@@ -36,6 +36,12 @@ package body Gtk.Main is
 
    package C renames Interfaces.C;
 
+   function Convert is new Unchecked_Conversion
+     (Timeout_Callback, System.Address);
+
+   function Timeout_Marshaller (Func : Timeout_Callback) return Gint;
+   --  Marshaller for Timeout_Callbacks.
+
    --------------
    -- Do_Event --
    --------------
@@ -304,6 +310,19 @@ package body Gtk.Main is
       Internal;
    end Set_Locale;
 
+   ------------------------
+   -- Timeout_Marshaller --
+   ------------------------
+
+   function Timeout_Marshaller (Func : Timeout_Callback) return Gint is
+   begin
+      if Func = null then
+         return Boolean'Pos (False);
+      else
+         return Boolean'Pos (Func.all);
+      end if;
+   end Timeout_Marshaller;
+
    -----------------
    -- Timeout_Add --
    -----------------
@@ -314,12 +333,17 @@ package body Gtk.Main is
    is
       function Internal
         (Interval : Guint32;
-         Func     : Timeout_Callback;
-         Data     : System.Address) return Timeout_Handler_Id;
-      pragma Import (C, Internal, "gtk_timeout_add");
+         Func     : System.Address;
+         Marshal  : System.Address := System.Null_Address;
+         Data     : System.Address := System.Null_Address;
+         Destroy  : System.Address := System.Null_Address)
+         return Timeout_Handler_Id;
+      pragma Import (C, Internal, "gtk_timeout_add_full");
 
    begin
-      return Internal (Interval, Func, System.Null_Address);
+      return Internal
+        (Interval, Timeout_Marshaller'Address,
+         System.Null_Address, Convert (Func));
    end Timeout_Add;
 
    ----------
@@ -445,6 +469,7 @@ package body Gtk.Main is
          if Data.User_Destroy /= null then
             Data.User_Destroy (Data.Data.all);
          end if;
+
          Internal2 (Data.Data);
          Internal (Data);
       end Free_Data;
