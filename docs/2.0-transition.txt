@@ -130,6 +130,8 @@ Gtk.Enums:
   Gtk_Trough_Type: removed.
 Gtk.File_Selection:
   now a child of Gtk_Dialog
+Gtk.Fixed:
+  new procedure: Set_Has_Window
 Gtk.Font_Selection:
   Gtk_Font_Selection_Dialog is now a child of Gtk_Dialog
   Gtk_Font_Selection is now a child of Gtk_Vbox
