@@ -7,10 +7,6 @@
 
 include ../Makefile.common
 
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA = @INSTALL_DATA@
-
 CFLAGS = @CFLAGS@ -Wall @GTK_CFLAGS@ -I. $(FPIC)
  
 SONAME        = libgtkada_gl-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)

@@ -7,10 +7,6 @@
 
 include ../Makefile.common
 
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA = @INSTALL_DATA@
-
 SONAME        = libgtkada_glade-$(MAJOR).$(MINOR)$(SO_EXT).$(MICRO)
 LIBNAME       = libgtkada_glade$(SO_EXT)
 ARCHIVENAME   = libgtkada_glade.a

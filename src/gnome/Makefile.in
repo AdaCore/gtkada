@@ -14,7 +14,7 @@ install: all
 	$(RM) $(libdir)/$(LIBNAME)
 	$(LN) $(SONAME) $(libdir)/$(LIBNAME)
 	$(CP) gnome*.ads gnome*.adb $(incdir)
-	$(CP) *.ali $(alidir)
+	$(CP) gnome*.ali $(alidir)
 	$(CHMOD) -w $(alidir)/*.ali
 
 else
