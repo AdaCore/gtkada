@@ -34,6 +34,7 @@ install: all
 	$(CP) $(MESA_SPECS) $(incdir)
 	$(CP) gdk*.ads gdk*.adb $(incdir)
 	$(CP) gtk*.ads gtk*.adb $(incdir)
+	$(CP) *.ali $(alidir)
 	$(CHMOD) -w $(alidir)/*.ali
 
 else
