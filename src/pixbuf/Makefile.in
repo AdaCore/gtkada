@@ -45,23 +45,23 @@ all:
 install:
 endif
 
-$(LIBNAME):: $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS)
+$(LIBNAME): $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS)
 	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS) @GTK_LIBS@ -L.. -lgtkada $(PIXBUF_LIBS)
 	-@if [ ! -f ../.devel ]; then \
 	   strip $(LIBNAME); \
 	fi
  
-$(ARCHIVENAME):: $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS)
+$(ARCHIVENAME): $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS)
 	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	   $(RANLIB) $(ARCHIVENAME); \
 	fi
 
-$(PIXBUF_OBJECTS)::
+$(PIXBUF_OBJECTS):: force
 	@if [ -f ../.devel ]; then \
-	   $(CC) -I.. -aO../lib-obj $(GNATFLAGS_DEVEL) $(FPIC) -c $(PIXBUF_SOURCES); \
+	   $(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS_DEVEL) $(FPIC) ${@:%.o=%} ;\
 	else \
-	   $(GNATMAKE) -I.. $(GNATFLAGS) $(FPIC) -c $(PIXBUF_SOURCES); \
+	   $(GNATMAKE) -I.. $(GNATFLAGS) $(FPIC) ${@:%.o=%}; \
 	fi
 
 misc_pixbuf.o: misc_pixbuf.c
