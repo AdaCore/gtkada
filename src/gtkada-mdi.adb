@@ -992,6 +992,12 @@ package body Gtkada.MDI is
       Req   : Gtk_Requisition;
 
    begin
+      --  If the MDI hasn't been created yet, we do nothing, it will be done
+      --  later.
+      if MDI_Alloc_Width = 1 or else MDI_Alloc_Height = 1 then
+         return;
+      end if;
+
       --  Resize all the handles and notebooks on the sides.
 
       for J in Left .. Bottom loop
