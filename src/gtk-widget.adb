@@ -980,18 +980,26 @@ package body Gtk.Widget is
             exit when Last = 0;
 
             if Flag_Set then
-               Put (File, " or ");
+               Put_Line (File, " or");
             else
                New_Line (File);
-               Put (File, "     ");
                Flag_Set := True;
             end if;
 
-            Put (File, To_Ada (S (The_First + 4 .. First - 1)));
+            Put (File, "     " & To_Ada (S (The_First + 4 .. First - 1)));
             The_First := Last + 1;
          end loop;
 
-         if not Flag_Set then
+         if The_First /= S'Last then
+            if Flag_Set then
+               Put_Line (File, " or");
+            else
+               New_Line (File);
+            end if;
+
+            Put (File, "     " & To_Ada (S (The_First + 4 .. S'Last)));
+
+         elsif not Flag_Set then
             Put (File, "0");
          end if;
 
@@ -1188,6 +1196,12 @@ package body Gtk.Widget is
             The_First := Last + 1;
          end loop;
 
+         if The_First /= S'Last then
+            Events := Events or
+              2 ** Gdk_Event_Mask_Enum'Pos
+                (Gdk_Event_Mask_Enum'Value (S (The_First .. Last)));
+         end if;
+ 
          return Events;
       end Decode_Events;
 
