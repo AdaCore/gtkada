@@ -1906,7 +1906,7 @@ ada_style_get_y_thickness (GtkStyle* style) {
  ***************************************************/
 
 guint
-ada_object_get_type (GObject* object)
+ada_gobject_get_type (GObject* object)
 {
   return G_OBJECT_TYPE (object);
 }
