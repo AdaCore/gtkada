@@ -126,7 +126,7 @@ package body Create_Ctree is
 
    ----------------------------------------------------------------------
 
-   procedure After_Press (Ctree : in Gtk.Ctree.Gtk_Ctree) is
+   procedure After_Press (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class) is
       N_Sel : Guint renames Gint_List.Length (Gtk.Ctree.Get_Selection (Ctree));
       N_Vis : Guint renames Gtk.Ctree.Row_List.Length
         (Gtk.Ctree.Get_Row_List (Ctree));
@@ -138,19 +138,8 @@ package body Create_Ctree is
    end After_Press;
 
    procedure After_Press_Cb (Ctree : access Gtk.Ctree.Gtk_Ctree_Record) is
-      N_Sel : Guint renames Gint_List.Length (Gtk.Ctree.Get_Selection (Ctree));
-      N_Vis : Guint renames Gtk.Ctree.Row_List.Length
-        (Gtk.Ctree.Get_Row_List (Ctree));
    begin
-      --  FIXME:  Here, I would like to be able to call After_Press.
-      --  FIXME:  It would be even more nice to be able to call
-      --  FIXME:  After_Press_Cb directly from the code. But for that,
-      --  FIXME:  the Ctree parameter must be an access to
-      --  FIXME:  Gtk_Ctree_Record'Class, I think.
-      Gtk.Label.Set_Text (Sel_Label, Str => Common.Image_Of (Gint (N_Sel)));
-      Gtk.Label.Set_Text (Vis_Label, Str => Common.Image_Of (Gint (N_Vis)));
-      Gtk.Label.Set_Text (Book_Label, Str => Common.Image_Of (Books));
-      Gtk.Label.Set_Text (Page_Label, Str => Common.Image_Of (Pages));
+      After_Press (Ctree);
    end After_Press_Cb;
 
    -------------------------------------------------------------------
@@ -236,7 +225,7 @@ package body Create_Ctree is
 
       if Gtk.Ctree.Get_Line_Style (Ctree) /= Ctree_Lines_Tabbed then
 
-         if Gtk.Ctree.Row_Get_Is_Leaf (Gtk.Ctree.Node_Get_Row (Node)) then
+         if not Gtk.Ctree.Row_Get_Is_Leaf (Gtk.Ctree.Node_Get_Row (Node)) then
             Style := Ctree_Style_Row_Data.Node_Get_Row_Data (Ctree,
                                                              Node => Node);
          else
@@ -245,8 +234,8 @@ package body Create_Ctree is
                  Gtk.Ctree.Row_Get_Parent (Gtk.Ctree.Node_Get_Row (Node));
             begin
                if Gtk.Ctree.Is_Created (Parent) then
-                  Style := Ctree_Style_Row_Data.Node_Get_Row_Data
-                    (Ctree, Parent);
+                  Style :=
+                    Ctree_Style_Row_Data.Node_Get_Row_Data (Ctree, Parent);
                end if;
             end;
          end if;
@@ -274,18 +263,10 @@ package body Create_Ctree is
       if New_Line_Style /= Current_Line_Style and then
         (New_Line_Style = Ctree_Lines_Tabbed or
          Current_Line_Style = Ctree_Lines_Tabbed) then
-         --  Ctree_Style_Row_Data.Pre_Recursive (Ctree,
-         --                                      Node => Gtk.Ctree.Null_Ctree_Node,
-         --                                      Func => Set_Background'Access,
-         --                                      Data => null);
-         null;
-         --  FIXME: For some reason, most of the nodes of the CTree don't
-         --  FIXME: have the Style attached to it. So it creates a crash
-         --  FIXME: (Constraint_Error) in Set_Background during the
-         --  FIXME: the Pre_Recursive routine.
-         --  FIXME: So, for now, I just disabled the Pre_Recursive, so the
-         --  FIXME: the tree will look all white until we find the cause of
-         --  FIXME: the problem.
+         Ctree_Style_Row_Data.Pre_Recursive (Ctree,
+                                             Node => Gtk.Ctree.Null_Ctree_Node,
+                                             Func => Set_Background'Access,
+                                             Data => null);
       end if;
 
       Gtk.Ctree.Set_Line_Style (Ctree, Line_Style => New_Line_Style);
@@ -488,7 +469,7 @@ package body Create_Ctree is
       N := ((B ** Integer (D) - 1) / (B - 1)) * (P + 1);
 
       if N > 100_000 then
-         Ada.Text_IO.Put_Line (Gint'Image (N) & "total items? Try less");
+         Ada.Text_IO.Put_Line (Gint'Image (N) & " total items? Try less");
          return;
       end if;
 
