@@ -61,8 +61,9 @@ package Gtk.Text is
    --  Return True if the operation was succesful, False otherwise.
 
    procedure Freeze (Text : access Gtk_Text_Record);
-   --  Freeze the Gtk_Text widget, stopping any redrawing of the widget
-   --  until the Thaw operation is called. This operation is useful when
+   --  Freeze the Gtk_Text widget.
+   --  In other words, stop any redrawing of the widget until the Thaw
+   --  operation is called. This operation is useful when
    --  a large number of changes need to be made within the widget.
    --  Freezing it during the updates will avoid some flicker seen by
    --  the user.
@@ -76,16 +77,15 @@ package Gtk.Text is
 
    function Get_Hadj (Text : access Gtk_Text_Record)
      return Gtk.Adjustment.Gtk_Adjustment;
-   --  Return the horizontal scrollbar associated to the given text
-   --  widget.
+   --  Return the horizontal scrollbar associated to the given text widget.
 
    function Get_Length (Text : access Gtk_Text_Record) return Guint;
-   --  Return the total length of the text contained within the text
-   --  widget.
+   --  Return the total length of the text contained within the text widget.
 
    function Get_Point (Text : access Gtk_Text_Record) return Guint;
-   --  Gets the current position of the cursor as the number of
-   --  characters from the upper left corner of the widget.
+   --  Get the current position of the cursor.
+   --  Return the number of characters from the upper left corner of the
+   --  widget.
 
    --  <doc_ignore>
    function Get_Text (Text : access Gtk_Text_Record) return String;
@@ -102,9 +102,9 @@ package Gtk.Text is
      (Text : out Gtk_Text;
       Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
       Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
-   --  Create a new text widget with the given scrollbars. If either or
-   --  both scrollbars is not provided, the text widget will create its
-   --  own.
+   --  Create a new text widget with the given scrollbars.
+   --  If either or both scrollbars is not provided, the text widget will
+   --  create its own.
 
    procedure Initialize
      (Text : access Gtk_Text_Record'Class;
@@ -115,8 +115,7 @@ package Gtk.Text is
 
    function Get_Vadj (Text : access Gtk_Text_Record)
      return Gtk.Adjustment.Gtk_Adjustment;
-   --  Return the vertical scrollbar associated to the given text
-   --  widget.
+   --  Return the vertical scrollbar associated to the given text widget.
 
    procedure Insert
      (Text   : access Gtk_Text_Record;
@@ -125,8 +124,8 @@ package Gtk.Text is
       Back   : in Gdk.Color.Gdk_Color;
       Chars  : in String;
       Length : in Gint := -1);
-   --  Insert the given string (Chars) inside the text of the text
-   --  widget, with the specified Font, foreground (Fore) and background
+   --  Insert the given string (Chars) inside the text of the text widget.
+   --  Use the specified Font, foreground (Fore) and background
    --  (Back) colors. Only the first "Length" characters are inserted,
    --  unless Length is set to -1, in which case the complete string is
    --  inserted.
@@ -135,20 +134,19 @@ package Gtk.Text is
      (Text : access Gtk_Text_Record;
       Hadj : Gtk.Adjustment.Gtk_Adjustment;
       Vadj : Gtk.Adjustment.Gtk_Adjustment);
-   --  Set the horizontal and vertical adjustments associated to the
-   --  given text widget.
+   --  Set the horizontal and vertical adjustments associated to a text widget.
 
    procedure Set_Editable
      (Text : access Gtk_Text_Record; Editable : in Boolean := True);
-   --  Toggle the editable state of the given text widget, which
-   --  determine whether the user can edit the text or not. Note that
+   --  Toggle the editable state of the given text widget.
+   --  This determines whether the user can edit the text or not. Note that
    --  the programmer can still perform any update.
 
    procedure Set_Line_Wrap
      (Text : access Gtk_Text_Record; Line_Wrap : in Boolean := True);
-   --  Set the Line_Wrap state of the given text widget. If set to True,
-   --  the line is broken when it reaches the extent of the widget
-   --  viewing area and the rest is displayed on the next line. If set
+   --  Set the Line_Wrap state of the given text widget.
+   --  If set to True, the line is broken when it reaches the extent of the
+   --  widget viewing area and the rest is displayed on the next line. If set
    --  to false, the line continues regardless of the size of current
    --  viewing area.
 
@@ -157,13 +155,17 @@ package Gtk.Text is
 
    procedure Set_Word_Wrap
      (Text : access Gtk_Text_Record; Word_Wrap : in Boolean := True);
-   --  Set the Word_Wrap state of the given text widget. If set to True,
-   --  words are wrapped down to the next line if they can't be completed
-   --  on the current line.
+   --  Set the Word_Wrap state of the given text widget.
+   --  If set to True, words are wrapped down to the next line if they can't
+   --  be completed on the current line.
 
    procedure Thaw (Text : access Gtk_Text_Record);
-   --  Cancel the previous call to Freeze. Allow the widget to be
-   --  redrawn again.
+   --  Cancel the previous call to Freeze.
+   --  Allow the widget to be redrawn again.
+
+   ----------------------------
+   -- Support for Gate/Dgate --
+   ----------------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
