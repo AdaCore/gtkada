@@ -28,14 +28,13 @@
 -----------------------------------------------------------------------
 
 --  <description>
---
 --  This package contains high level support for the Glade GUI builder.
 --  It provides routines to generate Ada code and create widgets dynamically
 --  from an XML definition file.
 --  @pxref{Package_Glib.Glade} for the low level GUI builder support.
---
 --  </description>
 
+with Ada.Text_IO; use Ada.Text_IO;
 with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
 
 package Gtk.Glade is
