@@ -129,15 +129,20 @@ package Gtkada.MDI is
    --  the window that currently has the focus.
    --  Parent must be the toplevel window that contains the MDI.
 
+   type Show_Tabs_Policy_Enum is (Always, Never, Automatic);
+
    procedure Configure
      (MDI                       : access MDI_Window_Record;
       Opaque_Resize             : Boolean             := False;
       Opaque_Move               : Boolean             := False;
       Close_Floating_Is_Unfloat : Boolean             := True;
-      Title_Font                : Pango.Font.Pango_Font_Description := null;
-      Background_Color          : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Title_Bar_Color           : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Focus_Title_Color         : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color);
+      Title_Font         : Pango.Font.Pango_Font_Description := null;
+      Background_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Title_Bar_Color    : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Focus_Title_Color  : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Draw_Title_Bars    : Boolean             := True;
+      Tabs_Position      : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Bottom;
+      Show_Tabs_Policy   : Show_Tabs_Policy_Enum := Automatic);
    --  Change the setup of the MDI.
    --  Close_Floating_Is_Unfloat, if True, means that closing a floating child
    --  will put it back in the MDI instead of destroying it (unless its flag
@@ -145,6 +150,12 @@ package Gtkada.MDI is
    --  Title_Font is the font used in the title bars (if null, "sans 8"
    --  is used).
    --  The colors, when Null_Color, will not change the current setup.
+   --  If Draw_Title_Bars is False, then no extra title bar will be displayed
+   --  for the MDI children when they are maximized. This saves space on the
+   --  screen. However, the notebook tabs will be highlighted with
+   --  Title_Bar_Color in exchange.
+   --  Tabs_Position indicates where the notebook tabs should be put.
+   --  Show_Tabs_Policy indicates when the notebook tabs should be displayed.
 
    type Child_Flags is mod 2 ** 5;
    Iconify_Button       : constant Child_Flags := 2 ** 0;
@@ -851,6 +862,10 @@ private
       Title_Bar_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Focus_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Default_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+
+      Draw_Title_Bars   : Boolean             := True;
+      Tabs_Position     : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Bottom;
+      Show_Tabs_Policy  : Show_Tabs_Policy_Enum := Automatic;
 
       Selection_Dialog : Gtk.Widget.Gtk_Widget;
       --  The interactive dialog for selecting new children.
