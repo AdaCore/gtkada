@@ -88,6 +88,9 @@ package Glib.XML is
    --  If File_Name is the empty string, then the tree is printed on the
    --  standard output
 
+   function Protect (S : String) return String;
+   --  Return a copy of S modified so that it is a valid XML value
+
    function Find_Tag (N : Node_Ptr; Tag : String) return Node_Ptr;
    --  Find a tag Tag in N and its brothers.
 

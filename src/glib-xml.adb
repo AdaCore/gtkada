@@ -440,6 +440,55 @@ package body Glib.XML is
       end if;
    end Get_Node;
 
+   -------------
+   -- Protect --
+   -------------
+
+   function Protect (S : String) return String is
+      Length : Natural := 0;
+   begin
+      for J in S'Range loop
+         case S (J) is
+            when '<' => Length := Length + 4;
+            when '>' => Length := Length + 4;
+            when '&' => Length := Length + 5;
+            when ''' => Length := Length + 6;
+            when '"' => Length := Length + 6;
+            when others => Length := Length + 1;
+         end case;
+      end loop;
+
+      declare
+         Result : String (1 .. Length);
+         Index : Integer := 1;
+      begin
+         for J in S'Range loop
+            case S (J) is
+               when '<' =>
+                  Result (Index .. Index + 3) := "&lt;";
+                  Index := Index + 4;
+               when '>' =>
+                  Result (Index .. Index + 3) := "&gt;";
+                  Index := Index + 4;
+               when '&' =>
+                  Result (Index .. Index + 4) := "&amp;";
+                  Index := Index + 5;
+               when ''' =>
+                  Result (Index .. Index + 5) := "&apos;";
+                  Index := Index + 6;
+               when '"' =>
+                  Result (Index .. Index + 5) := "&quot;";
+                  Index := Index + 6;
+               when others =>
+                  Result (Index) := S (J);
+                  Index := Index + 1;
+            end case;
+         end loop;
+
+         return Result;
+      end;
+   end Protect;
+
    -----------
    -- Print --
    -----------
