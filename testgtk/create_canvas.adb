@@ -206,18 +206,18 @@ package body Create_Canvas is
       Gtk_New (Item4, Get_Window (Canvas));
       Put (Canvas, Item4, 280, 170);
 
-      Add_Link (Canvas, Item1, Item2, "From1->2");
-      Add_Link (Canvas, Item3, Item1, "From3->1");
-      Add_Link (Canvas, Item1, Item4, "From1->4");
-      Add_Link (Canvas, Item2, Item3, "From2->3");
-      Add_Link (Canvas, Item2, Item4, "From2->4");
-      Add_Link (Canvas, Item3, Item4, "From3->4");
-      Add_Link (Canvas, Item4, Item3, "From3->41");
-      Add_Link (Canvas, Item3, Item4, "From3->42");
-      Add_Link (Canvas, Item4, Item3, "From3->43");
-      Add_Link (Canvas, Item3, Item4, "From3->44");
-      Add_Link (Canvas, Item2, Item2, "Self");
-      Add_Link (Canvas, Item2, Item2, "Self2");
+      Add_Link (Canvas, Item1, Item2, Both_Arrow, "From1->2");
+      Add_Link (Canvas, Item3, Item1, Start_Arrow, "From3->1");
+      Add_Link (Canvas, Item1, Item4, No_Arrow, "From1->4");
+      Add_Link (Canvas, Item2, Item3, End_Arrow, "From2->3");
+      Add_Link (Canvas, Item2, Item4, Both_Arrow, "From2->4");
+      Add_Link (Canvas, Item3, Item4, Start_Arrow, "From3->4");
+      Add_Link (Canvas, Item4, Item3, End_Arrow, "From3->41");
+      Add_Link (Canvas, Item3, Item4, Both_Arrow, "From3->42");
+      Add_Link (Canvas, Item4, Item3, Both_Arrow, "From3->43");
+      Add_Link (Canvas, Item3, Item4, Both_Arrow, "From3->44");
+      Add_Link (Canvas, Item2, Item2, No_Arrow, "Self");
+      Add_Link (Canvas, Item2, Item2, Start_Arrow, "Self2");
 
       Show_All (Frame);
    end Run;
