@@ -67,7 +67,7 @@ package Gtk.Clist is
    ------------------------------------------------
 
    procedure Gtk_New (Widget : out Gtk_Clist; Columns : in Gint);
-   --  This procedure creates a list with COLUMNS columns.
+   --  Create a list with Columns columns.
    --  Each line will have this exact number of column
    --  The number of columns can not be changed once the widget has been
    --  created.
@@ -81,10 +81,10 @@ package Gtk.Clist is
      (Widget  : out Gtk_Clist;
       Columns : in  Gint;
       Titles  : in  Gtkada.Types.Chars_Ptr_Array);
-   --  This procedure creates a new list with COLUMNS columns. The title
-   --  of the columns is specified in TITLES.
-   --  The results are undefined (and can raise an error) if TITLES does
-   --  not have at least COLUMNS items.
+   --  Create a new list with Columns columns.
+   --  The title of the columns is specified in Titles.
+   --  The results are undefined (and can raise an exception) if Titles does
+   --  not have at least Columns items.
 
    procedure Initialize
      (Widget  : access Gtk_Clist_Record'Class;
@@ -94,12 +94,12 @@ package Gtk.Clist is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Clist internally.
+   --  Return the internal value associated with a Gtk_Clist internally.
 
    procedure Set_Hadjustment
       (Clist      : access Gtk_Clist_Record;
        Adjustment : Gtk.Adjustment.Gtk_Adjustment);
-   --  Sets the horizontal adjustment used for the clist.
+   --  Set the horizontal adjustment used for the clist.
    --  Note that such an adjustment is automatically created when the clist
    --  is added to a Gtk_Scrolled_Window. You should rather use
    --  Gtk.Scrolled_Window.Set_Hadjustment if you want to modify the
@@ -110,7 +110,7 @@ package Gtk.Clist is
    procedure Set_Vadjustment
      (Clist      : access Gtk_Clist_Record;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
-   --  Sets the vertical adjustment used for the clist.
+   --  Set the vertical adjustment used for the clist.
    --  Note that such an adjustment is automatically created when the clist
    --  is added to a Gtk_Scrolled_Window. You should rather use
    --  Gtk.Scrolled_Window.Set_Hadjustment if you want to modify the
@@ -120,7 +120,7 @@ package Gtk.Clist is
 
    function Get_Hadjustment (Clist  : access  Gtk_Clist_Record)
                              return           Gtk.Adjustment.Gtk_Adjustment;
-   --  Returns the horizontal adjustment used for the clist.
+   --  Return the horizontal adjustment used for the clist.
    --  This indicates what position the clist is presently displaying, and
    --  by changing its value, the clist is automatically scrolled horizontally.
    --  This is done automatically when the clist's parent is a
@@ -128,7 +128,7 @@ package Gtk.Clist is
 
    function Get_Vadjustment (Clist  : access Gtk_Clist_Record)
                              return          Gtk.Adjustment.Gtk_Adjustment;
-   --  Returns the vertical adjustment used for the clist.
+   --  Return the vertical adjustment used for the clist.
    --  This indicates what position the clist is presently displaying, and
    --  by changing its value, the clist is automatically scrolled vertically.
    --  This is done automatically when the clist's parent is a
@@ -136,7 +136,7 @@ package Gtk.Clist is
 
    procedure Set_Selection_Mode (Clist : access Gtk_Clist_Record;
                                  Mode  : in Gtk.Enums.Gtk_Selection_Mode);
-   --  Modifies the selection mode for the clist.
+   --  Modify the selection mode for the clist.
    --  This indicates whether one or more lines can be selected at the
    --  same time in the clist, and how this selection can done by the
    --  user (does he have to click explictly on an item, or can he
@@ -150,19 +150,19 @@ package Gtk.Clist is
    --------------------
 
    procedure Freeze (Clist : access Gtk_Clist_Record);
-   --  Freezes all visual updates on the list, while you make big changes.
+   --  Freeze all visual updates on the list, while you make big changes.
    --  This is more efficient than working on an unfrozen list.
 
    procedure Thaw (Clist : access Gtk_Clist_Record);
-   --  Thaw the list, ie reactivates all the visual updates. This also forces
-   --  an immediate refresh of the list.
+   --  Thaw the list, ie reactivate all the visual updates.
+   --  This also forces an immediate refresh of the list.
    --  Note that each Freeze must be followed by a Thaw. The visual updates
    --  are not reactivated until the last Thaw has been emitted, but there is
    --  an immediate refresh every time anyway.
 
    procedure Set_Shadow_Type (Clist    : access Gtk_Clist_Record;
                               The_Type : in Gtk.Enums.Gtk_Shadow_Type);
-   --  Sets the border style of the clist.
+   --  Set the border style of the clist.
 
    ----------------------------
    -- Modifying the contents --
@@ -171,74 +171,76 @@ package Gtk.Clist is
    function Append (Clist : access Gtk_Clist_Record;
                     Text  : in     Gtkada.Types.Chars_Ptr_Array)
                    return      Gint;
-   --  Appends a new row to the clist, and returns the index of the row that
-   --  was created. The row is added at the end of the CLISt.
-   --  The behavior is undefined if TEXT does not have at least as many items
-   --  as there are columns in the CLIST.
+   --  Append a new row to the clist, and return the index of the row created.
+   --  The row is added at the end of the Clist.
+   --  The behavior is undefined if Text does not have at least as many items
+   --  as there are columns in the Clist.
 
    function Prepend (Clist : access Gtk_Clist_Record;
                      Text  : in     Gtkada.Types.Chars_Ptr_Array)
                      return         Gint;
-   --  Adds a new row at the beginning of the clist, and returns the index of
-   --  the row that was created.
-   --  The behavior is undefined if TEXT does not have at least as many items
-   --  as there are columns in the CLIST.
+   --  Add a new row at the beginning of the clist, and return its index.
+   --  The behavior is undefined if Text does not have at least as many items
+   --  as there are columns in the Clist.
 
    -------------
    -- Columns --
    -------------
 
    procedure Column_Titles_Hide (Clist : access Gtk_Clist_Record);
-   --  Hides the column titles for the list. This is the default behavior if
-   --  no column titles were given when the list was created.
+   --  Hide the column titles for the list.
+   --  This is the default behavior if no column titles were given when the
+   --  list was created.
 
    procedure Column_Titles_Show (Clist : access Gtk_Clist_Record);
-   --  Shows the column titles for the list. This is the default behavior if
-   --  some column titles were given when the list was created.
+   --  Show the column titles for the list.
+   --  This is the default behavior if some column titles were given when the
+   --  list was created.
 
    procedure Column_Title_Active (Clist : access Gtk_Clist_Record;
                                   Column : in Gint);
-   --  Sets the column title to be an activate title, ie answer all button
-   --  presses, highlights when the mouse is over it, ...
+   --  Set the column title to be an activate title.
+   --  In other words, answer all button presses, highlights when the mouse is
+   --  over it, ...
 
    procedure Column_Title_Passive (Clist : access Gtk_Clist_Record;
                                    Column : in Gint);
-   --  Sets the column title to be passive, ie acts just as a title, and does
-   --  not react to mouse events.
+   --  Set the column title to be passive.
+   --  Act just as a title, and do not react to mouse events.
 
    procedure Column_Titles_Active (Clist : access Gtk_Clist_Record);
-   --  Sets all column titles to be active.
+   --  Set all column titles to be active.
 
    procedure Column_Titles_Passive (Clist : access Gtk_Clist_Record);
-   --  Sets all column titles to be passive.
+   --  Set all column titles to be passive.
 
    procedure Set_Column_Title (Clist  : access Gtk_Clist_Record;
                                Column : in Gint;
                                Title  : in String);
-   --  Sets the text for the button of the column's title.
+   --  Set the text for the button of the column's title.
    --  See Set_Column_Widget if you want to put a pixmap inside the button.
 
    function Get_Column_Title (Clist  : access Gtk_Clist_Record;
                               Column : in Gint)
                              return String;
-   --  Returns the text used for the title's column. This is a copy of the
-   --  title, so you can't modify it to automatically change the column's
-   --  title.
+   --  Return the text used for the title's column.
+   --  This is a copy of the title, so you can't modify it to automatically
+   --  change the column's title.
 
    procedure Set_Column_Widget
      (Clist  : access Gtk_Clist_Record;
       Column : in     Gint;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Modifies the widget used in the Gtk_Button that is the column's title.
+   --  Modify the widget used in the Gtk_Button that is the column's title.
    --  By default, this button contains a simple Gtk_Label, which is replaced
-   --  by WIDGET. This is the function to use if you want to put a pixmap
+   --  by Widget. This is the function to use if you want to put a pixmap
    --  (or a Gtk_Box that contains both a pixmap and some text) in a column's
    --  title.
 
    function Get_Column_Widget (Clist  : access Gtk_Clist_Record;
                                Column : in Gint)
                               return Gtk.Widget.Gtk_Widget;
-   --  Returns the child of the button that makes the column's title.
+   --  Return the child of the button that makes the column's title.
    --  Unless you changed it with Set_Column_Widget, this will return a
    --  Gtk_Label. Note also that if this widget was not created in Ada, but
    --  transparently by gtk+, you have to 'with' Gtk.Type_Conversion so that
@@ -249,7 +251,7 @@ package Gtk.Clist is
      (Clist         : access Gtk_Clist_Record;
       Column        : in Gint;
       Justification : in Gtk.Enums.Gtk_Justification);
-   --  Changes the way the text in the whole column is justified.
+   --  Change the way the text in the whole column is justified.
    --  This function has no effect on the title if you used Set_Column_Widget
    --  before.
 
@@ -257,55 +259,55 @@ package Gtk.Clist is
      (Clist   : access Gtk_Clist_Record;
       Column  : in Gint;
       Visible : in Boolean);
-   --  Modifies the visibility of a column.
+   --  Modify the visibility of a column.
 
    procedure Set_Column_Resizeable
      (Clist    : access Gtk_Clist_Record;
       Column   : in Gint;
       Resizeable : in Boolean);
-   --  Sets whether the column can be dynamically resized by the user with the
-   --  mouse. If RESIZEABLE is true, then the column can be resized by clicking
-   --  and draging the lines that separates the column from the next one.
+   --  Set whether the column can be dynamically resized with the mouse.
+   --  If Resizeable is true, then the column can be resized by clicking
+   --  and dragging the lines that separates the column from the next one.
 
    procedure Set_Column_Auto_Resize
      (Clist       : access Gtk_Clist_Record;
       Column      : in Gint;
       Auto_Resize : in Boolean);
-   --  Sets whether the column should automatically be resized to the optimal
+   --  Set whether the column should automatically be resized to the optimal
    --  size (based on its contents). Note that this operation could slow things
    --  down a lot if you have a lot of items in your list.
 
    function Columns_Autosize (Clist  : access Gtk_Clist_Record) return Gint;
-   --  Sets all the columns' width to their optimal size, and returns the total
-   --  width of the clist after this operation.
+   --  Set all the columns' width to their optimal size.
+   --  Return the total width of the clist after this operation.
 
    function Optimal_Column_Width (Clist : access Gtk_Clist_Record;
                                   Column : Gint)
                                  return Gint;
-   --  Returns the optimal width for COLUMN, based on its contents. This is
-   --  the maximal cell width in the column.
+   --  Return the optimal width for Column, based on its contents.
+   --  This is the maximal cell width in the column.
 
    procedure Set_Column_Width
      (Clist  : access Gtk_Clist_Record;
       Column : in Gint;
       Width  : in Gint);
-   --  Sets the column width in pixels. By default, the column's width is
-   --  chosen from the column's title.
+   --  Set the column width in pixels.
+   --  By default, the column's width is chosen from the column's title.
 
    procedure Set_Column_Min_Width
      (Clist     : access Gtk_Clist_Record;
       Column    : Gint;
       Min_Width : Gint);
-   --  Sets the minimal width for the column, in pixels.
-   --  if MIN_WIDTH is negative, there is no limit on the minimal width for
+   --  Set the minimal width for the column, in pixels.
+   --  if Min_Width is negative, there is no limit on the minimal width for
    --  the column.
 
    procedure Set_Column_Max_Width
      (Clist     : access Gtk_Clist_Record;
       Column    : Gint;
       Max_Width : Gint);
-   --  Sets the maximal width for the column, in pixels.
-   --  if MAX_WIDTH is negative, there is no limit on the maximal width for
+   --  Set the maximal width for the column, in pixels.
+   --  If Max_Width is negative, there is no limit on the maximal width for
    --  the column.
 
    ----------
@@ -315,19 +317,19 @@ package Gtk.Clist is
    procedure Set_Row_Height
      (Clist  : access Gtk_Clist_Record;
       Height : Gint);
-   --  Sets the height of the rows, in pixels.
-   --  if HEIGHT is 0, the chosen height will be the current's font height.
+   --  Set the height of the rows, in pixels.
+   --  if Height is 0, the chosen height will be the current's font height.
 
    function Row_Is_Visible (Clist : access Gtk_Clist_Record;
                             Row   : in Gint)
                            return Gtk.Enums.Gtk_Visibility;
-   --  Returns the visibility status of the row.
+   --  Return the visibility status of the row.
 
    procedure Set_Foreground
      (Clist : access Gtk_Clist_Record;
       Row   : in Gint;
       Color : in Gdk.Color.Gdk_Color);
-   --  Sets the foreground color for the row.
+   --  Set the foreground color for the row.
    --  The color must already be allocated.
    --  If no such row exists in the list, nothing is done.
 
@@ -335,31 +337,31 @@ package Gtk.Clist is
      (Clist : access Gtk_Clist_Record;
       Row   : in Gint;
       Color : in Gdk.Color.Gdk_Color);
-   --  Sets the background color for the row.
+   --  Set the background color for the row.
    --  The color must already be allocated.
    --  If no such row exists in the list, nothing is done.
 
    procedure Set_Row_Style
      (Clist : access Gtk_Clist_Record; Row : Gint;
       Style : in Gtk.Style.Gtk_Style'Class);
-   --  Sets the default style for the cells in the row. This can be
+   --  Set the default style for the cells in the row. This can be
    --  overriden for each cell with Set_Cell_Style.
 
    function Get_Row_Style (Clist  : access Gtk_Clist_Record;
                            Row    : in     Gint)
                            return          Gtk.Style.Gtk_Style'Class;
-   --  Gets the default style used for the row.
+   --  Return the default style used for the row.
 
    procedure Set_Selectable (Clist      : access Gtk_Clist_Record;
                              Row        : Gint;
                              Selectable : Boolean);
-   --  Indicates whether the row can be selected or not. The default value
-   --  is True.
+   --  Indicate whether the row can be selected or not.
+   --  The default value is True.
 
    function Get_Selectable (Clist : access Gtk_Clist_Record;
                             Row   : Gint)
                            return Boolean;
-   --  Returns the selectable status of the row.
+   --  Return the selectable status of the row.
 
    -----------
    -- Cells --
@@ -369,7 +371,7 @@ package Gtk.Clist is
                            Row    : in Gint;
                            Column : in Gint)
                           return Gtk.Enums.Gtk_Cell_Type;
-   --  Returns the type of the cell at ROW/COLUMN.
+   --  Return the type of the cell at Row/Column.
    --  This indicates which of the functions Get_Text. Get_Pixmap, etc.
    --  below you can use.
 
@@ -378,12 +380,13 @@ package Gtk.Clist is
       Row    : in Gint;
       Column : in Gint;
       Text   : in String);
-   --  Sets the cell's text, replacing its current contents.
+   --  Set the cell's text, replacing its current contents.
 
    function Get_Text
      (Clist    : access Gtk_Clist_Record;
       Row      : in Gint;
       Column   : in Gint) return String;
+   --  Return the text contained in cell.
    --  If there was a problem, a null-length string is returned.
    --  The problem might appear in case the row or the column are
    --  invalid, or if the cell does not contain any text.
@@ -394,7 +397,7 @@ package Gtk.Clist is
       Column : in Gint;
       Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
-   --  Sets the cell's pixmap, replacing its current contents.
+   --  Set the cell's pixmap, replacing its current contents.
 
    procedure Get_Pixmap
      (Clist    : access Gtk_Clist_Record;
@@ -403,7 +406,7 @@ package Gtk.Clist is
       Pixmap   : out Gdk.Pixmap.Gdk_Pixmap'Class;
       Mask     : out Gdk.Bitmap.Gdk_Bitmap'Class;
       Is_Valid : out Boolean);
-   --  Gets the pixmap contained in a cell.
+   --  Return the pixmap contained in a cell.
    --  The result is meaningful only if Is_Valid is True. If the Cell did not
    --  contain a pixmap, Is_Valid is set to False
 
@@ -415,10 +418,10 @@ package Gtk.Clist is
       Spacing : in Guint8;
       Pixmap  : in Gdk.Pixmap.Gdk_Pixmap'Class;
       Mask    : in Gdk.Bitmap.Gdk_Bitmap'Class);
-   --  Sets both the text and the pixmap for the cell, replacing its current
-   --  contents.
+   --  Set both the text and the pixmap for the cell.
+   --  Replace its current contents.
 
-   procedure  Get_Pixtext
+   procedure Get_Pixtext
      (Clist    : access Gtk_Clist_Record;
       Row      : in Gint;
       Column   : in Gint;
@@ -435,14 +438,14 @@ package Gtk.Clist is
                              Row    : in Gint;
                              Column : in Gint;
                              Style  : in Gtk.Style.Gtk_Style'Class);
-   --  Sets the style (font, color, ...) use for the cell.
+   --  Set the style (font, color, ...) used for the cell.
    --  This overrides the row's style.
 
    function Get_Cell_Style (Clist  : access Gtk_Clist_Record;
                             Row    : in     Gint;
                             Column : in     Gint)
                             return          Gtk.Style.Gtk_Style'Class;
-   --  Returns the style of the cell.
+   --  Return the style of the cell.
 
    procedure Set_Shift
      (Clist      : access Gtk_Clist_Record;
@@ -450,8 +453,8 @@ package Gtk.Clist is
       Column     : in Gint;
       Vertical   : in Gint;
       Horizontal : in Gint);
-   --  Sets a horizontal and vertical shift for drawing the content of the
-   --  cell. Both shifts can be either positive or negative.
+   --  Set a horizontal and vertical shift for drawing the content of the cell.
+   --  Both shifts can be either positive or negative.
    --  This is particularly useful for indenting items in a columns.
 
    -------------------------
@@ -460,19 +463,19 @@ package Gtk.Clist is
 
    procedure Set_Reorderable
      (Clist : access Gtk_Clist_Record; Reorderable : Boolean);
-   --  Sets whether the list can be dynamically reordered by the user, using
-   --  a simple drag-n-drop protocol.
+   --  Set whether the list can be dynamically reordered by the user.
+   --  (using a simple drag-n-drop protocol).
 
    procedure Set_Use_Drag_Icons
      (Clist : access Gtk_Clist_Record; Use_Icons : Boolean);
-   --  Sets whether drag icons are shown while the user is reordering the
-   --  list. The default value is True.
+   --  Set whether drag icons are shown while the user is reordering the list.
+   --  The default value is True.
 
    procedure Set_Button_Actions
      (Clist         : access Gtk_Clist_Record;
       Button        :        Guint;
       Button_Action :        Gtk.Enums.Gtk_Button_Action);
-   --  Sets the action for a specific buton on the list.
+   --  Set the action for a specific buton on the list.
    --  The default if for the left mouse button to select or drag and item,
    --  the other buttons are ignored.
    --  The Button_Expands action has no effect on a clist.
@@ -483,11 +486,11 @@ package Gtk.Clist is
       Column    : in Gint;
       Row_Align : in Gfloat;
       Col_Align : in Gfloat);
-   --  Scrolls the list so that ROW/COLUMN is visible.
-   --  If ROW is -1, the clist is not scrolled vertically.
-   --  If COLUMN is -1, the clist is not scrolled horizontally.
-   --  The new location of ROW/COLUMN depends on the value of ROW_ALIGN and
-   --  COL_ALIGN (from 0.0x0.0 (top-left) to 1.0x1.0 (bottom-right), all
+   --  Scroll the list so that Row/Column is visible.
+   --  If Row is -1, the clist is not scrolled vertically.
+   --  If Column is -1, the clist is not scrolled horizontally.
+   --  The new location of Row/Column depends on the value of Row_Align and
+   --  Col_Align (from 0.0x0.0 (top-left) to 1.0x1.0 (bottom-right), all
    --  intermediate values are possible).
 
    ----------
@@ -556,7 +559,7 @@ package Gtk.Clist is
 
    procedure Set_Show_Titles (Clist : access Gtk_Clist_Record; Show : Boolean);
    --  If show is true, call Column_Titles_Show. Do nothing otherwise.
-   --  this procedure is primarily used by GATE generated code.
+   --  This procedure is primarily used by GATE generated code.
 
    --  gtk_clist_set_sort_column
    --  gtk_clist_set_sort_type
