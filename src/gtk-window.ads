@@ -63,7 +63,7 @@ package Gtk.Window is
    type Gtk_Window is access all Gtk_Window_Record'Class;
 
    procedure Gtk_New
-     (Window   : in out Gtk_Window;
+     (Window   : out Gtk_Window;
       The_Type : in  Gtk.Enums.Gtk_Window_Type := Gtk.Enums.Window_Toplevel);
    --  Create a new window.
    --  The_Type specifies the type of the window, and can be either a

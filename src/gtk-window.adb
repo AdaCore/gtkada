@@ -78,7 +78,7 @@ package body Gtk.Window is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Window   : in out Gtk_Window;
+   procedure Gtk_New (Window   : out Gtk_Window;
                       The_Type : in  Gtk_Window_Type := Window_Toplevel) is
    begin
       Window := new Gtk_Window_Record;
