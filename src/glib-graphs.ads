@@ -46,6 +46,9 @@ package Glib.Graphs is
    type Edge_Iterator   is private;
    --  Iterators other the vertices and edges of the graph
 
+   Null_Vertex_Iterator : constant Vertex_Iterator;
+   Null_Edge_Iterator : constant Edge_Iterator;
+
    type Vertices_Array is array (Natural range <>) of Vertex_Access;
    type Edges_Array    is array (Natural range <>) of Edge_Access;
 
@@ -270,13 +273,20 @@ package Glib.Graphs is
    -- Edge iterator --
    -------------------
 
-   function First (G : Graph; Src, Dest : Vertex_Access := null)
+   function First
+     (G : Graph;
+      Src, Dest : Vertex_Access := null;
+      Directed : Boolean := True)
       return Edge_Iterator;
    --  Return a pointer to the first edge from Src to Dest.
    --  If either Src or Dest is null, then any vertex matches. Thus, if both
    --  parameters are nulll, this iterator will traverse the whole graph.
    --  Note: there might be duplicates returned by this iterator, especially
    --  when the graph is not oriented.
+   --  Directed can be used to temporarily overrides the setting in the graph:
+   --  If Directed is True, the setting of G is taken into account.
+   --  If Directed is False, the setting of G is ignored, and the graph is
+   --  considered as not directed.
 
    procedure Next (E : in out Edge_Iterator);
    --  Moves V to the next edge in the graph.
@@ -355,6 +365,16 @@ private
       First_Pass     : Boolean;
       Repeat_Count   : Positive := 1;
    end record;
+
+   Null_Vertex_Iterator : constant Vertex_Iterator := null;
+   Null_Edge_Iterator : constant Edge_Iterator :=
+     (Directed       => False,
+      Src            => null,
+      Dest           => null,
+      Current_Edge   => null,
+      Current_Vertex => null,
+      First_Pass     => True,
+      Repeat_Count   => 1);
 
    pragma Inline (Get_Index);
    pragma Inline (Max_Index);

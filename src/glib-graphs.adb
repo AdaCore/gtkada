@@ -302,11 +302,13 @@ package body Glib.Graphs is
    -- First --
    -----------
 
-   function First (G : Graph; Src, Dest : Vertex_Access := null)
+   function First (G : Graph;
+                   Src, Dest : Vertex_Access := null;
+                   Directed : Boolean := True)
       return Edge_Iterator
    is
       Va : Edge_Iterator :=
-        (Directed       => G.Directed,
+        (Directed       => Directed and then G.Directed,
          Repeat_Count   => 1,
          Src            => Src,
          Dest           => Dest,
