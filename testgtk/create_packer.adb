@@ -29,12 +29,13 @@
 
 with Glib;               use Glib;
 with Gtk.Button;         use Gtk.Button;
+with Gtk.Enums;          use Gtk.Enums;
 with Gtk.Frame;          use Gtk.Frame;
 with Gtk.Handlers;       use Gtk.Handlers;
+with Gtk.Object;         use Gtk.Object;
 with Gtk.Packer;         use Gtk.Packer;
 with Gtk.Table;          use Gtk.Table;
 with Gtk.Toggle_Button;  use Gtk.Toggle_Button;
-with Gtk.Object;         use Gtk.Object;
 with Gtk.Widget;         use Gtk.Widget;
 
 package body Create_Packer is
