@@ -506,7 +506,7 @@ package body Gtkada.MDI is
    function Set_Focus_Child_MDI_Floating
      (Child : access Gtk_Widget_Record'Class) return Boolean is
    begin
-      Set_Focus_Child (MDI_Child (Child));
+      Set_Focus_Child (MDI_Child (Child), Force_Focus => False);
       return False;
    end Set_Focus_Child_MDI_Floating;
 
@@ -3033,7 +3033,10 @@ package body Gtkada.MDI is
    -- Set_Focus_Child --
    ---------------------
 
-   procedure Set_Focus_Child (Child : access MDI_Child_Record'Class) is
+   procedure Set_Focus_Child
+     (Child       : access MDI_Child_Record'Class;
+      Force_Focus : Boolean := True)
+   is
       procedure Emit_By_Name_Child
         (Object : System.Address; Name : String; Child : System.Address);
       pragma Import (C, Emit_By_Name_Child, "g_signal_emit_by_name");
@@ -3100,8 +3103,9 @@ package body Gtkada.MDI is
       --  want to make sure that no other widget has the focus. As a result,
       --  focus_in events will always be sent the next time the user selects a
       --  widget.
-
-      Grab_Focus (C);
+      if Force_Focus then
+         Grab_Focus (C);
+      end if;
 
       Highlight_Child (C, False);
 
