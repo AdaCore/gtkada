@@ -142,6 +142,8 @@ package Gtk.Font_Selection is
    --  keeps a copy of the information it needs.
    --  The default values for parameters are set so that there is in fact no
    --  filter.
+   --  Note that this call will succeed only if Fsd has been added to a window
+   --  first.
 
    function Get_Preview_Text (Fontsel : access Gtk_Font_Selection_Record)
                              return String;
