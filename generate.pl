@@ -22,10 +22,10 @@ $file = uc ($file);
 my ($line) = 0;
 for ($line = 0; $line < $#cfile; $line ++)
 {
-  last if (uc ($cfile[$line]) =~ /^STRUCT _$file\s*$/);
+  last if (uc ($cfile[$line]) =~ /^STRUCT\s+_$file\s*$/);
 }
 my ($current_package);
-$cfile[$line] =~ /struct _(.*)/;
+$cfile[$line] =~ /struct\s+_(.*)/;
 $current_package = &create_ada_name ($1);
 
 my ($in_comment) = 0;
@@ -197,6 +197,7 @@ sub create_ada_name
 
     return "The_Type" if ($entity eq "Type");
     return "The_End" if ($entity eq "End");
+#    return "The_Range" if ($entity eq "Range");
     return $entity;
   }
 
@@ -300,10 +301,11 @@ sub print_arguments
 	$indent = (' ' x $baseindent) . "   ";
 	    push (@output, "\n$indent");
       }
-    else {
-      push (@output, " ");
-      $indent .= ' ';
-    }
+    elsif ($arguments[0] !~ /void/ || $for_gtk_new || $return ne "void")
+      {
+	push (@output, " ");
+	$indent .= ' ';
+      }
     
     if ($arguments[0] !~ /void/ || $for_gtk_new)
       {
@@ -468,8 +470,8 @@ sub print_body
       }
     else
       {
-	$string = ($return eq "void" ? "procedure " : "function ");
-	$string .=  "$adaname";
+	$string = ($return eq "void" ? "procedure" : "function");
+	$string .=  " $adaname";
 	push (@output, "   $string");
 	$indent = ' ' x (length ($string) + 3);
 	&print_arguments ($indent, $return, \&convert_ada_type,
