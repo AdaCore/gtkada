@@ -48,7 +48,7 @@ package Gtk.Label is
    type Gtk_Label is access all Gtk_Label_Record'Class;
 
    procedure Gtk_New (Label :    out Gtk_Label;
-                      Str   : in     String);
+                      Str   : in     String := "");
    --  Create a new label.
    --  Str is the string to be displayed.
 

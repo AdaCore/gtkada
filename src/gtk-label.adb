@@ -55,7 +55,7 @@ package body Gtk.Label is
    -------------
 
    procedure Gtk_New (Label :    out Gtk_Label;
-                      Str   : in     String) is
+                      Str   : in     String := "") is
    begin
       Label := new Gtk_Label_Record;
       Initialize (Label, Str);
