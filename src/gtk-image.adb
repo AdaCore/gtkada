@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -97,12 +97,12 @@ package body Gtk.Image is
 
    procedure Get
      (Image    : access Gtk_Image_Record;
-      Icon_Set : out Gtk_Icon_Set;
+      Icon_Set : out Gtk.Icon_Factory.Gtk_Icon_Set;
       Size     : out Gtk.Enums.Gtk_Icon_Size)
    is
       procedure Internal
         (Image    : System.Address;
-         Icon_Set : out Gtk_Icon_Set;
+         Icon_Set : out Gtk.Icon_Factory.Gtk_Icon_Set;
          Size     : out Gint);
       pragma Import (C, Internal, "gtk_image_get_icon_set");
 
@@ -186,7 +186,7 @@ package body Gtk.Image is
 
    procedure Gtk_New
      (Image    : out Gtk_Image;
-      Icon_Set : Gtk_Icon_Set;
+      Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
       Size     : Gtk.Enums.Gtk_Icon_Size) is
    begin
       Image := new Gtk_Image_Record;
@@ -271,11 +271,11 @@ package body Gtk.Image is
 
    procedure Initialize
      (Image    : access Gtk_Image_Record'Class;
-      Icon_Set : Gtk_Icon_Set;
+      Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
       Size     : Gtk.Enums.Gtk_Icon_Size)
    is
       function Internal
-        (Icon_Set : Gtk_Icon_Set;
+        (Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
          Size     : Gtk.Enums.Gtk_Icon_Size) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_icon_set");
 
@@ -367,12 +367,12 @@ package body Gtk.Image is
 
    procedure Set
      (Image    : access Gtk_Image_Record;
-      Icon_Set : Gtk_Icon_Set;
+      Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
       Size     : Gtk.Enums.Gtk_Icon_Size)
    is
       procedure Internal
         (Image : System.Address;
-         Icon_Set : Gtk_Icon_Set;
+         Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
          Size     : Gtk.Enums.Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_image_set_from_icon_set");
 

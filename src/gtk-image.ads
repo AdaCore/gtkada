@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -43,15 +43,13 @@ with Gdk.Pixbuf;
 with Gdk.Pixmap;
 with Gdk.Image;
 with Gtk.Enums;
+with Gtk.Icon_Factory;
 with Gtk.Misc;
 
 package Gtk.Image is
 
    type Gtk_Image_Record is new Gtk.Misc.Gtk_Misc_Record with private;
    type Gtk_Image is access all Gtk_Image_Record'Class;
-
-   type Gtk_Icon_Set is new Glib.C_Proxy;
-   --  Move this declaration in Gtk.Icon_Factory when it is bound ???
 
    type Gtk_Image_Type is
      (Image_Empty,
@@ -88,7 +86,7 @@ package Gtk.Image is
 
    procedure Gtk_New
      (Image    : out Gtk_Image;
-      Icon_Set : Gtk_Icon_Set;
+      Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
       Size     : Gtk.Enums.Gtk_Icon_Size);
 
    procedure Gtk_New
@@ -127,7 +125,7 @@ package Gtk.Image is
 
    procedure Initialize
      (Image    : access Gtk_Image_Record'Class;
-      Icon_Set : Gtk_Icon_Set;
+      Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
       Size     : Gtk.Enums.Gtk_Icon_Size);
    --  Internal initialization function.
 
@@ -165,7 +163,7 @@ package Gtk.Image is
 
    procedure Set
      (Image    : access Gtk_Image_Record;
-      Icon_Set : Gtk_Icon_Set;
+      Icon_Set : Gtk.Icon_Factory.Gtk_Icon_Set;
       Size     : Gtk.Enums.Gtk_Icon_Size);
 
    procedure Set
@@ -198,7 +196,7 @@ package Gtk.Image is
 
    procedure Get
      (Image    : access Gtk_Image_Record;
-      Icon_Set : out Gtk_Icon_Set;
+      Icon_Set : out Gtk.Icon_Factory.Gtk_Icon_Set;
       Size     : out Gtk.Enums.Gtk_Icon_Size);
 
    function Get
