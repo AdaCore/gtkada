@@ -140,6 +140,12 @@ ada_ruler_get_upper (GtkRuler* widget)
  ** Functions for Editable
  ******************************************/
 
+guint
+ada_editable_get_editable (GtkEditable* widget)
+{
+  return widget->editable;
+}
+
 gchar*
 ada_editable_get_clipboard_text (GtkEditable* widget)
 {
