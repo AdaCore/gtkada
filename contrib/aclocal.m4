@@ -11,12 +11,14 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
    SO_OPTS=-Wl,-soname,
    BUILD_SHARED=yes
    FPIC=-fPIC
+   TARGET_LFLAGS=
 
    case $build_os in
    aix*)
       BUILD_SHARED=no
       FPIC=
       OS_SPECIFIC_LINK_OPTIONS=-Wl,-bexpall,-berok
+      TARGET_LFLAGS=-Wl,-bbigtoc
       ;;
    hp*)
       SO_EXT=.sl
@@ -40,6 +42,7 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
   AC_SUBST(SO_EXT)
   AC_SUBST(SO_OPTS)
   AC_SUBST(FPIC)
+  AC_SUBST(TARGET_LFLAGS)
 
 ]
 )
