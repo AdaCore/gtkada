@@ -24,6 +24,12 @@ Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
 	* gtk+/gdk/win32/gdkevents-win32.c: Force an update when paint message
 	is received, otherwise windows in background are not immediately
 	refreshed when moving a modal window on top of them.
+	Add handling of WM_NCPAINT message to refresh some areas when a window
+	from another application is moved on top of the current app.
+
+Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
+
+	* gtk+/gtk/gtktextview.c: Improve handling of selections under Windows
 
 #########################################
 # Selection problem B430-008
@@ -58,6 +64,51 @@ Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
          }
        DeleteObject (hrgn);
        break;
+--- gtk+/gdk/win32/gdkevents-win32.c	2003/04/13 09:25:27	1.3
++++ gtk+/gdk/win32/gdkevents-win32.c	2003/04/13 09:49:57
+@@ -2823,6 +2823,42 @@
+       *ret_valp = 1;
+       break;
+ 
++    case WM_NCPAINT:
++      if (msg->wParam < 1)
++	break;
++
++      hrgn = CreateRectRgn (0, 0, 0, 0);
++      if (GetUpdateRgn (msg->hwnd, hrgn, FALSE) == ERROR)
++	{
++	  WIN32_GDI_FAILED ("GetUpdateRgn");
++	  break;
++	}
++
++      hdc = BeginPaint (msg->hwnd, &paintstruct);
++      EndPaint (msg->hwnd, &paintstruct);
++
++      if ((paintstruct.rcPaint.right == paintstruct.rcPaint.left)
++          || (paintstruct.rcPaint.bottom == paintstruct.rcPaint.top))
++	{
++	  GDK_NOTE (EVENTS, g_print ("...empty paintstruct, ignored\n"));
++	  DeleteObject (hrgn);
++	  break;
++	}
++
++      {
++        GdkRegion *update_region = _gdk_win32_hrgn_to_region (hrgn);
++
++	_gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
++	gdk_region_offset (update_region, xoffset, yoffset);
++
++	_gdk_window_process_expose (window, update_region);
++	gdk_region_destroy (update_region);
++
++	DeleteObject (hrgn);
++	return_val = FALSE;
++      }
++      break;
++
+     case WM_PAINT:
+       hrgn = CreateRectRgn (0, 0, 0, 0);
+       if (GetUpdateRgn (msg->hwnd, hrgn, FALSE) == ERROR)
 --- gtk+/gdk/win32/Makefile.am	2002/11/25 10:58:36	1.1
 +++ gtk+/gdk/win32/Makefile.am	2002/11/25 10:59:18
 @@ -79,4 +79,4 @@
@@ -369,15 +420,17 @@ Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
  }
  
 --- gtk+/gdk/win32/gdkwindow-win32.c	2003/03/27 14:43:01	1.1
-+++ gtk+/gdk/win32/gdkwindow-win32.c	2003/03/27 17:14:28
-@@ -742,6 +742,13 @@
++++ gtk+/gdk/win32/gdkwindow-win32.c	2003/04/13 09:22:48
+@@ -742,6 +742,15 @@
    GDK_NOTE (MISC, g_print ("_gdk_windowing_window_destroy %p\n",
  			   GDK_WINDOW_HWND (window)));
  
 +  if (private->modal_hint)
 +    {
-+      if (!BringWindowToTop
-+	    (GetWindowLong (GDK_WINDOW_HWND (window), GWL_HWNDPARENT)))
++      HWND parent = (HWND) GetWindowLong
++	(GDK_WINDOW_HWND (window), GWL_HWNDPARENT);
++
++      if ((long)parent > 1 && !BringWindowToTop (parent))
 +	WIN32_API_FAILED ("BringWindowToTop");
 +    }
 +
