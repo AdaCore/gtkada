@@ -9,11 +9,13 @@ The primary download site is http://gtkada.eu.org
 New features in 1.2.9/1.3.9 include:
 
 - GUI builder support fixes under Win32.
-- Gtk.Type_Conversion isn't needed for the most common widgets: Gtk_Label.
+- Gtk.Type_Conversion isn't needed for the most common widgets: Gtk_Label,
+  Gtk_Menu_Item, Gtk_Button.
 - Gtkada.Canvas: better positionning of items; links can be attached anywhere
   in the items, not necessarily the middle.
 - GtkAda.File_Selection has been extended (see RM for details).
 - Documentation update.
+- Support for gdk-pixbuf 0.9
 
 LSM entry follows:
 Begin4
