@@ -27,80 +27,79 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  The Gdk_Color_Context type is used for allocating groups of colors.
+--  It is now deprecated in favor of the Gdk.Color.* functions.
+--  </description>
+
 with Gdk.Color;
 with Gdk.Visual;
 with Glib;
 
 package Gdk.Color_Context is
 
+   --  <doc_ignore>
+
    type Gdk_Color_Context is new Gdk.C_Proxy;
    Null_Color_Context : constant Gdk_Color_Context;
 
-   type Color_Description is
-      record
-         Red   : Glib.Gushort;
-         Green : Glib.Gushort;
-         Blue  : Glib.Gushort;
-      end record;
+   type Color_Description is record
+      Red   : Glib.Gushort;
+      Green : Glib.Gushort;
+      Blue  : Glib.Gushort;
+   end record;
 
    type Color_Description_Array is
-      array (Positive range <>) of Color_Description;
+     array (Positive range <>) of Color_Description;
 
+   procedure Gdk_New
+     (CC       :    out Gdk_Color_Context;
+      Visual   : in     Gdk.Visual.Gdk_Visual;
+      Colormap : in     Gdk.Color.Gdk_Colormap);
 
-   procedure Gdk_New (CC       :    out Gdk_Color_Context;
-                      Visual   : in     Gdk.Visual.Gdk_Visual;
-                      Colormap : in     Gdk.Color.Gdk_Colormap);
-
-   procedure Gdk_New_Mono (CC       :    out Gdk_Color_Context;
-                           Visual   : in     Gdk.Visual.Gdk_Visual;
-                           Colormap : in     Gdk.Color.Gdk_Colormap);
+   procedure Gdk_New_Mono
+     (CC       :    out Gdk_Color_Context;
+      Visual   : in     Gdk.Visual.Gdk_Visual;
+      Colormap : in     Gdk.Color.Gdk_Colormap);
 
    procedure Free (CC : in out Gdk_Color_Context);
 
-   procedure Get_Pixel (CC     : in     Gdk_Color_Context;
-                        Color  : in     Color_Description;
-                        Failed :    out Boolean;
-                        Pixel  :    out Glib.Gulong);
+   procedure Get_Pixel
+     (CC     : in     Gdk_Color_Context;
+      Color  : in     Color_Description;
+      Failed :    out Boolean;
+      Pixel  :    out Glib.Gulong);
 
-   function Get_Pixels (CC     : in     Gdk_Color_Context;
-                        Colors : in     Color_Description_Array)
-                        return Glib.Gulong_Array;
+   function Get_Pixels
+     (CC     : in     Gdk_Color_Context;
+      Colors : in     Color_Description_Array) return Glib.Gulong_Array;
 
-
-   type Get_Pixel_Incremental_Data (Number_Of_Colors : Positive) is
-      record
-         Colors : Color_Description_Array (1 .. Number_Of_Colors);
-         Used   : Glib.Boolean_Array (1 .. Number_Of_Colors);
-         Pixels : Glib.Gulong_Array (1 .. Number_Of_Colors);
-         Number_Of_Colors_Allocated : Natural;
-         --
-         --  This value reflects the number of valid pixels that
-         --  have been allocated and can acutally be read in the
-         --  Pixels array.
-      end record;
+   type Get_Pixel_Incremental_Data (Number_Of_Colors : Positive) is record
+      Colors : Color_Description_Array (1 .. Number_Of_Colors);
+      Used   : Glib.Boolean_Array (1 .. Number_Of_Colors);
+      Pixels : Glib.Gulong_Array (1 .. Number_Of_Colors);
+      Number_Of_Colors_Allocated : Natural;
+      --  This value reflects the number of valid pixels that
+      --  have been allocated and can acutally be read in the
+      --  Pixels array.
+   end record;
 
    procedure Get_Pixels_Incremental
      (CC   : in     Gdk_Color_Context;
       Data : in out Get_Pixel_Incremental_Data);
-   --
-   --  FIXME: This procedure needs to be reviewed by Manu to get approval
-   --  FIXME: that it has been properly bound. I don't see how it is used,
-   --  FIXME: especially for the Used parameter.
-   --  FIXME:
-   --  FIXME: Manu, once you've approved this procedure (or adapted it
-   --  FIXME: to your needs), please remove this comment.
 
-   procedure Query_Color (CC    : in     Gdk_Color_Context;
-                          Color :    out Gdk.Color.Gdk_Color);
+   procedure Query_Color
+     (CC    : in     Gdk_Color_Context;
+      Color :    out Gdk.Color.Gdk_Color);
 
+   procedure Query_Colors
+     (CC     : in     Gdk_Color_Context;
+      Colors : in out Gdk.Color.Gdk_Color_Array);
 
-   procedure Query_Colors (CC     : in     Gdk_Color_Context;
-                           Colors : in out Gdk.Color.Gdk_Color_Array);
-
-   procedure Add_Palette (CC           : in     Gdk_Color_Context;
-                          Palette      : in     Gdk.Color.Gdk_Color_Array;
-                          Palette_Size :    out Glib.Gint);
-   --
+   procedure Add_Palette
+     (CC           : in     Gdk_Color_Context;
+      Palette      : in     Gdk.Color.Gdk_Color_Array;
+      Palette_Size :    out Glib.Gint);
    --  Palette_Size corresponds to the number of colors actually allocated
    --  in the Color_Context palette. It can be equal or less than the
    --  length of the Palette array.
@@ -109,18 +108,21 @@ package Gdk.Color_Context is
 
    procedure Free_Dither (CC : in Gdk_Color_Context);
 
-   procedure Get_Pixel_From_Palette (CC     : in     Gdk_Color_Context;
-                                     Color  : in out Color_Description;
-                                     Failed :    out Boolean;
-                                     Pixel  :    out Glib.Gulong);
+   procedure Get_Pixel_From_Palette
+     (CC     : in     Gdk_Color_Context;
+      Color  : in out Color_Description;
+      Failed :    out Boolean;
+      Pixel  :    out Glib.Gulong);
 
-   procedure Get_Index_From_Palette (CC     : in     Gdk_Color_Context;
-                                     Color  : in out Color_Description;
-                                     Failed :    out Boolean;
-                                     Index  :    out Glib.Gint);
-   --
+   procedure Get_Index_From_Palette
+     (CC     : in     Gdk_Color_Context;
+      Color  : in out Color_Description;
+      Failed :    out Boolean;
+      Index  :    out Glib.Gint);
    --  In the interface, the type returned is guchar, but the code returns
    --  a Gint, which seems more reasonable to me. So, let's return a Gint.
+
+   --  </doc_ignore>
 
 private
    Null_Color_Context : constant Gdk_Color_Context := null;
