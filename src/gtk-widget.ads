@@ -401,6 +401,12 @@ package Gtk.Widget is
    --  This is mainly used for rulers in Gtk.Ruler (See the example in
    --  testgtk, with create_rulers.adb)
 
+   function Has_Default_Motion_Notify_Handler
+     (Widget : access Gtk_Widget_Record'Class) return Boolean;
+   --  Return True if Widget has a default handler for motion_notify events.
+   --  Note that the function Default_Motion_Notify_Event should not be called
+   --  if this one returns False, since it would create a segmentation fault.
+
    --------------------------
    -- Colors and colormaps --
    --------------------------

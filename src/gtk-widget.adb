@@ -454,6 +454,19 @@ package body Gtk.Widget is
       return Internal (Get_Object (Widget), Gdk.Event.To_Address (Event));
    end Default_Motion_Notify_Event;
 
+   ---------------------------------------
+   -- Has_Default_Motion_Notify_Handler --
+   ---------------------------------------
+
+   function Has_Default_Motion_Notify_Handler
+     (Widget : access Gtk_Widget_Record'Class) return Boolean
+   is
+      function Internal (Widget : in System.Address) return Gint;
+      pragma Import (C, Internal, "ada_widget_has_default_motion_notify");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget)));
+   end Has_Default_Motion_Notify_Handler;
+
    ---------------------------
    -- Get_Child_Requisition --
    ---------------------------
