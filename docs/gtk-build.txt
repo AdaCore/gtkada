@@ -14,6 +14,14 @@ ignore the special comments.
 
 Under HP-UX, a recent version of GCC (e.g 3.2) should be used
 
+brobecker/2004-02-19:
+On x86-solaris, I used a bleeding edge version of GCC from CVS, because
+the current GNAT5 wavefront had some problems (pbs with macros having a
+variable number of arguments, for instance).  All these problems could
+be work-around, but not without touching the code itself, which I wanted
+to avoid. However, I documented the build procedure for both compilers,
+so we should be able to easily rebuild Gtk with GNAT5 if need be.
+
 Under AiX and IRIX, the vendor C compiler is used:
 # CC=cc
 # export CC
@@ -81,6 +89,13 @@ cd zlib
 # for Solaris: gcc -shared -o libz.so `ar t libz.a`
 # cp libz.s? $prefix/lib
 
+# x86-solaris: brobecker/2004-02-19:
+# Some other shared libraries built later will be linked against this
+# library. Thus, although we only build a static version of libpng,
+# we still need to build this library with -fPIC.  Otherwise, we would
+# get a link error when building some of the gtk+ shared libraries.
+make CFLAGS='-g -O2 -fPIC'
+
 make
 make install
 cd ..
@@ -102,6 +117,13 @@ cp scripts/makefile.gcc makefile
 # for HP-UX: ld -z -b -o libpng.sl `ar t libpng.a` $LDFLAGS -lz
 # for Solaris: gcc -shared -o libpng.so `ar t libpng.a` $LDFLAGS -lz
 # cp -p libpng.s? $prefix/lib
+
+# x86-solaris: brobecker/2004-02-19:
+# Some other shared libraries built later will be linked against this
+# library. Thus, although we only build a static version of libpng,
+# we still need to build this library with -fPIC.  Otherwise, we would
+# get a link error when building some of the gtk+ shared libraries.
+make CFLAGS='-g -O2 -fPIC'
 
 make
 mkdir -p $prefix/include $prefix/lib
@@ -126,6 +148,13 @@ cd jpeg-6b
 # for Solaris: gcc -shared -o libjpeg.so `ar t libjpeg.a`
 # cp -p libjpeg.s? $prefix/lib
 
+# x86-solaris: brobecker/2004-02-19:
+# Some other shared libraries built later will be linked against this
+# library. Thus, although we only build a static version of libpng,
+# we still need to build this library with -fPIC.  Otherwise, we would
+# get a link error when building some of the gtk+ shared libraries.
+make CFLAGS='-g -O2 -fPIC'
+
 make
 cp -p libjpeg.a $prefix/lib
 cp -p jpeglib.h jconfig.h jmorecfg.h $prefix/include
@@ -142,6 +171,7 @@ cd ..
 tar xzvf gettext-0.11.5.tar.gz
 cd gettext-0.11.5
 ./configure --prefix=$prefix
+
 make
 make install
 
@@ -168,6 +198,29 @@ cd glib-2.2.3
 CPP="cc -E -I$C_INCLUDE_PATH"
 export CPP
 
+# brobecker/2004-02-18: x86-solaris:
+#
+# There seems to be a problem with macros having a variable number
+# of arguments, on x86-solaris.  This causes a build failure inside
+# glib/gmessages.h.  Don't know why...  The workaround for now is to
+# delete the macro definition and use the function definitions that are
+# directly below.  FIXME:brobecker/2004-02-18: This problem should be
+# fixed properly if we are ever to provide a supported version of GtkAda
+# and/or GPS.
+# (*** OBE with gcc-head (2004-02-19))
+#
+# There is a problem in autoconf that causes a configure failure
+# if a C++ preprocessor can not be found. The preprocessor is
+# /usr/ccs/lib/cpp, but configure only looks in /lib. So just make
+# sure to add a link from /usr/ccs/lib/cpp to /lib/cpp.
+# (*** OBE with gcc-head (2004-02-19))
+#
+# There is also a dependency on libgcc_s.so for which GCC didn't
+# add a rpath, so we need to help the loader find it by adding
+# the path to this library in LD_LIBRARY_PATH. This will be needed
+# throughout the rest of the gtk builds, so let's export the change.
+LD_LIBRARY_PATH=/opt/gtk-2.0/gcc-2004-02-19/lib:$LD_LIBRARY_PATH
+
 # on Linux:
 ./configure --prefix=$prefix --disable-debug
 
@@ -179,6 +232,14 @@ export CPP
 
 # on Tru64:
 make CFLAGS="-g -O2 -mieee -DTRIO_COMPILER_DECC"
+
+# on x86-solaris, there seems to be a bug with -fPIC, which later
+# causes a link problem (pb relocating __ctype). The offending symbol
+# comes from the expansion of the isxdigit() macro.  To workaround
+# the problem, we define __lint so that isxdigit is turned into a
+# regular function.
+# (*** OBE with gcc-head (2004-02-19))
+make CFLAGS="-g -O2 -D__lint"
 
 # on other systems:
 make
@@ -217,6 +278,34 @@ patch -p0 < .../GtkAda/contrib/pango-1.2.5.diff
 # systems (e.g. HP-UX, IRIX):
 
 bash ./configure --prefix=$prefix --with-included-modules=basic-x --disable-debug
+
+# x86-solaris 2.6: brobecker/2004-02-19:
+#
+# The patch applied above seems to be disturbing the dependencies
+# between several automatically generated files.  This causes the
+# Makefile to try to rebuild these file by calling automake, aclocal,
+# etc...  On the x86-solaris machine we have, these tools are either
+# not installed, or too old.  The makefile is equiped to handle the
+# cases when the needed tool is not installed, but causes some files
+# to be trashed when the tool is too old (for instance, config.h.in
+# gets destroyed when autoheader is too old). To work-around that,
+# we replace the calls to these tools by a call to /bin/true.
+#
+# In addition, there seems to be something going on with respect to
+# Xlib.h.  When we include this file, there seems to be a certain
+# macro that's define, and that prevents the XEvent structures from
+# being defined.  These definitions are forced by defining
+# DNeedFunctionPrototypes.
+make ACLOCAL=/bin/true AUTOCONF=/bin/true \
+     AUTOMAKE=/bin/true AUTOHEADER=/bin/true \
+     CFLAGS='-g -O2 -DNeedFunctionPrototypes'
+
+make ACLOCAL=/bin/true AUTOCONF=/bin/true \
+     AUTOMAKE=/bin/true AUTOHEADER=/bin/true \
+     CFLAGS='-g -O2 -DNeedFunctionPrototypes' \
+     install
+
+# On all other platforms, simply do:
 make
 make install
 cd ..
