@@ -62,9 +62,10 @@ package Gtk.Ctree is
 
    type Gtk_Ctree_Node is new Gdk.C_Proxy;
    --  This type represents a node inside a Ctree.
-   Null_Ctree_Node : constant Gtk_Ctree_Node := null;
 
    --  <doc_ignore>
+   Null_Ctree_Node : constant Gtk_Ctree_Node := null;
+
    package Row_List is new Glib.Glist.Generic_List (Gtk_Ctree_Row);
 
    function Convert is new Unchecked_Conversion
