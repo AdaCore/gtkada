@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Menu_Item; use Gtk.Menu_Item;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Menu is
@@ -226,6 +227,7 @@ package body Gtk.Menu is
    begin
       Gen_New (N, "Menu", File => File);
       Generate (Gtk_Menu_Shell (Menu), N, File);
+      Gen_Call_Child (N, null, "Menu_Item", "Set_Submenu", File => File);
    end Generate;
 
    procedure Generate (Menu : in out Gtk_Menu;
@@ -239,6 +241,10 @@ package body Gtk.Menu is
       end if;
 
       Generate (Gtk_Menu_Shell (Menu), N);
+      Menu_Item.Set_Submenu
+        (Gtk_Menu_Item
+          (Get_Object (Get_Field (N.Parent, "name")).all),
+         Menu);
    end Generate;
 
 end Gtk.Menu;
