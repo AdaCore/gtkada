@@ -301,6 +301,28 @@ package body Create_Clist is
       Set_Selection_Mode (List, Gtk_Selection_Mode'Val (3 - I));
    end Toggle_Sel_Mode;
 
+   ------------------
+   -- Click_Column --
+   ------------------
+
+   procedure Click_Column (List   : access Gtk_Clist_Record'Class;
+                           Column : Gint) is
+   begin
+      if Column = 4 then
+         Set_Column_Visibility (List, Column, False);
+      elsif Column = Get_Sort_Column (List) then
+         if Get_Sort_Type (List) = Ascending then
+            Set_Sort_Type (List, Descending);
+         else
+            Set_Sort_Type (List, Ascending);
+         end if;
+      else
+         Set_Sort_Column (List, Column);
+      end if;
+
+      Sort (List);
+   end Click_Column;
+
    ---------
    -- Run --
    ---------
@@ -340,6 +362,9 @@ package body Create_Clist is
       Gtk_New_Hbox (Hbox, False, 5);
       Set_Border_Width (Hbox, 5);
       Pack_Start (Vbox, Hbox, False, False, 0);
+
+      Clist_Cb.Connect (Clist, "click_column",
+                        Clist_Cb.To_Marshaller (Click_Column'Access));
 
       Gtk_New (Button, "Insert Row");
       Pack_Start (HBox, Button, True, True, 0);

@@ -80,6 +80,17 @@ package Gtk.Clist is
 
    --  </doc_ignore>
 
+
+   type Gtk_Clist_Compare_Func is access
+     function (Clist : access Gtk_Clist_Record'Class;
+               Row1  : Gtk_Clist_Row;
+               Row2  : Gtk_Clist_Row)
+              return Gint;
+   --  Function used when sorting a clist. This function takes two
+   --  rows as its arguments, and should return a Gint indicating in which
+   --  order the rows are found (-1 if Row1 comes first, 0 if they are equal,
+   --  1 if Row2 comes last).
+
    ------------------------------------------------
    -- Creating a list and setting the attributes --
    ------------------------------------------------
@@ -245,10 +256,17 @@ package Gtk.Clist is
    --  This column is relevant when you use Sort or Set_Auto_Sort below.
    --  The first column is number 0.
 
+   function Get_Sort_Column (Clist : access Gtk_Clist_Record) return Gint;
+   --  Return the column on which the clist is sorted.
+
    procedure Set_Sort_Type (Clist     : access Gtk_Clist_Record;
                             Sort_Type : Gtk_Sort_Type);
    --  Indicate in which order the sort should be done on the clist
    --  (ascending or descending).
+
+   function Get_Sort_Type (Clist : access Gtk_Clist_Record)
+                          return Gtk_Sort_Type;
+   --  Return the sort type currently used for the list
 
    procedure Sort (Clist : access Gtk_Clist_Record);
    --  Sort the lines of the clist, based on the column set by Set_Sort_Column,
@@ -258,6 +276,14 @@ package Gtk.Clist is
                             Auto_Sort : Boolean);
    --  If Auto_Sort is true, then the clist will be automatically sorted every
    --  time a new line is inserted into the clist.
+
+   procedure Set_Compare_Func (Clist : access Gtk_Clist_Record;
+                               Func  : Gtk_Clist_Compare_Func);
+   --  Set the function used when sorting the list. This function takes two
+   --  rows as its arguments, and should return a Gint indicating in which
+   --  order the rows are found (-1 if Row1 comes first, 0 if they are equal,
+   --  1 if Row2 comes last).
+   --  Func should be null to restore the default sorting functions.
 
    -------------
    -- Columns --
@@ -852,6 +878,8 @@ package Gtk.Clist is
 
 private
    type Gtk_Clist_Record is new Gtk.Container.Gtk_Container_Record
-     with null record;
+     with record
+        Sort_Func : Gtk_Clist_Compare_Func := null;
+     end record;
    pragma Import (C, Get_Type, "gtk_clist_get_type");
 end Gtk.Clist;

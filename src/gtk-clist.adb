@@ -301,6 +301,30 @@ package body Gtk.Clist is
         (Get_User_Data (Internal (Get_Object (Clist)), Stub));
    end Get_Hadjustment;
 
+   ---------------------
+   -- Get_Sort_Column --
+   ---------------------
+
+   function Get_Sort_Column (Clist : access Gtk_Clist_Record) return Gint is
+      function Internal (Clist : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_gtk_clist_get_sort_column");
+   begin
+      return Internal (Get_Object (Clist));
+   end Get_Sort_Column;
+
+   -------------------
+   -- Get_Sort_Type --
+   -------------------
+
+   function Get_Sort_Type (Clist : access Gtk_Clist_Record)
+                          return Gtk_Sort_Type
+   is
+      function Internal (Clist : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_gtk_clist_get_sort_type");
+   begin
+      return Gtk_Sort_Type'Val (Internal (Get_Object (Clist)));
+   end Get_Sort_Type;
+
    ----------------
    -- Get_Pixmap --
    ----------------
@@ -1021,6 +1045,50 @@ package body Gtk.Clist is
                 Column,
                 Width);
    end Set_Column_Width;
+
+   ----------------------
+   -- Ada_Compare_Func --
+   ----------------------
+
+   function Ada_Compare_Func (Clist : System.Address;
+                              Row1  : System.Address;
+                              Row2  : System.Address)
+                             return Gint;
+   --  Function called by Clists to sort the list. We can not pass directly
+   --  the user function to C, since it requires converting the arguments
+   --  to the appropriate Ada types first.
+
+   function Ada_Compare_Func (Clist : System.Address;
+                              Row1  : System.Address;
+                              Row2  : System.Address)
+                             return Gint
+   is
+      Stub : Gtk_Clist_Record;
+      List : Gtk_Clist;
+   begin
+      List := Gtk_Clist (Get_User_Data (Clist, Stub));
+      return List.Sort_Func (List, Convert (Row1), Convert (Row2));
+   end Ada_Compare_Func;
+
+   ----------------------
+   -- Set_Compare_Func --
+   ----------------------
+
+   procedure Set_Compare_Func (Clist : access Gtk_Clist_Record;
+                               Func  : Gtk_Clist_Compare_Func)
+   is
+      procedure Internal (Clist : System.Address;
+                          Func  : System.Address);
+      pragma Import (C, Internal, "gtk_clist_set_compare_func");
+   begin
+      if Func = null then
+         Clist.Sort_Func := null;
+         Internal (Get_Object (Clist), System.Null_Address);
+      else
+         Clist.Sort_Func := Func;
+         Internal (Get_Object (Clist), Ada_Compare_Func'Address);
+      end if;
+   end Set_Compare_Func;
 
    --------------------
    -- Set_Foreground --

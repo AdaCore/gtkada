@@ -2343,6 +2343,16 @@ ada_clist_get_row_list (GtkCList* widget)
   return widget->row_list;
 }
 
+GtkSortType
+ada_gtk_clist_get_sort_type (GtkCList* widget) {
+  return widget->sort_type;
+}
+
+gint
+ada_gtk_clist_get_sort_column (GtkCList* widget) {
+  return widget->sort_column;
+}
+
 void
 ada_gtk_clist_set_cell_contents (GtkCList* clist,
 				 GtkCListRow* row,
