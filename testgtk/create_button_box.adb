@@ -98,7 +98,7 @@ package body Create_Button_Box is
       Set_Child_Size (Bbox, Child_W, Child_H);
       Show (Bbox);
 
-      Border_Width (Box1, 25);
+      Set_Border_Width (Box1, 25);
       Pack_Start (Box1, Bbox, True, True, 0);
 
       Gtk_New (Button, Label => "OK");
@@ -146,7 +146,7 @@ package body Create_Button_Box is
          Set_Title (Window, "Button Box Test");
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
-         Border_Width (Window, Border_Width => 20);
+         Set_Border_Width (Window, Border_Width => 20);
 
          Gtk_New (Bbox);
          Add (Window, Bbox);

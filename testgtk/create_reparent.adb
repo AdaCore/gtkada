@@ -101,14 +101,14 @@ package body Create_Reparent is
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
          Set_Title (Window, "reparent");
-         Border_Width (Window, Border_Width => 0);
+         Set_Border_Width (Window, Border_Width => 0);
 
          Gtk_New_Vbox (Box1, False, 0);
          Add (Window, Box1);
          Show (Box1);
 
          Gtk_New_Hbox (Box2, False, 5);
-         Border_Width (Box2, 10);
+         Set_Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, True, True, 0);
          Show (Box2);
 
@@ -118,7 +118,7 @@ package body Create_Reparent is
          Pack_Start (Box2, Frame, True, True, 0);
          Show (Frame);
          Gtk_New_Vbox (Box3, False, 5);
-         Border_Width (Box3, 5);
+         Set_Border_Width (Box3, 5);
          Add (Frame, Box3);
          Show (Box3);
          Gtk_New (Button, "switch");
@@ -136,7 +136,7 @@ package body Create_Reparent is
          Pack_Start (Box2, Frame, True, True, 0);
          Show (Frame);
          Gtk_New_vbox (Box3, False, 5);
-         Border_Width (Box3, 5);
+         Set_Border_Width (Box3, 5);
          Add (Frame, Box3);
          Show (Box3);
          Gtk_New (Button, "switch");
@@ -150,7 +150,7 @@ package body Create_Reparent is
          Show (Separator);
 
          Gtk_New_Vbox (Box3, False, 10);
-         Border_Width (Box3, 10);
+         Set_Border_Width (Box3, 10);
          Pack_Start (Box1, Box3, False, True, 0);
          Show (Box3);
 

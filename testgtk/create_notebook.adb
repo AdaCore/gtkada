@@ -129,7 +129,7 @@ package body Create_Notebook is
                   Tmp : Gtk_Button;
                begin
                   Gtk_New (Tmp, "Page" & Gint'Image (I));
-                  Border_Width (Tmp, 10);
+                  Set_Border_Width (Tmp, 10);
                   Child := Gtk_Widget (Tmp);
                end;
             when 2 =>
@@ -149,11 +149,11 @@ package body Create_Notebook is
                   Button : Gtk_Button;
                begin
                   Gtk_New (Tmp, "Page" & Gint'Image (I));
-                  Border_Width (Tmp, 10);
+                  Set_Border_Width (Tmp, 10);
                   Child := Gtk_Widget (Tmp);
 
                   Gtk_New_Vbox (Box, True, 0);
-                  Border_Width (Box, 10);
+                  Set_Border_Width (Box, 10);
                   Add (Tmp, Box);
 
                   Gtk_New (Label, "Page" & Gint'Image (I));
@@ -177,7 +177,7 @@ package body Create_Notebook is
                   Label : Gtk_Label;
                begin
                   Gtk_New (Tmp, "Page" & Gint'Image (I));
-                  Border_Width (Tmp, 10);
+                  Set_Border_Width (Tmp, 10);
                   Gtk_New (Label, "Page" & Gint'Image (I));
                   Add (Tmp, Label);
                   Child := Gtk_Widget (Tmp);
@@ -302,7 +302,7 @@ package body Create_Notebook is
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
          Set_Title (Window, "notebook");
-         Border_Width (Window, Border_Width => 0);
+         Set_Border_Width (Window, Border_Width => 0);
 
          Gtk_New_Vbox (Box1, False, 0);
          Add (Window, Box1);
@@ -312,7 +312,7 @@ package body Create_Notebook is
                                Notebook);
          Set_Tab_Pos (Notebook, Pos_Top);
          Pack_Start (Box1, Notebook, True, True, 0);
-         Border_Width (Notebook, 10);
+         Set_Border_Width (Notebook, 10);
          Realize (Notebook);
 
          Create_From_Xpm_D (Book_Open,
@@ -364,7 +364,7 @@ package body Create_Notebook is
                                   Notebook_Popup'Access, Notebook);
 
          Gtk_New_Hbox (Box2, False, 10);
-         Border_Width (Box2, 10);
+         Set_Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, False, True, 0);
 
          Gtk_New (Button2, "Close");

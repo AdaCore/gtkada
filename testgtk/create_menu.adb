@@ -88,7 +88,7 @@ package body Create_Menu is
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
          Set_Title (Window, "Menus");
-         Border_Width (Window, 0);
+         Set_Border_Width (Window, 0);
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
 
@@ -118,7 +118,7 @@ package body Create_Menu is
          Show (Menu_Item);
 
          Gtk_New_Vbox (Box2, False, 10);
-         Border_Width (Box2, 10);
+         Set_Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, True, True, 0);
          Show (Box2);
 
@@ -133,7 +133,7 @@ package body Create_Menu is
          Show (Separator);
 
          Gtk_New_Vbox (Box2, False, 10);
-         Border_Width (Box2, 10);
+         Set_Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, False, True, 0);
          Show (Box2);
 

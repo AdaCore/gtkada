@@ -58,7 +58,7 @@ package body Create_Font_Selection is
 
       if not Is_Created (Window) then
          Gtk_New (Window, "Font Selection Dialog");
-         Position (Window, Win_Pos_Mouse);
+         Set_Position (Window, Win_Pos_Mouse);
 
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);

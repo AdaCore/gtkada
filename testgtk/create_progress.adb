@@ -253,12 +253,12 @@ package body Create_Progress is
                                    Destroy_Progress'Access,
                                    Pdata.Window'Access);
          Set_Title (Pdata.Window, "progress bar");
-         Border_Width (Pdata.Window, Border_Width => 0);
+         Set_Border_Width (Pdata.Window, Border_Width => 0);
 
          Pdata.Timer := 0;
 
          Gtk_New_Vbox (Vbox, False, 5);
-         Border_Width (Vbox, 10);
+         Set_Border_Width (Vbox, 10);
          Pack_Start (Get_Vbox (Pdata.Window), Vbox, False, True, 0);
 
          Gtk_New (Frame, "Progress");

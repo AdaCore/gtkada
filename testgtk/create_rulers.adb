@@ -55,7 +55,7 @@ package body Create_Rulers is
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
          Set_Title (Window, "Ruler");
-         Border_Width (Window, Border_Width => 0);
+         Set_Border_Width (Window, Border_Width => 0);
          Set_Usize (Window, 300, 300);
          Set_Events (Window, Pointer_Motion_Mask + Pointer_Motion_Hint_Mask);
 

@@ -243,7 +243,7 @@ package body Create_Tree is
 
       Gtk_New_Vbox (Box2, False, 0);
       Pack_Start (Box1, Box2, True, True, 0);
-      Border_Width (Box2, 5);
+      Set_Border_Width (Box2, 5);
       Show (Box2);
 
       Gtk_New (Scrolled);
@@ -280,7 +280,7 @@ package body Create_Tree is
 
       Gtk_New_Vbox (Box2, False, 0);
       Pack_Start (Box1, Box2, False, False, 0);
-      Border_Width (Box2, 5);
+      Set_Border_Width (Box2, 5);
       Show (Box2);
 
       Gtk_New (Tree_Buttons.Add_Button, "Add Item");
@@ -312,7 +312,7 @@ package body Create_Tree is
       --  Create button box
       Gtk_New_Vbox (Box2, False, 0);
       Pack_Start (Box1, Box2, False, False, 0);
-      Border_Width (Box2, 5);
+      Set_Border_Width (Box2, 5);
       Show (Box2);
 
       Gtk_New (Button, "Close");
@@ -373,7 +373,7 @@ package body Create_Tree is
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
          Set_Title (Window, "Tree Mode Selection Window");
-         Border_Width (Window, Border_Width => 0);
+         Set_Border_Width (Window, Border_Width => 0);
 
          Gtk_New_Vbox (Box1, False, 0);
          Add (Window, Box1);
@@ -381,7 +381,7 @@ package body Create_Tree is
 
          Gtk_New_Vbox (Box2, False, 5);
          Pack_Start (Box1, Box2, True, True, 0);
-         Border_Width (Box2, 5);
+         Set_Border_Width (Box2, 5);
          Show (Box2);
 
          Gtk_New_Hbox (Box3, False, 5);
@@ -395,7 +395,7 @@ package body Create_Tree is
 
          Gtk_New_Vbox (Box4, False, 0);
          Add (Frame, Box4);
-         Border_Width (Box4, 5);
+         Set_Border_Width (Box4, 5);
          Show (Box4);
 
          Gtk_New (Single_Button, Widget_Slist.Null_List, "SINGLE");
@@ -419,7 +419,7 @@ package body Create_Tree is
 
          Gtk_New_Vbox (Box4, False, 0);
          Add (Frame, Box4);
-         Border_Width (Box4, 5);
+         Set_Border_Width (Box4, 5);
          Show (Box4);
 
          Gtk_New (Draw_Line_Button, "Draw Line");
@@ -444,7 +444,7 @@ package body Create_Tree is
 
          Gtk_New_Hbox (Box4, False, 5);
          Add (Frame, Box4);
-         Border_Width (Box4, 5);
+         Set_Border_Width (Box4, 5);
          Show (Box4);
 
          --  Create number of item spin button
@@ -485,7 +485,7 @@ package body Create_Tree is
          --  Create bottom button box
          Gtk_New_Hbox (Box2, False, 0);
          Pack_Start (Box1, Box2, False, False, 0);
-         Border_Width (Box2, 5);
+         Set_Border_Width (Box2, 5);
          Show (Box2);
 
          Gtk_New (Button, "Create Tree Sample");

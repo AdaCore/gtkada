@@ -218,7 +218,7 @@ package body Create_Scroll_Test is
                                    Destroyed'Access,
                                    Dialog'Access);
          Set_Title (Window => Dialog, Title => "Scroll Test");
-         Border_Width (Dialog, 0);
+         Set_Border_Width (Dialog, 0);
 
          Box.Gtk_New_Hbox (Widget => Hbox, Homogeneous => False, Spacing => 0);
          Box.Pack_Start (In_Box => Gtk.Dialog.Get_Vbox (Dialog), Child => Hbox);

@@ -93,7 +93,7 @@ package body Create_Test_Idle is
          Id := Widget2_Cb.Connect (Dialog, "destroy", Destroy_idle'Access,
                                    Dialog'Access);
          Set_Title (Dialog, "Idle");
-         Border_Width (Dialog, Border_Width => 0);
+         Set_Border_Width (Dialog, Border_Width => 0);
 
          Gtk_New (Label, "count : 0");
          Set_Padding (Label, 10, 10);

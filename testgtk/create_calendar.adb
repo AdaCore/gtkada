@@ -55,7 +55,7 @@ package body Create_Calendar is
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
          Set_Title (Window, "Calendar");
-         Border_Width (Window, Border_Width => 0);
+         Set_Border_Width (Window, Border_Width => 0);
 
          Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
          Add (Window, Box1);

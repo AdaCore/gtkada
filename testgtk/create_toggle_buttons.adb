@@ -68,14 +68,14 @@ package body Create_Toggle_Buttons is
                                       New_Window'Access);
          Window.Set_Title (Window => New_Window,
                            Title => "Toggle buttons");
-         Border_Width (Container => New_Window, Border_Width => 0);
+         Set_Border_Width (Container => New_Window, Border_Width => 0);
 
          Box.Gtk_New_Vbox (Widget => Box1, Homogeneous => False, Spacing => 0);
          Add (Container => New_Window, Widget => Box1);
          Show (Box1);
 
          Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
-         Border_Width (Container => Box2, Border_Width => 10);
+         Set_Border_Width (Container => Box2, Border_Width => 10);
          Box.Pack_Start (In_Box => Box1, Child => Box2);
          Show (Box2);
 
@@ -97,7 +97,7 @@ package body Create_Toggle_Buttons is
          Show (A_Separator);
 
          Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
-         Border_Width (Container => Box2, Border_Width => 10);
+         Set_Border_Width (Container => Box2, Border_Width => 10);
          Box.Pack_Start (In_Box => Box1, Child => Box2, Expand => False);
          Show (Box2);
 

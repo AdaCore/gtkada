@@ -53,11 +53,11 @@ package body Create_Paned is
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
          Set_Title (Window, "Panes");
-         Border_Width (Window, Border_Width => 0);
+         Set_Border_Width (Window, Border_Width => 0);
 
          Gtk_New_Vpaned (VPaned);
          Add (Window, VPaned);
-         Border_Width (VPaned, 5);
+         Set_Border_Width (VPaned, 5);
          Show (VPaned);
 
          Gtk_New_Hpaned (HPaned);

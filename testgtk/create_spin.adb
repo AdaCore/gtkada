@@ -108,17 +108,17 @@ package body Create_Spin is
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
          Set_Title (Window, "spin buttons");
-         Border_Width (Window, Border_Width => 0);
+         Set_Border_Width (Window, Border_Width => 0);
 
          Gtk_New_Vbox (Main_Box, False, 5);
-         Border_Width (Main_Box, 10);
+         Set_Border_Width (Main_Box, 10);
          Add (Window, Main_Box);
 
          Gtk_New (Frame, "Not accelerated");
          Pack_Start (Main_Box, Frame, True, True, 0);
 
          Gtk_New_Vbox (VBox, False, 0);
-         Border_Width (VBox, 5);
+         Set_Border_Width (VBox, 5);
          Add (Frame, VBox);
 
          --  Day, month, year spinners
@@ -160,7 +160,7 @@ package body Create_Spin is
          Pack_Start (Main_Box, Frame, True, True, 0);
 
          Gtk_New_Vbox (Vbox, False, 0);
-         Border_Width (Vbox, 5);
+         Set_Border_Width (Vbox, 5);
          Add (Frame, Vbox);
 
          Gtk_New_Hbox (Hbox, False, 0);

@@ -73,7 +73,7 @@ package body Create_Buttons is
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
          Set_Title (Window, "buttons");
-         Border_Width (Window, Border_Width => 0);
+         Set_Border_Width (Window, Border_Width => 0);
 
          Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
          Add (Window, Box1);
@@ -82,7 +82,7 @@ package body Create_Buttons is
          Gtk_New (Table, Rows => 3, Columns => 3, Homogeneous => False);
          Set_Row_Spacings (Table, Spacing => 5);
          Set_Col_Spacings (Table, Spacing => 5);
-         Border_Width (Table, Border_Width => 10);
+         Set_Border_Width (Table, Border_Width => 10);
          Pack_Start (Box1, Table, Expand => True, Fill => True, Padding => 0);
          Show (Table);
 
@@ -107,7 +107,7 @@ package body Create_Buttons is
          Show (Separator);
 
          Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
-         Border_Width (Box2, Border_Width => 10);
+         Set_Border_Width (Box2, Border_Width => 10);
          Pack_Start (Box1, Box2, Expand => False, Fill => True, Padding => 0);
          Show (Box2);
 

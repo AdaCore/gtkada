@@ -59,7 +59,7 @@ package body Create_File_Selection is
       if not Is_Created (Window) then
          Gtk_New (Window, Title => "File Selection Dialog");
          Hide_Fileop_Buttons (Window);
-         Position (Window, Win_Pos_Mouse);
+         Set_Position (Window, Win_Pos_Mouse);
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                   Window'Access);
          Id := Files_Cb.Connect (Get_Ok_Button (Window), "clicked",

@@ -64,7 +64,7 @@ package body Create_Dialog is
          Id := Widget2_Cb.Connect (Dialog, "destroy", Destroyed'Access,
                                    Dialog'Access);
          Set_Title (Dialog, "dialog");
-         Border_Width (Dialog, 0);
+         Set_Border_Width (Dialog, 0);
 
          Gtk_New (Button, "OK");
          Set_Flags (Button, Can_Default);

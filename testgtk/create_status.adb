@@ -135,14 +135,14 @@ package body Create_Status is
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
          Set_Title (Window, "Status");
-         Border_Width (Window, Border_Width => 0);
+         Set_Border_Width (Window, Border_Width => 0);
 
          Gtk_New_Vbox (Box1, False, 0);
          Add (Window, Box1);
          Show (Box1);
 
          Gtk_New_Vbox (Box2, False, 10);
-         Border_Width (Box2, 10);
+         Set_Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, True, True, 0);
          Show (Box2);
 
@@ -185,7 +185,7 @@ package body Create_Status is
          Show (Separator);
 
          Gtk_New_Vbox (Box2, False, 10);
-         Border_Width (Box2, 10);
+         Set_Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, False, True, 0);
          Show (Box2);
 

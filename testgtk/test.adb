@@ -213,8 +213,8 @@ package body Test is
                       Expand => False, Fill => False);
 
       Scrolled_Window.Gtk_New (Scrolled_Window => A_Scrolled_Window);
-      Border_Width (Container => A_Scrolled_Window,
-                    Border_Width => 10);
+      Set_Border_Width (Container => A_Scrolled_Window,
+                        Border_Width => 10);
       Scrolled_Window.Set_Policy
         (Scrolled_Window => A_Scrolled_Window,
          H_Scrollbar_Policy => Enums.Policy_Automatic,
@@ -226,7 +226,7 @@ package body Test is
       Show (A_Scrolled_Window);
 
       Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 0);
-      Border_Width (Container => Box2, Border_Width => 10);
+      Set_Border_Width (Container => Box2, Border_Width => 10);
       Add_With_Viewport (Scrolled_Window => A_Scrolled_Window,
                          Child           => Box2);
       Temp := Scrolled_Window.Get_Vadjustment (Scrolled_Window => A_Scrolled_Window);
@@ -254,7 +254,7 @@ package body Test is
       Show (Separator);
 
       Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
-      Border_Width (Container => Box2, Border_Width => 10);
+      Set_Border_Width (Container => Box2, Border_Width => 10);
       Box.Pack_Start (In_Box => Box1, Child => Box2,
                        Expand => False, Fill => True);
       Show (Box2);

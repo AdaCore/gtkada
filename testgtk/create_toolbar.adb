@@ -204,7 +204,7 @@ package body Create_Toolbar is
          Set_Policy (Window, False, True, False);
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
-         Border_Width (Window, 0);
+         Set_Border_Width (Window, 0);
       end if;
       if Visible_Is_Set (Window) then
          Destroy (Window);

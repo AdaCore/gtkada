@@ -80,7 +80,7 @@ package body Create_Handle_Box is
                      Allow_Grow => True, Auto_Shrink => False);
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
-         Border_Width (Window, 20);
+         Set_Border_Width (Window, 20);
 
          Gtk_New_Vbox (Vbox, False, 0);
          Add (Window, Vbox);

@@ -56,7 +56,7 @@ package body Create_Gamma_Curve is
       if not Is_Created (Window) then
          Gtk_New (Window, WIndow_Toplevel);
          Set_Title (Window, "test");
-         Border_Width (Window, 10);
+         Set_Border_Width (Window, 10);
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
          Gtk_New (Curve);

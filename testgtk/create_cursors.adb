@@ -133,16 +133,16 @@ package body Create_Cursors is
          Set_Title (Window, "Cursors");
 
          Gtk_New_Vbox (Main_Box, Homogeneous => False, Spacing => 5);
-         Border_Width (Main_Box, 0);
+         Set_Border_Width (Main_Box, 0);
          Add (Window, Main_Box);
 
          Gtk_New_Vbox (Vbox, False, 5);
-         Border_Width (Vbox, 10);
+         Set_Border_Width (Vbox, 10);
          Pack_Start (Main_Box, Vbox);
          Show (Vbox);
 
          Gtk_New_Hbox (Hbox, False, 0);
-         Border_Width (Hbox, 5);
+         Set_Border_Width (Hbox, 5);
          Pack_Start (Vbox, Hbox, False, True, 0);
 
          Gtk_New (Label, "Cursor Value:");
@@ -158,7 +158,7 @@ package body Create_Cursors is
          Gtk_New (Frame, "Cursor Area");
          Set_Shadow_Type (Frame, Shadow_Etched_In);
          Set_Label_Align (Frame, 0.5, 0.0);
-         Border_Width (Frame, 10);
+         Set_Border_Width (Frame, 10);
          Pack_Start (Vbox, Frame);
          Show (Frame);
 
@@ -178,7 +178,7 @@ package body Create_Cursors is
          Pack_Start (Main_Box, Sep, False, True, 0);
 
          Gtk_New_Hbox (Hbox, False, 0);
-         Border_Width (Hbox, 10);
+         Set_Border_Width (Hbox, 10);
          Pack_Start (Main_Box, Hbox, False, True, 0);
 
          Gtk_New (Button, Label => "Close");

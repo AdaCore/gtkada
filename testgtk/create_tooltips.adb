@@ -123,7 +123,7 @@ package body Create_Tooltips is
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
          Set_Title (Window, "Tooltips");
-         Border_Width (Window, Border_Width => 0);
+         Set_Border_Width (Window, Border_Width => 0);
          Set_Policy (Window, True, False, False);
          Set_Usize (Window, 220, 280);
 
@@ -135,7 +135,7 @@ package body Create_Tooltips is
          Show (Box1);
 
          Gtk_New_Vbox (Box2, False, 10);
-         Border_Width (Box2, 10);
+         Set_Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, True, True, 0);
          Show (Box2);
 
@@ -160,7 +160,7 @@ package body Create_Tooltips is
          Set_Tip (Tooltips, Toggle, "Toggle TipsQuery view.", "Hi msw! ;)");
 
          Gtk_New_Vbox (Box3, False, 5);
-         Border_Width (Box3, 5);
+         Set_Border_Width (Box3, 5);
          Show (Box3);
 
          Gtk_New (Tips_Query);
@@ -182,7 +182,7 @@ package body Create_Tooltips is
                                    Widget_Selected'Access, Toggle);
 
          Gtk_New (Frame, "Tooltips Inspector");
-         Border_Width (Frame, 0);
+         Set_Border_Width (Frame, 0);
          Show (Frame);
          Pack_Start (Box2, Frame, True, True, 10);
 
@@ -193,7 +193,7 @@ package body Create_Tooltips is
          Show (Separator);
 
          Gtk_New_Vbox (Box2, False, 10);
-         Border_Width (Box2, 10);
+         Set_Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, False, True, 0);
          Show (Box2);
 

@@ -67,7 +67,7 @@ package body Create_Main_Loop is
          Id := Widget2_Cb.Connect (Window, "destroy", Loop_Destroy'Access,
                                    Window'Access);
          Set_Title (Window, "test_main_loop");
-         Border_Width (Window, Border_Width => 0);
+         Set_Border_Width (Window, Border_Width => 0);
 
          Gtk_New (Label, "In recursive main loop...");
          Set_Padding (Label, 20, 20);

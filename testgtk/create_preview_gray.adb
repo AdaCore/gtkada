@@ -78,7 +78,7 @@ package body Create_Preview_Gray is
          Id := Widget2_Cb.Connect (Window, "destroy", Preview_Destroy'Access,
                                    Window'Access);
          Set_Title (Window, "test");
-         Border_Width (Window, Border_Width => 10);
+         Set_Border_Width (Window, Border_Width => 10);
 
          Gtk_New (Preview, Preview_Grayscale);
          Size (Preview, 256, 256);

@@ -56,10 +56,10 @@ package body Create_Scrolled is
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                   Window'Access);
          Set_Title (Window, "Scrolled Window");
-         Border_Width (Window, Border_Width => 0);
+         Set_Border_Width (Window, Border_Width => 0);
 
          Gtk_New (Scrolled);
-         Border_Width (Scrolled, 10);
+         Set_Border_Width (Scrolled, 10);
          Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
          Pack_Start (Get_Vbox (Window), Scrolled, True, True, 0);
          Show (Scrolled);

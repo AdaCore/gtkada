@@ -94,7 +94,7 @@ package body Create_Test_Timeout is
          Id := Widget2_Cb.Connect (Dialog, "destroy", Destroy_Timeout'Access,
                                    Dialog'Access);
          Set_Title (Dialog, "Timeout Test");
-         Border_Width (Dialog, Border_Width => 0);
+         Set_Border_Width (Dialog, Border_Width => 0);
 
          Gtk_New (Label, "count : 0");
          Set_Padding (Label, 10, 10);
