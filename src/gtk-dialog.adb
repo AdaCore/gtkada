@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with Gtk.Window; use Gtk.Window;
 
 package body Gtk.Dialog is
 
@@ -120,8 +121,13 @@ package body Gtk.Dialog is
         return System.Address;
       pragma Import (C, Internal, "gtk_dialog_new_with_buttons");
    begin
-      Set_Object (Dialog,
-                  Internal (Title & ASCII.NUL, Get_Object (Parent), Flags));
+      if Parent = null then
+         Set_Object (Dialog,
+                     Internal (Title & ASCII.NUL, System.Null_Address, Flags));
+      else
+         Set_Object (Dialog,
+                     Internal (Title & ASCII.NUL, Get_Object (Parent), Flags));
+      end if;
       Initialize_User_Data (Dialog);
    end Initialize;
 
