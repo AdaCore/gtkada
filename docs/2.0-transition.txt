@@ -3,6 +3,8 @@ Here are the API changes that occured between GtkAda 1.2 and GtkAda 2.0:
 Glib:
   GType_* constants replace Gtk.Gtk_Type_*
 Glib.GObjects: new package
+Glib.Properties.Creation:
+  Gnew_Closure: removed.
 Gdk.Color_Context: removed, use Gdk.Color instead.
 Gtk.Combo:
   Get_Popup_Window: new procedure.
@@ -71,8 +73,6 @@ Gtk:
   Gtk_Type_Gdk_Event: replace by Gdk.Event.Get_Type
   Root_Type replaced by Glib.GObjects.GObject_Record
   All subprograms related to Root_Type moved to Glib.GObjects as well.
-Gtk.Accel_Label:
-  Set_Accel_Widget: replace by Set_Accel_Object
 Gtk.Adjustments:
   all Gfloat replaced by Gdouble
 Gtk.Arguments obsolete, use Glib.Values instead
@@ -165,6 +165,8 @@ Gtk.Image:
   Gtk_New (From_Animation), Get/Set (From_Animation): new functions.
 Gtk.Invisible:
   now a child of Gtk.Widget.
+Gtk.Item_Factory:
+  Parse_Rc, Parse_Rc_String, Print_Func: removed.
 Gtk.Label:
   Get: deprecated. use Get_Text instead.
   Parse_Uline: removed (replaced by Gtk_New_With_Mnemonic).
@@ -268,6 +270,8 @@ Gtk.Vbutton_Box:
   Get/Set_Spacing_Default: removed, deprecated, noop.
   Get/Set_Layout_Default: removed, deprecated, noop.
 Gtk.Widget:
+  Accelerator_Signal, Lock_Accelerators, Remove_Accelerators,
+   Unlock_accleerators: removed.
   Gtk_Requisition, Gtk_Allocation: now takes gint insstead of gint16.
   Double_Buffered_Is_Set, Set_Double_Buffered,
   Get_Parent_Window, Hide_On_Delete, Get_Modifer_Style: new function.
