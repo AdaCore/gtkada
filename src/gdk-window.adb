@@ -45,12 +45,10 @@ package body Gdk.Window is
    -- Foreign_New --
    -----------------
 
-   procedure Foreign_New
-     (Window :    out Gdk_Window;
-      An_Id  : in     Guint32)
-   is
-      function Internal (An_Id : in Guint32) return Gdk_Window;
+   procedure Foreign_New (Window : out Gdk_Window; An_Id : Guint32) is
+      function Internal (An_Id : Guint32) return Gdk_Window;
       pragma Import (C, Internal, "gdk_window_foreign_new");
+
    begin
       Window := Internal (An_Id);
    end Foreign_New;
@@ -60,15 +58,15 @@ package body Gdk.Window is
    -------------
 
    procedure Gdk_New
-     (Window          :    out Gdk_Window;
-      Parent          : in     Gdk_Window;
-      Attributes      : in     Gdk.Window_Attr.Gdk_Window_Attr;
-      Attributes_Mask : in     Gdk.Types.Gdk_Window_Attributes_Type)
+     (Window          : out Gdk_Window;
+      Parent          : Gdk_Window;
+      Attributes      : Gdk.Window_Attr.Gdk_Window_Attr;
+      Attributes_Mask : Gdk.Types.Gdk_Window_Attributes_Type)
    is
       function Internal
-        (Parent          : in Gdk_Window;
-         Attributes      : in Gdk.Window_Attr.Gdk_Window_Attr;
-         Attributes_Mask : in Gdk.Types.Gdk_Window_Attributes_Type)
+        (Parent          : Gdk_Window;
+         Attributes      : Gdk.Window_Attr.Gdk_Window_Attr;
+         Attributes_Mask : Gdk.Types.Gdk_Window_Attributes_Type)
          return Gdk_Window;
       pragma Import (C, Internal, "gdk_window_new");
 
@@ -82,10 +80,8 @@ package body Gdk.Window is
    -- Get_Children --
    ------------------
 
-   function Get_Children
-     (Window : in Gdk_Window) return Gdk_Window_List.Glist
-   is
-      function Internal (Window : in Gdk_Window) return System.Address;
+   function Get_Children (Window : Gdk_Window) return Gdk_Window_List.Glist is
+      function Internal (Window : Gdk_Window) return System.Address;
       pragma Import (C, Internal, "gdk_window_get_children");
       Result : Gdk_Window_List.Glist;
 
@@ -99,13 +95,13 @@ package body Gdk.Window is
    ------------------------------
 
    procedure Get_Desk_Relative_Origin
-     (Window  : in     Gdk_Window;
-      X       :    out Gint;
-      Y       :    out Gint;
-      Success :    out Boolean)
+     (Window  : Gdk_Window;
+      X       : out Gint;
+      Y       : out Gint;
+      Success : out Boolean)
    is
       function Internal
-        (Window : in Gdk_Window; X, Y : in System.Address) return Gboolean;
+        (Window : Gdk_Window; X, Y : System.Address) return Gboolean;
       pragma Import (C, Internal, "gdk_window_get_deskrelative_origin");
 
       Result : Gboolean;
@@ -125,14 +121,14 @@ package body Gdk.Window is
    ----------------
 
    procedure Get_Origin
-     (Window  : in     Gdk_Window;
-      X       :    out Gint;
-      Y       :    out Gint;
-      Success :    out Boolean)
+     (Window  : Gdk_Window;
+      X       : out Gint;
+      Y       : out Gint;
+      Success : out Boolean)
    is
       function Internal
-        (Window : in Gdk_Window;
-         X, Y   : in System.Address) return Gint;
+        (Window : Gdk_Window;
+         X, Y   : System.Address) return Gint;
       pragma Import (C, Internal, "gdk_window_get_origin");
 
       X_Out, Y_Out : aliased Gint;
@@ -140,8 +136,7 @@ package body Gdk.Window is
       --  the parameter is passed in a register for instance.
 
    begin
-      Success :=
-        To_Boolean (Internal (Window, X_Out'Address, Y_Out'Address));
+      Success := To_Boolean (Internal (Window, X_Out'Address, Y_Out'Address));
       X := X_Out;
       Y := Y_Out;
    end Get_Origin;
@@ -151,17 +146,17 @@ package body Gdk.Window is
    -----------------
 
    procedure Get_Pointer
-     (Window : in     Gdk_Window;
-      X      :    out Gint;
-      Y      :    out Gint;
-      Mask   :    out Gdk.Types.Gdk_Modifier_Type;
-      Result :    out Gdk_Window)
+     (Window : Gdk_Window;
+      X      : out Gint;
+      Y      : out Gint;
+      Mask   : out Gdk.Types.Gdk_Modifier_Type;
+      Result : out Gdk_Window)
    is
       function Internal
-        (Window : in Gdk_Window;
-         X      : in System.Address;
-         Y      : in System.Address;
-         Mask   : in System.Address) return Gdk_Window;
+        (Window : Gdk_Window;
+         X      : System.Address;
+         Y      : System.Address;
+         Mask   : System.Address) return Gdk_Window;
       pragma Import (C, Internal, "gdk_window_get_pointer");
 
       X_Out, Y_Out : aliased Gint;
@@ -195,9 +190,10 @@ package body Gdk.Window is
    -- Is_Viewable --
    -----------------
 
-   function Is_Viewable (Window : in Gdk_Window) return Boolean is
-      function Internal (Window : in Gdk_Window) return Gboolean;
+   function Is_Viewable (Window : Gdk_Window) return Boolean is
+      function Internal (Window : Gdk_Window) return Gboolean;
       pragma Import (C, Internal, "gdk_window_is_viewable");
+
    begin
       return Boolean'Val (Internal (Window));
    end Is_Viewable;
@@ -206,9 +202,10 @@ package body Gdk.Window is
    -- Is_Visible --
    ----------------
 
-   function Is_Visible (Window : in Gdk_Window) return Boolean is
-      function Internal (Window : in Gdk_Window) return Gboolean;
+   function Is_Visible (Window : Gdk_Window) return Boolean is
+      function Internal (Window : Gdk_Window) return Gboolean;
       pragma Import (C, Internal, "gdk_window_is_visible");
+
    begin
       return Boolean'Val (Internal (Window));
    end Is_Visible;
@@ -235,11 +232,10 @@ package body Gdk.Window is
    --------------------
 
    procedure Set_Background
-     (Window : in Gdk_Window;
-      Color  : in Gdk.Color.Gdk_Color)
+     (Window : Gdk_Window;
+      Color  : Gdk.Color.Gdk_Color)
    is
-      procedure Internal
-        (Window : in Gdk_Window; Color  : in System.Address);
+      procedure Internal (Window : Gdk_Window; Color : System.Address);
       pragma Import (C, Internal, "gdk_window_set_background");
       use type Gdk.Color.Gdk_Color;
 
@@ -260,8 +256,8 @@ package body Gdk.Window is
    -- Set_Icon_Name --
    -------------------
 
-   procedure Set_Icon_Name (Window : in Gdk_Window; Name : in String) is
-      procedure Internal (Window : in Gdk_Window; Name : in String);
+   procedure Set_Icon_Name (Window : Gdk_Window; Name : String) is
+      procedure Internal (Window : Gdk_Window; Name : String);
       pragma Import (C, Internal, "gdk_window_set_icon_name");
 
    begin
@@ -273,11 +269,10 @@ package body Gdk.Window is
    ---------------------------
 
    procedure Set_Override_Redirect
-     (Window            : in Gdk_Window;
-      Override_Redirect : in Boolean := True)
+     (Window            : Gdk_Window;
+      Override_Redirect : Boolean := True)
    is
-      procedure Internal
-        (Window : in Gdk_Window; Override_Redirect : in Gboolean);
+      procedure Internal (Window : Gdk_Window; Override_Redirect : Gboolean);
       pragma Import (C, Internal, "gdk_window_set_override_redirect");
 
    begin
@@ -288,8 +283,8 @@ package body Gdk.Window is
    -- Set_Role --
    --------------
 
-   procedure Set_Role (Window : in Gdk_Window; Role : in String) is
-      procedure Internal (Window : in Gdk_Window; Role : in String);
+   procedure Set_Role (Window : Gdk_Window; Role : String) is
+      procedure Internal (Window : Gdk_Window; Role : String);
       pragma Import (C, Internal, "gdk_window_set_role");
 
    begin
@@ -300,8 +295,8 @@ package body Gdk.Window is
    -- Set_Title --
    ---------------
 
-   procedure Set_Title (Window : in Gdk_Window; Title  : in String) is
-      procedure Internal (Window : in Gdk_Window; Title  : in String);
+   procedure Set_Title (Window : Gdk_Window; Title : String) is
+      procedure Internal (Window : Gdk_Window; Title : String);
       pragma Import (C, Internal, "gdk_window_set_title");
    begin
       Internal (Window, Title & ASCII.NUL);
@@ -317,8 +312,8 @@ package body Gdk.Window is
       Window : out Gdk_Window)
    is
       function Internal
-        (Win_X  : in System.Address;
-         Win_Y  : in System.Address) return Gdk_Window;
+        (Win_X  : System.Address;
+         Win_Y  : System.Address) return Gdk_Window;
       pragma Import (C, Internal, "gdk_window_at_pointer");
 
       X_Out, Y_Out : aliased Gint;
