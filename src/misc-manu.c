@@ -267,6 +267,18 @@ ada_text_get_text_end (GtkText* widget)
    return widget->text_end;
 }
 
+GtkAdjustment*
+ada_text_get_hadj (GtkText* widget)
+{
+  return widget->hadj;
+}
+
+GtkAdjustment*
+ada_text_get_vadj (GtkText* widget)
+{
+  return widget->vadj;
+}
+
 /******************************************
  ** Functions for File_Selection
  ******************************************/
@@ -373,6 +385,12 @@ GdkColor*
 ada_style_get_bg (GtkStyle* style, gint state)
 {
   return &(style->bg [state]);
+}
+
+GdkColor*
+ada_style_get_black (GtkStyle* style)
+{
+  return &(style->black);
 }
 
 /********************************************
