@@ -42,12 +42,12 @@
 --   |  |________________________|    |_______________________||
 --   |_________________________________________________________|
 --
---  A tree view can contain multiple physical column on the screen. These
+--  A tree view can contain multiple physical columns on the screen. These
 --  columns can have a button at the top, typically to force an ordering
 --  of the tree). They can also be reorganized interactively by the user.
 --
---  Each of this physical column can display several information, like buttons,
---  strings,... Each of this display comes from a cell_renderer, that displays
+--  Each physical column can display several information, like buttons,
+--  strings, ... Each of this display comes from a cell_renderer, that displays
 --  some data it reads from the model associated with the tree_view.
 --
 --  The renderers are then divided into lines, which are typically pointed to
@@ -85,7 +85,7 @@ package Gtk.Tree_View_Column is
       Tree_View_Column_Fixed);
 
    procedure Gtk_New (Widget : out Gtk_Tree_View_Column);
-   --  Creates a new Gtk_Tree_View_Column.
+   --  Create a new Gtk_Tree_View_Column.
 
    procedure Initialize (Widget : access Gtk_Tree_View_Column_Record'Class);
    --  Internal initialization function.
@@ -98,7 +98,7 @@ package Gtk.Tree_View_Column is
    -- Visual representation of the data --
    ---------------------------------------
    --  All the cells in a column have a similar graphical representation. This
-   --  could be either a simple text, an editable text, a toggle button,...
+   --  could be either a simple text, an editable text, a toggle button, ...
    --  This visual representation is independent from the actual data to
    --  represent. For instance, the same data from the model could be used for
    --  two different columns, once for a text and once for a button.
@@ -129,8 +129,8 @@ package Gtk.Tree_View_Column is
    --  Gtk.Box for the precise difference between the two
 
    procedure Clear (Tree_Column : access Gtk_Tree_View_Column_Record);
-   --  Remove all the renderers set in the column. The column will always be
-   --  empty until you put some new renderers.
+   --  Remove all the renderers set in the column.
+   --  The column will always be empty until you put some new renderers.
 
    function Get_Cell_Renderers
      (Tree_Column : access Gtk_Tree_View_Column_Record)
@@ -172,14 +172,15 @@ package Gtk.Tree_View_Column is
       Cell_Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Attribute     : String;
       Column        : Gint);
-   --  Adds an attribute mapping to the list in Tree_Column.  The Column is
-   --  the column of the model to get a value from, and the Attribute is the
-   --  parameter on Cell_Renderer to be set from the value. So for example if
-   --  column 2 of the model contains strings, you could have the "text"
-   --  attribute of a Gtk_Cell_Renderer_Text get its values from column 2.
+   --  Add an attribute mapping to the list in Tree_Column.
+   --  The Column is the column of the model to get a value from, and the
+   --  Attribute is the parameter on Cell_Renderer to be set from the value. So
+   --  for example if column 2 of the model contains strings, you could have
+   --  the "text" attribute of a Gtk_Cell_Renderer_Text get its values from
+   --  column 2.
    --
    --  For a list of properties available for each Cell_Renderer, please
-   --  refer to the corresponding packages specifications.
+   --  refer to the corresponding package specifications.
    --
    --  See also the function Set_Cell_Data_Func for another way to query the
    --  data to display in the tree.
@@ -189,7 +190,7 @@ package Gtk.Tree_View_Column is
       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Model       : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
-   --  This subprogram can be modified to globally modify an attribute of the
+   --  This subprogram can be used to globally modify an attribute of the
    --  Cell renderer.
    --  It is called every time some event happens in the tree (a line was
    --  clicked, the mouse moved into or out of a line,...). Iter and
@@ -222,7 +223,7 @@ package Gtk.Tree_View_Column is
    procedure Clear_Attributes
      (Tree_Column   : access Gtk_Tree_View_Column_Record;
       Cell_Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
-   --  Clears all existing attributes previously set with
+   --  Clear all existing attributes previously set with
    --  Gtk.Tree_View_Column.Set_Attributes.
 
    ------------------------------------------
@@ -232,132 +233,138 @@ package Gtk.Tree_View_Column is
    procedure Set_Spacing
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Spacing     : Gint);
-   --  Sets the spacing field of Tree_Column, which is the number of pixels to
-   --  place between cell renderers packed into it.
+   --  Set the spacing field of Tree_Column.
+   --  The spacing field is the number of pixels to place between cell
+   --  renderers packed into it.
 
-   function Get_Spacing (Tree_Column : access Gtk_Tree_View_Column_Record)
-                         return Gint;
-   --  Returns the spacing of Tree_Column.
+   function Get_Spacing
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
+   --  Return the spacing of Tree_Column.
 
    procedure Set_Visible
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Visible     : Boolean);
    --  Sets the visibility of Tree_Column.
 
-   function Get_Visible (Tree_Column : access Gtk_Tree_View_Column_Record)
-                         return Boolean;
-   --  Returns True if Tree_Column is visible.
+   function Get_Visible
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
+   --  Return True if Tree_Column is visible.
 
    procedure Set_Sizing
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       The_Type    : Gtk_Tree_View_Column_Sizing);
-   --  Sets the growth behavior of Tree_Column to The_Type.
+   --  Set the growth behavior of Tree_Column to The_Type.
 
-   function Get_Sizing (Tree_Column : access Gtk_Tree_View_Column_Record)
-                        return Gtk_Tree_View_Column_Sizing;
-   --  Returns the current type of Tree_Column.
+   function Get_Sizing
+     (Tree_Column : access Gtk_Tree_View_Column_Record)
+      return Gtk_Tree_View_Column_Sizing;
+   --  Return the current type of Tree_Column.
 
-   function Get_Width (Tree_Column : access Gtk_Tree_View_Column_Record)
-                       return Gint;
-   --  Returns the current size of the Tree_Column in pixels.
+   function Get_Width
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
+   --  Return the current size of the Tree_Column in pixels.
 
-   function Get_Fixed_Width (Tree_Column : access Gtk_Tree_View_Column_Record)
-                             return Gint;
-   --  Gets the fixed width of the column.  This value is only meaning may not
-   --  be the actual width of the column on the screen, just what is requested.
+   function Get_Fixed_Width
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
+   --  Get the fixed width of the column.
+   --  This value may not be the actual width of the column on the screen, just
+   --  what is requested.
 
    procedure Set_Fixed_Width
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Fixed_Width : Gint);
-   --  Sets the size of the column in pixels.  This is meaningful only if the
-   --  sizing type is Gtk_Tree_View_Column_Fixed.  In this case, the value is
-   --  discarded as the size of the column is based on the calculated width of
-   --  the column. The width is clamped to the min/max width for the column.
+   --  Set the size of the column in pixels.
+   --  This is meaningful only if the sizing type is
+   --  Gtk_Tree_View_Column_Fixed. In this case, the value is discarded as the
+   --  size of the column is based on the calculated width of the column. The
+   --  width is clamped to the min/max width for the column.
 
    procedure Set_Min_Width
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Min_Width   : Gint);
-   --  Sets the minimum width of the Tree_Column.  If Min_Width is -1, then the
-   --  minimum width is unset.
+   --  Set the minimum width of the Tree_Column.
+   --  If Min_Width is -1, then the minimum width is unset.
 
-   function Get_Min_Width (Tree_Column : access Gtk_Tree_View_Column_Record)
-                           return Gint;
-   --  Returns the minimum width in pixels of the Tree_Column, or -1 if no
+   function Get_Min_Width
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
+   --  Return the minimum width in pixels of the Tree_Column, or -1 if no
    --  minimum width is set.
 
    procedure Set_Max_Width
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Max_Width   : Gint);
-   --  Sets the maximum width of the Tree_Column.  If Max_Width is -1, then
-   --  the maximum width is unset.  Note, the column can actually be wider
-   --  than max width if it's the last column in a view.  In this case, the
-   --  column expands to fill the view.
+   --  Set the maximum width of the Tree_Column.
+   --  If Max_Width is -1, then the maximum width is unset.
+   --  Note, the column can actually be wider than max width if it's the last
+   --  column in a view. In this case, the column expands to fill the view.
 
-   function Get_Max_Width (Tree_Column : access Gtk_Tree_View_Column_Record)
-                           return Gint;
-   --  Returns the maximum width in pixels of the Tree_Column, or -1 if no
+   function Get_Max_Width
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
+   --  Return the maximum width in pixels of the Tree_Column, or -1 if no
    --  maximum width is set.
 
    procedure Clicked (Tree_Column : access Gtk_Tree_View_Column_Record);
-   --  Emits the "clicked" signal on the column.  This function will only work
-   --  if the user could have conceivably clicked on the button.
+   --  Emit the "clicked" signal on the column.
+   --  This function will only work if the user could have conceivably clicked
+   --  on the button.
 
    procedure Set_Title
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Title       : String);
-   --  Sets the title of the Tree_Column.  If a custom widget has been set,
-   --  then this value is ignored.
+   --  Set the title of the Tree_Column.
+   --  If a custom widget has been set, then this value is ignored.
 
    procedure Set_Clickable
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Clickable   : Boolean);
-   --  Sets the header to be active if Active is True.  When the header is
-   --  active, then it can take keyboard focus, and can be clicked.
+   --  Set the header to be active if Active is True.
+   --  When the header is active, then it can take keyboard focus, and can be
+   --  clicked.
 
-   function Get_Clickable (Tree_Column : access Gtk_Tree_View_Column_Record)
-                           return Boolean;
-   --  Returns True if the user can click on the header for the column.
+   function Get_Clickable
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
+   --  Return True if the user can click on the header for the column.
 
    procedure Set_Widget
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Widget      : access Gtk.Widget.Gtk_Widget_Record'Class);
 
-   function Get_Widget (Tree_Column : access Gtk_Tree_View_Column_Record)
-                        return Gtk.Widget.Gtk_Widget;
-   --  Returns the Gtk_Widget in the button in the column header.  If a custom
-   --  widget has not been set, then this will be a Gtk_Alignment with a
-   --  Gtk_Label in it.
+   function Get_Widget
+     (Tree_Column : access Gtk_Tree_View_Column_Record)
+       return Gtk.Widget.Gtk_Widget;
+   --  Return the Gtk_Widget in the button in the column header.
+   --  If a custom widget has not been set, then this will be a Gtk_Alignment
+   --  with a Gtk_Label in it.
 
    procedure Set_Alignment
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Xalign      : Gfloat);
-   --  Sets the alignment of the title or custom widget inside the column
-   --  header. The alignment determines its location inside the button
-   --  -- 0.0 for left, 0.5 for center, 1.0 for right.
+   --  Set the alignment of the title or custom widget inside the column header
+   --  The alignment determines its location inside the button
+   --  0.0 for left, 0.5 for center, 1.0 for right.
 
-   function Get_Alignment (Tree_Column : access Gtk_Tree_View_Column_Record)
-                           return Gfloat;
-   --  Returns the current x alignment of Tree_Column.  This value can range
-   --  between 0.0 and 1.0.
+   function Get_Alignment
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gfloat;
+   --  Return the current x alignment of Tree_Column.
+   --  This value can range between 0.0 and 1.0.
 
    procedure Set_Reorderable
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Reorderable : Boolean);
 
-   function Get_Reorderable (Tree_Column : access Gtk_Tree_View_Column_Record)
-                             return Boolean;
+   function Get_Reorderable
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
 
    procedure Set_Sort_Column_Id
      (Tree_Column    : access Gtk_Tree_View_Column_Record;
       Sort_Column_Id : Gint);
-   --  Sets the logical sort_column_id that this column sorts on when this
-   --  column is selected for sorting.  Doing so makes the column header
+   --  Set the logical sort_column_id that this column sorts on when this
+   --  column is selected for sorting. Doing so makes the column header
    --  clickable.
 
    function Get_Sort_Column_Id
-     (Tree_Column : access Gtk_Tree_View_Column_Record)
-     return Gint;
-   --  Gets the logical sort_column_id that the model sorts on when this
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gint;
+   --  Get the logical sort_column_id that the model sorts on when this
    --  column is selected for sorting.
    --  See Gtk.Tree_View_Column.Set_Sort_Column_Id.
    --  Return value: the current sort_column_id for this column, or -1 if
@@ -368,30 +375,28 @@ package Gtk.Tree_View_Column is
       Setting     : Boolean);
    --  Call this function with a Setting of True to display an arrow in
    --  the header button indicating the column is sorted. Call
-   --  gtk_tree_view_column_set_sort_order() to change the direction of
-   --  the arrow.
+   --  Set_Sort_Order to change the direction of the arrow.
 
    function Get_Sort_Indicator
-     (Tree_Column : access Gtk_Tree_View_Column_Record)
-     return Boolean;
-   --  Gets the value set by gtk_tree_view_column_set_sort_indicator().
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
+   --  Get the value set by Set_Sort_Indicator.
 
    procedure Set_Sort_Order
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Order       : Gtk_Sort_Type);
-   --  Changes the appearance of the sort indicator. (This <emphasis>does
-   --  not</emphasis> actually sort the model.  Use
+   --  Change the appearance of the sort indicator.
+   --  This does *not* actually sort the model. Use
    --  Gtk.Tree_View_Column.Set_Sort_Column_Id if you want automatic sorting
-   --  support.  This function is primarily for custom sorting behavior, and
+   --  support. This function is primarily for custom sorting behavior, and
    --  should be used in conjunction with Gtk.Tree_Sortable.Set_Sort_Column
    --  to do that. For custom models, the mechanism will vary. The sort
    --  indicator changes direction to indicate normal sort or reverse sort.
    --  Note that you must have the sort indicator enabled to see anything
-   --  when calling this function; see Gtk.Tree_View_Column.Set_Sort_Indicator.
+   --  when calling this function; see Set_Sort_Indicator.
 
-   function Get_Sort_Order (Tree_Column : access Gtk_Tree_View_Column_Record)
-                           return Gtk_Sort_Type;
-   --  Gets the value set by Gtk.Tree_View_Column.Set_Sort_Order.
+   function Get_Sort_Order
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Gtk_Sort_Type;
+   --  Get the value set by Set_Sort_Order.
 
    procedure Cell_Set_Cell_Data
      (Tree_Column : access Gtk_Tree_View_Column_Record;
@@ -399,11 +404,11 @@ package Gtk.Tree_View_Column is
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
       Is_Expander : Boolean;
       Is_Expanded : Boolean);
-   --  Sets the cell renderer based on the Tree_Model and Tree_Node.
+   --  Set the cell renderer based on the Tree_Model and Tree_Node.
    --  That is, for every attribute mapping in Tree_Column, it will get a
    --  value from the set column on the Tree_Node, and use that value to
    --  set the attribute on the cell renderer.  This is used primarily by
-   --  the GtkTreeView.
+   --  the Gtk_Tree_View.
 
    procedure Cell_Get_Size
      (Tree_Column : access Gtk_Tree_View_Column_Record;
@@ -412,8 +417,8 @@ package Gtk.Tree_View_Column is
       Y_Offset    : out Gint;
       Width       : out Gint;
       Height      : out Gint);
-   --  Obtains the width and height needed to render the column.  This is used
-   --  primarily by the Gtk_Tree_View.
+   --  Obtain the width and height needed to render the column.
+   --  This is used primarily by the Gtk_Tree_View.
 
    procedure Cell_Render
      (Tree_Column     : access Gtk_Tree_View_Column_Record;
@@ -422,13 +427,12 @@ package Gtk.Tree_View_Column is
       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
       Expose_Area     : Gdk.Rectangle.Gdk_Rectangle;
       Flags           : Guint);
-   --  Renders the cell contained by Tree_Column. This is used primarily by the
-   --  Gtk_Tree_View.
+   --  Renders the cell contained by Tree_Column.
+   --  This is used primarily by the Gtk_Tree_View.
 
    function Cell_Focus
      (Tree_Column : access Gtk_Tree_View_Column_Record;
-      Direction   : Gint)
-      return Boolean;
+      Direction   : Gint) return Boolean;
 
    procedure Cell_Draw_Focus
      (Tree_Column     : access Gtk_Tree_View_Column_Record;
@@ -438,8 +442,8 @@ package Gtk.Tree_View_Column is
       Expose_Area     : Gdk.Rectangle.Gdk_Rectangle;
       Flags           : Guint);
 
-   function Cell_Is_Visible (Tree_Column : access Gtk_Tree_View_Column_Record)
-                             return Boolean;
+   function Cell_Is_Visible
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
 
    procedure Cell_Set_Dirty (Tree_Column : access Gtk_Tree_View_Column_Record);
 
@@ -470,5 +474,4 @@ end Gtk.Tree_View_Column;
 --       Path_String     : String;
 --       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
 --       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
---       Flags           : Guint)
---       return Boolean;
+--       Flags           : Guint) return Boolean;
