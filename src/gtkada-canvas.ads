@@ -217,14 +217,11 @@ package Gtkada.Canvas is
 
    procedure Draw_Background
      (Canvas        : access Interactive_Canvas_Record;
-      Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle;
-      X_Left, Y_Top : Glib.Gint);
+      Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle);
    --  Draw the background of the canvas. This procedure should be overriden if
    --  you want to draw something else on the background. It must first clear
    --  the area on the screen.
    --
-   --  (X_Left, Y_Top) are the coordinates of the top-left screen corner, in
-   --  world coordinates.
    --  Screen_Rect is the rectangle on the screen that needs to be
    --  refreshed. These are canvas coordinates, therefore you must take into
    --  account the current zoom level while drawing.
@@ -237,8 +234,7 @@ package Gtkada.Canvas is
    procedure Draw_Grid
      (Canvas        : access Interactive_Canvas_Record;
       GC            : Gdk.GC.Gdk_GC;
-      Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle;
-      X_Left, Y_Top : Glib.Gint);
+      Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle);
    --  Helper function that can be called from Draw_Background. It cannot be
    --  used directly as Draw_Background, since it doesn't clear the area first.
 
@@ -423,8 +419,18 @@ package Gtkada.Canvas is
       X      : Glib.Gint) return Glib.Gint;
    --  Scale the scalar X depending by the zoom level (map from world
    --  coordinates to canvas coordinates).
-   --
-   --  ??? Need an extra parameter to convert coordinates instead of distances.
+   --  Substract the coordinates of the top-left corner if you are converting
+   --  coordinates instead of lengths.
+
+   function Top_World_Coordinates
+     (Canvas : access Interactive_Canvas_Record'Class) return Glib.Gint;
+   --  Return the world coordinates for the y=0 canvas coordinates (ie for the
+   --  upper-left corner).
+
+   function Left_World_Coordinates
+     (Canvas : access Interactive_Canvas_Record'Class) return Glib.Gint;
+   --  Return the world coordinates for the x=0 canvas coordinates (ie for the
+   --  upper-left corner).
 
    function To_World_Coordinates
      (Canvas : access Interactive_Canvas_Record'Class;
@@ -517,6 +523,14 @@ package Gtkada.Canvas is
      (Link : access Canvas_Link_Record; X_Pos, Y_Pos : Glib.Gfloat := 0.5);
    --  Same as Set_Src_Pos for the destination item
 
+   procedure Get_Src_Pos
+     (Link : access Canvas_Link_Record; X, Y : out Glib.Gfloat);
+   --  Return the attachment position of the link along its source item
+
+   procedure Get_Dest_Pos
+     (Link : access Canvas_Link_Record; X, Y : out Glib.Gfloat);
+   --  Return the attachment position of the link along its destination item
+
    function Has_Link
      (Canvas   : access Interactive_Canvas_Record;
       From, To : access Canvas_Item_Record'Class;
@@ -560,6 +574,42 @@ package Gtkada.Canvas is
    --
    --  ??? Would be nicer to give direct access to the Graph iterators
 
+   procedure Destroy (Link : in out Canvas_Link_Record);
+   --  Method called every time a link is destroyed. You should override this
+   --  if you define your own link types.
+   --  Note that the link might already have been removed from the canvas
+   --  when this subprogram is called.
+   --  This shouldn't free the link itself, only its fields.
+
+   -------------------
+   -- Drawing links --
+   -------------------
+   --  Drawing of links can be controlled at several levels:
+   --    - Redefining Update_Links gives control at the canvas level. This can
+   --      be used to implement routing algorithms for the links where the
+   --      routes must be computed before any link is actually drawn (otherwise
+   --      it is better to redefine Draw_Link). It can also be used to control
+   --      in what order the links should be drawn.
+   --    - Redefining Draw_Link gives the opportunity to draw links any way you
+   --      need (several bends, ...). It can be used to control the routing of
+   --      this specific link, for routing algorithms that only rely on the
+   --      items layout and not on other links. Otherwise see Update_Links.
+   --    - Redefining Draw_Straight_Line if slightly lower-level. This is
+   --      called by the default Draw_Link procedure, once the ends of the
+   --      links have been computed.
+
+   procedure Update_Links
+     (Canvas         : access Interactive_Canvas_Record;
+      GC             : Gdk.GC.Gdk_GC;
+      Invert_Mode    : Boolean;
+      From_Selection : Boolean);
+   --  Redraw all the links in the canvas, after the items have been laid out.
+   --  GC is a default graphic context that can be used for drawing. However,
+   --  any other graphic context will do. If Invert_Mode is true, this graphic
+   --  context must draw in xor mode.
+   --  If From_Selection is true, then only the links to or from one of the
+   --  selected items need to be drawn.
+
    procedure Draw_Link
      (Canvas      : access Interactive_Canvas_Record'Class;
       Link        : access Canvas_Link_Record;
@@ -595,6 +645,26 @@ package Gtkada.Canvas is
    type Item_Side is (East, West, North, South);
    --  Each side of an item, along its rectangle bounding box
 
+   procedure Clip_Line
+     (Src   : access Canvas_Item_Record;
+      To_X  : Glib.Gint;
+      To_Y  : Glib.Gint;
+      X_Pos : Glib.Gfloat;
+      Y_Pos : Glib.Gfloat;
+      Side  : out Item_Side;
+      X_Out : out Glib.Gint;
+      Y_Out : out Glib.Gint);
+   --  Clip the line that goes from Src at pos (X_Pos, Y_Pos) to (To_X, To_Y)
+   --  in world coordinates.
+   --  The intersection between that line and the border of Rect is returned
+   --  in (X_Out, Y_Out). The result should be in world coordinates.
+   --  X_Pos and Y_Pos have the same meaning as Src_X_Pos and Src_Y_Pos in the
+   --  link record.
+   --  This procedure is called when computing the position for the links
+   --  within the default Draw_Link procedure. The default implementation only
+   --  works with rectangular items. The computed coordinates are then passed
+   --  on directly to Draw_Straight_Line.
+
    procedure Draw_Straight_Line
      (Link      : access Canvas_Link_Record;
       Window    : Gdk.Window.Gdk_Window;
@@ -608,13 +678,6 @@ package Gtkada.Canvas is
    --  The links goes from (Src, X1, Y1) to (Dest, X2, Y2), in canvas
    --  coordinates. The coordinates have already been clipped so that they do
    --  not override the item.
-
-   procedure Destroy (Link : in out Canvas_Link_Record);
-   --  Method called every time a link is destroyed. You should override this
-   --  if you define your own link types.
-   --  Note that the link might already have been removed from the canvas
-   --  when this subprogram is called.
-   --  This shouldn't free the link itself, only its fields.
 
    ---------------
    -- Selection --
@@ -700,24 +763,6 @@ package Gtkada.Canvas is
    --  If you need to change the contents of the item, you should call
    --  Item_Updated after having done the drawing.
 
-   procedure Clip_Line
-     (Src   : access Canvas_Item_Record;
-      To_X  : Glib.Gint;
-      To_Y  : Glib.Gint;
-      X_Pos : Glib.Gfloat;
-      Y_Pos : Glib.Gfloat;
-      Side  : out Item_Side;
-      X_Out : out Glib.Gint;
-      Y_Out : out Glib.Gint);
-   --  Clip the line that goes from Src at pos (X_Pos, Y_Pos) to (To_X, To_Y)
-   --  in world coordinates.
-   --  The intersection between that line and the border of Rect is returned
-   --  in (X_Out, Y_Out). The result should be in world coordinates.
-   --  X_Pos and Y_Pos have the same meaning as Src_X_Pos and Src_Y_Pos in the
-   --  link record.
-   --  This procedure is called when computing the position for the links. The
-   --  default implementation only works with rectangular items.
-
    procedure Destroy (Item : in out Canvas_Item_Record);
    --  Free the memory occupied by the item (not the item itself). You should
    --  override this function if you define your own widget type, but always
@@ -802,7 +847,7 @@ package Gtkada.Canvas is
    --  procedure Handler (Canvas : access Interactive_Canvas_Record'Class;
    --                     Item   : Canvas_Item);
    --
-   --  Called when the user has clicked on an item to select it, ie before any
+   --  Emitted when the user has clicked on an item to select it, ie before any
    --  drag even has occured. This is a good time to add other items to the
    --  selection if you need. At thee same time, the primitive operation
    --  Selected is called for the item.
@@ -811,8 +856,17 @@ package Gtkada.Canvas is
    --  procedure Handler (Canvas : access Interactive_Canvas_Record'Class;
    --                     Item   : Canvas_Item);
    --
-   --  Called when the Item was unselected. At the same time, the primitive
+   --  Emitted when the Item was unselected. At the same time, the primitive
    --  operation Selected is called for the item.
+   --
+   --  - "item_moved"
+   --  procedure Handler (Canvas : access Interactive_Canvas_Record'Class;
+   --                     Item   : Canvas_Item);
+   --
+   --  Emitted when Item has been moved. New coordinates have been assigned to
+   --  Item. However, the canvas hasn't been refreshed yet. This signal might
+   --  be called multiple time when the user finishes a drag action, in case
+   --  there were several selected items.
    --
    --  - "zoomed"
    --  procedure Handler (Canvas : access Interactive_Canvas_Record'Class);
@@ -979,9 +1033,10 @@ end Gtkada.Canvas;
 --
 --  procedure Draw_Background
 --    (Canvas        : access Image_Canvas_Record;
---     Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle;
---     X_Left, Y_Top : Glib.Gint)
+--     Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle)
 --  is
+--     X_Left : constant Glib.Gint := Left_World_Coordinates (Canvas);
+--     Y_Top  : constant Glib.Gint := Top_World_Coordinates (Canvas);
 --     X, Y, W, H, Ys : Gint;
 --     Xs : Gint := Screen_Rect.X;
 --     Bw : constant Gint := Get_Width (Background)

@@ -108,7 +108,8 @@ package body Gtkada.Canvas is
       2 => New_String ("item_selected"),
       3 => New_String ("zoomed"),
       4 => New_String ("set_scroll_adjustments"),
-      5 => New_String ("item_unselected"));
+      5 => New_String ("item_unselected"),
+      6 => New_String ("item_moved"));
    --  Array of the signals created for this widget
 
    -----------------
@@ -135,14 +136,6 @@ package body Gtkada.Canvas is
    procedure Canvas_Destroyed (Canvas : access Gtk_Widget_Record'Class);
    --  Called when the canvas is being destroyed. All the items and links
    --  are removed, and the double-buffer is freed
-
-   procedure Update_Links
-     (Canvas      : access Interactive_Canvas_Record'Class;
-      GC          : Gdk.GC.Gdk_GC;
-      Invert_Mode : Boolean;
-      Selected    : Item_Selection_List := null);
-   --  Redraw all the links in the canvas.
-   --  If Item is not null, only the links to or from Item are redrawn.
 
    procedure Size_Allocate
      (Canv : access Gtk_Widget_Record'Class; Args : Gtk_Args);
@@ -302,6 +295,11 @@ package body Gtkada.Canvas is
       Param  : access Canvas_Item_Record'Class);
    pragma Import (C, Emit_By_Name_Item, "gtk_signal_emit_by_name");
 
+   function Compute_Line_Pos
+     (Canvas : access Interactive_Canvas_Record'Class)
+     return Gint_Array;
+   --  ???
+
    ---------------------------
    -- To_Canvas_Coordinates --
    ---------------------------
@@ -349,7 +347,8 @@ package body Gtkada.Canvas is
          2 => (1 => GType_Pointer,           2 => GType_None),
          3 => (1 => GType_Uint,              2 => GType_None),
          4 => (1 => Gtk.Adjustment.Get_Type, 2 => Gtk.Adjustment.Get_Type),
-         5 => (1 => GType_Pointer,           2 => GType_None));
+         5 => (1 => GType_Pointer,           2 => GType_None),
+         6 => (1 => GType_Pointer,           2 => GType_None));
       --  the parameters for the above signals.
       --  This must be defined in this function rather than at the
       --  library-level, or the value of Gdk_Event.Get_Type is not yet
@@ -1236,10 +1235,6 @@ package body Gtkada.Canvas is
 
    function Compute_Line_Pos
      (Canvas : access Interactive_Canvas_Record'Class)
-     return Gint_Array;
-
-   function Compute_Line_Pos
-     (Canvas : access Interactive_Canvas_Record'Class)
      return Gint_Array
    is
       type Graph_Range is record
@@ -1252,7 +1247,7 @@ package body Gtkada.Canvas is
       procedure Free is new Unchecked_Deallocation
         (Range_Array, Range_Array_Access);
 
-      Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
+      Xbase : constant Gint := Left_World_Coordinates (Canvas);
 
       Free_Ranges : Range_Array_Access := new Range_Array (1 .. 1000);
       Tmp : Range_Array_Access;
@@ -1335,8 +1330,8 @@ package body Gtkada.Canvas is
       Xc1, Xc2, Yc1, Yc2 : Gint;
       Xarr_End, Yarr_End, Xarr_Start, Yarr_Start : Gint;
       Angle_Arr_End, Angle_Arr_Start : Float;
-      Xbase    : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase    : constant Gint := Gint (Get_Value (Canvas.Vadj));
+      Xbase    : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase    : constant Gint := Top_World_Coordinates (Canvas);
       Src      : constant Canvas_Item := Canvas_Item (Get_Src (Link));
       Dest     : constant Canvas_Item := Canvas_Item (Get_Dest (Link));
       Line_Pos : constant Gint_Array := Compute_Line_Pos (Canvas);
@@ -1542,8 +1537,8 @@ package body Gtkada.Canvas is
       Link   : access Canvas_Link_Record'Class)
    is
       X1, Y1, X2, Y2 : Gint;
-      Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
+      Xbase : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase : constant Gint := Top_World_Coordinates (Canvas);
       Src   : constant Canvas_Item := Canvas_Item (Get_Src (Link));
       Dest  : constant Canvas_Item := Canvas_Item (Get_Dest (Link));
       Src_Side, Dest_Side : Item_Side;
@@ -1618,8 +1613,8 @@ package body Gtkada.Canvas is
       Link   : access Canvas_Link_Record'Class;
       Offset : Gint)
    is
-      Xbase      : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase      : constant Gint := Gint (Get_Value (Canvas.Vadj));
+      Xbase      : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase      : constant Gint := Top_World_Coordinates (Canvas);
       Arc_Offset : constant Float :=
         Float (To_Canvas_Coordinates (Canvas, Canvas.Arc_Link_Offset));
       Right_Angle : constant Float := Ada.Numerics.Pi / 2.0;
@@ -1730,8 +1725,8 @@ package body Gtkada.Canvas is
       Angle      : Float;
       X1, Y1, X2, Y2, X3, Y3 : Gint;
       Right_Angle : constant Float := Ada.Numerics.Pi / 2.0;
-      Xbase       : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase       : constant Gint := Gint (Get_Value (Canvas.Vadj));
+      Xbase       : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase       : constant Gint := Top_World_Coordinates (Canvas);
       Arc_Offset  : constant Float :=
         Float (To_Canvas_Coordinates (Canvas, Canvas.Arc_Link_Offset));
       Src         : constant Canvas_Item := Canvas_Item (Get_Src (Link));
@@ -1862,58 +1857,53 @@ package body Gtkada.Canvas is
    ------------------
 
    procedure Update_Links
-     (Canvas      : access Interactive_Canvas_Record'Class;
-      GC          : Gdk.GC.Gdk_GC;
-      Invert_Mode : Boolean;
-      Selected    : Item_Selection_List := null)
+     (Canvas         : access Interactive_Canvas_Record;
+      GC             : Gdk.GC.Gdk_GC;
+      Invert_Mode    : Boolean;
+      From_Selection : Boolean)
    is
       Current : Edge_Iterator;
-      L : Canvas_Link;
-      X, Y    : Gint;
-      Count   : Natural := 0;
+
+      procedure Internal (Max : Natural);
+      --  Draw at most Max links from the ones returned by Current
+
+      procedure Internal (Max : Natural) is
+         Count : Natural := 0;
+         L     : Canvas_Link;
+      begin
+         while not At_End (Current) loop
+            L := Canvas_Link (Get (Current));
+            if Is_Visible (Canvas_Item (Get_Src (L)))
+              and then Is_Visible (Canvas_Item (Get_Dest (L)))
+            then
+               Draw_Link (Canvas, L, Invert_Mode, GC,
+                          Gint (Repeat_Count (Current)));
+            end if;
+
+            --  To save time, we limit the number of links that are drawn while
+            --  moving items.
+            Count := Count + 1;
+            exit when Count > Max;
+
+            Next (Current);
+         end loop;
+      end Internal;
+
+      Iter    : Selection_Iterator;
    begin
-      if Selected /= null then
-         X := Selected.Item.Coord.X;
-         Y := Selected.Item.Coord.Y;
-         Selected.Item.Coord.X := Selected.X;
-         Selected.Item.Coord.Y := Selected.Y;
-      end if;
+      if From_Selection then
+         Iter := Start (Canvas);
 
-      --  Temporarily set the graph as not-directed, so that we get all links
-      --  to or from the item
-      Set_Directed (Canvas.Children, False);
-
-      if Selected /= null then
-         Current := First
-           (Canvas.Children, Src => Vertex_Access (Selected.Item));
+         while Get (Iter) /= null loop
+            Current := First
+              (Canvas.Children, Src => Vertex_Access (Get (Iter)),
+               Directed => False);
+            Internal (Links_Threshold_While_Moving);
+            Iter := Next (Iter);
+         end loop;
       else
          Current := First (Canvas.Children);
-      end if;
-
-      while not At_End (Current) loop
-         L := Canvas_Link (Get (Current));
-         if Is_Visible (Canvas_Item (Get_Src (L)))
-           and then Is_Visible (Canvas_Item (Get_Dest (L)))
-         then
-            Draw_Link (Canvas, L, Invert_Mode, GC,
-                       Gint (Repeat_Count (Current)));
-         end if;
-
-         --  To save time, we limit the number of links that are drawn while
-         --  moving items.
-         Count := Count + 1;
-         exit when Selected /= null
-           and then Count > Links_Threshold_While_Moving;
-
-         Next (Current);
-      end loop;
-
-      --  Restore the directed status of the graph
-      Set_Directed (Canvas.Children, True);
-
-      if Selected /= null then
-         Selected.Item.Coord.X := X;
-         Selected.Item.Coord.Y := Y;
+         Internal (Natural'Last);
       end if;
    end Update_Links;
 
@@ -1924,9 +1914,10 @@ package body Gtkada.Canvas is
    procedure Draw_Grid
      (Canvas        : access Interactive_Canvas_Record;
       GC            : Gdk.GC.Gdk_GC;
-      Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle;
-      X_Left, Y_Top : Glib.Gint)
+      Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle)
    is
+      X_Left : constant Gint := Left_World_Coordinates (Canvas);
+      Y_Top  : constant Gint := Top_World_Coordinates (Canvas);
       Grid   : constant Gint :=
         Gint (Canvas.Grid_Size) * Gint (Canvas.Zoom) / 100;
       X, Y, Xmin : Gint;
@@ -1962,8 +1953,7 @@ package body Gtkada.Canvas is
 
    procedure Draw_Background
      (Canvas        : access Interactive_Canvas_Record;
-      Screen_Rect   : Gdk_Rectangle;
-      X_Left, Y_Top : Gint) is
+      Screen_Rect   : Gdk_Rectangle) is
    begin
       Draw_Rectangle
         (Get_Window (Canvas),
@@ -1973,8 +1963,7 @@ package body Gtkada.Canvas is
          Y      => Screen_Rect.Y,
          Width  => Gint (Screen_Rect.Width),
          Height => Gint (Screen_Rect.Height));
-      Draw_Grid (Interactive_Canvas (Canvas), Canvas.Black_GC,
-                 Screen_Rect, X_Left, Y_Top);
+      Draw_Grid (Interactive_Canvas (Canvas), Canvas.Black_GC, Screen_Rect);
    end Draw_Background;
 
    ------------
@@ -1992,8 +1981,8 @@ package body Gtkada.Canvas is
       X, Y   : Gint;
       Dest   : Gdk_Rectangle;
       Inters : Boolean;
-      Xbase  : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase  : constant Gint := Gint (Get_Value (Canvas.Vadj));
+      Xbase  : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase  : constant Gint := Top_World_Coordinates (Canvas);
 
    begin
       --  If the GC was not created, do not do anything
@@ -2004,14 +1993,13 @@ package body Gtkada.Canvas is
 
       --  Clear the canvas
 
-      --  Set_Clip_Rectangle (Canvas.Black_GC, Rect);
-
-      Draw_Background (Canvas, Rect, Xbase, Ybase);
+      Draw_Background (Canvas, Rect);
 
       --  Draw the links first, so that they appear to be below the items.
       --  ??? Should redraw only the required links
 
-      Update_Links (Canvas, Canvas.Link_GC, False);
+      Update_Links (Canvas, Canvas.Link_GC, Invert_Mode => False,
+                    From_Selection => False);
 
       --  Draw each of the items.
 
@@ -2041,7 +2029,6 @@ package body Gtkada.Canvas is
          Draw_Dashed_Selection (Canvas);
       end if;
 
-      --  Set_Clip_Mask (Canvas.Black_GC, null);
       return False;
    end Expose;
 
@@ -2225,9 +2212,9 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record; Event : Gdk_Event)
       return Canvas_Item
    is
-      Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
-      X     : constant Gint := To_World_Coordinates
+      Xbase : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase : constant Gint := Top_World_Coordinates (Canvas);
+      X : constant Gint := To_World_Coordinates
         (Canvas, Gint (Get_X (Event)) + Xbase);
       Y     : constant Gint := To_World_Coordinates
         (Canvas, Gint (Get_Y (Event)) + Ybase);
@@ -2244,11 +2231,11 @@ package body Gtkada.Canvas is
      (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      Canvas   : Interactive_Canvas := Interactive_Canvas (Canv);
-      Item     : Canvas_Item;
-      Xbase    : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase    : constant Gint := Gint (Get_Value (Canvas.Vadj));
-      X        : constant Gint := To_World_Coordinates
+      Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
+      Item : Canvas_Item;
+      Xbase : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase : constant Gint := Top_World_Coordinates (Canvas);
+      X : constant Gint := To_World_Coordinates
         (Canvas, Gint (Get_X (Event)) + Xbase);
       Y        : constant Gint := To_World_Coordinates
         (Canvas, Gint (Get_Y (Event)) + Ybase);
@@ -2364,13 +2351,12 @@ package body Gtkada.Canvas is
      (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      Canvas      : Interactive_Canvas := Interactive_Canvas (Canv);
-      Tmp         : Item_Selection_List;
-      Xbase       : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase       : constant Gint := Gint (Get_Value (Canvas.Vadj));
-      Rect, Coord : Gdk_Rectangle;
-      Iter        : Item_Iterator;
-
+      Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
+      Tmp : Item_Selection_List;
+      Xbase : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase : constant Gint := Top_World_Coordinates (Canvas);
+      Rect, Coord  : Gdk_Rectangle;
+      Iter  : Item_Iterator;
    begin
       Grab_Remove (Canvas);
 
@@ -2432,6 +2418,10 @@ package body Gtkada.Canvas is
                Tmp.Item.Coord.Y := Tmp.Y;
             end if;
             Tmp.Item.From_Auto_Layout := False;
+
+            Emit_By_Name_Item
+              (Get_Object (Canvas), "item_moved" & ASCII.NUL, Tmp.Item);
+
             Tmp := Tmp.Next;
          end loop;
 
@@ -2599,8 +2589,8 @@ package body Gtkada.Canvas is
    procedure Draw_Dashed_Selection
      (Canvas : access Interactive_Canvas_Record'Class)
    is
-      Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
+      Xbase : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase : constant Gint := Top_World_Coordinates (Canvas);
       Selected : Item_Selection_List := Canvas.Selection;
       X, Y : Gint;
       Rect : Gdk_Rectangle;
@@ -2628,6 +2618,9 @@ package body Gtkada.Canvas is
                     Selected.Y mod Gint (Canvas.Grid_Size);
                end if;
 
+               Selected.Item.Coord.X := Selected.X;
+               Selected.Item.Coord.Y := Selected.Y;
+
                Draw_Rectangle
                  (Get_Window (Canvas),
                   GC     => Canvas.Anim_GC,
@@ -2639,8 +2632,6 @@ package body Gtkada.Canvas is
                   Height => To_Canvas_Coordinates
                   (Canvas, Gint (Selected.Item.Coord.Height)));
 
-               Update_Links (Canvas, Canvas.Anim_GC, True, Selected);
-
                if Canvas.Align_On_Grid then
                   Selected.X := X;
                   Selected.Y := Y;
@@ -2648,6 +2639,9 @@ package body Gtkada.Canvas is
             end if;
             Selected := Selected.Next;
          end loop;
+
+         Update_Links (Canvas, Canvas.Anim_GC,
+                       Invert_Mode => True, From_Selection => True);
       end if;
    end Draw_Dashed_Selection;
 
@@ -2715,8 +2709,8 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class)
    is
-      Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
+      Xbase : constant Gint := Left_World_Coordinates (Canvas);
+      Ybase : constant Gint := Top_World_Coordinates (Canvas);
    begin
       if Item.Visible then
          Queue_Draw_Area
@@ -3522,5 +3516,47 @@ package body Gtkada.Canvas is
    begin
       null;
    end Selected;
+
+   -----------------
+   -- Get_Src_Pos --
+   -----------------
+
+   procedure Get_Src_Pos
+     (Link : access Canvas_Link_Record; X, Y : out Glib.Gfloat) is
+   begin
+      X := Link.Src_X_Pos;
+      Y := Link.Src_Y_Pos;
+   end Get_Src_Pos;
+
+   ------------------
+   -- Get_Dest_Pos --
+   ------------------
+
+   procedure Get_Dest_Pos
+     (Link : access Canvas_Link_Record; X, Y : out Glib.Gfloat) is
+   begin
+      X := Link.Dest_X_Pos;
+      Y := Link.Dest_Y_Pos;
+   end Get_Dest_Pos;
+
+   ---------------------------
+   -- Top_World_Coordinates --
+   ---------------------------
+
+   function Top_World_Coordinates
+     (Canvas : access Interactive_Canvas_Record'Class) return Glib.Gint is
+   begin
+      return Gint (Get_Value (Canvas.Vadj));
+   end Top_World_Coordinates;
+
+   ----------------------------
+   -- Left_World_Coordinates --
+   ----------------------------
+
+   function Left_World_Coordinates
+     (Canvas : access Interactive_Canvas_Record'Class) return Glib.Gint is
+   begin
+      return Gint (Get_Value (Canvas.Hadj));
+   end Left_World_Coordinates;
 
 end Gtkada.Canvas;
