@@ -269,7 +269,7 @@ package Gtk.Tree_View is
    --  that support the Gtk_Drag_Source_Iface and the Gtk_Drag_Dest_Iface. Both
    --  Gtk_Tree_Store and Gtk_List_Store support these.
    --  If Reorderable is True, then the user can reorder the model by dragging
-   --  and dropping columns.  The developer will can listen to these changes by
+   --  and dropping columns.  The developer can listen to these changes by
    --  connecting to the model's signals.
    --  This function does not give you any degree of control over the order
    --  - any reorderering is allowed. If more control is needed, you should
