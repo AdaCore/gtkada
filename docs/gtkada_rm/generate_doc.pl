@@ -154,7 +154,7 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 		      "Gtk_Border_Combo" => "Gtk.Extra.Border_Combo",
 		      "Gtk_Font_Combo"   => "Gtk.Extra.Font_Combo",
 		      "Gtk_IEntry"       => "Gtk.Extra.Item_Entry",
-		      "Gtk_Entry"        => "Gtk.Gentry",
+		      "Gtk_Entry"        => "Gtk.GEntry",
 		      "Gtk_Range"        => "Gtk.Grange");
 
 ## Contains the parent of each widget
