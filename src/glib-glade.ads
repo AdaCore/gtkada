@@ -77,6 +77,14 @@ package Glib.Glade is
    --  e.g Gtk_New_Vbox if New_Name = Vbox.
    --  If Delim is not a space, Param1 is surrounded by it.
 
+   procedure Gen_New
+     (N : Node_Ptr; Class, Param1, Param2, Param3, Param4, Param5 : String;
+      File : File_Type; Delim : Character := ' ');
+   --  Output a call to <Class>.Gtk_New in File.
+   --  N is the node containing the widget to create.
+   --  Each Param<n> represents a parameter of Gtk_New.
+   --  If Delim is not a space, Param1 is surrounded by it.
+
    procedure Gen_Child (N, Child : Node_Ptr; File : File_Type);
    --  Output an assignment in File of the form:
    --  <Name> := Get_<Child-2> (<Parent>);

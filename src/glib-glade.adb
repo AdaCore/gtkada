@@ -195,6 +195,10 @@ package body Glib.Glade is
       end Has_Separator;
 
    begin
+      if S'Length = 0 then
+         return S;
+      end if;
+
       Has_Sep := Has_Separator (S);
 
       if S'Length > 4 and then S (S'First .. S'First + 3) = "GTK_" then
@@ -346,6 +350,40 @@ package body Glib.Glade is
          end if;
 
          N.Specific_Data.Created := True;
+      end if;
+   end Gen_New;
+
+   procedure Gen_New
+     (N : Node_Ptr; Class, Param1, Param2, Param3, Param4, Param5 : String;
+      File : File_Type; Delim : Character := ' ')
+   is
+      P : Node_Ptr;
+ 
+   begin
+      if N.Specific_Data.Created then
+         return;
+      end if;
+ 
+      P := Find_Tag (N.Child, "name");
+ 
+      if P /= null then
+         Add_Package (Class);
+ 
+         Put_Line (File, "   " & Class & ".Gtk_New");
+
+         if Delim /= ' ' then
+            Put (File, "     (" & To_Ada (P.Value.all) & ", " & Delim &
+              Param1 & Delim);
+         else
+            Put
+              (File, "     (" & To_Ada (P.Value.all) & ", " & To_Ada (Param1));
+         end if;
+
+         Put (File, ", " & To_Ada (Param2));
+         Put_Line (File, ", " & To_Ada (Param3) & ", ");
+         Put (File, "      " & To_Ada (Param4));
+         Put (File, ", " & To_Ada (Param5));
+         Put_Line (File, ");");
       end if;
    end Gen_New;
 
