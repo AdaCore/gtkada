@@ -49,7 +49,6 @@ with Gtk.Button;       use Gtk.Button;
 with Gtk.Check_Menu_Item; use Gtk.Check_Menu_Item;
 with Gtk.Container;    use Gtk.Container;
 with Gtk.Enums;        use Gtk.Enums;
-with Gtk.Extra.PsFont; use Gtk.Extra.PsFont;
 with Gtk.Event_Box;    use Gtk.Event_Box;
 with Gtk.Fixed;        use Gtk.Fixed;
 with Gtk.Handlers;
@@ -67,6 +66,7 @@ with Gtk.Style;        use Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtk.Window;       use Gtk.Window;
 with Gtkada.Handlers;  use Gtkada.Handlers;
+with Pango.Font;       use Pango.Font;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 with Ada.Unchecked_Deallocation;
@@ -87,6 +87,7 @@ package body Gtkada.MDI is
 
    Title_Bar_Height : constant Gint := 15;
    --  <preferences> Height of the title bar for the children
+   --  ??? Should be computed from Title_Font, and thus a field in MDI_Window
 
    MDI_Background_Color : constant String := "#666666";
    --  <preferences> Background color to use for the MDI window
@@ -94,11 +95,8 @@ package body Gtkada.MDI is
    Border_Thickness : constant Gint := 4;
    --  <preferences> Thickness of the windows in the MDI
 
-   Title_Font_Name : constant String := "Helvetica";
+   Title_Font : constant String := "Helvetica 6";
    --  <preferences> Name of the font to use in the title bar
-
-   Title_Font_Height : constant Gint := 10;
-   --  <preferences> Height of the font to use in the title bar
 
    Icons_Width : constant Gint := 100;
    Icons_Height : constant Gint := Title_Bar_Height + 2 * Border_Thickness;
@@ -1441,9 +1439,9 @@ package body Gtkada.MDI is
       use Widget_List;
       pragma Unreferenced (Area);
 
-      F  : constant Gdk.Font.Gdk_Font :=
-        Get_Gdkfont (Title_Font_Name, Title_Font_Height);
+      F  : Gdk.Font.Gdk_Font;
       GC : Gdk.Gdk_GC := Child.MDI.Non_Focus_GC;
+      Descr : Pango_Font_Description;
 
    begin
       --  Call this function so that for a dock item is highlighted if the
@@ -1452,6 +1450,10 @@ package body Gtkada.MDI is
       if Child.MDI.Focus_Child = MDI_Child (Child) then
          GC := Child.MDI.Focus_GC;
       end if;
+
+      Descr := From_String (Title_Font);
+      F := From_Description (Descr);
+      Free (Descr);
 
       Draw_Rectangle
         (Get_Window (Child),
@@ -2195,11 +2197,11 @@ package body Gtkada.MDI is
       end if;
 
       if Child.all in Gtk_Window_Record'Class then
-         C.Title := new String' (Get_Title (Gtk_Window (Child)));
+         C.Title := new String'(Get_Title (Gtk_Window (Child)));
       else
-         C.Title := new String' (" ");
+         C.Title := new String'(" ");
       end if;
-      C.Short_Title := new String' (C.Title.all);
+      C.Short_Title := new String'(C.Title.all);
 
       --  We need to show the widget before inserting it in a notebook,
       --  otherwise the notebook page will not be made visible.
@@ -2271,12 +2273,12 @@ package body Gtkada.MDI is
 
       Label           : Gtk_Accel_Label;
    begin
-      The_Title := new String' (Title);
+      The_Title := new String'(Title);
 
       if Short_Title /= "" then
-         The_Short_Title := new String' (Short_Title);
+         The_Short_Title := new String'(Short_Title);
       else
-         The_Short_Title := new String' (Title);
+         The_Short_Title := new String'(Title);
       end if;
 
       Free (Child.Title);
@@ -3757,15 +3759,15 @@ package body Gtkada.MDI is
          N : Node_Ptr;
       begin
          N := new Node;
-         N.Tag := new String' (Name);
-         N.Value := new String' (Value);
+         N.Tag := new String'(Name);
+         N.Value := new String'(Value);
          Add_Child (Child_Node, N);
       end Add;
 
    begin
       if Tree = null then
          Tree := new Node;
-         Tree.Tag := new String' ("MDI");
+         Tree.Tag := new String'("MDI");
          Child_Node := Tree;
          Add ("Maximized", Boolean'Image (Children_Are_Maximized (MDI)));
       else
@@ -3789,7 +3791,7 @@ package body Gtkada.MDI is
       end case;
 
       Child_Node := new Node;
-      Child_Node.Tag := new String' ("Child");
+      Child_Node.Tag := new String'("Child");
 
       Add ("Focus", Boolean'Image (Focus));
       Add ("Dock", Dock_Side'Image (Dock));
@@ -3985,14 +3987,14 @@ package body Gtkada.MDI is
             N : Node_Ptr;
          begin
             N := new Node;
-            N.Tag := new String' (Name);
-            N.Value := new String' (Value);
+            N.Tag := new String'(Name);
+            N.Value := new String'(Value);
             Add_Child (Child_Node, N);
          end Add;
 
       begin
          Root := new Node;
-         Root.Tag := new String' ("MDI");
+         Root.Tag := new String'("MDI");
          Child_Node := Root;
 
          Add ("Left",   Gint'Image (MDI.Docks_Size (Left)));
@@ -4019,7 +4021,7 @@ package body Gtkada.MDI is
                --  beginning of the list.
 
                Child_Node := new Node;
-               Child_Node.Tag := new String' ("Child");
+               Child_Node.Tag := new String'("Child");
 
                if Child.State = Iconified then
                   Add ("Uniconified_Height",
