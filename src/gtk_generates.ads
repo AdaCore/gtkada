@@ -67,7 +67,6 @@ package Gtk_Generates is
    procedure Menu_Item_Generate              (N : Node_Ptr; File : File_Type);
    procedure Misc_Generate                   (N : Node_Ptr; File : File_Type);
    procedure Notebook_Generate               (N : Node_Ptr; File : File_Type);
-   procedure Object_Generate                 (N : Node_Ptr; File : File_Type);
    procedure Option_Menu_Generate            (N : Node_Ptr; File : File_Type);
    procedure Packer_Generate                 (N : Node_Ptr; File : File_Type);
    procedure Paned_Generate                  (N : Node_Ptr; File : File_Type);
@@ -103,4 +102,11 @@ package Gtk_Generates is
      renames Bin_Generate;
    procedure Menu_Shell_Generate             (N : Node_Ptr; File : File_Type)
      renames Container_Generate;
+
+   procedure End_Generate                    (N : Node_Ptr; File : File_Type);
+   --  Common part needed for any widget.
+   --  This should always be called *after* calling Generate for each widget.
+   --  It will in particular set up the flags and accelerator, and put the
+   --  widget in the right container using the right procedure call.
+
 end Gtk_Generates;

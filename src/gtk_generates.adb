@@ -822,11 +822,6 @@ package body Gtk_Generates is
       Gen_Set (N, "Notebook", "tab_pos", File);
    end Notebook_Generate;
 
-   procedure Object_Generate (N : Node_Ptr; File : File_Type) is
-   begin
-      null;
-   end Object_Generate;
-
    procedure Option_Menu_Generate (N : Node_Ptr; File : File_Type) is
       S  : String_Ptr;
       First, Last : Natural;
@@ -1463,6 +1458,34 @@ package body Gtk_Generates is
    end Viewport_Generate;
 
    procedure Widget_Generate (N : Node_Ptr; File : File_Type) is
+   begin
+      null;
+   end Widget_Generate;
+
+   procedure Window_Generate (N : Node_Ptr; File : File_Type) is
+      procedure Build_Type;
+      pragma Import (C, Build_Type, "gtk_window_get_type");
+
+   begin
+      Build_Type;
+      Gen_New (N, "Window", Get_Field (N, "type").all, File => File);
+      Bin_Generate (N, File);
+
+      if Gettext_Support (N) then
+         Gen_Set (N, "Window", "title", File, "-""", """");
+      else
+         Gen_Set (N, "Window", "title", File, """", """");
+      end if;
+
+      Gen_Set (N, "Window", "Policy", "allow_shrink", "allow_grow",
+        "auto_shrink", "", File);
+      Gen_Set (N, "Window", "position", File);
+      Gen_Set (N, "Window", "modal", File);
+      Gen_Set (N, "Window", "Default_Size", "default_width", "default_height",
+        "", "", File);
+   end Window_Generate;
+
+   procedure End_Generate (N : Node_Ptr; File : File_Type) is
       Child       : Node_Ptr := Find_Tag (N.Child, "child");
       Q           : Node_Ptr;
       Top         : constant Node_Ptr   := Find_Top_Widget (N);
@@ -1474,13 +1497,8 @@ package body Gtk_Generates is
       First       : Natural;
       Last        : Natural;
       The_First   : Natural;
-      procedure Build_Type;
-      pragma Import (C, Build_Type, "gtk_widget_get_type");
 
    begin
-      Build_Type;
-      Object_Generate (N, File);
-
       S := Get_Field (Find_Child (Top.Parent, "project"), "use_widget_names");
 
       if S /= null and then Boolean'Value (S.all) then
@@ -1585,7 +1603,7 @@ package body Gtk_Generates is
 
       --  ??? Need to find a better way to call Pack_Start
 
-      if Child /= null then
+      if not N.Specific_Data.Has_Container and then Child /= null then
          Q := Find_Tag (Child.Child, "pack");
 
          if Q = null or else Q.Value.all = "GTK_PACK_START" then
@@ -1789,7 +1807,9 @@ package body Gtk_Generates is
          end if;
       end if;
 
-      Gen_Signal (N, File);
+      if not N.Specific_Data.Initialized then
+         Gen_Signal (N, File);
+      end if;
 
       if Find_Tag (N.Child, "child_name") = null then
          if not N.Specific_Data.Has_Container then
@@ -1817,29 +1837,6 @@ package body Gtk_Generates is
             N.Specific_Data.Has_Container := True;
          end if;
       end if;
-   end Widget_Generate;
-
-   procedure Window_Generate (N : Node_Ptr; File : File_Type) is
-      procedure Build_Type;
-      pragma Import (C, Build_Type, "gtk_window_get_type");
-
-   begin
-      Build_Type;
-      Gen_New (N, "Window", Get_Field (N, "type").all, File => File);
-      Bin_Generate (N, File);
-
-      if Gettext_Support (N) then
-         Gen_Set (N, "Window", "title", File, "-""", """");
-      else
-         Gen_Set (N, "Window", "title", File, """", """");
-      end if;
-
-      Gen_Set (N, "Window", "Policy", "allow_shrink", "allow_grow",
-        "auto_shrink", "", File);
-      Gen_Set (N, "Window", "position", File);
-      Gen_Set (N, "Window", "modal", File);
-      Gen_Set (N, "Window", "Default_Size", "default_width", "default_height",
-        "", "", File);
-   end Window_Generate;
+   end End_Generate;
 
 end Gtk_Generates;
