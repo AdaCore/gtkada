@@ -2950,12 +2950,6 @@ package body Gtkada.MDI is
          List := Next (List);
       end loop;
 
-      if Child_Position (Position)
-         not in Position_Bottom .. Position_Right
-      then
-         Note := First_Non_Side;
-      end if;
-
       --  Look for an empty notebook if there is any, unless we are using a
       --  position on one of the sides
       if Note = null then
@@ -2965,6 +2959,17 @@ package body Gtkada.MDI is
             not in Position_Bottom .. Position_Right
          then
             Note := Empty;
+         end if;
+      end if;
+
+      --  If no empty notebook and no notebook containing a child with the
+      --  same position, check the first notebook that contains a non-side
+      --  child, and use this one
+      if Note = null then
+         if Child_Position (Position)
+            not in Position_Bottom .. Position_Right
+         then
+            Note := First_Non_Side;
          end if;
       end if;
 
