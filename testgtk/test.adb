@@ -99,7 +99,7 @@ package body Test is
 
    procedure Create_Main_Window;
    procedure Do_Exit (Widget : in out Gtk_Widget;
-                      Data : in out Window.Gtk_Window'Class);
+                      Data : in out Window.Gtk_Window);
    procedure Exit_Main (Object : in out Gtk_Window);
    function Gtk_Version_Number return String;
 
@@ -113,7 +113,7 @@ package body Test is
    use type Button_Callback.Callback;
 
    package Do_Exit_Callback is new Signal.Callback
-     (Data_Type => Window.Gtk_Window'Class, Widget_Type => Widget.Gtk_Widget);
+     (Data_Type => Window.Gtk_Window, Widget_Type => Widget.Gtk_Widget);
 
    package Window_Callback is new Signal.Void_Callback
      (Widget_Type => Window.Gtk_Window);
@@ -261,8 +261,8 @@ package body Test is
 
       Button.Gtk_New (A_Button, Label => "close");
       Cb_Id := Do_Exit_Callback.Connect (Obj => A_Button, Name => "clicked",
-                                        Func => Do_Exit'Access,
-                                        Func_Data => Main_Window);
+                                         Func => Do_Exit'Access,
+                                         Func_Data => Main_Window);
       Box.Pack_Start (In_Box => Box2, Child => A_Button,
                       Expand => True, Fill => True);
       Set_Flags (Object => A_Button, Flags => Widget.Can_Default);
@@ -279,7 +279,7 @@ package body Test is
    ---------------
 
    procedure Do_Exit (Widget : in out Gtk_Widget;
-                      Data : in out Window.Gtk_Window'Class) is
+                      Data : in out Window.Gtk_Window) is
    begin
       Destroy (Data);
    end Do_Exit;
