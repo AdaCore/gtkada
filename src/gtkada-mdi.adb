@@ -1550,12 +1550,12 @@ package body Gtkada.MDI is
          Put_Line ("Button release, drag=" & C.MDI.In_Drag'Img);
       end if;
 
+      Pointer_Ungrab (Time => 0);
+
       if Get_Window (Child) /= Get_Window (Event) then
          C.MDI.In_Drag := No_Drag;
          return False;
       end if;
-
-      Pointer_Ungrab (Time => 0);
 
       case C.MDI.In_Drag is
          when In_Pre_Drag =>
@@ -4669,6 +4669,12 @@ package body Gtkada.MDI is
             Y      => Get_Allocation_Y (Parent),
             Width  => Get_Allocation_Width (Parent),
             Height => Get_Allocation_Height (Parent));
+
+         --  Never split the empty area
+         if Get_Nth_Page (Gtk_Notebook (Current), 0) = null then
+            Position := Position_Default;
+            return;
+         end if;
 
          Get_Pointer (Parent, X, Y);
 
