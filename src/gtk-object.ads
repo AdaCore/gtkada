@@ -96,6 +96,7 @@
 
 with Glib.Object;
 with Glib.Properties;
+with Gtkada.Types;
 
 package Gtk.Object is
 
@@ -203,6 +204,33 @@ package Gtk.Object is
    function Constructed_Is_Set
      (Object : access Gtk_Object_Record'Class) return Boolean;
    --  Test if the Constructed flag is set for the object
+
+   --------------------------
+   -- Creating new widgets --
+   --------------------------
+
+   --  <doc_ignore>
+   --  The following definitions are only provided for better backward
+   --  compatibility. You should use Glib.Object directly.
+
+   subtype GObject_Class is Glib.Object.GObject_Class;
+   Uninitialized_Class : GObject_Class renames
+     Glib.Object.Uninitialized_Class;
+
+   subtype Signal_Parameter_Types is Glib.Object.Signal_Parameter_Types;
+
+   Null_Parameter_Types : Signal_Parameter_Types renames
+     Glib.Object.Null_Parameter_Types;
+
+   procedure Initialize_Class_Record
+     (Object       : access GObject_Record'Class;
+      Signals      : Gtkada.Types.Chars_Ptr_Array;
+      Class_Record : in out GObject_Class;
+      Type_Name    : String;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
+      renames Glib.Object.Initialize_Class_Record;
+
+   --  </doc_ignore>
 
    ---------------
    -- User_Data --
