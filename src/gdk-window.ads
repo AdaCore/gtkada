@@ -507,7 +507,7 @@ package Gdk.Window is
 private
 
    Null_Window : constant Gdk_Window := null;
-   pragma Import (C, Get_Type, "gdk_window_get_type");
+   pragma Import (C, Get_Type, "gdk_window_object_get_type");
    pragma Import (C, Clear, "gdk_window_clear");
    pragma Import (C, Clear_Area, "gdk_window_clear_area");
    pragma Import (C, Clear_Area_E, "gdk_window_clear_area_e");
