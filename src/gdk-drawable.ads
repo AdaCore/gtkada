@@ -188,6 +188,18 @@ package Gdk.Drawable is
    --  Height is the height of the area to be copied, or -1 to make the area
    --  extend to the bottom edge of the source pixmap.
 
+   procedure Draw_Pixmap
+     (Drawable : Gdk_Drawable;
+      Gc       : Gdk.Gdk_GC;
+      Src      : Gdk_Drawable;
+      Xsrc     : Gint;
+      Ysrc     : Gint;
+      Xdest    : Gint;
+      Ydest    : Gint;
+      Width    : Gint := -1;
+      Height   : Gint := -1) renames Draw_Drawable;
+   --  Deprecated, use Draw_Drawable instead.
+
    procedure Draw_Image
      (Drawable : Gdk_Drawable;
       Gc       : Gdk.Gdk_GC;
