@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -108,10 +108,41 @@ package Pango.Font is
    --  case only.
 
    function Get_Family (Desc : Pango_Font_Description) return String;
-   --  Return the Family_Name of the given Pango_Font_Description. This is
+   --  Return the Family_Name of the given Pango_Font_Description.
 
    procedure Set_Family (Desc : Pango_Font_Description; Name : String);
    --  Set the Family_Name of the given Pango_Font_Description.
+
+   function Get_Style (Desc : Pango_Font_Description) return Pango.Enums.Style;
+   --  Return the Style of the given Pango_Font_Description.
+
+   procedure Set_Style
+     (Desc : Pango_Font_Description; Style : Pango.Enums.Style);
+   --  Set the Style of the given Pango_Font_Description.
+
+   function Get_Variant
+     (Desc : Pango_Font_Description) return Pango.Enums.Variant;
+   --  Return the Variant of the given Pango_Font_Description.
+
+   procedure Set_Variant
+     (Desc : Pango_Font_Description; Variant : Pango.Enums.Variant);
+   --  Set the Variant of the given Pango_Font_Description.
+
+   function Get_Weight
+     (Desc : Pango_Font_Description) return Pango.Enums.Weight;
+   --  Return the Weight of the given Pango_Font_Description.
+
+   procedure Set_Weight
+     (Desc : Pango_Font_Description; Weight : Pango.Enums.Weight);
+   --  Set the Weight of the given Pango_Font_Description.
+
+   function Get_Stretch
+     (Desc : Pango_Font_Description) return Pango.Enums.Stretch;
+   --  Return the Stretch of the given Pango_Font_Description.
+
+   procedure Set_Stretch
+     (Desc : Pango_Font_Description; Stretch : Pango.Enums.Stretch);
+   --  Set the Stretch of the given Pango_Font_Description.
 
    function Get_Size (Desc : Pango_Font_Description) return Gint;
    --  Return value: the size for the font description in pango units.
@@ -254,6 +285,15 @@ private
                   "pango_font_metrics_get_approximate_char_width");
    pragma Import (C, Get_Approximate_Digit_Width,
                   "pango_font_metrics_get_approximate_digit_width");
+
+   pragma Import (C, Get_Style, "pango_font_description_get_size");
+   pragma Import (C, Set_Style, "pango_font_description_set_size");
+   pragma Import (C, Get_Variant, "pango_font_description_get_variant");
+   pragma Import (C, Set_Variant, "pango_font_description_set_variant");
+   pragma Import (C, Get_Weight, "pango_font_description_get_weight");
+   pragma Import (C, Set_Weight, "pango_font_description_set_weight");
+   pragma Import (C, Get_Stretch, "pango_font_description_get_stretch");
+   pragma Import (C, Set_Stretch, "pango_font_description_set_stretch");
 end Pango.Font;
 
 --  Missing:
