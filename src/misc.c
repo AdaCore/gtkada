@@ -29,9 +29,6 @@
 -----------------------------------------------------------------------
 */
 
-/* ??? Consider removing this in the future */
-#define GTK_ENABLE_BROKEN
-
 #include <glib.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
@@ -40,7 +37,6 @@
 #include <strings.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktypeutils.h>
-#include "gtkextra/gtkplot.h"
 
 #ifndef _WIN32  /* Assuming X11 */
 #include <gdk/gdkx.h>
@@ -152,10 +148,6 @@ ada_gtk_parse_cmd_line (int *gnat_argc, char **gnat_argv, char* macro_switch)
 guint
 ada_signal_count_arguments (GType type, char* signal_name)
 {
-  /* Implementation note: using gtk_signal_query adds an extra call to
-     malloc and free, but using the internal variables/macros for
-     gtksignal.c would make this too dependent from the exact implementation
-     of gtk+ */
   guint signal_id = g_signal_lookup (signal_name, type);
   GSignalQuery signal;
 
@@ -174,10 +166,6 @@ ada_signal_count_arguments (GType type, char* signal_name)
 GType
 ada_signal_argument_type (GType type, char* signal_name, gint num)
 {
-  /* Implementation note: using g_signal_query adds an extra call to
-     malloc and free, but using the internal variables/macros of
-     gsignal.c would make this too dependent on the exact implementation
-     of gtk+ */
   guint signal_id = g_signal_lookup (signal_name, type);
   GSignalQuery signal;
 
@@ -2137,49 +2125,28 @@ ada_gtk_viewport_get_bin_window (GtkViewport* viewport) {
 }
 
 /******************************************
- ** Functions for Text
+ ** Functions for Text_View
  ******************************************/
 
-GdkWindow*
-ada_text_get_text_area (GtkText* widget)
+GtkAdjustment*
+ada_text_view_get_hadj (GtkTextView* widget)
 {
-  return widget->text_area;
-}
-
-guint
-ada_text_get_gap_position (GtkText* widget)
-{
-   return widget->gap_position;
-}
-
-guint
-ada_text_get_gap_size (GtkText* widget)
-{
-   return widget->gap_size;
-}
-
-guchar*
-ada_text_get_text (GtkText* widget)
-{
-   return widget->text.ch;
-}
-
-guint
-ada_text_get_text_end (GtkText* widget)
-{
-   return widget->text_end;
+  return widget->hadjustment;
 }
 
 GtkAdjustment*
-ada_text_get_hadj (GtkText* widget)
+ada_text_view_get_vadj (GtkTextView* widget)
 {
-  return widget->hadj;
+  return widget->vadjustment;
 }
 
-GtkAdjustment*
-ada_text_get_vadj (GtkText* widget)
+void
+ada_text_view_set_adjustments (GtkTextView* widget,
+                               GtkAdjustment* hadj,
+                               GtkAdjustment* vadj)
 {
-  return widget->vadj;
+  g_signal_emit_by_name
+    (G_OBJECT (widget), "set_scroll_adjustments", hadj, vadj);
 }
 
 /******************************************
@@ -2368,25 +2335,6 @@ ada_box_get_child (GtkBox* widget, gint num)
 }
 
 /**********************************************
- ** Functions for Gtk.Extra.Plot
- **********************************************/
-
-void
-ada_gtk_plot_set_color (GtkPlotLine* line, GdkColor* color) {
-  line->color = *color;
-}
-
-void
-ada_gtk_plot_set_line_style (GtkPlotLine* line, GtkPlotLineStyle style) {
-  line->line_style = style;
-}
-
-void
-ada_gtk_plot_set_line_width (GtkPlotLine* line, gfloat width) {
-  line->line_width = width;
-}
-
-/**********************************************
  ** Functions for Glib.Glist
  **********************************************/
 
@@ -2468,33 +2416,6 @@ ada_list_get_selection (GtkList* widget)
 {
    return widget->selection;
 }
-
-/******************************************
- ** Functions for Tree
- ******************************************/
-
-GList*
-ada_tree_get_children (GtkTree* widget)
-{
-   return widget->children;
-}
-
-GList*
-ada_tree_get_selection (GtkTree* widget)
-{
-   return widget->selection;
-}
-
-/*******************************************
- ** Functions for Tree_Item
- *******************************************/
-
-GtkWidget*
-ada_tree_item_get_subtree (GtkTreeItem* widget)
-{
-  return GTK_TREE_ITEM_SUBTREE (widget);
-}
-
 
 /******************************************
  ** Functions for Gtk_CList
