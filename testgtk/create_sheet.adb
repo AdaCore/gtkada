@@ -27,40 +27,43 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Common;            use Common;
+with Gdk.Bitmap;        use Gdk.Bitmap;
+with Gdk.Color;         use Gdk.Color;
+with Gdk.Drawable;      use Gdk.Drawable;
+with Gdk.Event;         use Gdk.Event;
+with Gdk.Font;          use Gdk.Font;
+with Gdk.Gc;            use Gdk.Gc;
+with Gdk.Pixmap;        use Gdk.Pixmap;
+with Gdk.Rectangle;     use Gdk.Rectangle;
+with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
+with Gdk.Types;         use Gdk.Types;
+with Gdk.Window;        use Gdk.Window;
 with Glib;              use Glib;
 with Gtk.Arguments;     use Gtk.Arguments;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Button;        use Gtk.Button;
-with Gtk.Frame;         use Gtk.Frame;
-with Gtk.Extra.Sheet;   use Gtk.Extra.Sheet;
-with Gtk.Handlers;      use Gtk.Handlers;
-with Gtk.Toolbar;       use Gtk.Toolbar;
-with Gtk.Enums;         use Gtk.Enums;
-with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Gtk.Label;         use Gtk.Label;
-with Gtk.GEntry;        use Gtk.GEntry;
-with Gtk.Notebook;      use Gtk.Notebook;
-with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gdk.Pixmap;        use Gdk.Pixmap;
-with Gtk.Pixmap;        use Gtk.Pixmap;
-with Gdk.Window;        use Gdk.Window;
-with Gdk.Color;         use Gdk.Color;
-with Gdk.Bitmap;        use Gdk.Bitmap;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
-with Common;            use Common;
+with Gtk.Combo;         use Gtk.Combo;
 with Gtk.Curve;         use Gtk.Curve;
-with Gtk.Widget;        use Gtk.Widget;
-with Gdk.Font;          use Gdk.Font;
-with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
-with Gdk.Types;         use Gdk.Types;
-with Gdk.Event;         use Gdk.Event;
+with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Extra.Border_Combo;  use Gtk.Extra.Border_Combo;
 with Gtk.Extra.Color_Combo;   use Gtk.Extra.Color_Combo;
 with Gtk.Extra.Font_Combo;    use Gtk.Extra.Font_Combo;
 with Gtk.Extra.Item_Entry;    use Gtk.Extra.Item_Entry;
-with Gdk.Gc;            use Gdk.Gc;
-with Gdk.Drawable;      use Gdk.Drawable;
-with Gdk.Rectangle;     use Gdk.Rectangle;
+with Gtk.Extra.Sheet;   use Gtk.Extra.Sheet;
+with Gtk.Frame;         use Gtk.Frame;
+with Gtk.GEntry;        use Gtk.GEntry;
+with Gtk.Handlers;      use Gtk.Handlers;
+with Gtk.Label;         use Gtk.Label;
+with Gtk.Menu;          use Gtk.Menu;
+with Gtk.Menu_Item;     use Gtk.Menu_Item;
+with Gtk.Notebook;      use Gtk.Notebook;
+with Gtk.Pixmap;        use Gtk.Pixmap;
+with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
+with Gtk.Toggle_Button; use Gtk.Toggle_Button;
+with Gtk.Toolbar;       use Gtk.Toolbar;
+with Gtk.Widget;        use Gtk.Widget;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 with Gtk.Type_Conversion;
 pragma Warnings (Off, Gtk.Type_Conversion);
@@ -76,6 +79,9 @@ package body Create_Sheet is
      (Gtk_Button_Record);
    package Sheet_Cb is new Gtk.Handlers.Return_Callback
      (Gtk_Sheet_Record, Boolean);
+   package Item_Handler is new Gtk.Handlers.User_Callback
+     (Gtk_Menu_Item_Record, String);
+
    package ICS renames Interfaces.C.Strings;
    function Ns (S : String) return Interfaces.C.Strings.chars_ptr
                renames Interfaces.C.Strings.New_String;
@@ -97,6 +103,7 @@ package body Create_Sheet is
    Fg_Pixmap        : Gtk_Pixmap;
    GEntry           : Gtk_Entry;
    Location         : Gtk_Label;
+   Popup            : Gtk_Menu;
 
    Bullet_Xpm : ICS.chars_ptr_array :=
      (Ns ("16 16 26 1"),
@@ -434,14 +441,14 @@ package body Create_Sheet is
    procedure Show_Entry  (Widget : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Widget);
       Cur_Page : Gint;
-      Sheet_Entry : Gtk_IEntry;
+      Sheet_Entry : Gtk_Entry;
    begin
       if not Flag_Is_Set (Widget, Has_Focus) then
          return;
       end if;
 
       Cur_Page := Get_Current_Page (Notebook);
-      Sheet_Entry := Gtk_IEntry (Get_Entry (Sheets (Cur_Page)));
+      Sheet_Entry := Gtk_Entry (Get_Entry (Sheets (Cur_Page)));
       Set_Text (GEntry, Get_Text (Sheet_Entry));
    end Show_Entry;
 
@@ -461,7 +468,7 @@ package body Create_Sheet is
       Column      : Gint := To_Gint (Params, 2);
       Arow        : Gint;
       Acol        : Gint;
-      Sheet_Entry : Gtk_IEntry;
+      Sheet_Entry : Gtk_Entry;
    begin
       declare
          S : String := Get_Column_Title (Sheet, Column);
@@ -474,7 +481,7 @@ package body Create_Sheet is
          end if;
       end;
 
-      Sheet_Entry := Gtk_IEntry (Get_Entry (Sheet));
+      Sheet_Entry := Gtk_Entry (Get_Entry (Sheet));
 
       --  Set_Max_Length (GEntry, Get_Max_Length (Sheet_Entry));
       Set_Text (GEntry, Cell_Get_Text (Sheet, Row, Column));
@@ -594,6 +601,312 @@ package body Create_Sheet is
          Attach (Sheets (0), Curve, 0, 4, 0.0, 0.0);
       end if;
    end Show_Child;
+
+   ---------------------
+   -- Popup_Activated --
+   ---------------------
+   --  Callback for all the items in the contextual menu of the second
+   --  example.
+   --  Data is the name of the item.
+   --  We already know that the item is valid, since otherwise it would not
+   --  have been activated in the contextual menu (see Build_Menu).
+
+   procedure Popup_Activated (Item : access Gtk_Menu_Item_Record'Class;
+                              Data : String)
+   is
+      pragma Warnings (Off, Item);
+      Cur_Page : Gint := Get_Current_Page (Notebook);
+      Sheet    : Gtk_Sheet := Sheets (Cur_Page);
+   begin
+      if Data = "Add Column   " then
+         Add_Column (Sheet, 1);
+
+      elsif Data = "Add Row      " then
+         Add_Row (Sheet, 1);
+
+      elsif Data = "Insert Row   " then
+         Insert_Rows (Sheet,
+                      Get_Range (Sheet).Row0,
+                      Get_Range (Sheet).Rowi - Get_Range(Sheet).Row0 + 1);
+
+      elsif Data = "Insert Column" then
+         Insert_Columns (Sheet,
+                         Get_Range (Sheet).Col0,
+                         Get_Range (Sheet).Coli - Get_Range(Sheet).Col0 + 1);
+
+      elsif Data = "Delete Row   " then
+         if Get_State (Sheet) = Sheet_Row_Selected then
+            Delete_Rows (Sheet,
+                         Get_Range (Sheet).Row0,
+                         Get_Range (Sheet).Rowi - Get_Range (Sheet).Row0 + 1);
+         end if;
+
+      elsif Data = "Delete Column" then
+         if Get_State (Sheet) = Sheet_Column_Selected then
+            Delete_Rows (Sheet,
+                         Get_Range (Sheet).Col0,
+                         Get_Range (Sheet).Coli - Get_Range (Sheet).Col0 + 1);
+         end if;
+
+      elsif Data = "Clear Cells  " then
+         if Get_State (Sheet) /= Sheet_Normal then
+            Range_Clear (Sheet, Get_Range (Sheet));
+         end if;
+      end if;
+
+      Destroy (Popup);
+   end Popup_Activated;
+
+   ----------------
+   -- Build_Menu --
+   ----------------
+   --  Builds a contextual menu.
+   --  Some items are not activated if no line or row is selected.
+
+   function Build_Menu (Sheet : access Gtk_Sheet_Record'Class)
+                       return Gtk_Menu
+   is
+      Menu : Gtk_Menu;
+      Item : Gtk_Menu_Item;
+      Items : array (0 .. 6) of String (1 .. 13) :=
+        ("Add Column   ",
+         "Add Row      ",
+         "Insert Row   ",
+         "Insert Column",
+         "Delete Row   ",
+         "Delete Column",
+         "Clear Cells  ");
+   begin
+      Gtk_New (Menu);
+
+      for I in 0 .. 6 loop
+         Gtk_New (Item, Items (I));
+
+         Item_Handler.Connect
+           (Item, "activate",
+            Item_Handler.To_Marshaller (Popup_Activated'Access),
+            Items (I));
+
+         Set_Flags (Item, Sensitive + Can_Focus);
+         case I is
+            when 2 | 4=>
+               --  Can only insert or delete a row if there is a selected one
+               if Get_State (Sheet) /= Sheet_Row_Selected then
+                  Unset_Flags (Item, Sensitive + Can_Focus);
+               end if;
+
+            when 3 | 5=>
+               --  Can only insert or delete a col. if there is a selected one
+               if Get_State (Sheet) /= Sheet_Column_Selected then
+                  Unset_Flags (Item, Sensitive + Can_Focus);
+               end if;
+
+            when others =>
+               null;
+         end case;
+
+         Show (Item);
+         Append (Menu, Item);
+      end loop;
+      return Menu;
+   end Build_Menu;
+
+   --------------
+   -- Do_Popup --
+   --------------
+   --  Popup a contextual menu in the sheet.
+   --  The menu is rebuild every time, depending on the context.
+   --  This function is used for the second example.
+
+   function Do_Popup (Sheet : access Gtk_Sheet_Record'Class;
+                      Event : Gdk_Event)
+                     return Boolean
+   is
+      X, Y : Gint;
+      Mods : Gdk_Modifier_Type;
+      Win  : Gdk_Window;
+   begin
+      Get_Pointer (Get_Window (Sheet), X, Y, Mods, Win);
+
+      if (Mods and Button3_Mask) /= 0 then
+
+         --  Destroy the previous popup
+         if Popup /= null then
+            Unref (Popup);
+         end if;
+
+         --  Build the new one.
+         Popup := Build_Menu (Sheet);
+         Gtk.Menu.Popup (Menu          => Popup,
+                         Button        => Get_Button (Event),
+                         Activate_Time => Get_Time (Event));
+      end if;
+      return True;
+   end Do_Popup;
+
+   -----------------
+   -- Format_Text --
+   -----------------
+   --  Returns a modified version of Text.
+   --  This is used to alter the contents of cells in the second demo.
+
+   function Format_Text (Sheet         : access Gtk_Sheet_Record'Class;
+                         Text          : String)
+                        return String
+   is
+      pragma Warnings (Off, Sheet);
+      type Cell_Format is (Text_Format, Numeric_Format);
+      Format     : Cell_Format := Numeric_Format;
+   begin
+      if Text /= "" then
+         for Ipos in Text'Range loop
+            case Text (Ipos) is
+               when '.' | ' ' | ',' | '-' | '+'
+                 | 'd' | 'D' | 'E' | 'e' | '1' | '2' | '3' | '4'
+                 | '5' | '6' | '7' | '8' | '9' | '0' =>
+                  null;
+
+               when others =>
+                  Format := Text_Format;
+            end case;
+         end loop;
+
+         if Format = Text_Format then
+            return Text;
+         else
+            return "Floating: " & Text;
+         end if;
+      end if;
+      return Text;
+   end Format_Text;
+
+   -------------------
+   -- Parse_Numbers --
+   -------------------
+   --  In the second demo, this callback is called every time the content of a
+   --  cell is changed.
+   --  This is used to automatically change the contents of the cell.
+
+   procedure Parse_Numbers (Widget : access Gtk_Widget_Record'Class) is
+      Sheet         : Gtk_Sheet := Gtk_Sheet (Widget);
+      Justification : Gtk.Enums.Gtk_Justification;
+   begin
+      Justification := Get_Justification (Gtk_IEntry (Get_Entry (Sheet)));
+      declare
+         Label : String := Format_Text
+           (Sheet, Get_Text (Gtk_IEntry (Get_Entry (Sheet))));
+         Row,
+         Col   : Gint;
+      begin
+         Get_Active_Cell (Sheet, Row, Col);
+         Set_Cell (Sheet, Row, Col, Justification, Label);
+      end;
+   end Parse_Numbers;
+
+   --------------------
+   -- Build_Example2 --
+   --------------------
+
+   procedure Build_Example2 (Sheet : access Gtk_Sheet_Record'Class) is
+      R : Gtk_Sheet_Range;
+      Color : Gdk_Color;
+      Tmp   : Boolean;
+   begin
+      Sheet_Unset_Flags (Sheet, Auto_Scroll);
+      Set_Selection_Mode (Sheet, Selection_Single);
+
+      R := (Row0 => 0, Rowi => 2, Col0 => 0, Coli => Get_Maxcol (Sheet));
+      Range_Set_Editable (Sheet, R, False);
+      Color := Parse ("light gray");
+      Alloc (Get_Colormap (Sheet), Color);
+      Range_Set_Background (Sheet, R, Color);
+      Color := Parse ("blue");
+      Alloc (Get_Colormap (Sheet), Color);
+      Range_Set_Foreground (Sheet, R, Color);
+
+      R.Row0 := 1;
+      Color := Parse ("red");
+      Alloc (Get_Colormap (Sheet), Color);
+      Range_Set_Foreground (Sheet, R, Color);
+
+      R.Row0 := 2;
+      Color := Parse ("black");
+      Alloc (Get_Colormap (Sheet), Color);
+      Range_Set_Foreground (Sheet, R, Color);
+
+      --  The first three rows can not be edited
+      Row_Set_Sensitivity (Sheet, 0, False);
+      Row_Set_Sensitivity (Sheet, 1, False);
+      Row_Set_Sensitivity (Sheet, 2, False);
+
+      Set_Cell (Sheet, 0, 2, Justify_Center,
+                "Click the right mouse button to display a popup");
+      Set_Cell (Sheet, 1, 2, Justify_Center,
+                "You can connect a parser to the 'set cell' signal");
+      Set_Cell (Sheet, 2, 2, Justify_Center,
+                "(Try typing numbers)");
+      Tmp := Set_Active_Cell (Sheet, 3, 0);
+
+      Sheet_Cb.Connect (Sheet, "button_press_event",
+                        Sheet_Cb.To_Marshaller (Do_Popup'Access));
+      Widget_Handler.Connect
+        (Sheet, "set_cell",
+         Widget_Handler.To_Marshaller (Parse_Numbers'Access));
+   end Build_Example2;
+
+   --------------------
+   -- Build_Example3 --
+   --------------------
+
+   procedure Build_Example3 (Sheet : access Gtk_Sheet_Record'Class) is
+      R : Gtk_Sheet_Range;
+      Color : Gdk_Color;
+   begin
+      R := (Row0 => 0, Rowi => 10, Col0 => 0, Coli => 6);
+      Color := Parse ("orange");
+      Alloc (Get_Colormap (Sheet), Color);
+      Range_Set_Background (Sheet, R, Color);
+
+      Color := Parse ("Violet");
+      Alloc (Get_Colormap (Sheet), Color);
+      Range_Set_Foreground (Sheet, R, Color);
+
+      R.Row0 := 1;
+      Color := Parse ("blue");
+      Alloc (Get_Colormap (Sheet), Color);
+      Range_Set_Background (Sheet, R, Color);
+
+      R.Coli := 0;
+      Color := Parse ("dark green");
+      Alloc (Get_Colormap (Sheet), Color);
+      Range_Set_Background (Sheet, R, Color);
+
+      R.Row0 := 0;
+      Color := Parse ("dark blue");
+      Alloc (Get_Colormap (Sheet), Color);
+      Range_Set_Border_Color (Sheet, R, Color);
+      Range_Set_Border (Sheet, R, Right_Border, 4, Line_Double_Dash);
+
+      R.Coli := 0;
+      R.Col0 := 0;
+      R.Rowi := 0;
+      Color := Parse ("red");
+      Alloc (Get_Colormap (Sheet), Color);
+      Range_Set_Border (Sheet, R, Right_Border + Bottom_Border, 4, Line_Solid);
+
+      R.Rowi := 0;
+      R.Col0 := 1;
+      R.Coli := 6;
+      Color := Parse ("dark blue");
+      Alloc (Get_Colormap (Sheet), Color);
+      Range_Set_Border_Color (Sheet, R, Color);
+      Range_Set_Border (Sheet, R, Bottom_Border, 4, Line_Double_Dash);
+
+      Sheet_Set_Flags (Sheet, Auto_Resize);
+
+      --  Change the type of entries
+      Change_Entry (Sheet, Gtk.Combo.Get_Type);
+   end Build_Example3;
 
    --------------------
    -- Build_Example1 --
@@ -1118,11 +1431,11 @@ package body Create_Sheet is
          Widget_Handler.To_Marshaller (Activate_Sheet_Entry'Access));
 
       Build_Example1 (Sheets (0));
---        Build_Example2 (Sheets (1));
---        Build_Example3 (Sheets (2));
+      Build_Example2 (Sheets (1));
+      Build_Example3 (Sheets (2));
 
---        Widget_Handler.Connect (Get_Entry (Sheets (2)), "changed",
---                          Widget_Handler.To_Marshaller (Show_Entry'Access));
+      Widget_Handler.Connect (Get_Entry (Sheets (2)), "changed",
+                              Widget_Handler.To_Marshaller (Show_Entry'Access));
 
       -------
       --  The pixmaps
