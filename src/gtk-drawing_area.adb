@@ -28,8 +28,9 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk; use Gdk;
-with Gtk.Util; use Gtk.Util;
+with Gdk;        use Gdk;
+with Gtk.Util;   use Gtk.Util;
+with Gtk.Object; use Gtk.Object;
 
 package body Gtk.Drawing_Area is
 
