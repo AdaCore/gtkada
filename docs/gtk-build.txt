@@ -238,7 +238,7 @@ touch -r aclocal.m4 configure.in
 # hangul-x,tamil-x,tamil-xft,thai-x,gurmukhi-x,bengali-x,gujarati-x,
 # devanagari-x,myanmar-x
 
-# Under Linux:
+# Under Linux (or if you have built Xft):
 ./configure --prefix=$prefix \
 	--with-included-modules=basic-x,basic-xft --disable-debug
 
@@ -288,9 +288,6 @@ cd gtk+-2.2.4
 
 # This patch fixes regressions in Gtk+
 patch -p0 < .../GtkAda/contrib/gtk+-2.2.4.diff
-
-# Under HP-UX, make sure that libX11.sl, libXt.sl and libXext.sl can be found
-# under e.g /usr/lib
 
 ./configure --disable-modules --without-libtiff \
   --with-included-loaders=xpm,png,gif,jpeg --prefix=$prefix --disable-debug
