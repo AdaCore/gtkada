@@ -31,6 +31,7 @@ my ($directory);
 my ($unit_name) = "";
 my ($definition_file) = $file;
 my ($has_get_type_subprogram) = 0;
+my ($enumerates) = "";   # Extra string to print for enumeration types
 
 ($directory, $file) = ($file =~ /^(.*\/)?([^\/]+)\.h$/);
 my ($hfile) = $file . ".h";
@@ -203,6 +204,73 @@ sub print_copyright_notice
 EOF
 }
 
+######################################
+## Parse the enumeration types, and stop when the first
+## struct is encountered
+##   arg 1 = contents of the file (array)
+##   return: line at which we stopped
+######################################
+
+sub parse_enums
+  {
+    my (@deffile) = @_;
+    my ($enum, $enum_name);
+    my ($line) = 0;
+
+    for ($line = 0; $line < $#deffile; $line ++)
+      {
+	last if ($deffile[$line] =~ /^STRUCT\s+_$file\s*/i);
+
+	# Do we have an enumerated type ?
+	if ($deffile[$line] =~ /^typedef enum/) {
+	  $enum = $deffile[$line];
+	  while ($deffile[$line] !~ /;/) {
+	    $line++;
+	    $enum .= $deffile[$line];
+	  }
+
+	  # Remove comments
+	  $enum =~ s/\/\*.*?\*\///g;
+	  $enum =~ s/\s+/ /g;
+
+	  ($enum, $enum_name) =
+	    ($enum =~ /typedef enum {([^\}]*)}\s*([\w_]+)/);
+	  $enum_name = &create_ada_name ($enum_name);
+	  $enumerates .= "   type $enum_name is ";
+	  $enum =~ s/\s//g;
+
+	  # If there is a representation clause, use an Integer type instead
+	  if ($enum =~ /=/) {
+	    $enumerates .= "mod 2 ** 16;\n";
+	    foreach (split (/,/, $enum)) {
+	      my ($value, $num) = lc ($_);
+	      $value =~ s/G[td]k|Gnome_//i;
+	      ($value, $num) = ($value =~ /^([^=]+)=(.*)/);
+	      $num = "2 ** $1" if ($num =~ /<<(.*)/);
+
+	      $enumerates .= "   " . &create_ada_name ($value)
+		. " : constant $enum_name := $num;\n";
+	    }
+	    $enumerates .= "\n";
+
+	  # Else create an enumeration to match the C enum
+	  } else {
+	    $enumerates .= "(\n";
+	    my ($first) = 1;
+	    foreach (split (/,/, $enum)) {
+	      my ($value) = lc ($_);
+	      $value =~ s/G[td]k|Gnome_//i;
+	      $enumerates .= ",\n" unless ($first);
+	      $first = 0;
+	      $enumerates .= "      " . &create_ada_name ($value);
+	    }
+	    $enumerates .= ");\n\n";
+	  }
+	}
+      }
+    return $line;
+  }
+
 
 ######################################
 ## Parse the definition file
@@ -220,12 +288,8 @@ sub parse_definition_file
     close (FILE);
     $file =~ s/-//g;  # Handle Gnome naming convention, e.g gnome-dock-band
 
-    my ($line) = 0;
-    for ($line = 0; $line < $#deffile; $line ++)
-      {
-	last if ($deffile[$line] =~ /^STRUCT\s+_$file\s*/i);
-      }
-
+    my ($line) = &parse_enums (@deffile);
+    
     if ($line < $#deffile) {
       $deffile[$line] =~ /struct\s+_(\w*)/;
 
@@ -331,6 +395,8 @@ sub generate_specifications
 	. &create_ada_name ($parent);
     $parent_string = ($parent eq "Root_Type") ?
 	"Root_Type" : "$parent_string\_Record";
+
+    unshift (@output, $enumerates);
 
     unshift (@output, "   type $prefix\_$current_package is access all "
 	     . "$prefix\_$current_package\_Record'Class;\n\n");
