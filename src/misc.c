@@ -36,7 +36,7 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtktextlayout.h>
+#include <gtk/gtktextview.h>
 #include <gtk/gtktypeutils.h>
 #include <gobject/gsignal.h>
 #include <gobject/gtype.h>
@@ -395,12 +395,6 @@ GdkDragAction
 ada_gtk_dnd_context_get_action (GdkDragContext* context) {
   return context->action;
 }
-
-GList*
-ada_gtk_dnd_context_get_targets (GdkDragContext* context) {
-  return context->targets;
-}
-
 
 /*
  * Gnode macros
@@ -766,6 +760,11 @@ extern const guint32 ada_gdk_invalid_guint32_value;
 extern const gulong  ada_gdk_invalid_gulong_value;
 #endif
 
+GdkAtom ada_make_atom (gulong num)
+{
+  return _GDK_MAKE_ATOM (num);
+}
+
 gdouble ada_gdk_event_get_x (GdkEvent * event)
 {
   switch (event->type)
@@ -1044,11 +1043,11 @@ char* ada_gdk_event_get_string (GdkEvent * event)
   return NULL;
 }
 
-gulong ada_gdk_event_get_atom (GdkEvent * event)
+GdkAtom ada_gdk_event_get_atom (GdkEvent * event)
 {
   if (event->type == GDK_PROPERTY_NOTIFY)
     return event->property.atom;
-  return ada_gdk_invalid_gulong_value;
+  return NULL;
 }
 
 guint ada_gdk_event_get_property_state (GdkEvent * event)
@@ -1065,25 +1064,25 @@ gint ada_gdk_event_get_visibility_state (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
-gulong ada_gdk_event_get_selection (GdkEvent * event)
+GdkAtom ada_gdk_event_get_selection (GdkEvent * event)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     return event->selection.selection;
-  return ada_gdk_invalid_gulong_value;
+  return NULL;
 }
 
-gulong ada_gdk_event_get_target (GdkEvent * event)
+GdkAtom ada_gdk_event_get_target (GdkEvent * event)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     return event->selection.target;
-  return ada_gdk_invalid_gulong_value;
+  return NULL;
 }
 
-gulong ada_gdk_event_get_property (GdkEvent * event)
+GdkAtom ada_gdk_event_get_property (GdkEvent * event)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     return event->selection.property;
-  return ada_gdk_invalid_gulong_value;
+  return NULL;
 }
 
 guint32 ada_gdk_event_get_requestor (GdkEvent * event)
@@ -1093,11 +1092,11 @@ guint32 ada_gdk_event_get_requestor (GdkEvent * event)
   return ada_gdk_invalid_guint32_value;
 }
 
-gulong ada_gdk_event_get_message_type (GdkEvent * event)
+GdkAtom ada_gdk_event_get_message_type (GdkEvent * event)
 {
   if (event->type == GDK_CLIENT_EVENT)
     return event->client.message_type;
-  return ada_gdk_invalid_gulong_value;
+  return NULL;
 }
 
 GdkEvent * ada_gdk_event_create (gint type, GdkWindow* win)
@@ -1504,7 +1503,7 @@ gint ada_gdk_event_set_key_val (GdkEvent * event, gint keyval)
     }
   return 1;
 }
-gint ada_gdk_event_set_atom (GdkEvent * event, gulong atom)
+gint ada_gdk_event_set_atom (GdkEvent * event, GdkAtom atom)
 {
   if (event->type == GDK_PROPERTY_NOTIFY)
     {
@@ -1534,7 +1533,7 @@ gint ada_gdk_event_set_visibility_state (GdkEvent * event, gint state)
   return 0;
 }
 
-gint ada_gdk_event_set_selection (GdkEvent * event, gulong selection)
+gint ada_gdk_event_set_selection (GdkEvent * event, GdkAtom selection)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     {
@@ -1544,7 +1543,7 @@ gint ada_gdk_event_set_selection (GdkEvent * event, gulong selection)
   return 0;
 }
 
-gint ada_gdk_event_set_target (GdkEvent * event, gulong target)
+gint ada_gdk_event_set_target (GdkEvent * event, GdkAtom target)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     {
@@ -1554,7 +1553,7 @@ gint ada_gdk_event_set_target (GdkEvent * event, gulong target)
   return 0;
 }
 
-gint ada_gdk_event_set_property (GdkEvent * event, gulong property)
+gint ada_gdk_event_set_property (GdkEvent * event, GdkAtom property)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     {
@@ -1574,7 +1573,7 @@ gint ada_gdk_event_set_requestor (GdkEvent * event, guint32 requestor)
   return 0;
 }
 
-gint ada_gdk_event_set_message_type (GdkEvent * event, gulong type)
+gint ada_gdk_event_set_message_type (GdkEvent * event, GdkAtom type)
 {
   if (event->type == GDK_CLIENT_EVENT)
     {
@@ -2144,11 +2143,11 @@ ada_text_iter_copy (const GtkTextIter *source,
  ** Functions for Text_Layout
  ******************************************/
 
-GtkTextAttributes*
-ada_text_layout_get_default_style (GtkTextLayout* layout)
-{
-  return layout->default_style;
-}
+/*  GtkTextAttributes* */
+/*  ada_text_layout_get_default_style (GtkTextLayout* layout) */
+/*  { */
+/*    return layout->default_style; */
+/*  } */
 
 /******************************************
  ** Functions for Text_View
@@ -2166,11 +2165,11 @@ ada_text_view_get_vadj (GtkTextView* widget)
   return widget->vadjustment;
 }
 
-GtkTextLayout*
-ada_text_view_get_layout (GtkTextView* widget)
-{
-  return widget->layout;
-}
+/*  GtkTextLayout* */
+/*  ada_text_view_get_layout (GtkTextView* widget) */
+/*  { */
+/*    return widget->layout; */
+/*  } */
 
 /******************************************
  ** Functions for File_Selection
@@ -3214,3 +3213,49 @@ GType ada_g_object_get_type (GObject* object) {
 GType ada_gtype_fundamental (GType type) {
   return G_TYPE_FUNDAMENTAL (type);
 }
+
+/******************************************
+ ** List Store                           **
+ ******************************************/
+
+void ada_gtk_list_store_set_value (GtkListStore *list_store,
+				   GtkTreeIter *iter,
+				   gint column,
+				   GValue *Value)
+{
+  gtk_list_store_set (list_store, iter, column, Value, -1);
+}
+			 
+
+/******************************************
+ ** Tree Store                           **
+ ******************************************/
+
+void ada_gtk_tree_store_set_value (GtkTreeStore *tree_store,
+				   GtkTreeIter *iter,
+				   gint column,
+				   GValue *Value)
+{
+  gtk_tree_store_set (tree_store, iter, column, Value, -1);
+}
+			
+
+/******************************************
+ ** Tree Model                           **
+ ******************************************/
+
+void ada_gtk_tree_model_get (GtkTreeModel *tree_model,
+			     GtkTreeIter *iter,
+			     gint column,
+			     void *Value)
+{
+   gtk_tree_model_get (tree_model, iter, column, Value, -1);
+}
+
+/*  void ada_gtk_tree_model_set (GtkTreeModel *tree_model, */
+/*  			     GtkTreeIter *iter, */
+/*  			     gint column, */
+/*  			     void *Value) */
+/*  { */
+/*     gtk_tree_model_set (tree_model, iter, column, Value, -1); */
+/*  } */
