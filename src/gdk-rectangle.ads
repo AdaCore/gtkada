@@ -59,6 +59,10 @@ package Gdk.Rectangle is
                         Dest      :    out Gdk_Rectangle;
                         Intersect :    out Boolean);
 
+   procedure Union (Src1 : in     Gdk_Rectangle;
+                    Src2 : in     Gdk_Rectangle;
+                    Dest :    out Gdk_Rectangle);
+
    ----------------------
    --  Gets the fields --
    ----------------------

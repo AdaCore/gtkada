@@ -136,6 +136,24 @@ package body Gdk.Rectangle is
       Rectangle.Y := Y;
    end Set_Y;
 
+
+   -------------
+   --  Union  --
+   -------------
+
+   procedure Union (Src1 : in     Gdk_Rectangle;
+                    Src2 : in     Gdk_Rectangle;
+                    Dest :    out Gdk_Rectangle) is
+      procedure Internal (Src1, Src2 : in System.Address;
+                          Dest       : in System.Address);
+      pragma Import (C, Internal, "gdk_rectangle_union");
+   begin
+      Internal (Src1'Address, Src2'Address, Dest'Address);
+   end Union;
+
+
+   ----------------------------------------------------------------------
+
    function Ada_Gdk_Rectangle_Size return Guint;
    pragma Import (C, Ada_Gdk_Rectangle_Size);
 begin
