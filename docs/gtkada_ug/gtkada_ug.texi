@@ -3049,7 +3049,6 @@ Here is the list of widgets that are currently not supported by GATE/DGATE.
 @itemize @bullet
 @item Gtk_Accel_Label
 @item Gtk_Color_Selection
-@item Gtk_Ctree
 @item Gtk_Curve
 @item Gtk_Fixed
 @item Gtk_Font_Selection
