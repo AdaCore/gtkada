@@ -221,9 +221,11 @@ package Gtkada.Canvas is
 
    function Has_Link (Canvas   : access Interactive_Canvas_Record;
                       From, To : access Canvas_Item_Record'Class;
-                      Name     : String)
+                      Name     : String := "")
                      return Boolean;
    --  Test whether there is a link from From to To, with the same name.
+   --  If Name is the empty string "", then no check is done on the name,
+   --  and True if returned if there is any link between the two items.
 
    procedure Raise_Item (Canvas : access Interactive_Canvas_Record;
                          Item   : access Canvas_Item_Record'Class);

@@ -1678,7 +1678,7 @@ package body Gtkada.Canvas is
 
    function Has_Link (Canvas   : access Interactive_Canvas_Record;
                       From, To : access Canvas_Item_Record'Class;
-                      Name     : String)
+                      Name     : String := "")
                      return Boolean
    is
       Current : Canvas_Link_List := Canvas.Links;
@@ -1686,7 +1686,8 @@ package body Gtkada.Canvas is
       while Current /= null loop
          if Current.Link.Src = Canvas_Item (From)
            and then Current.Link.Dest = Canvas_Item (To)
-           and then Current.Link.Descr.all = Name
+           and then (Name = ""
+                     or else Current.Link.Descr.all = Name)
          then
             return True;
          end if;
