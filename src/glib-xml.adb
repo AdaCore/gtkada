@@ -282,7 +282,9 @@ package body Glib.XML is
    -------------------
 
    function Get_Attribute
-     (N : Node_Ptr; Attribute_Name : UTF8_String) return UTF8_String
+     (N : in Node_Ptr;
+      Attribute_Name : in UTF8_String;
+      Default        : in UTF8_String := "") return UTF8_String
    is
       Index      : Natural;
       Key, Value : String_Ptr;
@@ -310,7 +312,7 @@ package body Glib.XML is
       Free (Key);
 
       if Value = null then
-         return "";
+         return Default;
       else
          declare
             V : constant String := Value.all;

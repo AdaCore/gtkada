@@ -124,9 +124,11 @@ package Glib.XML is
    --  the Specific_Data for each node.
 
    function Get_Attribute
-     (N : in Node_Ptr; Attribute_Name : in UTF8_String) return UTF8_String;
+     (N : in Node_Ptr;
+      Attribute_Name : in UTF8_String;
+      Default        : in UTF8_String := "") return UTF8_String;
    --  Return the value of the attribute 'Attribute_Name' if present.
-   --  Return "" otherwise.
+   --  Return Default otherwise.
 
    procedure Set_Attribute
      (N : Node_Ptr; Attribute_Name, Attribute_Value : UTF8_String);
