@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -36,17 +36,14 @@ package Gdk.Window is
 
    function Get_Window (Widget : in Gtk.Widget.Gtk_Widget'Class)
                         return Gdk.Window.Gdk_Window'Class;
-   --  FIXME : This should be in Gtk.Window.
 
-   procedure Clear_Area (Window : in Gdk_Window'Class;
+   procedure Clear_Area (Window : in Gdk_Window;
                          X      : in Gint;
                          Y      : in Gint;
                          Width  : in Gint;
                          Height : in Gint);
 
-
 private
-
    type Gdk_Window is new Root_Type with null record;
 
 end Gdk.Window;

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,15 +26,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 package body Gdk.Window is
 
+   ----------------
+   -- Clear_Area --
+   ----------------
 
-   ------------------
-   --  Clear_Area  --
-   ------------------
-
-   procedure Clear_Area (Window : in Gdk_Window'Class;
+   procedure Clear_Area (Window : in Gdk_Window;
                          X      : in Gint;
                          Y      : in Gint;
                          Width  : in Gint;
@@ -45,7 +43,6 @@ package body Gdk.Window is
    begin
       Internal (Get_Object (Window), X, Y, Width, Height);
    end Clear_Area;
-
 
    ----------------
    -- Get_Window --
