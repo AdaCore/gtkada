@@ -400,7 +400,12 @@ package Gtk.Ctree is
 
       function Node_Get_Row_Data (Ctree : access Gtk_Ctree_Record'Class;
                                   Node  : in     Gtk_Ctree_Node)
-                                  return         Data_Type;
+        return Data_Type;
+      --
+      --  Error Handling:
+      --  Gtkada.Types.Data_Error is raised when trying to retrieve
+      --  the data from a Node for which no data has been set
+      --  (use Node_Set_Row_Data).
 
       procedure Node_Set_Row_Data (Ctree : access Gtk_Ctree_Record'Class;
                                    Node  : in     Gtk_Ctree_Node;

@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtkada.Types;
 with System;
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
@@ -1432,6 +1433,9 @@ package body Gtk.CTree is
                                                     Get_Object (Node)));
       begin
          return D.all;
+      exception
+         when Constraint_Error =>
+            raise Gtkada.Types.Data_Error;
       end Node_Get_Row_Data;
 
       -----------------------
