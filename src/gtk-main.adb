@@ -32,8 +32,6 @@ with Unchecked_Deallocation;
 with Unchecked_Conversion;
 with System;
 
-with Ada.Text_IO; use Ada.Text_IO;
-
 package body Gtk.Main is
 
    package C renames Interfaces.C;
@@ -128,23 +126,25 @@ package body Gtk.Main is
       -- Add --
       ---------
 
-      function Quit_Add (Main_Level : Guint;
-                         Func       : Quit_Function;
-                         Data       : Data_Type)
-                        return Quit_Handler_Id
+      function Quit_Add
+        (Main_Level : Guint;
+         Func       : Quit_Function;
+         Data       : Data_Type) return Quit_Handler_Id
       is
-         function Internal (Main_Level : in Guint;
-                            Func       : in System.Address;
-                            Marshal    : in System.Address;
-                            Data       : in System.Address;
-                            Destroy    : in System.Address)
-                            return     Quit_Handler_Id;
+         function Internal
+           (Main_Level : in Guint;
+            Func       : in System.Address;
+            Marshal    : in System.Address;
+            Data       : in System.Address;
+            Destroy    : in System.Address) return Quit_Handler_Id;
          pragma Import (C, Internal, "gtk_quit_add_full");
+
          function Convert is new Unchecked_Conversion
            (Cb_Record_Access, System.Address);
-         D : Cb_Record_Access
-           := new Cb_Record'(Func => Func,
-                             Data => new Data_Type'(Data));
+
+         D : Cb_Record_Access :=
+           new Cb_Record' (Func => Func, Data => new Data_Type'(Data));
+
       begin
          return Internal (Main_Level, General_Cb'Address, System.Null_Address,
                           Convert (D), Free_Data'Address);
@@ -158,12 +158,13 @@ package body Gtk.Main is
    function Quit_Add_Destroy
      (Main_Level : Guint;
       Object     : access Gtk.Object.Gtk_Object_Record'Class)
-     return Quit_Handler_Id
+      return Quit_Handler_Id
    is
-      function Internal (Main_Level : Guint;
-                         Object     : System.Address)
-                        return Quit_Handler_Id;
+      function Internal
+        (Main_Level : Guint;
+         Object     : System.Address) return Quit_Handler_Id;
       pragma Import (C, Internal, "gtk_quit_add_destroy");
+
    begin
       return Internal (Main_Level, Get_Object (Object));
    end Quit_Add_Destroy;
