@@ -97,9 +97,13 @@ else
     echo "  "$j
   done
 
-  echo Merge of some changes failed. It usually means that some modified code
-  echo is obsolete in the current project file.
-  echo .rej files have been generated to help merging manually if needed.
+cat << EOF | gdialog error justify_fill
+Merge of some changes failed. It usually means that some modified code
+is obsolete in the current project file.
+
+Files with the ".rej" extension have been generated to help merging
+manually if needed.
+EOF
 fi
 
 cp -f $tmp/* $gt/
