@@ -80,6 +80,34 @@ package Gtk.Text_Tag is
    --  ??? If needed, might be better off in a separate package.
    --  ??? Will need lots of accessors...
 
+   ------------------
+   --  Properties  --
+   ------------------
+
+   procedure Set_Property_Name
+     (Tag  : access Gtk_Text_Tag_Record;
+      Name : String);
+
+   procedure Set_Property_Background
+     (Tag        : access Gtk_Text_Tag_Record;
+      Background : String);
+
+   procedure Set_Property_Editable
+     (Tag        : access Gtk_Text_Tag_Record;
+      Editable   : Boolean := True);
+
+   procedure Set_Property_Foreground
+     (Tag        : access Gtk_Text_Tag_Record;
+      Foreground : String);
+
+   procedure Set_Property_Invisible
+     (Tag        : access Gtk_Text_Tag_Record;
+      Invisible  : Boolean := True);
+
+   procedure Set_Property_Strikethrough
+     (Tag           : access Gtk_Text_Tag_Record;
+      Strikethrough : Boolean := True);
+
    -------------
    -- Signals --
    -------------
