@@ -35,12 +35,60 @@ package body Gtk.Handle_Box is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Handle_Box)
+   procedure Gtk_New (Handle_Box : out Gtk_Handle_Box)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_handle_box_new");
    begin
-      Set_Object (Widget, Internal);
+      Set_Object (Handle_Box, Internal);
    end Gtk_New;
+
+   -------------------------
+   -- Set_Handle_Position --
+   -------------------------
+
+   procedure Set_Handle_Position
+     (Handle_Box : in Gtk_Handle_Box;
+      Position   : in Enums.Gtk_Position_Type)
+   is
+      procedure Internal (Handle_Box : System.Address;
+                          Position   : Gint);
+      pragma Import (C, Internal, "gtk_handle_box_set_handle_position");
+   begin
+      Internal (Get_Object (Handle_Box),
+                Enums.Gtk_Position_Type'Pos (Position));
+   end Set_Handle_Position;
+
+   ---------------------
+   -- Set_Shadow_Type --
+   ---------------------
+
+   procedure Set_Shadow_Type
+     (Handle_Box : in Gtk_Handle_Box;
+      Typ        : in Enums.Gtk_Shadow_Type)
+   is
+      procedure Internal (Handle_Box : System.Address;
+                          Typ        : Gint);
+      pragma Import (C, Internal, "gtk_handle_box_set_shadow_type");
+   begin
+      Internal (Get_Object (Handle_Box),
+                Enums.Gtk_Shadow_Type'Pos (Typ));
+   end Set_Shadow_Type;
+
+   -------------------
+   -- Set_Snap_Edge --
+   -------------------
+
+   procedure Set_Snap_Edge
+     (Handle_Box : in Gtk_Handle_Box;
+      Edge       : in Enums.Gtk_Position_Type)
+   is
+      procedure Internal (Handle_Box : System.Address;
+                          Edgde      : Gint);
+      pragma Import (C, Internal, "gtk_handle_box_set_snap_edge");
+   begin
+      Internal (Get_Object (Handle_Box),
+                Enums.Gtk_Position_Type'Pos (Edge));
+   end Set_Snap_Edge;
 
 end Gtk.Handle_Box;

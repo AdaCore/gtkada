@@ -27,12 +27,26 @@
 -----------------------------------------------------------------------
 
 with Gtk.Bin;
+with Gtk.Enums;
 
 package Gtk.Handle_Box is
 
    type Gtk_Handle_Box is new Gtk.Bin.Gtk_Bin with private;
 
-   procedure Gtk_New (Widget : out Gtk_Handle_Box);
+   procedure Gtk_New
+     (Handle_Box : out Gtk_Handle_Box);
+
+   procedure Set_Shadow_Type
+     (Handle_Box : in Gtk_Handle_Box;
+      Typ        : in Enums.Gtk_Shadow_Type);
+
+   procedure Set_Handle_Position
+     (Handle_Box : in Gtk_Handle_Box;
+      Position   : in Enums.Gtk_Position_Type);
+
+   procedure Set_Snap_Edge
+     (Handle_Box : in Gtk_Handle_Box;
+      Edge       : in Enums.Gtk_Position_Type);
 
 private
    type Gtk_Handle_Box is new Gtk.Bin.Gtk_Bin with null record;
