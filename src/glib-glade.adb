@@ -406,6 +406,10 @@ package body Glib.Glade is
                  To_Ada (P.all));
             end if;
 
+         elsif Q = null then
+            --  Field1 has been found, but not Field2. Abort.
+            return;
+
          elsif (Field3 = "" or else R /= null)
            and then (Field4 = "" or else S /= null)
          then

@@ -114,7 +114,7 @@ package body Gtk.Option_Menu is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      S : String_Ptr;
+      S   : String_Ptr;
       First, Last : Natural;
 
    begin
@@ -148,9 +148,12 @@ package body Gtk.Option_Menu is
             First := Last + 1;
          end loop;
 
-         Put_Line (File, "   Option_Menu.Set_Menu (Gtk_Option_Menu (" &
-           To_Ada (Get_Field (N, "name").all) & "), " &
-           To_Ada (Get_Field (N, "name").all) & "_Menu);");
+         Put_Line (File, "   Option_Menu.Set_Menu");
+         Put_Line (File, "     (Gtk_Option_Menu (" &
+           To_Ada (Get_Field (Find_Top_Widget (N), "name").all) & "." &
+           To_Ada (Get_Field (N, "name").all) & "),");
+         Put_Line (File, "      " & To_Ada (Get_Field (N, "name").all) &
+           "_Menu);");
       end if;
    end Generate;
 
