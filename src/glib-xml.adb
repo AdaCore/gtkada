@@ -229,7 +229,7 @@ package body Glib.XML is
 
    function Get_Node (Buf : String; Index : access Natural) return Node_Ptr is
       N : Node_Ptr := new Node;
-      P, Q : Node_Ptr;
+      Q : Node_Ptr;
       S : String_Ptr;
       Index_Save : Natural;
       Empty_Node : Boolean;
@@ -265,19 +265,14 @@ package body Glib.XML is
 
                N.Child := Get_Node (Buf, Index);
                N.Child.Parent := N;
+               N.Last_Child := N.Child;
                pragma Assert (Buf (Index.all) = '<');
 
                while Buf (Index.all + 1) /= '/' loop
-                  Q := N.Child;
-                  P := Q.Next;
-
-                  while P /= null loop
-                     Q := P;
-                     P := P.Next;
-                  end loop;
-
+                  Q := N.Last_Child;
                   Q.Next := Get_Node (Buf, Index);
                   Q.Next.Parent := N;
+                  N.Last_Child := Q.Next;
                   pragma Assert (Buf (Index.all) = '<');
                end loop;
 
@@ -354,6 +349,28 @@ package body Glib.XML is
 
    function Parse (File : String) return Node_Ptr is
 
+      procedure Fast_Read (The_File : in String;
+                           Buf      : in String_Ptr);
+      --  Read Buf'length characters in The_File and store it in Buf.
+      --  This procedure performs a single call to Read, so it is supposed to
+      --  be more efficient than the previous implementation (read character
+      --  by character).
+
+      procedure Fast_Read (The_File : in String;
+                           Buf      : in String_Ptr) is
+         type Fixed_String is new String (Buf'Range);
+
+         package Dir_Fast is new Ada.Direct_IO (Fixed_String);
+         use Dir_Fast;
+
+         F : Dir_Fast.File_Type;
+
+      begin
+         Dir_Fast.Open (F, In_File, The_File);
+         Dir_Fast.Read (F, Fixed_String (Buf.all));
+         Dir_Fast.Close (F);
+      end Fast_Read;
+
       use Dir;
 
       Index       : aliased Natural := 2;
@@ -364,13 +381,8 @@ package body Glib.XML is
    begin
       Open (F, In_File, File);
       Buf := new String (1 .. Natural (Size (F)));
-
-      for J in 1 .. Natural (Size (F)) loop
-         Read (F, Buf (J));
-      end loop;
-
       Close (F);
-
+      Fast_Read (File, Buf);
       Get_Buf (Buf.all, Index, '>', XML_Version);
       return Get_Node (Buf.all, Index'Unchecked_Access);
    end Parse;
