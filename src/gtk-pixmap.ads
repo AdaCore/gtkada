@@ -29,6 +29,7 @@
 
 with Gdk.Bitmap;
 with Gdk.Pixmap;
+with Gdk.Window;
 with Gtk.Misc;
 
 package Gtk.Pixmap is
@@ -37,25 +38,33 @@ package Gtk.Pixmap is
    type Gtk_Pixmap is access all Gtk_Pixmap_Record'Class;
 
    procedure Get
-      (Pixmap : access Gtk_Pixmap_Record;
-       Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+     (Pixmap : access Gtk_Pixmap_Record;
+      Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
+      Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
    function Get_Mask (Widget : access Gtk_Pixmap_Record)
-                      return      Gdk.Bitmap.Gdk_Bitmap'Class;
+     return Gdk.Bitmap.Gdk_Bitmap'Class;
    function Get_Pixmap (Widget : access Gtk_Pixmap_Record)
-                        return      Gdk.Pixmap.Gdk_Pixmap'Class;
+     return Gdk.Pixmap.Gdk_Pixmap'Class;
    procedure Gtk_New
-      (Widget : out Gtk_Pixmap;
-       Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+     (Widget : out Gtk_Pixmap;
+      Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
+      Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
    procedure Initialize
-      (Widget : access Gtk_Pixmap_Record;
-       Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+     (Widget : access Gtk_Pixmap_Record;
+      Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
+      Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
    procedure Set
-      (Pixmap : access Gtk_Pixmap_Record;
-       Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+     (Pixmap : access Gtk_Pixmap_Record;
+      Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
+      Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+
+   --  The following routines are not part of the Gtk+ binding.
+   --  They provide additional routines used, e.g, by gate
+
+   function Create_Pixmap
+     (Window   : Gdk.Window.Gdk_Window;
+      Filename : String) return Gtk_Pixmap;
+   --  Create a pixmap using the colormap from Widget and the given file.
 
 private
    type Gtk_Pixmap_Record is new Gtk.Misc.Gtk_Misc_Record with null record;

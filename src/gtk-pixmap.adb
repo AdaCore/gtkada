@@ -29,6 +29,7 @@
 
 with Gdk; use Gdk;
 with Gdk.Bitmap;
+with Gdk.Color;
 with Gdk.Pixmap;
 with System;
 
@@ -139,5 +140,22 @@ package body Gtk.Pixmap is
                 Get_Object (Val),
                 Get_Object (Mask));
    end Set;
+
+   function Create_Pixmap
+     (Window   : Gdk.Window.Gdk_Window;
+      Filename : String) return Gtk_Pixmap
+   is
+      Gdkpixmap : Gdk.Pixmap.Gdk_Pixmap;
+      Mask      : Gdk.Bitmap.Gdk_Bitmap;
+      Pixmap    : Gtk_Pixmap;
+
+   begin
+      Gdk.Pixmap.Create_From_Xpm
+        (Gdkpixmap, Window, Mask, Gdk.Color.Null_Color, Filename);
+      Gtk_New (Pixmap, Gdkpixmap, Mask);
+      Gdk.Pixmap.Unref (Gdkpixmap);
+      Gdk.Bitmap.Unref (Mask);
+      return Pixmap;
+   end Create_Pixmap;
 
 end Gtk.Pixmap;
