@@ -47,6 +47,7 @@ EXPORTS
 	ada_radio_menu_item_new_from_widget
 	ada_radio_menu_item_new_with_label_from_widget
 	ada_gtk_container_get_focus_child
+	ada_gtk_default_expose_event_handler
 	ada_gdk_font_get_ascent
 	ada_gdk_font_get_descent
 	ada_gtk_font_selection_dialog_get_cancel
