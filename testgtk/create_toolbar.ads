@@ -27,15 +27,17 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Button; use Gtk.Button;
+with Gtk.Frame; use Gtk.Frame;
+with Gtk.Style; use Gtk.Style;
 with Gtk.Toolbar; use Gtk.Toolbar;
-with Gtk.Window;  use Gtk.Window;
+with Gdk.Window;  use Gdk.Window;
 
 package Create_Toolbar is
 
    procedure Make_Toolbar (Toolbar    : out Gtk_Toolbar;
-                           Toplevel   : in out Gtk_Window;
+                           Toplevel   : in Gdk_Window;
+                           Style      : in Gtk_Style;
                            With_Entry : in Boolean := False);
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record);
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
 
 end Create_Toolbar;

@@ -36,7 +36,6 @@ with Gtk.Adjustment;
 with Gtk.Box;
 with Gtk.Button;
 with Gtk.Check_Button;
-with Gtk.Clist;
 with Gtk.Ctree;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame;
@@ -79,7 +78,6 @@ package body Create_Ctree is
      (Base_Type => Gtk.Adjustment.Gtk_Adjustment_Record,
       Data_Type => Gtk.Ctree.Gtk_Ctree);
 
-   Window : aliased Gtk.Window.Gtk_Window;
    Ctree : Gtk.Ctree.Gtk_Ctree;
    Line_Style : Gtk.Enums.Gtk_Ctree_Line_Style;
    Clist_Omenu_Group1  : Gtk.Widget.Widget_Slist.GSlist;
@@ -216,7 +214,9 @@ package body Create_Ctree is
    procedure Set_Background
      (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class;
       Node  : in     Gtk.Ctree.Gtk_Ctree_Node;
-      Dummy : in     Ctree_Style_Row_Data.Data_Type_Access) is
+      Dummy : in     Ctree_Style_Row_Data.Data_Type_Access)
+   is
+      pragma Warnings (Off, Dummy);
       Style : Gtk.Style.Gtk_Style;
    begin
       if not Gtk.Ctree.Is_Created (Node) then
@@ -512,9 +512,9 @@ package body Create_Ctree is
    end Rebuild_Tree;
 
    procedure Rebuild_Tree (Widget : access Gtk.Widget.Gtk_Widget_Record;
-                           Ctree  : in     Gtk.Ctree.Gtk_Ctree) is
-      --
-      --  This procedure is used as a callback only.
+                           Ctree  : in     Gtk.Ctree.Gtk_Ctree)
+   is
+      pragma Warnings (Off, Widget);
    begin
       Rebuild_Tree (Ctree);
    end Rebuild_Tree;
@@ -523,7 +523,7 @@ package body Create_Ctree is
    --                               Run                             --
    -------------------------------------------------------------------
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
 
       Id : Guint;
       Tooltips : Gtk.Tooltips.Gtk_Tooltips;
@@ -538,471 +538,446 @@ package body Create_Ctree is
       Check : Gtk.Check_Button.Gtk_Check_Button;
       Omenu1, Omenu2, Omenu3, Omenu4 : Gtk.Option_Menu.Gtk_Option_Menu;
       Transparent : Gdk.Color.Gdk_Color;
-      Frame : Gtk.Frame.Gtk_Frame;
+      Frame2 : Gtk.Frame.Gtk_Frame;
 
       pragma Warnings (Off, Transparent);
    begin
-
-      if Window = null then
-
-         Gtk.Window.Gtk_New (Window, The_Type => Window_Toplevel);
-
-         Id := Common.Destroy_Cb.Connect (Obj => Window,
-                                          Name => "destroy",
-                                          Func => Common.Destroy_Window'Access,
-                                          Func_Data => Window'Access);
-
-         Gtk.Window.Set_Title (Window, Title => "GtkCTree");
-         Gtk.Window.Set_Border_Width (Window, Border_Width => 0);
-         Gtk.Tooltips.Gtk_New (Tooltips);
-
-         --  gtk_object_ref (tooltips)
-         --  gtk_oject_sink (tooltips)
-         --  gtk_object_data_full (window, [...] )
-
-         Gtk.Box.Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
-         Gtk.Window.Add (Window, Widget => Vbox);
-
-         Gtk.Box.Gtk_New_Hbox (HBox, Homogeneous => False, Spacing => 5);
-         Gtk.Box.Set_Border_Width (Hbox, Border_Width => 5);
-         Gtk.Box.Pack_Start (In_Box => Vbox, Child => Hbox, Expand => False);
-
-         Gtk.Label.Gtk_New (Label, Str => "Depth :");
-         Gtk.Box.Pack_Start (In_Box => Hbox, Child => Label, Expand => False);
-
-         Gtk.Adjustment.Gtk_New (Adj,
-                                 Value => 4.0,
-                                 Lower => 1.0,
-                                 Upper => 10.0,
-                                 Step_Increment => 1.0,
-                                 Page_Increment => 5.0,
-                                 Page_Size => 0.0);
-         Gtk.Spin_Button.Gtk_New (Spin1,
-                                  Adjustment => Adj,
-                                  Climb_Rate => 0.0,
-                                  The_Digits => 0);
-         Gtk.Box.Pack_Start (In_Box => Hbox,
-                             Child => Spin1,
-                             Expand => False,
-                             Padding => 5);
-
-         Gtk.Label.Gtk_New (Label, Str => "Books :");
-         Gtk.Box.Pack_Start (In_Box => Hbox, Child => Label, Expand => False);
-
-         Gtk.Adjustment.Gtk_New (Adj,
-                                 Value => 3.0,
-                                 Lower => 1.0,
-                                 Upper => 20.0,
-                                 Step_Increment => 1.0,
-                                 Page_Increment => 5.0,
-                                 Page_Size => 0.0);
-         Gtk.Spin_Button.Gtk_New (Spin2,
-                                  Adjustment => Adj,
-                                  Climb_Rate => 0.0,
-                                  The_Digits => 0);
-         Gtk.Box.Pack_Start (In_Box => Hbox,
-                             Child => Spin2,
-                             Expand => False,
-                             Padding => 5);
-
-         Gtk.Label.Gtk_New (Label, Str => "Pages :");
-         Gtk.Box.Pack_Start (Hbox, Child => Label, Expand => False);
-
-         Gtk.Adjustment.Gtk_New (Adj,
-                                 Value => 5.0,
-                                 Lower => 1.0,
-                                 Upper => 20.0,
-                                 Step_Increment => 1.0,
-                                 Page_Increment => 5.0,
-                                 Page_Size => 0.0);
-         Gtk.Spin_Button.Gtk_New (Spin3,
-                                  Adjustment => Adj,
-                                  Climb_Rate => 0.0,
-                                  The_Digits => 0);
-         Gtk.Box.Pack_Start (In_Box => Hbox,
-                             Child => Spin3,
-                             Expand => False,
-                             Padding => 5);
-
-         Gtk.Button.Gtk_New (Button, Label => "Close");
-         Gtk.Box.Pack_End (Hbox, Child => Button);
-
-         Id := Common.Widget_Cb.Connect (Obj => Button,
-                                         Name => "clicked",
-                                         Func => Gtk.Widget.Destroy'Access,
-                                         Slot_Object => Window);
-
-
-         Gtk.Button.Gtk_New (Button, "Rebuild Tree");
-         Gtk.Box.Pack_Start (Hbox, Child => Button);
-
-         Gtk.Scrolled_Window.Gtk_New (Scrolled_Win);
-         Gtk.Scrolled_Window.Set_Border_Width (Scrolled_Win, Border_Width => 5);
-         Gtk.Scrolled_Window.Set_Policy (Scrolled_Win,
-                                         H_Scrollbar_Policy => Policy_Automatic,
-                                         V_Scrollbar_Policy => Policy_Always);
-         Gtk.Box.Pack_Start (Vbox, Child => Scrolled_Win);
-
-         Gtk.Ctree.Gtk_New (Ctree, Titles => Title, Tree_Column => 0);
-         Gtk.Scrolled_Window.Add (Scrolled_Win, Ctree);
-
-         Gtk.Ctree.Set_Column_Auto_Resize (Ctree, Column => 0,
-                                           Auto_Resize => True);
-         Gtk.Ctree.Set_Column_Width (Ctree, Column => 1, Width => 200);
-         Gtk.Ctree.Set_Selection_Mode (Ctree, Mode => Selection_Extended);
-         Gtk.Ctree.Set_Line_Style (Ctree, Line_Style => Ctree_Lines_Dotted);
-         Line_Style := Ctree_Lines_Dotted;
-
-         Id := Ctree_Cb.Connect (Button,
-                                 Name => "clicked",
-                                 Func => Rebuild_Tree'Access,
-                                 Func_Data => Ctree);
-
-         Id := Ctree_Void_Cb.Connect (Ctree,
-                                      Name => "button_press_event",
-                                      Func => After_Press_Cb'Access,
-                                      After => True);
-
-         Id := Ctree_Void_Cb.Connect (Ctree,
-                                      Name => "button_release_event",
-                                      Func => After_Press_Cb'Access,
-                                      After => True);
-
---       gtk_signal_connect_after (GTK_OBJECT (ctree), "tree_move",
---                                 GTK_SIGNAL_FUNC (after_move), NULL);
-
-         Id := Ctree_Void_Cb.Connect (Ctree,
-                                      Name => "end_selection",
-                                      Func => After_Press_Cb'Access,
-                                      After => True);
-
-         Id := Ctree_Void_Cb.Connect (Ctree,
-                                      Name => "toggle_focus_row",
-                                      Func => After_Press_Cb'Access,
-                                      After => True);
-
-         Id := Ctree_Void_Cb.Connect (Ctree,
-                                      Name => "select_all",
-                                      Func => After_Press_Cb'Access,
-                                      After => True);
-
-         Id := Ctree_Void_Cb.Connect (Ctree,
-                                      Name => "unselect_all",
-                                      Func => After_Press_Cb'Access,
-                                      After => True);
-
-         Id := Ctree_Void_Cb.Connect (Ctree,
-                                      Name => "scroll_vertical",
-                                      Func => After_Press_Cb'Access,
-                                      After => True);
-
-         Gtk.Box.Gtk_New_Hbox (Bbox, Homogeneous => False, Spacing => 5);
-         Gtk.Box.Set_Border_Width (Bbox, Border_Width => 5);
-         Gtk.Box.Pack_Start (Vbox, Child => Bbox, Expand => False);
-
-         Gtk.Box.Gtk_New_Vbox (Mbox, Homogeneous => True, Spacing => 5);
-         Gtk.Box.Pack_Start (Bbox, Child => Mbox, Expand => False);
-
-         Gtk.Label.Gtk_New (Label, Str => "Row Height :");
-         Gtk.Box.Pack_Start (Mbox, Child => Label,
-                             Expand => False, Fill => False);
-
-         Gtk.Label.Gtk_New (Label, Str => "Indent :");
-         Gtk.Box.Pack_Start (Mbox, Child => Label,
-                             Expand => False, Fill => False);
-
-         Gtk.Label.Gtk_New (Label, Str => "Spacing :");
-         Gtk.Box.Pack_Start (Mbox, Child => Label,
-                             Expand => False, Fill => False);
-
-         Gtk.Box.Gtk_New_Vbox (Mbox, Homogeneous => True, Spacing => 5);
-         Gtk.Box.Pack_Start (Bbox, Child => Mbox, Expand => False);
-
-         Gtk.Box.Gtk_New_Vbox (Mbox, Homogeneous => True, Spacing => 5);
-         Gtk.Box.Pack_Start (Bbox, Child => Mbox, Expand => False);
-
-         Gtk.Adjustment.Gtk_New (Adj,
-                                 Value => 20.0,
-                                 Lower => 12.0,
-                                 Upper => 100.0,
-                                 Step_Increment => 1.0,
-                                 Page_Increment => 10.0,
-                                 Page_Size => 0.0);
-         Gtk.Spin_Button.Gtk_New (Spinner,
-                                  Adjustment => Adj,
-                                  Climb_Rate => 0.0,
-                                  The_Digits => 0);
-         Gtk.Box.Pack_Start (Mbox, Child => Spinner,
-                             Expand => False, Fill => False, Padding => 5);
-         Gtk.Tooltips.Set_Tip (Tooltips, Widget => Spinner,
-                               Tip_Text => "Row height of list items");
-         Id := Adjustment_Cb.Connect (Adj,
-                                      Name => "value_changed",
-                                      Func => Change_Row_Height'Access,
-                                      Func_Data => Ctree);
-         Gtk.Ctree.Set_Row_Height
-           (Ctree, Height => Gint (Gtk.Adjustment.Get_Value (Adj)));
-
-         Gtk.Adjustment.Gtk_New (Adj,
-                                 Value => 20.0,
-                                 Lower => 0.0,
-                                 Upper => 60.0,
-                                 Step_Increment => 1.0,
-                                 Page_Increment => 10.0,
-                                 Page_Size => 0.0);
-         Gtk.Spin_Button.Gtk_New (Spinner,
-                                  Adjustment => Adj,
-                                  Climb_Rate => 0.0,
-                                  The_Digits => 0);
-         Gtk.Box.Pack_Start (Mbox, Child => Spinner,
-                             Expand => False, Fill => False, Padding => 5);
-         Gtk.Tooltips.Set_Tip (Tooltips, Widget => Spinner,
-                               Tip_Text => "Tree Indentation.");
-         Id := Adjustment_Cb.Connect (Adj,
-                                      Name => "value_changed",
-                                      Func => Change_Indent'Access,
-                                      Func_Data => Ctree);
-
-         Gtk.Adjustment.Gtk_New (Adj,
-                                 Value => 5.0,
-                                 Lower => 0.0,
-                                 Upper => 60.0,
-                                 Step_Increment => 1.0,
-                                 Page_Increment => 10.0,
-                                 Page_Size => 0.0);
-         Gtk.Spin_Button.Gtk_New (Spinner,
-                                  Adjustment => Adj,
-                                  Climb_Rate => 0.0,
-                                  The_Digits => 0);
-         Gtk.Box.Pack_Start (Mbox, Child => Spinner,
-                             Expand => False, Fill => False, Padding => 5);
-         Gtk.Tooltips.Set_Tip (Tooltips, Widget => Spinner,
-                               Tip_Text => "Tree Spacing.");
-         Id := Adjustment_Cb.Connect (Adj,
-                                      Name => "value_changed",
-                                      Func => Change_Spacing'Access,
-                                      Func_Data => Ctree);
-
-
-         Gtk.Box.Gtk_New_Vbox (Mbox, Homogeneous => True, Spacing => 5);
-         Gtk.Box.Pack_Start (Bbox, Child => Mbox, Expand => False);
-
-         Gtk.Box.Gtk_New_Hbox (Hbox, Homogeneous =>  False, Spacing => 5);
-         Gtk.Box.Pack_Start (Mbox, Child => Hbox,
-                             Expand => False,  Fill => False);
-
-         Gtk.Button.Gtk_New (Button, Label => "Expand All");
-         Gtk.Box.Pack_Start (Hbox, Child => Button);
-         Id := Ctree_Object_Cb.Connect (Button,
-                                        Name => "clicked",
-                                        Func => Expand_All'Access,
-                                        Slot_Object => Ctree);
-
-         Gtk.Button.Gtk_New (Button, Label => "Collapse All");
-         Gtk.Box.Pack_Start (Hbox, Child => Button);
-         Id := Ctree_Object_Cb.Connect (Button,
-                                        Name => "clicked",
-                                        Func => Collapse_All'Access,
-                                        Slot_Object => Ctree);
-
-         Gtk.Button.Gtk_New (Button, Label => "Change Style");
-         Gtk.Box.Pack_Start (Hbox, Child => Button);
---       gtk_signal_connect (GTK_OBJECT (button), "clicked",
---                           GTK_SIGNAL_FUNC (change_style), ctree);
-
-         Gtk.Button.Gtk_New (Button, Label => "Export Tree");
-         Gtk.Box.Pack_Start (Hbox, Child => Button);
---       gtk_signal_connect (GTK_OBJECT (button), "clicked",
---                           GTK_SIGNAL_FUNC (export_ctree), ctree);
-
-         Gtk.Box.Gtk_New_Hbox (Hbox, Homogeneous =>  False, Spacing => 5);
-         Gtk.Box.Pack_Start (Mbox, Child => Hbox,
-                             Expand => False,  Fill => False);
-
-         Gtk.Button.Gtk_New (Button, Label => "Select All");
-         Gtk.Box.Pack_Start (Hbox, Child => Button);
-         Id := Ctree_Object_Cb.Connect (Button,
-                                        Name => "clicked",
-                                        Func => Select_All'Access,
-                                        Slot_Object => Ctree);
-
-         Gtk.Button.Gtk_New (Button, Label => "Unselect All");
-         Gtk.Box.Pack_Start (Hbox, Child => Button);
-         Id := Ctree_Object_Cb.Connect (Button,
-                                        Name => "clicked",
-                                        Func => Unselect_All'Access,
-                                        Slot_Object => Ctree);
-
-         Gtk.Button.Gtk_New (Button, Label => "Remove Selection");
-         Gtk.Box.Pack_Start (Hbox, Child => Button);
---       gtk_signal_connect (GTK_OBJECT (button), "clicked",
---                           GTK_SIGNAL_FUNC (remove_selection), ctree);
-
-         Gtk.Check_Button.Gtk_New (Check, With_Label => "Reorderable");
-         Gtk.Box.Pack_Start (Hbox, Child => Check, Expand => False);
-         Gtk.Tooltips.Set_Tip
-           (Tooltips,
-            Widget => Check,
-            Tip_Text => "Tree items can be reordered by dragging.");
---       gtk_signal_connect (GTK_OBJECT (check), "clicked",
---                           GTK_SIGNAL_FUNC (toggle_reorderable), ctree);
-         Gtk.Check_Button.Set_Active (Check, Is_Active => True);
-
-         Gtk.Box.Gtk_New_Hbox (Hbox, Homogeneous => True, Spacing => 5);
-         Gtk.Box.Pack_Start (Mbox, Child => Hbox,
-                             Expand => False, Fill => False);
-
-         Clist_Omenu_Group1 := Gtk.Widget.Widget_Slist.Null_List;
-         --  FIXME : I wonder if there is not a memory leak here...
-         Common.Build_Option_Menu (Omenu1,
-                                   Gr => Clist_Omenu_Group1,
-                                   Items => Items1,
-                                   History => 2,
-                                   Cb => Toggle_Line_Style'Access);
-         Gtk.Box.Pack_Start (Hbox, Child => Omenu1, Expand => False);
-         Gtk.Tooltips.Set_Tip (Tooltips,
-                               Widget => Omenu1,
-                               Tip_Text => "The tree's line style.");
-
-         Clist_Omenu_Group2 := Gtk.Widget.Widget_Slist.Null_List;
-         --  FIXME : I wonder if there is not a memory leak here...
-         Common.Build_Option_Menu (Omenu2,
-                                   Gr => Clist_Omenu_Group2,
-                                   Items => Items2,
-                                   History => 1,
-                                   Cb => Toggle_Expander_Style'Access);
-         Gtk.Box.Pack_Start (Hbox, Child => Omenu2, Expand => False);
-         Gtk.Tooltips.Set_Tip (Tooltips,
-                               Widget => Omenu2,
-                               Tip_Text => "The tree's expander style.");
-
-         Clist_Omenu_Group3 := Gtk.Widget.Widget_Slist.Null_List;
-         --  FIXME : I wonder if there is not a memory leak here...
-         Common.Build_Option_Menu (Omenu3,
-                                   Gr => Clist_Omenu_Group3,
-                                   Items => Items3,
-                                   History => 0,
-                                   Cb => Toggle_Justify'Access);
-         Gtk.Box.Pack_Start (Hbox, Child => Omenu3, Expand => False);
-         Gtk.Tooltips.Set_Tip (Tooltips,
-                               Widget => Omenu3,
-                               Tip_Text => "The tree's justification.");
-
-         Clist_Omenu_Group4 := Gtk.Widget.Widget_Slist.Null_List;
-         --  FIXME : I wonder if there is not a memory leak here...
-         Common.Build_Option_Menu (Omenu4,
-                                   Gr => Clist_Omenu_Group4,
-                                   Items => Items4,
-                                   History => 3,
-                                   Cb => Toggle_Sel_Mode'Access);
-         Gtk.Box.Pack_Start (Hbox, Child => Omenu4, Expand => False);
-         Gtk.Tooltips.Set_Tip (Tooltips,
-                               Widget => Omenu4,
-                               Tip_Text => "The list's selection mode.");
-
-         Gtk.Window.Realize (Window);
-
-         Gdk.Pixmap.Create_From_Xpm_D (Pixmap1,
-                                       Window => Gtk.Window.Get_Window (Window),
-                                       Mask => Mask1,
-                                       Transparent => Transparent,
-                                       Data => Common.Book_Closed_Xpm);
-         Gdk.Pixmap.Create_From_Xpm_D (Pixmap2,
-                                       Window => Gtk.Window.Get_Window (Window),
-                                       Mask => Mask2,
-                                       Transparent => Transparent,
-                                       Data => Common.Book_Open_Xpm);
-         Gdk.Pixmap.Create_From_Xpm_D (Pixmap3,
-                                       Window => Gtk.Window.Get_Window (Window),
-                                       Mask => Mask3,
-                                       Transparent => Transparent,
-                                       Data => Common.Mini_Page_Xpm);
-
-         Gtk.Ctree.Set_Usize (Ctree, Width => 0, Height => 300);
-
-         Gtk.Frame.Gtk_New (Frame);
-         Gtk.Frame.Set_Border_Width (Frame, Border_Width => 0);
-         Gtk.Frame.Set_Shadow_Type (Frame, The_Type => Shadow_Out);
-         Gtk.Box.Pack_Start (Vbox, Child => Frame, Expand => False);
-
-         Gtk.Box.Gtk_New_Hbox (Hbox, Homogeneous => True, Spacing => 2);
-         Gtk.Box.Set_Border_Width (Hbox, Border_Width => 2);
-         Gtk.Frame.Add (Frame, Widget => Hbox);
-
-         Gtk.Frame.Gtk_New (Frame);
-         Gtk.Frame.Set_Shadow_Type (Frame, The_Type => Shadow_In);
-         Gtk.Box.Pack_Start (Hbox, Child => Frame, Expand => False);
-
-         Gtk.Box.Gtk_New_Hbox (Hbox2, Homogeneous => False, Spacing => 0);
-         Gtk.Box.Set_Border_Width (Hbox2, Border_Width => 2);
-         Gtk.Frame.Add (Frame, Widget => Hbox2);
-
-         Gtk.Label.Gtk_New (Label, Str => "Books :");
-         Gtk.Box.Pack_Start (Hbox2, Child => Label, Expand => False);
-
-         Gtk.Label.Gtk_New (Book_Label, Str => Common.Image_Of (Books));
-         Gtk.Box.Pack_End (Hbox2, Child => Book_Label,
-                           Expand => False, Padding => 5);
-
-         Gtk.Frame.Gtk_New (Frame);
-         Gtk.Frame.Set_Shadow_Type (Frame, The_Type => Shadow_In);
-         Gtk.Box.Pack_Start (Hbox, Child => Frame, Expand => False);
-
-         Gtk.Box.Gtk_New_Hbox (Hbox2, Homogeneous => False, Spacing => 0);
-         Gtk.Box.Set_Border_Width (Hbox2, Border_Width => 2);
-         Gtk.Frame.Add (Frame, Widget => Hbox2);
-
-         Gtk.Label.Gtk_New (Label, Str => "Pages :");
-         Gtk.Box.Pack_Start (Hbox2, Child => Label, Expand => False);
-
-         Gtk.Label.Gtk_New (Page_Label, Str => Common.Image_Of (Pages));
-         Gtk.Box.Pack_End (Hbox2, Child => Page_Label,
-                           Expand => False, Padding => 5);
-
-         Gtk.Frame.Gtk_New (Frame);
-         Gtk.Frame.Set_Shadow_Type (Frame, The_Type => Shadow_In);
-         Gtk.Box.Pack_Start (Hbox, Child => Frame, Expand => False);
-
-         Gtk.Box.Gtk_New_Hbox (Hbox2, Homogeneous => False, Spacing => 0);
-         Gtk.Box.Set_Border_Width (Hbox2, Border_Width => 2);
-         Gtk.Frame.Add (Frame, Widget => Hbox2);
-
-         Gtk.Label.Gtk_New (Label, Str => "Selected :");
-         Gtk.Box.Pack_Start (Hbox2, Child => Label, Expand => False);
-
-         Gtk.Label.Gtk_New
-           (Sel_Label,
-            Str => Common.Image_Of (Gint (Gint_List.Length
-                                    (Gtk.Ctree.Get_Selection (Ctree)))));
-         Gtk.Box.Pack_End (Hbox2, Child => Sel_Label,
-                           Expand => False, Padding => 5);
-
-         Gtk.Frame.Gtk_New (Frame);
-         Gtk.Frame.Set_Shadow_Type (Frame, The_Type => Shadow_In);
-         Gtk.Box.Pack_Start (Hbox, Child => Frame, Expand => False);
-
-         Gtk.Box.Gtk_New_Hbox (Hbox2, Homogeneous => False, Spacing => 0);
-         Gtk.Box.Set_Border_Width (Hbox2, Border_Width => 2);
-         Gtk.Frame.Add (Frame, Widget => Hbox2);
-
-         Gtk.Label.Gtk_New (Label, Str => "Visible :");
-         Gtk.Box.Pack_Start (Hbox2, Child => Label, Expand => False);
-
-         Gtk.Label.Gtk_New
-           (Vis_Label,
-            Str => Common.Image_Of (Gint (Gtk.Ctree.Row_List.Length
-                                    (Gtk.Ctree.Get_Row_List (Ctree)))));
-         Gtk.Box.Pack_End (Hbox2, Child => Vis_Label,
-                           Expand => False, Padding => 5);
-
-         Rebuild_Tree (Ctree => Ctree);
-
-         Gtk.Window.Show_All (Window);
-
-      else
-         Gtk.Window.Destroy (Window);
-      end if;
-
+      Set_Label (Frame, "Ctree");
+      Gtk.Tooltips.Gtk_New (Tooltips);
+
+      --  gtk_object_ref (tooltips)
+      --  gtk_oject_sink (tooltips)
+      --  gtk_object_data_full (window, [...] )
+
+      Gtk.Box.Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
+      Gtk.Frame.Add (Frame, Widget => Vbox);
+
+      Gtk.Box.Gtk_New_Hbox (HBox, Homogeneous => False, Spacing => 5);
+      Gtk.Box.Set_Border_Width (Hbox, Border_Width => 5);
+      Gtk.Box.Pack_Start (In_Box => Vbox, Child => Hbox, Expand => False);
+
+      Gtk.Label.Gtk_New (Label, Str => "Depth :");
+      Gtk.Box.Pack_Start (In_Box => Hbox, Child => Label, Expand => False);
+
+      Gtk.Adjustment.Gtk_New (Adj,
+                              Value => 4.0,
+                              Lower => 1.0,
+                              Upper => 10.0,
+                              Step_Increment => 1.0,
+                              Page_Increment => 5.0,
+                              Page_Size => 0.0);
+      Gtk.Spin_Button.Gtk_New (Spin1,
+                               Adjustment => Adj,
+                               Climb_Rate => 0.0,
+                               The_Digits => 0);
+      Gtk.Box.Pack_Start (In_Box => Hbox,
+                          Child => Spin1,
+                          Expand => False,
+                          Padding => 5);
+
+      Gtk.Label.Gtk_New (Label, Str => "Books :");
+      Gtk.Box.Pack_Start (In_Box => Hbox, Child => Label, Expand => False);
+
+      Gtk.Adjustment.Gtk_New (Adj,
+                              Value => 3.0,
+                              Lower => 1.0,
+                              Upper => 20.0,
+                              Step_Increment => 1.0,
+                              Page_Increment => 5.0,
+                              Page_Size => 0.0);
+      Gtk.Spin_Button.Gtk_New (Spin2,
+                               Adjustment => Adj,
+                               Climb_Rate => 0.0,
+                               The_Digits => 0);
+      Gtk.Box.Pack_Start (In_Box => Hbox,
+                          Child => Spin2,
+                          Expand => False,
+                          Padding => 5);
+
+      Gtk.Label.Gtk_New (Label, Str => "Pages :");
+      Gtk.Box.Pack_Start (Hbox, Child => Label, Expand => False);
+
+      Gtk.Adjustment.Gtk_New (Adj,
+                              Value => 5.0,
+                              Lower => 1.0,
+                              Upper => 20.0,
+                              Step_Increment => 1.0,
+                              Page_Increment => 5.0,
+                              Page_Size => 0.0);
+      Gtk.Spin_Button.Gtk_New (Spin3,
+                               Adjustment => Adj,
+                               Climb_Rate => 0.0,
+                               The_Digits => 0);
+      Gtk.Box.Pack_Start (In_Box => Hbox,
+                          Child => Spin3,
+                          Expand => False,
+                          Padding => 5);
+
+      Gtk.Button.Gtk_New (Button, "Rebuild Tree");
+      Gtk.Box.Pack_Start (Hbox, Child => Button);
+
+      Gtk.Scrolled_Window.Gtk_New (Scrolled_Win);
+      Gtk.Scrolled_Window.Set_Border_Width (Scrolled_Win, Border_Width => 5);
+      Gtk.Scrolled_Window.Set_Policy (Scrolled_Win,
+                                      H_Scrollbar_Policy => Policy_Automatic,
+                                      V_Scrollbar_Policy => Policy_Always);
+      Gtk.Box.Pack_Start (Vbox, Child => Scrolled_Win);
+
+      Gtk.Ctree.Gtk_New (Ctree, Titles => Title, Tree_Column => 0);
+      Gtk.Scrolled_Window.Add (Scrolled_Win, Ctree);
+
+      Gtk.Ctree.Set_Column_Auto_Resize (Ctree, Column => 0,
+                                        Auto_Resize => True);
+      Gtk.Ctree.Set_Column_Width (Ctree, Column => 1, Width => 200);
+      Gtk.Ctree.Set_Selection_Mode (Ctree, Mode => Selection_Extended);
+      Gtk.Ctree.Set_Line_Style (Ctree, Line_Style => Ctree_Lines_Dotted);
+      Line_Style := Ctree_Lines_Dotted;
+
+      Id := Ctree_Cb.Connect (Button,
+                              Name => "clicked",
+                              Func => Rebuild_Tree'Access,
+                              Func_Data => Ctree);
+
+      Id := Ctree_Void_Cb.Connect (Ctree,
+                                   Name => "button_press_event",
+                                   Func => After_Press_Cb'Access,
+                                   After => True);
+
+      Id := Ctree_Void_Cb.Connect (Ctree,
+                                   Name => "button_release_event",
+                                   Func => After_Press_Cb'Access,
+                                   After => True);
+
+      --       gtk_signal_connect_after (GTK_OBJECT (ctree), "tree_move",
+      --                                 GTK_SIGNAL_FUNC (after_move), NULL);
+
+      Id := Ctree_Void_Cb.Connect (Ctree,
+                                   Name => "end_selection",
+                                   Func => After_Press_Cb'Access,
+                                   After => True);
+
+      Id := Ctree_Void_Cb.Connect (Ctree,
+                                   Name => "toggle_focus_row",
+                                   Func => After_Press_Cb'Access,
+                                   After => True);
+
+      Id := Ctree_Void_Cb.Connect (Ctree,
+                                   Name => "select_all",
+                                   Func => After_Press_Cb'Access,
+                                   After => True);
+
+      Id := Ctree_Void_Cb.Connect (Ctree,
+                                   Name => "unselect_all",
+                                   Func => After_Press_Cb'Access,
+                                   After => True);
+
+      Id := Ctree_Void_Cb.Connect (Ctree,
+                                   Name => "scroll_vertical",
+                                   Func => After_Press_Cb'Access,
+                                   After => True);
+
+      Gtk.Box.Gtk_New_Hbox (Bbox, Homogeneous => False, Spacing => 5);
+      Gtk.Box.Set_Border_Width (Bbox, Border_Width => 5);
+      Gtk.Box.Pack_Start (Vbox, Child => Bbox, Expand => False);
+
+      Gtk.Box.Gtk_New_Vbox (Mbox, Homogeneous => True, Spacing => 5);
+      Gtk.Box.Pack_Start (Bbox, Child => Mbox, Expand => False);
+
+      Gtk.Label.Gtk_New (Label, Str => "Row Height :");
+      Gtk.Box.Pack_Start (Mbox, Child => Label,
+                          Expand => False, Fill => False);
+
+      Gtk.Label.Gtk_New (Label, Str => "Indent :");
+      Gtk.Box.Pack_Start (Mbox, Child => Label,
+                          Expand => False, Fill => False);
+
+      Gtk.Label.Gtk_New (Label, Str => "Spacing :");
+      Gtk.Box.Pack_Start (Mbox, Child => Label,
+                          Expand => False, Fill => False);
+
+      Gtk.Box.Gtk_New_Vbox (Mbox, Homogeneous => True, Spacing => 5);
+      Gtk.Box.Pack_Start (Bbox, Child => Mbox, Expand => False);
+
+      Gtk.Box.Gtk_New_Vbox (Mbox, Homogeneous => True, Spacing => 5);
+      Gtk.Box.Pack_Start (Bbox, Child => Mbox, Expand => False);
+
+      Gtk.Adjustment.Gtk_New (Adj,
+                              Value => 20.0,
+                              Lower => 12.0,
+                              Upper => 100.0,
+                              Step_Increment => 1.0,
+                              Page_Increment => 10.0,
+                              Page_Size => 0.0);
+      Gtk.Spin_Button.Gtk_New (Spinner,
+                               Adjustment => Adj,
+                               Climb_Rate => 0.0,
+                               The_Digits => 0);
+      Gtk.Box.Pack_Start (Mbox, Child => Spinner,
+                          Expand => False, Fill => False, Padding => 5);
+      Gtk.Tooltips.Set_Tip (Tooltips, Widget => Spinner,
+                            Tip_Text => "Row height of list items");
+      Id := Adjustment_Cb.Connect (Adj,
+                                   Name => "value_changed",
+                                   Func => Change_Row_Height'Access,
+                                   Func_Data => Ctree);
+      Gtk.Ctree.Set_Row_Height
+        (Ctree, Height => Gint (Gtk.Adjustment.Get_Value (Adj)));
+
+      Gtk.Adjustment.Gtk_New (Adj,
+                              Value => 20.0,
+                              Lower => 0.0,
+                              Upper => 60.0,
+                              Step_Increment => 1.0,
+                              Page_Increment => 10.0,
+                              Page_Size => 0.0);
+      Gtk.Spin_Button.Gtk_New (Spinner,
+                               Adjustment => Adj,
+                               Climb_Rate => 0.0,
+                               The_Digits => 0);
+      Gtk.Box.Pack_Start (Mbox, Child => Spinner,
+                          Expand => False, Fill => False, Padding => 5);
+      Gtk.Tooltips.Set_Tip (Tooltips, Widget => Spinner,
+                            Tip_Text => "Tree Indentation.");
+      Id := Adjustment_Cb.Connect (Adj,
+                                   Name => "value_changed",
+                                   Func => Change_Indent'Access,
+                                   Func_Data => Ctree);
+
+      Gtk.Adjustment.Gtk_New (Adj,
+                              Value => 5.0,
+                              Lower => 0.0,
+                              Upper => 60.0,
+                              Step_Increment => 1.0,
+                              Page_Increment => 10.0,
+                              Page_Size => 0.0);
+      Gtk.Spin_Button.Gtk_New (Spinner,
+                               Adjustment => Adj,
+                               Climb_Rate => 0.0,
+                               The_Digits => 0);
+      Gtk.Box.Pack_Start (Mbox, Child => Spinner,
+                          Expand => False, Fill => False, Padding => 5);
+      Gtk.Tooltips.Set_Tip (Tooltips, Widget => Spinner,
+                            Tip_Text => "Tree Spacing.");
+      Id := Adjustment_Cb.Connect (Adj,
+                                   Name => "value_changed",
+                                   Func => Change_Spacing'Access,
+                                   Func_Data => Ctree);
+
+
+      Gtk.Box.Gtk_New_Vbox (Mbox, Homogeneous => True, Spacing => 5);
+      Gtk.Box.Pack_Start (Bbox, Child => Mbox, Expand => False);
+
+      Gtk.Box.Gtk_New_Hbox (Hbox, Homogeneous =>  False, Spacing => 5);
+      Gtk.Box.Pack_Start (Mbox, Child => Hbox,
+                          Expand => False,  Fill => False);
+
+      Gtk.Button.Gtk_New (Button, Label => "Expand All");
+      Gtk.Box.Pack_Start (Hbox, Child => Button);
+      Id := Ctree_Object_Cb.Connect (Button,
+                                     Name => "clicked",
+                                     Func => Expand_All'Access,
+                                     Slot_Object => Ctree);
+
+      Gtk.Button.Gtk_New (Button, Label => "Collapse All");
+      Gtk.Box.Pack_Start (Hbox, Child => Button);
+      Id := Ctree_Object_Cb.Connect (Button,
+                                     Name => "clicked",
+                                     Func => Collapse_All'Access,
+                                     Slot_Object => Ctree);
+
+      Gtk.Button.Gtk_New (Button, Label => "Change Style");
+      Gtk.Box.Pack_Start (Hbox, Child => Button);
+      --       gtk_signal_connect (GTK_OBJECT (button), "clicked",
+      --                           GTK_SIGNAL_FUNC (change_style), ctree);
+
+      Gtk.Button.Gtk_New (Button, Label => "Export Tree");
+      Gtk.Box.Pack_Start (Hbox, Child => Button);
+      --       gtk_signal_connect (GTK_OBJECT (button), "clicked",
+      --                           GTK_SIGNAL_FUNC (export_ctree), ctree);
+
+      Gtk.Box.Gtk_New_Hbox (Hbox, Homogeneous =>  False, Spacing => 5);
+      Gtk.Box.Pack_Start (Mbox, Child => Hbox,
+                          Expand => False,  Fill => False);
+
+      Gtk.Button.Gtk_New (Button, Label => "Select All");
+      Gtk.Box.Pack_Start (Hbox, Child => Button);
+      Id := Ctree_Object_Cb.Connect (Button,
+                                     Name => "clicked",
+                                     Func => Select_All'Access,
+                                     Slot_Object => Ctree);
+
+      Gtk.Button.Gtk_New (Button, Label => "Unselect All");
+      Gtk.Box.Pack_Start (Hbox, Child => Button);
+      Id := Ctree_Object_Cb.Connect (Button,
+                                     Name => "clicked",
+                                     Func => Unselect_All'Access,
+                                     Slot_Object => Ctree);
+
+      Gtk.Button.Gtk_New (Button, Label => "Remove Selection");
+      Gtk.Box.Pack_Start (Hbox, Child => Button);
+      --       gtk_signal_connect (GTK_OBJECT (button), "clicked",
+      --                           GTK_SIGNAL_FUNC (remove_selection), ctree);
+
+      Gtk.Check_Button.Gtk_New (Check, With_Label => "Reorderable");
+      Gtk.Box.Pack_Start (Hbox, Child => Check, Expand => False);
+      Gtk.Tooltips.Set_Tip
+        (Tooltips,
+         Widget => Check,
+         Tip_Text => "Tree items can be reordered by dragging.");
+      --       gtk_signal_connect (GTK_OBJECT (check), "clicked",
+      --                           GTK_SIGNAL_FUNC (toggle_reorderable), ctree);
+      Gtk.Check_Button.Set_Active (Check, Is_Active => True);
+
+      Gtk.Box.Gtk_New_Hbox (Hbox, Homogeneous => True, Spacing => 5);
+      Gtk.Box.Pack_Start (Mbox, Child => Hbox,
+                          Expand => False, Fill => False);
+
+      Clist_Omenu_Group1 := Gtk.Widget.Widget_Slist.Null_List;
+      --  FIXME : I wonder if there is not a memory leak here...
+      Common.Build_Option_Menu (Omenu1,
+                                Gr => Clist_Omenu_Group1,
+                                Items => Items1,
+                                History => 2,
+                                Cb => Toggle_Line_Style'Access);
+      Gtk.Box.Pack_Start (Hbox, Child => Omenu1, Expand => False);
+      Gtk.Tooltips.Set_Tip (Tooltips,
+                            Widget => Omenu1,
+                            Tip_Text => "The tree's line style.");
+
+      Clist_Omenu_Group2 := Gtk.Widget.Widget_Slist.Null_List;
+      --  FIXME : I wonder if there is not a memory leak here...
+      Common.Build_Option_Menu (Omenu2,
+                                Gr => Clist_Omenu_Group2,
+                                Items => Items2,
+                                History => 1,
+                                Cb => Toggle_Expander_Style'Access);
+      Gtk.Box.Pack_Start (Hbox, Child => Omenu2, Expand => False);
+      Gtk.Tooltips.Set_Tip (Tooltips,
+                            Widget => Omenu2,
+                            Tip_Text => "The tree's expander style.");
+
+      Clist_Omenu_Group3 := Gtk.Widget.Widget_Slist.Null_List;
+      --  FIXME : I wonder if there is not a memory leak here...
+      Common.Build_Option_Menu (Omenu3,
+                                Gr => Clist_Omenu_Group3,
+                                Items => Items3,
+                                History => 0,
+                                Cb => Toggle_Justify'Access);
+      Gtk.Box.Pack_Start (Hbox, Child => Omenu3, Expand => False);
+      Gtk.Tooltips.Set_Tip (Tooltips,
+                            Widget => Omenu3,
+                            Tip_Text => "The tree's justification.");
+
+      Clist_Omenu_Group4 := Gtk.Widget.Widget_Slist.Null_List;
+      --  FIXME : I wonder if there is not a memory leak here...
+      Common.Build_Option_Menu (Omenu4,
+                                Gr => Clist_Omenu_Group4,
+                                Items => Items4,
+                                History => 3,
+                                Cb => Toggle_Sel_Mode'Access);
+      Gtk.Box.Pack_Start (Hbox, Child => Omenu4, Expand => False);
+      Gtk.Tooltips.Set_Tip (Tooltips,
+                            Widget => Omenu4,
+                            Tip_Text => "The list's selection mode.");
+
+      Gtk.Frame.Realize (Frame);
+
+      Gdk.Pixmap.Create_From_Xpm_D (Pixmap1,
+                                    Window => Gtk.Frame.Get_Window (Frame),
+                                    Mask => Mask1,
+                                    Transparent => Transparent,
+                                    Data => Common.Book_Closed_Xpm);
+      Gdk.Pixmap.Create_From_Xpm_D (Pixmap2,
+                                    Window => Gtk.Frame.Get_Window (Frame),
+                                    Mask => Mask2,
+                                    Transparent => Transparent,
+                                    Data => Common.Book_Open_Xpm);
+      Gdk.Pixmap.Create_From_Xpm_D (Pixmap3,
+                                    Window => Gtk.Frame.Get_Window (Frame),
+                                    Mask => Mask3,
+                                    Transparent => Transparent,
+                                    Data => Common.Mini_Page_Xpm);
+
+      Gtk.Ctree.Set_Usize (Ctree, Width => 0, Height => 300);
+
+      Gtk.Frame.Gtk_New (Frame2);
+      Gtk.Frame.Set_Border_Width (Frame2, Border_Width => 0);
+      Gtk.Frame.Set_Shadow_Type (Frame2, The_Type => Shadow_Out);
+      Gtk.Box.Pack_Start (Vbox, Child => Frame2, Expand => False);
+
+      Gtk.Box.Gtk_New_Hbox (Hbox, Homogeneous => True, Spacing => 2);
+      Gtk.Box.Set_Border_Width (Hbox, Border_Width => 2);
+      Gtk.Frame.Add (Frame2, Widget => Hbox);
+
+      Gtk.Frame.Gtk_New (Frame2);
+      Gtk.Frame.Set_Shadow_Type (Frame2, The_Type => Shadow_In);
+      Gtk.Box.Pack_Start (Hbox, Child => Frame2, Expand => False);
+
+      Gtk.Box.Gtk_New_Hbox (Hbox2, Homogeneous => False, Spacing => 0);
+      Gtk.Box.Set_Border_Width (Hbox2, Border_Width => 2);
+      Gtk.Frame.Add (Frame2, Widget => Hbox2);
+
+      Gtk.Label.Gtk_New (Label, Str => "Books :");
+      Gtk.Box.Pack_Start (Hbox2, Child => Label, Expand => False);
+
+      Gtk.Label.Gtk_New (Book_Label, Str => Common.Image_Of (Books));
+      Gtk.Box.Pack_End (Hbox2, Child => Book_Label,
+                        Expand => False, Padding => 5);
+
+      Gtk.Frame.Gtk_New (Frame2);
+      Gtk.Frame.Set_Shadow_Type (Frame2, The_Type => Shadow_In);
+      Gtk.Box.Pack_Start (Hbox, Child => Frame2, Expand => False);
+
+      Gtk.Box.Gtk_New_Hbox (Hbox2, Homogeneous => False, Spacing => 0);
+      Gtk.Box.Set_Border_Width (Hbox2, Border_Width => 2);
+      Gtk.Frame.Add (Frame2, Widget => Hbox2);
+
+      Gtk.Label.Gtk_New (Label, Str => "Pages :");
+      Gtk.Box.Pack_Start (Hbox2, Child => Label, Expand => False);
+
+      Gtk.Label.Gtk_New (Page_Label, Str => Common.Image_Of (Pages));
+      Gtk.Box.Pack_End (Hbox2, Child => Page_Label,
+                        Expand => False, Padding => 5);
+
+      Gtk.Frame.Gtk_New (Frame2);
+      Gtk.Frame.Set_Shadow_Type (Frame2, The_Type => Shadow_In);
+      Gtk.Box.Pack_Start (Hbox, Child => Frame2, Expand => False);
+
+      Gtk.Box.Gtk_New_Hbox (Hbox2, Homogeneous => False, Spacing => 0);
+      Gtk.Box.Set_Border_Width (Hbox2, Border_Width => 2);
+      Gtk.Frame.Add (Frame2, Widget => Hbox2);
+
+      Gtk.Label.Gtk_New (Label, Str => "Selected :");
+      Gtk.Box.Pack_Start (Hbox2, Child => Label, Expand => False);
+
+      Gtk.Label.Gtk_New
+        (Sel_Label,
+         Str => Common.Image_Of (Gint (Gint_List.Length
+                                       (Gtk.Ctree.Get_Selection (Ctree)))));
+      Gtk.Box.Pack_End (Hbox2, Child => Sel_Label,
+                        Expand => False, Padding => 5);
+
+      Gtk.Frame.Gtk_New (Frame2);
+      Gtk.Frame.Set_Shadow_Type (Frame2, The_Type => Shadow_In);
+      Gtk.Box.Pack_Start (Hbox, Child => Frame2, Expand => False);
+
+      Gtk.Box.Gtk_New_Hbox (Hbox2, Homogeneous => False, Spacing => 0);
+      Gtk.Box.Set_Border_Width (Hbox2, Border_Width => 2);
+      Gtk.Frame.Add (Frame2, Widget => Hbox2);
+
+      Gtk.Label.Gtk_New (Label, Str => "Visible :");
+      Gtk.Box.Pack_Start (Hbox2, Child => Label, Expand => False);
+
+      Gtk.Label.Gtk_New
+        (Vis_Label,
+         Str => Common.Image_Of (Gint (Gtk.Ctree.Row_List.Length
+                                       (Gtk.Ctree.Get_Row_List (Ctree)))));
+      Gtk.Box.Pack_End (Hbox2, Child => Vis_Label,
+                        Expand => False, Padding => 5);
+
+      Rebuild_Tree (Ctree => Ctree);
+
+      Show_All (Frame);
    end Run;
 
 end Create_Ctree;

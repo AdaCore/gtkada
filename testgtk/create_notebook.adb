@@ -36,7 +36,6 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.GEntry; use Gtk.GEntry;
 with Gtk.Frame; use Gtk.Frame;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Menu; use Gtk.Menu;
@@ -47,7 +46,6 @@ with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
 with Gtk.Separator; use Gtk.Separator;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 with Common; use Common;
 
@@ -61,7 +59,6 @@ package body Create_Notebook is
    package Frame_Cb is new Signal.Callback
      (Gtk_Check_Button_Record, Gtk_Frame);
 
-   Window           : aliased Gtk_Window;
    Book_Open        : Gdk_Pixmap;
    Book_Open_Mask   : Gdk_Bitmap;
    Book_Closed      : Gdk_Pixmap;
@@ -255,11 +252,10 @@ package body Create_Notebook is
       end if;
    end Page_Switch;
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id              : Guint;
       Box1            : Gtk_Box;
       Box2            : Gtk_Box;
-      Separator       : Gtk_Separator;
       Option_Menu     : Gtk_Option_Menu;
       Menu            : Gtk_Menu;
       Menu_Item       : Gtk_Radio_Menu_Item;
@@ -267,132 +263,108 @@ package body Create_Notebook is
       Button          : Gtk_Check_Button;
       Button2         : Gtk_Button;
       Label           : Gtk_Label;
+      Separator       : Gtk_Separator;
+
    begin
-      if Window = null then
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect
-           (Window, "destroy", Destroy_Window'Access, Window'Access);
-         Set_Title (Window, "notebook");
-         Set_Border_Width (Window, Border_Width => 0);
+      Set_Label (Frame, "Notebook");
 
-         Gtk_New_Vbox (Box1, False, 0);
-         Add (Window, Box1);
+      Gtk_New_Vbox (Box1, False, 0);
+      Add (Frame, Box1);
 
-         Gtk_New (Notebook);
-         Id := Two_Cb.Connect
-           (Notebook, "switch_page", Page_Switch'Access, Notebook);
-         Set_Tab_Pos (Notebook, Pos_Top);
-         Pack_Start (Box1, Notebook, True, True, 0);
-         Set_Border_Width (Notebook, 10);
-         Realize (Notebook);
+      Gtk_New (Notebook);
+      Id := Two_Cb.Connect
+        (Notebook, "switch_page", Page_Switch'Access, Notebook);
+      Set_Tab_Pos (Notebook, Pos_Top);
+      Pack_Start (Box1, Notebook, False, False, 0);
+      Set_Border_Width (Notebook, 10);
+      Realize (Notebook);
 
-         Create_From_Xpm_D (Book_Open,
-                            Get_Window (Notebook),
-                            Book_Open_Mask, Null_Color,
-                            Book_Open_Xpm);
-         Create_From_Xpm_D (Book_Closed,
-                            Get_Window (Notebook),
-                            Book_Closed_Mask, Null_Color,
-                            Book_Closed_Xpm);
+      Create_From_Xpm_D (Book_Open,
+                         Get_Window (Notebook),
+                         Book_Open_Mask, Null_Color,
+                         Book_Open_Xpm);
+      Create_From_Xpm_D (Book_Closed,
+                         Get_Window (Notebook),
+                         Book_Closed_Mask, Null_Color,
+                         Book_Closed_Xpm);
 
-         Create_Pages (Notebook, 1, 5);
+      Create_Pages (Notebook, 1, 5);
 
-         Gtk_New_Hseparator (Separator);
-         Pack_Start (Box1, Separator, False, True, 10);
+      Gtk_New_Hseparator (Separator);
+      Pack_Start (Box1, Separator, False, True, 10);
 
-         Gtk_New_Hbox (Box2, False, 5);
-         Pack_Start (Box1, Box2, False, True, 0);
+      Gtk_New_Hbox (Box2, False, 5);
+      Pack_Start (Box1, Box2, False, True, 0);
 
-         Gtk_New (Button, "popup menu");
-         Pack_Start (Box2, Button, True, False, 0);
-         Id := Button_Cb.Connect
-           (Button, "clicked", Notebook_Popup'Access, Notebook);
+      Gtk_New (Button, "popup menu");
+      Pack_Start (Box2, Button, True, False, 0);
+      Id := Button_Cb.Connect
+        (Button, "clicked", Notebook_Popup'Access, Notebook);
 
-         Gtk_New (Button, "homogeneous tabs");
-         Pack_Start (Box2, Button, True, False, 0);
-         Id := Button_Cb.Connect
-           (Button, "clicked", Homogeneous'Access, Notebook);
+      Gtk_New (Button, "homogeneous tabs");
+      Pack_Start (Box2, Button, True, False, 0);
+      Id := Button_Cb.Connect
+        (Button, "clicked", Homogeneous'Access, Notebook);
 
-         Gtk_New_Hbox (Box2, False, 5);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, False, True, 0);
+      Gtk_New_Hbox (Box2, False, 5);
+      Set_Border_Width (Box2, 10);
+      Pack_Start (Box1, Box2, False, True, 0);
 
-         Gtk_New (Label, "Notebook Style :");
-         Pack_Start (Box2, Label, False, True, 0);
+      Gtk_New (Label, "Notebook Style :");
+      Pack_Start (Box2, Label, False, True, 0);
 
-         Gtk_New (Option_Menu);
-         Gtk_New (Menu);
+      Gtk_New (Option_Menu);
+      Gtk_New (Menu);
 
-         Gtk_New (Menu_Item, Group, "Standard");
-         Id := Note_Cb.Connect
-           (Menu_Item, "activate", Standard_Notebook'Access, Notebook);
-         Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
-         Append (Menu, Menu_Item);
-         Show (Menu_Item);
+      Gtk_New (Menu_Item, Group, "Standard");
+      Id := Note_Cb.Connect
+        (Menu_Item, "activate", Standard_Notebook'Access, Notebook);
+      Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
+      Append (Menu, Menu_Item);
+      Show (Menu_Item);
 
-         Gtk_New (Menu_Item, Group, "w/o Tabs");
-         Id := Note_Cb.Connect
-           (Menu_Item, "activate", Notabs_Notebook'Access, Notebook);
-         Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
-         Append (Menu, Menu_Item);
-         Show (Menu_Item);
+      Gtk_New (Menu_Item, Group, "w/o Tabs");
+      Id := Note_Cb.Connect
+        (Menu_Item, "activate", Notabs_Notebook'Access, Notebook);
+      Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
+      Append (Menu, Menu_Item);
+      Show (Menu_Item);
 
-         Gtk_New (Menu_Item, Group, "Scrollable");
-         Id := Note_Cb.Connect
-           (Menu_Item, "activate", Scrollable_Notebook'Access, Notebook);
-         Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
-         Append (Menu, Menu_Item);
-         Show (Menu_Item);
+      Gtk_New (Menu_Item, Group, "Scrollable");
+      Id := Note_Cb.Connect
+        (Menu_Item, "activate", Scrollable_Notebook'Access, Notebook);
+      Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
+      Append (Menu, Menu_Item);
+      Show (Menu_Item);
 
-         Set_Menu (Option_Menu, Menu);
-         Pack_Start (Box2, Option_Menu, False, False, 0);
+      Set_Menu (Option_Menu, Menu);
+      Pack_Start (Box2, Option_Menu, False, False, 0);
 
-         Gtk_New (Button2, "Show all pages");
-         Pack_Start (Box2, Button2, False, True, 0);
-         Id := Note_Cb.Connect
-           (Button2, "clicked", Show_All_Pages'Access, Notebook);
+      Gtk_New (Button2, "Show all pages");
+      Pack_Start (Box2, Button2, False, True, 0);
+      Id := Note_Cb.Connect
+        (Button2, "clicked", Show_All_Pages'Access, Notebook);
 
-         Gtk_New_Hbox (Box2, False, 10);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, False, True, 0);
+      Gtk_New_Hbox (Box2, False, 10);
+      Set_Border_Width (Box2, 10);
+      Pack_Start (Box1, Box2, False, True, 0);
 
-         Gtk_New (Button2, "next");
-         Id := Note_Cb.Connect
-           (Button2, "clicked", Next_Page'Access, Notebook);
-         Pack_Start (Box2, Button2, True, True, 0);
+      Gtk_New (Button2, "next");
+      Id := Note_Cb.Connect
+        (Button2, "clicked", Next_Page'Access, Notebook);
+      Pack_Start (Box2, Button2, True, True, 0);
 
-         Gtk_New (Button2, "prev");
-         Id := Note_Cb.Connect
-           (Button2, "clicked", Prev_Page'Access, Notebook);
-         Pack_Start (Box2, Button2, True, True, 0);
+      Gtk_New (Button2, "prev");
+      Id := Note_Cb.Connect
+        (Button2, "clicked", Prev_Page'Access, Notebook);
+      Pack_Start (Box2, Button2, True, True, 0);
 
-         Gtk_New (Button2, "rotate");
-         Id := Note_Cb.Connect
-           (Button2, "clicked", Rotate_Notebook'Access, Notebook);
-         Pack_Start (Box2, Button2, True, True, 0);
+      Gtk_New (Button2, "rotate");
+      Id := Note_Cb.Connect
+        (Button2, "clicked", Rotate_Notebook'Access, Notebook);
+      Pack_Start (Box2, Button2, True, True, 0);
 
-         Gtk_New_Hseparator (Separator);
-         Pack_Start (Box1, Separator, Expand => False, Fill => True,
-                     Padding => 0);
-         Show (Separator);
-
-         Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
-         Set_Border_Width (Box2, Border_Width => 10);
-         Pack_Start (Box1, Box2, Expand => False, Fill => True, Padding => 0);
-         Show (Box2);
-
-         Gtk_New (Button2, Label => "Close");
-         Id := Widget_Cb.Connect (Button2, "clicked", Destroy'Access, Window);
-         Pack_Start
-           (Box2, Button2, Expand => True, Fill => True, Padding => 0);
-         Set_Flags (Button2, Can_Default);
-         Grab_Default (Button2);
-
-         Show_All (Window);
-      else
-         Destroy (Window);
-      end if;
-
+      Show_All (Frame);
    end Run;
 
 end Create_Notebook;

@@ -30,11 +30,9 @@
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Main; use Gtk.Main;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 with Common; use Common;
 
@@ -42,46 +40,39 @@ with Ada.Text_IO;
 
 package body Create_Main_Loop is
 
-
-   Window : aliased Gtk.Dialog.Gtk_Dialog;
-
    procedure Loop_Destroy (Win : access Gtk_Widget_Record) is
+      pragma Warnings (Off, Win);
    begin
-      Window := null;
       Main_Quit;
    end Loop_Destroy;
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id     : Guint;
       Label  : Gtk_Label;
       Button : Gtk_Button;
-  begin
+      Box    : Gtk_Box;
 
-      if Window = null then
-         Gtk_New (Window);
-         Id := Widget3_Cb.Connect
-           (Gtk_Window (Window), "destroy", Loop_Destroy'Access);
-         Set_Title (Window, "test_main_loop");
-         Set_Border_Width (Window, Border_Width => 0);
+   begin
+      Set_Label (Frame, "Test Main Loop");
 
-         Gtk_New (Label, "In recursive main loop...");
-         Set_Padding (Label, 20, 20);
-         Pack_Start (Get_Vbox (Window), Label, True, True, 0);
-         Show (Label);
+      Gtk_New_Vbox (Box, Homogeneous => False, Spacing => 0);
+      Add (Frame, Box);
 
-         Gtk_New (Button, "Leave");
-         Pack_Start (Get_Action_Area (Window), Button, False, True, 0);
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
-         Set_Flags (Button, Can_Default);
-         Grab_Default (Button);
-         Show (Button);
-         Show (Window);
-         Ada.Text_IO.Put_Line ("Create_Mainloop: start");
-         Gtk.Main.Main;
-         Ada.Text_IO.Put_Line ("Create_Mainloop: done");
-      else
-         Destroy (Window);
-      end if;
+      Gtk_New (Label, "In recursive main loop...");
+      Set_Padding (Label, 20, 20);
+
+      Pack_Start (Box, Label, False, False, 0);
+
+      Gtk_New (Button, "Leave");
+      Pack_Start (Box, Button, False, False, 0);
+      Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Box);
+      Set_Flags (Button, Can_Default);
+      Grab_Default (Button);
+
+      Show_All (Frame);
+      Ada.Text_IO.Put_Line ("Create_Mainloop: start");
+      Gtk.Main.Main;
+      Ada.Text_IO.Put_Line ("Create_Mainloop: done");
    end Run;
 
 end Create_Main_Loop;

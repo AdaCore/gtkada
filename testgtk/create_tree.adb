@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Unchecked_Deallocation;
 with Glib; use Glib;
 with Gdk; use Gdk;
 with Gtk.Adjustment; use Gtk.Adjustment;
@@ -37,10 +36,8 @@ with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
 with Gtk.Label; use Gtk.Label;
-with Gtk.Object; use Gtk.Object;
 with Gtk.Radio_Button; use Gtk.Radio_Button;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Separator; use Gtk.Separator;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Spin_Button; use Gtk.Spin_Button;
 with Gtk.Tree; use Gtk.Tree;
@@ -56,6 +53,8 @@ package body Create_Tree is
 
    Default_Number_Of_Item  : Gfloat := 3.0;
    Default_Recursion_Level : Gfloat := 3.0;
+
+   Tree_Area : Gtk_Box;
 
    --  This is the mapping for sTreeSampleSelection
    Single_Button       : Gtk_Radio_Button;
@@ -211,32 +210,28 @@ package body Create_Tree is
                                  Recursion_Level_Max : in Gint)
    is
       Id           : Guint;
-      Window       : Gtk_Window;
-      Box1,
-        Box2       : Gtk_Box;
+      Box2         : Gtk_Box;
       Scrolled     : Gtk_Scrolled_Window;
       Root_Tree    : My_Tree;
       Root_Item    : Gtk_Tree_Item;
-      Button       : Gtk_Button;
-      Sep          : Gtk_Separator;
-   begin
-      Gtk_New (Window, Window_Toplevel);
-      Set_Title (Window, "Tree Sample");
+      use Gtk.Widget.Widget_List;
+      List         : Gtk.Widget.Widget_List.Glist;
 
-      Gtk_New_Vbox (Box1, False, 0);
-      Add (Window, Box1);
-      SHow (Box1);
+   begin
+      List := Children (Tree_Area);
+      while Length (List) /= 0 loop
+         Remove (Tree_Area, Get_Data (List));
+         List := Next (List);
+      end loop;
 
       Gtk_New_Vbox (Box2, False, 0);
-      Pack_Start (Box1, Box2, True, True, 0);
+      Pack_Start (Tree_Area, Box2, True, True, 0);
       Set_Border_Width (Box2, 5);
-      Show (Box2);
 
       Gtk_New (Scrolled);
       Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
       Pack_Start (Box2, Scrolled, True, True, 0);
       Set_Usize (Scrolled, 200, 200);
-      Show (Scrolled);
 
       --  Create root tree widget
       Root_Tree := new My_Tree_Record;
@@ -252,62 +247,40 @@ package body Create_Tree is
       else
          Set_View_Mode (Root_Tree, Gtk.Enums.Tree_View_Item);
       end if;
-      Show (Root_Tree);
 
       if No_Root_Item then
          Root_Item := From_Tree.Convert (Root_Tree);
       else
          Gtk_New (Root_Item, "root item");
          Append (Root_Tree, Root_Item);
-         Show (Root_Item);
       end if;
 
       Create_Subtree (Root_Item, - Boolean'Pos (No_Root_Item), Nb_Item_Max,
                       Recursion_Level_Max);
 
       Gtk_New_Vbox (Box2, False, 0);
-      Pack_Start (Box1, Box2, False, False, 0);
+      Pack_Start (Tree_Area, Box2, False, False, 0);
       Set_Border_Width (Box2, 5);
-      Show (Box2);
 
       Gtk_New (Root_Tree.Add_Button, "Add Item");
       Set_Sensitive (Root_Tree.Add_Button, False);
       Id := Tree_Cb.Connect (Root_Tree.Add_Button, "clicked",
                              Cb_Add_New_Item'Access, Root_Tree);
       Pack_Start (Box2, Root_Tree.Add_Button, True, True, 0);
-      Show (Root_Tree.Add_Button);
 
       Gtk_New (Root_Tree.Remove_Button, "Remove Item(s)");
       Set_Sensitive (Root_Tree.Remove_Button, False);
       Id := Tree_Cb.Connect (Root_Tree.Remove_Button, "clicked",
                              Cb_Remove_Item'Access, Root_Tree);
       Pack_Start (Box2, Root_Tree.Remove_Button, True, True, 0);
-      Show (Root_Tree.Remove_Button);
 
       Gtk_New (Root_Tree.Subtree_Button, "Remove Subtree");
       Set_Sensitive (Root_Tree.Subtree_Button, False);
       Id := Tree_Cb.Connect (Root_Tree.Subtree_Button, "clicked",
                              Cb_Remove_Subtree'Access, Root_Tree);
       Pack_Start (Box2, Root_Tree.Subtree_Button, True, True, 0);
-      Show (Root_Tree.Subtree_Button);
 
-      --  Create Separator
-      Gtk_New_Hseparator (Sep);
-      Pack_Start (Box1, Sep, False, False, 0);
-      Show (Sep);
-
-      --  Create button box
-      Gtk_New_Vbox (Box2, False, 0);
-      Pack_Start (Box1, Box2, False, False, 0);
-      Set_Border_Width (Box2, 5);
-      Show (Box2);
-
-      Gtk_New (Button, "Close");
-      Pack_Start (Box2, Button, True, True, 0);
-      Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
-      Show (Button);
-
-      Show (Window);
+      Show_All (Tree_Area);
    end Create_Tree_Sample;
 
    procedure Cb_Create_Tree (Button : access Gtk_Widget_Record) is
@@ -341,7 +314,7 @@ package body Create_Tree is
                           No_Root_Item, Nb_Item, Recursion_Level);
    end Cb_Create_Tree;
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id       : Guint;
       Box1,
         Box2,
@@ -349,147 +322,103 @@ package body Create_Tree is
         Box4,
         Box5   : Gtk_Box;
       Button   : Gtk_Button;
-      Sep      : Gtk_Separator;
-      Frame    : Gtk_Frame;
+      Frame2   : Gtk_Frame;
       Adj      : Gtk_Adjustment;
       Label    : Gtk_Label;
+
    begin
+      Set_Label (Frame, "Tree");
 
-      if Window = null then
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect
-           (Window, "destroy", Destroy_Window'Access, Window'Access);
-         Set_Title (Window, "Tree Mode Selection Window");
-         Set_Border_Width (Window, Border_Width => 0);
+      Gtk_New_Vbox (Box1, False, 0);
+      Add (Frame, Box1);
 
-         Gtk_New_Vbox (Box1, False, 0);
-         Add (Window, Box1);
-         Show (Box1);
+      Gtk_New_Vbox (Box2, False, 5);
+      Pack_Start (Box1, Box2, False, False, 0);
+      Set_Border_Width (Box2, 5);
 
-         Gtk_New_Vbox (Box2, False, 5);
-         Pack_Start (Box1, Box2, True, True, 0);
-         Set_Border_Width (Box2, 5);
-         Show (Box2);
+      Gtk_New_Hbox (Box3, False, 5);
+      Pack_Start (Box2, Box3, False, False, 0);
 
-         Gtk_New_Hbox (Box3, False, 5);
-         Pack_Start (Box2, Box3, True, True, 0);
-         Show (Box3);
+      --  Create selection mode frame
+      Gtk_New (Frame2, "Selection Mode");
+      Pack_Start (Box3, Frame2, False, False, 0);
 
-         --  Create selection mode frame
-         Gtk_New (Frame, "Selection Mode");
-         Pack_Start (Box3, Frame, True, True, 0);
-         Show (Frame);
+      Gtk_New_Vbox (Box4, False, 0);
+      Add (Frame2, Box4);
+      Set_Border_Width (Box4, 5);
 
-         Gtk_New_Vbox (Box4, False, 0);
-         Add (Frame, Box4);
-         Set_Border_Width (Box4, 5);
-         Show (Box4);
+      Gtk_New (Single_Button, Widget_Slist.Null_List, "SINGLE");
+      Pack_Start (Box4, Single_Button, False, False, 0);
 
-         Gtk_New (Single_Button, Widget_Slist.Null_List, "SINGLE");
-         Pack_Start (Box4, Single_Button, True, True, 0);
-         Show (Single_Button);
+      Gtk_New (Browse_Button, Group (Single_Button), "BROWSE");
+      Pack_Start (Box4, Browse_Button, False, False, 0);
 
-         Gtk_New (Browse_Button, Group (Single_Button), "BROWSE");
-         Pack_Start (Box4, Browse_Button, True, True, 0);
-         Show (Browse_Button);
+      Gtk_New (Multiple_Button, Group (Browse_Button), "MULTIPLE");
+      Pack_Start (Box4, Multiple_Button, False, False, 0);
 
-         Gtk_New (Multiple_Button, Group (Browse_Button), "MULTIPLE");
-         Pack_Start (Box4, Multiple_Button, True, True, 0);
-         Show (Multiple_Button);
+      Mode_Group := Group (Multiple_Button);
 
-         Mode_Group := Group (Multiple_Button);
+      --  Create option mode frame
+      Gtk_New (Frame2, "Options");
+      Pack_Start (Box3, Frame2, False, False, 0);
 
-         --  Create option mode frame
-         Gtk_New (Frame, "Options");
-         Pack_Start (Box3, Frame, True, True, 0);
-         Show (Frame);
+      Gtk_New_Vbox (Box4, False, 0);
+      Add (Frame2, Box4);
+      Set_Border_Width (Box4, 5);
 
-         Gtk_New_Vbox (Box4, False, 0);
-         Add (Frame, Box4);
-         Set_Border_Width (Box4, 5);
-         Show (Box4);
+      Gtk_New (Draw_Line_Button, "Draw Line");
+      Pack_Start (Box4, Draw_Line_Button, False, False, 0);
+      Set_Active (Draw_Line_Button, True);
 
-         Gtk_New (Draw_Line_Button, "Draw Line");
-         Pack_Start (Box4, Draw_Line_Button, True, True, 0);
-         Set_Active (Draw_Line_Button, True);
-         Show (Draw_Line_Button);
+      Gtk_New (View_Line_Button, "View line mode");
+      Pack_Start (Box4, View_Line_Button, False, False, 0);
+      Set_Active (View_Line_Button, True);
 
-         Gtk_New (View_Line_Button, "View line mode");
-         Pack_Start (Box4, View_Line_Button, True, True, 0);
-         Set_Active (View_Line_Button, True);
-         Show (View_Line_Button);
+      Gtk_New (No_Root_Item_Button, "Without Root Item");
+      Pack_Start (Box4, No_Root_Item_Button, False, False, 0);
+      Set_Active (No_Root_Item_Button, True);
 
-         Gtk_New (No_Root_Item_Button, "Without Root Item");
-         Pack_Start (Box4, No_Root_Item_Button, True, True, 0);
-         Set_Active (No_Root_Item_Button, True);
-         Show (No_Root_Item_Button);
+      --  Create recursion parameter
+      Gtk_New (Frame2, "Size parameters");
+      Pack_Start (Box2, Frame2, False, False, 0);
 
-         --  Create recursion parameter
-         Gtk_New (Frame, "Size parameters");
-         Pack_Start (Box2, Frame, True, True, 0);
-         Show (Frame);
-
-         Gtk_New_Hbox (Box4, False, 5);
-         Add (Frame, Box4);
-         Set_Border_Width (Box4, 5);
-         Show (Box4);
+      Gtk_New_Hbox (Box4, False, 5);
+      Add (Frame2, Box4);
+      Set_Border_Width (Box4, 5);
 
          --  Create number of item spin button
-         Gtk_New_Hbox (Box5, False, 5);
-         Pack_Start (Box4, Box5, False, False, 0);
-         Show (Box5);
+      Gtk_New_Hbox (Box5, False, 5);
+      Pack_Start (Box4, Box5, False, False, 0);
 
-         Gtk_New (Label, "Number of Item");
-         Set_Alignment (Label, 0.0, 0.5);
-         Pack_Start (Box5, Label, False, True, 0);
-         Show (Label);
+      Gtk_New (Label, "Number of Item");
+      Set_Alignment (Label, 0.0, 0.5);
+      Pack_Start (Box5, Label, False, True, 0);
 
-         Gtk_New (Adj, Default_Number_Of_Item, 1.0, 255.0, 1.0, 5.0, 0.0);
-         Gtk_New (Nb_Item_Spinner, Adj, 0.0, 0);
-         Pack_Start (Box5, Nb_Item_Spinner, False, True, 0);
-         Show (Nb_Item_Spinner);
+      Gtk_New (Adj, Default_Number_Of_Item, 1.0, 255.0, 1.0, 5.0, 0.0);
+      Gtk_New (Nb_Item_Spinner, Adj, 0.0, 0);
+      Pack_Start (Box5, Nb_Item_Spinner, False, True, 0);
 
-         --  Create recursion level spin button
-         Gtk_New_Hbox (Box5, False, 5);
-         Pack_Start (Box4, Box5, False, False, 0);
-         Show (Box5);
+      --  Create recursion level spin button
+      Gtk_New_Hbox (Box5, False, 5);
+      Pack_Start (Box4, Box5, False, False, 0);
 
-         Gtk_New (Label, "Depth level");
-         Set_Alignment (Label, 0.0, 0.5);
-         Pack_Start (Box5, Label, False, True, 0);
-         Show (Label);
+      Gtk_New (Label, "Depth level");
+      Set_Alignment (Label, 0.0, 0.5);
+      Pack_Start (Box5, Label, False, True, 0);
 
-         Gtk_New (Adj, Default_Recursion_Level, 0.0, 255.0, 1.0, 5.0, 0.0);
-         Gtk_New (Recursion_Spinner, Adj, 0.0, 0);
-         Pack_Start (Box5, Recursion_Spinner, False, True, 0);
-         Show (Recursion_Spinner);
+      Gtk_New (Adj, Default_Recursion_Level, 0.0, 255.0, 1.0, 5.0, 0.0);
+      Gtk_New (Recursion_Spinner, Adj, 0.0, 0);
+      Pack_Start (Box5, Recursion_Spinner, False, False, 0);
 
-         --  Create horizontal Separator
-         Gtk_New_Hseparator (Sep);
-         Pack_Start (Box1, Sep, False, False, 0);
-         Show (Sep);
+      Gtk_New (Button, "Create Tree Sample");
+      Pack_Start (Box1, Button, False, False, 0);
+      Id := Widget_Cb.Connect (Button, "clicked", Cb_Create_Tree'Access,
+                               Button);
 
-         --  Create bottom button box
-         Gtk_New_Hbox (Box2, False, 0);
-         Pack_Start (Box1, Box2, False, False, 0);
-         Set_Border_Width (Box2, 5);
-         Show (Box2);
+      Gtk_New_Vbox (Tree_Area, Homogeneous => False, Spacing => 0);
+      Pack_Start (Box1, Tree_Area, False, False, 0);
 
-         Gtk_New (Button, "Create Tree Sample");
-         Pack_Start (Box2, Button, True, True, 0);
-         Id := Widget_Cb.Connect (Button, "clicked", Cb_Create_Tree'Access,
-                                  Button);
-         Show (Button);
-
-         Gtk_New (Button, "Close");
-         Pack_Start (Box2, Button, True, True, 0);
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
-         Show (Button);
-         Show (Window);
-      else
-         Destroy (Window);
-      end if;
-
+      Show_All (Frame);
    end Run;
 
 end Create_Tree;

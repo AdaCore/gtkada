@@ -65,10 +65,11 @@ package body Create_File_Selection is
    end Ok;
 
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id     : Guint;
       Button : Gtk_Button;
    begin
+      Set_Label (Frame, "File Selection");
 
       if Window = null then
          Gtk_New (Window, Title => "File Selection Dialog");

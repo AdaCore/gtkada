@@ -30,7 +30,6 @@
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Main; use Gtk.Main;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
@@ -42,7 +41,6 @@ package body Create_Test_Timeout is
 
    package Label_Timeout is new Timeout (Gtk_Label);
 
-   Dialog : aliased Gtk_Dialog;
    Timeout   : Guint;
    Count  : Integer := 0;
 
@@ -66,7 +64,6 @@ package body Create_Test_Timeout is
    procedure Destroy_Timeout (Window : access Gtk_Widget_Record) is
    begin
       Stop_Timeout (Window);
-      Dialog := null;
    end Destroy_Timeout;
 
    procedure Start_Timeout (Label : access Gtk_Label_Record) is
@@ -77,47 +74,36 @@ package body Create_Test_Timeout is
       end if;
    end Start_Timeout;
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id       : Guint;
       Button   : Gtk_Button;
       Label    : Gtk_Label;
+      Box      : Gtk_Box;
+
    begin
+      Set_Label (Frame, "Timeout Test");
+      Gtk_New_Vbox (Box, Homogeneous => False, Spacing => 0);
+      Add (Frame, Box);
 
-      if Dialog = null then
-         Gtk_New (Dialog);
-         Id := Widget3_Cb.Connect (Dialog, "destroy", Destroy_Timeout'Access);
-         Set_Title (Dialog, "Timeout Test");
-         Set_Border_Width (Dialog, Border_Width => 0);
+      Gtk_New (Label, "count : 0");
+      Set_Padding (Label, 10, 10);
+      Pack_Start (Box, Label, False, False, 0);
 
-         Gtk_New (Label, "count : 0");
-         Set_Padding (Label, 10, 10);
-         Pack_Start (Get_Vbox (Dialog), Label, True, True, 0);
-         Show (Label);
+      Gtk_New (Button, "start");
+      Id := Label_Cb.Connect (Button, "clicked", Start_Timeout'Access, Label);
+      Set_Flags (Button, Can_Default);
+      Pack_Start (Box, Button, False, False, 0);
 
-         Gtk_New (Button, "close");
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Dialog);
-         Set_Flags (Button, Can_Default);
-         Grab_Default (Button);
-         Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
-         Show (Button);
+      Gtk_New (Button, "stop");
+      Id := Widget_Cb.Connect
+        (Button, "clicked", Destroy_Timeout'Access, Frame);
+      Set_Flags (Button, Can_Default);
+      Pack_Start (Box, Button, False, False, 0);
 
-         Gtk_New (Button, "start");
-         Id := Label_Cb.Connect (Button, "clicked", Start_Timeout'Access, Label);
-         Set_Flags (Button, Can_Default);
-         Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
-         Show (Button);
+      Id := Widget3_Cb.Connect
+        (Box, "destroy", Destroy_Timeout'Access);
 
-         Gtk_New (Button, "stop");
-         Id := Widget_Cb.Connect
-           (Button, "clicked", Destroy_Timeout'Access, Dialog);
-         Set_Flags (Button, Can_Default);
-         Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
-         Show (Button);
-         Show (Dialog);
-      else
-         Destroy (Dialog);
-      end if;
-
+      Show_All (Frame);
    end Run;
 
 end Create_Test_Timeout;

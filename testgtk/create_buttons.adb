@@ -31,22 +31,24 @@ with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Frame; use Gtk.Frame;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Separator; use Gtk.Separator;
 with Gtk.Table; use Gtk.Table;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
-with Common; use Common;
 with Gtk; use Gtk;
 
 package body Create_Buttons is
 
    package Button_Cb is new Signal.Object_Callback (Gtk_Button_Record);
 
-   Window : aliased Gtk.Window.Gtk_Window;
+   -------------------
+   -- Button_Window --
+   -------------------
 
    procedure Button_Window (Widget : access Gtk_Button_Record) is
    begin
+      --  Toggles the visibility of the window
       if Visible_Is_Set (Widget) then
          Hide (Widget);
       else
@@ -54,75 +56,47 @@ package body Create_Buttons is
       end if;
    end Button_Window;
 
+   ---------
+   -- Run --
+   ---------
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id      : Guint;
-      Box1,
-        Box2  : Gtk_Box;
-      Separator : Gtk_Separator;
+      Box1    : Gtk_Box;
       Table   : Gtk_Table;
       Button  : array (0 .. 8) of Gtk_Button;
       Left_A  : array (0 .. 8) of Gint := (0, 1, 2, 0, 2, 1, 1, 2, 0);
       Right_A : array (0 .. 8) of Gint := (1, 2, 3, 1, 3, 2, 2, 3, 1);
       Top_A   : array (0 .. 8) of Gint := (0, 1, 2, 2, 0, 2, 0, 1, 1);
       Bott_A  : array (0 .. 8) of Gint := (1, 2, 3, 3, 1, 3, 1, 2, 2);
-      Close   : Gtk_Button;
    begin
+      Gtk.Frame.Set_Label (Frame, "Buttons");
 
-      if Window = null then
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect (Window, "destroy", Destroy_Window'Access,
-                                   Window'Access);
-         Set_Title (Window, "buttons");
-         Set_Border_Width (Window, Border_Width => 0);
+      Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
+      Add (Frame, Box1);
+      Show (Box1);
 
-         Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
-         Add (Window, Box1);
-         Show (Box1);
+      Gtk_New (Table, Rows => 3, Columns => 3, Homogeneous => False);
+      Set_Row_Spacings (Table, Spacing => 5);
+      Set_Col_Spacings (Table, Spacing => 5);
+      Set_Border_Width (Table, Border_Width => 10);
+      Pack_Start (Box1, Table, Expand => False, Fill => False, Padding => 0);
+      Show (Table);
 
-         Gtk_New (Table, Rows => 3, Columns => 3, Homogeneous => False);
-         Set_Row_Spacings (Table, Spacing => 5);
-         Set_Col_Spacings (Table, Spacing => 5);
-         Set_Border_Width (Table, Border_Width => 10);
-         Pack_Start (Box1, Table, Expand => True, Fill => True, Padding => 0);
-         Show (Table);
+      for J in Button'Range loop
+         Gtk_New (Button (J), Label => "Button" & Integer'Image (J));
+      end loop;
 
-         for J in Button'Range loop
-            Gtk_New (Button (J), Label => "Button" & Integer'Image (J));
-         end loop;
-
-         for J in Button'Range loop
-            Id :=Button_Cb.Connect (Button (J), "clicked", Button_Window'Access,
-                                    Button ((J + 1) mod Button'Length));
-            Attach (Table, Button (J),
-                    Left_A (J), Right_A (J),
-                    Top_A (J), Bott_A (J),
-                    Expand + Fill,
-                    Expand + Fill, Xpadding => 0, Ypadding => 0);
-            Show (Button (J));
-         end loop;
-
-         Gtk_New_Hseparator (Separator);
-         Pack_Start (Box1, Separator, Expand => False, Fill => True,
-                     Padding => 0);
-         Show (Separator);
-
-         Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
-         Set_Border_Width (Box2, Border_Width => 10);
-         Pack_Start (Box1, Box2, Expand => False, Fill => True, Padding => 0);
-         Show (Box2);
-
-         Gtk_New (Close, Label => "Close");
-         Id := Widget_Cb.Connect (Close, "clicked", Destroy'Access, Window);
-         Pack_Start (Box2, Close, Expand => True, Fill => True, Padding => 0);
-         Set_Flags (Close, Can_Default);
-         Grab_Default (Close);
-         Show (Close);
-         Show (Window);
-      else
-         Destroy (Window);
-      end if;
-
+      for J in Button'Range loop
+         Id :=Button_Cb.Connect (Button (J), "clicked", Button_Window'Access,
+                                 Button ((J + 1) mod Button'Length));
+         Attach (Table, Button (J),
+                 Left_A (J), Right_A (J),
+                 Top_A (J), Bott_A (J),
+                 Expand + Fill,
+                 Expand + Fill, Xpadding => 0, Ypadding => 0);
+         Show (Button (J));
+      end loop;
    end Run;
 
 end Create_Buttons;

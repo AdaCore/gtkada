@@ -27,10 +27,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Button;
+with Gtk.Frame;
 
 package Create_Arrow is
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record);
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
+   function Help return String;
 
 end Create_Arrow;

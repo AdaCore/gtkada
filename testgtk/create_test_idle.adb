@@ -30,8 +30,6 @@
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Container; use Gtk.Container;
-with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Enums;  use Gtk.Enums;
 with Gtk.Frame;  use Gtk.Frame;
 with Gtk.Label; use Gtk.Label;
@@ -55,7 +53,6 @@ package body Create_Test_Idle is
    package My_Button_Cb is new Signal.Callback
      (My_Button_Record, Gtk_Box);
 
-   Dialog : aliased Gtk_Dialog;
    Idle   : Guint;
    Count  : Integer := 0;
 
@@ -78,7 +75,6 @@ package body Create_Test_Idle is
    procedure Destroy_Idle (Window : access Gtk_Widget_Record) is
    begin
       Stop_Idle (Window);
-      Dialog := null;
    end Destroy_Idle;
 
    procedure Start_Idle (Label : access Gtk_Label_Record) is
@@ -94,91 +90,75 @@ package body Create_Test_Idle is
       Set_Resize_Mode (Contain, Button.Value);
    end Toggle_Container;
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id       : Guint;
       Button   : Gtk_Button;
       Box      : Gtk_Box;
       Label    : Gtk_Label;
       Container : Gtk_Box;
-      Frame    : Gtk_Frame;
+      Frame2   : Gtk_Frame;
       Myb      : My_Button;
       Gr       : Widget_Slist.GSList;
+      Vbox     : Gtk_Box;
+
    begin
+      Set_Label (Frame, "Test Idle");
 
-      if Dialog = null then
-         Gtk_New (Dialog);
-         Id := Widget3_Cb.Connect (Dialog, "destroy", Destroy_idle'Access);
-         Set_Title (Dialog, "Idle");
-         Set_Border_Width (Dialog, Border_Width => 0);
+      Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
+      Add (Frame, Vbox);
 
-         Gtk_New (Label, "count : " & Integer'Image (Count));
-         Set_Padding (Label, 10, 10);
-         Show (Label);
+      Id := Widget3_Cb.Connect
+        (Vbox, "destroy", Destroy_Idle'Access);
 
-         Gtk_New_Hbox (Container, False, 0);
-         Pack_Start (Container, Label, True, True, 0);
-         Show (Container);
-         Pack_Start (Get_Vbox (Dialog), Container, True, True, 0);
+      Gtk_New (Label, "count : " & Integer'Image (Count));
+      Set_Padding (Label, 10, 10);
 
-         Gtk_New (Frame);
-         Set_Border_Width (Frame, 5);
-         Pack_Start (Get_Vbox (Dialog), Frame);
-         Show (Frame);
+      Gtk_New_Hbox (Container, False, 0);
+      Pack_Start (Container, Label, False, False, 0);
+      Pack_Start (Vbox, Container, False, False, 0);
 
-         Gtk_New_Vbox (Box, False, 0);
-         Add (Frame, Box);
-         Show (Box);
+      Gtk_New (Frame2);
+      Set_Border_Width (Frame2, 5);
+      Pack_Start (Vbox, Frame2, False, False);
 
-         Myb := new My_Button_Record;
-         Initialize (Myb, Widget_Slist.Null_List, "Resize-Parent");
-         Myb.Value := Resize_Parent;
-         Id := My_Button_Cb.Connect
-           (Myb, "clicked", Toggle_Container'Access, Container);
-         Show (Myb);
-         Pack_Start (Box, Myb, True, True, 0);
+      Gtk_New_Vbox (Box, False, 0);
+      Add (Frame2, Box);
 
-         Gr := Group (Myb);
-         Myb := new My_Button_Record;
-         Initialize (Myb, Gr, "Resize-Queue");
-         Myb.Value := Resize_Queue;
-         Id := My_Button_Cb.Connect
-           (Myb, "clicked", Toggle_Container'Access, Container);
-         Show (Myb);
-         Pack_Start (Box, Myb, True, True, 0);
+      Myb := new My_Button_Record;
+      Initialize (Myb, Widget_Slist.Null_List, "Resize-Parent");
+      Myb.Value := Resize_Parent;
+      Id := My_Button_Cb.Connect
+        (Myb, "clicked", Toggle_Container'Access, Container);
+      Pack_Start (Box, Myb, False, False, 0);
 
-         Gr := Group (Myb);
-         Myb := new My_Button_Record;
-         Initialize (Myb, Gr, "Resize-Immediate");
-         Myb.Value := Resize_Immediate;
-         Id := My_Button_Cb.Connect
-           (Myb, "clicked", Toggle_Container'Access, Container);
-         Show (Myb);
-         Pack_Start (Box, Myb, True, True, 0);
+      Gr := Group (Myb);
+      Myb := new My_Button_Record;
+      Initialize (Myb, Gr, "Resize-Queue");
+      Myb.Value := Resize_Queue;
+      Id := My_Button_Cb.Connect
+        (Myb, "clicked", Toggle_Container'Access, Container);
+      Pack_Start (Box, Myb, False, False, 0);
 
-         Gtk_New (Button, "close");
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Dialog);
-         Set_Flags (Button, Can_Default);
-         Grab_Default (Button);
-         Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
-         Show (Button);
+      Gr := Group (Myb);
+      Myb := new My_Button_Record;
+      Initialize (Myb, Gr, "Resize-Immediate");
+      Myb.Value := Resize_Immediate;
+      Id := My_Button_Cb.Connect
+        (Myb, "clicked", Toggle_Container'Access, Container);
+      Pack_Start (Box, Myb, False, False, 0);
 
-         Gtk_New (Button, "start");
-         Id := Label_Cb.Connect (Button, "clicked", Start_Idle'Access, Label);
-         Set_Flags (Button, Can_Default);
-         Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
-         Show (Button);
+      Gtk_New (Button, "start");
+      Id := Label_Cb.Connect (Button, "clicked", Start_Idle'Access, Label);
+      Set_Flags (Button, Can_Default);
+      Pack_Start (Vbox, Button, False, False, 0);
 
-         Gtk_New (Button, "stop");
-         Id := Widget_Cb.Connect
-           (Button, "clicked", Destroy_Idle'Access, Dialog);
-         Set_Flags (Button, Can_Default);
-         Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
-         Show (Button);
-         Show (Dialog);
-      else
-         Destroy (Dialog);
-      end if;
+      Gtk_New (Button, "stop");
+      Id := Widget_Cb.Connect
+        (Button, "clicked", Destroy_Idle'Access, Vbox);
+      Set_Flags (Button, Can_Default);
+      Pack_Start (Vbox, Button, False, False, 0);
 
+      Show_All (Frame);
    end Run;
 
 end Create_Test_Idle;

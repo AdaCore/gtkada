@@ -29,54 +29,26 @@
 
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
 with Gtk.Calendar; use Gtk.Calendar;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Widget; use Gtk.Widget;
+with Gtk.Frame; use Gtk.Frame;
 with Gtk.Window; use Gtk.Window;
-with Common; use Common;
 with Gtk; use Gtk;
 
 package body Create_Calendar is
-
-   package Button_Cb is new Signal.Object_Callback (Gtk_Button_Record);
-
-   Window : aliased Gtk.Window.Gtk_Window;
-
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
-      Id       : Guint;
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1     : Gtk_Box;
       Calendar : Gtk_Calendar;
-      Close    : Gtk_Button;
    begin
+      Set_Label (Frame, "Calendar");
 
-      if Window = null then
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect (Window, "destroy", Destroy_Window'Access,
-                                   Window'Access);
-         Set_Title (Window, "Calendar");
-         Set_Border_Width (Window, Border_Width => 0);
+      Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
+      Add (Frame, Box1);
+      Show (Box1);
 
-         Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
-         Add (Window, Box1);
-         Show (Box1);
-
-         Gtk_New (Calendar);
-         Pack_Start (Box1, Calendar, False, False, 0);
-         Show (Calendar);
-
-         Gtk_New (Close, Label => "Close");
-         Id := Widget_Cb.Connect (Close, "clicked", Destroy'Access, Window);
-         Pack_Start (Box1, Close, Expand => True, Fill => True, Padding => 0);
-         Set_Flags (Close, Can_Default);
-         Grab_Default (Close);
-         Show (Close);
-         Show (Window);
-      else
-         Destroy (Window);
-      end if;
-
+      Gtk_New (Calendar);
+      Pack_Start (Box1, Calendar, False, False, 0);
+      Show (Calendar);
    end Run;
 
 end Create_Calendar;

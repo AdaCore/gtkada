@@ -82,10 +82,11 @@ package body Create_Dialog is
    end Label_Toggle;
 
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id     : Guint;
       Button : Gtk_Button;
    begin
+      Set_Label (Frame, "Dialog");
       if Dialog = null then
          Gtk_New (Dialog);
          Id := Dialog_Destroy.Connect

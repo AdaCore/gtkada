@@ -32,7 +32,6 @@ with Glib; use Glib;
 with Gtk.Widget;
 with Gtk.Color_Selection;        use Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
-with Gtk.Button;
 with Gtk.Enums;
 with Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
@@ -73,11 +72,12 @@ package body Create_Color_Selection is
    Dialog : aliased Gtk_Color_Selection_Dialog;
 
    procedure Run
-     (Widget : access Button.Gtk_Button_Record)
+     (Frame : access Gtk_Frame_Record'Class)
    is
       Cb_Id  : Guint;
    begin
 
+      Set_Label (Frame, "Color Selection");
       if Dialog = null then
          Gtk_New (Dialog, Title => "Color Selection Dialog");
          Set_Opacity (Get_Colorsel (Dialog), True);

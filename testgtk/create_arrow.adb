@@ -30,92 +30,84 @@
 with Glib; use Glib;
 with Gtk.Arrow; use Gtk.Arrow;
 with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Separator; use Gtk.Separator;
+with Gtk.Frame; use Gtk.Frame;
+with Gtk.Label; use Gtk.Label;
 with Gtk.Table; use Gtk.Table;
-with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
-with Common; use Common;
 with Gtk; use Gtk;
-with Ada.Text_IO;
 
 package body Create_Arrow is
 
-   package Button_Cb is new Signal.Object_Callback (Gtk_Button_Record);
+   function Help return String is
+   begin
+      return "This shows the four possible types of @bshadows@B that can"
+        & ASCII.LF
+        & "be used within @bGtkAda@B for @bGtk_Frame@B, @bGtk_Arrow@B,..."
+        & ASCII.LF;
+   end Help;
 
-   Window : aliased Gtk.Window.Gtk_Window;
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
-      Id      : Guint;
-      Box1,
-        Box2  : Gtk_Box;
-      Separator : Gtk_Separator;
-      Table   : Gtk_Table;
-      Close   : Gtk_Button;
-      Arrow   : Gtk_Arrow;
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
+      Box1      : Gtk_Box;
+      Box2      : Gtk_Box;
+      Table     : Gtk_Table;
+      Arrow     : Gtk_Arrow;
+      Label     : Gtk_Label;
 
    begin
-      if Window = null then
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect (Window, "destroy", Destroy_Window'Access,
-                                   Window'Access);
-         Set_Title (Window, "buttons");
-         Set_Border_Width (Window, Border_Width => 0);
+      Set_Label (Frame, "Arrows");
 
-         Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
-         Add (Window, Box1);
-         Show (Box1);
+      Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
+      Add (Frame, Box1);
 
-         Gtk_New (Table, Rows => 3, Columns => 3, Homogeneous => False);
-         Set_Row_Spacings (Table, Spacing => 5);
-         Set_Col_Spacings (Table, Spacing => 5);
-         Set_Border_Width (Table, Border_Width => 10);
-         Pack_Start (Box1, Table, Expand => True, Fill => True, Padding => 0);
-         Show (Table);
+      Gtk_New (Table, Rows => 3, Columns => 3, Homogeneous => False);
+      Set_Row_Spacings (Table, Spacing => 5);
+      Set_Col_Spacings (Table, Spacing => 5);
+      Set_Border_Width (Table, Border_Width => 10);
+      Pack_Start (Box1, Table, Expand => False, Fill => False, Padding => 0);
 
-         Gtk_New (Arrow, Arrow_Type => Arrow_Up, Shadow_Type => Shadow_In);
-         Show (Arrow);
-         Attach (Table, Arrow, 1, 2, 0, 1,
-                 Enums.Expand or Enums.Fill, Enums.Expand or Enums.Fill, 0, 0);
+      Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
+      Gtk_New (Arrow,
+               Arrow_Type  => Arrow_Up,
+               Shadow_Type => Shadow_In);
+      Pack_Start (Box2, Arrow, Expand => True, Fill => True, Padding => 0);
+      Gtk_New (Label, "Shadow_In");
+      Pack_Start (Box2, Label, Expand => True, Fill => True, Padding => 0);
+      Attach (Table, box2, 1, 2, 0, 1,
+              Enums.Expand or Enums.Fill, Enums.Expand or Enums.Fill, 0, 0);
 
-         Gtk_New (Arrow, Arrow_Type => Arrow_Left, Shadow_Type => Shadow_Out);
-         Show (Arrow);
-         Attach (Table, Arrow, 0, 1, 1, 2,
-                 Enums.Expand or Enums.Fill, Enums.Expand or Enums.Fill, 0, 0);
+      Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
+      Gtk_New (Arrow,
+               Arrow_Type  => Arrow_Left,
+               Shadow_Type => Shadow_Out);
+      Pack_Start (Box2, Arrow, Expand => True, Fill => True, Padding => 0);
+      Gtk_New (Label, "Shadow_Out");
+      Pack_Start (Box2, Label, Expand => True, Fill => True, Padding => 0);
+      Attach (Table, Box2, 0, 1, 1, 2,
+              Enums.Expand or Enums.Fill, Enums.Expand or Enums.Fill, 0, 0);
 
-         Gtk_New (Arrow, Arrow_Type => Arrow_Right, Shadow_Type => Shadow_Etched_In);
-         Show (Arrow);
-         Attach (Table, Arrow, 2, 3, 1, 2,
-                 Enums.Expand or Enums.Fill, Enums.Expand or Enums.Fill, 0, 0);
+      Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
+      Gtk_New (Arrow,
+               Arrow_Type  => Arrow_Right,
+               Shadow_Type => Shadow_Etched_In);
+      Pack_Start (Box2, Arrow, Expand => True, Fill => True, Padding => 0);
+      Gtk_New (Label, "Shadow_Etched_In");
+      Pack_Start (Box2, Label, Expand => True, Fill => True, Padding => 0);
+      Attach (Table, Box2, 2, 3, 1, 2,
+              Enums.Expand or Enums.Fill, Enums.Expand or Enums.Fill, 0, 0);
 
-         Gtk_New (Arrow, Arrow_Type => Arrow_Down, Shadow_Type => Shadow_Etched_Out);
-         Show (Arrow);
-         Attach (Table, Arrow, 1, 2, 2, 3,
-                 Enums.Expand or Enums.Fill, Enums.Expand or Enums.Fill, 0, 0);
+      Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
+      Gtk_New (Arrow,
+               Arrow_Type  => Arrow_Down,
+               Shadow_Type => Shadow_Etched_Out);
+      Pack_Start (Box2, Arrow, Expand => True, Fill => True, Padding => 0);
+      Gtk_New (Label, "Shadow_Etched_Out");
+      Pack_Start (Box2, Label, Expand => True, Fill => True, Padding => 0);
+      Attach (Table, Box2, 1, 2, 2, 3,
+              Enums.Expand or Enums.Fill, Enums.Expand or Enums.Fill, 0, 0);
 
-         Gtk_New_Hseparator (Separator);
-         Pack_Start (Box1, Separator, Expand => False, Fill => True,
-                     Padding => 0);
-         Show (Separator);
-
-         Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
-         Set_Border_Width (Box2, Border_Width => 10);
-         Pack_Start (Box1, Box2, Expand => False, Fill => True, Padding => 0);
-         Show (Box2);
-
-         Gtk_New (Close, Label => "Close");
-         Id := Widget_Cb.Connect (Close, "clicked", Destroy'Access, Window);
-         Pack_Start (Box2, Close, Expand => True, Fill => True, Padding => 0);
-         Set_Flags (Close, Can_Default);
-         Grab_Default (Close);
-         Show (Close);
-         Show (Window);
-      else
-         Destroy (Window);
-      end if;
-
+      Show_All (Box1);
    end Run;
 
 end Create_Arrow;

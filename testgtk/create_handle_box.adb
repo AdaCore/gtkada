@@ -29,17 +29,15 @@
 
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Handle_Box; use Gtk.Handle_Box;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Separator; use Gtk.Separator;
 with Gtk.Signal; use Gtk.Signal;
+with Gtk.Style;  use Gtk.Style;
 with Gtk.Toolbar; use Gtk.Toolbar;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
-with Common; use Common;
 
 with Ada.Text_IO;
 with Create_Toolbar;
@@ -48,8 +46,6 @@ package body Create_Handle_Box is
 
    package Handle_Cb is new Signal.Two_Callback
      (Gtk_Handle_Box_Record, String, Gtk_Widget_Record);
-   Window : aliased Gtk_Window;
-
 
    procedure Child_Signal (Handle : access Gtk_Handle_Box_Record;
                            Child  : in Gtk_Widget_Record;
@@ -64,7 +60,7 @@ package body Create_Handle_Box is
    end Child_Signal;
 
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id        : Guint;
       Vbox      : Gtk_Box;
       Hbox      : Gtk_Box;
@@ -74,89 +70,67 @@ package body Create_Handle_Box is
       Handle2   : Gtk_Handle_Box;
       Toolbar   : Gtk_Toolbar;
    begin
-      if Window = null then
-         Gtk_New (Window, Window_Toplevel);
-         Set_Title (Window, "Handle Box Test");
-         Set_Policy (Window,
-                     Allow_Shrink => True,
-                     Allow_Grow   => True,
-                     Auto_Shrink  => False);
-         Id := Destroy_Cb.Connect
-           (Window, "destroy", Destroy_Window'Access, Window'Access);
-         Set_Border_Width (Window, Border_Width => 20);
+      Set_Label (Frame, "Handle Box");
+      Gtk_New_Vbox (Vbox,
+                    Homogeneous => False,
+                    Spacing     => 0);
+      Add (Frame, Vbox);
 
-         Gtk_New_Vbox (Vbox,
-                       Homogeneous => False,
-                       Spacing     => 0);
-         Add (Window, Vbox);
-         Show (Vbox);
+      Gtk_New (Label, "Above");
+      Pack_Start (Vbox, Label, False, False);
 
-         Gtk_New (Label, "Above");
-         Add (Vbox, Label);
-         Show (Label);
+      Gtk_New_Hseparator (Separator);
+      Pack_Start (Vbox, Separator, False, False);
 
-         Gtk_New_Hseparator (Separator);
-         Add (Vbox, Separator);
-         Show (Separator);
+      Gtk_New_Hbox (Hbox,
+                    Homogeneous => False,
+                    Spacing     => 10);
+      Pack_Start (Vbox, Hbox, False, False);
 
-         Gtk_New_Hbox (Hbox,
-                       Homogeneous => False,
-                       Spacing     => 10);
-         Add (Vbox, Hbox);
-         Show (Hbox);
+      Gtk_New_Hseparator (Separator);
+      Pack_Start (Vbox, Separator, False, False);
 
-         Gtk_New_Hseparator (Separator);
-         Add (Vbox, Separator);
-         Show (Separator);
+      Gtk_New (Label, "Below");
+      Pack_Start (Vbox, Label, False, False);
 
-         Gtk_New (Label, "Below");
-         Add (Vbox, Label);
-         Show (Label);
+      Gtk_New (Handle);
+      Pack_Start (Hbox,
+                  Child   => Handle,
+                  Expand  => False,
+                  Fill    => False,
+                  Padding => 0);
+      Id := Handle_Cb.Connect (Handle, "child_attached",
+                               Child_Signal'Access, "attached");
+      Id := Handle_Cb.Connect (Handle, "child_detached",
+                               Child_Signal'Access, "detached");
 
-         Gtk_New (Handle);
-         Pack_Start (Hbox,
-                     Child   => Handle,
-                     Expand  => False,
-                     Fill    => False,
-                     Padding => 0);
-         Id := Handle_Cb.Connect (Handle, "child_attached",
-                                  Child_Signal'Access, "attached");
-         Id := Handle_Cb.Connect (Handle, "child_detached",
-                                  Child_Signal'Access, "detached");
-         Show (Handle);
+      Create_Toolbar.Make_Toolbar (Toolbar, Get_Window (Frame),
+                                   Get_Style (Frame));
+      Set_Button_Relief (Toolbar, Relief_Normal);
+      Add (Handle, Toolbar);
 
-         Create_Toolbar.Make_Toolbar (Toolbar, Window);
-         Set_Button_Relief (Toolbar, Relief_Normal);
-         Add (Handle, Toolbar);
-         Show (Toolbar);
+      Gtk_New (Handle);
+      Pack_Start (Hbox,
+                  Child   => Handle,
+                  Expand  => False,
+                  Fill    => False,
+                  Padding => 0);
+      Id := Handle_Cb.Connect (Handle, "child_attached",
+                               Child_Signal'Access, "attached");
+      Id := Handle_Cb.Connect (Handle, "child_detached",
+                               Child_Signal'Access, "detached");
 
-         Gtk_New (Handle);
-         Pack_Start (Hbox,
-                     Child   => Handle,
-                     Expand  => False,
-                     Fill    => False,
-                     Padding => 0);
-         Id := Handle_Cb.Connect (Handle, "child_attached",
-                                  Child_Signal'Access, "attached");
-         Id := Handle_Cb.Connect (Handle, "child_detached",
-                                  Child_Signal'Access, "detached");
-         Show (Handle);
+      Gtk_New (Handle2);
+      Add (Handle, Handle2);
+      Id := Handle_Cb.Connect (Handle2, "child_attached",
+                               Child_Signal'Access, "attached");
+      Id := Handle_Cb.Connect (Handle2, "child_detached",
+                               Child_Signal'Access, "detached");
 
-         Gtk_New (Handle2);
-         Add (Handle, Handle2);
-         Id := Handle_Cb.Connect (Handle2, "child_attached",
-                                  Child_Signal'Access, "attached");
-         Id := Handle_Cb.Connect (Handle2, "child_detached",
-                                  Child_Signal'Access, "detached");
-         Show (Handle2);
+      Gtk_New (Label, "Fooo!");
+      Add (Handle2, Label);
 
-         Gtk_New (Label, "Fooo!");
-         Add (Handle2, Label);
-         Show (Label);
-         Show (Window);
-      else
-         Destroy (Window);
-      end if;
+      Show_All (Frame);
    end Run;
 
 end Create_Handle_Box;

@@ -29,25 +29,23 @@
 
 with Glib; use Glib;
 
-with Gdk;           use Gdk;
+with Common;           use Common;
 with Gdk.Drawable;  use Gdk.Drawable;
 with Gdk.Event;     use Gdk.Event;
 with Gdk.GC;        use Gdk.GC;
 with Gdk.Rectangle; use Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Window;    use Gdk.Window;
-
-with Gtk;              use Gtk;
+with Gdk;           use Gdk;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Button;       use Gtk.Button;
-with Gtk.Dialog;       use Gtk.Dialog;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Scrollbar;    use Gtk.Scrollbar;
 with Gtk.Signal;
 with Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
-with Common;           use Common;
+with Gtk;              use Gtk;
 
 package body Create_Scroll_Test is
 
@@ -67,8 +65,6 @@ package body Create_Scroll_Test is
 
    Scroll_Test_Pos : Gint := 0;
    Scroll_Test_GC : Gdk.GC.Gdk_GC;
-   Dialog : aliased Gtk.Dialog.Gtk_Dialog;
-
 
    -------------------------
    --  Adjustment_Change  --
@@ -207,73 +203,65 @@ package body Create_Scroll_Test is
    --  Run  --
    -----------
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id : Guint;
       Hbox : Box.Gtk_Box;
+      Vbox : Box.Gtk_Box;
       Drawing_Area : Gtk.Drawing_Area.Gtk_Drawing_Area;
       Adj : Gtk.Adjustment.Gtk_Adjustment;
       Scrollbar : Gtk.Scrollbar.Gtk_Scrollbar;
       Button : Gtk.Button.Gtk_Button;
+
    begin
-      if Dialog = null then
+      Set_Label (Frame, "Scroll Test");
 
-         Gtk.Dialog.Gtk_New (Dialog);
-         Id := Destroy_Dialog_Cb.Connect
-           (Dialog, "destroy", Destroy_Dialog'Access, Dialog'Access);
-         Set_Title (Window => Dialog, Title => "Scroll Test");
-         Set_Border_Width (Dialog, 0);
+      Box.Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
+      Add (Frame, Vbox);
 
-         Box.Gtk_New_Hbox (Hbox, Homogeneous => False, Spacing => 0);
-         Box.Pack_Start (In_Box => Gtk.Dialog.Get_Vbox (Dialog), Child => Hbox);
-         Show (Hbox);
+      Box.Gtk_New_Hbox (Hbox, Homogeneous => False, Spacing => 0);
+      Box.Pack_Start (In_Box => Vbox, Child => Hbox);
 
-         Gtk.Drawing_Area.Gtk_New (Drawing_Area);
-         Gtk.Drawing_Area.Size (Darea => Drawing_Area,
-                                Width => 200, Height => 200);
-         Box.Pack_Start (In_Box => Hbox, Child => Drawing_Area);
-         Show (Drawing_Area);
+      Gtk.Drawing_Area.Gtk_New (Drawing_Area);
+      Gtk.Drawing_Area.Size (Darea => Drawing_Area,
+                             Width => 200, Height => 200);
+      Box.Pack_Start (In_Box => Hbox, Child => Drawing_Area);
 
-         Set_Events (Widget => Drawing_Area,
-                     Events => Gdk.Types.Exposure_Mask);
+      Unrealize (Drawing_Area); --  Required for Set_Events
+      Set_Events (Widget => Drawing_Area,
+                  Events => Gdk.Types.Exposure_Mask);
 
-         Adjustment.Gtk_New (Adjustment => Adj, Value => 0.0, Lower => 0.0,
-                             Upper => 1000.0, Step_Increment => 1.0,
-                             Page_Increment => 180.0, Page_Size => 200.0);
-         Scroll_Test_Pos := 0;
+      Adjustment.Gtk_New (Adjustment => Adj, Value => 0.0, Lower => 0.0,
+                          Upper => 1000.0, Step_Increment => 1.0,
+                          Page_Increment => 180.0, Page_Size => 200.0);
+      Scroll_Test_Pos := 0;
 
-         Gtk.Scrollbar.Gtk_New_Vscrollbar (Widget => scrollbar,
-                                           Adjustment => Adj);
-         Box.Pack_Start (In_Box => Hbox, Child => Scrollbar,
-                         Expand => False, Fill => False);
-         Show (Scrollbar);
+      Gtk.Scrollbar.Gtk_New_Vscrollbar (Widget => scrollbar,
+                                        Adjustment => Adj);
+      Box.Pack_Start (In_Box => Hbox, Child => Scrollbar,
+                      Expand => False, Fill => False);
 
-         Id := Event_Expose_Cb.Connect (Obj => Drawing_Area,
-                                        Name => "expose_event",
-                                        Func => Expose'Access,
+      Id := Event_Expose_Cb.Connect (Obj => Drawing_Area,
+                                     Name => "expose_event",
+                                     Func => Expose'Access,
+                                     Func_Data => Adj);
+
+      Id := Event_Configure_Cb.Connect (Obj => Drawing_Area,
+                                        Name => "configure_event",
+                                        Func => Configure'Access,
                                         Func_Data => Adj);
 
-         Id := Event_Configure_Cb.Connect (Obj => Drawing_Area,
-                                           Name => "configure_event",
-                                           Func => Configure'Access,
-                                           Func_Data => Adj);
+      Id := Adjustment_Cb.Connect (Obj => Adj,
+                                   Name => "value_changed",
+                                   Func => Adjustment_Change'Access,
+                                   Func_Data => Drawing_Area);
 
-         Id := Adjustment_Cb.Connect (Obj => Adj,
-                                      Name => "value_changed",
-                                      Func => Adjustment_Change'Access,
-                                      Func_Data => Drawing_Area);
+      Gtk.Button.Gtk_New (Button, Label => "Quit");
+      Box.Pack_Start (In_Box => Vbox, Child => Button, Expand => False, Fill => False);
+      Id := Widget_Cb.Connect (Button, "clicked",
+                               Gtk.Widget.Destroy'Access,
+                               Frame);
 
-         Gtk.Button.Gtk_New (Button, Label => "Quit");
-         Box.Pack_Start (In_Box => Gtk.Dialog.Get_Action_Area (Dialog),
-                         Child => Button);
-         Id := Widget_Cb.Connect (Button, "clicked",
-                                  Gtk.Widget.Destroy'Access,
-                                  Dialog);
-         Show (Button);
-         Show (Dialog);
-      else
-         Destroy (Dialog);
-      end if;
-
+      Show_All (Frame);
    end Run;
 
 end Create_Scroll_Test;

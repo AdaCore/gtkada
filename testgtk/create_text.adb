@@ -31,28 +31,22 @@ with Glib; use Glib;
 with Gdk.Color; use Gdk.Color;
 with Gdk.Font; use Gdk.Font;
 with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
 with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Hbutton_Box; use Gtk.Hbutton_Box;
-with Gtk.Separator; use Gtk.Separator;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Text; use Gtk.Text;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
-with Common; use Common;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
 package body Create_Text is
 
    package Text_Cb is new Signal.Callback (Gtk_Toggle_Button_Record, Gtk_Text);
-
-   Window : aliased Gtk_Window;
 
    type String_Access is access String;
    type Text_Colors_Type is record
@@ -86,7 +80,7 @@ package body Create_Text is
       Set_Word_Wrap (Text, Is_Active (Toggle));
    end Word_Wrap;
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id           : Guint;
       Box1,
         Box2       : Gtk_Box;
@@ -94,118 +88,84 @@ package body Create_Text is
       Text         : Gtk_Text;
       Font         : Gdk_Font;
       Check        : Gtk_Check_Button;
-      Separator    : Gtk_Separator;
-      Button       : Gtk_Button;
       Scrolled     : Gtk_Scrolled_Window;
       Color_I, Color_J : Gdk_Color;
+
    begin
+      Set_Label (Frame, "Text");
 
-      if Window = null then
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect
-           (Window, "destroy", Destroy_Window'Access, Window'Access);
-         Set_Name (Window, "text window");
-         Set_Title (Window, "test");
-         Set_Usize (Window, 500, 500);
-         Set_Policy (Window, True, True, False);
-         Set_Border_Width (Window, Border_Width => 0);
+      Gtk_New_Vbox (Box1, False, 0);
+      Add (Frame, Box1);
 
-         Gtk_New_Vbox (Box1, False, 0);
-         Add (Window, Box1);
-         Show (Box1);
+      Gtk_New_Vbox (Box2, False, 10);
+      Set_Border_Width (Box2, 10);
+      Pack_Start (Box1, Box2, True, True, 0);
+      Show (Box2);
 
-         Gtk_New_Vbox (Box2, False, 10);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, True, True, 0);
-         Show (Box2);
+      Gtk_New (Scrolled);
+      Pack_Start (Box2, Scrolled, True, True, 0);
+      Set_Policy (Scrolled, Policy_Never, Policy_Always);
+      Show (Scrolled);
 
-         Gtk_New (Scrolled);
-         Pack_Start (Box2, Scrolled, True, True, 0);
-         Set_Policy (Scrolled, Policy_Never, Policy_Always);
-         Show (Scrolled);
+      Gtk_New (Text);
+      Set_Editable (Text, True);
+      Add (Scrolled, Text);
+      Grab_Focus (Text);
 
-         Gtk_New (Text);
-         Set_Editable (Text, True);
-         Add (Scrolled, Text);
-         Grab_Focus (Text);
-         Show (Text);
+      Freeze (Text);
 
-         Freeze (Text);
+      Load (Font, "-adobe-courier-medium-r-normal--*-120-*-*-*-*-*-*");
 
-         Load (Font, "-adobe-courier-medium-r-normal--*-120-*-*-*-*-*-*");
-
-         for I in Text_Colors'Range loop
-            Insert (Text, Font,
-                    White (Get_Colormap (Text)), Null_Color,
-                    Text_Colors (I).Name.all & Ascii.HT, -1);
-            Set_Rgb (Color_I, Text_Colors (I).Red, Text_Colors (I).Green,
-                     Text_Colors (I).Blue);
-            for J in Text_Colors'Range loop
-               Set_Rgb (Color_J, Text_Colors (J).Red, Text_Colors (J).Green,
-                        Text_Colors (J).Blue);
-               Insert (Text, Font, Color_J, Color_I, "XYZ", -1);
-            end loop;
-            Insert (Text, Null_Font, Null_Color, Null_Color,
-                    "" & Ascii.LF, -1);
+      for I in Text_Colors'Range loop
+         Insert (Text, Font,
+                 White (Get_Colormap (Text)), Null_Color,
+                 Text_Colors (I).Name.all & Ascii.HT, -1);
+         Set_Rgb (Color_I, Text_Colors (I).Red, Text_Colors (I).Green,
+                  Text_Colors (I).Blue);
+         for J in Text_Colors'Range loop
+            Set_Rgb (Color_J, Text_Colors (J).Red, Text_Colors (J).Green,
+                     Text_Colors (J).Blue);
+            Insert (Text, Font, Color_J, Color_I, "XYZ", -1);
          end loop;
+         Insert (Text, Null_Font, Null_Color, Null_Color,
+                 "" & Ascii.LF, -1);
+      end loop;
 
-         declare
-            Buffer : String (1 .. 1024);
-            Last   : Natural;
-            Infile       : File_Type;
-         begin
-            Open (Infile, In_File, "create_text.adb");
-            while not End_Of_File (Infile) loop
-               Get_Line (Infile, Buffer, Last);
+      declare
+         Buffer : String (1 .. 1024);
+         Last   : Natural;
+         Infile       : File_Type;
+      begin
+         Open (Infile, In_File, "create_text.adb");
+         while not End_Of_File (Infile) loop
+            Get_Line (Infile, Buffer, Last);
 
-               Insert (Text, Null_Font, White (Get_Colormap (Text)),
-                       Null_Color,
-                       Buffer (1 .. Last) & Ascii.LF, Gint (Last) + 1);
-            end loop;
-            Close (Infile);
-         exception
-            when Name_Error =>
-               Put_Line ("File create_text.adb not found....");
-         end;
+            Insert (Text, Null_Font, White (Get_Colormap (Text)),
+                    Null_Color,
+                    Buffer (1 .. Last) & Ascii.LF, Gint (Last) + 1);
+         end loop;
+         Close (Infile);
+      exception
+         when Name_Error =>
+            Put_Line ("File create_text.adb not found....");
+      end;
 
-         Thaw (Text);
+      Thaw (Text);
 
-         Gtk_New (Hbox);
-         Pack_Start (Box2, Hbox, False, False, 0);
-         Show (Hbox);
+      Gtk_New (Hbox);
+      Pack_Start (Box2, Hbox, False, False, 0);
 
-         Gtk_New (Check, "Editable");
-         Pack_Start (Hbox, Check, False, False, 0);
-         Id := Text_Cb.Connect (Check, "toggled", Toggle_Editable'Access, Text);
-         Set_Active (Check, True);
-         Show (Check);
+      Gtk_New (Check, "Editable");
+      Pack_Start (Hbox, Check, False, False, 0);
+      Id := Text_Cb.Connect (Check, "toggled", Toggle_Editable'Access, Text);
+      Set_Active (Check, True);
 
-         Gtk_New (Check, "Wrap Words");
-         Pack_Start (Hbox, Check, False, False, 0);
-         Id := Text_Cb.Connect (Check, "toggled", Word_Wrap'Access, Text);
-         Set_Active (Check, False);
-         Show (Check);
+      Gtk_New (Check, "Wrap Words");
+      Pack_Start (Hbox, Check, False, False, 0);
+      Id := Text_Cb.Connect (Check, "toggled", Word_Wrap'Access, Text);
+      Set_Active (Check, False);
 
-         Gtk_New_Hseparator (Separator);
-         Pack_Start (Box1, Separator, False, True, 0);
-         Show (Separator);
-
-         Gtk_New_Vbox (Box2, False, 10);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, False, True, 0);
-         Show (Box2);
-
-         Gtk_New (Button, "close");
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
-         Pack_Start (Box2, Button, True, True, 0);
-         Set_Flags (Button, Can_Default);
-         Grab_Default (Button);
-         Show (Button);
-         Show (Window);
-      else
-         Destroy (Window);
-      end if;
-
+      Show_All (Frame);
    end Run;
 
 end Create_Text;

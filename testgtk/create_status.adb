@@ -32,12 +32,8 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Separator; use Gtk.Separator;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
-with Common; use Common;
 
 with Ada.Text_IO;
 with Interfaces.C.Strings;
@@ -54,7 +50,6 @@ package body Create_Status is
 
    package Status_Cb is new Signal.Object_Callback (Gtk_Status_Bar_Record);
 
-   Window  : aliased Gtk.Window.Gtk_Window;
    Counter : Gint := 1;
 
    procedure Push (Status : access Gtk_Status_Bar_Record) is
@@ -130,85 +125,52 @@ package body Create_Status is
       end loop;
    end Dump;
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id        : Guint;
       Box1,
         Box2    : Gtk_Box;
       Status    : Gtk_Status_Bar;
       Button    : Gtk_Button;
-      Separator : Gtk_Separator;
+
    begin
+      Set_Label (Frame, "Status Bar");
 
-      if Window = null then
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect
-           (Window, "destroy", Destroy_Window'Access, Window'Access);
-         Set_Title (Window, "Status");
-         Set_Border_Width (Window, Border_Width => 0);
+      Gtk_New_Vbox (Box1, False, 0);
+      Add (Frame, Box1);
 
-         Gtk_New_Vbox (Box1, False, 0);
-         Add (Window, Box1);
-         Show (Box1);
+      Gtk_New_Vbox (Box2, False, 10);
+      Set_Border_Width (Box2, 10);
+      Pack_Start (Box1, Box2, False, False, 0);
 
-         Gtk_New_Vbox (Box2, False, 10);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, True, True, 0);
-         Show (Box2);
+      Gtk_New (Status);
+      Pack_End (Box1, Status, False, False, 0);
+      Id := Status_Cb.Connect (Status, "text_popped", Popped'Access,
+                               Status);
 
-         Gtk_New (Status);
-         Pack_End (Box1, Status, True, True, 0);
-         Show (Status);
-         Id := Status_Cb.Connect (Status, "text_popped", Popped'Access,
-                                  Status);
+      --  FIXME : the C testgtk uses gtk_widget_new here, which are
+      --  functions with multiple arguments
 
-         --  FIXME : the C testgtk uses gtk_widget_new here, which are
-         --  functions with multiple arguments
+      Gtk_New (Button, "Push Something");
+      Pack_Start (Box2, Button, False, False, 0);
+      Id := Status_Cb.Connect (Button, "clicked", Push'Access, Status);
 
-         Gtk_New (Button, "Push Something");
-         Show (Button);
-         Pack_Start (Box2, Button, False, False, 0);
-         Id := Status_Cb.Connect (Button, "clicked", Push'Access, Status);
+      Gtk_New (Button, "Pop");
+      Pack_Start (Box2, Button, False, False, 0);
+      Id := Status_Cb.Connect (Button, "clicked", Pop'Access, Status);
 
-         Gtk_New (Button, "Pop");
-         Show (Button);
-         Pack_Start (Box2, Button, False, False, 0);
-         Id := Status_Cb.Connect (Button, "clicked", Pop'Access, Status);
+      Gtk_New (Button, "Steal #4");
+      Pack_Start (Box2, Button, False, False, 0);
+      Id := Status_Cb.Connect (Button, "clicked", Steal'Access, Status);
 
-         Gtk_New (Button, "Steal #4");
-         Show (Button);
-         Pack_Start (Box2, Button, False, False, 0);
-         Id := Status_Cb.Connect (Button, "clicked", Steal'Access, Status);
+      Gtk_New (Button, "Dump stack");
+      Pack_Start (Box2, Button, False, False, 0);
+      Id := Status_Cb.Connect (Button, "clicked", Dump'Access, Status);
 
-         Gtk_New (Button, "Dump stack");
-         Show (Button);
-         Pack_Start (Box2, Button, False, False, 0);
-         Id := Status_Cb.Connect (Button, "clicked", Dump'Access, Status);
+      Gtk_New (Button, "Test contexts");
+      Pack_Start (Box2, Button, False, False, 0);
+      Id := Status_Cb.Connect (Button, "clicked", Contexts'Access, Status);
 
-         Gtk_New (Button, "Test contexts");
-         Show (Button);
-         Pack_Start (Box2, Button, False, False, 0);
-         Id := Status_Cb.Connect (Button, "clicked", Contexts'Access, Status);
-
-         Gtk_New_Hseparator (Separator);
-         Pack_Start (Box1, Separator, False, True, 0);
-         Show (Separator);
-
-         Gtk_New_Vbox (Box2, False, 10);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, False, True, 0);
-         Show (Box2);
-
-         Gtk_New (Button, "close");
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
-         Pack_Start (Box2, Button, True, True, 0);
-         Set_Flags (Button, Can_Default);
-         Grab_Default (Button);
-         Show (Button);
-         Show (Window);
-      else
-         Destroy (Window);
-      end if;
-
+      Show_All (Frame);
    end Run;
 
 end Create_Status;

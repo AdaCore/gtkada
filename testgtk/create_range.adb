@@ -35,76 +35,40 @@ with Gtk.Enums; use Gtk.Enums;
 with Gtk.Scale; use Gtk.Scale;
 with Gtk.Scrollbar; use Gtk.Scrollbar;
 with Gtk.Separator; use Gtk.Separator;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
-with Common; use Common;
 
 package body Create_Range is
 
-   Window : aliased Gtk.Window.Gtk_Window;
-
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
-      Id         : Guint;
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1       : Gtk_Box;
       Box2       : Gtk_Box;
       Adjustment : Gtk_Adjustment;
       Scale      : Gtk_Scale;
       Scrollbar  : Gtk_Scrollbar;
-      Separator  : Gtk_Separator;
-      Button     : Gtk_Button;
+
    begin
+      Set_Label (Frame, "Range");
 
-      if Window = null then
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect
-           (Window, "destroy", Destroy_Window'Access, Window'Access);
-         Set_Title (Window, "range");
-         Set_Border_Width (Window, Border_Width => 0);
+      Gtk_New_Vbox (Box1, False, 0);
+      Add (Frame, Box1);
 
-         Gtk_New_Vbox (Box1, False, 0);
-         Add (Window, Box1);
-         Show (Box1);
+      Gtk_New_Vbox (Box2, False, 10);
+      Set_Border_Width (Box2, 10);
+      Pack_Start (Box1, Box2, False, False, 0);
 
-         Gtk_New_Vbox (Box2, False, 10);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, True, True, 0);
-         Show (Box2);
+      Gtk_New (Adjustment, 0.0, 0.0, 101.0, 0.1, 1.0, 1.0);
+      Gtk_New_Hscale (Scale, Adjustment);
+      Set_Usize (Scale, 150, 30);
+      Set_Update_Policy (Scale, Update_Delayed);
+      Set_Digits (Scale, 1);
+      Set_Draw_Value (Scale, True);
+      Pack_Start (Box2, Scale, True, True, 0);
 
-         Gtk_New (Adjustment, 0.0, 0.0, 101.0, 0.1, 1.0, 1.0);
-         Gtk_New_Hscale (Scale, Adjustment);
-         Set_Usize (Scale, 150, 30);
-         Set_Update_Policy (Scale, Update_Delayed);
-         Set_Digits (Scale, 1);
-         Set_Draw_Value (Scale, True);
-         Pack_Start (Box2, Scale, True, True, 0);
-         Show (Scale);
+      Gtk_New_Hscrollbar (Scrollbar, Adjustment);
+      Set_Update_Policy (Scrollbar, Update_Continuous);
+      Pack_Start (Box2, Scrollbar, True, True, 0);
 
-         Gtk_New_Hscrollbar (Scrollbar, Adjustment);
-         Set_Update_Policy (Scrollbar, Update_Continuous);
-         Pack_Start (Box2, Scrollbar, True, True, 0);
-         Show (Scrollbar);
-
-         Gtk_New_Hseparator (Separator);
-         Pack_Start (Box1, Separator, False, True, 0);
-         Show (Separator);
-
-         Gtk_New_Vbox (Box2, False, 10);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, False, True, 0);
-         Show (Box2);
-
-         Gtk_New (Button, "close");
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
-         Pack_Start (Box2, Button, True, True, 0);
-         Set_Flags (Button, Can_Default);
-         Grab_Default (Button);
-         Show (Button);
-         Show (Window);
-      else
-         Destroy (Window);
-      end if;
-
+      Show_All (Frame);
    end Run;
 
 end Create_Range;

@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
-with Gdk;  use Gdk;
 with Gtk.Box;    use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Check_Button; use Gtk.Check_Button;
@@ -36,7 +35,6 @@ with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Paned; use Gtk.Paned;
-with Gtk.Signal; use Gtk.Signal;
 with Gtk.Table; use Gtk.Table;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
@@ -44,8 +42,6 @@ with Gtk; use Gtk;
 with Common; use Common;
 
 package body Create_Paned is
-
-   Window : aliased Gtk.Window.Gtk_Window;
 
    procedure Toggle_Resize (Child : access Gtk_Widget_Record) is
       Paned : Gtk_Paned := Gtk_Paned (Get_Parent (Child));
@@ -153,69 +149,55 @@ package body Create_Paned is
       return Frame;
    end Create_Pane_Options;
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       VPaned : Gtk_Paned;
       HPaned : Gtk_Paned;
-      Frame  : Gtk_Frame;
+      Frame2  : Gtk_Frame;
       Button : Gtk_Button;
-      Id     : Guint;
       Vbox   : Gtk_Box;
+
    begin
 
-      if Window = null then
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect
-           (Window, "destroy", Destroy_Window'Access, Window'Access);
-         Set_Title (Window, "Panes");
-         Set_Border_Width (Window, Border_Width => 0);
+      Set_Label (Frame, "Panes");
 
-         Gtk_New_Vbox (Vbox, False, 0);
-         Add (Window, Vbox);
+      Gtk_New_Vbox (Vbox, False, 0);
+      Add (Frame, Vbox);
 
-         Gtk_New_Vpaned (VPaned);
-         Pack_Start (Vbox, Vpaned, True, True, 0);
-         Set_Border_Width (VPaned, 5);
-         Show (VPaned);
+      Gtk_New_Vpaned (VPaned);
+      Pack_Start (Vbox, Vpaned, True, True, 0);
+      Set_Border_Width (VPaned, 5);
 
-         Gtk_New_Hpaned (HPaned);
-         Add1 (Vpaned, HPaned);
+      Gtk_New_Hpaned (HPaned);
+      Add1 (Vpaned, HPaned);
 
-         Gtk_New (Frame);
-         Set_Shadow_Type (Frame, Shadow_In);
-         Set_Usize (Frame, 60, 60);
-         Add1 (HPaned, Frame);
-         Show (Frame);
+      Gtk_New (Frame2);
+      Set_Shadow_Type (Frame2, Shadow_In);
+      Set_Usize (Frame2, 60, 60);
+      Add1 (HPaned, Frame2);
 
-         Gtk_New (Button, "Hi There");
-         Add (Frame, Button);
-         Show (Button);
+      Gtk_New (Button, "Hi There");
+      Add (Frame2, Button);
 
-         Gtk_New (Frame);
-         Set_Shadow_Type (Frame, Shadow_In);
-         Set_Usize (Frame, 80, 60);
-         Add2 (HPaned, Frame);
-         Show (Frame);
+      Gtk_New (Frame2);
+      Set_Shadow_Type (Frame2, Shadow_In);
+      Set_Usize (Frame2, 80, 60);
+      Add2 (HPaned, Frame2);
 
-         Show (HPaned);
+      Gtk_New (Frame2);
+      Set_Shadow_Type (Frame2, Shadow_In);
+      Set_Usize (Frame2, 60, 80);
+      Add2 (VPaned, Frame2);
 
-         Gtk_New (Frame);
-         Set_Shadow_Type (Frame, Shadow_In);
-         Set_Usize (Frame, 60, 80);
-         Add2 (VPaned, Frame);
+      Pack_Start (Vbox,
+                  Create_Pane_Options (Hpaned, "Horizontal",
+                                       "Left", "Right"),
+                  False, False, 0);
+      Pack_Start (Vbox,
+                  Create_Pane_Options (Hpaned, "Vertical",
+                                       "Top", "Bottom"),
+                  False, False, 0);
 
-         Pack_Start (Vbox,
-                     Create_Pane_Options (Hpaned, "Horizontal",
-                                          "Left", "Right"),
-                     False, False, 0);
-         Pack_Start (Vbox,
-                     Create_Pane_Options (Hpaned, "Vertical",
-                                          "Top", "Bottom"),
-                     False, False, 0);
-
-         Show_All (Window);
-      else
-         Destroy (Window);
-      end if;
+      Show_All (Frame);
 
    end Run;
 

@@ -32,15 +32,12 @@ with Gdk.Types; use Gdk.Types;
 with Gtk.Adjustment; use Gtk.Adjustment;
 with Gtk.Alignment;  use Gtk.Alignment;
 with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
 with Gtk.Check_Button; use Gtk.Check_Button;
-with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Enums;  use Gtk.Enums;
 with Gtk.Frame;  use Gtk.Frame;
 with Gtk.Gentry; use Gtk.Gentry;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Main; use Gtk.Main;
-with Gtk.Menu; use Gtk.Menu;
 with Gtk.Option_Menu; use Gtk.Option_Menu;
 with Gtk.Progress_Bar; use Gtk.Progress_Bar;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
@@ -73,7 +70,6 @@ package body Create_Progress is
 
    type ProgressData is
       record
-         Window          : aliased Gtk_Dialog;
          Pbar            : Gtk_Progress_Bar;
          Block_Spin      : Gtk_Spin_Button;
          X_Align_Spin    : Gtk_Spin_Button;
@@ -114,7 +110,6 @@ package body Create_Progress is
       Pdata.Timer := 0;
       --  Note: we are in a callback for destroy, so the window will be
       --  destroyed elsewhere. No need to do that here.
-      Pdata.Window := null;
    end Destroy_Progress;
 
    procedure Toggle_Orientation (Widget : access Gtk_Widget_Record) is
@@ -206,256 +201,239 @@ package body Create_Progress is
    end Entry_Changed;
 
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id     : Guint;
       Vbox   : Gtk_Box;
       Vbox2  : Gtk_Box;
       Hbox   : Gtk_Box;
-      Frame  : Gtk_Frame;
+      Frame2 : Gtk_Frame;
       Align  : Gtk_Alignment;
       Adj    : Gtk_Adjustment;
       Label  : Gtk_Label;
       Tab    : Gtk_Table;
       Check  : Gtk_Check_Button;
-      Button : Gtk_Button;
+
    begin
-      if Pdata.Window = null then
-         Gtk_New (Pdata.Window);
-         Set_Policy (Pdata.Window,
-                     Allow_Shrink => False,
-                     Allow_Grow   => False,
-                     Auto_Shrink  => True);
+      Set_Label (Frame, "Progress Bar");
 
-         Id := Widget3_Cb.Connect
-           (Pdata.Window, "destroy", Destroy_Progress'Access);
-         Set_Title (Pdata.Window, "progress bar");
-         Set_Border_Width (Pdata.Window, Border_Width => 0);
+      Pdata.Timer := 0;
 
-         Pdata.Timer := 0;
+      Gtk_New_Vbox (Vbox, False, 5);
+      Set_Border_Width (Vbox, 10);
+      Add (Frame, Vbox);
 
-         Gtk_New_Vbox (Vbox, False, 5);
-         Set_Border_Width (Vbox, 10);
-         Pack_Start (Get_Vbox (Pdata.Window), Vbox, False, True, 0);
+      Id := Widget3_Cb.Connect
+        (Vbox, "destroy", Destroy_Progress'Access);
 
-         Gtk_New (Frame, "Progress");
-         Pack_Start (Vbox, Frame, False, True, 0);
+      Gtk_New (Frame2, "Progress");
+      Pack_Start (Vbox, Frame2, False, True, 0);
 
-         Gtk_New_Vbox (Vbox2, False, 5);
-         Add (Frame, Vbox2);
+      Gtk_New_Vbox (Vbox2, False, 5);
+      Add (Frame2, Vbox2);
 
-         Gtk_New (Align,
-                  Xalign => 0.5,
-                  Yalign => 0.5,
-                  Xscale => 0.0,
-                  Yscale => 0.0);
-         Pack_Start (Vbox2, Align, False, False, 5);
+      Gtk_New (Align,
+               Xalign => 0.5,
+               Yalign => 0.5,
+               Xscale => 0.0,
+               Yscale => 0.0);
+      Pack_Start (Vbox2, Align, False, False, 5);
 
-         Gtk_New (Adj,
-                  Value          => 0.0,
-                  Lower          => 1.0,
-                  Upper          => 300.0,
-                  Step_Increment => 0.0,
-                  Page_Increment => 0.0,
-                  Page_Size      => 0.0);
-         Id := Adj_Cb.Connect (Adj, "value_changed",
-                               Value_Changed'Access);
+      Gtk_New (Adj,
+               Value          => 0.0,
+               Lower          => 1.0,
+               Upper          => 300.0,
+               Step_Increment => 0.0,
+               Page_Increment => 0.0,
+               Page_Size      => 0.0);
+      Id := Adj_Cb.Connect (Adj, "value_changed",
+                            Value_Changed'Access);
 
-         Gtk_New (Pdata.Pbar, Adj);
-         Set_Format_String (Pdata.Pbar, "%v from [%l,%u] (=%p%%)");
-         Add (Align, Pdata.Pbar);
+      Gtk_New (Pdata.Pbar, Adj);
+      Set_Format_String (Pdata.Pbar, "%v from [%l,%u] (=%p%%)");
+      Add (Align, Pdata.Pbar);
 
-         Pdata.Timer := Time_Cb.Add (100, Progress_Timeout'Access, Pdata.Pbar);
+      Pdata.Timer := Time_Cb.Add (100, Progress_Timeout'Access, Pdata.Pbar);
 
-         Gtk_New (Align,
-                  Xalign => 0.5,
-                  Yalign => 0.5,
-                  Xscale => 0.0,
-                  Yscale => 0.0);
-         Pack_Start (Vbox2, Align, False, False, 5);
+      Gtk_New (Align,
+               Xalign => 0.5,
+               Yalign => 0.5,
+               Xscale => 0.0,
+               Yscale => 0.0);
+      Pack_Start (Vbox2, Align, False, False, 5);
 
-         Gtk_New_Hbox (Hbox, False, 5);
-         Add (Align, Hbox);
+      Gtk_New_Hbox (Hbox, False, 5);
+      Add (Align, Hbox);
 
-         Gtk_New (Label, "Label updated by user :");
-         Pack_Start (Hbox, Label, False, True, 0);
+      Gtk_New (Label, "Label updated by user :");
+      Pack_Start (Hbox, Label, False, True, 0);
 
-         Gtk_New (Pdata.Label, "");
-         Pack_Start (Hbox, Pdata.Label, False, True, 0);
+      Gtk_New (Pdata.Label, "");
+      Pack_Start (Hbox, Pdata.Label, False, True, 0);
 
-         Gtk_New (Frame, "Options");
-         Pack_Start (Vbox, Frame, False, True, 0);
+      Gtk_New (Frame2, "Options");
+      Pack_Start (Vbox, Frame2, False, True, 0);
 
-         Gtk_New_Vbox (Vbox2, False, 5);
-         Add (Frame, Vbox2);
+      Gtk_New_Vbox (Vbox2, False, 5);
+      Add (Frame2, Vbox2);
 
-         Gtk_New (Tab,
-                  Rows        => 7,
-                  Columns     => 2,
-                  Homogeneous => False);
-         Pack_Start (Vbox2, Tab, False, True, 0);
+      Gtk_New (Tab,
+               Rows        => 7,
+               Columns     => 2,
+               Homogeneous => False);
+      Pack_Start (Vbox2, Tab, False, True, 0);
 
-         Gtk_New (Label, "Orientation :");
-         Attach (Tab, Label, 0, 1, 0, 1, Enums.Expand or Enums.Fill,
-                 Enums.Expand or Enums.Fill, 5, 5);
-         Set_Alignment (Label, 0.0, 0.5);
+      Gtk_New (Label, "Orientation :");
+      Attach (Tab, Label, 0, 1, 0, 1, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
+      Set_Alignment (Label, 0.0, 0.5);
 
-         Build_Option_Menu (Pdata.Omenu1, Pdata.Omenu1_Group,
-                            Items1, 0, Toggle_Orientation'Access);
+      Build_Option_Menu (Pdata.Omenu1, Pdata.Omenu1_Group,
+                         Items1, 0, Toggle_Orientation'Access);
 
-         Gtk_New_Hbox (Hbox, False, 0);
-         Attach (Tab, Hbox, 1, 2, 0, 1, Enums.Expand or Enums.Fill,
-                 Enums.Expand or Enums.Fill, 5, 5);
-         Pack_Start (Hbox, Pdata.Omenu1, True, True, 0);
+      Gtk_New_Hbox (Hbox, False, 0);
+      Attach (Tab, Hbox, 1, 2, 0, 1, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
+      Pack_Start (Hbox, Pdata.Omenu1, True, True, 0);
 
-         Gtk_New (Check, "Show Text");
-         Id := Check_Cb.Connect (Check, "clicked", Toggle_Show_Text'Access);
-         Attach (Tab, Check, 0, 1, 1, 2, Enums.Expand or Enums.Fill,
-                 Enums.Expand or Enums.Fill, 5, 5);
+      Gtk_New (Check, "Show Text");
+      Id := Check_Cb.Connect (Check, "clicked", Toggle_Show_Text'Access);
+      Attach (Tab, Check, 0, 1, 1, 2, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
 
-         Gtk_New_Hbox (Hbox, False, 0);
-         Attach (Tab, Hbox, 1, 2, 1, 2, Enums.Expand or Enums.Fill,
-                 Enums.Expand or Enums.Fill, 5, 5);
+      Gtk_New_Hbox (Hbox, False, 0);
+      Attach (Tab, Hbox, 1, 2, 1, 2, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
 
-         Gtk_New (Label, "Format : ");
-         Pack_Start (Hbox, Label, False, True, 0);
+      Gtk_New (Label, "Format : ");
+      Pack_Start (Hbox, Label, False, True, 0);
 
-         Gtk_New (Pdata.Gentry);
-         Id := Widget_Cb.Connect (Pdata.Gentry, "changed",
-                                  Entry_Changed'Access, Pdata.Gentry);
-         Pack_Start (Hbox, Pdata.Gentry, True, True, 0);
-         Set_Text (Pdata.Gentry, "%v from [%l,%u] (=%p%%)");
-         Set_Usize (Pdata.Gentry, 100, -1);
-         Set_Sensitive (Pdata.Gentry, False);
+      Gtk_New (Pdata.Gentry);
+      Id := Widget_Cb.Connect (Pdata.Gentry, "changed",
+                               Entry_Changed'Access, Pdata.Gentry);
+      Pack_Start (Hbox, Pdata.Gentry, True, True, 0);
+      Set_Text (Pdata.Gentry, "%v from [%l,%u] (=%p%%)");
+      Set_Usize (Pdata.Gentry, 100, -1);
+      Set_Sensitive (Pdata.Gentry, False);
 
-         Gtk_New (Label, "Text align :");
-         Attach (Tab, label, 0, 1, 2, 3, Enums.Expand or Enums.Fill,
-                 Enums.Expand or Enums.Fill, 5, 5);
-         Set_Alignment (Label, 0.0, 0.5);
+      Gtk_New (Label, "Text align :");
+      Attach (Tab, label, 0, 1, 2, 3, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
+      Set_Alignment (Label, 0.0, 0.5);
 
-         Gtk_New_Hbox (Hbox, False, 0);
-         Attach (Tab, Hbox, 1, 2, 2, 3, Enums.Expand or Enums.Fill,
-                 Enums.Expand or Enums.Fill, 5, 5);
+      Gtk_New_Hbox (Hbox, False, 0);
+      Attach (Tab, Hbox, 1, 2, 2, 3, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
 
-         Gtk_New (Label, "x :");
-         Pack_Start (Hbox, Label, False, True, 5);
+      Gtk_New (Label, "x :");
+      Pack_Start (Hbox, Label, False, True, 5);
 
-         Gtk_New (Adj,
-                  Value          => 0.5,
-                  Lower          => 0.0,
-                  Upper          => 1.0,
-                  Step_Increment => 0.1,
-                  Page_Increment => 0.1,
-                  Page_Size      => 0.0);
-         Gtk_New (Pdata.X_Align_Spin, Adj, Climb_Rate => 0.0, The_Digits => 1);
-         Pack_Start (Hbox, Pdata.X_Align_Spin, False, True, 0);
-         Set_Sensitive (Pdata.X_Align_Spin, False);
-         Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Align'Access);
+      Gtk_New (Adj,
+               Value          => 0.5,
+               Lower          => 0.0,
+               Upper          => 1.0,
+               Step_Increment => 0.1,
+               Page_Increment => 0.1,
+               Page_Size      => 0.0);
+      Gtk_New (Pdata.X_Align_Spin, Adj, Climb_Rate => 0.0, The_Digits => 1);
+      Pack_Start (Hbox, Pdata.X_Align_Spin, False, True, 0);
+      Set_Sensitive (Pdata.X_Align_Spin, False);
+      Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Align'Access);
 
-         Gtk_New (Label, "y :");
-         Pack_Start (Hbox, Label, False, True, 5);
+      Gtk_New (Label, "y :");
+      Pack_Start (Hbox, Label, False, True, 5);
 
-         Gtk_New (Adj,
-                  Value          => 0.5,
-                  Lower          => 0.0,
-                  Upper          => 1.0,
-                  Step_Increment => 0.1,
-                  Page_Increment => 0.1,
-                  Page_Size      => 0.0);
-         Gtk_New (Pdata.Y_Align_Spin, Adj, Climb_Rate => 0.0, The_Digits => 1);
-         Pack_Start (Hbox, Pdata.Y_Align_Spin, False, True, 0);
-         Set_Sensitive (Pdata.Y_Align_Spin, False);
-         Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Align'Access);
+      Gtk_New (Adj,
+               Value          => 0.5,
+               Lower          => 0.0,
+               Upper          => 1.0,
+               Step_Increment => 0.1,
+               Page_Increment => 0.1,
+               Page_Size      => 0.0);
+      Gtk_New (Pdata.Y_Align_Spin, Adj, Climb_Rate => 0.0, The_Digits => 1);
+      Pack_Start (Hbox, Pdata.Y_Align_Spin, False, True, 0);
+      Set_Sensitive (Pdata.Y_Align_Spin, False);
+      Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Align'Access);
 
-         Gtk_New (Label, "Bar Style :");
-         Attach (Tab, Label, 0, 1, 3, 4, Enums.Expand or Enums.Fill,
-                 Enums.Expand or Enums.Fill, 5, 5);
-         Set_Alignment (Label, 0.0, 0.5);
+      Gtk_New (Label, "Bar Style :");
+      Attach (Tab, Label, 0, 1, 3, 4, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
+      Set_Alignment (Label, 0.0, 0.5);
 
-         Build_Option_Menu (Pdata.Omenu2, Pdata.Omenu2_Group,
-                            Items2, 0, Toggle_Bar_Style'Access);
+      Build_Option_Menu (Pdata.Omenu2, Pdata.Omenu2_Group,
+                         Items2, 0, Toggle_Bar_Style'Access);
 
-         Gtk_New_Hbox (Hbox, False, 0);
-         Attach (Tab, Hbox, 1, 2, 3, 4, Enums.Expand or Enums.Fill,
-                 Enums.Expand or Enums.Fill, 5, 5);
-         Pack_Start (Hbox, Pdata.Omenu2, True, True, 0);
+      Gtk_New_Hbox (Hbox, False, 0);
+      Attach (Tab, Hbox, 1, 2, 3, 4, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
+      Pack_Start (Hbox, Pdata.Omenu2, True, True, 0);
 
-         Gtk_New (Label, "Block count :");
-         Attach (Tab, Label, 0, 1, 4, 5, Enums.Expand or Enums.Fill,
-                 Enums.Expand or Enums.Fill, 5, 5);
-         Set_Alignment (Label, 0.0, 0.5);
+      Gtk_New (Label, "Block count :");
+      Attach (Tab, Label, 0, 1, 4, 5, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
+      Set_Alignment (Label, 0.0, 0.5);
 
-         Gtk_New_Hbox (Hbox, False, 0);
-         Attach (Tab, Hbox, 1, 2, 4, 5, Enums.Expand or Enums.Fill,
-                 Enums.Expand or Enums.Fill, 5, 5);
+      Gtk_New_Hbox (Hbox, False, 0);
+      Attach (Tab, Hbox, 1, 2, 4, 5, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
 
-         Gtk_New (Adj,
-                  Value          => 10.0,
-                  Lower          => 2.0,
-                  Upper          => 20.0,
-                  Step_Increment => 1.0,
-                  Page_Increment => 5.0,
-                  Page_Size      => 0.0);
-         Gtk_New (Pdata.Block_Spin, Adj, Climb_Rate => 0.0, The_Digits => 0);
-         Pack_Start (Hbox, Pdata.Block_Spin, False, True, 0);
-         Set_Sensitive (Pdata.Block_Spin, False);
-         Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Blocks'Access);
+      Gtk_New (Adj,
+               Value          => 10.0,
+               Lower          => 2.0,
+               Upper          => 20.0,
+               Step_Increment => 1.0,
+               Page_Increment => 5.0,
+               Page_Size      => 0.0);
+      Gtk_New (Pdata.Block_Spin, Adj, Climb_Rate => 0.0, The_Digits => 0);
+      Pack_Start (Hbox, Pdata.Block_Spin, False, True, 0);
+      Set_Sensitive (Pdata.Block_Spin, False);
+      Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Blocks'Access);
 
-         Gtk_New (Check, "Activity mode");
-         Id := Check_Cb.Connect (Check, "clicked",
-                                 Toggle_Activity_Mode'Access);
-         Attach (Tab, Check, 0, 1, 5, 6, Enums.Expand or Enums.Fill,
-                 Enums.Expand or Enums.Fill, 5, 5);
+      Gtk_New (Check, "Activity mode");
+      Id := Check_Cb.Connect (Check, "clicked",
+                              Toggle_Activity_Mode'Access);
+      Attach (Tab, Check, 0, 1, 5, 6, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
 
-         Gtk_New_Hbox (Hbox, False, 0);
-         Attach (Tab, Hbox, 1, 2, 5, 6, Enums.Expand or Enums.Fill,
-                 Enums.Expand or Enums.Fill, 5, 5);
+      Gtk_New_Hbox (Hbox, False, 0);
+      Attach (Tab, Hbox, 1, 2, 5, 6, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
 
-         Gtk_New (Label, "Step size :");
-         Pack_Start (Hbox, Label, False, True, 0);
+      Gtk_New (Label, "Step size :");
+      Pack_Start (Hbox, Label, False, True, 0);
 
-         Gtk_New (Adj,
-                  Value          => 3.0,
-                  Lower          => 1.0,
-                  Upper          => 20.0,
-                  Step_Increment => 1.0,
-                  Page_Increment => 5.0,
-                  Page_Size      => 0.0);
-         Gtk_New (Pdata.Step_Spin, Adj, Climb_Rate => 0.0, The_Digits => 0);
-         Pack_Start (Hbox, Pdata.Step_Spin, False, True, 0);
-         Set_Sensitive (Pdata.Step_Spin, False);
-         Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Step'Access);
+      Gtk_New (Adj,
+               Value          => 3.0,
+               Lower          => 1.0,
+               Upper          => 20.0,
+               Step_Increment => 1.0,
+               Page_Increment => 5.0,
+               Page_Size      => 0.0);
+      Gtk_New (Pdata.Step_Spin, Adj, Climb_Rate => 0.0, The_Digits => 0);
+      Pack_Start (Hbox, Pdata.Step_Spin, False, True, 0);
+      Set_Sensitive (Pdata.Step_Spin, False);
+      Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Step'Access);
 
-         Gtk_New_Hbox (Hbox, False, 0);
-         Attach (Tab, Hbox, 1, 2, 6, 7, Enums.Expand or Enums.Fill,
-                 Enums.Expand or Enums.Fill, 5, 5);
+      Gtk_New_Hbox (Hbox, False, 0);
+      Attach (Tab, Hbox, 1, 2, 6, 7, Enums.Expand or Enums.Fill,
+              Enums.Expand or Enums.Fill, 5, 5);
 
-         Gtk_New (Label, "Blocks :");
-         Pack_Start (Hbox, Label, False, True, 0);
+      Gtk_New (Label, "Blocks :");
+      Pack_Start (Hbox, Label, False, True, 0);
 
-         Gtk_New (Adj,
-                  Value          => 5.0,
-                  Lower          => 2.0,
-                  Upper          => 10.0,
-                  Step_Increment => 1.0,
-                  Page_Increment => 5.0,
-                  Page_Size      => 0.0);
-         Gtk_New (Pdata.Act_Blocks_Spin, Adj, Climb_Rate => 0.0,
-                  The_Digits => 0);
-         Pack_Start (Hbox, Pdata.Act_Blocks_Spin, False, True, 0);
-         Set_Sensitive (Pdata.Act_Blocks_Spin, False);
-         Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Act_Blocks'Access);
+      Gtk_New (Adj,
+               Value          => 5.0,
+               Lower          => 2.0,
+               Upper          => 10.0,
+               Step_Increment => 1.0,
+               Page_Increment => 5.0,
+               Page_Size      => 0.0);
+      Gtk_New (Pdata.Act_Blocks_Spin, Adj, Climb_Rate => 0.0,
+               The_Digits => 0);
+      Pack_Start (Hbox, Pdata.Act_Blocks_Spin, False, True, 0);
+      Set_Sensitive (Pdata.Act_Blocks_Spin, False);
+      Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Act_Blocks'Access);
 
-         Gtk_New (Button, "close");
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access,
-                                  Pdata.Window);
-         Set_Flags (Button, Can_Default);
-         Pack_Start (Get_Action_Area (Pdata.Window), Button, True, True, 0);
-         Grab_Default (Button);
-         Show (Button);
-         Show_All (Pdata.Window);
-      else
-         Destroy (Pdata.Window);
-      end if;
+      Show_All (Vbox);
    end Run;
 
 end Create_Progress;

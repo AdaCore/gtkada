@@ -29,62 +29,54 @@
 
 with Glib; use Glib;
 with Gdk.Types; use Gdk.Types;
-with Gtk.Button; use Gtk.Button;
+with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Ruler; use Gtk.Ruler;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Table; use Gtk.Table;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
-with Common; use Common;
 
 package body Create_Rulers is
 
    package Ruler_Cb is new Signal.Object_Callback (Gtk_Ruler_Record);
 
-   Window : aliased Gtk.Window.Gtk_Window;
-
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id        : Guint;
-      Ruler     : GTk_Ruler;
+      Ruler     : Gtk_Ruler;
       Table     : Gtk_Table;
+      Darea     : Gtk_Drawing_Area;
+
    begin
+      Set_Label (Frame, "Ruler");
 
-      if Window = null then
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect
-           (Window, "destroy", Destroy_Window'Access, Window'Access);
-         Set_Title (Window, "Ruler");
-         Set_Border_Width (Window, Border_Width => 0);
-         Set_Usize (Window, 300, 300);
-         Set_Events (Window, Pointer_Motion_Mask + Pointer_Motion_Hint_Mask);
+      Gtk_New (Table, 2, 2, False);
+      Add (Frame, Table);
 
-         Gtk_New (Table, 2, 2, False);
-         Add (Window, Table);
-         Show (Table);
+      Gtk_New_Hruler (Ruler);
+      Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
+      Id := C_Unsafe_Connect (Gtk_Object (Frame), "motion_notify_event",
+                              Get_Default_Motion_Notify_Event (Ruler),
+                              Gtk_Object (Ruler));
+      Attach (Table, Ruler, 1, 2, 0, 1, Expand + Enums.Fill, Enums.Fill, 0, 0);
 
-         Gtk_New_Hruler (Ruler);
-         Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
-         Id := C_Unsafe_Connect (Gtk_Object (Window), "motion_notify_event",
-                                 Get_Default_Motion_Notify_Event (Ruler),
-                                 Gtk_Object (Ruler));
-         Attach (Table, Ruler, 1, 2, 0, 1, Expand + Enums.Fill, Enums.Fill, 0, 0);
-         Show (Ruler);
+      Gtk_New_Vruler (Ruler);
+      Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
+      Id := C_Unsafe_Connect (Gtk_Object (Frame), "motion_notify_event",
+                              Get_Default_Motion_Notify_Event (Ruler),
+                              Gtk_Object (Ruler));
+      Attach (Table, Ruler, 0, 1, 1, 2, Enums.Fill, Expand + Enums.Fill, 0, 0);
 
-         Gtk_New_Vruler (Ruler);
-         Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
-         Id := C_Unsafe_Connect (Gtk_Object (Window), "motion_notify_event",
-                                 Get_Default_Motion_Notify_Event (Ruler),
-                                 Gtk_Object (Ruler));
-         Attach (Table, Ruler, 0, 1, 1, 2, Enums.Fill, Expand + Enums.Fill, 0, 0);
-         Show (Ruler);
-         Show (Window);
-      else
-         Destroy (Window);
-      end if;
+      Gtk_New (Darea);
+      Unrealize (Darea);
+      Set_Events (Darea, Pointer_Motion_Mask + Pointer_Motion_Hint_Mask);
+      Attach (Table, Darea, 1, 2, 1, 2, Expand + Enums.Fill, Expand + Enums.Fill,
+              0, 0);
 
+
+
+
+      Show_All (Frame);
    end Run;
 
 end Create_Rulers;

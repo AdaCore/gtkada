@@ -28,11 +28,9 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
-with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Font_Selection;  use Gtk.Font_Selection;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Table; use Gtk.Table;
 with Gtk.Widget; use Gtk.Widget;
 with Common; use Common;
 with Gtk; use Gtk;
@@ -66,9 +64,11 @@ package body Create_Font_Selection is
    end Selection_OK;
 
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id      : Guint;
    begin
+
+      Set_Label (Frame, "Font Selection");
 
       if Window = null then
          Gtk_New (Window, "Font Selection Dialog");

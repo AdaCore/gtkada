@@ -35,17 +35,15 @@ with Gtk.Button_Box; use Gtk.Button_Box;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
 with Gtk.Hbutton_Box; use Gtk.Hbutton_Box;
-with Gtk.Signal; use Gtk.Signal;
 with Gtk.Vbutton_Box; use Gtk.Vbutton_Box;
 with Gtk.Window; use Gtk.Window;
-with Common; use Common;
 with Gtk; use Gtk;
 
 package body Create_Button_Box is
 
-   package Void_Cb is new Signal.Void_Callback (Gtk_Button_Record);
-
-   Window : aliased Gtk_Window;
+   -----------------
+   -- Create_Bbox --
+   -----------------
 
    function Create_Bbox (Horizontal : in Boolean;
                          Title      : in String;
@@ -95,76 +93,70 @@ package body Create_Button_Box is
       return Frame;
    end Create_Bbox;
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
-      Id     : Guint;
+   ---------
+   -- Run --
+   ---------
+
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Vbox   : Gtk_Box;
       Hbox   : Gtk_Box;
       Main_Vbox : Gtk_Box;
       Frame_Horz : Gtk_Frame;
       Frame_Vert : Gtk_Frame;
    begin
-      if Window = null then
+      Set_Label (Frame, "Button Box");
 
-         Gtk_New (Window, Window_Toplevel);
-         Set_Title (Window, "Button Boxes");
-         Id := Destroy_Cb.Connect (Window, "destroy", Destroy_Window'Access,
-                                   Window'Access);
-         Set_Border_Width (Window, Border_Width => 10);
+      Gtk_New_Vbox (Main_Vbox, Homogeneous => False, Spacing => 0);
+      Add (Frame, Main_Vbox);
 
-         Gtk_New_Vbox (Main_Vbox, Homogeneous => False, Spacing => 0);
-         Add (Window, Main_Vbox);
+      Gtk_New (Frame_Horz, "Horizontal Button Boxes");
+      Pack_Start (Main_Vbox,
+                  Child   => Frame_Horz,
+                  Expand  => True,
+                  Fill    => True,
+                  Padding => 10);
 
-         Gtk_New (Frame_Horz, "Horizontal Button Boxes");
-         Pack_Start (Main_Vbox,
-                     Child   => Frame_Horz,
-                     Expand  => True,
-                     Fill    => True,
-                     Padding => 10);
+      Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
+      Set_Border_Width (Vbox, Border_Width => 10);
+      Add (Frame_Horz, Vbox);
 
-         Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
-         Set_Border_Width (Vbox, Border_Width => 10);
-         Add (Frame_Horz, Vbox);
-
-         Pack_Start
-           (Vbox, Create_Bbox (True, "Spread", 40, 85, 20, Buttonbox_Spread),
-            True, True, 0);
-         Pack_Start
-           (Vbox, Create_Bbox (True, "Edge", 40, 85, 20, Buttonbox_Edge),
-            True, True, 5);
-         Pack_Start
-           (Vbox, Create_Bbox (True, "Start", 40, 85, 20, Buttonbox_Start),
-            True, True, 5);
-         Pack_Start
-           (Vbox, Create_Bbox (True, "End", 40, 85, 20, Buttonbox_Style_End),
-            True, True, 5);
+      Pack_Start
+        (Vbox, Create_Bbox (True, "Spread", 40, 85, 20, Buttonbox_Spread),
+         True, True, 0);
+      Pack_Start
+        (Vbox, Create_Bbox (True, "Edge", 40, 85, 20, Buttonbox_Edge),
+         True, True, 5);
+      Pack_Start
+        (Vbox, Create_Bbox (True, "Start", 40, 85, 20, Buttonbox_Start),
+         True, True, 5);
+      Pack_Start
+        (Vbox, Create_Bbox (True, "End", 40, 85, 20, Buttonbox_Style_End),
+         True, True, 5);
 
 
-         Gtk_New (Frame_Vert, "Vertical Button Boxes");
-         Pack_Start (Main_Vbox,
-                     Frame_Vert,
-                     Expand  => True,
-                     Fill    => True,
-                     Padding => 10);
-         Gtk_New_Hbox (Hbox, Homogeneous => False, Spacing => 0);
-         Set_Border_Width (Hbox, Border_Width => 10);
-         Add (Frame_Vert, Hbox);
+      Gtk_New (Frame_Vert, "Vertical Button Boxes");
+      Pack_Start (Main_Vbox,
+                  Frame_Vert,
+                  Expand  => True,
+                  Fill    => True,
+                  Padding => 10);
+      Gtk_New_Hbox (Hbox, Homogeneous => False, Spacing => 0);
+      Set_Border_Width (Hbox, Border_Width => 10);
+      Add (Frame_Vert, Hbox);
 
-         Pack_Start
-           (Hbox, Create_Bbox (False, "Spread", 30, 85, 20, Buttonbox_Spread),
-            True, True, 0);
-         Pack_Start
-           (Hbox, Create_Bbox (False, "Edge", 30, 85, 20, Buttonbox_Edge),
-            True, True, 5);
-         Pack_Start
-           (Hbox, Create_Bbox (False, "Start", 30, 85, 20, Buttonbox_Start),
-            True, True, 5);
-         Pack_Start
-           (Hbox, Create_Bbox (False, "End", 30, 85, 20, Buttonbox_Style_End),
-            True, True, 5);
-         Show_All (Window);
-      else
-         Destroy (Window);
-      end if;
+      Pack_Start
+        (Hbox, Create_Bbox (False, "Spread", 30, 85, 20, Buttonbox_Spread),
+         True, True, 0);
+      Pack_Start
+        (Hbox, Create_Bbox (False, "Edge", 30, 85, 20, Buttonbox_Edge),
+         True, True, 5);
+      Pack_Start
+        (Hbox, Create_Bbox (False, "Start", 30, 85, 20, Buttonbox_Start),
+         True, True, 5);
+      Pack_Start
+        (Hbox, Create_Bbox (False, "End", 30, 85, 20, Buttonbox_Style_End),
+         True, True, 5);
+      Show_All (Main_Vbox);
    end Run;
 
 end Create_Button_Box;

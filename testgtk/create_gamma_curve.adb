@@ -28,14 +28,13 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
+with Gtk.Box;    use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Curve; use Gtk.Curve;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Gamma_Curve; use Gtk.Gamma_Curve;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
+with Gtk.Signal; use Gtk.Signal;
 with Gtk; use Gtk;
-with Common; use Common;
 
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Text_IO;
@@ -43,28 +42,16 @@ with Ada.Text_IO;
 package body Create_Gamma_Curve is
 
    package Float_P is new Ada.Numerics.Generic_Elementary_Functions (Gfloat);
+   package Gamma_Cb is new Gtk.Signal.Void_Callback (Gtk_Button_Record);
 
-   Window : aliased Gtk_Window;
    Count  : Gint := 0;
    Curve  : Gtk_Gamma_Curve;
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
-      Id    : Guint;
-      Max   : Gint := 127 + (Count mod 4) * 128;
-      Vec   : Gfloat_Array (1 .. Positive (Max));
+   procedure Change_Curve (Button : access Gtk_Button_Record) is
+      pragma Warnings (Off, Button);
+      Max    : constant Gint := 127 + (Count mod 4) * 128;
+      Vec    : Gfloat_Array (1 .. Positive (Max));
    begin
-
-      if Window = null  then
-         Gtk_New (Window, WIndow_Toplevel);
-         Set_Title (Window, "test");
-         Set_Border_Width (Window, 10);
-         Id := Destroy_Cb.Connect
-           (Window, "destroy", Destroy_Window'Access, Window'Access);
-         Gtk_New (Curve);
-         Add (Window, Curve);
-         Show (Curve);
-      end if;
-
       if (Count mod 4 /= 3) then
          Ada.Text_IO.Put_Line ("Redrawing the window with "
                                & Gint'Image (Max)
@@ -76,14 +63,30 @@ package body Create_Gamma_Curve is
            * Float_P.Sqrt (Gfloat (J));
       end loop;
       Set_Vector (Get_Curve (Curve), Vec);
-
-      if not Visible_Is_Set (Window) then
-         Show (Window);
-      elsif (Count mod 4 = 3) then
-         Destroy (Window);
-      end if;
-
       Count := Count + 1;
+   end Change_Curve;
+
+   procedure Run (Frame: access Gtk.Frame.Gtk_Frame_Record'Class) is
+      Id     : Guint;
+      Button : Gtk_Button;
+      Box    : Gtk_Box;
+
+   begin
+      Set_Label (Frame, "Gamma Curve");
+
+      Gtk_New_Vbox (Box, Homogeneous => False, Spacing => 0);
+      Add (Frame, Box);
+
+      Gtk_New (Curve);
+      Pack_Start (Box, Curve, False, False);
+
+      Gtk_New (Button, "Change mode");
+      Pack_Start (Box, Button, False, False);
+      Id := Gamma_Cb.Connect (Button, "clicked", Change_Curve'Access);
+
+      Gamma_Cb.Emit_By_Name (Button, "clicked");
+
+      Show_All (Frame);
    end Run;
 
 end Create_Gamma_Curve;

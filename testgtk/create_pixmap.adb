@@ -33,21 +33,14 @@ with Gdk.Pixmap; use Gdk.Pixmap;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Separator; use Gtk.Separator;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Pixmap; use Gtk.Pixmap;
 with Gtk.Style; use Gtk.Style;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
-with Common; use Common;
 
 package body Create_Pixmap is
 
-   Window : aliased Gtk.Window.Gtk_Window;
-
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
-      Id        : Guint;
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1      : Gtk_Box;
       Box2      : Gtk_Box;
       Box3      : Gtk_Box;
@@ -57,64 +50,34 @@ package body Create_Pixmap is
       Mask      : Gdk_Bitmap;
       PixmapWid : Gtk_Pixmap;
       Label     : Gtk_Label;
-      Separator : Gtk_Separator;
+
    begin
-      if Window = null then
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect
-           (Window, "destroy", Destroy_Window'Access, Window'Access);
-         Set_Title (Window, "pixmap");
-         Set_Border_Width (Window, Border_Width => 0);
-         Realize (Window);
 
-         Gtk_New_Vbox (Box1, False, 0);
-         Add (Window, Box1);
-         Show (Box1);
+      Set_Label (Frame, "Pixmap");
 
-         Gtk_New_Vbox (Box2, False, 10);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, True, True, 0);
-         Show (Box2);
+      Gtk_New_Vbox (Box1, False, 0);
+      Add (Frame, Box1);
 
-         Gtk_New (Button);
-         Pack_Start (Box2, Button, False, False, 0);
-         Show (Button);
+      Gtk_New_Vbox (Box2, False, 10);
+      Set_Border_Width (Box2, 10);
+      Pack_Start (Box1, Box2, True, True, 0);
 
-         Style := Get_Style (Button);
-         Create_From_Xpm (Pixmap, Get_Window (Window), Mask,
-                          Get_Bg (Style, State_Normal), "test.xpm");
-         Gtk_New (PixmapWid, Pixmap, Mask);
+      Gtk_New (Button);
+      Pack_Start (Box2, Button, False, False, 0);
 
-         Gtk_New (Label, "Pixmap" & Ascii.LF & "test");
-         Gtk_New_Hbox (Box3, False, 0);
-         Set_Border_Width (Box3, 2);
-         Add (Box3, PixmapWid);
-         Add (Box3, Label);
-         Add (Button, Box3);
-         Show (PixmapWid);
-         Show (Label);
-         Show (Box3);
+      Style := Get_Style (Button);
+      Create_From_Xpm (Pixmap, Get_Window (Frame), Mask,
+                       Get_Bg (Style, State_Normal), "test.xpm");
+      Gtk_New (PixmapWid, Pixmap, Mask);
 
-         Gtk_New_Hseparator (Separator);
-         Pack_Start (Box3, Separator, False, True, 0);
-         Show (Separator);
+      Gtk_New (Label, "Pixmap" & Ascii.LF & "test");
+      Gtk_New_Hbox (Box3, False, 0);
+      Set_Border_Width (Box3, 2);
+      Add (Box3, PixmapWid);
+      Add (Box3, Label);
+      Add (Button, Box3);
 
-         Gtk_New_Vbox (Box2, False, 10);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, False, True, 0);
-         Show (Box2);
-
-         Gtk_New (Button, "close");
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
-         Pack_Start (Box2, Button, True, True, 0);
-         Set_Flags (Button, Can_Default);
-         Grab_Default (Button);
-         Show (Button);
-         Show (Window);
-      else
-         Destroy (Window);
-      end if;
-
+      Show_All (Frame);
    end Run;
 
 end Create_Pixmap;

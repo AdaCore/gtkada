@@ -36,13 +36,10 @@ with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Object; use Gtk.Object;
 with Gtk.Spin_Button; use Gtk.Spin_Button;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
-with Common; use Common;
 
 package body Create_Spin is
 
@@ -56,7 +53,6 @@ package body Create_Spin is
      (Gtk_Toggle_Button_Record, Gtk_Spin_Button);
    package Button_Cb is new Signal.Callback (My_Button_Record, Gint);
 
-   Window   : aliased Gtk.Window.Gtk_Window;
    Spinner1 : Gtk_Spin_Button;
 
    procedure Change_Digits (Spin : access Gtk_Spin_Button_Record) is
@@ -88,7 +84,7 @@ package body Create_Spin is
       end if;
    end Get_Value;
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id       : Guint;
       Main_Box : Gtk_Box;
       VBox      : Gtk_Box;
@@ -98,145 +94,129 @@ package body Create_Spin is
       Adj      : Gtk_Adjustment;
       Spinner  : Gtk_Spin_Button;
       Spinner2 : Gtk_Spin_Button;
-      Frame    : Gtk_Frame;
+      Frame2   : Gtk_Frame;
       Check    : Gtk_Check_Button;
-      Button   : Gtk_Button;
       Myb      : My_Button;
+
    begin
+      Set_Label (Frame, "Spin Buttons");
 
-      if Window = null then
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect
-           (Window, "destroy", Destroy_Window'Access, Window'Access);
-         Set_Title (Window, "spin buttons");
-         Set_Border_Width (Window, Border_Width => 0);
+      Gtk_New_Vbox (Main_Box, False, 5);
+      Set_Border_Width (Main_Box, 10);
+      Add (Frame, Main_Box);
 
-         Gtk_New_Vbox (Main_Box, False, 5);
-         Set_Border_Width (Main_Box, 10);
-         Add (Window, Main_Box);
+      Gtk_New (Frame2, "Not accelerated");
+      Pack_Start (Main_Box, Frame2, False, False, 0);
 
-         Gtk_New (Frame, "Not accelerated");
-         Pack_Start (Main_Box, Frame, True, True, 0);
+      Gtk_New_Vbox (VBox, False, 0);
+      Set_Border_Width (VBox, 5);
+      Add (Frame2, VBox);
 
-         Gtk_New_Vbox (VBox, False, 0);
-         Set_Border_Width (VBox, 5);
-         Add (Frame, VBox);
+      --  Day, month, year spinners
+      Gtk_New_Hbox (Hbox, False, 0);
+      Pack_Start (VBox, Hbox, False, False, 5);
 
-         --  Day, month, year spinners
-         Gtk_New_Hbox (Hbox, False, 0);
-         Pack_Start (VBox, Hbox, True, True, 5);
+      Gtk_New_Vbox (Vbox2, False, 0);
+      Pack_Start (Hbox, Vbox2, False, False, 5);
+      Gtk_New (Label, "Day:");
+      Set_Alignment (Label, 0.0, 0.5);
+      Pack_Start (Vbox2, Label, False, False, 0);
+      Gtk_New (Adj, 1.0, 1.0, 31.0, 1.0, 5.0, 0.0);
+      Gtk_New (Spinner, Adj, 0.0, 0);
+      Set_Wrap (Spinner, True);
+      Pack_Start (Vbox2, Spinner, False, False, 0);
 
-         Gtk_New_Vbox (Vbox2, False, 0);
-         Pack_Start (Hbox, Vbox2, True, True, 5);
-         Gtk_New (Label, "Day:");
-         Set_Alignment (Label, 0.0, 0.5);
-         Pack_Start (Vbox2, Label, False, True, 0);
-         Gtk_New (Adj, 1.0, 1.0, 31.0, 1.0, 5.0, 0.0);
-         Gtk_New (Spinner, Adj, 0.0, 0);
-         Set_Wrap (Spinner, True);
-         Pack_Start (Vbox2, Spinner, False, True, 0);
+      Gtk_New_Vbox (Vbox2, False, 0);
+      Pack_Start (Hbox, Vbox2, False, False, 5);
+      Gtk_New (Label, "Month:");
+      Set_Alignment (Label, 0.0, 0.5);
+      Pack_Start (Vbox2, Label, False, False, 0);
+      Gtk_New (Adj, 1.0, 1.0, 12.0, 1.0, 5.0, 0.0);
+      Gtk_New (Spinner, Adj, 0.0, 0);
+      Set_Wrap (Spinner, True);
+      Pack_Start (Vbox2, Spinner, False, False, 0);
 
-         Gtk_New_Vbox (Vbox2, False, 0);
-         Pack_Start (Hbox, Vbox2, True, True, 5);
-         Gtk_New (Label, "Month:");
-         Set_Alignment (Label, 0.0, 0.5);
-         Pack_Start (Vbox2, Label, False, True, 0);
-         Gtk_New (Adj, 1.0, 1.0, 12.0, 1.0, 5.0, 0.0);
-         Gtk_New (Spinner, Adj, 0.0, 0);
-         Set_Wrap (Spinner, True);
-         Pack_Start (Vbox2, Spinner, False, True, 0);
+      Gtk_New_Vbox (Vbox2, False, 0);
+      Pack_Start (Hbox, Vbox2, False, False, 5);
+      Gtk_New (Label, "Year:");
+      Set_Alignment (Label, 0.0, 0.5);
+      Pack_Start (Vbox2, Label, False, False, 0);
+      Gtk_New (Adj, 1998.0, 0.0, 2100.0, 1.0, 100.0, 0.0);
+      Gtk_New (Spinner, Adj, 0.0, 0);
+      Set_Wrap (Spinner, True);
+      Set_Usize (Spinner, 55, 0);
+      Pack_Start (Vbox2, Spinner, False, False, 0);
 
-         Gtk_New_Vbox (Vbox2, False, 0);
-         Pack_Start (Hbox, Vbox2, True, True, 5);
-         Gtk_New (Label, "Year:");
-         Set_Alignment (Label, 0.0, 0.5);
-         Pack_Start (Vbox2, Label, False, True, 0);
-         Gtk_New (Adj, 1998.0, 0.0, 2100.0, 1.0, 100.0, 0.0);
-         Gtk_New (Spinner, Adj, 0.0, 0);
-         Set_Wrap (Spinner, True);
-         Set_Usize (Spinner, 55, 0);
-         Pack_Start (Vbox2, Spinner, False, True, 0);
+      Gtk_New (Frame2, "Accelerated");
+      Pack_Start (Main_Box, Frame2, False, False, 0);
 
-         Gtk_New (Frame, "Accelerated");
-         Pack_Start (Main_Box, Frame, True, True, 0);
+      Gtk_New_Vbox (Vbox, False, 0);
+      Set_Border_Width (Vbox, 5);
+      Add (Frame2, Vbox);
 
-         Gtk_New_Vbox (Vbox, False, 0);
-         Set_Border_Width (Vbox, 5);
-         Add (Frame, Vbox);
+      Gtk_New_Hbox (Hbox, False, 0);
+      Pack_Start (Vbox, Hbox, False, False, 5);
 
-         Gtk_New_Hbox (Hbox, False, 0);
-         Pack_Start (Vbox, Hbox, False, True, 5);
+      Gtk_New_Vbox (Vbox2, False, 0);
+      Pack_Start (Hbox, Vbox2, False, False, 5);
+      Gtk_New (Label, "Value:");
+      Set_Alignment (Label, 0.0, 0.5);
+      Pack_Start (Vbox2, Label, False, False, 0);
+      Gtk_New (Adj, 0.0, -10000.0, 10000.0, 0.5, 100.0, 0.0);
+      Gtk_New (Spinner1, Adj, 1.0, 2);
+      Set_Wrap (Spinner1, True);
+      Set_Usize (Spinner1, 100, 0);
+      Set_Update_Policy (Spinner1, Update_Always);
+      Pack_Start (Vbox2, Spinner1, False, False, 0);
 
-         Gtk_New_Vbox (Vbox2, False, 0);
-         Pack_Start (Hbox, Vbox2, True, True, 5);
-         Gtk_New (Label, "Value:");
-         Set_Alignment (Label, 0.0, 0.5);
-         Pack_Start (Vbox2, Label, False, True, 0);
-         Gtk_New (Adj, 0.0, -10000.0, 10000.0, 0.5, 100.0, 0.0);
-         Gtk_New (Spinner1, Adj, 1.0, 2);
-         Set_Wrap (Spinner1, True);
-         Set_Usize (Spinner1, 100, 0);
-         Set_Update_Policy (Spinner1, Update_Always);
-         Pack_Start (Vbox2, Spinner1, False, True, 0);
+      Gtk_New_Vbox (Vbox2, False, 0);
+      Pack_Start (Hbox, Vbox2, False, False, 5);
+      Gtk_New (Label, "Digits:");
+      Set_Alignment (Label, 0.0, 0.5);
+      Pack_Start (Vbox2, Label, False, False, 0);
+      Gtk_New (Adj, 2.0, 1.0, 5.0, 1.0, 1.0, 0.0);
+      Gtk_New (Spinner2, Adj, 0.0, 0);
+      Set_Wrap (Spinner2, True);
+      Id := Spin_O_Cb.Connect (Adj, "value_changed", Change_Digits'Access,
+                               Spinner2);
 
-         Gtk_New_Vbox (Vbox2, False, 0);
-         Pack_Start (Hbox, Vbox2, True, True, 5);
-         Gtk_New (Label, "Digits:");
-         Set_Alignment (Label, 0.0, 0.5);
-         Pack_Start (Vbox2, Label, False, True, 0);
-         Gtk_New (Adj, 2.0, 1.0, 5.0, 1.0, 1.0, 0.0);
-         Gtk_New (Spinner2, Adj, 0.0, 0);
-         Set_Wrap (Spinner2, True);
-         Id := Spin_O_Cb.Connect (Adj, "value_changed", Change_Digits'Access,
-                                  Spinner2);
+      Pack_Start (Vbox2, Spinner2, False, False, 0);
 
-         Pack_Start (Vbox2, Spinner2, False, True, 0);
+      Gtk_New_Hbox (Hbox, False, 0);
+      Pack_Start (Vbox, Hbox, False, False, 5);
 
-         Gtk_New_Hbox (Hbox, False, 0);
-         Pack_Start (Vbox, Hbox, False, True, 5);
+      Gtk_New (Check, "Snap to 0.5-ticks");
+      Id := Spin_Cb.Connect (Check, "clicked", Toggle_Snap'Access,
+                             Spinner1);
+      Pack_Start (Vbox, Check, False, False, 0);
+      Set_Active (Check, True);
 
-         Gtk_New (Check, "Snap to 0.5-ticks");
-         Id := Spin_Cb.Connect (Check, "clicked", Toggle_Snap'Access,
-                                Spinner1);
-         Pack_Start (Vbox, Check, True, True, 0);
-         Set_Active (Check, True);
+      Gtk_New (Check, "Snap Numeric only input mode");
+      Id := Spin_Cb.Connect (Check, "clicked", Toggle_Numeric'Access,
+                             Spinner1);
+      Pack_Start (Vbox, Check, False, False, 0);
+      Set_Active (Check, True);
 
-         Gtk_New (Check, "Snap Numeric only input mode");
-         Id := Spin_Cb.Connect (Check, "clicked", Toggle_Numeric'Access,
-                                Spinner1);
-         Pack_Start (Vbox, Check, True, True, 0);
-         Set_Active (Check, True);
+      Gtk_New (Label, "");
+      Gtk_New_Hbox (Hbox, False, 0);
+      Pack_Start (Vbox, Hbox, False, False, 5);
 
-         Gtk_New (Label, "");
-         Gtk_New_Hbox (Hbox, False, 0);
-         Pack_Start (Vbox, Hbox, False, True, 5);
+      Myb := new My_Button_Record;
+      Initialize (Myb, "Value as Int");
+      Myb.Label := Label;
+      Id := Button_Cb.Connect (Myb, "clicked", Get_Value'Access, 1);
+      Pack_Start (Hbox, Myb, False, False, 5);
 
-         Myb := new My_Button_Record;
-         Initialize (Myb, "Value as Int");
-         Myb.Label := Label;
-         Id := Button_Cb.Connect (Myb, "clicked", Get_Value'Access, 1);
-         Pack_Start (Hbox, Myb, True, True, 5);
+      Myb := new My_Button_Record;
+      Initialize (Myb, "Value as Float");
+      Myb.Label := Label;
+      Id := Button_Cb.Connect (Myb, "clicked", Get_Value'Access, 2);
+      Pack_Start (Hbox, Myb, False, False, 5);
 
-         Myb := new My_Button_Record;
-         Initialize (Myb, "Value as Float");
-         Myb.Label := Label;
-         Id := Button_Cb.Connect (Myb, "clicked", Get_Value'Access, 2);
-         Pack_Start (Hbox, Myb, True, True, 5);
+      Pack_Start (Vbox, Label, False, False, 0);
+      Set_Text (Label, "0");
 
-         Pack_Start (Vbox, Label, True, True, 0);
-         Set_Text (Label, "0");
-
-         Gtk_New_Hbox (Hbox, False, 0);
-         Pack_Start (Main_Box, Hbox, False, True, 0);
-
-         Gtk_New (Button, "Close");
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
-         Pack_Start (Hbox, Button, True, True, 5);
-         Show_All (Window);
-      else
-         Destroy (Window);
-      end if;
-
+      Show_All (Frame);
    end Run;
 
 end Create_Spin;

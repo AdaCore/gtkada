@@ -27,10 +27,10 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Button;
+with Gtk.Frame;
 
 package Create_Button_Box is
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record);
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
 
 end Create_Button_Box;

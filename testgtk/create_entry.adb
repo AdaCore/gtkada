@@ -29,24 +29,17 @@
 
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
 with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Combo; use Gtk.Combo;
 with Gtk.GEntry; use Gtk.GEntry;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Separator; use Gtk.Separator;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
-with Common; use Common;
 with Gtk; use Gtk;
 
 package body Create_Entry is
 
    package Entry_Cb is new Signal.Callback
      (Base_Type => Gtk_Check_Button_Record, Data_Type => Gtk_Entry);
-
-   Window : aliased Gtk_Window;
 
    procedure Toggle_Editable (Button : access Gtk_Check_Button_Record;
                               The_Entry : in Gtk_Entry)
@@ -69,7 +62,7 @@ package body Create_Entry is
       Set_Visibility (The_Entry, Is_Active (Button));
    end Toggle_Visibility;
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       use String_List;
 
       List      : String_List.Glist;
@@ -79,90 +72,58 @@ package body Create_Entry is
       The_Entry : Gtk_Entry;
       Combo     : Gtk_Combo;
       Check     : Gtk_Check_Button;
-      Separator : Gtk_Separator;
-      Button    : Gtk_Button;
+
    begin
-      if Window = null then
+      Append (List, "item0");
+      Append (List, "item1 item1");
+      Append (List, "item2 item2 item2");
+      Append (List, "item3 item3 item3 item3");
+      Append (List, "item4 item4 item4 item4 item4");
+      Append (List, "item5 item5 item5 item5 item5 item5");
+      Append (List, "item6 item6 item6 item6 item6");
+      Append (List, "item7 item7 item7 item7");
+      Append (List, "item8 item8 item8");
+      Append (List, "item9 item9");
 
-         Append (List, "item0");
-         Append (List, "item1 item1");
-         Append (List, "item2 item2 item2");
-         Append (List, "item3 item3 item3 item3");
-         Append (List, "item4 item4 item4 item4 item4");
-         Append (List, "item5 item5 item5 item5 item5 item5");
-         Append (List, "item6 item6 item6 item6 item6");
-         Append (List, "item7 item7 item7 item7");
-         Append (List, "item8 item8 item8");
-         Append (List, "item9 item9");
+      Set_Label (Frame, "Entry");
 
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect
-           (Window, "destroy", Destroy_Window'Access, Window'Access);
-         Set_Title (Window, "entry");
-         Set_Border_Width (Window, 0);
+      Gtk_New_Vbox (Box1, False, 0);
+      Add (Frame, Box1);
 
-         Gtk_New_Vbox (Box1, False, 0);
-         Add (Window, Box1);
-         Show (Box1);
+      Gtk_New_Vbox (Box2, False, 10);
+      Set_Border_Width (Box2, 10);
+      Pack_Start (Box1, Box2, False, False, 0);
 
-         Gtk_New_Vbox (Box2, False, 10);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, True, True, 0);
-         Show (Box2);
+      Gtk_New (The_Entry);
+      Set_Text (The_Entry, "Hello world");
+      Select_Region (The_Entry, 0, 5);
+      Pack_Start (Box2, The_Entry, True, True, 0);
 
-         Gtk_New (The_Entry);
-         Set_Text (The_Entry, "Hello world");
-         Select_Region (The_Entry, 0, 5);
-         Pack_Start (Box2, The_Entry, True, True, 0);
-         Show (The_Entry);
+      Gtk_New (Combo);
+      Set_Popdown_Strings (Combo, List);
+      Set_Text (Get_Entry (Combo), "hello world");
+      Gtk.GEntry.Select_Region (Get_Entry (Combo), 0, -1);
+      Pack_Start (Box2, Combo, True, True, 0);
 
-         Gtk_New (Combo);
-         Set_Popdown_Strings (Combo, List);
-         Set_Text (Get_Entry (Combo), "hello world");
-         Gtk.GEntry.Select_Region (Get_Entry (Combo), 0, -1);
-         Pack_Start (Box2, Combo, True, True, 0);
-         Show (Combo);
+      Gtk_New (Check, "Editable");
+      Pack_Start (Box2, Check, False, True, 0);
+      Id := Entry_Cb.Connect
+        (Check, "toggled", Toggle_Editable'Access, The_Entry);
+      Set_Active (Check, True);
 
-         Gtk_New (Check, "Editable");
-         Pack_Start (Box2, Check, False, True, 0);
-         Id := Entry_Cb.Connect
-           (Check, "toggled", Toggle_Editable'Access, The_Entry);
-         Set_Active (Check, True);
-         Show (Check);
+      Gtk_New (Check, "Visible");
+      Pack_Start (Box2, Check, False, True, 0);
+      Id := Entry_Cb.Connect
+        (Check, "toggled", Toggle_Visibility'Access, The_Entry);
+      Set_Active (Check, True);
 
-         Gtk_New (Check, "Visible");
-         Pack_Start (Box2, Check, False, True, 0);
-         Id := Entry_Cb.Connect
-           (Check, "toggled", Toggle_Visibility'Access, The_Entry);
-         Set_Active (Check, True);
-         Show (Check);
+      Gtk_New (Check, "Sensitive");
+      Pack_Start (Box2, Check, False, True, 0);
+      Id := Entry_Cb.Connect
+        (Check, "toggled", Toggle_Sensitive'Access, The_Entry);
+      Set_Active (Check, True);
 
-         Gtk_New (Check, "Sensitive");
-         Pack_Start (Box2, Check, False, True, 0);
-         Id := Entry_Cb.Connect
-           (Check, "toggled", Toggle_Sensitive'Access, The_Entry);
-         Set_Active (Check, True);
-         Show (Check);
-
-         Gtk_New_Hseparator (Separator);
-         Pack_Start (Box1, Separator, False, True, 0);
-         Show (Separator);
-
-         Gtk_New_Vbox (Box2, False, 10);
-         Set_Border_Width (Box2, 10);
-         Pack_Start (Box1, Box2, False, True, 0);
-         Show (Box2);
-
-         Gtk_New (Button, "Close");
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
-         Pack_Start (Box2, Button, True, True, 0);
-         Set_Flags (Button, Can_Default);
-         Grab_Default (Button);
-         Show (Button);
-         Show (Window);
-      else
-         Destroy (Window);
-      end if;
+      Show_All (Frame);
    end Run;
 
 end Create_Entry;

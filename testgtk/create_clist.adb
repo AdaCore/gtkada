@@ -44,14 +44,12 @@ with Gtk.Option_Menu; use Gtk.Option_Menu;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
 with Gtk.Scrolled_Window;  use Gtk.Scrolled_Window;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Separator; use Gtk.Separator;
 with Gtk.Style; use Gtk.Style;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtkada.Types; use Gtkada.Types;
 with Common; use Common;
 
-with Create_Progress; use Create_Progress;
 with Interfaces.C.Strings;
 
 package body Create_Clist is
@@ -61,7 +59,6 @@ package body Create_Clist is
    package Check_Cb is new Signal.Callback
      (Gtk_Check_Button_Record, Gtk_Clist);
 
-   Window : aliased Gtk.Window.Gtk_Window;
    Clist_Columns      : constant Gint := 12;
    Clist_Rows         : Integer := 0;
    Style1             : Gtk_Style;
@@ -100,8 +97,6 @@ package body Create_Clist is
 
    procedure Remove_Selection (List : access Gtk_Clist_Record) is
       use Gint_List;
-      Selection : Gint_List.Glist;
-      Tmp : Gint_List.Glist;
       I : Gint;
    begin
       Freeze (List);
@@ -252,7 +247,7 @@ package body Create_Clist is
    end Toggle_Sel_Mode;
 
 
-   procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
 
       Texts     : Chars_Ptr_Array (0 .. Clist_Columns - 1);
       Id        : Guint;
@@ -260,7 +255,6 @@ package body Create_Clist is
         HBox    : Gtk_Box;
       Clist     : Gtk_CList;
       Button    : Gtk_Button;
-      Separator : Gtk_Separator;
       Label     : Gtk_Label;
       New_Row   : Gint;
       Scrolled  : Gtk_Scrolled_Window;
@@ -273,143 +267,121 @@ package body Create_Clist is
 
    begin
 
-      if Window = null then
-         Clist_Rows := 0;
-         Gtk_New (Window, Window_Toplevel);
-         Id := Destroy_Cb.Connect (Window, "destroy", Destroy_Window'Access,
-                                   Window'Access);
-         Set_Title (Window, "clist");
-         Set_Border_Width (Window, Border_Width => 0);
+      Clist_Rows := 0;
+      Set_Label (Frame, "Clist");
 
-         Gtk_New_Vbox (VBox, False, 0);
-         Add (Window, VBox);
+      Gtk_New_Vbox (VBox, False, 0);
+      Add (Frame, VBox);
 
-         Gtk_New (Scrolled);
-         Set_Border_Width (Scrolled, 5);
-         Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
+      Gtk_New (Scrolled);
+      Set_Border_Width (Scrolled, 5);
+      Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
 
-         Gtk_New (Clist, Clist_Columns, Titles);
-         Add (Scrolled, Clist);
-         --  TBD: Callback for click column
+      Gtk_New (Clist, Clist_Columns, Titles);
+      Add (Scrolled, Clist);
+      --  TBD: Callback for click column
 
-         Gtk_New_Hbox (Hbox, False, 5);
-         Set_Border_Width (Hbox, 5);
-         Pack_Start (Vbox, Hbox, False, False, 0);
+      Gtk_New_Hbox (Hbox, False, 5);
+      Set_Border_Width (Hbox, 5);
+      Pack_Start (Vbox, Hbox, False, False, 0);
 
-         Gtk_New (Button, "Insert Row");
-         Pack_Start (HBox, Button, True, True, 0);
-         Id := Clist_Cb.Connect (Button, "clicked", Insert_Row'Access, Clist);
+      Gtk_New (Button, "Insert Row");
+      Pack_Start (HBox, Button, True, True, 0);
+      Id := Clist_Cb.Connect (Button, "clicked", Insert_Row'Access, Clist);
 
-         Gtk_New (Button, "Add 1000 Rows with Pixmaps");
-         Pack_Start (HBox, Button, True, True, 0);
-         Id := Clist_Cb.Connect (Button, "clicked", Add1000'Access, Clist);
+      Gtk_New (Button, "Add 1000 Rows with Pixmaps");
+      Pack_Start (HBox, Button, True, True, 0);
+      Id := Clist_Cb.Connect (Button, "clicked", Add1000'Access, Clist);
 
-         Gtk_New (Button, "Add 10000 Rows");
-         Pack_Start (HBox, Button, True, True, 0);
-         Id := Clist_Cb.Connect (Button, "clicked", Add10000'Access, Clist);
+      Gtk_New (Button, "Add 10000 Rows");
+      Pack_Start (HBox, Button, True, True, 0);
+      Id := Clist_Cb.Connect (Button, "clicked", Add10000'Access, Clist);
 
-         --  Second layer of buttons
-         Gtk_New_Hbox (Hbox, False, 5);
-         Set_Border_Width (Hbox, 5);
-         Pack_Start (Vbox, Hbox, False, False, 0);
+      --  Second layer of buttons
+      Gtk_New_Hbox (Hbox, False, 5);
+      Set_Border_Width (Hbox, 5);
+      Pack_Start (Vbox, Hbox, False, False, 0);
 
-         Gtk_New (Button, "Clear List");
-         Pack_Start (Hbox, Button, True, True, 0);
-         Id := Clist_Cb.Connect (Button, "clicked", Clear_List'Access, Clist);
+      Gtk_New (Button, "Clear List");
+      Pack_Start (Hbox, Button, True, True, 0);
+      Id := Clist_Cb.Connect (Button, "clicked", Clear_List'Access, Clist);
 
-         Gtk_New (Button, "Remove Selection");
-         Pack_Start (Hbox, Button, True, True, 0);
-         Id := Clist_Cb.Connect (Button, "clicked", Remove_Selection'Access, Clist);
+      Gtk_New (Button, "Remove Selection");
+      Pack_Start (Hbox, Button, True, True, 0);
+      Id := Clist_Cb.Connect (Button, "clicked", Remove_Selection'Access, Clist);
 
-         Gtk_New (Button, "Undo Selection");
-         Pack_Start (Hbox, Button, True, True, 0);
-         Id := Clist_Cb.Connect (Button, "clicked", Undo_Selection'Access, Clist);
+      Gtk_New (Button, "Undo Selection");
+      Pack_Start (Hbox, Button, True, True, 0);
+      Id := Clist_Cb.Connect (Button, "clicked", Undo_Selection'Access, Clist);
 
-         --  TBD??? Warning tests button
+      --  TBD??? Warning tests button
 
-         --  Third layer of buttons
-         Gtk_New_Hbox (Hbox, False, 5);
-         Set_Border_Width (Hbox, 5);
-         Pack_Start (Vbox, Hbox, False, False, 0);
+      --  Third layer of buttons
+      Gtk_New_Hbox (Hbox, False, 5);
+      Set_Border_Width (Hbox, 5);
+      Pack_Start (Vbox, Hbox, False, False, 0);
 
-         Gtk_New (Check, "Toggle title Buttons");
-         Pack_Start (Hbox, Check, True, True, 0);
-         Id := Check_Cb.Connect (Check, "clicked", Toggle_Titles'Access, Clist);
-         Set_Active (Check, True);
+      Gtk_New (Check, "Toggle title Buttons");
+      Pack_Start (Hbox, Check, True, True, 0);
+      Id := Check_Cb.Connect (Check, "clicked", Toggle_Titles'Access, Clist);
+      Set_Active (Check, True);
 
-         Gtk_New (Check, "Reorderable");
-         Pack_Start (Hbox, Check, True, True, 0);
-         Id := Check_Cb.Connect (Check, "clicked", Toggle_Reorderable'Access, Clist);
-         Set_Active (Check, True);
+      Gtk_New (Check, "Reorderable");
+      Pack_Start (Hbox, Check, True, True, 0);
+      Id := Check_Cb.Connect (Check, "clicked", Toggle_Reorderable'Access, Clist);
+      Set_Active (Check, True);
 
-         Gtk_New (Label, "Selection_Mode :");
-         Pack_Start (Hbox, Label, False, True, 0);
+      Gtk_New (Label, "Selection_Mode :");
+      Pack_Start (Hbox, Label, False, True, 0);
 
-         Clist_Omenu_Group := Widget_Slist.Null_List;
-         Build_Option_Menu (Omenu, Clist_Omenu_Group, Items, 0, null);
-         --  FIXME: Add the missing callback (instead of null).
-         Pack_Start (Hbox, Omenu, False, True, 0);
+      Clist_Omenu_Group := Widget_Slist.Null_List;
+      Build_Option_Menu (Omenu, Clist_Omenu_Group, Items, 0, null);
+      --  FIXME: Add the missing callback (instead of null).
+      Pack_Start (Hbox, Omenu, False, True, 0);
 
 
-         Pack_Start (Vbox, Scrolled, True, True, 0);
-         Set_Row_Height (Clist, 18);
-         Set_Usize (Clist, -1, 300);
+      Pack_Start (Vbox, Scrolled, True, True, 0);
+      Set_Row_Height (Clist, 18);
+      Set_Usize (Clist, -1, 300);
 
-         for I in 0 .. Clist_Columns - 1 loop
-            Set_Column_Width (Clist, I, 80);
-         end loop;
+      for I in 0 .. Clist_Columns - 1 loop
+         Set_Column_Width (Clist, I, 80);
+      end loop;
 
-         Set_Column_Auto_Resize (Clist, 0, True);
-         Set_Column_Resizeable (Clist, 1, False);
-         Set_Column_Max_Width (Clist, 2, 100);
-         Set_Column_Min_Width (Clist, 3, 50);
-         Set_Selection_Mode (Clist, Selection_Extended);
-         Set_Column_Justification (Clist, 1, Justify_Right);
-         Set_Column_Justification (Clist, 2, Justify_Center);
+      Set_Column_Auto_Resize (Clist, 0, True);
+      Set_Column_Resizeable (Clist, 1, False);
+      Set_Column_Max_Width (Clist, 2, 100);
+      Set_Column_Min_Width (Clist, 3, 50);
+      Set_Selection_Mode (Clist, Selection_Extended);
+      Set_Column_Justification (Clist, 1, Justify_Right);
+      Set_Column_Justification (Clist, 2, Justify_Center);
 
-         for I in 1 .. Clist_Columns - 1 loop
+      for I in 1 .. Clist_Columns - 1 loop
             Texts (I) := ICS.New_String ("Columns " & Gint'Image (I));
-         end loop;
+      end loop;
 
-         Set_Rgb (Col1, 56000, 0, 0);
-         Set_Rgb (Col2, 0, 56000, 32000);
+      Set_Rgb (Col1, 56000, 0, 0);
+      Set_Rgb (Col2, 0, 56000, 32000);
 
-         Gtk_New (Style);
-         Set_Foreground (Style, State_Normal, Col1);
-         Set_Base (Style, State_Normal, Col2);
-         Load (Font, "-adobe-helvetica-bold-r-*-*-*-140-*-*-*-*-*-*");
-         Set_Font (Style, Font);
+      Gtk_New (Style);
+      Set_Foreground (Style, State_Normal, Col1);
+      Set_Base (Style, State_Normal, Col2);
+      Load (Font, "-adobe-helvetica-bold-r-*-*-*-140-*-*-*-*-*-*");
+      Set_Font (Style, Font);
 
-         for I in Gint'(0) .. 9 loop
-            Texts (0) := ICS.New_String ("ClistRow " & Integer'Image (Clist_Rows));
-            Clist_Rows := Clist_Rows + 1;
-            New_Row := Append (Clist, Texts);
-            ICS.Free (Texts (0));
-            if I mod 4 = 2 then
-               Set_Row_Style (Clist, I, Style);
-            else
-               Set_Cell_Style (Clist, I, I mod 4, Style);
-            end if;
-         end loop;
+      for I in Gint'(0) .. 9 loop
+         Texts (0) := ICS.New_String ("ClistRow " & Integer'Image (Clist_Rows));
+         Clist_Rows := Clist_Rows + 1;
+         New_Row := Append (Clist, Texts);
+         ICS.Free (Texts (0));
+         if I mod 4 = 2 then
+            Set_Row_Style (Clist, I, Style);
+         else
+            Set_Cell_Style (Clist, I, I mod 4, Style);
+         end if;
+      end loop;
 
-         Gtk_New_Hseparator (Separator);
-         Pack_Start (VBox, Separator, False, True, 0);
-
-         Gtk_New_Hbox (HBox, False, 10);
-         Set_Border_Width (Hbox, 10);
-         Pack_Start (Vbox, Hbox, False, True, 0);
-
-         Gtk_New (Button, "close");
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
-         Pack_Start (Hbox, Button, True, True, 0);
-         Set_Flags (Button, Can_Default);
-         Grab_Default (Button);
-         Show_All (Window);
-      else
-         Clist_Rows := 0;
-         Destroy (Window);
-      end if;
-
+      Show_All (Frame);
    end Run;
 
 end Create_Clist;
