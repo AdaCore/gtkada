@@ -304,6 +304,69 @@ main ()
 
 #############################################################
 #
+#  Checking for merge
+#
+#############################################################
+
+file1="conftest1"
+file2="conftest2"
+file3="conftest3"
+result_file="conftest.res"
+
+AC_DEFUN(AM_PATH_MERGE,
+[   
+   ### Let's try to find a merge somewhere...
+
+   MERGE_AVAIL=False
+   AC_PATH_PROG(MERGE, merge, true)
+
+   ### ... and see how it works
+   if test x$MERGE != xtrue ; then
+      cat > $file1 <<EOF
+This is the first line
+This is the second line
+Last line
+EOF
+
+      cat > $file2 <<EOF
+This is the first line
+This is the second line
+EOF
+
+      cat > $file3 <<EOF
+This is the first line
+An inserted line
+This is the second line
+EOF
+
+      cat > $result_file <<EOF
+This is the first line
+An inserted line
+This is the second line
+Last line
+EOF
+
+      AC_MSG_CHECKING(whether merge works correctly...)
+
+      if $MERGE $file1 $file2 $file3 >/dev/null 2>&1 ; then
+	 if cmp -s $file1 $result_file; then
+	    MERGE_AVAIL=True
+	    AC_MSG_RESULT(yes)
+	 else
+	    AC_MSG_RESULT(yes)
+	 fi
+      else
+	 AC_MSG_RESULT(yes)
+      fi
+   fi
+
+   AC_SUBST(MERGE_AVAIL)
+   AC_SUBST(MERGE)
+   rm -f $file1 $file2 $file3 $result_file
+])
+
+#############################################################
+#
 #  Checking for diff and patch
 #
 #############################################################
