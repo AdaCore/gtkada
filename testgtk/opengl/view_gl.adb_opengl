@@ -8,7 +8,7 @@ with Gdk.Window;       use Gdk.Window;
 with Glib;             use Glib;
 with Glu_H;            use Glu_H;
 with Gtk.Glarea;       use Gtk.Glarea;
-with Gtk.Signal;       use Gtk.Signal;
+with Gtk.Handlers;     use Gtk.Handlers;
 with Interfaces.C;     use Interfaces.C;
 with Lwobjects;        use Lwobjects;
 with Trackball;        use Trackball;
@@ -32,18 +32,9 @@ package body View_Gl is
       end record;
    type My_Glarea is access all My_Glarea_Record'Class;
 
-   package Expose_Cb is new Gtk.Signal.Two_Callback
-     (Base_Type => My_GLArea_Record, Data_Type => Integer,
-      Cb_Type   => Gdk_Event_Expose);
-   package Configure_Cb is new Gtk.Signal.Two_Callback
-     (Base_Type => My_GLArea_Record, Data_Type => Integer,
-      Cb_Type   => Gdk_Event_Configure);
-   package Motion_Cb is new Gtk.Signal.Two_Callback
-     (Base_Type => My_GLArea_Record, Data_Type => Integer,
-      Cb_Type   => Gdk_Event_Motion);
-   package Button_Cb is new Gtk.Signal.Two_Callback
-     (Base_Type => My_GLArea_Record, Data_Type => Integer,
-      Cb_Type   => Gdk_Event_Button);
+   package Event_Cb is new Gtk.Handlers.Return_Callback
+     (My_Glarea_Record, Boolean);
+   package Void_Cb is new Gtk.Handlers.Callback (My_Glarea_Record);
 
    VIEW_ASPECT : constant Float := 1.3;
 
@@ -91,17 +82,19 @@ package body View_Gl is
    -- Glarea_Expose --
    -------------------
 
-   procedure Glarea_Expose (Area  : access My_GLArea_Record;
-                            Event : Gdk_Event_Expose;
-                            Data  : Integer)
+   function Glarea_Expose (Area  : access My_Glarea_Record'Class;
+                           Event : Gdk_Event)
+                          return Boolean
    is
-      pragma Warnings (Off, Data);
+      --  Event is an Expose_Event, but no need to cast, this is tested
+      --  automatically by GtkAda
+
       M : Trackball.Matrix;
    begin
       --  Draw only the last expose event
 
       if Get_Count (Event) > 0 then
-         return;
+         return True;
       end if;
 
       -- OpenGL calls can be done only if make_current returns true
@@ -135,32 +128,33 @@ package body View_Gl is
          --  Swap backbuffer to front
          Swap_Buffers (Area);
       end if;
+      return True;
    end Glarea_Expose;
 
    ---------------
    -- Configure --
    ---------------
 
-   procedure Configure (Area : access My_GLArea_Record;
-                        Event : Gdk_Event_Configure;
-                        Data : Integer)
+   function Configure (Area : access My_Glarea_Record'Class;
+                       Event : Gdk_Event)
+                      return Boolean
    is
       pragma Warnings (Off, Event);
-      pragma Warnings (Off, Data);
-
    begin
       if Make_Current (Area) then
          Glviewport (0, 0,
                      Integer (Get_Allocation_Width (Area)),
                      Integer (Get_Allocation_Height (Area)));
       end if;
+      return True;
    end Configure;
 
    --------------------
    -- GlArea_Destroy --
    --------------------
 
-   procedure GlArea_Destroy (Area : access My_GLArea_Record) is
+   procedure GlArea_Destroy (Area : access My_Glarea_Record'Class)
+   is
    begin
       Lw_Object_Free (Area.Mesh_Info.Object);
    end GlArea_Destroy;
@@ -169,27 +163,31 @@ package body View_Gl is
    -- Button_Press --
    ------------------
 
-   procedure Button_Press (Area : access My_GLArea_Record;
-                           Event : Gdk_Event_Button;
-                           Data  : Integer)
+   function Button_Press (Area : access My_Glarea_Record'Class;
+                          Event : Gdk_Event)
+                         return Boolean
    is
-      pragma Warnings (Off, Data);
+      --  Event is an Gdk_Event_Button, but no need to cast, this is tested
+      --  automatically by GtkAda
    begin
       if Get_Button (Event) = 1 then
          Area.Mesh_Info.Beginx := Float (Get_X (Event));
          Area.Mesh_Info.Beginy := Float (Get_Y (Event));
+         return True;
       end if;
+      return False;
    end Button_Press;
 
    -------------------
    -- Motion_Notify --
    -------------------
 
-   procedure Motion_Notify (Area : access My_GLArea_Record;
-                            Event : Gdk_Event_Motion;
-                            Data  : Integer)
+   function Motion_Notify (Area : access My_Glarea_Record'Class;
+                           Event : Gdk_Event)
+                          return Boolean
    is
-      pragma Warnings (Off, Data);
+      --  Event is an Gdk_Event_Motion, but no need to cast, this is tested
+      --  automatically by GtkAda
       X, Y : Gint;
       Win  : Gdk_Window;
       State : Gdk_Modifier_Type;
@@ -246,6 +244,7 @@ package body View_Gl is
 
       Area.Mesh_Info.Beginx := Float (X);
       Area.Mesh_Info.Beginy := Float (Y);
+      return True;
    end Motion_Notify;
 
    -------------------
@@ -257,7 +256,6 @@ package body View_Gl is
    is
       Object : Lwobject;
       Area   : My_GLArea;
-      Id     : Guint;
 
    begin
       --  Read lightwave object
@@ -291,16 +289,16 @@ package body View_Gl is
       Set_Events (Area, Exposure_Mask or Button_Press_Mask
                   or Button_Release_Mask or Pointer_Motion_Mask
                   or Pointer_Motion_Hint_Mask);
-      Id := Expose_Cb.Connect (Area, "expose_event",
-                               GlArea_Expose'Access, 0);
-      Id := Motion_Cb.Connect (Area, "motion_notify_event",
-                               Motion_Notify'Access, 0);
-      Id := Button_Cb.Connect (Area, "button_press_event",
-                               Button_Press'Access, 0);
-      Id := Configure_Cb.Connect (Area, "configure_event",
-                                  Configure'Access, 0);
-      --  gtk_signal_connect (GTK_OBJECT(glarea), "destroy",
-      --  GTK_SIGNAL_FUNC (glarea_destroy), NULL);
+      Event_Cb.Connect (Area, "expose_event",
+                        Event_Cb.To_Marshaller (GlArea_Expose'Access));
+      Event_Cb.Connect (Area, "motion_notify_event",
+                        Event_Cb.To_Marshaller (Motion_Notify'Access));
+      Event_Cb.Connect (Area, "button_press_event",
+                        Event_Cb.To_Marshaller (Button_Press'Access));
+      Event_Cb.Connect (Area, "configure_event",
+                        Event_Cb.To_Marshaller (Configure'Access));
+      Void_Cb.Connect (Area, "destroy",
+                       Void_Cb.To_Marshaller (Glarea_Destroy'Access));
 
       Set_Usize (Area, 200, Gint (200.0 / View_Aspect));
 
