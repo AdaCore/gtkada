@@ -29,6 +29,7 @@
 
 with System;
 with Gtk.Util; use Gtk.Util;
+with Gtk.Menu_Item; use Gtk.Menu_Item;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 
 package body Gtk.Option_Menu is
@@ -166,7 +167,7 @@ package body Gtk.Option_Menu is
    is
       S             : String_Ptr;
       The_Menu      : Menu.Gtk_Menu;
-      The_Menu_Item : Menu_Item.Gtk_Menu_Item;
+      The_Menu_Item : Gtk_Menu_Item;
       First, Last   : Natural;
 
    begin
@@ -192,7 +193,7 @@ package body Gtk.Option_Menu is
                Last := S'Last + 1;
             end if;
 
-            Menu_Item.Gtk_New (The_Menu_Item, S (First .. Last - 1));
+            Gtk_New (The_Menu_Item, S (First .. Last - 1));
             Menu.Append (The_Menu, The_Menu_Item);
 
             exit when Last >= S'Last;

@@ -33,6 +33,7 @@ with Gtk.Util; use Gtk.Util;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Notebook; use Gtk.Notebook;
 with Gtk.Clist; use Gtk.Clist;
+with Gtk.Widget; use Gtk.Widget;
 
 package body Gtk.Label is
 
@@ -265,13 +266,13 @@ package body Gtk.Label is
                Set_Tab
                  (Gtk_Notebook (Get_Object (Find_Tag
                     (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                     "name").Value)), Num, Widget.Gtk_Widget (Label));
+                     "name").Value)), Num, Gtk_Widget (Label));
 
             elsif Is_Title then
                Set_Column_Widget
                  (Gtk_Clist (Get_Object (Find_Tag
                     (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                     "name").Value)), Num, Widget.Gtk_Widget (Label));
+                     "name").Value)), Num, Gtk_Widget (Label));
             end if;
          end if;
       end if;
