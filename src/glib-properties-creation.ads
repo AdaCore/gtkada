@@ -118,12 +118,13 @@ package Glib.Properties.Creation is
 
    type Flags_Class is new Glib.C_Proxy;
    type Flags_Value is new Glib.C_Proxy;
+   type Flags_Int_Value is mod Glib.Gint'Last;
 
    function Nth_Value (Klass : Flags_Class; Nth : Glib.Guint)
       return Flags_Value;
    --  Return the Nth-th value in Klass, or null if there is no such value.
 
-   function Value (Val : Flags_Value) return Glib.Gint;
+   function Value (Val : Flags_Value) return Flags_Int_Value;
    --  Return the numeric value for a specific enumeration. Use the matching
    --  Ada type and 'Val to convert it to a valid Ada enumeration
 

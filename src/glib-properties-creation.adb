@@ -887,8 +887,8 @@ package body Glib.Properties.Creation is
    -- Value --
    -----------
 
-   function Value (Val : Flags_Value) return Gint is
-      function Internal (Val : Flags_Value) return Gint;
+   function Value (Val : Flags_Value) return Flags_Int_Value is
+      function Internal (Val : Flags_Value) return Flags_Int_Value;
       pragma Import (C, Internal, "ada_gflags_get_value");
    begin
       return Internal (Val);
