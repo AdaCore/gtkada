@@ -82,9 +82,9 @@ package Gtk.Toolbar is
      (Toolbar              : access Gtk_Toolbar_Record;
       The_Type             : in Gtk_Toolbar_Child_Type;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Text                 : in String;
-      Tooltip_Text         : in String;
-      Tooltip_Private_Text : in String;
+      Text                 : in String := "";
+      Tooltip_Text         : in String := "";
+      Tooltip_Private_Text : in String := "";
       Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position             : in Gint)
       return Gtk.Widget.Gtk_Widget;
@@ -92,9 +92,9 @@ package Gtk.Toolbar is
    --  done in C.
    function Insert_Item
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : in String;
-      Tooltip_Text         : in String;
-      Tooltip_Private_Text : in String;
+      Text                 : in String := "";
+      Tooltip_Text         : in String := "";
+      Tooltip_Private_Text : in String := "";
       Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position             : in Gint)
       return Gtk.Button.Gtk_Button;
@@ -104,31 +104,31 @@ package Gtk.Toolbar is
    procedure Insert_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : in String;
-      Tooltip_Private_Text : in String;
+      Tooltip_Text         : in String := "";
+      Tooltip_Private_Text : in String := "";
       Position             : in Gint);
    function Prepend_Element
      (Toolbar              : access Gtk_Toolbar_Record;
       The_Type             : in Gtk_Toolbar_Child_Type;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Text                 : in String;
-      Tooltip_Text         : in String;
-      Tooltip_Private_Text : in String;
+      Text                 : in String := "";
+      Tooltip_Text         : in String := "";
+      Tooltip_Private_Text : in String := "";
       Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
       return Gtk.Widget.Gtk_Widget;
    function Prepend_Item
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : in String;
-      Tooltip_Text         : in String;
-      Tooltip_Private_Text : in String;
+      Text                 : in String := "";
+      Tooltip_Text         : in String := "";
+      Tooltip_Private_Text : in String := "";
       Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
       return Gtk.Button.Gtk_Button;
    procedure Prepend_Space (Toolbar : access Gtk_Toolbar_Record);
    procedure Prepend_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : in String;
-      Tooltip_Private_Text : in String);
+      Tooltip_Text         : in String := "";
+      Tooltip_Private_Text : in String := "");
    procedure Set_Orientation
      (Toolbar     : access Gtk_Toolbar_Record;
       Orientation : in Gtk_Orientation);
