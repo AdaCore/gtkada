@@ -28,7 +28,7 @@
 -----------------------------------------------------------------------
 
 with GNAT.HTable;
-with Generates; use Generates;
+with Gtk_Generates; use Gtk_Generates;
 
 package body Gtk.Glade is
 
