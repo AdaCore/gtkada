@@ -27,6 +27,18 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  The Gtk_Gamma_Curve widget is a child of Gtk_Curve specifically for editing
+--  gamma curves, which are used in graphics applications such as the Gimp.
+--
+--  The Gamma_Curve widget shows a curve which the user can edit with the mouse
+--  just like a Gtk_Curve widget. On the right of the curve it also displays 5
+--  buttons, 3 of which change between the 3 curve modes (spline, linear and
+--  free), and the other 2 set the curve to a particular gamma value, or reset
+--  it to a straight line.
+--  </description>
+--  <c_version>1.2.8</c_version>
+
 with Gtk.Object;
 with Gtk.Box;
 with Gtk.Curve;
@@ -37,16 +49,28 @@ package Gtk.Gamma_Curve is
    type Gtk_Gamma_Curve is access all Gtk_Gamma_Curve_Record'Class;
 
    procedure Gtk_New (Gamma_Curve : out Gtk_Gamma_Curve);
+   --  Create a new Gtk_Gamma_Curve.
+
    procedure Initialize (Gamma_Curve : access Gtk_Gamma_Curve_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
 
-   function Get_Curve (Gamma_Curve : access Gtk_Gamma_Curve_Record)
-     return Gtk.Curve.Gtk_Curve;
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Gamma_Curve.
 
-   function Get_Gamma (Gamma_Curve : access Gtk_Gamma_Curve_Record)
-     return Gfloat;
+   function Get_Curve
+     (Gamma_Curve : access Gtk_Gamma_Curve_Record) return Gtk.Curve.Gtk_Curve;
+   --  Return the Curve widget associated with a Gamma_Curve.
 
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type);
+   function Get_Gamma
+     (Gamma_Curve : access Gtk_Gamma_Curve_Record) return Gfloat;
+   --  Return the Gamma value associated with a Gamma_Curve.
+
+   ----------------------------
+   -- Support for Gate/Dgate --
+   ----------------------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
 
    procedure Generate
@@ -56,5 +80,7 @@ package Gtk.Gamma_Curve is
 private
 
    type Gtk_Gamma_Curve_Record is new Gtk.Box.Gtk_Box_Record with null record;
+
+   pragma Import (C, Get_Type, "gtk_gamma_curve_get_type");
 
 end Gtk.Gamma_Curve;
