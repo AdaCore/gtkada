@@ -96,6 +96,10 @@ package Gtk.Widget is
    -- Widgets' life cycle --
    -------------------------
 
+   procedure Initialize_Widget (Widget : access Gtk_Widget_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
    procedure Destroy_Cb (Widget : access Gtk_Widget_Record'Class);
    --  This function should be used as a callback to destroy a widget.
    --  All it does is call Destroy on its argument, but its profile is
@@ -160,6 +164,17 @@ package Gtk.Widget is
    --  Hide the widget from the screen and deletes the associated window.
    --  This does not destroy the widget itself, only its server-side
    --  resources.
+
+   generic
+      type Widget_Type is new Gtk_Widget_Record with private;
+      with procedure Realize_Proc (Widget : access Widget_Type'Class);
+   package Realize_Handling is
+
+      procedure Set_Realize (Widget : access Gtk_Widget_Record'Class);
+      --  Set the realize handler at the low level.
+      --  This is needed to replace the default realize in new widgets.
+
+   end Realize_Handling;
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Widget.
@@ -553,6 +568,10 @@ package Gtk.Widget is
    --  This modifies its visual aspect, and thus should be used only if you
    --  change its behavior at the same time, so as not to confuse the user.
 
+   function Get_State (Widget : access Gtk_Widget_Record)
+     return Enums.Gtk_State_Type;
+   --  Return the state of the widget.
+
    procedure Set_Sensitive (Widget    : access Gtk_Widget_Record;
                             Sensitive : in Boolean := True);
    --  Modify the sensitivity of the widget.
@@ -569,11 +588,16 @@ package Gtk.Widget is
                           Y      : out Gint);
    --  Return the coordinates of the pointer (i.e. mouse) relative to Widget.
 
+   procedure Set_Window
+     (Widget : access Gtk_Widget_Record;
+      Window : in Gdk.Window.Gdk_Window);
+   --  Set the Gdk window associated with the widget.
+
    function Get_Window (Widget : access Gtk_Widget_Record)
-                       return Gdk.Window.Gdk_Window;
-   --  Get the Gdk window associated with the widget. You can use this window
-   --  if you need to draw directly on the widget using the functions found in
-   --  the Gdk hierarchy.
+     return Gdk.Window.Gdk_Window;
+   --  Get the Gdk window associated with the widget.
+   --  You can use this window if you need to draw directly on the widget using
+   --  the functions found in the Gdk hierarchy.
 
    procedure Shape_Combine_Mask
      (Widget     : access Gtk_Widget_Record;

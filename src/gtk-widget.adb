@@ -374,6 +374,21 @@ package body Gtk.Widget is
    end Get_Toplevel;
 
    ----------------
+   -- Set_Window --
+   ----------------
+
+   procedure Set_Window
+     (Widget : access Gtk_Widget_Record;
+      Window : in Gdk.Window.Gdk_Window)
+   is
+      procedure Internal
+        (Widget : System.Address; Window : Gdk.Window.Gdk_Window);
+      pragma Import (C, Internal, "ada_widget_set_window");
+   begin
+      Internal (Get_Object (Widget), Window);
+   end Set_Window;
+
+   ----------------
    -- Get_Window --
    ----------------
 
@@ -509,6 +524,21 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget));
    end Hide;
+
+   -----------------------
+   -- Initialize_Widget --
+   -----------------------
+
+   procedure Initialize_Widget (Widget : access Gtk_Widget_Record'Class) is
+      function Internal
+        (The_Type : in Gtk_Type;
+         Nargs    : in Guint;
+         Args     : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_newv");
+   begin
+      Set_Object (Widget, Internal (Get_Type, 0, System.Null_Address));
+      Initialize_User_Data (Widget);
+   end Initialize_Widget;
 
    ---------------
    -- Intersect --
@@ -1005,6 +1035,20 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Enums.Gtk_State_Type'Pos (State));
    end Set_State;
 
+   ---------------
+   -- Get_State --
+   ---------------
+
+   function Get_State (Widget : access Gtk_Widget_Record)
+     return Enums.Gtk_State_Type
+   is
+      function Internal (Widget : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_widget_get_state");
+
+   begin
+      return Enums.Gtk_State_Type'Val (Internal (Get_Object (Widget)));
+   end Get_State;
+
    -------------------
    -- Set_UPosition --
    -------------------
@@ -1125,6 +1169,32 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Hide_All;
 
+   -----------------
+   -- Set_Realize --
+   -----------------
+
+   package body Realize_Handling is
+
+      procedure Internal_Realize (Widget : System.Address);
+      --  The wrapper passed to Gtk+.
+      pragma Convention (C, Internal_Realize);
+
+      procedure Internal_Realize (Widget : System.Address) is
+         Dummy : Widget_Type;
+      begin
+         Realize_Proc (Widget_Type (Get_User_Data (Widget, Dummy).all)'Access);
+      end Internal_Realize;
+
+      procedure Set_Realize (Widget : access Gtk_Widget_Record'Class) is
+         procedure Internal
+           (Widget : System.Address; Realize : System.Address);
+         pragma Import (C, Internal, "ada_widget_set_realize");
+      begin
+         Internal (Get_Object (Widget), Internal_Realize'Address);
+      end Set_Realize;
+
+   end Realize_Handling;
+
    ------------------------
    -- Shape_Combine_Mask --
    ------------------------
@@ -1222,7 +1292,7 @@ package body Gtk.Widget is
                        File   : in File_Type) is
       Child       : Node_Ptr := Find_Tag (N.Child, "child");
       Q           : Node_Ptr;
-      Top         : constant Node_Ptr := Find_Top_Widget (N);
+      Top         : constant Node_Ptr   := Find_Top_Widget (N);
       Top_Name    : constant String_Ptr := Get_Field (Top, "name");
       Cur         : constant String_Ptr := Get_Field (N, "name");
       S           : String_Ptr;
@@ -1234,6 +1304,13 @@ package body Gtk.Widget is
 
    begin
       Object.Generate (N, File);
+
+      S := Get_Field (Find_Child (Top.Parent, "project"), "use_widget_names");
+
+      if S /= null and then Boolean'Value (S.all) then
+         Gen_Set (N, "Widget", "name", File, Delim => '"');
+      end if;
+
       Gen_Set (N, "Widget", "sensitive", File);
       Gen_Set (N, "Widget", "UPosition", "x", "y", "", "", File);
       Gen_Set (N, "Widget", "USize", "width", "height", "", "", File);
