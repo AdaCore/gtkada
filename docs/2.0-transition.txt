@@ -8,37 +8,111 @@ Gdk.Event:
   Get_Pressure, Get_Xtilt, Get_Ytilt, Get_Source: removed
   Get_Type: replace Gtk.Gtk_Type_Gdk_Event
   Get_Event: replace Gtk.Arguments.To_Event
+Gdk.Pixbuf:
+  now part of libgtkada
+  upgrade to gdk pixbuf 0.8, now part of Gtk+
+  rendering functions have been suppressed.
+  see gdk-pixbuf.ads for the complete list of new functions.
+Gdk.Rectangle:
+  Gdk_Rectangle now takes gint instead of gint16 and guint16.
 Gdk.Region:
   Union_With_Rect, Intersect, Union, Substract, Gdk_Xor: Profile changed,
     Source1 is now in out (both source and result).
 Gdk.Rgb:
+  Init: removed, not longer needed.
+  Gtk_New: renamed Gdk_New.
   Get_8, Set_8: removed
 Gtk:
   Gtk_Type_* constants replaced by Glib.GType_*
   Gtk_Type_Gdk_Event: replace by Gdk.Event.Get_Type
   Root_Type replaced by Glib.GObjects.GObject_Record
   All subprograms related to Root_Type moved to Glib.GObjects as well.
+Gtk.Adjustments:
+  all Gfloat replaced by Gdouble
 Gtk.Arguments obsolete, use Glib.Values instead
+Gtk.Box:
+  New function Get_Spacing
+Gtk.Button:
+  New procedures Gtk_New_From_Stock, Gtk_New_From_Mnemonic
 Gtk.Button_Box:
   Set/Get_Spacing: removed since redundant with Gtk.Box
   Set/Get_Child*: removed
+Gtk.Calendar:
+  New signals: "day_selected", "day_selected_double_click",
+   "prev_month", "next_month", "prev_year", "next_year"
+Gtk.Check_Button:
+  Gtk_New/Initialize: With_Label renamed Label.
+  new procedure: Gtk_New_With_Mnemonic
+Gtk.Check_Menu_Item:
+  Set_Show_Toggle, Set_Always_Show_Toggle: removed (deprecated).
+  new procedures: Set_Inconsistent, Get_Inconsistent.
+Gtk.Clist: deprecated, use Gtk_Tree_View instead.
 Gtk.Color_Selection:
   Set_Opacity: removed
+Gtk.Color_Selection:
+  new functions Set/Get_Use_Opacity, Set/Get_Use_Palette,
+   Set/Get_Old_Color, Set/Get_Palette_Color, Unset_Palette_Color, Is_Adjusting.
 Gtk.Color_Selection_Dialog:
+  now a child of Gtk_Dialog.
   Get_Reset_Button: removed
 Gtk.Container:
-  Get_Toplevels, Register_Toplevel, Unregister_Toplevel: removed
+  Get_Toplevels, Register_Toplevel, Unregister_Toplevel: removed, use
+   Gtk.Window.List_Toplevels instead.
+  new functions: Propagate_Expose, Set/Unset_Focus_Chain, Resize_Children.
+Gtk.Ctree: deprecated, use Gtk_Tree_View instead.
+Gtk.Data: removed, obsolete.
 Gtk.Editable:
   Claim_Selection: removed
+  Get_Clipboard_Text, Get_Editable, Get_Has_Selection, Changed: removed
   Get_Selection_End_Pos/Start_Pos: replaced by Get_Selection_Bounds.
+  The following signals are removed: changed, activate, set-editable,
+   move_cursor, move_word, move_page, move_to_row, move_to_column,
+   kill_char, kill_word, kill_line, cut_clipboard, copy_clipboard,
+   paste_clipboard.
+Gtk.File_Selection:
+  now a child of Gtk_Dialog
 Gtk.Font_Selection:
+  Gtk_Font_Selection_Dialog is now a child of Gtk_Dialog
+  Gtk_Font_Selection is now a child of Gtk_Vbox
+  Font_Metric_Type, Font_Type, Font_Filter_Type: removed.
   Set_Filter: removed
+Gtk.Frame:
+  new functions Get_Label, Set_Label_Widget.
+Gtk.Gentry
+  now a child of Gtk_Widget.
+  new signals:
+    "insert_text"
+    "delete_text"
+    "changed"
+    "populate_popup"
+    "activate"
+    "move_cursor"
+    "insert_at_cursor"
+    "delete_from_cursor"
+    "cut_clipboard"
+    "copy_clipboard"
+    "paste_clipboard"
+    "toggle_overwrite"
+  Select_Region: removed.
+
 Gtk.Grange:
   Draw_*, Default_*, Slider_Update, Trough_Click: removed since internal
   Set/Get_Inverted: new functions
 Gtk.Handlers:
   Use Glib.Values instead of Gtk.Arguments.
   Relatively good compatibility kept however.
+Gtk.Image:
+  Gtk_Image_Type: new type.
+  Get_Storage_Type,
+  Get/Set from Pixmap, File, Pixbuf, Stock, Icon_Set: new functions.
+Gtk.Invisible:
+  now a child of Gtk.Widget.
+Gtk.Label:
+  Get: deprecated. use Get_Text instead.
+  Parse_Uline: removed (replaced by Gtk_New_With_Mnemonic).
+Gtk.Layout:
+  Freeze, Thaw: removed, deprecated.
+Gtk.List: deprecated, use Gtk_Tree_View instead.
 Gtk.Marshallers:
   Use Glib.Values instead of Gtk.Arguments.
 Gtk.Menu:
@@ -49,9 +123,120 @@ Gtk.Notebook:
   Get_Cur_Page, Get_Tab_Label, Get_Allocation_*, Get_Child, Set_Tab: removed
   Get_Menu_Label: spec modified to take a notebook+widget instead of a
     Gtk_Notebook_Page
+Gtk.Option_Menu:
+  Get_History: new function.
 Gtk.Paned:
   Set/Get_Gutter_Size: removed since there is no longer a gutter
   Set/Get_Handle_Size: remove
+  Get_Position: new function.
+Gtk.Pixmap: deprecated.
+Gtk.Preview: deprecated.
+Gtk.Progress: deprecated.
+  All functions but Set_Text_Alignment now take Gdouble instead of Gfloat.
+Gtk.Progress_Bar: major API changes, see spec. Previous API wasn't usable.
+Gtk.Ruler:
+  all functions now take/return Gdouble instead of Gfloat.
+Gtk.Scale:
+  new function Get_Value_Size
+Gtk.Scrolled_Window:
+  new a child of Gtk_Bin (instead of Gtk_Container).
+  Set_Shadow_Type: new function.
+Gtk.Selection:
+  Clear_Targets: new function.
+Gtk.Signal: removed, obsolete. Use Gtk.Handlers instead.
+Gtk.Spin_Button:
+  type Gtk_Spin_Button_Update_Policy moved here (from Gtk.Enums).
+  Gfloat parameters replaced by Gdouble.
+  Spin: now takes a Gtk_Spin_Type and a Gdouble as parameters.
+  Set_Digits: now takes a Guint instead of a Gint.
+  Gtk_New (with range), Set_Increments, Set_Range, Update: new procedures.
+Gtk.Status_Bar:
+  Set/Get_Has_Resize_Grip: new functions.
+Gtk.Style:
+  significant additions. see spec for details.
+  Draw_String: deprecated.
+  Draw_Oval: removed.
+Gtk.Text: broken. Use Gtk_Text_View instead.
+Gtk.Text_Buffer: new package.
+Gtk.Text_Child: new package.
+Gtk.Text_Iter: new package.
+Gtk.Text_Mark: new package.
+Gtk.Text_Tag: new package.
+Gtk.Text_Tag_Table: new package.
+Gtk.Text_View: new package.
+Gtk.Tips_Query: deprecated.
+Gtk.Toggle_Button:
+  Set/Get_Inconsistent: new functions.
+  Is_Active: removed, was deprecated. Use Get_Active instead.
+Gtk.Toolbar:
+  Set_Icon_Size, Insert_Stock: new functions.
+Gtk.Tooltips:
+  now a child of Gtk_Object.
+  Set_Colors: removed, was deprecated. The colors for tooltips are now taken
+   from the style.
+Gtk.Tree: removed, deprecated, use Gtk_Tree_View instead.
+Gtk.Tree_Item: removed, deprecated, use Gtk_Tree_View instead.
+Gtk.Vbutton_Box:
+  Get/Set_Spacing_Default: removed, deprecated, noop.
+  Get/Set_Layout_Default: removed, deprecated, noop.
 Gtk.Widget:
-  Get_Visual: removed
+  Gtk_Requisition, Gtk_Allocation: now takes gint insstead of gint16.
+  Double_Buffered_Is_Set, Set_Double_Buffered,
+  Get_Parent_Window, Hide_On_Delete, Get_Modifer_Style: new function.
+  Set_Default_Visual, Push/Pop_Visual, Get_Visual: removed
   Draw_Default, Draw_Focus, Popup: removed
+Gtk.Window:
+  Set_Role, Set_Destroy_With_Parent,
+  Set/Get_Resizeable, Set_Has_Frame, Set_Frame_Dimensions,
+  Set_Decorated, List_Toplevels, Present,
+  Iconify, Deiconify, Stick, Unstick,
+  Maximize, Unmaximize: new procedures.
+  Set_Policy, Set_Default_Size: deprecated.
+
+====
+
+Not bound yet:
+gerror.h
+gdk-pixbuf-loader.h
+gdkwindow.h: recheck. need at least invalidate_* and process_updates.
+gtkarg.h
+gtkbindings.h
+gtkcellrenderer.h
+gtkcellrendererpixbuf.h
+gtkcellrenderertext.h
+gtkcellrenderertextpixbuf.h
+gtkcellrenderertoggle.h
+gtkclipboard.h
+gtkdialog.h: see "missing" section in gtk-dialogs.ads
+gtkdnd.h: see "missing" section in gtk-dnd.ads
+gtkeditable.h: is a GTypeInterface, not a GObject
+gtkentry.h: add signals description and see "missing" section in gtk-gentry.ads
+gtkgc.h
+gtkhsv.h
+gtkiconfactory.h
+gtkimage.h: add documentation
+gtkimagemenuitem.h
+gtkimcontext.h
+gtkimmodule.h
+gtkimmulticontext.h
+gtklabel.h: see "missing" section in gtk-label.ads
+gtkliststore.h
+gtkmenuitem.h: see "missing" section in gtk-menu_item.ads
+gtkmessagedialog.h
+gtkrc.h: only partly bound.
+gtkselection.h: see "missing" section in gtk-selection.ads
+gtkseparatormenuitem.h
+gtksettings.h
+gtkstock.h (will replace Gtkada.Pixmaps)
+gtkstyle.h: now a GObject with signals. see "missing" section.
+            need to update field accessors.
+gtktreednd.h
+gtktreemodel.h
+gtktreemodelsort.h
+gtktreeselection.h
+gtktreesortable.h
+gtktreestore.h
+gtktreeview.h
+gtktreeviewcolumn.h
+gtkwidget.h: see "missing" section. check signals.
+gtkwindow.h: see "missing" section.
