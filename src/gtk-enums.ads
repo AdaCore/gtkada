@@ -78,6 +78,8 @@ package Gtk.Enums is
                             Update_Discontinuous,
                             Update_Delayed);
 
+   type Gtk_Relief_Style is (Normal, Half, None);
+
    type Gtk_Attach_Options is new Glib.Guint32;
    Expand : constant Gtk_Attach_Options := 1;
    Shrink : constant Gtk_Attach_Options := 2;
