@@ -358,7 +358,7 @@ void		gtk_plot_get_size		(GtkPlot *plot,
 					  	 gdouble *height);
 GtkAllocation 	gtk_plot_get_internal_allocation(GtkPlot *plot);
 void		gtk_plot_set_background		(GtkPlot *plot, 
-						 GdkColor background);
+						 GdkColor* background);
 void 		gtk_plot_paint                  (GtkPlot *plot,
                                                  GdkRectangle *area);
 
@@ -432,11 +432,11 @@ void		gtk_plot_axis_justify_title	(GtkPlot *plot,
 void		gtk_plot_axis_set_attributes 	(GtkPlot *plot,
 						 GtkPlotAxisPos axis,
 						 gint width,
-						 GdkColor color);
+						 GdkColor *color);
 void		gtk_plot_axis_get_attributes 	(GtkPlot *plot,
 						 GtkPlotAxisPos axis,
 						 gint *width,
-						 GdkColor *color);
+						 GdkColor **color);
 void		gtk_plot_axis_set_ticks		(GtkPlot *plot,
 						 GtkOrientation orientation,
 						 gdouble major_ticks,
@@ -464,15 +464,15 @@ void		gtk_plot_axis_title_set_attributes	(GtkPlot *plot,
 							 gchar *font,
 							 gint height,
 							 gint angle,
-							 GdkColor foreground,
-							 GdkColor background);
+							 GdkColor *foreground,
+							 GdkColor *background);
 void		gtk_plot_axis_labels_set_attributes	(GtkPlot *plot,
 						 	 GtkPlotAxisPos axis,
 							 gchar *font,
 							 gint height,
 							 gint angle,
-							 GdkColor foreground,
-							 GdkColor background);
+							 GdkColor *foreground,
+							 GdkColor *background);
 void		gtk_plot_axis_labels_set_numbers	(GtkPlot *plot,
 					 		 GtkPlotAxisPos axis,
 							 gint style,
@@ -497,27 +497,27 @@ void		gtk_plot_grids_get_visible		(GtkPlot *plot,
 void		gtk_plot_y0line_set_attributes 	(GtkPlot *plot,
 						 GtkPlotLineStyle style,
 						 gint width,
-						 GdkColor color);
+						 GdkColor *color);
 void		gtk_plot_x0line_set_attributes 	(GtkPlot *plot,
 						 GtkPlotLineStyle style,
 						 gint width,
-						 GdkColor color);
+						 GdkColor *color);
 void		gtk_plot_major_vgrid_set_attributes 	(GtkPlot *plot,
 						 	 GtkPlotLineStyle style,
 						 	 gint width,
-						 	 GdkColor color);
+						 	 GdkColor *color);
 void		gtk_plot_minor_vgrid_set_attributes 	(GtkPlot *plot,
 						 	 GtkPlotLineStyle style,
 						 	 gint width,
-						 	 GdkColor color);
+						 	 GdkColor *color);
 void		gtk_plot_major_hgrid_set_attributes 	(GtkPlot *plot,
 						 	 GtkPlotLineStyle style,
 						 	 gint width,
-						 	 GdkColor color);
+						 	 GdkColor *color);
 void		gtk_plot_minor_hgrid_set_attributes 	(GtkPlot *plot,
 						 	 GtkPlotLineStyle style,
 						 	 gint width,
-						 	 GdkColor color);
+						 	 GdkColor *color);
 /* Legends */
 
 void 		gtk_plot_show_legends 		(GtkPlot *plot);
@@ -580,32 +580,32 @@ void		gtk_plot_dataset_set_symbol     (GtkPlotData *data,
                                                  GtkPlotSymbolStyle style,
 						 gint size,
 						 gint line_width,
-						 GdkColor color);
+						 GdkColor *color);
 void		gtk_plot_dataset_get_symbol     (GtkPlotData *data,
                                                  GtkPlotSymbolType *type,
                                                  GtkPlotSymbolStyle *style,
 						 gint *size,
 						 gint *line_width,
-						 GdkColor *color);
+						 GdkColor **color);
 void		gtk_plot_dataset_set_connector  (GtkPlotData *data,
 						 GtkPlotConnector connector); 
 gint		gtk_plot_dataset_get_connector  (GtkPlotData *data);
 void		gtk_plot_dataset_set_line_attributes 	(GtkPlotData *data,
 						 	 GtkPlotLineStyle style,
 						 	 gint width,
-						 	 GdkColor color);
+						 	 GdkColor *color);
 void		gtk_plot_dataset_get_line_attributes 	(GtkPlotData *data,
 						 	 gint *style,
 						 	 gint *width,
-						 	 GdkColor *color);
+						 	 GdkColor **color);
 void		gtk_plot_dataset_set_x_attributes 	(GtkPlotData *data,
 						 	 GtkPlotLineStyle style,
 						 	 gint width,
-						 	 GdkColor color);
+						 	 GdkColor *color);
 void		gtk_plot_dataset_set_y_attributes 	(GtkPlotData *data,
 						 	 GtkPlotLineStyle style,
 						 	 gint width,
-						 	 GdkColor color);
+						 	 GdkColor *color);
 void		gtk_plot_dataset_show_xerrbars  	(GtkPlotData *data);
 void		gtk_plot_dataset_show_yerrbars 	 	(GtkPlotData *data);
 void		gtk_plot_dataset_hide_xerrbars  	(GtkPlotData *data);

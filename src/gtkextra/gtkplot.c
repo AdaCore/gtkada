@@ -69,7 +69,7 @@ static void gtk_plot_draw_point			(GtkPlot *plot,
 						 GdkGC *gc,
 						 gint x, gint y, gdouble dx, 
 						 GtkPlotSymbolType symbol,
-        					 GdkColor color,
+        					 GdkColor *color,
 						 GtkPlotSymbolStyle symbol_style,
                    				 gint symbol_size, 
 					 	 gint line_width);
@@ -78,7 +78,7 @@ static void gtk_plot_draw_symbol		(GtkPlot *plot,
 						 GdkGC *gc,
 						 gint x, gint y, gdouble dx, 
 						 GtkPlotSymbolType symbol,
-        					 GdkColor color,
+        					 GdkColor *color,
 						 gint filled,
                    				 gint symbol_size, 
 						 gint line_width);
@@ -1147,7 +1147,7 @@ gtk_plot_real_draw_dataset(GtkPlot *plot,
                                    gc,
                                    px, py, dx,
 	     	                   dataset->symbol.symbol_type, 
-                                   dataset->symbol.color,
+                                   &(dataset->symbol.color),
                                    dataset->symbol.symbol_style,
                                    dataset->symbol.size,
                                    dataset->symbol.line_width);
@@ -1223,7 +1223,7 @@ gtk_plot_draw_point (GtkPlot *plot,
                      GdkGC *gc,
                      gint x, gint y, gdouble dx, 
                      GtkPlotSymbolType symbol,
-                     GdkColor color,
+                     GdkColor *color,
                      GtkPlotSymbolStyle symbol_style,
                      gint size, 
                      gint line_width)
@@ -1233,7 +1233,7 @@ gtk_plot_draw_point (GtkPlot *plot,
 
   if(symbol_style == GTK_PLOT_SYMBOL_OPAQUE && symbol < GTK_PLOT_SYMBOL_PLUS)
      gtk_plot_draw_symbol (plot, area, gc, x, y, dx, symbol, 
-                           plot->background,
+                           &(plot->background),
                            TRUE,
                            size,
                            line_width);  
@@ -1253,7 +1253,7 @@ gtk_plot_draw_symbol(GtkPlot *plot,
                      GdkGC *gc,
                      gint x, gint y, gdouble dx, 
                      GtkPlotSymbolType symbol,
-                     GdkColor color,
+                     GdkColor *color,
                      gint filled,
                      gint size, 
                      gint line_width)
@@ -1264,7 +1264,7 @@ gtk_plot_draw_symbol(GtkPlot *plot,
 
     gdk_gc_get_values(gc, &values);
     if(values.function != GDK_XOR && values.function != GDK_INVERT)
-            gdk_gc_set_foreground (gc, &color);
+            gdk_gc_set_foreground (gc, color);
 
     gdk_gc_set_line_attributes (gc, line_width, 0, 0, 0);
 
@@ -1911,7 +1911,7 @@ gtk_plot_draw_legends (GtkPlot *plot, GdkRectangle area)
                                    area.y + y + (lascent+ldescent) / 2,
                                    0., 
                                    dataset->symbol.symbol_type,
-                                   dataset->symbol.color,
+                                   &(dataset->symbol.color),
                                    dataset->symbol.symbol_style,
                                    dataset->symbol.size, 
                                    dataset->symbol.line_width);
@@ -2528,9 +2528,9 @@ gtk_plot_get_internal_allocation (GtkPlot *plot)
 }
 
 void
-gtk_plot_set_background(GtkPlot *plot, GdkColor color)
+gtk_plot_set_background(GtkPlot *plot, GdkColor *color)
 {
-  plot->background = color;
+  plot->background = *color;
   gtk_widget_queue_draw(GTK_WIDGET(plot));
 }
 
@@ -2938,26 +2938,26 @@ gtk_plot_axis_justify_title (GtkPlot *plot, GtkPlotAxisPos axis, gint justificat
 
 void 
 gtk_plot_axis_set_attributes (GtkPlot *plot, GtkPlotAxisPos axis, 
-			      gint width, GdkColor color)
+			      gint width, GdkColor *color)
 {
   GtkPlotAxis *aux;
 
   aux = gtk_plot_get_axis (plot, axis);
   aux->line.line_width = width;
-  aux->line.color = color;
+  aux->line.color = *color;
 
   gtk_signal_emit (GTK_OBJECT(plot), plot_signals[CHANGED]);
 }
 
 void 
 gtk_plot_axis_get_attributes (GtkPlot *plot, GtkPlotAxisPos axis, 
-			      gint *width, GdkColor *color)
+			      gint *width, GdkColor **color)
 {
   GtkPlotAxis *aux;
 
   aux = gtk_plot_get_axis (plot, axis);
   *width = aux->line.line_width;
-  *color = aux->line.color;
+  *color = &(aux->line.color);
 }
 
 void
@@ -3077,8 +3077,8 @@ gtk_plot_axis_titles_set_attributes (GtkPlot *plot,
 				     gchar *font,
                                      gint height,
                                      gint angle,
-			             GdkColor fg,
-			             GdkColor bg)
+			             GdkColor *fg,
+			             GdkColor *bg)
 {
   GtkPlotAxis *aux;
 
@@ -3094,8 +3094,8 @@ gtk_plot_axis_titles_set_attributes (GtkPlot *plot,
     aux->title.font = g_strdup(font);
     aux->title.height = height;
   }
-  aux->title.fg = fg;
-  aux->title.bg = bg;
+  aux->title.fg = *fg;
+  aux->title.bg = *bg;
   aux->title.angle = angle;
 
   gtk_signal_emit (GTK_OBJECT(plot), plot_signals[CHANGED]);
@@ -3107,8 +3107,8 @@ gtk_plot_axis_labels_set_attributes (GtkPlot *plot,
 				     gchar *font,
                                      gint height,
                                      gint angle,
-			             GdkColor fg,
-			             GdkColor bg)
+			             GdkColor *fg,
+			             GdkColor *bg)
 {
   GtkPlotAxis *aux;
 
@@ -3124,8 +3124,8 @@ gtk_plot_axis_labels_set_attributes (GtkPlot *plot,
     aux->title.font = g_strdup(font);
     aux->title.height = height;
   }
-  aux->title.fg = fg;
-  aux->title.bg = bg;
+  aux->title.fg = *fg;
+  aux->title.bg = *bg;
   aux->title.angle = angle;
 
   gtk_signal_emit (GTK_OBJECT(plot), plot_signals[CHANGED]);
@@ -3213,11 +3213,11 @@ void
 gtk_plot_x0line_set_attributes(GtkPlot *plot, 
                                GtkPlotLineStyle line_style,
                                gint width,
-                               GdkColor color)
+                               GdkColor *color)
 {
   plot->x0_line.line_style = line_style;
   plot->x0_line.line_width = width;
-  plot->x0_line.color = color;
+  plot->x0_line.color = *color;
 
   gtk_signal_emit (GTK_OBJECT(plot), plot_signals[CHANGED]);
 }
@@ -3226,11 +3226,11 @@ void
 gtk_plot_y0line_set_attributes(GtkPlot *plot, 
                                GtkPlotLineStyle line_style,
                                gint width,
-                               GdkColor color)
+                               GdkColor *color)
 {
   plot->y0_line.line_style = line_style;
   plot->y0_line.line_width = width;
-  plot->y0_line.color = color;
+  plot->y0_line.color = *color;
 
   gtk_signal_emit (GTK_OBJECT(plot), plot_signals[CHANGED]);
 }
@@ -3239,11 +3239,11 @@ void
 gtk_plot_major_vgrid_set_attributes(GtkPlot *plot, 
                                     GtkPlotLineStyle line_style,
                                     gint width,
-                                    GdkColor color)
+                                    GdkColor *color)
 {
   plot->major_vgrid.line_style = line_style;
   plot->major_vgrid.line_width = width;
-  plot->major_vgrid.color = color;
+  plot->major_vgrid.color = *color;
 
   gtk_signal_emit (GTK_OBJECT(plot), plot_signals[CHANGED]);
 }
@@ -3252,11 +3252,11 @@ void
 gtk_plot_minor_vgrid_set_attributes(GtkPlot *plot, 
                                     GtkPlotLineStyle line_style,
                                     gint width,
-                                    GdkColor color)
+                                    GdkColor *color)
 {
   plot->minor_vgrid.line_style = line_style;
   plot->minor_vgrid.line_width = width;
-  plot->minor_vgrid.color = color;
+  plot->minor_vgrid.color = *color;
 
   gtk_signal_emit (GTK_OBJECT(plot), plot_signals[CHANGED]);
 }
@@ -3265,11 +3265,11 @@ void
 gtk_plot_major_hgrid_set_attributes(GtkPlot *plot, 
                                     GtkPlotLineStyle line_style,
                                     gint width,
-                                    GdkColor color)
+                                    GdkColor *color)
 {
   plot->major_hgrid.line_style = line_style;
   plot->major_hgrid.line_width = width;
-  plot->major_hgrid.color = color;
+  plot->major_hgrid.color = *color;
 
   gtk_signal_emit (GTK_OBJECT(plot), plot_signals[CHANGED]);
 }
@@ -3278,11 +3278,11 @@ void
 gtk_plot_minor_hgrid_set_attributes(GtkPlot *plot, 
                                     GtkPlotLineStyle line_style,
                                     gint width,
-                                    GdkColor color)
+                                    GdkColor *color)
 {
   plot->minor_hgrid.line_style = line_style;
   plot->minor_hgrid.line_width = width;
-  plot->minor_hgrid.color = color;
+  plot->minor_hgrid.color = *color;
 
   gtk_signal_emit (GTK_OBJECT(plot), plot_signals[CHANGED]);
 }
@@ -3618,48 +3618,48 @@ void
 gtk_plot_dataset_set_symbol (GtkPlotData *dataset,
 		             GtkPlotSymbolType type,
 		             GtkPlotSymbolStyle style,
-                             gint size, gint line_width, GdkColor color)
+                             gint size, gint line_width, GdkColor *color)
 {
   dataset->symbol.symbol_type = type;
   dataset->symbol.symbol_style = style;
   dataset->symbol.size = size;
   dataset->symbol.line_width = line_width;
-  dataset->symbol.color = color;
+  dataset->symbol.color = *color;
 }
 
 void
 gtk_plot_dataset_get_symbol (GtkPlotData *dataset,
 		             GtkPlotSymbolType *type,
 		             GtkPlotSymbolStyle *style,
-                             gint *size, gint *line_width, GdkColor *color)
+                             gint *size, gint *line_width, GdkColor **color)
 {
   *type = dataset->symbol.symbol_type;
   *style = dataset->symbol.symbol_style;
   *size = dataset->symbol.size;
   *line_width = dataset->symbol.line_width;
-  *color = dataset->symbol.color;
+  *color = &(dataset->symbol.color);
 }
 
 void
 gtk_plot_dataset_set_line_attributes (GtkPlotData *dataset, 
                                       GtkPlotLineStyle style,
                                       gint width,
-                                      GdkColor color)
+                                      GdkColor *color)
 {
   dataset->line.line_style = style; 
   dataset->line.line_width = width; 
-  dataset->line.color = color; 
+  dataset->line.color = *color; 
 }
 
 void
 gtk_plot_dataset_get_line_attributes (GtkPlotData *dataset, 
                                       gint *style,
                                       gint *width,
-                                      GdkColor *color)
+                                      GdkColor **color)
 {
   *style = dataset->line.line_style; 
   *width = dataset->line.line_width; 
-  *color = dataset->line.color; 
+  *color = &(dataset->line.color); 
 }
 
 
@@ -3680,22 +3680,22 @@ void
 gtk_plot_dataset_set_x_attributes (GtkPlotData *dataset, 
                            	   GtkPlotLineStyle style,
                             	   gint width,
-                            	   GdkColor color)
+                            	   GdkColor *color)
 {
   dataset->x_line.line_style = style; 
   dataset->x_line.line_width = width; 
-  dataset->x_line.color = color; 
+  dataset->x_line.color = *color; 
 }
 
 void
 gtk_plot_dataset_set_y_attributes (GtkPlotData *dataset, 
                            	   GtkPlotLineStyle style,
                             	   gint width,
-                            	   GdkColor color)
+                            	   GdkColor *color)
 {
   dataset->y_line.line_style = style; 
   dataset->y_line.line_width = width; 
-  dataset->y_line.color = color; 
+  dataset->y_line.color = *color; 
 }
 
 void
