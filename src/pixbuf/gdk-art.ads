@@ -28,4 +28,5 @@
 -----------------------------------------------------------------------
 
 package Gdk.Art is
+   pragma Linker_Option ("-lgtkada_art");
 end Gdk.Art;
