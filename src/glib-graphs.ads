@@ -175,13 +175,33 @@ package Glib.Graphs is
 
    type Depth_Vertices_Array is array (Natural range <>) of Depth_Record;
 
+   type Reverse_Edge_Callback is access
+     procedure (G : Graph; Edge : Edge_Access);
+   --  Callback called when the two ends of the edge should be reverted, so as
+   --  to make the graph acyclick
+
+   procedure Revert_Edge (G : Graph; E : Edge_Access);
+   --  Revert the two ends of Edge. This is meant to be used as a callback for
+   --  Depth_First_Search so as to make the graph acyclic.
+
    function Depth_First_Search (G : Graph) return Depth_Vertices_Array;
    --  Traverse the tree Depth_First.
 
-   function Depth_First_Search (G : Graph; Acyclic : access Boolean)
+   function Depth_First_Search
+     (G : Graph;
+      Acyclic : access Boolean;
+      Reverse_Edge_Cb : Reverse_Edge_Callback := null)
       return Depth_Vertices_Array;
    --  Same as above, but Acyclic is also modified to indicate whether G is
    --  acyclic.
+   --  If Reverse_Edge_Cb is not null, then it is called to reverse the ends of
+   --  selected edges, so that the final graph is acyclic. Note that you *must*
+   --  revert the ends, or there will be an infinite loop. You might also want
+   --  to mark the edge as reverted somehow, so as to draw the arrows on the
+   --  correct side, if your application is graphical.
+   --
+   --  If Reverse_Edge_Cb is null, no edge is reverted, and the graph is
+   --  unmodified.
 
    -----------------------------------
    -- Strongly connected components --

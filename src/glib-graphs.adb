@@ -521,7 +521,10 @@ package body Glib.Graphs is
    -- Depth_First_Search --
    ------------------------
 
-   function Depth_First_Search (G : Graph; Acyclic : access Boolean)
+   function Depth_First_Search
+     (G : Graph;
+      Acyclic : access Boolean;
+      Reverse_Edge_Cb : Reverse_Edge_Callback := null)
       return Depth_Vertices_Array
    is
       Colors : Color_Array (0 .. G.Last_Vertex_Index - 1) := (others => White);
@@ -553,15 +556,27 @@ package body Glib.Graphs is
                --  ??? Would be nice to have a non-recursive implementation, to
                --  ??? support larger graphs
                Depth_First_Visit (V);
-            elsif Colors (V.Index) = Gray then
+               Next (Eit);
 
-               --  ??? Make the graph acyclic by reversing the edges
-               --  V := Get (Eit).Dest;
-               --  Get (Eit).Dest := Get (Eit).Src;
-               --  Get (Eit).Src := V;
-               Acyclic.all := False;
+            elsif Colors (V.Index) = Gray then
+               --  Make the graph acyclic by reversing the edge.
+               if Reverse_Edge_Cb /= null then
+                  declare
+                     E : Edge_Access := Get (Eit);
+                  begin
+                     --  We need to first move the iterator, otherwise it will
+                     --  become invalid when the two edges have been reversed.
+                     Next (Eit);
+                     Reverse_Edge_Cb (G, E);
+                  end;
+               else
+                  Acyclic.all := False;
+                  Next (Eit);
+               end if;
+
+            else
+               Next (Eit);
             end if;
-            Next (Eit);
          end loop;
          Colors (U.Index) := Black;
          Time := Time + 1;
@@ -861,5 +876,21 @@ package body Glib.Graphs is
          Iter.Next := Old;
       end if;
    end Move_To_Back;
+
+   -----------------
+   -- Revert_Edge --
+   -----------------
+
+   procedure Revert_Edge (G : Graph; E : Edge_Access) is
+      Src  : Vertex_Access := E.Src;
+      Dest : Vertex_Access := E.Dest;
+   begin
+      Remove (E.Src.Out_Edges, E);
+      Remove (E.Dest.In_Edges, E);
+      E.Src  := Dest;
+      E.Dest := Src;
+      Add (E.Src.Out_Edges, E);
+      Add (E.Dest.In_Edges, E);
+   end Revert_Edge;
 
 end Glib.Graphs;
