@@ -182,7 +182,7 @@ package body Glib.Unicode is
    begin
       Result := Internal
         (Str (First)'Address + Storage_Offset (Index - First),
-         Str (First)'Address + Storage_Offset (Str'Length - 1));
+         Str (First)'Address + Storage_Offset (Str'Length));
 
       if Result = System.Null_Address then
          return Str'Last + 1;
