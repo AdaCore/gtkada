@@ -29,6 +29,7 @@
 
 
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Object;
 with Gtk.Misc;
 
 package Gtk.Arrow is
@@ -37,17 +38,25 @@ package Gtk.Arrow is
    type Gtk_Arrow is access all Gtk_Arrow_Record'Class;
 
    procedure Gtk_New
-      (Widget      : out Gtk_Arrow;
+      (Arrow       : out Gtk_Arrow;
        Arrow_Type  : in Gtk_Arrow_Type;
        Shadow_Type : in Gtk_Shadow_Type);
    procedure Initialize
-      (Widget      : access Gtk_Arrow_Record;
+      (Arrow       : access Gtk_Arrow_Record;
        Arrow_Type  : in Gtk_Arrow_Type;
        Shadow_Type : in Gtk_Shadow_Type);
    procedure Set
       (Arrow       : access Gtk_Arrow_Record;
        Arrow_Type  : in Gtk_Arrow_Type;
        Shadow_Type : in Gtk_Shadow_Type);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+ 
+   procedure Generate (Arrow  : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Arrow_Record is new Gtk.Misc.Gtk_Misc_Record with null record;

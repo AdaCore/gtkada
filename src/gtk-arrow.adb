@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Arrow is
 
@@ -37,13 +38,12 @@ package body Gtk.Arrow is
    -------------
 
    procedure Gtk_New
-      (Widget      : out Gtk_Arrow;
+      (Arrow       : out Gtk_Arrow;
        Arrow_Type  : in Gtk_Arrow_Type;
-       Shadow_Type : in Gtk_Shadow_Type)
-   is
+       Shadow_Type : in Gtk_Shadow_Type) is
    begin
-      Widget := new Gtk_Arrow_Record;
-      Initialize (Widget, Arrow_Type, Shadow_Type);
+      Arrow := new Gtk_Arrow_Record;
+      Initialize (Arrow, Arrow_Type, Shadow_Type);
    end Gtk_New;
 
    ----------------
@@ -51,19 +51,19 @@ package body Gtk.Arrow is
    ----------------
 
    procedure Initialize
-      (Widget      : access Gtk_Arrow_Record;
-       Arrow_Type  : in Gtk_Arrow_Type;
-       Shadow_Type : in Gtk_Shadow_Type)
+     (Arrow       : access Gtk_Arrow_Record;
+      Arrow_Type  : in Gtk_Arrow_Type;
+      Shadow_Type : in Gtk_Shadow_Type)
    is
       function Internal
         (Arrow_Type  : in Gint;
          Shadow_Type : in Gint)
-         return           System.Address;
+         return System.Address;
       pragma Import (C, Internal, "gtk_arrow_new");
    begin
-      Set_Object (Widget, Internal (Gtk_Arrow_Type'Pos (Arrow_Type),
-                                    Gtk_Shadow_Type'Pos (Shadow_Type)));
-      Initialize_User_Data (Widget);
+      Set_Object (Arrow, Internal (Gtk_Arrow_Type'Pos (Arrow_Type),
+                                   Gtk_Shadow_Type'Pos (Shadow_Type)));
+      Initialize_User_Data (Arrow);
    end Initialize;
 
    ---------
@@ -85,5 +85,38 @@ package body Gtk.Arrow is
                 Gtk_Arrow_Type'Pos (Arrow_Type),
                 Gtk_Shadow_Type'Pos (Shadow_Type));
    end Set;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type) is
+      use Misc;
+   begin
+      Gen_New (N, "Arrow", Get_Field (N, "arrow_type").all,
+        Get_Field (N, "shadow_type").all, File => File);
+      Misc.Generate (N, File);
+   end Generate;
+ 
+   procedure Generate
+     (Arrow  : in out Gtk.Object.Gtk_Object; N : in Node_Ptr)
+   is
+      use Misc;
+
+      S, S2 : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         S := Get_Field (N, "arrow_type");
+         S2 := Get_Field (N, "shadow_type");
+         Gtk_New (Gtk_Arrow (Arrow),
+                  Gtk_Arrow_Type'Value (S (S'First + 4 .. S'Last)),
+                  Gtk_Shadow_Type'Value (S2 (S2'First + 4 .. S2'Last)));
+         Set_Object (Get_Field (N, "name"), Arrow);
+         N.Specific_Data.Created := True;
+      end if;
+ 
+      Misc.Generate (Arrow, N);
+   end Generate;
 
 end Gtk.Arrow;
