@@ -204,7 +204,7 @@ package Gtk.Item_Factory is
         (Path            : String;
          Accelerator     : String := "";
          Callback        : Gtk_Item_Factory_Callback := null;
-         Pixbuf          : Gtkada.Types.Chars_Ptr;
+         Pixbuf          : access Guchar_Array;
          Len             : Guint;
          Callback_Action : Guint := 0) return Gtk_Item_Factory_Entry;
       --  Create a Gtk_Item_Factory_Entry from an inline pixbuf image.
