@@ -119,6 +119,9 @@ package Glib.Values is
    procedure Set_Address (Value : in out GValue; V_Address : System.Address);
    function  Get_Address (Value : GValue) return System.Address;
 
+   procedure Set_Boxed (Value : in out GValue; V_Address : System.Address);
+   function  Get_Boxed (Value : GValue) return System.Address;
+
    procedure Set_Enum (Value : in out GValue; V_Enum : Gint);
    function Get_Enum (Value : GValue) return Glib.Gint;
    --  These are used to manipulate the standard GtkAda enumeration types.
@@ -167,6 +170,8 @@ private
    pragma Import (C, Set_Address, "g_value_set_pointer");
    pragma Import (C, Set_Enum, "g_value_set_enum");
    pragma Import (C, Get_Enum, "g_value_get_enum");
+   pragma Import (C, Set_Boxed, "g_value_set_boxed");
+   pragma Import (C, Get_Boxed, "g_value_get_boxed");
    pragma Import (C, Unset, "g_value_unset");
 
    --  ??? We use our own version here, that doesn't check the type of

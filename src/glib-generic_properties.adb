@@ -224,7 +224,7 @@ package body Glib.Generic_Properties is
          --  Memory is freed automatically by gtk+, see g_value_unset and
          --  gdk_color_get_type, where the free() function is registered
 
-         Set_Address (Val, Boxed.all'Address);
+         Set_Boxed (Val, Boxed.all'Address);
          Internal (Get_Object (Object), Name, Val);
       end Set_Property;
 
@@ -258,7 +258,7 @@ package body Glib.Generic_Properties is
       begin
          Init (Value, Get_Type);
          Internal (Get_Object (Object), Name, Value);
-         Boxed := Conv (Get_Address (Value));
+         Boxed := Conv (Get_Boxed (Value));
          return Boxed.all;
       end Get_Property;
    end Generic_Internal_Boxed_Property;

@@ -300,7 +300,6 @@ private
 
    package Color_Properties is new Generic_Internal_Boxed_Property
      (Gdk_Color, Gdk_Color_Type);
---   type Property_Gdk_Color is Color_Properties.Property;
 
    procedure Set_Property
      (Object : access Glib.Object.GObject_Record'Class;
