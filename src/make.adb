@@ -166,12 +166,12 @@ with Gtk.Viewport;
 with Gtk.Widget;
 with Gtk.Window;
 
---  XXX ???
---  with Gtk.Extra.Border_Combo;
---  with Gtk.Extra.Check_Item;
---  with Gtk.Extra.Color_Combo;
+with Gtk.Extra.Border_Combo;
+with Gtk.Extra.Color_Combo;
 with Gtk.Extra.Combo_Box;
 with Gtk.Extra.Font_Combo;
+--  XXX ???
+--  with Gtk.Extra.Check_Item;
 --  with Gtk.Extra.Item_Entry;
 --  with Gtk.Extra.Plot;
 --  with Gtk.Extra.Plot_Canvas;
