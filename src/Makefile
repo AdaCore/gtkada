@@ -34,12 +34,20 @@ ARFLAGS = r
 
 RANLIB = ranlib
 
+SONAME = libgtkada.so
+LIBNAME = libgtkada.so
+
+bindir = $(prefix)
+libdir = $(prefix)
+incdir = $(prefix)
+alidir = $(prefix)
+
 all: libs gtkada-config testgtk 
 
-libs:: libgtkada.so libgtkada.a
+libs:: $(LIBNAME) libgtkada.a
 
-libgtkada.so:: $(TEST_LINK).o $(c_objects)
-	$(CC) -shared -Wl,-soname,libgtkada.so -o libgtkada.so g*.o $(c_objects) `gtk-config --libs` -lm
+$(LIBNAME):: $(TEST_LINK).o $(c_objects)
+	$(CC) -shared -Wl,-soname,$(SONAME) -o $(LIBNAME) g*.o $(c_objects) `gtk-config --libs` -lm
 
 libgtkada.a:: $(TEST_LINK).o $(c_objects)
 	$(AR) $(ARFLAGS) libgtkada.a g*.o $(c_objects)
@@ -54,32 +62,32 @@ $(TEST_LINK).o::
 	test -f $(TEST_LINK).adb || perl ./create_test_link.pl > $(TEST_LINK).adb
 	$(GNATMAKE) -c $(TEST_LINK) -shared -fPIC $(GNATFLAGS)
 
-main: main.adb test.adb test.ads libgtkada.so
+main: main.adb test.adb test.ads $(LIBNAME)
 	$(GNATMAKE) $@ $(GNATMAKEFLAGS) $(GNATMAKELDFLAGS) 
 
-install: libgtkada.a libgtkada.so gtkada-config
+install: libgtkada.a $(LIBNAME) gtkada-config
 	@if [ "$(prefix)" != `pwd` ]; then \
-	   @echo Installing GtkAda in $(prefix);            \
+	   echo Installing GtkAda in $(prefix);            \
 	   $(RM) test_link.ali;                             \
-	   $(INSTALL) -d $(prefix);                         \
-	   $(INSTALL) libgtkada.a libgtkada.so $(prefix);   \
-	   $(INSTALL) --mode=a-w+r *.ads $(prefix);         \
-	   $(INSTALL) --mode=a-w+r *.ali $(prefix);         \
-	   $(INSTALL) --mode=a+rx gtkada-config $(prefix);  \
-	   @echo "All the files have been copied.";         \
+	   $(INSTALL) -d $(bindir) $(libdir) $(incdir) $(alidir); \
+	   $(INSTALL) libgtkada.a $(LIBNAME) $(libdir);   \
+	   $(INSTALL) --mode=a-w+r *.ads *.adb $(incdir); \
+	   $(INSTALL) --mode=a-w+r *.ali $(alidir);         \
+	   $(INSTALL) --mode=a+rx gtkada-config $(bindir);  \
+	   echo "All the files have been copied.";          \
 	fi
 	@echo You may want to keep a copy of gtkada-config somewhere in your PATH
 
 gtkada-config: gtkada-config.in Makefile
 	@echo "Building the gtkada-config script"
 	@cat gtkada-config.in | sed -e 's#@prefix@#'$(prefix)'#' \
-	  -e 's#@gtkada_cflags@#-I'$(prefix)'#' \
-	  -e 's#@gtkada_libs@#-L'$(prefix)'#'  > ${@}
+	  -e 's#@gtkada_cflags@#-I'$(incdir)'#' \
+	  -e 's#@gtkada_libs@#-L'$(libdir)'#'  > ${@}
 	@chmod a+x ${@}
 
 clean:
 	-${RM} *.o *.ali *~ main b_main.c core
-	-${RM} libgtkada.a libgtkada.so
+	-${RM} libgtkada.a $(LIBNAME)
 	-${RM} $(TEST_LINK) b_$(TEST_LINK).c $(TEST_LINK).adb
 	-${RM} .\#*
 	-cd testgtk && make clean
