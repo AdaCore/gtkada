@@ -31,10 +31,15 @@ with Ada.Numerics.Discrete_Random;
 with Gdk.Color;           use Gdk.Color;
 with Gdk.Drawable;        use Gdk.Drawable;
 with Gdk.GC;              use Gdk.GC;
+with Gdk.Pixbuf;          use Gdk.Pixbuf;
+with Gdk.Rectangle;       use Gdk.Rectangle;
+with Gdk.Region;          use Gdk.Region;
 with Glib;                use Glib;
+with Glib.Error;          use Glib.Error;
 with Gtk.Arrow;           use Gtk.Arrow;
 with Gtk.Box;             use Gtk.Box;
 with Gtk.Button;          use Gtk.Button;
+with Gtk.Check_Button;    use Gtk.Check_Button;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Frame;           use Gtk.Frame;
 with Gtk.Handlers;        use Gtk.Handlers;
@@ -46,6 +51,7 @@ with Gtk.Label;           use Gtk.Label;
 with Gtk.Adjustment;      use Gtk.Adjustment;
 with Gtk.Extra.PsFont;    use Gtk.Extra.PsFont;
 with Gdk.Font;            use Gdk.Font;
+with Gtk.Style;           use Gtk.Style;
 
 package body Create_Canvas is
 
@@ -61,15 +67,55 @@ package body Create_Canvas is
    ----------------------------------------------------------------
 
    type Display_Item_Record is new Buffered_Item_Record with record
-      Color : Gdk.Color.Gdk_Color;
-      W, H : Gint;
-      Num : Positive;
+      Canvas : Interactive_Canvas;
+      Color  : Gdk.Color.Gdk_Color;
+      W, H   : Gint;
+      Num    : Positive;
    end record;
    type Display_Item is access all Display_Item_Record'Class;
 
-   procedure Initialize (Item : access Display_Item_Record'Class);
+   procedure Initialize
+     (Item   : access Display_Item_Record'Class;
+      Canvas : access Interactive_Canvas_Record'Class);
    --  Initialize Item with a random size and color.
    --  Canvas must have been realized
+
+   procedure Draw_To_Double_Buffer (Item : access Display_Item_Record'Class);
+   --  Draw the item to the double-buffer
+
+   -----------------------------------------------------------
+   -- A new non-rectangular item, with a hole in the middle --
+   -----------------------------------------------------------
+
+   type Hole_Item_Record is new Display_Item_Record with null record;
+
+   procedure Draw
+     (Item   : access Hole_Item_Record;
+      Canvas : access Gtkada.Canvas.Interactive_Canvas_Record'Class;
+      GC     : Gdk.GC.Gdk_GC;
+      Xdest  : Glib.Gint;
+      Ydest  : Glib.Gint);
+   function Point_In_Item
+     (Item   : access Hole_Item_Record;
+      X, Y   : Glib.Gint) return Boolean;
+   --  Override the inherited subprograms
+
+   ----------------------------------------------------
+   -- Our own canvas, with optional background image --
+   ----------------------------------------------------
+
+   type Image_Canvas_Record is new Interactive_Canvas_Record with record
+      Background : Gdk_Pixbuf;
+      Draw_Grid  : Boolean := True;
+      Grid_GC    : Gdk_GC;
+   end record;
+   type Image_Canvas is access all Image_Canvas_Record'Class;
+
+   procedure Draw_Background
+     (Canvas        : access Image_Canvas_Record;
+      Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle;
+      X_Left, Y_Top : Glib.Gint);
+   --  Draw the background image
 
    -----------------------------
    --  Misc. types and variables
@@ -77,6 +123,8 @@ package body Create_Canvas is
 
    package Canvas_Cb is new Gtk.Handlers.Callback
      (Interactive_Canvas_Record);
+   package Canvas_User_Cb is new Gtk.Handlers.User_Callback
+     (Gtk_Widget_Record, Image_Canvas);
 
    procedure Add_Canvas_Link
      (Canvas : access Interactive_Canvas_Record'Class;
@@ -134,8 +182,8 @@ package body Create_Canvas is
    Colors : array (Color_Type) of Gdk_Color;
 
    Items_List : array (1 .. 500) of Canvas_Item;
-   Last_Item : Positive := Items_List'First;
-   Last_Link : Positive := 1;
+   Last_Item : Positive;
+   Last_Link : Positive;
    Green_Gc : Gdk.GC.Gdk_GC;
 
    Item_Gen : Items_Random.Generator;
@@ -158,22 +206,34 @@ package body Create_Canvas is
         & "As you can see in this demo, the items can be linked together, and"
         & " the items remain connected when they are moved."
         & ASCII.LF
-        & "The canvas also support scrolling, if put in a "
+        & "The canvas also support @bscrolling@B, if put in a "
         & " @bGtk_Scrolled_Window@B, as you can see if you move the items"
         & " outside of the visible part of the canvas."
+        & "There is a small area on each side of the canvas. If you leave the"
+        & " mouse in this area while dragging an item, the canvas will"
+        & " keep scrolling until the mouse is moved outside of this area."
         & ASCII.LF
-        & "It also provides zooming capabilities, as well as a simply layout"
-        & " scheme (try inserting items linked to other items for instance)."
+        & "The canvas provides @bzooming@B capabilities. Try clicking on the"
+        & " two arrow buttons at the top of this demo."
         & ASCII.LF
-        & "No standard item is currently provided with GtkAda, but you can"
-        & " easily create your own items.";
+        & "The canvas includes a simple @blayout scheme@B, that can be"
+        & " overriden with more complex algorithms. Items are stored in a"
+        & " graph structure, tha includes a number of useful algorithms for"
+        & " layout: topological sort,..."
+        & ASCII.LF
+        & "@bNon-rectangular items@B can also be used, since for instance the"
+        & " two items 2 and 4 in the default layout."
+        & ASCII.LF
+        & "You can also redefine your own @btype of links@B. By default, links"
+        & " are either straight or arc links, that may optionaly have arrows"
+        & " on either end.";
    end Help;
 
-   ----------
-   -- Draw --
-   ----------
+   ---------------------------
+   -- Draw_To_Double_Buffer --
+   ---------------------------
 
-   procedure Draw (Item : access Display_Item_Record'Class) is
+   procedure Draw_To_Double_Buffer (Item : access Display_Item_Record'Class) is
    begin
       Set_Foreground (Green_GC, Display_Item (Item).Color);
       Draw_Rectangle
@@ -189,17 +249,188 @@ package body Create_Canvas is
         (Pixmap (Item),
          Font,
          Green_GC,
-         Item.W / 2,
-         Item.H / 2,
-         Positive'Image (Display_Item (Item).Num));
+         10,
+         10,
+         "Item" & Positive'Image (Display_Item (Item).Num));
+
+      Draw_Shadow
+        (Style       => Get_Style (Item.Canvas),
+         Window      => Pixmap (Item),
+         State_Type  => State_Normal,
+         Shadow_Type => Shadow_Out,
+         X           => 0,
+         Y           => 0,
+         Width       => Item.W,
+         Height      => Item.H);
+
+      --  We could not make Draw_To_Double_Buffer a primitive operation, since
+      --  it is defined in the body, however it would be cleaner in a real
+      --  application
+      if Item.all in Hole_Item_Record'Class then
+         Draw_Shadow
+           (Style       => Get_Style (Item.Canvas),
+            Window      => Pixmap (Item),
+            State_Type  => State_Normal,
+            Shadow_Type => Shadow_Etched_Out,
+            X           => Get_Coord (Item).Width / 2 - 12,
+            Y           => Get_Coord (Item).Height / 2 - 12,
+            Width       => 24,
+            Height      => 24);
+      end if;
+   end Draw_To_Double_Buffer;
+
+   ---------------------
+   -- Draw_Background --
+   ---------------------
+
+   procedure Draw_Background
+     (Canvas        : access Image_Canvas_Record;
+      Screen_Rect   : Gdk.Rectangle.Gdk_Rectangle;
+      X_Left, Y_Top : Glib.Gint) is
+   begin
+      if Canvas.Background /= null then
+         --  This is slightly complex, since we need to properly handle zooming
+         --  and tiling.
+         declare
+            X, Y, W, H, Ys : Gint;
+            Xs : Gint := Screen_Rect.X;
+            Bw : constant Gint := Get_Width (Canvas.Background)
+              * Gint (Get_Zoom (Canvas)) / 100;
+            Bh : constant Gint := Get_Height (Canvas.Background)
+              * Gint (Get_Zoom (Canvas)) / 100;
+            Scaled : Gdk_Pixbuf := Canvas.Background;
+         begin
+            --  A real application would cache this scaled pixmap, and update
+            --  the cache when the "zoomed" signal is emitted.
+            if Get_Zoom (Canvas) /= 100 then
+               Scaled := Scale_Simple (Canvas.Background, Bw, Bh);
+            end if;
+
+            while Xs < Screen_Rect.X + Screen_Rect.Width loop
+               Ys := Screen_Rect.Y;
+               X := (X_Left + Xs) mod Bw;
+               W := Gint'Min (Screen_Rect.Width + Screen_Rect.X - Xs, Bw - X);
+
+               while Ys < Screen_Rect.Y + Screen_Rect.Height loop
+                  Y := (Y_Top  + Ys) mod Bh;
+                  H := Gint'Min
+                    (Screen_Rect.Height + Screen_Rect.Y - Ys, Bh - Y);
+
+                  Render_To_Drawable
+                    (Pixbuf       => Scaled,
+                     Drawable     => Get_Window (Canvas),
+                     Gc           => Get_Black_GC (Get_Style (Canvas)),
+                     Src_X        => X,
+                     Src_Y        => Y,
+                     Dest_X       => Xs,
+                     Dest_Y       => Ys,
+                     Width        => W,
+                     Height       => H);
+                  Ys := Ys + H;
+               end loop;
+               Xs := Xs + W;
+            end loop;
+
+            if Get_Zoom (Canvas) /= 100 then
+               Unref (Scaled);
+            end if;
+         end;
+
+      else
+         Draw_Rectangle
+           (Get_Window (Canvas),
+            Get_Background_Gc (Get_Style (Canvas), State_Normal),
+            Filled => True,
+            X      => Screen_Rect.X,
+            Y      => Screen_Rect.Y,
+            Width  => Gint (Screen_Rect.Width),
+            Height => Gint (Screen_Rect.Height));
+      end if;
+
+      if Canvas.Draw_Grid then
+         Draw_Grid (Interactive_Canvas (Canvas),
+                    Canvas.Grid_GC, Screen_Rect, X_Left, Y_Top);
+      end if;
+   end Draw_Background;
+
+   ----------
+   -- Draw --
+   ----------
+
+   procedure Draw
+     (Item   : access Hole_Item_Record;
+      Canvas : access Gtkada.Canvas.Interactive_Canvas_Record'Class;
+      GC     : Gdk.GC.Gdk_GC;
+      Xdest  : Glib.Gint;
+      Ydest  : Glib.Gint)
+   is
+      Region : Gdk_Region;
+      Item_Width : constant Gint := To_Canvas_Coordinates
+        (Canvas, Get_Coord (Item).Width);
+      Item_Height : constant Gint := To_Canvas_Coordinates
+        (Canvas, Get_Coord (Item).Height);
+      Item_Width_10 : constant Gint := To_Canvas_Coordinates
+        (Canvas, Get_Coord (Item).Width / 2 - 10);
+      Item_Height_10 : constant Gint := To_Canvas_Coordinates
+        (Canvas, Get_Coord (Item).Height / 2 - 10);
+   begin
+      --  The trick to drawing non-rectangular items is to change the clip mask
+      --  of the graphic context before calling the inherited subprogram.
+
+      Region := Rectangle ((0, 0, Item_Width_10, Item_Height));
+      Union_With_Rect (Region, (0, 0, Item_Width, Item_Height_10));
+      Union_With_Rect
+        (Region,
+         (To_Canvas_Coordinates (Canvas, Get_Coord (Item).Width / 2 + 10),
+          0, Item_Width_10, Item_Height));
+      Union_With_Rect
+        (Region,
+         (0,
+          To_Canvas_Coordinates (Canvas, Get_Coord (Item).Height / 2 + 10),
+          Item_Width, Item_Height_10));
+      Set_Clip_Region (GC, Region);
+      Set_Clip_Origin (GC, Xdest, Ydest);
+
+      Draw
+        (Display_Item_Record (Item.all)'Access, Canvas, GC, Xdest, Ydest);
+
+      Set_Clip_Mask (GC, null);
+      Destroy (Region);
    end Draw;
+
+   -------------------
+   -- Point_In_Item --
+   -------------------
+
+   function Point_In_Item
+     (Item   : access Hole_Item_Record;
+      X, Y   : Glib.Gint) return Boolean
+   is
+      W : constant Gint := Get_Coord (Item).Width / 2;
+      H : constant Gint := Get_Coord (Item).Height / 2;
+      X2 : constant Gint := X - Get_Coord (Item).X;
+      Y2 : constant Gint := Y - Get_Coord (Item).Y;
+   begin
+      if X2 >= W - 10
+        and then X2 <= W + 10
+        and then Y2 >= H - 10
+        and then Y2 <= H + 10
+      then
+         return False;
+      else
+         return Point_In_Item (Display_Item_Record (Item.all)'Access, X, Y);
+      end if;
+   end Point_In_Item;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Item : access Display_Item_Record'Class) is
+   procedure Initialize
+     (Item   : access Display_Item_Record'Class;
+      Canvas : access Interactive_Canvas_Record'Class) is
    begin
+      Item.Canvas := Interactive_Canvas (Canvas);
       Item.Color := Colors (Random (Color_Gen));
       Item.W := Item_Width * Random (Zoom_Gen);
       Item.H := Item_Height * Random (Zoom_Gen);
@@ -210,7 +441,7 @@ package body Create_Canvas is
       Last_Item := Last_Item + 1;
       Set_Screen_Size (Item, Item.W, Item.H);
       Set_Text (Num_Items_Label, Positive'Image (Last_Item - 1) & " items");
-      Draw (Item);
+      Draw_To_Double_Buffer (Item);
    end Initialize;
 
    ---------------------
@@ -222,7 +453,7 @@ package body Create_Canvas is
    is
       Item : Display_Item := new Display_Item_Record;
    begin
-      Initialize (Item);
+      Initialize (Item, Canvas);
       Put (Canvas, Item, Random (Gen), Random (Gen));
       Refresh_Canvas (Canvas);
       Show_Item (Canvas, Item);
@@ -281,7 +512,7 @@ package body Create_Canvas is
       Item : Display_Item := new Display_Item_Record;
       Num  : constant Positive := Positive (Get_Value_As_Int (Start_Spin));
    begin
-      Initialize (Item);
+      Initialize (Item, Canvas);
 
       if With_Link and then Num < Last_Item then
          Add_Canvas_Link (Canvas, Item, Item, "0");
@@ -406,19 +637,19 @@ package body Create_Canvas is
       Link  : Canvas_Link;
    begin
       Item1 := new Display_Item_Record;
-      Initialize (Item1);
+      Initialize (Item1, Canvas);
       Put (Canvas, Item1, 10, 10);
 
-      Item2 := new Display_Item_Record;
-      Initialize (Item2);
+      Item2 := new Hole_Item_Record;
+      Initialize (Item2, Canvas);
       Put (Canvas, Item2, 70, 240);
 
       Item3 := new Display_Item_Record;
-      Initialize (Item3);
+      Initialize (Item3, Canvas);
       Put (Canvas, Item3, 200, 10);
 
-      Item4 := new Display_Item_Record;
-      Initialize (Item4);
+      Item4 := new Hole_Item_Record;
+      Initialize (Item4, Canvas);
       Put (Canvas, Item4, 280, 170);
 
       Add_Canvas_Link (Canvas, Item1, Item1, "From1->2");
@@ -448,20 +679,86 @@ package body Create_Canvas is
       Set_Text (Num_Links_Label, Positive'Image (Last_Link - 1) & " links");
    end Initial_Setup;
 
+   ------------------
+   -- Toggle_Align --
+   ------------------
+
+   procedure Toggle_Align
+     (Align : access Gtk_Widget_Record'Class;
+      Canvas : Image_Canvas) is
+   begin
+      Align_On_Grid (Canvas, Get_Active (Gtk_Check_Button (Align)));
+   end Toggle_Align;
+
+   ----------------------
+   -- Toggle_Draw_Grid --
+   ----------------------
+
+   procedure Toggle_Draw_Grid
+     (Align : access Gtk_Widget_Record'Class;
+      Canvas : Image_Canvas) is
+   begin
+      Canvas.Draw_Grid := Get_Active (Gtk_Check_Button (Align));
+      Refresh_Canvas (Canvas);
+   end Toggle_Draw_Grid;
+
+   -----------------------
+   -- Toggle_Orthogonal --
+   -----------------------
+
+   procedure Toggle_Orthogonal
+     (Align : access Gtk_Widget_Record'Class;
+      Canvas : Image_Canvas) is
+   begin
+      Set_Orthogonal_Links (Canvas, Get_Active (Gtk_Check_Button (Align)));
+      Refresh_Canvas (Canvas);
+   end Toggle_Orthogonal;
+
+   ------------------------
+   -- Background_Changed --
+   ------------------------
+
+   procedure Background_Changed
+     (Bg_Draw : access Gtk_Widget_Record'Class;
+      Canvas  : Image_Canvas)
+   is
+      Error : GError;
+   begin
+      if Get_Active (Gtk_Check_Button (Bg_Draw)) then
+         Gdk_New_From_File
+           (Canvas.Background,
+            Filename => "background.jpg",
+            Error    => Error);
+         Canvas.Grid_GC := Get_White_GC (Get_Style (Canvas));
+      else
+         if Canvas.Background /= null then
+            Unref (Canvas.Background);
+            Canvas.Background := null;
+         end if;
+         Canvas.Grid_GC := Get_Black_GC (Get_Style (Canvas));
+      end if;
+      Refresh_Canvas (Canvas);
+   end Background_Changed;
+
    ---------
    -- Run --
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Canvas   : Interactive_Canvas;
-      Box, Bbox, Bbox2, Spin_Box, Small : Gtk_Box;
+      Canvas   : Image_Canvas;
+      Box, Bbox, Bbox2, Bbox3, Spin_Box, Small : Gtk_Box;
       Button   : Gtk_Button;
       Arrow    : Gtk_Arrow;
       Scrolled : Gtk_Scrolled_Window;
       Label    : Gtk_Label;
       Adj      : Gtk_Adjustment;
+      F        : Gtk_Frame;
+      Align    : Gtk_Check_Button;
 
    begin
+      Last_Item := Items_List'First;
+      Last_Link := 1;
+
       Gtk_New_Vbox (Box, Homogeneous => False);
       Add (Frame, Box);
 
@@ -471,13 +768,20 @@ package body Create_Canvas is
       Gtk_New_Hbox (Bbox2, Homogeneous => True);
       Pack_Start (Box, Bbox2, Expand => False, Fill => False);
 
+      Gtk_New_Hbox (Bbox3, Homogeneous => True);
+      Pack_Start (Box, Bbox3, Expand => False, Fill => False);
+
       Gtk_New_Hbox (Spin_Box, Homogeneous => True);
       Pack_Start (Box, Spin_Box, Expand => False, Fill => False);
 
-      Gtk_New (Scrolled);
-      Pack_Start (Box, Scrolled);
+      Gtk_New (F);
+      Pack_Start (Box, F);
 
-      Gtk_New (Canvas);
+      Gtk_New (Scrolled);
+      Add (F, Scrolled);
+
+      Canvas := new Image_Canvas_Record;
+      Initialize (Canvas);
       Add (Scrolled, Canvas);
       Align_On_Grid (Canvas, False);
 
@@ -530,6 +834,35 @@ package body Create_Canvas is
       Canvas_Cb.Object_Connect
         (Button, "clicked",
          Canvas_Cb.To_Marshaller (Add_Single_Item_With_Link'Access), Canvas);
+
+      Gtk_New (Align, "Align on grid");
+      Set_Active (Align, Get_Align_On_Grid (Canvas));
+      Pack_Start (Bbox3, Align, Expand => False, Fill => True);
+      Canvas_User_Cb.Connect
+        (Align, "toggled",
+         Canvas_User_Cb.To_Marshaller (Toggle_Align'Access), Canvas);
+
+      Gtk_New (Align, "Draw grid");
+      Set_Active (Align, Canvas.Draw_Grid);
+      Pack_Start (Bbox3, Align, Expand => False, Fill => True);
+      Canvas_User_Cb.Connect
+        (Align, "toggled",
+         Canvas_User_Cb.To_Marshaller (Toggle_Draw_Grid'Access), Canvas);
+
+      Gtk_New (Align, "Orthogonal links");
+      Set_Active (Align, Get_Orthogonal_Links (Canvas));
+      Pack_Start (Bbox3, Align, Expand => False, Fill => True);
+      Canvas_User_Cb.Connect
+        (Align, "toggled",
+         Canvas_User_Cb.To_Marshaller (Toggle_Orthogonal'Access), Canvas);
+
+      Gtk_New (Align, "draw background");
+      Set_Active (Align, Canvas.Background /= null);
+      Pack_Start (Bbox3, Align, Expand => True, Fill => True);
+      Canvas_User_Cb.Connect
+        (Align, "toggled",
+         Canvas_User_Cb.To_Marshaller (Background_Changed'Access), Canvas);
+      Background_Changed (Align, Canvas);
 
       Gtk_New (Num_Items_Label, "0 items");
       Pack_Start (Spin_Box, Num_Items_Label, Expand => False, Fill => False);
