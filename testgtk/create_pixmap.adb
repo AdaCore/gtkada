@@ -52,7 +52,7 @@ package body Create_Pixmap is
       Box2      : Gtk_Box;
       Box3      : Gtk_Box;
       Button    : Gtk_Button;
-      Style     : aliased Gtk_Style_Record;
+      Style     : Gtk_Style;
       Pixmap    : Gdk_Pixmap;
       Mask      : Gdk_Bitmap;
       PixmapWid : Gtk_Pixmap;
@@ -82,7 +82,7 @@ package body Create_Pixmap is
 
          Style := Get_Style (Button);
          Create_From_Xpm (Pixmap, Get_Window (Window), Mask,
-                          Get_Bg (Style'Access, State_Normal), "test.xpm");
+                          Get_Bg (Style, State_Normal), "test.xpm");
          Gtk_New (PixmapWid, Pixmap, Mask);
 
          Gtk_New (Label, "Pixmap" & Ascii.LF & "test");

@@ -39,15 +39,15 @@ package Gtk.Rc is
    procedure Parse_String (Rc_String : in String);
 
    function Get_Style (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-     return Gtk.Style.Gtk_Style;
+                       return Gtk.Style.Gtk_Style;
 
    procedure Add_Widget_Name_Style
-     (Style   : access Gtk.Style.Gtk_Style_Record'Class;
-      Pattern : in     String);
+     (Style   : in Gtk.Style.Gtk_Style'Class;
+      Pattern : in String);
 
    procedure Add_Widget_Class_Style
-     (Style   : access Gtk.Style.Gtk_Style_Record'Class;
-      Pattern : in     String);
+     (Style   : in Gtk.Style.Gtk_Style'Class;
+      Pattern : in String);
 
 
    pragma Import (C, Init, "gtk_rc_init");

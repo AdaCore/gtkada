@@ -170,7 +170,7 @@ package body Create_Scroll_Test is
                      Adj     : in Adjustment.Gtk_Adjustment) is
       Area : Gdk.Rectangle.Gdk_Rectangle;
       Imin, Imax, Jmin, Jmax : Gint;
-      Sty : aliased Gtk.Style.Gtk_Style_Record
+      Sty : Gtk.Style.Gtk_Style
         := Gtk.Style.Get_Style (Widget);
    begin
       Area := Gdk.Event.Get_Area (Event);
@@ -192,7 +192,7 @@ package body Create_Scroll_Test is
             if ((I + J) mod 2 /= 0) then
                Gdk.Drawable.Draw_Rectangle
                  (Drawable => Get_Window (Widget),
-                  GC => Gtk.Style.Get_Black_Gc (Sty'Access),
+                  GC => Gtk.Style.Get_Black_Gc (Sty),
                   Filled => True,
                   X => 10 * I, Y => 10 * J - Gint (Adjustment.Get_Value (Adj)),
                   Width => 1 + I mod 10, Height => 1 + J mod 10);

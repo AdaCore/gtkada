@@ -71,11 +71,11 @@ package body Create_Cursors is
 
 
    procedure Cursor_Expose_Event (Darea : access Gtk_Drawing_Area_Record) is
-      Style      : aliased Gtk_Style_Record := Get_Style (Darea);
+      Style      : Gtk_Style := Get_Style (Darea);
       Draw       : Gdk_Drawable := Gdk_Drawable (Get_Window (Darea));
-      White_GC   : Gdk_GC := Get_White_GC (Style'Access);
-      Black_GC   : Gdk_GC := Get_Black_GC (Style'Access);
-      Gray_GC    : Gdk_GC := Get_Bg_GC (Style'Access, State_Normal);
+      White_GC   : Gdk_GC := Get_White_GC (Style);
+      Black_GC   : Gdk_GC := Get_Black_GC (Style);
+      Gray_GC    : Gdk_GC := Get_Bg_GC (Style, State_Normal);
       Max_Width  : Guint  := Get_Allocation_Width (Darea);
       Max_Height : Guint  := Get_Allocation_Height (Darea);
 

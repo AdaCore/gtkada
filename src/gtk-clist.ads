@@ -187,7 +187,7 @@ package Gtk.Clist is
    procedure Set_Cell_Style (Clist  : access Gtk_Clist_Record;
                              Row    : in Gint;
                              Column : in Gint;
-                             Style  : access Gtk_Style_Record'Class);
+                             Style  : in Gtk_Style'Class);
 
    procedure Set_Column_Auto_Resize
      (Clist       : access Gtk_Clist_Record;
@@ -259,7 +259,7 @@ package Gtk.Clist is
 
    procedure Set_Row_Style
      (Clist : access Gtk_Clist_Record; Row : Gint;
-      Style : access Gtk_Style_Record'Class);
+      Style : in Gtk_Style'Class);
 
    procedure Set_Selectable
      (Clist : access Gtk_Clist_Record; Row : Gint; Selectable : Boolean);
