@@ -545,7 +545,7 @@ sub find_signals () {
     if ($cfile =~ /^gdk/) {
 	$gtk = "gdk";
     }
-    
+
     open (FILE, $gtk_src_dir . "/$gtk/" . $cfile);
     my (@c_content) = <FILE>;
     close (FILE);
@@ -568,7 +568,7 @@ sub find_signals () {
 	    $in_struct = 0;
 	}
     }
-    
+
     my ($ada_signals) = &get_tag_value ("signals", @content);
 
     # If the tag is found in the Ada file, use it
@@ -661,7 +661,13 @@ sub find_hierarchy_array () {
 
 sub package_from_type () {
     my ($string) = shift;
-    $string =~ s/(G[td]k)_/$1./;
+    if ($string eq "Gtk_Plot") {
+	return "Gtk.Extra.Plot";
+    } elsif ($string eq "Gtk_Check_Item") {
+	return "Gtk.Extra.Check_Item";
+    } else {
+	$string =~ s/(G[td]k)_/$1./;
+    }
     return $string;
 }
 
