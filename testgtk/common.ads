@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,7 +35,7 @@ with Gtk.Label; use Gtk.Label;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 
-Package Common is
+package Common is
 
     --  This package is created to avoid the instanciation of the
     --  generic packages for callbacks. This provides a much smaller
@@ -54,4 +55,3 @@ Package Common is
    procedure Destroy_Window (Win : access Gtk.Window.Gtk_Window_Record;
                              Ptr : in Gtk_Window_Access);
 end Common;
-
