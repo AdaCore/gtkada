@@ -131,6 +131,14 @@ with Glib.Gnodes;
 with Glib.GSlist;
 with Glib.XML;
 with Glib;
+with Gtk.Extra.Check_Item;
+with Gtk.Extra.Plot;
+with Gtk.Extra.Plot_Canvas;
+with Gtk.Extra.Plot_Layout;
+with Gtk.Extra.Plot_Ps;
+with Gtk.Extra.PsFont;
+with Gtk.Extra;
+
 procedure Make is
 begin
    null;
