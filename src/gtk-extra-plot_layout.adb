@@ -168,12 +168,12 @@ package body Gtk.Extra.Plot_Layout is
                 X,
                 Y,
                 Angle,
-                Ps_Font & Ascii.NUL,
+                Ps_Font & ASCII.Nul,
                 Height,
                 F,
                 B,
                 Gtk.Enums.Gtk_Justification'Pos (Justification),
-                Text & Ascii.NUL);
+                Text & ASCII.Nul);
    end Put_Text;
 
    -------------

@@ -30,7 +30,6 @@
 
 with Gdk.Font;
 with Gdk; use Gdk;
-with Gtk.Enums; use Gtk.Enums;
 with Interfaces.C.Strings;
 with System;
 
@@ -53,11 +52,11 @@ package body Gtk.Extra.PsFont is
                           Xstring  : in System.Address;
                           Italic   : in Gint;
                           Bold     : in Gint);
-      pragma Import (C, Internal, "gtk_psfont_add");
+      pragma Import (C, Internal, "gtk_psfont_add_font");
    begin
-      Internal (Fontname & Ascii.NUL,
-                Psname & Ascii.NUL,
-                Family & Ascii.NUL,
+      Internal (Fontname & ASCII.Nul,
+                Psname & ASCII.Nul,
+                Family & ASCII.Nul,
                 Xstring (Xstring'First)'Address,
                 Boolean'Pos (Italic),
                 Boolean'Pos (Bold));
@@ -78,7 +77,7 @@ package body Gtk.Extra.PsFont is
                         return      Gtk_PsFont;
       pragma Import (C, Internal, "gtk_psfont_find_by_family");
    begin
-      return Internal (Name & Ascii.NUL,
+      return Internal (Name & ASCII.Nul,
                        Boolean'Pos (Italic),
                        Boolean'Pos (Bold));
    end Find_By_Family;
@@ -97,7 +96,7 @@ package body Gtk.Extra.PsFont is
       pragma Import (C, Internal, "gtk_psfont_get_gdkfont");
       Tmp : Gdk.Font.Gdk_Font;
    begin
-      Set_Object (Tmp, Internal (Name & Ascii.NUL, Height));
+      Set_Object (Tmp, Internal (Name & ASCII.Nul, Height));
       return Tmp;
    end Get_Gdkfont;
 
@@ -112,7 +111,7 @@ package body Gtk.Extra.PsFont is
                          return      Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_psfont_get_psfontname");
    begin
-      return Interfaces.C.Strings.Value (Internal (Name & Ascii.NUL));
+      return Interfaces.C.Strings.Value (Internal (Name & ASCII.Nul));
    end Get_Psfontname;
 
    -------------
@@ -121,9 +120,9 @@ package body Gtk.Extra.PsFont is
 
    function Getfont (Name   : in String) return Gtk_PsFont is
       function Internal (Name   : in String) return Gtk_PsFont;
-      pragma Import (C, Internal, "gtk_psfont_getfont");
+      pragma Import (C, Internal, "gtk_psfont_get_font");
    begin
-      return Internal (Name & Ascii.NUL);
+      return Internal (Name & ASCII.Nul);
    end Getfont;
 
 end Gtk.Extra.PsFont;

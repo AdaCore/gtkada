@@ -554,13 +554,13 @@ package body Gtk.Extra.Plot is
                    Plot_Angle'Pos (Angle),
                    System.Null_Address, Font_Height, Forea, Backa,
                    Gtk.Enums.Gtk_Justification'Pos (Justification),
-                   Text & Ascii.NUL);
+                   Text & ASCII.Nul);
       else
          Internal (Get_Object (Plot), X, Y,
                    Plot_Angle'Pos (Angle),
                    F'Address, Font_Height, Forea, Backa,
                    Gtk.Enums.Gtk_Justification'Pos (Justification),
-                   Text & Ascii.NUL);
+                   Text & ASCII.Nul);
       end if;
    end Put_Text;
 
@@ -614,7 +614,7 @@ package body Gtk.Extra.Plot is
    begin
       Internal (Get_Object (Plot),
                 Plot_Axis_Pos'Pos (Axis),
-                Title & Ascii.NUL);
+                Title & ASCII.Nul);
    end Axis_Set_Title;
 
    ---------------------
@@ -890,7 +890,7 @@ package body Gtk.Extra.Plot is
       end if;
       Internal (Get_Object (Plot),
                 Plot_Axis_Pos'Pos (Axis),
-                Ps_Font & Ascii.NUL,
+                Ps_Font & ASCII.Nul,
                 Height,
                 Plot_Angle'Pos (Angle),
                 Fa,
@@ -931,7 +931,7 @@ package body Gtk.Extra.Plot is
       end if;
       Internal (Get_Object (Plot),
                 Plot_Axis_Pos'Pos (Axis),
-                Ps_Font & Ascii.NUL,
+                Ps_Font & ASCII.Nul,
                 Height,
                 Plot_Angle'Pos (Angle),
                 Fa,
@@ -1778,7 +1778,7 @@ package body Gtk.Extra.Plot is
                           Name : in String);
       pragma Import (C, Internal, "gtk_plot_dataset_set_name");
    begin
-      Internal (Data, Name & Ascii.NUL);
+      Internal (Data, Name & ASCII.Nul);
    end Dataset_Set_Name;
 
    ----------------------

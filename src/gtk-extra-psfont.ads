@@ -72,7 +72,6 @@
 --  <c_version>gtk+extra0.99</c_version>
 
 with Gdk.Font;
-with Gtk.Enums;
 with System;
 with Gtkada.Types;
 

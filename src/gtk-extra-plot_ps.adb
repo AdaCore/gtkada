@@ -54,7 +54,7 @@ package body Gtk.Extra.Plot_Ps is
       pragma Import (C, Internal, "gtk_plot_export_ps");
    begin
       Internal (Get_Object (Plot),
-                Psfile & Ascii.NUL,
+                Psfile & ASCII.Nul,
                 Ps_Orientation'Pos (Orientation),
                 Boolean'Pos (Epsflag),
                 Ps_Page_Size'Pos (Page_Size));
@@ -84,7 +84,7 @@ package body Gtk.Extra.Plot_Ps is
       pragma Import (C, Internal, "gtk_plot_export_ps_with_size");
    begin
       Internal (Get_Object (Plot),
-                Psfile & Ascii.NUL,
+                Psfile & ASCII.Nul,
                 Ps_Orientation'Pos (Orientation),
                 Boolean'Pos (Epsflag),
                 Ps_Units'Pos (Units),
@@ -112,7 +112,7 @@ package body Gtk.Extra.Plot_Ps is
       pragma Import (C, Internal, "gtk_plot_layout_export_ps");
    begin
       Internal (Get_Object (Layout),
-                File_Name & Ascii.NUL,
+                File_Name & ASCII.Nul,
                 Ps_Orientation'Pos (Orientation),
                 Boolean'Pos (Epsflag),
                 Ps_Page_Size'Pos (Page_Size));
@@ -142,7 +142,7 @@ package body Gtk.Extra.Plot_Ps is
       pragma Import (C, Internal, "gtk_plot_layout_export_ps_with_size");
    begin
       Internal (Get_Object (Layout),
-                File_Name & Ascii.NUL,
+                File_Name & ASCII.Nul,
                 Ps_Orientation'Pos (Orientation),
                 Boolean'Pos (Epsflag),
                 Ps_Units'Pos (Units),
