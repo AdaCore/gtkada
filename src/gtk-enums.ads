@@ -167,7 +167,6 @@ package Gtk.Enums is
                                          Top_To_Bottom);
    --  enum type introduced in gtk1.1
 
-
    --  Some Glib instanciations
 
    function Convert (S : String) return System.Address;
