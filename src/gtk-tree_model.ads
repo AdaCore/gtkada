@@ -199,7 +199,7 @@ package Gtk.Tree_Model is
    --  Return an iterator pointing to Path_String.
    --  Null_Iter is returned if Path was invalid or no iterator could be set.
 
-   function Get_Iter_Root
+   function Get_Iter_First
      (Tree_Model : access Gtk_Tree_Model_Record) return Gtk_Tree_Iter;
    --  Return an iterator pointing to the root of Tree_Model.
    --  Null_Iter is returned if Tree_Model is empty.

@@ -244,15 +244,15 @@ package body Gtk.Tree_Model is
       end if;
    end Get_Iter_From_String;
 
-   -------------------
-   -- Get_Iter_Root --
-   -------------------
+   --------------------
+   -- Get_Iter_First --
+   --------------------
 
-   function Get_Iter_Root
+   function Get_Iter_First
      (Tree_Model : access Gtk_Tree_Model_Record) return Gtk_Tree_Iter
    is
       function Internal (Tree_Model, Iter : System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_tree_model_get_iter_root");
+      pragma Import (C, Internal, "gtk_tree_model_get_iter_first");
 
       Iter : aliased Gtk_Tree_Iter;
 
@@ -262,7 +262,7 @@ package body Gtk.Tree_Model is
       else
          return Null_Iter;
       end if;
-   end Get_Iter_Root;
+   end Get_Iter_First;
 
    --------------
    -- Get_Path --
