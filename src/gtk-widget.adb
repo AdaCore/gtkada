@@ -72,7 +72,6 @@ package body Gtk.Widget is
       return Internal (Get_Object (Widget));
    end Get_Events;
 
-
    --------------------
    --  Get_Toplevel  --
    --------------------
@@ -84,7 +83,6 @@ package body Gtk.Widget is
    begin
       Set_Object (Result, Internal (Get_Object (Widget)));
    end Get_Toplevel;
-
 
    --------------------
    --  Grab_Default  --

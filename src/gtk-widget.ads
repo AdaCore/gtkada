@@ -33,6 +33,12 @@ package Gtk.Widget is
    procedure Destroy (Widget : in out Gtk_Widget'Class);
    --  mapping: Destroy gtkwidget.h gtk_widget_destroy
 
+   --  GET_STYLE : to get the style field of a widget, please see
+   --  package gtk-style.ads
+
+   --  GET_WINDOW : to get the window field of a widget, please
+   --  see package gtk-window.ads
+
    procedure Set_Name (Widget : in out Gtk_Widget'Class;
                        Name : in String);
    --  mapping: Set_Name gtkwidget.h gtk_widget_set_name
