@@ -1,0 +1,337 @@
+with Ada.Text_IO;      use Ada.Text_IO;
+with GL_H;             use GL_H;
+with Gdk.Event;        use Gdk.Event;
+with Gdk.GL;           use Gdk.GL;
+with Gdk.Rectangle;    use Gdk.Rectangle;
+with Gdk.Types;        use Gdk.Types;
+with Gdk.Window;       use Gdk.Window;
+with Glib;             use Glib;
+with Glu_H;            use Glu_H;
+with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Glarea;       use Gtk.Glarea;
+with Gtk.Signal;       use Gtk.Signal;
+with Interfaces.C;     use Interfaces.C;
+with Lwobjects;        use Lwobjects;
+with Trackball;        use Trackball;
+
+package body View_Gl is
+
+   type Mesh_Info_Type is
+      record
+         Do_Init : Boolean := True;  --  True if not yet initialized
+         Zoom    : Float;            --  Field of view in degrees
+         Quat    : Quaternion;       -- orientation of object
+         Beginx  : Float;            --  Position of mouse
+         Beginy  : Float;
+         Object  : Lwobject;         --  lightwave object mesh
+      end record;
+
+   type My_Glarea_Record is new Gtk_GLArea_Record with
+      record
+         Mesh_Info : Mesh_Info_Type;
+      end record;
+   type My_Glarea is access all My_Glarea_Record'Class;
+
+   package Expose_Cb is new Gtk.Signal.Two_Callback
+     (Base_Type => My_GLArea_Record, Data_Type => Integer,
+      Cb_Type   => Gdk_Event_Expose);
+   package Configure_Cb is new Gtk.Signal.Two_Callback
+     (Base_Type => My_GLArea_Record, Data_Type => Integer,
+      Cb_Type   => Gdk_Event_Configure);
+   package Motion_Cb is new Gtk.Signal.Two_Callback
+     (Base_Type => My_GLArea_Record, Data_Type => Integer,
+      Cb_Type   => Gdk_Event_Motion);
+   package Button_Cb is new Gtk.Signal.Two_Callback
+     (Base_Type => My_GLArea_Record, Data_Type => Integer,
+      Cb_Type   => Gdk_Event_Button);
+
+   VIEW_ASPECT : constant Float := 1.3;
+
+   -------------
+   -- Init_GL --
+   -------------
+
+   procedure Init_GL
+   is
+      type Glfloat_Array is array (0 .. 3) of aliased Glfloat;
+      Light0_Pos   : Glfloat_Array := (-50.0, 50.0, 0.0, 0.0);
+      Light0_Color : Glfloat_Array := (0.6, 0.6, 0.6, 1.0);
+      Light1_Pos   : Glfloat_Array := (50.0, 50.0, 0.0, 0.0);
+      Light1_Color : Glfloat_Array := (0.4, 0.4, 1.0, 1.0);
+
+   begin
+
+      --  Remove back faces
+
+      Gldisable (GL_CULL_FACE);
+      Glenable (GL_DEPTH_TEST);
+
+      --  Speedups
+
+      Gldisable (GL_DITHER);
+      Glshademodel (GL_SMOOTH);
+      Glhint (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+      Glhint (GL_POLYGON_SMOOTH_HINT, GL_FASTEST);
+
+      -- Light
+
+      Gllightfv (GL_LIGHT0, GL_POSITION, Light0_Pos (0)'Access);
+      Gllightfv (GL_LIGHT0, GL_DIFFUSE,  Light0_Color (0)'Access);
+      Gllightfv (GL_LIGHT1, GL_POSITION, Light1_Pos (0)'Access);
+      Gllightfv (GL_LIGHT1, GL_DIFFUSE,  Light1_Color (0)'Access);
+      Glenable (GL_LIGHT0);
+      Glenable (GL_LIGHT1);
+      Glenable (GL_LIGHTING);
+
+      Glcolormaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+      Glenable (GL_COLOR_MATERIAL);
+   end Init_GL;
+
+   -------------------
+   -- Glarea_Expose --
+   -------------------
+
+   procedure Glarea_Expose (Area  : access My_GLArea_Record;
+                            Event : Gdk_Event_Expose;
+                            Data  : Integer)
+   is
+      pragma Warnings (Off, Data);
+      M : Trackball.Matrix;
+   begin
+      --  Draw only the last expose event
+
+      if Get_Count (Event) > 0 then
+         return;
+      end if;
+
+      -- OpenGL calls can be done only if make_current returns true
+
+      if Make_Current (Area) then
+
+         --  Basic initialization
+         if Area.Mesh_Info.Do_Init then
+            Init_GL;
+            Area.Mesh_Info.Do_Init := False;
+         end if;
+
+         --  View
+         Glmatrixmode (GL_PROJECTION);
+         Glloadidentity;
+         Gluperspective (Long_Float (Area.Mesh_Info.Zoom),
+                         Long_Float (VIEW_ASPECT), 1.0, 100.0);
+         Glmatrixmode (GL_MODELVIEW);
+
+         --  Draw Object
+         Glclearcolor (0.3, 0.4, 0.6, 1.0);
+         Glclear (GL_COLOR_BUFFER_BIT + GL_DEPTH_BUFFER_BIT);
+
+         Glloadidentity;
+         Gltranslatef (0.0, 0.0, -30.0);
+         Build_Rotmatrix (M, Area.Mesh_Info.Quat);
+         Glmultmatrixf (M (0, 0)'Access);
+
+         Lw_Object_Show (Area.Mesh_Info.Object);
+
+         --  Swap backbuffer to front
+         Swap_Buffers (Area);
+      end if;
+   end Glarea_Expose;
+
+   ---------------
+   -- Configure --
+   ---------------
+
+   procedure Configure (Area : access My_GLArea_Record;
+                        Event : Gdk_Event_Configure;
+                        Data : Integer)
+   is
+      pragma Warnings (Off, Event);
+      pragma Warnings (Off, Data);
+
+   begin
+      if Make_Current (Area) then
+         Glviewport (0, 0,
+                     Integer (Get_Allocation_Width (Area)),
+                     Integer (Get_Allocation_Height (Area)));
+      end if;
+   end Configure;
+
+   --------------------
+   -- GlArea_Destroy --
+   --------------------
+
+   procedure GlArea_Destroy (Area : access My_GLArea_Record) is
+   begin
+      Lw_Object_Free (Area.Mesh_Info.Object);
+   end GlArea_Destroy;
+
+   ------------------
+   -- Button_Press --
+   ------------------
+
+   procedure Button_Press (Area : access My_GLArea_Record;
+                           Event : Gdk_Event_Button;
+                           Data  : Integer)
+   is
+      pragma Warnings (Off, Data);
+   begin
+      if Get_Button (Event) = 1 then
+         Area.Mesh_Info.Beginx := Float (Get_X (Event));
+         Area.Mesh_Info.Beginy := Float (Get_Y (Event));
+      end if;
+   end Button_Press;
+
+   -------------------
+   -- Motion_Notify --
+   -------------------
+
+   procedure Motion_Notify (Area : access My_GLArea_Record;
+                            Event : Gdk_Event_Motion;
+                            Data  : Integer)
+   is
+      pragma Warnings (Off, Data);
+      X, Y : Gint;
+      Win  : Gdk_Window;
+      State : Gdk_Modifier_Type;
+      Rect  : Gdk_Rectangle;
+
+   begin
+      if Get_Is_Hint (Event) then
+         Get_Pointer (Get_Window (Event), X, Y, State, Win);
+      else
+         X := Gint (Get_X (Event));
+         Y := Gint (Get_Y (Event));
+         State := Get_State (Event);
+      end if;
+      Rect.X := 0;
+      Rect.Y := 0;
+      Rect.Width  := Get_Allocation_Width (Area);
+      Rect.Height := Get_Allocation_Height (Area);
+
+      if (State and Button1_Mask) /= 0 then
+         --  Drag in progress, simulate trackball
+         declare
+            Spin_Quat : Trackball.Quaternion;
+         begin
+            Trackball.Trackball
+              (Spin_Quat,
+               (2.0 * Area.Mesh_Info.Beginx - Float (Rect.Width))
+                  / Float (Rect.Width),
+               (Float (Rect.Height) - 2.0 * Area.Mesh_Info.Beginy)
+                  / Float (Rect.Height),
+               (2.0 * Float (X) - Float (Rect.Width)) / Float (Rect.Width),
+               (Float (Rect.Height) - 2.0 * Float (Y)) / Float (Rect.Height));
+            Add_Quats (Spin_Quat, Area.Mesh_Info.Quat,
+                       Dest => Area.Mesh_Info.Quat);
+
+            --  orientation has changed, redraw mesh
+            Draw (Area, Rect);
+         end;
+      end if;
+
+      if (State and Button2_Mask) /= 0 then
+         --  Zooming drag
+         Area.Mesh_Info.Zoom := Area.Mesh_Info.Zoom +
+           ((Float (Y) - Area.Mesh_Info.Beginy) / Float (Rect.Height)) * 40.0;
+         if Area.Mesh_Info.Zoom < 5.0 then
+            Area.Mesh_Info.Zoom := 5.0;
+         end if;
+         if Area.Mesh_Info.Zoom > 120.0 then
+            Area.Mesh_Info.Zoom := 120.0;
+         end if;
+
+         --  Zoom has changed, redraw mesh
+         Draw (Area, Rect);
+      end if;
+
+      Area.Mesh_Info.Beginx := Float (X);
+      Area.Mesh_Info.Beginy := Float (Y);
+   end Motion_Notify;
+
+   -------------------
+   -- Show_Lwobject --
+   -------------------
+
+   procedure Show_Lwobject (Frame : access Gtk_Frame_Record'Class;
+                            Lwobject_Name : String)
+   is
+      Object : Lwobject;
+      Area   : My_GLArea;
+      Id     : Guint;
+
+   begin
+      --  Read lightwave object
+      if not Lw_Is_Lwobject (Lwobject_Name) then
+         Put_Line (Lwobject_Name & " is not a lightwave 3D object");
+         return;
+      end if;
+
+      Object := Lw_Object_Read (Lwobject_Name);
+      if Object = null_lwobject then
+         Put_Line ("can't read lightwave 3D object " & Lwobject_Name);
+         return;
+      end if;
+
+      Lw_Object_Scale (Object, 10.0 / Lw_Object_Radius (Object));
+
+      --  Create aspect frame
+      --  Gtk_New (Frame, "", 0.5, 0.5, VIEW_ASPECT, False);
+
+      --  Create new OpenGL widget
+      Area := new My_Glarea_Record;
+      Initialize (Area,
+                  (GDK_GL_RGBA, GDK_GL_DOUBLEBUFFER,
+                   GDK_GL_DEPTH_SIZE, Gl_Configs (1)));
+      if Area = null then
+         Put_Line ("Can't create Gtk_GLArea widget");
+         return;
+      end if;
+
+      --  Setup events and signals
+      Set_Events (Area, Exposure_Mask or Button_Press_Mask
+                  or Button_Release_Mask or Pointer_Motion_Mask
+                  or Pointer_Motion_Hint_Mask);
+      Id := Expose_Cb.Connect (Area, "expose_event",
+                               GlArea_Expose'Access, 0);
+      Id := Motion_Cb.Connect (Area, "motion_notify_event",
+                               Motion_Notify'Access, 0);
+      Id := Button_Cb.Connect (Area, "button_press_event",
+                               Button_Press'Access, 0);
+      Id := Configure_Cb.Connect (Area, "configure_event",
+                                  Configure'Access, 0);
+      --  gtk_signal_connect (GTK_OBJECT(glarea), "destroy",
+      --  GTK_SIGNAL_FUNC (glarea_destroy), NULL);
+
+      Set_Usize (Area, 200, Gint (200.0 / View_Aspect));
+
+      --  Set up mesh info
+      Area.Mesh_Info.Do_Init := True;
+      Area.Mesh_Info.Object := Object;
+      Area.Mesh_Info.Beginx := 0.0;
+      Area.Mesh_Info.Beginy := 0.0;
+      Area.Mesh_Info.Zoom   := 45.0;
+      Trackball.Trackball (Area.Mesh_Info.Quat, 0.0, 0.0, 0.0, 0.0);
+
+      --  gtk_quit_add_destroy(1, GTK_OBJECT(window));
+
+      --  Put GlArea into Window and show it all
+      Add (Frame, Area);
+      Show_All (Frame);
+   end Show_Lwobject;
+
+   ---------
+   -- Run --
+   ---------
+
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
+   begin
+      if not Gdk.GL.Query then
+         Put_Line ("OpenGL not supported");
+         return;
+      end if;
+
+      Show_Lwobject (Frame, "alien.lwo");
+   end Run;
+
+
+end View_Gl;

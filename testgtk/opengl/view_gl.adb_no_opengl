@@ -1,0 +1,17 @@
+
+with Gtk.Label; use Gtk.Label;
+
+--  This is a dummy implementation of the OpenGL demo, used when OpenGL is
+--  not installed on the system.
+
+package body View_Gl is
+
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
+      Label : Gtk_Label;
+   begin
+      Gtk_New (Label, "OpenGL has not been installed on this system");
+      Add (Frame, Label);
+      Show_All (Frame);
+   end Run;
+
+end View_Gl;
