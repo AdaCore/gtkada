@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,7 +33,7 @@
 --  This button does not have multiple states, it can just be temporarily
 --  pressed while the mouse is on it, but does not keep its pressed state.
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Bin;
 with Gtk.Enums;
@@ -43,8 +43,7 @@ package Gtk.Button is
    type Gtk_Button_Record is new Bin.Gtk_Bin_Record with private;
    type Gtk_Button is access all Gtk_Button_Record'Class;
 
-   procedure Gtk_New (Button : out Gtk_Button;
-                      Label : in String := "");
+   procedure Gtk_New (Button : out Gtk_Button; Label : String := "");
    --  Create a new button.
    --  if Label is not the empty string, then the text appears in the
    --  button (and the child of the button is a Gtk_Label). On the other
@@ -52,21 +51,49 @@ package Gtk.Button is
    --  the button and it is your responsibility to add one. This is the
    --  recommended way to put a pixmap inside the button.
 
-   procedure Initialize (Button : access Gtk_Button_Record'Class;
-                         Label : in String);
+   procedure Gtk_New_From_Stock
+     (Button : out Gtk_Button; Stock_Id : String);
+   --  Create a new button containing the image and text from a stock item.
+   --  Some stock ids have predefined contants like Gtk_Stock_Button_OK and
+   --  Gtk_Stock_Button_Apply.
+   --  Stock_Id: the name of the stock item
+
+   procedure Gtk_New_With_Mnemonic
+     (Button : out Gtk_Button; Label : String);
+   --  Create a new button containing a label.
+   --  Label: The text of the button, with an underscore in front of the
+   --         mnemonic character
+   --  If characters in Label are preceded by an underscore, they are
+   --  underlined indicating that they represent a keyboard accelerator called
+   --  a mnemonic. Pressing Alt and that key activates the button.
+
+   procedure Initialize
+     (Button : access Gtk_Button_Record'Class;
+      Label  : String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Initialize_From_Stock
+     (Button   : access Gtk_Button_Record'Class;
+      Stock_Id : String);
+   --  Internal initialization function.
+
+   procedure Initialize_With_Mnemonic
+     (Button : access Gtk_Button_Record'Class;
+      Label  : String);
+   --  Internal initialization function.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Button.
 
-   procedure Set_Relief (Button   : access Gtk_Button_Record;
-                         NewStyle : in     Gtk.Enums.Gtk_Relief_Style);
+   procedure Set_Relief
+     (Button    : access Gtk_Button_Record;
+      New_Style : Gtk.Enums.Gtk_Relief_Style);
    --  Modify the relief style for the button.
    --  This modifies only its visual aspect, not its behavior.
 
-   function Get_Relief (Button : access Gtk_Button_Record)
-                       return Gtk.Enums.Gtk_Relief_Style;
+   function Get_Relief
+     (Button : access Gtk_Button_Record) return Gtk.Enums.Gtk_Relief_Style;
    --  Get the current relief style for the button
 
    ----------------------
