@@ -2757,6 +2757,7 @@ package body Gtkada.MDI is
       Child : MDI_Child;
    begin
       Set_Tab_Pos   (Notebook, MDI.Tabs_Position);
+      Set_Tab_Vborder (Notebook, 0);
 
       if Get_Nth_Page (Notebook, 1) /= null then
          Set_Show_Tabs (Notebook, MDI.Show_Tabs_Policy /= Never);
