@@ -27,509 +27,158 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk; use Gtk;
-with Interfaces.C.Strings;
-with System;
-
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Glib.Object;           use Glib.Object;
+with Gtk;                   use Gtk;
+with Interfaces.C.Strings;
+with System;                use System;
+with Unchecked_Conversion;
 
 package body Gtk.Tree_Model is
 
-   -------------
-   -- Gtk_New --
-   -------------
+   ---------------
+   -- Get_Flags --
+   ---------------
 
-   procedure Gtk_New (Widget : out Gtk_Tree_Path)
+   function Get_Flags (Model : access Gtk_Tree_Model_Record)
+      return Tree_Model_Flags
    is
+      function Internal (M : System.Address) return Tree_Model_Flags;
+      pragma Import (C, Internal, "gtk_tree_model_get_flags");
    begin
-      Widget := new Gtk_Tree_Path_Record;
-      Gtk.Tree_Model.Initialize (Widget);
-   end Gtk_New;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize (Widget : in out Gtk_Tree_Path)
-   is
-      function Internal return Gtk_Tree_Path;
-      pragma Import (C, Internal, "gtk_tree_path_new");
-   begin
-      Widget := Internal;
-   end Initialize;
+      return Internal (Get_Object (Model));
+   end Get_Flags;
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Tree_Path;
-                      Path : String)
-   is
+   function Gtk_New (Path : String := "") return Gtk_Tree_Path is
+      function Internal1 (Path   : String) return Gtk_Tree_Path;
+      pragma Import (C, Internal1, "gtk_tree_path_new_from_string");
+
+      function Internal2 return Gtk_Tree_Path;
+      pragma Import (C, Internal2, "gtk_tree_path_new");
    begin
-      Widget := new Gtk_Tree_Path_Record;
-      Initialize (Widget, Path);
+      if Path = "" then
+         return Internal2;
+      else
+         return Internal1 (Path & ASCII.NUL);
+      end if;
    end Gtk_New;
 
-   ----------------
-   -- Initialize --
-   ----------------
+   ---------------
+   -- To_String --
+   ---------------
 
-   procedure Initialize (Widget : in out Gtk_Tree_Path;
-                         Path : String)
-   is
-      function Internal (Path   : String)
-                         return Gtk_Tree_Path;
-      pragma Import (C, Internal, "gtk_tree_path_new_from_string");
-   begin
-      Widget := Internal (Path & ASCII.NUL);
-   end Initialize;
-
-   -------------------------
-   -- Tree_Path_To_String --
-   -------------------------
-
-   function Tree_Path_To_String (Path   : Gtk.Tree_Model.Gtk_Tree_Path)
-                                 return String
-   is
-      function Internal (Path   : System.Address)
-                         return Interfaces.C.Strings.chars_ptr;
+   function To_String (Path : Gtk_Tree_Path) return String is
+      function Internal (Path   : Gtk_Tree_Path) return chars_ptr;
       pragma Import (C, Internal, "gtk_tree_path_to_string");
    begin
-      return Interfaces.C.Strings.Value (Internal (Path.all'Address));
-   end Tree_Path_To_String;
+      return Interfaces.C.Strings.Value (Internal (Path));
+   end To_String;
 
---    -------------
---    -- Gtk_New --
---    -------------
+   -----------------
+   -- Get_Indices --
+   -----------------
 
---    procedure Gtk_New (Widget: out Gtk_Tree_Model)
---    is
---    begin
---       Widget := new Gtk_Tree_Model_Record;
---       Initialize (Widget);
---    end Gtk_New;
+   function Get_Indices (Path : Gtk_Tree_Path) return Gint_Array is
+      type Big_Gint_Array is array (Natural) of Gint;
+      type Big_Gint_Array_Access is access Big_Gint_Array;
+      function To_Big_Gint is new Unchecked_Conversion
+        (System.Address, Big_Gint_Array_Access);
 
---    ----------------
---    -- Initialize --
---    ----------------
+      function Internal (Path : Gtk_Tree_Path) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_path_get_indices");
 
---    procedure Initialize (Widget: access Gtk_Tree_Model_Record'Class)
---    is
---       function Internal return System.Address;
---       pragma Import (C, Internal, "gtk_tree_path_new_root");
---    begin
---       Set_Object (Widget, Internal);
---       Initialize_User_Data (Widget);
---    end Initialize;
-
-   ----------------------------
-   -- Tree_Path_Append_Index --
-   ----------------------------
-
-   procedure Tree_Path_Append_Index
-     (Path  : Gtk.Tree_Model.Gtk_Tree_Path;
-      Index : Gint)
-   is
-      procedure Internal
-        (Path  : System.Address;
-         Index : Gint);
-      pragma Import (C, Internal, "gtk_tree_path_append_index");
+      Result : Gint_Array (0 .. Integer (Get_Depth (Path)) - 1);
+      R      : Big_Gint_Array_Access := To_Big_Gint (Internal (Path));
    begin
-      Internal (Path.all'Address,
-                Index);
-   end Tree_Path_Append_Index;
+      for J in Result'Range loop
+         Result (J) := R (J);
+      end loop;
+      return Result;
+   end Get_Indices;
 
-   -----------------------------
-   -- Tree_Path_Prepend_Index --
-   -----------------------------
+   ----------
+   -- Prev --
+   ----------
 
-   procedure Tree_Path_Prepend_Index
-     (Path  : Gtk.Tree_Model.Gtk_Tree_Path;
-      Index : Gint)
-   is
-      procedure Internal
-        (Path  : System.Address;
-         Index : Gint);
-      pragma Import (C, Internal, "gtk_tree_path_prepend_index");
-   begin
-      Internal (Path.all'Address,
-                Index);
-   end Tree_Path_Prepend_Index;
-
-   -------------------------
-   -- Tree_Path_Get_Depth --
-   -------------------------
-
-   function Tree_Path_Get_Depth (Path   : Gtk.Tree_Model.Gtk_Tree_Path)
-                                 return Gint
-   is
-      function Internal (Path   : System.Address)
-                         return Gint;
-      pragma Import (C, Internal, "gtk_tree_path_get_depth");
-   begin
-      return Internal (Path.all'Address);
-   end Tree_Path_Get_Depth;
-
---    ---------------------------
---    -- Tree_Path_Get_Indices --
---    ---------------------------
-
---    function Tree_Path_Get_Indices (Path   : Gtk.Tree_Model.Gtk_Tree_Path)
---                                   return Gint
---    is
---       function Internal (Path   : System.Address)
---                         return Gint;
---       pragma Import (C, Internal, "gtk_tree_path_get_indices");
---    begin
---       return Internal (Path.all'Address);
---    end Tree_Path_Get_Indices;
-
-   --------------------
-   -- Tree_Path_Free --
-   --------------------
-
-   procedure Tree_Path_Free (Path : Gtk.Tree_Model.Gtk_Tree_Path)
-   is
-      procedure Internal (Path : System.Address);
-      pragma Import (C, Internal, "gtk_tree_path_free");
-   begin
-      Internal (Path.all'Address);
-   end Tree_Path_Free;
-
-   --------------------
-   -- Tree_Path_Copy --
-   --------------------
-
-   function Tree_Path_Copy (Path   : Gtk.Tree_Model.Gtk_Tree_Path)
-                            return Gtk.Tree_Model.Gtk_Tree_Path
-   is
-      function Internal (Path   : System.Address)
-                         return Gtk.Tree_Model.Gtk_Tree_Path;
-      pragma Import (C, Internal, "gtk_tree_path_copy");
-   begin
-      return Internal (Path.all'Address);
-   end Tree_Path_Copy;
-
-   -----------------------
-   -- Tree_Path_Compare --
-   -----------------------
-
-   function Tree_Path_Compare
-     (A      : Gtk.Tree_Model.Gtk_Tree_Path;
-      B      : Gtk.Tree_Model.Gtk_Tree_Path)
-      return Gint
-   is
-      function Internal
-        (A      : System.Address;
-         B      : System.Address)
-         return Gint;
-      pragma Import (C, Internal, "gtk_tree_path_compare");
-   begin
-      return Internal (A.all'Address,
-                       B.all'Address);
-   end Tree_Path_Compare;
-
-   --------------------
-   -- Tree_Path_Next --
-   --------------------
-
-   procedure Tree_Path_Next (Path : Gtk.Tree_Model.Gtk_Tree_Path)
-   is
-      procedure Internal (Path : System.Address);
-      pragma Import (C, Internal, "gtk_tree_path_next");
-   begin
-      Internal (Path.all'Address);
-   end Tree_Path_Next;
-
-   --------------------
-   -- Tree_Path_Prev --
-   --------------------
-
-   function Tree_Path_Prev (Path   : Gtk.Tree_Model.Gtk_Tree_Path)
-                            return Boolean
-   is
-      function Internal (Path   : System.Address)
-                         return Gint;
+   function Prev (Path : Gtk_Tree_Path) return Boolean is
+      function Internal (Path : Gtk_Tree_Path) return Gint;
       pragma Import (C, Internal, "gtk_tree_path_prev");
    begin
-      return Boolean'Val (Internal (Path.all'Address));
-   end Tree_Path_Prev;
+      return Internal (Path) /= 0;
+   end Prev;
 
-   ------------------
-   -- Tree_Path_Up --
-   ------------------
+   --------
+   -- Up --
+   --------
 
-   function Tree_Path_Up (Path   : Gtk.Tree_Model.Gtk_Tree_Path)
-                          return Boolean
-   is
-      function Internal (Path   : System.Address)
-                         return Gint;
+   function Up (Path : Gtk_Tree_Path) return Boolean is
+      function Internal (Path : Gtk_Tree_Path) return Gint;
       pragma Import (C, Internal, "gtk_tree_path_up");
    begin
-      return Boolean'Val (Internal (Path.all'Address));
-   end Tree_Path_Up;
+      return Internal (Path) /= 0;
+   end Up;
 
-   --------------------
-   -- Tree_Path_Down --
-   --------------------
+   -----------------
+   -- Is_Ancestor --
+   -----------------
 
-   procedure Tree_Path_Down (Path : Gtk.Tree_Model.Gtk_Tree_Path)
-   is
-      procedure Internal (Path : System.Address);
-      pragma Import (C, Internal, "gtk_tree_path_down");
-   begin
-      Internal (Path.all'Address);
-   end Tree_Path_Down;
-
-   ---------------------------
-   -- Tree_Path_Is_Ancestor --
-   ---------------------------
-
-   function Tree_Path_Is_Ancestor
-     (Path       : Gtk.Tree_Model.Gtk_Tree_Path;
-      Descendant : Gtk.Tree_Model.Gtk_Tree_Path)
-      return Boolean
-   is
-      function Internal
-        (Path       : System.Address;
-         Descendant : System.Address)
-         return Gint;
+   function Is_Ancestor (Path, Descendant : Gtk_Tree_Path) return Boolean is
+      function Internal (Path, Descendant : Gtk_Tree_Path) return Gint;
       pragma Import (C, Internal, "gtk_tree_path_is_ancestor");
    begin
-      return Boolean'Val (Internal (Path.all'Address,
-                                    Descendant.all'Address));
-   end Tree_Path_Is_Ancestor;
+      return Internal (Path, Descendant) /= 0;
+   end Is_Ancestor;
 
-   -----------------------------
-   -- Tree_Path_Is_Descendant --
-   -----------------------------
+   -------------------
+   -- Is_Descendant --
+   -------------------
 
-   function Tree_Path_Is_Descendant
-     (Path     : Gtk.Tree_Model.Gtk_Tree_Path;
-      Ancestor : Gtk.Tree_Model.Gtk_Tree_Path)
-      return Boolean
-   is
-      function Internal
-        (Path     : System.Address;
-         Ancestor : System.Address)
-         return Gint;
+   function Is_Descendant (Path, Ancestor : Gtk_Tree_Path) return Boolean is
+      function Internal (Path, Ancestor : Gtk_Tree_Path) return Gint;
       pragma Import (C, Internal, "gtk_tree_path_is_descendant");
    begin
-      return Boolean'Val (Internal (Path.all'Address,
-                                    Ancestor.all'Address));
-   end Tree_Path_Is_Descendant;
+      return Internal (Path, Ancestor) /= 0;
+   end Is_Descendant;
 
---    -------------
---    -- Gtk_New --
---    -------------
+   -------------
+   -- Gtk_New --
+   -------------
 
---    procedure Gtk_New
---      (Widget : out Gtk_Tree_Row_Reference;
---       Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
---       Path  : Gtk.Tree_Model.Gtk_Tree_Path)
---    is
---    begin
---       Widget := new Gtk_Tree_Row_Reference_Record;
---       Initialize (Widget, Model, Path);
---    end Gtk_New;
-
---    ----------------
---    -- Initialize --
---    ----------------
-
---    procedure Initialize
---      (Widget : access Gtk_Tree_Row_Reference_Record'Class;
---       Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
---       Path  : Gtk.Tree_Model.Gtk_Tree_Path)
---    is
---       function Internal
---         (Model  : System.Address;
---          Path   : System.Address)
---         return System.Address;
---       pragma Import (C, Internal, "gtk_tree_row_reference_new");
---    begin
---       Set_Object (Widget, Internal (Get_Object (Model),
---                                     Path.all'Address));
---       Initialize_User_Data (Widget);
---    end Initialize;
-
---    -------------
---    -- Gtk_New --
---    -------------
-
---    procedure Gtk_New
---      (Widget : out Gtk_Tree_Row_Reference;
---       Proxy : out Glib.Object.GObject;
---       Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
---       Path  : Gtk.Tree_Model.Gtk_Tree_Path)
---    is
---    begin
---       Widget := new Gtk_Tree_Row_Reference_Record;
---       Initialize (Widget, Proxy, Model, Path);
---    end Gtk_New;
-
---    ----------------
---    -- Initialize --
---    ----------------
-
---    procedure Initialize
---      (Widget : access Gtk_Tree_Row_Reference_Record'Class;
---       Proxy : out Glib.Object.GObject;
---       Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
---       Path  : Gtk.Tree_Model.Gtk_Tree_Path)
---    is
---       function Internal
---         (Proxy  : System.Address;
---          Model  : System.Address;
---          Path   : System.Address)
---          return System.Address;
---       pragma Import (C, Internal, "gtk_tree_row_reference_new_proxy");
---    begin
---       Set_Object (Widget, Internal (Get_Object (Proxy),
---                                     Get_Object (Model),
---                                     Path.all'Address));
---       Initialize_User_Data (Widget);
---    end Initialize;
-
---    ---------------------------------
---    -- Tree_Row_Reference_Get_Path --
---    ---------------------------------
-
---    function Tree_Row_Reference_Get_Path
---      (Reference : access Gtk.Tree_Model.Gtk_Tree_Row_Reference_Record'Class)
---      return Gtk.Tree_Model.Gtk_Tree_Path
---    is
---       function Internal (Reference : System.Address)
---                          return Gtk_Tree_Path;
---       pragma Import (C, Internal, "gtk_tree_row_reference_get_path");
---    begin
---       return Internal (Get_Object (Reference));
---    end Tree_Row_Reference_Get_Path;
-
---    ------------------------------
---    -- Tree_Row_Reference_Valid --
---    ------------------------------
-
---    function Tree_Row_Reference_Valid
---      (Reference : access Gtk.Tree_Model.Gtk_Tree_Row_Reference_Record'Class)
---      return Boolean
---    is
---       function Internal (Reference : System.Address)
---                          return Gint;
---       pragma Import (C, Internal, "gtk_tree_row_reference_valid");
---    begin
---       return Boolean'Val (Internal (Get_Object (Reference)));
---    end Tree_Row_Reference_Valid;
-
---    -----------------------------
---    -- Tree_Row_Reference_Free --
---    -----------------------------
-
---    procedure Tree_Row_Reference_Free
---      (Reference : access Gtk.Tree_Model.Gtk_Tree_Row_Reference_Record'Class)
---    is
---       procedure Internal (Reference : System.Address);
---       pragma Import (C, Internal, "gtk_tree_row_reference_free");
---    begin
---       Internal (Get_Object (Reference));
---    end Tree_Row_Reference_Free;
-
---    ---------------------------------
---    -- Tree_Row_Reference_Inserted --
---    ---------------------------------
-
---    procedure Tree_Row_Reference_Inserted
---      (Proxy : out Glib.Object.GObject;
---       Path  : Gtk.Tree_Model.Gtk_Tree_Path)
---    is
---       procedure Internal
---         (Proxy : System.Address;
---          Path  : System.Address);
---       pragma Import (C, Internal, "gtk_tree_row_reference_inserted");
---    begin
---       Internal (Get_Object (Proxy),
---                 Path.all'Address);
---    end Tree_Row_Reference_Inserted;
-
---    --------------------------------
---    -- Tree_Row_Reference_Deleted --
---    --------------------------------
-
---    procedure Tree_Row_Reference_Deleted
---      (Proxy : out Glib.Object.GObject;
---       Path  : Gtk.Tree_Model.Gtk_Tree_Path)
---    is
---       procedure Internal
---         (Proxy : System.Address;
---          Path  : System.Address);
---       pragma Import (C, Internal, "gtk_tree_row_reference_deleted");
---    begin
---       Internal (Get_Object (Proxy),
---                 Path.all'Address);
---    end Tree_Row_Reference_Deleted;
-
---    ----------------------------------
---    -- Tree_Row_Reference_Reordered --
---    ----------------------------------
-
---    procedure Tree_Row_Reference_Reordered
---      (Proxy     : out Glib.Object.GObject;
---       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
---       Iter      : Gtk_Tree_Iter;
---       New_Order : out Gint)
---    is
---       procedure Internal
---         (Proxy     : System.Address;
---          Path      : System.Address;
---          Iter      : System.Address;
---          New_Order : out Gint);
---       pragma Import (C, Internal, "gtk_tree_row_reference_reordered");
---    begin
---       Internal (Get_Object (Proxy),
---                 Path.all'Address,
---                 Iter'Address,
---                 New_Order);
---    end Tree_Row_Reference_Reordered;
-
-   --------------------
-   -- Tree_Iter_Copy --
-   --------------------
-
-   function Tree_Iter_Copy (Iter   : Gtk_Tree_Iter)
-                            return Gtk.Tree_Model.Gtk_Tree_Iter
+   function Gtk_New
+     (Model : access Gtk_Tree_Model_Record;  Path : Gtk_Tree_Path)
+      return Gtk_Tree_Row_Reference
    is
-      function Internal (Iter   : System.Address)
-                         return Gtk.Tree_Model.Gtk_Tree_Iter;
-      pragma Import (C, Internal, "gtk_tree_iter_copy");
-
-      B : Gtk_Tree_Iter;
+      function Internal
+        (Model  : System.Address; Path : Gtk_Tree_Path)
+         return Gtk_Tree_Row_Reference;
+      pragma Import (C, Internal, "gtk_tree_row_reference_new");
    begin
-      B := Internal (Iter'Address);
-      return B;
-   end Tree_Iter_Copy;
+      return Internal (Get_Object (Model), Path);
+   end Gtk_New;
 
-   --------------------
-   -- Tree_Iter_Free --
-   --------------------
+   -----------
+   -- Valid --
+   -----------
 
-   procedure Tree_Iter_Free (Iter : Gtk_Tree_Iter)
-   is
-      procedure Internal (Iter : System.Address);
-      pragma Import (C, Internal, "gtk_tree_iter_free");
+   function Valid (Reference : Gtk_Tree_Row_Reference) return Boolean is
+      function Internal (Reference : Gtk_Tree_Row_Reference) return Gint;
+      pragma Import (C, Internal, "gtk_tree_row_reference_valid");
    begin
-      Internal (Iter'Address);
-   end Tree_Iter_Free;
+      return Internal (Reference) /= 0;
+   end Valid;
 
    -------------------
    -- Get_N_Columns --
    -------------------
 
    function Get_N_Columns
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
-     return Gint
+     (Tree_Model : access Gtk_Tree_Model_Record) return Gint
    is
-      function Internal (Tree_Model : System.Address)
-                         return Gint;
+      function Internal (Tree_Model : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_tree_model_get_n_columns");
    begin
       return Internal (Get_Object (Tree_Model));
@@ -540,82 +189,74 @@ package body Gtk.Tree_Model is
    ---------------------
 
    function Get_Column_Type
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Index      : Gint)
-      return GType
+     (Tree_Model : access Gtk_Tree_Model_Record; Index : Gint) return GType
    is
-      function Internal
-        (Tree_Model : System.Address;
-         Index      : Gint)
+      function Internal (Tree_Model : System.Address; Index : Gint)
          return GType;
       pragma Import (C, Internal, "gtk_tree_model_get_column_type");
    begin
-      return Internal (Get_Object (Tree_Model),
-                       Index);
+      return Internal (Get_Object (Tree_Model), Index);
    end Get_Column_Type;
 
    --------------
    -- Get_Iter --
    --------------
 
-   procedure Get_Iter
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter       : out Gtk_Tree_Iter;
-      Path       : Gtk.Tree_Model.Gtk_Tree_Path;
-      Success    : out Boolean)
+   function Get_Iter
+     (Tree_Model : access Gtk_Tree_Model_Record;
+      Path       : Gtk_Tree_Path) return Gtk_Tree_Iter
    is
       function Internal
-        (Tree_Model : System.Address;
-         Iter       : System.Address;
-         Path       : System.Address)
+        (Tree_Model, Iter : System.Address; Path : Gtk_Tree_Path)
          return Gint;
       pragma Import (C, Internal, "gtk_tree_model_get_iter");
-
+      Iter : aliased Gtk_Tree_Iter;
    begin
-      Success := Boolean'Val (Internal (Get_Object (Tree_Model),
-                                        Iter'Address,
-                                        Path.all'Address));
+      if Internal (Get_Object (Tree_Model), Iter'Address, Path) /= 0 then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
    end Get_Iter;
 
    --------------------------
    -- Get_Iter_From_String --
    --------------------------
 
-   procedure Get_Iter_From_String
-     (Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter        : out Gtk_Tree_Iter;
-      Path_String : String;
-      Success     : out Boolean)
+   function Get_Iter_From_String
+     (Tree_Model  : access Gtk_Tree_Model_Record; Path_String : String)
+      return Gtk_Tree_Iter
    is
       function Internal
-        (Tree_Model  : System.Address;
-         Iter        : System.Address;
-         Path_String : String)
-         return Gint;
+        (Tree_Model, Iter  : System.Address; Str : String) return Gint;
       pragma Import (C, Internal, "gtk_tree_model_get_iter_from_string");
+      Iter : aliased Gtk_Tree_Iter;
    begin
-      Success := Boolean'Val (Internal (Get_Object (Tree_Model),
-                                        Iter'Address,
-                                        Path_String & ASCII.NUL));
+      if Internal
+        (Get_Object (Tree_Model), Iter'Address, Path_String & ASCII.NUL) /= 0
+      then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
    end Get_Iter_From_String;
 
    -------------------
    -- Get_Iter_Root --
    -------------------
 
-   procedure Get_Iter_Root
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter       : out Gtk_Tree_Iter;
-      Success    : out Boolean)
+   function Get_Iter_Root (Tree_Model : access Gtk_Tree_Model_Record)
+     return Gtk_Tree_Iter
    is
-      function Internal
-        (Tree_Model : System.Address;
-         Iter       : System.Address)
-         return Gint;
+      function Internal (Tree_Model, Iter : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_tree_model_get_iter_root");
+      Iter : aliased Gtk_Tree_Iter;
    begin
-      Success := Boolean'Val (Internal (Get_Object (Tree_Model),
-                                    Iter'Address));
+      if Internal (Get_Object (Tree_Model), Iter'Address) /= 0 then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
    end Get_Iter_Root;
 
    --------------
@@ -623,18 +264,14 @@ package body Gtk.Tree_Model is
    --------------
 
    function Get_Path
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter       : Gtk_Tree_Iter)
-      return Gtk.Tree_Model.Gtk_Tree_Path
+     (Tree_Model : access Gtk_Tree_Model_Record; Iter : Gtk_Tree_Iter)
+      return Gtk_Tree_Path
    is
-      function Internal
-        (Tree_Model : System.Address;
-         Iter       : System.Address)
-         return Gtk.Tree_Model.Gtk_Tree_Path;
+      function Internal (Tree_Model : System.Address; Iter : Gtk_Tree_Iter)
+         return Gtk_Tree_Path;
       pragma Import (C, Internal, "gtk_tree_model_get_path");
    begin
-      return Internal (Get_Object (Tree_Model),
-                       Iter'Address);
+      return Internal (Get_Object (Tree_Model), Iter);
    end Get_Path;
 
    ---------------
@@ -642,7 +279,7 @@ package body Gtk.Tree_Model is
    ---------------
 
    procedure Get_Value
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint;
       Value      : out Glib.Values.GValue)
@@ -654,158 +291,138 @@ package body Gtk.Tree_Model is
          Value      : out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_tree_model_get_value");
    begin
-      Internal (Get_Object (Tree_Model),
-                Iter'Address,
-                Column,
-                Value);
+      Internal (Get_Object (Tree_Model), Iter'Address, Column, Value);
    end Get_Value;
 
-   ---------------
-   -- Iter_Next --
-   ---------------
+   ----------
+   -- Next --
+   ----------
 
-   procedure Iter_Next
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter       : in out Gtk_Tree_Iter;
-      Success    : out Boolean)
+   procedure Next
+     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Iter       : in out Gtk_Tree_Iter)
    is
-      function Internal
-        (Tree_Model : System.Address;
-         Iter       : System.Address)
+      function Internal (Tree_Model, Iter : System.Address)
          return Gint;
       pragma Import (C, Internal, "gtk_tree_model_iter_next");
    begin
-      Success := Boolean'Val (Internal (Get_Object (Tree_Model),
-                                        Iter'Address));
-   end Iter_Next;
+      if Internal (Get_Object (Tree_Model), Iter'Address) = 0 then
+         Iter := Null_Iter;
+      end if;
+   end Next;
 
-   -------------------
-   -- Iter_Children --
-   -------------------
+   --------------
+   -- Children --
+   --------------
 
-   procedure Iter_Children
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter       : out Gtk_Tree_Iter;
-      Parent     : Gtk_Tree_Iter;
-      Success    : out Boolean)
+   function Children
+     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Parent     : Gtk_Tree_Iter) return Gtk_Tree_Iter
    is
       function Internal
-        (Tree_Model : System.Address;
-         Iter       : System.Address;
-         Parent     : System.Address)
-         return Gint;
+        (Tree_Model, Iter, Parent : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_tree_model_iter_children");
+      Iter : aliased Gtk_Tree_Iter;
    begin
-      Success := Boolean'Val (Internal (Get_Object (Tree_Model),
-                                        Iter'Address,
-                                        Parent'Address));
-   end Iter_Children;
+      if Internal
+        (Get_Object (Tree_Model), Iter'Address, Parent'Address) /= 0
+      then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
+   end Children;
 
-   --------------------
-   -- Iter_Has_Child --
-   --------------------
+   ---------------
+   -- Has_Child --
+   ---------------
 
-   function Iter_Has_Child
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter       : Gtk_Tree_Iter)
-      return Boolean
+   function Has_Child
+     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter) return Boolean
    is
-      function Internal
-        (Tree_Model : System.Address;
-         Iter       : System.Address)
-         return Gint;
+      function Internal (Tree_Model, Iter : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_tree_model_iter_has_child");
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_Model),
-                                    Iter'Address));
-   end Iter_Has_Child;
+      return Internal (Get_Object (Tree_Model), Iter'Address) /= 0;
+   end Has_Child;
 
-   ---------------------
-   -- Iter_N_Children --
-   ---------------------
+   ----------------
+   -- N_Children --
+   ----------------
 
-   function Iter_N_Children
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter       : Gtk_Tree_Iter)
-      return Gint
+   function N_Children
+     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter := Null_Iter) return Gint
    is
-      function Internal
-        (Tree_Model : System.Address;
-         Iter       : System.Address)
-         return Gint;
+      function Internal (Tree_Model, Iter : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_tree_model_iter_n_children");
    begin
       if Iter = Null_Iter then
-         return Internal (Get_Object (Tree_Model),
-                          System.Null_Address);
+         return Internal (Get_Object (Tree_Model), System.Null_Address);
       else
-         return Internal (Get_Object (Tree_Model),
-                          Iter'Address);
+         return Internal (Get_Object (Tree_Model), Iter'Address);
       end if;
-   end Iter_N_Children;
+   end N_Children;
 
-   --------------------
-   -- Iter_Nth_Child --
-   --------------------
+   ---------------
+   -- Nth_Child --
+   ---------------
 
-   function Iter_Nth_Child
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter       : Gtk_Tree_Iter;
+   function Nth_Child
+     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record;
       Parent     : Gtk_Tree_Iter;
-      N          : Gint)
-      return Boolean
+      N          : Gint) return Gtk_Tree_Iter
    is
       function Internal
-        (Tree_Model : System.Address;
-         Iter       : System.Address;
-         Parent     : System.Address;
-         N          : Gint)
+        (Tree_Model, Iter, Parent : System.Address; N : Gint)
          return Gint;
       pragma Import (C, Internal, "gtk_tree_model_iter_nth_child");
+      Iter : aliased Gtk_Tree_Iter;
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_Model),
-                                    Iter'Address,
-                                    Parent'Address,
-                                    N));
-   end Iter_Nth_Child;
+      if Internal
+        (Get_Object (Tree_Model), Iter'Address, Parent'Address, N) /= 0
+      then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
+   end Nth_Child;
 
-   -----------------
-   -- Iter_Parent --
-   -----------------
+   ------------
+   -- Parent --
+   ------------
 
-   function Iter_Parent
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter       : Gtk_Tree_Iter;
-      Child      : Gtk_Tree_Iter)
-      return Boolean
+   function Parent
+     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      Child      : Gtk_Tree_Iter) return Gtk_Tree_Iter
    is
       function Internal
-        (Tree_Model : System.Address;
-         Iter       : System.Address;
-         Child      : System.Address)
-         return Gint;
+        (Tree_Model, Iter, Child : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_tree_model_iter_parent");
+      Iter : aliased Gtk_Tree_Iter;
    begin
-      return Boolean'Val (Internal (Get_Object (Tree_Model),
-                                    Iter'Address,
-                                    Child'Address));
-   end Iter_Parent;
+      if Internal
+        (Get_Object (Tree_Model), Iter'Address, Child'Address) /= 0
+      then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
+   end Parent;
 
    --------------
    -- Ref_Node --
    --------------
 
    procedure Ref_Node
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter)
    is
-      procedure Internal
-        (Tree_Model : System.Address;
-         Iter       : System.Address);
+      procedure Internal (Tree_Model, Iter : System.Address);
       pragma Import (C, Internal, "gtk_tree_model_ref_node");
    begin
-      Internal (Get_Object (Tree_Model),
-                Iter'Address);
+      Internal (Get_Object (Tree_Model), Iter'Address);
    end Ref_Node;
 
    ----------------
@@ -813,16 +430,13 @@ package body Gtk.Tree_Model is
    ----------------
 
    procedure Unref_Node
-     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+     (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter)
    is
-      procedure Internal
-        (Tree_Model : System.Address;
-         Iter       : System.Address);
+      procedure Internal (Tree_Model, Iter : System.Address);
       pragma Import (C, Internal, "gtk_tree_model_unref_node");
    begin
-      Internal (Get_Object (Tree_Model),
-                Iter'Address);
+      Internal (Get_Object (Tree_Model), Iter'Address);
    end Unref_Node;
 
    ----------------
@@ -851,10 +465,7 @@ package body Gtk.Tree_Model is
       Packing : array (1 .. 10) of Character;
       pragma Warnings (Off, Packing);
    begin
-      Internal (Get_Object (Tree_Model),
-                Iter'Address,
-                Column,
-                Value'Address);
+      Internal (Get_Object (Tree_Model), Iter'Address, Column, Value'Address);
       return Value;
    end Model_Data_Get;
 
@@ -863,7 +474,7 @@ package body Gtk.Tree_Model is
    ----------------
 
    function Get_String
-     (Tree_Model : access Gtk_Tree_Model_Record'Class;
+     (Tree_Model : access Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint)
      return String
@@ -894,64 +505,22 @@ package body Gtk.Tree_Model is
       end if;
    end Get_String;
 
---    ---------------------------
---    -- Get_Valist --
---    ---------------------------
-
---    procedure Get_Valist
---      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
---       Iter       : Gtk_Tree_Iter;
---       Var_Args   : va_list)
---    is
---       procedure Internal
---         (Tree_Model : System.Address;
---          Iter       : System.Address;
---          Var_Args   : Gint);
---       pragma Import (C, Internal, "gtk_tree_model_get_valist");
---    begin
---       Internal (Get_Object (Tree_Model),
---                 Iter'Address,
---                 va_list'Pos (Var_Args));
---    end Get_Valist;
-
---    ------------------------
---    -- Foreach --
---    ------------------------
-
---    procedure Foreach
---      (Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
---       Func      : Gtk_Tree_Model_Foreach_Func;
---       User_Data : gpointer)
---    is
---       procedure Internal
---         (Model     : System.Address;
---          Func      : Gint;
---          User_Data : Integer);
---       pragma Import (C, Internal, "gtk_tree_model_foreach");
---    begin
---       Internal (Get_Object (Model),
---                 Gtk_Tree_Model_Foreach_Func'Pos (Func),
---                 User_Data);
---    end Foreach;
-
    -----------------
    -- Row_Changed --
    -----------------
 
    procedure Row_Changed
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Path       : Gtk.Tree_Model.Gtk_Tree_Path;
+      Path       : Gtk_Tree_Path;
       Iter       : Gtk_Tree_Iter)
    is
       procedure Internal
         (Tree_Model : System.Address;
-         Path       : System.Address;
+         Path       : Gtk_Tree_Path;
          Iter       : System.Address);
       pragma Import (C, Internal, "gtk_tree_model_row_changed");
    begin
-      Internal (Get_Object (Tree_Model),
-                Path.all'Address,
-                Iter'Address);
+      Internal (Get_Object (Tree_Model), Path, Iter'Address);
    end Row_Changed;
 
    ------------------
@@ -960,18 +529,16 @@ package body Gtk.Tree_Model is
 
    procedure Row_Inserted
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Path       : Gtk.Tree_Model.Gtk_Tree_Path;
+      Path       : Gtk_Tree_Path;
       Iter       : Gtk_Tree_Iter)
    is
       procedure Internal
         (Tree_Model : System.Address;
-         Path       : System.Address;
+         Path       : Gtk_Tree_Path;
          Iter       : System.Address);
       pragma Import (C, Internal, "gtk_tree_model_row_inserted");
    begin
-      Internal (Get_Object (Tree_Model),
-                Path.all'Address,
-                Iter'Address);
+      Internal (Get_Object (Tree_Model), Path, Iter'Address);
    end Row_Inserted;
 
    ---------------------------
@@ -980,18 +547,16 @@ package body Gtk.Tree_Model is
 
    procedure Row_Has_Child_Toggled
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Path       : Gtk.Tree_Model.Gtk_Tree_Path;
+      Path       : Gtk_Tree_Path;
       Iter       : Gtk_Tree_Iter)
    is
       procedure Internal
         (Tree_Model : System.Address;
-         Path       : System.Address;
+         Path       : Gtk_Tree_Path;
          Iter       : System.Address);
       pragma Import (C, Internal, "gtk_tree_model_row_has_child_toggled");
    begin
-      Internal (Get_Object (Tree_Model),
-                Path.all'Address,
-                Iter'Address);
+      Internal (Get_Object (Tree_Model), Path, Iter'Address);
    end Row_Has_Child_Toggled;
 
    -----------------
@@ -1000,15 +565,14 @@ package body Gtk.Tree_Model is
 
    procedure Row_Deleted
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Path       : Gtk.Tree_Model.Gtk_Tree_Path)
+      Path       : Gtk_Tree_Path)
    is
       procedure Internal
         (Tree_Model : System.Address;
-         Path       : System.Address);
+         Path       : Gtk_Tree_Path);
       pragma Import (C, Internal, "gtk_tree_model_row_deleted");
    begin
-      Internal (Get_Object (Tree_Model),
-                Path.all'Address);
+      Internal (Get_Object (Tree_Model), Path);
    end Row_Deleted;
 
    --------------------
@@ -1017,21 +581,19 @@ package body Gtk.Tree_Model is
 
    procedure Rows_Reordered
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Path       : Gtk.Tree_Model.Gtk_Tree_Path;
+      Path       : Gtk_Tree_Path;
       Iter       : Gtk_Tree_Iter;
-      New_Order  : out Gint)
+      New_Order  : Gint_Array)
    is
       procedure Internal
         (Tree_Model : System.Address;
-         Path       : System.Address;
+         Path       : Gtk_Tree_Path;
          Iter       : System.Address;
-         New_Order  : out Gint);
+         New_Order  : System.Address);
       pragma Import (C, Internal, "gtk_tree_model_rows_reordered");
    begin
-      Internal (Get_Object (Tree_Model),
-                Path.all'Address,
-                Iter'Address,
-                New_Order);
+      Internal
+        (Get_Object (Tree_Model), Path, Iter'Address, New_Order'Address);
    end Rows_Reordered;
 
 end Gtk.Tree_Model;
