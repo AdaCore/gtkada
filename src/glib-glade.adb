@@ -470,8 +470,9 @@ package body Glib.Glade is
          end loop;
 
          for J in Signal_Range'First .. Num_Signals loop
-            Put_Line (File, "   procedure " & To_Ada (Signals (J).Signal.all) &
-              " (Object : in out " & To_Ada (Signals (J).Class.all) & ");");
+            Put_Line (File, "   procedure " & To_Ada (Signals (J).Signal.all));
+            Put_Line (File, "     (Object : in out " &
+              To_Ada (Signals (J).Class.all) & ");");
             New_Line (File);
          end loop;
 
@@ -481,8 +482,9 @@ package body Glib.Glade is
          New_Line (File);
 
          for J in Signal_Range'First .. Num_Signals loop
-            Put_Line (File, "   procedure " & To_Ada (Signals (J).Signal.all) &
-              " (Object : in out " & To_Ada (Signals (J).Class.all) & ") is");
+            Put_Line (File, "   procedure " & To_Ada (Signals (J).Signal.all));
+            Put_Line (File, "     (Object : in out " &
+              To_Ada (Signals (J).Class.all) & ") is");
             Put_Line (File, "   begin");
             Put_Line (File, "      null;");
             Put_Line (File, "   end " & To_Ada (Signals (J).Signal.all) & ";");
