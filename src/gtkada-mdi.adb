@@ -3439,6 +3439,10 @@ package body Gtkada.MDI is
             Hide (MDI.Layout);
          end if;
 
+         --  Children are not considered as maximized if there are none of
+         --  them.
+         MDI.Children_Are_Maximized := MDI.Docks (None) /= null;
+
       elsif not Maximize and then MDI.Children_Are_Maximized then
          --  The middle notebook was already destroyed by the last call to
          --  Remove_From_Notebook in the above loop
@@ -3468,13 +3472,13 @@ package body Gtkada.MDI is
          then
             Hide_All (MDI.Docks (None));
          end if;
+         MDI.Children_Are_Maximized := False;
       end if;
 
       if Old_Focus /= null then
          Raise_Child (Old_Focus);
       end if;
 
-      MDI.Children_Are_Maximized := Maximize;
       Queue_Resize (MDI);
    end Maximize_Children;
 
