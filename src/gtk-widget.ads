@@ -117,11 +117,19 @@ package Gtk.Widget is
    --  All it does is call Destroy on its argument, but its profile is
    --  compatible with the handlers found in Gtk.Handlers.
 
+   --  <no_doc>
+
    procedure Unparent (Widget : access Gtk_Widget_Record'Class);
    --  This function is only for use in widget implementations.
    --  Should be called by implementations of the remove method
    --  on Gtk_Container, to dissociate a child from the container.
    --  Users should call Remove instead.
+   --  This function might be dangereous: it correctly updates widget to
+   --  reflect that it no longer belongs to its parent, however the parent
+   --  keeps an internal pointer to the widget, which will result in a
+   --  storage_error if you try to further access it.
+
+   --  </no_doc>
 
    procedure Show (Widget : access Gtk_Widget_Record);
    --  Schedule the widget to be displayed on the screen when its parent is
