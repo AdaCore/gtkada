@@ -259,8 +259,9 @@ package body Gtk.Box is
 
    begin
       if Child_Name = null then
-         Gen_New (N, "Box", Find_Tag (N.Child, "homogeneous").Value.all,
-           Find_Tag (N.Child, "spacing").Value.all, Class (4) & "box", File);
+         Gen_New (N, "Box", Get_Field (N, "homogeneous").all,
+           Get_Field (N, "spacing").all,
+           Class (Class'First + 3) & "box", File);
 
       else
          Gen_Child (N, Child_Name, File);
@@ -271,6 +272,9 @@ package body Gtk.Box is
       if Child_Name /= null then
          Gen_Set (N, "Box", "homogeneous", File);
          Gen_Set (N, "Box", "spacing", File);
+
+      else
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
       end if;
    end Generate;
 
@@ -330,6 +334,11 @@ package body Gtk.Box is
          if S /= null then
             Set_Spacing (Box, Gint'Value (S.all));
          end if;
+
+      else
+         Container.Add
+           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
+            Box);
       end if;
    end Generate;
 
