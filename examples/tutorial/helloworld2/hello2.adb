@@ -27,8 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Hello2_Package, Ada.Text_IO; use Hello2_Package, Ada.Text_IO;
-with Gtk.Main, Gtk.Widget;
+with Hello2_Package; use Hello2_Package;
+with Gtk.Main;
 with Gtk.Box, Gtk.Window, Gtk.Button; use  Gtk.Box, Gtk.Window, Gtk.Button;
 
 procedure Hello2 is
@@ -67,7 +67,7 @@ begin
    --  Creates a new button with the label "Button 1".
    Gtk_New (Button, "Button 1");
 
-   -- Now when the button is clicked, we call the "callback" function
+   --  Now when the button is clicked, we call the "callback" function
    --  with a pointer to "button 1" as its argument
    Handlers.Connect
      (Button, "clicked", Handlers.To_Marshaller (Hello_Callback'Access),

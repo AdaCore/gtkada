@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                        Copyright (C) 2000                         --
+--                        Copyright (C) 2000, 2002                         --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -36,17 +36,23 @@ package body Hello2_Package is
 
    procedure Hello_Callback
      (Widget : access Gtk_Widget_Record'Class;
-      Data   : String_Access) is
+      Data   : in     String_Access)
+   is
+      pragma Unreferenced (Widget);
    begin
-       Put_Line ("Hello again. " & Data.all & " was pressed.");
+      Put_Line ("Hello again. " & Data.all & " was pressed.");
    end Hello_Callback;
 
    function Delete_Event
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean is
+      Event  : in     Gdk_Event)
+     return Boolean
+   is
+      pragma Unreferenced (Event);
+      pragma Unreferenced (Widget);
    begin
-       Gtk.Main.Main_Quit;
-       return False;
+      Gtk.Main.Main_Quit;
+      return False;
    end Delete_Event;
 
 end Hello2_Package;
