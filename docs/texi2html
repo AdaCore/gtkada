@@ -325,6 +325,7 @@ $usage = <<EOT;
 This is $THISPROG
 To convert a Texinfo file to HMTL: $0 [options] file
  where options can be:
+  -body option        : change the attributes of the <BODY> tag
   -expandinfo         : use \@ifinfo sections, not \@iftex
   -glossary           : handle a glossary
   -invisible name     : use 'name' as an invisible anchor
@@ -350,6 +351,7 @@ EOT
 while (@ARGV && $ARGV[0] =~ /^-/) {
     $_ = shift(@ARGV);
     if (/^-acc$/)            { $use_acc = 1; next; }
+    if (/^-body$/)           { $T2H_BODYTEXT = shift (@ARGV); next; }
     if (/^-d(ebug)?(\d+)?$/) { $debug = $2 || shift(@ARGV); next; }
     if (/^-doctype$/)        { $doctype = shift(@ARGV); next; }
     if (/^-c(heck)?$/)       { $check = 1; next; }
