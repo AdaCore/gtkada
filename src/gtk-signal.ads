@@ -2,9 +2,9 @@ with Gtk.Object;
 
 package Gtk.Signal is
 
-   --  FIXME some signal can have a different declaration for a callback
-   --  FIXME function, ie having more parameters. We probably need to
-   --  FIXME defined some new generic package...
+   --  Every Connect function accepts 'null' for the function to call. In
+   --  this case, the callback behaves as if you were calling a function
+   --  with a null body
 
    ---------------------------------------------------------------
    --  The following package is for callbacks requiring a data to
@@ -17,8 +17,7 @@ package Gtk.Signal is
       --  This type need not be an access type (as opposed as what happens in
       --  C). A new access is created by the connect function.
 
-      type Widget_Type is new Object.Gtk_Object with private;
-      --  The type of the widget to which a callback is connected
+      type Widget_Type is new Gtk.Object.Gtk_Object with private;
 
    package Callback is
 
@@ -27,39 +26,15 @@ package Gtk.Signal is
          Data   : in out Data_Type);
       --  Callback function for Signal_Connect below
 
-      procedure Void_Callback_Procedure (Widget : in out Widget_Type'Class;
-                                         Data   : in     Data_Type);
-      --
-      --  Null body procedure
-
       function Connect
         (Obj       : in Widget_Type'Class;
          Name      : in String;
          Func      : in Callback;
-         Func_Data : in Data_Type)
+         Func_Data : in Data_Type;
+         After     : in Boolean := False)
          return Guint;
       --  mapping: Connect gtksignal.h gtk_signal_connect
-
-      function Connect_After
-        (Obj       : in Widget_Type'Class;
-         Name      : in String;
-         Func      : in Callback;
-         Func_Data : in Data_Type)
-         return Guint;
-      --  mapping: Connect_After gtksignal.h gtk_signal_connect_after
-
-      procedure Disconnect (Object     : in Widget_Type;
-                            Handler_Id : in Guint);
-      --  mapping: Signal_Disconnect gtksignal.h gtk_signal_disconnect
-
-      procedure Handler_Block (Obj        : in Widget_Type'Class;
-                               Handler_Id : in Guint);
-      --  mapping: Handler_Block gtksignal.h gtk_signal_handler_block
-
-      procedure Handler_Unblock (Obj        : in Widget_Type'Class;
-                                 Handler_Id : in Guint);
-      --  mapping: Handler_Unblock gtksignal.h gtk_signal_handler_unblock
-
+      --  mapping: Connect gtksignal.h gtk_signal_connect_after
    end Callback;
 
    -----------------------------------------------------------------
@@ -75,36 +50,14 @@ package Gtk.Signal is
       type Callback is access procedure
         (Widget : in out Widget_Type'Class);
 
-      procedure Void_Callback_Procedure (Widget : in out Widget_Type'Class);
-      --
-      --  null body callback.
-
       function Connect
         (Obj    : in Widget_Type'Class;
          Name   : in String;
-         Func   : in Callback)
+         Func   : in Callback;
+         After  : in Boolean := False)
          return Guint;
       --  mapping: Connect gtksignal.h gtk_signal_connect
-
-      function Connect_After
-        (Obj    : in Widget_Type'Class;
-         Name   : in String;
-         Func   : in Callback)
-         return Guint;
-      --  mapping: Connect_After gtksignal.h gtk_signal_connect_after
-
-      procedure Disconnect (Object     : in Widget_Type;
-                            Handler_Id : in Guint);
-      --  mapping: Signal_Disconnect gtksignal.h gtk_signal_disconnect
-
-      procedure Handler_Block (Obj        : in Widget_Type'Class;
-                               Handler_Id : in Guint);
-      --  mapping: Handler_Block gtksignal.h gtk_signal_handler_block
-
-      procedure Handler_Unblock (Obj        : in Widget_Type'Class;
-                                 Handler_Id : in Guint);
-      --  mapping: Handler_Unblock gtksignal.h gtk_signal_handler_unblock
-
+      --  mapping: Connect gtksignal.h gtk_signal_connect_after
    end Void_Callback;
 
    ------------------------------------------------------------------
@@ -122,39 +75,31 @@ package Gtk.Signal is
         (Obj         : in Object.Gtk_Object'Class;
          Name        : in String;
          Func        : in Callback;
-         Slot_Object : in Widget_Type'Class)
+         Slot_Object : in Widget_Type'Class;
+         After       : in Boolean := False)
          return Guint;
-      --  mapping: Connect_Object gtksignal.h gtk_signal_connect_object
-
-      function Connect_After
-        (Obj         : in Object.Gtk_Object'Class;
-         Name        : in String;
-         Func        : in Callback;
-         Slot_Object : in Widget_Type'Class)
-         return Guint;
-      --  mapping: Connect_Object_After gtksignal.h \
-      --  mapping: gtk_signal_connect_object_after
-
-      procedure Disconnect (Object     : in Widget_Type;
-                            Handler_Id : in Guint);
-      --  mapping: Signal_Disconnect gtksignal.h gtk_signal_disconnect
-
-      procedure Handler_Block (Obj        : in Object.Gtk_Object'Class;
-                               Handler_Id : in Guint);
-      --  mapping: Handler_Block gtksignal.h gtk_signal_handler_block
-
-      procedure Handler_Unblock (Obj        : in Object.Gtk_Object'Class;
-                                 Handler_Id : in Guint);
-      --  mapping: Handler_Unblock gtksignal.h gtk_signal_handler_unblock
-
+      --  mapping: Connect gtksignal.h gtk_signal_connect_object
+      --  mapping: Connect gtksignal.h gtk_signal_connect_object_after
    end Object_Callback;
 
    ------------------------------------------------------------------
    --  More general functions
    ------------------------------------------------------------------
 
+   procedure Disconnect (Object     : in Gtk.Object.Gtk_Object'Class;
+                         Handler_Id : in Guint);
+   --  mapping: Disconnect gtksignal.h gtk_signal_disconnect
+
+   procedure Handler_Block (Obj        : in Gtk.Object.Gtk_Object'Class;
+                            Handler_Id : in Guint);
+   --  mapping: Handler_Block gtksignal.h gtk_signal_handler_block
+
    procedure Handlers_Destroy (Obj : in Object.Gtk_Object'Class);
    --  mapping: Handlers_Destroy gtksignal.h gtk_signal_handlers_destroy
+
+   procedure Handler_Unblock (Obj        : in Gtk.Object.Gtk_Object'Class;
+                              Handler_Id : in Guint);
+   --  mapping: Handler_Unblock gtksignal.h gtk_signal_handler_unblock
 
 
    --  Functions which are not implemented because they are probably not needed

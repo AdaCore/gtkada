@@ -1,4 +1,5 @@
 #include "gtk/gtk.h"
+#include <stdarg.h>
 
 /***************************************************
  *  Functions for Objects
@@ -49,28 +50,38 @@ ada_colorsel_dialog_get_help_button (GtkColorSelectionDialog* dialog)
  *  Functions to get the fields of signal handlers
  ******************************************************/
 
+typedef void (*BindingFunc) (GtkObject*, gpointer);
+
+struct connect_record {
+  BindingFunc   binding_func;
+  gint          signal_num;
+};
+/* These are the first three fields of the Ada record Data_Type_Record */
+
+void
+ada_marshall (GtkObject      *object,
+	      gpointer        data,
+	      guint           nparams,
+	      GtkType        *arg_types)
+{
+  ((struct connect_record*)data)->binding_func (object, data);
+  /* The return value has to be set in arg_types [nparms] */
+  /* cf gtkwidget.c:gtk_widget_marshal_signal_4  */
+}
+
 guint
 ada_gtk_signal_connect (GtkObject           *object,
 			const gchar         *name,
-			GtkSignalFunc        func,
 			gpointer             func_data,
-			GtkSignalDestroy     destroy_func)
+			GtkSignalDestroy     destroy_func,
+			gint                 after)
 {
-  return gtk_signal_connect_full (object, name, func, NULL, func_data,
-				  destroy_func, FALSE, FALSE);
+  struct connect_record* cb = (struct connect_record*)func_data;
+  cb->signal_num = gtk_signal_lookup (name, GTK_OBJECT_TYPE (object));
+  return gtk_signal_connect_full (object, name, NULL,
+				  (GtkCallbackMarshal)&ada_marshall,
+				  func_data, destroy_func, FALSE, after);
 }
-
-guint
-ada_gtk_signal_connect_after (GtkObject           *object,
-			      const gchar         *name,
-			      GtkSignalFunc        func,
-			      gpointer             func_data,
-			      GtkSignalDestroy     destroy_func)
-{
-  return gtk_signal_connect_full (object, name, func, NULL, func_data,
-				  destroy_func, FALSE, TRUE);
-}
-
 
 /********************************************************
  *  Functions to get the fields of a gamma curve
