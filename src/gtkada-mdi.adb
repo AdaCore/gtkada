@@ -1452,6 +1452,11 @@ package body Gtkada.MDI is
 
       if C = C.MDI.Focus_Child then
          C.MDI.Focus_Child := null;
+
+         --  Give the focus back to the last child that had it.
+         if C.MDI.Items /= Widget_List.Null_List then
+            Set_Focus_Child (MDI_Child (Get_Data (First (C.MDI.Items))));
+         end if;
       end if;
 
       --  Destroy the child, unless the user has explicitely kept a Ref on it
