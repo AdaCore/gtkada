@@ -989,10 +989,12 @@ package body Gtkada.Canvas is
       Execute : Item_Processor)
    is
       Item : Vertex_Iterator := First (Canvas.Children);
+      It   : Canvas_Item;
    begin
       while not At_End (Item) loop
-         exit when not Execute (Canvas, Canvas_Item (Get (Item)));
+         It := Canvas_Item (Get (Item));
          Next (Item);
+         exit when not Execute (Canvas, It);
       end loop;
    end For_Each_Item;
 
