@@ -154,7 +154,7 @@ package Gtk.Handlers is
       Closure : GClosure;
    end record;
    --  This uniquely identifies a connection widget<->signal.
-   --  Closure is an internal data, that you should use.
+   --  Closure is an internal data, that you should not use.
 
    ---------------------------------------------------------
    --  These handlers should return a value
