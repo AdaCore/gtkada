@@ -75,10 +75,18 @@ package Glib.Properties is
    --  Definition of the types and subprograms.
    --  You can ignore this section.
 
+   package Char_Properties is new
+     Generic_Internal_Discrete_Property (Glib.Gchar);
+   package Uchar_Properties is new
+     Generic_Internal_Discrete_Property (Glib.Guchar);
    package Int_Properties is new
      Generic_Internal_Discrete_Property (Glib.Gint);
    package Uint_Properties is new
      Generic_Internal_Discrete_Property (Glib.Guint);
+   package Long_Properties is new
+     Generic_Internal_Discrete_Property (Glib.Glong);
+   package Ulong_Properties is new
+     Generic_Internal_Discrete_Property (Glib.Gulong);
    package Unichar_Properties is new
      Generic_Internal_Discrete_Property (Glib.Gunichar);
 
@@ -89,9 +97,17 @@ package Glib.Properties is
    --  for most of the standard enumeration types, and you can create
    --  your own types (see Glib.Properties).
 
+   type Property_Char      is new Char_Properties.Property;
+   type Property_Char_RO   is new Char_Properties.Property_RO;
+   type Property_Uchar     is new Uchar_Properties.Property;
+   type Property_Uchar_RO  is new Uchar_Properties.Property_RO;
    type Property_Int       is new Int_Properties.Property;
    type Property_Uint_RO   is new Uint_Properties.Property_RO;
    type Property_Uint      is new Uint_Properties.Property;
+   type Property_Long_RO   is new Long_Properties.Property_RO;
+   type Property_Long      is new Long_Properties.Property;
+   type Property_Ulong_RO  is new Ulong_Properties.Property_RO;
+   type Property_Ulong     is new Ulong_Properties.Property;
    type Property_Unichar   is new Unichar_Properties.Property;
    type Property_C_Proxy   is new Glib.Property;
    type Property_String_RO is new Glib.Property;
