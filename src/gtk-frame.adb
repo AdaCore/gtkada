@@ -136,8 +136,10 @@ package body Gtk.Frame is
       end if;
 
       Bin.Generate (N, File);
-      Gen_Set (N, "Frame", "Label_Align", "xalign", "yalign", "", "", File,
-        Is_Float => True);
+      Gen_Set
+        (N, "Frame", "Label_Align",
+         "label_xalign", "label_yalign", "", "", File,
+         Is_Float => True);
       Gen_Set (N, "Frame", "shadow_type", File);
 
       if not N.Specific_Data.Has_Container then
@@ -149,6 +151,8 @@ package body Gtk.Frame is
    procedure Generate (Frame : in out Gtk.Object.Gtk_Object;
                        N     : in Node_Ptr) is
       S, S2 : String_Ptr;
+      G, G2 : Gfloat := 0.0;
+
    begin
       if not N.Specific_Data.Created then
          S := Get_Field (N, "label");
@@ -165,12 +169,19 @@ package body Gtk.Frame is
 
       Bin.Generate (Frame, N);
 
-      S := Get_Field (N, "xalign");
-      S2 := Get_Field (N, "yalign");
+      S := Get_Field (N, "label_xalign");
+      S2 := Get_Field (N, "label_yalign");
 
-      if S /= null and then S2 /= null then
-         Set_Label_Align (Gtk_Frame (Frame),
-           Gfloat'Value (S.all), Gfloat'Value (S2.all));
+      if S /= null then
+         G := Gfloat'Value (S.all);
+      end if;
+
+      if S2 /= null then
+         G2 := Gfloat'Value (S2.all);
+      end if;
+
+      if S /= null and S2 /= null then
+         Set_Label_Align (Gtk_Frame (Frame), G, G2);
       end if;
 
       S := Get_Field (N, "shadow_type");
