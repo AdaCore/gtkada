@@ -29,16 +29,27 @@
 
 with Gdk.Rectangle;
 with Gdk.Window;
-with Gdk; use Gdk;
-with Gtk.Cell_Renderer;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Tree_Model;
+with Gdk;               use Gdk;
+with Gtk.Cell_Renderer; use Gtk.Cell_Renderer;
+with Gtk.Enums;         use Gtk.Enums;
+with Gtk.Tree_Model;    use Gtk.Tree_Model;
 with Gtk.Widget;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
+with Gtk.Widget;        use Gtk.Widget;
+with Gtk;               use Gtk;
 with System;
+with Unchecked_Conversion;
+with Unchecked_Deallocation;
 
 package body Gtk.Tree_View_Column is
+
+   procedure Internal_Cell_Data_Func
+     (Tree_Column, Cell, Model, Iter : System.Address; Data : Cell_Data_Func);
+   pragma Convention (C, Internal_Cell_Data_Func);
+   --  Internal marshaller for Set_Cell_Data_Func.
+
+   type Gtk_Tree_Iter_Access is access Gtk_Tree_Iter;
+   function To_Iter is new Unchecked_Conversion
+     (System.Address, Gtk_Tree_Iter_Access);
 
    -------------
    -- Gtk_New --
@@ -157,33 +168,136 @@ package body Gtk.Tree_View_Column is
                 Column);
    end Add_Attribute;
 
-   --    ------------------------
-   --    -- Set_Cell_Data_Func --
-   --    ------------------------
+   -----------------------------
+   -- Internal_Cell_Data_Func --
+   -----------------------------
 
-   --    procedure Set_Cell_Data_Func
-   --      (Tree_Column   : access Gtk_Tree_View_Column_Record;
-   --       Cell_Renderer :
-   --         access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-   --       Func          : Gtk_Tree_Cell_Data_Func;
-   --       Func_Data     : gpointer;
-   --       Destroy       : Gtk_Destroy_Notify)
-   --    is
-   --       procedure Internal
-   --         (Tree_Column   : System.Address;
-   --          Cell_Renderer : System.Address;
-   --          Func          : Gint;
-   --          Func_Data     : Integer;
-   --          Destroy       : Gint);
-   --       pragma Import
-   --                (C, Internal, "gtk_tree_view_column_set_cell_data_func");
-   --    begin
-   --       Internal (Get_Object (Tree_Column),
-   --                 Get_Object (Cell_Renderer),
-   --                 Gtk_Tree_Cell_Data_Func'Pos (Func),
-   --                 Func_Data,
-   --                 Gtk_Destroy_Notify'Pos (Destroy));
-   --    end Set_Cell_Data_Func;
+   procedure Internal_Cell_Data_Func
+     (Tree_Column, Cell, Model, Iter : System.Address; Data : Cell_Data_Func)
+   is
+      M_Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+      C_Stub : Gtk_Cell_Renderer_Record;
+      T_Stub : Gtk_Tree_View_Column_Record;
+
+      T : Gtk_Tree_View_Column :=
+        Gtk_Tree_View_Column (Get_User_Data (Tree_Column, T_Stub));
+      C : Gtk_Cell_Renderer :=
+        Gtk_Cell_Renderer (Get_User_Data (Cell, C_Stub));
+      M : Gtk_Tree_Model := Gtk_Tree_Model (Get_User_Data (Model, M_Stub));
+      I : Gtk_Tree_Iter_Access := To_Iter (Iter);
+   begin
+      Data (T, C, M, I.all);
+   end Internal_Cell_Data_Func;
+
+   ------------------------
+   -- Set_Cell_Data_Func --
+   ------------------------
+
+   procedure Set_Cell_Data_Func
+     (Tree_Column : access Gtk_Tree_View_Column_Record;
+      Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Func        : Cell_Data_Func)
+   is
+      procedure Internal
+        (Tree_Column   : System.Address;
+         Cell_Renderer : System.Address;
+         Func          : System.Address;
+         Func_Data     : Cell_Data_Func;
+         Destroy       : System.Address);
+      pragma Import (C, Internal, "gtk_tree_view_column_set_cell_data_func");
+   begin
+      Internal
+        (Get_Object (Tree_Column), Get_Object (Cell),
+         Internal_Cell_Data_Func'Address, Func, System.Null_Address);
+   end Set_Cell_Data_Func;
+
+   -------------------------
+   -- Cell_Data_Functions --
+   -------------------------
+
+   package body Cell_Data_Functions is
+      type Data_Type_Access is access Data_Type;
+      procedure Free is new Unchecked_Deallocation
+        (Data_Type, Data_Type_Access);
+
+      type Data_Type_Record is record
+         Func : Cell_Data_Func;
+         Data : Data_Type_Access;
+      end record;
+      type Data_Type_Record_Access is access Data_Type_Record;
+      pragma Convention (C, Data_Type_Record_Access);
+
+      procedure Free is new Unchecked_Deallocation
+        (Data_Type_Record, Data_Type_Record_Access);
+
+      procedure Internal_Destroy_Notify (Data : Data_Type_Record_Access);
+      pragma Convention (C, Internal_Destroy_Notify);
+
+      procedure Internal_Data_Cell_Data_Func
+        (Tree_Column, Cell, Model, Iter : System.Address;
+         Data : Data_Type_Record_Access);
+      pragma Convention (C, Internal_Data_Cell_Data_Func);
+
+      procedure Internal
+        (Tree_Column   : System.Address;
+         Cell_Renderer : System.Address;
+         Func          : System.Address;
+         Func_Data     : Data_Type_Record_Access;
+         Destroy       : System.Address);
+      pragma Import (C, Internal, "gtk_tree_view_column_set_cell_data_func");
+
+      ----------------------------------
+      -- Internal_Data_Cell_Data_Func --
+      ----------------------------------
+
+      procedure Internal_Data_Cell_Data_Func
+        (Tree_Column, Cell, Model, Iter : System.Address;
+         Data : Data_Type_Record_Access)
+      is
+         M_Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
+         C_Stub : Gtk_Cell_Renderer_Record;
+         T_Stub : Gtk_Tree_View_Column_Record;
+
+         T : Gtk_Tree_View_Column :=
+           Gtk_Tree_View_Column (Get_User_Data (Tree_Column, T_Stub));
+         C : Gtk_Cell_Renderer :=
+           Gtk_Cell_Renderer (Get_User_Data (Cell, C_Stub));
+         M : Gtk_Tree_Model := Gtk_Tree_Model (Get_User_Data (Model, M_Stub));
+         I : Gtk_Tree_Iter_Access := To_Iter (Iter);
+      begin
+         Data.Func (T, C, M, I.all, Data.Data.all);
+      end Internal_Data_Cell_Data_Func;
+
+      -----------------------------
+      -- Internal_Destroy_Notify --
+      -----------------------------
+
+      procedure Internal_Destroy_Notify (Data : Data_Type_Record_Access) is
+         D : Data_Type_Record_Access := Data;
+      begin
+         Free (D.Data);
+         Free (D);
+      end Internal_Destroy_Notify;
+
+      ------------------------
+      -- Set_Cell_Data_Func --
+      ------------------------
+
+      procedure Set_Cell_Data_Func
+        (Tree_Column : access Gtk_Tree_View_Column_Record;
+         Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+         Func        : Cell_Data_Func;
+         Data        : Data_Type) is
+      begin
+         Internal
+           (Get_Object (Tree_Column), Get_Object (Cell),
+            Internal_Data_Cell_Data_Func'Address,
+            new Data_Type_Record'
+              (Func => Func, Data => new Data_Type' (Data)),
+            Internal_Destroy_Notify'Address);
+      end Set_Cell_Data_Func;
+
+   end Cell_Data_Functions;
 
    ----------------------
    -- Clear_Attributes --

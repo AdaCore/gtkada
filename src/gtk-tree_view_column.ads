@@ -27,6 +27,32 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  General organization of the tree_view widgets:
+--
+--    ______________Tree_View___________________________________
+--   |   _________________________     ________________________|
+--   |  |_____Tree_View_Column1__|    |___Tree_View_Column2 __||
+--   |  |                        |    |                       ||
+--   |  |  ----------- ---------||    |                       ||
+--   |  |  |Renderer1| |render2 ||    |                       ||
+--   |  |  |         | |        ||    |                       ||
+--   |  |  |         | |        ||    |                       ||
+--   |  |  |         | |        ||    |                       ||
+--   |  |  |---------| |--------||    |                       ||
+--   |  |________________________|    |_______________________||
+--   |_________________________________________________________|
+--
+--  A tree view can contain multiple physical column on the screen. These
+--  columns can have a button at the top, typically to force an ordering
+--  of the tree). They can also be reorganized interactively by the user.
+--
+--  Each of this physical column can display several information, like buttons,
+--  strings,... Each of this display comes from a cell_renderer, that displays
+--  some data it reads from the model associated with the tree_view.
+--
+--  The renderers are then divided into lines, which are typically pointed to
+--  by iterators (Gtk_Tree_Iter).
+
 with Gdk.Rectangle;
 with Gdk.Window;
 with Gtk;
@@ -68,21 +94,78 @@ package Gtk.Tree_View_Column is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with this widget.
 
+   ---------------------------------------
+   -- Visual representation of the data --
+   ---------------------------------------
+   --  All the cells in a column have a similar graphical representation. This
+   --  could be either a simple text, an editable text, a toggle button,...
+   --  This visual representation is independent from the actual data to
+   --  represent. For instance, the same data from the model could be used for
+   --  two different columns, once for a text and once for a button.
+   --
+   --  The visual representation is specified through a "renderer". See the
+   --  various Gtk.Cell_Renderer* packages for more information on the
+   --  available renderers.
+   --
+   --  Note that the same renderer can be used for multiple columns, even
+   --  though its properties can be different each time. This means that for
+   --  instance you can instantiate only one Gtk_Cell_Renderer_Text, and use it
+   --  for all the columns that need to display text.
+
    procedure Pack_Start
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Expand      : Boolean);
+   --  Add a renderer to the Tree_Column.
+   --  Multiple renderers can be put in a specific column, and each of them can
+   --  be associated with different data from the model. This provides a very
+   --  powerful way to display different data in the same column.
 
    procedure Pack_End
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
       Expand      : Boolean);
+   --  Same as the above. See the description of Pack_Start and Pack_End in
+   --  Gtk.Box for the precise difference between the two
 
    procedure Clear (Tree_Column : access Gtk_Tree_View_Column_Record);
+   --  Remove all the renderers set in the column. The column will always be
+   --  empty until you put some new renderers.
 
    function Get_Cell_Renderers
      (Tree_Column : access Gtk_Tree_View_Column_Record)
-     return Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
+      return Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
+   --  Return the list of cell renderers set in the column
+
+   ------------------------------------
+   -- Specifying the data to display --
+   ------------------------------------
+   --  The data to display in a column is always read from the model associated
+   --  with the tree. In some cases (like if you are using the Gtk_Tree_Store
+   --  model), this means that is has to be physically stored in a data
+   --  structure. However, if you define your own models, you could also
+   --  compute it on the fly.
+   --
+   --  For instance, if you have a database that contains some distance and
+   --  time information, and you want to display the speed in a tree view: if
+   --  you are using a Gtk_Tree_Store model, you have to create a third column
+   --  in the model to store the string, and have a renderer point to that
+   --  third column.
+   --
+   --  However, if you are using your own model, it is conceivable that the
+   --  speed is computed on the fly from the distance and time.
+   --
+   --  The subprograms below use two or three parameters to precisely identify
+   --  the part of the tree they impact: the column, the renderer in the
+   --  column, and in some cases the specific line.
+   --
+   --  A renderer is always associated with a column in the model (even if that
+   --  is a virtual column not associated with physical data). This is done
+   --  through the Add_Attribute subprogram. This will read the data from the
+   --  model. The type of the data read depends on the type of the column in
+   --  the model.
+   --  The type of data that Add_Attribute excepts to find in the column is
+   --  documented in the packages for each of the renderer.
 
    procedure Add_Attribute
      (Tree_Column   : access Gtk_Tree_View_Column_Record;
@@ -97,20 +180,54 @@ package Gtk.Tree_View_Column is
    --
    --  For a list of properties available for each Cell_Renderer, please
    --  refer to the corresponding packages specifications.
+   --
+   --  See also the function Set_Cell_Data_Func for another way to query the
+   --  data to display in the tree.
 
---    procedure Set_Cell_Data_Func
---      (Tree_Column   : access Gtk_Tree_View_Column_Record;
---       Cell_Renderer :
---         access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
---       Func          : Gtk_Tree_Cell_Data_Func;
---       Func_Data     : gpointer;
---       Destroy       : Gtk_Destroy_Notify);
+   type Cell_Data_Func is access procedure
+     (Tree_Column : access Gtk_Tree_View_Column_Record'Class;
+      Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Model       : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+      Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  This subprogram can be modified to globally modify an attribute of the
+   --  Cell renderer.
+   --  It is called every time some event happens in the tree (a line was
+   --  clicked, the mouse moved into or out of a line,...). Iter and
+   --  Tree_Column point to the location in the tree that received the event.
+
+   procedure Set_Cell_Data_Func
+     (Tree_Column : access Gtk_Tree_View_Column_Record;
+      Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+      Func        : Cell_Data_Func);
+   --  Set a general callback function that will be called every time some even
+   --  happen inside the renderer Cell.
+
+   generic
+      type Data_Type is (<>);
+   package Cell_Data_Functions is
+      type Cell_Data_Func is access procedure
+        (Tree_Column : access Gtk_Tree_View_Column_Record'Class;
+         Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+         Model       : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
+         Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Data        : Data_Type);
+
+      procedure Set_Cell_Data_Func
+        (Tree_Column : access Gtk_Tree_View_Column_Record;
+         Cell        : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
+         Func        : Cell_Data_Func;
+         Data        : Data_Type);
+   end Cell_Data_Functions;
 
    procedure Clear_Attributes
      (Tree_Column   : access Gtk_Tree_View_Column_Record;
       Cell_Renderer : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
    --  Clears all existing attributes previously set with
    --  Gtk.Tree_View_Column.Set_Attributes.
+
+   ------------------------------------------
+   -- Options for manipulating the columns --
+   ------------------------------------------
 
    procedure Set_Spacing
      (Tree_Column : access Gtk_Tree_View_Column_Record;
@@ -121,10 +238,6 @@ package Gtk.Tree_View_Column is
    function Get_Spacing (Tree_Column : access Gtk_Tree_View_Column_Record)
                          return Gint;
    --  Returns the spacing of Tree_Column.
-
-   ------------------------------------------
-   -- Options for manipulating the columns --
-   ------------------------------------------
 
    procedure Set_Visible
      (Tree_Column : access Gtk_Tree_View_Column_Record;
