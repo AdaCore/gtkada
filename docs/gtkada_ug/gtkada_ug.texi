@@ -4,7 +4,7 @@
 @settitle GtkAda User's Guide
 @syncodeindex fn cp
 
-@set GtkAdaVersion 1.2.12
+@set GtkAdaVersion 2.0.0
 
 @titlepage
 
@@ -127,7 +127,7 @@ packages for @code{GtkAda}, @code{gtk+} and @code{Glade}.
 
      @uref{http://www.gtk.org}
 
-     @uref{http://glade.pn.org}
+     @uref{http://glade.gnome.org}
      
 
 The scheme used for GtkAda's version numbers is the following: the major
@@ -168,9 +168,9 @@ If you manage to use it on other systems (which should probably be
 straightforward - just recompile GtkAda), please let us know so that
 we can add to the above list.
 
-This version of GtkAda is known to be compatible with @code{gtk+} @b{1.2.2} up
-to @b{version 1.2.8}. This release is no longer compatible with older versions
-of gtk+ (up to 1.0).
+This version of GtkAda is known to be compatible with @code{gtk+} @b{1.3.4}.
+This release is no longer compatible with older versions
+of gtk+ (up to 1.3.3).
 
 This version of GtkAda is compatible with @code{Glade} @b{version
 0.5.9}.  Due to some modification in the output format of Glade, this
