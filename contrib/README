@@ -4,6 +4,9 @@ concern GtkAda directly.
 Contents
 ========
 
+gtk-win32.diff: this is the source patch used to build Gtk+ 1.3.0 under
+Windows NT.
+
 glade-0.5.9.win32.diff: this is the source patch used to build Glade 0.5.9
 under Windows NT.
 
