@@ -129,7 +129,7 @@ package body Gdk.Color is
                          Success    : in System.Address)
                          return Gint;
       pragma Import (C, Internal, "gdk_colormap_alloc_colors");
-      Tmp : Gboolean_Array (Colors'First .. Colors'Last);
+      Tmp : Gboolean_Array (Colors'Range);
    begin
       Result := Internal (Get_Object (Colormap),
                           Colors'Address,
