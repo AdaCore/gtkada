@@ -76,7 +76,8 @@ package Glib.Glist is
 
       procedure Append (List : in out Glist;
                         Data : in Gpointer);
-      --  Add a new item at the end of the list.
+      --  Add a new item at the end of the list, and stores the new list
+      --  directly back in LIST.
       --  The complexity of this operation is O(n)
 
       function Concat (List1 : in Glist;

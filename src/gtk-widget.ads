@@ -246,6 +246,8 @@ package Gtk.Widget is
    --  size would be. For Gtk_Windows, you should consider using
    --  Set_Default_Size instead, which sets a minimal size, but use the
    --  widget's requested size if it is bigger.
+   --  If WIDTH or HEIGHT is negative, they are ignored, and the widget's
+   --  default width is kept.
 
    function Get_Allocation_Width (Widget : access Gtk_Widget_Record)
                                  return Guint;
