@@ -190,7 +190,7 @@ package body Glib.Graphs is
          L := L.Next;
       end loop;
 
-      List := new Edge_List_Record' (E => Edge_Access (E), Next => List);
+      List := new Edge_List_Record'(E => Edge_Access (E), Next => List);
    end Add;
 
    ---------
@@ -199,7 +199,7 @@ package body Glib.Graphs is
 
    procedure Add    (List : in out Vertex_List; V : access Vertex'Class) is
    begin
-      List := new Vertex_List_Record' (V => Vertex_Access (V), Next => List);
+      List := new Vertex_List_Record'(V => Vertex_Access (V), Next => List);
    end Add;
 
    ------------
@@ -799,7 +799,7 @@ package body Glib.Graphs is
       --  ??? Should sort the edges by increasing weight
       --  ??? and do the loop in that order
 
-      Eit := First (G, Src => Vertex_Access' (null));
+      Eit := First (G, Src => Vertex_Access'(null));
       while not At_End (Eit) loop
          U := Get_Src (Get (Eit));
          V := Get_Dest (Get (Eit));
