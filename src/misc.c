@@ -2996,7 +2996,11 @@ GParamFlags ada_gparam_get_flags (GParamSpec* param) {
 }
 
 GType ada_gparam_get_value_type (GParamSpec* param) {
-  return param->value_type;
+  return G_PARAM_SPEC_VALUE_TYPE (param);
+}
+
+void ada_gparam_set_value_type (GParamSpec* param, GType value_type) {
+  G_PARAM_SPEC_VALUE_TYPE (param) = value_type;
 }
 
 gint8 ada_gparam_get_minimum_char (GParamSpecChar* param) {
@@ -3079,7 +3083,7 @@ gunichar ada_gparam_get_default_unichar (GParamSpecUnichar* param) {
   return param->default_value;
 }
 
-glong ada_gparam_get_default_enum (GParamSpecEnum* param) {
+gint ada_gparam_get_default_enum (GParamSpecEnum* param) {
   return param->default_value;
 }
 
