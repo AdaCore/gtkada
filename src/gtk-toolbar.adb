@@ -138,6 +138,18 @@ package body Gtk.Toolbar is
                 Tooltip_Private_Text & Ascii.NUL);
    end Append_Widget;
 
+   -----------------------
+   -- Get_Button_Relief --
+   -----------------------
+
+   function Get_Button_Relief (Toolbar : in Gtk_Toolbar)
+                               return Gtk_Relief_Style is
+      function Internal (Toolbar : System.Address) return Int;
+      pragma Import (C, Internal, "gtk_toolbar_get_button_relief");
+   begin
+      return Gtk_Relief_Style'Val (Internal (Get_Object (Toolbar)));
+   end Get_Button_Relief;
+
    -------------
    -- Gtk_New --
    -------------

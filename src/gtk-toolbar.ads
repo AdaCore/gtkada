@@ -139,7 +139,8 @@ package Gtk.Toolbar is
        Enable  : in Boolean);
    procedure Set_Button_Relief (Toolbar : in Gtk_Toolbar;
                                 Relief  : in Gtk_Relief_Style);
-
+   function Get_Button_Relief (Toolbar : in Gtk_Toolbar)
+                               return Gtk_Relief_Style;
 
 private
    type Gtk_Toolbar is new Gtk.Container.Gtk_Container with null record;
