@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;
 with Glib.Object; use Glib.Object;
 with Gtk.Object, Gtk.Handlers, Gtk.Main, Gtk.Table;
 with Gtkada.Types; use Gtkada.Types;
@@ -153,7 +152,7 @@ package body Tictactoe is
          Found := False;
 
          for J in Win_Array'Range (2) loop
-            Success := Success and then 
+            Success := Success and then
               Get_Active
                 (Tictactoe.Buttons (Rwins (K, J), Cwins (K, J)).Button);
             Found := Found or else
