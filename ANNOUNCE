@@ -16,7 +16,7 @@ LSM entry follows :
 Begin3
  Title:  GtkAda
  Version: 1.2.1
- Entered-date: 06APR99
+ Entered-date: 06MAY99
  Description: Ada95 graphical toolkit based on Gtk+ (version 1.2.x) 
  Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade
  Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
@@ -29,6 +29,11 @@ End
 
 
 New features in 1.2.1 include:
+
+- Installation problems reported with 1.2.0 have been fixed
+- Gdk.RGB has been bound
+- Updated features in Gtk.Style and Gtk.Table
+- The editor example has been completed
 
 New features in 1.2.0 include:
 
