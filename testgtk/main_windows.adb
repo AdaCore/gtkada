@@ -72,6 +72,7 @@ with Create_Cursors;
 with Create_Dialog;
 --  with Create_Dnd;
 with Create_Entry;
+with Create_Frame;
 with Create_File_Selection;
 with Create_Fixed;
 with Create_Font_Selection;
@@ -231,6 +232,8 @@ package body Main_Windows is
                                          Create_Fixed.Help'Access),
       (NS ("font selection"),   Gimp,    Create_Font_Selection.Run'Access,
                                          Create_Font_Selection.Help'Access),
+      (NS ("frame/aspect frame"), Box, Create_Frame.Run'Access,
+                                         Create_Frame.Help'Access),
       (NS ("gamma curve"),      Gimp,    Create_Gamma_Curve.Run'Access,
                                          Create_Gamma_Curve.Help'Access),
       (Ns ("graphic contexts"), GdkD,    Create_Gc.Run'Access,
@@ -760,7 +763,7 @@ package body Main_Windows is
                   Expand  => True,
                   Fill    => True,
                   Padding => 0);
-      Set_Usize (Scrolled, 150, 500);
+      Set_Usize (Scrolled, 170, 500);
 
       Gtk_New (Tree);
       Set_Selection_Mode (Tree, Gtk.Enums.Selection_Single);
