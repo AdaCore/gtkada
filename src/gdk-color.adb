@@ -243,14 +243,14 @@ package body Gdk.Color is
    ----------
 
    procedure Copy (Source : Gdk_Color; Destination : out Gdk_Color) is
-      function Internal (Source : System.Address) return System.Address;
+      type Gdk_Color_Access is access Gdk_Color;
+      pragma Convention (C, Gdk_Color_Access);
+
+      function Internal (Source : System.Address) return Gdk_Color_Access;
       pragma Import (C, Internal, "gdk_color_copy");
 
-      Result : aliased Gdk_Color;
-      for Result'Address use Internal (Source'Address);
-
    begin
-      Destination := Result;
+      Destination := Internal (Source'Address).all;
    end Copy;
 
    ----------
