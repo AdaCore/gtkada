@@ -72,17 +72,4 @@ package body Gtk.Drawing_Area is
       Internal (Get_Object (Darea), Width, Height);
    end Size;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Drawing_Area", File => File);
-      Widget.Generate (N, File);
-   end Generate;
-
 end Gtk.Drawing_Area;

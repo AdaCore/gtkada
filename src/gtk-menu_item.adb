@@ -197,32 +197,6 @@ package body Gtk.Menu_Item is
       end if;
    end Set_Right_Justify;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      S  : constant String_Ptr := Get_Field (N, "label");
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if S = null then
-         Gen_New (N, "Menu_Item", File => File);
-      else
-         if Gettext_Support (N) then
-            Gen_New (N, "Menu_Item", S.all,
-              File => File, Prefix => "-""", Postfix => """");
-         else
-            Gen_New (N, "Menu_Item", S.all,
-              File => File, Prefix => """", Postfix => """");
-         end if;
-      end if;
-
-      Item.Generate (N, File);
-      Gen_Set (N, "Menu_Item", "right_justify", File);
-   end Generate;
-
    ---------------------
    -- Type_Conversion --
    ---------------------

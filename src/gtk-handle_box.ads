@@ -94,13 +94,6 @@ package Gtk.Handle_Box is
    --  Pos_Left, then the snap edge will be Pos_Top, otherwise it will be
    --  Pos_Left.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

@@ -92,13 +92,6 @@ package Gtk.Color_Selection_Dialog is
       return Gtk.Button.Gtk_Button;
    --  Get the help button widget contained within the dialog.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

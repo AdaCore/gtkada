@@ -95,13 +95,6 @@ package Gtk.Alignment is
    --  Return the Y expansion value, in the range 0.0 .. 1.0
    --  0.0 means no expansion while 1.0 means full expansion.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

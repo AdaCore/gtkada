@@ -124,48 +124,4 @@ package body Gtk.Radio_Menu_Item is
       Set_Active (Radio_Menu_Item, False);
    end Set_Group;
 
-   --------------
-   -- Generate --
-   --------------
-
-   --  ??? This code is very similar to what is done for Radio Buttons
-   --  (see gtk-radio_button.adb), so it would be nice to share the code
-   --  Also, this code only takes into account the default case of an unnamed
-   --  radio group.
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Label : constant String_Ptr := Get_Field (N, "label");
-      Name  : constant String_Ptr := Get_Field (N, "name");
-      Top_Widget : Node_Ptr := Find_Top_Widget (N);
-      Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
-      Id    : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if not N.Specific_Data.Created then
-         Add_Package ("Radio_Menu_Item");
-         Put (File, "   Gtk_New (" &
-           To_Ada (Top.all) & "." & To_Ada (Name.all) & ", " &
-           To_Ada (Get_Field (N.Parent, "name").all) & "_Group");
-
-         if Label /= null then
-            Put (File, ", ");
-
-            if Gettext_Support (Top_Widget) then
-               Put (File, '-');
-            end if;
-
-            Put (File, '"' & Label.all & '"');
-         end if;
-
-         Put_Line (File, ");");
-         Put_Line (File, "   " & To_Ada (Get_Field (N.Parent, "name").all) &
-           "_Group := Group (" & To_Ada (Top.all) & "." &
-           To_Ada (Name.all) & ");");
-         N.Specific_Data.Created := True;
-      end if;
-
-      Check_Menu_Item.Generate (N, File);
-   end Generate;
-
 end Gtk.Radio_Menu_Item;

@@ -259,41 +259,10 @@ package body Gtk.Packer is
 
    procedure Set_Spacing (Packer  : access Gtk_Packer_Record;
                           Spacing : in     Guint) is
-      procedure Internal (Packer  : in System.Address;
-                          Spacing : in Guint);
+      procedure Internal (Packer  : System.Address; Spacing : Guint);
       pragma Import (C, Internal, "gtk_packer_set_spacing");
    begin
-      Internal (Get_Object (Packer),
-                Spacing);
+      Internal (Get_Object (Packer), Spacing);
    end Set_Spacing;
-
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      S  : String_Ptr;
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Packer", File => File);
-      Container.Generate (N, File);
-      Gen_Set (N, "Packer", "default_border_width", File => File);
-
-      S  := Get_Field (N, "default_pad_x");
-
-      if S /= null then
-         Gen_Set (N, "Packer", "Default_Pad", S.all,
-           Get_Field (N, "default_pad_y").all, "", "", File => File);
-      end if;
-
-      S  := Get_Field (N, "default_ipad_x");
-
-      if S /= null then
-         Gen_Set (N, "Packer", "Default_Ipad", S.all,
-           Get_Field (N, "default_ipad_y").all, "", "", File => File);
-      end if;
-   end Generate;
 
 end Gtk.Packer;

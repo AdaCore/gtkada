@@ -285,43 +285,4 @@ package body Gtk.Spin_Button is
                 Step);
    end Spin;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      S   : String_Ptr;
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
-      Id  : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if not N.Specific_Data.Created then
-         S := Get_Field (N, "name");
-         Add_Package ("Adjustment");
-         Put_Line
-           (File, "   Gtk_New (" & To_Ada (S.all) & "_Adj, " &
-            To_Float (Get_Field (N, "value").all) & ", " &
-            To_Float (Get_Field (N, "lower").all) & ", " &
-            To_Float (Get_Field (N, "upper").all) & ", " &
-            To_Float (Get_Field (N, "step").all)  & ", " &
-            To_Float (Get_Field (N, "page").all)  & ", " &
-            To_Float (Get_Field (N, "page_size").all) & ");");
-         Add_Package ("Spin_Button");
-         Put_Line (File, "   Gtk_New (" & To_Ada (Top.all) & "." &
-           To_Ada (S.all) & ", " & To_Ada (S.all) & "_Adj, " &
-           To_Float (Get_Field (N, "climb_rate").all) & ", " &
-           Get_Field (N, "digits").all & ");");
-         N.Specific_Data.Created := True;
-      end if;
-
-      GEntry.Generate (N, File);
-
-      Gen_Set (N, "Spin_Button", "numeric", File);
-      Gen_Set (N, "Spin_Button", "Snap_To_Ticks", "snap", "", "", "", File);
-      Gen_Set (N, "Spin_Button", "update_policy", File);
-      Gen_Set (N, "Spin_Button", "value", File, Is_Float => True);
-      Gen_Set (N, "Spin_Button", "wrap", File);
-   end Generate;
-
 end Gtk.Spin_Button;

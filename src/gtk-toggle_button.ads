@@ -92,13 +92,6 @@ package Gtk.Toggle_Button is
    --  Note that the state of the button is not changed, only the callbacks
    --  are called.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

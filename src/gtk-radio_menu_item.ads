@@ -62,13 +62,6 @@ package Gtk.Radio_Menu_Item is
    --  NOTE: This function is not part of Gtk+ itself, but is provided as a
    --  convenient function
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Radio_Menu_Item_Record is new
      Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record with null record;

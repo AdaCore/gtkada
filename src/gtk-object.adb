@@ -394,13 +394,4 @@ package body Gtk.Object is
 
    end User_Data;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-   begin
-      null;
-   end Generate;
-
 end Gtk.Object;

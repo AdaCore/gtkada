@@ -73,13 +73,6 @@ package Gtk.Progress_Bar is
      (Progress_Bar : access Gtk_Progress_Bar_Record;
       Percentage   : in Gfloat);
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Progress_Bar_Record is new Gtk.Progress.Gtk_Progress_Record
      with null record;

@@ -158,32 +158,15 @@ package body Gtk.Button_Box is
    -- Set_Spacing --
    -----------------
 
-   procedure Set_Spacing (Button_Box : access Gtk_Button_Box_Record;
-                          Spacing    : in Gint)
+   procedure Set_Spacing
+     (Button_Box : access Gtk_Button_Box_Record;
+      Spacing    : in Gint)
    is
-      procedure Internal (Widget  : in System.Address; Spacing : in Gint);
+      procedure Internal (Widget : in System.Address; Spacing : in Gint);
       pragma Import (C, Internal, "gtk_button_box_set_spacing");
 
    begin
       Internal (Get_Object (Button_Box), Spacing);
    end Set_Spacing;
-
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Box.Generate (N, File);
-      Gen_Set (N, "Button_Box", "spacing", File);
-      Gen_Set (N, "Button_Box", "Layout", "layout_style", "", "", "", File);
-      Gen_Set (N, "Button_Box", "Child_Size",
-        "child_min_width", "child_min_height", "", "", File);
-      Gen_Set (N, "Button_Box", "Child_Ipadding",
-        "child_ipad_x", "child_ipad_y", "", "", File);
-   end Generate;
 
 end Gtk.Button_Box;

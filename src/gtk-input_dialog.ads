@@ -40,13 +40,6 @@ package Gtk.Input_Dialog is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Input_Dialog.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Input_Dialog_Record is new Dialog.Gtk_Dialog_Record
      with null record;

@@ -180,34 +180,4 @@ package body Gtk.GEntry is
       Internal (Get_Object (The_Entry), Boolean'Pos (Visible));
    end Set_Visibility;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Child_Name : Node_Ptr := Find_Tag (N.Child, "child_name");
-      Id         : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if Child_Name = null then
-         Gen_New (N, "GEntry", File => File);
-      else
-         Gen_Child (N, Child_Name, File);
-      end if;
-
-      Editable.Generate (N, File);
-      Gen_Set (N, "GEntry", "editable", File);
-      Gen_Set (N, "GEntry", "Max_Length", "text_max_length", "", "", "", File);
-      Gen_Set (N, "GEntry", "position", File);
-
-      if Gettext_Support (N) then
-         Gen_Set (N, "GEntry", "text", File, "-""", """");
-      else
-         Gen_Set (N, "GEntry", "text", File, """", """");
-      end if;
-
-      Gen_Set (N, "GEntry", "Visibility", "text_visible", "", "", "", File);
-   end Generate;
-
 end Gtk.GEntry;

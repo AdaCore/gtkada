@@ -101,20 +101,4 @@ package body Gtk.Handle_Box is
                 Enums.Gtk_Position_Type'Pos (Edge));
    end Set_Snap_Edge;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Handle_Box", File => File);
-      Bin.Generate (N, File);
-      Gen_Set (N, "Handle_Box", "shadow_type", File);
-      Gen_Set (N, "Handle_Box", "handle_position", File);
-      Gen_Set (N, "Handle_Box", "snap_edge", File);
-   end Generate;
-
 end Gtk.Handle_Box;

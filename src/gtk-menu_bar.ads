@@ -77,13 +77,6 @@ package Gtk.Menu_Bar is
       The_Type : in Gtk_Shadow_Type);
    --  Set the shadow type to use on the Gtk_Menu_Bar.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

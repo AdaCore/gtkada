@@ -76,13 +76,6 @@ package Gtk.Image is
    --  Set the values of a Gtk_Image.
    --  Mask indicates which parts of the image should be transparent.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

@@ -52,13 +52,6 @@ package Gtk.Separator is
    procedure Initialize_Vseparator
      (Separator : access Gtk_Separator_Record'Class);
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Separator_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;

@@ -76,13 +76,6 @@ package Gtk.Scale is
 
    function Get_Value_Width (Scale  : access Gtk_Scale_Record) return Gint;
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Scale_Record is new Gtk.GRange.Gtk_Range_Record with null record;
 

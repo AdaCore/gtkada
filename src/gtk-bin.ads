@@ -47,14 +47,6 @@ package Gtk.Bin is
    function Get_Child (Bin : access Gtk_Bin_Record) return Gtk_Widget;
    --  Return the child associated with Bin.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type)
-     renames Gtk.Container.Generate;
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

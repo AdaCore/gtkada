@@ -96,12 +96,6 @@ package Gtk.Progress is
      (Progress : access Gtk_Progress_Record;
       Value    : in Gfloat);
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-
 private
    type Gtk_Progress_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;

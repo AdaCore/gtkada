@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Container; use Gtk.Container;
 with Gtk.Type_Conversion_Hooks;
 pragma Elaborate_All (Gtk.Type_Conversion_Hooks);
 
@@ -153,44 +152,6 @@ package body Gtk.Button is
       Internal (Get_Object (Button),
                 Gtk.Enums.Gtk_Relief_Style'Pos (NewStyle));
    end Set_Relief;
-
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Child_Name : constant Node_Ptr   := Find_Tag (N.Child, "child_name");
-      Label      : constant String_Ptr := Get_Field (N, "label");
-      Id         : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if N.Specific_Data.Initialized then
-         return;
-      end if;
-
-      if not N.Specific_Data.Created then
-         if Child_Name = null then
-            if Label = null then
-               Gen_New (N, "Button", File => File);
-            else
-               if Gettext_Support (N) then
-                  Gen_New (N, "Button", Label.all, File => File,
-                    Prefix => "-""", Postfix => """");
-               else
-                  Gen_New (N, "Button", Label.all, File => File,
-                    Prefix => """", Postfix => """");
-               end if;
-
-            end if;
-         else
-            Gen_Child (N, Child_Name, File);
-         end if;
-      end if;
-
-      Container.Generate (N, File);
-      Gen_Set (N, "Button", "relief", File);
-   end Generate;
 
    ---------------------
    -- Type_Conversion --

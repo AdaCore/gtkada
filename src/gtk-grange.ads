@@ -101,13 +101,6 @@ package Gtk.GRange is
       Result    :    out Gint);
    --  Was a function in C
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Range_Record is new Gtk.Widget.Gtk_Widget_Record with null record;
 

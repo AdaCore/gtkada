@@ -107,13 +107,6 @@ package Gtk.Color_Selection is
    --  Convert from an absolute value as used in Gdk_Color to a percentage
    --  value as used in Set_Color.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

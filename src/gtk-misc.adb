@@ -59,19 +59,4 @@ package body Gtk.Misc is
       Internal (Get_Object (Misc), Xpad, Ypad);
    end Set_Padding;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Widget.Generate (N, File);
-      Gen_Set (N, "Misc", "Alignment", "xalign", "yalign", "", "", File,
-        Is_Float => True);
-      Gen_Set (N, "Misc", "Padding", "xpad", "ypad", "", "", File);
-   end Generate;
-
 end Gtk.Misc;

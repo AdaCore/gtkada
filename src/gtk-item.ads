@@ -43,14 +43,6 @@ package Gtk.Item is
 
    procedure Toggle (Item : access Gtk_Item_Record);
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type)
-     renames Gtk.Bin.Generate;
-   --  Gate internal function
-
 private
    type Gtk_Item_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
 

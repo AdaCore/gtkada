@@ -85,13 +85,6 @@ package Gtk.Check_Menu_Item is
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record) return Boolean;
    --  Return True if the Item is active
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

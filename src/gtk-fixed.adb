@@ -115,17 +115,4 @@ package body Gtk.Fixed is
       Internal (Get_Object (Fixed), Get_Object (Widget), X, Y);
    end Put;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Fixed", File => File);
-      Container.Generate (N, File);
-   end Generate;
-
 end Gtk.Fixed;

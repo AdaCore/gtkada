@@ -102,13 +102,6 @@ package Gtk.Radio_Button is
    --  Modify the group to which the button belongs.
    --  This will not change anything visually.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

@@ -102,29 +102,4 @@ package body Gtk.Image is
       Internal (Get_Object (Image), Val, Mask);
    end Set;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if not N.Specific_Data.Created then
-         Add_Package ("Gdk.Image");
-         Add_Package ("Gdk.Bitmap");
-         Add_Package ("Gdk.Visual");
-
-         Put_Line (File, "   Get_System (The_Visual);");
-         Put_Line (File, "   Gdk_New (The_Image, " &
-           To_Ada (Get_Field (N, "image_type").all) & ", The_Visual, " &
-           Get_Field (N, "image_width").all & ", " &
-           Get_Field (N, "image_height").all & ");");
-         Gen_New (N, "Image", "The_Image", "Null_Bitmap", File => File);
-      end if;
-
-      Misc.Generate (N, File);
-   end Generate;
-
 end Gtk.Image;

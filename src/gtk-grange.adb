@@ -299,17 +299,4 @@ package body Gtk.GRange is
       Jump_Perc := Jump;
    end Trough_Click;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Widget.Generate (N, File);
-      Gen_Set (N, "GRange", "Update_Policy", "policy", File => File);
-   end Generate;
-
 end Gtk.GRange;

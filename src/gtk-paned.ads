@@ -182,13 +182,6 @@ package Gtk.Paned is
    function Get_Child2_Shrink (Paned : access Gtk_Paned_Record) return Boolean;
    --  Get the value of the shrink attribute for the second child.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

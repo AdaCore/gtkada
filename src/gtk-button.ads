@@ -88,13 +88,6 @@ package Gtk.Button is
    procedure Leave    (Button : access Gtk_Button_Record);
    --  Send the "leave" signal to the button
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

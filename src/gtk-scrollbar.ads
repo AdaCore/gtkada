@@ -59,13 +59,6 @@ package Gtk.Scrollbar is
      (Widget     : access Gtk_Scrollbar_Record'Class;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Scrollbar_Record is new Gtk.GRange.Gtk_Range_Record
      with null record;

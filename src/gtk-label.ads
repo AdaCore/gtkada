@@ -106,13 +106,6 @@ package Gtk.Label is
    --  feature is only used internally by gtk+ to create menus, and is not
    --  useful for end-users.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

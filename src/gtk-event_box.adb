@@ -53,17 +53,4 @@ package body Gtk.Event_Box is
       Initialize_User_Data (Event_Box);
    end Initialize;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Event_Box", File => File);
-      Bin.Generate (N, File);
-   end Generate;
-
 end Gtk.Event_Box;

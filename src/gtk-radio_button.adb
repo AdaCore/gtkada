@@ -147,47 +147,4 @@ package body Gtk.Radio_Button is
       Internal (Get_Object (Radio_Button), Get_Object (Group));
    end Set_Group;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Label : constant String_Ptr := Get_Field (N, "label");
-      Name  : constant String_Ptr := Get_Field (N, "name");
-      Top_Widget : Node_Ptr := Find_Top_Widget (N);
-      Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
-      Id    : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if N.Specific_Data.Initialized then
-         return;
-      end if;
-
-      if not N.Specific_Data.Created then
-         Add_Package ("Radio_Button");
-         Put (File, "   Gtk_New (" &
-           To_Ada (Top.all) & "." & To_Ada (Name.all) & ", " &
-           To_Ada (Get_Field (N.Parent, "name").all) & "_Group");
-
-         if Label /= null then
-            Put (File, ", ");
-
-            if Gettext_Support (Top_Widget) then
-               Put (File, '-');
-            end if;
-
-            Put (File, '"' & Label.all & '"');
-         end if;
-
-         Put_Line (File, ");");
-         Put_Line (File, "   " & To_Ada (Get_Field (N.Parent, "name").all) &
-           "_Group := Group (" & To_Ada (Top.all) & "." &
-           To_Ada (Name.all) & ");");
-         N.Specific_Data.Created := True;
-      end if;
-
-      Check_Button.Generate (N, File);
-   end Generate;
-
 end Gtk.Radio_Button;

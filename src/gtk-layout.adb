@@ -280,38 +280,13 @@ package body Gtk.Layout is
    -- Get_Bin_Window --
    --------------------
 
-   function Get_Bin_Window (Widget : access Gtk_Layout_Record)
-                           return Gdk.Window.Gdk_Window
+   function Get_Bin_Window
+     (Widget : access Gtk_Layout_Record) return Gdk.Window.Gdk_Window
    is
       function Internal (Layout : System.Address) return Gdk.Window.Gdk_Window;
       pragma Import (C, Internal, "ada_gtk_layout_get_bin_window");
    begin
       return Internal (Get_Object (Widget));
    end Get_Bin_Window;
-
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Cur : constant String_Ptr := Get_Field (N, "name");
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
-      Id  : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Layout", File => File);
-      Container.Generate (N, File);
-
-      Gen_Set (N, "Layout", "Size", "area_width", "area_height", "", "",
-        File => File);
-      Add_Package ("Adjustment");
-      Put_Line (File, "   Set_Step_Increment (Get_Hadjustment (" &
-        To_Ada (Top.all) & "." & To_Ada (Cur.all) & "), " &
-        To_Float (Get_Field (N, "hstep").all) & ");");
-      Put_Line (File, "   Set_Step_Increment (Get_Vadjustment (" &
-        To_Ada (Top.all) & "." & To_Ada (Cur.all) & "), " &
-        To_Float (Get_Field (N, "vstep").all) & ");");
-   end Generate;
 
 end Gtk.Layout;

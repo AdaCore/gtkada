@@ -159,13 +159,6 @@ package Gtk.Scrolled_Window is
    --  the slider part of the bar would be smaller than the trough - the
    --  display is larger than the page size).
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

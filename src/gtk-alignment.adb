@@ -149,23 +149,4 @@ package body Gtk.Alignment is
       Internal (Get_Object (Alignment), Xalign, Yalign, Xscale, Yscale);
    end Set;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New
-        (N, "Alignment",
-         To_Float (Get_Field (N, "xalign").all),
-         To_Float (Get_Field (N, "yalign").all),
-         To_Float (Get_Field (N, "xscale").all),
-         To_Float (Get_Field (N, "xscale").all), "",
-         File => File);
-      Bin.Generate (N, File);
-   end Generate;
-
 end Gtk.Alignment;

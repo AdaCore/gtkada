@@ -74,13 +74,6 @@ package Gtk.Vbutton_Box is
    --  Return the default layout to use for all the vbutton_boxes in your
    --  application.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

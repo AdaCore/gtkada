@@ -197,34 +197,4 @@ package body Gtk.Pixmap is
       return Pixmap;
    end Create_Pixmap;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
-      Cur : constant String_Ptr := Get_Field (N, "name");
-      S   : String_Ptr;
-      Id  : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if not N.Specific_Data.Created then
-         Add_Package ("Pixmap");
-
-         S := Get_Field (N, "filename");
-
-         if S = null then
-            S := new String' ("");
-         end if;
-
-         Put_Line (File, "   " & To_Ada (Top.all) & "." & To_Ada (Cur.all) &
-           " := Create_Pixmap (""" & S.all & """, " & To_Ada (Top.all) &
-           ");");
-         N.Specific_Data.Created := True;
-      end if;
-
-      Misc.Generate (N, File);
-   end Generate;
-
 end Gtk.Pixmap;

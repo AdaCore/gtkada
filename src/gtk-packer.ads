@@ -271,13 +271,6 @@ package Gtk.Packer is
    function Get_I_Pad_Y (Child : Gtk_Packer_Child) return Guint;
    --  Return the Y i_padding for the child (when not on the borders).
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Packer_Record is new Gtk.Container.Gtk_Container_Record
      with null record;

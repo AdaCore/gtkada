@@ -241,13 +241,6 @@ package Gtk.Window is
    --  dialog to which the user has to answer before the application can
    --  continue.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal procedure
-
    -------------
    -- Signals --
    -------------

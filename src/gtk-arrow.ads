@@ -73,13 +73,6 @@ package Gtk.Arrow is
       Shadow_Type : in Gtk_Shadow_Type);
    --  Set the direction and style of the Arrow.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

@@ -217,35 +217,4 @@ package body Gtk.Table is
       Internal (Get_Object (Table), Spacing);
    end Set_Row_Spacings;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      P   : Node_Ptr;
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
-      Id  : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if not N.Specific_Data.Created then
-         P := Find_Tag (N.Child, "name");
-
-         if P /= null then
-            Add_Package ("Table");
-            Put (File, "   Gtk_New (" & To_Ada (Top.all) & "." &
-              To_Ada (P.Value.all) & ", " &
-              To_Ada (Get_Field (N, "rows").all));
-            Put (File, ", " & To_Ada (Get_Field (N, "columns").all));
-            Put_Line
-              (File, ", " & To_Ada (Get_Field (N, "homogeneous").all) & ");");
-            N.Specific_Data.Created := True;
-         end if;
-      end if;
-
-      Container.Generate (N, File);
-      Gen_Set (N, "Table", "Row_Spacings", "row_spacing", File);
-      Gen_Set (N, "Table", "Col_Spacings", "column_spacing", File);
-   end Generate;
-
 end Gtk.Table;

@@ -58,13 +58,6 @@ package Gtk.Check_Button is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Check_Button.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

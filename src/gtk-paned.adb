@@ -289,25 +289,4 @@ package body Gtk.Paned is
       return Internal (Get_Object (Paned));
    end Get_Gutter_Size;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Class : constant String_Ptr := Get_Field (N, "class");
-      Id    : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New
-        (N, "Paned",
-         New_Name => Class (Class'First + 3) & "paned",
-         File => File);
-
-      Container.Generate (N, File);
-      Gen_Set (N, "Paned", "handle_size", File);
-      Gen_Set (N, "Paned", "gutter_size", File);
-      Gen_Set (N, "Paned", "position", File);
-   end Generate;
-
 end Gtk.Paned;

@@ -169,13 +169,6 @@ package Gtk.Toolbar is
    function Get_Button_Relief
      (Toolbar : access Gtk_Toolbar_Record) return Gtk_Relief_Style;
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Toolbar_Record is new Gtk.Container.Gtk_Container_Record
      with null record;

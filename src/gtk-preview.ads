@@ -107,13 +107,6 @@ package Gtk.Preview is
 
    procedure Uninit;
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Preview_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;

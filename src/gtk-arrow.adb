@@ -84,19 +84,4 @@ package body Gtk.Arrow is
                 Gtk_Shadow_Type'Pos (Shadow_Type));
    end Set;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      use Misc;
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Arrow", Get_Field (N, "arrow_type").all,
-        Get_Field (N, "shadow_type").all, File => File);
-      Misc.Generate (N, File);
-   end Generate;
-
 end Gtk.Arrow;

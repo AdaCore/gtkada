@@ -175,19 +175,4 @@ package body Gtk.Progress_Bar is
       Internal (Get_Object (Progress_Bar), Percentage);
    end Update;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Progress_Bar", File => File);
-      Progress.Generate (N, File);
-      Gen_Set (N, "Progress_Bar", "bar_style", File => File);
-      Gen_Set (N, "Progress_Bar", "orientation", File => File);
-   end Generate;
-
 end Gtk.Progress_Bar;

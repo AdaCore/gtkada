@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 
 package body Gtk.Combo is
 
@@ -212,69 +211,5 @@ package body Gtk.Combo is
    begin
       Internal (Get_Object (Combo_Box), Val, Boolean'Pos (Ok_If_Empty));
    end Set_Value_In_List;
-
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      S     : String_Ptr;
-      First, Last : Natural;
-      Top_Widget  : Node_Ptr := Find_Top_Widget (N);
-      Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
-      Child : Node_Ptr := Find_Tag (N.Child, "widget");
-      Id    : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Combo", File => File);
-
-      --  The child is the entry field associated with the combo box. It only
-      --  exists for Glade >= 0.5. Do not generate any "Add"
-
-      if Child /= null then
-         Child.Specific_Data.Has_Container := True;
-      end if;
-
-      Box.Generate (N, File);
-      Gen_Set (N, "Combo", "case_sensitive", File);
-      Gen_Set (N, "Combo", "use_arrows", File);
-      Gen_Set (N, "Combo", "use_arrows_always", File);
-
-      S := Get_Field (N, "items");
-
-      if S /= null then
-         First := S'First;
-
-         loop
-            Last := Index (S (First .. S'Last), ASCII.LF & "");
-
-            if Last = 0 then
-               Last := S'Last + 1;
-            end if;
-
-            Put (File, "   String_List.Append (" &
-              To_Ada (Get_Field (N, "name").all) & "_Items, ");
-
-            if Gettext_Support (Top_Widget) then
-               Put (File, '-');
-            end if;
-
-            Put_Line (File, '"' &
-              S (First .. Last - 1) & """);");
-
-            exit when Last >= S'Last;
-
-            First := Last + 1;
-         end loop;
-
-         Put_Line (File, "   Combo.Set_Popdown_Strings (" &
-                   To_Ada (Top.all) & "." &
-                   To_Ada (Get_Field (N, "name").all) & ", " &
-                   To_Ada (Get_Field (N, "name").all) & "_Items);");
-         Put_Line (File, "   Free_String_List (" &
-           To_Ada (Get_Field (N, "name").all) & "_Items);");
-      end if;
-   end Generate;
 
 end Gtk.Combo;

@@ -389,34 +389,4 @@ package body Gtk.Font_Selection is
                 Text & ASCII.NUL);
    end Set_Preview_Text;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Font_Selection", File => File);
-      Notebook.Generate (N, File);
-   end Generate;
-
-   ---------------------
-   -- Generate_Dialog --
-   ---------------------
-
-   procedure Generate_Dialog (N : in Node_Ptr; File : in File_Type) is
-   begin
-      if Gettext_Support (N) then
-         Gen_New (N, "Font_Selection_Dialog", Get_Field (N, "title").all,
-           File => File, Prefix => "-""", Postfix => """");
-      else
-         Gen_New (N, "Font_Selection_Dialog", Get_Field (N, "title").all,
-           File => File, Prefix => """", Postfix => """");
-      end if;
-
-      Window.Generate (N, File);
-   end Generate_Dialog;
-
 end Gtk.Font_Selection;

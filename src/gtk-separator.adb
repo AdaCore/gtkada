@@ -81,19 +81,4 @@ package body Gtk.Separator is
       Initialize_User_Data (Separator);
    end Initialize_Vseparator;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Class : constant String_Ptr := Get_Field (N, "class");
-      Id    : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Separator", "", "",
-        Class (Class'First + 3) & "separator", File);
-      Widget.Generate (N, File);
-   end Generate;
-
 end Gtk.Separator;

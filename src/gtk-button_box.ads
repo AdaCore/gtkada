@@ -129,13 +129,6 @@ package Gtk.Button_Box is
    --  Ipad_X and Ipad_Y are set to -1 if this widget uses the default
    --  values that are set by Set_Child_Ipadding_Default.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

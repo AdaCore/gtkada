@@ -386,24 +386,4 @@ package body Gtk.Menu is
       end Popup;
    end User_Menu_Popup;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      S  : String_Ptr := Get_Field (N.Parent, "class");
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Menu", File => File);
-
-      if S /= null and then S.all = "GtkMenuItem" then
-         Gen_Call_Child (N, null, "Menu_Item", "Set_Submenu", File => File);
-         N.Specific_Data.Has_Container := True;
-      end if;
-
-      Menu_Shell.Generate (N, File);
-   end Generate;
-
 end Gtk.Menu;

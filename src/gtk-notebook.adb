@@ -718,24 +718,4 @@ package body Gtk.Notebook is
       Internal (Get_Object (Notebook), Get_Object (Child), Position);
    end Reorder_Child;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Notebook", File => File);
-      Container.Generate (N, File);
-      Gen_Set (N, "Notebook", "scrollable", File);
-      Gen_Set (N, "Notebook", "show_border", File);
-      Gen_Set (N, "Notebook", "show_tabs", File);
-      Gen_Set (N, "Notebook", "tab_border", File);
-      Gen_Set (N, "Notebook", "tab_hborder", File);
-      Gen_Set (N, "Notebook", "tab_vborder", File);
-      Gen_Set (N, "Notebook", "tab_pos", File);
-   end Generate;
-
 end Gtk.Notebook;

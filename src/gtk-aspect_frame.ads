@@ -97,13 +97,6 @@ package Gtk.Aspect_Frame is
    --  Return the current Y alignment for the frame.
    --  1.0 means the child is top aligned, 1.0 that it is bottom aligned.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

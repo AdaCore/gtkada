@@ -117,18 +117,4 @@ package body Gtk.Menu_Bar is
       Internal (Get_Object (Menu_Bar), Gtk_Shadow_Type'Pos (The_Type));
    end Set_Shadow_Type;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Menu_Bar", File => File);
-      Menu_Shell.Generate (N, File);
-      Gen_Set (N, "Menu_Bar", "shadow_type", File => File);
-   end Generate;
-
 end Gtk.Menu_Bar;

@@ -63,31 +63,4 @@ package body Gtk.Check_Button is
       Initialize_User_Data (Check_Button);
    end Initialize;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Label : constant String_Ptr := Get_Field (N, "label");
-      Id    : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if not N.Specific_Data.Created then
-         if Label = null then
-            Gen_New (N, "Check_Button", File => File);
-         else
-            if Gettext_Support (N) then
-               Gen_New (N, "Check_Button", Label.all, File => File,
-                 Prefix => "-""", Postfix => """");
-            else
-               Gen_New (N, "Check_Button", Label.all, File => File,
-                 Prefix => """", Postfix => """");
-            end if;
-         end if;
-      end if;
-
-      Toggle_Button.Generate (N, File);
-   end Generate;
-
 end Gtk.Check_Button;

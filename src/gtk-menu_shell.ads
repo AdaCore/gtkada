@@ -105,14 +105,6 @@ package Gtk.Menu_Shell is
    --  This deselects the selected item, ungrabs the mouse and keyboard, and
    --  erase the Menu_Shell from the screen.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type)
-     renames Gtk.Container.Generate;
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

@@ -303,18 +303,4 @@ package body Gtk.List is
                 Item);
    end Unselect_Item;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "List", File => File);
-      Container.Generate (N, File);
-      Gen_Set (N, "List", "selection_mode", File => File);
-   end Generate;
-
 end Gtk.List;

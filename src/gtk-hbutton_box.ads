@@ -73,13 +73,6 @@ package Gtk.Hbutton_Box is
    function Get_Layout_Default return Gtk.Enums.Gtk_Button_Box_Style;
    --  Return the default layout to use for all the hbutton_boxes.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

@@ -76,17 +76,4 @@ package body Gtk.Hbutton_Box is
       Internal (Gtk_Button_Box_Style'Pos (Layout));
    end Set_Layout_Default;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Hbutton_Box", File => File);
-      Button_Box.Generate (N, File);
-   end Generate;
-
 end Gtk.Hbutton_Box;

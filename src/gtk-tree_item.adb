@@ -149,24 +149,4 @@ package body Gtk.Tree_Item is
                 Get_Object (Subtree));
    end Set_Subtree;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if Gettext_Support (N) then
-         Gen_New (N, "Tree_Item", Get_Field (N, "label").all,
-           File => File, Prefix => "-""", Postfix => """");
-      else
-         Gen_New (N, "Tree_Item", Get_Field (N, "label").all,
-           File => File, Prefix => """", Postfix => """");
-      end if;
-
-      Item.Generate (N, File);
-   end Generate;
-
 end Gtk.Tree_Item;

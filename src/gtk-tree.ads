@@ -103,13 +103,6 @@ package Gtk.Tree is
      (Tree : access Gtk_Tree_Record;
       Item : in Gint);
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Tree_Record is new Gtk.Container.Gtk_Container_Record
      with null record;

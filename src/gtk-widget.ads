@@ -809,13 +809,6 @@ package Gtk.Widget is
      (Widget : access Gtk_Widget_Record'Class) return Boolean;
    --  Test whether the Rc_Style flag is set.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    --------------------------------------
    -- Definitions for lists of widgets --
    --------------------------------------

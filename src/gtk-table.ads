@@ -136,13 +136,6 @@ package Gtk.Table is
    --  If Homogeneous is True, the rows and columns of the table will all
    --  be allocated the same width or height.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

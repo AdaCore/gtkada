@@ -63,13 +63,6 @@ package Gtk.Tree_Item is
    --  Note: Tree_Item must already have a parent, i.e have been inserted into
    --  a tree before you can set a subtree for it
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Tree_Item_Record is new Gtk.Item.Gtk_Item_Record with null record;
 

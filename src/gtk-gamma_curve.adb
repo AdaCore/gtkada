@@ -82,25 +82,4 @@ package body Gtk.Gamma_Curve is
       Initialize_User_Data (Gamma_Curve);
    end Initialize;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Gamma_Curve", File => File);
-      Box.Generate (N, File);
-      Add_Package ("Curve");
-      Put_Line (File, "   Set_Range (Get_Curve (" &
-        To_Ada (Get_Field (Find_Top_Widget (N), "name").all) & "." &
-        To_Ada (Get_Field (N, "name").all) & "), " &
-        To_Float (Get_Field (N, "min_x").all) & ", " &
-        To_Float (Get_Field (N, "max_x").all) & ", " &
-        To_Float (Get_Field (N, "min_y").all) & ", " &
-        To_Float (Get_Field (N, "max_y").all) & ");");
-   end Generate;
-
 end Gtk.Gamma_Curve;

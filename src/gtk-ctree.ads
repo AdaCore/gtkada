@@ -766,13 +766,6 @@ package Gtk.Ctree is
    --  !! Warning !! No type verification is made to check if you are
    --  using the appropriate function Get. This is your own responsability
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

@@ -83,20 +83,4 @@ package body Gtk.Dialog is
       Initialize_User_Data (Dialog);
    end Initialize;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate
-     (N    : in Node_Ptr;
-      File : in File_Type)
-   is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Dialog", File => File);
-      Window.Generate (N, File);
-   end Generate;
-
 end Gtk.Dialog;

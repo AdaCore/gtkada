@@ -153,13 +153,6 @@ package Gtk.Layout is
    function Get_Height (Layout : access Gtk_Layout_Record) return Guint;
    --  Get the height in pixels of the layout.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

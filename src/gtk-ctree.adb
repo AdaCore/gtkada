@@ -1783,16 +1783,4 @@ package body Gtk.CTree is
       end Pre_Recursive_To_Depth;
    end Row_Data;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Clist.Generate (N, File);
-   end Generate;
-
 end Gtk.CTree;

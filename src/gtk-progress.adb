@@ -295,18 +295,4 @@ package body Gtk.Progress is
       Internal (Get_Object (Progress), Value);
    end Set_Value;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Widget.Generate (N, File);
-      Gen_Set (N, "Progress", "activity_mode", File => File);
-      Gen_Set (N, "Progress", "show_text", File => File);
-   end Generate;
-
 end Gtk.Progress;

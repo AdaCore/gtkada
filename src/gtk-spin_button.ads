@@ -100,13 +100,6 @@ package Gtk.Spin_Button is
       Direction   : in Gtk.Enums.Gtk_Arrow_Type;
       Step        : in Gfloat);
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Spin_Button_Record is new Gtk.GEntry.Gtk_Entry_Record
      with null record;

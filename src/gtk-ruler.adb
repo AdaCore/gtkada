@@ -180,22 +180,4 @@ package body Gtk.Ruler is
       Internal (Get_Object (Ruler), Lower, Upper, Position, Max_Size);
    end Set_Range;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Class : constant String_Ptr := Get_Field (N, "class");
-      Id    : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Ruler", "", "", Class (Class'First + 3) & "ruler", File);
-      Widget.Generate (N, File);
-      Gen_Set (N, "Ruler", "metric", File);
-      Gen_Set
-        (N, "Ruler", "Range", "lower", "upper", "position", "max_size", File,
-         Is_Float => True);
-   end Generate;
-
 end Gtk.Ruler;

@@ -78,14 +78,6 @@ package Gtk.Drawing_Area is
    --  Request a new size for the area.
    --  This queues a resize request for the area.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

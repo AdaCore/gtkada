@@ -167,13 +167,6 @@ package Gtk.File_Selection is
      return Gtk.Widget.Gtk_Widget;
    --  Return the text displayed just above the Selection_Entry.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

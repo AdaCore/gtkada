@@ -209,13 +209,6 @@ package Gtk.Box is
                       return Gtk.Widget.Gtk_Widget;
    --  Return the Num-th child of the box, or null if there is no such child.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

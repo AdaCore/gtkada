@@ -47,14 +47,6 @@ package Gtk.Data is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Data.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type)
-     renames Gtk.Object.Generate;
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

@@ -242,22 +242,4 @@ package body Gtk.Preview is
       Internal;
    end Uninit;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if Get_Field (N, "type").all = "True" then
-         Gen_New (N, "Preview", "Preview_Color", File => File);
-         Gen_New (N, "Preview", "Preview_Grayscale", File => File);
-      end if;
-
-      Widget.Generate (N, File);
-      Gen_Set (N, "Preview", "expand", File);
-   end Generate;
-
 end Gtk.Preview;

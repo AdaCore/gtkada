@@ -389,22 +389,4 @@ package body Gtk.Text is
       Internal (Get_Object (Text));
    end Thaw;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Text", File => File);
-
-      Editable.Generate (N, File);
-
-      Gen_Set (N, "Text", "editable", File);
-      Gen_Set (N, "Text", "point", File);
-      Gen_Set (N, "Text", "word_wrap", File);
-   end Generate;
-
 end Gtk.Text;

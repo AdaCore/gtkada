@@ -94,13 +94,6 @@ package Gtk.Accel_Label is
    --  whenever accelerators are added or removed from the associated widget.
    --  Always return False.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

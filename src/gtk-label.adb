@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
+--                     Copyright (C) 1998-2001                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -48,10 +48,11 @@ package body Gtk.Label is
    ---------
 
    function Get (Label : access Gtk_Label_Record) return String is
-      procedure Internal (Label : in     System.Address;
-                          Str   :    out C.Strings.chars_ptr);
+      procedure Internal
+        (Label : System.Address; Str : out C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_get");
       Temp : chars_ptr;
+
    begin
       Internal (Get_Object (Label), Temp);
       return Value (Temp);
@@ -61,8 +62,7 @@ package body Gtk.Label is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Label :    out Gtk_Label;
-                      Str   : in     String := "") is
+   procedure Gtk_New (Label : out Gtk_Label; Str : in String := "") is
    begin
       Label := new Gtk_Label_Record;
       Initialize (Label, Str);
@@ -72,10 +72,13 @@ package body Gtk.Label is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Label : access Gtk_Label_Record'Class;
-                         Str   : in     String) is
+   procedure Initialize
+     (Label : access Gtk_Label_Record'Class;
+      Str   : in     String)
+   is
       function Internal (Str : in String) return System.Address;
       pragma Import (C, Internal, "gtk_label_new");
+
    begin
       Set_Object (Label, Internal (Str & ASCII.NUL));
       Initialize_User_Data (Label);
@@ -85,11 +88,14 @@ package body Gtk.Label is
    -- Set_Justify --
    -----------------
 
-   procedure Set_Justify (Label : access Gtk_Label_Record;
-                          Jtype : in Enums.Gtk_Justification) is
-      procedure Internal (Label : in System.Address;
-                          Jtype : in Enums.Gtk_Justification);
+   procedure Set_Justify
+     (Label : access Gtk_Label_Record;
+      Jtype : in Enums.Gtk_Justification)
+   is
+      procedure Internal
+        (Label : in System.Address; Jtype : in Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_label_set_justify");
+
    begin
       Internal (Get_Object (Label), Jtype);
    end Set_Justify;
@@ -98,11 +104,13 @@ package body Gtk.Label is
    -- Set_Text --
    --------------
 
-   procedure Set_Text (Label : access Gtk_Label_Record;
-                       Str   : in String) is
-      procedure Internal (Label : in System.Address;
-                          Str   : in String);
+   procedure Set_Text
+     (Label : access Gtk_Label_Record;
+      Str   : in String)
+   is
+      procedure Internal (Label : System.Address; Str : String);
       pragma Import (C, Internal, "gtk_label_set_text");
+
    begin
       Internal (Get_Object (Label), Str & ASCII.NUL);
    end Set_Text;
@@ -111,12 +119,13 @@ package body Gtk.Label is
    -- Set_Pattern --
    -----------------
 
-   procedure Set_Pattern (Label   : access Gtk_Label_Record;
-                          Pattern : in String)
+   procedure Set_Pattern
+     (Label   : access Gtk_Label_Record;
+      Pattern : in String)
    is
-      procedure Internal (Label   : in System.Address;
-                          Pattern : in String);
+      procedure Internal (Label : System.Address; Pattern : String);
       pragma Import (C, Internal, "gtk_label_set_pattern");
+
    begin
       Internal (Get_Object (Label), Pattern & ASCII.NUL);
    end Set_Pattern;
@@ -125,12 +134,13 @@ package body Gtk.Label is
    -- Set_Line_Wrap --
    -------------------
 
-   procedure Set_Line_Wrap (Label : access Gtk_Label_Record;
-                            Wrap  : in Boolean)
+   procedure Set_Line_Wrap
+     (Label : access Gtk_Label_Record;
+      Wrap  : in Boolean)
    is
-      procedure Internal (Label : in System.Address;
-                          Wrap  : in Gint);
+      procedure Internal (Label : System.Address; Wrap : Gint);
       pragma Import (C, Internal, "gtk_label_set_line_wrap");
+
    begin
       Internal (Get_Object (Label), Boolean'Pos (Wrap));
    end Set_Line_Wrap;
@@ -139,87 +149,14 @@ package body Gtk.Label is
    -- Parse_Uline --
    -----------------
 
-   procedure Parse_Uline
-     (Label : access Gtk_Label_Record;
-      Text  : in     String)
-   is
-      function Internal (Label : in System.Address;
-                         Text  : in String) return Guint;
+   procedure Parse_Uline (Label : access Gtk_Label_Record; Text : in String) is
+      function Internal (Label : System.Address; Text : String) return Guint;
       pragma Import (C, Internal, "gtk_label_parse_uline");
       Keyval : Guint;
+
    begin
       Keyval := Internal (Get_Object (Label), Text & ASCII.NUL);
    end Parse_Uline;
-
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Child_Name : String_Ptr := Get_Field (N, "child_name");
-      S          : String_Ptr;
-      Top        : String_Ptr := Get_Field (Find_Top_Widget (N), "name");
-      P          : Node_Ptr;
-      Num        : Gint;
-      Is_Tab,
-      Is_Title   : Boolean;
-      Id         : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if Gettext_Support (N) then
-         Gen_New (N, "Label", Adjust (Get_Field (N, "label").all),
-           File => File, Prefix => "-(""", Postfix => """)");
-      else
-         Gen_New (N, "Label", Adjust (Get_Field (N, "label").all),
-           File => File, Prefix => """", Postfix => """");
-      end if;
-
-      Misc.Generate (N, File);
-      Gen_Set (N, "Label", "justify", File);
-      Gen_Set (N, "Label", "Line_Wrap", "wrap", File);
-
-      if Child_Name /= null then
-         Is_Tab := Get_Part (Child_Name.all, 2) = "tab";
-         Is_Title := Get_Part (Child_Name.all, 2) = "title";
-
-         if Is_Tab or else Is_Title then
-
-            --  This label is part of a notebook (tab) or a clist (title)
-
-            P   := N.Parent.Child;
-            Num := 0;
-
-            while P /= N loop
-               S := Get_Field (P, "child_name");
-
-               if S /= null and then S.all = Child_Name.all then
-                  Num := Num + 1;
-               end if;
-
-               P := P.Next;
-            end loop;
-
-            if Is_Tab then
-               Add_Package ("Notebook");
-               Put (File, "   Set_Tab (");
-
-            elsif Is_Title then
-               Add_Package ("Clist");
-               Put (File, "   Set_Column_Widget (");
-            end if;
-
-            Put_Line (File,
-              To_Ada (Top.all) & "." &
-              To_Ada (Find_Tag
-                (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                 "name").Value.all) & "," &
-              Gint'Image (Num) & ", " &
-              To_Ada (Top.all) & "." &
-              To_Ada (Get_Field (N, "name").all) & ");");
-         end if;
-      end if;
-   end Generate;
 
    ---------------------
    -- Type_Conversion --

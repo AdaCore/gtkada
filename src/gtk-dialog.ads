@@ -77,13 +77,6 @@ package Gtk.Dialog is
      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
    --  Return the vertical box associated with a Dialog.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

@@ -118,26 +118,4 @@ package body Gtk.Check_Menu_Item is
       Internal (Get_Object (Check_Menu_Item));
    end Toggled;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if Gettext_Support (N) then
-         Gen_New (N, "Check_Menu_Item", Get_Field (N, "label").all,
-           File => File, Prefix => "-""", Postfix => """");
-      else
-         Gen_New (N, "Check_Menu_Item", Get_Field (N, "label").all,
-           File => File, Prefix => """", Postfix => """");
-      end if;
-
-      Menu_Item.Generate (N, File);
-      Gen_Set (N, "Check_Menu_Item", "active", File);
-      Gen_Set (N, "Check_Menu_Item", "always_show_toggle", File => File);
-   end Generate;
-
 end Gtk.Check_Menu_Item;

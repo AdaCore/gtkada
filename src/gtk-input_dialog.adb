@@ -55,17 +55,4 @@ package body Gtk.Input_Dialog is
       Initialize_User_Data (Input_Dialog);
    end Initialize;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Input_Dialog", File => File);
-      Dialog.Generate (N, File);
-   end Generate;
-
 end Gtk.Input_Dialog;

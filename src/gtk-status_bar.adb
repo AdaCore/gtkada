@@ -155,17 +155,4 @@ package body Gtk.Status_Bar is
       Internal (Get_Object (Statusbar), Context, Message);
    end Remove;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Status_Bar", File => File);
-      Box.Generate (N, File);
-   end Generate;
-
 end Gtk.Status_Bar;

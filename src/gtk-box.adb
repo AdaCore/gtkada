@@ -284,36 +284,4 @@ package body Gtk.Box is
                 Gtk_Pack_Type'Pos (PackType));
    end Set_Child_Packing;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      use Container;
-
-      Child_Name : constant Node_Ptr := Find_Tag (N.Child, "child_name");
-      Class      : constant String_Ptr := Get_Field (N, "class");
-      Id         : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if Child_Name = null then
-         if not N.Specific_Data.Created then
-            Gen_New (N, "Box", Get_Field (N, "homogeneous").all,
-              Get_Field (N, "spacing").all,
-              Class (Class'First + 3) & "box", File);
-         end if;
-
-      else
-         Gen_Child (N, Child_Name, File);
-      end if;
-
-      Container.Generate (N, File);
-
-      if Child_Name /= null then
-         Gen_Set (N, "Box", "homogeneous", File);
-         Gen_Set (N, "Box", "spacing", File);
-      end if;
-   end Generate;
-
 end Gtk.Box;

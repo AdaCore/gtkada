@@ -271,30 +271,4 @@ package body Gtk.Window is
       end if;
    end Get_Title;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Window", Get_Field (N, "type").all, File => File);
-      Bin.Generate (N, File);
-
-      if Gettext_Support (N) then
-         Gen_Set (N, "Window", "title", File, "-""", """");
-      else
-         Gen_Set (N, "Window", "title", File, """", """");
-      end if;
-
-      Gen_Set (N, "Window", "Policy", "allow_shrink", "allow_grow",
-        "auto_shrink", "", File);
-      Gen_Set (N, "Window", "position", File);
-      Gen_Set (N, "Window", "modal", File);
-      Gen_Set (N, "Window", "Default_Size", "default_width", "default_height",
-        "", "", File);
-   end Generate;
-
 end Gtk.Window;

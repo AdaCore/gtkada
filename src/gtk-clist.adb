@@ -1633,47 +1633,4 @@ package body Gtk.Clist is
       end Set;
    end Row_Data;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Columns, S : String_Ptr;
-      Cur : constant String_Ptr := Get_Field (N, "name");
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
-      Id  : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Columns := Get_Field (N, "columns");
-
-      if not N.Specific_Data.Created then
-         if Get_Field (N, "class").all = "GtkCTree" then
-            Gen_New (N, "Ctree", Columns.all, File => File);
-         else
-            Gen_New (N, "Clist", Columns.all, File => File);
-         end if;
-      end if;
-
-      Container.Generate (N, File);
-      Gen_Set (N, "Clist", "selection_mode", File => File);
-      Gen_Set (N, "Clist", "shadow_type", File => File);
-      Gen_Set (N, "Clist", "show_titles", File);
-
-      S := Get_Field (N, "column_widths");
-
-      if S /= null then
-         for J in 0 .. Gint'Value (Columns.all) - 1 loop
-            Put (File, "   Set_Column_Width (");
-
-            if Top /= Cur then
-               Put (File, To_Ada (Top.all) & ".");
-            end if;
-
-            Put_Line (File, To_Ada (Cur.all) & "," & Gint'Image (J) &
-              ", " & Get_Part (S.all, Integer (J + 1), ',') & ");");
-         end loop;
-      end if;
-   end Generate;
-
 end Gtk.Clist;

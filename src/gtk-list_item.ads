@@ -49,13 +49,6 @@ package Gtk.List_Item is
 
    procedure Gtk_Select (List_Item : access Gtk_List_Item_Record);
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_List_Item_Record is new Gtk.Item.Gtk_Item_Record with null record;
 

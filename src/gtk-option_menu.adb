@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 
 package body Gtk.Option_Menu is
 
@@ -106,60 +105,5 @@ package body Gtk.Option_Menu is
    begin
       Internal (Get_Object (Option_Menu), Get_Object (Menu));
    end Set_Menu;
-
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      S  : String_Ptr;
-      First, Last : Natural;
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Option_Menu", File => File);
-      Button.Generate (N, File);
-
-      S := Get_Field (N, "items");
-
-      if S /= null then
-         First := S'First;
-
-         Add_Package ("Menu");
-         Add_Package ("Menu_Item");
-         Put_Line (File, "   Menu.Gtk_New (" &
-           To_Ada (Get_Field (N, "name").all) & "_Menu);");
-
-         loop
-            Last := Index (S (First .. S'Last), ASCII.LF & "");
-
-            if Last = 0 then
-               Last := S'Last + 1;
-            end if;
-
-            Put (File, "   Menu_Item.Gtk_New (The_Menu_Item, ");
-
-            if Gettext_Support (N) then
-               Put (File, '-');
-            end if;
-
-            Put_Line (File, '"' & S (First .. Last - 1) & """);");
-            Put_Line (File, "   Menu.Append (" &
-              To_Ada (Get_Field (N, "name").all) & "_Menu, The_Menu_Item);");
-
-            exit when Last >= S'Last;
-
-            First := Last + 1;
-         end loop;
-
-         Put_Line (File, "   Option_Menu.Set_Menu");
-         Put_Line (File, "     (Gtk_Option_Menu (" &
-           To_Ada (Get_Field (Find_Top_Widget (N), "name").all) & "." &
-           To_Ada (Get_Field (N, "name").all) & "),");
-         Put_Line (File, "      " & To_Ada (Get_Field (N, "name").all) &
-           "_Menu);");
-      end if;
-   end Generate;
 
 end Gtk.Option_Menu;

@@ -165,13 +165,6 @@ package Gtk.Container is
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Emit a "set_focus_child" signal.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

@@ -304,20 +304,4 @@ package body Gtk.Tree is
       Internal (Get_Object (Tree), Item);
    end Unselect_Item;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Tree", File => File);
-      Container.Generate (N, File);
-      Gen_Set (N, "Tree", "selection_mode", File);
-      Gen_Set (N, "Tree", "view_lines", File);
-      Gen_Set (N, "Tree", "view_mode", File);
-   end Generate;
-
 end Gtk.Tree;

@@ -154,14 +154,6 @@ package Gtk.Editable is
    function Get_Position (Editable : access Gtk_Editable_Record) return Gint;
    --  Return the position of the cursor.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type)
-     renames Gtk.Widget.Generate;
-   --  Gate internal function
-
    ---------------
    --  Signals  --
    ---------------

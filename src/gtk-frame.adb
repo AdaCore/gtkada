@@ -125,36 +125,4 @@ package body Gtk.Frame is
       Internal (Get_Object (Frame), Gtk_Shadow_Type'Pos (The_Type));
    end Set_Shadow_Type;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      S  : String_Ptr;
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      S := Get_Field (N, "label");
-
-      if S /= null then
-         if Gettext_Support (N) then
-            Gen_New (N, "Frame", S.all,
-              File => File, Prefix => "-""", Postfix => """");
-         else
-            Gen_New (N, "Frame", S.all,
-              File => File, Prefix => """", Postfix => """");
-         end if;
-      else
-         Gen_New (N, "Frame", File => File);
-      end if;
-
-      Bin.Generate (N, File);
-      Gen_Set
-        (N, "Frame", "Label_Align",
-         "label_xalign", "label_yalign", "", "", File,
-         Is_Float => True);
-      Gen_Set (N, "Frame", "shadow_type", File);
-   end Generate;
-
 end Gtk.Frame;

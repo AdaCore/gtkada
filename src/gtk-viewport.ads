@@ -69,13 +69,6 @@ package Gtk.Viewport is
      (Viewport   : access Gtk_Viewport_Record;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Viewport_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
 

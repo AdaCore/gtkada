@@ -131,37 +131,4 @@ package body Gtk.Toggle_Button is
       Internal (Get_Object (Toggle_Button));
    end Toggled;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Label : constant String_Ptr := Get_Field (N, "label");
-      Id    : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if N.Specific_Data.Initialized then
-         return;
-      end if;
-
-      if not N.Specific_Data.Created then
-         if Label = null then
-            Gen_New (N, "Toggle_Button", File => File);
-         else
-            if Gettext_Support (N) then
-               Gen_New (N, "Toggle_Button", Label.all,
-                 File => File, Prefix => "-""", Postfix => """");
-            else
-               Gen_New (N, "Toggle_Button", Label.all,
-                 File => File, Prefix => """", Postfix => """");
-            end if;
-         end if;
-      end if;
-
-      Button.Generate (N, File);
-      Gen_Set (N, "Toggle_Button", "mode", File);
-      Gen_Set (N, "Toggle_Button", "active", File);
-   end Generate;
-
 end Gtk.Toggle_Button;

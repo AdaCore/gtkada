@@ -763,13 +763,6 @@ package Gtk.Clist is
       --  Get_Row_List. This is faster for big lists.
    end Row_Data;
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    --  <doc_ignore>
    procedure Set_Show_Titles (Clist : access Gtk_Clist_Record; Show : Boolean);
    --  If show is true, call Column_Titles_Show. Do nothing otherwise.

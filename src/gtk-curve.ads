@@ -104,13 +104,6 @@ package Gtk.Curve is
    --  to a linear or spline curve, in which case the curve will be changed as
    --  little as possible.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

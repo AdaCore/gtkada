@@ -124,13 +124,6 @@ package Gtk.Status_Bar is
    --  The message is only removed if it is in a specific context.
    --  Nothing happens if no matching message is found.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

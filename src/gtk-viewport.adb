@@ -185,18 +185,4 @@ package body Gtk.Viewport is
       Internal (Get_Object (Viewport), Adj);
    end Set_Vadjustment;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Viewport", File => File);
-      Gtk.Bin.Generate (N, File);
-      Gen_Set (N, "Viewport", "shadow_type", File => File);
-   end Generate;
-
 end Gtk.Viewport;

@@ -77,13 +77,6 @@ package Gtk.Menu_Item is
    --  Call Right_Justify when Justify. Noop otherwise
    --  This procedure is needed by Gate to automate the code generation.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with null record;
 

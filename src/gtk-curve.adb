@@ -147,20 +147,4 @@ package body Gtk.Curve is
                 Vector (Vector'First)'Address);
    end Set_Vector;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Curve", File => File);
-      Drawing_Area.Generate (N, File);
-      Gen_Set (N, "Curve", "curve_type", File => File);
-      Gen_Set (N, "Curve", "Range", "min_x", "max_x", "min_y", "max_y",
-        File => File, Is_Float => True);
-   end Generate;
-
 end Gtk.Curve;

@@ -206,17 +206,4 @@ package body Gtk.Calendar is
       return Boolean'Val (Internal (Get_Object (Calendar), Day));
    end Unmark_Day;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Calendar", File => File);
-      Widget.Generate (N, File);
-   end Generate;
-
 end Gtk.Calendar;

@@ -211,19 +211,4 @@ package body Gtk.Scrolled_Window is
       end if;
    end Set_Vadjustment;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Id : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      Gen_New (N, "Scrolled_Window", File => File);
-      Container.Generate (N, File);
-      Gen_Set (N, "Scrolled_Window", "Policy", "hscrollbar_policy",
-        "vscrollbar_policy", "", "", File);
-   end Generate;
-
 end Gtk.Scrolled_Window;

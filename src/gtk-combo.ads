@@ -137,13 +137,6 @@ package Gtk.Combo is
    --  If the value entered must match one of the values in the list, val
    --  should be True.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

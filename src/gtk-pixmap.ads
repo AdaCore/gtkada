@@ -79,13 +79,6 @@ package Gtk.Pixmap is
       return Gtk_Pixmap;
    --  Create a pixmap given a window and a buffer.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
 private
    type Gtk_Pixmap_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
 

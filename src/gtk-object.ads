@@ -310,13 +310,6 @@ package Gtk.Object is
 
    --  </doc_ignore>
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

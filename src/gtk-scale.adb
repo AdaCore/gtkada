@@ -182,37 +182,4 @@ package body Gtk.Scale is
       Internal (Get_Object (Scale), Gtk_Position_Type'Pos (Pos));
    end Set_Value_Pos;
 
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      S     : String_Ptr;
-      Class : constant String_Ptr := Get_Field (N, "class");
-      Id    : constant Gtk_Type := Get_Type;
-      pragma Warnings (Off, Id);
-
-   begin
-      if not N.Specific_Data.Created then
-         S := Get_Field (N, "name");
-         Add_Package ("Adjustment");
-         Put_Line
-           (File, "   Adjustment.Gtk_New (" & To_Ada (S.all) & "_Adj, " &
-            To_Float (Get_Field (N, "value").all) & ", " &
-            To_Float (Get_Field (N, "lower").all) & ", " &
-            To_Float (Get_Field (N, "upper").all) & ", " &
-            To_Float (Get_Field (N, "step").all)  & ", " &
-            To_Float (Get_Field (N, "page").all)  & ", " &
-            To_Float (Get_Field (N, "page_size").all) & ");");
-
-         Gen_New (N, "Scale", S.all & "_Adj", "",
-           Class (Class'First + 3) & "scale", File => File);
-      end if;
-
-      GRange.Generate (N, File);
-      Gen_Set (N, "Scale", "digits", File => File);
-      Gen_Set (N, "Scale", "draw_value", File => File);
-      Gen_Set (N, "Scale", "value_pos", File => File);
-   end Generate;
-
 end Gtk.Scale;

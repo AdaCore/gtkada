@@ -106,13 +106,6 @@ package Gtk.GEntry is
    --  Set the maximum length for the text.
    --  The current text is truncated if needed.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

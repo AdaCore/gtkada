@@ -374,13 +374,6 @@ package Gtk.Notebook is
      (Widget : access Gtk_Notebook_Record) return Page_List.Glist;
    --  Return the list of all pages in the notebook.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

@@ -73,13 +73,6 @@ package Gtk.Option_Menu is
    --  Select the menu item specified by index making it the newly selected
    --  value for the option menu.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

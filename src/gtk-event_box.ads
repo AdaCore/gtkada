@@ -62,13 +62,6 @@ package Gtk.Event_Box is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Event_Box.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------

@@ -86,13 +86,6 @@ package Gtk.Frame is
       The_Type : in Gtk_Shadow_Type);
    --  Change the visual aspect of the frame.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------
