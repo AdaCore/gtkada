@@ -3539,3 +3539,28 @@ void ada_gtk_tree_view_thaw_sort (GtkTreeStore* tree, gint id) {
   gtk_tree_sortable_set_sort_column_id
     (GTK_TREE_SORTABLE (tree), id, tree->order);
 }
+
+/*****************************************
+ ** Event boxes                         **
+ *****************************************/
+
+
+#if (GTK_CHECK_VERSION (2, 4, 0))
+void       gtk_event_box_set_visible_window (GtkEventBox *event_box,
+                                             gboolean     visible_window) 
+{
+}
+gboolean   gtk_event_box_get_visible_window (GtkEventBox *event_box)
+{
+   return 1;
+}
+
+void       gtk_event_box_set_above_child    (GtkEventBox *event_box,
+                                             gboolean     above_child)
+{
+}
+gboolean   gtk_event_box_get_above_child    (GtkEventBox *event_box) 
+{
+  return 0;
+}
+#endif
