@@ -221,11 +221,11 @@ package Gtk.Widget is
    -----------------------
 
    procedure Size_Request (Widget      : access Gtk_Widget_Record;
-                           Requisition : Gtk_Requisition);
+                           Requisition : in out Gtk_Requisition);
    --  Emit a "size_request" event for the widget
 
    procedure Size_Allocate (Widget     : access Gtk_Widget_Record;
-                            Allocation : Gtk_Allocation);
+                            Allocation : in out Gtk_Allocation);
    --  Emit a "size_allocate" event for the widget.
    --  Allocation'size is first constrained to a range between 1x1 and
    --  32767x32767.

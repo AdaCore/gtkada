@@ -1171,7 +1171,7 @@ package body Gtk.Widget is
    ------------------
 
    procedure Size_Request (Widget      : access Gtk_Widget_Record;
-                           Requisition : Gtk_Requisition)
+                           Requisition : in out Gtk_Requisition)
    is
       procedure Internal (Widget      : System.Address;
                           Requisition : System.Address);
@@ -1179,6 +1179,7 @@ package body Gtk.Widget is
       Req : aliased Gtk_Requisition := Requisition;
    begin
       Internal (Get_Object (Widget), Req'Address);
+      Requisition := Req;
    end Size_Request;
 
    -------------------
@@ -1186,7 +1187,7 @@ package body Gtk.Widget is
    -------------------
 
    procedure Size_Allocate (Widget     : access Gtk_Widget_Record;
-                            Allocation : Gtk_Allocation)
+                            Allocation : in out Gtk_Allocation)
    is
       procedure Internal (Widget      : System.Address;
                           Allocation : System.Address);
@@ -1194,6 +1195,7 @@ package body Gtk.Widget is
       Alloc : aliased Gtk_Allocation := Allocation;
    begin
       Internal (Get_Object (Widget), Alloc'Address);
+      Allocation := Alloc;
    end Size_Allocate;
 
    --------------
