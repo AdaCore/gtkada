@@ -9,8 +9,6 @@ with Gtk.Style; use Gtk.Style;
 with Gtk.Widget; use Gtk.Widget;
 with File_Utils; use File_Utils;
 
-with Gtk.Widget; use Gtk.Widget;
-
 package body Save_File_Selection_Pkg.Callbacks is
 
    use Gtk.Arguments;
@@ -25,7 +23,7 @@ package body Save_File_Selection_Pkg.Callbacks is
    is
       Arg1 : Gdk_Event := To_Event (Params, 1);
    begin
-      Gtk.Widget.Hide (Gtk.Widget.Get_Toplevel (Gtk_Widget (Object)));
+      Hide (Get_Toplevel (Object));
    end On_Save_Filesel_Delete_Event;
 
    ---------------------------------------
@@ -36,7 +34,7 @@ package body Save_File_Selection_Pkg.Callbacks is
      (Object : access Gtk_Button_Record'Class)
    is
    begin
-      Gtk.Widget.Hide (Gtk_Widget (Save_File_Selection));
+      Hide (Save_File_Selection);
       Free (Current_Filename);
       Current_Filename := new String' (Get_Filename (Save_File_Selection));
       Real_Open_File (Current_Filename.all);
@@ -50,7 +48,7 @@ package body Save_File_Selection_Pkg.Callbacks is
      (Object : access Gtk_Button_Record'Class)
    is
    begin
-      Gtk.Widget.Hide (Gtk.Widget.Get_Toplevel (Gtk_Widget (Object)));
+      Hide (Get_Toplevel (Gtk_Widget (Object)));
    end On_Save_Filesel_Cancel_Button_Clicked;
 
 end Save_File_Selection_Pkg.Callbacks;

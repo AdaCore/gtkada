@@ -1,11 +1,8 @@
 with Glib; use Glib;
 with Gtk; use Gtk;
 with Gdk.Types; use Gdk.Types;
-with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Enums;  use Gtk.Enums;
-with Gtk.Pixmap; use Gtk.Pixmap;
-with Gtk.Accel_Group; use Gtk.Accel_Group;
 with Callbacks_Gladeedit; use Callbacks_Gladeedit;
 with About_Dialog_Pkg.Callbacks; use About_Dialog_Pkg.Callbacks;
 
@@ -18,13 +15,13 @@ begin
 end Gtk_New;
 
 procedure Initialize (About_Dialog : access About_Dialog_Record'Class) is
-
 begin
    Gtk.Dialog.Initialize (About_Dialog);
    Set_Title (About_Dialog, "About The Editor");
    Set_Policy (About_Dialog, True, True, False);
    Set_Position (About_Dialog, Win_Pos_Mouse);
    Set_Modal (About_Dialog, False);
+
    About_Dialog.Dialog_Vbox2 := Get_Vbox (About_Dialog);
    Set_Border_Width (About_Dialog.Dialog_Vbox2, 2);
    Set_Homogeneous (About_Dialog.Dialog_Vbox2, False);

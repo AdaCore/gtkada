@@ -102,7 +102,7 @@ package body Main_Window_Pkg.Callbacks is
      (Object : access Gtk_Menu_Item_Record'Class)
    is
    begin
-      Gtk.Editable.Cut_Clipboard (Gtk_Editable (Main_Window.Text1), 0);
+      Cut_Clipboard (Main_Window.Text1, 0);
 
       Gtk.Status_Bar.Pop (Main_Window.Statusbar1, 1);
       Id := Gtk.Status_Bar.Push
@@ -117,7 +117,7 @@ package body Main_Window_Pkg.Callbacks is
      (Object : access Gtk_Menu_Item_Record'Class)
    is
    begin
-      Gtk.Editable.Copy_Clipboard (Gtk_Editable (Main_Window.Text1), 0);
+      Copy_Clipboard (Main_Window.Text1, 0);
 
       Gtk.Status_Bar.Pop (Main_Window.Statusbar1, 1);
       Id := Gtk.Status_Bar.Push (Main_Window.Statusbar1, 1, "Text copied.");
@@ -131,7 +131,7 @@ package body Main_Window_Pkg.Callbacks is
      (Object : access Gtk_Menu_Item_Record'Class)
    is
    begin
-      Gtk.Editable.Paste_Clipboard (Gtk_Editable (Main_Window.Text1), 0);
+      Paste_Clipboard (Main_Window.Text1, 0);
 
       Gtk.Status_Bar.Pop (Main_Window.Statusbar1, 1);
       Id := Gtk.Status_Bar.Push (Main_Window.Statusbar1, 1, "Text pasted.");
@@ -145,7 +145,7 @@ package body Main_Window_Pkg.Callbacks is
      (Object : access Gtk_Menu_Item_Record'Class)
    is
    begin
-      Gtk.Editable.Delete_Selection (Gtk_Editable (Main_Window.Text1));
+      Delete_Selection (Main_Window.Text1);
 
       Gtk.Status_Bar.Pop (Main_Window.Statusbar1, 1);
       Id := Gtk.Status_Bar.Push (Main_Window.Statusbar1, 1, "Text deleted.");

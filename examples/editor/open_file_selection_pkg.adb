@@ -1,11 +1,8 @@
 with Glib; use Glib;
 with Gtk; use Gtk;
 with Gdk.Types; use Gdk.Types;
-with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Enums;  use Gtk.Enums;
-with Gtk.Pixmap; use Gtk.Pixmap;
-with Gtk.Accel_Group; use Gtk.Accel_Group;
 with Callbacks_Gladeedit; use Callbacks_Gladeedit;
 with Open_File_Selection_Pkg.Callbacks; use Open_File_Selection_Pkg.Callbacks;
 
@@ -18,7 +15,6 @@ begin
 end Gtk_New;
 
 procedure Initialize (Open_File_Selection : access Open_File_Selection_Record'Class) is
-
 begin
    Gtk.File_Selection.Initialize (Open_File_Selection, "Open File");
    Set_Show_File_Op_Buttons (Open_File_Selection, True);
@@ -29,6 +25,7 @@ begin
    Set_Policy (Open_File_Selection, False, True, False);
    Set_Position (Open_File_Selection, Win_Pos_Mouse);
    Set_Modal (Open_File_Selection, False);
+
    Open_File_Selection.Ok_Button1 := Get_Ok_Button (Open_File_Selection);
    Set_Flags (Open_File_Selection.Ok_Button1, Can_Default);
    Button_Callback.Connect

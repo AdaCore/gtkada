@@ -1,11 +1,8 @@
 with Glib; use Glib;
 with Gtk; use Gtk;
 with Gdk.Types; use Gdk.Types;
-with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Enums;  use Gtk.Enums;
-with Gtk.Pixmap; use Gtk.Pixmap;
-with Gtk.Accel_Group; use Gtk.Accel_Group;
 with Callbacks_Gladeedit; use Callbacks_Gladeedit;
 with Save_File_Selection_Pkg.Callbacks; use Save_File_Selection_Pkg.Callbacks;
 
@@ -18,7 +15,6 @@ begin
 end Gtk_New;
 
 procedure Initialize (Save_File_Selection : access Save_File_Selection_Record'Class) is
-
 begin
    Gtk.File_Selection.Initialize (Save_File_Selection, "Save File");
    Set_Show_File_Op_Buttons (Save_File_Selection, True);
@@ -29,6 +25,7 @@ begin
    Set_Policy (Save_File_Selection, False, True, False);
    Set_Position (Save_File_Selection, Win_Pos_Mouse);
    Set_Modal (Save_File_Selection, False);
+
    Save_File_Selection.Ok_Button3 := Get_Ok_Button (Save_File_Selection);
    Set_Flags (Save_File_Selection.Ok_Button3, Can_Default);
    Button_Callback.Connect
