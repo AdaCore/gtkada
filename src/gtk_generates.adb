@@ -28,25 +28,6 @@ package body Gtk_Generates is
 
    Widget, Widget2 : System.Address;
 
-   function Get_Property
-     (N        : Node_Ptr;
-      Property : String;
-      Default  : String := "") return String;
-   --  Return the propertu Property in N, or Default if the property was not
-   --  found.
-
-   function Get_Property
-     (N        : Node_Ptr;
-      Property : String) return String_Ptr;
-   --  Return the value of the property Property if it exists in the direct
-   --  children of N.
-
-   function Get_Class (N : Node_Ptr) return String;
-   --  Return the class of N if N is a widget. Otherwise return "".
-
-   function Get_Name (N : Node_Ptr) return String;
-   --  Return the name of N.
-
    function Widget_New
      (T : Glib.GType; Addr : System.Address := System.Null_Address)
       return System.Address;
@@ -256,14 +237,20 @@ package body Gtk_Generates is
    -- Button_Box_Generate --
    -------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Button_Box_Generate (N : Node_Ptr; File : File_Type) is
-      function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_button_box_get_type");
+      Class : constant String := Get_Class (N);
+      function Build_Hbuttonbox return Glib.GType;
+      pragma Import (C, Build_Hbuttonbox, "gtk_hbutton_box_get_type");
+      function Build_Vbuttonbox return Glib.GType;
+      pragma Import (C, Build_Vbuttonbox, "gtk_vbutton_box_get_type");
 
    begin
-      Widget := Widget_New (Build_Type);
+      if Class = "GtkHButtonBox" then
+         Widget := Widget_New (Build_Hbuttonbox);
+      else
+         Widget := Widget_New (Build_Vbuttonbox);
+      end if;
+
       Widget_Destroy (Widget);
       Box_Generate (N, File);
       Gen_Set (N, "spacing", File);
@@ -755,8 +742,6 @@ package body Gtk_Generates is
    -- GEntry_Generate --
    ---------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure GEntry_Generate (N : Node_Ptr; File : File_Type) is
       Child_Name : constant Node_Ptr := Find_Tag (N.Child, "child_name");
       function Build_Type return Glib.GType;
@@ -773,7 +758,7 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Editable_Generate (N, File);
       Gen_Set (N, "editable", File);
-      Gen_Set (N, "Max_Length", "text_max_length", "", "", "", File);
+      Gen_Set (N, "Max_Length", "max_length", "", "", "", File);
       Gen_Set (N, "position", File);
 
       if Gettext_Support (N) then
@@ -782,7 +767,7 @@ package body Gtk_Generates is
          Gen_Set (N, "text", File, """", """");
       end if;
 
-      Gen_Set (N, "Visibility", "text_visible", "", "", "", File);
+      Gen_Set (N, "Visibility", "visibility", "", "", "", File);
    end GEntry_Generate;
 
    ---------------------
@@ -890,14 +875,15 @@ package body Gtk_Generates is
    --------------------
 
    procedure Label_Generate (N : Node_Ptr; File : File_Type) is
-      Child_Name : constant String_Ptr := Get_Field (N, "child_name");
+      Parent     : constant Node_Ptr := N.Parent.Parent;
+      Name       : constant String := To_Ada (Get_Name (N));
       S          : String_Ptr;
-      Top        : constant String_Ptr :=
-        Get_Field (Find_Top_Widget (N), "name");
+      Top        : constant String := To_Ada (Get_Name (Find_Top_Widget (N)));
       P          : Node_Ptr;
+      Packing    : Node_Ptr := null;
       Num        : Gint;
-      Is_Tab,
-      Is_Title   : Boolean;
+      Is_Tab     : Boolean := False;
+
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_label_get_type");
 
@@ -922,44 +908,55 @@ package body Gtk_Generates is
       Gen_Set (N, "justify", File);
       Gen_Set (N, "line_wrap", File, Property_Name => "wrap");
 
-      if Child_Name /= null then
-         Is_Tab := Get_Part (Child_Name.all, 2) = "tab";
-         Is_Title := Get_Part (Child_Name.all, 2) = "title";
+      Packing := Find_Tag (N, "packing");
 
-         if Is_Tab or else Is_Title then
+      if Parent /= null then
+         if Packing /= null then
+            S := Get_Property (Packing, "type");
 
+            if S /= null and then S.all = "tab" then
+               Is_Tab := True;
+            end if;
+         end if;
+
+         if Is_Tab then
             --  This label is part of a notebook (tab) or a clist (title)
 
-            P   := N.Parent.Child;
             Num := 0;
 
-            while P /= N loop
-               S := Get_Field (P, "child_name");
+            P := Parent.Child;
+            P := Find_Tag (P, "child");
+            P := P.Child;
 
-               if S /= null and then S.all = Child_Name.all then
-                  Num := Num + 1;
+            while P /= null and then P /= N loop
+               --  Count the widgets that are not tabs.
+               Packing := Find_Tag (P, "packing");
+
+               if Packing /= null then
+                  S := Get_Property (Packing, "type");
+
+                  if S = null or else S.all /= "tab" then
+                     Num := Num + 1;
+                  end if;
                end if;
 
-               P := P.Next;
+               if P.Parent.Next /= null then
+                  P := P.Parent.Next.Child;
+               else
+                  P := null;
+               end if;
             end loop;
 
-            if Is_Tab then
-               Add_Package ("Notebook");
-               Put (File, "   Set_Tab (");
+            Num := Num - 1;
 
-            elsif Is_Title then
-               Add_Package ("Clist");
-               Put (File, "   Set_Column_Widget (");
-            end if;
+            Add_Package ("Notebook");
+            Put (File, "   Set_Tab (");
 
-            Put_Line (File,
-              To_Ada (Top.all) & "." &
-              To_Ada (Find_Tag
-                (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                 "name").Value.all) & "," &
-              Gint'Image (Num) & ", " &
-              To_Ada (Top.all) & "." &
-              To_Ada (Get_Field (N, "name").all) & ");");
+            Put_Line
+              (File,
+               Top & "." & To_Ada (Get_Name (Parent)) & "," &
+               Gint'Image (Num) & ", " &
+               Top & "." & Name & ");");
          end if;
       end if;
    end Label_Generate;
@@ -1015,8 +1012,6 @@ package body Gtk_Generates is
    -- List_Item_Generate --
    ------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure List_Item_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_list_item_get_type");
@@ -1024,10 +1019,10 @@ package body Gtk_Generates is
    begin
       Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
-         Gen_New (N, "List_Item", Get_Field (N, "label").all,
+         Gen_New (N, "List_Item", Get_Property (N, "label"),
            File => File, Prefix => "-""", Postfix => """");
       else
-         Gen_New (N, "List_Item", Get_Field (N, "label").all,
+         Gen_New (N, "List_Item", Get_Property (N, "label"),
            File => File, Prefix => """", Postfix => """");
       end if;
 
@@ -1575,32 +1570,37 @@ package body Gtk_Generates is
    -- Spin_Button_Generate --
    --------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Spin_Button_Generate (N : Node_Ptr; File : File_Type) is
-      S   : String_Ptr;
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Top : constant String := To_Ada (Get_Name (Find_Top_Widget (N)));
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_spin_button_get_type");
-
+      Name : constant String := To_Ada (Get_Name (N));
    begin
       Widget := Widget_New (Build_Type);
       if not N.Specific_Data.Created then
-         S := Get_Field (N, "name");
          Add_Package ("Adjustment");
-         Put_Line
-           (File, "   Gtk_New (" & To_Ada (S.all) & "_Adj, " &
-            To_Float (Get_Field (N, "value").all) & ", " &
-            To_Float (Get_Field (N, "lower").all) & ", " &
-            To_Float (Get_Field (N, "upper").all) & ", " &
-            To_Float (Get_Field (N, "step").all)  & ", " &
-            To_Float (Get_Field (N, "page").all)  & ", " &
-            To_Float (Get_Field (N, "page_size").all) & ");");
+         declare
+            A : constant String :=
+              Get_Property (N, "adjustment", "1 0 100 1 10 10") & " ";
+            K : Natural := A'First - 1;
+            P : Natural := A'First;
+         begin
+            Put (File, "   Gtk_New (" & Name & "_Adj");
+            for J in 1 .. 6 loop
+               P := K + 1;
+               K := Index (A (P .. A'Last), " ");
+               Put (File, ", " & To_Float (A (P .. K - 1)));
+            end loop;
+
+            Put_Line (File, ");");
+         end;
+
          Add_Package ("Spin_Button");
-         Put_Line (File, "   Gtk_New (" & To_Ada (Top.all) & "." &
-           To_Ada (S.all) & ", " & To_Ada (S.all) & "_Adj, " &
-           To_Float (Get_Field (N, "climb_rate").all) & ", " &
-           Get_Field (N, "digits").all & ");");
+
+         Put_Line (File, "   Gtk_New (" & Top & "." &
+                   Name & ", " & Name & "_Adj, " &
+                   To_Float (Get_Property (N, "climb_rate", "1.0")) & ", " &
+                   Get_Property (N, "digits", "0") & ");");
          N.Specific_Data.Created := True;
       end if;
 
@@ -1725,7 +1725,7 @@ package body Gtk_Generates is
       Gen_Set (N, "active", File);
    end Toggle_Button_Generate;
 
-   Widget_Class : aliased String := "GtkWidget";
+   Widget_Class : constant String := "GtkWidget";
 
    ----------------------
    -- Toolbar_Generate --
@@ -1832,7 +1832,7 @@ package body Gtk_Generates is
                end if;
 
                Add_Package ("Widget");
-               Gen_Signal (P, File, Widget_Class'Access);
+               Gen_Signal (P, File, Widget_Class);
 
                P.Specific_Data.Created := True;
                P.Specific_Data.Initialized := True;
@@ -2232,6 +2232,28 @@ package body Gtk_Generates is
             else
                Put_Line (File, S.all & ");");
             end if;
+
+         elsif Parent_Class = "GtkNotebook" then
+            --  If the item is not a Tab, add it as a page.
+
+            S := Get_Property (Packing, "type");
+
+            if S = null or else S.all /= "tab" then
+               Put (File, "   Append_Page (");
+               Put (File, Top_Name & "." & Parent_Name & ", ");
+               Put_Line (File, Top_Name & "." & Cur & ");");
+
+               Put (File, "   Set_Tab_Label_Packing (");
+               Put (File, Top_Name & "." & Parent_Name & ", ");
+               Put (File, Top_Name & "." & Cur & ", ");
+               Put (File, To_Ada
+                      (Get_Property (Packing, "tab_expand", "False")) & ", ");
+               Put (File, To_Ada
+                      (Get_Property (Packing, "tab_fill", "False")) & ", ");
+               Put_Line (File, To_Ada
+                           (Get_Property
+                              (Packing, "tab_pack", "Pack_Start")) & ");");
+            end if;
          end if;
 
          --  ??? Need to implement specific "adding" functions for widgets
@@ -2254,7 +2276,7 @@ package body Gtk_Generates is
          Put_Line (File, "   Add_Accelerator (" &
                    Top_Name & "." &
                    Cur & ", """ &
-            Get_Field (Q, "signal").all & """,");
+                   Get_Field (Q, "signal").all & """,");
          Add_Package ("Gdk.Types.Keysyms");
          S := Get_Field (Q, "modifiers");
          Put (File, "     The_Accel_Group, " & Get_Field (Q, "key").all);
@@ -2323,79 +2345,5 @@ package body Gtk_Generates is
          end if;
       end if;
    end End_Generate;
-
-   ------------------
-   -- Get_Property --
-   ------------------
-
-   function Get_Property
-     (N        : Node_Ptr;
-      Property : String) return String_Ptr
-   is
-      C : Node_Ptr;
-   begin
-      if N = null then
-         return null;
-      end if;
-
-      C := N.Child;
-
-      while C /= null loop
-         if C.Tag.all = "property"
-           and then Get_Attribute (C, "name") = Property
-         then
-            return C.Value;
-         end if;
-
-         C := C.Next;
-      end loop;
-
-      return null;
-   end Get_Property;
-
-   function Get_Property
-     (N        : Node_Ptr;
-      Property : String;
-      Default  : String := "") return String
-   is
-      P : constant String_Ptr := Get_Property (N, Property);
-   begin
-      if P = null then
-         return Default;
-      else
-         return P.all;
-      end if;
-   end Get_Property;
-
-   ---------------
-   -- Get_Class --
-   ---------------
-
-   function Get_Class (N : Node_Ptr) return String is
-   begin
-      if N = null then
-         return "";
-      end if;
-
-      if N.Tag.all = "widget" then
-         return Get_Attribute (N, "class");
-      end if;
-
-      return "";
-   end Get_Class;
-
-   ---------------
-   -- Get_Name  --
-   ---------------
-
-   function Get_Name (N : Node_Ptr) return String is
-   begin
-      if N = null then
-         return "";
-      end if;
-
-      return Get_Attribute (N, "id");
-   end Get_Name;
-
 
 end Gtk_Generates;
