@@ -265,16 +265,54 @@ package body Gtk_Generates is
    -- Calendar_Generate --
    -----------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Calendar_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_calendar_get_type");
+      Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
+      Top        : constant String := Get_Name (Top_Widget);
 
+      Added : Boolean := False;
    begin
       Widget := Widget_New (Build_Type);
       Gen_New (N, "Calendar", File => File);
       Widget_Destroy (Widget);
+
+      if Get_Property (N, "display_options") /= "" then
+         Put (File, "   Display_Options ("
+              & To_Ada (Top) & "." & To_Ada (Get_Name (N)) & ", ");
+         declare
+            S : constant String := Get_Property (N, "display_options");
+            P : Natural := S'First;
+            T : Natural := S'First;
+         begin
+            while T <= S'Last loop
+               T := T + 1;
+
+               if T > S'Last or else S (T) = '|' then
+                  if P + 12 <= S'Last
+                    and then S (P .. P + 12) = "GTK_CALENDAR_"
+                  then
+                     P := P + 13;
+                  end if;
+
+                  if T > P then
+                     if not Added then
+                        Put (File, To_Ada (S (P .. T - 1)));
+                        Added := True;
+                     else
+                        Put (File, " and " & To_Ada (S (P .. T - 1)));
+                     end if;
+                  end if;
+
+                  P := T + 1;
+               end if;
+
+            end loop;
+         end;
+
+         Put_Line (File, ");");
+      end if;
+
       Widget_Generate (N, File);
    end Calendar_Generate;
 
@@ -330,53 +368,6 @@ package body Gtk_Generates is
       Gen_Set (N, "active", File);
       Gen_Set (N, "always_show_toggle", File => File);
    end Check_Menu_Item_Generate;
-
-   --------------------
-   -- Clist_Generate --
-   --------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
-   procedure Clist_Generate (N : Node_Ptr; File : File_Type) is
-      Columns, S : String_Ptr;
-      Cur : constant String_Ptr := Get_Field (N, "name");
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
-      function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_clist_get_type");
-
-   begin
-      Widget := Widget_New (Build_Type);
-      Columns := Get_Field (N, "columns");
-
-      if not N.Specific_Data.Created then
-         if Get_Field (N, "class").all = "GtkCTree" then
-            Gen_New (N, "Ctree", Columns.all, File => File);
-         else
-            Gen_New (N, "Clist", Columns.all, File => File);
-         end if;
-      end if;
-
-      Widget_Destroy (Widget);
-      Container_Generate (N, File);
-      Gen_Set (N, "selection_mode", File => File);
-      Gen_Set (N, "shadow_type", File => File);
-      Gen_Set (N, "show_titles", File);
-
-      S := Get_Field (N, "column_widths");
-
-      if S /= null then
-         for J in 0 .. Gint'Value (Columns.all) - 1 loop
-            Put (File, "   Set_Column_Width (");
-
-            if Top /= Cur then
-               Put (File, To_Ada (Top.all) & ".");
-            end if;
-
-            Put_Line (File, To_Ada (Cur.all) & "," & Gint'Image (J) &
-              ", " & Get_Part (S.all, Integer (J + 1), ',') & ");");
-         end loop;
-      end if;
-   end Clist_Generate;
 
    ------------------------------
    -- Color_Selection_Generate --
@@ -564,22 +555,6 @@ package body Gtk_Generates is
       Gen_Set (N, "border_width", File);
       Gen_Set (N, "resize_mode", File);
    end Container_Generate;
-
-   --------------------
-   -- Ctree_Generate --
-   --------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
-   procedure Ctree_Generate (N : Node_Ptr; File : File_Type) is
-      function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_ctree_get_type");
-
-   begin
-      Widget := Widget_New (Build_Type);
-      Widget_Destroy (Widget);
-      Clist_Generate (N, File);
-   end Ctree_Generate;
 
    --------------------
    -- Curve_Generate --
