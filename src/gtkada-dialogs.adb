@@ -30,9 +30,7 @@
 with Glib;              use Glib;
 with Gdk.Pixmap;        use Gdk.Pixmap;
 with Gdk.Color;         use Gdk.Color;
-with Gtk.Main;          use Gtk.Main;
 with Gtk.Box;           use Gtk.Box;
-with Gtk.Button;        use Gtk.Button;
 with Gtk.Dialog;        use Gtk.Dialog;
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Label;         use Gtk.Label;
@@ -41,27 +39,24 @@ with Gtk.Stock;         use Gtk.Stock;
 with Gtk.Widget;        use Gtk.Widget;
 with Ada.Strings;       use Ada.Strings;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
-with Gtkada.Handlers;   use Gtkada.Handlers;
 with Gtkada.Pixmaps;    use Gtkada.Pixmaps;
 with Gtkada.Intl;       use Gtkada.Intl;
 
 package body Gtkada.Dialogs is
 
-   subtype String_20 is String (1 .. 20);
-   --  Give enough room for translations
-
+   subtype String_6 is String (1 .. 6);
    type String_Const_Ptr is access constant String;
 
-   Dialog_Button_String : constant array (Button_Range) of String_20 :=
-     ("Yes                 ",
-      "No                  ",
-      "All                 ",
-      "OK                  ",
-      "Cancel              ",
-      "Abort               ",
-      "Retry               ",
-      "Ignore              ",
-      "Help                ");
+   Dialog_Button_String : constant array (Button_Range) of String_6 :=
+     ("Yes   ",
+      "No    ",
+      "All   ",
+      "OK    ",
+      "Cancel",
+      "Abort ",
+      "Retry ",
+      "Ignore",
+      "Help  ");
 
    Dialog_Button_Stock : constant array (Button_Range) of String_Const_Ptr :=
      (Stock_Yes'Access,
@@ -73,52 +68,6 @@ package body Gtkada.Dialogs is
       null,
       null,
       Stock_Help'Access);
-
-   type Gtkada_Dialog_Record is new Gtk_Dialog_Record with record
-      Value    : Message_Dialog_Buttons := Button_None;
-      Help_Msg : String_Ptr;
-   end record;
-   type Gtkada_Dialog is access all Gtkada_Dialog_Record'Class;
-
-   type Dialog_Button_Record is new Gtk_Button_Record with record
-      Button : Message_Dialog_Buttons := 0;
-   end record;
-   type Dialog_Button is access all Dialog_Button_Record'Class;
-
-   function Delete_Cb (Win : access Gtk_Widget_Record'Class) return Boolean;
-   procedure Clicked_Cb (Button : access Gtk_Widget_Record'Class);
-
-   --------------------
-   -- Destroy_Dialog --
-   --------------------
-
-   function Delete_Cb (Win : access Gtk_Widget_Record'Class) return Boolean is
-      pragma Unreferenced (Win);
-   begin
-      Main_Quit;
-      return True;
-   end Delete_Cb;
-
-   ----------------
-   -- Clicked_Cb --
-   ----------------
-
-   procedure Clicked_Cb (Button : access Gtk_Widget_Record'Class) is
-      Result : Message_Dialog_Buttons;
-      Value  : constant Message_Dialog_Buttons :=
-        Dialog_Button (Button).Button;
-
-   begin
-      if Value = Button_Help then
-         Result := Message_Dialog
-           (Gtkada_Dialog (Get_Toplevel (Button)).Help_Msg.all,
-            Buttons => Button_OK, Title => -"Help");
-         return;
-      end if;
-
-      Gtkada_Dialog (Get_Toplevel (Button)).Value := Value;
-      Main_Quit;
-   end Clicked_Cb;
 
    --------------------
    -- Message_Dialog --
@@ -135,73 +84,144 @@ package body Gtkada.Dialogs is
       Parent         : Gtk.Window.Gtk_Window := null)
       return Message_Dialog_Buttons
    is
-      Dialog      : Gtkada_Dialog;
+      Dialog : Gtk_Dialog := Create_Gtk_Dialog
+        (Msg           => Msg,
+         Dialog_Type   => Dialog_Type,
+         Title         => Title,
+         Justification => Justification,
+         Parent        => Parent);
+      Button : Gtk_Widget;
+      Result : Message_Dialog_Buttons;
+
+   begin
+      if Parent = null then
+         Set_Position (Dialog, Win_Pos_Mouse);
+      end if;
+
+      for J in Button_Range loop
+         if (Buttons and 2 ** Integer (J)) /= 0 then
+            if Dialog_Button_Stock (J) = null then
+               Button := Add_Button
+                 (Dialog,
+                  Text => Trim (-Dialog_Button_String (J), Right),
+                  Response_Id => Gtk_Response_Type (2 ** Integer (J)));
+            else
+               Button := Add_Button
+                 (Dialog,
+                  Text => Dialog_Button_Stock (J).all,
+                  Response_Id => Gtk_Response_Type (2 ** Integer (J)));
+            end if;
+
+            if Default_Button = 2 ** Integer (J) then
+               Grab_Default (Button);
+            end if;
+         end if;
+      end loop;
+
+      Show_All (Dialog);
+
+      loop
+         Result := Message_Dialog_Buttons (Run (Dialog));
+
+         case Result is
+            when Button_Yes
+              | Button_No
+              | Button_All
+              | Button_OK
+              | Button_Cancel
+              | Button_Abort
+              | Button_Retry
+              | Button_Ignore =>
+
+               Destroy (Dialog);
+               return Result;
+
+            when Button_Help =>
+               if Help_Msg /= "" then
+                  Result := Message_Dialog
+                    (Help_Msg, Buttons => Button_OK, Title => -"Help");
+               else
+                  Result := Message_Dialog
+                    (-"No help available",
+                     Buttons => Button_OK, Title => -"Help");
+               end if;
+
+            when others =>
+               null;
+         end case;
+      end loop;
+
+      return Button_None;
+   end Message_Dialog;
+
+   -----------------------
+   -- Create_Gtk_Dialog --
+   -----------------------
+
+   function Create_Gtk_Dialog
+     (Msg           : String;
+      Dialog_Type   : Message_Dialog_Type := Information;
+      Title         : String := "";
+      Justification : Gtk_Justification := Justify_Center;
+      Parent        : Gtk.Window.Gtk_Window := null)
+      return Gtk.Dialog.Gtk_Dialog
+   is
+      Dialog      : Gtk_Dialog;
       Label       : Gtk_Label;
-      Button      : Dialog_Button;
       Box         : Gtk_Box;
-      Value       : Message_Dialog_Buttons;
       Pix         : Gtk_Pixmap;
       Pixmap      : Gdk_Pixmap;
       Mask        : Gdk_Pixmap;
 
       use Gdk;
    begin
-      Dialog := new Gtkada_Dialog_Record;
-      Gtk.Dialog.Initialize (Dialog);
+      Gtk_New
+        (Dialog,
+         Title  => Title,
+         Parent => Parent,
+         Flags  => Modal or Destroy_With_Parent);
 
       --  Realize it so that we force the creation of its Gdk_Window.
       --  This is needed below to create a pixmap.
 
       Realize (Dialog);
 
-      if Help_Msg = "" then
-         Dialog.Help_Msg := new String' (-"No Help Available");
-      else
-         Dialog.Help_Msg := new String' (Help_Msg);
-      end if;
-
-      Set_Modal (Dialog);
-      if Parent /= null then
-         Set_Transient_For (Dialog, Parent);
-      else
-         Set_Position (Dialog, Win_Pos_Mouse);
-      end if;
-      Return_Callback.Connect
-        (Dialog, "delete_event",
-         Return_Callback.To_Marshaller (Delete_Cb'Access));
-
       case Dialog_Type is
          when Warning =>
             Create_From_Xpm_D
               (Pixmap, Get_Window (Dialog), Mask,
                Null_Color, Warning_Xpm);
-            Set_Title (Dialog, -"Warning");
+            if Title = "" then
+               Set_Title (Dialog, -"Warning");
+            end if;
 
          when Error =>
             Create_From_Xpm_D
               (Pixmap, Get_Window (Dialog), Mask,
                Null_Color, Error_Xpm);
-            Set_Title (Dialog, -"Error");
+            if Title = "" then
+               Set_Title (Dialog, -"Error");
+            end if;
 
          when Information =>
             Create_From_Xpm_D
               (Pixmap, Get_Window (Dialog), Mask,
                Null_Color, Information_Xpm);
-            Set_Title (Dialog, -"Information");
+            if Title = "" then
+               Set_Title (Dialog, -"Information");
+            end if;
 
          when Confirmation =>
             Create_From_Xpm_D
               (Pixmap, Get_Window (Dialog), Mask,
                Null_Color, Confirmation_Xpm);
-            Set_Title (Dialog, -"Confirmation");
+            if Title = "" then
+               Set_Title (Dialog, -"Confirmation");
+            end if;
 
          when Custom =>
             null;
       end case;
-
-      if Title /= "" then
-         Set_Title (Dialog, Title);
-      end if;
 
       Gtk_New_Hbox (Box);
       Pack_Start (Get_Vbox (Dialog), Box, Padding => 10);
@@ -215,41 +235,7 @@ package body Gtkada.Dialogs is
       Set_Justify (Label, Justification);
       Pack_Start (Box, Label, Padding => 10);
 
-      for J in Button_Range loop
-         if (Buttons and
-             2 ** Integer (J)) /= 0
-         then
-            Button := new Dialog_Button_Record;
-            Button.Button := 2 ** Integer (J);
-
-            if Dialog_Button_Stock (J) = null then
-               Initialize (Button, Trim (-Dialog_Button_String (J), Right));
-            else
-               Initialize_From_Stock (Button, Dialog_Button_Stock (J).all);
-            end if;
-
-            Set_USize (Button, 80, -1);
-            Pack_Start
-              (Get_Action_Area (Dialog), Button,
-               False, False, 14);
-            Set_Flags (Button, Can_Default);
-            Widget_Callback.Connect
-              (Button, "clicked",
-               Widget_Callback.To_Marshaller (Clicked_Cb'Access));
-
-            if Default_Button = 2 ** Integer (J) then
-               Grab_Default (Button);
-            end if;
-         end if;
-      end loop;
-
-      Show_All (Dialog);
-      Main;
-      Value := Dialog.Value;
-      Free (Dialog.Help_Msg);
-      Destroy (Dialog);
-
-      return Value;
-   end Message_Dialog;
+      return Dialog;
+   end Create_Gtk_Dialog;
 
 end Gtkada.Dialogs;

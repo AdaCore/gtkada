@@ -33,6 +33,7 @@
 --
 --  </description>
 
+with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Enums;  use Gtk.Enums;
 with Gtk.Window; use Gtk.Window;
 
@@ -111,5 +112,21 @@ package Gtkada.Dialogs is
    --    - Button_Cancel
    --    - Button_Ignore
    --    - Button_All
+
+   function Create_Gtk_Dialog
+     (Msg           : String;
+      Dialog_Type   : Message_Dialog_Type := Information;
+      Title         : String := "";
+      Justification : Gtk_Justification := Justify_Center;
+      Parent        : Gtk.Window.Gtk_Window := null)
+      return Gtk.Dialog.Gtk_Dialog;
+   --  Convenience function to create a new dialog.
+   --  This function was introduced in GtkAda 2.0 to provide a compatibility
+   --  with Message_Dialog, while using the standard Gtk.Dialog. You should add
+   --  the buttons yourself, through Gtk.Dialog.Gtk_Dialog, and then display
+   --  the dialog on the screen through Gtk.Dialog.Run.
+   --  As opposed to Message_Dialog, you can provide your own custom buttons if
+   --  needed.
+
 
 end Gtkada.Dialogs;
