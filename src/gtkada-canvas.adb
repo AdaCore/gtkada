@@ -54,7 +54,6 @@ pragma Elaborate_All (Gtk.Main);
 with Gtk.Style;        use Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
-with Gtk.Object;       use Gtk.Object;
 with System;
 with Unchecked_Deallocation;
 
@@ -65,7 +64,7 @@ package body Gtkada.Canvas is
    use type Gdk_Window, Gdk_Pixmap;
    use type System.Address;
 
-   Class_Record : System.Address := System.Null_Address;
+   Class_Record : GObject_Class := Uninitialized_Class;
    --  This pointer will keep a pointer to the C 'class record' for
    --  gtk. To avoid allocating memory for each widget, this may be done
    --  only once, and reused.
@@ -92,12 +91,11 @@ package body Gtkada.Canvas is
    --  ??? This could be configurable at the canvas level
    --  ??? This might be set to False with gtk+2.0
 
-   Scroll_Adj_Signal : constant := 4;
    Signals : constant chars_ptr_array :=
      (1 => New_String ("background_click"),
       2 => New_String ("item_selected"),
       3 => New_String ("zoomed"),
-      Scroll_Adj_Signal => New_String ("set_scroll_adjustments"));
+      4 => New_String ("set_scroll_adjustments"));
    --  Array of the signals created for this widget
 
    -----------------
@@ -349,9 +347,10 @@ package body Gtkada.Canvas is
       --  and the new signals created for this widget.
       --  Note also that we keep Class_Record, so that the memory allocation
       --  is done only once.
-      Gtk.Object.Initialize_Class_Record
+      Initialize_Class_Record
         (Canvas, Signals, Class_Record,
-         "GtkadaCanvas", Signal_Parameters, Scroll_Adj_Signal);
+         "GtkAdaCanvas", Signal_Parameters);
+      Set_Scroll_Adjustments_Signal (Class_Record, "set_scroll_adjustments");
 
       Return_Callback.Connect
         (Canvas, "expose_event",
