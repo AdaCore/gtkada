@@ -303,59 +303,62 @@ package body Glib.XML is
       Index_Save := Index.all;
       Get_Buf (Buf, Index.all, '>', N.Tag);
 
-      --  Here we have to deal with the attributes of the form
-      --  <tag attrib='xyyzy'>
+      --  Check to see whether it is a comment, !DOCTYPE, or the like:
 
-      Extract_Attrib (N.Tag, N.Attributes, Empty_Node);
-
-      --  it is possible to have a child-less node that has the form
-      --  <tag /> or <tag attrib='xyyzy'/>
-
-      if Empty_Node then
-         N.Value := new String' ("");
+      if N.Tag (N.Tag'First) = '!' then
+         return Get_Node (Buf, Index);
       else
-         if Buf (Index.all) = '<' then
-            if Buf (Index.all + 1) = '/' then
+         --  Here we have to deal with the attributes of the form
+         --  <tag attrib='xyyzy'>
 
-               --  No value contained on this node
+         Extract_Attrib (N.Tag, N.Attributes, Empty_Node);
 
-               N.Value := new String' ("");
-               Index.all := Index.all + 1;
+         --  it is possible to have a child-less node that has the form
+         --  <tag /> or <tag attrib='xyyzy'/>
+
+         if Empty_Node then
+            N.Value := new String' ("");
+         else
+            if Buf (Index.all) = '<' then
+               if Buf (Index.all + 1) = '/' then
+                  --  No value contained on this node
+
+                  N.Value := new String' ("");
+                  Index.all := Index.all + 1;
+
+               else
+                  --  Parse the children
+
+                  N.Child := Get_Node (Buf, Index);
+                  N.Child.Parent := N;
+                  Last_Child := N.Child;
+                  pragma Assert (Buf (Index.all) = '<');
+
+                  while Buf (Index.all + 1) /= '/' loop
+                     Q := Last_Child;
+                     Q.Next := Get_Node (Buf, Index);
+                     Q.Next.Parent := N;
+                     Last_Child := Q.Next;
+                     pragma Assert (Buf (Index.all) = '<');
+                  end loop;
+
+                  Index.all := Index.all + 1;
+               end if;
 
             else
+               --  Get the value of this node
 
-               --  Parse the children
-
-               N.Child := Get_Node (Buf, Index);
-               N.Child.Parent := N;
-               Last_Child := N.Child;
-               pragma Assert (Buf (Index.all) = '<');
-
-               while Buf (Index.all + 1) /= '/' loop
-                  Q := Last_Child;
-                  Q.Next := Get_Node (Buf, Index);
-                  Q.Next.Parent := N;
-                  Last_Child := Q.Next;
-                  pragma Assert (Buf (Index.all) = '<');
-               end loop;
-
-               Index.all := Index.all + 1;
+               Get_Buf (Buf, Index.all, '<', N.Value);
             end if;
 
-         else
-
-            --  Get the value of this node
-
-            Get_Buf (Buf, Index.all, '<', N.Value);
+            pragma Assert (Buf (Index.all) = '/');
+            Index.all := Index.all + 1;
+            Get_Buf (Buf, Index.all, '>', S);
+            pragma Assert (N.Tag.all = S.all);
          end if;
 
-         pragma Assert (Buf (Index.all) = '/');
-         Index.all := Index.all + 1;
-         Get_Buf (Buf, Index.all, '>', S);
-         pragma Assert (N.Tag.all = S.all);
+         return N;
       end if;
-
-      return N;
    end Get_Node;
 
    -----------
@@ -397,7 +400,13 @@ package body Glib.XML is
 
       else
          if N.Value.all = "" then
-            Put_Line ("/>");
+            --  The following handles the difference between what you got
+            --  when you parsed <tag/> vs. <tag />.
+            if N.Tag (N.Tag'Last) = '/' then
+               Put_Line (">");
+            else
+               Put_Line ("/>");
+            end if;
          else
             Put (">");
             Put (N.Value.all);
