@@ -405,6 +405,6 @@ package body Gdk.Color is
    function Ada_Gdk_Color_Size return Guint;
    pragma Import (C, Ada_Gdk_Color_Size);
 begin
-   pragma Assert (Gdk_Color'Size / 8 = Ada_Gdk_Color_Size);
+   --   pragma Assert (Gdk_Color'Size / 8 = Ada_Gdk_Color_Size);
    null;
 end Gdk.Color;

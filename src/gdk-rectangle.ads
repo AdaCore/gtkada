@@ -38,7 +38,6 @@ package Gdk.Rectangle is
          Height : Guint16;
       end record;
    pragma Pack (Gdk_Rectangle);
-   for Gdk_Rectangle'Size use 64;
 
    Full_Area : constant Gdk_Rectangle;
    --  The constant above can be used in Gtk.Widget.Draw when you want to

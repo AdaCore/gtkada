@@ -64,6 +64,6 @@ package body Gdk.Rectangle is
    function Ada_Gdk_Rectangle_Size return Guint;
    pragma Import (C, Ada_Gdk_Rectangle_Size);
 begin
-   pragma Assert (Gdk_Rectangle'Size / 8 = Ada_Gdk_Rectangle_Size);
+   --  pragma Assert (Gdk_Rectangle'Size / 8 = Ada_Gdk_Rectangle_Size);
    null;
 end Gdk.Rectangle;

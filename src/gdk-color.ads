@@ -148,8 +148,6 @@ private
       end record;
    --  The fields are to be chosen between 0 and 65535, not 0 and 255!!!
 
-   for Gdk_Color'Size use 96;
-
    Null_Color : constant Gdk_Color := (Gulong'Last, 0, 0, 0);
 
    pragma Inline (Set_Rgb);
