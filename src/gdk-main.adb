@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-1999 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -55,10 +55,19 @@ package body Gdk.Main is
    -----------------
 
    function Get_Display return String is
-      function Internal return Interfaces.C.Strings.chars_ptr;
+      use Interfaces.C.Strings;
+
+      function Internal return chars_ptr;
       pragma Import (C, Internal, "gdk_get_display");
+
+      Result : constant chars_ptr := Internal;
+
    begin
-      return Interfaces.C.Strings.Value (Internal);
+      if Result = Null_Ptr then
+         return "";
+      else
+         return Interfaces.C.Strings.Value (Internal);
+      end if;
    end Get_Display;
 
    ------------------
