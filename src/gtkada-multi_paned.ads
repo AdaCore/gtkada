@@ -185,6 +185,32 @@ package Gtkada.Multi_Paned is
    --    | 2 |   |   |  |   | 2 |   |   | 2 |   |   |  | 2 |   |   |
    --    +---+---+---+  +---+---+---+   +---+---+---+  +---+---+---+
 
+   procedure Split_Group
+     (Win           : access Gtkada_Multi_Paned_Record;
+      Ref_Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Orientation   : Gtk.Enums.Gtk_Orientation;
+      Fixed_Size    : Boolean := False;
+      Width, Height : Glib.Gint := 0;
+      After         : Boolean := True);
+   --  This is similar to Split, except Ref_Widget and all its siblings in the
+   --  pane are left together in the new pane.
+   --  For instance, Split_Group is called with "2" as the Ref_Widget:
+   --     +---+---+---+        +---+---+---+
+   --     | 1 | 2 | 3 |   =>   | 1 | 2 | 3 |
+   --     +---+---+---+        |   +---+---+
+   --                          |   |   4   |
+   --                          +---+-------+
+   --  If only Split had been used, the result would have been:
+   --                          +---+---+---+
+   --                          | 1 | 2 | 3 |
+   --                          |   +---+   |
+   --                          |   | 4 |   |
+   --                          +---+---+---+
+   --
+   --  This procedure is mostly useful when reloading a setup from a file, so
+   --  that you can properly restore it. See GtkAda.MDI for more information
+   --  on desktops.
 
    ---------------
    -- Iterators --
@@ -238,10 +264,10 @@ private
    type Child_Description (Is_Widget : Boolean) is record
       Parent : Child_Description_Access;
       Next   : Child_Description_Access;
+      Width, Height : Glib.Gint;
       case Is_Widget is
          when True  =>
             Widget      : Gtk.Widget.Gtk_Widget;
-            Width, Height : Glib.Gint;
             Fixed_Size  : Boolean;
          when False =>
             Orientation : Gtk.Enums.Gtk_Orientation;
