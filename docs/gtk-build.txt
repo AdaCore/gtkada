@@ -34,7 +34,7 @@ cd pkgconfig-0.14.0
 ./configure --prefix=$prefix
 make
 
-# IRIX: The SGI C compiler is detecting an error one of the source files.
+# IRIX: The SGI C compiler is detecting an error in one of the source files.
 # Apply the following patch to avoid the build failure.
 # patch -p0 < .../GtkAda/contrib/pkgconfig-0.14.0.diff
 
@@ -104,14 +104,15 @@ tar xzvf libpng-1.0.10.tar.gz
 cd libpng-1.0.10
 cp scripts/makefile.gcc makefile
 # check makefile & pngconf.h
-# On IRIX, change "CC=gcc" into "CC=cc" in the Makefile to force the use
-# of the SGI C compiler.
 
 # Under HP-UX and Solaris:
 # make CFLAGS="-O2 -fPIC"
 # for HP-UX: ld -z -b -o libpng.sl `ar t libpng.a` $LDFLAGS -lz
 # for Solaris: gcc -shared -o libpng.so `ar t libpng.a` $LDFLAGS -lz
 # cp -p libpng.s? $prefix/lib
+
+# Under IRIX:
+# make CC=cc
 
 make
 mkdir -p $prefix/include $prefix/lib
