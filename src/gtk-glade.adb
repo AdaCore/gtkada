@@ -657,7 +657,6 @@ begin
    SHT.Set (new String'("GtkHPaned"), Paned_Generate'Access);
    SHT.Set (new String'("GtkVPaned"), Paned_Generate'Access);
    SHT.Set (new String'("GtkPixmap"), Pixmap_Generate'Access);
-   SHT.Set (new String'("GtkPreview"), Preview_Generate'Access);
    SHT.Set (new String'("GtkProgressBar"), Progress_Bar_Generate'Access);
    SHT.Set (new String'("GtkRadioButton"), Radio_Button_Generate'Access);
    SHT.Set (new String'("GtkRadioMenuItem"), Radio_Menu_Item_Generate'Access);
