@@ -153,15 +153,20 @@ package body Gtkada.MDI is
    --  Whether title bars should be drawn when in maximized mode. They are
    --  always visible in non-maximized mode
 
-   Position_Of_Tabs : constant Gtk.Enums.Gtk_Position_Type := Pos_Bottom;
+   Position_Of_Tabs : constant Gtk.Enums.Gtk_Position_Type := Pos_Top;
    --  Where the tabs of the notebooks should be
 
    type Show_Tabs_Policy is (Always, Never, As_Needed);
-   Show_Tabs : Show_Tabs_Policy := As_Needed;
+   pragma Unreferenced (As_Needed);
+   Show_Tabs : Show_Tabs_Policy := Always;
    pragma Warnings (Off, Show_Tabs);
    --  Whether tabs in notebooks should be visible
    --  (not a constant to avoid warnings below about condition being always
    --  True or False)
+
+   Highlight_Page : constant Boolean := False;
+   --  Whether the notebook page containing the current widget should be
+   --  highlighted.
 
    MDI_Class_Record        : Gtk.Object.GObject_Class :=
      Gtk.Object.Uninitialized_Class;
@@ -660,6 +665,8 @@ package body Gtkada.MDI is
 
       MDI.Focus_Title_Color := Parse (Default_Title_Bar_Focus_Color);
       Alloc (Get_Default_Colormap, MDI.Focus_Title_Color);
+
+      MDI.Default_Title_Color := Get_Bg (Get_Default_Style, State_Normal);
 
       Gtk.Object.Initialize_Class_Record
         (MDI,
@@ -1483,12 +1490,28 @@ package body Gtkada.MDI is
         Gint (Get_Border_Width (Child.Main_Box));
 
       X : Gint := 1;
+      Note : constant Gtk_Notebook := Get_Notebook (Child);
+      Label : Gtk_Widget;
+      Color : Gdk_Color := Child.MDI.Default_Title_Color;
    begin
       --  Call this function so that for a dock item is highlighted if the
       --  current page is linked to the focus child.
 
       if Child.MDI.Focus_Child = MDI_Child (Child) then
          GC := Child.MDI.Focus_GC;
+         Color := Child.MDI.Focus_Title_Color;
+      end if;
+
+      --  Set the color of the notebook page and label.
+
+      if Highlight_Page then
+         Modify_Bg (Note, State_Normal, Color);
+
+         Label := Get_Tab_Label (Note, Child);
+
+         if Label /= null then
+            Modify_Bg (Label, State_Normal, Color);
+         end if;
       end if;
 
       if Realized_Is_Set (Child.Title_Area) then
@@ -3434,6 +3457,7 @@ package body Gtkada.MDI is
       Mask   : Gdk_Bitmap;
       Pixmap : Gtk_Pixmap;
       Note   : constant Gtk_Notebook := Get_Notebook (Child);
+      Label  : Gtk_Widget;
    begin
       if Note /= null
         and then (Child.State = Docked
@@ -3457,6 +3481,19 @@ package body Gtkada.MDI is
          end if;
 
          Set_Tab_Label (Note, Child, Event);
+
+         --  Set the background in the tab label.
+
+         if Highlight_Page
+           and then Child.MDI.Focus_Child = MDI_Child (Child)
+         then
+            Label := Get_Tab_Label (Note, Child);
+
+            if Label /= null then
+               Modify_Bg (Label, State_Normal, Child.MDI.Focus_Title_Color);
+            end if;
+         end if;
+
          Show_All (Event);
 
          Return_Callback.Object_Connect
@@ -5506,8 +5543,10 @@ package body Gtkada.MDI is
    procedure Highlight_Child
      (Child : access MDI_Child_Record; Highlight : Boolean := True)
    is
-      Note    : Gtk_Notebook;
+      Note    : constant Gtk_Notebook := Get_Notebook (Child);
+      Label   : Gtk_Widget;
       Style   : Gtk_Style;
+      Color   : Gdk_Color;
    begin
       if Highlight then
          --  Do nothing if:
@@ -5521,8 +5560,6 @@ package body Gtkada.MDI is
             return;
          end if;
 
-         Note := Get_Notebook (Child);
-
          if Note /= null
            and then Get_Current_Page (Note) = Page_Num (Note, Child)
          then
@@ -5530,8 +5567,23 @@ package body Gtkada.MDI is
          end if;
 
          Style := Child.MDI.Highlight_Style;
+         Color := Child.MDI.Focus_Title_Color;
       else
          Style := null;
+         Color := Child.MDI.Default_Title_Color;
+      end if;
+
+      --  Highlight the notebook if necessary.
+
+      if Highlight_Page
+        and then Note /= null
+        and then MDI_Child (Child) /= null
+      then
+         Label := Get_Tab_Label (Note, MDI_Child (Child));
+
+         if Label /= null then
+            Modify_Bg (Label, State_Normal, Color);
+         end if;
       end if;
 
       --  Might be null if we haven't created the MDI menu yet
