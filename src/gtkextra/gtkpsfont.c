@@ -461,49 +461,54 @@ gtk_psfont_get_gdkfont(const gchar *name, gint height)
  
   for (i = 0; i < NUM_X11_FONTS; i++) {
     x11_font = fontdata->xfont[i];
+
     if (x11_font != NULL) {
-     bufsize = strlen(x11_font)+25;  /* Should be enought*/
-     buffer = (gchar *)g_malloc(bufsize);
+      bufsize = strlen(x11_font)+25;  /* Should be enough */
+      buffer = (gchar *)g_malloc(bufsize);
 
-     for(auxheight = MAX(height, min_height); auxheight >= min_height; auxheight--){
-      g_snprintf(buffer, bufsize, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
+      for (auxheight = MAX(height, min_height);
+           auxheight >= min_height; auxheight--)
+        {
+          g_snprintf
+            (buffer, bufsize, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
     
-      gdk_font = gdk_font_load(buffer);
-      if (gdk_font != NULL) {
-         g_free(buffer);
-         break;
-      }
-     }
+          gdk_font = gdk_font_load(buffer);
 
-     if(gdk_font != NULL) break;
+          if (gdk_font != NULL)
+            break;
+        }
+
+      g_free(buffer);
+
+      if (gdk_font != NULL) break;
     }
-
-    g_free(buffer);
   }
 
   if (gdk_font == NULL) {
     for (i=0; i < NUM_LAST_RESORT_FONTS; i++) {
       x11_font = last_resort_fonts[i];
-      bufsize = strlen(x11_font)+25;  /* Should be enought*/
+      bufsize = strlen(x11_font)+25;  /* Should be enough */
       buffer = (char *)g_malloc(bufsize);
       
-      for(auxheight = MAX(height, min_height); auxheight >= min_height; auxheight--){
-       g_snprintf(buffer, bufsize, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
+      for (auxheight = MAX(height, min_height);
+           auxheight >= min_height; auxheight--)
+        {
+          g_snprintf
+            (buffer, bufsize, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
     
-       gdk_font = gdk_font_load(buffer);
-        if (gdk_font != NULL) {
-          g_free(buffer);
-          break;
-       }
+          gdk_font = gdk_font_load(buffer);
+
+          if (gdk_font != NULL)
+            break;
       }
+
+      g_free(buffer);
 
       if (gdk_font != NULL) {
 	g_warning("Could not find X Font for %s, using %s instead.",
 		  name, x11_font);
 	break;
       }
-
-      g_free(buffer);
     }
   }
 
