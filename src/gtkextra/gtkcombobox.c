@@ -70,8 +70,11 @@ gtk_combobox_class_init (GtkComboBoxClass * klass)
 static void
 gtk_combobox_destroy (GtkObject * combobox)
 {
-  gtk_widget_destroy (GTK_COMBO_BOX (combobox)->popwin);
-  gtk_widget_unref (GTK_COMBO_BOX (combobox)->popwin);
+  if (GTK_COMBO_BOX (combobox)->popwin) {
+     gtk_widget_destroy (GTK_COMBO_BOX (combobox)->popwin);
+     gtk_widget_unref (GTK_COMBO_BOX (combobox)->popwin);
+     GTK_COMBO_BOX (combobox)->popwin = NULL;
+  }
 
   if (GTK_OBJECT_CLASS (parent_class)->destroy)
     (*GTK_OBJECT_CLASS (parent_class)->destroy) (combobox);
@@ -132,12 +135,16 @@ static void
 gtk_combobox_popup_display (GtkComboBox * combobox)
 {
   gint height, width, x, y;
+  GtkWindow* toplevel;
 
   gtk_combobox_get_pos (combobox, &x, &y, &height, &width);
 
   gtk_window_move(GTK_WINDOW(combobox->popwin), x, y);
   gtk_widget_set_usize (combobox->popwin, width, height);
   gtk_widget_show (combobox->popwin);
+
+  toplevel = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (combobox)));
+  gtk_window_set_transient_for (GTK_WINDOW (combobox->popwin), toplevel);
 
   gtk_grab_add (combobox->popwin);
   gdk_pointer_grab (combobox->popwin->window, TRUE,
