@@ -49,6 +49,10 @@ package Gtk.List is
      (List    : access Gtk_List_Record;
       Start   : in Gint;
       The_End : in Gint);
+   --  Remove some items from the list.
+   --  if The_End is negative, it is assigned the position of the last item
+   --  in the list.
+   --  The first item in the list has an index of 0.
 
    function Get_Children
      (Widget : access Gtk.List.Gtk_List_Record) return Widget_List.Glist;
