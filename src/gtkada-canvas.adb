@@ -48,11 +48,11 @@ with Gdk.Window;       use Gdk.Window;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Enums;        use Gtk.Enums;
-with Gtk.Extra.PsFont; use Gtk.Extra.PsFont;
 with Gtk.Handlers;
 with Gtkada.Handlers;  use Gtkada.Handlers;
 with Gtk.Main;         use Gtk.Main;
 pragma Elaborate_All (Gtk.Main);
+with Pango.Font;       use Pango.Font;
 
 with Gtk.Style;        use Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
@@ -61,12 +61,8 @@ with System;
 with Unchecked_Deallocation;
 
 --  TODO:
---   - size of link annotations is incorrect when zoomed
 --   - would be nice to have a pixbuf item directly (for alpha layers)
 --   - have different backgrounds (bitmap images, vectored maps, ...)
---   - Should provide functions to Draw_Line, Draw_String or Draw_Text
---     automatically at the right zoom level (simple interface to X11
---     functions, no need to use pixbuf, except maybe for fonts).
 
 package body Gtkada.Canvas is
 
@@ -239,7 +235,7 @@ package body Gtkada.Canvas is
       Window : Gdk_Window;
       GC     : in Gdk.GC.Gdk_GC;
       X, Y   : Gint;
-      Str    : String_Access);
+      Link   : access Canvas_Link_Record'Class);
    --  Print an annotation on the canvas.
    --  The annotation is centered around (X, Y), in pixels. These coordinates
    --  should already include zoom processing.
@@ -437,11 +433,10 @@ package body Gtkada.Canvas is
          Remove (C.Children, V);
       end loop;
 
-      Free (C.Annotation_Font);
       Unref (C.Clear_GC);
       Unref (C.Black_GC);
       Unref (C.Anim_GC);
-      Unref (C.Font);
+      Unref (C.Annotation_Font);
       Destroy (C.Hadj);
       Destroy (C.Vadj);
       Gdk.Pixmap.Unref (C.Double_Buffer);
@@ -507,7 +502,9 @@ package body Gtkada.Canvas is
       Arc_Link_Offset   : Gint := Default_Arc_Link_Offset;
       Arrow_Angle       : Gint := Default_Arrow_Angle;
       Arrow_Length      : Gint := Default_Arrow_Length;
-      Motion_Threshold  : Gint := Default_Motion_Threshold) is
+      Motion_Threshold  : Gint := Default_Motion_Threshold)
+   is
+      Descr : Pango_Font_Description;
    begin
       Canvas.Grid_Size := Grid_Size;
 
@@ -515,20 +512,20 @@ package body Gtkada.Canvas is
          Canvas.Align_On_Grid := False;
       end if;
 
-      Free (Canvas.Annotation_Font);
-      Canvas.Annotation_Font := new String'(Annotation_Font);
-      Canvas.Annotation_Height := Annotation_Height;
+      if Canvas.Annotation_Font /= Null_Font then
+         Unref (Canvas.Annotation_Font);
+      end if;
+
+      Descr := To_Font_Description
+        (Family_Name => Annotation_Font,
+         Size        => Annotation_Height);
+      Canvas.Annotation_Font := From_Description (Descr);
+      Free (Descr);
+
       Canvas.Arc_Link_Offset := Arc_Link_Offset;
       Canvas.Arrow_Angle := Float (Arrow_Angle) * Ada.Numerics.Pi / 180.0;
       Canvas.Arrow_Length := Arrow_Length;
       Canvas.Motion_Threshold := Motion_Threshold;
-
-      if Canvas.Font /= Null_Font then
-         Unref (Canvas.Font);
-      end if;
-
-      Canvas.Font :=
-        Get_Gdkfont (Canvas.Annotation_Font.all, Canvas.Annotation_Height);
    end Configure;
 
    -----------------------
@@ -1070,18 +1067,70 @@ package body Gtkada.Canvas is
       Window : Gdk_Window;
       GC     : in Gdk.GC.Gdk_GC;
       X, Y   : Gint;
-      Str    : String_Access) is
+      Link   : access Canvas_Link_Record'Class)
+   is
+      Pixmap : Gdk_Pixmap;
+      Tmp    : Gdk_Pixbuf;
+      W, H   : Gint;
    begin
-      --  Do not draw the text in Xor mode, since this doesn't work on
-      --  Windows systems, and doesn't provide any real information anyway.
-      if GC /= Canvas.Anim_GC and then Canvas.Font /= null then
-         Draw_Text
-           (Window,
-            Canvas.Font,
-            GC,
-            X - String_Width (Canvas.Font, Str.all) / 2,
-            Y - String_Height (Canvas.Font, Str.all) / 2,
-            Text => Str.all);
+      if Link.Descr /= null
+        and then Link.Descr.all /= ""
+        and then Canvas.Annotation_Font /= null
+      then
+         if Link.Pixbuf = Null_Pixbuf then
+            W := String_Width (Canvas.Annotation_Font, Link.Descr.all);
+            H := Get_Ascent (Canvas.Annotation_Font) +
+              Get_Descent (Canvas.Annotation_Font);
+
+            Gdk_New (Pixmap, Get_Window (Canvas), W, H);
+            Draw_Rectangle (Pixmap, Canvas.Clear_GC, True, 0, 0, W, H);
+            Draw_Text
+              (Pixmap, Canvas.Annotation_Font, GC, 0,
+               Get_Ascent (Canvas.Annotation_Font),
+               Link.Descr.all);
+
+            Link.Pixbuf := Get_From_Drawable
+              (Dest   => null,
+               Src    => Pixmap,
+               Cmap   => Get_Colormap (Canvas),
+               Src_X  => 0,
+               Src_Y  => 0,
+               Dest_X => 0,
+               Dest_Y => 0,
+               Width  => W,
+               Height => H);
+            Gdk.Pixmap.Unref (Pixmap);
+         end if;
+
+         --  Do not draw the text in Xor mode, since this doesn't work on
+         --  Windows systems, and doesn't provide any real information anyway.
+         if GC /= Canvas.Anim_GC and then Canvas.Annotation_Font /= null then
+            if Canvas.Zoom = 100 then
+               Tmp := Link.Pixbuf;
+            else
+               Tmp := Scale_Simple
+                 (Src         => Link.Pixbuf,
+                  Dest_Width  =>
+                    Get_Width (Link.Pixbuf) * Gint (Canvas.Zoom) / 100,
+                  Dest_Height =>
+                    Get_Height (Link.Pixbuf) * Gint (Canvas.Zoom) / 100);
+            end if;
+
+            Render_To_Drawable
+              (Pixbuf   => Tmp,
+               Drawable => Window,
+               GC       => Canvas.Black_GC,
+               Src_X    => 0,
+               Src_Y    => 0,
+               Dest_X   => X,
+               Dest_Y   => Y,
+               Width    => Get_Width (Tmp),
+               Height   => Get_Height (Tmp));
+
+            if Canvas.Zoom /= 100 then
+               Unref (Tmp);
+            end if;
+         end if;
       end if;
    end Draw_Annotation;
 
@@ -1162,7 +1211,7 @@ package body Gtkada.Canvas is
            (Canvas, Window, GC,
             (X1 + X2) / 2,
             (Y1 + Y2) / 2,
-            Link.Descr);
+            Link);
       end if;
    end Draw_Straight_Link;
 
@@ -1221,7 +1270,7 @@ package body Gtkada.Canvas is
       --  Draw the annotations
       if Link.Descr /= null then
          Draw_Annotation
-           (Canvas, Window, GC, Xc + Radius / 2, Yc + Radius / 2, Link.Descr);
+           (Canvas, Window, GC, Xc + Radius / 2, Yc + Radius / 2, Link);
       end if;
    end Draw_Self_Link;
 
@@ -1377,7 +1426,7 @@ package body Gtkada.Canvas is
       if Link.Descr /= null then
          X2 := Gint (0.25 * Float (X1) + 0.5 * Float (X2) + 0.25 * Float (X3));
          Y2 := Gint (0.25 * Float (Y1) + 0.5 * Float (Y2) + 0.25 * Float (Y3));
-         Draw_Annotation (Canvas, Window, GC, X2, Y2, Link.Descr);
+         Draw_Annotation (Canvas, Window, GC, X2, Y2, Link);
       end if;
    end Draw_Arc_Link;
 
@@ -1713,6 +1762,54 @@ package body Gtkada.Canvas is
       return False;
    end Key_Press;
 
+   -------------------------
+   -- Item_At_Coordinates --
+   -------------------------
+
+   function Item_At_Coordinates
+     (Canvas : access Interactive_Canvas_Record;
+      X, Y : Glib.Gint) return Canvas_Item
+   is
+      Tmp  : Vertex_Iterator := First (Canvas.Children);
+      Result : Canvas_Item := null;
+      Item : Canvas_Item;
+   begin
+      --  Keep the last item found, since this is the one on top.
+      --  ??? Not the most efficient way to search, since we have to traverse
+      --  ??? the whole list every time.
+      while not At_End (Tmp) loop
+         Item := Canvas_Item (Get (Tmp));
+         if Item.Visible
+           and then X >= Item.Coord.X
+           and then X <= Item.Coord.X + Gint (Item.Coord.Width)
+           and then Y >= Item.Coord.Y
+           and then Y <= Item.Coord.Y + Gint (Item.Coord.Height)
+         then
+            Result := Item;
+         end if;
+         Next (Tmp);
+      end loop;
+      return Result;
+   end Item_At_Coordinates;
+
+   -------------------------
+   -- Item_At_Coordinates --
+   -------------------------
+
+   function Item_At_Coordinates
+     (Canvas : access Interactive_Canvas_Record; Event : Gdk_Event)
+      return Canvas_Item
+   is
+      Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
+      Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
+      X : constant Gint := To_World_Coordinates
+        (Canvas, Gint (Get_X (Event)) + Xbase);
+      Y : constant Gint := To_World_Coordinates
+        (Canvas, Gint (Get_Y (Event)) + Ybase);
+   begin
+      return Item_At_Coordinates (Canvas, X, Y);
+   end Item_At_Coordinates;
+
    --------------------
    -- Button_Pressed --
    --------------------
@@ -1722,7 +1819,6 @@ package body Gtkada.Canvas is
       Event : Gdk_Event) return Boolean
    is
       Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
-      Tmp : Vertex_Iterator := First (Canvas.Children);
       Item : Canvas_Item;
       Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
       Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
@@ -1742,25 +1838,12 @@ package body Gtkada.Canvas is
       Grab_Focus (Canvas);
       Set_Flags (Canvas, Has_Focus);
 
-      Clear_Selection (Canvas);
-
       --  Find the selected item.
-      --  Note that we only keep the last item found, since this is the one
-      --  on top, and thus the one the user really wanted to select
-
-      while not At_End (Tmp) loop
-         Item := Canvas_Item (Get (Tmp));
-         if Item.Visible
-           and then X >= Item.Coord.X
-           and then X <= Item.Coord.X + Gint (Item.Coord.Width)
-           and then Y >= Item.Coord.Y
-           and then Y <= Item.Coord.Y + Gint (Item.Coord.Height)
-         then
-            Clear_Selection (Canvas);
-            Add_To_Selection (Canvas, Item);
-         end if;
-         Next (Tmp);
-      end loop;
+      Clear_Selection (Canvas);
+      Item := Item_At_Coordinates (Canvas, X, Y);
+      if Item /= null then
+         Add_To_Selection (Canvas, Item);
+      end if;
 
       --  If there was none, nothing to do...
 
@@ -2462,6 +2545,7 @@ package body Gtkada.Canvas is
 
    procedure Destroy (Link : in out Canvas_Link_Record) is
    begin
+      Unref (Link.Pixbuf);
       Free (Link.Descr);
    end Destroy;
 
@@ -2549,13 +2633,6 @@ package body Gtkada.Canvas is
       L  : Gdouble;
    begin
       Canvas.Zoom := Percent;
-
-      if Canvas.Font /= null then
-         Unref (Canvas.Font);
-      end if;
-
-      Canvas.Font :=
-        Get_Gdkfont (Canvas.Annotation_Font.all, Canvas.Annotation_Height);
 
       --  Display the proper area in the canvas
       --  When zooming out, we want to keep the old area centered into the
@@ -2705,9 +2782,6 @@ package body Gtkada.Canvas is
       if Canvas.Zoom /= 100 then
          Unref (Tmp);
       end if;
-
-      --  Draw_Drawable (Dest, Canvas.Black_GC, Item.Pixmap, 0, 0, Xdest,
-      --  Ydest);
    end Draw;
 
    --------------------------------

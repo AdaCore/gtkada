@@ -206,6 +206,18 @@ package Gtkada.Canvas is
    --  Note that (X, Y) is the coordinates for a zoom level 100%. Conversion to
    --  other zoom levels is fully automatic
 
+   function Item_At_Coordinates
+     (Canvas : access Interactive_Canvas_Record;
+      X, Y : Glib.Gint) return Canvas_Item;
+   --  Return the item on top, at coordinates (X, Y).
+   --  null is returned if there is no such item.
+
+   function Item_At_Coordinates
+     (Canvas : access Interactive_Canvas_Record; Event : Gdk.Event.Gdk_Event)
+      return Canvas_Item;
+   --  Same as above, but using the coordinates of the event, taking into
+   --  account the current zoom level and current scrolling
+
    procedure Remove
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class);
@@ -604,6 +616,11 @@ private
       Descr  : String_Access;
       Arrow  : Arrow_Type;
 
+      Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf := Gdk.Pixbuf.Null_Pixbuf;
+      --  The pixmap in which the text is displayed. This is required to
+      --  properly implement zooming through pixmaps. The text is drawn at zoom
+      --  level 100%.
+
       Src_X_Pos  : Glib.Gfloat := 0.5;
       Src_Y_Pos  : Glib.Gfloat := 0.5;
       Dest_X_Pos : Glib.Gfloat := 0.5;
@@ -650,11 +667,8 @@ private
 
       Grid_Size         : Glib.Guint := Default_Grid_Size;
       --  The current number of pixels between each dot of the grid. If this
-      --  is strictly below 2, the grid is not drawn. (0) means that the
-      --  user has deactivated the grid completely.
+      --  is strictly below 2, the grid is not drawn.
 
-      Annotation_Font   : String_Access;
-      Annotation_Height : Glib.Gint := Default_Annotation_Height;
       Arc_Link_Offset   : Glib.Gint := Default_Arc_Link_Offset;
       Arrow_Angle       : Float;
       Arrow_Length      : Glib.Gint := Default_Arrow_Length;
@@ -664,10 +678,10 @@ private
       --  The following variables are initialized as soon as a Gdk_Window
       --  has been created for the canvas, in the Realized subprograms.
 
-      Clear_GC : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
-      Black_GC : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
-      Anim_GC  : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
-      Font     : Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
+      Clear_GC        : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
+      Black_GC        : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
+      Anim_GC         : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
+      Annotation_Font : Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
 
       Double_Buffer : Gdk.Pixmap.Gdk_Pixmap;
 
