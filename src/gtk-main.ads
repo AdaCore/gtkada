@@ -52,25 +52,25 @@ package Gtk.Main is
    --------------------------------------
 
    procedure Init;
-   --  Initializes GtkAda's internal structures.
+   --  Initialize GtkAda's internal structures.
    --  This subprogram should be called before any other one in GtkAda.
    --  If GtkAda could not be initialized (no access to the display, etc.), the
    --  application exits with an error
 
    function Init_Check return Boolean;
-   --  Initializes GtkAda's internal structures.
-   --  Returns False if there was an error (no access to the display, etc.)
+   --  Initialize GtkAda's internal structures.
+   --  Return False if there was an error (no access to the display, etc.)
 
    procedure Gtk_Exit (Error_Code : in Gint);
-   --  Terminates GtkAda cleanly, and quits the application.
+   --  Terminate GtkAda cleanly, and quits the application.
 
    function Set_Locale return String;
-   --  Read and parses the local settings, such as time format, ...
-   --  Returns the name of the local settings, which can also be set with
+   --  Read and parse the local settings, such as time format, ...
+   --  Return the name of the local settings, which can also be set with
    --  the environment variable LOCALE
 
    procedure Set_Locale;
-   --  Read and parses the local settings, such as time format, ...
+   --  Read and parse the local settings, such as time format, ...
 
    -----------------------------
    -- Init and Quit functions --
@@ -78,7 +78,7 @@ package Gtk.Main is
 
    type Init_Function is access procedure (Data : System.Address);
    procedure Init_Add (Func : Init_Function; Data : System.Address);
-   --  Registers a function to be called just before starting a main loop.
+   --  Register a function to be called just before starting a main loop.
    --  This function is called only once, even if a new main loop is started
    --  recursively.
 
@@ -88,14 +88,13 @@ package Gtk.Main is
    function Quit_Add (Main_Level : Guint;
                       Func       : Quit_Function)
                      return Quit_Handler_Id;
-   --  Registers a new function to be called when the current main loop
-   --  exists.
+   --  Register a new function to be called when the current main loop exists.
    --  The function will be called once when the current main loop exists.
-   --  If it returns FALSE, it will then be deleted from the list of
+   --  If it returns False, it will then be deleted from the list of
    --  quit functions, and won't be called again next time a main loop is
    --  exited.
    --  The function will only be called when exiting a main loop at level
-   --  MAIN_LEVEL. If MAIN_LEVEL is 0, the function will be called for the
+   --  Main_Level. If Main_Level is 0, the function will be called for the
    --  current main_loop.
 
    --  <doc_ignore>
@@ -116,18 +115,18 @@ package Gtk.Main is
      (Main_Level : Guint;
       Object     : access Gtk.Object.Gtk_Object_Record'Class)
      return Quit_Handler_Id;
-   --  Make sure that OBJECT is destroyed when existing the main loop at level
-   --  MAIN_LEVEL (or the current main loop is MAIN_LEVEL is 0).
+   --  Ensure that Object is destroyed when exiting the main loop at Main_Level
+   --  (or the current main loop level is 0).
 
    procedure Quit_Remove (Id : Quit_Handler_Id);
-   --  Removes a Quit Handler, that has been previously set by Quit_Add.
+   --  Remove a Quit Handler, that has been previously set by Quit_Add.
 
    -------------------
    -- The main loop --
    -------------------
 
    function Events_Pending return Boolean;
-   --  Returns True if there are some events waiting in the event queue.
+   --  Return True if there are some events waiting in the event queue.
 
    procedure Main;
    --  Start the main loop, and returns only when the main loop is exited.
@@ -138,57 +137,60 @@ package Gtk.Main is
    --  Note that this procedure can only be called within a single task.
 
    function Main_Level return Guint;
-   --  Returns the level of the current main loop
+   --  Return the level of the current main loop.
    --  Since there can be imbricated loops, this returns the depth of the
    --  current one, starting from 1 (0 if there is none).
 
    procedure Main_Quit;
-   --  Quits the current main loop.
+   --  Quit the current main loop.
    --  If this was the last active main loop, no more events will be processed
    --  by GtkAda.
 
    function Main_Iteration (Blocking : in Boolean := True) return Boolean;
-   --  Does one iteration of the main loop.
-   --  BLOCKING indicates whether GtkAda should wait for an event to be
+   --  Do one iteration of the main loop.
+   --  Blocking indicates whether GtkAda should wait for an event to be
    --  available, or simply exit if there is none.
    --  Returns True if no main loop is running
    --  When doing some heavy calculations in an application, it is recommended
    --  that you check from time to time if there are any events pending and
    --  process them, so that your application still reacts to events.
    --  To do that, you would add a loop like:
+   --
    --    while Gtk.Main.Events_Pending loop
+   --
    --        Dead := Gtk.Main.Main_Iteration;
+   --
    --    end loop;
 
    procedure Do_Event (Event : in Gdk.Event.Gdk_Event);
-   --  Processes EVENT as if it was in the event queue.
+   --  Process Event as if it was in the event queue.
    --  This function should almost never be used in your own application, this
    --  is the core function for event processing in GtkAda.
-   --  The user should not free EVENT, this is already done by GtkAda.
+   --  The user should not free Event, this is already done by GtkAda.
 
    function Get_Event_Widget (Event : in Gdk.Event.Gdk_Event)
                              return Gtk.Widget.Gtk_Widget;
-   --  Returns the widget to which EVENT applies
+   --  Return the widget to which Event applies.
 
    --------------------
    -- Grab functions --
    --------------------
 
    procedure Grab_Add (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Adds a new widget to the grab list.
+   --  Add a new widget to the grab list.
    --  The widget at the front of this list gets all the events even if it does
    --  not have the focus. This feature should be used with care.
    --  If you want a whole window to get the events, it is better to use
-   --  Gtk.Window.Set_Modal instead which does the grabbing abd ungrabbing for
+   --  Gtk.Window.Set_Modal instead which does the grabbing and ungrabbing for
    --  you.
    --  The grab is only done for the application. Events outside the
-   --  application are still send to their respective windows.
+   --  application are still sent to their respective windows.
 
    procedure Grab_Remove (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Removes a widget from the grab list.
+   --  Remove a widget from the grab list.
 
    function Grab_Get_Current return Gtk.Widget.Gtk_Widget;
-   --  Returns the widget that currently has the focus
+   --  Return the widget that currently has the focus.
 
    ----------
    -- Idle --
@@ -198,8 +200,8 @@ package Gtk.Main is
    --  queue, and are used for instance internally to redraw widgets (so that
    --  the application keeps reacting to user input even if there is a heavy
    --  redrawing to do).
-   --  The Idle function returns a boolean, which should be TRUE if the idle
-   --  remains activate and should be called again, or FALSE if the idle should
+   --  The Idle function returns a boolean, which should be True if the idle
+   --  remains active and should be called again, or False if the idle should
    --  be unregistered.
    --  The priority of these idle callbacks can also be modified, so that
    --  the scheduling calls one callback before another.
@@ -216,7 +218,7 @@ package Gtk.Main is
    function Idle_Add (Cb       : in Idle_Callback;
                       Priority : in Idle_Priority := Priority_Default_Idle)
                      return Idle_Handler_Id;
-   --  Registers an idle callback with no user data.
+   --  Register an idle callback with no user data.
 
    --  <doc_ignore>
    generic
@@ -234,7 +236,7 @@ package Gtk.Main is
    --  </doc_ignore>
 
    procedure Idle_Remove (Id : in Idle_Handler_Id);
-   --  Removes an idle callback, when its ID is known.
+   --  Remove an idle callback, when its Id is known.
 
    -------------
    -- Timeout --
@@ -249,8 +251,8 @@ package Gtk.Main is
    function Timeout_Add (Interval : in Guint32;
                          Func : Timeout_Callback)
                         return Timeout_Handler_Id;
-   --  Adds a new timeout. FUNC will be called after INTERVAL milliseconds.
-   --  The function will be as long as it returns TRUE.
+   --  Add a new timeout. Func will be called after Interval milliseconds.
+   --  The function will be as long as it returns True.
 
    --  <doc_ignore>
    generic
@@ -261,7 +263,7 @@ package Gtk.Main is
                     Func     : in Callback;
                     D        : in Data_Type)
                     return      Timeout_Handler_Id;
-      --  Adds a new timeout. FUNC will be called after INTERNAL milliseconds.
+      --  Adds a new timeout. Func will be called after Interval milliseconds.
    end Timeout;
    --  !!Warning!! The instances of this package must be declared at library
    --  level, as they are some accesses to internal functions that happen
@@ -269,7 +271,7 @@ package Gtk.Main is
    --  </doc_ignore>
 
    procedure Timeout_Remove (Id : in Timeout_Handler_Id);
-   --  Unregisters a timeout function.
+   --  Unregister a timeout function.
 
    -----------
    -- Input --
