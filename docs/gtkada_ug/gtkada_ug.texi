@@ -500,6 +500,13 @@ have to be instanciated at library level, not inside a subprogram, so
 that the functions are still defined when gtk needs to free the memory.
 @end cartouche
 
+@cartouche
+@b{WARNING} Before any other call to the GtkAda library is performed,
+@code{Gtk.Main.Init} must be invoked first. Most of the time, this
+procedure is invoked from the main procedure of the application, in
+which case no use of GtkAda can be done during the application
+elaboration.
+@end cartouche
 
 @c ----------------------------------------------------------------------
 @node Widgets Hierarchy
