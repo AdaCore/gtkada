@@ -860,11 +860,11 @@ package body Glib.Glade is
 
          Rename := Add_Signal (Top, Handler, Name, Class, Orig_Class);
 
-         if Returned <= Gtk_Type_None and then Class.all /= "GtkWidget" then
+         if Returned <= GType_None and then Class.all /= "GtkWidget" then
             Add_Signal_Instantiation (Class, Rename);
          end if;
 
-         if Returned > Gtk_Type_None then
+         if Returned > GType_None then
             Put (File, "   Return_Callback.");
          else
             Put (File, "   " &
@@ -982,7 +982,7 @@ package body Glib.Glade is
                      Signals (J).Signal.all,
                      -1);
 
-                  if Returned > Gtk_Type_None then
+                  if Returned > GType_None then
                      Put (File, "   function ");
                   else
                      Put (File, "   procedure ");
@@ -991,7 +991,7 @@ package body Glib.Glade is
                   Put_Line (File, To_Ada (Signals (J).Handler.all));
                   Put (File, "     (Object : access ");
 
-                  if Returned > Gtk_Type_None then
+                  if Returned > GType_None then
                      Put (File, "Gtk_Widget");
                   else
                      Put (File, To_Ada (Signals (J).Class.all));
@@ -1008,7 +1008,7 @@ package body Glib.Glade is
                      Put (File, ")");
                   end if;
 
-                  if Returned > Gtk_Type_None then
+                  if Returned > GType_None then
                      Put (File, " return Boolean");
                   end if;
 
@@ -1058,7 +1058,7 @@ package body Glib.Glade is
                      Put_Line (File, "   " & Dashes);
                      New_Line (File);
 
-                     if Returned > Gtk_Type_None then
+                     if Returned > GType_None then
                         Put (File, "   function ");
                      else
                         Put (File, "   procedure ");
@@ -1067,7 +1067,7 @@ package body Glib.Glade is
                      Put_Line (File, Handler);
                      Put (File, "     (Object : access ");
 
-                     if Returned > Gtk_Type_None then
+                     if Returned > GType_None then
                         Put (File, "Gtk_Widget");
                      else
                         Put (File, To_Ada (Signals (J).Class.all));
@@ -1086,7 +1086,7 @@ package body Glib.Glade is
                         Put (File, ")");
                      end if;
 
-                     if Returned > Gtk_Type_None then
+                     if Returned > GType_None then
                         Put (File, " return Boolean");
                      end if;
 
@@ -1159,7 +1159,7 @@ package body Glib.Glade is
 
                      Put_Line (File, "   begin");
 
-                     if Returned > Gtk_Type_None then
+                     if Returned > GType_None then
                         Put_Line (File, "      return False;");
                      else
                         Put_Line (File, "      null;");

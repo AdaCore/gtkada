@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -232,7 +232,7 @@ package Gtk.Object is
    --  second with two ints parameters.
 
    Null_Parameter_Types : constant Signal_Parameter_Types (1 .. 0, 1 .. 0) :=
-     (others => (others => Gtk_Type_None));
+     (others => (others => GType_None));
    --  An empty array, used as a default parameter in Initialize_Class_Record.
 
    procedure Initialize_Class_Record
