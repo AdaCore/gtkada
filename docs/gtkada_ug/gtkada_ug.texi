@@ -75,25 +75,14 @@ Getting started with GtkAda
 
 General GTK documentation
 
-* Package Gtk.Main - high level routines::
 * Package Gtk.Handlers - connecting callbacks::
-* Package Gtk.Tooltips::
-* Package Gtk.Adjustment::
-* Package Gtk.Widget::
-* Package Gtk.Label::
 * Package Gtk.Scrollbar::
 * Package Gtk.Drawing_Area::
 * Package Gtk.Text::
-* Package Gtk.Container::
 * Package Gtk.Table::
 * Package Gtk.Scrolled_Window::
 * Package Gtk.Notebook::
-* Package Gtk.Box::
-* Package Gtk.Button::
-* Package Gtk.Toggle_Button::
-* Package Gtk.Check_Button::
 * Package Gtk.Event_Box::
-* Package Gtk.Window::
 * Package Gtk.File_Selection::
 * Package Gtk.Enums::
 
@@ -884,12 +873,14 @@ the @code{Create_Window} procedure looks like
 @node General GTK documentation
 @chapter General GTK documentation
 
-This section describes briefly how to use the GTK toolset. This is largely
-inspired from the GTK+ documentation. It is recommended that you read this
-documentation for all general GTK topics.
+This section describes briefly how to use the GTK toolset.
+It is here only until the GtkAda reference manual is fully completed, and
+document some widgets that are not yet documented in the reference manual.
+You should preferably should at the reference manual for more information.
 
-The GTK toolkit is based on two lower level layers: GDK and Glib.
-It is sometimes needed to call these layers directly. @xref{Description of the GDK hierarchy} for a brief description of these packages.
+The GTK toolkit is based on two lower level layers: GDK and Glib.  It is
+sometimes needed to call these layers directly. For a brief description of
+these packages, @xref{Description of the GDK hierarchy}.
 
 Each widget is declared in a separate package.  The file, package and
 type names can be automatically retrieved from one another. For example,
@@ -900,62 +891,17 @@ You may want to look at the sources themselves to find informations on a
 specific widget.
 
 @menu
-* Package Gtk.Main - high level routines::
 * Package Gtk.Handlers - connecting callbacks::
-* Package Gtk.Tooltips::
-* Package Gtk.Adjustment::
-* Package Gtk.Widget::
-* Package Gtk.Label::
 * Package Gtk.Scrollbar::
 * Package Gtk.Drawing_Area::
 * Package Gtk.Text::
-* Package Gtk.Container::
 * Package Gtk.Table::
 * Package Gtk.Scrolled_Window::
 * Package Gtk.Notebook::
-* Package Gtk.Box::
-* Package Gtk.Button::
-* Package Gtk.Toggle_Button::
-* Package Gtk.Check_Button::
 * Package Gtk.Event_Box::
-* Package Gtk.Window::
 * Package Gtk.File_Selection::
 * Package Gtk.Enums::
 @end menu
-
-@node Package Gtk.Main - high level routines
-@section Package Gtk.Main - high level routines
-
-These procedures are described in the order in which they should be called:
-
-@itemize @bullet
-@item
-@code{Set_Locale} must be called first. It sets the various datas specific to
-your location, e.g time, date, decimal formats.
-@example
-procedure Set_Locale;
-@end example
-
-@item
-@code{Init} initializes the Gtk @var{engine}. Among other things, it
-parses the arguments provided on the command line.
-@example
-procedure Init;
-@end example
-
-@item
-The signal handling loop: call it once the interface has been set-up.
-@example
-procedure Main;
-@end example
-
-@item
-To interrupt the signal handling loop. Usually called in a callback to stop
-the application.
-@example
-procedure Main_Quit;
-@end example
-@end itemize
 
 @c ----------------------------------------------------------------------
 @node Package Gtk.Handlers - connecting callbacks
@@ -1204,211 +1150,6 @@ Two procedures to destroy a specific or any connection.
 @c @end group
 @end example
 
-@c ----------------------------------------------------------------------
-@node Package Gtk.Tooltips
-@section Package Gtk.Tooltips
-@c ----------------------------------------------------------------------
-
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Tooltips_Record @b{is new} Gtk.Data.Gtk_Data_Record @b{with private};
-@b{type} Gtk_Tooltips @b{is access all} Gtk_Tooltips_Record'@b{Class};
-@c @end cartouche
-@c @end group
-@end example
-
-The message hint that pops up in a little window when the mouse stay
-on a widget long enough without moving.
-
-@node Package Gtk.Adjustment
-@section Package Gtk.Adjustment
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Adjustment_Record @b{is new} Data.Gtk_Data_Record @b{with private};
-@b{type} Gtk_Adjustment @b{is access all} Gtk_Adjustment_Record'@b{Class};
-@c @end cartouche
-@c @end group
-@end example
-
-These objects allow you to create a link between a scrollbar and a
-scrollable widget (text, scrolled_window).
-
-@node Package Gtk.Widget
-@section Package Gtk.Widget
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Widget_Record @b{is new} Object.Gtk_Object_Record @b{with null record};
-@b{type} Gtk_Widget @b{is access all} Gtk_Widget_Record'@b{Class};
-@c @end cartouche
-@c @end group
-@end example
-
-Root of the widget tree. Here are a few useful primitives that are inherited
-by all the widgets.
-
-@itemize @bullet
-@item Destroy the widget
-@example
-@c @group
-@c @cartouche
-@b{procedure} Destroy (Widget : @b{access} Gtk_Widget_Record);
-@c @end cartouche
-@c @end group
-@end example
-
-@item The Widget can be referenced in a resource file under a specified name
-
-@example
-@c @group
-@c @cartouche
-@b{procedure} Set_Name
-  (Widget : @b{access} Gtk_Widget_Record; Name : in String);
-@c @end cartouche
-@c @end group
-@end example
-
-@item The @code{Widget} is displayed
-
-@example
-@c @group
-@c @cartouche
-@b{procedure} Show (Widget : @b{access} Gtk_Widget_Record);
-@c @end cartouche
-@c @end group
-@end example
-
-@item The @code{Widget} and its child widgets are displayed
-
-@example
-@c @group
-@c @cartouche
-@b{procedure} Show_All (Widget : @b{access} Gtk_Widget_Record);
-@c @end cartouche
-@c @end group
-@end example
-
-@item Hide the @code{Widget}.
-
-@example
-@c @group
-@c @cartouche
-@b{procedure} Hide (Widget : @b{access} Gtk_Widget_Record);
-@c @end cartouche
-@c @end group
-@end example
-
-@item To manipulate the color tables (see, e.g @code{Gdk.Color.White})
-
-@example
-@c @group
-@c @cartouche
-@b{function} Get_Colormap (Widget : @b{access} Gtk_Widget_Record)
-  @b{return} Gdk_Colormap;
-
-@b{function} Get_Default_Colormap @b{return} Gdk_Colormap;
-
-@b{procedure} Set_Default_Colormap
-  (Widget : @b{access} Gtk_Widget_Record; Cmap : Gdk_Colormap);
-@c @end cartouche
-@c @end group
-@end example
-
-@item To (de)associate a Gdk_Window to a widget:
-@example
-@c @group
-@c @cartouche
-@b{procedure} Realize (Widget : @b{access} Gtk_Widget_Record);
-@b{procedure} Unrealize (Widget : @b{access} Gtk_Widget_Record);
-@b{function}  Realized_Is_Set (Widget : @b{access} Gtk_Widget_Record'@b{Class})
-  @b{return} Boolean;
-@c @end cartouche
-@c @end group
-@end example
-
-You need to use @code{Realize} when for example you want to insert text in a
-@code{Gtk_Text} before calling @code{Show}.
-
-@item To make a widget (un)sensitive so that it won't generate any signal:
-@example
-@c @group
-@c @cartouche
-@b{procedure} Set_Sensitive
-  (Widget    : @b{access} Gtk_Widget_Record;
-   Sensitive : @b{in} Boolean := True);
-@c @end cartouche
-@c @end group
-@end example
-@code{Set_Sensitive} can be used to temporarily disable a button or a
-container. When it is not sensitive, its visual aspect changes.
-
-@item To know whether a widget has no parent (usually a main window):
-@example
-@c @group
-@c @cartouche
-@b{function} Toplevel_Is_Set (Widget : @b{access} Gtk_Widget_Record'@b{Class})
-  @b{return} Boolean;
-@c @end cartouche
-@c @end group
-@end example
-
-@item To get the parent widget:
-@example
-@c @group
-@c @cartouche
-@b{function} Get_Parent (Widget : @b{access} Gtk_Widget_Record)
-  @b{return} Gtk_Widget;
-@c @end cartouche
-@c @end group
-@end example
-
-@item To get the low level window (@code{Gdk_Window}) associated with a widget:
-@example
-@c @group
-@c @cartouche
-@b{function} Get_Window (Widget : @b{access} Gtk_Widget_Record)
-  @b{return} Gdk.Window.Gdk_Window;
-@c @end cartouche
-@c @end group
-@end example
-
-@end itemize
-
-@node Package Gtk.Label
-@section Package Gtk.Label
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Label_Record @b{is new} Misc.Gtk_Misc_Record @b{with private};
-@b{type} Gtk_Label @b{is access} all Gtk_Label_Record'@b{Class};
-@c @end cartouche
-@c @end group
-@end example
-
-To display and then modify a simple string.
-A @code{Gtk_Label} can emit no signal (see @code{Event_Box} if you want to
-connect a signal)
-
-Create a new label
-@example
-@c @group
-@c @cartouche
-@b{procedure} Gtk_New (Label : @b{out} Gtk_Label; Str : @b{in} String);
-@c @end cartouche
-@c @end group
-@end example
-
-Change the label string
-@example
-@c @group
-@c @cartouche
-@b{procedure} Set_Text (Label : @b{access} Gtk_Label_Record; Str : @b{in} String);
-@c @end cartouche
-@c @end group
-@end example
-
 @node Package Gtk.Scrollbar
 @section Package Gtk.Scrollbar
 @example
@@ -1568,52 +1309,6 @@ Also inherits primitives from @code{Gtk.Editable.Gtk_Editable}:
   return Guint;
 @end example
 @end itemize
-
-@node Package Gtk.Container
-@section Package Gtk.Container
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Container_Record @b{is new}
-  Gtk.Widget.Gtk_Widget_Record @b{with private};
-@b{type} Gtk_Container @b{is access all} Gtk_Container_Record'@b{Class};
-@c @end cartouche
-@c @end group
-@end example
-
-General notion that permits to create a hierarchical structure of widgets, such
-as @code{Gtk_Box, Gtk_Table, Gtk_EventBox}, @dots{}
-
-To add/remove a widget in a @code{Gtk_Container}:
-
-@example
-@c @group
-@c @cartouche
-@b{procedure} Add
-  (Container : @b{access} Gtk_Container_Record;
-   Widget    : @b{access} Gtk.Widget.Gtk_Widget_Record'@b{Class});
-
-@b{procedure} Remove
-  (Container : @b{access} Gtk_Container_Record;
-   Widget    : @b{access} Gtk.Widget.Gtk_Widget_Record'@b{Class});
-@c @end cartouche
-@c @end group
-@end example
-
-The @b{procedure}s @code{Pack_Start} and @code{Pack_End} of @code{Gtk_Box} and
-@code{Attach} of @code{Gtk_Table} let you add widgets and specify their
-position.
-
-To set the width of the border around the @code{Gtk_Container}:
-@example
-@c @group
-@c @cartouche
-@b{procedure} Border_Width
-  (Container    : @b{access} Gtk_Container_Record;
-   Border_Width : @b{in} Gint);
-@c @end cartouche
-@c @end group
-@end example
 
 @node Package Gtk.Table
 @section Package Gtk.Table
@@ -1775,117 +1470,6 @@ This widget has become more common lately in GUI programming,
 and it is a good way to show blocks of similar information that warrant
 separation in their display. 
 
-@node Package Gtk.Box
-@section Package Gtk.Box
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Box_Record @b{is new}
-  Gtk.Container.Gtk_Container_Record @b{with private};
-@b{type} Gtk_Box @b{is access all} Gtk_Box_Record'@b{Class};
-@b{subtype} Gtk_Vbox @b{is} Gtk_Box;
-@b{subtype} Gtk_Hbox @b{is} Gtk_Box;
-@c @end cartouche
-@c @end group
-@end example
-
-Horizontal (@code{Gtk_New_Hbox}) and vertical (@code{Gtk_New_Vbox}) boxes
-that can contain several widgets.
-you can add widgets from
-
-@itemize @bullet
-@item the left to the right starting from the beginning (@code{Pack_Start})
-@item the right to the left, starting from the end (@code{Pack_End})
-@end itemize
-
-@example
-@c @group
-@c @cartouche
-@b{procedure} Gtk_New_Vbox
-  (Box         : @b{in} out Gtk_Box;
-   Homogeneous : @b{in}  Boolean;
-   Spacing     : @b{in}  Gint);
-@b{procedure} Initialize_Vbox
-  (Box         : @b{access} Gtk_Box_Record'Class;
-   Homogeneous : @b{in}  Boolean;
-   Spacing     : @b{in}  Gint);
-
-@b{procedure} Gtk_New_Hbox
-  (Box         : @b{in} out Gtk_Box;
-   Homogeneous : @b{in}  Boolean;
-   Spacing     : @b{in}  Gint);
-@b{procedure} Initialize_Hbox
-  (Box         : @b{access} Gtk_Box_Record'Class;
-   Homogeneous : @b{in}  Boolean;
-   Spacing     : @b{in}  Gint);
-
-@b{procedure} Pack_Start
-  (In_Box  : @b{access} Gtk_Box_Record;
-   Child   : @b{access} Gtk.Widget.Gtk_Widget_Record'@b{Class};
-   Expand  : @b{in} Boolean := True;
-   Fill    : @b{in} Boolean := True;
-   Padding : @b{in} Gint    := 0);
-
-@b{procedure} Pack_End
-  (In_Box  : @b{access} Gtk_Box_Record;
-   Child   : @b{access} Gtk.Widget.Gtk_Widget_Record'@b{Class};
-   Expand  : @b{in} Boolean := True;
-   Fill    : @b{in} Boolean := True;
-   Padding : @b{in} Gint    := 0);
-@c @end cartouche
-@c @end group
-@end example
-
-@xref{Package Gtk.Table}
-
-@node Package Gtk.Button
-@section Package Gtk.Button
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Button_Record @b{is new} Bin.Gtk_Bin_Record @b{with private};
-@b{type} Gtk_Button @b{is access all} Gtk_Button_Record'@b{Class};
-@c @end cartouche
-@c @end group
-@end example
-
-A simple button with a label and signals (e.g @code{clicked}).
-
-@node Package Gtk.Toggle_Button
-@section Package Gtk.Toggle_Button
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Toggle_Button_Record @b{is new} Gtk.Button.Gtk_Button_Record
-  @b{with private};
-@b{type} Gtk_Toggle_Button @b{is access all} Gtk_Toggle_Button_Record'@b{Class};
-@c @end cartouche
-@c @end group
-@end example
-
-Toggle buttons are very similar to normal buttons, except they will always
-be in one of two states, alternated by a click. They may be depressed,
-and when you click again, they will pop back up.  Click again, and they will
-pop back down.
-
-@node Package Gtk.Check_Button
-@section Package Gtk.Check_Button
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Check_Button_Record @b{is new}
-  Toggle_Button.Gtk_Toggle_Button_Record @b{with private};
-@b{type} Gtk_Check_Button @b{is access all} Gtk_Check_Button_Record'@b{Class};
-@c @end cartouche
-@c @end group
-@end example
-
-Check buttons inherit many properties and @b{function}s from the the toggle
-buttons above, but look a little different.
-Rather than being buttons with text inside them, they are small squares with
-the text to the right of them. These are often seen for toggling
-options on and off in applications. 
-
 @node Package Gtk.Event_Box
 @section Package Gtk.Event_Box
 @example
@@ -1918,19 +1502,6 @@ This widget is a child of @code{Gtk_Container} and inherits in particular of:
 @c @end cartouche
 @c @end group
 @end example
-
-@node Package Gtk.Window
-@section Package Gtk.Window
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Window_Record @b{is new} Bin.Gtk_Bin_Record @b{with private};
-@b{type} Gtk_Window @b{is access all} Gtk_Window_Record'@b{Class};
-@c @end cartouche
-@c @end group
-@end example
-
-The base window, emits the signals @code{"destroy", "delete_event"}.
 
 @node Package Gtk.File_Selection
 @section Package Gtk.File_Selection
@@ -2637,14 +2208,14 @@ If you think one of the standard widgets is nice, but would be even
 better if it was drawing itself in a slighlty different way, of if it could
 contain some other data that you need in your application, there is a very
 simple way to do it: just create a new type that extends the
-current one (see the section @xref{Using tagged types to extend Gtk widgets}
+current one (see the section @ref{Using tagged types to extend Gtk widgets}
 below.
 
 Maybe you want to create your own brand new widget, that knows how to draw
 itself, how to react to events, ... and you want to be able to reuse it
 anytime you need ? Once again, using the standard Ada features, you can
 simply create a new tagged type and teach it how to interact with the user.
-See the section @xref{Creating new widgets in Ada} below.
+See the section @ref{Creating new widgets in Ada} below.
 
 @subsection Type conversions from C widgets to Ada widgets
 
