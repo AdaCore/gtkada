@@ -44,6 +44,7 @@ with Gdk.Region;       use Gdk.Region;
 with Gdk.Types;        use Gdk.Types;
 with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
 with Gdk.Rectangle;    use Gdk.Rectangle;
+with Gdk.Visual;       use Gdk.Visual;
 with Gdk.Window;       use Gdk.Window;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Arguments;    use Gtk.Arguments;
@@ -977,40 +978,83 @@ package body Gtkada.Canvas is
       Execute : Item_Processor;
       Linked_From_Or_To : Canvas_Item := null)
    is
-      Item : Vertex_Iterator;
-      Edge : Edge_Iterator;
-      It, It2 : Canvas_Item;
+      Iter : Item_Iterator := Start (Canvas, Linked_From_Or_To);
+      It : Canvas_Item;
+   begin
+      loop
+         It := Get (Iter);
+         exit when It = null;
+
+         Next (Iter);
+         exit when not Execute (Canvas, It);
+      end loop;
+   end For_Each_Item;
+
+   -----------
+   -- Start --
+   -----------
+
+   function Start
+     (Canvas : access Interactive_Canvas_Record;
+      Linked_From_Or_To : Canvas_Item := null) return Item_Iterator is
    begin
       if Linked_From_Or_To = null then
-         Item := First (Canvas.Children);
-         while not At_End (Item) loop
-            It := Canvas_Item (Get (Item));
-            Next (Item);
-            exit when not Execute (Canvas, It);
-         end loop;
+         return (Vertex            => First (Canvas.Children),
+                 Edge              => Null_Edge_Iterator,
+                 Linked_From_Or_To => null);
+      else
+         return (Vertex => Null_Vertex_Iterator,
+                 Edge   => First (Canvas.Children,
+                                  Vertex_Access (Linked_From_Or_To),
+                                  Directed => False),
+                 Linked_From_Or_To => Linked_From_Or_To);
+      end if;
+   end Start;
+
+   ----------
+   -- Next --
+   ----------
+
+   procedure Next (Iter : in out Item_Iterator) is
+   begin
+      if Iter.Linked_From_Or_To = null then
+         Next (Iter.Vertex);
+      else
+         Next (Iter.Edge);
+      end if;
+   end Next;
+
+   ---------
+   -- Get --
+   ---------
+
+   function Get (Iter : Item_Iterator) return Canvas_Item is
+      Item : Canvas_Item;
+   begin
+      if Iter.Linked_From_Or_To = null then
+         if At_End (Iter.Vertex) then
+            return null;
+         else
+            return Canvas_Item (Get (Iter.Vertex));
+         end if;
 
       else
-         Set_Directed (Canvas.Children, False);
+         if At_End (Iter.Edge) then
+            return null;
+         end if;
 
-         Edge := First (Canvas.Children, Vertex_Access (Linked_From_Or_To));
-         while not At_End (Edge) loop
-            It  := Canvas_Item (Get_Src (Get (Edge)));
-            It2 := Canvas_Item (Get_Dest (Get (Edge)));
-            Next (Edge);
+         Item  := Canvas_Item (Get_Src (Get (Iter.Edge)));
+         if Item /= Iter.Linked_From_Or_To then
+            return Item;
+         end if;
 
-            if It /= Linked_From_Or_To then
-               exit when not Execute (Canvas, It);
-            end if;
-
-            if It2 /= Linked_From_Or_To then
-               exit when not Execute (Canvas, It2);
-            end if;
-
-         end loop;
-
-         Set_Directed (Canvas.Children, True);
+         --  If Get_Src was the item, we want to return Dest (which might
+         --  actually be the item itself).
+         --  Else, if Get_Src wasn't the item, then Get_Dest is the item, and
+         --  we do not want to return it.
+         return Canvas_Item (Get_Dest (Get (Iter.Edge)));
       end if;
-   end For_Each_Item;
+   end Get;
 
    ---------------
    -- Clip_Line --
@@ -3195,23 +3239,23 @@ package body Gtkada.Canvas is
       end if;
    end Draw;
 
-   --------------------------------
-   -- Set_Screen_Size_And_Pixmap --
-   --------------------------------
+   ---------------------
+   -- Set_Screen_Size --
+   ---------------------
 
-   procedure Set_Screen_Size_And_Pixmap
+   procedure Set_Screen_Size
      (Item   : access Buffered_Item_Record;
-      Win    : Gdk.Window.Gdk_Window;
       Width, Height  : Glib.Gint) is
    begin
-      Set_Screen_Size (Item, Width, Height);
+      Set_Screen_Size (Canvas_Item_Record (Item.all)'Access, Width, Height);
 
       if Item.Pixmap /= null then
          Gdk.Pixmap.Unref (Item.Pixmap);
       end if;
 
-      Gdk_New (Item.Pixmap, Win, Width, Height);
-   end Set_Screen_Size_And_Pixmap;
+      Gdk_New (Item.Pixmap, null, Width, Height,
+               Depth => Get_Best_Depth);
+   end Set_Screen_Size;
 
    ------------
    -- Pixmap --

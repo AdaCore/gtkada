@@ -231,6 +231,7 @@ package Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       X, Y : Glib.Gint) return Canvas_Item;
    --  Return the item on top, at coordinates (X, Y).
+   --  These are world coordinates, as if the canvas had a zoom of 100%.
    --  null is returned if there is no such item.
 
    function Item_At_Coordinates
@@ -255,33 +256,6 @@ package Gtkada.Canvas is
    procedure Refresh_Canvas (Canvas : access Interactive_Canvas_Record);
    --  Redraw the whole canvas (both in the double buffer and on the screen).
 
-   type Item_Processor is access function
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Item   : access Canvas_Item_Record'Class) return Boolean;
-
-   procedure For_Each_Item
-     (Canvas  : access Interactive_Canvas_Record;
-      Execute : Item_Processor;
-      Linked_From_Or_To : Canvas_Item := null);
-   --  Execute an action on each of the items contained in the canvas.
-   --  If Execute returns False, we stop traversing the list of children.
-   --  It is safe to remove the items in Item_Processor.
-   --
-   --  If Linked_From_Or_To is not null, then only the items linked to this one
-   --  will be processed. It is possible that a given item will be returned
-   --  twice, if it is both linked to and from the item.
-   --
-   --  ??? Should we remove, and replace with the standard iterators from
-   --  ??? Graphs
-
-   function Has_Link
-     (Canvas   : access Interactive_Canvas_Record;
-      From, To : access Canvas_Item_Record'Class;
-      Name     : String := "") return Boolean;
-   --  Test whether there is a link from From to To, with the same name.
-   --  If Name is the empty string "", then no check is done on the name,
-   --  and True if returned if there is any link between the two items.
-
    procedure Raise_Item
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class);
@@ -305,6 +279,49 @@ package Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class);
    --  Scroll the canvas so that Item is visible.
+
+   --------------------------
+   -- Iterating over items --
+   --------------------------
+
+   type Item_Processor is access function
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Item   : access Canvas_Item_Record'Class) return Boolean;
+
+   procedure For_Each_Item
+     (Canvas  : access Interactive_Canvas_Record;
+      Execute : Item_Processor;
+      Linked_From_Or_To : Canvas_Item := null);
+   --  Execute an action on each of the items contained in the canvas.
+   --  If Execute returns False, we stop traversing the list of children.
+   --  It is safe to remove the items in Item_Processor.
+   --
+   --  If Linked_From_Or_To is not null, then only the items linked to this one
+   --  will be processed. It is possible that a given item will be returned
+   --  twice, if it is both linked to and from the item.
+
+
+   type Item_Iterator is private;
+
+   function Start
+     (Canvas : access Interactive_Canvas_Record;
+      Linked_From_Or_To : Canvas_Item := null) return Item_Iterator;
+   --  Return the first item in the canvas.
+   --  The same restriction as above applies if Linked_From_Or_To is not null.
+
+   procedure Next (Iter : in out Item_Iterator);
+   --  Move the iterator to the next item.
+   --  All items will eventually be returned if you do not add new items during
+   --  the iteration and none are removed. However, it is safe to remove items
+   --  at any time, except the current item
+
+   function Get (Iter : Item_Iterator) return Canvas_Item;
+   --  Return the item pointed to by the iterator.
+   --  null is returned when there are no more item in the canvas.
+
+   -------------
+   -- Zooming --
+   -------------
 
    procedure Zoom
      (Canvas : access Interactive_Canvas_Record;
@@ -417,6 +434,14 @@ package Gtkada.Canvas is
    procedure Set_Dest_Pos
      (Link : access Canvas_Link_Record; X_Pos, Y_Pos : Glib.Gfloat := 0.5);
    --  Same as Set_Src_Pos for the destination item
+
+   function Has_Link
+     (Canvas   : access Interactive_Canvas_Record;
+      From, To : access Canvas_Item_Record'Class;
+      Name     : String := "") return Boolean;
+   --  Test whether there is a link from From to To, with the same name.
+   --  If Name is the empty string "", then no check is done on the name,
+   --  and True if returned if there is any link between the two items.
 
    procedure Add_Link
      (Canvas : access Interactive_Canvas_Record;
@@ -532,6 +557,8 @@ package Gtkada.Canvas is
       Height : Glib.Gint);
    --  Set the size of the item in world coordinates (ie for a zoom level
    --  100%).
+   --  You need to redraw the item, and call Item_Updated to force the canvas
+   --  to refresh the screen.
 
    procedure Draw
      (Item   : access Canvas_Item_Record;
@@ -541,10 +568,13 @@ package Gtkada.Canvas is
    --  This subprogram, that must be overridden, should draw the item on
    --  the pixmap Dest, at the specific location (Xdest, Ydest). The item must
    --  also be drawn at the appropriate zoom level.
+   --  If you need to change the contents of the item, you should call
+   --  Item_Updated after having done the drawing.
 
    procedure Destroy (Item : in out Canvas_Item_Record);
    --  Free the memory occupied by the item (not the item itself). You should
-   --  override this function if you define your own widget type.
+   --  override this function if you define your own widget type, but always
+   --  call the parent's Destroy subprogram.
 
    procedure On_Button_Click
      (Item   : access Canvas_Item_Record;
@@ -552,10 +582,6 @@ package Gtkada.Canvas is
    --  Function called whenever the item was clicked on.
    --  Note that this function is not called when the item is moved, and thus
    --  is only called when the click was short.
-   --  If it returns True, the canvas it redrawn afterwards (in case the item
-   --  has changed for instance).
-   --  This procedure is never called for events that are used to move the
-   --  item in the canvas.
    --  The coordinates (X, Y) in the Event are relative to the top-left corner
    --  of Item.
 
@@ -563,6 +589,8 @@ package Gtkada.Canvas is
      (Item : access Canvas_Item_Record) return Gdk.Rectangle.Gdk_Rectangle;
    --  Return the coordinates and size of the item, in world coordinates (ie
    --  for a zoom level 100%).
+   --  If the item has never been resized, it initially has a width and height
+   --  of 1.
 
    procedure Set_Visibility
      (Item    : access Canvas_Item_Record;
@@ -591,24 +619,8 @@ package Gtkada.Canvas is
    --  the zoom yourself.
    --  You only need to update the contents of the double pixmap when the
    --  contents of the item changes, since all the drawing and zooming is
-   --  taken care of automatically.
-
-   procedure Draw
-     (Item : access Buffered_Item_Record;
-      Canvas : access Interactive_Canvas_Record'Class;
-      Dest : Gdk.Pixmap.Gdk_Pixmap;
-      Xdest, Ydest : Glib.Gint);
-   --  Draw the item's double-buffer onto Dest.
-
-   procedure Destroy (Item : in out Buffered_Item_Record);
-   --  Free the double-buffer allocated for the item
-
-   procedure Set_Screen_Size_And_Pixmap
-     (Item   : access Buffered_Item_Record;
-      Win    : Gdk.Window.Gdk_Window;
-      Width, Height  : Glib.Gint);
-   --  Changes the size of the item. Width and Height should be world sizes,
-   --  for a zoom level 100%, and should not depend on the current zoom level.
+   --  taken care of automatically. Once the drawing is done, call Item_Updated
+   --  to force the canvas to refresh the screen.
 
    function Pixmap (Item : access Buffered_Item_Record)
       return Gdk.Pixmap.Gdk_Pixmap;
@@ -745,7 +757,9 @@ private
    end record;
 
    type Canvas_Item_Record is abstract new Glib.Graphs.Vertex with record
-      Coord   : Gdk.Rectangle.Gdk_Rectangle := (0, 0, 10, 10);
+      Coord   : Gdk.Rectangle.Gdk_Rectangle := (0, 0, 1, 1);
+      --  Change doc for Get_Coord if you ever change default values
+
       Visible : Boolean := True;
 
       From_Auto_Layout : Boolean := True;
@@ -753,8 +767,29 @@ private
       --  layout algorithm.
    end record;
 
+   procedure Set_Screen_Size
+     (Item   : access Buffered_Item_Record;
+      Width, Height  : Glib.Gint);
+   --  See documentation from inherited subprogram
+
+   procedure Draw
+     (Item : access Buffered_Item_Record;
+      Canvas : access Interactive_Canvas_Record'Class;
+      Dest : Gdk.Pixmap.Gdk_Pixmap;
+      Xdest, Ydest : Glib.Gint);
+   --  Draw the item's double-buffer onto Dest.
+
+   procedure Destroy (Item : in out Buffered_Item_Record);
+   --  Free the double-buffer allocated for the item
+
    type Buffered_Item_Record is new Canvas_Item_Record with record
       Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+   end record;
+
+   type Item_Iterator is record
+      Vertex            : Glib.Graphs.Vertex_Iterator;
+      Edge              : Glib.Graphs.Edge_Iterator;
+      Linked_From_Or_To : Canvas_Item;
    end record;
 
    pragma Inline (To_Canvas_Coordinates);
