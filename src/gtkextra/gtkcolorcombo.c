@@ -116,7 +116,7 @@ static void         gtk_color_combo_class_init      (GtkColorComboClass *klass);
 static void         gtk_color_combo_init            (GtkColorCombo      *color_combo);
 static void         gtk_color_combo_destroy         (GtkObject     *color_combo);
 static void         gtk_color_combo_realize         (GtkWidget *widget);
-static void         color_to_hex(gint color, gchar string[4]);
+static void         color_to_hex(gint color, gchar string[5]);
 
 static GtkComboBoxClass *parent_class = NULL;
 
@@ -160,7 +160,9 @@ gtk_color_combo_destroy (GtkObject * color_combo)
     for(j=0; j<combo->ncols; j++)
       if(combo->button[i][j])
         gtk_widget_destroy(combo->button[i][j]);
-   
+  
+  if(combo->color_name) g_free(combo->color_name);
+ 
   if(GTK_COLOR_COMBO(color_combo)->table)
     gtk_widget_destroy (GTK_COLOR_COMBO(color_combo)->table);
 
@@ -342,7 +344,7 @@ gtk_color_combo_realize(GtkWidget *widget)
 }
 
 static void
-color_to_hex(gint color, gchar string[4])
+color_to_hex(gint color, gchar string[5])
 {
   gint i,n;
 
@@ -388,16 +390,12 @@ gtk_color_combo_new ()
   GdkColor color;
   gchar color_string[21];
   gint i,j,n;
-  gchar *red, *green, *blue;
+  gchar red[5], green[5], blue[5];
 
 
   color_combo = gtk_type_new (gtk_color_combo_get_type ());
 
   color_combo->default_flag=TRUE;
-
-  red=(gchar *)g_malloc(4*sizeof(gchar));
-  blue=(gchar *)g_malloc(4*sizeof(gchar));
-  green=(gchar *)g_malloc(4*sizeof(gchar));
 
   color_combo->nrows = 5;
   color_combo->ncols = 8;
@@ -432,17 +430,13 @@ gtk_color_combo_new_with_values (gint nrows, gint ncols, gchar **color_names)
   GdkColor color;
   gchar color_string[21];
   gint i,j,n;
-  gchar *red, *green, *blue;
+  gchar red[5], green[5], blue[5];
 
   widget = gtk_color_combo_new();
 
   color_combo = GTK_COLOR_COMBO(widget);
 
   color_combo->default_flag=FALSE;
-
-  red=(gchar *)g_malloc(4*sizeof(gchar));
-  blue=(gchar *)g_malloc(4*sizeof(gchar));
-  green=(gchar *)g_malloc(4*sizeof(gchar));
 
   color_combo->nrows=nrows;
   color_combo->ncols=ncols;

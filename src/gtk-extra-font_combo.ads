@@ -34,7 +34,7 @@
 --  screen.
 --  This widget only works with postscript fonts (see Gtk.Extra.PsFont).
 --  </description>
---  <c_version>gtk+extra 0.99.1</c_version>
+--  <c_version>gtk+extra 0.99.4</c_version>
 
 with Gtk.Toolbar;
 with Gtk.Combo;

@@ -373,7 +373,7 @@ gtk_psfont_get_gdkfont(gchar *name, gint height)
      buffer = (gchar *)g_malloc(bufsize);
 
      for(auxheight = MAX(height, min_height); auxheight >= min_height; auxheight--){
-      sprintf(buffer, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
+      g_snprintf(buffer, bufsize, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
     
       gdk_font = gdk_font_load(buffer);
       if (gdk_font != NULL) {
@@ -395,7 +395,7 @@ gtk_psfont_get_gdkfont(gchar *name, gint height)
       buffer = (char *)g_malloc(bufsize);
       
       for(auxheight = MAX(height, min_height); auxheight >= min_height; auxheight--){
-       sprintf(buffer, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
+       g_snprintf(buffer, bufsize, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
     
        gdk_font = gdk_font_load(buffer);
         if (gdk_font != NULL) {
@@ -409,6 +409,8 @@ gtk_psfont_get_gdkfont(gchar *name, gint height)
 		  name, x11_font);
 	break;
       }
+
+      g_free(buffer);
     }
   }
 
@@ -471,7 +473,7 @@ find_psfont(gchar *name)
   }
 
 
-  if(font_data == NULL) {
+  if(fontdata == NULL) {
     fonts = user_fonts;
     while(fonts){
       data = (GtkPSFont *) fonts->data;
@@ -510,7 +512,7 @@ gtk_psfont_find_by_family(gchar *name, gboolean italic, gboolean bold)
     }
   }
 
-  if(font_data == NULL) {
+  if(fontdata == NULL) {
     fonts = user_fonts;
     while(fonts){
       data = (GtkPSFont *) fonts->data;
@@ -537,7 +539,8 @@ gtk_psfont_get_families(GList **family, gint *numf)
   GList *fonts;
   gint i, j;
   gboolean new_family = TRUE;
-
+  
+  *family = NULL;
   *numf = 0;
 
   for(i = 0; i < NUM_FONTS; i++){

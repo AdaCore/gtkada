@@ -29,6 +29,9 @@
 #define DEFAULT_OFFSET 25
 #define DEFAULT_WIDTH 150
 #define DEFAULT_HEIGHT 120
+#define DEFAULT_FONT_HEIGHT 12
+
+static gchar DEFAULT_FONT[] = "Helvetica";
 
 #define GRAPH_MASK    (GDK_EXPOSURE_MASK |		\
                        GDK_POINTER_MOTION_MASK |	\
@@ -446,25 +449,25 @@ gtk_plot_layout_set_plots_pixmap(GtkPlotLayout *plot_layout)
 }
 
 void
-gtk_plot_layout_set_background (GtkPlotLayout *layout, GdkColor color)
+gtk_plot_layout_set_background (GtkPlotLayout *layout, GdkColor *color)
 {
   
   g_return_if_fail (layout != NULL);
   g_return_if_fail (GTK_IS_PLOT_LAYOUT (layout));
 
-  layout->background = color;
+  layout->background = *color;
 
   if(GTK_WIDGET_REALIZED(GTK_WIDGET(layout)))
        gtk_widget_queue_draw(GTK_WIDGET(layout));
 }
 
-void
+GtkPlotText *
 gtk_plot_layout_put_text (GtkPlotLayout *layout, 
                           gdouble x, gdouble y, gint angle,
-                          gchar *font, gint height,
+                          const gchar *font, gint height,
                           GdkColor *fg, GdkColor *bg, 
 			  GtkJustification justification,
-                          gchar *text)
+                          const gchar *text)
 {
   GtkWidget *widget;
   GtkPlotText *text_attr;
@@ -476,13 +479,19 @@ gtk_plot_layout_put_text (GtkPlotLayout *layout,
   text_attr->x = x;
   text_attr->y = y;
   text_attr->angle = angle;
-  text_attr->font = font;
   text_attr->fg = widget->style->black;
   text_attr->bg = widget->style->white;
-  text_attr->text = NULL;
-  text_attr->font = g_strdup(font);
-  text_attr->height = height;
   text_attr->justification = justification;
+
+  if(!font) {
+    text_attr->font = g_strdup(DEFAULT_FONT);
+    text_attr->height = DEFAULT_FONT_HEIGHT;
+  } else {
+    text_attr->font = g_strdup(font);
+    text_attr->height = height;
+  }
+
+  text_attr->text = NULL;
   if(text) text_attr->text = g_strdup(text);
 
   if(fg != NULL)
@@ -497,6 +506,7 @@ gtk_plot_layout_put_text (GtkPlotLayout *layout,
   layout->text = g_list_append(layout->text, text_attr);
   gtk_plot_layout_draw_text(layout, *text_attr);
 
+  return text_attr;
 }
 
 static void
@@ -510,6 +520,7 @@ gtk_plot_layout_draw_text(GtkPlotLayout *plot_layout,
   GdkColormap *colormap;
   gint x, y;
   gint width, height;
+  gint ascent, descent;
 
   if(plot_layout->pixmap == NULL) return;
   layout = GTK_LAYOUT(plot_layout);
@@ -517,24 +528,68 @@ gtk_plot_layout_draw_text(GtkPlotLayout *plot_layout,
   x = text.x * plot_layout->width;
   y = text.y * plot_layout->height;
 
-  rotate_text(plot_layout, text, &width, &height, &text_pixmap, &text_mask);
+  gtk_plot_text_get_size(text, &width, &height, &ascent, &descent);
 
   switch(text.justification){
     case GTK_JUSTIFY_LEFT:
-       break;
+      switch(text.angle){
+        case 0:
+            y -= ascent;
+            break;
+        case 90:
+            y -= height;
+            x -= ascent;
+            break;
+        case 180:
+            x -= width;
+            y -= descent;
+            break;
+        case 270:
+            x -= descent;
+            break;
+      }
+      break;
     case GTK_JUSTIFY_RIGHT:
-       if(text.angle == 0 || text.angle == 180)
-          x -= width;
-       else
-          y -= height;
-       break;
+      switch(text.angle){
+        case 0:
+            x -= width;
+            y -= ascent;
+            break;
+        case 90:
+            x -= ascent;
+            break;
+        case 180:
+            y -= descent;
+            break;
+        case 270:
+            y -= height;
+            x -= descent;
+            break;
+      }
+      break;
     case GTK_JUSTIFY_CENTER:
-       if(text.angle == 0 || text.angle == 180)
-          x -= width/2;
-       else
-          y -= height/2;
-       break;
+    default:
+      switch(text.angle){
+        case 0:
+            x -= width / 2.;
+            y -= ascent;
+            break;
+        case 90:
+            x -= ascent;
+            y -= height / 2.;
+            break;
+        case 180:
+            x -= width / 2.;
+            y -= descent;
+            break;
+        case 270:
+            x -= descent;
+            y -= height / 2.;
+            break;
+      }
   }
+
+  rotate_text(plot_layout, text, &width, &height, &text_pixmap, &text_mask);
 
   colormap = gtk_widget_get_colormap (GTK_WIDGET(layout));
   gc = gdk_gc_new(plot_layout->pixmap);
@@ -543,6 +598,7 @@ gtk_plot_layout_draw_text(GtkPlotLayout *plot_layout,
     gdk_gc_set_clip_mask (gc, text_mask);
     gdk_gc_set_clip_origin (gc, x, y);
   }
+
 
   gdk_draw_pixmap(plot_layout->pixmap, gc,
                   text_pixmap, 0, 0,
@@ -585,6 +641,7 @@ rotate_text(GtkPlotLayout *layout,
   gint ascent, descent;
   gint numf;
   gint xp = 0, yp = 0;
+  gchar *lastchar = NULL;
 
   window = GTK_WIDGET(layout)->window;
   colormap = gtk_widget_get_colormap (GTK_WIDGET(layout));
@@ -601,6 +658,7 @@ rotate_text(GtkPlotLayout *layout,
       old_height = *width;
     }
 
+  gtk_psfont_get_families(&family, &numf);
   font = gtk_psfont_get_gdkfont(text.font, text.height);
   psfont = gtk_psfont_get_font(text.font);
   tmp_font = psfont;
@@ -625,7 +683,6 @@ rotate_text(GtkPlotLayout *layout,
      switch(*aux){
        case '0': case '1': case '2': case '3':
        case '4': case '5': case '6': case '7': case '9':
-           gtk_psfont_get_families(&family, &numf);
            tmp_font = gtk_psfont_find_by_family((gchar *)g_list_nth_data(family, atoi(aux)), italic, bold);
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
@@ -635,7 +692,7 @@ rotate_text(GtkPlotLayout *layout,
            font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
            break;
-       case 'b':
+       case 'B':
            bold = TRUE;
            tmp_font = gtk_psfont_find_by_family(tmp_font->family, italic, bold);           font = gtk_psfont_get_gdkfont(tmp_font->psname, fontsize);
            aux++;
@@ -668,13 +725,40 @@ rotate_text(GtkPlotLayout *layout,
            aux++;
            break;
        case 'N':
+/*
            tmp_font = psfont;
+*/
            font = gtk_psfont_get_gdkfont(tmp_font->psname, text.height);
            y = y0;
            italic = psfont->italic;
            bold = psfont->bold;
            fontsize = text.height;
            aux++;
+           break;
+       case 'b':
+           if(lastchar){
+              x -= gdk_char_width_wc (font, *lastchar);
+              if(lastchar == text.text)
+                 lastchar = NULL;
+              else
+                 lastchar--;
+           } else {
+              x -= gdk_char_width_wc (font, 'X');
+           }
+           aux++;
+           break;
+       default:
+           if(aux && *aux != '\0' && *aux !='\n'){
+             subs[0] = *aux;
+             subs[1] = '\0';
+             gdk_draw_string (old_pixmap, font,
+                              gc,
+                              x, y,
+                              subs);
+             x += gdk_char_width_wc (font, *aux);
+             lastchar = aux;
+             aux++;
+           }
            break;
      }
    } else {
@@ -687,6 +771,7 @@ rotate_text(GtkPlotLayout *layout,
                         subs);
 
        x += gdk_char_width_wc (font, *aux);
+       lastchar = aux;
        aux++;
      }
    }
@@ -740,6 +825,7 @@ rotate_text(GtkPlotLayout *layout,
          }
        }
 
+  gdk_font_unref(font);
   gdk_gc_unref(gc);
   gdk_gc_unref(mask_gc);
   gdk_color_context_free(cc);

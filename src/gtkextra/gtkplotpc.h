@@ -21,6 +21,7 @@
 #define __GTK_PLOT_PC_H__
 
 #include <stdio.h>
+#include "gtkpsfont.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -96,7 +97,7 @@ struct _GtkPlotPC
 							 GdkRectangle area);
 
    void  (* setcolor)                     		(GtkPlotPC *pc,
-                                                 	GdkColor color);
+                                                 	GdkColor *color);
 
    void  (* setdash)					(GtkPlotPC *pc,
 							 gint num_values,
@@ -135,8 +136,9 @@ struct _GtkPlotPC
                                    	             	 gint x, gint y,
                                         	         gint justification,
                                                 	 gint angle,
+							 gchar *font,
+							 gint height,
                                                		 gchar *text);
-
 };
 
 GtkPlotPC *gtk_plot_pc_new				(gchar *psname,
@@ -168,7 +170,7 @@ void gtk_plot_pc_clip					(GtkPlotPC *pc,
 							 GdkRectangle area);
 
 void gtk_plot_pc_setcolor                     		(GtkPlotPC *pc,
-                                                 	GdkColor color);
+                                                 	GdkColor *color);
 
 void gtk_plot_pc_setdash				(GtkPlotPC *pc,
 							 gint num_values,
@@ -207,6 +209,8 @@ void gtk_plot_pc_drawstring   	                        (GtkPlotPC *pc,
                                    	             	 gint x, gint y,
                                         	         gint justification,
                                                 	 gint angle,
+							 gchar *font,
+							 gint height,
                                                		 gchar *text);
 
 

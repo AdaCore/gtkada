@@ -87,7 +87,7 @@ struct _GtkPSFont {
 GtkPSFont* 	gtk_psfont_get_font 		(gchar *name);
 GdkFont*	gtk_psfont_get_gdkfont 		(gchar *name, gint height);
 gchar *		gtk_psfont_get_psfontname	(gchar *name);
-void		gtk_psfont_add_font		(char *fontname,
+void		gtk_psfont_add_font		(gchar *fontname,
 						 gchar *psname,
 						 gchar *family,
 						 gchar *x_string[],

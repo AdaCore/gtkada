@@ -163,19 +163,23 @@ gtk_plot_print_draw_axis(GtkPlot *plot, GtkPlotAxis axis, int x, int y)
 			               axis.line.color);
          pc->setlinewidth(pc, axis.ticks_width);
 
-         for(ntick = 0; ntick < plot->xmajor.nticks; ntick++){
-             xx = plot->xmajor.ticks[ntick];
+         for(ntick = 0; ntick < plot->xticks.nmajorticks; ntick++){
+           xx = plot->xticks.major[ntick];
+           if(plot->xticks.major_values[ntick] >= plot->xmin){
              if(axis.major_mask & GTK_PLOT_TICKS_UP)
                    pc->drawline(pc, x+xx, y, x+xx, y-ticks_length);
              if(axis.major_mask & GTK_PLOT_TICKS_DOWN)
                    pc->drawline(pc, x+xx, y, x+xx, y+ticks_length);
+           }
          }
-         for(ntick = 0; ntick < plot->xminor.nticks; ntick++){
-             xx = plot->xminor.ticks[ntick];
+         for(ntick = 0; ntick < plot->xticks.nminorticks; ntick++){
+           xx = plot->xticks.minor[ntick];
+           if(plot->xticks.minor_values[ntick] >= plot->xmin){
              if(axis.minor_mask & GTK_PLOT_TICKS_UP)
                    pc->drawline(pc, x+xx, y, x+xx, y-ticks_length/2-1);
              if(axis.minor_mask & GTK_PLOT_TICKS_DOWN)
                    pc->drawline(pc, x+xx, y, x+xx, y+ticks_length/2+1);
+           }
          }
          break;
      case GTK_ORIENTATION_VERTICAL:
@@ -192,19 +196,23 @@ gtk_plot_print_draw_axis(GtkPlot *plot, GtkPlotAxis axis, int x, int y)
 			               axis.line.color);
          pc->setlinewidth(pc, axis.ticks_width);
 
-         for(ntick = 0; ntick < plot->ymajor.nticks; ntick++){
-             yy = plot->ymajor.ticks[ntick];
+         for(ntick = 0; ntick < plot->yticks.nmajorticks; ntick++){
+           yy = plot->yticks.major[ntick];
+           if(plot->yticks.major_values[ntick] >= plot->ymin){
              if(axis.major_mask & GTK_PLOT_TICKS_RIGHT)
                    pc->drawline(pc, x, y-yy, x+ticks_length, y-yy);
              if(axis.major_mask & GTK_PLOT_TICKS_LEFT)
                    pc->drawline(pc, x, y-yy, x-ticks_length, y-yy);
+           }
          }
-         for(ntick = 0; ntick < plot->yminor.nticks; ntick++){
-             yy = plot->yminor.ticks[ntick];
+         for(ntick = 0; ntick < plot->yticks.nminorticks; ntick++){
+           yy = plot->yticks.minor[ntick];
+           if(plot->yticks.minor_values[ntick] >= plot->ymin){
              if(axis.minor_mask & GTK_PLOT_TICKS_RIGHT)
                    pc->drawline(pc, x, y-yy, x+ticks_length/2+1, y-yy);
              if(axis.minor_mask & GTK_PLOT_TICKS_LEFT)
                    pc->drawline(pc, x, y-yy, x-ticks_length/2-1, y-yy);
+           }
          }
          break;
   }
@@ -262,9 +270,11 @@ gtk_plot_print_draw_grids(GtkPlot *plot)
           gtk_plot_print_set_line_style(pc, plot->minor_vgrid.line_style,
                                         plot->minor_vgrid.line_width,
                                         plot->minor_vgrid.color);
-          for(ntick = 0; ntick < plot->xminor.nticks; ntick++){
-           ix = xp+plot->xminor.ticks[ntick];
-           pc->drawline(pc, ix, yp+1, ix, yp+height);
+          for(ntick = 0; ntick < plot->xticks.nminorticks; ntick++){
+            if(plot->xticks.minor_values[ntick] >= plot->xmin){
+              ix = xp+plot->xticks.minor[ntick];
+              pc->drawline(pc, ix, yp+1, ix, yp+height);
+            }
           }
         }
     }
@@ -274,9 +284,11 @@ gtk_plot_print_draw_grids(GtkPlot *plot)
           gtk_plot_print_set_line_style(pc, plot->major_vgrid.line_style,
                                         plot->major_vgrid.line_width,
                                         plot->major_vgrid.color);
-         for(ntick = 0; ntick < plot->xmajor.nticks; ntick++){
-           ix = xp+plot->xmajor.ticks[ntick];
-           pc->drawline(pc, ix, yp+1, ix, yp+height);
+          for(ntick = 0; ntick < plot->xticks.nmajorticks; ntick++){
+            if(plot->xticks.major_values[ntick] >= plot->xmin){
+              ix = xp+plot->xticks.major[ntick];
+              pc->drawline(pc, ix, yp+1, ix, yp+height);
+            }
           }
         }
     }
@@ -286,9 +298,11 @@ gtk_plot_print_draw_grids(GtkPlot *plot)
           gtk_plot_print_set_line_style(pc, plot->minor_hgrid.line_style,
                                         plot->minor_hgrid.line_width,
                                         plot->minor_hgrid.color);
-          for(ntick = 0; ntick < plot->yminor.nticks; ntick++){
-           iy = height+yp-plot->yminor.ticks[ntick];
-           pc->drawline(pc, xp, iy, xp + width, iy);
+          for(ntick = 0; ntick < plot->yticks.nminorticks; ntick++){
+            if(plot->yticks.minor_values[ntick] >= plot->ymin){
+              iy = height+yp-plot->yticks.minor[ntick];
+              pc->drawline(pc, xp, iy, xp + width, iy);
+            }
           }
         }
     }
@@ -298,9 +312,11 @@ gtk_plot_print_draw_grids(GtkPlot *plot)
           gtk_plot_print_set_line_style(pc, plot->major_hgrid.line_style,
                                         plot->major_hgrid.line_width,
                                         plot->major_hgrid.color);
-          for(ntick = 0; ntick < plot->ymajor.nticks; ntick++){
-           iy = height+yp-plot->ymajor.ticks[ntick];
-           pc->drawline(pc, xp, iy, xp + width, iy);
+          for(ntick = 0; ntick < plot->yticks.nmajorticks; ntick++){
+            if(plot->yticks.major_values[ntick] >= plot->ymin){
+              iy = height+yp-plot->yticks.major[ntick];
+              pc->drawline(pc, xp, iy, xp + width, iy);
+            }
           }
         }
     }
@@ -329,65 +345,116 @@ gtk_plot_print_draw_labels(GtkPlot *plot,
   width = roundint(plot->width * widget->allocation.width);
   height = roundint(plot->height * widget->allocation.height);
 
-  pc->setcolor (pc, axis.label_attr.fg);
+  pc->setcolor (pc, &axis.label_attr.fg);
 
   font = gtk_psfont_get_gdkfont(axis.label_attr.font, axis.label_attr.height);
   psfont = gtk_psfont_get_psfontname(axis.label_attr.font);
   pc->setfont(pc, psfont, axis.label_attr.height);
   text_height = axis.label_attr.height;
 
+  switch(axis.label_attr.angle){
+    case 0:
+           y += text_height / 2.;
+           break;
+    case 90:
+           break;
+    case 180:
+           y -= text_height / 2.;
+           break;
+    case 270:
+           break;
+  }
+
   switch(axis.orientation){
      case GTK_ORIENTATION_VERTICAL:
        y += height;
-       for(ntick = 0; ntick < plot->ymajor.nticks; ntick++){
-           yy = plot->ymajor.ticks[ntick];
-           y_tick = plot->ymajor.value[ntick];
-           parse_label(y_tick, axis.label_precision, axis.label_style, label);
+       for(ntick = 0; ntick < plot->yticks.nmajorticks; ntick++){
+         yy = plot->yticks.major[ntick];
+         y_tick = plot->yticks.major_values[ntick];
+         if(y_tick >= plot->ymin){
+           if(!axis.custom_labels){
+             parse_label(y_tick, axis.label_precision, axis.label_style, label);
+           }
+           else
+           {
+             label[0]=' ';
+             label[1]='\0';
+             if(y_tick > 0. && fabs((gdouble)roundint(y_tick)-y_tick) < 1.E-8){
+                if(axis.nlabels > roundint(y_tick)-1)
+                  if(axis.tick_labels[roundint(y_tick)-1])
+                    sprintf(label, "%s", axis.tick_labels[roundint(y_tick)-1]);
+             }
+           }
            if(axis.label_mask & GTK_PLOT_LABEL_LEFT)
                 pc->drawstring(pc,
                              x-axis.labels_offset, 
-                             y-yy+font->descent, 
-                             GTK_JUSTIFY_RIGHT, 0,
+                             y-yy, 
+                             axis.label_attr.justification, 
+                             axis.label_attr.angle,
+                             psfont, text_height,
                              label);
            if(axis.label_mask & GTK_PLOT_LABEL_RIGHT)
                 pc->drawstring(pc,
                              x+axis.labels_offset, 
-                             y-yy+font->descent, 
-                             GTK_JUSTIFY_LEFT, 0,
+                             y-yy, 
+                             axis.label_attr.justification,
+                             axis.label_attr.angle,
+                             psfont, text_height,
                              label);
+         }
        }
        if(axis.title_visible && axis.title.text)
-            {
-              title = axis.title;
-              gtk_plot_print_draw_text(GTK_WIDGET(plot), plot->pc, title);
-            }
+          {
+            title = axis.title;
+            gtk_plot_print_draw_text(GTK_WIDGET(plot), plot->pc, title);
+          }
        break;
      case GTK_ORIENTATION_HORIZONTAL:
-       for(ntick = 0; ntick < plot->xmajor.nticks; ntick++){
-           xx = plot->xmajor.ticks[ntick];
-           x_tick = plot->xmajor.value[ntick];
-           parse_label(x_tick, axis.label_precision, axis.label_style, label);
+       for(ntick = 0; ntick < plot->xticks.nmajorticks; ntick++){
+         xx = plot->xticks.major[ntick];
+         x_tick = plot->xticks.major_values[ntick];
+         if(x_tick >= plot->xmin){
+           if(!axis.custom_labels){
+             parse_label(x_tick, axis.label_precision, axis.label_style, label);
+           }
+           else
+           {
+             label[0]=' ';
+             label[1]='\0';
+             if(x_tick > 0. && fabs((gdouble)roundint(x_tick)-x_tick) < 1.E-8){
+                if(axis.nlabels > roundint(x_tick)-1)
+                  if(axis.tick_labels[roundint(x_tick)-1])
+                    sprintf(label, "%s", axis.tick_labels[roundint(x_tick)-1]);
+             }
+           }
            if(axis.label_mask & GTK_PLOT_LABEL_TOP)
                 pc->drawstring(pc,
                              x+xx, 
                              y-axis.labels_offset, 
-                             GTK_JUSTIFY_CENTER, 0,
+                             axis.label_attr.justification,
+                             axis.label_attr.angle,
+                             psfont, text_height,
                              label);
-
+  
            if(axis.label_mask & GTK_PLOT_LABEL_BOTTOM)
                 pc->drawstring(pc,
                              x+xx, 
                              y+axis.labels_offset, 
-                             GTK_JUSTIFY_CENTER, 0,
+                             axis.label_attr.justification,
+                             axis.label_attr.angle,
+                             psfont, text_height,
                              label);
+         }
        }
        if(axis.title_visible && axis.title.text)
-            {
-              title = axis.title;
-              gtk_plot_print_draw_text(GTK_WIDGET(plot), plot->pc, title);
-            }
+          {
+            title = axis.title;
+            gtk_plot_print_draw_text(GTK_WIDGET(plot), plot->pc, title);
+          }
        break;
    }
+
+   gdk_font_unref(font);
 }
 
 static gint
@@ -650,7 +717,7 @@ gtk_plot_layout_print(GtkPlotLayout *layout, GtkPlotPC *pc)
 
   pc->init(pc, scalex, scaley);
 
-  pc->setcolor(pc, layout->background);
+  pc->setcolor(pc, &layout->background);
   gtk_plot_print_draw_rectangle(pc, 
                              0, 0,
                              layout->width, layout->height,
@@ -706,7 +773,7 @@ gtk_plot_print_draw(GtkPlot *plot)
   width = roundint(plot->width * widget->allocation.width);
   height = roundint(plot->height * widget->allocation.height);
 
-  plot->pc->setcolor(plot->pc, plot->background);
+  plot->pc->setcolor(plot->pc, &plot->background);
 
   gtk_plot_print_calc_ticks(plot, GTK_ORIENTATION_HORIZONTAL);
   gtk_plot_print_calc_ticks(plot, GTK_ORIENTATION_VERTICAL);
@@ -753,10 +820,10 @@ gtk_plot_print_draw(GtkPlot *plot)
   if(plot->right.is_visible)
     {
       gtk_plot_print_draw_axis(plot, plot->right,
-                            xoffset+(gfloat)width*plot->left_align,
+                            xoffset+(gfloat)width*plot->right_align,
                             yoffset);
       gtk_plot_print_draw_labels(plot, plot->right,
-                              xoffset+(gfloat)width*plot->left_align,
+                              xoffset+(gfloat)width*plot->right_align,
                               yoffset);
     }
 
@@ -889,7 +956,7 @@ gtk_plot_print_draw_errbars(GtkPlot *plot, GtkPlotData *dataset)
   if(!dataset->x || !dataset->y) return;
   if(!dataset->dx || !dataset->dy) return;
 
-  pc->setcolor(plot->pc, dataset->symbol.color);
+  pc->setcolor(plot->pc, &dataset->symbol.color);
   pc->setlinecaps(plot->pc, 0);
   pc->setlinewidth(plot->pc, dataset->symbol.line_width/2);
 
@@ -958,6 +1025,7 @@ gtk_plot_print_draw_errbars(GtkPlot *plot, GtkPlotData *dataset)
 static void
 gtk_plot_print_connect_points(GtkPlot *plot, GtkPlotData *dataset)
 {
+  GtkWidget *widget;
   GdkPoint *points;
   GtkPlotData spline;
   GdkPoint *spline_points;
@@ -972,12 +1040,11 @@ gtk_plot_print_connect_points(GtkPlot *plot, GtkPlotData *dataset)
 
   if(dataset->line.line_style == GTK_PLOT_LINE_NONE) return;
 
-  clip.x = roundint(plot->x * (gdouble)GTK_WIDGET(plot)->allocation.width);
-  clip.y = roundint(plot->y * (gdouble)GTK_WIDGET(plot)->allocation.height);
-  clip.width = roundint(plot->width * 
-                       (gdouble)GTK_WIDGET(plot)->allocation.width);
-  clip.height = roundint(plot->height * 
-                        (gdouble)GTK_WIDGET(plot)->allocation.height);
+  widget = GTK_WIDGET(plot);
+  clip.x = roundint(plot->x * (gdouble)widget->allocation.width);
+  clip.y = roundint(plot->y * (gdouble)widget->allocation.height);
+  clip.width = roundint(plot->width * (gdouble)widget->allocation.width);
+  clip.height = roundint(plot->height * (gdouble)widget->allocation.height);
 
   points = (GdkPoint *)g_malloc(2*num_points*sizeof(GdkPoint));
 
@@ -1138,7 +1205,7 @@ static void gtk_plot_print_set_line_style(GtkPlotPC *pc,
 
     if(line_style == GTK_PLOT_LINE_NONE) return;
 
-    pc->setcolor(pc, color);
+    pc->setcolor(pc, &color);
     pc->setlinewidth(pc, line_width);
 
     switch (line_style) {
@@ -1302,7 +1369,7 @@ gtk_plot_print_draw_symbol(GtkPlot *plot,
 {
     gint x0, y0;
 
-    plot->pc->setcolor(plot->pc, color);
+    plot->pc->setcolor(plot->pc, &color);
     plot->pc->setlinecaps(plot->pc, 0);
     plot->pc->setlinewidth(plot->pc, line_width);
     
@@ -1352,11 +1419,22 @@ static void
 gtk_plot_print_draw_xy (GtkPlot *plot,
                      GtkPlotData *dataset)
 {
+  GtkWidget *widget;
   GtkPlotPC *pc = plot->pc;
+  GdkRectangle clip;
   gdouble x, y;
   gint px, py;
   gint x0, y0;
   gint n;
+
+  widget = GTK_WIDGET(plot);
+  clip.x = roundint(plot->x * (gdouble)widget->allocation.width);
+  clip.y = roundint(plot->y * (gdouble)widget->allocation.height);
+  clip.width = roundint(plot->width * (gdouble)widget->allocation.width);
+  clip.height = roundint(plot->height * (gdouble)widget->allocation.height);
+
+  plot->pc->gsave(plot->pc);
+  plot->pc->clip(plot->pc, clip);
 
   if(!dataset->x || !dataset->y) return;
 
@@ -1389,6 +1467,9 @@ gtk_plot_print_draw_xy (GtkPlot *plot,
             }
       }
     }
+
+  plot->pc->grestore(plot->pc);
+
 }
 
 static void
@@ -1526,20 +1607,17 @@ gtk_plot_print_draw_star(GtkPlotPC *pc, gint x, gint y, gint size)
 static void
 gtk_plot_print_draw_text(GtkWidget *widget, GtkPlotPC *pc, GtkPlotText text)
 {
+  gchar *psfont;
   gint x, y;
 
   x = widget->allocation.x + text.x * widget->allocation.width;
   y = widget->allocation.y + text.y * widget->allocation.height;
 
-  if(text.angle == 0 || text.angle == 180)
-    y = y + (1 + pow(-1.0 ,text.angle/90))/2 * text.height;
-  else
-    x = x + pow(-1.0 ,text.angle/90+1) * text.height;
+  psfont = gtk_psfont_get_psfontname(text.font);
 
-  pc->setcolor(pc, text.fg);
-  pc->setfont(pc, gtk_psfont_get_psfontname(text.font), text.height);
-  pc->drawstring(pc, x, y, text.justification, text.angle, text.text); 
-
+  pc->setcolor(pc, &text.fg);
+  pc->setfont(pc, psfont, text.height);
+  pc->drawstring(pc, x, y, text.justification, text.angle, psfont, text.height, text.text); 
 }
 
 static void
@@ -1617,7 +1695,7 @@ gtk_plot_print_draw_legends (GtkPlot *plot)
   legend_area.height = height;
 
   if(!plot->legends_attr.transparent){
-     pc->setcolor(pc, plot->legends_attr.bg);
+     pc->setcolor(pc, &plot->legends_attr.bg);
      gtk_plot_print_draw_rectangle(pc, 
                      legend_area.x, legend_area.y,
                      legend_area.x+legend_area.width, 
@@ -1653,7 +1731,7 @@ gtk_plot_print_draw_legends (GtkPlot *plot)
                             x, y - font->ascent / 2,
                             x + plot->legends_line_width, y - font->ascent / 2);
 
-         pc->setcolor(pc, plot->legends_attr.fg);
+         pc->setcolor(pc, &plot->legends_attr.fg);
 
 
          if(dataset->symbol.symbol_type != GTK_PLOT_SYMBOL_BAR &&
@@ -1668,11 +1746,11 @@ gtk_plot_print_draw_legends (GtkPlot *plot)
                                    dataset->symbol.line_width);
 
          if(dataset->legend){
-                pc->setcolor(pc, plot->legends_attr.fg);
+                pc->setcolor(pc, &plot->legends_attr.fg);
                 pc->setfont(pc, psfont, plot->legends_attr.height);
                 pc->drawstring (pc,
                               x + plot->legends_line_width + 4, y,
-                              GTK_JUSTIFY_LEFT, 0,
+                              GTK_JUSTIFY_LEFT, 0, psfont, plot->legends_attr.height,
                               dataset->legend);
          }
        }
@@ -1712,91 +1790,150 @@ gtk_plot_print_draw_legends (GtkPlot *plot)
                         legend_area.height,
 			TRUE);
       }
+
+  gdk_font_unref(font);
 }
 
 static void
 gtk_plot_print_calc_ticks(GtkPlot *plot, gint orientation)
 {
-  GtkPlotTicks *major = NULL;
-  GtkPlotTicks *minor = NULL;
-  gdouble vmajor;
-  gdouble vminor;
+  GtkPlotTicks *ticks = NULL;
+  GtkPlotScale scale;
   gdouble min = 0., max = 0.;
+  gdouble absmax = 0., absmin = 0.;
   gint pt;
   gdouble tick;
-  gint nticks;
+  gdouble major_step;
+  gdouble minor_step;
+  gint nmajor, nminor;
+  gint n;
+
+
+  if(orientation == GTK_ORIENTATION_HORIZONTAL)
+      scale = plot->xscale;
+  else
+      scale = plot->yscale;
 
   switch(orientation){
     case GTK_ORIENTATION_HORIZONTAL:
-       major = &plot->xmajor;
-       minor = &plot->xminor;
+       ticks = &plot->xticks;
        max = plot->xmax;
        min = plot->xmin;
+       if(scale == GTK_PLOT_SCALE_LOG10){
+         if(max <= 1.E-12) max = 1.E-2;
+         if(min <= 1.E-12) min = max/1000.;
+         min = floor(log10(min));
+         min = pow(10., min);
+         plot->xmin = min;
+         plot->xmax = max;
+       }
+       absmin = plot->xmin;
+       absmax = plot->xmax;
        break;
     case GTK_ORIENTATION_VERTICAL:
-       major = &plot->ymajor;
-       minor = &plot->yminor;
+       ticks = &plot->yticks;
        max = plot->ymax;
        min = plot->ymin;
+       if(scale == GTK_PLOT_SCALE_LOG10){
+         if(max <= 1.E-12) max = 1.E-2;
+         if(min <= 1.E-12) min = max/1000.;
+         min = floor(log10(min));
+         min = pow(10., min);
+         plot->ymin = min;
+         plot->ymax = max;
+       }
+       absmin = plot->ymin;
+       absmax = plot->ymax;
        break;
   }
 
-  vminor = (gdouble)(floor(min/minor->step))*minor->step;
-  vmajor = (gdouble)(floor(min/major->step))*major->step;
-
-  if(major->set_limits || minor->set_limits){
-       max = MIN(minor->end, major->end);
-       min = MAX(major->begin, minor->begin);
+  if(ticks->set_limits){
+       max = ticks->end;
+       min = ticks->begin;
+  } else {
+       min = floor(min/ticks->step) * ticks->step;
+       max = ceil(max/ticks->step) * ticks->step;
   }
 
-  if(major->ticks != NULL){
-     g_free(major->ticks);
-     g_free(major->value);
-     major->ticks = NULL;
-     major->value = NULL;
-  }
-  if(minor->ticks != NULL){
-     g_free(minor->ticks);
-     g_free(minor->value);
-     minor->ticks = NULL;
-     minor->value = NULL;
+
+  if(ticks->major != NULL){
+     g_free(ticks->major);
+     g_free(ticks->minor);
+     g_free(ticks->major_values);
+     g_free(ticks->minor_values);
+     ticks->major = NULL;
+     ticks->minor = NULL;
+     ticks->major_values = NULL;
+     ticks->minor_values = NULL;
   }
 
-  nticks = 0;
-  major->nticks = 0;
-  if(major->step > 0.){
-   for(tick = vmajor; tick <= max + 2*major->step; tick += major->step){
-     if(tick >= min-1.E-10 && tick <= max+1.E-10){
+  nmajor = 0;
+  nminor = 0;
+  ticks->nmajorticks = 0;
+  ticks->nminorticks = 0;
+  major_step = ticks->step;
+  minor_step = major_step / ((gdouble)ticks->nminor + 1.0);
+
+  if(scale == GTK_PLOT_SCALE_LOG10){
+     if(major_step != 0.)
+         major_step = floor(major_step);
+
+     if(major_step == 0.)
+         major_step = 1;
+
+     minor_step = major_step / ((gdouble)ticks->nminor + 2.0);
+  }
+
+  if(ticks->step > 0.){
+   tick = min;
+   while(tick <= absmax + 2*fabs(major_step)){
+     if(tick >= min-1.E-10 && tick <= absmax+1.E-10){
         if(orientation == GTK_ORIENTATION_HORIZONTAL)
                                           pt = transform_x(plot, tick);
         else
                                           pt = transform_y(plot, tick);
-        nticks ++;
-        major->ticks = (gint *)g_realloc(major->ticks, nticks*sizeof(gint));
-        major->value = (gdouble *)g_realloc(major->value, nticks*sizeof(gdouble));
-        major->ticks[nticks-1] = pt;
-        major->value[nticks-1] = tick;
-        major->nticks = nticks;
+        nmajor ++;
+        ticks->major = (gint *)g_realloc(ticks->major, nmajor*sizeof(gint));
+        ticks->major_values = (gdouble *)g_realloc(ticks->major_values, nmajor*sizeof(gdouble));
+        ticks->major[nmajor-1] = pt;
+        ticks->major_values[nmajor-1] = tick;
+        ticks->nmajorticks = nmajor;
+     }
+     switch(scale){
+        case GTK_PLOT_SCALE_LINEAR:
+            tick += major_step;
+            break;
+        case GTK_PLOT_SCALE_LOG10:
+            tick = pow(10., log10(absmin)+nmajor*major_step);
+            break;
      }
    }
   }
-
-  nticks = 0;
-  minor->nticks = 0;
-  if(minor->step > 0.){
-   for(tick = vminor; tick <= max + major->step; tick += minor->step){
-     if(tick >= min-1.E-10 && tick <= max+1.E-10){
+  if(ticks->step >0. && ticks->nminor > 0){
+   for(nmajor = 0; nmajor < ticks->nmajorticks; nmajor++){
+    tick = ticks->major_values[nmajor];
+    for(n = 1; n <= ticks->nminor; n++){
+     switch(scale){
+        case GTK_PLOT_SCALE_LINEAR:
+            tick += minor_step;
+            break;
+        case GTK_PLOT_SCALE_LOG10:
+            tick += minor_step*ticks->major_values[nmajor]*10.;
+            break;
+     }  
+     if(tick >= min-1.E-10 && tick <= absmax+1.E-10){
         if(orientation == GTK_ORIENTATION_HORIZONTAL)
                                           pt = transform_x(plot, tick);
         else
                                           pt = transform_y(plot, tick);
-        nticks ++;
-        minor->ticks = (gint *)g_realloc(minor->ticks, nticks*sizeof(gint));
-        minor->value = (gdouble *)g_realloc(minor->value, nticks*sizeof(gdouble));
-        minor->ticks[nticks-1] = pt;
-        minor->value[nticks-1] = tick;
-        minor->nticks = nticks;
+        nminor ++;
+        ticks->minor = (gint *)g_realloc(ticks->minor, nminor*sizeof(gint));
+        ticks->minor_values = (gdouble *)g_realloc(ticks->minor_values, nminor*sizeof(gdouble));
+        ticks->minor[nminor-1] = pt;
+        ticks->minor_values[nminor-1] = tick;
+        ticks->nminorticks = nminor;
      }
+    }
    }
   }
 }

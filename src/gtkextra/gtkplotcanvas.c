@@ -60,6 +60,10 @@ enum {
         CLICK_TEXT,
         CLICK_AXIS,
 	CLICK_LEGENDS,
+        MOVE_TEXT,
+        MOVE_LEGENDS,
+        MOVE_PLOT,
+        RESIZE_PLOT,
         SELECT_REGION,
         LAST_SIGNAL
 };
@@ -80,6 +84,11 @@ typedef gboolean (*GtkPlotCanvasSignal3) (GtkObject *object,
                                           gdouble arg4, 
                                     	  gpointer user_data);
 
+typedef gboolean (*GtkPlotCanvasSignal4) (GtkObject *object,
+                                          gdouble arg1, 
+					  gdouble arg2,
+                                    	  gpointer user_data);
+
 static void
 gtk_plot_canvas_marshal_BOOL__POINTER           (GtkObject *object,
                                                  GtkSignalFunc func,
@@ -88,6 +97,12 @@ gtk_plot_canvas_marshal_BOOL__POINTER           (GtkObject *object,
 
 static void
 gtk_plot_canvas_marshal_BOOL__POINTER_POINTER   (GtkObject *object,
+                                                 GtkSignalFunc func,
+                                                 gpointer func_data,
+                                                 GtkArg * args);
+
+static void
+gtk_plot_canvas_marshal_BOOL__DOUBLE_DOUBLE     (GtkObject *object,
                                                  GtkSignalFunc func,
                                                  gpointer func_data,
                                                  GtkArg * args);
@@ -142,7 +157,7 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *class)
                     object_class->type,
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, click_on_plot),
                     gtk_plot_canvas_marshal_BOOL__POINTER,
-                    GTK_TYPE_BOOL, 1, GTK_TYPE_POINTER);
+                    GTK_TYPE_BOOL, 1, GTK_TYPE_GDK_EVENT);
 
   canvas_signals[CLICK_POINT] =
     gtk_signal_new ("click_on_point",
@@ -150,7 +165,7 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *class)
                     object_class->type,
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, click_on_point),
                     gtk_plot_canvas_marshal_BOOL__POINTER,
-                    GTK_TYPE_BOOL, 1, GTK_TYPE_POINTER);
+                    GTK_TYPE_BOOL, 1, GTK_TYPE_GDK_EVENT);
 
   canvas_signals[CLICK_LEGENDS] =
     gtk_signal_new ("click_on_legends",
@@ -158,7 +173,7 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *class)
                     object_class->type,
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, click_on_legends),
                     gtk_plot_canvas_marshal_BOOL__POINTER,
-                    GTK_TYPE_BOOL, 1, GTK_TYPE_POINTER);
+                    GTK_TYPE_BOOL, 1, GTK_TYPE_GDK_EVENT);
 
   canvas_signals[CLICK_TEXT] =
     gtk_signal_new ("click_on_text",
@@ -166,7 +181,7 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *class)
                     object_class->type,
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, click_on_text),
                     gtk_plot_canvas_marshal_BOOL__POINTER,
-                    GTK_TYPE_BOOL, 1, GTK_TYPE_POINTER);
+                    GTK_TYPE_BOOL, 1, GTK_TYPE_GDK_EVENT);
 
   canvas_signals[CLICK_TITLE] =
     gtk_signal_new ("click_on_title",
@@ -174,7 +189,7 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *class)
                     object_class->type,
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, click_on_title),
                     gtk_plot_canvas_marshal_BOOL__POINTER_POINTER,
-                    GTK_TYPE_BOOL, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+                    GTK_TYPE_BOOL, 2, GTK_TYPE_GDK_EVENT, GTK_TYPE_POINTER);
 
   canvas_signals[CLICK_AXIS] =
     gtk_signal_new ("click_on_axis",
@@ -182,7 +197,7 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *class)
                     object_class->type,
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, click_on_axis),
                     gtk_plot_canvas_marshal_BOOL__POINTER_POINTER,
-                    GTK_TYPE_BOOL, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+                    GTK_TYPE_BOOL, 2, GTK_TYPE_GDK_EVENT, GTK_TYPE_POINTER);
 
   canvas_signals[SELECT_REGION] =
     gtk_signal_new ("select_region",
@@ -193,6 +208,38 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *class)
                     GTK_TYPE_NONE, 4, 
                     GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE,
                     GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
+
+  canvas_signals[MOVE_TEXT] =
+    gtk_signal_new ("move_text",
+                    GTK_RUN_LAST,
+                    object_class->type,
+                    GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, move_text),
+                    gtk_plot_canvas_marshal_BOOL__DOUBLE_DOUBLE,
+                    GTK_TYPE_BOOL, 2, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
+
+  canvas_signals[MOVE_LEGENDS] =
+    gtk_signal_new ("move_legends",
+                    GTK_RUN_LAST,
+                    object_class->type,
+                    GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, move_legends),
+                    gtk_plot_canvas_marshal_BOOL__DOUBLE_DOUBLE,
+                    GTK_TYPE_BOOL, 2, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
+
+  canvas_signals[MOVE_PLOT] =
+    gtk_signal_new ("move_plot",
+                    GTK_RUN_LAST,
+                    object_class->type,
+                    GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, move_plot),
+                    gtk_plot_canvas_marshal_BOOL__DOUBLE_DOUBLE,
+                    GTK_TYPE_BOOL, 2, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
+
+  canvas_signals[RESIZE_PLOT] =
+    gtk_signal_new ("resize_plot",
+                    GTK_RUN_LAST,
+                    object_class->type,
+                    GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, resize_plot),
+                    gtk_plot_canvas_marshal_BOOL__DOUBLE_DOUBLE,
+                    GTK_TYPE_BOOL, 2, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
 
   gtk_object_class_add_signals (object_class, canvas_signals, LAST_SIGNAL);
 
@@ -245,6 +292,25 @@ gtk_plot_canvas_marshal_BOOL__POINTER_POINTER         (GtkObject *object,
                     GTK_VALUE_POINTER (args[1]),
                     func_data);
 }
+
+static void
+gtk_plot_canvas_marshal_BOOL__DOUBLE_DOUBLE	      (GtkObject *object,
+                                                       GtkSignalFunc func,
+                                                       gpointer func_data,
+                                                       GtkArg * args)
+{
+  GtkPlotCanvasSignal4 rfunc;
+  gboolean *veto;
+  veto = GTK_RETLOC_BOOL (args[2]);
+
+  rfunc = (GtkPlotCanvasSignal4) func;
+
+  *veto = (*rfunc) (object, 
+                    GTK_VALUE_DOUBLE (args[0]),
+                    GTK_VALUE_DOUBLE (args[1]),
+                    func_data);
+}
+
 
 static void
 gtk_plot_canvas_marshal_select			      (GtkObject *object,
@@ -375,23 +441,66 @@ gtk_plot_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
          old_y = text_y + (canvas->pointer_y - canvas->drag_y); 
          gtk_plot_text_get_size(*active_text, &old_width, &old_height,
                                 &ascent, &descent);
+
          switch(active_text->justification){
-	   case GTK_JUSTIFY_LEFT:
-	       break;
-	   case GTK_JUSTIFY_RIGHT:
-               if(active_text->angle == 0 || active_text->angle == 180)
-                  old_x -= old_width;
-               else
-                  old_y -= old_height;
-	       break;
-	   case GTK_JUSTIFY_CENTER:
-	   default:
-               if(active_text->angle == 0 || active_text->angle == 180)
-                  old_x -= old_width/2;
-               else
-                  old_y -= old_height/2;
-	       break;
+          case GTK_JUSTIFY_LEFT:
+           switch(active_text->angle){
+             case 0:
+                 old_y -= ascent;
+                 break;
+             case 90:
+                 old_y -= old_height;
+                 old_x -= ascent;
+                 break;
+             case 180:
+                 old_x -= old_width;
+                 old_y -= descent;
+                 break;
+             case 270:
+                 old_x -= descent;
+                 break;
+           }
+           break;
+         case GTK_JUSTIFY_RIGHT:
+           switch(active_text->angle){
+             case 0:
+                 old_x -= old_width;
+                 old_y -= ascent;
+                 break;
+             case 90:
+                 old_x -= ascent;
+                 break;
+             case 180:
+                 old_y -= descent;
+                 break;
+             case 270:
+                 old_y -= old_height;
+                 old_x -= descent;
+                 break;
+           }
+           break;
+         case GTK_JUSTIFY_CENTER:
+         default:
+           switch(active_text->angle){
+             case 0:
+                 old_x -= old_width / 2.;
+                 old_y -= ascent;
+                 break;
+             case 90:
+                 old_x -= ascent;
+                 old_y -= old_height / 2.;
+                 break;
+             case 180:
+                 old_x -= old_width / 2.;
+                 old_y -= descent;
+                 break;
+             case 270:
+                 old_x -= descent;
+                 old_y -= old_height / 2.;
+                 break;
+           }
          }
+
          gdk_draw_rectangle (GTK_LAYOUT(canvas)->bin_window,
                              xor_gc,
                              FALSE,
@@ -604,30 +713,71 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
                                &tascent, &tdescent);
 
        switch(child_text->justification){
-	   case GTK_JUSTIFY_LEFT:
-		break;
-	   case GTK_JUSTIFY_RIGHT:
-                if(child_text->angle == 0 || child_text->angle == 180)
-                   tx -= twidth;
-                else
-                   ty -= theight;
-		break;
-	   case GTK_JUSTIFY_CENTER:
-           default:
-                if(child_text->angle == 0 || child_text->angle == 180)
-                   tx -= twidth/2;
-                else
-                   ty -= theight/2;
-		break;
-        }
+          case GTK_JUSTIFY_LEFT:
+           switch(child_text->angle){
+             case 0:
+                 ty -= tascent;
+                 break;
+             case 90:
+                 ty -= theight;
+                 tx -= tascent;
+                 break;
+             case 180:
+                 tx -= twidth;
+                 ty -= tdescent;
+                 break;
+             case 270:
+                 tx -= tdescent;
+                 break;
+           }
+           break;
+         case GTK_JUSTIFY_RIGHT:
+           switch(child_text->angle){
+             case 0:
+                 tx -= twidth;
+                 ty -= tascent;
+                 break;
+             case 90:
+                 tx -= tascent;
+                 break;
+             case 180:
+                 ty -= tdescent;
+                 break;
+             case 270:
+                 ty -= theight;
+                 tx -= tdescent;
+                 break;
+           }
+           break;
+         case GTK_JUSTIFY_CENTER:
+         default:
+           switch(child_text->angle){
+             case 0:
+                 tx -= twidth / 2.;
+                 ty -= tascent;
+                 break;
+             case 90:
+                 tx -= tascent;
+                 ty -= theight / 2.;
+                 break;
+             case 180:
+                 tx -= twidth / 2.;
+                 ty -= tdescent;
+                 break;
+             case 270:
+                 tx -= tdescent;
+                 ty -= theight / 2.;
+                 break;
+           }
+       }
 
-        if(x >= tx-5 && x <= tx+twidth+5)
-          if(y >= ty-5 && y <= ty+theight+5)
-            {
-               canvas->action = GTK_PLOT_CANVAS_MOVE_TEXT;
-               canvas->active_text = child_text;
-               break;
-            }
+       if(x >= tx-5 && x <= tx+twidth+5)
+         if(y >= ty-5 && y <= ty+theight+5)
+           {
+              canvas->action = GTK_PLOT_CANVAS_MOVE_TEXT;
+              canvas->active_text = child_text;
+              break;
+           }
 
        text = text->next;
      }
@@ -680,24 +830,66 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
                                    &tascent, &tdescent);
 
             switch(child_text->justification){
-	      case GTK_JUSTIFY_LEFT:
-          		break;
-	      case GTK_JUSTIFY_RIGHT:
-                 if(child_text->angle == 0 || child_text->angle == 180)
-                        tx -= twidth;
-                 else
-                        ty -= theight;
-		 break;
-	      case GTK_JUSTIFY_CENTER:
+               case GTK_JUSTIFY_LEFT:
+                switch(child_text->angle){
+                  case 0:
+                      ty -= tascent;
+                      break;
+                  case 90:
+                      ty -= theight;
+                      tx -= tascent;
+                      break;
+                  case 180:
+                      tx -= twidth;
+                      ty -= tdescent;
+                      break;
+                  case 270:
+                      tx -= tdescent;
+                      break;
+                }
+                break;
+              case GTK_JUSTIFY_RIGHT:
+                switch(child_text->angle){
+                  case 0:
+                      tx -= twidth;
+                      ty -= tascent;
+                      break;
+                  case 90:
+                      tx -= tascent;
+                      break;
+                  case 180:
+                      ty -= tdescent;
+                      break;
+                  case 270:
+                      ty -= theight;
+                      tx -= tdescent;
+                      break;
+                }
+                break;
+              case GTK_JUSTIFY_CENTER:
               default:
-                 if(child_text->angle == 0 || child_text->angle == 180)
-                        tx -= twidth/2;
-                 else
-                        ty -= theight/2;
-		 break;
+                switch(child_text->angle){
+                  case 0:
+                      tx -= twidth / 2.;
+                      ty -= tascent;
+                      break;
+                  case 90:
+                      tx -= tascent;
+                      ty -= theight / 2.;
+                      break;
+                  case 180:
+                      tx -= twidth / 2.;
+                      ty -= tdescent;
+                      break;
+                  case 270:
+                      tx -= tdescent;
+                      ty -= theight / 2.;
+                      break;
+                }
              }
 
-             if(x >= tx-5 && x <= tx+twidth+5)
+
+            if(x >= tx-5 && x <= tx+twidth+5)
                if(y >= ty-5 && y <= ty+theight+5)
                   {
                       active_axis = axis[i];
@@ -1013,6 +1205,7 @@ gtk_plot_canvas_button_release(GtkWidget *widget, GdkEventButton *event)
   gdouble new_width, new_height;
   gdouble xmin, xmax;
   gdouble ymin, ymax;
+  gboolean veto = TRUE;
 
   canvas = GTK_PLOT_CANVAS(widget); 
 
@@ -1032,23 +1225,37 @@ gtk_plot_canvas_button_release(GtkWidget *widget, GdkEventButton *event)
                                       canvas->pointer_y - canvas->drag_y, 
                                       &dx, &dy);
     case GTK_PLOT_CANVAS_MOVE_TITLE:
+         gtk_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_TEXT],
+                         canvas->active_text->x + dx, 
+                         canvas->active_text->y + dy, &veto);
+         if(!veto) break;
          canvas->active_text->x += dx;
          canvas->active_text->y += dy;
          break;
     case GTK_PLOT_CANVAS_MOVE_LEGENDS:
          gtk_plot_legends_get_position(active_plot, &new_x, &new_y);
+         gtk_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_LEGENDS],
+                         new_x + dx/active_plot->width, 
+                         new_y + dy/active_plot->height,  &veto);
+         if(!veto) break;
          new_x += dx / active_plot->width;
          new_y += dy / active_plot->height;
          gtk_plot_legends_move(active_plot, new_x, new_y);
          break;
     case GTK_PLOT_CANVAS_MOVE_PLOT:
          gtk_plot_get_position (active_plot, &new_x, &new_y);
+         gtk_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_PLOT],
+                         new_x + dx, new_y + dy,  &veto);
+         if(!veto) break;
          new_x += dx;
          new_y += dy;
          gtk_plot_move(active_plot, new_x, new_y);
          break;
     case GTK_PLOT_CANVAS_RESIZE_PLOT:
          gtk_plot_get_size (active_plot, &new_width, &new_height);
+         gtk_signal_emit(GTK_OBJECT(canvas), canvas_signals[RESIZE_PLOT],
+                         new_x + dx, new_y + dy,  &veto);
+         if(!veto) break;
          new_width += dx; 
          new_height += dy; 
          gtk_plot_resize(active_plot, new_width, new_height);
@@ -1073,7 +1280,8 @@ gtk_plot_canvas_button_release(GtkWidget *widget, GdkEventButton *event)
   }
  
 
-  gtk_plot_layout_refresh(GTK_PLOT_LAYOUT(canvas));
+  if(veto)
+      gtk_plot_layout_refresh(GTK_PLOT_LAYOUT(canvas));
  
   canvas->active_data = NULL;
   canvas->active_point = -1;
@@ -1098,10 +1306,10 @@ gtk_plot_canvas_add_plot (GtkPlotCanvas *plot_canvas,
   gtk_plot_move(plot, x, y);
 
   if(GTK_PLOT_CANVAS_ALLOCATE_TITLES(plot_canvas)){
-    plot->left.title.x = plot->x - 50. / (gdouble)width;
-    plot->right.title.x = plot->x + plot->width + 30. / (gdouble)width;
+    plot->left.title.x = plot->x - 45. / (gdouble)width;
+    plot->right.title.x = plot->x + plot->width + 45. / (gdouble)width;
     plot->top.title.y = plot->y - 35. / (gdouble)height;
-    plot->bottom.title.y = plot->y + plot->height + 25. / (gdouble)height;
+    plot->bottom.title.y = plot->y + plot->height + 35. / (gdouble)height;
   }
 
   gtk_plot_layout_add_plot(GTK_PLOT_LAYOUT(plot_canvas), plot, 0, 0);

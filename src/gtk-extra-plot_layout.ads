@@ -39,7 +39,7 @@
 --  These relative coordinates makes it really easy to handle the resizing
 --  of this container.
 --  </description>
---  <c_version>gtk+extra 0.99.1</c_version>
+--  <c_version>gtk+extra 0.99.4</c_version>
 
 with Gdk.Color;
 with Gtk.Enums;

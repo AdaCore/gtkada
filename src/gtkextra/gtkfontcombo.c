@@ -209,6 +209,7 @@ gtk_font_combo_init (GtkFontCombo * font_combo)
   font_combo->height = 12;
   font_combo->italic = FALSE;
   font_combo->bold = FALSE;
+  gtk_list_select_item(GTK_LIST(GTK_COMBO(font_combo->size_combo)->list), 3);
 }
 
 guint
@@ -276,7 +277,7 @@ new_font(GtkEntry *entry, gpointer data)
 
 void
 gtk_font_combo_select (GtkFontCombo *combo, 
-		       gchar *family,
+		       const gchar *family,
                        gboolean bold,
 		       gboolean italic,
 		       gint height)

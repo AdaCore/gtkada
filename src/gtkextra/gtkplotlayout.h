@@ -72,18 +72,18 @@ void 		gtk_plot_layout_add_plot 	(GtkPlotLayout *plot_layout,
 					 	GtkPlot *plot, 
 					 	gint x, gint y);
 void		gtk_plot_layout_set_background	(GtkPlotLayout *plot_layout,
-						 GdkColor color);
+						 GdkColor *color);
 void		gtk_plot_layout_refresh		(GtkPlotLayout *layout);
-void 		gtk_plot_layout_put_text 	(GtkPlotLayout *layout,
+GtkPlotText * 	gtk_plot_layout_put_text 	(GtkPlotLayout *layout,
                           			 gdouble x, 
 						 gdouble y, 
 						 gint angle,
-                          			 gchar *font, 
+                          			 const gchar *font, 
                                                  gint height,
 						 GdkColor *fg, 
 						 GdkColor *bg, 
 						 GtkJustification justification,
-						 gchar *text);
+						 const gchar *text);
 void 		gtk_plot_layout_get_pixel	(GtkPlotLayout *plot_layout, 
 						 gdouble px, gdouble py,
                           			 gint *x, gint *y);

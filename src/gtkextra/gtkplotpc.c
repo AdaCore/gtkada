@@ -145,7 +145,7 @@ void gtk_plot_pc_clip                                   (GtkPlotPC *pc,
 }
 
 void gtk_plot_pc_setcolor                               (GtkPlotPC *pc,
-                                                        GdkColor color)
+                                                        GdkColor *color)
 {
   pc->setcolor(pc, color);
 }
@@ -212,9 +212,14 @@ void gtk_plot_pc_drawstring                             (GtkPlotPC *pc,
                                                          gint x, gint y,
                                                          gint justification,
                                                          gint angle,
+							 gchar *font,
+							 gint height,
                                                          gchar *text)
 {
-  pc->drawstring(pc, x, y, justification, angle, text);
+  if(!text) return;
+  if(strlen(text) == 0) return;
+
+  pc->drawstring(pc, x, y, justification, angle, font, height, text);
 }
 
 

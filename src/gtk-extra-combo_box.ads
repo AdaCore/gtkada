@@ -35,7 +35,7 @@
 --  implementation: Gtk_Combo, Gtk_Color_Combo, Gtk_Border_Combo.
 --
 --  </description>
---  <c_version>gtk+extra 0.99.1</c_version>
+--  <c_version>gtk+extra 0.99.4</c_version>
 
 with Gtk.Box;
 with Gtk.Button;
@@ -77,6 +77,14 @@ package Gtk.Extra.Combo_Box is
                       return Gtk.Frame.Gtk_Frame;
    --  The frame displayed in the popup window.
    --  You should add whatever value the popup window should display in it.
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
 
 private
    type Gtk_Combo_Box_Record is new Gtk.Box.Gtk_Box_Record with null record;

@@ -63,7 +63,7 @@ static void psdrawcircle			(GtkPlotPC *pc,
 						 gint size, gint filled);
 
 static void pssetcolor				(GtkPlotPC *pc, 
-						 GdkColor color); 
+						 GdkColor *color); 
 static void pssetlinewidth			(GtkPlotPC *pc, 
 						 gint width);
 static void pssetlinecaps			(GtkPlotPC *pc, 
@@ -72,6 +72,8 @@ static void psdrawstring			(GtkPlotPC *pc,
              					 gint x, gint y,
              					 gint justification,
              					 gint angle,
+						 gchar *font,
+						 gint height,
              					 gchar *text);
 static void pssetfont				(GtkPlotPC *pc, 
 						 gchar *font, 
@@ -80,16 +82,15 @@ static void pssetdash				(GtkPlotPC *pc,
 						 gint num_values,
 						 gdouble *values,
 						 gdouble offset);
-
 /*********************************************************************/
-static void pssetcolor(GtkPlotPC *pc, GdkColor color)
+static void pssetcolor(GtkPlotPC *pc, GdkColor *color)
 {
     FILE *psout = pc->pcfile;
 
     fprintf(psout, "%f %f %f setrgbcolor\n",
-	    (gdouble) color.red / 65535.0,
-	    (gdouble) color.green / 65535.0,
-	    (gdouble) color.blue / 65535.0);
+	    (gdouble) color->red / 65535.0,
+	    (gdouble) color->green / 65535.0,
+	    (gdouble) color->blue / 65535.0);
 }
 
 static void pssetlinewidth(GtkPlotPC *pc, gint width)
@@ -150,6 +151,7 @@ psinit						(GtkPlotPC *pc,
 
     if ((psout = fopen(pc->pcname, "w")) == NULL){
        g_warning("ERROR: Cannot open file: %s", pc->pcname); 
+       return;
     }
 
     pc->pcfile = psout;
@@ -211,6 +213,16 @@ psinit						(GtkPlotPC *pc,
              "/scf {scalefont} bind def\n"
              "/sw {stringwidth pop} bind def\n"
              "/tr {translate} bind def\n"
+
+             "/JR {\n"
+             " neg 0\n"
+             " rmoveto\n"
+             "} bind def\n"
+
+             "/JC {\n"
+             " 2 div neg 0\n"
+             " rmoveto\n"
+             "} bind def\n"
   
              "\n/ellipsedict 8 dict def\n"
              "ellipsedict /mtrx matrix put\n"
@@ -453,55 +465,220 @@ psdrawstring(GtkPlotPC *pc,
              gint x, gint y,
              gint justification, 
              gint angle,
+             gchar *font,
+             gint height,
              gchar *text)
 {
-  gchar *buffer;
-  gchar *str;
-  gint len;
+  gchar *curstr;
+  gchar *currfont;
+  gchar *aux;
+  GtkPSFont *psfont;
+  GtkPlotText ptext;
+  gchar bkspchar;
+  gchar *lastchar = NULL;
+  gint curcnt = 0, offset = 0;
+  gint numf;
+  gdouble scale = 1.0;
+  gboolean italic, bold;
+  GList *family;
   FILE *psout = pc->pcfile;
+  gint twidth, theight, tdescent, tascent;
+  
+  if (text == NULL || strlen(text) == 0) return;
 
-  /* Escape all '(' and ')':  */
-  buffer = g_malloc(2*strlen(text)+1);
-  *buffer = 0;
-  str = text;
-  while (*str != 0) {
-    len = strcspn(str,"()\\");
-    strncat(buffer, str, len);
-    str += len;
-    if (*str != 0) {
-      strcat(buffer,"\\");
-      strncat(buffer, str, 1);
-      str++;
-    }
-  }
-  fprintf(psout, "(%s) ", buffer);
-  g_free(buffer);
+  curstr = (gchar *)g_malloc(2*strlen(text)*sizeof(gchar));
+ 
+  gtk_psfont_get_families(&family, &numf);
+  psfont = gtk_psfont_get_font(font);
+  italic = psfont->italic;
+  bold = psfont->bold;
+
+  currfont = psfont->psname;
+
+  ptext.font = psfont->psname;
+  ptext.height = height;
+  ptext.text = text;
+  ptext.angle = angle;
+  gtk_plot_text_get_size(ptext, &twidth, &theight, &tascent, &tdescent);
+
+  if(angle == 90 || angle == 270) angle = 360 - angle;
+
+  fprintf(psout, "gs\n");
+  fprintf(psout, "%d %d translate\n", x, y);
+  fprintf(psout, "%d rotate\n", angle);
+
+  fprintf(psout, "0 0 m\n");
+  fprintf(psout, "1 -1 sc\n");
 
   switch (justification) {
-  case GTK_JUSTIFY_LEFT:
-    fprintf(psout, "%f %f m", (gfloat)x, (gfloat)y);
-    break;
-  case GTK_JUSTIFY_RIGHT:
-    if(angle == 0 || angle == 180)
-      fprintf(psout, "dup sw %f ex sub %f m", (gfloat)x, (gfloat)y);
-    if(angle == 270) 
-      fprintf(psout, "dup sw %f ex %f ex sub m", (gfloat)x, (gfloat)y);
-    if(angle == 90) 
-      fprintf(psout, "dup sw %f ex %f ex add m", (gfloat)x, (gfloat)y);
-    break;
-  case GTK_JUSTIFY_CENTER:
-  default:
-    if(angle == 0 || angle == 180)
-      fprintf(psout, "dup sw 2 div %f ex sub %f m", (gfloat)x, (gfloat)y);
-    if(angle == 270) 
-      fprintf(psout, "dup sw %f ex 2 div %f ex sub m", (gfloat)x, (gfloat)y);
-    if(angle == 90) 
-      fprintf(psout, "dup sw %f ex 2 div %f ex add m", (gfloat)x, (gfloat)y);
-    break;
+    case GTK_JUSTIFY_LEFT:
+      break;
+    case GTK_JUSTIFY_RIGHT:
+      if(angle == 0 || angle == 180)
+             fprintf(psout, "%d JR\n", twidth);
+      else
+             fprintf(psout, "%d JR\n", theight);
+      break;
+    case GTK_JUSTIFY_CENTER:
+    default:
+      if(angle == 0 || angle == 180)
+             fprintf(psout, "%d JC\n", twidth);
+      else
+             fprintf(psout, "%d JC\n", theight);
+      break;
   }
 
-  fprintf(psout, " gs %f rotate 1 -1 sc sh gr\n", -(gfloat)angle);
+  aux = text;
 
+  while(aux && *aux != '\0' && *aux != '\n') {
+     if(*aux == '\\'){
+         aux++;
+         switch(*aux){
+           case '0': case '1': case '2': case '3':
+           case '4': case '5': case '6': case '7': case '9':
+                  curstr[curcnt] = 0;
+                  if (curcnt >= 1) {
+                      fprintf(psout, "(%s) show\n", curstr);
+                  }
+                  curcnt = 0;
+                  psfont = gtk_psfont_find_by_family((gchar *)g_list_nth_data(family, atoi(aux)), italic, bold);
+                  currfont = psfont->psname;
+                  pssetfont(pc, currfont, (gint)scale);
+                  aux++;
+                  break;
+           case '8':case'g':
+                  curstr[curcnt] = 0;
+                  if (curcnt >= 1) {
+                      fprintf(psout, "(%s) show\n", curstr);
+                  }
+                  curcnt = 0;
+                  psfont = gtk_psfont_find_by_family("Symbol", italic, bold);
+                  currfont = psfont->psname;
+                  pssetfont(pc, currfont, (gint)scale);
+                  aux++;
+                  break;
+           case 'B':
+                  curstr[curcnt] = 0;
+                  if (curcnt >= 1) {
+                      fprintf(psout, "(%s) show\n", curstr);
+                  }
+                  curcnt = 0;
+  		  bold = TRUE;
+                  psfont = gtk_psfont_find_by_family(psfont->family, italic, bold);
+                  currfont = psfont->psname;
+                  pssetfont(pc, currfont, (gint)scale);
+                  aux++;
+                  break;
+           case 'i':
+                  curstr[curcnt] = 0;
+                  if (curcnt >= 1) {
+                      fprintf(psout, "(%s) show\n", curstr);
+                  }
+                  curcnt = 0;
+      	    	  italic = TRUE;
+                  psfont = gtk_psfont_find_by_family(psfont->family, italic, bold);
+                  currfont = psfont->psname;
+                  pssetfont(pc, currfont, (gint)scale);
+                  aux++;
+                  break;
+           case 's':case'_':
+                  curstr[curcnt] = 0;
+                  if (curcnt >= 1) {
+                      fprintf(psout, "(%s) show\n", curstr);
+                  }
+                  curcnt = 0;
+                  scale = 0.6 * height;
+                  pssetfont(pc, currfont, (gint)scale);
+                  offset -= (gint)scale / 2;
+                  fprintf(psout, "0 %d rmoveto\n", -((gint)scale / 2));
+                  aux++;
+                  break;
+           case 'S':case '^':
+                  curstr[curcnt] = 0;
+                  if (curcnt >= 1) {
+                      fprintf(psout, "(%s) show\n", curstr);
+                  }
+                  curcnt = 0;
+                  scale = 0.6 * height;
+                  pssetfont(pc, currfont, (gint)scale);
+                  offset += 0.5*height;
+                  fprintf(psout, "0 %d rmoveto\n", (gint)(0.5*height));
+                  aux++;
+                  break;
+           case 'N':
+                  curstr[curcnt] = 0;
+                  if (curcnt >= 1) {
+                      fprintf(psout, "(%s) show\n", curstr);
+                  }
+                  curcnt = 0;
+                  scale = height;
+                  pssetfont(pc, currfont, (gint)scale);
+                  fprintf(psout, "0 %d rmoveto\n", -offset);
+                  offset = 0;
+                  aux++;
+                  break;
+           case 'b':
+                  curstr[curcnt] = '\0';
+                  if(curcnt >= 1)
+                      fprintf(psout, "(%s) show\n", curstr);
+                  if (lastchar) {
+                      bkspchar = *lastchar;
+                      lastchar--;
+                  } else {
+                      bkspchar = 'X';
+                      lastchar = NULL;
+                  }
+                  fprintf(psout,
+                  "(%c) stringwidth pop 0 exch neg exch rmoveto\n", bkspchar );
+                  curcnt = 0;
+                  aux++;
+                  break;
+           case '-':
+                  curstr[curcnt] = 0;
+                  if (curcnt >= 1) {
+                      fprintf(psout, "(%s) show\n", curstr);
+                  }
+                  curcnt = 0;
+                  scale -= 3;
+                  if (scale < 6) {
+                      scale = 6;
+                  }
+                  pssetfont(pc, currfont, (gint)scale);
+                  aux++;
+                  break;
+           case '+':
+                  curstr[curcnt] = 0;
+                  if (curcnt >= 1) {
+                      fprintf(psout, "(%s) show\n", curstr);
+                  }
+                  curcnt = 0;
+                  scale += 3;
+                  pssetfont(pc, currfont, (gint)scale);
+                  aux++;
+                  break;
+           default:
+                  if(aux && *aux != '\0' && *aux !='\n'){
+                    curstr[curcnt++] = *aux;
+                    aux++;
+                  }
+                  break;
+         }
+     } else {
+       if(aux && *aux != '\0' && *aux !='\n'){
+                curstr[curcnt++] = *aux;
+		lastchar = aux;
+                aux++;
+       }
+     }
+  }
+  curstr[curcnt] = 0;
+
+  fprintf(psout, "(%s) show\n", curstr);
+
+  fprintf(psout, "gr\n");  
+  fprintf(psout, "n\n");  
+
+  g_free(curstr);
 }
 
 static void
@@ -511,6 +688,7 @@ pssetfont(GtkPlotPC *pc, gchar *font, gint height)
 
   fprintf(psout, "/%s ff %f scf sf\n", font, (double)height);
 }
+
 
 static void
 psgsave(GtkPlotPC *pc)

@@ -125,6 +125,19 @@ struct _GtkPlotCanvasClass
   void (*select_region)		(GtkPlotCanvas *canvas,
 				 gdouble xmin, gdouble xmax,
 				 gdouble ymin, gdouble ymax);
+
+  gint (*move_text)		(GtkPlotCanvas *canvas,
+				 gdouble x, gdouble y);
+
+  gint (*move_legends)		(GtkPlotCanvas *canvas,
+				 gdouble x, gdouble y);
+
+  gint (*move_plot)		(GtkPlotCanvas *canvas,
+				 gdouble x, gdouble y);
+
+  gint (*resize_plot)		(GtkPlotCanvas *canvas,
+				 gdouble width, gdouble height);
+
 };
 
 

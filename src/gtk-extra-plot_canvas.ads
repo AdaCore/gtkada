@@ -38,7 +38,7 @@
 --  Like any child of Gtk_Layout, this widget can have an almost unlimited
 --  size for its children, and provides scrolling.
 --  </description>
---  <c_version>gtk+extra 0.99.1</c_version>
+--  <c_version>gtk+extra 0.99.4</c_version>
 
 with Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Layout;
@@ -252,6 +252,39 @@ package Gtk.Extra.Plot_Canvas is
    --    Called when the user selected a region of a plot.
    --    Should return False if the event should not be propagated.
    --
+   --  - "move_text"
+   --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
+   --                      X, Y : Gdouble)
+   --                     return Boolean;
+   --
+   --    Called when a title was moved by the user.
+   --    The text moved is returned by Get_Active_Text, and X, Y are its
+   --    new position.
+   --    Should return False if the text should not be moved to that location.
+   --
+   --  - "move_legends"
+   --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
+   --                      X, Y : Gdouble)
+   --                     return Boolean;
+   --
+   --    Called just before moving Get_Active_Legend to a new location.
+   --    Should return False if the legend should not be moved.
+   --
+   --  - "move_plot"
+   --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
+   --                      X, Y : Gdouble)
+   --                     return Boolean;
+   --
+   --    Called just before moving Get_Active_Plot to a new location.
+   --    Should return False if the plot should not be moved.
+   --
+   --  - "resize_plot"
+   --    function Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
+   --                      Width, Height : Gdouble)
+   --                     return Boolean;
+   --
+   ---   Called just before resizing Get_Active_Plot.
+   --    Should return False if the plot should not be resized.
    --  </signals>
 
 private

@@ -64,7 +64,7 @@ guint      gtk_font_combo_get_type              (void);
 GtkWidget *gtk_font_combo_new                   (void);
 
 void	   gtk_font_combo_select		(GtkFontCombo *font_combo,
-						 gchar *family,
+						 const gchar *family,
 			                         gboolean bold,
                         			 gboolean italic,
 						 gint height);
