@@ -30,7 +30,8 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Widget;
+with Gtk.Widget; use Gtk.Widget;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.List is
 
@@ -303,5 +304,52 @@ package body Gtk.List is
       Internal (Get_Object (List),
                 Item);
    end Unselect_Item;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type) is
+   begin
+      Gen_New (N, "List", File => File);
+
+      Container.Generate (N, File);
+
+      Gen_Set (N, "List", "selection_mode", File => File);
+
+      if not N.Specific_Data.Has_Container then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
+      end if;
+   end Generate;
+
+   procedure Generate (List : in out Gtk_Object; N : in Node_Ptr) is
+      S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_List (List));
+
+         Set_Object (Get_Field (N, "name"), List);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Container.Generate (List, N);
+
+      S := Get_Field (N, "selection_mode");
+
+      if S /= null then
+         Set_Selection_Mode (Gtk_List (List),
+           Gtk_Selection_Mode'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      if not N.Specific_Data.Has_Container then
+         Container.Add
+           (Container.Gtk_Container
+            (Get_Object (Get_Field (N.Parent, "name"))),
+            Gtk_Widget (List));
+         N.Specific_Data.Has_Container := True;
+      end if;
+   end Generate;
 
 end Gtk.List;

@@ -29,12 +29,15 @@
 
 with Gtk.Container;
 with Gtk.Widget; use Gtk.Widget;
+with Gtk.Object; use Gtk.Object;
 
 package Gtk.Paned is
 
    type Gtk_Paned_Record is new Gtk.Container.Gtk_Container_Record
      with private;
    type Gtk_Paned is access all Gtk_Paned_Record'Class;
+   subtype Gtk_Vpaned is Gtk_Paned;
+   subtype Gtk_Hpaned is Gtk_Paned;
 
    procedure Add1 (Paned : access Gtk_Paned_Record;
                    Child : access Gtk_Widget_Record'Class);
@@ -69,6 +72,14 @@ package Gtk.Paned is
                               Size  : in Guint16);
    procedure Set_Handle_Size (Paned : access Gtk_Paned_Record;
                               Size  : in Guint16);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N    : in Node_Ptr;
+                       File : in File_Type);
+
+   procedure Generate (Paned : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Paned_Record is new Gtk.Container.Gtk_Container_Record

@@ -29,6 +29,9 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Container; use Gtk.Container;
+with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Paned is
 
@@ -257,5 +260,77 @@ package body Gtk.Paned is
    begin
       Internal (Get_Object (Paned), Guint16'Pos (Size));
    end Set_Handle_Size;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type) is
+      Class : String_Ptr := Get_Field (N, "class");
+   begin
+      Gen_New
+        (N, "Paned",
+         New_Name => Class (Class'First + 3) & "paned",
+         File => File);
+
+      Gen_Set (N, "Paned", "handle_size", File);
+      Gen_Set (N, "Paned", "gutter_size", File);
+
+      if not N.Specific_Data.Has_Container then
+         if Get_Field (N.Parent, "class").all = "GtkScrolledWindow" then
+            Gen_Call_Child
+              (N, null, "Scrolled_Window", "Add_With_Viewport", File => File);
+         else
+            Gen_Call_Child (N, null, "Container", "Add", File => File);
+         end if;
+
+         N.Specific_Data.Has_Container := True;
+      end if;
+   end Generate;
+
+   procedure Generate (Paned : in out Gtk_Object; N : in Node_Ptr) is
+      S     : String_Ptr;
+      Class : String_Ptr := Get_Field (N, "class");
+
+   begin
+      if not N.Specific_Data.Created then
+         if Class (Class'First + 3) = 'H' then
+            Gtk_New_Hpaned (Gtk_Paned (Paned));
+         else
+            Gtk_New_Vpaned (Gtk_Paned (Paned));
+         end if;
+
+         Set_Object (Get_Field (N, "name"), Paned);
+         N.Specific_Data.Created := True;
+      end if;
+
+      S := Get_Field (N, "handle_size");
+
+      if S /= null then
+         Set_Handle_Size (Gtk_Paned (Paned), Guint16'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "gutter_size");
+
+      if S /= null then
+         Set_Gutter_Size (Gtk_Paned (Paned), Guint16'Value (S.all));
+      end if;
+
+      if not N.Specific_Data.Has_Container then
+         if Get_Field (N.Parent, "class").all = "GtkScrolledWindow" then
+            Scrolled_Window.Add_With_Viewport
+              (Gtk_Scrolled_Window
+                (Get_Object (Get_Field (N.Parent, "name"))),
+               Gtk_Paned (Paned));
+         else
+            Container.Add
+              (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+               Gtk_Paned (Paned));
+         end if;
+
+         N.Specific_Data.Has_Container := True;
+      end if;
+   end Generate;
 
 end Gtk.Paned;

@@ -37,8 +37,19 @@ with Unchecked_Deallocation;
 with Unchecked_Conversion;
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Clist is
+
+   procedure Output_Titles (Name : in String;
+                            A    : in Chars_Ptr_Array);
+   --  Given an array of C String, generate the corresponding Ada code
+   --  in the context of GATE.
+
+   procedure Build_Title_List (N : in Node_Ptr;
+                               A : out Chars_Ptr_Array);
+   --  Build an array of C Strings corresponding to the label contained in the
+   --  widget described by N.
 
    ------------
    -- Append --
@@ -353,7 +364,6 @@ package body Gtk.Clist is
       Gdk.Set_Object (Pixmap, Pix);
       Gdk.Set_Object (Mask, Msk);
    end Get_Pixtext;
-
 
    ------------------
    -- Get_Row_List --
@@ -1231,10 +1241,9 @@ package body Gtk.Clist is
       Internal (Get_Object (Clist));
    end Undo_Selection;
 
-
-   ---------------
+   --------------
    -- Row_Data --
-   ---------------
+   --------------
 
    package body Row_Data is
 
@@ -1307,5 +1316,122 @@ package body Gtk.Clist is
       end Set;
 
    end Row_Data;
+
+   -------------------
+   -- Output_Titles --
+   -------------------
+
+   procedure Output_Titles (Name : in String;
+                            A    : in Chars_Ptr_Array) is
+   begin
+      Glib.Glade.Add_Package ("Interfaces.C.Strings");
+      Put_Line (Name & " : constant Chars_Ptr_Array (1 .. "
+                & Gint'Image (A'Last) & ")");
+      Put_Line ("        : = (");
+
+      for Index in A'First .. A'Last loop
+         Put_Line ("             Interfaces.C.Strings.New_String ( """ &
+                   Interfaces.C.Strings.Value (A (Index)) & """,");
+      end loop;
+
+      Put_Line ("            );");
+   end Output_Titles;
+
+   ----------------------
+   -- Build_Title_List --
+   ----------------------
+
+   procedure Build_Title_List (N : in Node_Ptr;
+                               A : out Chars_Ptr_Array) is
+      M : Node_Ptr;
+      S : String_Ptr;
+   begin
+      M := Find_Tag (N.Child, "widget");
+
+      for Index in A'First .. A'Last loop
+         S := Get_Field (M, "label");
+
+         if S /= null then
+            A (Index) := Interfaces.C.Strings.New_String (S.all);
+         end if;
+
+         M := M.Next;
+      end loop;
+   end Build_Title_List;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type) is
+      package ICS renames Interfaces.C.Strings;
+      Columns, S : String_Ptr;
+
+   begin
+      Columns := Get_Field (N, "columns");
+
+      if Columns /= null then
+         declare
+            Titles : Chars_Ptr_Array (1 .. Gint'Value (Columns.all));
+            Name   : constant String := Get_Field (N, "name").all & "_Titles";
+         begin
+            Build_Title_List (N, Titles);
+            Output_Titles (Name, Titles);
+            Gen_New (N, "Clist", Columns.all, Name, File => File);
+         end;
+      else
+         Gen_New (N, "Clist", File => File);
+      end if;
+
+      Container.Generate (N, File);
+
+      S := Get_Field (N, "selection_mode");
+
+      if S /= null then
+         Gen_Set (N, "Clist", S.all, File => File);
+      end if;
+
+      if not N.Specific_Data.Has_Container then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
+      end if;
+   end Generate;
+
+   procedure Generate (Clist : in out Gtk_Object; N : in Node_Ptr) is
+      Columns, S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         Columns := Get_Field (N, "columns");
+         if Columns /= null then
+            declare
+               Titles : Chars_Ptr_Array (1 .. Gint'Value (Columns.all));
+            begin
+               Build_Title_List (N, Titles);
+               Gtk_New (Gtk_Clist (Clist), Gint'Value (Columns.all), Titles);
+            end;
+
+            Set_Object (Get_Field (N, "name"), Clist);
+            N.Specific_Data.Created := True;
+         end if;
+      end if;
+
+      Container.Generate (Clist, N);
+
+      S := Get_Field (N, "selection_mode");
+
+      if S /= null then
+         Set_Selection_Mode (Gtk_Clist (Clist),
+           Gtk_Selection_Mode'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      if not N.Specific_Data.Has_Container then
+         Container.Add
+           (Container.Gtk_Container
+            (Get_Object (Get_Field (N.Parent, "name"))),
+            Gtk.Widget.Gtk_Widget (Clist));
+         N.Specific_Data.Has_Container := True;
+      end if;
+   end Generate;
 
 end Gtk.Clist;

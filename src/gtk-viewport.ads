@@ -30,6 +30,7 @@
 with Gtk.Adjustment;
 with Gtk.Bin;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Object; use Gtk.Object;
 
 package Gtk.Viewport is
 
@@ -42,8 +43,10 @@ package Gtk.Viewport is
                              return        Gtk.Adjustment.Gtk_Adjustment;
    procedure Gtk_New
       (Widget      : out Gtk_Viewport;
-       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
-       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment);
+       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment
+         := Adjustment.Null_Adjustment;
+       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment
+         := Adjustment.Null_Adjustment);
    procedure Initialize
       (Widget      : access Gtk_Viewport_Record;
        Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
@@ -57,6 +60,14 @@ package Gtk.Viewport is
    procedure Set_Vadjustment
       (Viewport   : access Gtk_Viewport_Record;
        Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N    : in Node_Ptr;
+                       File : in File_Type);
+
+   procedure Generate (Viewport : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Viewport_Record is new Gtk.Bin.Gtk_Bin_Record with null record;

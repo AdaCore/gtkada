@@ -29,6 +29,9 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
+with Gtk.Container; use Gtk.Container;
+with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 
 package body Gtk.Viewport is
 
@@ -70,9 +73,10 @@ package body Gtk.Viewport is
 
    procedure Gtk_New
       (Widget      : out Gtk_Viewport;
-       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
-       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment)
-   is
+       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment :=
+         Adjustment.Null_Adjustment;
+       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment :=
+         Adjustment.Null_Adjustment) is
    begin
       Widget := new Gtk_Viewport_Record;
       Initialize (Widget, Hadjustment, Vadjustment);
@@ -148,5 +152,65 @@ package body Gtk.Viewport is
       Internal (Get_Object (Viewport),
                 Get_Object (Adjustment));
    end Set_Vadjustment;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N    : in Node_Ptr;
+                       File : in File_Type) is
+   begin
+      Gen_New (N, "Viewport", File => File);
+      Gen_Set (N, "Viewport", "shadow_type", File => File);
+
+      if not N.Specific_Data.Has_Container then
+         if Get_Field (N.Parent, "class").all = "GtkScrolledWindow" then
+            Gen_Call_Child
+              (N, null, "Scrolled_window",
+               "Add_with_Viewport", File => File);
+
+         else
+            Gen_Call_Child (N, null, "Container", "Add", File => File);
+         end if;
+
+         N.Specific_Data.Has_Container := True;
+      end if;
+   end Generate;
+
+   procedure Generate (Viewport : in out Gtk_Object;
+                       N        : in Node_Ptr) is
+      S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Viewport (Viewport));
+         Set_Object (Get_Field (N, "name"), Viewport);
+
+         S := Get_Field (N, "shadow_type");
+
+         if S /= null then
+            Set_Shadow_Type
+              (Gtk_Viewport (Viewport),
+               Gtk_Shadow_Type'Value (S (S'First + 4 .. S'Last)));
+         end if;
+
+         N.Specific_Data.Created := True;
+      end if;
+
+      if not N.Specific_Data.Has_Container then
+         if Get_Field (N.Parent, "class").all = "GtkScrolledWindow" then
+            Scrolled_Window.Add_With_Viewport
+              (Gtk_Scrolled_Window
+                (Get_Object (Get_Field (N.Parent, "name"))),
+               Gtk_Viewport (Viewport));
+
+         else
+            Container.Add
+              (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+               Gtk_Viewport (Viewport));
+         end if;
+
+         N.Specific_Data.Has_Container := True;
+      end if;
+   end Generate;
 
 end Gtk.Viewport;

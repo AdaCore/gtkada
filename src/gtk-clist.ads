@@ -36,6 +36,7 @@ with Gtk.Adjustment;
 with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Style; use Gtk.Style;
+with Gtk.Object; use Gtk.Object;
 with Gtk.Widget;
 with Gtkada.Types; use Gtkada.Types;
 
@@ -372,6 +373,14 @@ package Gtk.Clist is
    --  The previous package implements the Row_Data stuff.
    --  !! Warning !! No type verification is made to check if you are
    --  using the appropriate function Get. This is your own responsability
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+
+   procedure Generate (Clist : in out Gtk_Object; N : in Node_Ptr);
 
 
 private

@@ -30,6 +30,7 @@
 with Gtk.Container;
 with Gtk.Enums;  use Gtk.Enums;
 with Gtk.Widget; use Gtk.Widget;
+with Gtk.Object; use Gtk.Object;
 
 package Gtk.List is
 
@@ -81,6 +82,14 @@ package Gtk.List is
    procedure Unselect_Item
       (List : access Gtk_List_Record;
        Item : in Gint);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+
+   procedure Generate (List : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_List_Record is new Gtk.Container.Gtk_Container_Record
