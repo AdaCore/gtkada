@@ -11,5 +11,5 @@ all: gtkada.texi
 clean:
 	$(RM) gtkada.aux gtkada.cp gtkada.dvi gtkada.fn gtkada.html gtkada.info*
 	$(RM) gtkada.ky gtkada.log gtkada.pg gtkada.toc gtkada.tp gtkada.vr
-	$(RM) texput.log
+	$(RM) texput.log gtkada.ps gtkada.txt
 
