@@ -26,41 +26,44 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib;
-with Glib.Object;
-with Pango.Font;
+with Glib;        use Glib;
+with Glib.Object; use Glib.Object;
+with Pango.Font;  use Pango.Font;
+with System;      use System;
 
-package Pango.Context is
+package body Pango.Context is
 
-   type Pango_Context_Record is new Glib.Object.GObject_Record with private;
-   type Pango_Context is access all Pango_Context_Record'Class;
-   --  A pango context is somewhat similar to a graphic context, and groups all
-   --  the information on how to handle the various international scripts
-   --  (font, color, direction,...)
-   --  Such a context is destroyed by calling Glib.Object.Unref on it.
+   --------------------------
+   -- Get_Font_Description --
+   --------------------------
 
-   function Get_Type return Glib.GType;
-   --  Return the internal value associated with a Pango_Context.
+   function Get_Font_Description
+     (Context : Pango_Context)
+      return Pango.Font.Pango_Font_Description
+   is
+      function Internal (Context : System.Address)
+         return Pango_Font_Description;
+      pragma Import
+        (C, Internal, "pango_context_get_font_description");
+   begin
+      return Internal (Get_Object (Context));
+   end Get_Font_Description;
+
+   --------------------------
+   -- Set_Font_Description --
+   --------------------------
 
    procedure Set_Font_Description
      (Context     : Pango_Context;
-      Description : Pango.Font.Pango_Font_Description);
+      Description : Pango.Font.Pango_Font_Description)
+   is
+      procedure Internal (Context : System.Address;
+                          Description : Pango_Font_Description);
+      pragma Import
+        (C, Internal, "pango_context_set_font_description");
+   begin
+      Internal (Get_Object (Context), Description);
+   end Set_Font_Description;
 
-   function Get_Font_Description (Context : Pango_Context)
-      return Pango.Font.Pango_Font_Description;
-
-private
-   type Pango_Context_Record is new Glib.Object.GObject_Record
-     with null record;
-   pragma Import (C, Get_Type, "pango_context_get_type");
 end Pango.Context;
 
---  missing:
---  pango_context_list_families
---  pango_context_load_font
---  pango_context_load_fontset
---  pango_context_get_metrics
---  pango_context_get_language
---  pango_context_set_language
---  pango_context_set_base_dir
---  pango_context_get_base_dir
