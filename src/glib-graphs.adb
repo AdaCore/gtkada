@@ -56,6 +56,24 @@ package body Glib.Graphs is
       return G.Directed;
    end Is_Directed;
 
+   ---------------
+   -- Get_Index --
+   ---------------
+
+   function Get_Index (V : access Vertex) return Natural is
+   begin
+      return V.Index;
+   end Get_Index;
+
+   ---------------
+   -- Max_Index --
+   ---------------
+
+   function Max_Index (G : Graph) return Natural is
+   begin
+      return G.Last_Vertex_Index;
+   end Max_Index;
+
    ----------------
    -- Add_Vertex --
    ----------------

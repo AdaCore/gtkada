@@ -115,6 +115,13 @@ package Glib.Graphs is
    --  iterators will return this item last.
    --  All iterators become obsolete.
 
+   function Get_Index (V : access Vertex) return Natural;
+   --  Return the uniq index associated with the vertex. Each vertex has a
+   --  different index from 0 to Max_Index (Graph)
+
+   function Max_Index (G : Graph) return Natural;
+   --  Return the maximum index used for vertices in the graph.
+
    --------------------------
    -- Breadth First Search --
    --------------------------
@@ -324,4 +331,7 @@ private
       First_Pass     : Boolean;
       Repeat_Count   : Positive := 1;
    end record;
+
+   pragma Inline (Get_Index);
+   pragma Inline (Max_Index);
 end Glib.Graphs;
