@@ -255,6 +255,8 @@ bash ./configure --prefix=$prefix \
 # are forced by defining DNeedFunctionPrototypes.
 #
 # make CFLAGS='-g -O2 -DNeedFunctionPrototypes' all install
+# 
+# This doesn't seem to be the case for x86-solaris 2.8.
 
 # On all other platforms, simply do:
 make all install
