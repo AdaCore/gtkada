@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,12 +27,18 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.Object; use Glib.Object;
+with Glib.Object;   use Glib.Object;
 with Gdk.Rectangle; use Gdk.Rectangle;
-with Gtk.Enums; use Gtk.Enums;
+with Gtk.Enums;     use Gtk.Enums;
 with System;
+with Gdk.Color;     use Gdk.Color;
+with Ada.Unchecked_Conversion;
 
 package body Gtk.Style is
+
+   type Gdk_Color_Access is access Gdk_Color;
+   function Convert is new Ada.Unchecked_Conversion
+     (System.Address, Gdk_Color_Access);
 
    ---------------
    --  Gtk_New  --
@@ -140,13 +146,8 @@ package body Gtk.Style is
         (Style      : Gtk_Style;
          State_Type : Enums.Gtk_State_Type) return System.Address;
       pragma Import (C, Internal, "ada_style_get_fg");
-
-      Add : constant System.Address := Internal (Style, State_Type);
-      Col : Gdk.Color.Gdk_Color;
-      for Col'Address use Add;
-
    begin
-      return Col;
+      return Convert (Internal (Style, State_Type)).all;
    end Get_Foreground;
 
    --------------------
@@ -208,14 +209,8 @@ package body Gtk.Style is
         (Style      : Gtk_Style;
          State_Type : Enums.Gtk_State_Type) return System.Address;
       pragma Import (C, Internal, "ada_style_get_bg");
-
-      Add : constant System.Address := Internal (Style, State_Type);
-
-      Col : Gdk.Color.Gdk_Color;
-      for Col'Address use Add;
-
    begin
-      return Col;
+      return Convert (Internal (Style, State_Type)).all;
    end Get_Background;
 
    --------------------
@@ -258,13 +253,8 @@ package body Gtk.Style is
         (Style      : Gtk_Style;
          State_Type : Enums.Gtk_State_Type) return System.Address;
       pragma Import (C, Internal, "ada_style_get_light");
-
-      Add : constant System.Address := Internal (Style, State_Type);
-      Col : Gdk.Color.Gdk_Color;
-      for Col'Address use Add;
-
    begin
-      return Col;
+      return Convert (Internal (Style, State_Type)).all;
    end Get_Light;
 
    ---------------
@@ -307,13 +297,8 @@ package body Gtk.Style is
         (Style      : Gtk_Style;
          State_Type : Enums.Gtk_State_Type) return System.Address;
       pragma Import (C, Internal, "ada_style_get_dark");
-
-      Add : constant System.Address := Internal (Style, State_Type);
-      Col : Gdk.Color.Gdk_Color;
-      for Col'Address use Add;
-
    begin
-      return Col;
+      return Convert (Internal (Style, State_Type)).all;
    end Get_Dark;
 
    --------------
@@ -356,13 +341,8 @@ package body Gtk.Style is
         (Style      : Gtk_Style;
          State_Type : Enums.Gtk_State_Type) return System.Address;
       pragma Import (C, Internal, "ada_style_get_mid");
-
-      Add : constant System.Address := Internal (Style, State_Type);
-      Col : Gdk.Color.Gdk_Color;
-      for Col'Address use Add;
-
    begin
-      return Col;
+      return Convert (Internal (Style, State_Type)).all;
    end Get_Middle;
 
    ----------------
@@ -404,13 +384,8 @@ package body Gtk.Style is
         (Style      : Gtk_Style;
          State_Type : Enums.Gtk_State_Type) return System.Address;
       pragma Import (C, Internal, "ada_style_get_text");
-
-      Add : constant System.Address := Internal (Style, State_Type);
-      Col : Gdk.Color.Gdk_Color;
-      for Col'Address use Add;
-
    begin
-      return Col;
+      return Convert (Internal (Style, State_Type)).all;
    end Get_Text;
 
    --------------
@@ -453,13 +428,8 @@ package body Gtk.Style is
         (Style      : Gtk_Style;
          State_Type : Enums.Gtk_State_Type) return System.Address;
       pragma Import (C, Internal, "ada_style_get_base");
-
-      Add : constant System.Address := Internal (Style, State_Type);
-      Col : Gdk.Color.Gdk_Color;
-      for Col'Address use Add;
-
    begin
-      return Col;
+      return Convert (Internal (Style, State_Type)).all;
    end Get_Base;
 
    --------------
@@ -497,13 +467,8 @@ package body Gtk.Style is
    function Get_Black (Style : Gtk_Style) return Gdk.Color.Gdk_Color is
       function Internal (Style : Gtk_Style) return System.Address;
       pragma Import (C, Internal, "ada_style_get_black");
-
-      Add : constant System.Address := Internal (Style);
-      Col : Gdk.Color.Gdk_Color;
-      for Col'Address use Add;
-
    begin
-      return Col;
+      return Convert (Internal (Style)).all;
    end Get_Black;
 
    ---------------
@@ -534,13 +499,8 @@ package body Gtk.Style is
    function Get_White (Style : Gtk_Style) return Gdk.Color.Gdk_Color is
       function Internal (Style : Gtk_Style) return System.Address;
       pragma Import (C, Internal, "ada_style_get_white");
-
-      Add : constant System.Address := Internal (Style);
-      Col : Gdk.Color.Gdk_Color;
-      for Col'Address use Add;
-
    begin
-      return Col;
+      return Convert (Internal (Style)).all;
    end Get_White;
 
    ---------------
