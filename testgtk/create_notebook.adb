@@ -263,6 +263,7 @@ package body Create_Notebook is
    is
       pragma Warnings (Off, Page_Num);
       function Convert is new Gdk.Unchecked_Cast (Gtk_Pixmap);
+      function Convert is new Gdk.Unchecked_Cast (Gtk_Box);
       Old_Page : Gtk_Notebook_Page := Get_Cur_Page (Notebook);
       Pixmap   : Gtk_Pixmap;
    begin
@@ -271,15 +272,16 @@ package body Create_Notebook is
          return;
       end if;
 
-      Pixmap := Convert (Get_Child (Get_Tab_Label (Page), 0));
+      Pixmap := Convert (Get_Child (Convert (Get_Tab_Label (Page)), 0));
       Set (Pixmap, Book_Open, Book_Open_Mask);
-      Pixmap := Convert (Get_Child (Get_Menu_Label (Page), 0));
+      Pixmap := Convert (Get_Child (Convert (Get_Menu_Label (Page)), 0));
       Set (Pixmap, Book_Open, Book_Open_Mask);
 
       if Is_Created (Old_Page) then
-         Pixmap := Convert (Get_Child (Get_Tab_Label (Old_Page), 0));
+         Pixmap := Convert (Get_Child (Convert (Get_Tab_Label (Old_Page)), 0));
          Set (Pixmap, Book_Closed, Book_Closed_Mask);
-         Pixmap := Convert (Get_Child (Get_Menu_Label (Old_Page), 0));
+         Pixmap := Convert (Get_Child (Convert (Get_Menu_Label (Old_Page)),
+                                                0));
          Set (Pixmap, Book_Closed, Book_Closed_Mask);
       end if;
    end Page_Switch;
