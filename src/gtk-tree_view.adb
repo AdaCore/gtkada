@@ -780,35 +780,45 @@ package body Gtk.Tree_View is
 
    procedure Get_Path_At_Pos
      (Tree_View : access Gtk_Tree_View_Record;
-      Window    : Gdk.Window.Gdk_Window;
       X         : Gint;
       Y         : Gint;
-      Path      : Gtk.Tree_Model.Gtk_Tree_Path;
-      Column    : Gtk.Tree_View_Column.Gtk_Tree_View_Column;
+      Path      : out Gtk.Tree_Model.Gtk_Tree_Path;
+      Column    : out Gtk.Tree_View_Column.Gtk_Tree_View_Column;
       Cell_X    : out Gint;
       Cell_Y    : out Gint;
       Row_Found : out Boolean)
    is
       function Internal
         (Tree_View : System.Address;
-         Window    : Gdk.Window.Gdk_Window;
          X         : Gint;
          Y         : Gint;
-         Path      : Gtk.Tree_Model.Gtk_Tree_Path;
-         Column    : System.Address;
+         Path      : access Gtk.Tree_Model.Gtk_Tree_Path;
+         Column    : access System.Address;
          Cell_X    : access Gint;
          Cell_Y    : access Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_path_at_pos");
 
       Local_X, Local_Y : aliased Gint;
 
+      Local_Column : aliased System.Address;
+      Local_Path   : aliased Gtk.Tree_Model.Gtk_Tree_Path;
+
+      Stub         : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
+
    begin
       Row_Found := To_Boolean (Internal
         (Get_Object (Tree_View),
-         Window, X, Y,
-         Path, Get_Object (Column), Local_X'Access, Local_Y'Access));
+         X, Y,
+         Local_Path'Access,
+         Local_Column'Access,
+         Local_X'Access, Local_Y'Access));
       Cell_X := Local_X;
       Cell_Y := Local_Y;
+
+      Column := Gtk.Tree_View_Column.Gtk_Tree_View_Column
+        (Get_User_Data (Local_Column, Stub));
+
+      Path := Local_Path;
    end Get_Path_At_Pos;
 
    -------------------
