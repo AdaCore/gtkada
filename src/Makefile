@@ -47,7 +47,7 @@ all: libs gtkada-config testgtk
 libs:: $(LIBNAME) libgtkada.a
 
 $(LIBNAME):: $(TEST_LINK).o $(c_objects)
-	$(CC) -shared -Wl,-soname,$(SONAME) -o $(LIBNAME) g*.o $(c_objects) `gtk-config --libs` -lm
+	$(CC) -shared -o $(LIBNAME) glib*.o gdk*.o gtk*.o $(c_objects) `gtk-config --libs` -lm
 
 libgtkada.a:: $(TEST_LINK).o $(c_objects)
 	$(AR) $(ARFLAGS) libgtkada.a g*.o $(c_objects)
