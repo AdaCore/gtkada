@@ -32,7 +32,7 @@
 --  A box is a container that can have multiple children, organized either
 --  horizontally or vertically. Two subtypes are provided, Gtk_Hbox and
 --  Gtk_Vbox, to conform to the C API. However, you do not need to
---  distinguished between the two in Ada, this is automatic.
+--  distinguish between the two in Ada, this is automatic.
 --
 --  Children can be added to one of two positions in the box, either at the
 --  beginning (ie left or top) or at the end (ie right or bottom). Each of
@@ -71,22 +71,22 @@ package Gtk.Box is
    procedure Gtk_New_Vbox (Box         : in out Gtk_Box;
                            Homogeneous : in  Boolean := False;
                            Spacing     : in  Gint := 0);
-   --  Creates a new vertical box.
+   --  Create a new vertical box.
    --  Its children will be placed one above the other.
-   --  If HOMOGENEOUS is True, all the children will be allocated exactly the
+   --  If Homogeneous is True, all the children will be allocated exactly the
    --  same screen real-estate, whereas if it is False, each child can have
    --  its own size.
-   --  SPACING is the space left between two adjacent children.
+   --  Spacing is the space left between two adjacent children.
 
    procedure Gtk_New_Hbox (Box         : in out Gtk_Box;
                            Homogeneous : in  Boolean := False;
                            Spacing     : in  Gint := 0);
-   --  Creates a new horizontal box.
+   --  Create a new horizontal box.
    --  Its children will be placed one besides the other.
-   --  If HOMOGENEOUS is True, all the children will be allocated exactly the
+   --  If Homogeneous is True, all the children will be allocated exactly the
    --  same screen real-estate, whereas if it is False, each child can have
    --  its own size.
-   --  SPACING is the space left between two adjacent children.
+   --  Spacing is the space left between two adjacent children.
 
    procedure Initialize_Vbox (Box         : access Gtk_Box_Record'Class;
                               Homogeneous : in  Boolean := False;
@@ -101,13 +101,13 @@ package Gtk.Box is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Box internally.
+   --  Return the internal value associated with a Gtk_Box internally.
 
    function Get_Hbox_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_HBox internally.
+   --  Return the internal value associated with a Gtk_HBox internally.
 
    function Get_Vbox_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_VBox internally.
+   --  Return the internal value associated with a Gtk_VBox internally.
 
    procedure Pack_Start
      (In_Box  : access Gtk_Box_Record;
@@ -115,23 +115,23 @@ package Gtk.Box is
       Expand  : in Boolean := True;
       Fill    : in Boolean := True;
       Padding : in Gint    := 0);
-   --  Adds a new child to the beginning of the box (ie left or top part).  It
-   --  is added to the right (resp. the bottom) of the previous child added to
-   --  the beginning of the box. Note that a child added to the beginning of
+   --  Add a new child to the beginning of the box (ie left or top part).
+   --  It is added to the right (resp. the bottom) of the previous child added
+   --  to the beginning of the box. Note that a child added to the beginning of
    --  the box will always remain on the left (resp. top) of all the children
    --  added to the end of the box.
    --
-   --  If EXPAND is False, the size allocated for each size will be the one
-   --  requested by the widget (or the largest child if HOMOGENEOUS was set to
+   --  If Expand is False, the size allocated for each size will be the one
+   --  requested by the widget (or the largest child if Homogeneous was set to
    --  true when the box was created). Otherwise, the total size of the box is
    --  divided between all the children. Note that this does not mean that the
    --  children have to occupy all the space given to them...
    --
-   --  If FILL is True, then the widget will be resized so as to occupy all the
+   --  If Fill is True, then the widget will be resized so as to occupy all the
    --  space allocated to them. This is only relevant if Expand is True, since
    --  otherwise the space allocated is the same one as the child's size.
    --
-   --  PADDING is the amount of space left around the widget when it is drawn.
+   --  Padding is the amount of space left around the widget when it is drawn.
 
    procedure Pack_End
      (In_Box  : access Gtk_Box_Record;
@@ -139,7 +139,7 @@ package Gtk.Box is
       Expand  : in Boolean := True;
       Fill    : in Boolean := True;
       Padding : in Gint    := 0);
-   --  Adds a new child to the end of the box (ie right or bottom part).
+   --  Add a new child to the end of the box (ie right or bottom part).
    --  It is added to the left (resp. top) of the previous child added to the
    --  end of the box. Note that a child added to the end of the box will
    --  always remain on the right (resp. bottom) of all the children added to
@@ -150,36 +150,34 @@ package Gtk.Box is
    procedure Pack_Start_Defaults
      (In_Box  : access Gtk_Box_Record;
       Child   : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  This is the same as Pack_Start if you use the default value for the
-   --  parameters.
+   --  This is the same as Pack_Start if you use the default parameter values.
    --  It is provided for backward compatibility only.
 
    procedure Pack_End_Defaults
      (In_Box  : access Gtk_Box_Record;
       Child   : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  This is the same as Pack_End if you use the default value for the
-   --  parameters.
+   --  This is the same as Pack_End if you use the default parameter values.
    --  It is provided for backward compatibility only.
 
    procedure Set_Homogeneous (In_Box      : access Gtk_Box_Record;
                               Homogeneous : in     Boolean);
-   --  Modifies the homogeneous parameter for the box.
+   --  Modify the homogeneous parameter for the box.
    --  If the box is homogeneous, then all its children will be allocated the
    --  same amount of space, even if they are not resized to occupy it
-   --  (depending on the parameters given to Pack_Start and Pack_Edd).
+   --  (depending on the parameters given to Pack_Start and Pack_End).
 
    procedure Set_Spacing (In_Box  : access Gtk_Box_Record;
                           Spacing : in Gint);
-   --  Modifies the spacing for the box, ie the amount of space left between
-   --  two adjacent children.
+   --  Modify the spacing for the box.
+   --  I.e. the amount of space left between two adjacent children.
 
    procedure Reorder_Child
      (In_Box : access Gtk_Box_Record;
       Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Pos    : in Guint);
-   --  Moves the Child to a new position.
-   --  Nothing is done if CHILD is not in the box.
-   --  POS starts at 0, and indicates the position of the child relative to all
+   --  Move the Child to a new position.
+   --  Nothing is done if Child is not in the box.
+   --  Pos starts at 0, and indicates the position of the child relative to all
    --  other children, no matter where they were packed  (the beginning or the
    --  end of the box).
 
@@ -191,7 +189,7 @@ package Gtk.Box is
       Padding  : out Gint;
       PackType : out Gtk.Enums.Gtk_Pack_Type);
    --  Get information on how the child was packed in the box.
-   --  The results are undefined if CHILD is not in the box.
+   --  The results are undefined if Child is not in the box.
 
    procedure Set_Child_Packing
      (In_Box    : access Gtk_Box_Record;
@@ -200,12 +198,12 @@ package Gtk.Box is
       Fill      : in Boolean;
       Padding   : in Gint;
       PackType  : in Gtk.Enums.Gtk_Pack_Type);
-   --  Modifies the packing for a child.
+   --  Modify the packing for a child.
 
    function Get_Child (Box : access Gtk_Box_Record;
                        Num : in Gint)
                       return Gtk.Widget.Gtk_Widget;
-   --  Returns the NUM-th child of the box, or null if there is no such child.
+   --  Return the Num-th child of the box, or null if there is no such child.
 
    ----------------------------
    -- Support for GATE/DGATE --
