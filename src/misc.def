@@ -228,6 +228,7 @@ EXPORTS
 	ada_gtk_paned_get_handle_size
 	ada_gtk_parse_cmd_line
 	ada_gtk_type_gdk_event
+	ada_gtk_viewport_get_bin_window
 	ada_gtkarg_value_object
 	ada_initialize_class_record
 	ada_list_get_children
@@ -241,6 +242,10 @@ EXPORTS
 	ada_notebook_get_tab_label
 	ada_notebook_get_tab_pos
 	ada_notebook_page_get_child
+	ada_notebook_page_allocation_height
+	ada_notebook_page_allocation_width
+	ada_notebook_page_allocation_x
+	ada_notebook_page_allocation_y
 	ada_object_flag_is_set
 	ada_object_flags
 	ada_object_get_type
