@@ -26,7 +26,7 @@ gtkeditable.h: is a GTypeInterface, not a GObject
 gtkentry.h: add signals description and see "missing" section in gtk-gentry.ads
 gtkgc.h
 gtkhsv.h
-gtkiconfactory.h
+gtkiconfactory.h: mostly bound
 gtkimage.h: add documentation
 gtkimcontext.h
 gtkimmodule.h
