@@ -182,7 +182,7 @@ package body Gtkada.Canvas is
       --  Note also that we keep Class_Record, so that the memory allocation
       --  is done only once.
       Gtk.Object.Initialize_Class_Record
-        (Canvas, Signals, Signal_Parameters, Class_Record);
+        (Canvas, Signals, Class_Record, Signal_Parameters);
 
       Gtk_New (Canvas.Drawing_Area);
       Add (Canvas, Canvas.Drawing_Area);
