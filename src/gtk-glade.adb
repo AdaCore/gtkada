@@ -129,7 +129,6 @@ package body Gtk.Glade is
 
       if not Is_Internal then
          Get_Gate (S) (N, File);
-         End_Generate (Project, N, File);
       end if;
 
       if not C and then S /= "placeholder" then
@@ -153,6 +152,10 @@ package body Gtk.Glade is
 
          P := P.Next;
       end loop;
+
+      if not Is_Internal then
+         End_Generate (Project, N, File);
+      end if;
    end Print_Initialize_Procedure;
 
    ------------------
