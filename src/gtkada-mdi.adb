@@ -3344,7 +3344,6 @@ package body Gtkada.MDI is
          Win := Gtk_Window (Get_Toplevel (Child.Initial));
          Reparent (Get_Child (Win), Gtk_Box (Get_Child (Child)));
          Child.State := Normal;
-
          Destroy (Win);
 
          if Child.MDI.Central.Children_Are_Maximized then
@@ -5061,8 +5060,8 @@ package body Gtkada.MDI is
            MDI.Title_Bar_Height - 2 * Border_Thickness;
          Raised     : Boolean;
 
-         Current_Pages : array (Dock_Side) of MDI_Child
-           := (others => null);
+         Current_Pages : array (Dock_Side) of MDI_Child :=
+           (others => null);
 
       begin
          if From_Tree /= null then
@@ -5134,6 +5133,15 @@ package body Gtkada.MDI is
                                    Allocation_Int (Icons_Width),
                                    Allocation_Int (Icons_Height)));
                   end case;
+
+
+                  if State = Docked then
+                     Set_USize
+                       (MDI.Docks (Child.Dock),
+                        Allocation_Int (Width),
+                        Allocation_Int (Height));
+                  end if;
+
                end if;
             end if;
 
