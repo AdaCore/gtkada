@@ -321,11 +321,24 @@ foreach $source_file (@source_files) {
 		    $profile .= "\n  (";
 		    for ($i=0; $i<=$#params; $i++) {
 			$profile .= " " x 3     if ($i != 0);
+			my ($type) = $params[$i][2];
+			my ($default) = "";
+			if ($params[$i][2] =~ /:=/
+			    && length ($params[$i][2]) > 30) {
+			    $type =~ s/\s*:=.*//;
+			    $default = $params[$i][2];			    
+			    $default =~ s/.*:=/:=/;
+			}
+			
 			$profile .= sprintf ("%-18s : \@b{%-6s} %s",
 					     $params[$i][0],
 					     $params[$i][1],
-					     $params[$i][2])
-				. (($i == $#params) ? ")" : ";\n");
+					     $type);
+			if ($default ne '') {
+			    $profile .= "\n" . (' ' x 23) . $default;
+			}
+			
+			$profile .= (($i == $#params) ? ")" : ";\n");
 		    }
 		}
 		if ($return eq "") {
@@ -655,6 +668,11 @@ sub package_from_type () {
 # Prepare the string $1 for output (highlight keywords and comments)
 sub highlight_keywords () {
     my ($string) = shift;
+
+    # Protect texi special characters
+    $string =~ s/([{}])/\@$1/g;
+
+    # Highlight keywords and commands
     $string =~ s/--([^\n]*)/-\@:-\@i{$1}/g;
     $string =~ s/\b($keywords_reg)\b/\@b{$1}/g;
 
