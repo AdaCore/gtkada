@@ -176,8 +176,14 @@ package body Gtk.Widget is
       Rec : aliased Gdk.Rectangle.Gdk_Rectangle := Area;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
+      use type Gdk.Rectangle.Gdk_Rectangle;
    begin
-      Internal (Get_Object (Widget), Rec'Address);
+      if Rec = Gdk.Rectangle.Full_Area then
+         --  Redraw the whole widget
+         Internal (Get_Object (Widget), System.Null_Address);
+      else
+         Internal (Get_Object (Widget), Rec'Address);
+      end if;
    end Draw;
 
    ---------------------
