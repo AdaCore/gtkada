@@ -37,7 +37,7 @@
 --  @pxref{Package_Gdk.Pixmap} for more details on pixmap handling.
 --
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Glib; use Glib;
 
@@ -52,28 +52,30 @@ package Gdk.Bitmap is
 
    Null_Bitmap : constant Gdk_Bitmap;
 
-   procedure Gdk_New (Bitmap : out Gdk_Bitmap;
-                      Window : in  Gdk.Window.Gdk_Window;
-                      Width  : in  Gint;
-                      Height : in  Gint);
+   procedure Gdk_New
+     (Bitmap : out Gdk_Bitmap;
+      Window : Gdk.Window.Gdk_Window;
+      Width  : Gint;
+      Height : Gint);
    --  Create a new bitmap with a given size.
    --  Window is used to determine default values for the new bitmap.
    --  Can be eventually null in which case the root window is used.
    --  Width is the width of the new bitmap in pixels.
    --  Height is the height of the new bitmap in pixels.
 
-   procedure Ref (Bitmap : in Gdk_Bitmap);
+   procedure Ref (Bitmap : Gdk_Bitmap);
    --  Add a reference to a bitmap.
 
-   procedure Unref (Bitmap : in Gdk_Bitmap);
+   procedure Unref (Bitmap : Gdk_Bitmap);
    --  This is the usual way to destroy a bitmap. The memory is freed when
    --  there is no more reference
 
-   procedure Create_From_Data (Bitmap :    out Gdk_Bitmap;
-                               Window : in     Gdk.Window.Gdk_Window;
-                               Data   : in     String;
-                               Width  : in     Gint;
-                               Height : in     Gint);
+   procedure Create_From_Data
+     (Bitmap : out Gdk_Bitmap;
+      Window : Gdk.Window.Gdk_Window;
+      Data   : String;
+      Width  : Gint;
+      Height : Gint);
    --  Create a bitmap from data in XBM format.
    --  Window is used to determine default values for the new bitmap, can be
    --  null in which case the root window is used.
@@ -83,6 +85,6 @@ package Gdk.Bitmap is
 
 private
    Null_Bitmap : constant Gdk_Bitmap := null;
-   pragma Import (C, Ref, "gdk_bitmap_ref");
-   pragma Import (C, Unref, "gdk_bitmap_unref");
+   pragma Import (C, Ref, "gdk_drawable_ref");
+   pragma Import (C, Unref, "gdk_drawable_unref");
 end Gdk.Bitmap;

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,72 +27,105 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.4</c_version>
+
 with Glib; use Glib;
 with Gdk.Rectangle;
 with Gdk.Types;
 
 package Gdk.Region is
 
-   type Gdk_Region is new Gdk.C_Proxy;
+   subtype Gdk_Region is Gdk.Gdk_Region;
    Null_Region : constant Gdk_Region;
 
+   type Gdk_Fill_Rule is (Even_Odd_Rule, Winding_Rule);
+   --  GC fill rule for polygons.
+   for Gdk_Fill_Rule'Size use Gint'Size;
+
+   type Gdk_Overlap_Type is
+     (Overlap_Rectangle_In,
+      --  Rectangle is in region.
+
+      Overlap_Rectangle_Out,
+      --  Rectangle is not in region.
+
+      Overlap_Rectangle_Part
+      --  Rectangle is partially in region.
+     );
+   --  Types of overlapping between a rectangle and a region.
+   for Gdk_Overlap_Type'Size use Gint'Size;
+
    procedure Gdk_New (Region : out Gdk_Region);
+   --  Create a new region.
+
+   procedure Polygon
+     (Region    : out Gdk_Region;
+      Points    : Gdk.Types.Gdk_Points_Array;
+      Fill_Rule : Gdk_Fill_Rule);
+
+   function Copy (Region : Gdk_Region) return Gdk_Region;
+
+   function Rectangle
+     (Rectangle : Gdk.Rectangle.Gdk_Rectangle) return Gdk_Region;
 
    procedure Destroy (Region : in out Gdk_Region);
 
    procedure Get_Clipbox
-     (Region    : in     Gdk_Region;
-      Rectangle :    out Gdk.Rectangle.Gdk_Rectangle);
+     (Region    : Gdk_Region;
+      Rectangle : out Gdk.Rectangle.Gdk_Rectangle);
 
-   function Empty (Region : in Gdk_Region) return Boolean;
+   procedure Get_Rectangles
+     (Region       : Gdk_Region;
+      Rectangle    : out Gdk.Rectangle.Gdk_Rectangle_Array;
+      N_Rectangles : out Natural);
 
-   function "=" (Left, Right : in Gdk_Region) return Boolean;
+   function Empty (Region : Gdk_Region) return Boolean;
 
-   function Point_In
-     (Region : in Gdk_Region;
-      X, Y   : in Integer) return Boolean;
+   function "=" (Left, Right : Gdk_Region) return Boolean;
+
+   function Point_In (Region : Gdk_Region; X, Y : Integer) return Boolean;
 
    function Rect_In
-     (Region : in Gdk_Region;
-      Rect   : in Rectangle.Gdk_Rectangle) return Types.Gdk_Overlap_Type;
-
-   procedure Polygon
-     (Region :    out Gdk_Region;
-      Points : in     Gdk.Types.Gdk_Points_Array;
-      Fill_Rule : in     Types.Gdk_Fill_Rule);
+     (Region : Gdk_Region;
+      Rect   : Gdk.Rectangle.Gdk_Rectangle) return Gdk_Overlap_Type;
 
    procedure Offset
-     (Region : in Gdk_Region;
-      Dx     : in Gint;
-      Dy     : in Gint);
+     (Region : Gdk_Region;
+      Dx     : Gint;
+      Dy     : Gint);
 
    procedure Shrink
-     (Region : in Gdk_Region;
-      Dx     : in Gint;
-      Dy     : in Gint);
+     (Region : Gdk_Region;
+      Dx     : Gint;
+      Dy     : Gint);
 
    procedure Union_With_Rect
      (Region : in out Gdk_Region;
-      Rect   : in     Rectangle.Gdk_Rectangle);
+      Rect   : Gdk.Rectangle.Gdk_Rectangle);
 
    procedure Intersect
      (Source1 : in out Gdk_Region;
-      Source2 : in     Gdk_Region);
+      Source2 : Gdk_Region);
 
    procedure Union
      (Source1 : in out Gdk_Region;
-      Source2 : in     Gdk_Region);
+      Source2 : Gdk_Region);
 
    procedure Substract
      (Source1 : in out Gdk_Region;
-      Source2 : in     Gdk_Region);
+      Source2 : Gdk_Region);
 
    procedure Gdk_Xor
      (Source1 : in out Gdk_Region;
-      Source2 : in     Gdk_Region);
+      Source2 : Gdk_Region);
 
 private
    Null_Region : constant Gdk_Region := null;
+
+   pragma Import (C, Copy, "gdk_region_copy");
+   pragma Import (C, Rectangle, "gdk_region_rectangle");
+   pragma Import (C, Get_Clipbox, "gdk_region_get_clipbox");
+   pragma Import (C, Rect_In, "gdk_region_rect_in");
    pragma Import (C, Offset, "gdk_region_offset");
    pragma Import (C, Shrink, "gdk_region_shrink");
    pragma Import (C, Union_With_Rect, "gdk_region_union_with_rect");
@@ -101,3 +134,6 @@ private
    pragma Import (C, Substract, "gdk_region_substract");
    pragma Import (C, Gdk_Xor, "gdk_region_xor");
 end Gdk.Region;
+
+--  missing:
+--  gdk_region_spans_intersect_foreach

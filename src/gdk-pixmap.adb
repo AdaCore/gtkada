@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,14 +36,14 @@ package body Gdk.Pixmap is
    ----------------------
 
    procedure Create_From_Data
-     (Pixmap :    out Gdk_Pixmap;
-      Window : in     Gdk.Window.Gdk_Window;
-      Data   : in     String;
-      Width  : in     Gint;
-      Height : in     Gint;
-      Depth  : in     Gint;
-      Fg     : in     Color.Gdk_Color;
-      Bg     : in     Color.Gdk_Color)
+     (Pixmap : out Gdk_Pixmap;
+      Window : Gdk.Window.Gdk_Window;
+      Data   : String;
+      Width  : Gint;
+      Height : Gint;
+      Depth  : Gint;
+      Fg     : Color.Gdk_Color;
+      Bg     : Color.Gdk_Color)
    is
       function Internal
         (Window : Gdk.Window.Gdk_Window;
@@ -54,6 +54,7 @@ package body Gdk.Pixmap is
          Fg     : System.Address;
          Bg     : System.Address) return Gdk_Pixmap;
       pragma Import (C, Internal, "gdk_pixmap_create_from_data");
+
       use type Gdk.Color.Gdk_Color;
 
       Fg_Col : aliased Gdk.Color.Gdk_Color := Fg;
@@ -83,17 +84,17 @@ package body Gdk.Pixmap is
    ---------------------
 
    procedure Create_From_Xpm
-     (Pixmap      :    out Gdk_Pixmap;
-      Window      : in     Gdk.Window.Gdk_Window;
+     (Pixmap      : out Gdk_Pixmap;
+      Window      : Gdk.Window.Gdk_Window;
       Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
-      Transparent : in     Gdk.Color.Gdk_Color;
-      Filename    : in     String)
+      Transparent : Gdk.Color.Gdk_Color;
+      Filename    : String)
    is
       function Internal
-        (Window      : in Gdk.Window.Gdk_Window;
-         Mask        : in System.Address;
-         Transparent : in System.Address;
-         Filename    : in String) return Gdk_Pixmap;
+        (Window      : Gdk.Window.Gdk_Window;
+         Mask        : System.Address;
+         Transparent : System.Address;
+         Filename    : String) return Gdk_Pixmap;
       pragma Import (C, Internal, "gdk_pixmap_create_from_xpm");
 
       use type Gdk.Color.Gdk_Color;
@@ -122,19 +123,19 @@ package body Gdk.Pixmap is
    ---------------------
 
    procedure Create_From_Xpm
-     (Pixmap      :    out Gdk_Pixmap;
-      Window      : in     Gdk.Window.Gdk_Window;
-      Colormap    : in     Gdk.Color.Gdk_Colormap;
+     (Pixmap      : out Gdk_Pixmap;
+      Window      : Gdk.Window.Gdk_Window;
+      Colormap    : Gdk.Color.Gdk_Colormap;
       Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
-      Transparent : in     Gdk.Color.Gdk_Color;
-      Filename    : in     String)
+      Transparent : Gdk.Color.Gdk_Color;
+      Filename    : String)
    is
       function Internal
-        (Window      : in Gdk.Window.Gdk_Window;
-         Colormap    : in Gdk.Color.Gdk_Colormap;
-         Mask        : in System.Address;
-         Transparent : in System.Address;
-         Filename    : in String) return Gdk_Pixmap;
+        (Window      : Gdk.Window.Gdk_Window;
+         Colormap    : Gdk.Color.Gdk_Colormap;
+         Mask        : System.Address;
+         Transparent : System.Address;
+         Filename    : String) return Gdk_Pixmap;
       pragma Import (C, Internal, "gdk_pixmap_colormap_create_from_xpm");
 
       use type Gdk.Color.Gdk_Color;
@@ -167,17 +168,17 @@ package body Gdk.Pixmap is
    -----------------------
 
    procedure Create_From_Xpm_D
-     (Pixmap      :    out Gdk_Pixmap;
-      Window      : in     Gdk.Window.Gdk_Window;
+     (Pixmap      : out Gdk_Pixmap;
+      Window      : Gdk.Window.Gdk_Window;
       Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
-      Transparent : in     Gdk.Color.Gdk_Color;
-      Data        : in     Gtkada.Types.Chars_Ptr_Array)
+      Transparent : Gdk.Color.Gdk_Color;
+      Data        : Gtkada.Types.Chars_Ptr_Array)
    is
       function Internal
-        (Window      : in Gdk.Window.Gdk_Window;
-         Mask        : in System.Address;
-         Transparent : in System.Address;
-         Data        : in Gtkada.Types.Chars_Ptr_Array) return Gdk_Pixmap;
+        (Window      : Gdk.Window.Gdk_Window;
+         Mask        : System.Address;
+         Transparent : System.Address;
+         Data        : Gtkada.Types.Chars_Ptr_Array) return Gdk_Pixmap;
       pragma Import (C, Internal, "gdk_pixmap_create_from_xpm_d");
 
       use type Gdk.Color.Gdk_Color;
@@ -203,19 +204,19 @@ package body Gdk.Pixmap is
    -----------------------
 
    procedure Create_From_Xpm_D
-     (Pixmap      :    out Gdk_Pixmap;
-      Window      : in     Gdk.Window.Gdk_Window;
-      Colormap    : in     Gdk.Color.Gdk_Colormap;
+     (Pixmap      : out Gdk_Pixmap;
+      Window      : Gdk.Window.Gdk_Window;
+      Colormap    : Gdk.Color.Gdk_Colormap;
       Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
-      Transparent : in     Gdk.Color.Gdk_Color;
-      Data        : in     Gtkada.Types.Chars_Ptr_Array)
+      Transparent : Gdk.Color.Gdk_Color;
+      Data        : Gtkada.Types.Chars_Ptr_Array)
    is
       function Internal
-        (Window      : in Gdk.Window.Gdk_Window;
-         Colormap    : in Gdk.Color.Gdk_Colormap;
-         Mask        : in System.Address;
-         Transparent : in System.Address;
-         Data        : in Gtkada.Types.Chars_Ptr_Array) return Gdk_Pixmap;
+        (Window      : Gdk.Window.Gdk_Window;
+         Colormap    : Gdk.Color.Gdk_Colormap;
+         Mask        : System.Address;
+         Transparent : System.Address;
+         Data        : Gtkada.Types.Chars_Ptr_Array) return Gdk_Pixmap;
       pragma Import (C, Internal, "gdk_pixmap_colormap_create_from_xpm_d");
 
       use type Gdk.Color.Gdk_Color;
@@ -241,17 +242,17 @@ package body Gdk.Pixmap is
    -------------
 
    procedure Gdk_New
-     (Pixmap :    out Gdk_Pixmap;
-      Window : in     Gdk.Window.Gdk_Window;
-      Width  : in     Gint;
-      Height : in     Gint;
-      Depth  : in     Gint := -1)
+     (Pixmap : out Gdk_Pixmap;
+      Window : Gdk.Window.Gdk_Window;
+      Width  : Gint;
+      Height : Gint;
+      Depth  : Gint := -1)
    is
       function Internal
-        (Window : in Gdk.Window.Gdk_Window;
-         Width  : in Gint;
-         Height : in Gint;
-         Depth  : in Gint) return Gdk_Pixmap;
+        (Window : Gdk.Window.Gdk_Window;
+         Width  : Gint;
+         Height : Gint;
+         Depth  : Gint) return Gdk_Pixmap;
       pragma Import (C, Internal, "gdk_pixmap_new");
 
    begin

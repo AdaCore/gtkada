@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,52 +32,55 @@ with Glib; use Glib;
 
 package body Gdk.Keyval is
 
-   ----------------
-   --  Is_Lower  --
-   ----------------
+   --------------
+   -- Is_Lower --
+   --------------
 
-   function Is_Lower (Keyval : in Gdk.Types.Gdk_Key_Type) return Boolean is
-      function Internal (Keyval : in Gdk.Types.Gdk_Key_Type) return Gboolean;
+   function Is_Lower (Keyval : Gdk.Types.Gdk_Key_Type) return Boolean is
+      function Internal (Keyval : Gdk.Types.Gdk_Key_Type) return Gboolean;
       pragma Import (C, Internal, "gdk_keyval_is_lower");
+
    begin
       return To_Boolean (Internal (Keyval));
    end Is_Lower;
 
 
-   ----------------
-   --  Is_Upper  --
-   ----------------
+   --------------
+   -- Is_Upper --
+   --------------
 
-   function Is_Upper (Keyval : in Gdk.Types.Gdk_Key_Type) return Boolean is
-      function Internal (Keyval : in Gdk.Types.Gdk_Key_Type) return Gboolean;
+   function Is_Upper (Keyval : Gdk.Types.Gdk_Key_Type) return Boolean is
+      function Internal (Keyval : Gdk.Types.Gdk_Key_Type) return Gboolean;
       pragma Import (C, Internal, "gdk_keyval_is_upper");
+
    begin
       return To_Boolean (Internal (Keyval));
    end Is_Upper;
 
 
-   -----------------
-   --  From_Name  --
-   -----------------
+   ---------------
+   -- From_Name --
+   ---------------
 
-   function From_Name (Keyval_Name : in String)
-                       return Gdk.Types.Gdk_Key_Type is
-      function Internal (Keyval_Name : in String)
-                         return Gdk.Types.Gdk_Key_Type;
+   function From_Name (Keyval_Name : String) return Gdk.Types.Gdk_Key_Type is
+      function Internal (Keyval_Name : String) return Gdk.Types.Gdk_Key_Type;
       pragma Import (C, Internal, "gdk_keyval_from_name");
+
    begin
       return Internal (Keyval_Name & ASCII.NUL);
    end From_Name;
 
 
-   ------------
-   --  Name  --
-   ------------
+   ----------
+   -- Name --
+   ----------
 
-   function Name (Keyval : in Gdk.Types.Gdk_Key_Type) return String is
-      function Internal (Keyval : in Gdk.Types.Gdk_Key_Type)
-                         return Interfaces.C.Strings.chars_ptr;
+   function Name (Keyval : Gdk.Types.Gdk_Key_Type) return String is
+      function Internal
+        (Keyval : Gdk.Types.Gdk_Key_Type)
+         return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gdk_keyval_name");
+
    begin
       return C.Strings.Value (Internal (Keyval));
    end Name;

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,133 +29,127 @@
 
 with Gdk.Color;
 with Gdk.Cursor;
-with Gdk.Types;
+with Gdk.Event;
 with Gdk.Visual;
+with Gdk.Window;
 with Glib;
 
 package Gdk.Window_Attr is
 
-   type Gdk_Window_Attr is new C_Proxy;
+   subtype Gdk_Window_Attr is Gdk.Gdk_Window_Attr;
    Null_Window_Attr : constant Gdk_Window_Attr;
 
    procedure Gdk_New
-     (Window_Attr       :    out Gdk_Window_Attr;
-      Title             : in     String := "";
-      Event_Mask        : in     Gdk.Types.Gdk_Event_Mask :=
-        Gdk.Types.Null_Event_Mask;
-      X, Y              : in     Glib.Gint16 := 0;
-      Width             : in     Glib.Gint16 := 0;
-      Height            : in     Glib.Gint16 := 0;
-      Wclass            : in     Gdk.Types.Gdk_Window_Class :=
-        Gdk.Types.Input_Output;
-      Visual            : in     Gdk.Visual.Gdk_Visual :=
-        Gdk.Visual.Null_Visual;
-      Colormap          : in     Gdk.Color.Gdk_Colormap :=
-        Gdk.Color.Null_Colormap;
-      Window_Type       : in     Gdk.Types.Gdk_Window_Type :=
-        Gdk.Types.Window_Root;
-      Cursor            : in     Gdk.Cursor.Gdk_Cursor :=
-        Gdk.Cursor.Null_Cursor;
-      Wmclass_Name      : in     String := "";
-      Wmclass_Class     : in     String := "";
-      Override_Redirect : in     Boolean := True);
+     (Window_Attr       : out Gdk_Window_Attr;
+      Title             : String := "";
+      Event_Mask        : Gdk.Event.Gdk_Event_Mask := 0;
+      X, Y              : Glib.Gint := 0;
+      Width             : Glib.Gint := 0;
+      Height            : Glib.Gint := 0;
+      Wclass            : Gdk.Window.Gdk_Window_Class :=
+        Gdk.Window.Input_Output;
+      Visual            : Gdk.Visual.Gdk_Visual := null;
+      Colormap          : Gdk.Color.Gdk_Colormap := null;
+      Window_Type       : Gdk.Window.Gdk_Window_Type :=
+        Gdk.Window.Window_Root;
+      Cursor            : Gdk.Cursor.Gdk_Cursor := null;
+      Wmclass_Name      : String := "";
+      Wmclass_Class     : String := "";
+      Override_Redirect : Boolean := True);
 
    procedure Destroy (Window_Attr : in out Gdk_Window_Attr);
 
    procedure Set_Title
-     (Window_Attr : in Gdk_Window_Attr;
-      Title       : in String);
+     (Window_Attr : Gdk_Window_Attr;
+      Title       : String);
 
-   function Get_Title (Window_Attr : in Gdk_Window_Attr) return String;
+   function Get_Title (Window_Attr : Gdk_Window_Attr) return String;
 
    procedure Set_Event_Mask
-     (Window_Attr : in Gdk_Window_Attr;
-      Event_Mask  : in Gdk.Types.Gdk_Event_Mask);
+     (Window_Attr : Gdk_Window_Attr;
+      Event_Mask  : Gdk.Event.Gdk_Event_Mask);
 
    function Get_Event_Mask
-     (Window_Attr : in Gdk_Window_Attr)
-      return Gdk.Types.Gdk_Event_Mask;
+     (Window_Attr : Gdk_Window_Attr) return Gdk.Event.Gdk_Event_Mask;
 
    procedure Set_X
-     (Window_Attr : in Gdk_Window_Attr;
-      X           : in Glib.Gint16);
+     (Window_Attr : Gdk_Window_Attr;
+      X           : Glib.Gint);
 
-   function Get_X (Window_Attr : in Gdk_Window_Attr) return Glib.Gint16;
-
+   function Get_X (Window_Attr : Gdk_Window_Attr) return Glib.Gint;
 
    procedure Set_Y
-     (Window_Attr : in Gdk_Window_Attr;
-      Y           : in Glib.Gint16);
+     (Window_Attr : Gdk_Window_Attr;
+      Y           : Glib.Gint);
 
-   function Get_Y (Window_Attr : in Gdk_Window_Attr) return Glib.Gint16;
+   function Get_Y (Window_Attr : Gdk_Window_Attr) return Glib.Gint;
 
    procedure Set_Width
-     (Window_Attr : in Gdk_Window_Attr;
-      Width       : in Glib.Gint16);
+     (Window_Attr : Gdk_Window_Attr;
+      Width       : Glib.Gint);
 
-   function Get_Width (Window_Attr : in Gdk_Window_Attr) return Glib.Gint16;
+   function Get_Width (Window_Attr : Gdk_Window_Attr) return Glib.Gint;
 
    procedure Set_Height
-     (Window_Attr : in Gdk_Window_Attr;
-      Height      : in Glib.Gint16);
+     (Window_Attr : Gdk_Window_Attr;
+      Height      : Glib.Gint);
 
-   function Get_Height (Window_Attr : in Gdk_Window_Attr) return Glib.Gint16;
+   function Get_Height (Window_Attr : Gdk_Window_Attr) return Glib.Gint;
 
    procedure Set_Window_Class
-     (Window_Attr : in Gdk_Window_Attr;
-      Wclass      : in Gdk.Types.Gdk_Window_Class);
+     (Window_Attr : Gdk_Window_Attr;
+      Wclass      : Gdk.Window.Gdk_Window_Class);
 
    function Get_Window_Class
-     (Window_Attr : in Gdk_Window_Attr) return Gdk.Types.Gdk_Window_Class;
+     (Window_Attr : Gdk_Window_Attr) return Gdk.Window.Gdk_Window_Class;
 
    procedure Set_Visual
-     (Window_Attr : in Gdk_Window_Attr;
-      Visual      : in Gdk.Visual.Gdk_Visual);
+     (Window_Attr : Gdk_Window_Attr;
+      Visual      : Gdk.Visual.Gdk_Visual);
 
    function Get_Visual
-     (Window_Attr : in Gdk_Window_Attr) return Gdk.Visual.Gdk_Visual;
+     (Window_Attr : Gdk_Window_Attr) return Gdk.Visual.Gdk_Visual;
 
    procedure Set_Colormap
-     (Window_Attr : in Gdk_Window_Attr;
-      Colormap    : in Gdk.Color.Gdk_Colormap);
+     (Window_Attr : Gdk_Window_Attr;
+      Colormap    : Gdk.Color.Gdk_Colormap);
 
    function Get_Colormap
-     (Window_Attr : in Gdk_Window_Attr) return Gdk.Color.Gdk_Colormap;
+     (Window_Attr : Gdk_Window_Attr) return Gdk.Color.Gdk_Colormap;
 
    procedure Set_Window_Type
-     (Window_Attr : in Gdk_Window_Attr;
-      Window_Type : in Gdk.Types.Gdk_Window_Type);
+     (Window_Attr : Gdk_Window_Attr;
+      Window_Type : Gdk.Window.Gdk_Window_Type);
 
    function Get_Window_Type
-     (Window_Attr : in Gdk_Window_Attr) return Gdk.Types.Gdk_Window_Type;
+     (Window_Attr : Gdk_Window_Attr) return Gdk.Window.Gdk_Window_Type;
 
    procedure Set_Cursor
-     (Window_Attr : in Gdk_Window_Attr;
-      Cursor      : in Gdk.Cursor.Gdk_Cursor);
+     (Window_Attr : Gdk_Window_Attr;
+      Cursor      : Gdk.Cursor.Gdk_Cursor);
 
    function Get_Cursor
-     (Window_Attr : in Gdk_Window_Attr)
+     (Window_Attr : Gdk_Window_Attr)
       return Gdk.Cursor.Gdk_Cursor;
 
    procedure Set_Wmclass_Name
-     (Window_Attr  : in Gdk_Window_Attr;
-      Wmclass_Name : in String);
+     (Window_Attr  : Gdk_Window_Attr;
+      Wmclass_Name : String);
 
-   function Get_Wmclass_Name (Window_Attr : in Gdk_Window_Attr) return String;
-
+   function Get_Wmclass_Name (Window_Attr : Gdk_Window_Attr) return String;
 
    procedure Set_Wmclass_Class
-     (Window_Attr   : in Gdk_Window_Attr;
-      Wmclass_Class : in String);
+     (Window_Attr   : Gdk_Window_Attr;
+      Wmclass_Class : String);
 
-   function Get_Wmclass_Class (Window_Attr : in Gdk_Window_Attr) return String;
+   function Get_Wmclass_Class (Window_Attr : Gdk_Window_Attr) return String;
 
    procedure Set_Override_Redirect
-     (Window_Attr       : in Gdk_Window_Attr;
-      Override_Redirect : in Boolean);
+     (Window_Attr       : Gdk_Window_Attr;
+      Override_Redirect : Boolean);
 
    function Get_Override_Redirect
-     (Window_Attr : in Gdk_Window_Attr) return Boolean;
+     (Window_Attr : Gdk_Window_Attr) return Boolean;
 
 private
    Null_Window_Attr : constant Gdk_Window_Attr := null;

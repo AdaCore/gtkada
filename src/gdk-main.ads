@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,11 +31,12 @@
 --  This package provides routines to handle initialization and set up of the
 --  Gdk library.
 --  </description>
+--  <c_version>1.3.4</c_version>
 
 with Glib; use Glib;
 
 with Gdk.Cursor;
-with Gdk.Types;
+with Gdk.Event;
 with Gdk.Window;
 
 package Gdk.Main is
@@ -46,11 +47,12 @@ package Gdk.Main is
    --  which were not handled. (Such arguments should either
    --  be handled by the application or dismissed).
 
-   procedure Gdk_Exit (Error_Code : in Gint);
+   procedure Gdk_Exit (Error_Code : Gint);
    --  Restore the library to an un-itialized state and exits
    --  the program using the "exit" system call.
    --  Error_Code is the error value to pass to "exit".
    --  Allocated structures are freed and the program exits cleanly.
+   --  This function is deprecated.
 
    function Set_Locale return String;
    --  Initialize handling of internationalization of strings.
@@ -59,7 +61,7 @@ package Gdk.Main is
    procedure Set_Locale;
    --  Drops the string returned by the Set_Locale function;
 
-   procedure Set_Use_Xshm (Use_Xshm : in Boolean := True);
+   procedure Set_Use_Xshm (Use_Xshm : Boolean := True);
    --  Set whether shared memory (when supported by the graphic server) should
    --  be used.
 
@@ -69,29 +71,42 @@ package Gdk.Main is
    function Get_Display return String;
    --  Return the name of the display.
 
-   function Time_Get return Guint32;
-   --  Get the number of milliseconds since the library was initialized.
-   --  This time value is accurate to milliseconds even though
-   --  a more accurate time down to the microsecond could be
-   --  returned.
-   --  Note that this function is currently not supported under Win32 systems.
+   function Pointer_Grab
+     (Window       : Gdk.Window.Gdk_Window;
+      Owner_Events : Boolean := True;
+      Event_Mask   : Gdk.Event.Gdk_Event_Mask;
+      Confine_To   : Gdk.Window.Gdk_Window := Gdk.Window.Null_Window;
+      Cursor       : Gdk.Cursor.Gdk_Cursor := Gdk.Cursor.Null_Cursor;
+      Time         : Guint32) return Boolean;
+   --  Grab the pointer to a specific window.
+   --    - Window is the window which will receive the grab
+   --    - Owner_Events specifies whether events will be reported as is,
+   --      or relative to Window
+   --    - Event_Mask masks only interesting events
+   --    - Confine_To limits the cursor movement to the specified window
+   --    - Cursor changes the cursor for the duration of the grab
+   --    - Time specifies the time
+   --  Requires a corresponding call to Pointer_Ungrab
 
-   function Timer_Get return Guint32;
-   --  Return the current timer interval.
-   --  This interval is in units of milliseconds.
+   procedure Pointer_Ungrab (Time : Guint32);
+   --  Release any pointer grab.
 
-   procedure Timer_Set (Milliseconds : in Guint32);
-   --  Set the timer interval.
-   --  Milliseconds is the new value for the timer.
-   --  As a side effect, calls to Gdk.Event.Get will last for a maximum
-   --  of time of Milliseconds. However, a value of 0 milliseconds will cause
-   --  Gdk.Event.Get to block indefinitely until an event is received.
+   function Pointer_Is_Grabbed return Boolean;
+   --  Tell wether there is an active pointer grab in effect.
 
-   procedure Timer_Enable;
-   --  Enable the Gdk timer.
+   function Keyboard_Grab
+     (Window       : Gdk.Window.Gdk_Window;
+      Owner_Events : Boolean := True;
+      Time         : Guint32) return Boolean;
+   --  Grab the keyboard to a specific window.
+   --    - Window is the window which will receive the grab
+   --    - Owner_Events specifies whether events will be reported as is,
+   --      or relative to Window
+   --    - Time specifies the time
+   --  Requires a corresponding call to Keyboard_Ungrab
 
-   procedure Timer_Disable;
-   --  Disable the Gdk timer.
+   procedure Keyboard_Ungrab (Time : Guint32);
+   --  Release any keyboard grab.
 
    function Screen_Width return Gint;
    --  Return the width of the screen.
@@ -112,62 +127,19 @@ package Gdk.Main is
    procedure Beep;
    --  Emit a beep.
 
-   procedure Key_Repeat_Disable;
-   --  Disable the key repeat behavior.
-
-   procedure Key_Repeat_Restore;
-   --  Restore the key repet behavior.
-
-   function Pointer_Grab
-     (Window       : in Gdk.Window.Gdk_Window;
-      Owner_Events : in Boolean := True;
-      Event_Mask   : in Gdk.Types.Gdk_Event_Mask;
-      Confine_To   : in Gdk.Window.Gdk_Window := Gdk.Window.Null_Window;
-      Cursor       : in Gdk.Cursor.Gdk_Cursor := Gdk.Cursor.Null_Cursor;
-      Time         : in Guint32) return Boolean;
-   --  Grab the pointer to a specific window.
-   --    - Window is the window which will receive the grab
-   --    - Owner_Events specifies whether events will be reported as is,
-   --      or relative to Window
-   --    - Event_Mask masks only interesting events
-   --    - Confine_To limits the cursor movement to the specified window
-   --    - Cursor changes the cursor for the duration of the grab
-   --    - Time specifies the time
-   --  Requires a corresponding call to Pointer_Ungrab
-
-   procedure Pointer_Ungrab (Time : in Guint32);
-   --  Release any pointer grab.
-
-   function Pointer_Is_Grabbed return Boolean;
-   --  Tell wether there is an active pointer grab in effect.
-
-   function Keyboard_Grab
-     (Window       : in Gdk.Window.Gdk_Window;
-      Owner_Events : in Boolean := True;
-      Time         : in Guint32) return Boolean;
-   --  Grab the keyboard to a specific window.
-   --    - Window is the window which will receive the grab
-   --    - Owner_Events specifies whether events will be reported as is,
-   --      or relative to Window
-   --    - Time specifies the time
-   --  Requires a corresponding call to Keyboard_Ungrab
-
-   procedure Keyboard_Ungrab (Time : in Guint32);
-   --  Release any keyboard grab.
+   procedure Set_Double_Click_Time (Msec : Guint);
 
 private
    pragma Import (C, Gdk_Exit, "gdk_exit");
-   pragma Import (C, Time_Get, "gdk_time_get");
-   pragma Import (C, Timer_Get, "gdk_timer_get");
-   pragma Import (C, Timer_Set, "gdk_timer_set");
-   pragma Import (C, Timer_Enable, "gdk_timer_enable");
-   pragma Import (C, Timer_Disable, "gdk_timer_disable");
    pragma Import (C, Screen_Width, "gdk_screen_width");
    pragma Import (C, Screen_Height, "gdk_screen_height");
    pragma Import (C, Screen_Width_MM, "gdk_screen_width_mm");
    pragma Import (C, Screen_Height_MM, "gdk_screen_height_mm");
+   pragma Import (C, Set_Double_Click_Time, "gdk_set_double_click_time");
    pragma Import (C, Flush, "gdk_flush");
    pragma Import (C, Beep, "gdk_beep");
-   pragma Import (C, Key_Repeat_Disable, "gdk_key_repeat_disable");
-   pragma Import (C, Key_Repeat_Restore, "gdk_key_repeat_restore");
 end Gdk.Main;
+
+--  missing:
+--  gdk_wcstombs
+--  gdk_mbstowcs

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,77 +33,76 @@ package body Gdk.Font is
 
    package C renames Interfaces.C;
 
+   -----------
+   -- Equal --
+   -----------
 
-   -------------
-   --  Equal  --
-   -------------
-
-   function Equal (Fonta, Fontb : in Gdk_Font) return Boolean is
-      function Internal (Fonta, Fontb : in Gdk_Font) return Gint;
+   function Equal (Fonta, Fontb : Gdk_Font) return Boolean is
+      function Internal (Fonta, Fontb : Gdk_Font) return Gint;
       pragma Import (C, Internal, "gdk_font_equal");
+
    begin
       return Boolean'Val (Internal (Fonta, Fontb));
    end Equal;
 
-   --------------------
-   --  Char_Measure  --
-   --------------------
+   ------------------
+   -- Char_Measure --
+   ------------------
 
-   function Char_Measure (Font : in Gdk_Font;
-                          Char : in Character) return Gint is
-      function Internal (Font : in Gdk_Font;
-                         Char : in C.char) return Gint;
+   function Char_Measure (Font : Gdk_Font; Char : Character) return Gint is
+      function Internal (Font : Gdk_Font; Char : C.char) return Gint;
       pragma Import (C, Internal, "gdk_char_measure");
+
    begin
       return Internal (Font, C.To_C (Char));
    end Char_Measure;
 
-   ------------------
-   --  Char_Width  --
-   ------------------
+   ----------------
+   -- Char_Width --
+   ----------------
 
-   function Char_Width (Font : in Gdk_Font;
-                        Char : in Character) return Gint is
-      function Internal (Font : in Gdk_Font;
-                         Char : in C.char) return Gint;
+   function Char_Width (Font : Gdk_Font; Char : Character) return Gint is
+      function Internal (Font : Gdk_Font; Char : C.char) return Gint;
       pragma Import (C, Internal, "gdk_char_width");
+
    begin
       return Internal (Font, C.To_C (Char));
    end Char_Width;
 
-   ------------------
-   --  Char_Width  --
-   ------------------
+   ----------------
+   -- Char_Width --
+   ----------------
 
-   function Char_Width (Font : in Gdk_Font;
-                        Char : in Gdk.Types.Gdk_WChar) return Gint is
-      function Internal (Font : in Gdk_Font;
-                         Char : in C.wchar_t) return Gint;
+   function Char_Width
+     (Font : Gdk_Font; Char : Gdk.Types.Gdk_WChar) return Gint
+   is
+      function Internal (Font : Gdk_Font; Char : C.wchar_t) return Gint;
       pragma Import (C, Internal, "gdk_char_width_wc");
+
    begin
       return Internal (Font, C.To_C (Char));
    end Char_Width;
 
-   --------------------
-   --  Fontset_Load  --
-   --------------------
+   ------------------
+   -- Fontset_Load --
+   ------------------
 
-   procedure Fontset_Load (Font         :   out Gdk_Font;
-                           Fontset_Name : in    String) is
-      function Internal (Fontset_Name : in String) return Gdk_Font;
+   procedure Fontset_Load (Font : out Gdk_Font; Fontset_Name : String) is
+      function Internal (Fontset_Name : String) return Gdk_Font;
       pragma Import (C, Internal, "gdk_fontset_load");
+
    begin
       Font := Internal (Fontset_Name & ASCII.NUL);
    end Fontset_Load;
 
-   ------------
-   --  Load  --
-   ------------
+   ----------
+   -- Load --
+   ----------
 
-   procedure Load (Font      :    out Gdk_Font;
-                   Font_Name : in     String) is
-      function Internal (Font_Name : in String) return Gdk_Font;
+   procedure Load (Font : out Gdk_Font; Font_Name : String) is
+      function Internal (Font_Name : String) return Gdk_Font;
       pragma Import (C, Internal, "gdk_font_load");
+
    begin
       Font := Internal (Font_Name & ASCII.NUL);
    end Load;
@@ -112,171 +111,112 @@ package body Gdk.Font is
    -- String_Extents --
    --------------------
 
-   procedure String_Extents (Font     : in      Gdk.Font.Gdk_Font;
-                             Str      : in      String;
-                             Lbearing :     out Gint;
-                             Rbearing :     out Gint;
-                             Width    :     out Gint;
-                             Ascent   :     out Gint;
-                             Descent  :     out Gint) is
-      procedure Internal (Font     : in     Gdk.Font.Gdk_Font;
-                          Str      : in     String;
-                          Lbearing :    out Gint;
-                          Rbearing :    out Gint;
-                          Width    :    out Gint;
-                          Ascent   :    out Gint;
-                          Descent  :    out Gint);
-      pragma Import (C, Internal, "gdk_string_extents");
+   procedure String_Extents
+     (Font     : Gdk.Font.Gdk_Font;
+      Str      : String;
+      Lbearing : out Gint;
+      Rbearing : out Gint;
+      Width    : out Gint;
+      Ascent   : out Gint;
+      Descent  : out Gint)
+   is
+      procedure Internal
+        (Font     : Gdk.Font.Gdk_Font;
+         Str      : String;
+         Length   : Gint;
+         Lbearing : out Gint;
+         Rbearing : out Gint;
+         Width    : out Gint;
+         Ascent   : out Gint;
+         Descent  : out Gint);
+      pragma Import (C, Internal, "gdk_text_extents");
+
    begin
-      Internal (Font, Str & ASCII.NUL, Lbearing, Rbearing,
+      Internal
+        (Font, Str, Str'Length, Lbearing, Rbearing, Width, Ascent, Descent);
+   end String_Extents;
+
+   procedure String_Extents
+     (Font        : Gdk_Font;
+      Text        : Gdk.Types.Gdk_WString;
+      Lbearing    : out Gint;
+      Rbearing    : out Gint;
+      Width       : out Gint;
+      Ascent      : out Gint;
+      Descent     : out Gint)
+   is
+      procedure Internal
+        (Font        : Gdk_Font;
+         Text        : Gdk.Types.Gdk_WString;
+         Text_Length : Gint;
+         Lbearing    : out Gint;
+         Rbearing    : out Gint;
+         Width       : out Gint;
+         Ascent      : out Gint;
+         Descent     : out Gint);
+      pragma Import (C, Internal, "gdk_text_extents_wc");
+
+   begin
+      Internal (Font, Text, Text'Length, Lbearing, Rbearing,
                 Width, Ascent, Descent);
    end String_Extents;
 
-   ---------------------
-   --  String_Height  --
-   ---------------------
+   -------------------
+   -- String_Height --
+   -------------------
 
-   function String_Height (Font : in Gdk_Font;
-                           Str  : in String) return Gint is
-      function Internal (Font : in Gdk_Font;
-                         Str  : in String) return Gint;
-      pragma Import (C, Internal, "gdk_string_height");
-   begin
-      return Internal (Font, Str & ASCII.NUL);
-   end String_Height;
-
-   -----------------
-   -- Text_Height --
-   -----------------
-
-   function Text_Height (Font : in Gdk_Font;
-                         Str  : in String)
-                        return Gint
-   is
-      function Internal (Font        : in Gdk_Font;
-                         Text        : in String;
-                         Text_Length : in Gint) return Gint;
+   function String_Height (Font : Gdk_Font; Str : String) return Gint is
+      function Internal
+        (Font        : Gdk_Font;
+         Text        : String;
+         Text_Length : Gint) return Gint;
       pragma Import (C, Internal, "gdk_text_height");
+
    begin
       return Internal (Font, Str, Str'Length);
-   end Text_Height;
+   end String_Height;
 
-   ----------------------
-   --  String_Measure  --
-   ----------------------
+   --------------------
+   -- String_Measure --
+   --------------------
 
-   function String_Measure (Font : in Gdk_Font;
-                            Str  : in String) return Gint is
-      function Internal (Font : in Gdk_Font;
-                         Str  : in String) return Gint;
-      pragma Import (C, Internal, "gdk_string_measure");
+   function String_Measure (Font : Gdk_Font; Str : String) return Gint is
+      function Internal
+        (Font        : Gdk_Font;
+         Text        : String;
+         Text_Length : Gint) return Gint;
+      pragma Import (C, Internal, "gdk_text_measure");
+
    begin
-      return Internal (Font, Str & ASCII.NUL);
+      return Internal (Font, Str, Str'Length);
    end String_Measure;
 
-   --------------------
-   --  String_Width  --
-   --------------------
+   ------------------
+   -- String_Width --
+   ------------------
 
-   function String_Width (Font : in Gdk_Font;
-                          Str  : in String) return Gint is
-      function Internal (Font : in Gdk_Font;
-                         Str : in String) return Gint;
-      pragma Import (C, Internal, "gdk_string_width");
+   function String_Width (Font : Gdk_Font; Str : String) return Gint is
+      function Internal
+        (Font        : Gdk_Font;
+         Text        : String;
+         Text_Length : Gint) return Gint;
+      pragma Import (C, Internal, "gdk_text_width");
+
    begin
-      return Internal (Font, Str & ASCII.NUL);
+      return Internal (Font, Str, Str'Length);
    end String_Width;
 
-   ------------------
-   -- Text_Extents --
-   ------------------
-
-   procedure Text_Extents (Font        : in Gdk_Font;
-                           Text        : in String;
-                           Lbearing    :    out Gint;
-                           Rbearing    :    out Gint;
-                           Width       :    out Gint;
-                           Ascent      :    out Gint;
-                           Descent     :    out Gint) is
-      procedure Internal (Font        : in Gdk_Font;
-                          Text        : in String;
-                          Text_Length : in Gint;
-                          Lbearing    :    out Gint;
-                          Rbearing    :    out Gint;
-                          Width       :    out Gint;
-                          Ascent      :    out Gint;
-                          Descent     :    out Gint);
-      pragma Import (C, Internal, "gdk_text_extents");
-   begin
-      Internal (Font, Text, Text'Length, Lbearing, Rbearing,
-                Width, Ascent, Descent);
-   end Text_Extents;
-
-   ------------------
-   -- Text_Extents --
-   ------------------
-
-   procedure Text_Extents (Font        : in Gdk_Font;
-                           Text        : in Gdk.Types.Gdk_WString;
-                           Lbearing    :    out Gint;
-                           Rbearing    :    out Gint;
-                           Width       :    out Gint;
-                           Ascent      :    out Gint;
-                           Descent     :    out Gint) is
-      procedure Internal (Font        : in Gdk_Font;
-                          Text        : in Gdk.Types.Gdk_WString;
-                          Text_Length : in Gint;
-                          Lbearing    :    out Gint;
-                          Rbearing    :    out Gint;
-                          Width       :    out Gint;
-                          Ascent      :    out Gint;
-                          Descent     :    out Gint);
-      pragma Import (C, Internal, "gdk_text_extents_wc");
-   begin
-      Internal (Font, Text, Text'Length, Lbearing, Rbearing,
-                Width, Ascent, Descent);
-   end Text_Extents;
-
-   --------------------
-   --  Text_Measure  --
-   --------------------
-
-   function Text_Measure (Font : in Gdk_Font;
-                          Text : in String) return Gint is
-      function Internal (Font        : in Gdk_Font;
-                         Text        : in String;
-                         Text_Length : in Gint) return Gint;
-      pragma Import (C, Internal, "gdk_text_measure");
-   begin
-      return Internal (Font, Text, Text'Length);
-   end Text_Measure;
-
-   ------------------
-   --  Text_Width  --
-   ------------------
-
-   function Text_Width (Font : in Gdk_Font;
-                        Text : in String) return Gint is
-      function Internal (Font        : in Gdk_Font;
-                         Text        : in String;
-                         Text_Length : in Gint) return Gint;
-      pragma Import (C, Internal, "gdk_text_width");
-   begin
-      return Internal (Font, Text, Text'Length);
-   end Text_Width;
-
-   ------------------
-   --  Text_Width  --
-   ------------------
-
-   function Text_Width (Font : in Gdk_Font;
-                        Text : in Gdk.Types.Gdk_WString) return Gint is
-      function Internal (Font        : in Gdk_Font;
-                         Text        : in Gdk.Types.Gdk_WString;
-                         Text_Length : in Gint) return Gint;
+   function String_Width
+     (Font : Gdk_Font; Text : Gdk.Types.Gdk_WString) return Gint
+   is
+      function Internal
+        (Font        : Gdk_Font;
+         Text        : Gdk.Types.Gdk_WString;
+         Text_Length : Gint) return Gint;
       pragma Import (C, Internal, "gdk_text_width_wc");
+
    begin
       return Internal (Font, Text, Text'Length);
-   end Text_Width;
+   end String_Width;
 
 end Gdk.Font;

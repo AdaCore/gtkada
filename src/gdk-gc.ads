@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,15 +47,13 @@
 --  which demonstrates all the basic settings of the graphic contexts.
 --
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Glib; use Glib;
 with Gdk.Color;
 with Gdk.Font;
 with Gdk.Rectangle;
 with Gdk.Region;
-with Gdk.Types;
-with Gdk.Window;
 
 package Gdk.GC is
 
@@ -72,15 +70,69 @@ package Gdk.GC is
    --  calling a lot of functions to modify the GC directly, since there is
    --  a single call to the server.
 
-   Null_GC : constant Gdk_GC;
-   Null_GC_Values : constant Gdk_GC_Values;
+   type Gdk_Cap_Style is (Cap_Not_Last, Cap_Butt, Cap_Round, Cap_Projecting);
+   for Gdk_Cap_Style'Size use Gint'Size;
+
+   type Gdk_Fill is (Solid, Tiled, Stippled, Opaque_Stippled);
+   for Gdk_Fill'Size use Gint'Size;
+
+   type Gdk_Function is
+     (Copy,
+      Invert,
+      Gdk_Xor,
+      Clear,
+      Gdk_And,
+      And_Reverse,
+      And_Invert,
+      Noop,
+      Gdk_Or,
+      Equiv,
+      Or_Reverse,
+      Copy_Invert,
+      Or_Invert,
+      Nand,
+      Set);
+   for Gdk_Function'Size use Gint'Size;
+
+   type Gdk_Join_Style is (Join_Miter, Join_Round, Join_Bevel);
+   for Gdk_Join_Style'Size use Gint'Size;
+
+   type Gdk_Line_Style is (Line_Solid, Line_On_Off_Dash, Line_Double_Dash);
+   for Gdk_Line_Style'Size use Gint'Size;
+
+   type Gdk_Subwindow_Mode is (Clip_By_Children, Include_Inferiors);
+   for Gdk_Subwindow_Mode'Size use Gint'Size;
+
+   type Gdk_GC_Values_Mask is mod 2 ** 32;
+   GC_Foreground    : constant Gdk_GC_Values_Mask := 2 ** 0;
+   GC_Background    : constant Gdk_GC_Values_Mask := 2 ** 1;
+   GC_Font          : constant Gdk_GC_Values_Mask := 2 ** 2;
+   GC_Function      : constant Gdk_GC_Values_Mask := 2 ** 3;
+   GC_Fill          : constant Gdk_GC_Values_Mask := 2 ** 4;
+   GC_Tile          : constant Gdk_GC_Values_Mask := 2 ** 5;
+   GC_Stipple       : constant Gdk_GC_Values_Mask := 2 ** 6;
+   GC_Clip_Mask     : constant Gdk_GC_Values_Mask := 2 ** 7;
+   GC_Subwindow     : constant Gdk_GC_Values_Mask := 2 ** 8;
+   GC_Ts_X_Origin   : constant Gdk_GC_Values_Mask := 2 ** 9;
+   GC_Tx_Y_Origin   : constant Gdk_GC_Values_Mask := 2 ** 10;
+   GC_Clip_X_Origin : constant Gdk_GC_Values_Mask := 2 ** 11;
+   GC_Clip_Y_Origin : constant Gdk_GC_Values_Mask := 2 ** 12;
+   GC_Exposures     : constant Gdk_GC_Values_Mask := 2 ** 13;
+   GC_Line_Width    : constant Gdk_GC_Values_Mask := 2 ** 14;
+   GC_Line_Style    : constant Gdk_GC_Values_Mask := 2 ** 15;
+   GC_Cap_Style     : constant Gdk_GC_Values_Mask := 2 ** 16;
+   GC_Join_Style    : constant Gdk_GC_Values_Mask := 2 ** 17;
+
+   Null_GC : constant Gdk_GC := null;
+   Null_GC_Values : constant Gdk_GC_Values := null;
 
    ------------
    -- Gdk_GC --
    ------------
 
-   procedure Gdk_New (GC     :    out Gdk_GC;
-                      Window : in     Gdk.Window.Gdk_Window);
+   procedure Gdk_New
+     (GC       : out Gdk_GC;
+      Drawable : Gdk.Gdk_Drawable);
    --  Create a new graphic context.
    --  The window must have been realized first (so that it is associated
    --  with some resources on the Xserver).
@@ -88,10 +140,11 @@ package Gdk.GC is
    --  and same color depth as Window.
    --  See the manual page for XCreateGC on Unix systems for more information.
 
-   procedure Gdk_New (GC          :    out Gdk_GC;
-                      Window      : in     Gdk.Window.Gdk_Window;
-                      Values      : in     Gdk_GC_Values;
-                      Values_Mask : in     Types.Gdk_GC_Values_Mask);
+   procedure Gdk_New
+     (GC          : out Gdk_GC;
+      Drawable    : Gdk.Gdk_Drawable;
+      Values      : Gdk_GC_Values;
+      Values_Mask : Gdk_GC_Values_Mask);
    --  Create a new graphic context.
    --  It is directly created with the values set in Values, and whose
    --  associated field has been set in Values_Mask.
@@ -99,43 +152,48 @@ package Gdk.GC is
    --  other functions in this package, since each of them requires a call
    --  to the server.
 
-   procedure Destroy (GC : in Gdk_GC);
+   function Get_Type return Glib.GType;
+   --  Return the internal value associated with Gdk_GC.
+
+   procedure Destroy (GC : Gdk_GC);
    --  Free the memory allocated on the server for the graphic context.
    --  Graphic contexts are never freed automatically by GtkAda, this is
    --  the user responsibility to do so.
+   --  This procedure is deprecated. Use Unref instead.
 
-   procedure Ref (GC : in Gdk_GC);
+   procedure Ref (GC : Gdk_GC);
    --  Increment the reference counting for the graphic context.
-   --  You should usually not have to use it.
 
-   procedure Unref (GC : in Gdk_GC);
+   procedure Unref (GC : Gdk_GC);
    --  Decrement the reference counting for the graphic context.
    --  When this reaches 0, the graphic context is destroyed.
 
-   procedure Get_Values (GC     : in Gdk_GC;
-                         Values : in Gdk_GC_Values);
+   procedure Get_Values (GC : Gdk_GC; Values : Gdk_GC_Values);
    --  Get the values set in the GC.
    --  This copies the values from the server to client, allowing faster
    --  modifications. Values can then be copied back to the server by
    --  creating a new graphic context with the function Gdk_New above.
    --  Values should have been allocated first with a call to Gdk_New.
 
-   procedure Set_Foreground (GC    : in Gdk_GC;
-                             Color : in Gdk.Color.Gdk_Color);
+   procedure Set_Values
+     (GC     : Gdk_GC;
+      Values : Gdk_GC_Values;
+      Mask   : Gdk_GC_Values_Mask);
+   --  Set the values in the GC.
+   --  Mask indicates which values should be taken from Values and set in GC.
+
+   procedure Set_Foreground (GC : Gdk_GC; Color : Gdk.Color.Gdk_Color);
    --  Set the foreground color for the graphic context.
    --  This color is the one that is used by most drawing functions.
 
-   procedure Set_Background (GC     : in Gdk_GC;
-                             Color  : in Gdk.Color.Gdk_Color);
+   procedure Set_Background (GC : Gdk_GC; Color : Gdk.Color.Gdk_Color);
    --  Set the background color for the graphic context.
 
-   procedure Set_Font (GC   : in Gdk_GC;
-                       Font : in Gdk.Font.Gdk_Font);
+   procedure Set_Font (GC : Gdk_GC; Font : Gdk.Font.Gdk_Font);
    --  Set the font used by the graphic context.
    --  This font is used by the function Gdk.Drawable.Draw_Text.
 
-   procedure Set_Function (GC   : in Gdk_GC;
-                           Func : in Types.Gdk_Function);
+   procedure Set_Function (GC : Gdk_GC; Func : Gdk_Function);
    --  Set the function in the graphic context.
    --  This function specifies how the points are put on the screen, ie
    --  if GtkAda how GtkAda should mix the point already on the screen
@@ -150,59 +208,49 @@ package Gdk.GC is
    --  some do not need the middle step (Copy), whereas most require the three
    --  steps, and thus can be much slower.
 
-   procedure Set_Fill (GC   : in Gdk_GC;
-                       Fill : in Types.Gdk_Fill);
+   procedure Set_Fill (GC : Gdk_GC; Fill : Gdk_Fill);
    --  Set the pattern used for filling the polygons.
 
-   procedure Set_Tile (GC   : in Gdk_GC;
-                       Tile : in Gdk.Gdk_Pixmap);
+   procedure Set_Tile (GC : Gdk_GC; Tile : Gdk.Gdk_Pixmap);
 
-   procedure Set_Stipple (GC      : in Gdk_GC;
-                          Stipple : in Gdk.Gdk_Pixmap);
+   procedure Set_Stipple (GC : Gdk_GC; Stipple : Gdk.Gdk_Pixmap);
 
-   procedure Set_Clip_Mask (GC    : in Gdk.GC.Gdk_GC;
-                            Mask  : in Gdk.Gdk_Bitmap);
+   procedure Set_Ts_Origin (GC : Gdk_GC; X, Y : Gint);
+   --  Set the Tile and Stipple origin in the graphic context.
+
+   procedure Set_Clip_Origin (GC : Gdk_GC; X, Y : Gint);
+   --  Set the origin of the clip mask.
+   --  See the functions Set_Clip_Rectangle, Set_Clip_Region and
+   --  Gdk.Bitmap.Set_Clip_Mask for more explanation.
+
+   procedure Set_Clip_Mask (GC : Gdk.GC.Gdk_GC; Mask : Gdk.Gdk_Bitmap);
    --  If Mask is set to Null_Bitmap, then no clip_mask is used for drawing.
    --  Points will be drawn through this GC only where the bits are set to 1
    --  in the mask. See also the function Set_Clip_Origin for
    --  how to move the mask inside the GC.
 
-   procedure Set_Ts_Origin (GC   : in Gdk_GC;
-                            X, Y : in Gint);
-   --  Set the Tile and Stipple origin in the graphic context.
-
-   procedure Set_Clip_Origin (GC   : in Gdk_GC;
-                              X, Y : in Gint);
-   --  Set the origin of the clip mask.
-   --  See the functions Set_Clip_Rectangle, Set_Clip_Region and
-   --  Gdk.Bitmap.Set_Clip_Mask for more explanation.
-
    procedure Set_Clip_Rectangle
-     (GC        : in Gdk_GC;
-      Rectangle : in Gdk.Rectangle.Gdk_Rectangle);
+     (GC : Gdk_GC; Rectangle : Gdk.Rectangle.Gdk_Rectangle);
    --  Set the clip rectangle.
    --  Only the points that are drawn inside this rectangle will be displayed
    --  on the screen. Note that you might have to modify the Clip origin first
    --  with Set_Clip_Origin.
    --  See Set_Clip_Mask to delete the current clip mask.
 
-   procedure Set_Clip_Region (GC     : in Gdk_GC;
-                              Region : in Gdk.Region.Gdk_Region);
+   procedure Set_Clip_Region (GC : Gdk_GC; Region : Gdk.Region.Gdk_Region);
    --  Define a clip region on the screen.
    --  This is just like Set_Clip_Rectangle, except that a region is a more
    --  complex region, that can be the intersection or union of multiple
    --  rectangles. Note that the Clip_Origin can have an influence on this
    --  function.
 
-   procedure Set_Subwindow (GC   : in Gdk_GC;
-                            Mode : in Types.Gdk_Subwindow_Mode);
+   procedure Set_Subwindow (GC : Gdk_GC; Mode : Gdk_Subwindow_Mode);
    --  Set the subwindow mode for the graphic context.
    --  This specifies whether the drawing routines should be clipped to
    --  the specific window they are drawn into, or if they should extend
    --  to subwindows as well.
 
-   procedure Set_Exposures (GC        : in Gdk_GC;
-                            Exposures : in Boolean);
+   procedure Set_Exposures (GC : Gdk_GC; Exposures : Boolean);
    --  Exposures indicates whether you want "expose" and "noexpose" events to
    --  be reported when calling Copy_Area and Copy_Plane with this GC.
    --  You should disable this if you don't need the event and want to optimize
@@ -211,11 +259,12 @@ package Gdk.GC is
    --  generate an expose event. Otherwise, these will generate a no_expose
    --  event.
 
-   procedure Set_Line_Attributes (GC         : in Gdk_GC;
-                                  Line_Width : in Gint;
-                                  Line_Style : in Types.Gdk_Line_Style;
-                                  Cap_Style  : in Types.Gdk_Cap_Style;
-                                  Join_Style : in Types.Gdk_Join_Style);
+   procedure Set_Line_Attributes
+     (GC         : Gdk_GC;
+      Line_Width : Gint;
+      Line_Style : Gdk_Line_Style;
+      Cap_Style  : Gdk_Cap_Style;
+      Join_Style : Gdk_Join_Style);
    --  Set the line attributes for this GC.
    --  Line_Width is the width of the line. If its value is 0, the line is as
    --  thin as possible, possibly even more so than if the width is 1. It is
@@ -231,9 +280,10 @@ package Gdk.GC is
    --  Join_Style specifies how two consecutive lines drawn by Draw_Lines are
    --  connected.
 
-   procedure Set_Dashes (Gc          : in Gdk_GC;
-                         Dash_Offset : in Gint;
-                         Dash_List   : in Guchar_Array);
+   procedure Set_Dashes
+     (Gc          : Gdk_GC;
+      Dash_Offset : Gint;
+      Dash_List   : Guchar_Array);
    --  Specify the dash pattern when the line's style is anything but solid.
    --  The values in the array alternatively give the length (in pixels) of
    --  the plain dash, the empty dash, the second plain dash, ... None of
@@ -241,9 +291,16 @@ package Gdk.GC is
    --  this is equivalent to giving the array concatenated with itself.
    --  Dash_Offset specifies the phase of the pattern to start with.
 
-   procedure Copy (Dst_GC : in Gdk_GC;
-                   Src_GC : in Gdk_GC);
+   procedure Copy (Dst_GC : Gdk_GC; Src_GC : Gdk_GC);
    --  Copy a Src_GC to Dst_GC.
+
+   procedure Set_Colormap (Gc : Gdk_GC; Colormap : Gdk.Gdk_Colormap);
+
+   function Get_Colormap (Gc : Gdk_GC) return Gdk.Gdk_Colormap;
+
+   procedure Set_Rgb_Fg_Color (Gc : Gdk_GC; Color : Gdk.Color.Gdk_Color);
+
+   procedure Set_Rgb_Bg_Color (Gc : Gdk_GC; Color : Gdk.Color.Gdk_Color);
 
    ----------------------
    -- Gdk_Color_Values --
@@ -254,63 +311,68 @@ package Gdk.GC is
    --  Note that this function allocates a C structure, and thus needs to
    --  be freed with a call to Free below.
 
-   procedure Free (Values : in Gdk_GC_Values);
+   procedure Free (Values : Gdk_GC_Values);
    --  Free the C structure associated with Values.
 
-   procedure Set_Foreground (Values : in Gdk_GC_Values;
-                             Color  : in Gdk.Color.Gdk_Color);
+   procedure Set_Foreground
+     (Values : Gdk_GC_Values; Color : Gdk.Color.Gdk_Color);
    --  Same as Set_Foreground, but on the client side
 
-   procedure Set_Background (Values : in Gdk_GC_Values;
-                             Color  : in Gdk.Color.Gdk_Color);
+   procedure Set_Background
+     (Values : Gdk_GC_Values; Color : Gdk.Color.Gdk_Color);
    --  Same as Set_Background, but on the client side
 
-   procedure Set_Font (Values : in Gdk_GC_Values;
-                       Font   : in Gdk.Font.Gdk_Font);
+   procedure Set_Font (Values : Gdk_GC_Values; Font : Gdk.Font.Gdk_Font);
    --  Same as Set_Font, but on the client side
 
-   procedure Set_Function (Values : in Gdk_GC_Values;
-                           Func   : in Types.Gdk_Function);
+   procedure Set_Function (Values : Gdk_GC_Values; Func : Gdk_Function);
    --  Same as Set_Function, but on the client side
 
-   procedure Set_Fill (Values : in Gdk_GC_Values;
-                       Fill   : in Types.Gdk_Fill);
+   procedure Set_Fill (Values : Gdk_GC_Values; Fill : Gdk_Fill);
    --  Same as Set_Fill, but on the client side
 
-   procedure Set_Ts_Origin (Values : in Gdk_GC_Values;
-                            X, Y   : in Gint);
+   procedure Set_Ts_Origin
+     (Values : Gdk_GC_Values;
+      X, Y   : Gint);
    --  Same as Set_Ts_Origin, but on the client side
 
-   procedure Set_Clip_Origin (Values : in Gdk_GC_Values;
-                              X, Y   : in Gint);
+   procedure Set_Clip_Origin
+     (Values : Gdk_GC_Values;
+      X, Y   : Gint);
    --  Same as Set_Clip_Origin, but on the client side
 
-   procedure Set_Subwindow (Values : in Gdk_GC_Values;
-                            Mode   : in Types.Gdk_Subwindow_Mode);
+   procedure Set_Subwindow
+     (Values : Gdk_GC_Values;
+      Mode   : Gdk_Subwindow_Mode);
    --  Same as Set_Subwindow, but on the client side
 
-   procedure Set_Exposures (Values    : in Gdk_GC_Values;
-                            Exposures : in Boolean);
+   procedure Set_Exposures (Values : Gdk_GC_Values; Exposures : Boolean);
    --  Same as Set_Exposures, but on the client side
 
-   procedure Set_Line_Attributes (Values     : in Gdk_GC_Values;
-                                  Line_Width : in Gint;
-                                  Line_Style : in Types.Gdk_Line_Style;
-                                  Cap_Style  : in Types.Gdk_Cap_Style;
-                                  Join_Style : in Types.Gdk_Join_Style);
+   procedure Set_Line_Attributes
+     (Values     : Gdk_GC_Values;
+      Line_Width : Gint;
+      Line_Style : Gdk_Line_Style;
+      Cap_Style  : Gdk_Cap_Style;
+      Join_Style : Gdk_Join_Style);
    --  Same as Set_Line_Attributes, but on the client side
 
 private
-   Null_GC : constant Gdk_GC := null;
-   Null_GC_Values : constant Gdk_GC_Values := null;
-
+   pragma Import (C, Get_Type, "gdk_gc_get_type");
    pragma Import (C, Copy, "gdk_gc_copy");
-   pragma Import (C, Destroy, "gdk_gc_destroy");
+   pragma Import (C, Destroy, "gdk_gc_unref");
    pragma Import (C, Free, "ada_gdk_gc_free_values");
    pragma Import (C, Get_Values, "gdk_gc_get_values");
+   pragma Import (C, Set_Values, "gdk_gc_set_values");
    pragma Import (C, Ref, "gdk_gc_ref");
    pragma Import (C, Unref, "gdk_gc_unref");
+   pragma Import (C, Set_Clip_Rectangle, "gdk_gc_set_clip_rectangle");
+   pragma Import (C, Set_Clip_Region, "gdk_gc_set_clip_region");
    pragma Import (C, Set_Stipple, "gdk_gc_set_stipple");
    pragma Import (C, Set_Tile, "gdk_gc_set_tile");
    pragma Import (C, Set_Clip_Mask, "gdk_gc_set_clip_mask");
+   pragma Import (C, Set_Colormap, "gdk_gc_set_colormap");
+   pragma Import (C, Get_Colormap, "gdk_gc_get_colormap");
+   pragma Import (C, Set_Rgb_Fg_Color, "gdk_gc_set_rgb_fg_color");
+   pragma Import (C, Set_Rgb_Bg_Color, "gdk_gc_set_rgb_bg_color");
 end Gdk.GC;

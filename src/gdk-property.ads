@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.4</c_version>
+
 with Glib; use Glib;
 
 with Gdk.Types;
@@ -34,36 +36,49 @@ with Gdk.Window;
 
 package Gdk.Property is
 
-   function Atom_Intern
-     (Atom_Name      : in String;
-      Only_If_Exists : in Boolean := True) return Gdk.Types.Gdk_Atom;
+   type Gdk_Prop_Mode is
+     (Prop_Mode_Replace, Prop_Mode_Prepend, Prop_Mode_Append);
+   for Gdk_Prop_Mode'Size use Gint'Size;
 
-   function Atom_Name (Atom   : in Gdk.Types.Gdk_Atom) return String;
+   function Atom_Intern
+     (Atom_Name      : String;
+      Only_If_Exists : Boolean := True) return Gdk.Types.Gdk_Atom;
+
+   function Atom_Name (Atom : Gdk.Types.Gdk_Atom) return String;
 
    procedure Get
-     (Window               : in     Gdk.Window.Gdk_Window;
-      Property             : in     Gdk.Types.Gdk_Atom;
-      The_Type             : in     Gdk.Types.Gdk_Atom;
-      Offset               : in     Gulong;
-      Length               : in     Gulong;
-      Pdelete              : in     Boolean;
-      Actual_Property_Type :    out Gdk.Types.Gdk_Atom;
-      Actual_Format        :    out Gint;
-      Data                 :    out Guchar_Array_Access;
-      Success              :    out Boolean);
+     (Window               : Gdk.Window.Gdk_Window;
+      Property             : Gdk.Types.Gdk_Atom;
+      The_Type             : Gdk.Types.Gdk_Atom;
+      Offset               : Gulong;
+      Length               : Gulong;
+      Pdelete              : Boolean;
+      Actual_Property_Type : out Gdk.Types.Gdk_Atom;
+      Actual_Format        : out Gint;
+      Data                 : out Guchar_Array_Access;
+      Success              : out Boolean);
 
    procedure Change
-     (Window    : in Gdk.Window.Gdk_Window;
-      Property  : in Gdk.Types.Gdk_Atom;
-      The_Type  : in Gdk.Types.Gdk_Atom;
-      Format    : in Gint;
-      Mode      : in Gdk.Types.Gdk_Prop_Mode;
-      Data      : in Guchar_Array);
+     (Window    : Gdk.Window.Gdk_Window;
+      Property  : Gdk.Types.Gdk_Atom;
+      The_Type  : Gdk.Types.Gdk_Atom;
+      Format    : Gint;
+      Mode      : Gdk_Prop_Mode;
+      Data      : Guchar_Array);
 
    procedure Delete
-     (Window   : in Gdk.Window.Gdk_Window;
-      Property : in Gdk.Types.Gdk_Atom);
+     (Window   : Gdk.Window.Gdk_Window;
+      Property : Gdk.Types.Gdk_Atom);
 
 private
    pragma Import (C, Delete, "gdk_property_delete");
 end Gdk.Property;
+
+--  missing:
+--  gdk_text_property_to_text_list
+--  gdk_text_property_to_utf8_list
+--  gdk_utf8_to_string_target
+--  gdk_utf8_to_compound_text
+--  gdk_free_text_list
+--  gdk_string_to_compound_text
+--  gdk_free_compound_text

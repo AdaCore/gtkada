@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,8 +36,9 @@ package body Gdk.Window_Attr is
    -------------
 
    procedure Destroy (Window_Attr : in out Gdk_Window_Attr) is
-      procedure Internal (Window_Attr : in Gdk_Window_Attr);
+      procedure Internal (Window_Attr : Gdk_Window_Attr);
       pragma Import (C, Internal, "ada_gdk_window_attr_destroy");
+
    begin
       Internal (Window_Attr);
       Window_Attr := Null_Window_Attr;
@@ -48,29 +49,26 @@ package body Gdk.Window_Attr is
    -------------
 
    procedure Gdk_New
-     (Window_Attr       :    out Gdk_Window_Attr;
-      Title             : in     String := "";
-      Event_Mask        : in     Gdk.Types.Gdk_Event_Mask :=
-        Gdk.Types.Null_Event_Mask;
-      X, Y              : in     Glib.Gint16 := 0;
-      Width             : in     Glib.Gint16 := 0;
-      Height            : in     Glib.Gint16 := 0;
-      Wclass            : in     Gdk.Types.Gdk_Window_Class :=
-        Gdk.Types.Input_Output;
-      Visual            : in     Gdk.Visual.Gdk_Visual :=
-        Gdk.Visual.Null_Visual;
-      Colormap          : in     Gdk.Color.Gdk_Colormap :=
-        Gdk.Color.Null_Colormap;
-      Window_Type       : in     Gdk.Types.Gdk_Window_Type :=
-        Gdk.Types.Window_Root;
-      Cursor            : in     Gdk.Cursor.Gdk_Cursor :=
-        Gdk.Cursor.Null_Cursor;
-      Wmclass_Name      : in     String := "";
-      Wmclass_Class     : in     String := "";
-      Override_Redirect : in     Boolean := True)
+     (Window_Attr       : out Gdk_Window_Attr;
+      Title             : String := "";
+      Event_Mask        : Gdk.Event.Gdk_Event_Mask := 0;
+      X, Y              : Glib.Gint := 0;
+      Width             : Glib.Gint := 0;
+      Height            : Glib.Gint := 0;
+      Wclass            : Gdk.Window.Gdk_Window_Class :=
+        Gdk.Window.Input_Output;
+      Visual            : Gdk.Visual.Gdk_Visual := null;
+      Colormap          : Gdk.Color.Gdk_Colormap := null;
+      Window_Type       : Gdk.Window.Gdk_Window_Type :=
+        Gdk.Window.Window_Root;
+      Cursor            : Gdk.Cursor.Gdk_Cursor := null;
+      Wmclass_Name      : String := "";
+      Wmclass_Class     : String := "";
+      Override_Redirect : Boolean := True)
    is
       function Internal return Gdk_Window_Attr;
       pragma Import (C, Internal, "ada_gdk_window_attr_new");
+
    begin
       Window_Attr := Internal;
 
@@ -94,11 +92,12 @@ package body Gdk.Window_Attr is
    -- Get_Override_Redirect --
    ---------------------------
 
-   function Get_Override_Redirect (Window_Attr : in Gdk_Window_Attr)
-                                   return Boolean is
-      function Internal (Window_Attr : in Gdk_Window_Attr)
-                   return Glib.Gboolean;
+   function Get_Override_Redirect
+     (Window_Attr : Gdk_Window_Attr) return Boolean
+   is
+      function Internal (Window_Attr : Gdk_Window_Attr) return Glib.Gboolean;
       pragma Import (C, Internal, "ada_gdk_window_attr_get_override_redirect");
+
    begin
       return Glib.To_Boolean (Internal (Window_Attr));
    end Get_Override_Redirect;
@@ -107,10 +106,11 @@ package body Gdk.Window_Attr is
    -- Get_Title --
    ---------------
 
-   function Get_Title (Window_Attr : in Gdk_Window_Attr) return String is
-      function Internal (Window_Attr : in Gdk_Window_Attr)
-                        return Interfaces.C.Strings.chars_ptr;
+   function Get_Title (Window_Attr : Gdk_Window_Attr) return String is
+      function Internal
+        (Window_Attr : Gdk_Window_Attr) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gdk_window_attr_get_title");
+
    begin
       return Interfaces.C.Strings.Value (Internal (Window_Attr));
    end Get_Title;
@@ -119,11 +119,13 @@ package body Gdk.Window_Attr is
    -- Get_Wmclass_Class --
    -----------------------
 
-   function Get_Wmclass_Class (Window_Attr : in Gdk_Window_Attr)
-                              return String is
-      function Internal (Window_Attr : in Gdk_Window_Attr)
-                         return Interfaces.C.Strings.chars_ptr;
+   function Get_Wmclass_Class
+     (Window_Attr : Gdk_Window_Attr) return String
+   is
+      function Internal
+        (Window_Attr : Gdk_Window_Attr) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gdk_window_attr_get_wmclass_class");
+
    begin
       return Interfaces.C.Strings.Value (Internal (Window_Attr));
    end Get_Wmclass_Class;
@@ -132,11 +134,13 @@ package body Gdk.Window_Attr is
    -- Get_Wmclass_Name --
    ----------------------
 
-   function Get_Wmclass_Name (Window_Attr : in Gdk_Window_Attr)
-                              return String is
-      function Internal (Window_Attr : in Gdk_Window_Attr)
-                         return Interfaces.C.Strings.chars_ptr;
+   function Get_Wmclass_Name
+     (Window_Attr : Gdk_Window_Attr) return String
+   is
+      function Internal
+        (Window_Attr : Gdk_Window_Attr) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gdk_window_attr_get_wmclass_name");
+
    begin
       return Interfaces.C.Strings.Value (Internal (Window_Attr));
    end Get_Wmclass_Name;
@@ -145,11 +149,15 @@ package body Gdk.Window_Attr is
    -- Set_Override_Redirect --
    ---------------------------
 
-   procedure Set_Override_Redirect (Window_Attr       : in Gdk_Window_Attr;
-                                    Override_Redirect : in Boolean) is
-      procedure Internal (Window_Attr : in Gdk_Window_Attr;
-                          Override_Redirect : in Glib.Gboolean);
+   procedure Set_Override_Redirect
+     (Window_Attr       : Gdk_Window_Attr;
+      Override_Redirect : Boolean)
+   is
+      procedure Internal
+        (Window_Attr       : Gdk_Window_Attr;
+         Override_Redirect : Glib.Gboolean);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_override_redirect");
+
    begin
       Internal (Window_Attr, Glib.To_Gboolean (Override_Redirect));
    end Set_Override_Redirect;
@@ -158,11 +166,15 @@ package body Gdk.Window_Attr is
    -- Set_Title --
    ---------------
 
-   procedure Set_Title (Window_Attr : in Gdk_Window_Attr;
-                        Title       : in String) is
-      procedure Internal (Window_Attr : in Gdk_Window_Attr;
-                          Title : in String);
+   procedure Set_Title
+     (Window_Attr : Gdk_Window_Attr;
+      Title       : String)
+   is
+      procedure Internal
+        (Window_Attr : Gdk_Window_Attr;
+         Title       : String);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_title");
+
    begin
       Internal (Window_Attr, Title & ASCII.NUL);
    end Set_Title;
@@ -171,11 +183,15 @@ package body Gdk.Window_Attr is
    -- Set_Wmclass_Class --
    -----------------------
 
-   procedure Set_Wmclass_Class (Window_Attr   : in Gdk_Window_Attr;
-                                Wmclass_Class : in String) is
-      procedure Internal (Window_Attr  : in Gdk_Window_Attr;
-                          Wmclass_Class : in String);
+   procedure Set_Wmclass_Class
+     (Window_Attr   : Gdk_Window_Attr;
+      Wmclass_Class : String)
+   is
+      procedure Internal
+        (Window_Attr   : Gdk_Window_Attr;
+         Wmclass_Class : String);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_wmclass_class");
+
    begin
       Internal (Window_Attr, Wmclass_Class & ASCII.NUL);
    end Set_Wmclass_Class;
@@ -184,11 +200,15 @@ package body Gdk.Window_Attr is
    -- Set_Wmclass_Name --
    ----------------------
 
-   procedure Set_Wmclass_Name (Window_Attr  : in Gdk_Window_Attr;
-                               Wmclass_Name : in String) is
-      procedure Internal (Window_Attr  : in Gdk_Window_Attr;
-                          Wmclass_Name : in String);
+   procedure Set_Wmclass_Name
+     (Window_Attr  : Gdk_Window_Attr;
+      Wmclass_Name : String)
+   is
+      procedure Internal
+        (Window_Attr  : Gdk_Window_Attr;
+         Wmclass_Name : String);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_wmclass_name");
+
    begin
       Internal (Window_Attr, Wmclass_Name & ASCII.NUL);
    end Set_Wmclass_Name;

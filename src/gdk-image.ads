@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,48 +37,60 @@
 --  To draw a Gdk_Image in a Gdk_Window or Gdk_Pixmap use
 --  Gdk.Drawable.Draw_Image.
 
+--  <c_version>1.3.4</c_version>
+
 with Glib; use Glib;
-with Gdk.Visual;
-with Gdk.Window;
 
 package Gdk.Image is
 
-   type Gdk_Image is new Gdk.C_Proxy;
+   subtype Gdk_Image is Gdk.Gdk_Image;
    Null_Image : constant Gdk_Image;
 
    type Gdk_Image_Type is (Image_Normal, Image_Shared, Image_Fastest);
+   for Gdk_Image_Type'Size use Gint'Size;
 
    procedure Gdk_New
-     (Image      :    out Gdk_Image;
-      Image_Type : in     Gdk_Image_Type;
-      Visual     : in     Gdk.Visual.Gdk_Visual;
-      Width      : in     Gint;
-      Height     : in     Gint);
+     (Image      : out Gdk_Image;
+      Image_Type : Gdk_Image_Type;
+      Visual     : Gdk.Gdk_Visual;
+      Width      : Gint;
+      Height     : Gint);
+
+   function Get_Type return Glib.GType;
+   --  Return the internal value associated with a Gdk_Image.
 
    procedure Get
-     (Image  :    out Gdk_Image;
-      Window : in     Gdk.Window.Gdk_Window;
-      X      : in     Gint;
-      Y      : in     Gint;
-      Width  : in     Gint;
-      Height : in     Gint);
+     (Image    : out Gdk_Image;
+      Drawable : Gdk.Gdk_Drawable;
+      X        : Gint;
+      Y        : Gint;
+      Width    : Gint;
+      Height   : Gint);
+
+   procedure Ref (Image : Gdk_Image);
+   --  Increment the reference counting for the image.
+
+   procedure Unref (Image : Gdk_Image);
+   --  Decrement the reference counting for the image.
+   --  When this reaches 0, the image is destroyed.
+
+   procedure Destroy (Image : Gdk_Image);
+   --  Deprecated. Use Unref instead.
 
    procedure Put_Pixel
-     (Image : in Gdk_Image;
-      X     : in Gint;
-      Y     : in Gint;
-      Pixel : in Guint32);
+     (Image : Gdk_Image;
+      X     : Gint;
+      Y     : Gint;
+      Pixel : Guint32);
 
-   function Get_Pixel
-     (Image : in Gdk_Image;
-      X     : in Gint;
-      Y     : in Gint) return Guint32;
-
-   procedure Destroy (Image : in Gdk_Image);
+   function Get_Pixel (Image : Gdk_Image; X : Gint; Y : Gint) return Guint32;
 
 private
    Null_Image : constant Gdk_Image := null;
-   pragma Import (C, Destroy, "gdk_image_destroy");
+   pragma Import (C, Get_Type, "gdk_image_get_type");
+   pragma Import (C, Destroy, "gdk_image_unref");
+   pragma Import (C, Ref, "gdk_image_ref");
+   pragma Import (C, Unref, "gdk_image_unref");
    pragma Import (C, Get_Pixel, "gdk_image_get_pixel");
    pragma Import (C, Put_Pixel, "gdk_image_put_pixel");
 end Gdk.Image;

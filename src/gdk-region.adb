@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,8 +35,8 @@ package body Gdk.Region is
    -- "=" --
    ---------
 
-   function "=" (Left, Right : in Gdk_Region) return Boolean is
-      function Internal (Region1, Region2 : in Gdk_Region) return Gboolean;
+   function "=" (Left, Right : Gdk_Region) return Boolean is
+      function Internal (Region1, Region2 : Gdk_Region) return Gboolean;
       pragma Import (C, Internal, "gdk_region_equal");
 
    begin
@@ -48,7 +48,7 @@ package body Gdk.Region is
    -------------
 
    procedure Destroy (Region : in out Gdk_Region) is
-      procedure Internal (Region : in Gdk_Region);
+      procedure Internal (Region : Gdk_Region);
       pragma Import (C, Internal, "gdk_region_destroy");
 
    begin
@@ -60,35 +60,13 @@ package body Gdk.Region is
    -- Empty --
    -----------
 
-   function Empty (Region : in Gdk_Region) return Boolean is
-      function Internal (Region : in Gdk_Region) return Gboolean;
+   function Empty (Region : Gdk_Region) return Boolean is
+      function Internal (Region : Gdk_Region) return Gboolean;
       pragma Import (C, Internal, "gdk_region_empty");
 
    begin
       return Boolean'Val (Internal (Region));
    end Empty;
-
-   -----------------
-   -- Get_Clipbox --
-   -----------------
-
-   procedure Get_Clipbox
-     (Region    : in     Gdk_Region;
-      Rectangle :    out Gdk.Rectangle.Gdk_Rectangle)
-   is
-      procedure Internal
-        (Region    : in Gdk_Region;
-         Rectangle : in System.Address);
-      pragma Import (C, Internal, "gdk_region_get_clipbox");
-
-      Rec : aliased Gdk.Rectangle.Gdk_Rectangle;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
-
-   begin
-      Internal (Region, Rec'Address);
-      Rectangle := Rec;
-   end Get_Clipbox;
 
    -------------
    -- Gdk_New --
@@ -102,16 +80,33 @@ package body Gdk.Region is
       Region := Internal;
    end Gdk_New;
 
+   --------------------
+   -- Get_Rectangles --
+   --------------------
+
+   procedure Get_Rectangles
+     (Region       : Gdk_Region;
+      Rectangle    : out Gdk.Rectangle.Gdk_Rectangle_Array;
+      N_Rectangles : out Natural)
+   is
+      procedure Internal
+        (Region       : Gdk_Region;
+         Rectangle    : System.Address;
+         N_Rectangles : out Natural);
+      pragma Import (C, Internal, "gdk_region_get_rectangles");
+
+   begin
+      Internal (Region, Rectangle'Address, N_Rectangles);
+   end Get_Rectangles;
+
    --------------
    -- Point_In --
    --------------
 
    function Point_In
-     (Region : in Gdk_Region;
-      X, Y   : in Integer) return Boolean
+     (Region : Gdk_Region; X, Y : Integer) return Boolean
    is
-      function Internal
-        (Region : in Gdk_Region; X, Y : in Integer) return Gboolean;
+      function Internal (Region : Gdk_Region; X, Y : Integer) return Gboolean;
       pragma Import (C, Internal, "gdk_region_point_in");
 
    begin
@@ -123,39 +118,18 @@ package body Gdk.Region is
    -------------
 
    procedure Polygon
-     (Region    :    out Gdk_Region;
-      Points    : in     Gdk.Types.Gdk_Points_Array;
-      Fill_Rule : in     Types.Gdk_Fill_Rule)
+     (Region    : out Gdk_Region;
+      Points    : Gdk.Types.Gdk_Points_Array;
+      Fill_Rule : Gdk_Fill_Rule)
    is
       function Internal
-        (Points  : in Gdk.Types.Gdk_Points_Array;
-         Npoints : in Gint;
-         Fill_Rule : in Types.Gdk_Fill_Rule) return Gdk_Region;
+        (Points    : Gdk.Types.Gdk_Points_Array;
+         Npoints   : Gint;
+         Fill_Rule : Gdk_Fill_Rule) return Gdk_Region;
       pragma Import (C, Internal, "gdk_region_polygon");
 
    begin
       Region := Internal (Points, Points'Length, Fill_Rule);
    end Polygon;
-
-   -------------
-   -- Rect_In --
-   -------------
-
-   function Rect_In
-     (Region : in Gdk_Region;
-      Rect   : in Rectangle.Gdk_Rectangle) return Types.Gdk_Overlap_Type
-   is
-      function Internal
-        (Region : in Gdk_Region;
-         Rect   : in System.Address) return Types.Gdk_Overlap_Type;
-      pragma Import (C, Internal, "gdk_region_rect_in");
-
-      Rectangle : aliased Gdk.Rectangle.Gdk_Rectangle := Rect;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
-
-   begin
-      return Internal (Region, Rectangle'Address);
-   end Rect_In;
 
 end Gdk.Region;

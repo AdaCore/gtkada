@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,25 +27,36 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.4</c_version>
+
 with Gdk.Types;
 
 package Gdk.Keyval is
 
-   function Name (Keyval : in Gdk.Types.Gdk_Key_Type) return String;
+   function Name (Keyval : Gdk.Types.Gdk_Key_Type) return String;
 
-   function From_Name (Keyval_Name : in String) return Gdk.Types.Gdk_Key_Type;
+   function From_Name (Keyval_Name : String) return Gdk.Types.Gdk_Key_Type;
 
    function To_Upper
-     (Keyval : in Gdk.Types.Gdk_Key_Type) return Gdk.Types.Gdk_Key_Type;
+     (Keyval : Gdk.Types.Gdk_Key_Type) return Gdk.Types.Gdk_Key_Type;
 
    function To_Lower
-     (Keyval : in Gdk.Types.Gdk_Key_Type) return Gdk.Types.Gdk_Key_Type;
+     (Keyval : Gdk.Types.Gdk_Key_Type) return Gdk.Types.Gdk_Key_Type;
 
-   function Is_Upper (Keyval : in Gdk.Types.Gdk_Key_Type) return Boolean;
+   function Is_Upper (Keyval : Gdk.Types.Gdk_Key_Type) return Boolean;
 
-   function Is_Lower (Keyval : in Gdk.Types.Gdk_Key_Type) return Boolean;
+   function Is_Lower (Keyval : Gdk.Types.Gdk_Key_Type) return Boolean;
 
 private
    pragma Import (C, To_Upper, "gdk_keyval_to_upper");
    pragma Import (C, To_Lower, "gdk_keyval_to_lower");
 end Gdk.Keyval;
+
+--  missing:
+--  gdk_keymap_lookup_key
+--  gdk_keymap_translate_keyboard_state
+--  gdk_keymap_get_entries_for_keyval
+--  gdk_keymap_get_entries_for_keycode
+--  gdk_keyval_convert_case
+--  gdk_keyval_to_unicode
+--  gdk_unicode_to_keyval

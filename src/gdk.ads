@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,10 +40,24 @@ package Gdk is
    pragma Preelaborate;
 
    subtype C_Proxy is Glib.C_Proxy;
+
    type Gdk_GC is new C_Proxy;
-   type Gdk_Window is new C_Proxy;
-   subtype Gdk_Drawable is Gdk_Window;
+
+   type Gdk_Drawable is new C_Proxy;
+   subtype Gdk_Window is Gdk_Drawable;
    subtype Gdk_Pixmap is Gdk_Drawable;
    subtype Gdk_Bitmap is Gdk_Drawable;
+
+   type Gdk_Colormap is new C_Proxy;
+
+   type Gdk_Visual is new C_Proxy;
+
+   type Gdk_Font is new C_Proxy;
+
+   type Gdk_Image is new C_Proxy;
+
+   type Gdk_Region is new C_Proxy;
+
+   type Gdk_Window_Attr is new C_Proxy;
 
 end Gdk;

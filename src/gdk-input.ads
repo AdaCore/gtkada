@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2001                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,6 +31,7 @@
 --  GtkAda event loop. Note that this package is currently not supported
 --  under Windows.
 
+with Gdk.Event;
 with Gdk.Types;
 with Gdk.Window;
 with Glib;
@@ -43,7 +44,7 @@ package Gdk.Input is
 
    procedure Set_Extension_Events
      (Window : in Gdk.Window.Gdk_Window;
-      Mask   : in Gdk.Types.Gdk_Event_Mask;
+      Mask   : in Gdk.Event.Gdk_Event_Mask;
       Mode   : in Gdk.Types.Gdk_Extension_Mode);
    --  ??? Check that Mask is indeed of type GdkEventMask.
    --  The C code defines it as Gint...

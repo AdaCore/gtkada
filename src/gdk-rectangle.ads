@@ -39,6 +39,9 @@ package Gdk.Rectangle is
    end record;
    pragma Convention (C, Gdk_Rectangle);
 
+   type Gdk_Rectangle_Array is array (Natural range <>) of Gdk_Rectangle;
+   --  This type is used by Gdk.Region.
+
    Full_Area : constant Gdk_Rectangle;
    --  The constant above can be used in Gtk.Widget.Draw when you want to
    --  redraw the whole widget

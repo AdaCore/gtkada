@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,44 +27,50 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.4</c_version>
+
 with Glib; use Glib;
 with Glib.Glist;
 pragma Elaborate_All (Glib.Glist);
 
-with Gdk.Types;
 with System;
 with Unchecked_Conversion;
 
 package Gdk.Visual is
 
-   type Gdk_Visual is new Gdk.C_Proxy;
+   subtype Gdk_Visual is Gdk.Gdk_Visual;
    Null_Visual : constant Gdk_Visual;
    --  This type is not private because we need the full declaration
    --  to instanciate Glib.Glist.Generic_List with it.
 
-   type Gdk_Visual_Type_Array is array (Natural range <>)
-     of Types.Gdk_Visual_Type;
+   type Gdk_Visual_Type is
+     (Visual_Static_Gray,
+      Visual_Grayscale,
+      Visual_Static_Color,
+      Visual_Pseudo_Color,
+      Visual_True_Color,
+      Visual_Direct_Color);
+
+   type Gdk_Visual_Type_Array is array (Natural range <>) of Gdk_Visual_Type;
+
+   function Get_Type return Glib.GType;
+   --  Return the internal value associated with Gdk_Visual.
 
    function Get_Best_Depth return Gint;
 
-   function Get_Best_Type return Types.Gdk_Visual_Type;
+   function Get_Best_Type return Gdk_Visual_Type;
 
-   procedure Get_System (Visual : out Gdk_Visual);
+   function Get_System return Gdk_Visual;
 
-   procedure Get_Best (Visual : out Gdk_Visual);
+   function Get_Best return Gdk_Visual;
 
-   procedure Get_Best
-     (Visual :    out Gdk_Visual;
-      Depth  : in     Gint);
+   function Get_Best (Depth  : Gint) return Gdk_Visual;
 
-   procedure Get_Best
-     (Visual      :    out Gdk_Visual;
-      Visual_Type : in     Types.Gdk_Visual_Type);
+   function Get_Best (Visual_Type : Gdk_Visual_Type) return Gdk_Visual;
 
-   procedure Get_Best
-     (Visual      :    out Gdk_Visual;
-      Depth       : in     Gint;
-      Visual_Type : in     Types.Gdk_Visual_Type);
+   function Get_Best
+     (Depth       : Gint;
+      Visual_Type : Gdk_Visual_Type) return Gdk_Visual;
 
    function Query_Depths return Gint_Array;
 
@@ -79,6 +85,10 @@ package Gdk.Visual is
 
 private
    Null_Visual : constant Gdk_Visual := null;
+   pragma Import (C, Get_Type, "gdk_visual_get_type");
    pragma Import (C, Get_Best_Depth, "gdk_visual_get_best_depth");
    pragma Import (C, Get_Best_Type, "gdk_visual_get_best_type");
+   pragma Import (C, Get_System, "gdk_visual_get_system");
+
+   for Gdk_Visual_Type'Size use Gint'Size;
 end Gdk.Visual;

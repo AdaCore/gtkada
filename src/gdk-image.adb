@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,39 +29,50 @@
 
 package body Gdk.Image is
 
-   ---------------
-   --  Gdk_New  --
-   ---------------
+   -------------
+   -- Gdk_New --
+   -------------
 
-   procedure Gdk_New (Image      :    out Gdk_Image;
-                      Image_Type : in     Gdk_Image_Type;
-                      Visual     : in     Gdk.Visual.Gdk_Visual;
-                      Width      : in     Gint;
-                      Height     : in     Gint) is
-      function Internal (Image_Type : in Gdk_Image_Type;
-                         Visual     : in Gdk.Visual.Gdk_Visual;
-                         Width, Height : in Gint) return Gdk_Image;
+   procedure Gdk_New
+     (Image      : out Gdk_Image;
+      Image_Type : Gdk_Image_Type;
+      Visual     : Gdk.Gdk_Visual;
+      Width      : Gint;
+      Height     : Gint)
+   is
+      function Internal
+        (Image_Type : Gdk_Image_Type;
+         Visual     : Gdk.Gdk_Visual;
+         Width      : Gint;
+         Height     : Gint) return Gdk_Image;
       pragma Import (C, Internal, "gdk_image_new");
+
    begin
       Image := Internal (Image_Type, Visual, Width, Height);
    end Gdk_New;
 
-   -----------
-   --  Get  --
-   -----------
+   ---------
+   -- Get --
+   ---------
 
-   procedure Get (Image  :    out Gdk_Image;
-                  Window : in     Gdk.Window.Gdk_Window;
-                  X      : in     Gint;
-                  Y      : in     Gint;
-                  Width  : in     Gint;
-                  Height : in     Gint) is
-      function Internal (Window        : in Gdk.Window.Gdk_Window;
-                         X, Y          : in Gint;
-                         Width, Height : in Gint) return Gdk_Image;
+   procedure Get
+     (Image    : out Gdk_Image;
+      Drawable : Gdk.Gdk_Drawable;
+      X        : Gint;
+      Y        : Gint;
+      Width    : Gint;
+      Height   : Gint)
+   is
+      function Internal
+        (Drawable : Gdk.Gdk_Drawable;
+         X        : Gint;
+         Y        : Gint;
+         Width    : Gint;
+         Height   : Gint) return Gdk_Image;
       pragma Import (C, Internal, "gdk_image_get");
+
    begin
-      Image := Internal (Window, X, Y, Width, Height);
+      Image := Internal (Drawable, X, Y, Width, Height);
    end Get;
 
 end Gdk.Image;

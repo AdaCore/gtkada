@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,29 +29,49 @@
 
 package body Gdk.Window is
 
+   ---------------
+   -- Copy_Area --
+   ---------------
+
+   procedure Copy_Area
+     (Window        : Gdk_Window;
+      Gc            : Gdk.Gdk_GC;
+      X             : Gint;
+      Y             : Gint;
+      Source_Window : Gdk_Window;
+      Source_X      : Gint;
+      Source_Y      : Gint;
+      Width         : Gint;
+      Height        : Gint)
+   is
+      procedure Internal
+        (Drawable        : Gdk_Drawable;
+         Gc              : Gdk.Gdk_GC;
+         Source_Drawable : Gdk_Drawable;
+         Source_X        : Gint;
+         Source_Y        : Gint;
+         X               : Gint;
+         Y               : Gint;
+         Width           : Gint;
+         Height          : Gint);
+      pragma Import (C, Internal, "gdk_draw_drawable");
+
+   begin
+      Internal
+        (Window, Gc, Source_Window, Source_X, Source_Y, X, Y, Width, Height);
+   end Copy_Area;
+
    -------------
    -- Destroy --
    -------------
 
    procedure Destroy (Window : in out Gdk_Window) is
-      procedure Internal (Window : in Gdk_Window);
+      procedure Internal (Window : Gdk_Window);
       pragma Import (C, Internal, "gdk_window_destroy");
    begin
       Internal (Window);
       Window := Null_Window;
    end Destroy;
-
-   -----------------
-   -- Foreign_New --
-   -----------------
-
-   procedure Foreign_New (Window : out Gdk_Window; An_Id : Guint32) is
-      function Internal (An_Id : Guint32) return Gdk_Window;
-      pragma Import (C, Internal, "gdk_window_foreign_new");
-
-   begin
-      Window := Internal (An_Id);
-   end Foreign_New;
 
    -------------
    -- Gdk_New --
@@ -60,20 +80,17 @@ package body Gdk.Window is
    procedure Gdk_New
      (Window          : out Gdk_Window;
       Parent          : Gdk_Window;
-      Attributes      : Gdk.Window_Attr.Gdk_Window_Attr;
-      Attributes_Mask : Gdk.Types.Gdk_Window_Attributes_Type)
+      Attributes      : Gdk_Window_Attr;
+      Attributes_Mask : Gdk_Window_Attributes_Type)
    is
       function Internal
         (Parent          : Gdk_Window;
-         Attributes      : Gdk.Window_Attr.Gdk_Window_Attr;
-         Attributes_Mask : Gdk.Types.Gdk_Window_Attributes_Type)
-         return Gdk_Window;
+         Attributes      : Gdk_Window_Attr;
+         Attributes_Mask : Gdk_Window_Attributes_Type) return Gdk_Window;
       pragma Import (C, Internal, "gdk_window_new");
 
    begin
-      Window := Internal (Parent => Parent,
-                          Attributes => Attributes,
-                          Attributes_Mask => Attributes_Mask);
+      Window := Internal (Parent, Attributes, Attributes_Mask);
    end Gdk_New;
 
    ------------------
@@ -89,6 +106,30 @@ package body Gdk.Window is
       Gdk_Window_List.Set_Object (Result, Internal (Window));
       return Result;
    end Get_Children;
+
+   --------------------
+   -- Get_Decoration --
+   --------------------
+
+   procedure Get_Decorations
+     (Window      : Gdk_Window;
+      Decorations : out Gdk_Wm_Decoration;
+      Success     : out Boolean)
+   is
+      function Internal
+        (Window      : Gdk_Window;
+         Decorations : access Gdk_Wm_Decoration) return Gboolean;
+      pragma Import (C, Internal, "gdk_window_get_decorations");
+
+      Tmp : aliased Gdk_Wm_Decoration;
+
+   begin
+      Success := To_Boolean (Internal (Window, Tmp'Access));
+
+      if Success then
+         Decorations := Tmp;
+      end if;
+   end Get_Decorations;
 
    ------------------------------
    -- Get_Desk_Relative_Origin --
@@ -127,8 +168,7 @@ package body Gdk.Window is
       Success : out Boolean)
    is
       function Internal
-        (Window : Gdk_Window;
-         X, Y   : System.Address) return Gint;
+        (Window : Gdk_Window; X, Y : System.Address) return Gint;
       pragma Import (C, Internal, "gdk_window_get_origin");
 
       X_Out, Y_Out : aliased Gint;
@@ -210,6 +250,36 @@ package body Gdk.Window is
       return Boolean'Val (Internal (Window));
    end Is_Visible;
 
+   -------------------
+   -- Peek_Children --
+   -------------------
+
+   function Peek_Children
+     (Window : Gdk_Window) return Gdk_Window_List.Glist
+   is
+      function Internal (Window : Gdk_Window) return System.Address;
+      pragma Import (C, Internal, "gdk_window_peek_children");
+      Result : Gdk_Window_List.Glist;
+
+   begin
+      Gdk_Window_List.Set_Object (Result, Internal (Window));
+      return Result;
+   end Peek_Children;
+
+   ---------------------
+   -- Process_Updates --
+   ---------------------
+
+   procedure Process_Updates
+     (Window : Gdk_Window; Update_Children : Boolean := True)
+   is
+      procedure Internal (Window : Gdk_Window; Update_Children : Gboolean);
+      pragma Import (C, Internal, "gdk_window_process_updates");
+
+   begin
+      Internal (Window, To_Gboolean (Update_Children));
+   end Process_Updates;
+
    ---------------------
    -- Set_Back_Pixmap --
    ---------------------
@@ -252,6 +322,18 @@ package body Gdk.Window is
       Internal (Window, Color_A);
    end Set_Background;
 
+   -----------------------
+   -- Set_Debug_Updates --
+   -----------------------
+
+   procedure Set_Debug_Updates (Setting : Boolean := True) is
+      procedure Internal (Setting : Gboolean);
+      pragma Import (C, Internal, "gdk_window_set_debug_updates");
+
+   begin
+      Internal (To_Gboolean (Setting));
+   end Set_Debug_Updates;
+
    -------------------
    -- Set_Icon_Name --
    -------------------
@@ -263,6 +345,21 @@ package body Gdk.Window is
    begin
       Internal (Window, Name & ASCII.NUL);
    end Set_Icon_Name;
+
+   --------------------
+   -- Set_Modal_Hint --
+   --------------------
+
+   procedure Set_Modal_Hint
+     (Window : Gdk_Window;
+      Modal  : Boolean)
+   is
+      procedure Internal (Window : Gdk_Window; Modal : Gboolean);
+      pragma Import (C, Internal, "gdk_window_set_modal_hint");
+
+   begin
+      Internal (Window, To_Gboolean (Modal));
+   end Set_Modal_Hint;
 
    ---------------------------
    -- Set_Override_Redirect --
@@ -290,6 +387,23 @@ package body Gdk.Window is
    begin
       Internal (Window, Role & ASCII.NUL);
    end Set_Role;
+
+   ------------------------
+   -- Set_Static_Gravity --
+   ------------------------
+
+   function Set_Static_Gravities
+     (Window     : Gdk_Window;
+      Use_Static : Boolean) return Boolean
+   is
+      function Internal
+        (Window     : Gdk_Window;
+         Use_Static : Gboolean) return Gboolean;
+      pragma Import (C, Internal, "gdk_window_set_static_gravities");
+
+   begin
+      return To_Boolean (Internal (Window, To_Gboolean (Use_Static)));
+   end Set_Static_Gravities;
 
    ---------------
    -- Set_Title --

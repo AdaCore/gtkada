@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,16 +29,16 @@
 
 package body Gdk.Bitmap is
 
-   ------------------------
-   --  Create_From_Data  --
-   ------------------------
+   ----------------------
+   -- Create_From_Data --
+   ----------------------
 
    procedure Create_From_Data
-     (Bitmap :    out Gdk_Bitmap;
-      Window : in     Gdk.Window.Gdk_Window;
-      Data   : in     String;
-      Width  : in     Gint;
-      Height : in     Gint)
+     (Bitmap : out Gdk_Bitmap;
+      Window : Gdk.Window.Gdk_Window;
+      Data   : String;
+      Width  : Gint;
+      Height : Gint)
    is
       function Internal
         (Window : Gdk.Window.Gdk_Window;
@@ -57,15 +57,15 @@ package body Gdk.Bitmap is
 
    procedure Gdk_New
      (Bitmap : out Gdk_Bitmap;
-      Window : in  Gdk.Window.Gdk_Window;
-      Width  : in  Gint;
-      Height : in  Gint)
+      Window : Gdk.Window.Gdk_Window;
+      Width  : Gint;
+      Height : Gint)
    is
       function Internal
-        (Window : in Gdk.Window.Gdk_Window;
-         Width  : in Gint;
-         Height : in Gint;
-         Depth  : in Gint) return Gdk_Bitmap;
+        (Window : Gdk.Window.Gdk_Window;
+         Width  : Gint;
+         Height : Gint;
+         Depth  : Gint) return Gdk_Bitmap;
       pragma Import (C, Internal, "gdk_pixmap_new");
 
    begin

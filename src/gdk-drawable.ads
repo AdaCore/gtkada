@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,14 +40,10 @@
 --  @pxref{Package_Gdk.GC} for more information.
 --
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Glib; use Glib;
-with Gdk.GC;
-with Gdk.Font;
-with Gdk.Image;
 with Gdk.Types;
-with Gdk.Window;
 
 package Gdk.Drawable is
 
@@ -56,75 +52,55 @@ package Gdk.Drawable is
 
    Null_Drawable : constant Gdk_Drawable;
 
-   procedure Copy_Area
-     (Dest     : in Gdk_Drawable;
-      GC       : in Gdk.GC.Gdk_GC;
-      X        : in Gint;
-      Y        : in Gint;
-      Source   : in Gdk.Window.Gdk_Window;
-      Source_X : in Gint;
-      Source_Y : in Gint;
-      Width    : in Gint := -1;
-      Height   : in Gint := -1);
-   --  Copy a drawing area.
-   --  Dest is the Gdk_Drawable to draw.
-   --  X is the x coordinate of the destination within Dest.
-   --  X is the y coordinate of the destination within Dest.
-   --  Source_X is the left edge of the source rectangle within Source.
-   --  Source_Y is the top of the source rectangle within Source.
-   --  Width is the width of the area to be copied, or -1 to make the area
-   --  extend to the right edge of Source.
-   --  Height is the height of the area to be copied, or -1 to make the area
-   --  extend to the bottom edge of Source.
+   function Get_Type return Glib.GType;
+   --  Return the internal value associated with a Gdk_Drawable.
+
+   procedure Get_Size
+     (Drawable : Gdk_Drawable;
+      Width    : out Gint;
+      Height   : out Gint);
+   --  Return the width and height of a given drawable.
+
+   procedure Set_Colormap
+     (Drawable : Gdk_Drawable; Colormap : Gdk.Gdk_Colormap);
+
+   function Get_Colormap
+     (Drawable : Gdk_Drawable) return Gdk.Gdk_Colormap;
+
+   function Get_Visual (Drawable : Gdk_Drawable) return Gdk.Gdk_Visual;
+
+   function Get_Depth (Drawable : Gdk_Drawable) return Gdk.Gdk_Visual;
+
+   procedure Ref (Drawable : Gdk_Drawable);
+
+   procedure Unref (Drawable : Gdk_Drawable);
 
    procedure Draw_Point
-     (Drawable : in Gdk_Drawable;
-      Gc       : in Gdk.GC.Gdk_GC;
-      X        : in Gint;
-      Y        : in Gint);
+     (Drawable : Gdk_Drawable;
+      Gc       : Gdk.Gdk_GC;
+      X        : Gint;
+      Y        : Gint);
    --  Draw a point, using the foreground color and other attributes of the Gc.
 
-   procedure Draw_Points
-     (Drawable : in Gdk_Drawable;
-      Gc       : in Gdk.GC.Gdk_GC;
-      Points   : in Gdk.Types.Gdk_Points_Array);
-   --  Draw a number of points.
-   --  Use the foreground color and other attributes of the Gc.
-
    procedure Draw_Line
-     (Drawable : in Gdk_Drawable;
-      Gc       : in Gdk.GC.Gdk_GC;
-      X1       : in Gint;
-      Y1       : in Gint;
-      X2       : in Gint;
-      Y2       : in Gint);
+     (Drawable : Gdk_Drawable;
+      Gc       : Gdk.Gdk_GC;
+      X1       : Gint;
+      Y1       : Gint;
+      X2       : Gint;
+      Y2       : Gint);
    --  Draw a line, using the foreground color and other attributes of the Gc.
    --  (X1, Y1) is coordinate of the start point.
    --  (X2, Y2) is coordinate of the end point.
 
-   procedure Draw_Lines
-     (Drawable : in Gdk_Drawable;
-      Gc       : in Gdk.GC.Gdk_GC;
-      Points   : in Gdk.Types.Gdk_Points_Array);
-   --  Draw a series of lines connecting the given points.
-   --  The way in which joins between lines are drawn is determined by the
-   --  Cap_Style value in the Gdk_GC. This can be set with
-   --  Gdk.Gc.Set_Line_Attributes.
-
-   procedure Draw_Segments
-     (Drawable : in Gdk_Drawable;
-      Gc       : in Gdk.GC.Gdk_GC;
-      Segs     : in Gdk.Types.Gdk_Segments_Array);
-   --  Draw a number of unconnected lines.
-
    procedure Draw_Rectangle
-     (Drawable : in Gdk_Drawable;
-      Gc       : in Gdk.GC.Gdk_GC;
-      Filled   : in Boolean := False;
-      X        : in Gint;
-      Y        : in Gint;
-      Width    : in Gint;
-      Height   : in Gint);
+     (Drawable : Gdk_Drawable;
+      Gc       : Gdk.Gdk_GC;
+      Filled   : Boolean := False;
+      X        : Gint;
+      Y        : Gint;
+      Width    : Gint;
+      Height   : Gint);
    --  Draw a rectangular outline or filled rectangle.
    --  Note that a rectangle drawn filled is 1 pixel smaller in both dimensions
    --  than a rectangle outlined. Calling
@@ -137,15 +113,15 @@ package Gdk.Drawable is
    --  (X, Y) represents the coordinate of the top-left edge of the rectangle.
 
    procedure Draw_Arc
-     (Drawable : in Gdk_Drawable;
-      Gc       : in Gdk.GC.Gdk_GC;
-      Filled   : in Boolean := False;
-      X        : in Gint;
-      Y        : in Gint;
-      Width    : in Gint;
-      Height   : in Gint;
-      Angle1   : in Gint;
-      Angle2   : in Gint);
+     (Drawable : Gdk_Drawable;
+      Gc       : Gdk.Gdk_GC;
+      Filled   : Boolean := False;
+      X        : Gint;
+      Y        : Gint;
+      Width    : Gint;
+      Height   : Gint;
+      Angle1   : Gint;
+      Angle2   : Gint);
    --  Draws an arc or a filled 'pie slice'.
    --  The arc is defined by the bounding rectangle of the entire ellipse, and
    --  the start and end angles of the part of the ellipse to be drawn.
@@ -158,10 +134,10 @@ package Gdk.Drawable is
    --  degree.
 
    procedure Draw_Polygon
-     (Drawable : in Gdk_Drawable;
-      Gc       : in Gdk.GC.Gdk_GC;
-      Filled   : in Boolean;
-      Points   : in Gdk.Types.Gdk_Points_Array);
+     (Drawable : Gdk_Drawable;
+      Gc       : Gdk.Gdk_GC;
+      Filled   : Boolean;
+      Points   : Gdk.Types.Gdk_Points_Array);
    --  Draw an outlined or filled polygon.
    --  Filled is True if the polygon should be filled. The polygon is closed
    --  automatically, connecting the last point to the first point if
@@ -170,39 +146,39 @@ package Gdk.Drawable is
    --  polygon.
 
    procedure Draw_Text
-     (Drawable    : in Gdk_Drawable;
-      Font        : in Gdk.Font.Gdk_Font;
-      Gc          : in Gdk.GC.Gdk_GC;
-      X           : in Gint;
-      Y           : in Gint;
-      Text        : in String);
+     (Drawable    : Gdk_Drawable;
+      Font        : Gdk.Gdk_Font;
+      Gc          : Gdk.Gdk_GC;
+      X           : Gint;
+      Y           : Gint;
+      Text        : String);
    --  Draw a string in the given font or fontset.
    --  X is the x coordinate of the left edge of the text.
    --  Y is the y coordinate of the baseline of the text.
 
    procedure Draw_Text
-     (Drawable    : in Gdk_Drawable;
-      Font        : in Gdk.Font.Gdk_Font;
-      Gc          : in Gdk.GC.Gdk_GC;
-      X           : in Gint;
-      Y           : in Gint;
-      Wide_Text   : in Gdk.Types.Gdk_WString);
+     (Drawable    : Gdk_Drawable;
+      Font        : Gdk.Gdk_Font;
+      Gc          : Gdk.Gdk_GC;
+      X           : Gint;
+      Y           : Gint;
+      Wide_Text   : Gdk.Types.Gdk_WString);
    --  Draw a wide string in the given font of fontset.
    --  If the font is a 1-byte font, the string is converted into 1-byte
    --  characters (discarding the high bytes) before output.
 
-   procedure Draw_Pixmap
-     (Drawable : in Gdk_Drawable;
-      Gc       : in Gdk.GC.Gdk_GC;
-      Src      : in Gdk_Drawable;
-      Xsrc     : in Gint;
-      Ysrc     : in Gint;
-      Xdest    : in Gint;
-      Ydest    : in Gint;
-      Width    : in Gint := -1;
-      Height   : in Gint := -1);
+   procedure Draw_Drawable
+     (Drawable : Gdk_Drawable;
+      Gc       : Gdk.Gdk_GC;
+      Src      : Gdk_Drawable;
+      Xsrc     : Gint;
+      Ysrc     : Gint;
+      Xdest    : Gint;
+      Ydest    : Gint;
+      Width    : Gint := -1;
+      Height   : Gint := -1);
    --  Draw a pixmap, or a part of a pixmap, onto another drawable.
-   --  Src is the source GdkPixmap to draw.
+   --  Src is the source Gdk_Drawable to draw.
    --  Xsrc is the left edge of the source rectangle within Src.
    --  Ysrc is the top of the source rectangle within Src.
    --  Xdest is the x coordinate of the destination within Src.
@@ -213,15 +189,15 @@ package Gdk.Drawable is
    --  extend to the bottom edge of the source pixmap.
 
    procedure Draw_Image
-     (Drawable : in Gdk_Drawable;
-      Gc       : in Gdk.GC.Gdk_GC;
-      Image    : in Gdk.Image.Gdk_Image;
-      Xsrc     : in Gint;
-      Ysrc     : in Gint;
-      Xdest    : in Gint;
-      Ydest    : in Gint;
-      Width    : in Gint := -1;
-      Height   : in Gint := -1);
+     (Drawable : Gdk_Drawable;
+      Gc       : Gdk.Gdk_GC;
+      Image    : Gdk.Gdk_Image;
+      Xsrc     : Gint;
+      Ysrc     : Gint;
+      Xdest    : Gint;
+      Ydest    : Gint;
+      Width    : Gint := -1;
+      Height   : Gint := -1);
    --  Draw a Gdk_Image onto a Drawable.
    --  The depth of the Gdk_Image must match the depth of the Gdk_Drawable.
    --  Image is the Gdk_Image to draw.
@@ -234,15 +210,65 @@ package Gdk.Drawable is
    --  Height is the height of the area to be copied, or -1 to make the area
    --  extend to the bottom edge of image.
 
+   procedure Draw_Points
+     (Drawable : Gdk_Drawable;
+      Gc       : Gdk.Gdk_GC;
+      Points   : Gdk.Types.Gdk_Points_Array);
+   --  Draw a number of points.
+   --  Use the foreground color and other attributes of the Gc.
+
+   procedure Draw_Segments
+     (Drawable : in Gdk_Drawable;
+      Gc       : in Gdk.Gdk_GC;
+      Segs     : in Gdk.Types.Gdk_Segments_Array);
+   --  Draw a number of unconnected lines.
+
+   procedure Draw_Lines
+     (Drawable : Gdk_Drawable;
+      Gc       : Gdk.Gdk_GC;
+      Points   : Gdk.Types.Gdk_Points_Array);
+   --  Draw a series of lines connecting the given points.
+   --  The way in which joins between lines are drawn is determined by the
+   --  Cap_Style value in the Gdk_GC. This can be set with
+   --  Gdk.Gc.Set_Line_Attributes.
+
+   function Get_Image
+     (Drawable : Gdk_Drawable;
+      X        : Gint;
+      Y        : Gint;
+      Width    : Gint;
+      Height   : Gint) return Gdk_Image;
+
+   function Get_Clip_Region (Drawable : Gdk_Drawable) return Gdk.Gdk_Region;
+
+   function Get_Visible_Region (Drawable : Gdk_Drawable) return Gdk.Gdk_Region;
+
 private
    Null_Drawable : constant Gdk_Drawable := null;
-   pragma Import (C, Copy_Area, "gdk_window_copy_area");
+   pragma Import (C, Get_Type, "gdk_drawable_get_type");
+   pragma Import (C, Get_Depth, "gdk_drawable_get_depth");
+   pragma Import (C, Ref, "gdk_drawable_ref");
+   pragma Import (C, Unref, "gdk_drawable_unref");
+   pragma Import (C, Get_Size, "gdk_drawable_get_size");
+   pragma Import (C, Get_Colormap, "gdk_drawable_get_colormap");
+   pragma Import (C, Get_Visual, "gdk_drawable_get_visual");
+   pragma Import (C, Set_Colormap, "gdk_drawable_set_colormap");
+   pragma Import (C, Draw_Drawable, "gdk_draw_drawable");
    pragma Import (C, Draw_Line, "gdk_draw_line");
-   pragma Import (C, Draw_Pixmap, "gdk_draw_pixmap");
    pragma Import (C, Draw_Point, "gdk_draw_point");
    pragma Import (C, Draw_Image, "gdk_draw_image");
+   pragma Import (C, Get_Image, "gdk_drawable_get_image");
+   pragma Import (C, Get_Clip_Region, "gdk_drawable_get_clip_region");
+   pragma Import (C, Get_Visible_Region, "gdk_drawable_get_visible_region");
 end Gdk.Drawable;
 
 --  <example>
 --  <include>../examples/documentation/draw.adb</include>
 --  </example>
+
+--  missing pango related functions:
+--  gdk_draw_glyphs
+--  gdk_draw_layout_line
+--  gdk_draw_layout
+--  gdk_draw_layout_line_with_colors
+--  gdk_draw_layout_with_colors

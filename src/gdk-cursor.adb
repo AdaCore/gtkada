@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,10 +37,9 @@ package body Gdk.Cursor is
 
    procedure Gdk_New
      (Widget      : out Gdk_Cursor;
-      Cursor_Type : in Gdk.Types.Gdk_Cursor_Type)
+      Cursor_Type : Gdk_Cursor_Type)
    is
-      function Internal
-        (Cursor_Type : in Gdk.Types.Gdk_Cursor_Type) return Gdk_Cursor;
+      function Internal (Cursor_Type : Gdk_Cursor_Type) return Gdk_Cursor;
       pragma Import (C, Internal, "ada_gdk_cursor_new");
 
    begin
@@ -49,20 +48,20 @@ package body Gdk.Cursor is
 
    procedure Gdk_New
      (Widget : out Gdk_Cursor;
-      Source : in Gdk.Gdk_Pixmap;
-      Mask   : in Gdk.Gdk_Pixmap;
-      Fg     : in Gdk.Color.Gdk_Color;
-      Bg     : in Gdk.Color.Gdk_Color;
-      X      : in Glib.Gint;
+      Source : Gdk.Gdk_Pixmap;
+      Mask   : Gdk.Gdk_Pixmap;
+      Fg     : Gdk.Color.Gdk_Color;
+      Bg     : Gdk.Color.Gdk_Color;
+      X      : Glib.Gint;
       Y      : in Glib.Gint)
    is
       function Internal
-        (Source : in Gdk.Gdk_Pixmap;
-         Mask   : in Gdk.Gdk_Pixmap;
-         Fg     : in System.Address;
-         Bg     : in System.Address;
-         X      : in Glib.Gint;
-         Y      : in Glib.Gint) return Gdk_Cursor;
+        (Source : Gdk.Gdk_Pixmap;
+         Mask   : Gdk.Gdk_Pixmap;
+         Fg     : System.Address;
+         Bg     : System.Address;
+         X      : Glib.Gint;
+         Y      : Glib.Gint) return Gdk_Cursor;
       pragma Import (C, Internal, "gdk_cursor_new_from_pixmap");
 
       Col_Fg : aliased Gdk.Color.Gdk_Color := Fg;

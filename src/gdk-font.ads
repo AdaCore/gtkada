@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -82,7 +82,7 @@
 --  the characters in a font.
 --
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.4</c_version>
 --  <screenshot>font</screenshot>
 
 with Glib; use Glib;
@@ -90,7 +90,7 @@ with Gdk.Types;
 
 package Gdk.Font is
 
-   type Gdk_Font is new Gdk.C_Proxy;
+   subtype Gdk_Font is Gdk.Gdk_Font;
    --  A font used to draw text.
    --  This can represent a bitmap font, a scalable (vectorial) font, or
    --  a fontset. A fontset is a list of comma-separated fonts, that permits
@@ -103,8 +103,10 @@ package Gdk.Font is
 
    Null_Font : constant Gdk_Font;
 
-   procedure Load (Font      :    out Gdk_Font;
-                   Font_Name : in     String);
+   function Get_Type return Glib.GType;
+   --  Return the internal value associated with Gdk_Font.
+
+   procedure Load (Font : out Gdk_Font; Font_Name : String);
    --  Load a new font, given its name.
    --  This is the first step before using a font.
    --  The font is first looked up in the cache, and if it was already
@@ -112,28 +114,27 @@ package Gdk.Font is
    --  this function multiple times with the same Font_Name.
    --  Null_Font is returned if the font could not be loaded.
 
-   procedure Fontset_Load (Font         :   out Gdk_Font;
-                           Fontset_Name : in    String);
+   procedure Fontset_Load (Font : out Gdk_Font; Fontset_Name : String);
    --  Load a new font set.
    --  Fontset_Name is a comma-separated list of fonts that will be loaded
    --  as part of the fontset.
 
-   procedure Ref (Font : in Gdk_Font);
+   procedure Ref (Font : Gdk_Font);
    --  Increment the reference counter for the font.
    --  You should not make any assumption of the initial value of the fonts
    --  returned by Load or Fontset_Load, since these can be extracted from a
    --  cache.
 
-   procedure Unref (Font : in Gdk_Font);
+   procedure Unref (Font : Gdk_Font);
    --  Decrement the reference counter for the font.
    --  When this counter reaches 0, the font is deleted from memory.
 
-   function Id (Font : in Gdk_Font) return Gint;
+   function Id (Font : Gdk_Font) return Gint;
    --  Return the X font id for the font.
    --  This Id will only be needed if you want to call directly X11 functions,
    --  you won't need it with GtkAda.
 
-   function Equal (Fonta, Fontb : in Gdk_Font) return Boolean;
+   function Equal (Fonta, Fontb : Gdk_Font) return Boolean;
    --  Compare two fonts or two fontsets for equality.
    --  Two fonts are equal if they have the same font Id.
    --  Two fontsets are equal if the name given to Fontset_Load was the same.
@@ -143,75 +144,59 @@ package Gdk.Font is
    --  This is the logical extent above the baseline for spacing between two
    --  lines.
 
-   function Get_Descent (Font : in Gdk_Font) return Gint;
+   function Get_Descent (Font : Gdk_Font) return Gint;
    --  Return the maximal descent for the font.
    --  This is the logical extent below the baseline for spacing between two
    --  lines.
 
-   function String_Width (Font : in Gdk_Font;
-                          Str  : in String)
-                         return Gint;
+   function String_Width (Font : Gdk_Font; Str : String) return Gint;
    --  Return the width in pixels that Str will occupy if drawn with Font.
    --  The value returned is the distance between the origin of the text and
    --  the position at which the next string should be drawn.
 
-   function Text_Width (Font : in Gdk_Font;
-                        Text : in String)
-                       return Gint;
-   --  This is the same function as String_Width.
-   --  In C, this function is intended to measure only the width of a part
-   --  of the string, but you can simply pass it a substring in Ada.
-
-   function Text_Width (Font : in Gdk_Font;
-                        Text : in Gdk.Types.Gdk_WString)
-                       return Gint;
+   function String_Width
+     (Font : Gdk_Font; Text : Gdk.Types.Gdk_WString) return Gint;
    --  Return the width in pixels that Text will occupy on the screen.
    --  This function should be used with strings that contain Unicode
    --  characters
 
-   function Char_Width (Font : in Gdk_Font;
-                        Char : in Character)
-                       return Gint;
+   function Char_Width (Font : Gdk_Font; Char : Character) return Gint;
    --  Return the width in pixels occupied by a single character on the screen.
    --  The value returned is the distance between Char's origin on the screen
    --  and the origin of the next character in the string.
 
-   function Char_Width (Font : in Gdk_Font;
-                        Char : in Gdk.Types.Gdk_WChar)
-                       return Gint;
+   function Char_Width
+     (Font : Gdk_Font; Char : Gdk.Types.Gdk_WChar) return Gint;
    --  Return the width in pixels occupied by a single wide-character.
 
-   function String_Measure (Font : in Gdk_Font;
-                            Str  : in String)
-                           return Gint;
+   function String_Measure (Font : Gdk_Font; Str : String) return Gint;
    --  Determine the distance from the origin to the rightmost portion of Str.
    --  This is not the correct value for determining the origin of the next
    --  portion when drawing text in multiple pieces.
    --  See String_Width instead.
 
-   function Text_Measure (Font : in Gdk_Font;
-                          Text : in String)
-                         return Gint;
-   --  Same function a String_Measure.
-   --  In C, this function is intended to measure only the width of a part of
-   --  the string, but you can simply pass it a substring in Ada.
-   --  This is also called the right bearing of the string.
-
-   function Char_Measure (Font : in Gdk_Font;
-                          Char : in Character)
-                         return Gint;
+   function Char_Measure (Font : Gdk_Font; Char : Character) return Gint;
    --  Return the width in pixels of Char.
    --  As opposed to Char_Width, the value returned is not the distance at
    --  which the next character should be drawn.
    --  This is also called the right bearing of the character.
 
-   procedure String_Extents (Font     : in     Gdk.Font.Gdk_Font;
-                             Str      : in     String;
-                             Lbearing :    out Gint;
-                             Rbearing :    out Gint;
-                             Width    :    out Gint;
-                             Ascent   :    out Gint;
-                             Descent  :    out Gint);
+   function String_Height (Font : Gdk_Font; Str : String) return Gint;
+   --  Return the height in pixels of the string.
+   --  This is the total height, and you can not easily tell how this height
+   --  is split around the baseline.
+
+   function Char_Height (Font : Gdk_Font; Char : Character) return Gint;
+   --  Return the total height in pixels of a single character.
+
+   procedure String_Extents
+     (Font     : Gdk.Font.Gdk_Font;
+      Str      : String;
+      Lbearing : out Gint;
+      Rbearing : out Gint;
+      Width    : out Gint;
+      Ascent   : out Gint;
+      Descent  : out Gint);
    --  Return the metrics for a given text.
    --  See the picture for more explanations on all the fields.
    --  Lbearing : Origin to left edge of character.
@@ -220,51 +205,20 @@ package Gdk.Font is
    --  Ascent   : Baseline to top edge of character.
    --  Descent  : Baseline to bottom edge of character.
 
-   procedure Text_Extents (Font        : in     Gdk_Font;
-                           Text        : in     String;
-                           Lbearing    :    out Gint;
-                           Rbearing    :    out Gint;
-                           Width       :    out Gint;
-                           Ascent      :    out Gint;
-                           Descent     :    out Gint);
-   --  Return all the metrics for a given text.
-   --  See the picture for more explanations on all the fields.
-   --  in C, this function would be used for part of a string, which you can
-   --  simulate in Ada with a substring.
-
-   procedure Text_Extents (Font        : in     Gdk_Font;
-                           Text        : in     Gdk.Types.Gdk_WString;
-                           Lbearing    :    out Gint;
-                           Rbearing    :    out Gint;
-                           Width       :    out Gint;
-                           Ascent      :    out Gint;
-                           Descent     :    out Gint);
+   procedure String_Extents
+     (Font        : Gdk_Font;
+      Text        : Gdk.Types.Gdk_WString;
+      Lbearing    : out Gint;
+      Rbearing    : out Gint;
+      Width       : out Gint;
+      Ascent      : out Gint;
+      Descent     : out Gint);
    --  Return all the metrics for a given wide-character string.
    --  See the picture for more explanations on the returned values.
 
-   function String_Height (Font : in Gdk_Font;
-                           Str  : in String)
-                          return Gint;
-   --  Return the height in pixels of the string.
-   --  This is the total height, and you can not easily tell how this height
-   --  is split around the baseline.
-
-   function Text_Height (Font : in Gdk_Font;
-                         Str  : in String)
-                        return Gint;
-   --  Same as String_Height.
-   --  In C, this function is intended to measure only the width of a part of
-   --  the string, but you can simply pass it a substring in Ada.
-   --  This is also called the right bearing of the string.
-
-   function Char_Height (Font : in Gdk_Font;
-                         Char : in Character)
-                        return Gint;
-   --  Return the total height in pixels of a single character.
-
-
 private
    Null_Font : constant Gdk_Font := null;
+   pragma Import (C, Get_Type, "gdk_font_get_type");
    pragma Import (C, Char_Height, "gdk_char_height");
    pragma Import (C, Id, "gdk_font_id");
    pragma Import (C, Ref, "gdk_font_ref");

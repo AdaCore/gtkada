@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,74 +38,50 @@ package body Gdk.Visual is
       Default_Terminator => 0);
 
    type Aliased_Visual_Type_Array is array (Natural range <>)
-     of aliased Types.Gdk_Visual_Type;
+     of aliased Gdk_Visual_Type;
 
    package Visual_Type_Ptr is new Interfaces.C.Pointers
-     (Index => Natural, Element => Types.Gdk_Visual_Type,
+     (Index => Natural, Element => Gdk_Visual_Type,
       Element_Array => Aliased_Visual_Type_Array,
-      Default_Terminator => Types.Visual_Static_Gray);
+      Default_Terminator => Visual_Static_Gray);
 
    --------------
    -- Get_Best --
    --------------
 
-   procedure Get_Best (Visual : out Gdk_Visual) is
+   function Get_Best return Gdk_Visual is
       function Internal return Gdk_Visual;
-      pragma Import (C, Internal, "gdk_visual_get_system");
+      pragma Import (C, Internal, "gdk_visual_get_best");
    begin
-      Visual := Internal;
+      return Internal;
    end Get_Best;
 
-   --------------
-   -- Get_Best --
-   --------------
-
-   procedure Get_Best (Visual :    out Gdk_Visual;
-                       Depth  : in     Gint) is
-      function Internal (Depth : in Gint) return Gdk_Visual;
+   function Get_Best (Depth : Gint) return Gdk_Visual is
+      function Internal (Depth : Gint) return Gdk_Visual;
       pragma Import (C, Internal, "gdk_visual_get_best_with_depth");
+
    begin
-      Visual := Internal (Depth);
+      return Internal (Depth);
    end Get_Best;
 
-   --------------
-   -- Get_Best --
-   --------------
-
-   procedure Get_Best (Visual      :    out Gdk_Visual;
-                       Visual_Type : in     Types.Gdk_Visual_Type) is
-      function Internal (Visual_Type : in Types.Gdk_Visual_Type)
-                         return Gdk_Visual;
+   function Get_Best (Visual_Type : Gdk_Visual_Type) return Gdk_Visual is
+      function Internal (Visual_Type : Gdk_Visual_Type) return Gdk_Visual;
       pragma Import (C, Internal, "gdk_visual_get_best_with_type");
+
    begin
-      Visual := Internal (Visual_Type);
+      return Internal (Visual_Type);
    end Get_Best;
 
-   --------------
-   -- Get_Best --
-   --------------
-
-   procedure Get_Best (Visual      :    out Gdk_Visual;
-                       Depth       : in     Gint;
-                       Visual_Type : in     Types.Gdk_Visual_Type) is
-      function Internal (Depth       : in Gint;
-                         Visual_Type : in Types.Gdk_Visual_Type)
-                         return Gdk_Visual;
+   function Get_Best
+     (Depth : Gint; Visual_Type : Gdk_Visual_Type) return Gdk_Visual
+   is
+      function Internal
+        (Depth : Gint; Visual_Type : Gdk_Visual_Type) return Gdk_Visual;
       pragma Import (C, Internal, "gdk_visual_get_best_with_both");
+
    begin
-      Visual := Internal (Depth, Visual_Type);
+      return Internal (Depth, Visual_Type);
    end Get_Best;
-
-   ----------------
-   -- Get_System --
-   ----------------
-
-   procedure Get_System (Visual : out Gdk_Visual) is
-      function Internal return Gdk_Visual;
-      pragma Import (C, Internal, "gdk_visual_get_system");
-   begin
-      Visual := Internal;
-   end Get_System;
 
    ------------------
    -- List_Visuals --

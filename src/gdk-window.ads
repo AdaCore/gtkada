@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -46,7 +46,7 @@
 --  scrolling should be done with the Gtk_Scrolled_Window widget, but you
 --  might want to handle scrolling yourself). See the function
 --  Gdk.Event.Get_Graphics_Expose for more information.
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.4</c_version>
 
 with System;
 with Glib; use Glib;
@@ -54,9 +54,9 @@ with Glib.Glist;
 with Gdk;
 with Gdk.Color;
 with Gdk.Cursor;
+with Gdk.Event;
+with Gdk.Rectangle;
 with Gdk.Types;
-with Gdk.Visual;
-with Gdk.Window_Attr;
 with Unchecked_Conversion;
 
 package Gdk.Window is
@@ -65,22 +65,136 @@ package Gdk.Window is
 
    Null_Window : constant Gdk_Window;
 
+   type Gdk_Window_Class is (Input_Output, Input_Only);
+
+   type Gdk_Window_Type is
+     (Window_Root,
+      --  there is only one root window and it is initialized at startup.
+      --  Creating a window of type Window_Root is an error.
+
+      Window_Toplevel,
+      --  Windows which interact with the window manager.
+
+      Window_Child,
+      --  Windows which are children of some other type of window.
+      --  (Any other type of window). Most windows are child windows.
+
+      Window_Dialog,
+      --  A special kind of toplevel window which interacts with the window
+      --  manager slightly differently than a regular toplevel window.
+      --  Dialog windows should be used for any transient window.
+
+      Window_Temp,
+      --  ???
+
+      Window_Foreign
+      --  A window that actually belongs to another application.
+     );
+   --  Type of windows.
+
+   type Gdk_Window_Attributes_Type is mod 2 ** 32;
+   Wa_Title    : constant Gdk_Window_Attributes_Type := 2 ** 1;
+   Wa_X        : constant Gdk_Window_Attributes_Type := 2 ** 2;
+   Wa_Y        : constant Gdk_Window_Attributes_Type := 2 ** 3;
+   Wa_Cursor   : constant Gdk_Window_Attributes_Type := 2 ** 4;
+   Wa_Colormap : constant Gdk_Window_Attributes_Type := 2 ** 5;
+   Wa_Visual   : constant Gdk_Window_Attributes_Type := 2 ** 6;
+   Wa_Wmclass  : constant Gdk_Window_Attributes_Type := 2 ** 7;
+   Wa_Noredir  : constant Gdk_Window_Attributes_Type := 2 ** 8;
+
+   type Gdk_Window_Hints is mod 2 ** 32;
+   --  Size restriction.
+   Gdk_Hint_Pos        : constant Gdk_Window_Hints := 2 ** 0;
+   Gdk_Hint_Min_Size   : constant Gdk_Window_Hints := 2 ** 1;
+   Gdk_Hint_Max_Size   : constant Gdk_Window_Hints := 2 ** 2;
+   Gdk_Hint_Base_Size  : constant Gdk_Window_Hints := 2 ** 3;
+   Gdk_Hint_Aspect     : constant Gdk_Window_Hints := 2 ** 4;
+   Gdk_Hint_Resize_Inc : constant Gdk_Window_Hints := 2 ** 5;
+
+   type Gdk_Window_Type_Hint is
+     (Window_Type_Hint_Normal,
+      --  Normal toplevel window
+
+      Window_Type_Hint_Dialog,
+      --  Dialog window
+
+      Window_Type_Hint_Menu,
+      --  Window used to implement a menu.
+
+      Window_Type_Hint_Toolbar
+      --  Toolbar: Window used to implement toolbars.
+     );
+   --  Hints for the window manager that indicate what type of function the
+   --  window has. The window manager can use this when determining decoration
+   --  and behaviour of the window. The hint must be set before mapping the
+   --  window.
+
+   type Gdk_Wm_Decoration is mod 2 ** 32;
+   Decor_All      : constant Gdk_Wm_Decoration := 2 ** 0;
+   Decor_Border   : constant Gdk_Wm_Decoration := 2 ** 1;
+   Decor_Resize_H : constant Gdk_Wm_Decoration := 2 ** 2;
+   Decor_Title    : constant Gdk_Wm_Decoration := 2 ** 3;
+   Decor_Menu     : constant Gdk_Wm_Decoration := 2 ** 4;
+   Decor_Minimize : constant Gdk_Wm_Decoration := 2 ** 5;
+   Decor_Maximize : constant Gdk_Wm_Decoration := 2 ** 6;
+
+   type Gdk_Wm_Function is mod 2 ** 32;
+   Func_All      : constant Gdk_Wm_Function := 2 ** 0;
+   Func_Resize   : constant Gdk_Wm_Function := 2 ** 1;
+   Func_Move     : constant Gdk_Wm_Function := 2 ** 2;
+   Func_Minimize : constant Gdk_Wm_Function := 2 ** 3;
+   Func_Maximize : constant Gdk_Wm_Function := 2 ** 4;
+   Func_Close    : constant Gdk_Wm_Function := 2 ** 5;
+
+   type Gdk_Gravity is
+     (Gravity_North_West,
+      Gravity_North,
+      Gravity_North_East,
+      Gravity_West,
+      Gravity_Center,
+      Gravity_East,
+      Gravity_South_West,
+      Gravity_South,
+      Gravity_South_East,
+      Gravity_Static);
+
+   type Gdk_Window_Edge is
+     (Window_Edge_North_West,
+      Window_Edge_North,
+      Window_Edge_North_East,
+      Window_Edge_West,
+      Window_Edge_East,
+      Window_Edge_South_West,
+      Window_Edge_South,
+      Window_Edge_South_East);
+
+   type Gdk_Geometry is record
+      Min_Width   : Gint;
+      Min_Height  : Gint;
+      Max_Width   : Gint;
+      Max_Height  : Gint;
+      Base_Width  : Gint;
+      Base_Height : Gint;
+      Width_Inc   : Gint;
+      Height_Inc  : Gint;
+      Min_Aspect  : Gdouble;
+      Max_Aspect  : Gdouble;
+      Win_Gravity : Gdk_Gravity;
+   end record;
+
    procedure Gdk_New
      (Window          : out Gdk_Window;
       Parent          : Gdk_Window;
-      Attributes      : Gdk.Window_Attr.Gdk_Window_Attr;
-      Attributes_Mask : Gdk.Types.Gdk_Window_Attributes_Type);
+      Attributes      : Gdk.Gdk_Window_Attr;
+      Attributes_Mask : Gdk_Window_Attributes_Type);
 
-   procedure Foreign_New (Window : out Gdk_Window; An_Id : Guint32);
+   function Get_Type return Glib.GType;
+   --  Return the internal value associated with Gdk_Window.
 
    procedure Destroy (Window : in out Gdk_Window);
    --  Destroy a window and all its children.
 
-   procedure Ref (Window : Gdk_Window);
-   --  Increment the reference counter associated with window.
-
-   procedure Unref (Window : Gdk_Window);
-   --  Decrement the reference counter associated with window.
+   function Get_Window_Type (Window : Gdk_Window) return Gdk_Window_Type;
 
    procedure Window_At_Pointer
      (Win_X  : out Gint;
@@ -146,22 +260,53 @@ package Gdk.Window is
       Source_Y      : Gint;
       Width         : Gint;
       Height        : Gint);
+   --  Obsolete. Use Gdk.Drawable.Draw_Drawable instead.
 
    procedure Gdk_Raise (Window : Gdk_Window);
 
    procedure Lower (Window : Gdk_Window);
 
+   procedure Focus (Window : Gdk_Window; Timestamp : Guint32);
+
    procedure Set_Override_Redirect
      (Window            : Gdk_Window;
       Override_Redirect : Boolean := True);
 
+   procedure Scroll (Window : Gdk_Window; Dx, Dy : Gint);
+
+   procedure Shape_Combine_Mask
+     (Window     : Gdk_Window;
+      Shape_Mask : Gdk.Gdk_Bitmap;
+      Offset_X   : Gint;
+      Offset_Y   : Gint);
+   --  Allow for making shaped (partially transparent) windows.
+   --  This featureis  needed for Drag and Drop for example.
+   --  Shape_Mask can be the mask from Gdk.Pixmap.Create_From_Xpm.
+
+   procedure Shape_Combine_Region
+     (Window       : Gdk_Window;
+      Shape_Region : Gdk.Gdk_Region;
+      Offset_X     : Gint;
+      Offset_Y     : Gint);
+
    procedure Set_Child_Shapes (Window : Gdk_Window);
+   --  Quickly take the shapes of all the child windows of a window and use
+   --  their shapes as the shape mask for this window - useful for container
+   --  windows that do not want to look like a big box.
 
    procedure Merge_Child_Shapes (Window : Gdk_Window);
+   --  Merge (ie add) child shapes to your own window's shape keeping its
+   --  current shape and adding the child shapes to it.
 
    function Is_Visible (Window : Gdk_Window) return Boolean;
 
    function Is_Viewable (Window : Gdk_Window) return Boolean;
+
+   function Get_State (Window : Gdk_Window) return Gdk.Event.Gdk_Window_State;
+
+   function Set_Static_Gravities
+     (Window     : Gdk_Window;
+      Use_Static : Boolean) return Boolean;
 
    procedure Set_Hints
      (Window     : Gdk_Window;
@@ -171,12 +316,20 @@ package Gdk.Window is
       Min_Height : Gint;
       Max_Width  : Gint;
       Max_Height : Gint;
-      Flags      : Gdk.Types.Gdk_Window_Hints);
+      Flags      : Gdk_Window_Hints);
+
+   procedure Set_Type_Hint
+     (Window : Gdk_Window;
+      Hint   : Gdk_Window_Type_Hint);
+
+   procedure Set_Modal_Hint
+     (Window : Gdk_Window;
+      Modal  : Boolean);
 
    procedure Set_Geometry_Hints
      (Window   : Gdk_Window;
-      Geometry : in out Gdk.Types.Gdk_Geometry;
-      Flags    : Gdk.Types.Gdk_Window_Hints);
+      Geometry : in out Gdk_Geometry;
+      Flags    : Gdk_Window_Hints);
 
    procedure Set_Title (Window : Gdk_Window; Title : String);
 
@@ -198,9 +351,6 @@ package Gdk.Window is
    --  Note: the window must be realized first, ie have an associated X11/Win32
    --  window.
 
-   procedure Set_Colormap
-     (Window : Gdk_Window; Colormap : Gdk.Color.Gdk_Colormap);
-
    procedure Get_Geometry
      (Window : Gdk_Window;
       X      : out Gint;
@@ -215,17 +365,6 @@ package Gdk.Window is
      (Window : Gdk_Window;
       X      : out Gint;
       Y      : out Gint);
-
-   procedure Get_Size
-     (Window : Gdk_Window;
-      Width  : out Gint;
-      Height : out Gint);
-
-   function Get_Visual (Window : Gdk_Window) return Gdk.Visual.Gdk_Visual;
-
-   function Get_Colormap (Window : Gdk_Window) return Gdk.Color.Gdk_Colormap;
-
-   function Get_Type (Window : Gdk_Window) return Gdk.Types.Gdk_Window_Type;
 
    procedure Get_Origin
      (Window  : Gdk_Window;
@@ -244,6 +383,10 @@ package Gdk.Window is
       X      : out Gint;
       Y      : out Gint);
 
+   procedure Get_Frame_Extents
+     (Window : Gdk_Window;
+      Rect   : Gdk.Rectangle.Gdk_Rectangle);
+
    procedure Get_Pointer
      (Window : Gdk_Window;
       X      : out Gint;
@@ -255,10 +398,22 @@ package Gdk.Window is
 
    function Get_Toplevel (Window : Gdk_Window) return Gdk_Window;
 
-   function Get_Events (Window : Gdk_Window) return Gdk.Types.Gdk_Event_Mask;
+   --  Gdk_Window_List
+   --
+   function Convert is new Unchecked_Conversion (Gdk_Window, System.Address);
+   function Convert is new Unchecked_Conversion (System.Address, Gdk_Window);
+
+   package Gdk_Window_List is new
+     Glib.Glist.Generic_List (Gpointer => Gdk_Window);
+
+   function Get_Children (Window : Gdk_Window) return Gdk_Window_List.Glist;
+
+   function Peek_Children (Window : Gdk_Window) return Gdk_Window_List.Glist;
+
+   function Get_Events (Window : Gdk_Window) return Gdk.Event.Gdk_Event_Mask;
 
    procedure Set_Events
-     (Window : Gdk_Window; Event_Mask : Gdk.Types.Gdk_Event_Mask);
+     (Window : Gdk_Window; Event_Mask : Gdk.Event.Gdk_Event_Mask);
 
    procedure Set_Icon
      (Window      : Gdk_Window;
@@ -274,47 +429,91 @@ package Gdk.Window is
 
    procedure Set_Decorations
      (Window      : Gdk_Window;
-      Decorations : Gdk.Types.Gdk_Wm_Decoration);
+      Decorations : Gdk_Wm_Decoration);
+
+   procedure Get_Decorations
+     (Window      : Gdk_Window;
+      Decorations : out Gdk_Wm_Decoration;
+      Success     : out Boolean);
 
    procedure Set_Functions
      (Window    : Gdk_Window;
-      Functions : Gdk.Types.Gdk_Wm_Function);
-
-   --  Gdk_Window_List
-   --
-   function Convert is new Unchecked_Conversion (Gdk_Window, System.Address);
-   function Convert is new Unchecked_Conversion (System.Address, Gdk_Window);
-
-   package Gdk_Window_List is new
-     Glib.Glist.Generic_List (Gpointer => Gdk_Window);
-
-   function Get_Children
-     (Window : Gdk_Window) return Gdk_Window_List.Glist;
+      Functions : Gdk_Wm_Function);
 
    function Get_Toplevels return Gdk_Window_List.Glist;
+
+   procedure Iconify (Window : Gdk_Window);
+
+   procedure Deiconify (Window : Gdk_Window);
+
+   procedure Stick (Window : Gdk_Window);
+
+   procedure Unstick (Window : Gdk_Window);
+
+   procedure Maximize (Window : Gdk_Window);
+
+   procedure Unmaximize (Window : Gdk_Window);
+
+   procedure Register_Dnd (Window : Gdk_Window);
+
+   function Get_Update_Area (Window : Gdk_Window) return Gdk_Region;
+
+   procedure Freeze_Updates (Window : Gdk_Window);
+
+   procedure Thaw_Updates (Window : Gdk_Window);
+
+   procedure Process_All_Updates;
+
+   procedure Process_Updates
+     (Window : Gdk_Window; Update_Children : Boolean := True);
+
+   procedure Set_Debug_Updates (Setting : Boolean := True);
+
+   procedure Ref (Window : Gdk_Window);
+   --  Increment the reference counter associated with window.
+
+   procedure Unref (Window : Gdk_Window);
+   --  Decrement the reference counter associated with window.
 
 private
 
    Null_Window : constant Gdk_Window := null;
+   pragma Import (C, Get_Type, "gdk_window_get_type");
    pragma Import (C, Clear, "gdk_window_clear");
    pragma Import (C, Clear_Area, "gdk_window_clear_area");
    pragma Import (C, Clear_Area_E, "gdk_window_clear_area_e");
-   pragma Import (C, Copy_Area, "gdk_window_copy_area");
+   pragma Import (C, Focus, "gdk_window_focus");
+   pragma Import (C, Scroll, "gdk_window_scroll");
+   pragma Import (C, Shape_Combine_Mask, "gdk_window_shape_combine_mask");
+   pragma Import (C, Shape_Combine_Region, "gdk_window_shape_combine_region");
+   pragma Import (C, Get_State, "gdk_window_get_state");
+   pragma Import (C, Set_Type_Hint, "gdk_window_set_type_hint");
+   pragma Import (C, Get_Frame_Extents, "gdk_window_get_frame_extents");
+   pragma Import (C, Iconify, "gdk_window_iconify");
+   pragma Import (C, Deiconify, "gdk_window_deiconify");
+   pragma Import (C, Stick, "gdk_window_stick");
+   pragma Import (C, Unstick, "gdk_window_unstick");
+   pragma Import (C, Maximize, "gdk_window_maximize");
+   pragma Import (C, Unmaximize, "gdk_window_unmaximize");
+   pragma Import (C, Register_Dnd, "gdk_window_register_dnd");
+   pragma Import (C, Get_Update_Area, "gdk_window_get_update_area");
+   pragma Import (C, Freeze_Updates, "gdk_window_freeze_updates");
+   pragma Import (C, Thaw_Updates, "gdk_window_thaw_updates");
+   pragma Import (C, Process_All_Updates, "gdk_window_process_all_updates");
    pragma Import (C, Get_Events, "gdk_window_get_events");
    pragma Import (C, Get_Geometry, "gdk_window_get_geometry");
    pragma Import (C, Get_Parent, "gdk_window_get_parent");
    pragma Import (C, Get_Position, "gdk_window_get_position");
    pragma Import (C, Get_Root_Origin, "gdk_window_get_root_origin");
-   pragma Import (C, Get_Size, "gdk_window_get_size");
    pragma Import (C, Get_Toplevel, "gdk_window_get_toplevel");
-   pragma Import (C, Get_Type, "gdk_window_get_type");
+   pragma Import (C, Get_Window_Type, "gdk_window_get_window_type");
    pragma Import (C, Hide, "gdk_window_hide");
    pragma Import (C, Lower, "gdk_window_lower");
    pragma Import (C, Merge_Child_Shapes, "gdk_window_merge_child_shapes");
    pragma Import (C, Move, "gdk_window_move");
    pragma Import (C, Move_Resize, "gdk_window_move_resize");
    pragma Import (C, Gdk_Raise, "gdk_window_raise");
-   pragma Import (C, Ref, "gdk_window_ref");
+   pragma Import (C, Ref, "gdk_drawable_ref");
    pragma Import (C, Reparent, "gdk_window_reparent");
    pragma Import (C, Resize, "gdk_window_resize");
    pragma Import (C, Set_Child_Shapes, "gdk_window_set_child_shapes");
@@ -326,11 +525,41 @@ private
    pragma Import (C, Set_Hints, "gdk_window_set_hints");
    pragma Import (C, Set_Transient_For, "gdk_window_set_transient_for");
    pragma Import (C, Show, "gdk_window_show");
-   pragma Import (C, Unref, "gdk_window_unref");
+   pragma Import (C, Unref, "gdk_drawable_unref");
    pragma Import (C, Withdraw, "gdk_window_withdraw");
    pragma Import (C, Set_Cursor, "gdk_window_set_cursor");
-   pragma Import (C, Get_Colormap, "gdk_window_get_colormap");
-   pragma Import (C, Get_Visual, "gdk_window_get_visual");
-   pragma Import (C, Set_Colormap, "gdk_window_set_colormap");
    pragma Import (C, Set_Icon, "gdk_window_set_icon");
+
+   for Gdk_Gravity'Size use Gint'Size;
+   for Gdk_Gravity use
+     (Gravity_North_West => 1,
+      Gravity_North      => 2,
+      Gravity_North_East => 3,
+      Gravity_West       => 4,
+      Gravity_Center     => 5,
+      Gravity_East       => 6,
+      Gravity_South_West => 7,
+      Gravity_South      => 8,
+      Gravity_South_East => 9,
+      Gravity_Static     => 10);
+
+   for Gdk_Window_Type_Hint'Size use Gint'Size;
+
+   for Gdk_Window_Type'Size use Gint'Size;
+
+   for Gdk_Window_Class'Size use Gint'Size;
+
+   for Gdk_Window_Edge'Size use Gint'Size;
+
 end Gdk.Window;
+
+--  missing:
+--  gdk_set_sm_client_id
+--  gdk_window_begin_paint_rect
+--  gdk_window_begin_paint_region
+--  gdk_window_end_paint
+--  gdk_window_begin_resize_drag
+--  gdk_window_begin_move_drag
+--  gdk_window_invalidate_rect
+--  gdk_window_invalidate_region
+--  gdk_window_constrain_size
