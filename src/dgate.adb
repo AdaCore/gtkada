@@ -96,7 +96,7 @@ begin
 
 exception
    when others =>
-      Put_Line
+      Ada.Text_IO.Put_Line
         ("DGATE: Internal error. This usually means that the specified");
-      Put_Line ("project file has some syntax errors.");
+      Ada.Text_IO.Put_Line ("project file has some syntax errors.");
 end DGate;
