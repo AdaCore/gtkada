@@ -532,7 +532,6 @@ package body Gtkada.Canvas is
    is
       Alloc  : constant Gtk_Allocation_Access := To_Allocation (Args, 1);
       Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
-
    begin
       Set_Page_Size (Canvas.Hadj, Gdouble (Alloc.Width));
       Set_Step_Increment (Canvas.Hadj, 10.0);
@@ -543,6 +542,11 @@ package body Gtkada.Canvas is
       Set_Page_Increment (Canvas.Vadj, Get_Page_Size (Canvas.Vadj) / 2.0);
 
       Update_Adjustments (Canvas);
+
+      if Canvas.Show_Item /= null then
+         Show_Item (Canvas, Canvas.Show_Item);
+         Canvas.Show_Item := null;
+      end if;
    end Size_Allocate;
 
    -------------------
@@ -2851,8 +2855,13 @@ package body Gtkada.Canvas is
         To_Canvas_Coordinates (Canvas, Y + Gint (Item.Coord.Height));
       Adj_Changed : Boolean := False;
    begin
-      --  Realize it first, so that there is a size allocated
-      Realize (Canvas);
+      --  If no size was allocated yet, memorize the item for later (see
+      --  the callback for size_allocate)
+      if Get_Allocation_Width (Canvas) = 1
+        or else Get_Allocation_Height (Canvas) = 1
+      then
+         Canvas.Show_Item := Canvas_Item (Item);
+      end if;
 
       --  Do we need to scroll the canvas to the right to show the item?
 
