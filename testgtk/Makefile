@@ -15,7 +15,7 @@ GTKADA_CONFIG=../gtkada-config
 ALL_CFLAGS = $(CFLAGS) `gtk-config --cflags`
 
 GNATCC = gcc
-GNATFLAGS = -gnatwu -g
+GNATFLAGS = -g
 
 GNATMAKE = gnatmake
 GNATMAKEFLAGS = $(GNATFLAGS)
