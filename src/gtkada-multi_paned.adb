@@ -199,31 +199,43 @@ package body Gtkada.Multi_Paned is
       Tmp : Child_Description_Access;
       H   : Natural;
       Alloc : Gtk_Allocation;
+
+      function Image (Orient : Gtk_Orientation) return String;
+      --  return the string to display for Orient
+
+      function Image (Orient : Gtk_Orientation) return String is
+      begin
+         case Orient is
+            when Orientation_Horizontal => return "horiz";
+            when Orientation_Vertical   => return "vert";
+         end case;
+      end Image;
+
    begin
       if Child = null then
          Put_Line ("<null>");
 
       elsif Child.Is_Widget then
          Compute_Child_Position (Split, Child, Alloc);
-         Put_Line (Prefix & "<widget req_width=""" & Child.Width'Img
-                   & """ req_height="""   & Child.Height'Img
-                   & """ width=""" & Alloc.Width'Img
-                   & """ height=""" & Alloc.Height'Img
-                   & """ visible=""" & Is_Visible (Child)'Img
-                   & """ fixed_size=""" & Child.Fixed_Size'Img
-                   & """ widget="""
+         Put_Line (Prefix & "<w req_w=" & Child.Width'Img
+                   & " req_h="   & Child.Height'Img
+                   & " w=" & Alloc.Width'Img
+                   & " h=" & Alloc.Height'Img
+                   & " visible=" & Is_Visible (Child)'Img
+                   & " fixed=" & Child.Fixed_Size'Img
+                   & " w="
                    & System.Address_Image (Child.Widget.all'Address)
-                   & """>");
+                   & ">");
       else
          Compute_Child_Position (Split, Child, Alloc);
-         Put_Line (Prefix & "<pane orientation="
-                   & Child.Orientation'Img
-                   & """ handles=""" & Child.Handles'Length'Img
-                   & """ req_width=""" & Child.Width'Img
-                   & """ req_height=""" & Child.Height'Img
-                   & """ width=""" & Alloc.Width'Img
-                   & """ height=""" & Alloc.Height'Img
-                   & """>");
+         Put_Line (Prefix & "<p orient="
+                   & Image (Child.Orientation)
+                   & " handles=""" & Child.Handles'Length'Img
+                   & " req_w=" & Child.Width'Img
+                   & " req_h=" & Child.Height'Img
+                   & " w=" & Alloc.Width'Img
+                   & " h=" & Alloc.Height'Img
+                   & ">");
          Tmp := Child.First_Child;
          H := Child.Handles'First;
          while Tmp /= null loop
@@ -2146,13 +2158,25 @@ package body Gtkada.Multi_Paned is
 
             Current.Fixed_Size := Fixed_Size;
 
+            if not Realized_Is_Set (Win) then
+               Current.Width      := Width;
+               Current.Height     := Height;
+            end if;
+
             Move_Handles (Win, Current.Parent, Win.Selected_Handle_Index);
+            Win.Selected_Handle_Parent := null;
             exit;
          end if;
 
          Next (Iter);
       end loop;
 
+      if Traces then
+         Put_Line ("Set_Size on "
+                   & System.Address_Image (Widget.all'Address)
+                   & " to " & Width'Img & Height'Img);
+         Dump (Win, Win.Children);
+      end if;
       Queue_Resize (Win);
    end Set_Size;
 
