@@ -52,6 +52,15 @@ with Gtk.Dialog;
 with Gtk.Drawing_Area;
 with Gtk.Editable;
 with Gtk.Event_Box;
+with Gtk.Extra.Plot;
+with Gtk.Extra.Plot_Canvas;
+with Gtk.Extra.Plot_Layout;
+with Gtk.Extra.Sheet;
+with Gtk.Extra.Combo_Box;
+with Gtk.Extra.Color_Combo;
+with Gtk.Extra.Border_Combo;
+with Gtk.Extra.Font_Combo;
+with Gtk.Extra.Item_Entry;
 with Gtk.File_Selection;
 with Gtk.Fixed;
 with Gtk.Font_Selection;
@@ -153,6 +162,8 @@ package body Gtk.Type_Conversion is
          when 'B' =>
             if Type_Name = "GtkBin" then
                return new Gtk.Bin.Gtk_Bin_Record;
+            elsif Type_Name = "GtkBorderCombo" then
+               return new Gtk.Extra.Border_Combo.Gtk_Border_Combo_Record;
             elsif Type_Name = "GtkBox" then
                return new Gtk.Box.Gtk_Box_Record;
             elsif Type_Name = "GtkButton" then
@@ -169,6 +180,8 @@ package body Gtk.Type_Conversion is
                return new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record;
             elsif Type_Name = "GtkCList" then
                return new Gtk.Clist.Gtk_Clist_Record;
+            elsif Type_Name = "GtkColorCombo" then
+               return new Gtk.Extra.Color_Combo.Gtk_Color_Combo_Record;
             elsif Type_Name = "GtkColorSelection" then
                return new Gtk.Color_Selection.Gtk_Color_Selection_Record;
             elsif Type_Name = "GtkColorSelectionDialog" then
@@ -176,6 +189,8 @@ package body Gtk.Type_Conversion is
                  Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog_Record;
             elsif Type_Name = "GtkCombo" then
                return new Gtk.Combo.Gtk_Combo_Record;
+            elsif Type_Name = "GtkComboBox" then
+               return new Gtk.Extra.Combo_Box.Gtk_Combo_Box_Record;
             elsif Type_Name = "GtkContainer" then
                return new Gtk.Container.Gtk_Container_Record;
             elsif Type_Name = "GtkCtree" then
@@ -204,6 +219,8 @@ package body Gtk.Type_Conversion is
                return new Gtk.File_Selection.Gtk_File_Selection_Record;
             elsif Type_Name = "GtkFixed" then
                return new Gtk.Fixed.Gtk_Fixed_Record;
+            elsif Type_Name = "GtkFontCombo" then
+               return new Gtk.Extra.Font_Combo.Gtk_Font_Combo_Record;
             elsif Type_Name = "GtkFontSelection" then
                return new Gtk.Font_Selection.Gtk_Font_Selection_Record;
             elsif Type_Name = "GtkFontSelectionDialog" then
@@ -227,7 +244,9 @@ package body Gtk.Type_Conversion is
                return new Gtk.Paned.Gtk_Paned_Record;
             end if;
          when 'I' =>
-            if Type_Name = "GtkImage" then
+            if Type_Name = "GtkIentry" then
+               return new Gtk.Extra.Item_Entry.Gtk_IEntry_Record;
+            elsif Type_Name = "GtkImage" then
                return new Gtk.Image.Gtk_Image_Record;
             elsif Type_Name = "GtkInputDialog" then
                return new Gtk.Input_Dialog.Gtk_Input_Dialog_Record;
@@ -275,6 +294,12 @@ package body Gtk.Type_Conversion is
                return new Gtk.Pixmap.Gtk_Pixmap_Record;
             elsif Type_Name = "GtkPlug" then
                return new Gtk.Plug.Gtk_Plug_Record;
+            elsif Type_Name = "GtkPlot" then
+               return new Gtk.Extra.Plot.Gtk_Plot_Record;
+            elsif Type_Name = "GtkPlotCanvas" then
+               return new Gtk.Extra.Plot_Canvas.Gtk_Plot_Canvas_Record;
+            elsif Type_Name = "GtkPlotLayout" then
+               return new Gtk.Extra.Plot_Layout.Gtk_Plot_Layout_Record;
             elsif Type_Name = "GtkPreview" then
                return new Gtk.Preview.Gtk_Preview_Record;
             elsif Type_Name = "GtkProgress" then
@@ -301,6 +326,8 @@ package body Gtk.Type_Conversion is
                return new Gtk.Scrolled_Window.Gtk_Scrolled_Window_Record;
             elsif Type_Name = "GtkSeparator" then
                return new Gtk.Separator.Gtk_Separator_Record;
+            elsif Type_Name = "GtkSheet" then
+               return new Gtk.Extra.Sheet.Gtk_Sheet_Record;
             elsif Type_Name = "GtkSocket" then
                return new Gtk.Socket.Gtk_Socket_Record;
             elsif Type_Name = "GtkSpinButton" then
