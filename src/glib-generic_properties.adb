@@ -215,15 +215,10 @@ package body Glib.Generic_Properties is
             Value  : in out GValue);
          pragma Import (C, Internal, "g_object_set_property");
 
-         Boxed : Boxed_Access;
          Val : GValue;
       begin
          Init (Val, Get_Type);
-         Boxed := new Boxed_Type' (Value);
-         --  Memory is freed automatically by gtk+, see g_value_unset and
-         --  gdk_color_get_type, where the free() function is registered
-
-         Set_Boxed (Val, Boxed.all'Address);
+         Set_Boxed (Val, Copy (Value));
          Internal (Get_Object (Object), Name, Val);
       end Set_Property;
 
