@@ -189,3 +189,23 @@
  	      size++;
  	  size++;
  	  GDK_NOTE (DND, g_print ("...as text: %.40s\n", data));
+
+
+#########################################
+# Selection problem B430-008
+#########################################
+
+
+--- save/gtktextview.c	Wed Jul  3 12:42:28 2002
++++ gtktextview.c	Wed Jul  3 11:52:51 2002
+@@ -3866,8 +3866,11 @@
+ 
+   text_view = GTK_TEXT_VIEW (widget);
+ 
++  /* 
+   if (event->window != text_view->text_window->bin_window)
+     return FALSE;
++  */
+ 
+   if (event->button == 1)
+     {
