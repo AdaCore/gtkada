@@ -643,6 +643,38 @@ package Gtk.Widget is
    --  rather than Gdk.Drawable.Draw_Text
    --  Text must be a valid Utf8 text, see Glib.Convert.
 
+   procedure Modify_Fg
+     (Widget     : access Gtk_Widget_Record;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color);
+   --  Sets the foreground color for a widget in a particular state.  All
+   --  other style values are left untouched.
+
+   procedure Modify_Bg
+     (Widget     : access Gtk_Widget_Record;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color);
+   --  Sets the background color for a widget in a particular state.  All
+   --  other style values are left untouched.
+
+   procedure Modify_Text
+     (Widget     : access Gtk_Widget_Record;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color);
+   --  Sets the text color for a widget in a particular state.  All other
+   --  style values are left untouched. The text color is the foreground
+   --  color used along with the base color (see Modify_Base)
+   --  for widgets such as Gtk_Entry and Gtk_Text_View.
+
+   procedure Modify_Base
+     (Widget     : access Gtk_Widget_Record;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color);
+   --  Sets the base color for a widget in a particular state.
+   --  All other style values are left untouched. The base color
+   --  is the background color used along with the text color
+   --  (see Modify_Text) for widgets such as Gtk_Entry and Gtk_Text_View.
+
    procedure Modify_Font
      (Widget : access Gtk_Widget_Record;
       Desc   : Pango.Font.Pango_Font_Description);
@@ -1684,10 +1716,6 @@ end Gtk.Widget;
 --  - gtk_widget_mnemonic_activate
 --  - gtk_widget_region_intersect
 --  - gtk_widget_is_focus
---  - gtk_widget_modify_fg
---  - gtk_widget_modify_bg
---  - gtk_widget_modify_text
---  - gtk_widget_modify_base
 --  - gtk_widget_class_install_style_property
 --  - gtk_widget_class_install_style_property_parser
 --  - gtk_widget_style_get_property

@@ -979,6 +979,114 @@ package body Gtk.Widget is
       return Internal (Get_Object (Widget));
    end Get_Style;
 
+   ---------------
+   -- Modify_Fg --
+   ---------------
+
+   procedure Modify_Fg
+     (Widget     : access Gtk_Widget_Record;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Widget : System.Address;
+         State  : Enums.Gtk_State_Type;
+         Color  : System.Address);
+      pragma Import (C, Internal, "gtk_widget_modify_fg");
+
+      use type Gdk.Color.Gdk_Color;
+      Col     : aliased Gdk.Color.Gdk_Color := Color;
+      Color_A : System.Address := Col'Address;
+
+   begin
+      if Color = Gdk.Color.Null_Color then
+         Color_A := System.Null_Address;
+      end if;
+
+      Internal (Get_Object (Widget), State_Type, Color_A);
+   end Modify_Fg;
+
+   ---------------
+   -- Modify_Bg --
+   ---------------
+
+   procedure Modify_Bg
+     (Widget     : access Gtk_Widget_Record;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Widget : System.Address;
+         State  : Enums.Gtk_State_Type;
+         Color  : System.Address);
+      pragma Import (C, Internal, "gtk_widget_modify_bg");
+
+      use type Gdk.Color.Gdk_Color;
+      Col     : aliased Gdk.Color.Gdk_Color := Color;
+      Color_A : System.Address := Col'Address;
+
+   begin
+      if Color = Gdk.Color.Null_Color then
+         Color_A := System.Null_Address;
+      end if;
+
+      Internal (Get_Object (Widget), State_Type, Color_A);
+   end Modify_Bg;
+
+   -----------------
+   -- Modify_Text --
+   -----------------
+
+   procedure Modify_Text
+     (Widget     : access Gtk_Widget_Record;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Widget : System.Address;
+         State  : Enums.Gtk_State_Type;
+         Color  : System.Address);
+      pragma Import (C, Internal, "gtk_widget_modify_text");
+
+      use type Gdk.Color.Gdk_Color;
+      Col     : aliased Gdk.Color.Gdk_Color := Color;
+      Color_A : System.Address := Col'Address;
+
+   begin
+      if Color = Gdk.Color.Null_Color then
+         Color_A := System.Null_Address;
+      end if;
+
+      Internal (Get_Object (Widget), State_Type, Color_A);
+   end Modify_Text;
+
+   -----------------
+   -- Modify_Base --
+   -----------------
+
+   procedure Modify_Base
+     (Widget     : access Gtk_Widget_Record;
+      State_Type : Enums.Gtk_State_Type;
+      Color      : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Widget : System.Address;
+         State  : Enums.Gtk_State_Type;
+         Color  : System.Address);
+      pragma Import (C, Internal, "gtk_widget_modify_base");
+
+      use type Gdk.Color.Gdk_Color;
+      Col     : aliased Gdk.Color.Gdk_Color := Color;
+      Color_A : System.Address := Col'Address;
+
+   begin
+      if Color = Gdk.Color.Null_Color then
+         Color_A := System.Null_Address;
+      end if;
+
+      Internal (Get_Object (Widget), State_Type, Color_A);
+   end Modify_Base;
+
    -----------------
    -- Modify_Font --
    -----------------
