@@ -976,14 +976,27 @@ package body Gtk.Widget is
    ------------------
 
    procedure Set_Parent (Widget : access Gtk_Widget_Record;
-                         Parent : in     Gtk_Widget)
+                         Parent : access Gtk_Widget_Record'Class)
    is
       procedure Internal (Widget, Parent : in System.Address);
       pragma Import (C, Internal, "gtk_widget_set_parent");
-
    begin
       Internal (Get_Object (Widget), Get_Object (Parent));
    end Set_Parent;
+
+   -----------------------
+   -- Set_Parent_Window --
+   -----------------------
+
+   procedure Set_Parent_Window
+     (Widget : access Gtk_Widget_Record;
+      Window : Gdk.Window.Gdk_Window)
+   is
+      procedure Internal (Widget : in System.Address; Parent : Gdk_Window);
+      pragma Import (C, Internal, "gtk_widget_set_parent_window");
+   begin
+      Internal (Get_Object (Widget), Window);
+   end Set_Parent_Window;
 
    ------------------
    -- Set_Rc_Style --

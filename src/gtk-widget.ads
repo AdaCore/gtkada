@@ -543,10 +543,17 @@ package Gtk.Widget is
 
    procedure Set_Parent
      (Widget : access Gtk_Widget_Record;
-      Parent : in Gtk_Widget);
+      Parent : access Gtk_Widget_Record'Class);
    --  Modify the parent for the widget.
    --  This is not the recommended way to do this, you should use
    --  Gtk.Container.Add or Gtk.Box.Pack_Start instead.
+
+   procedure Set_Parent_Window
+     (Widget : access Gtk_Widget_Record;
+      Window : Gdk.Window.Gdk_Window);
+   --  Set the parent window for the actual Gdk_Window of the widget. This sets
+   --  up required internal fields, and should be used only when you implement
+   --  your own container, as opposed to using one of the standard containers.
 
    function Get_Parent (Widget : access Gtk_Widget_Record) return Gtk_Widget;
    --  Return the parent of the widget, or null if Widget is a toplevel
@@ -1260,7 +1267,6 @@ end Gtk.Widget;
 --  - gtk_widget_getv
 --  - gtk_widget_set
 --  - gtk_widget_setv
---  - gtk_widget_set_parent_window  <= mainly internal
 --  - gtk_widget_get_parent_window  <= mainly internal
 --  - gtk_widget_hide_on_delete     <= used as callback
 --  - gtk_widget_set_composite_name
