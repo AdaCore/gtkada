@@ -1,4 +1,5 @@
 with Ada.Text_IO;
+with Glib; use Glib;
 with Gtk.Box;    use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Color_Selection; use Gtk.Color_Selection;
@@ -9,6 +10,7 @@ with Gtk.Curve; use Gtk.Curve;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Gamma_Curve; use Gtk.Gamma_Curve;
 with Gtk.Hbox;   use Gtk.Hbox;
+with Gtk.Main; use Gtk.Main;
 with Gtk.Menu; use Gtk.Menu;
 with Gtk.Menu_Bar; use Gtk.Menu_Bar;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
@@ -292,7 +294,7 @@ package body Test is
 
       Show (A_Window);
 
-      Gtk.Main;
+      Gtk.Main.Main;
    end Main;
 
 end Test;
