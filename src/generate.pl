@@ -1206,12 +1206,19 @@ sub convert_ada_type
 
     } elsif ($type eq "Root_Type") {
 	return "Root_Type";
+
+    } elsif ($type eq "GtkRequisition*") {
+      $with_list {"with Gtk.Widget"} ++;
+      return "Gtk.Widget.Gtk_Requisition";
+
     } elsif ($type =~ /GSList\*/) {
       $with_list {"with Glib.GSList"} ++;
       return "GSList";
+
     } elsif ($type =~ /Gdk([^*]+)\*/) {
       $with_list {"with Gdk.$1"} ++;
       return "Gdk.$1.Gdk_$1";
+
     } elsif ($type =~ /(Gtk|Gnome)([^*]+)\*/) {
       my ($t) = $2;
       my ($prefix) = $1;
