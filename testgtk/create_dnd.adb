@@ -458,7 +458,7 @@ package body Create_Dnd is
       if Get_Targets (Context) /= Guint_List.Null_List then
          Get_Data (Widget, Context,
                    Gdk_Atom (Guint_List.Get_Data (Get_Targets (Context))),
-                   Time);
+                   Guint32 (Time));
          return True;
       end if;
       return False;
@@ -492,9 +492,11 @@ package body Create_Dnd is
         and then Get_Format (Data) = 8
       then
          Put_Log ("Received " & Get_Data_As_String (Data) & " in trashcan");
-         Finish (Context, Success => True, Del => False, Time => Time);
+         Finish
+           (Context, Success => True, Del => False, Time => Guint32 (Time));
       else
-         Finish (Context, Success => False, Del => False, Time => Time);
+         Finish
+           (Context, Success => False, Del => False, Time => Guint32 (Time));
       end if;
    end Target_Drag_Data_Received;
 
@@ -529,7 +531,7 @@ package body Create_Dnd is
       end if;
 
       Source_Widget := Get_Source_Widget (Context);
-      Drag_Status (Context, Get_Suggested_Action (Context), Time);
+      Drag_Status (Context, Get_Suggested_Action (Context), Guint32 (Time));
 
       return True;
    end Target_Drag_Motion;
@@ -598,10 +600,11 @@ package body Create_Dnd is
          Put_Log ("Received "
                   & Get_Data_As_String (Data)
                   & " in label");
-         Gtk.Dnd.Finish (Context, Success => True, Del => False, Time => Time);
+         Gtk.Dnd.Finish
+           (Context, Success => True, Del => False, Time => Guint32 (Time));
       else
-         Gtk.Dnd.Finish (Context, Success => False, Del => False,
-                         Time => Time);
+         Gtk.Dnd.Finish
+           (Context, Success => False, Del => False, Time => Guint32 (Time));
       end if;
    end Label_Drag_Data_Received;
 

@@ -584,17 +584,17 @@ package body Create_Ctree is
             when 0 =>
                Gdk.Color.Set_Rgb
                  (Tmp_Color,
-                  Red => 10_000 * Guint (Cur_Depth mod 6),
+                  Red => 10_000 * Guint16 (Cur_Depth mod 6),
                   Green => 0,
-                  Blue => 65_535 - Guint ((I * 10_000) mod 65_535));
+                  Blue => 65_535 - Guint16 ((I * 10_000) mod 65_535));
                Gtk.Style.Set_Base (Style,
                                    State_Type => State_Normal,
                                    Color => Tmp_Color);
             when 1 =>
                Gdk.Color.Set_Rgb
                  (Tmp_Color,
-                  Red => 10_000 * Guint (Cur_Depth mod 6),
-                  Green => 65_535 - Guint ((I * 10_000) mod 65_535),
+                  Red => 10_000 * Guint16 (Cur_Depth mod 6),
+                  Green => 65_535 - Guint16 ((I * 10_000) mod 65_535),
                   Blue => 0);
                Gtk.Style.Set_Base (Style,
                                    State_Type => State_Normal,
@@ -602,9 +602,9 @@ package body Create_Ctree is
             when others =>
                Gdk.Color.Set_Rgb
                  (Tmp_Color,
-                  Red => 65_535 - Guint ((I * 10_000) mod 65_535),
+                  Red => 65_535 - Guint16 ((I * 10_000) mod 65_535),
                   Green => 0,
-                  Blue => 10_000 * Guint (Cur_Depth mod 6));
+                  Blue => 10_000 * Guint16 (Cur_Depth mod 6));
                Gtk.Style.Set_Base (Style,
                                    State_Type => State_Normal,
                                    Color => Tmp_Color);
