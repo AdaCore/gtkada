@@ -27,9 +27,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  This package contains support for the Glade GUI builder. It provides
---  routines to generate Ada code and create widgets dynamically from an
---  XML definition file.
+--  <description>
+--
+--  This package contains high level support for the Glade GUI builder.
+--  It provides routines to generate Ada code and create widgets dynamically
+--  from an XML definition file.
+--  @pxref{Package_Glib.Glade} for the low level GUI builder support.
+--
+--  </description>
 
 with Gtk.Object;
 with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
@@ -45,12 +50,14 @@ package Gtk.Glade is
       Dgate : Dynamic_Generate_Ptr;
    end record;
 
+   --  <doc_ignore>
    procedure Generic_Ptr (N : Node_Ptr; File : File_Type);
    --  Dummy Generate_Ptr that does nothing.
  
    procedure Generic_DPtr
      (Object : in out Gtk.Object.Gtk_Object; N : Node_Ptr);
    --  Dummy Dynamic_Generate_Ptr that does nothing.
+   --  </doc_ignore>
  
    function Get_Gate (Class : String) return Generate_Ptr;
    --  Return a Generate_Ptr corresponding to a specific Class.
@@ -72,7 +79,7 @@ package Gtk.Glade is
    --  Parse File, create and display the corresponding widgets.
 
    procedure Instantiate (N : Node_Ptr; Display : Boolean := True);
-   --  Create the widgets corresponding to N and its children, and
-   --  optionally display them.
+   --  Create the widgets corresponding to N and its children.
+   --  If Display is True, display them.
 
 end Gtk.Glade;
