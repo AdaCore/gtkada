@@ -27,19 +27,19 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk;  use Gdk;
-with Glib; use Glib;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Frame; use Gtk.Frame;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Object; use Gtk.Object;
-with Gtk.Tips_Query; use Gtk.Tips_Query;
+with Gdk;               use Gdk;
+with Glib;              use Glib;
+with Gtk.Arguments;     use Gtk.Arguments;
+with Gtk.Box;           use Gtk.Box;
+with Gtk.Button;        use Gtk.Button;
+with Gtk.Frame;         use Gtk.Frame;
+with Gtk.Handlers;      use Gtk.Handlers;
+with Gtk.Object;        use Gtk.Object;
+with Gtk.Tips_Query;    use Gtk.Tips_Query;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Gtk.Tooltips; use Gtk.Tooltips;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
-
+with Gtk.Tooltips;      use Gtk.Tooltips;
+with Gtk.Widget;        use Gtk.Widget;
+with Gtk;               use Gtk;
 with Ada.Text_IO;
 
 package body Create_Tooltips is
@@ -47,10 +47,30 @@ package body Create_Tooltips is
    package Tooltips_Data is new User_Data (Gtk_Tooltips);
    --  This is required to set tooltips for a widget.
 
-   package Query_Cb is new Object_Callback (Gtk_Tips_Query_Record);
-   package Entered_Cb is new Tips_Query_Callback (Gtk_Toggle_Button_Record);
+   package Query_Cb is new Handlers.Callback (Gtk_Tips_Query_Record);
+   package Entered_Cb is new Handlers.User_Callback
+     (Gtk_Tips_Query_Record, Gtk_Toggle_Button);
+   package Selected_Cb is new Handlers.Return_Callback
+     (Gtk_Tips_Query_Record, Gint);
 
-   procedure Tooltips_Destroy (Widget : access Gtk_Widget_Record) is
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "@bGtk_Tooltips@B allow you to provide short help texts to the"
+        & " user. This also requires a @bGtk_Tips_Query@B widget, that"
+        & " displays tooltips and has a ""What's this"" functionnality."
+        & " Through the @bwidget_entered@B and @bwidget_selected@B signals,"
+        & " you can decide to display some extensive help.";
+   end Help;
+
+   ----------------------
+   -- Tooltips_Destroy --
+   ----------------------
+
+   procedure Tooltips_Destroy (Widget : access Gtk_Widget_Record'Class) is
       Tt : Gtk_Tooltips;
    begin
       Tt := Tooltips_Data.Get (Widget, "tooltips");
@@ -58,14 +78,18 @@ package body Create_Tooltips is
       Destroy (Widget);
    end Tooltips_Destroy;
 
-   procedure Widget_Entered (Tips_Query  : access Gtk_Tips_Query_Record;
-                             Widget      : access Gtk_Widget_Record'Class;
-                             Tip_Text    : in String;
-                             Tip_Private : in String;
-                             Toggle      : access Gtk_Toggle_Button_Record'Class)
+   --------------------
+   -- Widget_Entered --
+   --------------------
+
+   procedure Widget_Entered (Tips_Query  : access Gtk_Tips_Query_Record'Class;
+                             Params      : in Gtk.Arguments.Gtk_Args;
+                             Toggle      : in Gtk_Toggle_Button)
    is
-      pragma Warnings (Off, Widget);
-      pragma Warnings (Off, Tip_Private);
+      --  Widget    : Gtk_Widget := Gtk_Widget (To_Object (Params, 1));
+      Tip_Text    : String := To_String (Params, 2);
+      --  Tip_Private : String := To_String (Params, 3);
+
    begin
       if Is_Active (Toggle) then
          if Tip_Text'Length /= 0 then
@@ -78,15 +102,18 @@ package body Create_Tooltips is
       end if;
    end Widget_Entered;
 
-   procedure Widget_Selected (Tips_Query  : access Gtk_Tips_Query_Record;
-                              Widget      : access Gtk_Widget_Record'Class;
-                              Tip_Text    : in String;
-                              Tip_Private : in String;
-                              Data        : access Gtk_Toggle_Button_Record'Class)
+   ---------------------
+   -- Widget_Selected --
+   ---------------------
+
+   function Widget_Selected (Tips_Query  : access Gtk_Tips_Query_Record'Class;
+                             Params      : in Gtk.Arguments.Gtk_Args)
+                            return Gint
    is
+      Widget    : Gtk_Widget := Gtk_Widget (To_Object (Params, 1));
+      --  Tip_Text    : String := To_String (Params, 2);
+      Tip_Private : String := To_String (Params, 3);
       pragma Warnings (Off, Tips_Query);
-      pragma Warnings (Off, Tip_Text);
-      pragma Warnings (Off, Data);
    begin
       if Is_Created (Widget.all) then
          Ada.Text_IO.Put ("Help ");
@@ -98,10 +125,23 @@ package body Create_Tooltips is
          Ada.Text_IO.Put_Line (" requested for "
                                & Type_Name (Get_Type (Widget)));
       end if;
+      return 0;
    end Widget_Selected;
 
+   -----------------
+   -- Start_Query --
+   -----------------
+
+   procedure Start_Query (Tips_Query : access Gtk_Tips_Query_Record'Class) is
+   begin
+      Gtk.Tips_Query.Start_Query (Tips_Query);
+   end Start_Query;
+
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id         : Guint;
       Box1,
         Box2,
         Box3     : Gtk_Box;
@@ -152,17 +192,19 @@ package body Create_Tooltips is
 
       Gtk_New (Button, "[?]");
       Pack_Start (Box3, Button, False, False, 0);
-      Id := Query_Cb.Connect (Button, "clicked", Start_Query'Access,
-                              Tips_Query);
+      Query_Cb.Object_Connect
+        (Button, "clicked",
+         Query_Cb.To_Marshaller (Start_Query'Access),
+         Slot_Object => Tips_Query);
       Set_Tip (Tooltips, Button, "Start the Tooltips Inspector",
                "ContextHelp/buttons/?");
 
       Pack_Start (Box3, Tips_Query, False, False, 0);
       Set_Caller (Tips_Query, Button);
-      Id := Entered_Cb.Connect (Tips_Query, "widget_entered",
-                                Widget_Entered'Access, Toggle);
-      Id := Entered_Cb.Connect (Tips_Query, "widget_selected",
-                                Widget_Selected'Access, Toggle);
+      Entered_Cb.Connect (Tips_Query, "widget_entered",
+                          Widget_Entered'Access, Toggle);
+      Selected_Cb.Connect (Tips_Query, "widget_selected",
+                           Widget_Selected'Access);
 
       Gtk_New (Frame2, "Tooltips Inspector");
       Set_Border_Width (Frame2, 0);

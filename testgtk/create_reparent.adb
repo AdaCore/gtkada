@@ -27,15 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk;  use Gdk;
-with Glib; use Glib;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Frame; use Gtk.Frame;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
+with Gdk;          use Gdk;
+with Glib;         use Glib;
+with Gtk.Box;      use Gtk.Box;
+with Gtk.Button;   use Gtk.Button;
+with Gtk.Frame;    use Gtk.Frame;
+with Gtk.Label;    use Gtk.Label;
+with Gtk.Handlers; use Gtk.Handlers;
+with Gtk.Widget;   use Gtk.Widget;
+with Gtk;          use Gtk;
 
 with Ada.Text_IO;
 
@@ -46,12 +46,31 @@ package body Create_Reparent is
    end record;
    type My_Button is access all My_Button_Record'Class;
 
-   package Box_Cb is new Signal.Callback (My_Button_Record, Gtk_Box);
-   package Int_Cb is new Signal.Two_Callback_Gtk
-     (Gtk_Label_Record, Gint, Gtk_Widget_Record);
+   package Box_Cb is new Handlers.User_Callback (My_Button_Record, Gtk_Box);
+   package Int_Cb is new Handlers.User_Callback
+     (Gtk_Label_Record, Gint);
 
-   procedure Set_Parent_Signal (Child      : access Gtk_Label_Record;
-                                Old_Parent : access Gtk_Widget_Record;
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "This demo does not demonstrate a widget. Instead, it shows how"
+        & " you can dynamically change the parent of a widget. The widget is"
+        & " automatically redisplayed inside its new parent, and delete from"
+        & " the old one."
+        & ASCII.LF
+        & "This demo also shows how to extend an existing @bGtk_Button@B to"
+        & " include specific data to it.";
+   end Help;
+
+   -----------------------
+   -- Set_Parent_Signal --
+   -----------------------
+
+   procedure Set_Parent_Signal (Child      : access Gtk_Label_Record'Class;
+                                Old_Parent : access Gtk_Widget_Record'Class;
                                 Data       : in Gint)
    is
    begin
@@ -76,15 +95,22 @@ package body Create_Reparent is
       Ada.Text_IO.Put_Line (" data = " & Gint'Image (Data));
    end Set_Parent_Signal;
 
-   procedure Reparent_Label (Widget     : access My_Button_Record;
+   --------------------
+   -- Reparent_Label --
+   --------------------
+
+   procedure Reparent_Label (Widget     : access My_Button_Record'Class;
                              New_Parent : in Gtk_Box)
    is
    begin
       Reparent (Widget.Label, New_Parent);
    end Reparent_Label;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id        : Guint;
       Box1      : Gtk_Box;
       Box2      : Gtk_Box;
       Box3      : Gtk_Box;
@@ -112,13 +138,16 @@ package body Create_Reparent is
 
       Myb := new My_Button_Record;
       Initialize (Myb, "switch");
-      Id := Box_Cb.Connect (Myb, "clicked", Reparent_Label'Access, Box3);
+      Box_Cb.Connect (Myb, "clicked",
+                      Box_Cb.To_Marshaller (Reparent_Label'Access),
+                      Box3);
       Myb.Label := Label;
       Pack_Start (Box3, Myb, False, True, 0);
 
       Pack_Start (Box3, Label, False, True, 0);
-      Id := Int_Cb.Connect (Label, "parent_set", Set_Parent_Signal'Access,
-                            42);
+      Int_Cb.Connect (Label, "parent_set",
+                      Int_Cb.To_Marshaller (Set_Parent_Signal'Access),
+                      42);
       Show (Label);
 
       Gtk_New (Frame2, "Frame 2");
@@ -129,7 +158,9 @@ package body Create_Reparent is
 
       Myb := new My_Button_Record;
       Initialize (Myb, "switch");
-      Id := Box_Cb.Connect (Myb, "clicked", Reparent_Label'Access, Box3);
+      Box_Cb.Connect (Myb, "clicked",
+                      Box_Cb.To_Marshaller (Reparent_Label'Access),
+                      Box3);
       Myb.Label := Label;
       Pack_Start (Box3, Myb, False, True, 0);
 

@@ -27,19 +27,19 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Box; use Gtk.Box;
+with Glib;             use Glib;
+with Gtk.Box;          use Gtk.Box;
 with Gtk.Check_Button; use Gtk.Check_Button;
-with Gtk.Combo; use Gtk.Combo;
-with Gtk.GEntry; use Gtk.GEntry;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk; use Gtk;
+with Gtk.Combo;        use Gtk.Combo;
+with Gtk.GEntry;       use Gtk.GEntry;
+with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Handlers;     use Gtk.Handlers;
+with Gtk;              use Gtk;
 
 package body Create_Entry is
 
-   package Entry_Cb is new Signal.Callback
-     (Base_Type => Gtk_Check_Button_Record, Data_Type => Gtk_Entry);
+   package Entry_Cb is new Handlers.User_Callback
+     (Gtk_Check_Button_Record, Gtk_Entry);
 
    ----------
    -- Help --
@@ -56,32 +56,43 @@ package body Create_Entry is
    -- Toggle_Editable --
    ---------------------
 
-   procedure Toggle_Editable (Button : access Gtk_Check_Button_Record;
+   procedure Toggle_Editable (Button : access Gtk_Check_Button_Record'Class;
                               The_Entry : in Gtk_Entry)
    is
    begin
       Set_Editable (The_Entry, Is_Active (Button));
    end Toggle_Editable;
 
-   procedure Toggle_Sensitive (Button : access Gtk_Check_Button_Record;
+   ----------------------
+   -- Toggle_Sensitive --
+   ----------------------
+
+   procedure Toggle_Sensitive (Button : access Gtk_Check_Button_Record'Class;
                                The_Entry : in Gtk_Entry)
    is
    begin
       Set_Sensitive (The_Entry, Is_Active (Button));
    end Toggle_Sensitive;
 
-   procedure Toggle_Visibility (Button : access Gtk_Check_Button_Record;
+   -----------------------
+   -- Toggle_Visibility --
+   -----------------------
+
+   procedure Toggle_Visibility (Button : access Gtk_Check_Button_Record'Class;
                                 The_Entry : in Gtk_Entry)
    is
    begin
       Set_Visibility (The_Entry, Is_Active (Button));
    end Toggle_Visibility;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       use String_List;
 
       List      : String_List.Glist;
-      Id        : Guint;
       Box1,
         Box2    : Gtk_Box;
       The_Entry : Gtk_Entry;
@@ -122,20 +133,23 @@ package body Create_Entry is
 
       Gtk_New (Check, "Editable");
       Pack_Start (Box2, Check, False, True, 0);
-      Id := Entry_Cb.Connect
-        (Check, "toggled", Toggle_Editable'Access, The_Entry);
+      Entry_Cb.Connect
+        (Check, "toggled",
+         Entry_Cb.To_Marshaller (Toggle_Editable'Access), The_Entry);
       Set_Active (Check, True);
 
       Gtk_New (Check, "Visible");
       Pack_Start (Box2, Check, False, True, 0);
-      Id := Entry_Cb.Connect
-        (Check, "toggled", Toggle_Visibility'Access, The_Entry);
+      Entry_Cb.Connect
+        (Check, "toggled",
+         Entry_Cb.To_Marshaller (Toggle_Visibility'Access), The_Entry);
       Set_Active (Check, True);
 
       Gtk_New (Check, "Sensitive");
       Pack_Start (Box2, Check, False, True, 0);
-      Id := Entry_Cb.Connect
-        (Check, "toggled", Toggle_Sensitive'Access, The_Entry);
+      Entry_Cb.Connect
+        (Check, "toggled",
+         Entry_Cb.To_Marshaller (Toggle_Sensitive'Access), The_Entry);
       Set_Active (Check, True);
 
       Show_All (Frame);

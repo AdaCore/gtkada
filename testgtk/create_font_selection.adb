@@ -27,12 +27,27 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Enums; use Gtk.Enums;
+with Glib;                use Glib;
+with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Font_Selection;  use Gtk.Font_Selection;
-with Gtk; use Gtk;
+with Gtk;                 use Gtk;
 
 package body Create_Font_Selection is
+
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "A very specific widget to select a new font based on its"
+        & " characteristics, like the family, weight, size, ...";
+   end Help;
+
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Font    : Gtk_Font_Selection;
    begin

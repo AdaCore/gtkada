@@ -27,14 +27,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Box; use Gtk.Box;
+with Glib;       use Glib;
+with Gtk.Box;    use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Main; use Gtk.Main;
+with Gtk.Label;  use Gtk.Label;
+with Gtk.Main;   use Gtk.Main;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
-with Common; use Common;
+with Gtk;        use Gtk;
+with Common;     use Common;
 
 package body Create_Test_Timeout is
 
@@ -43,6 +43,21 @@ package body Create_Test_Timeout is
    Timeout   : Guint;
    Count  : Integer := 0;
 
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "A @btimeout@B function is a function that is run at specific"
+        & " time intervals. This is different from a @bidle@B function, since"
+        & " you know exactly when the next occurence will be.";
+   end Help;
+
+   ------------------
+   -- Timeout_Test --
+   ------------------
+
    function Timeout_Test (Label : in Gtk_Label) return Boolean is
    begin
       Count := Count + 1;
@@ -50,7 +65,11 @@ package body Create_Test_Timeout is
       return True;
    end Timeout_Test;
 
-   procedure Stop_Timeout (Object : access Gtk_Widget_Record) is
+   ------------------
+   -- Stop_Timeout --
+   ------------------
+
+   procedure Stop_Timeout (Object : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Object);
    begin
       if Timeout /= 0 then
@@ -60,12 +79,11 @@ package body Create_Test_Timeout is
       end if;
    end Stop_Timeout;
 
-   procedure Destroy_Timeout (Window : access Gtk_Widget_Record) is
-   begin
-      Stop_Timeout (Window);
-   end Destroy_Timeout;
+   -------------------
+   -- Start_Timeout --
+   -------------------
 
-   procedure Start_Timeout (Label : access Gtk_Label_Record) is
+   procedure Start_Timeout (Label : access Gtk_Label_Record'Class) is
    begin
       if Timeout = 0 then
          Timeout := Label_Timeout.Add (100, Timeout_Test'Access,
@@ -73,8 +91,11 @@ package body Create_Test_Timeout is
       end if;
    end Start_Timeout;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id       : Guint;
       Button   : Gtk_Button;
       Label    : Gtk_Label;
       Box      : Gtk_Box;
@@ -89,18 +110,24 @@ package body Create_Test_Timeout is
       Pack_Start (Box, Label, False, False, 0);
 
       Gtk_New (Button, "start");
-      Id := Label_Cb.Connect (Button, "clicked", Start_Timeout'Access, Label);
+      Label_Handler.Object_Connect
+        (Button, "clicked",
+         Label_Handler.To_Marshaller (Start_Timeout'Access),
+         Slot_Object => Label);
       Set_Flags (Button, Can_Default);
       Pack_Start (Box, Button, False, False, 0);
 
       Gtk_New (Button, "stop");
-      Id := Widget_Cb.Connect
-        (Button, "clicked", Destroy_Timeout'Access, Frame);
+      Widget_Handler.Object_Connect
+        (Button, "clicked",
+         Widget_Handler.To_Marshaller (Stop_Timeout'Access),
+         Slot_Object => Frame);
       Set_Flags (Button, Can_Default);
       Pack_Start (Box, Button, False, False, 0);
 
-      Id := Widget3_Cb.Connect
-        (Box, "destroy", Destroy_Timeout'Access);
+      Widget_Handler.Connect
+        (Box, "destroy",
+         Widget_Handler.To_Marshaller (Stop_Timeout'Access));
 
       Show_All (Frame);
    end Run;

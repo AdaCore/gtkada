@@ -27,24 +27,24 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gdk.Color; use Gdk.Color;
-with Gdk.Font; use Gdk.Font;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Check_Button; use Gtk.Check_Button;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Hbutton_Box; use Gtk.Hbutton_Box;
-with Gtk.Signal; use Gtk.Signal;
+with Glib;                use Glib;
+with Gdk.Color;           use Gdk.Color;
+with Gdk.Font;            use Gdk.Font;
+with Gtk.Box;             use Gtk.Box;
+with Gtk.Check_Button;    use Gtk.Check_Button;
+with Gtk.Enums;           use Gtk.Enums;
+with Gtk.Hbutton_Box;     use Gtk.Hbutton_Box;
+with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Text; use Gtk.Text;
-with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Gtk; use Gtk;
-
-with Ada.Text_IO; use Ada.Text_IO;
+with Gtk.Text;            use Gtk.Text;
+with Gtk.Toggle_Button;   use Gtk.Toggle_Button;
+with Gtk;                 use Gtk;
+with Ada.Text_IO;         use Ada.Text_IO;
 
 package body Create_Text is
 
-   package Text_Cb is new Signal.Callback (Gtk_Toggle_Button_Record, Gtk_Text);
+   package Text_Cb is new Handlers.User_Callback
+     (Gtk_Toggle_Button_Record, Gtk_Text);
 
    type String_Access is access String;
    type Text_Colors_Type is record
@@ -64,22 +64,49 @@ package body Create_Text is
       (16#FFFF#, 16#0#,    16#FFFF#, new String'("magenta")),
       (16#FFFF#, 16#FFFF#, 16#0#,    new String'("yellow")));
 
-   procedure Toggle_Editable (Toggle : access Gtk_Toggle_Button_Record;
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "The @bGtk_Text@B widget allows you to display easily any kind of"
+        & " text in your applications. As you can see in this demo, this"
+        & " widget supports colors, text wrapping, images in the"
+        & " background,..."
+        & ASCII.LF
+        & "One important thing to note is that the text widget does not"
+        & " provide any scrolling in itself. Instead, you have to put it in a"
+        & " @bGtk_Scrolled_Window@B if you want some scrolling.";
+   end Help;
+
+   ---------------------
+   -- Toggle_Editable --
+   ---------------------
+
+   procedure Toggle_Editable (Toggle : access Gtk_Toggle_Button_Record'Class;
                               Text   : in Gtk_Text)
    is
    begin
       Set_Editable (Text, Is_Active (Toggle));
    end Toggle_Editable;
 
-   procedure Word_Wrap (Toggle : access Gtk_Toggle_Button_Record;
+   ---------------
+   -- Word_Wrap --
+   ---------------
+
+   procedure Word_Wrap (Toggle : access Gtk_Toggle_Button_Record'Class;
                         Text   : in Gtk_Text)
    is
    begin
       Set_Word_Wrap (Text, Is_Active (Toggle));
    end Word_Wrap;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id           : Guint;
       Box1,
         Box2       : Gtk_Box;
       Hbox         : Gtk_HButton_Box;
@@ -155,12 +182,15 @@ package body Create_Text is
 
       Gtk_New (Check, "Editable");
       Pack_Start (Hbox, Check, False, False, 0);
-      Id := Text_Cb.Connect (Check, "toggled", Toggle_Editable'Access, Text);
+      Text_Cb.Connect (Check, "toggled",
+                       Text_Cb.To_Marshaller (Toggle_Editable'Access),
+                       Text);
       Set_Active (Check, True);
 
       Gtk_New (Check, "Wrap Words");
       Pack_Start (Hbox, Check, False, False, 0);
-      Id := Text_Cb.Connect (Check, "toggled", Word_Wrap'Access, Text);
+      Text_Cb.Connect (Check, "toggled",
+                       Text_Cb.To_Marshaller (Word_Wrap'Access), Text);
       Set_Active (Check, False);
 
       Show_All (Frame);

@@ -39,6 +39,21 @@ with Gtk; use Gtk;
 
 package body Create_Menu is
 
+   function Help return String is
+   begin
+      return "This demo shows how to create a @bGtk_Menu_Bar@B, with multiple"
+        & " @bGtk_Menu@Bs. Each of this submenu is actually a @btearoff@B menu"
+        & ", which means by that clicking on the dashed line, you can simply"
+        & " glue the submenu to another place on your desktop, and keep it"
+        & " around. To hide it, simply click on the dashed line again."
+        & ASCII.LF
+        & "The second item in this demo is a @bGtk_Option_Menu@B which"
+        & " provides a list for the user to choose from. This is different"
+        & " from the @bGtk_Combo_Box@B that you can see in the @bEntry@B demo,"
+        & " since a @bGtk_Option_Menu@B does not have any editable entry"
+        & " associated with it.";
+   end Help;
+
    function Create_Menu
      (Depth : Integer; Tearoff : Boolean) return Gtk_Menu is
       Menu      : Gtk_Menu;

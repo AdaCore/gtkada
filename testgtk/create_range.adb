@@ -36,6 +36,27 @@ with Gtk; use Gtk;
 
 package body Create_Range is
 
+   function Help return String is
+   begin
+      return "A @bGtk_Range@B is a simple way to select a value in a"
+        & " specific interval. Although less precise than a "
+        & "@bGtk_Spin_Button@B, it is much faster to use."
+        & ASCII.LF
+        & "A @bGtk_Scrollbar@B (seen below the range) can also be used as a"
+        & " @bGtk_Range@B, although it does not display its value and relies"
+        & " on another widget to do so."
+        & ASCII.LF
+        & "Note that this demo does not require any explicit callback to be"
+        & " set to connect the two widgets. In fact, they both use the same"
+        & " @bGtk_Adjustment@B for their value. Thus, when you modify one of"
+        & " the widget, it modifies its value in the adjustment, which is then"
+        & " reflected in the other widget."
+        & ASCII.LF
+        & "As you can see, the @bGtk_Scrollbar@B update its value as soon as"
+        & " it is moved, whereas the @bGtk_Range@B only update its value when"
+        & " the user releases the mouse button.";
+   end Help;
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1       : Gtk_Box;
       Box2       : Gtk_Box;

@@ -39,6 +39,13 @@ with Gtk; use Gtk;
 
 package body Create_Pixmap is
 
+   function Help return String is
+   begin
+      return "This demo simply shows how you can put a pixmap in a"
+        & " @bGtk_Button@B simply by putting both in a @bGtk_Box@B, and then"
+        & " associating the box with the button.";
+   end Help;
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1      : Gtk_Box;
       Box2      : Gtk_Box;

@@ -28,35 +28,35 @@
 -----------------------------------------------------------------------
 
 with Gdk;
-with Gdk.Bitmap; use Gdk.Bitmap;
-with Gdk.Color;  use Gdk.Color;
-with Gdk.Pixmap; use Gdk.Pixmap;
-with Glib; use Glib;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Check_Button; use Gtk.Check_Button;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Frame; use Gtk.Frame;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Menu; use Gtk.Menu;
-with Gtk.Notebook; use Gtk.Notebook;
-with Gtk.Option_Menu; use Gtk.Option_Menu;
-with Gtk.Pixmap; use Gtk.Pixmap;
+with Gdk.Bitmap;          use Gdk.Bitmap;
+with Gdk.Color;           use Gdk.Color;
+with Gdk.Pixmap;          use Gdk.Pixmap;
+with Glib;                use Glib;
+with Gtk.Box;             use Gtk.Box;
+with Gtk.Button;          use Gtk.Button;
+with Gtk.Check_Button;    use Gtk.Check_Button;
+with Gtk.Enums;           use Gtk.Enums;
+with Gtk.Frame;           use Gtk.Frame;
+with Gtk.Handlers;        use Gtk.Handlers;
+with Gtk.Label;           use Gtk.Label;
+with Gtk.Menu;            use Gtk.Menu;
+with Gtk.Notebook;        use Gtk.Notebook;
+with Gtk.Option_Menu;     use Gtk.Option_Menu;
+with Gtk.Pixmap;          use Gtk.Pixmap;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
-with Gtk.Separator; use Gtk.Separator;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
-with Common; use Common;
+with Gtk.Separator;       use Gtk.Separator;
+with Gtk.Widget;          use Gtk.Widget;
+with Gtk;                 use Gtk;
+with Common;              use Common;
 
 package body Create_Notebook is
 
-   package Note_Cb is new Signal.Object_Callback (Gtk_Notebook_Record);
-   package Button_Cb is new Signal.Callback
+   package Note_Cb is new Handlers.Callback (Gtk_Notebook_Record);
+   package Button_Cb is new Handlers.User_Callback
      (Gtk_Check_Button_Record, Gtk_Notebook);
-   package Two_Cb is new Signal.Two_Callback
-     (Gtk_Notebook_Record, Gtk_Notebook, Gtk_Notebook_Page);
-   package Frame_Cb is new Signal.Callback
+   package Two_Cb is new Handlers.User_Callback
+     (Gtk_Notebook_Record, Gtk_Notebook);
+   package Frame_Cb is new Handlers.User_Callback
      (Gtk_Check_Button_Record, Gtk_Frame);
 
    Book_Open        : Gdk_Pixmap;
@@ -82,7 +82,7 @@ package body Create_Notebook is
    -- Tab_Fill --
    --------------
 
-   procedure Tab_Fill (Button : access Gtk_Check_Button_Record;
+   procedure Tab_Fill (Button : access Gtk_Check_Button_Record'Class;
                        Child  : in Gtk_Frame) is
       Expand, Fill : Boolean;
       Typ          : Gtk_Pack_Type;
@@ -92,7 +92,11 @@ package body Create_Notebook is
         (Notebook, Child, Expand, Is_Active (Button), Typ);
    end Tab_Fill;
 
-   procedure Tab_Expand (Button : access Gtk_Check_Button_Record;
+   ----------------
+   -- Tab_Expand --
+   ----------------
+
+   procedure Tab_Expand (Button : access Gtk_Check_Button_Record'Class;
                          Child  : in Gtk_Frame) is
       Expand, Fill : Boolean;
       Typ          : Gtk_Pack_Type;
@@ -102,7 +106,38 @@ package body Create_Notebook is
         (Notebook, Child, Is_Active (Button), Fill, Typ);
    end Tab_Expand;
 
-   procedure Tab_Pack (Button : access Gtk_Check_Button_Record;
+   ----------
+   -- Hide --
+   ----------
+
+   procedure Hide (Widget : access Gtk_Widget_Record'Class) is
+   begin
+      Gtk.Widget.Hide (Widget);
+   end Hide;
+
+   ---------------
+   -- Next_Page --
+   ---------------
+
+   procedure Next_Page (Notebook : access Gtk_Notebook_Record'Class) is
+   begin
+      Gtk.Notebook.Next_Page (Notebook);
+   end Next_Page;
+
+   ---------------
+   -- Prev_Page --
+   ---------------
+
+   procedure Prev_Page (Notebook : access Gtk_Notebook_Record'Class) is
+   begin
+      Gtk.Notebook.Prev_Page (Notebook);
+   end Prev_Page;
+
+   --------------
+   -- Tab_Pack --
+   --------------
+
+   procedure Tab_Pack (Button : access Gtk_Check_Button_Record'Class;
                        Child  : in Gtk_Frame) is
       Expand, Fill : Boolean;
       Typ          : Gtk_Pack_Type;
@@ -117,9 +152,14 @@ package body Create_Notebook is
       end if;
    end Tab_Pack;
 
+   ------------------
+   -- Create_Pages --
+   ------------------
+
    procedure Create_Pages
      (Notebook  : access Gtk_Notebook_Record'Class;
-      The_Start : Gint; The_End : Gint)
+      The_Start : Gint;
+      The_End   : Gint)
    is
       Child     : Gtk_Frame;
       Label_Box : Gtk_Box;
@@ -130,7 +170,7 @@ package body Create_Notebook is
       Hbox      : Gtk_Box;
       Check     : Gtk_Check_Button;
       Button    : Gtk_Button;
-      Id        : Guint;
+
    begin
       for I in The_Start .. The_End loop
          Gtk_New (Child, "Page " & Gint'Image (I));
@@ -146,21 +186,30 @@ package body Create_Notebook is
          Gtk_New (Check, "Fill tab");
          Pack_Start (Hbox, Check, True, True, 5);
          Set_Active (Check, True);
-         Id := Frame_Cb.Connect (Check, "toggled", Tab_Fill'Access, Child);
+         Frame_Cb.Connect (Check, "toggled",
+                           Frame_Cb.To_Marshaller (Tab_Fill'Access),
+                           Child);
 
          Gtk_New (Check, "Expand tab");
          Pack_Start (Hbox, Check, True, True, 5);
          Set_Active (Check, True);
-         Id := Frame_Cb.Connect (Check, "toggled", Tab_Expand'Access, Child);
+         Frame_Cb.Connect (Check, "toggled",
+                           Frame_Cb.To_Marshaller (Tab_Expand'Access),
+                           Child);
 
          Gtk_New (Check, "Pack end");
          Pack_Start (Hbox, Check, True, True, 5);
          Set_Active (Check, True);
-         Id := Frame_Cb.Connect (Check, "toggled", Tab_Pack'Access, Child);
+         Frame_Cb.Connect (Check, "toggled",
+                           Frame_Cb.To_Marshaller (Tab_Pack'Access),
+                           Child);
 
          Gtk_New (Button, "Hide page");
          Pack_Start (Vbox, Button, True, True, 5);
-         Id := Widget_Cb.Connect (Button, "clicked", Hide'Access, Child);
+         Widget_Handler.Object_Connect
+           (Button, "clicked",
+            Widget_Handler.To_Marshaller (Hide'Access),
+            Slot_Object => Child);
 
          Show_All (Child);
          Gtk_New_Hbox (Label_Box, False, 0);
@@ -185,7 +234,11 @@ package body Create_Notebook is
       end loop;
    end Create_Pages;
 
-   procedure Rotate_Notebook (Notebook : access Gtk_Notebook_Record) is
+   ---------------------
+   -- Rotate_Notebook --
+   ---------------------
+
+   procedure Rotate_Notebook (Notebook : access Gtk_Notebook_Record'Class) is
    begin
       Set_Tab_Pos (Notebook,
                    Gtk_Position_Type'Val
@@ -193,12 +246,20 @@ package body Create_Notebook is
                     mod 4));
    end Rotate_Notebook;
 
-   procedure Show_All_Pages (Notebook : access Gtk_Notebook_Record) is
+   --------------------
+   -- Show_All_Pages --
+   --------------------
+
+   procedure Show_All_Pages (Notebook : access Gtk_Notebook_Record'Class) is
    begin
       Show_All (Notebook);
    end Show_All_Pages;
 
-   procedure Standard_Notebook (Notebook : access Gtk_Notebook_Record) is
+   -----------------------
+   -- Standard_Notebook --
+   -----------------------
+
+   procedure Standard_Notebook (Notebook : access Gtk_Notebook_Record'Class) is
    begin
       Set_Show_Tabs (Notebook, True);
       Set_Scrollable (Notebook, False);
@@ -209,7 +270,11 @@ package body Create_Notebook is
       end if;
    end Standard_Notebook;
 
-   procedure Notabs_Notebook (Notebook : access Gtk_Notebook_Record) is
+   ---------------------
+   -- Notabs_Notebook --
+   ---------------------
+
+   procedure Notabs_Notebook (Notebook : access Gtk_Notebook_Record'Class) is
    begin
       Set_Show_Tabs (Notebook, False);
       if Page_List.Length (Get_Children (Notebook)) = 15 then
@@ -219,7 +284,12 @@ package body Create_Notebook is
       end if;
    end Notabs_Notebook;
 
-   procedure Scrollable_Notebook (Notebook : access Gtk_Notebook_Record) is
+   -------------------------
+   -- Scrollable_Notebook --
+   -------------------------
+
+   procedure Scrollable_Notebook (Notebook : access Gtk_Notebook_Record'Class)
+   is
    begin
       Set_Show_Tabs (Notebook, True);
       Set_Scrollable (Notebook, True);
@@ -228,7 +298,11 @@ package body Create_Notebook is
       end if;
    end Scrollable_Notebook;
 
-   procedure Notebook_Popup (Button : access Gtk_Check_Button_Record;
+   --------------------
+   -- Notebook_Popup --
+   --------------------
+
+   procedure Notebook_Popup (Button : access Gtk_Check_Button_Record'Class;
                              Notebook : in Gtk_Notebook) is
    begin
       if Is_Active (Button) then
@@ -238,13 +312,21 @@ package body Create_Notebook is
       end if;
    end Notebook_Popup;
 
-   procedure Homogeneous (Button : access Gtk_Check_Button_Record;
+   -----------------
+   -- Homogeneous --
+   -----------------
+
+   procedure Homogeneous (Button : access Gtk_Check_Button_Record'Class;
                           Notebook : in Gtk_Notebook) is
    begin
       Set_Homogeneous_Tabs (Notebook, Is_Active (Button));
    end Homogeneous;
 
-   procedure Page_Switch (Notebook : access Gtk_Notebook_Record;
+   -----------------
+   -- Page_Switch --
+   -----------------
+
+   procedure Page_Switch (Notebook : access Gtk_Notebook_Record'Class;
                           Page     : in Gtk_Notebook_Page;
                           Page_Num : in Gtk_Notebook)
    is
@@ -269,8 +351,11 @@ package body Create_Notebook is
       end if;
    end Page_Switch;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id              : Guint;
       Box1            : Gtk_Box;
       Box2            : Gtk_Box;
       Option_Menu     : Gtk_Option_Menu;
@@ -289,8 +374,9 @@ package body Create_Notebook is
       Add (Frame, Box1);
 
       Gtk_New (Notebook);
-      Id := Two_Cb.Connect
-        (Notebook, "switch_page", Page_Switch'Access, Notebook);
+      Two_Cb.Connect
+        (Notebook, "switch_page",
+         Two_Cb.To_Marshaller (Page_Switch'Access), Notebook);
       Set_Tab_Pos (Notebook, Pos_Top);
       Pack_Start (Box1, Notebook, False, False, 0);
       Set_Border_Width (Notebook, 10);
@@ -315,13 +401,15 @@ package body Create_Notebook is
 
       Gtk_New (Button, "popup menu");
       Pack_Start (Box2, Button, True, False, 0);
-      Id := Button_Cb.Connect
-        (Button, "clicked", Notebook_Popup'Access, Notebook);
+      Button_Cb.Connect
+        (Button, "clicked",
+         Button_Cb.To_Marshaller (Notebook_Popup'Access), Notebook);
 
       Gtk_New (Button, "homogeneous tabs");
       Pack_Start (Box2, Button, True, False, 0);
-      Id := Button_Cb.Connect
-        (Button, "clicked", Homogeneous'Access, Notebook);
+      Button_Cb.Connect
+        (Button, "clicked",
+         Button_Cb.To_Marshaller (Homogeneous'Access), Notebook);
 
       Gtk_New_Hbox (Box2, False, 5);
       Set_Border_Width (Box2, 10);
@@ -334,22 +422,28 @@ package body Create_Notebook is
       Gtk_New (Menu);
 
       Gtk_New (Menu_Item, Group, "Standard");
-      Id := Note_Cb.Connect
-        (Menu_Item, "activate", Standard_Notebook'Access, Notebook);
+      Note_Cb.Object_Connect
+        (Menu_Item, "activate",
+         Note_Cb.To_Marshaller (Standard_Notebook'Access),
+         Slot_Object => Notebook);
       Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
       Append (Menu, Menu_Item);
       Show (Menu_Item);
 
       Gtk_New (Menu_Item, Group, "w/o Tabs");
-      Id := Note_Cb.Connect
-        (Menu_Item, "activate", Notabs_Notebook'Access, Notebook);
+      Note_Cb.Object_Connect
+        (Menu_Item, "activate",
+         Note_Cb.To_Marshaller (Notabs_Notebook'Access),
+         Slot_Object => Notebook);
       Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
       Append (Menu, Menu_Item);
       Show (Menu_Item);
 
       Gtk_New (Menu_Item, Group, "Scrollable");
-      Id := Note_Cb.Connect
-        (Menu_Item, "activate", Scrollable_Notebook'Access, Notebook);
+      Note_Cb.Object_Connect
+        (Menu_Item, "activate",
+         Note_Cb.To_Marshaller (Scrollable_Notebook'Access),
+         Slot_Object => Notebook);
       Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
       Append (Menu, Menu_Item);
       Show (Menu_Item);
@@ -359,26 +453,34 @@ package body Create_Notebook is
 
       Gtk_New (Button2, "Show all pages");
       Pack_Start (Box2, Button2, False, True, 0);
-      Id := Note_Cb.Connect
-        (Button2, "clicked", Show_All_Pages'Access, Notebook);
+      Note_Cb.Object_Connect
+        (Button2, "clicked",
+         Note_Cb.To_Marshaller (Show_All_Pages'Access),
+         Slot_Object => Notebook);
 
       Gtk_New_Hbox (Box2, False, 10);
       Set_Border_Width (Box2, 10);
       Pack_Start (Box1, Box2, False, True, 0);
 
       Gtk_New (Button2, "next");
-      Id := Note_Cb.Connect
-        (Button2, "clicked", Next_Page'Access, Notebook);
+      Note_Cb.Object_Connect
+        (Button2, "clicked",
+         Note_Cb.To_Marshaller (Next_Page'Access),
+         Slot_Object => Notebook);
       Pack_Start (Box2, Button2, True, True, 0);
 
       Gtk_New (Button2, "prev");
-      Id := Note_Cb.Connect
-        (Button2, "clicked", Prev_Page'Access, Notebook);
+      Note_Cb.Object_Connect
+        (Button2, "clicked",
+         Note_Cb.To_Marshaller (Prev_Page'Access),
+         Slot_Object => Notebook);
       Pack_Start (Box2, Button2, True, True, 0);
 
       Gtk_New (Button2, "rotate");
-      Id := Note_Cb.Connect
-        (Button2, "clicked", Rotate_Notebook'Access, Notebook);
+      Note_Cb.Object_Connect
+        (Button2, "clicked",
+         Note_Cb.To_Marshaller (Rotate_Notebook'Access),
+         Slot_Object => Notebook);
       Pack_Start (Box2, Button2, True, True, 0);
 
       Show_All (Frame);

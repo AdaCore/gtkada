@@ -31,4 +31,5 @@ with Gtk.Frame; use Gtk.Frame;
 
 package Create_Preview_Color is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
+   function Help return String;
 end Create_Preview_Color;

@@ -45,7 +45,7 @@ with Gtk.Label;
 with Gtk.Option_Menu;
 with Gtk.Radio_Menu_Item;
 with Gtk.Scrolled_Window;
-with Gtk.Signal;
+with Gtk.Handlers;
 with Gtk.Spin_Button;
 with Gtk.Style;
 with Gtk.Tooltips;
@@ -66,19 +66,19 @@ package body Create_Ctree is
 
    package Ctree_Style_Row_Data is new Gtk.Ctree.Row_Data (Gtk.Style.Gtk_Style);
 
-   package Ctree_Cb is new Gtk.Signal.Callback
-     (Base_Type => Gtk.Widget.Gtk_Widget_Record,
-      Data_Type => Gtk.Ctree.Gtk_Ctree);
+   package Ctree_User_Cb is new Gtk.Handlers.User_Callback
+     (Widget_Type => Gtk.Widget.Gtk_Widget_Record,
+      User_Type   => Gtk.Ctree.Gtk_Ctree);
 
-   package Ctree_Object_Cb is new Gtk.Signal.Object_Callback
-     (Base_Type => Gtk.Ctree.Gtk_Ctree_Record);
+   package Ctree_Cb is new Gtk.Handlers.Callback
+     (Widget_Type => Gtk.Ctree.Gtk_Ctree_Record);
 
-   package Ctree_Void_Cb is new Gtk.Signal.Void_Callback
-     (Base_Type => Gtk.Ctree.Gtk_Ctree_Record);
+   package Gint_Ctree_Cb is new Gtk.Handlers.Return_Callback
+     (Widget_Type => Gtk.Ctree.Gtk_Ctree_Record, Return_Type => Gint);
 
-   package Adjustment_Cb is new Gtk.Signal.Callback
-     (Base_Type => Gtk.Adjustment.Gtk_Adjustment_Record,
-      Data_Type => Gtk.Ctree.Gtk_Ctree);
+   package Adjustment_Cb is new Gtk.Handlers.User_Callback
+     (Widget_Type => Gtk.Adjustment.Gtk_Adjustment_Record,
+      User_Type   => Gtk.Ctree.Gtk_Ctree);
 
    Ctree : Gtk.Ctree.Gtk_Ctree;
    Line_Style : Gtk.Enums.Gtk_Ctree_Line_Style;
@@ -122,12 +122,24 @@ package body Create_Ctree is
       ICS.New_String ("Browse"),
       ICS.New_String ("Multiple"),
       ICS.New_String ("Extended"));
-
-   --
    --  Put at the package level, because we would like to avoid allocating
    --  then freeing the memory every time we click on the "ctree" button.
 
-   ----------------------------------------------------------------------
+
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "A @bGtk_Ctree@B is a widget similar to a @bGtk_Clist@B, except"
+        & " that the information is presented in a hierarchical manner, as in"
+        & " a @bGtk_Tree@B.";
+   end Help;
+
+   -----------------
+   -- After_Press --
+   -----------------
 
    procedure After_Press (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class) is
       N_Sel : Guint renames Gint_List.Length (Gtk.Ctree.Get_Selection (Ctree));
@@ -140,17 +152,27 @@ package body Create_Ctree is
       Gtk.Label.Set_Text (Page_Label, Str => Common.Image_Of (Pages));
    end After_Press;
 
-   procedure After_Press_Cb (Ctree : access Gtk.Ctree.Gtk_Ctree_Record) is
+   ------------------------
+   -- After_Press_return --
+   ------------------------
+
+   function After_Press_Return (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class)
+                               return Gint
+   is
    begin
       After_Press (Ctree);
-   end After_Press_Cb;
+      return 0;
+   end After_Press_Return;
 
-   -------------------------------------------------------------------
+   -----------------
+   -- Count_Items --
+   -----------------
 
    procedure Count_Items
      (Ctree      : access Gtk.Ctree.Gtk_Ctree_Record'Class;
       Node       : in     Gtk.Ctree.Gtk_Ctree_Node;
-      Dummy_Data : in     Ctree_Style_Row_Data.Data_Type_Access) is
+      Dummy_Data : in     Ctree_Style_Row_Data.Data_Type_Access)
+   is
       pragma Warnings (Off, Ctree);
       pragma Warnings (Off, Dummy_Data);
    begin
@@ -161,10 +183,12 @@ package body Create_Ctree is
       end if;
    end Count_Items;
 
-   -------------------------------------------------------------------
+   -------------------
+   -- Change_Indent --
+   -------------------
 
    procedure Change_Indent
-     (Adj   : access Gtk.Adjustment.Gtk_Adjustment_Record;
+     (Adj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
       Ctree : in     Gtk.Ctree.Gtk_Ctree)
    is
    begin
@@ -172,10 +196,12 @@ package body Create_Ctree is
         (Ctree, Indent => Gint (Gtk.Adjustment.Get_Value (Adj)));
    end Change_Indent;
 
-   -------------------------------------------------------------------
+   --------------------
+   -- Change_Spacing --
+   --------------------
 
    procedure Change_Spacing
-     (Adj   : access Gtk.Adjustment.Gtk_Adjustment_Record;
+     (Adj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
       Ctree : in     Gtk.Ctree.Gtk_Ctree)
    is
    begin
@@ -183,10 +209,12 @@ package body Create_Ctree is
         (Ctree, Spacing => Gint (Gtk.Adjustment.Get_Value (Adj)));
    end Change_Spacing;
 
-   -------------------------------------------------------------------
+   -----------------------
+   -- Change_Row_Height --
+   -----------------------
 
    procedure Change_Row_Height
-     (Adj   : access Gtk.Adjustment.Gtk_Adjustment_Record;
+     (Adj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
       Ctree : in     Gtk.Ctree.Gtk_Ctree)
    is
    begin
@@ -194,52 +222,56 @@ package body Create_Ctree is
         (Ctree, Height => Gint (Gtk.Adjustment.Get_Value (Adj)));
    end Change_Row_Height;
 
-   -------------------------------------------------------------------
+   ----------------
+   -- Expand_All --
+   ----------------
 
-   procedure Expand_All (Ctree : access Gtk.Ctree.Gtk_Ctree_Record)
-   is
+   procedure Expand_All (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class) is
    begin
       Gtk.Ctree.Expand_Recursive (Ctree);
-      After_Press_Cb (Ctree);
+      After_Press (Ctree);
    end Expand_All;
 
-   -------------------------------------------------------------------
+   ------------------
+   -- Collapse_All --
+   ------------------
 
-   procedure Collapse_All (Ctree : access Gtk.Ctree.Gtk_Ctree_Record)
-   is
+   procedure Collapse_All (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class) is
    begin
       Gtk.Ctree.Collapse_Recursive (Ctree);
-      After_Press_Cb (Ctree);
+      After_Press (Ctree);
    end Collapse_All;
 
-   -------------------------------------------------------------------
+   ----------------
+   -- Select_All --
+   ----------------
 
-   procedure Select_All (Ctree : access Gtk.Ctree.Gtk_Ctree_Record)
-   is
+   procedure Select_All (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class) is
    begin
       Gtk.Ctree.Select_Recursive (Ctree);
-      After_Press_Cb (Ctree);
+      After_Press (Ctree);
    end Select_All;
 
-   -------------------------------------------------------------------
+   ------------------
+   -- Unselect_All --
+   ------------------
 
-   procedure Unselect_All (Ctree : access Gtk.Ctree.Gtk_Ctree_Record)
-   is
+   procedure Unselect_All (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class) is
    begin
       Gtk.Ctree.Unselect_Recursive (Ctree);
-      After_Press_Cb (Ctree);
+      After_Press (Ctree);
    end Unselect_All;
 
-   -------------------------------------------------------------------
+   ------------------
+   -- Change_Style --
+   ------------------
 
-   procedure Change_Style (Ctree : access Gtk.Ctree.Gtk_Ctree_Record)
+   procedure Change_Style (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class)
    is
-
       Node : Gtk.Ctree.Gtk_Ctree_Node;
       Child : Gtk.Ctree.Gtk_Ctree_Node;
       Col1, Col2 : Gdk.Color.Gdk_Color;
       Pos : Gint := Gtk.Ctree.Get_Focus_Row (Ctree);
-
    begin
 
       if Pos < 0 then
@@ -306,18 +338,18 @@ package body Create_Ctree is
       if Gtk.Ctree.Is_Created (Child) then
          Gtk.Ctree.Node_Set_Row_Style (Ctree, Child, Style2);
       end if;
-
-
    end Change_Style;
 
-   -------------------------------------------------------------------
+   ----------------------
+   -- Remove_Selection --
+   ----------------------
 
-   procedure Remove_Selection (Ctree : access Gtk.Ctree.Gtk_Ctree_Record)
+   procedure Remove_Selection (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class)
    is
+      use Gtk.Ctree.Node_List;
+
       Node : Gtk.Ctree.Gtk_Ctree_Node;
       Selection : Gtk.Ctree.Node_List.Glist;
-
-      use Gtk.Ctree.Node_List;
 
    begin
 
@@ -357,11 +389,13 @@ package body Create_Ctree is
       end if;
 
       Gtk.Ctree.Thaw (Ctree);
-      After_Press_Cb (Ctree);
+      After_Press (Ctree);
 
    end Remove_Selection;
 
-   -------------------------------------------------------------------
+   --------------------
+   -- Set_Background --
+   --------------------
 
    procedure Set_Background
      (Ctree : access Gtk.Ctree.Gtk_Ctree_Record'Class;
@@ -398,9 +432,12 @@ package body Create_Ctree is
 
    end Set_Background;
 
-   ----------
+   -----------------------
+   -- Toggle_Line_Style --
+   -----------------------
 
-   procedure Toggle_Line_Style (Widget : access Gtk.Widget.Gtk_Widget_Record)
+   procedure Toggle_Line_Style
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       Current_Line_Style : constant Gtk_Ctree_Line_Style :=
         Gtk.Ctree.Get_Line_Style (Ctree);
@@ -426,11 +463,12 @@ package body Create_Ctree is
 
    end Toggle_Line_Style;
 
-   -------------------------------------------------------------------
+   ---------------------------
+   -- Toggle_Expander_Style --
+   ---------------------------
 
    procedure Toggle_Expander_Style
-     (Widget : access Gtk.Widget.Gtk_Widget_Record)
-   is
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) is
    begin
       if not Gtk.Widget.Mapped_Is_Set (Widget) then
          return;
@@ -441,10 +479,12 @@ package body Create_Ctree is
            (3 - Gtk.Radio_Menu_Item.Selected_Button (Clist_Omenu_Group2)));
    end Toggle_Expander_Style;
 
-   -------------------------------------------------------------------
+   --------------------
+   -- Toggle_Justify --
+   --------------------
 
-   procedure Toggle_Justify (Widget : access Gtk.Widget.Gtk_Widget_Record)
-   is
+   procedure Toggle_Justify
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) is
    begin
       if not Gtk.Widget.Mapped_Is_Set (Widget) then
          return;
@@ -456,10 +496,12 @@ package body Create_Ctree is
            (1 - Gtk.Radio_Menu_Item.Selected_Button (Clist_Omenu_Group3)));
    end Toggle_Justify;
 
-   -------------------------------------------------------------------
+   ---------------------
+   -- Toggle_Sel_Mode --
+   ---------------------
 
-   procedure Toggle_Sel_Mode (Widget : access Gtk.Widget.Gtk_Widget_Record)
-   is
+   procedure Toggle_Sel_Mode
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) is
    begin
       if not Gtk.Widget.Mapped_Is_Set (Widget) then
          return;
@@ -471,10 +513,16 @@ package body Create_Ctree is
       After_Press (Ctree);
    end Toggle_Sel_Mode;
 
-   -------------------------------------------------------------------
+   -----------------
+   -- Gint_Random --
+   -----------------
 
    package Gint_Random is new Ada.Numerics.Discrete_Random
      (Result_Subtype => Gint);
+
+   ---------------------
+   -- Build_Recursive --
+   ---------------------
 
    procedure Build_Recursive (Ctree     : in Gtk.Ctree.Gtk_Ctree;
                               Cur_Depth : in     Gint;
@@ -599,10 +647,11 @@ package body Create_Ctree is
 
    end Build_Recursive;
 
-   -------------------------------------------------------------------
+   ------------------
+   -- Rebuild_Tree --
+   ------------------
 
-   procedure Rebuild_Tree (Ctree  : in Gtk.Ctree.Gtk_Ctree) is
-
+   procedure Rebuild_Tree (Ctree : in Gtk.Ctree.Gtk_Ctree) is
       B, D, P, N : Gint;
       Text : Gtkada.Types.Chars_Ptr_Array (1 .. Title'length);
       Parent : Gtk.Ctree.Gtk_Ctree_Node;
@@ -664,10 +713,13 @@ package body Create_Ctree is
 
       Gtk.Ctree.Thaw (Ctree);
       After_Press (Ctree);
-
    end Rebuild_Tree;
 
-   procedure Rebuild_Tree (Widget : access Gtk.Widget.Gtk_Widget_Record;
+   ------------------
+   -- Rebuild_Tree --
+   ------------------
+
+   procedure Rebuild_Tree (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
                            Ctree  : in     Gtk.Ctree.Gtk_Ctree)
    is
       pragma Warnings (Off, Widget);
@@ -675,13 +727,12 @@ package body Create_Ctree is
       Rebuild_Tree (Ctree);
    end Rebuild_Tree;
 
-   -------------------------------------------------------------------
-   --                               Run                             --
-   -------------------------------------------------------------------
+   ---------
+   -- Run --
+   ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
 
-      Id : Guint;
       Tooltips : Gtk.Tooltips.Gtk_Tooltips;
       Hbox, Bbox : Gtk.Box.Gtk_Box;
       Hbox2      : Gtk.Box.Gtk_Box;
@@ -789,48 +840,56 @@ package body Create_Ctree is
       Gtk.Ctree.Set_Line_Style (Ctree, Line_Style => Ctree_Lines_Dotted);
       Line_Style := Ctree_Lines_Dotted;
 
-      Id := Ctree_Cb.Connect (Button,
-                              Name => "clicked",
-                              Func => Rebuild_Tree'Access,
-                              Func_Data => Ctree);
+      Ctree_User_Cb.Connect
+        (Button,
+         Name => "clicked",
+         Marsh => Ctree_User_Cb.To_Marshaller (Rebuild_Tree'Access),
+         User_Data => Ctree);
 
-      Id := Ctree_Void_Cb.Connect (Ctree,
-                                   Name => "button_press_event",
-                                   Func => After_Press_Cb'Access,
-                                   After => True);
+      Gint_Ctree_Cb.Connect
+        (Ctree,
+         Name => "button_press_event",
+         Marsh => Gint_Ctree_Cb.To_Marshaller (After_Press_Return'Access),
+         After => True);
 
-      Id := Ctree_Void_Cb.Connect (Ctree,
-                                   Name => "button_release_event",
-                                   Func => After_Press_Cb'Access,
-                                   After => True);
+      Gint_Ctree_Cb.Connect
+        (Ctree,
+         Name => "button_release_event",
+         Marsh => Gint_Ctree_Cb.To_Marshaller (After_Press_Return'Access),
+         After => True);
 
       --       gtk_signal_connect_after (GTK_OBJECT (ctree), "tree_move",
       --                                 GTK_SIGNAL_FUNC (after_move), NULL);
 
-      Id := Ctree_Void_Cb.Connect (Ctree,
-                                   Name => "end_selection",
-                                   Func => After_Press_Cb'Access,
-                                   After => True);
+      Ctree_Cb.Connect
+        (Ctree,
+         Name => "end_selection",
+         Marsh => Ctree_Cb.To_Marshaller (After_Press'Access),
+         After => True);
 
-      Id := Ctree_Void_Cb.Connect (Ctree,
-                                   Name => "toggle_focus_row",
-                                   Func => After_Press_Cb'Access,
-                                   After => True);
+      Ctree_Cb.Connect
+        (Ctree,
+         Name => "toggle_focus_row",
+         Marsh => Ctree_Cb.To_Marshaller (After_Press'Access),
+         After => True);
 
-      Id := Ctree_Void_Cb.Connect (Ctree,
-                                   Name => "select_all",
-                                   Func => After_Press_Cb'Access,
-                                   After => True);
+      Ctree_Cb.Connect
+        (Ctree,
+         Name => "select_all",
+         Marsh => Ctree_Cb.To_Marshaller (After_Press'Access),
+         After => True);
 
-      Id := Ctree_Void_Cb.Connect (Ctree,
-                                   Name => "unselect_all",
-                                   Func => After_Press_Cb'Access,
-                                   After => True);
+      Ctree_Cb.Connect
+        (Ctree,
+         Name => "unselect_all",
+         Marsh => Ctree_Cb.To_Marshaller (After_Press'Access),
+         After => True);
 
-      Id := Ctree_Void_Cb.Connect (Ctree,
-                                   Name => "scroll_vertical",
-                                   Func => After_Press_Cb'Access,
-                                   After => True);
+      Ctree_Cb.Connect
+        (Ctree,
+         Name => "scroll_vertical",
+         Marsh => Ctree_Cb.To_Marshaller (After_Press'Access),
+         After => True);
 
       Gtk.Box.Gtk_New_Hbox (Bbox, Homogeneous => False, Spacing => 5);
       Gtk.Box.Set_Border_Width (Bbox, Border_Width => 5);
@@ -872,10 +931,11 @@ package body Create_Ctree is
                           Expand => False, Fill => False, Padding => 5);
       Gtk.Tooltips.Set_Tip (Tooltips, Widget => Spinner,
                             Tip_Text => "Row height of list items");
-      Id := Adjustment_Cb.Connect (Adj,
-                                   Name => "value_changed",
-                                   Func => Change_Row_Height'Access,
-                                   Func_Data => Ctree);
+      Adjustment_Cb.Connect
+        (Adj,
+         Name  => "value_changed",
+         Marsh => Adjustment_Cb.To_Marshaller (Change_Row_Height'Access),
+         User_Data => Ctree);
       Gtk.Ctree.Set_Row_Height
         (Ctree, Height => Gint (Gtk.Adjustment.Get_Value (Adj)));
 
@@ -894,10 +954,11 @@ package body Create_Ctree is
                           Expand => False, Fill => False, Padding => 5);
       Gtk.Tooltips.Set_Tip (Tooltips, Widget => Spinner,
                             Tip_Text => "Tree Indentation.");
-      Id := Adjustment_Cb.Connect (Adj,
-                                   Name => "value_changed",
-                                   Func => Change_Indent'Access,
-                                   Func_Data => Ctree);
+      Adjustment_Cb.Connect
+        (Adj,
+         Name => "value_changed",
+         Marsh => Adjustment_Cb.To_Marshaller (Change_Indent'Access),
+         User_Data => Ctree);
 
       Gtk.Adjustment.Gtk_New (Adj,
                               Value => 5.0,
@@ -914,10 +975,11 @@ package body Create_Ctree is
                           Expand => False, Fill => False, Padding => 5);
       Gtk.Tooltips.Set_Tip (Tooltips, Widget => Spinner,
                             Tip_Text => "Tree Spacing.");
-      Id := Adjustment_Cb.Connect (Adj,
-                                   Name => "value_changed",
-                                   Func => Change_Spacing'Access,
-                                   Func_Data => Ctree);
+      Adjustment_Cb.Connect
+        (Adj,
+         Name => "value_changed",
+         Marsh => Adjustment_Cb.To_Marshaller (Change_Spacing'Access),
+         User_Data => Ctree);
 
 
       Gtk.Box.Gtk_New_Vbox (Mbox, Homogeneous => True, Spacing => 5);
@@ -929,27 +991,30 @@ package body Create_Ctree is
 
       Gtk.Button.Gtk_New (Button, Label => "Expand All");
       Gtk.Box.Pack_Start (Hbox, Child => Button);
-      Id := Ctree_Object_Cb.Connect (Button,
-                                     Name => "clicked",
-                                     Func => Expand_All'Access,
-                                     Slot_Object => Ctree);
+      Ctree_Cb.Object_Connect
+        (Button,
+         Name  => "clicked",
+         Marsh => Ctree_Cb.To_Marshaller (Expand_All'Access),
+         Slot_Object => Ctree);
 
       Gtk.Button.Gtk_New (Button, Label => "Collapse All");
       Gtk.Box.Pack_Start (Hbox, Child => Button);
-      Id := Ctree_Object_Cb.Connect (Button,
-                                     Name => "clicked",
-                                     Func => Collapse_All'Access,
-                                     Slot_Object => Ctree);
+      Ctree_Cb.Object_Connect
+        (Button,
+         Name => "clicked",
+         Marsh => Ctree_Cb.To_Marshaller (Collapse_All'Access),
+         Slot_Object => Ctree);
 
       Gtk.Button.Gtk_New (Button, Label => "Change Style");
       Gtk.Box.Pack_Start (Hbox, Child => Button);
-      Id := Ctree_Object_Cb.Connect (Button,
-                                     Name => "clicked",
-                                     Func => Change_Style'Access,
-                                     Slot_Object => Ctree);
+      Ctree_Cb.Object_Connect
+        (Button,
+         Name => "clicked",
+         Marsh => Ctree_Cb.To_Marshaller (Change_Style'Access),
+         Slot_Object => Ctree);
 
-      Gtk.Button.Gtk_New (Button, Label => "Export Tree");
-      Gtk.Box.Pack_Start (Hbox, Child => Button);
+      --       Gtk.Button.Gtk_New (Button, Label => "Export Tree");
+      --       Gtk.Box.Pack_Start (Hbox, Child => Button);
       --       gtk_signal_connect (GTK_OBJECT (button), "clicked",
       --                           GTK_SIGNAL_FUNC (export_ctree), ctree);
 
@@ -959,24 +1024,27 @@ package body Create_Ctree is
 
       Gtk.Button.Gtk_New (Button, Label => "Select All");
       Gtk.Box.Pack_Start (Hbox, Child => Button);
-      Id := Ctree_Object_Cb.Connect (Button,
-                                     Name => "clicked",
-                                     Func => Select_All'Access,
-                                     Slot_Object => Ctree);
+      Ctree_Cb.Object_Connect
+        (Button,
+         Name => "clicked",
+         Marsh => Ctree_Cb.To_Marshaller (Select_All'Access),
+         Slot_Object => Ctree);
 
       Gtk.Button.Gtk_New (Button, Label => "Unselect All");
       Gtk.Box.Pack_Start (Hbox, Child => Button);
-      Id := Ctree_Object_Cb.Connect (Button,
-                                     Name => "clicked",
-                                     Func => Unselect_All'Access,
-                                     Slot_Object => Ctree);
+      Ctree_Cb.Object_Connect
+        (Button,
+         Name => "clicked",
+         Marsh => Ctree_Cb.To_Marshaller (Unselect_All'Access),
+         Slot_Object => Ctree);
 
       Gtk.Button.Gtk_New (Button, Label => "Remove Selection");
       Gtk.Box.Pack_Start (Hbox, Child => Button);
-      Id := Ctree_Object_Cb.Connect (Button,
-                                     Name => "clicked",
-                                     Func => Remove_Selection'Access,
-                                     Slot_Object => Ctree);
+      Ctree_Cb.Object_Connect
+        (Button,
+         Name => "clicked",
+         Marsh => Ctree_Cb.To_Marshaller (Remove_Selection'Access),
+         Slot_Object => Ctree);
 
       Gtk.Check_Button.Gtk_New (Check, With_Label => "Reorderable");
       Gtk.Box.Pack_Start (Hbox, Child => Check, Expand => False);

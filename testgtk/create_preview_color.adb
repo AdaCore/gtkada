@@ -27,16 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Box;    use Gtk.Box;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Main; use Gtk.Main;
+with Glib;        use Glib;
+with Gtk.Box;     use Gtk.Box;
+with Gtk.Enums;   use Gtk.Enums;
+with Gtk.Main;    use Gtk.Main;
 with Gtk.Preview; use Gtk.Preview;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
-with Gtk; use Gtk;
-with Common; use Common;
+with Gtk.Widget;  use Gtk.Widget;
+with Gtk.Window;  use Gtk.Window;
+with Gtk;         use Gtk;
+with Common;      use Common;
 
 package body Create_Preview_Color is
 
@@ -46,6 +45,21 @@ package body Create_Preview_Color is
 
    Color_Idle : Guint  := 0;
    Count      : Guchar := 1;
+
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "The @bGtk_Preview@B widget displays an RGB image, which can be"
+        & " easily manipulated through an array of @bGuchar@Bs. The image"
+        & " can be either color or grayscale.";
+   end Help;
+
+   ---------------------
+   -- Color_Idle_Func --
+   ---------------------
 
    function Color_Idle_Func (Preview : Gtk_Preview) return Boolean is
       Buf : Guchar_Array (0 .. 767);
@@ -66,7 +80,11 @@ package body Create_Preview_Color is
       return True;
    end Color_Idle_Func;
 
-   procedure Preview_Destroy (Dummy : access Gtk_Widget_Record) is
+   ---------------------
+   -- Preview_Destroy --
+   ---------------------
+
+   procedure Preview_Destroy (Dummy : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Dummy);
    begin
       if Color_Idle > 0 then
@@ -76,15 +94,23 @@ package body Create_Preview_Color is
       Window := null;
    end Preview_Destroy;
 
-   procedure Demo_Destroy (Dummy : access Gtk_Widget_Record) is
-      pragma Warnings (Off, Dummy);
+   ------------------
+   -- Demo_Destroy --
+   ------------------
+
+   procedure Demo_Destroy (Dummy : access Gtk_Widget_Record'Class) is
    begin
-      Destroy (Window);
-      Preview_Destroy (Dummy);
+      if Window /= null then
+         Destroy (Window);
+         Preview_Destroy (Dummy);
+      end if;
    end Demo_Destroy;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id      : Guint;
       Preview : Gtk_Preview;
       Box     : Gtk_Box;
 
@@ -97,12 +123,16 @@ package body Create_Preview_Color is
 
          Gtk_New_Vbox (Box, Homogeneous => False);
          Add (Frame, Box);
-         Id := Widget3_Cb.Connect (Box, "destroy", Demo_Destroy'Access);
+         Widget_Handler.Connect
+           (Box, "destroy",
+            Widget_Handler.To_Marshaller (Demo_Destroy'Access));
 
          --  Now create the real demo
 
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget3_Cb.Connect (Window, "destroy", Preview_Destroy'Access);
+         Widget_Handler.Connect
+           (Window, "destroy",
+            Widget_Handler.To_Marshaller (Preview_Destroy'Access));
          Set_Title (Window, "test");
          Set_Border_Width (Window, Border_Width => 10);
 

@@ -27,51 +27,64 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-
-with Common;           use Common;
-with Gdk.Drawable;  use Gdk.Drawable;
-with Gdk.Event;     use Gdk.Event;
-with Gdk.GC;        use Gdk.GC;
-with Gdk.Rectangle; use Gdk.Rectangle;
+with Glib;             use Glib;
+with Gdk.Drawable;     use Gdk.Drawable;
+with Gdk.Event;        use Gdk.Event;
+with Gdk.GC;           use Gdk.GC;
+with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Types;
-with Gdk.Window;    use Gdk.Window;
-with Gdk;           use Gdk;
+with Gdk.Window;       use Gdk.Window;
+with Gdk;              use Gdk;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Box;          use Gtk.Box;
-with Gtk.Button;       use Gtk.Button;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Scrollbar;    use Gtk.Scrollbar;
-with Gtk.Signal;
+with Gtk.Handlers;
 with Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtk;              use Gtk;
 
 package body Create_Scroll_Test is
 
-   package Adjustment_Cb is new Signal.Callback
-     (Base_Type => Adjustment.Gtk_Adjustment_Record,
-      Data_Type => Drawing_Area.Gtk_Drawing_Area);
+   package Adjustment_Cb is new Handlers.User_Callback
+     (Widget_Type => Adjustment.Gtk_Adjustment_Record,
+      User_Type => Drawing_Area.Gtk_Drawing_Area);
 
-   package Event_Configure_Cb is new Signal.Two_Callback
-     (Base_Type => Drawing_Area.Gtk_Drawing_Area_Record,
-      Data_Type => Adjustment.Gtk_Adjustment,
-      Cb_Type => Gdk.Event.Gdk_Event_Configure);
-
-   package Event_Expose_Cb is new Signal.Two_Callback
-     (Base_Type => Drawing_Area.Gtk_Drawing_Area_Record,
-      Data_Type => Adjustment.Gtk_Adjustment,
-      Cb_Type => Gdk.Event.Gdk_Event_Expose);
+   package Event_Cb is new Handlers.User_Return_Callback
+     (Widget_Type => Drawing_Area.Gtk_Drawing_Area_Record,
+      Return_Type => Gint,
+      User_Type => Adjustment.Gtk_Adjustment);
 
    Scroll_Test_Pos : Gint := 0;
    Scroll_Test_GC : Gdk.GC.Gdk_GC;
+
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "This demo shows how you can implement some scrolling in your"
+        & " applications. Most of the time, putting a widget into a"
+        & " @bGtk_Scrolling_Area@B will do the job. However, if the scrolling"
+        & " takes place on a very large region, it might be more efficient to"
+        & " have a widget with the minimal size visible on the screen, and"
+        & " simply draw the relevant region in it."
+        & ASCII.LF
+        & "As you can see in this demo, this mechanism is implemented using"
+        & " some @bGtk_Adjustment@B widgets, along with some"
+        & " @bGtk_Scrollbar@Bs."
+        & ASCII.LF
+        & "Note also that you must set the event mask in your widget so that"
+        & " @bexpose@B and @bconfigure@B events are correctly handled.";
+   end Help;
 
    -------------------------
    --  Adjustment_Change  --
    -------------------------
 
    procedure Adjustment_Change
-     (Adj : access Adjustment.Gtk_Adjustment_Record;
+     (Adj : access Adjustment.Gtk_Adjustment_Record'Class;
       Widget   : in Drawing_Area.Gtk_Drawing_Area)
    is
       Source_Min : Gint := Gint (Get_Value (Adj)) - Scroll_Test_Pos;
@@ -80,6 +93,7 @@ package body Create_Scroll_Test is
       Dest_Max   : Gint := Gint (Get_Allocation_Height (Widget));
       Rect       : Gdk_Rectangle;
       Event      : Gdk_Event_Expose;
+      Tmp        : Gint;
 
    begin
       Scroll_Test_Pos := Gint (Get_Value (Adj));
@@ -128,7 +142,7 @@ package body Create_Scroll_Test is
          loop
             Get_Graphics_Expose (Event, Get_Window (Widget));
             exit when not Is_Created (Event);
-            Gtk.Widget.Event (Widget, Gdk_Event (Event));
+            Tmp := Gtk.Widget.Event (Widget, Gdk_Event (Event));
             if Get_Count (Event) = 0 then
                Free (Event);
                exit;
@@ -147,29 +161,38 @@ package body Create_Scroll_Test is
    --  Configure  --
    -----------------
 
-   procedure Configure (Widget  : access Drawing_Area.Gtk_Drawing_Area_Record;
-                        Cb_Data : in Gdk.Event.Gdk_Event_Configure;
-                        Adj     : in Adjustment.Gtk_Adjustment) is
-      pragma Warnings (Off, Cb_Data);
+   function Configure
+     (Widget  : access Drawing_Area.Gtk_Drawing_Area_Record'Class;
+      Event   : Gdk.Event.Gdk_Event;
+      Adj     : in Adjustment.Gtk_Adjustment)
+     return Gint
+   is
+      pragma Warnings (Off, Event);
    begin
       Set_Page_Increment (Adj, 0.9 * Gfloat (Get_Allocation_Height (Widget)));
       Set_Page_Size (Adj, Gfloat (Get_Allocation_Height (Widget)));
       --  FIXME Emit_By_Name (Adj, "changed");
+      return 0;
    end Configure;
 
    --------------
    --  Expose  --
    --------------
 
-   procedure Expose (Widget  : access Drawing_Area.Gtk_Drawing_Area_Record;
-                     Event   : in Gdk.Event.Gdk_Event_Expose;
-                     Adj     : in Adjustment.Gtk_Adjustment) is
+   function Expose
+     (Widget  : access Drawing_Area.Gtk_Drawing_Area_Record'Class;
+      Event   : in Gdk.Event.Gdk_Event;
+      Adj     : in Adjustment.Gtk_Adjustment)
+     return Gint
+   is
+      Expose_Event : Gdk.Event.Gdk_Event_Expose :=
+        Gdk.Event.Gdk_Event_Expose (Event);
       Area : Gdk.Rectangle.Gdk_Rectangle;
       Imin, Imax, Jmin, Jmax : Gint;
       Sty : Gtk.Style.Gtk_Style
         := Gtk.Style.Get_Style (Widget);
    begin
-      Area := Gdk.Event.Get_Area (Event);
+      Area := Gdk.Event.Get_Area (Expose_Event);
 
       Imin := Area.X / 10;
       Imax := (Area.X + Gint (Area.Width) + 9) / 10;
@@ -195,22 +218,19 @@ package body Create_Scroll_Test is
             end if;
          end loop; --  J
       end loop;  --  I
-
+      return 0;
    end Expose;
-
 
    -----------
    --  Run  --
    -----------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id : Guint;
       Hbox : Box.Gtk_Box;
       Vbox : Box.Gtk_Box;
       Drawing_Area : Gtk.Drawing_Area.Gtk_Drawing_Area;
       Adj : Gtk.Adjustment.Gtk_Adjustment;
       Scrollbar : Gtk.Scrollbar.Gtk_Scrollbar;
-      Button : Gtk.Button.Gtk_Button;
 
    begin
       Set_Label (Frame, "Scroll Test");
@@ -240,20 +260,23 @@ package body Create_Scroll_Test is
       Box.Pack_Start (In_Box => Hbox, Child => Scrollbar,
                       Expand => False, Fill => False);
 
-      Id := Event_Expose_Cb.Connect (Obj => Drawing_Area,
-                                     Name => "expose_event",
-                                     Func => Expose'Access,
-                                     Func_Data => Adj);
+      Event_Cb.Connect
+        (Widget    => Drawing_Area,
+         Name      => "expose_event",
+         Marsh     => Event_Cb.To_Marshaller (Expose'Access),
+         User_Data => Adj);
 
-      Id := Event_Configure_Cb.Connect (Obj => Drawing_Area,
-                                        Name => "configure_event",
-                                        Func => Configure'Access,
-                                        Func_Data => Adj);
+      Event_Cb.Connect
+        (Widget    => Drawing_Area,
+         Name      => "configure_event",
+         Marsh     => Event_Cb.To_Marshaller (Configure'Access),
+         User_Data => Adj);
 
-      Id := Adjustment_Cb.Connect (Obj => Adj,
-                                   Name => "value_changed",
-                                   Func => Adjustment_Change'Access,
-                                   Func_Data => Drawing_Area);
+      Adjustment_Cb.Connect
+        (Widget    => Adj,
+         Name      => "value_changed",
+         Marsh  => Adjustment_Cb.To_Marshaller (Adjustment_Change'Access),
+         User_Data => Drawing_Area);
 
       Show_All (Frame);
    end Run;

@@ -34,6 +34,16 @@ with Gtk; use Gtk;
 
 package body Create_Radio_Button is
 
+   function Help return String is
+   begin
+      return "A @bGtk_Radio_Button@B is part of a group. Only one button"
+        & " can be selected in this group. If you select a new button,"
+        & " the button currently selected is first deselected."
+        & ASCII.LF
+        & "This group is actually a simple @bWidget_SList.GSList@B. You"
+        & " put the first button into the @bNull_List@B, and then add"
+        & " the next buttons to the @bGroup@B created.";
+   end Help;
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1, Box2 : Gtk_Box;

@@ -27,24 +27,24 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Adjustment; use Gtk.Adjustment;
-with Gtk.Alignment;  use Gtk.Alignment;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Check_Button; use Gtk.Check_Button;
-with Gtk.Enums;  use Gtk.Enums;
-with Gtk.Frame;  use Gtk.Frame;
-with Gtk.Gentry; use Gtk.Gentry;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Main; use Gtk.Main;
-with Gtk.Option_Menu; use Gtk.Option_Menu;
-with Gtk.Progress_Bar; use Gtk.Progress_Bar;
+with Glib;                use Glib;
+with Gtk.Adjustment;      use Gtk.Adjustment;
+with Gtk.Alignment;       use Gtk.Alignment;
+with Gtk.Box;             use Gtk.Box;
+with Gtk.Check_Button;    use Gtk.Check_Button;
+with Gtk.Enums;           use Gtk.Enums;
+with Gtk.Frame;           use Gtk.Frame;
+with Gtk.Gentry;          use Gtk.Gentry;
+with Gtk.Label;           use Gtk.Label;
+with Gtk.Main;            use Gtk.Main;
+with Gtk.Option_Menu;     use Gtk.Option_Menu;
+with Gtk.Progress_Bar;    use Gtk.Progress_Bar;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
-with Gtk.Spin_Button; use Gtk.Spin_Button;
-with Gtk.Table;       use Gtk.Table;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
-with Gtkada.Types; use Gtkada.Types;
+with Gtk.Spin_Button;     use Gtk.Spin_Button;
+with Gtk.Table;           use Gtk.Table;
+with Gtk.Widget;          use Gtk.Widget;
+with Gtk;                 use Gtk;
+with Gtkada.Types;        use Gtkada.Types;
 
 with Common; use Common;
 with Interfaces.C.Strings;
@@ -53,7 +53,7 @@ package body Create_Progress is
 
    package ICS renames Interfaces.C.Strings;
 
-   package Time_Cb   is new Gtk.Main.Timeout (Gtk_Progress_Bar);
+   package Time_Cb  is new Gtk.Main.Timeout (Gtk_Progress_Bar);
 
    Items1 : constant Chars_Ptr_Array :=
      (ICS.New_String ("Left-Right"),
@@ -65,7 +65,8 @@ package body Create_Progress is
      (ICS.New_String ("Continuous"),
       ICS.New_String ("Discrete"));
 
-   type Simple_Cb_Func is access procedure (Wiget : access Gtk_Widget_Record);
+   type Simple_Cb_Func is access
+     procedure (Wiget : access Gtk_Widget_Record'Class);
 
    type ProgressData is
       record
@@ -86,6 +87,22 @@ package body Create_Progress is
 
    Pdata : ProgressData;
 
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "A @bGtk_Progress_Bar@B is a widget that you can use to display"
+        & " the status of an operation. In this example, the progress bar is"
+        & " associated with a @bTimeout@B, and thus updates itself"
+        & " periodically.";
+   end Help;
+
+   ----------------------
+   -- Progress_Timeout --
+   ----------------------
+
    function Progress_Timeout (Pbar : Gtk_Progress_Bar) return Boolean is
       pragma Warnings (Off, Pbar);
       New_Val : Gfloat;
@@ -99,8 +116,11 @@ package body Create_Progress is
       return True;
    end Progress_Timeout;
 
+   ----------------------
+   -- Destroy_Progress --
+   ----------------------
 
-   procedure Destroy_Progress (Window : access Gtk_Widget_Record) is
+   procedure Destroy_Progress (Window : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Window);
    begin
       Timeout_Remove (Pdata.Timer);
@@ -111,7 +131,11 @@ package body Create_Progress is
       --  destroyed elsewhere. No need to do that here.
    end Destroy_Progress;
 
-   procedure Toggle_Orientation (Widget : access Gtk_Widget_Record) is
+   ------------------------
+   -- Toggle_Orientation --
+   ------------------------
+
+   procedure Toggle_Orientation (Widget : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Widget);
       I : Natural := Selected_Button (Pdata.Omenu1_Group);
    begin
@@ -119,8 +143,12 @@ package body Create_Progress is
                        Gtk_Progress_Bar_Orientation'Val (3 - I));
    end Toggle_Orientation;
 
+   ----------------------
+   -- Toggle_Show_Text --
+   ----------------------
 
-   procedure Toggle_Show_Text (Widget : access Gtk_Check_Button_Record) is
+   procedure Toggle_Show_Text (Widget : access Gtk_Check_Button_Record'Class)
+   is
    begin
       Set_Show_Text (Progress  => Pdata.Pbar,
                      Show_Text => Is_Active (Widget));
@@ -129,7 +157,11 @@ package body Create_Progress is
       Set_Sensitive (Pdata.Y_Align_Spin, Is_Active (Widget));
    end Toggle_Show_Text;
 
-   procedure Toggle_Bar_Style (Widget : access Gtk_Widget_Record) is
+   ----------------------
+   -- Toggle_Bar_Style --
+   ----------------------
+
+   procedure Toggle_Bar_Style (Widget : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Widget);
       I : Natural := Selected_Button (Pdata.Omenu2_Group);
    begin
@@ -137,8 +169,11 @@ package body Create_Progress is
       Set_Bar_Style (Pdata.Pbar, Gtk_Progress_Bar_Style'Val (1 - I));
    end Toggle_Bar_Style;
 
+   -------------------
+   -- Value_Changed --
+   -------------------
 
-   procedure Value_Changed (Adj   : access Gtk_Adjustment_Record) is
+   procedure Value_Changed (Adj   : access Gtk_Adjustment_Record'Class) is
       pragma Warnings (Off, Adj);
    begin
       if Get_Activity_Mode (Pdata.Pbar) then
@@ -150,8 +185,11 @@ package body Create_Progress is
       end if;
    end Value_Changed;
 
+   -------------------
+   -- Adjust_Blocks --
+   -------------------
 
-   procedure Adjust_Blocks (Adj   : access Gtk_Adjustment_Record) is
+   procedure Adjust_Blocks (Adj   : access Gtk_Adjustment_Record'Class) is
       pragma Warnings (Off, Adj);
    begin
       Set_Percentage (Pdata.Pbar, 0.0);
@@ -159,24 +197,33 @@ package body Create_Progress is
                            Guint (Get_Value_As_Int (Pdata.Block_Spin)));
    end Adjust_Blocks;
 
+   -----------------
+   -- Adjust_Step --
+   -----------------
 
-   procedure Adjust_Step (Adj   : access Gtk_Adjustment_Record) is
+   procedure Adjust_Step (Adj   : access Gtk_Adjustment_Record'Class) is
       pragma Warnings (Off, Adj);
    begin
       Set_Activity_Step (Pdata.Pbar,
                          Guint (Get_Value_As_Int (Pdata.Step_Spin)));
    end Adjust_Step;
 
+   -----------------------
+   -- Adjust_Act_Blocks --
+   -----------------------
 
-   procedure Adjust_Act_Blocks (Adj   : access Gtk_Adjustment_Record) is
+   procedure Adjust_Act_Blocks (Adj   : access Gtk_Adjustment_Record'Class) is
       pragma Warnings (Off, Adj);
    begin
       Set_Activity_Blocks (Pdata.Pbar,
                            Guint (Get_Value_As_Int (Pdata.Act_Blocks_Spin)));
    end Adjust_Act_Blocks;
 
+   ------------------
+   -- Adjust_Align --
+   ------------------
 
-   procedure Adjust_Align (Adj   : access Gtk_Adjustment_Record) is
+   procedure Adjust_Align (Adj   : access Gtk_Adjustment_Record'Class) is
       pragma Warnings (Off, Adj);
    begin
       Set_Text_Alignment (Pdata.Pbar,
@@ -184,24 +231,34 @@ package body Create_Progress is
                           Get_Value_As_Float (Pdata.Y_Align_Spin));
    end Adjust_Align;
 
+   --------------------------
+   -- Toggle_Activity_Mode --
+   --------------------------
 
-   procedure Toggle_Activity_Mode (Widget : access Gtk_Check_Button_Record) is
+   procedure Toggle_Activity_Mode
+     (Widget : access Gtk_Check_Button_Record'Class)
+   is
    begin
       Set_Activity_Mode (Pdata.Pbar, Is_Active (Widget));
       Set_Sensitive (Pdata.Step_Spin, Is_Active (Widget));
       Set_Sensitive (Pdata.Act_Blocks_Spin, Is_Active (Widget));
    end Toggle_Activity_Mode;
 
+   -------------------
+   -- Entry_Changed --
+   -------------------
 
-   procedure Entry_Changed (Widget : access Gtk_Widget_Record) is
+   procedure Entry_Changed (Widget : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Widget);
    begin
       Set_Format_String (Pdata.Pbar, Get_Text (Pdata.Gentry));
    end Entry_Changed;
 
+   ---------
+   -- Run --
+   ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id     : Guint;
       Vbox   : Gtk_Box;
       Vbox2  : Gtk_Box;
       Hbox   : Gtk_Box;
@@ -221,8 +278,9 @@ package body Create_Progress is
       Set_Border_Width (Vbox, 10);
       Add (Frame, Vbox);
 
-      Id := Widget3_Cb.Connect
-        (Vbox, "destroy", Destroy_Progress'Access);
+      Widget_Handler.Connect
+        (Vbox, "destroy",
+         Widget_Handler.To_Marshaller (Destroy_Progress'Access));
 
       Gtk_New (Frame2, "Progress");
       Pack_Start (Vbox, Frame2, False, True, 0);
@@ -244,8 +302,9 @@ package body Create_Progress is
                Step_Increment => 0.0,
                Page_Increment => 0.0,
                Page_Size      => 0.0);
-      Id := Adj_Cb.Connect (Adj, "value_changed",
-                            Value_Changed'Access);
+      Adj_Handler.Connect
+        (Adj, "value_changed",
+         Adj_Handler.To_Marshaller (Value_Changed'Access));
 
       Gtk_New (Pdata.Pbar, Adj);
       Set_Format_String (Pdata.Pbar, "%v from [%l,%u] (=%p%%)");
@@ -295,7 +354,9 @@ package body Create_Progress is
       Pack_Start (Hbox, Pdata.Omenu1, True, True, 0);
 
       Gtk_New (Check, "Show Text");
-      Id := Check_Cb.Connect (Check, "clicked", Toggle_Show_Text'Access);
+      Check_Handler.Connect
+        (Check, "clicked",
+         Check_Handler.To_Marshaller (Toggle_Show_Text'Access));
       Attach (Tab, Check, 0, 1, 1, 2, Enums.Expand or Enums.Fill,
               Enums.Expand or Enums.Fill, 5, 5);
 
@@ -307,8 +368,10 @@ package body Create_Progress is
       Pack_Start (Hbox, Label, False, True, 0);
 
       Gtk_New (Pdata.Gentry);
-      Id := Widget_Cb.Connect (Pdata.Gentry, "changed",
-                               Entry_Changed'Access, Pdata.Gentry);
+      Widget_Handler.Object_Connect
+        (Pdata.Gentry, "changed",
+         Widget_Handler.To_Marshaller (Entry_Changed'Access),
+         Slot_Object => Pdata.Gentry);
       Pack_Start (Hbox, Pdata.Gentry, True, True, 0);
       Set_Text (Pdata.Gentry, "%v from [%l,%u] (=%p%%)");
       Set_Usize (Pdata.Gentry, 100, -1);
@@ -336,7 +399,9 @@ package body Create_Progress is
       Gtk_New (Pdata.X_Align_Spin, Adj, Climb_Rate => 0.0, The_Digits => 1);
       Pack_Start (Hbox, Pdata.X_Align_Spin, False, True, 0);
       Set_Sensitive (Pdata.X_Align_Spin, False);
-      Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Align'Access);
+      Adj_Handler.Connect
+        (Adj, "value_changed",
+         Adj_Handler.To_Marshaller (Adjust_Align'Access));
 
       Gtk_New (Label, "y :");
       Pack_Start (Hbox, Label, False, True, 5);
@@ -351,7 +416,9 @@ package body Create_Progress is
       Gtk_New (Pdata.Y_Align_Spin, Adj, Climb_Rate => 0.0, The_Digits => 1);
       Pack_Start (Hbox, Pdata.Y_Align_Spin, False, True, 0);
       Set_Sensitive (Pdata.Y_Align_Spin, False);
-      Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Align'Access);
+      Adj_Handler.Connect
+        (Adj, "value_changed",
+         Adj_Handler.To_Marshaller (Adjust_Align'Access));
 
       Gtk_New (Label, "Bar Style :");
       Attach (Tab, Label, 0, 1, 3, 4, Enums.Expand or Enums.Fill,
@@ -385,11 +452,14 @@ package body Create_Progress is
       Gtk_New (Pdata.Block_Spin, Adj, Climb_Rate => 0.0, The_Digits => 0);
       Pack_Start (Hbox, Pdata.Block_Spin, False, True, 0);
       Set_Sensitive (Pdata.Block_Spin, False);
-      Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Blocks'Access);
+      Adj_Handler.Connect
+        (Adj, "value_changed",
+         Adj_Handler.To_Marshaller (Adjust_Blocks'Access));
 
       Gtk_New (Check, "Activity mode");
-      Id := Check_Cb.Connect (Check, "clicked",
-                              Toggle_Activity_Mode'Access);
+      Check_Handler.Connect
+        (Check, "clicked",
+         Check_Handler.To_Marshaller (Toggle_Activity_Mode'Access));
       Attach (Tab, Check, 0, 1, 5, 6, Enums.Expand or Enums.Fill,
               Enums.Expand or Enums.Fill, 5, 5);
 
@@ -410,7 +480,9 @@ package body Create_Progress is
       Gtk_New (Pdata.Step_Spin, Adj, Climb_Rate => 0.0, The_Digits => 0);
       Pack_Start (Hbox, Pdata.Step_Spin, False, True, 0);
       Set_Sensitive (Pdata.Step_Spin, False);
-      Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Step'Access);
+      Adj_Handler.Connect
+        (Adj, "value_changed",
+         Adj_Handler.To_Marshaller (Adjust_Step'Access));
 
       Gtk_New_Hbox (Hbox, False, 0);
       Attach (Tab, Hbox, 1, 2, 6, 7, Enums.Expand or Enums.Fill,
@@ -430,7 +502,9 @@ package body Create_Progress is
                The_Digits => 0);
       Pack_Start (Hbox, Pdata.Act_Blocks_Spin, False, True, 0);
       Set_Sensitive (Pdata.Act_Blocks_Spin, False);
-      Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Act_Blocks'Access);
+      Adj_Handler.Connect
+        (Adj, "value_changed",
+         Adj_Handler.To_Marshaller (Adjust_Act_Blocks'Access));
 
       Show_All (Vbox);
    end Run;

@@ -27,13 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Box;    use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Curve; use Gtk.Curve;
+with Glib;            use Glib;
+with Gtk.Box;         use Gtk.Box;
+with Gtk.Button;      use Gtk.Button;
+with Gtk.Curve;       use Gtk.Curve;
 with Gtk.Gamma_Curve; use Gtk.Gamma_Curve;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk; use Gtk;
+with Gtk.Handlers;    use Gtk.Handlers;
+with Gtk;             use Gtk;
 
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Text_IO;
@@ -41,12 +41,27 @@ with Ada.Text_IO;
 package body Create_Gamma_Curve is
 
    package Float_P is new Ada.Numerics.Generic_Elementary_Functions (Gfloat);
-   package Gamma_Cb is new Gtk.Signal.Void_Callback (Gtk_Button_Record);
+   package Gamma_Cb is new Handlers.Callback (Gtk_Button_Record);
 
    Count  : Gint := 0;
    Curve  : Gtk_Gamma_Curve;
 
-   procedure Change_Curve (Button : access Gtk_Button_Record) is
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "A very specific widget to edit a curve. This is based on a "
+        & " @bGtk_Curve@B, a modified version of the @bGtk_Drawing_Area@B."
+        & " You problably won't need to use this...";
+   end Help;
+
+   ------------------
+   -- Change_Curve --
+   ------------------
+
+   procedure Change_Curve (Button : access Gtk_Button_Record'Class) is
       pragma Warnings (Off, Button);
       Max    : constant Gint := 127 + (Count mod 4) * 128;
       Vec    : Gfloat_Array (1 .. Positive (Max));
@@ -65,8 +80,11 @@ package body Create_Gamma_Curve is
       Count := Count + 1;
    end Change_Curve;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame: access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id     : Guint;
       Button : Gtk_Button;
       Box    : Gtk_Box;
 
@@ -81,7 +99,8 @@ package body Create_Gamma_Curve is
 
       Gtk_New (Button, "Change mode");
       Pack_Start (Box, Button, False, False);
-      Id := Gamma_Cb.Connect (Button, "clicked", Change_Curve'Access);
+      Gamma_Cb.Connect (Button, "clicked",
+                        Gamma_Cb.To_Marshaller (Change_Curve'Access));
 
       Gamma_Cb.Emit_By_Name (Button, "clicked");
 

@@ -27,20 +27,24 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Box;    use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
+with Glib;             use Glib;
+with Gtk.Box;          use Gtk.Box;
+with Gtk.Button;       use Gtk.Button;
 with Gtk.Check_Button; use Gtk.Check_Button;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Frame; use Gtk.Frame;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Paned; use Gtk.Paned;
-with Gtk.Table; use Gtk.Table;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
-with Common; use Common;
+with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Frame;        use Gtk.Frame;
+with Gtk.Label;        use Gtk.Label;
+with Gtk.Paned;        use Gtk.Paned;
+with Gtk.Table;        use Gtk.Table;
+with Gtk.Widget;       use Gtk.Widget;
+with Gtk;              use Gtk;
+with Common;           use Common;
 
 package body Create_Paned is
+
+   ----------
+   -- Help --
+   ----------
 
    function Help return String is
    begin
@@ -49,7 +53,11 @@ package body Create_Paned is
         & "They have two children, one for each side.";
    end Help;
 
-   procedure Toggle_Resize (Child : access Gtk_Widget_Record) is
+   -------------------
+   -- Toggle_Resize --
+   -------------------
+
+   procedure Toggle_Resize (Child : access Gtk_Widget_Record'Class) is
       Paned : Gtk_Paned := Gtk_Paned (Get_Parent (Child));
       --  We use to need an unchecked conversion above, but this is
       --  not required now, as long as their is a with of
@@ -80,7 +88,11 @@ package body Create_Paned is
       Unref (Child);
    end Toggle_Resize;
 
-   procedure Toggle_Shrink (Child : access Gtk_Widget_Record) is
+   -------------------
+   -- Toggle_Shrink --
+   -------------------
+
+   procedure Toggle_Shrink (Child : access Gtk_Widget_Record'Class) is
       Paned : Gtk_Paned := Gtk_Paned (Get_Parent (Child));
       Is_Child1 : Boolean := Gtk_Widget (Child) = Get_Child1 (Paned);
       Resize : Boolean;
@@ -106,6 +118,10 @@ package body Create_Paned is
       Unref (Child);
    end Toggle_Shrink;
 
+   -------------------------
+   -- Create_Pane_Options --
+   -------------------------
+
    function Create_Pane_Options (Paned : access Gtk_Paned_Record'Class;
                                  Frame_Label : String;
                                  Label1 : String;
@@ -116,7 +132,7 @@ package body Create_Paned is
       Table : Gtk_Table;
       Label : Gtk_Label;
       Check : Gtk_Check_Button;
-      Id    : Guint;
+
    begin
       Gtk_New (Frame, Frame_Label);
       Set_Border_Width (Frame, 4);
@@ -129,31 +145,43 @@ package body Create_Paned is
 
       Gtk_New (Check, "Resize");
       Attach_Defaults (Table, Check, 0, 1, 1, 2);
-      Id := Widget_Cb.Connect
-        (Check, "toggled", Toggle_Resize'Access, Get_Child1 (Paned));
+      Widget_Handler.Object_Connect
+        (Check, "toggled",
+         Widget_Handler.To_Marshaller (Toggle_Resize'Access),
+         Slot_Object => Get_Child1 (Paned));
 
       Gtk_New (Check, "Shrink");
       Attach_Defaults (Table, Check, 0, 1, 2, 3);
       Set_Active (Check, True);
-      Id := Widget_Cb.Connect
-        (Check, "toggled", Toggle_Shrink'Access, Get_Child1 (Paned));
+      Widget_Handler.Object_Connect
+        (Check, "toggled",
+         Widget_Handler.To_Marshaller (Toggle_Shrink'Access),
+         Slot_Object => Get_Child1 (Paned));
 
       Gtk_New (Label, Label2);
       Attach_Defaults (Table, Label, 1, 2, 0, 1);
 
       Gtk_New (Check, "Resize");
       Attach_Defaults (Table, Check, 1, 2, 1, 2);
-      Id := Widget_Cb.Connect
-        (Check, "toggled", Toggle_Resize'Access, Get_Child2 (Paned));
+      Widget_Handler.Object_Connect
+        (Check, "toggled",
+         Widget_Handler.To_Marshaller (Toggle_Resize'Access),
+         Slot_Object => Get_Child2 (Paned));
 
       Gtk_New (Check, "Shrink");
       Attach_Defaults (Table, Check, 1, 2, 2, 3);
       Set_Active (Check, True);
-      Id := Widget_Cb.Connect
-        (Check, "toggled", Toggle_Shrink'Access, Get_Child2 (Paned));
+      Widget_Handler.Object_Connect
+        (Check, "toggled",
+         Widget_Handler.To_Marshaller (Toggle_Shrink'Access),
+         Slot_Object => Get_Child2 (Paned));
 
       return Frame;
    end Create_Pane_Options;
+
+   ---------
+   -- Run --
+   ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       VPaned : Gtk_Paned;

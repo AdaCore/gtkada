@@ -31,4 +31,5 @@ with Gtk.Frame; use Gtk.Frame;
 
 package Create_Radio_Button is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
+   function Help return String;
 end Create_Radio_Button;

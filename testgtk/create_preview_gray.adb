@@ -29,7 +29,6 @@
 
 with Glib; use Glib;
 with Gtk.Box;    use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Main; use Gtk.Main;
 with Gtk.Preview; use Gtk.Preview;
@@ -47,6 +46,21 @@ package body Create_Preview_Gray is
    Gray_Idle : Guint  := 0;
    Count     : Guchar := 1;
 
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "The @bGtk_Preview@B widget displays an RGB image, which can be"
+        & " easily manipulated through an array of @bGuchar@Bs. The image"
+        & " can be either color or grayscale.";
+   end Help;
+
+   --------------------
+   -- Gray_Idle_Func --
+   --------------------
+
    function Gray_Idle_Func (Preview : Gtk_Preview) return Boolean is
       Buf : Guchar_Array (0 .. 255);
    begin
@@ -61,7 +75,11 @@ package body Create_Preview_Gray is
       return True;
    end Gray_Idle_Func;
 
-   procedure Preview_Destroy (Dummy  : access Gtk_Widget_Record) is
+   ---------------------
+   -- Preview_Destroy --
+   ---------------------
+
+   procedure Preview_Destroy (Dummy  : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Dummy);
    begin
       if Gray_Idle > 0 then
@@ -71,15 +89,23 @@ package body Create_Preview_Gray is
       Window := null;
    end Preview_Destroy;
 
-   procedure Demo_Destroy (Dummy : access Gtk_Widget_Record) is
-      pragma Warnings (Off, Dummy);
+   ------------------
+   -- Demo_Destroy --
+   ------------------
+
+   procedure Demo_Destroy (Dummy : access Gtk_Widget_Record'Class) is
    begin
-      Destroy (Window);
-      Preview_Destroy (Dummy);
+      if Window /= null then
+         Destroy (Window);
+         Preview_Destroy (Dummy);
+      end if;
    end Demo_Destroy;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id      : Guint;
       Preview : Gtk_Preview;
       Box     : Gtk_Box;
 
@@ -92,12 +118,16 @@ package body Create_Preview_Gray is
 
          Gtk_New_Vbox (Box, Homogeneous => False);
          Add (Frame, Box);
-         Id := Widget3_Cb.Connect (Box, "destroy", Demo_Destroy'Access);
+         Widget_Handler.Connect
+           (Box, "destroy",
+            Widget_Handler.To_Marshaller (Demo_Destroy'Access));
 
          --  Now create the real demo
 
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget3_Cb.Connect (Window, "destroy", Preview_Destroy'Access);
+         Widget_Handler.Connect
+           (Window, "destroy",
+            Widget_Handler.To_Marshaller (Preview_Destroy'Access));
          Set_Title (Window, "test");
          Set_Border_Width (Window, Border_Width => 10);
 

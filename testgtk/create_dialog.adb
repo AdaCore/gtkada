@@ -27,28 +27,23 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Dialog; use Gtk.Dialog;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Widget; use Gtk.Widget;
-with Common; use Common;
-with Gtk; use Gtk;
+with Common;       use Common;
+with Glib;         use Glib;
+with Gtk.Box;      use Gtk.Box;
+with Gtk.Button;   use Gtk.Button;
+with Gtk.Dialog;   use Gtk.Dialog;
+with Gtk.Handlers; use Gtk.Handlers;
+with Gtk.Label;    use Gtk.Label;
+with Gtk.Widget;   use Gtk.Widget;
+with Gtk;          use Gtk;
 
 package body Create_Dialog is
    type Gtk_Label_access is access all Gtk_Label;
-   package Label_Destroy is new Signal.Callback (Gtk_Label_Record,
-                                                 Gtk_Label_Access);
-   procedure Destroyed (Lab : access Gtk_Label_Record;
-                        Ptr : in Gtk_Label_Access);
+   package Label_Destroy is new Handlers.User_Callback
+     (Gtk_Label_Record, Gtk_Label_Access);
 
-   type Gtk_Dialog_access is access all Gtk_Dialog;
-   package Dialog_Destroy is new Signal.Callback (Gtk_Dialog_Record,
-                                                  Gtk_Dialog_Access);
-   procedure Destroyed (Lab : access Gtk_Dialog_Record;
-                        Ptr : in Gtk_Dialog_Access);
+   procedure Destroyed (Lab : access Gtk_Label_Record'Class;
+                        Ptr : in Gtk_Label_Access);
 
    Dialog       : aliased Gtk.Dialog.Gtk_Dialog;
    Global_Label : aliased Gtk_Label;
@@ -62,26 +57,22 @@ package body Create_Dialog is
         & " series of button, like OK, Cancel or Help.";
    end Help;
 
-   procedure Destroyed (Lab : access Gtk_Label_Record;
+   procedure Destroyed (Lab : access Gtk_Label_Record'Class;
                         Ptr : in Gtk_Label_Access) is
    begin
       Ptr.all := null;
    end Destroyed;
 
-   procedure Destroyed (Lab : access Gtk_Dialog_Record;
-                        Ptr : in Gtk_Dialog_Access) is
-   begin
-      Ptr.all := null;
-   end Destroyed;
-
-   procedure Label_Toggle (Button : access Gtk_Widget_Record) is
+   procedure Label_Toggle (Button : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Button);
-      Id : Guint;
+
    begin
       if Global_Label = null then
          Gtk_New (Global_Label, "Dialog Test");
-         Id := Label_Destroy.Connect
-           (Global_Label, "destroy", Destroyed'Access, Global_Label'Access);
+         Label_Destroy.Connect
+           (Global_Label, "destroy",
+            Label_Destroy.To_Marshaller (Destroyed'Access),
+            Global_Label'Access);
          Set_Padding (Global_Label, 10, 10);
          Pack_Start (Get_Vbox (Dialog), Global_Label, True, True, 0);
          Show (Global_Label);
@@ -92,14 +83,16 @@ package body Create_Dialog is
 
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id     : Guint;
       Button : Gtk_Button;
+
    begin
       Set_Label (Frame, "Dialog");
       if Dialog = null then
          Gtk_New (Dialog);
-         Id := Dialog_Destroy.Connect
-           (Dialog, "destroy", Destroyed'Access, Dialog'Access);
+         Destroy_Dialog_Handler.Connect
+           (Dialog, "destroy",
+            Destroy_Dialog_Handler.To_Marshaller (Destroy_Dialog'Access),
+            Dialog'Access);
          Set_Title (Dialog, "Gtk_Dialog");
          Set_Border_Width (Dialog, 0);
          Set_Usize (Dialog, 200, 110);
@@ -111,7 +104,9 @@ package body Create_Dialog is
          Show (Button);
 
          Gtk_New (Button, "Toggle");
-         Id := Widget3_Cb.Connect (Button, "clicked", Label_Toggle'Access);
+         Widget_Handler.Connect
+           (Button, "clicked",
+            Widget_Handler.To_Marshaller (Label_Toggle'Access));
          Pack_Start (Get_Action_Area (Dialog), Button, True, True, 0);
          Show (Button);
          Show (Dialog);

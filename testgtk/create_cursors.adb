@@ -29,24 +29,24 @@
 
 with Unchecked_Conversion;
 
-with Glib; use Glib;
-with Gdk.Cursor;     use Gdk.Cursor;
-with Gdk.Drawable;   use Gdk.Drawable;
-with Gdk.Event;      use Gdk.Event;
-with Gdk.GC;         use Gdk.GC;
-with Gdk.Types;      use Gdk.Types;
-with Gdk.Window;     use Gdk.Window;
-with Gtk.Adjustment; use Gtk.Adjustment;
-with Gtk.Box; use Gtk.Box;
+with Glib;             use Glib;
+with Gdk.Cursor;       use Gdk.Cursor;
+with Gdk.Drawable;     use Gdk.Drawable;
+with Gdk.Event;        use Gdk.Event;
+with Gdk.GC;           use Gdk.GC;
+with Gdk.Types;        use Gdk.Types;
+with Gdk.Window;       use Gdk.Window;
+with Gtk.Adjustment;   use Gtk.Adjustment;
+with Gtk.Box;          use Gtk.Box;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Frame; use Gtk.Frame;
-with Gtk.Label;  use Gtk.Label;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Spin_Button; use Gtk.Spin_Button;
-with Gtk.Style;  use Gtk.Style;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
+with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Frame;        use Gtk.Frame;
+with Gtk.Label;        use Gtk.Label;
+with Gtk.Handlers;     use Gtk.Handlers;
+with Gtk.Spin_Button;  use Gtk.Spin_Button;
+with Gtk.Style;        use Gtk.Style;
+with Gtk.Widget;       use Gtk.Widget;
+with Gtk;              use Gtk;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
@@ -57,15 +57,34 @@ package body Create_Cursors is
    end record;
    type My_Spin_Button is access all My_Spin_Button_Record;
 
-   package Spin_Cb is new Signal.Object_Callback (My_Spin_Button_Record);
-   package Spin2_Cb is new Signal.Callback (My_Spin_Button_Record,
-                                            Gtk_Drawing_Area);
-   package Spin3_Cb is new Signal.Two_Callback (Gtk_Widget_Record,
-                                                My_Spin_Button,
-                                                Gdk_Event_Button);
-   package Da_Cb is new Signal.Object_Callback (Gtk_Drawing_Area_Record);
+   package Spin2_Cb is new Handlers.User_Callback
+     (My_Spin_Button_Record, Gtk_Drawing_Area);
+   package Spin3_Cb is new Handlers.User_Return_Callback
+     (Gtk_Widget_Record, Gint, My_Spin_Button);
+   package Da_Cb is new Handlers.Return_Callback
+     (Gtk_Drawing_Area_Record, Gint);
 
-   procedure Cursor_Expose_Event (Darea : access Gtk_Drawing_Area_Record) is
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "Multiple kind of cursors can be used in your application. Even"
+        & " though you can define your own pixmaps for cursors, a number of"
+        & " cursors are predefined."
+        & ASCII.LF
+        & "This demo also shows a basic example on how to draw into a"
+        & " @bGtk_Drawing_Area@B.";
+   end Help;
+
+   -------------------------
+   -- Cursor_Expose_Event --
+   -------------------------
+
+   function Cursor_Expose_Event (Darea : access Gtk_Drawing_Area_Record'Class)
+                                return Gint
+   is
       Style      : Gtk_Style := Get_Style (Darea);
       Draw       : Gdk_Drawable := Gdk_Drawable (Get_Window (Darea));
       White_GC   : Gdk_GC := Get_White_GC (Style);
@@ -82,15 +101,19 @@ package body Create_Cursors is
       Draw_Rectangle (Draw, Gray_GC, True, Gint (Max_Width / 3),
                       Gint (Max_Height / 3), Gint (Max_Width / 3),
                       Gint (Max_Height / 3));
+      return 0;
    end Cursor_Expose_Event;
 
+   ----------------
+   -- Set_Cursor --
+   ----------------
 
-   procedure Set_Cursor (Spinner : access My_Spin_Button_Record;
+   procedure Set_Cursor (Spinner : access My_Spin_Button_Record'Class;
                          Widget  : in Gtk_Drawing_Area)
    is
       pragma Warnings (Off);
-      function To_Cursor is new Unchecked_Conversion (Gint,
-                                                      Gdk_Cursor_Type);
+      function To_Cursor is new Unchecked_Conversion
+        (Gint, Gdk_Cursor_Type);
       pragma Warnings (On);
 
       C      : Gint := Get_Value_As_Int (Spinner);
@@ -108,9 +131,15 @@ package body Create_Cursors is
       Destroy (Cursor);
    end Set_Cursor;
 
-   procedure Cursor_Event (Darea   : access Gtk_Widget_Record;
-                           Event   : in Gdk_Event_Button;
-                           Spinner : in My_Spin_Button) is
+   ------------------
+   -- Cursor_Event --
+   ------------------
+
+   function Cursor_Event (Darea   : access Gtk_Widget_Record'Class;
+                           Event   : in Gdk_Event;
+                           Spinner : in My_Spin_Button)
+                         return Gint
+   is
       pragma Warnings (Off, Darea);
    begin
       if Get_Button (Event) = 1 then
@@ -120,10 +149,14 @@ package body Create_Cursors is
       else
          Put_Line ("Unknown button : " & Guint'Image (Get_Button (Event)));
       end if;
+      return 0;
    end Cursor_Event;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id      : Guint;
       Vbox,
         Hbox  : Gtk_Box;
       Label   : Gtk_Label;
@@ -131,6 +164,7 @@ package body Create_Cursors is
       Spinner : My_Spin_Button;
       Frame2  : Gtk_Frame;
       Darea   : Gtk_Drawing_Area;
+
    begin
       Set_Label (Frame, "Cursors");
 
@@ -161,16 +195,20 @@ package body Create_Cursors is
       Gtk_New (Darea);
       Set_Usize (Darea, 80, 80);
       Add (Frame2, Darea);
-      Id := Da_Cb.Connect (Darea, "expose_event",
-                           Cursor_Expose_Event'Access, Darea);
+      Da_Cb.Object_Connect
+        (Darea, "expose_event",
+         Da_Cb.To_Marshaller (Cursor_Expose_Event'Access),
+         Darea);
 
       Unrealize (Darea); --  Required for the call to Set_Events
       Set_Events (Darea, Exposure_Mask or Button_Press_Mask);
 
-      Id := Spin3_Cb.Connect (Darea, "button_press_event",
-                              Cursor_Event'Access, Spinner);
-
-      Id := Spin2_Cb.Connect (Spinner, "changed", Set_Cursor'Access, Darea);
+      Spin3_Cb.Connect (Darea, "button_press_event",
+                        Spin3_Cb.To_Marshaller (Cursor_Event'Access),
+                        Spinner);
+      Spin2_Cb.Connect (Spinner, "changed",
+                        Spin2_Cb.To_Marshaller (Set_Cursor'Access),
+                        Darea);
 
       Gtk_New (Spinner.Label, "XXX");
       Pack_Start (Vbox, Spinner.Label, False, False, 0);

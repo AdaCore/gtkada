@@ -38,22 +38,26 @@ package body Common is
    --  Build_Option_Menu  --
    -------------------------
 
-   procedure Build_Option_Menu (Omenu   : out Gtk.Option_Menu.Gtk_Option_Menu;
-                                Gr      : out Widget_Slist.GSlist;
-                                Items   : Chars_Ptr_Array;
-                                History : Gint;
-                                Cb      : Widget_Cb.Callback)
+   procedure Build_Option_Menu
+     (Omenu   : out Gtk.Option_Menu.Gtk_Option_Menu;
+      Gr      : out Widget_Slist.GSlist;
+      Items   : Chars_Ptr_Array;
+      History : Gint;
+      Cb      : Widget_Handler.Marshallers.Void_Marshaller.Handler)
+
    is
       Menu      : Gtk_Menu;
       Menu_Item : Gtk_Radio_Menu_Item;
-      Id        : Guint;
+
    begin
       Gtk.Option_Menu.Gtk_New (OMenu);
       Gtk_New (Menu);
 
       for I in Items'Range loop
          Gtk_New (Menu_Item, Gr, ICS.Value (Items (I)));
-         Id := Widget_Cb.Connect (Menu_Item, "activate", Cb, Menu_Item);
+         Widget_Handler.Object_Connect (Menu_Item, "activate",
+                                        Widget_Handler.To_Marshaller (Cb),
+                                        Slot_Object => Menu_Item);
          Gr := Group (Menu_Item);
          Append (Menu, Menu_Item);
          if I = History then
@@ -70,8 +74,9 @@ package body Common is
    -- Destroy_Window --
    --------------------
 
-   procedure Destroy_Window (Win : access Gtk.Window.Gtk_Window_Record;
+   procedure Destroy_Window (Win : access Gtk.Window.Gtk_Window_Record'Class;
                              Ptr : in Gtk_Window_Access) is
+      pragma Warnings (Off, Win);
    begin
       Ptr.all := null;
    end Destroy_Window;
@@ -80,7 +85,7 @@ package body Common is
    -- Destroy_Dialog --
    --------------------
 
-   procedure Destroy_Dialog (Win : access Gtk.Dialog.Gtk_Dialog_Record;
+   procedure Destroy_Dialog (Win : access Gtk.Dialog.Gtk_Dialog_Record'Class;
                              Ptr : in Gtk_Dialog_Access) is
    begin
       Ptr.all := null;

@@ -27,18 +27,18 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Enums;  use Gtk.Enums;
-with Gtk.Frame;  use Gtk.Frame;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Main; use Gtk.Main;
+with Glib;             use Glib;
+with Gtk.Box;          use Gtk.Box;
+with Gtk.Button;       use Gtk.Button;
+with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Frame;        use Gtk.Frame;
+with Gtk.Label;        use Gtk.Label;
+with Gtk.Main;         use Gtk.Main;
 with Gtk.Radio_Button; use Gtk.Radio_Button;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
-with Common; use Common;
+with Gtk.Handlers;     use Gtk.Handlers;
+with Gtk.Widget;       use Gtk.Widget;
+with Gtk;              use Gtk;
+with Common;           use Common;
 
 package body Create_Test_Idle is
 
@@ -49,11 +49,26 @@ package body Create_Test_Idle is
    end record;
    type My_Button is access all My_Button_Record'Class;
 
-   package My_Button_Cb is new Signal.Callback
+   package My_Button_Cb is new Handlers.User_Callback
      (My_Button_Record, Gtk_Box);
 
    Idle   : Guint;
    Count  : Integer := 0;
+
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "An idle function is a function that is run every time GtkAda is"
+        & " not busy processing an event. No commitment is made as to when"
+        & " this will next happen.";
+   end Help;
+
+   ---------------
+   -- Idle_Test --
+   ---------------
 
    function Idle_Test (Label : in Gtk_Label) return Boolean is
    begin
@@ -62,7 +77,11 @@ package body Create_Test_Idle is
       return True;
    end Idle_Test;
 
-   procedure Stop_Idle (Object : access Gtk_Widget_Record) is
+   ---------------
+   -- Stop_Idle --
+   ---------------
+
+   procedure Stop_Idle (Object : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Object);
    begin
       if Idle /= 0 then
@@ -71,26 +90,41 @@ package body Create_Test_Idle is
       end if;
    end Stop_Idle;
 
-   procedure Destroy_Idle (Window : access Gtk_Widget_Record) is
+   ------------------
+   -- Destroy_Idle --
+   ------------------
+
+   procedure Destroy_Idle (Window : access Gtk_Widget_Record'Class) is
    begin
       Stop_Idle (Window);
    end Destroy_Idle;
 
-   procedure Start_Idle (Label : access Gtk_Label_Record) is
+   ----------------
+   -- Start_Idle --
+   ----------------
+
+   procedure Start_Idle (Label : access Gtk_Label_Record'Class) is
    begin
       if Idle = 0 then
          Idle := Label_Idle.Add (Idle_Test'Access, Gtk_Label (Label));
       end if;
    end Start_Idle;
 
-   procedure Toggle_Container (Button : access My_Button_Record;
+   ----------------------
+   -- Toggle_Container --
+   ----------------------
+
+   procedure Toggle_Container (Button : access My_Button_Record'Class;
                                Contain : in Gtk_Box) is
    begin
       Set_Resize_Mode (Contain, Button.Value);
    end Toggle_Container;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id       : Guint;
       Button   : Gtk_Button;
       Box      : Gtk_Box;
       Label    : Gtk_Label;
@@ -106,8 +140,9 @@ package body Create_Test_Idle is
       Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
       Add (Frame, Vbox);
 
-      Id := Widget3_Cb.Connect
-        (Vbox, "destroy", Destroy_Idle'Access);
+      Widget_Handler.Connect
+        (Vbox, "destroy",
+         Widget_Handler.To_Marshaller (Destroy_Idle'Access));
 
       Gtk_New (Label, "count : " & Integer'Image (Count));
       Set_Padding (Label, 10, 10);
@@ -126,34 +161,42 @@ package body Create_Test_Idle is
       Myb := new My_Button_Record;
       Initialize (Myb, Widget_Slist.Null_List, "Resize-Parent");
       Myb.Value := Resize_Parent;
-      Id := My_Button_Cb.Connect
-        (Myb, "clicked", Toggle_Container'Access, Container);
+      My_Button_Cb.Connect
+        (Myb, "clicked",
+         My_Button_Cb.To_Marshaller (Toggle_Container'Access), Container);
       Pack_Start (Box, Myb, False, False, 0);
 
       Gr := Group (Myb);
       Myb := new My_Button_Record;
       Initialize (Myb, Gr, "Resize-Queue");
       Myb.Value := Resize_Queue;
-      Id := My_Button_Cb.Connect
-        (Myb, "clicked", Toggle_Container'Access, Container);
+      My_Button_Cb.Connect
+        (Myb, "clicked",
+         My_Button_Cb.To_Marshaller (Toggle_Container'Access), Container);
       Pack_Start (Box, Myb, False, False, 0);
 
       Gr := Group (Myb);
       Myb := new My_Button_Record;
       Initialize (Myb, Gr, "Resize-Immediate");
       Myb.Value := Resize_Immediate;
-      Id := My_Button_Cb.Connect
-        (Myb, "clicked", Toggle_Container'Access, Container);
+      My_Button_Cb.Connect
+        (Myb, "clicked",
+         My_Button_Cb.To_Marshaller (Toggle_Container'Access), Container);
       Pack_Start (Box, Myb, False, False, 0);
 
       Gtk_New (Button, "start");
-      Id := Label_Cb.Connect (Button, "clicked", Start_Idle'Access, Label);
+      Label_Handler.Object_Connect
+        (Button, "clicked",
+         Label_Handler.To_Marshaller (Start_Idle'Access),
+         Slot_Object => Label);
       Set_Flags (Button, Can_Default);
       Pack_Start (Vbox, Button, False, False, 0);
 
       Gtk_New (Button, "stop");
-      Id := Widget_Cb.Connect
-        (Button, "clicked", Destroy_Idle'Access, Vbox);
+      Widget_Handler.Object_Connect
+        (Button, "clicked",
+         Widget_Handler.To_Marshaller (Destroy_Idle'Access),
+         Slot_Object => Vbox);
       Set_Flags (Button, Can_Default);
       Pack_Start (Vbox, Button, False, False, 0);
 

@@ -27,24 +27,41 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Enums; use Gtk.Enums;
+with Glib;                use Glib;
+with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Table; use Gtk.Table;
-with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
-with Gtk; use Gtk;
+with Gtk.Table;           use Gtk.Table;
+with Gtk.Toggle_Button;   use Gtk.Toggle_Button;
+with Gtk.Widget;          use Gtk.Widget;
+with Gtk.Window;          use Gtk.Window;
+with Gtk;                 use Gtk;
 
 package body Create_Scrolled is
-
-   package Scrolled_Cb is new Signal.Object_Callback
-     (Gtk_Scrolled_Window_Record);
 
    Has_Parent   : Boolean := False;
    Parent       : Gtk_Widget;
    Float_Parent : Gtk_Window;
+
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "This demo shows how a @bGtk_Scrolled_Window@B can be used to"
+        & " provide some scrolling in any other widget. In this example, the"
+        & " @bGtk_Scrolled_Window@B contains a Gtk_Table, that is"
+        & " automatically scrolled when the scrollbars are moved."
+        & ASCII.LF
+        & "No explicit signal is required in this demo, everything is done"
+        & " through @bGtk_Adjustment@Bs, that contain the current value of the"
+        & " @bGtK_Scrollbar@Bs and also specify the area to display in the"
+        & " @bGtk_Table@B.";
+   end Help;
+
+   ---------
+   -- Run --
+   ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Table     : Gtk_Table;

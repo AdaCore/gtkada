@@ -27,43 +27,65 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Signal; use Gtk.Signal;
+with Glib;           use Glib;
+with Gtk.Box;        use Gtk.Box;
+with Gtk.Button;     use Gtk.Button;
+with Gtk.Handlers;   use Gtk.Handlers;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
-with Gtk; use Gtk;
+with Gtk;            use Gtk;
 
 with Ada.Text_IO;
 with Interfaces.C.Strings;
 
 package body Create_Status is
 
-   type Do_Not_Use_This_Type is new Gtk_Status_Bar_Record with null record;
-   package Do_Not_Use_This_Package is
-     new Signal.Object_Callback (Do_Not_Use_This_Type);
-   --
-   -- FIXME : The previous two lines are there to prevent a small technical
-   -- FIMXE : problem found in GNAT-3.11p (a.k.a a bug) during compilation.
-   -- FIXME : Remove them when GNAT-3.12p is released.
-
-   package Status_Cb is new Signal.Object_Callback (Gtk_Status_Bar_Record);
+   package Status_Cb is new Handlers.Callback (Gtk_Status_Bar_Record);
 
    Counter : Gint := 1;
 
-   procedure Push (Status : access Gtk_Status_Bar_Record) is
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "A @bGtk_Status_Bar@B is generally found at the bottom of"
+        & " application windows. It displays some help text, generally"
+        & " depending on the current context in the application."
+        & ASCII.LF
+        & "In GtkAda, @bGtk_Status_Bar@B are organized as stacks: you push"
+        & " some text onto the stack, and the top of the stack is always"
+        & " displayed. You can then pop part of the stak to display the older"
+        & " content of the @bGtk_Status_Bar@B. This behavior is especially"
+        & " for temporarily displaying help in the status bar, but still being"
+        & " able to show some other informations.";
+   end Help;
+
+   ----------
+   -- Push --
+   ----------
+
+   procedure Push (Status : access Gtk_Status_Bar_Record'Class) is
       Id : Message_Id;
    begin
       Id := Push (Status, 1, "Something" & Gint'Image (Counter));
       Counter := Counter + 1;
    end Push;
 
-   procedure Pop (Status : access Gtk_Status_Bar_Record) is
+   ---------
+   -- Pop --
+   ---------
+
+   procedure Pop (Status : access Gtk_Status_Bar_Record'Class) is
    begin
       Pop (Status, 1);
    end Pop;
 
-   procedure Popped (Status : access Gtk_Status_Bar_Record) is
+   ------------
+   -- Popped --
+   ------------
+
+   procedure Popped (Status : access Gtk_Status_Bar_Record'Class) is
       use type Messages_List.GSlist;
    begin
       if Get_Messages (Status) = Messages_List.Null_List then
@@ -71,12 +93,20 @@ package body Create_Status is
       end if;
    end Popped;
 
-   procedure Steal (Status : access Gtk_Status_Bar_Record) is
+   -----------
+   -- Steal --
+   -----------
+
+   procedure Steal (Status : access Gtk_Status_Bar_Record'Class) is
    begin
       Remove (Status, 1, 4);
    end Steal;
 
-   procedure Contexts (Status : access Gtk_Status_Bar_Record) is
+   --------------
+   -- Contexts --
+   --------------
+
+   procedure Contexts (Status : access Gtk_Status_Bar_Record'Class) is
    begin
       Ada.Text_IO.Put_Line ("Status_Bar : Context : "
                             & "any context"
@@ -105,7 +135,11 @@ package body Create_Status is
                                           (Status, "hit the mouse2")));
    end Contexts;
 
-   procedure Dump (Status : access Gtk_Status_Bar_Record) is
+   ----------
+   -- Dump --
+   ----------
+
+   procedure Dump (Status : access Gtk_Status_Bar_Record'Class) is
       List : Messages_List.GSlist := Get_Messages (Status);
       use type Messages_List.GSlist;
    begin
@@ -124,8 +158,11 @@ package body Create_Status is
       end loop;
    end Dump;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id        : Guint;
       Box1,
         Box2    : Gtk_Box;
       Status    : Gtk_Status_Bar;
@@ -143,31 +180,39 @@ package body Create_Status is
 
       Gtk_New (Status);
       Pack_End (Box1, Status, False, False, 0);
-      Id := Status_Cb.Connect (Status, "text_popped", Popped'Access,
-                               Status);
-
-      --  FIXME : the C testgtk uses gtk_widget_new here, which are
-      --  functions with multiple arguments
+      Status_Cb.Object_Connect (Status, "text_popped",
+                                Status_Cb.To_Marshaller (Popped'Access),
+                                Slot_Object => Status);
 
       Gtk_New (Button, "Push Something");
       Pack_Start (Box2, Button, False, False, 0);
-      Id := Status_Cb.Connect (Button, "clicked", Push'Access, Status);
+      Status_Cb.Object_Connect (Button, "clicked",
+                                Status_Cb.To_Marshaller (Push'Access),
+                                Slot_Object => Status);
 
       Gtk_New (Button, "Pop");
       Pack_Start (Box2, Button, False, False, 0);
-      Id := Status_Cb.Connect (Button, "clicked", Pop'Access, Status);
+      Status_Cb.Object_Connect (Button, "clicked",
+                                Status_Cb.To_Marshaller (Pop'Access),
+                                Slot_Object => Status);
 
-      Gtk_New (Button, "Steal #4");
+      Gtk_New (Button, "Steal Message_Id #4");
       Pack_Start (Box2, Button, False, False, 0);
-      Id := Status_Cb.Connect (Button, "clicked", Steal'Access, Status);
+      Status_Cb.Object_Connect (Button, "clicked",
+                                Status_Cb.To_Marshaller (Steal'Access),
+                                Slot_Object => Status);
 
       Gtk_New (Button, "Dump stack");
       Pack_Start (Box2, Button, False, False, 0);
-      Id := Status_Cb.Connect (Button, "clicked", Dump'Access, Status);
+      Status_Cb.Object_Connect (Button, "clicked",
+                                Status_Cb.To_Marshaller (Dump'Access),
+                                Slot_Object => Status);
 
       Gtk_New (Button, "Test contexts");
       Pack_Start (Box2, Button, False, False, 0);
-      Id := Status_Cb.Connect (Button, "clicked", Contexts'Access, Status);
+      Status_Cb.Object_Connect (Button, "clicked",
+                                Status_Cb.To_Marshaller (Contexts'Access),
+                                Slot_Object => Status);
 
       Show_All (Frame);
    end Run;

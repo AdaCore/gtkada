@@ -27,17 +27,17 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk; use Gtk;
+with Glib;             use Glib;
+with Gtk;              use Gtk;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Dialog;       use Gtk.Dialog;
-with Gtk.Label; use Gtk.Label;
+with Gtk.Label;        use Gtk.Label;
+with Gtk.Handlers;     use Gtk.Handlers;
 with Gtk.Option_Menu;
-with Gtk.Signal;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
-with Gtkada.Types; use Gtkada.Types;
+with Gtk.Widget;       use Gtk.Widget;
+with Gtk.Window;       use Gtk.Window;
+with Gtkada.Types;     use Gtkada.Types;
 with Interfaces.C.Strings;
 
 package Common is
@@ -49,32 +49,33 @@ package Common is
    --  It also contains services that are used in 2 or more examples
    --  of testgtk.
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget_Record);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget_Record, Gtk_Widget);
-   package Widget3_Cb is new Signal.Void_Callback (Gtk_Widget_Record);
-   package Label_Cb is new Signal.Object_Callback (Gtk_Label_Record);
-   package Adj_Cb is new Signal.Void_Callback (Gtk_Adjustment_Record);
-   package Check_Cb is new Signal.Void_Callback (Gtk_Check_Button_Record);
+   package Widget_Handler is new Handlers.Callback (Gtk_Widget_Record);
+   package User_Widget_Handler is new Handlers.User_Callback
+     (Gtk_Widget_Record, Gtk_Widget);
+   package Label_Handler  is new Handlers.Callback (Gtk_Label_Record);
+   package Adj_Handler    is new Handlers.Callback (Gtk_Adjustment_Record);
+   package Check_Handler  is new Handlers.Callback (Gtk_Check_Button_Record);
 
 
    type Gtk_Window_Access is access all Gtk_Window;
-   package Destroy_Cb is new Signal.Callback (Gtk_Window_Record,
-                                              Gtk_Window_Access);
-   procedure Destroy_Window (Win : access Gtk.Window.Gtk_Window_Record;
+   package Destroy_Handler is new Handlers.User_Callback
+     (Gtk_Window_Record, Gtk_Window_Access);
+   procedure Destroy_Window (Win : access Gtk.Window.Gtk_Window_Record'Class;
                              Ptr : in Gtk_Window_Access);
 
+
    type Gtk_Dialog_Access is access all Gtk_Dialog;
-   package Destroy_Dialog_Cb is new Signal.Callback (Gtk_Dialog_Record,
-                                                     Gtk_Dialog_Access);
-   procedure Destroy_Dialog (Win : access Gtk.Dialog.Gtk_Dialog_Record;
-                             Ptr : in Gtk_Dialog_Access);
+   package Destroy_Dialog_Handler is new Handlers.User_Callback
+     (Gtk_Dialog_Record, Gtk_Dialog_Access);
+   procedure Destroy_Dialog (Win : access Gtk_Dialog_Record'Class;
+                             Ptr : in     Gtk_Dialog_Access);
 
-
-   procedure Build_Option_Menu (Omenu   : out Gtk.Option_Menu.Gtk_Option_Menu;
-                                Gr      : out Widget_Slist.GSlist;
-                                Items   : Chars_Ptr_Array;
-                                History : Gint;
-                                Cb      : Widget_Cb.Callback);
+   procedure Build_Option_Menu
+     (Omenu   : out Gtk.Option_Menu.Gtk_Option_Menu;
+      Gr      : out Widget_Slist.GSlist;
+      Items   : Chars_Ptr_Array;
+      History : Gint;
+      Cb      : Widget_Handler.Marshallers.Void_Marshaller.Handler);
    --
    --  Builds an option menu with the given list of items.
    --  If 'History' is in Items'Range, then item number 'History'

@@ -27,25 +27,26 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Handle_Box; use Gtk.Handle_Box;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Separator; use Gtk.Separator;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Style;  use Gtk.Style;
-with Gtk.Toolbar; use Gtk.Toolbar;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
+with Glib;            use Glib;
+with Gdk;             use Gdk;
+with Gtk.Box;         use Gtk.Box;
+with Gtk.Enums;       use Gtk.Enums;
+with Gtk.Handle_Box;  use Gtk.Handle_Box;
+with Gtk.Label;       use Gtk.Label;
+with Gtk.Separator;   use Gtk.Separator;
+with Gtk.Handlers;    use Gtk.Handlers;
+with Gtk.Style;       use Gtk.Style;
+with Gtk.Toolbar;     use Gtk.Toolbar;
+with Gtk.Widget;      use Gtk.Widget;
+with Gtk;             use Gtk;
 
 with Ada.Text_IO;
 with Create_Toolbar;
 
 package body Create_Handle_Box is
 
-   package Handle_Cb is new Signal.Two_Callback
-     (Gtk_Handle_Box_Record, String, Gtk_Widget_Record);
+   package Handle_Cb is new Handlers.User_Callback
+     (Gtk_Handle_Box_Record, String);
 
    ----------
    -- Help --
@@ -61,22 +62,33 @@ package body Create_Handle_Box is
         & " @bGtk_Handle_Box@B.";
    end Help;
 
+   ------------------
+   -- Child_Signal --
+   ------------------
 
-   procedure Child_Signal (Handle : access Gtk_Handle_Box_Record;
-                           Child  : in Gtk_Widget_Record;
+   procedure Child_Signal (Handle : access Gtk_Handle_Box_Record'Class;
+                           Child  : access Gtk_Widget_Record'Class;
                            Data   : in String) is
-      Tmp : aliased Gtk_Widget_Record := Child;
    begin
-      Ada.Text_IO.Put_Line (Type_Name (Get_Type (Handle))
-                            & ": child <"
-                            & Type_Name (Get_Type (Tmp'Access))
-                            & "> "
-                            & Data);
+      Ada.Text_IO.Put_Line ("In Child Signal");
+      if Gdk.Is_Created  (Child.all) then
+         Ada.Text_IO.Put_Line (Type_Name (Get_Type (Handle))
+                               & ": child <"
+                               & Type_Name (Get_Type (Child))
+                               & "> "
+                               & Data);
+      else
+         Ada.Text_IO.Put_Line (Type_Name (Get_Type (Handle))
+                               & ": child <null> " & Data);
+      end if;
+
    end Child_Signal;
 
+   ---------
+   -- Run --
+   ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id        : Guint;
       Vbox      : Gtk_Box;
       Hbox      : Gtk_Box;
       Label     : Gtk_Label;
@@ -84,6 +96,7 @@ package body Create_Handle_Box is
       Handle    : Gtk_Handle_Box;
       Handle2   : Gtk_Handle_Box;
       Toolbar   : Gtk_Toolbar;
+
    begin
       Set_Label (Frame, "Handle Box");
       Gtk_New_Vbox (Vbox,
@@ -114,10 +127,12 @@ package body Create_Handle_Box is
                   Expand  => False,
                   Fill    => False,
                   Padding => 0);
-      Id := Handle_Cb.Connect (Handle, "child_attached",
-                               Child_Signal'Access, "attached");
-      Id := Handle_Cb.Connect (Handle, "child_detached",
-                               Child_Signal'Access, "detached");
+      Handle_Cb.Connect (Handle, "child_attached",
+                         Handle_Cb.To_Marshaller (Child_Signal'Access),
+                         "attached");
+      Handle_Cb.Connect (Handle, "child_detached",
+                         Handle_Cb.To_Marshaller (Child_Signal'Access),
+                         "detached");
 
       Create_Toolbar.Make_Toolbar (Toolbar, Get_Window (Frame),
                                    Get_Style (Frame));
@@ -130,17 +145,21 @@ package body Create_Handle_Box is
                   Expand  => False,
                   Fill    => False,
                   Padding => 0);
-      Id := Handle_Cb.Connect (Handle, "child_attached",
-                               Child_Signal'Access, "attached");
-      Id := Handle_Cb.Connect (Handle, "child_detached",
-                               Child_Signal'Access, "detached");
+      Handle_Cb.Connect (Handle, "child_attached",
+                         Handle_Cb.To_Marshaller (Child_Signal'Access),
+                         "attached");
+      Handle_Cb.Connect (Handle, "child_detached",
+                         Handle_Cb.To_Marshaller (Child_Signal'Access),
+                         "detached");
 
       Gtk_New (Handle2);
       Add (Handle, Handle2);
-      Id := Handle_Cb.Connect (Handle2, "child_attached",
-                               Child_Signal'Access, "attached");
-      Id := Handle_Cb.Connect (Handle2, "child_detached",
-                               Child_Signal'Access, "detached");
+      Handle_Cb.Connect (Handle2, "child_attached",
+                         Handle_Cb.To_Marshaller (Child_Signal'Access),
+                         "attached");
+      Handle_Cb.Connect (Handle2, "child_detached",
+                         Handle_Cb.To_Marshaller (Child_Signal'Access),
+                         "detached");
 
       Gtk_New (Label, "Fooo!");
       Add (Handle2, Label);

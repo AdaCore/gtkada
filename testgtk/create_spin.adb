@@ -27,18 +27,18 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Adjustment; use Gtk.Adjustment;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Check_Button; use Gtk.Check_Button;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Frame; use Gtk.Frame;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Spin_Button; use Gtk.Spin_Button;
+with Glib;              use Glib;
+with Gtk.Adjustment;    use Gtk.Adjustment;
+with Gtk.Box;           use Gtk.Box;
+with Gtk.Button;        use Gtk.Button;
+with Gtk.Check_Button;  use Gtk.Check_Button;
+with Gtk.Enums;         use Gtk.Enums;
+with Gtk.Frame;         use Gtk.Frame;
+with Gtk.Handlers;      use Gtk.Handlers;
+with Gtk.Label;         use Gtk.Label;
+with Gtk.Spin_Button;   use Gtk.Spin_Button;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Gtk; use Gtk;
+with Gtk;               use Gtk;
 
 package body Create_Spin is
 
@@ -46,32 +46,65 @@ package body Create_Spin is
       Label : Gtk_Label;
    end record;
    type My_Button is access all My_Button_Record;
+   --  This is basic Gtk_Button, except that is has an extra internal
+   --  data.
 
-   package Spin_O_Cb is new Signal.Object_Callback (Gtk_Spin_Button_Record);
-   package Spin_Cb is new Signal.Callback
+   package Spin_O_Cb is new Handlers.Callback (Gtk_Spin_Button_Record);
+   package Spin_Cb is new Handlers.User_Callback
      (Gtk_Toggle_Button_Record, Gtk_Spin_Button);
-   package Button_Cb is new Signal.Callback (My_Button_Record, Gint);
+   package Button_Cb is new Handlers.User_Callback (My_Button_Record, Gint);
 
    Spinner1 : Gtk_Spin_Button;
 
-   procedure Change_Digits (Spin : access Gtk_Spin_Button_Record) is
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "A @bGtk_Spin_Button@B is a widget that allows the user to"
+        & " choose a value from a specific range. You can only associate"
+        & " the spin button with numeric values."
+        & ASCII.LF
+        & "This demo also creates a child of @bGtk_Button@B for the two"
+        & " buttons at the bottom. These are basic buttons, but they also"
+        & " contain a pointer to the label where to display the value.";
+   end Help;
+
+   -------------------
+   -- Change_Digits --
+   -------------------
+
+   procedure Change_Digits (Spin : access Gtk_Spin_Button_Record'Class) is
    begin
       Set_Digits (Spinner1, Get_Value_As_Int (Spin));
    end Change_Digits;
 
-   procedure Toggle_Snap (Widget : access Gtk_Toggle_Button_Record;
+   -----------------
+   -- Toggle_Snap --
+   -----------------
+
+   procedure Toggle_Snap (Widget : access Gtk_Toggle_Button_Record'Class;
                           Spin : in Gtk_Spin_Button) is
    begin
       Set_Snap_To_Ticks (Spin, Is_Active (Widget));
    end Toggle_Snap;
 
-   procedure Toggle_Numeric (Widget : access Gtk_Toggle_Button_Record;
+   --------------------
+   -- Toggle_Numeric --
+   --------------------
+
+   procedure Toggle_Numeric (Widget : access Gtk_Toggle_Button_Record'Class;
                              Spin : in Gtk_Spin_Button) is
    begin
       Set_Numeric (Spin, Is_Active (Widget));
    end Toggle_Numeric;
 
-   procedure Get_Value (Widget : access My_Button_Record;
+   ---------------
+   -- Get_Value --
+   ---------------
+
+   procedure Get_Value (Widget : access My_Button_Record'Class;
                         Data   : in Gint)
    is
       Spin  : Gtk_Spin_Button := Spinner1;
@@ -83,8 +116,11 @@ package body Create_Spin is
       end if;
    end Get_Value;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id       : Guint;
       Main_Box : Gtk_Box;
       VBox      : Gtk_Box;
       Hbox     : Gtk_Box;
@@ -176,8 +212,10 @@ package body Create_Spin is
       Gtk_New (Adj, 2.0, 1.0, 5.0, 1.0, 1.0, 0.0);
       Gtk_New (Spinner2, Adj, 0.0, 0);
       Set_Wrap (Spinner2, True);
-      Id := Spin_O_Cb.Connect (Adj, "value_changed", Change_Digits'Access,
-                               Spinner2);
+      Spin_O_Cb.Object_Connect
+        (Adj, "value_changed",
+         Spin_O_Cb.To_Marshaller (Change_Digits'Access),
+         Slot_Object => Spinner2);
 
       Pack_Start (Vbox2, Spinner2, False, False, 0);
 
@@ -185,14 +223,16 @@ package body Create_Spin is
       Pack_Start (Vbox, Hbox, False, False, 5);
 
       Gtk_New (Check, "Snap to 0.5-ticks");
-      Id := Spin_Cb.Connect (Check, "clicked", Toggle_Snap'Access,
-                             Spinner1);
+      Spin_Cb.Connect
+        (Check, "clicked",
+         Spin_Cb.To_Marshaller (Toggle_Snap'Access), Spinner1);
       Pack_Start (Vbox, Check, False, False, 0);
       Set_Active (Check, True);
 
       Gtk_New (Check, "Snap Numeric only input mode");
-      Id := Spin_Cb.Connect (Check, "clicked", Toggle_Numeric'Access,
-                             Spinner1);
+      Spin_Cb.Connect
+        (Check, "clicked",
+         Spin_Cb.To_Marshaller (Toggle_Numeric'Access), Spinner1);
       Pack_Start (Vbox, Check, False, False, 0);
       Set_Active (Check, True);
 
@@ -203,13 +243,15 @@ package body Create_Spin is
       Myb := new My_Button_Record;
       Initialize (Myb, "Value as Int");
       Myb.Label := Label;
-      Id := Button_Cb.Connect (Myb, "clicked", Get_Value'Access, 1);
+      Button_Cb.Connect (Myb, "clicked",
+                         Button_Cb.To_Marshaller (Get_Value'Access), 1);
       Pack_Start (Hbox, Myb, False, False, 5);
 
       Myb := new My_Button_Record;
       Initialize (Myb, "Value as Float");
       Myb.Label := Label;
-      Id := Button_Cb.Connect (Myb, "clicked", Get_Value'Access, 2);
+      Button_Cb.Connect (Myb, "clicked",
+                         Button_Cb.To_Marshaller (Get_Value'Access), 2);
       Pack_Start (Hbox, Myb, False, False, 5);
 
       Pack_Start (Vbox, Label, False, False, 0);

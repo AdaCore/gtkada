@@ -27,20 +27,20 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk; use Gtk;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Label; use Gtk.Label;
-with Gtk.List; use Gtk.List;
-with Gtk.List_Item; use Gtk.List_Item;
-with Gtk.Option_Menu;  use Gtk.Option_Menu;
-with Gtk.Radio_Menu_Item;  use Gtk.Radio_Menu_Item;
+with Glib;                use Glib;
+with Gtk;                 use Gtk;
+with Gtk.Box;             use Gtk.Box;
+with Gtk.Button;          use Gtk.Button;
+with Gtk.Enums;           use Gtk.Enums;
+with Gtk.Label;           use Gtk.Label;
+with Gtk.List;            use Gtk.List;
+with Gtk.List_Item;       use Gtk.List_Item;
+with Gtk.Option_Menu;     use Gtk.Option_Menu;
+with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Widget; use Gtk.Widget;
-with Gtkada.Types; use Gtkada.Types;
+with Gtk.Handlers;        use Gtk.Handlers;
+with Gtk.Widget;          use Gtk.Widget;
+with Gtkada.Types;        use Gtkada.Types;
 
 with Ada.Text_IO;   use Ada.Text_IO;
 with Common; use Common;
@@ -50,7 +50,7 @@ package body Create_List is
 
    package ICS renames Interfaces.C.Strings;
 
-   package List_Cb is new Signal.Object_Callback (Gtk_List_Record);
+   package List_Cb is new Handlers.Callback (Gtk_List_Record);
 
    Num_Item : Natural := 0;
 
@@ -63,6 +63,10 @@ package body Create_List is
    List : Gtk_List;
    Omenu_Group  : Widget_Slist.GSlist;
 
+   ----------
+   -- Help --
+   ----------
+
    function Help return String is
    begin
       return "Note that the @bGtk_List@B list widget is not the best way to"
@@ -72,7 +76,11 @@ package body Create_List is
         & " that can be selected either as a group or independently.";
    end Help;
 
-   procedure Toggle_Sel_Mode (Widget : access Gtk_Widget_Record) is
+   ---------------------
+   -- Toggle_Sel_Mode --
+   ---------------------
+
+   procedure Toggle_Sel_Mode (Widget : access Gtk_Widget_Record'Class) is
    begin
       if not Mapped_Is_Set (Widget) then
          return;
@@ -82,7 +90,11 @@ package body Create_List is
          Gtk_Selection_Mode'Val (3 - Selected_Button (Omenu_Group)));
    end Toggle_Sel_Mode;
 
-   procedure List_Add (List : access Gtk_List_Record) is
+   --------------
+   -- List_Add --
+   --------------
+
+   procedure List_Add (List : access Gtk_List_Record'Class) is
       Item : Gtk_List_Item;
    begin
       Gtk_New (Item, Label => "added item" & Natural'Image (Num_Item));
@@ -91,7 +103,11 @@ package body Create_List is
       Add (List, Item);
    end List_Add;
 
-   procedure List_Remove (List : access Gtk_List_Record) is
+   -----------------
+   -- List_Remove --
+   -----------------
+
+   procedure List_Remove (List : access Gtk_List_Record'Class) is
       use Widget_List;
       Tmp_List,
         Clear_List : Widget_List.Glist;
@@ -107,13 +123,20 @@ package body Create_List is
       Free (Clear_List);
    end List_Remove;
 
-   procedure List_Clear (List : access Gtk_List_Record) is
+   ----------------
+   -- List_Clear --
+   ----------------
+
+   procedure List_Clear (List : access Gtk_List_Record'Class) is
    begin
       Clear_Items (List, 0, -1);
    end List_Clear;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id           : Guint;
       Vbox,
       Hbox,
       Cbox         : Gtk_Box;
@@ -172,21 +195,27 @@ package body Create_List is
                   Expand  => True,
                   Fill    => True,
                   Padding => 0);
-      Id := List_Cb.Connect (Button, "clicked", List_Add'Access, List);
+      List_Cb.Object_Connect (Button, "clicked",
+                              List_Cb.To_Marshaller (List_Add'Access),
+                              Slot_Object => List);
 
       Gtk_New (Button, Label => "Clear List");
       Pack_Start (Hbox, BUtton,
                   Expand  => True,
                   Fill    => True,
                   Padding => 0);
-      Id := List_Cb.Connect (Button, "clicked", List_Clear'Access, List);
+      List_Cb.Object_Connect (Button, "clicked",
+                              List_Cb.To_Marshaller (List_Clear'Access),
+                              Slot_Object => List);
 
       Gtk_New (Button, Label => "Remove Selection");
       Pack_Start (Hbox, Button,
                   Expand  => True,
                   Fill    => True,
                   Padding => 0);
-      Id := List_Cb.Connect (Button, "clicked", List_Remove'Access, List);
+      List_Cb.Object_Connect (Button, "clicked",
+                              List_Cb.To_Marshaller (List_Remove'Access),
+                              Slot_Object => List);
 
       Gtk_New_Hbox (Cbox, Homogeneous => False, Spacing => 0);
       Pack_Start (Vbox, Cbox,
@@ -208,11 +237,8 @@ package body Create_List is
                   Padding => 0);
 
       Omenu_Group := Widget_Slist.Null_List;
-      Build_Option_Menu (List_Omenu,
-                         Omenu_Group,
-                         Items,
-                         0,
-                         Toggle_Sel_Mode'Access);
+      Build_Option_Menu (List_Omenu, Omenu_Group,
+                         Items, 0, Toggle_Sel_Mode'Access);
       Pack_Start (Hbox, List_Omenu,
                   Expand  => False,
                   Fill    => True,

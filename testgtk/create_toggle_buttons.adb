@@ -31,15 +31,25 @@ with Glib;               use Glib;
 with Gtk;                use Gtk;
 with Gtk.Box;            use Gtk.Box;
 with Gtk.Toggle_Button;  use Gtk.Toggle_Button;
-with Gtk.Signal;
-with Gtk.Widget;         use Gtk.Widget;
 
 package body Create_Toggle_Buttons is
 
-   package Exit_Cb is new Signal.Object_Callback
-     (Base_Type => Gtk.Widget.Gtk_Widget_Record);
-   --  Must be instanciated at library level !
+   ----------
+   -- Help --
+   ----------
 
+   function Help return String is
+   begin
+      return "A @bGtk_Toggle_Button@B is a button with two possible states,"
+        & " on and off. Their state is modified each time the user pressed"
+        & " the button. As opposed to @bGtk_Radio_Button@B, "
+        & " @bGtk_Toggle_Button@B are not grouped, and multiple buttons can"
+        & " be selected at the same time.";
+   end Help;
+
+   ---------
+   -- Run --
+   ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1, Box2 : Box.Gtk_Box;

@@ -28,22 +28,26 @@
 -----------------------------------------------------------------------
 
 
-with Gdk.Bitmap; use Gdk.Bitmap;
-with Gdk.Color; use Gdk.Color;
-with Gdk.Pixmap; use Gdk.Pixmap;
-with Gdk.Window; use Gdk.Window;
-with Glib; use Glib;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.GEntry; use Gtk.GEntry;
-with Gtk.Pixmap; use Gtk.Pixmap;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Style; use Gtk.Style;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
+with Gdk.Bitmap;   use Gdk.Bitmap;
+with Gdk.Color;    use Gdk.Color;
+with Gdk.Pixmap;   use Gdk.Pixmap;
+with Gdk.Window;   use Gdk.Window;
+with Glib;         use Glib;
+with Gtk.Enums;    use Gtk.Enums;
+with Gtk.GEntry;   use Gtk.GEntry;
+with Gtk.Handlers; use Gtk.Handlers;
+with Gtk.Pixmap;   use Gtk.Pixmap;
+with Gtk.Style;    use Gtk.Style;
+with Gtk.Widget;   use Gtk.Widget;
+with Gtk;          use Gtk;
 
 package body Create_Toolbar is
 
-   package Toolbar_Cb is new Signal.Object_Callback (Gtk_Toolbar_Record);
+   package Toolbar_Cb is new Handlers.Callback (Gtk_Toolbar_Record);
+
+   ----------
+   -- Help --
+   ----------
 
    function Help return String is
    begin
@@ -60,6 +64,10 @@ package body Create_Toolbar is
         & " @bGtk_Entry@B widget in the middle.";
    end Help;
 
+   ----------------
+   -- New_Pixmap --
+   ----------------
+
    function New_Pixmap (Filename   : in String;
                         Window     : in Gdk_Window'Class;
                         Background : in Gdk_Color)
@@ -74,82 +82,137 @@ package body Create_Toolbar is
       return Gtk_Widget (GtkPixmap);
    end New_Pixmap;
 
-   procedure Set_Horizontal (Toolbar : access Gtk_Toolbar_Record) is
+   --------------------
+   -- Set_Horizontal --
+   --------------------
+
+   procedure Set_Horizontal (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Orientation (Toolbar, Orientation_Horizontal);
    end Set_Horizontal;
 
-   procedure Set_Vertical (Toolbar : access Gtk_Toolbar_Record) is
+   ------------------
+   -- Set_Vertical --
+   ------------------
+
+   procedure Set_Vertical (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Orientation (Toolbar, Orientation_Vertical);
    end Set_Vertical;
 
-   procedure Set_Icons (Toolbar : access Gtk_Toolbar_Record) is
+   ---------------
+   -- Set_Icons --
+   ---------------
+
+   procedure Set_Icons (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Style (Toolbar, Toolbar_Icons);
    end Set_Icons;
 
-   procedure Set_Text (Toolbar : access Gtk_Toolbar_Record) is
+   --------------
+   -- Set_Text --
+   --------------
+
+   procedure Set_Text (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Style (Toolbar, Toolbar_Text);
    end Set_Text;
 
-   procedure Set_Both (Toolbar : access Gtk_Toolbar_Record) is
+   --------------
+   -- Set_Both --
+   --------------
+
+   procedure Set_Both (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Style (Toolbar, Toolbar_Both);
    end Set_Both;
 
-   procedure Set_Small_Space (Toolbar : access Gtk_Toolbar_Record) is
+   ---------------------
+   -- Set_Small_Space --
+   ---------------------
+
+   procedure Set_Small_Space (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Space_Size (Toolbar, 5);
    end Set_Small_Space;
 
-   procedure Set_Big_Space (Toolbar : access Gtk_Toolbar_Record) is
+   -------------------
+   -- Set_Big_Space --
+   -------------------
+
+   procedure Set_Big_Space (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Space_Size (Toolbar, 10);
    end Set_Big_Space;
 
-   procedure Set_Enable (Toolbar : access Gtk_Toolbar_Record) is
+   ----------------
+   -- Set_Enable --
+   ----------------
+
+   procedure Set_Enable (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Tooltips (Toolbar, True);
    end Set_Enable;
 
-   procedure Set_Disable (Toolbar : access Gtk_Toolbar_Record) is
+   -----------------
+   -- Set_Disable --
+   -----------------
+
+   procedure Set_Disable (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Tooltips (Toolbar, False);
    end Set_Disable;
 
-   procedure Borders (Toolbar : access Gtk_Toolbar_Record) is
+   -------------
+   -- Borders --
+   -------------
+
+   procedure Borders (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Button_Relief (Toolbar, Relief_Normal);
    end Borders;
 
-   procedure Borderless (Toolbar : access Gtk_Toolbar_Record) is
+   ----------------
+   -- Borderless --
+   ----------------
+
+   procedure Borderless (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Button_Relief (Toolbar, Relief_None);
    end Borderless;
 
-   procedure Space_Style_Empty (Toolbar : access Gtk_Toolbar_Record) is
+   -----------------------
+   -- Space_Style_Empty --
+   -----------------------
+
+   procedure Space_Style_Empty (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Space_Style (Toolbar, Toolbar_Space_Empty);
    end Space_Style_Empty;
 
-   procedure Space_Style_Line (Toolbar : access Gtk_Toolbar_Record) is
+   ----------------------
+   -- Space_Style_Line --
+   ----------------------
+
+   procedure Space_Style_Line (Toolbar : access Gtk_Toolbar_Record'Class) is
    begin
       Set_Space_Style (Toolbar, Toolbar_Space_Line);
    end Space_Style_Line;
+
+   ------------------
+   -- Make_Toolbar --
+   ------------------
 
    procedure Make_Toolbar (Toolbar    : out Gtk_Toolbar;
                            Toplevel   : in Gdk_Window;
                            Style      : in Gtk_Style;
                            With_Entry : in Boolean := False)
    is
-      Id        : Guint;
       The_Entry : Gtk_Entry;
 
    begin
       Gtk_New (Toolbar, Orientation_Horizontal, Toolbar_Both);
-      Id := Toolbar_Cb.Connect
+      Toolbar_Cb.Object_Connect
         (Append_Item (Toolbar,
                       Text => "Horizontal",
                       Tooltip_Text => "Horizontal_toolbar_layout",
@@ -158,33 +221,43 @@ package body Create_Toolbar is
                                           Toplevel,
                                           Get_Bg (Style,
                                                   State_Normal))),
-         "clicked", Set_Horizontal'Access, Toolbar);
+         "clicked",
+         Toolbar_Cb.To_Marshaller (Set_Horizontal'Access),
+         Slot_Object => Toolbar);
 
-      Id := Toolbar_Cb.Connect
+      Toolbar_Cb.Object_Connect
         (Append_Item (Toolbar, "Vertical", "Vertical_toolbar_layout", "",
                       New_Pixmap ("test.xpm",
                                   Toplevel,
                                   Get_Bg (Style, State_Normal))),
-         "clicked", Set_Vertical'Access, Toolbar);
+         "clicked",
+         Toolbar_Cb.To_Marshaller (Set_Vertical'Access),
+         Slot_Object => Toolbar);
       Append_Space (Toolbar);
-      Id := Toolbar_Cb.Connect
+      Toolbar_Cb.Object_Connect
         (Append_Item (Toolbar, "Icons", "Only show toolbar icons", "",
                       New_Pixmap ("test.xpm",
                                   Toplevel,
                                   Get_Bg (Style, State_Normal))),
-         "clicked", Set_Icons'Access, Toolbar);
-      Id := Toolbar_Cb.Connect
+         "clicked",
+         Toolbar_Cb.To_Marshaller (Set_Icons'Access),
+         Slot_Object => Toolbar);
+      Toolbar_Cb.Object_Connect
         (Append_Item (Toolbar, "Text", "Only show toolbar text", "",
                       New_Pixmap ("test.xpm",
                                   Toplevel,
                                   Get_Bg (Style, State_Normal))),
-         "clicked", Set_Text'Access, Toolbar);
-      Id := Toolbar_Cb.Connect
+         "clicked",
+         Toolbar_Cb.To_Marshaller (Set_Text'Access),
+         Slot_Object => Toolbar);
+      Toolbar_Cb.Object_Connect
         (Append_Item (Toolbar, "Both", "Show toolbar icons and text", "",
                       New_Pixmap ("test.xpm",
                                   Toplevel,
                                   Get_Bg (Style, State_Normal))),
-         "clicked", Set_Both'Access, Toolbar);
+         "clicked",
+         Toolbar_Cb.To_Marshaller (Set_Both'Access),
+         Slot_Object => Toolbar);
       Append_Space (Toolbar);
 
       if With_Entry then
@@ -195,59 +268,68 @@ package body Create_Toolbar is
          Append_Space (Toolbar);
       end if;
 
-      Id := Toolbar_Cb.Connect
+      Toolbar_Cb.Object_Connect
         (Append_Item (Toolbar, "Small", "Use small spaces", "",
                       New_Pixmap ("test.xpm",
                                   Toplevel,
                                   Get_Bg (Style, State_Normal))),
-         "clicked", Set_Small_Space'Access, Toolbar);
-      Id := Toolbar_Cb.Connect
+         "clicked",
+         Toolbar_Cb.To_Marshaller (Set_Small_Space'Access),
+         Slot_Object => Toolbar);
+      Toolbar_Cb.Object_Connect
         (Append_Item (Toolbar, "Big", "Use big spaces", "Toolbar/Big",
                       New_Pixmap ("test.xpm",
                                   Toplevel,
                                   Get_Bg (Style, State_Normal))),
-         "clicked", Set_Big_Space'Access, Toolbar);
+         "clicked", Toolbar_Cb.To_Marshaller (Set_Big_Space'Access),
+         Slot_Object => Toolbar);
       Append_Space (Toolbar);
-      Id := Toolbar_Cb.Connect
+      Toolbar_Cb.Object_Connect
         (Append_Item (Toolbar, "Enable", "Enable_Tooltips", "",
                       New_Pixmap ("test.xpm",
                                   Toplevel,
                                   Get_Bg (Style, State_Normal))),
-         "clicked", Set_Enable'Access, Toolbar);
-      Id := Toolbar_Cb.Connect
+         "clicked", Toolbar_Cb.To_Marshaller (Set_Enable'Access),
+         Slot_Object => Toolbar);
+      Toolbar_Cb.Object_Connect
         (Append_Item (Toolbar, "Disable", "Disable_Tooltips", "",
                       New_Pixmap ("test.xpm",
                                   Toplevel,
                                   Get_Bg (Style, State_Normal))),
-         "clicked", Set_Disable'Access, Toolbar);
+         "clicked", Toolbar_Cb.To_Marshaller (Set_Disable'Access),
+         Slot_Object => Toolbar);
 
       Append_Space (Toolbar);
-      Id := Toolbar_Cb.Connect
+      Toolbar_Cb.Object_Connect
         (Append_Item (Toolbar, "Borders", "Show Borders", "",
                       New_Pixmap ("test.xpm",
                                   Toplevel,
                                   Get_Bg (Style, State_Normal))),
-         "clicked", Borders'Access, Toolbar);
-      Id := Toolbar_Cb.Connect
+         "clicked", Toolbar_Cb.To_Marshaller (Borders'Access),
+         Slot_Object => Toolbar);
+      Toolbar_Cb.Object_Connect
         (Append_Item (Toolbar, "Borderless", "Hide Borders", "",
                       New_Pixmap ("test.xpm",
                                   Toplevel,
                                   Get_Bg (Style, State_Normal))),
-         "clicked", Borderless'Access, Toolbar);
+         "clicked", Toolbar_Cb.To_Marshaller (Borderless'Access),
+         Slot_Object => Toolbar);
 
       Append_Space (Toolbar);
-      Id := Toolbar_Cb.Connect
+      Toolbar_Cb.Object_Connect
         (Append_Item (Toolbar, "Empty", "Empty spaces", "",
                       New_Pixmap ("test.xpm",
                                   Toplevel,
                                   Get_Bg (Style, State_Normal))),
-         "clicked", Space_Style_Empty'Access, Toolbar);
-      Id := Toolbar_Cb.Connect
+         "clicked", Toolbar_Cb.To_Marshaller (Space_Style_Empty'Access),
+         Slot_Object => Toolbar);
+      Toolbar_Cb.Object_Connect
         (Append_Item (Toolbar, "Lines", "Lines in spaces", "",
                       New_Pixmap ("test.xpm",
                                   Toplevel,
                                   Get_Bg (Style, State_Normal))),
-         "clicked", Space_Style_Line'Access, Toolbar);
+         "clicked", Toolbar_Cb.To_Marshaller (Space_Style_Line'Access),
+         Slot_Object => Toolbar);
 
    end Make_Toolbar;
 

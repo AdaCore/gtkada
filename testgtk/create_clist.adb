@@ -27,35 +27,34 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gdk;       use Gdk;
-with Gdk.Color; use Gdk.Color;
-with Gdk.Font;  use Gdk.Font;
-with Gdk.Pixmap; use Gdk.Pixmap;
-with Gdk.Bitmap; use Gdk.Bitmap;
-with Gtk; use Gtk;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Check_Button; use Gtk.Check_Button;
-with Gtk.Clist; use Gtk.Clist;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Option_Menu; use Gtk.Option_Menu;
+with Glib;                use Glib;
+with Gdk;                 use Gdk;
+with Gdk.Color;           use Gdk.Color;
+with Gdk.Font;            use Gdk.Font;
+with Gdk.Pixmap;          use Gdk.Pixmap;
+with Gdk.Bitmap;          use Gdk.Bitmap;
+with Gtk;                 use Gtk;
+with Gtk.Box;             use Gtk.Box;
+with Gtk.Button;          use Gtk.Button;
+with Gtk.Check_Button;    use Gtk.Check_Button;
+with Gtk.Clist;           use Gtk.Clist;
+with Gtk.Enums;           use Gtk.Enums;
+with Gtk.Label;           use Gtk.Label;
+with Gtk.Option_Menu;     use Gtk.Option_Menu;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
-with Gtk.Scrolled_Window;  use Gtk.Scrolled_Window;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Style; use Gtk.Style;
-with Gtk.Widget; use Gtk.Widget;
-with Gtkada.Types; use Gtkada.Types;
-with Common; use Common;
-
+with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
+with Gtk.Handlers;        use Gtk.Handlers;
+with Gtk.Style;           use Gtk.Style;
+with Gtk.Widget;          use Gtk.Widget;
+with Gtkada.Types;        use Gtkada.Types;
+with Common;              use Common;
 with Interfaces.C.Strings;
 
 package body Create_Clist is
    package ICS renames Interfaces.C.Strings;
 
-   package Clist_Cb is new Signal.Object_Callback (Gtk_Clist_Record);
-   package Check_Cb is new Signal.Callback
+   package Clist_Cb is new Handlers.Callback (Gtk_Clist_Record);
+   package Check_Cb is new Handlers.User_Callback
      (Gtk_Check_Button_Record, Gtk_Clist);
 
    Clist_Columns      : constant Gint := 12;
@@ -88,13 +87,38 @@ package body Create_Clist is
       ICS.New_String ("Multiple"),
       ICS.New_String ("Extended"));
 
-      procedure Clear_List (List : access Gtk_Clist_Record) is
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "An @bGtk_Clist@B is like a @bGtk_List@B, except it shows the"
+        & " information on multiple columns. You can have as many columns"
+        & " as you want, each with its own information."
+        & ASCII.LF
+        & "Each line can have its own user_data, although the interface is"
+        & " different from the standard interface. Some specific functions"
+        & " are provided for this usage. The standard inheritance mechanism"
+        & " does not work for rows in a clist, altough of course it does"
+        & " work for the @bGtk_Clist@B itself.";
+   end Help;
+
+   ----------------
+   -- Clear_List --
+   ----------------
+
+   procedure Clear_List (List : access Gtk_Clist_Record'Class) is
    begin
       Clear (List);
       Clist_Rows := 0;
    end Clear_List;
 
-   procedure Remove_Selection (List : access Gtk_Clist_Record) is
+   ----------------------
+   -- Remove_Selection --
+   ----------------------
+
+   procedure Remove_Selection (List : access Gtk_Clist_Record'Class) is
       use Gint_List;
       I : Gint;
    begin
@@ -110,7 +134,11 @@ package body Create_Clist is
       Thaw (List);
    end Remove_Selection;
 
-   procedure Toggle_Titles (Button : access Gtk_Check_Button_Record;
+   -------------------
+   -- Toggle_Titles --
+   -------------------
+
+   procedure Toggle_Titles (Button : access Gtk_Check_Button_Record'Class;
                             List : in Gtk_Clist) is
    begin
       if Is_Active (Button) then
@@ -120,19 +148,27 @@ package body Create_Clist is
       end if;
    end Toggle_Titles;
 
-   procedure Toggle_Reorderable (Button : access Gtk_Check_Button_Record;
+   ------------------------
+   -- Toggle_Reorderable --
+   ------------------------
+
+   procedure Toggle_Reorderable (Button : access Gtk_Check_Button_Record'Class;
                                  List : in Gtk_Clist) is
    begin
       Set_Reorderable (List, Is_Active (Button));
    end Toggle_Reorderable;
 
+   -------------
+   -- Add1000 --
+   -------------
 
-   procedure Add1000 (List : access Gtk_Clist_Record) is
+   procedure Add1000 (List : access Gtk_Clist_Record'Class) is
       Pixmap : Gdk_Pixmap;
       Mask   : Gdk_Bitmap;
       Texts  : Chars_Ptr_Array (0 .. Clist_Columns - 1);
       Row    : Gint;
       Style  : Gtk_Style := Get_Style (List);
+
    begin
       Create_From_Xpm_D (Pixmap, Get_Clist_Window (List),
                          Mask, Get_White (Style),
@@ -161,9 +197,14 @@ package body Create_Clist is
       Unref (Mask);
    end Add1000;
 
-   procedure Add10000 (List : access Gtk_Clist_Record) is
+   --------------
+   -- Add10000 --
+   --------------
+
+   procedure Add10000 (List : access Gtk_Clist_Record'Class) is
       Texts  : Chars_Ptr_Array (0 .. Clist_Columns - 1);
       Row    : Gint;
+
    begin
       for I in 3 .. Clist_Columns - 1 loop
          Texts (I) := ICS.New_String ("Column" & Gint'Image (I));
@@ -183,7 +224,11 @@ package body Create_Clist is
       Thaw (List);
    end Add10000;
 
-   procedure Insert_Row (List : access Gtk_Clist_Record) is
+   ----------------
+   -- Insert_Row --
+   ----------------
+
+   procedure Insert_Row (List : access Gtk_Clist_Record'Class) is
       Texts  : Chars_Ptr_Array (0 .. Clist_Columns - 1)
         := (ICS.New_String ("This"),
             ICS.New_String ("is an"),
@@ -202,8 +247,8 @@ package body Create_Clist is
       Row  : Gint;
       Font : Gdk_Font;
       Style : Gtk_Style := Get_Style (List);
-   begin
 
+   begin
       Row := Prepend (List, Texts);
       if not Gdk.Is_Created (Style1) then
          Set_Rgb (Col1, 0, 56000, 0);
@@ -234,22 +279,32 @@ package body Create_Clist is
       Free (Texts);
    end Insert_Row;
 
-   procedure Undo_Selection (List : access Gtk_Clist_Record) is
+   --------------------
+   -- Undo_Selection --
+   --------------------
+
+   procedure Undo_Selection (List : access Gtk_Clist_Record'Class) is
    begin
       Gtk.Clist.Undo_Selection (List);
    end Undo_Selection;
 
-   procedure Toggle_Sel_Mode (List : access Gtk_Clist_Record) is
+   ---------------------
+   -- Toggle_Sel_Mode --
+   ---------------------
+
+   procedure Toggle_Sel_Mode (List : access Gtk_Clist_Record'Class) is
       I : Integer := Selected_Button (Clist_Omenu_Group);
+
    begin
       Set_Selection_Mode (List, Gtk_Selection_Mode'Val (3 - I));
    end Toggle_Sel_Mode;
 
+   ---------
+   -- Run --
+   ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-
       Texts     : Chars_Ptr_Array (0 .. Clist_Columns - 1);
-      Id        : Guint;
       VBox,
         HBox    : Gtk_Box;
       Clist     : Gtk_CList;
@@ -286,15 +341,21 @@ package body Create_Clist is
 
       Gtk_New (Button, "Insert Row");
       Pack_Start (HBox, Button, True, True, 0);
-      Id := Clist_Cb.Connect (Button, "clicked", Insert_Row'Access, Clist);
+      Clist_Cb.Object_Connect (Button, "clicked",
+                               Clist_Cb.To_Marshaller (Insert_Row'Access),
+                               Slot_Object => Clist);
 
       Gtk_New (Button, "Add 1000 Rows with Pixmaps");
       Pack_Start (HBox, Button, True, True, 0);
-      Id := Clist_Cb.Connect (Button, "clicked", Add1000'Access, Clist);
+      Clist_Cb.Object_Connect (Button, "clicked",
+                               Clist_Cb.To_Marshaller (Add1000'Access),
+                               Slot_Object => Clist);
 
       Gtk_New (Button, "Add 10000 Rows");
       Pack_Start (HBox, Button, True, True, 0);
-      Id := Clist_Cb.Connect (Button, "clicked", Add10000'Access, Clist);
+      Clist_Cb.Object_Connect (Button, "clicked",
+                               Clist_Cb.To_Marshaller (Add10000'Access),
+                               Slot_Object => Clist);
 
       --  Second layer of buttons
       Gtk_New_Hbox (Hbox, False, 5);
@@ -303,15 +364,23 @@ package body Create_Clist is
 
       Gtk_New (Button, "Clear List");
       Pack_Start (Hbox, Button, True, True, 0);
-      Id := Clist_Cb.Connect (Button, "clicked", Clear_List'Access, Clist);
+      Clist_Cb.Object_Connect (Button, "clicked",
+                               Clist_Cb.To_Marshaller (Clear_List'Access),
+                               Slot_Object => Clist);
 
       Gtk_New (Button, "Remove Selection");
       Pack_Start (Hbox, Button, True, True, 0);
-      Id := Clist_Cb.Connect (Button, "clicked", Remove_Selection'Access, Clist);
+      Clist_Cb.Object_Connect
+        (Button, "clicked",
+         Clist_Cb.To_Marshaller (Remove_Selection'Access),
+         Slot_Object => Clist);
 
       Gtk_New (Button, "Undo Selection");
       Pack_Start (Hbox, Button, True, True, 0);
-      Id := Clist_Cb.Connect (Button, "clicked", Undo_Selection'Access, Clist);
+      Clist_Cb.Object_Connect
+        (Button, "clicked",
+         Clist_Cb.To_Marshaller (Undo_Selection'Access),
+         Slot_Object => Clist);
 
       --  TBD??? Warning tests button
 
@@ -322,12 +391,17 @@ package body Create_Clist is
 
       Gtk_New (Check, "Toggle title Buttons");
       Pack_Start (Hbox, Check, True, True, 0);
-      Id := Check_Cb.Connect (Check, "clicked", Toggle_Titles'Access, Clist);
+      Check_Cb.Connect (Check, "clicked",
+                        Check_Cb.To_Marshaller (Toggle_Titles'Access),
+                        Clist);
       Set_Active (Check, True);
 
       Gtk_New (Check, "Reorderable");
       Pack_Start (Hbox, Check, True, True, 0);
-      Id := Check_Cb.Connect (Check, "clicked", Toggle_Reorderable'Access, Clist);
+      Check_Cb.Connect
+        (Check, "clicked",
+         Check_Cb.To_Marshaller (Toggle_Reorderable'Access),
+         Clist);
       Set_Active (Check, True);
 
       Gtk_New (Label, "Selection_Mode :");
@@ -337,7 +411,6 @@ package body Create_Clist is
       Build_Option_Menu (Omenu, Clist_Omenu_Group, Items, 0, null);
       --  FIXME: Add the missing callback (instead of null).
       Pack_Start (Hbox, Omenu, False, True, 0);
-
 
       Pack_Start (Vbox, Scrolled, True, True, 0);
       Set_Row_Height (Clist, 18);

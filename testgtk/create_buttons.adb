@@ -27,19 +27,19 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Frame; use Gtk.Frame;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Table; use Gtk.Table;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
+with Glib;         use Glib;
+with Gtk;          use Gtk;
+with Gtk.Box;      use Gtk.Box;
+with Gtk.Button;   use Gtk.Button;
+with Gtk.Enums;    use Gtk.Enums;
+with Gtk.Frame;    use Gtk.Frame;
+with Gtk.Handlers; use Gtk.Handlers;
+with Gtk.Table;    use Gtk.Table;
+with Gtk.Widget;   use Gtk.Widget;
 
 package body Create_Buttons is
 
-   package Button_Cb is new Signal.Object_Callback (Gtk_Button_Record);
+   package Button_Cb is new Handlers.Callback (Gtk_Button_Record);
 
    ----------
    -- Help --
@@ -56,7 +56,7 @@ package body Create_Buttons is
    -- Button_Window --
    -------------------
 
-   procedure Button_Window (Widget : access Gtk_Button_Record) is
+   procedure Button_Window (Widget : access Gtk_Button_Record'Class) is
    begin
       --  Toggles the visibility of the window
       if Visible_Is_Set (Widget) then
@@ -71,7 +71,6 @@ package body Create_Buttons is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id      : Guint;
       Box1    : Gtk_Box;
       Table   : Gtk_Table;
       Button  : array (0 .. 8) of Gtk_Button;
@@ -79,6 +78,7 @@ package body Create_Buttons is
       Right_A : array (0 .. 8) of Gint := (1, 2, 3, 1, 3, 2, 2, 3, 1);
       Top_A   : array (0 .. 8) of Gint := (0, 1, 2, 2, 0, 2, 0, 1, 1);
       Bott_A  : array (0 .. 8) of Gint := (1, 2, 3, 3, 1, 3, 1, 2, 2);
+
    begin
       Gtk.Frame.Set_Label (Frame, "Buttons");
 
@@ -98,8 +98,10 @@ package body Create_Buttons is
       end loop;
 
       for J in Button'Range loop
-         Id :=Button_Cb.Connect (Button (J), "clicked", Button_Window'Access,
-                                 Button ((J + 1) mod Button'Length));
+         Button_Cb.Object_Connect
+           (Button (J), "clicked",
+            Button_Cb.To_Marshaller (Button_Window'Access),
+            Button ((J + 1) mod Button'Length));
          Attach (Table, Button (J),
                  Left_A (J), Right_A (J),
                  Top_A (J), Bott_A (J),

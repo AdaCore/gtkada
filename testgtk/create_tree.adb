@@ -27,25 +27,25 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gdk; use Gdk;
-with Gtk.Adjustment; use Gtk.Adjustment;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Check_Button; use Gtk.Check_Button;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Frame; use Gtk.Frame;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Radio_Button; use Gtk.Radio_Button;
+with Glib;                use Glib;
+with Gdk;                 use Gdk;
+with Gtk.Adjustment;      use Gtk.Adjustment;
+with Gtk.Box;             use Gtk.Box;
+with Gtk.Button;          use Gtk.Button;
+with Gtk.Check_Button;    use Gtk.Check_Button;
+with Gtk.Enums;           use Gtk.Enums;
+with Gtk.Frame;           use Gtk.Frame;
+with Gtk.Label;           use Gtk.Label;
+with Gtk.Radio_Button;    use Gtk.Radio_Button;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Spin_Button; use Gtk.Spin_Button;
-with Gtk.Tree; use Gtk.Tree;
-with Gtk.Tree_Item; use Gtk.Tree_Item;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
-with Gtk; use Gtk;
-with Common; use Common;
+with Gtk.Handlers;        use Gtk.Handlers;
+with Gtk.Spin_Button;     use Gtk.Spin_Button;
+with Gtk.Tree;            use Gtk.Tree;
+with Gtk.Tree_Item;       use Gtk.Tree_Item;
+with Gtk.Widget;          use Gtk.Widget;
+with Gtk.Window;          use Gtk.Window;
+with Gtk;                 use Gtk;
+with Common;              use Common;
 
 package body Create_Tree is
 
@@ -75,7 +75,7 @@ package body Create_Tree is
    end record;
    type My_Tree is access all My_Tree_Record'Class;
 
-   package Tree_Cb is new Signal.Object_Callback (My_Tree_Record);
+   package Tree_Cb is new Handlers.Callback (My_Tree_Record);
 
    package To_Tree is new Unchecked_Cast
      (Gtk_Tree_Record, Gtk_Tree);
@@ -83,7 +83,25 @@ package body Create_Tree is
      (Gtk_Tree_Item_Record, Gtk_Tree_Item);
 
 
-   procedure Cb_Tree_Changed (Tree : access My_Tree_Record) is
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "A @bGtk_Tree@B is to @bGtk_Ctree@B what @bGtk_List@B is to"
+        & " @bGtk_Clist@B: this is a more flexible version, since items in"
+        & " a tree can contain any kind of widget, including pixmaps."
+        & ASCII.LF
+        & "On the other hand, it is a little bit slower than a @bGtk_Ctree@B"
+        & " and can contain only a limited number of items.";
+   end Help;
+
+   ---------------------
+   -- Cb_Tree_Changed --
+   ---------------------
+
+   procedure Cb_Tree_Changed (Tree : access My_Tree_Record'Class) is
       use Widget_List;
       Selected_List : Widget_List.Glist;
       Nb_Selected   : Guint;
@@ -103,7 +121,11 @@ package body Create_Tree is
       end if;
    end Cb_Tree_Changed;
 
-   procedure Cb_Add_New_Item (Tree : access My_Tree_Record) is
+   ---------------------
+   -- Cb_Add_New_Item --
+   ---------------------
+
+   procedure Cb_Add_New_Item (Tree : access My_Tree_Record'Class) is
       use Widget_List;
       Selected_List : Widget_List.Glist;
       Selected_Item : Gtk_Tree_Item;
@@ -129,7 +151,11 @@ package body Create_Tree is
       Tree.Nb_Item_Add := Tree.Nb_Item_Add + 1;
    end Cb_Add_New_Item;
 
-   procedure Cb_Remove_Item (Tree : access My_Tree_Record) is
+   --------------------
+   -- Cb_Remove_Item --
+   --------------------
+
+   procedure Cb_Remove_Item (Tree : access My_Tree_Record'Class) is
       use Widget_List;
       Selected_List : Widget_List.Glist;
       Clear_List    : Widget_List.Glist;
@@ -145,7 +171,11 @@ package body Create_Tree is
       Free (Clear_List);
    end Cb_Remove_Item;
 
-   procedure Cb_Remove_Subtree (Tree : access My_Tree_Record) is
+   -----------------------
+   -- Cb_Remove_Subtree --
+   -----------------------
+
+   procedure Cb_Remove_Subtree (Tree : access My_Tree_Record'Class) is
       use Widget_List;
       Selected_List : Widget_List.Glist;
       Item          : Gtk_Tree_Item;
@@ -158,6 +188,10 @@ package body Create_Tree is
         end if;
       end if;
    end Cb_Remove_Subtree;
+
+   --------------------
+   -- Create_Subtree --
+   --------------------
 
    procedure Create_Subtree (Item                : in Gtk_Tree_Item;
                              Level               : in Guint;
@@ -202,6 +236,10 @@ package body Create_Tree is
       end if;
    end Create_Subtree;
 
+   ------------------------
+   -- Create_Tree_Sample --
+   ------------------------
+
    procedure Create_Tree_Sample (Selection_Mode : in Gtk_Selection_Mode;
                                  Draw_Line      : in Boolean;
                                  View_Line      : in Boolean;
@@ -209,7 +247,6 @@ package body Create_Tree is
                                  Nb_Item_Max    : in Gint;
                                  Recursion_Level_Max : in Gint)
    is
-      Id           : Guint;
       Box2         : Gtk_Box;
       Scrolled     : Gtk_Scrolled_Window;
       Root_Tree    : My_Tree;
@@ -237,8 +274,10 @@ package body Create_Tree is
       Root_Tree := new My_Tree_Record;
       Initialize (Root_Tree);
       Root_Tree.Nb_Item_Add := 0;
-      Id := Tree_Cb.Connect (Root_Tree, "selection_changed",
-                             Cb_Tree_Changed'Access, Root_Tree);
+      Tree_Cb.Object_Connect
+        (Root_Tree, "selection_changed",
+         Tree_Cb.To_Marshaller (Cb_Tree_Changed'Access),
+         Slot_Object => Root_Tree);
       Add_With_Viewport (Scrolled, Root_Tree);
       Set_Selection_Mode (Root_Tree, Selection_Mode);
       Set_View_Lines (Root_Tree, Draw_Line);
@@ -264,26 +303,36 @@ package body Create_Tree is
 
       Gtk_New (Root_Tree.Add_Button, "Add Item");
       Set_Sensitive (Root_Tree.Add_Button, False);
-      Id := Tree_Cb.Connect (Root_Tree.Add_Button, "clicked",
-                             Cb_Add_New_Item'Access, Root_Tree);
+      Tree_Cb.Object_Connect
+        (Root_Tree.Add_Button, "clicked",
+         Tree_Cb.To_Marshaller (Cb_Add_New_Item'Access),
+         Slot_Object => Root_Tree);
       Pack_Start (Box2, Root_Tree.Add_Button, True, True, 0);
 
       Gtk_New (Root_Tree.Remove_Button, "Remove Item(s)");
       Set_Sensitive (Root_Tree.Remove_Button, False);
-      Id := Tree_Cb.Connect (Root_Tree.Remove_Button, "clicked",
-                             Cb_Remove_Item'Access, Root_Tree);
+      Tree_Cb.Object_Connect
+        (Root_Tree.Remove_Button, "clicked",
+         Tree_Cb.To_Marshaller (Cb_Remove_Item'Access),
+         Slot_Object => Root_Tree);
       Pack_Start (Box2, Root_Tree.Remove_Button, True, True, 0);
 
       Gtk_New (Root_Tree.Subtree_Button, "Remove Subtree");
       Set_Sensitive (Root_Tree.Subtree_Button, False);
-      Id := Tree_Cb.Connect (Root_Tree.Subtree_Button, "clicked",
-                             Cb_Remove_Subtree'Access, Root_Tree);
+      Tree_Cb.Object_Connect
+        (Root_Tree.Subtree_Button, "clicked",
+         Tree_Cb.To_Marshaller (Cb_Remove_Subtree'Access),
+         Slot_Object => Root_Tree);
       Pack_Start (Box2, Root_Tree.Subtree_Button, True, True, 0);
 
       Show_All (Tree_Area);
    end Create_Tree_Sample;
 
-   procedure Cb_Create_Tree (Button : access Gtk_Widget_Record) is
+   --------------------
+   -- Cb_Create_Tree --
+   --------------------
+
+   procedure Cb_Create_Tree (Button : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Button);
       Selection_Mode  : Gtk_Selection_Mode := Selection_Single;
       View_Line       : Boolean;
@@ -314,8 +363,11 @@ package body Create_Tree is
                           No_Root_Item, Nb_Item, Recursion_Level);
    end Cb_Create_Tree;
 
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id       : Guint;
       Box1,
         Box2,
         Box3,
@@ -412,8 +464,10 @@ package body Create_Tree is
 
       Gtk_New (Button, "Create Tree Sample");
       Pack_Start (Box1, Button, False, False, 0);
-      Id := Widget_Cb.Connect (Button, "clicked", Cb_Create_Tree'Access,
-                               Button);
+      Widget_Handler.Object_Connect
+        (Button, "clicked",
+         Widget_Handler.To_Marshaller (Cb_Create_Tree'Access),
+         Slot_Object => Button);
 
       Gtk_New_Vbox (Tree_Area, Homogeneous => False, Spacing => 0);
       Pack_Start (Box1, Tree_Area, False, False, 0);

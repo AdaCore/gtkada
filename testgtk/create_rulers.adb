@@ -27,20 +27,39 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gdk.Types; use Gdk.Types;
+with Glib;             use Glib;
+with Gdk.Types;        use Gdk.Types;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Object; use Gtk.Object;
-with Gtk.Ruler; use Gtk.Ruler;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Table; use Gtk.Table;
-with Gtk; use Gtk;
+with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Object;       use Gtk.Object;
+with Gtk.Ruler;        use Gtk.Ruler;
+with Gtk.Handlers;     use Gtk.Handlers;
+with Gtk.Table;        use Gtk.Table;
+with Gtk.Widget;       use Gtk.Widget;
+with Gtk;              use Gtk;
 
 package body Create_Rulers is
 
+   package Motion_Cb is new Handlers.Return_Callback
+     (Gtk_Widget_Record, Gint);
+
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "The @bGtk_Ruler@B widget is used to display the cursor"
+        & " coordinates in an image. Note that to use it, you need to modify"
+        & " the event mask of the widget to allow for @bPointer_Motion_Mask@B"
+        & " events.";
+   end Help;
+
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Id        : Guint;
       Ruler     : Gtk_Ruler;
       Table     : Gtk_Table;
       Darea     : Gtk_Drawing_Area;
@@ -59,16 +78,18 @@ package body Create_Rulers is
 
       Gtk_New_Hruler (Ruler);
       Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
-      Id := C_Unsafe_Connect (Gtk_Object (Darea), "motion_notify_event",
-                              Get_Default_Motion_Notify_Event (Ruler),
-                              Gtk_Object (Ruler));
+      Motion_Cb.Object_Connect
+        (Gtk_Object (Darea), "motion_notify_event",
+         Motion_Cb.To_Marshaller (Default_Motion_Notify_Event'Access),
+         Slot_Object => Ruler);
       Attach (Table, Ruler, 1, 2, 0, 1, Expand + Enums.Fill, Enums.Fill, 0, 0);
 
       Gtk_New_Vruler (Ruler);
       Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
-      Id := C_Unsafe_Connect (Gtk_Object (Darea), "motion_notify_event",
-                              Get_Default_Motion_Notify_Event (Ruler),
-                              Gtk_Object (Ruler));
+      Motion_Cb.Object_Connect
+        (Gtk_Object (Darea), "motion_notify_event",
+         Motion_Cb.To_Marshaller (Default_Motion_Notify_Event'Access),
+         Slot_Object => Ruler);
       Attach (Table, Ruler, 0, 1, 1, 2, Enums.Fill, Expand + Enums.Fill, 0, 0);
 
       Show_All (Frame);

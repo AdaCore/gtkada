@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Glib;                use Glib;
+with Gtk;                 use Gtk;
 with Gdk.Bitmap;          use Gdk.Bitmap;
 with Gdk.Color;           use Gdk.Color;
 with Gdk.Font;            use Gdk.Font;
@@ -38,6 +39,7 @@ with Gtk.Dialog;          use Gtk.Dialog;
 --  with Gtk.Drawing_Area;    use Gtk.Drawing_Area;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Frame;           use Gtk.Frame;
+with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.HButton_Box;     use Gtk.HButton_Box;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Main;            use Gtk.Main;
@@ -45,7 +47,7 @@ with Gtk.Notebook;        use Gtk.Notebook;
 with Gtk.Pixmap;          use Gtk.Pixmap;
 with Gtk.Radio_Button;    use Gtk.Radio_Button;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Signal;          use Gtk.Signal;
+with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Style;           use Gtk.Style;
 with Gtk.Text;            use Gtk.Text;
 with Gtk.Toolbar;         use Gtk.Toolbar;
@@ -115,11 +117,11 @@ package body Main_Windows is
                        return Gtk_Pixmap;
    --  Create a new icon from a file
 
-   procedure Display_Help (Button : access Gtk_Widget_Record);
+   procedure Display_Help (Button : access Gtk_Widget_Record'Class);
    --  Display an Help window for the current demo
 
-   package Notebook_Cb is new Gtk.Signal.Two_Callback
-     (Gtk_Notebook_Record, Gtk_Notebook, Gtk_Notebook_Page);
+   package Notebook_Cb is new Gtk.Handlers.User_Callback
+     (Gtk_Notebook_Record, Gtk_Notebook);
 
    Help_Dialog : Gtk.Dialog.Gtk_Dialog;
    Help_Text   : Gtk.Text.Gtk_Text;
@@ -156,19 +158,21 @@ package body Main_Windows is
    --  New definition for tree items, so that they know which demo function
    --  to call.
 
-   package Tree_Cb is new Gtk.Signal.Two_Callback_Gtk
-     (Base_Type => Gtk.Tree.Gtk_Tree_Record,
-      Data_Type => Integer,
-      Cb_Type   => Demo_Tree_Item_Record);
-   procedure Tree_Select_Child (Tree : access Gtk_Tree_Record;
-                                Item : access Demo_Tree_Item_Record;
-                                Data : Integer);
+   package Tree_Cb is new Gtk.Handlers.User_Callback
+     (Widget_Type => Gtk.Tree.Gtk_Tree_Record,
+      User_Type => Integer);
+   procedure Tree_Select_Child (Tree   : access Gtk_Tree_Record'Class;
+                                Item_P : access Gtk_Widget_Record'Class;
+                                Data   : Integer);
    --  Callbacks when a different item in the tree is selected.
 
-   package Window_Callback is new Gtk.Signal.Void_Callback
-     (Base_Type => Gtk_Widget_Record);
-   procedure Exit_Main (Object : access Gtk_Widget_Record);
+   package Window_Cb is new Handlers.Callback (Gtk_Widget_Record);
+   package Return_Window_Cb is new Handlers.Return_Callback
+     (Gtk_Widget_Record, Boolean);
+   procedure Exit_Main (Object : access Gtk_Widget_Record'Class);
    --  Callbacks when the main window is killed
+   function Delete_Event (Object : access Gtk_Widget_Record'Class)
+                         return Boolean;
 
    type Demo_Type is (Box, Base, Complex, Gimp, Misc);
    --  The available types for demos. Each of them is a tree item, whose subitems
@@ -203,21 +207,28 @@ package body Main_Windows is
                                          Create_Calendar.Help'Access),
       (NS ("check buttons"),    Base,    Create_Check_Buttons.Run'Access,
                                          Create_Check_Buttons.Help'Access),
-      (NS ("clist"),            Complex, Create_Clist.Run'Access, null),
-      (NS ("ctree"),            Complex, Create_Ctree.Run'Access, null),
-      (NS ("color selection"),  Gimp,    Create_Color_Selection.Run'Access, null),
-      (NS ("cursors"),          Misc,    Create_Cursors.Run'Access, null),
+      (NS ("clist"),            Complex, Create_Clist.Run'Access,
+                                         Create_Clist.Help'Access),
+      (NS ("ctree"),            Complex, Create_Ctree.Run'Access,
+                                         Create_Ctree.Help'Access),
+      (NS ("color selection"),  Gimp,    Create_Color_Selection.Run'Access,
+                                         Create_Color_Selection.Help'Access),
+      (NS ("cursors"),          Misc,    Create_Cursors.Run'Access,
+                                         Create_Cursors.Help'Access),
       (NS ("dialog"),           Base,    Create_Dialog.Run'Access,
                                          Create_Dialog.Help'Access),
       (NS ("dnd"),              Complex, null, null),
       (NS ("entry"),            Base,    Create_Entry.Run'Access,
                                          Create_Entry.Help'Access),
       (NS ("event watcher"),    Misc,    null, null),
-      (NS ("file selection"),   Complex, Create_File_Selection.Run'Access, null),
+      (NS ("file selection"),   Complex, Create_File_Selection.Run'Access,
+                                         Create_File_Selection.Help'Access),
       (NS ("fixed"),            Box,     Create_Fixed.Run'Access,
                                          Create_Fixed.Help'Access),
-      (NS ("font selection"),   Gimp,    Create_Font_Selection.Run'Access, null),
-      (NS ("gamma curve"),      Gimp,    Create_Gamma_Curve.Run'Access, null),
+      (NS ("font selection"),   Gimp,    Create_Font_Selection.Run'Access,
+                                         Create_Font_Selection.Help'Access),
+      (NS ("gamma curve"),      Gimp,    Create_Gamma_Curve.Run'Access,
+                                         Create_Gamma_Curve.Help'Access),
       (NS ("handle box"),       Box,     Create_Handle_Box.Run'Access,
                                          Create_Handle_Box.Help'Access),
       (NS ("item factory"),     Complex, null, null),
@@ -225,37 +236,57 @@ package body Main_Windows is
       (NS ("layout"),           Box,     null, null),
       (NS ("list"),             Base,    Create_List.Run'Access,
                                          Create_List.Help'Access),
-      (NS ("menus"),            Base,    Create_Menu.Run'Access, null),
+      (NS ("menus"),            Base,    Create_Menu.Run'Access,
+                                         Create_Menu.Help'Access),
       (NS ("modal window"),     Base,    null, null),
       (NS ("notebook"),         Box,     Create_Notebook.Run'Access,
                                          Create_Notebook.Help'Access),
       (NS ("panes"),            Box,     Create_Paned.Run'Access,
                                          Create_Paned.Help'Access),
-      (NS ("pixmap"),           Base,    Create_Pixmap.Run'Access, null),
-      (NS ("preview color"),    Gimp,    Create_Preview_Color.Run'Access, null),
-      (NS ("preview gray"),     Gimp,    Create_Preview_Gray.Run'Access, null),
-      (NS ("progress bar"),     Complex, Create_Progress.Run'Access, null),
-      (NS ("radio buttons"),    Base,    Create_Radio_Button.Run'Access, null),
-      (NS ("range controls"),   Base,    Create_Range.Run'Access, null),
+      (NS ("pixmap"),           Base,    Create_Pixmap.Run'Access,
+                                         Create_Pixmap.Help'Access),
+      (NS ("preview color"),    Gimp,    Create_Preview_Color.Run'Access,
+                                         Create_Preview_Color.Help'Access),
+      (NS ("preview gray"),     Gimp,    Create_Preview_Gray.Run'Access,
+                                         Create_Preview_Gray.Help'Access),
+      (NS ("progress bar"),     Complex, Create_Progress.Run'Access,
+                                         Create_Progress.Help'Access),
+      (NS ("radio buttons"),    Base,    Create_Radio_Button.Run'Access,
+                                         Create_Radio_Button.Help'Access),
+      (NS ("range controls"),   Base,    Create_Range.Run'Access,
+                                         Create_Range.Help'Access),
       (NS ("rc file"),          Misc,    null, null),
-      (NS ("reparent"),         Complex, Create_Reparent.Run'Access, null),
-      (NS ("rulers"),           Gimp,    Create_Rulers.Run'Access, null),
+      (NS ("reparent"),         Complex, Create_Reparent.Run'Access,
+                                         Create_Reparent.Help'Access),
+      (NS ("rulers"),           Gimp,    Create_Rulers.Run'Access,
+                                         Create_Rulers.Help'Access),
       (NS ("saved position"),   Misc,    null, null),
-      (NS ("scrolled windows"), Base,    Create_Scrolled.Run'Access, null),
+      (NS ("scrolled windows"), Base,    Create_Scrolled.Run'Access,
+                                         Create_Scrolled.Help'Access),
       (NS ("shapes"),           Misc,    null, null),
-      (NS ("spinbutton"),       Base,    Create_Spin.Run'Access, null),
-      (NS ("statusbar"),        Base,    Create_Status.Run'Access, null),
-      (NS ("test idle"),        Misc,    Create_Test_Idle.Run'Access, null),
-      (NS ("test mainloop"),    Misc,    Create_Main_Loop.Run'Access, null),
-      (NS ("test scrolling"),   Misc,    Create_Scroll_Test.Run'Access, null),
+      (NS ("spinbutton"),       Base,    Create_Spin.Run'Access,
+                                         Create_Spin.Help'Access),
+      (NS ("statusbar"),        Base,    Create_Status.Run'Access,
+                                         Create_Status.Help'Access),
+      (NS ("test idle"),        Misc,    Create_Test_Idle.Run'Access,
+                                         Create_Test_Idle.Help'Access),
+      (NS ("test mainloop"),    Misc,    Create_Main_Loop.Run'Access,
+                                         Create_Main_Loop.Help'Access),
+      (NS ("test scrolling"),   Misc,    Create_Scroll_Test.Run'Access,
+                                         Create_Scroll_Test.Help'Access),
       (NS ("test selection"),   Misc,    null, null),
-      (NS ("test timeout"),     Misc,    Create_Test_Timeout.Run'Access, null),
-      (NS ("text"),             Complex, Create_Text.Run'Access, null),
-      (NS ("toggle buttons"),   Base,    Create_Toggle_Buttons.Run'Access, null),
+      (NS ("test timeout"),     Misc,    Create_Test_Timeout.Run'Access,
+                                         Create_Test_Timeout.Help'Access),
+      (NS ("text"),             Complex, Create_Text.Run'Access,
+                                         Create_Text.Help'Access),
+      (NS ("toggle buttons"),   Base,    Create_Toggle_Buttons.Run'Access,
+                                         Create_Toggle_Buttons.Help'Access),
       (NS ("toolbar"),          Box,     Create_Toolbar.Run'Access,
                                          Create_Toolbar.Help'Access),
-      (NS ("tooltips"),         Complex, Create_Tooltips.Run'Access, null),
-      (NS ("tree"),             Complex, Create_Tree.Run'Access, null),
+      (NS ("tooltips"),         Complex, Create_Tooltips.Run'Access,
+                                         Create_Tooltips.Help'Access),
+      (NS ("tree"),             Complex, Create_Tree.Run'Access,
+                                         Create_Tree.Help'Access),
       (NS ("WM hints"),         Misc,    null, null)
       );
 
@@ -267,7 +298,6 @@ package body Main_Windows is
       Item_Subtree : Gtk_Tree;
       Item_New     : Demo_Tree_Item;
       Item         : Gtk_Tree_Item;
-      Id           : Guint;
 
    begin
       for Typ in Demo_Type'Range loop
@@ -296,8 +326,10 @@ package body Main_Windows is
          end loop;
 
          Set_Subtree (Item, Item_Subtree);
-         Id := Tree_Cb.Connect (Item_Subtree, "select_child",
-                                Tree_Select_Child'Access, 0);
+         Tree_Cb.Connect
+           (Item_Subtree, "select_child",
+            Tree_Cb.To_Marshaller (Tree_Select_Child'Access),
+            0);
       end loop;
    end Fill_Gtk_Tree;
 
@@ -305,7 +337,7 @@ package body Main_Windows is
    -- Destroy_Help --
    ------------------
 
-   procedure Destroy_Help (Button : access Gtk_Widget_Record) is
+   procedure Destroy_Help (Button : access Gtk_Widget_Record'Class) is
       pragma Warnings (Off, Button);
    begin
       Destroy (Help_Dialog);
@@ -316,9 +348,8 @@ package body Main_Windows is
    -- Display_Help --
    ------------------
 
-   procedure Display_Help (Button : access Gtk_Widget_Record) is
+   procedure Display_Help (Button : access Gtk_Widget_Record'Class) is
       Close     : Gtk.Button.Gtk_Button;
-      Id        : Guint;
       Scrolled  : Gtk_Scrolled_Window;
       Label     : Gtk.Label.Gtk_Label;
 
@@ -348,7 +379,10 @@ package body Main_Windows is
 
          Gtk_New (Close, "Close");
          Pack_Start (Get_Action_Area (Help_Dialog), Close, False, False);
-         Id := Widget_Cb.Connect (Close, "clicked", Destroy_Help'Access, Help_Dialog);
+         Widget_Handler.Object_Connect
+           (Close, "clicked",
+            Widget_Handler.To_Marshaller (Destroy_Help'Access),
+            Slot_Object => Help_Dialog);
          Set_Flags (Close, Can_Default);
          Grab_Default (Close);
 
@@ -485,10 +519,23 @@ package body Main_Windows is
    --  Exit_Main  --
    -----------------
 
-   procedure Exit_Main (Object : access Gtk_Widget_Record) is
+   procedure Exit_Main (Object : access Gtk_Widget_Record'Class) is
    begin
       Gtk.Main.Main_Quit;
    end Exit_Main;
+
+   ------------------
+   -- Delete_Event --
+   ------------------
+
+   function Delete_Event (Object : access Gtk_Widget_Record'Class)
+                         return Boolean
+   is
+   begin
+      --  Do not allow the user to kill the window by clicking on the icon,
+      --  he has to press explicitly "Quit"
+      return True;
+   end Delete_Event;
 
    --------------
    -- Set_Help --
@@ -510,12 +557,13 @@ package body Main_Windows is
    -- Tree_Select_Child --
    -----------------------
 
-   procedure Tree_Select_Child (Tree : access Gtk_Tree_Record;
-                                Item : access Demo_Tree_Item_Record;
-                                Data : Integer)
+   procedure Tree_Select_Child (Tree   : access Gtk_Tree_Record'Class;
+                                Item_P : access Gtk_Widget_Record'Class;
+                                Data   : Integer)
    is
       use Gtk.Widget.Widget_List;
       List : Gtk.Widget.Widget_List.Glist;
+      Item : Demo_Tree_Item := Demo_Tree_Item (Item_P);
    begin
       if Gtk_Demos (Item.Demo_Num).Func /= null then
 
@@ -619,7 +667,7 @@ package body Main_Windows is
    -- Switch_Page --
    -----------------
 
-   procedure Switch_Page (Notebook : access Gtk_Notebook_Record;
+   procedure Switch_Page (Notebook : access Gtk_Notebook_Record'Class;
                           Page     : in Gtk_Notebook_Page;
                           User     : in Gtk_Notebook)
    is
@@ -645,7 +693,6 @@ package body Main_Windows is
       Vbox2    : Gtk.Box.Gtk_Box;
       Tree     : Gtk.Tree.Gtk_Tree;
       Scrolled : Gtk_Scrolled_Window;
-      Cb_Id    : Guint;
       Font     : Gdk.Font.Gdk_Font;
       Style    : Gtk_Style;
       --  Drawing_Area : Gtk.Drawing_Area.Gtk_Drawing_Area;
@@ -655,12 +702,11 @@ package body Main_Windows is
 
    begin
       Gtk.Window.Initialize (Win, Gtk.Enums.Window_Toplevel);
-      Cb_Id := Window_Callback.Connect (Obj  => Win,
-                                        Name => "destroy",
-                                        Func => Exit_Main'Access);
-      Cb_Id := Window_Callback.Connect (Obj  => Win,
-                                        Name => "delete_event",
-                                        Func => Exit_Main'Access);
+      Window_Cb.Connect (Win, "destroy",
+                         Window_Cb.To_Marshaller (Exit_Main'Access));
+      Return_Window_Cb.Connect
+        (Win, "delete_event",
+         Return_Window_Cb.To_Marshaller (Delete_Event'Access));
 
       --  The global box
       Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
@@ -678,8 +724,10 @@ package body Main_Windows is
       --  Notebook creation
       Gtk_New (Win.Notebook);
       Pack_Start (Vbox, Win.Notebook, Expand => True, Fill => True);
-      Cb_Id := Notebook_Cb.Connect (Win.Notebook, "switch_page",
-                                    Switch_Page'Access, Win.Notebook);
+      Notebook_Cb.Connect
+        (Win.Notebook, "switch_page",
+         Notebook_Cb.To_Marshaller (Switch_Page'Access),
+         Win.Notebook);
 
       --  First page: Gtk demos
       Gtk_New (Frame);
@@ -754,11 +802,14 @@ package body Main_Windows is
 
       Gtk_New (Button, "Help on current demo");
       Pack_Start (Bbox, Button, Expand => True, Fill => False);
-      Cb_Id := Widget3_Cb.Connect (Button, "clicked", Display_Help'Access);
+      Widget_Handler.Connect
+        (Button, "clicked",
+         Widget_Handler.To_Marshaller (Display_Help'Access));
 
       Gtk_New (Button, "Quit");
       Pack_Start (Bbox, Button, Expand => True, Fill => False);
-      Cb_Id := Widget3_Cb.Connect (Button, "clicked", Exit_Main'Access);
+      Window_Cb.Connect (Button, "clicked",
+                         Window_Cb.To_Marshaller (Exit_Main'Access));
 
       Pack_End (Vbox, Bbox, Expand => False, Padding => 5);
 
