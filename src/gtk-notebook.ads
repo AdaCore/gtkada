@@ -182,6 +182,9 @@ package Gtk.Notebook is
    --  Note also that the page has to be visible on the screen (ie you must
    --  have called Gtk.Widget.Show on it first).
    --  Use -1 to set the current page to the last one.
+   --
+   --  Note: This call won't succeeded unless you have called Show on the
+   --  widget displayed in the page.
 
    procedure Next_Page (Notebook : access Gtk_Notebook_Record);
    --  Display the next page on the screen.
