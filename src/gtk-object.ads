@@ -42,7 +42,7 @@
 --    removed from memory while you still need it.
 --
 --  - User data: any number of data can be attached to a Gtk_Object or one of
---    its children. Theses data are references by a String, in a hash-table.
+--    its children. Theses data are referenced by a String, in a hash-table.
 --    GtkAda itself uses this feature to provide an easy conversion between C
 --    and Ada widgets.
 --    Although you might prefer to have a completely object-oriented
