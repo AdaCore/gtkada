@@ -237,6 +237,28 @@ ada_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
   return gtk_radio_menu_item_new_with_label (l, label);
 }
 
+/********************
+ * Check_Menu_Item
+ ********************/
+
+guint
+ada_check_menu_item_get_active (GtkCheckMenuItem* item) {
+  return item->active;
+}
+
+/********************
+ * Progress_Bar
+ ********************/
+
+GtkAdjustment*
+ada_progress_bar_get_adjustment (GtkProgress* widget) {
+  return widget->adjustment;
+}
+
+guint
+ada_progress_get_activity_mode (GtkProgress* widget) {
+  return widget->activity_mode;
+}
 
 /********************
  * GdkPoint
@@ -455,16 +477,26 @@ ada_gdk_event_motion_get_y (GdkEventMotion * event)
 }
 
 
-/*
- *
+/********************
  * GtkAdjustment
- *
- */
+ ********************/
 
 gfloat
 ada_gtk_adjustment_get_value (GtkAdjustment * adjustment)
 {
   return adjustment->value;
+}
+
+gfloat
+ada_adjustment_get_lower (GtkAdjustment * adjustment)
+{
+  return adjustment->lower;
+}
+
+gfloat
+ada_adjustment_get_upper (GtkAdjustment * adjustment)
+{
+  return adjustment->upper;
 }
 
 void
@@ -1021,16 +1053,6 @@ ada_box_get_child (GtkBox* widget, gint num)
     return ((GtkBoxChild*)(g_list_nth_data (widget->children, num)))->widget;
   else
     return NULL;
-}
-
-/**********************************************
- ** Functions for Progress_Bar
- **********************************************/
-
-gfloat
-ada_progress_bar_get_percentage (GtkProgressBar* widget)
-{
-  return widget->percentage;
 }
 
 /**********************************************
