@@ -112,6 +112,19 @@ package body Gdk.Font is
    end Load;
 
 
+   -----------
+   --  Ref  --
+   -----------
+
+   procedure Ref (Font : in out Gdk_Font) is
+      function Internal (Font : in System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_font_ref");
+      S : System.Address;
+   begin
+      S := Internal (Get_Object (Font));
+   end Ref;
+
+
    ----------------------
    --  String_Measure  --
    ----------------------
@@ -168,5 +181,18 @@ package body Gdk.Font is
    begin
       return Internal (Get_Object (Font), Text, Text'Length);
    end Text_Width;
+
+
+   -------------
+   --  Unref  --
+   -------------
+
+   procedure Unref (Font : in out Gdk_Font) is
+      procedure Internal (Font : in System.Address);
+      pragma Import (C, Internal, "gdk_font_unref");
+   begin
+      Internal (Get_Object (Font));
+      Set_Object (Font, System.Null_Address);
+   end Unref;
 
 end Gdk.Font;
