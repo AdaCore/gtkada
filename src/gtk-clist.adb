@@ -1341,6 +1341,9 @@ package body Gtk.Clist is
                             File : in File_Type)
    is
       First : Boolean := True;
+
+      use type Interfaces.C.size_t;
+
    begin
       Glib.Glade.Add_Package ("Interfaces.C.Strings");
       Put_Line (File, "   " & To_Ada (Name) & " := (");
@@ -1352,7 +1355,13 @@ package body Gtk.Clist is
             Put_Line (File, ",");
          end if;
 
-         Put (File, "     Interfaces.C.Strings.New_String (""" &
+         if A'First = A'Last then
+            Put (File, "     1 => ");
+         else
+            Put (File, "     ");
+         end if;
+
+         Put (File, "Interfaces.C.Strings.New_String (""" &
            Interfaces.C.Strings.Value (A (Index)) & """)");
       end loop;
 
