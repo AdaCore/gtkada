@@ -60,8 +60,13 @@ package body Glib.Values is
    function Get_String (Value : GValue) return String is
       function Internal (Value : GValue) return chars_ptr;
       pragma Import (C, Internal, "g_value_get_string");
+      C : chars_ptr := Internal (Value);
    begin
-      return Interfaces.C.Strings.Value (Internal (Value));
+      if C = Null_Ptr then
+         return "";
+      else
+         return Interfaces.C.Strings.Value (C);
+      end if;
    end Get_String;
 
    ----------------
@@ -71,9 +76,14 @@ package body Glib.Values is
    function Get_String (Value : GValue; Length : Gint) return String is
       function Internal (Value : GValue) return chars_ptr;
       pragma Import (C, Internal, "g_value_get_string");
+      C : chars_ptr := Internal (Value);
    begin
-      return Interfaces.C.Strings.Value
-        (Internal (Value), Interfaces.C.size_t (Length));
+      if C = Null_Ptr then
+         return "";
+      else
+         return Interfaces.C.Strings.Value
+           (C, Interfaces.C.size_t (Length));
+      end if;
    end Get_String;
 
    -----------------
