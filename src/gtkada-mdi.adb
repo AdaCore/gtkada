@@ -3694,6 +3694,12 @@ package body Gtkada.MDI is
          Set_Tab_Label (Child.MDI.Docks (Side), Child, Event);
          Show_All (Event);
 
+         Return_Callback.Object_Connect
+           (Event, "button_press_event",
+            Return_Callback.To_Marshaller
+            (Set_Focus_Child_MDI_Floating'Access),
+            Child);
+
          --  Setup drag-and-drop, so that items can be moved from one location
          --  to another.
 
