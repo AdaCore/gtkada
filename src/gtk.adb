@@ -68,8 +68,12 @@ package body Gtk is
       function Internal (Object : in System.Address; Key : in String)
                          return Root_Type_Access;
       pragma Import (C, Internal, "gtk_object_get_data");
+      use type System.Address;
       R : Root_Type_Access;
    begin
+      if Obj = System.Null_Address then
+         return null;
+      end if;
       R := Internal (Obj, GtkAda_String);
       if R = null then
          R := new Root_Type'Class'(Stub);
