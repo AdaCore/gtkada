@@ -2,11 +2,12 @@ SRC=gtkplot.c gtkplotcanvas.c gtkplotlayout.c gtkplotprint.c gtkplotps.c gtkpsfo
 
 OBJ=${SRC:%.c=%.o}
 CC=@CC@
+PIC=-fPIC
 
 all: ${OBJ}
 
 %.o: %.c
-	${CC} -c $< `gtk-config --cflags`
+	${CC} -c $(PIC) $< `gtk-config --cflags`
 
 clean:
 	${RM} ${OBJ}
