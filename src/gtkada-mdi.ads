@@ -423,6 +423,10 @@ package Gtkada.MDI is
    --  All the children are stacked so that the focus widget is on top.
    --  They overlap each other, but all the title bars are left visible
 
+   procedure Single_Window (MDI : access MDI_Window_Record);
+   --  Keep only one notebook in the central area (ie undo any Split that
+   --  might have been done previously).
+
    procedure Tile_Horizontally (MDI : access MDI_Window_Record);
    procedure Tile_Vertically (MDI : access MDI_Window_Record);
    --  The available space in the MDI is shared equally between all children.

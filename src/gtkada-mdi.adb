@@ -4357,6 +4357,18 @@ package body Gtkada.MDI is
       end if;
    end Removed_From_Notebook;
 
+   -------------------
+   -- Single_Window --
+   -------------------
+
+   procedure Single_Window (MDI : access MDI_Window_Record) is
+   begin
+      if MDI.Central.Children_Are_Maximized then
+         Maximize_Children (MDI, False);
+         Maximize_Children (MDI, True);
+      end if;
+   end Single_Window;
+   
    -----------
    -- Split --
    -----------
