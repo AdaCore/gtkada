@@ -77,11 +77,6 @@ package Gtk.Color_Selection_Dialog is
       return Gtk.Button.Gtk_Button;
    --  Get the OK button widget contained within the dialog.
 
-   function Get_Reset_Button
-     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
-      return Gtk.Button.Gtk_Button;
-   --  Get the reset button widget contained within the dialog.
-
    function Get_Cancel_Button
      (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Button.Gtk_Button;

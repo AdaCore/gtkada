@@ -63,22 +63,6 @@ package body Gtk.Color_Selection_Dialog is
         (Get_User_Data (Internal (Get_Object (Color_Selection_Dialog)), Stub));
    end Get_OK_Button;
 
-   ----------------------
-   -- Get_Reset_Button --
-   ----------------------
-
-   function Get_Reset_Button
-     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
-      return Gtk.Button.Gtk_Button
-   is
-      function Internal (Dialog : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_colorsel_dialog_get_reset_button");
-      Stub : Gtk.Button.Gtk_Button_Record;
-   begin
-      return Gtk.Button.Gtk_Button
-        (Get_User_Data (Internal (Get_Object (Color_Selection_Dialog)), Stub));
-   end Get_Reset_Button;
-
    -----------------------
    -- Get_Cancel_Button --
    -----------------------
