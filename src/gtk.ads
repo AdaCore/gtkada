@@ -37,7 +37,4 @@ private
                          Value  : in     System.Address);
    pragma Inline (Set_Object);
 
-   function To_Boolean (Value : in Gint) return Boolean;
-   function To_Gint (Bool : in Boolean) return Gint;
-
 end Gtk;
