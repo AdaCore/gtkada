@@ -228,7 +228,13 @@ sub parse_definition_file
 
     if ($line < $#deffile) {
       $deffile[$line] =~ /struct\s+_(\w*)/;
-      $current_package = &create_ada_name ($1);
+
+      # Get the package name from the name of the structure. Given the
+      # various casing used in Gtk+/Gnome, there are a few exceptions that
+      # we need to handle manually
+      
+      $current_package = ($1 eq "GnomeDEntryEdit") ? "Dentry_Edit" :$1;
+      $current_package = &create_ada_name ($current_package);
 
       my ($in_comment) = 0;
       $line++ while ($deffile[$line] !~ /\{/);
@@ -295,8 +301,8 @@ sub parse_definition_file
 
 sub func_sort () {
 
-  return (-1) if ($a =~ /_new$/);
-  return (1)  if ($b =~ /_new$/);
+  return (-1) if ($a =~ /_new$/ || $a =~ /_new_/);
+  return (1)  if ($b =~ /_new$/ || $b =~ /_new_/);
 
   return &ada_func_name ($a) cmp &ada_func_name ($b);
 }
@@ -411,6 +417,8 @@ sub create_ada_name
     my ($char);
 
     $entity =~ s/-/_/g;
+
+    # Put an underscore before each upper-case letter
     $entity =~ s/([^_])([A-Z])/$1_$2/g;
 
     substr ($entity, 0, 1) = uc (substr ($entity, 0, 1));
@@ -431,6 +439,7 @@ sub create_ada_name
     return "GRange" if ($entity eq "Range");     # gtk-range.h
     return "GEntry" if ($entity eq "Entry");     # gnome-entry.h
     return "Accepted" if ($entity eq "Accept");  # gnome-icon-item.h
+
     return $entity;
   }
 
@@ -943,7 +952,10 @@ sub convert_ada_type
       my ($t) = $2;
       my ($prefix) = $1;
       return "Object'Class" if ($t eq "Object");
-      if ($t ne "GC") {
+
+      if ($t eq "DEntryEdit") {
+	$t = "Dentry_Edit";
+      } elsif ($t ne "GC") {
 	$t =~ s/(.)([A-Z])/$1_$2/g;
       }
       if ("$prefix\_$t" eq "$prefix\_$current_package") {
