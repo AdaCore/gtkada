@@ -49,7 +49,32 @@ package body Gtk.Adjustment is
       Internal (Get_Object (Adjustment), Lower, Upper);
    end Clamp_Page;
 
+   -------------------
+   -- Set_Page_Size --
+   -------------------
 
+   procedure Set_Page_Size (Adjustment : in out Gtk_Adjustment'Class;
+                            Page_Size  : in Gfloat)
+   is
+      procedure Internal (Adj : System.Address; Value : Gfloat);
+      pragma Import (C, Internal, "ada_adjustment_set_page_size");
+   begin
+      Internal (Get_Object (Adjustment), Page_Size);
+   end Set_Page_Size;
+
+   ------------------------
+   -- Set_Page_Increment --
+   ------------------------
+
+   procedure Set_Page_Increment (Adjustment : in out Gtk_Adjustment'Class;
+                                 Page_Increment : in Gfloat)
+   is
+      procedure Internal (Adj : System.Address; Value : Gfloat);
+      pragma Import (C, Internal, "ada_adjustment_set_page_increment");
+   begin
+      Internal (Get_Object (Adjustment), Page_Increment);
+   end Set_Page_Increment;
+ 
    -----------------
    --  Get_Value  --
    -----------------

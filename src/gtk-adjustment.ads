@@ -54,6 +54,14 @@ package Gtk.Adjustment is
                          Upper      : in     Gfloat);
    --  mapping: Clamp_Page gtkadjustment.h gtk_adjustment_clamp_page
 
+   procedure Set_Page_Size (Adjustment : in out Gtk_Adjustment'Class;
+                            Page_Size  : in Gfloat);
+   --  mapping: Set_Page_Size gtkadjustment.h adjustment->page_size
+
+   procedure Set_Page_Increment (Adjustment : in out Gtk_Adjustment'Class;
+                                 Page_Increment : in Gfloat);
+   --  mapping: Set_Page_Increment gtkadjustment.h adjustment->page_increment
+
 private
 
    type Gtk_Adjustment is new Data.Gtk_Data with null record;
