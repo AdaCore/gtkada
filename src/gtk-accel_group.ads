@@ -99,10 +99,13 @@ package Gtk.Accel_Group is
       Accel_Key  : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type) return Boolean;
 
-   --  ??? To bind:
+   function From_Object
+     (Object : access Gtk.Object.Gtk_Object_Record'Class)
+      return Object_List.GSlist;
+   --  Gets a list of all accel groups which are attached to Object.
 
-   --  function Accel_Groups_From_Object
-   --    (GObject *object) return GSlist*;
+
+   --  ??? To bind:
 
    --  function Find
    --   (Accel_Group : access Gtk_Accel_Group_Record,

@@ -29,8 +29,16 @@
 
 with Interfaces.C.Strings;
 with System;
+with Gtk.Object; use Gtk.Object;
+with Glib.Type_Conversion_Hooks;
+pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.Accel_Group is
+
+   function Type_Conversion (Type_Name : String) return GObject;
+   --  This function is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    ---------------------------
    -- Accel_Groups_Activate --
@@ -152,4 +160,34 @@ package body Gtk.Accel_Group is
       Internal (Get_Object (Accel_Group));
    end Unlock;
 
+   -----------------
+   -- From_Object --
+   -----------------
+
+   function From_Object
+     (Object : access Gtk_Object_Record'Class) return Object_List.GSlist
+   is
+      function Internal (Container : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_accel_groups_from_object");
+      List : Object_List.GSlist;
+   begin
+      Object_List.Set_Object (List, Internal (Get_Object (Object)));
+      return List;
+   end From_Object;
+
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return GObject is
+   begin
+      if Type_Name = "GtkAccelGroup" then
+         return new Gtk_Accel_Group_Record;
+      else
+         return null;
+      end if;
+   end Type_Conversion;
+
+begin
+   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Accel_Group;
