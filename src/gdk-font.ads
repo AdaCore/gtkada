@@ -3,7 +3,7 @@ with Glib; use Glib;
 package Gdk.Font is
 
    type Gdk_Font is new Root_Type with private;
-
+   Null_Font : constant Gdk_Font;
 
    procedure Load (Font      :    out Gdk_Font;
                    Font_Name : in     String);
@@ -46,6 +46,7 @@ package Gdk.Font is
 private
 
    type Gdk_Font is new Root_Type with null record;
+   Null_Font : constant Gdk_Font := (Ptr => System.Null_Address);
 
    --  mapping: NOT_IMPLEMENTED gdk.h gdk_font_ref
    --  mapping: NOT_IMPLEMENTED gdk.h gdk_font_unref
