@@ -472,17 +472,17 @@ package body Gdk.Event is
    --------------
 
    function Get_Atom (Event : Gdk_Event) return Gdk_Atom is
-      function Internal (Event : Gdk_Event) return Gulong;
+      function Internal (Event : Gdk_Event) return Gdk_Atom;
       pragma Import (C, Internal, "ada_gdk_event_get_atom");
 
-      Atom : constant Gulong := Internal (Event);
+      Atom : constant Gdk_Atom := Internal (Event);
 
    begin
-      if Atom = Invalid_Gulong_Value then
+      if Atom = null then
          raise Invalid_Field;
       end if;
 
-      return Gdk_Atom (Atom);
+      return Atom;
    end Get_Atom;
 
    ------------------------
@@ -527,17 +527,17 @@ package body Gdk.Event is
    -------------------
 
    function Get_Selection (Event : Gdk_Event) return Gdk_Atom is
-      function Internal (Event : Gdk_Event) return Gulong;
+      function Internal (Event : Gdk_Event) return Gdk_Atom;
       pragma Import (C, Internal, "ada_gdk_event_get_selection");
 
-      Selection : constant Gulong := Internal (Event);
+      Selection : constant Gdk_Atom := Internal (Event);
 
    begin
-      if Selection = Invalid_Gulong_Value then
+      if Selection = null then
          raise Invalid_Field;
       end if;
 
-      return Gdk_Atom (Selection);
+      return Selection;
    end Get_Selection;
 
    ----------------
@@ -545,17 +545,17 @@ package body Gdk.Event is
    ----------------
 
    function Get_Target (Event : Gdk_Event) return Gdk_Atom is
-      function Internal (Event : Gdk_Event) return Gulong;
+      function Internal (Event : Gdk_Event) return Gdk_Atom;
       pragma Import (C, Internal, "ada_gdk_event_get_target");
 
-      Target : constant Gulong := Internal (Event);
+      Target : constant Gdk_Atom := Internal (Event);
 
    begin
-      if Target = Invalid_Gulong_Value then
+      if Target = null then
          raise Invalid_Field;
       end if;
 
-      return Gdk_Atom (Target);
+      return Target;
    end Get_Target;
 
    ------------------
@@ -563,17 +563,17 @@ package body Gdk.Event is
    ------------------
 
    function Get_Property (Event : Gdk_Event) return Gdk_Atom is
-      function Internal (Event : Gdk_Event) return Gulong;
+      function Internal (Event : Gdk_Event) return Gdk_Atom;
       pragma Import (C, Internal, "ada_gdk_event_get_property");
 
-      Prop : constant Gulong := Internal (Event);
+      Prop : constant Gdk_Atom := Internal (Event);
 
    begin
-      if Prop = Invalid_Gulong_Value then
+      if Prop = null then
          raise Invalid_Field;
       end if;
 
-      return Gdk_Atom (Prop);
+      return Prop;
    end Get_Property;
 
    -------------------
@@ -599,17 +599,17 @@ package body Gdk.Event is
    ----------------------
 
    function Get_Message_Type (Event : Gdk_Event) return Gdk_Atom is
-      function Internal (Event : Gdk_Event) return Gulong;
+      function Internal (Event : Gdk_Event) return Gdk_Atom;
       pragma Import (C, Internal, "ada_gdk_event_get_message_type");
 
-      Message : constant Gulong := Internal (Event);
+      Message : constant Gdk_Atom := Internal (Event);
 
    begin
-      if Message = Invalid_Gulong_Value then
+      if Message = null then
          raise Invalid_Field;
       end if;
 
-      return Gdk_Atom (Message);
+      return Message;
    end Get_Message_Type;
 
    --------------
@@ -1047,11 +1047,11 @@ package body Gdk.Event is
    --------------
 
    procedure Set_Atom (Event : Gdk_Event; Atom : Gdk_Atom) is
-      function Internal (Event : Gdk_Event; Atom : Gulong) return Gint;
+      function Internal (Event : Gdk_Event; Atom : Gdk_Atom) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_atom");
 
    begin
-      if Internal (Event, Gulong (Atom)) = 0 then
+      if Internal (Event, Atom) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Atom;
@@ -1092,11 +1092,11 @@ package body Gdk.Event is
    -------------------
 
    procedure Set_Selection (Event : Gdk_Event; Selection : Gdk_Atom) is
-      function Internal (Event : Gdk_Event; Selection : Gulong) return Gint;
+      function Internal (Event : Gdk_Event; Selection : Gdk_Atom) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_selection");
 
    begin
-      if Internal (Event, Gulong (Selection)) = 0 then
+      if Internal (Event, Selection) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Selection;
@@ -1106,11 +1106,11 @@ package body Gdk.Event is
    ----------------
 
    procedure Set_Target (Event : Gdk_Event; Target : Gdk_Atom) is
-      function Internal (Event : Gdk_Event; Target : Gulong) return Gint;
+      function Internal (Event : Gdk_Event; Target : Gdk_Atom) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_target");
 
    begin
-      if Internal (Event, Gulong (Target)) = 0 then
+      if Internal (Event, Target) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Target;
@@ -1134,11 +1134,11 @@ package body Gdk.Event is
    ------------------
 
    procedure Set_Property (Event : Gdk_Event; Property : Gdk_Atom) is
-      function Internal (Event : Gdk_Event; Property : Gulong) return Gint;
+      function Internal (Event : Gdk_Event; Property : Gdk_Atom) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_property");
 
    begin
-      if Internal (Event, Gulong (Property)) = 0 then
+      if Internal (Event, Property) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Property;
@@ -1162,11 +1162,11 @@ package body Gdk.Event is
    ----------------------
 
    procedure Set_Message_Type (Event : Gdk_Event; Typ : Gdk_Atom) is
-      function Internal (Event : Gdk_Event; Typ : Gulong) return Gint;
+      function Internal (Event : Gdk_Event; Typ : Gdk_Atom) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_message_type");
 
    begin
-      if Internal (Event, Gulong (Typ)) = 0 then
+      if Internal (Event, Typ) = 0 then
          raise Invalid_Field;
       end if;
    end Set_Message_Type;

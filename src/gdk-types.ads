@@ -56,7 +56,7 @@ package Gdk.Types is
    --  See at the end of the package a list of all the types that
    --  have not been "bound".
 
-   type Gdk_Atom is new Gulong;
+   type Gdk_Atom is new C_Proxy;
    --  This type represents a property of the X-server, that can be
    --  manipulated through functions in Gdk.Property. They have an associated
    --  name, that can be printed, as well as a value whose type may vary.
