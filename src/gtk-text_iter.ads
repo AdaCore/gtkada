@@ -38,6 +38,7 @@ with Glib.Values;
 with Gdk.Pixbuf;
 with Gtk.Text_Child;
 with Gtk.Text_Tag;
+with Interfaces.C.Strings;
 with System;
 
 package Gtk.Text_Iter is
@@ -106,6 +107,12 @@ package Gtk.Text_Iter is
    --  correspond to byte offsets in the text buffer. Note that 16#FFFC# can
    --  occur in normal text as well, so it is not a reliable indicator that a
    --  pixbuf or widget is in the buffer.
+
+   function Get_Slice
+     (Start   : Gtk_Text_Iter;
+      The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
+   --  Same as above, but returns the row C string.
+   --  The caller is responsible for freeing the string returned.
 
    function Get_Text
      (Start   : Gtk_Text_Iter;

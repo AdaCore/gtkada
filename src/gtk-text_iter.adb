@@ -128,22 +128,26 @@ package body Gtk.Text_Iter is
 
    function Get_Slice
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter) return String
+      The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr
    is
       function Internal
         (Start   : Gtk_Text_Iter;
          The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_slice");
 
-      Str : Interfaces.C.Strings.chars_ptr := Internal (Start, The_End);
-
    begin
-      declare
-         S : constant String := Interfaces.C.Strings.Value (Str);
-      begin
-         Interfaces.C.Strings.Free (Str);
-         return S;
-      end;
+      return Internal (Start, The_End);
+   end Get_Slice;
+
+   function Get_Slice
+     (Start   : Gtk_Text_Iter;
+      The_End : Gtk_Text_Iter) return String
+   is
+      Str : Interfaces.C.Strings.chars_ptr := Get_Slice (Start, The_End);
+      S   : constant String := Interfaces.C.Strings.Value (Str);
+   begin
+      Interfaces.C.Strings.Free (Str);
+      return S;
    end Get_Slice;
 
    --------------
