@@ -41,6 +41,9 @@ package Glib.Glade is
 
       Has_Accel_Group : Boolean := False;
       --  True if object has created an accelerator group
+
+      Has_Radio_Button_Group : Boolean := False;
+      --  True if object has created a radio button group
    end record;
 
    package Glib_XML is new Glib.XML (XML_Data);
@@ -62,15 +65,20 @@ package Glib.Glade is
    --  Convert S by adding a separator before each upper case character and
    --  by putting in upper case each character following a separator.
 
+   function To_Float (S : String) return String;
+   --  Convert S to an Ada Float by adding a trailing ".0" when S is an
+   --  integer value.
+
    function Get_Part
      (S : String; Part : Positive; Separator : Character := ':') return String;
    --  Get the Part-th part of S delimited by Separator
 
    procedure Gen_Set
      (N : Node_Ptr; Class, Name : String;
-      File : File_Type; Delim : Character := ' ');
+      File : File_Type; Delim : Character := ' '; Is_Float : Boolean := False);
    --  Generate a Set_<Name> call in File. If Delim is not a space, Name is
    --  surrounded by it.
+   --  If Is_Float is true, call To_Float on the field <Name>.
 
    procedure Gen_Set
      (N : Node_Ptr; Class, Name, Field : String; File : File_Type);
@@ -78,10 +86,11 @@ package Glib.Glade is
 
    procedure Gen_Set
      (N : Node_Ptr; Class, Name, Field1, Field2, Field3, Field4 : String;
-      File : File_Type);
+      File : File_Type; Is_Float : Boolean := False);
    --  Generate a Set_<Name> (Field1, Field2) call in File if Field3 is a null
    --  string or Set_<Name> (Field1, Field2, Field3) if Field4 is null, or
    --  Set_<Name> (Field1, Field2, Field3, Field4) otherwise.
+   --  If Is_Float is true, call To_Float on each non null field.
 
    procedure Gen_New
      (N : Node_Ptr; Class, Param1, Param2, New_Name : String := "";
@@ -98,7 +107,8 @@ package Glib.Glade is
       File : File_Type; Delim : Character := ' ');
    --  Output a call to <Class>.Gtk_New in File.
    --  N is the node containing the widget to create.
-   --  Each Param<n> represents a parameter of Gtk_New.
+   --  Each Param<n> represents a parameter of Gtk_New, except Param5
+   --  which is omitted if null.
    --  If Delim is not a space, Param1 is surrounded by it.
 
    procedure Gen_Child (N, Child : Node_Ptr; File : File_Type);
