@@ -34,28 +34,6 @@ with Ada.Unchecked_Conversion;
 
 package body Gtk.Widget is
 
-   ------------------------
-   -- Accelerator_Signal --
-   ------------------------
-
-   function Accelerator_Signal
-     (Widget       : access Gtk_Widget_Record;
-      Accel_Group  : Gtk.Accel_Group.Gtk_Accel_Group;
-      Accel_Key    : Gdk.Types.Gdk_Key_Type;
-      Accel_Mods   : Gdk.Types.Gdk_Modifier_Type) return Guint
-   is
-      function Internal
-        (Widget      : System.Address;
-         Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group;
-         Accel_Key   : Gdk.Types.Gdk_Key_Type;
-         Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Guint;
-      pragma Import (C, Internal, "gtk_widget_accelerator_signal");
-
-   begin
-      return Internal
-        (Get_Object (Widget), Accel_Group, Accel_Key, Accel_Mods);
-   end Accelerator_Signal;
-
    --------------
    -- Activate --
    --------------
@@ -625,18 +603,6 @@ package body Gtk.Widget is
         (Internal (Get_Object (Widget), Get_Object (Ancestor)));
    end Is_Ancestor;
 
-   -----------------------
-   -- Lock_Accelerators --
-   -----------------------
-
-   procedure Lock_Accelerators (Widget : access Gtk_Widget_Record) is
-      procedure Internal (Widget : System.Address);
-      pragma Import (C, Internal, "gtk_widget_lock_accelerators");
-
-   begin
-      Internal (Get_Object (Widget));
-   end Lock_Accelerators;
-
    ---------
    -- Map --
    ---------
@@ -803,27 +769,6 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Accel_Group, Accel_Key, Accel_Mods);
    end Remove_Accelerator;
-
-   -------------------------
-   -- Remove_Accelerators --
-   -------------------------
-
-   procedure Remove_Accelerators
-     (Widget       : access Gtk_Widget_Record;
-      Accel_Signal : String;
-      Visible_Only : Boolean := True)
-   is
-      procedure Internal
-        (Widget       : System.Address;
-         Accel_Signal : String;
-         Visible_Only : Gint);
-      pragma Import (C, Internal, "gtk_widget_remove_accelerators");
-
-   begin
-      Internal (Get_Object (Widget),
-                Accel_Signal & ASCII.NUL,
-                Boolean'Pos (Visible_Only));
-   end Remove_Accelerators;
 
    --------------
    -- Reparent --
@@ -1435,18 +1380,6 @@ package body Gtk.Widget is
    begin
       return Gtk.Widget.Flag_Is_Set (Widget, Toplevel);
    end Toplevel_Is_Set;
-
-   -------------------------
-   -- Unlock_Accelerators --
-   -------------------------
-
-   procedure Unlock_Accelerators (Widget : access Gtk_Widget_Record) is
-      procedure Internal (Widget : System.Address);
-      pragma Import (C, Internal, "gtk_widget_unlock_accelerators");
-
-   begin
-      Internal (Get_Object (Widget));
-   end Unlock_Accelerators;
 
    -----------
    -- Unmap --
