@@ -76,6 +76,8 @@ with Ada.Unchecked_Deallocation;
 with Ada.Unchecked_Conversion;
 with Ada.Tags;         use Ada.Tags;
 with System;           use System;
+with GNAT.IO; use GNAT.IO;
+with Ada.Exceptions; use Ada.Exceptions;
 
 package body Gtkada.MDI is
 
@@ -123,11 +125,17 @@ package body Gtkada.MDI is
 
    MDI_Class_Record        : Gtk.Object.GObject_Class :=
      Gtk.Object.Uninitialized_Class;
+   Child_Class_Record      : Gtk.Object.GObject_Class :=
+     Gtk.Object.Uninitialized_Class;
    MDI_Layout_Class_Record : Gtk.Object.GObject_Class :=
      Gtk.Object.Uninitialized_Class;
 
    MDI_Signals : constant chars_ptr_array :=
      (1 => New_String ("child_selected"));
+
+   Child_Signals : constant chars_ptr_array :=
+     (1 => New_String ("float_child"),
+      2 => New_String ("unfloat_child"));
 
    Close_Xpm : constant Interfaces.C.Strings.chars_ptr_array :=
      (New_String ("13 11 3 1"),
@@ -1320,7 +1328,9 @@ package body Gtkada.MDI is
       --  However, we need to restore the initial state before calling
       --  Dock_Child and Float_Child below
 
-      if C.Initial.all in Gtk_Window_Record'Class then
+      if C.Initial.all in Gtk_Window_Record'Class
+        and then C.State /= Floating
+      then
          Old_Parent := Get_Parent (C.Initial_Child);
          Reparent (C.Initial_Child, Gtk_Window (C.Initial));
          Result := Return_Callback.Emit_By_Name
@@ -1333,27 +1343,19 @@ package body Gtkada.MDI is
       end if;
 
       if not Result then
-         if C.State = Docked then
-            Dock_Child (C, False);
-         end if;
-
-         if C.State = Normal
-           and then Children_Are_Maximized (C.MDI)
-         then
-            Remove_From_Notebook (C, None);
-         else
-            Destroy (C);
-         end if;
+         Dock_Child (C, False);
+         Float_Child (C, False);
+         Destroy (C.Initial);
       end if;
 
       Free (Event);
 
    exception
-      when others =>
+      when E : others =>
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the button in Initialize
-         null;
+         Put_Line ("Unexpected exception " & Exception_Information (E));
    end Close_Child;
 
    -------------------
@@ -1750,7 +1752,6 @@ package body Gtkada.MDI is
       Cursor : Gdk.Cursor.Gdk_Cursor;
       Tmp    : Gdk_Grab_Status;
       Curs   : Gdk_Cursor_Type;
-      List    : Target_List;
 
    begin
       --  It sometimes happens that widgets let events pass through (for
@@ -1770,26 +1771,9 @@ package body Gtkada.MDI is
          return False;
       end if;
 
-      --  Do we have a drag-and-drop operation ? This is true if we are
-      --  pressing control, or simply clicking in a maximized or docked child
-      --  (otherwise, moving items in the layout would interfer with dnd).
-
-      if (Get_State (Event) and Control_Mask) /= 0
-        or else (C.State /= Normal and then C.State /= Iconified)
-        or else Children_Are_Maximized (C.MDI)
-      then
-         List := Target_List_New (Source_Target_Table);
-         Set_Icon_Default
-           (Gtk.Dnd.Drag_Begin
-            (Widget  => C,
-             Targets => List,
-             Actions => Action_Copy,
-             Button  => Gint (Get_Button (Event)),
-             Event   => Event));
-         Target_List_Unref (List);
-      end if;
-
       Set_Focus_Child (C);
+      MDI.X_Root := Gint (Get_X_Root (Event));
+      MDI.Y_Root := Gint (Get_Y_Root (Event));
 
       --  Can't move items inside a notebook
       if C.State = Docked
@@ -1800,8 +1784,6 @@ package body Gtkada.MDI is
 
       MDI.Selected_Child := C;
 
-      MDI.X_Root := Gint (Get_X_Root (Event));
-      MDI.Y_Root := Gint (Get_Y_Root (Event));
       MDI.Initial_Width := Gint (Get_Allocation_Width (Child));
       MDI.Initial_Height := Gint (Get_Allocation_Height (Child));
       MDI.Current_W := MDI.Initial_Width;
@@ -1921,12 +1903,43 @@ package body Gtkada.MDI is
          return False;
       end if;
 
+      --  Do we have a drag-and-drop operation ? This is true if we are
+      --  pressing control, or simply clicking in a maximized or docked
+      --  child (otherwise, moving items in the layout would interfer with
+      --  dnd).
+
+      if MDI.X_Root /= -1
+        and then (Get_State (Event) and Button1_Mask) /= 0
+        and then ((Get_State (Event) and Control_Mask) /= 0
+                  or else (C.State /= Normal and then C.State /= Iconified)
+                  or else Children_Are_Maximized (C.MDI))
+        and then Gtk.Dnd.Check_Threshold
+          (C, MDI.X_Root, MDI.Y_Root, Gint (Get_X_Root (Event)),
+           Gint (Get_Y_Root (Event)))
+      then
+         declare
+            List : Target_List := Target_List_New (Source_Target_Table);
+         begin
+            Set_Icon_Default
+              (Gtk.Dnd.Drag_Begin
+               (Widget  => C,
+                Targets => List,
+                Actions => Action_Copy,
+                Button  => 1,
+                Event   => Event));
+            Target_List_Unref (List);
+
+            --  Avoid any further standard moving event
+            MDI.X_Root := -1;
+         end;
+      end if;
+
       --  A button_motion event ?
 
       if (Get_State (Event) and Button1_Mask) /= 0
         and then MDI.Selected_Child /= null
+        and then MDI.X_Root /= -1
       then
-
          if not Children_Are_Maximized (MDI)
            and then
            ((not MDI.Opaque_Resize and then MDI.Current_Cursor /= Left_Ptr)
@@ -2154,6 +2167,9 @@ package body Gtkada.MDI is
       Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Flags   : Buttons_Flags)
    is
+      Signal_Parameters : constant Signal_Parameter_Types :=
+        (1 => (1 => GType_Pointer),
+         2 => (1 => GType_Pointer));
       Button    : Gtk_Button;
       Box       : Gtk_Box;
       Pix       : Gdk_Pixmap;
@@ -2163,6 +2179,14 @@ package body Gtkada.MDI is
 
    begin
       Gtk.Event_Box.Initialize (Child);
+
+      Gtk.Object.Initialize_Class_Record
+        (Child,
+         Signals      => Child_Signals,
+         Class_Record => Child_Class_Record,
+         Type_Name    => "GtkAdaMDIChild",
+         Parameters   => Signal_Parameters);
+
       Widget_Callback.Connect
         (Child, "drag_data_get", Source_Drag_Data_Get'Access);
 
@@ -2973,6 +2997,7 @@ package body Gtkada.MDI is
 
          Child.State := Floating;
          Update_Float_Menu (Child);
+         Widget_Callback.Emit_By_Name (Child, "float_child");
 
       elsif Child.State = Floating and then not Float then
          --  Reassign the widget to Child instead of the notebook
@@ -2999,6 +3024,7 @@ package body Gtkada.MDI is
 
          Update_Float_Menu (Child);
          Unref (Child);
+         Widget_Callback.Emit_By_Name (Child, "unfloat_child");
       end if;
    end Float_Child;
 
@@ -3384,18 +3410,19 @@ package body Gtkada.MDI is
       return Gtk_Widget (Child.Initial_Child);
    end Get_Widget;
 
-   ----------------
-   -- Get_Window --
-   ----------------
+   ------------------------
+   -- Get_Initial_Window --
+   ------------------------
 
-   function Get_Window (Child : access MDI_Child_Record) return Gtk_Window is
+   function Get_Initial_Window
+     (Child : access MDI_Child_Record) return Gtk_Window is
    begin
       if Child.Initial.all in Gtk_Window_Record'Class then
          return Gtk_Window (Child.Initial);
       else
          return null;
       end if;
-   end Get_Window;
+   end Get_Initial_Window;
 
    ---------------------
    -- Get_Focus_Child --
