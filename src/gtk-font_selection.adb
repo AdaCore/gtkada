@@ -262,6 +262,7 @@ package body Gtk.Font_Selection is
       function Internal (Fontsel : in System.Address)
                          return       Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_font_selection_get_font_name");
+      use type Interfaces.C.Strings.chars_ptr;
       S : Interfaces.C.Strings.chars_ptr := Internal (Get_Object (Fontsel));
    begin
       if S /= Interfaces.C.Strings.Null_Ptr then
