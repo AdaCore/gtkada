@@ -235,7 +235,8 @@ breakpoint on the  function 'g_log'.  Then run your  program as usual,
 using  the  'run'  command.  Then  send  us the  result  of  the  'bt'
 command. Here is a summary :
      
-   $ make static   (see testgtk/Makefile if needed)
+   $ make static   (use `gtkada-config --static` as a parameter to
+                    gnatmake)
    $ gdb <your_program_name>
    gdb> break g_warning
    gdb> run
