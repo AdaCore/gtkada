@@ -32,6 +32,10 @@ package body My_Widget is
      (0 => new String'("bullseye" & Ascii.NUL),
       1 => new String'("missed" & Ascii.NUL));
 
+   package Internal_Cb is new Void_Callback (Target_Widget_Record);
+   --  The type of callbacks for the signals above. This is used only to
+   --  emit the signals.
+
    --  Note: To create a real-life widget, you would have to do more
    --  things than are done in this simple example:
    --    * The "expose_event" signal actually passes the Area to
@@ -111,6 +115,8 @@ package body My_Widget is
      --  the widget. Note that the widget will not necessary have that size,
      --  it could be bigger, depending on what it is contained into.
      --  See the signal "size_allocate" too.
+     --  More information on the size requesition process can be found in the
+     --  book "Gtk+/Gnome Application Development" by Havoc Pennington.
    is
    begin
       Requisition.Width := Widget.Radius;
@@ -167,9 +173,9 @@ package body My_Widget is
       if Tmp_X * Tmp_X + Tmp_Y * Tmp_Y
         <= Widget.Radius * Widget.Radius / 4
       then
-         Gtk.Signal.Emit_By_Name (Widget, "bullseye");
+         Internal_Cb.Emit_By_Name (Widget, "bullseye");
       else
-         Gtk.Signal.Emit_By_Name (Widget, "missed");
+         Internal_Cb.Emit_By_Name (Widget, "missed");
       end if;
    end Clicked;
 
