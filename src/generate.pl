@@ -599,7 +599,7 @@ sub generate_specifications
 	  . ($abstract ? "abstract " : "")
 	  . "new ",
 	  $parent_string = ($parent eq "Root_Type") ?
-	      "Root_Type" : "$parent_string\_Record",
+	      "Root_Type" : "$parent_string",
 	  " with null record;\n\n");
 
     push (@output, $enumerates_clauses);
