@@ -228,6 +228,10 @@ package Gdk.Event is
    --  They are only used with some special input devices, like drawing
    --  tablets,...
 
+   function Get_Width (Event : in Gdk_Event) return Gint16;
+   function Get_Height (Event : in Gdk_Event) return Gint16;
+   --  Get the size and width in a configure event
+
    function Get_Source (Event : in Gdk_Event)
                        return Gdk.Types.Gdk_Input_Source;
    --  Set to a constant for now in the gtk+ source... Probably useless.
@@ -293,6 +297,8 @@ package Gdk.Event is
    procedure Set_Window (Event : in Gdk_Event; Win : Gdk.Window.Gdk_Window);
    procedure Set_X      (Event : in Gdk_Event; X : Gdouble);
    procedure Set_Y      (Event : in Gdk_Event; Y : Gdouble);
+   procedure Set_Width  (Event : in Gdk_Event; Width : Gint16);
+   procedure Set_Height (Event : in Gdk_Event; Height : Gint16);
    procedure Set_Button (Event : in Gdk_Event; Button : Guint);
    procedure Set_State  (Event : in Gdk_Event;
                          State : in Gdk.Types.Gdk_Modifier_Type);

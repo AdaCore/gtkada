@@ -170,6 +170,36 @@ package body Gdk.Event is
       return Y;
    end Get_Y;
 
+   ---------------
+   -- Get_Width --
+   ---------------
+
+   function Get_Width (Event : in Gdk_Event) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_get_width");
+      Width : constant Gint16 := Internal (Get_Object (Event));
+   begin
+      if Width = -10000 then
+         raise Invalid_Field;
+      end if;
+      return Width;
+   end Get_Width;
+
+   ----------------
+   -- Get_Height --
+   ----------------
+
+   function Get_Height (Event : in Gdk_Event) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_get_height");
+      Height : constant Gint16 := Internal (Get_Object (Event));
+   begin
+      if Height = -10000 then
+         raise Invalid_Field;
+      end if;
+      return Height;
+   end Get_Height;
+
    ----------------
    -- Get_X_Root --
    ----------------
@@ -844,6 +874,34 @@ package body Gdk.Event is
          raise Invalid_Field;
       end if;
    end Set_Y;
+
+   ---------------
+   -- Set_Width --
+   ---------------
+
+   procedure Set_Width (Event : in Gdk_Event; Width : Gint16) is
+      function Internal (Event : in System.Address;  Width : Gint16)
+                        return Gint;
+      pragma Import (C, Internal, "ada_gdk_event_set_width");
+   begin
+      if Internal (Get_Object (Event), Width) = 0 then
+         raise Invalid_Field;
+      end if;
+   end Set_Width;
+
+   ----------------
+   -- Set_Height --
+   ----------------
+
+   procedure Set_Height (Event : in Gdk_Event; Height : Gint16) is
+      function Internal (Event : in System.Address;  Height : Gint16)
+                        return Gint;
+      pragma Import (C, Internal, "ada_gdk_event_set_height");
+   begin
+      if Internal (Get_Object (Event), Height) = 0 then
+         raise Invalid_Field;
+      end if;
+   end Set_Height;
 
    ----------------
    -- Set_Button --
