@@ -3,7 +3,8 @@ problems.
 
 Mon Sep 16 12:39:09  2002	Florent Duguet <duguet@gnat.com>
 
-	* pangowin32.c : optimization of the pango rendering through caching.
+	* pango/pangowin32.c: optimization of the pango rendering through
+	caching.
 
 Mon Sep 16 12:03:54  2002	Arnaud Charlet <charlet@gnat.com>
 
