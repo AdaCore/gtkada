@@ -44,7 +44,7 @@ package Gtk.Toolbar is
        Tooltip_Text         : in String;
        Tooltip_Private_Text : in String;
        Icon                 : in Gtk.Widget.Gtk_Widget'Class)
-       return                    Gtk.Widget.Gtk_Widget'Class;
+       return                    Gtk.Widget.Gtk_Widget;
    --  Note : you have to set the "clicked" callback yourself, as opposed to
    --  what is done in C.
 
@@ -77,7 +77,7 @@ package Gtk.Toolbar is
        Tooltip_Private_Text : in String;
        Icon                 : in Gtk.Widget.Gtk_Widget'Class;
        Position             : in Gint)
-       return                    Gtk.Widget.Gtk_Widget'Class;
+       return                    Gtk.Widget.Gtk_Widget;
    --  Note : you have to set the callback yourself, as opposed to what is
    --  done in C.
 
@@ -106,7 +106,7 @@ package Gtk.Toolbar is
        Tooltip_Text         : in String;
        Tooltip_Private_Text : in String;
        Icon                 : in Gtk.Widget.Gtk_Widget'Class)
-       return                    Gtk.Widget.Gtk_Widget'Class;
+       return                    Gtk.Widget.Gtk_Widget;
    function Prepend_Item
       (Toolbar              : in Gtk_Toolbar;
        Text                 : in String;

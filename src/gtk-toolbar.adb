@@ -43,7 +43,7 @@ package body Gtk.Toolbar is
        Tooltip_Text         : in String;
        Tooltip_Private_Text : in String;
        Icon                 : in Gtk.Widget.Gtk_Widget'Class)
-       return                    Gtk.Widget.Gtk_Widget'Class
+       return                    Gtk.Widget.Gtk_Widget
    is
       function Internal
          (Toolbar              : in System.Address;
@@ -170,7 +170,7 @@ package body Gtk.Toolbar is
        Tooltip_Private_Text : in String;
        Icon                 : in Gtk.Widget.Gtk_Widget'Class;
        Position             : in Gint)
-       return                    Gtk.Widget.Gtk_Widget'Class
+       return                    Gtk.Widget.Gtk_Widget
    is
       function Internal
          (Toolbar              : in System.Address;
@@ -291,7 +291,7 @@ package body Gtk.Toolbar is
        Tooltip_Text         : in String;
        Tooltip_Private_Text : in String;
        Icon                 : in Gtk.Widget.Gtk_Widget'Class)
-       return                    Gtk.Widget.Gtk_Widget'Class
+       return                    Gtk.Widget.Gtk_Widget
    is
       function Internal
          (Toolbar              : in System.Address;
