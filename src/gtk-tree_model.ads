@@ -187,6 +187,24 @@ package Gtk.Tree_Model is
    type Gtk_Tree_Iter is private;
    Null_Iter : constant Gtk_Tree_Iter;
 
+   procedure Iter_Copy (Source : Gtk_Tree_Iter; Dest : out Gtk_Tree_Iter);
+   --  Create a copy of Source.
+
+   procedure Set_Tree_Iter
+     (Val  : in out Glib.Values.GValue;
+      Iter : Gtk_Tree_Iter);
+   --  Set the value of the given GValue to Iter.
+   --  Note that Iter is stored by reference, which means no copy of Iter
+   --  is made. Iter should remain allocated as long as Val is being used.
+
+   procedure Get_Tree_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : out Gtk_Tree_Iter);
+   --  Extract the iterator from the given GValue.
+   --  Note that the iterator returned is a copy of the iterator referenced
+   --  by the give GValue. Modifying the iterator returned does not modify
+   --  the iterator referenced by the GValue.
+
    function Get_Iter
      (Tree_Model : access Gtk_Tree_Model_Record;
       Path       : Gtk_Tree_Path) return Gtk_Tree_Iter;
@@ -416,6 +434,7 @@ private
    pragma Import (C, Copy,          "gtk_tree_path_copy");
    pragma Import (C, Compare,       "gtk_tree_path_compare");
    pragma Import (C, Down,          "gtk_tree_path_down");
+   pragma Import (C, Set_Tree_Iter, "g_value_set_pointer");
 end Gtk.Tree_Model;
 
 --  Not bound:
