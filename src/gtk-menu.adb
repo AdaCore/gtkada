@@ -78,6 +78,34 @@ package body Gtk.Menu is
       Internal (Get_Object (Menu));
    end Detach;
 
+   --------------------------------
+   --  Ensure_Uline_Accel_Group  --
+   --------------------------------
+
+   function Ensure_Uline_Accel_Group (Menu : access Gtk_Menu_Record)
+                                      return Accel_Group.Gtk_Accel_Group is
+      function Internal (Menu : in System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_menu_ensure_uline_accel_group");
+      Result : Accel_Group.Gtk_Accel_Group;
+   begin
+      Set_Object (Result, Internal (Get_Object (Menu)));
+      return Result;
+   end Ensure_Uline_Accel_Group;
+
+   -----------------------
+   --  Get_Accel_Group  --
+   -----------------------
+
+   function Get_Accel_Group (Menu : access Gtk_Menu_Record)
+                            return Accel_Group.Gtk_Accel_Group is
+      function Internal (Menu : in System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_menu_get_accel_group");
+      Result : Accel_Group.Gtk_Accel_Group;
+   begin
+      Set_Object (Result, Internal (Get_Object (Menu)));
+      return Result;
+   end Get_Accel_Group;
+
    ----------------
    -- Get_Active --
    ----------------
@@ -120,6 +148,21 @@ package body Gtk.Menu is
       Widget := new Gtk_Menu_Record;
       Initialize (Widget);
    end Gtk_New;
+
+   -----------------------------
+   --  Get_Uline_Accel_Group  --
+   -----------------------------
+
+   function Get_Uline_Accel_Group (Menu : access Gtk_Menu_Record)
+                                   return Accel_Group.Gtk_Accel_Group is
+      function Internal (Menu : in System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_menu_get_uline_accel_group");
+      Result : Accel_Group.Gtk_Accel_Group;
+   begin
+      Set_Object (Result, Internal (Get_Object (Menu)));
+      return Result;
+   end Get_Uline_Accel_Group;
+
 
    ----------------
    -- Initialize --
@@ -178,6 +221,49 @@ package body Gtk.Menu is
       Internal (Get_Object (Menu), Get_Object (Child));
    end Prepend;
 
+
+   ---------------------
+   --  Reorder_Child  --
+   ---------------------
+
+   procedure Reorder_Child
+     (Menu     : access Gtk_Menu_Record;
+      Child    : in     Gtk.Widget.Gtk_Widget_Record'Class;
+      Position : in     Gint) is
+      procedure Internal (Menu     : in System.Address;
+                          Child    : in System.Address;
+                          Position : in Gint);
+      pragma Import (C, Internal, "gtk_menu_reorder_child");
+   begin
+      Internal (Get_Object (Menu), Get_Object (Child), Position);
+   end Reorder_Child;
+
+   ------------------
+   --  Reposition  --
+   ------------------
+
+   procedure Reposition (Menu : access Gtk_Menu_Record) is
+      procedure Internal (Menu : in System.Address);
+      pragma Import (C, Internal, "gtk_menu_reposition");
+   begin
+      Internal (Get_Object (Menu));
+   end Reposition;
+
+   -----------------------
+   --  Set_Accel_Group  --
+   -----------------------
+
+   procedure Set_Accel_Group
+      (Menu        : access Gtk_Menu_Record;
+       Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group'Class) is
+      procedure Internal (Menu        : in System.Address;
+                          Accel_Group : in System.Address);
+      pragma Import (C, Internal, "gtk_menu_set_accel_group");
+   begin
+      Internal (Get_Object (Menu), Get_Object (Accel_Group));
+   end Set_Accel_Group;
+
+
    ----------------
    -- Set_Active --
    ----------------
@@ -192,6 +278,39 @@ package body Gtk.Menu is
    begin
       Internal (Get_Object (Menu), Index);
    end Set_Active;
+
+
+   -----------------
+   --  Set_Title  --
+   -----------------
+
+   procedure Set_Title (Menu  : access Gtk_Menu_Record;
+                        Title : in     String) is
+      procedure Internal (Menu  : in System.Address;
+                          Title : in String);
+      pragma Import (C, Internal, "gtk_menu_set_title");
+   begin
+      Internal (Get_Object (Menu), Title & ASCII.NUL);
+   end Set_Title;
+
+
+   -------------------------
+   --  Set_Tearoff_State  --
+   -------------------------
+
+   procedure Set_Tearoff_State (Menu     : access Gtk_Menu_Record;
+                                Torn_Off : in     Boolean) is
+      procedure Internal (Menu     : in System.Address;
+                          Torn_Off : in Gboolean);
+      pragma Import (C, Internal, "gtk_menu_set_tearoff_state");
+   begin
+      Internal (Get_Object (Menu), To_Gboolean (Torn_Off));
+   end Set_Tearoff_State;
+
+
+   ------------------------------------
+   --  Menu_Popup (generic package)  --
+   ------------------------------------
 
    package body Menu_Popup is
 

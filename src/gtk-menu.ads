@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Accel_Group;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Menu_Item;
 with Gtk.Menu_Shell;
@@ -45,17 +46,33 @@ package Gtk.Menu is
    procedure Append
      (Menu  : access Gtk_Menu_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class);
+
    procedure Attach_To_Widget
      (Menu          : access Gtk_Menu_Record;
       Attach_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Detacher      : in Gtk_Menu_Detach_Func);
+
    procedure Detach (Menu : access Gtk_Menu_Record);
+
+   function Ensure_Uline_Accel_Group (Menu : access Gtk_Menu_Record)
+                                      return Accel_Group.Gtk_Accel_Group;
+
+   function Get_Accel_Group (Menu : access Gtk_Menu_Record)
+                            return Accel_Group.Gtk_Accel_Group;
+
    function Get_Active (Menu : access Gtk_Menu_Record)
                         return Gtk.Menu_Item.Gtk_Menu_Item;
+
    function Get_Attach_Widget (Menu : access Gtk_Menu_Record)
                                return Gtk.Widget.Gtk_Widget;
+
+   function Get_Uline_Accel_Group (Menu : access Gtk_Menu_Record)
+                                   return Accel_Group.Gtk_Accel_Group;
+
    procedure Gtk_New (Widget : out Gtk_Menu);
+
    procedure Initialize (Widget : access Gtk_Menu_Record'Class);
+
    procedure Insert
      (Menu     : access Gtk_Menu_Record;
       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -80,12 +97,32 @@ package Gtk.Menu is
    end Menu_Popup;
 
    procedure Popdown (Menu : access Gtk_Menu_Record);
+
    procedure Prepend
      (Menu  : access Gtk_Menu_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class);
+
+   procedure Reorder_Child
+     (Menu     : access Gtk_Menu_Record;
+      Child    : in     Gtk.Widget.Gtk_Widget_Record'Class;
+      Position : in     Gint);
+
+   procedure Reposition (Menu : access Gtk_Menu_Record);
+
+   procedure Set_Accel_Group
+      (Menu        : access Gtk_Menu_Record;
+       Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group'Class);
+
    procedure Set_Active
      (Menu  : access Gtk_Menu_Record;
       Index : in Guint);
+
+
+   procedure Set_Tearoff_State (Menu     : access Gtk_Menu_Record;
+                                Torn_Off : in     Boolean);
+
+   procedure Set_Title (Menu  : access Gtk_Menu_Record;
+                        Title : in     String);
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
