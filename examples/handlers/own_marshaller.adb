@@ -71,7 +71,7 @@ package body Own_Marshaller is
       is
       begin
          return (Func  => To_General_Handler (Cb),
-                 Marsh => My_Tips_Marshaller'Access);
+                 Proxy => My_Tips_Marshaller'Access);
       end To_Marshaller;
 
    end My_Tips_Marshaller_Pkg;
