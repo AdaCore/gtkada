@@ -207,3 +207,31 @@ ada_aspect_frame_get_yalign (GtkAspectFrame* widget)
    return widget->yalign;
 }
 
+/******************************************
+ ** Functions for Text
+ ******************************************/
+
+guint
+ada_text_get_gap_position (GtkText* widget)
+{
+   return widget->gap_position;
+}
+
+guint
+ada_text_get_gap_size (GtkText* widget)
+{
+   return widget->gap_size;
+}
+
+guchar*
+ada_text_get_text (GtkText* widget)
+{
+   return widget->text;
+}
+
+guint
+ada_text_get_text_end (GtkText* widget)
+{
+   return widget->text_end;
+}
+
