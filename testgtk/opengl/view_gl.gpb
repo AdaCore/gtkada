@@ -1,3 +1,4 @@
+#if HAVE_GL then
 with Ada.Text_IO;      use Ada.Text_IO;
 with GL_H;             use GL_H;
 with Gdk.Event;        use Gdk.Event;
@@ -12,9 +13,13 @@ with Gtk.Handlers;     use Gtk.Handlers;
 with Interfaces.C;     use Interfaces.C;
 with Lwobjects;        use Lwobjects;
 with Trackball;        use Trackball;
+#else
+with Gtk.Label; use Gtk.Label;
+#end if;
 
 package body View_Gl is
 
+#if HAVE_GL
    type Mesh_Info_Type is
       record
          Do_Init : Boolean := True;  --  True if not yet initialized
@@ -64,10 +69,10 @@ package body View_Gl is
 
       -- Light
 
-      Gllightfv (GL_LIGHT0, GL_POSITION, Light0_Pos (0)'Access);
-      Gllightfv (GL_LIGHT0, GL_DIFFUSE,  Light0_Color (0)'Access);
-      Gllightfv (GL_LIGHT1, GL_POSITION, Light1_Pos (0)'Access);
-      Gllightfv (GL_LIGHT1, GL_DIFFUSE,  Light1_Color (0)'Access);
+      Gllightfv (GL_LIGHT0, GL_POSITION, Light0_Pos (0)'Unchecked_Access);
+      Gllightfv (GL_LIGHT0, GL_DIFFUSE,  Light0_Color (0)'Unchecked_Access);
+      Gllightfv (GL_LIGHT1, GL_POSITION, Light1_Pos (0)'Unchecked_Access);
+      Gllightfv (GL_LIGHT1, GL_DIFFUSE,  Light1_Color (0)'Unchecked_Access);
       Glenable (GL_LIGHT0);
       Glenable (GL_LIGHT1);
       Glenable (GL_LIGHTING);
@@ -88,6 +93,11 @@ package body View_Gl is
       --  automatically by GtkAda
 
       M : Trackball.Matrix;
+
+#if WIN32 then
+      Val : aliased GLfloat;
+#end if;
+
    begin
       --  Draw only the last expose event
 
@@ -108,8 +118,14 @@ package body View_Gl is
          --  View
          Glmatrixmode (GL_PROJECTION);
          Glloadidentity;
+
+#if WIN32 then
+         Gluperspective (GLdouble (Area.Mesh_Info.Zoom),
+                         GLdouble (VIEW_ASPECT), 1.0, 100.0);
+#else
          Gluperspective (Long_Float (Area.Mesh_Info.Zoom),
                          Long_Float (VIEW_ASPECT), 1.0, 100.0);
+#end if;
          Glmatrixmode (GL_MODELVIEW);
 
          --  Draw Object
@@ -119,7 +135,13 @@ package body View_Gl is
          Glloadidentity;
          Gltranslatef (0.0, 0.0, -30.0);
          Build_Rotmatrix (M, Area.Mesh_Info.Quat);
+
+#if WIN32 then
+         Val := GLfloat (M (0, 0));
+         Glmultmatrixf (Val'Unchecked_Access);
+#else
          Glmultmatrixf (M (0, 0)'Access);
+#end if;
 
          Lw_Object_Show (Area.Mesh_Info.Object);
 
@@ -140,9 +162,15 @@ package body View_Gl is
       pragma Warnings (Off, Event);
    begin
       if Make_Current (Area) then
+#if WIN32 then
+         Glviewport (0, 0,
+                     GLsizei (Get_Allocation_Width (Area)),
+                     GLsizei (Get_Allocation_Height (Area)));
+#else
          Glviewport (0, 0,
                      Integer (Get_Allocation_Width (Area)),
                      Integer (Get_Allocation_Height (Area)));
+#end if;
       end if;
       return True;
    end Configure;
@@ -329,5 +357,16 @@ package body View_Gl is
       Show_Lwobject (Frame, "penguin.lwo");
    end Run;
 
+#else
+
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
+      Label : Gtk_Label;
+   begin
+      Gtk_New (Label, "OpenGL has not been installed on this system");
+      Add (Frame, Label);
+      Show_All (Frame);
+   end Run;
+
+#end if;
 
 end View_Gl;
