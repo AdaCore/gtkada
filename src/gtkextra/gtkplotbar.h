@@ -34,6 +34,13 @@ extern "C" {
 typedef struct _GtkPlotBar             GtkPlotBar;
 typedef struct _GtkPlotBarClass        GtkPlotBarClass;
 
+typedef enum
+{
+  GTK_PLOT_BAR_POINTS,
+  GTK_PLOT_BAR_RELATIVE,
+  GTK_PLOT_BAR_ABSOLUTE,
+} GtkPlotBarUnits;
+
 struct _GtkPlotBar
 {
   GtkPlotData data;

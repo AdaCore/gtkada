@@ -1,8 +1,8 @@
 SRC=gtkplot.c gtkplotcanvas.c gtkplotprint.c gtkplotps.c \
   gtkpsfont.c gtkplotpc.c gtksheet.c gtkitementry.c \
-  gtkcombobox.c gtkcolorcombo.c gtkbordercombo.c gtkfontcombo.c gtkplotgdk.c \
+  gtkcombobox.c gtkextra-marshall.o gtkcolorcombo.c gtkbordercombo.c \
+  gtkfontcombo.c gtkplotgdk.c gtkextra.c gtkplotdt.c \
   gtkplotdata.c gtkplot3d.c gtkplotpolar.c gtkplotbar.c gtkplotbox.c gtkplotsurface.c
-SRC=gtkpsfont.c gtkcombobox.c gtkcolorcombo.c gtkbordercombo.c gtkfontcombo.c
 
 OBJ=${SRC:%.c=%.o}
 CC=@CC@
@@ -23,7 +23,7 @@ gtkextramarshal.c: gtkextra.list
 
 clean:
 	-$(RM) $(OBJ)
-	-$(RM) gtkextramarshal.*
+	-$(RM) gtkextramarshal.[ch]
 
 distclean: clean
 	-$(RM) Makefile

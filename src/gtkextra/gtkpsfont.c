@@ -28,6 +28,7 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
+#include <pango/pango.h>
 #include "gtkpsfont.h"
 
 #define FONTCACHE_SIZE 17
@@ -39,300 +40,263 @@ static GtkPSFont font_data[] =
   { "Times-Roman",
     "Times-Roman",
     "Times-Roman",
-    { "-adobe-times-medium-r-normal",
-      NULL
-    },
+    "times, Medium",
+    NULL,
     FALSE, FALSE
   }, 
   { "Times-Italic",
     "Times-Italic",
     "Times-Roman",
-    { "-adobe-times-medium-i-normal",
-      NULL
-    },
+    "times, Medium Italic",
+    NULL,
     TRUE, FALSE
   }, 
   { "Times-Bold",
     "Times-Bold",
     "Times-Roman",
-    { "-adobe-times-bold-r-normal",
-      NULL
-    },
+    "times, Bold",
+    NULL,
     FALSE, TRUE
   }, 
   { "Times-BoldItalic",
     "Times-BoldItalic",
     "Times-Roman",
-    { "-adobe-times-bold-i-normal",
-      NULL
-    },
-    TRUE, TRUE,
+    "times, Bold Italic",
+    NULL,
+    TRUE, TRUE
   }, 
   { "AvantGarde-Book",
     "AvantGarde-Book",
     "AvantGarde",
-    { "-adobe-avantgarde-book-r-normal",
-      "-schumacher-clean-medium-r-normal"
-    },
-    FALSE, FALSE,
+    "avantgarde",
+    NULL,
+    FALSE, FALSE
   },
   { "AvantGarde-BookOblique",
     "AvantGarde-BookOblique",
     "AvantGarde",
-    { "-adobe-avantgarde-book-o-normal",
-      "-schumacher-clean-medium-i-normal"
-    },
+    "avantgarde, Oblique",
+    NULL,
     TRUE, FALSE
   },
   { "AvantGarde-Demi",
     "AvantGarde-Demi",
     "AvantGarde",
-    { "-adobe-avantgarde-demibold-r-normal",
-      "-schumacher-clean-bold-r-normal"
-    },
+    "avantgarde, Semi-Bold",
+    NULL,
     FALSE, TRUE
   },
   { "AvantGarde-DemiOblique",
     "AvantGarde-DemiOblique",
     "AvantGarde",
-    { "-adobe-avantgarde-demibold-o-normal",
-      "-schumacher-clean-bold-i-normal"
-    },
+    "avantgarde, Semi-Bold Oblique",
+    NULL,
     TRUE, TRUE
   },
   { "Bookman-Light",
     "Bookman-Light",
     "Bookman",
-    { "-adobe-bookman-light-r-normal",
-      "-adobe-times-medium-r-normal"
-    },
-    FALSE, FALSE,
+    "bookman",
+    NULL,
+    FALSE, FALSE
   },
   { "Bookman-LightItalic",
     "Bookman-LightItalic",
     "Bookman",
-    { "-adobe-bookman-light-i-normal",
-      "-adobe-times-medium-i-normal"
-    },
-    TRUE, FALSE,
+    "bookman, Light Italic",
+    NULL,
+    TRUE, FALSE
   },
   { "Bookman-Demi",
     "Bookman-Demi",
     "Bookman",
-    { "-adobe-bookman-demibold-r-normal",
-      "-adobe-times-bold-r-normal"
-    },
-    FALSE, TRUE,
+    "bookman, Semi-Bold", 
+    NULL,
+    FALSE, TRUE
   },
   { "Bookman-DemiItalic",
     "Bookman-DemiItalic",
     "Bookman",
-    { "-adobe-bookman-demibold-i-normal",
-      "-adobe-times-bold-i-normal"
-    },
-    TRUE, TRUE,
+    "bookman, Semi-Bold Italic", 
+    NULL,
+    TRUE, TRUE
   },
   { "Courier",
     "Courier",
     "Courier",
-    { "-adobe-courier-medium-r-normal",
-      NULL
-    },
+    "courier",
+    NULL,
     FALSE, FALSE
   },
   { "Courier-Oblique",
     "Courier-Oblique",
     "Courier",
-    { "-adobe-courier-medium-o-normal",
-      NULL
-    },
+    "courier, Italic",
+    NULL,
     TRUE, FALSE
   },
   { "Courier-Bold",
     "Courier-Bold",
     "Courier",
-    { "-adobe-courier-bold-r-normal",
-      NULL
-    },
+    "courier, Bold",
+    NULL,
     FALSE, TRUE
   },
   { "Courier-BoldOblique",
     "Courier-BoldOblique",
     "Courier",
-    { "-adobe-courier-bold-o-normal",
-      NULL
-    },
+    "courier, Bold Oblique",
+    NULL,
     TRUE, TRUE
   },
   { "Helvetica",
     "Helvetica",
     "Helvetica",
-    { "-adobe-helvetica-medium-r-normal",
-      NULL
-    },
+    "helvetica, Medium",
+    NULL,
     FALSE, FALSE
   },
   { "Helvetica-Oblique",
     "Helvetica-Oblique",
     "Helvetica",
-    { "-adobe-helvetica-medium-o-normal",
-      NULL
-    },
+    "helvetica, Medium Oblique",
+    NULL,
     TRUE, FALSE
   },
   { "Helvetica-Bold",
     "Helvetica-Bold",
     "Helvetica",
-    { "-adobe-helvetica-bold-r-normal",
-      NULL
-    },
+    "helvetica, Bold",
+    NULL,
     FALSE, TRUE
   },
   { "Helvetica-BoldOblique",
     "Helvetica-BoldOblique",
     "Helvetica",
-    { "-adobe-helvetica-bold-o-normal",
-      NULL
-    },
+    "helvetica, Bold Oblique",
+    NULL,
     TRUE, TRUE
   },
   { "Helvetica-Narrow",
     "Helvetica-Narrow",
     "Helvetica-Narrow",
-    { "-adobe-helvetica-medium-r-normal",
-      NULL
-    },
+    "helvetica, Medium Condensed",
+    NULL,
     FALSE, FALSE
   },
   { "Helvetica-Narrow-Oblique",
     "Helvetica-Narrow-Oblique",
     "Helvetica-Narrow",
-    { "-adobe-helvetica-medium-o-normal",
-      NULL
-    },
+    "helvetica, Medium Oblique Condensed",
+    NULL,
     TRUE, FALSE
   },
   { "Helvetica-Narrow-Bold",
     "Helvetica-Narrow-Bold",
     "Helvetica-Narrow",
-    { "-adobe-helvetica-bold-r-normal",
-      NULL
-    },
+    "helvetica, Bold Condensed",
+    NULL,
     FALSE, TRUE
   },
   { "Helvetica-Narrow-BoldOblique",
     "Helvetica-Narrow-BoldOblique",
     "Helvetica-Narrow",
-    { "-adobe-helvetica-bold-o-normal",
-      NULL
-    },
+    "helvetica, Bold Oblique Condensed",
+    NULL,
     TRUE, TRUE
   },
   { "NewCenturySchoolbook-Roman",
     "NewCenturySchlbk-Roman",
     "NewCenturySchlbk",
-    { "-adobe-new century schoolbook-medium-r-normal",
-      NULL
-    },
+    "new century schoolbook, Medium",
+    NULL,
     FALSE, FALSE
   },
   { "NewCenturySchoolbook-Italic",
     "NewCenturySchlbk-Italic",
     "NewCenturySchlbk",
-    { "-adobe-new century schoolbook-medium-i-normal",
-      NULL
-    },
+    "new century schoolbook, Medium Italic",
+    NULL,
     TRUE, FALSE
   },
   { "NewCenturySchoolbook-Bold",
     "NewCenturySchlbk-Bold",
     "NewCenturySchlbk",
-    { "-adobe-new century schoolbook-bold-r-normal",
-      NULL
-    },
+    "new century schoolbook, Bold",
+    NULL,
     FALSE, TRUE
   },
   { "NewCenturySchoolbook-BoldItalic",
     "NewCenturySchlbk-BoldItalic",
     "NewCenturySchlbk",
-    { "-adobe-new century schoolbook-bold-i-normal",
-      NULL
-    },
+    "new century schoolbook, Bold Italic",
+    NULL,
     TRUE, TRUE
   },
   { "Palatino-Roman",
     "Palatino-Roman",
-    "Lucida",
-    { "-adobe-palatino-medium-r-normal",
-      "-*-lucidabright-medium-r-normal"
-    },
+    "Palatino",
+    "palatino, Medium",
+    NULL,
     FALSE, FALSE
   },
   { "Palatino-Italic",
     "Palatino-Italic",
-    "Lucida",
-    { "-adobe-palatino-medium-i-normal",
-      "-*-lucidabright-medium-i-normal"
-    },
+    "Palatino",
+    "palatino, Medium Italic",
+    NULL,
     TRUE, FALSE
   },
   { "Palatino-Bold",
     "Palatino-Bold",
-    "Lucida",
-    { "-adobe-palatino-bold-r-normal",
-      "-*-lucidabright-demibold-r-normal"
-    },
+    "Palatino",
+    "palatino, Bold",
+    NULL,
     FALSE, TRUE
   },
   { "Palatino-BoldItalic",
     "Palatino-BoldItalic",
-    "Lucida",
-    { "-adobe-palatino-bold-i-normal",
-      "-*-lucidabright-demibold-i-normal"
-    },
+    "Palatino",
+    "palatino, Bold Italic",
+    NULL,
     TRUE, TRUE
   },
   { "Symbol",
     "Symbol",
     "Symbol",
-    {
-      "-adobe-symbol-medium-r-normal",
-      "-*-symbol-medium-r-normal"
-    },
+    "symbol",
+    NULL,
     FALSE, FALSE
   },
   { "ZapfChancery-MediumItalic",
     "ZapfChancery-MediumItalic",
     "ZapfChancery",
-    { "-adobe-zapf chancery-medium-i-normal",
-      "-*-itc zapf chancery-medium-i-normal"
-    },
+    "zapf chancery, Medium Italic",
+    NULL,
     FALSE, FALSE
   },
   { "ZapfDingbats",
     "ZapfDingbats",
     "ZapfDingbats",
-    { "-adobe-zapf dingbats-medium-r-normal",
-      "-*-itc zapf dingbats-*-*-*"
-    },
+    "zapf dingbats, Medium",
+    NULL,
     FALSE, FALSE
   },
 };
 
 #define NUM_FONTS (sizeof(font_data)/sizeof(GtkPSFont))
 
-gchar *last_resort_fonts[] = {
-  "-adobe-courier-medium-r-normal",
-  "fixed" /* Must be last. This is guaranteed to exist on an X11 system. */
-};
-
-#define NUM_LAST_RESORT_FONTS 2
-
 static GList *user_fonts;
 static gboolean psfont_init = FALSE;
 static GList *psfont_families;
 static gint numf;
 static gint psfont_refcount = 0;
+
+#ifdef G_PLATFORM_WIN32
+static const char *default_font = "sans";
+#else
+static const char *default_font = "fixed";
+#endif
 
 static GtkPSFont *find_psfont		(const gchar *name);
 
@@ -354,16 +318,6 @@ gtk_psfont_init()
 */
 
   psfont_init = TRUE;
-/*
-  for(i = 0; i < NUM_FONTS; i++){
-    gtk_psfont_add_font(font_data[i].fontname,
-			font_data[i].psname,
-			font_data[i].family,
-			font_data[i].xfont,
-			font_data[i].italic,
-			font_data[i].bold);
-  }
-*/  
   psfont_families = NULL;
   numf = 0;
 
@@ -425,18 +379,19 @@ gtk_psfont_unref()
 }
 
 GtkPSFont *
-gtk_psfont_get_font(const gchar *name)
+gtk_psfont_get_by_name(const gchar *name)
 {
   GtkPSFont *font;
 
   font = find_psfont(name);
 
   if (font == NULL) {
-    font = find_psfont("Courier");
+    font = find_psfont(default_font);
     if (font == NULL) {
-      g_warning ("Error, couldn't locate font. Shouldn't happend.");
+      g_warning ("Error, couldn't locate default font. Shouldn't happen.");
     } else {
-      g_message ("Font %s not found, using Courier instead.", name);
+      g_message ("Postscript font %s not found, using %s instead.",
+		 name, default_font);
     }
   }
 
@@ -444,112 +399,143 @@ gtk_psfont_get_font(const gchar *name)
 }
 
 GdkFont *
-gtk_psfont_get_gdkfont(const gchar *name, gint height)
+gtk_psfont_get_gdkfont(GtkPSFont *font, gint height)
 {
-  GtkPSFont *fontdata;
-  GdkFont *gdk_font = NULL;
-  gchar *x11_font;
-  gint bufsize;
-  gchar *buffer = NULL;
-  gint i;
-  gint auxheight;
-  gint min_height = 1;
+  PangoFontDescription *font_desc;
+  gchar *font_string;
+  GdkFont *gdkfont;
+
+  g_return_val_if_fail (font != NULL, NULL);
+
+  if (height <= 0) height = 1;
+
+  font_desc = gtk_psfont_get_font_description(font, height);
+  gdkfont = font_desc ? gdk_font_from_description(font_desc) : NULL;
+  if (font_desc)
+    pango_font_description_free(font_desc);
+
+  if (!gdkfont) {
+    font_string = g_strdup_printf("%s %i", default_font, height);
+    font_desc = pango_font_description_from_string(font_string);
+    g_free(font_string);
+    gdkfont = font_desc ? gdk_font_from_description(font_desc) : NULL;
+    if (font_desc)
+      pango_font_description_free(font_desc);
+
+    if (gdkfont)
+      g_message ("Pango font %s %i (PS font %s) not found, using %s instead.",
+		 font->pango_description, height, font->fontname, default_font);
+    else
+      g_warning ("Error, couldn't locate default font. Shouldn't happen.");
+  }
+
+  return gdkfont;
+}
+
+PangoFontDescription *
+gtk_psfont_get_font_description(GtkPSFont *font, gint height)
+{
+  PangoFontDescription *font_desc, *desc;
+  PangoContext *context = gdk_pango_context_get();
+  PangoFontset *pffontset;
+  PangoFont *pffont;
+  gchar *font_string;
+
+  g_return_val_if_fail (font != NULL, NULL);
 
   if (height <= 0) height = 1;
  
-  fontdata = gtk_psfont_get_font(name);
- 
-  for (i = 0; i < NUM_X11_FONTS; i++) {
-    x11_font = fontdata->xfont[i];
+  font_string = g_strdup_printf("%s %i", font->pango_description, height);
+  font_desc = pango_font_description_from_string(font_string);
+  g_free(font_string);
 
-    if (x11_font != NULL) {
-      bufsize = strlen(x11_font)+25;  /* Should be enough */
-      buffer = (gchar *)g_malloc(bufsize);
+  if (!font_desc) {
+    font_string = g_strdup_printf("%s %i", default_font, height);
+    font_desc = pango_font_description_from_string(font_string);
+    g_free(font_string);
+    if (font_desc)
+      g_message ("Font %s not describable, using %s instead.",
+		 font->fontname, default_font);
+    else
+      g_warning ("Error, couldn't describe default font. Shouldn't happen.");
+  }
 
-      for (auxheight = MAX(height, min_height);
-           auxheight >= min_height; auxheight--)
-        {
-          g_snprintf
-            (buffer, bufsize, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
-    
-          gdk_font = gdk_font_load(buffer);
-
-          if (gdk_font != NULL)
-            break;
-        }
-
-      g_free(buffer);
-
-      if (gdk_font != NULL) break;
+  /* Loading via the pango fontset facility means that pango.aliases is used */
+  if (font_desc) {
+    pffontset = pango_context_load_fontset(context, font_desc,
+      pango_context_get_language(context));
+    if (pffontset) {
+      pffont = pango_fontset_get_font(pffontset, g_utf8_get_char(" "));
+      if (pffont) {
+	desc = pango_font_describe(pffont);
+	g_object_unref(G_OBJECT(pffont));
+	if (desc) {
+	  pango_font_description_free(font_desc);
+	  font_desc = desc;
+	}
+      }
+      g_object_unref(G_OBJECT(pffontset));
     }
   }
 
-  if (gdk_font == NULL) {
-    for (i=0; i < NUM_LAST_RESORT_FONTS; i++) {
-      x11_font = last_resort_fonts[i];
-      bufsize = strlen(x11_font)+25;  /* Should be enough */
-      buffer = (char *)g_malloc(bufsize);
-      
-      for (auxheight = MAX(height, min_height);
-           auxheight >= min_height; auxheight--)
-        {
-          g_snprintf
-            (buffer, bufsize, "%s-*-%d-*-*-*-*-*-*-*", x11_font, auxheight);
-    
-          gdk_font = gdk_font_load(buffer);
-
-          if (gdk_font != NULL)
-            break;
-      }
-
-      g_free(buffer);
-
-      if (gdk_font != NULL) {
-	g_warning("Could not find X Font for %s, using %s instead.",
-		  name, x11_font);
-	break;
-      }
-    }
-  }
-
-  if (gdk_font == NULL) 
-	g_warning("Could not find X Font for %s", name);
-	
-  return gdk_font;
+  return font_desc;
 }
 
 
-gchar *
-gtk_psfont_get_psfontname(const gchar *fontname)
+const gchar *
+gtk_psfont_get_psfontname(GtkPSFont *font)
 {
-  GtkPSFont *font = NULL;
- 
-  font = find_psfont(fontname); 
-  if(!font) 
-     font = find_psfont("Courier");  
+
+  g_return_val_if_fail (font != NULL, NULL);
 
   return font->psname;
 }
 
 void
-gtk_psfont_add_font (const gchar *fontname, const gchar *psname, const gchar *family,
-                     gchar *x_string[],
+gtk_psfont_add_font (const gchar *fontname, 
+                     const gchar *psname, const gchar *family,
+                     const gchar *pango_description,
                      gboolean italic, gboolean bold)
 {
   GtkPSFont *font;
 
-  font = g_new(GtkPSFont, 1);
+  font = g_new0(GtkPSFont, 1);
 
   font->fontname = g_strdup(fontname); 
   font->psname = g_strdup(psname); 
   font->family = g_strdup(family); 
-  font->xfont[0] = g_strdup(x_string[0]);
-  font->xfont[1] = g_strdup(x_string[1]);
+  font->pango_description = g_strdup(pango_description); 
+  font->i18n_latinfamily = NULL;
   font->italic = italic;
   font->bold = bold;
+  font->vertical = FALSE;
 
   user_fonts = g_list_append(user_fonts, font);
 }
+
+void
+gtk_psfont_add_i18n_font (const gchar *fontname, 
+                         const gchar *psname, const gchar *family,
+                         const gchar *i18n_latinfamily, 
+                         const gchar *pango_description,
+                         gboolean italic, gboolean bold, gboolean vertical)
+{
+  GtkPSFont *font;
+
+  font = g_new0(GtkPSFont, 1);
+
+  font->fontname = g_strdup(fontname); 
+  font->psname = g_strdup(psname); 
+  font->family = g_strdup(family); 
+  font->pango_description = g_strdup(pango_description); 
+  font->i18n_latinfamily = g_strdup(i18n_latinfamily);
+  font->italic = italic;
+  font->bold = bold;
+  font->vertical = vertical;
+
+  user_fonts = g_list_append(user_fonts, font);
+}
+
 
 static GtkPSFont *
 find_psfont(const gchar *name)
@@ -559,40 +545,43 @@ find_psfont(const gchar *name)
   GList *fonts;
   gint i;
 
-  for(i = 0; i < NUM_FONTS; i++){
-    if(strcmp(name, font_data[i].fontname) == 0) { 
-       fontdata = &font_data[i];
-       break;
-    }
-    if(strcmp(name, font_data[i].psname) == 0) { 
-       fontdata = &font_data[i];
-       break;
-    }
-  }
+  /* user_fonts should be superior to font_data, the built-in default
+     settings because user_fonts is supposed to store a more appropriate
+     existent xfont than font_data.
+  */
 
+  fonts = user_fonts;
+  while(fonts){
+    data = (GtkPSFont *) fonts->data;
+    if(strcmp(name, data->fontname) == 0) {
+      fontdata = data;
+      break;
+    }
+    if(strcmp(name, data->psname) == 0) {
+      fontdata = data;
+      break;
+    }
+    fonts = fonts->next;
+  }
 
   if(fontdata == NULL) {
-    fonts = user_fonts;
-    while(fonts){
-      data = (GtkPSFont *) fonts->data;
-      if(strcmp(name, data->fontname) == 0) {
-         fontdata = data;
-         break;
+    for(i = 0; i < NUM_FONTS; i++){
+      if(strcmp(name, font_data[i].fontname) == 0) { 
+	fontdata = &font_data[i];
+	break;
       }
-      if(strcmp(name, data->psname) == 0) {
-         fontdata = data;
-         break;
+      if(strcmp(name, font_data[i].psname) == 0) { 
+	fontdata = &font_data[i];
+       break;
       }
-      fonts = fonts->next;
     }
   }
-
-
+  
   return fontdata;
 }
 
 GtkPSFont *
-gtk_psfont_find_by_family(const gchar *name, gboolean italic, gboolean bold)
+gtk_psfont_get_by_family(const gchar *name, gboolean italic, gboolean bold)
 {
   GtkPSFont *fontdata = NULL;
   GtkPSFont *data = NULL;
@@ -600,28 +589,33 @@ gtk_psfont_find_by_family(const gchar *name, gboolean italic, gboolean bold)
   GList *fonts;
   gint i;
 
-  for(i = 0; i < NUM_FONTS; i++){
-    if(strcmp(name, font_data[i].family) == 0) { 
-       return_data = &font_data[i];
-       if(font_data[i].italic == italic && font_data[i].bold == bold){
-           fontdata = &font_data[i];
-           break;
-       }
-    }
-  }
+  /* user_fonts should be superior to font_data, the built-in default
+     settings because user_fonts is supposed to store a more appropriate
+     existent xfont than font_data.
+  */
 
-  if(fontdata == NULL) {
-    fonts = user_fonts;
-    while(fonts){
-      data = (GtkPSFont *) fonts->data;
-      if(strcmp(name, data->family) == 0) {
-        return_data = &font_data[i];
-        if(data->italic == italic && data->bold == bold){
-            fontdata = data;
-            break;
-        }
+  fonts = user_fonts;
+  while(fonts){
+    data = (GtkPSFont *) fonts->data;
+    if(strcmp(name, data->family) == 0) {
+      return_data = data;
+      if(data->italic == italic && data->bold == bold){
+	fontdata = data;
+	break;
       }
-      fonts = fonts->next;
+    }
+    fonts = fonts->next;
+  }
+    
+  if(fontdata == NULL) {
+    for(i = 0; i < NUM_FONTS; i++){
+      if(strcmp(name, font_data[i].family) == 0) { 
+	return_data = &font_data[i];
+	if(font_data[i].italic == italic && font_data[i].bold == bold){
+	  fontdata = &font_data[i];
+	  break;
+	}
+      }
     }
   }
 
@@ -641,3 +635,38 @@ gtk_psfont_get_families(GList **families, gint *num_families)
   *families = psfont_families;
   *num_families = numf;
 }
+
+/* get the width, ascent and descent of a character. */
+void
+gtk_psfont_get_char_size(GtkPSFont *psfont,
+                         GdkFont *font,
+                         GdkFont *latin_font,
+                         GdkWChar wc,
+                         gint *width,
+                         gint *ascent,
+                         gint *descent)
+{
+  GdkFont *dfont;
+  gint w, a, d, w0;
+  
+  if (psfont->i18n_latinfamily && psfont->vertical && (0 > wc || wc > 0x7f)) {
+    /* vertical-writing CJK postscript fonts. */
+    w = (font->ascent + font->descent);
+    w0 = gdk_char_width_wc(font, wc);
+    d = w0 * font->descent / w;
+    a = w0 - d;
+  } else {
+    if (psfont->i18n_latinfamily && 0 <= wc && wc <= 0x7f)
+      dfont = latin_font;
+    else
+      dfont = font;
+    w = gdk_char_width_wc(dfont, wc);
+    a = dfont->ascent;
+    d = dfont->descent;
+  }
+
+  if (width != NULL) *width = w;
+  if (ascent != NULL) *ascent = a;
+  if (descent != NULL) *descent = d;
+}
+

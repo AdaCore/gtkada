@@ -16,7 +16,6 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
 #ifndef __GTK_PLOT_H__
 #define __GTK_PLOT_H__
 
@@ -25,12 +24,6 @@ extern "C" {
 #endif /* __cplusplus */
 
 #include "gtkplotpc.h"
-
-enum
-{
-  GTK_PLOT_TRANSPARENT    	 = 1 << 1
-};
-
 
 #define GTK_PLOT(obj)        GTK_CHECK_CAST (obj, gtk_plot_get_type (), GtkPlot)
 
@@ -43,12 +36,6 @@ enum
 #define GTK_TYPE_PLOT_AXIS   (gtk_plot_axis_get_type ())
 #define GTK_IS_PLOT_AXIS(obj)     GTK_CHECK_TYPE (obj, gtk_plot_axis_get_type ())
 
-#define GTK_PLOT_FLAGS(plot)         (GTK_PLOT(plot)->flags)
-#define GTK_PLOT_SET_FLAGS(plot,flag) (GTK_PLOT_FLAGS(plot) |= (flag))
-#define GTK_PLOT_UNSET_FLAGS(plot,flag) (GTK_PLOT_FLAGS(plot) &= ~(flag))
-
-#define GTK_PLOT_TRANSPARENT(plot) (GTK_PLOT_FLAGS(plot) & GTK_PLOT_TRANSPARENT)
-
 typedef struct _GtkPlot		GtkPlot;
 typedef struct _GtkPlotClass	GtkPlotClass;
 typedef struct _GtkPlotData		GtkPlotData;
@@ -58,13 +45,48 @@ typedef struct _GtkPlotAxisClass 	GtkPlotAxisClass;
 typedef struct _GtkPlotText 	GtkPlotText;
 typedef struct _GtkPlotLine 	GtkPlotLine;
 typedef struct _GtkPlotSymbol 	GtkPlotSymbol;
+typedef struct _GtkPlotTick	GtkPlotTick;
 typedef struct _GtkPlotTicks	GtkPlotTicks;
 typedef struct _GtkPlotVector   GtkPlotVector;
+typedef struct _GtkPlotMarker   GtkPlotMarker;
 
 
-typedef gdouble (*GtkPlotFunc)	(GtkPlot *plot, GtkPlotData *data, gdouble x, gboolean *error);
+typedef gdouble (*GtkPlotFunc)		(GtkPlot *plot, 
+					 GtkPlotData *data, 
+					 gdouble x, 
+					 gboolean *error);
 
-typedef gdouble (*GtkPlotFunc3D)	(GtkPlot *plot, GtkPlotData *data, gdouble x, gdouble y, gboolean *error);
+typedef gdouble (*GtkPlotFunc3D)	(GtkPlot *plot, 
+					 GtkPlotData *data, 
+					 gdouble x, gdouble y, 
+					 gboolean *error);
+
+typedef void   	(*GtkPlotIterator)	(GtkPlot *plot,
+					 GtkPlotData *data, 
+					 gint iter, 
+                                         gdouble *x, 
+					 gdouble *y, 
+					 gdouble *z,
+					 gdouble *a,
+                                         gdouble *dx, 
+					 gdouble *dy, 
+					 gdouble *dz,
+					 gdouble *da,
+					 gchar **label,
+					 gboolean *error);
+
+enum
+{
+  GTK_PLOT_DATA_X 	= 1 << 0,
+  GTK_PLOT_DATA_Y 	= 1 << 1,
+  GTK_PLOT_DATA_Z 	= 1 << 2,
+  GTK_PLOT_DATA_A 	= 1 << 3,
+  GTK_PLOT_DATA_DX 	= 1 << 4,
+  GTK_PLOT_DATA_DY 	= 1 << 5,
+  GTK_PLOT_DATA_DZ 	= 1 << 6,
+  GTK_PLOT_DATA_DA 	= 1 << 7,
+  GTK_PLOT_DATA_LABELS 	= 1 << 8,
+};
 
 typedef enum
 {
@@ -173,6 +195,12 @@ enum
   GTK_PLOT_GRADIENT_S		= 1 << 2,
 };
 
+struct _GtkPlotMarker
+{
+  GtkPlotData *data;
+  gint point;
+};
+
 struct _GtkPlotText
 {
   gdouble x, y;
@@ -185,6 +213,7 @@ struct _GtkPlotText
   GtkPlotBorderStyle border;
   gint border_width;
   gint shadow_width;
+  gint border_space;
 
   gchar *font;
   gint height;
@@ -197,6 +226,8 @@ struct _GtkPlotText
 struct _GtkPlotLine
 {
   GtkPlotLineStyle line_style;
+  GdkCapStyle cap_style;
+  GdkJoinStyle join_style;
 
   gfloat line_width;
   GdkColor color;
@@ -218,21 +249,38 @@ struct _GtkPlotVector
   gdouble x, y, z;
 };
 
+struct _GtkPlotTick
+{
+  gdouble value;
+  gboolean minor;
+};
+
 struct _GtkPlotTicks
 {
+  gdouble min;
+  gdouble max;
+
+  GtkPlotScale scale;
+
   gint nmajorticks;             /* Number of major ticks drawn */
   gint nminorticks;             /* Number of minor ticks drawn */
+  gint nticks;                  /* total number of ticks */
 
-  gdouble step;		   /* major ticks step */
-  gint nminor;		   /* number of minor ticks between major ticks */
+  gdouble step;                 /* major ticks step */
+  gint nminor;                  /* number of minor ticks between major ticks */
 
-  gint *major;             /* major ticks points */
-  gint *minor;             /* minor ticks points */
-  gdouble *major_values;          /* major ticks values */
-  gdouble *minor_values;          /* minor ticks values */
+  gboolean apply_break;
+  GtkPlotScale break_scale;
+  gdouble break_step;
+  gint break_nminor;
+  gdouble break_min;
+  gdouble break_max;
+  gdouble break_position;
+
+  GtkPlotTick *values;
 
   gboolean set_limits;
-  gdouble begin, end; 
+  gdouble begin, end;
 };
 
 struct _GtkPlotAxis
@@ -256,9 +304,6 @@ struct _GtkPlotAxis
   GtkPlotLine line;
   GtkPlotLine major_grid;
   GtkPlotLine minor_grid;
-
-  gdouble min;
-  gdouble max;
 
   gint major_mask;
   gint minor_mask;
@@ -287,6 +332,10 @@ struct _GtkPlotData
   GtkWidget widget;
 
   gboolean is_function;
+  gboolean is_iterator;
+
+  guint16 iterator_mask;
+
   gboolean show_legend;
   gboolean show_labels;
   gboolean fill_area;
@@ -327,6 +376,8 @@ struct _GtkPlotData
   gdouble *dz;
   gdouble *da;
 
+  gdouble a_scale;
+
   gchar **labels;
 
   gint labels_offset;
@@ -334,35 +385,51 @@ struct _GtkPlotData
 
   GtkPlotFunc function;
   GtkPlotFunc3D function3d;
+  GtkPlotIterator iterator;
 
   gdouble x_step;
   gdouble y_step;
   gdouble z_step;
 
   GdkColor color_min, color_max;
+  GdkColor color_lt_min, color_gt_max;
   gint gradient_mask;
   GtkPlotTicks gradient;
+  gboolean gradient_custom;
+  GdkColor *gradient_colors;
 
   gboolean show_gradient;
   gint legends_precision;
+  GtkPlotLabelStyle legends_style;
 
   gpointer link;
 
+  GList *markers;
+  gboolean show_markers;
+
+  gboolean redraw_pending;
 };
 
 struct _GtkPlot
 {
   GtkWidget widget;
 
+  GtkAllocation internal_allocation;
+
   GdkDrawable *drawable;
 
-  guint8 flags;
+  GdkPixmap *bg_pixmap;
+  gboolean use_pixmap;
+
+  gboolean transparent;
+
   gdouble magnification;
 
   gboolean clip_data;
 
   GdkColor background;
 
+  gboolean grids_on_top;
   gboolean show_x0;
   gboolean show_y0;
 
@@ -378,6 +445,9 @@ struct _GtkPlot
   GtkPlotAxis *top; 
   GtkPlotAxis *left; 
   GtkPlotAxis *right; 
+
+  gboolean reflect_x;
+  gboolean reflect_y;
 
   gfloat bottom_align;
   gfloat top_align;
@@ -409,6 +479,10 @@ struct _GtkPlotClass
 {
   GtkWidgetClass parent_class;
 
+  void		(* set_pc)		(GtkPlot *plot, GtkPlotPC *pc);
+  void		(* set_drawable)	(GtkPlot *plot, GdkDrawable *drawable);
+  gboolean	(* add_data)   		(GtkPlot *plot, GtkPlotData *data);
+  void		(* update)   		(GtkPlot *plot, gboolean new_range);
   void 		(* changed) 		(GtkPlot *plot);
 
   gboolean 	(* moved)   		(GtkPlot *plot, 
@@ -438,6 +512,10 @@ struct _GtkPlotDataClass
 {
   GtkWidgetClass parent_class;
 
+  gboolean	(* add_to_plot) 	(GtkPlotData *data, GtkPlot *plot);
+  void		(* update) 		(GtkPlotData *data, gboolean new_range);
+  void          (* gradient_changed)    (GtkPlotData *data);
+  void          (* gradient_colors_changed)    (GtkPlotData *data);
   void 		(* draw_data)   	(GtkPlotData *data);
   void 		(* draw_symbol)   	(GtkPlotData *data, 
                                          gdouble x, 
@@ -452,6 +530,7 @@ struct _GtkPlotDataClass
   void 		(* get_legend_size)   	(GtkPlotData *data, 
                                          gint *width, gint *height);
 
+  void          (* clone)               (GtkPlotData *data, GtkPlotData *copy);
 /*
   void 		(* error) 		(GtkPlotData *data, gint errno);
 */
@@ -481,6 +560,13 @@ void		gtk_plot_construct_with_size	(GtkPlot *plot,
 void		gtk_plot_set_drawable		(GtkPlot *plot,
 						 GdkDrawable *drawable);
 GdkDrawable *	gtk_plot_get_drawable		(GtkPlot *plot);
+void		gtk_plot_set_pc			(GtkPlot *plot,
+						 GtkPlotPC *pc);
+void		gtk_plot_set_background_pixmap	(GtkPlot *plot,
+						 GdkPixmap *pixmap);
+void		gtk_plot_set_transparent	(GtkPlot *plot, 
+						 gboolean transparent);
+gboolean	gtk_plot_is_transparent		(GtkPlot *plot); 
 void		gtk_plot_get_position		(GtkPlot *plot,
 						 gdouble *x, gdouble *y);
 void		gtk_plot_get_size		(GtkPlot *plot,
@@ -526,11 +612,17 @@ void 		gtk_plot_set_yscale		(GtkPlot *plot,
 						 GtkPlotScale scale_type);
 GtkPlotScale 	gtk_plot_get_xscale		(GtkPlot *plot);
 GtkPlotScale 	gtk_plot_get_yscale		(GtkPlot *plot);
+void	 	gtk_plot_reflect_x		(GtkPlot *plot, 
+						 gboolean reflect);
+void	 	gtk_plot_reflect_y		(GtkPlot *plot, 
+						 gboolean reflect);
+gboolean 	gtk_plot_is_x_reflected		(GtkPlot *plot);
+gboolean 	gtk_plot_is_y_reflected		(GtkPlot *plot);
 GtkPlotText *	gtk_plot_put_text		(GtkPlot *plot,
 						 gdouble x, gdouble y, 
 						 const gchar *font,	
-             gint height,
-             gint angle,
+             					 gint height,
+             					 gint angle,
 						 const GdkColor *foreground,
 						 const GdkColor *background,
 						 gboolean transparent,
@@ -538,6 +630,7 @@ GtkPlotText *	gtk_plot_put_text		(GtkPlot *plot,
                                                  const gchar *text); 
 gint 		gtk_plot_remove_text		(GtkPlot *plot,
 						 GtkPlotText *text);
+
 void		gtk_plot_text_get_size		(const gchar *text, 
 						 gint angle,
 						 const gchar *font_name, 
@@ -560,6 +653,11 @@ void 		gtk_plot_text_set_attributes 	(GtkPlotText *text_attr,
                               			 gboolean transparent,
                               			 GtkJustification justification,
                               			 const gchar *text);
+void 		gtk_plot_text_set_border 	(GtkPlotText *text,
+                        			 GtkPlotBorderStyle border,
+                          			 gint border_space,
+                          			 gint border_width,
+                          			 gint shadow_width);
 void            gtk_plot_draw_line		(GtkPlot *plot,
                 			         GtkPlotLine line,
                    				 gdouble x1, gdouble y1, 
@@ -627,6 +725,15 @@ void		gtk_plot_axis_set_ticks_limits	(GtkPlot *plot,
 						 gdouble begin, gdouble end);
 void		gtk_plot_axis_unset_ticks_limits(GtkPlot *plot,
 						 GtkPlotOrientation orientation);
+void            gtk_plot_axis_set_break         (GtkPlot *plot,
+                                                 GtkPlotOrientation orient,
+                                                 gdouble min, gdouble max,
+                                                 gdouble step_after,
+                                                 gint nminor_after,
+                                                 GtkPlotScale scale_after,
+                                                 gdouble pos);
+void            gtk_plot_axis_remove_break      (GtkPlot *plot,
+                                                 GtkPlotOrientation orient);
 void		gtk_plot_axis_show_labels	(GtkPlot *plot, 
 						 GtkPlotAxisPos axis,
 						 gint labels_mask);
@@ -648,10 +755,16 @@ void		gtk_plot_axis_set_labels_attributes	(GtkPlot *plot,
 					 const GdkColor *background,
                                          gboolean transparent,
                                          GtkJustification justification);
-void		gtk_plot_axis_set_labels_numbers	(GtkPlot *plot,
+#define gtk_plot_axis_set_labels_numbers gtk_plot_axis_set_labels_style
+void		gtk_plot_axis_set_labels_style	        (GtkPlot *plot,
 					 		 GtkPlotAxisPos axis,
 							 gint style,
 							 gint precision); 
+void		gtk_plot_axis_set_labels_offset		(GtkPlot *plot,
+					 		 GtkPlotAxisPos axis,
+							 gint offset); 
+gint		gtk_plot_axis_get_labels_offset		(GtkPlot *plot,
+					 		 GtkPlotAxisPos axis);
 void 		gtk_plot_axis_use_custom_tick_labels 	(GtkPlot *plot,
                                       			 GtkPlotAxisPos axispos,
                                       			 gboolean use);
@@ -673,6 +786,9 @@ gboolean 	gtk_plot_x0_visible			(GtkPlot *plot);
 void 		gtk_plot_y0_set_visible			(GtkPlot *plot, 
 							 gboolean visible);
 gboolean 	gtk_plot_y0_visible			(GtkPlot *plot);
+void		gtk_plot_grids_set_on_top		(GtkPlot *plot,
+							 gboolean on_top);
+gboolean	gtk_plot_grids_on_top			(GtkPlot *plot);
 void		gtk_plot_grids_set_visible		(GtkPlot *plot,
                 				         gboolean vmajor, 
 						 	 gboolean vminor,

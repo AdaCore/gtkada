@@ -28,30 +28,30 @@ extern "C" {
 gboolean
 gtk_plot_export_ps                              (GtkPlot *plot,
                                                  char *file_name,
-                                                 gint orient,
-                                                 gint epsflag,
-                                                 gint page_size);
+                                                 GtkPlotPageOrientation orient,
+                                                 gboolean epsflag,
+                                                 GtkPlotPageSize page_size);
 gboolean
 gtk_plot_export_ps_with_size                    (GtkPlot *plot,
                                                  char *file_name,
-                                                 gint orient,
-                                                 gint epsflag,
-                                                 gint units,
+                                                 GtkPlotPageOrientation orient,
+                                                 gboolean epsflag,
+                                                 GtkPlotUnits units,
                                                  gint width,
                                                  gint height);
 gboolean
 gtk_plot_canvas_export_ps                       (GtkPlotCanvas *canvas,
                                                  char *file_name,
-                                                 gint orient,
-                                                 gint epsflag,
-                                                 gint page_size);
+                                                 GtkPlotPageOrientation orient,
+                                                 gboolean epsflag,
+                                                 GtkPlotPageSize page_size);
 
 gboolean
 gtk_plot_canvas_export_ps_with_size             (GtkPlotCanvas *canvas,
                                                  char *file_name,
-                                                 gint orient,
-                                                 gint epsflag,
-                                                 gint units,
+                                                 GtkPlotPageOrientation orient,
+                                                 gboolean epsflag,
+                                                 GtkPlotUnits units,
                                                  gint width,
                                                  gint height);
 

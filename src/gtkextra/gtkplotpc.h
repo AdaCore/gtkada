@@ -37,13 +37,13 @@ extern "C" {
 
 /* Page size */
 
-enum{
+typedef enum{
      GTK_PLOT_LETTER	,
      GTK_PLOT_LEGAL	,
      GTK_PLOT_A4	,
      GTK_PLOT_EXECUTIVE	,
      GTK_PLOT_CUSTOM	
-};
+} GtkPlotPageSize;
 
 #define GTK_PLOT_LETTER_W 	612   /* Width and Height in ps points */
 #define GTK_PLOT_LETTER_H 	792
@@ -59,18 +59,18 @@ enum{
 
 
 /* Page orientation */
-enum{
+typedef enum{
      GTK_PLOT_PORTRAIT	,
      GTK_PLOT_LANDSCAPE	
-};
+} GtkPlotPageOrientation;
 
 /* Size units */
-enum{
+typedef enum{
      GTK_PLOT_PSPOINTS	,
      GTK_PLOT_MM	,
      GTK_PLOT_CM	,
      GTK_PLOT_INCHES	
-};
+} GtkPlotUnits;
 
 
 typedef struct _GtkPlotPC GtkPlotPC;
@@ -85,6 +85,11 @@ struct _GtkPlotPoint
 struct _GtkPlotPC
 {
    GtkObject object;
+
+   gdouble width, height; /* viewport */
+   GdkColor color;
+
+   gint init_count;
 };
 
 
@@ -96,12 +101,19 @@ struct _GtkPlotPCClass
 
    void  (* leave)					(GtkPlotPC *pc);
 
+   void  (* set_viewport)				(GtkPlotPC *pc,
+							 gdouble w, gdouble h);
+
    void  (* gsave)					(GtkPlotPC *pc);
 
    void  (* grestore)					(GtkPlotPC *pc);
 
    void  (* clip)					(GtkPlotPC *pc,
 							 const GdkRectangle *area);
+   void  (* clip_mask)					(GtkPlotPC *pc,
+							 gdouble x,
+							 gdouble y,
+							 const GdkBitmap *mask);
 
    void  (* set_color)                     		(GtkPlotPC *pc,
                                                  	const GdkColor *color);
@@ -151,7 +163,7 @@ struct _GtkPlotPCClass
                                                  	 gdouble height); 
 
    void  (* set_font)					(GtkPlotPC *pc,
-							 const gchar *font,
+							 GtkPSFont *psfont,
 							 gint height);
 
    void  (* draw_string)   	                        (GtkPlotPC *pc,
@@ -161,12 +173,23 @@ struct _GtkPlotPCClass
 							 const GdkColor *bg,
 							 gboolean transparent,
 							 gint border,
+							 gint border_space,
 							 gint border_width,
 							 gint shadow_width,
 							 const gchar *font,
 							 gint height,
 							 GtkJustification just,
 							 const gchar *text);
+
+   void  (* draw_pixmap)   	                        (GtkPlotPC *pc,
+							 GdkPixmap *pixmap,
+							 GdkBitmap *mask,
+                                   	             	 gint xsrc, gint ysrc,
+                                   	             	 gint xdest, gint ydest,
+                                   	             	 gint width, 
+                                                         gint height, 
+                                   	             	 gdouble scale_x, 
+                                                         gdouble scale_y); 
 };
 
 GtkType    gtk_plot_pc_get_type				(void);
@@ -175,6 +198,8 @@ GtkObject *gtk_plot_pc_new				(void);
 gboolean gtk_plot_pc_init				(GtkPlotPC *pc);
 
 void gtk_plot_pc_leave					(GtkPlotPC *pc);
+void gtk_plot_pc_set_viewport				(GtkPlotPC *pc,
+							 gdouble w, gdouble h);
 
 void gtk_plot_pc_gsave					(GtkPlotPC *pc);
 
@@ -182,6 +207,10 @@ void gtk_plot_pc_grestore				(GtkPlotPC *pc);
 
 void gtk_plot_pc_clip					(GtkPlotPC *pc,
 							 GdkRectangle *area);
+void gtk_plot_pc_clip_mask				(GtkPlotPC *pc,
+							 gdouble x, 
+							 gdouble y, 
+							 GdkBitmap *mask);
 
 void gtk_plot_pc_set_color                     		(GtkPlotPC *pc,
                                                    	 GdkColor *color);
@@ -231,7 +260,7 @@ void gtk_plot_pc_draw_circle 	                        (GtkPlotPC *pc,
                                                  	 gdouble size); 
 
 void gtk_plot_pc_set_font				(GtkPlotPC *pc,
-							 gchar *font,
+							 GtkPSFont *psfont,
 							 gint height);
 
 void gtk_plot_pc_draw_string   	                	(GtkPlotPC *pc,
@@ -241,6 +270,7 @@ void gtk_plot_pc_draw_string   	                	(GtkPlotPC *pc,
 							 const GdkColor *bg,
 							 gboolean transparent,
 							 gint border,
+							 gint border_space,
 							 gint border_width,
 							 gint shadow_width,
 							 const gchar *font,
@@ -248,6 +278,15 @@ void gtk_plot_pc_draw_string   	                	(GtkPlotPC *pc,
 							 GtkJustification just,
 							 const gchar *text);
 
+void  gtk_plot_pc_draw_pixmap   	                (GtkPlotPC *pc,
+							 GdkPixmap *pixmap,
+							 GdkBitmap *mask,
+                                   	             	 gint xsrc, gint ysrc,
+                                   	             	 gint xdest, gint ydest,
+                                   	             	 gint width,
+                                   	             	 gint height, 
+                                   	             	 gdouble scale_x,
+                                   	             	 gdouble scale_y); 
 
 #ifdef __cplusplus
 }

@@ -70,10 +70,8 @@ gtk_combobox_class_init (GtkComboBoxClass * klass)
 static void
 gtk_combobox_destroy (GtkObject * combobox)
 {
-  if (GTK_COMBO_BOX (combobox)->popwin) {
-    gtk_widget_destroy (GTK_COMBO_BOX (combobox)->popwin);
-    GTK_COMBO_BOX (combobox)->popwin = NULL;
-  }
+  gtk_widget_destroy (GTK_COMBO_BOX (combobox)->popwin);
+  gtk_widget_unref (GTK_COMBO_BOX (combobox)->popwin);
 
   if (GTK_OBJECT_CLASS (parent_class)->destroy)
     (*GTK_OBJECT_CLASS (parent_class)->destroy) (combobox);
@@ -96,7 +94,10 @@ gtk_combobox_get_pos (GtkComboBox * combobox, gint * x, gint * y, gint * height,
   widget = GTK_WIDGET(combobox);
   popwin = GTK_BIN (combobox->popwin);
 
-  gdk_window_get_origin (GTK_BUTTON(combobox->button)->event_window, x, y); 
+  gdk_window_get_origin (combobox->button->window, x, y);
+  *x += combobox->button->allocation.x;
+  *y += combobox->button->allocation.y;
+
   real_height = combobox->button->allocation.height;
   real_width = combobox->button->allocation.width + combobox->arrow->allocation.width;
 
@@ -121,9 +122,9 @@ gtk_combobox_get_pos (GtkComboBox * combobox, gint * x, gint * y, gint * height,
        *x - real_width > avail_width)
       	      *x = *x + real_width - (work_width + child_requisition.width);
 
-
   *width = work_width + child_requisition.width;
   *height = work_height + child_requisition.height;
+  
 }
 
 
@@ -131,25 +132,12 @@ static void
 gtk_combobox_popup_display (GtkComboBox * combobox)
 {
   gint height, width, x, y;
-  gint old_width, old_height;
-  GtkWindow* toplevel;
-
-
-  old_width = combobox->popwin->allocation.width;
-  old_height  = combobox->popwin->allocation.height;
-
 
   gtk_combobox_get_pos (combobox, &x, &y, &height, &width);
 
-  gtk_widget_set_uposition (combobox->popwin, x, y);
+  gtk_window_move(GTK_WINDOW(combobox->popwin), x, y);
   gtk_widget_set_usize (combobox->popwin, width, height);
-  gtk_widget_realize (combobox->popwin);
-  gdk_window_resize (combobox->popwin->window, width, height);
   gtk_widget_show (combobox->popwin);
-
-  toplevel = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (combobox)));
-  gtk_window_set_transient_for (GTK_WINDOW (combobox->popwin), toplevel);
-  
 
   gtk_grab_add (combobox->popwin);
   gdk_pointer_grab (combobox->popwin->window, TRUE,
@@ -219,10 +207,9 @@ gtk_combobox_init (GtkComboBox * combobox)
 
                        
   combobox->popwin = gtk_window_new (GTK_WINDOW_POPUP);
-
   gtk_widget_ref (combobox->popwin);
+  gtk_window_set_resizable (GTK_WINDOW (combobox->popwin), FALSE);
   gtk_window_set_policy (GTK_WINDOW (combobox->popwin), 1, 1, 0);
-
   gtk_widget_set_events (combobox->popwin, GDK_KEY_PRESS_MASK);
  
   event_box = gtk_event_box_new ();

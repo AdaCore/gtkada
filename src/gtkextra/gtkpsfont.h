@@ -72,33 +72,52 @@ extern "C" {
    "ZapfDingbats",
 */
 
-
 typedef struct _GtkPSFont GtkPSFont;
 
 struct _GtkPSFont {
   gchar *fontname;
   gchar *psname;
   gchar *family;
-  gchar *xfont[2];
+  gchar *pango_description;
+  gchar *i18n_latinfamily;
   gboolean italic;
   gboolean bold;
+  gboolean vertical;
 };
 
 gint		gtk_psfont_init			();
 void		gtk_psfont_unref		();
-GtkPSFont* 	gtk_psfont_get_font 		(const gchar *name);
-GdkFont*	gtk_psfont_get_gdkfont 		(const gchar *name, gint height);
-gchar *		gtk_psfont_get_psfontname	(const gchar *name);
+GtkPSFont* 	gtk_psfont_get_by_name 		(const gchar *name);
+GtkPSFont* 	gtk_psfont_get_by_family        (const gchar *family, 
+                                                 gboolean italic, 
+                                                 gboolean bold);
+GdkFont*	gtk_psfont_get_gdkfont 		(GtkPSFont *font, gint height);
+PangoFontDescription*	gtk_psfont_get_font_description (GtkPSFont *font, 
+						         gint height);
+const gchar *	gtk_psfont_get_psfontname	(GtkPSFont *psfont);
 void		gtk_psfont_add_font		(const char *fontname,
 						 const gchar *psname,
 						 const gchar *family,
-						 gchar *x_string[],
-                                                 gboolean italic,
+						 const gchar *pango_string,
+						 gboolean italic,
                                                  gboolean bold);
-GtkPSFont * 	gtk_psfont_find_by_family       (const gchar *name, 
-                                                 gboolean italic, 
-                                                 gboolean bold);
+void		gtk_psfont_add_i18n_font	(const char *fontname,
+						 const gchar *psname,
+						 const gchar *family,
+						 const gchar *i18n_latinfamily,
+						 const gchar *pango_string,
+						 gboolean italic,
+                                                 gboolean bold,
+						 gboolean vertical);
 void 		gtk_psfont_get_families		(GList **family, gint *numf);
+void 		gtk_psfont_get_char_size	(GtkPSFont *psfont,
+                        			 GdkFont *font,
+                        			 GdkFont *latin_font,
+                        			 GdkWChar wc,
+                         			 gint *width,
+                        			 gint *ascent,
+                        			 gint *descent);
+
 
 #ifdef __cplusplus
 }

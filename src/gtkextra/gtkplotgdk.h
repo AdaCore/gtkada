@@ -54,6 +54,8 @@ struct _GtkPlotGdk
 struct _GtkPlotGdkClass
 {
    GtkPlotPCClass parent_class;
+
+   void (* set_drawable) 	(GtkPlotGdk *gdk, GdkDrawable *drawable);
 };
 
 GtkType    gtk_plot_gdk_get_type			(void);

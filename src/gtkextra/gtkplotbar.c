@@ -26,6 +26,8 @@
 #include "gtkplot3d.h"
 #include "gtkplotdata.h"
 #include "gtkplotbar.h"
+#include "gtkplotpc.h"
+#include "gtkplotps.h"
 #include "gtkpsfont.h"
 
 static void gtk_plot_bar_class_init 	(GtkPlotBarClass *klass);
@@ -41,6 +43,7 @@ static void gtk_plot_bar_draw_symbol	(GtkPlotData *data,
                                          gdouble da);
 static void gtk_plot_bar_draw_legend	(GtkPlotData *data, 
 					 gint x, gint y);
+static void gtk_plot_bar_clone          (GtkPlotData *data, GtkPlotData *copy);
 
 static gint roundint (gdouble x);
 
@@ -84,6 +87,7 @@ gtk_plot_bar_class_init (GtkPlotBarClass *klass)
   widget_class = (GtkWidgetClass *) klass;
   data_class = (GtkPlotDataClass *) klass;
 
+  data_class->clone = gtk_plot_bar_clone;
   data_class->draw_legend = gtk_plot_bar_draw_legend;
   data_class->draw_symbol = gtk_plot_bar_draw_symbol;
 }
@@ -131,6 +135,15 @@ gtk_plot_bar_construct(GtkPlotBar *bar, GtkOrientation orientation)
 }
 
 static void
+gtk_plot_bar_clone(GtkPlotData *data, GtkPlotData *copy)
+{
+  GTK_PLOT_DATA_CLASS(parent_class)->clone(data, copy);
+
+  GTK_PLOT_BAR(copy)->orientation = GTK_PLOT_BAR(data)->orientation;
+  GTK_PLOT_BAR(copy)->width = GTK_PLOT_BAR(data)->width;
+}
+
+static void
 gtk_plot_bar_draw_symbol(GtkPlotData *dataset, 
                          gdouble x, gdouble y, gdouble z, gdouble a,
                          gdouble dx, gdouble dy, gdouble dz, gdouble da)
@@ -140,6 +153,7 @@ gtk_plot_bar_draw_symbol(GtkPlotData *dataset,
   GdkRectangle area, clip_area;
   gdouble px, py, px0, py0;
   gdouble x1 = 0.0, y1 = 0.0, width = 0.0, height = 0.0;
+  gdouble ex, ey;
 
   bar = GTK_PLOT_BAR(dataset);
   plot = dataset->plot;
@@ -162,16 +176,26 @@ gtk_plot_bar_draw_symbol(GtkPlotData *dataset,
       case GTK_ORIENTATION_VERTICAL:    
         gtk_plot_get_pixel(plot, x-bar->width, y, &px, &py);
         gtk_plot_get_pixel(plot, x+bar->width, MAX(0., plot->ymin), &px0, &py0);
+        if(dataset->show_yerrbars)
+          gtk_plot_get_pixel(plot, x, y + dy, &ex, &ey);
         break;
       case GTK_ORIENTATION_HORIZONTAL:    
         gtk_plot_get_pixel(plot, y, x+bar->width, &px, &py);
-        gtk_plot_get_pixel(plot, MAX(0., plot->xmin), x-bar->width, &px0, &py0);
+        gtk_plot_get_pixel(plot, MAX(0., plot->xmin), x-bar->width, &px0, &py0);        if(dataset->show_xerrbars)
+          gtk_plot_get_pixel(plot, y + dy, x, &ex, &ey);
         break;
     }
     x1 = MIN(px, px0);
     y1 = MIN(py, py0);
-    width = fabs(px - px0);
-    height = fabs(py0 - py);
+    if(GTK_IS_PLOT_PS(plot->pc)){
+      width = fabs(px - px0);
+      height = fabs(py0 - py);
+    }
+    else
+    {
+      width = abs(roundint(px - px0));
+      height = abs(roundint(py0 - py));
+    }
   
     if(dataset->symbol.symbol_style == GTK_PLOT_SYMBOL_OPAQUE){
       gtk_plot_pc_set_color(plot->pc, &plot->background);
@@ -182,6 +206,8 @@ gtk_plot_bar_draw_symbol(GtkPlotData *dataset,
   
     gtk_plot_pc_set_lineattr (plot->pc, dataset->symbol.border.line_width, 
                               0, 0, 0);
+    gtk_plot_pc_set_dash (plot->pc, 0, 0, 0); 
+
     if(dataset->symbol.symbol_style == GTK_PLOT_SYMBOL_FILLED){
       gtk_plot_pc_set_color(plot->pc, &dataset->symbol.color);
       gtk_plot_pc_draw_rectangle (plot->pc,
@@ -194,6 +220,14 @@ gtk_plot_bar_draw_symbol(GtkPlotData *dataset,
                                 FALSE,
                                 x1, y1, width, height);
   
+    if(dataset->show_yerrbars){
+      gtk_plot_pc_draw_line(plot->pc, ex, py, ex, ey);
+      gtk_plot_pc_draw_line(plot->pc, px, ey, px0, ey);
+    }
+    if(dataset->show_xerrbars){
+      gtk_plot_pc_draw_line(plot->pc, px, ey, ex, ey);
+      gtk_plot_pc_draw_line(plot->pc, ex, py, ex, py0);
+    }
   }
 
   gtk_plot_pc_clip(plot->pc, NULL);
@@ -242,6 +276,7 @@ gtk_plot_bar_draw_legend(GtkPlotData *data, gint x, gint y)
 
   gtk_plot_draw_text(plot, legend);
 
+
   if(data->symbol.symbol_style == GTK_PLOT_SYMBOL_OPAQUE){
     gtk_plot_pc_set_color(plot->pc, &plot->background);
     gtk_plot_pc_draw_rectangle(plot->pc, TRUE, 
@@ -251,6 +286,7 @@ gtk_plot_bar_draw_legend(GtkPlotData *data, gint x, gint y)
   }
 
   gtk_plot_pc_set_lineattr (plot->pc, data->symbol.border.line_width, 0, 0, 0);
+  gtk_plot_pc_set_dash(plot->pc, 0, 0, 0);
 
   if(data->symbol.symbol_style == GTK_PLOT_SYMBOL_FILLED){
     gtk_plot_pc_set_color(plot->pc, &data->symbol.color);

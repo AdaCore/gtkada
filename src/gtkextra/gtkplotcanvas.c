@@ -22,11 +22,14 @@
 #include <string.h>
 #include <math.h>
 #include <gtk/gtk.h>
+#include "gtkplotpc.h"
+#include "gtkplotgdk.h"
+#include "gtkplotps.h"
 #include "gtkplot.h"
 #include "gtkplot3d.h"
 #include "gtkplotdata.h"
 #include "gtkplotcanvas.h"
-#include "gtkplotgdk.h"
+#include "gtkextra-marshal.h"
 
 #define DEFAULT_WIDTH 100
 #define DEFAULT_HEIGHT 150
@@ -63,8 +66,6 @@ static void gtk_plot_canvas_remove		(GtkContainer *container,
 						 GtkWidget *child);
 
 /* Drawing functions */
-static void gtk_plot_canvas_draw                (GtkWidget *widget, 
-                                                 GdkRectangle *area);
 static gint gtk_plot_canvas_expose              (GtkWidget *widget, 
                                                  GdkEventExpose *event);
 static void gtk_plot_canvas_create_pixmap       (GtkWidget *widget, 
@@ -74,8 +75,7 @@ static void gtk_plot_canvas_get_real_pixel      (GtkWidget *widget,
                                                  gdouble px, gdouble py,
                                                  gint *x, gint *y);
 static void draw_selection 			(GtkPlotCanvas *canvas, 
-                				 GdkRectangle area,
-                				 gboolean markers);
+                				 GdkRectangle area);
 static void draw_marker				(GtkPlotCanvas *canvas, 
 						 GdkGC *gc, gint x, gint y);
 static void gtk_plot_canvas_draw_text           (GtkPlotCanvas *canvas,
@@ -94,6 +94,9 @@ static gint roundint                            (gdouble x);
 
 /* Signals */
 
+extern void 
+_gtkextra_signal_emit(GtkObject *object, guint signal_id, ...);
+
 enum {
         SELECT_ITEM,
         MOVE_ITEM,
@@ -103,42 +106,6 @@ enum {
         CHANGED,
         LAST_SIGNAL
 };
-
-typedef gboolean (*GtkPlotCanvasSignal1) (GtkObject *object,
-                                          gpointer arg1, 
-					  gdouble arg2,
-					  gdouble arg3,
-                                    	  gpointer user_data);
-
-typedef gboolean (*GtkPlotCanvasSignal2) (GtkObject *object,
-                                          gpointer arg1, 
-					  gpointer arg2,
-                                    	  gpointer user_data);
-
-typedef gboolean (*GtkPlotCanvasSignal3) (GtkObject *object,
-                                          gdouble arg1, 
-                                          gdouble arg2, 
-                                          gdouble arg3, 
-                                          gdouble arg4, 
-                                    	  gpointer user_data);
-
-static void
-gtk_plot_canvas_marshal_move_resize             (GtkObject *object,
-                                                 GtkSignalFunc func,
-                                                 gpointer func_data,
-                                                 GtkArg * args);
-
-static void
-gtk_plot_canvas_marshal_select_item             (GtkObject *object,
-                                                 GtkSignalFunc func,
-                                                 gpointer func_data,
-                                                 GtkArg * args);
-
-static void
-gtk_plot_canvas_marshal_select		        (GtkObject *object,
-                                                 GtkSignalFunc func,
-                                                 gpointer func_data,
-                                                 GtkArg * args);
 
 static GtkFixedClass *parent_class = NULL;
 static guint canvas_signals[LAST_SIGNAL] = {0};
@@ -167,29 +134,38 @@ gtk_plot_canvas_get_type (void)
   return plot_canvas_type;
 }
 
-GtkType
+static GtkPlotCanvasChild*
+gtk_plot_canvas_child_copy (GtkPlotCanvasChild *child)
+{
+  GtkPlotCanvasChild *new_child;
+
+  g_return_val_if_fail (child != NULL, NULL);
+
+  new_child = gtk_plot_canvas_child_new(child->type);
+
+  *new_child = *child;
+
+  return new_child;
+}
+
+static void
+gtk_plot_canvas_child_free (GtkPlotCanvasChild *child)
+{
+  g_return_if_fail (child != NULL);
+
+  g_free (child);
+}
+
+GType
 gtk_plot_canvas_child_get_type (void)
 {
-  static GtkType plot_canvas_child_type = 0;
+  static GType canvas_child_type;
 
-  if (!plot_canvas_child_type)
-    {
-      GtkTypeInfo plot_canvas_child_info =
-      {
-       "GtkPlotCanvasChild",
-       0,
-       0,
-       (GtkClassInitFunc) NULL,
-       (GtkObjectInitFunc) NULL,
-       /* reserved 1*/ NULL,
-        /* reserved 2 */ NULL,
-        (GtkClassInitFunc) NULL,
-      };
-
-      plot_canvas_child_type = gtk_type_unique (GTK_TYPE_BOXED,
-                                              &plot_canvas_child_info);
-    }
-  return plot_canvas_child_type;
+  if(!canvas_child_type)
+  {
+    canvas_child_type = g_boxed_type_register_static("GtkPlotCanvasChild", (GBoxedCopyFunc)gtk_plot_canvas_child_copy, (GBoxedFreeFunc)gtk_plot_canvas_child_free);
+  }
+  return canvas_child_type;
 }
 
 static void
@@ -208,18 +184,18 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *klass)
   canvas_signals[SELECT_ITEM] =
     gtk_signal_new ("select_item",
                     GTK_RUN_LAST,
-                    object_class->type,
+		    GTK_CLASS_TYPE(object_class),
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, select_item),
-                    gtk_plot_canvas_marshal_select_item,
-                    GTK_TYPE_BOOL, 2, GTK_TYPE_GDK_EVENT, 
+                    gtkextra_BOOLEAN__BOXED_BOXED,
+                    GTK_TYPE_BOOL, 2, GDK_TYPE_EVENT, 
                     GTK_TYPE_PLOT_CANVAS_CHILD);
 
   canvas_signals[MOVE_ITEM] =
     gtk_signal_new ("move_item",
                     GTK_RUN_LAST,
-                    object_class->type,
+		    GTK_CLASS_TYPE(object_class),
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, move_item),
-                    gtk_plot_canvas_marshal_move_resize,
+                    gtkextra_BOOLEAN__BOXED_DOUBLE_DOUBLE,
                     GTK_TYPE_BOOL, 3, GTK_TYPE_PLOT_CANVAS_CHILD, 
                     GTK_TYPE_DOUBLE,
                     GTK_TYPE_DOUBLE);
@@ -227,9 +203,9 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *klass)
   canvas_signals[RESIZE_ITEM] =
     gtk_signal_new ("resize_item",
                     GTK_RUN_LAST,
-                    object_class->type,
+		    GTK_CLASS_TYPE(object_class),
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, resize_item),
-                    gtk_plot_canvas_marshal_move_resize,
+                    gtkextra_BOOLEAN__BOXED_DOUBLE_DOUBLE,
                     GTK_TYPE_BOOL, 3, GTK_TYPE_PLOT_CANVAS_CHILD,
                     GTK_TYPE_DOUBLE,
                     GTK_TYPE_DOUBLE);
@@ -237,18 +213,18 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *klass)
   canvas_signals[DELETE_ITEM] =
     gtk_signal_new ("delete_item",
                     GTK_RUN_LAST,
-                    object_class->type,
+		    GTK_CLASS_TYPE(object_class),
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, delete_item),
-                    gtk_marshal_BOOL__POINTER,
+                    gtkextra_BOOLEAN__POINTER,
                     GTK_TYPE_BOOL, 1,  
                     GTK_TYPE_PLOT_CANVAS_CHILD);
 
   canvas_signals[SELECT_REGION] =
     gtk_signal_new ("select_region",
                     GTK_RUN_LAST,
-                    object_class->type,
+		    GTK_CLASS_TYPE(object_class),
                     GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, select_region),
-                    gtk_plot_canvas_marshal_select,
+                    gtkextra_VOID__DOUBLE_DOUBLE_DOUBLE_DOUBLE,
                     GTK_TYPE_NONE, 4, 
                     GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE,
                     GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
@@ -256,17 +232,15 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *klass)
   canvas_signals[CHANGED] =
     gtk_signal_new("changed",
                    GTK_RUN_LAST,
-                   object_class->type,
+		   GTK_CLASS_TYPE(object_class),
                    GTK_SIGNAL_OFFSET (GtkPlotCanvasClass, changed),
-                   gtk_marshal_NONE__NONE,
+                   gtkextra_VOID__VOID,
                    GTK_TYPE_NONE, 0);
 
-  gtk_object_class_add_signals (object_class, canvas_signals, LAST_SIGNAL);
 
   object_class->destroy = gtk_plot_canvas_destroy;
 
   widget_class->map = gtk_plot_canvas_map;
-  widget_class->draw = gtk_plot_canvas_draw;
   widget_class->expose_event = gtk_plot_canvas_expose;
   widget_class->size_request = gtk_plot_canvas_size_request;
   widget_class->focus_in_event = gtk_plot_canvas_focus_in;
@@ -285,62 +259,6 @@ gtk_plot_canvas_class_init (GtkPlotCanvasClass *klass)
 }
 
 static void
-gtk_plot_canvas_marshal_move_resize           (GtkObject *object,
-                                               GtkSignalFunc func,
-                                               gpointer func_data,
-                                               GtkArg * args)
-{
-  GtkPlotCanvasSignal1 rfunc;
-  gboolean *veto;
-  veto = GTK_RETLOC_BOOL (args[3]);
-
-  rfunc = (GtkPlotCanvasSignal1) func;
-
-  *veto = (*rfunc) (object, 
-                    GTK_VALUE_POINTER (args[0]),
-                    GTK_VALUE_DOUBLE (args[1]),
-                    GTK_VALUE_DOUBLE (args[2]),
-                    func_data);
-}
-
-static void
-gtk_plot_canvas_marshal_select_item                   (GtkObject *object,
-                                                       GtkSignalFunc func,
-                                                       gpointer func_data,
-                                                       GtkArg * args)
-{
-  GtkPlotCanvasSignal2 rfunc;
-  gboolean *veto;
-  veto = GTK_RETLOC_BOOL (args[2]);
-
-  rfunc = (GtkPlotCanvasSignal2) func;
-
-  *veto = (*rfunc) (object, 
-                    GTK_VALUE_POINTER (args[0]),
-                    GTK_VALUE_POINTER (args[1]),
-                    func_data);
-}
-
-
-static void
-gtk_plot_canvas_marshal_select			      (GtkObject *object,
-                                                       GtkSignalFunc func,
-                                                       gpointer func_data,
-                                                       GtkArg * args)
-{
-  GtkPlotCanvasSignal3 rfunc;
-
-  rfunc = (GtkPlotCanvasSignal3) func;
-
-  (*rfunc) (object, 
-            GTK_VALUE_DOUBLE (args[0]),
-            GTK_VALUE_DOUBLE (args[1]),
-            GTK_VALUE_DOUBLE (args[2]),
-            GTK_VALUE_DOUBLE (args[3]),
-            func_data);
-}
-
-static void
 gtk_plot_canvas_init (GtkPlotCanvas *plot_canvas)
 {
   GtkWidget *widget;
@@ -355,6 +273,7 @@ gtk_plot_canvas_init (GtkPlotCanvas *plot_canvas)
   gtk_widget_set_events (widget, gtk_widget_get_events(widget)|
                          GRAPH_MASK);
 
+  plot_canvas->freeze_count = 0;
   plot_canvas->cursor = gdk_cursor_new(GDK_TOP_LEFT_ARROW);
 
   plot_canvas->num_plots = 0;
@@ -366,7 +285,7 @@ gtk_plot_canvas_init (GtkPlotCanvas *plot_canvas)
   plot_canvas->magnification = 1.;
 
   plot_canvas->show_grid = FALSE;
-  plot_canvas->grid_step = 20;
+  plot_canvas->grid_step = 20.;
   plot_canvas->grid.line_style = GTK_PLOT_LINE_SOLID;
   plot_canvas->grid.line_width = 0;
 
@@ -390,9 +309,35 @@ gtk_plot_canvas_init (GtkPlotCanvas *plot_canvas)
   plot_canvas->pixmap_height = DEFAULT_HEIGHT;
 
   gtk_psfont_init();
-  plot_canvas->pc = GTK_PLOT_PC(gtk_plot_gdk_new(NULL));
+
+  plot_canvas->pc = NULL;
+  gtk_plot_canvas_set_pc(plot_canvas, NULL);
 
   plot_canvas->pixmap = NULL;
+}
+
+void
+gtk_plot_canvas_set_pc(GtkPlotCanvas *canvas, GtkPlotPC *pc)
+{
+  GList *list;
+
+  if(canvas->pc)
+    gtk_object_unref(GTK_OBJECT(canvas->pc));
+
+  if(!pc){
+    canvas->pc = GTK_PLOT_PC(gtk_plot_gdk_new(NULL));
+    gtk_object_ref(GTK_OBJECT(canvas->pc));
+    gtk_object_sink(GTK_OBJECT(canvas->pc));
+  } else {
+    canvas->pc = pc;
+    gtk_object_ref(GTK_OBJECT(pc));
+    gtk_object_sink(GTK_OBJECT(pc));
+  }
+
+  if(canvas->pc && GTK_IS_PLOT_GDK(canvas->pc)){
+       GTK_PLOT_GDK(canvas->pc)->drawable = canvas->pixmap;
+  }
+  gtk_plot_pc_set_viewport(canvas->pc, canvas->pixmap_width, canvas->pixmap_height);
 }
 
 GtkWidget*
@@ -414,13 +359,31 @@ gtk_plot_canvas_construct(GtkPlotCanvas *plot_canvas,
 {
   gdouble m = magnification;
 
+  plot_canvas->transparent = TRUE;
+
   plot_canvas->width = width;
   plot_canvas->height = height;
   plot_canvas->pixmap_width = roundint(width * m);
   plot_canvas->pixmap_height = roundint(height * m);
   gtk_plot_canvas_set_magnification(plot_canvas, m);
+
+  gtk_fixed_set_has_window (GTK_FIXED(plot_canvas), TRUE);
+
+
 }
 
+void
+gtk_plot_canvas_freeze(GtkPlotCanvas *canvas)
+{
+  canvas->freeze_count++;
+}
+
+void
+gtk_plot_canvas_thaw(GtkPlotCanvas *canvas)
+{
+  if(canvas->freeze_count == 0) return;
+  canvas->freeze_count--;
+}
 
 static void
 gtk_plot_canvas_destroy (GtkObject *object)
@@ -447,9 +410,16 @@ gtk_plot_canvas_destroy (GtkObject *object)
        if(text->font) g_free(text->font); 
        if(text->text) g_free(text->text); 
     }
-
-    if(child->data)
-         g_free(child->data);
+    if(child->type == GTK_PLOT_CANVAS_PIXMAP){
+       GdkPixmap *pixmap;
+     
+       pixmap = (GdkPixmap *)child->data;
+       if (pixmap)
+         gdk_pixmap_unref(pixmap); 
+    } else {
+       if(child->data)
+           g_free(child->data);
+    }
 
     g_free(child);
 
@@ -458,9 +428,16 @@ gtk_plot_canvas_destroy (GtkObject *object)
 
     list = plot_canvas->childs;
   }
+  plot_canvas->childs = NULL;
 
-
-  gtk_object_destroy(GTK_OBJECT(plot_canvas->pc));
+  if( plot_canvas->cursor ){
+     gdk_cursor_destroy(plot_canvas->cursor);
+     plot_canvas->cursor = NULL;
+  }
+  if( plot_canvas->pc ){
+     gtk_object_unref(GTK_OBJECT(plot_canvas->pc));
+     plot_canvas->pc = NULL;
+  }
 
   if (GTK_OBJECT_CLASS (parent_class)->destroy)
     (*GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -491,30 +468,6 @@ gtk_plot_canvas_remove(GtkContainer *container, GtkWidget *child)
   GTK_CONTAINER_CLASS(parent_class)->remove(container, child);
 }
 
-static void
-gtk_plot_canvas_draw (GtkWidget *widget, GdkRectangle *area)
-{
-  GtkPlotCanvas *canvas;
-
-  canvas = GTK_PLOT_CANVAS(widget);
-
-  if(!GTK_WIDGET_REALIZED(widget)) return;
-  if(!canvas->pixmap) return;
-
-  GTK_WIDGET_CLASS(parent_class)->draw(widget, area);
-
-  gtk_plot_canvas_set_plots_pixmap(canvas);
-
-  gtk_plot_canvas_paint(canvas);
-
-  gdk_draw_pixmap(widget->window,
-                  widget->style->fg_gc[GTK_STATE_NORMAL],
-                  canvas->pixmap,
-                  0, 0,
-                  0, 0,
-                  -1, -1);
-}
-
 void
 gtk_plot_canvas_paint (GtkPlotCanvas *canvas)
 {
@@ -525,13 +478,29 @@ gtk_plot_canvas_paint (GtkPlotCanvas *canvas)
   widget = GTK_WIDGET(canvas);
 
   if(GTK_WIDGET_REALIZED(widget) && !canvas->pixmap) return;
+  if(canvas->freeze_count > 0) return;
+
+  if(!gtk_plot_pc_init(canvas->pc)) return;
 
   gtk_plot_pc_gsave(canvas->pc);
-  gtk_plot_pc_set_color(canvas->pc, &canvas->background);
 
-  gtk_plot_pc_draw_rectangle(canvas->pc,
-                            TRUE,
-                            0,0,canvas->pixmap_width, canvas->pixmap_height);
+  if(!GTK_IS_PLOT_PS(canvas->pc) || !canvas->transparent){
+    if(canvas->transparent){
+      GdkColor white;
+      gdk_color_white(gtk_widget_get_colormap(GTK_WIDGET(canvas)), &white);
+      gtk_plot_pc_set_color(canvas->pc, &white);
+    } else
+      gtk_plot_pc_set_color(canvas->pc, &canvas->background);
+    gtk_plot_pc_draw_rectangle(canvas->pc,
+                              TRUE,
+                              0,0,canvas->pixmap_width, canvas->pixmap_height);
+  }
+
+  if(!GTK_IS_PLOT_PS(canvas->pc) || !canvas->transparent){
+    gtk_plot_pc_draw_rectangle(canvas->pc,
+                              TRUE,
+                              0,0,canvas->pixmap_width, canvas->pixmap_height);
+  }
 
   gtk_plot_canvas_draw_grid(canvas);
   plots = canvas->plots;
@@ -547,6 +516,7 @@ gtk_plot_canvas_paint (GtkPlotCanvas *canvas)
       plot->magnification = canvas->magnification;
 
       gtk_plot_set_drawable(plot, canvas->pixmap);
+
       gtk_plot_paint(GTK_PLOT(plot));
 
       plot->pc = pc;
@@ -565,6 +535,7 @@ gtk_plot_canvas_paint (GtkPlotCanvas *canvas)
    }
 
   gtk_plot_pc_grestore(canvas->pc);
+  gtk_plot_pc_leave(canvas->pc);
 }
 
 void
@@ -573,18 +544,22 @@ gtk_plot_canvas_refresh(GtkPlotCanvas *canvas)
   if(!GTK_WIDGET_REALIZED(GTK_WIDGET(canvas))) return;
   if(!canvas->pixmap) return;
 
-  gdk_draw_pixmap(GTK_WIDGET(canvas)->window,
+  gdk_draw_drawable(GTK_WIDGET(canvas)->window,
                   GTK_WIDGET(canvas)->style->fg_gc[GTK_STATE_NORMAL],
                   canvas->pixmap,
                   0, 0,
                   0, 0,
                   -1, -1);
+
+  if(canvas->state == GTK_STATE_SELECTED){
+    draw_selection(canvas, canvas->drag_area); 
+  }
 }
 
 static void
 gtk_plot_canvas_draw_grid(GtkPlotCanvas *canvas)
 {
-  gint x, y;
+  gdouble x, y;
 
   if(!canvas->pixmap) return;
   if(!canvas->show_grid) return;
@@ -594,10 +569,12 @@ gtk_plot_canvas_draw_grid(GtkPlotCanvas *canvas)
   gtk_plot_canvas_set_line_attributes(canvas, canvas->grid);
 
   for(x = 0; x < canvas->pixmap_width; x += canvas->grid_step)
-      gtk_plot_pc_draw_line(canvas->pc, x, 0, x, canvas->pixmap_height);
+      gtk_plot_pc_draw_line(canvas->pc, 
+                            roundint(x), 0, roundint(x), canvas->pixmap_height);
 
   for(y = 0; y < canvas->pixmap_height; y += canvas->grid_step)
-      gtk_plot_pc_draw_line(canvas->pc, 0, y, canvas->pixmap_width, y);
+      gtk_plot_pc_draw_line(canvas->pc, 
+                            0, roundint(y), canvas->pixmap_width, roundint(y));
 }
 
 static void
@@ -633,8 +610,12 @@ gtk_plot_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
   gint x, y;
   gint new_x, new_y;
   gint new_width, new_height;
-  gint cursor;
+  gint cursor = GDK_TOP_LEFT_ARROW;
   gint pivot_x, pivot_y;
+  gdouble fx, fy, fz, fa;
+  gdouble fdx, fdy, fdz, fda;
+  gchar *label;
+  gboolean error;
 
   canvas = GTK_PLOT_CANVAS(widget);
   gtk_widget_get_pointer(widget, &x, &y);
@@ -649,6 +630,8 @@ gtk_plot_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
 
   if(canvas->action == GTK_PLOT_CANVAS_ACTION_INACTIVE) 
        cursor = GDK_TOP_LEFT_ARROW;
+  else if(canvas->action == GTK_PLOT_CANVAS_ACTION_DRAG) 
+       cursor = GDK_FLEUR;
   else
        switch(canvas->drag_point){
             case GTK_PLOT_CANVAS_TOP_LEFT: 
@@ -714,14 +697,74 @@ gtk_plot_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
        if(canvas->active_item.flags & GTK_PLOT_CANVAS_CAN_MOVE){
          gint dx, dy;
 
-         draw_selection(canvas, canvas->drag_area, TRUE);
+         if(canvas->active_item.type == GTK_PLOT_CANVAS_MARKER){
+           GtkPlotMarker *marker;
+           gboolean move = FALSE;
+           gint i;
+
+           marker = (GtkPlotMarker *)canvas->active_item.data;
+           for(i = 0; i < marker->data->num_points; i++){
+              gdouble px, py;
+	      gtk_plot_data_get_point(marker->data, i,
+	  			     &fx, &fy, &fz, &fa, &fdx, &fdy, &fdz, &fda,
+				     &label, &error); 
+              gtk_plot_get_pixel(marker->data->plot,
+                                 fx, fy,
+                                 &px, &py);
+             
+              if(fabs(x - px) <= DEFAULT_MARKER_SIZE && 
+                 fabs(y - py) <= DEFAULT_MARKER_SIZE) {
+                      move = TRUE;
+                      x = px;
+                      y = py;
+                      break;
+              }
+           }
+           if(!move) return TRUE;
+
+         } else if(canvas->active_item.type == GTK_PLOT_CANVAS_DATA){
+	   gboolean veto = FALSE;
+
+           draw_selection(canvas, canvas->drag_area);
+		
+	   gtk_plot_get_point(canvas->active_plot, x, y, &fx, &fy);
+
+           _gtkextra_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_ITEM],
+                           &canvas->active_item, fx, fy, &veto);
+
+           if(veto){
+              gtk_signal_emit (GTK_OBJECT(canvas), canvas_signals[CHANGED]);
+
+              gtk_plot_data_get_point(canvas->active_data, canvas->active_point,
+	    		             &fx, &fy, &fz, &fa, &fdx, &fdy, &fdz, &fda,
+			             &label, &error);
+
+              if(fx != canvas->active_x || fy != canvas->active_y){
+                canvas->active_x = fx;
+                canvas->active_y = fy;
+
+	        canvas->drag_x = x;
+	        canvas->drag_y = y;
+
+	        canvas->drag_area.x = x - 10;
+	        canvas->drag_area.y = y - 10;
+
+                canvas->active_item.allocation.x = x - 10;
+                canvas->active_item.allocation.y = y - 10;
+                canvas->active_item.allocation.width = 20;
+             }
+           }
+           draw_selection(canvas, canvas->drag_area);
+           return TRUE;
+         }
+         draw_selection(canvas, canvas->drag_area);
          canvas->pointer_x = x;
          canvas->pointer_y = y;
          dx = x - canvas->drag_x;
          dy = y - canvas->drag_y;
          area.x = canvas->active_item.allocation.x + dx; 
          area.y = canvas->active_item.allocation.y + dy;
-         draw_selection(canvas, area, TRUE);
+         draw_selection(canvas, area);
          canvas->drag_area = area;
        }
        break;
@@ -773,19 +816,19 @@ gtk_plot_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
 
                 canvas->pointer_x = x;
                 canvas->pointer_y = y;
-                draw_selection(canvas, canvas->drag_area, TRUE);
+                draw_selection(canvas, canvas->drag_area);
                 area.x = new_x;
                 area.y = new_y;
                 area.width = new_width;
                 area.height = new_height;
-                draw_selection(canvas, area, TRUE);
+                draw_selection(canvas, area);
                 canvas->drag_area = area;
 
        }
 
        break;
      case GTK_PLOT_CANVAS_ACTION_SELECTION:
-         draw_selection(canvas, canvas->drag_area, FALSE);
+         draw_selection(canvas, canvas->drag_area);
          canvas->pointer_x = x;
          canvas->pointer_y = y;
          area.x = MIN(canvas->pointer_x, canvas->drag_x); 
@@ -793,7 +836,7 @@ gtk_plot_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
          area.width = abs(x - canvas->drag_x);
          area.height = abs(y - canvas->drag_y);
          canvas->drag_area = area;
-         draw_selection(canvas, canvas->drag_area, FALSE);
+         draw_selection(canvas, canvas->drag_area);
  	 break;
      case GTK_PLOT_CANVAS_ACTION_INACTIVE:
      default:
@@ -887,6 +930,8 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
           active_item.type = child->type;
           active_item.state = GTK_STATE_SELECTED;
           active_item.flags = child->flags;
+          active_item.selection = child->selection;
+          active_item.mode = child->mode;
           state = GTK_STATE_SELECTED;
           new_selection = TRUE;
           new_pos = pos;
@@ -895,42 +940,6 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
       childs = childs->next;
     }
 
-/**********************************************************************/
-/*  text = canvas->text;
-
-  while(text)
-    {
-      child_text = (GtkPlotText *)text->data;
-      gtk_plot_canvas_get_pixel(GTK_PLOT_CANVAS(widget), 
-                                child_text->x, child_text->y,
-                                &tx, &ty);
-
-      gtk_plot_text_get_area(child_text->text,
-                             child_text->angle,
-			     child_text->justification,
-			     child_text->font,
-			     roundint(m * child_text->height), 
-                             &rx, &ry, &twidth, &theight); 
-
-      area.x = tx + rx;
-      area.y = ty + ry;
-      area.width = twidth;
-      area.height = theight;
-
-      if((pos = posible_selection(area, x, y)) != GTK_PLOT_CANVAS_OUT){ 
-          active_item.data = text->data;
-          active_item.allocation = area;
-          active_item.type = GTK_PLOT_CANVAS_TEXT;
-          active_item.state = GTK_STATE_SELECTED;
-          active_item.flags = GTK_PLOT_CANVAS_CAN_MOVE;
-          state = GTK_STATE_SELECTED;
-          new_selection = TRUE;
-          new_pos = pos;
-      }
-
-      text = text->next;
-    }
-*/
 /**********************************************************************/
   plots = canvas->plots;
   while(plots)
@@ -956,6 +965,14 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
 				     roundint(child_text->height * m),
                                      &rx, &ry, &twidth, &theight);
 
+              if(child_text->border != GTK_PLOT_BORDER_NONE){
+                 tx -= child_text->border_space;
+                 ty -= child_text->border_space;
+                 twidth += 2 * child_text->border_space;
+                 theight += 2 * child_text->border_space;
+              }
+
+
               area.x = tx + rx;
               area.y = ty + ry;
               area.width = twidth;
@@ -967,6 +984,8 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
                 active_item.type = GTK_PLOT_CANVAS_TITLE;
                 active_item.state = GTK_STATE_SELECTED;
                 active_item.flags = GTK_PLOT_CANVAS_CAN_MOVE;
+                active_item.selection = GTK_PLOT_CANVAS_SELECT_MARKERS;
+                active_item.mode = GTK_PLOT_CANVAS_SELECT_CLICK_2;
                 state = GTK_STATE_SELECTED;
                 click_plot = plot;
                 new_selection = TRUE;
@@ -1001,6 +1020,8 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
            active_item.type = GTK_PLOT_CANVAS_LEGENDS;
            active_item.state = GTK_STATE_SELECTED;
            active_item.flags = GTK_PLOT_CANVAS_CAN_MOVE;
+           active_item.selection = GTK_PLOT_CANVAS_SELECT_MARKERS;
+           active_item.mode = GTK_PLOT_CANVAS_SELECT_CLICK_2;
            state = GTK_STATE_SELECTED;
            click_plot = plot;
            new_selection = TRUE;
@@ -1036,6 +1057,8 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
                 active_item.type = GTK_PLOT_CANVAS_AXIS;
                 active_item.state = GTK_STATE_SELECTED;
                 active_item.flags = GTK_PLOT_CANVAS_FROZEN;
+                active_item.selection = GTK_PLOT_CANVAS_SELECT_MARKERS;
+                active_item.mode = GTK_PLOT_CANVAS_SELECT_CLICK_2;
                 state = GTK_STATE_SELECTED;
                 new_pos = pos;
                 click_plot = plot;
@@ -1047,6 +1070,8 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
                 active_item.type = GTK_PLOT_CANVAS_AXIS;
                 active_item.state = GTK_STATE_SELECTED;
                 active_item.flags = GTK_PLOT_CANVAS_FROZEN;
+                active_item.selection = GTK_PLOT_CANVAS_SELECT_MARKERS;
+                active_item.mode = GTK_PLOT_CANVAS_SELECT_CLICK_2;
                 state = GTK_STATE_SELECTED;
                 new_pos = pos;
                 click_plot = plot;
@@ -1061,6 +1086,8 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
                 active_item.type = GTK_PLOT_CANVAS_AXIS;
                 active_item.state = GTK_STATE_SELECTED;
                 active_item.flags = GTK_PLOT_CANVAS_FROZEN;
+                active_item.selection = GTK_PLOT_CANVAS_SELECT_MARKERS;
+                active_item.mode = GTK_PLOT_CANVAS_SELECT_CLICK_2;
                 state = GTK_STATE_SELECTED;
                 new_pos = pos;
                 click_plot = plot;
@@ -1072,6 +1099,8 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
                 active_item.type = GTK_PLOT_CANVAS_AXIS;
                 active_item.state = GTK_STATE_SELECTED;
                 active_item.flags = GTK_PLOT_CANVAS_FROZEN;
+                active_item.selection = GTK_PLOT_CANVAS_SELECT_MARKERS;
+                active_item.mode = GTK_PLOT_CANVAS_SELECT_CLICK_2;
                 state = GTK_STATE_SELECTED;
                 new_pos = pos;
                 click_plot = plot;
@@ -1093,6 +1122,8 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
               active_item.flags = GTK_PLOT_CANVAS_CAN_MOVE |
                                   GTK_PLOT_CANVAS_CAN_X_RESIZE |
                                   GTK_PLOT_CANVAS_CAN_Y_RESIZE;
+              active_item.selection = GTK_PLOT_CANVAS_SELECT_MARKERS;
+              active_item.mode = GTK_PLOT_CANVAS_SELECT_CLICK_2;
               state = GTK_STATE_SELECTED;
               new_pos = pos;
               click_plot = plot;
@@ -1105,7 +1136,59 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
 /**********************************************************************/
   if(!active_plot) active_plot = click_plot;
 
+/* DATA MARKERS */
+
   if(active_plot && !GTK_IS_PLOT3D(active_plot)){
+    dataset = active_plot->data_sets;
+    while(dataset){
+      GList *markers;
+
+      data = GTK_PLOT_DATA(dataset->data);
+  
+      markers = data->markers;
+      while(markers){
+        GtkPlotMarker *marker;
+	gdouble fx, fy, fz, fa, fdx, fdy, fdz, fda;
+	gboolean error;
+	gchar *label;
+  
+        marker = (GtkPlotMarker *)markers->data;
+      
+	gtk_plot_data_get_point(data, marker->point,
+				&fx, &fy, &fz, &fa, &fdx, &fdy, &fdz, &fda,
+				&label, &error); 
+        gtk_plot_get_pixel(GTK_PLOT(active_plot), 
+                           fx, fy, &xi, &yi);
+
+        if(abs(xi-x) <= 20 && abs(yi-y) <= 20){
+  
+           active_item.type = GTK_PLOT_CANVAS_MARKER;
+           active_item.state = GTK_STATE_SELECTED;
+           active_item.flags = GTK_PLOT_CANVAS_CAN_MOVE;
+           x = xi;
+           y = yi;
+           active_item.allocation.x = xi - 10;
+           active_item.allocation.y = yi - 10;
+           active_item.allocation.width = 20;
+           active_item.allocation.height = 20;
+           active_item.data = marker;
+           active_item.selection = GTK_PLOT_CANVAS_SELECT_TARGET;
+           active_item.mode = GTK_PLOT_CANVAS_SELECT_CLICK_1;
+           new_pos = GTK_PLOT_CANVAS_IN;
+           state = GTK_STATE_SELECTED;
+           break;
+        }
+        markers = markers->next;
+      }
+      if(active_item.type == GTK_PLOT_CANVAS_MARKER) break;
+      dataset = dataset->next;
+    }
+  }
+
+/* DATA POINTS */
+
+  if(active_plot && !GTK_IS_PLOT3D(active_plot) &&
+     GTK_PLOT_CANVAS_CAN_SELECT_POINT(canvas)){
     dataset = active_plot->data_sets;
 
     while(dataset)
@@ -1113,8 +1196,15 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
        data = GTK_PLOT_DATA(dataset->data);
 
        if(!data->is_function){
+	 gdouble fx, fy, fz, fa, fdx, fdy, fdz, fda;
+	 gboolean error;
+	 gchar *label;
+
          for(i = 0; i < data->num_points; i++){
-           gtk_plot_get_pixel(GTK_PLOT(active_plot), data->x[i], data->y[i], &xi, &yi);
+	   gtk_plot_data_get_point(data, i,
+	  			   &fx, &fy, &fz, &fa, &fdx, &fdy, &fdz, &fda,
+				   &label, &error); 
+           gtk_plot_get_pixel(GTK_PLOT(active_plot), fx, fy, &xi, &yi);
            if(abs(xi-x) <= DEFAULT_MARKER_SIZE && 
               abs(yi-y) <= DEFAULT_MARKER_SIZE){
                 gdouble ax, ay;
@@ -1127,11 +1217,13 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
                                    &ax, &ay);
                 x = ax;
                 y = ay;
-                active_item.allocation.x = xi;
-                active_item.allocation.y = yi;
-                active_item.allocation.width = 20;
-                active_item.allocation.height = 20;
+                active_item.allocation.x = xi - DEFAULT_MARKER_SIZE;
+                active_item.allocation.y = yi - DEFAULT_MARKER_SIZE;
+                active_item.allocation.width = 2 * DEFAULT_MARKER_SIZE;
+                active_item.allocation.height = 2 * DEFAULT_MARKER_SIZE;
                 active_item.data = data;
+                active_item.selection = GTK_PLOT_CANVAS_SELECT_TARGET;
+                active_item.mode = GTK_PLOT_CANVAS_SELECT_CLICK_2;
                 new_pos = GTK_PLOT_CANVAS_IN;
                 state = GTK_STATE_SELECTED;
                 break;
@@ -1156,16 +1248,24 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
 
     if(active_item.type == GTK_PLOT_CANVAS_DATA)
        {
+	        gdouble fx, fy, fz, fa, fdx, fdy, fdz, fda;
+   	        gboolean error;
+	        gchar *label;
+
+	        gtk_plot_data_get_point(data, i,
+	  	  		   &fx, &fy, &fz, &fa, &fdx, &fdy, &fdz, &fda,
+				   &label, &error); 
+
                 canvas->active_data = data;
                 canvas->active_point = i;
-                canvas->active_x = data->x[i];
-                canvas->active_y = data->y[i];
+                canvas->active_x = fx;
+                canvas->active_y = fy;
        }
 
     if(click_plot) canvas->active_plot = click_plot;
 
     veto = TRUE;
-    gtk_signal_emit(GTK_OBJECT(canvas), canvas_signals[SELECT_ITEM],
+    _gtkextra_signal_emit(GTK_OBJECT(canvas), canvas_signals[SELECT_ITEM],
                     event, &active_item, &veto);
 
     if(!veto)
@@ -1180,6 +1280,8 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
        active_item.type != GTK_PLOT_CANVAS_RECTANGLE &&
        active_item.type != GTK_PLOT_CANVAS_LINE &&
        active_item.type != GTK_PLOT_CANVAS_CUSTOM &&
+       active_item.type != GTK_PLOT_CANVAS_PIXMAP &&
+       active_item.type != GTK_PLOT_CANVAS_MARKER &&
        click_plot != canvas->active_plot) new_item = TRUE;
 
     if(canvas->active_item.type == GTK_PLOT_CANVAS_DATA &&
@@ -1202,9 +1304,10 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
            canvas->state = GTK_STATE_SELECTED; 
            canvas->action = GTK_PLOT_CANVAS_ACTION_INACTIVE;
 
-           draw_selection(canvas, active_item.allocation, TRUE);
+           draw_selection(canvas, active_item.allocation);
 
-           return TRUE;
+           if(active_item.mode == GTK_PLOT_CANVAS_SELECT_CLICK_2)
+             return TRUE;
 
          } else {
 
@@ -1218,18 +1321,24 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
          }
     }
 
-    if(!new_item &&
-       ((active_item.type == GTK_PLOT_CANVAS_DATA &&
-        GTK_PLOT_CANVAS_CAN_DND_POINT(canvas)) ||
-        (active_item.type != GTK_PLOT_CANVAS_DATA &&
-         GTK_PLOT_CANVAS_CAN_DND(canvas)))) {
+    if((!new_item && active_item.mode == GTK_PLOT_CANVAS_SELECT_CLICK_2) ||   
+       active_item.mode == GTK_PLOT_CANVAS_SELECT_CLICK_1) {
+       
+      if((active_item.type == GTK_PLOT_CANVAS_DATA &&
+          GTK_PLOT_CANVAS_CAN_DND_POINT(canvas)) ||
+         (active_item.type != GTK_PLOT_CANVAS_DATA &&
+          GTK_PLOT_CANVAS_CAN_DND(canvas))) {
 
          switch(new_pos){
           case GTK_PLOT_CANVAS_IN:
               canvas->action = GTK_PLOT_CANVAS_ACTION_DRAG;
               break;
           default:
-              canvas->action = GTK_PLOT_CANVAS_ACTION_RESIZE;
+              if(active_item.flags & GTK_PLOT_CANVAS_CAN_X_RESIZE ||
+                 active_item.flags & GTK_PLOT_CANVAS_CAN_Y_RESIZE)
+                 canvas->action = GTK_PLOT_CANVAS_ACTION_RESIZE;
+              else
+                 canvas->action = GTK_PLOT_CANVAS_ACTION_DRAG;
          }
          gdk_pointer_grab (widget->window, FALSE,
                            GDK_POINTER_MOTION_HINT_MASK |
@@ -1237,14 +1346,15 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
                            GDK_BUTTON_RELEASE_MASK,
                            NULL, NULL, event->time);
          canvas->drag_point = new_pos;
+
          canvas->drag_x = x;
          canvas->drag_y = y;
          canvas->pointer_x = x;
          canvas->pointer_y = y;
 
          return TRUE;
+      }
     }
-
   } 
 
   gtk_plot_canvas_unselect(canvas);
@@ -1260,9 +1370,10 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
          active_item.state = GTK_STATE_SELECTED;
          active_item.flags = GTK_PLOT_CANVAS_CAN_X_RESIZE |
                              GTK_PLOT_CANVAS_CAN_Y_RESIZE;
+         active_item.selection = GTK_PLOT_CANVAS_SELECT_NONE;
          veto = TRUE;
 
-         gtk_signal_emit(GTK_OBJECT(canvas), canvas_signals[SELECT_ITEM],
+         _gtkextra_signal_emit(GTK_OBJECT(canvas), canvas_signals[SELECT_ITEM],
                          event, &canvas->active_item, &veto);
          if(veto){
            canvas->active_item = active_item;
@@ -1281,10 +1392,11 @@ gtk_plot_canvas_button_press(GtkWidget *widget, GdkEventButton *event)
                              GDK_BUTTON1_MOTION_MASK |
                              GDK_BUTTON_RELEASE_MASK,
                              NULL, NULL, event->time);
-           draw_selection(canvas, active_item.allocation, FALSE);
+           draw_selection(canvas, active_item.allocation);
          }
   }
 
+  gtk_widget_queue_draw(GTK_WIDGET(canvas));
   return TRUE;  
 }
 
@@ -1294,11 +1406,16 @@ gtk_plot_canvas_button_release(GtkWidget *widget, GdkEventButton *event)
 {
   GtkPlotCanvas *canvas;
   GtkPlotCanvasChild *child;
+  GtkPlotMarker *marker = NULL;
   GtkPlotText *text;
   GtkPlotAxis *axis = NULL;
   GtkPlot *active_plot;
-  gdouble x, y;
+  gint active_point = 0;
+  gdouble fx, fy, fz, fa, fdx, fdy, fdz, fda;
   gdouble dx, dy;
+  gdouble x, y;
+  gboolean error;
+  gchar *label;
   gdouble new_x, new_y;
   gdouble new_width, new_height;
   gdouble x1 = 0., y1 = 0., x2 = 0., y2 = 0.;
@@ -1344,7 +1461,7 @@ gtk_plot_canvas_button_release(GtkWidget *widget, GdkEventButton *event)
     case GTK_PLOT_CANVAS_TEXT:
          child = (GtkPlotCanvasChild *)canvas->active_item.data;
          text = (GtkPlotText *)child->data;
-         gtk_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_ITEM],
+         _gtkextra_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_ITEM],
                          &canvas->active_item, 
                          text->x + dx, text->y + dy, &veto);
          if(!veto) break;
@@ -1358,9 +1475,50 @@ gtk_plot_canvas_button_release(GtkWidget *widget, GdkEventButton *event)
          gtk_signal_emit (GTK_OBJECT(canvas), canvas_signals[CHANGED]);
 
          break;
+    case GTK_PLOT_CANVAS_MARKER:
+         marker = (GtkPlotMarker *)canvas->active_item.data;
+         active_point = marker->point;
+         {
+           gboolean move = FALSE;
+           gint i;
+
+           x = canvas->pointer_x; 
+           y = canvas->pointer_y; 
+           for(i = 0; i < marker->data->num_points; i++){
+              gdouble px, py;
+
+	      gtk_plot_data_get_point(marker->data, i,
+	  	  		   &fx, &fy, &fz, &fa, &fdx, &fdy, &fdz, &fda,
+				   &label, &error); 
+              gtk_plot_get_pixel(marker->data->plot,
+                                 fx, fy, &px, &py);
+             
+              if(fabs(x - px) <= DEFAULT_MARKER_SIZE && 
+                 fabs(y - py) <= DEFAULT_MARKER_SIZE) {
+                      move = TRUE;
+                      x = px;
+                      y = py;
+                      break;
+              }
+           }
+           if(!move) break;
+           active_point = i;
+         }
+         if(active_point == marker->point) break;
+
+	 gtk_plot_data_get_point(marker->data, active_point,
+	 	  		 &fx, &fy, &fz, &fa, &fdx, &fdy, &fdz, &fda,
+				 &label, &error); 
+         _gtkextra_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_ITEM],
+                         &canvas->active_item, fx, fy, &veto);
+         if(!veto) break;
+         marker->point = active_point;
+         gtk_signal_emit (GTK_OBJECT(canvas), canvas_signals[CHANGED]);
+         break;
     case GTK_PLOT_CANVAS_RECTANGLE:
     case GTK_PLOT_CANVAS_LINE:
     case GTK_PLOT_CANVAS_ELLIPSE:
+    case GTK_PLOT_CANVAS_PIXMAP:
     case GTK_PLOT_CANVAS_CUSTOM:
          child = (GtkPlotCanvasChild *)canvas->active_item.data;
          x1 = MIN(child->rx1, child->rx2);
@@ -1371,11 +1529,11 @@ gtk_plot_canvas_button_release(GtkWidget *widget, GdkEventButton *event)
          y1 += dy;
          x2 = x1 + new_width;
          y2 = y1 + new_height;
-         gtk_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_ITEM],
+         _gtkextra_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_ITEM],
                          child, 
-                         x1, x2, &veto);
+                         x2, y2, &veto);
          if(canvas->action != GTK_PLOT_CANVAS_ACTION_DRAG)
-            gtk_signal_emit(GTK_OBJECT(canvas), 
+            _gtkextra_signal_emit(GTK_OBJECT(canvas), 
                             canvas_signals[RESIZE_ITEM],
                             child, new_width, new_height, &veto);
          if(!veto) break;
@@ -1398,7 +1556,7 @@ gtk_plot_canvas_button_release(GtkWidget *widget, GdkEventButton *event)
     case GTK_PLOT_CANVAS_TITLE:
          axis = (GtkPlotAxis *)canvas->active_item.data;
          text = &axis->title;
-         gtk_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_ITEM],
+         _gtkextra_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_ITEM],
                          &canvas->active_item, 
                          text->x + dx, text->y + dy, &veto);
          if(!veto) break;
@@ -1410,7 +1568,7 @@ gtk_plot_canvas_button_release(GtkWidget *widget, GdkEventButton *event)
          gtk_plot_legends_get_position(active_plot, &new_x, &new_y);
          new_x += dx / active_plot->width;
          new_y += dy / active_plot->height;
-         gtk_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_ITEM],
+         _gtkextra_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_ITEM],
                          &canvas->active_item, new_x, new_y, 
                          &veto);
          if(!veto) break;
@@ -1418,11 +1576,11 @@ gtk_plot_canvas_button_release(GtkWidget *widget, GdkEventButton *event)
          gtk_signal_emit (GTK_OBJECT(canvas), canvas_signals[CHANGED]);
          break;
     case GTK_PLOT_CANVAS_PLOT:
-         gtk_signal_emit(GTK_OBJECT(canvas), 
+         _gtkextra_signal_emit(GTK_OBJECT(canvas), 
                          canvas_signals[MOVE_ITEM],
                          &canvas->active_item, new_x, new_y, &veto);
          if(canvas->action != GTK_PLOT_CANVAS_ACTION_DRAG)
-            gtk_signal_emit(GTK_OBJECT(canvas), 
+            _gtkextra_signal_emit(GTK_OBJECT(canvas), 
                             canvas_signals[RESIZE_ITEM],
                             &canvas->active_item, new_width, new_height, &veto);
          if(!veto) break;
@@ -1431,31 +1589,10 @@ gtk_plot_canvas_button_release(GtkWidget *widget, GdkEventButton *event)
                               new_y,
                               new_width,
                               new_height);
+
          gtk_signal_emit (GTK_OBJECT(canvas), canvas_signals[CHANGED]);
          break;
     case GTK_PLOT_CANVAS_DATA:
-         if(canvas->active_data == NULL) break;
-         if(canvas->active_point == -1) break;
-
-         gtk_plot_get_pixel(GTK_PLOT(canvas->active_plot), 
-                            canvas->active_data->x[canvas->active_point],
-                            canvas->active_data->y[canvas->active_point],
-                            &x, &y);
-
-         x += (canvas->pointer_x - canvas->drag_x);
-         y += (canvas->pointer_y - canvas->drag_y);
-
-         gtk_plot_get_point(canvas->active_plot, x, y, &new_x, &new_y);
-
-         gtk_signal_emit(GTK_OBJECT(canvas), canvas_signals[MOVE_ITEM],
-                         &canvas->active_item, new_x, new_y, &veto);
-         if(!veto) break;
-
-         canvas->active_data->x[canvas->active_point] = new_x;
-         canvas->active_data->y[canvas->active_point] = new_y;
-
-         gtk_signal_emit (GTK_OBJECT(canvas), canvas_signals[CHANGED]);
-
          break;
     case GTK_PLOT_CANVAS_AXIS:
     case GTK_PLOT_CANVAS_NONE:
@@ -1485,13 +1622,13 @@ gtk_plot_canvas_button_release(GtkWidget *widget, GdkEventButton *event)
 
   if(veto){
       gtk_plot_canvas_paint(canvas);
-      gtk_plot_canvas_refresh(canvas);
+      gtk_widget_queue_draw(GTK_WIDGET(canvas));
       canvas->active_item.allocation = canvas->drag_area;
       if((canvas->active_item.type == GTK_PLOT_CANVAS_DATA &&
           canvas->action == GTK_PLOT_CANVAS_ACTION_SELECTION) ||
          (canvas->active_item.type != GTK_PLOT_CANVAS_DATA &&
           canvas->action != GTK_PLOT_CANVAS_ACTION_SELECTION))
-             draw_selection(canvas, canvas->active_item.allocation, TRUE);
+             draw_selection(canvas, canvas->active_item.allocation);
   } else {
       canvas->state = GTK_STATE_NORMAL;
   }  
@@ -1535,13 +1672,6 @@ gtk_plot_canvas_add_plot (GtkPlotCanvas *plot_canvas,
 
   gtk_plot_set_magnification(plot, plot_canvas->magnification);
   gtk_widget_set_usize(GTK_WIDGET(plot), width, height); 
-  gtk_plot_move(plot, x, y);
-
-  plot->left->title.x = plot->x - .1;
-  plot->right->title.x = plot->x + plot->width + .1;
-  plot->top->title.y = plot->y - .05;
-  plot->bottom->title.y = plot->y + plot->height + .055;
-
   plot_canvas->plots = g_list_append(plot_canvas->plots, plot);
   gtk_plot_canvas_set_plots_pixmap(plot_canvas);
 
@@ -1549,6 +1679,13 @@ gtk_plot_canvas_add_plot (GtkPlotCanvas *plot_canvas,
 
   GTK_WIDGET(plot)->allocation.width = width;
   GTK_WIDGET(plot)->allocation.height = height;
+
+  gtk_plot_move(plot, x, y);
+
+  plot->left->title.x = plot->x - .1;
+  plot->right->title.x = plot->x + plot->width + .1;
+  plot->top->title.y = plot->y - .05;
+  plot->bottom->title.y = plot->y + plot->height + .055;
 
   plot_canvas->active_plot = plot;
 
@@ -1564,6 +1701,7 @@ gtk_plot_canvas_set_plots_pixmap(GtkPlotCanvas *plot_canvas)
   GtkPlot *plot;
 
   if(!plot_canvas->pixmap) return;
+
   plots = plot_canvas->plots;
   while(plots)
     {
@@ -1573,10 +1711,28 @@ gtk_plot_canvas_set_plots_pixmap(GtkPlotCanvas *plot_canvas)
       area.y = GTK_WIDGET(plot)->allocation.y;
       area.width = GTK_WIDGET(plot)->allocation.width;
       area.height = GTK_WIDGET(plot)->allocation.height;
-      gtk_widget_draw(GTK_WIDGET(plot), &area);
+
       plots = plots->next;
     }
 
+}
+
+void
+gtk_plot_canvas_set_transparent (GtkPlotCanvas *canvas, gboolean transparent)
+{
+  g_return_if_fail (canvas != NULL);
+  g_return_if_fail (GTK_IS_PLOT_CANVAS (canvas));
+
+  canvas->transparent = transparent;
+}
+
+gboolean
+gtk_plot_canvas_transparent (GtkPlotCanvas *canvas)
+{
+  g_return_val_if_fail (canvas != NULL, TRUE);
+  g_return_val_if_fail (GTK_IS_PLOT_CANVAS (canvas), TRUE);
+
+  return(canvas->transparent);
 }
 
 void
@@ -1586,7 +1742,13 @@ gtk_plot_canvas_set_background (GtkPlotCanvas *canvas, const GdkColor *color)
   g_return_if_fail (canvas != NULL);
   g_return_if_fail (GTK_IS_PLOT_CANVAS (canvas));
 
-  canvas->background = *color;
+  if(!color) {
+    canvas->transparent = TRUE;
+    return;
+  } else {
+    canvas->background = *color;
+    canvas->transparent = FALSE;
+  }
 
   if(GTK_WIDGET_REALIZED(GTK_WIDGET(canvas)))
        gtk_plot_canvas_paint(canvas);
@@ -1629,10 +1791,7 @@ gtk_plot_canvas_unselect (GtkPlotCanvas *plot_canvas)
 {
 
   if(plot_canvas->state == GTK_STATE_SELECTED){
-    if(plot_canvas->active_item.type == GTK_PLOT_CANVAS_NONE)
-       draw_selection(plot_canvas, plot_canvas->drag_area, FALSE); 
-    else
-       draw_selection(plot_canvas, plot_canvas->drag_area, TRUE); 
+    draw_selection(plot_canvas, plot_canvas->drag_area); 
   }
 
   plot_canvas->action = GTK_PLOT_CANVAS_ACTION_INACTIVE;
@@ -1686,7 +1845,7 @@ gtk_plot_canvas_get_active_point(GtkPlotCanvas *canvas, gdouble *x, gdouble *y)
 GtkPlotCanvasChild *
 gtk_plot_canvas_get_active_item(GtkPlotCanvas *canvas)
 {
-  return &canvas->active_item;
+  return (&canvas->active_item);
 }
 
 void
@@ -1695,6 +1854,8 @@ gtk_plot_canvas_set_size(GtkPlotCanvas *canvas, gint width, gint height)
   GList *plots;
   GtkPlot *plot;
   gdouble m = canvas->magnification;
+
+  gtk_plot_canvas_cancel_action(canvas);
 
   canvas->width = width;
   canvas->height = height;
@@ -1714,6 +1875,7 @@ gtk_plot_canvas_set_size(GtkPlotCanvas *canvas, gint width, gint height)
  
        gtk_widget_set_usize(GTK_WIDGET(plot), 
                             canvas->pixmap_width, canvas->pixmap_height); 
+       gtk_signal_emit_by_name(GTK_OBJECT(plot), "update");
 
        plots = plots->next;
      }
@@ -1743,10 +1905,10 @@ gtk_plot_canvas_create_pixmap(GtkWidget *widget, gint width, gint height)
                                          height, -1);
   }
 
-  if(GTK_IS_PLOT_GDK(canvas->pc)){
+  if(canvas->pc && GTK_IS_PLOT_GDK(canvas->pc)){
        GTK_PLOT_GDK(canvas->pc)->drawable = canvas->pixmap;
-       GTK_PLOT_GDK(canvas->pc)->window = GTK_WIDGET(canvas)->window;
   }
+  gtk_plot_pc_set_viewport(canvas->pc, width, height);
 
   gtk_plot_pc_set_color(canvas->pc, &canvas->background);
 
@@ -1764,7 +1926,6 @@ static gint
 gtk_plot_canvas_expose(GtkWidget *widget, GdkEventExpose *event)
 {
   GtkPlotCanvas *canvas;
-  GdkPixmap *pixmap;
 
   if(!GTK_WIDGET_DRAWABLE(widget)) return FALSE;
 
@@ -1775,20 +1936,14 @@ gtk_plot_canvas_expose(GtkWidget *widget, GdkEventExpose *event)
                                     canvas->pixmap_width, 
                                     canvas->pixmap_height);
       gtk_plot_canvas_paint(canvas);
-      return FALSE;
   }
 
-  pixmap = canvas->pixmap;
-  gdk_draw_pixmap(GTK_WIDGET(canvas)->window,
-                  widget->style->fg_gc[GTK_STATE_NORMAL],
-                  pixmap, 
-                  event->area.x, 
-                  event->area.y,
-                  event->area.x, 
-                  event->area.y,
-                  event->area.width, event->area.height);
-  return FALSE;
+  /* copy the backing pixmap to the window */
+  gtk_plot_canvas_refresh(canvas);
 
+  GTK_WIDGET_CLASS(parent_class)->expose_event(widget, event);
+
+  return FALSE;
 }
 
 
@@ -1834,10 +1989,9 @@ gtk_plot_canvas_set_magnification(GtkPlotCanvas *canvas,
 
 static void
 draw_selection (GtkPlotCanvas *canvas, 
-                GdkRectangle area,
-                gboolean markers)
+                GdkRectangle area)
 {
-  GdkGC *xor_gc, *gc;
+  GdkGC *xor_gc = NULL, *gc = NULL;
   GdkGCValues values;
 
   gdk_gc_get_values(GTK_WIDGET(canvas)->style->fg_gc[0], &values);
@@ -1850,13 +2004,13 @@ draw_selection (GtkPlotCanvas *canvas,
                                   GDK_GC_FUNCTION |
                                   GDK_GC_SUBWINDOW);
 
-  if(canvas->active_item.type == GTK_PLOT_CANVAS_DATA){
-    gint x, y;
-    gdouble old_x, old_y;
-    gdouble new_x, new_y;
+  if(canvas->active_item.type == GTK_PLOT_CANVAS_DATA ||
+     canvas->active_item.selection == GTK_PLOT_CANVAS_SELECT_TARGET){
 
-    area.x -= area.width / 2;
-    area.y -= area.height / 2;
+    area.x += area.width / 2 - 10;
+    area.y += area.height / 2 - 10;
+    area.width = 20;
+    area.height = 20;
     gdk_draw_rectangle (GTK_WIDGET(canvas)->window,
                         xor_gc,
                         FALSE,
@@ -1876,40 +2030,27 @@ draw_selection (GtkPlotCanvas *canvas,
                   area.x + area.width/2, area.y + area.height - 1, 
                   area.x + area.width/2, area.y + area.height - 6);
 
-    if(canvas->action == GTK_PLOT_CANVAS_ACTION_DRAG){
-      gdouble ax, ay;
-
-      old_x = canvas->active_data->x[canvas->active_point];
-      old_y = canvas->active_data->y[canvas->active_point];
-
-      gtk_plot_get_pixel(GTK_PLOT(canvas->active_plot), old_x, old_y, &ax, &ay);
-
-      x = ax + canvas->pointer_x - canvas->drag_x;
-      y = ay + canvas->pointer_y - canvas->drag_y;
-
-      gtk_plot_get_point(canvas->active_plot, x, y, &new_x, &new_y);
-
-      canvas->active_data->x[canvas->active_point] = new_x;
-      canvas->active_data->y[canvas->active_point] = new_y;
+    if(canvas->active_item.type == GTK_PLOT_CANVAS_DATA &&
+       canvas->action == GTK_PLOT_CANVAS_ACTION_DRAG){
 
       gtk_plot_set_drawable(canvas->active_plot, GTK_WIDGET(canvas)->window);
      
       gc = GTK_PLOT_GDK(canvas->active_data->plot->pc)->gc;
+      gdk_gc_ref(xor_gc);
       GTK_PLOT_GDK(canvas->active_data->plot->pc)->gc = xor_gc;
  
       gtk_plot_data_draw_points(canvas->active_data, canvas->active_data->num_points);
+
       GTK_PLOT_GDK(canvas->active_data->plot->pc)->gc = gc;
       gtk_plot_set_drawable(canvas->active_plot, canvas->pixmap);
-
-      canvas->active_data->x[canvas->active_point] = old_x;
-      canvas->active_data->y[canvas->active_point] = old_y;
     }
 
+    if(xor_gc) gdk_gc_destroy(xor_gc);
     return;
   }
 
 
-  if(markers){
+  if(canvas->active_item.selection == GTK_PLOT_CANVAS_SELECT_MARKERS){
      gdk_draw_rectangle (GTK_WIDGET(canvas)->window,
                          xor_gc,
                          FALSE,
@@ -1938,7 +2079,7 @@ draw_selection (GtkPlotCanvas *canvas,
                          area.x, area.y,
                          area.width, area.height);         
   }
-  gdk_gc_unref(xor_gc);
+  if(xor_gc) gdk_gc_destroy(xor_gc);
 }
 
 static void
@@ -2016,7 +2157,7 @@ gtk_plot_canvas_grid_set_visible(GtkPlotCanvas *canvas, gboolean visible)
 }
 
 void
-gtk_plot_canvas_grid_set_step(GtkPlotCanvas *canvas, gint step)
+gtk_plot_canvas_grid_set_step(GtkPlotCanvas *canvas, gdouble step)
 {
   canvas->grid_step = step;
   gtk_signal_emit (GTK_OBJECT(canvas), canvas_signals[CHANGED]);
@@ -2171,6 +2312,34 @@ gtk_plot_canvas_put_ellipse(GtkPlotCanvas *canvas,
   return child;
 }
 
+GtkPlotCanvasChild *
+gtk_plot_canvas_put_pixmap (GtkPlotCanvas *canvas,
+                            GdkPixmap *pixmap,
+                            gdouble x1, gdouble y1)
+{
+  GtkPlotCanvasChild *child;
+  gint width, height;
+  gdouble x2, y2;
+
+  if(!pixmap) return NULL;
+
+  child = gtk_plot_canvas_child_new(GTK_PLOT_CANVAS_PIXMAP);
+  child->data = pixmap;
+  gdk_pixmap_ref(pixmap);
+
+  if(pixmap) {
+    gdk_window_get_size(pixmap, &width, &height);
+    x2 = x1 + (gdouble)width / (gdouble)canvas->width;
+    y2 = y1 + (gdouble)height / (gdouble)canvas->height;
+  } else {
+    x2 = x1 + 0.1;
+    y2 = y1 + 0.05;
+  }
+ 
+  gtk_plot_canvas_put_child(canvas, child, x1, y1, x2, y2);
+  return child;
+}
+
 void
 gtk_plot_canvas_line_set_attributes(GtkPlotCanvasChild *child,
 		 	            GtkPlotLineStyle style,
@@ -2251,6 +2420,9 @@ gtk_plot_canvas_child_new(GtkPlotCanvasType type)
   child->min_width = -1;
   child->min_height = -1;
 
+  child->selection = GTK_PLOT_CANVAS_SELECT_MARKERS;
+  child->mode = GTK_PLOT_CANVAS_SELECT_CLICK_2;
+
   switch(type){
     case GTK_PLOT_CANVAS_LINE:
 	child->data = g_new0(GtkPlotCanvasLine, 1);
@@ -2265,6 +2437,9 @@ gtk_plot_canvas_child_new(GtkPlotCanvasType type)
 	child->data = g_new0(GtkPlotText, 1);
         child->flags = GTK_PLOT_CANVAS_CAN_MOVE;
         break;    
+    case GTK_PLOT_CANVAS_PIXMAP:
+        child->data = NULL;
+        break;
     case GTK_PLOT_CANVAS_CUSTOM:
         child->data = NULL;
         child->flags = GTK_PLOT_CANVAS_CAN_MOVE;
@@ -2273,7 +2448,6 @@ gtk_plot_canvas_child_new(GtkPlotCanvasType type)
   }
   
   child->draw_child = NULL;
-  child->print_child = NULL;
   return child;
 }
 
@@ -2304,7 +2478,7 @@ gtk_plot_canvas_child_move(GtkPlotCanvas *canvas,
   child->ry1 = y1;
 
   gtk_plot_canvas_paint(canvas);
-  gtk_plot_canvas_refresh(canvas);
+  gtk_widget_queue_draw(GTK_WIDGET(canvas));
   gtk_signal_emit (GTK_OBJECT(canvas), canvas_signals[CHANGED]);
 }
 
@@ -2320,7 +2494,7 @@ gtk_plot_canvas_child_move_resize(GtkPlotCanvas *canvas,
   child->ry2 = y2;
 
   gtk_plot_canvas_paint(canvas);
-  gtk_plot_canvas_refresh(canvas);
+  gtk_widget_queue_draw(GTK_WIDGET(canvas));
   gtk_signal_emit (GTK_OBJECT(canvas), canvas_signals[CHANGED]);
 }
 
@@ -2344,7 +2518,24 @@ gtk_plot_canvas_remove_child(GtkPlotCanvas *canvas,
                         child, &veto);
 
         if(veto){
-          g_free(child->data);
+          if(child->type == GTK_PLOT_CANVAS_TEXT){
+             GtkPlotText *text;
+     
+             text = (GtkPlotText *)child->data;
+   
+             if(text->font) g_free(text->font); 
+             if(text->text) g_free(text->text); 
+          }
+          if(child->type == GTK_PLOT_CANVAS_PIXMAP){
+             GdkPixmap *pixmap;
+     
+             pixmap = (GdkPixmap *)child->data;
+             gdk_pixmap_unref(pixmap); 
+          } else {
+             if(child->data)
+                 g_free(child->data);
+          }
+
           g_free(child);
 
           canvas->childs = g_list_remove_link(canvas->childs, list);
@@ -2361,6 +2552,21 @@ gtk_plot_canvas_remove_child(GtkPlotCanvas *canvas,
 
 }
 
+void
+gtk_plot_canvas_child_set_selection (GtkPlotCanvasChild *child,
+				     GtkPlotCanvasSelection selection)
+{
+  if(!child) return;
+  child->selection = selection;
+}
+
+void
+gtk_plot_canvas_child_set_selection_mode (GtkPlotCanvasChild *child,
+				          GtkPlotCanvasSelectionMode mode)
+{
+  if(!child) return;
+  child->mode = mode;
+}
 
 /**********************************************************************/
 static void
@@ -2372,12 +2578,15 @@ gtk_plot_canvas_draw_child(GtkPlotCanvas *canvas,
   GtkPlotCanvasEllipse *ellipse = NULL;
   GtkPlotText *text = NULL;
   GtkPlotPoint arrow[3];
+  GdkColormap *colormap = NULL;
+  GdkColor white, black;
   gint rx1 = 0, ry1 = 0, rx2 = 0, ry2 = 0;
   gint xmin, xmax, ymin, ymax;
   gint width = 0, height = 0;
   gint xm = 0, ym = 0;
   gdouble angle = 0.;
   gdouble m = canvas->magnification;
+  gdouble scale_x, scale_y;
 
   if(!canvas->pixmap) return;
 
@@ -2410,17 +2619,17 @@ gtk_plot_canvas_draw_child(GtkPlotCanvas *canvas,
             angle = asin((ry2 - ry1)/height);
 
         gtk_plot_canvas_set_line_attributes(canvas, line->line);
-        gtk_plot_pc_set_lineattr(canvas->pc, line->line.line_width, 0, 0, 0);
         gtk_plot_pc_draw_line(canvas->pc, rx1, ry1, rx2, ry2);
+        gtk_plot_pc_set_lineattr(canvas->pc, line->line.line_width, 0, 0, 0);
         if(line->arrow_mask & GTK_PLOT_ARROW_END){
            arrow[1].x = rx2;
            arrow[1].y = ry2;
            xm = rx2 - cos(angle) * line->arrow_length * m;
            ym = ry2 - sin(angle) * line->arrow_length * m;
-           arrow[0].x = xm + sin(angle)* line->arrow_width * m / 2.0;
-           arrow[0].y = ym - cos(angle)* line->arrow_width * m / 2.0;
-           arrow[2].x = xm - sin(angle)* line->arrow_width * m / 2.0;
-           arrow[2].y = ym + cos(angle)* line->arrow_width * m / 2.0;
+           arrow[0].x = xm - sin(angle)* line->arrow_width * m / 2.0;
+           arrow[0].y = ym + cos(angle)* line->arrow_width * m / 2.0;
+           arrow[2].x = xm + sin(angle)* line->arrow_width * m / 2.0;
+           arrow[2].y = ym - cos(angle)* line->arrow_width * m / 2.0;
            switch(line->arrow_style){
              case GTK_PLOT_SYMBOL_EMPTY:
                gtk_plot_pc_draw_lines (canvas->pc, arrow, 3);
@@ -2440,10 +2649,10 @@ gtk_plot_canvas_draw_child(GtkPlotCanvas *canvas,
            arrow[1].y = ry1;
            xm = rx1 + cos(angle) * line->arrow_length * m;
            ym = ry1 + sin(angle) * line->arrow_length * m;
-           arrow[0].x = xm + sin(angle)* line->arrow_width * m;
-           arrow[0].y = ym - cos(angle)* line->arrow_width * m;
-           arrow[2].x = xm - sin(angle)* line->arrow_width * m;
-           arrow[2].y = ym + cos(angle)* line->arrow_width * m;
+           arrow[0].x = xm + sin(angle)* line->arrow_width * m / 2.0;
+           arrow[0].y = ym - cos(angle)* line->arrow_width * m / 2.0;
+           arrow[2].x = xm - sin(angle)* line->arrow_width * m / 2.0;
+           arrow[2].y = ym + cos(angle)* line->arrow_width * m / 2.0;
            switch(line->arrow_style){
              case GTK_PLOT_SYMBOL_EMPTY:
                gtk_plot_pc_draw_lines (canvas->pc, arrow, 3);
@@ -2502,6 +2711,34 @@ gtk_plot_canvas_draw_child(GtkPlotCanvas *canvas,
         text = (GtkPlotText *)child->data;
         gtk_plot_canvas_draw_text(canvas, child);
         break;
+    case GTK_PLOT_CANVAS_PIXMAP:
+        if(child->data){
+          gdk_window_get_size((GdkPixmap *)child->data, &width, &height);
+          scale_x = (gdouble)child->allocation.width / (gdouble)width;
+          scale_y = (gdouble)child->allocation.height / (gdouble)height;
+          gtk_plot_pc_draw_pixmap(canvas->pc, (GdkPixmap *)child->data, NULL,
+                                  0, 0,  
+                                  child->allocation.x, 
+                                  child->allocation.y, 
+                                  width, 
+                                  height,
+                                  scale_x, scale_y);
+        } else {
+          colormap = gdk_colormap_get_system();
+          gdk_color_black(colormap, &black);
+          gdk_color_white(colormap, &white);
+
+          gtk_plot_pc_set_color(canvas->pc, &white);
+          gtk_plot_pc_draw_rectangle(canvas->pc, TRUE,
+                               child->allocation.x, child->allocation.y,
+                               child->allocation.width, child->allocation.height);
+          gtk_plot_pc_set_color(canvas->pc, &black);
+          gtk_plot_pc_draw_rectangle(canvas->pc, FALSE,
+                               child->allocation.x, child->allocation.y,
+                               child->allocation.width, child->allocation.height);
+
+        }
+        break;
     case GTK_PLOT_CANVAS_CUSTOM:
     default:
         if(child->draw_child) child->draw_child(canvas, child);
@@ -2535,6 +2772,13 @@ gtk_plot_canvas_draw_text(GtkPlotCanvas *canvas,
                          text->font, roundint(m * text->height), 
                          &tx, &ty, &width, &height);
 
+  if(text->border != GTK_PLOT_BORDER_NONE){
+     tx -= text->border_space;
+     ty -= text->border_space;
+     width += 2 * text->border_space;
+     height += 2 * text->border_space;
+  }
+
   tx += x;
   ty += y;
 
@@ -2543,10 +2787,6 @@ gtk_plot_canvas_draw_text(GtkPlotCanvas *canvas,
   gtk_plot_canvas_get_position(canvas, tx + width, ty + height,
                                &child->rx2, &child->ry2);
 
-
-  if(GTK_IS_PLOT_GDK(canvas->pc))
-        GTK_PLOT_GDK(canvas->pc)->window = GTK_WIDGET(canvas)->window;
-
   gtk_plot_pc_draw_string(canvas->pc,
                          x, y,
                          text->angle,
@@ -2554,24 +2794,14 @@ gtk_plot_canvas_draw_text(GtkPlotCanvas *canvas,
                          &text->bg,
                          text->transparent,
                          text->border,
-                         text->border_width,
-                         text->shadow_width,
+                         roundint(m * text->border_space),
+                         roundint(m * text->border_width),
+                         roundint(m * text->shadow_width),
                          text->font,
-                         roundint(text->height * m),
+                         roundint(m * text->height),
                          text->justification,
                          text->text);
   gtk_signal_emit (GTK_OBJECT(canvas), canvas_signals[CHANGED]);
-}
-
-static gint
-roundint (gdouble x)
-{
- gint sign = 1;
-
-/* if(x <= 0.) sign = -1;
-*/
- return (x+sign*.50999999471);
-
 }
 
 static void
@@ -2617,5 +2847,16 @@ gtk_plot_canvas_set_line_attributes(GtkPlotCanvas *canvas, GtkPlotLine line)
    default:
         break;
   } 
+}
+
+static gint
+roundint (gdouble x)
+{
+ gint sign = 1;
+
+/* if(x <= 0.) sign = -1;
+*/
+ return (x+sign*.50999999471);
+
 }
 

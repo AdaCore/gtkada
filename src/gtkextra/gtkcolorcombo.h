@@ -38,25 +38,24 @@ typedef struct _GtkColorComboClass	GtkColorComboClass;
 struct _GtkColorCombo {
 	GtkComboBox color_combo;
 
-        gint default_flag:1;
-
         gint nrows;
         gint ncols;
         gint row;
         gint column;
 
-        GtkWidget ***button;
+        GtkWidget **button;
 	GtkWidget *table;
         GtkWidget *custom_button;
 
-        gchar **color_name;
+        GdkColor *colors;
+        GdkColor selection;
 };
 
 struct _GtkColorComboClass {
 	GtkComboBoxClass parent_class;
 
         void (*changed) (GtkColorCombo *color_combo, 
-                         gint selection, gchar *color_name);
+                         gint selection, GdkColor *color);
 };
 
 GtkType   gtk_color_combo_get_type           (void);
@@ -64,16 +63,17 @@ GtkType   gtk_color_combo_get_type           (void);
 GtkWidget *gtk_color_combo_new                  (void);
 
 GtkWidget *gtk_color_combo_new_with_values      (gint nrows, gint ncols,
-                                                 gchar **color_names);
+                                                 GdkColor *colors);
 void 	  gtk_color_combo_construct 		(GtkColorCombo *color_combo);
 void 	  gtk_color_combo_construct_with_values (GtkColorCombo *color_combo,
                                                  gint nrows, gint ncols,
-                                                 gchar **color_names);
-gchar     *gtk_color_combo_get_color_at 	(GtkColorCombo *combo,
+                                                 GdkColor *colors);
+GdkColor  gtk_color_combo_get_color_at 		(GtkColorCombo *combo,
                                                  gint row, gint col);
 void      gtk_color_combo_find_color		(GtkColorCombo *color_combo,
                            			 GdkColor *color, 
 						 gint *row, gint *col);
+GdkColor  gtk_color_combo_get_selection		(GtkColorCombo *combo);
 
 #ifdef __cplusplus
 }

@@ -6,6 +6,10 @@
  * Copyright (C) 1999 Arjan Molenaar
  * Dia -- an diagram creation/manipulation program
  * Copyright (C) 1998 Alexander Larsson
+ * ISO Latin encoding by
+ * Przemek Klosowski
+ * przemek@rrdbartok.nist.gov
+ * (borrowed from XMGR)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -30,6 +34,8 @@
 #include <ctype.h>
 #include <time.h>
 #include <gtk/gtk.h>
+#include <wctype.h>
+#include <locale.h>
 
 #include "gtkplot.h"
 #include "gtkpsfont.h"
@@ -38,15 +44,20 @@
 
 static void gtk_plot_ps_class_init 		(GtkPlotPSClass *klass);
 static void gtk_plot_ps_init 			(GtkPlotPS *ps);
-static void gtk_plot_ps_finalize 		(GtkObject *object);
+static void gtk_plot_ps_destroy 		(GtkObject *object);
 /*********************************************************************/
 /* Postscript specific functions */
 static gboolean psinit				(GtkPlotPC *pc); 
+static void pssetviewport			(GtkPlotPC *pc, 
+						 gdouble w, gdouble h); 
 static void psleave				(GtkPlotPC *pc);
 static void psgsave				(GtkPlotPC *pc);
 static void psgrestore				(GtkPlotPC *pc);
 static void psclip				(GtkPlotPC *pc,
 						 const GdkRectangle *area);
+static void psclipmask				(GtkPlotPC *pc,
+						 gdouble x, gdouble y,
+						 const GdkBitmap *mask);
 static void psdrawlines				(GtkPlotPC *pc,
 						 GtkPlotPoint *points, 
 						 gint numpoints);
@@ -85,6 +96,7 @@ static void psdrawstring			(GtkPlotPC *pc,
                                                  const GdkColor *bg,
                                                  gboolean transparent,
                                                  gint border,
+                                                 gint border_space,
                                                  gint border_width,
                                                  gint shadow_width,
                                                  const gchar *font,
@@ -92,14 +104,27 @@ static void psdrawstring			(GtkPlotPC *pc,
                                                  GtkJustification just,
                                                  const gchar *text);
 static void pssetfont				(GtkPlotPC *pc, 
-						 const gchar *font, 
+						 GtkPSFont *psfont,
 						 gint height);
 static void pssetdash				(GtkPlotPC *pc, 
 						 gdouble offset,
 						 gdouble *values,
 						 gint num_values);
+static void psdrawpixmap                        (GtkPlotPC *pc,
+                                                 GdkPixmap *pixmap,
+                                                 GdkBitmap *mask,
+                                                 gint xsrc, gint ysrc,
+                                                 gint xdest, gint ydest,
+                                                 gint width, gint height,
+                                                 gdouble sx, gdouble sy);
+
+static void ps_reencode_font			(FILE *file, char *fontname);
+static void color_to_hex                        (GdkColor color,
+                                                 gchar string[7]);
+
 /*********************************************************************/
 static GtkPlotPCClass *parent_class = NULL;
+static gchar *locale = NULL;
 
 GtkType
 gtk_plot_ps_get_type (void)
@@ -137,18 +162,22 @@ static void
 gtk_plot_ps_class_init (GtkPlotPSClass *klass)
 {
   GtkObjectClass *object_class;
+  GObjectClass *gobject_class;
   GtkPlotPCClass *pc_class;
 
   parent_class = gtk_type_class (gtk_plot_pc_get_type ());
 
   object_class = (GtkObjectClass *) klass;
+  gobject_class = (GObjectClass *) klass;
   pc_class = (GtkPlotPCClass *) klass;
 
   pc_class->init = psinit;
   pc_class->leave = psleave;
+  pc_class->set_viewport = pssetviewport;
   pc_class->gsave = psgsave;
   pc_class->grestore = psgrestore;
   pc_class->clip = psclip;
+  pc_class->clip_mask = psclipmask;
   pc_class->set_color = pssetcolor;
   pc_class->set_dash = pssetdash;
   pc_class->set_lineattr = pssetlineattr;
@@ -161,18 +190,22 @@ gtk_plot_ps_class_init (GtkPlotPSClass *klass)
   pc_class->draw_ellipse = psdrawellipse;
   pc_class->set_font = pssetfont;
   pc_class->draw_string = psdrawstring;
+  pc_class->draw_pixmap = psdrawpixmap;
 
-  object_class->finalize = gtk_plot_ps_finalize;
+  object_class->destroy = gtk_plot_ps_destroy;
 }
 
 static void
-gtk_plot_ps_finalize(GtkObject *object)
+gtk_plot_ps_destroy(GtkObject *object)
 {
   GtkPlotPS *ps;
 
   ps = GTK_PLOT_PS(object);
 
-  if(ps->psname) g_free(ps->psname);
+  if(ps->psname){
+    g_free(ps->psname);
+    ps->psname = NULL;
+  }
 }
 
 GtkObject *
@@ -298,6 +331,10 @@ gtk_plot_ps_set_size                            (GtkPlotPS *ps,
         ps->page_height = height;
    }
 
+   if(ps->orientation == GTK_PLOT_PORTRAIT)
+     gtk_plot_pc_set_viewport(GTK_PLOT_PC(ps), ps->page_width, ps->page_height);
+   else
+     gtk_plot_pc_set_viewport(GTK_PLOT_PC(ps), ps->page_height, ps->page_width);
 }
 
 void
@@ -309,6 +346,12 @@ gtk_plot_ps_set_scale                           (GtkPlotPS *ps,
   ps->scaley = scaley; 
 }
 
+static void pssetviewport			(GtkPlotPC *pc,
+						 gdouble w, gdouble h) 
+{
+
+}
+
 static void pssetlineattr			(GtkPlotPC *pc, 
                                                  gfloat line_width,
                                                  GdkLineStyle line_style,
@@ -317,7 +360,7 @@ static void pssetlineattr			(GtkPlotPC *pc,
 {
     FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-    fprintf(psout, "%f slw\n", line_width);
+    fprintf(psout, "%g slw\n", line_width);
     fprintf(psout, "%d slc\n", abs(cap_style - 1));
     fprintf(psout, "%d slj\n", join_style);
 
@@ -363,6 +406,8 @@ psleave(GtkPlotPC *pc)
     fprintf(GTK_PLOT_PS(pc)->psfile, "%%%%Trailer\n");
     fprintf(GTK_PLOT_PS(pc)->psfile, "%%%%EOF\n");
     fclose(GTK_PLOT_PS(pc)->psfile);
+    setlocale(LC_NUMERIC, locale);
+    g_free(locale);
 }
 
 static gboolean 
@@ -373,6 +418,9 @@ psinit						(GtkPlotPC *pc)
     GtkPlotPS *ps;
 
     now = time(NULL);
+
+    locale = g_strdup(setlocale(LC_NUMERIC, NULL));
+    setlocale(LC_NUMERIC, "C");
 
     ps = GTK_PLOT_PS(pc);
     psout = ps->psfile;
@@ -403,7 +451,9 @@ psinit						(GtkPlotPC *pc)
     else
              fprintf(psout,"%%%%Orientation: Landscape\n");
 
+/*
     if(ps->epsflag)
+*/
           fprintf (psout,
                    "%%%%BoundingBox: 0 0 %d %d\n"
                    "%%%%Pages: 1\n"
@@ -469,15 +519,78 @@ psinit						(GtkPlotPC *pc)
              "   end\n"
              "} def\n\n"
     ); 
-    
+  
+    fprintf(psout,
+          "[ /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef\n"
+          "/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef\n"
+          "/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef\n"
+          "/.notdef /.notdef /space /exclam /quotedbl /numbersign /dollar /percent /ampersand /quoteright\n"
+          "/parenleft /parenright /asterisk /plus /comma /hyphen /period /slash /zero /one\n"
+          "/two /three /four /five /six /seven /eight /nine /colon /semicolon\n"          "/less /equal /greater /question /at /A /B /C /D /E\n"
+          "/F /G /H /I /J /K /L /M /N /O\n"
+          "/P /Q /R /S /T /U /V /W /X /Y\n"
+          "/Z /bracketleft /backslash /bracketright /asciicircum /underscore /quoteleft /a /b /c\n"
+          "/d /e /f /g /h /i /j /k /l /m\n"
+          "/n /o /p /q /r /s /t /u /v /w\n"
+          "/x /y /z /braceleft /bar /braceright /asciitilde /.notdef /.notdef /.notdef\n"
+          "/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef\n"
+          "/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef\n"
+          "/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef\n"
+          "/space /exclamdown /cent /sterling /currency /yen /brokenbar /section /dieresis /copyright\n"
+          "/ordfeminine /guillemotleft /logicalnot /hyphen /registered /macron /degree /plusminus /twosuperior /threesuperior\n"
+          "/acute /mu /paragraph /periodcentered /cedilla /onesuperior /ordmasculine /guillemotright /onequarter /onehalf\n"
+          "/threequarters /questiondown /Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla\n"
+          "/Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis /Eth /Ntilde\n"
+          "/Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply /Oslash /Ugrave /Uacute /Ucircumflex\n"
+          "/Udieresis /Yacute /Thorn /germandbls /agrave /aacute /acircumflex /atilde /adieresis /aring\n"
+          "/ae /ccedilla /egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis\n"
+          "/eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide /oslash /ugrave\n"
+          "/uacute /ucircumflex /udieresis /yacute /thorn /ydieresis] /isolatin1encoding exch def\n");
+ 
+    ps_reencode_font(psout, "Times-Roman");
+    ps_reencode_font(psout, "Times-Italic");
+    ps_reencode_font(psout, "Times-Bold");
+    ps_reencode_font(psout, "Times-BoldItalic");
+    ps_reencode_font(psout, "AvantGarde-Book");
+    ps_reencode_font(psout, "AvantGarde-BookOblique");
+    ps_reencode_font(psout, "AvantGarde-Demi");
+    ps_reencode_font(psout, "AvantGarde-DemiOblique");
+    ps_reencode_font(psout, "Bookman-Light");
+    ps_reencode_font(psout, "Bookman-LightItalic");
+    ps_reencode_font(psout, "Bookman-Demi");
+    ps_reencode_font(psout, "Bookman-DemiItalic");
+    ps_reencode_font(psout, "Courier");
+    ps_reencode_font(psout, "Courier-Oblique");
+    ps_reencode_font(psout, "Courier-Bold");
+    ps_reencode_font(psout, "Courier-BoldOblique");
+    ps_reencode_font(psout, "Helvetica");
+    ps_reencode_font(psout, "Helvetica-Oblique");
+    ps_reencode_font(psout, "Helvetica-Bold");
+    ps_reencode_font(psout, "Helvetica-BoldOblique");
+    ps_reencode_font(psout, "Helvetica-Narrow");
+    ps_reencode_font(psout, "Helvetica-Narrow-Oblique");
+    ps_reencode_font(psout, "Helvetica-Narrow-Bold");
+    ps_reencode_font(psout, "Helvetica-Narrow-BoldOblique");
+    ps_reencode_font(psout, "NewCenturySchoolbook-Roman");
+    ps_reencode_font(psout, "NewCenturySchoolbook-Italic");
+    ps_reencode_font(psout, "NewCenturySchoolbook-Bold");
+    ps_reencode_font(psout, "NewCenturySchoolbook-BoldItalic");
+    ps_reencode_font(psout, "Palatino-Roman");
+    ps_reencode_font(psout, "Palatino-Italic");
+    ps_reencode_font(psout, "Palatino-Bold");
+    ps_reencode_font(psout, "Palatino-BoldItalic");
+    ps_reencode_font(psout, "Symbol");
+    ps_reencode_font(psout, "ZapfChancery-MediumItalic");
+    ps_reencode_font(psout, "ZapfDingbats");
+   
     if(ps->orientation == GTK_PLOT_PORTRAIT)
              fprintf(psout, "%d %d translate\n"
-                            "%f %f scale\n",
+                            "%g %g scale\n",
                             0, ps->page_height,
                             ps->scalex, -ps->scaley);
 
     if(ps->orientation == GTK_PLOT_LANDSCAPE)
-             fprintf(psout, "%f %f scale\n"
+             fprintf(psout, "%g %g scale\n"
                             "-90 rotate \n",
                             ps->scalex, -ps->scaley);
 
@@ -486,11 +599,31 @@ psinit						(GtkPlotPC *pc)
     return TRUE;
 }
 
+static void ps_reencode_font(FILE *file, char *fontname)
+{
+  /* Don't reencode the Symbol font, as it doesn't work in latin1 encoding.
+   * Instead, just define Symbol-latin1 to be the same as Symbol. */
+  if (!strcmp(fontname, "Symbol"))
+    fprintf(file,
+            "/%s-latin1\n"
+            "    /%s findfont\n"
+            "definefont pop\n", fontname, fontname);
+  else
+    fprintf(file,
+            "/%s-latin1\n"
+            "    /%s findfont\n"
+            "    dup length dict begin\n"
+            "   {1 index /FID ne {def} {pop pop} ifelse} forall\n"
+            "   /Encoding isolatin1encoding def\n"
+            "    currentdict end\n"
+            "definefont pop\n", fontname, fontname);
+}
+
 static void pssetcolor(GtkPlotPC *pc, const GdkColor *color)
 {
     FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-    fprintf(psout, "%f %f %f setrgbcolor\n",
+    fprintf(psout, "%g %g %g setrgbcolor\n",
 	    (gdouble) color->red / 65535.0,
 	    (gdouble) color->green / 65535.0,
 	    (gdouble) color->blue / 65535.0);
@@ -501,8 +634,9 @@ psdrawpoint(GtkPlotPC *pc, gdouble x, gdouble y)
 {
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-  fprintf(psout, "%f %f m\n", x, y);
-  fprintf(psout, "%f %f l\n", x, y);
+  fprintf(psout, "n\n");
+  fprintf(psout, "%g %g m\n", x, y);
+  fprintf(psout, "%g %g l\n", x, y);
   fprintf(psout, "s\n");
 }
 
@@ -513,9 +647,9 @@ psdrawlines(GtkPlotPC *pc, GtkPlotPoint *points, gint numpoints)
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
  
   fprintf(psout,"n\n");
-  fprintf(psout,"%f %f m\n", points[0].x, points[0].y);
+  fprintf(psout,"%g %g m\n", points[0].x, points[0].y);
   for(i = 1; i < numpoints; i++)
-        fprintf(psout,"%f %f l\n", points[i].x, points[i].y);
+        fprintf(psout,"%g %g l\n", points[i].x, points[i].y);
 
   fprintf(psout,"s\n");
 }
@@ -527,9 +661,9 @@ psdrawpolygon(GtkPlotPC *pc, gboolean filled, GtkPlotPoint *points, gint numpoin
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
   fprintf(psout,"n\n");
-  fprintf(psout,"%f %f m\n", points[0].x, points[0].y);
+  fprintf(psout,"%g %g m\n", points[0].x, points[0].y);
   for(i = 1; i < numpoints; i++)
-      fprintf(psout,"%f %f l\n", points[i].x, points[i].y);
+      fprintf(psout,"%g %g l\n", points[i].x, points[i].y);
 
   if(filled)
      fprintf(psout,"f\n");
@@ -543,8 +677,8 @@ static void psdrawline(GtkPlotPC *pc, gdouble x0, gdouble y0, gdouble xf, gdoubl
 {
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-  fprintf(psout, "%f %f m\n", x0, y0);
-  fprintf(psout, "%f %f l\n", xf, yf);
+  fprintf(psout, "%g %g m\n", x0, y0);
+  fprintf(psout, "%g %g l\n", xf, yf);
   fprintf(psout, "s\n");
 }
 
@@ -571,13 +705,11 @@ psdrawcircle(GtkPlotPC *pc, gboolean filled, gdouble x, gdouble y, gdouble size)
 {
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-  fprintf(psout,"n %f %f %f %f 0 360 ellipse\n", 
+  fprintf(psout,"n %g %g %g %g 0 360 ellipse\n", 
           x, y, size / 2., size / 2.);
 
   if(filled)
      fprintf(psout,"f\n");
-  else
-     fprintf(psout,"cp\n");
 
   fprintf(psout,"s\n");
 }
@@ -590,16 +722,86 @@ psdrawellipse(GtkPlotPC *pc,
 {
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-  fprintf(psout,"n %f %f %f %f 0 360 ellipse\n", 
+  fprintf(psout,"n %g %g %g %g 0 360 ellipse\n", 
           x+width/2., y+height/2., 
           width/2., height/2.);
 
   if(filled)
      fprintf(psout,"f\n");
-  else
-     fprintf(psout,"cp\n");
 
   fprintf(psout,"s\n");
+}
+
+static void
+psoutputstring (GtkPlotPC *pc,
+		GtkPSFont *psfont,
+		GtkPSFont *latin_psfont,
+		gint height,
+		const GdkWChar *wstring,
+		const gchar *addstring)
+{
+  const GdkWChar *p;
+  GdkWChar wcs[2];
+  gint curcode = 0, code; /* 0..neither 1..latin 2..i18n */
+  gchar begin[] = { 0, '(', '<' };
+  gchar end[] = { 0, ')', '>' };
+  GtkPSFont *fonts[3];
+  FILE *out = GTK_PLOT_PS(pc)->psfile;
+  gchar *mbs, *c;
+ 
+  fonts[0] = NULL;
+  fonts[1] = latin_psfont;
+  fonts[2] = psfont;
+
+  p = wstring;
+  
+  if (psfont->i18n_latinfamily) {
+    while (*p) {
+      code = (*p >= 0 && *p <= 0x7f) ? 1 : 2;
+      if (curcode && curcode != code)
+	fprintf(out, "%c %s\n", end[curcode], addstring);
+      if (curcode != code) {
+	pssetfont(pc, fonts[code], height);
+	fputc(begin[code], out);
+      }
+      
+      curcode = code;
+
+      wcs[0] = *p++;
+      wcs[1] = 0;
+      c = mbs = gdk_wcstombs(wcs);
+      
+      if (code == 2) {
+	while (*c)
+	  fprintf(out, "%02x", (unsigned char)(*c++));
+      } else {
+	if (*c == '(' || *c == ')')
+	  fputc('\\', out);
+	fputc(*c, out);
+      }
+      
+      g_free(mbs);
+    }
+  } else {
+    c = mbs = gdk_wcstombs(wstring);
+    
+    while (*c) {
+      if (curcode == 0) {
+	pssetfont(pc, psfont, height);
+	fputc(begin[1], out);
+	curcode = 1;
+      }
+
+      if (*c == '(' || *c == ')')
+	fputc('\\', out);
+      fputc(*c++, out);
+    }
+
+    g_free(mbs);
+  }
+
+  if (curcode)
+    fprintf(out, "%c %s\n", end[curcode], addstring);
 }
 
 static void
@@ -610,21 +812,18 @@ psdrawstring	(GtkPlotPC *pc,
                  const GdkColor *bg,
                  gboolean transparent,
                  gint border,
+                 gint border_space,
                  gint border_width,
                  gint shadow_width,
                  const gchar *font,
-                 gint height,
+                 gint font_height,
                  GtkJustification justification,
                  const gchar *text)
 
 {
-  gchar *curstr;
   gchar *currfont;
-  const gchar *aux = 0;
-  GtkPSFont *psfont;
-  gchar bkspchar, insert_char, num[4];
-  const gchar *xaux = 0;
-  const gchar *lastchar = NULL;
+  const gchar *c;
+  GtkPSFont *psfont, *base_psfont, *latin_psfont = NULL;
   gint curcnt = 0, offset = 0;
   gint numf;
   gdouble scale;
@@ -633,22 +832,69 @@ psdrawstring	(GtkPlotPC *pc,
   GList *family;
   FILE *psout;
   gint twidth, theight, tdescent, tascent;
+  gint tx, ty, width, height; 
   gint i;
+  GdkWChar *curstr, *wtext, *lastchar = NULL, bkspchar[2], *aux, *xaux;
+  gchar num[4];
 
   if (text == NULL || strlen(text) == 0) return;
 
   psout = GTK_PLOT_PS(pc)->psfile;
 
-  curstr = (gchar *)g_malloc(2*strlen(text)*sizeof(gchar));
- 
   gtk_psfont_get_families(&family, &numf);
-  psfont = gtk_psfont_get_font(font);
+  base_psfont = psfont = gtk_psfont_get_by_name(font);
   italic = psfont->italic;
   bold = psfont->bold;
 
   currfont = psfont->psname;
 
-  gtk_plot_text_get_size(text, angle, psfont->psname, height, 
+  if (psfont->i18n_latinfamily) {
+    latin_psfont = gtk_psfont_get_by_family(psfont->i18n_latinfamily, italic,
+					    bold);
+  }
+
+  gtk_plot_text_get_area(text, angle, justification, font, font_height,
+                         &tx, &ty, &width, &height);
+
+  tx += x;
+  ty += y;
+  if(!transparent){
+    pssetcolor(pc, bg);
+    gtk_plot_pc_draw_rectangle(pc,
+                         TRUE,
+                         tx - border_space, ty - border_space,
+                         width + 2*border_space, height + 2*border_space);
+  }
+/* border */
+
+  pssetcolor(pc, fg);
+  pssetdash(pc, 0, NULL, 0);
+  pssetlineattr(pc, border_width, 0, 0, 0);
+ 
+  switch(border){
+    case GTK_PLOT_BORDER_SHADOW:
+      psdrawrectangle(pc,
+                         TRUE, 
+                         tx - border_space + shadow_width,
+                         ty + height + border_space, 
+                         width + 2 * border_space, shadow_width);
+      psdrawrectangle(pc,
+                         TRUE, 
+                         tx + width + border_space, 
+                         ty - border_space + shadow_width, 
+                         shadow_width, height + 2 * border_space);
+    case GTK_PLOT_BORDER_LINE: 
+      psdrawrectangle(pc,
+                         FALSE, 
+                         tx - border_space, ty - border_space, 
+                         width + 2*border_space, height + 2*border_space);
+    case GTK_PLOT_BORDER_NONE:
+    default:
+        break;
+  }
+
+
+  gtk_plot_text_get_size(text, angle, psfont->psname, font_height, 
                          &twidth, &theight, &tascent, &tdescent);
 
   if(angle == 90 || angle == 270) angle = 360 - angle;
@@ -659,14 +905,15 @@ psdrawstring	(GtkPlotPC *pc,
   fprintf(psout, "0 0 m\n");
   fprintf(psout, "1 -1 sc\n");
 
-  pssetcolor(pc, fg);
-  pssetfont(pc, currfont, height);
+  
+  if (psfont->i18n_latinfamily)
+    special = TRUE;
 
-  aux = text;
-  while(aux && *aux != '\0' && *aux != '\n') {
-     if(*aux == '\\'){
-         aux++;
-         switch(*aux){
+  c = text;
+  while(c && *c != '\0' && *c != '\n') {
+     if(*c == '\\'){
+         c++;
+         switch(*c){
            case '0': case '1': case '2': case '3':
            case '4': case '5': case '6': case '7': case '9':
            case '8': case'g': case 'B': case 'b': case 'x': case 'N':
@@ -677,7 +924,7 @@ psdrawstring	(GtkPlotPC *pc,
              break;
          }
      } else {
-         aux++;
+         c++;
      }
   }
 
@@ -700,6 +947,8 @@ psdrawstring	(GtkPlotPC *pc,
         break;
     }
   } else {
+    pssetfont(pc, psfont, font_height);
+    
     switch (justification) {
       case GTK_JUSTIFY_LEFT:
         break;
@@ -718,8 +967,12 @@ psdrawstring	(GtkPlotPC *pc,
     return;
   }
 
-  aux = text;
-  scale = height;
+  i = strlen(text) + 2;
+  curstr = g_malloc0(sizeof(GdkWChar) * i);
+  aux = wtext = g_malloc0(sizeof(GdkWChar) * i);
+  gdk_mbstowcs(wtext, text, i - 1);
+
+  scale = font_height;
   curcnt = 0;
 
   while(aux && *aux != '\0' && *aux != '\n') {
@@ -729,157 +982,150 @@ psdrawstring	(GtkPlotPC *pc,
            case '0': case '1': case '2': case '3':
            case '4': case '5': case '6': case '7': case '9':
                   curstr[curcnt] = 0;
-                  if (curcnt >= 1) {
-                      fprintf(psout, "(%s) show\n", curstr);
-                  }
+		  psoutputstring(pc, psfont, latin_psfont, (gint)scale,
+				 curstr, "show");
                   curcnt = 0;
-                  psfont = gtk_psfont_find_by_family((gchar *)g_list_nth_data(family, *aux-'0'), italic, bold);
-                  currfont = psfont->psname;
-                  pssetfont(pc, currfont, (gint)scale);
-                  aux++;
+                  psfont = gtk_psfont_get_by_family((gchar *)g_list_nth_data(family, *aux-'0'), italic, bold);
+		  aux++;
                   break;
-           case '8':case'g':
+           case '8':case 'g':
                   curstr[curcnt] = 0;
-                  if (curcnt >= 1) {
-                      fprintf(psout, "(%s) show\n", curstr);
-                  }
+                  psoutputstring(pc, psfont, latin_psfont, (gint)scale,
+				 curstr, "show");
                   curcnt = 0;
-                  psfont = gtk_psfont_find_by_family("Symbol", italic, bold);
-                  currfont = psfont->psname;
-                  pssetfont(pc, currfont, (gint)scale);
+                  psfont = gtk_psfont_get_by_family("Symbol", italic, bold);
                   aux++;
                   break;
            case 'B':
                   curstr[curcnt] = 0;
-                  if (curcnt >= 1) {
-                      fprintf(psout, "(%s) show\n", curstr);
-                  }
+                  psoutputstring(pc, psfont, latin_psfont, (gint)scale,
+				 curstr, "show");
                   curcnt = 0;
   		  bold = TRUE;
-                  psfont = gtk_psfont_find_by_family(psfont->family, italic, bold);
-                  currfont = psfont->psname;
-                  pssetfont(pc, currfont, (gint)scale);
-                  aux++;
+                  psfont = gtk_psfont_get_by_family(psfont->family, italic, bold);
+		  if (psfont->i18n_latinfamily)
+		    latin_psfont = gtk_psfont_get_by_family(psfont->i18n_latinfamily, italic, bold);
+		  aux++;
                   break;
            case 'x':
                   xaux = aux + 1;
                   for (i=0; i<3; i++){
-                   if (xaux[i] > 47 && xaux[i] < 58)
-                     num[i] = xaux[i];
-                   else
-                     break;
+		    if (xaux[i] >= '0' && xaux[i] <= '9')
+		      num[i] = xaux[i];
+		    else
+		      break;
                   }
                   if (i < 3){
                      aux++;
                      break;
                   }
                   num[3] = '\0';
-                  insert_char = (gchar)atoi(num);
-                  curstr[curcnt++] = insert_char;
+		  
+		  i = atoi(num);
+		  g_snprintf(num, 4, "%o", i % (64 * 8));
+
+		  curstr[curcnt++] = '\\';
+		  i = 0;
+		  while (num[i]) {
+		    curstr[curcnt++] = num[i++];
+		  }
+		  
                   aux += 4;
                   break;
            case 'i':
-                  curstr[curcnt] = 0;
-                  if (curcnt >= 1) {
-                      fprintf(psout, "(%s) show\n", curstr);
-                  }
+	          curstr[curcnt] = 0;
+                  psoutputstring(pc, psfont, latin_psfont, (gint)scale,
+				 curstr, "show");
                   curcnt = 0;
-      	    	  italic = TRUE;
-                  psfont = gtk_psfont_find_by_family(psfont->family, italic, bold);
-                  currfont = psfont->psname;
-                  pssetfont(pc, currfont, (gint)scale);
-                  aux++;
+		  italic = TRUE;
+                  psfont = gtk_psfont_get_by_family(psfont->family, italic, bold);
+		  if (psfont->i18n_latinfamily)
+		    latin_psfont = gtk_psfont_get_by_family(psfont->i18n_latinfamily, italic, bold);
+		  aux++;
                   break;
-           case 's':case'_':
+           case 's':case '_':
                   curstr[curcnt] = 0;
-                  if (curcnt >= 1) {
-                      fprintf(psout, "(%s) show\n", curstr);
-                  }
+                  psoutputstring(pc, psfont, latin_psfont, (gint)scale,
+				 curstr, "show");
                   curcnt = 0;
-                  scale = 0.6 * height;
-                  pssetfont(pc, currfont, (gint)scale);
-                  offset -= (gint)scale / 2;
+                  scale = 0.6 * font_height;
+		  offset -= (gint)scale / 2;
                   fprintf(psout, "0 %d rmoveto\n", -((gint)scale / 2));
                   aux++;
                   break;
            case 'S':case '^':
                   curstr[curcnt] = 0;
-                  if (curcnt >= 1) {
-                      fprintf(psout, "(%s) show\n", curstr);
-                  }
+                  psoutputstring(pc, psfont, latin_psfont, (gint)scale,
+				 curstr, "show");
                   curcnt = 0;
-                  scale = 0.6 * height;
-                  pssetfont(pc, currfont, (gint)scale);
-                  offset += 0.5*height;
-                  fprintf(psout, "0 %d rmoveto\n", (gint)(0.5*height));
+                  scale = 0.6 * font_height;
+		  offset += 0.5*font_height;
+                  fprintf(psout, "0 %d rmoveto\n", (gint)(0.5*font_height));
                   aux++;
                   break;
            case 'N':
                   curstr[curcnt] = 0;
-                  if (curcnt >= 1) {
-                      fprintf(psout, "(%s) show\n", curstr);
-                  }
+                  psoutputstring(pc, psfont, latin_psfont, (gint)scale,
+				 curstr, "show");
                   curcnt = 0;
-                  scale = height;
-                  psfont = gtk_psfont_get_font(font);
-                  currfont = psfont->psname;
-                  pssetfont(pc, currfont, (gint)scale);
+		  psfont = base_psfont;
+		  italic = psfont->italic;
+		  bold = psfont->bold;
+		  if (psfont->i18n_latinfamily) {
+		    latin_psfont = gtk_psfont_get_by_family(psfont->i18n_latinfamily,
+							     italic, bold);
+		  }
+                  scale = font_height;
                   fprintf(psout, "0 %d rmoveto\n", -offset);
                   offset = 0;
                   aux++;
                   break;
            case 'b':
                   curstr[curcnt] = '\0';
-                  if(curcnt >= 1)
-                      fprintf(psout, "(%s) show\n", curstr);
+                  psoutputstring(pc, psfont, latin_psfont, (gint)scale,
+				 curstr, "show");
+                  curcnt = 0;
+		  bkspchar[1] = 0;
                   if (lastchar) {
-                      bkspchar = *lastchar;
+                      bkspchar[0] = *lastchar;
                       lastchar--;
                   } else {
-                      bkspchar = 'X';
+                      bkspchar[0] = 'X';
                       lastchar = NULL;
                   }
-                  fprintf(psout,
-                  "(%c) stringwidth pop 0 exch neg exch rmoveto\n", bkspchar );
-                  curcnt = 0;
+		  psoutputstring(pc, psfont, latin_psfont, (gint)scale,
+				 bkspchar,
+				 "stringwidth pop 0 exch neg exch rmoveto");
                   aux++;
                   break;
            case '-':
                   curstr[curcnt] = 0;
-                  if (curcnt >= 1) {
-                      fprintf(psout, "(%s) show\n", curstr);
-                  }
+		  psoutputstring(pc, psfont, latin_psfont, (gint)scale,
+				 curstr, "show");
                   curcnt = 0;
                   scale -= 3;
                   if (scale < 6) {
                       scale = 6;
                   }
-                  pssetfont(pc, currfont, (gint)scale);
                   aux++;
                   break;
            case '+':
                   curstr[curcnt] = 0;
-                  if (curcnt >= 1) {
-                      fprintf(psout, "(%s) show\n", curstr);
-                  }
+		  psoutputstring(pc, psfont, latin_psfont, (gint)scale,
+				 curstr, "show");
                   curcnt = 0;
                   scale += 3;
-                  pssetfont(pc, currfont, (gint)scale);
                   aux++;
                   break;
            default:
-                  if(aux && *aux != '\0' && *aux !='\n'){
+                  if(aux && *aux != '\0' && *aux != '\n'){
                     curstr[curcnt++] = *aux;
                     aux++;
                   }
                   break;
          }
      } else {
-
-       if(*aux == ')' || *aux == '(')
-                curstr[curcnt++] = '\\';
-
-       if(aux && *aux != '\0' && *aux !='\n'){
+       if(aux && *aux != '\0' && *aux != '\n'){
                 curstr[curcnt++] = *aux;
 		lastchar = aux;
                 aux++;
@@ -888,21 +1134,28 @@ psdrawstring	(GtkPlotPC *pc,
      }
   }
   curstr[curcnt] = 0;
-
-  fprintf(psout, "(%s) show\n", curstr);
+  psoutputstring(pc, psfont, latin_psfont, (gint)scale, curstr, "show");
 
   psgrestore(pc);  
   fprintf(psout, "n\n");  
 
+
+  g_free(wtext);
   g_free(curstr);
 }
 
 static void
-pssetfont(GtkPlotPC *pc, const gchar *font, gint height)
+pssetfont(GtkPlotPC *pc, GtkPSFont *psfont, gint height)
 {
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-  fprintf(psout, "/%s ff %f scf sf\n", font, (double)height);
+  if (psfont->i18n_latinfamily && psfont->vertical)
+    fprintf(psout,
+	    "/%s ff [0 1 -1 0 0 0.3] makefont [%d 0 0 %d 0 0] makefont sf\n",
+	    psfont->psname, height, height);
+  else
+    fprintf(psout, "/%s-latin1 ff %g scf sf\n", psfont->psname, (double)height);
+
 }
 
 
@@ -937,6 +1190,83 @@ psgrestore(GtkPlotPC *pc)
 }
 
 static void
+psclipmask(GtkPlotPC *pc, gdouble x, gdouble y, const GdkBitmap *mask)
+{
+  FILE *psout = GTK_PLOT_PS(pc)->psfile;
+  gint width, height;
+  gint px, py;
+  gint npoints = 0;
+  gint i;
+  GtkPlotVector *points;
+  GdkImage *image;
+
+  if(!mask){ 
+    fprintf(psout,"grestore\n");
+    return;
+  }
+
+  gdk_window_get_size((GdkWindow *)mask, &width, &height);
+  image = gdk_image_get((GdkWindow *)mask, 0, 0, width, height);
+
+  points = (GtkPlotVector *)g_malloc(width*height*sizeof(GtkPlotVector));
+
+  for(px = 0; px < width; px++){
+    for(py = 0; py < height; py++){
+      if(gdk_image_get_pixel(image, px, py)){
+        points[npoints].x = px; 
+        points[npoints].y = py; 
+        npoints++;
+        break;
+      }
+    } 
+  }
+  for(py = points[npoints-1].y; py < height; py++){
+    for(px = width - 1; px >= 0; px--){
+      if(gdk_image_get_pixel(image, px, py)){
+        points[npoints].x = px; 
+        points[npoints].y = py; 
+        npoints++;
+        break;
+      }
+    } 
+  }
+  for(px = points[npoints-1].x; px >= 0; px--){
+    for(py = height - 1; py >= 0; py--){
+      if(gdk_image_get_pixel(image, px, py)){
+        points[npoints].x = px; 
+        points[npoints].y = py; 
+        npoints++;
+        break;
+      }
+    } 
+  }
+  for(py = points[npoints-1].y; py >= 0; py--){
+    for(px = 0; px < width; px++){
+      if(gdk_image_get_pixel(image, px, py)){
+        points[npoints].x = px; 
+        points[npoints].y = py; 
+        npoints++;
+        break;
+      }
+    } 
+  }
+
+  fprintf(psout,"gsave\n");
+
+  fprintf(psout,"n\n");
+  fprintf(psout,"%g %g m\n", x + points[0].x, y + points[0].y);
+  for(i = 1; i < npoints; i++)
+      fprintf(psout,"%g %g l\n", x + points[i].x, y + points[i].y);
+
+  fprintf(psout,"cp\n");
+
+  fprintf(psout,"clip\n");
+
+  g_free(points);
+  gdk_image_destroy(image);
+}
+
+static void
 psclip(GtkPlotPC *pc, const GdkRectangle *clip)
 {
   FILE *psout = GTK_PLOT_PS(pc)->psfile;
@@ -948,6 +1278,110 @@ psclip(GtkPlotPC *pc, const GdkRectangle *clip)
 
   fprintf(psout,"gsave\n");
   fprintf(psout,"%d %d %d %d rectclip\n", clip->x, clip->y, clip->width, clip->height);
+}
+
+/* TODO: FIXME */
+
+static void 
+psdrawpixmap  (GtkPlotPC *pc,
+               GdkPixmap *pixmap,
+               GdkBitmap *mask,
+               gint xsrc, gint ysrc,
+               gint xdest, gint ydest,
+               gint width, gint height,
+               gdouble scale_x, gdouble scale_y)
+{
+  FILE *psout = GTK_PLOT_PS(pc)->psfile;
+  GdkColormap *colormap;
+
+  colormap = gdk_colormap_get_system ();
+
+  fprintf(psout, "gsave\n");
+  if(pixmap){
+    GdkImage *image;
+    gint x, y;
+
+    image = gdk_image_get(pixmap,
+                          xsrc, ysrc,
+                          width, height);
+
+    if(mask) gtk_plot_pc_clip_mask(pc, xdest, ydest, mask);
+
+    fprintf(psout, "%d %g translate\n", xdest, ydest + height * scale_y);
+    fprintf(psout, "%g %g scale\n",width * scale_x, height * scale_y);
+    fprintf(psout, "%d %d 8 [%d 0 0 %d 0 %d]\n",width, height, width, height, height);
+    fprintf(psout, "/scanline %d 3 mul string def\n", width);
+    fprintf(psout, "{ currentfile scanline readhexstring pop } false 3\n");
+    fprintf(psout, "colorimage\n");
+
+
+    for(y = 0; y < height; y++){
+      for(x = 0; x < width; x++){
+        GdkColor color;
+        gchar string[7];
+
+        color.pixel = gdk_image_get_pixel(image, x, y);
+	gdk_colormap_query_color(colormap, color.pixel, &color);
+        color_to_hex(color, string);
+        fprintf(psout,"%s",string);
+        if(fmod(x + 1, 13) == 0) fprintf(psout, "\n");
+      }
+      fprintf(psout,"\n");
+    }
+
+    gdk_image_destroy(image);
+    if(mask) gtk_plot_pc_clip_mask(pc, xdest, ydest, NULL);
+  }
+
+  fprintf(psout, "grestore\n");
+}
+
+static void
+color_to_hex(GdkColor color, gchar string[7])
+{
+  gint n;
+  gint aux;
+
+  aux = color.red / 256;
+  n=aux/16;
+  aux-=n*16;
+  if(n < 10)
+    string[0]='0'+n;
+  else
+    string[0]='A'+n-10;
+  n = aux;
+  if(n < 10)
+    string[1]='0'+n;
+  else
+    string[1]='A'+n-10;
+
+  aux = color.green / 256;
+  n=aux/16;
+  aux-=n*16;
+  if(n < 10)
+    string[2]='0'+n;
+  else
+    string[2]='A'+n-10;
+  n = aux;
+  if(n < 10)
+    string[3]='0'+n;
+  else
+    string[3]='A'+n-10;
+
+  aux = color.blue / 256;
+  n=aux/16;
+  aux-=n*16;
+  if(n < 10)
+    string[4]='0'+n;
+  else
+    string[4]='A'+n-10;
+  n = aux;
+  if(n < 10)
+    string[5]='0'+n;
+  else
+    string[5]='A'+n-10;
+
+  string[6]='\0';
 }
 
 

@@ -45,12 +45,6 @@ struct _GtkFontCombo {
 	GtkWidget *size_combo;
         GtkWidget *bold_button;
 	GtkWidget *italic_button;
-
-        GtkPSFont *psfont;
-        GdkFont *font;
-        gint height;
-        gboolean italic;
-        gboolean bold;
 };
 
 struct _GtkFontComboClass {
@@ -73,6 +67,10 @@ void	   gtk_font_combo_select_nth		(GtkFontCombo *font_combo,
 			                         gboolean bold,
                         			 gboolean italic,
 						 gint height);
+gint	   gtk_font_combo_get_font_height	(GtkFontCombo *font_combo);
+GtkPSFont  *gtk_font_combo_get_psfont		(GtkFontCombo *font_combo);
+PangoFontDescription  *gtk_font_combo_get_font_description (GtkFontCombo *font_combo);
+GdkFont    *gtk_font_combo_get_gdkfont		(GtkFontCombo *font_combo);
 
 #ifdef __cplusplus
 }

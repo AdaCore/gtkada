@@ -27,26 +27,48 @@
 #include "gtkplotpolar.h"
 #include "gtkplot3d.h"
 #include "gtkplotpc.h"
+#include "gtkplotgdk.h" // TODO REMOVE
 #include "gtkpsfont.h"
+#include "gtkextra-marshal.h"
 
 #define DEFAULT_FONT_HEIGHT 18
 
 static gchar DEFAULT_FONT[] = "Helvetica";
 
+extern void gtk_plot_ticks_recalc               (GtkPlotTicks *ticks);
+extern void gtk_plot_ticks_autoscale            (GtkPlotTicks *ticks,
+                                                 gdouble xmin, gdouble xmax,
+                                                 gint *precision);
+extern gdouble gtk_plot_ticks_transform        (GtkPlotTicks *ticks, gdouble y);
+extern gdouble gtk_plot_ticks_inverse          (GtkPlotTicks *ticks, gdouble x);
+extern void gtk_plot_parse_label               (gdouble val,
+                                                gint precision,
+                                                gint style,
+                                                gchar *label,
+                                                GtkPlotScale scale);
+
+
+
+
 
 static void gtk_plot_data_class_init 		(GtkPlotDataClass *klass);
 static void gtk_plot_data_init 			(GtkPlotData *data);
 static void gtk_plot_data_destroy		(GtkObject *object);
-static void gtk_plot_data_draw 			(GtkWidget *widget, 
-						 GdkRectangle *area);
+static void gtk_plot_data_real_clone            (GtkPlotData *real_data,
+                                                 GtkPlotData *copy_data);
+static void gtk_plot_data_real_update		(GtkPlotData *data, 
+						 gboolean new_range);
+static void update_gradient			(GtkPlotData *data);
 static void gtk_plot_data_draw_private 		(GtkPlotData *data);
 static void gtk_plot_data_draw_legend		(GtkPlotData *data, 
 						 gint x, gint y);
 static void gtk_plot_data_get_legend_size	(GtkPlotData *data, 
 						 gint *width, gint *height);
-static void gtk_plot_data_draw_gradient		(GtkPlotData *data, 
+static void gtk_plot_data_real_draw_gradient	(GtkPlotData *data, 
 						 gint x, gint y);
 static void gtk_plot_data_real_draw		(GtkPlotData *data, 
+						 gint npoints);
+static void gtk_plot_data_real_real_draw	(GtkPlotData *data, 
 						 gint npoints);
 static void gtk_plot_data_real_draw_symbol	(GtkPlotData *data, 
 						 gdouble x, 
@@ -109,7 +131,6 @@ static void gtk_plot_data_draw_star		(GtkPlotData *data,
 
 static void gtk_plot_data_connect_points	(GtkPlotData *data, 
 						 gint npoints);
-static void gtk_plot_data_calc_gradient		(GtkPlotData *data);
 
 static gint roundint				(gdouble x);
 static void spline_solve 			(int n, 
@@ -131,15 +152,47 @@ static void rgb_to_hsv 				(gdouble  r,
             					 gdouble *h, 
 						 gdouble *s, 
 						 gdouble *v);
+static void real_autoscale_gradient		(GtkPlotData *data, 
+						 gdouble xmin, gdouble xmax);
+
+static void draw_marker				(GtkPlotData *data, 
+						 GtkPlotMarker *marker);
 
 enum {
+  ADD_TO_PLOT,
+  UPDATE,
   DRAW_DATA,
+  GRADIENT_CHANGED,
+  GRADIENT_COLORS_CHANGED,
   LAST_SIGNAL
 };
 
 static GtkWidgetClass *parent_class = NULL;
 static guint data_signals[LAST_SIGNAL] = { 0 };
 
+GtkType
+gtk_plot_marker_get_type (void)
+{
+  static GtkType marker_type = 0;
+
+  if (!marker_type)
+    {
+      GtkTypeInfo data_info =
+      {
+        "GtkPlotMarker",
+        0,
+        0,
+        (GtkClassInitFunc) NULL,
+        (GtkObjectInitFunc) NULL,
+        /* reserved 1*/ NULL,
+        /* reserved 2 */ NULL,
+        (GtkClassInitFunc) NULL,
+      };
+
+      marker_type = gtk_type_unique (GTK_TYPE_BOXED, &data_info);
+    }
+  return marker_type;
+}
 
 GtkType
 gtk_plot_data_get_type (void)
@@ -178,26 +231,62 @@ gtk_plot_data_class_init (GtkPlotDataClass *klass)
   widget_class = (GtkWidgetClass *) klass;
   data_class = (GtkPlotDataClass *) klass;
 
-  widget_class->draw = gtk_plot_data_draw;
   object_class->destroy = gtk_plot_data_destroy;
 
+  data_class->clone = gtk_plot_data_real_clone;
+  data_class->add_to_plot = NULL;
+  data_class->update = gtk_plot_data_real_update;
+  data_class->gradient_changed = update_gradient;
+  data_class->gradient_colors_changed = update_gradient;
   data_class->draw_symbol = gtk_plot_data_real_draw_symbol;
   data_class->draw_data = gtk_plot_data_draw_private;
   data_class->draw_legend = gtk_plot_data_draw_legend;
+/*
+  data_class->draw_gradient = gtk_plot_data_real_draw_gradient;
+*/
   data_class->get_legend_size = gtk_plot_data_get_legend_size;
+
+  data_signals[ADD_TO_PLOT] =
+    gtk_signal_new ("add_to_plot",
+                    GTK_RUN_LAST,
+                    GTK_CLASS_TYPE(object_class),
+                    GTK_SIGNAL_OFFSET (GtkPlotDataClass, add_to_plot),
+                    gtkextra_BOOL__POINTER,
+                    GTK_TYPE_BOOL, 1, GTK_TYPE_PLOT);
+
+  data_signals[UPDATE] =
+    gtk_signal_new ("update",
+                    GTK_RUN_LAST,
+                    GTK_CLASS_TYPE(object_class),
+                    GTK_SIGNAL_OFFSET (GtkPlotDataClass, update),
+                    gtkextra_VOID__BOOL,
+                    GTK_TYPE_NONE, 1, GTK_TYPE_BOOL);
 
   data_signals[DRAW_DATA] =
     gtk_signal_new ("draw_data",
                     GTK_RUN_FIRST,
-                    object_class->type,
+                    GTK_CLASS_TYPE(object_class),
                     GTK_SIGNAL_OFFSET (GtkPlotDataClass, draw_data),
-                    gtk_marshal_NONE__NONE,
+                    gtkextra_VOID__VOID,
                     GTK_TYPE_NONE, 0, GTK_TYPE_NONE);
 
-  gtk_object_class_add_signals (object_class, data_signals, LAST_SIGNAL);
+  data_signals[GRADIENT_CHANGED] =
+    gtk_signal_new ("gradient_changed",
+                    GTK_RUN_LAST,
+                    GTK_CLASS_TYPE(object_class),
+                    GTK_SIGNAL_OFFSET (GtkPlotDataClass, gradient_changed),
+                    gtkextra_VOID__VOID,
+                    GTK_TYPE_NONE, 0, GTK_TYPE_NONE);
+
+  data_signals[GRADIENT_COLORS_CHANGED] =
+    gtk_signal_new ("gradient_colors_changed",
+                    GTK_RUN_LAST,
+                    GTK_CLASS_TYPE(object_class),
+                    GTK_SIGNAL_OFFSET (GtkPlotDataClass, gradient_colors_changed),
+                    gtkextra_VOID__VOID,
+                    GTK_TYPE_NONE, 0, GTK_TYPE_NONE);
 
 }
-
 
 static void
 gtk_plot_data_init (GtkPlotData *dataset)
@@ -214,6 +303,9 @@ gtk_plot_data_init (GtkPlotData *dataset)
   gdk_color_black(colormap, &black);
   gdk_color_white(colormap, &white);
 
+  dataset->color_lt_min = white;
+  dataset->color_gt_max = white;
+
   gdk_color_parse("red", &color);
   gdk_color_alloc(colormap, &color);
   dataset->color_max = color;
@@ -222,23 +314,32 @@ gtk_plot_data_init (GtkPlotData *dataset)
   gdk_color_alloc(colormap, &color);
   dataset->color_min = color;
 
-  dataset->gradient.begin = 0.0;
-  dataset->gradient.end = 1.0;
+  dataset->gradient_colors = NULL;
+
+  dataset->gradient.min = 0.0;
+  dataset->gradient.max = 1.0;
   dataset->gradient.nmajorticks = 10;
-  dataset->gradient.major = NULL;
-  dataset->gradient.major_values = NULL;
+  dataset->gradient.nminorticks = 0;
+  dataset->gradient.nminor = 0;
+  dataset->gradient.values = NULL;
+  dataset->gradient.scale = GTK_PLOT_SCALE_LINEAR;
+  dataset->gradient.apply_break = FALSE;
   dataset->gradient_mask = GTK_PLOT_GRADIENT_H;
   dataset->show_gradient = FALSE;
-  gtk_plot_data_calc_gradient(dataset);
   dataset->legends_precision = 3;
+  dataset->legends_style = GTK_PLOT_LABEL_FLOAT;
+  gtk_plot_data_reset_gradient(dataset);
 
   dataset->plot = NULL;
 
   dataset->is_function = FALSE;
+  dataset->is_iterator = FALSE;
+  dataset->iterator_mask = GTK_PLOT_DATA_X|GTK_PLOT_DATA_Y;
   dataset->show_legend = TRUE;
   dataset->show_labels = FALSE;
   dataset->fill_area = FALSE;
   dataset->function = NULL;
+  dataset->iterator = NULL;
   dataset->num_points = 0;
   dataset->x = NULL;
   dataset->y = NULL;
@@ -248,24 +349,34 @@ gtk_plot_data_init (GtkPlotData *dataset)
   dataset->dy = NULL;
   dataset->dz = NULL;
   dataset->da = NULL;
+  dataset->a_scale = 1.0;
+
   dataset->labels = NULL;
   dataset->x_step = .5;
   dataset->y_step = .5;
   dataset->line_connector = GTK_PLOT_CONNECT_STRAIGHT;
 
   dataset->line.line_style = GTK_PLOT_LINE_SOLID;
+  dataset->line.cap_style = 0;
+  dataset->line.join_style = 0;
   dataset->line.line_width = 1;
   dataset->line.color = black; 
 
   dataset->x_line.line_style = GTK_PLOT_LINE_NONE;
+  dataset->x_line.cap_style = 0;
+  dataset->x_line.join_style = 0;
   dataset->x_line.line_width = 1;
   dataset->x_line.color = black; 
 
   dataset->y_line.line_style = GTK_PLOT_LINE_NONE;
+  dataset->y_line.cap_style = 0;
+  dataset->y_line.join_style = 0;
   dataset->y_line.line_width = 1;
   dataset->y_line.color = black; 
 
   dataset->z_line.line_style = GTK_PLOT_LINE_NONE;
+  dataset->z_line.cap_style = 0;
+  dataset->z_line.join_style = 0;
   dataset->z_line.line_width = 1;
   dataset->z_line.color = black; 
 
@@ -293,9 +404,13 @@ gtk_plot_data_init (GtkPlotData *dataset)
   dataset->labels_attr.transparent = TRUE;
   dataset->labels_attr.font = NULL;
   dataset->labels_attr.text = NULL;
+  dataset->labels_attr.border_space = 3;
   dataset->labels_offset = 6;
 
   dataset->link = NULL;
+
+  dataset->markers = NULL;
+  dataset->show_markers = TRUE;
 
   gtk_plot_data_labels_set_attributes(dataset, 
                                       DEFAULT_FONT,
@@ -305,6 +420,8 @@ gtk_plot_data_init (GtkPlotData *dataset)
                                       &white);
 
   gtk_psfont_init();
+
+  dataset->redraw_pending = TRUE;
 }
 
 static void
@@ -318,13 +435,22 @@ gtk_plot_data_destroy (GtkObject *object)
   data = GTK_PLOT_DATA (object);
 
   if(data->labels_attr.font) g_free(data->labels_attr.font);
+  data->labels_attr.font = NULL;
   if(data->legend) g_free(data->legend);
+  data->legend = NULL;
   if(data->name) g_free(data->name);
+  data->name = NULL;
 
-  if(data->gradient.major){
-     g_free(data->gradient.major);
-     g_free(data->gradient.major_values);
+  if(data->gradient.values){
+     g_free(data->gradient.values);
+     data->gradient.values = NULL;
   }
+  if(data->gradient_colors){
+     g_free(data->gradient_colors);
+     data->gradient_colors = NULL;
+  }
+
+  gtk_plot_data_remove_markers(data);
 
   gtk_psfont_unref();
 }
@@ -359,12 +485,111 @@ gtk_plot_data_construct_function (GtkPlotData *data, GtkPlotFunc function)
   data->function = function;
 }
 
+GtkWidget*
+gtk_plot_data_new_iterator (GtkPlotIterator iterator, gint npoints, guint16 mask)
+{
+  GtkWidget *dataset;
+
+  dataset = gtk_type_new (gtk_plot_data_get_type ());
+
+  gtk_plot_data_construct_iterator (GTK_PLOT_DATA(dataset), iterator, npoints, mask);
+
+  return (dataset);
+}
+
+void
+gtk_plot_data_construct_iterator (GtkPlotData *data, 
+				  GtkPlotIterator iterator, gint npoints, guint16 mask)
+{
+  data->is_iterator = TRUE;
+  data->iterator_mask = mask;
+  data->iterator = iterator;
+  data->num_points = npoints; 
+}
+
+void
+gtk_plot_data_clone (GtkPlotData *data, GtkPlotData *copy)
+{
+  GTK_PLOT_DATA_CLASS(GTK_OBJECT_GET_CLASS(GTK_OBJECT(data)))->clone(data, copy);
+}
+
+void
+gtk_plot_data_update(GtkPlotData *data)
+{
+  GTK_PLOT_DATA_CLASS(GTK_OBJECT_GET_CLASS(GTK_OBJECT(data)))->update(data, TRUE);
+}
+
+static void
+gtk_plot_data_real_update(GtkPlotData *data, gboolean new_range)
+{
+  data->redraw_pending = TRUE;
+}
+
+static void
+update_gradient(GtkPlotData *data)
+{ 
+  data->redraw_pending = TRUE;
+}
+
+/*
 static void
 gtk_plot_data_draw (GtkWidget *widget, GdkRectangle *area)
 {
   if(!GTK_WIDGET_VISIBLE(widget)) return;
   gtk_signal_emit(GTK_OBJECT(widget), data_signals[DRAW_DATA], NULL);
-  GTK_PLOT_DATA_CLASS(GTK_OBJECT(widget)->klass)->draw_data(GTK_PLOT_DATA(widget));
+  GTK_PLOT_DATA_CLASS(GTK_OBJECT_GET_CLASS(GTK_OBJECT(widget)))->draw_data(GTK_PLOT_DATA(widget));
+
+  GTK_PLOT_DATA(widget)->redraw_pending = FALSE;
+}
+*/
+
+static void
+draw_marker(GtkPlotData *data, GtkPlotMarker *marker)
+{
+  GtkPlot *plot;
+  GdkColor black;
+  GdkColormap *colormap = NULL;
+  GtkPlotPoint p[6];
+  gdouble x, y, z, a, dx, dy, dz, da;
+  gchar *label;
+  gboolean error;
+  gdouble px, py;
+
+  if(!data->plot) return;
+  plot = data->plot;
+
+  gtk_plot_data_get_point(data, marker->point, 
+			  &x, &y, &z, &a, &dx, &dy, &dz, &da,  
+			  &label, &error);
+
+  if(x < plot->xmin || y < plot->ymin || x >= plot->xmax || y >= plot->ymax) 
+     return;
+
+  gtk_plot_get_pixel(plot, x, y, &px, &py);
+
+  colormap = gdk_colormap_get_system();
+  gdk_color_black(colormap, &black);
+  gtk_plot_pc_set_color(plot->pc, &black);
+  gtk_plot_pc_set_lineattr(plot->pc, 1, 0, 0, 0);
+
+  p[0].x = px;
+  p[0].y = py;
+  p[1].x = px - 6;
+  p[1].y = py - 12;
+  p[2].x = px + 6;
+  p[2].y = py - 12;
+  gtk_plot_pc_draw_polygon(plot->pc, TRUE, p, 3);
+  p[1].x = px - 6;
+  p[1].y = py + 12;
+  p[2].x = px + 6;
+  p[2].y = py + 12;
+  gtk_plot_pc_draw_polygon(plot->pc, TRUE, p, 3);
+  p[0].x = px - 6;
+  p[0].y = py;
+  p[1].x = px + 7;
+  p[1].y = py;
+  gtk_plot_pc_set_lineattr(plot->pc, 3, 0, 0, 0);
+  gtk_plot_pc_draw_polygon(plot->pc, FALSE, p, 2);
 }
 
 void
@@ -373,12 +598,27 @@ gtk_plot_data_paint (GtkPlotData *data)
   if(!GTK_WIDGET_VISIBLE(GTK_WIDGET(data))) return;
 
   gtk_signal_emit(GTK_OBJECT(data), data_signals[DRAW_DATA], NULL);
+
+  data->redraw_pending = FALSE;
 }
 
 static void
 gtk_plot_data_draw_private (GtkPlotData *data)
 {
+  GList *list = NULL;
+
   gtk_plot_data_real_draw(data, data->num_points);
+
+  if(data->show_markers){
+    list = data->markers;
+    while(list){
+      GtkPlotMarker *marker;
+
+      marker = (GtkPlotMarker *)list->data;
+      draw_marker(data, marker); 
+      list = list->next;
+    } 
+  }
 }
 
 static void
@@ -392,9 +632,15 @@ gtk_plot_data_real_draw   (GtkPlotData *dataset,
   GdkRectangle area, clip_area;
   gdouble x, y, z = 0., a = 0.;
   gdouble dx = 0., dy = 0., dz = 0., da = 0.;
-  gint n;
   gdouble *fx = NULL;
   gdouble *fy = NULL;
+  gdouble *fz = NULL;
+  gdouble *fa = NULL;
+  gdouble *fdx = NULL;
+  gdouble *fdy = NULL;
+  gdouble *fdz = NULL;
+  gdouble *fda = NULL;
+  gchar **fl = NULL;
   gboolean error;
   gdouble m;
 
@@ -414,7 +660,6 @@ gtk_plot_data_real_draw   (GtkPlotData *dataset,
   gtk_plot_pc_gsave(plot->pc);
 
   m = plot->magnification;
-  npoints = MIN(npoints, dataset->num_points);
 
   area.x = widget->allocation.x;
   area.y = widget->allocation.y;
@@ -426,70 +671,10 @@ gtk_plot_data_real_draw   (GtkPlotData *dataset,
   clip_area.width = roundint(plot->width * area.width);
   clip_area.height = roundint(plot->height * area.height);
 
-  if(!dataset->is_function)
-    {
-       gtk_plot_data_connect_points (dataset, npoints+1);
-       gtk_plot_data_draw_xyz(dataset, npoints);
-       for(n=dataset->num_points-npoints; n<=dataset->num_points-1; n++)
-         {
-           x = dataset->x[n];
-           y = dataset->y[n];
-           if(dataset->z != NULL) z = dataset->z[n];
-           if(dataset->a != NULL) a = dataset->a[n];
-           if(dataset->dx != NULL) dx = dataset->dx[n];
-           if(dataset->dy != NULL) dy = dataset->dy[n];
-           if(dataset->dz != NULL) dz = dataset->dz[n];
-           if(dataset->da != NULL) da = dataset->da[n];
-
-           if(x >= plot->xmin && x <= plot->xmax){
-               GdkColor symbol_color, border_color;
-               gint symbol_size;
-
-               symbol_color = dataset->symbol.color;
-               border_color = dataset->symbol.border.color;
-               symbol_size = dataset->symbol.size;
-               if(dataset->da){
-                  GdkColor level_color;
-                  gtk_plot_data_get_gradient_level(dataset, da, &level_color);
-                  gdk_color_alloc(colormap, &level_color);
-                  dataset->symbol.color = level_color;
-                  dataset->symbol.border.color = level_color;
-               }
-               if(dataset->a && !GTK_IS_PLOT3D(plot)){
-                  gdouble px, py, px0, py0;     
-                  gtk_plot_get_pixel(plot, x, y, &px, &py);
-                  gtk_plot_get_pixel(plot, x + a, y, &px0, &py0);
-                  dataset->symbol.size = fabs(px0 -px);
-               }
-               GTK_PLOT_DATA_CLASS(GTK_OBJECT(dataset)->klass)->draw_symbol(dataset, x, y, z, a, dx, dy, dz, da); 
-               dataset->symbol.color = symbol_color;
-               dataset->symbol.border.color = border_color;
-               dataset->symbol.size = symbol_size;
-
-               if(dataset->show_labels){
-                 if(dataset->labels && dataset->labels[n]){
-                    GtkPlotText label;
-                    gdouble px, py, pz;
-
-                    if(GTK_IS_PLOT3D(plot))
-                        gtk_plot3d_get_pixel(GTK_PLOT3D(plot), x, y, z, 
-                                             &px, &py, &pz);
-                    else
-                        gtk_plot_get_pixel(plot, x, y, &px, &py);
-
-                    label = dataset->labels_attr;
-                    label.text = dataset->labels[n];
-                    label.x = (gdouble)px / (gdouble)area.width;
-                    label.y = (gdouble)(py - roundint((dataset->labels_offset + dataset->symbol.size) * m)) / (gdouble)area.height; 
-                    gtk_plot_draw_text(plot, label);	
-                 }          
-               }
-           }
-         } 
-    } 
-  else
+  if(dataset->is_function)
     {
        gdouble xmin, xmax, px, py;
+
        function = dataset;
        function->num_points = 0;
        gtk_plot_get_pixel(plot, plot->xmin, 0, &xmin, &py);
@@ -528,8 +713,192 @@ gtk_plot_data_real_draw   (GtkPlotData *dataset,
        function->x = NULL;
        function->y = NULL;
     }
+  else if(dataset->is_iterator)
+    {
+       gint iter;
+       gchar *label;
+   
+       function = dataset;
+       if(function->iterator_mask & GTK_PLOT_DATA_X)
+         fx = g_new0(gdouble, npoints);
+       if(function->iterator_mask & GTK_PLOT_DATA_Y)
+         fy = g_new0(gdouble, npoints); 
+       if(function->iterator_mask & GTK_PLOT_DATA_Z)
+         fz = g_new0(gdouble, npoints);
+       if(function->iterator_mask & GTK_PLOT_DATA_A)
+         fa = g_new0(gdouble, npoints); 
+       if(function->iterator_mask & GTK_PLOT_DATA_DX)
+         fdx = g_new0(gdouble, npoints);
+       if(function->iterator_mask & GTK_PLOT_DATA_DY)
+         fdy = g_new0(gdouble, npoints); 
+       if(function->iterator_mask & GTK_PLOT_DATA_DZ)
+         fdz = g_new0(gdouble, npoints);
+       if(function->iterator_mask & GTK_PLOT_DATA_DA)
+         fda = g_new0(gdouble, npoints);
+       if(function->iterator_mask & GTK_PLOT_DATA_LABELS)
+         fl = (gchar **)g_malloc0(npoints * sizeof(gchar *)); 
+
+       for(iter = 0; iter < npoints; iter++){
+            function->iterator (plot, dataset, 
+                                function->num_points - npoints + iter, 
+                                &x, &y, &z, &a, &dx, &dy, &dz, &da, &label, &error);
+
+            if(error)
+              {
+                 break;
+              }
+            else
+              {
+                if(function->iterator_mask & GTK_PLOT_DATA_X) fx[iter] = x;
+                if(function->iterator_mask & GTK_PLOT_DATA_Y) fy[iter] = y;
+                if(function->iterator_mask & GTK_PLOT_DATA_Z) fz[iter] = z;
+                if(function->iterator_mask & GTK_PLOT_DATA_A) fa[iter] = a;
+                if(function->iterator_mask & GTK_PLOT_DATA_DX) fdx[iter] = dx;
+                if(function->iterator_mask & GTK_PLOT_DATA_DY) fdy[iter] = dy;
+                if(function->iterator_mask & GTK_PLOT_DATA_DZ) fdz[iter] = dz;
+                if(function->iterator_mask & GTK_PLOT_DATA_DA) fda[iter] = da;
+                if(function->iterator_mask & GTK_PLOT_DATA_LABELS) 
+                                                   fl[iter] = g_strdup(label);
+              }
+       }
+       function->x = fx;
+       function->y = fy;
+       function->z = fz;
+       function->a = fa;
+       function->dx = fdx;
+       function->dy = fdy;
+       function->dz = fdz;
+       function->da = fda;
+       function->labels = fl;
+       gtk_plot_data_real_real_draw(function, MIN(iter, npoints));
+
+       if(fx) g_free(fx);
+       if(fy) g_free(fy);
+       if(fz) g_free(fz);
+       if(fa) g_free(fa);
+       if(fdx) g_free(fdx);
+       if(fdy) g_free(fdy);
+       if(fdz) g_free(fdz);
+       if(fda) g_free(fda);
+       if(fl) {
+         for(iter = 0; iter < npoints; iter++) g_free(fl[iter]);
+         g_free(fl);
+       }
+       function->x = NULL;
+       function->y = NULL;
+       function->z = NULL;
+       function->a = NULL;
+       function->dx = NULL;
+       function->dy = NULL;
+       function->dz = NULL;
+       function->da = NULL;
+       function->labels = NULL;
+    }
+  else
+       gtk_plot_data_real_real_draw(dataset, npoints);
+
   gtk_plot_pc_grestore(plot->pc);
 }
+
+static void
+gtk_plot_data_real_real_draw   (GtkPlotData *dataset,  
+			   	gint npoints)
+{
+  GtkWidget *widget;
+  GtkPlot *plot = NULL;
+  GdkRectangle area;
+  GdkColormap *colormap;
+  gdouble x, y, z = 0., a = 0.;
+  gdouble dx = 0., dy = 0., dz = 0., da = 0.;
+  gint n;
+  gdouble m;
+
+  g_return_if_fail(GTK_IS_PLOT_DATA(dataset));
+  g_return_if_fail(dataset->plot != NULL);
+  g_return_if_fail(GTK_IS_PLOT(dataset->plot));
+  g_return_if_fail(GTK_WIDGET_REALIZED(dataset->plot));
+
+  plot = dataset->plot;
+  widget = GTK_WIDGET(plot);
+  colormap = gdk_colormap_get_system();
+
+  if(!GTK_WIDGET_DRAWABLE(widget)) return;
+  if(!GTK_WIDGET_VISIBLE(widget)) return;
+  if(!GTK_WIDGET_VISIBLE(GTK_WIDGET(dataset))) return;
+
+  area.x = widget->allocation.x;
+  area.y = widget->allocation.y;
+  area.width = widget->allocation.width;
+  area.height = widget->allocation.height;
+
+  gtk_plot_pc_gsave(plot->pc);
+
+  m = plot->magnification;
+  npoints = MIN(npoints, dataset->num_points);
+
+  gtk_plot_data_connect_points (dataset, npoints+1);
+  gtk_plot_data_draw_xyz(dataset, npoints);
+  for(n=dataset->num_points-npoints; n<=dataset->num_points-1; n++)
+    {
+      x = dataset->x[n];
+      y = dataset->y[n];
+      if(dataset->z != NULL) z = dataset->z[n];
+      if(dataset->a != NULL) a = dataset->a[n];
+      if(dataset->dx != NULL) dx = dataset->dx[n];
+      if(dataset->dy != NULL) dy = dataset->dy[n];
+      if(dataset->dz != NULL) dz = dataset->dz[n];
+      if(dataset->da != NULL) da = dataset->da[n];
+
+      if(!plot->clip_data || 
+        (plot->clip_data && GTK_IS_PLOT_POLAR(plot) && x >= GTK_PLOT_POLAR(plot)->r->ticks.min && x <= GTK_PLOT_POLAR(plot)->r->ticks.max) || 
+        (plot->clip_data && x >= plot->xmin && x <= plot->xmax)){
+          GdkColor symbol_color, border_color;
+          gint symbol_size;
+
+          symbol_color = dataset->symbol.color;
+          border_color = dataset->symbol.border.color;
+          symbol_size = dataset->symbol.size;
+          if(dataset->da){
+             GdkColor level_color;
+             gtk_plot_data_get_gradient_level(dataset, da, &level_color);
+             dataset->symbol.color = level_color;
+             dataset->symbol.border.color = level_color;
+          }
+          if(dataset->a && !GTK_IS_PLOT3D(plot)){
+             gdouble px, py, px0, py0;     
+             gtk_plot_get_pixel(plot, x, y, &px, &py);
+             gtk_plot_get_pixel(plot, x + a, y, &px0, &py0);
+             dataset->symbol.size = fabs((px - px0)/plot->magnification);
+             dataset->symbol.size *= fabs(dataset->a_scale);
+          }
+          GTK_PLOT_DATA_CLASS(GTK_OBJECT_GET_CLASS(GTK_OBJECT(dataset)))->draw_symbol(dataset, x, y, z, a, dx, dy, dz, da); 
+          dataset->symbol.color = symbol_color;
+          dataset->symbol.border.color = border_color;
+          dataset->symbol.size = symbol_size;
+
+          if(dataset->show_labels){
+            if(dataset->labels && dataset->labels[n]){
+               GtkPlotText label;
+               gdouble px, py, pz;
+
+               if(GTK_IS_PLOT3D(plot))
+                   gtk_plot3d_get_pixel(GTK_PLOT3D(plot), x, y, z, 
+                                        &px, &py, &pz);
+               else
+                   gtk_plot_get_pixel(plot, x, y, &px, &py);
+
+               label = dataset->labels_attr;
+               label.text = dataset->labels[n];
+               label.x = (gdouble)px / (gdouble)area.width;
+               label.y = (gdouble)(py - roundint((dataset->labels_offset + dataset->symbol.size) * m)) / (gdouble)area.height; 
+               gtk_plot_draw_text(plot, label);	
+            }          
+          }
+      }
+    } 
+ 
+}
+
 
 static void
 gtk_plot_data_draw_legend(GtkPlotData *data, gint x, gint y)
@@ -614,20 +983,29 @@ gtk_plot_data_draw_legend(GtkPlotData *data, gint x, gint y)
   gtk_plot_pc_grestore(plot->pc);
 }
 
-static void
+void
 gtk_plot_data_draw_gradient(GtkPlotData *data, gint x, gint y)
+{
+  gtk_plot_data_real_draw_gradient(data, x, y);
+/*
+  if(GTK_PLOT_DATA_CLASS(GTK_OBJECT_GET_CLASS(GTK_OBJECT(data)))->draw_gradient)
+    GTK_PLOT_DATA_CLASS(GTK_OBJECT_GET_CLASS(GTK_OBJECT(data)))->draw_gradient(data, x, y);
+*/
+}
+
+static void
+gtk_plot_data_real_draw_gradient(GtkPlotData *data, gint x, gint y)
 {
   GtkPlot *plot = NULL;
   GtkPlotText legend;
+  gchar text[100];
   GdkRectangle area;
   GdkColor color;
   gint lascent, ldescent, lheight, lwidth;
   gdouble m;
-  gint ncolors;
-  gdouble step;
   gint level;
-  gdouble h;
-  gint cy;
+  gint y_orig = y;
+  gdouble ry;
 
   g_return_if_fail(data->plot != NULL);
   g_return_if_fail(GTK_IS_PLOT(data->plot));
@@ -641,68 +1019,138 @@ gtk_plot_data_draw_gradient(GtkPlotData *data, gint x, gint y)
   area.width = GTK_WIDGET(plot)->allocation.width;
   area.height = GTK_WIDGET(plot)->allocation.height;
 
-  m = plot->magnification; 
+  m = plot->magnification;
   legend = plot->legends_attr;
 
-  if(data->legend)
-    legend.text = data->legend;
-  else
-    legend.text = "";
-
-  gtk_plot_text_get_size(legend.text, legend.angle, legend.font,
-                         roundint(legend.height * m), 
+  gtk_plot_parse_label(data->gradient.min, data->legends_precision, data->legends_style, text, data->gradient.scale);
+  gtk_plot_text_get_size(text, legend.angle, legend.font,
+                         roundint(legend.height * m),
                          &lwidth, &lheight,
                          &lascent, &ldescent);
 
-  ncolors = (lascent + ldescent) * data->gradient.nmajorticks;
-  step = (data->gradient.end - data->gradient.begin) / ncolors;
+  if(!data->gradient_custom){
+    gint ncolors = (lascent + ldescent) * (data->gradient.nticks - 1);
+    gint cy;
+    gdouble h;
+    gint l;
 
-  cy = y;
-  for(h = data->gradient.end; h >= data->gradient.begin; h -= step){
-    gtk_plot_data_get_gradient_level(data, h, &color);
-    gdk_color_alloc(gdk_colormap_get_system(), &color);
-    gtk_plot_pc_set_color(plot->pc, &color);
+    cy = y;
+    for(l = ncolors; l >= 0; l -= 1){
+      h = gtk_plot_ticks_inverse(&data->gradient, (gdouble)l/(gdouble)ncolors);
+      gtk_plot_data_get_gradient_level(data, h, &color);
+      gtk_plot_pc_set_color(plot->pc, &color);
 
-    gtk_plot_pc_draw_line(plot->pc, 
-                          x, cy,
-                          x + roundint(plot->legends_line_width * m), cy);
+      gtk_plot_pc_draw_line(plot->pc,
+                            x, cy,
+                            x + roundint(plot->legends_line_width * m), cy);
 
-    cy++;
-  }
+      cy++;
+    }
 
-  gtk_plot_pc_set_color(plot->pc, &plot->legends_attr.fg);
-  gtk_plot_pc_draw_rectangle(plot->pc, FALSE,
-                             x, y,
-                             roundint(plot->legends_line_width * m),
-                             ncolors);
+    gtk_plot_pc_set_color(plot->pc, &plot->legends_attr.fg);
+    gtk_plot_pc_set_lineattr(plot->pc, plot->legends_border_width, 0, 0, 0);
+    gtk_plot_pc_draw_rectangle(plot->pc, FALSE,
+                               x, y,
+                               roundint(plot->legends_line_width * m),
+                               ncolors);
 
-  gtk_plot_pc_set_lineattr(plot->pc, plot->legends_border_width, 0, 0, 0);
 
-  y -= (lascent + ldescent) / 2;
-  for(level = data->gradient.nmajorticks; level >= 0; level--){
-    gchar text[20];
+    y -= (lascent + ldescent) / 2;
+    for(level = data->gradient.nticks-1; level >= 0; level--){
+      gdouble val, h;
 
-    h = data->gradient.major_values[level];
-  
-    legend.x = (gdouble)(area.x + x + roundint((plot->legends_line_width + 4) * m))
-               / (gdouble)area.width;
-    legend.y = (gdouble)(area.y + y + lascent) / (gdouble)area.height;
+      h = data->gradient.values[level].value;
 
-    sprintf(text, "%.*f", data->legends_precision,  h);
-    legend.text = text;
+      legend.x = (gdouble)(area.x + x + roundint((plot->legends_line_width + 4) * m)) / (gdouble)area.width;
+      legend.y = (gdouble)(area.y + y + lascent) / (gdouble)area.height;
 
-    gtk_plot_pc_draw_line(plot->pc, 
-                          x, y + (lascent + ldescent) / 2,
-                          x + roundint(4 * m), y + (lascent + ldescent) / 2);
-    gtk_plot_pc_draw_line(plot->pc, 
-                          x + roundint((plot->legends_line_width - 4)* m), 
-                          y + (lascent + ldescent) / 2,
-                          x + roundint(plot->legends_line_width * m), 
-                          y + (lascent + ldescent) / 2);
+      val = h;
 
-    gtk_plot_draw_text(plot, legend);
+      gtk_plot_parse_label(val, data->legends_precision, data->legends_style, text, data->gradient.scale);
 
-    y += lascent + ldescent;
+      legend.text = text;
+
+      gtk_plot_pc_draw_line(plot->pc,
+                            x, y + (lascent + ldescent) / 2,
+                            x + roundint(4 * m), y + (lascent + ldescent) / 2);
+      gtk_plot_pc_draw_line(plot->pc,
+                            x + roundint((plot->legends_line_width - 4)* m),
+                            y + (lascent + ldescent) / 2,
+                            x + roundint(plot->legends_line_width * m),
+                            y + (lascent + ldescent) / 2);
+
+      gtk_plot_draw_text(plot, legend);
+
+      y += (lascent + ldescent);
+    }
+  } else {
+
+    gint nlevels = data->gradient.nticks;
+
+    legend.x = (gdouble)(area.x + x + roundint((plot->legends_line_width + 4) * m)) / (gdouble)area.width;
+
+    y_orig = y;
+    ry = y;
+    for(level = nlevels-1; level >= 0; level--){
+      gdouble val, h;
+      gboolean sublevel = FALSE;
+
+      val = data->gradient.values[level].value;
+      sublevel = data->gradient.values[level].minor;
+
+      if(level != 0){
+        h = val;
+        gtk_plot_data_get_gradient_level(data, h, &color);
+
+        gtk_plot_pc_set_color(plot->pc, &color);
+
+        gtk_plot_pc_draw_rectangle(plot->pc, TRUE,
+                                   x, ry,
+                                   roundint(plot->legends_line_width * m),
+                                   (lascent + ldescent)/(gdouble)(data->gradient.nminor+1)+1);
+      }
+
+      if(!sublevel){
+        legend.y = (gdouble)(area.y + ry + lascent - (lascent+ldescent)/2.) / (gdouble)area.height;
+
+        gtk_plot_parse_label(val, data->legends_precision, data->legends_style, text, data->gradient.scale);
+
+        legend.text = text;
+        gtk_plot_draw_text(plot, legend);
+      }
+      ry += (lascent + ldescent)/(gdouble)(data->gradient.nminor+1);
+
+    }
+
+    gtk_plot_pc_set_color(plot->pc, &plot->legends_attr.fg);
+    gtk_plot_pc_set_lineattr(plot->pc, plot->legends_border_width, 0, 0, 0);
+    gtk_plot_pc_draw_rectangle(plot->pc, FALSE,
+                               x, y,
+                               roundint(plot->legends_line_width * m),
+                               (data->gradient.nmajorticks-1)*(lascent + ldescent));
+
+    ry = y;
+    for(level = nlevels-1; level >= 0; level--){
+      gdouble val;
+      gboolean sublevel = FALSE;
+
+      val = data->gradient.values[level].value;
+      if(data->gradient.values[level].minor) sublevel = TRUE;
+
+      if(!sublevel){
+        gtk_plot_pc_draw_line(plot->pc,
+                              x, ry,
+                              x + roundint(4 * m), ry);
+        gtk_plot_pc_draw_line(plot->pc,
+                              x + roundint((plot->legends_line_width - 4)* m),
+                              ry,
+                              x + roundint(plot->legends_line_width * m),
+                              ry);
+      }
+
+      ry += (lascent + ldescent)/(double)(data->gradient.nminor+1);
+    }
+
   }
 }
 
@@ -718,7 +1166,7 @@ gtk_plot_data_get_legend_size(GtkPlotData *data, gint *width, gint *height)
   g_return_if_fail(GTK_IS_PLOT(data->plot));
 
   plot = data->plot;
-  m = plot->magnification; 
+  m = plot->magnification;
 
   legend = plot->legends_attr;
 
@@ -728,15 +1176,37 @@ gtk_plot_data_get_legend_size(GtkPlotData *data, gint *width, gint *height)
     legend.text = "";
 
   gtk_plot_text_get_size(legend.text, legend.angle, legend.font,
-                         roundint(legend.height * m), 
+                         roundint(legend.height * m),
                          &lwidth, &lheight,
                          &lascent, &ldescent);
 
   *width = lwidth + roundint((plot->legends_line_width + 12) * m);
   *height = MAX(lascent + ldescent, roundint(data->symbol.size * m) + 2 * data->symbol.border.line_width);
 
-  if(data->show_gradient)
-    *height += (lascent + ldescent) * (data->gradient.nmajorticks + 2);
+  if(data->show_gradient){
+    gchar text[100];
+    gint label_height = 0;
+
+    gtk_plot_parse_label(data->gradient.min, data->legends_precision, data->legends_style, text, data->gradient.scale);
+    gtk_plot_text_get_size(text, 0, legend.font,
+                           roundint(legend.height * m),
+                           &lwidth, &lheight,
+                           &lascent, &ldescent);
+
+    *width = MAX(*width, lwidth + roundint((plot->legends_line_width + 12) * m));
+    label_height = MAX(label_height, lheight);
+
+    gtk_plot_parse_label(data->gradient.max, data->legends_precision, data->legends_style, text, data->gradient.scale);
+    gtk_plot_text_get_size(text, 0, legend.font,
+                           roundint(legend.height * m),
+                           &lwidth, &lheight,
+                           &lascent, &ldescent);
+
+    *width = MAX(*width, lwidth + roundint((plot->legends_line_width + 12) * m));
+    label_height = MAX(label_height, lheight);
+    *height += label_height * (data->gradient.nmajorticks + 1);
+  }
+
 }
 
 static void
@@ -750,13 +1220,18 @@ gtk_plot_data_real_draw_symbol (GtkPlotData *data,
   plot = data->plot;
 
   if(GTK_IS_PLOT_POLAR(plot)){
+    GtkPlotPolar *polar = GTK_PLOT_POLAR(plot);
     if(plot->clip_data &&
-       (y < plot->xmin || y > plot->xmax || x < plot->ymin || x > plot->ymax)) 
+       (x < polar->r->ticks.min || x > polar->r->ticks.max || y < polar->angle->ticks.min || y > polar->angle->ticks.max)) 
              return; 
-  } else {
-    if(x < plot->xmin || x > plot->xmax) return;
+  } else if(GTK_IS_PLOT3D(plot)){
+    if(plot->clip_data && (x < plot->xmin || x > plot->xmax)) return;
     if(plot->clip_data && data->symbol.symbol_type != GTK_PLOT_SYMBOL_IMPULSE &&
        (y < plot->ymin || y > plot->ymax)) return; 
+  } else {
+    if(plot->clip_data &&
+       (x < plot->xmin || x > plot->xmax || y < plot->ymin || y > plot->ymax)) 
+             return; 
   }
 
   if(GTK_IS_PLOT3D(plot))
@@ -810,11 +1285,14 @@ gtk_plot_data_draw_symbol_private (GtkPlotData *data,
   GdkRectangle area, clip_area;
   gboolean filled;
   gint size;
+  gdouble m;
 
   if(symbol.symbol_type == GTK_PLOT_SYMBOL_NONE) return;
 
   plot = data->plot;
   widget = GTK_WIDGET(plot);
+
+  m = plot->magnification;
 
   area.x = GTK_WIDGET(plot)->allocation.x;
   area.y = GTK_WIDGET(plot)->allocation.y;
@@ -832,6 +1310,8 @@ gtk_plot_data_draw_symbol_private (GtkPlotData *data,
 
   gtk_plot_pc_set_color(plot->pc, &symbol.color);
   gtk_plot_pc_set_lineattr (plot->pc, symbol.border.line_width, 0, 0, 0);
+  gtk_plot_pc_set_dash (plot->pc, 0, 0, 0);
+
   filled = (symbol.symbol_style == GTK_PLOT_SYMBOL_FILLED) ? TRUE : FALSE;
   size = symbol.size;
 
@@ -844,11 +1324,11 @@ gtk_plot_data_draw_symbol_private (GtkPlotData *data,
      case GTK_PLOT_SYMBOL_SQUARE:
             gtk_plot_pc_draw_rectangle (plot->pc,
                                         filled,
-                                        x-size/2.0, y-size/2.0,
-                                        size, size);
+                                        x-m*size/2.0, y-m*size/2.0,
+                                        m*size, m*size);
             break;
      case GTK_PLOT_SYMBOL_CIRCLE:
-            gtk_plot_pc_draw_circle (plot->pc, filled, x, y, size); 
+            gtk_plot_pc_draw_circle (plot->pc, filled, x, y, m*size); 
             break;
      case GTK_PLOT_SYMBOL_UP_TRIANGLE:
             gtk_plot_data_draw_up_triangle (data, x, y, size, filled);                  
@@ -1014,17 +1494,19 @@ gtk_plot_data_draw_errbars(GtkPlotData *dataset,
               errbar[0].y = eu_y; 
               errbar[1].x = px + m * dataset->zerrbar_caps/2.; 
               errbar[1].y = eu_y; 
-              errbar[2].x = px; 
-     
-              errbar[2].y = eu_y; 
-              errbar[3].x = px; 
-     
-              errbar[3].y = ed_y; 
-              errbar[4].x = px - m * dataset->zerrbar_caps/2.; 
-              errbar[4].y = ed_y; 
-              errbar[5].x = px + m * dataset->zerrbar_caps/2.; 
-              errbar[5].y = ed_y; 
-              gtk_plot_pc_draw_lines(plot->pc, errbar, 6);
+              gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
+
+              errbar[0].x = px; 
+              errbar[0].y = eu_y; 
+              errbar[1].x = px; 
+              errbar[1].y = ed_y; 
+              gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
+
+              errbar[0].x = px - m * dataset->zerrbar_caps/2.; 
+              errbar[0].y = ed_y; 
+              errbar[1].x = px + m * dataset->zerrbar_caps/2.; 
+              errbar[1].y = ed_y; 
+              gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
            }
   } else {
        gtk_plot_get_pixel(plot, x, y, &px, &py);
@@ -1039,17 +1521,19 @@ gtk_plot_data_draw_errbars(GtkPlotData *dataset,
               errbar[0].y = py - m * dataset->xerrbar_caps/2.; 
               errbar[1].x = el_x; 
               errbar[1].y = py + m * dataset->xerrbar_caps/2.; 
-              errbar[2].x = el_x; 
-              errbar[2].y = py; 
+              gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
 
-              errbar[3].x = er_x; 
-              errbar[3].y = py; 
+              errbar[0].x = el_x; 
+              errbar[0].y = py; 
+              errbar[1].x = er_x; 
+              errbar[1].y = py; 
+              gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
      
-              errbar[4].x = er_x; 
-              errbar[4].y = py - m * dataset->xerrbar_caps/2.; 
-              errbar[5].x = er_x; 
-              errbar[5].y = py + m * dataset->xerrbar_caps/2.; 
-              gtk_plot_pc_draw_lines(plot->pc, errbar, 6);
+              errbar[0].x = er_x; 
+              errbar[0].y = py - m * dataset->xerrbar_caps/2.; 
+              errbar[1].x = er_x; 
+              errbar[1].y = py + m * dataset->xerrbar_caps/2.; 
+              gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
            }
 
        if(dataset->show_yerrbars)
@@ -1058,17 +1542,19 @@ gtk_plot_data_draw_errbars(GtkPlotData *dataset,
               errbar[0].y = eu_y; 
               errbar[1].x = px + m * dataset->yerrbar_caps/2.; 
               errbar[1].y = eu_y; 
-              errbar[2].x = px; 
-     
-              errbar[2].y = eu_y; 
-              errbar[3].x = px; 
-     
-              errbar[3].y = ed_y; 
-              errbar[4].x = px - m * dataset->yerrbar_caps/2.; 
-              errbar[4].y = ed_y; 
-              errbar[5].x = px + m * dataset->yerrbar_caps/2.; 
-              errbar[5].y = ed_y; 
-              gtk_plot_pc_draw_lines(plot->pc, errbar, 6);
+              gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
+
+              errbar[0].x = px; 
+              errbar[0].y = eu_y; 
+              errbar[1].x = px; 
+              errbar[1].y = ed_y; 
+              gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
+
+              errbar[0].x = px - m * dataset->yerrbar_caps/2.; 
+              errbar[0].y = ed_y; 
+              errbar[1].x = px + m * dataset->yerrbar_caps/2.; 
+              errbar[1].y = ed_y; 
+              gtk_plot_pc_draw_lines(plot->pc, errbar, 2);
            }
   }
 }
@@ -1093,7 +1579,7 @@ gtk_plot_data_draw_down_triangle(GtkPlotData *data,
   point[1].y = y - m*size*sin(pi/6.)/2.;
 
   point[2].x = x;
-  point[2].y = y + size/2.;
+  point[2].y = y + m*size/2.;
 
   gtk_plot_pc_draw_polygon (plot->pc, filled, point, 3); 
 }
@@ -1117,7 +1603,7 @@ gtk_plot_data_draw_up_triangle(GtkPlotData *data,
   point[1].y = y + m*size*sin(pi/6.)/2.;
 
   point[2].x = x;
-  point[2].y = y - size/2.;
+  point[2].y = y - m*size/2.;
 
   gtk_plot_pc_draw_polygon (plot->pc, filled, point, 3); 
 }
@@ -1168,7 +1654,7 @@ gtk_plot_data_draw_left_triangle(GtkPlotData *data,
   point[1].x = x + m*size*sin(pi/6.)/2.;
   point[1].y = y + m*size*cos(pi/6.)/2.;
 
-  point[2].x = x - size/2.;
+  point[2].x = x - m*size/2.;
   point[2].y = y;
 
   gtk_plot_pc_draw_polygon (plot->pc, filled, point, 3); 
@@ -1192,7 +1678,7 @@ gtk_plot_data_draw_right_triangle(GtkPlotData *data,
   point[1].x = x - m*(gdouble)size*sin(pi/6.)/2.;
   point[1].y = y + m*(gdouble)size*cos(pi/6.)/2.;
 
-  point[2].x = x + size/2.;
+  point[2].x = x + m*size/2.;
   point[2].y = y;
 
   gtk_plot_pc_draw_polygon (plot->pc, filled, point, 3); 
@@ -1550,6 +2036,44 @@ gtk_plot_data_get_points(GtkPlotData *data,
 }
 
 void
+gtk_plot_data_get_point(GtkPlotData *dataset, gint n, 
+                        gdouble *x, gdouble *y, gdouble *z, gdouble *a, 
+                        gdouble *dx, gdouble *dy, gdouble *dz, gdouble *da, 
+                        gchar **label, gboolean *error)
+{
+  *error = FALSE;
+
+  if(dataset->is_function){
+    g_warning("This functions does not work for functions");
+    *error = TRUE;
+    return;
+  } else if(dataset->is_iterator) {
+    if(n >= dataset->num_points){
+       g_warning("n >= dataset->num_points");
+       *error = TRUE;
+       return;
+    }
+    dataset->iterator (GTK_PLOT(dataset->plot), dataset, n, 
+                       x, y, z, a, dx, dy, dz, da, label, error);
+  } else {
+    if(n >= dataset->num_points){
+       g_warning("n >= dataset->num_points");
+       *error = TRUE;
+       return;
+    }
+    if(dataset->x) *x = dataset->x[n]; 
+    if(dataset->y) *y = dataset->y[n]; 
+    if(dataset->z) *z = dataset->z[n]; 
+    if(dataset->a) *a = dataset->a[n]; 
+    if(dataset->dx) *dx = dataset->dx[n]; 
+    if(dataset->dy) *dy = dataset->dy[n]; 
+    if(dataset->dz) *dz = dataset->dz[n]; 
+    if(dataset->da) *da = dataset->da[n]; 
+    if(dataset->labels) *label = dataset->labels[n]; 
+  }
+}
+
+void
 gtk_plot_data_set_x(GtkPlotData *data, 
                     gdouble *x) 
 {
@@ -1608,6 +2132,12 @@ gtk_plot_data_set_da(GtkPlotData *data,
   data->da = da;
 }
 
+void
+gtk_plot_data_set_a_scale(GtkPlotData *data, gdouble a_scale) 
+{
+  data->a_scale = a_scale;
+}
+
 
 void
 gtk_plot_data_set_labels(GtkPlotData *data, 
@@ -1615,6 +2145,7 @@ gtk_plot_data_set_labels(GtkPlotData *data,
 {
   data->labels = labels;
 }
+
 
 gdouble *
 gtk_plot_data_get_x(GtkPlotData *dataset, gint *num_points)
@@ -1670,6 +2201,12 @@ gtk_plot_data_get_da(GtkPlotData *dataset, gint *num_points)
 {
   *num_points = dataset->num_points;
   return(dataset->da);
+}
+
+gdouble 
+gtk_plot_data_get_a_scale(GtkPlotData *dataset)
+{
+  return(dataset->a_scale);
 }
 
 
@@ -1758,10 +2295,14 @@ gtk_plot_data_get_symbol (GtkPlotData *dataset,
 void
 gtk_plot_data_set_line_attributes (GtkPlotData *dataset, 
                                    GtkPlotLineStyle style,
+                                   GdkCapStyle cap_style,
+                                   GdkJoinStyle join_style,
                                    gfloat width,
                                    const GdkColor *color)
 {
   dataset->line.line_style = style; 
+  dataset->line.cap_style = cap_style;
+  dataset->line.join_style = join_style;
   dataset->line.line_width = width; 
   dataset->line.color = *color; 
 }
@@ -1769,10 +2310,14 @@ gtk_plot_data_set_line_attributes (GtkPlotData *dataset,
 void
 gtk_plot_data_get_line_attributes (GtkPlotData *dataset, 
                                    GtkPlotLineStyle *style,
+                                   GdkCapStyle *cap_style,
+                                   GdkJoinStyle *join_style,
                                    gfloat *width,
                                    GdkColor *color)
 {
   *style = dataset->line.line_style; 
+  *cap_style = dataset->line.cap_style; 
+  *join_style = dataset->line.join_style; 
   *width = dataset->line.line_width; 
   *color = dataset->line.color; 
 }
@@ -1794,10 +2339,14 @@ gtk_plot_data_get_connector (GtkPlotData *dataset)
 void
 gtk_plot_data_set_x_attributes (GtkPlotData *dataset, 
                            	GtkPlotLineStyle style,
+                           	GdkCapStyle cap_style,
+                           	GdkJoinStyle join_style,
                             	gfloat width,
                             	const GdkColor *color)
 {
   dataset->x_line.line_style = style; 
+  dataset->x_line.cap_style = cap_style; 
+  dataset->x_line.join_style = join_style; 
   dataset->x_line.line_width = width; 
   dataset->x_line.color = *color; 
 }
@@ -1805,10 +2354,14 @@ gtk_plot_data_set_x_attributes (GtkPlotData *dataset,
 void
 gtk_plot_data_set_y_attributes (GtkPlotData *dataset, 
                            	GtkPlotLineStyle style,
+                           	GdkCapStyle cap_style,
+                           	GdkJoinStyle join_style,
                             	gfloat width,
                             	const GdkColor *color)
 {
   dataset->y_line.line_style = style; 
+  dataset->y_line.cap_style = cap_style; 
+  dataset->y_line.join_style = join_style; 
   dataset->y_line.line_width = width; 
   dataset->y_line.color = *color; 
 }
@@ -1816,10 +2369,14 @@ gtk_plot_data_set_y_attributes (GtkPlotData *dataset,
 void
 gtk_plot_data_set_z_attributes (GtkPlotData *dataset, 
                            	GtkPlotLineStyle style,
+                           	GdkCapStyle cap_style,
+                           	GdkJoinStyle join_style,
                             	gfloat width,
                             	const GdkColor *color)
 {
   dataset->z_line.line_style = style; 
+  dataset->z_line.cap_style = cap_style; 
+  dataset->z_line.join_style = join_style; 
   dataset->z_line.line_width = width; 
   dataset->z_line.color = *color; 
 }
@@ -1942,6 +2499,7 @@ void
 gtk_plot_data_set_gradient_mask (GtkPlotData *data, gint mask)
 {
   data->gradient_mask = mask;
+  gtk_signal_emit(GTK_OBJECT(data), data_signals[GRADIENT_COLORS_CHANGED]);
 }
 
 gint
@@ -1963,11 +2521,114 @@ gtk_plot_data_gradient_visible (GtkPlotData *data)
 }
 
 void
+gtk_plot_data_gradient_autoscale_a (GtkPlotData *data)
+{
+  gdouble amin, amax;
+  gint n;
+  gboolean change = FALSE;
+
+  if(data->is_function) return;
+  if(!data->a && !(data->iterator_mask & GTK_PLOT_DATA_A)) return;
+
+  amin = 1.e16;
+  amax = -1.e16;
+
+  for(n = 0; n < data->num_points; n++){
+      gdouble fx, fy, fz, fa;
+      gdouble fdx, fdy, fdz, fda;
+      gchar *label;
+      gboolean error;
+      gtk_plot_data_get_point(data, n,
+                              &fx, &fy, &fz, &fa,
+                              &fdx, &fdy, &fdz, &fda,
+                              &label, &error);
+      if(fa < amin) amin = fa;
+      if(fa > amax) amax = fa;
+      change = TRUE;
+  }
+
+  if(!change) return;
+  real_autoscale_gradient(data, amin, amax);
+}
+
+void
+gtk_plot_data_gradient_autoscale_da (GtkPlotData *data)
+{
+  gdouble amin, amax;
+  gint n;
+  gboolean change = FALSE;
+
+  if(data->is_function) return;
+  if(!data->da && !(data->iterator_mask & GTK_PLOT_DATA_DA)) return;
+
+  amin = 1.e16;
+  amax = -1.e16;
+
+  for(n = 0; n < data->num_points; n++){
+      gdouble fx, fy, fz, fa;
+      gdouble fdx, fdy, fdz, fda;
+      gchar *label;
+      gboolean error;
+      gtk_plot_data_get_point(data, n,
+                              &fx, &fy, &fz, &fa,
+                              &fdx, &fdy, &fdz, &fda,
+                              &label, &error);
+      if(fda < amin) amin = fda;
+      if(fda > amax) amax = fda;
+      change = TRUE;
+  }
+
+  if(!change) return;
+  real_autoscale_gradient(data, amin, amax);
+}
+
+void
+gtk_plot_data_gradient_autoscale_z (GtkPlotData *data)
+{
+  gdouble zmin, zmax;
+  gint n;
+  gboolean change = FALSE;
+
+  if(data->is_function) return;
+  if(!data->z && !(data->iterator_mask & GTK_PLOT_DATA_Z)) return;
+
+  zmin = 1.e16;
+  zmax = -1.e16;
+
+  for(n = 0; n < data->num_points; n++){
+      gdouble fx, fy, fz, fa;
+      gdouble fdx, fdy, fdz, fda;
+      gchar *label;
+      gboolean error;
+      gtk_plot_data_get_point(data, n,
+                              &fx, &fy, &fz, &fa,
+                              &fdx, &fdy, &fdz, &fda,
+                              &label, &error);
+      if(fz < zmin) zmin = fz;
+      if(fz > zmax) zmax = fz;
+      change = TRUE;
+  }
+
+  if(!change) return;
+  real_autoscale_gradient(data, zmin, zmax);
+}
+
+static void
+real_autoscale_gradient(GtkPlotData *data, gdouble xmin, gdouble xmax)
+{
+  gint p;
+  gtk_plot_ticks_autoscale(&data->gradient, xmin, xmax, &p);
+  gtk_plot_data_reset_gradient(data);
+  data->legends_precision = p;
+  data->legends_style = data->gradient.scale == GTK_PLOT_SCALE_LINEAR ? GTK_PLOT_LABEL_FLOAT : GTK_PLOT_LABEL_EXP;
+}
+
+void
 gtk_plot_data_set_gradient_colors (GtkPlotData *data,
                                    const GdkColor *min,
                                    const GdkColor *max)
 {
-  data->color_min= *min;
+  data->color_min = *min;
   data->color_max = *max;
 }
 
@@ -1978,26 +2639,70 @@ gtk_plot_data_get_gradient_colors (GtkPlotData *data,
 {
   min = &data->color_min;
   max = &data->color_max;
+  gtk_signal_emit(GTK_OBJECT(data), data_signals[GRADIENT_COLORS_CHANGED]);
+}
+
+void
+gtk_plot_data_set_gradient_nth_color (GtkPlotData *data,
+                                      guint level,
+                                      GdkColor *color)
+{
+  if(!data->gradient_custom) return;
+
+  if(level > data->gradient.nticks) return;
+  data->gradient_colors[level] = *color;
+  gtk_signal_emit(GTK_OBJECT(data), data_signals[GRADIENT_COLORS_CHANGED]);
+}
+
+const GdkColor *
+gtk_plot_data_get_gradient_nth_color (GtkPlotData *data,
+                                      guint level)
+{
+  if(level > data->gradient.nticks) return NULL;
+  return &data->gradient_colors[level];
+}
+
+void
+gtk_plot_data_set_gradient_outer_colors (GtkPlotData *data,
+                                         const GdkColor *min,
+                                         const GdkColor *max)
+{
+  data->color_lt_min = *min;
+  data->color_gt_max = *max;
+  gtk_signal_emit(GTK_OBJECT(data), data_signals[GRADIENT_COLORS_CHANGED]);
+}
+
+void
+gtk_plot_data_get_gradient_outer_colors (GtkPlotData *data,
+                                         GdkColor *min,
+                                         GdkColor *max)
+{
+  min = &data->color_lt_min;
+  max = &data->color_gt_max;
 }
 
 void
 gtk_plot_data_set_gradient (GtkPlotData *data,
-                            gdouble min, gdouble max, gint nlevels)
+                            gdouble min, gdouble max, 
+			    gint nlevels, gint nsublevels)
 {
-  data->gradient.begin = min;
-  data->gradient.end = max;
+  data->gradient.min = min;
+  data->gradient.max = max;
   data->gradient.nmajorticks = nlevels;
+  data->gradient.nminor = nsublevels;
 
-  gtk_plot_data_calc_gradient(data);
+  gtk_plot_data_reset_gradient(data);
 }
 
 void
 gtk_plot_data_get_gradient (GtkPlotData *data,
-                            gdouble *min, gdouble *max, gint *nlevels)
+                            gdouble *min, gdouble *max, 
+			    gint *nlevels, gint *nsublevels)
 {
-  *min = data->gradient.begin;
-  *max = data->gradient.end;
+  *min = data->gradient.min;
+  *max = data->gradient.max;
   *nlevels = data->gradient.nmajorticks;
+  *nsublevels = data->gradient.nminor;
 }
 
 void
@@ -2008,12 +2713,29 @@ gtk_plot_data_get_gradient_level (GtkPlotData *data, gdouble level, GdkColor *co
   gdouble h, s, v;
   gdouble h1, s1, v1;
   gdouble h2, s2, v2;
-  gdouble delta, value;
+  gdouble value;
 
-  min = data->color_min; 
-  max = data->color_max; 
-  delta = data->gradient.end - data->gradient.begin;
-  value = fabs(level - data->gradient.begin);
+  min = data->color_min;
+  max = data->color_max;
+
+  if(level > data->gradient.max) { *color = data->color_gt_max; return; }
+  if(level < data->gradient.min) { *color = data->color_lt_min; return; }
+  if(data->gradient_custom){
+    gint i;
+    gint start = data->gradient.scale == GTK_PLOT_SCALE_LINEAR ? (level - data->gradient.min) / (data->gradient.max - data->gradient.min) * data->gradient.nticks : 0;
+    gint end = data->gradient.nticks;
+    for(i = MAX(start-1,0); i < end; i++){
+      if(level > data->gradient.values[i].value && level <= data->gradient.values[i+1].value)
+        {
+           *color = data->gradient_colors[i];
+           return;
+        }
+    }
+    *color = max;
+    return;
+  }
+
+  value = gtk_plot_ticks_transform(&data->gradient, level);
 
   red = min.red;
   green = min.green;
@@ -2028,17 +2750,33 @@ gtk_plot_data_get_gradient_level (GtkPlotData *data, gdouble level, GdkColor *co
   v = 1.;
   h = 1.;
   if(data->gradient_mask & GTK_PLOT_GRADIENT_S)
-                    s = s1 + (s2 - s1) * value / delta;
+                    s = s1 + (s2 - s1) * value;
   if(data->gradient_mask & GTK_PLOT_GRADIENT_V)
-                    v = v1 + (v2 - v1) * value / delta;
+                    v = v1 + (v2 - v1) * value;
   if(data->gradient_mask & GTK_PLOT_GRADIENT_H)
-                    h = h1 + (h2 - h1) * value / delta;
+                    h = h1 + (h2 - h1) * value;
 
   hsv_to_rgb(h, MIN(s, 1.0), MIN(v, 1.0), &red, &green, &blue);
 
   color->red = red;
   color->green = green;
   color->blue = blue;
+}
+
+void
+gtk_plot_data_gradient_set_style        (GtkPlotData *data,
+                                         GtkPlotLabelStyle style,
+                                         gint precision)
+{
+  data->legends_style = style,
+  data->legends_precision = style;
+}
+
+void            gtk_plot_data_gradient_set_scale        (GtkPlotData *data,
+                                                         GtkPlotScale scale)
+{
+  data->gradient.scale = scale;
+  gtk_plot_data_reset_gradient(data);
 }
 
 static void
@@ -2216,48 +2954,193 @@ spline_eval (int n, gdouble x[], gdouble y[], gdouble y2[], gdouble val)
     ((a*a*a - a)*y2[k_lo] + (b*b*b - b)*y2[k_hi]) * (h*h)/6.0;
 }
 
-static void
-gtk_plot_data_calc_gradient(GtkPlotData *data)
+void
+gtk_plot_data_reset_gradient(GtkPlotData *data)
 {
+  data->gradient.step = (data->gradient.max - data->gradient.min)/data->gradient.nmajorticks;
+  gtk_plot_ticks_recalc(&data->gradient);
+  gtk_signal_emit(GTK_OBJECT(data), data_signals[GRADIENT_CHANGED]);
+  gtk_plot_data_reset_gradient_colors(data);
+}
+
+void
+gtk_plot_data_reset_gradient_colors(GtkPlotData *data)
+{
+  gdouble max = 0.;
+  gint nminor = 0;
+  gint i;
+  gboolean custom;
   GtkPlotTicks *ticks;
-  gdouble min = 0., max = 0.;
-  gdouble absmin = 0., absmax = 0.;
-  gdouble tick;
-  gdouble major_step;
-  gint nmajor;
 
   ticks = &data->gradient;
 
-  max = ticks->end;
-  min = ticks->begin;
-  absmin = min;
-  absmax = max;
+  custom = data->gradient_custom;
+  nminor = data->gradient.nminor;
+  max = data->gradient.max;
+  data->gradient_custom = FALSE;
 
-  if(ticks->major != NULL){
-     g_free(ticks->major);
-     g_free(ticks->minor);
-     g_free(ticks->major_values);
-     g_free(ticks->minor_values);
-     ticks->major = NULL;
-     ticks->minor = NULL;
-     ticks->major_values = NULL;
-     ticks->minor_values = NULL;
+  if(data->gradient_colors)
+    g_free(data->gradient_colors);
+
+  data->gradient_colors = g_new0(GdkColor, ticks->nticks + 1);
+  data->gradient.max = ticks->values[ticks->nticks-2].value;
+  data->gradient.nminor = 0;
+  for(i = 0; i < data->gradient.nticks-1; i++){
+    GdkColor color;
+    gtk_plot_data_get_gradient_level(data, ticks->values[i].value, &color);
+    data->gradient_colors[i] = color;
   }
 
-  nmajor = 0;
-  ticks->step = major_step = (absmax - absmin) / (ticks->nmajorticks);
+  data->gradient.max = max;
+  data->gradient_custom = custom;
+  data->gradient.nminor = nminor;
+  gtk_signal_emit(GTK_OBJECT(data), data_signals[GRADIENT_COLORS_CHANGED]);
+}
 
-  ticks->major_values = (gdouble *)g_malloc((ticks->nmajorticks + 1) * sizeof(gdouble));
+void
+gtk_plot_data_gradient_use_custom_colors(GtkPlotData *data, gboolean custom)
+{
+  data->gradient_custom = custom;
+  gtk_signal_emit(GTK_OBJECT(data), data_signals[GRADIENT_COLORS_CHANGED]);
+}
 
-  if(ticks->step > 0.){
-   tick = min - major_step;
-   while(tick <= absmax + 2*fabs(major_step)){
-     if(tick >= min-1.E-10 && tick <= absmax+1.E-10){
-        nmajor ++;
-        ticks->major_values[nmajor-1] = tick;
-     }
-     tick += major_step;
-   }
+gboolean
+gtk_plot_data_gradient_custom_colors(GtkPlotData *data)
+{
+  return(data->gradient_custom);
+}
+
+GtkPlotMarker *
+gtk_plot_data_add_marker(GtkPlotData *data, guint point)
+{
+  GtkPlotMarker *marker = NULL;
+/*
+  GList *list = NULL;
+*/
+
+  if(point >= data->num_points) return FALSE;
+
+/*
+  list = data->markers;
+  while(list){
+    marker = (GtkPlotMarker *)list->data;
+    if(marker->point == point) return FALSE;
+    list = list->next;
+  }
+*/
+
+  marker = g_new0(GtkPlotMarker, 1);
+
+  marker->data = data;
+  marker->point = point;  
+
+  data->markers = g_list_append(data->markers, marker);
+  return (marker);
+}
+
+gboolean
+gtk_plot_data_remove_marker(GtkPlotData *data, GtkPlotMarker *marker)
+{
+  GList *list;
+
+  list = data->markers;
+  while(list){
+    GtkPlotMarker *point;
+
+    point = (GtkPlotMarker *)list->data;
+    if(point == marker){
+      g_free(marker);
+      data->markers = g_list_remove_link(data->markers, list);
+      g_list_free_1(list);
+      return TRUE;
+    }
+    list = list->next;
+  } 
+
+  return FALSE;
+} 
+
+void
+gtk_plot_data_remove_markers(GtkPlotData *data)
+{
+  GList *list;
+
+  list = data->markers;
+  while(list){
+    g_free(list->data);
+    data->markers = g_list_remove_link(data->markers, list); 
+    g_list_free_1(list);
+    list = data->markers; 
+  }
+
+  data->markers = NULL;
+}
+
+void
+gtk_plot_data_show_markers(GtkPlotData *data, gboolean show)
+{
+  data->show_markers = show;
+}
+
+gboolean
+gtk_plot_data_markers_visible(GtkPlotData *data)
+{
+  return (data->show_markers);
+}
+
+static void
+gtk_plot_data_real_clone(GtkPlotData *real_data, GtkPlotData *copy_data)
+{
+  gdouble min, max;
+  gint i, nlevels, nsublevels;
+
+  copy_data->link = real_data->link;
+ 
+  copy_data->is_iterator = real_data->is_iterator;
+  copy_data->is_function = real_data->is_function;
+  copy_data->iterator = real_data->iterator;
+  copy_data->function = real_data->function;
+  copy_data->function3d = real_data->function3d;
+  copy_data->num_points = real_data->num_points;
+  copy_data->iterator_mask = real_data->iterator_mask;
+
+  copy_data->symbol = real_data->symbol;
+  copy_data->line = real_data->line;
+  copy_data->line_connector = real_data->line_connector;
+
+  copy_data->show_legend = real_data->show_legend;
+  copy_data->show_labels = real_data->show_labels;
+  copy_data->fill_area = real_data->fill_area;
+  copy_data->labels_offset = real_data->labels_offset;
+  copy_data->legends_precision = real_data->legends_precision;
+  copy_data->legends_style = real_data->legends_style;
+  copy_data->gradient_custom = real_data->gradient_custom;
+  copy_data->show_gradient = real_data->show_gradient;
+  gtk_plot_data_set_legend(copy_data, real_data->legend);
+  gtk_plot_data_set_name(copy_data, real_data->name);
+  copy_data->x_step = real_data->x_step;
+  copy_data->y_step = real_data->y_step;
+  copy_data->z_step = real_data->z_step;
+
+  copy_data->x_line = real_data->x_line;
+  copy_data->y_line = real_data->y_line;
+  copy_data->z_line = real_data->z_line;
+
+  copy_data->show_xerrbars = real_data->show_xerrbars;
+  copy_data->show_yerrbars = real_data->show_yerrbars;
+  copy_data->show_zerrbars = real_data->show_zerrbars;
+
+  copy_data->gradient_mask = real_data->gradient_mask;
+  copy_data->color_min = real_data->color_min;
+  copy_data->color_max = real_data->color_max;
+  copy_data->color_lt_min = real_data->color_lt_min;
+  copy_data->color_gt_max = real_data->color_gt_max;
+
+  gtk_plot_data_get_gradient(real_data, &min, &max, &nlevels, &nsublevels);
+  gtk_plot_data_set_gradient(copy_data, min, max, nlevels, nsublevels);
+
+  for(i = 0; i < copy_data->gradient.nticks; i++){
+    gtk_plot_data_set_gradient_nth_color(copy_data, i, &real_data->gradient_colors[i]);
   }
 
 }

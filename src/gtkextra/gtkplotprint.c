@@ -27,17 +27,23 @@
 
 #include "gtkplotpc.h"
 #include "gtkplot.h"
+#include "gtkplot3d.h"
+#include "gtkplotdata.h"
 #include "gtkpsfont.h"
 #include "gtkplotpc.h"
 #include "gtkplotps.h"
+#include "gtkplotdt.h"
+#include "gtkplotsurface.h"
 #include "gtkplotcanvas.h"
+
+static void recalc_pixels(GtkPlot *plot);
 
 gboolean
 gtk_plot_export_ps                              (GtkPlot *plot,
                                                  char *psname,
-                                                 gint orient,
-                                                 gint epsflag,
-                                                 gint page_size)
+                                                 GtkPlotPageOrientation orient,
+                                                 gboolean epsflag,
+                                                 GtkPlotPageSize page_size)
 {
   GtkPlotPC *pc;
   GtkPlotPS *ps;
@@ -67,24 +73,24 @@ gtk_plot_export_ps                              (GtkPlot *plot,
 
   plot->pc = GTK_PLOT_PC(ps);
   plot->magnification = 1.0;
- 
-  if(!gtk_plot_pc_init(plot->pc)) return FALSE; 
+  recalc_pixels(plot); 
+
   gtk_plot_paint(plot);
-  gtk_plot_pc_leave(plot->pc); 
 
   plot->pc = pc;
   plot->magnification = m;
   gtk_object_destroy(GTK_OBJECT(ps));
+  recalc_pixels(plot); 
 
   return TRUE;
 }
 
-gboolean 
+gboolean
 gtk_plot_export_ps_with_size                    (GtkPlot *plot,
                                                  char *psname,
-                                                 gint orient,
-                                                 gint epsflag,
-                                                 gint units,
+                                                 GtkPlotPageOrientation orient,
+                                                 gboolean epsflag,
+                                                 GtkPlotUnits units,
                                                  gint width,
                                                  gint height)
 {
@@ -118,13 +124,13 @@ gtk_plot_export_ps_with_size                    (GtkPlot *plot,
  
   plot->pc = GTK_PLOT_PC(ps);
   plot->magnification = 1.0;
+  recalc_pixels(plot); 
 
-  if(!gtk_plot_pc_init(plot->pc)) return FALSE; 
   gtk_plot_paint(plot);
-  gtk_plot_pc_leave(plot->pc); 
 
   plot->pc = pc;
   plot->magnification = m;
+  recalc_pixels(plot); 
   gtk_object_destroy(GTK_OBJECT(ps));
 
   return TRUE;
@@ -133,56 +139,75 @@ gtk_plot_export_ps_with_size                    (GtkPlot *plot,
 gboolean
 gtk_plot_canvas_export_ps                       (GtkPlotCanvas *canvas,
                                                  char *psname,
-                                                 gint orient,
-                                                 gint epsflag,
-                                                 gint page_size)
+                                                 GtkPlotPageOrientation orient,
+                                                 gboolean epsflag,
+                                                 GtkPlotPageSize page_size)
 {
   GtkPlotPC *pc;
   GtkPlotPS *ps;
   GList *plots;
+  gint old_width, old_height;
   gdouble scalex, scaley;
   gdouble m;
+  GtkAllocation allocation[100];
+  GtkAllocation canvas_allocation;
+  GtkPlotPC *aux_pc[100];
+  gint n = 0;
 
   m = canvas->magnification;
 
   ps = GTK_PLOT_PS(gtk_plot_ps_new(psname, orient, epsflag, page_size, 1.0, 1.0));
 
   if(orient == GTK_PLOT_PORTRAIT){
-    scalex = (gfloat)ps->page_width /
-                                (gfloat)GTK_WIDGET(canvas)->allocation.width;
-    scaley = (gfloat)ps->page_height /
-                                (gfloat)GTK_WIDGET(canvas)->allocation.height;
+    scalex = (gfloat)ps->page_width / (gfloat)canvas->width;
+    scaley = (gfloat)ps->page_height / (gfloat)canvas->height;
   }else{
-    scalex = (gfloat)ps->page_width /
-                                (gfloat)GTK_WIDGET(canvas)->allocation.height;
-    scaley = (gfloat)ps->page_height /
-                                (gfloat)GTK_WIDGET(canvas)->allocation.width;
+    scalex = (gfloat)ps->page_width / (gfloat)canvas->height;
+    scaley = (gfloat)ps->page_height / (gfloat)canvas->width;
   }
 
   gtk_plot_ps_set_scale(ps, scalex, scaley);
 
+  old_width = canvas->pixmap_width;
+  old_height = canvas->pixmap_height;
+
   pc = canvas->pc;
   canvas->pc = GTK_PLOT_PC(ps);
   canvas->magnification = 1.0;
+  canvas->pixmap_width = canvas->width;
+  canvas->pixmap_height = canvas->height;
+
+  canvas_allocation.x = canvas_allocation.y = 0;
+  canvas_allocation.width = canvas->width;
+  canvas_allocation.height = canvas->height;
 
   plots = canvas->plots;
   while(plots){
     GtkPlot *plot;
-   
+
     plot = GTK_PLOT(plots->data);
 
     plot->magnification = 1.0;
-    
+
+    allocation[n] = GTK_WIDGET(plot)->allocation;
+    aux_pc[n] = plot->pc;
+    plot->pc = pc;
+    n++;
+
+    gtk_widget_size_allocate(GTK_WIDGET(plot), &canvas_allocation);
+    recalc_pixels(plot);
+
     plots= plots->next;
   }
 
-  if(!gtk_plot_pc_init(canvas->pc)) return FALSE; 
   gtk_plot_canvas_paint(canvas);
-  gtk_plot_pc_leave(canvas->pc); 
 
   canvas->pc = pc;
   canvas->magnification = m;
+  canvas->pixmap_width = old_width;
+  canvas->pixmap_height = old_height;
 
+  n = 0;
   plots = canvas->plots;
   while(plots){
     GtkPlot *plot;
@@ -190,6 +215,10 @@ gtk_plot_canvas_export_ps                       (GtkPlotCanvas *canvas,
     plot = GTK_PLOT(plots->data);
 
     plot->magnification = m;
+    gtk_widget_size_allocate(GTK_WIDGET(plot), &allocation[n]);
+    plot->pc = aux_pc[n];
+    recalc_pixels(plot); 
+    n++;
     
     plots= plots->next;
   }
@@ -202,17 +231,22 @@ gtk_plot_canvas_export_ps                       (GtkPlotCanvas *canvas,
 gboolean
 gtk_plot_canvas_export_ps_with_size             (GtkPlotCanvas *canvas,
                                                  char *psname,
-                                                 gint orient,
-                                                 gint epsflag,
-                                                 gint units,
+                                                 GtkPlotPageOrientation orient,
+                                                 gboolean epsflag,
+                                                 GtkPlotUnits units,
                                                  gint width,
                                                  gint height)
 {
   GtkPlotPC *pc;
   GtkPlotPS *ps;
   GList *plots;
+  GtkAllocation allocation[100];
+  GtkAllocation canvas_allocation;
+  GtkPlotPC *aux_pc[100];
+  gint old_width, old_height;
   gdouble scalex, scaley;
   gdouble m;
+  gint n = 0;
 
   m = canvas->magnification;
 
@@ -222,22 +256,27 @@ gtk_plot_canvas_export_ps_with_size             (GtkPlotCanvas *canvas,
                                              1.0 , 1.0));
 
   if(orient == GTK_PLOT_PORTRAIT){
-    scalex = (gfloat)ps->page_width /
-                                (gfloat)GTK_WIDGET(canvas)->allocation.width;
-    scaley = (gfloat)ps->page_height /
-                                (gfloat)GTK_WIDGET(canvas)->allocation.height;
+    scalex = (gfloat)ps->page_width / (gfloat)canvas->width;
+    scaley = (gfloat)ps->page_height / (gfloat)canvas->height;
   }else{
-    scalex = (gfloat)ps->page_width /
-                                (gfloat)GTK_WIDGET(canvas)->allocation.height;
-    scaley = (gfloat)ps->page_height /
-                                (gfloat)GTK_WIDGET(canvas)->allocation.width;
+    scalex = (gfloat)ps->page_width / (gfloat)canvas->height;
+    scaley = (gfloat)ps->page_height / (gfloat)canvas->width;
   }
 
   gtk_plot_ps_set_scale(ps, scalex, scaley);
 
+  old_width = canvas->pixmap_width;
+  old_height = canvas->pixmap_height;
+
   pc = canvas->pc;
   canvas->pc = GTK_PLOT_PC(ps);
   canvas->magnification = 1.0;
+  canvas->pixmap_width = canvas->width;
+  canvas->pixmap_height = canvas->height;
+
+  canvas_allocation.x = canvas_allocation.y = 0;
+  canvas_allocation.width = canvas->width;
+  canvas_allocation.height = canvas->height;
 
   plots = canvas->plots;
   while(plots){
@@ -246,17 +285,26 @@ gtk_plot_canvas_export_ps_with_size             (GtkPlotCanvas *canvas,
     plot = GTK_PLOT(plots->data);
 
     plot->magnification = 1.0;
+    allocation[n] = GTK_WIDGET(plot)->allocation;
+    aux_pc[n] = plot->pc;
+    plot->pc = pc;
+    n++;
+
+
+    gtk_widget_size_allocate(GTK_WIDGET(plot), &canvas_allocation);
+    recalc_pixels(plot); 
     
     plots= plots->next;
   }
 
-  if(!gtk_plot_pc_init(canvas->pc)) return FALSE; 
   gtk_plot_canvas_paint(canvas);
-  gtk_plot_pc_leave(canvas->pc); 
 
   canvas->pc = pc;
   canvas->magnification = m;
+  canvas->pixmap_width = old_width;
+  canvas->pixmap_height = old_height;
 
+  n = 0;
   plots = canvas->plots;
   while(plots){
     GtkPlot *plot;
@@ -264,6 +312,10 @@ gtk_plot_canvas_export_ps_with_size             (GtkPlotCanvas *canvas,
     plot = GTK_PLOT(plots->data);
 
     plot->magnification = m;
+    gtk_widget_size_allocate(GTK_WIDGET(plot), &allocation[n]);
+    plot->pc = aux_pc[n];
+    recalc_pixels(plot); 
+    n++;
     
     plots= plots->next;
   }
@@ -271,5 +323,37 @@ gtk_plot_canvas_export_ps_with_size             (GtkPlotCanvas *canvas,
   gtk_object_destroy(GTK_OBJECT(ps));
 
   return TRUE;
+}
+
+static void
+recalc_pixels(GtkPlot *plot)
+{
+  GList *list;
+  
+  list = plot->data_sets;
+  while(list){
+    GtkPlotData *data;
+    data = GTK_PLOT_DATA(list->data);
+    if(GTK_IS_PLOT_SURFACE(data)){
+      GtkPlotSurface *surface = GTK_PLOT_SURFACE(data);
+      gint i;
+
+      for(i = surface->dt->node_0; i < surface->dt->node_cnt; i++){
+        GtkPlotDTnode *node;
+        node = gtk_plot_dt_get_node(surface->dt,i);
+        if(GTK_IS_PLOT3D(plot)){
+          gtk_plot3d_get_pixel(GTK_PLOT3D(plot),
+                               node->x, node->y, node->z,
+                               &node->px, &node->py, &node->pz);
+        } else {
+          gtk_plot_get_pixel(plot,
+                             node->x, node->y,
+                             &node->px, &node->py);
+          node->pz = 0.0;
+        }
+      }
+    }
+    list = list->next;
+  }
 }
 

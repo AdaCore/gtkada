@@ -32,6 +32,7 @@
 #include <gdk/gdkkeysyms.h>
 #include "gtkcombobox.h"
 #include "gtkbordercombo.h"
+#include "gtkextra-marshal.h"
 
 /* SIGNALS */
 enum {
@@ -96,11 +97,12 @@ gtk_border_combo_class_init (GtkBorderComboClass * klass)
 
   border_combo_signals[CHANGED]=gtk_signal_new("changed",
                                       GTK_RUN_FIRST,
-                                      GTK_CLASS_TYPE (object_class),
+                                      GTK_CLASS_TYPE(object_class),
                                       GTK_SIGNAL_OFFSET(GtkBorderComboClass,
                                       changed),
-                                      gtk_marshal_NONE__INT,
+                                      gtkextra_VOID__INT,
                                       GTK_TYPE_NONE, 1, GTK_TYPE_INT);
+
   klass->changed = NULL;
                                                         
 }
@@ -114,10 +116,17 @@ gtk_border_combo_destroy (GtkObject * border_combo)
   combo=GTK_BORDER_COMBO(border_combo);
 
   for(i=0; i<combo->nrows; i++)
-   for(j=0; j<combo->ncols; j++)
-     gtk_widget_destroy(combo->button[i][j]);
-   
-  gtk_widget_destroy (GTK_BORDER_COMBO(border_combo)->table);
+   for(j=0; j<combo->ncols; j++){
+     if(combo->button[i][j]){
+       gtk_widget_destroy(combo->button[i][j]);
+       combo->button[i][j] = NULL;
+     }
+   }
+  
+  if(GTK_BORDER_COMBO(border_combo)->table){ 
+    gtk_widget_destroy (GTK_BORDER_COMBO(border_combo)->table);
+    GTK_BORDER_COMBO(border_combo)->table = NULL;
+  }
 
   if (GTK_OBJECT_CLASS (parent_class)->destroy)
     (*GTK_OBJECT_CLASS (parent_class)->destroy) (border_combo);

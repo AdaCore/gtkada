@@ -71,6 +71,7 @@ void		gtk_plot_polar_construct_with_size (GtkPlotPolar *plot,
 
 void		gtk_plot_polar_rotate		(GtkPlotPolar *plot,
 						 gdouble angle);
+gdouble		gtk_plot_polar_get_angle	(GtkPlotPolar *plot);
 
 #ifdef __cplusplus
 }

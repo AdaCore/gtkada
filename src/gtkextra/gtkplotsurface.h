@@ -25,14 +25,27 @@ extern "C" {
 #endif /* __cplusplus */
 
 #include "gtkplot.h"
+#include "gtkplotdt.h"
 
 #define GTK_PLOT_SURFACE(obj)        GTK_CHECK_CAST (obj, gtk_plot_surface_get_type (), GtkPlotSurface)
 #define GTK_TYPE_PLOT_SURFACE        (gtk_plot_surface_get_type ())
 #define GTK_PLOT_SURFACE_CLASS(klass) GTK_CHECK_CLASS_CAST (klass, gtk_plot_surface_get_type(), GtkPlotSurfaceClass)
 #define GTK_IS_PLOT_SURFACE(obj)     GTK_CHECK_TYPE (obj, gtk_plot_surface_get_type ())
 
+typedef struct _GtkPlotPolygon             GtkPlotPolygon;
 typedef struct _GtkPlotSurface             GtkPlotSurface;
 typedef struct _GtkPlotSurfaceClass        GtkPlotSurfaceClass;
+
+struct _GtkPlotPolygon
+{
+  GtkPlotDTtriangle *t;  		/* parent triangle */
+  GtkPlotVector xyz[4]; 		/* points */
+  GtkPlotVector p[4];			/* pixels */
+  gint n;				/* number of points */
+  gdouble level;
+  gboolean cut_level;	
+  gboolean sublevel;
+};
 
 struct _GtkPlotSurface
 {
@@ -43,24 +56,35 @@ struct _GtkPlotSurface
   GdkColor grid_foreground;
   GdkColor grid_background;
 
+  gboolean use_height_gradient;
+  gboolean use_amplitud;
+
   GtkPlotVector light;
   gdouble ambient;
 
   gint nx, ny;
 
+  GtkPlotDT *dt;
+  gboolean recalc_dt;
+
+  GList *polygons;
+
   gboolean show_grid;
   gboolean show_mesh;
+  gboolean transparent;
 
   gdouble xstep, ystep;
+
+  GtkPlotLine mesh_line;
 };
 
 struct _GtkPlotSurfaceClass
 {
   GtkPlotDataClass parent_class;
 
-  void 	(*draw_triangle) 		(GtkPlotSurface *surface, 
-					 GtkPlotVector *points,
-                         		 gint sign);
+  void 	(*build_polygons) 		(GtkPlotSurface *surface);
+  void 	(*sort_polygons) 		(GtkPlotSurface *surface);
+  void 	(*draw_polygons) 		(GtkPlotSurface *surface);
 };
 
 
@@ -91,6 +115,12 @@ void            gtk_plot_surface_set_light      (GtkPlotSurface *data,
 						 gdouble z);
 void            gtk_plot_surface_set_ambient    (GtkPlotSurface *data,
                                    		 gdouble ambient);
+void            gtk_plot_surface_use_height_gradient (GtkPlotSurface *data, 
+						 gboolean use_gradient);
+void            gtk_plot_surface_use_amplitud   (GtkPlotSurface *data, 
+						 gboolean use_amplitud);
+void            gtk_plot_surface_set_transparent(GtkPlotSurface *data,
+                                   		 gboolean transparent);
 
 void 		gtk_plot_surface_set_points	(GtkPlotSurface *data,
 						 gdouble *x, 
@@ -142,6 +172,9 @@ void		gtk_plot_surface_set_ystep  	(GtkPlotSurface *data,
 						 gdouble ystep);
 gdouble		gtk_plot_surface_get_xstep  	(GtkPlotSurface *data);
 gdouble		gtk_plot_surface_get_ystep  	(GtkPlotSurface *data);
+void            gtk_plot_surface_build_mesh     (GtkPlotSurface *data);
+void            gtk_plot_surface_recalc_nodes   (GtkPlotSurface *data);
+
 
 #ifdef __cplusplus
 }

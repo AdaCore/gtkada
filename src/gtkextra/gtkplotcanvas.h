@@ -65,6 +65,19 @@ typedef enum
 
 typedef enum
 {
+      GTK_PLOT_CANVAS_SELECT_NONE,    
+      GTK_PLOT_CANVAS_SELECT_MARKERS,
+      GTK_PLOT_CANVAS_SELECT_TARGET,
+} GtkPlotCanvasSelection;
+
+typedef enum
+{
+      GTK_PLOT_CANVAS_SELECT_CLICK_1,    
+      GTK_PLOT_CANVAS_SELECT_CLICK_2,
+} GtkPlotCanvasSelectionMode;
+
+typedef enum
+{
       GTK_PLOT_CANVAS_NONE,
       GTK_PLOT_CANVAS_PLOT,
       GTK_PLOT_CANVAS_AXIS,
@@ -75,6 +88,8 @@ typedef enum
       GTK_PLOT_CANVAS_LINE,
       GTK_PLOT_CANVAS_RECTANGLE,
       GTK_PLOT_CANVAS_ELLIPSE,
+      GTK_PLOT_CANVAS_PIXMAP,
+      GTK_PLOT_CANVAS_MARKER,
       GTK_PLOT_CANVAS_CUSTOM,
 } GtkPlotCanvasType;
 
@@ -131,11 +146,12 @@ struct _GtkPlotCanvasChild
 
   GtkPlotCanvasType type;
   GtkPlotCanvasFlag flags;
+  GtkPlotCanvasSelection selection;
+  GtkPlotCanvasSelectionMode mode;
 
   gpointer data;
 
   void (*draw_child) (GtkPlotCanvas *canvas, GtkPlotCanvasChild *child);
-  void (*print_child) (gpointer *pc, GtkPlotCanvasChild *child);
 };
 
 struct _GtkPlotCanvasLine
@@ -175,13 +191,15 @@ struct _GtkPlotCanvas
   guint16 flags;
   guint state;
 
+  guint freeze_count;
+
   gint pixmap_width, pixmap_height;
   gint width, height;
 
   gdouble magnification;
   
   gboolean show_grid;
-  gint grid_step;
+  gdouble grid_step;
   GtkPlotLine grid;
 
   GtkPlotCanvasAction action;
@@ -189,10 +207,12 @@ struct _GtkPlotCanvas
   GdkPixmap *pixmap;
 
   GdkColor background;
+  gboolean transparent;
 
   GtkPlot *active_plot;
   GtkPlotData *active_data;
   gint active_point;
+  gint active_lpoint, active_rpoint;
   gdouble active_x, active_y;
 
   GtkPlotCanvasChild active_item;
@@ -245,12 +265,16 @@ GtkWidget*	gtk_plot_canvas_new		(gint width, gint height,
 void		gtk_plot_canvas_construct       (GtkPlotCanvas *canvas,
 						 gint width, gint height,
                                                  gdouble magnification);
+void		gtk_plot_canvas_set_pc          (GtkPlotCanvas *canvas,
+						 GtkPlotPC *pc);
 void		gtk_plot_canvas_paint           (GtkPlotCanvas *canvas);
 void		gtk_plot_canvas_refresh         (GtkPlotCanvas *canvas);
+void 		gtk_plot_canvas_freeze		(GtkPlotCanvas *canvas);
+void 		gtk_plot_canvas_thaw		(GtkPlotCanvas *canvas);
 void		gtk_plot_canvas_grid_set_visible(GtkPlotCanvas *canvas,
 						 gboolean visible);
 void		gtk_plot_canvas_grid_set_step	(GtkPlotCanvas *canvas,
-						 gint step);
+						 gdouble step);
 void		gtk_plot_canvas_grid_set_attributes(GtkPlotCanvas *canvas,
                          			 GtkPlotLineStyle style,
                          			 gint width,
@@ -272,6 +296,9 @@ void            gtk_plot_canvas_set_size        (GtkPlotCanvas *canvas,
                                                  gint width, gint height);
 void            gtk_plot_canvas_set_magnification (GtkPlotCanvas *canvas,
                                                  gdouble magnification);
+void 		gtk_plot_canvas_set_transparent (GtkPlotCanvas *canvas, 
+						 gboolean transparent);
+gboolean 	gtk_plot_canvas_transparent 	(GtkPlotCanvas *canvas);
 void		gtk_plot_canvas_set_background  (GtkPlotCanvas *canvas,
 						 const GdkColor *background);
 void            gtk_plot_canvas_get_pixel       (GtkPlotCanvas *plot_canvas,
@@ -321,6 +348,10 @@ GtkPlotCanvasChild *
                             			 const GdkColor *fg,
                             			 const GdkColor *bg,
                             			 gboolean fill);
+GtkPlotCanvasChild * 
+		gtk_plot_canvas_put_pixmap	(GtkPlotCanvas *canvas,
+						 GdkPixmap *pixmap,
+                            			 gdouble x1, gdouble y1);
 
 void 	gtk_plot_canvas_line_set_attributes     (GtkPlotCanvasChild *child,
                                     		GtkPlotLineStyle style,
@@ -354,7 +385,10 @@ void gtk_plot_canvas_child_move_resize		(GtkPlotCanvas *canvas,
                                  		 gdouble x1, gdouble y1,
                                   		 gdouble x2, gdouble y2);
 
-
+void gtk_plot_canvas_child_set_selection	(GtkPlotCanvasChild *child,
+						 GtkPlotCanvasSelection selection);
+void gtk_plot_canvas_child_set_selection_mode	(GtkPlotCanvasChild *child,
+						 GtkPlotCanvasSelectionMode mode);
 
 #ifdef __cplusplus
 }

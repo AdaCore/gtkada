@@ -69,6 +69,8 @@ struct _GtkPlot3D
   GtkPlotVector origin;
 
   gdouble a1, a2, a3;
+  gdouble ncos[360];
+  gdouble nsin[360];
 
   GtkPlotAxis *ax, *ay, *az; 
 
@@ -232,7 +234,11 @@ void            gtk_plot3d_axis_show_ticks      (GtkPlot3D *plot,
 void 		gtk_plot3d_set_titles_offset 	(GtkPlot3D *plot,
                                                  gint offset);
 gint 		gtk_plot3d_get_titles_offset 	(GtkPlot3D *plot);
-
+void            gtk_plot3d_axis_set_scale       (GtkPlot3D *plot,
+                                                 GtkPlotAxisPos axis,
+                                                 GtkPlotScale scale);
+GtkPlotScale    gtk_plot3d_axis_get_scale       (GtkPlot3D *plot,
+                                                 GtkPlotAxisPos axis);
 /* Grids */
 void            gtk_plot3d_major_grids_set_visible    (GtkPlot3D *plot,
 						       gboolean x,
