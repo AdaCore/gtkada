@@ -64,6 +64,9 @@ package Glib is
    type Gfloat  is new C.C_float;
    type Gdouble is new C.double;
 
+   subtype Grange_Float is Gdouble;
+   --  Needed for better compatibility between GtkAda 1.2 and 2.0
+
    type Gint8  is range -(2 ** 7) .. (2 ** 7 - 1);
    type Gint16 is range -(2 ** 15) .. (2 ** 15 - 1);
    type Gint32 is range -(2 ** 31) .. (2 ** 31 - 1);
