@@ -26,7 +26,7 @@
  
 with Ada.Command_Line; use Ada.Command_Line;
 with Ada.Text_IO;
-with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
+with Glib.Glade;
 with Gtk; use Gtk;
 with Gtk.Glade; use Gtk.Glade;
 with Gtk.Main;
@@ -36,6 +36,11 @@ with DGate_Callbacks;
 with Unchecked_Conversion;
  
 procedure DGate is
+
+   use Glib;
+   use Glib.Glade;
+   use Glib.Glade.Glib_XML;
+
    N : Node_Ptr;
  
    type String_Access is access all String;

@@ -7,11 +7,19 @@ fi
 
 echo Generating Ada files...
 
-prj=`gate.ex -p $*`
+info=`gate.ex -p -s $*`
 
 if [ $? != 0 ]; then
   echo "Couldn't parse $*. Exiting."
   exit 1
+fi
+
+args=$*
+set $info
+prj=$1
+
+if [ "$2" != "" ]; then
+  cd $2
 fi
 
 gt=".gate/$prj"
@@ -20,7 +28,7 @@ tmp=$gt/tmp
 /bin/rm -rf $tmp
 mkdir $tmp
 wd=`pwd`
-gate.ex $* > $tmp/gate.ada
+gate.ex $args > $tmp/gate.ada
 
 if [ $? != 0 ]; then
   echo "Couldn't generate Ada code. Exiting."

@@ -28,9 +28,10 @@ with Ada.Text_IO; use Ada.Text_IO;
 with GNAT.OS_Lib;
 
 procedure Gate is
-   N            : Node_Ptr;
-   Arg          : Natural;
-   Flag_Project : Boolean := False;
+   N                     : Node_Ptr;
+   Arg                   : Natural;
+   Flag_Project          : Boolean := False;
+   Flag_Source_Directory : Boolean := False;
 
    procedure Usage;
 
@@ -39,6 +40,7 @@ procedure Gate is
       Put_Line ("Usage: gate.ex switches project-file");
       New_Line;
       Put_Line ("  -p    Output the name of the project and exit");
+      Put_Line ("  -s    Output the name of the source directory and exit");
       GNAT.OS_Lib.OS_Exit (1);
    end Usage;
 
@@ -53,6 +55,11 @@ begin
          Arg := Arg + 1;
       end if;
 
+      if Argument (Arg) = "-s" then
+         Flag_Source_Directory := True;
+         Arg := Arg + 1;
+      end if;
+
       if Arg > Argument_Count then
          Usage;
          return;
@@ -60,8 +67,16 @@ begin
 
       N := Parse (Argument (Arg));
 
-      if Flag_Project then
-         Put_Line (Get_Field (Find_Tag (N.Child, "project"), "name").all);
+      if Flag_Project or else Flag_Source_Directory then
+         if Flag_Project then
+            Put_Line (Get_Field (Find_Tag (N.Child, "project"), "name").all);
+         end if;
+
+         if Flag_Source_Directory then
+            Put_Line (Get_Field (Find_Tag (N.Child, "project"),
+              "source_directory").all);
+         end if;
+
       else
          Generate (N);
       end if;
