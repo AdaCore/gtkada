@@ -640,6 +640,9 @@ package body Gtk_Generates is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_file_selection_get_type");
 
+      Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
+      Top        : constant String := Get_Name (Top_Widget);
+      P          : Node_Ptr;
    begin
       Widget := Widget_New (Build_Type);
       if Gettext_Support (N) then
@@ -652,6 +655,27 @@ package body Gtk_Generates is
 
       Gen_Set
         (N, "show_file_op_buttons", File, Property_Name => "show_fileops");
+
+      P := Find_Tag_With_Attribute
+        (N.Child, "child", "internal-child", "cancel_button");
+
+      if P /= null and then P.Child /= null then
+         P := P.Child;
+         Gen_Signal
+           (P, File,
+            The_Object => "Get_Cancel_Button (" & To_Ada (Top)  & ")");
+      end if;
+
+      P := Find_Tag_With_Attribute
+        (N.Child, "child", "internal-child", "ok_button");
+
+      if P /= null and then P.Child /= null then
+         P := P.Child;
+         Gen_Signal
+           (P, File,
+            The_Object => "Get_Ok_Button (" & To_Ada (Top)  & ")");
+      end if;
+
       Widget_Destroy (Widget);
       Window_Generate (N, File);
    end File_Selection_Generate;
