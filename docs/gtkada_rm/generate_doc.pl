@@ -164,9 +164,9 @@ foreach $source_file (@source_files) {
 	$description =~ s/^\s*//;
 	$description = &process_list ($description);
 	    
-	&output ("$description\n",
-		 "See also \@uref{http://www.gtk.org/docs/$cfile.html,$cfile.html} ",
-		 "for more information.\n");
+	&output ("$description\n");
+	#	 "See also \@uref{http://www.gtk.org/docs/$cfile.html,$cfile.html} ",
+	#	 "for more information.\n");
 
 	if (&get_tag_value ("screenshot", @content)) {
 	    &output ("\@iftex\n\@image{",
