@@ -75,7 +75,6 @@ with Gtk.Input_Dialog;
 with Gtk.Invisible;
 with Gtk.Item;
 with Gtk.Item_Factory;
-with Gtk.Label;
 with Gtk.Layout;
 with Gtk.List;
 with Gtk.List_Item;
@@ -114,14 +113,21 @@ with Gtk.Toolbar;
 with Gtk.Tooltips;
 with Gtk.Tree;
 with Gtk.Tree_Item;
-with Gtk.Type_Conversion_Hooks; use Gtk.Type_Conversion_Hooks;
 with Gtk.Vbutton_Box;
 with Gtk.Viewport;
 with Gtk.Widget;
 with Gtk.Window;
 pragma Warnings (On);
 
+with Gtk.Type_Conversion_Hooks;
+pragma Elaborate_All (Gtk.Type_Conversion_Hooks);
+
 package body Gtk.Type_Conversion is
+
+   function Full_Conversion (Type_Name : String) return Root_Type_Access;
+   --  This function knows about all base widgets present in GtkAda.
+   --  One noticeable difference is Gtk_Label that is recognized by default,
+   --  to avoid the need of this package for the common usage.
 
    ----------
    -- Init --
@@ -138,15 +144,7 @@ package body Gtk.Type_Conversion is
    -- Full_Conversion --
    ---------------------
 
-   function Full_Conversion (Obj  : System.Address;
-                             Stub : Root_Type'Class)
-                            return Root_Type_Access
-   is
-      function Get_Type (Obj : System.Address) return Gtk_Type;
-      pragma Import (C, Get_Type, "ada_object_get_type");
-
-      Type_Name : String := Gtk.Type_Name (Get_Type (Obj));
-      Hooks     : Gtk.Type_Conversion_Hooks.Hook_List_Access;
+   function Full_Conversion (Type_Name : String) return Root_Type_Access is
    begin
       case Type_Name (Type_Name'First + 3) is
          when 'A' =>
@@ -260,9 +258,7 @@ package body Gtk.Type_Conversion is
                return new Gtk.Item_Factory.Gtk_Item_Factory_Record;
             end if;
          when 'L' =>
-            if Type_Name = "GtkLabel" then
-               return new Gtk.Label.Gtk_Label_Record;
-            elsif Type_Name = "GtkLayout" then
+            if Type_Name = "GtkLayout" then
                return new Gtk.Layout.Gtk_Layout_Record;
             elsif Type_Name = "GtkList" then
                return new Gtk.List.Gtk_List_Record;
@@ -378,22 +374,9 @@ package body Gtk.Type_Conversion is
          when others => null;
       end case;
 
-      Hooks := Gtk.Type_Conversion_Hooks.Conversion_Hooks;
-      while Hooks /= null loop
-         declare
-            R : Root_Type_Access := Hooks.Func (Type_Name);
-         begin
-            if R /= null then
-               return R;
-            end if;
-         end;
-         Hooks := Hooks.Next;
-      end loop;
-      Put_Line ("GtkAda: Unknown type in Full_Conversion: " & Type_Name);
-      Put_Line ("Please report it to <gtkada@ada.eu.org>");
-      return new Root_Type'Class'(Stub);
+      return null;
    end Full_Conversion;
 
 begin
-   Type_Conversion_Function := Full_Conversion'Access;
+   Gtk.Type_Conversion_Hooks.Add_Hook (Full_Conversion'Access);
 end Gtk.Type_Conversion;

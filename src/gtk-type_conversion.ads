@@ -39,19 +39,11 @@ package Gtk.Type_Conversion is
    --  This function has to be called to enable the full capacity for type
    --  conversions in GtkAda. If this function is not called, then
    --  converting a C widget to an Ada type will not be as exact (for
-   --  instance, most C widget will get converted to a Gtk.Object, instead
-   --  of the matching Ada widget).
+   --  instance, most C widgets will get converted to a Gtk.Object, instead
+   --  of the matching Ada widget. One major exception is Gtk_Label which
+   --  will always be recognized by GtkAda).
    --  On the other hand, if you call this function (or with this package),
-   --  then your application will 'with' all the GtkAda packages, and the
-   --  initialization will be a little bit slower).
-
-private
-   --  <doc_ignore>
-   function Full_Conversion (Obj  : System.Address; Stub : Root_Type'Class)
-                             return Root_Type_Access;
-   --  This function converts a C widget type to the correct Ada type.
-   --  It has to be in a separate package so that its use is not mandatory
-   --  (users who need this feature will simply 'with' this package).
-   --  </doc_ignore>
+   --  then your application will 'with' all the GtkAda packages, involving
+   --  bigger statically linked executables and a longer elaboration.
 
 end Gtk.Type_Conversion;
