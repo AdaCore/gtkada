@@ -65,7 +65,8 @@ package Gtk is
    --  If the version is 1.2.6, returns 6.
 
    type Gtk_Type is new Guint;
-   Gtk_Type_None : constant Gtk_Type := 1;
+   Gtk_Type_Invalid : constant Gtk_Type := 0;
+   Gtk_Type_None    : constant Gtk_Type := 1;
    --  This type describes an internal type in Gtk+.
    --  You shouldn't have to use it in your own applications, however it might
    --  be useful sometimes.
@@ -133,5 +134,5 @@ private
    pragma Import (C, Major_Version, "ada_gtk_major_version");
    pragma Import (C, Minor_Version, "ada_gtk_minor_version");
    pragma Import (C, Micro_Version, "ada_gtk_micro_version");
- 
+
 end Gtk;
