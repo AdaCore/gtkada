@@ -621,6 +621,8 @@ package body Gtk.Handlers is
          --  Handler_Proxy to use
 
          User  : User_Access := null;
+         Object   : Acc := null;
+         --  Slot Object for Object_Connect
       end record;
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
@@ -688,16 +690,23 @@ package body Gtk.Handlers is
 
          Values := Make_Values (N_Params, Params);
 
-         if Data.Proxy /= null then
-            Value :=
-              Data.Proxy
-                (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
-                 Values, To_General_Handler (Data.Func), Data.User.all);
+         if Data.Object /= null then
+            if Data.Proxy /= null then
+               Value := Data.Proxy
+                 (Data.Object, Values, To_General_Handler (Data.Func),
+                  Data.User.all);
+            else
+               Value := Data.Func (Data.Object, Values, Data.User.all);
+            end if;
+
+         elsif Data.Proxy /= null then
+            Value := Data.Proxy
+              (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
+               Values, To_General_Handler (Data.Func), Data.User.all);
          else
-            Value :=
-              Data.Func
-                (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
-                 Values, Data.User.all);
+            Value := Data.Func
+              (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
+               Values, Data.User.all);
          end if;
 
          Set_Value (Return_Value, Value'Address);
@@ -719,6 +728,24 @@ package body Gtk.Handlers is
          Id := Connect (Widget, Name, Marsh, User_Data, After);
       end Connect;
 
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+      begin
+         Id := Object_Connect
+           (Widget, Name, Marsh, Slot_Object, User_Data, After);
+      end Object_Connect;
+
       -------------
       -- Connect --
       -------------
@@ -735,6 +762,24 @@ package body Gtk.Handlers is
          Id := Connect (Widget, Name, Cb, User_Data, After);
       end Connect;
 
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+      begin
+         Id := Object_Connect
+           (Widget, Name, Cb, Slot_Object, User_Data, After);
+      end Object_Connect;
+
       -------------
       -- Connect --
       -------------
@@ -747,12 +792,11 @@ package body Gtk.Handlers is
          After     : Boolean := False)
         return Handler_Id
       is
-         D : Data_Type_Access :=
-           new Data_Type_Record'
-             (Func     => To_Handler (Marsh.Func),
-              Proxy    => Marsh.Proxy,
-              User     => new User_Type'(User_Data));
-
+         D : Data_Type_Access := new Data_Type_Record'
+           (Func     => To_Handler (Marsh.Func),
+            Proxy    => Marsh.Proxy,
+            User     => new User_Type'(User_Data),
+            Object   => null);
       begin
          pragma Assert
            (Type_Of_Return (Widget, Name) /= GType_Invalid,
@@ -771,6 +815,41 @@ package body Gtk.Handlers is
             After);
       end Connect;
 
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id
+      is
+         D : Data_Type_Access := new Data_Type_Record'
+           (Func     => To_Handler (Marsh.Func),
+            Proxy    => Marsh.Proxy,
+            User     => new User_Type'(User_Data),
+            Object   => Acc (Slot_Object));
+      begin
+         pragma Assert
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
+            "Invalid signal for this widget");
+         pragma Assert
+           (Type_Of_Return (Widget, Name) /= GType_None,
+            "Handlers for this signal should return a value.");
+
+         return Do_Signal_Connect
+           (Glib.Object.GObject (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Marsh.Proxy),
+            Convert (D),
+            Free_Data'Address,
+            After);
+      end Object_Connect;
+
       -------------
       -- Connect --
       -------------
@@ -782,12 +861,11 @@ package body Gtk.Handlers is
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access :=
-           new Data_Type_Record'
-             (Func     => Cb,
-              Proxy    => null,
-              User     => new User_Type'(User_Data));
-
+         D : Data_Type_Access := new Data_Type_Record'
+           (Func     => Cb,
+            Proxy    => null,
+            User     => new User_Type'(User_Data),
+            Object   => null);
       begin
          pragma Assert
            (Type_Of_Return (Widget, Name) /= GType_Invalid,
@@ -805,6 +883,41 @@ package body Gtk.Handlers is
             Free_Data'Address,
             After);
       end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id
+      is
+         D : Data_Type_Access := new Data_Type_Record'
+           (Func     => Cb,
+            Proxy    => null,
+            User     => new User_Type'(User_Data),
+            Object   => Acc (Slot_Object));
+      begin
+         pragma Assert
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
+            "Invalid signal for this widget");
+         pragma Assert
+           (Type_Of_Return (Widget, Name) /= GType_None,
+            "Handlers for this signal should return a value.");
+
+         return Do_Signal_Connect
+           (Glib.Object.GObject (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Cb),
+            Convert (D),
+            Free_Data'Address,
+            After);
+      end Object_Connect;
 
       ------------------
       -- Emit_By_Name --
@@ -1194,6 +1307,8 @@ package body Gtk.Handlers is
          --  Handler_Proxy to use
 
          User   : User_Access := null;
+         Object : Acc := null;
+         --  Slot_Object for Object_Connect
       end record;
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
@@ -1259,7 +1374,16 @@ package body Gtk.Handlers is
 
          Values := Make_Values (N_Params, Params);
 
-         if Data.Proxy /= null then
+         if Data.Object /= null then
+            if Data.Proxy /= null then
+               Data.Proxy
+                 (Data.Object, Values, To_General_Handler (Data.Func),
+                  Data.User.all);
+            else
+               Data.Func (Data.Object, Values, Data.User.all);
+            end if;
+
+         elsif Data.Proxy /= null then
             Data.Proxy
               (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
                Values, To_General_Handler (Data.Func), Data.User.all);
@@ -1286,6 +1410,24 @@ package body Gtk.Handlers is
          Id := Connect (Widget, Name, Marsh, User_Data, After);
       end Connect;
 
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+      begin
+         Id := Object_Connect
+           (Widget, Name, Marsh, Slot_Object, User_Data, After);
+      end Object_Connect;
+
       -------------
       -- Connect --
       -------------
@@ -1302,6 +1444,24 @@ package body Gtk.Handlers is
          Id := Connect (Widget, Name, Cb, User_Data, After);
       end Connect;
 
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+      begin
+         Id := Object_Connect
+           (Widget, Name, Cb, Slot_Object, User_Data, After);
+      end Object_Connect;
+
       -------------
       -- Connect --
       -------------
@@ -1313,12 +1473,11 @@ package body Gtk.Handlers is
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access :=
-           new Data_Type_Record'
-             (Func  => To_Handler (Marsh.Func),
-              Proxy => Marsh.Proxy,
-              User  => new User_Type'(User_Data));
-
+         D : Data_Type_Access := new Data_Type_Record'
+           (Func   => To_Handler (Marsh.Func),
+            Proxy  => Marsh.Proxy,
+            User   => new User_Type'(User_Data),
+            Object => null);
       begin
          pragma Assert
            (Type_Of_Return (Widget, Name) /= GType_Invalid,
@@ -1337,6 +1496,41 @@ package body Gtk.Handlers is
             After);
       end Connect;
 
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      function Object_Connect
+        (Widget      : access GObject_Record'Class;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id
+      is
+         D : Data_Type_Access := new Data_Type_Record'
+           (Func  => To_Handler (Marsh.Func),
+            Proxy => Marsh.Proxy,
+            User  => new User_Type'(User_Data),
+            Object => Acc (Slot_Object));
+      begin
+         pragma Assert
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
+            "Invalid signal for this widget");
+         pragma Assert
+           (Type_Of_Return (Widget, Name) = GType_None,
+            "Handlers for this signal should not return a value.");
+
+         return Do_Signal_Connect
+           (Glib.Object.GObject (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Marsh.Proxy),
+            Convert (D),
+            Free_Data'Address,
+            After);
+      end Object_Connect;
+
       -------------
       -- Connect --
       -------------
@@ -1348,9 +1542,11 @@ package body Gtk.Handlers is
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id
       is
-         D : Data_Type_Access :=
-           new Data_Type_Record'
-             (Func => Cb, Proxy => null, User => new User_Type'(User_Data));
+         D : Data_Type_Access := new Data_Type_Record'
+           (Func   => Cb,
+            Proxy  => null,
+            User   => new User_Type'(User_Data),
+            Object => null);
 
       begin
          pragma Assert
@@ -1369,6 +1565,41 @@ package body Gtk.Handlers is
             Free_Data'Address,
             After);
       end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      function Object_Connect
+        (Widget      : access GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id
+      is
+         D : Data_Type_Access := new Data_Type_Record'
+           (Func   => Cb,
+            Proxy  => null,
+            User   => new User_Type'(User_Data),
+            Object => Acc (Slot_Object));
+      begin
+         pragma Assert
+           (Type_Of_Return (Widget, Name) /= GType_Invalid,
+            "Invalid signal for this widget");
+         pragma Assert
+           (Type_Of_Return (Widget, Name) = GType_None,
+            "Handlers for this signal should not return a value.");
+
+         return Do_Signal_Connect
+           (Glib.Object.GObject (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Cb),
+            Convert (D),
+            Free_Data'Address,
+            After);
+      end Object_Connect;
 
       ------------------
       -- Emit_By_Name --

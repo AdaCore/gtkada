@@ -357,12 +357,28 @@ package Gtk.Handlers is
          User_Data : User_Type;
          After     : Boolean := False);
 
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False);
+
       procedure Connect
         (Widget    : access Widget_Type'Class;
          Name      : String;
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False);
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False);
 
       pragma Inline (Connect);
 
@@ -373,12 +389,28 @@ package Gtk.Handlers is
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id;
 
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id;
+
       function Connect
         (Widget    : access Widget_Type'Class;
          Name      : String;
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id;
+
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id;
 
       --  Some convenient functions to create marshallers
 
@@ -630,12 +662,28 @@ package Gtk.Handlers is
          User_Data : User_Type;
          After     : Boolean := False);
 
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False);
+
       procedure Connect
         (Widget    : access Widget_Type'Class;
          Name      : String;
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False);
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False);
 
       pragma Inline (Connect);
 
@@ -646,12 +694,28 @@ package Gtk.Handlers is
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id;
 
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id;
+
       function Connect
         (Widget    : access Widget_Type'Class;
          Name      : String;
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False) return Handler_Id;
+
+      function Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False) return Handler_Id;
 
       --  Some convenient functions to create marshallers
 
