@@ -42,13 +42,12 @@
 with Glib; use Glib;
 with Gdk.Bitmap;
 with Gdk.Color;
-with Gdk.Drawable;
 with Gdk.Window;
 with Gtkada.Types;
 
 package Gdk.Pixmap is
 
-   subtype Gdk_Pixmap is Gdk.Drawable.Gdk_Drawable;
+   subtype Gdk_Pixmap is Gdk.Gdk_Pixmap;
    --  A server-side image.
    --  You can create an empty pixmap, or load if from external files in
    --  bitmap and pixmap format. See Gdk.Pixbuf if you need to load
