@@ -99,7 +99,7 @@ package Gtk.Label is
 
    --  Note: as opposed to the C version, this subprogram does not return the
    --  accelerator keyval associated with the last character underlined. This
-   --  feature is only used internal by gtk+ to create menus, and is not
+   --  feature is only used internally by gtk+ to create menus, and is not
    --  useful for end-users.
 
    procedure Generate (N      : in Node_Ptr;
