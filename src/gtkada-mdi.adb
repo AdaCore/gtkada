@@ -4158,6 +4158,11 @@ package body Gtkada.MDI is
          Icons_Height : constant Gint :=
            MDI.Title_Bar_Height - 2 * Border_Thickness;
 
+         Raised     : Boolean := False;
+
+         Current_Pages : array (Dock_Side) of MDI_Child
+           := (others => null);
+
       begin
          pragma Assert (From_Tree.Tag.all = "MDI");
          MDI.Desktop_Was_Loaded := True;
@@ -4241,6 +4246,11 @@ package body Gtkada.MDI is
                      then
                         Focus_Child := Child;
 
+                     elsif N.Tag.all = "Raised"
+                       and then Boolean'Value (N.Value.all)
+                     then
+                        Raised := True;
+
                      else
                         --  ??? Unknown node, just ignore for now
                         null;
@@ -4248,6 +4258,12 @@ package body Gtkada.MDI is
 
                      N := N.Next;
                   end loop;
+
+                  if Raised then
+                     Current_Pages (Child.Dock) := Child;
+                  end if;
+
+                  Raised := False;
 
                   case State is
                      when Docked =>
@@ -4274,11 +4290,16 @@ package body Gtkada.MDI is
                                    Allocation_Int (Icons_Width),
                                    Allocation_Int (Icons_Height)));
                   end case;
-
                end if;
             end if;
 
             Child_Node := Child_Node.Next;
+         end loop;
+
+         for J in Current_Pages'Range loop
+            if Current_Pages (J) /= null then
+               Raise_Child (Current_Pages (J));
+            end if;
          end loop;
 
          if Focus_Child /= null then
@@ -4307,8 +4328,11 @@ package body Gtkada.MDI is
          procedure Add (Name, Value : String);
          --  Add a new child to Child_Node
 
-         procedure Save_Widget (Child : MDI_Child);
-         --  Save the Child.
+         procedure Save_Widget
+           (Child  : MDI_Child;
+            Raised : Boolean);
+         --  Save the Child. Raised is True if Child is the current page
+         --  in a notebook.
 
          ---------
          -- Add --
@@ -4327,7 +4351,9 @@ package body Gtkada.MDI is
          -- Save_Widget --
          -----------------
 
-         procedure Save_Widget (Child : MDI_Child) is
+         procedure Save_Widget
+           (Child  : MDI_Child;
+            Raised : Boolean) is
          begin
             Register := Registers;
             Widget_Node := null;
@@ -4369,12 +4395,18 @@ package body Gtkada.MDI is
                   Add ("Focus", "True");
                end if;
 
+               if Raised then
+                  Add ("Raised", "True");
+               end if;
+
                Add_Child (Child_Node, Widget_Node);
 
                Add_Child (Root, Child_Node);
             end if;
 
          end Save_Widget;
+
+         Current_Page : Gint;
 
       begin
          Root := new Node;
@@ -4395,12 +4427,14 @@ package body Gtkada.MDI is
               and then (J /= None or else MDI.Children_Are_Maximized)
             then
                Length := Page_List.Length (Get_Children (MDI.Docks (J)));
+               Current_Page := Get_Current_Page (MDI.Docks (J));
 
                if Length > 0 then
                   for Page_Index in reverse 0 .. Length - 1 loop
                      Save_Widget
                        (Get_Child_From_Page
-                          (Get_Nth_Page (MDI.Docks (J), Gint (Page_Index))));
+                          (Get_Nth_Page (MDI.Docks (J), Gint (Page_Index))),
+                        (Current_Page = Gint (Page_Index)));
                   end loop;
                end if;
             end if;
@@ -4417,11 +4451,11 @@ package body Gtkada.MDI is
 
                when Normal =>
                   if not MDI.Children_Are_Maximized then
-                     Save_Widget (Child);
+                     Save_Widget (Child, False);
                   end if;
 
                when Floating | Iconified =>
-                  Save_Widget (Child);
+                  Save_Widget (Child, False);
             end case;
 
             Item := Widget_List.Next (Item);
