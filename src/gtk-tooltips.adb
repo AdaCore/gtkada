@@ -111,13 +111,14 @@ package body Gtk.Tooltips is
                          Background : Gdk.Color.Gdk_Color)
    is
       procedure Internal (Tooltips   : System.Address;
-                          Foreground : System.Address;
-                          Background : System.Address);
+                          Foreground : in out Gdk.Color.Gdk_Color;
+                          Background : in out Gdk.Color.Gdk_Color);
       pragma Import (C, Internal, "gtk_tooltips_set_colors");
-      Fore : aliased Gdk.Color.Gdk_Color := Foreground;
-      Back : aliased Gdk.Color.Gdk_Color := Background;
+
+      Fore : Gdk.Color.Gdk_Color := Foreground;
+      Back : Gdk.Color.Gdk_Color := Background;
    begin
-      Internal (Get_Object (Tooltips), Back'Address, Fore'Address);
+      Internal (Get_Object (Tooltips), Back, Fore);
    end Set_Colors;
 
    -------------
