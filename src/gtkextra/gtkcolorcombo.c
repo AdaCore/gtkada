@@ -35,6 +35,7 @@
 #include "gtkcombobox.h"
 #include "gtkcolorcombo.h"
 #include "gtkextramarshal.h"
+#include "gtkextramarshal.c"
 
 /* SIGNALS */
 enum {
