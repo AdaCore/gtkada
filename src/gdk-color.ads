@@ -282,10 +282,10 @@ private
    Null_Colormap : constant Gdk_Colormap := null;
 
    type Gdk_Color is record
-      Pixel : Guint32 := Guint32'Last;
-      Red   : Guint16 := 1;
-      Green : Guint16 := 0;
-      Blue  : Guint16 := 0;
+      Pixel : Guint32;
+      Red   : Guint16;
+      Green : Guint16;
+      Blue  : Guint16;
    end record;
    pragma Convention (C, Gdk_Color);
    --  The fields are to be chosen between 0 and 65535, not 0 and 255!!!
