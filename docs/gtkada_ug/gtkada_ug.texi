@@ -55,7 +55,7 @@ unmodified in any copy.
 * Description of the GDK hierarchy::
 * Description of the Glib hierarchy::
 * Resource files::
-* Threads::
+* Tasks::
 * How to report bugs::
 * Object-oriented features::
 * Support for Glade the Gtk GUI builder::
@@ -1711,16 +1711,49 @@ widget_class "*GtkText" style "text"
 @end example
 
 
-@node Threads
-@chapter Threads
+@node Tasks
+@chapter Tasks
 
-The 1.2 series of Gtk+ are now thread safe. The
-usage of tasks inside programs using this toolkit should not cause any
-problem provided that you protect your Gtk calls with Gdk.Threads.Enter/
-Leave and that your windowing system (e.g X) is thread-safe.
+The GLib library can be used in a task-safe mode by calling Gdk.Thread.Init
+before making any other GLib calls. In this mode GLib automatically locks all
+internal data structures as needed. This does not mean that two tasks can
+simultaneously access, for example, a single hash table, but they can access
+two different hash tables simultaneously. If two different tasks need to
+access the same hash table, the application is responsible for locking itself
+(by e.g using protected objects).
 
-We recommend however that you read the section related to this topic in the
-GTK+ documentation.
+When GLib is intialized to be task-safe, GtkAda is task aware. There is a
+single global lock that you must acquire with Gdk.Threads.Enter before making
+any Gdk/Gtk call, and release with Gdk.Threads.Leave afterwards. 
+
+A minimal main program for a tasking GtkAda application looks like: 
+
+@example
+@b{with} Gdk.Threads;
+@b{with} Gtk.Main;
+@b{with} Gtk.Enums; @b{use} Gtk.Enums;
+@b{with} Gtk.Window; @b{use} Gtk.Window;
+
+@b{procedure} GtkAda_With_Tasks @b{is}
+   Window : Gtk_Window;
+@b{begin}
+   Gdk.Threads.Init;
+   Gtk.Main.Init;
+
+   Gtk_New (Window, Window_Toplevel);
+   Show (Window);
+
+   Gdk.Threads.Enter;
+   Gtk.Main.Main;
+   Gdk.Threads.Leave;
+@b{end} GtkAda_With_Tasks;
+@end example
+
+Callbacks require a bit of attention. Callbacks from GtkAda (signals) are made
+within the GtkAda lock. However callbacks from GLib (timeouts, IO callbacks,
+and idle functions) are made outside of the GtkAda lock. So, within a signal
+handler you do not need to call Gtk.Threads.Enter, but within the other types
+of callbacks, you do.
 
 @node How to report bugs
 @chapter How to report bugs
