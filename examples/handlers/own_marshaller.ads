@@ -86,7 +86,7 @@ package Own_Marshaller is
                                     Params : Gtk.Arguments.Gtk_Args;
                                     Cb     : Gtk.Marshallers.General_Handler);
       function To_Marshaller (Cb : Handler)
-                             return Tips_Handlers.Marshallers.Connection;
+                             return Tips_Handlers.Marshallers.Marshaller;
    end My_Tips_Marshaller_Pkg;
 
 end Own_Marshaller;

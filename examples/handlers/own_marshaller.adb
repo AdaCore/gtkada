@@ -67,7 +67,7 @@ package body Own_Marshaller is
       -------------------
 
       function To_Marshaller (Cb : Handler)
-                             return Tips_Handlers.Marshallers.Connection
+                             return Tips_Handlers.Marshallers.Marshaller
       is
       begin
          return (Func  => To_General_Handler (Cb),
