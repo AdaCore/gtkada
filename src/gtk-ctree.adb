@@ -457,6 +457,7 @@ package body Gtk.CTree is
       pragma Import (C, Internal, "gtk_ctree_new");
    begin
       Set_Object (Widget, Internal (Columns, Tree_Column));
+      Initialize_User_Data (Widget);
    end Initialize;
 
    -----------------
