@@ -4,13 +4,13 @@
 #include "gtkextra/gtkpsfont.h"
 #include "gtkextra/gtkcombobox.h"
 #include "gtkextra/gtkfontcombo.h"
+#include "gtkextra/gtkcolorcombo.h"
 
 /* XXX ??? */
 #if 0
+#include "gtkextra/gtksheet.h"
 #include "gtkextra/gtkplot.h"
 #include "gtkextra/gtkplotcanvas.h"
-#include "gtkextra/gtksheet.h"
-#include "gtkextra/gtkcolorcombo.h"
 #include "gtkextra/gtkitementry.h"
 
 /********************************************************************
@@ -147,7 +147,6 @@ ada_gtk_plot_canvas_set_child_flags (GtkPlotCanvasChild* child,
   child->flags = flags;
 }
 
-
 /********************************************************************
  **
  **  Gtk_Sheet widget
@@ -198,7 +197,6 @@ gint
 ada_gtk_sheet_get_row_height (GtkSheet* sheet, gint row) {
   return sheet->row[row].height;
 }
-
 #endif
 
 /********************************************************************
@@ -253,9 +251,6 @@ ada_gtk_font_combo_get_font (GtkFontCombo* combo) {
   return combo->font;
 }
 
-// ???
-#if 0
-
 /********************************************************************
  **
  **  Gtk_Color_Combo widget
@@ -285,6 +280,9 @@ void ada_gtk_extra_color_combo_set_row (GtkColorCombo* combo, gint row) {
 void ada_gtk_extra_color_combo_set_column (GtkColorCombo* combo, gint col) {
   combo->column = col;
 }
+
+// ???
+#if 0
 
 /********************************************************************
  **
