@@ -1153,6 +1153,38 @@ gint ada_gdk_event_get_key_val (GdkEvent * event)
   return ada_gdk_invalid_gint_value;
 }
 
+guint16 ada_gdk_event_get_hardware_keycode (GdkEvent * event)
+{ 
+  if (!event)
+    return 0;
+
+  switch (event->type)
+    {
+    case GDK_KEY_PRESS:
+    case GDK_KEY_RELEASE:
+      return event->key.hardware_keycode;
+    default:
+      break;
+    }
+  return 0;
+}
+
+guint8 ada_gdk_event_get_group (GdkEvent * event)
+{ 
+  if (!event)
+    return 0;
+
+  switch (event->type)
+    {
+    case GDK_KEY_PRESS:
+    case GDK_KEY_RELEASE:
+      return event->key.group;
+    default:
+      break;
+    }
+  return 0;
+}
+
 char* ada_gdk_event_get_string (GdkEvent * event)
 {
   if (!event)
@@ -1646,6 +1678,35 @@ gint ada_gdk_event_set_key_val (GdkEvent * event, gint keyval)
     }
   return 1;
 }
+
+gint ada_gdk_event_set_group (GdkEvent * event, guint8 group)
+{
+  switch (event->type)
+    {
+    case GDK_KEY_PRESS:
+    case GDK_KEY_RELEASE:
+      event->key.group = group;
+      break;
+    default:
+      return 0;
+    }
+  return 1;
+}
+
+gint ada_gdk_event_set_hardware_keycode (GdkEvent * event, guint16 keycode)
+{
+  switch (event->type)
+    {
+    case GDK_KEY_PRESS:
+    case GDK_KEY_RELEASE:
+      event->key.hardware_keycode = keycode;
+      break;
+    default:
+      return 0;
+    }
+  return 1;
+}
+
 gint ada_gdk_event_set_atom (GdkEvent * event, GdkAtom atom)
 {
   if (event->type == GDK_PROPERTY_NOTIFY)

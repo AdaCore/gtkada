@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -460,7 +460,13 @@ package Gdk.Event is
    --  ???
 
    function Get_Key_Val (Event : Gdk_Event) return Gdk.Types.Gdk_Key_Type;
-   --  Code of the key that was pressed (and that generated the event.
+   --  Code of the key that was pressed (and that generated the event).
+
+   function Get_Group (Event : Gdk_Event) return Guint8;
+   --  Group of the key that was pressed;
+
+   function Get_Hardware_Keycode (Event : Gdk_Event) return Guint16;
+   --  Hardware key code of the key that was pressed.
 
    function Get_String  (Event : Gdk_Event) return String;
    --  Symbol of the key that was pressed, as a string.
@@ -553,6 +559,12 @@ package Gdk.Event is
 
    procedure Set_Key_Val (Event : Gdk_Event; Key : Gdk.Types.Gdk_Key_Type);
    --  Set the Key_Val field of an event.
+
+   procedure Set_Group (Event : Gdk_Event; Group : Guint8);
+   --  Set the group field of a key event.
+
+   procedure Set_Hardware_Keycode (Event : Gdk_Event; Keycode : Guint16);
+   --  Set the hardware key code field of a key event.
 
    procedure Set_Atom (Event : Gdk_Event; Atom : Gdk.Types.Gdk_Atom);
    --  Set the Atom field of an event.
