@@ -27,5 +27,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <documentation>
+--
+--  This is the top level package of the Gtk.Extra widget hierarchy.
+--
+--  </documentation>
+
 package Gtk.Extra is
 end Gtk.Extra;
