@@ -27,6 +27,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This widget is derived from Gtk_Drawing_Area and provides an area where
+--  it is possible to use the openGL API.
+--
+--  </description>
+--  <c_version>1.2.2</c_version>
+
 with Gtk.Drawing_Area;
 with Gdk.GL; use Gdk.GL;
 
@@ -43,22 +51,46 @@ package Gtk.GLArea is
 
    procedure Gtk_New (Widget    : out Gtk_GLArea;
                       Attr_List : in  Attributes_Array);
+   --  Make an OpenGL widget, Attr_List is passed to glXChooseVisual GLX call.
+   --  Attr_List specifies a list of Boolean attributes and enum/integer
+   --  attribute/value pairs.
+   --  See glXChooseVisual man page for more explanation on Attr_List.
+   --  Widget is created with visual and colormap of the
+   --  requested type and GLX context is created for this widget. You
+   --  can't do opengl calls on widget until it has X window. X window
+   --  is not created until widget is realized.
+
    procedure Initialize (Widget    : access Gtk_GLArea_Record;
                          Attr_List : in     Attributes_Array);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
    procedure Gtk_New
      (Widget    :    out Gtk_GLArea;
       Attr_List : in     Attributes_Array;
       Share     : access Gtk_GLArea_Record'Class);
+   --  Same as above.
+   --  Share specifies the widget with which to share display lists and
+   --  texture objects. A non initialized value indicates that no sharing is
+   --  to take place.
+
    procedure Initialize
      (Widget    : access Gtk_GLArea_Record;
       Attr_List : in     Attributes_Array;
       Share     : access Gtk_GLArea_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
 
    function Make_Current
      (Glarea : access Gtk_GLArea_Record'Class)
      return Boolean;
+   --  Must be called before rendering into OpenGL widgets.
+   --  Return True if rendering to widget is possible. Rendering is not
+   --  possible if widget is not Gtk_GLArea widget or widget is not realized.
 
    procedure Swap_Buffers (Glarea : access Gtk_GLArea_Record'Class);
+   --  Promote contents of back buffer of Glarea to front buffer.
+   --  The contents of front buffer become undefined.
 
 private
    type Gtk_GLArea_Record is
