@@ -21,7 +21,7 @@ GNATFLAGS = -O2 -gnatn -gnatwuwewl
 GNATFLAGS_DEVEL = -O2 -gnatag -gnatwuwewl -g
 
 GNATMAKE = gnatmake
-GNATMAKEBINDFLAGS = -bargs -shared
+GNATMAKEBINDFLAGS =
 GNATMAKELDFLAGS = -largs -L. -lgtkada @GTK_LIBS@
 OS_SPECIFIC_LINK_OPTIONS = @OS_SPECIFIC_LINK_OPTIONS@
 
