@@ -286,7 +286,7 @@ package Gtk.Main is
      (Interval : in Guint32;
       Func : Timeout_Callback) return Timeout_Handler_Id;
    --  Add a new timeout. Func will be called after Interval milliseconds.
-   --  The function will be as long as it returns True.
+   --  The function will be called as long as it returns True.
 
    --  <doc_ignore>
    generic
