@@ -36,7 +36,7 @@ New features from 0.6 include:
 - Code generation simplified in GATE
 - Support for Accelerators in widgets
 - New examples in the example/ directory: how to create a widget directly
-  in Ada
+  in Ada (both composite widgets and widgets from scratch)
 
 New features from 0.5 include:
 
