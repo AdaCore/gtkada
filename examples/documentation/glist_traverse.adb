@@ -9,9 +9,9 @@ begin
 
    --  First step: create a new list.
 
-   Prepend (List, 2);                       --  add at the beginning of the list
-   Append (List, 3);                        --  add at the end of the list
-   Insert (List, Data => 1, Position => 1); --  in the middle of the list
+   Prepend (List, 2);                       -- add at the beginning of the list
+   Append (List, 3);                        -- add at the end of the list
+   Insert (List, Data => 1, Position => 1); -- in the middle of the list
 
    --  Traverse the list (first way)
 
