@@ -1,5 +1,10 @@
 This is a patch against Gtk+ 2.2.1 sources that fixes Windows specific problems
 
+Thu Mar 27 18:16:10 2003	Arnaud Charlet <charlet@gnat.com>
+
+	* gtk+/gdk/win32/gdkwindow-win32.c: Bring parent window on top when
+	destroying a modal window. Fixes unexpected lost focus.
+
 Fri Mar 14 12:50:58 2003	Arnaud Charlet <charlet@gnat.com>
 
 	* pango/modules/basic/basic-win32.c: Disable undefined macros
@@ -362,4 +367,20 @@ Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
 +  *x = otx < 0 ? tx : CLAMP (tx, monitor.x, MAX (monitor.x, monitor.x + monitor.width - twidth));
    *y = ty;
  }
+ 
+--- gtk+/gdk/win32/gdkwindow-win32.c	2003/03/27 14:43:01	1.1
++++ gtk+/gdk/win32/gdkwindow-win32.c	2003/03/27 17:14:28
+@@ -742,6 +742,13 @@
+   GDK_NOTE (MISC, g_print ("_gdk_windowing_window_destroy %p\n",
+ 			   GDK_WINDOW_HWND (window)));
+ 
++  if (private->modal_hint)
++    {
++      if (!BringWindowToTop
++	    (GetWindowLong (GDK_WINDOW_HWND (window), GWL_HWNDPARENT)))
++	WIN32_API_FAILED ("BringWindowToTop");
++    }
++
+   if (private->extension_events != 0)
+     _gdk_input_window_destroy (window);
  
