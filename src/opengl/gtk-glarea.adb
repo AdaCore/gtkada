@@ -28,8 +28,8 @@
 -----------------------------------------------------------------------
 
 with Gtk.Drawing_Area;
-with Gtk.Enums; use Gtk.Enums;
 with Gtk.Type_Conversion_Hooks;
+pragma Elaborate_All (Gtk.Type_Conversion_Hooks);
 
 package body Gtk.GLArea is
 
