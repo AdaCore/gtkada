@@ -2073,16 +2073,6 @@ ada_alignment_get_yscale (GtkAlignment* widget)
 }
 
 /******************************************
- ** Functions for Bin
- ******************************************/
-
-GtkWidget *
-ada_bin_get_child (GtkBin* widget)
-{
-   return widget->child;
-}
-
-/******************************************
  ** Functions for Ruler
  ******************************************/
 
