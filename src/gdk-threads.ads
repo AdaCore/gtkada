@@ -38,9 +38,10 @@ package Gdk.Threads is
    procedure Leave;
 
 private
+   pragma Linker_Options ("-lgthread");
+   --  This is needed to resolve g_thread_init
 
    pragma Import (C, Init, "g_thread_init");
    pragma Import (C, Enter, "gdk_threads_enter");
    pragma Import (C, Leave, "gdk_threads_leave");
-
 end Gdk.Threads;
