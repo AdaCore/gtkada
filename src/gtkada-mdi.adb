@@ -985,7 +985,7 @@ package body Gtkada.MDI is
       case Side is
          when Left | Right =>
             if MDI.Priorities (Top) <= MDI.Priorities (Side)
-              and then MDI.Docks_Size (Top) /= 0
+              and then MDI.Docks (Top) /= null
             then
                Alloc.Y := MDI.Docks_Size (Top) + Handle_Size;
             else
@@ -995,7 +995,7 @@ package body Gtkada.MDI is
             Alloc.Height := MDI_Height - Allocation_Int (Alloc.Y);
 
             if MDI.Priorities (Bottom) <= MDI.Priorities (Side)
-              and then MDI.Docks_Size (Bottom) /= 0
+              and then MDI.Docks (Bottom) /= null
             then
                Alloc.Height := Alloc.Height
                  - Allocation_Int (MDI.Docks_Size (Bottom)) - Handle_Size;
@@ -1005,7 +1005,7 @@ package body Gtkada.MDI is
 
          when Top | Bottom =>
             if MDI.Priorities (Left) < MDI.Priorities (Side)
-              and then MDI.Docks_Size (Left) /= 0
+              and then MDI.Docks (Left) /= null
             then
                Alloc.X := MDI.Docks_Size (Left) + Handle_Size;
             else
@@ -1015,7 +1015,7 @@ package body Gtkada.MDI is
             Alloc.Width := MDI_Width - Allocation_Int (Alloc.X);
 
             if MDI.Priorities (Right) < MDI.Priorities (Side)
-              and then MDI.Docks_Size (Right) /= 0
+              and then MDI.Docks (Right) /= null
             then
                Alloc.Width := Alloc.Width
                  - Allocation_Int (MDI.Docks_Size (Right)) - Handle_Size;
@@ -1037,7 +1037,7 @@ package body Gtkada.MDI is
    begin
       if Realized_Is_Set (M) then
          for S in Left .. Bottom loop
-            if M.Docks_Size (S) /= 0 then
+            if M.Docks (S) /= null then
                Compute_Size (M, S, Alloc, Is_Handle => True);
                Show (M.Handles (S));
                Gdk.Window.Move_Resize
