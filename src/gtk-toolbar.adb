@@ -30,6 +30,7 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
+with Gtk.Pixmap; use Gtk.Pixmap;
 
 package body Gtk.Toolbar is
 
@@ -509,6 +510,8 @@ package body Gtk.Toolbar is
 
    procedure Generate (N       : in Node_Ptr;
                        File    : in File_Type) is
+      P : Node_Ptr;
+      S : String_Ptr;
    begin
       Gen_New (N, "Toolbar", Get_Field (N, "orientation").all,
         Get_Field (N, "type").all, File => File);
@@ -516,10 +519,34 @@ package body Gtk.Toolbar is
       Gen_Set (N, "Toolbar", "space_size", File);
       Gen_Set (N, "Toolbar", "space_style", File);
       Gen_Set (N, "Toolbar", "tooltips", File);
+
+      --  Now look for widgets that should be added to this toolbar
+
+      P := N.Child;
+
+      while P /= null loop
+         if P.Tag.all = "widget" then
+            S := Get_Field (P, "child_name");
+
+            if S /= null and then Get_Part (S.all, 1) = "Toolbar" then
+               Put_Line (File, "   " & To_Ada (Get_Field (P, "name").all) &
+                 " := Toolbar.Append_Item (" &
+                 Get_Field (N, "name").all & ", """ &
+                 Get_Field (P, "label").all & """, """", """",");
+               Put_Line (File, "     Create_Pixmap (" & '"' &
+                 Get_Field (P, "icon").all & """));");
+               P.Specific_Data.Created := True;
+               P.Specific_Data.Has_Container := True;
+            end if;
+         end if;
+
+         P := P.Next;
+      end loop;
    end Generate;
 
    procedure Generate (Toolbar : in out Gtk_Object;
                        N       : in Node_Ptr) is
+      P     : Node_Ptr;
       S, S2 : String_Ptr;
    begin
       if not N.Specific_Data.Created then
@@ -553,6 +580,33 @@ package body Gtk.Toolbar is
       if S /= null then
          Set_Tooltips (Gtk_Toolbar (Toolbar), Boolean'Value (S.all));
       end if;
+
+      --  Now look for widgets that should be added to this toolbar
+
+      P := N.Child;
+
+      while P /= null loop
+         if P.Tag.all = "widget" then
+            S := Get_Field (P, "child_name");
+
+            if S /= null and then Get_Part (S.all, 1) = "Toolbar" then
+               begin
+                  Set_Object (Get_Field (P, "name"),
+                    Gtk_Object (
+                      Append_Item (Gtk_Toolbar (Toolbar),
+                        Get_Field (P, "label").all, "", "",
+                        Create_Pixmap (Get_Field (P, "icon").all))));
+                  P.Specific_Data.Created := True;
+                  P.Specific_Data.Has_Container := True;
+               exception
+                  --  Ignore null pointers for now ???
+                  when Constraint_Error => null;
+               end;
+            end if;
+         end if;
+
+         P := P.Next;
+      end loop;
    end Generate;
 
 end Gtk.Toolbar;

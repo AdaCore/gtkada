@@ -157,14 +157,16 @@ package body Gtk.Button is
       Label      : String_Ptr := Get_Field (N, "label");
 
    begin
-      if Child_Name = null then
-         if Label = null then
-            Gen_New (N, "Button", File => File);
+      if not N.Specific_Data.Created then
+         if Child_Name = null then
+            if Label = null then
+               Gen_New (N, "Button", File => File);
+            else
+               Gen_New (N, "Button", Label.all, File => File, Delim => '"');
+            end if;
          else
-            Gen_New (N, "Button", Label.all, File => File, Delim => '"');
+            Gen_Child (N, Child_Name, File);
          end if;
-      else
-         Gen_Child (N, Child_Name, File);
       end if;
 
       Container.Generate (N, File);

@@ -31,6 +31,7 @@ with Unchecked_Conversion;
 with Unchecked_Deallocation;
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Object is
 
@@ -262,6 +263,13 @@ package body Gtk.Object is
       S : String_Ptr := Get_Field (N, "flags");
 
    begin
+      --  If Object is null at this point, it means that it has already been
+      --  created and registered
+
+      if Object = null then
+         Object := Get_Object (Get_Field (N, "name"));
+      end if;
+ 
       if S /= null then
          Set_Flags (Object, Guint32'Value (S.all));
       end if;
