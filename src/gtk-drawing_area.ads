@@ -62,21 +62,21 @@ package Gtk.Drawing_Area is
    type Gtk_Drawing_Area is access all Gtk_Drawing_Area_Record'Class;
 
    procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area);
-   --  Creates a new blank Drawing_Area. Note that the background of the
-   --  widget is unitialized, and that you have to draw on it yourself.
+   --  Create a new blank Drawing_Area.
+   --  Note that the background of the widget is unitialized, and that you
+   --  have to draw on it yourself.
 
    procedure Initialize (Drawing_Area : access Gtk_Drawing_Area_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Drawing_Area_Record
-   --  internally.
+   --  Return the internal value associated with a Gtk_Drawing_Area_Record.
 
    procedure Size (Darea  : access Gtk_Drawing_Area_Record;
                    Width  : in Gint;
                    Height : in Gint);
-   --  Requests a new size for the area.
+   --  Request a new size for the area.
    --  This queues a resize request for the area.
 
    ----------------------------

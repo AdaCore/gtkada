@@ -45,7 +45,7 @@ package Gtk.Data is
    type Gtk_Data is access all Gtk_Data_Record'Class;
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Data internally.
+   --  Return the internal value associated with a Gtk_Data internally.
 
    ----------------------------
    -- Support for GATE/DGATE --
@@ -70,7 +70,7 @@ package Gtk.Data is
    --  - "disconnect"
    --    procedure Handler (Data : access Gtk_Data_Record'Class);
    --
-   --    Emitted just before DATA is destroyed.
+   --    Emitted just before Data is destroyed.
    --  </signals>
 
 private

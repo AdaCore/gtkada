@@ -49,8 +49,8 @@ package Gtk.Label is
 
    procedure Gtk_New (Label :    out Gtk_Label;
                       Str   : in     String);
-   --  Creates a new label.
-   --  STR is the string to be displayed.
+   --  Create a new label.
+   --  Str is the string to be displayed.
 
    procedure Initialize (Label : access Gtk_Label_Record'Class;
                          Str   : in     String);
@@ -58,17 +58,17 @@ package Gtk.Label is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Label internally.
+   --  Return the internal value associated with a Gtk_Label internally.
 
    procedure Set_Text (Label : access Gtk_Label_Record;
                        Str   : in String);
-   --  Changes the text of the label
+   --  Change the text of the label.
    --  The new text is visible on the screen at once. Note that the underline
    --  pattern is not modified.
 
    procedure Set_Justify (Label : access Gtk_Label_Record;
                           Jtype : in Enums.Gtk_Justification);
-   --  Sets the justification for the label.
+   --  Set the justification for the label.
    --  The default value is Justify_Center, which means that the text will be
    --  centered in the label. Note that this setting has an impact only when
    --  the Gtk_Label is larger than the text (its default width is the same
@@ -76,30 +76,30 @@ package Gtk.Label is
 
    procedure Set_Pattern (Label   : access Gtk_Label_Record;
                           Pattern : in String);
-   --  Changes the underlines pattern.
-   --  PATTERN is a simple string made of underscore and space characters,
+   --  Change the underlines pattern.
+   --  Pattern is a simple string made of underscore and space characters,
    --  matching the ones in the string. GtkAda will underline every letter
    --  that matches an underscore.
    --  An empty string disables the underlines.
    --  example: If the text is FooBarBaz and the PATTERN is "___   ___"
-   --  then both "Foo" and "Baz" will be underlines, but not "Bar".
+   --  then both "Foo" and "Baz" will be underlined, but not "Bar".
 
    procedure Set_Line_Wrap (Label : access Gtk_Label_Record;
                             Wrap  : in Boolean);
-   --  Toggles line wrapping within LABEL.
-   --  if WRAP is True, then Label will break lines if the text is larger
-   --  then the widget's size. If WRAP is False, then the text is simply
+   --  Toggle line wrapping within Label.
+   --  if Wrap is True, then Label will break lines if the text is larger
+   --  then the widget's size. If Wrap is False, then the text is simply
    --  cut off.
 
    function Get (Label : access Gtk_Label_Record) return String;
-   --  Gets the current value of the text displayed in the label.
+   --  Get the current value of the text displayed in the label.
 
    procedure Parse_Uline (Label : access Gtk_Label_Record;
                           Text  : in     String);
-   --  Creates both the text and the underscore pattern from a single string.
-   --  TEXT is parsed for underscores. The next character is converted to
+   --  Create both the text and the underscore pattern from a single string.
+   --  Text is parsed for underscores. The next character is converted to
    --  an underlined character.
-
+   --
    --  Note: as opposed to the C version, this subprogram does not return the
    --  accelerator keyval associated with the last character underlined. This
    --  feature is only used internally by gtk+ to create menus, and is not

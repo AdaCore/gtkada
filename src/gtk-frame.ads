@@ -55,8 +55,8 @@ package Gtk.Frame is
 
    procedure Gtk_New (Frame : out Gtk_Frame;
                       Label : in String := "");
-   --  Creates a new frame.
-   --  If LABEL is not the empty string, the frame will have a title.
+   --  Create a new frame.
+   --  If Label is not the empty string, the frame will have a title.
 
    procedure Initialize (Frame : access Gtk_Frame_Record'Class;
                          Label : in String := "");
@@ -64,28 +64,28 @@ package Gtk.Frame is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Frame internally.
+   --  Return the internal value associated with a Gtk_Frame internally.
 
    procedure Set_Label (Frame : access Gtk_Frame_Record;
                         Label : in String := "");
-   --  Changes the label of the frame dynamically.
-   --  If LABEL is the empty string, the frame's label is deleted.
+   --  Change the label of the frame dynamically.
+   --  If Label is the empty string, the frame's label is deleted.
 
    procedure Set_Label_Align
      (Frame  : access Gtk_Frame_Record;
       Xalign : in Gfloat := 0.0;
       Yalign : in Gfloat := 0.0);
-   --  Changes the alignment of the title in the frame.
-   --  XALIGN and YALIGN are both percents that indicate the exact position
+   --  Change the alignment of the title in the frame.
+   --  Xalign and Yalign are both percents that indicate the exact position
    --  of the label relative to the top-left corner of the frame.
-   --  Note that YALIGN is currently ignored, and the label can only be
-   --  displayed on the top of the frame (0.0 for XALIGN means align the label
+   --  Note that Yalign is currently ignored, and the label can only be
+   --  displayed on the top of the frame (0.0 for Xalign means align the label
    --  on the left, 1.0 means align the label on the right).
 
    procedure Set_Shadow_Type
      (Frame    : access Gtk_Frame_Record;
       The_Type : in Gtk_Shadow_Type);
-   --  Changes the visual aspect of the frame.
+   --  Change the visual aspect of the frame.
 
    ----------------------------
    -- Support for GATE/DGATE --

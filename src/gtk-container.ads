@@ -44,34 +44,34 @@ package Gtk.Container is
 
    procedure Set_Border_Width (Container    : access Gtk_Container_Record;
                                Border_Width : in Gint);
-   --  Modifies the size of the frame that surrounds the widget. The exact
-   --  visual impact depends on the specific widget class.
+   --  Modify the size of the frame that surrounds the widget.
+   --  The exact visual impact depends on the specific widget class.
 
    procedure Add (Container : access Gtk_Container_Record;
                   Widget    : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Adds a new child to the container.
+   --  Add a new child to the container.
    --  Note that some containers can have only one child. Nothing is done
    --  if there is already a child.
    --  This basically sends the "add" signal (see below)
 
    procedure Remove (Container : access Gtk_Container_Record;
                      Widget    : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Removes a child from the container.
-   --  Nothing is done if WIDGET is not a child of CONTAINER. WIDGET is not
+   --  Remove a child from the container.
+   --  Nothing is done if Widget is not a child of Container. Widget is not
    --  destroyed, but is deleted from the screen.
    --  This basically sends the "remove" signal (see below)
 
    procedure Set_Resize_Mode (Container   : access Gtk_Container_Record;
                               Resize_Mode : in Gtk.Enums.Gtk_Resize_Mode);
-   --  Changes the resizing behavior for the CONTAINER.
+   --  Change the resizing behavior for the Container.
    --  The default value is Resize_Parent.
 
    function Children (Container : access Gtk_Container_Record)
                      return Gtk.Widget.Widget_List.Glist;
-   --  Returns a list of all the children of the container.
+   --  Return a list of all the children of the container.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Container internally.
+   --  Return the internal value associated with a Gtk_Container internally.
 
    -----------------------
    -- Foreach functions --
@@ -82,9 +82,9 @@ package Gtk.Container is
 
    procedure Forall (Container : access Gtk_Container_Record;
                      Func      : Forall_Function);
-   --  Executes FUNC for each of the children of CONTAINER.
+   --  Execute Func for each of the children of Container.
    --  See also the generic package Forall_Pkg if you want to pass some
-   --  extra data to FUNC.
+   --  extra data to Func.
 
    --  <doc_ignore>
    generic
@@ -97,7 +97,7 @@ package Gtk.Container is
       procedure Forall (Container : access Gtk_Container_Record;
                         Func      : Forall_Function;
                         Data      : Data_Type);
-      --  Executes FUNC for each of the children of CONTAINER
+      --  Execute FUNC for each of the children of CONTAINER
 
    end Forall_Pkg;
    --  </doc_ignore>
@@ -108,40 +108,43 @@ package Gtk.Container is
 
    procedure Set_Reallocate_Redraws (Container : access Gtk_Container_Record;
                                      Needs_Redraws : Boolean := False);
-   --  If NEEDS_REDRAWS is True, then a "draw" signal is emitted for the
-   --  CONTAINER whenever one is emitted for a child.
+   --  Set the "needs_redraws" field.
+   --  If Needs_Redraws is True, then a "draw" signal is emitted for the
+   --  Container whenever one is emitted for a child.
 
    procedure Set_Focus_Vadjustment
      (Container  : access Gtk_Container_Record;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
-   --  ADJUSTMENT should have been created and displayed at some other
+   --  Set the focus to the vertical adjustment.
+   --  Adjustment should have been created and displayed at some other
    --  place in your application.
-   --  CONTAINER will make sure that ADJUSTMENT always matches the range
+   --  Container will make sure that Adjustment always matches the range
    --  for the focus widget's position (y .. y + height).
 
    procedure Set_Focus_Hadjustment
      (Container  : access Gtk_Container_Record;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
-   --  ADJUSTMENT should have been created and displayed at some other
+   --  Set the focus to the horizontal adjustment.
+   --  Adjustment should have been created and displayed at some other
    --  place in your application.
-   --  CONTAINER will make sure that ADJUSTMENT always matches the range
+   --  Container will make sure that Adjustment always matches the range
    --  for the focus widget's position (x .. x + width).
 
    function Get_Toplevels return Gtk.Widget.Widget_List.Glist;
-   --  Returns the list of all the toplevel widgets, ie the ones that don't
-   --  have any parent (windows, dialogs, ...)
+   --  Return the list of all the toplevel widgets.
+   --  I.e. the ones that don't have any parent (windows, dialogs, ...)
 
    procedure Register_Toplevel (Container : access Gtk_Container_Record);
-   --  Registers CONTAINER as a toplevel widget, returned by the subprogram
+   --  Register Container as a toplevel widget, returned by the subprogram
    --  Get_Toplevels.
 
    procedure Unregister_Toplevel (Container : access Gtk_Container_Record);
-   --  Unregisters CONTAINER as a toplevel widget.
+   --  Unregister Container as a toplevel widget.
 
    function Child_Type (Container : access Gtk_Container_Record)
                        return Gtk.Gtk_Type;
-   --  Returns the type of the children in CONTAINER.
-   --  If CONTAINER can contain any type of widget, Gtk_Type_None is
+   --  Return the type of the children in Container.
+   --  If Container can contain any type of widget, Gtk_Type_None is
    --  returned.
 
    ----------------------
@@ -149,17 +152,17 @@ package Gtk.Container is
    ----------------------
 
    procedure Check_Resize (Container : access Gtk_Container_Record);
-   --  Emits the "check_resize" signal
+   --  Emit the "check_resize" signal
 
    function Focus (Container : access Gtk_Container_Record;
                    Direction : Gtk.Enums.Gtk_Direction_Type)
                   return Boolean;
-   --  Emits the "focus" signal
+   --  Emit the "focus" signal
 
    procedure Set_Focus_Child
      (Container : access Gtk_Container_Record;
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Emits a "set_focus_child" signal.
+   --  Emit a "set_focus_child" signal.
 
    ----------------------------
    -- Support for GATE/DGATE --
@@ -195,8 +198,8 @@ package Gtk.Container is
    --  - "check_resize"
    --    procedure Handler (Container : access Gtk_Container_Record'Class);
    --
-   --    Called every time the CONTAINER needs resizing.
-   --    Upon receiving this signal, CONTAINER should check whether it needs
+   --    Called every time the Container needs resizing.
+   --    Upon receiving this signal, Container should check whether it needs
    --    to be resized, and if it does should queue a resize request.
    --
    --  - "focus"

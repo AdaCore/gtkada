@@ -48,32 +48,31 @@ package Gtk.Hbutton_Box is
    type Gtk_Hbutton_Box is access all Gtk_Hbutton_Box_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Hbutton_Box);
-   --  Creates a new horizontal button box.
+   --  Create a new horizontal button box.
 
    procedure Initialize (Widget : access Gtk_Hbutton_Box_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_HButton_Box internally.
+   --  Return the internal value associated with a Gtk_HButton_Box internally.
 
    procedure Set_Spacing_Default (Spacing : in Gint);
-   --  Sets the default spacing (space between two adjacent children of the
-   --  box) for all the Hbutton_Boxes in your application. This can be
+   --  Set the default spacing (space between two adjacent children).
+   --  This is done for all the Hbutton_Boxes in your application. This can be
    --  overriden for a specific box by calling Gtk.Button_Box.Set_Spacing.
 
    function Get_Spacing_Default return Gint;
-   --  Returns the default spacing to use for all Hbutton_Boxes in your
+   --  Return the default spacing to use for all Hbutton_Boxes in your
    --  application that don't have a specific value.
 
    procedure Set_Layout_Default (Layout : in Gtk.Enums.Gtk_Button_Box_Style);
-   --  Sets the the default layout to use for all the hbutton_boxes in your
+   --  Set the the default layout to use for all the hbutton_boxes in your
    --  application that don't have a specific value set by
    --  Gtk.Button_Box.Set_Layout. The default value is Buttonbox_Edge.
 
    function Get_Layout_Default return Gtk.Enums.Gtk_Button_Box_Style;
-   --  Returns the default layout to use for all the hbutton_boxes in your
-   --  application.
+   --  Return the default layout to use for all the hbutton_boxes.
 
    ----------------------------
    -- Support for GATE/DGATE --

@@ -29,7 +29,7 @@
 
 --  <description>
 --
---  This widget is a container that catches event for its child when its
+--  This widget is a container that catches events for its child when its
 --  child does not have its own window (like a Gtk_Scrolled_Window or a
 --  Gtk_Label for instance).
 --  Some widgets in GtkAda do not have their own window, and thus can not
@@ -53,7 +53,7 @@ package Gtk.Event_Box is
    type Gtk_Event_Box is access all Gtk_Event_Box_Record'Class;
 
    procedure Gtk_New (Event_Box : out Gtk_Event_Box);
-   --  Creates a new box.
+   --  Create a new box.
    --  The box's child can then be set using the Gtk.Container.Add function.
 
    procedure Initialize (Event_Box : access Gtk_Event_Box_Record'Class);
@@ -61,7 +61,7 @@ package Gtk.Event_Box is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Event_Box internally.
+   --  Return the internal value associated with a Gtk_Event_Box internally.
 
    ----------------------------
    -- Support for GATE/DGATE --
