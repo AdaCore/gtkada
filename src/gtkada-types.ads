@@ -27,6 +27,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This package provides GtkAda specific types and their associated functions.
+--
+--  </description>
+
 with Interfaces.C.Strings;
 
 package Gtkada.Types is
@@ -41,9 +47,12 @@ package Gtkada.Types is
    Null_Ptr : Chars_Ptr renames Interfaces.C.Strings.Null_Ptr;
 
    function Null_Array return Chars_Ptr_Array;
-   pragma Inline (Null_Array);
    --  Return a null array.
+   pragma Inline (Null_Array);
 
+   -------------------------------------
+   --  Handling of arrays of Strings  --
+   -------------------------------------
    --  The following functions provide a very convenient way to create
    --  C arrays of null terminated strings in Ada.
    --
@@ -53,7 +62,7 @@ package Gtkada.Types is
    --
    --  which corresponds to the C declaration:
    --
-   --     char *signals[] = {"clicked", "missed", "new signal"};
+   --     char *signals[] = @{"clicked", "missed", "new signal"@};
    --
    --  Note that you still need to manually call Free (Signals) if you want to
    --  release the memory dynamically allocated by the "+" functions.
@@ -84,6 +93,6 @@ package Gtkada.Types is
    --  resulting array.
 
    procedure Free (A : in out Chars_Ptr_Array);
-   --  Frees all the strings in A
+   --  Free all the strings in A.
 
 end Gtkada.Types;
