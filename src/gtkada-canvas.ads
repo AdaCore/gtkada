@@ -193,6 +193,20 @@ package Gtkada.Canvas is
    --  Note that (X, Y) is the coordinates for a zoom level 100%. Conversion to
    --  other zoom levels is fully automatic
 
+   procedure Set_Items
+     (Canvas : access Interactive_Canvas_Record;
+      Items  : Glib.Graphs.Graph);
+   --  Set the items and links to display in the canvas from Items.
+   --  All items previously in the canvas are removed, and replaced by the
+   --  vertices in Items.
+   --  Note that the vertices in Items must be in Canvas_Item_Record'Class, and
+   --  the links must be in Canvas_Link_Record'Class.
+   --  If you do not have an automatic layout set up in Canvas, you need to set
+   --  the coordinates of all the vertices by calling Move_To separately.
+   --
+   --  You mustn't destroy items yourself, this is done automatically when the
+   --  canvas is destroyed.
+
    procedure Put
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class;
@@ -614,7 +628,7 @@ private
 
    type Canvas_Link_Record is new Glib.Graphs.Edge with record
       Descr  : String_Access;
-      Arrow  : Arrow_Type;
+      Arrow  : Arrow_Type := End_Arrow;
 
       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf := Gdk.Pixbuf.Null_Pixbuf;
       --  The pixmap in which the text is displayed. This is required to
@@ -698,7 +712,7 @@ private
    end record;
 
    type Canvas_Item_Record is abstract new Glib.Graphs.Vertex with record
-      Coord   : Gdk.Rectangle.Gdk_Rectangle;
+      Coord   : Gdk.Rectangle.Gdk_Rectangle := (0, 0, 10, 10);
       Visible : Boolean := True;
    end record;
 

@@ -905,6 +905,23 @@ package body Gtkada.Canvas is
       Update_Adjustments (Canvas);
    end Put;
 
+   ---------------
+   -- Set_Items --
+   ---------------
+
+   procedure Set_Items
+     (Canvas : access Interactive_Canvas_Record;
+      Items  : Glib.Graphs.Graph) is
+   begin
+      Destroy (Canvas.Children);
+      Canvas.Children := Items;
+
+      if Canvas.Auto_Layout then
+         Layout (Canvas);
+      end if;
+      Update_Adjustments (Canvas);
+   end Set_Items;
+
    --------------
    -- Realized --
    --------------
@@ -2234,7 +2251,8 @@ package body Gtkada.Canvas is
    begin
       while not At_End (Current) loop
          if Name = ""
-           or else Canvas_Link (Get (Current)).Descr.all = Name
+           or else (Canvas_Link (Get (Current)).Descr /= null
+                    and then Canvas_Link (Get (Current)).Descr.all = Name)
          then
             return True;
          end if;
@@ -2545,7 +2563,9 @@ package body Gtkada.Canvas is
 
    procedure Destroy (Link : in out Canvas_Link_Record) is
    begin
-      Unref (Link.Pixbuf);
+      if Link.Pixbuf /= null then
+         Unref (Link.Pixbuf);
+      end if;
       Free (Link.Descr);
    end Destroy;
 
