@@ -516,7 +516,12 @@ begin
             new Gtk.Radio_Button.Gtk_Radio_Button);
    SHT.Set (new String '("GtkRadioMenuItem"),
             new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item);
-   SHT.Set (new String '("GtkRuler"), new Gtk.Ruler.Gtk_Ruler);
+
+   Object := new Gtk.Ruler.Gtk_Ruler;
+   SHT.Set (new String '("GtkRuler"), Object);
+   SHT.Set (new String '("GtkHRuler"), Object);
+   SHT.Set (new String '("GtkVRuler"), Object);
+
    SHT.Set (new String '("GtkScale"), new Gtk.Scale.Gtk_Scale);
    SHT.Set (new String '("GtkScrollbar"), new Gtk.Scrollbar.Gtk_Scrollbar);
    SHT.Set (new String '("GtkScrolledWindow"),
