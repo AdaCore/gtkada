@@ -46,7 +46,7 @@ GENERATE_PRJ  = ./generate_prj
 PRJ           = gtkada.gpr
 
 c_objects = $(LIB_DIR)/misc.o $(LIB_DIR)/misc_extra.o $(LIB_DIR)/misc_broken.o
-c_extra_objects = ${wildcard gtkextra/gtk*.o}
+c_extra_objects = gtkextra/gtk*.o
 
 ## General and public targets
 
