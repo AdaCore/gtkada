@@ -148,6 +148,12 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 		      "Gtk_Check_Item"   => "Gtk.Extra.Check_Item",
 		      "Gtk_Plot_Layout"  => "Gtk.Extra.Plot_Layout",
 		      "Gtk_Plot_Canvas"  => "Gtk.Extra.Plot_Canvas",
+		      "Gtk_Plot_3D"      => "Gtk.Extra.Plot_3D",
+		      "Gtk_Plot_Bar"     => "Gtk.Extra.Plot_Bar",
+		      "Gtk_Plot_Box"     => "Gtk.Extra.Plot_Box",
+		      "Gtk_Plot_Data"    => "Gtk.Extra.Plot_Data",
+		      "Gtk_Plot_Polar"   => "Gtk.Extra.Plot_Polar",
+		      "Gtk_Plot_Surface" => "Gtk.Extra.Plot_Surface",
 		      "Gtk_Combo_Box"    => "Gtk.Extra.Combo_Box",
 		      "Gtk_Sheet"        => "Gtk.Extra.Sheet",
 		      "Gtk_Color_Combo"  => "Gtk.Extra.Color_Combo",
@@ -163,6 +169,9 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 ## The output file (stored here so that we can sort the output)
 ## It is indexed on the package name
 %output = ();
+
+## List of packages defined in GtkAda
+my (%packages) = ();
 
 ## Name of the package that is currently being proposed.
 $package_name="";
@@ -193,7 +202,7 @@ foreach $source_file (@source_files) {
 
 	@content = &delete_ignore(&expand_include (@content));
 	print "Generating doc for $source_file\n";
-	
+
 	# Get the package name
 	$package_name = &get_package_name (@content);
 	my ($cfile) = &get_c_file ($package_name);
@@ -202,6 +211,7 @@ foreach $source_file (@source_files) {
 	# because of the font that is used in there. We thus use another
 	# font just for them...
 	local ($pack) = $package_name;
+	$packages{$package_name} = "";
 	$pack =~ s/_/\@code{_}/g;
 
 	&output ("\@page\n",
@@ -214,7 +224,7 @@ foreach $source_file (@source_files) {
 	    (&get_tag_value ("description", @content), 0);
 	$description =~ s/^\s*//;
 	$description = &process_list ($description);
-	    
+
 	&output ("$description\n");
 
 	if (&get_tag_value ("screenshot", @content)) {
@@ -230,20 +240,20 @@ foreach $source_file (@source_files) {
 
 
 	## Prepare the submenu
-	
+
 	&output ("\@menu\n");
 	&output ("* $package_name Widget Hierarchy::\n") if (@hierarchy);
 	&output ("* $package_name Signals::\n")          if (keys %signals);
 	&output ("* $package_name Types::\n")            if (%types);
 	&output ("* $package_name Subprograms::\n")      if (@subprogs);
-	
+
 	if (&get_tag_value ("example", @content)) {
 	    &output ("* $package_name Example::\n");
 	}
 	&output ("\@end menu\n\n");
 
 	## Widget hierarchy
-	
+
 	if (@hierarchy) {
 	    my ($hierarchy, $hierarchy_short) = ("", "");
 	    $hierarchy = sprintf ("\@b{%-30s (\@pxref{Package_%s})\n",
@@ -277,10 +287,6 @@ foreach $source_file (@source_files) {
 	    &output ("\@end ifnottex\n");
 	    &output ("\@ifnothtml\n\@iftex\n\@smallexample\n$hierarchy_short\n",
 		     "\@end smallexample\n\@end iftex\n\@end ifnothtml\n");
-#	    &output ("\@ifinfo\n\@smallexample\n$hierarchy\n",
-#		     "\@end smallexample\n\@end ifinfo\n");
-#	    &output ("\@iftex\n\@smallexample\n$hierarchy_short",
-#		     "\n\@end smallexample\n\@end iftex");
 	    &html_output ("</TD></TR></TABLE>");
 	} else {
 	    $parent{$package_name} = "<>";
@@ -293,7 +299,7 @@ foreach $source_file (@source_files) {
 			   "\@node $package_name Signals\n",
 			   "\@section Signals\n\n");
 	    &output ("\@itemize \@bullet\n\n");
-	    
+
 	    foreach $signal (sort keys %signals) {
 		&output ("\@item \"\@b{$signal}\"\n\n",
 			 $signals{$signal}, "\n");
@@ -307,7 +313,6 @@ foreach $source_file (@source_files) {
 	    &color_output ($section_bg, $section_fg,
 			   "\@node $package_name Types\n",
 			   "\@section Types\n\n");
-#	    &output ("\@itemize \@bullet\n");
 	    &html_output ("<TABLE width=100% border=0 ",
 			  "CELLSPACING=0>");
 
@@ -315,7 +320,6 @@ foreach $source_file (@source_files) {
 		&html_output ("<TR>",
 			      "<TD WIDTH=$tab1_width></TD>",
 			      "<TD BGCOLOR=$subprog_bg valign=top>");
-#		&output ("\@item \n");
 		&output ("\@smallexample\n\@exdent ",
 			 $types{$type}[0],
 			 "\n\@end smallexample");
@@ -327,9 +331,8 @@ foreach $source_file (@source_files) {
 		&html_output ("</TD></TR>");
 	    }
 	    &html_output ("</TABLE>");
-#	    &output ("\@end itemize\n");
 	}
-	
+
 	## List of subprograms (sorted)
 
 	if (@subprogs) {
@@ -347,7 +350,6 @@ foreach $source_file (@source_files) {
 
 		if ($return eq "--") {
 		    if ($has_itemize == 1) {
-#			&output ("\@end itemize\n");
 			$has_itemize = 0;
 		    }
 		    &html_output ("<TR><TD colspan=3 BGCOLOR=$subsection_bg>");
@@ -365,7 +367,6 @@ foreach $source_file (@source_files) {
 		}
 
 		if ($has_itemize == 0) {
-#		    &output ("\@itemize \@bullet\n\n");
 		    $has_itemize = 1;
 		}
 
@@ -385,10 +386,10 @@ foreach $source_file (@source_files) {
 			if ($params[$i][2] =~ /:=/
 			    && length ($params[$i][2]) > 30) {
 			    $type =~ s/\s*:=.*//;
-			    $default = $params[$i][2];			    
+			    $default = $params[$i][2];
 			    $default =~ s/.*:=/:=/;
 			}
-			
+
 			$profile .= sprintf ("%-18s : \@b{%-6s} %s",
 					     $params[$i][0],
 					     $params[$i][1],
@@ -396,7 +397,7 @@ foreach $source_file (@source_files) {
 			if ($default ne '') {
 			    $profile .= "\n" . (' ' x 23) . $default;
 			}
-			
+
 			$profile .= (($i == $#params) ? ")" : ";\n");
 		    }
 		}
@@ -406,12 +407,12 @@ foreach $source_file (@source_files) {
 		    $profile .= "\n" . " " x 3 if (scalar (@params) > 0);
 		    $profile .=  "\@b{return} $return;";
 		}
-		    
+
 		&html_output ("<TR>",
 			      "<TD WIDTH=$tab1_width></TD>",
 			      "<TD BGCOLOR=$subprog_bg valign=top WIDTH=$tab23_width>");
 		&output ("\@smallexample\n\@exdent $profile\n\@end smallexample");
-		
+
 		$comment =~ s/^\s*//;
 		$comment = &process_list (&clean_comment_marks ($comment, 1));
 		&html_output ("</TD></TR><TR>",
@@ -421,9 +422,6 @@ foreach $source_file (@source_files) {
 			 $comment, "\@*\n",
 			 "\@ifhtml\n<BR><BR>\n\@end ifhtml\n");
 		&html_output ("</TD></TR>");
-	    }
-	    if ($has_itemize == 1)  {
-#		&output ("\@end itemize\n\n");
 	    }
 	    &html_output ("</TABLE>");
 	}
@@ -464,10 +462,8 @@ foreach $package_name (keys %parent) {
 ## Outputs the files
 ## Requires the global variables $output and $package_name
 
-my (%packages) = ();
-
 foreach (keys %parent) {
-    $packages{&package_from_type ($_)} = "";
+  $packages{&package_from_type ($_)} = "";
 }
 
 open (MENU, ">$menu_file_name");
@@ -547,10 +543,10 @@ sub find_type_in_package () {
     while (@content && $line !~ /^private/) {
 	$line = shift @content;
     }
-    
+
     # Find the name of the type in the package @content
-    
-    while (@content) {
+
+    while (@content && ! defined $p) {
 	$line = shift @content;
 	if ($line =~ /type ([^ \t]+)_Record/) {
 	    $origin = $1;
@@ -646,7 +642,7 @@ sub get_types () {
 	    if ($line =~ /access\s*$/) {
 		$line .= shift @content;
 	    }
-	    
+
 	    $line =~ s/^\s+/ /g;
 
 	    # For an access to function type
@@ -685,10 +681,10 @@ sub get_types () {
 			$description .= "      -- $line\n";
 		    } else {
 			$description .= "    $line\n";
-		    }			
+		    }
 		}
 	    }
-	    
+
 	    # Else if we have an enumeration type, get all the possible values
 	    # and the associated comments
 	    elsif ($line =~ s/^.*\sis\s+\(\s*(.*)//) {
@@ -724,7 +720,7 @@ sub get_types () {
 		    $description .= $line;
 		}
 	    }
-	    
+
 #	    print $description;
 
 	    $line = shift @content;
@@ -755,7 +751,7 @@ sub get_types () {
     return %types;
 }
 
-    
+
 # Returns the list of signals defined in the C file $1.
 # The Ada file is defined in $2
 # If the Ada file has a "<signals>" tag, then this is used instead
@@ -768,7 +764,7 @@ sub find_signals () {
 
     ## Parses the C file to find all the signals
     my ($gtk) = "gtk";
-    
+
     if ($cfile =~ /^gdk/) {
 	$gtk = "gdk";
     }
@@ -776,16 +772,16 @@ sub find_signals () {
     open (FILE, $gtk_src_dir . "/$gtk/" . $cfile);
     my (@c_content) = <FILE>;
     close (FILE);
-    
+
     my ($in_struct) = 0;
     my ($line);
     foreach $line (@c_content) {
 	if ($line =~ /^\s*struct\s/) {
 	    $in_struct = 1;
 	}
-	
+
 	if ($in_struct) {
-	    
+
 	    # A pointer to function ?
 	    if ($line =~ /\(\*\s*([^\)]+)/) {
 		$c_signals{$1} = "";
@@ -833,12 +829,12 @@ sub find_signals () {
 	    if (! defined $signals{$_}
 		&& ! defined $signals_exceptions{$cfile . "/" . $_})
 	    {
-		
+
 		print "  The signal $_ is not documented in the Ada file!\n";
 		$signals{$_} = "";
 	    }
 	}
-	
+
     } else {
 	print "  Signals loaded from the C header file.\n"
 	    if (keys %c_signals);
@@ -917,7 +913,7 @@ sub highlight_keywords () {
 
     # Do not highlight keywords in comments !
     while (($string =~ s/\@i(.*)\@b{([^\}]+)}(.*)/\@i$1$2$3/g)){};
-    
+
     return $string;
 }
 
