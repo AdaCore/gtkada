@@ -119,7 +119,7 @@ package body Gtk.Main is
       ----------------
 
       function General_Cb (D : System.Address) return Gint is
-         Data : Cb_Record_Access := Convert (D);
+         Data : constant Cb_Record_Access := Convert (D);
       begin
          return Boolean'Pos (Data.Func (Data.Data.all));
       end General_Cb;
@@ -144,7 +144,7 @@ package body Gtk.Main is
          function Convert is new Unchecked_Conversion
            (Cb_Record_Access, System.Address);
 
-         D : Cb_Record_Access :=
+         D : constant Cb_Record_Access :=
            new Cb_Record' (Func => Func, Data => new Data_Type'(Data));
 
       begin
@@ -369,7 +369,7 @@ package body Gtk.Main is
       ----------------
 
       function General_Cb (D : System.Address) return Gint is
-         Data : Cb_Record_Access := Convert (D);
+         Data : constant Cb_Record_Access := Convert (D);
       begin
          return Boolean'Pos (Data.Func (Data.Data.all));
       end General_Cb;
@@ -396,7 +396,7 @@ package body Gtk.Main is
          function Convert is new Unchecked_Conversion
            (Cb_Record_Access, System.Address);
 
-         Data : Cb_Record_Access := new Cb_Record'
+         Data : constant Cb_Record_Access := new Cb_Record'
            (Func => Cb,
             User_Destroy => Destroy,
             Data => new Data_Type'(D));
@@ -454,7 +454,7 @@ package body Gtk.Main is
       ----------------
 
       function General_Cb (D : System.Address) return Gint is
-         Data : Cb_Record_Access := Convert (D);
+         Data : constant Cb_Record_Access := Convert (D);
       begin
          return Boolean'Pos (Data.Func (Data.Data.all));
       end General_Cb;
@@ -480,7 +480,7 @@ package body Gtk.Main is
          function Convert is new Unchecked_Conversion
            (Cb_Record_Access, System.Address);
 
-         Data : Cb_Record_Access := new Cb_Record'
+         Data : constant Cb_Record_Access := new Cb_Record'
            (Func => Func,
             Data => new Data_Type'(D),
             User_Destroy => Destroy);
