@@ -167,7 +167,7 @@ package Gtk.Menu is
    --  ACTIVATE_TIME is the time at which the event occured (you can get it
    --  directly from the Gdk_Event structure).
    --
-   --  Note that a variant of this function is available in the generic package
+   --  Note that a variant of this function is given in the generic package
    --  User_Menu_Popup.
 
    --  Note: in the Popup function, the Parent_* parameters are not access
@@ -190,10 +190,10 @@ package Gtk.Menu is
          Func              : in Gtk_Menu_Position_Func := null;
          Button            : in Guint := 1;
          Activate_Time     : in Guint32 := 0);
-
       --  Same as the Popup function above.
       --  Note that DATA is not duplicated, thus you should take care of the
       --  memory allocation/deallocation yourself.
+
       --  Note also that the order of parameters is slightly different from the
       --  C version.
    end User_Menu_Popup;
