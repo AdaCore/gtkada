@@ -32,6 +32,9 @@ with System;
 
 package body Gtk.Text_Buffer is
 
+   procedure g_free (Mem : Interfaces.C.Strings.chars_ptr);
+   pragma Import (C, g_free, "g_free");
+
    -------------
    -- Gtk_New --
    -------------
@@ -342,7 +345,7 @@ package body Gtk.Text_Buffer is
       declare
          S : constant String := Interfaces.C.Strings.Value (Str);
       begin
-         Interfaces.C.Strings.Free (Str);
+         g_free (Str);
          return S;
       end;
    end Get_Text;
@@ -376,7 +379,7 @@ package body Gtk.Text_Buffer is
       declare
          S : constant String := Interfaces.C.Strings.Value (Str);
       begin
-         Interfaces.C.Strings.Free (Str);
+         g_free (Str);
          return S;
       end;
    end Get_Slice;
