@@ -1630,25 +1630,29 @@ package body Gtkada.MDI is
                         Split
                           (C.MDI,
                            Current, Note, Orientation_Vertical,
-                           Width => 0, Height => 0,
+                           Width => 0,
+                           Height => Get_Allocation_Height (Current) / 2,
                            After => True);
                      when Position_Top =>
                         Split
                           (C.MDI,
                            Current, Note, Orientation_Vertical,
-                           Width => 0, Height => 0,
+                           Width => 0,
+                           Height => Get_Allocation_Height (Current) / 2,
                            After => False);
                      when Position_Left =>
                         Split
                           (C.MDI,
                            Current, Note, Orientation_Horizontal,
-                           Width => 0, Height => 0,
+                           Width => Get_Allocation_Width (Current) / 2,
+                           Height => 0,
                            After => False);
                      when Position_Right =>
                         Split
                           (C.MDI,
                            Current, Note, Orientation_Horizontal,
-                           Width => 0, Height => 0,
+                           Width => Get_Allocation_Width (Current) / 2,
+                           Height => 0,
                            After => True);
                      when others =>
                         null;
