@@ -1,3 +1,31 @@
+-----------------------------------------------------------------------
+--          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--                                                                   --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU General Public               --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- General Public License for more details.                          --
+--                                                                   --
+-- You should have received a copy of the GNU General Public         --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+--                                                                   --
+-- As a special exception, if other files instantiate generics from  --
+-- this unit, or you link this unit with other files to produce an   --
+-- executable, this  unit  does not  by itself cause  the resulting  --
+-- executable to be covered by the GNU General Public License. This  --
+-- exception does not however invalidate any other reasons why the   --
+-- executable file  might be covered by the  GNU Public License.     --
+-----------------------------------------------------------------------
 
 with Glib;                use Glib;
 with Gdk.Bitmap;          use Gdk.Bitmap;
@@ -87,6 +115,10 @@ package body Main_Windows is
    procedure Display_Help (Button : access Gtk_Widget_Record);
    --  Display an Help window for the current demo
 
+   Help_Dialog : Gtk.Dialog.Gtk_Dialog;
+   Help_Text   : Gtk.Text.Gtk_Text;
+   --  The dialog used to display the help window
+
    type Demo_Function is
      access procedure (Frame : access Gtk_Frame_Record'Class);
    --  The type of function to call when an item in the tree is selected.
@@ -108,18 +140,15 @@ package body Main_Windows is
 
    type Demo_Tree_Item_Record is new Gtk_Tree_Item_Record with
       record
-         Demo_Func : Demo_Function := null;
-         Help      : Help_Function := null;
+         Demo_Num  : Natural;
       end record;
    type Demo_Tree_Item is access all Demo_Tree_Item_Record'Class;
    procedure Gtk_New (Item  : out Demo_Tree_Item;
                       Label : String;
-                      Func  : Demo_Function;
-                      Help : Help_Function);
+                      Num   : Natural);
    procedure Initialize (Item  : access Demo_Tree_Item_Record'Class;
                          Label : String;
-                         Func  : Demo_Function;
-                         Help : Help_Function);
+                         Num   : Natural);
    --  New definition for tree items, so that they know which demo function
    --  to call.
 
@@ -158,8 +187,10 @@ package body Main_Windows is
 
 
    Gtk_Demos : constant Tree_Item_Array :=
-     ((NS ("arrow"),            Base,    Create_Arrow.Run'Access, Create_Arrow.Help'Access),
-      (NS ("button box"),       Box,     Create_Button_Box.Run'Access, null),
+     ((NS ("arrow"),            Base,    Create_Arrow.Run'Access,
+                                         Create_Arrow.Help'Access),
+      (NS ("button box"),       Box,     Create_Button_Box.Run'Access,
+                                         Create_Button_Box.Help'Access),
       (NS ("buttons"),          Base,    Create_Buttons.Run'Access, null),
       (NS ("calendar"),         Base,    Create_Calendar.Run'Access, null),
       (NS ("check buttons"),    Base,    Create_Check_Buttons.Run'Access, null),
@@ -240,8 +271,7 @@ package body Main_Windows is
             then
                Gtk_New (Item_New,
                         Label => Gtk_Demos (Item_Num).Label.all,
-                        Func  => Gtk_Demos (Item_Num).Func,
-                        Help  => Gtk_Demos (Item_Num).Help);
+                        Num   => Item_Num);
                Append (Item_Subtree, Item_New);
                Show (Item_New);
             end if;
@@ -258,73 +288,123 @@ package body Main_Windows is
    ------------------
 
    procedure Display_Help (Button : access Gtk_Widget_Record) is
-      Dialog   : Gtk.Dialog.Gtk_Dialog;
-      Close    : Gtk.Button.Gtk_Button;
-      Text     : Gtk.Text.Gtk_Text;
-      Id       : Guint;
-      Scrolled : Gtk_Scrolled_Window;
+      Close     : Gtk.Button.Gtk_Button;
+      Id        : Guint;
+      Scrolled  : Gtk_Scrolled_Window;
+      Label     : Gtk.Label.Gtk_Label;
 
    begin
       if Current_Help = null then
          return;
       end if;
 
-      Gtk_New (Dialog);
-      Set_Policy (Dialog, Allow_Shrink => True, Allow_Grow => True,
-                  Auto_Shrink => True);
-      Set_Title (Dialog, "testgtk help");
-      Set_Usize (Dialog, 400, 200);
+      if Help_Dialog = null then
+         Gtk_New (Help_Dialog);
+         Set_Policy (Help_Dialog, Allow_Shrink => True, Allow_Grow => True,
+                     Auto_Shrink => True);
+         Set_Title (Help_Dialog, "testgtk help");
+         Set_Usize (Help_Dialog, 400, 250);
 
-      Gtk_New (Scrolled);
-      Pack_Start (Get_Vbox (Dialog), Scrolled, True, True, 0);
-      Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
+         Set_Spacing (Get_Vbox (Help_Dialog), 3);
 
-      Gtk_New (Text);
-      Add (Scrolled, Text);
-      Set_Editable (Text, False);
-      Freeze (Text);
+         Gtk_New (Label, "Information on this demo");
+         Pack_Start (Get_Vbox (Help_Dialog), Label, False, True, 0);
 
+         Gtk_New (Scrolled);
+         Pack_Start (Get_Vbox (Help_Dialog), Scrolled, True, True, 0);
+         Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
+
+         Gtk_New (Help_Text);
+         Add (Scrolled, Help_Text);
+         Set_Editable (Help_Text, False);
+         Set_Style (Help_Text, Get_Style (Help_Dialog));
+
+         Gtk_New (Close, "Close");
+         Pack_Start (Get_Action_Area (Help_Dialog), Close, False, False);
+         Id := Widget_Cb.Connect (Close, "clicked", Hide'Access, Help_Dialog);
+
+      else
+         Delete_Text (Help_Text, 0, -1);
+      end if;
+
+      Freeze (Help_Text);
       declare
          Help  : constant String := Current_Help.all;
          Pos   : Natural := Help'First;
          First : Natural;
-         Last  : Natural;
-         Green : Gdk_Color;
+         Blue  : Gdk_Color;
+         Black : constant Gdk_Color
+           := Gdk.Color.Black (Get_Colormap (Help_Text));
+         Current_Color : Gdk_Color := Black;
+         Newline : constant String := (1 => ASCII.LF);
+         Max_Length : constant := 70;
+
+         Line_End : Natural;
+         --  Points to the first character of the next line
 
       begin
-         Set_Rgb (Green, 16#0#, 16#FFFF#, 16#0#);
+         Set_Rgb (Blue, 16#0#, 16#0#, 16#FFFF#);
 
          loop
-            First := Ada.Strings.Fixed.Index (Help (Pos .. Help'Last), "@b");
-            exit when First = 0;
 
-            Insert (Text, Null_Font,
-                    White (Get_Colormap (Text)),
-                    Null_Color,
-                    Help (Pos .. First - 1), -1);
+            --  The end of the line can be at most Max_Length character,
+            --  finishing at the first previous white space. Stops at the
+            --  first Newline encountered if any
 
-            Last := Ada.Strings.Fixed.Index (Help (First + 2 .. Help'Last), "@B");
-            if Last = 0 then
-               Last := Help'Last + 1;
+            if Pos + Max_Length < Help'Last then
+               Line_End := Ada.Strings.Fixed.Index
+                 (Help (Pos .. Pos + Max_Length), " ", Ada.Strings.Backward);
+            else
+               Line_End := Help'Last + 1;
             end if;
-            Insert (Text, Null_Font, Green, Null_Color,
-                    Help (First + 2 .. Last - 1), -1);
-            Pos := Last + 2;
-         end loop;
 
-         Insert (Text, Null_Font,
-                 White (Get_Colormap (Text)),
-                 Null_Color,
-                 Help (Pos .. Help'Last), -1);
+            First := Ada.Strings.Fixed.Index
+              (Help (Pos .. Line_End - 1), Newline);
+            if First /= 0 then
+               Line_End := First;
+            end if;
+
+            --  Scan and print the line
+
+            while Pos < Line_End loop
+
+               --  Any special sections to highlight ?
+
+               First := Ada.Strings.Fixed.Index
+                 (Help (Pos .. Line_End - 1), "@");
+
+               if First = 0 or First = Line_End - 1 then
+                  Insert (Help_Text, Null_Font, Current_Color, Null_Color,
+                          Help (Pos .. Line_End - 1), -1);
+                  Pos := Line_End;
+
+               else
+                  Insert (Help_Text, Null_Font, Current_Color, Null_Color,
+                          Help (Pos .. First - 1), -1);
+
+                  case Help (First + 1) is
+                     when 'b' =>
+                        Current_Color := Blue;
+                        Pos := First + 2;
+                     when 'B' =>
+                        Current_Color := Black;
+                        Pos := First + 2;
+                     when others =>
+                        Insert (Help_Text, Null_Font, Current_Color, Null_Color,
+                                "@", 1);
+                        Pos := First + 1;
+                  end case;
+               end if;
+            end loop;
+
+            Pos := Pos + 1;
+            exit when Pos > Help'Last;
+            Insert (Help_Text, Null_Font, Null_Color, Null_Color, Newline, 1);
+         end loop;
       end;
 
-      Thaw (Text);
-
-      Gtk_New (Close, "Close");
-      Pack_Start (Get_Action_Area (Dialog), Close, False, False);
-      Id := Widget_Cb.Connect (Close, "clicked", Destroy'Access, Dialog);
-
-      Show_All (Dialog);
+      Thaw (Help_Text);
+      Show_All (Help_Dialog);
    end Display_Help;
 
    ----------------
@@ -350,12 +430,11 @@ package body Main_Windows is
 
    procedure Gtk_New (Item  : out Demo_Tree_Item;
                       Label : String;
-                      Func  : Demo_Function;
-                      Help  : Help_Function)
+                      Num   : Natural)
    is
    begin
       Item := new Demo_Tree_Item_Record;
-      Initialize (Item, Label, Func, Help);
+      Initialize (Item, Label, Num);
    end Gtk_New;
 
    ----------------
@@ -364,13 +443,11 @@ package body Main_Windows is
 
    procedure Initialize (Item  : access Demo_Tree_Item_Record'Class;
                          Label : String;
-                         Func  : Demo_Function;
-                         Help  : Help_Function)
+                         Num   : Natural)
    is
    begin
       Gtk.Tree_Item.Initialize (Item, Label);
-      Item.Demo_Func := Func;
-      Item.Help      := Help;
+      Item.Demo_Num := Num;
    end Initialize;
 
    -----------------
@@ -393,7 +470,7 @@ package body Main_Windows is
       use Gtk.Widget.Widget_List;
       List : Gtk.Widget.Widget_List.Glist;
    begin
-      if Item.Demo_Func /= null then
+      if Gtk_Demos (Item.Demo_Num).Func /= null then
 
          --  Remove the current demo from the frame
 
@@ -405,8 +482,15 @@ package body Main_Windows is
 
          --  And then insert our own new demo
 
-         Item.Demo_Func (Gtk_Demo_Frame);
-         Current_Help := Item.Help;
+         Gtk_Demos (Item.Demo_Num).Func (Gtk_Demo_Frame);
+         Current_Help := Gtk_Demos (Item.Demo_Num).Help;
+         if Help_Dialog /= null then
+            declare
+               W : aliased Gtk_Widget_Record;
+            begin
+               Display_Help (W'Access);
+            end;
+         end if;
       end if;
    end Tree_Select_Child;
 
@@ -589,7 +673,6 @@ package body Main_Windows is
       Gtk_New (Frame);
       Gtk_New (Label, "OpenGL demo");
       Append_Page (Win.Notebook, Frame, Label);
-
 
    end Initialize;
 end Main_Windows;
