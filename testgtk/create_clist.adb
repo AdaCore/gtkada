@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -91,7 +91,10 @@ package body Create_Clist is
 
    function Help return String is
    begin
-      return "An @bGtk_Clist@B is like a @bGtk_List@B, except it shows the"
+      return "!!!! Consider using a @bGtk_Tree_View@B instead !!!!"
+        & ASCII.LF
+        & ASCII.LF
+        & "An @bGtk_Clist@B is like a @bGtk_List@B, except it shows the"
         & " information on multiple columns. You can have as many columns"
         & " as you want, each with its own information."
         & ASCII.LF
@@ -453,4 +456,3 @@ package body Create_Clist is
    end Run;
 
 end Create_Clist;
-
