@@ -1,18 +1,11 @@
-SHELL = /bin/sh
+SHELL=/bin/sh
 
-# INSTALL = install
-# INSTALL_PROGRAM = $(INSTALL)
-# INSTALL_DATA = $(INSTALL)
+#### Please modify the installation directory below
+prefix=`pwd`
 
-prefix = /usr/local
+
+
 exec_prefix = $(prefix)
-libdir = $(exec_prefix)/lib
-infodir = $(prefix)/info
-mandir = $(prefix)/man
-man1dir = $(mandir)/man1
-man3dir = $(mandir)man3
-man1ext = .1
-man3ext = .3
 
 .SUFFIXES:
 .SUFFIXES: .c .o .ads .adb .ali
@@ -23,6 +16,7 @@ man3ext = .3
 c_objects = misc.o misc-gnat.o
 
 TEST_LINK = test_link
+INSTALL = install
 
 CC = gcc
 CFLAGS = -O2 -g -Wall
@@ -34,24 +28,24 @@ ALL_GNATFLAGS = $(GNATFLAGS) -shared -fPIC
 
 GNATMAKE = gnatmake
 GNATMAKEFLAGS = $(GNATFLAGS)
-GNATMAKELDFLAGS = -largs `gtk-config --libs` $(c_objects) -lgtkada
+GNATMAKELDFLAGS = -largs `gtk-config --libs` -lgtkada
 
 ARFLAGS = r
 
 RANLIB = ranlib
 
-all: libs testgtk
+all: libs gtkada-config testgtk 
 
 libs:: libgtkada.so libgtkada.a
 
 libgtkada.so:: $(TEST_LINK).o $(c_objects)
-	$(CC) -shared -Wl,-soname,libgtkada.so -o libgtkada.so g*.o $(c_objects) `gtk-config --libs` -lc -lm
+	$(CC) -shared -Wl,-soname,libgtkada.so -o libgtkada.so g*.o $(c_objects) `gtk-config --libs` -lm
 
 libgtkada.a:: $(TEST_LINK).o $(c_objects)
 	$(AR) $(ARFLAGS) libgtkada.a g*.o $(c_objects)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) libgtkada.a; \
-	fi \
+	fi
 
 testgtk::
 	$(MAKE) -C testgtk
@@ -63,14 +57,25 @@ $(TEST_LINK).o::
 main: main.adb test.adb test.ads libgtkada.so
 	$(GNATMAKE) $@ $(GNATMAKEFLAGS) $(GNATMAKELDFLAGS) 
 
-install: libgtkada.a libgtkada.so
-	@echo To Install, copy libgtkada.a *.ads *.ali to a new directory
-	@echo and then do a 'chmod a-w *.ali' so that Gnat will not
-	@echo try to recompile your files
+install: libgtkada.a libgtkada.so gtkada-config
+	@if [ "$(prefix)" != `pwd` ]; then \
+	   @echo Installing GtkAda in $(prefix);            \
+	   $(RM) test_link.ali;                             \
+	   $(INSTALL) -d $(prefix);                         \
+	   $(INSTALL) libgtkada.a libgtkada.so $(prefix);   \
+	   $(INSTALL) --mode=a-w+r *.ads $(prefix);         \
+	   $(INSTALL) --mode=a-w+r *.ali $(prefix);         \
+	   $(INSTALL) --mode=a+rx gtkada-config $(prefix);  \
+	   @echo "All the files have been copied.";         \
+	fi
+	@echo You may want to keep a copy of gtkada-config somewhere in your PATH
 
-uninstall:
-
-install-strip:
+gtkada-config: gtkada-config.in Makefile
+	@echo "Building the gtkada-config script"
+	@cat gtkada-config.in | sed -e 's#@prefix@#'$(prefix)'#' \
+	  -e 's#@gtkada_cflags@#-I'$(prefix)'#' \
+	  -e 's#@gtkada_libs@#-L'$(prefix)'#'  > ${@}
+	@chmod a+x ${@}
 
 clean:
 	-${RM} *.o *.ali *~ main b_main.c core
@@ -85,21 +90,6 @@ mostlyclean: clean
 
 maintainer-clean: clean
 
-
-TAGS: ;
-
-info: ;
-
-dvi: ;
-
-dist: ;
-
-check: ;
-
-installcheck: ;
-
-installdirs: ;
-
 .c.o:
 	$(CC) -c $(ALL_CFLAGS) $<
 .ads.o:
@@ -107,3 +97,5 @@ installdirs: ;
 
 .adb.o:
 	$(CC) -c $(ALL_GNATFLAGS) $<
+
+

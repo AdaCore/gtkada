@@ -1,0 +1,43 @@
+#!/bin/sh
+
+gtkada_libs="-largs @gtkada_libs@"
+gtkada_cflags="@gtkada_cflags@"
+
+prefix=@prefix@
+
+usage="\
+Usage: gtkada-config [--prefix] [--libs] [--cflags] [--help]"
+
+if test $# -eq 0; then
+      echo $gtkada_cflags -largs $gtakada_libs `gtk-config --libs` -lgtkada
+      exit 1
+fi
+
+while test $# -gt 0; do
+  case "$1" in
+  -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+  *) optarg= ;;
+  esac
+
+  case $1 in
+    -h|--help)
+	echo $(usage)
+        exit 1
+        ;;
+    --prefix)
+      echo $prefix
+      ;;
+    --cflags)
+      echo $gtkada_cflags
+      ;;
+    --libs)
+      echo $gtkada_libs `gtk-config --libs` -lgtkada
+      ;;
+    *)
+      echo "${usage}" 1>&2
+      exit 1
+      ;;
+  esac
+  shift
+done
+

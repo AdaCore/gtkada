@@ -1,19 +1,5 @@
 SHELL = /bin/sh
 
-# INSTALL = install
-# INSTALL_PROGRAM = $(INSTALL)
-# INSTALL_DATA = $(INSTALL)
-
-prefix = /usr/local
-exec_prefix = $(prefix)
-libdir = $(exec_prefix)/lib
-infodir = $(prefix)/info
-mandir = $(prefix)/man
-man1dir = $(mandir)/man1
-man3dir = $(mandir)man3
-man1ext = .1
-man3ext = .3
-
 .SUFFIXES:
 .SUFFIXES: .c .o .ads .adb .ali
 
@@ -24,6 +10,8 @@ target = testgtk
 
 CC = gcc
 CFLAGS = -O2 -g -Wall
+GTKADA_CONFIG=../gtkada-config
+
 ALL_CFLAGS = $(CFLAGS) `gtk-config --cflags`
 
 GNATCC = gcc
@@ -42,17 +30,17 @@ MALLOC_FLAGS=
 all: $(target)
 
 $(target): ../*.ad[sb] *.ad[sb]
-	$(GNATMAKE) $(GNATMAKEFLAGS) $(target) -largs $(GNATMAKELDFLAGS)
+	@echo "-------------------------------------"
+	@echo $(GNATMAKE) $(target) '`'$(GTKADA_CONFIG)'`'
+	@echo "-------------------------------------"
+	@$(GNATMAKE) $(target) `$(GTKADA_CONFIG)`
 
 static: ../*.ad[sb] *.ad[sb]
 	$(GNATMAKE) $(GNATMAKEFLAGS) $(target) -largs $(MALLOC_FLAGS) $(GNATMAKELDFLAGS_STATIC)
 
 
-install: ;
-
-uninstall: ;
-
-install-strip: ;
+install:
+	@echo "Nothing to do --  just run the ./testgtk program"
 
 clean:
 	-${RM} *.o *.ali *~ testgtk b_testgtk.c core
@@ -64,20 +52,6 @@ mostlyclean: clean
 
 maintainer-clean: clean
 
-
-TAGS: ;
-
-info: ;
-
-dvi: ;
-
-dist: ;
-
-check: ;
-
-installcheck: ;
-
-installdirs: ;
 
 .adb.o:
 	$(CC) -c $(ALL_GNATFLAGS) $<
