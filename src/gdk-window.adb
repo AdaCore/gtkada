@@ -29,9 +29,9 @@
 
 package body Gdk.Window is
 
-   ---------------
-   --  Destroy  --
-   ---------------
+   -------------
+   -- Destroy --
+   -------------
 
    procedure Destroy (Window : in out Gdk_Window) is
       procedure Internal (Window : in Gdk_Window);
@@ -41,33 +41,37 @@ package body Gdk.Window is
       Window := Null_Window;
    end Destroy;
 
-   -------------------
-   --  Foreign_New  --
-   -------------------
+   -----------------
+   -- Foreign_New --
+   -----------------
 
-   procedure Foreign_New (Window :    out Gdk_Window;
-                          An_Id  : in     Guint32) is
+   procedure Foreign_New
+     (Window :    out Gdk_Window;
+      An_Id  : in     Guint32)
+   is
       function Internal (An_Id : in Guint32) return Gdk_Window;
       pragma Import (C, Internal, "gdk_window_foreign_new");
    begin
       Window := Internal (An_Id);
    end Foreign_New;
 
-   ---------------
-   --  Gdk_New  --
-   ---------------
+   -------------
+   -- Gdk_New --
+   -------------
 
    procedure Gdk_New
      (Window          :    out Gdk_Window;
       Parent          : in     Gdk_Window;
       Attributes      : in     Gdk.Window_Attr.Gdk_Window_Attr;
-      Attributes_Mask : in     Gdk.Types.Gdk_Window_Attributes_Type) is
+      Attributes_Mask : in     Gdk.Types.Gdk_Window_Attributes_Type)
+   is
       function Internal
         (Parent          : in Gdk_Window;
          Attributes      : in Gdk.Window_Attr.Gdk_Window_Attr;
          Attributes_Mask : in Gdk.Types.Gdk_Window_Attributes_Type)
          return Gdk_Window;
       pragma Import (C, Internal, "gdk_window_new");
+
    begin
       Window := Internal (Parent => Parent,
                           Attributes => Attributes,
@@ -78,32 +82,37 @@ package body Gdk.Window is
    -- Get_Children --
    ------------------
 
-   function Get_Children (Window : in Gdk_Window)
-                          return Gdk_Window_List.Glist is
+   function Get_Children
+     (Window : in Gdk_Window) return Gdk_Window_List.Glist
+   is
       function Internal (Window : in Gdk_Window) return System.Address;
       pragma Import (C, Internal, "gdk_window_get_children");
       Result : Gdk_Window_List.Glist;
+
    begin
       Gdk_Window_List.Set_Object (Result, Internal (Window));
       return Result;
    end Get_Children;
 
-   --------------------------------
-   --  Get_Desk_Relative_Origin  --
-   --------------------------------
+   ------------------------------
+   -- Get_Desk_Relative_Origin --
+   ------------------------------
 
-   procedure Get_Desk_Relative_Origin (Window  : in     Gdk_Window;
-                                       X       :    out Gint;
-                                       Y       :    out Gint;
-                                       Success :    out Boolean) is
-      function Internal (Window : in Gdk_Window;
-                         X, Y   : in System.Address)
-                        return Gboolean;
+   procedure Get_Desk_Relative_Origin
+     (Window  : in     Gdk_Window;
+      X       :    out Gint;
+      Y       :    out Gint;
+      Success :    out Boolean)
+   is
+      function Internal
+        (Window : in Gdk_Window; X, Y : in System.Address) return Gboolean;
       pragma Import (C, Internal, "gdk_window_get_deskrelative_origin");
+
       Result : Gboolean;
       X_Out, Y_Out : aliased Gint;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
+
    begin
       Result := Internal (Window, X_Out'Address, Y_Out'Address);
       X := X_Out;
@@ -111,72 +120,80 @@ package body Gdk.Window is
       Success := To_Boolean (Result);
    end Get_Desk_Relative_Origin;
 
-   ------------------
-   --  Get_Origin  --
-   ------------------
+   ----------------
+   -- Get_Origin --
+   ----------------
 
-   procedure Get_Origin (Window  : in     Gdk_Window;
-                         X       :    out Gint;
-                         Y       :    out Gint;
-                         Success :    out Boolean) is
-      function Internal (Window : in Gdk_Window;
-                         X, Y   : in System.Address) return Gint;
+   procedure Get_Origin
+     (Window  : in     Gdk_Window;
+      X       :    out Gint;
+      Y       :    out Gint;
+      Success :    out Boolean)
+   is
+      function Internal
+        (Window : in Gdk_Window;
+         X, Y   : in System.Address) return Gint;
       pragma Import (C, Internal, "gdk_window_get_origin");
+
       X_Out, Y_Out : aliased Gint;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
+
    begin
-      Success := To_Boolean (Internal (Window,
-                                       X_Out'Address, Y_Out'Address));
+      Success :=
+        To_Boolean (Internal (Window, X_Out'Address, Y_Out'Address));
       X := X_Out;
       Y := Y_Out;
    end Get_Origin;
 
-   -------------------
-   --  Get_Pointer  --
-   -------------------
+   -----------------
+   -- Get_Pointer --
+   -----------------
 
-   procedure Get_Pointer (Window : in     Gdk_Window;
-                          X      :    out Gint;
-                          Y      :    out Gint;
-                          Mask   :    out Gdk.Types.Gdk_Modifier_Type;
-                          Result :    out Gdk_Window) is
-      function Internal (Window : in Gdk_Window;
-                         X      : in System.Address;
-                         Y      : in System.Address;
-                         Mask   : in System.Address)
-                         return      Gdk_Window;
+   procedure Get_Pointer
+     (Window : in     Gdk_Window;
+      X      :    out Gint;
+      Y      :    out Gint;
+      Mask   :    out Gdk.Types.Gdk_Modifier_Type;
+      Result :    out Gdk_Window)
+   is
+      function Internal
+        (Window : in Gdk_Window;
+         X      : in System.Address;
+         Y      : in System.Address;
+         Mask   : in System.Address) return Gdk_Window;
       pragma Import (C, Internal, "gdk_window_get_pointer");
+
       X_Out, Y_Out : aliased Gint;
       Mask_Out : aliased Gdk.Types.Gdk_Modifier_Type;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
+
    begin
-      Result := Internal (Window,
-                          X_Out'Address,
-                          Y_Out'Address,
-                          Mask_Out'Address);
+      Result :=
+        Internal (Window, X_Out'Address, Y_Out'Address, Mask_Out'Address);
       X := X_Out;
       Y := Y_Out;
       Mask := Mask_Out;
    end Get_Pointer;
 
-   ---------------------
-   --  Get_Toplevels  --
-   ---------------------
+   -------------------
+   -- Get_Toplevels --
+   -------------------
 
    function Get_Toplevels return Gdk_Window_List.Glist is
       function Internal return System.Address;
       pragma Import (C, Internal, "gdk_window_get_toplevels");
       Result : Gdk_Window_List.Glist;
+
    begin
       Gdk_Window_List.Set_Object (Result, Internal);
       return Result;
    end Get_Toplevels;
 
-   -------------------
-   --  Is_Viewable  --
-   -------------------
+   ----------------
+   -- Is_Viewable --
+   -----------------
 
    function Is_Viewable (Window : in Gdk_Window) return Boolean is
       function Internal (Window : in Gdk_Window) return Gboolean;
@@ -185,9 +202,9 @@ package body Gdk.Window is
       return Boolean'Val (Internal (Window));
    end Is_Viewable;
 
-   ------------------
-   --  Is_Visible  --
-   ------------------
+   ----------------
+   -- Is_Visible --
+   ----------------
 
    function Is_Visible (Window : in Gdk_Window) return Boolean is
       function Internal (Window : in Gdk_Window) return Gboolean;
@@ -196,14 +213,16 @@ package body Gdk.Window is
       return Boolean'Val (Internal (Window));
    end Is_Visible;
 
-   ----------------------
-   --  Set_Background  --
-   ----------------------
+   --------------------
+   -- Set_Background --
+   --------------------
 
-   procedure Set_Background (Window : in Gdk_Window;
-                             Color  : in Gdk.Color.Gdk_Color) is
-      procedure Internal (Window : in Gdk_Window;
-                          Color  : in System.Address);
+   procedure Set_Background
+     (Window : in Gdk_Window;
+      Color  : in Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Window : in Gdk_Window; Color  : in System.Address);
       pragma Import (C, Internal, "gdk_window_set_background");
       use type Gdk.Color.Gdk_Color;
 
@@ -211,48 +230,61 @@ package body Gdk.Window is
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
       Color_A : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
       end if;
+
       Internal (Window, Color_A);
    end Set_Background;
 
-   -----------------------------
-   --  Set_Override_Redirect  --
-   -----------------------------
+   -------------------
+   -- Set_Icon_Name --
+   -------------------
+
+   procedure Set_Icon_Name (Window : in Gdk_Window; Name : in String) is
+      procedure Internal (Window : in Gdk_Window; Name : in String);
+      pragma Import (C, Internal, "gdk_window_set_icon_name");
+
+   begin
+      Internal (Window, Name & ASCII.Nul);
+   end Set_Icon_Name;
+
+   ---------------------------
+   -- Set_Override_Redirect --
+   ---------------------------
 
    procedure Set_Override_Redirect
      (Window            : in Gdk_Window;
-      Override_Redirect : in Boolean    := True) is
-      procedure Internal (Window            : in Gdk_Window;
-                          Override_Redirect : in Gboolean);
+      Override_Redirect : in Boolean := True)
+   is
+      procedure Internal
+        (Window : in Gdk_Window; Override_Redirect : in Gboolean);
       pragma Import (C, Internal, "gdk_window_set_override_redirect");
+
    begin
       Internal (Window, Boolean'Pos (Override_Redirect));
    end Set_Override_Redirect;
 
-   ----------------
-   --  Set_Role  --
-   ----------------
+   --------------
+   -- Set_Role --
+   --------------
 
-   procedure Set_Role (Window : in Gdk_Window;
-                       Role   : in String) is
-      procedure Internal (Window : in Gdk_Window;
-                          Role   : in String);
+   procedure Set_Role (Window : in Gdk_Window; Role : in String) is
+      procedure Internal (Window : in Gdk_Window; Role : in String);
       pragma Import (C, Internal, "gdk_window_set_role");
+
    begin
       Internal (Window, Role & ASCII.Nul);
    end Set_Role;
 
-   -----------------
-   --  Set_Title  --
-   -----------------
+   ---------------
+   -- Set_Title --
+   ---------------
 
-   procedure Set_Title (Window : in Gdk_Window;
-                        Title  : in String) is
-      procedure Internal (Window : in Gdk_Window;
-                          Title  : in String);
+   procedure Set_Title (Window : in Gdk_Window; Title  : in String) is
+      procedure Internal (Window : in Gdk_Window; Title  : in String);
       pragma Import (C, Internal, "gdk_window_set_title");
    begin
       Internal (Window, Title & ASCII.Nul);
@@ -262,16 +294,20 @@ package body Gdk.Window is
    -- Window_At_Pointer --
    -----------------------
 
-   procedure Window_At_Pointer (Win_X  : out Gint;
-                                Win_Y  : out Gint;
-                                Window : out Gdk_Window) is
-      function Internal (Win_X  : in System.Address;
-                         Win_Y  : in System.Address)
-                         return Gdk_Window;
+   procedure Window_At_Pointer
+     (Win_X  : out Gint;
+      Win_Y  : out Gint;
+      Window : out Gdk_Window)
+   is
+      function Internal
+        (Win_X  : in System.Address;
+         Win_Y  : in System.Address) return Gdk_Window;
       pragma Import (C, Internal, "gdk_window_at_pointer");
+
       X_Out, Y_Out : aliased Gint;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
+
    begin
       Window := Internal (X_Out'Address, Y_Out'Address);
       Win_X := X_Out;

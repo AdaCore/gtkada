@@ -63,9 +63,7 @@ package Gdk.Window is
       Attributes      : in     Gdk.Window_Attr.Gdk_Window_Attr;
       Attributes_Mask : in     Gdk.Types.Gdk_Window_Attributes_Type);
 
-   procedure Foreign_New (Window :    out Gdk_Window;
-                          An_Id  : in     Guint32);
-
+   procedure Foreign_New (Window : out Gdk_Window; An_Id : in Guint32);
 
    procedure Destroy (Window : in out Gdk_Window);
 
@@ -73,9 +71,10 @@ package Gdk.Window is
 
    procedure Unref (Window : in Gdk_Window);
 
-   procedure Window_At_Pointer (Win_X  : out Gint;
-                                Win_Y  : out Gint;
-                                Window : out Gdk_Window);
+   procedure Window_At_Pointer
+     (Win_X  : out Gint;
+      Win_Y  : out Gint;
+      Window : out Gdk_Window);
 
    procedure Show (Window : in Gdk_Window);
 
@@ -83,50 +82,57 @@ package Gdk.Window is
 
    procedure Withdraw (Window : in Gdk_Window);
 
-   procedure Move (Window : in Gdk_Window;
-                   X      : in Gint;
-                   Y      : in Gint);
+   procedure Move
+     (Window : in Gdk_Window;
+      X      : in Gint;
+      Y      : in Gint);
 
-   procedure Resize (Window : in Gdk_Window;
-                     Width  : in Gint;
-                     Height : in Gint);
+   procedure Resize
+     (Window : in Gdk_Window;
+      Width  : in Gint;
+      Height : in Gint);
 
-   procedure Move_Resize (Window : in Gdk_Window;
-                          X      : in Gint;
-                          Y      : in Gint;
-                          Width  : in Gint;
-                          Height : in Gint);
+   procedure Move_Resize
+     (Window : in Gdk_Window;
+      X      : in Gint;
+      Y      : in Gint;
+      Width  : in Gint;
+      Height : in Gint);
 
-   procedure Reparent (Window     : in Gdk_Window;
-                       New_Parent : in Gdk_Window;
-                       X          : in Gint;
-                       Y          : in Gint);
+   procedure Reparent
+     (Window     : in Gdk_Window;
+      New_Parent : in Gdk_Window;
+      X          : in Gint;
+      Y          : in Gint);
 
    procedure Clear (Window : in Gdk_Window);
 
-   procedure Clear_Area (Window : in Gdk_Window;
-                         X      : in Gint;
-                         Y      : in Gint;
-                         Width  : in Gint;
-                         Height : in Gint);
+   procedure Clear_Area
+     (Window : in Gdk_Window;
+      X      : in Gint;
+      Y      : in Gint;
+      Width  : in Gint;
+      Height : in Gint);
    --  Does not generate an expose event.
 
-   procedure Clear_Area_E (Window : in Gdk_Window;
-                           X      : in Gint;
-                           Y      : in Gint;
-                           Width  : in Gint;
-                           Height : in Gint);
+   procedure Clear_Area_E
+     (Window : in Gdk_Window;
+      X      : in Gint;
+      Y      : in Gint;
+      Width  : in Gint;
+      Height : in Gint);
    --  Same as Clear_Area, but generates an expose event.
 
-   procedure Copy_Area (Window        : in Gdk_Window;
-                        Gc            : in Gdk.Gdk_GC;
-                        X             : in Gint;
-                        Y             : in Gint;
-                        Source_Window : in Gdk_Window;
-                        Source_X      : in Gint;
-                        Source_Y      : in Gint;
-                        Width         : in Gint;
-                        Height        : in Gint);
+   procedure Copy_Area
+     (Window        : in Gdk_Window;
+      Gc            : in Gdk.Gdk_GC;
+      X             : in Gint;
+      Y             : in Gint;
+      Source_Window : in Gdk_Window;
+      Source_X      : in Gint;
+      Source_Y      : in Gint;
+      Width         : in Gint;
+      Height        : in Gint);
 
    procedure Gdk_Raise (Window : in Gdk_Window);
 
@@ -144,122 +150,133 @@ package Gdk.Window is
 
    function Is_Viewable (Window : in Gdk_Window) return Boolean;
 
-   procedure Set_Hints (Window     : in Gdk_Window;
-                        X          : in Gint;
-                        Y          : in Gint;
-                        Min_Width  : in Gint;
-                        Min_Height : in Gint;
-                        Max_Width  : in Gint;
-                        Max_Height : in Gint;
-                        Flags      : in Gdk.Types.Gdk_Window_Hints);
+   procedure Set_Hints
+     (Window     : in Gdk_Window;
+      X          : in Gint;
+      Y          : in Gint;
+      Min_Width  : in Gint;
+      Min_Height : in Gint;
+      Max_Width  : in Gint;
+      Max_Height : in Gint;
+      Flags      : in Gdk.Types.Gdk_Window_Hints);
 
-   procedure Set_Geometry_Hints (Window   : in Gdk_Window;
-                                 Geometry : in out Gdk.Types.Gdk_Geometry;
-                                 Flags    : in     Gdk.Types.Gdk_Window_Hints);
+   procedure Set_Geometry_Hints
+     (Window   : in Gdk_Window;
+      Geometry : in out Gdk.Types.Gdk_Geometry;
+      Flags    : in     Gdk.Types.Gdk_Window_Hints);
 
-   procedure Set_Title (Window : in Gdk_Window;
-                        Title  : in String);
+   procedure Set_Title (Window : in Gdk_Window; Title  : in String);
 
-   procedure Set_Role (Window : in Gdk_Window;
-                       Role   : in String);
+   procedure Set_Role (Window : in Gdk_Window; Role   : in String);
 
-   procedure Set_Transient_For (Window : in Gdk_Window;
-                                Leader : in Gdk_Window);
+   procedure Set_Transient_For
+     (Window : in Gdk_Window; Leader : in Gdk_Window);
 
-   procedure Set_Background (Window : in Gdk_Window;
-                             Color  : in Gdk.Color.Gdk_Color);
+   procedure Set_Background
+     (Window : in Gdk_Window; Color : in Gdk.Color.Gdk_Color);
 
-   procedure Set_Back_Pixmap (Window          : in Gdk_Window;
-                              Pixmap          : in Gdk.Gdk_Pixmap;
-                              Parent_Relative : in Gint);
+   procedure Set_Back_Pixmap
+     (Window          : in Gdk_Window;
+      Pixmap          : in Gdk.Gdk_Pixmap;
+      Parent_Relative : in Gint);
 
-   procedure Set_Cursor (Window : in Gdk_Window;
-                         Cursor : in Gdk.Cursor.Gdk_Cursor);
-   --  Note: the window must be realized first, ie have an associated X11
+   procedure Set_Cursor
+     (Window : in Gdk_Window; Cursor : in Gdk.Cursor.Gdk_Cursor);
+   --  Note: the window must be realized first, ie have an associated X11/Win32
    --  window.
 
-   procedure Set_Colormap (Window   : in Gdk_Window;
-                           Colormap : in Gdk.Color.Gdk_Colormap);
+   procedure Set_Colormap
+     (Window   : in Gdk_Window; Colormap : in Gdk.Color.Gdk_Colormap);
 
-   procedure Get_Geometry (Window : in     Gdk_Window;
-                           X      :    out Gint;
-                           Y      :    out Gint;
-                           Width  :    out Gint;
-                           Height :    out Gint;
-                           Depth  :    out Gint);
+   procedure Get_Geometry
+     (Window : in     Gdk_Window;
+      X      :    out Gint;
+      Y      :    out Gint;
+      Width  :    out Gint;
+      Height :    out Gint;
+      Depth  :    out Gint);
 
-   procedure Get_Position (Window : in     Gdk_Window;
-                           X      :    out Gint;
-                           Y      :    out Gint);
+   procedure Get_Position
+     (Window : in     Gdk_Window;
+      X      :    out Gint;
+      Y      :    out Gint);
 
-   procedure Get_Size (Window : in     Gdk_Window;
-                       Width  :    out Gint;
-                       Height :    out Gint);
+   procedure Get_Size
+     (Window : in     Gdk_Window;
+      Width  :    out Gint;
+      Height :    out Gint);
 
    function Get_Visual (Window : in Gdk_Window) return Gdk.Visual.Gdk_Visual;
 
-   function Get_Colormap (Window : in Gdk_Window)
-                          return Gdk.Color.Gdk_Colormap;
+   function Get_Colormap
+     (Window : in Gdk_Window) return Gdk.Color.Gdk_Colormap;
 
    function Get_Type (Window : in Gdk_Window) return Gdk.Types.Gdk_Window_Type;
 
-   procedure Get_Origin (Window  : in     Gdk_Window;
-                         X       :    out Gint;
-                         Y       :    out Gint;
-                         Success :    out Boolean);
+   procedure Get_Origin
+     (Window  : in     Gdk_Window;
+      X       :    out Gint;
+      Y       :    out Gint;
+      Success :    out Boolean);
 
-   procedure Get_Desk_Relative_Origin (Window  : in     Gdk_Window;
-                                       X       :    out Gint;
-                                       Y       :    out Gint;
-                                       Success :    out Boolean);
+   procedure Get_Desk_Relative_Origin
+     (Window  : in     Gdk_Window;
+      X       :    out Gint;
+      Y       :    out Gint;
+      Success :    out Boolean);
 
-   procedure Get_Root_Origin (Window : in     Gdk_Window;
-                              X      :    out Gint;
-                              Y      :    out Gint);
+   procedure Get_Root_Origin
+     (Window : in     Gdk_Window;
+      X      :    out Gint;
+      Y      :    out Gint);
 
-   procedure Get_Pointer (Window : in     Gdk_Window;
-                          X      :    out Gint;
-                          Y      :    out Gint;
-                          Mask   :    out Gdk.Types.Gdk_Modifier_Type;
-                          Result :    out Gdk_Window);
+   procedure Get_Pointer
+     (Window : in     Gdk_Window;
+      X      :    out Gint;
+      Y      :    out Gint;
+      Mask   :    out Gdk.Types.Gdk_Modifier_Type;
+      Result :    out Gdk_Window);
 
    function Get_Parent (Window : in Gdk_Window) return Gdk_Window;
 
-   function Get_Toplevel (Window   : in Gdk_Window) return Gdk_Window;
+   function Get_Toplevel (Window : in Gdk_Window) return Gdk_Window;
 
-   function Get_Events (Window : in Gdk_Window)
-                        return Gdk.Types.Gdk_Event_Mask;
+   function Get_Events
+     (Window : in Gdk_Window) return Gdk.Types.Gdk_Event_Mask;
 
-   procedure Set_Events (Window     : in Gdk_Window;
-                         Event_Mask : in Gdk.Types.Gdk_Event_Mask);
+   procedure Set_Events
+     (Window : in Gdk_Window; Event_Mask : in Gdk.Types.Gdk_Event_Mask);
 
-   --  procedure Set_Icon       --
-   --  procedure Set_Icon_Name  --
-   --
-   --  For circular dependency issues, these 2 services have been moved
-   --  to the Gdk.Window.Pixmap child package.
+   procedure Set_Icon
+     (Window      : in Gdk_Window;
+      Icon_Window : in Gdk_Window;
+      Pixmap      : in Gdk_Pixmap;
+      Mask        : in Gdk_Bitmap);
 
-   procedure Set_Group (Window : in Gdk_Window;
-                        Leader : in Gdk_Window);
+   procedure Set_Icon_Name
+     (Window : in Gdk_Window;
+      Name   : in String);
+
+   procedure Set_Group (Window : in Gdk_Window; Leader : in Gdk_Window);
 
    procedure Set_Decorations
      (Window      : in Gdk_Window;
       Decorations : in Gdk.Types.Gdk_Wm_Decoration);
 
-   procedure Set_Functions (Window    : in Gdk_Window;
-                            Functions : in Gdk.Types.Gdk_Wm_Function);
-
+   procedure Set_Functions
+     (Window    : in Gdk_Window;
+      Functions : in Gdk.Types.Gdk_Wm_Function);
 
    --  Gdk_Window_List
    --
    function Convert is new Unchecked_Conversion (Gdk_Window, System.Address);
    function Convert is new Unchecked_Conversion (System.Address, Gdk_Window);
 
-   package Gdk_Window_List is new Glib.Glist.Generic_List
-     (Gpointer => Gdk_Window);
+   package Gdk_Window_List is new
+     Glib.Glist.Generic_List (Gpointer => Gdk_Window);
 
-   function Get_Children (Window : in Gdk_Window)
-                          return Gdk_Window_List.Glist;
+   function Get_Children
+     (Window : in Gdk_Window) return Gdk_Window_List.Glist;
 
    function Get_Toplevels return Gdk_Window_List.Glist;
 
@@ -302,11 +319,7 @@ private
    pragma Import (C, Get_Colormap, "gdk_window_get_colormap");
    pragma Import (C, Get_Visual, "gdk_window_get_visual");
    pragma Import (C, Set_Colormap, "gdk_window_set_colormap");
-   --  void          gdk_window_set_icon        (GdkWindow       *window,
-   --                                            GdkWindow       *icon_window,
-   --                                            GdkPixmap       *pixmap,
-   --                                            GdkBitmap       *mask);
-   --  void          gdk_window_set_icon_name   (GdkWindow       *window,
-   --                                            gchar           *name);
+   pragma Import (C, Set_Icon, "gdk_window_set_icon");
    pragma Import (C, Set_Back_Pixmap, "gdk_window_set_back_pixmap");
+
 end Gdk.Window;
