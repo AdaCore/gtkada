@@ -12,25 +12,25 @@ package body Test is
 
    subtype String7 is String (1 .. 7);
 
-   procedure Hello (Widget : in Gtk.Widget.Widget'Class;
-                    S      : access String7);
-   procedure Destroy (Object : in Gtk.Widget.Widget'Class);
+   procedure Hello (Widget : in out Gtk.Button.Gtk_Button;
+                    S      : in     String7);
+   procedure Destroy (Object : in out Gtk.Window.Gtk_Window);
 
    -----------
    -- Hello --
    -----------
 
-   procedure Hello (Widget : in Gtk.Widget.Widget'Class;
-                    S      : access String7) is
+   procedure Hello (Widget : in out Gtk.Button.Gtk_Button;
+                    S      : in     String7) is
    begin
-      Ada.Text_IO.Put_Line ("Hello World  => String was=" & S.all);
+      Ada.Text_IO.Put_Line ("Hello World  => String was=" & S);
    end Hello;
 
    -------------
    -- Destroy --
    -------------
 
-   procedure Destroy (Object : in Gtk.Widget.Widget'Class) is
+   procedure Destroy (Object : in out Gtk.Window.Gtk_Window) is
    begin
       Ada.Text_IO.Put_Line ("Destroy");
       Main_Quit;
@@ -42,12 +42,15 @@ package body Test is
 
    procedure Main is
 
-      package String_Cb is new Callback (String7);
+      package String_Cb is new Callback (String7, Gtk.Button.Gtk_Button);
+      package Void_Cb   is new Void_Callback (Gtk.Window.Gtk_Window);
 
-      A_Window : aliased Gtk.Window.Window;
-      A_Button : Gtk.Button.Button;
-      A_Box    : Gtk.Hbox.Hbox;
-      Cb_Id    : GInt;
+      A_Window : aliased Gtk.Window.Gtk_Window;
+      A_Button : Gtk.Button.Gtk_Button;
+      A_Box    : Gtk.Hbox.Gtk_Hbox;
+      Void_Id  : Void_Cb.Callback_Id;
+      Str_Id   : String_Cb.Callback_Id;
+
    begin
       Init;
       --  Initialize the library (how can we pass the command line arguments ?)
@@ -56,7 +59,7 @@ package body Test is
       Gtk_New (A_Window, Window_Toplevel);
       Set_Title (A_Window, "Hello buttons");
       Border_Width (A_Window, 10);
-      Cb_Id := Connect (A_Window, "destroy", Destroy'Access);
+      Void_Id := Void_Cb.Connect (A_Window, "destroy", Destroy'Access);
 
       --  Create the box to store the buttons
       Gtk_New (A_Box, False, 0);
@@ -64,14 +67,14 @@ package body Test is
 
       --  Create the first button
       Gtk_New (A_Button, Label => "Button1");
-      Cb_Id := String_Cb.Connect (A_Button, "clicked",
+      Str_Id := String_Cb.Connect (A_Button, "clicked",
                                   Hello'Access, "Button1");
       Pack_Start (A_Box, A_Button, True, True, 0);
       Show (A_Button);
 
       --  Create the second button
       Gtk_New (A_Button, Label => "Button2");
-      Cb_Id := String_Cb.Connect (A_Button, "clicked",
+      Str_Id := String_Cb.Connect (A_Button, "clicked",
                                   Hello'Access, "Button2");
       Pack_Start (A_Box, A_Button, True, True, 0);
       Show (A_Button);

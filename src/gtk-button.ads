@@ -3,10 +3,10 @@ with Gtk.Container;
 
 package Gtk.Button is
 
-   type Button is new Gtk.Container.Container with private;
+   type Gtk_Button is new Gtk.Container.Gtk_Container with private;
 
-   procedure Gtk_New (Widget : out Button);
-   procedure Gtk_New (Widget : out Button'Class;
+   procedure Gtk_New (Widget : out Gtk_Button);
+   procedure Gtk_New (Widget : out Gtk_Button'Class;
                       Label  : in String);
 
    --  mapping: New gtkbutton.h gtk_button_new
@@ -14,6 +14,6 @@ package Gtk.Button is
 
 private
 
-   type Button is new Gtk.Container.Container with null record;
+   type Gtk_Button is new Gtk.Container.Gtk_Container with null record;
 
 end Gtk.Button;

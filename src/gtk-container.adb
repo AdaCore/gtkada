@@ -21,9 +21,9 @@ package body Gtk.Container is
    --------------------
 
    procedure Border_Width (Of_Container : in Gtk_Container'Class;
-                           Border_Width : in GInt) is
+                           Border_Width : in Gint) is
       procedure Internal (Of_Container  : System.Address;
-                          Border_Widget : GInt);
+                          Border_Widget : Gint);
       pragma Import (C, Internal, "gtk_container_border_width");
    begin
       Internal (Get_Object (Of_Container), Border_Width);

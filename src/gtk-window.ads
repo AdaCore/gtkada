@@ -7,12 +7,12 @@ package Gtk.Window is
                             Window_Dialog,
                             Window_Popup);
 
-   type Window is new Gtk.Bin.Bin with private;
+   type Gtk_Window is new Gtk.Bin.Gtk_Bin with private;
 
-   procedure Gtk_New (Win      : out Window;
+   procedure Gtk_New (Win      : out Gtk_Window;
                       The_Type : in  Window_Type);
 
-   procedure Set_Title (Win   : in Window;
+   procedure Set_Title (Win   : in Gtk_Window;
                         Title : in String);
 
    --  mapping: Window_Type gtkenums.h GtkWindowType
@@ -21,6 +21,6 @@ package Gtk.Window is
 
 private
 
-   type Window is new Gtk.Bin.Bin with null record;
+   type Gtk_Window is new Gtk.Bin.Gtk_Bin with null record;
 
 end Gtk.Window;

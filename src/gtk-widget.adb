@@ -43,7 +43,7 @@ package body Gtk.Widget is
                             Sensitive : in Boolean)
    is
       procedure Internal (Widget      : in System.Address;
-                          Sensitive : in GInt);
+                          Sensitive : in Gint);
       pragma Import (C, Internal, "gtk_widget_set_sensitive");
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Sensitive));

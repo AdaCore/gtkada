@@ -8,7 +8,7 @@ package Gtk.Container is
                   Widget       : in Gtk.Widget.Gtk_Widget'Class);
 
    procedure Border_Width (Of_Container : in Gtk_Container'Class;
-                           Border_Width : in GInt);
+                           Border_Width : in Gint);
 
    --  mapping: Add  gtkcontainer.h gtk_container_add
    --  mapping: Border_Width gtkcontainer.h gtk_container_border_width

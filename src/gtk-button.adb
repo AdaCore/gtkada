@@ -5,7 +5,7 @@ package body Gtk.Button is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Button) is
+   procedure Gtk_New (Widget : out Gtk_Button) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_button_new");
    begin
@@ -16,7 +16,7 @@ package body Gtk.Button is
    --  New --
    --------------
 
-   procedure Gtk_New (Widget : out Button'Class;
+   procedure Gtk_New (Widget : out Gtk_Button'Class;
                       Label  : in String) is
       function New_Internal (S : String) return System.Address;
       pragma Import (C, New_Internal, "gtk_button_new_with_label");

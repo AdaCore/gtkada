@@ -3,10 +3,10 @@ with Gtk.Container;
 
 package Gtk.Bin is
 
-   type Bin is new Gtk.Container.Container with private;
+   type Gtk_Bin is new Gtk.Container.Gtk_Container with private;
 
 private
 
-   type Bin is new Gtk.Container.Container with null record;
+   type Gtk_Bin is new Gtk.Container.Gtk_Container with null record;
 
 end Gtk.Bin;
