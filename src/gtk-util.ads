@@ -47,7 +47,9 @@ package Gtk.Util is
    --  manager. Use Set_Object (see below) to "convert" this object to an
    --  appropriate widget.
 
-   type Void_Signal is access procedure (Object : in Private_Object);
+   type Callback is access procedure
+     (Object : in Private_Object;
+      Data   : in System.Address);
    --  The callback type.
 
    procedure Set_Object
@@ -58,13 +60,20 @@ package Gtk.Util is
    --  Note that the caller must ensure that Widget has the right type when
    --  calling this procedure.
 
-   procedure Set_Signal (Name : String; Signal : Void_Signal);
+   procedure Set_Signal
+     (Name      : in String;
+      Func      : in Callback;
+      Func_Data : in System.Address);
    --  Associates a signal with the specified Name. It is up to the caller to
    --  choose unique names. Signal is the address of a callback. Note that
    --  no check is performed on Signal.
 
-   function Get_Signal (Name : String) return Void_Signal;
-   --  Return a Signal associated (via a call to Set_Signal) with Name
+   procedure Get_Signal
+     (Name      : in     String;
+      Func      :    out Callback;
+      Func_Data :    out System.Address);
+   --  Return a Signal and a Data associated (via a call to Set_Signal) with
+   --  Name
 
 private
    type Private_Object is new System.Address;

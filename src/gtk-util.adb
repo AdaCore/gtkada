@@ -42,6 +42,13 @@ package body Gtk.Util is
    --  Number of hash headers, related (for efficiency purposes only)
    --  to the maximum number of widgets.
 
+   type Func_Rec is record
+      Func      : Callback;
+      Func_Data : System.Address;
+   end record;
+
+   No_Func_Rec : constant Func_Rec := (null, System.Null_Address);
+
    function Hash  (S : String_Ptr) return Hash_Header;
    function Equal (S1, S2 : String_Ptr) return Boolean;
    --  Hash and equality functions for hash table
@@ -56,8 +63,8 @@ package body Gtk.Util is
 
    package Signals is new GNAT.HTable.Simple_HTable
      (Header_Num => Hash_Header,
-      Element    => Void_Signal,
-      No_Element => null,
+      Element    => Func_Rec,
+      No_Element => No_Func_Rec,
       Key        => String_Ptr,
       Hash       => Hash,
       Equal      => Equal);
@@ -118,22 +125,33 @@ package body Gtk.Util is
    end Set_Object;
 
    ----------------
-   -- Get_Signal --
-   ----------------
-
-   function Get_Signal (Name : String) return Void_Signal is
-      S : aliased String := Name;
-   begin
-      return Signals.Get (S'Unchecked_Access);
-   end Get_Signal;
-
-   ----------------
    -- Set_Signal --
    ----------------
 
-   procedure Set_Signal (Name : String; Signal : Void_Signal) is
+   procedure Set_Signal
+     (Name      : in String;
+      Func      : in Callback;
+      Func_Data : in System.Address) is
    begin
-      Signals.Set (new String '(Name), Signal);
+      Signals.Set (new String '(Name), (Func, Func_Data));
    end Set_Signal;
+
+   ----------------
+   -- Get_Signal --
+   ----------------
+
+   procedure Get_Signal
+     (Name      : in     String;
+      Func      :    out Callback;
+      Func_Data :    out System.Address)
+   is
+      S   : aliased String := Name;
+      Rec : Func_Rec;
+
+   begin
+      Rec := Signals.Get (S'Unchecked_Access);
+      Func := Rec.Func;
+      Func_Data := Rec.Func_Data;
+   end Get_Signal;
 
 end Gtk.Util;
