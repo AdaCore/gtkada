@@ -10,14 +10,13 @@ procedure Create_Check_Buttons (Widget : in out Button.Gtk_Button'Class) is
    A_Separator : HSeparator.Gtk_HSeparator;
    Cb_Id : Guint;
 begin
-
    if not Is_Created (New_Window) then
       Window.Gtk_New (Window => New_Window,
                       The_Type => Enums.Window_Toplevel);
       Cb_Id := Do_Exit_Callback.Connect (Obj => New_Window,
                                          Name => "destroy",
                                          Func => Do_Exit'Access,
-                                         Func_Data => New_Window'Access);
+                                         Func_Data => New_Window);
       Window.Set_Title (Window => New_Window,
                         Title => "check buttons");
       Container.Border_Width (Container => New_Window,
@@ -57,11 +56,12 @@ begin
       Cb_Id := Do_Exit_Callback.Connect (Obj => A_Button,
                                          Name => "clicked",
                                          Func => Do_Exit'Access,
-                                         Func_Data => New_Window'Access);
+                                         Func_Data => New_Window);
       Box.Pack_Start (In_Box => Box2, Child => A_Button);
       Object.Set_Flags (Object => A_Button, Flags => Gtk.Widget.Can_Default);
       Gtk.Widget.Grab_Default (A_Button);
       Gtk.Widget.Show (A_Button);
+
    end if;
 
    if not Gtk.Widget.Visible_Is_Set (New_Window) then

@@ -16,6 +16,7 @@ with Gtk.Vbox;
 with Gtk.Widget;
 with Gtk.Window;
 
+with Create_Color_Selection;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
 
@@ -32,7 +33,7 @@ package body Test is
 
    procedure Create_Main_Window;
    procedure Do_Exit (Widget : in out Gtk.Widget.Gtk_Widget'Class;
-                      Data : in out Gtk_Window_Access);
+                      Data : in out Window.Gtk_Window'Class);
    procedure Exit_Main (Object : in out Window.Gtk_Window'Class);
    function Gtk_Version_Number return String;
 
@@ -46,7 +47,7 @@ package body Test is
    use type Button_Callback.Callback;
 
    package Do_Exit_Callback is new Signal.Callback
-     (Data_Type => Gtk_Window_Access, Widget_Type => Widget.Gtk_Widget);
+     (Data_Type => Window.Gtk_Window'Class, Widget_Type => Widget.Gtk_Widget);
 
    package Window_Callback is new Signal.Void_Callback
      (Widget_Type => Window.Gtk_Window);
@@ -71,10 +72,8 @@ package body Test is
    Check_Buttons_Window : aliased Window.Gtk_Window;
 
    procedure Create_Check_Buttons (Widget : in out Button.Gtk_Button'Class);
-
    procedure Create_Check_Buttons (Widget : in out Button.Gtk_Button'Class)
    is separate;
-
 
    ---------------------------
    --  The list of buttons  --
@@ -85,7 +84,8 @@ package body Test is
       (ASU.To_Unbounded_String ("buttons"), null),
       (ASU.To_Unbounded_String ("check buttons"), Create_Check_Buttons'Access),
       (ASU.To_Unbounded_String ("clist"), null),
-      (ASU.To_Unbounded_String ("color selection"), null),
+      (ASU.To_Unbounded_String ("color selection"),
+       Create_Color_Selection.Run'Access),
       (ASU.To_Unbounded_String ("cursors"), null),
       (ASU.To_Unbounded_String ("dialog"), null),
       (ASU.To_Unbounded_String ("dnd"), null),
@@ -129,7 +129,7 @@ package body Test is
 
    procedure Create_Main_Window is
       Cb_Id : Guint;
-      Box1, Box2 : Vbox.Gtk_VBox;
+      Box1, Box2 : Vbox.Gtk_Vbox;
       A_Label : Label.Gtk_Label;
       A_Scrolled_Window : Scrolled_Window.Gtk_Scrolled_Window;
       Temp : Adjustment.Gtk_Adjustment;
@@ -144,10 +144,10 @@ package body Test is
 
       Cb_Id := Window_Callback.Connect (Obj => Main_Window, Name => "destroy",
                                         Func => Exit_Main'Access);
---       Cb_Id := Window_Callback.Connect
---         (Obj => Main_Window,
---          Name => "delete_event",
---          Func => Exit_Main'Access);
+      Cb_Id := Window_Callback.Connect
+        (Obj => Main_Window,
+         Name => "delete_event",
+         Func => Exit_Main'Access);
 
       Vbox.Gtk_New (Widget => Box1, Homogeneous => False, Spacing => 0);
       Container.Add (Container => Main_Window, Widget => Box1);
@@ -209,7 +209,7 @@ package body Test is
       Button.Gtk_New (Widget => A_Button, Label => "close");
       Cb_Id := Do_Exit_Callback.Connect (Obj => A_Button, Name => "clicked",
                                         Func => Do_Exit'Access,
-                                        Func_Data => Main_Window'Access);
+                                        Func_Data => Main_Window);
       Box.Pack_Start (In_Box => Box2, Child => A_Button,
                       Expand => True, Fill => True);
       Object.Set_Flags (Object => A_Button, Flags => Widget.Can_Default);
@@ -226,11 +226,9 @@ package body Test is
    ---------------
 
    procedure Do_Exit (Widget : in out Gtk.Widget.Gtk_Widget'Class;
-                      Data : in out Gtk_Window_Access) is
+                      Data : in out Window.Gtk_Window'Class) is
    begin
-      Gtk.Widget.Destroy (Data.all);
-      --      Gtk.Main.Main_Quit;
-      --  Not necessary.
+      Gtk.Widget.Destroy (Data);
    end Do_Exit;
 
    -----------------
