@@ -69,7 +69,7 @@ package body Gtk.GLArea is
       Initialize_User_Data (Widget);
 
       --  gtk+'s double buffering and openGL's don't go together
-      Set_Double_Buffer (Widget, False);      
+      Set_Double_Buffered (Widget, False);
    end Initialize;
 
    -------------
@@ -107,7 +107,7 @@ package body Gtk.GLArea is
       Initialize_User_Data (Widget);
 
       --  gtk+'s double buffering and openGL's don't go together
-      Set_Double_Buffer (Widget, False);      
+      Set_Double_Buffered (Widget, False);
    end Initialize;
 
    ------------------
