@@ -6,13 +6,13 @@
 /* object macros ****************************************************/
 
 void
-gtk_object_set_flags (GtkObject * object, gint flags)
+ada_object_set_flags (GtkObject * object, gint flags)
 {
   GTK_OBJECT_SET_FLAGS (object, flags);
 }
 
 void 
-gtk_object_unset_flags (GtkObject * object, gint flags)
+ada_object_unset_flags (GtkObject * object, gint flags)
 {
   GTK_OBJECT_UNSET_FLAGS (object, flags);
 }
@@ -21,7 +21,7 @@ gtk_object_unset_flags (GtkObject * object, gint flags)
 /* toggle_buttons ***************************************************/
 
 gint 
-get_state (GtkToggleButton *toggle_button)
+ada_toggle_button_get_state (GtkToggleButton *toggle_button)
 {
   return toggle_button->active;
 }
@@ -29,7 +29,7 @@ get_state (GtkToggleButton *toggle_button)
 /* radio_menu_item **************************************************/
 
 GtkWidget*
-gtk_radio_menu_item_new_from_widget (GtkRadioMenuItem *group)
+ada_radio_menu_item_new_from_widget (GtkRadioMenuItem *group)
 {
   GSList *l = NULL;
   if (group)
@@ -41,7 +41,7 @@ gtk_radio_menu_item_new_from_widget (GtkRadioMenuItem *group)
 /********************************************************************/
 
 GtkWidget *
-gtk_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
+ada_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
 						const gchar      *label)
 {
   GSList *l = NULL;

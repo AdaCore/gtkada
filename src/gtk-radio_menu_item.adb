@@ -7,7 +7,7 @@ package body Gtk.Radio_Menu_Item is
 
    procedure New_From_Widget (Radio_Menu_Item : out Gtk_Radio_Menu_Item) is
       function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_radio_menu_item_new_from_widget");
+      pragma Import (C, Internal, "ada_radio_menu_item_new_from_widget");
    begin
       Set_Object (Radio_Menu_Item, Internal);
    end New_From_Widget;
@@ -21,7 +21,7 @@ package body Gtk.Radio_Menu_Item is
                               Label           : in  String) is
       function Internal (Label : in String) return System.Address;
       pragma Import (C, Internal,
-                     "gtk_radio_menu_item_new_with_label_from_widget");
+                     "ada_radio_menu_item_new_with_label_from_widget");
    begin
       Set_Object (Radio_Menu_Item, Internal (Label & ASCII.NUL));
    end New_From_Widget;

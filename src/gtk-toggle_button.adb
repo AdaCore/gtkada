@@ -32,7 +32,7 @@ package body Gtk.Toggle_Button is
 
    function Is_Selected (Widget : in Gtk_Toggle_Button'Class) return Boolean is
       function Internal (W : in System.Address) return Gint;
-      pragma Import (C, Internal, "get_state");
+      pragma Import (C, Internal, "ada_toggle_button_get_state");
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end Is_Selected;
