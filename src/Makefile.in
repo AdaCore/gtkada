@@ -108,7 +108,7 @@ $(GDIALOG):: $(GDIALOG).adb $(LIBNAME)
 	   $(GNATMAKE) $(GNATFLAGS) $(GDIALOG) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	fi
 
-$(LIB_DIR)/$(MAKE_ADB).o::
+$(LIB_DIR)/$(MAKE_ADB).o:: gtkada-intl.adb force
 	@if [ -f .devel ]; then \
 	  $(CD) $(LIB_DIR); \
 	  $(GNATMAKE) -c ../$(MAKE_ADB) $(GNATFLAGS_DEVEL) $(FPIC); \
