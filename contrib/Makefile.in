@@ -16,6 +16,7 @@ all:
 
 install: 
 	${MAKE} -C $(src_dir) install
+	${MAKE} -C $(testgtk_dir) install
 
 clean-generic:
 	-${RM} core
