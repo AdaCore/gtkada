@@ -4675,7 +4675,7 @@ package body Gtkada.MDI is
          User      : User_Data)
       is
          Child, Focus_Child : MDI_Child;
-         Child_Node : Node_Ptr := From_Tree.Child;
+         Child_Node : Node_Ptr;
          N          : Node_Ptr;
          Register   : Register_Node;
          Width, Height : Guint;
@@ -4689,7 +4689,11 @@ package body Gtkada.MDI is
            := (others => null);
 
       begin
-         pragma Assert (From_Tree.Tag.all = "MDI");
+         if From_Tree /= null then
+            Child_Node := From_Tree.Child;
+            pragma Assert (From_Tree.Tag.all = "MDI");
+         end if;
+
          MDI.Desktop_Was_Loaded := True;
 
          while Child_Node /= null loop
