@@ -27,15 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Glib.Object; use Glib.Object;
 with Gdk.Event;
 with Gdk.Rectangle;
 with Gdk.Window;
 with Gdk; use Gdk;
-with Gtk.Cell_Editable;
 with Gtk.Widget;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
-with System;
+with System; use System;
 
 package body Gtk.Cell_Renderer is
 
@@ -117,7 +117,7 @@ package body Gtk.Cell_Renderer is
       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
       Flags           : Gtk_Cell_Renderer_State)
-      return Gtk.Cell_Editable.Gtk_Cell_Editable
+      return GObject
    is
       function Internal
         (Cell            : System.Address;
@@ -129,17 +129,18 @@ package body Gtk.Cell_Renderer is
          Flags           : Gint)
          return System.Address;
       pragma Import (C, Internal, "gtk_cell_renderer_start_editing");
-      Stub : Gtk.Cell_Editable.Gtk_Cell_Editable_Record;
+      Stub : GObject_Record;
    begin
-      return Gtk.Cell_Editable.Gtk_Cell_Editable
-        (Get_User_Data (Internal (Get_Object (Cell),
-                                  Event,
-                                  Get_Object (Widget),
-                                  Path & ASCII.NUL,
-                                  Background_Area,
-                                  Cell_Area,
-                                  Gtk_Cell_Renderer_State'Pos (Flags)),
-                        Stub));
+      return GObject (Get_User_Data
+                      (Internal
+                       (Get_Object (Cell),
+                        Event,
+                        Get_Object (Widget),
+                        Path & ASCII.NUL,
+                        Background_Area,
+                        Cell_Area,
+                        Gtk_Cell_Renderer_State'Pos (Flags)),
+                       Stub));
    end Start_Editing;
 
    --------------------
