@@ -97,6 +97,7 @@ with Create_Tooltips;
 with Create_Tree;
 with Xpm;
 with Common; use Common;
+with View_GL; use View_GL;
 
 package body Main_Windows is
 
@@ -673,6 +674,8 @@ package body Main_Windows is
       Gtk_New (Frame);
       Gtk_New (Label, "OpenGL demo");
       Append_Page (Win.Notebook, Frame, Label);
+
+      View_GL.Run (Frame);
 
    end Initialize;
 end Main_Windows;
