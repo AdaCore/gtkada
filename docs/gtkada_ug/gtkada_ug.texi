@@ -4,6 +4,11 @@
 @settitle GtkAda User's Guide
 @syncodeindex fn cp
 
+@dircategory User Interface Toolkit
+@direntry
+* GTKAda_Ug: (gtkada_ug).           Ada '95 Binding to GTK+ User's Guide
+@end direntry 
+
 @set GtkAdaVersion 2.0.0
 
 @titlepage

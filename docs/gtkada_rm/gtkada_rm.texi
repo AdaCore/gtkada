@@ -3,6 +3,11 @@
 @setfilename gtkada_rm.info
 @syncodeindex fn cp
 
+@dircategory User Interface Toolkit
+@direntry
+* GTKAda_Rm: (gtkada_rm).           Ada '95 Binding to GTK+ Reference Manual
+@end direntry 
+
 @c --------------------------------------------
 @finalout
 @c --------------------------------------------
