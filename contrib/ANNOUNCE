@@ -19,7 +19,7 @@ Begin3
  Entered-date: 06MAY99
  Description: Ada95 graphical toolkit based on Gtk+ (version 1.2.x) 
  Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade
- Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
+ Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <Joel_Brobecker@raytheon.com> and Arnaud Charlet <charlet@gnat.com>
  Maintained-by: gtkada@ada.eu.org
  Primary-site:  http://ada.eu.org/gtkada/
  Original-site: http://ada.eu.org/gtkada/ 
