@@ -27,112 +27,112 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+
+--  !! Warning !! This is one of the only package that requires manual
+--  memory management in some cases. If you use the function Allocate,
+--  you have to use the function Free too...
+
 with Glib; use Glib;
 with Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Window;
+with Ada.Finalization;
 
 package Gdk.Event is
 
-
-   -----------------
-   --  Gdk_Event  --
-   -----------------
+   ------------------------------
+   --  Definition of the types --
+   ------------------------------
 
    type Gdk_Event is new Root_Type with private;
-
+   subtype Gdk_Event_Any is Gdk_Event;
+   --  Change from GtkAda1.2.3: There is no longer a tagged type
+   --  hierarchy, only one type.
+   --  However there are now a few runtime tests for each of the
+   --  function, to check whether a given field is available or not.
    --
-   --  Should probably be abstract but it would oblige us to
-   --  define some of the following services as abstract.
+   --  Fields common to all events: Window, Send_Event, Event_Type
 
-   function Events_Pending return Boolean;
+   subtype Gdk_Event_Button is Gdk_Event;
+   --  A button was pressed or release. Relevant fields:
+   --  Time, X, Y, Pressure, Xtilt, Ytilt, State, Button, Source,
+   --  Device_Id, X_Root, Y_Root, Window
+   --  Type: Button_Press, Gdk_2Button_Press, Gdk_3Button_Press, Button_Release
 
-   procedure Get (Event : out Gdk_Event);
+   subtype Gdk_Event_Configure is Gdk_Event;
+   --  The window configuration has changed: either it was remapped,
+   --  resized, moved, ...
+   --  Relevant fields: X, Y, Width, Height
+   --  Type: Configure
 
-   procedure Peek (Event : out Gdk_Event);
+   subtype Gdk_Event_Crossing is Gdk_Event;
+   --  The mouse has been moved in or out of the window
+   --  Relevant fields: Time, SubWindow, X, Y, X_Root, Y_Root, Mode,
+   --  Detail, Focus, State
+   --  Type: Enter_Notify, Leave_Notify
 
-   procedure Put (Event : in Gdk_Event);
+   subtype Gdk_Event_Expose is Gdk_Event;
+   --  The window needs to be redrawn. For efficiency, gtk gives you the
+   --  smallest area that you need to redraw
+   --  Relevant fields: Area, Count, Graphics_Expose
+   --  Type: Expose
 
-   procedure Copy (Source : in Gdk_Event;
-                   Destination : out Gdk_Event);
+   subtype Gdk_Event_No_Expose is Gdk_Event;
+   --  ???
+   --  No Relevent fields except the common ones
+   --  Type: No_Expose
 
-   procedure Free (Event : in out Gdk_Event);
+   subtype Gdk_Event_Focus is Gdk_Event;
+   --  The focus has changed for a window.
+   --  Relevant fields: in
+   --  Type: Focus_Change
 
-   function Get_Time (Event  : in Gdk.Event.Gdk_Event) return Guint32;
+   subtype Gdk_Event_Motion is Gdk_Event;
+   --  The mouse has moved
+   --  Relevant fields: Time, X, Y, Pressure, Xtilt, Ytilt, State,
+   --  Is_Hint, Source, Device_Id, X_Root, Y_Root
+   --  Type: Motion_Notify
 
-   procedure Set_Show_Events (Show_Events : in Boolean := True);
+   subtype Gdk_Event_Key is Gdk_Event;
+   --  A keyboard key was pressed
+   --  Relevant fields: Time, State, Key_Val, String
+   --  Type: Key_Press, Key_Release
 
-   function Get_Show_Events return Boolean;
+   subtype Gdk_Event_Property is Gdk_Event;
+   --  Some property of the window was modified
+   --  Relevent fields: Atom, Time, Property_State
+   --  Type: Property_Notify
 
+   subtype Gdk_Event_Proximity is Gdk_Event;
+   --  from gtk+: "This event type will be used pretty rarely. It only is
+   --  important for XInput aware programs that are drawing their own
+   --  cursor"
+   --  Relevant fields: Time, Source, Device_Id
+   --  Type: Proximity_In, Proximity_Out
 
-   function Get_Event_Type (Event : in Gdk_Event)
-                            return Types.Gdk_Event_Type;
+   subtype Gdk_Event_Visibility is Gdk_Event;
+   --  The visibility state of the window (partially visibly, fully visible,
+   --  hidden)
+   --  Relevant fields: Visibility_State
+   --  type: Visibility_Notify
 
-   procedure Set_Event_Type (Event      : in Gdk_Event;
-                             Event_Type : in Types.Gdk_Event_Type);
+   subtype Gdk_Event_Selection is Gdk_Event;
+   --  Something has been selected inside the window
+   --  Relevant fields: Selection, Target, Property, Requestor, Time
+   --  Type: Selection_Clear, Selection_Request, Selection_Notify
 
-   function Get_Window (Event  : in     Gdk_Event)
-                        return Gdk.Window.Gdk_Window;
+   subtype Gdk_Event_Client is Gdk_Event;
+   --  ???
+   --  Relevant fields: Message_Type, Data
+   --  Type: Client_Event
 
-   procedure Set_Window (Event  : in Gdk_Event;
-                         Window : in Gdk.Window.Gdk_Window'Class);
+   --  The following event types do not seem to have any associated type:
+   --  Delete, Destroy, Map, Unmap, Drag_Enter, Drag_Leave, Drag_Motion,
+   --  Drag_Status, Drag_Start, Drag_Finished
 
-   function Get_Send_Event (Event : in Gdk_Event) return Boolean;
-
-   procedure Set_Send_Event (Event      : in Gdk_Event;
-                             Send_Event : in Boolean := True);
-
-
-   procedure Send_Client_Message_To_All (Event : in Gdk_Event);
-
-   function Send_Client_Message (Event : in Gdk_Event;
-                                 Xid   : in Guint32)
-                                 return Boolean;
-
-   ---------------------
-   --  Gdk_Event_Any  --
-   ---------------------
-
-   type Gdk_Event_Any is new Gdk_Event with private;
-
-
-   ------------------------
-   --  Gdk_Event_Button  --
-   ------------------------
-
-   type Gdk_Event_Button is new Gdk_Event with private;
-
-   function Get_Time (Event : in Gdk_Event_Button) return Guint32;
-
-   function Get_X (Event : in Gdk_Event_Button) return Gdouble;
-
-   function Get_Y (Event : in Gdk_Event_Button) return Gdouble;
-
-   function Get_Pressure (Event : in Gdk_Event_Button) return Gdouble;
-
-   function Get_Xtilt (Event : in Gdk_Event_Button) return Gdouble;
-
-   function Get_Ytilt (Event : in Gdk_Event_Button) return Gdouble;
-
-   function Get_State (Event : in Gdk_Event_Button)
-                       return Gdk.Types.Gdk_Modifier_Type;
-
-   function Get_Button (Event : in Gdk_Event_Button) return Guint;
-
-   function Get_Source (Event : in Gdk_Event_Button)
-                        return Gdk.Types.Gdk_Input_Source;
-
-   function Get_Device_Id (Event : in Gdk_Event_Button)
-                           return Gdk.Types.Gdk_Device_Id;
-
-   function Get_X_Root (Event : in Gdk_Event_Button) return Gdouble;
-
-   function Get_Y_Root (Event : in Gdk_Event_Button) return Gdouble;
-
-
-   ------------------------
-   --  Gdk_Event_Client  --
-   ------------------------
+   -----------------------------------------
+   --  Specific definition for the fields --
+   -----------------------------------------
 
    type Gdk_Event_Client_Data_Format is (Char_Array,
                                          Short_Array,
@@ -146,6 +146,7 @@ package Gdk.Event is
    Number_Of_Shorts     : constant := 10;
    Number_Of_Longs      : constant := 5;
 
+
    type Gdk_Event_Client_Data (Format : Gdk_Event_Client_Data_Format) is
       record
          case Format is
@@ -158,236 +159,219 @@ package Gdk.Event is
          end case;
       end record;
 
-   type Gdk_Event_Client is new Gdk_Event with private;
+   -------------------------------------
+   --  Access to fields of the event  --
+   -------------------------------------
+   --  If a field does not exist for the event you gave, an exception
+   --  Invalid_Field is raised
 
-   function Get_Message_Type (Event : in Gdk_Event_Client)
-                              return Gdk.Types.Gdk_Atom;
+   Invalid_Field : exception;
 
-   function Get_Data (Event : in Gdk_Event_Client)
-                      return Gdk_Event_Client_Data;
+   function Get_Event_Type (Event : in Gdk_Event) return Types.Gdk_Event_Type;
+   --  The type of the event.
 
-   ---------------------------
-   --  Gdk_Event_Configure  --
-   ---------------------------
+   function Get_Send_Event (Event : in Gdk_Event) return Boolean;
+   --  Set to true if the event was generated by the application, False
+   --  if generated by the X server/Win32.
 
-   type Gdk_Event_Configure is new Gdk_Event with private;
+   function Get_Window (Event  : in Gdk_Event) return Gdk.Window.Gdk_Window;
+   --  The window the event occured on
 
-   function Get_X (Event : in Gdk_Event_Configure) return Gint16;
+   function Get_Time      (Event : in Gdk_Event) return Guint32;
+   --  Time when the event occured
 
-   procedure Set_X (Event : in Gdk_Event_Configure;
-                    X     : in Gint16);
+   function Get_X         (Event : in Gdk_Event) return Gdouble;
+   function Get_Y         (Event : in Gdk_Event) return Gdouble;
+   --  Coordinates of the mouse when the event occured. The coordinates
+   --  are relative to the parent window.
 
-   function Get_Y (Event : in Gdk_Event_Configure) return Gint16;
+   function Get_X_Root    (Event : in Gdk_Event) return Gdouble;
+   function Get_Y_Root    (Event : in Gdk_Event) return Gdouble;
+   --  Coordinates of the mouse when the event occured, relative to the
+   --  root window.
 
-   procedure Set_Y (Event : in Gdk_Event_Configure;
-                    Y     : in Gint16);
+   function Get_Button    (Event : in Gdk_Event) return Guint;
+   --  Number of the button that was pressed.
 
-   function Get_Width (Event : in Gdk_Event_Configure) return Gint16;
+   function Get_State     (Event : in Gdk_Event)
+                          return Gdk.Types.Gdk_Modifier_Type;
+   --  State of the mouse buttons and keyboard keys just prior to the
+   --  event
 
-   procedure Set_Width (Event : in Gdk_Event_Configure;
-                        Width : in Gint16);
+   function Get_Subwindow (Event : in Gdk_Event) return Gdk.Window.Gdk_Window;
+   --  Child window for the event. For an EnterNotifyEvent, this is set to
+   --  the initial window for the pointer, for an LeaveNotifyEvent this is set
+   --  to the window occupied by the pointer in its last position.
 
-   function Get_Height (Event : in Gdk_Event_Configure) return Gint16;
+   function Get_Mode (Event : in Gdk_Event) return Gdk.Types.Gdk_Crossing_Mode;
+   --  Set to indicate whether the events are normal events, pseudo-motion
+   --  events when a grab activates or pseudo-motion events when a grab
+   --  deativates
 
-   procedure Set_Height (Event  : in Gdk_Event_Configure;
-                         Height : in Gint16);
+   function Get_Detail (Event : in Gdk_Event) return Gdk.Types.Gdk_Notify_Type;
+   --  Set to indicate the notify details.
 
+   function Get_Focus (Event : in Gdk_Event) return Boolean;
+   --  Set to true if the window for the event is the focus window
 
-   --------------------------
-   --  Gdk_Event_Crossing  --
-   --------------------------
+   function Get_Pressure  (Event : in Gdk_Event) return Gdouble;
+   function Get_Xtilt     (Event : in Gdk_Event) return Gdouble;
+   function Get_Ytilt     (Event : in Gdk_Event) return Gdouble;
+   --  These are currently set to constants in the gtk+ code itself, so they
+   --  are most probably useless... Their respective values are 0.5, 0 and 0
 
-   type Gdk_Event_Crossing is new Gdk_Event with private;
+   function Get_Source (Event : in Gdk_Event)
+                       return Gdk.Types.Gdk_Input_Source;
+   --  Set to a constant for now in the gtk+ source... Probably useless.
 
-   function Get_Subwindow (Event : in Gdk_Event_Crossing)
-                           return Gdk.Window.Gdk_Window;
+   function Get_Device_Id (Event : in Gdk_Event)
+                          return Gdk.Types.Gdk_Device_Id;
+   --  Set to a constant for now in the gtk+ source... Probably useless.
 
-   function Get_Time (Event : in Gdk_Event_Crossing) return Guint32;
+   function Get_Area (Event : in Gdk_Event) return Rectangle.Gdk_Rectangle;
+   --  The minimal area on which the event applies (For Expose_Events, this is
+   --  the minimal area to redraw).
 
-   function Get_X (Event : in Gdk_Event_Crossing) return Gdouble;
+   function Get_Count (Event : in Gdk_Event) return Gint;
+   --  Number of Expose_Events that are to follow this one
 
-   function Get_Y (Event : in Gdk_Event_Crossing) return Gdouble;
+   function Get_In (Event : in Gdk_Event) return Boolean;
+   --  True if the window has gained the focus, False otherwise
 
-   function Get_X_Root (Event : in Gdk_Event_Crossing) return Gdouble;
+   function Get_Is_Hint (Event : in Gdk_Event) return Boolean;
+   --  ???
 
-   function Get_Y_Root (Event : in Gdk_Event_Crossing) return Gdouble;
+   function Get_Key_Val (Event : in Gdk_Event) return Gdk.Types.Gdk_Key_Type;
+   --  Code of the key that was pressed (and that generated the event
 
-   function Get_Mode (Event : in Gdk_Event_Crossing)
-                      return Gdk.Types.Gdk_Crossing_Mode;
+   function Get_String  (Event : in Gdk_Event) return String;
+   --  Symbol of the key that was pressed, as a string
 
-   function Get_Detail (Event : in Gdk_Event_Crossing)
-                        return Gdk.Types.Gdk_Notify_Type;
+   function Get_Atom (Event : in Gdk_Event) return Gdk.Types.Gdk_Atom;
+   --  Indicates which property has changed
+   --  ??? Atom should not be a Guint
 
-   function Get_Focus (Event : in Gdk_Event_Crossing) return Boolean;
+   function Get_Property_State (Event : in Gdk_Event) return Guint;
+   --  ??? The return type should be changed
 
-   function Get_State (Event : in Gdk_Event_Crossing)
-                       return Gdk.Types.Gdk_Modifier_Type;
+   function Get_Visibility_State (Event : in Gdk_Event)
+                                 return Gdk.Types.Gdk_Visibility_State;
+   --  Return the new visibility state for the window
 
+   function Get_Selection (Event : in Gdk_Event) return Gdk.Types.Gdk_Atom;
+   --  What was selected in the window...
 
-   ------------------------
-   --  Gdk_Event_Expose  --
-   ------------------------
+   function Get_Target (Event : in Gdk_Event) return Gdk.Types.Gdk_Atom;
+   --  ???
 
-   type Gdk_Event_Expose is new Gdk_Event with private;
+   function Get_Property (Event : in Gdk_Event) return Gdk.Types.Gdk_Atom;
+   --  ???
+
+   function Get_Requestor (Event : in Gdk_Event) return Guint32;
+   --  ???
+
+   function Get_Message_Type (Event : in Gdk_Event) return Gdk.Types.Gdk_Atom;
+   --  ???
+
+   function Get_Data (Event : in Gdk_Event) return Gdk_Event_Client_Data;
+   --  ???
+
+   ----------------------------------------
+   --  Modifying the fields of an event  --
+   ----------------------------------------
+
+   procedure Set_Window (Event : in Gdk_Event; Win : Gdk.Window.Gdk_Window);
+   procedure Set_X      (Event : in Gdk_Event; X : Gdouble);
+   procedure Set_Y      (Event : in Gdk_Event; Y : Gdouble);
+   procedure Set_Button (Event : in Gdk_Event; Button : Guint);
+   procedure Set_State  (Event : in Gdk_Event;
+                         State : in Gdk.Types.Gdk_Modifier_Type);
+   procedure Set_Subwindow (Event  : in Gdk_Event;
+                            Window : in Gdk.Window.Gdk_Window);
+   procedure Set_Mode   (Event : in Gdk_Event;
+                         Mode  : in Gdk.Types.Gdk_Crossing_Mode);
+   procedure Set_Detail (Event  : in Gdk_Event;
+                         Detail : in Gdk.Types.Gdk_Notify_Type);
+   procedure Set_Focus (Event : in Gdk_Event; Has_Focus : Boolean);
+   procedure Set_Area  (Event : in Gdk_Event; Area : Rectangle.Gdk_Rectangle);
+   procedure Set_In    (Event : in Gdk_Event; Focus_In : Boolean);
+   procedure Set_Is_Hint (Event : in Gdk_Event; Is_Hint : Boolean);
+   procedure Set_Key_Val (Event : in Gdk_Event; Key : Gdk.Types.Gdk_Key_Type);
+   procedure Set_Atom (Event : in Gdk_Event; Atom : Gdk.Types.Gdk_Atom);
+   procedure Set_Property_State (Event : in Gdk_Event; State : Guint);
+   procedure Set_Visibility_State (Event : in Gdk_Event;
+                                   State : Gdk.Types.Gdk_Visibility_State);
+   procedure Set_Selection (Event : in Gdk_Event;
+                            Selection : Gdk.Types.Gdk_Atom);
+   procedure Set_Target (Event : in Gdk_Event; Target : Gdk.Types.Gdk_Atom);
+   procedure Set_Property (Event : in Gdk_Event;
+                           Property : Gdk.Types.Gdk_Atom);
+   procedure Set_Requestor (Event : in Gdk_Event; Requestor : Guint32);
+   procedure Set_Message_Type (Event : in Gdk_Event; Typ : Gdk.Types.Gdk_Atom);
+
+   -------------------------
+   --  General functions  --
+   -------------------------
+
+   procedure Deep_Copy (From : Gdk_Event; To : out Gdk_Event);
+   --  Deep copy for an event. The C structure is itself duplicated,
+   --  but since we have controlled types, it will be automatically
+   --  deallocated.
 
    procedure Get_Graphics_Expose
      (Event  : out Gdk_Event_Expose;
       Window : in Gdk.Window.Gdk_Window'Class);
+   --  ???
 
-   function Get_Area (Event : in     Gdk_Event_Expose)
-                      return Rectangle.Gdk_Rectangle;
+   function Events_Pending return Boolean;
+   --  Is there any event pending on the queue ?
 
-   procedure Set_Area (Event : in Gdk_Event_Expose;
-                       Area  : in Rectangle.Gdk_Rectangle);
+   procedure Get (Event : out Gdk_Event);
+   --  Get the next event on the queue
 
-   function Get_Count (Event : in Gdk_Event_Expose) return Gint;
+   procedure Peek (Event : out Gdk_Event);
+   --  Look at the next event on the queue, but leave if there.
 
-   procedure Set_Count (Event : in Gdk_Event_Expose;
-                        Count : in Gint);
+   procedure Put (Event : in Gdk_Event);
+   --  Add an event on the queue - Better to use Gtk.Signal.Emit_By_Name
 
+   procedure Set_Show_Events (Show_Events : in Boolean := True);
+   function Get_Show_Events return Boolean;
+   --  For debug purposes, you can choose whether you want to see the events
+   --  gtk+ receives.
 
-   -----------------------
-   --  Gdk_Event_Focus  --
-   -----------------------
+   procedure Send_Client_Message_To_All (Event : in Gdk_Event);
+   --  ???
 
-   type Gdk_Event_Focus is new Gdk_Event with private;
+   function Send_Client_Message (Event : in Gdk_Event;
+                                 Xid   : in Guint32)
+                                return Boolean;
+   --  ???
 
-   function Get_In (Event : in Gdk_Event_Focus) return Boolean;
+   procedure Allocate (Event      : out Gdk_Event;
+                       Event_Type : in Types.Gdk_Event_Type;
+                       Window     : in Gdk.Window.Gdk_Window);
+   --  Create an event, whose fields are uninitialized. You need to use the
+   --  function Set_* above to modify them, before you can send the event with
+   --  Emit_By_Name
+   --  !!Note!!: The event has to be freed if you have called this function.
+   --  Use the function Free.
 
-
-   ---------------------
-   --  Gdk_Event_Key  --
-   ---------------------
-
-   type Gdk_Event_Key is new Gdk_Event with private;
-
-   function Get_Time (Event : in Gdk_Event_Key) return Guint32;
-
-   function Get_State (Event : in Gdk_Event_Key)
-                       return Gdk.Types.Gdk_Modifier_Type;
-
-   function Get_Key_Val (Event : in Gdk_Event_Key)
-                         return Gdk.Types.Gdk_Key_Type;
-
-   function Get_String  (Event : in Gdk_Event_Key) return String;
-
-
-   ------------------------
-   --  Gdk_Event_Motion  --
-   ------------------------
-
-   type Gdk_Event_Motion is new Gdk_Event with private;
-
-   function Get_Time (Event : in Gdk_Event_Motion) return Guint32;
-
-   function Get_X (Event : in Gdk_Event_Motion) return Gdouble;
-
-   function Get_Y (Event : in Gdk_Event_Motion) return Gdouble;
-
-   function Get_Pressure (Event : in Gdk_Event_Motion) return Gdouble;
-
-   function Get_Xtilt (Event : in Gdk_Event_Motion) return Gdouble;
-
-   function Get_Ytilt (Event : in Gdk_Event_Motion) return Gdouble;
-
-   function Get_State (Event : in Gdk_Event_Motion)
-                       return Gdk.Types.Gdk_Modifier_Type;
-
-   function Get_Is_Hint (Event : in Gdk_Event_Motion) return Boolean;
-
-   function Get_Source (Event : in Gdk_Event_Motion)
-                        return Gdk.Types.Gdk_Input_Source;
-
-   function Get_Device_Id (Event : in Gdk_Event_Motion)
-                           return Gdk.Types.Gdk_Device_Id;
-
-   function Get_X_Root (Event : in Gdk_Event_Motion) return Gdouble;
-
-   function Get_Y_Root (Event : in Gdk_Event_Motion) return Gdouble;
-
-
-   ---------------------------
-   --  Gdk_Event_No_Expose  --
-   ---------------------------
-
-   type Gdk_Event_No_Expose is new Gdk_Event with private;
-
-
-   --------------------------
-   --  Gdk_Event_Property  --
-   --------------------------
-
-   type Gdk_Event_Property is new Gdk_Event with private;
-
-   function Get_Atom (Event : in Gdk_Event_Property) return Gdk.Types.Gdk_Atom;
-
-   function Get_Time (Event : in Gdk_Event_Property) return Guint32;
-
-   function Get_State (Event : in Gdk_Event_Property)
-                       return Gdk.Types.Gdk_Modifier_Type;
-
-
-   ---------------------------
-   --  Gdk_Event_Proximity  --
-   ---------------------------
-
-   type Gdk_Event_Proximity is new Gdk_Event with private;
-
-   function Get_Time (Event : in Gdk_Event_Proximity) return Guint32;
-
-   function Get_Source (Event : in Gdk_Event_Proximity)
-                        return Gdk.Types.Gdk_Input_Source;
-
-   function Get_Device_Id (Event : in Gdk_Event_Proximity)
-                           return Gdk.Types.Gdk_Device_Id;
-
-
-   ---------------------------
-   --  Gdk_Event_Selection  --
-   ---------------------------
-
-   type Gdk_Event_Selection is new Gdk_Event with private;
-
-   function Get_Selection (Event : in Gdk_Event_Selection)
-                           return Gdk.Types.Gdk_Atom;
-
-   function Get_Target (Event : in Gdk_Event_Selection)
-                        return Gdk.Types.Gdk_Atom;
-
-   function Get_Property (Event : in Gdk_Event_Selection)
-                          return Gdk.Types.Gdk_Atom;
-
-   function Get_Requestor (Event : in Gdk_Event_Selection) return Guint32;
-
-   function Get_Time (Event : in Gdk_Event_Selection) return Guint32;
-
-
-   ----------------------------
-   --  Gdk_Event_Visibility  --
-   ----------------------------
-
-   type Gdk_Event_Visibility is new Gdk_Event with private;
-
-   function Get_Visibility_State (Event : in Gdk_Event_Visibility)
-     return Gdk.Types.Gdk_Visibility_State;
-
+   procedure Free (Event : in out Gdk_Event);
+   --  Free the memory (and C structure) associated with an event. You need to
+   --  call this function only if the event was created through Allocate, not
+   --  if it was created by GtkAda itself.
 
 private
 
-   type Gdk_Event is new Root_Type with null record;
-   type Gdk_Event_Any is new Gdk_Event with null record;
-   type Gdk_Event_Button is new Gdk_Event with null record;
-   type Gdk_Event_Client is new Gdk_Event with null record;
-   type Gdk_Event_Configure is new Gdk_Event with null record;
-   type Gdk_Event_Crossing is new Gdk_Event with null record;
-   type Gdk_Event_Expose is new Gdk_Event with null record;
-   type Gdk_Event_Focus is new Gdk_Event with null record;
-   type Gdk_Event_Key is new Gdk_Event with null record;
-   type Gdk_Event_Motion is new Gdk_Event with null record;
-   type Gdk_Event_No_Expose is new Gdk_Event with null record;
-   type Gdk_Event_Property is new Gdk_Event with null record;
-   type Gdk_Event_Proximity is new Gdk_Event with null record;
-   type Gdk_Event_Selection is new Gdk_Event with null record;
-   type Gdk_Event_Visibility is new Gdk_Event with null record;
+   type Gdk_Event is new Root_Type with
+      record
+         User_Created : Boolean := False;  --  True if allocated by the user
+      end record;
+
+   ---------------------
+   --  Design issues  --
+   ---------------------
+   --  See gdk-event.adb for some of the design issues behing that package.
 
 end Gdk.Event;
