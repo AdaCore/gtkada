@@ -281,7 +281,7 @@ package body Gtk.Dnd is
    is
       procedure Internal
         (Widget : System.Address;
-         Colormap : Gdk_Colormap;
+         Colormap : Gdk.Gdk_Colormap;
          Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
          Mask     : Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "gtk_drag_source_set_icon");
