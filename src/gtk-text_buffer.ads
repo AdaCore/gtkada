@@ -51,6 +51,10 @@ package Gtk.Text_Buffer is
       Table  : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table := null);
    --  Create a new text buffer.
    --  Create a new table if Table is null.
+   --  The buffer is created with a reference count of 1, and therefore should
+   --  be manually unreferenced (Glib.Object.Unref). It is recommended to do
+   --  that as soon as the buffer has been used to create a
+   --  Gtk.Text_View.Gtk_Text_View widget.
 
    procedure Initialize
      (Buffer : access Gtk_Text_Buffer_Record'Class;
