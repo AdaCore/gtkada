@@ -79,7 +79,6 @@ General GTK documentation
 * Package Gtk.Notebook::
 * Package Gtk.Event_Box::
 * Package Gtk.File_Selection::
-* Package Gtk.Enums::
 
 Description of the GDK hierarchy
 
@@ -910,7 +909,6 @@ specific widget.
 * Package Gtk.Notebook::
 * Package Gtk.Event_Box::
 * Package Gtk.File_Selection::
-* Package Gtk.Enums::
 @end menu
 
 @node Package Gtk.Text
@@ -1269,10 +1267,6 @@ To hide the file manipulation buttons (destruction, @dots{}):
 @c @end cartouche
 @c @end group
 @end example
-
-@node Package Gtk.Enums
-@section Package Gtk.Enums
-This package defines all the enumerated @b{type}s used by the GTK hierarchy.
 
 @node Description of the GDK hierarchy
 @chapter Description of the GDK hierarchy
