@@ -72,11 +72,11 @@ package body Gtk.Tree_Store is
       Initialize_User_Data (Widget);
    end Initialize;
 
-   ---------------
-   -- Set_Value --
-   ---------------
+   ---------
+   -- Set --
+   ---------
 
-   procedure Set_Value
+   procedure Set
      (Tree_Store : access Gtk_Tree_Store_Record;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Gint;
@@ -86,14 +86,78 @@ package body Gtk.Tree_Store is
         (Tree_Store : System.Address;
          Iter       : System.Address;
          Column     : Gint;
-         Value      : System.Address);
-      pragma Import (C, Internal, "ada_gtk_tree_store_set_value");
+         Value      : System.Address;
+         Final      : Gint := -1);
+      pragma Import (C, Internal, "gtk_tree_store_set");
    begin
-      Internal (Get_Object (Tree_Store),
-                Iter'Address,
-                Column,
-                Value);
-   end Set_Value;
+      Internal (Get_Object (Tree_Store), Iter'Address, Column, Value);
+   end Set;
+
+   ---------
+   -- Set --
+   ---------
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : String)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : System.Address;
+         Column     : Gint;
+         Value      : String;
+         Final      : Gint := -1);
+      pragma Import (C, Internal, "gtk_tree_store_set");
+   begin
+      Internal
+        (Get_Object (Tree_Store), Iter'Address, Column, Value & ASCII.NUL);
+   end Set;
+
+   ---------
+   -- Set --
+   ---------
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Boolean)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : System.Address;
+         Column     : Gint;
+         Value      : Gboolean;
+         Final      : Gint := -1);
+      pragma Import (C, Internal, "gtk_tree_store_set");
+   begin
+      Internal
+        (Get_Object (Tree_Store), Iter'Address, Column, Boolean'Pos (Value));
+   end Set;
+
+   ---------
+   -- Set --
+   ---------
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Glib.C_Proxy)
+   is
+      procedure Internal
+        (Tree_Store : System.Address;
+         Iter       : System.Address;
+         Column     : Gint;
+         Value      : Glib.C_Proxy;
+         Final      : Gint := -1);
+      pragma Import (C, Internal, "gtk_tree_store_set");
+   begin
+      Internal
+        (Get_Object (Tree_Store), Iter'Address, Column, Value);
+   end Set;
 
    ---------------
    -- Set_Value --
@@ -109,13 +173,13 @@ package body Gtk.Tree_Store is
         (Tree_Store : System.Address;
          Iter       : System.Address;
          Column     : Gint;
-         Value      : System.Address);
+         Value      : Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_tree_store_set_value");
    begin
       Internal (Get_Object (Tree_Store),
                 Iter'Address,
                 Column,
-                Value'Address);
+                Value);
    end Set_Value;
 
    ------------

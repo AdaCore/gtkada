@@ -27,6 +27,17 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  This package implements a specific model to store your data in. It is
+--  basically similar to a small database, in that each field can contain any
+--  number of columns.
+--
+--  Each column can contain a different type of data, specified when the model
+--  is created.
+--
+--  Adding new values in the model is done as in the example at the end.
+--  </description>
+
 with Glib.Values; use Glib.Values;
 with Gtk;
 with Gtk.Tree_Model;
@@ -59,12 +70,42 @@ package Gtk.Tree_Store is
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Gint;
       Value      : in out Glib.Values.GValue);
+   --  Set a new value in the model. The value is added in the column Column,
+   --  and in the line Iter.
 
-   procedure Set_Value
+   procedure Set
      (Tree_Store : access Gtk_Tree_Store_Record;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Gint;
       Value      : System.Address);
+   --  General function that can be used to set any data in the model. You
+   --  should just pass a 'Address on the data you want to pass, and it will be
+   --  converted appropriately by the C routine, depending on the type of the
+   --  data in that column of the model.
+   --
+   --  Please see the example at the end for more information on how to create
+   --  your own Set procedures adapted to your model.
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : String);
+   --  Same as above, but easier to use with a string.
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Boolean);
+   --  Same as above, but easier to use with a boolean.
+
+   procedure Set
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column     : Gint;
+      Value      : Glib.C_Proxy);
+   --  Same as above, but easier for the types in Gdk.
 
    procedure Remove
      (Tree_Store : access Gtk_Tree_Store_Record;
@@ -168,3 +209,52 @@ private
 end Gtk.Tree_Store;
 
 --  ??? Missing : drag-and-drop stuff
+
+--  <example>
+--  Adding a new line in the model:
+--
+--  declare
+--     Iter  : Gtk_Text_Iter;
+--     Value : Glib.Values.GValue;
+--  begin
+--     Append (Model, Iter, Null_Iter);
+--
+--     --  First method:
+--
+--     Init (Value, GType_String);
+--     Set_String (Value, "foo");
+--     Set_Value (Model, Iter, 0, Value);
+--     Unref (Value);
+--
+--     --  Second method:
+--
+--     Set (Model, Iter, 0, "foo");
+--  end;
+--
+--  </example>
+
+--  <example>
+--  Defining your own Set function for your model: This can be done by directly
+--  importing the C function, with the appropriate number of parameters.
+--  Remember that you are passing data directly to C, thus you need to end
+--  strings with ASCII.NUL
+--
+--  procedure My_Set
+--     (Tree_Store : access Gtk_Tree_Store_Record'Class;
+--      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+--      Column1 : Gint; Value1 : String;
+--      Column2 : Gint; Value2 : Boolean)
+--  is
+--      procedure Internal
+--        (Tree, Iter : System.Address;
+--         Column1 : Gint; Value1 : String;
+--         Column2 : Gint; Value2 : Gint;
+--         Final : Gint := -1);
+--      pragma Import (C, Internal, "gtk_tree_store_set");
+--   begin
+--      Internal
+--        (Get_Object (Tree_Store), Iter'Address,
+--         Column1, Value1 & ASCII.NUL, Column2, Boolean'Pos (Value2));
+--   end Set;
+--
+--  </example>
