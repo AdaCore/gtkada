@@ -150,7 +150,7 @@ package body Gtk.Signal is
                                 Func => Func);
       begin
          return Do_Signal_Connect (Obj,
-                                   Name & Ascii.NUL,
+                                   Name,
                                    Marshaller'Address,
                                    Convert (D),
                                    Free'Address,
@@ -249,7 +249,7 @@ package body Gtk.Signal is
                                 Func => Func);
       begin
          return Do_Signal_Connect (Obj,
-                                   Name & Ascii.NUL,
+                                   Name,
                                    Marshaller'Address,
                                    Convert (D),
                                    Free'Address,
@@ -303,7 +303,7 @@ package body Gtk.Signal is
       is
       begin
          return Do_Signal_Connect (Obj,
-                                   Name & Ascii.NUL,
+                                   Name,
                                    Marshaller'Address,
                                    Convert (Func),
                                    System.Null_Address,
@@ -386,13 +386,34 @@ package body Gtk.Signal is
                                     Func => Func);
       begin
          return Do_Signal_Connect (Obj,
-                                   Name & Ascii.NUL,
+                                   Name,
                                    Marshaller'Address,
                                    Convert (D),
                                    Free'Address,
                                    After);
       end Connect;
    end Object_Callback;
+
+   ----------------------
+   -- C_Unsafe_Connect --
+   ----------------------
+
+   function C_Unsafe_Connect (Object      : in Gtk.Object.Gtk_Object'Class;
+                              Name        : in String;
+                              Func        : in System.Address;
+                              Slot_Object : in Gtk.Object.Gtk_Object'Class)
+                              return Guint
+   is
+      function Internal (Object      : in System.Address;
+                         Name        : in String;
+                         Func        : in System.Address;
+                         Slot_Object : in System.Address)
+                         return Guint;
+      pragma Import (C, Internal, "gtk_signal_connect_object");
+   begin
+      return Internal (Get_Object (Object), Name & Ascii.NUL,
+                       Func, Get_Object (Slot_Object));
+   end C_Unsafe_Connect;
 
    ----------------
    -- Disconnect --

@@ -114,6 +114,18 @@ package Gtk.Signal is
       --  mapping: Connect gtksignal.h gtk_signal_connect_object_after
    end Object_Callback;
 
+   ----------------------------------------------------------------
+   --  The following function for connecting a default C callback
+   ----------------------------------------------------------------
+
+   function C_Unsafe_Connect (Object      : in Gtk.Object.Gtk_Object'Class;
+                              Name        : in String;
+                              Func        : in System.Address;
+                              Slot_Object : in Gtk.Object.Gtk_Object'Class)
+                              return Guint;
+   --  See testgtk/create_ruler for an example how to use this...
+   --  You should avoid using this whenever possible
+
    ------------------------------------------------------------------
    --  More general functions
    ------------------------------------------------------------------
