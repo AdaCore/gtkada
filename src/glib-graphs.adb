@@ -116,6 +116,21 @@ package body Glib.Graphs is
       Free (E2);
    end Remove;
 
+   -------------
+   -- Destroy --
+   -------------
+
+   procedure Destroy (G : in out Graph) is
+      V : Vertex_List := G.Vertices;
+      Tmp : Vertex_List;
+   begin
+      while V /= null loop
+         Tmp := V.Next;
+         Remove (G, V.V);
+         V := Tmp;
+      end loop;
+   end Destroy;
+
    ------------
    -- Remove --
    ------------

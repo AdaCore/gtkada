@@ -79,6 +79,10 @@ package Glib.Graphs is
    --  vertex from the graph. This subprogram must be overriden.
    --  This subprogram shouldn't (and in fact can't) free V itself.
 
+   procedure Destroy (G : in out Graph);
+   --  Destroy all the nodes and edges of the graph, and then free the memory
+   --  occupied by the graph itself
+
    procedure Remove (G : in out Graph; E : access Edge'Class);
    --  Remove the edge from the graph. The primitive
    --  subprogram Destroy is called for the edge.
