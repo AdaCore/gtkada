@@ -3741,6 +3741,10 @@ package body Gtkada.MDI is
 
    package body Desktop is
 
+      Empty_Notebook_Filler : MDI_Child;
+      --  Used to fill the empty notebook, and prevent it from being destroyed
+      --  during a desktop load.
+
       procedure Parse_Child_Node
         (MDI         : access MDI_Window_Record'Class;
          Child_Node  : Node_Ptr;
@@ -3811,6 +3815,7 @@ package body Gtkada.MDI is
          Child  : MDI_Child;
          Raised_Child : MDI_Child;
          X, Y : Gint;
+         Dummy  : Gtk_Label;
       begin
          Width  := Gint'Value (Get_Attribute (Child_Node, "Width", "-1"));
          Height := Gint'Value (Get_Attribute (Child_Node, "Height", "-1"));
@@ -3867,6 +3872,12 @@ package body Gtkada.MDI is
 
             N := N.Next;
          end loop;
+
+         if Child_Node.Child = null then
+            Gtk_New (Dummy, "");
+            Empty_Notebook_Filler := Put (MDI, Dummy);
+            Put_In_Notebook (MDI, Empty_Notebook_Filler, Notebook);
+         end if;
 
          if Raised_Child /= null then
             Set_Current_Page (Notebook, Page_Num (Notebook, Raised_Child));
@@ -4147,6 +4158,8 @@ package body Gtkada.MDI is
 
          Reuse_Empty_If_Needed : Boolean := True;
       begin
+         Empty_Notebook_Filler := null;
+
          if From_Tree /= null then
             Child_Node := From_Tree.Child;
             pragma Assert (From_Tree.Tag.all = "MDI");
@@ -4201,6 +4214,18 @@ package body Gtkada.MDI is
          MDI.Desktop_Was_Loaded := True;
 
          Queue_Resize (MDI);
+
+         if Empty_Notebook_Filler /= null then
+            --  The empty notebook has been created during the desktop load
+            declare
+               Note : constant Gtk_Notebook :=
+                 Gtk_Notebook (Get_Parent (Empty_Notebook_Filler));
+            begin
+               Ref (Note);
+               Remove_Page (Note, 0);
+            end;
+         end if;
+
          return True;
       end Restore_Desktop;
 
