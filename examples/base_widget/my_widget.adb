@@ -53,57 +53,21 @@ package body My_Widget is
 
    --  Define our own marshaller, since this is not one of the
    --  standard one.
-   type Requisition_Access is access Gtk.Widget.Gtk_Requisition;
-   package Size_Cb is new Handlers.Callback
-     (Target_Widget_Record);
-   function To_Requisition (Args : Gtk_Args; Num : Positive)
-                           return Requisition_Access;
+   package Size_Cb is new Handlers.Callback (Target_Widget_Record);
    package Requisition_Marshaller is new Size_Cb.Marshallers.Generic_Marshaller
-     (Requisition_Access, To_Requisition);
+     (Gtk_Requisition_Access, To_Requisition);
 
-
-   type Allocation_Access is access Gtk.Widget.Gtk_Allocation;
-   package Allocation_Cb is new Handlers.Callback
-     (Target_Widget_Record);
-   function To_Allocation (Args : Gtk_Args; Num : Positive)
-                          return Allocation_Access;
+   package Allocation_Cb is new Handlers.Callback (Target_Widget_Record);
    package Allocation_Marshaller is new
      Allocation_Cb.Marshallers.Generic_Marshaller
-     (Allocation_Access, To_Allocation);
+       (Gtk_Allocation_Access, To_Allocation);
 
    package Button_Cb is new Handlers.User_Callback
      (Target_Widget_Record, Integer);
 
-   --------------------
-   -- To_Requisition --
-   --------------------
-
-   function To_Requisition (Args : Gtk_Args; Num : Positive)
-                           return Requisition_Access
-   is
-      function Convert is new Unchecked_Conversion
-        (System.Address, Requisition_Access);
-   begin
-      return Convert (Get_Nth (Args, Num));
-   end To_Requisition;
-
-   -------------------
-   -- To_Allocation --
-   -------------------
-
-   function To_Allocation (Args : Gtk_Args; Num : Positive)
-                          return Allocation_Access
-   is
-      function Convert is new Unchecked_Conversion
-        (System.Address, Allocation_Access);
-   begin
-      return Convert (Get_Nth (Args, Num));
-   end To_Allocation;
-
-   ---------------
+   -----------------
    -- Draw_Target --
-   ---------------
-
+   -----------------
 
    procedure Draw_Target (Widget  : access Target_Widget_Record'Class)
      --  This function is called when we need to redraw the widget (for
@@ -156,13 +120,13 @@ package body My_Widget is
    ------------------
 
    procedure Size_Request (Widget      : access Target_Widget_Record'Class;
-                           Requisition : Requisition_Access)
+                           Requisition : Gtk_Requisition_Access)
      --  This function is called by gtk+ when the widget is realized.
      --  It should modify Requisition to ask for a appropriate size for
      --  the widget. Note that the widget will not necessary have that size,
      --  it could be bigger, depending on what it is contained into.
      --  See the signal "size_allocate" too.
-     --  More information on the size requesition process can be found in the
+     --  More information on the size requisition process can be found in the
      --  book "Gtk+/Gnome Application Development" by Havoc Pennington.
    is
    begin
@@ -179,7 +143,7 @@ package body My_Widget is
    -------------------
 
    procedure Size_Allocate (Widget     : access Target_Widget_Record'Class;
-                            Allocation : Allocation_Access)
+                            Allocation : Gtk_Allocation_Access)
      --  This function is called once gtk has decided what size and position
      --  the widget will actually have, or everytime the widget is resized.
      --  This would be a good time for instance for resizing the component
@@ -280,6 +244,5 @@ package body My_Widget is
         (Widget, "size_allocate",
          Allocation_Marshaller.To_Marshaller (Size_Allocate'Access));
    end Initialize;
-
 
 end My_Widget;
