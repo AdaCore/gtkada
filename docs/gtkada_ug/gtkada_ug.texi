@@ -733,7 +733,8 @@ file selected, and then close the dialog. All we need to know in that
 procedure in what widget to operate on. This can be achieved by the
 following handler:
 
-@example
+@need 3000
+@smallexample
    procedure OK (Files : access Gtk_File_Selection_Record'Class) is
    begin
       Ada.Text_IO.Put_Line ("Selected " & Get_Filename (Files));
@@ -741,7 +742,7 @@ following handler:
       Destroy (Files);
       --  Destroys the file selector dialog
    end Ok;
-@end example
+@end smallexample
 
 We know need to connect the object we created in the first part, and this
 new callback we just defined. As documented in the reference manual,
@@ -809,7 +810,7 @@ of being the button itself.
 
 @example
    Files_Cb.Object_Connect
-     (Get_Ok_Button (Window),  --  The object to which we connect the handler
+     (Get_Ok_Button (Window),  --  The object to connect to the handler
       "clicked",               --  The name of the signal
       Files_Cb.To_Marshaller (Ok'Access),  --  The signal handler
       Slot_Object => Window);
