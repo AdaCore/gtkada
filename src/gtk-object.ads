@@ -232,6 +232,7 @@ package Gtk.Object is
      (Object                    : access Gtk_Object_Record'Class;
       Signals                   : Gtkada.Types.Chars_Ptr_Array;
       Class_Record              : in out System.Address;
+      Type_Name                 : String;
       Parameters                : Signal_Parameter_Types :=
         Null_Parameter_Types;
       Scroll_Adjustments_Signal : Guint := 0);
@@ -247,6 +248,7 @@ package Gtk.Object is
    --  As a special case, if Parameters has its default value, all signals are
    --  created with no argument. This is done for backward compatibility
    --  mainly, and you should instead give it an explicit value.
+   --  Type_Name should be a unique name identifying the name of the new type.
    --
    --  Scroll_Adjustments_Signal is the index of the new signal that will be
    --  emitted when Gtk.Widget.Set_Scroll_Adjustments is called. If it is 0,
