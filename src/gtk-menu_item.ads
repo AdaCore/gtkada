@@ -29,7 +29,6 @@
 
 --  <c_version>1.3.6</c_version>
 
-with Gtk.Enums;
 with Gtk.Item;
 with Gtk.Widget;
 
@@ -67,10 +66,6 @@ package Gtk.Menu_Item is
 
    function Get_Submenu
      (Menu_Item : access Gtk_Menu_Item_Record) return Gtk.Widget.Gtk_Widget;
-
-   procedure Set_Placement
-     (Menu_Item : access Gtk_Menu_Item_Record;
-      Placement : Enums.Gtk_Submenu_Placement);
 
    procedure Gtk_Select (Menu_Item : access Gtk_Menu_Item_Record);
 

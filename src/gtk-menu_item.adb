@@ -174,23 +174,6 @@ package body Gtk.Menu_Item is
       Set_Right_Justified (Menu_Item, True);
    end Right_Justify;
 
-   -------------------
-   -- Set_Placement --
-   -------------------
-
-   procedure Set_Placement
-     (Menu_Item : access Gtk_Menu_Item_Record;
-      Placement : Enums.Gtk_Submenu_Placement)
-   is
-      procedure Internal
-        (Menu_Item : System.Address;
-         Placement : Enums.Gtk_Submenu_Placement);
-      pragma Import (C, Internal, "_gtk_menu_item_set_placement");
-
-   begin
-      Internal (Get_Object (Menu_Item), Placement);
-   end Set_Placement;
-
    -----------------
    -- Set_Submenu --
    -----------------
