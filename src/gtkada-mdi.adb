@@ -3336,6 +3336,8 @@ package body Gtkada.MDI is
          Update_Float_Menu (Child);
          Unref (Child);
          Widget_Callback.Emit_By_Name (Child, "unfloat_child");
+
+         Raise_Child (Child);
       end if;
    end Float_Child;
 
