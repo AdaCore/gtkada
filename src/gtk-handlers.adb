@@ -34,74 +34,48 @@ with System;
 
 package body Gtk.Handlers is
 
-   function Do_Signal_Connect (Object     : in Gtk.Object.Gtk_Object;
-                               Name       : in String;
-                               Marshaller : in System.Address;
-                               Func_Data  : in System.Address;
-                               Destroy    : in System.Address;
-                               After      : in Boolean)
-                              return          Handler_Id;
+   function Do_Signal_Connect
+     (Object     : in Gtk.Object.Gtk_Object;
+      Name       : in String;
+      Marshaller : in System.Address;
+      Func_Data  : in System.Address;
+      Destroy    : in System.Address;
+      After      : in Boolean) return Handler_Id;
    --  Internal function used to connect the signal.
-
-   -------------------
-   -- Argument_Type --
-   -------------------
-
-   function Argument_Type
-     (The_Type : Gtk_Type; Name : in String; Num : in Gint) return Gtk_Type
-   is
-      function Internal
-        (The_Type : Gtk_Type; Name : String; Num  : Gint) return Gtk_Type;
-      pragma Import (C, Internal, "ada_signal_argument_type");
-   begin
-      return Internal (The_Type, Name & ASCII.Nul, Num);
-   end Argument_Type;
-
-   ---------------------
-   -- Count_Arguments --
-   ---------------------
-
-   function Count_Arguments
-     (The_Type : Gtk_Type; Name : in String) return Guint
-   is
-      function Internal (The_Type : Gtk_Type; Name : String) return Guint;
-      pragma Import (C, Internal, "ada_signal_count_arguments");
-
-   begin
-      return Internal (The_Type, Name & ASCII.Nul);
-   end Count_Arguments;
 
    -----------------------
    -- Do_Signal_Connect --
    -----------------------
 
-   function Do_Signal_Connect (Object     : in Gtk.Object.Gtk_Object;
-                               Name       : in String;
-                               Marshaller : in System.Address;
-                               Func_Data  : in System.Address;
-                               Destroy    : in System.Address;
-                               After      : in Boolean)
-                              return Handler_Id
+   function Do_Signal_Connect
+     (Object     : in Gtk.Object.Gtk_Object;
+      Name       : in String;
+      Marshaller : in System.Address;
+      Func_Data  : in System.Address;
+      Destroy    : in System.Address;
+      After      : in Boolean) return Handler_Id
    is
-      function Internal (Object        : System.Address;
-                         Name          : String;
-                         Func          : System.Address;
-                         Marshaller    : System.Address;
-                         Func_Data     : System.Address;
-                         Destroy       : System.Address;
-                         Object_Signal : Gint;
-                         After         : Gint)
-                         return Handler_Id;
+      function Internal
+        (Object        : System.Address;
+         Name          : String;
+         Func          : System.Address;
+         Marshaller    : System.Address;
+         Func_Data     : System.Address;
+         Destroy       : System.Address;
+         Object_Signal : Gint;
+         After         : Gint) return Handler_Id;
       pragma Import (C, Internal, "gtk_signal_connect_full");
+
    begin
-      return Internal (Get_Object (Object),
-                       Name & ASCII.Nul,
-                       System.Null_Address,
-                       Marshaller,
-                       Func_Data,
-                       Destroy,
-                       Boolean'Pos (False),
-                       Boolean'Pos (After));
+      return Internal
+        (Get_Object (Object),
+         Name & ASCII.Nul,
+         System.Null_Address,
+         Marshaller,
+         Func_Data,
+         Destroy,
+         Boolean'Pos (False),
+         Boolean'Pos (After));
    end Do_Signal_Connect;
 
    ---------------------
@@ -115,10 +89,11 @@ package body Gtk.Handlers is
       function To_General_Handler is new Unchecked_Conversion
         (Handler, Gtk.Marshallers.General_Handler);
 
-      procedure Set_Return_Value (Typ    : Gtk_Type;
-                                  Value  : Return_Type;
-                                  Params : System.Address;
-                                  Num    : Guint);
+      procedure Set_Return_Value
+        (Typ    : Gtk_Type;
+         Value  : Return_Type;
+         Params : System.Address;
+         Num    : Guint);
       pragma Import (C, Set_Return_Value, "ada_set_return_value");
       --  Function used internally to specify the value returned by a
       --  callback.  In the gtk+ convention, such return values should go as
@@ -132,11 +107,17 @@ package body Gtk.Handlers is
       --  parameter of Marshaller to another type.
 
       type Data_Type_Record is record
-         Func     : Handler;             --  User's callback
-         Proxy    : Marshallers.Handler_Proxy := null;  -- Handler_Proxy to use
-         Object   : Acc        := null;  --  Slot Object for Object_Connect
-         Ret_Type : Gtk_Type;            --  The C constant used to indicate
-         --                              --  the return type.
+         Func     : Handler;
+         --  User's callback
+
+         Proxy    : Marshallers.Handler_Proxy := null;
+         --  Handler_Proxy to use
+
+         Object   : Acc        := null;
+         --  Slot Object for Object_Connect
+
+         Ret_Type : Gtk_Type;
+         --  The C constant used to indicate the return type.
       end record;
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
@@ -151,10 +132,11 @@ package body Gtk.Handlers is
       pragma Convention (C, Free_Data);
       --  Free the memory associated with the callback's data
 
-      procedure First_Marshaller (Object    : in System.Address;
-                                  User_Data : in System.Address;
-                                  Nparams   : in Guint;
-                                  Params    : in System.Address);
+      procedure First_Marshaller
+        (Object    : in System.Address;
+         User_Data : in System.Address;
+         Nparams   : in Guint;
+         Params    : in System.Address);
       pragma Convention (C, First_Marshaller);
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
@@ -237,10 +219,11 @@ package body Gtk.Handlers is
       -- First_Marshaller --
       ----------------------
 
-      procedure First_Marshaller (Object    : in System.Address;
-                                  User_Data : in System.Address;
-                                  Nparams   : in Guint;
-                                  Params    : in System.Address)
+      procedure First_Marshaller
+        (Object    : in System.Address;
+         User_Data : in System.Address;
+         Nparams   : in Guint;
+         Params    : in System.Address)
       is
          use type Marshallers.Handler_Proxy;
 
