@@ -77,7 +77,7 @@ package body Gtk.Toggle_Button is
 
    procedure Set_Mode
       (Toggle_Button  : in Gtk_Toggle_Button;
-       Draw_Indicator : in Gint)
+       Draw_Indicator : in Boolean)
    is
       procedure Internal
          (Toggle_Button  : in System.Address;
@@ -85,7 +85,7 @@ package body Gtk.Toggle_Button is
       pragma Import (C, Internal, "gtk_toggle_button_set_mode");
    begin
       Internal (Get_Object (Toggle_Button),
-                Draw_Indicator);
+                Boolean'Pos (Draw_Indicator));
    end Set_Mode;
 
    ---------------

@@ -39,7 +39,7 @@ package Gtk.Toggle_Button is
                       Label  : in String);
    procedure Set_Mode
       (Toggle_Button  : in Gtk_Toggle_Button;
-       Draw_Indicator : in Gint);
+       Draw_Indicator : in Boolean);
    procedure Set_State
       (Toggle_Button : in Gtk_Toggle_Button;
        Active        : in Boolean);
