@@ -137,7 +137,11 @@ private
 
    type Byte is range 0 .. 255;
    for Byte'Size use 8;
-   Gvalue_Size : constant Natural := C_Gvalue_Size;
+   Gvalue_Size : constant Natural := (GType'Size + 4 * Gdouble'Size) / 8;
+   --  In fact, we should really use the following constant definition,
+   --  except that GNAT 3.14 does not compile...
+   --  Gvalue_Size : constant Natural := C_Gvalue_Size;
+
    type GValue is array (1 .. Gvalue_Size) of Byte;
    pragma Convention (C, GValue);
    pragma Pack (GValue);

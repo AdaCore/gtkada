@@ -144,4 +144,9 @@ package body Glib.Values is
       Value := (others => 0);
       Internal (Value, G_Type);
    end Init;
+
+begin
+   if GValue'Size /= C_Gvalue_Size * 8 then
+      raise Program_Error;
+   end if;
 end Glib.Values;
