@@ -2,12 +2,12 @@
 
 package body Gtk.Container is
 
-   -------------
-   -- Add --
-   -------------
+   -----------
+   --  Add  --
+   -----------
 
-   procedure Add (In_Container : in Container'Class;
-                  Widget       : in Gtk.Widget.Widget'Class) is
+   procedure Add (In_Container : in Gtk_Container'Class;
+                  Widget       : in Gtk.Widget.Gtk_Widget'Class) is
       procedure Internal (In_Container : System.Address;
                           Widget       : System.Address);
       pragma Import (C, Internal, "gtk_container_add");
@@ -15,11 +15,12 @@ package body Gtk.Container is
       Internal (Get_Object (In_Container), Get_Object (Widget));
    end Add;
 
-   ----------------------
-   -- Border_Width --
-   ----------------------
 
-   procedure Border_Width (Of_Container : in Container'Class;
+   --------------------
+   --  Border_Width  --
+   --------------------
+
+   procedure Border_Width (Of_Container : in Gtk_Container'Class;
                            Border_Width : in GInt) is
       procedure Internal (Of_Container  : System.Address;
                           Border_Widget : GInt);
