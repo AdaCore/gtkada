@@ -209,59 +209,13 @@ ada_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
 }
 
 
-/*
- *
+/********************
  * GdkPoint
- *
- */
+ ********************/
 
-GdkPoint * 
-ada_gdk_point_new_with_coordinates (const gint16 x, const gint16 y)
-{
-  GdkPoint * result = NULL;
-  
-  result = g_new (GdkPoint, 1);
-  if (result)
-    {
-      result->x = x;
-      result->y = y;
-      
-    }
-
-  return result;
-}
-
-void
-ada_gdk_point_set_coordinates (GdkPoint * point, 
-			       const gint16 x, 
-			       const gint16 y)
-{
-  g_return_if_fail (point != NULL);
-  
-  point->x = x;
-  point->y = y;
-}
-
-gint16
-ada_gdk_point_get_x (GdkPoint * point)
-{
-  g_return_val_if_fail (point != NULL, 0);
-  
-  return point->x;
-}
-
-gint16
-ada_gdk_point_get_y (GdkPoint * point)
-{
-  g_return_val_if_fail (point != NULL, 0);
-  
-  return point->y;
-}
-
-void
-ada_gdk_point_destroy (GdkPoint * point)
-{
-  g_free (point);
+guint
+ada_gdk_point_size () {
+  return sizeof (GdkPoint);
 }
 
 
