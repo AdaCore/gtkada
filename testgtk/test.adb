@@ -24,13 +24,15 @@ package body Test is
    package ASU renames Ada.Strings.Unbounded;
 
 
+   type Gtk_Window_Access is access all Window.Gtk_Window'Class;
+
    ----------------------
    --  Local services  --
    ----------------------
 
    procedure Create_Main_Window;
    procedure Do_Exit (Widget : in out Gtk.Widget.Gtk_Widget'Class;
-                      Data : in out Window.Gtk_Window);
+                      Data : in out Gtk_Window_Access);
    procedure Exit_Main (Object : in out Window.Gtk_Window'Class);
    function Gtk_Version_Number return String;
 
@@ -44,7 +46,7 @@ package body Test is
    use type Button_Callback.Callback;
 
    package Do_Exit_Callback is new Signal.Callback
-     (Data_Type => Window.Gtk_Window, Widget_Type => Widget.Gtk_Widget);
+     (Data_Type => Gtk_Window_Access, Widget_Type => Widget.Gtk_Widget);
 
    package Window_Callback is new Signal.Void_Callback
      (Widget_Type => Window.Gtk_Window);
@@ -64,6 +66,9 @@ package body Test is
    -------------------------------
    --  Gtk+ Example procedures  --
    -------------------------------
+
+   Main_Window : aliased Window.Gtk_Window;
+   Check_Buttons_Window : aliased Window.Gtk_Window;
 
    procedure Create_Check_Buttons (Widget : in out Button.Gtk_Button'Class);
 
@@ -123,9 +128,8 @@ package body Test is
    --------------------------
 
    procedure Create_Main_Window is
-      Main_Window : Window.Gtk_Window;
       Cb_Id : Guint;
-      Box1, Box2 : Vbox.Gtk_Vbox;
+      Box1, Box2 : Vbox.Gtk_VBox;
       A_Label : Label.Gtk_Label;
       A_Scrolled_Window : Scrolled_Window.Gtk_Scrolled_Window;
       Temp : Adjustment.Gtk_Adjustment;
@@ -205,7 +209,7 @@ package body Test is
       Button.Gtk_New (Widget => A_Button, Label => "close");
       Cb_Id := Do_Exit_Callback.Connect (Obj => A_Button, Name => "clicked",
                                         Func => Do_Exit'Access,
-                                        Func_Data => Main_Window);
+                                        Func_Data => Main_Window'Access);
       Box.Pack_Start (In_Box => Box2, Child => A_Button,
                       Expand => True, Fill => True);
       Object.Set_Flags (Object => A_Button, Flags => Widget.Can_Default);
@@ -222,9 +226,9 @@ package body Test is
    ---------------
 
    procedure Do_Exit (Widget : in out Gtk.Widget.Gtk_Widget'Class;
-                      Data : in out Window.Gtk_Window) is
+                      Data : in out Gtk_Window_Access) is
    begin
-      Gtk.Widget.Destroy (Data);
+      Gtk.Widget.Destroy (Data.all);
       --      Gtk.Main.Main_Quit;
       --  Not necessary.
    end Do_Exit;
