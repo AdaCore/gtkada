@@ -22,7 +22,7 @@ The home page for gtk is
      
 This home page will always contain the latest news for this toolkit.
 
-This is GtkAda version 1.2.5. This package is an Ada95 graphical library
+This is GtkAda version 1.2.6. This package is an Ada95 graphical library
 for the Gimp Toolkit, which means this is a set of packages to allow you
 to easily create some graphical interfaces under X11 and Win32, using Ada95
 as a programming language.
@@ -122,62 +122,8 @@ some Ada functions. Thus the generic packages  have to be instanciated
 at library level, not  inside a subprogram,  so that the functions are
 still defined when gtk needs to free the memory.
 
-
 Documentation
 =============
 
-Although not complete, a first set of documentation is provided in the
+The GtkAda reference manul and user's guide can be found under the
 docs/ subdirectory in various formats (texinfo, ps, txt, info, html)
-
-
-How to report bugs
-==================
-     
-While this library is now considered stable, you still might find some
-bugs in it. We have tried to test it as much  as possible, essentially
-by converting the testgtk.c file found in the gtk distribution.
-We have been able to rewrite nearly all the tests.  Please have a look
-at the  testgtk,  which can  give you a lot  of examples of how to use
-this toolkit.
-
-For more general questions about gtk itself, please ask your questions
-to the  gtk  mailing list. The  authors of  this toolkit  are far from
-beeing specialists of gtk, as it was one of our first project with gtk.
-     
-There are two kinds of problems you can encounter :
-     
-- If the gtk library itself  was compiled with warnings turned on, you
-may  get some  warnings messages,  mainly because  of  types problems.
-These warnings should not appear, as  we have tried to be as type safe
-as possible  in this package.  To  know exactly where  the problem is,
-we recommand using gdb. You will have to load the dynamic libraries
-first. Then  send  us the  result  of  the  'bt' command.
-Here is a summary :
-     
-   $ gnatmake -g <your_program> `gtkada-config`
-   $ gdb <your_program_name>
-   (gdb) break main
-   (gdb) run
-   (gdb) break g_log
-   (gdb) cont
-   ....
-   (gdb) bt
-     
-- In  some  (hopefully) rare cases,   you can even get a  segmentation
-fault  within gtk.  That  means there is  definitevly  something wrong
-either  your program  or   the  toolkit.  Please  check   your program
-carefully, and if you think this is a problem in GtkAda itself, send us
-an email.
-     
-To report  errors, if you are a supported user of GNAT, send a mail to
-report@gnat.com following  the usual procedure. Otherwise, send a mail
-to gtkada@ada.eu.org to reach all the authors, explaining exactly what
-you are doing, what it the  expected  result  and  what  you  actually
-get. Please include the required sources to reproduced the problem, in
-a  format usable  by 'gnatchop'  (basically, insert  all  the required
-sources at  the end of  the mail). Please  try to provide a  subset of
-your sources as small as possible.
-     
-Of course, we will  welcome any patch   you can provide, so  that this
-toolkit is as useful as possible...
-
