@@ -115,11 +115,10 @@ package Gtk.Widget is
    --  compatible with the handlers found in Gtk.Handlers.
 
    procedure Unparent (Widget : access Gtk_Widget_Record'Class);
-   --  Detach the widget from its parent.
-   --  As a side effect, the widget will be erased from the screen.
-   --  Note that Widget will be destroyed if its reference count reaches 0.
-   --  Thus, if you want to reuse it, you should first Gtk.Object.Ref it,
-   --  before calling Unparent.
+   --  This function is only for use in widget implementations.
+   --  Should be called by implementations of the remove method
+   --  on Gtk_Container, to dissociate a child from the container.
+   --  Users should call Remove instead.
 
    procedure Show (Widget : access Gtk_Widget_Record);
    --  Schedule the widget to be displayed on the screen when its parent is
