@@ -95,6 +95,10 @@ package Gtk.GEntry is
    function Get_Text (The_Entry : access Gtk_Entry_Record) return String;
    --  Return the current text written in the entry.
 
+   function Get_Chars (The_Entry : access Gtk_Entry_Record) return String
+     renames Get_Text;
+   --  Convenience function provided for compatibility with GtkAda 1.2
+
    procedure Append_Text
      (The_Entry : access Gtk_Entry_Record; Text : String);
    --  Append a new string at the end of the existing one.
