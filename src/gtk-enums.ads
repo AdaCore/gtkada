@@ -43,6 +43,12 @@ package Gtk.Enums is
                             Window_Dialog,
                             Window_Popup);
 
+   type Gtk_Button_Action is new Guint;
+   Button_Ignored : constant Gtk_Button_Action := 0;
+   Button_Selects : constant Gtk_Button_Action := 1 ** 0;
+   Button_Drags   : constant Gtk_Button_Action := 1 ** 1;
+   Button_Expands : constant Gtk_Button_Action := 1 ** 2;
+
    type Gtk_Button_Box_Style is (Buttonbox_Default_Style,
                                  Buttonbox_Spread,
                                  Buttonbox_Edge,
