@@ -25,12 +25,17 @@ New features in 1.2.11 include:
   previousely provided in Gtk.Glade
 - Gtk.Glade.Register_Generate allows to add easily support for new widgets
   in Gate
+- The following widgets are now recognized automatically and no longer require
+  the use of Gtk.Type_Conversion: Gtk_Item, Gtk_Check_Menu_Item,
+  Gtk_Radio_Menu_Item, Gtk_Tearoff_Menu_Item, Gtk_Tree_Item.
+- A new function, Gtk.Unchecked_Cast, provides an alternative to
+  Gtk.Type_Conversion.
 
 LSM entry follows:
 Begin4
 Title:  GtkAda
 Version: 1.2.11
-Entered-date: 2001-02-15
+Entered-date: 2001-02-28
 Description: Ada95 graphical toolkit based on Gtk+ (version >= 1.2.2) 
 Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade Win32
 Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
