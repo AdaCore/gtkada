@@ -321,7 +321,7 @@ sub parse_signals {
 	$signals .= "   --  - \"$name\"\n   --    ";
 	$signals .= ($return eq "void")? "procedure " : "function ";
 	$signals .=
-	  "Handler (Widget : $prefix\_$current_package\_Record'Class";
+	  "Handler (Widget : access $prefix\_$current_package\_Record'Class";
 	$params =~ s/^[^,]+//;
 
 	if ($params ne "") {
@@ -915,7 +915,9 @@ sub print_arguments
 	    $with_list {"with Interfaces.C.Strings"} ++;
 	}
 	else {
-	    push (@output, &{$convert} ($return));
+	  my ($t) = &{$convert} ($return);
+	  $t =~ s/'Class$//;
+	  push (@output, $t);
 	}
       }
   }
