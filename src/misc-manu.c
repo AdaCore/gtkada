@@ -35,3 +35,30 @@ ada_colorsel_dialog_get_help_button (GtkColorSelectionDialog* dialog)
 {
   return dialog->help_button;
 }
+
+/******************************************************
+ *  Functions to get the fields of signal handlers
+ ******************************************************/
+
+guint
+ada_gtk_signal_connect (GtkObject           *object,
+			const gchar         *name,
+			GtkSignalFunc        func,
+			gpointer             func_data,
+			GtkSignalDestroy     destroy_func)
+{
+  return gtk_signal_connect_full (object, name, func, NULL, func_data,
+				  destroy_func, FALSE, FALSE);
+}
+
+guint
+ada_gtk_signal_connect_after (GtkObject           *object,
+			      const gchar         *name,
+			      GtkSignalFunc        func,
+			      gpointer             func_data,
+			      GtkSignalDestroy     destroy_func)
+{
+  return gtk_signal_connect_full (object, name, func, NULL, func_data,
+				  destroy_func, FALSE, TRUE);
+}
+
