@@ -92,6 +92,22 @@ package Gtk is
 
    Gtk_Type_Invalid : constant Gtk_Type := 0;
    Gtk_Type_None    : constant Gtk_Type := 1;
+   Gtk_Type_Char    : constant Gtk_Type := 2;
+   Gtk_Type_Uchar   : constant Gtk_Type := 3;
+   Gtk_Type_Bool    : constant Gtk_Type := 4;
+   Gtk_Type_Int     : constant Gtk_Type := 5;
+   Gtk_Type_Uint    : constant Gtk_Type := 6;
+   Gtk_Type_Long    : constant Gtk_Type := 7;
+   Gtk_Type_Ulong   : constant Gtk_Type := 8;
+   Gtk_Type_Float   : constant Gtk_Type := 9;
+   Gtk_Type_Double  : constant Gtk_Type := 10;
+   Gtk_Type_String  : constant Gtk_Type := 11;  --  Null terminated string.
+   Gtk_Type_Enum    : constant Gtk_Type := 12;
+   Gtk_Type_Flags   : constant Gtk_Type := 13;
+   Gtk_Type_Boxed   : constant Gtk_Type := 14;
+   Gtk_Type_Pointer : constant Gtk_Type := 15;  --  a general pointer type.
+   Gtk_Type_Object  : constant Gtk_Type := 21;  --  One of the widgets/objects
+   Gtk_Type_Gdk_Event : Gtk_Type;      --  a Gdk_Event
 
    function Type_Name (Type_Num : in Gtk_Type) return String;
    --  Return the type name corresponding to a Gtk_Type.
@@ -178,5 +194,5 @@ private
    pragma Import (C, Major_Version, "ada_gtk_major_version");
    pragma Import (C, Minor_Version, "ada_gtk_minor_version");
    pragma Import (C, Micro_Version, "ada_gtk_micro_version");
-
+   pragma Import (C, Gtk_Type_Gdk_Event, "GTK_TYPE_GDK_EVENT");
 end Gtk;
