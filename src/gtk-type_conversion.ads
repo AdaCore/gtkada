@@ -42,7 +42,7 @@ package Gtk.Type_Conversion is
    type File_Conversion_Hook_Type is
      access function (Type_Name : String) return Root_Type_Access;
    File_Conversion_Hook : File_Conversion_Hook_Type := null;
-   --  This variable can be point to one of your functions.
+   --  This variable can point to one of your functions.
    --  It gets the name of a C widget (ex/ "GtkButton") and should return
    --  a newly allocated Ada widget.
    --  Its intended use is to provide a way to easily import new C widgets,
