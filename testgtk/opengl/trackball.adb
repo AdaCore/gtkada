@@ -176,7 +176,7 @@ package body Trackball is
       Vscale (T1, Q2 (3));
 
       T2 := Qv2;
-      Vscale (T1, Q1 (3));
+      Vscale (T2, Q1 (3));
 
       Vcross (Qv1, Qv2, Cross => T3);
       Vadd (T1, T2, Tf);
