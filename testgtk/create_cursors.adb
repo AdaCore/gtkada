@@ -101,6 +101,10 @@ package body Create_Cursors is
       Gdk_New (Cursor, To_Cursor (C));
       Set_Cursor (Window, Cursor);
       Set_Text (Spinner.Label, Gdk_Cursor_Type'Image (To_Cursor (C)));
+
+      --  Note: the cursor pixmap is copied to the server, which keeps it as
+      --  long at it needs. On the client side, it is possible to delete the
+      --  cursor right now.
       Destroy (Cursor);
    end Set_Cursor;
 
