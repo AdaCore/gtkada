@@ -107,6 +107,9 @@ package Gtk.Text is
    --  Note also that an internal counter is incremented. The updates will
    --  be performed only when the same numbers of calls to Thaw has been
    --  performed.
+   --
+   --  Note that you can not call Set_Position while the widget is frozen.
+   --  This will create a Storage_Error otherwise.
 
    procedure Thaw (Text : access Gtk_Text_Record);
    --  Cancel the previous call to Freeze.
