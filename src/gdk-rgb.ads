@@ -35,6 +35,15 @@ with Gdk.Drawable;
 
 package Gdk.Rgb is
 
+   --  This package can be used for color conversions. This package
+   --  creates a private 32 bit private colormap, which is easier than
+   --  using X11 color tables, and gives access to more colors.
+   --  The routines in this package are highly optimized (more so than
+   --  the ones in Gdk.Color_Context), and have been used for instance
+   --  for fast transfer of RGB video images to the screen.
+   --  They also provide automatic dithering if the screen does not
+   --  support enough colors.
+
    type Gdk_Rgb_Cmap is private;
    --  This is the full colormap, ie a set of 256 Rbg items.
    --  You can extract values using the functions Get or Set below.
