@@ -6,7 +6,7 @@
 
 @titlepage
 
-@set GtkAdaVersion 1.2.10
+@set GtkAdaVersion 1.2.11
 
 @title GtkAda User's Guide
 @subtitle Version @value{GtkAdaVersion}
