@@ -7,47 +7,25 @@
 AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
 [
 
+   SO_EXT=.so
+   BUILD_SHARED=yes
+   FPIC=-fPIC
+
    case $build_os in
    aix*)
       OS_SPECIFIC_LINK_OPTIONS=-Wl,-bexpall,-berok
       ;;
+   hp*)
+      SO_EXT=.sl
+      BUILD_SHARED=no
+      FPIC=
+      ;;
    esac
 
   AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
-
-]
-)
-
-AC_DEFUN(AM_ADD_GTKADA_LINK,
-[
-
-   case $build_os in
-   hp*)
-      GTKADA_LINK=libgtkada.a
-      ;;
-   *)
-      GTKADA_LINK=-lgtkada
-      ;;
-   esac
-
-  AC_SUBST(GTKADA_LINK)
-
-]
-)
-
-AC_DEFUN(AM_ADD_SO_EXT,
-[
-
-   case $build_os in
-   hp*)
-      SO_EXT=.sl
-      ;;
-   *)
-      SO_EXT=.so
-      ;;
-   esac
-
+  AC_SUBST(BUILD_SHARED)
   AC_SUBST(SO_EXT)
+  AC_SUBST(FPIC)
 
 ]
 )
