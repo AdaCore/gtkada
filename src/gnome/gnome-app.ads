@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                  Copyright (C) 2000-2001                          --
+--                  Copyright (C) 2000-2002                          --
 --                            ACT-Europe                             --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -34,8 +34,8 @@ with Gtk.Menu_Bar;
 with Gtk.Status_Bar;
 with Gtk.Widget;
 with Gtk.Window;
-with Gnome.Dock;
-with Gnome.Dock_Item;
+with Bonobo.Dock;
+with Bonobo.Dock_Item;
 
 package Gnome.App is
 
@@ -63,47 +63,47 @@ package Gnome.App is
 
    procedure Add_Dock_Item
      (App           : access Gnome_App_Record;
-      Item          : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class;
-      Placement     : Dock.Gnome_Dock_Placement;
+      Item          : access Bonobo.Dock_Item.Bonobo_Dock_Item_Record'Class;
+      Placement     : Bonobo.Dock.Bonobo_Dock_Placement;
       Band_Num      : Gint;
       Band_Position : Gint;
       Offset        : Gint);
-   --  Warning: Gnome_Dock is described as an immature API.
+   --  Warning: Bonobo_Dock is described as an immature API.
 
    procedure Add_Docked
      (App           : access Gnome_App_Record;
       Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
       Name          : String;
-      Behavior      : Gnome.Dock_Item.Gnome_Dock_Item_Behavior;
-      Placement     : Dock.Gnome_Dock_Placement;
+      Behavior      : Bonobo.Dock_Item.Bonobo_Dock_Item_Behavior;
+      Placement     : Bonobo.Dock.Bonobo_Dock_Placement;
       Band_Num      : Gint;
       Band_Position : Gint;
       Offset        : Gint);
-   --  Warning: Gnome_Dock is described as an immature API.
+   --  Warning: Bonobo_Dock is described as an immature API.
 
    procedure Add_Toolbar
      (App           : access Gnome_App_Record;
       Toolbar       : access Gtk.Toolbar.Gtk_Toolbar_Record'Class;
       Name          : String;
-      Behavior      : Gnome.Dock_Item.Gnome_Dock_Item_Behavior;
-      Placement     : Dock.Gnome_Dock_Placement;
+      Behavior      : Bonobo.Dock_Item.Bonobo_Dock_Item_Behavior;
+      Placement     : Bonobo.Dock.Bonobo_Dock_Placement;
       Band_Num      : Gint;
       Band_Position : Gint;
       Offset        : Gint);
-   --  Warning: Gnome_Dock is described as an immature API.
+   --  Warning: Bonobo_Dock is described as an immature API.
 
    procedure Enable_Layout_Config
      (App    : access Gnome_App_Record;
       Enable : Boolean);
 
    function Get_Dock
-     (App : access Gnome_App_Record) return Gnome.Dock.Gnome_Dock;
-   --  Warning: Gnome_Dock is described as an immature API.
+     (App : access Gnome_App_Record) return Bonobo.Dock.Bonobo_Dock;
+   --  Warning: Bonobo_Dock is described as an immature API.
 
    function Get_Dock_Item_By_Name
      (App  : access Gnome_App_Record;
-      Name : String) return Gnome.Dock_Item.Gnome_Dock_Item;
-   --  Warning: Gnome_Dock is described as an immature API.
+      Name : String) return Bonobo.Dock_Item.Bonobo_Dock_Item;
+   --  Warning: Bonobo_Dock is described as an immature API.
 
    procedure Set_Contents
      (App      : access Gnome_App_Record;

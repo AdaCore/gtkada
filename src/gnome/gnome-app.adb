@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                  Copyright (C) 2000-2001                          --
+--                  Copyright (C) 2000-2002                          --
 --                            ACT-Europe                             --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -33,8 +33,8 @@ with Gtk; use Gtk;
 
 package body Gnome.App is
 
-   use Gnome.Dock;
-   use Gnome.Dock_Item;
+   use Bonobo.Dock;
+   use Bonobo.Dock_Item;
 
    ---------------
    -- Gnome_New --
@@ -80,8 +80,8 @@ package body Gnome.App is
 
    procedure Add_Dock_Item
      (App           : access Gnome_App_Record;
-      Item          : access Gnome.Dock_Item.Gnome_Dock_Item_Record'Class;
-      Placement     : Gnome_Dock_Placement;
+      Item          : access Bonobo.Dock_Item.Bonobo_Dock_Item_Record'Class;
+      Placement     : Bonobo_Dock_Placement;
       Band_Num      : Gint;
       Band_Position : Gint;
       Offset        : Gint)
@@ -97,7 +97,7 @@ package body Gnome.App is
    begin
       Internal (Get_Object (App),
                 Get_Object (Item),
-                Gnome_Dock_Placement'Pos (Placement),
+                Bonobo_Dock_Placement'Pos (Placement),
                 Band_Num,
                 Band_Position,
                 Offset);
@@ -111,8 +111,8 @@ package body Gnome.App is
      (App           : access Gnome_App_Record;
       Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
       Name          : String;
-      Behavior      : Gnome_Dock_Item_Behavior;
-      Placement     : Gnome_Dock_Placement;
+      Behavior      : Bonobo_Dock_Item_Behavior;
+      Placement     : Bonobo_Dock_Placement;
       Band_Num      : Gint;
       Band_Position : Gint;
       Offset        : Gint)
@@ -131,8 +131,8 @@ package body Gnome.App is
       Internal (Get_Object (App),
                 Get_Object (Widget),
                 Name & ASCII.NUL,
-                Gnome_Dock_Item_Behavior'Pos (Behavior),
-                Gnome_Dock_Placement'Pos (Placement),
+                Bonobo_Dock_Item_Behavior'Pos (Behavior),
+                Bonobo_Dock_Placement'Pos (Placement),
                 Band_Num,
                 Band_Position,
                 Offset);
@@ -146,8 +146,8 @@ package body Gnome.App is
      (App           : access Gnome_App_Record;
       Toolbar       : access Gtk.Toolbar.Gtk_Toolbar_Record'Class;
       Name          : String;
-      Behavior      : Gnome_Dock_Item_Behavior;
-      Placement     : Gnome_Dock_Placement;
+      Behavior      : Bonobo_Dock_Item_Behavior;
+      Placement     : Bonobo_Dock_Placement;
       Band_Num      : Gint;
       Band_Position : Gint;
       Offset        : Gint)
@@ -166,8 +166,8 @@ package body Gnome.App is
       Internal (Get_Object (App),
                 Get_Object (Toolbar),
                 Name & ASCII.NUL,
-                Gnome_Dock_Item_Behavior'Pos (Behavior),
-                Gnome_Dock_Placement'Pos (Placement),
+                Bonobo_Dock_Item_Behavior'Pos (Behavior),
+                Bonobo_Dock_Placement'Pos (Placement),
                 Band_Num,
                 Band_Position,
                 Offset);
@@ -194,11 +194,11 @@ package body Gnome.App is
    -- Get_Dock --
    --------------
 
-   function Get_Dock (App : access Gnome_App_Record) return Gnome_Dock is
+   function Get_Dock (App : access Gnome_App_Record) return Bonobo_Dock is
       function Internal (App : System.Address) return System.Address;
       pragma Import (C, Internal, "gnome_app_get_dock");
    begin
-      return Gnome_Dock (Gtk.Widget.Convert (Internal (Get_Object (App))));
+      return Bonobo_Dock (Gtk.Widget.Convert (Internal (Get_Object (App))));
    end Get_Dock;
 
    ---------------------------
@@ -207,14 +207,14 @@ package body Gnome.App is
 
    function Get_Dock_Item_By_Name
      (App    : access Gnome_App_Record;
-      Name   : String) return Gnome.Dock_Item.Gnome_Dock_Item
+      Name   : String) return Bonobo.Dock_Item.Bonobo_Dock_Item
    is
       function Internal
         (App    : System.Address;
          Name   : String) return System.Address;
       pragma Import (C, Internal, "gnome_app_get_dock_item_by_name");
    begin
-      return Gnome_Dock_Item
+      return Bonobo_Dock_Item
         (Gtk.Widget.Convert (Internal (Get_Object (App), Name & ASCII.NUL)));
    end Get_Dock_Item_By_Name;
 
