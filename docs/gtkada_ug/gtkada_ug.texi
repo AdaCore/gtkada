@@ -51,7 +51,6 @@ unmodified in any copy.
 * Hierarchical composition of a window::
 * Signal handling::
 * Starting an application with GtkAda::
-* Description of the GDK hierarchy::
 * Resource files::
 * Memory management::
 * Tasking with GtkAda::
