@@ -12,6 +12,7 @@ Note that most of the GtkExtra package has not been ported to Gtk+ 2.0 yet
 (this is work in progress), so these widgets are currently disabled.
 
 New features in 2.0.1:
+- Support for libglade2
 - New capabilities in GtkAda.MDI, see spec for details
 - Support for drad-n-drop in GtkAda.MDI
 - Bugs and memory leak fixes in GtkAda.MDI
