@@ -1,63 +1,63 @@
 package body Gtk.Widget is
 
-   ------------------
-   -- Activate --
-   ------------------
+   ----------------
+   --  Activate  --
+   ----------------
 
-   procedure Activate (Widg : in Widget'Class)
+   procedure Activate (Widget : in Gtk_Widget'Class)
    is
-      procedure Internal (Widg : in System.Address);
+      procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_activate");
    begin
-      Internal (Get_Object (Widg));
+      Internal (Get_Object (Widget));
    end Activate;
 
-   ------------------
-   --  Destroy --
-   ------------------
+   ---------------
+   --  Destroy  --
+   ---------------
 
-   procedure Destroy (Widg : in Widget'Class) is
-      procedure Internal (Widg : System.Address);
+   procedure Destroy (Widget : in Gtk_Widget'Class) is
+      procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_widget_destroy");
    begin
-      Internal (Get_Object (Widg));
+      Internal (Get_Object (Widget));
    end Destroy;
 
-   --------------
-   -- Hide --
-   --------------
+   ------------
+   --  Hide  --
+   ------------
 
-   procedure Hide (Widg : in Widget'Class)
+   procedure Hide (Widget : in Gtk_Widget'Class)
    is
-      procedure Internal (Widg : in System.Address);
+      procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_hide");
    begin
-      Internal (Get_Object (Widg));
+      Internal (Get_Object (Widget));
    end Hide;
 
-   -----------------------
-   -- Set_Sensitive --
-   -----------------------
+   ---------------------
+   --  Set_Sensitive  --
+   ---------------------
 
-   procedure Set_Sensitive (Widg      : in Widget'Class;
+   procedure Set_Sensitive (Widget    : in Gtk_Widget'Class;
                             Sensitive : in Boolean)
    is
-      procedure Internal (Widg      : in System.Address;
+      procedure Internal (Widget      : in System.Address;
                           Sensitive : in GInt);
       pragma Import (C, Internal, "gtk_widget_set_sensitive");
    begin
-      Internal (Get_Object (Widg), Boolean'Pos (Sensitive));
+      Internal (Get_Object (Widget), Boolean'Pos (Sensitive));
    end Set_Sensitive;
 
-   --------------
-   -- Show --
-   --------------
+   ------------
+   --  Show  --
+   ------------
 
-   procedure Show (Widg : in Widget'Class) is
-      procedure Internal (Widg : System.Address);
+   procedure Show (Widget : in Gtk_Widget'Class) is
+      procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_widget_show");
    begin
-      Internal (Get_Object (Widg));
+      Internal (Get_Object (Widget));
    end Show;
 
 end Gtk.Widget;

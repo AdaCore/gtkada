@@ -1,4 +1,3 @@
-
 --  The widget is the base of the tree for displayable objects.
 --  (A displayable object is one which takes up some amount
 --  of screen real estate). It provides a common base and interface
@@ -23,27 +22,27 @@ package Gtk.Widget is
    Reserved_3       : constant := 2 ** 17;
    Rc_Style         : constant := 2 ** 18;
 
-   type Widget is new Object with private;
+   type Gtk_Widget is new Object with private;
 
-   procedure Activate (Widg : in Widget'Class);
+   procedure Activate (Widget : in Gtk_Widget'Class);
    --  mapping: Activate gtkwidget.h gtk_widget_activate
 
-   procedure Destroy (Widg : in Widget'Class);
+   procedure Destroy (Widget : in Gtk_Widget'Class);
    --  mapping: Destroy gtkwidget.h gtk_widget_destroy
 
-   procedure Hide (Widg : in Widget'Class);
+   procedure Hide (Widget : in Gtk_Widget'Class);
    --  mapping: Hide gtkwidget.h gtk_widget_hide
 
-   procedure Set_Sensitive (Widg      : in Widget'Class;
+   procedure Set_Sensitive (Widget    : in Gtk_Widget'Class;
                             Sensitive : in Boolean);
    --  mapping: Set_Sensitive gtkwidget.h gtk_widget_set_sensitive
 
-   procedure Show (Widg : in Widget'Class);
+   procedure Show (Widget : in Gtk_Widget'Class);
    --  mapping: Show gtkwidget.h gtk_widget_show
 
 private
 
-   type Widget is new Object with null record;
+   type Gtk_Widget is new Object with null record;
 
    --  mapping: TopLevel gtkwidget.h GTK_TOPLEVEL
    --  mapping: No_Window gtkwidget.h GTK_NOWINDOW
