@@ -37,7 +37,7 @@
 --  @pxref{Package_Gdk.Bitmap} for more details on bitmap handling.
 --
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Glib; use Glib;
 with Gdk.Bitmap;

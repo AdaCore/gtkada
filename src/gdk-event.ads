@@ -37,7 +37,7 @@
 --  memory management in some cases. If you use the function Allocate,
 --  you have to use the function Free too...
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with System;
 with Glib; use Glib;

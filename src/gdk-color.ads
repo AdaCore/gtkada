@@ -44,7 +44,7 @@
 --  visual your application is running on.
 --
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Glib; use Glib;
 with Glib.Object;

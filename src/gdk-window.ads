@@ -46,7 +46,7 @@
 --  scrolling should be done with the Gtk_Scrolled_Window widget, but you
 --  might want to handle scrolling yourself). See the function
 --  Gdk.Event.Get_Graphics_Expose for more information.
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with System;
 with Glib; use Glib;
