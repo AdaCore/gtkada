@@ -6,6 +6,11 @@
 ## tags, and the documentation is automatically generated.
 ## The tags are looked for anywhere in the file.
 ##
+## SETUP NOTES:
+##    This script should be run from the $prefix/doc/automatic
+##    directory in the GtkAda package. It expects to find the gtk+
+##    sources in $prefix/gtk+-1.2.6/ (the version number can vary).
+##
 ## The following tags are known:
 ##
 ## <description>...</description>
@@ -24,8 +29,28 @@
 ##     have an Ada binding.
 ##
 ## <screenshot>...</screenshot>
+##     Specifies the name of a file that shows a screenshot of the
+##     widget. The name should not include any extension (it will
+##     be ".eps" for the latex version of the documentation and
+##     ".jpg" for the html version.
+##     This tag won't be shown in the info file.
+##     The pixmap should be in the directory where you are compiling
+##     the documentation.
 ##
 ## <example>...</example>
+##     Gives an example of use of the widget. The keywords and comments
+##     are automatically highlighted. Unless the example is short, we
+##     recommended using <include> to include its code from an external
+##     compilable source file.
+##
+## <include>...</include>
+##     Includes an external source file. The file is included inline, thus
+##     any enclosing tag is taken into account, as in
+##      <example><include>file</include></example>
+##     Note that comment starts are added at the beginning of each line.
+##     You can use relative pathnames (relative to the directory of the file
+##     containing this file).
+##     Both tags (opening and closing) should be on the same line.
 ##
 ## The functions and procedures are automatically associated with
 ## the comments that follow them, and that stops at the first blank
@@ -41,8 +66,9 @@
 $src_dir = "../../src/";
 # name of the source directory for GtkAda
 
-$gtk_src_dir = "/home/briot/gtk/gtk+-1.2.6";
-# Name of the source directory for gtk+
+$gtk_src_dir = "../..";
+# Name of the source directory for gtk+ (base directory for now,
+# the exact subdirectory is found below).
 
 *OUT = \*STDOUT;
 # the output is sent to OUT, which by default is the standard output
@@ -55,6 +81,9 @@ opendir (DIR, $src_dir);
 @source_files = grep (/\.ads/, readdir (DIR));
 closedir (DIR);
 
+opendir (DIR, $gtk_src_dir);
+$gtk_src_dir .= "/" . (grep (/gtk\+-/, readdir (DIR)))[0];
+closedir (DIR);
 
 local (@Ada_keywords) = ('abort', 'abs', 'accept', 'access', 'all', 'and',
 			 'array', 'at', 'begin', 'body', 'case', 'constant',
@@ -80,7 +109,7 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 foreach $source_file (@source_files) {
 
     open (FILE, $src_dir . "/" . $source_file);
-    @content = <FILE>;
+    @content = &expand_include (<FILE>);
     close (FILE);
 
     # Only generate documentation if we have a <description> tag
@@ -247,6 +276,34 @@ sub find_type_in_package () {
 	}
     }
     return $origin;
+}
+
+# Expands a given <include>...</include> and replace it with the content of
+# the file
+# Parameter: array of strings to check and possibly expand
+# Returns the new array where tags have been expanded.
+
+sub expand_include () {
+    my (@content) = @_;
+    my (@strings);
+    my ($line);
+
+    foreach $line (@_) {
+	if ($line =~ /(.*)\<include\>(.*)\<\/include\>(.*)/) {
+	    push (@strings, $1);
+	    my ($file, $rest) = ($2, $3);
+
+	    open (INCLUDE_FILE, "$src_dir/$file") ||
+		die "Could not open $src_dir/$file";
+	    push (@strings, "--  " . join ("--  ", <INCLUDE_FILE>) . "\n" . $rest);
+	    close (INCLUDE_FILE);
+
+	} else {
+	    push (@strings, $line);
+	}
+    }
+    
+    return @strings;
 }
 
 # Returns the list of signals defined in the C file $1.
