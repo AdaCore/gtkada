@@ -61,7 +61,7 @@ package Gtk.Text_Attributes is
    --  is preserved.
 
    function Get_Font (Text_Attr : Gtk_Text_Attributes)
-     return Pango.Font.Pango_Font_Description_Record;
+     return Pango.Font.Pango_Font_Description;
    --  Return the Pango_Font_Description associated to the given
    --  Gtk_Text_Attributes.
 
