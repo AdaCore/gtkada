@@ -1,5 +1,6 @@
 
 with Gtk; use Gtk;
+with System;
 
 package Glib.Glist is
 
