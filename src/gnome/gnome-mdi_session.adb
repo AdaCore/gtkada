@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
-with Gtk; use Gtk;
 with System;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
