@@ -49,7 +49,7 @@ package body Gtk.Extra.Combo_Box is
    procedure Initialize (Widget : access Gtk_Combo_Box_Record'Class)
    is
       function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_combobox_new");
+      pragma Import (C, Internal, "gtk_extra_combobox_new");
    begin
       Set_Object (Widget, Internal);
    end Initialize;
@@ -61,7 +61,7 @@ package body Gtk.Extra.Combo_Box is
    procedure Hide_Popdown_Window (Combobox : access Gtk_Combo_Box_Record)
    is
       procedure Internal (Combobox : in System.Address);
-      pragma Import (C, Internal, "gtk_combobox_hide_popdown_window");
+      pragma Import (C, Internal, "gtk_extra_combobox_hide_popdown_window");
    begin
       Internal (Get_Object (Combobox));
    end Hide_Popdown_Window;
@@ -75,7 +75,7 @@ package body Gtk.Extra.Combo_Box is
    is
       function Internal (Combobox : System.Address)
                         return System.Address;
-      pragma Import (C, Internal, "ada_gtk_combo_box_get_button");
+      pragma Import (C, Internal, "ada_gtk_extra_combo_box_get_button");
       Stub : Gtk.Button.Gtk_Button_Record;
    begin
       return Gtk.Button.Gtk_Button
@@ -91,7 +91,7 @@ package body Gtk.Extra.Combo_Box is
    is
       function Internal (Combobox : System.Address)
                         return System.Address;
-      pragma Import (C, Internal, "ada_gtk_combo_box_get_arrow");
+      pragma Import (C, Internal, "ada_gtk_extra_combo_box_get_arrow");
       Stub : Gtk.Arrow.Gtk_Arrow_Record;
    begin
       return Gtk.Arrow.Gtk_Arrow
@@ -107,7 +107,7 @@ package body Gtk.Extra.Combo_Box is
    is
       function Internal (Combobox : System.Address)
                         return System.Address;
-      pragma Import (C, Internal, "ada_gtk_combo_box_get_frame");
+      pragma Import (C, Internal, "ada_gtk_extra_combo_box_get_frame");
       Stub : Gtk.Frame.Gtk_Frame_Record;
    begin
       return Gtk.Frame.Gtk_Frame

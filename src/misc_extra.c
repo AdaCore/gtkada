@@ -2,7 +2,7 @@
 #include <gtk/gtk.h>
 
 #include "gtkextra/gtkpsfont.h"
-#include "gtkextra/gtkcombobox.h"
+#include "gtkextra/gtkextracombobox.h"
 #include "gtkextra/gtkfontcombo.h"
 #include "gtkextra/gtkcolorcombo.h"
 #include "gtkextra/gtksheet.h"
@@ -156,22 +156,22 @@ ada_gtk_sheet_get_row_height (GtkSheet* sheet, gint row) {
 
 /********************************************************************
  **
- **  Gtk_Combo_Box widget
+ **  Gtk_Extra_Combo_Box widget
  **
  ********************************************************************/
 
 GtkWidget*
-ada_gtk_combo_box_get_button (GtkComboBox* combo) {
+ada_gtk_extra_combo_box_get_button (GtkExtraComboBox* combo) {
   return combo->button;
 }
 
 GtkWidget*
-ada_gtk_combo_box_get_arrow (GtkComboBox* combo) {
+ada_gtk_extra_combo_box_get_arrow (GtkExtraComboBox* combo) {
   return combo->arrow;
 }
 
 GtkWidget*
-ada_gtk_combo_box_get_frame (GtkComboBox* combo) {
+ada_gtk_extra_combo_box_get_frame (GtkExtraComboBox* combo) {
   return combo->frame;
 }
 

@@ -25,7 +25,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#include "gtkcombobox.h"
+#include "gtkextracombobox.h"
 
 #define GTK_COLOR_COMBO(obj)			GTK_CHECK_CAST (obj, gtk_color_combo_get_type (), GtkColorCombo)
 #define GTK_COLOR_COMBO_CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, gtk_color_combo_get_type (), GtkColorComboClass)
@@ -36,7 +36,7 @@ typedef struct _GtkColorComboClass	GtkColorComboClass;
 
 /* you should access only the entry and list fields directly */
 struct _GtkColorCombo {
-	GtkComboBox color_combo;
+	GtkExtraComboBox color_combo;
 
         gint nrows;
         gint ncols;
@@ -52,7 +52,7 @@ struct _GtkColorCombo {
 };
 
 struct _GtkColorComboClass {
-	GtkComboBoxClass parent_class;
+	GtkExtraComboBoxClass parent_class;
 
         void (*changed) (GtkColorCombo *color_combo, 
                          gint selection, GdkColor *color);

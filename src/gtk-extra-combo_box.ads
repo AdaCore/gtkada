@@ -86,5 +86,5 @@ package Gtk.Extra.Combo_Box is
 
 private
    type Gtk_Combo_Box_Record is new Gtk.Box.Gtk_Box_Record with null record;
-   pragma Import (C, Get_Type, "gtk_combobox_get_type");
+   pragma Import (C, Get_Type, "gtk_extra_combobox_get_type");
 end Gtk.Extra.Combo_Box;

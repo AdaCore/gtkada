@@ -25,7 +25,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#include "gtkcombobox.h"
+#include "gtkextracombobox.h"
 
 #define GTK_BORDER_COMBO(obj)			GTK_CHECK_CAST (obj, gtk_border_combo_get_type (), GtkBorderCombo)
 #define GTK_BORDER_COMBO_CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, gtk_border_combo_get_type (), GtkBorderComboClass)
@@ -36,7 +36,7 @@ typedef struct _GtkBorderComboClass	GtkBorderComboClass;
 
 /* you should access only the entry and list fields directly */
 struct _GtkBorderCombo {
-	GtkComboBox border_combo;
+	GtkExtraComboBox border_combo;
 
         gint nrows;
         gint ncols;
@@ -49,7 +49,7 @@ struct _GtkBorderCombo {
 };
 
 struct _GtkBorderComboClass {
-	GtkComboBoxClass parent_class;
+	GtkExtraComboBoxClass parent_class;
 
         void (*changed) (GtkBorderCombo *border_combo, gint selection);
 };
