@@ -65,6 +65,7 @@ with Gtk.Menu_Item;
 with Gtk.Menu_Shell;
 with Gtk.Notebook;
 with Gtk.Option_Menu;
+with Gtk.Packer;
 with Gtk.Paned;
 --  with Gtk.Pixmap;
 with Gtk.Preview;
@@ -762,6 +763,8 @@ begin
      (Gtk.Notebook.Generate'Access, Gtk.Notebook.Generate'Access));
    SHT.Set (new String '("GtkOptionMenu"),
      (Gtk.Option_Menu.Generate'Access, Gtk.Option_Menu.Generate'Access));
+   SHT.Set (new String '("GtkPacker"),
+     (Gtk.Packer.Generate'Access, Gtk.Packer.Generate'Access));
    --  SHT.Set (new String '("GtkPaned"),
    --    (Gtk.Paned.Generate'Access, Gtk.Paned.Generate'Access));
    SHT.Set (new String '("GtkHPaned"),

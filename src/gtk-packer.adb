@@ -29,6 +29,7 @@
 
 with Gdk; use Gdk;
 with Gtk.Widget;
+with Gtk.Util; use Gtk.Util;
 with System;
 
 package body Gtk.Packer is
@@ -236,5 +237,69 @@ package body Gtk.Packer is
       Internal (Get_Object (Packer),
                 Spacing);
    end Set_Spacing;
+
+   --------------
+   -- Generate --
+   --------------
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type) is
+   begin
+      Gen_New (N, File => File);
+      Container.Generate (N, File);
+      Gen_Set (N, "Packer", "default_border_width", File => File);
+      Gen_Set (N, "Packer", "Default_Pad", Get_Field (N, "default_pad_x").all,
+        Get_Field (N, "default_pad_y").all, "", "", File => File);
+      Gen_Set (N, "Packer", "Default_Ipad",
+        Get_Field (N, "default_ipad_x").all,
+        Get_Field (N, "default_ipad_y").all, "", "", File => File);
+
+      if not N.Specific_Data.Has_Container then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
+      end if;
+   end Generate;
+ 
+   procedure Generate
+     (Packer : in out Gtk.Object.Gtk_Object; N : in Node_Ptr)
+   is
+      S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Packer (Packer));
+         Set_Object (Get_Field (N, "name"), Packer);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Container.Generate (Packer, N);
+
+      S := Get_Field (N, "default_border_width");
+ 
+      if S /= null then
+         Set_Default_Border_Width (Gtk_Packer (Packer), Guint'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "default_pad_x");
+ 
+      if S /= null then
+         Set_Default_Pad (Gtk_Packer (Packer), Guint'Value (S.all),
+           Guint'Value (Get_Field (N, "default_pad_y").all));
+      end if;
+
+      S := Get_Field (N, "default_ipad_x");
+ 
+      if S /= null then
+         Set_Default_Ipad (Gtk_Packer (Packer), Guint'Value (S.all),
+           Guint'Value (Get_Field (N, "default_ipad_y").all));
+      end if;
+
+      if not N.Specific_Data.Has_Container then
+         Container.Add
+           (Container.Gtk_Container
+            (Get_Object (Get_Field (N.Parent, "name"))),
+            Gtk.Widget.Gtk_Widget (Packer));
+         N.Specific_Data.Has_Container := True;
+      end if;
+   end Generate;
 
 end Gtk.Packer;

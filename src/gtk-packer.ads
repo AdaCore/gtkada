@@ -27,15 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Container;
+with Gtk.Object;
 with Gtk.Widget;
+with Gtk.Container;
 
 package Gtk.Packer is
 
    type Gtk_Packer_Record is new Gtk.Container.Gtk_Container_Record
      with private;
    type Gtk_Packer is access all Gtk_Packer_Record'Class;
-
 
    type Gtk_Packer_Options is new Guint;
    Gtk_Pack_Expand : constant Gtk_Packer_Options;
@@ -117,6 +117,13 @@ package Gtk.Packer is
 
    procedure Set_Spacing (Packer  : access Gtk_Packer_Record;
                           Spacing : in     Guint);
+
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+   --  Gate internal function
+ 
+   procedure Generate (Packer : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
 
