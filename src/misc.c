@@ -3227,3 +3227,14 @@ GType ada_g_object_get_type (GObject* object) {
 GType ada_gtype_fundamental (GType type) {
   return G_TYPE_FUNDAMENTAL (type);
 }
+
+/******************************************
+ ** Functions for Tree_Iter
+ ******************************************/
+
+void
+ada_tree_iter_copy (const GtkTreeIter *source,
+                    GtkTreeIter *dest)
+{
+  *dest = *source;
+}
