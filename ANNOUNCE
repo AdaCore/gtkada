@@ -30,7 +30,12 @@ End
 
 New features in 1.2.5 include:
 
+- New scheme for callbacks. This is much more complete than the old scheme,
+  and will permit for instance the creation of callbacks that return a
+  value (such as for the signal "delete_event"). It is also much more
+  systematic than the old one (less packages need to be instanciated).
 - Gate has been updated to Glade 0.5.5, plus various bug fixes
+- A new examples shows how to do some flicker-free animation with GtkAda
 - Tested on HP-UX 11.00
 - Tested on SCO UnixWare 7.1
 
