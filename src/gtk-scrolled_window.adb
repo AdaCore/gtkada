@@ -29,6 +29,8 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Enums; use Gtk.Enums;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Scrolled_Window is
 
@@ -164,5 +166,41 @@ package body Gtk.Scrolled_Window is
    begin
       Internal (Get_Object (Scrolled_Window), Get_Object (Vadjustment));
    end Set_Vadjustment;
+
+   --------------
+   -- Generate --
+   --------------
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type) is
+   begin
+      Gen_New (N, "Scrolled_Window", File => File);
+      Container.Generate (N, File);
+      Gen_Set (N, "Scrolled_Window", "Policy", "hscrollbar_policy",
+        "vscrollbar_policy", "", "", File);
+   end Generate;
+ 
+   procedure Generate
+     (Scrolled_Window : in out Gtk.Object.Gtk_Object; N : in Node_Ptr)
+   is
+      S, S2 : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Scrolled_Window (Scrolled_Window));
+         Set_Object (Get_Field (N, "name"), Scrolled_Window);
+         N.Specific_Data.Created := True;
+      end if;
+ 
+      Container.Generate (Scrolled_Window, N);
+ 
+      S := Get_Field (N, "hscrollbar_policy");
+      S2 := Get_Field (N, "vscrollbar_policy");
+ 
+      if S /= null and then S2 /= null then
+         Set_Policy (Gtk_Scrolled_Window (Scrolled_Window),
+           Gtk_Policy_Type'Value (S (S'First + 4 .. S'Last)),
+           Gtk_Policy_Type'Value (S2 (S2'First + 4 .. S2'Last)));
+      end if;
+   end Generate;
 
 end Gtk.Scrolled_Window;

@@ -77,7 +77,7 @@ with Gtk.Preview;
 with Gtk.Ruler;
 --  with Gtk.Scale;
 --  with Gtk.Scrollbar;
---  with Gtk.Scrolled_Window;
+with Gtk.Scrolled_Window;
 --  with Gtk.Separator;
 --  with Gtk.Spin_Button;
 with Gtk.Status_Bar;
@@ -600,9 +600,9 @@ begin
    --    (Gtk.Scale.Generate'Access, Gtk.Scale.Generate'Access));
    --  SHT.Set (new String '("GtkScrollbar"),
    --    (Gtk.Scrollbar.Generate'Access, Gtk.Scrollbar.Generate'Access));
-   --  SHT.Set (new String '("GtkScrolledWindow"),
-   --    (Gtk.Scrolled_Window.Generate'Access,
-   --     Gtk.Scrolled_Window.Generate'Access));
+   SHT.Set (new String '("GtkScrolledWindow"),
+     (Gtk.Scrolled_Window.Generate'Access,
+      Gtk.Scrolled_Window.Generate'Access));
    --  SHT.Set (new String '("GtkSeparator"),
    --    (Gtk.Separator.Generate'Access, Gtk.Separator.Generate'Access));
    --  SHT.Set (new String '("GtkSpinButton"),

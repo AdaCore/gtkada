@@ -30,6 +30,7 @@
 with Gtk.Adjustment;
 with Gtk.Container;
 with Gtk.Enums;
+with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Scrolled_Window is
@@ -75,6 +76,15 @@ package Gtk.Scrolled_Window is
      (Scrolled_Window    : access Gtk_Scrolled_Window_Record;
       H_Scrollbar_Policy : in     Enums.Gtk_Policy_Type;
       V_Scrollbar_Policy : in     Enums.Gtk_Policy_Type);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+ 
+   procedure Generate
+     (Scrolled_Window : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Scrolled_Window_Record is new Container.Gtk_Container_Record
