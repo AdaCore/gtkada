@@ -644,6 +644,8 @@ private
       Dummy10 : System.Address;
       Dummy11 : Gint;
       Dummy12 : Gint;
+      Dummy13 : Gint;
+      Dummy14 : Gint;
    end record;
    pragma Convention (C, Gtk_Text_Iter);
    --  Note that part of the implementation of this package assumes that this
