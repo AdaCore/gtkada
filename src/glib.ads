@@ -187,6 +187,7 @@ package Glib is
    --  This uniquely identifies a connection widget<->signal.
 
    Invalid_Handler_Id : constant Handler_Id;
+   Null_Handler_Id : constant Handler_Id;
 
    ----------------
    -- Properties --
@@ -320,6 +321,7 @@ private
 
    type Handler_Id is new Guint;
    Invalid_Handler_Id : constant Handler_Id := -1;
+   Null_Handler_Id : constant Handler_Id := 0;
 
    pragma Import (C, Fundamental, "ada_gtype_fundamental");
    pragma Import (C, Parent, "g_type_parent");
