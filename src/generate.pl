@@ -604,7 +604,7 @@ sub generate_specifications
 
     push (@output, $enumerates_clauses);
 
-    if ($has_get_type_subprogram) {
+    if ($has_get_type_subprogram == -1) {
       push (@output,
 	    "   pragma Import (C, Get_Type, \""
 	    . lc ("$prefix\_$current_package\_get_type") . "\");"
@@ -1027,7 +1027,7 @@ sub print_declaration
 	push (@output, "   function Get_Type return Gtk.Gtk_Type;\n");
 	push (@output, "   --  Return the internal value associated with"
 	      . " this widget.\n\n");
-	$has_get_type_subprogram = 0;
+	$has_get_type_subprogram = -1;
       }
 
     } else {
