@@ -422,9 +422,8 @@ package Gtkada.Canvas is
    --  is only called when the click was short.
    --  If it returns True, the canvas it redrawn afterwards (in case the item
    --  has changed for instance).
-   --  This procedure is called is always called, except when clicking with the
-   --  first button on an item. It is called otherwise for button releases and
-   --  double-clicks.
+   --  This procedure is never called for events that are used to move the
+   --  item in the canvas.
    --  The coordinates (X, Y) in the Event are relative to the top-left corner
    --  of Item.
 
@@ -574,6 +573,10 @@ private
       Mouse_Has_Moved   : Boolean;
       --  True if mouse has moved while the button was clicked. This is used
       --  to distinguish between item motion and item selection.
+
+      Event_Press       : Gdk.Event.Gdk_Event;
+      --  Save the event that was sent when the item was clicked on. This
+      --  event will be sent to the application if the item was not moved.
 
       Grid_Size         : Glib.Guint := Default_Grid_Size;
       --  The current number of pixels between each dot of the grid. If this
