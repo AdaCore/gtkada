@@ -2256,7 +2256,7 @@ package body Gtkada.MDI is
       The_Title       : String_Access;
       The_Short_Title : String_Access;
       --  Those pointers are used to prevent problems when
-      --  Title is in fact Child.Title
+      --  the Title parameter is in fact Child.Title
 
       Label           : Gtk_Accel_Label;
    begin
