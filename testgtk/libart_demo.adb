@@ -30,6 +30,7 @@
 with Gtk.Frame;         use Gtk.Frame;
 with Gtk.Label;         use Gtk.Label;
 with Glib;              use Glib;
+with Glib.Error;        use Glib.Error;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Drawing_Area;  use Gtk.Drawing_Area;
 with Gdk.Pixbuf;        use Gdk.Pixbuf;
@@ -160,7 +161,7 @@ package body Libart_Demo is
       Pix, Pix2, Pix3 : Gdk_Pixbuf;
       Draw            : Image_Drawing;
       Label           : Gtk_Label;
-      Error           : GError;
+      Error           : Glib.Error.GError;
 
    begin
       Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);

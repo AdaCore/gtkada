@@ -36,7 +36,7 @@ with Gtk.Adjustment;
 with Gtk.Box;
 with Gtk.Button;
 with Gtk.Check_Button;
-with Gtk.Ctree;
+with Gtk.Ctree; use Gtk.Ctree;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame;
 with Gtk.Label;
@@ -80,7 +80,7 @@ package body Create_Ctree is
       User_Type   => Gtk.Ctree.Gtk_Ctree);
 
    Ctree : Gtk.Ctree.Gtk_Ctree;
-   Line_Style : Gtk.Enums.Gtk_Ctree_Line_Style;
+   Line_Style : Gtk.Ctree.Gtk_Ctree_Line_Style;
    Clist_Omenu_Group1  : Gtk.Widget.Widget_Slist.GSlist;
    Clist_Omenu_Group2  : Gtk.Widget.Widget_Slist.GSlist;
    Clist_Omenu_Group3  : Gtk.Widget.Widget_Slist.GSlist;

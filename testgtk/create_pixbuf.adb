@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Glib;             use Glib;
+with Glib.Error;       use Glib.Error;
 with Gdk.Event;        use Gdk.Event;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Pixbuf;       use Gdk.Pixbuf;
@@ -104,7 +105,7 @@ package body Create_Pixbuf is
    ------------------
 
    function Load_Pixbufs return Boolean is
-      Error : GError;
+      Error : Glib.Error.GError;
    begin
       Gdk_New_From_File (Background, Background_Name, Error);
 
