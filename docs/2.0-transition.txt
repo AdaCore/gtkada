@@ -314,7 +314,7 @@ gtkarg.h
 gtkbindings.h
 gtkcellrenderer.h            |
 gtkcellrendererpixbuf.h      |
-gtkcellrenderertext.h        |   Binding almose complete
+gtkcellrenderertext.h        |   Binding almost complete
 gtkcellrenderertextpixbuf.h  |
 gtkcellrenderertoggle.h      |
 gtkclipboard.h
@@ -337,7 +337,6 @@ gtkrc.h: only partly bound.
 gtkselection.h: see "missing" section in gtk-selection.ads
 gtkseparatormenuitem.h
 gtksettings.h
-gtksizegroup.h
 gtkstyle.h: now a GObject with signals. see "missing" section.
             need to update field accessors.
 gtktreednd.h
