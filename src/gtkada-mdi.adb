@@ -4552,6 +4552,8 @@ package body Gtkada.MDI is
                N := N.Next;
             end loop;
          end if;
+
+         Set_Size_Request (Child, Gint (Width), Gint (Height));
       end Parse_Child_Node;
 
       ------------------------
