@@ -1276,7 +1276,8 @@ package body Gtkada.Canvas is
       --  Warn the user that a selection has been made
 
       Emit_By_Name_Item
-        (Gtk.Get_Object (Canvas), "item_selected", Canvas.Selection.Item);
+        (Gtk.Get_Object (Canvas), "item_selected" & ASCII.NUL,
+         Canvas.Selection.Item);
 
       --  Initialize the move
 
