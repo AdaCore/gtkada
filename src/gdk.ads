@@ -30,6 +30,7 @@
 with System;
 
 package Gdk is
+   pragma Elaborate_Body;
 
    type Root_Type is abstract tagged private;
    type Root_Type_Access is access all Root_Type'Class;

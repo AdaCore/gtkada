@@ -72,6 +72,7 @@ with System;
 --  more natural way to use callbacks.
 
 package Gtk.Handlers is
+   pragma Elaborate_Body;
 
    type Handler_Id is new Guint;
    --  This uniquely identifies a connection widget<->signal.

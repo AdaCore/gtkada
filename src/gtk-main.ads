@@ -30,6 +30,7 @@
 with Gtk.Widget;
 
 package Gtk.Main is
+   pragma Elaborate_Body;
 
    procedure Init;
 

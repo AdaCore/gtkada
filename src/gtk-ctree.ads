@@ -40,6 +40,7 @@ with Gtkada.Types; use Gtkada.Types;
 with Interfaces.C.Strings;
 
 package Gtk.Ctree is
+   pragma Elaborate_Body;
 
    type Gtk_Ctree_Record is new Gtk.Clist.Gtk_Clist_Record with private;
    type Gtk_Ctree is access all Gtk_Ctree_Record'Class;
