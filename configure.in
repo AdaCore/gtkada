@@ -21,7 +21,7 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 
 # checking for gtk
-AM_PATH_GTK(1.3.2,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
+AM_PATH_GTK(1.3.3,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
 
 # Gettext stuff
 ALL_LINGUAS="fr"
