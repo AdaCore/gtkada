@@ -898,7 +898,8 @@ package body Gtkada.MDI is
    procedure Check_Interactive_Selection_Dialog
      (MDI    : access MDI_Window_Record;
       Event  : Gdk.Event.Gdk_Event;
-      Move_To_Next : Boolean)
+      Move_To_Next : Boolean;
+      Visible_In_Central_Only : Boolean := False)
    is
       use type Widget_List.Glist;
       D : Selection_Dialog_Access;
@@ -914,16 +915,56 @@ package body Gtkada.MDI is
 
       if Event = null then
          declare
-            List : Widget_List.Glist;
+            List, Tmp : Widget_List.Glist;
+            Notebook  : Gtk_Notebook;
+            Child     : MDI_Child;
          begin
-            if Move_To_Next then
-               List := Next (First (MDI.Items));
-            else
-               List := Last (MDI.Items);
-            end if;
+            if not Visible_In_Central_Only then
+               if Move_To_Next then
+                  List := Next (First (MDI.Items));
+               else
+                  List := Last (MDI.Items);
+               end if;
 
-            if List /= Null_List then
-               Set_Focus_Child (MDI_Child (Widget_List.Get_Data (List)));
+               if List /= Null_List then
+                  Set_Focus_Child (MDI_Child (Widget_List.Get_Data (List)));
+               end if;
+
+            elsif MDI.Central.Children_Are_Maximized then
+               List := Get_Children (MDI.Central.Container);
+               Notebook := Find_Current_In_Central (MDI);
+               Tmp  := List;
+
+               while Tmp /= Null_List loop
+                  if Widget_List.Get_Data (Tmp) = Gtk_Widget (Notebook) then
+                     if Move_To_Next then
+                        Tmp := Widget_List.Next (Tmp);
+                        if Tmp = Null_List then
+                           Tmp := Widget_List.First (List);
+                        end if;
+                     else
+                        Tmp := Widget_List.Prev (Tmp);
+                        if Tmp = Null_List then
+                           Tmp := Widget_List.Last (List);
+                        end if;
+                     end if;
+
+                     Notebook := Gtk_Notebook (Widget_List.Get_Data (Tmp));
+                     Child := MDI_Child
+                       (Get_Nth_Page
+                          (Notebook, Get_Current_Page (Notebook)));
+
+                     if Child /= null then
+                        Set_Focus_Child (Child);
+                     end if;
+
+                     exit;
+                  end if;
+
+                  Tmp := Widget_List.Next (Tmp);
+               end loop;
+
+               Free (List);
             end if;
          end;
          return;

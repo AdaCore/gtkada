@@ -283,7 +283,8 @@ package Gtkada.MDI is
    procedure Check_Interactive_Selection_Dialog
      (MDI    : access MDI_Window_Record;
       Event  : Gdk.Event.Gdk_Event;
-      Move_To_Next : Boolean);
+      Move_To_Next : Boolean;
+      Visible_In_Central_Only : Boolean := False);
    --  Open the interactive dialog for selecting windows.
    --  This dialog should be open as a result of a key press event.
    --  Move_To_Next indicates whether we want to select the next child (True)
@@ -299,6 +300,11 @@ package Gtkada.MDI is
    --
    --  If Event is null, then no dialog is displayed. Instead, the next or
    --  previous child is immediately selected.
+   --
+   --  If Visible_In_Central_Only is set, then only the children currently
+   --  visible in the central area can be selected. There is only one such
+   --  child unless the central area was splitted. Event is ignored in this
+   --  case, and the selection is not interactive
    --
    --  This function is not internal to the MDI since connecting to the
    --  key_press_event and key_release_event should be done in the gtk_window
