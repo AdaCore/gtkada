@@ -20,13 +20,12 @@
 
 --  This package provides to DGATE a generic callback
 
-with Gtk.Util; use Gtk.Util;
 with System;
 
 package DGate_Callbacks is
 
    procedure Generic_Callback
-     (Object : in Private_Object;
+     (Object : in System.Address;
       Data   : in System.Address);
    --  This callback will print on standard output the string pointed to by
    --  Data.

@@ -27,11 +27,11 @@ with Ada.Command_Line; use Ada.Command_Line;
 with Ada.Text_IO; use Ada.Text_IO;
 with Glib.Glade;
 with Gtk; use Gtk;
-with Gtk.Glade; use Gtk.Glade;
+with Glade; use Glade;
+with Glade.XML; use Glade.XML;
 with Gtk.Main;
-with Gtk.Util; use Gtk.Util;
-with System;
 with DGate_Callbacks;
+with System;
 with Unchecked_Conversion;
 with GNAT.OS_Lib;
 with GNAT.Command_Line; use GNAT.Command_Line;
@@ -51,6 +51,7 @@ procedure DGate is
    Id       : Gtk.Main.Timeout_Handler_Id;
    Timeout  : Guint32 := 0;
    Filename : String_Ptr;
+   XML      : Glade_XML;
 
    function To_Address is new Unchecked_Conversion
      (String_Access, System.Address);
@@ -73,8 +74,8 @@ procedure DGate is
 
          if Name /= null then
             S := new String '(Name.all & ':' & Handler.all);
-            Gtk.Util.Set_Signal
-              (Handler.all, DGate_Callbacks.Generic_Callback'Access,
+            Signal_Connect
+              (XML, Handler.all, DGate_Callbacks.Generic_Callback'Address,
                To_Address (S));
             return;
          end if;
@@ -102,7 +103,7 @@ begin
    else
       loop
          case Getopt ("timeout:") is
-            when ASCII.Nul => exit;
+            when ASCII.NUL => exit;
 
             when 't' =>
                if Full_Switch = "timeout" then
@@ -123,11 +124,11 @@ begin
          return;
       end if;
 
-      Gtk.Main.Set_Locale;
       Gtk.Main.Init;
+      Glade.Init;
       N := Parse (Filename.all);
+      Gtk_New (XML, Filename.all);
       Register_Signals (N);
-      Instantiate (N);
 
       if Timeout > 0 then
          --  Let the application run for timeout milliseconds and then quit
