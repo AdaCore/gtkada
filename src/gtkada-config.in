@@ -1,15 +1,28 @@
 #!/bin/sh
-
-gtkada_libs="-largs @gtkada_libs@"
-gtkada_cflags="@gtkada_cflags@"
+# @configure_input@
 
 prefix=@prefix@
 
-usage="\
-Usage: gtkada-config [--prefix] [--libs] [--cflags] [--help]"
+gtk_libs="@GTK_LIBS@"
+gtkada_libs="-largs -L@prefix@/include/gtkada -L@prefix@/lib"
+gtkada_cflags="-I@prefix@/include/gtkada"
+
+usage()
+{
+        cat <<EOF
+Usage: gtkada-config [OPTIONS]
+Options:
+        [--prefix]
+        [--version|-v]
+        [--libs]
+        [--cflags]
+        [--help|-h]
+EOF
+        exit $1
+}
 
 if test $# -eq 0; then
-      echo $gtkada_cflags -largs $gtakada_libs `gtk-config --libs` -lgtkada
+      echo $gtkada_cflags $gtkada_libs @GTK_LIBS@ -lgtkada
       exit 1
 fi
 
@@ -20,21 +33,25 @@ while test $# -gt 0; do
   esac
 
   case $1 in
-    -h|--help)
-	echo ${usage}
-        exit 1
-        ;;
+    --help|-h)
+      usage 1>&2
+      exit 1
+      ;;
     --prefix)
       echo $prefix
+      ;;
+    --version|-v)
+      echo @GTKADA_VERSION@
+      exit 1
+      ;;
+    --libs)
+      echo $gtkada_libs $gtk_libs -lgtkada
       ;;
     --cflags)
       echo $gtkada_cflags
       ;;
-    --libs)
-      echo $gtkada_libs `gtk-config --libs` -lgtkada
-      ;;
     *)
-      echo "${usage}" 1>&2
+      usage 1>&2
       exit 1
       ;;
   esac
