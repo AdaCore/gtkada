@@ -104,9 +104,9 @@ Object-oriented features
 
 @noindent
 GtkAda is a high-level portable graphical toolkit, based on the gtk+
-toolkit, one of the official GNU toolkit. It makes it easy to create
+toolkit, one of the official GNU toolkits. It makes it easy to create
 portable user interfaces for multiple platforms, including most
-platforms that have a X11 server, and Win32 platforms.
+platforms that have a X11 server and Win32 platforms.
 
 Although it is based on a C library, GtkAda uses some advanced Ada95
 features like tagged types, generic packages, access to subprograms,
@@ -130,7 +130,11 @@ to create a window and all the dialogs. Ada code can then be generated
 with a single click.
 
 GtkAda also has a full support for OpenGL, and comes with a very thin
-binding to the OpenGL (@code{Mesa}) libraries.
+binding to the OpenGL (@code{Mesa}) libraries. You can thus create
+graphical applications that display 3D graphics, and display them in a
+GtkAda window, as with any other 2D graphics. This manual does not
+document OpenGL at all, see any book on OpenGL, or the specification
+that came with your OpenGL library, for more information.
 
 The following Internet sites will always contain the latest new and
 packages for @code{GtkAda}, @code{gtk+} and @code{Glade}.
@@ -143,18 +147,20 @@ packages for @code{GtkAda}, @code{gtk+} and @code{Glade}.
      
 
 The scheme used for GtkAda's version numbers is the following: the major
-version number follows gtk+ (e.g 1.2 or 1.3). Thus, stable versions of
-GtkAda will have even major numbers, and development versions will have
-odd version numbers. The minor version numbers depends on GtkAda's
+version number is the same as for the underlying gtk+ library (e.g 1.2
+or 1.3). Thus, stable versions of GtkAda will have even major numbers,
+and development versions (potentially less stable, although we are
+trying to make sure that no big problem exists in those versions) will
+have odd version numbers. The minor version numbers depends on GtkAda's
 release number.
 
 This documentation is distributed with GtkAda @b{version
-@value{GtkAdaVersion}}.  Every widget from @w{gtk+ 1.2} has been
-implemented, and the test program found in the gtk release has been
-re-implemented in Ada (have a look at the @code{testgtk/} directory in the
-distribution).
+@value{GtkAdaVersion}}. At this stage, every widget found in @w{gtk+
+1.2} has been implemented, and the test program found in the gtk release
+has been fully coded in Ada (have a look at the @code{testgtk/}
+directory in the distribution).
 
-This binding was tested on the following systems:
+This toolkit was tested on the following systems:
 @itemize @bullet
 @item Linux/x86
 @item Solaris/sparc
@@ -169,14 +175,14 @@ This binding was tested on the following systems:
 @item FreeBSD 3.2
 @end itemize
 
-with the latest version of the @code{GNAT} compiler, developed by
+with the latest version of the @code{GNAT} compiler, developed and supported by
 Ada Core Technologies (see @uref{http://www.gnat.com}).
 
 If you manage to use it on other systems (which should probably be
 straightforward - just recompile GtkAda), please let us know so that
 we can add to the above list.
 
-This version of GtkAda is compatible with @code{Gtk+} @b{1.2.2} up to
+This version of GtkAda is compatible with @code{gtk+} @b{1.2.2} up to
 @b{version 1.2.6}. This release is no longer compatible with older versions
 of gtk+ (up to 1.0). If you really need to use such an old version, please
 consider downloading GtkAda 0.2.1 (but be aware that your code will
@@ -199,6 +205,11 @@ refer to the examples that you can find in the @file{testgtk/} and
 more up-to-date (and more extensive).
 They are heavily commented, and are likely to contain a lot of
 information that you might find interesting.
+
+If you are interested in getting support for GtkAda (including priority
+bug fixes, early releases, help in using the toolkit, help in designing
+your interface,@dots{}), please contact Ada Core Technologies
+(sales@@gnat.com).
 
 
 @c --------------------------------------------------------------------
@@ -231,16 +242,31 @@ in GtkAda.
 This section explains how to build and install GtkAda on your machine.
 It is Unix-oriented, since GtkAda is distributed in binary format on
 Windows machines, and comes with all the dependent packages, including
-the gtk+ libraries and @code{Glade}.
+the gtk+ libraries and @code{Glade}. If you are a Windows-user, you should
+skip this section.
 
-On Unix systems, you need to first install the gtk+ libraries. Download
-the compatible packages from the gtk+ web site, and make sure that
-the @code{gtk-config} script is in your @var{PATH} environment variable.
+On Unix systems, you first need to install the glib and gtk+
+libraries. Download the compatible packages from the gtk+ web site
+(@url{http://www.gtk.org}, compile and install it.  When compiling glib,
+make sure that the support for multithreading is enabled (this is
+default, and can be enforced with the @code{--enable-threads
+--with-threads} command line switches.
+
+Change your PATH environment variable so that the script @code{gtk-config},
+which indicates where gtk+ was installed and what libraries it needs is
+automatically found by GtkAda. You will no longer need this script once
+GtkAda is installed, unless you develop part of your application in C.
+
+OpenGL support will not be activated in GtkAda unless you already have
+the OpenGL libraries on your systems. You can for instance look at
+Mesa, which is free implementation.
 
 Optionally, you can also install the @code{Glade} interface builder. Get
 the compatible package from the Glade web site, compile and install it.
+The official version already knows about Ada (at least enough to call
+GtkAda's own programs), so no patch is needed.
 
-You can then get the latest version of GtkAda from the web site.
+You can finally download the latest version of GtkAda from the web site.
 Untar and uncompress the package, then simply do the following
 steps:
 @example
@@ -256,9 +282,9 @@ sure that @code{configure} finds them by specifying the
 @code{--with-GL-prefix} switch on the command line. @code{configure}
 should be able to automatically detect the libraries however.
 
-You then have to make sure that the system will be able to find the
-dynamic libraries if your application uses them. Typically, you would do
-one of the following:
+You must then make sure that the system will be able to find the dynamic
+libraries at run time if your application uses them. Typically, you
+would do one of the following:
 @itemize @bullet
 @item run @code{ldconfig} if you installed GtkAda in one of the standard
   location and you are super-user on your machine
@@ -291,8 +317,11 @@ as some detailed information on the widgets and their parameters.
 All the demos are associated with a contextual help that points to its
 aspects that are worth studying.
 
-It also contains an OpenGL demo if your application was compiled with
-support for OpenGL.
+It also contains an OpenGL demo if GtkAda was compiled with support for
+OpenGL.
+
+This program is far more extensive that its C counterpart, and the GtkAda
+team has added a lot of new examples in there.
 
 @item @file{examples/} directory:
 
@@ -302,11 +331,19 @@ instance, this is were you will find some sample XML files for
 directly in Ada, or examples on how to create your own callback
 marshallers.
 
+On the whole, these examples are a little more complex than testgtk, but
+since they focus on demonstrating a precise concept, they are still quite
+easy to understand.
+
 @item @file{docs/} directory:
 
 It contains the html, info, text and @TeX{} versions of the documentation you
-are currently reading. It also contains a subdirectory with some slides
-that were used to present GtkAda at various shows.
+are currently reading. Note that the documentation is divided into two
+subdirectories, one containing the user guide, which you are currently
+reading, the other containing the reference manual, which gives detailed
+information on all the widgets found in GtkAda. The docs directory also
+contains a subdirectory with some slides that were used to present GtkAda
+at various shows.
 
 @end itemize
 
@@ -315,12 +352,16 @@ that were used to present GtkAda at various shows.
 @section How to compile an application with GtkAda
 @c ----------------------------------------------------------------------
 
+This section explains how you can compile your own applications.
+The procedure is system-dependent, and thus is divided into two
+subsections.
+
 @subsection Unix systems
 
 @noindent
 On Unix systems, a script called @code{gtkada-config} is automatically
 created when you build GtkAda. This script is copied in a subdirectory
-@file{bin/} of the installation directory.
+@file{bin/} in the installation directory.
 
 The easiest and recommended way to build a GtkAda application is to
 use the @code{gnatmake} program distributed with GNAT, that takes care of
@@ -333,6 +374,12 @@ where GtkAda and gtk+ libraries have been installed.
 
 Note the use of back-ticks around gtkada-config, which force the shell to
 evaluate the script and put the output on the command line.
+
+However, on complex systems, gnatmake might not be enough. Users frequently
+like to create @code{Makefile}s. The script @code{gtkada-config} remains
+useful in that case, since you can call it from your Makefile (same
+syntax as above with the back-ticks) to create variables like FLAGS and
+LIBS. See the switches of @code{gtkada-config} below for more information.
 
 The script @code{gtkada-config} understands the following command line
 switches (chosen to be compatible with the ones set by @code{gtk-config}):
@@ -385,17 +432,17 @@ distribution), GtkAda does not include a binding to it, except for a few
 required packages. These are the @file{Glib.*} packages in the GtkAda
 distribution.
 
-@code{Gdk} is the platform-dependant part of gtk+. Its implementation is
-completly different on win32 systems and X11 systems, although the
+@code{Gdk} is the platform-dependent part of gtk+. Its implementation is
+completely different on win32 systems and X11 systems, although the
 interface is of course the same. It provides a set of functions to draw
 lines, rectangles and pixmaps on the screen, manipulate
 colors, etc@dots{} It has a complete equivalent in GtkAda, through the
 @file{Gdk.*} packages.
 
-@code{Gtk} is the top level library. It is platform independant, and
+@code{Gtk} is the top level library. It is platform independent, and
 does all its drawing through calls to Gdk. This is where the high-level
 widgets are defined. It also includes support for callbacks. Its
-equivalent in the GtkAda libraries is the @file{Gtk.*} packages. It is
+equivalent in the GtkAda libraries are the @file{Gtk.*} packages. It is
 made of a fully object-oriented hierarchy of widgets (see @ref{Widgets
 Hierarchy}).
 
@@ -422,7 +469,7 @@ to provide backward compatibility whenever possible.
 
 Since GtkAda is based on gtk+, we have tried to stay as close as possible
 from it, while using high-level features of the Ada95 language. It is
-thus relatively easy to convert from C to Ada.
+thus relatively easy to convert external examples from C to Ada.
 
 We have tried to adopt a consistent naming scheme for Ada identifiers:
 @itemize @bullet
@@ -463,7 +510,7 @@ again implemented as generic packages, that require more explanation
 @end itemize
 
 @cartouche
-@b{WARNING:} all the generic functions allocate some memory for internal
+@b{WARNING:} all the generic packages allocate some memory for internal
 structures, and call internal functions. This memory is freed by gtk
 itself, by calling some Ada functions. Therefore the generic packages
 have to be instanciated at library level, not inside a subprogram, so
@@ -502,89 +549,12 @@ It is important to be familiar with this hierarchy. It is then easier to
 know how to build and organize your windows. Most widgets are demonstrated
 in the @file{testgtk/} directory in the GtkAda distribution.
 
-@need 15
+@cartouche
+@image{hierarchy, 22.8cm}
 @smallexample
-Gtk_Object
-  +-- Gtk_Data
-  |     +-- Gtk_Tooltips
-  |     \__ Gtk_Adjustment
-  \__ Gtk_Widget  @i{(Visual widgets)}
-        +-- Gtk_Calendar
-        +-- Gtk_Container  @i{(Widgets that have children)}
-        |     +-- Gtk_Bin  @i{(Widgets that have a single child)}
-        |     |     +-- Gtk_Alignment
-        |     |     +-- Gtk_Button @i{(Widgets that you can click)}
-        |     |     |     +-- Gtk_Option_Menu
-        |     |     |     +-- Gtk_Toggle_Button
-        |     |     |     |     \__ Gtk_Check_Button
-        |     |     |     |           \__ Gtk_Radio_Button
-        |     |     +-- Gtk_Event_Box
-        |     |     +-- Gtk_Frame
-        |     |     |     \__ Gtk_Aspect_Frame
-        |     |     +-- Gtk_Handle_Box
-        |     |     +-- Gtk_Invisible
-        |     |     +-- Gtk_Item
-        |     |     |     +-- Gtk_List_Item
-        |     |     |     +-- Gtk_Menu_Item
-        |     |     |     |     +-- Gtk_Check_Menu_Item
-        |     |     |     |     |     \__ Gtk_Radio_Menu_Item
-        |     |     |     |     \__ Gtk_Tearoff_Menu_Item
-        |     |     |     \__ Gtk_Tree_Item
-        |     |     +-- Gtk_Viewport
-        |     |     \__ Gtk_Window  @i{(Have an independent window)}
-        |     |           +-- Gtk_Color_Selection_Dialog
-        |     |           +-- Gtk_Dialog
-        |     |           |     \__ Gtk_Input_Dialog
-        |     |           +-- Gtk_File_Selection
-        |     |           +-- Gtk_Font_Selection_Dialog
-        |     |           \__ Gtk_Plug
-        |     +-- Gtk_Box  @i{(Widgets that have one or more children)}
-        |     |     +-- Gtk_Button_Box
-        |     |     |     +-- Gtk_Vbutton_Box
-        |     |     |     \__ Gtk_Hbutton_Box
-        |     |     +-- Gtk_Color_Selection
-        |     |     +-- Gtk_Combo
-        |     |     +-- Gtk_Gamma_Curve
-        |     |     \__ Gtk_Status_Bar
-        |     +-- Gtk_Clist
-        |     |     \__ Gtk_Ctree
-        |     +-- Gtk_Fixed
-        |     +-- Gtk_Layout
-        |     +-- Gtk_List
-        |     +-- Gtk_Menu_Shell
-        |     |     +-- Gtk_Menu
-        |     |     \__ Gtk_Menu_Bar
-        |     +-- Gtk_Notebook
-        |     |     \__ Gtk_Font_Selection
-        |     +-- Gtk_Packer
-        |     +-- Gtk_Paned
-        |     +-- Gtk_Scrolled_Window
-        |     +-- Gtk_Socket
-        |     +-- Gtk_Toolbar
-        |     +-- Gtk_Table
-        |     \__ Gtk_Tree
-        +-- Gtk_Drawing_Area
-        |     \__ Gtk_Curve
-        +-- Gtk_Editable
-        |     +-- Gtk_Entry
-        |     |     \__ Gtk_Spin_Button
-        |     \__ Gtk_Text
-        +-- Gtk_Misc
-        |     +-- Gtk_Arrow
-        |     +-- Gtk_Image
-        |     +-- Gtk_Label
-        |     |     +-- Gtk_Accel_Label
-        |     |     \__ Gtk_Tips_Query
-        |     \__ Gtk_Pixmap
-        +-- Gtk_Preview
-        +-- Gtk_Progress
-        |     \__ Gtk_Progress_Bar
-        +-- Gtk_Range
-        |     +-- Gtk_Scale
-        |     \__ Gtk_Scrollbar
-        +-- Gtk_Ruler
-        \__ Gtk_Separator
+            @strong{Hierarchy of widgets in GtkAda}
 @end smallexample
+@end cartouche
 
 @c ----------------------------------------------------------------------
 @node Hierarchical composition of a window

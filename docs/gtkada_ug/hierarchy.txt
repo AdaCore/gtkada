@@ -1,0 +1,80 @@
+Gtk_Object
+  +-- Gtk_Data
+  |     +-- Gtk_Tooltips
+  |     \__ Gtk_Adjustment
+  \__ Gtk_Widget  @i{(Visual widgets)}
+        +-- Gtk_Calendar
+        +-- Gtk_Container  @i{(Widgets that have children)}
+        |     +-- Gtk_Bin  @i{(Widgets that have a single child)}
+        |     |     +-- Gtk_Alignment
+        |     |     +-- Gtk_Button @i{(Widgets that you can click)}
+        |     |     |     +-- Gtk_Option_Menu
+        |     |     |     +-- Gtk_Toggle_Button
+        |     |     |     |     \__ Gtk_Check_Button
+        |     |     |     |           \__ Gtk_Radio_Button
+        |     |     +-- Gtk_Event_Box
+        |     |     +-- Gtk_Frame
+        |     |     |     \__ Gtk_Aspect_Frame
+        |     |     +-- Gtk_Handle_Box
+        |     |     +-- Gtk_Invisible
+        |     |     +-- Gtk_Item
+        |     |     |     +-- Gtk_List_Item
+        |     |     |     +-- Gtk_Menu_Item
+        |     |     |     |     +-- Gtk_Check_Menu_Item
+        |     |     |     |     |     \__ Gtk_Radio_Menu_Item
+        |     |     |     |     \__ Gtk_Tearoff_Menu_Item
+        |     |     |     \__ Gtk_Tree_Item
+        |     |     +-- Gtk_Viewport
+        |     |     \__ Gtk_Window  @i{(Have an independent window)}
+        |     |           +-- Gtk_Color_Selection_Dialog
+        |     |           +-- Gtk_Dialog
+        |     |           |     \__ Gtk_Input_Dialog
+        |     |           +-- Gtk_File_Selection
+        |     |           +-- Gtk_Font_Selection_Dialog
+        |     |           \__ Gtk_Plug
+        |     +-- Gtk_Box  @i{(Widgets that have one or more children)}
+        |     |     +-- Gtk_Button_Box
+        |     |     |     +-- Gtk_Vbutton_Box
+        |     |     |     \__ Gtk_Hbutton_Box
+        |     |     +-- Gtk_Color_Selection
+        |     |     +-- Gtk_Combo
+        |     |     +-- Gtk_Gamma_Curve
+        |     |     \__ Gtk_Status_Bar
+        |     +-- Gtk_Clist
+        |     |     \__ Gtk_Ctree
+        |     +-- Gtk_Fixed
+        |     +-- Gtk_Layout
+        |     +-- Gtk_List
+        |     +-- Gtk_Menu_Shell
+        |     |     +-- Gtk_Menu
+        |     |     \__ Gtk_Menu_Bar
+        |     +-- Gtk_Notebook
+        |     |     \__ Gtk_Font_Selection
+        |     +-- Gtk_Packer
+        |     +-- Gtk_Paned
+        |     +-- Gtk_Scrolled_Window
+        |     +-- Gtk_Socket
+        |     +-- Gtk_Toolbar
+        |     +-- Gtk_Table
+        |     \__ Gtk_Tree
+        +-- Gtk_Drawing_Area
+        |     \__ Gtk_Curve
+        +-- Gtk_Editable
+        |     +-- Gtk_Entry
+        |     |     \__ Gtk_Spin_Button
+        |     \__ Gtk_Text
+        +-- Gtk_Misc
+        |     +-- Gtk_Arrow
+        |     +-- Gtk_Image
+        |     +-- Gtk_Label
+        |     |     +-- Gtk_Accel_Label
+        |     |     \__ Gtk_Tips_Query
+        |     \__ Gtk_Pixmap
+        +-- Gtk_Preview
+        +-- Gtk_Progress
+        |     \__ Gtk_Progress_Bar
+        +-- Gtk_Range
+        |     +-- Gtk_Scale
+        |     \__ Gtk_Scrollbar
+        +-- Gtk_Ruler
+        \__ Gtk_Separator
