@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Ada.Unchecked_Conversion;
 with Interfaces.C.Pointers;
 with Interfaces.C.Strings;
 with System;
@@ -177,7 +176,7 @@ package body Gdk.Property is
         (To_Guchar_Array
          (Guchars_Ptr.Value
           (Ref => Tmp_Result,
-           Length => Interfaces.C.Ptrdiff_T (Actual_Length))));
+           Length => Interfaces.C.ptrdiff_t (Actual_Length))));
 
       C_Free (Tmp_Result);
    end Get;
