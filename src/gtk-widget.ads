@@ -409,10 +409,6 @@ package Gtk.Widget is
    --  user, should he choose to activate this possibility in his themes (see
    --  gtk-accel_map.ads for more information).
 
-   function Get_Accel_Path (Widget : access Gtk_Widget_Record) return String;
-   --  Return the acceleration path for this widget, or the empty string if
-   --  no path was set
-
    -------------------------
    --  Events and signals --
    -------------------------
