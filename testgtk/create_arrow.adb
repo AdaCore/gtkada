@@ -41,10 +41,13 @@ package body Create_Arrow is
 
    function Help return String is
    begin
-      return "This shows the four possible types of @bshadows@B that can"
+      return "This demo shows the four possible types of @bGtk_Shadow_Type@B"
+        & " that can be used within @bGtkAda@B."
         & ASCII.LF
-        & "be used within @bGtkAda@B for @bGtk_Frame@B, @bGtk_Arrow@B,..."
-        & ASCII.LF;
+        & "It also demonstrates how items can be organized in a @bGtk_Table@B"
+        & " to position them as you want. Each of the groups @bGtk_Arrow@B +"
+        & " @bGtk_Label@B is first put in a @bGtk_Box@B, that is then put in"
+        & " a table element.";
    end Help;
 
 
