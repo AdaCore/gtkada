@@ -5,6 +5,10 @@
 .PHONY: clean-generic mostlyclean-generic \
 	clean distclean mostlyclean maintainer-clean
 
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
 CFLAGS = @CFLAGS@ -Wall @GTK_CFLAGS@ -I. $(FPIC)
  
 SONAME        = libgtkada_gl.so
@@ -61,7 +65,6 @@ install: all
 	$(CP) $(MESA_SPECS) $(incdir)
 	$(CP) gdk*.ads gdk*.adb $(incdir)
 	$(CP) gtk*.ads gtk*.adb $(incdir)
-	$(CP) gdk*.ali gtk*.ali $(alidir)
 	$(CHMOD) -w $(alidir)/*.ali
 
 clean-generic:
