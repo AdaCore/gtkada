@@ -47,7 +47,7 @@ with System;
 package Gtk.Widget is
 
    --  Flags used by Widget on top of Object
-   TopLevel         : constant := 2 ** 4;
+   Toplevel         : constant := 2 ** 4;
    No_Window        : constant := 2 ** 5;
    Realized         : constant := 2 ** 6;
    Mapped           : constant := 2 ** 7;
@@ -59,9 +59,19 @@ package Gtk.Widget is
    Can_Default      : constant := 2 ** 13;
    Has_Default      : constant := 2 ** 14;
    Has_Grab         : constant := 2 ** 15;
-   Basic            : constant := 2 ** 16;
-   Reserved_3       : constant := 2 ** 17;
-   Rc_Style         : constant := 2 ** 18;
+   Rc_Style         : constant := 2 ** 16;
+   Composite_Child  : constant := 2 ** 17;
+   No_Reparent      : constant := 2 ** 18;
+   App_Paintable    : constant := 2 ** 19;
+   Receives_Default : constant := 2 ** 20;
+
+   type Gtk_Widget_Flags is
+     (Gtk_Destroyed, Gtk_Floating, Gtk_Connected, Gtk_Constructed,
+      Gtk_Toplevel, Gtk_No_Window, Gtk_Realized, Gtk_Mapped, Gtk_Visible,
+      Gtk_Sensitive, Gtk_Parent_Sensitive, Gtk_Can_Focus, Gtk_Has_Focus,
+      Gtk_Can_Default, Gtk_Has_Default, Gtk_Has_Grab, Gtk_Rc_Style,
+      Gtk_Composite_Child, Gtk_No_Reparent, Gtk_App_Paintable,
+      Gtk_Receives_Default);
 
    type Gtk_Widget is new Object.Gtk_Object with null record;
    type Gtk_Widget_Access is access all Gtk_Widget'Class;
