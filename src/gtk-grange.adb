@@ -211,6 +211,7 @@ package body Gtk.GRange is
       pragma Import (C, Internal, "gtk_range_get_adjustment");
 
       Widget : Gtk.Adjustment.Gtk_Adjustment;
+      pragma Warnings (Off, Widget);  --  ??? Not clear why GNAT is complaining
 
    begin
       Set_Object (Widget, Internal (Get_Object (The_Range)));
