@@ -33,6 +33,7 @@ with Gdk.GC;
 with Gdk.Color;
 with Gdk.Cursor;  use Gdk.Cursor;
 with Gdk.Event;
+with Gdk.Pixbuf;
 with Gdk.Types;
 with Gdk.Window;
 with Gtk.Accel_Group;
@@ -41,6 +42,7 @@ with Gtk.Button;
 with Gtk.Fixed;
 with Gtk.Event_Box;
 with Gtk.Handlers;
+with Gtk.Label;
 with Gtk.Main;
 with Gtk.Menu;
 with Gtk.Notebook;
@@ -212,6 +214,13 @@ package Gtkada.MDI is
 
    function Get_State (Child : access MDI_Child_Record) return State_Type;
    --  Return the current state of the child
+
+   procedure Set_Icon
+     (Child : access MDI_Child_Record;
+      Icon  : Gdk.Pixbuf.Gdk_Pixbuf);
+   --  Associate an icon with Child. This icon is visible in the title bar, the
+   --  notebook tabs, the Window menu and the interactive selection dialog.
+   --  The icon is updated dynamically on the screen.
 
    -----------
    -- Menus --
@@ -620,12 +629,17 @@ private
 
       Flags : Child_Flags;
 
+      Icon : Gdk.Pixbuf.Gdk_Pixbuf;
+
       Maximize_Button : Gtk.Button.Gtk_Button;
       Minimize_Button : Gtk.Button.Gtk_Button;
 
       Title_Box : Gtk.Box.Gtk_Box;
       --  Box that contains the title. It will be resized whenever the title
       --  font changes.
+
+      Tab_Label : Gtk.Label.Gtk_Label;
+      --  label used when child is in a notebook, null if not in a notebook
    end record;
 
    procedure Gtk_New

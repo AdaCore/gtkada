@@ -54,6 +54,7 @@ with Gdk.Event;        use Gdk.Event;
 with Gdk.GC;           use Gdk.GC;
 with Gdk.Main;         use Gdk.Main;
 with Gdk.Pixmap;
+with Gdk.Pixbuf;       use Gdk.Pixbuf;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Types;        use Gdk.Types;
 with Gdk.Types.Keysyms;
@@ -63,7 +64,6 @@ with Gtk;              use Gtk;
 with Gtk.Accel_Group;  use Gtk.Accel_Group;
 with Gtk.Accel_Label;  use Gtk.Accel_Label;
 with Gtk.Arguments;    use Gtk.Arguments;
-with Gtk.Bin;          use Gtk.Bin;
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Button;       use Gtk.Button;
 with Gtk.Check_Menu_Item; use Gtk.Check_Menu_Item;
@@ -100,8 +100,6 @@ with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Tags;         use Ada.Tags;
 with System;           use System;
-
---  with Ada.Text_IO; use Ada.Text_IO;
 
 package body Gtkada.MDI is
 
@@ -234,6 +232,7 @@ package body Gtkada.MDI is
       Modifier      : Gdk_Modifier_Type;
       Next_Key      : Gdk_Key_Type;
       Prev_Key      : Gdk_Key_Type;
+      Icon          : Gtk.Pixmap.Gtk_Pixmap;
    end record;
    type Selection_Dialog_Access is access all Selection_Dialog_Record'Class;
 
@@ -284,11 +283,6 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class;
       Event  : Gdk_Event) return Boolean;
    --  The pointer has left the mouse.
-
-   function Get_Tab_Label
-     (Child : access MDI_Child_Record'Class) return Gtk_Label;
-   --  Return the label displayed in the notebook tab that contains Child, or
-   --  null if Child is not in a notebook.
 
    procedure Reposition_Handles (M : access MDI_Window_Record'Class);
    --  Recompute the position of the four handles on each side of the MDI.
@@ -485,6 +479,12 @@ package body Gtkada.MDI is
       Event : Gdk_Event) return Boolean;
    --  Handle key events in the selection dialog
 
+   procedure Update_Tab_Label (Child : access MDI_Child_Record'Class);
+   --  Return the tab to use in the notebooks containing Child
+
+   procedure Update_Menu_Item (Child : access MDI_Child_Record'Class);
+   --  Update the menu entry for Child
+
    -------------------------
    -- Set_Focus_Child_MDI --
    -------------------------
@@ -669,8 +669,9 @@ package body Gtkada.MDI is
          if C /= Children'First then
             Append_Text (D.Ent, ",");
          end if;
-         Append_Text (D.Ent,
-                      Get_Short_Title (MDI_Child (Get_Data (Children (C)))));
+         Append_Text
+           (D.Ent, Locale_To_UTF8
+              (Get_Short_Title (MDI_Child (Get_Data (Children (C))))));
       end loop;
 
       Append_Text (D.Ent, "}");
@@ -699,9 +700,25 @@ package body Gtkada.MDI is
 
       if D.Current_Child = Null_List then
          Set_Text (D.Label, "");
+         Set_Child_Visible (D.Icon, False);
       else
-         Set_Text
-           (D.Label, Get_Short_Title (MDI_Child (Get_Data (D.Current_Child))));
+         declare
+            C : MDI_Child;
+            Pixmap : Gdk_Pixmap;
+            Mask   : Gdk.Gdk_Bitmap;
+            Scaled : Gdk_Pixbuf;
+         begin
+            C := MDI_Child (Get_Data (D.Current_Child));
+            Set_Text (D.Label, Locale_To_UTF8 (Get_Short_Title (C)));
+
+            Set_Child_Visible (D.Icon, C.Icon /= null);
+            if C.Icon /= null then
+               Scaled := Scale_Simple (C.Icon, 32, 32);
+               Render_Pixmap_And_Mask (Scaled, Pixmap, Mask, 128);
+               Unref (Scaled);
+               Set (D.Icon, Pixmap, Mask);
+            end if;
+         end;
       end if;
    end Update_Selection_Dialog;
 
@@ -740,10 +757,11 @@ package body Gtkada.MDI is
       use type Widget_List.Glist;
       C : MDI_Child;
       D : Selection_Dialog_Access;
-      Box : Gtk_Box;
+      Box, HBox : Gtk_Box;
       Frame : Gtk_Frame;
       Tmp : Gdk_Grab_Status;
       pragma Unreferenced (Tmp);
+
    begin
       if Get_Event_Type (Event) = Key_Press
         and then
@@ -774,8 +792,14 @@ package body Gtkada.MDI is
             Gtk_New_Vbox (Box, Homogeneous => False);
             Add (Frame, Box);
 
+            Gtk_New_Hbox (HBox, Homogeneous => False);
+            Pack_Start (Box, HBox, Expand => False);
+
+            Gtk_New (D.Icon);
+            Pack_Start (HBox, D.Icon, Expand => False);
+
             Gtk_New (D.Label);
-            Pack_Start (Box, D.Label, Expand => False);
+            Pack_Start (HBox, D.Label, Expand => True, Fill => True);
 
             Gtk_New (D.Ent);
             Pack_Start (Box, D.Ent, Expand => True);
@@ -788,6 +812,19 @@ package body Gtkada.MDI is
 
             MDI.Selection_Dialog := Gtk_Widget (D);
 
+            --  Make sure all the key events are forwarded to us, as otherwise
+            --  if the mouse was moving out of the window we wouldn't the
+            --  events
+            Tmp := Keyboard_Grab (Get_Window (D), True, Time => 0);
+
+            Return_Callback.Object_Connect
+              (D, "key_release_event",
+               Return_Callback.To_Marshaller
+               (Key_Event_Selection_Dialog'Access), MDI);
+            Return_Callback.Object_Connect
+              (D, "key_press_event",
+               Return_Callback.To_Marshaller
+               (Key_Event_Selection_Dialog'Access), MDI);
          else
             D := Selection_Dialog_Access (MDI.Selection_Dialog);
             Delete_Text (D.Ent, Gint (D.Length), -1);
@@ -798,19 +835,6 @@ package body Gtkada.MDI is
          else
             Update_Selection_Dialog (MDI, -1);
          end if;
-
-         --  Make sure all the key events are forwarded to us, as otherwise if
-         --  the mouse was moving out of the window we wouldn't the events
-         Tmp := Keyboard_Grab (Get_Window (D), True, Time => 0);
-
-         Return_Callback.Object_Connect
-           (D, "key_release_event",
-            Return_Callback.To_Marshaller
-              (Key_Event_Selection_Dialog'Access), MDI);
-         Return_Callback.Object_Connect
-           (D, "key_press_event",
-            Return_Callback.To_Marshaller
-              (Key_Event_Selection_Dialog'Access), MDI);
 
          return True;
 
@@ -1805,6 +1829,7 @@ package body Gtkada.MDI is
 
       GC : Gdk.Gdk_GC := Child.MDI.Non_Focus_GC;
       W, H : Gint;
+      X : Gint := Border_Thickness + 3;
    begin
       --  Call this function so that for a dock item is highlighted if the
       --  current page is linked to the focus child.
@@ -1822,12 +1847,31 @@ package body Gtkada.MDI is
          Gint (Get_Allocation_Width (Child)) - 2 * Border_Thickness,
          Child.MDI.Title_Bar_Height);
 
-      Set_Text (Child.MDI.Title_Layout, Child.Title.all);
+      if Child.Icon /= null then
+         W := Get_Width (Child.Icon);
+         H := Get_Height (Child.Icon);
+
+         Render_To_Drawable_Alpha
+           (Child.Icon,
+            Get_Window (Child),
+            Src_X  => 0,
+            Src_Y  => 0,
+            Dest_X => X,
+            Dest_Y => Border_Thickness + (Child.MDI.Title_Bar_Height - H) / 2,
+            Width  => W,
+            Height => H,
+            Alpha  => Alpha_Full,
+            Alpha_Threshold => 128);
+
+         X := X + W + 1;
+      end if;
+
+      Set_Text (Child.MDI.Title_Layout, Locale_To_UTF8 (Child.Title.all));
       Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
       Draw_Layout
         (Get_Window (Child),
          Get_White_GC (Get_Style (Child.MDI)),
-         Border_Thickness + 3,
+         X,
          Border_Thickness + (Child.MDI.Title_Bar_Height - H) / 2,
          Child.MDI.Title_Layout);
 
@@ -2772,30 +2816,67 @@ package body Gtkada.MDI is
       return Child.Short_Title.all;
    end Get_Short_Title;
 
-   -------------------
-   -- Get_Tab_Label --
-   -------------------
+   ----------------------
+   -- Create_Menu_Item --
+   ----------------------
 
-   function Get_Tab_Label
-     (Child : access MDI_Child_Record'Class) return Gtk_Label
+   procedure Update_Menu_Item (Child : access MDI_Child_Record'Class) is
+      Label : Gtk_Accel_Label;
+      Pixmap : Gtk_Pixmap;
+      Pix : Gdk_Pixmap;
+      Mask : Gdk_Bitmap;
+      Box  : Gtk_Box;
+   begin
+      if Child.Menu_Item /= null then
+         if Get_Child (Child.Menu_Item) /= null then
+            Remove (Child.Menu_Item, Get_Child (Child.Menu_Item));
+         end if;
+
+         Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 5);
+
+         if Child.Icon /= null then
+            Render_Pixmap_And_Mask (Child.Icon, Pix, Mask, 128);
+            Gtk_New (Pixmap, Pix, Mask);
+            Pack_Start (Box, Pixmap, Expand => False);
+         end if;
+
+         Gtk_New (Label, Locale_To_UTF8 (Child.Short_Title.all));
+         Set_Alignment (Label, 0.0, 0.5);
+         Set_Accel_Widget (Label, Child.Menu_Item);
+         Pack_Start (Box, Label,  Expand => True, Fill => True);
+
+         Show_All (Box);
+         Add (Child.Menu_Item, Box);
+
+         Set_Accel_Path
+           (Child.Menu_Item, "<gtkada>/window/child/"
+            & Locale_To_UTF8 (Child.Short_Title.all),
+            Child.MDI.Group);
+      end if;
+   end Update_Menu_Item;
+
+   --------------
+   -- Set_Icon --
+   --------------
+
+   procedure Set_Icon
+     (Child : access MDI_Child_Record;
+      Icon  : Gdk.Pixbuf.Gdk_Pixbuf)
    is
       Note : Gtk_Notebook;
    begin
-      if Child.State = Docked then
-         Note := Child.MDI.Docks (Child.Dock);
+      if Child.Icon /= null then
+         Unref (Child.Icon);
+      end if;
+      Child.Icon := Icon;
 
-      elsif Child.State = Normal
-        and then Child.MDI.Children_Are_Maximized
-      then
-         Note := Child.MDI.Docks (None);
+      if Realized_Is_Set (Child) then
+         Draw_Child (Child, Full_Area);
       end if;
 
-      if Note /= null then
-         return Gtk_Label (Get_Child (Gtk_Bin (Get_Tab_Label (Note, Child))));
-      else
-         return null;
-      end if;
-   end Get_Tab_Label;
+      Update_Menu_Item (Child);
+      Update_Tab_Label (Child);
+   end Set_Icon;
 
    ---------------
    -- Set_Title --
@@ -2812,7 +2893,6 @@ package body Gtkada.MDI is
       --  the Title parameter is in fact Child.Title
 
       Label           : Gtk_Accel_Label;
-      Tab             : Gtk_Label;
    begin
       The_Title := new String'(Title);
 
@@ -2829,30 +2909,16 @@ package body Gtkada.MDI is
       Child.Short_Title := The_Short_Title;
 
       if Child.State = Floating then
-         Set_Title (Gtk_Window (Get_Toplevel (Child.Initial)), Title);
+         Set_Title (Gtk_Window (Get_Toplevel (Child.Initial)),
+                    Locale_To_UTF8 (Title));
       end if;
 
-      Tab := Get_Tab_Label (Child);
-      if Tab /= null then
-         Set_Text (Tab, Child.Short_Title.all);
-      end if;
+      Update_Tab_Label (Child);
 
       --  Update the menu, if it exists
 
       if Child.Menu_Item /= null then
-         --  Since we don't want to use Gtk.Type_Conversion in this package,
-         --  the simplest is to destroy and recreate the label associated
-         --  with the menu_item.
-
-         Gtk_New (Label, Child.Short_Title.all);
-         Set_Alignment (Label, 0.0, 0.5);
-         Set_Accel_Widget (Label, Child.Menu_Item);
-         Remove (Child.Menu_Item, Get_Child (Child.Menu_Item));
-         Add (Child.Menu_Item, Label);
-         Show (Label);
-         Set_Accel_Path
-           (Child.Menu_Item, "<gtkada>/window/child/" & Child.Short_Title.all,
-            Child.MDI.Group);
+         Update_Menu_Item (Child);
 
       --  Else in case the menu entry wasn't created before because there was
       --  no title yet, we just create it now.
@@ -3413,7 +3479,7 @@ package body Gtkada.MDI is
 
          if (Child.Flags and Float_As_Transient) /= 0 then
             Gtk_New (Diag,
-                     Title  => Child.Title.all,
+                     Title  => Locale_To_UTF8 (Child.Title.all),
                      Parent => Gtk_Window (Get_Toplevel (Child.MDI)),
                      Flags  => No_Separator or Destroy_With_Parent);
             Set_Has_Separator (Diag, False);
@@ -3421,7 +3487,7 @@ package body Gtkada.MDI is
             Cont := Gtk_Container (Get_Vbox (Diag));
          else
             Gtk_New (Win);
-            Set_Title (Win, Child.Title.all);
+            Set_Title (Win, Locale_To_UTF8 (Child.Title.all));
             Cont := Gtk_Container (Win);
          end if;
 
@@ -3559,6 +3625,53 @@ package body Gtkada.MDI is
       end if;
    end Create_Notebook;
 
+   ----------------------
+   -- Update_Tab_Label --
+   ----------------------
+
+   procedure Update_Tab_Label (Child : access MDI_Child_Record'Class) is
+      Event : Gtk_Event_Box;
+      Box   : Gtk_Box;
+      Pix   : Gdk_Pixmap;
+      Mask  : Gdk_Bitmap;
+      Pixmap : Gtk_Pixmap;
+      Tab   : Gtk_Widget;
+      Side  : Dock_Side := Child.Dock;
+   begin
+      if Child.State = Docked
+        or else (Child.State = Normal
+                 and then Child.MDI.Children_Are_Maximized)
+      then
+         if Child.State = Normal then
+            Side := None;
+         end if;
+
+         Gtk_New (Event);
+         Gtk_New (Child.Tab_Label, Locale_To_UTF8 (Child.Short_Title.all));
+
+         if Child.Icon /= null then
+            Gtk_New_Hbox (Box, Homogeneous => False);
+
+            Render_Pixmap_And_Mask (Child.Icon, Pix, Mask, 128);
+            Gtk_New (Pixmap, Pix, Mask);
+            Pack_Start (Box, Pixmap, Expand => False);
+            Pack_Start (Box, Child.Tab_Label,  Expand => True, Fill => True);
+            Add (Event, Box);
+            Show_All (Box);
+         else
+            Add (Event, Child.Tab_Label);
+            Show_All (Child.Tab_Label);
+         end if;
+
+         Set_Tab_Label (Child.MDI.Docks (Side), Child, Event);
+
+         --  Setup drag-and-drop, so that items can be moved from one location
+         --  to another.
+
+         Set_Dnd_Source (Event, Child);
+      end if;
+   end Update_Tab_Label;
+
    ---------------------
    -- Put_In_Notebook --
    ---------------------
@@ -3569,8 +3682,6 @@ package body Gtkada.MDI is
       Child : access MDI_Child_Record'Class)
    is
       Label : Gtk_Label;
-      Event : Gtk_Event_Box;
-
    begin
       --  Embed the contents of the child into the notebook, and mark
       --  Child as docked, so that we can't manipulate it afterwards.
@@ -3607,22 +3718,15 @@ package body Gtkada.MDI is
 
       Create_Notebook (MDI, Side);
 
-      Gtk_New (Event);
-      Gtk_New (Label, Child.Short_Title.all);
-      Add (Event, Label);
-      Show (Label);
-      Append_Page (MDI.Docks (Side), Child, Event);
+      Gtk_New (Label, "");
+      Append_Page (MDI.Docks (Side), Child, Label);
+      Update_Tab_Label (Child);
 
       Unref (Child);
 
       if Child.Minimize_Button /= null then
          Set_Sensitive (Child.Minimize_Button, False);
       end if;
-
-      --  Setup drag-and-drop, so that items can be moved from one location to
-      --  another.
-
-      Set_Dnd_Source (Event, Child);
    end Put_In_Notebook;
 
    --------------------------
@@ -3637,6 +3741,7 @@ package body Gtkada.MDI is
       MDI  : constant MDI_Window := MDI_Window (Child.MDI);
    begin
       if Page /= -1 then
+         Child.Tab_Label := null;
          Ref (Child);
 
          --  Do not use Remove() below, since it will generate random SE in dnd
@@ -4181,7 +4286,8 @@ package body Gtkada.MDI is
             Tmp := Next (Tmp);
          end loop;
 
-         Gtk_New (Child.Menu_Item, G, Child.Short_Title.all);
+         Gtk_New (Child.Menu_Item, G, "");
+         Update_Menu_Item (Child);
          Append (Child.MDI.Menu, Child.Menu_Item);
          Set_Active
            (Child.Menu_Item, MDI_Child (Child) = Child.MDI.Focus_Child);
@@ -4932,7 +5038,7 @@ package body Gtkada.MDI is
          Note := Child.MDI.Docks (Child.Dock);
       end if;
 
-      Label := Get_Tab_Label (Child);
+      Label := Child.Tab_Label;
 
       if Highlight then
          --  Do nothing if:
@@ -4959,8 +5065,19 @@ package body Gtkada.MDI is
 
       --  Might be null if we haven't created the MDI menu yet
       if Child.Menu_Item /= null then
-         Tab := Get_Child (Child.Menu_Item);
-         Set_Style (Tab, Style);
+         declare
+            Children : Widget_List.Glist := Get_Children
+              (Gtk_Box (Get_Child (Child.Menu_Item)));
+            Tmp      : Widget_List.Glist := Children;
+         begin
+            while Tmp /= Null_List loop
+               if Get_Data (Tmp)'Tag = Gtk_Accel_Label_Record'Tag then
+                  Set_Style (Get_Data (Tmp), Style);
+               end if;
+               Tmp := Next (Tmp);
+            end loop;
+            Free (Children);
+         end;
       end if;
 
       if Label /= null then
