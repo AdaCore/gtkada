@@ -3468,7 +3468,7 @@ package body Gtkada.MDI is
       Update_Tab_Label (Child);
 
       Set_Child_Visible (Note, True);
-      Show_All (Note);
+      Show (Note);
       Queue_Resize (Note);
 
       Unref (Child);
