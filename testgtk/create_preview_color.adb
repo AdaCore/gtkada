@@ -28,26 +28,21 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
-with Gdk.Types; use Gdk.Types;
+with Gtk.Button; use Gtk.Button;
+with Gtk.Box;    use Gtk.Box;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Main; use Gtk.Main;
 with Gtk.Preview; use Gtk.Preview;
-with Gtk.Signal;  use Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
+with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 with Common; use Common;
-
-with Gdk.Event; use Gdk.Event;
-with Gdk.Types; use Gdk.Types;
-
-with Ada.Text_IO; use Ada.Text_IO;
 
 package body Create_Preview_Color is
 
    package Preview_Idle is new Gtk.Main.Idle (Gtk_Preview);
-   package Map_Cb is new Gtk.Signal.Void_Callback (Gtk_Preview_Record);
-   package Expose_Cb is new Gtk.Signal.Two_Callback
-     (Gtk_Preview_Record, Integer, Gdk_Event_Expose);
+
+   Window : aliased Gtk.Window.Gtk_Window;
 
    Color_Idle : Guint  := 0;
    Count      : Guchar := 1;
@@ -55,7 +50,6 @@ package body Create_Preview_Color is
    function Color_Idle_Func (Preview : Gtk_Preview) return Boolean is
       Buf : Guchar_Array (0 .. 767);
       K   : Natural;
-
    begin
       for I in 0 .. Guchar'(255) loop
          K := 0;
@@ -68,64 +62,60 @@ package body Create_Preview_Color is
          Draw_Row (Preview, Buf, 0, Gint (I), 256);
       end loop;
       Count := Count + 1;
-      --  Draw (Preview);
-      -- gtk_signal_emit (GTK_OBJECT (widget), widget_signals[DRAW], area);
---      Put_Line ("Color_Idle");
-
---        Allocate (Event, Expose, Get_Window (Preview));
---        Set_Area (Event, Full_Area);
---        Expose_Cb.Emit_By_Name (Preview, "expose_event", Event);
+      Draw (Preview);
       return True;
    end Color_Idle_Func;
-
-   procedure Map_Handler (Preview : access Gtk_Preview_Record) is
-   begin
---      Put_Line ("Map_Handler");
-      Color_Idle := Preview_Idle.Add (Color_Idle_Func'Access,
-                                      Gtk_Preview (Preview));
-   end Map_Handler;
 
    procedure Preview_Destroy (Dummy : access Gtk_Widget_Record) is
       pragma Warnings (Off, Dummy);
    begin
-      if Color_Idle /= 0 then
+      if Color_Idle > 0 then
          Idle_Remove (Color_Idle);
+         Color_Idle := 0;
       end if;
-      Color_Idle := 0;
+      Window := null;
    end Preview_Destroy;
 
+   procedure Demo_Destroy (Dummy : access Gtk_Widget_Record) is
+      pragma Warnings (Off, Dummy);
+   begin
+      Destroy (Window);
+      Preview_Destroy (Dummy);
+   end Demo_Destroy;
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Preview : Gtk_Preview;
-      Buf     : Guchar_Array (0 .. 767);
-      K       : Natural;
       Id      : Guint;
+      Preview : Gtk_Preview;
+      Box     : Gtk_Box;
 
    begin
-      Set_Label (Frame, "Preview Color");
+      if Window = null then
 
-      Gtk_New (Preview, Preview_Color);
-      Id := Widget3_Cb.Connect
-        (Preview, "destroy", Preview_Destroy'Access);
+         --  Create a dummy widget, that will tell us whenever the user
+         --  selected a new demo (since the children of Frame are automatically
+         --  deleted in that case). We can then close the dialog.
 
-      Size (Preview, 256, 256);
-      Add (Frame, Preview);
+         Gtk_New_Vbox (Box, Homogeneous => False);
+         Add (Frame, Box);
+         Id := Widget3_Cb.Connect (Box, "destroy", Demo_Destroy'Access);
 
-      for I in 0 .. Guchar'(255) loop
-         K := 0;
-         for J in 0 .. Guchar'(255) loop
-            Buf (K + 0) := I;
-            Buf (K + 1) := 0;
-            Buf (K + 2) := J;
-            K := K + 3;
-         end loop;
-         Draw_Row (Preview, Buf, 0, Gint (I), 256);
-      end loop;
+         --  Now create the real demo
 
-      --  Color_Idle := Preview_Idle.Add (Color_Idle_Func'Access, Preview);
-      Id := Map_Cb.Connect (Preview, "map", Map_Handler'Access);
+         Gtk_New (Window, Window_Toplevel);
+         Id := Widget3_Cb.Connect (Window, "destroy", Preview_Destroy'Access);
+         Set_Title (Window, "test");
+         Set_Border_Width (Window, Border_Width => 10);
 
-      Show_All (Frame);
+         Gtk_New (Preview, Preview_Color);
+         Size (Preview, 256, 256);
+         Add (Window, Preview);
+
+         Color_Idle := Preview_Idle.Add (Color_Idle_Func'Access, Preview);
+         Show_All (Window);
+      else
+         Destroy (Window);
+      end if;
+
    end Run;
 
 end Create_Preview_Color;
-
