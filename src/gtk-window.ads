@@ -398,7 +398,7 @@ package Gtk.Window is
    function Get_Title (Window : access Gtk_Window_Record) return String;
    --  Return the title of the window, or "" if there is none
 
-   function Get_Transient_Parent
+   function Get_Transient_For
      (Window : access Gtk_Window_Record) return Gtk_Window;
    --  Return the window for which this one is a temporary window.
    --  See Set_Transient_For below for more information on transient windows.

@@ -115,7 +115,7 @@ package body Gtk.Window is
    function Get_Title (Window : access Gtk_Window_Record) return String is
       function Internal
         (Window : System.Address) return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "ada_gtk_window_get_title");
+      pragma Import (C, Internal, "gtk_window_get_title");
 
       S : constant chars_ptr := Internal (Get_Object (Window));
 
@@ -141,21 +141,21 @@ package body Gtk.Window is
       return To_Boolean (Internal (Get_Object (Window)));
    end Get_Resizable;
 
-   --------------------------
-   -- Get_Transient_Parent --
-   --------------------------
+   -----------------------
+   -- Get_Transient_For --
+   -----------------------
 
-   function Get_Transient_Parent
+   function Get_Transient_For
      (Window : access Gtk_Window_Record) return Gtk_Window
    is
       function Internal (Window : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_gtk_window_get_transient_parent");
+      pragma Import (C, Internal, "gtk_window_get_transient_for");
 
       Stub : Gtk_Window_Record;
 
    begin
       return Gtk_Window (Get_User_Data (Internal (Get_Object (Window)), Stub));
-   end Get_Transient_Parent;
+   end Get_Transient_For;
 
    -------------
    -- Gtk_New --
