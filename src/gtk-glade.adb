@@ -301,6 +301,21 @@ package body Gtk.Glade is
                               Printed := True;
                            end if;
 
+                           if S = "GtkImageMenuItem" then
+                              declare
+                                 Image : constant Node_Ptr :=
+                                   Find_Tag_With_Attribute
+                                     (T.Child, "child", "internal-child",
+                                      "image");
+                              begin
+                                 if Image /= null then
+                                    Put_Line (File, "   " &
+                                              To_Ada (Get_Name (Image.Child))
+                                              & " : Gtk_Image;");
+                                 end if;
+                              end;
+                           end if;
+
                         elsif Kind = Local then
                            --  Special cases:
                            --  Declare a Gtk_Adjustment with each
@@ -316,12 +331,11 @@ package body Gtk.Glade is
                               Put_Line (File, "   " & To_Ada (Q) &
                                  "_Adj : Gtk_Adjustment;");
                               Printed := True;
-                           end if;
 
                            --  Declare a GSList for each Widget containing
                            --  radio buttons or radio menu items
 
-                           if S = "GtkRadioButton"
+                           elsif S = "GtkRadioButton"
                               or else S = "GtkRadioMenuItem"
                            then
                               if not
@@ -334,15 +348,15 @@ package body Gtk.Glade is
                                     True;
                                  Printed := True;
                               end if;
-                           end if;
 
                            --  Declare a Glist with each combo box
 
-                           if S = "GtkCombo" then
+                           elsif S = "GtkCombo" then
                               Put_Line (File, "   " &
-                                 To_Ada (Get_Attribute (T, "id")) &
+                                 To_Ada (Q) &
                                  "_Items : String_List.Glist;");
                               Printed := True;
+
                            end if;
 
                            --  Declare an Accel_Group if any accelerator needs
@@ -522,6 +536,19 @@ package body Gtk.Glade is
                  "_Record'Class) is");
 
                Put_Line (Output, "   pragma Suppress (All_Checks);");
+
+               declare
+                  Pixmaps : constant Node_Ptr := Find_Tag
+                    (Project, "pixmaps_directory");
+               begin
+                  if Pixmaps /= null then
+                     Put_Line (Output, "   Pixmaps_Dir : constant String := """
+                               & Pixmaps.Value.all & "/"";");
+                  else
+                     Put_Line (Output, "   Pixmaps_Dir : constant String := """
+                               & "pixmaps" & "/"";");
+                  end if;
+               end;
 
                --  ??? Is this still safe? UTF-8 etc...
 
