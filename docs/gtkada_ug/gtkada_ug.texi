@@ -93,7 +93,6 @@ Description of the GDK hierarchy
 * Draw in a widget::
 
 Object-oriented features
-* Converting your applications to the new tagged type scheme::
 * Using tagged types to extend Gtk widgets::
 * Creating new widgets in Ada::
 
@@ -1827,7 +1826,6 @@ existing widgets or even create your own.
 
 @menu
 * General description of the tagged types::
-* Converting your applications to the new tagged type scheme::
 * Using tagged types to extend Gtk widgets::
 * Creating new widgets in Ada::
 @end menu
@@ -1939,62 +1937,6 @@ defined in the package @b{Gtk.Type_Conversion}. It is a function that takes
 a string with the name of the C widget (ex/ "GtkButton"), and expects a newly
 allocated pointer in return. If you don't know this type either, simply
 return @b{null}.
-
-@node Converting your applications to the new tagged type scheme
-@section Converting your applications to the new tagged type scheme
-
-GtkAda 0.6 is an almost complete rewrite of GtkAda. Whereas widgets
-used to be record types, they now are implemented as access types.
-This change has two benefits:
-@itemize @bullet
-@item It is now clearer, when you pass an object to a function or as
-  an argument to a callback, that you are still working with the
-  widget you created before.
-@item Most important, it is now possible to extend existing types directly
-  in Ada (see the section below).
-@end itemize
-
-Your existing code might have to be modified a little though (sorry
-about that, this is for the better!).
-@itemize @bullet
-@item Although @code{Gtk_New} now creates access types (and allocate memory for
-  them), you do not have to free this memory yourself. This is
-  automatically taken care of by gtk itself, which is one of the
-  strong points of the new scheme.
-@item The only part of your code that is actually modified are the
-  callbacks. The changes should be easy to handle (We did it
-  for testgtk itself :-).
-  When instanciating a callback generic, the first parameter should be
-  modified like this:
-
-@example
-@c @group
-@c @cartouche
-package My_Cb is new Signal.Void_Callback (Gtk_Widget_Record);
-                                                     ^^^^^^^
-@c @end cartouche
-@c @end group
-@end example
-
-  Then you have to modify the spec of the subprogram iself:
-
-@example
-@c @group
-@c @cartouche
-@b{procedure} My_Func (Button : @b{access} Gtk.Button.Gtk_Button_Record;
-                   Data   : @b{in} Gint);
-@c @end cartouche
-@c @end group
-@end example
-
-  Note that the first parameter is an anonymous access to a record
-  type, and the second parameter is an "in" parameter.
-@end itemize
-
-The last things that have changed in this new version of the toolkit are some
-of the names of the parameters in the subprograms. This
-is part of a major cleanup we are doing so that things can be more
-homogeneous within GtkAda.
 
 @node Using tagged types to extend Gtk widgets
 @section Using tagged types to extend Gtk widgets
