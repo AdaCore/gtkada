@@ -8,7 +8,6 @@ The primary download site is http://gtkada.eu.org
 
 New features in 1.2.7/1.3.7 include:
 
-- Add support for libart and gdk-pixbuf
 - The handling of arrays of null terminated strings has been greatly simplified
   (see GtkAda.Types for more details).
 - New widgets bound from GtkExtra: Gtk_Plot, Gtk_Plot_Canvas, Gtk_Plot_Layout,
@@ -19,6 +18,8 @@ New features in 1.2.7/1.3.7 include:
 - Glade now properly handles backup files under Win32.
 - Update to GtkGlArea 1.2.2
 - The support for opengl is now built in a separate library.
+- Support for image loading, rendering, scaling and compositing has been added
+  (from libart and gdkpixbuf).
 
 New features in 1.2.6/1.3.6 include:
 
