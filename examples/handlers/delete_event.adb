@@ -5,16 +5,13 @@
 --  depending on whether we should allow the window to be closed by the window
 --  manager or not.
 
-with Glib;           use Glib;
 with Gtk.Main;
 with Gtk.Rc;
 with Gtk.Handlers;
 with Gdk.Event;      use Gdk.Event;
 with Gtk.Enums;      use Gtk.Enums;
 with Gtk.Button;     use Gtk.Button;
-with Gtk.Box;        use Gtk.Box;
 with Gtk.Window;     use Gtk.Window;
-with Gtk.Widget;     use Gtk.Widget;
 with Ada.Text_IO;    use Ada.Text_IO;
 
 procedure Delete_Event is
@@ -27,6 +24,8 @@ procedure Delete_Event is
                      Event : Gdk_Event)
                     return Boolean
    is
+      pragma Unreferenced (Event);
+      pragma Unreferenced (B);
    begin
       --  If you return FALSE in the "delete_event" signal handler,
       --  GTK will emit the "destroy" signal. Returning TRUE means
@@ -44,6 +43,7 @@ procedure Delete_Event is
 
    procedure Delete (B             : access Gtk_Button_Record'Class;
                      To_Be_Deleted : Gtk_Window) is
+      pragma Unreferenced (B);
    begin
       Put_Line ("Quit the application and destroy the window.");
       Destroy (To_Be_Deleted);
