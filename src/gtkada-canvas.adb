@@ -2265,23 +2265,24 @@ package body Gtkada.Canvas is
          Add_To_Selection (Canvas, Item);
          Set_X (Event, Gdouble (X - Item.Coord.X));
          Set_Y (Event, Gdouble (Y - Item.Coord.Y));
-
-         --  Double-click events are transmitted directly to the item, and are
-         --  not used to move an item.
-         --  Clicks other than left mouse button are also transmitted directly.
-         --  These only need to be transmitted to the last item we clicked on,
-         --  not to the whole selection
-
-         if Get_Event_Type (Event) = Gdk_2button_Press
-           or else Get_Button (Event) /= 1
-         then
-            Set_Cursor (Get_Window (Canvas), null);
-            On_Button_Click (Item, Event);
-            return False;
-         end if;
-
       else
          Widget_Callback.Emit_By_Name (Canvas, "background_click", Event);
+      end if;
+
+      --  Double-click events are transmitted directly to the item, and are
+      --  not used to move an item.
+      --  Clicks other than left mouse button are also transmitted directly.
+      --  These only need to be transmitted to the last item we clicked on,
+      --  not to the whole selection
+
+      if Get_Event_Type (Event) = Gdk_2button_Press
+        or else Get_Button (Event) /= 1
+      then
+         Set_Cursor (Get_Window (Canvas), null);
+         if Item /= null then
+            On_Button_Click (Item, Event);
+         end if;
+         return False;
       end if;
 
       --  Change the cursor to give visual feedback
