@@ -8,7 +8,7 @@ SHELL=/bin/sh
 .PHONY: clean-generic mostlyclean-generic \
 	clean distclean mostlyclean maintainer-clean
 
-TEST_LINK = test_link
+MAKE_ADB = make
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
@@ -72,10 +72,10 @@ dirs:: force
 	$(CHMOD) +x $(GATE) $(GTKADA_CONFIG)
 
 
-$(LIBNAME):: $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
+$(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 	$(CC) -shared -o $(LIBNAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects) @GTK_LIBS@ -lm
 
-$(ARCHIVENAME):: $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
+$(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) $(ARCHIVENAME); \
@@ -89,26 +89,27 @@ install_ali::
 	test -f .devel || $(CP) $(LIB_DIR)/*.ali .
 	test -f .devel || $(CHMOD) -w glib*.ali gdk*.ali gtk*.ali
 
-$(GATE_EX):: $(GATE_SRC) $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
+$(GATE_EX):: $(GATE_SRC) $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 	if [ -f .devel ]; then \
 	  $(GNATMAKE) -aO$(LIB_DIR) -g $(GNATMAKEFLAGS) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS); \
 	else \
 	  $(GNATMAKE) $(GNATMAKEFLAGS) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS); \
 	fi
 
-$(DGATE):: $(DGATE).adb $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
+$(DGATE):: $(DGATE).adb $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 	if [ -f .devel ]; then \
 	   $(GNATMAKE) -aO$(LIB_DIR) -g $(GNATMAKEFLAGS) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
 	else \
 	   $(GNATMAKE) $(GNATMAKEFLAGS) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
 	fi
 
-$(LIB_DIR)/$(TEST_LINK).o::
-	test -f $(LIB_DIR)/$(TEST_LINK).adb || @PERL@ ./create_test_link.pl > $(LIB_DIR)/$(TEST_LINK).adb
+$(LIB_DIR)/$(MAKE_ADB).o::
 	@if [ -f .devel ]; then \
-	  $(CD) $(LIB_DIR); $(GNATMAKE) -c -g -I.. $(TEST_LINK) -shared -fPIC $(GNATFLAGS); \
+	  $(CD) $(LIB_DIR); \
+	  $(GNATMAKE) -c -g -I.. ../$(MAKE_ADB) -shared -fPIC $(GNATFLAGS); \
 	else \
-	  $(CD) $(LIB_DIR); $(GNATMAKE) -c -I.. $(TEST_LINK) -shared -fPIC $(GNATFLAGS); \
+	  $(CD) $(LIB_DIR); \
+	  $(GNATMAKE) -c -I.. ../$(MAKE_ADB) -shared -fPIC $(GNATFLAGS); \
 	fi
 
 install: $(ARCHIVENAME) $(LIBNAME)
@@ -142,7 +143,6 @@ clean-generic:
 	-$(RM) $(LIB_DIR)/*
 	-${RM} $(ARCHIVENAME) $(LIBNAME)
 	-${RM} $(GATE_EX) $(DGATE)
-	-${RM} $(TEST_LINK) $(TEST_LINK).adb
 	-${RM} .\#*
 
 mostlyclean-generic: clean-generic
