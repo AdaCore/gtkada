@@ -97,23 +97,25 @@ package body Glib.Values is
    ---------
 
    function Nth (Val : GValues; Num : Guint) return GValue is
-      function Internal (Val : System.Address; Num : Guint) return GValue;
+      procedure Internal
+        (Val : System.Address; Num : Guint; V : in out GValue);
       pragma Import (C, Internal, "ada_gvalue_nth");
-
+      V : GValue;
    begin
       --   Should this be greater or greater or equal ???
       if Num > Val.Nb then
          raise Constraint_Error;
       end if;
 
-      return Internal (Val.Arr, Num);
+      Internal (Val.Arr, Num, V);
+      return V;
    end Nth;
 
    -----------------
    -- Set_Boolean --
    -----------------
 
-   procedure Set_Boolean (Value : GValue; V_Boolean : Boolean) is
+   procedure Set_Boolean (Value : in out GValue; V_Boolean : Boolean) is
       procedure Internal (Value : GValue; V_Boolean : Gboolean);
       pragma Import (C, Internal, "g_value_set_boolean");
    begin
@@ -124,11 +126,22 @@ package body Glib.Values is
    -- Set_String --
    ----------------
 
-   procedure Set_String (Value : GValue; V_String : String) is
-      procedure Internal (Value : GValue; V_String : String);
+   procedure Set_String (Value : in out GValue; V_String : String) is
+      procedure Internal (Value : in out GValue; V_String : String);
       pragma Import (C, Internal, "g_value_set_string");
    begin
       Internal (Value, V_String & ASCII.NUL);
    end Set_String;
 
+   ----------
+   -- Init --
+   ----------
+
+   procedure Init (Value : in out GValue; G_Type : Glib.GType) is
+      procedure Internal (Value : in out GValue; G_Type : Glib.GType);
+      pragma Import (C, Internal, "g_value_init");
+   begin
+      Value := (others => 0);
+      Internal (Value, G_Type);
+   end Init;
 end Glib.Values;
