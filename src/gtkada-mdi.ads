@@ -604,6 +604,14 @@ package Gtkada.MDI is
    --  Return True if a desktop was loaded, False if the MDI is only the result
    --  of calls to Gtk_New and Put.
 
+   procedure Present_On_Child_Focus
+     (MDI     : access MDI_Window_Record;
+      Present : Boolean);
+   --  Whether giving the focus to a child should cause the window containing
+   --  this child should be Presented.
+   --  This behaviour is enabled by default; it might be useful to disable it,
+   --  for example when loading a desktop.
+
    -------------
    -- Signals --
    -------------
@@ -775,6 +783,10 @@ private
 
       Desktop_Was_Loaded : Boolean := False;
       --  True if a desktop was loaded
+
+      Present_Window_On_Child_Focus : Boolean := True;
+      --  Whether the window containing a child should be Presented when the
+      --  child gets the focus.
 
       Selected : Dock_Side := None;
       --  The handle that was selected for the resize operation.
