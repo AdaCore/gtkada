@@ -108,7 +108,6 @@ package body Glib.Object is
 
    begin
       Set_Object (Object, Internal (GType_Object));
-      Initialize_User_Data (Object);
    end Initialize;
 
    ----------------
@@ -168,39 +167,10 @@ package body Glib.Object is
          --  try to create the exact Ada type corresponding to the C type.
 
          Set_Object (R, Obj);
-         Initialize_User_Data (R);
       end if;
 
       return R;
    end Get_User_Data;
-
-   --------------------------
-   -- Initialize_User_Data --
-   --------------------------
-
-   procedure Initialize_User_Data (Obj : access GObject_Record'Class) is
-      function Internal
-        (Object : in System.Address;
-         Quark  : in Glib.GQuark) return GObject;
-      pragma Import (C, Internal, "g_object_get_qdata");
-
-      procedure Set_User_Data
-        (Obj     : System.Address;
-         Quark   : Glib.GQuark;
-         Data    : System.Address;
-         Destroy : System.Address);
-      pragma Import (C, Set_User_Data, "g_object_set_qdata_full");
-
-   begin
-      if GtkAda_String_Quark = Glib.Unknown_Quark then
-         GtkAda_String_Quark := Glib.Quark_From_String (GtkAda_String);
-      end if;
-
-      if Internal (Get_Object (Obj), GtkAda_String_Quark) = null then
-         Set_User_Data (Get_Object (Obj), GtkAda_String_Quark,
-                        Obj.all'Address, Free_User_Data'Address);
-      end if;
-   end Initialize_User_Data;
 
    ----------------
    -- Is_Created --
@@ -218,9 +188,39 @@ package body Glib.Object is
 
    procedure Set_Object
      (Object : access GObject_Record'Class;
-      Value  : System.Address) is
+      Value  : System.Address)
+   is
+      use type System.Address;
+
+      procedure Set_User_Data
+        (Obj     : System.Address;
+         Quark   : Glib.GQuark;
+         Data    : System.Address;
+         Destroy : System.Address);
+      pragma Import (C, Set_User_Data, "g_object_set_qdata_full");
+
    begin
       Object.Ptr := Value;
+
+      --  Sets a user data field for the C object associated with Obj.
+      --  This field will be used so that it is possible, knowing a
+      --  C object, to get the full ada object.
+
+      if GtkAda_String_Quark = Glib.Unknown_Quark then
+         GtkAda_String_Quark := Glib.Quark_From_String (GtkAda_String);
+      end if;
+
+      --  If the user_data was already set in C, gtk+ will automatically call
+      --  the finalization on it, and thus indirectly destroy the Ada
+      --  object. which is exactly what we want.
+
+      --  Special case for Null_Address, sicne this means we are already
+      --  destroying the widget, and Set_User_Data would be invalid.
+
+      if Value /= System.Null_Address then
+         Set_User_Data (Value, GtkAda_String_Quark,
+                        Object.all'Address, Free_User_Data'Address);
+      end if;
    end Set_Object;
 
    --------------------

@@ -60,6 +60,10 @@ package Glib.Object is
    --
    --  which is easier.
 
+   ----------------
+   -- Life cycle --
+   ----------------
+
    procedure G_New (Object : out GObject);
    --  Create a new GObject.
    --  This is only required when you want to create an Ada tagged type to
@@ -98,17 +102,13 @@ package Glib.Object is
       Value  : System.Address);
    --  Modify the underlying C pointer.
 
-   procedure Initialize_User_Data (Obj : access GObject_Record'Class);
-   --  Sets a user data field for the C object associated with Obj.
-   --  This field will be used so that it is possible, knowing a
-   --  C object, to get the full ada object.
-
    function Get_User_Data
      (Obj  : in System.Address;
       Stub : in GObject_Record'Class) return GObject;
-   --  Get the user data that was set by GtkAda.
-   --  If the Data is not set, return a new access type, that points to
-   --  a structure with the same tag as Stub.
+   --  Return the Ada object matching the C object Obj. If Obj was created
+   --  explicitely from GtkAda, this will be the exact same widget. If Obj was
+   --  created implicitely by gtk+ (buttons in complex windows,...), a new Ada
+   --  object of type Stub will be created.
 
    function Unchecked_Cast
      (Obj  : access GObject_Record'Class;
@@ -183,7 +183,12 @@ package Glib.Object is
 
    type Signal_Parameter_Types is
      array (Natural range <>, Natural range <>) of GType;
-   --  The description of the parameters for each event.
+   --  The description of the parameters for each event. These are the
+   --  parameters that the application must provide when emitting the
+   --  signal. The user can of course add his own parameters when connecting
+   --  the signal in his application, through the use of
+   --  Gtk.Handlers.User_Callback.
+   --
    --  Each event defined with Initialize_Class_Record below should have an
    --  entry in this table. If Gtk_Type_None is found in the table, it is
    --  ignored. For instance, a Signal_Parameter_Type like:
@@ -206,7 +211,9 @@ package Glib.Object is
    --  It is associated with Signals'Length new signals. A pointer to the
    --  newly created structure is also returned in Class_Record.
    --  If Class_Record /= System.Null_Address, no memory allocation is
-   --  performed, we just reuse it.
+   --  performed, we just reuse it. As a result, each instantiation of an
+   --  object will share the same GObject_Class, exactly as is done for gtk+.
+   --
    --  Note: The underlying C object must already have been initialized
    --  by a call to its parent's Initialize function.
    --  Parameters'Length should be the same as Signals'Length, or the result
@@ -216,9 +223,9 @@ package Glib.Object is
    --  mainly, and you should instead give it an explicit value.
    --  Type_Name should be a unique name identifying the name of the new type.
    --
-   --  Only the signals with no parameter can be connected from C. However,
-   --  any signal can be connected from Ada. This is due to the way we define
-   --  default marshallers for the signals.
+   --  Only the signals with no parameter can be connected from C code.
+   --  However, any signal can be connected from Ada. This is due to the way
+   --  we define default marshallers for the signals.
 
    function Type_From_Class (Class_Record : GObject_Class) return GType;
    --  Return the internal gtk+ type that describes the newly created
@@ -257,7 +264,8 @@ package Glib.Object is
    --
    --  We recommend using this package only if you want your data to be
    --  available from your own C code. If you just want to access it from Ada,
-   --  you should consider creating a new tagged type instead.
+   --  you should consider creating a new tagged type instead, that extends
+   --  either GObject_Record or the specific widget type you need.
 
    --  <doc_ignore>
 
