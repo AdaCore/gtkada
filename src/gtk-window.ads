@@ -96,9 +96,9 @@ package Gtk.Window is
                          Auto_Shrink  : in     Boolean);
    --  Specify the behavior of the window with regards to size modifications.
    --  Default values when the window is created are:
-   --    Allow_Shrink => False
-   --    Allow_Grow   => True
-   --    Auto_Shrink  => False
+   --    Allow_Shrink => False,
+   --    Allow_Grow   => True,
+   --    Auto_Shrink  => False.
    --  If ALLOW_SHRINK is False, then the minimum size of the window is
    --  calculated once depending on its children, and the window can never be
    --  smaller.
