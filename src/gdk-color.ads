@@ -149,7 +149,7 @@ private
       end record;
    --  The fields are to be chosen between 0 and 65535, not 0 and 255!!!
 
-   Null_Color : constant Gdk_Color := (Gulong'Last, 0, 0, 0);
+   Null_Color : constant Gdk_Color := (Gulong'Last, Gushort'Last, 0, 0);
    --  Note: in the implementation of GtkAda, everytime a color is used, it
    --  is important to test whether this is Null_Color or not. If it is, then
    --  System.Null_Address should be passed to C instead of Null_Color'Address
