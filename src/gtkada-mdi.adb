@@ -1198,11 +1198,17 @@ package body Gtkada.MDI is
       N   : Widget_List.Glist;
 
    begin
+      --  Note: we only destroy the floating children. Other children will be
+      --  destroyed when their parent container is destroyed, so we have
+      --  nothing to do for them.
+
       while Tmp /= Null_List loop
          --  Get the next field first, since Destroy will actually destroy Tmp
 
          N := Next (Tmp);
-         Destroy (Get_Data (Tmp));
+         if MDI_Child (Get_Data (Tmp)).State = Floating then
+            Destroy (Get_Data (Tmp));
+         end if;
          Tmp := N;
       end loop;
 
