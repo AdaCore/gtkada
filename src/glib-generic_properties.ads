@@ -171,6 +171,10 @@ package Glib.Generic_Properties is
    generic
       type Boxed_Type is private;
       with function Get_Type return Glib.GType;
+      with function Copy (B : Boxed_Type) return System.Address;
+      --  Copy should return a newly allocated of B. Allocation should be done
+      --  through the glib/gtk+ functions, or the memory will not be freed
+      --  correctly.
    package Generic_Internal_Boxed_Property is
       type Property_RO is new Glib.Property;
       type Property    is new Glib.Property;
