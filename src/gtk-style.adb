@@ -29,7 +29,6 @@
 
 with Gdk; use Gdk;
 with Gtk.Enums; use Gtk.Enums;
-with Unchecked_Deallocation;
 with System;
 
 package body Gtk.Style is
@@ -38,16 +37,14 @@ package body Gtk.Style is
    --  Attach  --
    --------------
 
-   function Attach (Style  : access Gtk_Style_Record;
+   function Attach (Style  : in Gtk_Style;
                     Window : in Gdk.Window.Gdk_Window) return Gtk_Style is
       function Internal (Style : in System.Address;
                          Window : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_style_attach");
       Result : Gtk_Style;
    begin
-      Result := new Gtk_Style_Record;
-      Set_Object (Result, Internal (Get_Object (Style),
-                                    Get_Object (Window)));
+      Set_Object (Result, Internal (Get_Object (Style), Get_Object (Window)));
       return Result;
    end Attach;
 
@@ -56,34 +53,31 @@ package body Gtk.Style is
    --  Copy  --
    ------------
 
-   function Copy (Source : access Gtk_Style_Record) return Gtk_Style is
+   function Copy (Source : in Gtk_Style) return Gtk_Style is
       function Internal (Style : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_style_copy");
       Destination : Gtk_Style;
    begin
-      Destination := new Gtk_Style_Record;
       Set_Object (Destination, Internal (Get_Object (Source)));
       return Destination;
    end Copy;
-
 
    --------------
    --  Detach  --
    --------------
 
-   procedure Detach (Style : access Gtk_Style_Record) is
+   procedure Detach (Style : in Gtk_Style) is
       procedure Internal (Style : in System.Address);
       pragma Import (C, Internal, "gtk_style_detach");
    begin
       Internal (Get_Object (Style));
    end Detach;
 
-
    ------------------
    --  Draw_Arrow  --
    ------------------
 
-   procedure Draw_Arrow (Style       : access Gtk_Style_Record;
+   procedure Draw_Arrow (Style       : in Gtk_Style;
                          Window      : in Gdk.Window.Gdk_Window;
                          State_Type  : in Enums.Gtk_State_Type;
                          Shadow_Type : in Enums.Gtk_Shadow_Type;
@@ -106,13 +100,11 @@ package body Gtk.Style is
                 Shadow_Type, Arrow_Type, Fill, X, Y, Width, Height);
    end Draw_Arrow;
 
-
-
    --------------------
    --  Draw_Diamond  --
    --------------------
 
-   procedure Draw_Diamond (Style       : access Gtk_Style_Record;
+   procedure Draw_Diamond (Style       : in Gtk_Style;
                            Window      : in Gdk.Window.Gdk_Window;
                            State_Type  : in Enums.Gtk_State_Type;
                            Shadow_Type : in Enums.Gtk_Shadow_Type;
@@ -131,12 +123,11 @@ package body Gtk.Style is
                 Shadow_Type, X, Y, Width, Height);
    end Draw_Diamond;
 
-
    ------------------
    --  Draw_Hline  --
    ------------------
 
-   procedure Draw_Hline (Style      : access Gtk_Style_Record;
+   procedure Draw_Hline (Style      : in Gtk_Style;
                          Window     : in Gdk.Window.Gdk_Window;
                          State_Type : in Enums.Gtk_State_Type;
                          X1, X2     : in Gint;
@@ -150,12 +141,11 @@ package body Gtk.Style is
                 State_Type, X1, X2, Y);
    end Draw_Hline;
 
-
    -----------------
    --  Draw_Oval  --
    -----------------
 
-   procedure Draw_Oval (Style       : access Gtk_Style_Record;
+   procedure Draw_Oval (Style       : in Gtk_Style;
                         Window      : in Gdk.Window.Gdk_Window;
                         State_Type  : in Enums.Gtk_State_Type;
                         Shadow_Type : in Enums.Gtk_Shadow_Type;
@@ -174,12 +164,11 @@ package body Gtk.Style is
                 Shadow_Type, X, Y, Width, Height);
    end Draw_Oval;
 
-
    --------------------
    --  Draw_Polygon  --
    --------------------
 
-   procedure Draw_Polygon (Style       : access Gtk_Style_Record;
+   procedure Draw_Polygon (Style       : in Gtk_Style;
                            Window      : in Gdk.Window.Gdk_Window;
                            State_Type  : in Enums.Gtk_State_Type;
                            Shadow_Type : in Enums.Gtk_Shadow_Type;
@@ -197,12 +186,11 @@ package body Gtk.Style is
                 Shadow_Type, Points, Points'Length, Fill);
    end Draw_Polygon;
 
-
    -------------------
    --  Draw_Shadow  --
    -------------------
 
-   procedure Draw_Shadow (Style       : access Gtk_Style_Record;
+   procedure Draw_Shadow (Style       : in Gtk_Style;
                           Window      : in Gdk.Window.Gdk_Window;
                           State_Type  : in Enums.Gtk_State_Type;
                           Shadow_Type : in Enums.Gtk_Shadow_Type;
@@ -219,12 +207,11 @@ package body Gtk.Style is
                 State_Type, Shadow_Type, X, Y, Width, Height);
    end Draw_Shadow;
 
-
    -------------------
    --  Draw_String  --
    -------------------
 
-   procedure Draw_String (Style       : access Gtk_Style_Record;
+   procedure Draw_String (Style       : in Gtk_Style;
                           Window      : in Gdk.Window.Gdk_Window;
                           State_Type  : in Enums.Gtk_State_Type;
                           X, Y        : in Gint;
@@ -244,7 +231,7 @@ package body Gtk.Style is
    --  Draw_Vline  --
    ------------------
 
-   procedure Draw_Vline (Style      : access Gtk_Style_Record;
+   procedure Draw_Vline (Style      : in Gtk_Style;
                          Window     : in Gdk.Window.Gdk_Window;
                          State_Type : in Enums.Gtk_State_Type;
                          Y1, Y2     : in Gint;
@@ -258,23 +245,11 @@ package body Gtk.Style is
                 State_Type, Y1, Y2, X);
    end Draw_Vline;
 
-   ----------
-   -- Free --
-   ----------
-
-   procedure Free (Source : in out Gtk_Style) is
-      procedure Internal is new Unchecked_Deallocation
-        (Object => Gtk_Style_Record'Class, Name => Gtk_Style);
-   begin
-      Unref (Source);
-      Internal (Source);
-   end Free;
-
    ------------
    -- Get_Bg --
    ------------
 
-   function Get_Bg (Style      : access Gtk_Style_Record;
+   function Get_Bg (Style      : in Gtk_Style;
                     State_Type : in Enums.Gtk_State_Type)
                     return          Gdk.Color.Gdk_Color
    is
@@ -294,7 +269,7 @@ package body Gtk.Style is
    -- Get_Black --
    ---------------
 
-   function Get_Black (Style : access Gtk_Style_Record)
+   function Get_Black (Style : in Gtk_Style)
                        return Gdk.Color.Gdk_Color
    is
       function Internal (Style      : in System.Address)
@@ -312,7 +287,7 @@ package body Gtk.Style is
    --  Get_Black_GC  --
    --------------------
 
-   function Get_Black_GC (Style : access Gtk_Style_Record)
+   function Get_Black_GC (Style : in Gtk_Style)
                           return Gdk.GC.Gdk_GC
    is
       function Internal (Style : in System.Address) return System.Address;
@@ -327,7 +302,7 @@ package body Gtk.Style is
    --  Get_Bg_GC  --
    -----------------
 
-   function Get_Bg_GC (Style : access Gtk_Style_Record;
+   function Get_Bg_GC (Style : in Gtk_Style;
                        State : in Enums.Gtk_State_Type)
                        return Gdk.GC.Gdk_GC
    is
@@ -345,7 +320,7 @@ package body Gtk.Style is
    --  Get_White_GC  --
    --------------------
 
-   function Get_White_GC (Style : access Gtk_Style_Record)
+   function Get_White_GC (Style : in Gtk_Style)
                           return Gdk.GC.Gdk_GC
    is
       function Internal (Style : in System.Address) return System.Address;
@@ -360,7 +335,7 @@ package body Gtk.Style is
    -- Get_White --
    ---------------
 
-   function Get_White (Style : access Gtk_Style_Record)
+   function Get_White (Style : in Gtk_Style)
                        return Gdk.Color.Gdk_Color
    is
       function Internal (Style      : in System.Address)
@@ -378,9 +353,10 @@ package body Gtk.Style is
    ---------------
 
    procedure Gtk_New (Style : out Gtk_Style) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_style_new");
    begin
-      Style := new Gtk_Style_Record;
-      Initialize (Style);
+      Set_Object (Style, Internal);
    end Gtk_New;
 
    ---------------
@@ -388,7 +364,7 @@ package body Gtk.Style is
    ---------------
 
    function Get_Style (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-                      return       Gtk.Style.Gtk_Style_Record
+                      return       Gtk_Style
    is
       function Internal (Widget : System.Address)
                         return    System.Address;
@@ -397,28 +373,17 @@ package body Gtk.Style is
       --  user data associated with it. We need to create a new instance
       --  everytime. We can't return a pointer, since we have no way to
       --  free the memory afterward.
-      Stub : Gtk.Style.Gtk_Style_Record;
+      Stub : Gtk_Style;
    begin
       Set_Object (Stub, Internal (Get_Object (Widget)));
       return Stub;
    end Get_Style;
 
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize (Style : access Gtk_Style_Record) is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_style_new");
-   begin
-      Set_Object (Style, Internal);
-   end Initialize;
-
    ---------
    -- Ref --
    ---------
 
-   procedure Ref (Object : access Gtk_Style_Record) is
+   procedure Ref (Object : in Gtk_Style) is
       procedure Internal (Object : in System.Address);
       pragma Import (C, Internal, "gtk_style_ref");
       use type System.Address;
@@ -432,9 +397,9 @@ package body Gtk.Style is
    -- Set_Base --
    --------------
 
-   procedure Set_Base (Style      : access Gtk_Style_Record;
-                       State_Type : in     Enums.Gtk_State_Type;
-                       Color      : in     Gdk.Color.Gdk_Color)
+   procedure Set_Base (Style      : in Gtk_Style;
+                       State_Type : in Enums.Gtk_State_Type;
+                       Color      : in Gdk.Color.Gdk_Color)
    is
       procedure Internal
         (Style : System.Address; State : Gint; Color : System.Address);
@@ -449,9 +414,9 @@ package body Gtk.Style is
    --  Set_Background  --
    ----------------------
 
-   procedure Set_Background (Style      : access Gtk_Style_Record;
-                             Window     : in     Gdk.Window.Gdk_Window;
-                             State_Type : in     Enums.Gtk_State_Type) is
+   procedure Set_Background (Style      : in Gtk_Style;
+                             Window     : in Gdk.Window.Gdk_Window;
+                             State_Type : in Enums.Gtk_State_Type) is
       procedure Internal (Style      : in System.Address;
                           Window     : in System.Address;
                           State_Type : in Enums.Gtk_State_Type);
@@ -464,7 +429,7 @@ package body Gtk.Style is
    -- Set_Font --
    --------------
 
-   procedure Set_Font (Style : access Gtk_Style_Record;
+   procedure Set_Font (Style : in Gtk_Style;
                        Font  : Gdk.Font.Gdk_Font)
    is
       procedure Internal
@@ -478,9 +443,9 @@ package body Gtk.Style is
    -- Set_Foreground --
    --------------------
 
-   procedure Set_Foreground (Style      : access Gtk_Style_Record;
-                             State_Type : in     Enums.Gtk_State_Type;
-                             Color      : in     Gdk.Color.Gdk_Color)
+   procedure Set_Foreground (Style      : in Gtk_Style;
+                             State_Type : in Enums.Gtk_State_Type;
+                             Color      : in Gdk.Color.Gdk_Color)
    is
       procedure Internal
         (Style : System.Address; State : Gint; Color : System.Address);
@@ -495,7 +460,7 @@ package body Gtk.Style is
    -- Unref --
    -----------
 
-   procedure Unref (Object : access Gtk_Style_Record) is
+   procedure Unref (Object : in Gtk_Style) is
       procedure Internal (Object : in System.Address);
       pragma Import (C, Internal, "gtk_style_unref");
       use type System.Address;

@@ -38,78 +38,72 @@ with Gtk.Widget;
 
 package Gtk.Style is
 
-   type Gtk_Style_Record is new Root_Type with private;
-   type Gtk_Style is access all Gtk_Style_Record'Class;
+   type Gtk_Style is new Root_Type with private;
+
+   --  NOTE: Gtk_Style is not an access type, since there is no easy
+   --  way to automatically deallocate memory when the C widget is
+   --  destroyed. It would be the responsability of the user to free
+   --  memory, which is too different from the way the other widgets
+   --  work.
 
    procedure Gtk_New (Style : out Gtk_Style);
-   --  IMPORTANT NOTE: for this widget, this is your own responsability
-   --  to free the memory. No automatic work is done here !!!
 
-   procedure Initialize (Style : access Gtk_Style_Record);
+   function Copy (Source : in Gtk_Style) return Gtk_Style;
 
-   function Copy (Source : access Gtk_Style_Record) return Gtk_Style;
-   --  This function allocates a new pointer, and initialize it with the
-   --  value of Source. Freeing the memory is your responsability (use Free
-   --  below to destroy the associated C widget at the same time)
-
-   procedure Free (Source : in out Gtk_Style);
-   --  This function is not part of gtk+ itself, this is provided for
-   --  conveniance only
-
-   function Attach (Style  : access Gtk_Style_Record;
+   function Attach (Style  : in Gtk_Style;
                     Window : in Gdk.Window.Gdk_Window) return Gtk_Style;
 
-   procedure Detach (Style : access Gtk_Style_Record);
+   procedure Detach (Style : in Gtk_Style);
 
-   procedure Set_Background (Style      : access Gtk_Style_Record;
-                             Window     : in     Gdk.Window.Gdk_Window;
-                             State_Type : in     Enums.Gtk_State_Type);
-   procedure Set_Foreground (Style      : access Gtk_Style_Record;
-                             State_Type : in     Enums.Gtk_State_Type;
-                             Color      : in     Gdk.Color.Gdk_Color);
-   procedure Set_Base (Style      : access Gtk_Style_Record;
-                       State_Type : in     Enums.Gtk_State_Type;
-                       Color      : in     Gdk.Color.Gdk_Color);
-   procedure Set_Font (Style      : access Gtk_Style_Record;
-                       Font       : in     Gdk.Font.Gdk_Font);
+   procedure Set_Background (Style      : in Gtk_Style;
+                             Window     : in Gdk.Window.Gdk_Window;
+                             State_Type : in Enums.Gtk_State_Type);
+   procedure Set_Foreground (Style      : in Gtk_Style;
+                             State_Type : in Enums.Gtk_State_Type;
+                             Color      : in Gdk.Color.Gdk_Color);
+   procedure Set_Base (Style      : in Gtk_Style;
+                       State_Type : in Enums.Gtk_State_Type;
+                       Color      : in Gdk.Color.Gdk_Color);
+   procedure Set_Font (Style      : in Gtk_Style;
+                       Font       : in Gdk.Font.Gdk_Font);
 
-   function Get_Bg (Style      : access Gtk_Style_Record;
+   function Get_Bg (Style      : in Gtk_Style;
                     State_Type : in Enums.Gtk_State_Type)
                     return          Gdk.Color.Gdk_Color;
 
-   function Get_Black (Style : access Gtk_Style_Record)
+   function Get_Black (Style : in Gtk_Style)
                        return Gdk.Color.Gdk_Color;
 
-   function Get_White (Style : access Gtk_Style_Record)
+   function Get_White (Style : in Gtk_Style)
                        return Gdk.Color.Gdk_Color;
 
    function Get_Style (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-                       return Gtk.Style.Gtk_Style_Record;
+                       return Gtk_Style;
    --  Warning: We return a record, not a pointer, since there is no way
    --  for us to automatically free the memory that would be associated with
    --  a pointer
 
-   function Get_Black_GC (Style : access Gtk_Style_Record)
+   function Get_Black_GC (Style : in Gtk_Style)
                           return Gdk.GC.Gdk_GC;
-   function Get_Bg_GC (Style : access Gtk_Style_Record;
+   function Get_Bg_GC (Style : in Gtk_Style;
                        State : in Enums.Gtk_State_Type)
                        return Gdk.GC.Gdk_GC;
-   function Get_White_GC (Style : access Gtk_Style_Record)
+   function Get_White_GC (Style : in Gtk_Style)
                           return Gdk.GC.Gdk_GC;
 
-   procedure Draw_Hline (Style      : access Gtk_Style_Record;
+   procedure Draw_Hline (Style      : in Gtk_Style;
                          Window     : in Gdk.Window.Gdk_Window;
                          State_Type : in Enums.Gtk_State_Type;
                          X1, X2     : in Gint;
                          Y          : in Gint);
 
-   procedure Draw_Vline (Style      : access Gtk_Style_Record;
+   procedure Draw_Vline (Style      : in Gtk_Style;
                          Window     : in Gdk.Window.Gdk_Window;
                          State_Type : in Enums.Gtk_State_Type;
                          Y1, Y2     : in Gint;
                          X          : in Gint);
 
-   procedure Draw_Shadow (Style       : access Gtk_Style_Record;
+   procedure Draw_Shadow (Style       : in Gtk_Style;
                           Window      : in Gdk.Window.Gdk_Window;
                           State_Type  : in Enums.Gtk_State_Type;
                           Shadow_Type : in Enums.Gtk_Shadow_Type;
@@ -117,14 +111,14 @@ package Gtk.Style is
                           Width       : in Gint;
                           Height      : in Gint);
 
-   procedure Draw_Polygon (Style      : access Gtk_Style_Record;
+   procedure Draw_Polygon (Style      : in Gtk_Style;
                            Window     : in Gdk.Window.Gdk_Window;
                            State_Type : in Enums.Gtk_State_Type;
                            Shadow_Type : in Enums.Gtk_Shadow_Type;
                            Points     : in Gdk.Types.Gdk_Points_Array;
                            Fill       : in Gint);
 
-   procedure Draw_Arrow (Style       : access Gtk_Style_Record;
+   procedure Draw_Arrow (Style       : in Gtk_Style;
                          Window      : in Gdk.Window.Gdk_Window;
                          State_Type  : in Enums.Gtk_State_Type;
                          Shadow_Type : in Enums.Gtk_Shadow_Type;
@@ -134,7 +128,7 @@ package Gtk.Style is
                          Width       : in Gint;
                          Height      : in Gint);
 
-   procedure Draw_Diamond (Style       : access Gtk_Style_Record;
+   procedure Draw_Diamond (Style       : in Gtk_Style;
                            Window      : in Gdk.Window.Gdk_Window;
                            State_Type  : in Enums.Gtk_State_Type;
                            Shadow_Type : in Enums.Gtk_Shadow_Type;
@@ -142,7 +136,7 @@ package Gtk.Style is
                            Width       : in Gint;
                            Height      : in Gint);
 
-   procedure Draw_Oval (Style       : access Gtk_Style_Record;
+   procedure Draw_Oval (Style       : in Gtk_Style;
                         Window      : in Gdk.Window.Gdk_Window;
                         State_Type  : in Enums.Gtk_State_Type;
                         Shadow_Type : in Enums.Gtk_Shadow_Type;
@@ -150,16 +144,16 @@ package Gtk.Style is
                         Width       : in Gint;
                         Height      : in Gint);
 
-   procedure Draw_String (Style       : access Gtk_Style_Record;
+   procedure Draw_String (Style       : in Gtk_Style;
                           Window      : in Gdk.Window.Gdk_Window;
                           State_Type  : in Enums.Gtk_State_Type;
                           X, Y        : in Gint;
                           Str         : in String);
 
-   procedure Ref (Object : access Gtk_Style_Record);
-   procedure Unref (Object : access Gtk_Style_Record);
+   procedure Ref (Object : in Gtk_Style);
+   procedure Unref (Object : in Gtk_Style);
 
 private
-   type Gtk_Style_Record is new Root_Type with null record;
+   type Gtk_Style is new Root_Type with null record;
 
 end Gtk.Style;
