@@ -202,9 +202,9 @@ package Gtk.Extra.Plot is
    ---------------------
 
    procedure Gtk_New (Plot     : out Gtk_Plot;
-                      Drawable : in Gdk.Drawable.Gdk_Drawable
-                        :=  Gdk.Drawable.Null_Drawable);
-   --  Creates a new plot, that will be displayed in Drawable.
+                      Drawable : in Gdk.Drawable.Gdk_Drawable :=
+                        Gdk.Drawable.Null_Drawable);
+   --  Create a new plot, that will be displayed in Drawable.
    --  All the dataset, labels, axis,... associated with the plot will be drawn
    --  in that drawable, which must have been created beforehand.
    --  Note that the drawable can also be set later with Set_Drawable.
@@ -212,9 +212,9 @@ package Gtk.Extra.Plot is
    procedure Gtk_New (Plot     : out Gtk_Plot;
                       Width    : in Gdouble;
                       Height   : in Gdouble;
-                      Drawable : in Gdk.Drawable.Gdk_Drawable
-                        := Gdk.Drawable.Null_Drawable);
-   --  Creates a new plot with a specific size.
+                      Drawable : in Gdk.Drawable.Gdk_Drawable :=
+                        Gdk.Drawable.Null_Drawable);
+   --  Create a new plot with a specific size.
 
    procedure Initialize (Plot     : access Gtk_Plot_Record;
                          Drawable : in Gdk.Drawable.Gdk_Drawable);
