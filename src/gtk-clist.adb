@@ -554,7 +554,8 @@ package body Gtk.Clist is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget  : access Gtk_Clist_Record; Columns : in Gint)
+   procedure Initialize
+     (Widget : access Gtk_Clist_Record'Class; Columns : in Gint)
    is
       function Internal (Columns : in Gint) return System.Address;
       pragma Import (C, Internal, "gtk_clist_new");
