@@ -8,6 +8,7 @@ The primary download site is http://gtkada.eu.org
 
 New features in 1.2.10/1.3.10 include:
 
+- RPMs available for Linux/86
 - Gtk.Type_Conversion is no longer needed for Gtk_List_Item
 - Gtkada.File_Selection_Dialog does not crash any more on directory selection
   under NT.
