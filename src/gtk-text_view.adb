@@ -919,19 +919,4 @@ package body Gtk.Text_View is
    --     return Internal (Get_Object (Text_View));
    --  end Get_Tabs;
 
-   ----------------
-   -- Get_Layout --
-   ----------------
-
-   function Get_Layout (Text_View : access Gtk_Text_View_Record)
-     return Gtk.Text_Layout.Gtk_Text_Layout
-   is
-      function Internal (Text_View : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_text_view_get_layout");
-      Stub : Gtk.Text_Layout.Gtk_Text_Layout_Record;
-   begin
-      return Gtk.Text_Layout.Gtk_Text_Layout
-        (Get_User_Data (Internal (Get_Object (Text_View)), Stub));
-   end Get_Layout;
-
 end Gtk.Text_View;

@@ -39,8 +39,8 @@ with Gtk.Enums;
 with Gtk.Text_Buffer;
 with Gtk.Text_Child;
 with Gtk.Text_Iter;
-with Gtk.Text_Layout;
 with Gtk.Text_Mark;
+with Gtk.Text_Attributes;
 with Gtk.Widget;
 
 package Gtk.Text_View is
@@ -389,12 +389,24 @@ package Gtk.Text_View is
    --                     return Pango_Tab_Array;
    --  ??? Needs pango binding to be bound. Is this procedure essential?
 
-   function Get_Layout (Text_View : access Gtk_Text_View_Record)
-     return Gtk.Text_Layout.Gtk_Text_Layout;
-   --  Return the associated Gtk_Text_Layout. This can be useful to set the
-   --  default font, for instance. The layout is only created when the widget
-   --  is realized.
-   --  ??? Verify that the layout is really created at this instant...
+--    function Get_Layout (Text_View : access Gtk_Text_View_Record)
+--      return Gtk.Text_Layout.Gtk_Text_Layout;
+--    --  Return the associated Gtk_Text_Layout. This can be useful to set the
+--    --  default font, for instance. The layout is only created when the widget
+--    --  is realized.
+--    --  ??? Verify that the layout is really created at this instant...
+
+--    function Get_Default_Attributes
+--      (Text_View : access Gtk_Text_View_Record)
+--      return Gtk.Text_Attributes.Gtk_Text_Attributes;
+   --  Note that the return value of this changes with the theme.
+   --  Obtains a copy of the default text attributes. These are the
+   --  attributes used for text unless a tag overrides them.
+   --  You'd typically pass the default attributes in to
+   --  gtk_text_tag_get_attributes() in order to get the
+   --  attributes in effect at a given text position.
+   --  The return value is a copy owned by the caller of this function,
+   --  and should be freed.
 
    ----------------
    -- Properties --
