@@ -1,8 +1,5 @@
 
-with System;
-with Ada.Command_Line;
 with Gtk.Signal;
-with Interfaces.C.Strings;
 
 package body Gtk is
 
@@ -41,28 +38,17 @@ package body Gtk is
    --------------
 
    procedure Gtk_Init is
-      use Ada.Command_Line;
       procedure Internal (Arg  : System.Address;
                           Argv : System.Address);
       pragma Import (C, Internal, "gtk_init");
 
-      Argc : Integer := Ada.Command_Line.Argument_Count;
-      type Argv_T is array (1 .. Argc) of Interfaces.C.Strings.chars_ptr;
-      Argv : Argv_T;
-
+      Argc : Integer := 0;
    begin
-      for I in 1 .. Argc loop
-         Argv (I) := Interfaces.C.Strings.New_String (Argument (I));
-      end loop;
-      if Argc = 0 then
-         Internal (Argc'Address, System.Null_Address);
-      else
-         Internal (Argc'Address, Argv (1)'Address);
-      end if;
-
-      for I in 1 .. Argc loop
-         Interfaces.C.Strings.Free (Argv (I));
-      end loop;
+      --  FIXME we have to pass the command line arguments to gtk_init,
+      --  FIXME so that -display,... are parsed.
+      --  FIXME We then have to rewrite some of Ada.Command_Line
+      --  FIXME functions, so that we skip already parsed arguments
+      Internal (Argc'Address, System.Null_Address);
    end Gtk_Init;
 
    --------------
