@@ -88,6 +88,7 @@ procedure Dynamic is
 
 begin
    Gtk.Main.Init;
+   Gtk.Type_Conversion.Init;
 
    Gtk_New (Window, Window_Toplevel);
    Set_Title (Window, "button with text");
