@@ -2791,7 +2791,11 @@ package body Gtkada.MDI is
    begin
       if Note /= null and then Child.State = Normal then
          Gtk_New (Event);
-         Set_Visible_Window (Event, False);
+         Set_Flags (Event, No_Window);
+
+         --  From gtk+ 2.4.0 on, we could use instead
+         --  Set_Visible_Window (Event, False);
+
          Gtk_New (Child.Tab_Label, Child.Short_Title.all);
 
          if Child.Icon /= null then
