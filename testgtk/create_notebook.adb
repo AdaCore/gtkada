@@ -274,7 +274,7 @@ package body Create_Notebook is
       Option_Menu     : Gtk_Option_Menu;
       Menu            : Gtk_Menu;
       Menu_Item       : Gtk_Radio_Menu_Item;
-      Group           : Gtk.Radio_Menu_Item.Group_List;
+      Group           : Gtk.Radio_Menu_Item.Widget_SList.GSlist;
       Button          : Gtk_Check_Button;
       Button2         : Gtk_Button;
    begin

@@ -13,7 +13,6 @@ with Gtk; use Gtk;
 
 package body Create_Paned is
 
-   package Button_Cb is new Signal.Object_Callback (Gtk_Button);
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
 
    Window : Gtk.Window.Gtk_Window;
