@@ -590,7 +590,7 @@ static guint sheet_signals[LAST_SIGNAL] = {0};
 GtkType
 gtk_sheet_get_type ()
 {
-  static guint sheet_type = 0;
+  static GtkType sheet_type = 0;
   if(!sheet_type){
 	GtkTypeInfo sheet_info =
         {
@@ -630,10 +630,10 @@ gtk_sheet_range_free (GtkSheetRange *range)
   g_free (range);
 }
 
-GType
+GtkType
 gtk_sheet_range_get_type (void)
 {
-  static GType sheet_range_type;
+  static GtkType sheet_range_type;
 
   if(!sheet_range_type)
   {
