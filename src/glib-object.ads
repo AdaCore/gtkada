@@ -135,7 +135,7 @@ package Glib.Object is
    function Lookup
      (Object : Glib.GType; Signal : String) return Glib.Signal_Id;
    --  Returns the signal Id associated with a specific Object/Signal pair.
-   --  Invalid_Signal_Id is returned if no such signal exists for Object.
+   --  Null_Signal_Id is returned if no such signal exists for Object.
    --  You can then use the Query procedure to get more information on the
    --  signal.
 
@@ -149,7 +149,7 @@ package Glib.Object is
    procedure Query (Id : Glib.Signal_Id; Result : out Signal_Query);
    --  Return the description associated with the signal Id. You can get the
    --  various fields from Query with one of the functions below.
-   --  Result is undefined if Id is Invalid_Signal_Id
+   --  Result is undefined if Id is Invalid_Signal_Id or Null_Signal_Id
 
    function Id (Q : Signal_Query) return Glib.Signal_Id;
    --  Return the signal Id. Each Id is specific to a widget/signal name pair.
