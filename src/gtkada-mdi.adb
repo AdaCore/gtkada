@@ -1,4 +1,4 @@
------------------------------------------------------------------------
+------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --                 Copyright (C) 2001-2003 ACT-Europe                --
@@ -76,6 +76,7 @@ with Gtk.GEntry;       use Gtk.GEntry;
 with Gtk.Handlers;
 with Gtk.Label;        use Gtk.Label;
 with Pango.Layout;     use Pango.Layout;
+with Gtkada.Multi_Paned; use Gtkada.Multi_Paned;
 with Gtk.Main;         use Gtk.Main;
 pragma Elaborate_All (Gtk.Main);
 
@@ -98,6 +99,9 @@ with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Tags;         use Ada.Tags;
 with System;           use System;
+
+with Ada.Exceptions; use Ada.Exceptions;
+with GNAT.IO; use GNAT.IO;
 
 package body Gtkada.MDI is
 
@@ -287,7 +291,10 @@ package body Gtkada.MDI is
    --  Recompute the position of the four handles on each side of the MDI.
 
    procedure Create_Notebook
-     (MDI : access MDI_Window_Record'Class; Side : Dock_Side);
+     (MDI        : access MDI_Window_Record'Class;
+      Side       : Dock_Side;
+      Notebook   : in out Gtk_Notebook;
+      Put_In_MDI : Boolean := True);
    --  Create the notebook that goes to one of the sides of MDI, or to the
    --  middle. If this notebook already exists, its tabs are shown, since new
    --  children will be added to it.
@@ -384,11 +391,22 @@ package body Gtkada.MDI is
    --  Remove Child from MDI, and put it under control of a dock box, on the
    --  specific Side.
 
+   procedure Put_In_Notebook
+     (MDI   : access MDI_Window_Record'Class;
+      Side  : Dock_Side;
+      Note  : in out Gtk_Notebook;
+      Child : access MDI_Child_Record'Class);
+   --  Same as above, but an explicit Note can be specified
+
    procedure Remove_From_Notebook
      (Child : access MDI_Child_Record'Class; Side : Dock_Side);
    --  Remove Child from the notebook it belongs to.
    --  Child will be destroyed, unless you Ref' it first.
    --  The notebook is destroyed if Child was the last item.
+
+   function Get_Notebook
+     (Child : access MDI_Child_Record'Class) return Gtk_Notebook;
+   --  Return the notebook that directly contains Child
 
    function Get_Child_From_Page (Page : Gtk_Widget) return MDI_Child;
    --  Return the MDI child contained in the notebook page.
@@ -406,6 +424,8 @@ package body Gtkada.MDI is
    procedure Cascade_Cb    (MDI   : access Gtk_Widget_Record'Class);
    procedure Tile_H_Cb     (MDI   : access Gtk_Widget_Record'Class);
    procedure Tile_V_Cb     (MDI   : access Gtk_Widget_Record'Class);
+   procedure Split_H_Cb     (MDI   : access Gtk_Widget_Record'Class);
+   procedure Split_V_Cb     (MDI   : access Gtk_Widget_Record'Class);
    procedure Dock_Cb       (MDI   : access Gtk_Widget_Record'Class);
    procedure Float_Cb      (MDI   : access Gtk_Widget_Record'Class);
    procedure Close_Cb      (MDI   : access Gtk_Widget_Record'Class);
@@ -417,6 +437,8 @@ package body Gtkada.MDI is
 
    procedure Set_Focus_Child_MDI
      (MDI : access Gtk_Widget_Record'Class; Args : Gtk_Args);
+   procedure Set_Focus_Child_Notebook
+     (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args);
    --  Called when the widget that has the keyboard focus has changed. This is
    --  used to automatically select its parent MDI_Child.
 
@@ -456,15 +478,57 @@ package body Gtkada.MDI is
       Event : Gdk_Event) return Boolean;
    --  Handle key events in the selection dialog
 
-   procedure Update_Tab_Label (Child : access MDI_Child_Record'Class);
+   procedure Update_Tab_Label
+     (Child : access MDI_Child_Record'Class);
    --  Return the tab to use in the notebooks containing Child
 
    procedure Update_Menu_Item (Child : access MDI_Child_Record'Class);
    --  Update the menu entry for Child
 
+   function Find_Current_In_Central
+     (MDI : access MDI_Window_Record'Class) return Gtk_Notebook;
+   --  Return the notebook that last had the focus in the central area, or null
+   --  if there is nothing in the central area.
+
+   procedure Removed_From_Notebook
+     (Note : access Gtk_Widget_Record'Class; Args  : Gtk_Args);
+   --  Called when a child is removed from one of the notebooks or a paned in
+   --  the central area.
+
    procedure Emit_By_Name_Child
      (Object : System.Address; Name : String; Child : System.Address);
    pragma Import (C, Emit_By_Name_Child, "g_signal_emit_by_name");
+
+   ------------------
+   -- Get_Notebook --
+   ------------------
+
+   function Get_Notebook
+     (Child : access MDI_Child_Record'Class) return Gtk_Notebook
+   is
+      Parent : Gtk_Widget;
+   begin
+      case Child.State is
+         when Docked    => return Child.MDI.Docks (Child.Dock);
+         when Floating  => return null;
+         when Iconified => return null;
+         when Normal    =>
+            if Child.MDI.Central.Children_Are_Maximized then
+               Parent := Gtk_Widget (Child);
+               loop
+                  Parent := Get_Parent (Parent);
+                  exit when Parent = Gtk_Widget (Child.MDI.Central.Container)
+                    or else Parent = null;
+
+                  if Parent.all in Gtk_Notebook_Record'Class then
+                     return Gtk_Notebook (Parent);
+                  end if;
+               end loop;
+            end if;
+
+            return null;
+      end case;
+   end Get_Notebook;
 
    -------------------------
    -- Set_Focus_Child_MDI --
@@ -489,6 +553,21 @@ package body Gtkada.MDI is
       --  No need to call the parent's set_focus_child, this is called
       --  automatically when the signal is propagated.
    end Set_Focus_Child_MDI;
+
+   ------------------------------
+   -- Set_Focus_Child_Notebook --
+   ------------------------------
+
+   procedure Set_Focus_Child_Notebook
+     (Note : access Gtk_Widget_Record'Class; Args : Gtk_Args)
+   is
+      pragma Unreferenced (Note);
+      Widget : constant Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
+   begin
+      if Widget /= null then
+         Set_Focus_Child (MDI_Child (Widget));
+      end if;
+   end Set_Focus_Child_Notebook;
 
    ----------------------------------
    -- Set_Focus_Child_MDI_Floating --
@@ -575,22 +654,24 @@ package body Gtkada.MDI is
          Type_Name    => "GtkAdaMDI",
          Parameters   => Signal_Parameters);
 
-      Gtk_New (MDI.Layout);
-      Set_Has_Window (MDI.Layout, True);
+      Gtk_New (MDI.Central.Layout);
+      Set_Has_Window (MDI.Central.Layout, True);
       Gtk.Object.Initialize_Class_Record
-        (MDI.Layout,
+        (MDI.Central.Layout,
          Signals      => No_Signals,
          Class_Record => MDI_Layout_Class_Record,
          Type_Name    => "GtkAdaMDI_Layout");
+      Put (MDI, MDI.Central.Layout, Drop_Area_Thickness, Drop_Area_Thickness);
+      Set_Dnd_Target (MDI_Window (MDI).Central.Layout);
 
-      Set_Dnd_Target (MDI_Window (MDI).Layout);
-
-      Put (MDI, MDI.Layout, Drop_Area_Thickness, Drop_Area_Thickness);
+      Gtk_New (MDI.Central.Container);
+      Set_Child_Visible (MDI.Central.Container, False);
+      Put (MDI, MDI.Central.Container, 0, 0);
 
       Widget_Callback.Connect
         (MDI, "realize", Widget_Callback.To_Marshaller (Realize_MDI'Access));
       Widget_Callback.Object_Connect
-        (MDI.Layout, "realize",
+        (MDI.Central.Layout, "realize",
          Widget_Callback.To_Marshaller (Realize_MDI_Layout'Access), MDI);
       Widget_Callback.Connect
         (MDI, "destroy", Widget_Callback.To_Marshaller (Destroy_MDI'Access));
@@ -981,8 +1062,9 @@ package body Gtkada.MDI is
          if Background_Color /= Null_Color then
             Set_Background (Get_Window (MDI), Background_Color);
 
-            if Realized_Is_Set (MDI.Layout) then
-               Set_Background (Get_Window (MDI.Layout), Background_Color);
+            if Realized_Is_Set (MDI.Central.Layout) then
+               Set_Background
+                 (Get_Window (MDI.Central.Layout), Background_Color);
             end if;
 
             Need_Redraw := True;
@@ -1011,7 +1093,10 @@ package body Gtkada.MDI is
    procedure Realize_MDI_Layout (MDI : access Gtk_Widget_Record'Class) is
       M : constant MDI_Window := MDI_Window (MDI);
    begin
-      Gdk.Window.Set_Background (Get_Window (M.Layout), M.Background_Color);
+      Gdk.Window.Set_Background
+        (Get_Window (M.Central.Layout), M.Background_Color);
+      Gdk.Window.Set_Background
+        (Get_Window (M), M.Background_Color);
    end Realize_MDI_Layout;
 
    -----------------
@@ -1068,6 +1153,7 @@ package body Gtkada.MDI is
 
       Destroy (Cursor);
       Destroy (Window_Attr);
+      Queue_Resize (MDI);
    end Realize_MDI;
 
    ----------------
@@ -1518,10 +1604,10 @@ package body Gtkada.MDI is
       end if;
 
       if not MDI.All_Floating_Mode then
-         if MDI.Children_Are_Maximized then
-            Size_Allocate (MDI.Docks (None), Alloc);
+         if MDI.Central.Children_Are_Maximized then
+            Size_Allocate (MDI.Central.Container, Alloc);
          else
-            Size_Allocate (MDI.Layout, Alloc);
+            Size_Allocate (MDI.Central.Layout, Alloc);
          end if;
       end if;
 
@@ -1600,7 +1686,7 @@ package body Gtkada.MDI is
             C.Uniconified_Height := Req.Height;
          end if;
 
-         if (not M.Children_Are_Maximized and then C.State = Normal)
+         if (not M.Central.Children_Are_Maximized and then C.State = Normal)
            or else (C.Uniconified_Width = -1 or else C.Uniconified_Height = -1)
          then
             Alloc := (C.X, C.Y, Allocation_Int (C.Uniconified_Width),
@@ -1667,10 +1753,13 @@ package body Gtkada.MDI is
       Set_Focus_Child (C);
 
    exception
-      when others =>
+      when E : others =>
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the button in Initialize
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
          null;
    end Iconify_Child;
 
@@ -1764,10 +1853,13 @@ package body Gtkada.MDI is
       end if;
 
    exception
-      when others =>
+      when E : others =>
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the button in Initialize
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
          null;
    end Close_Child;
 
@@ -1779,6 +1871,7 @@ package body Gtkada.MDI is
       use type Widget_SList.GSlist;
       C : MDI_Child := MDI_Child (Child);
       MDI : constant MDI_Window := C.MDI;
+      Note : Gtk_Notebook;
 
    begin
       --  We know at that stage that Child has already been unparent-ed
@@ -1811,12 +1904,12 @@ package body Gtkada.MDI is
          --  the notebook.
 
          if C.State = Normal
-           and then C.MDI.Children_Are_Maximized
+           and then C.MDI.Central.Children_Are_Maximized
          then
-            Remove_From_Notebook (C, None);
-            Set_Show_Tabs
-              (C.MDI.Docks (None),
-               Get_Nth_Page (C.MDI.Docks (None), 1) /= null);
+            Note := Get_Notebook (C);
+            if Note /= null then
+               Remove_From_Notebook (C, None);
+            end if;
 
          elsif Get_Parent (C) /= null then
             Remove (Gtk_Container (Get_Parent (C)), C);
@@ -2190,7 +2283,7 @@ package body Gtkada.MDI is
                      or else C.State = Iconified
                      or else (C.State = Docked and then C.Dock = None))
          then
-            Maximize_Children (MDI, not MDI.Children_Are_Maximized);
+            Maximize_Children (MDI, not MDI.Central.Children_Are_Maximized);
          end if;
 
          return False;
@@ -2216,7 +2309,7 @@ package body Gtkada.MDI is
 
       --  Can't move items inside a notebook
       if C.State = Docked
-        or else (C.State = Normal and then MDI.Children_Are_Maximized)
+        or else (C.State = Normal and then MDI.Central.Children_Are_Maximized)
       then
          return True;
       end if;
@@ -2249,13 +2342,13 @@ package body Gtkada.MDI is
          Time => 0);
       Destroy (Cursor);
 
-      if not MDI.Children_Are_Maximized
+      if not MDI.Central.Children_Are_Maximized
         and then
         ((not MDI.Opaque_Resize and then MDI.Current_Cursor /= Left_Ptr)
          or else (not MDI.Opaque_Move and then MDI.Current_Cursor = Left_Ptr))
       then
          Draw_Rectangle
-           (Get_Window (MDI.Layout),
+           (Get_Window (MDI.Central.Layout),
             MDI.Xor_GC,
             Filled => False,
             X => MDI.Current_X,
@@ -2298,23 +2391,23 @@ package body Gtkada.MDI is
 
       if Alloc.X + Alloc.Width < Buttons_Width then
          Alloc.X := Buttons_Width - Alloc.Width;
-      elsif Alloc.X > Get_Allocation_Width (MDI.Layout) - Minimal then
-         Alloc.X := Get_Allocation_Width (MDI.Layout) - Minimal;
+      elsif Alloc.X > Get_Allocation_Width (MDI.Central.Layout) - Minimal then
+         Alloc.X := Get_Allocation_Width (MDI.Central.Layout) - Minimal;
       end if;
 
       if Alloc.Y + MDI.Title_Bar_Height < Minimal then
          Alloc.Y := Minimal - MDI.Title_Bar_Height;
-      elsif Alloc.Y > Get_Allocation_Height (MDI.Layout) - Minimal then
-         Alloc.Y := Get_Allocation_Height (MDI.Layout) - Minimal;
+      elsif Alloc.Y > Get_Allocation_Height (MDI.Central.Layout) - Minimal then
+         Alloc.Y := Get_Allocation_Height (MDI.Central.Layout) - Minimal;
       end if;
 
-      if not MDI.Children_Are_Maximized
+      if not MDI.Central.Children_Are_Maximized
         and then ((not MDI.Opaque_Resize
                     and then MDI.Current_Cursor /= Left_Ptr)
           or else (not MDI.Opaque_Move and then MDI.Current_Cursor = Left_Ptr))
       then
          Draw_Rectangle
-           (Get_Window (MDI.Layout),
+           (Get_Window (MDI.Central.Layout),
             MDI.Xor_GC,
             Filled => False,
             X => Alloc.X,
@@ -2369,7 +2462,7 @@ package body Gtkada.MDI is
         and then (Get_State (Event) and Button1_Mask) /= 0
         and then ((Get_State (Event) and Control_Mask) /= 0
                   or else (C.State /= Normal and then C.State /= Iconified)
-                  or else C.MDI.Children_Are_Maximized)
+                  or else C.MDI.Central.Children_Are_Maximized)
         and then Gtk.Dnd.Check_Threshold
           (C, MDI.X_Root, MDI.Y_Root, Gint (Get_X_Root (Event)),
            Gint (Get_Y_Root (Event)))
@@ -2397,14 +2490,14 @@ package body Gtkada.MDI is
         and then MDI.Selected_Child /= null
         and then MDI.X_Root /= -1
       then
-         if not MDI.Children_Are_Maximized
+         if not MDI.Central.Children_Are_Maximized
            and then
            ((not MDI.Opaque_Resize and then MDI.Current_Cursor /= Left_Ptr)
             or else (not MDI.Opaque_Move
                      and then MDI.Current_Cursor = Left_Ptr))
          then
             Draw_Rectangle
-              (Get_Window (MDI.Layout),
+              (Get_Window (MDI.Central.Layout),
                MDI.Xor_GC,
                Filled => False,
                X => MDI.Current_X,
@@ -2480,11 +2573,11 @@ package body Gtkada.MDI is
                Allocation_Int (MDI.Current_H));
             Size_Allocate (Child, Alloc);
 
-         elsif not MDI.Children_Are_Maximized then
+         elsif not MDI.Central.Children_Are_Maximized then
             MDI.Current_W := W;
             MDI.Current_H := H;
             Draw_Rectangle
-              (Get_Window (MDI.Layout),
+              (Get_Window (MDI.Central.Layout),
                MDI.Xor_GC,
                Filled => False,
                X      => MDI.Current_X,
@@ -2496,7 +2589,7 @@ package body Gtkada.MDI is
       --  A motion_event ? change the cursor if needed
 
       elsif C.State = Normal
-        and then not MDI.Children_Are_Maximized
+        and then not MDI.Central.Children_Are_Maximized
       then
          Delta_X := Gint (Get_X (Event));
          Delta_Y := Gint (Get_Y (Event));
@@ -2794,18 +2887,18 @@ package body Gtkada.MDI is
 
       Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
 
-      if not MDI.Children_Are_Maximized
+      if not MDI.Central.Children_Are_Maximized
         and then MDI.Default_X + Threshold >
-        Gint (Get_Allocation_Width (MDI.Layout))
+        Gint (Get_Allocation_Width (MDI.Central.Layout))
       then
          MDI.Default_X := 10;
       else
          MDI.Default_X := MDI.Default_X + 10;
       end if;
 
-      if not MDI.Children_Are_Maximized
+      if not MDI.Central.Children_Are_Maximized
         and then MDI.Default_Y + Threshold >
-        Gint (Get_Allocation_Height (MDI.Layout))
+        Gint (Get_Allocation_Height (MDI.Central.Layout))
       then
          MDI.Default_Y := 10;
       else
@@ -2839,10 +2932,14 @@ package body Gtkada.MDI is
 
       if MDI.All_Floating_Mode then
          Float_Child (C, True);
-      elsif MDI.Children_Are_Maximized then
+      elsif MDI.Central.Children_Are_Maximized then
+         --  Pretend C is not in the central area, since Put_In_Notebook needs
+         --  to find the current child to know which notebook of the splitted
+         --  area to use.
+         C.State := Iconified;
          Put_In_Notebook (MDI, None, C);
       else
-         Put (MDI.Layout, C, 0, 0);
+         Put (MDI.Central.Layout, C, 0, 0);
       end if;
 
       if MDI.Menu /= null then
@@ -3066,6 +3163,7 @@ package body Gtkada.MDI is
 
    procedure Lower_Child (Child : access MDI_Child_Record'Class) is
       Num : Gint;
+      Note : Gtk_Notebook;
    begin
       Ref (Child);
       Remove (Child.MDI.Items, Gtk_Widget (Child));
@@ -3084,10 +3182,10 @@ package body Gtkada.MDI is
          end if;
 
       elsif Child.State = Normal
-        and then Child.MDI.Children_Are_Maximized
+        and then Child.MDI.Central.Children_Are_Maximized
       then
-         Set_Current_Page
-           (Child.MDI.Docks (None), Page_Num (Child.MDI.Docks (None), Child));
+         Note := Get_Notebook (Child);
+         Set_Current_Page (Note, Page_Num (Note, Child));
 
       elsif Realized_Is_Set (Child) then
          Gdk.Window.Lower (Get_Window (Child));
@@ -3104,6 +3202,7 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Raise_Child (Child : access MDI_Child_Record'Class) is
+      Note : Gtk_Notebook;
    begin
       Ref (Child);
       Remove (Child.MDI.Items, Gtk_Widget (Child));
@@ -3113,17 +3212,12 @@ package body Gtkada.MDI is
       --  For an docked item, we in fact want to raise its parent dock,
       --  and make sure the current page in that dock is the correct one.
 
-      if Child.State = Docked then
-         Set_Current_Page
-           (Child.MDI.Docks (Child.Dock),
-            Page_Num (Child.MDI.Docks (Child.Dock), Child));
-
-      elsif Child.State = Normal
-        and then Child.MDI.Children_Are_Maximized
+      if Child.State = Docked
+        or else (Child.State = Normal
+                 and then Child.MDI.Central.Children_Are_Maximized)
       then
-         Set_Current_Page
-           (Child.MDI.Docks (None),
-            Page_Num (Child.MDI.Docks (None), Child));
+         Note := Get_Notebook (Child);
+         Set_Current_Page (Note, Page_Num (Note, Child));
 
       elsif Child.State = Floating
         and then Realized_Is_Set (Child.Initial)
@@ -3308,14 +3402,14 @@ package body Gtkada.MDI is
       Max_W, Max_H : Gint;
 
    begin
-      if MDI.Children_Are_Maximized then
-         Max_W := Gint (Get_Allocation_Width (MDI.Docks (None)));
-         Max_H := Gint (Get_Allocation_Height (MDI.Docks (None)));
+      if MDI.Central.Children_Are_Maximized then
+         Max_W := Gint (Get_Allocation_Width (MDI.Central.Container));
+         Max_H := Gint (Get_Allocation_Height (MDI.Central.Container));
          Maximize_Children (MDI, False);
 
       else
-         Max_W := Gint (Get_Allocation_Width (MDI.Layout));
-         Max_H := Gint (Get_Allocation_Height (MDI.Layout));
+         Max_W := Gint (Get_Allocation_Width (MDI.Central.Layout));
+         Max_H := Gint (Get_Allocation_Height (MDI.Central.Layout));
       end if;
 
       while List /= Null_List loop
@@ -3367,14 +3461,14 @@ package body Gtkada.MDI is
       Max_W, Max_H : Gint;
 
    begin
-      if MDI.Children_Are_Maximized then
-         Max_W := Gint (Get_Allocation_Width (MDI.Docks (None)));
-         Max_H := Gint (Get_Allocation_Height (MDI.Docks (None)));
+      if MDI.Central.Children_Are_Maximized then
+         Max_W := Gint (Get_Allocation_Width (MDI.Central.Container));
+         Max_H := Gint (Get_Allocation_Height (MDI.Central.Container));
          Maximize_Children (MDI, False);
 
       else
-         Max_W := Gint (Get_Allocation_Width (MDI.Layout));
-         Max_H := Gint (Get_Allocation_Height (MDI.Layout));
+         Max_W := Gint (Get_Allocation_Width (MDI.Central.Layout));
+         Max_H := Gint (Get_Allocation_Height (MDI.Central.Layout));
       end if;
 
       while List /= Null_List loop
@@ -3476,10 +3570,10 @@ package body Gtkada.MDI is
          Minimize_Child (Child, False);
          Dock_Child (Child, False);
 
-         if Child.MDI.Children_Are_Maximized then
+         if Child.MDI.Central.Children_Are_Maximized then
             Remove_From_Notebook (Child, None);
          else
-            Remove (Child.MDI.Layout, Child);
+            Remove (Child.MDI.Central.Layout, Child);
          end if;
 
          if (Child.Flags and Float_As_Transient) /= 0 then
@@ -3544,10 +3638,10 @@ package body Gtkada.MDI is
 
          Destroy (Win);
 
-         if Child.MDI.Children_Are_Maximized then
+         if Child.MDI.Central.Children_Are_Maximized then
             Put_In_Notebook (Child.MDI, None, Child);
          else
-            Put (Child.MDI.Layout, Child, Child.X, Child.Y);
+            Put (Child.MDI.Central.Layout, Child, Child.X, Child.Y);
             Alloc := (Child.X, Child.Y,
                       Allocation_Int (Child.Uniconified_Width),
                       Allocation_Int (Child.Uniconified_Height));
@@ -3575,33 +3669,37 @@ package body Gtkada.MDI is
    ---------------------
 
    procedure Create_Notebook
-     (MDI : access MDI_Window_Record'Class; Side : Dock_Side) is
+     (MDI        : access MDI_Window_Record'Class;
+      Side       : Dock_Side;
+      Notebook   : in out Gtk_Notebook;
+      Put_In_MDI : Boolean := True) is
    begin
-      if MDI.Docks (Side) = null then
-         Gtk_New (MDI.Docks (Side));
-         Set_Tab_Pos (MDI.Docks (Side), Pos_Bottom);
-         Set_Show_Tabs (MDI.Docks (Side), False);
-         Set_Show_Border (MDI.Docks (Side), False);
-         Set_Border_Width (MDI.Docks (Side), 0);
+      if Notebook = null then
+         Gtk_New (Notebook);
+         Set_Tab_Pos (Notebook, Pos_Bottom);
+         Set_Show_Tabs (Notebook, False);
+         Set_Show_Border (Notebook, False);
+         Set_Border_Width (Notebook, 0);
+         Set_Scrollable (Notebook);
 
-         Set_Scrollable (MDI.Docks (Side));
+         Widget_Callback.Connect
+           (Notebook, "remove", Removed_From_Notebook'Access);
+         Widget_Callback.Connect
+           (Notebook, "set_focus_child", Set_Focus_Child_Notebook'Access);
 
-         --  Coordinates don't matter, they are set in Size_Allocate_MDI.
+         if Put_In_MDI then
+            --  Coordinates don't matter, they are set in Size_Allocate_MDI.
+            Put (MDI, Notebook, 0, 0);
 
-         Put (MDI, MDI.Docks (Side), 0, 0);
+            --   Size to be computed
+            if Side /= None then
+               MDI.Docks_Size (Side) := -1;
+            end if;
 
-         --   Size to be computed
-
-         if Side /= None then
-            MDI.Docks_Size (Side) := -1;
+            Show_All (Notebook);
          end if;
 
-         Show_All (MDI.Docks (Side));
-         Set_Dnd_Target (MDI.Docks (Side));
-
-      else
-         Set_Show_Tabs
-           (MDI.Docks (Side), Get_Nth_Page (MDI.Docks (Side), 0) /= null);
+         Set_Dnd_Target (Notebook);
       end if;
    end Create_Notebook;
 
@@ -3617,10 +3715,12 @@ package body Gtkada.MDI is
       Pixmap : Gtk_Pixmap;
       Tab   : Gtk_Widget;
       Side  : Dock_Side := Child.Dock;
+      Note  : constant Gtk_Notebook := Get_Notebook (Child);
    begin
-      if Child.State = Docked
-        or else (Child.State = Normal
-                 and then Child.MDI.Children_Are_Maximized)
+      if Note /= null
+        and then (Child.State = Docked
+                  or else (Child.State = Normal
+                           and then Child.MDI.Central.Children_Are_Maximized))
       then
          if Child.State = Normal then
             Side := None;
@@ -3641,7 +3741,7 @@ package body Gtkada.MDI is
             Add (Event, Child.Tab_Label);
          end if;
 
-         Set_Tab_Label (Child.MDI.Docks (Side), Child, Event);
+         Set_Tab_Label (Note, Child, Event);
          Show_All (Event);
 
          Return_Callback.Object_Connect
@@ -3666,7 +3766,31 @@ package body Gtkada.MDI is
       Side  : Dock_Side;
       Child : access MDI_Child_Record'Class)
    is
+      Note : Gtk_Notebook;
+   begin
+      if Side = None then
+         --  Find the last child that had the focus in the central area, and
+         --  use that notebook
+         Note := Find_Current_In_Central (MDI);
+         Put_In_Notebook (MDI, Side, Note, Child);
+      else
+         Put_In_Notebook (MDI, Side, Note, Child);
+      end if;
+   end Put_In_Notebook;
+
+   ---------------------
+   -- Put_In_Notebook --
+   ---------------------
+
+   procedure Put_In_Notebook
+     (MDI   : access MDI_Window_Record'Class;
+      Side  : Dock_Side;
+      Note  : in out Gtk_Notebook;
+      Child : access MDI_Child_Record'Class)
+   is
       Label : Gtk_Label;
+      List : Widget_List.Glist;
+      C : MDI_Child;
    begin
       --  Embed the contents of the child into the notebook, and mark
       --  Child as docked, so that we can't manipulate it afterwards.
@@ -3679,16 +3803,16 @@ package body Gtkada.MDI is
                Remove_From_Notebook (Child, Child.Dock);
 
             when Normal =>
-               if not MDI.Children_Are_Maximized
-                 or else Page_Num (MDI.Docks (None), Child) = -1
+               if not MDI.Central.Children_Are_Maximized
+                 or else Get_Notebook (Child) = null
                then
-                  Remove (MDI.Layout, Child);
+                  Remove (MDI.Central.Layout, Child);
                else
-                  Remove_From_Notebook (Child, None);
+                  Remove (Gtk_Notebook (Get_Parent (Child)), Child);
                end if;
 
             when Iconified =>
-               Remove (MDI.Layout, Child);
+               Remove (MDI.Central.Layout, Child);
 
             when Floating =>
                null;
@@ -3696,14 +3820,24 @@ package body Gtkada.MDI is
       end if;
 
       if Side = None then
+         if Note = null then
+            Note := Find_Current_In_Central (MDI);
+            if Note = null then
+               Create_Notebook (MDI, None, Note, Put_In_MDI => False);
+               Add_Child (MDI.Central.Container, Note);
+            end if;
+         end if;
+
          Child.State := Normal;
+         Append_Page (Note, Child);
       else
          Child.State := Docked;
+         Create_Notebook (MDI, Side, MDI.Docks (Side));
+         Note := MDI.Docks (Side);
+         Append_Page (Note, Child);
       end if;
 
-      Create_Notebook (MDI, Side);
-
-      Append_Page (MDI.Docks (Side), Child);
+      Set_Show_Tabs (Note, Get_Nth_Page (Note, 1) /= null);
       Update_Tab_Label (Child);
 
       Unref (Child);
@@ -3713,6 +3847,41 @@ package body Gtkada.MDI is
       end if;
    end Put_In_Notebook;
 
+   -----------------------------
+   -- Find_Current_In_Central --
+   -----------------------------
+
+   function Find_Current_In_Central
+     (MDI : access MDI_Window_Record'Class) return Gtk_Notebook
+   is
+      List : Widget_List.Glist := MDI.Items;
+      C    : MDI_Child;
+      Note : Gtk_Notebook;
+   begin
+      --  Find the last child that had the focus in the central area
+      while List /= Widget_List.Null_List loop
+         C := MDI_Child (Get_Data (List));
+         if C.State = Normal then
+            Note := Get_Notebook (C);
+            if Note /= null then
+               return Note;
+            end if;
+         end if;
+         List := Next (List);
+      end loop;
+
+      --  If there is only one child to the central paned, this is the central
+      --  notebook
+
+      List := Get_Children (MDI.Central.Container);
+      if Length (List) = 1 then
+         Note := Gtk_Notebook (Get_Data (List));
+      end if;
+      Free (List);
+
+      return Note;
+   end Find_Current_In_Central;
+
    --------------------------
    -- Remove_From_Notebook --
    --------------------------
@@ -3720,30 +3889,24 @@ package body Gtkada.MDI is
    procedure Remove_From_Notebook
      (Child : access MDI_Child_Record'Class; Side : Dock_Side)
    is
-      Note : constant Gtk_Notebook := Child.MDI.Docks (Side);
+      Note : Gtk_Notebook := Get_Notebook (Child);
       Page : constant Gint := Page_Num (Note, Child);
       MDI  : constant MDI_Window := MDI_Window (Child.MDI);
+      P    : Gtk_Widget;
    begin
       if Page /= -1 then
-         Child.Tab_Label := null;
          Ref (Child);
-
-         --  Do not use Remove() below, since it will generate random SE in dnd
-         --  operations.
-         Unparent (Child);
-
-         Remove_Page (Note, Page);
+         Remove (Note, Child);
       end if;
 
-      if Get_Nth_Page (Note, 0) = null
+      if (Note = null
+          or else Get_Nth_Page (Note, 0) = null)
         and then Side /= None
       then
          Destroy (MDI.Docks (Side));
          MDI.Docks (Side) := null;
          MDI.Docks_Size (Side) := 0;
          Reposition_Handles (MDI);
-      else
-         Set_Show_Tabs (Note, Get_Nth_Page (Note, 1) /= null);
       end if;
 
       Child.State := Normal;
@@ -3797,11 +3960,11 @@ package body Gtkada.MDI is
          Ref (Child);
          Remove_From_Notebook (Child, Child.Dock);
 
-         if MDI.Children_Are_Maximized then
+         if MDI.Central.Children_Are_Maximized then
             Put_In_Notebook (MDI, None, Child);
 
          else
-            Put (MDI.Layout, Child, 0, 0);
+            Put (MDI.Central.Layout, Child, 0, 0);
 
             --  If the child was at least allocated once before (which doesn't
             --  happen if we are destroying the MDI when it hasn't been mapped
@@ -3871,7 +4034,8 @@ package body Gtkada.MDI is
          List := First (MDI.Items);
          Child.X := 0;
          Child.Y := Gint'Max
-           (0, Gint (Get_Allocation_Height (MDI.Layout)) - Icons_Height);
+           (0,
+            Gint (Get_Allocation_Height (MDI.Central.Layout)) - Icons_Height);
 
          --  Find the best placement for the icon
 
@@ -3881,7 +4045,7 @@ package body Gtkada.MDI is
             if C2 /= MDI_Child (Child) and then C2.State = Iconified then
                if abs (C2.Y - Child.Y) / Icons_Height <= 1 then
                   if C2.X + Icons_Width >=
-                    Gint (Get_Allocation_Width (MDI.Layout))
+                    Gint (Get_Allocation_Width (MDI.Central.Layout))
                   then
                      Child.X := 0;
                      Child.Y := C2.Y - Icons_Height;
@@ -3931,57 +4095,53 @@ package body Gtkada.MDI is
       List      : Widget_List.Glist := Last (MDI.Items);
       C         : MDI_Child;
       Old_Focus : constant MDI_Child := MDI.Focus_Child;
-      Created   : Boolean := False;
+      Note      : Gtk_Notebook;
 
    begin
       if MDI.All_Floating_Mode then
          return;
       end if;
 
-      if Maximize and then not MDI.Children_Are_Maximized then
-         MDI.Children_Are_Maximized := True;
-         if MDI.Docks (None) /= null then
-            Set_Child_Visible (MDI.Docks (None), True);
-         else
-            Create_Notebook (MDI, None);
-         end if;
+      if Maximize and then not MDI.Central.Children_Are_Maximized then
+         MDI.Central.Children_Are_Maximized := True;
 
          while List /= Null_List loop
             C := MDI_Child (Get_Data (List));
             List := Prev (List);
 
             if C.State = Normal or else C.State = Iconified then
-               Created := True;
                Put_In_Notebook (MDI, None, C);
             end if;
          end loop;
 
-         Set_Child_Visible (MDI.Layout, False);
+         Set_Child_Visible (MDI.Central.Layout, False);
+         Set_Child_Visible (MDI.Central.Container, True);
+         Show_All (MDI.Central.Container);
+         Hide_All (MDI.Central.Layout);
 
-      elsif not Maximize and then MDI.Children_Are_Maximized then
+      elsif not Maximize and then MDI.Central.Children_Are_Maximized then
          --  The middle notebook was already destroyed by the last call to
          --  Remove_From_Notebook in the above loop
 
-         Set_Child_Visible (MDI.Layout, True);
+         Set_Child_Visible (MDI.Central.Layout, True);
+         Set_Child_Visible (MDI.Central.Container, False);
 
-         loop
-            C := MDI_Child (Get_Nth_Page (MDI.Docks (None), 0));
-            exit when C = null;
-
-            --  Remove from middle notebook and put in layout
-            Ref (C);
-            Remove_From_Notebook (C, None);
-            Put (MDI.Layout, C, 0, 0);
-            Unref (C);
+         while List /= Null_List loop
+            C := MDI_Child (Get_Data (List));
+            if C.State = Normal then
+               --  Remove from middle notebook and put in layout
+               Ref (C);
+               Remove (Gtk_Container (Get_Parent (C)), C);
+               Put (MDI.Central.Layout, C, 0, 0);
+               Unref (C);
+            end if;
+            List := Prev (List);
          end loop;
 
-         --  If the user has done a Show_All on the MDI, it is possible that
-         --  both the layout and the notebook are made visible, so it's time to
-         --  hide one of them.
-         if MDI.Docks (None) /= null then
-            Set_Child_Visible (MDI.Docks (None), False);
-         end if;
-         MDI.Children_Are_Maximized := False;
+         Show_All (MDI.Central.Layout);
+         Hide_All (MDI.Central.Container);
+
+         MDI.Central.Children_Are_Maximized := False;
       end if;
 
       if Old_Focus /= null then
@@ -4048,10 +4208,13 @@ package body Gtkada.MDI is
       Cascade_Children (MDI_Window (MDI));
 
    exception
-      when others =>
+      when E : others =>
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the menu in Create_Menu.
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
          null;
    end Cascade_Cb;
 
@@ -4064,10 +4227,13 @@ package body Gtkada.MDI is
       Tile_Horizontally (MDI_Window (MDI));
 
    exception
-      when others =>
+      when E : others =>
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the menu in Create_Menu.
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
          null;
    end Tile_H_Cb;
 
@@ -4080,12 +4246,138 @@ package body Gtkada.MDI is
       Tile_Vertically (MDI_Window (MDI));
 
    exception
-      when others =>
+      when E : others =>
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the menu in Create_Menu.
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
          null;
    end Tile_V_Cb;
+
+   ---------------------------
+   -- Removed_From_Notebook --
+   ---------------------------
+
+   procedure Removed_From_Notebook
+     (Note : access Gtk_Widget_Record'Class; Args  : Gtk_Args)
+   is
+      Children : Widget_List.Glist := Get_Children (Gtk_Container (Note));
+      C :    Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
+      Child : MDI_Child;
+      Parent   : Gtk_Widget;
+      Len      : Guint;
+   begin
+      if C.all not in MDI_Child_Record'Class then
+         return;
+      end if;
+
+      Child := MDI_Child (C);
+      Child.Tab_Label := null;
+      Len := Length (Children);
+      Free (Children);
+
+      if Len = 0 then
+         --  Destroy a notebook when embedded in a paned widget, so that the
+         --  pane automatically hides the handles if necessary
+         --  If the parent is not a paned widget, then either the notebook
+         --  is a dock or there is no pane widget and the notebook is in the
+         --  central area.
+
+         Parent := Get_Parent (Note);
+         if Parent.all in Gtkada_Multi_Paned_Record'Class then
+            Children := Get_Children (Gtk_Container (Parent));
+            Len := Length (Children);
+            Free (Children);
+
+            --  Always keep at least one notebook in the paned, for
+            --  drag-and-drop purposes
+            if Len /= 1 then
+               Destroy (Note);
+            end if;
+         end if;
+      else
+         Set_Show_Tabs (Gtk_Notebook (Note), Len > 1);
+      end if;
+   end Removed_From_Notebook;
+
+   -----------
+   -- Split --
+   -----------
+
+   procedure Split
+     (MDI : access MDI_Window_Record; Orientation : Gtk_Orientation)
+   is
+      Pane, Old : Gtkada_Multi_Paned;
+      Note, Note2 : Gtk_Notebook;
+      Child : MDI_Child;
+      Pos : Positive := 1;
+   begin
+      Maximize_Children (MDI, True);
+      Note := Find_Current_In_Central (MDI);
+
+      --  Only split if there are at least two children
+      if Note /= null and then Get_Nth_Page (Note, 1) /= null then
+         Create_Notebook (MDI, None, Note2, Put_In_MDI => False);
+         Child := MDI_Child (Get_Nth_Page (Note, Get_Current_Page (Note)));
+         Ref (Child);
+         Remove (Note, Child);
+         Put_In_Notebook (MDI, None, Note2, Child);
+         Unref (Child);
+
+         Split (MDI.Central.Container,
+                Ref_Widget  => Note,
+                New_Child   => Note2,
+                Orientation => Orientation,
+                After       => False);
+         Show_All (Note2);
+      end if;
+   end Split;
+
+   ----------------
+   -- Split_H_Cb --
+   ----------------
+
+   procedure Split_H_Cb (MDI   : access Gtk_Widget_Record'Class) is
+   begin
+      --  Do nothing unless the current child is in the central area, since
+      --  otherwise this is disturbing for the user
+
+      if MDI_Window (MDI).Focus_Child /= null
+        and then MDI_Window (MDI).Focus_Child.State = Normal
+      then
+         Split (MDI_Window (MDI), Orientation => Orientation_Horizontal);
+      end if;
+   exception
+      when E : others =>
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
+         null;
+   end Split_H_Cb;
+
+   ----------------
+   -- Split_V_Cb --
+   ----------------
+
+   procedure Split_V_Cb (MDI   : access Gtk_Widget_Record'Class) is
+   begin
+      --  Do nothing unless the current child is in the central area, since
+      --  otherwise this is disturbing for the user
+
+      if MDI_Window (MDI).Focus_Child /= null
+        and then MDI_Window (MDI).Focus_Child.State = Normal
+      then
+         Split (MDI_Window (MDI), Orientation => Orientation_Vertical);
+      end if;
+   exception
+      when E : others =>
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
+         null;
+   end Split_V_Cb;
 
    -----------------
    -- Maximize_Cb --
@@ -4096,10 +4388,13 @@ package body Gtkada.MDI is
       Maximize_Children (MDI_Window (MDI), True);
 
    exception
-      when others =>
+      when E : others =>
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the menu in Create_Menu.
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
          null;
    end Maximize_Cb;
 
@@ -4110,14 +4405,17 @@ package body Gtkada.MDI is
    procedure Maximize_Child_Cb (Child : access Gtk_Widget_Record'Class) is
       M : constant MDI_Window := MDI_Child (Child).MDI;
    begin
-      Maximize_Children (M, not M.Children_Are_Maximized);
+      Maximize_Children (M, not M.Central.Children_Are_Maximized);
       Set_Focus_Child (MDI_Child (Child));
 
    exception
-      when others =>
+      when E : others =>
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the button in Initialize
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
          null;
    end Maximize_Child_Cb;
 
@@ -4130,10 +4428,13 @@ package body Gtkada.MDI is
       Maximize_Children (MDI_Window (MDI), False);
 
    exception
-      when others =>
+      when E : others =>
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the menu in Create_Menu.
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
          null;
    end Unmaximize_Cb;
 
@@ -4157,10 +4458,13 @@ package body Gtkada.MDI is
       end if;
 
    exception
-      when others =>
+      when E : others =>
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the menu in Create_Menu.
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
          null;
    end Dock_Cb;
 
@@ -4184,10 +4488,13 @@ package body Gtkada.MDI is
       end if;
 
    exception
-      when others =>
+      when E : others =>
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the menu in Create_Menu.
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
          null;
    end Float_Cb;
 
@@ -4213,10 +4520,13 @@ package body Gtkada.MDI is
       end if;
 
    exception
-      when others =>
+      when E : others =>
          --  Silently ignore the exceptions for now, to avoid crashes.
          --  The application using the MDI can not do it, since this callback
          --  is called directly from the menu in Create_Menu.
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
          null;
    end Close_Cb;
 
@@ -4386,6 +4696,20 @@ package body Gtkada.MDI is
            (Item, "activate",
             Widget_Callback.To_Marshaller (Tile_V_Cb'Access), MDI);
          Set_Accel_Path (Item, "<gtkada>/window/tile_vertical", MDI.Group);
+
+         Gtk_New (Item, "Split Horizontally");
+         Append (MDI.Menu, Item);
+         Widget_Callback.Object_Connect
+           (Item, "activate",
+            Widget_Callback.To_Marshaller (Split_H_Cb'Access), MDI);
+         Set_Accel_Path (Item, "<gtkada>/window/split_horizontal", MDI.Group);
+
+         Gtk_New (Item, "Split Vertically");
+         Append (MDI.Menu, Item);
+         Widget_Callback.Object_Connect
+           (Item, "activate",
+            Widget_Callback.To_Marshaller (Split_V_Cb'Access), MDI);
+         Set_Accel_Path (Item, "<gtkada>/window/split_vertical", MDI.Group);
 
          Gtk_New (Item, "Maximize All");
          Append (MDI.Menu, Item);
@@ -4600,7 +4924,7 @@ package body Gtkada.MDI is
          Tree := new Node;
          Tree.Tag := new String'("MDI");
          Child_Node := Tree;
-         Add ("Maximized", Boolean'Image (MDI.Children_Are_Maximized));
+         Add ("Maximized", Boolean'Image (MDI.Central.Children_Are_Maximized));
       else
          Child_Node := Tree;
       end if;
@@ -4966,15 +5290,13 @@ package body Gtkada.MDI is
          Add ("Right",  Gint'Image (MDI.Docks_Size (Right)));
          Add ("Top",    Gint'Image (MDI.Docks_Size (Top)));
          Add ("Bottom", Gint'Image (MDI.Docks_Size (Bottom)));
-         Add ("Maximized", Boolean'Image (MDI.Children_Are_Maximized));
+         Add ("Maximized", Boolean'Image (MDI.Central.Children_Are_Maximized));
 
          --  Look through all the notebooks, and save the widgets in the
          --  notebook order.
 
          for J in MDI.Docks'Range loop
-            if MDI.Docks (J) /= null
-              and then (J /= None or else MDI.Children_Are_Maximized)
-            then
+            if MDI.Docks (J) /= null then
                Length := Page_List.Length (Get_Children (MDI.Docks (J)));
                Current_Page := Get_Current_Page (MDI.Docks (J));
 
@@ -4999,9 +5321,7 @@ package body Gtkada.MDI is
                   null;
 
                when Normal =>
-                  if not MDI.Children_Are_Maximized then
-                     Save_Widget (Child, False);
-                  end if;
+                  Save_Widget (Child, False);
 
                when Floating | Iconified =>
                   Save_Widget (Child, False);
@@ -5075,26 +5395,19 @@ package body Gtkada.MDI is
       Note    : Gtk_Notebook;
       Style   : Gtk_Style;
    begin
-      if (Child.State = Normal
-          and then Child.MDI.Children_Are_Maximized)
-      then
-         Note := Child.MDI.Docks (None);
-
-      elsif Child.State = Docked then
-         Note := Child.MDI.Docks (Child.Dock);
-      end if;
-
       if Highlight then
          --  Do nothing if:
          --    - the child is in the layout and has the focus
          --    - the child is in a notebook and is in the current page
 
          if (Child.State = Normal
-             and then not Child.MDI.Children_Are_Maximized
+             and then not Child.MDI.Central.Children_Are_Maximized
              and then Child.MDI.Selected_Child = MDI_Child (Child))
          then
             return;
          end if;
+
+         Note := Get_Notebook (Child);
 
          if Note /= null
            and then Get_Current_Page (Note) = Page_Num (Note, Child)
@@ -5192,9 +5505,10 @@ package body Gtkada.MDI is
       Data : constant Selection_Data := Selection_Data (To_C_Proxy (Args, 4));
       Info : constant Guint := To_Guint (Args, 5);
       Time : constant Guint := To_Guint (Args, 6);
+      Found : Boolean;
+      Note : Gtk_Notebook;
 
       Child : MDI_Child;
-      Old   : Gtk_Notebook;
 
       type Gtk_Widget_Access is access Gtk_Widget;
       function Unchecked_Convert is new Ada.Unchecked_Conversion
@@ -5208,14 +5522,12 @@ package body Gtkada.MDI is
             when Widget_Format =>
                Child := MDI_Child (Unchecked_Convert (Get_Data (Data)).all);
 
-               if Notebook.all in Gtk_Fixed_Record'Class then
-                  if Child.State /= Normal then
-                     Dock_Child (Child, False);
-                  end if;
-
+               if Gtk_Widget (Notebook) =
+                 Gtk_Widget (Child.MDI.Central.Layout)
+               then
+                  Dock_Child (Child, False);
                   Set_Focus_Child (Child);
                   Raise_Child (Child);
-
                   Finish
                     (Context,
                      Success => True,
@@ -5247,22 +5559,30 @@ package body Gtkada.MDI is
                  or else Child.MDI.Docks (Child.Dock) /=
                     Gtk_Notebook (Notebook)
                then
-
-                  Old := Child.MDI.Docks (Child.Dock);
-
                   --  We have to first undock it, or we can't move it to
                   --  another dock
                   Dock_Child (Child, False);
+                  Found := False;
 
-                  for Side in Dock_Side'Range loop
+                  for Side in Left .. Bottom loop
                      if Gtk_Notebook (Notebook) = Child.MDI.Docks (Side) then
-                        if Side /= None then
-                           Child.Dock := Side;
-                           Dock_Child (Child, True);
-                        end if;
+                        Child.Dock := Side;
+                        Dock_Child (Child, True);
+                        Found := True;
                         exit;
                      end if;
                   end loop;
+
+                  --  If not found, we are dropping it in one of the central
+                  --  notebooks
+
+                  if not Found then
+                     Ref (Child);
+                     Remove (Gtk_Container (Get_Parent (Child)), Child);
+                     Note := Gtk_Notebook (Notebook);
+                     Put_In_Notebook (Child.MDI, None, Note, Child);
+                     Unref (Child);
+                  end if;
 
                   Set_Focus_Child (Child);
                   Raise_Child (Child);
@@ -5327,5 +5647,4 @@ package body Gtkada.MDI is
       Widget_Callback.Object_Connect
         (Widget, "drag_data_get", Source_Drag_Data_Get'Access, Child);
    end Set_Dnd_Source;
-
 end Gtkada.MDI;
