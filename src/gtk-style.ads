@@ -444,7 +444,7 @@ package Gtk.Style is
                          State_Type  : in Enums.Gtk_State_Type;
                          Shadow_Type : in Enums.Gtk_Shadow_Type;
                          Arrow_Type  : in Enums.Gtk_Arrow_Type;
-                         Fill        : in Gint;
+                         Fill        : in Boolean;
                          X, Y        : in Gint;
                          Width       : in Gint;
                          Height      : in Gint);
@@ -482,7 +482,6 @@ private
    pragma Import (C, Detach, "gtk_style_detach");
    pragma Import (C, Ref, "gtk_style_ref");
    pragma Import (C, Unref, "gtk_style_unref");
-   pragma Import (C, Draw_Arrow, "gtk_draw_arrow");
    pragma Import (C, Draw_Diamond, "gtk_draw_diamond");
    pragma Import (C, Draw_Hline, "gtk_draw_hline");
    pragma Import (C, Draw_Oval, "gtk_draw_oval");

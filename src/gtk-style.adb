@@ -73,6 +73,36 @@ package body Gtk.Style is
       Internal (Get_Object (Widget), Style);
    end Set_Style;
 
+   ----------------
+   -- Draw_Arrow --
+   ----------------
+
+   procedure Draw_Arrow (Style       : in Gtk_Style;
+                         Window      : in Gdk.Window.Gdk_Window;
+                         State_Type  : in Enums.Gtk_State_Type;
+                         Shadow_Type : in Enums.Gtk_Shadow_Type;
+                         Arrow_Type  : in Enums.Gtk_Arrow_Type;
+                         Fill        : in Boolean;
+                         X, Y        : in Gint;
+                         Width       : in Gint;
+                         Height      : in Gint)
+   is
+      procedure Internal (Style         : in Gtk_Style;
+                          Window        : in Gdk.Window.Gdk_Window;
+                          State_Type  : in Enums.Gtk_State_Type;
+                          Shadow_Type : in Enums.Gtk_Shadow_Type;
+                          Arrow_Type  : in Enums.Gtk_Arrow_Type;
+                          Fill        : in Gint;
+                          X, Y        : in Gint;
+                          Width       : in Gint;
+                          Height      : in Gint);
+      pragma Import (C, Internal, "gtk_draw_arrow");
+   begin
+      Internal (Style, Window, State_Type,
+                Shadow_Type, Arrow_Type, Boolean'Pos (Fill), X, Y,
+                Width, Height);
+   end Draw_Arrow;
+
    --------------------
    --  Draw_Polygon  --
    --------------------
