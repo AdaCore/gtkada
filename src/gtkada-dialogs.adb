@@ -53,12 +53,12 @@ package body Gtkada.Dialogs is
    Dialog_Button_String : constant array (Button_Range) of String_20 :=
      ("Yes                 ",
       "No                  ",
+      "All                 ",
       "OK                  ",
       "Cancel              ",
       "Abort               ",
       "Retry               ",
       "Ignore              ",
-      "All                 ",
       "Help                ");
 
    type Gtkada_Dialog_Record is new Gtk_Dialog_Record with record
