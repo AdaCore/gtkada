@@ -81,19 +81,22 @@ package body Gtkada.MDI is
 
    use Glib.Xml_Int;
 
-   Title_Bar_Focus_Color : constant String := "#000088";
+   Default_Title_Bar_Focus_Color : constant String := "#000088";
    --  Default color to use for the title bar of the child that has
    --  the focus
 
-   Title_Bar_Color : constant String := "#AAAAAA";
+   Default_Title_Bar_Color : constant String := "#AAAAAA";
    --  Default color to use for the title bar of children that do not
    --  have the focus.
 
-   MDI_Background_Color : constant String := "#666666";
+   Default_MDI_Background_Color : constant String := "#666666";
    --  Default background color to use for the MDI window
 
+   Default_Title_Font : constant String := "Sans 8";
+   --  Default title font for the children
+
    Border_Thickness : constant Gint := 4;
-   --  <preferences> Thickness of the separators in the MDI
+   --  Thickness of the separators in the MDI
 
    Drop_Area_Thickness : constant Gint := 4;
    --  Thickness of the Dnd drop areas on each side of the MDI.
@@ -109,6 +112,9 @@ package body Gtkada.MDI is
 
    Threshold : constant Gint := 40;
    --  Threshold used to reset coordinates when putting items in the MDI.
+
+   Draw_Handles_Shadow : constant Boolean := False;
+   --  Whether a shadow should be drawn on each handle
 
    Corner_Size : constant Gint := Border_Thickness * 2;
    --  Extra tolerance when the user selects a corner for resizing (if the
@@ -221,6 +227,11 @@ package body Gtkada.MDI is
    --  Called when the user has pressed the mouse while in the MDI, in
    --  particular in one of the handles
 
+   procedure Resize_Docks_From_Mouse (MDI : access MDI_Window_Record'Class);
+   --  Compute the new size of docks from the current pointer location,
+   --  assuming we are in the middle of resizing docks interactively. This
+   --  immediately updates the docks.
+
    procedure Close_Child (Child : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Internal version of Close, for a MDI_Child
 
@@ -273,11 +284,6 @@ package body Gtkada.MDI is
    procedure Menu_Destroyed (MDI : access Gtk_Widget_Record'Class);
    --  Called when the Menu associated with a MDI is destroyed.
 
-   function Compute_Workspace_Size (MDI : access MDI_Window_Record'Class)
-      return Gtk_Allocation;
-   --  Return the allocation to use for the workspace area of the MDI (which is
-   --  either the layout or the middle notebook).
-
    procedure Compute_Docks_Size (MDI : access MDI_Window_Record'Class);
    --  Recompute the size of all the docks.
 
@@ -305,6 +311,17 @@ package body Gtkada.MDI is
    --  Called when the current page in Docked_Child has changed.
    --  This is used to refresh the notebook so that is reflects the selected
    --  widget.
+
+   procedure Compute_Size
+     (MDI                 : access MDI_Window_Record'Class;
+      Side                : Dock_Side;
+      Alloc               : out Gtk_Allocation;
+      Is_Handle           : Boolean);
+   --  Compute the size and position for the docks or the associated handles.
+   --
+   --  If Side is None, return the allocation to use for the workspace area of
+   --  the MDI (which is either the layout or the middle notebook). Is_Handle
+   --  is irrelevant in that case.
 
    procedure Draw_Child
      (Child : access MDI_Child_Record'Class; Area : Gdk_Rectangle);
@@ -458,6 +475,15 @@ package body Gtkada.MDI is
 
       Set_Dnd_Target (MDI_Window (MDI).Layout);
 
+      MDI.Background_Color := Parse (Default_MDI_Background_Color);
+      Alloc (Get_Default_Colormap, MDI.Background_Color);
+
+      MDI.Title_Bar_Color := Parse (Default_Title_Bar_Color);
+      Alloc (Get_Default_Colormap, MDI.Title_Bar_Color);
+
+      MDI.Focus_Title_Color := Parse (Default_Title_Bar_Focus_Color);
+      Alloc (Get_Default_Colormap, MDI.Focus_Title_Color);
+
       Put (MDI, MDI.Layout, Drop_Area_Thickness, Drop_Area_Thickness);
 
       Widget_Callback.Connect
@@ -501,8 +527,9 @@ package body Gtkada.MDI is
      (MDI                       : access MDI_Window_Record;
       Opaque_Resize             : Boolean             := False;
       Opaque_Move               : Boolean             := False;
+      Opaque_Docks              : Boolean             := False;
       Close_Floating_Is_Unfloat : Boolean             := True;
-      Title_Font                : String              := "Sans 8";
+      Title_Font                : Pango_Font_Description := null;
       Background_Color          : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Title_Bar_Color           : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Focus_Title_Color         : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color)
@@ -515,13 +542,19 @@ package body Gtkada.MDI is
    begin
       MDI.Opaque_Resize := Opaque_Resize;
       MDI.Opaque_Move   := Opaque_Move;
+      MDI.Opaque_Docks  := Opaque_Docks;
       MDI.Close_Floating_Is_Unfloat := Close_Floating_Is_Unfloat;
 
-      Desc := From_String (Title_Font);
-      Set_Font_Description (MDI.Title_Layout, Desc);
+      if Title_Font /= null then
+         Set_Font_Description (MDI.Title_Layout, Title_Font);
+      else
+         Desc := From_String (Default_Title_Font);
+         Set_Font_Description (MDI.Title_Layout, Desc);
+         Free (Desc);
+      end if;
+
       Get_Pixel_Size (MDI.Title_Layout, W, H);
       MDI.Title_Bar_Height := 2 + H;
-      Free (Desc);
 
       --  Resize the title bar of all children already in the MDI
 
@@ -534,9 +567,26 @@ package body Gtkada.MDI is
 
       --  Ignore changes in colors, unless the MDI is realized
 
+      if Background_Color /= Null_Color then
+         MDI.Background_Color  := Background_Color;
+      end if;
+
+      if Title_Bar_Color /= Null_Color then
+         MDI.Title_Bar_Color   := Title_Bar_Color;
+      end if;
+
+      if Focus_Title_Color /= Null_Color then
+         MDI.Focus_Title_Color := Focus_Title_Color;
+      end if;
+
       if Realized_Is_Set (MDI) then
          if Background_Color /= Null_Color then
             Set_Background (Get_Window (MDI), Background_Color);
+
+            if Realized_Is_Set (MDI.Layout) then
+               Set_Background (Get_Window (MDI.Layout), Background_Color);
+            end if;
+
             Need_Redraw := True;
          end if;
 
@@ -561,10 +611,9 @@ package body Gtkada.MDI is
    ------------------------
 
    procedure Realize_MDI_Layout (MDI : access Gtk_Widget_Record'Class) is
-      Color : Gdk_Color := Parse (MDI_Background_Color);
+      M : constant MDI_Window := MDI_Window (MDI);
    begin
-      Alloc (Get_Default_Colormap, Color);
-      Gdk.Window.Set_Background (Get_Window (MDI_Window (MDI).Layout), Color);
+      Gdk.Window.Set_Background (Get_Window (M.Layout), M.Background_Color);
    end Realize_MDI_Layout;
 
    -----------------
@@ -574,24 +623,17 @@ package body Gtkada.MDI is
    procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class) is
       Window_Attr : Gdk.Window_Attr.Gdk_Window_Attr;
       M           : MDI_Window := MDI_Window (MDI);
-      Color       : Gdk_Color;
       Cursor      : Gdk_Cursor;
 
    begin
-      Color := Parse (MDI_Background_Color);
-      Alloc (Get_Default_Colormap, Color);
-      Gdk.Window.Set_Background (Get_Window (M), Color);
+      Gdk.Window.Set_Background (Get_Window (M), M.Background_Color);
 
       Gdk_New (M.Non_Focus_GC, Get_Window (MDI));
-      Color := Parse (Title_Bar_Color);
-      Alloc (Get_Default_Colormap, Color);
-      Set_Foreground (M.Non_Focus_GC, Color);
+      Set_Foreground (M.Non_Focus_GC, M.Title_Bar_Color);
       Set_Exposures (M.Non_Focus_GC, False);
 
       Gdk_New (M.Focus_GC, Get_Window (MDI));
-      Color := Parse (Title_Bar_Focus_Color);
-      Alloc (Get_Default_Colormap, Color);
-      Set_Foreground (M.Focus_GC, Color);
+      Set_Foreground (M.Focus_GC, M.Focus_Title_Color);
       Set_Exposures (M.Focus_GC, False);
 
       Gdk_New (M.Xor_GC, Get_Window (MDI));
@@ -649,6 +691,7 @@ package body Gtkada.MDI is
      (MDI : access Gtk_Widget_Record'Class; Args : Gtk_Args)
      return Boolean
    is
+      pragma Warnings (Off);
       M                 : constant MDI_Window := MDI_Window (MDI);
       Event             : constant Gdk_Event := To_Event (Args, 1);
       Area              : constant Gdk_Rectangle := Get_Area (Event);
@@ -683,169 +726,171 @@ package body Gtkada.MDI is
          --  we might have to draw on several windows if there are several
          --  handles in the layout.
 
-         if M.Docks (Left) /= null then
-            Get_Geometry (M.Handles (Left), X, Y, W, H, Depth);
-            First := 0;
-            Last := H;
+         if Draw_Handles_Shadow then
+            if M.Docks (Left) /= null then
+               Get_Geometry (M.Handles (Left), X, Y, W, H, Depth);
+               First := 0;
+               Last := H;
 
-            Draw_Line
-              (M.Handles (Left), Get_White_GC (Get_Style (M)), 0, 0, 0, H);
+               Draw_Line
+                 (M.Handles (Left), Get_White_GC (Get_Style (M)), 0, 0, 0, H);
 
-            if M.Priorities (Left) < M.Priorities (Top) then
-               if M.Docks (Top) /= null then
-                  First := M.Docks_Size (Top) + Handle_Size - 1;
-                  Draw_Line
-                    (M.Handles (Left), Get_Black_GC (Get_Style (M)),
-                     Handle_Size - 1, 0, Handle_Size - 1,
-                     First - Handle_Size + 1);
-               else
-                  Draw_Line
-                    (M.Handles (Left), Get_White_GC (Get_Style (M)),
-                     0, 0, Handle_Size - 1, 0);
+               if M.Priorities (Left) < M.Priorities (Top) then
+                  if M.Docks (Top) /= null then
+                     First := M.Docks_Size (Top) + Handle_Size - 1
+                       - Drop_Area_Thickness;
+                     Draw_Line
+                       (M.Handles (Left), Get_Black_GC (Get_Style (M)),
+                        Handle_Size - 1, 0, Handle_Size - 1,
+                        First - Handle_Size + 1);
+                  else
+                     Draw_Line
+                       (M.Handles (Left), Get_White_GC (Get_Style (M)),
+                        0, 0, Handle_Size - 1, 0);
+                  end if;
                end if;
+
+               if M.Priorities (Left) < M.Priorities (Bottom) then
+                  if M.Docks (Bottom) /= null then
+                     Last := H - M.Docks_Size (Bottom) - Handle_Size;
+                     Draw_Line
+                       (M.Handles (Left), Get_Black_GC (Get_Style (M)),
+                        Handle_Size - 1, Last + Handle_Size - 1,
+                        Handle_Size - 1, H);
+                  else
+                     Draw_Line
+                       (M.Handles (Left), Get_Black_GC (Get_Style (M)),
+                        0, H - 1, Handle_Size - 1, H - 1);
+                  end if;
+               end if;
+
+               Draw_Line
+                 (M.Handles (Left), Get_Black_GC (Get_Style (M)),
+                  Handle_Size - 1, First, Handle_Size - 1, Last);
             end if;
 
-            if M.Priorities (Left) < M.Priorities (Bottom) then
-               if M.Docks (Bottom) /= null then
-                  Last := H - M.Docks_Size (Bottom) - Handle_Size
-                     + Drop_Area_Thickness;
-                  Draw_Line
-                    (M.Handles (Left), Get_Black_GC (Get_Style (M)),
-                     Handle_Size - 1, Last + Handle_Size - 1,
-                     Handle_Size - 1, H);
-               else
-                  Draw_Line
-                    (M.Handles (Left), Get_Black_GC (Get_Style (M)),
-                     0, H - 1, Handle_Size - 1, H - 1);
+            if M.Docks (Bottom) /= null then
+               Get_Geometry (M.Handles (Bottom), X, Y, W, H, Depth);
+               First := 0;
+               Last := W;
+
+               Draw_Line
+                 (M.Handles (Bottom), Get_Black_GC (Get_Style (M)),
+                  0, Handle_Size - 1, W, Handle_Size - 1);
+
+               if M.Priorities (Bottom) < M.Priorities (Right) then
+                  if M.Docks (Right) /= null then
+                     Last := W - M.Docks_Size (Right) - Handle_Size;
+                     Draw_Line
+                       (M.Handles (Bottom), Get_White_GC (Get_Style (M)),
+                        Last + Handle_Size - 1, 0, W, 0);
+                  else
+                     Draw_Line
+                       (M.Handles (Bottom), Get_Black_GC (Get_Style (M)),
+                        W - 1, 0, W - 1, Handle_Size - 1);
+                  end if;
                end if;
+
+               if M.Priorities (Bottom) < M.Priorities (Left) then
+                  if M.Docks (Left) /= null then
+                     First := M.Docks_Size (Left) + Handle_Size
+                       - Drop_Area_Thickness - 1;
+                     Draw_Line
+                       (M.Handles (Bottom), Get_White_GC (Get_Style (M)),
+                        0, 0, M.Docks_Size (Left) - Drop_Area_Thickness, 0);
+                  else
+                     Draw_Line
+                       (M.Handles (Bottom), Get_White_GC (Get_Style (M)),
+                        0, 0, 0, Handle_Size - 2);
+                  end if;
+               end if;
+
+               Draw_Line
+                 (M.Handles (Bottom), Get_White_GC (Get_Style (M)),
+                  First, 0, Last, 0);
             end if;
 
-            Draw_Line
-              (M.Handles (Left), Get_Black_GC (Get_Style (M)),
-               Handle_Size - 1, First, Handle_Size - 1, Last);
-         end if;
+            if M.Docks (Right) /= null then
+               Get_Geometry (M.Handles (Right), X, Y, W, H, Depth);
+               First := 0;
+               Last := H;
 
-         if M.Docks (Bottom) /= null then
-            Get_Geometry (M.Handles (Bottom), X, Y, W, H, Depth);
-            First := 0;
-            Last := W;
+               Draw_Line
+                 (M.Handles (Right), Get_Black_GC (Get_Style (M)),
+                  Handle_Size - 1, 0, Handle_Size - 1, H);
 
-            Draw_Line
-              (M.Handles (Bottom), Get_Black_GC (Get_Style (M)),
-               0, Handle_Size - 1, W, Handle_Size - 1);
-
-            if M.Priorities (Bottom) < M.Priorities (Right) then
-               if M.Docks (Right) /= null then
-                  Last := W - M.Docks_Size (Right) - Handle_Size;
-                  Draw_Line
-                    (M.Handles (Bottom), Get_White_GC (Get_Style (M)),
-                     Last + Handle_Size - 1, 0, W, 0);
-               else
-                  Draw_Line
-                    (M.Handles (Bottom), Get_Black_GC (Get_Style (M)),
-                     W - 1, 0, W - 1, Handle_Size - 1);
+               if M.Priorities (Right) < M.Priorities (Top) then
+                  if M.Docks (Top) /= null then
+                     First := M.Docks_Size (Top) + Handle_Size - 1;
+                     Draw_Line
+                       (M.Handles (Right), Get_White_GC (Get_Style (M)),
+                        0, 0, 0, First - Handle_Size);
+                  else
+                     Draw_Line
+                       (M.Handles (Right), Get_White_GC (Get_Style (M)),
+                        0, 0, Handle_Size - 1, 0);
+                  end if;
                end if;
+
+               if M.Priorities (Right) < M.Priorities (Bottom) then
+                  if M.Docks (Bottom) /= null then
+                     Last := H - M.Docks_Size (Bottom) - Handle_Size;
+                     Draw_Line
+                       (M.Handles (Right), Get_White_GC (Get_Style (M)),
+                        0, Last + Handle_Size - 1, 0, H);
+                  else
+                     Draw_Line
+                       (M.Handles (Right), Get_Black_GC (Get_Style (M)),
+                        0, H - 1, Handle_Size - 1, H - 1);
+                  end if;
+               end if;
+
+               Draw_Line
+                 (M.Handles (Right), Get_White_GC (Get_Style (M)),
+                  0, First, 0, Last);
             end if;
 
-            if M.Priorities (Bottom) < M.Priorities (Left) then
-               if M.Docks (Left) /= null then
-                  First := M.Docks_Size (Left) + Handle_Size
-                    - Drop_Area_Thickness - 1;
-                  Draw_Line
-                    (M.Handles (Bottom), Get_White_GC (Get_Style (M)),
-                     0, 0, M.Docks_Size (Left) - Drop_Area_Thickness, 0);
-               else
-                  Draw_Line
-                    (M.Handles (Bottom), Get_White_GC (Get_Style (M)),
-                     0, 0, 0, Handle_Size - 2);
-               end if;
-            end if;
+            if M.Docks (Top) /= null then
+               Get_Geometry (M.Handles (Top), X, Y, W, H, Depth);
+               First := 0;
+               Last := W;
 
-            Draw_Line
-              (M.Handles (Bottom), Get_White_GC (Get_Style (M)),
-               First, 0, Last, 0);
-         end if;
-
-         if M.Docks (Right) /= null then
-            Get_Geometry (M.Handles (Right), X, Y, W, H, Depth);
-            First := 0;
-            Last := H;
-
-            Draw_Line
-              (M.Handles (Right), Get_Black_GC (Get_Style (M)),
-               Handle_Size - 1, 0, Handle_Size - 1, H);
-
-            if M.Priorities (Right) < M.Priorities (Top) then
-               if M.Docks (Top) /= null then
-                  First := M.Docks_Size (Top) + Handle_Size - 1;
-                  Draw_Line
-                    (M.Handles (Right), Get_White_GC (Get_Style (M)),
-                     0, 0, 0, First - Handle_Size);
-               else
-                  Draw_Line
-                    (M.Handles (Right), Get_White_GC (Get_Style (M)),
-                     0, 0, Handle_Size - 1, 0);
-               end if;
-            end if;
-
-            if M.Priorities (Right) < M.Priorities (Bottom) then
-               if M.Docks (Bottom) /= null then
-                  Last := H - M.Docks_Size (Bottom) - Handle_Size;
-                  Draw_Line
-                    (M.Handles (Right), Get_White_GC (Get_Style (M)),
-                     0, Last + Handle_Size - 1, 0, H);
-               else
-                  Draw_Line
-                    (M.Handles (Right), Get_Black_GC (Get_Style (M)),
-                     0, H - 1, Handle_Size - 1, H - 1);
-               end if;
-            end if;
-
-            Draw_Line
-              (M.Handles (Right), Get_White_GC (Get_Style (M)),
-               0, First, 0, Last);
-         end if;
-
-         if M.Docks (Top) /= null then
-            Get_Geometry (M.Handles (Top), X, Y, W, H, Depth);
-            First := 0;
-            Last := W;
-
-            Draw_Line
-              (M.Handles (Top), Get_White_GC (Get_Style (M)),
-               0, 0, W, 0);
-
-            if M.Priorities (Top) <= M.Priorities (Left) then
-               if M.Docks (Left) /= null then
-                  First := M.Docks_Size (Left) + Handle_Size
-                    - Drop_Area_Thickness - 1;
-                  Draw_Line
-                    (M.Handles (Top), Get_Black_GC (Get_Style (M)), 0,
-                     Handle_Size - 1,
-                     M.Docks_Size (Left) - Drop_Area_Thickness,
-                     Handle_Size - 1);
-               end if;
                Draw_Line
                  (M.Handles (Top), Get_White_GC (Get_Style (M)),
-                  0, 0, 0, Handle_Size);
-            end if;
+                  0, 0, W, 0);
 
-            if M.Priorities (Top) <= M.Priorities (Right) then
-               if M.Docks (Right) /= null then
-                  Last := W - M.Docks_Size (Right) - Handle_Size;
+               if M.Priorities (Top) <= M.Priorities (Left) then
+                  if M.Docks (Left) /= null then
+                     First := M.Docks_Size (Left) + Handle_Size
+                       - Drop_Area_Thickness - 1;
+                     Draw_Line
+                       (M.Handles (Top), Get_Black_GC (Get_Style (M)), 0,
+                        Handle_Size - 1,
+                        M.Docks_Size (Left) - Drop_Area_Thickness,
+                        Handle_Size - 1);
+                  end if;
+                  Draw_Line
+                    (M.Handles (Top), Get_White_GC (Get_Style (M)),
+                     0, 0, 0, Handle_Size);
+               end if;
+
+               if M.Priorities (Top) <= M.Priorities (Right) then
+                  if M.Docks (Right) /= null then
+                     Last := W - M.Docks_Size (Right) - Handle_Size;
+                     Draw_Line
+                       (M.Handles (Top), Get_Black_GC (Get_Style (M)),
+                        Last + Handle_Size - 1, Handle_Size - 1,
+                        W, Handle_Size - 1);
+                  end if;
                   Draw_Line
                     (M.Handles (Top), Get_Black_GC (Get_Style (M)),
-                     Last + Handle_Size - 1, Handle_Size - 1,
-                     W, Handle_Size - 1);
+                     W - 1, 0, W - 1, Handle_Size);
                end if;
+
                Draw_Line
                  (M.Handles (Top), Get_Black_GC (Get_Style (M)),
-                  W - 1, 0, W - 1, Handle_Size);
+                  First, Handle_Size - 1, Last, Handle_Size - 1);
             end if;
-
-            Draw_Line
-              (M.Handles (Top), Get_Black_GC (Get_Style (M)),
-               First, Handle_Size - 1, Last, Handle_Size - 1);
          end if;
       end if;
 
@@ -853,144 +898,155 @@ package body Gtkada.MDI is
         (Class_From_Type (Parent (Get_Type (M)))) (Get_Object (M), Event);
    end Expose_MDI;
 
+   ------------------
+   -- Compute_Size --
+   ------------------
+
+   procedure Compute_Size
+     (MDI                 : access MDI_Window_Record'Class;
+      Side                : Dock_Side;
+      Alloc               : out Gtk_Allocation;
+      Is_Handle           : Boolean)
+   is
+      MDI_Width  : constant Allocation_Int := Get_Allocation_Width (MDI);
+      MDI_Height : constant Allocation_Int := Get_Allocation_Height (MDI);
+   begin
+      case Side is
+         when Left =>
+            if Is_Handle then
+               Alloc.X     := MDI.Docks_Size (Left);
+               Alloc.Width := Allocation_Int (Handle_Size);
+            else
+               Alloc.X     := Drop_Area_Thickness;
+               Alloc.Width := Allocation_Int (MDI.Docks_Size (Left))
+                 - Drop_Area_Thickness;
+            end if;
+
+         when Right =>
+            if Is_Handle then
+               Alloc.Width := Allocation_Int (Handle_Size);
+               Alloc.X     := MDI_Width - MDI.Docks_Size (Right) - Handle_Size
+                 - Drop_Area_Thickness;
+            else
+               Alloc.Width := Allocation_Int (MDI.Docks_Size (Right));
+               Alloc.X     := MDI_Width - Gint (Alloc.Width) -
+                 Drop_Area_Thickness;
+            end if;
+
+         when Top =>
+            if Is_Handle then
+               Alloc.Y      := MDI.Docks_Size (Top);
+               Alloc.Height := Allocation_Int (Handle_Size);
+            else
+               Alloc.Y      := Drop_Area_Thickness;
+               Alloc.Height := Allocation_Int (MDI.Docks_Size (Top))
+                 - Drop_Area_Thickness;
+            end if;
+
+         when Bottom =>
+            if Is_Handle then
+               Alloc.Height := Allocation_Int (Handle_Size);
+               Alloc.Y :=  MDI_Height - MDI.Docks_Size (Bottom) - Handle_Size
+                 - Drop_Area_Thickness;
+            else
+               Alloc.Height := Allocation_Int (MDI.Docks_Size (Bottom));
+               Alloc.Y := MDI_Height - Gint (Alloc.Height) -
+                 Drop_Area_Thickness;
+            end if;
+
+         when None =>
+            if MDI.Docks (Left) /= null then
+               Alloc.X := MDI.Docks_Size (Left) + Handle_Size;
+            else
+               Alloc.X := Drop_Area_Thickness;
+            end if;
+
+            if MDI.Docks (Top) /= null then
+               Alloc.Y := MDI.Docks_Size (Top) + Handle_Size;
+            else
+               Alloc.Y := Drop_Area_Thickness;
+            end if;
+
+            Alloc.Width := MDI_Width - Allocation_Int (Alloc.X) -
+              Drop_Area_Thickness;
+            if MDI.Docks (Right) /= null then
+               Alloc.Width := Alloc.Width - Handle_Size -
+                 Allocation_Int (MDI.Docks_Size (Right));
+            end if;
+
+            Alloc.Height := MDI_Height - Allocation_Int (Alloc.Y) -
+              Drop_Area_Thickness;
+            if MDI.Docks (Bottom) /= null then
+               Alloc.Height := Alloc.Height - Handle_Size
+                 - Allocation_Int (MDI.Docks_Size (Bottom));
+            end if;
+      end case;
+
+      case Side is
+         when Left | Right =>
+            if MDI.Priorities (Top) <= MDI.Priorities (Side)
+              and then MDI.Docks_Size (Top) /= 0
+            then
+               Alloc.Y := MDI.Docks_Size (Top) + Handle_Size;
+            else
+               Alloc.Y := Drop_Area_Thickness;
+            end if;
+
+            Alloc.Height := MDI_Height - Allocation_Int (Alloc.Y);
+
+            if MDI.Priorities (Bottom) <= MDI.Priorities (Side)
+              and then MDI.Docks_Size (Bottom) /= 0
+            then
+               Alloc.Height := Alloc.Height
+                 - Allocation_Int (MDI.Docks_Size (Bottom)) - Handle_Size;
+            else
+               Alloc.Height := Alloc.Height - Drop_Area_Thickness;
+            end if;
+
+         when Top | Bottom =>
+            if MDI.Priorities (Left) < MDI.Priorities (Side)
+              and then MDI.Docks_Size (Left) /= 0
+            then
+               Alloc.X := MDI.Docks_Size (Left) + Handle_Size;
+            else
+               Alloc.X := Drop_Area_Thickness;
+            end if;
+
+            Alloc.Width := MDI_Width - Allocation_Int (Alloc.X);
+
+            if MDI.Priorities (Right) < MDI.Priorities (Side)
+              and then MDI.Docks_Size (Right) /= 0
+            then
+               Alloc.Width := Alloc.Width
+                 - Allocation_Int (MDI.Docks_Size (Right)) - Handle_Size;
+            else
+               Alloc.Width := Alloc.Width - Drop_Area_Thickness;
+            end if;
+
+         when None =>
+            null;
+      end case;
+   end Compute_Size;
+
    ------------------------
    -- Reposition_Handles --
    ------------------------
 
    procedure Reposition_Handles (M : access MDI_Window_Record'Class) is
       Alloc      : Gtk_Allocation;
-      MDI_Width  : constant Gint := Gint (Get_Allocation_Width (M));
-      MDI_Height : constant Gint := Gint (Get_Allocation_Height (M));
-
    begin
-      --  If none of the handles has been created yet.
-
-      if not Realized_Is_Set (M) then
-         return;
-      end if;
-
-      if M.Docks_Size (Left) /= 0 then
-         Alloc.Width := Allocation_Int (Handle_Size);
-         Alloc.X := M.Docks_Size (Left);
-
-         if M.Priorities (Top) <= M.Priorities (Left)
-           and then M.Docks_Size (Top) /= 0
-         then
-            Alloc.Y := M.Docks_Size (Top) + Handle_Size;
-         else
-            Alloc.Y := Drop_Area_Thickness;
-         end if;
-
-         Alloc.Height := Allocation_Int (MDI_Height - Alloc.Y);
-
-         if M.Priorities (Bottom) <= M.Priorities (Left)
-           and then M.Docks_Size (Bottom) /= 0
-         then
-            Alloc.Height := Alloc.Height
-              - Allocation_Int (M.Docks_Size (Bottom));
-         end if;
-
-         Alloc.Height := Alloc.Height - Drop_Area_Thickness;
-
-         Show (M.Handles (Left));
-         Gdk.Window.Move_Resize
-           (M.Handles (Left), Alloc.X, Alloc.Y,
-            Gint (Alloc.Width), Gint (Alloc.Height));
-      else
-         Hide (M.Handles (Left));
-      end if;
-
-      if M.Docks_Size (Right) /= 0 then
-         Alloc.Width := Allocation_Int (Handle_Size);
-         Alloc.X := MDI_Width - M.Docks_Size (Right) - Handle_Size
-           - Drop_Area_Thickness;
-
-         if M.Priorities (Top) <= M.Priorities (Right)
-           and then M.Docks_Size (Top) /= 0
-         then
-            Alloc.Y := M.Docks_Size (Top) + Handle_Size;
-         else
-            Alloc.Y := Drop_Area_Thickness;
-         end if;
-
-         Alloc.Height := Allocation_Int (MDI_Height - Alloc.Y);
-
-         if M.Priorities (Bottom) <= M.Priorities (Right)
-           and then M.Docks_Size (Bottom) /= 0
-         then
-            Alloc.Height := Alloc.Height
-              - Allocation_Int (M.Docks_Size (Bottom));
-         end if;
-
-         Show (M.Handles (Right));
-         Gdk.Window.Move_Resize
-           (M.Handles (Right), Alloc.X, Alloc.Y,
-            Gint (Alloc.Width), Gint (Alloc.Height));
-      else
-         Hide (M.Handles (Right));
-      end if;
-
-      if M.Docks_Size (Top) /= 0 then
-         Alloc.Height := Allocation_Int (Handle_Size);
-         Alloc.Y := M.Docks_Size (Top) + Drop_Area_Thickness;
-
-         if M.Docks_Size (Left) = 0
-           or else M.Priorities (Top) < M.Priorities (Left)
-         then
-            Alloc.X := Drop_Area_Thickness;
-         else
-            Alloc.X := M.Docks_Size (Left) + Handle_Size;
-         end if;
-
-         Alloc.Width := Allocation_Int (MDI_Width - Alloc.X);
-
-         if M.Priorities (Right) < M.Priorities (Top)
-           and then M.Docks_Size (Right) /= 0
-         then
-            Alloc.Width := Alloc.Width
-              - Allocation_Int (M.Docks_Size (Right) + Handle_Size);
-         end if;
-
-         Alloc.Width := Alloc.Width - Drop_Area_Thickness;
-
-         Show (M.Handles (Top));
-         Gdk.Window.Move_Resize
-           (M.Handles (Top), Alloc.X, Alloc.Y,
-            Gint (Alloc.Width), Gint (Alloc.Height));
-      else
-         Hide (M.Handles (Top));
-      end if;
-
-      if M.Docks_Size (Bottom) /= 0 then
-         Alloc.Height := Allocation_Int (Handle_Size);
-         Alloc.Y :=
-           Gint (MDI_Height - M.Docks_Size (Bottom) - Handle_Size);
-
-         if M.Docks_Size (Left) = 0
-           or else M.Priorities (Bottom) < M.Priorities (Left)
-         then
-            Alloc.X := Drop_Area_Thickness;
-         else
-            Alloc.X := M.Docks_Size (Left) + Handle_Size;
-         end if;
-
-         Alloc.Width := Allocation_Int (MDI_Width - Alloc.X);
-
-         if M.Priorities (Right) < M.Priorities (Bottom)
-           and then M.Docks_Size (Right) /= 0
-         then
-            Alloc.Width := Alloc.Width
-              - Allocation_Int (M.Docks_Size (Right) + Handle_Size);
-         end if;
-
-         Alloc.Width := Alloc.Width - Drop_Area_Thickness;
-
-         Show (M.Handles (Bottom));
-         Gdk.Window.Move_Resize
-           (M.Handles (Bottom), Alloc.X, Alloc.Y,
-            Gint (Alloc.Width), Gint (Alloc.Height));
-      else
-         Hide (M.Handles (Bottom));
+      if Realized_Is_Set (M) then
+         for S in Left .. Bottom loop
+            if M.Docks_Size (S) /= 0 then
+               Compute_Size (M, S, Alloc, Is_Handle => True);
+               Show (M.Handles (S));
+               Gdk.Window.Move_Resize
+                 (M.Handles (S), Alloc.X, Alloc.Y,
+                  Gint (Alloc.Width), Gint (Alloc.Height));
+            else
+               Hide (M.Handles (S));
+            end if;
+         end loop;
       end if;
    end Reposition_Handles;
 
@@ -1003,8 +1059,6 @@ package body Gtkada.MDI is
    is
       L : constant Gtk_Widget := Convert (Layout);
    begin
-      --  First, register the new size of the MDI itself
-
       Set_Allocation (L, Alloc);
 
       if Realized_Is_Set (L) then
@@ -1013,43 +1067,6 @@ package body Gtkada.MDI is
             Gint (Alloc.Width), Gint (Alloc.Height));
       end if;
    end Size_Allocate_MDI_Layout;
-
-   ----------------------------
-   -- Compute_Workspace_Size --
-   ----------------------------
-
-   function Compute_Workspace_Size (MDI : access MDI_Window_Record'Class)
-      return Gtk_Allocation
-   is
-      Alloc : Gtk_Allocation;
-   begin
-      if MDI.Docks (Left) /= null then
-         Alloc.X := MDI.Docks_Size (Left) + Handle_Size;
-      else
-         Alloc.X := Drop_Area_Thickness;
-      end if;
-
-      if MDI.Docks (Top) /= null then
-         Alloc.Y := MDI.Docks_Size (Top) + Handle_Size + Drop_Area_Thickness;
-      else
-         Alloc.Y := Drop_Area_Thickness;
-      end if;
-
-      Alloc.Width := Get_Allocation_Width (MDI) - Allocation_Int (Alloc.X);
-      if MDI.Docks (Right) /= null then
-         Alloc.Width := Alloc.Width -
-           Allocation_Int (Handle_Size + MDI.Docks_Size (Right));
-      end if;
-      Alloc.Width := Alloc.Width - Drop_Area_Thickness;
-
-      Alloc.Height := Get_Allocation_Height (MDI) - Allocation_Int (Alloc.Y);
-      if MDI.Docks (Bottom) /= null then
-         Alloc.Height := Alloc.Height -
-           Allocation_Int (Handle_Size + MDI.Docks_Size (Bottom));
-      end if;
-
-      return Alloc;
-   end Compute_Workspace_Size;
 
    ------------------------
    -- Compute_Docks_Size --
@@ -1061,7 +1078,6 @@ package body Gtkada.MDI is
         Get_Allocation_Height (MDI);
       Alloc : Gtk_Allocation;
       Req   : Gtk_Requisition;
-
    begin
       --  If the MDI hasn't been created yet, we do nothing, it will be done
       --  later.
@@ -1087,128 +1103,50 @@ package body Gtkada.MDI is
          end if;
       end loop;
 
-      --  Left dock
+      --  Make sure that the docks don't make the middle area too small, and
+      --  assign it its new size.
 
-      if MDI.Docks (Left) /= null then
-         Alloc.X := Drop_Area_Thickness;
-         Alloc.Width := Allocation_Int (MDI.Docks_Size (Left))
-           - Drop_Area_Thickness;
+      Compute_Size (MDI, None, Alloc, Is_Handle => False);
 
-         if MDI.Priorities (Top) <= MDI.Priorities (Left)
-           and then MDI.Docks_Size (Top) /= 0
-         then
-            Alloc.Y := MDI.Docks_Size (Top) + Handle_Size
-              + Drop_Area_Thickness;
+      if Alloc.Width < Min_Width then
+         if MDI.Docks_Size (Left) > Min_Width - Alloc.Width then
+            MDI.Docks_Size (Left) := MDI.Docks_Size (Left)
+              - Min_Width + Alloc.Width;
          else
-            Alloc.Y := Drop_Area_Thickness;
+            MDI.Docks_Size (Right) := MDI.Docks_Size (Right)
+              - Min_Width + Alloc.Width;
          end if;
-
-         Alloc.Height := MDI_Alloc_Height - Allocation_Int (Alloc.Y);
-
-         if MDI.Priorities (Bottom) <= MDI.Priorities (Left)
-           and then MDI.Docks_Size (Bottom) /= 0
-         then
-            Alloc.Height := Alloc.Height
-              - Allocation_Int (MDI.Docks_Size (Bottom));
-         end if;
-
-         Alloc.Height := Alloc.Height - Drop_Area_Thickness;
-
-         Size_Allocate (MDI.Docks (Left), Alloc);
       end if;
 
-      --  Right dock
-
-      if MDI.Docks (Right) /= null then
-         Alloc.Width := Allocation_Int (MDI.Docks_Size (Right));
-         Alloc.X := Gint (MDI_Alloc_Width - Alloc.Width)
-           - Drop_Area_Thickness;
-
-         if MDI.Priorities (Top) <= MDI.Priorities (Right)
-           and then MDI.Docks_Size (Top) /= 0
-         then
-            Alloc.Y := MDI.Docks_Size (Top) + Handle_Size
-              + Drop_Area_Thickness;
+      if Alloc.Height < Min_Width then
+         if MDI.Docks_Size (Top) > Min_Width - Alloc.Height then
+            MDI.Docks_Size (Top) := MDI.Docks_Size (Top)
+              - Min_Width + Alloc.Height;
          else
-            Alloc.Y := Drop_Area_Thickness;
+            MDI.Docks_Size (Bottom) := MDI.Docks_Size (Bottom)
+              - Min_Width + Alloc.Height;
          end if;
-
-         Alloc.Height := MDI_Alloc_Height - Allocation_Int (Alloc.Y);
-         if MDI.Priorities (Bottom) <= MDI.Priorities (Right)
-           and then MDI.Docks_Size (Bottom) /= 0
-         then
-            Alloc.Height := Alloc.Height
-              - Allocation_Int (MDI.Docks_Size (Bottom));
-         end if;
-
-         Size_Allocate (MDI.Docks (Right), Alloc);
       end if;
 
-      --  Top dock
-
-      if MDI.Docks (Top) /= null then
-         Alloc.Y := Drop_Area_Thickness;
-         Alloc.Height := Allocation_Int (MDI.Docks_Size (Top));
-
-         if MDI.Priorities (Left) < MDI.Priorities (Top)
-           and then MDI.Docks_Size (Left) /= 0
-         then
-            Alloc.X := MDI.Docks_Size (Left) + Handle_Size;
-         else
-            Alloc.X := Drop_Area_Thickness;
-         end if;
-
-         Alloc.Width := MDI_Alloc_Width - Allocation_Int (Alloc.X);
-         if MDI.Priorities (Right) < MDI.Priorities (Top)
-           and then MDI.Docks_Size (Right) /= 0
-         then
-            Alloc.Width := Alloc.Width
-              - Allocation_Int (MDI.Docks_Size (Right) + Handle_Size);
-         end if;
-
-         Alloc.Width := Alloc.Width - Drop_Area_Thickness;
-
-         Size_Allocate (MDI.Docks (Top), Alloc);
+      if Alloc.Width < Min_Width or else Alloc.Height < Min_Width then
+         Compute_Size (MDI, None, Alloc, Is_Handle => False);
       end if;
-
-      --  Bottom dock
-
-      if MDI.Docks (Bottom) /= null then
-         Alloc.Height := Allocation_Int (MDI.Docks_Size (Bottom))
-           - Drop_Area_Thickness;
-         Alloc.Y := Gint (MDI_Alloc_Height - Alloc.Height)
-           - Drop_Area_Thickness;
-
-         if MDI.Priorities (Left) < MDI.Priorities (Bottom)
-           and then MDI.Docks_Size (Left) /= 0
-         then
-            Alloc.X := MDI.Docks_Size (Left) + Handle_Size;
-         else
-            Alloc.X := Drop_Area_Thickness;
-         end if;
-
-         Alloc.Width := MDI_Alloc_Width - Allocation_Int (Alloc.X);
-
-         if MDI.Priorities (Right) < MDI.Priorities (Bottom)
-           and then MDI.Docks_Size (Right) /= 0
-         then
-            Alloc.Width := Alloc.Width
-              - Allocation_Int (MDI.Docks_Size (Right) + Handle_Size);
-         end if;
-
-         Alloc.Width := Alloc.Width - Drop_Area_Thickness;
-
-         Size_Allocate (MDI.Docks (Bottom), Alloc);
-      end if;
-
-      --  Middle container
-      Alloc := Compute_Workspace_Size (MDI);
 
       if Children_Are_Maximized (MDI) then
          Size_Allocate (MDI.Docks (None), Alloc);
       else
          Size_Allocate (MDI.Layout, Alloc);
       end if;
+
+
+      --  Once this is done, we can actually resize the docks
+
+      for S in Left .. Bottom loop
+         if MDI.Docks (S) /= null then
+            Compute_Size (MDI, S, Alloc, Is_Handle => False);
+            Size_Allocate (MDI.Docks (S), Alloc);
+         end if;
+      end loop;
 
       Alloc := (X => 0, Y => 0, Width => MDI_Alloc_Width,
                 Height => Drop_Area_Thickness);
@@ -1279,15 +1217,6 @@ package body Gtkada.MDI is
             Alloc := (C.X, C.Y, Allocation_Int (C.Uniconified_Width),
                       Allocation_Int (C.Uniconified_Height));
             Size_Allocate (C, Alloc);
-
-         --  The following is required for the iconified children initially
-         --  displayed through the desktop save functions to be propertly
-         --  displayed.
-         --  elsif C.State = Iconified then
-         --     Alloc := (C.X, C.Y,
-         --               Get_Allocation_Width (C),
-         --               Get_Allocation_Height (C));
-         --     Size_Allocate (Get_Child (C), Alloc);
          end if;
 
          List := Widget_List.Next (List);
@@ -1594,6 +1523,69 @@ package body Gtkada.MDI is
       return False;
    end Draw_Child;
 
+   -----------------------------
+   -- Resize_Docks_From_Mouse --
+   -----------------------------
+
+   procedure Resize_Docks_From_Mouse (MDI : access MDI_Window_Record'Class) is
+   begin
+      case MDI.Selected is
+         when Left =>
+            MDI.Docks_Size (Left) := MDI.Current_X - Drop_Area_Thickness;
+
+            if MDI.Docks_Size (Left) >
+              Gint (Get_Allocation_Width (MDI)) - MDI.Docks_Size (Right)
+            then
+               MDI.Docks_Size (Right) := Gint (Get_Allocation_Width (MDI)) -
+                 MDI.Docks_Size (Left) - 2 * Handle_Size;
+            end if;
+
+         when Right =>
+            MDI.Docks_Size (Right) := Gint (Get_Allocation_Width (MDI))
+              - MDI.Current_X - Drop_Area_Thickness * 2;
+
+            if MDI.Docks_Size (Left) >
+              Gint (Get_Allocation_Width (MDI)) - MDI.Docks_Size (Right)
+            then
+               MDI.Docks_Size (Left) := Gint (Get_Allocation_Width (MDI)) -
+                 MDI.Docks_Size (Right) - 2 * Handle_Size;
+            end if;
+
+         when Top =>
+            MDI.Docks_Size (Top) := MDI.Current_Y - Drop_Area_Thickness * 2;
+
+            if MDI.Docks_Size (Top) >
+              Gint (Get_Allocation_Height (MDI)) - MDI.Docks_Size (Bottom)
+            then
+               MDI.Docks_Size (Bottom) := Gint (Get_Allocation_Height (MDI)) -
+                 MDI.Docks_Size (Top) - 2 * Handle_Size;
+            end if;
+
+         when Bottom =>
+            MDI.Docks_Size (Bottom) := Gint (Get_Allocation_Height (MDI)) -
+              MDI.Current_Y - Drop_Area_Thickness;
+
+            if MDI.Docks_Size (Top) >
+              Gint (Get_Allocation_Height (MDI)) - MDI.Docks_Size (Bottom)
+            then
+               MDI.Docks_Size (Top) := Gint (Get_Allocation_Height (MDI)) -
+                 MDI.Docks_Size (Bottom) - 2 * Handle_Size;
+            end if;
+
+         when None =>
+            null;
+      end case;
+
+      --  Make sure the size is at least one, or the handle will completely
+      --  disappear and the user will not have access to the window any more
+
+      MDI.Docks_Size (MDI.Selected) :=
+        Gint'Max (1, MDI.Docks_Size (MDI.Selected));
+
+      Compute_Docks_Size (MDI);
+      Queue_Resize (MDI);
+   end Resize_Docks_From_Mouse;
+
    ------------------------
    -- Button_Pressed_MDI --
    ------------------------
@@ -1642,12 +1634,12 @@ package body Gtkada.MDI is
             M.Current_W := M.Current_X;
             M.Current_Y := Drop_Area_Thickness;
             M.Current_H := Gint (Get_Allocation_Height (M))
-              - 2 * Drop_Area_Thickness;
+              - Drop_Area_Thickness;
 
          when Top | Bottom =>
             M.Current_X := Drop_Area_Thickness;
             M.Current_W := Gint (Get_Allocation_Width (M))
-              - 2 * Drop_Area_Thickness;
+              - Drop_Area_Thickness;
             M.Current_Y := Gint (Get_Y (Event)) + Win_Y;
             M.Current_H := M.Current_Y;
 
@@ -1655,9 +1647,11 @@ package body Gtkada.MDI is
             null;
       end case;
 
-      Draw_Line
-        (Get_Window (MDI),
-         M.Xor_GC, M.Current_X, M.Current_Y, M.Current_W, M.Current_H);
+      if not M.Opaque_Docks then
+         Draw_Line
+           (Get_Window (MDI),
+            M.Xor_GC, M.Current_X, M.Current_Y, M.Current_W, M.Current_H);
+      end if;
 
       return False;
    end Button_Pressed_MDI;
@@ -1672,73 +1666,18 @@ package body Gtkada.MDI is
    is
       pragma Unreferenced (Event);
       M : MDI_Window := MDI_Window (MDI);
-      Min_Size : constant Gint := 30;
-      --  Minimal size of the central widget
    begin
       if M.Selected = None then
          return False;
       end if;
 
-      Draw_Line
-        (Get_Window (MDI),
-         M.Xor_GC, M.Current_X, M.Current_Y, M.Current_W, M.Current_H);
+      if not M.Opaque_Docks then
+         Draw_Line
+           (Get_Window (MDI),
+            M.Xor_GC, M.Current_X, M.Current_Y, M.Current_W, M.Current_H);
+      end if;
 
-      case M.Selected is
-         when Left =>
-            --  Substract Handle_Size / 2, so that the handle is still under
-            --  the pointer, and the user can simply click again to resize
-
-            M.Docks_Size (Left) := M.Current_X - Handle_Size / 2;
-
-            if M.Docks_Size (Left) >
-              Gint (Get_Allocation_Width (M)) - M.Docks_Size (Right)
-            then
-               M.Docks_Size (Right) := Gint (Get_Allocation_Width (M)) -
-                 M.Docks_Size (Left) - 2 * Handle_Size - Min_Size;
-            end if;
-
-         when Right =>
-            M.Docks_Size (Right) :=
-              Gint (Get_Allocation_Width (M)) - M.Current_X - Handle_Size;
-
-            if M.Docks_Size (Left) >
-              Gint (Get_Allocation_Width (M)) - M.Docks_Size (Right)
-            then
-               M.Docks_Size (Left) := Gint (Get_Allocation_Width (M)) -
-                 M.Docks_Size (Right) - 2 * Handle_Size - Min_Size;
-            end if;
-
-         when Top =>
-            M.Docks_Size (Top) := M.Current_Y - Handle_Size;
-
-            if M.Docks_Size (Top) >
-              Gint (Get_Allocation_Height (M)) - M.Docks_Size (Bottom)
-            then
-               M.Docks_Size (Bottom) := Gint (Get_Allocation_Height (M)) -
-                 M.Docks_Size (Top) - 2 * Handle_Size - Min_Size;
-            end if;
-
-         when Bottom =>
-            M.Docks_Size (Bottom) :=
-              Gint (Get_Allocation_Height (M)) - M.Current_Y - Handle_Size / 2;
-
-            if M.Docks_Size (Top) >
-              Gint (Get_Allocation_Height (M)) - M.Docks_Size (Bottom)
-            then
-               M.Docks_Size (Top) := Gint (Get_Allocation_Height (M)) -
-                 M.Docks_Size (Bottom) - 2 * Handle_Size - Min_Size;
-            end if;
-
-         when None =>
-            null;
-      end case;
-
-      --  Make sure the size is at least one, or the handle will completely
-      --  disappear and the user will not have access to the window any more
-
-      M.Docks_Size (M.Selected) := Gint'Max (1, M.Docks_Size (M.Selected));
-
-      Compute_Docks_Size (M);
+      Resize_Docks_From_Mouse (M);
 
       Pointer_Ungrab (Time => 0);
       M.Selected := None;
@@ -1762,9 +1701,11 @@ package body Gtkada.MDI is
          return False;
       end if;
 
-      Draw_Line
-        (Get_Window (MDI),
-         M.Xor_GC, M.Current_X, M.Current_Y, M.Current_W, M.Current_H);
+      if not M.Opaque_Docks then
+         Draw_Line
+           (Get_Window (MDI),
+            M.Xor_GC, M.Current_X, M.Current_Y, M.Current_W, M.Current_H);
+      end if;
 
       if Get_Window (Event) /= Get_Window (M) then
          Get_Pointer (M, X, Y);
@@ -1787,9 +1728,14 @@ package body Gtkada.MDI is
             null;
       end case;
 
-      Draw_Line
-        (Get_Window (MDI),
-         M.Xor_GC, M.Current_X, M.Current_Y, M.Current_W, M.Current_H);
+      if M.Opaque_Docks then
+         Resize_Docks_From_Mouse (M);
+      else
+         Draw_Line
+           (Get_Window (MDI),
+            M.Xor_GC, M.Current_X, M.Current_Y, M.Current_W, M.Current_H);
+      end if;
+
       return False;
    end Button_Motion_MDI;
 
@@ -1831,7 +1777,7 @@ package body Gtkada.MDI is
       --  (otherwise, moving items in the layout would interfer with dnd).
 
       if (Get_State (Event) and Control_Mask) /= 0
-        or else C.State /= Normal
+        or else (C.State /= Normal and then C.State /= Iconified)
         or else Children_Are_Maximized (C.MDI)
       then
          List := Target_List_New (Source_Target_Table);
@@ -1843,8 +1789,8 @@ package body Gtkada.MDI is
              Button  => Gint (Get_Button (Event)),
              Event   => Event));
          Target_List_Unref (List);
+         return True;
       end if;
-
 
       Set_Focus_Child (C);
 
@@ -2801,7 +2747,7 @@ package body Gtkada.MDI is
          List := Widget_List.Next (List);
       end loop;
 
-      Alloc := Compute_Workspace_Size (MDI);
+      Compute_Size (MDI, None, Alloc, Is_Handle => False);
       W := Gint (Alloc.Width)  - (Num_Children - 1) * MDI.Title_Bar_Height;
       H := Gint (Alloc.Height) - (Num_Children - 1) * MDI.Title_Bar_Height;
 

@@ -45,6 +45,7 @@ with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
 with Gtk.Widget;
 with Gtk.Window;
+with Pango.Font;
 with Pango.Layout;
 
 --  TODO:
@@ -118,17 +119,20 @@ package Gtkada.MDI is
      (MDI                       : access MDI_Window_Record;
       Opaque_Resize             : Boolean             := False;
       Opaque_Move               : Boolean             := False;
+      Opaque_Docks              : Boolean             := False;
       Close_Floating_Is_Unfloat : Boolean             := True;
-      Title_Font                : String              := "Sans 8";
+      Title_Font                : Pango.Font.Pango_Font_Description := null;
       Background_Color          : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Title_Bar_Color           : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Focus_Title_Color         : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color);
    --  Change the setup of the MDI.
    --  Close_Floating_Is_Unfloat, if True, means that closing a floating child
    --  will put it back in the MDI instead of destroying it.
-   --  Title_Font is the font used in the title bars.
-   --  The colors, when Null_Color, will not change the current setup. Changes
-   --  in colors will not take effect unless the MDI is realized.
+   --  Title_Font is the font used in the title bars (if null, "sans 8"
+   --  is used).
+   --  The colors, when Null_Color, will not change the current setup.
+   --  Opaque_Docks should be true if resizing the docks with the handles
+   --  should be opaque.
 
    function Put
      (MDI   : access MDI_Window_Record;
@@ -630,10 +634,17 @@ private
       Opaque_Move : Boolean;
       --  True if the contents of windows should be displayed while moved
 
+      Opaque_Docks : Boolean;
+      --  True if resizing the docks should be opaque.
+
       Close_Floating_Is_Unfloat : Boolean;
       --  True if destroying a floating window will put the child back in the
       --  MDI instead of destroying it. False if the child should be destroyed
       --  (provided it accepts so in its delete_event handler).
+
+      Background_Color  : Gdk.Color.Gdk_Color;
+      Title_Bar_Color   : Gdk.Color.Gdk_Color;
+      Focus_Title_Color : Gdk.Color.Gdk_Color;
    end record;
 
    pragma Inline (Get_Window);
