@@ -847,6 +847,8 @@ gdouble ada_gdk_event_get_x (GdkEvent * event)
       return event->crossing.x;
     case GDK_CONFIGURE:
       return event->configure.x;
+    case GDK_SCROLL:
+      return event->scroll.x;
     default:
       break;
     }
@@ -872,6 +874,8 @@ gdouble ada_gdk_event_get_y (GdkEvent * event)
       return event->crossing.y;
     case GDK_CONFIGURE:
       return event->configure.y;
+    case GDK_SCROLL:
+      return event->scroll.y;
     default:
       break;
     }
@@ -925,6 +929,8 @@ gdouble ada_gdk_event_get_x_root (GdkEvent * event)
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       return event->crossing.x_root;
+    case GDK_SCROLL:
+      return event->scroll.x_root;
     default:
       break;
     }
@@ -948,6 +954,8 @@ gdouble ada_gdk_event_get_y_root (GdkEvent * event)
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       return event->crossing.y_root;
+    case GDK_SCROLL:
+      return event->scroll.x_root;
     default:
       break;
     }
@@ -994,6 +1002,8 @@ guint ada_gdk_event_get_state (GdkEvent * event)
       return event->crossing.state;
     case GDK_PROPERTY_NOTIFY:
       return event->property.state;
+    case GDK_SCROLL:
+      return event->scroll.state;
     default:
       break;
     }
@@ -1061,6 +1071,21 @@ gint ada_gdk_event_get_focus (GdkEvent * event)
     default:
       break;
     }
+  return ada_gdk_invalid_gint_value;
+}
+
+gint ada_gdk_event_get_direction (GdkEvent * event)
+{
+  if (!event)
+    return ada_gdk_invalid_gint_value;
+
+  switch (event->type)
+    { 
+    case GDK_SCROLL:
+      return event->scroll.direction;
+    default:
+      break;
+    } 
   return ada_gdk_invalid_gint_value;
 }
 
@@ -1276,8 +1301,12 @@ GdkEvent * ada_gdk_event_create (gint type, GdkWindow* win)
   GdkEvent* event;
 
   event = gdk_event_new (type);
+  event->any.send_event = TRUE;
   event->any.window = win;
-  gdk_window_ref (win);
+
+  if (win != NULL)
+    gdk_window_ref (win);
+
   return event;
 }
 
@@ -1345,6 +1374,9 @@ gint ada_gdk_event_set_x (GdkEvent * event, gdouble x)
     case GDK_CONFIGURE:
       event->configure.x = x;
       break;
+    case GDK_SCROLL:
+      event->scroll.x = x;
+      break;
     default:
       return 0;
     }
@@ -1371,6 +1403,9 @@ gint ada_gdk_event_set_y (GdkEvent * event, gdouble y)
     case GDK_CONFIGURE:
       event->configure.y = y;
       break;
+    case GDK_SCROLL:
+      event->scroll.y = y;
+      break;
     default:
       return 0;
     }
@@ -1394,6 +1429,9 @@ gint ada_gdk_event_set_xroot (GdkEvent * event, gdouble xroot)
     case GDK_LEAVE_NOTIFY:
       event->crossing.x_root = xroot;
       break;
+    case GDK_SCROLL:
+      event->scroll.x_root = xroot;
+      break;
     default:
       return 0;
     }
@@ -1416,6 +1454,9 @@ gint ada_gdk_event_set_yroot (GdkEvent * event, gdouble yroot)
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       event->crossing.y_root = yroot;
+      break;
+    case GDK_SCROLL:
+      event->scroll.y_root = yroot;
       break;
     default:
       return 0;
@@ -1459,6 +1500,10 @@ gint ada_gdk_event_set_time (GdkEvent * event, guint32 time)
     case GDK_PROXIMITY_IN:
     case GDK_PROXIMITY_OUT:
       event->proximity.time = time;
+      break;
+
+    case GDK_SCROLL:
+      event->scroll.time = time;
       break;
 
     default:
@@ -1533,6 +1578,9 @@ gint ada_gdk_event_set_state (GdkEvent * event, guint state)
     case GDK_PROPERTY_NOTIFY:
       event->property.state = state;
       break;
+    case GDK_SCROLL:
+      event->scroll.state = state;
+      break;
     default:
       return 0;
     }
@@ -1568,7 +1616,6 @@ gint ada_gdk_event_set_string (GdkEvent * event, char* str)
   return 1;
 }
 
-
 gint ada_gdk_event_set_mode (GdkEvent * event, gint mode)
 {
   switch (event->type)
@@ -1590,6 +1637,20 @@ gint ada_gdk_event_set_detail (GdkEvent * event, gint detail)
     case GDK_ENTER_NOTIFY:
     case GDK_LEAVE_NOTIFY:
       event->crossing.detail = detail;
+      break;
+    default:
+      return 0;
+    }
+  return 1;
+}
+
+gint ada_gdk_event_set_direction
+  (GdkEvent * event, GdkScrollDirection direction)
+{
+  switch (event->type)
+    {
+    case GDK_SCROLL:
+      event->scroll.direction = direction;
       break;
     default:
       return 0;
@@ -3405,3 +3466,31 @@ ada_tree_iter_copy (const GtkTreeIter *source,
 {
   *dest = *source;
 }
+
+/******************************************
+ ** Mouse handling                       **
+ ******************************************/
+
+#ifdef _WIN32
+
+#include <windows.h>
+void
+ada_gdk_move_pointer (gint x, gint y)
+{
+  SetCursorPos (x, y);
+}
+
+#else
+#include <gdk/gdkx.h>
+
+void
+ada_gdk_move_pointer (gint x, gint y)
+{
+  GdkDisplay *display = gdk_display_get_default ();
+  Display *xdisplay = GDK_DISPLAY_XDISPLAY (display);
+  Window xroot_window = GDK_WINDOW_XID (gdk_get_default_root_window ());
+
+  XWarpPointer (xdisplay, None, xroot_window, 0, 0, 0, 0, x, y);
+}
+
+#endif
