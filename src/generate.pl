@@ -545,7 +545,7 @@ sub print_arguments
 	push (@output, " ");
 	$indent .= ' ';
       }
-    
+
     if ($arguments[0] !~ /void/ || $for_gtk_new)
       {
 	push (@output, "(");
@@ -562,7 +562,7 @@ sub print_arguments
 	    push (@variables, "Widget");
 	    push (@types, "access $prefix\_$current_package\_Record");
 	  }
-	
+
 	foreach (@arguments)
 	  {
 	    last if (/void/);
@@ -573,19 +573,29 @@ sub print_arguments
 	    $type =~ s/\s//g;
 	    push (@variables, &create_ada_name ($name));
 	    $type = &{$convert} ($type);
+
+	    # Handling of widget parameters
+
 	    if ($type =~ /\'Class/) {
-		$type =~ s/\'Class//;
-		if ($type eq "$prefix\_$current_package") {
-		    $type = "access $type\_Record";
-		}
-		else
-		{
-		    $type = "access $type\_Record'Class";
-		}
-	    }
-	    else
-	    {
-		$type = "in $type";
+	      $type =~ s/\'Class//;
+	      if ($type eq "$prefix\_$current_package") {
+		$type = "access $type\_Record";
+	      }
+	      else {
+		$type = "access $type\_Record'Class";
+	      }
+
+	    # Pointers arguments in C map to "in out" parameters in Ada.
+	    # However, pointers to pointers (char**) map to "in out" parameters
+	    # to the access type.
+	    } elsif ($type =~ /(.*)\*$/) {
+	      $type = $1;
+	      $type = "$1_Access" if ($type =~ /(.*)\*$/);
+	      $type = "in out $type";
+
+	    # Else, simply an "in" parameter
+	    } else {
+	      $type = "in $type";
 	    }
 	    push (@types, $type);
 	  }
@@ -680,7 +690,7 @@ sub print_arguments_call
 sub print_arguments_call_for_gtk_new
 {
     my (@arguments) = @_;
-    
+
     if ($arguments[0] !~ /void/)
     {
 	foreach (@arguments)
@@ -801,7 +811,7 @@ sub print_body
     else
       {
 	my ($terminate) = ";\n";
-	  
+
 	if (&convert_ada_type ($return) =~ /\'Class/)
 	  {
 	    my ($tmp) = &convert_ada_type ($return);
@@ -930,26 +940,25 @@ sub convert_ada_type
 sub convert_c_type
   {
     my ($type) = shift;
-    
+
     if ($type =~ /gint([^*]*)(\*?)/) {
-      if ($2 ne "") {
-	return "out Gint$1";
-      }
-      return "Gint$1";
+      return ($2 ne "") ? "out Gint$1" : "Gint$1";
+
     } elsif ($type eq "gboolean") {
       return "Gint";
+
     } elsif ($type =~ /guint([^*]*)(\*?)/) {
-      if ($2 ne "") {
-	return "out Guint$1";
-      }
-      return "Guint$1";
+      return ($2 ne "") ? "out Guint$1" : "Guint$1";
+
+    } elsif ($type =~ /double([^*]*)(\*?)/) {
+      return ($2 ne "") ? "out Gdouble$1" : "Gdouble$1";
+
     } elsif ($type =~ /int(\*?)/) {
-      if ($1 ne "") {
-	return "out Integer";
-      }
-      return "Integer";
+      return ($1 ne "") ? "out Integer" : "Integer";
+
     } elsif ($type eq "gfloat") {
       return "Gfloat";
+
     } elsif ($type =~ /(const)?g?char\*/) {
       return "String";
     } else {
