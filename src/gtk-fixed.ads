@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,6 +29,7 @@
 
 with Gtk.Container;
 with Gtk.Widget;
+with Gtk.Object;
 
 package Gtk.Fixed is
 
@@ -36,20 +37,27 @@ package Gtk.Fixed is
      with private;
    type Gtk_Fixed is access all Gtk_Fixed_Record'Class;
 
-   function Get_Children (Widget : access Gtk_Fixed_Record)
-                          return      Widget.Widget_List.Glist;
-   procedure Gtk_New (Widget : out Gtk_Fixed);
-   procedure Initialize (Widget : access Gtk_Fixed_Record'Class);
+   function Get_Children (Fixed : access Gtk_Fixed_Record)
+     return Widget.Widget_List.Glist;
+   procedure Gtk_New (Fixed : out Gtk_Fixed);
+   procedure Initialize (Fixed : access Gtk_Fixed_Record'Class);
    procedure Move
-      (Fixed  : access Gtk_Fixed_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-       X      : in Gint16;
-       Y      : in Gint16);
+     (Fixed  : access Gtk_Fixed_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      X      : in Gint16;
+      Y      : in Gint16);
    procedure Put
-      (Fixed  : access Gtk_Fixed_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-       X      : in Gint16;
-       Y      : in Gint16);
+     (Fixed  : access Gtk_Fixed_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      X      : in Gint16;
+      Y      : in Gint16);
+
+   procedure Generate (N    : in Node_Ptr;
+                       File : in File_Type);
+   --  Gate internal function
+
+   procedure Generate (Fixed : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
    type Gtk_Fixed_Record is new Gtk.Container.Gtk_Container_Record

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Fixed is
 
@@ -36,16 +37,17 @@ package body Gtk.Fixed is
    -- Get_Children --
    ------------------
 
-   function Get_Children (Widget : access Gtk_Fixed_Record)
-                          return      Widget.Widget_List.Glist
+   function Get_Children (Fixed : access Gtk_Fixed_Record)
+     return Widget.Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
-                         return      System.Address;
+        return System.Address;
       pragma Import (C, Internal, "ada_fixed_get_children");
       use Gtk.Widget.Widget_List;
       Children : Gtk.Widget.Widget_List.Glist;
+
    begin
-      Set_Object (Children, Internal (Get_Object (Widget)));
+      Set_Object (Children, Internal (Get_Object (Fixed)));
       return Children;
    end Get_Children;
 
@@ -53,24 +55,24 @@ package body Gtk.Fixed is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Fixed)
+   procedure Gtk_New (Fixed : out Gtk_Fixed)
    is
    begin
-      Widget := new Gtk_Fixed_Record;
-      Initialize (Widget);
+      Fixed := new Gtk_Fixed_Record;
+      Initialize (Fixed);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Fixed_Record'Class)
+   procedure Initialize (Fixed : access Gtk_Fixed_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_fixed_new");
    begin
-      Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
+      Set_Object (Fixed, Internal);
+      Initialize_User_Data (Fixed);
    end Initialize;
 
    ----------
@@ -78,22 +80,20 @@ package body Gtk.Fixed is
    ----------
 
    procedure Move
-      (Fixed  : access Gtk_Fixed_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-       X      : in Gint16;
-       Y      : in Gint16)
+     (Fixed  : access Gtk_Fixed_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      X      : in Gint16;
+      Y      : in Gint16)
    is
       procedure Internal
-         (Fixed  : in System.Address;
-          Widget : in System.Address;
-          X      : in Gint16;
-          Y      : in Gint16);
+        (Fixed  : in System.Address;
+         Widget : in System.Address;
+         X      : in Gint16;
+         Y      : in Gint16);
       pragma Import (C, Internal, "gtk_fixed_move");
+
    begin
-      Internal (Get_Object (Fixed),
-                Get_Object (Widget),
-                X,
-                Y);
+      Internal (Get_Object (Fixed), Get_Object (Widget), X, Y);
    end Move;
 
    ---------
@@ -101,22 +101,41 @@ package body Gtk.Fixed is
    ---------
 
    procedure Put
-      (Fixed  : access Gtk_Fixed_Record;
-       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-       X      : in Gint16;
-       Y      : in Gint16)
+     (Fixed  : access Gtk_Fixed_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      X      : in Gint16;
+      Y      : in Gint16)
    is
       procedure Internal
-         (Fixed  : in System.Address;
-          Widget : in System.Address;
-          X      : in Gint16;
-          Y      : in Gint16);
+        (Fixed  : in System.Address;
+         Widget : in System.Address;
+         X      : in Gint16;
+         Y      : in Gint16);
       pragma Import (C, Internal, "gtk_fixed_put");
+
    begin
-      Internal (Get_Object (Fixed),
-                Get_Object (Widget),
-                X,
-                Y);
+      Internal (Get_Object (Fixed), Get_Object (Widget), X, Y);
    end Put;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+   begin
+      Gen_New (N, "Fixed", File => File);
+      Container.Generate (N, File);
+   end Generate;
+
+   procedure Generate (Fixed : in out Object.Gtk_Object; N : in Node_Ptr) is
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Fixed (Fixed));
+         Set_Object (Get_Field (N, "name"), Fixed);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Container.Generate (Fixed, N);
+   end Generate;
 
 end Gtk.Fixed;
