@@ -103,6 +103,9 @@ package Gtkada.Macro is
    procedure Free (Item : in out Macro_Item_Access);
    --  Free the memory associated with an item
 
+   procedure Free_List (List : in out Macro_Item_Access);
+   --  Free the memory associated with List and all its siblings.
+
    procedure Save_To_Disk (File : Ada.Text_IO.File_Type; Item : Macro_Item);
    --  Saves the item to the disk
 

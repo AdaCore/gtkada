@@ -157,6 +157,20 @@ package body Gtkada.Macro is
       Internal (Item);
    end Free;
 
+   ---------------
+   -- Free_List --
+   ---------------
+
+   procedure Free_List (List : in out Macro_Item_Access) is
+      Item : Macro_Item_Access := List;
+   begin
+      while Item /= null loop
+         List := List.Next;
+         Free (Item);
+         Item := List;
+      end loop;
+   end Free_List;
+
    -----------------
    -- Find_Widget --
    -----------------
