@@ -162,7 +162,7 @@ package body Gtk.Label is
          Gen_New (N, "Label", Adjust (Get_Field (N, "label").all),
            File => File, Prefix => "-(""", Postfix => """)");
       else
-         Gen_New (N, "Label", Get_Field (N, "label").all,
+         Gen_New (N, "Label", Adjust (Get_Field (N, "label").all),
            File => File, Prefix => """", Postfix => """");
       end if;
 
