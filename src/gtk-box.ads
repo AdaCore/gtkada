@@ -9,6 +9,11 @@ package Gtk.Box is
    type Pack_Type is (Pack_Start, Pack_End);
    --  mapping: Pack_Type gtkenums.h GtkPackType
 
+   function Get_Child
+     (Box : in Gtk_Box;
+      Num : in Gint)
+      return   Gtk.Widget.Gtk_Widget;
+
    procedure Pack_Start
      (In_Box  : in Gtk_Box'Class;
       Child   : in Gtk.Widget.Gtk_Widget'Class;

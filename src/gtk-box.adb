@@ -1,6 +1,23 @@
 
 package body Gtk.Box is
 
+   ---------------
+   -- Get_Child --
+   ---------------
+
+   function Get_Child (Box : in Gtk_Box;
+                       Num : in Gint)
+                       return   Gtk.Widget.Gtk_Widget is
+      function Internal (Box : in System.Address;
+                         Num : in Gint)
+                         return  System.Address;
+      pragma Import (C, Internal, "ada_box_get_child");
+      W : Gtk.Widget.Gtk_Widget;
+   begin
+      Set_Object (W, Internal (Get_Object (Box), Num));
+      return W;
+   end Get_Child;
+
    ----------------
    -- Pack_Start --
    ----------------
