@@ -453,14 +453,22 @@ package body Gdk.Event is
 
       use type Interfaces.C.Strings.chars_ptr;
 
-      Str : constant Interfaces.C.Strings.chars_ptr := Internal (Event);
+      Event_Type : Gdk_Event_Type := Get_Event_Type (Event);
 
    begin
-      if Str = Interfaces.C.Strings.Null_Ptr then
-         raise Invalid_Field;
+      if Event_Type = Key_Press or else Event_Type = Key_Release then
+         declare
+            Str : constant Interfaces.C.Strings.chars_ptr := Internal (Event);
+         begin
+            if Str = Interfaces.C.Strings.Null_Ptr then
+               return "";
+            end if;
+
+            return Interfaces.C.Strings.Value (Str);
+         end;
       end if;
 
-      return Interfaces.C.Strings.Value (Str);
+      raise Invalid_Field;
    end Get_String;
 
    --------------
