@@ -155,7 +155,7 @@ package Gdk.GC is
                               X, Y : in Gint);
    --  Set the origin of the clip mask.
    --  See the functions Set_Clip_Rectangle, Set_Clip_Region and
-   --  Set_Clip_Mask for more explanation.
+   --  Gdk.Bitmap.Set_Clip_Mask for more explanation.
 
    procedure Set_Clip_Rectangle
      (GC        : in Gdk_GC;

@@ -30,8 +30,7 @@
 --  <description>
 --
 --  This is the top level package of the Gdk widget hierarchy.
---  It provides the basic types and related functions needed throughout Gdk
---  and Gtk.
+--  It provides a single type used to access the underlying C structures.
 --
 --  </description>
 
@@ -41,8 +40,8 @@ with Unchecked_Conversion;
 package Gdk is
    pragma Preelaborate;
 
-   type C_Dummy_Record is limited private;
-   type C_Proxy is access C_Dummy_Record;
+   type C_Dummy is limited private;
+   type C_Proxy is access C_Dummy;
    pragma Convention (C, C_Proxy);
    --  General proxy for C structures.
    --  This type is used instead of System.Address so that the variables are
@@ -52,13 +51,17 @@ package Gdk is
    --  C_Proxy is a public type so that one can compare directly the value
    --  of the variables with 'null'.
 
+   --  <doc_ignore>
+
    function Convert is new Unchecked_Conversion (System.Address, C_Proxy);
    function Convert is new Unchecked_Conversion (C_Proxy, System.Address);
    --  Converts from a System.Address returned by a C function to an
    --  internal C_Proxy.
 
+   --  </doc_ignore>
+
 private
-   type C_Dummy_Record is null record;
+   type C_Dummy is null record;
    --  This array can contain anything, since it is never used on the Ada side
    --  anyway.
 

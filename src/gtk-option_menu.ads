@@ -51,9 +51,9 @@ package Gtk.Option_Menu is
    procedure Initialize (Option_Menu : access Gtk_Option_Menu_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
- 
+
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Window.
+   --  Return the internal value associated with a Gtk_Option_Menu.
 
    function Get_Menu (Option_Menu : access Gtk_Option_Menu_Record)
      return Gtk.Menu.Gtk_Menu;
@@ -88,7 +88,7 @@ package Gtk.Option_Menu is
    -------------
    -- Signals --
    -------------
- 
+
    --  <signals>
    --  The following new signals are defined for this widget:
    --

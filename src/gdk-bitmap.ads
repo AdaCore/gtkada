@@ -63,7 +63,7 @@ package Gdk.Bitmap is
 
    procedure Ref (Bitmap : in Gdk_Bitmap);
    --  Add a reference to a bitmap.
- 
+
    procedure Unref (Bitmap : in out Gdk_Bitmap);
    --  This is the usual way to destroy a bitmap. The memory is freed when
    --  there is no more reference
@@ -82,7 +82,10 @@ package Gdk.Bitmap is
 
    procedure Set_Clip_Mask (GC    : in Gdk.GC.Gdk_GC;
                             Mask  : in Gdk_Bitmap);
-   --  If Mask is set to Null_Bitmap, then no clip_mask is used for drawing
+   --  If Mask is set to Null_Bitmap, then no clip_mask is used for drawing.
+   --  Points will be drawn through this GC only where the bits are set to 1
+   --  in the mask. See also the function Gdk.GC.Set_Clip_Origin for
+   --  how to move the mask inside the GC.
 
 private
    Null_Bitmap : constant Gdk_Bitmap := null;

@@ -185,7 +185,7 @@ package Gdk.Drawable is
       X           : in Gint;
       Y           : in Gint;
       Wide_Text   : in Gdk.Types.Gdk_WString);
-   --  Draw a wide string the given font of fontset.
+   --  Draw a wide string in the given font of fontset.
    --  If the font is a 1-byte font, the string is converted into 1-byte
    --  characters (discarding the high bytes) before output.
 
