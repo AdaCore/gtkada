@@ -196,13 +196,18 @@ package body Gtk.Menu_Item is
       S : String_Ptr := Get_Field (N, "label");
    begin
       if S = null then
-         Gen_New (N, "Menu_Item", File => File, Delim => '"');
+         Gen_New (N, "Menu_Item", File => File);
       else
-         Gen_New (N, "Menu_Item", S.all, File => File, Delim => '"');
+         if Gettext_Support (N) then
+            Gen_New (N, "Menu_Item", S.all,
+              File => File, Prefix => "-""", Postfix => """");
+         else
+            Gen_New (N, "Menu_Item", S.all,
+              File => File, Prefix => """", Postfix => """");
+         end if;
       end if;
 
       Item.Generate (N, File);
-
       Gen_Set (N, "Menu_Item", "right_justify", File);
    end Generate;
 
