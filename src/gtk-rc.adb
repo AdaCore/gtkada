@@ -36,12 +36,13 @@ package body Gtk.Rc is
    ----------------------------
 
    procedure Add_Widget_Class_Style
-     (Style   : in Gtk.Style.Gtk_Style;
+     (Style   : in Gtk_Rc_Style;
       Pattern : in String)
    is
-      procedure Internal (Style   : in Gtk.Style.Gtk_Style;
-                          Pattern : in String);
+      procedure Internal
+        (Style : in Gtk_Rc_Style; Pattern : in String);
       pragma Import (C, Internal, "gtk_rc_add_widget_class_style");
+
    begin
       Internal (Style, Pattern & ASCII.NUL);
    end Add_Widget_Class_Style;
@@ -51,12 +52,13 @@ package body Gtk.Rc is
    ---------------------------
 
    procedure Add_Widget_Name_Style
-     (Style   : in Gtk.Style.Gtk_Style;
+     (Style   : in Gtk_Rc_Style;
       Pattern : in String)
    is
-      procedure Internal (Style   : in Gtk.Style.Gtk_Style;
-                          Pattern : in String);
+      procedure Internal
+        (Style : in Gtk_Rc_Style; Pattern : in String);
       pragma Import (C, Internal, "gtk_rc_add_widget_name_style");
+
    begin
       Internal (Style, Pattern & ASCII.NUL);
    end Add_Widget_Name_Style;
@@ -66,12 +68,11 @@ package body Gtk.Rc is
    ---------------
 
    function Get_Style
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-     return Gtk.Style.Gtk_Style
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Gtk_Rc_Style
    is
-      function Internal (Widget : in System.Address)
-                        return Gtk.Style.Gtk_Style;
+      function Internal (Widget : in System.Address) return Gtk_Rc_Style;
       pragma Import (C, Internal, "gtk_rc_get_style");
+
    begin
       return Internal (Get_Object (Widget));
    end Get_Style;

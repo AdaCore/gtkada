@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Style;
 with Gtk.Widget;
 
 package Gtk.Rc is
@@ -39,16 +38,17 @@ package Gtk.Rc is
    procedure Parse_String (Rc_String : in String);
 
    function Get_Style (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-                       return Gtk.Style.Gtk_Style;
+     return Gtk_Rc_Style;
 
    procedure Add_Widget_Name_Style
-     (Style   : in Gtk.Style.Gtk_Style;
+     (Style   : in Gtk_Rc_Style;
       Pattern : in String);
 
    procedure Add_Widget_Class_Style
-     (Style   : in Gtk.Style.Gtk_Style;
+     (Style   : in Gtk_Rc_Style;
       Pattern : in String);
 
+private
 
    pragma Import (C, Init, "gtk_rc_init");
 
