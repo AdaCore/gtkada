@@ -421,3 +421,13 @@ ada_box_get_child (GtkBox* widget, gint num)
   else
     return NULL;
 }
+
+/**********************************************
+ ** Functions for Progress_Bar
+ **********************************************/
+
+gfloat
+ada_progress_bar_get_percentage (GtkProgressBar* widget)
+{
+  return widget->percentage;
+}
