@@ -26,7 +26,8 @@ with System;
 package DGate_Callbacks is
  
    procedure Generic_Callback
-     (Object : in Private_Object; Data : in System.Address);
+     (Object : in Private_Object;
+      Data   : in System.Address);
    --  This callback will print on standard output the string pointed to by
    --  Data.
 

@@ -21,7 +21,7 @@
 --  DGATE stands for Dynamic GATE.
 --  Parse a Glade's XML project file, declare the required callbacks and
 --  create the widgets associated with the project file.
---  Dyngate can very easily be used in conjunction with GLADE to test during
+--  DGATE can very easily be used in conjunction with GLADE to test during
 --  the development.
  
 with Ada.Command_Line; use Ada.Command_Line;
@@ -131,7 +131,7 @@ begin
       Instantiate (N);
 
       if Timeout > 0 then
-         --  Let the application run for timeout seconds and then quit
+         --  Let the application run for timeout milliseconds and then quit
 
          Id := My_Timeout.Add (Timeout, DGate_Callbacks.Quit'Access, 0);
       end if;
