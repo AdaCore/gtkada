@@ -1259,8 +1259,8 @@ package body Gtk_Generates is
    begin
       Widget := Widget_New (Build_Type);
       Gen_New (N, "Progress_Bar", File => File);
-      Gen_Set (N, "fraction", File => File);
-      Gen_Set (N, "pulse_step", File => File);
+      Gen_Set (N, "fraction", File => File, Is_Float => True);
+      Gen_Set (N, "pulse_step", File => File, Is_Float => True);
 
       if Gettext_Support (N) then
          Gen_Set (N, "text", File, "-""", """");
