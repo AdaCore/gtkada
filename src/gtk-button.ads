@@ -27,6 +27,7 @@
 -----------------------------------------------------------------------
 
 with Gtk.Container;
+with Gtk.Enums;
 
 package Gtk.Button is
 
@@ -34,6 +35,11 @@ package Gtk.Button is
 
    procedure Gtk_New (Widget : out Gtk_Button);
    procedure Gtk_New (Widget : out Gtk_Button; Label  : in String);
+
+   procedure Set_Relief (Widget   : in out Gtk_Button;
+                         NewStyle : in Gtk.Enums.Gtk_Relief_Style);
+   function Get_Relief (Widget : in Gtk_Button)
+                        return Gtk.Enums.Gtk_Relief_Style;
 
    ---------------
    --  Signals  --

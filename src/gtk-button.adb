@@ -53,6 +53,18 @@ package body Gtk.Button is
       Internal (Get_Object (Widget));
    end Enter;
 
+   ----------------
+   -- Get_Relief --
+   ----------------
+
+   function Get_Relief (Widget : in Gtk_Button)
+                        return Gtk.Enums.Gtk_Relief_Style is
+      function Internal (Widget : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_button_get_relief");
+   begin
+      return Gtk.Enums.Gtk_Relief_Style'Val (Internal (Get_Object (Widget)));
+   end Get_Relief;
+
    -------------
    -- Gtk_New --
    -------------
@@ -107,5 +119,19 @@ package body Gtk.Button is
    begin
       Internal (Get_Object (Widget));
    end Released;
+
+   ----------------
+   -- Set_Relief --
+   ----------------
+
+   procedure Set_Relief (Widget   : in out Gtk_Button;
+                         NewStyle : in Gtk.Enums.Gtk_Relief_Style) is
+      procedure Internal (Widget : in System.Address;
+                          NewStyle : in Gint);
+      pragma Import (C, Internal, "gtk_button_set_relief");
+   begin
+      Internal (Get_Object (Widget),
+                Gtk.Enums.Gtk_Relief_Style'Pos (NewStyle));
+   end Set_Relief;
 
 end Gtk.Button;
