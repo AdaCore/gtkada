@@ -37,6 +37,8 @@ look at the testgtk/ directory).
      
 These functions were tested on the following systems :
    - Linux/x86
+   - Linux/sparc
+   - Linux/ppc
    - Solaris/sparc
    - Solaris/x86
    - Dec Unix 4.0b
