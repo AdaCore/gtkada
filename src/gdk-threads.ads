@@ -27,15 +27,33 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This package provides simple primitives to write multithreaded applications
+--  with GtkAda. See the GtkAda User's Guide for more details (section
+--  Tasking with GtkAda).
+--
+--  </description>
+--  <c_version>1.2.7</c_version>
+
 with System;
 
 package Gdk.Threads is
 
    procedure Init (Vtable : System.Address := System.Null_Address);
+   --  Initialize the Gdk internal threading support.
+   --  This procedure must be called before any call to Enter or Leave.
+   --  The parameter Vtable should never be used for now.
 
    procedure Enter;
+   --  Take the GtkAda global lock.
+   --  See the GtkAda User's Guide for more details (section Tasking with
+   --  GtkAda).
 
    procedure Leave;
+   --  Release the GtkAda global lock.
+   --  See the GtkAda User's Guide for more details (section Tasking with
+   --  GtkAda).
 
 private
    pragma Linker_Options ("-lgthread");
