@@ -2381,8 +2381,9 @@ in your program or in the toolkit.  Please check your program carefully,
 and if you think this is a problem in GtkAda itself, send us an e-mail.
 @end itemize
 
-To report errors, send a mail to the authors (@uref{mailto:gtkada@@ada.eu.org})
-explaining exactly what your
+To report errors, if you are a supported user of GNAT, send a mail to
+@uref{mailto:report@@gnat.com}, otherwise send a mail to the authors
+(@uref{mailto:gtkada@@ada.eu.org}) explaining exactly what your
 are  doing,  what  is  the  expected  result  and  what  you  actually
 get. Please include the required sources to reproduce the problem, in
 a  format usable  by @code{gnatchop}  (basically, insert  all  the required
@@ -2831,7 +2832,7 @@ widget (in this case GtkImage) whose name is image1.
 If you get such warnings, your file may or may not compile properly, but
 you won't get the complete widget hierarchy at run time.
 
-Feel free to send us (@uref{mailto:gtkada@@ada.eu.org}) the XML file that
+Feel free to send us (see "How to report bugs") the XML file that
 causes this problem. We don't guarantee a rapid fix for each particular
 problem, but receiving real examples of missing functionnalities will
 certainly help implementing them faster.
