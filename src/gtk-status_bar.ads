@@ -1,10 +1,22 @@
 with Gtk.Box;
+with Interfaces.C.Strings;
+with Glib.GSlist;
 
 package Gtk.Status_Bar is
 
    type Gtk_Status_Bar is new Gtk.Box.Gtk_Box with private;
    type Context_Id is new Guint;
    type Message_Id is new Guint;
+
+   type Status_Bar_Msg is
+      record
+         Text    : Interfaces.C.Strings.chars_ptr;
+         Context : Context_Id;
+         Message : Message_Id;
+      end record;
+   function Convert (Msg : Status_Bar_Msg) return System.Address;
+   function Convert (Msg : System.Address) return Status_Bar_Msg;
+   package Messages_List is new Glib.GSlist.Generic_SList (Status_Bar_Msg);
 
    procedure Gtk_New (Widget : out Gtk_Status_Bar);
    --  mapping: Gtk_New gtkstatusbar.h gtk_statusbar_new
@@ -14,6 +26,9 @@ package Gtk.Status_Bar is
                             return Context_Id;
    --  mapping: Statusbar_Get_Context_Id gtkstatusbar.h \
    --  mapping: gtk_statusbar_get_context_id
+
+   function Get_Messages (Statusbar : in Gtk_Status_Bar'Class)
+                          return Messages_List.GSlist;
 
    function Push
      (Statusbar : in Gtk_Status_Bar'Class;

@@ -1,5 +1,24 @@
+with Unchecked_Conversion;
 
 package body Gtk.Status_Bar is
+
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (Msg : Status_Bar_Msg) return System.Address is
+   begin
+      return Msg'Address;
+      --  FIXME : this function is anyway not supposed to be used
+   end Convert;
+
+   function Convert (Msg : System.Address) return Status_Bar_Msg is
+      type Status_Bar_Msg_Access is access all Status_Bar_Msg;
+      function Internal is new Unchecked_Conversion (System.Address,
+                                                     Status_Bar_Msg_Access);
+   begin
+      return Internal (Msg).all;
+   end Convert;
 
    -------------
    -- Gtk_New --
@@ -28,6 +47,22 @@ package body Gtk.Status_Bar is
       return Internal (Get_Object (Statusbar),
                        Context_Description & Ascii.NUL);
    end Get_Context_Id;
+
+   ------------------
+   -- Get_Messages --
+   ------------------
+
+   function Get_Messages (Statusbar : in Gtk_Status_Bar'Class)
+                          return Messages_List.GSlist
+   is
+      function Internal (Statusbar : in System.Address)
+                         return System.Address;
+      pragma Import (C, Internal, "ada_status_get_messages");
+      List : Messages_List.GSlist;
+   begin
+      Messages_List.Set_Object (List, Internal (Get_Object (Statusbar)));
+      return List;
+   end Get_Messages;
 
    ----------
    -- Push --
