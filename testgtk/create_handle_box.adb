@@ -47,6 +47,21 @@ package body Create_Handle_Box is
    package Handle_Cb is new Signal.Two_Callback
      (Gtk_Handle_Box_Record, String, Gtk_Widget_Record);
 
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "A @bGtk_Handle_Box@B provides a special place where widgets"
+        & " can be attached and detached. For instance, in this demo the"
+        & " @bGtk_Toolbar@B can be detached from the handle box to create"
+        & " a separate window." & ASCII.LF
+        & "When the window is closed, the toolbar is reattached to the"
+        & " @bGtk_Handle_Box@B.";
+   end Help;
+
+
    procedure Child_Signal (Handle : access Gtk_Handle_Box_Record;
                            Child  : in Gtk_Widget_Record;
                            Data   : in String) is

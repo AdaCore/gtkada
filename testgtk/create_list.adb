@@ -63,6 +63,15 @@ package body Create_List is
    List : Gtk_List;
    Omenu_Group  : Widget_Slist.GSlist;
 
+   function Help return String is
+   begin
+      return "Note that the @bGtk_List@B list widget is not the best way to"
+        & " display text, as opposed to what you can see in this demo."
+        & ASCII.LF
+        & "Instead this widget is intended to provide a list of lines"
+        & " that can be selected either as a group or independently.";
+   end Help;
+
    procedure Toggle_Sel_Mode (Widget : access Gtk_Widget_Record) is
    begin
       if not Mapped_Is_Set (Widget) then

@@ -35,7 +35,7 @@ with Gdk.Pixmap;          use Gdk.Pixmap;
 with Gtk.Box;             use Gtk.Box;
 with Gtk.Button;          use Gtk.Button;
 with Gtk.Dialog;          use Gtk.Dialog;
-with Gtk.Drawing_Area;    use Gtk.Drawing_Area;
+--  with Gtk.Drawing_Area;    use Gtk.Drawing_Area;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Frame;           use Gtk.Frame;
 with Gtk.HButton_Box;     use Gtk.HButton_Box;
@@ -118,6 +118,9 @@ package body Main_Windows is
    procedure Display_Help (Button : access Gtk_Widget_Record);
    --  Display an Help window for the current demo
 
+   package Notebook_Cb is new Gtk.Signal.Two_Callback
+     (Gtk_Notebook_Record, Gtk_Notebook, Gtk_Notebook_Page);
+
    Help_Dialog : Gtk.Dialog.Gtk_Dialog;
    Help_Text   : Gtk.Text.Gtk_Text;
    --  The dialog used to display the help window
@@ -127,8 +130,6 @@ package body Main_Windows is
    --  The type of function to call when an item in the tree is selected.
    --  The parameter is the frame in which the demo should be displayed
 
-   type Help_Function is
-     access function return String;
    Current_Help : Help_Function := null;
    --  Returns the help string to display,
    --  Symbols between @b and @B are displayed in bold
@@ -196,31 +197,40 @@ package body Main_Windows is
                                          Create_Box.Help'Access),
       (NS ("button box"),       Box,     Create_Button_Box.Run'Access,
                                          Create_Button_Box.Help'Access),
-      (NS ("buttons"),          Base,    Create_Buttons.Run'Access, null),
-      (NS ("calendar"),         Base,    Create_Calendar.Run'Access, null),
-      (NS ("check buttons"),    Base,    Create_Check_Buttons.Run'Access, null),
+      (NS ("buttons"),          Base,    Create_Buttons.Run'Access,
+                                         Create_Buttons.Help'Access),
+      (NS ("calendar"),         Base,    Create_Calendar.Run'Access,
+                                         Create_Calendar.Help'Access),
+      (NS ("check buttons"),    Base,    Create_Check_Buttons.Run'Access,
+                                         Create_Check_Buttons.Help'Access),
       (NS ("clist"),            Complex, Create_Clist.Run'Access, null),
       (NS ("ctree"),            Complex, Create_Ctree.Run'Access, null),
       (NS ("color selection"),  Gimp,    Create_Color_Selection.Run'Access, null),
       (NS ("cursors"),          Misc,    Create_Cursors.Run'Access, null),
-      (NS ("dialog"),           Base,    Create_Dialog.Run'Access, null),
+      (NS ("dialog"),           Base,    Create_Dialog.Run'Access,
+                                         Create_Dialog.Help'Access),
       (NS ("dnd"),              Complex, null, null),
-      (NS ("entry"),            Base,    Create_Entry.Run'Access, null),
+      (NS ("entry"),            Base,    Create_Entry.Run'Access,
+                                         Create_Entry.Help'Access),
       (NS ("event watcher"),    Misc,    null, null),
       (NS ("file selection"),   Complex, Create_File_Selection.Run'Access, null),
       (NS ("fixed"),            Box,     Create_Fixed.Run'Access,
                                          Create_Fixed.Help'Access),
       (NS ("font selection"),   Gimp,    Create_Font_Selection.Run'Access, null),
       (NS ("gamma curve"),      Gimp,    Create_Gamma_Curve.Run'Access, null),
-      (NS ("handle box"),       Box,     Create_Handle_Box.Run'Access, null),
+      (NS ("handle box"),       Box,     Create_Handle_Box.Run'Access,
+                                         Create_Handle_Box.Help'Access),
       (NS ("item factory"),     Complex, null, null),
       (NS ("labels"),           Base,    null, null),
       (NS ("layout"),           Box,     null, null),
-      (NS ("list"),             Base,    Create_List.Run'Access, null),
+      (NS ("list"),             Base,    Create_List.Run'Access,
+                                         Create_List.Help'Access),
       (NS ("menus"),            Base,    Create_Menu.Run'Access, null),
       (NS ("modal window"),     Base,    null, null),
-      (NS ("notebook"),         Box,     Create_Notebook.Run'Access, null),
-      (NS ("panes"),            Box,     Create_Paned.Run'Access, null),
+      (NS ("notebook"),         Box,     Create_Notebook.Run'Access,
+                                         Create_Notebook.Help'Access),
+      (NS ("panes"),            Box,     Create_Paned.Run'Access,
+                                         Create_Paned.Help'Access),
       (NS ("pixmap"),           Base,    Create_Pixmap.Run'Access, null),
       (NS ("preview color"),    Gimp,    Create_Preview_Color.Run'Access, null),
       (NS ("preview gray"),     Gimp,    Create_Preview_Gray.Run'Access, null),
@@ -242,7 +252,8 @@ package body Main_Windows is
       (NS ("test timeout"),     Misc,    Create_Test_Timeout.Run'Access, null),
       (NS ("text"),             Complex, Create_Text.Run'Access, null),
       (NS ("toggle buttons"),   Base,    Create_Toggle_Buttons.Run'Access, null),
-      (NS ("toolbar"),          Box,     Create_Toolbar.Run'Access, null),
+      (NS ("toolbar"),          Box,     Create_Toolbar.Run'Access,
+                                         Create_Toolbar.Help'Access),
       (NS ("tooltips"),         Complex, Create_Tooltips.Run'Access, null),
       (NS ("tree"),             Complex, Create_Tree.Run'Access, null),
       (NS ("WM hints"),         Misc,    null, null)
@@ -375,11 +386,7 @@ package body Main_Windows is
                --  finishing at the first previous white space. Stops at the
                --  first Newline encountered if any
 
---                 Line_End := Ada.Strings.Fixed.Index
---                   (Help (Pos .. Help'Last), " ", Ada.Strings.Backward);
---                 if Line_End = 0 then
                Line_End := Help'Last + 1;
---               end if;
 
                First := Ada.Strings.Fixed.Index
                  (Help (Pos .. Line_End - 1), Newline);
@@ -483,6 +490,22 @@ package body Main_Windows is
       Gtk.Main.Main_Quit;
    end Exit_Main;
 
+   --------------
+   -- Set_Help --
+   --------------
+
+   procedure Set_Help (Func : Help_Function) is
+   begin
+      Current_Help := Func;
+      if Help_Dialog /= null then
+         declare
+            W : aliased Gtk_Widget_Record;
+         begin
+            Display_Help (W'Access);
+         end;
+      end if;
+   end Set_Help;
+
    -----------------------
    -- Tree_Select_Child --
    -----------------------
@@ -507,14 +530,7 @@ package body Main_Windows is
          --  And then insert our own new demo
 
          Gtk_Demos (Item.Demo_Num).Func (Gtk_Demo_Frame);
-         Current_Help := Gtk_Demos (Item.Demo_Num).Help;
-         if Help_Dialog /= null then
-            declare
-               W : aliased Gtk_Widget_Record;
-            begin
-               Display_Help (W'Access);
-            end;
-         end if;
+         Set_Help (Gtk_Demos (Item.Demo_Num).Help);
       end if;
    end Tree_Select_Child;
 
@@ -582,6 +598,41 @@ package body Main_Windows is
       Initialize (Win);
    end Gtk_New;
 
+   -----------------
+   -- OpenGL_Help --
+   -----------------
+
+   function Opengl_Help return String is
+   begin
+      return "This demo shows how you can use GtkAda to display an @bOpenGL@B"
+        & " widget. GtkAda provides a special window in which you can display"
+        & " any kind of OpenGL drawing." & ASCII.LF
+        & "GtkAda comes with a very basic binding to OpenGL (@bMesa@B), but"
+        & " you can use any binding you want, including win32 on Windows."
+        & ASCII.LF & ASCII.LF
+        & "To use this demo, try moving the demo with: " & ASCII.LF
+        & "   - Left mouse button: rotate the drawing." & ASCII.LF
+        & "   - Middle mouse button: zoom the drawing.";
+   end Opengl_Help;
+
+   -----------------
+   -- Switch_Page --
+   -----------------
+
+   procedure Switch_Page (Notebook : access Gtk_Notebook_Record;
+                          Page     : in Gtk_Notebook_Page;
+                          User     : in Gtk_Notebook)
+   is
+      pragma Warnings (Off, Page);
+      pragma Warnings (Off, User);
+   begin
+      if Get_Current_Page (Notebook) = 0 then
+         Set_Help (Opengl_Help'Access);
+      else
+         Set_Help (null);
+      end if;
+   end Switch_Page;
+
    ----------------
    -- Initialize --
    ----------------
@@ -597,7 +648,7 @@ package body Main_Windows is
       Cb_Id    : Guint;
       Font     : Gdk.Font.Gdk_Font;
       Style    : Gtk_Style;
-      Drawing_Area : Gtk.Drawing_Area.Gtk_Drawing_Area;
+      --  Drawing_Area : Gtk.Drawing_Area.Gtk_Drawing_Area;
       Button   : Gtk.Button.Gtk_Button;
       --  Bbox     : Gtk.Box.Gtk_Box;
       Bbox     : Gtk.Hbutton_Box.Gtk_Hbutton_Box;
@@ -627,6 +678,8 @@ package body Main_Windows is
       --  Notebook creation
       Gtk_New (Win.Notebook);
       Pack_Start (Vbox, Win.Notebook, Expand => True, Fill => True);
+      Cb_Id := Notebook_Cb.Connect (Win.Notebook, "switch_page",
+                                    Switch_Page'Access, Win.Notebook);
 
       --  First page: Gtk demos
       Gtk_New (Frame);
@@ -670,20 +723,21 @@ package body Main_Windows is
       Set_Usize (Gtk_Demo_Frame, 550, 500);
 
       --  Second page: Gdk demos
-      Gtk_New (Frame);
-      Gtk_New (Label, "Gdk demo");
-      Append_Page (Win.Notebook, Child => Frame, Tab_Label => Label);
+--        Gtk_New (Frame);
+--        Gtk_New (Label, "Gdk demo");
+--        Append_Page (Win.Notebook, Child => Frame, Tab_Label => Label);
 
-      Gtk_New_Vbox (Box, Homogeneous => False, Spacing => 0);
-      Add (Frame, Box);
+--        Gtk_New_Vbox (Box, Homogeneous => False, Spacing => 0);
+--        Add (Frame, Box);
 
-      Pack_Start (Box, Create_Gdk_Toolbar (Frame), Expand => False, Fill => False);
+--        Pack_Start (Box, Create_Gdk_Toolbar (Frame),
+--                    Expand => False, Fill => False);
 
-      Gtk_New (Frame, "Drawing Demo");
-      Pack_Start (Box, Frame, Expand => True, Fill => True);
+--        Gtk_New (Frame, "Drawing Demo");
+--        Pack_Start (Box, Frame, Expand => True, Fill => True);
 
-      Gtk_New (Drawing_Area);
-      Add (Frame, Drawing_Area);
+--        Gtk_New (Drawing_Area);
+--        Add (Frame, Drawing_Area);
 
       --  Third page: OpenGL demos
       Gtk_New (Frame);

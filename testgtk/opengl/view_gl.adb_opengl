@@ -12,6 +12,7 @@ with Gtk.Signal;       use Gtk.Signal;
 with Interfaces.C;     use Interfaces.C;
 with Lwobjects;        use Lwobjects;
 with Trackball;        use Trackball;
+with Main_Windows;     use Main_Windows;
 
 package body View_Gl is
 

@@ -65,6 +65,23 @@ package body Create_Notebook is
    Book_Closed_Mask : Gdk_Bitmap;
    Notebook         : Gtk_Notebook;
 
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "A @bGtk_Toolbar@B is a tabbed dialog that contains any kind"
+        & " of widget, like @bGtk_Frame@Bs in this case. Whenever the user"
+        & " selects a new tab, a new page is displayed." & ASCII.LF
+        & "A callback can be called whenever a new page is selected, through"
+        & " the ""page_switch"" signal.";
+   end Help;
+
+   --------------
+   -- Tab_Fill --
+   --------------
+
    procedure Tab_Fill (Button : access Gtk_Check_Button_Record;
                        Child  : in Gtk_Frame) is
       Expand, Fill : Boolean;

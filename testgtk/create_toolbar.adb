@@ -45,6 +45,21 @@ package body Create_Toolbar is
 
    package Toolbar_Cb is new Signal.Object_Callback (Gtk_Toolbar_Record);
 
+   function Help return String is
+   begin
+      return "A @bGtk_Toolbar@B is a set of buttons. Each button is can be"
+        & " represented both as a text or an icon, or even both. A tooltip"
+        & " is automatically created for each button." & ASCII.LF
+        & "The following two signals are defined:" & ASCII.LF
+        & "   - ""orientation_changed"": the widget was re-oriented."
+        & ASCII.LF
+        & "   - ""style_changed"": a new style was selected." & ASCII.LF
+        & ASCII.LF
+        & "It is worth noting that the toolbar can basically contain any type"
+        & " of widget, not only buttons. In this demo, we have added a "
+        & " @bGtk_Entry@B widget in the middle.";
+   end Help;
+
    function New_Pixmap (Filename   : in String;
                         Window     : in Gdk_Window'Class;
                         Background : in Gdk_Color)

@@ -41,6 +41,21 @@ package body Create_Entry is
    package Entry_Cb is new Signal.Callback
      (Base_Type => Gtk_Check_Button_Record, Data_Type => Gtk_Entry);
 
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "This demo demonstrates two types of widgets, a simple"
+        & " @bGtk_Entry@B and a @bGtk_Combo@B that is composed that adds a"
+        & " window to facilitates the insertion of the text.";
+   end Help;
+
+   ---------------------
+   -- Toggle_Editable --
+   ---------------------
+
    procedure Toggle_Editable (Button : access Gtk_Check_Button_Record;
                               The_Entry : in Gtk_Entry)
    is

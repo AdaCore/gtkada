@@ -28,18 +28,26 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
+with Gdk.Types; use Gdk.Types;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Main; use Gtk.Main;
 with Gtk.Preview; use Gtk.Preview;
+with Gtk.Signal;  use Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
 with Common; use Common;
 
-with Ada.Text_IO;
+with Gdk.Event; use Gdk.Event;
+with Gdk.Types; use Gdk.Types;
+
+with Ada.Text_IO; use Ada.Text_IO;
 
 package body Create_Preview_Color is
 
    package Preview_Idle is new Gtk.Main.Idle (Gtk_Preview);
+   package Map_Cb is new Gtk.Signal.Void_Callback (Gtk_Preview_Record);
+   package Expose_Cb is new Gtk.Signal.Two_Callback
+     (Gtk_Preview_Record, Integer, Gdk_Event_Expose);
 
    Color_Idle : Guint  := 0;
    Count      : Guchar := 1;
@@ -47,6 +55,7 @@ package body Create_Preview_Color is
    function Color_Idle_Func (Preview : Gtk_Preview) return Boolean is
       Buf : Guchar_Array (0 .. 767);
       K   : Natural;
+
    begin
       for I in 0 .. Guchar'(255) loop
          K := 0;
@@ -59,14 +68,29 @@ package body Create_Preview_Color is
          Draw_Row (Preview, Buf, 0, Gint (I), 256);
       end loop;
       Count := Count + 1;
-      Draw (Preview);
+      --  Draw (Preview);
+      -- gtk_signal_emit (GTK_OBJECT (widget), widget_signals[DRAW], area);
+--      Put_Line ("Color_Idle");
+
+--        Allocate (Event, Expose, Get_Window (Preview));
+--        Set_Area (Event, Full_Area);
+--        Expose_Cb.Emit_By_Name (Preview, "expose_event", Event);
       return True;
    end Color_Idle_Func;
+
+   procedure Map_Handler (Preview : access Gtk_Preview_Record) is
+   begin
+--      Put_Line ("Map_Handler");
+      Color_Idle := Preview_Idle.Add (Color_Idle_Func'Access,
+                                      Gtk_Preview (Preview));
+   end Map_Handler;
 
    procedure Preview_Destroy (Dummy : access Gtk_Widget_Record) is
       pragma Warnings (Off, Dummy);
    begin
-      Idle_Remove (Color_Idle);
+      if Color_Idle /= 0 then
+         Idle_Remove (Color_Idle);
+      end if;
       Color_Idle := 0;
    end Preview_Destroy;
 
@@ -97,7 +121,8 @@ package body Create_Preview_Color is
          Draw_Row (Preview, Buf, 0, Gint (I), 256);
       end loop;
 
-      Color_Idle := Preview_Idle.Add (Color_Idle_Func'Access, Preview);
+      --  Color_Idle := Preview_Idle.Add (Color_Idle_Func'Access, Preview);
+      Id := Map_Cb.Connect (Preview, "map", Map_Handler'Access);
 
       Show_All (Frame);
    end Run;

@@ -39,5 +39,6 @@ package Create_Toolbar is
                            Style      : in Gtk_Style;
                            With_Entry : in Boolean := False);
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
+   function Help return String;
 
 end Create_Toolbar;

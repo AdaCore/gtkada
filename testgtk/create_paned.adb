@@ -42,6 +42,13 @@ with Common; use Common;
 
 package body Create_Paned is
 
+   function Help return String is
+   begin
+      return "A @bGtk_Paned@B splits a container in two parts, that can be"
+        & " resized by the user." & ASCII.LF
+        & "They have two children, one for each side.";
+   end Help;
+
    procedure Toggle_Resize (Child : access Gtk_Widget_Record) is
       Paned : Gtk_Paned := Gtk_Paned (Get_Parent (Child));
       --  We use to need an unchecked conversion above, but this is

@@ -41,6 +41,17 @@ package body Create_Buttons is
 
    package Button_Cb is new Signal.Object_Callback (Gtk_Button_Record);
 
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "a @bGtk_Button@B is the basic widget to which you can associate"
+        & " a callback. Whenever the user presses the mouse on the button,"
+        & " one or more functions specified by the user can be called.";
+   end Help;
+
    -------------------
    -- Button_Window --
    -------------------

@@ -34,6 +34,17 @@ with Gtk.Check_Button;  use Gtk.Check_Button;
 
 package body Create_Check_Buttons is
 
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "A @bGtk_Check_Button@B has two possible states, either activated"
+        & " or desactivated. A callback can be set each time the state is"
+        & " modified.";
+   end Help;
+
    ---------
    -- Run --
    ---------

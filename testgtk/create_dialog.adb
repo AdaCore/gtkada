@@ -53,6 +53,15 @@ package body Create_Dialog is
    Dialog       : aliased Gtk.Dialog.Gtk_Dialog;
    Global_Label : aliased Gtk_Label;
 
+   function Help return String is
+   begin
+      return "A @bGtk_dialog@B is a separate window, usually used to print"
+        & " a message for the user, or signal an error." & ASCII.LF
+        & "A @bGtk_Dialog@B is split into two boxes, its @bVbox@B that will"
+        & " contain the message, and an @bAction_Area@B that contains a"
+        & " series of button, like OK, Cancel or Help.";
+   end Help;
+
    procedure Destroyed (Lab : access Gtk_Label_Record;
                         Ptr : in Gtk_Label_Access) is
    begin

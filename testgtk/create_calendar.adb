@@ -34,6 +34,22 @@ with Gtk.Frame; use Gtk.Frame;
 with Gtk; use Gtk;
 
 package body Create_Calendar is
+
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "A @bGtk_Calendar@B is a simple way to interactively select"
+        & " a date. A callback can be set for every change to the date,"
+        & " for instance the date, the month,...";
+   end Help;
+
+   ---------
+   -- Run --
+   ---------
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1     : Gtk_Box;
       Calendar : Gtk_Calendar;

@@ -42,6 +42,10 @@ package Main_Windows is
    procedure Gtk_New (Win : out Main_Window);
    procedure Initialize (Win : access Main_Window_Record'Class);
 
+   type Help_Function is access function return String;
+   procedure Set_Help (Func : Help_Function);
+   --  Set a new help function to be displayed
+
 private
 
    Gtk_Demo_Frame : Gtk.Frame.Gtk_Frame;
