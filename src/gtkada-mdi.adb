@@ -3858,14 +3858,6 @@ package body Gtkada.MDI is
             Focus_Child := Child;
          end if;
 
-         W := Allocation_Int'Value
-           (Get_Attribute (Child_Node, "Width", "-1"));
-         H := Allocation_Int'Value
-           (Get_Attribute (Child_Node, "Height", "-1"));
-         if W /= -1 or else H /= -1 then
-            Set_Size_Request (Child, W, H);
-         end if;
-
          N := Child_Node.Child.Next;
 
          while N /= null loop
@@ -3880,6 +3872,12 @@ package body Gtkada.MDI is
             elsif N.Tag.all = "Y" then
                Y := Gint'Value (N.Value.all);
 
+            elsif N.Tag.all = "Width" then
+               W := Gint'Value (N.Value.all);
+
+            elsif N.Tag.all = "Height" then
+               H := Gint'Value (N.Value.all);
+
             else
                --  ??? Unknown node, just ignore for now
                null;
@@ -3887,7 +3885,10 @@ package body Gtkada.MDI is
 
             N := N.Next;
          end loop;
-         --  Set_Size_Request (Child, 0, 0);
+
+         if W /= -1 or else H /= -1 then
+            Set_Size_Request (Child, W, H);
+         end if;
       end Parse_Child_Node;
 
       ---------------------
