@@ -41,7 +41,7 @@ package body Gdk.Rgb is
       X, Y          : in Glib.Gint;
       Width, Height : in Glib.Gint;
       Dith          : in Gdk_Rgb_Dither;
-      Rgb_Buf       : in String;
+      Rgb_Buf       : in Rgb_Buffer;
       Rowstride     : in Glib.Gint)
    is
       procedure Internal (Drawable            : System.Address;
@@ -67,7 +67,7 @@ package body Gdk.Rgb is
       X, Y          : in     Glib.Gint;
       Width, Height : in     Glib.Gint;
       Dith          : in     Gdk_Rgb_Dither;
-      Rgb_Buf       : in     String;
+      Rgb_Buf       : in     Rgb_Buffer;
       Rowstride     : in     Glib.Gint;
       Cmap          : in     Gdk_Rgb_Cmap)
    is
@@ -95,7 +95,7 @@ package body Gdk.Rgb is
       X, Y          : in     Glib.Gint;
       Width, Height : in     Glib.Gint;
       Dith          : in     Gdk_Rgb_Dither;
-      Rgb_Buf       : in     String;
+      Rgb_Buf       : in     Rgb_Buffer;
       Rowstride     : in     Glib.Gint)
    is
       procedure Internal (Drawable            : System.Address;
@@ -120,7 +120,7 @@ package body Gdk.Rgb is
                              X, Y          : in     Glib.Gint;
                              Width, Height : in     Glib.Gint;
                              Dith          : in     Gdk_Rgb_Dither;
-                             Rgb_Buf       : in     String;
+                             Rgb_Buf       : in     Rgb_Buffer;
                              Rowstride     : in     Glib.Gint)
    is
       procedure Internal (Drawable            : System.Address;
@@ -146,7 +146,7 @@ package body Gdk.Rgb is
       X, Y          : in     Glib.Gint;
       Width, Height : in     Glib.Gint;
       Dith          : in     Gdk_Rgb_Dither;
-      Rgb_Buf       : in     String;
+      Rgb_Buf       : in     Rgb_Buffer;
       Rowstride     : in     Glib.Gint;
       Xdith, Ydith  : in     Glib.Gint)
    is
@@ -205,10 +205,30 @@ package body Gdk.Rgb is
    -- Get --
    ---------
 
-   function Get (Cmap : Gdk_Rgb_Cmap; Index : Natural) return Rgb_Item is
+   function Get (Cmap : Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index) return Rgb_Item
+   is
+      function Internal (Cmap : Gdk_Rgb_Cmap;
+                         Index : Natural)
+                        return Rgb_Item;
+      pragma Import (C, Internal, "ada_rgb_cmap_get");
    begin
-      return Cmap.Colors (Index);
+      return Internal (Cmap, Index);
    end Get;
+
+   -----------
+   -- Get_8 --
+   -----------
+
+   function Get_8 (Cmap : Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index)
+                  return Glib.Guchar
+   is
+      function Internal (Cmap : Gdk_Rgb_Cmap;
+                         Index : Natural)
+                        return Glib.Guchar;
+      pragma Import (C, Internal, "ada_rgb_cmap_get8");
+   begin
+      return Internal (Cmap, Index);
+   end Get_8;
 
    --------------
    -- Get_Cmap --
@@ -243,36 +263,43 @@ package body Gdk.Rgb is
    procedure Gtk_New (Cmap   : in out Gdk_Rgb_Cmap;
                       Colors : in     Glib.Guint32_Array)
    is
-      procedure Internal (Cmap     : in out Gdk_Rgb_Cmap;
-                          Colors   :        System.Address;
-                          N_Colors :        Integer);
+      function Internal (Colors   :        System.Address;
+                         N_Colors :        Integer)
+                        return Gdk_Rgb_Cmap;
       pragma Import (C, Internal, "gdk_rgb_cmap_new");
    begin
-      Internal (Cmap, Colors'Address, Colors'Length);
+      return Internal (Colors'Address, Colors'Length);
    end Gtk_New;
-
-   ----------
-   -- Init --
-   ----------
-
-   procedure Init is
-      procedure Internal;
-      pragma Import (C, Internal, "gdk_rgb_init");
-
-   begin
-      Internal;
-   end Init;
 
    ---------
    -- Set --
    ---------
 
    procedure Set
-     (Cmap : in out Gdk_Rgb_Cmap; Index : Natural; Value : Rgb_Item)
+     (Cmap : in out Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index; Value : Rgb_Item)
    is
+      procedure Internal (Cmap : Gdk_Rgb_Cmap;
+                          Index : Natural;
+                          Value : Rgb_Item);
+      pragma Import (C, Internal, "ada_rgb_cmap_set");
    begin
-      Cmap.Colors (Index) := Value;
+      Internal (Cmap, Index, Value);
    end Set;
+
+   -----------
+   -- Set_8 --
+   -----------
+
+   procedure Set_8
+     (Cmap : in out Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index; Value : Glib.Guchar)
+   is
+      procedure Internal (Cmap : Gdk_Rgb_Cmap;
+                          Index : Natural;
+                          Value : Glib.Guchar);
+      pragma Import (C, Internal, "ada_rgb_cmap_set8");
+   begin
+      Internal (Cmap, Index, Value);
+   end Set_8;
 
    ---------------------
    -- Xpixel_From_Rgb --
