@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Widget;
 
 package body Gdk.Rgb is
 
@@ -259,10 +258,9 @@ package body Gdk.Rgb is
    procedure Init is
       procedure Internal;
       pragma Import (C, Internal, "gdk_rgb_init");
+
    begin
       Internal;
-      Gtk.Widget.Set_Default_Colormap (Get_Cmap);
-      Gtk.Widget.Set_Default_Visual (Get_Visual);
    end Init;
 
    ---------
