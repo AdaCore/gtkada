@@ -3,6 +3,21 @@
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkwidget.h>
  
+/* object macros ****************************************************/
+
+void
+gtk_object_set_flags (GtkObject * object, gint flags)
+{
+  GTK_OBJECT_SET_FLAGS (object, flags);
+}
+
+void 
+gtk_object_unset_flags (GtkObject * object, gint flags)
+{
+  GTK_OBJECT_UNSET_FLAGS (object, flags);
+}
+
+    
 /* toggle_buttons ***************************************************/
 
 gint 
