@@ -49,7 +49,7 @@ my (@output) = ();
 my (%with_list) = ();
 
 my ($current_package) = &create_ada_name ($file);
-$current_package = "progress_bar" if ($current_package eq "progressbar");
+
 
 $file = uc ($file);
 
@@ -60,6 +60,23 @@ $file = "GTK$1BUTTONBOX" if ($file =~ /GTK([VH]?)BBOX/);
 my (@cfile);
 
 if ($list_mode) {
+    $current_package = "progress_bar" if ($current_package eq "progressbar");
+    $current_package = "aspect_frame" if ($current_package eq "aspectframe");
+    $current_package = "check_button" if ($current_package eq "checkbutton");
+    $current_package = "check_menu_item" if ($current_package eq "checkmenuitem");
+    $current_package = "drawing_area" if ($current_package eq "drawingarea");
+    $current_package = "event_box" if ($current_package eq "eventbox");
+    $current_package = "handle_box" if ($current_package eq "handlebox");
+    $current_package = "list_item" if ($current_package eq "listitem");
+    $current_package = "menu_bar" if ($current_package eq "menubar");
+    $current_package = "menu_shell" if ($current_package eq "menushell");
+    $current_package = "option_menu" if ($current_package eq "optionmenu");
+    $current_package = "radio_menu_item" if ($current_package eq "radio_menu_item");
+    $current_package = "scrolled_window" if ($current_package eq "scrolledwindow");
+    $current_package = "spin_button" if ($current_package eq "spinbutton");
+    $current_package = "tips_query" if ($current_package eq "tipsquery");
+    $current_package = "toggle_button" if ($current_package eq "togglebutton");
+    $current_package = "tree_item" if ($current_package eq "treeitem");
 
     my (%list);
     my (%from);
@@ -94,7 +111,9 @@ if ($list_mode) {
 		}
 		elsif (/pragma\s+Import\s+\(C,[^,]+,\s+\"([^\"]+)\"/)
 		{
-		    $from {$last} .= "  from misc.c";
+		    if ($1 =~ /^ada_/) {
+			$from {$last} .= "  from misc.c";
+		    }
 		}
 		
 	    }
