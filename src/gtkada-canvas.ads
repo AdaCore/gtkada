@@ -82,6 +82,7 @@ package Gtkada.Canvas is
 
    type Canvas_Link_Record is new Glib.Graphs.Edge with private;
    type Canvas_Link is access all Canvas_Link_Record'Class;
+   type Canvas_Link_Access is access all Canvas_Link_Record;
    --  A link between two items in the canvas.
    --  The implementation provided in this package provides links that can
    --  be either straight links or curved links.
@@ -301,7 +302,8 @@ package Gtkada.Canvas is
    type Layout_Algorithm is access procedure
      (Canvas : access Interactive_Canvas_Record'Class;
       Graph : Glib.Graphs.Graph;
-      Force : Boolean := False);
+      Force : Boolean;
+      Vertical_Layout : Boolean);
    --  A general layout algorithm. It should compute the position of all the
    --  vertices of the graph, and set them directly in the graph itself.
    --  NoteL all the vertices in the graph are of time Canvad_Item_Record'Class
@@ -322,7 +324,8 @@ package Gtkada.Canvas is
    procedure Default_Layout_Algorithm
      (Canvas : access Interactive_Canvas_Record'Class;
       Graph : Glib.Graphs.Graph;
-      Force : Boolean := False);
+      Force : Boolean;
+      Vertical_Layout : Boolean);
    --  The default algorithm used in the canvas.
    --  Basically, items are put next to each other, unless there is a link
    --  between two items. In that case, the second item is put below the first,
@@ -334,8 +337,10 @@ package Gtkada.Canvas is
    --  If Auto_Layout is true, then the items will be automatically layed out
    --  when inserted in the canvas, if no coordinates are specified.
 
-   procedure Layout (Canvas : access Interactive_Canvas_Record;
-                     Force  : Boolean := False);
+   procedure Layout
+     (Canvas : access Interactive_Canvas_Record;
+      Force  : Boolean := False;
+      Vertical_Layout : Boolean := False);
    --  Recompute the layout of the canvas.
    --  If Force is False, only the items that don't already have a location are
    --  moved.
@@ -405,6 +410,32 @@ package Gtkada.Canvas is
    --  (From, To) can be used to limit what links are looked for.
    --
    --  ??? Would be nicer to give direct access to the Graph iterators
+
+   procedure Draw_Link
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Link   : access Canvas_Link_Record;
+      Window : Gdk.Window.Gdk_Window;
+      Invert_Mode : Boolean;
+      GC     : Gdk.GC.Gdk_GC);
+   --  Redraw the link on the canvas.
+   --  Note that this is a primitive procedure of Link, not of Canvas, and thus
+   --  can easily be overrided for specific links. The default version draws
+   --  either straight or arc links (the latter when there are multiple links
+   --  between two given items).
+   --  This function shouldn't be called if one of the two ends of the link is
+   --  invisible.
+   --
+   --  Window is the window in which the links should be drawn (they are
+   --  sometimes drawn into the double-buffer, and sometimes directly on the
+   --  screen, while items are moved).
+   --
+   --  GC is a possible graphic context that could be used to draw the
+   --  link. You shouldn't destroy it or modify its attributes. However, you
+   --  can use any other graphic context specific to your application, for
+   --  instance if you want to draw the link in various colors or shapes. The
+   --  graphic context you use must be in Invert mode (see Gdk.GC.Set_Function)
+   --  if and only if Invert_Mode is true, so that when items are moved on the
+   --  canvas, the links properly follow the items they are attached to.
 
    procedure Destroy (Link : in out Canvas_Link_Record);
    --  Method called every time a link is destroyed. You should override this

@@ -130,10 +130,11 @@ package body Gtkada.Canvas is
    --  are removed, and the double-buffer is freed
 
    procedure Update_Links
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Window : Gdk_Window;
-      GC     : in Gdk.GC.Gdk_GC;
-      Selected : in Item_Selection_List := null);
+     (Canvas      : access Interactive_Canvas_Record'Class;
+      Window      : Gdk_Window;
+      GC          : Gdk.GC.Gdk_GC;
+      Invert_Mode : Boolean;
+      Selected    : Item_Selection_List := null);
    --  Redraw all the links in the canvas.
    --  If Item is not null, only the links to or from Item are redrawn.
 
@@ -183,7 +184,7 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       Window : Gdk_Window;
       GC     : in Gdk.GC.Gdk_GC;
-      Link   : in Canvas_Link);
+      Link   : access Canvas_Link_Record'Class);
    --  Draw Link on the screen as a straight line.
    --  This link includes both an arrow head on its destination, and an
    --  optional text displayed approximatively in its middle.
@@ -192,7 +193,7 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       Window : Gdk_Window;
       GC     : in Gdk.GC.Gdk_GC;
-      Link   : in Canvas_Link;
+      Link   : access Canvas_Link_Record'Class;
       Offset : Gint);
    --  Draw Link on the screen.
    --  The link is drawn as a curved link (ie there is an extra handle in its
@@ -204,7 +205,7 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       Window : Gdk_Window;
       GC     : in Gdk.GC.Gdk_GC;
-      Link   : in Canvas_Link;
+      Link   : access Canvas_Link_Record'Class;
       Offset : Gint);
    --  Draw a link when its source and destination items are the same
 
@@ -641,7 +642,8 @@ package body Gtkada.Canvas is
    procedure Default_Layout_Algorithm
      (Canvas : access Interactive_Canvas_Record'Class;
       Graph : Glib.Graphs.Graph;
-      Force : Boolean := False)
+      Force : Boolean;
+      Vertical_Layout : Boolean)
    is
       Step       : Gint := Gint (Canvas.Grid_Size);
       Region     : Gdk_Region;
@@ -702,28 +704,61 @@ package body Gtkada.Canvas is
 
             if Src_Item /= null then
                Num := 0;
-               X3 := Src_Item.Coord.X;
-               Y1 := Src_Item.Coord.Y + Gint (Src_Item.Coord.Height) + Step;
 
-               loop
-                  case Num mod 3 is
-                     when 0 =>
-                        X1 := X3;
-                     when 1 =>
-                        X1 := X3 - Step - Gint (Item.Coord.Width);
-                     when 2 =>
-                        X1 := X3 + Step + Gint (Src_Item.Coord.Width);
-                     when others => null;
-                  end case;
+               if Vertical_Layout then
+                  X3 := Src_Item.Coord.Y;
+                  Y1 := Src_Item.Coord.X + Gint (Src_Item.Coord.Width) + Step;
 
-                  Coord := (X1, Y1, Item.Coord.Width, Item.Coord.Height);
-                  exit when Rect_In (Region, Coord) = Overlap_Rectangle_Out;
+                  loop
+                     case Num mod 3 is
+                        when 0 =>
+                           X1 := X3;
+                        when 1 =>
+                           X1 := X3 - Step - Gint (Item.Coord.Height);
+                        when 2 =>
+                           X1 := X3 + Step + Gint (Item.Coord.Height);
+                        when others => null;
+                     end case;
 
-                  Num := Num + 1;
-                  if Num mod 3 = 0 then
-                     Y1 := Y1 + 2 * Step;
-                  end if;
-               end loop;
+                     Coord := (Y1, X1, Item.Coord.Width, Item.Coord.Height);
+                     exit when Rect_In (Region, Coord) = Overlap_Rectangle_Out;
+
+                     Num := Num + 1;
+                     if Num mod 3 = 0 then
+                        Y1 := Y1 + 2 * Step;
+                     end if;
+                  end loop;
+
+                  Item.Coord.X := Y1;
+                  Item.Coord.Y := X1;
+
+               else
+                  X3 := Src_Item.Coord.X;
+                  Y1 := Src_Item.Coord.Y + Gint (Src_Item.Coord.Height) + Step;
+
+                  loop
+                     case Num mod 3 is
+                        when 0 =>
+                           X1 := X3;
+                        when 1 =>
+                           X1 := X3 - Step - Gint (Item.Coord.Width);
+                        when 2 =>
+                           X1 := X3 + Step + Gint (Item.Coord.Width);
+                        when others => null;
+                     end case;
+
+                     Coord := (X1, Y1, Item.Coord.Width, Item.Coord.Height);
+                     exit when Rect_In (Region, Coord) = Overlap_Rectangle_Out;
+
+                     Num := Num + 1;
+                     if Num mod 3 = 0 then
+                        Y1 := Y1 + 2 * Step;
+                     end if;
+                  end loop;
+
+                  Item.Coord.X := X1;
+                  Item.Coord.Y := Y1;
+               end if;
 
             else
                --  Else put the item in the first line, at the first possible
@@ -735,12 +770,16 @@ package body Gtkada.Canvas is
                   Coord := (X1, Y1, Item.Coord.Width, Item.Coord.Height);
                   exit when Rect_In (Region, Coord) = Overlap_Rectangle_Out;
 
-                  X1 := X1 + 2 * Step;
+                  if Vertical_Layout then
+                     Y1 := Y1 + 2 * Step;
+                  else
+                     X1 := X1 + 2 * Step;
+                  end if;
                end loop;
-            end if;
 
-            Item.Coord.X := X1;
-            Item.Coord.Y := Y1;
+               Item.Coord.X := X1;
+               Item.Coord.Y := Y1;
+            end if;
 
             Union_With_Rect (Region, Item.Coord);
          end if;
@@ -766,14 +805,33 @@ package body Gtkada.Canvas is
    -- Layout --
    ------------
 
-   procedure Layout (Canvas : access Interactive_Canvas_Record;
-                     Force  : Boolean := False)
+   procedure Layout
+     (Canvas : access Interactive_Canvas_Record;
+      Force  : Boolean := False;
+      Vertical_Layout : Boolean := False)
    is
       Step  : Gint := Gint (Canvas.Grid_Size);
       Items : Vertex_Iterator;
       Item : Canvas_Item;
+      Min_X, Min_Y : Gint := Gint'Last;
    begin
-      Canvas.Layout (Canvas, Canvas.Children);
+      Canvas.Layout (Canvas, Canvas.Children, Force, Vertical_Layout);
+
+      Items := First (Canvas.Children);
+      while not At_End (Items) loop
+         Item := Canvas_Item (Get (Items));
+         Min_X := Gint'Min (Min_X, Item.Coord.X);
+         Min_Y := Gint'Min (Min_Y, Item.Coord.Y);
+         Next (Items);
+      end loop;
+
+      Items := First (Canvas.Children);
+      while not At_End (Items) loop
+         Item := Canvas_Item (Get (Items));
+         Item.Coord.X := Item.Coord.X - Min_X + Gint (Canvas.Grid_Size);
+         Item.Coord.Y := Item.Coord.Y - Min_Y + Gint (Canvas.Grid_Size);
+         Next (Items);
+      end loop;
 
       if Canvas.Align_On_Grid then
          Items := First (Canvas.Children);
@@ -1022,7 +1080,7 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       Window : Gdk_Window;
       GC     : in Gdk.GC.Gdk_GC;
-      Link   : in Canvas_Link)
+      Link   : access Canvas_Link_Record'Class)
    is
       X1, Y1, X2, Y2 : Gint;
       Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
@@ -1114,7 +1172,7 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       Window : Gdk_Window;
       GC     : in Gdk.GC.Gdk_GC;
-      Link   : in Canvas_Link;
+      Link   : access Canvas_Link_Record'Class;
       Offset : Gint)
    is
       Xbase      : constant Gint := Gint (Get_Value (Canvas.Hadj));
@@ -1173,7 +1231,7 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       Window : Gdk_Window;
       GC     : in Gdk.GC.Gdk_GC;
-      Link   : in Canvas_Link;
+      Link   : access Canvas_Link_Record'Class;
       Offset : Gint)
    is
       procedure Bezier_One_Control
@@ -1327,20 +1385,50 @@ package body Gtkada.Canvas is
       end if;
    end Draw_Arc_Link;
 
+   ---------------
+   -- Draw_Link --
+   ---------------
+
+   procedure Draw_Link
+     (Canvas      : access Interactive_Canvas_Record'Class;
+      Link        : access Canvas_Link_Record;
+      Window      : Gdk_Window;
+      Invert_Mode : Boolean;
+      GC          : Gdk.GC.Gdk_GC)
+   is
+      R : constant Gint := 1; --  Gint (Repeat_Count (Link));
+   begin
+      --  Self-referencing links
+      if Get_Src (Link) = Get_Dest (Link) then
+         Draw_Self_Link (Canvas, Window, GC, Link, R);
+
+      elsif R = 1 then
+         --  The first link in the list is always straight
+         Draw_Straight_Link (Canvas, Window, GC, Link);
+
+      elsif R mod 2 = 1 then
+         Draw_Arc_Link (Canvas, Window, GC, Link, R / 2);
+
+      else
+         Draw_Arc_Link (Canvas, Window, GC, Link, -(R / 2));
+
+      end if;
+   end Draw_Link;
+
    ------------------
    -- Update_Links --
    ------------------
 
    procedure Update_Links
-     (Canvas   : access Interactive_Canvas_Record'Class;
-      Window   : Gdk_Window;
-      GC       : Gdk.GC.Gdk_GC;
-      Selected : Item_Selection_List := null)
+     (Canvas      : access Interactive_Canvas_Record'Class;
+      Window      : Gdk_Window;
+      GC          : Gdk.GC.Gdk_GC;
+      Invert_Mode : Boolean;
+      Selected    : Item_Selection_List := null)
    is
       Current : Edge_Iterator;
       L : Canvas_Link;
       X, Y    : Gint;
-      R       : Gint;
    begin
       if Selected /= null then
          X := Selected.Item.Coord.X;
@@ -1365,23 +1453,7 @@ package body Gtkada.Canvas is
          if Is_Visible (Canvas_Item (Get_Src (L)))
            and then Is_Visible (Canvas_Item (Get_Dest (L)))
          then
-            R := Gint (Repeat_Count (Current));
-
-            --  Self-referencing links
-            if Get_Src (L) = Get_Dest (L) then
-               Draw_Self_Link (Canvas, Window, GC, L, R);
-
-            elsif R = 1 then
-               --  The first link in the list is always straight
-               Draw_Straight_Link (Canvas, Window, GC, L);
-
-            elsif R mod 2 = 1 then
-               Draw_Arc_Link (Canvas, Window, GC, L, R / 2);
-
-            else
-               Draw_Arc_Link (Canvas, Window, GC, L, -(R / 2));
-
-            end if;
+            Draw_Link (Canvas, L, Window, Invert_Mode, GC);
          end if;
 
          Next (Current);
@@ -1474,7 +1546,7 @@ package body Gtkada.Canvas is
       --  Draw the links first, so that they appear to be below the items.
       --  ??? Should redraw only the required links
 
-      Update_Links (Canvas, Pix, Canvas.Black_GC);
+      Update_Links (Canvas, Pix, Canvas.Black_GC, False);
 
       --  Draw each of the items.
 
@@ -1953,7 +2025,7 @@ package body Gtkada.Canvas is
                Height => Gint (Selected.Item.Coord.Height));
 
             Update_Links
-              (Canvas, Get_Window (Canvas), Canvas.Anim_GC, Selected);
+              (Canvas, Get_Window (Canvas), Canvas.Anim_GC, True, Selected);
 
             if Canvas.Align_On_Grid then
                Selected.X := X;
