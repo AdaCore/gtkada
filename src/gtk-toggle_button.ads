@@ -1,41 +1,31 @@
+
 with Gtk.Button;
 
 package Gtk.Toggle_Button is
 
-   type Gtk_Toggle_Button is new Button.Gtk_Button with private;
+   type Gtk_Toggle_Button is new Gtk.Button.Gtk_Button with private;
 
-   type Toggle_Button_Mode is (Button_Style, Radio_Style);
-
-
+   function Is_Active (Widget : in Gtk_Toggle_Button'Class)
+                        return      Boolean;
    procedure Gtk_New (Widget : out Gtk_Toggle_Button);
-   --  mapping: Create_New gtktogglebutton.h gtk_toggle_button_new
-
    procedure Gtk_New (Widget : out Gtk_Toggle_Button;
-                         With_Label : in String);
-   --  mapping: Create_New gtktogglebutton.h gtk_toggle_button_new_with_label
-
-   procedure Set_Mode (Widget : in out Gtk_Toggle_Button'Class;
-                       New_Mode : in Toggle_Button_Mode);
-   --  mapping: Set_Mode gtktogglebutton.h gtk_toggle_button_set_mode
-
-   procedure Set_State (Widget : in out Gtk_Toggle_Button'Class;
-                        To_Selected : in Boolean);
-   --  mapping: Set_State gtktogglebutton.h gtk_toggle_button_set_state
-
-
-   procedure Toggled (Widget : in out Gtk_Toggle_Button'Class);
-   --  mapping: Toggled gtktogglebutton.h gtk_toggle_button_toggled
-
-
-   function Is_Selected (Widget : in Gtk_Toggle_Button'Class) return Boolean;
-
+                      Label  : in String);
+   procedure Set_Mode
+      (Toggle_Button  : in Gtk_Toggle_Button'Class;
+       Draw_Indicator : in Gint);
+   procedure Set_State
+      (Toggle_Button : in Gtk_Toggle_Button'Class;
+       Active        : in Boolean);
+   procedure Toggled (Toggle_Button : in Gtk_Toggle_Button'Class);
 
 private
+   type Gtk_Toggle_Button is new Gtk.Button.Gtk_Button with null record;
 
-   type Gtk_Toggle_Button is new Button.Gtk_Button with null record;
-
-   --  Services not mapped ...
-   --
-   --  mapping: OBJECT_ORIENTED gtktogglebutton.h gtk_toggle_button_get_type
-
+   --  mapping: Is_Active gtktogglebutton.h GtkToggleButton->active
+   --  mapping: NOT_IMPLEMENTED gtktogglebutton.h gtk_toggle_button_get_type
+   --  mapping: Gtk_New gtktogglebutton.h gtk_toggle_button_new
+   --  mapping: Gtk_New gtktogglebutton.h gtk_toggle_button_new_with_label
+   --  mapping: Set_Mode gtktogglebutton.h gtk_toggle_button_set_mode
+   --  mapping: Set_State gtktogglebutton.h gtk_toggle_button_set_state
+   --  mapping: Toggled gtktogglebutton.h gtk_toggle_button_toggled
 end Gtk.Toggle_Button;

@@ -2,83 +2,89 @@
 package body Gtk.Toggle_Button is
 
    ---------------
-   --  Gtk_New  --
+   -- Is_Active --
    ---------------
 
-   procedure Gtk_New (Widget : out Gtk_Toggle_Button) is
+   function Is_Active (Widget : in Gtk_Toggle_Button'Class)
+                        return      Boolean
+   is
+      function Internal (Widget : in System.Address)
+                         return      Integer;
+      pragma Import (C, Internal, "ada_toggle_button_get_active");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget)));
+   end Is_Active;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New (Widget : out Gtk_Toggle_Button)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_toggle_button_new");
    begin
       Set_Object (Widget, Internal);
    end Gtk_New;
 
-
-   ---------------
-   --  Gtk_New  --
-   ---------------
+   -------------
+   -- Gtk_New --
+   -------------
 
    procedure Gtk_New (Widget : out Gtk_Toggle_Button;
-                         With_Label : in String) is
-      function Internal (S : in String) return System.Address;
+                      Label  : in String)
+   is
+      function Internal (Label  : in String)
+                         return      System.Address;
       pragma Import (C, Internal, "gtk_toggle_button_new_with_label");
    begin
-      Set_Object (Widget, Internal (With_Label & ASCII.NUL));
+      Set_Object (Widget, Internal (Label & Ascii.NUL));
    end Gtk_New;
 
+   --------------
+   -- Set_Mode --
+   --------------
 
-   -------------------
-   --  Is_Selected  --
-   -------------------
-
-   function Is_Selected (Widget : in Gtk_Toggle_Button'Class) return Boolean is
-      function Internal (W : in System.Address) return Gint;
-      pragma Import (C, Internal, "ada_toggle_button_get_state");
-   begin
-      return To_Boolean (Internal (Get_Object (Widget)));
-   end Is_Selected;
-
-
-   ----------------
-   --  Set_Mode  --
-   ----------------
-
-   procedure Set_Mode (Widget : in out Gtk_Toggle_Button'Class;
-                       New_Mode : in Toggle_Button_Mode) is
-      procedure Internal (W : in System.Address;
-                          M : in Gint);
+   procedure Set_Mode
+      (Toggle_Button  : in Gtk_Toggle_Button'Class;
+       Draw_Indicator : in Gint)
+   is
+      procedure Internal
+         (Toggle_Button  : in System.Address;
+          Draw_Indicator : in Gint);
       pragma Import (C, Internal, "gtk_toggle_button_set_mode");
    begin
-
-      Internal (Get_Object (Widget), To_Gint (New_Mode = Radio_Style));
-      --
-      --  The mode inside gtk is equal to (New_Mode = Radio_Button) because :
-      --    + To have a Radio_Button, we have to set the mode to True
-      --    + To have a Classic_Button, we have to set the mode to False
+      Internal (Get_Object (Toggle_Button),
+                Draw_Indicator);
    end Set_Mode;
 
+   ---------------
+   -- Set_State --
+   ---------------
 
-   -----------------
-   --  Set_state  --
-   -----------------
-
-   procedure Set_State (Widget : in out Gtk_Toggle_Button'Class;
-                        To_Selected : in Boolean) is
-      procedure Internal (W : in System.Address; S : in Gint);
+   procedure Set_State
+      (Toggle_Button : in Gtk_Toggle_Button'Class;
+       Active        : in Boolean)
+   is
+      procedure Internal
+         (Toggle_Button : in System.Address;
+          State         : in Gint);
       pragma Import (C, Internal, "gtk_toggle_button_set_state");
    begin
-      Internal (Get_Object (Widget), To_Gint (To_Selected));
+      Internal (Get_Object (Toggle_Button),
+                Boolean'Pos (Active));
    end Set_State;
 
+   -------------
+   -- Toggled --
+   -------------
 
-   ---------------
-   --  Toggled  --
-   ---------------
-
-   procedure Toggled (Widget : in out Gtk_Toggle_Button'Class) is
-      procedure Internal (W : in System.Address);
+   procedure Toggled (Toggle_Button : in Gtk_Toggle_Button'Class)
+   is
+      procedure Internal (Toggle_Button : in System.Address);
       pragma Import (C, Internal, "gtk_toggle_button_toggled");
    begin
-      Internal (Get_Object (Widget));
+      Internal (Get_Object (Toggle_Button));
    end Toggled;
 
 end Gtk.Toggle_Button;
