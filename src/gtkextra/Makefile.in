@@ -2,7 +2,8 @@ SRC=gtkplot.c gtkplotcanvas.c gtkplotprint.c gtkplotps.c \
   gtkpsfont.c gtkcheckitem.c gtkplotpc.c gtksheet.c gtkitementry.c \
   gtkcombobox.c gtkcolorcombo.c gtkbordercombo.c gtkfontcombo.c gtkplotgdk.c \
   gtkplotdata.c gtkplot3d.c gtkplotpolar.c gtkplotbar.c gtkplotbox.c gtkplotsurface.c
-SRC=gtkpsfont.c gtkcombobox.c gtkfontcombo.c
+SRC=gtkpsfont.c gtkcombobox.c gtkcolorcombo.c gtkbordercombo.c \ 
+  gtkfontcombo.c
 
 OBJ=${SRC:%.c=%.o}
 CC=@CC@
@@ -10,13 +11,20 @@ FPIC=@FPIC@
 CFLAGS=-O2
 ALL_CFLAGS=$(CFLAGS) @GTK_CFLAGS@ $(FPIC)
 
-all: $(OBJ)
+all: gtkextramarshal.h gtkextramarshal.c $(OBJ)
 
 %.o: %.c %.h
 	$(CC) -c $(ALL_CFLAGS) $<
 
+gtkextramarshal.h: gtkextra.list
+	glib-genmarshal --prefix=gtk_extra_marshal --header $< > gtkextramarshal.h
+
+gtkextramarshal.c: gtkextra.list
+	glib-genmarshal --prefix=gtk_extra_marshal --body $< > gtkextramarshal.c
+
 clean:
 	-$(RM) $(OBJ)
+	-$(RM) gtkextramarshal.*
 
 distclean: clean
 	-$(RM) Makefile
