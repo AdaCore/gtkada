@@ -163,6 +163,7 @@ using the following compilers:
 
 the following versions of gtk:
 @itemize @bullet
+@item Gtk 1.2.5
 @item Gtk 1.2.2
 @item Gtk 1.2.1
 @item Gtk 1.2.0
@@ -170,8 +171,7 @@ the following versions of gtk:
 
 and the following versions of glade:
 @itemize @bullet
-@item Glade 0.4.1
-@item Glade 0.4.0
+@item Glade 0.5.5
 @end itemize
 
 Although versions up to 0.2.1 were compatible with Gtk-1.0, this one is
@@ -2830,10 +2830,11 @@ both cases, you first need to get and install glade (http://glade.pn.org).
 Then start a new project (or edit an old one). It is easy enough to use,
 simply select the widget you want to add to your interface, and click!
 
-Starting from version 0.4.1 of Glade, you can directly create Ada files from
-Glade by selection Ada95 as the language for your project. By doing so,
-you will tell Glade to call gate internally when using the "Write Source Code"
-functionality.
+Note that we only recommend to use version 0.5.5 of Glade, as some previous
+versions are not compatible. Using this version, you can directly create Ada
+files from Glade by selecting Ada95 as the language in the project options.
+By doing so, you will tell Glade to call gate internally when using the
+"Write Source Code" functionality.
 
 @itemize @bullet
 @item DGATE (Dynamic Glade Ada Translator and Evaluator) is the dynamic
@@ -2846,9 +2847,10 @@ takes the XML file in argument and generates a set of Ada files that,
 when compiled, will recreate the interface you just designed with Glade.
 @end itemize
 
-The most important file created by Gate is called
-@code{callback_<project_name>.adb}.
-It contains stubs for all the callbacks you declared in Glade.
+The most important files created by Gate are called
+@code{<widget_name>-callbacks.adb}.
+They contain stubs for all the callbacks related to a top level widget
+you declared in Glade.
 
 Note that you can easily go back to Glade any time, modify your interface,
 and have GATE re-generate a set of files. All your modifications will be
