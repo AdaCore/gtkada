@@ -30,8 +30,6 @@ with Glib; use Glib;
 
 package Gdk.Threads is
 
-   function Init return Boolean;
-
    procedure Enter;
 
    procedure Leave;
