@@ -108,6 +108,7 @@ package body Create_Cursors is
    -- Set_Cursor --
    ----------------
 
+
    procedure Set_Cursor (Spinner : access My_Spin_Button_Record'Class;
                          Widget  : in Gtk_Drawing_Area)
    is
@@ -117,8 +118,8 @@ package body Create_Cursors is
       pragma Warnings (On);
 
       C      : Gint := Get_Value_As_Int (Spinner);
-      Cursor : Gdk_Cursor;
       Window : Gdk_Window := Get_Window (Widget);
+      Cursor : Gdk_Cursor := Null_Cursor;
    begin
       C := C mod 154;
       Gdk_New (Cursor, To_Cursor (C));
