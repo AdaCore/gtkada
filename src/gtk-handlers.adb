@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2001                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,6 +29,7 @@
 
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
+with Glib.Values; use Glib.Values;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Widget;
 with System;
@@ -36,23 +37,30 @@ with System;
 package body Gtk.Handlers is
 
    function Do_Signal_Connect
-     (Object      : in Gtk.Object.Gtk_Object;
-      Name        : in String;
-      Marshaller  : in System.Address;
-      Func_Data   : in System.Address;
-      Destroy     : in System.Address;
-      After       : in Boolean;
-      Slot_Object : in System.Address := System.Null_Address)
-      return Handler_Id;
+     (Object      : Gtk.Object.Gtk_Object;
+      Name        : String;
+      Marshaller  : System.Address;
+      Handler     : System.Address;
+      Func_Data   : System.Address;
+      Destroy     : System.Address;
+      After       : Boolean;
+      Slot_Object : System.Address := System.Null_Address) return Handler_Id;
    --  Internal function used to connect the signal.
 
-   procedure Destroy_Marshaller
-     (Object    : in System.Address;
-      User_Data : in System.Address;
-      Nparams   : in Guint;
-      Params    : in System.Address);
-   pragma Convention (C, Destroy_Marshaller);
-   --  Marshaller used to disconnect Object from any signal where it was
+   type Destroy_Data_Record is record
+      Id, Id2, Id3 : Handler_Id;
+      Obj1, Obj2   : System.Address;
+   end record;
+
+   type Destroy_Data_Access is access Destroy_Data_Record;
+   procedure Free is new Unchecked_Deallocation
+     (Destroy_Data_Record, Destroy_Data_Access);
+
+   procedure Destroy_Func
+     (Object : System.Address;
+      Data   : Destroy_Data_Access);
+   pragma Convention (C, Destroy_Func);
+   --  Handler used to disconnect Object from any signal where it was
    --  connected with Object_Connect and given as the slot object.
    --  Otherwise, a handler could be called with Object as the parameter when
    --  it has been destroyed.
@@ -61,132 +69,119 @@ package body Gtk.Handlers is
    pragma Import (C, Disconnect_Internal, "g_signal_handler_disconnect");
    --  Internal version of Disconnect
 
-   type Destroy_Data_Record is record
-      Id, Id2, Id3 : Handler_Id;
-      Obj1, Obj2 : System.Address;
-   end record;
+   function Signal_Lookup (Name : String; IType : Gtk_Type) return Guint;
+   pragma Import (C, Signal_Lookup, "g_signal_lookup");
 
-   type Destroy_Data_Access is access Destroy_Data_Record;
-   function Convert is new Unchecked_Conversion
-     (Destroy_Data_Access, System.Address);
-   function Convert is new Unchecked_Conversion
-     (System.Address, Destroy_Data_Access);
-   procedure Free is new Unchecked_Deallocation
-     (Destroy_Data_Record, Destroy_Data_Access);
+   procedure Set_Value (Value : GValue; Val : System.Address);
+   pragma Import (C, Set_Value, "ada_gvalue_set");
+   --  Function used internally to specify the value returned by a callback.
 
-   ------------------------
-   -- Destroy_Marshaller --
-   ------------------------
+   function To_Address is new Unchecked_Conversion
+     (Gtk.Marshallers.General_Handler, System.Address);
 
-   procedure Destroy_Marshaller
-     (Object    : in System.Address;
-      User_Data : in System.Address;
-      Nparams   : in Guint;
-      Params    : in System.Address)
+   --------------------------------
+   -- Glib.Closure small binding --
+   --------------------------------
+
+   subtype GClosure is Glib.C_Proxy;
+
+   function CClosure_New
+     (Callback  : System.Address;
+      User_Data : System.Address;
+      Destroy   : System.Address) return GClosure;
+   pragma Import (C, CClosure_New, "g_cclosure_new");
+
+   procedure Set_Marshal (Closure : GClosure; Marshaller : System.Address);
+   pragma Import (C, Set_Marshal, "g_closure_set_marshal");
+
+   function Get_Data (Closure : GClosure) return System.Address;
+   pragma Import (C, Get_Data, "ada_gclosure_get_data");
+
+   ------------------
+   -- Destroy_Func --
+   ------------------
+
+   procedure Destroy_Func
+     (Object : System.Address; Data : Destroy_Data_Access)
    is
-      Data : Destroy_Data_Access := Convert (User_Data);
+      D : Destroy_Data_Access := Data;
    begin
+      --  Ensure that this function is only called once by disconnecting
+      --  all associated connections to this handler.
+
       Disconnect_Internal (Data.Obj1, Data.Id);
       Disconnect_Internal (Data.Obj1, Data.Id2);
       Disconnect_Internal (Data.Obj2, Data.Id3);
-      Free (Data);
-   end Destroy_Marshaller;
+      Free (D);
+   end Destroy_Func;
 
    -----------------------
    -- Do_Signal_Connect --
    -----------------------
 
    function Do_Signal_Connect
-     (Object      : in Gtk.Object.Gtk_Object;
-      Name        : in String;
-      Marshaller  : in System.Address;
-      Func_Data   : in System.Address;
-      Destroy     : in System.Address;
-      After       : in Boolean;
+     (Object      : Gtk.Object.Gtk_Object;
+      Name        : String;
+      Marshaller  : System.Address;
+      Handler     : System.Address;
+      Func_Data   : System.Address;
+      Destroy     : System.Address;
+      After       : Boolean;
       Slot_Object : System.Address := System.Null_Address) return Handler_Id
    is
       function Internal
+        (Instance  : System.Address;
+         Signal_Id : Guint;
+         Detail    : GQuark;
+         Closure   : GClosure;
+         After     : Gint) return Handler_Id;
+      pragma Import (C, Internal, "g_signal_connect_closure_by_id");
+
+      function Internal2
         (Object        : System.Address;
          Name          : String;
          Func          : System.Address;
-         Marshaller    : System.Address;
-         Func_Data     : System.Address;
-         Destroy       : System.Address;
-         Object_Signal : Gint;
-         After         : Gint) return Handler_Id;
-      pragma Import (C, Internal, "gtk_signal_connect_full");
-
-      --  XXX ???
-      --  function Internal
-      --    (Instance  : System.Address;
-      --     Signal_Id : Guint;
-      --     Detail    : GQuark;
-      --     Closure   : GClosure;
-      --     After     : Gint) return Handler_Id;
-      --  pragma Import (C, Internal, "g_signal_connect_closure_by_id");
-
-      --  Closure := G_CClosure_New
-      --    (System.Null_Address, Func_Data, (GClosureNotify) Destroy),
-      --  Set_Marshal (Closure, Marshaller);
-      --  Internal
-      --    (Get_Object (Object),
-      --     G_Signal_Lookup (Name & ASCII.NUL, Get_Type (Object)),
-      --     Unknown_Quark, Closure, Boolean'Pos (After));
-
-      --  old:
-      --  procedure First_Marshaller
-      --    (Object    : in System.Address;
-      --     User_Data : in System.Address;
-      --     Nparams   : in Guint;
-      --     Params    : in System.Address);
-
-      --  new:
-      --  typedef void (*GClosureMarshal)
-      --    (GClosure       *closure,
-      --     GValue         *return_value,
-      --     guint           n_param_values,
-      --     const GValue   *param_values,
-      --     gpointer        invocation_hint,
-      --     gpointer        marshal_data);
+         Marshaller    : System.Address := System.Null_Address;
+         Func_Data     : Destroy_Data_Access;
+         Destroy       : System.Address := System.Null_Address;
+         Object_Signal : Gint := 0;
+         After         : Gint := 0) return Handler_Id;
+      pragma Import (C, Internal2, "gtk_signal_connect_full");
 
       use type System.Address;
-      Id : Handler_Id;
-      Data : Destroy_Data_Access;
+      Id      : Handler_Id;
+      Data    : Destroy_Data_Access;
+      Closure : GClosure;
+
    begin
+      Closure := CClosure_New (Handler, Func_Data, Destroy);
+      Set_Marshal (Closure, Marshaller);
       Id := Internal
         (Get_Object (Object),
-         Name & ASCII.NUL,
-         System.Null_Address,
-         Marshaller,
-         Func_Data,
-         Destroy,
-         Boolean'Pos (False),
-         Boolean'Pos (After));
+         Signal_Lookup (Name & ASCII.NUL, Get_Type (Object)),
+         Unknown_Quark, Closure, Boolean'Pos (After));
 
       if Slot_Object /= System.Null_Address then
          Data := new Destroy_Data_Record;
          Data.Id := Id;
          Data.Obj1 := Get_Object (Object);
          Data.Obj2 := Slot_Object;
-         Data.Id2 := Internal
+
+         --  Destroy_Func will remove the following two connections when
+         --  called the first time, so that Destroy_Func is only called once.
+
+         Data.Id2 := Internal2
            (Get_Object (Object),
             "destroy" & ASCII.NUL,
-            System.Null_Address,
-            Destroy_Marshaller'Address,
-            Convert (Data),
-            System.Null_Address,
-            Boolean'Pos (False),
-            Boolean'Pos (False));
-         Data.Id3 := Internal
+            Destroy_Func'Address,
+            Func_Data => Data);
+         Data.Id3 := Internal2
            (Slot_Object,
             "destroy" & ASCII.NUL,
-            System.Null_Address,
-            Destroy_Marshaller'Address,
-            Convert (Data),
-            System.Null_Address,
-            Boolean'Pos (False),
-            Boolean'Pos (False));
+            Destroy_Func'Address,
+            Func_Data => Data);
       end if;
+
       return Id;
    end Do_Signal_Connect;
 
@@ -200,18 +195,10 @@ package body Gtk.Handlers is
         (Gtk.Marshallers.General_Handler, Handler);
       function To_General_Handler is new Unchecked_Conversion
         (Handler, Gtk.Marshallers.General_Handler);
-
-      procedure Set_Return_Value
-        (Typ    : Gtk_Type;
-         Value  : Return_Type;
-         Params : System.Address;
-         Num    : Guint);
-      pragma Import (C, Set_Return_Value, "ada_set_return_value");
-      --  Function used internally to specify the value returned by a
-      --  callback.  In the gtk+ convention, such return values should go as
-      --  the last element in Params (which is a GtkArg*).  Typ is the C type
-      --  (matches the constants G_TYPE_INT, ...).  Num is the position in
-      --  Params where the value should be put.
+      function To_Address is new Unchecked_Conversion
+        (Handler, System.Address);
+      function To_Address is new Unchecked_Conversion
+        (Marshallers.Handler_Proxy, System.Address);
 
       type Acc is access all Widget_Type'Class;
       --  This type has to be declared at library level, otherwise
@@ -225,11 +212,8 @@ package body Gtk.Handlers is
          Proxy    : Marshallers.Handler_Proxy := null;
          --  Handler_Proxy to use
 
-         Object   : Acc        := null;
+         Object   : Acc := null;
          --  Slot Object for Object_Connect
-
-         Ret_Type : Gtk_Type;
-         --  The C constant used to indicate the return type.
       end record;
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
@@ -240,15 +224,17 @@ package body Gtk.Handlers is
       function Convert is new Unchecked_Conversion
         (System.Address, Data_Type_Access);
 
-      procedure Free_Data (Data : in System.Address);
+      procedure Free_Data (Data : Data_Type_Access);
       pragma Convention (C, Free_Data);
       --  Free the memory associated with the callback's data
 
       procedure First_Marshaller
-        (Object    : in System.Address;
-         User_Data : in System.Address;
-         Nparams   : in Guint;
-         Params    : in System.Address);
+        (Closure         : GClosure;
+         Return_Value    : GValue;
+         N_Params        : Guint;
+         Params          : System.Address;
+         Invocation_Hint : System.Address;
+         User_Data       : System.Address);
       pragma Convention (C, First_Marshaller);
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
@@ -258,10 +244,10 @@ package body Gtk.Handlers is
       -------------
 
       procedure Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Marsh   : in     Marshallers.Marshaller;
-         After   : in     Boolean := False)
+        (Widget : access Widget_Type'Class;
+         Name   : String;
+         Marsh  : Marshallers.Marshaller;
+         After  : Boolean := False)
       is
          Id : Handler_Id;
       begin
@@ -274,10 +260,10 @@ package body Gtk.Handlers is
 
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Marsh       : in     Marshallers.Marshaller;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False)
+         After       : Boolean := False)
       is
          Id : Handler_Id;
       begin
@@ -289,10 +275,10 @@ package body Gtk.Handlers is
       -------------
 
       procedure Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Cb      : in     Handler;
-         After   : in     Boolean := False)
+        (Widget : access Widget_Type'Class;
+         Name   : String;
+         Cb     : Handler;
+         After  : Boolean := False)
       is
          Id : Handler_Id;
       begin
@@ -305,10 +291,10 @@ package body Gtk.Handlers is
 
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Cb          : in     Handler;
+         Name        : String;
+         Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False)
+         After       : Boolean := False)
       is
          Id : Handler_Id;
       begin
@@ -319,10 +305,11 @@ package body Gtk.Handlers is
       -- Free_Data --
       ---------------
 
-      procedure Free_Data (Data : in System.Address) is
+      procedure Free_Data (Data : Data_Type_Access) is
          procedure Internal is new Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
-         D : Data_Type_Access := Convert (Data);
+         D : Data_Type_Access := Data;
+
       begin
          Internal (D);
       end Free_Data;
@@ -332,43 +319,50 @@ package body Gtk.Handlers is
       ----------------------
 
       procedure First_Marshaller
-        (Object    : in System.Address;
-         User_Data : in System.Address;
-         Nparams   : in Guint;
-         Params    : in System.Address)
+        (Closure         : GClosure;
+         Return_Value    : GValue;
+         N_Params        : Guint;
+         Params          : System.Address;
+         Invocation_Hint : System.Address;
+         User_Data       : System.Address)
       is
          use type Marshallers.Handler_Proxy;
 
-         Data  : Data_Type_Access := Convert (User_Data);
-         Stub  : Widget_Type;
-         Value : Return_Type;
+         Data   : constant Data_Type_Access := Convert (Get_Data (Closure));
+         Stub   : Widget_Type;
+         Value  : aliased Return_Type;
+         Values : GValues;
+
       begin
          if Data.Func = null then
             return;
          end if;
 
+         Values := Make_Values (N_Params, Params);
+
          if Data.Object = null then
             if Data.Proxy /= null then
-               Value := Data.Proxy (Acc (Get_User_Data (Object, Stub)),
-                                    Gtk.Arguments.Make_Args (Nparams, Params),
-                                    To_General_Handler (Data.Func));
+               Value :=
+                 Data.Proxy
+                   (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
+                    Values, To_General_Handler (Data.Func));
             else
-               Value := Data.Func (Acc (Get_User_Data (Object, Stub)),
-                                   Gtk.Arguments.Make_Args (Nparams, Params));
+               Value :=
+                 Data.Func
+                   (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
+                    Values);
             end if;
          else
             if Data.Proxy /= null then
-               Value := Data.Proxy (Data.Object,
-                                    Gtk.Arguments.Make_Args (Nparams, Params),
-                                    To_General_Handler (Data.Func));
+               Value :=
+                 Data.Proxy
+                   (Data.Object, Values, To_General_Handler (Data.Func));
             else
-               Value := Data.Func
-                 (Data.Object, Gtk.Arguments.Make_Args (Nparams, Params));
+               Value := Data.Func (Data.Object, Values);
             end if;
          end if;
 
-         --  Insert the value into the Params array, as expected.
-         Set_Return_Value (Data.Ret_Type, Value, Params, Nparams);
+         Set_Value (Return_Value, Value'Address);
       end First_Marshaller;
 
       -------------
@@ -377,18 +371,16 @@ package body Gtk.Handlers is
 
       function Connect
         (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Marsh   : in     Marshallers.Marshaller;
-         After   : in     Boolean := False)
-        return Handler_Id
+         Name    : String;
+         Marsh   : Marshallers.Marshaller;
+         After   : Boolean := False) return Handler_Id
       is
          D : Data_Type_Access :=
-           new Data_Type_Record'(Func     => To_Handler (Marsh.Func),
-                                 Proxy    => Marsh.Proxy,
-                                 Object   => null,
-                                 Ret_Type => Argument_Type (Get_Type (Widget),
-                                                            Name,
-                                                            -1));
+           new Data_Type_Record'
+             (Func     => To_Handler (Marsh.Func),
+              Proxy    => Marsh.Proxy,
+              Object   => null);
+
       begin
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
@@ -397,12 +389,14 @@ package body Gtk.Handlers is
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_None,
             "Handlers for this signal should not return a value.");
 
-         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Widget),
-                                   Name,
-                                   First_Marshaller'Address,
-                                   Convert (D),
-                                   Free_Data'Address,
-                                   After);
+         return Do_Signal_Connect
+           (Gtk.Object.Gtk_Object (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Marsh.Proxy),
+            Convert (D),
+            Free_Data'Address,
+            After);
       end Connect;
 
       --------------------
@@ -411,20 +405,17 @@ package body Gtk.Handlers is
 
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Marsh       : in     Marshallers.Marshaller;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False)
-        return Handler_Id
+         After       : Boolean := False) return Handler_Id
       is
          D : Data_Type_Access :=
-           new Data_Type_Record'(Func     => To_Handler (Marsh.Func),
-                                 Proxy    => Marsh.Proxy,
-                                 Object   => Acc (Slot_Object),
-                                 Ret_Type => Argument_Type
-                                   (Gtk.Object.Get_Type (Widget),
-                                    Name,
-                                    -1));
+           new Data_Type_Record'
+             (Func     => To_Handler (Marsh.Func),
+              Proxy    => Marsh.Proxy,
+              Object   => Acc (Slot_Object));
+
       begin
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
@@ -433,13 +424,15 @@ package body Gtk.Handlers is
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_None,
             "Handlers for this signal should not return a value.");
 
-         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Widget),
-                                   Name,
-                                   First_Marshaller'Address,
-                                   Convert (D),
-                                   Free_Data'Address,
-                                   After,
-                                   Get_Object (Slot_Object));
+         return Do_Signal_Connect
+           (Gtk.Object.Gtk_Object (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Marsh.Proxy),
+            Convert (D),
+            Free_Data'Address,
+            After,
+            Get_Object (Slot_Object));
       end Object_Connect;
 
       -------------
@@ -448,18 +441,16 @@ package body Gtk.Handlers is
 
       function Connect
         (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Cb      : in     Handler;
-         After   : in     Boolean := False)
-        return Handler_Id
+         Name    : String;
+         Cb      : Handler;
+         After   : Boolean := False) return Handler_Id
       is
          D : Data_Type_Access :=
-           new Data_Type_Record'(Func     => Cb,
-                                 Proxy    => null,
-                                 Object   => null,
-                                 Ret_Type => Argument_Type (Get_Type (Widget),
-                                                            Name,
-                                                            -1));
+           new Data_Type_Record'
+             (Func     => Cb,
+              Proxy    => null,
+              Object   => null);
+
       begin
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
@@ -468,12 +459,14 @@ package body Gtk.Handlers is
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_None,
             "Handlers for this signal should not return a value.");
 
-         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Widget),
-                                   Name,
-                                   First_Marshaller'Address,
-                                   Convert (D),
-                                   Free_Data'Address,
-                                   After);
+         return Do_Signal_Connect
+           (Gtk.Object.Gtk_Object (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Cb),
+            Convert (D),
+            Free_Data'Address,
+            After);
       end Connect;
 
       --------------------
@@ -482,20 +475,17 @@ package body Gtk.Handlers is
 
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Cb          : in     Handler;
+         Name        : String;
+         Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False)
-        return Handler_Id
+         After       : Boolean := False) return Handler_Id
       is
          D : Data_Type_Access :=
-           new Data_Type_Record'(Func     => Cb,
-                                 Proxy    => null,
-                                 Object   => Acc (Slot_Object),
-                                 Ret_Type => Argument_Type
-                                    (Gtk.Object.Get_Type (Widget),
-                                     Name,
-                                     -1));
+           new Data_Type_Record'
+             (Func     => Cb,
+              Proxy    => null,
+              Object   => Acc (Slot_Object));
+
       begin
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
@@ -504,41 +494,43 @@ package body Gtk.Handlers is
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_None,
             "Handlers for this signal should not return a value.");
 
-         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Widget),
-                                   Name,
-                                   First_Marshaller'Address,
-                                   Convert (D),
-                                   Free_Data'Address,
-                                   After,
-                                   Get_Object (Slot_Object));
+         return Do_Signal_Connect
+           (Gtk.Object.Gtk_Object (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Cb),
+            Convert (D),
+            Free_Data'Address,
+            After,
+            Get_Object (Slot_Object));
       end Object_Connect;
 
       ------------------
       -- Emit_By_Name --
       ------------------
 
-      function Emit_By_Name (Object : access Widget_Type'Class;
-                             Name   : in String;
-                             Param  : in Gdk.Event.Gdk_Event)
-                            return Return_Type
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gdk.Event.Gdk_Event) return Return_Type
       is
          procedure Internal
-           (Object : in System.Address;
-            Name   : in String;
-            Param  : in System.Address;
-            Ret    :    out Return_Type);
+           (Object : System.Address;
+            Name   : String;
+            Param  : System.Address;
+            Ret    : out Return_Type);
          pragma Import (C, Internal, "gtk_signal_emit_by_name");
 
          B : Return_Type;
       begin
          pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-         Internal (Get_Object (Object), Name & ASCII.NUL,
-                   Gdk.Event.To_Address (Param), B);
+         Internal
+           (Get_Object (Object), Name & ASCII.NUL,
+            Gdk.Event.To_Address (Param), B);
          return B;
       end Emit_By_Name;
 
    end Return_Callback;
-
 
    --------------------------
    -- User_Return_Callback --
@@ -550,17 +542,10 @@ package body Gtk.Handlers is
         (Gtk.Marshallers.General_Handler, Handler);
       function To_General_Handler is new Unchecked_Conversion
         (Handler, Gtk.Marshallers.General_Handler);
-
-      procedure Set_Return_Value (Typ    : Gtk_Type;
-                                  Value  : Return_Type;
-                                  Params : System.Address;
-                                  Num    : Guint);
-      pragma Import (C, Set_Return_Value, "ada_set_return_value");
-      --  Function used internally to specify the value returned by a
-      --  callback.  In the gtk+ convention, such return values should go as
-      --  the last element in Params (which is a GtkArg*).  Typ is the C type
-      --  (matches the constants GTK_TYPE_INT, ...).  Num is the position in
-      --  Params where the value should be put.
+      function To_Address is new Unchecked_Conversion
+        (Handler, System.Address);
+      function To_Address is new Unchecked_Conversion
+        (Marshallers.Handler_Proxy, System.Address);
 
       type Acc is access all Widget_Type'Class;
       --  This type has to be declared at library level, otherwise
@@ -569,11 +554,13 @@ package body Gtk.Handlers is
 
       type User_Access is access User_Type;
       type Data_Type_Record is record
-         Func     : Handler;             --  User's callback
-         Proxy    : Marshallers.Handler_Proxy := null; --  Handler_Proxy to use
-         User     : User_Access  := null;
-         Ret_Type : Gtk_Type;            --  The C constant used to indicate
-         --                              --  the return type.
+         Func  : Handler;
+         --  User's callback
+
+         Proxy : Marshallers.Handler_Proxy := null;
+         --  Handler_Proxy to use
+
+         User  : User_Access := null;
       end record;
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
@@ -584,14 +571,17 @@ package body Gtk.Handlers is
       function Convert is new Unchecked_Conversion
         (System.Address, Data_Type_Access);
 
-      procedure Free_Data (Data : in System.Address);
+      procedure Free_Data (Data : Data_Type_Access);
       pragma Convention (C, Free_Data);
       --  Free the memory associated with the callback's data
 
-      procedure First_Marshaller (Object    : in System.Address;
-                                  User_Data : in System.Address;
-                                  Nparams   : in Guint;
-                                  Params    : in System.Address);
+      procedure First_Marshaller
+        (Closure         : GClosure;
+         Return_Value    : GValue;
+         N_Params        : Guint;
+         Params          : System.Address;
+         Invocation_Hint : System.Address;
+         User_Data       : System.Address);
       pragma Convention (C, First_Marshaller);
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
@@ -600,12 +590,13 @@ package body Gtk.Handlers is
       -- Free_Data --
       ---------------
 
-      procedure Free_Data (Data : in System.Address) is
+      procedure Free_Data (Data : Data_Type_Access) is
          procedure Internal is new Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
          procedure Internal2 is new Unchecked_Deallocation
            (User_Type, User_Access);
-         D : Data_Type_Access := Convert (Data);
+         D : Data_Type_Access := Data;
+
       begin
          Internal2 (D.User);
          Internal (D);
@@ -615,33 +606,41 @@ package body Gtk.Handlers is
       -- First_Marshaller --
       ----------------------
 
-      procedure First_Marshaller (Object    : in System.Address;
-                                  User_Data : in System.Address;
-                                  Nparams   : in Guint;
-                                  Params    : in System.Address)
+      procedure First_Marshaller
+        (Closure         : GClosure;
+         Return_Value    : GValue;
+         N_Params        : Guint;
+         Params          : System.Address;
+         Invocation_Hint : System.Address;
+         User_Data       : System.Address)
       is
          use type Marshallers.Handler_Proxy;
 
-         Data  : Data_Type_Access := Convert (User_Data);
-         Stub  : Widget_Type;
-         Value : Return_Type;
+         Data   : constant Data_Type_Access := Convert (Get_Data (Closure));
+         Stub   : Widget_Type;
+         Value  : aliased Return_Type;
+         Values : GValues;
+
       begin
          if Data.Func = null then
             return;
          end if;
 
+         Values := Make_Values (N_Params, Params);
+
          if Data.Proxy /= null then
-            Value := Data.Proxy (Acc (Get_User_Data (Object, Stub)),
-                                 Gtk.Arguments.Make_Args (Nparams, Params),
-                                 To_General_Handler (Data.Func),
-                                 Data.User.all);
+            Value :=
+              Data.Proxy
+                (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
+                 Values, To_General_Handler (Data.Func), Data.User.all);
          else
-            Value := Data.Func (Acc (Get_User_Data (Object, Stub)),
-                                Gtk.Arguments.Make_Args (Nparams, Params),
-                                Data.User.all);
+            Value :=
+              Data.Func
+                (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
+                 Values, Data.User.all);
          end if;
-         --  Insert the value into the Params array, as expected.
-         Set_Return_Value (Data.Ret_Type, Value, Params, Nparams);
+
+         Set_Value (Return_Value, Value'Address);
       end First_Marshaller;
 
       -------------
@@ -650,10 +649,10 @@ package body Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Marsh     : in     Marshallers.Marshaller;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False)
+         Name      : String;
+         Marsh     : Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False)
       is
          Id : Handler_Id;
       begin
@@ -666,10 +665,10 @@ package body Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Cb        : in     Handler;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False)
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False)
       is
          Id : Handler_Id;
       begin
@@ -682,20 +681,18 @@ package body Gtk.Handlers is
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Marsh     : in     Marshallers.Marshaller;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False)
+         Name      : String;
+         Marsh     : Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False)
         return Handler_Id
       is
          D : Data_Type_Access :=
-           new Data_Type_Record'(Func     => To_Handler (Marsh.Func),
-                                 Proxy    => Marsh.Proxy,
-                                 User     => new User_Type'(User_Data),
-                                 Ret_Type => Argument_Type
-                                   (Get_Type (Widget),
-                                    Name,
-                                    -1));
+           new Data_Type_Record'
+             (Func     => To_Handler (Marsh.Func),
+              Proxy    => Marsh.Proxy,
+              User     => new User_Type'(User_Data));
+
       begin
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
@@ -704,12 +701,14 @@ package body Gtk.Handlers is
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_None,
             "Handlers for this signal should not return a value.");
 
-         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Widget),
-                                   Name,
-                                   First_Marshaller'Address,
-                                   Convert (D),
-                                   Free_Data'Address,
-                                   After);
+         return Do_Signal_Connect
+           (Gtk.Object.Gtk_Object (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Marsh.Proxy),
+            Convert (D),
+            Free_Data'Address,
+            After);
       end Connect;
 
       -------------
@@ -718,20 +717,17 @@ package body Gtk.Handlers is
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Cb        : in     Handler;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False)
-        return Handler_Id
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id
       is
          D : Data_Type_Access :=
-           new Data_Type_Record'(Func     => Cb,
-                                 Proxy    => null,
-                                 User     => new User_Type'(User_Data),
-                                 Ret_Type => Argument_Type
-                                   (Get_Type (Widget),
-                                    Name,
-                                    -1));
+           new Data_Type_Record'
+             (Func     => Cb,
+              Proxy    => null,
+              User     => new User_Type'(User_Data));
+
       begin
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
@@ -740,35 +736,39 @@ package body Gtk.Handlers is
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_None,
             "Handlers for this signal should not return a value.");
 
-         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Widget),
-                                   Name,
-                                   First_Marshaller'Address,
-                                   Convert (D),
-                                   Free_Data'Address,
-                                   After);
+         return Do_Signal_Connect
+           (Gtk.Object.Gtk_Object (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Cb),
+            Convert (D),
+            Free_Data'Address,
+            After);
       end Connect;
 
       ------------------
       -- Emit_By_Name --
       ------------------
 
-      function Emit_By_Name (Object : access Widget_Type'Class;
-                             Name   : in String;
-                             Param  : in Gdk.Event.Gdk_Event)
-                            return Return_Type
+      function Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gdk.Event.Gdk_Event) return Return_Type
       is
          procedure Internal
-           (Object : in System.Address;
-            Name   : in String;
-            Param  : in System.Address;
-            Ret    :    out Return_Type);
+           (Object : System.Address;
+            Name   : String;
+            Param  : System.Address;
+            Ret    : out Return_Type);
          pragma Import (C, Internal, "gtk_signal_emit_by_name");
 
          B : Return_Type;
+
       begin
          pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-         Internal (Get_Object (Object), Name & ASCII.NUL,
-                   Gdk.Event.To_Address (Param), B);
+         Internal
+           (Get_Object (Object), Name & ASCII.NUL,
+            Gdk.Event.To_Address (Param), B);
          return B;
       end Emit_By_Name;
 
@@ -784,6 +784,10 @@ package body Gtk.Handlers is
         (Gtk.Marshallers.General_Handler, Handler);
       function To_General_Handler is new Unchecked_Conversion
         (Handler, Gtk.Marshallers.General_Handler);
+      function To_Address is new Unchecked_Conversion
+        (Handler, System.Address);
+      function To_Address is new Unchecked_Conversion
+        (Marshallers.Handler_Proxy, System.Address);
 
       type Acc is access all Widget_Type'Class;
       --  This type has to be declared at library level, otherwise
@@ -793,7 +797,7 @@ package body Gtk.Handlers is
       type Data_Type_Record is record
          Func   : Handler;             --  User's callback
          Proxy  : Marshallers.Handler_Proxy := null;  --  Handler_Proxy to use
-         Object : Acc        := null;  --  Slot Object for Object_Connect
+         Object : Acc := null;         --  Slot Object for Object_Connect
       end record;
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
@@ -804,14 +808,17 @@ package body Gtk.Handlers is
       function Convert is new Unchecked_Conversion
         (System.Address, Data_Type_Access);
 
-      procedure Free_Data (Data : in System.Address);
+      procedure Free_Data (Data : Data_Type_Access);
       pragma Convention (C, Free_Data);
       --  Free the memory associated with the callback's data
 
-      procedure First_Marshaller (Object    : in System.Address;
-                                  User_Data : in System.Address;
-                                  Nparams   : in Guint;
-                                  Params    : in System.Address);
+      procedure First_Marshaller
+        (Closure         : GClosure;
+         Return_Value    : GValue;
+         N_Params        : Guint;
+         Params          : System.Address;
+         Invocation_Hint : System.Address;
+         User_Data       : System.Address);
       pragma Convention (C, First_Marshaller);
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
@@ -820,10 +827,11 @@ package body Gtk.Handlers is
       -- Free_Data --
       ---------------
 
-      procedure Free_Data (Data : in System.Address) is
+      procedure Free_Data (Data : Data_Type_Access) is
          procedure Internal is new Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
-         D : Data_Type_Access := Convert (Data);
+         D : Data_Type_Access := Data;
+
       begin
          Internal (D);
       end Free_Data;
@@ -832,37 +840,43 @@ package body Gtk.Handlers is
       -- First_Marshaller --
       ----------------------
 
-      procedure First_Marshaller (Object    : in System.Address;
-                                  User_Data : in System.Address;
-                                  Nparams   : in Guint;
-                                  Params    : in System.Address)
+      procedure First_Marshaller
+        (Closure         : GClosure;
+         Return_Value    : GValue;
+         N_Params        : Guint;
+         Params          : System.Address;
+         Invocation_Hint : System.Address;
+         User_Data       : System.Address)
       is
          use type Marshallers.Handler_Proxy;
 
-         Data : Data_Type_Access := Convert (User_Data);
-         Stub : Widget_Type;
+         Data   : constant Data_Type_Access := Convert (Get_Data (Closure));
+         Stub   : Widget_Type;
+         Values : GValues;
+
       begin
          if Data.Func = null then
             return;
          end if;
 
+         Values := Make_Values (N_Params, Params);
+
          if Data.Object = null then
             if Data.Proxy /= null then
-               Data.Proxy (Acc (Get_User_Data (Object, Stub)),
-                           Gtk.Arguments.Make_Args (Nparams, Params),
-                           To_General_Handler (Data.Func));
+               Data.Proxy
+                 (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
+                  Values, To_General_Handler (Data.Func));
             else
-               Data.Func (Acc (Get_User_Data (Object, Stub)),
-                          Gtk.Arguments.Make_Args (Nparams, Params));
+               Data.Func
+                 (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
+                  Values);
             end if;
          else
             if Data.Proxy /= null then
-               Data.Proxy (Data.Object,
-                           Gtk.Arguments.Make_Args (Nparams, Params),
-                           To_General_Handler (Data.Func));
+               Data.Proxy
+                 (Data.Object, Values, To_General_Handler (Data.Func));
             else
-               Data.Func (Data.Object,
-                          Gtk.Arguments.Make_Args (Nparams, Params));
+               Data.Func (Data.Object, Values);
             end if;
          end if;
       end First_Marshaller;
@@ -872,10 +886,10 @@ package body Gtk.Handlers is
       -------------
 
       procedure Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Marsh   : in     Marshallers.Marshaller;
-         After   : in     Boolean := False)
+        (Widget : access Widget_Type'Class;
+         Name   : String;
+         Marsh  : Marshallers.Marshaller;
+         After  : Boolean := False)
       is
          Id : Handler_Id;
       begin
@@ -888,10 +902,10 @@ package body Gtk.Handlers is
 
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Marsh       : in     Marshallers.Marshaller;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False)
+         After       : Boolean := False)
       is
          Id : Handler_Id;
       begin
@@ -903,10 +917,10 @@ package body Gtk.Handlers is
       -------------
 
       procedure Connect
-        (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Cb      : in     Handler;
-         After   : in     Boolean := False)
+        (Widget : access Widget_Type'Class;
+         Name   : String;
+         Cb     : Handler;
+         After  : Boolean := False)
       is
          Id : Handler_Id;
       begin
@@ -919,10 +933,10 @@ package body Gtk.Handlers is
 
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Cb          : in     Handler;
+         Name        : String;
+         Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False)
+         After       : Boolean := False)
       is
          Id : Handler_Id;
       begin
@@ -935,15 +949,17 @@ package body Gtk.Handlers is
 
       function Connect
         (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Marsh   : in     Marshallers.Marshaller;
-         After   : in     Boolean := False)
+         Name    : String;
+         Marsh   : Marshallers.Marshaller;
+         After   : Boolean := False)
         return Handler_Id
       is
          D : Data_Type_Access :=
-           new Data_Type_Record'(Func  => To_Handler (Marsh.Func),
-                                 Proxy => Marsh.Proxy,
-                                 Object => null);
+           new Data_Type_Record'
+             (Func  => To_Handler (Marsh.Func),
+              Proxy => Marsh.Proxy,
+              Object => null);
+
       begin
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
@@ -952,12 +968,14 @@ package body Gtk.Handlers is
            (Argument_Type (Get_Type (Widget), Name, -1) = Gtk_Type_None,
             "Handlers for this signal should return a value.");
 
-         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Widget),
-                                   Name,
-                                   First_Marshaller'Address,
-                                   Convert (D),
-                                   Free_Data'Address,
-                                   After);
+         return Do_Signal_Connect
+           (Gtk.Object.Gtk_Object (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Marsh.Proxy),
+            Convert (D),
+            Free_Data'Address,
+            After);
       end Connect;
 
       --------------------
@@ -966,16 +984,17 @@ package body Gtk.Handlers is
 
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Marsh       : in     Marshallers.Marshaller;
+         Name        : String;
+         Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False)
-        return Handler_Id
+         After       : Boolean := False) return Handler_Id
       is
          D : Data_Type_Access :=
-           new Data_Type_Record'(Func  => To_Handler (Marsh.Func),
-                                 Proxy => Marsh.Proxy,
-                                 Object => Acc (Slot_Object));
+           new Data_Type_Record'
+             (Func  => To_Handler (Marsh.Func),
+              Proxy => Marsh.Proxy,
+              Object => Acc (Slot_Object));
+
       begin
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
@@ -984,13 +1003,15 @@ package body Gtk.Handlers is
            (Argument_Type (Get_Type (Widget), Name, -1) = Gtk_Type_None,
             "Handlers for this signal should return a value.");
 
-         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Widget),
-                                   Name,
-                                   First_Marshaller'Address,
-                                   Convert (D),
-                                   Free_Data'Address,
-                                   After,
-                                   Get_Object (Slot_Object));
+         return Do_Signal_Connect
+           (Gtk.Object.Gtk_Object (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Marsh.Proxy),
+            Convert (D),
+            Free_Data'Address,
+            After,
+            Get_Object (Slot_Object));
       end Object_Connect;
 
       -------------
@@ -999,15 +1020,14 @@ package body Gtk.Handlers is
 
       function Connect
         (Widget  : access Widget_Type'Class;
-         Name    : in     String;
-         Cb      : in     Handler;
-         After   : in     Boolean := False)
+         Name    : String;
+         Cb      : Handler;
+         After   : Boolean := False)
         return Handler_Id
       is
          D : Data_Type_Access :=
-           new Data_Type_Record'(Func   => Cb,
-                                 Proxy  => null,
-                                 Object => null);
+           new Data_Type_Record' (Func => Cb, Proxy => null, Object => null);
+
       begin
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
@@ -1016,12 +1036,14 @@ package body Gtk.Handlers is
            (Argument_Type (Get_Type (Widget), Name, -1) = Gtk_Type_None,
             "Handlers for this signal should return a value.");
 
-         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Widget),
-                                   Name,
-                                   First_Marshaller'Address,
-                                   Convert (D),
-                                   Free_Data'Address,
-                                   After);
+         return Do_Signal_Connect
+           (Gtk.Object.Gtk_Object (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Cb),
+            Convert (D),
+            Free_Data'Address,
+            After);
       end Connect;
 
       --------------------
@@ -1030,16 +1052,17 @@ package body Gtk.Handlers is
 
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
-         Name        : in     String;
-         Cb          : in     Handler;
+         Name        : String;
+         Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
-         After       : in     Boolean := False)
-        return Handler_Id
+         After       : Boolean := False) return Handler_Id
       is
          D : Data_Type_Access :=
-           new Data_Type_Record'(Func   => Cb,
-                                 Proxy  => null,
-                                 Object => Acc (Slot_Object));
+           new Data_Type_Record'
+             (Func   => Cb,
+              Proxy  => null,
+              Object => Acc (Slot_Object));
+
       begin
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
@@ -1048,31 +1071,36 @@ package body Gtk.Handlers is
            (Argument_Type (Get_Type (Widget), Name, -1) = Gtk_Type_None,
             "Handlers for this signal should return a value.");
 
-         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Widget),
-                                   Name,
-                                   First_Marshaller'Address,
-                                   Convert (D),
-                                   Free_Data'Address,
-                                   After,
-                                   Get_Object (Slot_Object));
+         return Do_Signal_Connect
+           (Gtk.Object.Gtk_Object (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Cb),
+            Convert (D),
+            Free_Data'Address,
+            After,
+            Get_Object (Slot_Object));
       end Object_Connect;
 
       ------------------
       -- Emit_By_Name --
       ------------------
 
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gdk.Event.Gdk_Event)
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gdk.Event.Gdk_Event)
       is
-         procedure Internal (Object : in System.Address;
-                             Name   : in String;
-                             Param  : in System.Address);
+         procedure Internal
+           (Object : System.Address;
+            Name   : String;
+            Param  : System.Address);
          pragma Import (C, Internal, "gtk_signal_emit_by_name");
       begin
          pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-         Internal (Get_Object (Object), Name & ASCII.NUL,
-                   Gdk.Event.To_Address (Param));
+         Internal
+           (Get_Object (Object), Name & ASCII.NUL,
+            Gdk.Event.To_Address (Param));
       end Emit_By_Name;
 
    end Callback;
@@ -1083,11 +1111,14 @@ package body Gtk.Handlers is
 
    package body User_Callback is
 
-
       function To_Handler is new Unchecked_Conversion
         (Gtk.Marshallers.General_Handler, Handler);
       function To_General_Handler is new Unchecked_Conversion
         (Handler, Gtk.Marshallers.General_Handler);
+      function To_Address is new Unchecked_Conversion
+        (Handler, System.Address);
+      function To_Address is new Unchecked_Conversion
+        (Marshallers.Handler_Proxy, System.Address);
 
       type Acc is access all Widget_Type'Class;
       --  This type has to be declared at library level, otherwise
@@ -1096,8 +1127,12 @@ package body Gtk.Handlers is
 
       type User_Access is access User_Type;
       type Data_Type_Record is record
-         Func   : Handler;             --  User's callback
-         Proxy  : Marshallers.Handler_Proxy := null;  --  Handler_Proxy to use
+         Func   : Handler;
+         --  User's callback
+
+         Proxy  : Marshallers.Handler_Proxy := null;
+         --  Handler_Proxy to use
+
          User   : User_Access := null;
       end record;
       type Data_Type_Access is access all Data_Type_Record;
@@ -1109,14 +1144,17 @@ package body Gtk.Handlers is
       function Convert is new Unchecked_Conversion
         (System.Address, Data_Type_Access);
 
-      procedure Free_Data (Data : in System.Address);
+      procedure Free_Data (Data : Data_Type_Access);
       pragma Convention (C, Free_Data);
       --  Free the memory associated with the callback's data
 
-      procedure First_Marshaller (Object    : in System.Address;
-                                  User_Data : in System.Address;
-                                  Nparams   : in Guint;
-                                  Params    : in System.Address);
+      procedure First_Marshaller
+        (Closure         : GClosure;
+         Return_Value    : GValue;
+         N_Params        : Guint;
+         Params          : System.Address;
+         Invocation_Hint : System.Address;
+         User_Data       : System.Address);
       pragma Convention (C, First_Marshaller);
       --  First level marshaller. This is the function that is actually
       --  called by gtk+. It then calls the Ada functions as required.
@@ -1125,12 +1163,12 @@ package body Gtk.Handlers is
       -- Free_Data --
       ---------------
 
-      procedure Free_Data (Data : in System.Address) is
+      procedure Free_Data (Data : Data_Type_Access) is
          procedure Internal is new Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
          procedure Internal2 is new Unchecked_Deallocation
            (User_Type, User_Access);
-         D : Data_Type_Access := Convert (Data);
+         D : Data_Type_Access := Data;
       begin
          Internal2 (D.User);
          Internal (D);
@@ -1140,29 +1178,35 @@ package body Gtk.Handlers is
       -- First_Marshaller --
       ----------------------
 
-      procedure First_Marshaller (Object    : in System.Address;
-                                  User_Data : in System.Address;
-                                  Nparams   : in Guint;
-                                  Params    : in System.Address)
+      procedure First_Marshaller
+        (Closure         : GClosure;
+         Return_Value    : GValue;
+         N_Params        : Guint;
+         Params          : System.Address;
+         Invocation_Hint : System.Address;
+         User_Data       : System.Address)
       is
          use type Marshallers.Handler_Proxy;
 
-         Data : Data_Type_Access := Convert (User_Data);
-         Stub : Widget_Type;
+         Data   : constant Data_Type_Access := Convert (Get_Data (Closure));
+         Stub   : Widget_Type;
+         Values : GValues;
+
       begin
          if Data.Func = null then
             return;
          end if;
 
+         Values := Make_Values (N_Params, Params);
+
          if Data.Proxy /= null then
-            Data.Proxy (Acc (Get_User_Data (Object, Stub)),
-                        Gtk.Arguments.Make_Args (Nparams, Params),
-                        To_General_Handler (Data.Func),
-                        Data.User.all);
+            Data.Proxy
+              (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
+               Values, To_General_Handler (Data.Func), Data.User.all);
          else
-            Data.Func (Acc (Get_User_Data (Object, Stub)),
-                       Gtk.Arguments.Make_Args (Nparams, Params),
-                       Data.User.all);
+            Data.Func
+              (Acc (Get_User_Data (Get_Address (Nth (Values, 0)), Stub)),
+               Values, Data.User.all);
          end if;
       end First_Marshaller;
 
@@ -1172,10 +1216,10 @@ package body Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Marsh     : in     Marshallers.Marshaller;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False)
+         Name      : String;
+         Marsh     : Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False)
       is
          Id : Handler_Id;
       begin
@@ -1188,10 +1232,10 @@ package body Gtk.Handlers is
 
       procedure Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Cb        : in     Handler;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False)
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False)
       is
          Id : Handler_Id;
       begin
@@ -1204,16 +1248,17 @@ package body Gtk.Handlers is
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Marsh     : in     Marshallers.Marshaller;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False)
-        return Handler_Id
+         Name      : String;
+         Marsh     : Marshallers.Marshaller;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id
       is
          D : Data_Type_Access :=
-           new Data_Type_Record'(Func  => To_Handler (Marsh.Func),
-                                 Proxy => Marsh.Proxy,
-                                 User  => new User_Type'(User_Data));
+           new Data_Type_Record'
+             (Func  => To_Handler (Marsh.Func),
+              Proxy => Marsh.Proxy,
+              User  => new User_Type'(User_Data));
+
       begin
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
@@ -1222,12 +1267,14 @@ package body Gtk.Handlers is
            (Argument_Type (Get_Type (Widget), Name, -1) = Gtk_Type_None,
             "Handlers for this signal should return a value.");
 
-         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Widget),
-                                   Name,
-                                   First_Marshaller'Address,
-                                   Convert (D),
-                                   Free_Data'Address,
-                                   After);
+         return Do_Signal_Connect
+           (Gtk.Object.Gtk_Object (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Marsh.Proxy),
+            Convert (D),
+            Free_Data'Address,
+            After);
       end Connect;
 
       -------------
@@ -1236,16 +1283,15 @@ package body Gtk.Handlers is
 
       function Connect
         (Widget    : access Widget_Type'Class;
-         Name      : in     String;
-         Cb        : in     Handler;
-         User_Data : in     User_Type;
-         After     : in     Boolean := False)
-        return Handler_Id
+         Name      : String;
+         Cb        : Handler;
+         User_Data : User_Type;
+         After     : Boolean := False) return Handler_Id
       is
          D : Data_Type_Access :=
-           new Data_Type_Record'(Func  => Cb,
-                                 Proxy => null,
-                                 User  => new User_Type'(User_Data));
+           new Data_Type_Record'
+             (Func => Cb, Proxy => null, User => new User_Type'(User_Data));
+
       begin
          pragma Assert
            (Argument_Type (Get_Type (Widget), Name, -1) /= Gtk_Type_Invalid,
@@ -1254,30 +1300,36 @@ package body Gtk.Handlers is
            (Argument_Type (Get_Type (Widget), Name, -1) = Gtk_Type_None,
             "Handlers for this signal should return a value.");
 
-         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Widget),
-                                   Name,
-                                   First_Marshaller'Address,
-                                   Convert (D),
-                                   Free_Data'Address,
-                                   After);
+         return Do_Signal_Connect
+           (Gtk.Object.Gtk_Object (Widget),
+            Name,
+            First_Marshaller'Address,
+            To_Address (Cb),
+            Convert (D),
+            Free_Data'Address,
+            After);
       end Connect;
 
       ------------------
       -- Emit_By_Name --
       ------------------
 
-      procedure Emit_By_Name (Object : access Widget_Type'Class;
-                              Name   : in String;
-                              Param  : in Gdk.Event.Gdk_Event)
+      procedure Emit_By_Name
+        (Object : access Widget_Type'Class;
+         Name   : String;
+         Param  : Gdk.Event.Gdk_Event)
       is
-         procedure Internal (Object : in System.Address;
-                             Name   : in String;
-                             Param  : in System.Address);
+         procedure Internal
+           (Object : System.Address;
+            Name   : String;
+            Param  : System.Address);
          pragma Import (C, Internal, "gtk_signal_emit_by_name");
+
       begin
          pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-         Internal (Get_Object (Object), Name & ASCII.NUL,
-                   Gdk.Event.To_Address (Param));
+         Internal
+           (Get_Object (Object), Name & ASCII.NUL,
+            Gdk.Event.To_Address (Param));
       end Emit_By_Name;
 
    end User_Callback;
@@ -1288,7 +1340,7 @@ package body Gtk.Handlers is
 
    procedure Disconnect
      (Object : access Gtk.Object.Gtk_Object_Record'Class;
-      Id     : in Handler_Id) is
+      Id     : Handler_Id) is
    begin
       Disconnect_Internal (Obj => Get_Object (Object), Id  => Id);
    end Disconnect;
@@ -1299,11 +1351,11 @@ package body Gtk.Handlers is
 
    procedure Emit_Stop_By_Name
      (Object : access Gtk.Object.Gtk_Object_Record'Class;
-      Name   : in String)
+      Name   : String)
    is
-      procedure Internal (Object : in System.Address;
-                          Name   : in String);
+      procedure Internal (Object : System.Address; Name : String);
       pragma Import (C, Internal, "gtk_signal_emit_stop_by_name");
+
    begin
       Internal (Get_Object (Object), Name & ASCII.NUL);
    end Emit_Stop_By_Name;
@@ -1314,10 +1366,11 @@ package body Gtk.Handlers is
 
    procedure Handler_Block
      (Obj : access Gtk.Object.Gtk_Object_Record'Class;
-      Id  : in Handler_Id)
+      Id  : Handler_Id)
    is
-      procedure Internal (Obj : in System.Address; Id : in Handler_Id);
+      procedure Internal (Obj : System.Address; Id : Handler_Id);
       pragma Import (C, Internal, "g_signal_handler_block");
+
    begin
       Internal (Obj => Get_Object (Obj), Id  => Id);
    end Handler_Block;
@@ -1326,10 +1379,10 @@ package body Gtk.Handlers is
    -- Handlers_Destroy --
    ----------------------
 
-   procedure Handlers_Destroy (Obj : access Object.Gtk_Object_Record'Class)
-   is
+   procedure Handlers_Destroy (Obj : access Object.Gtk_Object_Record'Class) is
       procedure Internal (Obj : System.Address);
       pragma Import (C, Internal, "g_signal_handlers_destroy");
+
    begin
       Internal (Obj => Get_Object (Obj));
    end Handlers_Destroy;
@@ -1340,9 +1393,9 @@ package body Gtk.Handlers is
 
    procedure Handler_Unblock
      (Obj : access Gtk.Object.Gtk_Object_Record'Class;
-      Id  : in Handler_Id)
+      Id  : Handler_Id)
    is
-      procedure Internal (Obj : in System.Address; Id : in Handler_Id);
+      procedure Internal (Obj : System.Address; Id : Handler_Id);
       pragma Import (C, Internal, "g_signal_handler_unblock");
    begin
       Internal (Obj => Get_Object (Obj), Id  => Id);
