@@ -115,10 +115,21 @@ package body Gtk.Notebook is
       function Internal (Notebook_Page : in System.Address)
                          return System.Address;
       pragma Import (C, Internal, "ada_notebook_page_get_child");
-      Stub : Gtk_Widget_Record;
+
+      Stub   : Gtk_Widget_Record;
+      Object : System.Address;
+
+      use type System.Address;
+
    begin
-      return Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Page)), Stub));
+      Object := Get_Object (Page);
+
+      if Object = System.Null_Address then
+         return null;
+      else
+         return Gtk_Widget
+           (Get_User_Data (Internal (Get_Object (Page)), Stub));
+      end if;
    end Get_Child;
 
    ------------------
@@ -500,10 +511,13 @@ package body Gtk.Notebook is
    begin
       Page := Get_Child (Page_List.Nth_Data (Get_Children (Notebook),
                                              Guint (Page_Num)));
-      Ref (Page);
-      Remove_Page (Notebook, Page_Num);
-      Insert_Page (Notebook, Gtk_Widget (Page), Tab_Label, Page_Num);
-      Unref (Page);
+
+      if Page /= null then
+         Ref (Page);
+         Remove_Page (Notebook, Page_Num);
+         Insert_Page (Notebook, Gtk_Widget (Page), Tab_Label, Page_Num);
+         Unref (Page);
+      end if;
    end Set_Tab;
 
    --------------------

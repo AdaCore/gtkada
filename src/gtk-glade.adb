@@ -204,8 +204,17 @@ package body Gtk.Glade is
    -----------------
 
    procedure Generic_Ptr (N : Node_Ptr; File : File_Type) is
+      S : String_Ptr := Get_Field (N, "name");
+
    begin
-      null;
+      if S /= null then
+         Put_Line (File, "   --  WARNING: Unsupported widget");
+         Put_Line (File, "   --  " & Get_Field (N, "class").all &
+           " (" & S.all & ")");
+      end if;
+   exception
+      when Constraint_Error =>
+         null;
    end Generic_Ptr;
  
    ------------------
@@ -213,9 +222,18 @@ package body Gtk.Glade is
    ------------------
 
    procedure Generic_DPtr
-     (Object : in out Gtk.Object.Gtk_Object; N : Node_Ptr) is
+     (Object : in out Gtk.Object.Gtk_Object; N : Node_Ptr)
+   is
+      S : String_Ptr := Get_Field (N, "name");
+
    begin
-      null;
+      if S /= null then
+         Put_Line ("WARNING: Unsupported widget");
+         Put_Line (Get_Field (N, "class").all & " (" & S.all & ")");
+      end if;
+   exception
+      when Constraint_Error =>
+         null;
    end Generic_DPtr;
 
    ---------------------------

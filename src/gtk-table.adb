@@ -247,7 +247,7 @@ package body Gtk.Table is
 
          if P /= null then
             Add_Package ("Table");
-            Put (File, "     Table.Gtk_New (" & To_Ada (P.Value.all) & ", " &
+            Put (File, "   Table.Gtk_New (" & To_Ada (P.Value.all) & ", " &
               To_Ada (Get_Field (N, "rows").all));
             Put (File, ", " & To_Ada (Get_Field (N, "columns").all));
             Put_Line

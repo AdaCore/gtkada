@@ -30,6 +30,7 @@
 with Gdk; use Gdk;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Util; use Gtk.Util;
+with Gtk.Table; use Gtk.Table;
 
 package body Gtk.Widget is
 
@@ -848,9 +849,10 @@ package body Gtk.Widget is
 
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
-      Child  : Node_Ptr := Find_Tag (N.Child, "child");
-      Q, Top : Node_Ptr;
-      S      : String_Ptr;
+      Child    : Node_Ptr := Find_Tag (N.Child, "child");
+      Q, Top   : Node_Ptr;
+      S        : String_Ptr;
+      Flag_Set : Boolean;
 
    begin
       Object.Generate (N, File);
@@ -864,8 +866,98 @@ package body Gtk.Widget is
       if Child /= null then
          Q := Find_Tag (Child.Child, "pack");
 
-         if Q = null or else Q.Value.all /= "GTK_PACK_END" then
-            Gen_Call_Child (N, Child, "Box", "Pack_Start",
+         if Q = null or else Q.Value.all = "GTK_PACK_START" then
+            if Get_Field (Child, "expand") /= null then
+               Gen_Call_Child (N, Child, "Box", "Pack_Start",
+                 "expand", "fill", "padding", File);
+               N.Specific_Data.Has_Container := True;
+
+            elsif Get_Field (Child, "left_attach") /= null then
+               Add_Package ("Table");
+               Put_Line (File, "   Table.Attach (" &
+                 To_Ada (Find_Tag
+                   (Find_Parent (N.Parent, "Table"), "name").Value.all) &
+                 ", " & To_Ada (Get_Field (N, "name").all) &
+                 ", " & Get_Field (Child, "left_attach").all &
+                 ", " & Get_Field (Child, "right_attach").all &
+                 ", " & Get_Field (Child, "top_attach").all &
+                 ", " & Get_Field (Child, "bottom_attach").all & ",");
+
+               Put (File, "     ");
+
+               Flag_Set := False;
+
+               if Boolean'Value (Get_Field (Child, "xexpand").all) then
+                  Put (File, "Expand");
+                  Flag_Set := True;
+               end if;
+
+               if Boolean'Value (Get_Field (Child, "xshrink").all) then
+                  if Flag_Set then
+                     Put (File, " or ");
+                  else
+                     Flag_Set := True;
+                  end if;
+
+                  Put (File, "Shrink");
+               end if;
+
+               if Boolean'Value (Get_Field (Child, "xfill").all) then
+                  if Flag_Set then
+                     Put (File, " or ");
+                  else
+                     Flag_Set := True;
+                  end if;
+
+                  Put (File, "Fill");
+               end if;
+
+               if not Flag_Set then
+                  Put (File, "0");
+               end if;
+
+               Put (File, ", ");
+ 
+               Flag_Set := False;
+ 
+               if Boolean'Value (Get_Field (Child, "yexpand").all) then
+                  Put (File, "Expand");
+                  Flag_Set := True;
+               end if;
+ 
+               if Boolean'Value (Get_Field (Child, "yshrink").all) then
+                  if Flag_Set then
+                     Put (File, " or ");
+                  else
+                     Flag_Set := True;
+                  end if;
+ 
+                  Put (File, "Shrink");
+               end if;
+ 
+               if Boolean'Value (Get_Field (Child, "yfill").all) then
+                  if Flag_Set then
+                     Put (File, " or ");
+                  else
+                     Flag_Set := True;
+                  end if;
+ 
+                  Put (File, "Fill");
+               end if;
+ 
+               if not Flag_Set then
+                  Put_Line (File, "0,");
+               else
+                  Put_Line (File, ",");
+               end if;
+
+               Put_Line (File, "     " & Get_Field (Child, "xpad").all & ", " &
+                 Get_Field (Child, "ypad").all & ");");
+               N.Specific_Data.Has_Container := True;
+            end if;
+
+         elsif Q.Value.all = "GTK_PACK_END" then
+            Gen_Call_Child (N, Child, "Box", "Pack_End",
               "expand", "fill", "padding", File);
             N.Specific_Data.Has_Container := True;
          end if;
@@ -916,6 +1008,7 @@ package body Gtk.Widget is
       pragma Import (C, Signal_Connect, "gtk_signal_connect");
 
       use Object;
+      use Enums;
 
    begin
       Object.Generate (Widget, N);
@@ -952,14 +1045,68 @@ package body Gtk.Widget is
 
       if Child /= null then
          Q := Find_Tag (Child.Child, "pack");
+         S := Get_Field (Child, "expand");
+         S2 := Get_Field (Child, "fill");
+         S3 := Get_Field (Child, "padding");
 
-         if Q = null or else Q.Value.all /= "GTK_PACK_END" then
-            S := Get_Field (Child, "expand");
-            S2 := Get_Field (Child, "fill");
-            S3 := Get_Field (Child, "padding");
-
+         if Q = null or else Q.Value.all = "GTK_PACK_START" then
             if S /= null and then S2 /= null and then S3 /= null then
                Gtk.Box.Pack_Start
+                 (Gtk_Box (Get_Object (Find_Tag
+                   (Find_Parent (N.Parent, "Box"), "name").Value)),
+                  Gtk_Widget (Get_Object (Get_Field (N, "name"))),
+                  Boolean'Value (S.all), Boolean'Value (S2.all),
+                  Gint'Value (S3.all));
+               N.Specific_Data.Has_Container := True;
+
+            else
+               declare
+                  Xoptions, Yoptions : Gtk_Attach_Options := 0;
+               begin
+                  if Boolean'Value (Get_Field (Child, "xexpand").all) then
+                     Xoptions := Expand;
+                  end if;
+
+                  if Boolean'Value (Get_Field (Child, "xshrink").all) then
+                     Xoptions := Xoptions or Shrink;
+                  end if;
+
+                  if Boolean'Value (Get_Field (Child, "xfill").all) then
+                     Xoptions := Xoptions or Fill;
+                  end if;
+
+                  if Boolean'Value (Get_Field (Child, "yexpand").all) then
+                     Yoptions := Expand;
+                  end if;
+
+                  if Boolean'Value (Get_Field (Child, "yshrink").all) then
+                     Yoptions := Yoptions or Shrink;
+                  end if;
+
+                  if Boolean'Value (Get_Field (Child, "yfill").all) then
+                     Yoptions := Yoptions or Fill;
+                  end if;
+
+                  Gtk.Table.Attach (Gtk_Table (Get_Object (Find_Tag
+                    (Find_Parent (N.Parent, "Table"), "name").Value)),
+                     Gtk_Widget (Get_Object (Get_Field (N, "name"))),
+                     Gint'Value (Get_Field (Child, "left_attach").all),
+                     Gint'Value (Get_Field (Child, "right_attach").all),
+                     Gint'Value (Get_Field (Child, "top_attach").all),
+                     Gint'Value (Get_Field (Child, "bottom_attach").all),
+                     Xoptions, Yoptions,
+                     Gint'Value (Get_Field (Child, "xpad").all),
+                     Gint'Value (Get_Field (Child, "ypad").all));
+                  N.Specific_Data.Has_Container := True;
+               exception
+                  when Constraint_Error =>
+                     null;
+               end;
+            end if;
+ 
+         elsif Q.Value.all = "GTK_PACK_END" then
+            if S /= null and then S2 /= null and then S3 /= null then
+               Gtk.Box.Pack_End
                  (Gtk_Box (Get_Object (Find_Tag
                    (Find_Parent (N.Parent, "Box"), "name").Value)),
                   Gtk_Widget (Get_Object (Get_Field (N, "name"))),
