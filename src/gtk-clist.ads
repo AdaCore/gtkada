@@ -248,7 +248,7 @@ package Gtk.Clist is
    procedure Set_Column_Widget
      (Clist  : access Gtk_Clist_Record;
       Column : in     Gint;
-      Widget : in     Gtk.Widget.Gtk_Widget);
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    procedure Set_Column_Width
      (Clist  : access Gtk_Clist_Record;
@@ -262,7 +262,7 @@ package Gtk.Clist is
 
    procedure Set_Hadjustment
       (Clist      : access Gtk_Clist_Record;
-       Adjustment : in     Gtk.Adjustment.Gtk_Adjustment);
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
    procedure Set_Pixmap
      (Clist  : access Gtk_Clist_Record;
@@ -317,7 +317,7 @@ package Gtk.Clist is
 
    procedure Set_Vadjustment
      (Clist      : access Gtk_Clist_Record;
-      Adjustment : in     Gtk.Adjustment.Gtk_Adjustment);
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
    procedure Thaw (Clist : access Gtk_Clist_Record);
 

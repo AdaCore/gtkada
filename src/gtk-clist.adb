@@ -673,9 +673,7 @@ package body Gtk.Clist is
          Color : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_background");
    begin
-      Internal (Get_Object (Clist),
-                Row,
-                Color'Address);
+      Internal (Get_Object (Clist), Row, Color'Address);
    end Set_Background;
 
    ------------------------
@@ -829,7 +827,7 @@ package body Gtk.Clist is
    procedure Set_Column_Widget
      (Clist  : access Gtk_Clist_Record;
       Column : in     Gint;
-      Widget : in     Gtk.Widget.Gtk_Widget)
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
         (Clist  : in System.Address;
@@ -837,9 +835,7 @@ package body Gtk.Clist is
          Widget : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_column_widget");
    begin
-      Internal (Get_Object (Clist),
-                Column,
-                Get_Object (Widget));
+      Internal (Get_Object (Clist), Column, Get_Object (Widget));
    end Set_Column_Widget;
 
    ----------------------
@@ -888,7 +884,7 @@ package body Gtk.Clist is
 
    procedure Set_Hadjustment
      (Clist      : access Gtk_Clist_Record;
-      Adjustment : in     Gtk.Adjustment.Gtk_Adjustment)
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal (Clist      : in System.Address;
                           Adjustment : in System.Address);
@@ -1112,7 +1108,7 @@ package body Gtk.Clist is
 
    procedure Set_Vadjustment
       (Clist      : access Gtk_Clist_Record;
-       Adjustment : in     Gtk.Adjustment.Gtk_Adjustment)
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal (Clist      : in System.Address;
                           Adjustment : in System.Address);
