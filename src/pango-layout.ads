@@ -237,6 +237,13 @@ package Pango.Layout is
       return Glib.Gint;
    --  Return the number of lines in Layout
 
+   procedure Set_Markup
+     (Layout : access Pango_Layout_Record;
+      Markup : String);
+   --  Change the text that layout displays. Markup must be a valid
+   --  UTF8 String, and might contain markups as defined in the pango markup
+   --  language.
+
    ------------------------
    -- Layouting the text --
    ------------------------
@@ -309,7 +316,6 @@ end Pango.Layout;
 --  pango_layout_copy
 --  pango_layout_set_attributes
 --  pango_layout_get_attributes
---  pango_layout_set_markup
 --  pango_layout_set_markup_with_accel
 --  pango_layout_set_indent
 --  pango_layout_get_indent

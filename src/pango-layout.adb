@@ -170,6 +170,21 @@ package body Pango.Layout is
       Internal (Get_Object (Layout), Text, Text'Length);
    end Set_Text;
 
+   ----------------
+   -- Set_Markup --
+   ----------------
+
+   procedure Set_Markup
+     (Layout : access Pango_Layout_Record;
+      Markup : String)
+   is
+      procedure Internal
+        (Layout : System.Address; Text : String; Length : Gint);
+      pragma Import (C, Internal, "pango_layout_set_markup");
+   begin
+      Internal (Get_Object (Layout), Markup, Markup'Length);
+   end Set_Markup;
+
    --------------
    -- Get_Text --
    --------------
