@@ -41,6 +41,8 @@ with Glib.Type_Conversion_Hooks;
 with Glib.Values;
 with Glib.XML;
 
+with Glib.Graphs;
+
 with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Cursor;
