@@ -33,20 +33,18 @@ with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Toggle_Button is
 
-   ---------------
-   -- Is_Active --
-   ---------------
+   ----------------
+   -- Get_Active --
+   ----------------
 
-   function Is_Active (Toggle_Button : access Gtk_Toggle_Button_Record)
-     return Boolean
+   function Get_Active (Toggle_Button : access Gtk_Toggle_Button_Record)
+                       return Boolean
    is
-      function Internal (Widget : in System.Address)
-        return Integer;
-      pragma Import (C, Internal, "ada_toggle_button_get_active");
-
+      function Internal (Widget : in System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_toggle_button_get_active");
    begin
       return Boolean'Val (Internal (Get_Object (Toggle_Button)));
-   end Is_Active;
+   end Get_Active;
 
    -------------
    -- Gtk_New --
@@ -66,12 +64,16 @@ package body Gtk.Toggle_Button is
    procedure Initialize (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
                          Label         : in String := "")
    is
-      function Internal (Label  : in String)
-        return System.Address;
+      function Internal (Label  : in String) return System.Address;
       pragma Import (C, Internal, "gtk_toggle_button_new_with_label");
-
+      function Internal2 return System.Address;
+      pragma Import (C, Internal2, "gtk_toggle_button_new");
    begin
-      Set_Object (Toggle_Button, Internal (Label & Ascii.NUL));
+      if Label = "" then
+         Set_Object (Toggle_Button, Internal2);
+      else
+         Set_Object (Toggle_Button, Internal (Label & Ascii.NUL));
+      end if;
       Initialize_User_Data (Toggle_Button);
    end Initialize;
 

@@ -27,6 +27,17 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+
+--  A Gtk_Toggle_Button is like a regular button, but can be in one of
+--  two states, "active" or "inactive". Its visual aspect is modified
+--  when the state is changed.
+--  You should consider using a Gtk_Check_Button instead, since it looks
+--  nicer and provides more visual clues that the button can is toggleable.
+
+--  </description>
+--  <c_version> 1.2.6 </c_version>
+
 with Gtk.Button;
 with Gtk.Object;
 
@@ -36,27 +47,49 @@ package Gtk.Toggle_Button is
      with private;
    type Gtk_Toggle_Button is access all Gtk_Toggle_Button_Record'Class;
 
-   function Is_Active (Toggle_Button : access Gtk_Toggle_Button_Record)
-     return Boolean;
    procedure Gtk_New (Toggle_Button : out Gtk_Toggle_Button;
                       Label         : in String := "");
+   --  Initializes a button.
+   --  If LABEL is "", then no label is created inside the button and
+   --  you will have to provide your own child through a call to
+   --  Gtk.Container.Add. This is the recommended way to put a pixmap
+   --  inside a toggle button.
+
    procedure Initialize (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
                          Label         : in String := "");
-   procedure Set_Mode
-     (Toggle_Button  : access Gtk_Toggle_Button_Record;
-      Draw_Indicator : in Boolean);
-   procedure Set_Active
-     (Toggle_Button : access Gtk_Toggle_Button_Record;
-      Is_Active     : in Boolean);
-   procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   procedure Set_Mode (Toggle_Button  : access Gtk_Toggle_Button_Record;
+                       Draw_Indicator : in Boolean);
+   --  Changes the mode of the button.
+   --  If DRAW_INDICATOR is False, then the button is hidden.
+
+   procedure Set_Active (Toggle_Button : access Gtk_Toggle_Button_Record;
+                         Is_Active     : in Boolean);
+   --  Changes the state of the button.
+   --  When IS_ACTIVE is True, the button is drawn as a pressed button.
+
+   function Get_Active (Toggle_Button : access Gtk_Toggle_Button_Record)
+                      return Boolean;
+   --  Returns true if the button is in its active state, i.e is pressed.
+
+   function Is_Active (Toggle_Button : access Gtk_Toggle_Button_Record)
+                      return Boolean
+                      renames Get_Active;
+   --  Deprecated: this is the old name of Get_Active.
+
+   procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record);
+   --  Emits the toggled signal on this widget.
+   --  Note that the state of the button is not changed, only the callbacks
+   --  are called.
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
 
    procedure Generate
      (Toggle_Button : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
    type Gtk_Toggle_Button_Record is new Gtk.Button.Gtk_Button_Record
