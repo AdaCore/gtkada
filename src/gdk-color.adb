@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,11 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Ada.Text_IO;              use Ada.Text_IO;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with System;
 
 package body Gdk.Color is
+
+   package Int_IO is new Ada.Text_IO.Integer_IO (Integer);
+   use Int_IO;
 
    function Internal_Copy (C : Gdk_Color) return System.Address;
 
@@ -354,6 +358,23 @@ package body Gdk.Color is
 
       return Color;
    end Parse;
+
+   ---------------
+   -- To_String --
+   ---------------
+
+   function To_String (Color : Gdk_Color) return String is
+      Result  : String (1 .. 16);
+   begin
+      Put
+        (Result,
+         Integer (Color.Red / 256) * 65536
+           + Integer (Color.Green / 256) * 256
+           + Integer (Color.Blue / 256),
+         16);
+
+      return Result (9 .. 15);
+   end To_String;
 
    -----------
    -- Pixel --
