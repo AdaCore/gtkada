@@ -48,12 +48,14 @@ package body Gtk.Extra.Color_Combo is
                           Col         : out Gint);
       pragma Import (C, Internal, "gtk_color_combo_find_color");
       use type Gdk.Color.Gdk_Color;
+
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
    begin
       if Color = Gdk.Color.Null_Color then
          Ca := System.Null_Address;
       end if;
+
       Internal (Get_Object (Color_Combo), Ca, Row, Col);
    end Find_Color;
 

@@ -286,7 +286,9 @@ package body Gtk.Container is
                              Func      : System.Address;
                              Data      : System.Address);
          pragma Import (C, Internal, "gtk_container_forall");
+
          D : aliased Internal_Data := (Data, Func);
+
       begin
          Internal (Get_Object (Container), Internal_Func'Address, D'Address);
       end Forall;
