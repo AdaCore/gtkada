@@ -94,7 +94,7 @@ package Gtk.Clist is
    --  Function used when sorting a clist. This function takes two
    --  rows as its arguments, and should return a Gint indicating in which
    --  order the rows are found (-1 if Row1 comes first, 0 if they are equal,
-   --  1 if Row2 comes last).
+   --  1 if Row2 comes first).
 
    ------------------------------------------------
    -- Creating a list and setting the attributes --
