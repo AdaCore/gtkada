@@ -28,6 +28,8 @@
 -----------------------------------------------------------------------
 
 with System;
+with Unchecked_Conversion;
+with Unchecked_Deallocation;
 
 package body Gtk.CTree is
 
@@ -49,8 +51,9 @@ package body Gtk.CTree is
    -- Collapse_Recursive --
    ------------------------
 
-   procedure Collapse_Recursive (Ctree : access Gtk_Ctree_Record;
-                                 Node  : in     Gtk_Ctree_Node)
+   procedure Collapse_Recursive
+     (Ctree : access Gtk_Ctree_Record;
+      Node  : in     Gtk_Ctree_Node := Null_Ctree_Node)
    is
       procedure Internal (Ctree : in System.Address;
                           Node  : in System.Address);
@@ -63,9 +66,10 @@ package body Gtk.CTree is
    -- Collapse_To_Depth --
    -----------------------
 
-   procedure Collapse_To_Depth (Ctree : access Gtk_Ctree_Record;
-                                Node  : in     Gtk_Ctree_Node;
-                                Depth : in     Gint)
+   procedure Collapse_To_Depth
+     (Ctree : access Gtk_Ctree_Record;
+      Node  : in     Gtk_Ctree_Node := Null_Ctree_Node;
+      Depth : in     Gint)
    is
       procedure Internal (Ctree : in System.Address;
                           Node  : in System.Address;
@@ -93,8 +97,9 @@ package body Gtk.CTree is
    -- Expand_Recursive --
    ----------------------
 
-   procedure Expand_Recursive (Ctree : access Gtk_Ctree_Record;
-                               Node  : in Gtk_Ctree_Node)
+   procedure Expand_Recursive
+     (Ctree : access Gtk_Ctree_Record;
+      Node  : in Gtk_Ctree_Node := Null_Ctree_Node)
    is
       procedure Internal (Ctree : in System.Address;
                           Node  : in System.Address);
@@ -107,9 +112,10 @@ package body Gtk.CTree is
    -- Expand_To_Depth --
    ---------------------
 
-   procedure Expand_To_Depth (Ctree : access Gtk_Ctree_Record;
-                              Node  : in     Gtk_Ctree_Node;
-                              Depth : in     Gint)
+   procedure Expand_To_Depth
+     (Ctree : access Gtk_Ctree_Record;
+      Node  : in     Gtk_Ctree_Node := Null_Ctree_Node;
+      Depth : in     Gint)
    is
       procedure Internal (Ctree : in System.Address;
                           Node  : in System.Address;
@@ -118,6 +124,156 @@ package body Gtk.CTree is
    begin
       Internal (Get_Object (Ctree), Get_Object (Node), Depth);
    end Expand_To_Depth;
+
+
+   --------------------------
+   --  Get_Expander_Style  --
+   --------------------------
+
+   function Get_Expander_Style (Ctree : access Gtk_Ctree_Record)
+                                return         Gtk_Ctree_Expander_Style
+   is
+      function Internal (Ctree : in System.Address) return Gint;
+      pragma Import (C, Internal, "ada_ctree_get_expander_style");
+   begin
+      return Gtk_Ctree_Expander_Style'Val (Internal (Get_Object (Ctree)));
+   end Get_Expander_Style;
+
+   ----------------------
+   --  Get_Line_Style  --
+   ----------------------
+
+   function Get_Line_Style (Ctree : access Gtk_Ctree_Record)
+                            return         Gtk_Ctree_Line_Style
+   is
+      function Internal (Ctree : in System.Address) return Gint;
+      pragma Import (C, Internal, "ada_ctree_get_line_style");
+   begin
+      return Gtk_Ctree_Line_Style'Val (Internal (Get_Object (Ctree)));
+   end Get_Line_Style;
+
+   ---------------------
+   --  Get_Node_Info  --
+   ---------------------
+
+   procedure Get_Node_Info
+     (Ctree         : access Gtk_Ctree_Record;
+      Node          : in     Gtk_Ctree_Node;
+      Text          :    out Interfaces.C.Strings.chars_ptr;
+      Spacing       :    out Guint8;
+      Pixmap_Closed :    out Gdk.Pixmap.Gdk_Pixmap;
+      Mask_Closed   :    out Gdk.Bitmap.Gdk_Bitmap;
+      Pixmap_Opened :    out Gdk.Pixmap.Gdk_Pixmap;
+      Mask_Opened   :    out Gdk.Bitmap.Gdk_Bitmap;
+      Is_Leaf       :    out Boolean;
+      Expanded      :    out Boolean;
+      Success       :    out Boolean) is
+      function Internal (Ctree         : in System.Address;
+                         Node          : in System.Address;
+                         Text          : in System.Address;
+                         Spacing       : in System.Address;
+                         Pixmap_Closed : in System.Address;
+                         Mask_Closed   : in System.Address;
+                         Pixmap_Opened : in System.Address;
+                         Mask_Opened   : in System.Address;
+                         Is_Leaf       : in System.Address;
+                         Expanded      : in System.Address)
+                         return             Gint;
+      pragma Import (C, Internal, "gtk_ctree_get_node_info");
+      Tmp_Is_Leaf, Tmp_Expanded : Gboolean;
+      Tmp_Pixmap_Closed, Tmp_Mask_Closed : System.Address;
+      Tmp_Pixmap_Opened, Tmp_Mask_Opened : System.Address;
+   begin
+      Success := To_Boolean (Internal (Get_Object (Ctree),
+                                       Get_Object (Node),
+                                       Text'Address,
+                                       Spacing'Address,
+                                       Tmp_Pixmap_Closed'Address,
+                                       Tmp_Mask_Closed'Address,
+                                       Tmp_Pixmap_Opened'Address,
+                                       Tmp_Mask_Opened'Address,
+                                       Tmp_Is_Leaf'Address,
+                                       Tmp_Expanded'Address));
+      Set_Object (Pixmap_Closed, Tmp_Pixmap_Closed);
+      Set_Object (Mask_Closed, Tmp_Mask_Closed);
+      Set_Object (Pixmap_Opened, Tmp_Pixmap_Opened);
+      Set_Object (Mask_Opened, Tmp_Mask_Opened);
+      Is_Leaf := To_Boolean (Tmp_Is_Leaf);
+      Expanded := To_Boolean (Tmp_Expanded);
+   end Get_Node_Info;
+
+
+   ------------------
+   -- Get_Row_List --
+   ------------------
+
+   function Get_Row_List (Ctree : access Gtk_Ctree_Record)
+                          return         Row_List.Glist
+   is
+      function Internal (Ctree : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_clist_get_row_list");
+      --  Note: We need to extract "GTK_CLIST (Ctree)->row_list", which
+      --  explains why the imported C routine applies to a clist. Also, we
+      --  have to override the Get_Row_List function inherited from Clist
+      --  because we need to return a list of Gtk_Ctree_Row (The inherited
+      --  Get_Row_List would return a list of Gtk_Clist_Row).
+      List : Row_List.Glist;
+   begin
+      Row_List.Set_Object (List, Internal (Get_Object (Ctree)));
+      return List;
+   end Get_Row_List;
+
+
+   ---------------------
+   --  Get_Show_Stub  --
+   ---------------------
+
+   function Get_Show_Stub (Ctree : access Gtk_Ctree_Record) return Boolean
+   is
+      function Internal (Ctree : in System.Address) return Gboolean;
+      pragma Import (C, Internal, "ada_ctree_get_show_stub");
+   begin
+      return To_Boolean (Internal (Get_Object (Ctree)));
+   end Get_Show_Stub;
+
+   ---------------------
+   -- Get_Tree_Column --
+   ---------------------
+
+   function Get_Tree_Column (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class)
+                             return          Gint
+   is
+      function Internal (Widget : in System.Address) return Gint;
+      pragma Import (C, Internal, "ada_ctree_get_tree_column");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Tree_Column;
+
+   ---------------------
+   -- Get_Tree_Indent --
+   ---------------------
+
+   function Get_Tree_Indent (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class)
+                             return          Gint
+   is
+      function Internal (Widget : in System.Address) return Gint;
+      pragma Import (C, Internal, "ada_ctree_get_tree_indent");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Tree_Indent;
+
+   ----------------------
+   -- Get_Tree_Spacing --
+   ----------------------
+
+   function Get_Tree_Spacing (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class)
+                              return          Gint
+   is
+      function Internal (Widget : in System.Address) return Gint;
+      pragma Import (C, Internal, "ada_ctree_get_tree_spacing");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Tree_Spacing;
 
    -------------
    -- Gtk_New --
@@ -201,6 +357,7 @@ package body Gtk.CTree is
    function Insert_Node (Ctree         : access Gtk_Ctree_Record;
                          Parent        : in     Gtk_Ctree_Node;
                          Sibling       : in     Gtk_Ctree_Node;
+                         Text          : in     Chars_Ptr_Array;
                          Spacing       : in     Guint8;
                          Pixmap_Closed : in     Gdk.Pixmap.Gdk_Pixmap;
                          Mask_Closed   : in     Gdk.Bitmap.Gdk_Bitmap;
@@ -213,6 +370,7 @@ package body Gtk.CTree is
       function Internal (Ctree         : in System.Address;
                          Parent        : in System.Address;
                          Sibling       : in System.Address;
+                         Text          : in Chars_Ptr_Array;
                          Spacing       : in Guint8;
                          Pixmap_Closed : in System.Address;
                          Mask_Closed   : in System.Address;
@@ -227,6 +385,7 @@ package body Gtk.CTree is
       Set_Object (Tmp, Internal (Get_Object (Ctree),
                                  Get_Object (Parent),
                                  Get_Object (Sibling),
+                                 Text,
                                  Spacing,
                                  Get_Object (Pixmap_Closed),
                                  Get_Object (Mask_Closed),
@@ -440,6 +599,19 @@ package body Gtk.CTree is
       Set_Object (Pixmap, Pixmap_Address);
       Set_Object (Mask, Mask_Address);
    end Node_Get_Pixtext;
+
+   ------------------
+   -- Node_Get_Row --
+   ------------------
+
+   function Node_Get_Row (Node : in Gtk_Ctree_Node) return Gtk_Ctree_Row is
+      function Internal (Node : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_ctree_node_get_row");
+      Result : Gtk_Ctree_Row;
+   begin
+      Set_Object (Result, Internal (Get_Object (Node)));
+      return Result;
+   end Node_Get_Row;
 
    ------------------------
    -- Node_Get_Row_Style --
@@ -776,11 +948,73 @@ package body Gtk.CTree is
    end Remove_Node;
 
    ----------------------
+   -- Row_Get_Children --
+   ----------------------
+
+   function Row_Get_Children (Row : in Gtk_Ctree_Row) return Gtk_Ctree_Node is
+      function Internal (Row : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_ctree_row_get_children");
+      Result : Gtk_Ctree_Node;
+   begin
+      Set_Object (Result, Internal (Get_Object (Row)));
+      return Result;
+   end Row_Get_Children;
+
+   ----------------------
+   -- Row_Get_Expanded --
+   ----------------------
+
+   function Row_Get_Expanded (Row : in Gtk_Ctree_Row) return Boolean is
+      function Internal (Row : in System.Address) return Guint;
+      pragma Import (C, Internal, "ada_ctree_row_get_expanded");
+   begin
+      return To_Boolean (Internal (Get_Object (Row)));
+   end Row_Get_Expanded;
+
+   ---------------------
+   -- Row_Get_Is_Leaf --
+   ---------------------
+
+   function Row_Get_Is_Leaf (Row : in Gtk_Ctree_Row) return Boolean is
+      function Internal (Row : in System.Address) return Guint;
+      pragma Import (C, Internal, "ada_ctree_row_get_is_leaf");
+   begin
+      return To_Boolean (Internal (Get_Object (Row)));
+   end Row_Get_Is_Leaf;
+
+   --------------------
+   -- Row_Get_Parent --
+   --------------------
+
+   function Row_Get_Parent (Row : in Gtk_Ctree_Row) return Gtk_Ctree_Node is
+      function Internal (Row : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_ctree_row_get_parent");
+      Result : Gtk_Ctree_Node;
+   begin
+      Set_Object (Result, Internal (Get_Object (Row)));
+      return Result;
+   end Row_Get_Parent;
+
+   ---------------------
+   -- Row_Get_Sibling --
+   ---------------------
+
+   function Row_Get_Sibling (Row : in Gtk_Ctree_Row) return Gtk_Ctree_Node is
+      function Internal (Row : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_ctree_row_get_sibling");
+      Result : Gtk_Ctree_Node;
+   begin
+      Set_Object (Result, Internal (Get_Object (Row)));
+      return Result;
+   end Row_Get_Sibling;
+
+   ----------------------
    -- Select_Recursive --
    ----------------------
 
-   procedure Select_Recursive (Ctree : access Gtk_Ctree_Record;
-                               Node  : in     Gtk_Ctree_Node)
+   procedure Select_Recursive
+     (Ctree : access Gtk_Ctree_Record;
+      Node  : in     Gtk_Ctree_Node := Null_Ctree_Node)
    is
       procedure Internal (Ctree : in System.Address;
                           Node  : in System.Address);
@@ -974,8 +1208,9 @@ package body Gtk.CTree is
    -- Unselect_Recursive --
    ------------------------
 
-   procedure Unselect_Recursive (Ctree : access Gtk_Ctree_Record;
-                                 Node  : in     Gtk_Ctree_Node)
+   procedure Unselect_Recursive
+     (Ctree : access Gtk_Ctree_Record;
+      Node  : in     Gtk_Ctree_Node := Null_Ctree_Node)
    is
       procedure Internal (Ctree : in System.Address;
                           Node  : in System.Address);
@@ -983,5 +1218,134 @@ package body Gtk.CTree is
    begin
       Internal (Get_Object (Ctree), Get_Object (Node));
    end Unselect_Recursive;
+
+   ---------------
+   -- Row_Data --
+   ---------------
+
+   package body Row_Data is
+
+      type Ctree_Func_Record is
+         record
+            Func : Gtk_Ctree_Func;
+            Data : Data_Type_Access;
+         end record;
+      type Ctree_Func_Record_Access is access all Ctree_Func_Record;
+
+      function Convert is new Unchecked_Conversion (System.Address,
+                                                    Data_Type_Access);
+      function Convert is new Unchecked_Conversion (Data_Type_Access,
+                                                    System.Address);
+      function Convert is new Unchecked_Conversion (System.Address,
+                                                    Ctree_Func_Record_Access);
+      function Convert is new Unchecked_Conversion (Ctree_Func_Record_Access,
+                                                    System.Address);
+
+      procedure Free_Data (Data : in System.Address);
+      pragma Convention (C, Free_Data);
+
+      procedure C_Ctree_Func (C_Ctree : in System.Address;
+                            C_Node  : in System.Address;
+                            C_Data  : in System.Address);
+      pragma Convention (C, C_Ctree_Func);
+
+
+      ------------------
+      -- C_Ctree_Func --
+      ------------------
+
+      procedure C_Ctree_Func (C_Ctree : in System.Address;
+                              C_Node  : in System.Address;
+                              C_Data  : in System.Address) is
+         Data_Access : constant Ctree_Func_Record_Access := Convert (C_Data);
+         Stub : Gtk.Ctree.Gtk_Ctree_Record;
+         Ctree : constant Gtk.Ctree.Gtk_Ctree :=
+           Gtk.Ctree.Gtk_Ctree (Get_User_Data (C_Ctree, Stub));
+         Node  : Gtk.Ctree.Gtk_Ctree_Node;
+      begin
+         Set_Object (Node, C_Node);
+         Data_Access.Func (Ctree, Node, Data => Data_Access.Data);
+      end C_Ctree_Func;
+
+      ----------
+      -- Free --
+      ----------
+
+      procedure Free_Data (Data : in System.Address) is
+         procedure Internal is new Unchecked_Deallocation (Data_Type,
+                                                            Data_Type_Access);
+         D : Data_Type_Access := Convert (Data);
+      begin
+         Internal (D);
+      end Free_Data;
+
+      -----------------------
+      -- Node_Get_Row_Data --
+      -----------------------
+
+      function Node_Get_Row_Data (Ctree : access Gtk_Ctree_Record'Class;
+                                  Node  : in     Gtk_Ctree_Node)
+                                  return Data_Type
+      is
+         function Internal (Ctree, Node : in System.Address)
+                            return System.Address;
+         pragma Import (C, Internal, "gtk_ctree_node_get_row_data");
+         D : Data_Type_Access := Convert (Internal (Get_Object (Ctree),
+                                                    Get_Object (Node)));
+      begin
+         return D.all;
+      end Node_Get_Row_Data;
+
+      -----------------------
+      -- Node_Set_Row_Data --
+      -----------------------
+
+      procedure Node_Set_Row_Data (Ctree : access Gtk_Ctree_Record'Class;
+                                   Node  : in     Gtk_Ctree_Node;
+                                   Data  : in     Data_Type)
+      is
+         procedure Internal (Object  : in System.Address;
+                             Node    : in System.Address;
+                             Data    : in System.Address;
+                             Destroy : in System.Address);
+         pragma Import (C, Internal, "gtk_ctree_node_set_row_data_full");
+         D : Data_Type_Access := new Data_Type'(Data);
+      begin
+         Internal (Get_Object (Ctree),
+                   Get_Object (Node),
+                   Convert (D),
+                   Free_Data'Address);
+      end Node_Set_Row_Data;
+
+
+      -------------------
+      -- Pre_Recursive --
+      -------------------
+
+      procedure Pre_Recursive (Ctree : access Gtk_Ctree_Record'Class;
+                               Node  : in     Gtk_Ctree_Node;
+                               Func  : in     Gtk_Ctree_Func;
+                               Data  : in     Data_Type_Access) is
+         procedure Internal (Ctree : in System.Address;
+                             Node  : in System.Address;
+                             Func  : in System.Address;
+                             Data  : in System.Address);
+         pragma Import (C, Internal, "gtk_ctree_pre_recursive");
+         C_Func_Address : System.Address;
+         Local_Data : constant Ctree_Func_Record := (Func => Func,
+                                                     Data => Data);
+      begin
+         if Func = null then
+            C_Func_Address := System.Null_Address;
+         else
+            C_Func_Address := C_Ctree_Func'Address;
+         end if;
+         Internal (Get_Object (Ctree),
+                   Get_Object (Node),
+                   C_Ctree_Func'Address,
+                   Data => Local_Data'Address);
+      end Pre_Recursive;
+
+   end Row_Data;
 
 end Gtk.CTree;

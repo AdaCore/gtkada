@@ -31,6 +31,7 @@ with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Pixmap;
 with Glib; use Glib;
+with Glib.Glist;
 --  with Glib.Gnodes;
 with Gtk.Clist;
 with Gtk.Enums; use Gtk.Enums;
@@ -43,28 +44,36 @@ package Gtk.Ctree is
    type Gtk_Ctree_Record is new Gtk.Clist.Gtk_Clist_Record with private;
    type Gtk_Ctree is access all Gtk_Ctree_Record'Class;
 
-   type Gtk_Ctree_Row is new Object_Type;
+   type Gtk_Ctree_Row is new Gtk.Clist.Gtk_Clist_Row;
+
    type Gtk_Ctree_Node is new Object_Type;
+   Null_Ctree_Node : constant Gtk_Ctree_Node;
+
+   package Row_List is new Glib.Glist.Generic_List (Gtk_Ctree_Row);
 
    procedure Collapse (Ctree : access Gtk_Ctree_Record;
                        Node  : in     Gtk_Ctree_Node);
 
-   procedure Collapse_Recursive (Ctree : access Gtk_Ctree_Record;
-                                 Node  : in     Gtk_Ctree_Node);
+   procedure Collapse_Recursive
+     (Ctree : access Gtk_Ctree_Record;
+      Node  : in     Gtk_Ctree_Node := Null_Ctree_Node);
 
-   procedure Collapse_To_Depth (Ctree : access Gtk_Ctree_Record;
-                                Node  : in     Gtk_Ctree_Node;
-                                Depth : in     Gint);
+   procedure Collapse_To_Depth
+     (Ctree : access Gtk_Ctree_Record;
+      Node  : in     Gtk_Ctree_Node := Null_Ctree_Node;
+      Depth : in     Gint);
 
    procedure Expand (Ctree : access Gtk_Ctree_Record;
                      Node  : in     Gtk_Ctree_Node);
 
-   procedure Expand_Recursive (Ctree : access Gtk_Ctree_Record;
-                               Node  : in     Gtk_Ctree_Node);
+   procedure Expand_Recursive
+     (Ctree : access Gtk_Ctree_Record;
+      Node  : in     Gtk_Ctree_Node := Null_Ctree_Node);
 
-   procedure Expand_To_Depth (Ctree : access Gtk_Ctree_Record;
-                              Node  : in     Gtk_Ctree_Node;
-                              Depth : in     Gint);
+   procedure Expand_To_Depth
+     (Ctree : access Gtk_Ctree_Record;
+      Node  : in     Gtk_Ctree_Node := Null_Ctree_Node;
+      Depth : in     Gint);
 
    --  Export_To_Gnode
    --  Find
@@ -73,7 +82,39 @@ package Gtk.Ctree is
    --  Find_By_Row_Data
    --  Find_By_Row_Data_Custom
    --  Find_Node_Ptr
-   --  Get_Node_Info
+
+   function Get_Expander_Style (Ctree : access Gtk_Ctree_Record)
+                                return         Gtk_Ctree_Expander_Style;
+
+   function Get_Line_Style (Ctree : access Gtk_Ctree_Record)
+                            return         Gtk_Ctree_Line_Style;
+
+   procedure Get_Node_Info
+     (Ctree         : access Gtk_Ctree_Record;
+      Node          : in     Gtk_Ctree_Node;
+      Text          :    out Interfaces.C.Strings.chars_ptr;
+      Spacing       :    out Guint8;
+      Pixmap_Closed :    out Gdk.Pixmap.Gdk_Pixmap;
+      Mask_Closed   :    out Gdk.Bitmap.Gdk_Bitmap;
+      Pixmap_Opened :    out Gdk.Pixmap.Gdk_Pixmap;
+      Mask_Opened   :    out Gdk.Bitmap.Gdk_Bitmap;
+      Is_Leaf       :    out Boolean;
+      Expanded      :    out Boolean;
+      Success       :    out Boolean);
+
+   function Get_Row_List (Ctree : access Gtk_Ctree_Record)
+                          return         Row_List.Glist;
+
+   function Get_Show_Stub (Ctree : access Gtk_Ctree_Record) return Boolean;
+
+   function Get_Tree_Column (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class)
+                             return          Gint;
+
+   function Get_Tree_Indent (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class)
+                             return          Gint;
+
+   function Get_Tree_Spacing (Widget : access Gtk.Ctree.Gtk_Ctree_Record'Class)
+                              return          Gint;
 
    procedure Gtk_New (Widget      :    out Gtk_Ctree;
                       Titles      : in     Chars_Ptr_Array;
@@ -97,6 +138,7 @@ package Gtk.Ctree is
    function Insert_Node (Ctree         : access Gtk_Ctree_Record;
                          Parent        : in     Gtk_Ctree_Node;
                          Sibling       : in     Gtk_Ctree_Node;
+                         Text          : in     Chars_Ptr_Array;
                          Spacing       : in     Guint8;
                          Pixmap_Closed : in     Gdk.Pixmap.Gdk_Pixmap;
                          Mask_Closed   : in     Gdk.Bitmap.Gdk_Bitmap;
@@ -105,6 +147,8 @@ package Gtk.Ctree is
                          Is_Leaf       : in     Boolean;
                          Expanded      : in     Boolean)
                          return                 Gtk_Ctree_Node;
+   --  Note: Insert_Node expects the length of the Text parameter
+   --        to be equal to the number of columns of the Ctree...
 
    function Is_Ancestor (Ctree  : access Gtk_Ctree_Record;
                          Node   : in     Gtk_Ctree_Node;
@@ -155,7 +199,7 @@ package Gtk.Ctree is
                                Mask    :    out Gdk.Bitmap.Gdk_Bitmap;
                                Success :    out Boolean);
 
-   --  Node_Get_Row_Data
+   function Node_Get_Row (Node : in Gtk_Ctree_Node) return Gtk_Ctree_Row;
 
    function Node_Get_Row_Style (Ctree  : access Gtk_Ctree_Record;
                                 Node   : in     Gtk_Ctree_Node)
@@ -212,9 +256,6 @@ package Gtk.Ctree is
                                Pixmap  : in     Gdk.Pixmap.Gdk_Pixmap;
                                Mask    : in     Gdk.Bitmap.Gdk_Bitmap);
 
-   --  Node_Set_Row_Data
-   --  Node_Set_Row_Data_Full
-
    procedure Node_Set_Row_Style (Ctree : access Gtk_Ctree_Record;
                                  Node  : in     Gtk_Ctree_Node;
                                  Style : in     Gtk.Style.Gtk_Style);
@@ -234,11 +275,6 @@ package Gtk.Ctree is
                             Column : in     Gint;
                             Text   : in     String);
 
-   --  Post_Recursive
-   --  Post_Recursive_To_Depth
-   --  Pre_Recursive
-   --  Pre_Recursive_To_Depth
-
    procedure Real_Select_Recursive (Ctree : access Gtk_Ctree_Record;
                                     Node  : in     Gtk_Ctree_Node;
                                     State : in     Gint);
@@ -246,8 +282,23 @@ package Gtk.Ctree is
    procedure Remove_Node (Ctree : access Gtk_Ctree_Record;
                           Node  : in     Gtk_Ctree_Node);
 
-   procedure Select_Recursive (Ctree : access Gtk_Ctree_Record;
-                               Node  : in     Gtk_Ctree_Node);
+   function Row_Get_Children (Row : in Gtk_Ctree_Row) return Gtk_Ctree_Node;
+
+   function Row_Get_Expanded (Row : in Gtk_Ctree_Row) return Boolean;
+   --  Expanded can also be retrieved via Get_Node_Info
+   --  This function is just a quick accessor
+
+   function Row_Get_Is_Leaf (Row : in Gtk_Ctree_Row) return Boolean;
+   --  Is_Leaf can also be retrieved view Get_Node_Info
+   --  This function is just a quick accessor
+
+   function Row_Get_Parent (Row : in Gtk_Ctree_Row) return Gtk_Ctree_Node;
+
+   function Row_Get_Sibling (Row : in Gtk_Ctree_Row) return Gtk_Ctree_Node;
+
+   procedure Select_Recursive
+     (Ctree : access Gtk_Ctree_Record;
+      Node  : in     Gtk_Ctree_Node := Null_Ctree_Node);
 
    --  Set_Drag_Compare_Func
 
@@ -293,11 +344,55 @@ package Gtk.Ctree is
    procedure Unselect (Ctree : access Gtk_Ctree_Record;
                        Node  : in     Gtk_Ctree_Node);
 
-   procedure Unselect_Recursive (Ctree : access Gtk_Ctree_Record;
-                                 Node  : in     Gtk_Ctree_Node);
+   procedure Unselect_Recursive
+     (Ctree : access Gtk_Ctree_Record;
+      Node  : in     Gtk_Ctree_Node := Null_Ctree_Node);
+
+   ---------------
+   -- Row_Data --
+   ---------------
+
+   generic
+      type Data_Type (<>) is private;
+   package Row_Data is
+
+      type Data_Type_Access is access all Data_Type;
+
+      type Gtk_Ctree_Func is access
+        procedure (Ctree : access Gtk_Ctree_Record'Class;
+                   Node  : in     Gtk_Ctree_Node;
+                   Data  : in     Data_Type_Access);
+
+      function Node_Get_Row_Data (Ctree : access Gtk_Ctree_Record'Class;
+                                  Node  : in     Gtk_Ctree_Node)
+                                  return         Data_Type;
+
+      procedure Node_Set_Row_Data (Ctree : access Gtk_Ctree_Record'Class;
+                                   Node  : in     Gtk_Ctree_Node;
+                                   Data  : in     Data_Type);
+      --  maps gtk_ctree_node_set_row_data_full
+
+      --  Post_Recursive
+      --  Post_Recursive_To_Depth
+
+      procedure Pre_Recursive (Ctree : access Gtk_Ctree_Record'Class;
+                               Node  : in     Gtk_Ctree_Node;
+                               Func  : in     Gtk_Ctree_Func;
+                               Data  : in     Data_Type_Access);
+
+      --  Pre_Recursive_To_Depth
+
+   end Row_Data;
+
+   --  The previous package implements the Row_Data stuff.
+   --  !! Warning !! No type verification is made to check if you are
+   --  using the appropriate function Get. This is your own responsability
 
 private
 
    type Gtk_Ctree_Record is new Gtk.Clist.Gtk_Clist_Record with null record;
+
+   Null_Ctree_Node : constant Gtk_Ctree_Node :=
+     Gtk_Ctree_Node (Null_Object_Type);
 
 end Gtk.Ctree;
