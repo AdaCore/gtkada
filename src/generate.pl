@@ -1120,10 +1120,10 @@ sub print_body
 	    $tmp =~ s/\'Class//;
 	    push (@output, "   begin\n");
 	    if ($tmp eq "Gtk.Widget.Gtk_Widget") {
-	      $string = "      return Convert (Internal";
+	      $string = "      return Widget.Convert (Internal";
 	      $terminate = ");\n";
 	    } else {
-	      $string = "      return $tmp (Convert (Internal";
+	      $string = "      return $tmp (Widget.Convert (Internal";
 	      $terminate = "));\n";
 	      }
 	    $with_list{"with Gtk.Widget; use Gtk.Widget"}++;
