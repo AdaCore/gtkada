@@ -171,7 +171,7 @@ package body Create_Scroll_Test is
       Area : Gdk.Rectangle.Gdk_Rectangle;
       Imin, Imax, Jmin, Jmax : Gint;
    begin
-      Gdk.Event.Get_Area (Event => Event, Area => Area);
+      Area := Gdk.Event.Get_Area (Event);
 
       Imin := Get_X (Area) / 10;
       Imax := (Get_X (Area) + Gint (Get_Width (Area)) + 9) / 10;
