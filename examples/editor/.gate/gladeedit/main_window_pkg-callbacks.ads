@@ -36,13 +36,16 @@ package Main_Window_Pkg.Callbacks is
      (Object : access Gtk_Menu_Item_Record'Class);
 
    procedure On_New_Button_Clicked
-     (Object : access Gtk_Button_Record'Class);
+     (Object : access Gtk_Widget_Record'Class;
+      Params : Gtk.Arguments.Gtk_Args);
 
    procedure On_Open_Button_Clicked
-     (Object : access Gtk_Button_Record'Class);
+     (Object : access Gtk_Widget_Record'Class;
+      Params : Gtk.Arguments.Gtk_Args);
 
    procedure On_Save_Button_Clicked
-     (Object : access Gtk_Button_Record'Class);
+     (Object : access Gtk_Widget_Record'Class;
+      Params : Gtk.Arguments.Gtk_Args);
 
    procedure On_Text_Changed
      (Object : access Gtk_Text_Record'Class);

@@ -153,24 +153,27 @@ begin
    Set_Space_Style (Main_Window.Toolbar1, Toolbar_Space_Empty);
    Set_Tooltips (Main_Window.Toolbar1, True);
    Set_Button_Relief (Main_Window.Toolbar1, Relief_Normal);
-   Main_Window.Button1 := Append_Item (Main_Window.Toolbar1, "New", "", "",
-     Create_Pixmap ("new.xpm", Main_Window));
-   Main_Window.Button2 := Append_Item (Main_Window.Toolbar1, "Open", "", "",
-     Create_Pixmap ("open.xpm", Main_Window));
-   Main_Window.Button3 := Append_Item (Main_Window.Toolbar1, "Save", "", "",
-     Create_Pixmap ("save.xpm", Main_Window));
-
-   Button_Callback.Connect
-     (Main_Window.Button1, "clicked",
-      Button_Callback.To_Marshaller (On_New_Button_Clicked'Access));
-
-   Button_Callback.Connect
-     (Main_Window.Button2, "clicked",
-      Button_Callback.To_Marshaller (On_Open_Button_Clicked'Access));
-
-   Button_Callback.Connect
-     (Main_Window.Button3, "clicked",
-      Button_Callback.To_Marshaller (On_Save_Button_Clicked'Access));
+   Main_Window.Button1 := Append_Element
+     (Toolbar => Main_Window.Toolbar1,
+      The_Type => Toolbar_Child_Button,
+      Text => "New",
+      Icon => Gtk_Widget (Create_Pixmap ("new.xpm", Main_Window)));
+   Widget_Callback.Connect
+     (Main_Window.Button1, "clicked", On_New_Button_Clicked'Access);
+   Main_Window.Button2 := Append_Element
+     (Toolbar => Main_Window.Toolbar1,
+      The_Type => Toolbar_Child_Button,
+      Text => "Open",
+      Icon => Gtk_Widget (Create_Pixmap ("open.xpm", Main_Window)));
+   Widget_Callback.Connect
+     (Main_Window.Button2, "clicked", On_Open_Button_Clicked'Access);
+   Main_Window.Button3 := Append_Element
+     (Toolbar => Main_Window.Toolbar1,
+      The_Type => Toolbar_Child_Button,
+      Text => "Save",
+      Icon => Gtk_Widget (Create_Pixmap ("save.xpm", Main_Window)));
+   Widget_Callback.Connect
+     (Main_Window.Button3, "clicked", On_Save_Button_Clicked'Access);
 
    Gtk_New (Main_Window.Scrolledwindow1);
    Pack_Start (Main_Window.Vbox1, Main_Window.Scrolledwindow1, True, True, 0);
@@ -180,7 +183,7 @@ begin
    Text_Callback.Connect
      (Main_Window.Text1, "changed",
       Text_Callback.To_Marshaller (On_Text_Changed'Access));
-   Add_With_Viewport (Main_Window.Scrolledwindow1, Main_Window.Text1);
+   Add (Main_Window.Scrolledwindow1, Main_Window.Text1);
    Set_Editable (Main_Window.Text1, True);
 
    Gtk_New (Main_Window.Statusbar1);

@@ -1,11 +1,9 @@
 with Gtk.Dialog; use Gtk.Dialog;
-with Gtk.Window; use Gtk.Window;
-with Gtk.Container; use Gtk.Container;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Label; use Gtk.Label;
-with Gtk.Misc; use Gtk.Misc;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Object; use Gtk.Object;
+with Gtk.Window; use Gtk.Window;
 
 package About_Dialog_Pkg is
 

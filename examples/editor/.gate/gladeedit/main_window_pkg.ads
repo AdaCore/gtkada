@@ -1,7 +1,5 @@
 with Gtk.Window; use Gtk.Window;
-with Gtk.Widget; use Gtk.Widget;
 with Gtk.Box; use Gtk.Box;
-with Gtk.Container; use Gtk.Container;
 with Gtk.Menu_Bar; use Gtk.Menu_Bar;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
 with Gtk.Menu; use Gtk.Menu;
@@ -9,6 +7,7 @@ with Gtk.Accel_Group; use Gtk.Accel_Group;
 with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
 with Gtk.Toolbar; use Gtk.Toolbar;
 with Gtk.Pixmap; use Gtk.Pixmap;
+with Gtk.Widget; use Gtk.Widget;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Text; use Gtk.Text;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
@@ -37,9 +36,9 @@ package Main_Window_Pkg is
       Help_Menu : Gtk_Menu;
       About : Gtk_Menu_Item;
       Toolbar1 : Gtk_Toolbar;
-      Button1 : Gtk_Button;
-      Button2 : Gtk_Button;
-      Button3 : Gtk_Button;
+      Button1 : Gtk_Widget;
+      Button2 : Gtk_Widget;
+      Button3 : Gtk_Widget;
       Scrolledwindow1 : Gtk_Scrolled_Window;
       Text1 : Gtk_Text;
       Statusbar1 : Gtk_Statusbar;

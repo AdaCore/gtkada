@@ -11,12 +11,12 @@ begin
    Gtk.Main.Set_Locale;
    Gtk.Main.Init;
    Gtk_New (Main_Window);
-   Widget.Show_All (Gtk_Widget (Main_Window));
+   Show_All (Main_Window);
    Gtk_New (Open_File_Selection);
-   Widget.Show_All (Gtk_Widget (Open_File_Selection));
+   Show_All (Open_File_Selection);
    Gtk_New (About_Dialog);
-   Widget.Show_All (Gtk_Widget (About_Dialog));
+   Show_All (About_Dialog);
    Gtk_New (Save_File_Selection);
-   Widget.Show_All (Gtk_Widget (Save_File_Selection));
+   Show_All (Save_File_Selection);
    Gtk.Main.Main;
 end Gladeedit;

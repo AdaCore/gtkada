@@ -140,7 +140,8 @@ package body Main_Window_Pkg.Callbacks is
    ---------------------------
 
    procedure On_New_Button_Clicked
-     (Object : access Gtk_Button_Record'Class)
+     (Object : access Gtk_Widget_Record'Class;
+      Params : Gtk.Arguments.Gtk_Args)
    is
    begin
       null;
@@ -151,7 +152,8 @@ package body Main_Window_Pkg.Callbacks is
    ----------------------------
 
    procedure On_Open_Button_Clicked
-     (Object : access Gtk_Button_Record'Class)
+     (Object : access Gtk_Widget_Record'Class;
+      Params : Gtk.Arguments.Gtk_Args)
    is
    begin
       null;
@@ -162,7 +164,8 @@ package body Main_Window_Pkg.Callbacks is
    ----------------------------
 
    procedure On_Save_Button_Clicked
-     (Object : access Gtk_Button_Record'Class)
+     (Object : access Gtk_Widget_Record'Class;
+      Params : Gtk.Arguments.Gtk_Args)
    is
    begin
       null;

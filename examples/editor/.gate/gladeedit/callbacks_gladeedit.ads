@@ -1,9 +1,10 @@
 with Gtk.Handlers;
 with Gtk.Window; use Gtk.Window;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
-with Gtk.Button; use Gtk.Button;
+with Gtk.Widget; use Gtk.Widget;
 with Gtk.Text; use Gtk.Text;
 with Gtk.File_Selection; use Gtk.File_Selection;
+with Gtk.Button; use Gtk.Button;
 
 package Callbacks_Gladeedit is
 
@@ -13,13 +14,16 @@ package Callbacks_Gladeedit is
    package Menu_Item_Callback is new
      Gtk.Handlers.Callback (Gtk_Menu_Item_Record);
 
-   package Button_Callback is new
-     Gtk.Handlers.Callback (Gtk_Button_Record);
+   package Widget_Callback is new
+     Gtk.Handlers.Callback (Gtk_Widget_Record);
 
    package Text_Callback is new
      Gtk.Handlers.Callback (Gtk_Text_Record);
 
    package File_Selection_Callback is new
      Gtk.Handlers.Callback (Gtk_File_Selection_Record);
+
+   package Button_Callback is new
+     Gtk.Handlers.Callback (Gtk_Button_Record);
 
 end Callbacks_Gladeedit;

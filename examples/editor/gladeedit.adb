@@ -11,6 +11,6 @@ begin
    Gtk.Main.Set_Locale;
    Gtk.Main.Init;
    Gtk_New (Main_Window);
-   Widget.Show_All (Gtk_Widget (Main_Window));
+   Show_All (Main_Window);
    Gtk.Main.Main;
 end Gladeedit;
