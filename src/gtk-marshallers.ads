@@ -56,9 +56,9 @@
 --     publicly declared so that users can create new marshallers that
 --     would not be already provided here.
 --
---     A Handler_Proxy is a subprogram that, from an array of arguments
---     stored in Gtk.Arguments.Gtk_Args and a General_Handler, calls the
---     associated Handler with the appropriate arguments.
+--     A Handler_Proxy is a subprogram that calls its associated
+--     handler with the appropriate arguments (from an array of arguments
+--     stored in Gtk.Arguments.Gtk_Args)
 --
 --     A Marshaller is the association of a General_Handler and a
 --     Handler_Proxy.
@@ -114,6 +114,8 @@ with Gtk.Object;
 with Gtk.Arguments;
 
 package Gtk.Marshallers is
+
+   --  <doc_ignore>Do not create automatic documentation for this package
 
    type General_Handler is access procedure;
 
@@ -469,4 +471,5 @@ package Gtk.Marshallers is
 
    end User_Void_Marshallers;
 
+   --  </doc_ignore>
 end Gtk.Marshallers;
