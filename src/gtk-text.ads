@@ -21,6 +21,8 @@ package Gtk.Text is
                               return      Guint;
    function Get_Gap_Size (Widget : in Gtk_Text'Class)
                           return      Guint;
+   function Get_Hadj (Widget : in Gtk_Text'Class)
+                      return Gtk.Adjustment.Gtk_Adjustment;
    function Get_Length (Text   : in Gtk_Text'Class)
                         return      Guint;
    function Get_Point (Text   : in Gtk_Text'Class)
@@ -31,8 +33,12 @@ package Gtk.Text is
                           return      Guint;
    procedure Gtk_New
       (Widget : out Gtk_Text;
-       Hadj   : in Gtk.Adjustment.Gtk_Adjustment'Class;
-       Vadj   : in Gtk.Adjustment.Gtk_Adjustment'Class);
+       Hadj   : in Gtk.Adjustment.Gtk_Adjustment'Class
+                   := Gtk.Adjustment.Null_Adjustment;
+       Vadj   : in Gtk.Adjustment.Gtk_Adjustment'Class
+                   := Gtk.Adjustment.Null_Adjustment);
+   function Get_Vadj (Widget : in Gtk_Text'Class)
+                      return Gtk.Adjustment.Gtk_Adjustment;
    procedure Insert
       (Text   : in Gtk_Text'Class;
        Font   : in Gdk.Font.Gdk_Font'Class;
@@ -46,13 +52,13 @@ package Gtk.Text is
        Vadj : in Gtk.Adjustment.Gtk_Adjustment'Class);
    procedure Set_Editable
       (Text     : in Gtk_Text'Class;
-       Editable : in Gint);
+       Editable : in Boolean);
    procedure Set_Point
       (Text  : in Gtk_Text'Class;
        Index : in Guint);
    procedure Set_Word_Wrap
       (Text      : in Gtk_Text'Class;
-       Word_Wrap : in Gint);
+       Word_Wrap : in Boolean);
    procedure Thaw (Text : in Gtk_Text'Class);
 
 private
