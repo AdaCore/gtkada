@@ -183,6 +183,12 @@ package Gtk.Main is
      (Event : Gdk.Event.Gdk_Event) return Gtk.Widget.Gtk_Widget;
    --  Return the widget to which Event applies.
 
+   function Get_Current_Event return Gdk.Event.Gdk_Event;
+   --  Return a copy of the event being processed by gtk+. The returned
+   --  value must be freed by the caller.
+   --  If there is no current event, null is returned.
+
+
    --------------------
    -- Grab functions --
    --------------------
@@ -343,4 +349,5 @@ private
    pragma Import (C, Timeout_Remove, "gtk_timeout_remove");
    pragma Import (C, Init_Add, "gtk_init_add");
    pragma Import (C, Quit_Remove, "gtk_main_quit_remove");
+   pragma Import (C, Get_Current_Event, "gtk_get_current_event");
 end Gtk.Main;
