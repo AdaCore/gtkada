@@ -4,6 +4,18 @@ package body Gtk.Object is
 
 
    -----------------
+   --  Connected  --
+   -----------------
+
+   function Connected (Object : in Gtk_Object'Class) return Boolean is
+      function Internal (Object : in System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_object_connected");
+   begin
+      return To_Boolean (Internal (Get_Object (Object)));
+   end Connected;
+
+
+   -----------------
    -- Destroy --
    -----------------
 
@@ -19,7 +31,44 @@ package body Gtk.Object is
       Gtk.Signal.Handlers_Destroy (Object);
 
       Internal (Get_Object (Object));
+      Set_Object (Object, System.Null_Address);
    end Destroy;
+
+
+   ----------------
+   --  Destroyed --
+   ----------------
+
+   function Destroyed (Object : in Gtk_Object'Class) return Boolean is
+      function Internal (Object : in System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_object_destroyed");
+   begin
+      return To_Boolean (Internal (Get_Object (Object)));
+   end Destroyed;
+
+
+   -------------
+   --  Flags  --
+   -------------
+
+   function Flags (Object : in Gtk_Object'Class) return Guint32 is
+      function Internal (Object : in System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_object_flags");
+   begin
+      return Internal (Get_Object (Object));
+   end Flags;
+
+
+   ----------------
+   --  Floating  --
+   ----------------
+
+   function Floating (Object : in Gtk_Object'Class) return Boolean is
+      function Internal (Object : in System.Address) return Guint32;
+      pragma Import (C, Internal, "ada_object_floating");
+   begin
+      return To_Boolean (Internal (Get_Object (Object)));
+   end Floating;
 
 
    -----------------
@@ -27,9 +76,9 @@ package body Gtk.Object is
    -----------------
 
    procedure Set_Flags (Object : in out Gtk_Object'Class;
-                        Flags  : in     Gint) is
+                        Flags  : in     Guint32) is
       procedure Internal (Object : in System.Address;
-                          Flags  : in Gint);
+                          Flags  : in Guint32);
       pragma Import (C, Internal, "ada_object_set_flags");
    begin
       Internal (Get_Object (Object), Flags);
@@ -41,9 +90,9 @@ package body Gtk.Object is
    -------------------
 
    procedure Unset_Flags (Object : in out Gtk_Object'Class;
-                          Flags  : in     Gint) is
+                          Flags  : in     Guint32) is
       procedure Internal (Object : in System.Address;
-                          Flags  : in Gint);
+                          Flags  : in Guint32);
       pragma Import (C, Internal, "ada_object_unset_flags");
    begin
       Internal (Get_Object (Object), Flags);

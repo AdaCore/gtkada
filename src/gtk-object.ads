@@ -5,14 +5,28 @@ package Gtk.Object is
    --  FIXME  I wonder wether Gtk_Object should be an abstract
    --  FIXME  type or not...
 
-   procedure Set_Flags (Object : in out Gtk_Object'Class;
-                        Flags  : in     Gint);
-
-   procedure Unset_Flags (Object : in out Gtk_Object'Class;
-                          Flags  : in     Gint);
-
    procedure Destroy (Object : in out Gtk_Object'Class);
    --  mapping: Destroy gtkobject.h gtk_object_destroy
+
+
+   -------------
+   --  Flags  --
+   -------------
+
+   function Flags (Object : in Gtk_Object'Class) return Guint32;
+
+   procedure Set_Flags (Object : in out Gtk_Object'Class;
+                        Flags  : in     Guint32);
+
+   procedure Unset_Flags (Object : in out Gtk_Object'Class;
+                          Flags  : in     Guint32);
+
+
+   function Destroyed (Object : in Gtk_Object'Class) return Boolean;
+
+   function Floating (Object : in Gtk_Object'Class) return Boolean;
+
+   function Connected (Object : in Gtk_Object'Class) return Boolean;
 
 private
 
