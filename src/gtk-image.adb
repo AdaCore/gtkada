@@ -113,6 +113,16 @@ package body Gtk.Image is
       Size := Gtk.Enums.Gtk_Icon_Size'Val (Sze);
    end Get;
 
+   function Get
+     (Image : access Gtk_Image_Record) return Gdk.Pixbuf.Gdk_Pixbuf_Animation
+   is
+      function Internal
+        (Image : System.Address) return Gdk.Pixbuf.Gdk_Pixbuf_Animation;
+      pragma Import (C, Internal, "gtk_image_get_animation");
+   begin
+      return Internal (Get_Object (Image));
+   end Get;
+
    ----------------------
    -- Get_Storage_Type --
    ----------------------
@@ -181,6 +191,14 @@ package body Gtk.Image is
    begin
       Image := new Gtk_Image_Record;
       Initialize (Image, Icon_Set, Size);
+   end Gtk_New;
+
+   procedure Gtk_New
+     (Image     : out Gtk_Image;
+      Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation) is
+   begin
+      Image := new Gtk_Image_Record;
+      Initialize (Image, Animation);
    end Gtk_New;
 
    ----------------
@@ -271,6 +289,18 @@ package body Gtk.Image is
       Initialize_User_Data (Image);
    end Initialize;
 
+   procedure Initialize
+     (Image     : access Gtk_Image_Record'Class;
+      Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation)
+   is
+      function Internal
+        (Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation) return System.Address;
+      pragma Import (C, Internal, "gtk_image_new_from_animation");
+   begin
+      Set_Object (Image, Internal (Animation));
+      Initialize_User_Data (Image);
+   end Initialize;
+
    ---------
    -- Set --
    ---------
@@ -355,6 +385,18 @@ package body Gtk.Image is
 
    begin
       Internal (Get_Object (Image), Icon_Set, Size);
+   end Set;
+
+   procedure Set
+     (Image     : access Gtk_Image_Record;
+      Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation)
+   is
+      procedure Internal
+        (Image     : System.Address;
+         Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
+      pragma Import (C, Internal, "gtk_image_set_from_animation");
+   begin
+      Internal (Get_Object (Image), Animation);
    end Set;
 
 end Gtk.Image;

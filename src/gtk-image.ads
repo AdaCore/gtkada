@@ -36,7 +36,7 @@
 --  to store the pixel data on the server side (thus not allowing manipulation
 --  of the data after creation) you should use Gtk_Pixmap.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gdk.Bitmap;
 with Gdk.Pixbuf;
@@ -59,7 +59,9 @@ package Gtk.Image is
       Image_Image,
       Image_Pixbuf,
       Image_Stock,
-      Image_Icon_Set);
+      Image_Icon_Set,
+      Image_Animation);
+   for Gtk_Image_Type'Size use Gint'Size;
 
    procedure Gtk_New
      (Image : out Gtk_Image;
@@ -88,6 +90,11 @@ package Gtk.Image is
      (Image    : out Gtk_Image;
       Icon_Set : Gtk_Icon_Set;
       Size     : Gtk.Enums.Gtk_Icon_Size);
+
+   procedure Gtk_New
+     (Image     : out Gtk_Image;
+      Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
+   --  Create a GtkImage displaying the given animation.
 
    procedure Initialize
      (Image : access Gtk_Image_Record'Class;
@@ -124,6 +131,11 @@ package Gtk.Image is
       Size     : Gtk.Enums.Gtk_Icon_Size);
    --  Internal initialization function.
 
+   procedure Initialize
+     (Image     : access Gtk_Image_Record'Class;
+      Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
+   --  Internal initialization procedure.
+
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Image.
 
@@ -156,6 +168,11 @@ package Gtk.Image is
       Icon_Set : Gtk_Icon_Set;
       Size     : Gtk.Enums.Gtk_Icon_Size);
 
+   procedure Set
+     (Image     : access Gtk_Image_Record;
+      Animation : Gdk.Pixbuf.Gdk_Pixbuf_Animation);
+   --  Cause the Image to display the given Animation.
+
    function Get_Storage_Type
      (Image : access Gtk_Image_Record) return Gtk_Image_Type;
 
@@ -183,6 +200,12 @@ package Gtk.Image is
      (Image    : access Gtk_Image_Record;
       Icon_Set : out Gtk_Icon_Set;
       Size     : out Gtk.Enums.Gtk_Icon_Size);
+
+   function Get
+     (Image : access Gtk_Image_Record) return Gdk.Pixbuf.Gdk_Pixbuf_Animation;
+   --  Get the Pixbuf Animation being displayed by the given Image. The
+   --  reference counter for the returned animation is not incremented. This
+   --  must be done separately if needed.
 
    ----------------
    -- Properties --
