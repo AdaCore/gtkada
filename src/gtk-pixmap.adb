@@ -1,4 +1,6 @@
 with Gdk; use Gdk;
+with Gdk.Bitmap;
+with Gdk.Pixmap;
 
 package body Gtk.Pixmap is
 
@@ -21,6 +23,38 @@ package body Gtk.Pixmap is
                 Get_Object (Val),
                 Get_Object (Mask));
    end Get;
+
+   --------------
+   -- Get_Mask --
+   --------------
+
+   function Get_Mask (Widget : in Gtk_Pixmap'Class)
+                      return      Gdk.Bitmap.Gdk_Bitmap'Class
+   is
+      function Internal (Widget : in System.Address)
+                         return      System.Address;
+      pragma Import (C, Internal, "ada_pixmap_get_mask");
+      Tmp : Gdk.Bitmap.Gdk_Bitmap;
+   begin
+      Set_Object (Tmp, Internal (Get_Object (Widget)));
+      return Tmp;
+   end Get_Mask;
+
+   ----------------
+   -- Get_Pixmap --
+   ----------------
+
+   function Get_Pixmap (Widget : in Gtk_Pixmap'Class)
+                        return      Gdk.Pixmap.Gdk_Pixmap'Class
+   is
+      function Internal (Widget : in System.Address)
+                         return      System.Address;
+      pragma Import (C, Internal, "ada_pixmap_get_pixmap");
+      Tmp : Gdk.Pixmap.Gdk_Pixmap;
+   begin
+      Set_Object (Tmp, Internal (Get_Object (Widget)));
+      return Tmp;
+   end Get_Pixmap;
 
    -------------
    -- Gtk_New --
@@ -62,3 +96,4 @@ package body Gtk.Pixmap is
    end Set;
 
 end Gtk.Pixmap;
+
