@@ -964,8 +964,12 @@ access the same hash table, the application is responsible for locking itself
 
 When Glib is initialized to be task-safe, GtkAda is task aware. There is
 a single global lock that you must acquire with Gdk.Threads.Enter before
-making any Gdk/Gtk call, and which you must release with
-Gdk.Threads.Leave afterwards. 
+making any Gdk/Gtk call, and which you must release with Gdk.Threads.Leave
+afterwards.
+
+Thus, Gtk.Main.Main should be called with the lock acquired (see example
+below), ensuring that all the functions executed in the task that started
+the main loop do not need to protect themselves again.
 
 Beware that the GtkAda main loop (Gtk.Main.Main) can only be be run inside
 one specific tasks. In other words, you cannot call Gtk.Main.Main from
