@@ -304,7 +304,11 @@ package body View_Gl is
       --  Create new OpenGL widget
       Area := new My_Glarea_Record;
       Initialize (Area,
-                  (GDK_GL_RGBA, GDK_GL_DOUBLEBUFFER,
+                  (GDK_GL_RGBA,
+                   GDK_GL_RED_SIZE, Gl_Configs (1),
+                   GDK_GL_GREEN_SIZE, Gl_Configs (1),
+                   GDK_GL_BLUE_SIZE, Gl_Configs (1),
+                   GDK_GL_DOUBLEBUFFER,
                    GDK_GL_DEPTH_SIZE, Gl_Configs (1)));
       if Area = null then
          Put_Line ("Can't create Gtk_GLArea widget");
