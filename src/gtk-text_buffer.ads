@@ -155,7 +155,7 @@ package Gtk.Text_Buffer is
    --  The Default_Editable parameter indicates whether the text is editable at
    --  Iter if no tags enclosing Iter affect editability. Typically the result
    --  of Gtk.Text_View.Get_Editable is appropriate here.
-   --  Result: whether an insertion was possible at @iter
+   --  Result: whether an insertion was possible at Iter
 
    --  gtk_text_buffer_insert_with_tags not bound: variable number of arguments
    --  could write the equivalent of this convenience function using arrays.
