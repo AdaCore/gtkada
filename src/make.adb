@@ -128,6 +128,7 @@ with Gtk.Option_Menu;
 with Gtk.Packer;
 with Gtk.Paned;
 with Gtk.Pixmap;
+with Gtk.Pixmap_Menu_Item;
 with Gtk.Plug;
 with Gtk.Preview;
 with Gtk.Progress;
