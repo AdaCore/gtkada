@@ -177,8 +177,15 @@
  	      size++;
  	  size++;
  	  GDK_NOTE (DND, g_print ("...as text: %.40s\n", data));
-
-
+@@ -390,7 +390,7 @@
+ 	  cf = CF_TEXT;
+ 	  for (i = 0; i < nelements; i++)
+ 	    {
+-	      if (*data == '\n')
++	      if (data[i] == '\n')
+ 		*ucptr++ = '\r';
+ 	      *ucptr++ = data[i];
+ 	    }
 #########################################
 # Selection problem B430-008
 #########################################
@@ -207,8 +214,8 @@ Wed Sep 11 16:55:47  2002  Florent Duguet <duguet@gnat.com>
 	* gdkgeometry-win32.c : ask for a repaint of the invalidate zone to 
 	address smoothness issues
 
---- gdk/win32/gdkgeometry-win32.c.old	2002-02-10 14:18:50.000000000 +0100
-+++ gdk/win32/gdkgeometry-win32.c	2002-09-11 16:21:14.000000000 +0200
+--- gtk+/gdk/win32/gdkgeometry-win32.c.old	2002-02-10 14:18:50.000000000 +0100
++++ gtk+/gdk/win32/gdkgeometry-win32.c	2002-09-11 16:21:14.000000000 +0200
 @@ -134,14 +134,18 @@
  
        gdk_window_queue_translation (window, dx, dy);
@@ -238,8 +245,8 @@ Thu Sep 12 18:03:02 2002  Florent Duguet <duguet@gnat.com>
 	this forces a refresh of zones which are actually invalidated and 
 	visible
 
---- gdk/win32/gdkevents-win32.c.old	2002-03-06 01:36:08.000000000 +0100
-+++ gdk/win32/gdkevents-win32.c	2002-09-12 17:37:07.000000000 +0200
+--- gtk+/gdk/win32/gdkevents-win32.c.old	2002-03-06 01:36:08.000000000 +0100
++++ gtk+/gdk/win32/gdkevents-win32.c	2002-09-12 17:37:07.000000000 +0200
 @@ -2972,6 +2976,13 @@
  	    _gdk_window_process_expose (window, msg->time, &expose_rect);
  
@@ -253,3 +260,39 @@ Thu Sep 12 18:03:02 2002  Florent Duguet <duguet@gnat.com>
          }
        break;
 
+
+
+Fri Sep 13 14:56:43  2002	Florent Duguet <duguet@gnat.com>
+
+	* gdkselection-win32.c : modifying the utf8 string clean-up for
+	proper copy paste of strings with empty lines.
+
+--- gtk+/gdk/win32/gdkselection-win32.c.old	2002-02-10 14:18:50.000000000 +0100
++++ gtk+/gdk/win32/gdkselection-win32.c	2002-09-13 14:55:09.000000000 +0200
+@@ -793,13 +793,19 @@
+ 
+   while (*p)
+     {
+-      if (*p == '\r' || *p == '\n')
+-	{
+-	  p++;
+-	  if (*p == '\r' || *p == '\n')
+-	    p++;
+-
+-	  g_string_append_c (result, '\n');
++      if (*p == '\r')
++        {
++          p++ ;
++          if (*p == '\n')
++            {
++              p++ ;
++	      g_string_append_c (result, '\n') ; /* win32 new-line */
++	    }
++	}
++      else if (*p == '\n')
++        {
++          p++ ;
++	  g_string_append_c (result, '\n'); /* unix new-line */
+ 	}
+       else
+ 	{
