@@ -39,8 +39,6 @@ with Gtk; use Gtk;
 
 package body Create_Rulers is
 
-   package Ruler_Cb is new Signal.Object_Callback (Gtk_Ruler_Record);
-
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Id        : Guint;
       Ruler     : Gtk_Ruler;
@@ -53,28 +51,25 @@ package body Create_Rulers is
       Gtk_New (Table, 2, 2, False);
       Add (Frame, Table);
 
-      Gtk_New_Hruler (Ruler);
-      Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
-      Id := C_Unsafe_Connect (Gtk_Object (Frame), "motion_notify_event",
-                              Get_Default_Motion_Notify_Event (Ruler),
-                              Gtk_Object (Ruler));
-      Attach (Table, Ruler, 1, 2, 0, 1, Expand + Enums.Fill, Enums.Fill, 0, 0);
-
-      Gtk_New_Vruler (Ruler);
-      Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
-      Id := C_Unsafe_Connect (Gtk_Object (Frame), "motion_notify_event",
-                              Get_Default_Motion_Notify_Event (Ruler),
-                              Gtk_Object (Ruler));
-      Attach (Table, Ruler, 0, 1, 1, 2, Enums.Fill, Expand + Enums.Fill, 0, 0);
-
       Gtk_New (Darea);
       Unrealize (Darea);
       Set_Events (Darea, Pointer_Motion_Mask + Pointer_Motion_Hint_Mask);
       Attach (Table, Darea, 1, 2, 1, 2, Expand + Enums.Fill, Expand + Enums.Fill,
               0, 0);
 
+      Gtk_New_Hruler (Ruler);
+      Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
+      Id := C_Unsafe_Connect (Gtk_Object (Darea), "motion_notify_event",
+                              Get_Default_Motion_Notify_Event (Ruler),
+                              Gtk_Object (Ruler));
+      Attach (Table, Ruler, 1, 2, 0, 1, Expand + Enums.Fill, Enums.Fill, 0, 0);
 
-
+      Gtk_New_Vruler (Ruler);
+      Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
+      Id := C_Unsafe_Connect (Gtk_Object (Darea), "motion_notify_event",
+                              Get_Default_Motion_Notify_Event (Ruler),
+                              Gtk_Object (Ruler));
+      Attach (Table, Ruler, 0, 1, 1, 2, Enums.Fill, Expand + Enums.Fill, 0, 0);
 
       Show_All (Frame);
    end Run;
