@@ -50,7 +50,7 @@ package body Gtk.Check_Menu_Item is
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record) return Boolean
    is
       function Internal (Item : System.Address) return Guint;
-      pragma Import (C, Internal, "ada_check_menu_item_get_active");
+      pragma Import (C, Internal, "gtk_check_menu_item_get_active");
    begin
       return Internal (Get_Object (Check_Menu_Item)) /= 0;
    end Get_Active;
