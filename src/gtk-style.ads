@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -65,6 +65,11 @@ package Gtk.Style is
    --  Warning: We return a record, not a pointer, since there is no way
    --  for us to automatically free the memory that would be associated with
    --  a pointer
+
+
+   --  Should bind gtk_widget_modify_style
+   --  Should bind gtk_widget_set_default_style
+   --  Should bind gtk_widget_get_default_style
 
 
    --  The following functions change the default values (generally just before
