@@ -13,16 +13,15 @@ package My_Widget is
 
 
    procedure Gtk_New (Widget : out Target_Widget);
-   procedure Initialize (Widget : access Target_Widget_Record);
-
-
+   procedure Initialize (Widget : access Target_Widget_Record'Class);
 
 private
-   type Target_Widget_Record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with
-      record
-         Gc_In  : Gdk.GC.Gdk_GC;
-         Gc_Out : Gdk.GC.Gdk_GC;
-         Radius : Gint;
-      end record;
+   type Target_Widget_Record is new
+     Gtk.Drawing_Area.Gtk_Drawing_Area_Record with
+   record
+      Gc_In  : Gdk.GC.Gdk_GC;
+      Gc_Out : Gdk.GC.Gdk_GC;
+      Radius : Gint;
+   end record;
 
 end My_Widget;

@@ -205,12 +205,11 @@ package body My_Widget is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Target_Widget_Record) is
+   procedure Initialize (Widget : access Target_Widget_Record'Class) is
    begin
       --  We need to call the ancestor's Initialize function to create
       --  the underlying C object.
-      Gtk.Drawing_Area.Initialize
-        (Gtk.Drawing_Area.Gtk_Drawing_Area_Record (Widget.all)'Access);
+      Gtk.Drawing_Area.Initialize (Widget);
 
       --  The following call is required to initialize the class record,
       --  and the new signals created for this widget.
