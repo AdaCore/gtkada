@@ -178,14 +178,10 @@ package Gtk.Enums is
 
    function Convert (S : String) return System.Address;
    function Convert (S : System.Address) return String;
-   function Convert_I (I : Gint) return System.Address;
-   function Convert_A (S : System.Address) return Gint;
-   pragma Import (C, Convert_I, "convert_i");
-   pragma Import (C, Convert_A, "convert_a");
+   function Convert (I : Gint) return System.Address;
+   function Convert (S : System.Address) return Gint;
 
    package String_List is new Glib.Glist.Generic_List (String);
-   package Gint_List is new Glib.Glist.Generic_List (Gint,
-                                                     Convert_I,
-                                                     Convert_A);
+   package Gint_List is new Glib.Glist.Generic_List (Gint);
 
 end Gtk.Enums;
