@@ -33,6 +33,8 @@ with Gtk.Enums;          use Gtk.Enums;
 with Gtk.Widget;         use Gtk.Widget;
 with Gtk.File_Selection; use Gtk.File_Selection;
 with Gtkada.Handlers;    use Gtkada.Handlers;
+with GNAT.OS_Lib;        use GNAT.OS_Lib;
+with Gtk.GEntry;         use Gtk.GEntry;
 
 package body Gtkada.File_Selection is
 
@@ -80,7 +82,10 @@ package body Gtkada.File_Selection is
    --------------------
 
    function File_Selection_Dialog
-     (Title : String := "Select File") return String
+     (Title : String := "Select File";
+      Default_Dir : String := "";
+      Dir_Only    : Boolean := False;
+      Must_Exist  : Boolean := False) return String
    is
       Dialog : Gtkada_File_Selection;
       Button : Gtk_Button;
@@ -88,7 +93,13 @@ package body Gtkada.File_Selection is
    begin
       Dialog := new Gtkada_File_Selection_Record;
       Initialize (Dialog, Title);
+
+      if Default_Dir /= "" then
+         Set_Filename (Dialog, Default_Dir);
+      end if;
+
       Set_Modal (Dialog);
+      Set_Show_File_Op_Buttons (Dialog, False);
       Set_Position (Dialog, Win_Pos_Mouse);
       Return_Callback.Connect
         (Dialog, "delete_event",
@@ -102,19 +113,40 @@ package body Gtkada.File_Selection is
         (Button, "clicked",
          Widget_Callback.To_Marshaller (Clicked_Cancel_Cb'Access));
       Show_All (Dialog);
+
+      if Dir_Only then
+         Hide_All (Get_Parent (Get_File_List (Dialog)));
+      end if;
+
       Main;
 
-      if Dialog.File_Selected then
-         declare
-            S : String := Get_Filename (Dialog);
-         begin
+      loop
+         if Dialog.File_Selected then
+            declare
+               S : String := Get_Filename (Dialog);
+            begin
+               if S = ""
+                 or else not Must_Exist
+                 or else (Dir_Only and then Is_Directory (S))
+                 or else Is_Regular_File (S)
+               then
+                  Destroy (Dialog);
+                  return S;
+               else
+                  --  The user might have entered a name in the text field
+                  --  and pressed enter, so we simply change the current
+                  --  directory, and try again
+                  Set_Filename (Dialog, S & Directory_Separator);
+                  Set_Text (Gtk_Entry (Get_Selection_Entry (Dialog)), "");
+                  Dialog.File_Selected := False;
+                  Main;
+               end if;
+            end;
+         else
             Destroy (Dialog);
-            return S;
-         end;
-      else
-         Destroy (Dialog);
-         return "";
-      end if;
+            return "";
+         end if;
+      end loop;
    end File_Selection_Dialog;
 
 end Gtkada.File_Selection;
