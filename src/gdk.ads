@@ -39,6 +39,7 @@ with System;
 with Unchecked_Conversion;
 
 package Gdk is
+   pragma Preelaborate;
 
    type C_Dummy_Record is limited private;
    type C_Proxy is access C_Dummy_Record;
