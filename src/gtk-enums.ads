@@ -104,13 +104,13 @@ package Gtk.Enums is
       --  Delete only the portion of the word to the left/right of the cursor
       --  if we are in the middle of a word.
       Delete_Words,
-      Gtk_Delete_Display_Lines,
-      Gtk_Delete_Display_Line_Ends,
-      Gtk_Delete_Paragraph_Ends,
+      Delete_Display_Lines,
+      Delete_Display_Line_Ends,
+      Delete_Paragraph_Ends,
       --  Delete until end of line ???
-      Gtk_Delete_Paragraphs,
+      Delete_Paragraphs,
       --  Delete current line ???
-      Gtk_Delete_Whitespace);
+      Delete_Whitespace);
    for Gtk_Delete_Type'Size use Gint'Size;
 
    type Gtk_Direction_Type is
