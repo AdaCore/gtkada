@@ -41,6 +41,18 @@ with Gtk; use Gtk;
 
 package body Create_Button_Box is
 
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return "This demo demonstrates the possible @bLayout@B that can be used"
+        & " with a @bGtk_Button_Box@B widget." & ASCII.LF
+        & "All the boxes here are created exactly the same way, and only the"
+        & " layout differs.";
+   end Help;
+
    -----------------
    -- Create_Bbox --
    -----------------

@@ -32,5 +32,6 @@ with Gtk.Frame;
 package Create_Button_Box is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
+   function Help return String;
 
 end Create_Button_Box;
