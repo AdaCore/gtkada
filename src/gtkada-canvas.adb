@@ -3379,6 +3379,10 @@ package body Gtkada.Canvas is
    is
       Tmp, Tmp2 : Gdk_Pixbuf;
    begin
+      if Item.Pixmap = null then
+         return;
+      end if;
+
       if Canvas.Zoom = 100 then
          Draw_Pixmap
            (Drawable => Get_Window (Canvas),
