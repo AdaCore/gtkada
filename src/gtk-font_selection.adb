@@ -161,36 +161,24 @@ package body Gtk.Font_Selection is
           Spacings    : in System.Address;
           Charsets    : in System.Address);
       pragma Import (C, Internal, "gtk_font_selection_dialog_set_filter");
-      use type Interfaces.C.size_t;
-      Fo : Gtkada.Types.Chars_Ptr_Array (1 .. Foundries'Length + 1);
-      We : Gtkada.Types.Chars_Ptr_Array (1 .. Weights'Length + 1);
-      Sl : Gtkada.Types.Chars_Ptr_Array (1 .. Slants'Length + 1);
-      Se : Gtkada.Types.Chars_Ptr_Array (1 .. Setwidths'Length + 1);
-      Sp : Gtkada.Types.Chars_Ptr_Array (1 .. Spacings'Length + 1);
-      Ch : Gtkada.Types.Chars_Ptr_Array (1 .. Charsets'Length + 1);
-   begin
-      Fo (1 .. Foundries'Length) := Foundries;
-      Fo (Fo'Last) := Interfaces.C.Strings.Null_Ptr;
-      We (1 .. Weights'Length) := Weights;
-      We (We'Last) := Interfaces.C.Strings.Null_Ptr;
-      Sl (1 .. Slants'Length) := Slants;
-      Sl (Sl'Last) := Interfaces.C.Strings.Null_Ptr;
-      Se (1 .. Setwidths'Length) := Setwidths;
-      Se (Se'Last) := Interfaces.C.Strings.Null_Ptr;
-      Sp (1 .. Spacings'Length) := Spacings;
-      Sp (Sp'Last) := Interfaces.C.Strings.Null_Ptr;
-      Ch (1 .. Charsets'Length) := Charsets;
-      Ch (Ch'Last) := Interfaces.C.Strings.Null_Ptr;
 
+      Fo : Chars_Ptr_Array := Foundries + Null_Ptr;
+      We : Chars_Ptr_Array := Weights + Null_Ptr;
+      Sl : Chars_Ptr_Array := Slants + Null_Ptr;
+      Se : Chars_Ptr_Array := Setwidths + Null_Ptr;
+      Sp : Chars_Ptr_Array := Spacings + Null_Ptr;
+      Ch : Chars_Ptr_Array := Charsets + Null_Ptr;
+
+   begin
       Internal (Get_Object (Fsd),
                 Gtk_Font_Filter_Type'Pos (Filter_Type),
                 Gtk_Font_Type'Pos (Font_Type),
-                Fo (1)'Address,
-                We (1)'Address,
-                Sl (1)'Address,
-                Se (1)'Address,
-                Sp (1)'Address,
-                Ch (1)'Address);
+                Fo'Address,
+                We'Address,
+                Sl'Address,
+                Se'Address,
+                Sp'Address,
+                Ch'Address);
    end Set_Filter;
 
    -------------------
@@ -363,35 +351,24 @@ package body Gtk.Font_Selection is
           Charsets    : in System.Address);
       pragma Import (C, Internal, "gtk_font_selection_set_filter");
       use type Interfaces.C.size_t;
-      Fo : Gtkada.Types.Chars_Ptr_Array (1 .. Foundries'Length + 1);
-      We : Gtkada.Types.Chars_Ptr_Array (1 .. Weights'Length + 1);
-      Sl : Gtkada.Types.Chars_Ptr_Array (1 .. Slants'Length + 1);
-      Se : Gtkada.Types.Chars_Ptr_Array (1 .. Setwidths'Length + 1);
-      Sp : Gtkada.Types.Chars_Ptr_Array (1 .. Spacings'Length + 1);
-      Ch : Gtkada.Types.Chars_Ptr_Array (1 .. Charsets'Length + 1);
-   begin
-      Fo (1 .. Foundries'Length) := Foundries;
-      Fo (Fo'Last) := Interfaces.C.Strings.Null_Ptr;
-      We (1 .. Weights'Length) := Weights;
-      We (We'Last) := Interfaces.C.Strings.Null_Ptr;
-      Sl (1 .. Slants'Length) := Slants;
-      Sl (Sl'Last) := Interfaces.C.Strings.Null_Ptr;
-      Se (1 .. Setwidths'Length) := Setwidths;
-      Se (Se'Last) := Interfaces.C.Strings.Null_Ptr;
-      Sp (1 .. Spacings'Length) := Spacings;
-      Sp (Sp'Last) := Interfaces.C.Strings.Null_Ptr;
-      Ch (1 .. Charsets'Length) := Charsets;
-      Ch (Ch'Last) := Interfaces.C.Strings.Null_Ptr;
 
+      Fo : Chars_Ptr_Array := Foundries + Null_Ptr;
+      We : Chars_Ptr_Array := Weights + Null_Ptr;
+      Sl : Chars_Ptr_Array := Slants + Null_Ptr;
+      Se : Chars_Ptr_Array := Setwidths + Null_Ptr;
+      Sp : Chars_Ptr_Array := Spacings + Null_Ptr;
+      Ch : Chars_Ptr_Array := Charsets + Null_Ptr;
+
+   begin
       Internal (Get_Object (Fsd),
                 Gtk_Font_Filter_Type'Pos (Filter_Type),
                 Gtk_Font_Type'Pos (Font_Type),
-                Fo (1)'Address,
-                We (1)'Address,
-                Sl (1)'Address,
-                Se (1)'Address,
-                Sp (1)'Address,
-                Ch (1)'Address);
+                Fo'Address,
+                We'Address,
+                Sl'Address,
+                Se'Address,
+                Sp'Address,
+                Ch'Address);
    end Set_Filter;
 
    -------------------
