@@ -408,78 +408,78 @@ EOF
 
 AC_DEFUN(AM_CHECK_OPENGL,
 [   
-   # checking for openGL libraries
+
+   # checking for OpenGL libraries
+   AC_ARG_WITH(GL,         [  --with-GL=value         Which OpenGL library to compile GtkAda with (auto,GL,MesaGL,no)])
    AC_ARG_WITH(GL-prefix,  [  --with-GL-prefix=DIR    Prefix where GL/MesaGL is installed])
-   AC_ARG_WITH(lib-GL,     [  --with-lib-GL           use '-lGL'])
-   AC_ARG_WITH(lib-MesaGL, [  --with-lib-MesaGL       use '-lMesaGL'])
    
+
    if test "x$with_GL_prefix" = "x" ; then
-    GL_LDOPTS=""
-    GL_CFLAGS=""
+      GL_LDOPTS=""
+      GL_CFLAGS=""
    else
-    GL_LDOPTS="-L$with_GL_prefix/lib"
-    GL_CFLAGS="-I$with_GL_prefix/include"
+      GL_LDOPTS="-L$with_GL_prefix/lib"
+      GL_CFLAGS="-I$with_GL_prefix/include"
    fi
    
+
    saved_LIBS="$LIBS"
-   
-   AC_MSG_CHECKING([OpenGL])
+ 
+   AC_MSG_CHECKING([for OpenGL])
    LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lGL"
    AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_GL=yes, have_GL=no)
    AC_MSG_RESULT($have_GL)
    
-   AC_MSG_CHECKING([Mesa])
+   AC_MSG_CHECKING([for Mesa])
    LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGL"
    AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL=yes, have_MesaGL=no)
    AC_MSG_RESULT($have_MesaGL)
-   
-   if test "x$have_MesaGL" = "xno"; then
-    AC_MSG_CHECKING([Mesa with pthreads])
-    LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGL -lpthread"
-    AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL_pthread=yes, have_MesaGL_pthread=no)
-    AC_MSG_RESULT($have_MesaGL_pthread)
-   fi
-   
+    
    LIBS="$saved_LIBS"
    HAVE_OPENGL="False"
-   
-   if test "x$with_lib_GL" = "xyes"; then
-   
-     if test "x$have_GL" = "xyes"; then
-       GL_LIBS="$GL_LDOPTS -lGLU -lGL"
-       HAVE_OPENGL="True"
-     else
-       AC_MSG_ERROR([Missing GL library])
-     fi
-   
-   elif test "x$with_lib_MesaGL" = "xyes"; then
-   
-     if test "x$have_MesaGL" = "xyes"; then
-       GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
-       HAVE_OPENGL="True"
-     elif test "x$have_MesaGL_pthread" = "xyes"; then
-       GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
-       HAVE_OPENGL="True"
-     else
-       AC_MSG_ERROR([Missing MesaGL library])
-     fi
-   
-   else
-   
-     if test "x$have_GL" = "xyes"; then
-       GL_LIBS="$GL_LDOPTS -lGLU -lGL"
-       HAVE_OPENGL="True"
-     elif test "x$have_MesaGL" = "xyes"; then
-       GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
-       HAVE_OPENGL="True"
-     elif test "x$have_MesaGL_pthread" = "xyes"; then
-       GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
-       HAVE_OPENGL="True"
-     else
-       AC_MSG_RESULT([*** OpenGL support will not be integrated into GtkAda ***])
-     fi
+
+ 
+   case "x$with_GL" in
+   x|xauto)
+      if test "x$have_GL" = "xyes"; then
+         GL_LIBS="$GL_LDOPTS -lGLU -lGL"
+         HAVE_OPENGL="True"
+      elif test "x$have_MesaGL" = "xyes"; then
+         GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
+         HAVE_OPENGL="True"
+      elif test "x$have_MesaGL_pthread" = "xyes"; then
+         GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
+         HAVE_OPENGL="True"
+      fi
+      ;;
+   xGL)
+      if test "x$have_GL" = "xyes"; then
+         GL_LIBS="$GL_LDOPTS -lGLU -lGL"
+         HAVE_OPENGL="True"
+      else
+         AC_MSG_ERROR([Missing OpenGL library])
+      fi
+      ;;
+   xMesaGL)
+      if test "x$have_MesaGL" = "xyes"; then
+         GL_LIBS="$GL_LDOPTS -lGLU -lGL"
+         HAVE_OPENGL="True"
+      else
+         AC_MSG_ERROR([Missing Mesa library])
+      fi
+      ;;
+   xno)
+      ;;
+   *)
+      AC_MSG_ERROR([Unknown value for "--with-GL" option. Should be either auto, GL, MesaGL, no])
+      ;;
+   esac
+
+   if test "x$HAVE_OPENGL"="xFalse"; then
+      AC_MSG_RESULT([*** OpenGL support will not be integrated into GtkAda ***])
    fi
-   
+
+
    AC_SUBST(GL_LIBS)
    AC_SUBST(GL_CFLAGS)
    AC_SUBST(HAVE_OPENGL)
