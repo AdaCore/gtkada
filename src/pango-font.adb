@@ -226,5 +226,4 @@ package body Pango.Font is
       return Internal (Get_Object (Font), Language);
    end Get_Metrics;
 
-
 end Pango.Font;
