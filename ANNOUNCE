@@ -23,6 +23,7 @@ New features in 1.2.9/1.3.9 include:
 - GtkAda.File_Selection has been extended (see RM for details).
 - Documentation update.
 - Support for gdk-pixbuf 0.9
+- Limited beta support for Gnome in src/gnome.
 
 LSM entry follows:
 Begin4
