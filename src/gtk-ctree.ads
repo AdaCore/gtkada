@@ -684,8 +684,8 @@ package Gtk.Ctree is
 
       type Gcompare_Func is access
         function (A, B : in Data_Type) return Boolean;
-      --  Function used to compare data types in Find_By_Row_Data_Custom and
-      --  Find_All_By_Row_Data_Custom.
+      --  Function used to compare data types in the functions
+      --  Find_[All] By_Row_Data_Custom.
 
       function Find_By_Row_Data_Custom
         (Ctree : access Gtk_Ctree_Record'Class;
