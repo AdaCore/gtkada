@@ -29,7 +29,7 @@
 
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
-with Gtk.Object;
+with Gtk.Object;  use Gtk.Object;
 with Interfaces.C.Strings;
 with Gdk; use Gdk;
 with Ada.Text_IO;
@@ -66,7 +66,63 @@ package body Gtk.Signal is
                                Func_Data  : in System.Address;
                                Destroy    : in System.Address;
                                After      : in Boolean)
-                               return          Guint;
+                              return          Guint;
+   --  Internal function used to connect the signal.
+
+   function Count_Arguments
+     (Object : access Gtk.Object.Gtk_Object_Record'Class;
+      Name   : in String)
+     return          Guint;
+   --  Returns the number of arguments used in the handlers for the signal
+   --  Note that in the Connect functions below we always test whether the user
+   --  has ask for *at most* the number of arguments defined by gtk+ for the
+   --  callback. This is because having less argument is authorized (the
+   --  extra parameters passed by gtk+ will simply be ignored), whereas having
+   --  more arguments is impossible (they would never be set).
+
+   function Argument_Type
+     (Object : access Gtk.Object.Gtk_Object_Record'Class;
+      Name   : in String;
+      Num    : in Guint)
+     return Gtk_Type;
+   --  Returns the type of the num-th argument for the handlers the for signal
+
+
+   -------------------
+   -- Argument_Type --
+   -------------------
+
+   function Argument_Type
+     (Object : access Gtk.Object.Gtk_Object_Record'Class;
+      Name   : in String;
+      Num    : in Guint)
+     return Gtk_Type
+   is
+      function Internal (Object : System.Address;
+                         Name : String;
+                         Num  : Guint)
+                        return Gtk_Type;
+      pragma Import (C, Internal, "ada_signal_argument_type");
+   begin
+      return Internal (Get_Object (Object), Name & ASCII.Nul, Num);
+   end Argument_Type;
+
+   ---------------------
+   -- Count_Arguments --
+   ---------------------
+
+   function Count_Arguments
+     (Object : access Gtk.Object.Gtk_Object_Record'Class;
+      Name   : in String)
+     return          Guint
+   is
+      function Internal (Object : System.Address;
+                         Name : String)
+                        return Guint;
+      pragma Import (C, Internal, "ada_signal_count_arguments");
+   begin
+      return Internal (Get_Object (Object), Name & ASCII.Nul);
+   end Count_Arguments;
 
    -----------------------
    -- Do_Signal_Connect --
@@ -178,12 +234,18 @@ package body Gtk.Signal is
          Func      : in Callback;
          Func_Data : in Data_Type;
          After     : in Boolean := False)
-         return Guint
+        return Guint
       is
          D : Data_Type_Access :=
           new Data_Type_Record'(Data => new Data_Type'(Func_Data),
                                 Func => Func);
       begin
+         --  Check that the real gtk+ callback has at least as many
+         --  parameters as given in this package
+         pragma Assert (Count_Arguments (Obj, Name) >= 0);
+         pragma Assert (Argument_Type (Obj, Name, -1)
+                        = Gtk_Type_None);
+
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
                                    Marshaller'Address,
@@ -191,6 +253,22 @@ package body Gtk.Signal is
                                    Free_Data'Address,
                                    After);
       end Connect;
+
+      ------------------
+      -- Emit_By_Name --
+      ------------------
+
+      procedure Emit_By_Name
+        (Object : access Base_Type'Class;
+         Name   : in String)
+      is
+         procedure Internal (Object : in System.Address;
+                             Name   : in String);
+         pragma Import (C, Internal, "gtk_signal_emit_by_name");
+      begin
+         Internal (Get_Object (Object.all), Name & Ascii.NUL);
+      end Emit_By_Name;
+
    end Callback;
 
    ------------------
@@ -286,6 +364,11 @@ package body Gtk.Signal is
           new Data_Type_Record'(Data => new Data_Type'(Func_Data),
                                 Func => Func);
       begin
+         --  Check that the real gtk+ callback has at least as many
+         --  parameters as given in this package
+         pragma Assert (Count_Arguments (Obj, Name) >= 1);
+         pragma Assert (Argument_Type (Obj, Name, -1) = Gtk_Type_None);
+
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
                                    Marshaller'Address,
@@ -293,6 +376,23 @@ package body Gtk.Signal is
                                    Free_Data'Address,
                                    After);
       end Connect;
+
+      ------------------
+      -- Emit_By_Name --
+      ------------------
+
+      procedure Emit_By_Name
+        (Object  : access Base_Type'Class;
+         Name    : in String;
+         Cb_Data : in Cb_Type)
+      is
+         procedure Internal (Object  : in System.Address;
+                             Name    : in String;
+                             Cb_Data : in Cb_Type);
+         pragma Import (C, Internal, "gtk_signal_emit_by_name");
+      begin
+         Internal (Get_Object (Object.all), Name & Ascii.Nul, Cb_Data);
+      end Emit_By_Name;
 
    end Two_Callback;
 
@@ -395,6 +495,11 @@ package body Gtk.Signal is
           new Data_Type_Record'(Data => new Data_Type'(Func_Data),
                                 Func => Func);
       begin
+         --  Check that the real gtk+ callback has at least as many
+         --  parameters as given in this package
+         pragma Assert (Count_Arguments (Obj, Name) >= 1);
+         pragma Assert (Argument_Type (Obj, Name, -1) = Gtk_Type_None);
+
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
                                    Marshaller'Address,
@@ -402,6 +507,23 @@ package body Gtk.Signal is
                                    Free_Data'Address,
                                    After);
       end Connect;
+
+      ------------------
+      -- Emit_By_Name --
+      ------------------
+
+      procedure Emit_By_Name
+        (Object  : access Base_Type'Class;
+         Name    : in String;
+         Cb_Data : in Cb_Type)
+      is
+         procedure Internal (Object  : in System.Address;
+                             Name    : in String;
+                             Cb_Data : in Cb_Type);
+         pragma Import (C, Internal, "gtk_signal_emit_by_name");
+      begin
+         Internal (Get_Object (Object.all), Name & Ascii.Nul, Cb_Data);
+      end Emit_By_Name;
 
    end Two_Callback_Gtk;
 
@@ -486,6 +608,11 @@ package body Gtk.Signal is
       is
          D : Data_Type_Access := new Data_Type_Record'(Func => Func);
       begin
+         --  Check that the real gtk+ callback has at least as many
+         --  parameters as given in this package
+         pragma Assert (Count_Arguments (Obj, Name) >= 0);
+         pragma Assert (Argument_Type (Obj, Name, -1) = Gtk_Type_None);
+
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
                                    Marshaller'Address,
@@ -493,6 +620,21 @@ package body Gtk.Signal is
                                    Free_Data'Address,
                                    After);
       end Connect;
+
+      ------------------
+      -- Emit_By_Name --
+      ------------------
+
+      procedure Emit_By_Name
+        (Object : access Base_Type'Class;
+         Name   : in String)
+      is
+         procedure Internal (Object : in System.Address;
+                             Name   : in String);
+         pragma Import (C, Internal, "gtk_signal_emit_by_name");
+      begin
+         Internal (Get_Object (Object.all), Name & Ascii.NUL);
+      end Emit_By_Name;
 
    end Record_Callback;
 
@@ -607,6 +749,11 @@ package body Gtk.Signal is
           new Data_Type_Record'(Data => new Data_Type'Class'(Data.all),
                                 Func => Func);
       begin
+         --  Check that the real gtk+ callback has at least as many
+         --  parameters as given in this package
+         pragma Assert (Count_Arguments (Obj, Name) >= 2);
+         pragma Assert (Argument_Type (Obj, Name, -1) = Gtk_Type_None);
+
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
                                    Marshaller'Address,
@@ -614,6 +761,7 @@ package body Gtk.Signal is
                                    Free_Data'Address,
                                    After);
       end Connect;
+
    end Tips_Query_Callback;
 
    ------------------------------------------------------------
@@ -662,6 +810,11 @@ package body Gtk.Signal is
          return Guint
       is
       begin
+         --  Check that the real gtk+ callback has at least as many
+         --  parameters as given in this package
+         pragma Assert (Count_Arguments (Obj, Name) >= 0);
+         pragma Assert (Argument_Type (Obj, Name, -1) = Gtk_Type_None);
+
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
                                    Marshaller'Address,
@@ -669,6 +822,22 @@ package body Gtk.Signal is
                                    System.Null_Address,
                                    After);
       end Connect;
+
+      ------------------
+      -- Emit_By_Name --
+      ------------------
+
+      procedure Emit_By_Name
+        (Object : access Base_Type'Class;
+         Name   : in String)
+      is
+         procedure Internal (Object : in System.Address;
+                             Name   : in String);
+         pragma Import (C, Internal, "gtk_signal_emit_by_name");
+      begin
+         Internal (Get_Object (Object.all), Name & Ascii.NUL);
+      end Emit_By_Name;
+
    end Void_Callback;
 
 
@@ -746,6 +915,11 @@ package body Gtk.Signal is
            := new Data_Type_Record'(Data => Widget_Type (Slot_Object),
                                     Func => Func);
       begin
+         --  Check that the real gtk+ callback has at least as many
+         --  parameters as given in this package
+         pragma Assert (Count_Arguments (Obj, Name) >= 0);
+         pragma Assert (Argument_Type (Obj, Name, -1) = Gtk_Type_None);
+
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
                                    Marshaller'Address,
@@ -792,21 +966,6 @@ package body Gtk.Signal is
       Internal (Obj => Get_Object (Object.all),
                 Id  => Handler_Id);
    end Disconnect;
-
-   ------------------
-   -- Emit_By_Name --
-   ------------------
-
-   procedure Emit_By_Name
-     (Object : access Gtk.Object.Gtk_Object_Record'Class;
-      Name   : in String)
-   is
-      procedure Internal (Object : in System.Address;
-                          Name   : in String);
-      pragma Import (C, Internal, "gtk_signal_emit_by_name");
-   begin
-      Internal (Get_Object (Object.all), Name & Ascii.NUL);
-   end Emit_By_Name;
 
    -----------------------
    -- Emit_Stop_By_Name --

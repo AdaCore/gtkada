@@ -67,7 +67,12 @@ package Gtk.Signal is
          Func      : in Callback;
          Func_Data : in Data_Type;
          After     : in Boolean := False)
-         return Guint;
+        return Guint;
+
+      procedure Emit_By_Name
+        (Object : access Base_Type'Class;
+         Name   : in String);
+
    end Callback;
 
    ---------------------------------------------------------------
@@ -99,8 +104,14 @@ package Gtk.Signal is
          Func      : in Callback;
          Func_Data : in Data_Type;
          After     : in Boolean := False)
-         return Guint;
+        return Guint;
       --  Intended to be used when Cb_Type is a type from Gdk
+
+      procedure Emit_By_Name
+        (Object  : access Base_Type'Class;
+         Name    : in String;
+         Cb_Data : in Cb_Type);
+
    end Two_Callback;
 
    generic
@@ -124,6 +135,11 @@ package Gtk.Signal is
          After     : in Boolean := False)
          return Guint;
       --  Intended to be used when Cb_Type is a type from Gtk
+
+      procedure Emit_By_Name
+        (Object  : access Base_Type'Class;
+         Name    : in String;
+         Cb_Data : in Cb_Type);
 
    end Two_Callback_Gtk;
 
@@ -150,6 +166,11 @@ package Gtk.Signal is
          Func      : in Callback;
          After     : in Boolean := False)
         return Guint;
+
+      procedure Emit_By_Name
+        (Object  : access Base_Type'Class;
+         Name    : in String);
+
    end Record_Callback;
 
    -----------------------------------------------------------------
@@ -170,7 +191,12 @@ package Gtk.Signal is
          Name   : in String;
          Func   : in Callback;
          After  : in Boolean := False)
-         return Guint;
+        return Guint;
+
+      procedure Emit_By_Name
+        (Object  : access Base_Type'Class;
+         Name    : in String);
+
    end Void_Callback;
 
    ------------------------------------------------------------------
@@ -191,7 +217,8 @@ package Gtk.Signal is
          Func        : in Callback;
          Slot_Object : access Base_Type'Class;
          After       : in Boolean := False)
-         return Guint;
+        return Guint;
+
    end Object_Callback;
 
    ------------------------------------------------------------------
@@ -215,7 +242,8 @@ package Gtk.Signal is
          Func        : in Callback;
          Data        : access Data_Type'Class;
          After       : in Boolean := False)
-         return Guint;
+        return Guint;
+
    end Tips_Query_Callback;
 
    ----------------------------------------------------------------
@@ -240,10 +268,6 @@ package Gtk.Signal is
       Handler_Id : in Guint);
 
    procedure Emit_Stop_By_Name
-     (Object : access Gtk.Object.Gtk_Object_Record'Class;
-      Name   : in String);
-
-   procedure Emit_By_Name
      (Object : access Gtk.Object.Gtk_Object_Record'Class;
       Name   : in String);
 
