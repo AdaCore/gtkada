@@ -34,7 +34,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <gtk/gtk.h>
-#include <wctype.h>
+// #include <wctype.h>
 #include <locale.h>
 
 #include "gtkplot.h"
