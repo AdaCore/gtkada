@@ -106,6 +106,8 @@
 --    never have a user_data. They accept an additional parameter called
 --    Slot_Object. When the callback in invoked, the Gtk Object emitting
 --    the signal is substituted by this Slot_Object.
+--    These callbacks are always automatically disconnected as soon as one
+--    of the two widgets involved is destroyed.
 --
 --    There are several methods to connect a handler. For each method,
 --    although the option of connecting a Handler is provided, the
@@ -187,6 +189,8 @@ package Gtk.Handlers is
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False);
       --  Connects a Marshaller. The Handler_Id is dropped.
+      --  This is automatically disconnected as soon as either Widget or
+      --  Slot_Object is destroyed.
 
       procedure Connect
         (Widget  : access Widget_Type'Class;
@@ -202,6 +206,8 @@ package Gtk.Handlers is
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False);
       --  Connects a Handler. The Handler_Id is dropped.
+      --  This is automatically disconnected as soon as either Widget or
+      --  Slot_Object is destroyed.
 
       pragma Inline (Connect);
       pragma Inline (Object_Connect);
@@ -222,6 +228,8 @@ package Gtk.Handlers is
          After       : in     Boolean := False)
         return Handler_Id;
       --  Connects a Marshaller. Returns the Handler_Id.
+      --  This is automatically disconnected as soon as either Widget or
+      --  Slot_Object is destroyed.
 
       function Connect
         (Widget  : access Widget_Type'Class;
@@ -239,7 +247,8 @@ package Gtk.Handlers is
          After       : in     Boolean := False)
         return Handler_Id;
       --  Connects a Handler. Returns the Handler_Id.
-
+      --  This is automatically disconnected as soon as either Widget or
+      --  Slot_Object is destroyed.
 
       --  Some convenient functions to create marshallers
 

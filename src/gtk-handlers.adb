@@ -30,30 +30,80 @@
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
 with Gtk.Object; use Gtk.Object;
+with Gtk.Widget;
 with System;
 
 package body Gtk.Handlers is
 
    function Do_Signal_Connect
-     (Object     : in Gtk.Object.Gtk_Object;
-      Name       : in String;
-      Marshaller : in System.Address;
-      Func_Data  : in System.Address;
-      Destroy    : in System.Address;
-      After      : in Boolean) return Handler_Id;
+     (Object      : in Gtk.Object.Gtk_Object;
+      Name        : in String;
+      Marshaller  : in System.Address;
+      Func_Data   : in System.Address;
+      Destroy     : in System.Address;
+      After       : in Boolean;
+      Slot_Object : in System.Address := System.Null_Address)
+      return Handler_Id;
    --  Internal function used to connect the signal.
+
+   procedure Destroy_Marshaller
+     (Object    : in System.Address;
+      User_Data : in System.Address;
+      Nparams   : in Guint;
+      Params    : in System.Address);
+   pragma Convention (C, Destroy_Marshaller);
+   --  Marshaller used to disconnect Object from any signal where it was
+   --  connected with Object_Connect and given as the slot object.
+   --  Otherwise, a handler could be called with Object as the parameter when
+   --  it has been destroyed.
+
+   procedure Disconnect_Internal (Obj : System.Address; Id : Handler_Id);
+   pragma Import (C, Disconnect_Internal, "gtk_signal_disconnect");
+   --  Internal version of Disconnect
+
+   type Destroy_Data_Record is record
+      Id, Id2, Id3 : Handler_Id;
+      Obj1, Obj2 : System.Address;
+   end record;
+
+   type Destroy_Data_Access is access Destroy_Data_Record;
+   function Convert is new Unchecked_Conversion
+     (Destroy_Data_Access, System.Address);
+   function Convert is new Unchecked_Conversion
+     (System.Address, Destroy_Data_Access);
+   procedure Free is new Unchecked_Deallocation
+     (Destroy_Data_Record, Destroy_Data_Access);
+
+   ------------------------
+   -- Destroy_Marshaller --
+   ------------------------
+
+   procedure Destroy_Marshaller
+     (Object    : in System.Address;
+      User_Data : in System.Address;
+      Nparams   : in Guint;
+      Params    : in System.Address)
+   is
+      Data : Destroy_Data_Access := Convert (User_Data);
+   begin
+      Disconnect_Internal (Data.Obj1, Data.Id);
+      Disconnect_Internal (Data.Obj1, Data.Id2);
+      Disconnect_Internal (Data.Obj2, Data.Id3);
+      Free (Data);
+   end Destroy_Marshaller;
 
    -----------------------
    -- Do_Signal_Connect --
    -----------------------
 
    function Do_Signal_Connect
-     (Object     : in Gtk.Object.Gtk_Object;
-      Name       : in String;
-      Marshaller : in System.Address;
-      Func_Data  : in System.Address;
-      Destroy    : in System.Address;
-      After      : in Boolean) return Handler_Id
+     (Object      : in Gtk.Object.Gtk_Object;
+      Name        : in String;
+      Marshaller  : in System.Address;
+      Func_Data   : in System.Address;
+      Destroy     : in System.Address;
+      After       : in Boolean;
+      Slot_Object : System.Address := System.Null_Address) return Handler_Id
    is
       function Internal
         (Object        : System.Address;
@@ -66,8 +116,11 @@ package body Gtk.Handlers is
          After         : Gint) return Handler_Id;
       pragma Import (C, Internal, "gtk_signal_connect_full");
 
+      use type System.Address;
+      Id : Handler_Id;
+      Data : Destroy_Data_Access;
    begin
-      return Internal
+      Id := Internal
         (Get_Object (Object),
          Name & ASCII.NUL,
          System.Null_Address,
@@ -76,6 +129,32 @@ package body Gtk.Handlers is
          Destroy,
          Boolean'Pos (False),
          Boolean'Pos (After));
+
+      if Slot_Object /= System.Null_Address then
+         Data := new Destroy_Data_Record;
+         Data.Id := Id;
+         Data.Obj1 := Get_Object (Object);
+         Data.Obj2 := Slot_Object;
+         Data.Id2 := Internal
+           (Get_Object (Object),
+            "destroy" & ASCII.NUL,
+            System.Null_Address,
+            Destroy_Marshaller'Address,
+            Convert (Data),
+            System.Null_Address,
+            Boolean'Pos (False),
+            Boolean'Pos (False));
+         Data.Id3 := Internal
+           (Slot_Object,
+            "destroy" & ASCII.NUL,
+            System.Null_Address,
+            Destroy_Marshaller'Address,
+            Convert (Data),
+            System.Null_Address,
+            Boolean'Pos (False),
+            Boolean'Pos (False));
+      end if;
+      return Id;
    end Do_Signal_Connect;
 
    ---------------------
@@ -326,7 +405,8 @@ package body Gtk.Handlers is
                                    First_Marshaller'Address,
                                    Convert (D),
                                    Free_Data'Address,
-                                   After);
+                                   After,
+                                   Get_Object (Slot_Object));
       end Object_Connect;
 
       -------------
@@ -396,7 +476,8 @@ package body Gtk.Handlers is
                                    First_Marshaller'Address,
                                    Convert (D),
                                    Free_Data'Address,
-                                   After);
+                                   After,
+                                   Get_Object (Slot_Object));
       end Object_Connect;
 
       ------------------
@@ -875,7 +956,8 @@ package body Gtk.Handlers is
                                    First_Marshaller'Address,
                                    Convert (D),
                                    Free_Data'Address,
-                                   After);
+                                   After,
+                                   Get_Object (Slot_Object));
       end Object_Connect;
 
       -------------
@@ -938,7 +1020,8 @@ package body Gtk.Handlers is
                                    First_Marshaller'Address,
                                    Convert (D),
                                    Free_Data'Address,
-                                   After);
+                                   After,
+                                   Get_Object (Slot_Object));
       end Object_Connect;
 
       ------------------
@@ -1172,14 +1255,9 @@ package body Gtk.Handlers is
 
    procedure Disconnect
      (Object : access Gtk.Object.Gtk_Object_Record'Class;
-      Id     : in Handler_Id)
-   is
-      procedure Internal (Obj : System.Address; Id : Handler_Id);
-      pragma Import (C, Internal, "gtk_signal_disconnect");
-
+      Id     : in Handler_Id) is
    begin
-      Internal (Obj => Get_Object (Object),
-                Id  => Id);
+      Disconnect_Internal (Obj => Get_Object (Object), Id  => Id);
    end Disconnect;
 
    -----------------------
