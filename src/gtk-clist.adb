@@ -652,26 +652,6 @@ package body Gtk.CList is
                 Gdk.Get_Object (Mask));
    end Set_Pixtext;
 
-   ----------------
-   -- Set_Policy --
-   ----------------
-
-   procedure Set_Policy
-      (Clist             : in Gtk_CList;
-       Vscrollbar_Policy : in Gtk_Policy_Type;
-       Hscrollbar_Policy : in Gtk_Policy_Type)
-   is
-      procedure Internal
-         (Clist             : in System.Address;
-          Vscrollbar_Policy : in Gint;
-          Hscrollbar_Policy : in Gint);
-      pragma Import (C, Internal, "gtk_clist_set_policy");
-   begin
-      Internal (Get_Object (Clist),
-                Gtk_Policy_Type'Pos (Vscrollbar_Policy),
-                Gtk_Policy_Type'Pos (Hscrollbar_Policy));
-   end Set_Policy;
-
    --------------------
    -- Set_Row_Height --
    --------------------

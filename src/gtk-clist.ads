@@ -200,11 +200,6 @@ package Gtk.CList is
        Pixmap  : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask    : in Gdk.Bitmap.Gdk_Bitmap'Class);
 
-   procedure Set_Policy
-      (Clist             : in Gtk_CList;
-       Vscrollbar_Policy : in Gtk_Policy_Type;
-       Hscrollbar_Policy : in Gtk_Policy_Type);
-
    procedure Set_Row_Height (Clist : in Gtk_CList; Height : in Gint);
 
    procedure Set_Selection_Mode (Clist : in Gtk_CList;
