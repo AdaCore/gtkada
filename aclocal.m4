@@ -40,6 +40,10 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
    *osf*)
       OS_SPECIFIC_LINK_OPTIONS=-Wl,-expect_unresolved,\*
       ;;
+   *mingw*)
+      BUILD_SHARED=no
+      FPIC=
+      ;;
    esac
 
   AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
