@@ -1903,9 +1903,12 @@ package body Gtk.Handlers is
 
    procedure Disconnect
      (Object : access Glib.Object.GObject_Record'Class;
-      Id     : Handler_Id) is
+      Id     : in out Handler_Id) is
    begin
-      Disconnect_Internal (Obj => Get_Object (Object), Id  => Id.Signal);
+      if Id.Signal /= Null_Signal_Id then
+         Disconnect_Internal (Obj => Get_Object (Object), Id  => Id.Signal);
+         Id.Signal := Null_Signal_Id;
+      end if;
    end Disconnect;
 
    -----------------------
