@@ -34,6 +34,8 @@ package Gtk.Style is
                     State_Type : in Enums.Gtk_State_Type)
                     return          Gdk.Color.Gdk_Color;
 
+   function Get_Black (Style : in Gtk_Style) return Gdk.Color.Gdk_Color;
+
    function Get_Style (Widget : in Gtk.Widget.Gtk_Widget'Class)
                        return Gtk.Style.Gtk_Style;
 
