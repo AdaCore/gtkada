@@ -283,7 +283,7 @@ package Gtk.Extra.Plot_Canvas is
    --                      Width, Height : Gdouble)
    --                     return Boolean;
    --
-   ---   Called just before resizing Get_Active_Plot.
+   --    Called just before resizing Get_Active_Plot.
    --    Should return False if the plot should not be resized.
    --  </signals>
 
