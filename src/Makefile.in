@@ -130,12 +130,12 @@ install: $(ARCHIVENAME) $(LIBNAME)
            $(INSTALL_PROGRAM) $(GATE_EX) $(bindir); \
            $(INSTALL_PROGRAM) $(DGATE) $(bindir); \
 	fi
-	@echo ------------------------------------------------------------------
-	@echo --  GtkAda has now been installed.                              --
-	@echo --  To be able to use the library, you may need to update your  --
-	@echo --  LD_LIBRARY_PATH or to run ldconfig. You may also need to    --
-	@echo --  update your PATH to include gtkada-config in it.	      --
-	@echo ------------------------------------------------------------------
+	@echo '------------------------------------------------------------------'
+	@echo '--  GtkAda has now been installed.                              --'
+	@echo '--  To be able to use the library, you may need to update your  --'
+	@echo '--  LD_LIBRARY_PATH or to run ldconfig. You may also need to    --'
+	@echo '--  update your PATH to include gtkada-config in it.            --'
+	@echo '------------------------------------------------------------------'
 
 clean-generic:
 	-${RM} *.o *.ali *~ b_*.c core
