@@ -43,6 +43,9 @@
 --  actually recommended, since the exact color generally depends on the
 --  visual your application is running on.
 --
+--  Note for users transitioning from gtk+ 1.2: the Get_System call is now
+--  obsolete, and you should use Gtk.Widget.Get_Default_Colormap instead.
+--
 --  </description>
 --  <c_version>1.3.6</c_version>
 
@@ -130,13 +133,6 @@ package Gdk.Color is
    --  Unref is the only way to destroy a colormap once you no longer need it.
    --  Note that because gtk+ uses reference counts, the colormap will not
    --  be actually destroyed while at least one object is using it.
-
-   function Get_System return Gdk_Colormap;
-   --  Get the default colormap for the system.
-   --  This is the same function as Gtk.Widget.Get_Default_Colormap.
-
-   function Get_System_Size return Gint;
-   --  Return the number of entries in the default colormap on the system.
 
    procedure Change
      (Colormap : Gdk_Colormap; Ncolors : Gint);
@@ -310,8 +306,6 @@ private
    pragma Inline (Pixel);
    pragma Inline (Set_Property);
    pragma Inline (Get_Property);
-   pragma Import (C, Get_System_Size, "gdk_colormap_get_system_size");
-   pragma Import (C, Get_System, "gdk_colormap_get_system");
    pragma Import (C, Ref, "gdk_colormap_ref");
    pragma Import (C, Unref, "gdk_colormap_unref");
    pragma Import (C, Gdk_Colormap_Type, "gdk_colormap_get_type");
