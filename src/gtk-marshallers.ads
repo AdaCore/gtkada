@@ -59,10 +59,10 @@ with Gtk.Arguments;
 --         Return_Widget_Cb.Connect (W, "delete_event",
 --            Return_Widget_Cb.To_Event_Marshaller (My_Cb'Access));
 --
---  The real handler in gtk+ should expect at least as many arguments as in the
---  marshaller you are using (i.e if your marshaller has one argument (as in the
---  Generic_Marshaller or Generic_Widget_Marshaller below, the C handler must
---  have at least one argument too).
+--  The real handler in gtk+ should expect at least as many arguments as
+--  in the marshaller you are using (i.e if your marshaller has one
+--  argument (as in the Generic_Marshaller or Generic_Widget_Marshaller
+--  below, the C handler must have at least one argument too).
 --
 --  Each of the generic packages here provides one main function, called
 --  To_Marshaller. This returns a record that is a connection between a
