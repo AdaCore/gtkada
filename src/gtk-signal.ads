@@ -12,7 +12,7 @@ package Gtk.Signal is
    ---------------------------------------------------------------
 
    generic
-      type Data_Type is private;
+      type Data_Type (<>) is private;
       --  The type of the data for the callback
       --  This type need not be an access type (as opposed as what happens in
       --  C). A new access is created by the connect function.
