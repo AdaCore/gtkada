@@ -2343,6 +2343,79 @@ ada_clist_get_row_list (GtkCList* widget)
   return widget->row_list;
 }
 
+/******************************************
+ ** Functions for Gtk_Packer
+ ******************************************/
+
+GtkPackerChild*
+ada_packer_find_child (GtkPacker* packer, GtkWidget* child) {
+  GList * list;
+
+  list = g_list_first (packer->children);
+  while (list) {
+    if (((GtkPackerChild*)(list->data))->widget == child) {
+      return (GtkPackerChild*)(list->data);
+    }
+    list = g_list_next(list);
+  }
+  return NULL;
+}
+
+GtkPackerChild*
+ada_packer_get_nth_child (GtkPacker* packer, guint n) {
+  GList * list;
+  guint m = 1;
+
+  list = g_list_first (packer->children);
+  while (list && m != n) {
+    list = g_list_next (list);
+    m ++;
+  }
+  if (list) {
+    return (GtkPackerChild*)(list->data);
+  }
+  return NULL;
+}
+
+GtkAnchorType
+ada_packer_get_anchor (GtkPackerChild* child) {
+  return child->anchor;
+}
+
+GtkSideType
+ada_packer_get_side (GtkPackerChild* child) {
+  return child->side;
+}
+
+GtkPackerOptions
+ada_packer_get_options (GtkPackerChild* child) {
+  return child->options;
+}
+
+guint
+ada_packer_get_border_width (GtkPackerChild* child) {
+  return child->border_width;
+}
+
+guint
+ada_packer_get_pad_x (GtkPackerChild* child) {
+  return child->pad_x;
+}
+
+guint
+ada_packer_get_pad_y (GtkPackerChild* child) {
+  return child->pad_y;
+}
+
+guint
+ada_packer_get_i_pad_x (GtkPackerChild* child) {
+  return child->i_pad_x;
+}
+
+guint
+ada_packer_get_i_pad_y (GtkPackerChild* child) {
+  return child->i_pad_y;
+}
 
 /******************************************
  ** Functions for CTree
