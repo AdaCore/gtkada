@@ -277,7 +277,6 @@ package body Gtkada.MDI is
 
    procedure Destroy_Child (Child : access Gtk_Widget_Record'Class);
    procedure Destroy_Initial_Child (Child : access Gtk_Widget_Record'Class);
-   procedure Destroy_Initial_Window (Child : access Gtk_Widget_Record'Class);
    --  Called when either the child itself, or the widget we initially put
    --  in it, are destroyed. Remove the child from the MDI properly.
 
@@ -1315,9 +1314,6 @@ package body Gtkada.MDI is
    procedure Close_Child (Child : access Gtk_Widget_Record'Class) is
       C          : constant MDI_Child := MDI_Child (Child);
       Event      : Gdk_Event;
-      Old_Parent : Gtk_Widget;
-      Result     : Boolean;
-
    begin
       Allocate (Event, Delete, Get_Window (C.MDI));
 
@@ -1326,21 +1322,9 @@ package body Gtkada.MDI is
       --  However, we need to restore the initial state before calling
       --  Dock_Child and Float_Child below
 
-      if C.Initial.all in Gtk_Window_Record'Class
-        and then C.State /= Floating
+      if not Return_Callback.Emit_By_Name
+        (C.Initial, "delete_event", Event)
       then
-         Old_Parent := Get_Parent (C.Initial_Child);
-         Reparent (C.Initial_Child, Gtk_Window (C.Initial));
-         Result := Return_Callback.Emit_By_Name
-           (C.Initial, "delete_event", Event);
-         Reparent (C.Initial_Child, Old_Parent);
-
-      else
-         Result := Return_Callback.Emit_By_Name
-           (C.Initial, "delete_event", Event);
-      end if;
-
-      if not Result then
          Destroy (C);
       end if;
 
@@ -1383,9 +1367,9 @@ package body Gtkada.MDI is
       Widget_List.Remove (C.MDI.Items, Gtk_Widget (C));
 
       if not Gtk.Object.In_Destruction_Is_Set (C.MDI) then
-         --  Initial_Child could be null if we are destroying a floating
+         --  Initial could be null if we are destroying a floating
          --  child explicitly (by closing its X11 window)
-         if C.Initial_Child /= null then
+         if C.Initial /= null then
             Float_Child (C, False);
             Dock_Child (C, False);
          end if;
@@ -1425,36 +1409,11 @@ package body Gtkada.MDI is
       --  (therefore, do not use Destroy, only Unref). In all cases, it should
       --  be hidden on the screen
 
-      if C.Initial.all in Gtk_Window_Record'Class then
-         if C.State /= Floating then
-            Reparent (C.Initial_Child, Gtk_Window (C.Initial));
-         end if;
-
-         Hide_All (C.Initial);
-
-         --  Workaround an apparent bug in gtk+: it it not possible to unref()
-         --  a toplevel GtkWindow, we can just destroy() it. Otherwise, we get
-         --  a glib warning and storage_error
-
-         if Ref_Count (Get_Object (C.Initial)) <= 2 then
-            --  There seems to be a bug in g_object_last_unref: call to
-            --  parent_class->dispose should be replaced with call to
-            --  g_object_run_dispose.
-            --  As a result we need to Unref the child as well
-            --  However, unreffing a Gtk_Window causes a SEGV, so comment it
-            --  out for now ???
-            --  Unref (C.Initial);
-
-            Destroy (C.Initial);
-         end if;
-
-      elsif Get_Parent (C.Initial_Child) /= null then
-         Remove
-           (Gtk_Container (Get_Parent (C.Initial_Child)), C.Initial_Child);
+      if Get_Parent (C.Initial) /= null then
+         Remove (Gtk_Container (Get_Parent (C.Initial)), C.Initial);
       end if;
 
       C.Initial := null;
-      C.Initial_Child := null;
 
       Free (C.Title);
       Free (C.Short_Title);
@@ -1468,25 +1427,10 @@ package body Gtkada.MDI is
 
    procedure Destroy_Initial_Child (Child : access Gtk_Widget_Record'Class) is
    begin
-      pragma Assert (Get_Parent (MDI_Child (Child).Initial_Child) = null);
-
-      --  If the initial_child wasn't explicitly destroyed in Destroy_Child
-
       if not Gtk.Object.Destroyed_Is_Set (Child) then
          Destroy (Child);
       end if;
    end Destroy_Initial_Child;
-
-   ----------------------------
-   -- Destroy_Initial_Window --
-   ----------------------------
-
-   procedure Destroy_Initial_Window (Child : access Gtk_Widget_Record'Class) is
-   begin
-      if not Gtk.Object.Destroyed_Is_Set (Child) then
-         Destroy (Child);
-      end if;
-   end Destroy_Initial_Window;
 
    ----------------
    -- Draw_Child --
@@ -2179,7 +2123,7 @@ package body Gtkada.MDI is
    procedure Gtk_New
      (Child   : out MDI_Child;
       Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags : Buttons_Flags := All_Buttons) is
+      Flags : Child_Flags := All_Buttons) is
    begin
       Child := new MDI_Child_Record;
       Initialize (Child, Widget, Flags);
@@ -2192,7 +2136,7 @@ package body Gtkada.MDI is
    procedure Initialize
      (Child   : access MDI_Child_Record;
       Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags   : Buttons_Flags)
+      Flags   : Child_Flags)
    is
       Signal_Parameters : constant Signal_Parameter_Types :=
         (1 => (1 => GType_Pointer),
@@ -2205,6 +2149,8 @@ package body Gtkada.MDI is
       Event     : Gtk_Event_Box;
 
    begin
+      pragma Assert (Widget.all not in Gtk_Window_Record'Class);
+
       Gtk.Event_Box.Initialize (Child);
 
       Gtk.Object.Initialize_Class_Record
@@ -2222,7 +2168,7 @@ package body Gtkada.MDI is
       Set_Flags (Child, App_Paintable);
 
       Child.State := Normal;
-      Child.Buttons := Flags;
+      Child.Flags := Flags;
 
       Add_Events
         (Child, Button_Press_Mask
@@ -2302,21 +2248,11 @@ package body Gtkada.MDI is
 
       --  The child widget
 
-      if Widget.all in Gtk_Window_Record'Class then
-         pragma Assert (Get_Child (Gtk_Window (Widget)) /= null);
-         Child.Initial_Child := Get_Child (Gtk_Window (Widget));
-         Reparent (Child.Initial_Child, Event);
-         Widget_Callback.Object_Connect
-           (Widget, "destroy",
-            Widget_Callback.To_Marshaller (Destroy_Initial_Window'Access),
-            Child);
-      else
-         Child.Initial_Child := Gtk_Widget (Widget);
-         Add (Event, Widget);
-      end if;
+      Child.Initial := Gtk_Widget (Widget);
+      Add (Event, Widget);
 
       Widget_Callback.Object_Connect
-        (Child.Initial_Child, "destroy",
+        (Child.Initial, "destroy",
          Widget_Callback.To_Marshaller (Destroy_Initial_Child'Access),
          Child);
    end Initialize;
@@ -2328,7 +2264,7 @@ package body Gtkada.MDI is
    function Put
      (MDI   : access MDI_Window_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags : Buttons_Flags := All_Buttons) return MDI_Child
+      Flags : Child_Flags := All_Buttons) return MDI_Child
    is
       C           : MDI_Child;
       Requisition : Gtk_Requisition;
@@ -2364,11 +2300,7 @@ package body Gtkada.MDI is
          MDI.Default_Y := MDI.Default_Y + 10;
       end if;
 
-      if Child.all in Gtk_Window_Record'Class then
-         C.Title := new String'(Get_Title (Gtk_Window (Child)));
-      else
-         C.Title := new String'(" ");
-      end if;
+      C.Title       := new String'(" ");
       C.Short_Title := new String'(C.Title.all);
 
       --  We need to show the widget before inserting it in a notebook,
@@ -2455,10 +2387,6 @@ package body Gtkada.MDI is
       Child.Title := The_Title;
       Child.Short_Title := The_Short_Title;
 
-      if Child.Initial.all in Gtk_Window_Record'Class then
-         Set_Title (Gtk_Window (Child.Initial), Title);
-      end if;
-
       if Child.State = Docked then
          Set_Text
            (Gtk_Label
@@ -2517,9 +2445,7 @@ package body Gtkada.MDI is
       Tmp := First (MDI.Items);
 
       while Tmp /= Null_List loop
-         if MDI_Child (Get_Data (Tmp)).Initial_Child = Gtk_Widget (Widget)
-           or else MDI_Child (Get_Data (Tmp)).Initial = Gtk_Widget (Widget)
-         then
+         if MDI_Child (Get_Data (Tmp)).Initial = Gtk_Widget (Widget) then
             return MDI_Child (Get_Data (Tmp));
          end if;
 
@@ -2543,9 +2469,7 @@ package body Gtkada.MDI is
    begin
       loop
          Child := Get (Iter);
-         exit when Child = null
-           or else Child.Initial'Tag = Tag
-           or else Child.Initial_Child'Tag = Tag;
+         exit when Child = null or else Child.Initial'Tag = Tag;
          Next (Iter);
       end loop;
 
@@ -2608,7 +2532,7 @@ package body Gtkada.MDI is
 
          if Child.State = Floating then
             Gdk.Window.Lower
-              (Get_Window (Gtk_Window (Get_Parent (Child.Initial_Child))));
+              (Get_Window (Gtk_Window (Get_Toplevel (Child.Initial))));
          end if;
       end if;
 
@@ -2650,8 +2574,7 @@ package body Gtkada.MDI is
 
          if Child.State = Floating then
             Gdk.Window.Gdk_Raise
-              (Get_Window (Gtk_Window (Get_Parent
-                                         (Child.Initial_Child))));
+              (Get_Window (Gtk_Window (Get_Toplevel (Child.Initial))));
          end if;
       end if;
       return False;
@@ -2760,7 +2683,7 @@ package body Gtkada.MDI is
       Update_Dock_Menu (C);
       Update_Float_Menu (C);
       Set_Sensitive
-        (C.MDI.Close_Menu_Item, (C.Buttons and Destroy_Button) /= 0);
+        (C.MDI.Close_Menu_Item, (C.Flags and Destroy_Button) /= 0);
 
       if C.Menu_Item /= null
         and then not Get_Active (C.Menu_Item)
@@ -2768,14 +2691,14 @@ package body Gtkada.MDI is
          Set_Active (C.Menu_Item, True);
       end if;
 
-      --  It would be nice to find the first child of C.Initial_Child that
+      --  It would be nice to find the first child of C.Initial that
       --  accepts the keyboard focus. However, in the meantime, we at least
       --  want to make sure that no other widget has the focus. As a result,
       --  focus_in events will always be sent the next time the user selects a
       --  widget.
 
-      Set_Flags (C.Initial_Child, Can_Focus);
-      Grab_Focus (C.Initial_Child);
+      Set_Flags (C.Initial, Can_Focus);
+      Grab_Focus (C.Initial);
 
       Emit_By_Name_Child (Get_Object (C.MDI), "child_selected" & ASCII.NUL,
                           Get_Object (C));
@@ -2966,9 +2889,6 @@ package body Gtkada.MDI is
    begin
       --  Gtk_Window children are handled differently (see Float_Child)
 
-      pragma Assert
-        (not (MDI_Child (Child).Initial.all in Gtk_Window_Record'Class));
-
       if MDI_Child (Child).MDI.Close_Floating_Is_Unfloat then
          Float_Child (MDI_Child (Child), False);
          return True;
@@ -2990,6 +2910,8 @@ package body Gtkada.MDI is
       Alloc : Gtk_Allocation;
    begin
       if Child.State /= Floating and then Float then
+         --  Ref is removed when the child is unfloated.
+         Ref (Child);
          Child.Uniconified_Width  :=
            Gint (Get_Allocation_Width (Get_Widget (Child)));
          Child.Uniconified_Height :=
@@ -2998,30 +2920,28 @@ package body Gtkada.MDI is
          Minimize_Child (Child, False);
          Dock_Child (Child, False);
 
-         --  Ref is removed when the child is unfloated.
-         Ref (Child);
-
          if Children_Are_Maximized (Child.MDI) then
             Remove_From_Notebook (Child, None);
          else
             Remove (Child.MDI.Layout, Child);
          end if;
 
-         if Child.Initial.all in Gtk_Window_Record'Class then
-            Win := Gtk_Window (Child.Initial);
-         else
-            Gtk_New (Win, Window_Toplevel);
-            Set_Title (Win, Child.Title.all);
+         Gtk_New (Win, Window_Toplevel);
+         Set_Title (Win, Child.Title.all);
+         Set_Position (Win, Win_Pos_Center_On_Parent);
 
-            --  Delete_Event should be forwarded to the child, not to the
-            --  toplevel window
-
-            Return_Callback.Object_Connect
-              (Win, "delete_event",
-               Return_Callback.To_Marshaller (Delete_Child'Access), Child);
+         if (Child.Flags and Float_As_Transient) /= 0 then
+            Set_Transient_For (Win, Gtk_Window (Get_Toplevel (Child.MDI)));
          end if;
 
-         Reparent (Get_Parent (Child.Initial_Child), Win);
+         --  Delete_Event should be forwarded to the child, not to the
+         --  toplevel window
+
+         Return_Callback.Object_Connect
+           (Win, "delete_event",
+            Return_Callback.To_Marshaller (Delete_Child'Access), Child);
+
+         Reparent (Get_Parent (Child.Initial), Win);
          Set_Default_Size
            (Win, Child.Uniconified_Width, Child.Uniconified_Height);
          Show_All (Win);
@@ -3033,15 +2953,11 @@ package body Gtkada.MDI is
       elsif Child.State = Floating and then not Float then
          --  Reassign the widget to Child instead of the notebook
 
-         Win := Gtk_Window (Get_Parent (Get_Parent (Child.Initial_Child)));
+         Win := Gtk_Window (Get_Toplevel (Child.Initial));
          Reparent (Get_Child (Win), Gtk_Box (Get_Child (Child)));
          Child.State := Normal;
 
-         if Gtk_Widget (Child.Initial) = Gtk_Widget (Win) then
-            Hide_All (Child.Initial);
-         else
-            Destroy (Win);
-         end if;
+         Destroy (Win);
 
          if Children_Are_Maximized (Child.MDI) then
             Put_In_Notebook (Child.MDI, None, Child);
@@ -3205,7 +3121,10 @@ package body Gtkada.MDI is
    begin
       if Page /= -1 then
          Ref (Child);
-         Remove (Gtk_Container (Get_Parent (Child)), Child);
+
+         --  Do not use Remove() below, since it will generate random SE in dnd
+         --  operations.
+         Unparent (Child);
          Remove_Page (Note, Page);
       end if;
 
@@ -3266,7 +3185,6 @@ package body Gtkada.MDI is
             Put (MDI.Layout, Child, 0, 0);
             Size_Allocate (Child, Alloc);
          end if;
-         Child.State := Normal;
 
          Unref (Child);
          Queue_Resize (Child);
@@ -3440,22 +3358,8 @@ package body Gtkada.MDI is
 
    function Get_Widget (Child : access MDI_Child_Record) return Gtk_Widget is
    begin
-      return Gtk_Widget (Child.Initial_Child);
+      return Gtk_Widget (Child.Initial);
    end Get_Widget;
-
-   ------------------------
-   -- Get_Initial_Window --
-   ------------------------
-
-   function Get_Initial_Window
-     (Child : access MDI_Child_Record) return Gtk_Window is
-   begin
-      if Child.Initial.all in Gtk_Window_Record'Class then
-         return Gtk_Window (Child.Initial);
-      else
-         return null;
-      end if;
-   end Get_Initial_Window;
 
    ---------------------
    -- Get_Focus_Child --

@@ -45,7 +45,6 @@ with Gtk.Menu_Item;
 with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
 with Gtk.Widget;
-with Gtk.Window;
 with Pango.Font;
 with Pango.Layout;
 
@@ -135,17 +134,25 @@ package Gtkada.MDI is
    --  Opaque_Docks should be true if resizing the docks with the handles
    --  should be opaque.
 
-   type Buttons_Flags is mod 2 ** 3;
-   Iconify_Button  : constant Buttons_Flags := 2 ** 0;
-   Maximize_Button : constant Buttons_Flags := 2 ** 1;
-   Destroy_Button  : constant Buttons_Flags := 2 ** 2;
-   All_Buttons     : constant Buttons_Flags :=
+   type Child_Flags is mod 2 ** 4;
+   Iconify_Button     : constant Child_Flags := 2 ** 0;
+   Maximize_Button    : constant Child_Flags := 2 ** 1;
+   Destroy_Button     : constant Child_Flags := 2 ** 2;
+   Float_As_Transient : constant Child_Flags := 2 ** 3;
+   All_Buttons        : constant Child_Flags :=
      Iconify_Button or Maximize_Button or Destroy_Button;
+   --  Special flags to set up the widgets:
+   --  The first three list the buttons that should be displayed in the title
+   --  bar of the MDI children.
+   --  If Float_As_Transient is set, then the child will be set up as a
+   --  transient window when floating: on most window managers, it will stay on
+   --  top of the MDI, but the window will have less decorations in its title
+   --  bar, in particular no destroy button.
 
    function Put
      (MDI   : access MDI_Window_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags : Buttons_Flags := All_Buttons) return MDI_Child;
+      Flags : Child_Flags := All_Buttons) return MDI_Child;
    --  Add a new child to the MDI window, and return its embedding widget.
    --  Note that there is a small difference between adding a toplevel
    --  Gtk_Window and a standard widget.
@@ -267,13 +274,6 @@ package Gtkada.MDI is
    --  initially Put() in MDI.
    --  Note that if you put a toplevel Gtk_Window initially, this returns the
    --  child of the window.
-
-   function Get_Initial_Window
-     (Child : access MDI_Child_Record) return Gtk.Window.Gtk_Window;
-   --  If you initially Put() a Gtk_Window in the MDI, this returns that
-   --  window, although with no child (see Get_Widget instead).
-   --  If you have put something else than a toplevel window, this function
-   --  returns null.
 
    function Find_MDI_Child
      (MDI    : access MDI_Window_Record;
@@ -506,10 +506,7 @@ private
 
    type MDI_Child_Record is new Gtk.Event_Box.Gtk_Event_Box_Record with record
       Initial : Gtk.Widget.Gtk_Widget;
-      Initial_Child : Gtk.Widget.Gtk_Widget;
-      --  The widget we used to build this child. This is used in case it
-      --  was a window, since we need to be able to reparent it in the future,
-      --  just in case.
+      --  The widget we used to build this child.
 
       X, Y : Glib.Gint;
       --  Note: the coordinates of children are the coordinates inside
@@ -545,7 +542,7 @@ private
       Menu_Item : Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item;
       --  The item in the dynamic menu that represents this child.
 
-      Buttons : Buttons_Flags;
+      Flags : Child_Flags;
 
       Maximize_Button : Gtk.Button.Gtk_Button;
       Minimize_Button : Gtk.Button.Gtk_Button;
@@ -558,13 +555,13 @@ private
    procedure Gtk_New
      (Child  : out MDI_Child;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags  : Buttons_Flags := All_Buttons);
+      Flags  : Child_Flags := All_Buttons);
    --  Create a new MDI child that contains widget.
 
    procedure Initialize
      (Child  : access MDI_Child_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags  : Buttons_Flags);
+      Flags  : Child_Flags);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
