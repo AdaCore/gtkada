@@ -123,18 +123,19 @@ package Gtkada.Canvas is
    -- Enum types --
    ----------------
 
-   type Arrow_Type is (No_Arrow,
-                        --  the link does not have an arrow
+   type Arrow_Type is
+     (No_Arrow,
+      --  the link does not have an arrow
 
-                       Start_Arrow,
-                        --  the link has an arrow at its beginning
+      Start_Arrow,
+      --  the link has an arrow at its beginning
 
-                       End_Arrow,
-                        --  the link has an arrow at the end
+      End_Arrow,
+      --  the link has an arrow at the end
 
-                       Both_Arrow
-                        --  the link has an arrow on both sides
-                       );
+      Both_Arrow
+      --  the link has an arrow on both sides
+     );
    --  Indicate whether the links have an arrow or not.
 
    -----------------------
@@ -161,14 +162,15 @@ package Gtkada.Canvas is
    --  A Grid_Size of 0 means than no grid should be drawn in the background of
    --  canvas. Note that in that case you can never activate Align_On_Grid.
 
-   procedure Align_On_Grid (Canvas : access Interactive_Canvas_Record;
-                            Align  : Boolean := True);
+   procedure Align_On_Grid
+     (Canvas : access Interactive_Canvas_Record;
+      Align  : Boolean := True);
    --  Choose whether the items should be aligned on the grid when moved.
    --  Existing items are not moved even if you set this parameter to True,
    --  this will only take effect the next time the items are moved.
 
-   function Get_Align_On_Grid (Canvas : access Interactive_Canvas_Record)
-                              return Boolean;
+   function Get_Align_On_Grid
+     (Canvas : access Interactive_Canvas_Record) return Boolean;
    --  Return True if items are currently aligned on grid.
 
    procedure Move_To
@@ -183,9 +185,10 @@ package Gtkada.Canvas is
    --  items (in which case it is placed to the right of it), or not (in which
    --  case it is placed at the bottom of the leftmost column).
 
-   procedure Put (Canvas : access Interactive_Canvas_Record;
-                  Item   : access Canvas_Item_Record'Class;
-                  X, Y   : Glib.Gint := Glib.Gint'First);
+   procedure Put
+     (Canvas : access Interactive_Canvas_Record;
+      Item   : access Canvas_Item_Record'Class;
+      X, Y   : Glib.Gint := Glib.Gint'First);
    --  Add a new item to the canvas.
    --  The item is added at a specific location.
    --  If at least one of X or Y has the default value, then the item
@@ -196,57 +199,63 @@ package Gtkada.Canvas is
    --  Note also that the current size of the item is used to compute the new
    --  location, so it should depend on the current zoom.
 
-   procedure Remove (Canvas : access Interactive_Canvas_Record;
-                     Item   : access Canvas_Item_Record'Class);
+   procedure Remove
+     (Canvas : access Interactive_Canvas_Record;
+      Item   : access Canvas_Item_Record'Class);
    --  Remove an item and all the links to and from it from the canvas.
    --  The item itself is not freed, but the links are.
    --  Nothing is done if the item is not part of the canvas.
 
-   procedure Item_Updated (Canvas : access Interactive_Canvas_Record;
-                           Item   : access Canvas_Item_Record'Class);
+   procedure Item_Updated
+     (Canvas : access Interactive_Canvas_Record;
+      Item   : access Canvas_Item_Record'Class);
    --  This should be called when Item has changed the contents of its
    --  pixmap, and thus the Canvas should be updated.
 
    procedure Refresh_Canvas (Canvas : access Interactive_Canvas_Record);
    --  Redraw the whole canvas (both in the double buffer and on the screen).
 
-   type Item_Processor is access
-     function (Canvas : access Interactive_Canvas_Record'Class;
-               Item   : access Canvas_Item_Record'Class)
-              return Boolean;
-   procedure For_Each_Item (Canvas  : access Interactive_Canvas_Record;
-                            Execute : Item_Processor);
+   type Item_Processor is access function
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Item   : access Canvas_Item_Record'Class) return Boolean;
+
+   procedure For_Each_Item
+     (Canvas  : access Interactive_Canvas_Record;
+      Execute : Item_Processor);
    --  Execute an action on each of the items contained in the canvas.
    --  If Execute returns False, we stop traversing the list of children.
    --  It is safe to remove the items in Item_Processor.
 
-   function Has_Link (Canvas   : access Interactive_Canvas_Record;
-                      From, To : access Canvas_Item_Record'Class;
-                      Name     : String := "")
-                     return Boolean;
+   function Has_Link
+     (Canvas   : access Interactive_Canvas_Record;
+      From, To : access Canvas_Item_Record'Class;
+      Name     : String := "") return Boolean;
    --  Test whether there is a link from From to To, with the same name.
    --  If Name is the empty string "", then no check is done on the name,
    --  and True if returned if there is any link between the two items.
 
-   procedure Raise_Item (Canvas : access Interactive_Canvas_Record;
-                         Item   : access Canvas_Item_Record'Class);
+   procedure Raise_Item
+     (Canvas : access Interactive_Canvas_Record;
+      Item   : access Canvas_Item_Record'Class);
    --  Raise the item so that it is displayed on top of all the others
    --  The canvas is refreshed as needed to reflect the change.
    --  Nothing happens if Item is not part of the canvas.
 
-   procedure Lower_Item (Canvas : access Interactive_Canvas_Record;
-                         Item   : access Canvas_Item_Record'Class);
+   procedure Lower_Item
+     (Canvas : access Interactive_Canvas_Record;
+      Item   : access Canvas_Item_Record'Class);
    --  Lower the item so that it is displayed below all the others.
    --  The canvas is refreshed as needed to reflect the change.
    --  Nothing happens if Item is not part of the canvas.
 
-   function Is_On_Top (Canvas : access Interactive_Canvas_Record;
-                       Item   : access Canvas_Item_Record'Class)
-                      return Boolean;
+   function Is_On_Top
+     (Canvas : access Interactive_Canvas_Record;
+      Item   : access Canvas_Item_Record'Class) return Boolean;
    --  Return True if Item is displayed on top of all the others in the canvas.
 
-   procedure Show_Item (Canvas : access Interactive_Canvas_Record;
-                        Item   : access Canvas_Item_Record'Class);
+   procedure Show_Item
+     (Canvas : access Interactive_Canvas_Record;
+      Item   : access Canvas_Item_Record'Class);
    --  Scroll the canvas so that Item is visible.
 
    procedure Zoom
@@ -340,10 +349,10 @@ package Gtkada.Canvas is
    --  your responsability to do so.
    --  Nothing is done if Link does not belong to canvas.
 
-   type Link_Processor is access
-     function (Canvas : access Interactive_Canvas_Record'Class;
-               Link   : access Canvas_Link_Record'Class)
-              return Boolean;
+   type Link_Processor is access function
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Link   : access Canvas_Link_Record'Class) return Boolean;
+
    procedure For_Each_Link
      (Canvas  : access Interactive_Canvas_Record;
       Execute : Link_Processor);
@@ -387,16 +396,18 @@ package Gtkada.Canvas is
 
    procedure Set_Screen_Size
      (Item   : access Canvas_Item_Record;
-      Width, Height  : Glib.Gint);
+      Width  : Glib.Gint;
+      Height : Glib.Gint);
    --  Set the size that the items occupies on the screen. You must call this
    --  subprogram every time the zoom level changes, since Width and Height
    --  must reflect the current size of the item in the current zoom level,
    --  not an absolute size that is automatically scaled.
 
-   procedure Draw (Item : access Canvas_Item_Record;
-                   Canvas : access Interactive_Canvas_Record'Class;
-                   Dest : Gdk.Pixmap.Gdk_Pixmap;
-                   Xdest, Ydest : Glib.Gint) is abstract;
+   procedure Draw
+     (Item   : access Canvas_Item_Record;
+      Canvas : access Interactive_Canvas_Record'Class;
+      Dest   : Gdk.Pixmap.Gdk_Pixmap;
+      Xdest, Ydest : Glib.Gint) is abstract;
    --  This subprogram, that must be overridden, should draw the item on
    --  the pixmap Dest, at the specific location (At_X, At_Y).
 
@@ -404,8 +415,9 @@ package Gtkada.Canvas is
    --  Free the memory occupied by the item (not the item itself). You should
    --  override this function if you define your own widget type.
 
-   procedure On_Button_Click (Item   : access Canvas_Item_Record;
-                              Event  : Gdk.Event.Gdk_Event_Button);
+   procedure On_Button_Click
+     (Item   : access Canvas_Item_Record;
+      Event  : Gdk.Event.Gdk_Event_Button);
    --  Function called whenever the item was clicked on.
    --  Note that this function is not called when the item is moved, and thus
    --  is only called when the click was short.
@@ -417,8 +429,8 @@ package Gtkada.Canvas is
    --  The coordinates (X, Y) in the Event are relative to the top-left corner
    --  of Item.
 
-   function Get_Coord (Item : access Canvas_Item_Record)
-                      return Gdk.Rectangle.Gdk_Rectangle;
+   function Get_Coord
+     (Item : access Canvas_Item_Record) return Gdk.Rectangle.Gdk_Rectangle;
    --  Return the coordinates and size of the item.
 
    procedure Set_Visibility
@@ -442,10 +454,11 @@ package Gtkada.Canvas is
    --  of the pixmap when the item is created and every time the canvas is
    --  zoomed (connect to the "zoomed" signal).
 
-   procedure Draw (Item : access Buffered_Item_Record;
-                   Canvas : access Interactive_Canvas_Record'Class;
-                   Dest : Gdk.Pixmap.Gdk_Pixmap;
-                   Xdest, Ydest : Glib.Gint);
+   procedure Draw
+     (Item : access Buffered_Item_Record;
+      Canvas : access Interactive_Canvas_Record'Class;
+      Dest : Gdk.Pixmap.Gdk_Pixmap;
+      Xdest, Ydest : Glib.Gint);
    --  Draw the item's double-buffer onto Dest.
 
    procedure Destroy (Item : access Buffered_Item_Record);
@@ -504,11 +517,10 @@ private
 
    type Canvas_Link_List_Record;
    type Canvas_Link_List is access Canvas_Link_List_Record;
-   type Canvas_Link_List_Record is
-      record
-         Link : Canvas_Link;
-         Next : Canvas_Link_List;
-      end record;
+   type Canvas_Link_List_Record is record
+      Link : Canvas_Link;
+      Next : Canvas_Link_List;
+   end record;
 
    type Canvas_Link_Record is tagged record
       Src    : Canvas_Item;
@@ -529,20 +541,18 @@ private
 
    type Canvas_Item_List_Record;
    type Canvas_Item_List is access Canvas_Item_List_Record;
-   type Canvas_Item_List_Record is
-      record
-         Item : Canvas_Item;
-         Next : Canvas_Item_List;
-      end record;
+   type Canvas_Item_List_Record is record
+      Item : Canvas_Item;
+      Next : Canvas_Item_List;
+   end record;
 
    type Item_Selection_List_Record;
    type Item_Selection_List is access Item_Selection_List_Record;
-   type Item_Selection_List_Record is
-      record
-         Item : Canvas_Item;
-         X, Y : Glib.Gint;
-         Next : Item_Selection_List;
-      end record;
+   type Item_Selection_List_Record is record
+      Item : Canvas_Item;
+      X, Y : Glib.Gint;
+      Next : Item_Selection_List;
+   end record;
    --  A list of items, but this also memorizes the position of the items (used
    --  for selected widgets while they are being moved, so that we do not
    --  change the coordinates of the item itself until the mouse is released
@@ -550,56 +560,56 @@ private
 
    type Interactive_Canvas_Record is new
       Gtk.Drawing_Area.Gtk_Drawing_Area_Record with
-      record
-         Links             : Canvas_Link_List  := null;
-         Children          : Canvas_Item_List := null;
+   record
+      Links             : Canvas_Link_List  := null;
+      Children          : Canvas_Item_List := null;
 
-         Selection         : Item_Selection_List := null;
-         --  List of currently selected items that will be moved when the mouse
-         --  is dragged
+      Selection         : Item_Selection_List := null;
+      --  List of currently selected items that will be moved when the mouse
+      --  is dragged
 
-         Last_X_Event      : Glib.Gint;
-         Last_Y_Event      : Glib.Gint;
-         --  Last position where the mouse was pressed or moved in the canvas.
+      Last_X_Event      : Glib.Gint;
+      Last_Y_Event      : Glib.Gint;
+      --  Last position where the mouse was pressed or moved in the canvas.
 
-         Mouse_Has_Moved   : Boolean;
-         --  True if mouse has moved while the button was clicked. This is used
-         --  to distinguish between item motion and item selection.
+      Mouse_Has_Moved   : Boolean;
+      --  True if mouse has moved while the button was clicked. This is used
+      --  to distinguish between item motion and item selection.
 
-         Grid_Size         : Glib.Guint := Default_Grid_Size;
-         --  The current number of pixels between each dot of the grid. If this
-         --  is strictly below 2, the grid is not drawn. (0) means that the
-         --  user has deactivated the grid completely.
+      Grid_Size         : Glib.Guint := Default_Grid_Size;
+      --  The current number of pixels between each dot of the grid. If this
+      --  is strictly below 2, the grid is not drawn. (0) means that the
+      --  user has deactivated the grid completely.
 
-         Annotation_Font   : String_Access;
-         Annotation_Height : Glib.Gint := Default_Annotation_Height;
-         Arc_Link_Offset   : Glib.Gint := Default_Arc_Link_Offset;
-         Arrow_Angle       : Float;
-         Arrow_Length      : Glib.Gint := Default_Arrow_Length;
-         Motion_Threshold  : Glib.Gint := Default_Motion_Threshold;
-         Align_On_Grid     : Boolean := False;
+      Annotation_Font   : String_Access;
+      Annotation_Height : Glib.Gint := Default_Annotation_Height;
+      Arc_Link_Offset   : Glib.Gint := Default_Arc_Link_Offset;
+      Arrow_Angle       : Float;
+      Arrow_Length      : Glib.Gint := Default_Arrow_Length;
+      Motion_Threshold  : Glib.Gint := Default_Motion_Threshold;
+      Align_On_Grid     : Boolean := False;
 
-         --  The following variables are initialized as soon as a Gdk_Window
-         --  has been created for the canvas, in the Realized subprograms.
+      --  The following variables are initialized as soon as a Gdk_Window
+      --  has been created for the canvas, in the Realized subprograms.
 
-         Clear_GC : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
-         Black_GC : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
-         Anim_GC  : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
-         Font     : Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
+      Clear_GC : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
+      Black_GC : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
+      Anim_GC  : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
+      Font     : Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
 
-         Double_Buffer : Gdk.Pixmap.Gdk_Pixmap;
+      Double_Buffer : Gdk.Pixmap.Gdk_Pixmap;
 
-         Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;
-         Scrolling_Timeout_Id : Gtk.Main.Timeout_Handler_Id := 0;
-         Dashed_Line_Visible : Boolean := False;
+      Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;
+      Scrolling_Timeout_Id : Gtk.Main.Timeout_Handler_Id := 0;
+      Dashed_Line_Visible : Boolean := False;
 
-         Zoom : Glib.Guint := 100;
-         --  Zoom level in percent (100% is normal size)
+      Zoom : Glib.Guint := 100;
+      --  Zoom level in percent (100% is normal size)
 
-         Target_Zoom : Glib.Guint := 100;
-         Zoom_Step : Glib.Gint;
-         --  Variables used while smooth-scrolling the canvas
-      end record;
+      Target_Zoom : Glib.Guint := 100;
+      Zoom_Step : Glib.Gint;
+      --  Variables used while smooth-scrolling the canvas
+   end record;
 
    type Canvas_Item_Record is abstract tagged record
       Coord   : Gdk.Rectangle.Gdk_Rectangle;

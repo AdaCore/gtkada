@@ -2569,6 +2569,18 @@ package body Gtkada.Canvas is
       Free (Link.Descr);
    end Destroy;
 
+   procedure Destroy (Item : access Canvas_Item_Record) is
+   begin
+      null;
+   end Destroy;
+
+   procedure Destroy (Item : access Buffered_Item_Record) is
+   begin
+      if Item.Pixmap /= null then
+         Gdk.Pixmap.Unref (Item.Pixmap);
+      end if;
+   end Destroy;
+
    -------------
    -- Get_Src --
    -------------
@@ -2809,23 +2821,4 @@ package body Gtkada.Canvas is
       return Item.Pixmap;
    end Pixmap;
 
-   -------------
-   -- Destroy --
-   -------------
-
-   procedure Destroy (Item : access Canvas_Item_Record) is
-   begin
-      null;
-   end Destroy;
-
-   -------------
-   -- Destroy --
-   -------------
-
-   procedure Destroy (Item : access Buffered_Item_Record) is
-   begin
-      if Item.Pixmap /= null then
-         Gdk.Pixmap.Unref (Item.Pixmap);
-      end if;
-   end Destroy;
 end Gtkada.Canvas;
