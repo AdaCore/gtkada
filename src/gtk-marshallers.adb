@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Unchecked_Conversion;
-with Gtk.Handlers;           use Gtk.Handlers;
 with System;                 use System;
 with Gtk.Arguments;          use Gtk.Arguments;
 
