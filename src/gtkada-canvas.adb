@@ -455,12 +455,12 @@ package body Gtkada.Canvas is
                loop
                   X1 := Src_Item.Coord.X + ((Num + 1) mod 3 - 1)
                     * Gint (Canvas.Grid_Size * 2 + Src_Item.Coord.Width);
-                  Y1 := Src_Item.Coord.Y + (1 + Num / 3)
-                    * Gint (Canvas.Grid_Size * 2 + Src_Item.Coord.Height);
-                  if X1 < 0 then
-                     X1 := Src_Item.Coord.X;
+                  Y1 := Src_Item.Coord.Y
+                    + Gint (Src_Item.Coord.Height)
+                    + (1 + Num / 3) * Gint (Canvas.Grid_Size * 2);
+                  if X1 >= 0 then
+                     exit when Location_Is_Free (X1, Y1);
                   end if;
-                  exit when Location_Is_Free (X1, Y1);
                   Num := Num + 1;
                end loop;
             end;
