@@ -239,7 +239,8 @@ package Gtk.Object is
      (Object       : access Gtk_Object_Record'Class;
       Signals      : Gtkada.Types.Chars_Ptr_Array;
       Class_Record : in out System.Address;
-      Parameters   : Signal_Parameter_Types := Null_Parameter_Types);
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
+      Scroll_Adjustments_Signal : Guint := 0);
    --  Create the class record for a new widget type.
    --  It is associated with Signals'Length new signals. A pointer to the
    --  newly created structure is also returned in Class_Record.
@@ -252,6 +253,14 @@ package Gtk.Object is
    --  As a special case, if Parameters has its default value, all signals are
    --  created with no argument. This is done for backward compatibility
    --  mainly, and you should instead give it an explicit value.
+   --
+   --  Scroll_Adjustments_Signal is the index of the new signal that will be
+   --  emitted when Gtk.Widget.Set_Scroll_Adjustments is called. If it is 0, no
+   --  signal is emitted. The first signal is Signals has index 1. Note that
+   --  the handlers for this signal take two arguments in addition to the
+   --  widget (the horizontal and vertical adjustments to be used). See
+   --  Gtk.Scrolled_Window and Gtk.Widget.Set_Scroll_Adustment for more
+   --   information on this signal.
    --
    --  Only the signals with no parameter can be connected from C. However,
    --  any signal can be connected from Ada. This is due to the way we define
