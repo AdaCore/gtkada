@@ -535,6 +535,10 @@ package body Gtkada.MDI is
       Gtk_New (MDI.Main_Pane);
       Attach (MDI, MDI.Main_Pane, 1, 2, 1, 2);
 
+      --  Request a null size, so that the window can be resized at will, even
+      --  though we have played with Set_Size_Request on the children.
+      Set_Size_Request (MDI.Main_Pane, 0, 0);
+
       --  The MDI must have a window, so that we can change the background
       --  color. No other notebook or paned inside has a window
       Set_Has_Window (MDI.Main_Pane, True);
@@ -595,6 +599,7 @@ package body Gtkada.MDI is
       Set_Child_Visible (MDI.Docks (Left), False);
 
       Gtk_New (MDI.Central.Container);
+      Set_Size_Request (MDI.Central.Container, 0, 0);
       Split
         (MDI.Main_Pane, MDI.Docks (Left), MDI.Central.Container,
          Orientation_Horizontal);
@@ -603,6 +608,9 @@ package body Gtkada.MDI is
       Set_Child_Visible (MDI.Central.Container, False);
 
       Gtk_New (MDI.Central.Layout);
+      --  No size requested for the layout, since otherwise it will be
+      --  dynamically resized when items are moved.
+      Set_Size_Request (MDI.Central.Layout, 0, 0);
 
       --  The layout should have a window, otherwise its children will
       --  overlap the items from the MDI when they are too big (this seems to
@@ -1755,10 +1763,6 @@ package body Gtkada.MDI is
       Set_Size_Request (Child, Alloc.Width, Alloc.Height);
       Move (MDI.Central.Layout, Child, Alloc.X, Alloc.Y);
 
-      --  No size requested for the layout, since otherwise it will be
-      --  dynamically resized when items are moved.
-      Set_Size_Request (MDI.Central.Layout, 0, 0);
-
       if MDI.Current_Cursor /= Left_Ptr then
          MDI_Child (Child).Uniconified_Width  := Gint (Alloc.Width);
          MDI_Child (Child).Uniconified_Height := Gint (Alloc.Height);
@@ -2275,7 +2279,7 @@ package body Gtkada.MDI is
       Widget_List.Prepend (MDI.Items, Gtk_Widget (C));
 
       if Default_Width /= -1 or else Default_Height /= -1 then
-         Set_Size_Request (C, Default_Width, Default_Height);
+         Set_Size_Request (C.Initial, Default_Width, Default_Height);
       end if;
 
       --  If all items are maximized, add Child to the notebook
@@ -4663,23 +4667,24 @@ package body Gtkada.MDI is
          MDI.Desktop_Was_Loaded := True;
 
          while Child_Node /= null loop
-            if Child_Node.Tag.all = "Left" then
-               Set_Size (MDI.Main_Pane, MDI.Docks (Left),
-                         Gint'Value (Child_Node.Value.all), -1);
+--              if Child_Node.Tag.all = "Left" then
+--                 Set_Size (MDI.Main_Pane, MDI.Docks (Left),
+--                           Gint'Value (Child_Node.Value.all), -1);
+--
+--              elsif Child_Node.Tag.all = "Right" then
+--                 Set_Size (MDI.Main_Pane, MDI.Docks (Right),
+--                           Gint'Value (Child_Node.Value.all), -1);
+--
+--              elsif Child_Node.Tag.all = "Top" then
+--                 Set_Size (MDI.Main_Pane, MDI.Docks (Top),
+--                           -1, Gint'Value (Child_Node.Value.all));
+--
+--              elsif Child_Node.Tag.all = "Bottom" then
+--                 Set_Size (MDI.Main_Pane, MDI.Docks (Bottom),
+--                           -1, Gint'Value (Child_Node.Value.all));
 
-            elsif Child_Node.Tag.all = "Right" then
-               Set_Size (MDI.Main_Pane, MDI.Docks (Right),
-                         Gint'Value (Child_Node.Value.all), -1);
-
-            elsif Child_Node.Tag.all = "Top" then
-               Set_Size (MDI.Main_Pane, MDI.Docks (Top),
-                         -1, Gint'Value (Child_Node.Value.all));
-
-            elsif Child_Node.Tag.all = "Bottom" then
-               Set_Size (MDI.Main_Pane, MDI.Docks (Bottom),
-                         -1, Gint'Value (Child_Node.Value.all));
-
-            elsif Child_Node.Tag.all = "Maximized" then
+--            els
+            if Child_Node.Tag.all = "Maximized" then
                Maximize_Children (MDI, Boolean'Value (Child_Node.Value.all));
 
             elsif Child_Node.Tag.all = "Pane" then
@@ -4911,14 +4916,14 @@ package body Gtkada.MDI is
          Root := new Node;
          Root.Tag := new String'("MDI");
 
-         Add (Root, "Left",
-              Gint'Image (Get_Allocation_Width (MDI.Docks (Left))));
-         Add (Root, "Right",
-              Gint'Image (Get_Allocation_Width (MDI.Docks (Right))));
-         Add (Root, "Top",
-              Gint'Image (Get_Allocation_Height (MDI.Docks (Top))));
-         Add (Root, "Bottom",
-              Gint'Image (Get_Allocation_Height (MDI.Docks (Bottom))));
+--           Add (Root, "Left",
+--                Gint'Image (Get_Allocation_Width (MDI.Docks (Left))));
+--           Add (Root, "Right",
+--                Gint'Image (Get_Allocation_Width (MDI.Docks (Right))));
+--           Add (Root, "Top",
+--                Gint'Image (Get_Allocation_Height (MDI.Docks (Top))));
+--           Add (Root, "Bottom",
+--                Gint'Image (Get_Allocation_Height (MDI.Docks (Bottom))));
          Add (Root, "Maximized",
               Boolean'Image (MDI.Central.Children_Are_Maximized));
 
