@@ -51,7 +51,6 @@ with Gdk.Drawable;     use Gdk.Drawable;
 with Gdk.Event;        use Gdk.Event;
 with Gdk.GC;           use Gdk.GC;
 with Gdk.Main;         use Gdk.Main;
-with Gdk.Pixmap;
 with Gdk.Pixbuf;       use Gdk.Pixbuf;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Types;        use Gdk.Types;
@@ -75,6 +74,7 @@ with Gtk.Frame;        use Gtk.Frame;
 with Gtk.GEntry;       use Gtk.GEntry;
 with Gtk.Table;        use Gtk.Table;
 with Gtk.Handlers;
+with Gtk.Image;        use Gtk.Image;
 with Gtk.Label;        use Gtk.Label;
 with Pango.Layout;     use Pango.Layout;
 with Gtkada.Multi_Paned; use Gtkada.Multi_Paned;
@@ -2183,9 +2183,8 @@ package body Gtkada.MDI is
          3 => (1 => GType_None));
       Button    : Gtk_Button;
       Box       : Gtk_Box;
-      Pix       : Gdk_Pixmap;
-      Mask      : Gdk_Bitmap;
-      Pixmap    : Gtk_Pixmap;
+      Pix       : Gdk_Pixbuf;
+      Pixmap    : Gtk_Image;
       Event     : Gtk_Event_Box;
 
    begin
@@ -2244,9 +2243,8 @@ package body Gtkada.MDI is
       Set_Border_Width (Box, Guint (Border_Thickness));
 
       if (Flags and Destroy_Button) /= 0 then
-         Gdk.Pixmap.Create_From_Xpm_D
-           (Pix, null, Get_Default_Colormap, Mask, Null_Color, Close_Xpm);
-         Gtk_New (Pixmap, Pix, Mask);
+         Pix := Gdk_New_From_Xpm_Data (Close_Xpm);
+         Gtk_New (Pixmap, Pix);
          Gtk_New (Button);
          Add (Button, Pixmap);
          Pack_End (Child.Title_Box, Button, Expand => False, Fill => False);
@@ -2257,9 +2255,8 @@ package body Gtkada.MDI is
       end if;
 
       if (Flags and Maximize_Button) /= 0 then
-         Gdk.Pixmap.Create_From_Xpm_D
-           (Pix, null, Get_Default_Colormap, Mask, Null_Color, Maximize_Xpm);
-         Gtk_New (Pixmap, Pix, Mask);
+         Pix := Gdk_New_From_Xpm_Data (Maximize_Xpm);
+         Gtk_New (Pixmap, Pix);
          Gtk_New (Child.Maximize_Button);
          Add (Child.Maximize_Button, Pixmap);
          Pack_End
@@ -2271,9 +2268,8 @@ package body Gtkada.MDI is
       end if;
 
       if (Flags and Iconify_Button) /= 0 then
-         Gdk.Pixmap.Create_From_Xpm_D
-           (Pix, null, Get_Default_Colormap, Mask, Null_Color, Iconify_Xpm);
-         Gtk_New (Pixmap, Pix, Mask);
+         Pix := Gdk_New_From_Xpm_Data (Iconify_Xpm);
+         Gtk_New (Pixmap, Pix);
          Gtk_New (Child.Minimize_Button);
          Add (Child.Minimize_Button, Pixmap);
          Pack_End (Child.Title_Box, Child.Minimize_Button, Expand
