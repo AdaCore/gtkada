@@ -258,13 +258,12 @@ package Gdk.Color is
 private
    Null_Colormap : constant Gdk_Colormap := null;
 
-   type Gdk_Color is
-      record
-         Pixel : Gulong;
-         Red   : Gushort;
-         Green : Gushort;
-         Blue  : Gushort;
-      end record;
+   type Gdk_Color is record
+      Pixel : Gulong;
+      Red   : Gushort;
+      Green : Gushort;
+      Blue  : Gushort;
+   end record;
    --  The fields are to be chosen between 0 and 65535, not 0 and 255!!!
 
    Null_Color : constant Gdk_Color := (Gulong'Last, 1, 0, 0);
