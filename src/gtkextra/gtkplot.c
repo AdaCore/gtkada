@@ -4387,6 +4387,7 @@ gtk_plot_calc_ticks(GtkPlot *plot, gint orientation)
      minor_step = major_step / ((gdouble)ticks->nminor + 2.0);
   }
 
+
   if(ticks->step > 0.){
    tick = min - major_step;
    while(tick <= absmax + 2*fabs(major_step)){
@@ -4407,7 +4408,14 @@ gtk_plot_calc_ticks(GtkPlot *plot, gint orientation)
             tick += major_step; 
             break;
         case GTK_PLOT_SCALE_LOG10:
+/********************************************************************/
+/***** The following line makes gcc2.8.1 core dump              ****/
+#if 0
             tick = pow(10., log10(absmin)+nmajor*major_step); 
+#endif
+/********************************************************************/
+            tick = absmin * pow(10., nmajor*major_step); 
+			 
             break;
      }
    }
@@ -4440,6 +4448,6 @@ gtk_plot_calc_ticks(GtkPlot *plot, gint orientation)
     }
    }
   }
-
 }
+
 

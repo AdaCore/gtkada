@@ -1904,7 +1904,13 @@ gtk_plot_print_calc_ticks(GtkPlot *plot, gint orientation)
             tick += major_step;
             break;
         case GTK_PLOT_SCALE_LOG10:
+/*************************************************************/
+/******* gcc 2.8.1 core dumps on the following line     *****/
+#if 0
             tick = pow(10., log10(absmin)+nmajor*major_step);
+#endif
+/*************************************************************/	    
+            tick = absmin * pow(10., nmajor*major_step);
             break;
      }
    }
