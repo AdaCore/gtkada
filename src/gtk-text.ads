@@ -38,64 +38,70 @@ package Gtk.Text is
    type Gtk_Text_Record is new Gtk.Editable.Gtk_Editable_Record with private;
    type Gtk_Text is access all Gtk_Text_Record'Class;
 
-   function Backward_Delete
-      (Text   : access Gtk_Text_Record;
-       Nchars : in Guint)
-       return      Gint;
-   function Forward_Delete
-      (Text   : access Gtk_Text_Record;
-       Nchars : in Guint)
-       return      Gint;
-   procedure Freeze (Text : access Gtk_Text_Record);
-   function Get_Gap_Position (Widget : access Gtk_Text_Record) return Guint;
-   function Get_Gap_Size (Widget : access Gtk_Text_Record) return Guint;
-   function Get_Hadj (Widget : access Gtk_Text_Record)
-                      return Gtk.Adjustment.Gtk_Adjustment;
-   function Get_Length (Text   : access Gtk_Text_Record) return Guint;
-   function Get_Point (Text   : access Gtk_Text_Record) return Guint;
-   function Get_Text (Widget : access Gtk_Text_Record) return String;
-   function Get_Text_End (Widget : access Gtk_Text_Record) return Guint;
-   procedure Gtk_New
-      (Widget : out Gtk_Text;
-       Hadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
-         := Gtk.Adjustment.Null_Adjustment;
-       Vadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
-         := Gtk.Adjustment.Null_Adjustment);
-   procedure Initialize
-      (Widget : access Gtk_Text_Record'Class;
-       Hadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
-         := Gtk.Adjustment.Null_Adjustment;
-       Vadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
-         := Gtk.Adjustment.Null_Adjustment);
+   function Backward_Delete (Text : access Gtk_Text_Record; Nchars : in Guint)
+     return Gint;
 
-   function Get_Vadj (Widget : access Gtk_Text_Record)
-                      return Gtk.Adjustment.Gtk_Adjustment;
+   function Forward_Delete (Text : access Gtk_Text_Record; Nchars : in Guint)
+     return Gint;
+
+   procedure Freeze (Text : access Gtk_Text_Record);
+
+   function Get_Gap_Position (Text : access Gtk_Text_Record) return Guint;
+
+   function Get_Gap_Size (Text : access Gtk_Text_Record) return Guint;
+
+   function Get_Hadj (Text : access Gtk_Text_Record)
+     return Gtk.Adjustment.Gtk_Adjustment;
+
+   function Get_Length (Text : access Gtk_Text_Record) return Guint;
+
+   function Get_Point (Text : access Gtk_Text_Record) return Guint;
+
+   function Get_Text (Text : access Gtk_Text_Record) return String;
+
+   function Get_Text_End (Text : access Gtk_Text_Record) return Guint;
+
+   procedure Gtk_New
+     (Text : out Gtk_Text;
+      Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
+      Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
+
+   procedure Initialize
+     (Text : access Gtk_Text_Record'Class;
+      Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
+      Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
+
+   function Get_Vadj (Text : access Gtk_Text_Record)
+     return Gtk.Adjustment.Gtk_Adjustment;
+
    procedure Insert
-      (Text   : access Gtk_Text_Record;
-       Font   : in Gdk.Font.Gdk_Font'Class;
-       Fore   : in Gdk.Color.Gdk_Color;
-       Back   : in Gdk.Color.Gdk_Color;
-       Chars  : in String;
-       Length : in Gint);
+     (Text   : access Gtk_Text_Record;
+      Font   : in Gdk.Font.Gdk_Font'Class;
+      Fore   : in Gdk.Color.Gdk_Color;
+      Back   : in Gdk.Color.Gdk_Color;
+      Chars  : in String;
+      Length : in Gint);
+
    procedure Set_Adjustments
-      (Text : access Gtk_Text_Record;
-       Hadj : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
-       Vadj : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
-   procedure Set_Editable (Text : access Gtk_Text_Record;
-                           Editable : in Boolean);
+     (Text : access Gtk_Text_Record;
+      Hadj : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+      Vadj : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+
+   procedure Set_Editable
+     (Text : access Gtk_Text_Record; Editable : in Boolean);
+
    procedure Set_Point (Text : access Gtk_Text_Record; Index : in Guint);
+
    procedure Set_Word_Wrap
-      (Text      : access Gtk_Text_Record;
-       Word_Wrap : in Boolean);
+     (Text : access Gtk_Text_Record; Word_Wrap : in Boolean);
+
    procedure Thaw (Text : access Gtk_Text_Record);
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
-
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
 
    procedure Generate (Text : in out Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
    type Gtk_Text_Record is new Gtk.Editable.Gtk_Editable_Record
