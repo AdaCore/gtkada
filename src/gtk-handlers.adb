@@ -264,6 +264,7 @@ package body Gtk.Handlers is
          After  : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Connect (Widget, Name, Marsh, After);
       end Connect;
@@ -280,6 +281,7 @@ package body Gtk.Handlers is
          After       : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Object_Connect (Widget, Name, Marsh, Slot_Object, After);
       end Object_Connect;
@@ -295,6 +297,7 @@ package body Gtk.Handlers is
          After  : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Connect (Widget, Name, Cb, After);
       end Connect;
@@ -311,6 +314,7 @@ package body Gtk.Handlers is
          After       : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Object_Connect (Widget, Name, Cb, Slot_Object, After);
       end Object_Connect;
@@ -684,6 +688,7 @@ package body Gtk.Handlers is
          After     : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Connect (Widget, Name, Marsh, User_Data, After);
       end Connect;
@@ -701,6 +706,7 @@ package body Gtk.Handlers is
          After       : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Object_Connect
            (Widget, Name, Marsh, Slot_Object, User_Data, After);
@@ -718,6 +724,7 @@ package body Gtk.Handlers is
          After     : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Connect (Widget, Name, Cb, User_Data, After);
       end Connect;
@@ -735,6 +742,7 @@ package body Gtk.Handlers is
          After       : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Object_Connect
            (Widget, Name, Cb, Slot_Object, User_Data, After);
@@ -1030,6 +1038,7 @@ package body Gtk.Handlers is
          After  : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Connect (Widget, Name, Marsh, After);
       end Connect;
@@ -1046,6 +1055,7 @@ package body Gtk.Handlers is
          After       : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Object_Connect (Widget, Name, Marsh, Slot_Object, After);
       end Object_Connect;
@@ -1061,6 +1071,7 @@ package body Gtk.Handlers is
          After  : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Connect (Widget, Name, Cb, After);
       end Connect;
@@ -1077,6 +1088,7 @@ package body Gtk.Handlers is
          After       : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Object_Connect (Widget, Name, Cb, Slot_Object, After);
       end Object_Connect;
@@ -1375,6 +1387,7 @@ package body Gtk.Handlers is
          After     : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Connect (Widget, Name, Marsh, User_Data, After);
       end Connect;
@@ -1392,6 +1405,7 @@ package body Gtk.Handlers is
          After       : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Object_Connect
            (Widget, Name, Marsh, Slot_Object, User_Data, After);
@@ -1409,6 +1423,7 @@ package body Gtk.Handlers is
          After     : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Connect (Widget, Name, Cb, User_Data, After);
       end Connect;
@@ -1426,6 +1441,7 @@ package body Gtk.Handlers is
          After       : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Object_Connect
            (Widget, Name, Cb, Slot_Object, User_Data, After);
@@ -1615,6 +1631,7 @@ package body Gtk.Handlers is
          After     : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Connect (Widget, Name, Marsh, User_Data, After);
       end Connect;
@@ -1632,6 +1649,7 @@ package body Gtk.Handlers is
          After       : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Object_Connect
            (Widget, Name, Marsh, Slot_Object, User_Data, After);
@@ -1649,6 +1667,7 @@ package body Gtk.Handlers is
          After     : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Connect (Widget, Name, Cb, User_Data, After);
       end Connect;
@@ -1666,6 +1685,7 @@ package body Gtk.Handlers is
          After       : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Object_Connect
            (Widget, Name, Cb, Slot_Object, User_Data, After);
@@ -1765,6 +1785,7 @@ package body Gtk.Handlers is
          After     : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Connect (Widget, Name, Marsh, User_Data, After);
       end Connect;
@@ -1782,6 +1803,7 @@ package body Gtk.Handlers is
          After       : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Object_Connect
            (Widget, Name, Marsh, Slot_Object, User_Data, After);
@@ -1799,6 +1821,7 @@ package body Gtk.Handlers is
          After     : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Connect (Widget, Name, Cb, User_Data, After);
       end Connect;
@@ -1816,6 +1839,7 @@ package body Gtk.Handlers is
          After       : Boolean := False)
       is
          Id : Handler_Id;
+         pragma Warnings (Off, Id);
       begin
          Id := Object_Connect
            (Widget, Name, Cb, Slot_Object, User_Data, After);

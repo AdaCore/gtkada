@@ -396,6 +396,7 @@ package body Gtk.Glade is
       Buffer      : String (1 .. 256);
       Len         : Natural;
       Num_Signals : Natural;
+      pragma Warnings (Off, Num_Signals);
       Output      : File_Type;
       Project     : constant String :=
         To_Ada (Get_Field (Find_Tag (N.Child, "project"), "name").all);

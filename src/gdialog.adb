@@ -45,6 +45,8 @@ with GNAT.OS_Lib; use GNAT.OS_Lib;
 
 procedure GDialog is
    Button        : Message_Dialog_Buttons;
+   pragma Warnings (Off, Button);
+
    Buffer        : String (1 .. 8192);
    Last          : Natural := 0;
    Kind          : Message_Dialog_Type := Information;

@@ -3093,6 +3093,7 @@ package body Gtkada.Canvas is
       Steps   : Guint := 1)
    is
       Id : Timeout_Handler_Id;
+      pragma Warnings (Off, Id);
    begin
       if Canvas.Zoom = Percent then
          return;
