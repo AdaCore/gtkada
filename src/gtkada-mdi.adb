@@ -2310,10 +2310,10 @@ package body Gtkada.MDI is
          Widget_Callback.Object_Connect
            (Child.Minimize_Button, "clicked",
             Widget_Callback.To_Marshaller (Iconify_Child'Access), Child);
-
-         Gtk_New (Event);
-         Pack_Start (Box, Event, Expand => True, Fill => True, Padding => 0);
       end if;
+
+      Gtk_New (Event);
+      Pack_Start (Box, Event, Expand => True, Fill => True, Padding => 0);
 
       --  The child widget
 
