@@ -110,7 +110,7 @@ with Create_Text;
 with Create_Toggle_Buttons;
 with Create_Toolbar;
 with Create_Tooltips;
-with Create_Tree;
+--  with Create_Tree;
 with Common; use Common;
 with View_GL; use View_GL;
 
@@ -307,8 +307,8 @@ package body Main_Windows is
                                          Create_Toolbar.Help'Access),
       (NS ("tooltips"),         Complex, Create_Tooltips.Run'Access,
                                          Create_Tooltips.Help'Access),
-      (NS ("tree"),             Complex, Create_Tree.Run'Access,
-                                         Create_Tree.Help'Access),
+      --  (NS ("tree"),             Complex, Create_Tree.Run'Access,
+      --                                     Create_Tree.Help'Access),
       (NS ("WM hints"),         Misc,    null, null)
       );
 
