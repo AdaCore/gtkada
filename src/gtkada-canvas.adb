@@ -62,6 +62,7 @@ with Gtk.Widget;       use Gtk.Widget;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
 with Unchecked_Deallocation;
+with GNAT.IO;          use GNAT.IO;
 
 --  TODO:
 --   - would be nice to have a pixbuf item directly (for alpha layers)
@@ -72,6 +73,8 @@ package body Gtkada.Canvas is
    use type Gdk_GC;
    use type Gdk_Window, Gdk_Pixmap;
    use type System.Address;
+
+   Traces : constant Boolean := False;
 
    Class_Record : GObject_Class := Uninitialized_Class;
    --  This pointer will keep a pointer to the C 'class record' for
@@ -2307,11 +2310,38 @@ package body Gtkada.Canvas is
 
       Item := Item_At_Coordinates (Canvas, X, Y);
 
+      if Traces then
+         if Item /= null then
+            Put_Line ("Clicked on Item at coordinates (" & X'Img & Y'Img
+                      & ") item=("
+                      & Item.Coord.X'Img & Item.Coord.Y'Img
+                      & Item.Coord.Width'Img & Item.Coord.Height'Img
+                      & ") base=(" & Xbase'Img & Ybase'Img
+                      & ") mouse=" & Gint (Get_X (Event))'Img
+                      & Gint (Get_Y (Event))'Img);
+         else
+            Put_Line ("Clicked outside of item");
+         end if;
+      end if;
+
       if (Get_State (Event) and Control_Mask) = 0
         and then (Item = null or else not Is_Selected (Canvas, Item))
       then
          Clear_Selection (Canvas);
       end if;
+
+      --  Update the coordinates in the selection, since they might have
+      --  changed during a previous move
+
+      declare
+         Selected : Item_Selection_List := Canvas.Selection;
+      begin
+         while Selected /= null loop
+            Selected.X := Selected.Item.Coord.X;
+            Selected.Y := Selected.Item.Coord.Y;
+            Selected := Selected.Next;
+         end loop;
+      end;
 
       if Item /= null then
          Add_To_Selection (Canvas, Item);
@@ -2679,6 +2709,15 @@ package body Gtkada.Canvas is
                Selected.Item.Coord.X := Selected.X;
                Selected.Item.Coord.Y := Selected.Y;
 
+               if Traces then
+                  Put_Line ("Draw_Dashed_Selection, at "
+                            & Selected.X'Img
+                            & Selected.Y'Img
+                            & " canvas coordinates="
+                            & To_Canvas_Coordinates (Canvas, Selected.X)'Img
+                            & To_Canvas_Coordinates (Canvas, Selected.Y)'Img);
+               end if;
+
                Draw_Rectangle
                  (Get_Window (Canvas),
                   GC     => Canvas.Anim_GC,
@@ -2735,6 +2774,14 @@ package body Gtkada.Canvas is
       while Selected /= null loop
          Selected.X := Selected.X + Delta_X;
          Selected.Y := Selected.Y + Delta_Y;
+
+         if Traces then
+            Put_Line ("Move_Selection delta="
+                      & Delta_X'Img & Delta_Y'Img
+                      & " to "
+                      & Selected.X'Img & Selected.Y'Img);
+         end if;
+
          Selected := Selected.Next;
       end loop;
 
@@ -2749,6 +2796,12 @@ package body Gtkada.Canvas is
          --  Start with a canvas with no scrollbar. Then move one of the items
          --  to the left (in the scrollbox). The scrollbar would keep appearing
          --  and disappearing, and slow down the whole process.
+         if Traces then
+            Put_Line ("Show_Item X,Y="
+                      & Canvas.Selection.X'Img
+                      & Canvas.Selection.Y'Img);
+         end if;
+
          Show_Item
            (Canvas, Canvas.Selection.Item,
             Canvas.Selection.X, Canvas.Selection.Y,
@@ -3086,6 +3139,11 @@ package body Gtkada.Canvas is
          X    => Item.Coord.X,
          Y    => Item.Coord.Y,
          Next => Canvas.Selection);
+
+      if Traces then
+         Put_Line ("Add_To_Selection X,Y=" & Canvas.Selection.X'Img
+                   & Canvas.Selection.Y'Img);
+      end if;
 
       Selected (Item, Canvas, Is_Selected => True);
       Emit_By_Name_Item
