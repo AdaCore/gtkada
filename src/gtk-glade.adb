@@ -333,7 +333,6 @@ package body Gtk.Glade is
       Kind        : Variable_Kind) return Boolean
   is
       Option_Menu : Boolean := True;
-      Callback    : Boolean := True;
       Accelerator : Boolean := True;
       Printed     : Boolean := False;
 
@@ -343,7 +342,6 @@ package body Gtk.Glade is
          Kind  : Variable_Kind;
          First : Boolean;
          Option_Menu : in out Boolean;
-         Callback    : in out Boolean;
          Accelerator : in out Boolean);
       --  Internal recursive version of this procedure
 
@@ -353,7 +351,6 @@ package body Gtk.Glade is
          Kind  : Variable_Kind;
          First : Boolean;
          Option_Menu : in out Boolean;
-         Callback    : in out Boolean;
          Accelerator : in out Boolean)
       is
          P : Node_Ptr := N;
@@ -426,16 +423,6 @@ package body Gtk.Glade is
                         end if;
                      end if;
 
-                     --  Declare a Cb_Id if any signal needs to be connected in
-                     --  this widget
-
-                     if Find_Tag (P.Child, "signal") /= null then
-                        if Callback then
-                           Put_Line (File, "   Cb_Id : Glib.Guint;");
-                           Callback := False;
-                        end if;
-                     end if;
-
                      --  Declare an Accel_Group if any accelerator needs to be
                      --  set up in this widget
 
@@ -463,7 +450,7 @@ package body Gtk.Glade is
                   end if;
 
                   Print_Var (P.Child, File, Kind, False, Option_Menu,
-                    Callback, Accelerator);
+                    Accelerator);
                end if;
             end if;
 
@@ -474,7 +461,7 @@ package body Gtk.Glade is
       end Print_Var;
 
    begin
-      Print_Var (N, File, Kind, True, Option_Menu, Callback, Accelerator);
+      Print_Var (N, File, Kind, True, Option_Menu, Accelerator);
 
       if Kind = Local then
          return True;
