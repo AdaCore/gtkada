@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                  Copyright (C) 2001 ACT-Europe                    --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -65,18 +65,6 @@ package body Create_Tooltips is
         & " Through the @bwidget_entered@B and @bwidget_selected@B signals,"
         & " you can decide to display some extensive help.";
    end Help;
-
-   ----------------------
-   -- Tooltips_Destroy --
-   ----------------------
-
-   procedure Tooltips_Destroy (Widget : access Gtk_Widget_Record'Class) is
-      Tt : Gtk_Tooltips;
-   begin
-      Tt := Tooltips_Data.Get (Widget, "tooltips");
-      Destroy (Tt);
-      Destroy (Widget);
-   end Tooltips_Destroy;
 
    --------------------
    -- Widget_Entered --
