@@ -72,7 +72,7 @@ OPENGL_FLAGS=
 MESA_SPECS=
 endif
 
-c_objects = $(LIB_DIR)/misc.o
+c_objects = $(LIB_DIR)/misc.o $(LIB_DIR)/misc_extra.o
 c_extra_objects = gtkextra/gtk*.o
 
 ## General and public targets
