@@ -9,13 +9,13 @@
 gint
 ada_object_get_type (GtkObject* object)
 {
-  return object->klass->type;
+  return GTK_OBJECT_TYPE (object);
 }
 
 gchar*
-ada_type_name (GtkObject* object)
+ada_type_name (gint type)
 {
-  return gtk_type_name (GTK_OBJECT_TYPE (object));
+  return gtk_type_name (type);
 }
 
 /***************************************************
@@ -330,7 +330,7 @@ ada_toggle_button_get_active (GtkToggleButton* widget)
 GtkWidget*
 ada_combo_get_entry (GtkCombo* widget)
 {
-   return widget->entry;
+  return widget->entry;
 }
 
 /*******************************************
@@ -340,7 +340,7 @@ ada_combo_get_entry (GtkCombo* widget)
 GdkColor*
 ada_style_get_bg (GtkStyle* style, gint state)
 {
-    return &(style->bg [state]);
+  return &(style->bg [state]);
 }
 
 /********************************************
@@ -350,13 +350,19 @@ ada_style_get_bg (GtkStyle* style, gint state)
 GtkStyle*
 ada_widget_get_style (GtkWidget* widget)
 {
-    return widget->style;
+  return widget->style;
 }
 
 GdkWindow*
 ada_widget_get_window (GtkWidget* widget)
 {
-    return widget->window;
+  return widget->window;
+}
+
+GtkWidget*
+ada_widget_get_parent (GtkWidget* widget)
+{
+  return widget->parent;
 }
 
 /******************************************
