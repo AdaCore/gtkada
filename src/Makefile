@@ -11,6 +11,9 @@ OBJECTS= misc.o misc-gnat.o
 $(TARGET):: $(OBJECTS) *.ad[sb]
 	$(GNATMAKE) $(TARGET) $(GNATFLAGS) -largs $(GNATLARGS)
 
+
+misc.o: misc.c misc-manu.c misc-joel.c
+
 .c.o:
 	$(CC) $(CFLAGS) $<
 
