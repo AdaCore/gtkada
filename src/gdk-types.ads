@@ -77,13 +77,14 @@ package Gdk.Types is
    --  manipulated through functions in Gdk.Property. They have an associated
    --  name, that can be printed, as well as a value whose type may vary.
 
-   type Gdk_Axis_Use is (Axis_Ignore,
-                         Axis_X,
-                         Axis_Y,
-                         Axis_Pressure,
-                         Axis_X_Tilt,
-                         Axis_Y_Tilt,
-                         Axis_Last);
+   type Gdk_Axis_Use is
+     (Axis_Ignore,
+      Axis_X,
+      Axis_Y,
+      Axis_Pressure,
+      Axis_X_Tilt,
+      Axis_Y_Tilt,
+      Axis_Last);
 
    type Gdk_Byte_Order is (Lsb_First, Msb_First);
 
@@ -91,91 +92,91 @@ package Gdk.Types is
 
    type Gdk_Crossing_Mode is (Crossing_Normal, Crossing_Grab, Crossing_Ungrab);
 
-   type Gdk_Cursor_Type is (X_Cursor,
-                            Arrow,
-                            Based_Arrow_Down,
-                            Based_Arrow_Up,
-                            Boat,
-                            Bogosity,
-                            Bottom_Left_Corner,
-                            Bottom_Right_Corner,
-                            Bottom_Side,
-                            Bottom_Tee,
-                            Box_Spiral,
-                            Center_Ptr,
-                            Circle,
-                            Clock,
-                            Coffee_Mug,
-                            Cross,
-                            Cross_Reverse,
-                            Crosshair,
-                            Diamond_Cross,
-                            Dot,
-                            Dotbox,
-                            Double_Arrow,
-                            Draft_Large,
-                            Draft_Small,
-                            Draped_Box,
-                            Exchange,
-                            Fleur,
-                            Gobbler,
-                            Gumby,
-                            Hand1,
-                            Hand2,
-                            Heart,
-                            Icon,
-                            Iron_Cross,
-                            Left_Ptr,
-                            Left_Side,
-                            Left_Tee,
-                            Leftbutton,
-                            Ll_Angle,
-                            Lr_Angle,
-                            Man,
-                            Middlebutton,
-                            Mouse,
-                            Pencil,
-                            Pirate,
-                            Plus,
-                            Question_Arrow,
-                            Right_Ptr,
-                            Right_Side,
-                            Right_Tee,
-                            Rightbutton,
-                            Rtl_Logo,
-                            Sailboat,
-                            Sb_Down_Arrow,
-                            Sb_H_Double_Arrow,
-                            Sb_Left_Arrow,
-                            Sb_Right_Arrow,
-                            Sb_Up_Arrow,
-                            Sb_V_Double_Arrow,
-                            Shuttle,
-                            Sizing,
-                            Spider,
-                            Spraycan,
-                            Star,
-                            Target,
-                            Tcross,
-                            Top_Left_Arrow,
-                            Top_Left_Corner,
-                            Top_Right_Corner,
-                            Top_Side,
-                            Top_Tee,
-                            Trek,
-                            Ul_Angle,
-                            Umbrella,
-                            Ur_Angle,
-                            Watch,
-                            Xterm);
+   type Gdk_Cursor_Type is
+     (X_Cursor,
+      Arrow,
+      Based_Arrow_Down,
+      Based_Arrow_Up,
+      Boat,
+      Bogosity,
+      Bottom_Left_Corner,
+      Bottom_Right_Corner,
+      Bottom_Side,
+      Bottom_Tee,
+      Box_Spiral,
+      Center_Ptr,
+      Circle,
+      Clock,
+      Coffee_Mug,
+      Cross,
+      Cross_Reverse,
+      Crosshair,
+      Diamond_Cross,
+      Dot,
+      Dotbox,
+      Double_Arrow,
+      Draft_Large,
+      Draft_Small,
+      Draped_Box,
+      Exchange,
+      Fleur,
+      Gobbler,
+      Gumby,
+      Hand1,
+      Hand2,
+      Heart,
+      Icon,
+      Iron_Cross,
+      Left_Ptr,
+      Left_Side,
+      Left_Tee,
+      Leftbutton,
+      Ll_Angle,
+      Lr_Angle,
+      Man,
+      Middlebutton,
+      Mouse,
+      Pencil,
+      Pirate,
+      Plus,
+      Question_Arrow,
+      Right_Ptr,
+      Right_Side,
+      Right_Tee,
+      Rightbutton,
+      Rtl_Logo,
+      Sailboat,
+      Sb_Down_Arrow,
+      Sb_H_Double_Arrow,
+      Sb_Left_Arrow,
+      Sb_Right_Arrow,
+      Sb_Up_Arrow,
+      Sb_V_Double_Arrow,
+      Shuttle,
+      Sizing,
+      Spider,
+      Spraycan,
+      Star,
+      Target,
+      Tcross,
+      Top_Left_Arrow,
+      Top_Left_Corner,
+      Top_Right_Corner,
+      Top_Side,
+      Top_Tee,
+      Trek,
+      Ul_Angle,
+      Umbrella,
+      Ur_Angle,
+      Watch,
+      Xterm);
 
    type Gdk_Device_Id is new Guint32;
-   --
-   --  This type is specific to GtkAda. In gdk, they use guint32.
+   --  This type is specific to GtkAda. In Gdk, guint32 is used instead.
 
    type Gdk_Event_Mask is new Guint;
    --  Note that you need to change the event mask of a widget if you want
-   --  to be able to get certain events. To change this mask, the widget
+   --  to be able to get some events. To change this mask, the widget
    --  must first be Unrealized.
 
    Null_Event_Mask          : constant Gdk_Event_Mask;
@@ -212,62 +213,63 @@ package Gdk.Types is
    Proximity_Out_Mask       : constant Gdk_Event_Mask;
    All_Events_Mask          : constant Gdk_Event_Mask;
 
-   type Gdk_Event_Type is (Nothing,
-                           Delete,
-                           Destroy,
-                           Expose,
-                           Motion_Notify,
-                           Button_Press,
-                           Gdk_2button_Press,  --  Double-click
-                           Gdk_3button_Press,  --  Triple-click
-                           Button_Release,
-                           Key_Press,
-                           Key_Release,
-                           Enter_Notify,
-                           Leave_Notify,
-                           Focus_Change,
-                           Configure,
-                           Map,
-                           Unmap,
-                           Property_Notify,
-                           Selection_Clear,
-                           Selection_Request,
-                           Selection_Notify,
-                           Proximity_In,
-                           Proximity_Out,
-                           Drag_Enter,
-                           Drag_Leave,
-                           Drag_Motion,
-                           Drag_Status,
-                           Drop_Start,
-                           Drop_Finished,
-                           Client_Event,
-                           Visibility_Notify,
-                           No_Expose);
+   type Gdk_Event_Type is
+     (Nothing,
+      Delete,
+      Destroy,
+      Expose,
+      Motion_Notify,
+      Button_Press,
+      Gdk_2button_Press,  --  Double-click
+      Gdk_3button_Press,  --  Triple-click
+      Button_Release,
+      Key_Press,
+      Key_Release,
+      Enter_Notify,
+      Leave_Notify,
+      Focus_Change,
+      Configure,
+      Map,
+      Unmap,
+      Property_Notify,
+      Selection_Clear,
+      Selection_Request,
+      Selection_Notify,
+      Proximity_In,
+      Proximity_Out,
+      Drag_Enter,
+      Drag_Leave,
+      Drag_Motion,
+      Drag_Status,
+      Drop_Start,
+      Drop_Finished,
+      Client_Event,
+      Visibility_Notify,
+      No_Expose);
 
-   type Gdk_Extension_Mode is (Extension_Events_None,
-                               Extension_Events_All,
-                               Extension_Events_Cursor);
+   type Gdk_Extension_Mode is
+     (Extension_Events_None, Extension_Events_All, Extension_Events_Cursor);
 
    type Gdk_Fill is (Solid, Tiled, Stippled, Opaque_Stippled);
 
    type Gdk_Fill_Rule is (Even_Odd_Rule, Winding_Rule);
 
-   type Gdk_Function is (Copy,
-                         Invert,
-                         Gdk_Xor,
-                         Clear,
-                         Gdk_And,
-                         And_Reverse,
-                         And_Invert,
-                         Noop,
-                         Gdk_Or,
-                         Equiv,
-                         Or_Reverse,
-                         Copy_Invert,
-                         Or_Invert,
-                         Nand,
-                         Set);
+   type Gdk_Function is
+     (Copy,
+      Invert,
+      Gdk_Xor,
+      Clear,
+      Gdk_And,
+      And_Reverse,
+      And_Invert,
+      Noop,
+      Gdk_Or,
+      Equiv,
+      Or_Reverse,
+      Copy_Invert,
+      Or_Invert,
+      Nand,
+      Set);
 
    type Gdk_Join_Style is (Join_Miter, Join_Round, Join_Bevel);
 
@@ -313,14 +315,13 @@ package Gdk.Types is
 
    type Gdk_Input_Condition is (Input_Read, Input_Write, Input_Exception);
 
-   type Gdk_Input_Mode is (Mode_Disabled,
-                           Mode_Screen,
-                           Mode_Window);
+   type Gdk_Input_Mode is (Mode_Disabled, Mode_Screen, Mode_Window);
 
-   type Gdk_Input_Source is (Source_Mouse,
-                             Source_Pen,
-                             Source_Eraser,
-                             Source_Cursor);
+   type Gdk_Input_Source is
+     (Source_Mouse,
+      Source_Pen,
+      Source_Eraser,
+      Source_Cursor);
 
    type Gdk_Key_Type is new Guint;
    --  see Gdk.Types.Keysyms for key type constants
@@ -357,9 +358,8 @@ package Gdk.Types is
       Overlap_Rectangle_Out,
       Overlap_Rectangle_Part);
 
-   type Gdk_Prop_Mode is (Prop_Mode_Replace,
-                          Prop_Mode_Prepend,
-                          Prop_Mode_Append);
+   type Gdk_Prop_Mode is
+     (Prop_Mode_Replace, Prop_Mode_Prepend, Prop_Mode_Append);
 
    type Gdk_Subwindow_Mode is (Clip_By_Children, Include_Inferiors);
 
@@ -383,16 +383,18 @@ package Gdk.Types is
    GC_Cap_Style     : constant Gdk_GC_Values_Mask;
    GC_Join_Style    : constant Gdk_GC_Values_Mask;
 
-   type Gdk_Visibility_State is (Visibility_Unobscured,
-                                 Visibility_Partial,
-                                 Visibility_Fully_Obscured);
+   type Gdk_Visibility_State is
+     (Visibility_Unobscured,
+      Visibility_Partial,
+      Visibility_Fully_Obscured);
 
-   type Gdk_Visual_Type is (Visual_Static_Gray,
-                            Visual_Grayscale,
-                            Visual_Static_Color,
-                            Visual_Pseudo_Color,
-                            Visual_True_Color,
-                            Visual_Direct_Color);
+   type Gdk_Visual_Type is
+     (Visual_Static_Gray,
+      Visual_Grayscale,
+      Visual_Static_Color,
+      Visual_Pseudo_Color,
+      Visual_True_Color,
+      Visual_Direct_Color);
 
    type Gdk_Window_Attributes_Type is new Guint;
    Wa_Title    : constant Gdk_Window_Attributes_Type;
@@ -404,8 +406,7 @@ package Gdk.Types is
    Wa_Wmclass  : constant Gdk_Window_Attributes_Type;
    Wa_Noredir  : constant Gdk_Window_Attributes_Type;
 
-   type Gdk_Window_Class is (Input_Output,
-                             Input_Only);
+   type Gdk_Window_Class is (Input_Output, Input_Only);
 
    type Gdk_Window_Hints is new Guint;
    Gdk_Hint_Pos        : constant Gdk_Window_Hints;
@@ -415,13 +416,14 @@ package Gdk.Types is
    Gdk_Hint_Aspect     : constant Gdk_Window_Hints;
    Gdk_Hint_Resize_Inc : constant Gdk_Window_Hints;
 
-   type Gdk_Window_Type is (Window_Root,
-                            Window_Toplevel,
-                            Window_Child,
-                            Window_Dialog,
-                            Window_Temp,
-                            Window_Pixmap,
-                            Window_Foreign);
+   type Gdk_Window_Type is
+     (Window_Root,
+      Window_Toplevel,
+      Window_Child,
+      Window_Dialog,
+      Window_Temp,
+      Window_Pixmap,
+      Window_Foreign);
 
    type Gdk_Wm_Decoration is new Guint;
    Decor_All      : constant Gdk_Wm_Decoration;
@@ -442,7 +444,6 @@ package Gdk.Types is
 
    subtype Gdk_WChar is Standard.Wide_Character;
    subtype Gdk_WString is Standard.Wide_String;
-   --
    --  Gdk does not define a Gdk_WString type, but uses pointers
    --  to Gdk_WChar instead.
 
@@ -496,14 +497,14 @@ private
    Ic_Status_Background    : constant Gdk_IC_Attributes_Type := 2 ** 25;
    Ic_Status_Pixmap        : constant Gdk_IC_Attributes_Type := 2 ** 26;
    Ic_Status_Colormap      : constant Gdk_IC_Attributes_Type := 2 ** 27;
-   Ic_All_Req              : constant Gdk_IC_Attributes_Type
-     := Ic_Style or Ic_Client_Window;
-   Ic_Preedit_Area_Req     : constant Gdk_IC_Attributes_Type
-     := Ic_Preedit_Area or Ic_Preedit_Fontset;
-   Ic_Preedit_Position_Req : constant Gdk_IC_Attributes_Type
-     := Ic_Preedit_Area or Ic_Spot_Location or Ic_Preedit_Fontset;
-   Ic_Status_Area_Req      : constant Gdk_IC_Attributes_Type
-     := Ic_Status_Area or Ic_Status_Fontset;
+   Ic_All_Req              : constant Gdk_IC_Attributes_Type :=
+     Ic_Style or Ic_Client_Window;
+   Ic_Preedit_Area_Req     : constant Gdk_IC_Attributes_Type :=
+     Ic_Preedit_Area or Ic_Preedit_Fontset;
+   Ic_Preedit_Position_Req : constant Gdk_IC_Attributes_Type :=
+     Ic_Preedit_Area or Ic_Spot_Location or Ic_Preedit_Fontset;
+   Ic_Status_Area_Req      : constant Gdk_IC_Attributes_Type :=
+     Ic_Status_Area or Ic_Status_Fontset;
 
    Im_Preedit_Area      : constant Gdk_IM_Style := 16#0001#;
    Im_Preedit_Callbacks : constant Gdk_IM_Style := 16#0002#;
@@ -568,130 +569,133 @@ private
    Gdk_Hint_Aspect     : constant Gdk_Window_Hints := 2 ** 4;
    Gdk_Hint_Resize_Inc : constant Gdk_Window_Hints := 2 ** 5;
 
-
    ------------------------------
    --  Representation clauses  --
    ------------------------------
 
-   for Gdk_Event_Type use (Nothing => -1,
-                           Delete => 0,
-                           Destroy => 1,
-                           Expose => 2,
-                           Motion_Notify => 3,
-                           Button_Press => 4,
-                           Gdk_2button_Press => 5,
-                           Gdk_3button_Press => 6,
-                           Button_Release => 7,
-                           Key_Press => 8,
-                           Key_Release => 9,
-                           Enter_Notify => 10,
-                           Leave_Notify => 11,
-                           Focus_Change => 12,
-                           Configure => 13,
-                           Map => 14,
-                           Unmap => 15,
-                           Property_Notify => 16,
-                           Selection_Clear => 17,
-                           Selection_Request => 18,
-                           Selection_Notify => 19,
-                           Proximity_In => 20,
-                           Proximity_Out => 21,
-                           Drag_Enter => 22,
-                           Drag_Leave => 23,
-                           Drag_Motion => 24,
-                           Drag_Status => 25,
-                           Drop_Start => 26,
-                           Drop_Finished => 27,
-                           Client_Event => 28,
-                           Visibility_Notify => 29,
-                           No_Expose => 30);
+   for Gdk_Event_Type use
+     (Nothing => -1,
+      Delete => 0,
+      Destroy => 1,
+      Expose => 2,
+      Motion_Notify => 3,
+      Button_Press => 4,
+      Gdk_2button_Press => 5,
+      Gdk_3button_Press => 6,
+      Button_Release => 7,
+      Key_Press => 8,
+      Key_Release => 9,
+      Enter_Notify => 10,
+      Leave_Notify => 11,
+      Focus_Change => 12,
+      Configure => 13,
+      Map => 14,
+      Unmap => 15,
+      Property_Notify => 16,
+      Selection_Clear => 17,
+      Selection_Request => 18,
+      Selection_Notify => 19,
+      Proximity_In => 20,
+      Proximity_Out => 21,
+      Drag_Enter => 22,
+      Drag_Leave => 23,
+      Drag_Motion => 24,
+      Drag_Status => 25,
+      Drop_Start => 26,
+      Drop_Finished => 27,
+      Client_Event => 28,
+      Visibility_Notify => 29,
+      No_Expose => 30);
 
-   for Gdk_Input_Condition use (Input_Read      => 2 ** 0,
-                                Input_Write     => 2 ** 1,
-                                Input_Exception => 2 ** 2);
+   for Gdk_Input_Condition use
+     (Input_Read      => 2 ** 0,
+      Input_Write     => 2 ** 1,
+      Input_Exception => 2 ** 2);
 
-   for Gdk_Subwindow_Mode use (Clip_By_Children  => 0,
-                               Include_Inferiors => 1);
+   for Gdk_Subwindow_Mode use (Clip_By_Children  => 0, Include_Inferiors => 1);
 
-   --  FIXME: Warning : these values should be kept synchronized with
-   --  FIXME: gdk/gdcursors.h
-   for Gdk_Cursor_Type use (X_Cursor => 0,
-                            Arrow    => 2,
-                            Based_Arrow_Down => 4,
-                            Based_Arrow_Up => 6,
-                            Boat => 8,
-                            Bogosity => 10,
-                            Bottom_Left_Corner => 12,
-                            Bottom_Right_Corner => 14,
-                            Bottom_Side => 16,
-                            Bottom_Tee => 18,
-                            Box_Spiral => 20,
-                            Center_Ptr => 22,
-                            Circle => 24,
-                            Clock => 26,
-                            Coffee_Mug => 28,
-                            Cross => 30,
-                            Cross_Reverse => 32,
-                            Crosshair => 34,
-                            Diamond_Cross => 36,
-                            Dot => 38,
-                            Dotbox => 40,
-                            Double_Arrow => 42,
-                            Draft_Large => 44,
-                            Draft_Small => 46,
-                            Draped_Box => 48,
-                            Exchange => 50,
-                            Fleur => 52,
-                            Gobbler => 54,
-                            Gumby => 56,
-                            Hand1 => 58,
-                            Hand2 => 60,
-                            Heart => 62,
-                            Icon => 64,
-                            Iron_Cross => 66,
-                            Left_Ptr => 68,
-                            Left_Side => 70,
-                            Left_Tee => 72,
-                            Leftbutton => 74,
-                            Ll_Angle => 76,
-                            Lr_Angle => 78,
-                            Man => 80,
-                            Middlebutton => 82,
-                            Mouse => 84,
-                            Pencil => 86,
-                            Pirate => 88,
-                            Plus => 90,
-                            Question_Arrow => 92,
-                            Right_Ptr => 94,
-                            Right_Side => 96,
-                            Right_Tee => 98,
-                            Rightbutton => 100,
-                            Rtl_Logo => 102,
-                            Sailboat => 104,
-                            Sb_Down_Arrow => 106,
-                            Sb_H_Double_Arrow => 108,
-                            Sb_Left_Arrow => 110,
-                            Sb_Right_Arrow => 112,
-                            Sb_Up_Arrow => 114,
-                            Sb_V_Double_Arrow => 116,
-                            Shuttle => 118,
-                            Sizing => 120,
-                            Spider => 122,
-                            Spraycan => 124,
-                            Star => 126,
-                            Target => 128,
-                            Tcross => 130,
-                            Top_Left_Arrow => 132,
-                            Top_Left_Corner => 134,
-                            Top_Right_Corner => 136,
-                            Top_Side => 138,
-                            Top_Tee => 140,
-                            Trek => 142,
-                            Ul_Angle => 144,
-                            Umbrella => 146,
-                            Ur_Angle => 148,
-                            Watch => 150,
-                            Xterm => 152);
+   --  Warning : these values should be kept synchronized with gdk/gdcursors.h
+   --  ??? However, since these values are imported from Xlib, it is unlikely
+   --  that they will change soon.
+
+   for Gdk_Cursor_Type use
+     (X_Cursor => 0,
+      Arrow    => 2,
+      Based_Arrow_Down => 4,
+      Based_Arrow_Up => 6,
+      Boat => 8,
+      Bogosity => 10,
+      Bottom_Left_Corner => 12,
+      Bottom_Right_Corner => 14,
+      Bottom_Side => 16,
+      Bottom_Tee => 18,
+      Box_Spiral => 20,
+      Center_Ptr => 22,
+      Circle => 24,
+      Clock => 26,
+      Coffee_Mug => 28,
+      Cross => 30,
+      Cross_Reverse => 32,
+      Crosshair => 34,
+      Diamond_Cross => 36,
+      Dot => 38,
+      Dotbox => 40,
+      Double_Arrow => 42,
+      Draft_Large => 44,
+      Draft_Small => 46,
+      Draped_Box => 48,
+      Exchange => 50,
+      Fleur => 52,
+      Gobbler => 54,
+      Gumby => 56,
+      Hand1 => 58,
+      Hand2 => 60,
+      Heart => 62,
+      Icon => 64,
+      Iron_Cross => 66,
+      Left_Ptr => 68,
+      Left_Side => 70,
+      Left_Tee => 72,
+      Leftbutton => 74,
+      Ll_Angle => 76,
+      Lr_Angle => 78,
+      Man => 80,
+      Middlebutton => 82,
+      Mouse => 84,
+      Pencil => 86,
+      Pirate => 88,
+      Plus => 90,
+      Question_Arrow => 92,
+      Right_Ptr => 94,
+      Right_Side => 96,
+      Right_Tee => 98,
+      Rightbutton => 100,
+      Rtl_Logo => 102,
+      Sailboat => 104,
+      Sb_Down_Arrow => 106,
+      Sb_H_Double_Arrow => 108,
+      Sb_Left_Arrow => 110,
+      Sb_Right_Arrow => 112,
+      Sb_Up_Arrow => 114,
+      Sb_V_Double_Arrow => 116,
+      Shuttle => 118,
+      Sizing => 120,
+      Spider => 122,
+      Spraycan => 124,
+      Star => 126,
+      Target => 128,
+      Tcross => 130,
+      Top_Left_Arrow => 132,
+      Top_Left_Corner => 134,
+      Top_Right_Corner => 136,
+      Top_Side => 138,
+      Top_Tee => 140,
+      Trek => 142,
+      Ul_Angle => 144,
+      Umbrella => 146,
+      Ur_Angle => 148,
+      Watch => 150,
+      Xterm => 152);
 
    Decor_All      : constant Gdk_Wm_Decoration := 2 ** 0;
    Decor_Border   : constant Gdk_Wm_Decoration := 2 ** 1;
@@ -707,10 +711,8 @@ private
    Func_Minimize : constant Gdk_Wm_Function := 2 ** 3;
    Func_Maximize : constant Gdk_Wm_Function := 2 ** 4;
    Func_Close    : constant Gdk_Wm_Function := 2 ** 5;
-
 end Gdk.Types;
 
---
 --  The following types were not bound because it did not seem
 --  to be necessary (yet).
 --

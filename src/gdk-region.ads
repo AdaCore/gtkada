@@ -40,52 +40,61 @@ package Gdk.Region is
 
    procedure Destroy (Region : in out Gdk_Region);
 
-   procedure Get_Clipbox (Region    : in     Gdk_Region;
-                          Rectangle :    out Gdk.Rectangle.Gdk_Rectangle);
+   procedure Get_Clipbox
+     (Region    : in     Gdk_Region;
+      Rectangle :    out Gdk.Rectangle.Gdk_Rectangle);
 
    function Empty (Region : in Gdk_Region) return Boolean;
 
    function "=" (Left, Right : in Gdk_Region) return Boolean;
 
+   function Point_In
+     (Region : in Gdk_Region;
+      X, Y   : in Integer) return Boolean;
 
-   function Point_In (Region : in Gdk_Region;
-                      X, Y   : in Integer) return Boolean;
+   function Rect_In
+     (Region : in Gdk_Region;
+      Rect   : in Rectangle.Gdk_Rectangle) return Types.Gdk_Overlap_Type;
 
-   function Rect_In (Region : in Gdk_Region;
-                     Rect   : in Rectangle.Gdk_Rectangle)
-                     return Types.Gdk_Overlap_Type;
+   procedure Polygon
+     (Region :    out Gdk_Region;
+      Points : in     Gdk.Types.Gdk_Points_Array;
+      Fill_Rule : in     Types.Gdk_Fill_Rule);
 
-   procedure Polygon (Region :    out Gdk_Region;
-                      Points : in     Gdk.Types.Gdk_Points_Array;
-                      Fill_Rule : in     Types.Gdk_Fill_Rule);
+   procedure Offset
+     (Region : in Gdk_Region;
+      Dx     : in Gint;
+      Dy     : in Gint);
 
-   procedure Offset (Region : in Gdk_Region;
-                     Dx     : in Gint;
-                     Dy     : in Gint);
+   procedure Shrink
+     (Region : in Gdk_Region;
+      Dx     : in Gint;
+      Dy     : in Gint);
 
-   procedure Shrink (Region : in Gdk_Region;
-                     Dx     : in Gint;
-                     Dy     : in Gint);
+   procedure Union_With_Rect
+     (Result :    out Gdk_Region;
+      Region : in     Gdk_Region;
+      Rect   : in     Rectangle.Gdk_Rectangle);
 
-   procedure Union_With_Rect (Result :    out Gdk_Region;
-                              Region : in     Gdk_Region;
-                              Rect   : in     Rectangle.Gdk_Rectangle);
+   procedure Intersect
+     (Result  :    out Gdk_Region;
+      Source1 : in     Gdk_Region;
+      Source2 : in     Gdk_Region);
 
-   procedure Intersect (Result  :    out Gdk_Region;
-                        Source1 : in     Gdk_Region;
-                        Source2 : in     Gdk_Region);
+   procedure Union
+     (Result  :     out Gdk_Region;
+      Source1 : in      Gdk_Region;
+      Source2 : in      Gdk_Region);
 
-   procedure Union (Result  :     out Gdk_Region;
-                    Source1 : in      Gdk_Region;
-                    Source2 : in      Gdk_Region);
+   procedure Substract
+     (Result  :     out Gdk_Region;
+      Source1 : in      Gdk_Region;
+      Source2 : in      Gdk_Region);
 
-   procedure Substract (Result  :     out Gdk_Region;
-                        Source1 : in      Gdk_Region;
-                        Source2 : in      Gdk_Region);
-
-   procedure Gdk_Xor (Result  :     out Gdk_Region;
-                      Source1 : in      Gdk_Region;
-                      Source2 : in      Gdk_Region);
+   procedure Gdk_Xor
+     (Result  :     out Gdk_Region;
+      Source1 : in      Gdk_Region;
+      Source2 : in      Gdk_Region);
 
 private
    Null_Region : constant Gdk_Region := null;

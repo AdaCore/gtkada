@@ -34,32 +34,35 @@ with Gdk.Window;
 
 package Gdk.Property is
 
-   function Atom_Intern (Atom_Name      : in String;
-                         Only_If_Exists : in Boolean := True)
-                         return              Gdk.Types.Gdk_Atom;
+   function Atom_Intern
+     (Atom_Name      : in String;
+      Only_If_Exists : in Boolean := True) return Gdk.Types.Gdk_Atom;
 
    function Atom_Name (Atom   : in Gdk.Types.Gdk_Atom) return String;
 
-   procedure Get (Window               : in     Gdk.Window.Gdk_Window;
-                  Property             : in     Gdk.Types.Gdk_Atom;
-                  The_Type             : in     Gdk.Types.Gdk_Atom;
-                  Offset               : in     Gulong;
-                  Length               : in     Gulong;
-                  Pdelete              : in     Boolean;
-                  Actual_Property_Type :    out Gdk.Types.Gdk_Atom;
-                  Actual_Format        :    out Gint;
-                  Data                 :    out Guchar_Array_Access;
-                  Success              :    out Boolean);
+   procedure Get
+     (Window               : in     Gdk.Window.Gdk_Window;
+      Property             : in     Gdk.Types.Gdk_Atom;
+      The_Type             : in     Gdk.Types.Gdk_Atom;
+      Offset               : in     Gulong;
+      Length               : in     Gulong;
+      Pdelete              : in     Boolean;
+      Actual_Property_Type :    out Gdk.Types.Gdk_Atom;
+      Actual_Format        :    out Gint;
+      Data                 :    out Guchar_Array_Access;
+      Success              :    out Boolean);
 
-   procedure Change (Window    : in Gdk.Window.Gdk_Window;
-                     Property  : in Gdk.Types.Gdk_Atom;
-                     The_Type  : in Gdk.Types.Gdk_Atom;
-                     Format    : in Gint;
-                     Mode      : in Gdk.Types.Gdk_Prop_Mode;
-                     Data      : in Guchar_Array);
+   procedure Change
+     (Window    : in Gdk.Window.Gdk_Window;
+      Property  : in Gdk.Types.Gdk_Atom;
+      The_Type  : in Gdk.Types.Gdk_Atom;
+      Format    : in Gint;
+      Mode      : in Gdk.Types.Gdk_Prop_Mode;
+      Data      : in Guchar_Array);
 
-   procedure Delete (Window   : in Gdk.Window.Gdk_Window;
-                     Property : in Gdk.Types.Gdk_Atom);
+   procedure Delete
+     (Window   : in Gdk.Window.Gdk_Window;
+      Property : in Gdk.Types.Gdk_Atom);
 
 private
    pragma Import (C, Delete, "gdk_property_delete");

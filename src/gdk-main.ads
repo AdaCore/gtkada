@@ -42,7 +42,6 @@ package Gdk.Main is
    function Set_Locale return String;
 
    procedure Set_Locale;
-   --
    --  Drops the string returned by the Set_Locale function;
 
    procedure Set_Use_Xshm (Use_Xshm : in Boolean := True);
@@ -91,11 +90,10 @@ package Gdk.Main is
 
    function Pointer_Is_Grabbed return Boolean;
 
-
-   function Keyboard_Grab (Window       : in Gdk.Window.Gdk_Window;
-                           Owner_Events : in Boolean := True;
-                           Time         : in Guint32)
-                           return Boolean;
+   function Keyboard_Grab
+     (Window       : in Gdk.Window.Gdk_Window;
+      Owner_Events : in Boolean := True;
+      Time         : in Guint32) return Boolean;
 
    procedure Keyboard_Ungrab (Time : in Guint32);
 

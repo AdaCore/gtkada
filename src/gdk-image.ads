@@ -36,31 +36,33 @@ package Gdk.Image is
    type Gdk_Image is new Gdk.C_Proxy;
    Null_Image : constant Gdk_Image;
 
-   type Gdk_Image_Type is (Image_Normal,
-                           Image_Shared,
-                           Image_Fastest);
+   type Gdk_Image_Type is (Image_Normal, Image_Shared, Image_Fastest);
 
-   procedure Gdk_New (Image      :    out Gdk_Image;
-                      Image_Type : in     Gdk_Image_Type;
-                      Visual     : in     Gdk.Visual.Gdk_Visual;
-                      Width      : in     Gint;
-                      Height     : in     Gint);
+   procedure Gdk_New
+     (Image      :    out Gdk_Image;
+      Image_Type : in     Gdk_Image_Type;
+      Visual     : in     Gdk.Visual.Gdk_Visual;
+      Width      : in     Gint;
+      Height     : in     Gint);
 
-   procedure Get (Image  :    out Gdk_Image;
-                  Window : in     Gdk.Window.Gdk_Window;
-                  X      : in     Gint;
-                  Y      : in     Gint;
-                  Width  : in     Gint;
-                  Height : in     Gint);
+   procedure Get
+     (Image  :    out Gdk_Image;
+      Window : in     Gdk.Window.Gdk_Window;
+      X      : in     Gint;
+      Y      : in     Gint;
+      Width  : in     Gint;
+      Height : in     Gint);
 
-   procedure Put_Pixel (Image : in Gdk_Image;
-                        X     : in Gint;
-                        Y     : in Gint;
-                        Pixel : in Guint32);
+   procedure Put_Pixel
+     (Image : in Gdk_Image;
+      X     : in Gint;
+      Y     : in Gint;
+      Pixel : in Guint32);
 
-   function Get_Pixel (Image : in Gdk_Image;
-                       X     : in Gint;
-                       Y     : in Gint) return Guint32;
+   function Get_Pixel
+     (Image : in Gdk_Image;
+      X     : in Gint;
+      Y     : in Gint) return Guint32;
 
    procedure Destroy (Image : in Gdk_Image);
 

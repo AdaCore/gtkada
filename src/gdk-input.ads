@@ -37,12 +37,12 @@ package Gdk.Input is
 
    procedure Gdk_Exit;
 
-   procedure Set_Extension_Events (Window : in Gdk.Window.Gdk_Window;
-                                   Mask   : in Gdk.Types.Gdk_Event_Mask;
-                                   Mode   : in Gdk.Types.Gdk_Extension_Mode);
-   --
-   --  FIXME: Verify that Mask is indeed of type GdkEventMask.
-   --  FIXME: The C code defines it as Gint...
+   procedure Set_Extension_Events
+     (Window : in Gdk.Window.Gdk_Window;
+      Mask   : in Gdk.Types.Gdk_Event_Mask;
+      Mode   : in Gdk.Types.Gdk_Extension_Mode);
+   --  ??? Check that Mask is indeed of type GdkEventMask.
+   --  The C code defines it as Gint...
 
    generic
       type Data_Type (<>) is private;
@@ -72,7 +72,7 @@ package Gdk.Input is
    --    This returns the list of past motion events in the window, between two
    --    times. This might give a finer granularity than getting the
    --    Motion_Events themselves, and might be more efficient.
-   --    Not supporting by all XServers though.
+   --    Not supported by all XServers though.
 
 private
    pragma Import (C, Init, "gdk_input_init");

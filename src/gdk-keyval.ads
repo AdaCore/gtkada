@@ -35,22 +35,17 @@ package Gdk.Keyval is
 
    function From_Name (Keyval_Name : in String) return Gdk.Types.Gdk_Key_Type;
 
-   function To_Upper (Keyval : in Gdk.Types.Gdk_Key_Type)
-     return Gdk.Types.Gdk_Key_Type;
+   function To_Upper
+     (Keyval : in Gdk.Types.Gdk_Key_Type) return Gdk.Types.Gdk_Key_Type;
 
-   function To_Lower (Keyval : in Gdk.Types.Gdk_Key_Type)
-     return Gdk.Types.Gdk_Key_Type;
+   function To_Lower
+     (Keyval : in Gdk.Types.Gdk_Key_Type) return Gdk.Types.Gdk_Key_Type;
 
    function Is_Upper (Keyval : in Gdk.Types.Gdk_Key_Type) return Boolean;
 
    function Is_Lower (Keyval : in Gdk.Types.Gdk_Key_Type) return Boolean;
 
-
-   ------------------------
-   --  "pragma Import"s  --
-   ------------------------
-
+private
    pragma Import (C, To_Upper, "gdk_keyval_to_upper");
    pragma Import (C, To_Lower, "gdk_keyval_to_lower");
-
 end Gdk.Keyval;

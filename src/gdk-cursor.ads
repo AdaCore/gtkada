@@ -36,8 +36,9 @@ package Gdk.Cursor is
    type Gdk_Cursor is new Gdk.C_Proxy;
    Null_Cursor : constant Gdk_Cursor;
 
-   procedure Gdk_New (Widget      : out Gdk_Cursor;
-                      Cursor_Type : in  Gdk.Types.Gdk_Cursor_Type);
+   procedure Gdk_New
+     (Widget      : out Gdk_Cursor;
+      Cursor_Type : in  Gdk.Types.Gdk_Cursor_Type);
 
    procedure Gdk_New
      (Widget : out Gdk_Cursor;

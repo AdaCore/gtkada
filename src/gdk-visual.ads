@@ -29,11 +29,11 @@
 
 with Glib; use Glib;
 with Glib.Glist;
-with Unchecked_Conversion;
 pragma Elaborate_All (Glib.Glist);
 
 with Gdk.Types;
 
+with Unchecked_Conversion;
 
 package Gdk.Visual is
 
@@ -45,7 +45,6 @@ package Gdk.Visual is
    type Gdk_Visual_Type_Array is array (Natural range <>)
      of Types.Gdk_Visual_Type;
 
-
    function Get_Best_Depth return Gint;
 
    function Get_Best_Type return Types.Gdk_Visual_Type;
@@ -54,21 +53,22 @@ package Gdk.Visual is
 
    procedure Get_Best (Visual : out Gdk_Visual);
 
-   procedure Get_Best (Visual :    out Gdk_Visual;
-                       Depth  : in     Gint);
+   procedure Get_Best
+     (Visual :    out Gdk_Visual;
+      Depth  : in     Gint);
 
-   procedure Get_Best (Visual      :    out Gdk_Visual;
-                       Visual_Type : in     Types.Gdk_Visual_Type);
+   procedure Get_Best
+     (Visual      :    out Gdk_Visual;
+      Visual_Type : in     Types.Gdk_Visual_Type);
 
-   procedure Get_Best (Visual      :    out Gdk_Visual;
-                       Depth       : in     Gint;
-                       Visual_Type : in     Types.Gdk_Visual_Type);
+   procedure Get_Best
+     (Visual      :    out Gdk_Visual;
+      Depth       : in     Gint;
+      Visual_Type : in     Types.Gdk_Visual_Type);
 
    function Query_Depths return Gint_Array;
 
    function Query_Visual_Types return Gdk_Visual_Type_Array;
-
-
 
    function Convert is new Unchecked_Conversion (Gdk_Visual, System.Address);
    function Convert is new Unchecked_Conversion (System.Address, Gdk_Visual);
@@ -76,7 +76,6 @@ package Gdk.Visual is
    package Gdk_Visual_List is new Glib.Glist.Generic_List (Gdk_Visual);
 
    function List_Visuals return Gdk_Visual_List.Glist;
-
 
 private
    Null_Visual : constant Gdk_Visual := null;
