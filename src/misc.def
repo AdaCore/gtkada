@@ -1,6 +1,4 @@
 EXPORTS
-	ada_get_xwindow
-	ada_get_xwindow
 	convert_a
 	convert_i
 	convert_ua
