@@ -43,14 +43,15 @@ package body Gtk.Pixmap is
 
    procedure Get
       (Pixmap : access Gtk_Pixmap_Record;
-       Val    : in Gdk.Pixmap.Gdk_Pixmap;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap)
+       Val    : out Gdk.Pixmap.Gdk_Pixmap;
+       Mask   : out Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal
          (Pixmap : in System.Address;
-          Val    : in Gdk.Pixmap.Gdk_Pixmap;
-          Mask   : in Gdk.Bitmap.Gdk_Bitmap);
+          Val    : out Gdk.Pixmap.Gdk_Pixmap;
+          Mask   : out Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "gtk_pixmap_get");
+
    begin
       Internal (Get_Object (Pixmap), Val, Mask);
    end Get;

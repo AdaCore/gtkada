@@ -41,8 +41,8 @@ package Gtk.Pixmap is
 
    procedure Get
      (Pixmap : access Gtk_Pixmap_Record;
-      Val    : in Gdk.Pixmap.Gdk_Pixmap;
-      Mask   : in Gdk.Bitmap.Gdk_Bitmap);
+      Val    : out Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : out Gdk.Bitmap.Gdk_Bitmap);
 
    function Get_Mask
      (Widget : access Gtk_Pixmap_Record) return Gdk.Bitmap.Gdk_Bitmap;
