@@ -415,7 +415,17 @@ package Gdk.Event is
    procedure Get_Graphics_Expose
      (Event  : out Gdk_Event_Expose;
       Window : in Gdk.Window.Gdk_Window);
-   --  ???
+   --  Waits for a GraphicsExpose or NoExpose event
+   --  If it gets a GraphicsExpose event, it returns a pointer to it,
+   --  otherwise it returns an event for which Is_Created is False.
+   --
+   --  This function can be used to implement scrolling: you must call
+   --  Gdk.GC.Set_Exposures with True on the GC you are using for the
+   --  drawing, so that a events are generated for obscured areas and every
+   --  time a new part of the widget is drawn. However, there is a race
+   --  condition if multiple scrolls happen before you have finished
+   --  processing the first one. A workaround is to call Get_Graphics_Expose
+   --  after every scroll until it returns a null event.
 
    function Events_Pending return Boolean;
    --  Is there any event pending on the queue ?

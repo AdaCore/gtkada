@@ -39,6 +39,11 @@
 --  If you simply want to create a simply window, you should instead look
 --  at the functions provided in Gtk.Window and Gtk.Widget, which are higher
 --  level than these.
+--
+--  Scrolling can be implemented in several ways with GtkAda (toplevel
+--  scrolling should be done with the Gtk_Scrolled_Window widget, but you
+--  might want to handle scrolling yourself). See the function
+--  Gdk.Event.Get_Graphics_Expose for more information.
 --  <c_version>1.2.7</c_version>
 
 with Glib; use Glib;
