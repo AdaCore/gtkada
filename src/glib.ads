@@ -46,6 +46,7 @@ package Glib is
    --  Some Array types  --
    ------------------------
 
+   type Gint_Array is array (Natural range <>) of Gint;
    type Gulong_Array is array (Natural range <>) of Gulong;
    type Gfloat_Array is array (Natural range <>) of Gfloat;
    type Guchar_Array is array (Natural range <>) of Guchar;
