@@ -72,7 +72,7 @@ package Gtk.Combo is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Sheet.
+   --  Return the internal value associated with a Gtk_Combo.
 
    procedure Disable_Activate (Combo_Box : access Gtk_Combo_Record);
    --  Disable the standard handler for the <return> key in the entry field.
