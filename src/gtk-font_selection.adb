@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,6 +32,9 @@ with Interfaces.C.Strings;
 with System;
 
 package body Gtk.Font_Selection is
+
+   procedure g_free (S : Interfaces.C.Strings.chars_ptr);
+   pragma Import (C, g_free, "g_free");
 
    -----------------------
    -- Get_Cancel_Button --
@@ -114,11 +117,17 @@ package body Gtk.Font_Selection is
         (Fsd : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_font_selection_dialog_get_font_name");
 
-      S : Interfaces.C.Strings.chars_ptr := Internal (Get_Object (Fsd));
+      S : constant Interfaces.C.Strings.chars_ptr :=
+        Internal (Get_Object (Fsd));
 
    begin
       if S /= Interfaces.C.Strings.Null_Ptr then
-         return Interfaces.C.Strings.Value (Internal (Get_Object (Fsd)));
+         declare
+            Val : constant String := Interfaces.C.Strings.Value (S);
+         begin
+            g_free (S);
+            return Val;
+         end;
       else
          return "";
       end if;
@@ -199,11 +208,17 @@ package body Gtk.Font_Selection is
       pragma Import (C, Internal, "gtk_font_selection_get_font_name");
 
       use type Interfaces.C.Strings.chars_ptr;
-      S : Interfaces.C.Strings.chars_ptr := Internal (Get_Object (Fontsel));
+      S : constant Interfaces.C.Strings.chars_ptr :=
+        Internal (Get_Object (Fontsel));
 
    begin
       if S /= Interfaces.C.Strings.Null_Ptr then
-         return Interfaces.C.Strings.Value (Internal (Get_Object (Fontsel)));
+         declare
+            Val : constant String := Interfaces.C.Strings.Value (S);
+         begin
+            g_free (S);
+            return Val;
+         end;
       else
          return "";
       end if;
