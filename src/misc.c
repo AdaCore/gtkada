@@ -578,24 +578,6 @@ ada_gtk_font_selection_dialog_get_apply (GtkFontSelectionDialog* fsd)
 }
 
 /********************
- * Check_Menu_Item
- ********************/
-
-guint
-ada_check_menu_item_get_active (GtkCheckMenuItem* item) {
-  return item->active;
-}
-
-/********************
- * Menu_Item
- ********************/
-
-GtkWidget*
-ada_gtk_menu_item_get_submenu (GtkMenuItem* item) {
-  return item->submenu;
-}
-
-/********************
  * Paned
  ********************/
 
@@ -1607,13 +1589,6 @@ gint ada_gdk_event_set_message_type (GdkEvent * event, gulong type)
  ********************/
 
 gdouble
-ada_gtk_adjustment_get_value (GtkAdjustment * adjustment)
-{
-  return adjustment->value;
-}
-
-
-gdouble
 ada_gtk_adjustment_get_page_size (GtkAdjustment * adjustment)
 {
   return adjustment->page_size;
@@ -2054,22 +2029,6 @@ ada_gamma_curve_get_gamma (GtkGammaCurve* widget)
 }
 
 /******************************************
- ** Functions for Gtk_Window
- ******************************************/
-
-char*
-ada_gtk_window_get_title (GtkWindow* window)
-{
-  return window->title;
-}
-
-GtkWindow*
-ada_gtk_window_get_transient_parent (GtkWindow* window)
-{
-  return window->transient_parent;
-}
-
-/******************************************
  ** Functions for Alignment
  ******************************************/
 
@@ -2095,34 +2054,6 @@ gfloat
 ada_alignment_get_yscale (GtkAlignment* widget)
 {
    return widget->yscale;
-}
-
-/******************************************
- ** Functions for Ruler
- ******************************************/
-
-gdouble
-ada_ruler_get_lower (GtkRuler* widget)
-{
-   return widget->lower;
-}
-
-gdouble
-ada_ruler_get_max_size (GtkRuler* widget)
-{
-   return widget->max_size;
-}
-
-gdouble
-ada_ruler_get_position (GtkRuler* widget)
-{
-   return widget->position;
-}
-
-gdouble
-ada_ruler_get_upper (GtkRuler* widget)
-{
-   return widget->upper;
 }
 
 /******************************************
@@ -2153,11 +2084,15 @@ ada_aspect_frame_get_yalign (GtkAspectFrame* widget)
 
 guint
 ada_gtk_layout_get_width (GtkLayout* layout) {
+  /** ??? Should not be needed with gtk_layout_get_size,
+      ??? but kept for compatibility with GVD **/
   return layout->width;
 }
 
 guint
 ada_gtk_layout_get_height (GtkLayout* layout) {
+  /** ??? Should not be needed with gtk_layout_get_size,
+      ??? but kept for compatibility with GVD **/
   return layout->height;
 }
 
@@ -2314,12 +2249,14 @@ ada_file_selection_get_selection_text (GtkFileSelection* widget)
 GtkWidget*
 ada_dialog_get_action_area (GtkDialog* widget)
 {
+  /** ??? Obsolete with Gtk.Dialog.Add_* **/
    return widget->action_area;
 }
 
 GtkWidget*
 ada_dialog_get_vbox (GtkDialog* widget)
 {
+  /** ??? Obsolete with Gtk.Dialog.Add_* **/
    return widget->vbox;
 }
 
@@ -2366,12 +2303,6 @@ ada_widget_set_window (GtkWidget* widget, GdkWindow *window)
   widget->window = window;
 }
 
-GtkWidget*
-ada_widget_get_parent (GtkWidget* widget)
-{
-  return widget->parent;
-}
-
 gint
 ada_widget_get_motion_notify (GtkWidget* widget, GdkEvent* event)
 {
@@ -2385,35 +2316,14 @@ ada_widget_has_default_motion_notify (GtkWidget* widget)
   return (GTK_WIDGET_GET_CLASS (widget)->motion_notify_event) != 0;
 }
 
-/******************************************
- ** Functions for Pixmap
- ******************************************/
-
-GdkBitmap*
-ada_pixmap_get_mask (GtkPixmap* widget)
-{
-   return widget->mask;
-}
-
-GdkPixmap*
-ada_pixmap_get_pixmap (GtkPixmap* widget)
-{
-   return widget->pixmap;
-}
-
 /*******************************************
  ** Functions for Notebook
  *******************************************/
 
-gint
-ada_notebook_get_tab_pos (GtkNotebook* widget)
-{
-   return widget->tab_pos;
-}
-
 GList*
 ada_notebook_get_children (GtkNotebook* widget)
 {
+  /** ??? Should use gtk_container_get_children instead **/
   return widget->children;
 }
 
@@ -2484,6 +2394,7 @@ ada_gslist_get_data (GSList* list)
 GList*
 ada_fixed_get_children (GtkFixed* widget)
 {
+  /** ??? Should use gtk_container_get_children instead **/
    return widget->children;
 }
 
@@ -2504,6 +2415,7 @@ ada_status_get_messages (GtkStatusbar* widget)
 GList*
 ada_list_get_children (GtkList* widget)
 {
+  /** ??? Should use gtk_container_get_children instead **/
    return widget->children;
 }
 
