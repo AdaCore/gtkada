@@ -286,10 +286,11 @@ end Gdk.Color;
 
 --  <example>
 --  --  Here is an example how you can allocate a new color, when you know
---  --  its red/green/blue components:
+--  --  its red/green/blue components: Note that we allocate white in fact
+--  --  since the maximal value for color components is 65535.
 --     Color   : Gdk_Color;
 --     Success : Boolean;
---     Set_Rbg (Color, 255, 255, 255);
+--     Set_Rbg (Color, 65535, 65535, 65535);
 --     Alloc_Color (Colormap   => Gtk.Widget.Get_Default_Colormap,
 --                  Color      => Color,
 --                  Writeable  => False,
