@@ -576,6 +576,29 @@ package body Gtk.Tree_Model is
       return Get_User_Data (Value, Stub);
    end Get_Object;
 
+   -----------------
+   -- Get_Address --
+   -----------------
+
+   function Get_Address
+     (Tree_Model : access Gtk_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return System.Address
+   is
+      procedure Internal
+        (Tree_Model : System.Address;
+         Iter       : Gtk_Tree_Iter;
+         Column     : Gint;
+         Value      : out System.Address;
+         Final      : Gint := -1);
+      pragma Import (C, Internal, "gtk_tree_model_get");
+
+      Value : System.Address;
+   begin
+      Internal (Get_Object (Tree_Model), Iter, Column, Value);
+      return Value;
+   end Get_Address;
+
    ----------------
    -- Get_String --
    ----------------

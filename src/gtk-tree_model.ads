@@ -58,8 +58,10 @@ with Glib.Values;
 
 package Gtk.Tree_Model is
 
-   type Gtk_Tree_Model_Record is new Glib.Object.GObject_Record with private;
+   type Gtk_Tree_Model_Record is new Glib.Object.GObject_Record
+     with private;
    type Gtk_Tree_Model is access all Gtk_Tree_Model_Record'Class;
+   --  This is an abstract interface
 
    type Tree_Model_Flags is mod 2 ** 32;
    Tree_Model_Iters_Persist : constant Tree_Model_Flags;
@@ -76,6 +78,7 @@ package Gtk.Tree_Model is
       return Tree_Model_Flags;
    --  Return a set of flags supported by this interface. The flags
    --  supported should not change during the lifecycle of the tree_model.
+   --  The flags should not change in the lifetime of the model.
 
    function Get_N_Columns (Tree_Model : access Gtk_Tree_Model_Record)
      return Gint;
@@ -183,6 +186,8 @@ package Gtk.Tree_Model is
    ---------------
    -- Iterators --
    ---------------
+   --  ??? Need to be able to access the user_data fields, so that new models
+   --  can define their own iterators
 
    type Gtk_Tree_Iter is private;
    Null_Iter : constant Gtk_Tree_Iter;
@@ -323,6 +328,12 @@ package Gtk.Tree_Model is
       Iter       : Gtk_Tree_Iter;
       Column     : Gint) return String;
    --  Get the string stored at a specific location in the model.
+
+   function Get_Address
+     (Tree_Model : access Gtk_Tree_Model_Record;
+      Iter       : Gtk_Tree_Iter;
+      Column     : Gint) return System.Address;
+   --  Get the pointer stored at a specific location in the model.
 
    -------------
    -- Signals --
