@@ -264,4 +264,44 @@ package body Gtk.Paned is
       Internal (Get_Object (Paned), Position);
    end Set_Position;
 
+   ---------------------
+   -- Set_Handle_Size --
+   ---------------------
+
+   procedure Set_Handle_Size
+     (Paned : access Gtk_Paned_Record;
+      Size  : Guint16) is
+   begin
+      null;
+   end Set_Handle_Size;
+
+   ---------------------
+   -- Get_Handle_Size --
+   ---------------------
+
+   function Get_Handle_Size (Paned : access Gtk_Paned_Record) return Guint16 is
+   begin
+      return 0;
+   end Get_Handle_Size;
+
+   ---------------------
+   -- Set_Gutter_Size --
+   ---------------------
+
+   procedure Set_Gutter_Size
+     (Paned : access Gtk_Paned_Record;
+      Size  : Guint16) is
+   begin
+      null;
+   end Set_Gutter_Size;
+
+   ---------------------
+   -- Get_Gutter_Size --
+   ---------------------
+
+   function Get_Gutter_Size (Paned : access Gtk_Paned_Record) return Guint16 is
+   begin
+      return 0;
+   end Get_Gutter_Size;
+
 end Gtk.Paned;

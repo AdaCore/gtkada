@@ -172,6 +172,30 @@ package Gtk.Paned is
    function Get_Child2_Shrink (Paned : access Gtk_Paned_Record) return Boolean;
    --  Get the value of the shrink attribute for the second child.
 
+   --  <doc_ignore>
+
+   procedure Set_Handle_Size
+     (Paned : access Gtk_Paned_Record;
+      Size  : Guint16);
+   --  Do nothing.
+   --  Only provided for compatibility.
+
+   function Get_Handle_Size (Paned : access Gtk_Paned_Record) return Guint16;
+   --  Return 0.
+   --  Only provided for compatibility.
+
+   procedure Set_Gutter_Size
+     (Paned : access Gtk_Paned_Record;
+      Size  : Guint16);
+   --  Do nothing.
+   --  Only provided for compatibility.
+
+   function Get_Gutter_Size (Paned : access Gtk_Paned_Record) return Guint16;
+   --  Return 0.
+   --  Only provided for compatibility.
+
+   --  </doc_ignore>
+
    ----------------
    -- Properties --
    ----------------
