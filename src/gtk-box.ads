@@ -65,11 +65,11 @@ package Gtk.Box is
    --  <doc_ignore>
    subtype Gtk_Hbox_Record is Gtk_Box_Record;
    subtype Gtk_Vbox_Record is Gtk_Box_Record;
-   --  </doc_ignore>
 
    type Gtk_Box is access all Gtk_Box_Record'Class;
    subtype Gtk_Hbox is Gtk_Box;
    subtype Gtk_Vbox is Gtk_Box;
+   --  </doc_ignore>
 
    procedure Gtk_New_Vbox (Box         : in out Gtk_Box;
                            Homogeneous : in  Boolean := False;
