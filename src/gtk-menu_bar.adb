@@ -74,7 +74,7 @@ package body Gtk.Menu_Bar is
    procedure Gtk_New (Menu_Bar : out Gtk_Menu_Bar) is
    begin
       Menu_Bar := new Gtk_Menu_Bar_Record;
-      Initialize (Menu_Bar);
+      Gtk.Menu_Bar.Initialize (Menu_Bar);
    end Gtk_New;
 
    ----------------

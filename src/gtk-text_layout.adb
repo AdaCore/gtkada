@@ -38,7 +38,7 @@ package body Gtk.Text_Layout is
    procedure Gtk_New (Layout : out Gtk_Text_Layout) is
    begin
       Layout := new Gtk_Text_Layout_Record;
-      Initialize (Layout);
+      Gtk.Text_Layout.Initialize (Layout);
    end Gtk_New;
 
    ----------------

@@ -76,7 +76,7 @@ package body Gnome.Druid_Page_Standard is
    procedure Gnome_New (Widget : out Gnome_Druid_Page_Standard) is
    begin
       Widget := new Gnome_Druid_Page_Standard_Record;
-      Initialize (Widget);
+      Gnome.Druid_Page_Standard.Initialize (Widget);
    end Gnome_New;
 
    ----------------

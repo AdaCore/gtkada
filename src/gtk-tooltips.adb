@@ -63,7 +63,7 @@ package body Gtk.Tooltips is
    procedure Gtk_New (Widget : out Gtk_Tooltips) is
    begin
       Widget := new Gtk_Tooltips_Record;
-      Initialize (Widget);
+      Gtk.Tooltips.Initialize (Widget);
    end Gtk_New;
 
    ----------------

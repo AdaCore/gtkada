@@ -38,7 +38,7 @@ package body Gtk.Vbutton_Box is
    procedure Gtk_New (Widget : out Gtk_Vbutton_Box) is
    begin
       Widget := new Gtk_Vbutton_Box_Record;
-      Initialize (Widget);
+      Gtk.Vbutton_Box.Initialize (Widget);
    end Gtk_New;
 
    ----------------

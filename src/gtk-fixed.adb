@@ -56,7 +56,7 @@ package body Gtk.Fixed is
    procedure Gtk_New (Fixed : out Gtk_Fixed) is
    begin
       Fixed := new Gtk_Fixed_Record;
-      Initialize (Fixed);
+      Gtk.Fixed.Initialize (Fixed);
    end Gtk_New;
 
    ----------------

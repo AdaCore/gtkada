@@ -69,7 +69,7 @@ package body Gtk.Option_Menu is
    procedure Gtk_New (Option_Menu : out Gtk_Option_Menu) is
    begin
       Option_Menu := new Gtk_Option_Menu_Record;
-      Initialize (Option_Menu);
+      Gtk.Option_Menu.Initialize (Option_Menu);
    end Gtk_New;
 
    ----------------

@@ -200,7 +200,7 @@ package body Gtk.Notebook is
    procedure Gtk_New (Widget : out Gtk_Notebook) is
    begin
       Widget := new Gtk_Notebook_Record;
-      Initialize (Widget);
+      Gtk.Notebook.Initialize (Widget);
    end Gtk_New;
 
    ----------------

@@ -38,7 +38,7 @@ package body Gtk.Event_Box is
    procedure Gtk_New (Event_Box : out Gtk_Event_Box) is
    begin
       Event_Box := new Gtk_Event_Box_Record;
-      Initialize (Event_Box);
+      Gtk.Event_Box.Initialize (Event_Box);
    end Gtk_New;
 
    ----------------

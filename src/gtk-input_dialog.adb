@@ -38,7 +38,7 @@ package body Gtk.Input_Dialog is
    procedure Gtk_New (Input_Dialog : out Gtk_Input_Dialog) is
    begin
       Input_Dialog := new Gtk_Input_Dialog_Record;
-      Initialize (Input_Dialog);
+      Gtk.Input_Dialog.Initialize (Input_Dialog);
    end Gtk_New;
 
    ----------------

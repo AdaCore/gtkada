@@ -38,7 +38,7 @@ package body Gtk.Text_Tag_Table is
    procedure Gtk_New (Table : out Gtk_Text_Tag_Table) is
    begin
       Table := new Gtk_Text_Tag_Table_Record;
-      Initialize (Table);
+      Gtk.Text_Tag_Table.Initialize (Table);
    end Gtk_New;
 
    ----------------

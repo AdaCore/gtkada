@@ -51,7 +51,7 @@ package body Gtk.Hbutton_Box is
    procedure Gtk_New (Widget : out Gtk_Hbutton_Box) is
    begin
       Widget := new Gtk_Hbutton_Box_Record;
-      Initialize (Widget);
+      Gtk.Hbutton_Box.Initialize (Widget);
    end Gtk_New;
 
    ----------------

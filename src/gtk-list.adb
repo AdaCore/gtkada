@@ -131,7 +131,7 @@ package body Gtk.List is
    is
    begin
       Widget := new Gtk_List_Record;
-      Initialize (Widget);
+      Gtk.List.Initialize (Widget);
    end Gtk_New;
 
    ----------------

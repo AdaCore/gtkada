@@ -57,7 +57,7 @@ package body Gtk.Status_Bar is
    procedure Gtk_New (Statusbar : out Gtk_Status_Bar) is
    begin
       Statusbar := new Gtk_Status_Bar_Record;
-      Initialize (Statusbar);
+      Gtk.Status_Bar.Initialize (Statusbar);
    end Gtk_New;
 
    --------------------

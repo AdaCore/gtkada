@@ -40,7 +40,7 @@ package body Gnome.Icon_Selection is
    procedure Gnome_New (Widget : out Gnome_Icon_Selection) is
    begin
       Widget := new Gnome_Icon_Selection_Record;
-      Initialize (Widget);
+      Gnome.Icon_Selection.Initialize (Widget);
    end Gnome_New;
 
    ----------------

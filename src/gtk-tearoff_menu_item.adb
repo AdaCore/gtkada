@@ -49,7 +49,7 @@ package body Gtk.Tearoff_Menu_Item is
    procedure Gtk_New (Menu_Item : out Gtk_Tearoff_Menu_Item) is
    begin
       Menu_Item := new Gtk_Tearoff_Menu_Item_Record;
-      Initialize (Menu_Item);
+      Gtk.Tearoff_Menu_Item.Initialize (Menu_Item);
    end Gtk_New;
 
    ----------------

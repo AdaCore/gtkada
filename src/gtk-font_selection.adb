@@ -242,7 +242,7 @@ package body Gtk.Font_Selection is
    procedure Gtk_New (Widget : out Gtk_Font_Selection) is
    begin
       Widget := new Gtk_Font_Selection_Record;
-      Initialize (Widget);
+      Gtk.Font_Selection.Initialize (Widget);
    end Gtk_New;
 
    ----------------

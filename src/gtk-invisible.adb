@@ -41,7 +41,7 @@ package body Gtk.Invisible is
 
    begin
       Widget := new Gtk_Invisible_Record;
-      Initialize (Widget);
+      Gtk.Invisible.Initialize (Widget);
    end Gtk_New;
 
    ------------------

@@ -40,7 +40,7 @@ package body Gnome.Paper_Selector is
    procedure Gnome_New (Paper_Selector : out Gnome_Paper_Selector) is
    begin
       Paper_Selector := new Gnome_Paper_Selector_Record;
-      Initialize (Paper_Selector);
+      Gnome.Paper_Selector.Initialize (Paper_Selector);
    end Gnome_New;
 
    ----------------

@@ -72,7 +72,7 @@ package body Gtk.Text_Child is
    procedure Gtk_New (Widget : out Gtk_Text_Child_Anchor) is
    begin
       Widget := new Gtk_Text_Child_Anchor_Record;
-      Initialize (Widget);
+      Gtk.Text_Child.Initialize (Widget);
    end Gtk_New;
 
    ----------------

@@ -38,7 +38,7 @@ package body Gtk.Tips_Query is
    procedure Gtk_New (Widget : out Gtk_Tips_Query) is
    begin
       Widget := new Gtk_Tips_Query_Record;
-      Initialize (Widget);
+      Gtk.Tips_Query.Initialize (Widget);
    end Gtk_New;
 
    ----------------

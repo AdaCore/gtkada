@@ -78,7 +78,7 @@ package body Gtk.Extra.Color_Combo is
    procedure Gtk_New (Widget : out Gtk_Color_Combo) is
    begin
       Widget := new Gtk_Color_Combo_Record;
-      Initialize (Widget);
+      Gtk.Extra.Color_Combo.Initialize (Widget);
    end Gtk_New;
 
    ----------------

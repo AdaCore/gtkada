@@ -54,7 +54,7 @@ package body Gtk.Color_Selection is
    procedure Gtk_New (Widget : out Gtk_Color_Selection) is
    begin
       Widget := new Gtk_Color_Selection_Record;
-      Initialize (Widget);
+      Gtk.Color_Selection.Initialize (Widget);
    end Gtk_New;
 
    ----------------

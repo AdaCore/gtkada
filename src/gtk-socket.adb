@@ -38,7 +38,7 @@ package body Gtk.Socket is
    procedure Gtk_New (Widget : out Gtk_Socket) is
    begin
       Widget := new Gtk_Socket_Record;
-      Initialize (Widget);
+      Gtk.Socket.Initialize (Widget);
    end Gtk_New;
 
    ------------------

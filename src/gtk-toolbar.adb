@@ -214,7 +214,7 @@ package body Gtk.Toolbar is
    procedure Gtk_New (Widget : out Gtk_Toolbar) is
    begin
       Widget := new Gtk_Toolbar_Record;
-      Initialize (Widget);
+      Gtk.Toolbar.Initialize (Widget);
    end Gtk_New;
 
    -------------
@@ -254,7 +254,7 @@ package body Gtk.Toolbar is
       Orientation : Gtk_Orientation;
       Style       : Gtk_Toolbar_Style) is
    begin
-      Initialize (Widget);
+      Gtk.Toolbar.Initialize (Widget);
       Set_Orientation (Widget, Orientation);
       Set_Style (Widget, Style);
    end Initialize;

@@ -43,7 +43,7 @@ package body Gnome.Font_Picker is
    procedure Gnome_New (Widget : out Gnome_Font_Picker) is
    begin
       Widget := new Gnome_Font_Picker_Record;
-      Initialize (Widget);
+      Gnome.Font_Picker.Initialize (Widget);
    end Gnome_New;
 
    ----------------

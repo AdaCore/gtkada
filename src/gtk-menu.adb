@@ -117,7 +117,7 @@ package body Gtk.Menu is
    procedure Gtk_New (Widget : out Gtk_Menu) is
    begin
       Widget := new Gtk_Menu_Record;
-      Initialize (Widget);
+      Gtk.Menu.Initialize (Widget);
    end Gtk_New;
 
    ----------------

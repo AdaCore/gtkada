@@ -72,7 +72,7 @@ package body Gtk.Dialog is
    procedure Gtk_New (Dialog : out Gtk_Dialog) is
    begin
       Dialog := new Gtk_Dialog_Record;
-      Initialize (Dialog);
+      Gtk.Dialog.Initialize (Dialog);
    end Gtk_New;
 
    ----------------

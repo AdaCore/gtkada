@@ -43,7 +43,7 @@ package body Gnome.Dock_Band is
    procedure Gnome_New (Widget : out Gnome_Dock_Band) is
    begin
       Widget := new Gnome_Dock_Band_Record;
-      Initialize (Widget);
+      Gnome.Dock_Band.Initialize (Widget);
    end Gnome_New;
 
    ----------------

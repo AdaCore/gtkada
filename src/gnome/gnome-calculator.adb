@@ -39,7 +39,7 @@ package body Gnome.Calculator is
    procedure Gnome_New (Widget : out Gnome_Calculator) is
    begin
       Widget := new Gnome_Calculator_Record;
-      Initialize (Widget);
+      Gnome.Calculator.Initialize (Widget);
    end Gnome_New;
 
    ----------------

@@ -40,7 +40,7 @@ package body Gnome.Property_Box is
    procedure Gnome_New (Widget : out Gnome_Property_Box) is
    begin
       Widget := new Gnome_Property_Box_Record;
-      Initialize (Widget);
+      Gnome.Property_Box.Initialize (Widget);
    end Gnome_New;
 
    ----------------

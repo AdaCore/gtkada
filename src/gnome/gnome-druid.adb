@@ -42,7 +42,7 @@ package body Gnome.Druid is
    procedure Gnome_New (Widget : out Gnome_Druid) is
    begin
       Widget := new Gnome_Druid_Record;
-      Initialize (Widget);
+      Gnome.Druid.Initialize (Widget);
    end Gnome_New;
 
    ----------------

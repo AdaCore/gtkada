@@ -39,7 +39,7 @@ package body Gtk.Extra.Combo_Box is
    is
    begin
       Widget := new Gtk_Combo_Box_Record;
-      Initialize (Widget);
+      Gtk.Extra.Combo_Box.Initialize (Widget);
    end Gtk_New;
 
    ----------------

@@ -76,7 +76,7 @@ package body Gtk.GEntry is
    procedure Gtk_New (Widget : out Gtk_Entry) is
    begin
       Widget := new Gtk_Entry_Record;
-      Initialize (Widget);
+      Gtk.GEntry.Initialize (Widget);
    end Gtk_New;
 
    ----------------

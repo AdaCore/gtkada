@@ -42,7 +42,7 @@ package body Gnome.Dock is
    procedure Gnome_New (Widget : out Gnome_Dock) is
    begin
       Widget := new Gnome_Dock_Record;
-      Initialize (Widget);
+      Gnome.Dock.Initialize (Widget);
    end Gnome_New;
 
    ----------------

@@ -57,7 +57,7 @@ package body Gtk.Curve is
    procedure Gtk_New (Curve : out Gtk_Curve) is
    begin
       Curve := new Gtk_Curve_Record;
-      Initialize (Curve);
+      Gtk.Curve.Initialize (Curve);
    end Gtk_New;
 
    ----------------

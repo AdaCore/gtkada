@@ -99,7 +99,7 @@ package body Gtk.Packer is
    procedure Gtk_New (Widget : out Gtk_Packer) is
    begin
       Widget := new Gtk_Packer_Record;
-      Initialize (Widget);
+      Gtk.Packer.Initialize (Widget);
    end Gtk_New;
 
    ----------------

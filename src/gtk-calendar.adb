@@ -111,7 +111,7 @@ package body Gtk.Calendar is
    procedure Gtk_New (Widget : out Gtk_Calendar) is
    begin
       Widget := new Gtk_Calendar_Record;
-      Initialize (Widget);
+      Gtk.Calendar.Initialize (Widget);
    end Gtk_New;
 
    ----------------

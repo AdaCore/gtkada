@@ -38,7 +38,7 @@ package body Gtk.Handle_Box is
    procedure Gtk_New (Handle_Box : out Gtk_Handle_Box) is
    begin
       Handle_Box := new Gtk_Handle_Box_Record;
-      Initialize (Handle_Box);
+      Gtk.Handle_Box.Initialize (Handle_Box);
    end Gtk_New;
 
    ----------------

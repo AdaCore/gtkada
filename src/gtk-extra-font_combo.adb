@@ -87,7 +87,7 @@ package body Gtk.Extra.Font_Combo is
    is
    begin
       Widget := new Gtk_Font_Combo_Record;
-      Initialize (Widget);
+      Gtk.Extra.Font_Combo.Initialize (Widget);
    end Gtk_New;
 
    ----------------

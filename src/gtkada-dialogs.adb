@@ -136,7 +136,7 @@ package body Gtkada.Dialogs is
       use Gdk;
    begin
       Dialog := new Gtkada_Dialog_Record;
-      Initialize (Dialog);
+      Gtk.Dialog.Initialize (Dialog);
 
       --  Realize it so that we force the creation of its Gdk_Window.
       --  This is needed below to create a pixmap.

@@ -38,7 +38,7 @@ package body Gtk.Extra.Border_Combo is
    procedure Gtk_New (Widget : out Gtk_Border_Combo) is
    begin
       Widget := new Gtk_Border_Combo_Record;
-      Initialize (Widget);
+      Gtk.Extra.Border_Combo.Initialize (Widget);
    end Gtk_New;
 
    ----------------

@@ -38,7 +38,7 @@ package body Gtk.Gamma_Curve is
    procedure Gtk_New (Gamma_Curve : out Gtk_Gamma_Curve) is
    begin
       Gamma_Curve := new Gtk_Gamma_Curve_Record;
-      Initialize (Gamma_Curve);
+      Gtk.Gamma_Curve.Initialize (Gamma_Curve);
    end Gtk_New;
 
    ---------------

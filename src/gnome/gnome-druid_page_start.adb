@@ -84,7 +84,7 @@ package body Gnome.Druid_Page_Start is
    procedure Gnome_New (Widget : out Gnome_Druid_Page_Start) is
    begin
       Widget := new Gnome_Druid_Page_Start_Record;
-      Initialize (Widget);
+      Gnome.Druid_Page_Start.Initialize (Widget);
    end Gnome_New;
 
    ----------------

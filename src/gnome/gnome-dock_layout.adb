@@ -43,7 +43,7 @@ package body Gnome.Dock_Layout is
    procedure Gnome_New (Widget : out Gnome_Dock_Layout) is
    begin
       Widget := new Gnome_Dock_Layout_Record;
-      Initialize (Widget);
+      Gnome.Dock_Layout.Initialize (Widget);
    end Gnome_New;
 
    ----------------

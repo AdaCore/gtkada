@@ -39,7 +39,7 @@ package body Gnome.Color_Picker is
    procedure Gnome_New (Color_Picker : out Gnome_Color_Picker) is
    begin
       Color_Picker := new Gnome_Color_Picker_Record;
-      Initialize (Color_Picker);
+      Gnome.Color_Picker.Initialize (Color_Picker);
    end Gnome_New;
 
    ----------------

@@ -84,7 +84,7 @@ package body Gtk.Combo is
    procedure Gtk_New (Combo_Box : out Gtk_Combo) is
    begin
       Combo_Box := new Gtk_Combo_Record;
-      Initialize (Combo_Box);
+      Gtk.Combo.Initialize (Combo_Box);
    end Gtk_New;
 
    ----------------

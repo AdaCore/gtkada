@@ -100,7 +100,7 @@ package body Gtk.Progress_Bar is
    procedure Gtk_New (Progress_Bar : out Gtk_Progress_Bar) is
    begin
       Progress_Bar := new Gtk_Progress_Bar_Record;
-      Initialize (Progress_Bar);
+      Gtk.Progress_Bar.Initialize (Progress_Bar);
    end Gtk_New;
 
    ----------------

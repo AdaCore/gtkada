@@ -38,7 +38,7 @@ package body Gtk.Drawing_Area is
    procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area) is
    begin
       Drawing_Area := new Gtk_Drawing_Area_Record;
-      Initialize (Drawing_Area);
+      Gtk.Drawing_Area.Initialize (Drawing_Area);
    end Gtk_New;
 
    ----------------

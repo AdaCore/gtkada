@@ -46,13 +46,13 @@ package body Gnome.Stock is
    procedure Gnome_New (Widget : out Gnome_Stock; Icon : String) is
    begin
       Widget := new Gnome_Stock_Record;
-      Initialize (Widget, Icon);
+      Gnome.Stock.Initialize (Widget, Icon);
    end Gnome_New;
 
    procedure Gnome_New (Widget : out Gnome_Stock) is
    begin
       Widget := new Gnome_Stock_Record;
-      Initialize (Widget);
+      Gnome.Stock.Initialize (Widget);
    end Gnome_New;
 
    procedure Gnome_New
@@ -61,7 +61,7 @@ package body Gnome.Stock is
       Icon   : String) is
    begin
       Widget := new Gnome_Stock_Record;
-      Initialize (Widget, Window, Icon);
+      Gnome.Stock.Initialize (Widget, Window, Icon);
    end Gnome_New;
 
    ----------------
