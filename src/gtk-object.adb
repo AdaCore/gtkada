@@ -287,23 +287,17 @@ package body Gtk.Object is
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
    begin
-      Gen_Set (N, "Object", "flags", File);
+      null;
    end Generate;
 
    procedure Generate (Object : in out Gtk_Object;
                        N      : in Node_Ptr) is
-      S : String_Ptr := Get_Field (N, "flags");
-
    begin
       --  If Object is null at this point, it means that it has already been
       --  created and registered
 
       if Object = null then
          Object := Get_Object (Get_Field (N, "name"));
-      end if;
-
-      if S /= null then
-         Set_Flags (Object, Guint32'Value (S.all));
       end if;
    end Generate;
 

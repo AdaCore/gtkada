@@ -31,6 +31,8 @@ with Gdk; use Gdk;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Util; use Gtk.Util;
 with Gtk.Table; use Gtk.Table;
+with Ada.Strings.Fixed; use Ada.Strings.Fixed;
+with Ada.Strings.Maps; use Ada.Strings.Maps;
 
 package body Gtk.Widget is
 
@@ -51,6 +53,7 @@ package body Gtk.Widget is
                          Accel_Mods  : Gint)
         return Guint;
       pragma Import (C, Internal, "gtk_widget_accelerator_signal");
+
    begin
       return Internal (Get_Object (Widget),
                        Get_Object (Accel_Group),
@@ -58,14 +61,14 @@ package body Gtk.Widget is
                        Gdk.Types.Gdk_Modifier_Type'Pos (Accel_Mods));
    end Accelerator_Signal;
 
-   ----------------
-   --  Activate  --
-   ----------------
+   --------------
+   -- Activate --
+   --------------
 
-   procedure Activate (Widget : access Gtk_Widget_Record)
-   is
+   procedure Activate (Widget : access Gtk_Widget_Record) is
       procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_activate");
+
    begin
       Internal (Get_Object (Widget));
    end Activate;
@@ -89,6 +92,7 @@ package body Gtk.Widget is
                           Accel_Mods  : Gint;
                           Accel_Flags : Gint);
       pragma Import (C, Internal, "gtk_widget_add_accelerator");
+
    begin
       Internal (Get_Object (Widget), Accel_Signal & Ascii.Nul,
                 Get_Object (Accel_Group),
@@ -97,15 +101,16 @@ package body Gtk.Widget is
                 Gtk.Accel_Group.Gtk_Accel_Flags'Pos (Accel_Flags));
    end Add_Accelerator;
 
-   ------------------------
-   --  Can_Focus_Is_Set  --
-   ------------------------
+   ----------------------
+   -- Can_Focus_Is_Set --
+   ----------------------
 
    function Can_Focus_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                              return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_can_focus");
+
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end Can_Focus_Is_Set;
@@ -129,14 +134,15 @@ package body Gtk.Widget is
       return Gtk_Widget (Get_User_Data (W, Stub));
    end Convert;
 
-   ---------------
-   --  Destroy  --
-   ---------------
+   -------------
+   -- Destroy --
+   -------------
 
    procedure Destroy (Widget : access Gtk_Widget_Record) is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_widget_destroy");
       Tmp : System.Address := Get_Object (Widget);
+
    begin
       --  We use a Tmp variable, because when the C widget is destroyed,
       --  the Ada structure might be freed (or not), and we always want
@@ -156,19 +162,21 @@ package body Gtk.Widget is
       procedure Internal (Widget : in System.Address;
                           Area   : in System.Address);
       pragma Import (C, Internal, "gtk_widget_draw");
+
    begin
       Internal (Get_Object (Widget), Area'Address);
    end Draw;
 
-   -----------------------
-   --  Drawable_Is_Set  --
-   -----------------------
+   ---------------------
+   -- Drawable_Is_Set --
+   ---------------------
 
    function Drawable_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                             return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_drawable");
+
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end Drawable_Is_Set;
@@ -182,6 +190,7 @@ package body Gtk.Widget is
    is
       procedure Internal (Widget : System.Address; Event : System.Address);
       pragma Import (C, Internal, "gtk_widget_event");
+
    begin
       Internal (Get_Object (Widget), Get_Object (Event));
    end Event;
@@ -191,10 +200,11 @@ package body Gtk.Widget is
    ---------------------------
 
    function Get_Allocation_Height (Widget : access Gtk_Widget_Record)
-                                   return Guint
+     return Guint
    is
       function Internal (Widget : System.Address) return Guint;
       pragma Import (C, Internal, "ada_widget_allocation_height");
+
    begin
       return Internal (Get_Object (Widget));
    end Get_Allocation_Height;
@@ -204,10 +214,11 @@ package body Gtk.Widget is
    --------------------------
 
    function Get_Allocation_Width (Widget : access Gtk_Widget_Record)
-                                  return Guint
+     return Guint
    is
       function Internal (Widget : System.Address) return Guint;
       pragma Import (C, Internal, "ada_widget_allocation_width");
+
    begin
       return Internal (Get_Object (Widget));
    end Get_Allocation_Width;
@@ -217,10 +228,11 @@ package body Gtk.Widget is
    ----------------------
 
    function Get_Allocation_X (Widget : access Gtk_Widget_Record)
-                              return Gint
+     return Gint
    is
       function Internal (Widget : System.Address) return Gint;
       pragma Import (C, Internal, "ada_widget_allocation_x");
+
    begin
       return Internal (Get_Object (Widget));
    end Get_Allocation_X;
@@ -230,10 +242,11 @@ package body Gtk.Widget is
    ----------------------
 
    function Get_Allocation_Y (Widget : access Gtk_Widget_Record)
-                              return Gint
+     return Gint
    is
       function Internal (Widget : System.Address) return Gint;
       pragma Import (C, Internal, "ada_widget_allocation_y");
+
    begin
       return Internal (Get_Object (Widget));
    end Get_Allocation_Y;
@@ -243,21 +256,23 @@ package body Gtk.Widget is
    -------------------------------------
 
    function Get_Default_Motion_Notify_Event (Widget : access Gtk_Widget_Record)
-                                             return System.Address
+     return System.Address
    is
       function Internal (Widget : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_widget_get_motion_notify");
+
    begin
       return Internal (Get_Object (Widget));
    end Get_Default_Motion_Notify_Event;
 
-   ------------------
-   --  Get_Object  --
-   ------------------
+   ----------------
+   -- Get_Object --
+   ----------------
 
    function Get_Events (Widget : access Gtk_Widget_Record) return Gint is
       function Internal (Widget : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_widget_get_events");
+
    begin
       return Internal (Get_Object (Widget));
    end Get_Events;
@@ -270,19 +285,21 @@ package body Gtk.Widget is
       function Internal (Widget : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_widget_get_parent");
       Stub : Gtk_Widget_Record;
+
    begin
       return Gtk_Widget (Get_User_Data (Internal (Get_Object (Widget)), Stub));
    end Get_Parent;
 
-   --------------------
-   --  Get_Toplevel  --
-   --------------------
+   ------------------
+   -- Get_Toplevel --
+   ------------------
 
    function Get_Toplevel (Widget : access Gtk_Widget_Record) return Gtk_Widget
    is
       function Internal (Widget : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_toplevel");
       Stub : Gtk_Widget_Record;
+
    begin
       return Gtk_Widget (Get_User_Data (Internal (Get_Object (Widget)), Stub));
    end Get_Toplevel;
@@ -292,49 +309,55 @@ package body Gtk.Widget is
    ----------------
 
    function Get_Window (Widget : access Gtk_Widget_Record)
-                        return Gdk.Window.Gdk_Window
+     return Gdk.Window.Gdk_Window
    is
       function Internal (Widget : System.Address)
-                        return    System.Address;
+        return System.Address;
       pragma Import (C, Internal, "ada_widget_get_window");
+
       Win : Gdk.Window.Gdk_Window;
+
    begin
       Set_Object (Win, Internal (Get_Object (Widget)));
       return Win;
    end Get_Window;
 
-   --------------------
-   --  Grab_Default  --
-   --------------------
+   ------------------
+   -- Grab_Default --
+   ------------------
 
    procedure Grab_Default (Widget : access Gtk_Widget_Record) is
       procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_grab_default");
+
    begin
       Internal (Get_Object (Widget));
    end Grab_Default;
 
-
-   ------------------
-   --  Grab_Focus  --
-   ------------------
+   ----------------
+   -- Grab_Focus --
+   ----------------
 
    procedure Grab_Focus (Widget : access Gtk_Widget_Record) is
       procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_grab_focus");
+
    begin
       Internal (Get_Object (Widget));
    end Grab_Focus;
 
-   --------------------
-   --  Get_Colormap  --
-   --------------------
+   ------------------
+   -- Get_Colormap --
+   ------------------
 
    function Get_Colormap (Widget : access Gtk_Widget_Record)
-                          return Gdk.Color.Gdk_Colormap is
+     return Gdk.Color.Gdk_Colormap
+   is
       function Internal (Widget : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_colormap");
+
       Result : Gdk.Color.Gdk_Colormap;
+
    begin
       Set_Object (Result, Internal (Get_Object (Widget)));
       return Result;
@@ -347,7 +370,9 @@ package body Gtk.Widget is
    function Get_Default_Colormap return Gdk.Color.Gdk_Colormap is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_default_colormap");
+
       Result : Gdk.Color.Gdk_Colormap;
+
    begin
       Set_Object (Result, Internal);
       return Result;
@@ -360,7 +385,9 @@ package body Gtk.Widget is
    function Get_Default_Visual return Gdk_Visual is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_default_visual");
+
       Visual : Gdk_Visual;
+
    begin
       Set_Object (Visual, Internal);
       return Visual;
@@ -373,71 +400,78 @@ package body Gtk.Widget is
    function Get_Visual (Widget : access Gtk_Widget_Record) return Gdk_Visual is
       function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_visual");
+
       Visual : Gdk_Visual;
+
    begin
       Set_Object (Visual, Internal (Get_Object (Widget)));
       return Visual;
    end Get_Visual;
 
-   --------------------------
-   --  Has_Default_Is_Set  --
-   --------------------------
+   ------------------------
+   -- Has_Default_Is_Set --
+   ------------------------
 
    function Has_Default_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                                return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_has_default");
+
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end Has_Default_Is_Set;
 
-   ------------------------
-   --  Has_Focus_Is_Set  --
-   ------------------------
+   ----------------------
+   -- Has_Focus_Is_Set --
+   ----------------------
 
    function Has_Focus_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                              return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_has_focus");
+
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end Has_Focus_Is_Set;
 
-   -----------------------
-   --  Has_Grab_Is_Set  --
-   -----------------------
+   ---------------------
+   -- Has_Grab_Is_Set --
+   ---------------------
 
    function Has_Grab_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                             return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_has_grab");
+
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end Has_Grab_Is_Set;
 
-   ------------
-   --  Hide  --
-   ------------
+   ----------
+   -- Hide --
+   ----------
 
    procedure Hide (Widget : access Gtk_Widget_Record) is
       procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_hide");
+
    begin
       Internal (Get_Object (Widget));
    end Hide;
 
-   ---------------------------
-   --  Is_Sensitive_Is_Set  --
-   ---------------------------
+   -------------------------
+   -- Is_Sensitive_Is_Set --
+   -------------------------
 
    function Is_Sensitive_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                                 return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_is_sensitive");
+
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end Is_Sensitive_Is_Set;
@@ -446,107 +480,116 @@ package body Gtk.Widget is
    -- Lock_Accelerators --
    -----------------------
 
-   procedure Lock_Accelerators (Widget       : access Gtk_Widget_Record) is
+   procedure Lock_Accelerators (Widget : access Gtk_Widget_Record) is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_widget_lock_accelerators");
+
    begin
       Internal (Get_Object (Widget));
    end Lock_Accelerators;
 
-   -----------
-   --  Map  --
-   -----------
+   ---------
+   -- Map --
+   ---------
 
    procedure Map (Widget : access Gtk_Widget_Record) is
       procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_map");
+
    begin
       Internal (Get_Object (Widget));
    end Map;
 
-   ---------------------
-   --  Mapped_Is_Set  --
-   ---------------------
+   -------------------
+   -- Mapped_Is_Set --
+   -------------------
 
    function Mapped_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                           return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_mapped");
+
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end Mapped_Is_Set;
 
-   ------------------------
-   --  No_Window_Is_Set  --
-   ------------------------
+   ----------------------
+   -- No_Window_Is_Set --
+   ----------------------
 
    function No_Window_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                              return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_no_window");
+
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end No_Window_Is_Set;
 
-   -------------------------------
-   --  Parent_Sensitive_Is_Set  --
-   -------------------------------
+   -----------------------------
+   -- Parent_Sensitive_Is_Set --
+   -----------------------------
 
    function Parent_Sensitive_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                                     return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_parent_sensitive");
+
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end Parent_Sensitive_Is_Set;
 
-   -------------
-   --  Popup  --
-   -------------
+   -----------
+   -- Popup --
+   -----------
 
    procedure Popup (Widget : access Gtk_Widget_Record; X, Y : in Gint) is
       procedure Internal (Widget : in System.Address; X, Y : in Gint);
       pragma Import (C, Internal, "gtk_widget_popup");
+
    begin
       Internal (Get_Object (Widget), X, Y);
    end Popup;
 
-   -----------------------
-   --  Rc_Style_Is_Set  --
-   -----------------------
+   ---------------------
+   -- Rc_Style_Is_Set --
+   ---------------------
 
    function Rc_Style_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                             return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_rc_style");
+
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end Rc_Style_Is_Set;
 
-   --------------
-   -- Realize  --
+   -------------
+   -- Realize --
    -------------
 
    procedure Realize (Widget : access Gtk_Widget_Record) is
       procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_realize");
+
    begin
       Internal (Get_Object (Widget));
    end Realize;
 
-   -----------------------
-   --  Realized_Is_Set  --
-   -----------------------
+   ---------------------
+   -- Realized_Is_Set --
+   ---------------------
 
    function Realized_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                             return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_realized");
+
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end Realized_Is_Set;
@@ -566,6 +609,7 @@ package body Gtk.Widget is
                           Accel_Key   : Gint;
                           Accel_Mods  : Gint);
       pragma Import (C, Internal, "gtk_widget_remove_accelerator");
+
    begin
       Internal (Get_Object (Widget),
                 Get_Object (Accel_Group),
@@ -586,31 +630,33 @@ package body Gtk.Widget is
                           Accel_Signal : String;
                           Visible_Only : Gint);
       pragma Import (C, Internal, "gtk_widget_remove_accelerators");
+
    begin
       Internal (Get_Object (Widget),
                 Accel_Signal & Ascii.NUL,
                 Boolean'Pos (Visible_Only));
    end Remove_Accelerators;
 
-   ----------------
-   --  Reparent  --
-   ----------------
+   --------------
+   -- Reparent --
+   --------------
 
    procedure Reparent (Widget : access Gtk_Widget_Record;
                        New_Parent : access Gtk_Widget_Record'Class)
    is
       procedure Internal (Widget, New_Parent : in System.Address);
       pragma Import (C, Internal, "gtk_widget_reparent");
+
    begin
       Internal (Get_Object (Widget), Get_Object (New_Parent));
    end Reparent;
 
-   ------------------------
-   --  Sensitive_Is_Set  --
-   ------------------------
+   ----------------------
+   -- Sensitive_Is_Set --
+   ----------------------
 
    function Sensitive_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                              return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_sensitive");
@@ -627,6 +673,7 @@ package body Gtk.Widget is
    is
       procedure Internal (Widget : System.Address; Cmap : System.Address);
       pragma Import (C, Internal, "gtk_widget_set_colormap");
+
    begin
       Internal (Get_Object (Widget), Get_Object (Cmap));
    end Set_Colormap;
@@ -635,10 +682,10 @@ package body Gtk.Widget is
    -- Set_Default_Colormap --
    --------------------------
 
-   procedure Set_Default_Colormap (Cmap : Gdk_Colormap)
-   is
+   procedure Set_Default_Colormap (Cmap : Gdk_Colormap) is
       procedure Internal (Cmap : System.Address);
       pragma Import (C, Internal, "gtk_widget_set_default_colormap");
+
    begin
       Internal (Get_Object (Cmap));
    end Set_Default_Colormap;
@@ -647,17 +694,17 @@ package body Gtk.Widget is
    -- Set_Default_Visual --
    ------------------------
 
-   procedure Set_Default_Visual (Visual : Gdk_Visual)
-   is
+   procedure Set_Default_Visual (Visual : Gdk_Visual) is
       procedure Internal (Visual : System.Address);
       pragma Import (C, Internal, "gtk_widget_set_default_visual");
+
    begin
       Internal (Get_Object (Visual));
    end Set_Default_Visual;
 
-   ------------------
-   --  Set_Events  --
-   ------------------
+   ----------------
+   -- Set_Events --
+   ----------------
 
    procedure Set_Events (Widget : access Gtk_Widget_Record;
                          Events : in     Gdk.Types.Gdk_Event_Mask)
@@ -665,19 +712,38 @@ package body Gtk.Widget is
       procedure Internal (Widget : in System.Address;
                           Events : in Gint);
       pragma Import (C, Internal, "gtk_widget_set_events");
+
    begin
       Internal (Get_Object (Widget),
                 Gdk.Types.Gdk_Event_Mask'Pos (Events));
    end Set_Events;
 
-   ----------------
-   --  Set_Name  --
-   ----------------
+   --------------------------
+   -- Set_Extension_Events --
+   --------------------------
+
+   procedure Set_Extension_Events
+     (Widget : access Gtk_Widget_Record;
+      Mode   : in     Gdk.Types.Gdk_Extension_Mode)
+   is
+      procedure Internal (Widget : in System.Address;
+                          Mode   : in Gint);
+      pragma Import (C, Internal, "gtk_widget_set_extension_events");
+
+   begin
+      Internal (Get_Object (Widget),
+                Gdk.Types.Gdk_Extension_Mode'Pos (Mode));
+   end Set_Extension_Events;
+
+   --------------
+   -- Set_Name --
+   --------------
 
    procedure Set_Name (Widget : access Gtk_Widget_Record; Name : in String) is
       procedure Internal (Widget : in System.Address;
                           Name : in String);
       pragma Import (C, Internal, "gtk_widget_set_name");
+
    begin
       Internal (Get_Object (Widget), Name & Ascii.NUL);
    end Set_Name;
@@ -691,6 +757,7 @@ package body Gtk.Widget is
    is
       procedure Internal (Widget, Parent : in System.Address);
       pragma Import (C, Internal, "gtk_widget_set_parent");
+
    begin
       Internal (Get_Object (Widget), Get_Object (Parent));
    end Set_Parent;
@@ -704,6 +771,7 @@ package body Gtk.Widget is
    is
       procedure Internal (Widget : in System.Address; Sensitive : in Gint);
       pragma Import (C, Internal, "gtk_widget_set_sensitive");
+
    begin
       Internal (Get_Object (Widget), To_Gint (Sensitive));
    end Set_Sensitive;
@@ -717,32 +785,35 @@ package body Gtk.Widget is
    is
       procedure Internal (Widget : System.Address; State : Gint);
       pragma Import (C, Internal, "gtk_widget_set_state");
+
    begin
       Internal (Get_Object (Widget), Enums.Gtk_State_Type'Pos (State));
    end Set_State;
 
-   ---------------------
-   --  Set_UPosition  --
-   ---------------------
+   -------------------
+   -- Set_UPosition --
+   -------------------
 
    procedure Set_UPosition (Widget : access Gtk_Widget_Record;
                             X, Y : in Gint)
    is
       procedure Internal (Widget : System.Address; X, Y : in Gint);
       pragma Import (C, Internal, "gtk_widget_set_uposition");
+
    begin
       Internal (Get_Object (Widget), X, Y);
    end Set_UPosition;
 
-   -----------------
-   --  Set_USize  --
-   -----------------
+   ---------------
+   -- Set_USize --
+   ---------------
 
    procedure Set_USize (Widget : access Gtk_Widget_Record;
                         Width, Height : Gint)
    is
       procedure Internal (Widget : System.Address; Width, Height : in Gint);
       pragma Import (C, Internal, "gtk_widget_set_usize");
+
    begin
       Internal (Get_Object (Widget), Width, Height);
    end Set_USize;
@@ -756,41 +827,45 @@ package body Gtk.Widget is
    is
       procedure Internal (Widget : System.Address; Visual : System.Address);
       pragma Import (C, Internal, "gtk_widget_set_visual");
+
    begin
       Internal (Get_Object (Widget), Get_Object (Visual));
    end Set_Visual;
 
-   ------------
-   --  Show  --
-   ------------
+   ----------
+   -- Show --
+   ----------
 
    procedure Show (Widget : access Gtk_Widget_Record) is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_widget_show");
+
    begin
       Internal (Get_Object (Widget));
    end Show;
 
-   ----------------
-   --  Show_All  --
-   ----------------
+   --------------
+   -- Show_All --
+   --------------
 
    procedure Show_All (Widget : access Gtk_Widget_Record) is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_widget_show_all");
+
    begin
       Internal (Get_Object (Widget));
    end Show_All;
 
-   -----------------------
-   --  Toplevel_Is_Set  --
-   -----------------------
+   ---------------------
+   -- Toplevel_Is_Set --
+   ---------------------
 
    function Toplevel_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                             return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_toplevel");
+
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end Toplevel_Is_Set;
@@ -799,22 +874,22 @@ package body Gtk.Widget is
    -- Unlock_Accelerators --
    -------------------------
 
-   procedure Unlock_Accelerators
-     (Widget       : access Gtk_Widget_Record)
-   is
+   procedure Unlock_Accelerators (Widget : access Gtk_Widget_Record) is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_widget_unlock_accelerators");
+
    begin
       Internal (Get_Object (Widget));
    end Unlock_Accelerators;
 
-   -------------
-   --  Unmap  --
-   -------------
+   -----------
+   -- Unmap --
+   -----------
 
    procedure Unmap (Widget : access Gtk_Widget_Record) is
       procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_unmap");
+
    begin
       Internal (Get_Object (Widget));
    end Unmap;
@@ -826,6 +901,7 @@ package body Gtk.Widget is
    procedure Unrealize (Widget : access Gtk_Widget_Record) is
       procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_unrealize");
+
    begin
       Internal (Get_Object (Widget));
    end Unrealize;
@@ -835,10 +911,11 @@ package body Gtk.Widget is
    --------------------
 
    function Visible_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                            return Boolean
+     return Boolean
    is
       function Internal (Widget : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_widget_visible");
+
    begin
       return To_Boolean (Internal (Get_Object (Widget)));
    end Visible_Is_Set;
@@ -849,10 +926,13 @@ package body Gtk.Widget is
 
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
-      Child    : Node_Ptr := Find_Tag (N.Child, "child");
-      Q, Top   : Node_Ptr;
-      S        : String_Ptr;
-      Flag_Set : Boolean;
+      Child     : Node_Ptr := Find_Tag (N.Child, "child");
+      Q, Top    : Node_Ptr;
+      S         : String_Ptr;
+      Flag_Set  : Boolean;
+      First     : Natural;
+      Last      : Natural;
+      The_First : Natural;
 
    begin
       Object.Generate (N, File);
@@ -860,6 +940,63 @@ package body Gtk.Widget is
       Gen_Set (N, "Widget", "UPosition", "x", "y", "", "", File);
       Gen_Set (N, "Widget", "USize", "width", "height", "", "", File);
       Gen_Set (N, "Widget", "state", File);
+      Gen_Set (N, "Widget", "extension_events", File);
+
+      S := Get_Field (N, "can_default");
+
+      if S /= null and then Boolean'Value (S.all) then
+         Add_Package ("Object");
+         Put_Line (File, "   Object.Set_Flags (Gtk_Object (" &
+           To_Ada (Get_Field (N, "name").all) & "), Can_Default);");
+      end if;
+
+      S := Get_Field (N, "has_focus");
+
+      if S /= null and then Boolean'Value (S.all) then
+         Put_Line (File, "   Widget.Grab_Focus (Gtk_Widget (" &
+           To_Ada (Get_Field (N, "name").all) & "));");
+      end if;
+
+      S := Get_Field (N, "has_default");
+
+      if S /= null and then Boolean'Value (S.all) then
+         Put_Line (File, "   Widget.Grab_Default (Gtk_Widget (" &
+           To_Ada (Get_Field (N, "name").all) & "));");
+      end if;
+
+      S := Get_Field (N, "events");
+
+      if S /= null then
+         Put (File, "   Widget.Set_Events (Gtk_Widget (" &
+           To_Ada (Get_Field (N, "name").all) & "), ");
+
+         Flag_Set := False;
+         The_First := S'First;
+
+         loop
+            Find_Token (S (The_First .. S'Last), To_Set (" |"),
+              Ada.Strings.Inside, First, Last);
+
+            exit when Last = 0;
+
+            if Flag_Set then
+               Put (File, " or ");
+            else
+               New_Line (File);
+               Put (File, "     ");
+               Flag_Set := True;
+            end if;
+
+            Put (File, To_Ada (S (The_First + 4 .. First - 1)));
+            The_First := Last + 1;
+         end loop;
+
+         if not Flag_Set then
+            Put (File, "0");
+         end if;
+
+         Put_Line (File, ");");
+      end if;
 
       --  ??? Need to find a better way to call Pack_Start
 
@@ -999,6 +1136,7 @@ package body Gtk.Widget is
       Q          : Node_Ptr;
       Func       : Callback;
       Data       : System.Address;
+      Events     : Gdk.Types.Gdk_Event_Mask;
 
       procedure Signal_Connect
         (Object        : System.Address;
@@ -1006,6 +1144,57 @@ package body Gtk.Widget is
          Func          : Callback;
          Func_Data     : System.Address);
       pragma Import (C, Signal_Connect, "gtk_signal_connect");
+
+      function Decode_Events (S : String) return Gdk.Types.Gdk_Event_Mask;
+
+      function Decode_Events (S : String) return Gdk.Types.Gdk_Event_Mask is
+         use Gdk.Types;
+
+         Events    : Gdk_Event_Mask := Null_Event_Mask;
+         First     : Natural;
+         Last      : Natural;
+         The_First : Natural;
+
+         type Gdk_Event_Mask_Enum is
+           (Gdk_Null_Event_Mask,
+            Gdk_Exposure_Mask,
+            Gdk_Pointer_Motion_Mask,
+            Gdk_Pointer_Motion_Hint_Mask,
+            Gdk_Button_Motion_Mask,
+            Gdk_Button_1_Motion_Mask,
+            Gdk_Button_2_Motion_Mask,
+            Gdk_Button_3_Motion_Mask,
+            Gdk_Button_Press_Mask,
+            Gdk_Button_Release_Mask,
+            Gdk_Key_Press_Mask,
+            Gdk_Key_Release_Mask,
+            Gdk_Enter_Notify_Mask,
+            Gdk_Leave_Notify_Mask,
+            Gdk_Focus_Change_Mask,
+            Gdk_Structure_Mask,
+            Gdk_Property_Change_Mask,
+            Gdk_Visibility_Notify_Mask,
+            Gdk_Proximity_In_Mask,
+            Gdk_Proximity_Out_Mask);
+         pragma Warnings (Off, Gdk_Event_Mask_Enum);
+
+      begin
+         The_First := S'First;
+
+         loop
+            Find_Token (S (The_First .. S'Last), To_Set (" |"),
+              Ada.Strings.Inside, First, Last);
+
+            exit when Last = 0;
+
+            Events := Events or
+              2 ** Gdk_Event_Mask_Enum'Pos
+                (Gdk_Event_Mask_Enum'Value (S (The_First .. First - 1)));
+            The_First := Last + 1;
+         end loop;
+
+         return Events;
+      end Decode_Events;
 
       use Object;
       use Enums;
@@ -1039,6 +1228,38 @@ package body Gtk.Widget is
 
       if S /= null then
          Set_State (Gtk_Widget (Widget), Enums.Gtk_State_Type'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "events");
+
+      if S /= null then
+         Events := Decode_Events (S.all);
+         Set_Events (Gtk_Widget (Widget), Events);
+      end if;
+
+      S := Get_Field (N, "extension_events");
+
+      if S /= null then
+         Set_Extension_Events (Gtk_Widget (Widget),
+           Gdk.Types.Gdk_Extension_Mode'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      S := Get_Field (N, "can_default");
+
+      if S /= null and then Boolean'Value (S.all) then
+         Set_Flags (Widget, Can_Default);
+      end if;
+
+      S := Get_Field (N, "has_focus");
+
+      if S /= null and then Boolean'Value (S.all) then
+         Grab_Focus (Gtk_Widget (Widget));
+      end if;
+
+      S := Get_Field (N, "has_default");
+
+      if S /= null and then Boolean'Value (S.all) then
+         Grab_Default (Gtk_Widget (Widget));
       end if;
 
       --  ??? Need to find a better way to call Pack_Start
@@ -1116,6 +1337,8 @@ package body Gtk.Widget is
             end if;
          end if;
       end if;
+
+      --  ??? Need to handle accelerators
 
       Q := Find_Tag (N.Child, "signal");
 

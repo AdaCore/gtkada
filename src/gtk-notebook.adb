@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Container; use Gtk.Container;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Notebook is
@@ -560,6 +561,11 @@ package body Gtk.Notebook is
       Gen_Set (N, "Notebook", "show_tabs", File);
       Gen_Set (N, "Notebook", "tab_border", File);
       Gen_Set (N, "Notebook", "tab_pos", File);
+
+      if not N.Specific_Data.Has_Container then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
    procedure Generate (Notebook : in out Gtk_Object;
@@ -604,6 +610,13 @@ package body Gtk.Notebook is
          Set_Tab_Pos
            (Gtk_Notebook (Notebook),
             Gtk_Position_Type'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      if not N.Specific_Data.Has_Container then
+         Container.Add
+           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+            Widget.Gtk_Widget (Notebook));
+         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 

@@ -66,36 +66,26 @@ package Gtk.Widget is
    App_Paintable    : constant := 2 ** 19;
    Receives_Default : constant := 2 ** 20;
 
-   type Gtk_Widget_Flags is
-     (Gtk_Destroyed, Gtk_Floating, Gtk_Connected, Gtk_Constructed,
-      Gtk_Toplevel, Gtk_No_Window, Gtk_Realized, Gtk_Mapped, Gtk_Visible,
-      Gtk_Sensitive, Gtk_Parent_Sensitive, Gtk_Can_Focus, Gtk_Has_Focus,
-      Gtk_Can_Default, Gtk_Has_Default, Gtk_Has_Grab, Gtk_Rc_Style,
-      Gtk_Composite_Child, Gtk_No_Reparent, Gtk_App_Paintable,
-      Gtk_Receives_Default);
-
    type Gtk_Widget_Record is new Object.Gtk_Object_Record with null record;
    type Gtk_Widget is access all Gtk_Widget_Record'Class;
 
    --  This is the desired amount of space when you create new widgets.
    --  See the examples/base_widget directory for an example how to use this
 
-   type Gtk_Requisition is
-      record
-         Width  : Gint16;
-         Height : Gint16;
-      end record;
+   type Gtk_Requisition is record
+      Width  : Gint16;
+      Height : Gint16;
+   end record;
    pragma Pack (Gtk_Requisition);
 
    --  This is a size and position for a new widget. See examples/base_widget
 
-   type Gtk_Allocation is
-      record
-         X      : Gint16;
-         Y      : Gint16;
-         Width  : Guint16;
-         Height : Guint16;
-      end record;
+   type Gtk_Allocation is record
+      X      : Gint16;
+      Y      : Gint16;
+      Width  : Guint16;
+      Height : Guint16;
+   end record;
    pragma Pack (Gtk_Allocation);
 
    function Get_Window (Widget : access Gtk_Widget_Record)
@@ -156,9 +146,12 @@ package Gtk.Widget is
    procedure Set_Events (Widget : access Gtk_Widget_Record;
                          Events : in     Gdk.Types.Gdk_Event_Mask);
 
+   procedure Set_Extension_Events
+     (Widget : access Gtk_Widget_Record;
+      Mode   : in     Gdk.Types.Gdk_Extension_Mode);
+
    procedure Set_State (Widget : access Gtk_Widget_Record;
                         State : in Enums.Gtk_State_Type);
-
 
    --  (See also gtk-style for functions dealing with styles)
 

@@ -134,7 +134,8 @@ package body Gtk.Frame is
       end if;
 
       Bin.Generate (N, File);
-      Gen_Set (N, "Frame", "Label_Align", "xalign", "yalign", "", "", File);
+      Gen_Set (N, "Frame", "Label_Align", "xalign", "yalign", "", "", File,
+        Is_Float => True);
       Gen_Set (N, "Frame", "shadow_type", File);
    end Generate;
 

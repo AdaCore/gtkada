@@ -154,16 +154,16 @@ package body Gtk.Aspect_Frame is
  
       if S /= null then
          Gen_New (N, "Aspect_Frame", S.all,
-           Get_Field (N, "xalign").all,
-           Get_Field (N, "yalign").all,
-           Get_Field (N, "ratio").all,
+           To_Float (Get_Field (N, "xalign").all),
+           To_Float (Get_Field (N, "yalign").all),
+           To_Float (Get_Field (N, "ratio").all),
            Get_Field (N, "obey_child").all,
            File, '"');
       else
          Gen_New (N, "Aspect_Frame", "",
-           Get_Field (N, "xalign").all,
-           Get_Field (N, "yalign").all,
-           Get_Field (N, "ratio").all,
+           To_Float (Get_Field (N, "xalign").all),
+           To_Float (Get_Field (N, "yalign").all),
+           To_Float (Get_Field (N, "ratio").all),
            Get_Field (N, "obey_child").all,
            File, '"');
       end if;

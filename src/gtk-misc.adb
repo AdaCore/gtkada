@@ -68,7 +68,8 @@ package body Gtk.Misc is
                        File : in File_Type) is
    begin
       Widget.Generate (N, File);
-      Gen_Set (N, "Misc", "Alignment", "xalign", "yalign", "", "", File);
+      Gen_Set (N, "Misc", "Alignment", "xalign", "yalign", "", "", File,
+        Is_Float => True);
       Gen_Set (N, "Misc", "Padding", "xpad", "ypad", "", "", File);
    end Generate;
 

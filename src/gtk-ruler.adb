@@ -194,7 +194,8 @@ package body Gtk.Ruler is
       Widget.Generate (N, File);
       Gen_Set (N, "Ruler", "metric", File);
       Gen_Set
-        (N, "Ruler", "Range", "lower", "upper", "position", "max_size", File);
+        (N, "Ruler", "Range", "lower", "upper", "position", "max_size", File,
+         Is_Float => True);
    end Generate;
 
    procedure Generate (Ruler : in out Gtk_Object;
