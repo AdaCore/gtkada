@@ -1714,18 +1714,22 @@ widget_class "*GtkText" style "text"
 @node Tasks
 @chapter Tasks
 
-The GLib library can be used in a task-safe mode by calling Gdk.Thread.Init
-before making any other GLib calls. In this mode GLib automatically locks all
+The Glib library can be used in a task-safe mode by calling Gdk.Thread.Init
+before making any other Glib calls. In this mode Glib automatically locks all
 internal data structures as needed. This does not mean that two tasks can
 simultaneously access, for example, a single hash table, but they can access
 two different hash tables simultaneously. If two different tasks need to
 access the same hash table, the application is responsible for locking itself
 (by e.g using protected objects).
 
-When GLib is intialized to be task-safe, GtkAda is task aware. There is a
+When Glib is intialized to be task-safe, GtkAda is task aware. There is a
 single global lock that you must acquire with Gdk.Threads.Enter before making
 any Gdk/Gtk call, and release with Gdk.Threads.Leave afterwards. 
 
+Note that Gdk.Threads assumes that you are using a tasking run time that maps
+Ada tasks to native threads. For example under Linux with GNAT, you need to
+change the default tasking run time for that purpose.
+ 
 A minimal main program for a tasking GtkAda application looks like: 
 
 @example
@@ -1750,7 +1754,7 @@ A minimal main program for a tasking GtkAda application looks like:
 @end example
 
 Callbacks require a bit of attention. Callbacks from GtkAda (signals) are made
-within the GtkAda lock. However callbacks from GLib (timeouts, IO callbacks,
+within the GtkAda lock. However callbacks from Glib (timeouts, IO callbacks,
 and idle functions) are made outside of the GtkAda lock. So, within a signal
 handler you do not need to call Gtk.Threads.Enter, but within the other types
 of callbacks, you do.
