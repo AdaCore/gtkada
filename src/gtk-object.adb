@@ -9,7 +9,8 @@ package body Gtk.Object is
 
    procedure Adjust (Object : in out Gtk_Object) is
    begin
-      Ref (Object);
+      null;
+      --  IFREF Ref (Object);
    end Adjust;
 
    -----------------
@@ -53,7 +54,8 @@ package body Gtk.Object is
 
    procedure Finalize (Object : in out Gtk_Object) is
    begin
-      Unref (Object);
+      null;
+      --  IFREF Unref (Object);
    end Finalize;
 
    -------------
@@ -96,7 +98,8 @@ package body Gtk.Object is
 
    procedure Initialize (Object : in out Gtk_Object) is
    begin
-      Ref (Object);
+      null;
+      --  IFREF Ref (Object);
    end Initialize;
 
    ------------------

@@ -9,7 +9,8 @@ package body Gtk.Style is
 
    procedure Adjust (Object : in out Gtk_Style) is
    begin
-      Ref (Object);
+      null;
+      --  IFREF Ref (Object);
    end Adjust;
 
    --------------
@@ -299,7 +300,8 @@ package body Gtk.Style is
 
    procedure Finalize (Object : in out Gtk_Style) is
    begin
-      Unref (Object);
+      null;
+      --  IFREF Unref (Object);
    end Finalize;
 
    ----------------
@@ -308,7 +310,8 @@ package body Gtk.Style is
 
    procedure Initialize (Object : in out Gtk_Style) is
    begin
-      Ref (Object);
+      null;
+      --  IFREF Ref (Object);
    end Initialize;
 
    ---------
