@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                        Copyright (C) 2000                         --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--               Copyright (C) 2001-2002 ACT-Europe                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -53,6 +53,7 @@ package body Gtkada.File_Selection is
    ---------------
 
    function Delete_Cb (Win : access Gtk_Widget_Record'Class) return Boolean is
+      pragma Unreferenced (Win);
    begin
       Main_Quit;
       return True;
@@ -73,6 +74,7 @@ package body Gtkada.File_Selection is
    -----------------------
 
    procedure Clicked_Cancel_Cb (Button : access Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Button);
    begin
       Main_Quit;
    end Clicked_Cancel_Cb;
