@@ -380,4 +380,183 @@ package body Glib.Object is
       Internal (Get_Object (Object), Property_Name & ASCII.Nul);
    end Notify;
 
+   ---------------
+   -- User_Data --
+   ---------------
+
+   package body User_Data is
+      type Data_Access is access all Data_Type;
+
+      type Cb_Record is record
+         Ptr : Data_Access;
+      end record;
+      type Cb_Record_Access is access all Cb_Record;
+
+      function Convert is new
+        Unchecked_Conversion (System.Address, Cb_Record_Access);
+      procedure Free_Data (Data : System.Address);
+      pragma Convention (C, Free_Data);
+
+      procedure Set_Data_Internal
+        (Object  : System.Address;
+         Key     : String;
+         Data    : System.Address;
+         Destroy : System.Address);
+      pragma Import (C, Set_Data_Internal, "g_object_set_data_full");
+
+      procedure Set_Data_Internal_Id
+        (Object  : System.Address;
+         Key     : Glib.GQuark;
+         Data    : System.Address;
+         Destroy : System.Address);
+      pragma Import (C, Set_Data_Internal_Id, "g_object_set_qdata_full");
+
+      ----------
+      -- Free --
+      ----------
+
+      procedure Free_Data (Data : System.Address) is
+         procedure Internal is new
+           Unchecked_Deallocation (Cb_Record, Cb_Record_Access);
+
+         procedure Internal2 is new
+           Unchecked_Deallocation (Data_Type, Data_Access);
+
+         D : Cb_Record_Access := Convert (Data);
+
+      begin
+         Internal2 (D.Ptr);
+         Internal (D);
+      end Free_Data;
+
+      ---------
+      -- Get --
+      ---------
+
+      function Get
+        (Object : access GObject_Record'Class;
+         Id     : String := "user_data") return Data_Type
+      is
+         function Internal
+           (Object : System.Address;
+            Key    : String) return System.Address;
+         pragma Import (C, Internal, "g_object_get_data");
+
+         D : constant Cb_Record_Access :=
+           Convert (Internal (Get_Object (Object), Id & ASCII.NUL));
+
+      begin
+         if D = null or else D.Ptr = null then
+            raise Gtkada.Types.Data_Error;
+         else
+            return D.Ptr.all;
+         end if;
+      end Get;
+
+      ---------
+      -- Get --
+      ---------
+
+      function Get
+        (Object : access GObject_Record'Class;
+         Id     : Glib.GQuark) return Data_Type
+      is
+         function Internal
+           (Object : System.Address;
+            Key    : Glib.GQuark) return System.Address;
+         pragma Import (C, Internal, "g_object_get_qdata");
+
+         D : constant Cb_Record_Access :=
+           Convert (Internal (Get_Object (Object), Id));
+
+      begin
+         if D = null or else D.Ptr = null then
+            raise Gtkada.Types.Data_Error;
+         else
+            return D.Ptr.all;
+         end if;
+      end Get;
+
+      ---------
+      -- Set --
+      ---------
+
+      procedure Set
+        (Object : access GObject_Record'Class;
+         Data   : Data_Type;
+         Id     : String := "user_data")
+      is
+         function Convert is new
+           Unchecked_Conversion (Cb_Record_Access, System.Address);
+         D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
+
+      begin
+         Set_Data_Internal
+           (Get_Object (Object),
+            Id & ASCII.NUL,
+            Convert (D),
+            Free_Data'Address);
+      end Set;
+
+      ---------
+      -- Set --
+      ---------
+
+      procedure Set
+        (Object : access GObject_Record'Class;
+         Data   : Data_Type;
+         Id     : Glib.GQuark)
+      is
+         function Convert is new
+           Unchecked_Conversion (Cb_Record_Access, System.Address);
+         D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
+
+      begin
+         Set_Data_Internal_Id
+           (Get_Object (Object),
+            Id,
+            Convert (D),
+            Free_Data'Address);
+      end Set;
+
+      ------------
+      -- Remove --
+      ------------
+
+      procedure Remove
+        (Object : access GObject_Record'Class;
+         Id     : String := "user_data")
+      is
+         procedure Internal (Object : System.Address; Id : String);
+         pragma Import (C, Internal, "g_object_steal_data");
+
+      begin
+         --  First make sure that the destroy callback is called, so that
+         --  memory can be freed
+         Set_Data_Internal
+           (Get_Object (Object),
+            Id & ASCII.NUL, System.Null_Address, System.Null_Address);
+         Internal (Get_Object (Object), Id & ASCII.NUL);
+      end Remove;
+
+      ------------
+      -- Remove --
+      ------------
+
+      procedure Remove
+        (Object : access GObject_Record'Class;
+         Id     : Glib.GQuark)
+      is
+         procedure Internal (Object : System.Address; Id : Glib.GQuark);
+         pragma Import (C, Internal, "g_object_steal_qdata");
+
+      begin
+         --  First make sure that the destroy callback is called, so that
+         --  memory can be freed
+         Set_Data_Internal_Id
+           (Get_Object (Object), Id, System.Null_Address, System.Null_Address);
+         Internal (Get_Object (Object), Id);
+      end Remove;
+   end User_Data;
+
 end Glib.Object;

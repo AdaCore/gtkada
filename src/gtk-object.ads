@@ -230,60 +230,14 @@ package Gtk.Object is
    --  </doc_ignore>
 
    ---------------
-   -- User_Data --
+   -- User Data --
    ---------------
-   --  This package allow you to associate your own Data to the C widgets. No
-   --  type verification is made to check if you are using the correct
-   --  matching Get function. This is your own responsability.
-   --
-   --  We recommend using this package only if you want your data to be
-   --  available from your own C code. If you just want to access it from Ada,
-   --  you should consider creating a new tagged type instead.
-
-   --  <doc_ignore>
+   --  It is possible to associate your own specific data with an existing
+   --  object. See the documentation in Glib.Object.
+   --  The declaration below has been kept for compatibility reasons.
 
    generic
-      type Data_Type (<>) is private;
-   package User_Data is
-      function Get
-        (Object : access Gtk_Object_Record'Class;
-         Id     : String := "user_data") return Data_Type;
-      --  Get the information associated with the key ID.
-      --  Raise Gtkada.Types.Data_Error if there is none.
-
-      procedure Set
-        (Object : access Gtk_Object_Record'Class;
-         Data   : Data_Type;
-         Id     : String := "user_data");
-      --  Associate some new user data with the object.
-      --  The strings starting with "gtkada_" are reserved for GtkAda's
-      --  internal use, please avoid using them.
-
-      procedure Remove
-        (Object : access Gtk_Object_Record'Class; Id : String := "user_data");
-      --  Remove some data from the object
-
-      function Get
-        (Object : access Gtk_Object_Record'Class;
-         Id     : Glib.GQuark) return Data_Type;
-      --  Same function as Get above, but uses directly the Quark associated
-      --  with the string, which speeds up the access time significantly.
-
-      procedure Set
-        (Object : access Gtk_Object_Record'Class;
-         Data   : Data_Type;
-         Id     : Glib.GQuark);
-      --  Same function as Set above, but uses directly the Quark associated
-      --  with the string, which speeds up the access time significantly.
-
-      procedure Remove
-        (Object : access Gtk_Object_Record'Class; Id : Glib.GQuark);
-      --  Same function as Remove above, but uses directly the Quark associated
-      --  with the string, which speeds up the access time significantly.
-
-   end User_Data;
-
-   --  </doc_ignore>
+   package User_Data renames Glib.Object.User_Data;
 
    ----------------
    -- Properties --
