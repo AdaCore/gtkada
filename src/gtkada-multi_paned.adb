@@ -1,3 +1,23 @@
+-----------------------------------------------------------------------
+--                               G T K A D A                         --
+--                                                                   --
+--                     Copyright (C) 2003                            --
+--                            ACT-Europe                             --
+--                                                                   --
+-- GPS is free  software;  you can redistribute it and/or modify  it --
+-- under the terms of the GNU General Public License as published by --
+-- the Free Software Foundation; either version 2 of the License, or --
+-- (at your option) any later version.                               --
+--                                                                   --
+-- This program is  distributed in the hope that it will be  useful, --
+-- but  WITHOUT ANY WARRANTY;  without even the  implied warranty of --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- General Public License for more details. You should have received --
+-- a copy of the GNU General Public License along with this program; --
+-- if not,  write to the  Free Software Foundation, Inc.,  59 Temple --
+-- Place - Suite 330, Boston, MA 02111-1307, USA.                    --
+-----------------------------------------------------------------------
+
 with Ada.Unchecked_Deallocation;
 with Gdk.Cursor;           use Gdk, Gdk.Cursor;
 with Gdk.Drawable;         use Gdk.Drawable;
@@ -18,6 +38,8 @@ with Gtk.Widget;           use Gtk.Widget;
 with Gtkada.Handlers;      use Gtkada.Handlers;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;               use System;
+with GNAT.IO;              use GNAT.IO;
+with Ada.Exceptions;       use Ada.Exceptions;
 
 package body Gtkada.Multi_Paned is
 
@@ -1234,6 +1256,12 @@ package body Gtkada.Multi_Paned is
 
          Next (Iter);
       end loop;
+
+   exception
+      when E : others =>
+         pragma Debug
+           (Put_Line ("Unexpected exception " & Exception_Information (E)));
+         null;
    end Size_Allocate_Paned;
 
    ----------------
