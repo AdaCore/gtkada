@@ -1,4 +1,3 @@
-with Ada.Text_IO; use Ada.Text_IO;
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
@@ -4333,8 +4332,6 @@ package body Gtkada.MDI is
       else
          Style := Get_Style (Child.MDI);
       end if;
-
-      Put_Line ("Highlight_Child: " & Child.Title.all & " " & Highlight'Img);
 
       Tab := Get_Child (Child.Menu_Item);
       Set_Style (Tab, Style);
