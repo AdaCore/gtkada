@@ -41,10 +41,10 @@ package Gtk.Text is
    type Gtk_Text is access all Gtk_Text_Record'Class;
 
    function Backward_Delete (Text : access Gtk_Text_Record; Nchars : in Guint)
-     return Gint;
+     return Boolean;
 
    function Forward_Delete (Text : access Gtk_Text_Record; Nchars : in Guint)
-     return Gint;
+     return Boolean;
 
    procedure Freeze (Text : access Gtk_Text_Record);
 

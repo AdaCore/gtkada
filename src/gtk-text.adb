@@ -408,7 +408,7 @@ package body Gtk.Text is
       S := Get_Field (N, "editable");
 
       if S /= null then
-         Set_Editable (Gtk_Text (Text), boolean'Value (S.all));
+         Set_Editable (Gtk_Text (Text), Boolean'Value (S.all));
       end if;
 
       S := Get_Field (N, "point");
