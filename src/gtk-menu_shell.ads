@@ -62,49 +62,49 @@ package Gtk.Menu_Shell is
    procedure Append
      (Menu_Shell : access Gtk_Menu_Shell_Record;
       Child      : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
-   --  Adds a new item at the end of the menu.
+   --  Add a new item at the end of the menu.
 
    procedure Prepend
      (Menu_Shell : access Gtk_Menu_Shell_Record;
       Child      : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
-   --  Adds a new item at the beginning of the menu
+   --  Add a new item at the beginning of the menu
 
    procedure Insert
      (Menu_Shell : access Gtk_Menu_Shell_Record;
       Child      : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
       Position   : in Gint);
-   --  Adds a new item at a specific position in the menu.
+   --  Add a new item at a specific position in the menu.
    --  The first item is at position 0. To insert as the last item in the menu,
-   --  set POSITION to -1.
+   --  set Position to -1.
 
    procedure Select_Item
      (Menu_Shell : access Gtk_Menu_Shell_Record;
       Item       : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
-   --  Selects a new item in the menu, after deselecting the current item.
+   --  Select a new item in the menu, after deselecting the current item.
 
    procedure Deselect (Menu_Shell : access Gtk_Menu_Shell_Record);
-   --  Deselects the currently selected item.
+   --  Deselect the currently selected item.
 
    procedure Activate_Item
      (Menu_Shell       : access Gtk_Menu_Shell_Record;
       Item             : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
       Force_Deactivate : Boolean);
-   --  Activates the item.
-   --  If FORCE_DEACTIVATE is True or the menu_shell sets this property,
-   --  MENU_SHELL and all its parent menus are deactivated and erased from
+   --  Activate the item.
+   --  If Force_Deactivate is True or the menu_shell sets this property,
+   --  Menu_Shell and all its parent menus are deactivated and erased from
    --  the screen.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Menu_Shell internally.
+   --  Return the internal value associated with a Gtk_Menu_Shell internally.
 
    ----------------------
    -- Signals emission --
    ----------------------
 
    procedure Deactivate (Menu_Shell : access Gtk_Menu_Shell_Record);
-   --  Emits the "deactivate" signal.
+   --  Emit the "deactivate" signal.
    --  This deselects the selected item, ungrabs the mouse and keyboard, and
-   --  erase the MENU_SHELL from the screen.
+   --  erase the Menu_Shell from the screen.
 
    ----------------------------
    -- Support for GATE/DGATE --
@@ -151,7 +151,7 @@ package Gtk.Menu_Shell is
    --                       Force_Hide : Gboolean);
    --
    --    Activates the current menu item within the Menu_Shell.
-   --    if FORCE_HIDE is True, hide the menu afterwards.
+   --    if Force_Hide is True, hide the menu afterwards.
    --
    --  - "cancel"
    --    procedure Handler (Menu_Shell : access Gtk_Menu_Shell_Record'Class);

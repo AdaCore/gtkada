@@ -30,7 +30,7 @@
 --  <description>
 --  This widget is a base class for all the widgets that require an
 --  alignment and padding.
---  This widget can not be instanciated directly.
+--  This widget can not be instantiated directly.
 --  </description>
 --  <c_version>1.2.6</c_version>
 
@@ -45,23 +45,23 @@ package Gtk.Misc is
    procedure Set_Alignment (Misc   : access Gtk_Misc_Record;
                             Xalign : in     Gfloat;
                             Yalign : in     Gfloat);
-   --  Modifies the alignment for the widget.
-   --  XALIGN and YALIGN are both values between 0.0 and 1.0 that specify the
-   --  alignment: if XALIGN is 0.0, the widget will be left aligned; if it is
+   --  Modify the alignment for the widget.
+   --  Xalign and Yalign are both values between 0.0 and 1.0 that specify the
+   --  alignment: if Xalign is 0.0, the widget will be left aligned; if it is
    --  0.5, the widget will be centered; if it is 1.0 the widget will be
-   --  right aligned. YALIGN is from top (0.0) to bottom (1.0).
-   --  Both XALIGN and YALIGN will be constrained to the range 0.0 .. 1.0
+   --  right aligned. Yalign is from top (0.0) to bottom (1.0).
+   --  Both Xalign and Yalign will be constrained to the range 0.0 .. 1.0
    --  Note that if the widget fills its allocated area, these two parameters
    --  won't have any effect.
 
    procedure Set_Padding (Misc : access Gtk_Misc_Record;
                           Xpad : in     Gint;
                           Ypad : in     Gint);
-   --  Sets the padding (ie the extra spaces on the side of the widget).
-   --  If XPAD or YPAD is negative, they will be changed to 0.
+   --  Set the padding (i.e. the extra spaces on the side of the widget).
+   --  If Xpad or Ypad is negative, they will be changed to 0.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Misc internally.
+   --  Return the internal value associated with a Gtk_Misc internally.
 
    ----------------------------
    -- Support for GATE/DGATE --
