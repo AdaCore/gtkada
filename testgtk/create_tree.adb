@@ -261,9 +261,9 @@ package body Create_Tree is
       Set_Selection_Mode (Root_Tree, Selection_Mode);
       Set_View_Lines (Root_Tree, Draw_Line);
       if View_Line then
-         Set_View_Mode (Root_Tree, Gtk.Enums.View_Line);
+         Set_View_Mode (Root_Tree, Gtk.Enums.Tree_View_Line);
       else
-         Set_View_Mode (Root_Tree, Gtk.Enums.View_Item);
+         Set_View_Mode (Root_Tree, Gtk.Enums.Tree_View_Item);
       end if;
       Show (Root_Tree);
 

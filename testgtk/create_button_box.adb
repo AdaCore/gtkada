@@ -125,14 +125,18 @@ package body Create_Button_Box is
          Set_Border_Width (Vbox, Border_Width => 10);
          Add (Frame_Horz, Vbox);
 
-         Pack_Start (Vbox, Create_Bbox (True, "Spread", 40, 85, 20, Spread),
-                                        True, True, 0);
-         Pack_Start (Vbox, Create_Bbox (True, "Edge", 40, 85, 20, Edge),
-                                        True, True, 5);
-         Pack_Start (Vbox, Create_Bbox (True, "Start", 40, 85, 20, Start),
-                                        True, True, 5);
-         Pack_Start (Vbox, Create_Bbox (True, "End", 40, 85, 20, Style_End),
-                                        True, True, 5);
+         Pack_Start
+           (Vbox, Create_Bbox (True, "Spread", 40, 85, 20, Buttonbox_Spread),
+            True, True, 0);
+         Pack_Start
+           (Vbox, Create_Bbox (True, "Edge", 40, 85, 20, Buttonbox_Edge),
+            True, True, 5);
+         Pack_Start
+           (Vbox, Create_Bbox (True, "Start", 40, 85, 20, Buttonbox_Start),
+            True, True, 5);
+         Pack_Start
+           (Vbox, Create_Bbox (True, "End", 40, 85, 20, Buttonbox_Style_End),
+            True, True, 5);
 
 
          Gtk_New (Frame_Vert, "Vertical Button Boxes");
@@ -145,14 +149,18 @@ package body Create_Button_Box is
          Set_Border_Width (Hbox, Border_Width => 10);
          Add (Frame_Vert, Hbox);
 
-         Pack_Start (Hbox, Create_Bbox (False, "Spread", 30, 85, 20, Spread),
-                                        True, True, 0);
-         Pack_Start (Hbox, Create_Bbox (False, "Edge", 30, 85, 20, Edge),
-                                        True, True, 5);
-         Pack_Start (Hbox, Create_Bbox (False, "Start", 30, 85, 20, Start),
-                                        True, True, 5);
-         Pack_Start (Hbox, Create_Bbox (False, "End", 30, 85, 20, Style_End),
-                                        True, True, 5);
+         Pack_Start
+           (Hbox, Create_Bbox (False, "Spread", 30, 85, 20, Buttonbox_Spread),
+            True, True, 0);
+         Pack_Start
+           (Hbox, Create_Bbox (False, "Edge", 30, 85, 20, Buttonbox_Edge),
+            True, True, 5);
+         Pack_Start
+           (Hbox, Create_Bbox (False, "Start", 30, 85, 20, Buttonbox_Start),
+            True, True, 5);
+         Pack_Start
+           (Hbox, Create_Bbox (False, "End", 30, 85, 20, Buttonbox_Style_End),
+            True, True, 5);
       end if;
 
       if not Visible_Is_Set (Window) then

@@ -107,22 +107,22 @@ package body Create_Toolbar is
 
    procedure Borders (Toolbar : in out Gtk_Toolbar) is
    begin
-      Set_Button_Relief (Toolbar, Normal);
+      Set_Button_Relief (Toolbar, Relief_Normal);
    end Borders;
 
    procedure Borderless (Toolbar : in out Gtk_Toolbar) is
    begin
-      Set_Button_Relief (Toolbar, None);
+      Set_Button_Relief (Toolbar, Relief_None);
    end Borderless;
 
    procedure Space_Style_Empty (Toolbar : in out Gtk_Toolbar) is
    begin
-      Set_Space_Style (Toolbar, Space_Empty);
+      Set_Space_Style (Toolbar, Toolbar_Space_Empty);
    end Space_Style_Empty;
 
    procedure Space_Style_Line (Toolbar : in out Gtk_Toolbar) is
    begin
-      Set_Space_Style (Toolbar, Space_Line);
+      Set_Space_Style (Toolbar, Toolbar_Space_Line);
    end Space_Style_Line;
 
    procedure Make_Toolbar (Toolbar    : out Gtk_Toolbar;

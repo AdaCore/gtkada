@@ -62,11 +62,7 @@ package body Create_Spin is
    procedure Toggle_Snap (Widget : in out Gtk_Toggle_Button;
                           Spin : in out Gtk_Spin_Button) is
    begin
-      if Is_Active (Widget) then
-         Set_Update_Policy (Spin, Update_Always + Update_Snap_To_Ticks);
-      else
-         Set_Update_Policy (Spin, Update_Always);
-      end if;
+      Set_Snap_To_Ticks (Spin, Is_Active (Widget));
    end Toggle_Snap;
 
    procedure Toggle_Numeric (Widget : in out Gtk_Toggle_Button;

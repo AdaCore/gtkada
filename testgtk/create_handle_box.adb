@@ -126,7 +126,7 @@ package body Create_Handle_Box is
          Show (Handle);
 
          Create_Toolbar.Make_Toolbar (Toolbar, Window);
-         Set_Button_Relief (Toolbar, Normal);
+         Set_Button_Relief (Toolbar, Relief_Normal);
          Add (Handle, Toolbar);
          Show (Toolbar);
 
