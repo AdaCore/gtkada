@@ -1,4 +1,3 @@
-with Unchecked_Deallocation;
 
 package body Gtk.Combo is
 
@@ -12,17 +11,6 @@ package body Gtk.Combo is
    begin
       Internal (Get_Object (Combo_Box));
    end Disable_Activate;
-
-   ----------
-   -- Free --
-   ----------
-
-   procedure Free (S : in out String_Access) is
-      procedure Internal is new Unchecked_Deallocation (String,
-                                                        String_Access);
-   begin
-      Internal (S);
-   end Free;
 
    -------------
    -- Gtk_New --
@@ -130,16 +118,6 @@ package body Gtk.Combo is
    begin
       Internal (Get_Object (Combo_Box), Val, Boolean'Pos (Ok_If_Empty));
    end Set_Value_In_List;
-
-   ----------------------
-   -- To_String_Access --
-   ----------------------
-
-   function To_String_Access (S : String) return String_Access is
-   begin
-      return new String'(S & Ascii.NUL);
-   end To_String_Access;
-
 
 end Gtk.Combo;
 

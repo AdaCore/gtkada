@@ -11,6 +11,7 @@ with Gtk.Combo;  use Gtk.Combo;
 with Ada.Text_IO;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Color_Selection; use Gtk.Color_Selection;
+with Interfaces.C.Strings;
 with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
 
 package body Test is
@@ -21,6 +22,8 @@ package body Test is
    package Void_Cb_Button is new Void_Callback (Gtk.Button.Gtk_Button);
    package ColSel_Cb is new Object_Callback (Gtk_Color_Selection_Dialog);
    use Gtk.Combo.String_List;
+
+   package ICS renames Interfaces.C.Strings;
 
    Status   : Gtk_Status_Bar;
 
@@ -40,6 +43,7 @@ package body Test is
    begin
       Ada.Text_IO.Put_Line ("Hello World  => String was=" & S);
       Message := Push (Status, 1, S);
+      Gtk.Destroy (Widget);
    end Hello;
 
    -----------------
@@ -63,7 +67,7 @@ package body Test is
 
    procedure Launch_Dialog (Object : in out Gtk.Button.Gtk_Button) is
       Dialog : aliased Gtk_Color_Selection_Dialog;
-      Id     : ColSel_Cb.Callback_Id;
+      Id     : Guint;
    begin
       Gtk_New (Dialog);
       Hide (Get_Help_Button (Dialog));
@@ -90,16 +94,11 @@ package body Test is
 
    procedure Main is
 
-      function CS (S : String) return Gtk.Combo.String_Access
-        renames Gtk.Combo.To_String_Access;
-
       A_Window : aliased Gtk.Window.Gtk_Window;
-      A_Button : Gtk.Button.Gtk_Button;
       A_Box    : Gtk_Hbox;
+      A_Button : Gtk.Button.Gtk_Button;
       V_Box    : Gtk_Vbox;
-      Void_Id  : Void_Cb.Callback_Id;
-      Void_B_Id : Void_Cb_Button.Callback_Id;
-      Str_Id   : String_Cb.Callback_Id;
+      Id       : Guint;
       Combo    : Gtk_Combo;
       List     : Glist;
 
@@ -111,7 +110,7 @@ package body Test is
       Gtk_New (A_Window, Window_Toplevel);
       Set_Title (A_Window, "Hello buttons");
       Border_Width (A_Window, 10);
-      Void_Id := Void_Cb.Connect (A_Window, "destroy", Destroy'Access);
+      Id := Void_Cb.Connect (A_Window, "destroy", Destroy'Access);
 
       --  Create the box to store the buttons
       Gtk_New (V_Box, False, 0);
@@ -121,30 +120,30 @@ package body Test is
       Pack_Start (V_Box, A_Box);
 
       --  Create the first button
-      Gtk_New (A_Button, Label => "Button1");
-      Str_Id := String_Cb.Connect (A_Button, "clicked",
-                                   Hello'Access, "Button1");
+      Gtk_New (A_Button, With_Label => "Button1");
+      Id := String_Cb.Connect (A_Button, "clicked",
+                               Hello'Access, "Button1");
       Pack_Start (A_Box, A_Button, True, True, 0);
       Show (A_Button);
 
       --  Create the second button
-      Gtk_New (A_Button, Label => "Button2");
-      Str_Id := String_Cb.Connect (A_Button, "clicked",
-                                  Hello'Access, "Button2");
+      Gtk_New (A_Button, With_Label => "Button2");
+      Id := String_Cb.Connect (A_Button, "clicked",
+                               Hello'Access, "Button2");
       Pack_Start (A_Box, A_Button, True, True, 0);
       Show (A_Button);
 
       --  Combo Box
-      Append (List, CS ("item0"));
-      Append (List, CS ("item1 item1"));
-      Append (List, CS ("item2 item2 item2"));
-      Append (List, CS ("item3 item3 item3 item3"));
-      Append (List, CS ("item4 item4 item4 item4 item4"));
-      Append (List, CS ("item5 item5 item5 item5 item5 item5"));
-      Append (List, CS ("item6 item6 item6 item6 item6"));
-      Append (List, CS ("item7 item7 item7 item7"));
-      Append (List, CS ("item8 item8 item8"));
-      Append (List, CS ("item9 item9"));
+      Append (List, ICS.New_String ("item0"));
+      Append (List, ICS.New_String ("item1 item1"));
+      Append (List, ICS.New_String ("item2 item2 item2"));
+      Append (List, ICS.New_String ("item3 item3 item3 item3"));
+      Append (List, ICS.New_String ("item4 item4 item4 item4 item4"));
+      Append (List, ICS.New_String ("item5 item5 item5 item5 item5 item5"));
+      Append (List, ICS.New_String ("item6 item6 item6 item6 item6"));
+      Append (List, ICS.New_String ("item7 item7 item7 item7"));
+      Append (List, ICS.New_String ("item8 item8 item8"));
+      Append (List, ICS.New_String ("item9 item9"));
 
       Gtk_New (Combo);
       Set_Popdown_Strings (Combo, List);
@@ -157,9 +156,9 @@ package body Test is
       Show (Status);
 
       --  Launch dialog
-      Gtk_New (A_Button, Label => "Color Selection");
-      Void_B_Id := Void_Cb_Button.Connect (A_Button, "clicked",
-                                           Launch_Dialog'Access);
+      Gtk_New (A_Button, With_Label => "Color Selection");
+      Id := Void_Cb_Button.Connect (A_Button, "clicked",
+                                    Launch_Dialog'Access);
       Pack_Start (V_Box, A_Button, True, True, 5);
       Show (A_Button);
 

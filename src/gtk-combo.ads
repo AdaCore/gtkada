@@ -2,16 +2,13 @@
 with Gtk.Hbox;
 with Gtk.Item;
 with Glib.Glist;
+with Interfaces.C.Strings;
 
 package Gtk.Combo is
 
-   type String_Access is access all String;
-   package String_List is new Glib.Glist.Generic_List (String_Access);
-
-   function To_String_Access (S : String) return String_Access;
-   --  Convert a String to a String_Access
-   procedure Free (S : in out String_Access);
-   --  Free the memory occupied by a String_Access
+   --   type String_Access is access all String;
+   package String_List is new Glib.Glist.Generic_List
+     (Interfaces.C.Strings.chars_ptr);
 
    type Gtk_Combo is new Gtk.Hbox.Gtk_Hbox with private;
 
