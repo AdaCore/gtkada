@@ -566,7 +566,7 @@ gtk_plot_layout_draw_text(GtkPlotLayout *plot_layout,
   x = text.x * plot_layout->width;
   y = text.y * plot_layout->height;
 
-  gtk_plot_text_get_size(text, &width, &height, &ascent, &descent);
+  gtk_plot_text_get_size(text, 1.0, &width, &height, &ascent, &descent);
 
   switch(text.justification){
     case GTK_JUSTIFY_LEFT:
@@ -687,7 +687,7 @@ rotate_text(GtkPlotLayout *layout,
   cc = gdk_color_context_new(visual, colormap);
   gc = gdk_gc_new (window);
 
-  gtk_plot_text_get_size(text, width, height, &ascent, &descent);
+  gtk_plot_text_get_size(text, 1.0, width, height, &ascent, &descent);
   old_width = *width;
   old_height = *height;
   if(text.angle == 90 || text.angle == 270)
