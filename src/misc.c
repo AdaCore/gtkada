@@ -144,11 +144,16 @@ GtkType
 ada_signal_argument_type (gint type, char* signal_name, gint num)
 {
   /* Implementation note: using gtk_signal_query adds an extra call to
-     malloc and free, but using the internal variables/macros for
+     malloc and free, but using the internal variables/macros of
      gtksignal.c would make this too dependent on the exact implementation
      of gtk+ */
   guint signal_id = gtk_signal_lookup (signal_name, type);
-  GtkSignalQuery * signal = gtk_signal_query (signal_id);
+  GtkSignalQuery * signal;
+
+  if (signal_id == 0)
+    return GTK_TYPE_INVALID;
+
+  signal = gtk_signal_query (signal_id);
 
   if (num < 0)
     return signal->return_val;
@@ -2189,12 +2194,6 @@ ada_combo_get_list (GtkCombo* widget)
 gint
 ada_widget_get_state (GtkWidget *widget) {
   return widget->state;
-}
-
-GtkStyle*
-ada_widget_get_style (GtkWidget* widget)
-{
-  return widget->style;
 }
 
 GdkWindow*
