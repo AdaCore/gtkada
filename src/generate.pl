@@ -496,6 +496,7 @@ sub parse_functions
 
 	  # Cleanup initial spaces and remove comments from the arguments list
 	  $args =~ s/\/\*.*?\*\///g;
+	  $args =~ s/[ ,\(]const //g; # gnome-calculator.h
 	  $args =~ s/\s+/ /g;
 	  @arguments = grep ($_ !~ /^\s*$/, split (/,/, $args));
 
