@@ -3728,8 +3728,9 @@ package body Gtkada.MDI is
          User        : User_Data;
          Initial_Orientation : Gtk_Orientation;
          Initial_Ref_Child : Gtk_Widget := null;
-         Initial_Ref_Pane  : in out Pane);
+         First_Child : out Gtk_Notebook);
       --  Parse a <Pane> node
+      --  First_Child is the first notebook insert in pane (possibly inserted
 
       --------------------------------
       -- Register_Desktop_Functions --
@@ -3904,13 +3905,13 @@ package body Gtkada.MDI is
       ---------------------
 
       procedure Parse_Pane_Node
-        (MDI         : access MDI_Window_Record'Class;
-         Node        : Node_Ptr;
-         Focus_Child : in out MDI_Child;
-         User        : User_Data;
+        (MDI                 : access MDI_Window_Record'Class;
+         Node                : Node_Ptr;
+         Focus_Child         : in out MDI_Child;
+         User                : User_Data;
          Initial_Orientation : Gtk_Orientation;
-         Initial_Ref_Child : Gtk_Widget := null;
-         Initial_Ref_Pane  : in out Pane)
+         Initial_Ref_Child   : Gtk_Widget := null;
+         First_Child         : out Gtk_Notebook)
       is
          Orientation : constant Gtk_Orientation := Gtk_Orientation'Value
            (Get_Attribute (Node, "Orientation"));
@@ -3918,14 +3919,17 @@ package body Gtkada.MDI is
          Width, Height : Gint;
          Note : Gtk_Notebook;
          Ref_Item : Gtk_Widget := Initial_Ref_Child;
-         Ref_Pane : Pane := Initial_Ref_Pane;
+         Ref_Pane : Pane := Root_Pane;
          Is_First : Boolean := True;
          Orient : Gtk_Orientation;
          Must_Unref : Boolean;
+         Pane_First_Child : Gtk_Notebook;
       begin
          if Traces then
             Put_Line ("MDI Parsing pane node " & Orientation'Img);
          end if;
+
+         First_Child := null;
 
          N := Node.Child;
          while N /= null loop
@@ -3948,7 +3952,23 @@ package body Gtkada.MDI is
                   Remove (Gtk_Container (Get_Parent (Note)), Note);
                end if;
 
-               if Ref_Item /= null then
+               if First_Child /= null
+                 and then Node.Child.Tag.all = "Pane"
+                 and then N = Node.Child.Next
+               then
+                  if Traces then
+                     Put_Line ("MDI Notebook inserted, split_group since "
+                               & System.Address_Image (First_Child.all'Address)
+                               & " orient=" & Orient'Img);
+                  end if;
+                  Split_Group (MDI,
+                               Ref_Widget  => First_Child,
+                               New_Child   => Note,
+                               Width       => Width,
+                               Height      => Height,
+                               Orientation => Orient);
+
+               elsif Ref_Item /= null then
                   if Traces then
                      Put_Line ("MDI Notebook inserted, splitting ref_item "
                                & System.Address_Image (Ref_Item.all'Address)
@@ -3973,7 +3993,11 @@ package body Gtkada.MDI is
                          Orientation => Orient);
                end if;
                Ref_Item := Gtk_Widget (Note);
-               Ref_Pane := Root_Pane;
+               Ref_Pane := Get_Pane (MDI, Note);
+
+               if First_Child = null then
+                  First_Child := Note;
+               end if;
 
                if Must_Unref then
                   Unref (Note);
@@ -3987,8 +4011,11 @@ package body Gtkada.MDI is
                   User        => User,
                   Initial_Orientation => Orient,
                   Initial_Ref_Child => Ref_Item,
-                  Initial_Ref_Pane  => Ref_Pane);
+                  First_Child => Pane_First_Child);
                Ref_Item := null;
+               if First_Child = null then
+                  First_Child := Pane_First_Child;
+               end if;
             end if;
 
             N := N.Next;
@@ -4009,7 +4036,7 @@ package body Gtkada.MDI is
          State      : State_Type;
          Raised     : Boolean;
          X, Y       : Gint;
-         Ref_Pane   : Pane;
+         First_Notebook : Gtk_Notebook;
          Width, Height : Gint;
 
       begin
@@ -4024,10 +4051,9 @@ package body Gtkada.MDI is
 
          while Child_Node /= null loop
             if Child_Node.Tag.all = "Pane" then
-               Ref_Pane := Root_Pane;
                Parse_Pane_Node (MDI, Child_Node, Focus_Child, User,
                                 Orientation_Horizontal,
-                                null, Ref_Pane);
+                                null, First_Notebook);
 
             elsif Child_Node.Tag.all = "Bottom_Dock_Height" then
                --  An old desktop ? Do not load it at all, and use the default
