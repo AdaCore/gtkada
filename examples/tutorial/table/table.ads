@@ -1,4 +1,3 @@
-with Glib; use Glib;
 with Gdk.Event; use Gdk.Event;
 with Gtk.Widget, Gtk.Handlers; use Gtk.Widget, Gtk.Handlers;
 
