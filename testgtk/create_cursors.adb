@@ -26,6 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Unchecked_Conversion;
+
 with Glib; use Glib;
 with Gdk.Cursor;     use Gdk.Cursor;
 with Gdk.Drawable;   use Gdk.Drawable;
@@ -84,12 +86,17 @@ package body Create_Cursors is
    procedure Set_Cursor (Spinner : in out Gtk_Spin_Button;
                          Widget  : in out Gtk_Drawing_Area)
    is
+      function To_Cursor is new Unchecked_Conversion (Gint,
+                                                      Gdk_Cursor_Type);
+      pragma Warnings (Off);
+
       C      : Gint := Get_Value_As_Int (Spinner);
       Cursor : Gdk_Cursor;
+      Window : Gdk_Window := Get_Window (Widget);
    begin
       C := C mod 154;
-      Gdk_New (Cursor, Guint (C));
-      Set_Cursor (Get_Window (Widget), Cursor);
+      Gdk_New (Cursor, To_Cursor (C));
+      Set_Cursor (Window, Cursor);
       Destroy (Cursor);
    end Set_Cursor;
 
@@ -100,7 +107,7 @@ package body Create_Cursors is
    begin
       if Get_Button (Event) = 1 then
          Spin (Spinner, Arrow_Up, Get_Step_Increment (Get_Adjustment (Spinner)));
-      elsif Get_Button (Event) = 1 then
+      elsif Get_Button (Event) = 3 then
          Spin (Spinner, Arrow_Down, Get_Step_Increment (Get_Adjustment (Spinner)));
       end if;
    end Cursor_Event;
