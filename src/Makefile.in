@@ -80,14 +80,27 @@ $(ARCHIVENAME):: $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
 	  $(RANLIB) $(ARCHIVENAME); \
 	fi
 
+# This copies the .ali files from lib_obj/ to the current directory, and change
+# the permission of the files so that dgate, gate and testgtk use the dynamic
+# library. We do not do this if .devel exists, so that gnatmake will still
+# rebuild the files (it does not check anything if the .ali files are read-only.
 install_ali::
 	test -f .devel || $(CP) $(LIB_DIR)/*.ali .
+	test -f .devel || $(CHMOD) -w *.ali
 
 $(GATE_EX):: $(GATE_SRC) $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
-	$(GNATMAKE) $(GNATMAKEFLAGS) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS)
+	if [ -f .devel ]; then \
+	  $(GNATMAKE) -aO$(LIB_DIR) $(GNATMAKEFLAGS) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS); \
+	else \
+	  $(GNATMAKE) $(GNATMAKEFLAGS) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS); \
+	fi
 
 $(DGATE):: $(DGATE).adb $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
-	$(GNATMAKE) $(GNATMAKEFLAGS) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS)
+	if [ -f .devel ]; then \
+	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATMAKEFLAGS) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
+	else \
+	   $(GNATMAKE) $(GNATMAKEFLAGS) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
+	fi
 
 testgtk::
 	$(MAKE) -C testgtk
