@@ -2078,7 +2078,14 @@ Also note that to be able to keep track of your modifications, gate
 relies on @code{patch} and @code{diff} being available on your system.
 If you don't have a working set of @code{diff/patch}, @code{configure}
 will simply replace them by null operations, which means that regeneration of
-files will override the previous ones. This is the current behavior on NT.
+files will override the previous ones.
+
+Under Win32 based systems, GtkAda now comes with a set of unix-like tools
+(including @code{patch} and @code{diff}) that provide the same functionality.
+Note that these tools are provided as is, and we recommend using your own
+supported set of utilities. You can find the complete package of the GNU
+utilities provided at
+@url{http://www.weihenstephan.de/~syring/win32/UnxUtils.html}.
 
 In some cases, due to major changes in the project file, Gate may not be
 able to merge all the changes. In this case, it will notify you so, and
