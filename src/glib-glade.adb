@@ -422,9 +422,8 @@ package body Glib.Glade is
    procedure Gen_Set
      (N : Node_Ptr; Name, Field : String; File : File_Type)
    is
-   pragma Unreferenced (Field);
       P   : constant Node_Ptr := Find_Tag_With_Attribute
-         (N.Child, "property", "name", Name);
+         (N.Child, "property", "name", Field);
       Cur : constant String := Get_Attribute (Find_Tag_With_Attribute
          (N, "widget", "id"), "id");
       Top : constant String := Get_Attribute (Find_Tag_With_Attribute
@@ -806,33 +805,30 @@ package body Glib.Glade is
    -- Gen_Signal --
    ----------------
 
-   Gtk_Widget_Class : aliased String := "GtkWidget";
-
    procedure Gen_Signal
      (N            : Node_Ptr;
       File         : File_Type;
-      Widget_Class : String_Ptr := null)
+      Widget_Class : String := "")
    is
       P        : Node_Ptr := Find_Tag (N.Child, "signal");
       Top      : constant Node_Ptr := Find_Top_Widget (N);
-      Current  : constant String_Ptr := Get_Field (N, "name");
-      Orig_Class,
-      Class    : String_Ptr;
-      Handler  : String_Ptr;
-      Name     : String_Ptr;
-      Object   : String_Ptr;
-      After    : String_Ptr;
+      Current  : constant String := Get_Name (N);
+
       Returned : GType;
       Rename   : String_Ptr;
       Q        : Signal_Query;
 
-      function Simple_Class (Class : String_Ptr) return String_Ptr;
+      function Simple_Class (Class : String) return String;
       --  Return the simple name of a class.
       --  This currently simply replaces Gtk[HV]* by Gtk*
 
-      function Simple_Class (Class : String_Ptr) return String_Ptr is
+      function Simple_Class (Class : String) return String is
       begin
-         if Class /= null and then Class'Length >= 5
+         if Widget_Class = "" then
+            return Get_Class (N);
+         end if;
+
+         if Class /= "" and then Class'Length >= 5
            and then Class (Class'First .. Class'First + 2) = "Gtk"
            and then
              (Class (Class'First + 3) = 'H'
@@ -840,81 +836,101 @@ package body Glib.Glade is
            and then Class (Class'First + 4) in 'A' .. 'Z'
            and then Class (Class'First + 4 .. Class'Last) /= "Button_Box"
          then
-            return new String'("Gtk" & Class (Class'First + 4 .. Class'Last));
+            return "Gtk" & Class (Class'First + 4 .. Class'Last);
          else
             return Class;
          end if;
       end Simple_Class;
 
+      Orig_Class : constant String := Simple_Class (Widget_Class);
+      Class      : constant String := Orig_Class; --  ??? fix when having obj
+
+      function Yes_No_To_True_False (S : in String) return String;
+      --  Transform "yes" to "True" and "no" to "False".
+      --  By default return "False".
+
+      function Yes_No_To_True_False (S : in String) return String is
+      begin
+         if S = "yes" then
+            return "True";
+         else
+            return "False";
+         end if;
+      end Yes_No_To_True_False;
+
    begin
-      if Widget_Class = null then
-         Orig_Class := Simple_Class (Get_Field (N, "class"));
-      else
-         Orig_Class := Widget_Class;
-      end if;
-
       while P /= null loop
-         Object := Get_Field (P, "object");
+         declare
+            Handler  : constant String := Get_Attribute (P, "handler");
+            Name     : constant String := Get_Attribute (P, "name");
+            Object   : constant String := Get_Attribute (P, "object");
+            After    : constant String :=
+              Yes_No_To_True_False (Get_Attribute (P, "after"));
+         begin
 
-         if Object /= null then
-            Class := Gtk_Widget_Class'Access;
-         else
-            Class := Orig_Class;
-         end if;
+            --           if Object /= null then
+            --              Class := Gtk_Widget_Class'Access;
+            --           else
+            --              Class := Orig_Class;
+            --           end if;
 
-         Handler := Get_Field (P, "handler");
-         Name := Get_Field (P, "name");
-         After := Get_Field (P, "after");
+            Query (Lookup (Type_From_Name (Orig_Class), Name), Q);
+            Returned := Return_Type (Q);
 
-         Query (Lookup (Type_From_Name (Orig_Class.all), Name.all), Q);
-         Returned := Return_Type (Q);
+            Rename := Add_Signal
+              (Top,
+               new String'(Handler),
+               new String'(Name),
+               new String'(Class),
+               new String'(Orig_Class));
 
-         Rename := Add_Signal (Top, Handler, Name, Class, Orig_Class);
+            if Returned <= GType_None and then Class /= "GtkWidget" then
+               Add_Signal_Instantiation (new String'(Class), Rename);
+            end if;
 
-         if Returned <= GType_None and then Class.all /= "GtkWidget" then
-            Add_Signal_Instantiation (Class, Rename);
-         end if;
+            if Returned > GType_None then
+               Put (File, "   Return_Callback.");
+            else
+               Put
+                 (File, "   " &
+                  To_Ada
+                    (Class (Class'First + 3 .. Class'Last)) & "_Callback.");
+            end if;
 
-         if Returned > GType_None then
-            Put (File, "   Return_Callback.");
-         else
-            Put (File, "   " &
-              To_Ada (Class (Class'First + 3 .. Class'Last)) & "_Callback.");
-         end if;
+            if Object /= "" then
+               Put (File, "Object_");
+            end if;
 
-         if Object /= null then
-            Put (File, "Object_");
-         end if;
+            Put_Line (File, "Connect");
+            Put (File, "     (");
 
-         Put_Line (File, "Connect");
-         Put (File, "     (");
+            if Top /= N then
+               Put (File, To_Ada (Get_Name (Top)) & ".");
+            end if;
 
-         if Top /= N then
-            Put (File, To_Ada (Get_Field (Top, "name").all) & ".");
-         end if;
+            Put (File, To_Ada (Current) & ", """ & Name & """,");
 
-         Put (File, To_Ada (Current.all) &
-           ", """ & Name.all & """,");
+            if Params (Q)'Length = 0 then
+               New_Line (File);
+               Put (File, "      " &
+                 To_Ada (Class (Class'First + 3 .. Class'Last)) &
+                 "_Callback.To_Marshaller (" & To_Ada (Handler) & "'Access" &
+                 ")");
+            else
+               Put (File, " " & To_Ada (Handler) & "'Access");
+            end if;
 
-         if Params (Q)'Length = 0 then
-            New_Line (File);
-            Put (File, "      " &
-              To_Ada (Class (Class'First + 3 .. Class'Last)) &
-              "_Callback.To_Marshaller (" & To_Ada (Handler.all) & "'Access" &
-              ")");
-         else
-            Put (File, " " & To_Ada (Handler.all) & "'Access");
-         end if;
+            if Object /= "" then
+               Put (File, ", " & To_Ada (Object));
+            end if;
 
-         if Object /= null then
-            Put (File, ", " & To_Ada (Object.all));
-         end if;
+            if After /= "" then
+               Put (File, ", " & To_Ada (After));
+            end if;
 
-         if After /= null then
-            Put (File, ", " & To_Ada (After.all));
-         end if;
+            Put_Line (File, ");");
+         end;
 
-         Put_Line (File, ");");
          P := Find_Tag (P.Next, "signal");
       end loop;
    end Gen_Signal;
@@ -982,7 +998,7 @@ package body Glib.Glade is
             Put_Line (File, "with Gtk.Widget; use Gtk.Widget;");
             New_Line (File);
             Put_Line (File, "package " &
-              To_Ada (Get_Field (SR.Widget, "name").all) &
+              To_Ada (Get_Name (SR.Widget)) &
               "_Pkg.Callbacks is");
 
             for J in Signal_Range'First .. Num_Signals loop
@@ -1026,7 +1042,7 @@ package body Glib.Glade is
             end loop;
 
             Put_Line (File, "end " &
-              To_Ada (Get_Field (SR.Widget, "name").all) & "_Pkg.Callbacks;");
+              To_Ada (Get_Name (SR.Widget)) & "_Pkg.Callbacks;");
 
             --  ??? Need to find a way to put only the required packages
 
@@ -1041,7 +1057,7 @@ package body Glib.Glade is
             Put_Line (File, "with Gtk.Widget; use Gtk.Widget;");
             New_Line (File);
             Put_Line (File, "package body " &
-              To_Ada (Get_Field (SR.Widget, "name").all) &
+              To_Ada (Get_Name (SR.Widget)) &
               "_Pkg.Callbacks is");
             New_Line (File);
             Put_Line (File, "   use Gtk.Arguments;");
@@ -1185,7 +1201,7 @@ package body Glib.Glade is
             end loop;
 
             Put_Line (File, "end " &
-              To_Ada (Get_Field (SR.Widget, "name").all) &
+              To_Ada (Get_Name (SR.Widget)) &
               "_Pkg.Callbacks;");
          end if;
       end loop;
@@ -1259,5 +1275,78 @@ package body Glib.Glade is
 
       return "Gtk." & To_Ada (S (S'First + 3 .. S'Last));
    end To_Package_Name;
+
+   ------------------
+   -- Get_Property --
+   ------------------
+
+   function Get_Property
+     (N        : Node_Ptr;
+      Property : String) return String_Ptr
+   is
+      C : Node_Ptr;
+   begin
+      if N = null then
+         return null;
+      end if;
+
+      C := N.Child;
+
+      while C /= null loop
+         if C.Tag.all = "property"
+           and then Get_Attribute (C, "name") = Property
+         then
+            return C.Value;
+         end if;
+
+         C := C.Next;
+      end loop;
+
+      return null;
+   end Get_Property;
+
+   function Get_Property
+     (N        : Node_Ptr;
+      Property : String;
+      Default  : String := "") return String
+   is
+      P : constant String_Ptr := Get_Property (N, Property);
+   begin
+      if P = null then
+         return Default;
+      else
+         return P.all;
+      end if;
+   end Get_Property;
+
+   ---------------
+   -- Get_Class --
+   ---------------
+
+   function Get_Class (N : Node_Ptr) return String is
+   begin
+      if N = null then
+         return "";
+      end if;
+
+      if N.Tag.all = "widget" then
+         return Get_Attribute (N, "class");
+      end if;
+
+      return "";
+   end Get_Class;
+
+   ---------------
+   -- Get_Name  --
+   ---------------
+
+   function Get_Name (N : Node_Ptr) return String is
+   begin
+      if N = null then
+         return "";
+      end if;
+
+      return Get_Attribute (N, "id");
+   end Get_Name;
 
 end Glib.Glade;
