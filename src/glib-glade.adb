@@ -606,24 +606,24 @@ package body Glib.Glade is
    ---------------
 
    procedure Gen_Child (N, Child : Node_Ptr; File : File_Type) is
-      P   : String_Ptr := Get_Field (N, "name");
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
-      Parent : Node_Ptr;
-      Parent_Top : String_Ptr;
+      P      : String_Ptr := Get_Field (N, "name");
+      Top    : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Parent : String_Ptr;
 
    begin
       if P /= null then
-         Parent := Find_Parent (N.Parent, Get_Part (Child.Value.all, 1));
-         Parent_Top := Get_Field (Find_Top_Widget (Parent), "name");
+         Parent := Get_Field
+           (Find_Parent (N.Parent, Get_Part (Child.Value.all, 1)).Parent,
+            "name");
 
          Put (File, "   " & To_Ada (Top.all) & "." & To_Ada (P.all) &
               " := Get_" & To_Ada (Get_Part (Child.Value.all, 2)) & " (");
 
-         if Parent_Top /= null then
-            Put (File, To_Ada (Parent_Top.all) & ".");
+         if Parent /= Top then
+            Put (File, To_Ada (Top.all) & ".");
          end if;
 
-         Put_Line (File, To_Ada (Find_Tag (Parent, "name").Value.all) & ");");
+         Put_Line (File, To_Ada (Parent.all) & ");");
       end if;
    end Gen_Child;
 
