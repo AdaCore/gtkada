@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,6 +37,7 @@
 --  <c_version>1.3.15</c_version>
 
 with System;
+with Interfaces.C.Strings;
 
 package Glib.Values is
 
@@ -113,6 +114,8 @@ package Glib.Values is
    function  Get_String (Value : GValue) return String;
    function  Get_String (Value : GValue; Length : Gint) return String;
 
+   function  Get_Chars (Value : GValue) return Interfaces.C.Strings.chars_ptr;
+
    procedure Set_Proxy (Value : in out GValue; V_Proxy : C_Proxy);
    function  Get_Proxy (Value : GValue) return C_Proxy;
 
@@ -171,6 +174,7 @@ private
    pragma Import (C, Set_Address, "g_value_set_pointer");
    pragma Import (C, Set_Enum, "g_value_set_enum");
    pragma Import (C, Get_Enum, "g_value_get_enum");
+   pragma Import (C, Get_Chars, "g_value_get_string");
    pragma Import (C, Set_Flags, "g_value_set_flags");
    pragma Import (C, Get_Flags, "g_value_get_flags");
    pragma Import (C, Set_Boxed, "g_value_set_boxed");
