@@ -222,7 +222,7 @@ package body Gtk.Progress is
       pragma Import (C, Internal, "gtk_progress_set_format_string");
 
    begin
-      Internal (Get_Object (Progress), Format & ASCII.Nul);
+      Internal (Get_Object (Progress), Format & ASCII.NUL);
    end Set_Format_String;
 
    --------------------
@@ -300,28 +300,13 @@ package body Gtk.Progress is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Widget.Generate (N, File);
       Gen_Set (N, "Progress", "activity_mode", File => File);
       Gen_Set (N, "Progress", "show_text", File => File);
-   end Generate;
-
-   procedure Generate (Progress : in out Object.Gtk_Object; N : in Node_Ptr) is
-      S : String_Ptr;
-   begin
-      Widget.Generate (Progress, N);
-
-      S := Get_Field (N, "activity_mode");
-
-      if S /= null then
-         Set_Activity_Mode (Gtk_Progress (Progress), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "show_text");
-
-      if S /= null then
-         Set_Show_Text (Gtk_Progress (Progress), Boolean'Value (S.all));
-      end if;
    end Generate;
 
 end Gtk.Progress;

@@ -56,7 +56,6 @@
 with Gtk.Adjustment;
 with Gtk.Container;
 with Gtk.Enums;
-with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Scrolled_Window is
@@ -160,16 +159,12 @@ package Gtk.Scrolled_Window is
    --  the slider part of the bar would be smaller than the trough - the
    --  display is larger than the page size).
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate
-     (Scrolled_Window : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

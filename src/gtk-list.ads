@@ -30,12 +30,14 @@
 with Gtk.Container;
 with Gtk.Enums;  use Gtk.Enums;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Object; use Gtk.Object;
 
 package Gtk.List is
 
    type Gtk_List_Record is new Gtk.Container.Gtk_Container_Record with private;
    type Gtk_List is access all Gtk_List_Record'Class;
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_List.
 
    procedure Append_Items
      (List  : access Gtk_List_Record;
@@ -101,15 +103,16 @@ package Gtk.List is
      (List : access Gtk_List_Record;
       Item : in Gint);
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-
-   procedure Generate (List : in out Gtk_Object; N : in Node_Ptr);
+   --  Gate internal function
 
 private
    type Gtk_List_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
 
+   pragma Import (C, Get_Type, "gtk_list_get_type");
 end Gtk.List;

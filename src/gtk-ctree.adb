@@ -35,7 +35,7 @@ with Unchecked_Deallocation;
 package body Gtk.CTree is
 
    Compare_Drag_Func_Key : constant String :=
-     "_GtkAda_Ctree_Compare_Drag_Func" & ASCII.Nul;
+     "_GtkAda_Ctree_Compare_Drag_Func" & ASCII.NUL;
    --
    --  The key that will be used to store the address of the Ada
    --  Compare_Drag_Func function.
@@ -901,7 +901,7 @@ package body Gtk.CTree is
 
    begin
       Internal
-        (Get_Object (Ctree), Node, Column, Text & ASCII.Nul, Spacing,
+        (Get_Object (Ctree), Node, Column, Text & ASCII.NUL, Spacing,
          Pixmap, Mask);
    end Node_Set_Pixtext;
 
@@ -976,7 +976,7 @@ package body Gtk.CTree is
       pragma Import (C, Internal, "gtk_ctree_node_set_text");
 
    begin
-      Internal (Get_Object (Ctree), Node, Column, Text & ASCII.Nul);
+      Internal (Get_Object (Ctree), Node, Column, Text & ASCII.NUL);
    end Node_Set_Text;
 
    ---------------------------
@@ -1206,7 +1206,7 @@ package body Gtk.CTree is
    begin
       Internal (Get_Object (Ctree),
                 Node,
-                Text & ASCII.Nul,
+                Text & ASCII.NUL,
                 Spacing,
                 Pixmap_Closed,
                 Mask_Closed,
@@ -1787,16 +1787,12 @@ package body Gtk.CTree is
    -- Generate --
    --------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Clist.Generate (N, File);
-   end Generate;
-
-   procedure Generate
-     (Ctree : in out Gtk.Object.Gtk_Object; N : in Node_Ptr) is
-   begin
-      Clist.Generate (Ctree, N);
    end Generate;
 
 end Gtk.CTree;

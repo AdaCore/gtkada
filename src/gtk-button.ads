@@ -35,7 +35,6 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
-with Gtk.Object;
 with Gtk.Bin;
 with Gtk.Enums;
 
@@ -89,17 +88,12 @@ package Gtk.Button is
    procedure Leave    (Button : access Gtk_Button_Record);
    --  Send the "leave" signal to the button
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Button : in out Gtk.Object.Gtk_Object;
-                       N      : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

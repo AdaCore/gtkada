@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gtk.Adjustment;
-with Gtk.Util; use Gtk.Util;
 with System;
 
 package body Gtk.Progress_Bar is
@@ -181,41 +180,14 @@ package body Gtk.Progress_Bar is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Progress_Bar", File => File);
       Progress.Generate (N, File);
       Gen_Set (N, "Progress_Bar", "bar_style", File => File);
       Gen_Set (N, "Progress_Bar", "orientation", File => File);
-   end Generate;
-
-   procedure Generate
-     (Progress_Bar : in out Object.Gtk_Object; N : in Node_Ptr)
-   is
-      S : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Progress_Bar (Progress_Bar));
-         Set_Object (Get_Field (N, "name"), Progress_Bar);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Progress.Generate (Progress_Bar, N);
-
-      S := Get_Field (N, "bar_style");
-
-      if S /= null then
-         Set_Bar_Style
-           (Gtk_Progress_Bar (Progress_Bar),
-            Gtk_Progress_Bar_Style'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      S := Get_Field (N, "orientation");
-
-      if S /= null then
-         Set_Orientation
-           (Gtk_Progress_Bar (Progress_Bar),
-            Gtk_Progress_Bar_Orientation'Value (S (S'First + 4 .. S'Last)));
-      end if;
    end Generate;
 
 end Gtk.Progress_Bar;

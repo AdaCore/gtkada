@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 with Gtk.Type_Conversion_Hooks;
 pragma Elaborate_All (Gtk.Type_Conversion_Hooks);
 
@@ -82,6 +81,9 @@ package body Gtk.List_Item is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       if Gettext_Support (N) then
          Gen_New (N, "List_Item", Get_Field (N, "label").all,
@@ -92,17 +94,6 @@ package body Gtk.List_Item is
       end if;
 
       Item.Generate (N, File);
-   end Generate;
-
-   procedure Generate (List_Item : in out Gtk_Object; N : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_List_Item (List_Item), Get_Field (N, "label").all);
-         Set_Object (Get_Field (N, "name"), List_Item);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Item.Generate (List_Item, N);
    end Generate;
 
    ----------------
@@ -117,7 +108,7 @@ package body Gtk.List_Item is
       pragma Import (C, Internal, "gtk_list_item_new_with_label");
 
    begin
-      Set_Object (List_Item, Internal (Label & ASCII.Nul));
+      Set_Object (List_Item, Internal (Label & ASCII.NUL));
       Initialize_User_Data (List_Item);
    end Initialize;
 

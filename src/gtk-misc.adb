@@ -63,37 +63,15 @@ package body Gtk.Misc is
    -- Generate --
    --------------
 
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Widget.Generate (N, File);
       Gen_Set (N, "Misc", "Alignment", "xalign", "yalign", "", "", File,
         Is_Float => True);
       Gen_Set (N, "Misc", "Padding", "xpad", "ypad", "", "", File);
-   end Generate;
-
-   procedure Generate (Misc : in out Gtk_Object;
-                       N    : in Node_Ptr) is
-      S, S2 : String_Ptr;
-
-   begin
-      Widget.Generate (Misc, N);
-
-      S := Get_Field (N, "xalign");
-      S2 := Get_Field (N, "yalign");
-
-      if S /= null and then S2 /= null then
-         Set_Alignment
-           (Gtk_Misc (Misc), Gfloat'Value (S.all), Gfloat'Value (S2.all));
-      end if;
-
-      S := Get_Field (N, "xpad");
-      S2 := Get_Field (N, "ypad");
-
-      if S /= null and then S2 /= null then
-         Set_Padding
-           (Gtk_Misc (Misc), Gint'Value (S.all), Gint'Value (S2.all));
-      end if;
    end Generate;
 
 end Gtk.Misc;

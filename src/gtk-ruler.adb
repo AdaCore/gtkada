@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Ruler is
 
@@ -185,9 +184,11 @@ package body Gtk.Ruler is
    -- Generate --
    --------------
 
-   procedure Generate (N     : in Node_Ptr;
-                       File  : in File_Type) is
-      Class : String_Ptr := Get_Field (N, "class");
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Class : constant String_Ptr := Get_Field (N, "class");
+      Id    : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Ruler", "", "", Class (Class'First + 3) & "ruler", File);
       Widget.Generate (N, File);
@@ -195,44 +196,6 @@ package body Gtk.Ruler is
       Gen_Set
         (N, "Ruler", "Range", "lower", "upper", "position", "max_size", File,
          Is_Float => True);
-   end Generate;
-
-   procedure Generate (Ruler : in out Gtk_Object;
-                       N     : in Node_Ptr) is
-      Class         : String_Ptr := Get_Field (N, "class");
-      S, S2, S3, S4 : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         if Class (Class'First + 3) = 'H' then
-            Gtk_New_Hruler (Gtk_Ruler (Ruler));
-         else
-            Gtk_New_Vruler (Gtk_Ruler (Ruler));
-         end if;
-
-         Set_Object (Get_Field (N, "name"), Ruler);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Widget.Generate (Ruler, N);
-      S := Get_Field (N, "metric");
-
-      if S /= null then
-         Set_Metric (Gtk_Ruler (Ruler),
-           Gtk_Metric_Type'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      S  := Get_Field (N, "lower");
-      S2 := Get_Field (N, "upper");
-      S3 := Get_Field (N, "position");
-      S4 := Get_Field (N, "max_size");
-
-      if S /= null and then S2 /= null and then S3 /= null
-        and then S4 /= null
-      then
-         Set_Range
-           (Gtk_Ruler (Ruler), Gfloat'Value (S.all), Gfloat'Value (S2.all),
-            Gfloat'Value (S3.all), Gfloat'Value (S4.all));
-      end if;
    end Generate;
 
 end Gtk.Ruler;

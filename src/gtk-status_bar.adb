@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 with Unchecked_Conversion;
 
 package body Gtk.Status_Bar is
@@ -75,7 +74,7 @@ package body Gtk.Status_Bar is
       pragma Import (C, Internal, "gtk_statusbar_get_context_id");
    begin
       return Internal (Get_Object (Statusbar),
-                       Context_Description & ASCII.Nul);
+                       Context_Description & ASCII.NUL);
    end Get_Context_Id;
 
    ------------------
@@ -123,7 +122,7 @@ package body Gtk.Status_Bar is
          return Message_Id;
       pragma Import (C, Internal, "gtk_statusbar_push");
    begin
-      return Internal (Get_Object (Statusbar), Context, Text & ASCII.Nul);
+      return Internal (Get_Object (Statusbar), Context, Text & ASCII.NUL);
    end Push;
 
    ---------
@@ -160,23 +159,13 @@ package body Gtk.Status_Bar is
    -- Generate --
    --------------
 
-   procedure Generate (N         : in Node_Ptr;
-                       File      : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Status_Bar", File => File);
       Box.Generate (N, File);
-   end Generate;
-
-   procedure Generate (Statusbar : in out Gtk_Object;
-                       N         : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Status_Bar (Statusbar));
-         Set_Object (Get_Field (N, "name"), Statusbar);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Box.Generate (Statusbar, N);
    end Generate;
 
 end Gtk.Status_Bar;

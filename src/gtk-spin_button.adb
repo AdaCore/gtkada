@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Spin_Button is
 
@@ -293,6 +292,8 @@ package body Gtk.Spin_Button is
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
       S   : String_Ptr;
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Id  : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       if not N.Specific_Data.Created then
@@ -321,67 +322,6 @@ package body Gtk.Spin_Button is
       Gen_Set (N, "Spin_Button", "update_policy", File);
       Gen_Set (N, "Spin_Button", "value", File, Is_Float => True);
       Gen_Set (N, "Spin_Button", "wrap", File);
-   end Generate;
-
-   procedure Generate
-     (Spin_Button : in out Object.Gtk_Object; N : in Node_Ptr)
-   is
-      use Gtk.Adjustment;
-
-      S   : String_Ptr;
-      Adj : Gtk_Adjustment;
-
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New
-           (Adj,
-            Gfloat'Value (Get_Field (N, "value").all),
-            Gfloat'Value (Get_Field (N, "lower").all),
-            Gfloat'Value (Get_Field (N, "upper").all),
-            Gfloat'Value (Get_Field (N, "step").all),
-            Gfloat'Value (Get_Field (N, "page").all),
-            Gfloat'Value (Get_Field (N, "page_size").all));
-         Gtk_New (Gtk_Spin_Button (Spin_Button), Adj,
-           Gfloat'Value (Get_Field (N, "climb_rate").all),
-           Gint'Value (Get_Field (N, "digits").all));
-         Set_Object (Get_Field (N, "name"), Spin_Button);
-         N.Specific_Data.Created := True;
-      end if;
-
-      GEntry.Generate (Spin_Button, N);
-
-      S := Get_Field (N, "numeric");
-
-      if S /= null then
-         Set_Numeric (Gtk_Spin_Button (Spin_Button), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "snap");
-
-      if S /= null then
-         Set_Snap_To_Ticks
-           (Gtk_Spin_Button (Spin_Button), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "update_policy");
-
-      if S /= null then
-         Set_Update_Policy
-           (Gtk_Spin_Button (Spin_Button),
-            Gtk_Spin_Button_Update_Policy'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      S := Get_Field (N, "value");
-
-      if S /= null then
-         Set_Value (Gtk_Spin_Button (Spin_Button), Gfloat'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "wrap");
-
-      if S /= null then
-         Set_Wrap (Gtk_Spin_Button (Spin_Button), Boolean'Value (S.all));
-      end if;
    end Generate;
 
 end Gtk.Spin_Button;

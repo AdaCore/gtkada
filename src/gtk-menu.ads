@@ -62,7 +62,6 @@
 --  <c_version> 1.2.6 </c_version>
 
 with Gtk.Accel_Group;
-with Gtk.Object;
 with Gtk.Menu_Item;   use Gtk.Menu_Item;
 with Gtk.Menu_Shell;
 with Gtk.Widget;
@@ -279,17 +278,12 @@ package Gtk.Menu is
    --  Return the widget to which the menu was attached.
    --  If the menu was not attached, this function returns null.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Menu : in out Gtk.Object.Gtk_Object;
-                       N    : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Layout is
 
@@ -297,6 +296,8 @@ package body Gtk.Layout is
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
       Cur : constant String_Ptr := Get_Field (N, "name");
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Id  : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       Gen_New (N, "Layout", File => File);
@@ -311,27 +312,6 @@ package body Gtk.Layout is
       Put_Line (File, "   Set_Step_Increment (Get_Vadjustment (" &
         To_Ada (Top.all) & "." & To_Ada (Cur.all) & "), " &
         To_Float (Get_Field (N, "vstep").all) & ");");
-   end Generate;
-
-   procedure Generate (Layout : in out Object.Gtk_Object; N : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Layout (Layout));
-         Set_Object (Get_Field (N, "name"), Layout);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Container.Generate (Layout, N);
-
-      Set_Size (Gtk_Layout (Layout),
-        Guint'Value (Get_Field (N, "area_width").all),
-        Guint'Value (Get_Field (N, "area_height").all));
-      Adjustment.Set_Step_Increment
-        (Get_Hadjustment (Gtk_Layout (Layout)),
-         Gfloat'Value (Get_Field (N, "hstep").all));
-      Adjustment.Set_Step_Increment
-        (Get_Vadjustment (Gtk_Layout (Layout)),
-         Gfloat'Value (Get_Field (N, "vstep").all));
    end Generate;
 
 end Gtk.Layout;

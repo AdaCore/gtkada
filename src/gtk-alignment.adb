@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Alignment is
 
@@ -155,6 +154,9 @@ package body Gtk.Alignment is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New
         (N, "Alignment",
@@ -164,22 +166,6 @@ package body Gtk.Alignment is
          To_Float (Get_Field (N, "xscale").all), "",
          File => File);
       Bin.Generate (N, File);
-   end Generate;
-
-   procedure Generate
-     (Alignment : in out Object.Gtk_Object; N : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Alignment (Alignment),
-           Gfloat'Value (Get_Field (N, "xalign").all),
-           Gfloat'Value (Get_Field (N, "yalign").all),
-           Gfloat'Value (Get_Field (N, "xscale").all),
-           Gfloat'Value (Get_Field (N, "yscale").all));
-         Set_Object (Get_Field (N, "name"), Alignment);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Bin.Generate (Alignment, N);
    end Generate;
 
 end Gtk.Alignment;

@@ -31,7 +31,6 @@ with Gdk.Color;
 with Gdk.GC;
 with Gdk.Visual;
 with Gdk.Window;
-with Gtk.Object; use Gtk.Object;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
 
@@ -69,6 +68,9 @@ package Gtk.Preview is
      (Preview  : access Gtk_Preview_Record'Class;
       The_Type : in Gtk_Preview_Type);
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Preview.
+
    procedure Put
      (Preview : access Gtk_Preview_Record;
       Window  : in Gdk.Window.Gdk_Window;
@@ -105,12 +107,12 @@ package Gtk.Preview is
 
    procedure Uninit;
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-
-   procedure Generate (Preview : in out Gtk_Object; N : in Node_Ptr);
+   --  Gate internal function
 
 private
    type Gtk_Preview_Record is new Gtk.Widget.Gtk_Widget_Record
@@ -121,4 +123,5 @@ private
 
    pragma Import (C, Get_Visual, "gtk_preview_get_visual");
    pragma Import (C, Get_Cmap, "gtk_preview_get_cmap");
+   pragma Import (C, Get_Type, "gtk_preview_get_type");
 end Gtk.Preview;

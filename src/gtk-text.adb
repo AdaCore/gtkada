@@ -29,7 +29,6 @@
 
 with System;
 with Interfaces.C.Strings;
-with Gtk.Util; use Gtk.Util;
 with Gdk.Window; use Gdk.Window;
 
 package body Gtk.Text is
@@ -284,7 +283,7 @@ package body Gtk.Text is
       end if;
 
       Internal
-        (Get_Object (Text), Font, Fore_A, Back_A, Chars & ASCII.Nul, Length);
+        (Get_Object (Text), Font, Fore_A, Back_A, Chars & ASCII.NUL, Length);
    end Insert;
 
    ---------------------
@@ -395,6 +394,9 @@ package body Gtk.Text is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Text", File => File);
 
@@ -403,36 +405,6 @@ package body Gtk.Text is
       Gen_Set (N, "Text", "editable", File);
       Gen_Set (N, "Text", "point", File);
       Gen_Set (N, "Text", "word_wrap", File);
-   end Generate;
-
-   procedure Generate (Text : in out Gtk_Object; N : in Node_Ptr) is
-      S : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Text (Text));
-         Set_Object (Get_Field (N, "name"), Text);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Editable.Generate (Text, N);
-
-      S := Get_Field (N, "editable");
-
-      if S /= null then
-         Set_Editable (Gtk_Text (Text), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "point");
-
-      if S /= null then
-         Set_Point (Gtk_Text (Text), Guint'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "word_wrap");
-
-      if S /= null then
-         Set_Word_Wrap (Gtk_Text (Text), Boolean'Value (S.all));
-      end if;
    end Generate;
 
 end Gtk.Text;

@@ -57,7 +57,7 @@ package body Gtk.Item_Factory is
       pragma Import (C, Internal, "gtk_item_factory_add_foreign");
    begin
       Internal (Get_Object (Accel_Widget),
-                Full_Path & ASCII.Nul,
+                Full_Path & ASCII.NUL,
                 Accel_Group,
                 Keyval,
                 Gdk.Types.Gdk_Modifier_Type'Pos (Modifiers));
@@ -111,7 +111,7 @@ package body Gtk.Item_Factory is
       pragma Import (C, Internal, "gtk_item_factory_delete_item");
    begin
       Internal (Get_Object (Ifactory),
-                Path & ASCII.Nul);
+                Path & ASCII.NUL);
    end Delete_Item;
 
    -----------------
@@ -147,7 +147,7 @@ package body Gtk.Item_Factory is
 
    begin
       return Gtk.Widget.Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Ifactory), Path & ASCII.Nul),
+        (Get_User_Data (Internal (Get_Object (Ifactory), Path & ASCII.NUL),
                         Stub));
    end Get_Item;
 
@@ -188,7 +188,7 @@ package body Gtk.Item_Factory is
 
    begin
       return Gtk.Widget.Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Ifactory), Path & ASCII.Nul),
+        (Get_User_Data (Internal (Get_Object (Ifactory), Path & ASCII.NUL),
                         Stub));
    end Get_Widget;
 
@@ -220,7 +220,7 @@ package body Gtk.Item_Factory is
       procedure Internal (File_Name : in String);
       pragma Import (C, Internal, "gtk_item_factory_parse_rc");
    begin
-      Internal (File_Name & ASCII.Nul);
+      Internal (File_Name & ASCII.NUL);
    end Parse_Rc;
 
    ---------------------
@@ -231,7 +231,7 @@ package body Gtk.Item_Factory is
       procedure Internal (Rc_String : in String);
       pragma Import (C, Internal, "gtk_item_factory_parse_rc_string");
    begin
-      Internal (Rc_String & ASCII.Nul);
+      Internal (Rc_String & ASCII.NUL);
    end Parse_Rc_String;
 
    ----------------------
@@ -484,7 +484,7 @@ package body Gtk.Item_Factory is
             Str          : in String);
          pragma Import (C, Internal, "gtk_item_factory_print_func");
       begin
-         Internal (File_Pointer'Address, Str & ASCII.Nul);
+         Internal (File_Pointer'Address, Str & ASCII.NUL);
       end Print_Func;
 
       ------------------------
@@ -558,7 +558,7 @@ package body Gtk.Item_Factory is
       pragma Import (C, Internal, "gtk_item_factory_new");
    begin
       Set_Object (Ifactory, Internal (Container_Type,
-                                      Path & ASCII.Nul,
+                                      Path & ASCII.NUL,
                                       Accel_Group));
    end Initialize;
 

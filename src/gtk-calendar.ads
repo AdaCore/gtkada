@@ -44,7 +44,6 @@
 --  </description>
 --  <c_version>1.2.8</c_version>
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Calendar is
@@ -132,15 +131,12 @@ package Gtk.Calendar is
    --  Defrost a calendar.
    --  All the changes made since the last Freeze are displayed.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Calendar : in out Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

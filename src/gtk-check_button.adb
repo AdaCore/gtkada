@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Check_Button is
 
@@ -36,8 +35,9 @@ package body Gtk.Check_Button is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Check_Button : out Gtk_Check_Button;
-                      With_Label   : in String := "") is
+   procedure Gtk_New
+     (Check_Button : out Gtk_Check_Button;
+      With_Label   : in String := "") is
    begin
       Check_Button := new Gtk_Check_Button_Record;
       Initialize (Check_Button, With_Label);
@@ -68,7 +68,9 @@ package body Gtk.Check_Button is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Label : String_Ptr := Get_Field (N, "label");
+      Label : constant String_Ptr := Get_Field (N, "label");
+      Id    : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       if not N.Specific_Data.Created then
@@ -86,26 +88,6 @@ package body Gtk.Check_Button is
       end if;
 
       Toggle_Button.Generate (N, File);
-   end Generate;
-
-   procedure Generate
-     (Check_Button : in out Object.Gtk_Object; N : in Node_Ptr)
-   is
-      S : String_Ptr := Get_Field (N, "label");
-
-   begin
-      if not N.Specific_Data.Created then
-         if S = null then
-            Gtk_New (Gtk_Check_Button (Check_Button));
-         else
-            Gtk_New (Gtk_Check_Button (Check_Button), S.all);
-         end if;
-
-         Set_Object (Get_Field (N, "name"), Check_Button);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Toggle_Button.Generate (Check_Button, N);
    end Generate;
 
 end Gtk.Check_Button;

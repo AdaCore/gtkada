@@ -36,7 +36,6 @@
 --  </description>
 --  <c_version>1.2.7</c_version>
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Window;
 with Gtk.Button;
 with Gtk.Color_Selection;
@@ -93,17 +92,12 @@ package Gtk.Color_Selection_Dialog is
       return Gtk.Button.Gtk_Button;
    --  Get the help button widget contained within the dialog.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate
-     (Color_Selection_Dialog : in out Gtk_Object;
-      N                      : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

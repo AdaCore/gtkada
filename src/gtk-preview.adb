@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Preview is
 
@@ -247,8 +246,10 @@ package body Gtk.Preview is
    -- Generate --
    --------------
 
-   procedure Generate (N         : in Node_Ptr;
-                       File      : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       if Get_Field (N, "type").all = "True" then
          Gen_New (N, "Preview", "Preview_Color", File => File);
@@ -257,28 +258,6 @@ package body Gtk.Preview is
 
       Widget.Generate (N, File);
       Gen_Set (N, "Preview", "expand", File);
-   end Generate;
-
-   procedure Generate (Preview : in out Gtk_Object;
-                       N       : in Node_Ptr) is
-      S : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         if Get_Field (N, "type").all = "True" then
-            Gtk_New (Gtk_Preview (Preview), Preview_Color);
-            Gtk_New (Gtk_Preview (Preview), Preview_Grayscale);
-         end if;
-
-         Set_Object (Get_Field (N, "name"), Preview);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Widget.Generate (Preview, N);
-      S := Get_Field (N, "expand");
-
-      if S /= null then
-         Set_Expand (Gtk_Preview (Preview), Boolean'Value (S.all));
-      end if;
    end Generate;
 
 end Gtk.Preview;

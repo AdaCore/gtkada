@@ -30,8 +30,6 @@
 with System;
 with Gtk.Menu_Item;  use Gtk.Menu_Item;
 with Gtk.Menu_Shell; use Gtk.Menu_Shell;
-with Gtk.Util;       use Gtk.Util;
-with Gtk.Object;     use Gtk.Object;
 
 package body Gtk.Menu is
 
@@ -392,9 +390,11 @@ package body Gtk.Menu is
    -- Generate --
    --------------
 
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type) is
-      S : String_Ptr := Get_Field (N.Parent, "class");
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      S  : String_Ptr := Get_Field (N.Parent, "class");
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Menu", File => File);
 
@@ -404,26 +404,6 @@ package body Gtk.Menu is
       end if;
 
       Menu_Shell.Generate (N, File);
-   end Generate;
-
-   procedure Generate (Menu : in out Gtk_Object;
-                       N    : in Node_Ptr) is
-      S : String_Ptr := Get_Field (N.Parent, "class");
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Menu (Menu));
-         Set_Object (Get_Field (N, "name"), Menu);
-         N.Specific_Data.Created := True;
-      end if;
-
-      if S /= null and then S.all = "GtkMenuItem" then
-         Menu_Item.Set_Submenu
-           (Gtk_Menu_Item (Get_Object (Get_Field (N.Parent, "name"))),
-            Widget.Gtk_Widget (Menu));
-         N.Specific_Data.Has_Container := True;
-      end if;
-
-      Menu_Shell.Generate (Menu, N);
    end Generate;
 
 end Gtk.Menu;

@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Container;
 with Gtk.Enums;  use Gtk.Enums;
 with Gtk.Widget; use Gtk.Widget;
@@ -40,6 +39,9 @@ package Gtk.Tree is
    procedure Gtk_New (Widget : out Gtk_Tree);
 
    procedure Initialize (Widget : access Gtk_Tree_Record'Class);
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Tree.
 
    procedure Append
      (Tree      : access Gtk_Tree_Record;
@@ -101,15 +103,16 @@ package Gtk.Tree is
      (Tree : access Gtk_Tree_Record;
       Item : in Gint);
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-
-   procedure Generate (Tree : in out Gtk_Object; N : in Node_Ptr);
+   --  Gate internal function
 
 private
    type Gtk_Tree_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
 
+   pragma Import (C, Get_Type, "gtk_tree_get_type");
 end Gtk.Tree;

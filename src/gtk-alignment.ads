@@ -45,7 +45,6 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
-with Gtk.Object;
 with Gtk.Bin;
 
 package Gtk.Alignment is
@@ -96,17 +95,12 @@ package Gtk.Alignment is
    --  Return the Y expansion value, in the range 0.0 .. 1.0
    --  0.0 means no expansion while 1.0 means full expansion.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Alignment : in out Object.Gtk_Object;
-                       N         : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Enums;
 with Gtk.Item;
 with Gtk.Widget;
@@ -42,6 +41,9 @@ package Gtk.Menu_Item is
 
    procedure Initialize
      (Menu_Item : access Gtk_Menu_Item_Record'Class; Label : in  String);
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Menu_Item.
 
    procedure Set_Submenu
      (Menu_Item : access Gtk_Menu_Item_Record;
@@ -75,15 +77,15 @@ package Gtk.Menu_Item is
    --  Call Right_Justify when Justify. Noop otherwise
    --  This procedure is needed by Gate to automate the code generation.
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-
-   procedure Generate (Menu_Item : in out Gtk_Object; N : in Node_Ptr);
+   --  Gate internal function
 
 private
-
    type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with null record;
 
+   pragma Import (C, Get_Type, "gtk_menu_item_get_type");
 end Gtk.Menu_Item;

@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Color_Selection_Dialog is
 
@@ -136,7 +135,7 @@ package body Gtk.Color_Selection_Dialog is
       function Internal (S : String) return System.Address;
       pragma Import (C, Internal, "gtk_color_selection_dialog_new");
    begin
-      Set_Object (Color_Selection_Dialog, Internal (Title & ASCII.Nul));
+      Set_Object (Color_Selection_Dialog, Internal (Title & ASCII.NUL));
       Initialize_User_Data (Color_Selection_Dialog);
    end Initialize;
 
@@ -145,6 +144,9 @@ package body Gtk.Color_Selection_Dialog is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       if Gettext_Support (N) then
          Gen_New (N, "Color_Selection_Dialog", Get_Field (N, "title").all,
@@ -155,20 +157,6 @@ package body Gtk.Color_Selection_Dialog is
       end if;
 
       Window.Generate (N, File);
-   end Generate;
-
-   procedure Generate
-     (Color_Selection_Dialog : in out Gtk_Object;
-      N                      : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Color_Selection_Dialog (Color_Selection_Dialog),
-           Get_Field (N, "title").all);
-         Set_Object (Get_Field (N, "name"), Color_Selection_Dialog);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Window.Generate (Color_Selection_Dialog, N);
    end Generate;
 
 end Gtk.Color_Selection_Dialog;

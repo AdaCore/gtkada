@@ -51,7 +51,6 @@ with Gdk.Font;
 with Gtk.Button;
 with Gtk.Notebook;
 with Gtk.Window;
-with Gtk.Object;
 with Gtkada.Types;
 
 package Gtk.Font_Selection is
@@ -246,25 +245,17 @@ package Gtk.Font_Selection is
    --  The callback on this button should temporarily apply the font, but
    --  should be able to cancel its effect if the Cancel button is selected.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate
-     (Fontsel : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    --  <doc_ignore>
 
    procedure Generate_Dialog (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate_Dialog
-     (Fsd : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    --  </doc_ignore>
 

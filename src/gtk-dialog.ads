@@ -49,7 +49,6 @@
 --  </description>
 --  <c_version>1.2.8</c_version>
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Box;
 with Gtk.Window;
 
@@ -78,15 +77,12 @@ package Gtk.Dialog is
      (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
    --  Return the vertical box associated with a Dialog.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Dialog : in out Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

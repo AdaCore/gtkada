@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Aspect_Frame is
 
@@ -147,9 +146,11 @@ package body Gtk.Aspect_Frame is
    -- Generate --
    --------------
 
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type) is
-      S : String_Ptr;
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      S  : String_Ptr;
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       S := Get_Field (N, "label");
 
@@ -179,35 +180,6 @@ package body Gtk.Aspect_Frame is
       end if;
 
       Frame.Generate (N, File);
-   end Generate;
-
-   procedure Generate (Aspect_Frame : in out Gtk.Object.Gtk_Object;
-                       N            : in Node_Ptr) is
-      S : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         S := Get_Field (N, "label");
-
-         if S /= null then
-            Gtk_New (Gtk_Aspect_Frame (Aspect_Frame), S.all,
-              Gfloat'Value (Get_Field (N, "xalign").all),
-              Gfloat'Value (Get_Field (N, "yalign").all),
-              Gfloat'Value (Get_Field (N, "ratio").all),
-              Boolean'Value (Get_Field (N, "obey_child").all));
-
-         else
-            Gtk_New (Gtk_Aspect_Frame (Aspect_Frame), "",
-              Gfloat'Value (Get_Field (N, "xalign").all),
-              Gfloat'Value (Get_Field (N, "yalign").all),
-              Gfloat'Value (Get_Field (N, "ratio").all),
-              Boolean'Value (Get_Field (N, "obey_child").all));
-         end if;
-
-         Set_Object (Get_Field (N, "name"), Aspect_Frame);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Frame.Generate (Aspect_Frame, N);
    end Generate;
 
 end Gtk.Aspect_Frame;

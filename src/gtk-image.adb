@@ -28,8 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk.Visual;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Image is
 
@@ -109,6 +107,9 @@ package body Gtk.Image is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       if not N.Specific_Data.Created then
          Add_Package ("Gdk.Image");
@@ -124,29 +125,6 @@ package body Gtk.Image is
       end if;
 
       Misc.Generate (N, File);
-   end Generate;
-
-   procedure Generate (Image : in out Object.Gtk_Object; N : in Node_Ptr) is
-      use Gdk.Image, Gdk.Bitmap, Gdk.Visual;
-
-      Img    : Gdk_Image;
-      Visual : Gdk_Visual;
-      S      : String_Ptr;
-
-   begin
-      if not N.Specific_Data.Created then
-         S := Get_Field (N, "image_type");
-         Get_System (Visual);
-         Gdk_New (Img,
-           Gdk_Image_Type'Value (S (S'First + 4 .. S'Last)), Visual,
-           Gint'Value (Get_Field (N, "image_width").all),
-           Gint'Value (Get_Field (N, "image_height").all));
-         Gtk_New (Gtk_Image (Image), Img, Null_Bitmap);
-         Set_Object (Get_Field (N, "name"), Image);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Misc.Generate (Image, N);
    end Generate;
 
 end Gtk.Image;

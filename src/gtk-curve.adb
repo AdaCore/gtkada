@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Curve is
 
@@ -36,13 +35,16 @@ package body Gtk.Curve is
    -- Get_Vector --
    ----------------
 
-   procedure Get_Vector (Curve  : access Gtk_Curve_Record;
-                         Vector : in out Gfloat_Array)
+   procedure Get_Vector
+     (Curve  : access Gtk_Curve_Record;
+      Vector : in out Gfloat_Array)
    is
-      procedure Internal (Curve  : System.Address;
-                          Veclen : Integer;
-                          Vector : System.Address);
+      procedure Internal
+        (Curve  : System.Address;
+         Veclen : Integer;
+         Vector : System.Address);
       pragma Import (C, Internal, "gtk_curve_get_vector");
+
    begin
       Internal (Get_Object (Curve), Vector'Length,
                 Vector (Vector'First)'Address);
@@ -85,11 +87,11 @@ package body Gtk.Curve is
    -- Set_Curve_Type --
    --------------------
 
-   procedure Set_Curve_Type (Curve      : access Gtk_Curve_Record;
-                             Curve_Type : in Gtk_Curve_Type)
+   procedure Set_Curve_Type
+     (Curve      : access Gtk_Curve_Record;
+      Curve_Type : in Gtk_Curve_Type)
    is
-      procedure Internal (Curve      : System.Address;
-                          Curve_Type : Gint);
+      procedure Internal (Curve : System.Address; Curve_Type : Gint);
       pragma Import (C, Internal, "gtk_curve_set_curve_type");
    begin
       Internal (Get_Object (Curve), Gtk_Curve_Type'Pos (Curve_Type));
@@ -132,8 +134,9 @@ package body Gtk.Curve is
    -- Set_Vector --
    ----------------
 
-   procedure Set_Vector (Curve  : access Gtk_Curve_Record;
-                         Vector : in Gfloat_Array)
+   procedure Set_Vector
+     (Curve  : access Gtk_Curve_Record;
+      Vector : in Gfloat_Array)
    is
       procedure Internal (Curve  : System.Address;
                           Veclen : Integer;
@@ -149,40 +152,15 @@ package body Gtk.Curve is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Curve", File => File);
       Drawing_Area.Generate (N, File);
       Gen_Set (N, "Curve", "curve_type", File => File);
       Gen_Set (N, "Curve", "Range", "min_x", "max_x", "min_y", "max_y",
         File => File, Is_Float => True);
-   end Generate;
-
-   procedure Generate
-     (Curve : in out Object.Gtk_Object;
-      N     : in Node_Ptr)
-   is
-      S : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Curve (Curve));
-         Set_Object (Get_Field (N, "name"), Curve);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Drawing_Area.Generate (Curve, N);
-
-      S := Get_Field (N, "curve_type");
-
-      if S /= null then
-         Set_Curve_Type (Gtk_Curve (Curve),
-           Gtk_Curve_Type'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      Set_Range (Gtk_Curve (Curve),
-        Gfloat'Value (Get_Field (N, "min_x").all),
-        Gfloat'Value (Get_Field (N, "max_x").all),
-        Gfloat'Value (Get_Field (N, "min_y").all),
-        Gfloat'Value (Get_Field (N, "max_y").all));
    end Generate;
 
 end Gtk.Curve;

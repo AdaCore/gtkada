@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Scale is
 
@@ -189,7 +188,9 @@ package body Gtk.Scale is
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
       S     : String_Ptr;
-      Class : String_Ptr := Get_Field (N, "class");
+      Class : constant String_Ptr := Get_Field (N, "class");
+      Id    : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       if not N.Specific_Data.Created then
@@ -212,57 +213,6 @@ package body Gtk.Scale is
       Gen_Set (N, "Scale", "digits", File => File);
       Gen_Set (N, "Scale", "draw_value", File => File);
       Gen_Set (N, "Scale", "value_pos", File => File);
-   end Generate;
-
-   procedure Generate (Scale : in out Object.Gtk_Object; N : in Node_Ptr) is
-      S   : String_Ptr;
-      Adj : Adjustment.Gtk_Adjustment;
-      Class : String_Ptr := Get_Field (N, "class");
-
-   begin
-      if not N.Specific_Data.Created then
-         Adjustment.Gtk_New
-           (Adj,
-            Gfloat'Value (Get_Field (N, "value").all),
-            Gfloat'Value (Get_Field (N, "lower").all),
-            Gfloat'Value (Get_Field (N, "upper").all),
-            Gfloat'Value (Get_Field (N, "step").all),
-            Gfloat'Value (Get_Field (N, "page").all),
-            Gfloat'Value (Get_Field (N, "page_size").all));
-
-         if Class (Class'First + 3) = 'H' then
-            Gtk_New_Hscale (Gtk_Scale (Scale), Adj);
-         else
-            Gtk_New_Vscale (Gtk_Scale (Scale), Adj);
-         end if;
-
-         Set_Object (Get_Field (N, "name"), Scale);
-         N.Specific_Data.Created := True;
-      end if;
-
-      GRange.Generate (Scale, N);
-
-      S := Get_Field (N, "digits");
-
-      if S /= null then
-         Set_Digits
-           (Gtk_Scale (Scale), Gint'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "draw_value");
-
-      if S /= null then
-         Set_Draw_Value
-           (Gtk_Scale (Scale), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "value_pos");
-
-      if S /= null then
-         Set_Value_Pos
-           (Gtk_Scale (Scale),
-            Gtk_Position_Type'Value (S (S'First + 4 .. S'Last)));
-      end if;
    end Generate;
 
 end Gtk.Scale;

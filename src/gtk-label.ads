@@ -38,7 +38,6 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
-with Gtk.Object;
 with Gtk.Enums;
 with Gtk.Misc;
 
@@ -107,17 +106,12 @@ package Gtk.Label is
    --  feature is only used internally by gtk+ to create menus, and is not
    --  useful for end-users.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Label : in out Gtk.Object.Gtk_Object;
-                       N     : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

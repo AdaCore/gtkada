@@ -36,7 +36,6 @@
 --  </description>
 --  <c_version>1.2.7</c_version>
 
-with Gtk.Object;
 with Gtk.Box;
 with Gtk.Button;
 with Gtk.Widget;
@@ -168,17 +167,12 @@ package Gtk.File_Selection is
      return Gtk.Widget.Gtk_Widget;
    --  Return the text displayed just above the Selection_Entry.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (File_Selection : in out Gtk.Object.Gtk_Object;
-                       N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

@@ -41,7 +41,6 @@
 with Gdk.Bitmap;
 with Gdk.Image;
 with Gtk.Misc;
-with Gtk.Object;
 
 package Gtk.Image is
 
@@ -77,16 +76,12 @@ package Gtk.Image is
    --  Set the values of a Gtk_Image.
    --  Mask indicates which parts of the image should be transparent.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate
-     (Image : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

@@ -42,7 +42,6 @@
 
 with Gtk.Container;
 with Gtk.Widget;
-with Gtk.Object;
 
 package Gtk.Fixed is
 
@@ -82,15 +81,12 @@ package Gtk.Fixed is
    --  X indicates the horizontal position to place the widget at.
    --  Y is the vertical position to place the widget at.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Fixed : in out Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

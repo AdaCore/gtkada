@@ -28,9 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 with Interfaces.C.Strings;
-with Gtk.Object;   use Gtk.Object;
 
 package body Gtk.File_Selection is
 
@@ -77,7 +75,7 @@ package body Gtk.File_Selection is
                           Pattern        : String);
       pragma Import (C, Internal, "gtk_file_selection_complete");
    begin
-      Internal (Get_Object (File_Selection), Pattern & ASCII.Nul);
+      Internal (Get_Object (File_Selection), Pattern & ASCII.NUL);
    end Complete;
 
    -----------------------
@@ -266,7 +264,7 @@ package body Gtk.File_Selection is
         return System.Address;
       pragma Import (C, Internal, "gtk_file_selection_new");
    begin
-      Set_Object (File_Selection, Internal (Title & ASCII.Nul));
+      Set_Object (File_Selection, Internal (Title & ASCII.NUL));
       Initialize_User_Data (File_Selection);
    end Initialize;
 
@@ -284,7 +282,7 @@ package body Gtk.File_Selection is
       pragma Import (C, Internal, "gtk_file_selection_set_filename");
 
    begin
-      Internal (Get_Object (File_Selection), Filename & ASCII.Nul);
+      Internal (Get_Object (File_Selection), Filename & ASCII.NUL);
    end Set_Filename;
 
    -------------------------
@@ -320,8 +318,10 @@ package body Gtk.File_Selection is
    -- Generate --
    --------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       if Gettext_Support (N) then
          Gen_New (N, "File_Selection", Get_Field (N, "title").all,
@@ -333,23 +333,6 @@ package body Gtk.File_Selection is
 
       Gen_Set (N, "File_Selection", "show_file_op_buttons", File);
       Window.Generate (N, File);
-   end Generate;
-
-   procedure Generate (File_Selection : in out Gtk_Object;
-                       N              : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New
-           (Gtk_File_Selection (File_Selection), Get_Field (N, "title").all);
-         Set_Object (Get_Field (N, "name"), File_Selection);
-         N.Specific_Data.Created := True;
-      end if;
-
-      if not Boolean'Value (Get_Field (N, "show_file_op_buttons").all) then
-         Hide_Fileop_Buttons (Gtk_File_Selection (File_Selection));
-      end if;
-
-      Window.Generate (File_Selection, N);
    end Generate;
 
 end Gtk.File_Selection;

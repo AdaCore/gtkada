@@ -29,7 +29,6 @@
 
 with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Object;
 with Gtk.GRange;
 
 package Gtk.Scale is
@@ -49,6 +48,9 @@ package Gtk.Scale is
    procedure Gtk_New_Vscale
      (Scale      : out Gtk_Scale;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Scale.
 
    procedure Initialize_Hscale
      (Scale      : access Gtk_Scale_Record'Class;
@@ -74,14 +76,15 @@ package Gtk.Scale is
 
    function Get_Value_Width (Scale  : access Gtk_Scale_Record) return Gint;
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-
-   procedure Generate (Scale : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Gate internal function
 
 private
    type Gtk_Scale_Record is new Gtk.GRange.Gtk_Range_Record with null record;
 
+   pragma Import (C, Get_Type, "gtk_scale_get_type");
 end Gtk.Scale;

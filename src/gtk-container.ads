@@ -34,7 +34,6 @@
 
 with Gtk.Adjustment;
 with Gtk.Enums;
-with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Container is
@@ -166,17 +165,12 @@ package Gtk.Container is
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Emit a "set_focus_child" signal.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Container : in out Gtk.Object.Gtk_Object;
-                       N         : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

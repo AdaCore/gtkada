@@ -34,7 +34,6 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Misc is
@@ -63,16 +62,12 @@ package Gtk.Misc is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Misc.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Misc : in out Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

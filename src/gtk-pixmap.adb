@@ -31,7 +31,6 @@ with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Pixmap;
 with Gtk.Widget;
-with Gtk.Util; use Gtk.Util;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
 
@@ -206,6 +205,8 @@ package body Gtk.Pixmap is
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
       Cur : constant String_Ptr := Get_Field (N, "name");
       S   : String_Ptr;
+      Id  : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       if not N.Specific_Data.Created then
@@ -224,28 +225,6 @@ package body Gtk.Pixmap is
       end if;
 
       Misc.Generate (N, File);
-   end Generate;
-
-   procedure Generate (Pixmap : in out Object.Gtk_Object; N : in Node_Ptr) is
-      Top : Node_Ptr;
-      S   : String_Ptr;
-
-   begin
-      if not N.Specific_Data.Created then
-         S := Get_Field (N, "filename");
-
-         if S = null then
-            S := new String' ("");
-         end if;
-
-         Top := Find_Top_Widget (N);
-         Pixmap := Object.Gtk_Object (Create_Pixmap (S.all,
-           Gtk.Window.Gtk_Window (Get_Object (Get_Field (Top, "name")))));
-         Set_Object (Get_Field (N, "name"), Pixmap);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Misc.Generate (Pixmap, N);
    end Generate;
 
 end Gtk.Pixmap;

@@ -42,7 +42,6 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
-with Gtk.Object;
 with Gtk.Container;
 with Gtk.Menu_Item;   use Gtk.Menu_Item;
 
@@ -106,19 +105,13 @@ package Gtk.Menu_Shell is
    --  This deselects the selected item, ungrabs the mouse and keyboard, and
    --  erase the Menu_Shell from the screen.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type)
+   procedure Generate (N : in Node_Ptr; File : in File_Type)
      renames Gtk.Container.Generate;
    --  Gate internal function
-
-   procedure Generate (Menu_Shell : in out Gtk.Object.Gtk_Object;
-                       N : in Node_Ptr)
-     renames Gtk.Container.Generate;
-   --  Dgate internal function
 
    -------------
    -- Signals --

@@ -35,7 +35,6 @@
 --  </description>
 --  <c_version>1.2.7</c_version>
 
-with Gtk.Object;
 with Gtk.Button;
 with Gtk.Menu;
 with Gtk.Widget;
@@ -74,16 +73,12 @@ package Gtk.Option_Menu is
    --  Select the menu item specified by index making it the newly selected
    --  value for the option menu.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate
-     (Option_Menu : in out Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

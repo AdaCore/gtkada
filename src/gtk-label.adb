@@ -29,11 +29,6 @@
 
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
-with Gtk.Util; use Gtk.Util;
-with Gtk.Object; use Gtk.Object;
-with Gtk.Notebook; use Gtk.Notebook;
-with Gtk.Clist; use Gtk.Clist;
-with Gtk.Widget; use Gtk.Widget;
 with Gtk.Type_Conversion_Hooks;
 pragma Elaborate_All (Gtk.Type_Conversion_Hooks);
 
@@ -144,12 +139,12 @@ package body Gtk.Label is
    -- Parse_Uline --
    -----------------
 
-   procedure Parse_Uline (Label : access Gtk_Label_Record;
-                          Text  : in     String)
+   procedure Parse_Uline
+     (Label : access Gtk_Label_Record;
+      Text  : in     String)
    is
       function Internal (Label : in System.Address;
-                         Text  : in String)
-                        return Guint;
+                         Text  : in String) return Guint;
       pragma Import (C, Internal, "gtk_label_parse_uline");
       Keyval : Guint;
    begin
@@ -168,6 +163,8 @@ package body Gtk.Label is
       Num        : Gint;
       Is_Tab,
       Is_Title   : Boolean;
+      Id         : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       if Gettext_Support (N) then
@@ -220,71 +217,6 @@ package body Gtk.Label is
               Gint'Image (Num) & ", " &
               To_Ada (Top.all) & "." &
               To_Ada (Get_Field (N, "name").all) & ");");
-         end if;
-      end if;
-   end Generate;
-
-   procedure Generate (Label : in out Gtk.Object.Gtk_Object;
-                       N     : in Node_Ptr) is
-      Child_Name : String_Ptr := Get_Field (N, "child_name");
-      S          : String_Ptr;
-      P          : Node_Ptr;
-      Num        : Gint;
-      Is_Tab,
-      Is_Title   : Boolean;
-
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Label (Label), Get_Field (N, "label").all);
-         Set_Object (Get_Field (N, "name"), Label);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Misc.Generate (Label, N);
-
-      S := Get_Field (N, "justify");
-
-      if S /= null then
-         Set_Justify (Gtk_Label (Label),
-           Enums.Gtk_Justification'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      S := Get_Field (N, "wrap");
-
-      if S /= null then
-         Set_Line_Wrap (Gtk_Label (Label), Boolean'Value (S.all));
-      end if;
-
-      if Child_Name /= null then
-         Is_Tab := Get_Part (Child_Name.all, 2) = "tab";
-         Is_Title := Get_Part (Child_Name.all, 2) = "title";
-
-         if Is_Tab or else Is_Title then
-            P := N.Parent.Child;
-            Num := 0;
-
-            while P /= N loop
-               S := Get_Field (P, "child_name");
-
-               if S /= null and then S.all = Child_Name.all then
-                  Num := Num + 1;
-               end if;
-
-               P := P.Next;
-            end loop;
-
-            if Is_Tab then
-               Set_Tab
-                 (Gtk_Notebook (Get_Object (Find_Tag
-                    (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                     "name").Value)), Num, Gtk_Widget (Label));
-
-            elsif Is_Title then
-               Set_Column_Widget
-                 (Gtk_Clist (Get_Object (Find_Tag
-                    (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                     "name").Value)), Num, Gtk_Widget (Label));
-            end if;
          end if;
       end if;
    end Generate;

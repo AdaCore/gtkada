@@ -28,8 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
-with Gtk.Menu_Item; use Gtk.Menu_Item;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 
 package body Gtk.Option_Menu is
@@ -114,8 +112,10 @@ package body Gtk.Option_Menu is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      S   : String_Ptr;
+      S  : String_Ptr;
       First, Last : Natural;
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       Gen_New (N, "Option_Menu", File => File);
@@ -159,49 +159,6 @@ package body Gtk.Option_Menu is
            To_Ada (Get_Field (N, "name").all) & "),");
          Put_Line (File, "      " & To_Ada (Get_Field (N, "name").all) &
            "_Menu);");
-      end if;
-   end Generate;
-
-   procedure Generate
-     (Option_Menu : in out Object.Gtk_Object; N : in Node_Ptr)
-   is
-      S             : String_Ptr;
-      The_Menu      : Menu.Gtk_Menu;
-      The_Menu_Item : Gtk_Menu_Item;
-      First, Last   : Natural;
-
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Option_Menu (Option_Menu));
-         Set_Object (Get_Field (N, "name"), Option_Menu);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Button.Generate (Option_Menu, N);
-
-      S := Get_Field (N, "items");
-
-      if S /= null then
-         First := S'First;
-
-         Menu.Gtk_New (The_Menu);
-
-         loop
-            Last := Index (S (First .. S'Last), ASCII.LF & "");
-
-            if Last = 0 then
-               Last := S'Last + 1;
-            end if;
-
-            Gtk_New (The_Menu_Item, S (First .. Last - 1));
-            Menu.Append (The_Menu, The_Menu_Item);
-
-            exit when Last >= S'Last;
-
-            First := Last + 1;
-         end loop;
-
-         Set_Menu (Gtk_Option_Menu (Option_Menu), The_Menu);
       end if;
    end Generate;
 

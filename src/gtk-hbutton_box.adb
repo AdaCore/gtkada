@@ -29,7 +29,6 @@
 
 with System;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Util;  use Gtk.Util;
 
 package body Gtk.Hbutton_Box is
 
@@ -37,8 +36,7 @@ package body Gtk.Hbutton_Box is
    -- Get_Layout_Default --
    ------------------------
 
-   function Get_Layout_Default return Gtk_Button_Box_Style
-   is
+   function Get_Layout_Default return Gtk_Button_Box_Style is
       function Internal return Gint;
       pragma Import (C, Internal, "gtk_hbutton_box_get_layout_default");
    begin
@@ -49,8 +47,7 @@ package body Gtk.Hbutton_Box is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Hbutton_Box)
-   is
+   procedure Gtk_New (Widget : out Gtk_Hbutton_Box) is
    begin
       Widget := new Gtk_Hbutton_Box_Record;
       Initialize (Widget);
@@ -60,8 +57,7 @@ package body Gtk.Hbutton_Box is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Hbutton_Box_Record'Class)
-   is
+   procedure Initialize (Widget : access Gtk_Hbutton_Box_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hbutton_box_new");
    begin
@@ -73,8 +69,7 @@ package body Gtk.Hbutton_Box is
    -- Set_Layout_Default --
    ------------------------
 
-   procedure Set_Layout_Default (Layout : in Gtk_Button_Box_Style)
-   is
+   procedure Set_Layout_Default (Layout : in Gtk_Button_Box_Style) is
       procedure Internal (Layout : in Gint);
       pragma Import (C, Internal, "gtk_hbutton_box_set_layout_default");
    begin
@@ -85,23 +80,13 @@ package body Gtk.Hbutton_Box is
    -- Generate --
    --------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Hbutton_Box", File => File);
       Button_Box.Generate (N, File);
-   end Generate;
-
-   procedure Generate (Hbutton_Box : in out Object.Gtk_Object;
-                       N           : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Hbutton_Box (Hbutton_Box));
-         Set_Object (Get_Field (N, "name"), Hbutton_Box);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Button_Box.Generate (Hbutton_Box, N);
    end Generate;
 
 end Gtk.Hbutton_Box;

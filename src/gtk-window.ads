@@ -52,7 +52,6 @@
 
 with Gdk.Types;
 with Gtk.Accel_Group;
-with Gtk.Object;
 with Gtk.Bin;
 with Gtk.Enums;
 with Gtk.Widget;
@@ -242,11 +241,12 @@ package Gtk.Window is
    --  dialog to which the user has to answer before the application can
    --  continue.
 
+   ----------------------
+   -- Support for Gate --
+   ----------------------
+
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal procedure
-
-   procedure Generate (Window : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

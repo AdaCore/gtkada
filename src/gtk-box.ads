@@ -57,7 +57,6 @@
 
 with Gtk.Container;
 with Gtk.Enums;
-with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Box is
@@ -210,16 +209,12 @@ package Gtk.Box is
                       return Gtk.Widget.Gtk_Widget;
    --  Return the Num-th child of the box, or null if there is no such child.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Box : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Scrollbar is
 
@@ -116,7 +115,9 @@ package body Gtk.Scrollbar is
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
       S     : String_Ptr;
-      Class : String_Ptr := Get_Field (N, "class");
+      Class : constant String_Ptr := Get_Field (N, "class");
+      Id    : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       if not N.Specific_Data.Created then
@@ -151,44 +152,6 @@ package body Gtk.Scrollbar is
       end if;
 
       GRange.Generate (N, File);
-   end Generate;
-
-   procedure Generate
-     (Scrollbar : in out Object.Gtk_Object; N : in Node_Ptr)
-   is
-      Adj : Adjustment.Gtk_Adjustment;
-      Class : String_Ptr := Get_Field (N, "class");
-
-   begin
-      if not N.Specific_Data.Created then
-
-         if Class (Class'First + 3) = 'H' then
-            Adjustment.Gtk_New
-              (Adj,
-               Gfloat'Value (Get_Field (N, "hvalue").all),
-               Gfloat'Value (Get_Field (N, "hlower").all),
-               Gfloat'Value (Get_Field (N, "hupper").all),
-               Gfloat'Value (Get_Field (N, "hstep").all),
-               Gfloat'Value (Get_Field (N, "hpage").all),
-               Gfloat'Value (Get_Field (N, "hpage_size").all));
-            Gtk_New_Hscrollbar (Gtk_Scrollbar (Scrollbar), Adj);
-         else
-            Adjustment.Gtk_New
-              (Adj,
-               Gfloat'Value (Get_Field (N, "vvalue").all),
-               Gfloat'Value (Get_Field (N, "vlower").all),
-               Gfloat'Value (Get_Field (N, "vupper").all),
-               Gfloat'Value (Get_Field (N, "vstep").all),
-               Gfloat'Value (Get_Field (N, "vpage").all),
-               Gfloat'Value (Get_Field (N, "vpage_size").all));
-            Gtk_New_Vscrollbar (Gtk_Scrollbar (Scrollbar), Adj);
-         end if;
-
-         Set_Object (Get_Field (N, "name"), Scrollbar);
-         N.Specific_Data.Created := True;
-      end if;
-
-      GRange.Generate (Scrollbar, N);
    end Generate;
 
 end Gtk.Scrollbar;

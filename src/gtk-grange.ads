@@ -29,7 +29,6 @@
 
 with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.GRange is
@@ -37,6 +36,9 @@ package Gtk.GRange is
    type Gtk_Range_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Range is access all Gtk_Range_Record'Class;
    subtype Gtk_GRange is Gtk_Range;
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Range.
 
    procedure Default_Hmotion
      (The_Range : access Gtk_Range_Record;
@@ -99,14 +101,15 @@ package Gtk.GRange is
       Result    :    out Gint);
    --  Was a function in C
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-
-   procedure Generate (The_Range : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Gate internal function
 
 private
    type Gtk_Range_Record is new Gtk.Widget.Gtk_Widget_Record with null record;
 
+   pragma Import (C, Get_Type, "gtk_range_get_type");
 end Gtk.GRange;

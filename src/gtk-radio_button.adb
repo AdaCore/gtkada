@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Radio_Button is
 
@@ -157,6 +156,8 @@ package body Gtk.Radio_Button is
       Name  : constant String_Ptr := Get_Field (N, "name");
       Top_Widget : Node_Ptr := Find_Top_Widget (N);
       Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
+      Id    : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       if N.Specific_Data.Initialized then
@@ -187,59 +188,6 @@ package body Gtk.Radio_Button is
       end if;
 
       Check_Button.Generate (N, File);
-   end Generate;
-
-   procedure Generate
-     (Radio_Button : in out Object.Gtk_Object; N : in Node_Ptr)
-   is
-      S     : String_Ptr := Get_Field (N, "label");
-      Radio : aliased Gtk_Radio_Button_Record;
-
-      function Find_Prev_Radio_Button (N : Node_Ptr) return Gtk_Radio_Button;
-      --  Find the previous radio button in the node N.
-
-      function Find_Prev_Radio_Button (N : Node_Ptr) return Gtk_Radio_Button is
-         P     : Node_Ptr := N.Parent.Child;
-         Q     : Node_Ptr;
-         S     : String_Ptr;
-
-      begin
-         while P /= N loop
-            S := Get_Field (P, "class");
-
-            if S /= null and then S.all = "GtkRadioButton" then
-               Q := P;
-            end if;
-
-            P := P.Next;
-         end loop;
-
-         if Q = null then
-            return Radio'Unchecked_Access;
-         else
-            return Gtk_Radio_Button (Get_Object (Get_Field (Q, "name")));
-         end if;
-      end Find_Prev_Radio_Button;
-
-   begin
-      if N.Specific_Data.Initialized then
-         return;
-      end if;
-
-      if not N.Specific_Data.Created then
-         if S = null then
-            Gtk_New
-              (Gtk_Radio_Button (Radio_Button), Find_Prev_Radio_Button (N));
-         else
-            Gtk_New (Gtk_Radio_Button (Radio_Button),
-              Find_Prev_Radio_Button (N), S.all);
-         end if;
-
-         Set_Object (Get_Field (N, "name"), Radio_Button);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Check_Button.Generate (Radio_Button, N);
    end Generate;
 
 end Gtk.Radio_Button;

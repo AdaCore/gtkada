@@ -172,8 +172,10 @@ package body Gtk.Button_Box is
    -- Generate --
    --------------
 
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Box.Generate (N, File);
       Gen_Set (N, "Button_Box", "spacing", File);
@@ -182,47 +184,6 @@ package body Gtk.Button_Box is
         "child_min_width", "child_min_height", "", "", File);
       Gen_Set (N, "Button_Box", "Child_Ipadding",
         "child_ipad_x", "child_ipad_y", "", "", File);
-   end Generate;
-
-   procedure Generate
-     (Button_Box : in out Object.Gtk_Object; N : in Node_Ptr)
-   is
-      S, S2 : String_Ptr;
-   begin
-      Box.Generate (Button_Box, N);
-      S := Get_Field (N, "spacing");
-
-      if S /= null then
-         Set_Spacing (Gtk_Button_Box (Button_Box), Gint'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "layout_style");
-
-      if S /= null then
-         Set_Layout
-           (Gtk_Button_Box (Button_Box),
-            Enums.Gtk_Button_Box_Style'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      S  := Get_Field (N, "child_min_width");
-      S2 := Get_Field (N, "child_min_height");
-
-      if S /= null and then S2 /= null then
-         Set_Child_Size
-           (Gtk_Button_Box (Button_Box),
-            Gint'Value (S.all),
-            Gint'Value (S2.all));
-      end if;
-
-      S  := Get_Field (N, "child_ipad_x");
-      S2 := Get_Field (N, "child_ipad_y");
-
-      if S /= null and then S2 /= null then
-         Set_Child_Ipadding
-           (Gtk_Button_Box (Button_Box),
-            Gint'Value (S.all),
-            Gint'Value (S2.all));
-      end if;
    end Generate;
 
 end Gtk.Button_Box;

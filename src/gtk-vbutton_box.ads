@@ -38,7 +38,6 @@
 --  <c_version>1.2.6</c_version>
 
 with Gtk.Button_Box;
-with Gtk.Object;
 with Gtk.Enums;
 
 package Gtk.Vbutton_Box is
@@ -75,17 +74,12 @@ package Gtk.Vbutton_Box is
    --  Return the default layout to use for all the vbutton_boxes in your
    --  application.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Vbutton_Box : in out Object.Gtk_Object;
-                       N           : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

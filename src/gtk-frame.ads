@@ -45,7 +45,6 @@
 --  <c_version>1.2.6</c_version>
 
 with Gtk.Bin;
-with Gtk.Object;
 with Gtk.Enums; use Gtk.Enums;
 
 package Gtk.Frame is
@@ -87,16 +86,12 @@ package Gtk.Frame is
       The_Type : in Gtk_Shadow_Type);
    --  Change the visual aspect of the frame.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Frame : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

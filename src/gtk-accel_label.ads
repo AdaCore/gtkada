@@ -56,7 +56,6 @@
 
 with Gtk.Label;
 with Gtk.Widget;
-with Gtk.Object;
 
 package Gtk.Accel_Label is
 
@@ -95,16 +94,12 @@ package Gtk.Accel_Label is
    --  whenever accelerators are added or removed from the associated widget.
    --  Always return False.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate
-     (Accel_Label : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

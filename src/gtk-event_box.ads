@@ -44,7 +44,6 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
-with Gtk.Object;
 with Gtk.Bin;
 
 package Gtk.Event_Box is
@@ -63,15 +62,12 @@ package Gtk.Event_Box is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Event_Box.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Event_Box : in out Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

@@ -28,8 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util;   use Gtk.Util;
-with Gtk.Object; use Gtk.Object;
 
 package body Gtk.Drawing_Area is
 
@@ -47,7 +45,8 @@ package body Gtk.Drawing_Area is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Drawing_Area : access Gtk_Drawing_Area_Record'Class)
+   procedure Initialize
+     (Drawing_Area : access Gtk_Drawing_Area_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_drawing_area_new");
@@ -77,23 +76,13 @@ package body Gtk.Drawing_Area is
    -- Generate --
    --------------
 
-   procedure Generate (N            : in Node_Ptr;
-                       File         : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Drawing_Area", File => File);
       Widget.Generate (N, File);
-   end Generate;
-
-   procedure Generate (Drawing_Area : in out Gtk_Object;
-                       N            : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Drawing_Area (Drawing_Area));
-         Set_Object (Get_Field (N, "name"), Drawing_Area);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Widget.Generate (Drawing_Area, N);
    end Generate;
 
 end Gtk.Drawing_Area;

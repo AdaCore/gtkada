@@ -42,7 +42,6 @@
 
 with Gtk.Container;
 with Gtk.Enums;
-with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Table is
@@ -137,17 +136,12 @@ package Gtk.Table is
    --  If Homogeneous is True, the rows and columns of the table will all
    --  be allocated the same width or height.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Table : in out Gtk.Object.Gtk_Object;
-                       N     : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

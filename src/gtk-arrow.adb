@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Arrow is
 
@@ -89,33 +88,15 @@ package body Gtk.Arrow is
    -- Generate --
    --------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
       use Misc;
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Arrow", Get_Field (N, "arrow_type").all,
         Get_Field (N, "shadow_type").all, File => File);
       Misc.Generate (N, File);
-   end Generate;
-
-   procedure Generate
-     (Arrow  : in out Gtk.Object.Gtk_Object; N : in Node_Ptr)
-   is
-      use Misc;
-
-      S, S2 : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         S := Get_Field (N, "arrow_type");
-         S2 := Get_Field (N, "shadow_type");
-         Gtk_New (Gtk_Arrow (Arrow),
-                  Gtk_Arrow_Type'Value (S (S'First + 4 .. S'Last)),
-                  Gtk_Shadow_Type'Value (S2 (S2'First + 4 .. S2'Last)));
-         Set_Object (Get_Field (N, "name"), Arrow);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Misc.Generate (Arrow, N);
    end Generate;
 
 end Gtk.Arrow;

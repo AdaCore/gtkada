@@ -30,7 +30,6 @@
 with Gdk.Font;
 with Interfaces.C.Strings;
 with System;
-with Gtk.Util; use Gtk.Util;
 with Gtkada.Types; use Gtkada.Types;
 
 package body Gtk.Font_Selection is
@@ -188,7 +187,7 @@ package body Gtk.Font_Selection is
       pragma Import (C, Internal, "gtk_font_selection_dialog_set_font_name");
    begin
       return Boolean'Val (Internal (Get_Object (Fsd),
-                                    Fontname & ASCII.Nul));
+                                    Fontname & ASCII.NUL));
    end Set_Font_Name;
 
    ----------------------
@@ -206,7 +205,7 @@ package body Gtk.Font_Selection is
                      "gtk_font_selection_dialog_set_preview_text");
    begin
       Internal (Get_Object (Fsd),
-                Text & ASCII.Nul);
+                Text & ASCII.NUL);
    end Set_Preview_Text;
 
    --------------
@@ -290,7 +289,7 @@ package body Gtk.Font_Selection is
                          return      System.Address;
       pragma Import (C, Internal, "gtk_font_selection_dialog_new");
    begin
-      Set_Object (Widget, Internal (Title & ASCII.Nul));
+      Set_Object (Widget, Internal (Title & ASCII.NUL));
       Initialize_User_Data (Widget);
    end Initialize;
 
@@ -370,7 +369,7 @@ package body Gtk.Font_Selection is
       pragma Import (C, Internal, "gtk_font_selection_set_font_name");
    begin
       return Boolean'Val (Internal (Get_Object (Fontsel),
-                                    Fontname & ASCII.Nul));
+                                    Fontname & ASCII.NUL));
    end Set_Font_Name;
 
    ----------------------
@@ -387,7 +386,7 @@ package body Gtk.Font_Selection is
       pragma Import (C, Internal, "gtk_font_selection_set_preview_text");
    begin
       Internal (Get_Object (Fontsel),
-                Text & ASCII.Nul);
+                Text & ASCII.NUL);
    end Set_Preview_Text;
 
    --------------
@@ -395,20 +394,12 @@ package body Gtk.Font_Selection is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Font_Selection", File => File);
       Notebook.Generate (N, File);
-   end Generate;
-
-   procedure Generate (Fontsel : in out Object.Gtk_Object; N : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Font_Selection (Fontsel));
-         Set_Object (Get_Field (N, "name"), Fontsel);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Notebook.Generate (Fontsel, N);
    end Generate;
 
    ---------------------
@@ -426,18 +417,6 @@ package body Gtk.Font_Selection is
       end if;
 
       Window.Generate (N, File);
-   end Generate_Dialog;
-
-   procedure Generate_Dialog
-     (Fsd : in out Object.Gtk_Object; N : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Font_Selection_Dialog (Fsd), Get_Field (N, "title").all);
-         Set_Object (Get_Field (N, "name"), Fsd);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Window.Generate (Fsd, N);
    end Generate_Dialog;
 
 end Gtk.Font_Selection;

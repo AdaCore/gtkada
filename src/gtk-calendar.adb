@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Util; use Gtk.Util;
 with Gtk.Widget; use Gtk.Widget;
 with System;
 
@@ -37,8 +36,9 @@ package body Gtk.Calendar is
    -- Left --
    ----------
 
-   function "and" (Left, Right : Gtk_Calendar_Display_Options)
-                   return Gtk_Calendar_Display_Options is
+   function "and"
+     (Left, Right : Gtk_Calendar_Display_Options)
+      return Gtk_Calendar_Display_Options is
    begin
       return Left + Right;
    end "and";
@@ -211,20 +211,12 @@ package body Gtk.Calendar is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Calendar", File => File);
       Widget.Generate (N, File);
-   end Generate;
-
-   procedure Generate (Calendar : in out Gtk_Object; N : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Calendar (Calendar));
-         Set_Object (Get_Field (N, "name"), Calendar);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Widget.Generate (Calendar, N);
    end Generate;
 
 end Gtk.Calendar;

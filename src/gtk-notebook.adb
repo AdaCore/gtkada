@@ -28,11 +28,9 @@
 -----------------------------------------------------------------------
 
 with Gtk.Container; use Gtk.Container;
-with Gtk.Enums;     use Gtk.Enums;
-with Gtk.Util;      use Gtk.Util;
 with Gtk.Widget;    use Gtk.Widget;
+with Gtk.Enums;     use Gtk.Enums;
 with System;
-with Gtk.Object;    use Gtk.Object;
 
 package body Gtk.Notebook is
 
@@ -725,6 +723,9 @@ package body Gtk.Notebook is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Notebook", File => File);
       Container.Generate (N, File);
@@ -735,69 +736,6 @@ package body Gtk.Notebook is
       Gen_Set (N, "Notebook", "tab_hborder", File);
       Gen_Set (N, "Notebook", "tab_vborder", File);
       Gen_Set (N, "Notebook", "tab_pos", File);
-   end Generate;
-
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate
-     (Notebook : in out Gtk_Object;
-      N        : in Node_Ptr)
-   is
-      S : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Notebook (Notebook));
-         Set_Object (Get_Field (N, "name"), Notebook);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Container.Generate (Notebook, N);
-
-      S := Get_Field (N, "scrollable");
-
-      if S /= null then
-         Set_Scrollable (Gtk_Notebook (Notebook), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "show_border");
-
-      if S /= null then
-         Set_Show_Border (Gtk_Notebook (Notebook), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "show_tabs");
-
-      if S /= null then
-         Set_Show_Tabs (Gtk_Notebook (Notebook), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "tab_border");
-
-      if S /= null then
-         Set_Tab_Border (Gtk_Notebook (Notebook), Gint'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "tab_hborder");
-
-      if S /= null then
-         Set_Tab_Hborder (Gtk_Notebook (Notebook), Gint'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "tab_vborder");
-
-      if S /= null then
-         Set_Tab_Vborder (Gtk_Notebook (Notebook), Gint'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "tab_pos");
-
-      if S /= null then
-         Set_Tab_Pos
-           (Gtk_Notebook (Notebook),
-            Gtk_Position_Type'Value (S (S'First + 4 .. S'Last)));
-      end if;
    end Generate;
 
 end Gtk.Notebook;

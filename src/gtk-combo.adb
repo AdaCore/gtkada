@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 
 package body Gtk.Combo is
@@ -149,7 +148,7 @@ package body Gtk.Combo is
 
    begin
       Internal (Get_Object (Combo_Box), Get_Object (Item),
-                Item_Value & ASCII.Nul);
+                Item_Value & ASCII.NUL);
    end Set_Item_String;
 
    -------------------------
@@ -219,11 +218,13 @@ package body Gtk.Combo is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      S : String_Ptr;
+      S     : String_Ptr;
       First, Last : Natural;
-      Top_Widget : Node_Ptr := Find_Top_Widget (N);
+      Top_Widget  : Node_Ptr := Find_Top_Widget (N);
       Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
       Child : Node_Ptr := Find_Tag (N.Child, "widget");
+      Id    : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       Gen_New (N, "Combo", File => File);
@@ -273,72 +274,6 @@ package body Gtk.Combo is
                    To_Ada (Get_Field (N, "name").all) & "_Items);");
          Put_Line (File, "   Free_String_List (" &
            To_Ada (Get_Field (N, "name").all) & "_Items);");
-      end if;
-   end Generate;
-
-   procedure Generate
-     (Combo_Box : in out Object.Gtk_Object; N : in Node_Ptr)
-   is
-      S     : String_Ptr;
-      Items : String_List.Glist;
-      First, Last : Natural;
-      Child : Node_Ptr := Find_Tag (N.Child, "widget");
-
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Combo (Combo_Box));
-         Set_Object (Get_Field (N, "name"), Combo_Box);
-         N.Specific_Data.Created := True;
-      end if;
-
-      --  The child is the entry field associated with the combo box. It only
-      --  exists for Glade >= 0.5. Do not generate any "Add"
-
-      if Child /= null then
-         Child.Specific_Data.Has_Container := True;
-      end if;
-
-      Box.Generate (Combo_Box, N);
-
-      S := Get_Field (N, "case_sensitive");
-
-      if S /= null then
-         Set_Case_Sensitive (Gtk_Combo (Combo_Box), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "use_arrows");
-
-      if S /= null then
-         Set_Use_Arrows (Gtk_Combo (Combo_Box), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "use_arrows_always");
-
-      if S /= null then
-         Set_Use_Arrows_Always (Gtk_Combo (Combo_Box), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "items");
-
-      if S /= null then
-         First := S'First;
-
-         loop
-            Last := Index (S (First .. S'Last), ASCII.LF & "");
-
-            if Last = 0 then
-               Last := S'Last + 1;
-            end if;
-
-            String_List.Append (Items, S (First .. Last - 1));
-
-            exit when Last >= S'Last;
-
-            First := Last + 1;
-         end loop;
-
-         Set_Popdown_Strings (Gtk_Combo (Combo_Box), Items);
-         String_List.Free (Items);
       end if;
    end Generate;
 

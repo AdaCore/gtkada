@@ -27,15 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Box;              use Gtk.Box;
-with Gtk.Util;             use Gtk.Util;
-with Gtk.Fixed;            use Gtk.Fixed;
-with Gtk.Layout;           use Gtk.Layout;
-with Gtk.Packer;           use Gtk.Packer;
-with Gtk.Container;        use Gtk.Container;
-with Gtk.Toolbar;          use Gtk.Toolbar;
 with Interfaces.C.Strings;
-with Gtk.Table;            use Gtk.Table;
 with Ada.Strings.Fixed;    use Ada.Strings.Fixed;
 with Ada.Strings.Maps;     use Ada.Strings.Maps;
 with Gdk.Visual;           use Gdk.Visual;
@@ -101,7 +93,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_add_accelerator");
 
    begin
-      Internal (Get_Object (Widget), Accel_Signal & ASCII.Nul,
+      Internal (Get_Object (Widget), Accel_Signal & ASCII.NUL,
                 Accel_Group,
                 Gdk.Types.Gdk_Key_Type'Pos (Accel_Key),
                 Gdk.Types.Gdk_Modifier_Type'Pos (Accel_Mods),
@@ -792,7 +784,7 @@ package body Gtk.Widget is
 
    begin
       Internal (Get_Object (Widget),
-                Accel_Signal & ASCII.Nul,
+                Accel_Signal & ASCII.NUL,
                 Boolean'Pos (Visible_Only));
    end Remove_Accelerators;
 
@@ -978,7 +970,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_set_name");
 
    begin
-      Internal (Get_Object (Widget), Name & ASCII.Nul);
+      Internal (Get_Object (Widget), Name & ASCII.NUL);
    end Set_Name;
 
    ------------------
@@ -1335,8 +1327,8 @@ package body Gtk.Widget is
    -- Visible_Is_Set --
    --------------------
 
-   function Visible_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                           return Boolean is
+   function Visible_Is_Set
+     (Widget : access Gtk_Widget_Record'Class) return Boolean is
    begin
       return Gtk.Widget.Flag_Is_Set (Widget, Visible);
    end Visible_Is_Set;
@@ -1345,8 +1337,7 @@ package body Gtk.Widget is
    -- Generate --
    --------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
       Child       : Node_Ptr := Find_Tag (N.Child, "child");
       Q           : Node_Ptr;
       Top         : constant Node_Ptr   := Find_Top_Widget (N);
@@ -1358,6 +1349,8 @@ package body Gtk.Widget is
       First       : Natural;
       Last        : Natural;
       The_First   : Natural;
+      Id          : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       Object.Generate (N, File);
@@ -1692,320 +1685,6 @@ package body Gtk.Widget is
 
                else
                   Gen_Call_Child (N, null, "Container", "Add", File => File);
-               end if;
-            end if;
-
-            N.Specific_Data.Has_Container := True;
-         end if;
-      end if;
-   end Generate;
-
-   procedure Generate (Widget : in out Object.Gtk_Object;
-                       N      : in Node_Ptr) is
-      S, S2, S3   : String_Ptr;
-      Child       : Node_Ptr := Find_Tag (N.Child, "child");
-      Q           : Node_Ptr;
-      Func        : Callback;
-      Data        : System.Address;
-      Events      : Gdk.Types.Gdk_Event_Mask;
-      Options     : Gtk_Packer_Options;
-      Use_Default : Boolean;
-
-      procedure Signal_Connect
-        (Object        : System.Address;
-         Name          : String;
-         Func          : Callback;
-         Func_Data     : System.Address);
-      pragma Import (C, Signal_Connect, "gtk_signal_connect");
-
-      function Decode_Events (S : String) return Gdk.Types.Gdk_Event_Mask;
-
-      function Decode_Events (S : String) return Gdk.Types.Gdk_Event_Mask is
-         use Gdk.Types;
-
-         Events    : Gdk_Event_Mask := Null_Event_Mask;
-         First     : Natural;
-         Last      : Natural;
-         The_First : Natural;
-
-         type Gdk_Event_Mask_Enum is
-           (Gdk_Null_Event_Mask,
-            Gdk_Exposure_Mask,
-            Gdk_Pointer_Motion_Mask,
-            Gdk_Pointer_Motion_Hint_Mask,
-            Gdk_Button_Motion_Mask,
-            Gdk_Button1_Motion_Mask,
-            Gdk_Button2_Motion_Mask,
-            Gdk_Button3_Motion_Mask,
-            Gdk_Button_Press_Mask,
-            Gdk_Button_Release_Mask,
-            Gdk_Key_Press_Mask,
-            Gdk_Key_Release_Mask,
-            Gdk_Enter_Notify_Mask,
-            Gdk_Leave_Notify_Mask,
-            Gdk_Focus_Change_Mask,
-            Gdk_Structure_Mask,
-            Gdk_Property_Change_Mask,
-            Gdk_Visibility_Notify_Mask,
-            Gdk_Proximity_In_Mask,
-            Gdk_Proximity_Out_Mask);
-         pragma Warnings (Off, Gdk_Event_Mask_Enum);
-
-      begin
-         The_First := S'First;
-
-         loop
-            Find_Token (S (The_First .. S'Last), To_Set (" |"),
-              Ada.Strings.Inside, First, Last);
-
-            exit when Last = 0;
-
-            Events := Events or
-              2 ** Gdk_Event_Mask_Enum'Pos
-                (Gdk_Event_Mask_Enum'Value (S (The_First .. First - 1)));
-            The_First := Last + 1;
-         end loop;
-
-         if The_First /= S'Last then
-            Events := Events or
-              2 ** Gdk_Event_Mask_Enum'Pos
-                (Gdk_Event_Mask_Enum'Value (S (The_First .. S'Last)));
-         end if;
-
-         return Events;
-      end Decode_Events;
-
-      use Object;
-      use Enums;
-
-   begin
-      Object.Generate (Widget, N);
-
-      S := Get_Field (N, "sensitive");
-
-      if S /= null then
-         Set_Sensitive (Gtk_Widget (Widget), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "x");
-      S2 := Get_Field (N, "y");
-
-      if S /= null and then S2 /= null then
-         Set_UPosition
-           (Gtk_Widget (Widget), Gint'Value (S.all), Gint'Value (S2.all));
-      end if;
-
-      S := Get_Field (N, "width");
-      S2 := Get_Field (N, "height");
-
-      if S /= null and then S2 /= null then
-         Set_USize
-           (Gtk_Widget (Widget), Gint'Value (S.all), Gint'Value (S2.all));
-      end if;
-
-      S := Get_Field (N, "state");
-
-      if S /= null then
-         Set_State (Gtk_Widget (Widget), Enums.Gtk_State_Type'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "events");
-
-      if S /= null then
-         Events := Decode_Events (S.all);
-         Set_Events (Gtk_Widget (Widget), Events);
-      end if;
-
-      S := Get_Field (N, "extension_events");
-
-      if S /= null then
-         Set_Extension_Events (Gtk_Widget (Widget),
-           Gdk.Types.Gdk_Extension_Mode'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      S := Get_Field (N, "can_default");
-
-      if S /= null and then Boolean'Value (S.all) then
-         Set_Flags (Widget, Can_Default);
-      end if;
-
-      S := Get_Field (N, "has_focus");
-
-      if S /= null and then Boolean'Value (S.all) then
-         Grab_Focus (Gtk_Widget (Widget));
-      end if;
-
-      S := Get_Field (N, "has_default");
-
-      if S /= null and then Boolean'Value (S.all) then
-         Grab_Default (Gtk_Widget (Widget));
-      end if;
-
-      --  ??? Need to find a better way to call Pack_Start
-
-      if Child /= null then
-         Q := Find_Tag (Child.Child, "pack");
-         S := Get_Field (Child, "expand");
-         S2 := Get_Field (Child, "fill");
-         S3 := Get_Field (Child, "padding");
-
-         if Q = null or else Q.Value.all = "GTK_PACK_START" then
-            if S /= null and then S2 /= null and then S3 /= null then
-
-               --  This widget is part of a Gtk_Box
-
-               Gtk.Box.Pack_Start
-                 (Gtk_Box (Get_Object (Find_Tag
-                   (Find_Parent (N.Parent, "Box"), "name").Value)),
-                  Gtk_Widget (Get_Object (Get_Field (N, "name"))),
-                  Boolean'Value (S.all), Boolean'Value (S2.all),
-                  Gint'Value (S3.all));
-               N.Specific_Data.Has_Container := True;
-
-            elsif Get_Field (Child, "left_attach") /= null then
-
-               --  This widget is part of a Gtk_Table
-
-               declare
-                  Xoptions, Yoptions : Gtk_Attach_Options := 0;
-               begin
-                  if Boolean'Value (Get_Field (Child, "xexpand").all) then
-                     Xoptions := Expand;
-                  end if;
-
-                  if Boolean'Value (Get_Field (Child, "xshrink").all) then
-                     Xoptions := Xoptions or Shrink;
-                  end if;
-
-                  if Boolean'Value (Get_Field (Child, "xfill").all) then
-                     Xoptions := Xoptions or Fill;
-                  end if;
-
-                  if Boolean'Value (Get_Field (Child, "yexpand").all) then
-                     Yoptions := Expand;
-                  end if;
-
-                  if Boolean'Value (Get_Field (Child, "yshrink").all) then
-                     Yoptions := Yoptions or Shrink;
-                  end if;
-
-                  if Boolean'Value (Get_Field (Child, "yfill").all) then
-                     Yoptions := Yoptions or Fill;
-                  end if;
-
-                  Gtk.Table.Attach (Gtk_Table (Get_Object (Find_Tag
-                    (Find_Parent (N.Parent, "Table"), "name").Value)),
-                     Gtk_Widget (Get_Object (Get_Field (N, "name"))),
-                     Guint'Value (Get_Field (Child, "left_attach").all),
-                     Guint'Value (Get_Field (Child, "right_attach").all),
-                     Guint'Value (Get_Field (Child, "top_attach").all),
-                     Guint'Value (Get_Field (Child, "bottom_attach").all),
-                     Xoptions, Yoptions,
-                     Guint'Value (Get_Field (Child, "xpad").all),
-                     Guint'Value (Get_Field (Child, "ypad").all));
-                  N.Specific_Data.Has_Container := True;
-               exception
-                  when Constraint_Error =>
-                     null;
-               end;
-
-            elsif Get_Field (Child, "side") /= null then
-
-               --  This widget is part of a packer
-
-               S := Get_Field (Child, "use_default");
-               Use_Default := S /= null and then Boolean'Value (S.all);
-               Options := 0;
-
-               if Boolean'Value (Get_Field (Child, "expand").all) then
-                  Options := Options or Gtk_Pack_Expand;
-               end if;
-
-               if Boolean'Value (Get_Field (Child, "xfill").all) then
-                  Options := Options or Gtk_Fill_X;
-               end if;
-
-               if Boolean'Value (Get_Field (Child, "yfill").all) then
-                  Options := Options or Gtk_Fill_Y;
-               end if;
-
-               S := Get_Field (Child, "side");
-               S2 := Get_Field (Child, "anchor");
-
-               if Use_Default then
-                  Gtk.Packer.Add_Defaults (Gtk_Packer (Get_Object (Find_Tag
-                    (Find_Parent (N.Parent, "Packer"), "name").Value)),
-                     Gtk_Widget (Get_Object (Get_Field (N, "name"))),
-                     Gtk_Side_Type'Value (S (S'First + 4 .. S'Last)),
-                     Gtk_Anchor_Type'Value (S2 (S2'First + 4 .. S2'Last)),
-                     Options);
-
-               else
-                  Gtk.Packer.Add (Gtk_Packer (Get_Object (Find_Tag
-                    (Find_Parent (N.Parent, "Packer"), "name").Value)),
-                     Gtk_Widget (Get_Object (Get_Field (N, "name"))),
-                     Gtk_Side_Type'Value (S (S'First + 4 .. S'Last)),
-                     Gtk_Anchor_Type'Value (S2 (S2'First + 4 .. S2'Last)),
-                     Options,
-                     Guint'Value (Get_Field (Child, "border_width").all),
-                     Guint'Value (Get_Field (Child, "xpad").all),
-                     Guint'Value (Get_Field (Child, "ypad").all),
-                     Guint'Value (Get_Field (Child, "xipad").all),
-                     Guint'Value (Get_Field (Child, "yipad").all));
-               end if;
-
-               N.Specific_Data.Has_Container := True;
-            end if;
-         end if;
-      end if;
-
-      --  ??? Need to handle accelerators
-
-      Q := Find_Tag (N.Child, "signal");
-
-      while Q /= null loop
-         S := Get_Field (Q, "handler");
-
-         if S /= null then
-            Get_Signal (S.all, Func, Data);
-            Signal_Connect
-              (Get_Object (Widget),
-               Get_Field (Q, "name").all & ASCII.Nul,
-               Func, Data);
-         end if;
-
-         Q := Find_Tag (Q.Next, "signal");
-      end loop;
-
-      if Find_Tag (N.Child, "child_name") = null then
-         if not N.Specific_Data.Has_Container then
-            S := Get_Field (N.Parent, "class");
-
-            if S /= null then
-               if S.all = "GtkFixed" then
-                  Fixed.Put
-                    (Gtk_Fixed (Get_Object (Get_Field (N.Parent, "name"))),
-                     Gtk_Widget (Widget),
-                     Gint16'Value (Get_Field (N, "x").all),
-                     Gint16'Value (Get_Field (N, "y").all));
-
-               elsif S.all = "GtkLayout" then
-                  Layout.Put
-                    (Gtk_Layout (Get_Object (Get_Field (N.Parent, "name"))),
-                     Gtk_Widget (Widget),
-                     Gint16'Value (Get_Field (N, "x").all),
-                     Gint16'Value (Get_Field (N, "y").all));
-
-               elsif S.all = "GtkToolbar" then
-                  --  ??? Need to handle tooltip
-                  Toolbar.Append_Widget (Gtk_Toolbar
-                    (Get_Object (Get_Field (N.Parent, "name"))),
-                     Gtk_Widget (Widget));
-
-               else
-                  Container.Add
-                    (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-                     Gtk_Widget (Widget));
                end if;
             end if;
 

@@ -42,7 +42,6 @@
 --  <c_version>1.2.8</c_version>
 
 with Gtk.Drawing_Area;
-with Gtk.Object;
 
 package Gtk.Curve is
 
@@ -105,15 +104,12 @@ package Gtk.Curve is
    --  to a linear or spline curve, in which case the curve will be changed as
    --  little as possible.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Curve : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

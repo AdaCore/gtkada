@@ -39,7 +39,6 @@
 
 with Gtk.Button_Box;
 with Gtk.Enums;
-with Gtk.Object;
 
 package Gtk.Hbutton_Box is
 
@@ -74,17 +73,12 @@ package Gtk.Hbutton_Box is
    function Get_Layout_Default return Gtk.Enums.Gtk_Button_Box_Style;
    --  Return the default layout to use for all the hbutton_boxes.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Hbutton_Box : in out Gtk.Object.Gtk_Object;
-                       N           : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

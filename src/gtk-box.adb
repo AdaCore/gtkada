@@ -28,11 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Dialog;         use Gtk.Dialog;
 with Gtk.Enums;          use Gtk.Enums;
-with Gtk.File_Selection; use Gtk.File_Selection;
-with Gtk.Util;           use Gtk.Util;
-with Gtk.Object;         use Gtk.Object;
 with Gtk.Widget;         use Gtk.Widget;
 
 package body Gtk.Box is
@@ -41,15 +37,18 @@ package body Gtk.Box is
    -- Get_Child --
    ---------------
 
-   function Get_Child (Box : access Gtk_Box_Record;
-                       Num : in Gint)
-                       return Gtk_Widget is
-      function Internal (Box : in System.Address; Num : in Gint)
-                         return  System.Address;
+   function Get_Child
+     (Box : access Gtk_Box_Record;
+      Num : in Gint) return Gtk_Widget
+   is
+      function Internal
+        (Box : in System.Address; Num : in Gint) return System.Address;
       pragma Import (C, Internal, "ada_box_get_child");
+
       use type System.Address;
       Stub : Gtk_Widget_Record;
       S    : System.Address := Internal (Get_Object (Box), Num);
+
    begin
       if S /= System.Null_Address then
          return Gtk_Widget (Get_User_Data (S, Stub));
@@ -289,12 +288,13 @@ package body Gtk.Box is
    -- Generate --
    --------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
       use Container;
 
-      Child_Name : Node_Ptr := Find_Tag (N.Child, "child_name");
-      Class      : String_Ptr := Get_Field (N, "class");
+      Child_Name : constant Node_Ptr := Find_Tag (N.Child, "child_name");
+      Class      : constant String_Ptr := Get_Field (N, "class");
+      Id         : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       if Child_Name = null then
@@ -313,80 +313,6 @@ package body Gtk.Box is
       if Child_Name /= null then
          Gen_Set (N, "Box", "homogeneous", File);
          Gen_Set (N, "Box", "spacing", File);
-      end if;
-   end Generate;
-
-   procedure Generate (Box : in out Gtk_Object; N : in Node_Ptr) is
-      use Container;
-
-      Child_Name     : String_Ptr := Get_Field (N, "child_name");
-      Class          : String_Ptr := Get_Field (N, "class");
-      S              : String_Ptr;
-      Dialog         : Gtk_Dialog;
-      File_Selection : Gtk_File_Selection;
-
-   begin
-      if not N.Specific_Data.Created then
-         if Child_Name = null then
-            if Class (Class'First + 3) = 'H' then
-               Gtk_New_Hbox
-                 (Gtk_Box (Box),
-                  Boolean'Value (Get_Field (N, "homogeneous").all),
-                  Gint'Value (Get_Field (N, "spacing").all));
-
-            else
-               Gtk_New_Vbox
-                 (Gtk_Box (Box),
-                  Boolean'Value (Get_Field (N, "homogeneous").all),
-                  Gint'Value (Get_Field (N, "spacing").all));
-            end if;
-         else
-            if Get_Part (Child_Name.all, 1) = "Dialog" then
-               Dialog :=
-                 Gtk_Dialog (Get_Object (Find_Tag
-                   (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                    "name").Value));
-
-               if Get_Part (Child_Name.all, 2) = "action_area" then
-                  Box := Gtk_Object (Get_Action_Area (Dialog));
-               elsif Get_Part (Child_Name.all, 2) = "vbox" then
-                  Box := Gtk_Object (Get_Vbox (Dialog));
-               end if;
-            else
-
-               --  Assuming File_Selection
-
-               File_Selection :=
-                 Gtk_File_Selection (Get_Object (Find_Tag
-                   (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                    "name").Value));
-
-               if Get_Part (Child_Name.all, 2) = "action_area" then
-                  Box := Gtk_Object (Get_Action_Area (File_Selection));
-               elsif Get_Part (Child_Name.all, 2) = "button_area" then
-                  Box := Gtk_Object (Get_Button_Area (File_Selection));
-               end if;
-            end if;
-         end if;
-
-         Set_Object (Get_Field (N, "name"), Gtk_Object (Box));
-         N.Specific_Data.Created := True;
-      end if;
-
-      Container.Generate (Box, N);
-
-      if Child_Name /= null then
-         S := Get_Field (N, "homogeneous");
-
-         if S /= null then
-            Set_Homogeneous (Gtk_Box (Box), Boolean'Value (S.all));
-         end if;
-
-         S := Get_Field (N, "spacing");
-
-         if S /= null then
-            Set_Spacing (Gtk_Box (Box), Gint'Value (S.all));
-         end if;
       end if;
    end Generate;
 

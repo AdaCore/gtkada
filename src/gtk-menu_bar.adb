@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Menu_Bar is
 
@@ -122,32 +121,14 @@ package body Gtk.Menu_Bar is
    -- Generate --
    --------------
 
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Menu_Bar", File => File);
       Menu_Shell.Generate (N, File);
       Gen_Set (N, "Menu_Bar", "shadow_type", File => File);
-   end Generate;
-
-   procedure Generate (Menu_Bar : in out Gtk_Object;
-                       N        : in Node_Ptr) is
-      S : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Menu_Bar (Menu_Bar));
-         Set_Object (Get_Field (N, "name"), Menu_Bar);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Menu_Shell.Generate (Menu_Bar, N);
-
-      S := Get_Field (N, "shadow_type");
-
-      if S /= null then
-         Set_Shadow_Type (Gtk_Menu_Bar (Menu_Bar),
-           Gtk_Shadow_Type'Value (S (S'First + 4 .. S'Last)));
-      end if;
    end Generate;
 
 end Gtk.Menu_Bar;

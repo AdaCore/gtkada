@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Viewport is
 
@@ -191,31 +190,13 @@ package body Gtk.Viewport is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Viewport", File => File);
       Gtk.Bin.Generate (N, File);
       Gen_Set (N, "Viewport", "shadow_type", File => File);
-   end Generate;
-
-   procedure Generate (Viewport : in out Gtk_Object;
-                       N        : in Node_Ptr) is
-      S : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Viewport (Viewport));
-         Set_Object (Get_Field (N, "name"), Viewport);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Gtk.Bin.Generate (Viewport, N);
-
-      S := Get_Field (N, "shadow_type");
-
-      if S /= null then
-         Set_Shadow_Type
-           (Gtk_Viewport (Viewport),
-            Gtk_Shadow_Type'Value (S (S'First + 4 .. S'Last)));
-      end if;
    end Generate;
 
 end Gtk.Viewport;

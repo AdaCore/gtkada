@@ -31,13 +31,15 @@ with Gdk.Bitmap;
 with Gdk.Pixmap;
 with Gtk.Misc;
 with Gtk.Window;
-with Gtk.Object;
 with Gtkada.Types;
 
 package Gtk.Pixmap is
 
    type Gtk_Pixmap_Record is new Gtk.Misc.Gtk_Misc_Record with private;
    type Gtk_Pixmap is access all Gtk_Pixmap_Record'Class;
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Pixmap.
 
    procedure Get
      (Pixmap : access Gtk_Pixmap_Record;
@@ -77,13 +79,15 @@ package Gtk.Pixmap is
       return Gtk_Pixmap;
    --  Create a pixmap given a window and a buffer.
 
+   ----------------------
+   -- Support for Gate --
+   ----------------------
+
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Pixmap : in out Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
 private
    type Gtk_Pixmap_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
 
+   pragma Import (C, Get_Type, "gtk_pixmap_get_type");
 end Gtk.Pixmap;

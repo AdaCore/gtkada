@@ -38,7 +38,6 @@
 --  </description>
 --  <c_version>1.2.7</c_version>
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Editable is
@@ -155,17 +154,13 @@ package Gtk.Editable is
    function Get_Position (Editable : access Gtk_Editable_Record) return Gint;
    --  Return the position of the cursor.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type)
      renames Gtk.Widget.Generate;
    --  Gate internal function
-
-   procedure Generate (Editable : in out Gtk_Object; N : in Node_Ptr)
-     renames Gtk.Widget.Generate;
-   --  Dgate internal function
 
    ---------------
    --  Signals  --

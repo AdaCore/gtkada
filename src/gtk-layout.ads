@@ -48,7 +48,6 @@ with Gdk.Window;
 with Gtk.Adjustment;
 with Gtk.Container;
 with Gtk.Widget;
-with Gtk.Object;
 
 package Gtk.Layout is
 
@@ -154,15 +153,12 @@ package Gtk.Layout is
    function Get_Height (Layout : access Gtk_Layout_Record) return Guint;
    --  Get the height in pixels of the layout.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Layout : in out Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

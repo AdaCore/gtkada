@@ -29,12 +29,14 @@
 
 with Gtk.Adjustment;
 with Gtk.Widget;
-with Gtk.Object;
 
 package Gtk.Progress is
 
    type Gtk_Progress_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Progress is access all Gtk_Progress_Record'Class;
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Progress.
 
    function Get_Current_Percentage
      (Progress : access Gtk_Progress_Record) return Gfloat;
@@ -94,15 +96,15 @@ package Gtk.Progress is
      (Progress : access Gtk_Progress_Record;
       Value    : in Gfloat);
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-
-   procedure Generate (Progress : in out Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Progress_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;
 
+   pragma Import (C, Get_Type, "gtk_progress_get_type");
 end Gtk.Progress;

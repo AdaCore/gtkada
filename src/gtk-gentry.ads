@@ -42,7 +42,6 @@
 --  <c_version>1.2.7</c_version>
 
 with Gtk.Editable;
-with Gtk.Object;
 
 package Gtk.GEntry is
 
@@ -107,15 +106,12 @@ package Gtk.GEntry is
    --  Set the maximum length for the text.
    --  The current text is truncated if needed.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (The_Entry : in out Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
 
@@ -48,6 +47,9 @@ package Gtk.Ruler is
    procedure Initialize_Hruler (Ruler : access Gtk_Ruler_Record'Class);
 
    procedure Initialize_Vruler (Ruler : access Gtk_Ruler_Record'Class);
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Ruler.
 
    procedure Draw_Pos (Ruler : access Gtk_Ruler_Record);
 
@@ -72,14 +74,16 @@ package Gtk.Ruler is
       Position : in Gfloat;
       Max_Size : in Gfloat);
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-
-   procedure Generate (Ruler : in out Gtk_Object; N : in Node_Ptr);
+   --  Gate internal function
 
 private
    type Gtk_Ruler_Record is new Gtk.Widget.Gtk_Widget_Record with null record;
+
+   pragma Import (C, Get_Type, "gtk_ruler_get_type");
 
 end Gtk.Ruler;

@@ -42,7 +42,6 @@
 
 with Gtk.Box;
 with Gtk.Enums;
-with Gtk.Object;
 
 package Gtk.Button_Box is
 
@@ -130,15 +129,12 @@ package Gtk.Button_Box is
    --  Ipad_X and Ipad_Y are set to -1 if this widget uses the default
    --  values that are set by Set_Child_Ipadding_Default.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Button_Box : in out Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

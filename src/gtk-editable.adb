@@ -266,7 +266,7 @@ package body Gtk.Editable is
    begin
       Internal
         (Get_Object (Editable),
-         New_Text & ASCII.Nul,
+         New_Text & ASCII.NUL,
          New_Text'Length,
          Position);
    end Insert_Text;

@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Input_Dialog is
 
@@ -41,29 +40,6 @@ package body Gtk.Input_Dialog is
       Input_Dialog := new Gtk_Input_Dialog_Record;
       Initialize (Input_Dialog);
    end Gtk_New;
-
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
-   begin
-      Gen_New (N, "Input_Dialog", File => File);
-      Dialog.Generate (N, File);
-   end Generate;
-
-   procedure Generate (Input_Dialog : in out Gtk_Object;
-                       N            : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Input_Dialog (Input_Dialog));
-         Set_Object (Get_Field (N, "name"), Input_Dialog);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Dialog.Generate (Input_Dialog, N);
-   end Generate;
 
    ----------------
    -- Initialize --
@@ -78,5 +54,18 @@ package body Gtk.Input_Dialog is
       Set_Object (Input_Dialog, Internal);
       Initialize_User_Data (Input_Dialog);
    end Initialize;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
+   begin
+      Gen_New (N, "Input_Dialog", File => File);
+      Dialog.Generate (N, File);
+   end Generate;
 
 end Gtk.Input_Dialog;

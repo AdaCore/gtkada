@@ -43,7 +43,6 @@
 --  <c_version>1.2.6</c_version>
 
 with Gtk.Check_Button;
-with Gtk.Object;
 with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Radio_Button is
@@ -103,16 +102,12 @@ package Gtk.Radio_Button is
    --  Modify the group to which the button belongs.
    --  This will not change anything visually.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate
-     (Radio_Button : in out Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

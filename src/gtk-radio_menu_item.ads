@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gtk.Check_Menu_Item;
-with Gtk.Object;
 with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Radio_Menu_Item is
@@ -51,6 +50,9 @@ package Gtk.Radio_Menu_Item is
       Group           : in Widget_SList.GSlist;
       Label           : in String := "");
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Radio_Menu_Item.
+
    procedure Set_Group
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record;
       Group           : in Widget_SList.GSlist);
@@ -60,15 +62,16 @@ package Gtk.Radio_Menu_Item is
    --  NOTE: This function is not part of Gtk+ itself, but is provided as a
    --  convenient function
 
+   ----------------------
+   -- Support for Gate --
+   ----------------------
+
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate
-     (Radio_Menu_Item : in out Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
 private
    type Gtk_Radio_Menu_Item_Record is new
      Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record with null record;
 
+   pragma Import (C, Get_Type, "gtk_radio_menu_item_get_type");
 end Gtk.Radio_Menu_Item;

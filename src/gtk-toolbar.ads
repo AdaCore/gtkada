@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Button;
 with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
@@ -48,6 +47,9 @@ package Gtk.Toolbar is
      (Widget      : access Gtk_Toolbar_Record'Class;
       Orientation : in Gtk_Orientation;
       Style       : in Gtk_Toolbar_Style);
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Toolbar.
 
    --  In all the following functions, "Tooltip_Text" can be a empty String.
    --  In that case, no tooltip will be created
@@ -167,14 +169,16 @@ package Gtk.Toolbar is
    function Get_Button_Relief
      (Toolbar : access Gtk_Toolbar_Record) return Gtk_Relief_Style;
 
-   --  The following two procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-   procedure Generate (Toolbar : in out Gtk_Object; N : in Node_Ptr);
+   --  Gate internal function
 
 private
    type Gtk_Toolbar_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
 
+   pragma Import (C, Get_Type, "gtk_toolbar_get_type");
 end Gtk.Toolbar;

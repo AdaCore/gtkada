@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Dialog is
 
@@ -36,8 +35,8 @@ package body Gtk.Dialog is
    -- Get_Action_Area --
    ---------------------
 
-   function Get_Action_Area (Dialog : access Gtk_Dialog_Record)
-                             return Gtk.Box.Gtk_Box
+   function Get_Action_Area
+     (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box
    is
       function Internal (Dialog : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_dialog_get_action_area");
@@ -51,8 +50,8 @@ package body Gtk.Dialog is
    -- Get_Vbox --
    --------------
 
-   function Get_Vbox (Dialog : access Gtk_Dialog_Record)
-                      return Gtk.Box.Gtk_Box
+   function Get_Vbox
+     (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box
    is
       function Internal (Dialog : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_dialog_get_vbox");
@@ -88,23 +87,16 @@ package body Gtk.Dialog is
    -- Generate --
    --------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
+   procedure Generate
+     (N    : in Node_Ptr;
+      File : in File_Type)
+   is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Dialog", File => File);
       Window.Generate (N, File);
-   end Generate;
-
-   procedure Generate (Dialog : in out Gtk_Object;
-                       N      : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Dialog (Dialog));
-         Set_Object (Get_Field (N, "name"), Dialog);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Window.Generate (Dialog, N);
    end Generate;
 
 end Gtk.Dialog;

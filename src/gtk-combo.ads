@@ -57,7 +57,6 @@ with Gtk.List;
 with Gtk.Box;
 with Gtk.Item;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Object;
 
 package Gtk.Combo is
 
@@ -138,15 +137,12 @@ package Gtk.Combo is
    --  If the value entered must match one of the values in the list, val
    --  should be True.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Combo_Box : in out Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

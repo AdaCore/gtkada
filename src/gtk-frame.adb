@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Frame is
 
@@ -36,8 +35,9 @@ package body Gtk.Frame is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Frame : out Gtk_Frame;
-                      Label : in String := "") is
+   procedure Gtk_New
+     (Frame : out Gtk_Frame;
+      Label : in String := "") is
    begin
       Frame := new Gtk_Frame_Record;
       Initialize (Frame, Label);
@@ -47,10 +47,11 @@ package body Gtk.Frame is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Frame : access Gtk_Frame_Record'Class;
-                         Label : in String := "") is
-      function Internal (Label  : in System.Address)
-        return System.Address;
+   procedure Initialize
+     (Frame : access Gtk_Frame_Record'Class;
+      Label : in String := "")
+   is
+      function Internal (Label  : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_frame_new");
    begin
       if Label = "" then
@@ -128,9 +129,11 @@ package body Gtk.Frame is
    -- Generate --
    --------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
-      S : String_Ptr;
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      S  : String_Ptr;
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       S := Get_Field (N, "label");
 
@@ -152,50 +155,6 @@ package body Gtk.Frame is
          "label_xalign", "label_yalign", "", "", File,
          Is_Float => True);
       Gen_Set (N, "Frame", "shadow_type", File);
-   end Generate;
-
-   procedure Generate (Frame : in out Gtk.Object.Gtk_Object;
-                       N     : in Node_Ptr) is
-      S, S2 : String_Ptr;
-      G, G2 : Gfloat := 0.0;
-
-   begin
-      if not N.Specific_Data.Created then
-         S := Get_Field (N, "label");
-
-         if S /= null then
-            Gtk_New (Gtk_Frame (Frame), S.all);
-         else
-            Gtk_New (Gtk_Frame (Frame));
-         end if;
-
-         Set_Object (Get_Field (N, "name"), Frame);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Bin.Generate (Frame, N);
-
-      S := Get_Field (N, "label_xalign");
-      S2 := Get_Field (N, "label_yalign");
-
-      if S /= null then
-         G := Gfloat'Value (S.all);
-      end if;
-
-      if S2 /= null then
-         G2 := Gfloat'Value (S2.all);
-      end if;
-
-      if S /= null and S2 /= null then
-         Set_Label_Align (Gtk_Frame (Frame), G, G2);
-      end if;
-
-      S := Get_Field (N, "shadow_type");
-
-      if S /= null then
-         Set_Shadow_Type (Gtk_Frame (Frame),
-           Gtk_Shadow_Type'Value (S (S'First + 4 .. S'Last)));
-      end if;
    end Generate;
 
 end Gtk.Frame;

@@ -57,7 +57,6 @@ with Gtk.Adjustment;
 with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Style;
-with Gtk.Object;
 with Gtk.Widget;
 with Gtkada.Types;
 with Unchecked_Conversion;
@@ -764,15 +763,12 @@ package Gtk.Clist is
       --  Get_Row_List. This is faster for big lists.
    end Row_Data;
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Clist : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    --  <doc_ignore>
    procedure Set_Show_Titles (Clist : access Gtk_Clist_Record; Show : Boolean);

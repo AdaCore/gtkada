@@ -29,7 +29,6 @@
 
 with System;
 with Gtk.Container; use Gtk.Container;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Paned is
 
@@ -294,9 +293,11 @@ package body Gtk.Paned is
    -- Generate --
    --------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
-      Class : String_Ptr := Get_Field (N, "class");
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Class : constant String_Ptr := Get_Field (N, "class");
+      Id    : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New
         (N, "Paned",
@@ -307,42 +308,6 @@ package body Gtk.Paned is
       Gen_Set (N, "Paned", "handle_size", File);
       Gen_Set (N, "Paned", "gutter_size", File);
       Gen_Set (N, "Paned", "position", File);
-   end Generate;
-
-   procedure Generate (Paned : in out Gtk_Object; N : in Node_Ptr) is
-      S     : String_Ptr;
-      Class : String_Ptr := Get_Field (N, "class");
-
-   begin
-      if not N.Specific_Data.Created then
-         if Class (Class'First + 3) = 'H' then
-            Gtk_New_Hpaned (Gtk_Paned (Paned));
-         else
-            Gtk_New_Vpaned (Gtk_Paned (Paned));
-         end if;
-
-         Set_Object (Get_Field (N, "name"), Paned);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Container.Generate (Paned, N);
-      S := Get_Field (N, "handle_size");
-
-      if S /= null then
-         Set_Handle_Size (Gtk_Paned (Paned), Guint16'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "gutter_size");
-
-      if S /= null then
-         Set_Gutter_Size (Gtk_Paned (Paned), Guint16'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "position");
-
-      if S /= null then
-         Set_Position (Gtk_Paned (Paned), Gint'Value (S.all));
-      end if;
    end Generate;
 
 end Gtk.Paned;

@@ -44,7 +44,6 @@
 --  <c_version>1.2.8</c_version>
 
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Object;
 with Gtk.Misc;
 
 package Gtk.Arrow is
@@ -74,15 +73,12 @@ package Gtk.Arrow is
       Shadow_Type : in Gtk_Shadow_Type);
    --  Set the direction and style of the Arrow.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Arrow : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

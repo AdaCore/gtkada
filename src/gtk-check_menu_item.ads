@@ -38,7 +38,6 @@
 --  </description>
 --  <c_version>1.2.8</c_version>
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Menu_Item;
 
 package Gtk.Check_Menu_Item is
@@ -86,15 +85,12 @@ package Gtk.Check_Menu_Item is
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record) return Boolean;
    --  Return True if the Item is active
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Check_Menu_Item : in out Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

@@ -28,8 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
-with Gtk.Combo; use Gtk.Combo;
 with Interfaces.C.Strings;
 
 package body Gtk.GEntry is
@@ -48,7 +46,7 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_append_text");
 
    begin
-      Internal (Get_Object (The_Entry), Text & ASCII.Nul);
+      Internal (Get_Object (The_Entry), Text & ASCII.NUL);
    end Append_Text;
 
    --------------
@@ -128,7 +126,7 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_prepend_text");
 
    begin
-      Internal (Get_Object (The_Entry), Text & ASCII.Nul);
+      Internal (Get_Object (The_Entry), Text & ASCII.NUL);
    end Prepend_Text;
 
    --------------------
@@ -162,7 +160,7 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_set_text");
 
    begin
-      Internal (Get_Object (The_Entry), Text & ASCII.Nul);
+      Internal (Get_Object (The_Entry), Text & ASCII.NUL);
    end Set_Text;
 
    --------------------
@@ -188,6 +186,9 @@ package body Gtk.GEntry is
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
       Child_Name : Node_Ptr := Find_Tag (N.Child, "child_name");
+      Id         : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       if Child_Name = null then
          Gen_New (N, "GEntry", File => File);
@@ -207,68 +208,6 @@ package body Gtk.GEntry is
       end if;
 
       Gen_Set (N, "GEntry", "Visibility", "text_visible", "", "", "", File);
-   end Generate;
-
-   procedure Generate
-     (The_Entry : in out Object.Gtk_Object;
-      N : in Node_Ptr)
-   is
-      S : String_Ptr;
-      Child_Name : String_Ptr := Get_Field (N, "child_name");
-
-   begin
-      if Child_Name = null then
-         if not N.Specific_Data.Created then
-            Gtk_New (Gtk_Entry (The_Entry));
-            Set_Object (Get_Field (N, "name"), The_Entry);
-            N.Specific_Data.Created := True;
-         end if;
-      else
-
-         --  Assuming the field is part of a Combo Box
-
-         declare
-            Combo : Gtk_Combo;
-
-         begin
-            Combo := Gtk_Combo (Get_Object (Find_Tag
-               (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                "name").Value));
-            The_Entry := Object.Gtk_Object (Get_Entry (Combo));
-         end;
-      end if;
-
-      Editable.Generate (The_Entry, N);
-
-      S := Get_Field (N, "editable");
-
-      if S /= null then
-         Set_Editable (Gtk_Entry (The_Entry), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "text_max_length");
-
-      if S /= null then
-         Set_Max_Length (Gtk_Entry (The_Entry), Guint16'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "position");
-
-      if S /= null then
-         Set_Position (Gtk_Entry (The_Entry), Gint'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "text");
-
-      if S /= null then
-         Set_Text (Gtk_Entry (The_Entry), S.all);
-      end if;
-
-      S := Get_Field (N, "text_visible");
-
-      if S /= null then
-         Set_Visibility (Gtk_Entry (The_Entry), Boolean'Value (S.all));
-      end if;
    end Generate;
 
 end Gtk.GEntry;

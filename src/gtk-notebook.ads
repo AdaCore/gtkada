@@ -38,7 +38,6 @@
 --  <c_version>1.2.6</c_version>
 
 with Glib.Glist;
-with Gtk.Object;
 with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Widget;
@@ -375,17 +374,12 @@ package Gtk.Notebook is
      (Widget : access Gtk_Notebook_Record) return Page_List.Glist;
    --  Return the list of all pages in the notebook.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate
-     (Notebook : in out Gtk.Object.Gtk_Object;
-      N        : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

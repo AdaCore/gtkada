@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Fixed is
 
@@ -121,20 +120,12 @@ package body Gtk.Fixed is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Fixed", File => File);
       Container.Generate (N, File);
-   end Generate;
-
-   procedure Generate (Fixed : in out Object.Gtk_Object; N : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Fixed (Fixed));
-         Set_Object (Get_Field (N, "name"), Fixed);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Container.Generate (Fixed, N);
    end Generate;
 
 end Gtk.Fixed;

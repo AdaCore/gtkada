@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Separator is
@@ -44,22 +43,25 @@ package Gtk.Separator is
 
    procedure Gtk_New_Vseparator (Separator : out Gtk_Separator);
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Separator.
+
    procedure Initialize_Hseparator
      (Separator : access Gtk_Separator_Record'Class);
 
    procedure Initialize_Vseparator
      (Separator : access Gtk_Separator_Record'Class);
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-
-   procedure Generate
-     (Separator : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Gate internal function
 
 private
    type Gtk_Separator_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;
 
+   pragma Import (C, Get_Type, "gtk_separator_get_type");
 end Gtk.Separator;

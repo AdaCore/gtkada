@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 with Gtk.Type_Conversion_Hooks;
 pragma Elaborate_All (Gtk.Type_Conversion_Hooks);
 
@@ -202,9 +201,11 @@ package body Gtk.Menu_Item is
    -- Generate --
    --------------
 
-   procedure Generate (N         : in Node_Ptr;
-                       File      : in File_Type) is
-      S : String_Ptr := Get_Field (N, "label");
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      S  : constant String_Ptr := Get_Field (N, "label");
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       if S = null then
          Gen_New (N, "Menu_Item", File => File);
@@ -220,32 +221,6 @@ package body Gtk.Menu_Item is
 
       Item.Generate (N, File);
       Gen_Set (N, "Menu_Item", "right_justify", File);
-   end Generate;
-
-   procedure Generate (Menu_Item : in out Gtk_Object;
-                       N         : in Node_Ptr) is
-      S : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         S := Get_Field (N, "label");
-
-         if S = null then
-            Gtk_New (Gtk_Menu_Item (Menu_Item));
-         else
-            Gtk_New (Gtk_Menu_Item (Menu_Item), S.all);
-         end if;
-
-         Set_Object (Get_Field (N, "name"), Menu_Item);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Item.Generate (Menu_Item, N);
-
-      S := Get_Field (N, "right_justify");
-
-      if S /= null and then Boolean'Value (S.all) then
-         Right_Justify (Gtk_Menu_Item (Menu_Item));
-      end if;
    end Generate;
 
    ---------------------

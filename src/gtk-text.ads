@@ -40,7 +40,6 @@
 
 with Gdk.Color;
 with Gdk.Font;
-with Gtk.Object; use Gtk.Object;
 with Gtk.Adjustment;
 with Gtk.Editable;
 with Gdk.Window;
@@ -193,15 +192,12 @@ package Gtk.Text is
    --  If set to True, words are wrapped down to the next line if they can't
    --  be completed on the current line.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Text : in out Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
 private
    type Gtk_Text_Record is new Gtk.Editable.Gtk_Editable_Record

@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Item;
 
 package Gtk.List_Item is
@@ -45,16 +44,20 @@ package Gtk.List_Item is
      (List_Item : access Gtk_List_Item_Record'Class;
       Label     : in String := "");
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_List_Item.
+
    procedure Gtk_Select (List_Item : access Gtk_List_Item_Record);
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-
-   procedure Generate (List_Item : in out Gtk_Object; N : in Node_Ptr);
+   --  Gate internal function
 
 private
    type Gtk_List_Item_Record is new Gtk.Item.Gtk_Item_Record with null record;
 
+   pragma Import (C, Get_Type, "gtk_list_item_get_type");
 end Gtk.List_Item;

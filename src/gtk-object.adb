@@ -30,7 +30,6 @@
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
 with System;
-with Gtk.Util; use Gtk.Util;
 with Gtkada.Types;
 
 package body Gtk.Object is
@@ -39,8 +38,8 @@ package body Gtk.Object is
    -- Connected_Is_Set --
    ----------------------
 
-   function Connected_Is_Set (Object : access Gtk_Object_Record'Class)
-                             return Boolean is
+   function Connected_Is_Set
+     (Object : access Gtk_Object_Record'Class) return Boolean is
    begin
       return Flag_Is_Set (Object, Connected);
    end Connected_Is_Set;
@@ -49,8 +48,8 @@ package body Gtk.Object is
    -- Constructed_Is_Set --
    ------------------------
 
-   function Constructed_Is_Set (Object : access Gtk_Object_Record'Class)
-                               return Boolean is
+   function Constructed_Is_Set
+     (Object : access Gtk_Object_Record'Class) return Boolean is
    begin
       return Flag_Is_Set (Object, Constructed);
    end Constructed_Is_Set;
@@ -290,9 +289,8 @@ package body Gtk.Object is
                             Key    : in String)
                             return System.Address;
          pragma Import (C, Internal, "gtk_object_get_data");
-         D : Cb_Record_Access
-           := Convert (Internal (Get_Object (Object),
-                                 Id & ASCII.Nul));
+         D : Cb_Record_Access :=
+           Convert (Internal (Get_Object (Object), Id & ASCII.NUL));
       begin
          return D.Ptr.all;
       exception
@@ -400,25 +398,9 @@ package body Gtk.Object is
    -- Generate --
    --------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
    begin
       null;
-   end Generate;
-
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (Object : in out Gtk_Object;
-                       N      : in Node_Ptr) is
-   begin
-      --  If Object is null at this point, it means that it has already been
-      --  created and registered
-
-      if Object = null then
-         Object := Get_Object (Get_Field (N, "name"));
-      end if;
    end Generate;
 
 end Gtk.Object;

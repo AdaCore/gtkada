@@ -43,7 +43,6 @@ with Gdk.Pixmap;
 with Glib; use Glib;
 with Glib.Glist;
 with Glib.Gnodes;
-with Gtk.Object;
 with Gtk.Clist;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Style;
@@ -767,16 +766,12 @@ package Gtk.Ctree is
    --  !! Warning !! No type verification is made to check if you are
    --  using the appropriate function Get. This is your own responsability
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Ctree : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

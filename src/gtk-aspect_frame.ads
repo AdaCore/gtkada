@@ -40,7 +40,6 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
-with Gtk.Object;
 with Gtk.Frame;
 
 package Gtk.Aspect_Frame is
@@ -98,17 +97,12 @@ package Gtk.Aspect_Frame is
    --  Return the current Y alignment for the frame.
    --  1.0 means the child is top aligned, 1.0 that it is bottom aligned.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Aspect_Frame : in out Gtk.Object.Gtk_Object;
-                       N            : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

@@ -36,7 +36,6 @@
 --  <c_version>1.2.8</c_version>
 
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Object; use Gtk.Object;
 with Gtk.Menu_Shell;
 with Gtk.Menu_Item;
 
@@ -78,15 +77,12 @@ package Gtk.Menu_Bar is
       The_Type : in Gtk_Shadow_Type);
    --  Set the shadow type to use on the Gtk_Menu_Bar.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Menu_Bar : in out Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

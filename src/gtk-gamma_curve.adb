@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Gamma_Curve is
 
@@ -46,8 +45,8 @@ package body Gtk.Gamma_Curve is
    -- Get_Curve --
    ---------------
 
-   function Get_Curve (Gamma_Curve : access Gtk_Gamma_Curve_Record)
-                       return Gtk.Curve.Gtk_Curve
+   function Get_Curve
+     (Gamma_Curve : access Gtk_Gamma_Curve_Record) return Gtk.Curve.Gtk_Curve
    is
       function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gamma_curve_get_curve");
@@ -88,6 +87,9 @@ package body Gtk.Gamma_Curve is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Gamma_Curve", File => File);
       Box.Generate (N, File);
@@ -99,25 +101,6 @@ package body Gtk.Gamma_Curve is
         To_Float (Get_Field (N, "max_x").all) & ", " &
         To_Float (Get_Field (N, "min_y").all) & ", " &
         To_Float (Get_Field (N, "max_y").all) & ");");
-   end Generate;
-
-   procedure Generate
-     (Gamma_Curve : in out Object.Gtk_Object;
-      N           : in Node_Ptr) is
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Gamma_Curve (Gamma_Curve));
-         Set_Object (Get_Field (N, "name"), Gamma_Curve);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Box.Generate (Gamma_Curve, N);
-
-      Curve.Set_Range (Get_Curve (Gtk_Gamma_Curve (Gamma_Curve)),
-        Gfloat'Value (Get_Field (N, "min_x").all),
-        Gfloat'Value (Get_Field (N, "max_x").all),
-        Gfloat'Value (Get_Field (N, "min_y").all),
-        Gfloat'Value (Get_Field (N, "max_y").all));
    end Generate;
 
 end Gtk.Gamma_Curve;

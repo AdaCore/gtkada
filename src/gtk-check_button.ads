@@ -36,7 +36,6 @@
 --  <c_version> 1.2.6 </c_version>
 --  <screenshot>checkbutton</screenshot>
 
-with Gtk.Object;
 with Gtk.Toggle_Button;
 
 package Gtk.Check_Button is
@@ -59,16 +58,12 @@ package Gtk.Check_Button is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Check_Button.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate
-     (Check_Button : in out Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

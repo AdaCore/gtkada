@@ -29,11 +29,9 @@
 
 with System;
 with Gdk.Types; use Gdk.Types;
-with Gtk.Util; use Gtk.Util;
 with Gtk.Accel_Group;  use Gtk.Accel_Group;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Widget;       use Gtk.Widget;
-with Gtk.Object;       use Gtk.Object;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Window is
@@ -221,7 +219,7 @@ package body Gtk.Window is
                           T : in String);
       pragma Import (C, Internal, "gtk_window_set_title");
    begin
-      Internal (Get_Object (Window), Title & ASCII.Nul);
+      Internal (Get_Object (Window), Title & ASCII.NUL);
    end Set_Title;
 
    -----------------
@@ -277,8 +275,10 @@ package body Gtk.Window is
    -- Generate --
    --------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Window", Get_Field (N, "type").all, File => File);
       Bin.Generate (N, File);
@@ -295,59 +295,6 @@ package body Gtk.Window is
       Gen_Set (N, "Window", "modal", File);
       Gen_Set (N, "Window", "Default_Size", "default_width", "default_height",
         "", "", File);
-   end Generate;
-
-   procedure Generate (Window : in out Gtk_Object;
-                       N      : in Node_Ptr) is
-      S, S2, S3 : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         S := Get_Field (N, "type");
-         Gtk_New (Gtk_Window (Window),
-                  Gtk_Window_Type'Value (S (S'First + 4 .. S'Last)));
-         Set_Object (Get_Field (N, "name"), Window);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Bin.Generate (Window, N);
-
-      S := Get_Field (N, "title");
-
-      if S /= null then
-         Set_Title (Gtk_Window (Window), S.all);
-      end if;
-
-      S := Get_Field (N, "allow_shrink");
-      S2 := Get_Field (N, "allow_grow");
-      S3 := Get_Field (N, "auto_shrink");
-
-      if S /= null and then S2 /= null and then S3 /= null then
-         Set_Policy
-           (Gtk_Window (Window), Boolean'Value (S.all), Boolean'Value (S2.all),
-            Boolean'Value (S3.all));
-      end if;
-
-      S := Get_Field (N, "position");
-
-      if S /= null then
-         Set_Position (Gtk_Window (Window),
-           Enums.Gtk_Window_Position'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      S := Get_Field (N, "modal");
-
-      if S /= null then
-         Set_Modal (Gtk_Window (Window), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "default_width");
-      S2 := Get_Field (N, "default_height");
-
-      if S /= null and then S2 /= null then
-         Set_Default_Size
-           (Gtk_Window (Window), Gint'Value (S.all), Gint'Value (S2.all));
-      end if;
-
    end Generate;
 
 end Gtk.Window;

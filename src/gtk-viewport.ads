@@ -30,7 +30,6 @@
 with Gtk.Adjustment;
 with Gtk.Bin;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Object; use Gtk.Object;
 
 package Gtk.Viewport is
 
@@ -46,6 +45,9 @@ package Gtk.Viewport is
      (Viewport    : access Gtk_Viewport_Record'Class;
       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Viewport.
 
    function Get_Hadjustment
      (Viewport : access Gtk_Viewport_Record)
@@ -67,13 +69,15 @@ package Gtk.Viewport is
      (Viewport   : access Gtk_Viewport_Record;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
 
+   ----------------------
+   -- Support for Gate --
+   ----------------------
+
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Viewport : in out Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
 private
    type Gtk_Viewport_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
 
+   pragma Import (C, Get_Type, "gtk_viewport_get_type");
 end Gtk.Viewport;

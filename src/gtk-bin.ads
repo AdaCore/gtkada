@@ -33,7 +33,6 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Container; use Gtk.Container;
 
@@ -48,18 +47,13 @@ package Gtk.Bin is
    function Get_Child (Bin : access Gtk_Bin_Record) return Gtk_Widget;
    --  Return the child associated with Bin.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type)
+   procedure Generate (N : in Node_Ptr; File : in File_Type)
      renames Gtk.Container.Generate;
    --  Gate internal function
-
-   procedure Generate (Bin : in out Gtk_Object; N : in Node_Ptr)
-     renames Gtk.Container.Generate;
-   --  Dgate internal function
 
    -------------
    -- Signals --

@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Radio_Menu_Item is
 
@@ -80,7 +79,7 @@ package body Gtk.Radio_Menu_Item is
 
    begin
       Set_Object
-        (Radio_Menu_Item, Internal (Get_Object (Group), Label & ASCII.Nul));
+        (Radio_Menu_Item, Internal (Get_Object (Group), Label & ASCII.NUL));
       Initialize_User_Data (Radio_Menu_Item);
    end Initialize;
 
@@ -139,6 +138,8 @@ package body Gtk.Radio_Menu_Item is
       Name  : constant String_Ptr := Get_Field (N, "name");
       Top_Widget : Node_Ptr := Find_Top_Widget (N);
       Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
+      Id    : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       if not N.Specific_Data.Created then
@@ -165,58 +166,6 @@ package body Gtk.Radio_Menu_Item is
       end if;
 
       Check_Menu_Item.Generate (N, File);
-   end Generate;
-
-   procedure Generate
-     (Radio_Menu_Item : in out Object.Gtk_Object; N : in Node_Ptr)
-   is
-      S : String_Ptr := Get_Field (N, "label");
-
-      function Find_Group (N : Node_Ptr) return Widget_SList.GSlist;
-      --  Find the group associated with the previous radio menu item in the
-      --  node N or Null_List if there is none.
-
-      function Find_Group (N : Node_Ptr)
-        return Widget_SList.GSlist
-      is
-         P     : Node_Ptr := N.Parent.Child;
-         Q     : Node_Ptr;
-         S     : String_Ptr;
-
-      begin
-         while P /= N loop
-            S := Get_Field (P, "class");
-
-            if S /= null and then S.all = "GtkRadioMenuItem" then
-               Q := P;
-            end if;
-
-            P := P.Next;
-         end loop;
-
-         if Q = null then
-            return Widget_SList.Null_List;
-         else
-            return Group (Gtk_Radio_Menu_Item
-              (Get_Object (Get_Field (Q, "name"))));
-         end if;
-      end Find_Group;
-
-   begin
-      if not N.Specific_Data.Created then
-         if S = null then
-            Gtk_New (Gtk_Radio_Menu_Item (Radio_Menu_Item),
-              Find_Group (N));
-         else
-            Gtk_New (Gtk_Radio_Menu_Item (Radio_Menu_Item),
-              Find_Group (N), S.all);
-         end if;
-
-         Set_Object (Get_Field (N, "name"), Radio_Menu_Item);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Check_Menu_Item.Generate (Radio_Menu_Item, N);
    end Generate;
 
 end Gtk.Radio_Menu_Item;

@@ -39,7 +39,6 @@
 --  </description>
 --  <c_version>1.2.8</c_version>
 
-with Gtk.Object;
 with Gtk.Box;
 with Gtk.Curve;
 
@@ -66,16 +65,12 @@ package Gtk.Gamma_Curve is
      (Gamma_Curve : access Gtk_Gamma_Curve_Record) return Gfloat;
    --  Return the Gamma value associated with a Gamma_Curve.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate
-     (Gamma_Curve : in out Object.Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --

@@ -30,7 +30,6 @@
 with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.GEntry;
-with Gtk.Object;
 
 package Gtk.Spin_Button is
 
@@ -65,6 +64,9 @@ package Gtk.Spin_Button is
       Climb_Rate  : in Gfloat;
       The_Digits  : in Gint);
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Spin_Button.
+
    procedure Set_Adjustment
      (Spin_Button : access Gtk_Spin_Button_Record;
       Adjustment  : Gtk.Adjustment.Gtk_Adjustment);
@@ -98,16 +100,16 @@ package Gtk.Spin_Button is
       Direction   : in Gtk.Enums.Gtk_Arrow_Type;
       Step        : in Gfloat);
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-
-   procedure Generate
-     (Spin_Button : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Gate internal function
 
 private
    type Gtk_Spin_Button_Record is new Gtk.GEntry.Gtk_Entry_Record
      with null record;
 
+   pragma Import (C, Get_Type, "gtk_spin_button_get_type");
 end Gtk.Spin_Button;

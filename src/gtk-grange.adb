@@ -304,26 +304,12 @@ package body Gtk.GRange is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Widget.Generate (N, File);
       Gen_Set (N, "GRange", "Update_Policy", "policy", File => File);
-   end Generate;
-
-   procedure Generate
-     (The_Range : in out Object.Gtk_Object; N : in Node_Ptr)
-   is
-      S : String_Ptr;
-
-   begin
-      Widget.Generate (The_Range, N);
-
-      S := Get_Field (N, "policy");
-
-      if S /= null then
-         Set_Update_Policy
-           (Gtk_Range (The_Range),
-            Gtk_Update_Type'Value (S (S'First + 4 .. S'Last)));
-      end if;
    end Generate;
 
 end Gtk.GRange;

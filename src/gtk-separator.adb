@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Separator is
 
@@ -87,30 +86,14 @@ package body Gtk.Separator is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      Class : String_Ptr := Get_Field (N, "class");
+      Class : constant String_Ptr := Get_Field (N, "class");
+      Id    : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Separator", "", "",
         Class (Class'First + 3) & "separator", File);
       Widget.Generate (N, File);
-   end Generate;
-
-   procedure Generate
-     (Separator : in out Object.Gtk_Object; N : in Node_Ptr)
-   is
-      Class : String_Ptr := Get_Field (N, "class");
-   begin
-      if not N.Specific_Data.Created then
-         if Class (Class'First + 3) = 'H' then
-            Gtk_New_Hseparator (Gtk_Separator (Separator));
-         else
-            Gtk_New_Vseparator (Gtk_Separator (Separator));
-         end if;
-
-         Set_Object (Get_Field (N, "name"), Separator);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Widget.Generate (Separator, N);
    end Generate;
 
 end Gtk.Separator;

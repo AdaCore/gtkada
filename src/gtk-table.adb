@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Table is
 
@@ -222,10 +221,11 @@ package body Gtk.Table is
    -- Generate --
    --------------
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
       P   : Node_Ptr;
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Id  : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
 
    begin
       if not N.Specific_Data.Created then
@@ -246,39 +246,6 @@ package body Gtk.Table is
       Container.Generate (N, File);
       Gen_Set (N, "Table", "Row_Spacings", "row_spacing", File);
       Gen_Set (N, "Table", "Col_Spacings", "column_spacing", File);
-   end Generate;
-
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate (Table : in out Gtk.Object.Gtk_Object;
-                       N     : in Node_Ptr) is
-      S : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         S := Get_Field (N, "type");
-         Gtk_New
-           (Gtk_Table (Table), Guint'Value (Get_Field (N, "rows").all),
-            Guint'Value (Get_Field (N, "columns").all),
-            Boolean'Value (Get_Field (N, "homogeneous").all));
-         Set_Object (Get_Field (N, "name"), Table);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Container.Generate (Table, N);
-
-      S := Get_Field (N, "row_spacing");
-
-      if S /= null then
-         Set_Row_Spacings (Gtk_Table (Table), Guint'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "column_spacing");
-
-      if S /= null then
-         Set_Col_Spacings (Gtk_Table (Table), Guint'Value (S.all));
-      end if;
    end Generate;
 
 end Gtk.Table;

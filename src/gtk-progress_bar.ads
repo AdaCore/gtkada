@@ -29,7 +29,6 @@
 
 with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Object;
 with Gtk.Progress;
 
 package Gtk.Progress_Bar is
@@ -42,6 +41,9 @@ package Gtk.Progress_Bar is
      (Progress_Bar : out Gtk_Progress_Bar;
       Adjustment   : in Gtk.Adjustment.Gtk_Adjustment :=
         Gtk.Adjustment.Null_Adjustment);
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Progress_Bar.
 
    procedure Initialize
      (Progress_Bar : access Gtk_Progress_Bar_Record'Class;
@@ -71,16 +73,16 @@ package Gtk.Progress_Bar is
      (Progress_Bar : access Gtk_Progress_Bar_Record;
       Percentage   : in Gfloat);
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-
-   procedure Generate
-     (Progress_Bar : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Gate internal function
 
 private
    type Gtk_Progress_Bar_Record is new Gtk.Progress.Gtk_Progress_Record
      with null record;
 
+   pragma Import (C, Get_Type, "gtk_progress_bar_get_type");
 end Gtk.Progress_Bar;

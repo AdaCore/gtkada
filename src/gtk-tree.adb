@@ -28,9 +28,6 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Widget;
-with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Tree is
 
@@ -311,49 +308,16 @@ package body Gtk.Tree is
    -- Generate --
    --------------
 
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Id : constant Gtk_Type := Get_Type;
+      pragma Warnings (Off, Id);
+
    begin
       Gen_New (N, "Tree", File => File);
       Container.Generate (N, File);
       Gen_Set (N, "Tree", "selection_mode", File);
       Gen_Set (N, "Tree", "view_lines", File);
       Gen_Set (N, "Tree", "view_mode", File);
-   end Generate;
-
-   procedure Generate (Tree : in out Gtk_Object;
-                       N    : in Node_Ptr) is
-      S : String_Ptr;
-   begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Tree (Tree));
-         Set_Object (Get_Field (N, "name"), Tree);
-         N.Specific_Data.Created := True;
-      end if;
-
-      Container.Generate (Tree, N);
-
-      S := Get_Field (N, "selection_mode");
-
-      if S /= null then
-         Set_Selection_Mode
-           (Gtk_Tree (Tree),
-            Gtk_Selection_Mode'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      S := Get_Field (N, "view_lines");
-
-      if S /= null then
-         Set_View_Lines (Gtk_Tree (Tree), Boolean'Value (S.all));
-      end if;
-
-      S := Get_Field (N, "view_mode");
-
-      if S /= null then
-         Set_View_Mode
-           (Gtk_Tree (Tree),
-            Gtk_Tree_View_Mode'Value (S (S'First + 4 .. S'Last)));
-      end if;
    end Generate;
 
 end Gtk.Tree;

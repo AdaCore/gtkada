@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Item;
 with Gtk.Tree;
 with Gtk.Widget;
@@ -41,6 +40,9 @@ package Gtk.Tree_Item is
 
    procedure Initialize
      (Tree_Item : access Gtk_Tree_Item_Record'Class; Label : in String := "");
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Tree_Item.
 
    procedure Collapse (Tree_Item : access Gtk_Tree_Item_Record);
 
@@ -61,14 +63,15 @@ package Gtk.Tree_Item is
    --  Note: Tree_Item must already have a parent, i.e have been inserted into
    --  a tree before you can set a subtree for it
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
-
-   procedure Generate (Tree_Item : in out Gtk_Object; N : in Node_Ptr);
+   --  Gate internal function
 
 private
    type Gtk_Tree_Item_Record is new Gtk.Item.Gtk_Item_Record with null record;
 
+   pragma Import (C, Get_Type, "gtk_tree_item_get_type");
 end Gtk.Tree_Item;

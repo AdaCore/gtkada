@@ -50,7 +50,6 @@
 --  </description>
 --  <c_version>1.2.8</c_version>
 
-with Gtk.Object; use Gtk.Object;
 with Gtk.Box;
 with Interfaces.C.Strings;
 with Glib.GSlist;
@@ -87,6 +86,9 @@ package Gtk.Status_Bar is
    procedure Initialize (Statusbar : access Gtk_Status_Bar_Record'Class);
    --  Internal initialization function.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Status_Bar.
+
    function Get_Context_Id
      (Statusbar           : access Gtk_Status_Bar_Record;
       Context_Description : in String) return Context_Id;
@@ -122,15 +124,12 @@ package Gtk.Status_Bar is
    --  The message is only removed if it is in a specific context.
    --  Nothing happens if no matching message is found.
 
-   ----------------------------
-   -- Support for Gate/Dgate --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate (Statusbar : in out Gtk_Object; N : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --
@@ -157,4 +156,6 @@ package Gtk.Status_Bar is
 
 private
    type Gtk_Status_Bar_Record is new Gtk.Box.Gtk_Box_Record with null record;
+
+   pragma Import (C, Get_Type, "gtk_statusbar_get_type");
 end Gtk.Status_Bar;

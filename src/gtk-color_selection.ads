@@ -43,7 +43,6 @@
 
 with Gtk.Enums;
 with Gtk.Box;
-with Gtk.Object;
 
 package Gtk.Color_Selection is
 
@@ -108,17 +107,12 @@ package Gtk.Color_Selection is
    --  Convert from an absolute value as used in Gdk_Color to a percentage
    --  value as used in Set_Color.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
+   ----------------------
+   -- Support for Gate --
+   ----------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
-
-   procedure Generate
-     (Colorsel : in out Object.Gtk_Object;
-      N        : in Node_Ptr);
-   --  Dgate internal function
 
    -------------
    -- Signals --
