@@ -1,4 +1,4 @@
-Here are the complete procedures to build Gtk+ 2.2.1 from scratch
+Here are the complete procedures to build Gtk+ 2.2.4 from scratch
 (Systems tested are Redhat 7.2, Solaris 2.5.1, Solaris 2.8, Tru64 5.1a,
  HP-UX 11.00).
 
@@ -154,8 +154,8 @@ cd ..
 ########
 # glib #
 ########
-tar xzvf glib-2.2.1.tar.gz
-cd glib-2.2.1
+tar xzvf glib-2.2.3.tar.gz
+cd glib-2.2.3
 
 # on Linux:
 ./configure --prefix=$prefix --enable-debug=minimum
@@ -178,8 +178,8 @@ cd ..
 #######
 # atk #
 #######
-tar xzvf atk-1.2.0.tar.gz
-cd atk-1.2.0
+tar xzvf atk-1.2.4.tar.gz
+cd atk-1.2.4
 
 ./configure --prefix=$prefix
 make
@@ -189,8 +189,8 @@ cd ..
 #########
 # pango #
 #########
-tar xzvf pango-1.2.1.tar.gz
-cd pango-1.2.1
+tar xzvf pango-1.2.5.tar.gz
+cd pango-1.2.5
 
 # Apply this patch if you want to ease distributing stand alone executables:
 patch -p0 < .../GtkAda/contrib/pango-1.2.1.diff
@@ -213,11 +213,8 @@ cd ..
 #######
 # gtk #
 #######
-tar xzvf gtk+-2.2.1.tar.gz
-cd gtk+-2.2.1
-
-# Apply this patch if you want to ease distributing stand alone executables:
-patch -p0 < .../GtkAda/contrib/gtk+-2.2.1.diff
+tar xzvf gtk+-2.2.4.tar.gz
+cd gtk+-2.2.4
 
 # Under certain platforms such as AiX or NT, a very recent version of
 # libtool may be needed. To install the most recent version of libtool,
@@ -229,11 +226,6 @@ patch -p0 < .../GtkAda/contrib/gtk+-2.2.1.diff
 
 # Under HP-UX, make sure that libX11.sl, libXt.sl and libXext.sl can be found
 # under e.g /usr/lib
-
-# Under Solaris 2.5.1, plain Gtk+ will not compile because it uses X11R6
-# specific features. The following patch disables this feature which is only
-# used for XIM support:
-# patch -p0 < .../GtkAda/contrib/gtk+-2.2.1-solaris2.5.1.diff
 
 ./configure --disable-modules --without-libtiff \
   --with-included-loaders=xpm,png,gif,jpeg --prefix=$prefix \
