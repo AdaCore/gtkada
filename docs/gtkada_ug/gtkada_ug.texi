@@ -195,9 +195,9 @@ If you manage to use it on other systems (which should probably be
 straightforward - just recompile GtkAda), please let us know so that
 we can add to the above list.
 
-This version of GtkAda is compatible with @code{gtk+} up to @b{version
-1.2.6}. This release is no longer compatible with older versions of gtk+
-(up to 1.0). If you really need to use such an old version, please
+This version of GtkAda is compatible with @code{Gtk+} @b{1.2.2} up to
+@b{version 1.2.6}. This release is no longer compatible with older versions
+of gtk+ (up to 1.0). If you really need to use such an old version, please
 consider downloading GtkAda 0.2.1 (but be aware that your code will
 never work with recent versions, since the API has been completely
 rewritten since then).
