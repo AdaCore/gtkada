@@ -119,6 +119,11 @@ package body Gtk.Radio_Menu_Item is
 
    begin
       Internal (Get_Object (Radio_Menu_Item), Get_Object (Group));
+
+      --  This is a workaround for a bug in gtk+ <= 1.2.7 (that has been
+      --  reported) The same code might be included in gtk+ at some point, and
+      --  can be removed from here then.   ???
+      Set_Active (Radio_Menu_Item, False);
    end Set_Group;
 
    --------------
