@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -92,8 +92,18 @@ package body Gtk.Scale is
       function Internal (Adjustment : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_hscale_new");
 
+      Adj : System.Address;
+
+      use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
-      Set_Object (Scale, Internal (Get_Object (Adjustment)));
+      if Adjustment = null then
+         Adj := System.Null_Address;
+      else
+         Adj := Get_Object (Adjustment);
+      end if;
+
+      Set_Object (Scale, Internal (Adj));
       Initialize_User_Data (Scale);
    end Initialize_Hscale;
 
@@ -108,8 +118,18 @@ package body Gtk.Scale is
       function Internal (Adjustment : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_vscale_new");
 
+      Adj : System.Address;
+
+      use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
-      Set_Object (Scale, Internal (Get_Object (Adjustment)));
+      if Adjustment = null then
+         Adj := System.Null_Address;
+      else
+         Adj := Get_Object (Adjustment);
+      end if;
+
+      Set_Object (Scale, Internal (Adj));
       Initialize_User_Data (Scale);
    end Initialize_Vscale;
 

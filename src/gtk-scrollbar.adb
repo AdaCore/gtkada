@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -66,10 +66,21 @@ package body Gtk.Scrollbar is
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
       function Internal (Adjustment : in System.Address)
-                         return          System.Address;
+        return System.Address;
       pragma Import (C, Internal, "gtk_hscrollbar_new");
+
+      Adj : System.Address;
+
+      use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
-      Set_Object (Widget, Internal (Get_Object (Adjustment)));
+      if Adjustment = null then
+         Adj := System.Null_Address;
+      else
+         Adj := Get_Object (Adjustment);
+      end if;
+
+      Set_Object (Widget, Internal (Adj));
       Initialize_User_Data (Widget);
    end Initialize_Hscrollbar;
 
@@ -82,10 +93,21 @@ package body Gtk.Scrollbar is
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
       function Internal (Adjustment : in System.Address)
-                         return          System.Address;
+        return System.Address;
       pragma Import (C, Internal, "gtk_vscrollbar_new");
+
+      Adj : System.Address;
+
+      use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
-      Set_Object (Widget, Internal (Get_Object (Adjustment)));
+      if Adjustment = null then
+         Adj := System.Null_Address;
+      else
+         Adj := Get_Object (Adjustment);
+      end if;
+
+      Set_Object (Widget, Internal (Adj));
       Initialize_User_Data (Widget);
    end Initialize_Vscrollbar;
 
