@@ -29,7 +29,7 @@
 
 --  <description>
 --
---  This is the top level package of the Gdk widget hierarchy.
+--  This is the top level package of the Gdk hierarchy.
 --  It provides a single type used to access the underlying C structures.
 --
 --  </description>
