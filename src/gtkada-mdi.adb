@@ -36,7 +36,6 @@
 --    implemented as special MDI_Children ?
 --  - Manipulation of the title bar for children (adding buttons, adding
 --    pixmaps,...)
---  - define new signals ("float_child", ...)
 --  - Automatically add a new menu bar when a child is floated (settable
 --    on a per-child basis).
 --  - contextual menu in the title bar of children to dock them, float them,...
@@ -2976,15 +2975,11 @@ package body Gtkada.MDI is
 
       Update_Tab_Label (Child);
 
-      --  Update the menu, if it exists
+      --  Update the menu, if it exists. We need to recreate the menu item to
+      --  keep it sorted
 
       if Child.Menu_Item /= null then
-         Update_Menu_Item (Child);
-
-      --  Else in case the menu entry wasn't created before because there was
-      --  no title yet, we just create it now.
-
-      elsif Child.MDI.Menu /= null and then Title /= "" then
+         Destroy (Child.Menu_Item);
          Create_Menu_Entry (Child);
       end if;
 
@@ -4256,6 +4251,10 @@ package body Gtkada.MDI is
       G           : Widget_SList.GSlist := Widget_SList.Null_List;
       First_Child : MDI_Child;
       Tmp         : Widget_List.Glist;
+      Position    : Gint;
+      Children    : Widget_List.Glist;
+      Item        : Gtk_Menu_Item;
+      Ref         : String_Access;
 
    begin
       if Child.Menu_Item = null
@@ -4272,15 +4271,39 @@ package body Gtkada.MDI is
 
             if First_Child.Menu_Item /= null then
                G := Get_Group (First_Child.Menu_Item);
-               exit;
+
+               --  Find the closest menu item, to keep the Window menu sorted
+               if First_Child.Short_Title.all > Child.Short_Title.all
+                 and then (Ref = null
+                           or else First_Child.Short_Title.all < Ref.all)
+               then
+                  Ref := First_Child.Short_Title;
+                  Item := Gtk_Menu_Item (First_Child.Menu_Item);
+               end if;
             end if;
 
             Tmp := Next (Tmp);
          end loop;
 
+         --  Insert the new item sorted in the Window menu
+         if Item = null then
+            Position := -1;
+         else
+            Position := 0;
+            Children := Get_Children (Child.MDI.Menu);
+            Tmp := Children;
+            while Tmp /= Widget_List.Null_List loop
+               exit when Gtk_Menu_Item (Get_Data (Tmp)) = Item;
+               Position := Position + 1;
+               Tmp := Next (Tmp);
+            end loop;
+            Free (Children);
+         end if;
+
          Gtk_New (Child.Menu_Item, G, "");
          Update_Menu_Item (Child);
-         Append (Child.MDI.Menu, Child.Menu_Item);
+
+         Insert (Child.MDI.Menu, Child.Menu_Item, Position);
          Set_Active
            (Child.Menu_Item, MDI_Child (Child) = Child.MDI.Focus_Child);
          Show_All (Child.Menu_Item);
