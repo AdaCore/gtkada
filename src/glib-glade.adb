@@ -459,11 +459,16 @@ package body Glib.Glade is
    -- Gen_Signal_Instanciations --
    -------------------------------
 
-   function Gen_Signal_Instanciations (File : File_Type) return Natural is
-      S : String_Ptr;
-
+   function Gen_Signal_Instanciations (Project : String; File : File_Type)
+     return Natural
+   is
+      S   : String_Ptr;
    begin
-      if Num_Signal_Instanciations > 0 then
+      if Num_Signal_Instanciations = 0 then
+         Put_Line (File, "package Callbacks_" & Project & " is");
+         Put_Line (File, "end Callbacks_" & Project & ";");
+
+      else
          Put_Line (File, "with Gtk.Signal;");
 
          for J in Signal_Range'First .. Num_Signal_Instanciations loop
@@ -474,7 +479,7 @@ package body Glib.Glade is
          end loop;
 
          New_Line (File);
-         Put_Line (File, "package Callbacks is");
+         Put_Line (File, "package Callbacks_" & Project & " is");
          New_Line (File);
 
          for J in Signal_Range'First .. Num_Signal_Instanciations loop
@@ -493,9 +498,9 @@ package body Glib.Glade is
             New_Line (File);
          end loop;
 
-         Put_Line (File, "end Callbacks;");
+         Put_Line (File, "end Callbacks_" & Project & ";");
          New_Line (File);
-         Put_Line (File, "package body Callbacks is");
+         Put_Line (File, "package body Callbacks_" & Project & " is");
          New_Line (File);
 
          for J in Signal_Range'First .. Num_Signals loop
@@ -508,7 +513,7 @@ package body Glib.Glade is
             New_Line (File);
          end loop;
 
-         Put_Line (File, "end Callbacks;");
+         Put_Line (File, "end Callbacks_" & Project & ";");
       end if;
 
       return Num_Signal_Instanciations;

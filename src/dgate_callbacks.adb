@@ -35,7 +35,7 @@ package body DGate_Callbacks is
      (Object : in Private_Object;
       Data   : in System.Address) is
    begin
-      Ada.Text_IO.Put_Line (To_String (Data).all);
+      Ada.Text_IO.Put_Line ("Callback called.");
    end Generic_Callback;
  
 end DGate_Callbacks;

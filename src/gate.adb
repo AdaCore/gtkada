@@ -35,14 +35,12 @@ procedure Gate is
 
    procedure Usage is
    begin
-      Put_Line ("Usage: gate switches project-file");
+      Put_Line ("Usage: gate.ex switches project-file");
       New_Line;
       Put_Line ("  -p    Output the name of the project and exit");
    end Usage;
 
 begin
-   --  ??? This is still a very simple minded program.
-
    if Argument_Count = 0 then
       Usage;
    else

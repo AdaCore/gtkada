@@ -110,9 +110,12 @@ package Glib.Glade is
    --  Output to file calls to connect if N contains any signal
    --  Also register the class of the widget that uses signals.
 
-   function Gen_Signal_Instanciations (File : File_Type) return Natural;
+   function Gen_Signal_Instanciations (Project : String; File : File_Type)
+     return Natural;
    --  Output to file all the instanciations of Gtk.Signal that have been
    --  referenced in previous calls to Gen_Signal.
    --  Return the number of instanciations generated.
+   --  The instanciations are all generated in a package called
+   --  Callbacks_<Project>
 
 end Glib.Glade;

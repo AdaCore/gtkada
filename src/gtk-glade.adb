@@ -367,6 +367,8 @@ package body Gtk.Glade is
       Len         : Natural;
       Num_Signals : Natural;
       Output      : File_Type;
+      Project     : String :=
+        To_Ada (Get_Field (Find_Tag (N.Child, "project"), "name").all);
 
    begin
       Print_Header (N, Output);
@@ -390,7 +392,8 @@ package body Gtk.Glade is
          Put_Line ("with Gtk; use Gtk;");
          Put_Line ("with Gtk.Enums; use Gtk.Enums;");
          Put_Line ("with Gtk.Button; use Gtk.Button;");
-         Put_Line ("with Callbacks; use Callbacks;");
+         Put_Line ("with Callbacks_" & Project &
+           "; use Callbacks_" & Project & ";");
          Gen_Packages (Standard_Output);
          Reset_Packages;
          New_Line;
@@ -411,7 +414,7 @@ package body Gtk.Glade is
       end loop;
 
       New_Line;
-      Num_Signals := Gen_Signal_Instanciations (Standard_Output);
+      Num_Signals := Gen_Signal_Instanciations (Project, Standard_Output);
    end Generate;
 
    -----------------
