@@ -340,10 +340,9 @@ ada_initialize_class_record
   else
     {
       klass = g_type_class_ref (G_TYPE_FROM_CLASS (old_class_record));
-
     }
 
-  G_OBJECT_GET_CLASS (object) = klass;
+  ((GTypeInstance*)object)->g_class = (GTypeClass*) klass;
   return klass;
 }
 
