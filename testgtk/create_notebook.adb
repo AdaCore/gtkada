@@ -50,8 +50,6 @@ with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 with Common; use Common;
 
-with Interfaces.C.Strings;
-
 package body Create_Notebook is
 
    package Note_Cb is new Signal.Object_Callback (Gtk_Notebook);
@@ -64,55 +62,6 @@ package body Create_Notebook is
    Book_Open_Mask   : Gdk_Bitmap;
    Book_Closed      : Gdk_Pixmap;
    Book_Closed_Mask : Gdk_Bitmap;
-
-   package ICS renames Interfaces.C.Strings;
-   Book_Open_Xpm    : ICS.chars_ptr_array :=
-     (ICS.New_String ("16 16 4 1"),
-      ICS.New_String ("       c None s None"),
-      ICS.New_String (".      c black"),
-      ICS.New_String ("X      c #808080"),
-      ICS.New_String ("o      c white"),
-      ICS.New_String ("                "),
-      ICS.New_String ("  ..            "),
-      ICS.New_String (" .Xo.    ...    "),
-      ICS.New_String (" .Xoo. ..oo.    "),
-      ICS.New_String (" .Xooo.Xooo...  "),
-      ICS.New_String (" .Xooo.oooo.X.  "),
-      ICS.New_String (" .Xooo.Xooo.X.  "),
-      ICS.New_String (" .Xooo.oooo.X.  "),
-      ICS.New_String (" .Xooo.Xooo.X.  "),
-      ICS.New_String (" .Xooo.oooo.X.  "),
-      ICS.New_String ("  .Xoo.Xoo..X.  "),
-      ICS.New_String ("   .Xo.o..ooX.  "),
-      ICS.New_String ("    .X..XXXXX.  "),
-      ICS.New_String ("    ..X.......  "),
-      ICS.New_String ("     ..         "),
-      ICS.New_String ("                "));
-   Book_Closed_Xpm  : ICS.chars_ptr_array :=
-     (ICS.New_String ("16 16 6 1"),
-      ICS.New_String ("       c None s None"),
-      ICS.New_String (".      c black"),
-      ICS.New_String ("X      c red"),
-      ICS.New_String ("o      c yellow"),
-      ICS.New_String ("O      c #808080"),
-      ICS.New_String ("#      c white"),
-      ICS.New_String ("                "),
-      ICS.New_String ("       ..       "),
-      ICS.New_String ("     ..XX.      "),
-      ICS.New_String ("   ..XXXXX.     "),
-      ICS.New_String (" ..XXXXXXXX.    "),
-      ICS.New_String (".ooXXXXXXXXX.   "),
-      ICS.New_String ("..ooXXXXXXXXX.  "),
-      ICS.New_String (".X.ooXXXXXXXXX. "),
-      ICS.New_String (".XX.ooXXXXXX..  "),
-      ICS.New_String (" .XX.ooXXX..#O  "),
-      ICS.New_String ("  .XX.oo..##OO. "),
-      ICS.New_String ("   .XX..##OO..  "),
-      ICS.New_String ("    .X.#OO..    "),
-      ICS.New_String ("     ..O..      "),
-      ICS.New_String ("      ..        "),
-      ICS.New_String ("                "));
-
 
    procedure Create_Pages (Notebook  : in out Gtk_Notebook;
                            The_Start : Gint;
