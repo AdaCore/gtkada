@@ -1,0 +1,501 @@
+This is a patch against Gtk+ 2.0.7 sources that fixes Windows specific problems.
+
+Tue Nov  5 11:54:18  2002	Arnaud Charlet <charlet@gnat.com>
+
+	* glib/glib/glib.def: Add missing symbol.
+
+	* gtk+/gdk/win32/gdkwindow-win32.c
+	(gdk_window_get_frame_extents): Fix miscomputation of y coordinate.
+	(gdk_window_unstick): Remove spurious warning.
+	(gdk_window_set_transient_for): Use TOPMOST after all, since
+	NO_TOPMOST is too confusing.
+
+	* gtk+/gdk/win32/gdkevents-win32.c (gdk_event_translate): Add handling
+	of maximized and minimized events.
+
+Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
+
+	* gtk+/gdk/win32/gdkevents-win32.c: Handle WM_NCPAINT. Fixes the
+	bad window display update when window is in background.
+
+Mon Sep 16 12:39:09  2002	Florent Duguet <duguet@gnat.com>
+
+	* pango/pango/pangowin32.c: Optimization of the pango rendering through
+	caching.
+
+Thu Sep 12 18:03:02 2002	Florent Duguet <duguet@gnat.com>
+
+	* gtk+/gdk/win32/gdkevents-win32.c: Force an update when paint message
+	is received this forces a refresh of zones which are actually
+	invalidated and visible.
+
+Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
+
+	* gtk+/gdk/win32/gdkgeometry-win32.c: Ask for a repaint of the
+	invalidate zone to address smoothness issues.
+
+#########################################
+# Selection problem B430-008
+#########################################
+
+
+--- gtk+/gtk/gtktextview.c.old	2002-11-05 11:11:07 +0100
++++ gtk+/gtk/gtktextview.c	2002-11-05 11:11:25 +0100
+@@ -3874,8 +3874,10 @@
+ 
+   text_view = GTK_TEXT_VIEW (widget);
+ 
++#if 0
+   if (event->window != text_view->text_window->bin_window)
+     return FALSE;
++#endif
+ 
+   if (event->button == 1)
+     {
+
+#########################################
+# GtkTextView smoothness issues
+#########################################
+
+--- gtk+/gdk/win32/gdkgeometry-win32.c.old	2002-11-05 11:13:39 +0100
++++ gtk+/gdk/win32/gdkgeometry-win32.c	2002-11-05 11:14:52 +0100
+@@ -140,13 +140,17 @@
+ 
+       gdk_window_queue_translation (window, dx, dy);
+ 
+-      if (!ScrollWindowEx (GDK_WINDOW_HWND (window),
+-                           dx, dy, /* in: scroll offsets */
+-                           NULL, /* in: scroll rect, NULL == entire client area */
+-                           &clipRect, /* in: restrict to */
+-                           NULL, /* in: update region */
+-                           NULL, /* out: update rect */
+-                           SW_INVALIDATE | SW_SCROLLCHILDREN))
++      if (ScrollWindowEx (GDK_WINDOW_HWND (window),
++                          dx, dy, /* in: scroll offsets */
++                          NULL, /* in: scroll rect, NULL == entire client area */
++                          &clipRect, /* in: restrict to */
++                          NULL, /* in: update region */
++                          NULL, /* out: update rect */
++                          SW_INVALIDATE | SW_SCROLLCHILDREN))
++	{
++	  PostMessage (GDK_WINDOW_HWND (window), WM_PAINT, 0,0);
++	}
++      else
+         WIN32_API_FAILED ("ScrollWindowEx");
+     }
+ 
+--- gtk+/gdk/win32/gdkevents-win32.c.old	2002-11-05 11:19:14 +0100
++++ gtk+/gdk/win32/gdkevents-win32.c	2002-11-05 11:19:33 +0100
+@@ -3073,6 +3073,12 @@
+ 
+ 	  _gdk_window_process_expose (window, _gdk_win32_get_next_tick (msg->time), &expose_rect);
+ 	  return_val = FALSE;
++
++         /* Force a process_all_updates to refresh visible windows
++          * when receiving a paint message. */
++
++         if (!GDK_WINDOW_DESTROYED (window) && gdk_window_is_visible (window))
++           gdk_window_process_updates (window, FALSE);
+         }
+       break;
+ 
+#########################################
+# Optimization of rendering
+#########################################
+--- pango/pango/pangowin32.c	2002/11/07 09:29:03	1.1
++++ pango/pango/pangowin32.c	2002/11/07 10:08:09
+@@ -227,22 +227,15 @@
+   return result;
+ }
+ 
+-/**
+- * pango_win32_render:
+- * @hdc:     the device context
+- * @font:    the font in which to draw the string
+- * @glyphs:  the glyph string to draw
+- * @x:       the x position of start of string (in pixels)
+- * @y:       the y position of baseline (in pixels)
+- *
+- * Render a PangoGlyphString onto a Windows DC
+- */
+-void 
+-pango_win32_render (HDC               hdc,
+-		    PangoFont        *font,
+-		    PangoGlyphString *glyphs,
+-		    int               x, 
+-		    int               y)
++#define CACHE_SIZE 256
++static HFONT pango_win32_render_offset_previous_font;
++
++static int 
++pango_win32_render_offset (HDC               hdc,
++			   PangoFont        *font,
++			   PangoGlyphString *glyphs,
++			   int               x, 
++			   int               y)
+ {
+   HFONT old_hfont = NULL;
+   HFONT hfont;
+@@ -251,17 +244,33 @@
+   gint *dX;
+   gint last_x = 0;
+   PangoGlyphUnit start_x_offset = 0, x_offset = 0;
++  /* temporary static storage for runs of less than 256 glyphes */
++  static guint16 stat_glyph_indices [CACHE_SIZE];
++  static gint stat_dX [CACHE_SIZE];
+ 
+-  g_return_if_fail (glyphs != NULL);
++  if (glyphs == NULL)
++    return 0;
+ 
+   hfont = pango_win32_get_hfont (font);
+   if (!hfont)
+-    return;
++    return 0;
+ 
+-  old_hfont = SelectObject (hdc, hfont);
+-		
+-  glyph_indexes = g_new (guint16, glyphs->num_glyphs);
+-  dX = g_new (INT, glyphs->num_glyphs);
++  if (pango_win32_render_offset_previous_font != hfont)
++    {
++      old_hfont = SelectObject (hdc, hfont);
++      pango_win32_render_offset_previous_font = hfont;
++    }
++
++  if (glyphs->num_glyphs > CACHE_SIZE)
++    {
++      glyph_indexes = g_new (guint16, glyphs->num_glyphs);
++      dX = g_new (INT, glyphs->num_glyphs);
++    }
++  else
++    {
++      glyph_indexes = stat_glyph_indices;
++      dX = stat_dX;
++    }
+ 
+ #ifdef PANGO_WIN32_DEBUGGING
+   PING (("num_glyphs:%d", glyphs->num_glyphs));
+@@ -324,9 +333,34 @@
+ 	       glyph_indexes, num_valid_glyphs,
+ 	       dX);
+ 
+-  SelectObject (hdc, old_hfont); /* restore */
+-  g_free (glyph_indexes);
+-  g_free (dX);
++  if (glyphs->num_glyphs > CACHE_SIZE)
++    {
++      g_free (glyph_indexes);
++      g_free (dX);
++    }
++
++  return PANGO_PIXELS (x_offset - start_x_offset);
++}
++
++/**
++ * pango_win32_render:
++ * @hdc:     the device context
++ * @font:    the font in which to draw the string
++ * @glyphs:  the glyph string to draw
++ * @x:       the x position of start of string (in pixels)
++ * @y:       the y position of baseline (in pixels)
++ *
++ * Render a PangoGlyphString onto a Windows DC
++ */
++void 
++pango_win32_render (HDC               hdc,
++		    PangoFont        *font,
++		    PangoGlyphString *glyphs,
++		    int               x, 
++		    int               y)
++{
++  pango_win32_render_offset_previous_font = NULL;
++  (void) pango_win32_render_offset (hdc, font, glyphs, x, y);
+ }
+ 
+ static void
+@@ -611,18 +645,16 @@
+ 				int              y)
+ {
+   GSList *tmp_list = line->runs;
+-  PangoRectangle overall_rect;
+-  PangoRectangle logical_rect;
+   PangoRectangle ink_rect;
++  COLORREF saved_fg_color = 0;
++  COLORREF saved_bk_color = 0;
+   
+-  int x_off = 0;
++  int x_off = 0, tmp_off;
++
++  pango_win32_render_offset_previous_font = NULL;
+ 
+-  pango_layout_line_get_extents (line,NULL, &overall_rect);
+-  
+   while (tmp_list)
+     {
+-      HBRUSH oldfg = NULL;
+-      HBRUSH brush = NULL;
+       POINT points[2];
+       PangoUnderline uline = PANGO_UNDERLINE_NONE;
+       PangoLayoutRun *run = tmp_list->data;
+@@ -633,69 +665,56 @@
+ 
+       pango_win32_get_item_properties (run->item, &uline, &fg_color, &fg_set, &bg_color, &bg_set);
+ 
+-      if (uline == PANGO_UNDERLINE_NONE)
+-	pango_glyph_string_extents (run->glyphs, run->item->analysis.font,
+-				    NULL, &logical_rect);
+-      else
+-	pango_glyph_string_extents (run->glyphs, run->item->analysis.font,
+-				    &ink_rect, &logical_rect);
+-
+       if (bg_set)
+-	{
+-	  HBRUSH oldbrush;
+-
+-	  brush = CreateSolidBrush (RGB ((bg_color.color.red + 128) >> 8,
+-					 (bg_color.color.green + 128) >> 8,
+-					 (bg_color.color.blue + 128) >> 8));
+-	  oldbrush = SelectObject (hdc, brush);
+-	  Rectangle (hdc, x + PANGO_PIXELS (x_off + logical_rect.x),
+-			  y + PANGO_PIXELS (overall_rect.y),
+-			  PANGO_PIXELS (logical_rect.width),
+-			  PANGO_PIXELS (overall_rect.height));
+-	  SelectObject (hdc, oldbrush);
+-	  DeleteObject (brush);
+-	}
++	saved_bk_color = SetBkColor (hdc,
++				     RGB ((bg_color.color.red + 128) >> 8,
++					  (bg_color.color.green + 128) >> 8,
++					  (bg_color.color.blue + 128) >> 8));
+ 
+       if (fg_set)
+-	{
+-	  brush = CreateSolidBrush (RGB ((fg_color.color.red + 128) >> 8,
+-					 (fg_color.color.green + 128) >> 8,
+-					 (fg_color.color.blue + 128) >> 8));
+-	  oldfg = SelectObject (hdc, brush);
+-	}
++	saved_fg_color = SetTextColor (hdc,
++				       RGB ((fg_color.color.red + 128) >> 8,
++					    (fg_color.color.green + 128) >> 8,
++					    (fg_color.color.blue + 128) >> 8));
++
++      tmp_off = pango_win32_render_offset (hdc, run->item->analysis.font,
++					   run->glyphs,
++					   x + PANGO_PIXELS (x_off), y);
+ 
+-      pango_win32_render (hdc, run->item->analysis.font, run->glyphs,
+-			  x + PANGO_PIXELS (x_off), y);
+-
+-      switch (uline)
++      if (uline != PANGO_UNDERLINE_NONE)
+ 	{
+-	case PANGO_UNDERLINE_NONE:
+-	  break;
+-	case PANGO_UNDERLINE_DOUBLE:
+-	  points[0].x = x + PANGO_PIXELS (x_off + ink_rect.x) - 1;
+-	  points[0].y = points[1].y = y + 4;
+-	  points[1].x = x + PANGO_PIXELS (x_off + ink_rect.x + ink_rect.width);
+-	  Polyline (hdc, points, 2);
+-	  /* Fall through */
+-	case PANGO_UNDERLINE_SINGLE:
+-	  points[0].y = points[1].y = y + 2;
+-	  Polyline (hdc, points, 2);
+-	  break;
+-	case PANGO_UNDERLINE_LOW:
+-	  points[0].x = x + PANGO_PIXELS (x_off + ink_rect.x) - 1;
+-	  points[0].y = points[1].y = y + PANGO_PIXELS (ink_rect.y + ink_rect.height) + 2;
+-	  points[1].x = x + PANGO_PIXELS (x_off + ink_rect.x + ink_rect.width);
+-	  Polyline (hdc, points, 2);
+-	  break;
++	  pango_glyph_string_extents (run->glyphs, run->item->analysis.font,
++				      &ink_rect, NULL);
++
++	  switch (uline)
++	    {
++	      case PANGO_UNDERLINE_NONE:
++		break;
++	      case PANGO_UNDERLINE_DOUBLE:
++		points[0].x = x + PANGO_PIXELS (x_off + ink_rect.x) - 1;
++		points[0].y = points[1].y = y + 4;
++		points[1].x = x + PANGO_PIXELS (x_off + ink_rect.x + ink_rect.width);
++		Polyline (hdc, points, 2);
++		/* Fall through */
++	      case PANGO_UNDERLINE_SINGLE:
++		points[0].y = points[1].y = y + 2;
++		Polyline (hdc, points, 2);
++		break;
++	      case PANGO_UNDERLINE_LOW:
++		points[0].x = x + PANGO_PIXELS (x_off + ink_rect.x) - 1;
++		points[0].y = points[1].y = y + PANGO_PIXELS (ink_rect.y + ink_rect.height) + 2;
++		points[1].x = x + PANGO_PIXELS (x_off + ink_rect.x + ink_rect.width);
++		Polyline (hdc, points, 2);
++		break;
++	    }
+ 	}
+ 
++      if (bg_set)
++	SetBkColor (hdc, saved_bk_color);
+       if (fg_set)
+-	{
+-	  SelectObject (hdc, oldfg);
+-	  DeleteObject (brush);
+-	}
+-      
+-      x_off += logical_rect.width;
++	SetTextColor (hdc, saved_fg_color);
++
++      x_off += tmp_off;
+     }
+ }
+ 
+@@ -720,6 +739,14 @@
+   int indent;
+   int width;
+   int y_offset = 0;
++  COLORREF saved_foreground_color;
++  COLORREF saved_background_color;
++  HFONT saved_font;
++
++  /* save colors */
++  saved_foreground_color = GetTextColor (hdc);
++  saved_background_color = GetTextColor (hdc);
++  saved_font = SelectObject (hdc, NULL);
+ 
+   gboolean first = TRUE;
+   
+@@ -780,6 +807,11 @@
+       y_offset += logical_rect.height;
+       tmp_list = tmp_list->next;
+     }
++
++  /* restore colors */
++  SetTextColor (hdc, saved_foreground_color);
++  SetTextColor (hdc, saved_background_color);
++  SelectObject (hdc, saved_font);
+ }
+ 
+ /* This utility function is duplicated here and in pango-layout.c; should it be
+################################################################
+# Fixes wrong update in window display when window in background
+################################################################
+--- gdb/win32/gdkevents-win32.c.old	2002-11-05 11:19:14 +0100
++++ gdb/win32/gdkevents-win32.c	2002-11-05 17:27:08 +0100
+@@ -1986,6 +1986,8 @@
+   gchar buf[256];
+   gboolean return_val = FALSE;
+   
++  HRGN ncPaintRGN;
++
+   if (ret_val_flagp)
+     *ret_val_flagp = FALSE;
+ 
+@@ -2972,6 +2974,38 @@
+       *ret_valp = 1;
+       break;
+ 
++    case WM_NCPAINT:
++      /* gets the region to be updated */
++      ncPaintRGN = (HRGN) (msg->wParam);
++      if (ncPaintRGN == 0)
++	break;
++      if (ncPaintRGN == 1)
++	{
++	  GetClientRect (msg->hwnd, &rect);
++	} else {
++	  /* get the update region, and deduce a rectangle....*/
++	  hrgn = CreateRectRgn (0,0,0,0);
++	  GetUpdateRgn (msg->hwnd, hrgn, FALSE);
++	  GetRgnBox (hrgn, &rect);
++	  DeleteObject (hrgn);
++	}
++      /* then, if region is not empty, notify the */
++      if ((rect.left != rect.right) && (rect.top != rect.bottom))
++	{
++	  GdkRectangle expose_rect;
++
++	  _gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
++	  expose_rect.x = rect.left + xoffset;
++	  expose_rect.y = rect.top + yoffset;
++	  expose_rect.width = rect.right - rect.left;
++	  expose_rect.height = rect.bottom - rect.top;
++
++	  _gdk_window_process_expose (window, msg->time, &expose_rect);
++
++	  return_val = FALSE;
++	}
++      break;
++
+     case WM_PAINT:
+       if (!GetUpdateRect (msg->hwnd, NULL, FALSE))
+ 	{
+--- glib/glib/glib.def.old	2002-11-05 11:52:22 +0100
++++ glib/glib/glib.def	2002-11-05 11:52:35 +0100
+@@ -333,6 +333,7 @@
+ 	g_main_loop_ref
+ 	g_main_loop_run
+ 	g_main_loop_unref
++	g_main_thread_init
+ 	g_malloc
+ 	g_malloc0
+ 	g_markup_error_quark
+--- gtk+/gdk/win32/gdkwindow-win32.c.old	2002-11-05 11:06:15 +0100
++++ gtk+/gdk/win32/gdkwindow-win32.c	2002-11-05 19:55:08 +0100
+@@ -1526,7 +1526,7 @@
+   if (!SetParent (window_id, parent_id))
+ 	WIN32_API_FAILED ("SetParent");
+ #else /* make the modal window topmost instead */
+-  if (!SetWindowPos (window_id, HWND_NOTOPMOST, 0, 0, 0, 0,
++  if (!SetWindowPos (window_id, HWND_TOPMOST, 0, 0, 0, 0,
+                      SWP_NOMOVE | SWP_NOSIZE))
+     WIN32_API_FAILED ("SetWindowPos");
+ #endif
+@@ -1837,7 +1837,7 @@
+     WIN32_API_FAILED ("GetWindowRect");
+ 
+   rect->x = r.left;
+-  rect->y = r.right;
++  rect->y = r.top;
+   rect->width = r.right - r.left;
+   rect->height = r.bottom - r.top;
+ }
+@@ -2397,11 +2397,7 @@
+   if (GDK_WINDOW_DESTROYED (window))
+     return;
+ 
+-  if (GDK_WINDOW_IS_MAPPED (window))
+-    {
+-      g_warning ("gdk_window_unstick (%p) ???", GDK_WINDOW_HWND (window));
+-    }
+-  else
++  if (!GDK_WINDOW_IS_MAPPED (window))
+     {
+       /* Flip our client side flag, the real work happens on map. */
+       gdk_synthesize_window_state (window,
+--- gtk+/gdk/win32/gdkevents-win32.c	2002/11/05 19:15:02	1.2
++++ gtk+/gdk/win32/gdkevents-win32.c	2002/11/05 19:21:57
+@@ -3192,6 +3192,8 @@
+ 	  if (k_grab_window == window)
+ 	    gdk_keyboard_ungrab (msg->time);
+ 
++	  private->state |= GDK_WINDOW_STATE_ICONIFIED;
++
+ 	  return_val = !GDK_WINDOW_DESTROYED (window);
+ 	}
+       else if ((msg->wParam == SIZE_RESTORED
+@@ -3218,6 +3220,14 @@
+ 	  GDK_WINDOW_IMPL_WIN32 (private->impl)->width = event->configure.width;
+ 	  GDK_WINDOW_IMPL_WIN32 (private->impl)->height = event->configure.height;
+ 
++	  if (msg->wParam == SIZE_RESTORED)
++	    private->state = 0;
++	  else if (msg->wParam == SIZE_MAXIMIZED)
++	    {
++	      private->state |= GDK_WINDOW_STATE_MAXIMIZED;
++	      private->state &= ~GDK_WINDOW_STATE_ICONIFIED;
++	    }
++
+ 	  if (private->resize_count > 1)
+ 	    private->resize_count -= 1;
+ 	  
