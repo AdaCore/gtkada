@@ -456,10 +456,14 @@ package body Gtk.Extra.Plot_Data is
       return Gtkada.Types.Chars_Ptr_Array
    is
       type Str_Array is array (Natural) of Chars_Ptr;
-      function Internal (Data : System.Address) return Str_Array;
+      type Str_Array_Access is access all Str_Array;
+      pragma Convention (C, Str_Array_Access);
+
+      function Internal (Data : System.Address) return Str_Array_Access;
       pragma Import (C, Internal, "gtk_plot_data_get_labels");
 
       N : constant size_t := size_t (Get_Numpoints (Data));
+
    begin
       return Chars_Ptr_Array
         (Internal (Get_Object (Data))(0 .. Integer (N) - 1));
