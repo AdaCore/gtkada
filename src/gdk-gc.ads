@@ -96,7 +96,7 @@ package Gdk.GC is
    --  other functions in this package, since each of them requires a call
    --  to the server.
 
-   procedure Destroy (GC : in out Gdk_GC);
+   procedure Destroy (GC : in Gdk_GC);
    --  Free the memory allocated on the server for the graphic context.
    --  Graphic contexts are never freed automatically by GtkAda, this is
    --  the user responsibility to do so.

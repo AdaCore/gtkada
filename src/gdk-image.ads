@@ -62,7 +62,7 @@ package Gdk.Image is
                        X     : in Gint;
                        Y     : in Gint) return Guint32;
 
-   procedure Destroy (Image : in out Gdk_Image);
+   procedure Destroy (Image : in Gdk_Image);
 
 private
    Null_Image : constant Gdk_Image := null;

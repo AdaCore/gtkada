@@ -121,7 +121,7 @@ package Gdk.Font is
    --  returned by Load or Fontset_Load, since these can be extracted from a
    --  cache.
 
-   procedure Unref (Font : in out Gdk_Font);
+   procedure Unref (Font : in Gdk_Font);
    --  Decrement the reference counter for the font.
    --  When this counter reaches 0, the font is deleted from memory.
 
