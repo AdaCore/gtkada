@@ -59,6 +59,20 @@ package body Glib is
    end To_Boolean;
 
 
+   ------------------------
+   --  To_Boolean_Array  --
+   ------------------------
+
+   function To_Boolean_Array (A : in Gboolean_Array) return Boolean_Array is
+      Result : Boolean_Array (A'Range);
+   begin
+      for Index in A'Range loop
+         Result (Index) := To_Boolean (A (Index));
+      end loop;
+      return Result;
+   end To_Boolean_Array;
+
+
    -------------------
    --  To_Gboolean  --
    -------------------

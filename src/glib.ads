@@ -26,6 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Ada.Unchecked_Deallocation;
 with Interfaces.C;
 
 package Glib is
@@ -66,6 +67,9 @@ package Glib is
    --  Some Array types  --
    ------------------------
 
+   type Gboolean_Array is array (Natural range <>) of Gboolean;
+   type Gshort_Array is array (Natural range <>) of Gshort;
+   type Glong_Array is array (Natural range <>) of Glong;
    type Gint_Array is array (Natural range <>) of Gint;
    type Gushort_Array is array (Natural range <>) of Gushort;
    type Gulong_Array is array (Natural range <>) of Gulong;
@@ -74,15 +78,29 @@ package Glib is
 
    type Boolean_Array is array (Natural range <>) of Boolean;
 
+   type Short_Array is array (Natural range <>) of C.short;
+   type Long_Array is array (Natural range <>) of C.long;
+
    ---------------------------
    --  Conversion services  --
    ---------------------------
 
+   function To_Boolean_Array (A : in Gboolean_Array) return Boolean_Array;
    function To_Boolean (Value : in Gboolean) return Boolean;
    function To_Boolean (Value : in Gint) return Boolean;
    function To_Boolean (Value : in Guint) return Boolean;
    function To_Gboolean (Bool : in Boolean) return Gboolean;
    function To_Gint (Bool : in Boolean) return Gint;
+
+
+   -------------------------
+   --  Some Access types  --
+   -------------------------
+
+   type Guchar_Array_Access is access Guchar_Array;
+
+   procedure Free is new Ada.Unchecked_Deallocation
+     (Object => Guchar_Array, Name => Guchar_Array_Access);
 
 end Glib;
 
