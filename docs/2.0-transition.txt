@@ -312,11 +312,11 @@ gdkwindow.h: see "missing" section.
 gtkaccessible.h (derives from AtkObject)
 gtkarg.h
 gtkbindings.h
-gtkcellrenderer.h
-gtkcellrendererpixbuf.h
-gtkcellrenderertext.h
-gtkcellrenderertextpixbuf.h
-gtkcellrenderertoggle.h
+gtkcellrenderer.h            |
+gtkcellrendererpixbuf.h      |
+gtkcellrenderertext.h        |   Binding almose complete
+gtkcellrenderertextpixbuf.h  |
+gtkcellrenderertoggle.h      |
 gtkclipboard.h
 gtkdialog.h: see "missing" section in gtk-dialogs.ads
 gtkdnd.h: see "missing" section in gtk-dnd.ads
@@ -341,13 +341,15 @@ gtksizegroup.h
 gtkstyle.h: now a GObject with signals. see "missing" section.
             need to update field accessors.
 gtktreednd.h
-gtktreemodel.h
-gtktreemodelsort.h
-gtktreeselection.h
-gtktreesortable.h
-gtktreestore.h
-gtktreeview.h
-gtktreeviewcolumn.h
+
+gtktreemodel.h        |
+gtktreemodelsort.h    |
+gtktreeselection.h    |
+gtktreesortable.h     |   Binding almost complete
+gtktreestore.h        |
+gtktreeview.h         |
+gtktreeviewcolumn.h   |
+          
 gtkwidget.h: see "missing" section. check signals.
 gtkwindow.h: see "missing" section.
 
