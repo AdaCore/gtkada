@@ -29,6 +29,8 @@
 
 with Glib;
 with Glib.Glist;
+pragma Elaborate_All (Glib.Glist);
+
 with System;
 
 package Gtk.Enums is

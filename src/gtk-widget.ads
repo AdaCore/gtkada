@@ -43,6 +43,8 @@ with Gtk.Enums;
 with Gtk.Object;
 with Glib.Glist;
 with Glib.GSlist;
+pragma Elaborate_All (Glib.GSlist);
+
 with System;
 
 package Gtk.Widget is

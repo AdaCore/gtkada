@@ -29,6 +29,8 @@
 
 with Glib; use Glib;
 with Glib.Glist;
+pragma Elaborate_All (Glib.Glist);
+
 with Gdk.Types;
 
 

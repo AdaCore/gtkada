@@ -27,17 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-
 package Gdk.Threads is
 
    procedure Enter;
 
    procedure Leave;
 
-   ---------------------
-   --  pragma Import  --
-   ---------------------
+private
 
    pragma Import (C, Enter, "gdk_threads_enter");
    pragma Import (C, Leave, "gdk_threads_leave");

@@ -29,7 +29,6 @@
 
 with Gtk.Adjustment;
 with Gtk.Container;
-with Gtk.Enums;
 with Gtk.Widget;
 
 package Gtk.Layout is

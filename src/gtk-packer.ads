@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gtk.Container;
-with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
 
 package Gtk.Packer is

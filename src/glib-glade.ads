@@ -29,6 +29,7 @@
 
 with Ada.Text_IO; use Ada.Text_IO;
 with Glib.XML;
+pragma Elaborate_All (Glib.XML);
 
 package Glib.Glade is
 

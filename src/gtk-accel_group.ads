@@ -30,7 +30,6 @@
 with Gdk; use Gdk;
 with Gdk.Types;
 
-with Gtk.Enums;
 with Gtk.Object;
 
 package Gtk.Accel_Group is
