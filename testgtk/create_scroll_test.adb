@@ -124,7 +124,7 @@ package body Create_Scroll_Test is
       end if;
 
       if Source_Min /= Source_Max then
-         if not Is_Created (Scroll_Test_Gc) then
+         if Scroll_Test_Gc = Null_GC then
             Gdk_New (Scroll_Test_GC, Get_Window (Widget));
             Set_Exposures (Scroll_Test_GC, True);
          end if;

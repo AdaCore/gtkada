@@ -189,8 +189,8 @@ package body Create_Clist is
       Free (Texts);
 
       Thaw (List);
-      Unref (Pixmap);
-      Unref (Mask);
+      Gdk.Pixmap.Unref (Pixmap);
+      Gdk.Bitmap.Unref (Mask);
    end Add1000;
 
    --------------
@@ -237,7 +237,7 @@ package body Create_Clist is
 
    begin
       Row := Prepend (List, Texts);
-      if not Gdk.Is_Created (Style1) then
+      if Style1 = Null_Style then
          Set_Rgb (Col1, 0, 56000, 0);
          Set_Rgb (Col2, 32000, 0, 56000);
 

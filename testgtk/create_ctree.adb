@@ -47,7 +47,7 @@ with Gtk.Radio_Menu_Item;
 with Gtk.Scrolled_Window;
 with Gtk.Handlers;
 with Gtk.Spin_Button;
-with Gtk.Style;
+with Gtk.Style;   use Gtk.Style;
 with Gtk.Tooltips;
 with Gtk.Widget;
 with Gtk.Window;
@@ -61,6 +61,8 @@ package body Create_Ctree is
 
    use type Gtk.Window.Gtk_Window;
    use Gtkada.Types;
+
+   use type Gtk.Ctree.Gtk_Ctree_Node;
 
    package Ctree_Style_Row_Data is new Gtk.Ctree.Row_Data (Gtk.Style.Gtk_Style);
 
@@ -89,8 +91,8 @@ package body Create_Ctree is
    Book_Label, Page_Label, Sel_Label, Vis_Label : Gtk.Label.Gtk_Label;
    Spin1, Spin2, Spin3 : Gtk.Spin_Button.Gtk_Spin_Button;
 
-   Style1 : Gtk.Style.Gtk_Style;
-   Style2 : Gtk.Style.Gtk_Style;
+   Style1 : Gtk.Style.Gtk_Style := Null_Style;
+   Style2 : Gtk.Style.Gtk_Style := Null_Style;
 
    Books : Gint := 0;
    Pages : Gint := 0;
@@ -267,11 +269,11 @@ package body Create_Ctree is
         (Gtk.Ctree.Node_List.Nth (Gtk.Ctree.Get_Node_List (Ctree),
                                   Guint (Pos)));
 
-      if not Gtk.Ctree.Is_Created (Node) then
+      if Node = null then
          return;
       end if;
 
-      if not Gdk.Is_Created (Style1) then
+      if Style1 = Null_Style then
          Gdk.Color.Set_Rgb (Color => Col1,
                             Red => 0,
                             Green => 56_000,
@@ -320,7 +322,7 @@ package body Create_Ctree is
                                      Style => Style2);
 
       Child := Gtk.Ctree.Row_Get_Children (Gtk.Ctree.Node_Get_Row (Node));
-      if Gtk.Ctree.Is_Created (Child) then
+      if Child /= null then
          Gtk.Ctree.Node_Set_Row_Style (Ctree, Child, Style2);
       end if;
    end Change_Style;
@@ -367,7 +369,7 @@ package body Create_Ctree is
 
          Node := Gtk.Ctree.Node_Nth (Ctree,
                                      Guint (Gtk.Ctree.Get_Focus_Row (Ctree)));
-         if Gtk.Ctree.Is_Created (Node) then
+         if Node /= null then
             Gtk.Ctree.Gtk_Select (Ctree, Node);
          end if;
 
@@ -390,7 +392,7 @@ package body Create_Ctree is
       pragma Warnings (Off, Dummy);
       Style : Gtk.Style.Gtk_Style;
    begin
-      if not Gtk.Ctree.Is_Created (Node) then
+      if Node = null then
          return;
       end if;
 
@@ -404,7 +406,7 @@ package body Create_Ctree is
                Parent : constant Gtk.Ctree.Gtk_Ctree_Node :=
                  Gtk.Ctree.Row_Get_Parent (Gtk.Ctree.Node_Get_Row (Node));
             begin
-               if Gtk.Ctree.Is_Created (Parent) then
+               if Parent /= null then
                   Style :=
                     Ctree_Style_Row_Data.Node_Get_Row_Data (Ctree, Parent);
                end if;
@@ -545,7 +547,7 @@ package body Create_Ctree is
             Is_Leaf => True,
             Expanded => False);
 
-         if Gtk.Ctree.Is_Created (Parent) and then
+         if Parent /= null and then
            Gtk.Ctree.Get_Line_Style (Ctree) = Ctree_Lines_Tabbed then
             Gtk.Ctree.Node_Set_Row_Style
               (Ctree,

@@ -745,7 +745,7 @@ package body Main_Windows is
       --  Label
       Style := Copy (Get_Style (Win));
       Load (Font, "-adobe-helvetica-bold-*-*-*-*-180-*-*-*-*-*-*");
-      if Gdk.Is_Created (Font) then
+      if Font /= null then
          Set_Font (Style, Font);
       end if;
 

@@ -68,7 +68,7 @@ package body Create_Toolbar is
    ----------------
 
    function New_Pixmap (Filename   : in String;
-                        Window     : in Gdk_Window'Class;
+                        Window     : in Gdk_Window;
                         Background : in Gdk_Color)
                         return Gtk_Widget
    is
