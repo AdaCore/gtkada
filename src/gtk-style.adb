@@ -268,6 +268,20 @@ package body Gtk.Style is
    end Get_Black;
 
    ---------------
+   -- Get_White --
+   ---------------
+
+   function Get_White (Style : in Gtk_Style) return Gdk.Color.Gdk_Color is
+      function Internal (Style      : in System.Address)
+                        return System.Address;
+      pragma Import (C, Internal, "ada_style_get_white");
+      Color : Gdk.Color.Gdk_Color;
+   begin
+      Set_Object (Color, Internal (Gtk.Get_Object (Style)));
+      return Color;
+   end Get_White;
+
+   ---------------
    --  Gtk_New  --
    ---------------
 
