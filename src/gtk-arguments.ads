@@ -87,7 +87,6 @@ package Gtk.Arguments is
      (Args : Gtk_Args; Num : Positive) return Gtk.Widget.Gtk_Allocation_Access;
 
 private
-   --   pragma Inline (Make_Args); --  ??? redundant
    pragma Inline (To_Gint);
    pragma Inline (To_Guint);
    pragma Inline (To_Boolean);
