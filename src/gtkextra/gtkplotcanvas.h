@@ -22,6 +22,7 @@
 
 
 #include <gdk/gdk.h>
+#include "gtkplotpc.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -143,6 +144,8 @@ struct _GtkPlotCanvasLine
 
   GtkPlotCanvasArrow arrow_mask;
   gint arrow_length;
+  gint arrow_width;
+  GtkPlotSymbolStyle arrow_style;
 };
 
 struct _GtkPlotCanvasRectangle
@@ -205,6 +208,7 @@ struct _GtkPlotCanvas
   gint num_plots;
 
   GdkCursor *cursor;
+  GtkPlotPC *pc;
 };
 
 struct _GtkPlotCanvasClass
@@ -223,10 +227,14 @@ struct _GtkPlotCanvasClass
                                  GtkPlotCanvasChild *item,
 				 gdouble new_width, gdouble new_height);
 
-  void (*select_region)		(GtkPlotCanvas *canvas,
-				 gdouble xmin, gdouble xmax,
-				 gdouble ymin, gdouble ymax);
+  gboolean (*delete_item)	(GtkPlotCanvas *canvas,
+                                 GtkPlotCanvasChild *item);
 
+  void (*select_region)		(GtkPlotCanvas *canvas,
+				 gdouble xmin, gdouble ymin,
+				 gdouble xmax, gdouble ymax);
+
+  void (*changed)		(GtkPlotCanvas *canvas);
 };
 
 
@@ -234,6 +242,10 @@ GtkType		gtk_plot_canvas_get_type	(void);
 GtkType		gtk_plot_canvas_child_get_type	(void);
 GtkWidget*	gtk_plot_canvas_new		(gint width, gint height,
                                                  gdouble magnification);
+void		gtk_plot_canvas_construct       (GtkPlotCanvas *canvas,
+						 gint width, gint height,
+                                                 gdouble magnification);
+void		gtk_plot_canvas_paint           (GtkPlotCanvas *canvas);
 void		gtk_plot_canvas_refresh         (GtkPlotCanvas *canvas);
 void		gtk_plot_canvas_grid_set_visible(GtkPlotCanvas *canvas,
 						 gboolean visible);
@@ -242,7 +254,7 @@ void		gtk_plot_canvas_grid_set_step	(GtkPlotCanvas *canvas,
 void		gtk_plot_canvas_grid_set_attributes(GtkPlotCanvas *canvas,
                          			 GtkPlotLineStyle style,
                          			 gint width,
-                         			 GdkColor *color);
+                         			 const GdkColor *color);
 void 		gtk_plot_canvas_add_plot 	(GtkPlotCanvas *plot_canvas, 
 					 	 GtkPlot *plot, 
 					 	 gdouble x, gdouble y);
@@ -252,7 +264,7 @@ void		gtk_plot_canvas_cancel_action	(GtkPlotCanvas *plot_canvas);
 void		gtk_plot_canvas_unselect	(GtkPlotCanvas *plot_canvas);
 GtkPlot *       gtk_plot_canvas_get_active_plot (GtkPlotCanvas *canvas);
 GtkPlotData *   gtk_plot_canvas_get_active_data (GtkPlotCanvas *canvas);
-void  		gtk_plot_canvas_get_active_point (GtkPlotCanvas *canvas,
+gint  		gtk_plot_canvas_get_active_point (GtkPlotCanvas *canvas,
 						  gdouble *x, gdouble *y);
 GtkPlotCanvasChild *   
 		gtk_plot_canvas_get_active_item (GtkPlotCanvas *canvas);
@@ -261,7 +273,7 @@ void            gtk_plot_canvas_set_size        (GtkPlotCanvas *canvas,
 void            gtk_plot_canvas_set_magnification (GtkPlotCanvas *canvas,
                                                  gdouble magnification);
 void		gtk_plot_canvas_set_background  (GtkPlotCanvas *canvas,
-						 GdkColor *background);
+						 const GdkColor *background);
 void            gtk_plot_canvas_get_pixel       (GtkPlotCanvas *plot_canvas,
                                                  gdouble px, gdouble py,
                                                  gint *x, gint *y);
@@ -273,11 +285,11 @@ GtkPlotCanvasChild *
 		gtk_plot_canvas_put_text 	(GtkPlotCanvas *canvas,
                                                  gdouble x,
                                                  gdouble y,
-                                                 gint angle,
                                                  const gchar *font,
                                                  gint height,
-                                                 GdkColor *fg,
-                                                 GdkColor *bg,
+                                                 gint angle,
+                                                 const GdkColor *fg,
+                                                 const GdkColor *bg,
 						 gboolean transparent,
                                                  GtkJustification justification,                                                 const gchar *text);
 gboolean        gtk_plot_canvas_remove_child    (GtkPlotCanvas *canvas,
@@ -287,17 +299,17 @@ GtkPlotCanvasChild *
                          			 gdouble x1, gdouble y1,
                          			 gdouble x2, gdouble y2,
                          			 GtkPlotLineStyle style,
-                         			 gint width,
-                         			 GdkColor *color,
+                         			 gfloat width,
+                         			 const GdkColor *color,
                          			 GtkPlotCanvasArrow arrow_mask);
 GtkPlotCanvasChild *
 		gtk_plot_canvas_put_rectangle	(GtkPlotCanvas *canvas,
                               			 gdouble x1, gdouble y1,
                               			 gdouble x2, gdouble y2,
                               			 GtkPlotLineStyle style,
-                              			 gint width,
-                              			 GdkColor *fg,
-                              			 GdkColor *bg,
+                              			 gfloat width,
+                              			 const GdkColor *fg,
+                              			 const GdkColor *bg,
                               			 GtkPlotBorderStyle border,
                               			 gboolean fill);
 GtkPlotCanvasChild * 
@@ -305,28 +317,28 @@ GtkPlotCanvasChild *
                             			 gdouble x1, gdouble y1,
                             			 gdouble x2, gdouble y2,
                             			 GtkPlotLineStyle style,
-                            			 gint width,
-                            			 GdkColor *fg,
-                            			 GdkColor *bg,
+                            			 gfloat width,
+                            			 const GdkColor *fg,
+                            			 const GdkColor *bg,
                             			 gboolean fill);
 
 void 	gtk_plot_canvas_line_set_attributes     (GtkPlotCanvasChild *child,
                                     		GtkPlotLineStyle style,
-                                    		gint width,
-                                    		GdkColor *color,
+                                    		gfloat width,
+                                    		const GdkColor *color,
                                     		GtkPlotCanvasArrow mask);
 void gtk_plot_canvas_rectangle_set_attributes	(GtkPlotCanvasChild *child,
                                          	GtkPlotLineStyle style,
-                                         	gint width,
-                                         	GdkColor *fg,
-                                         	GdkColor *bg,
+                                         	gfloat width,
+                                         	const GdkColor *fg,
+                                         	const GdkColor *bg,
                                          	GtkPlotBorderStyle border,
                                          	gboolean fill);
 void gtk_plot_canvas_ellipse_set_attributes	(GtkPlotCanvasChild *child,
                                        		GtkPlotLineStyle style,
-                                       		gint width,
-                                       		GdkColor *fg,
-                                       		GdkColor *bg,
+                                       		gfloat width,
+                                       		const GdkColor *fg,
+                                       		const GdkColor *bg,
                                        		gboolean fill);
 GtkPlotCanvasChild * 
 gtk_plot_canvas_child_new			(GtkPlotCanvasType type);
@@ -342,8 +354,6 @@ void gtk_plot_canvas_child_move_resize		(GtkPlotCanvas *canvas,
                                  		 gdouble x1, gdouble y1,
                                   		 gdouble x2, gdouble y2);
 
-gboolean 	gtk_plot_canvas_remove_child	(GtkPlotCanvas *canvas,
-                             			GtkPlotCanvasChild *child);
 
 
 #ifdef __cplusplus

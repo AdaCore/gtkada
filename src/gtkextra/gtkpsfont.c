@@ -334,7 +334,7 @@ static GList *psfont_families;
 static gint numf;
 static gint psfont_refcount = 0;
 
-static GtkPSFont *find_psfont		(gchar *name);
+static GtkPSFont *find_psfont		(const gchar *name);
 
 gint 
 gtk_psfont_init()
@@ -425,7 +425,7 @@ gtk_psfont_unref()
 }
 
 GtkPSFont *
-gtk_psfont_get_font(gchar *name)
+gtk_psfont_get_font(const gchar *name)
 {
   GtkPSFont *font;
 
@@ -444,7 +444,7 @@ gtk_psfont_get_font(gchar *name)
 }
 
 GdkFont *
-gtk_psfont_get_gdkfont(gchar *name, gint height)
+gtk_psfont_get_gdkfont(const gchar *name, gint height)
 {
   GtkPSFont *fontdata;
   GdkFont *gdk_font = NULL;
@@ -515,7 +515,7 @@ gtk_psfont_get_gdkfont(gchar *name, gint height)
 
 
 gchar *
-gtk_psfont_get_psfontname(gchar *fontname)
+gtk_psfont_get_psfontname(const gchar *fontname)
 {
   GtkPSFont *font = NULL;
  
@@ -527,7 +527,7 @@ gtk_psfont_get_psfontname(gchar *fontname)
 }
 
 void
-gtk_psfont_add_font (gchar *fontname, gchar *psname, gchar *family,
+gtk_psfont_add_font (const gchar *fontname, const gchar *psname, const gchar *family,
                      gchar *x_string[],
                      gboolean italic, gboolean bold)
 {
@@ -547,7 +547,7 @@ gtk_psfont_add_font (gchar *fontname, gchar *psname, gchar *family,
 }
 
 static GtkPSFont *
-find_psfont(gchar *name)
+find_psfont(const gchar *name)
 {
   GtkPSFont *fontdata = NULL;
   GtkPSFont *data = NULL;
@@ -587,7 +587,7 @@ find_psfont(gchar *name)
 }
 
 GtkPSFont *
-gtk_psfont_find_by_family(gchar *name, gboolean italic, gboolean bold)
+gtk_psfont_find_by_family(const gchar *name, gboolean italic, gboolean bold)
 {
   GtkPSFont *fontdata = NULL;
   GtkPSFont *data = NULL;

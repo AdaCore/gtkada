@@ -118,16 +118,23 @@ GtkWidget*
 gtk_check_item_new_with_label (const gchar *label)
 {
   GtkWidget *check_item;
-  GtkWidget *label_widget;
   
   check_item = gtk_check_item_new ();
+  gtk_check_item_construct_with_label(GTK_CHECK_ITEM(check_item), label);
+  
+  return check_item;
+}
+
+void
+gtk_check_item_construct_with_label (GtkCheckItem* check_item, const gchar *label)
+{
+  GtkWidget *label_widget;
+  
   label_widget = gtk_label_new (label);
   gtk_misc_set_alignment (GTK_MISC (label_widget), 0.0, 0.5);
   
   gtk_container_add (GTK_CONTAINER (check_item), label_widget);
   gtk_widget_show (label_widget);
-  
-  return check_item;
 }
 
 /* This should only be called when toggle_button->draw_indicator

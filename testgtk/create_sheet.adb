@@ -626,27 +626,31 @@ package body Create_Sheet is
          Add_Row (Sheet, 1);
 
       elsif Data = "Insert Row   " then
-         Insert_Rows (Sheet,
-                      Get_Range (Sheet).Row0,
-                      Get_Range (Sheet).Rowi - Get_Range(Sheet).Row0 + 1);
+         Insert_Rows
+           (Sheet,
+            Guint (Get_Range (Sheet).Row0),
+            Guint (Get_Range (Sheet).Rowi - Get_Range(Sheet).Row0 + 1));
 
       elsif Data = "Insert Column" then
-         Insert_Columns (Sheet,
-                         Get_Range (Sheet).Col0,
-                         Get_Range (Sheet).Coli - Get_Range(Sheet).Col0 + 1);
+         Insert_Columns
+           (Sheet,
+            Guint (Get_Range (Sheet).Col0),
+            Guint (Get_Range (Sheet).Coli - Get_Range(Sheet).Col0 + 1));
 
       elsif Data = "Delete Row   " then
          if Get_State (Sheet) = Sheet_Row_Selected then
-            Delete_Rows (Sheet,
-                         Get_Range (Sheet).Row0,
-                         Get_Range (Sheet).Rowi - Get_Range (Sheet).Row0 + 1);
+            Delete_Rows
+              (Sheet,
+               Guint (Get_Range (Sheet).Row0),
+               Guint (Get_Range (Sheet).Rowi - Get_Range (Sheet).Row0 + 1));
          end if;
 
       elsif Data = "Delete Column" then
          if Get_State (Sheet) = Sheet_Column_Selected then
-            Delete_Rows (Sheet,
-                         Get_Range (Sheet).Col0,
-                         Get_Range (Sheet).Coli - Get_Range (Sheet).Col0 + 1);
+            Delete_Rows
+              (Sheet,
+               Guint (Get_Range (Sheet).Col0),
+               Guint (Get_Range (Sheet).Coli - Get_Range (Sheet).Col0 + 1));
          end if;
 
       elsif Data = "Clear Cells  " then
@@ -817,8 +821,8 @@ package body Create_Sheet is
       Sheet_Unset_Flags (Sheet, Auto_Scroll);
       Set_Selection_Mode (Sheet, Selection_Single);
 
-      R :=
-        (Row0 => 0, Rowi => 2, Col0 => 0, Coli => Get_Columns_Count (Sheet));
+      R := (Row0 => 0, Rowi => 2,
+            Col0 => 0, Coli => Gint (Get_Columns_Count (Sheet)));
       Range_Set_Editable (Sheet, R2, False);
       Color := Parse ("light gray");
       Alloc (Get_Colormap (Sheet), Color);
@@ -932,7 +936,7 @@ package body Create_Sheet is
       Mask   : Gdk_Bitmap;
       Show_Button : Gtk_Button;
    begin
-      for I in 0 .. Get_Columns_Count (Sheet) loop
+      for I in 0 .. Gint (Get_Columns_Count (Sheet)) loop
          Column_Button_Add_Label (Sheet, I, "A" & Gint'Image (I));
          Set_Column_Title (Sheet, I, "A" & Gint'Image (I));
       end loop;
@@ -1080,8 +1084,8 @@ package body Create_Sheet is
       --  Update the button of the combo box
       Gdk_New (Tmp_Gc, Get_Window (Button));
       Set_Foreground (Tmp_Gc, Color);
-      Draw_Rectangle (Get_Pixmap (Bg_Pixmap), Tmp_Gc, True, 5, 20, 16, 4);
-      Draw (Bg_Pixmap, Full_Area);
+      Draw_Rectangle (Get_Pixmap (Fg_Pixmap), Tmp_Gc, True, 5, 20, 16, 4);
+      Draw (Fg_Pixmap, Full_Area);
       Unref (Tmp_Gc);
    end Change_Fg;
 
@@ -1111,7 +1115,7 @@ package body Create_Sheet is
       Current     : Gtk_Sheet;
       Border_Mask : Gtk_Sheet_Border;
       R           : Gtk_Sheet_Range;
-      Width       : constant Gint := 3;
+      Width       : constant Guint := 3;
       Auxcol      : Gint;
       Auxrange    : aliased Gtk_Sheet_Range_Record;
    begin

@@ -90,6 +90,7 @@ with Create_Paned;
 with Create_Packer;
 with Create_Pixmap;
 with Create_Plot;
+with Create_Plot_3D;
 with Create_Preview_Color;
 with Create_Preview_Gray;
 with Create_Progress;
@@ -274,6 +275,8 @@ package body Main_Windows is
                                          Create_Pixmap.Help'Access),
       (NS ("plot"),             Complex, Create_Plot.Run'Access,
                                          Create_Plot.Help'Access),
+      (NS ("plot 3D"),          Complex, Create_Plot_3D.Run'Access,
+                                         Create_Plot_3D.Help'Access),
       (NS ("preview color"),    Gimp,    Create_Preview_Color.Run'Access,
                                          Create_Preview_Color.Help'Access),
       (NS ("preview gray"),     Gimp,    Create_Preview_Gray.Run'Access,

@@ -27,6 +27,14 @@
 extern "C" {
 #endif /* __cplusplus */
 
+
+#define GTK_PLOT_PC(obj)        GTK_CHECK_CAST (obj, gtk_plot_pc_get_type (), GtkPlotPC)
+#define GTK_TYPE_PLOT_PC   (gtk_plot_pc_get_type ())
+
+#define GTK_PLOT_PC_CLASS(klass) GTK_CHECK_CLASS_CAST (klass, gtk_plot_pc_get_type(), GtkPlotPCClass)
+#define GTK_IS_PLOT_PC(obj)     GTK_CHECK_TYPE (obj, gtk_plot_pc_get_type ())
+
+
 /* Page size */
 
 enum{
@@ -64,28 +72,27 @@ enum{
      GTK_PLOT_INCHES	
 };
 
+
 typedef struct _GtkPlotPC GtkPlotPC;
+typedef struct _GtkPlotPCClass GtkPlotPCClass;
+typedef struct _GtkPlotPoint         GtkPlotPoint;
+
+struct _GtkPlotPoint
+{
+  gdouble x, y;
+};
 
 struct _GtkPlotPC
 {
-   FILE *pcfile;
-   gchar *pcname;
-   gint orientation;
-   gint epsflag;
+   GtkObject object;
+};
 
-   gint type;
-   /* measure units for page size */
-   gint units;  
-   gfloat width;
-   gfloat height;
 
-   /* page size in points (depends on orientation) */
-   gint page_width;
-   gint page_height;
+struct _GtkPlotPCClass
+{
+   GtkObjectClass parent_class;
 
-   void  (* init)					(GtkPlotPC *pc,
-							 gfloat scale_x,
-							 gfloat scale_y);
+   gboolean  (* init)					(GtkPlotPC *pc);
 
    void  (* leave)					(GtkPlotPC *pc);
 
@@ -94,77 +101,78 @@ struct _GtkPlotPC
    void  (* grestore)					(GtkPlotPC *pc);
 
    void  (* clip)					(GtkPlotPC *pc,
-							 GdkRectangle area);
+							 const GdkRectangle *area);
 
-   void  (* setcolor)                     		(GtkPlotPC *pc,
-                                                 	GdkColor *color);
+   void  (* set_color)                     		(GtkPlotPC *pc,
+                                                 	const GdkColor *color);
 
-   void  (* setdash)					(GtkPlotPC *pc,
-							 gint num_values,
+   void  (* set_lineattr)			(GtkPlotPC *pc,
+						 gfloat line_width,
+                                                 GdkLineStyle line_style,
+                                                 GdkCapStyle cap_style,
+                                                 GdkJoinStyle join_style);
+
+   void  (* set_dash)					(GtkPlotPC *pc,
+							 gdouble offset_,	
 							 gdouble *values,
-							 gdouble offset);
+							 gint num_values);
 
-   void  (* setlinewidth)				(GtkPlotPC *pc,
-							 gint width);
+   void  (* draw_point)					(GtkPlotPC *pc,
+							 gdouble x, gdouble y);
 
-   void  (* setlinecaps)				(GtkPlotPC *pc,
-							 gint caps);
+   void  (* draw_line)					(GtkPlotPC *pc,
+							 gdouble x1, gdouble y1,
+							 gdouble x2, gdouble y2);
 
-   void  (* drawline)					(GtkPlotPC *pc,
-							 gint x1, gint y1,
-							 gint x2, gint y2);
-
-   void  (* drawlines)					(GtkPlotPC *pc,
-							 GdkPoint *points,
+   void  (* draw_lines)					(GtkPlotPC *pc,
+							 GtkPlotPoint *points,
 							 gint numpoints);
 
-   void  (* drawpolygon)	                        (GtkPlotPC *pc,
-                                	                 GdkPoint *points,
-                                        	         gint numpoints,
-                                                	 gint filled);
+   void  (* draw_rectangle)	                        (GtkPlotPC *pc,
+							 gboolean filled,
+							 gdouble x, gdouble y,
+							 gdouble width,
+							 gdouble height);
 
-   void  (* drawcircle) 	                        (GtkPlotPC *pc,
-                                                 	 gint x, gint y,
-                                                 	 gint size, 
-							 gint filled);
+   void  (* draw_polygon)	                        (GtkPlotPC *pc,
+							 gboolean filled,
+                                	                 GtkPlotPoint *points,
+                                        	         gint numpoints);
 
-   void  (* drawellipse) 	                        (GtkPlotPC *pc,
-                                                 	 gint x, gint y,
-                                                 	 gint width, 
-                                                 	 gint height, 
-							 gint filled);
+   void  (* draw_circle) 	                        (GtkPlotPC *pc,
+							 gboolean filled,
+                                                 	 gdouble x, gdouble y,
+                                                 	 gdouble size); 
 
-   void  (* setfont)					(GtkPlotPC *pc,
-							 gchar *font,
+   void  (* draw_ellipse) 	                        (GtkPlotPC *pc,
+							 gboolean filled,
+                                                 	 gdouble x, gdouble y,
+                                                 	 gdouble width, 
+                                                 	 gdouble height); 
+
+   void  (* set_font)					(GtkPlotPC *pc,
+							 const gchar *font,
 							 gint height);
 
-   void  (* drawstring)   	                        (GtkPlotPC *pc,
+   void  (* draw_string)   	                        (GtkPlotPC *pc,
                                    	             	 gint x, gint y,
-                                        	         GtkJustification justification,
-                                                	 gint angle,
-							 gchar *font,
+                                               		 gint angle,
+							 const GdkColor *fg,
+							 const GdkColor *bg,
+							 gboolean transparent,
+							 gint border,
+							 gint border_width,
+							 gint shadow_width,
+							 const gchar *font,
 							 gint height,
-                                               		 gchar *text);
+							 GtkJustification just,
+							 const gchar *text);
 };
 
-GtkPlotPC *gtk_plot_pc_new				(gchar *psname,
-							 gint orientation,
-							 gint page_size);
+GtkType    gtk_plot_pc_get_type				(void);
+GtkObject *gtk_plot_pc_new				(void);
 							 
-GtkPlotPC *gtk_plot_pc_new_with_size			(gchar *psname,
-							 gint orientation,
-							 gint units,
-							 gfloat width,
-							 gfloat height);
-
-void gtk_plot_pc_set_size			        (GtkPlotPC *pc,
-							 gint units,
-							 gfloat width,
-							 gfloat height);
-
-void gtk_plot_pc_init					(GtkPlotPC *pc,
-							 gfloat scale_x,
-							 gfloat scale_y);
+gboolean gtk_plot_pc_init				(GtkPlotPC *pc);
 
 void gtk_plot_pc_leave					(GtkPlotPC *pc);
 
@@ -173,51 +181,72 @@ void gtk_plot_pc_gsave					(GtkPlotPC *pc);
 void gtk_plot_pc_grestore				(GtkPlotPC *pc);
 
 void gtk_plot_pc_clip					(GtkPlotPC *pc,
-							 GdkRectangle area);
+							 GdkRectangle *area);
 
-void gtk_plot_pc_setcolor                     		(GtkPlotPC *pc,
-                                                 	GdkColor *color);
+void gtk_plot_pc_set_color                     		(GtkPlotPC *pc,
+                                                   	 GdkColor *color);
 
-void gtk_plot_pc_setdash				(GtkPlotPC *pc,
-							 gint num_values,
+void gtk_plot_pc_set_lineattr			  (GtkPlotPC *pc,
+		                                   gfloat line_width,
+                                                   GdkLineStyle line_style,
+                                                   GdkCapStyle cap_style,
+                                                   GdkJoinStyle join_style);
+
+void gtk_plot_pc_set_dash				(GtkPlotPC *pc,
+							 gdouble offset_,
 							 gdouble *values,
-							 gdouble offset);
+							 gint num_values);
 
-void gtk_plot_pc_setlinewidth				(GtkPlotPC *pc,
-							 gint width);
+void gtk_plot_pc_draw_point				(GtkPlotPC *pc,
+							 gdouble x, gdouble y);
 
-void gtk_plot_pc_setlinecaps				(GtkPlotPC *pc,
-							 gint caps);
+void gtk_plot_pc_draw_line				(GtkPlotPC *pc,
+							 gdouble x1, gdouble y1,
+							 gdouble x2, gdouble y2);
 
-void gtk_plot_pc_drawline				(GtkPlotPC *pc,
-							 gint x1, gint y1,
-							 gint x2, gint y2);
-
-void gtk_plot_pc_drawlines				(GtkPlotPC *pc,
-							 GdkPoint *points,
+void gtk_plot_pc_draw_lines				(GtkPlotPC *pc,
+							 GtkPlotPoint *points,
 							 gint numpoints);
 
-void gtk_plot_pc_drawpolygon	                        (GtkPlotPC *pc,
-                                	                 GdkPoint *points,
-                                        	         gint numpoints,
-                                                	 gint filled);
+void gtk_plot_pc_draw_rectangle	                        (GtkPlotPC *pc,
+							 gboolean filled,
+							 gdouble x, gdouble y,
+							 gdouble width,
+							 gdouble height);
 
-void gtk_plot_pc_drawcircle 	                        (GtkPlotPC *pc,
-                                                 	 gint x, gint y,
-                                                 	 gint size, 
-							 gint filled);
+void gtk_plot_pc_draw_polygon	                        (GtkPlotPC *pc,
+                                                	 gint filled,
+                                	                 GtkPlotPoint *points,
+                                        	         gint numpoints);
 
-void gtk_plot_pc_setfont				(GtkPlotPC *pc,
+void gtk_plot_pc_draw_ellipse	                        (GtkPlotPC *pc,
+							 gboolean filled,
+							 gdouble x, gdouble y,
+							 gdouble width,
+							 gdouble height);
+
+void gtk_plot_pc_draw_circle 	                        (GtkPlotPC *pc,
+							 gint filled,
+                                                 	 gdouble x, gdouble y,
+                                                 	 gdouble size); 
+
+void gtk_plot_pc_set_font				(GtkPlotPC *pc,
 							 gchar *font,
 							 gint height);
 
-void gtk_plot_pc_drawstring   	                        (GtkPlotPC *pc,
-                                   	             	 gint x, gint y,
-                                        	         GtkJustification justification,
-                                                	 gint angle,
-							 gchar *font,
+void gtk_plot_pc_draw_string   	                	(GtkPlotPC *pc,
+                                   	         	 gint x, gint y,
+                                               		 gint angle,
+							 const GdkColor *fg,
+							 const GdkColor *bg,
+							 gboolean transparent,
+							 gint border,
+							 gint border_width,
+							 gint shadow_width,
+							 const gchar *font,
 							 gint height,
-                                               		 gchar *text);
+							 GtkJustification just,
+							 const gchar *text);
 
 
 #ifdef __cplusplus

@@ -68,6 +68,7 @@ struct _GtkCheckItemClass
 GtkType    gtk_check_item_get_type       (void);
 GtkWidget* gtk_check_item_new            (void);
 GtkWidget* gtk_check_item_new_with_label (const gchar *label);
+void       gtk_check_item_construct_with_label (GtkCheckItem* check_item, const gchar *label);
 
 
 #ifdef __cplusplus

@@ -37,7 +37,7 @@
 --  </description>. The recommended solution is to put a Gtk_Pixmap as the
 --  child of the button of the combo box ("Add (Get_Button (Combo), Pixmap)"),
 --  and updated it in the handler for this signal.
---  <c_version>gtk+extra 0.99.5</c_version>
+--  <c_version>gtk+extra 0.99.14</c_version>
 
 with Gdk.Color;
 with Gtk.Extra.Combo_Box;

@@ -80,8 +80,8 @@ package body Gtk.Extra.Sheet is
    -------------
 
    procedure Gtk_New (Sheet   : out Gtk_Sheet;
-                      Rows    : in Gint;
-                      Columns : in Gint;
+                      Rows    : in Guint;
+                      Columns : in Guint;
                       Title   : in String := "";
                       Entry_Type : in Gtk_Type := Gtk_Type_Invalid)
    is
@@ -96,20 +96,20 @@ package body Gtk.Extra.Sheet is
 
    procedure Initialize
      (Sheet   : access Gtk_Sheet_Record'Class;
-      Rows    : in Gint;
-      Columns : in Gint;
+      Rows    : in Guint;
+      Columns : in Guint;
       Title   : in String := "";
       Entry_Type : in Gtk_Type := Gtk_Type_Invalid)
    is
       function Internal
-        (Rows    : in Gint;
-         Columns : in Gint;
+        (Rows    : in Guint;
+         Columns : in Guint;
          Title   : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_sheet_new");
 
       function Internal2
-        (Rows      : in Gint;
-         Columns    : in Gint;
+        (Rows      : in Guint;
+         Columns    : in Guint;
          Title      : in System.Address;
          Entry_Type : in Gtk_Type) return System.Address;
       pragma Import (C, Internal2, "gtk_sheet_new_with_custom_entry");
@@ -137,8 +137,8 @@ package body Gtk.Extra.Sheet is
 
    procedure Gtk_New_Browser
      (Sheet   : out Gtk_Sheet;
-      Rows    : in Gint;
-      Columns : in Gint;
+      Rows    : in Guint;
+      Columns : in Guint;
       Title   : in String := "") is
    begin
       Sheet := new Gtk_Sheet_Record;
@@ -150,13 +150,13 @@ package body Gtk.Extra.Sheet is
    ------------------------
 
    procedure Initialize_Browser (Sheet   : access Gtk_Sheet_Record'Class;
-                                 Rows    : in Gint;
-                                 Columns : in Gint;
+                                 Rows    : in Guint;
+                                 Columns : in Guint;
                                  Title   : in String := "")
    is
       function Internal
-        (Rows    : in Gint;
-         Columns : in Gint;
+        (Rows    : in Guint;
+         Columns : in Guint;
          Title   : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_sheet_new_browser");
 
@@ -441,10 +441,10 @@ package body Gtk.Extra.Sheet is
    --------------------------
 
    procedure Set_Row_Titles_Width (Sheet : access Gtk_Sheet_Record;
-                                   Width : in Gint)
+                                   Width : in Guint)
    is
       procedure Internal (Sheet : in System.Address;
-                          Width : in Gint);
+                          Width : in Guint);
       pragma Import (C, Internal, "gtk_sheet_set_row_titles_width");
    begin
       Internal (Get_Object (Sheet), Width);
@@ -455,10 +455,10 @@ package body Gtk.Extra.Sheet is
    ------------------------------
 
    procedure Set_Column_Titles_Height (Sheet  : access Gtk_Sheet_Record;
-                                       Height : in Gint)
+                                       Height : in Guint)
    is
       procedure Internal (Sheet  : in System.Address;
-                          Height : in Gint);
+                          Height : in Guint);
       pragma Import (C, Internal, "gtk_sheet_set_column_titles_height");
    begin
       Internal (Get_Object (Sheet), Height);
@@ -1085,11 +1085,11 @@ package body Gtk.Extra.Sheet is
    -- Get_Cell_Area --
    -------------------
 
-   function Get_Cell_Area
+   procedure Get_Cell_Area
      (Sheet  : access Gtk_Sheet_Record;
       Row    : in Gint;
       Column : in Gint;
-      Area   : in Gdk.Rectangle.Gdk_Rectangle) return Boolean
+      Area   : out Gdk.Rectangle.Gdk_Rectangle)
    is
       function Internal
         (Sheet  : in System.Address;
@@ -1098,11 +1098,12 @@ package body Gtk.Extra.Sheet is
          Area   : access Gdk.Rectangle.Gdk_Rectangle) return Gint;
       pragma Import (C, Internal, "gtk_sheet_get_cell_area");
 
-      A : aliased Gdk.Rectangle.Gdk_Rectangle := Area;
-
+      A : aliased Gdk.Rectangle.Gdk_Rectangle;
    begin
-      return Boolean'Val
-        (Internal (Get_Object (Sheet), Row, Column, A'Access));
+      if Internal (Get_Object (Sheet), Row, Column, A'Access) = 0 then
+         raise Constraint_Error;
+      end if;
+      Area := A;
    end Get_Cell_Area;
 
    ----------------------
@@ -1111,11 +1112,11 @@ package body Gtk.Extra.Sheet is
 
    procedure Set_Column_Width (Sheet  : access Gtk_Sheet_Record;
                                Column : in Gint;
-                               Width  : in Gint)
+                               Width  : in Guint)
    is
       procedure Internal (Sheet  : in System.Address;
                           Column : in Gint;
-                          Width  : in Gint);
+                          Width  : in Guint);
       pragma Import (C, Internal, "gtk_sheet_set_column_width");
    begin
       Internal (Get_Object (Sheet), Column, Width);
@@ -1127,11 +1128,11 @@ package body Gtk.Extra.Sheet is
 
    procedure Set_Row_Height (Sheet  : access Gtk_Sheet_Record;
                              Row    : in Gint;
-                             Height : in Gint)
+                             Height : in Guint)
    is
       procedure Internal (Sheet  : in System.Address;
                           Row    : in Gint;
-                          Height : in Gint);
+                          Height : in Guint);
       pragma Import (C, Internal, "gtk_sheet_set_row_height");
    begin
       Internal (Get_Object (Sheet), Row, Height);
@@ -1142,10 +1143,10 @@ package body Gtk.Extra.Sheet is
    ----------------
 
    procedure Add_Column (Sheet : access Gtk_Sheet_Record;
-                         Ncols : in Gint)
+                         Ncols : in Guint)
    is
       procedure Internal (Sheet : in System.Address;
-                          Ncols : in Gint);
+                          Ncols : in Guint);
       pragma Import (C, Internal, "gtk_sheet_add_column");
    begin
       Internal (Get_Object (Sheet), Ncols);
@@ -1156,10 +1157,10 @@ package body Gtk.Extra.Sheet is
    -------------
 
    procedure Add_Row (Sheet : access Gtk_Sheet_Record;
-                      Nrows : in Gint)
+                      Nrows : in Guint)
    is
       procedure Internal (Sheet : in System.Address;
-                          Nrows : in Gint);
+                          Nrows : in Guint);
       pragma Import (C, Internal, "gtk_sheet_add_row");
    begin
       Internal (Get_Object (Sheet), Nrows);
@@ -1170,12 +1171,12 @@ package body Gtk.Extra.Sheet is
    -----------------
 
    procedure Insert_Rows (Sheet : access Gtk_Sheet_Record;
-                          Row   : in Gint;
-                          Nrows : in Gint)
+                          Row   : in Guint;
+                          Nrows : in Guint)
    is
       procedure Internal (Sheet : in System.Address;
-                          Row   : in Gint;
-                          Nrows : in Gint);
+                          Row   : in Guint;
+                          Nrows : in Guint);
       pragma Import (C, Internal, "gtk_sheet_insert_rows");
    begin
       Internal (Get_Object (Sheet), Row, Nrows);
@@ -1186,12 +1187,12 @@ package body Gtk.Extra.Sheet is
    --------------------
 
    procedure Insert_Columns (Sheet : access Gtk_Sheet_Record;
-                             Col   : in Gint;
-                             Ncols : in Gint)
+                             Col   : in Guint;
+                             Ncols : in Guint)
    is
       procedure Internal (Sheet : in System.Address;
-                          Col   : in Gint;
-                          Ncols : in Gint);
+                          Col   : in Guint;
+                          Ncols : in Guint);
       pragma Import (C, Internal, "gtk_sheet_insert_columns");
    begin
       Internal (Get_Object (Sheet), Col, Ncols);
@@ -1202,12 +1203,12 @@ package body Gtk.Extra.Sheet is
    -----------------
 
    procedure Delete_Rows (Sheet : access Gtk_Sheet_Record;
-                          Row   : in Gint;
-                          Nrows : in Gint)
+                          Row   : in Guint;
+                          Nrows : in Guint)
    is
       procedure Internal (Sheet : in System.Address;
-                          Row   : in Gint;
-                          Nrows : in Gint);
+                          Row   : in Guint;
+                          Nrows : in Guint);
       pragma Import (C, Internal, "gtk_sheet_delete_rows");
    begin
       Internal (Get_Object (Sheet), Row, Nrows);
@@ -1218,12 +1219,12 @@ package body Gtk.Extra.Sheet is
    --------------------
 
    procedure Delete_Columns (Sheet : access Gtk_Sheet_Record;
-                             Col   : in Gint;
-                             Ncols : in Gint)
+                             Col   : in Guint;
+                             Ncols : in Guint)
    is
       procedure Internal (Sheet : in System.Address;
-                          Col   : in Gint;
-                          Ncols : in Gint);
+                          Col   : in Guint;
+                          Ncols : in Guint);
       pragma Import (C, Internal, "gtk_sheet_delete_columns");
    begin
       Internal (Get_Object (Sheet), Col, Ncols);
@@ -1355,13 +1356,13 @@ package body Gtk.Extra.Sheet is
    procedure Range_Set_Border (Sheet      : access Gtk_Sheet_Record;
                                The_Range  : in Gtk_Sheet_Range;
                                Mask       : in Gtk_Sheet_Border;
-                               Width      : in Gint;
+                               Width      : in Guint;
                                Line_Style : in Gdk.Types.Gdk_Line_Style)
    is
       procedure Internal (Sheet      : in System.Address;
                           The_Range  : in Gtk_Sheet_Range;
                           Mask       : in Gint;
-                          Width      : in Gint;
+                          Width      : in Guint;
                           Line_Style : in Gint);
       pragma Import (C, Internal, "gtk_sheet_range_set_border");
    begin
@@ -1523,8 +1524,8 @@ package body Gtk.Extra.Sheet is
    -- Get_Columns_Count --
    -----------------------
 
-   function Get_Columns_Count (Sheet : access Gtk_Sheet_Record) return Gint is
-      function Internal (Sheet : System.Address) return Gint;
+   function Get_Columns_Count (Sheet : access Gtk_Sheet_Record) return Guint is
+      function Internal (Sheet : System.Address) return Guint;
       pragma Import (C, Internal, "gtk_sheet_get_columns_count");
    begin
       return Internal (Get_Object (Sheet));
@@ -1534,8 +1535,8 @@ package body Gtk.Extra.Sheet is
    -- Get_Rows_Count --
    --------------------
 
-   function Get_Rows_Count (Sheet : access Gtk_Sheet_Record) return Gint is
-      function Internal (Sheet : System.Address) return Gint;
+   function Get_Rows_Count (Sheet : access Gtk_Sheet_Record) return Guint is
+      function Internal (Sheet : System.Address) return Guint;
       pragma Import (C, Internal, "gtk_sheet_get_rows_count");
    begin
       return Internal (Get_Object (Sheet));

@@ -31,7 +31,7 @@
 --  A Gtk_Sheet is a table like the one you can find in most spreadsheets.
 --  Each cell can contain some text or any kind of widgets.
 --  </description>
---  <c_version>gtk+extra 0.99.9</c_version>
+--  <c_version>gtk+extra 0.99.14</c_version>
 
 with Gtk.Adjustment;  use Gtk.Adjustment;
 with Gtk.Container;
@@ -50,7 +50,7 @@ package Gtk.Extra.Sheet is
 
    type Gtk_Sheet_Range_Record is record
       Row0, Col0 : Gint;  --  Upper-left cell
-      Rowi, Coli : Gint; --  Lower-Right cell
+      Rowi, Coli : Gint;  --  Lower-Right cell
    end record;
 
    type Gtk_Sheet_Range is access all Gtk_Sheet_Range_Record;
@@ -103,8 +103,8 @@ package Gtk.Extra.Sheet is
    -------------------------------
 
    procedure Gtk_New (Sheet      : out Gtk_Sheet;
-                      Rows       : in Gint;
-                      Columns    : in Gint;
+                      Rows       : in Guint;
+                      Columns    : in Guint;
                       Title      : in String := "";
                       Entry_Type : in Gtk_Type := Gtk_Type_Invalid);
    --  Create a new sheet with a specific number of rows and columns.
@@ -114,24 +114,24 @@ package Gtk.Extra.Sheet is
    --  The Title is internal, and does not appear on the screen.
 
    procedure Initialize (Sheet      : access Gtk_Sheet_Record'Class;
-                         Rows       : in Gint;
-                         Columns    : in Gint;
+                         Rows       : in Guint;
+                         Columns    : in Guint;
                          Title      : in String := "";
                          Entry_Type : in Gtk_Type := Gtk_Type_Invalid);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    procedure Gtk_New_Browser (Sheet   : out Gtk_Sheet;
-                              Rows    : in Gint;
-                              Columns : in Gint;
+                              Rows    : in Guint;
+                              Columns : in Guint;
                               Title   : in String := "");
    --  Create a new sheet browser with a specific number of rows and columns.
    --  This is a standard Gtk_Sheet, except that it is read-only and that its
    --  cells will automatically resize themselves depending on their contents.
 
    procedure Initialize_Browser (Sheet   : access Gtk_Sheet_Record'Class;
-                                 Rows    : in Gint;
-                                 Columns : in Gint;
+                                 Rows    : in Guint;
+                                 Columns : in Guint;
                                  Title   : in String := "");
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
@@ -268,7 +268,7 @@ package Gtk.Extra.Sheet is
    --  Return the title of a specific column.
 
    procedure Set_Column_Titles_Height (Sheet  : access Gtk_Sheet_Record;
-                                       Height : in Gint);
+                                       Height : in Guint);
    --  Modify the height of the row in which the column titles appear.
 
    procedure Column_Button_Add_Label (Sheet  : access Gtk_Sheet_Record;
@@ -319,7 +319,7 @@ package Gtk.Extra.Sheet is
 
    procedure Set_Column_Width (Sheet  : access Gtk_Sheet_Record;
                                Column : in Gint;
-                               Width  : in Gint);
+                               Width  : in Guint);
    --  Modify the width in pixels of a specific column.
 
    function Get_Column_Width (Sheet  : access Gtk_Sheet_Record;
@@ -328,17 +328,17 @@ package Gtk.Extra.Sheet is
    --  Return the width in pixels of the Column-nth in Sheet.
 
    procedure Add_Column (Sheet : access Gtk_Sheet_Record;
-                         Ncols : in Gint);
+                         Ncols : in Guint);
    --  Add some empty columns at the end of the sheet.
 
    procedure Insert_Columns (Sheet : access Gtk_Sheet_Record;
-                             Col   : in Gint;
-                             Ncols : in Gint);
+                             Col   : in Guint;
+                             Ncols : in Guint);
    --  Add Ncols empty columns just before the columns number Col.
 
    procedure Delete_Columns (Sheet : access Gtk_Sheet_Record;
-                             Col   : in Gint;
-                             Ncols : in Gint);
+                             Col   : in Guint;
+                             Ncols : in Guint);
    --  Delete Ncols columns starting from Col.
 
    procedure Column_Set_Justification
@@ -347,7 +347,7 @@ package Gtk.Extra.Sheet is
       Justification : in Gtk.Enums.Gtk_Justification);
    --  Set the default justification for the cells in the specific column.
 
-   function Get_Columns_Count (Sheet : access Gtk_Sheet_Record) return Gint;
+   function Get_Columns_Count (Sheet : access Gtk_Sheet_Record) return Guint;
    --  Return the maximum column number of the displayed cells.
 
    ----------
@@ -368,7 +368,7 @@ package Gtk.Extra.Sheet is
    --  Return the title of a specific row.
 
    procedure Set_Row_Titles_Width (Sheet : access Gtk_Sheet_Record;
-                                   Width : in Gint);
+                                   Width : in Guint);
    --  Modify the width of the column that has the row titles.
 
    procedure Row_Button_Add_Label (Sheet : access Gtk_Sheet_Record;
@@ -419,7 +419,7 @@ package Gtk.Extra.Sheet is
 
    procedure Set_Row_Height (Sheet  : access Gtk_Sheet_Record;
                              Row    : in Gint;
-                             Height : in Gint);
+                             Height : in Guint);
    --  Set the height in pixels of a specific row.
 
    function Get_Row_Height (Sheet   : access Gtk_Sheet_Record;
@@ -428,20 +428,20 @@ package Gtk.Extra.Sheet is
    --  Return the height in pixels of the Row-th row in Sheet.
 
    procedure Add_Row (Sheet : access Gtk_Sheet_Record;
-                      Nrows : in Gint);
+                      Nrows : in Guint);
    --  Append Nrows row at the end of the sheet.
 
    procedure Insert_Rows (Sheet : access Gtk_Sheet_Record;
-                          Row   : in Gint;
-                          Nrows : in Gint);
+                          Row   : in Guint;
+                          Nrows : in Guint);
    --  Add Nrows empty rows just before the row number Row.
 
    procedure Delete_Rows (Sheet : access Gtk_Sheet_Record;
-                          Row   : in Gint;
-                          Nrows : in Gint);
+                          Row   : in Guint;
+                          Nrows : in Guint);
    --  Delete Nrows rows starting from Row.
 
-   function Get_Rows_Count (Sheet : access Gtk_Sheet_Record) return Gint;
+   function Get_Rows_Count (Sheet : access Gtk_Sheet_Record) return Guint;
    --  Return the maximum row number of displayed cells.
 
    -----------
@@ -488,7 +488,7 @@ package Gtk.Extra.Sheet is
    procedure Range_Set_Border (Sheet      : access Gtk_Sheet_Record;
                                The_Range  : in Gtk_Sheet_Range;
                                Mask       : in Gtk_Sheet_Border;
-                               Width      : in Gint;
+                               Width      : in Guint;
                                Line_Style : in Gdk.Types.Gdk_Line_Style);
    --  Set the style of the border for the cells in the range.
 
@@ -551,14 +551,14 @@ package Gtk.Extra.Sheet is
                              Row    : out Gint;
                              Column : out Gint);
    --  Return the row and column matching a given pixel on the screen.
-   --  Constraint_Error is raised if no such cell exist.
+   --  Constraint_Error is raised if no such cell exists.
 
-   function Get_Cell_Area (Sheet  : access Gtk_Sheet_Record;
-                           Row    : in Gint;
-                           Column : in Gint;
-                           Area   : in Gdk.Rectangle.Gdk_Rectangle)
-                          return  Boolean;
+   procedure Get_Cell_Area (Sheet  : access Gtk_Sheet_Record;
+                            Row    : in Gint;
+                            Column : in Gint;
+                            Area   : out Gdk.Rectangle.Gdk_Rectangle);
    --  Get the area of the screen that a cell is mapped to.
+   --  Constraint_Error is raised if no such cell exists;
 
 --     function Get_Attributes (Sheet      : access Gtk_Sheet_Record;
 --                              Row        : in Gint;
@@ -875,7 +875,7 @@ package Gtk.Extra.Sheet is
    --  - "new_column_width"
    --    procedure Handler (Sheet  : access Gtk_Sheet_Record'Class;
    --                       Column : Gint;
-   --                       Width  : Gint);
+   --                       Width  : Guint);
    --
    --    Emitted whenever the width of the column is changed, either by the
    --    user or automatically if the cells should automatically resize
@@ -884,7 +884,7 @@ package Gtk.Extra.Sheet is
    --  - "new_row_height"
    --    procedure Handler (Sheet  : access Gtk_Sheet_Record'Class;
    --                       Row    : Gint;
-   --                       Height : Gint);
+   --                       Height : Guint);
    --
    --    Emitted whenever the height of the row is changed.
    --  </signals>

@@ -341,6 +341,9 @@ gtk_color_combo_realize(GtkWidget *widget)
   gtk_signal_connect (GTK_OBJECT (combo->button), "clicked",
 	              (GtkSignalFunc) gtk_color_combo_update, 
                       color_combo);
+
+  gtk_color_combo_update(NULL, color_combo);
+
 }
 
 static void
@@ -387,15 +390,22 @@ GtkWidget *
 gtk_color_combo_new ()
 {
   GtkColorCombo *color_combo;
+  color_combo = gtk_type_new (gtk_color_combo_get_type ());
+
+  gtk_color_combo_construct(color_combo);
+
+  return(GTK_WIDGET(color_combo));
+}
+
+void
+gtk_color_combo_construct(GtkColorCombo *color_combo)
+{
   GdkColor color;
   gchar color_string[21];
   gint i,j,n;
   gchar red[5], green[5], blue[5];
 
-
-  color_combo = gtk_type_new (gtk_color_combo_get_type ());
-
-  color_combo->default_flag=TRUE;
+  color_combo->default_flag = TRUE;
 
   color_combo->nrows = 5;
   color_combo->ncols = 8;
@@ -418,7 +428,6 @@ gtk_color_combo_new ()
        color_combo->color_name[n-1]=g_strdup(color_string);
    }
 
-  return(GTK_WIDGET(color_combo));
 
 }
 
@@ -426,20 +435,27 @@ GtkWidget *
 gtk_color_combo_new_with_values (gint nrows, gint ncols, gchar **color_names)
 {
   GtkColorCombo *color_combo;
-  GtkWidget *widget;
+
+  color_combo = gtk_type_new(gtk_color_combo_get_type());
+
+  gtk_color_combo_construct_with_values(color_combo, nrows, ncols, color_names);
+  return(GTK_WIDGET(color_combo));
+}
+
+void
+gtk_color_combo_construct_with_values(GtkColorCombo *color_combo,
+				      gint nrows, gint ncols, 
+                                      gchar **color_names)
+{
   GdkColor color;
   gchar color_string[21];
   gint i,j,n;
   gchar red[5], green[5], blue[5];
 
-  widget = gtk_color_combo_new();
+  color_combo->default_flag = FALSE;
 
-  color_combo = GTK_COLOR_COMBO(widget);
-
-  color_combo->default_flag=FALSE;
-
-  color_combo->nrows=nrows;
-  color_combo->ncols=ncols;
+  color_combo->nrows = nrows;
+  color_combo->ncols = ncols;
   n = color_combo->nrows * color_combo->ncols;
   color_combo->color_name = (gchar **)g_malloc(n*sizeof(gchar *));
 
@@ -458,7 +474,6 @@ gtk_color_combo_new_with_values (gint nrows, gint ncols, gchar **color_names)
        color_combo->color_name[n-1]=g_strdup(color_string);
    }
 
-  return(widget);
 }
 
 
@@ -472,6 +487,8 @@ gtk_color_combo_get_color_at(GtkColorCombo *color_combo, gint row, gint col)
    return name;
 }
 
+/* Returns best match for a given color */
+
 void
 gtk_color_combo_find_color(GtkColorCombo *color_combo,
                            GdkColor *color, gint *row, gint *col)
@@ -479,6 +496,8 @@ gtk_color_combo_find_color(GtkColorCombo *color_combo,
    GdkColor combo_color;
    gchar *name;
    gint i, j;
+   gdouble dist = 114000.0;
+   gdouble d, dr, dg, db;
 
    *row = -1;
    *col = -1;
@@ -487,9 +506,28 @@ gtk_color_combo_find_color(GtkColorCombo *color_combo,
      for(j = 0; j < color_combo->ncols; j++){ 
         name = gtk_color_combo_get_color_at(color_combo, i, j);
         gdk_color_parse(name, &combo_color);
+
+
         if(gdk_color_equal(color, &combo_color)){
                    *row = i;
                    *col = j;
+                   return;
+        }
+       
+        dr = abs(color->red - combo_color.red); 
+        dg = abs(color->green - combo_color.green);  
+        db = abs(color->blue - combo_color.blue); 
+
+        d = dr + dg + db;
+/*
+        printf("%d %d %d // %d %d %d\n",color->red,color->green,color->blue,combo_color.red,combo_color.green,combo_color.blue);
+        printf("%f\n",d);
+*/
+
+        if(d < dist){
+            dist = d;
+            *row = i; 
+            *col = j; 
         }
      }
    }

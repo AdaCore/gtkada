@@ -25,12 +25,36 @@
 extern "C" {
 #endif /* __cplusplus */
 
+gboolean
+gtk_plot_export_ps                              (GtkPlot *plot,
+                                                 char *file_name,
+                                                 gint orient,
+                                                 gint epsflag,
+                                                 gint page_size);
+gboolean
+gtk_plot_export_ps_with_size                    (GtkPlot *plot,
+                                                 char *file_name,
+                                                 gint orient,
+                                                 gint epsflag,
+                                                 gint units,
+                                                 gint width,
+                                                 gint height);
+gboolean
+gtk_plot_canvas_export_ps                       (GtkPlotCanvas *canvas,
+                                                 char *file_name,
+                                                 gint orient,
+                                                 gint epsflag,
+                                                 gint page_size);
 
-void            gtk_plot_print                      	(GtkPlot *plot,
-                                                         GtkPlotPC *pc);
+gboolean
+gtk_plot_canvas_export_ps_with_size             (GtkPlotCanvas *canvas,
+                                                 char *file_name,
+                                                 gint orient,
+                                                 gint epsflag,
+                                                 gint units,
+                                                 gint width,
+                                                 gint height);
 
-void            gtk_plot_canvas_print       		(GtkPlotCanvas *canvas,
-                                                 	 GtkPlotPC *pc);
 
 #ifdef __cplusplus
 }

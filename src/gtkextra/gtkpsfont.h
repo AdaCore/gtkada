@@ -86,16 +86,16 @@ struct _GtkPSFont {
 
 gint		gtk_psfont_init			();
 void		gtk_psfont_unref		();
-GtkPSFont* 	gtk_psfont_get_font 		(gchar *name);
-GdkFont*	gtk_psfont_get_gdkfont 		(gchar *name, gint height);
-gchar *		gtk_psfont_get_psfontname	(gchar *name);
-void		gtk_psfont_add_font		(gchar *fontname,
-						 gchar *psname,
-						 gchar *family,
+GtkPSFont* 	gtk_psfont_get_font 		(const gchar *name);
+GdkFont*	gtk_psfont_get_gdkfont 		(const gchar *name, gint height);
+gchar *		gtk_psfont_get_psfontname	(const gchar *name);
+void		gtk_psfont_add_font		(const char *fontname,
+						 const gchar *psname,
+						 const gchar *family,
 						 gchar *x_string[],
                                                  gboolean italic,
                                                  gboolean bold);
-GtkPSFont * 	gtk_psfont_find_by_family       (gchar *name, 
+GtkPSFont * 	gtk_psfont_find_by_family       (const gchar *name, 
                                                  gboolean italic, 
                                                  gboolean bold);
 void 		gtk_psfont_get_families		(GList **family, gint *numf);

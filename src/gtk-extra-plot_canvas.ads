@@ -38,11 +38,12 @@
 --  Like any child of Gtk_Layout, this widget can have an almost unlimited
 --  size for its children, and provides scrolling.
 --  </description>
---  <c_version>gtk+extra 0.99.9</c_version>
+--  <c_version>gtk+extra 0.99.14</c_version>
 
 with Gdk;
 with Gdk.Pixmap;
 with Gtk.Extra.Plot;
+with Gtk.Extra.Plot_Data;
 with Gtk.Fixed;
 with Gdk.Color;
 with Gtk.Enums;
@@ -127,13 +128,19 @@ package Gtk.Extra.Plot_Canvas is
    --  Return the internal value associated with a Gtk_Plot_Canvas_Child.
 
    procedure Refresh (Canvas : access Gtk_Plot_Canvas_Record);
-   --  Force a refresh of the canvas on the screen.
+   --  Force a refresh of the canvas on the screen. The screen is updated from
+   --  the contents of the double-buffer.
+
+   procedure Paint (Canvas : access Gtk_Plot_Canvas_Record);
+   --  Redraw each of the items included in the canvas. The painting is done
+   --  in the double-buffer, and must be drawn on the screen with Refresh.
 
    function Get_Pixmap (Canvas : access Gtk_Plot_Canvas_Record)
                        return Gdk.Pixmap.Gdk_Pixmap;
    --  Return the pixmap associated with the Canvas.
    --  If you add your own items on the canvas (see Child_New below), you
-   --  can draw them on this pixmap to make them visible on the canvas.
+   --  can draw them on this pixmap to make them visible on the canvas. You
+   --  need to call Refresh to send this pixmap to the screen.
 
    procedure Grid_Set_Visible (Canvas  : access Gtk_Plot_Canvas_Record;
                                Visible : in Boolean);
@@ -145,7 +152,7 @@ package Gtk.Extra.Plot_Canvas is
 
    procedure Grid_Set_Attributes
      (Canvas : access Gtk_Plot_Canvas_Record;
-      Style  : in Gtk.Extra.Plot.Plot_Line_Style;
+      Style  : in Gtk.Extra.Plot_Data.Plot_Line_Style;
       Width  : in Gint;
       Color  : in Gdk.Color.Gdk_Color);
    --  Set the attributes of the grid.
@@ -182,15 +189,18 @@ package Gtk.Extra.Plot_Canvas is
    --  the signal.
 
    function Get_Active_Data (Canvas : access Gtk_Plot_Canvas_Record)
-                            return      Gtk.Extra.Plot.Gtk_Plot_Data;
+      return Gtk.Extra.Plot_Data.Gtk_Plot_Data;
    --  Return the active dataset (which of course belongs to the active plot).
    --  This is the dataset that was last clicked on.
 
    procedure Get_Active_Point (Canvas : access Gtk_Plot_Canvas_Record;
                                X      : out Gdouble;
-                               Y      : out Gdouble);
+                               Y      : out Gdouble;
+                               Index  : out Gint);
    --  Return the relative coordinates of the active point in the
-   --  active dataset.
+   --  active dataset. Index will contain the index of the active point in the
+   --  list of the canvas'children, or -1 if there is no active point.
+   --  This is the index in the coordinates arrays of Get_Active_Data.
    --  This is the one that was last clicked on.
 
    procedure Set_Size (Canvas  : access Gtk_Plot_Canvas_Record;
@@ -264,9 +274,9 @@ package Gtk.Extra.Plot_Canvas is
      (Canvas        : access Gtk_Plot_Canvas_Record;
       X             : in Gdouble;
       Y             : in Gdouble;
-      Angle         : in Gint;
       Ps_Font       : in String;
       Height        : in Gint;
+      Angle         : in Gint;
       Fg            : in Gdk.Color.Gdk_Color;
       Bg            : in Gdk.Color.Gdk_Color;
       Transparent   : in Boolean;
@@ -297,8 +307,8 @@ package Gtk.Extra.Plot_Canvas is
       Y1         : Gdouble;
       X2         : Gdouble;
       Y2         : Gdouble;
-      Style      : Gtk.Extra.Plot.Plot_Line_Style;
-      Width      : Gint;
+      Style      : Gtk.Extra.Plot_Data.Plot_Line_Style;
+      Width      : Gfloat;
       Color      : Gdk.Color.Gdk_Color;
       Arrow_Mask : Plot_Canvas_Arrow)
      return Gtk_Plot_Canvas_Child;
@@ -310,8 +320,8 @@ package Gtk.Extra.Plot_Canvas is
       Y1         : Gdouble;
       X2         : Gdouble;
       Y2         : Gdouble;
-      Style      : Gtk.Extra.Plot.Plot_Line_Style;
-      Width      : Gint;
+      Style      : Gtk.Extra.Plot_Data.Plot_Line_Style;
+      Width      : Gfloat;
       Fg         : Gdk.Color.Gdk_Color;
       Bg         : Gdk.Color.Gdk_Color;
       Border     : Gtk.Extra.Plot.Plot_Border_Style;
@@ -325,8 +335,8 @@ package Gtk.Extra.Plot_Canvas is
       Y1         : Gdouble;
       X2         : Gdouble;
       Y2         : Gdouble;
-      Style      : Gtk.Extra.Plot.Plot_Line_Style;
-      Width      : Gint;
+      Style      : Gtk.Extra.Plot_Data.Plot_Line_Style;
+      Width      : Gfloat;
       Fg         : Gdk.Color.Gdk_Color;
       Bg         : Gdk.Color.Gdk_Color;
       Fill       : Boolean := False)
@@ -335,16 +345,16 @@ package Gtk.Extra.Plot_Canvas is
 
    procedure Line_Set_Attributes
      (Child : Gtk_Plot_Canvas_Child;
-      Style : Gtk.Extra.Plot.Plot_Line_Style;
-      Width : Gint;
+      Style : Gtk.Extra.Plot_Data.Plot_Line_Style;
+      Width : Gfloat;
       Color : Gdk.Color.Gdk_Color;
       Mask  : Plot_Canvas_Arrow);
    --  Change the attributes of a line.
 
    procedure Rectangle_Set_Attributes
      (Child  : Gtk_Plot_Canvas_Child;
-      Style  : Gtk.Extra.Plot.Plot_Line_Style;
-      Width  : Gint;
+      Style  : Gtk.Extra.Plot_Data.Plot_Line_Style;
+      Width  : Gfloat;
       Fg     : Gdk.Color.Gdk_Color;
       Bg     : Gdk.Color.Gdk_Color;
       Border : Gtk.Extra.Plot.Plot_Border_Style;
@@ -353,8 +363,8 @@ package Gtk.Extra.Plot_Canvas is
 
    procedure Ellipse_Set_Attributes
      (Child  : Gtk_Plot_Canvas_Child;
-      Style  : Gtk.Extra.Plot.Plot_Line_Style;
-      Width  : Gint;
+      Style  : Gtk.Extra.Plot_Data.Plot_Line_Style;
+      Width  : Gfloat;
       Fg     : Gdk.Color.Gdk_Color;
       Bg     : Gdk.Color.Gdk_Color;
       Fill   : Boolean := False);
@@ -396,14 +406,6 @@ package Gtk.Extra.Plot_Canvas is
       X2     : Gdouble;
       Y2     : Gdouble);
    --  Move an resize an item in the canvas.
-
-   function Remove_Child
-     (Canvas : access Gtk_Plot_Canvas_Record;
-      Child  : Gtk_Plot_Canvas_Child)
-     return Boolean;
-   --  Remove an item from the canvas.
-   --  Return True if Child belonged to the canvas and could be successfully
-   --  removed, False otherwise.
 
    function Get_Item_Type (Item : Gtk_Plot_Canvas_Child)
                           return Plot_Canvas_Type;
@@ -526,12 +528,24 @@ package Gtk.Extra.Plot_Canvas is
    --    it will become (New_Width, New_Height). If the handler returns False,
    --    nothing happens.
    --
+   --  - "delete_item"
+   --    procedure Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
+   --                       Item   : Gtk_Plot_Canvas_Child);
+   --
+   --    Called when an item is being removed from the canvas
+   --
    --  - "select_region"
    --    procedure Handler (Canvas : access Gtk_Plot_Canvas_Record'Class;
    --                       X_Min  : Gdouble;
-   --                       X_Max  : Gdouble;
    --                       Y_Min  : Gdouble;
+   --                       X_Max  : Gdouble;
    --                       Y_Max  : Gdouble);
+   --
+   --  - "changed"
+   --    procedure Handler (Canvas : access Gtk_Plot_Canvas_Record'Class);
+   --
+   --    Called when the contents of the canvas has changed (an item was
+   --    moved interactively by the user).
    --
    --    A region of the canvas was selected by the user.
    --  </signals>

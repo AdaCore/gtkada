@@ -31,84 +31,307 @@
 #include <time.h>
 #include <gtk/gtk.h>
 
-#include "gtkplotpc.h"
 #include "gtkplot.h"
 #include "gtkpsfont.h"
-#include "gtkplotcanvas.h"
-#include "gtkplotprint.h"
+#include "gtkplotpc.h"
+#include "gtkplotps.h"
 
+static void gtk_plot_ps_class_init 		(GtkPlotPSClass *klass);
+static void gtk_plot_ps_init 			(GtkPlotPS *ps);
+static void gtk_plot_ps_finalize 		(GtkObject *object);
 /*********************************************************************/
 /* Postscript specific functions */
-static void psinit				(GtkPlotPC *pc, 
-						 gfloat scalex, 
-						 gfloat scaley);
+static gboolean psinit				(GtkPlotPC *pc); 
 static void psleave				(GtkPlotPC *pc);
 static void psgsave				(GtkPlotPC *pc);
 static void psgrestore				(GtkPlotPC *pc);
 static void psclip				(GtkPlotPC *pc,
-						 GdkRectangle area);
+						 const GdkRectangle *area);
 static void psdrawlines				(GtkPlotPC *pc,
-						 GdkPoint *points, 
+						 GtkPlotPoint *points, 
 						 gint numpoints);
+static void psdrawpoint				(GtkPlotPC *pc, 
+                				 gdouble x, gdouble y); 
 static void psdrawline				(GtkPlotPC *pc,
-						 gint x0, gint y0, 
-						 gint xf, gint yf);
+						 gdouble x0, gdouble y0, 
+						 gdouble xf, gdouble yf);
 static void psdrawpolygon			(GtkPlotPC *pc,
-						 GdkPoint *points, 
-						 gint numpoints, 
-						 gint filled);
+						 gboolean filled,
+						 GtkPlotPoint *points, 
+						 gint numpoints); 
+static void psdrawrectangle			(GtkPlotPC *pc, 
+						 gboolean filled, 
+                				 gdouble x, gdouble y, 
+						 gdouble width, gdouble height);
 static void psdrawcircle			(GtkPlotPC *pc,
-                                                 gint x, gint y, 
-						 gint size, gint filled);
+						 gboolean filled,
+                                                 gdouble x, gdouble y, 
+						 gdouble size);
 static void psdrawellipse			(GtkPlotPC *pc, 
-						 gint x, gint y, 
-						 gint width, gint height, 
-              					 gint filled);
+              					 gboolean filled,
+						 gdouble x, gdouble y, 
+						 gdouble width, gdouble height); 
 static void pssetcolor				(GtkPlotPC *pc, 
-						 GdkColor *color); 
-static void pssetlinewidth			(GtkPlotPC *pc, 
-						 gint width);
-static void pssetlinecaps			(GtkPlotPC *pc, 
-						 gint caps);
+						 const GdkColor *color); 
+static void pssetlineattr			(GtkPlotPC *pc, 
+                                                 gfloat line_width,
+                                                 GdkLineStyle line_style,
+                                                 GdkCapStyle cap_style,
+                                                 GdkJoinStyle join_style);
 static void psdrawstring			(GtkPlotPC *pc,
              					 gint x, gint y,
-             					 GtkJustification justification,
-             					 gint angle,
-						 gchar *font,
-						 gint height,
-             					 gchar *text);
+                                                 gint angle,
+                                                 const GdkColor *fg,
+                                                 const GdkColor *bg,
+                                                 gboolean transparent,
+                                                 gint border,
+                                                 gint border_width,
+                                                 gint shadow_width,
+                                                 const gchar *font,
+                                                 gint height,
+                                                 GtkJustification just,
+                                                 const gchar *text);
 static void pssetfont				(GtkPlotPC *pc, 
-						 gchar *font, 
+						 const gchar *font, 
 						 gint height);
 static void pssetdash				(GtkPlotPC *pc, 
-						 gint num_values,
+						 gdouble offset,
 						 gdouble *values,
-						 gdouble offset);
+						 gint num_values);
 /*********************************************************************/
-static void pssetcolor(GtkPlotPC *pc, GdkColor *color)
-{
-    FILE *psout = pc->pcfile;
+static GtkPlotPCClass *parent_class = NULL;
 
-    fprintf(psout, "%f %f %f setrgbcolor\n",
-	    (gdouble) color->red / 65535.0,
-	    (gdouble) color->green / 65535.0,
-	    (gdouble) color->blue / 65535.0);
+GtkType
+gtk_plot_ps_get_type (void)
+{
+  static GtkType pc_type = 0;
+
+  if (!pc_type)
+    {
+      GtkTypeInfo pc_info =
+      {
+        "GtkPlotPS",
+        sizeof (GtkPlotPS),
+        sizeof (GtkPlotPSClass),
+        (GtkClassInitFunc) gtk_plot_ps_class_init,
+        (GtkObjectInitFunc) gtk_plot_ps_init,
+        /* reserved 1*/ NULL,
+        /* reserved 2 */ NULL,
+        (GtkClassInitFunc) NULL,
+      };
+
+      pc_type = gtk_type_unique (GTK_TYPE_PLOT_PC, &pc_info);
+    }
+  return pc_type;
 }
 
-static void pssetlinewidth(GtkPlotPC *pc, gint width)
+static void
+gtk_plot_ps_init (GtkPlotPS *ps)
 {
-    FILE *psout = pc->pcfile;
+  ps->psname = NULL;
+  ps->gsaved = FALSE;
+}
 
-    fprintf(psout, "%d slw\n", (int)width);
+
+static void
+gtk_plot_ps_class_init (GtkPlotPSClass *klass)
+{
+  GtkObjectClass *object_class;
+  GtkPlotPCClass *pc_class;
+
+  parent_class = gtk_type_class (gtk_plot_pc_get_type ());
+
+  object_class = (GtkObjectClass *) klass;
+  pc_class = (GtkPlotPCClass *) klass;
+
+  pc_class->init = psinit;
+  pc_class->leave = psleave;
+  pc_class->gsave = psgsave;
+  pc_class->grestore = psgrestore;
+  pc_class->clip = psclip;
+  pc_class->set_color = pssetcolor;
+  pc_class->set_dash = pssetdash;
+  pc_class->set_lineattr = pssetlineattr;
+  pc_class->draw_point = psdrawpoint;
+  pc_class->draw_line = psdrawline;
+  pc_class->draw_lines = psdrawlines;
+  pc_class->draw_rectangle = psdrawrectangle;
+  pc_class->draw_polygon = psdrawpolygon;
+  pc_class->draw_circle = psdrawcircle;
+  pc_class->draw_ellipse = psdrawellipse;
+  pc_class->set_font = pssetfont;
+  pc_class->draw_string = psdrawstring;
+
+  object_class->finalize = gtk_plot_ps_finalize;
+}
+
+static void
+gtk_plot_ps_finalize(GtkObject *object)
+{
+  GtkPlotPS *ps;
+
+  ps = GTK_PLOT_PS(object);
+
+  if(ps->psname) g_free(ps->psname);
+}
+
+GtkObject *
+gtk_plot_ps_new                         (const gchar *psname,
+                                         gint orientation,
+                                         gint epsflag,
+                                         gint page_size,
+                                         gdouble scalex,
+					 gdouble scaley)
+{
+  GtkObject *object;
+  GtkPlotPS *ps;
+
+  object = gtk_type_new(gtk_plot_ps_get_type());
+
+  ps = GTK_PLOT_PS(object);
+
+  gtk_plot_ps_construct(ps, psname, orientation, epsflag, page_size, scalex, scaley);
+
+  return (object);
+}
+
+void
+gtk_plot_ps_construct                   (GtkPlotPS *ps,
+					 const gchar *psname,
+                                         gint orientation,
+                                         gint epsflag,
+                                         gint page_size,
+                                         gdouble scalex,
+					 gdouble scaley)
+{
+  gint width, height;
+
+  ps->psname = g_strdup(psname);
+  ps->orientation = orientation;
+  ps->epsflag = epsflag;
+  ps->page_size = page_size;
+  ps->scalex = scalex;
+  ps->scaley = scaley;
+
+  switch (page_size){
+   case GTK_PLOT_LEGAL:
+        width = GTK_PLOT_LEGAL_W;
+        height = GTK_PLOT_LEGAL_H;
+        break;
+   case GTK_PLOT_A4:
+        width = GTK_PLOT_A4_W;
+        height = GTK_PLOT_A4_H;
+        break;
+   case GTK_PLOT_EXECUTIVE:
+        width = GTK_PLOT_EXECUTIVE_W;
+        height = GTK_PLOT_EXECUTIVE_H;
+        break;
+   case GTK_PLOT_LETTER:
+   default:
+        width = GTK_PLOT_LETTER_W;
+        height = GTK_PLOT_LETTER_H;
+  }
+
+  gtk_plot_ps_set_size(ps, GTK_PLOT_PSPOINTS, width, height);
+}
+
+GtkObject *
+gtk_plot_ps_new_with_size                       (const gchar *psname,
+                                                 gint orientation,
+                                                 gint epsflag,
+                                                 gint units,
+                                                 gdouble width, gdouble height,
+						 gdouble scalex, gdouble scaley)
+{
+  GtkObject *object;
+  GtkPlotPS *ps;
+
+  object = gtk_type_new(gtk_plot_ps_get_type());
+
+  ps = GTK_PLOT_PS(object);
+
+  gtk_plot_ps_construct_with_size (ps, psname, orientation, epsflag, units, width, height, scalex, scaley);
+
+  return object;
+}
+
+void
+gtk_plot_ps_construct_with_size                 (GtkPlotPS *ps,
+						 const gchar *psname,
+                                                 gint orientation,
+                                                 gint epsflag,
+                                                 gint units,
+                                                 gdouble width, gdouble height,
+						 gdouble scalex, gdouble scaley)
+{
+  gtk_plot_ps_construct(ps, psname, orientation, epsflag, GTK_PLOT_CUSTOM, scalex, scaley);
+
+  gtk_plot_ps_set_size(ps, units, width, height);
+}
+
+void
+gtk_plot_ps_set_size                            (GtkPlotPS *ps,
+                                                 gint units,
+                                                 gdouble width,
+                                                 gdouble height)
+{
+  ps->units = units;
+  ps->width = width;
+  ps->height = height;
+
+  switch(units){
+   case GTK_PLOT_MM:
+        ps->page_width = (gdouble)width * 2.835;
+        ps->page_height = (gdouble)height * 2.835;
+        break;
+   case GTK_PLOT_CM:
+        ps->page_width = width * 28.35;
+        ps->page_height = height * 28.35;
+        break;
+   case GTK_PLOT_INCHES:
+        ps->page_width = width * 72;
+        ps->page_height = height * 72;
+        break;
+   case GTK_PLOT_PSPOINTS:
+   default:
+        ps->page_width = width;
+        ps->page_height = height;
+   }
+
+}
+
+void
+gtk_plot_ps_set_scale                           (GtkPlotPS *ps,
+                                                 gdouble scalex,
+                                                 gdouble scaley)
+{
+  ps->scalex = scalex;
+  ps->scaley = scaley; 
+}
+
+static void pssetlineattr			(GtkPlotPC *pc, 
+                                                 gfloat line_width,
+                                                 GdkLineStyle line_style,
+                                                 GdkCapStyle cap_style,
+                                                 GdkJoinStyle join_style)
+{
+    FILE *psout = GTK_PLOT_PS(pc)->psfile;
+
+    fprintf(psout, "%f slw\n", line_width);
+    fprintf(psout, "%d slc\n", abs(cap_style - 1));
+    fprintf(psout, "%d slj\n", join_style);
+
+    if(line_style == 0)
+            fprintf(psout,"[] 0 sd\n");  /* solid line */
 }
 
 static void 
 pssetdash(GtkPlotPC *pc,
-          gint num_values,
+          gdouble offset, 
           gdouble *values,
-          gdouble offset) 
+          gint num_values)
 {
-    FILE *psout = pc->pcfile;
+    FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
     switch(num_values){
       case 0:
@@ -136,29 +359,32 @@ pssetdash(GtkPlotPC *pc,
 static void 
 psleave(GtkPlotPC *pc)
 {
-    fprintf(pc->pcfile, "showpage\n");
-    fprintf(pc->pcfile, "%%%%Trailer\n");
-    fclose(pc->pcfile);
+    fprintf(GTK_PLOT_PS(pc)->psfile, "showpage\n");
+    fprintf(GTK_PLOT_PS(pc)->psfile, "%%%%Trailer\n");
+    fprintf(GTK_PLOT_PS(pc)->psfile, "%%%%EOF\n");
+    fclose(GTK_PLOT_PS(pc)->psfile);
 }
 
-static void 
-psinit						(GtkPlotPC *pc,
-                                                 gfloat scalex,
-                                                 gfloat scaley)
+static gboolean 
+psinit						(GtkPlotPC *pc)
 {
     time_t now;
     FILE *psout;
+    GtkPlotPS *ps;
 
     now = time(NULL);
 
-    if ((psout = fopen(pc->pcname, "w")) == NULL){
-       g_warning("ERROR: Cannot open file: %s", pc->pcname); 
-       return;
+    ps = GTK_PLOT_PS(pc);
+    psout = ps->psfile;
+
+    if ((psout = fopen(ps->psname, "w")) == NULL){
+       g_warning("ERROR: Cannot open file: %s", ps->psname); 
+       return FALSE;
     }
 
-    pc->pcfile = psout;
+    ps->psfile = psout;
 
-    if(pc->epsflag)
+    if(ps->epsflag)
        fprintf (psout, "%%!PS-Adobe-2.0 PCF-2.0\n");
     else
        fprintf (psout, "%%!PS-Adobe-2.0\n");
@@ -168,22 +394,22 @@ psinit						(GtkPlotPC *pc,
              "%%%%Creator: %s v%s Copyright (c) 1999 Adrian E. Feiguin\n"
              "%%%%CreationDate: %s"
              "%%%%Magnification: 1.0000\n",
-             pc->pcname,
+             ps->psname,
              "GtkPlot", "3.x",
              ctime (&now));
 
-    if(pc->orientation == GTK_PLOT_PORTRAIT)
+    if(ps->orientation == GTK_PLOT_PORTRAIT)
              fprintf(psout,"%%%%Orientation: Portrait\n");
     else
              fprintf(psout,"%%%%Orientation: Landscape\n");
 
-    if(pc->epsflag)
+    if(ps->epsflag)
           fprintf (psout,
                    "%%%%BoundingBox: 0 0 %d %d\n"
                    "%%%%Pages: 1\n"
                    "%%%%EndComments\n",
-                   pc->page_width,
-                   pc->page_height);
+                   ps->page_width,
+                   ps->page_height);
 
 
     fprintf (psout,
@@ -244,219 +470,109 @@ psinit						(GtkPlotPC *pc,
              "} def\n\n"
     ); 
     
-    if(pc->orientation == GTK_PLOT_PORTRAIT)
+    if(ps->orientation == GTK_PLOT_PORTRAIT)
              fprintf(psout, "%d %d translate\n"
                             "%f %f scale\n",
-                            0, pc->page_height,
-                            scalex, -scaley);
+                            0, ps->page_height,
+                            ps->scalex, -ps->scaley);
 
-    if(pc->orientation == GTK_PLOT_LANDSCAPE)
+    if(ps->orientation == GTK_PLOT_LANDSCAPE)
              fprintf(psout, "%f %f scale\n"
                             "-90 rotate \n",
-                            scalex, -scaley);
+                            ps->scalex, -ps->scaley);
 
     fprintf(psout,"%%%%EndProlog\n\n\n");
 
+    return TRUE;
 }
 
-void 
-gtk_plot_export_ps			        (GtkPlot *plot, 
-					 	 char *pcname, 
-						 int orient, 
-						 int epsflag, 
-						 gint page_size)
+static void pssetcolor(GtkPlotPC *pc, const GdkColor *color)
 {
-  GtkPlotPC *pc;
+    FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-  pc = gtk_plot_pc_new(pcname, orient, page_size);
-
-  pc->epsflag = epsflag;
-
-  pc->init = psinit;
-  pc->leave = psleave;
-  pc->gsave = psgsave;
-  pc->grestore = psgrestore;
-  pc->clip = psclip;
-  pc->setcolor = pssetcolor;
-  pc->setdash = pssetdash;
-  pc->setlinewidth = pssetlinewidth;
-  pc->setlinecaps = pssetlinecaps;
-  pc->drawline = psdrawline;
-  pc->drawlines = psdrawlines;
-  pc->drawpolygon = psdrawpolygon;
-  pc->drawcircle = psdrawcircle;
-  pc->drawellipse = psdrawellipse;
-  pc->setfont = pssetfont;
-  pc->drawstring = psdrawstring;
-
-  gtk_plot_print(plot, pc);
-
-  g_free(pc->pcname);
-  g_free(pc);
-}
-
-void 
-gtk_plot_export_ps_with_size			(GtkPlot *plot, 
-					 	 char *pcname, 
-						 gint orient, 
-						 int epsflag, 
-						 gint units,
-						 gint width,
-                                                 gint height)
-{
-  GtkPlotPC *pc;
-
-  pc = gtk_plot_pc_new_with_size(pcname, 
-				 orient, 
-                                 units, width, height);
-
-  pc->epsflag = epsflag;
-
-  pc->init = psinit;
-  pc->leave = psleave;
-  pc->gsave = psgsave;
-  pc->grestore = psgrestore;
-  pc->clip = psclip;
-  pc->setcolor = pssetcolor;
-  pc->setdash = pssetdash;
-  pc->setlinewidth = pssetlinewidth;
-  pc->setlinecaps = pssetlinecaps;
-  pc->drawline = psdrawline;
-  pc->drawlines = psdrawlines;
-  pc->drawpolygon = psdrawpolygon;
-  pc->drawcircle = psdrawcircle;
-  pc->drawellipse = psdrawellipse;
-  pc->setfont = pssetfont;
-  pc->drawstring = psdrawstring;
-
-  gtk_plot_print(plot, pc);
-
-  g_free(pc->pcname);
-  g_free(pc);
-}
-
-void 
-gtk_plot_canvas_export_ps			(GtkPlotCanvas *canvas, 
-					 	 char *pcname, 
-						 int orient, 
-						 int epsflag, 
-						 gint page_size)
-{
-  GtkPlotPC *pc;
-
-  pc = gtk_plot_pc_new(pcname, orient, page_size);
-
-  pc->init = psinit;
-  pc->leave = psleave;
-  pc->gsave = psgsave;
-  pc->grestore = psgrestore;
-  pc->clip = psclip;
-  pc->setcolor = pssetcolor;
-  pc->setdash = pssetdash;
-  pc->setlinewidth = pssetlinewidth;
-  pc->setlinecaps = pssetlinecaps;
-  pc->drawline = psdrawline;
-  pc->drawlines = psdrawlines;
-  pc->drawpolygon = psdrawpolygon;
-  pc->drawcircle = psdrawcircle;
-  pc->drawellipse = psdrawellipse;
-  pc->setfont = pssetfont;
-  pc->drawstring = psdrawstring;
-
-  gtk_plot_canvas_print(canvas, pc);
-
-  g_free(pc->pcname);
-  g_free(pc);
-}
-
-
-void 
-gtk_plot_canvas_export_ps_with_size		(GtkPlotCanvas *canvas, 
-					 	 char *pcname, 
-						 gint orient, 
-						 gint epsflag, 
-						 gint units,
-						 gint width, 
-						 gint height)
-{
-  GtkPlotPC *pc;
-
-  pc = gtk_plot_pc_new_with_size(pcname, 
-                                 orient, 
-                                 units, width, height);
-
-  pc->init = psinit;
-  pc->leave = psleave;
-  pc->gsave = psgsave;
-  pc->grestore = psgrestore;
-  pc->clip = psclip;
-  pc->setcolor = pssetcolor;
-  pc->setdash = pssetdash;
-  pc->setlinewidth = pssetlinewidth;
-  pc->setlinecaps = pssetlinecaps;
-  pc->drawline = psdrawline;
-  pc->drawlines = psdrawlines;
-  pc->drawpolygon = psdrawpolygon;
-  pc->drawcircle = psdrawcircle;
-  pc->drawellipse = psdrawellipse;
-  pc->setfont = pssetfont;
-  pc->drawstring = psdrawstring;
- 
-  gtk_plot_canvas_print(canvas, pc);
-
-  g_free(pc->pcname);
-  g_free(pc);
+    fprintf(psout, "%f %f %f setrgbcolor\n",
+	    (gdouble) color->red / 65535.0,
+	    (gdouble) color->green / 65535.0,
+	    (gdouble) color->blue / 65535.0);
 }
 
 static void
-psdrawlines(GtkPlotPC *pc, GdkPoint *points, gint numpoints)
+psdrawpoint(GtkPlotPC *pc, gdouble x, gdouble y)
 {
-  gint i;
-  FILE *psout = pc->pcfile;
-  
-  fprintf(psout,"n\n");
-  fprintf(psout,"%d %d m\n", points[0].x, points[0].y);
-  for(i = 1; i < numpoints; i++)
-        fprintf(psout,"%d %d l\n", points[i].x, points[i].y);
+  FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-  fprintf(psout,"s\n");
-}
-
-static void
-psdrawpolygon(GtkPlotPC *pc, GdkPoint *points, gint numpoints, gint filled)
-{
-  gint i;
-  FILE *psout = pc->pcfile;
-
-  fprintf(psout,"n\n");
-  fprintf(psout,"%d %d m\n", points[0].x, points[0].y);
-  for(i = 1; i < numpoints; i++)
-      fprintf(psout,"%d %d l\n", points[i].x, points[i].y);
-
-  if(filled)
-     fprintf(psout,"f\n");
-  else
-     fprintf(psout,"cp\n");
-
-  fprintf(psout,"s\n");
-}
-
-static void psdrawline(GtkPlotPC *pc, gint x0, gint y0, gint xf, gint yf)
-{
-  FILE *psout = pc->pcfile;
-
-  fprintf(psout, "%d %d m\n", x0, y0);
-  fprintf(psout, "%d %d l\n", xf, yf);
+  fprintf(psout, "%f %f m\n", x, y);
+  fprintf(psout, "%f %f l\n", x, y);
   fprintf(psout, "s\n");
 }
 
 static void
-psdrawcircle(GtkPlotPC *pc, gint x, gint y, gint size, gint filled)
+psdrawlines(GtkPlotPC *pc, GtkPlotPoint *points, gint numpoints)
 {
-  FILE *psout = pc->pcfile;
+  gint i;
+  FILE *psout = GTK_PLOT_PS(pc)->psfile;
+ 
+  fprintf(psout,"n\n");
+  fprintf(psout,"%f %f m\n", points[0].x, points[0].y);
+  for(i = 1; i < numpoints; i++)
+        fprintf(psout,"%f %f l\n", points[i].x, points[i].y);
+
+  fprintf(psout,"s\n");
+}
+
+static void
+psdrawpolygon(GtkPlotPC *pc, gboolean filled, GtkPlotPoint *points, gint numpoints)
+{
+  gint i;
+  FILE *psout = GTK_PLOT_PS(pc)->psfile;
+
+  fprintf(psout,"n\n");
+  fprintf(psout,"%f %f m\n", points[0].x, points[0].y);
+  for(i = 1; i < numpoints; i++)
+      fprintf(psout,"%f %f l\n", points[i].x, points[i].y);
+
+  if(filled)
+     fprintf(psout,"f\n");
+  else
+     fprintf(psout,"cp\n");
+
+  fprintf(psout,"s\n");
+}
+
+static void psdrawline(GtkPlotPC *pc, gdouble x0, gdouble y0, gdouble xf, gdouble yf)
+{
+  FILE *psout = GTK_PLOT_PS(pc)->psfile;
+
+  fprintf(psout, "%f %f m\n", x0, y0);
+  fprintf(psout, "%f %f l\n", xf, yf);
+  fprintf(psout, "s\n");
+}
+
+static void
+psdrawrectangle(GtkPlotPC *pc, gboolean filled, 
+                gdouble x, gdouble y, gdouble width, gdouble height)
+{
+  GtkPlotPoint point[4];
+
+  point[0].x = x;
+  point[0].y = y;
+  point[1].x = x + width;
+  point[1].y = y;
+  point[2].x = x + width;
+  point[2].y = y + height;
+  point[3].x = x;
+  point[3].y = y + height;
+
+  psdrawpolygon(pc, filled, point, 4);
+}
+
+static void
+psdrawcircle(GtkPlotPC *pc, gboolean filled, gdouble x, gdouble y, gdouble size)
+{
+  FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
   fprintf(psout,"n %f %f %f %f 0 360 ellipse\n", 
-          (gdouble)x, (gdouble)y, (gdouble)size, (gdouble)size);
+          x, y, size / 2., size / 2.);
 
   if(filled)
      fprintf(psout,"f\n");
@@ -467,14 +583,16 @@ psdrawcircle(GtkPlotPC *pc, gint x, gint y, gint size, gint filled)
 }
 
 static void
-psdrawellipse(GtkPlotPC *pc, gint x, gint y, gint width, gint height, 
-              gint filled)
+psdrawellipse(GtkPlotPC *pc, 
+              gboolean filled, 
+              gdouble x, gdouble y, 
+              gdouble width, gdouble height)
 {
-  FILE *psout = pc->pcfile;
+  FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
   fprintf(psout,"n %f %f %f %f 0 360 ellipse\n", 
-          (gdouble)x+width/2, (gdouble)y+height/2, 
-          (gdouble)width/2, (gdouble)height/2);
+          x+width/2., y+height/2., 
+          width/2., height/2.);
 
   if(filled)
      fprintf(psout,"f\n");
@@ -485,30 +603,41 @@ psdrawellipse(GtkPlotPC *pc, gint x, gint y, gint width, gint height,
 }
 
 static void
-psdrawstring(GtkPlotPC *pc,
-             gint x, gint y,
-             GtkJustification justification, 
-             gint angle,
-             gchar *font,
-             gint height,
-             gchar *text)
+psdrawstring	(GtkPlotPC *pc,
+             	 gint x, gint y,
+                 gint angle,
+                 const GdkColor *fg,
+                 const GdkColor *bg,
+                 gboolean transparent,
+                 gint border,
+                 gint border_width,
+                 gint shadow_width,
+                 const gchar *font,
+                 gint height,
+                 GtkJustification justification,
+                 const gchar *text)
+
 {
   gchar *curstr;
   gchar *currfont;
-  gchar *aux;
+  const gchar *aux = 0;
   GtkPSFont *psfont;
-  GtkPlotText ptext;
-  gchar bkspchar;
-  gchar *lastchar = NULL;
+  gchar bkspchar, insert_char, num[4];
+  const gchar *xaux = 0;
+  const gchar *lastchar = NULL;
   gint curcnt = 0, offset = 0;
   gint numf;
   gdouble scale;
   gboolean italic, bold;
+  gboolean special = FALSE;
   GList *family;
-  FILE *psout = pc->pcfile;
+  FILE *psout;
   gint twidth, theight, tdescent, tascent;
-  
+  gint i;
+
   if (text == NULL || strlen(text) == 0) return;
+
+  psout = GTK_PLOT_PS(pc)->psfile;
 
   curstr = (gchar *)g_malloc(2*strlen(text)*sizeof(gchar));
  
@@ -519,41 +648,79 @@ psdrawstring(GtkPlotPC *pc,
 
   currfont = psfont->psname;
 
-  ptext.font = psfont->psname;
-  ptext.height = height;
-  ptext.text = text;
-  ptext.angle = angle;
-  gtk_plot_text_get_size(&ptext, 1., &twidth, &theight, &tascent, &tdescent);
+  gtk_plot_text_get_size(text, angle, psfont->psname, height, 
+                         &twidth, &theight, &tascent, &tdescent);
 
   if(angle == 90 || angle == 270) angle = 360 - angle;
-
-  fprintf(psout, "gs\n");
+  psgsave(pc);
   fprintf(psout, "%d %d translate\n", x, y);
   fprintf(psout, "%d rotate\n", angle);
 
   fprintf(psout, "0 0 m\n");
   fprintf(psout, "1 -1 sc\n");
 
-  switch (justification) {
-    case GTK_JUSTIFY_LEFT:
-      break;
-    case GTK_JUSTIFY_RIGHT:
-      if(angle == 0 || angle == 180)
-             fprintf(psout, "%d JR\n", twidth);
-      else
-             fprintf(psout, "%d JR\n", theight);
-      break;
-    case GTK_JUSTIFY_CENTER:
-    default:
-      if(angle == 0 || angle == 180)
-             fprintf(psout, "%d JC\n", twidth);
-      else
-             fprintf(psout, "%d JC\n", theight);
-      break;
+  pssetcolor(pc, fg);
+  pssetfont(pc, currfont, height);
+
+  aux = text;
+  while(aux && *aux != '\0' && *aux != '\n') {
+     if(*aux == '\\'){
+         aux++;
+         switch(*aux){
+           case '0': case '1': case '2': case '3':
+           case '4': case '5': case '6': case '7': case '9':
+           case '8': case'g': case 'B': case 'b': case 'x': case 'N':
+           case 's': case 'S': case 'i': case '-': case '+': case '^':
+             special = TRUE;
+             break;
+           default:
+             break;
+         }
+     } else {
+         aux++;
+     }
+  }
+
+  if(special){
+    switch (justification) {
+      case GTK_JUSTIFY_LEFT:
+        break;
+      case GTK_JUSTIFY_RIGHT:
+        if(angle == 0 || angle == 180)
+               fprintf(psout, "%d JR\n", twidth);
+        else
+               fprintf(psout, "%d JR\n", theight);
+        break;
+      case GTK_JUSTIFY_CENTER:
+      default:
+        if(angle == 0 || angle == 180)
+               fprintf(psout, "%d JC\n", twidth);
+        else
+               fprintf(psout, "%d JC\n", theight);
+        break;
+    }
+  } else {
+    switch (justification) {
+      case GTK_JUSTIFY_LEFT:
+        break;
+      case GTK_JUSTIFY_RIGHT:
+        fprintf(psout, "(%s) sw JR\n", text);
+        break;
+      case GTK_JUSTIFY_CENTER:
+      default:
+        fprintf(psout, "(%s) sw JC\n", text);
+        break;
+    }
+    fprintf(psout, "(%s) show\n", text);
+
+    psgrestore(pc);  
+    fprintf(psout, "n\n");  
+    return;
   }
 
   aux = text;
   scale = height;
+  curcnt = 0;
 
   while(aux && *aux != '\0' && *aux != '\n') {
      if(*aux == '\\'){
@@ -566,7 +733,7 @@ psdrawstring(GtkPlotPC *pc,
                       fprintf(psout, "(%s) show\n", curstr);
                   }
                   curcnt = 0;
-                  psfont = gtk_psfont_find_by_family((gchar *)g_list_nth_data(family, atoi(aux)), italic, bold);
+                  psfont = gtk_psfont_find_by_family((gchar *)g_list_nth_data(family, *aux-'0'), italic, bold);
                   currfont = psfont->psname;
                   pssetfont(pc, currfont, (gint)scale);
                   aux++;
@@ -593,6 +760,23 @@ psdrawstring(GtkPlotPC *pc,
                   currfont = psfont->psname;
                   pssetfont(pc, currfont, (gint)scale);
                   aux++;
+                  break;
+           case 'x':
+                  xaux = aux + 1;
+                  for (i=0; i<3; i++){
+                   if (xaux[i] > 47 && xaux[i] < 58)
+                     num[i] = xaux[i];
+                   else
+                     break;
+                  }
+                  if (i < 3){
+                     aux++;
+                     break;
+                  }
+                  num[3] = '\0';
+                  insert_char = (gchar)atoi(num);
+                  curstr[curcnt++] = insert_char;
+                  aux += 4;
                   break;
            case 'i':
                   curstr[curcnt] = 0;
@@ -637,6 +821,8 @@ psdrawstring(GtkPlotPC *pc,
                   }
                   curcnt = 0;
                   scale = height;
+                  psfont = gtk_psfont_get_font(font);
+                  currfont = psfont->psname;
                   pssetfont(pc, currfont, (gint)scale);
                   fprintf(psout, "0 %d rmoveto\n", -offset);
                   offset = 0;
@@ -689,10 +875,15 @@ psdrawstring(GtkPlotPC *pc,
                   break;
          }
      } else {
+
+       if(*aux == ')' || *aux == '(')
+                curstr[curcnt++] = '\\';
+
        if(aux && *aux != '\0' && *aux !='\n'){
                 curstr[curcnt++] = *aux;
 		lastchar = aux;
                 aux++;
+
        }
      }
   }
@@ -700,16 +891,16 @@ psdrawstring(GtkPlotPC *pc,
 
   fprintf(psout, "(%s) show\n", curstr);
 
-  fprintf(psout, "gr\n");  
+  psgrestore(pc);  
   fprintf(psout, "n\n");  
 
   g_free(curstr);
 }
 
 static void
-pssetfont(GtkPlotPC *pc, gchar *font, gint height)
+pssetfont(GtkPlotPC *pc, const gchar *font, gint height)
 {
-  FILE *psout = pc->pcfile;
+  FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
   fprintf(psout, "/%s ff %f scf sf\n", font, (double)height);
 }
@@ -718,25 +909,45 @@ pssetfont(GtkPlotPC *pc, gchar *font, gint height)
 static void
 psgsave(GtkPlotPC *pc)
 {
-  fprintf(pc->pcfile,"gsave\n");
+  GtkPlotPS *ps;
+  FILE *psout;
+
+  ps = GTK_PLOT_PS(pc);
+
+  psout = ps->psfile;
+
+  fprintf(psout,"gsave\n");
+  ps->gsaved = TRUE;
 }
 
 static void
 psgrestore(GtkPlotPC *pc)
 {
-  fprintf(pc->pcfile,"grestore\n");
+  GtkPlotPS *ps;
+  FILE *psout;
+
+  ps = GTK_PLOT_PS(pc);
+
+  psout = ps->psfile;
+
+  if(!ps->gsaved) return;
+
+  fprintf(psout,"grestore\n");
+  ps->gsaved = FALSE;
 }
 
 static void
-psclip(GtkPlotPC *pc, GdkRectangle clip)
+psclip(GtkPlotPC *pc, const GdkRectangle *clip)
 {
-  fprintf(pc->pcfile,"%d %d %d %d rectclip\n", clip.x, clip.y, clip.width, clip.height);
-}
+  FILE *psout = GTK_PLOT_PS(pc)->psfile;
 
-static void
-pssetlinecaps(GtkPlotPC *pc, gint caps)
-{
-  fprintf(pc->pcfile,"%d slc\n", caps);
+  if(!clip){ 
+    fprintf(psout,"grestore\n");
+    return;
+  }
+
+  fprintf(psout,"gsave\n");
+  fprintf(psout,"%d %d %d %d rectclip\n", clip->x, clip->y, clip->width, clip->height);
 }
 
 

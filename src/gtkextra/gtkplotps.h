@@ -31,28 +31,85 @@
 extern "C" {
 #endif /* __cplusplus */
 
-void            gtk_plot_export_ps              (GtkPlot *plot,
-                                                 gchar *psfile,
-                                                 gint orientation,
-                                                 gint epsflag,
-                                                 gint page_size);
-void            gtk_plot_export_ps_with_size    (GtkPlot *plot,
-                                                 gchar *psfile,
-                                                 gint orientation,
-                                                 gint epsflag,
-                                                 gint units,
-                                                 gint width, gint height);
-void            gtk_plot_canvas_export_ps       (GtkPlotCanvas *canvas,
-                                                 char *file_name,
-                                                 gint orientation,
-                                                 gint epsflag,
-                                                 gint page_size);
-void            gtk_plot_canvas_export_ps_with_size     (GtkPlotCanvas *canvas,
-                                                 char *file_name,
-                                                 gint orientation,
-                                                 gint epsflag,
-                                                 gint units,
-                                                 gint width, gint height);
+#define GTK_PLOT_PS(obj)        GTK_CHECK_CAST (obj, gtk_plot_ps_get_type (), GtkPlotPS)
+#define GTK_TYPE_PLOT_PS   (gtk_plot_ps_get_type ())
+
+#define GTK_PLOT_PS_CLASS(klass) GTK_CHECK_CLASS_CAST (klass, gtk_plot_ps_get_type(), GtkPlotPSClass)
+#define GTK_IS_PLOT_PS(obj)     GTK_CHECK_TYPE (obj, gtk_plot_ps_get_type ())
+
+
+typedef struct _GtkPlotPS GtkPlotPS;
+typedef struct _GtkPlotPSClass GtkPlotPSClass;
+
+struct _GtkPlotPS
+{
+   GtkPlotPC pc;
+
+   FILE *psfile;
+   gchar *psname;
+ 
+   gint orientation;
+   gint epsflag;
+
+   gint units;
+   gint page_size;
+   gint width, height;
+
+   gint page_width;
+   gint page_height;
+
+   gdouble scalex, scaley;
+
+   gboolean gsaved;
+};
+
+struct _GtkPlotPSClass
+{
+   GtkPlotPCClass parent_class;
+};
+
+GtkType    gtk_plot_ps_get_type                        (void);
+GtkObject *gtk_plot_ps_new                             (const gchar *psname,
+                                                        gint orientation,
+                                                        gint epsflag,
+                                                        gint page_size,
+							gdouble scalex,
+							gdouble scaley);
+
+GtkObject *gtk_plot_ps_new_with_size                   (const gchar *psname,
+                                                        gint orientation,
+                                                        gint epsflag,
+                                                        gint units,
+                                                        gdouble width,
+                                                        gdouble height,
+							gdouble scalex,
+							gdouble scaley);
+
+void	gtk_plot_ps_construct                          (GtkPlotPS *ps,
+							const gchar *psname,
+                                                        gint orientation,
+                                                        gint epsflag,
+                                                        gint page_size,
+							gdouble scalex,
+							gdouble scaley);
+void	gtk_plot_ps_construct_with_size                (GtkPlotPS *ps,
+							const gchar *psname,
+                                                        gint orientation,
+                                                        gint epsflag,
+                                                        gint units,
+							gdouble width,
+							gdouble height,
+							gdouble scalex,
+							gdouble scaley);
+
+void gtk_plot_ps_set_size                              (GtkPlotPS *ps,
+                                                        gint units,
+                                                        gdouble width,
+                                                        gdouble height);
+
+void gtk_plot_ps_set_scale                             (GtkPlotPS *ps,
+                                                        gdouble scalex,
+                                                        gdouble scaley);
 
 
 #ifdef __cplusplus

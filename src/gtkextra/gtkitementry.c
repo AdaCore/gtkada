@@ -291,9 +291,18 @@ gtk_item_entry_new_with_max_length (guint16 max)
 {
   GtkItemEntry *item_entry;
   item_entry = gtk_type_new (gtk_item_entry_get_type ());
-  GTK_ENTRY (item_entry)->text_max_length = max;
+
+  gtk_item_entry_construct_with_max_length(item_entry, max);
+
   return GTK_WIDGET (item_entry);
 }
+
+void
+gtk_item_entry_construct_with_max_length (GtkItemEntry *item_entry, guint16 max)
+{
+  GTK_ENTRY (item_entry)->text_max_length = max;
+}
+
 
 void
 gtk_item_entry_set_text (GtkItemEntry *item_entry,
@@ -412,6 +421,7 @@ gtk_entry_size_allocate (GtkWidget     *widget,
 			 GtkAllocation *allocation)
 {
   GtkEntry *entry;
+  GtkItemEntry *ientry;
   GtkEditable *editable;
   gint width = 0, nwidth = 0, height = 0, nheight = 0;
 
@@ -420,9 +430,14 @@ gtk_entry_size_allocate (GtkWidget     *widget,
   g_return_if_fail (GTK_IS_ITEM_ENTRY (widget));
   g_return_if_fail (allocation != NULL);
 
-  widget->allocation = *allocation;
   entry = GTK_ENTRY (widget);
+  ientry = GTK_ITEM_ENTRY (widget);
   editable = GTK_EDITABLE (widget);
+
+  if(ientry->text_max_size > 0)
+    allocation->width = MIN(ientry->text_max_size, allocation->width);
+
+  widget->allocation = *allocation;
 
   if (GTK_WIDGET_REALIZED (widget))
     {
@@ -457,6 +472,7 @@ gtk_entry_size_allocate (GtkWidget     *widget,
 #endif
 
     }
+
 }
 
 static void

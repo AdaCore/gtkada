@@ -37,6 +37,7 @@
 #include <strings.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktypeutils.h>
+#include "gtkextra/gtkextra.h"
 
 #ifndef _WIN32  /* Assuming X11 */
 #include <gdk/gdkx.h>
@@ -2623,6 +2624,25 @@ ada_box_get_child (GtkBox* widget, gint num)
     return ((GtkBoxChild*)(g_list_nth_data (widget->children, num)))->widget;
   else
     return NULL;
+}
+
+/**********************************************
+ ** Functions for Gtk.Extra.Plot
+ **********************************************/
+
+void
+ada_gtk_plot_set_color (GtkPlotLine* line, GdkColor* color) {
+  line->color = *color;
+}
+
+void
+ada_gtk_plot_set_line_style (GtkPlotLine* line, GtkPlotLineStyle style) {
+  line->line_style = style;
+}
+
+void
+ada_gtk_plot_set_line_width (GtkPlotLine* line, gfloat width) {
+  line->line_width = width;
 }
 
 /**********************************************

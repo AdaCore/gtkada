@@ -31,6 +31,7 @@ with Gtk.Extra.Plot;
 with System;
 with Gdk.Color; use Gdk.Color;
 with Gtk.Extra.Plot; use Gtk.Extra.Plot;
+with Gtk.Extra.Plot_Data; use Gtk.Extra.Plot_Data;
 
 package body Gtk.Extra.Plot_Canvas is
 
@@ -74,10 +75,9 @@ package body Gtk.Extra.Plot_Canvas is
    ------------------------
 
    function Get_Active_Data (Canvas : access Gtk_Plot_Canvas_Record)
-                            return      Gtk.Extra.Plot.Gtk_Plot_Data
+      return Gtk_Plot_Data
    is
-      function Internal (Canvas : in System.Address)
-                         return      Gtk.Extra.Plot.Gtk_Plot_Data;
+      function Internal (Canvas : in System.Address) return Gtk_Plot_Data;
       pragma Import (C, Internal, "gtk_plot_canvas_get_active_data");
    begin
       return Internal (Get_Object (Canvas));
@@ -105,14 +105,18 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Get_Active_Point (Canvas : access Gtk_Plot_Canvas_Record;
                                X      : out Gdouble;
-                               Y      : out Gdouble)
+                               Y      : out Gdouble;
+                               Index  : out Gint)
    is
-      procedure Internal (Canvas : in System.Address;
-                          X      : out Gdouble;
-                          Y      : out Gdouble);
+      function Internal (Canvas : in System.Address;
+                         X      : System.Address;
+                         Y      : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_plot_canvas_get_active_point");
+      X2, Y2 : aliased Gdouble;
    begin
-      Internal (Get_Object (Canvas), X, Y);
+      Index := Internal (Get_Object (Canvas), X2'Address, Y2'Address);
+      X := X2;
+      Y := Y2;
    end Get_Active_Point;
 
    -------------
@@ -297,7 +301,7 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Grid_Set_Attributes
      (Canvas : access Gtk_Plot_Canvas_Record;
-      Style  : in Gtk.Extra.Plot.Plot_Line_Style;
+      Style  : in Gtk.Extra.Plot_Data.Plot_Line_Style;
       Width  : in Gint;
       Color  : in Gdk.Color.Gdk_Color)
    is
@@ -401,9 +405,9 @@ package body Gtk.Extra.Plot_Canvas is
      (Canvas        : access Gtk_Plot_Canvas_Record;
       X             : in Gdouble;
       Y             : in Gdouble;
-      Angle         : in Gint;
       Ps_Font       : in String;
       Height        : in Gint;
+      Angle         : in Gint;
       Fg            : in Gdk.Color.Gdk_Color;
       Bg            : in Gdk.Color.Gdk_Color;
       Transparent   : in Boolean;
@@ -414,9 +418,9 @@ package body Gtk.Extra.Plot_Canvas is
       function Internal (Canvas        : in System.Address;
                          X             : in Gdouble;
                          Y             : in Gdouble;
-                         Angle         : in Gint;
                          Font          : in String;
                          Height        : in Gint;
+                         Angle         : in Gint;
                          Fg            : in System.Address;
                          Bg            : in System.Address;
                          Transparent   : in Gint;
@@ -441,7 +445,7 @@ package body Gtk.Extra.Plot_Canvas is
       end if;
 
       return Internal
-        (Get_Object (Canvas), X, Y, Angle, Ps_Font & ASCII.NUL, Height,
+        (Get_Object (Canvas), X, Y, Ps_Font & ASCII.NUL, Height, Angle,
          F, B, Boolean'Pos (Transparent),
          Gtk.Enums.Gtk_Justification'Pos (Justification),
          Text & ASCII.NUL);
@@ -457,8 +461,8 @@ package body Gtk.Extra.Plot_Canvas is
       Y1         : Gdouble;
       X2         : Gdouble;
       Y2         : Gdouble;
-      Style      : Gtk.Extra.Plot.Plot_Line_Style;
-      Width      : Gint;
+      Style      : Plot_Line_Style;
+      Width      : Gfloat;
       Color      : Gdk.Color.Gdk_Color;
       Arrow_Mask : Plot_Canvas_Arrow)
      return Gtk_Plot_Canvas_Child
@@ -470,7 +474,7 @@ package body Gtk.Extra.Plot_Canvas is
          X2         : Gdouble;
          Y2         : Gdouble;
          Style      : Gint;
-         Width      : Gint;
+         Width      : Gfloat;
          Color      : System.Address;
          Arrow_Mask : Gint)
         return Gtk_Plot_Canvas_Child;
@@ -496,8 +500,8 @@ package body Gtk.Extra.Plot_Canvas is
       Y1         : Gdouble;
       X2         : Gdouble;
       Y2         : Gdouble;
-      Style      : Gtk.Extra.Plot.Plot_Line_Style;
-      Width      : Gint;
+      Style      : Plot_Line_Style;
+      Width      : Gfloat;
       Fg         : Gdk.Color.Gdk_Color;
       Bg         : Gdk.Color.Gdk_Color;
       Border     : Gtk.Extra.Plot.Plot_Border_Style;
@@ -511,7 +515,7 @@ package body Gtk.Extra.Plot_Canvas is
          X2         : Gdouble;
          Y2         : Gdouble;
          Style      : Gint;
-         Width      : Gint;
+         Width      : Gfloat;
          Fg         : System.Address;
          Bg         : System.Address;
          Border     : Gint;
@@ -544,8 +548,8 @@ package body Gtk.Extra.Plot_Canvas is
       Y1         : Gdouble;
       X2         : Gdouble;
       Y2         : Gdouble;
-      Style      : Gtk.Extra.Plot.Plot_Line_Style;
-      Width      : Gint;
+      Style      : Plot_Line_Style;
+      Width      : Gfloat;
       Fg         : Gdk.Color.Gdk_Color;
       Bg         : Gdk.Color.Gdk_Color;
       Fill       : Boolean := False)
@@ -558,7 +562,7 @@ package body Gtk.Extra.Plot_Canvas is
          X2         : Gdouble;
          Y2         : Gdouble;
          Style      : Gint;
-         Width      : Gint;
+         Width      : Gfloat;
          Fg         : System.Address;
          Bg         : System.Address;
          Fill       : Gint)
@@ -586,15 +590,15 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Line_Set_Attributes
      (Child : Gtk_Plot_Canvas_Child;
-      Style : Gtk.Extra.Plot.Plot_Line_Style;
-      Width : Gint;
+      Style : Plot_Line_Style;
+      Width : Gfloat;
       Color : Gdk.Color.Gdk_Color;
       Mask  : Plot_Canvas_Arrow)
    is
       procedure Internal
         (Child      : Gtk_Plot_Canvas_Child;
          Style      : Gint;
-         Width      : Gint;
+         Width      : Gfloat;
          Color      : System.Address;
          Arrow_Mask : Gint);
       pragma Import (C, Internal, "gtk_plot_canvas_line_set_attributes");
@@ -615,8 +619,8 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Rectangle_Set_Attributes
      (Child  : Gtk_Plot_Canvas_Child;
-      Style  : Gtk.Extra.Plot.Plot_Line_Style;
-      Width  : Gint;
+      Style  : Plot_Line_Style;
+      Width  : Gfloat;
       Fg     : Gdk.Color.Gdk_Color;
       Bg     : Gdk.Color.Gdk_Color;
       Border : Gtk.Extra.Plot.Plot_Border_Style;
@@ -625,7 +629,7 @@ package body Gtk.Extra.Plot_Canvas is
       procedure Internal
         (Child      : Gtk_Plot_Canvas_Child;
          Style      : Gint;
-         Width      : Gint;
+         Width      : Gfloat;
          Fg         : System.Address;
          Bg         : System.Address;
          Border     : Gint;
@@ -653,8 +657,8 @@ package body Gtk.Extra.Plot_Canvas is
 
    procedure Ellipse_Set_Attributes
      (Child  : Gtk_Plot_Canvas_Child;
-      Style  : Gtk.Extra.Plot.Plot_Line_Style;
-      Width  : Gint;
+      Style  : Plot_Line_Style;
+      Width  : Gfloat;
       Fg     : Gdk.Color.Gdk_Color;
       Bg     : Gdk.Color.Gdk_Color;
       Fill   : Boolean := False)
@@ -662,7 +666,7 @@ package body Gtk.Extra.Plot_Canvas is
       procedure Internal
         (Child      : Gtk_Plot_Canvas_Child;
          Style      : Gint;
-         Width      : Gint;
+         Width      : Gfloat;
          Fg         : System.Address;
          Bg         : System.Address;
          Fill       : Gint);
@@ -744,24 +748,6 @@ package body Gtk.Extra.Plot_Canvas is
       Internal (Get_Object (Canvas), Child, X1, Y1, X2, Y2);
    end Child_Move_Resize;
 
-   ------------------
-   -- Remove_Child --
-   ------------------
-
-   function Remove_Child
-     (Canvas : access Gtk_Plot_Canvas_Record;
-      Child  : Gtk_Plot_Canvas_Child)
-     return Boolean
-   is
-      function Internal
-        (Canvas : System.Address;
-         Child  : Gtk_Plot_Canvas_Child)
-        return Gint;
-      pragma Import (C, Internal, "gtk_plot_canvas_remove_child");
-   begin
-      return Boolean'Val (Internal (Get_Object (Canvas), Child));
-   end Remove_Child;
-
    -------------
    -- Convert --
    -------------
@@ -784,5 +770,16 @@ package body Gtk.Extra.Plot_Canvas is
    begin
       return Internal (Get_Object (Canvas));
    end Get_Pixmap;
+
+   -----------
+   -- Paint --
+   -----------
+
+   procedure Paint (Canvas : access Gtk_Plot_Canvas_Record) is
+      procedure Internal (Canvas : System.Address);
+      pragma Import (C, Internal, "gtk_plot_canvas_paint");
+   begin
+      Internal (Get_Object (Canvas));
+   end Paint;
 
 end Gtk.Extra.Plot_Canvas;

@@ -58,6 +58,8 @@ struct _GtkItemEntryClass
 GtkType    gtk_item_entry_get_type       (void);
 GtkWidget* gtk_item_entry_new            (void);
 GtkWidget* gtk_item_entry_new_with_max_length (guint16   max);
+void	   gtk_item_entry_construct_with_max_length (GtkItemEntry *item_entry,
+                                                     guint16   max);
 void       gtk_item_entry_set_text            (GtkItemEntry *item_entry, 
                                                const gchar *text,
                                                GtkJustification justification);
