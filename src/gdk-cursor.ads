@@ -58,6 +58,15 @@ package Gdk.Cursor is
    --  Create a new cursor from a given pixmap and mask.
    --  Both the pixmap and mask must have a depth of 1 (i.e. each pixel has
    --  only 2 values - on or off). The standard cursor size is 16 by 16 pixels.
+   --   - Source is the pixmap specifying the cursor.
+   --   - Mask is the pixmap specifying the mask, which must be the same size
+   --   as source.
+   --   - Fg is the foreground color, used for the bits in the source which are
+   --   enabled. The color does not have to be allocated first.
+   --   - Bg is the background color, used for the bits in the source which are
+   --   disabled. The color does not have to be allocated first.
+   --   - X is the horizontal offset of the 'hotspot' of the cursor.
+   --   - Y is the vertical offset of the 'hotspot' of the cursor.
 
    procedure Destroy (Cursor : in Gdk_Cursor);
    --  Destroy a cursor, freeing any resources allocated for it.
