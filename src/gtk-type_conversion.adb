@@ -76,7 +76,6 @@ with Gtk.Item;
 with Gtk.Item_Factory;
 with Gtk.Layout;
 with Gtk.List;
-with Gtk.List_Item;
 with Gtk.Menu;
 with Gtk.Menu_Bar;
 with Gtk.Menu_Shell;
@@ -258,8 +257,6 @@ package body Gtk.Type_Conversion is
                return new Gtk.Layout.Gtk_Layout_Record;
             elsif Type_Name = "GtkList" then
                return new Gtk.List.Gtk_List_Record;
-            elsif Type_Name = "GtkListItem" then
-               return new Gtk.List_Item.Gtk_List_Item_Record;
             end if;
          when 'M' =>
             if Type_Name = "GtkMenu" then
