@@ -752,7 +752,7 @@ package body Gtk.Style is
    is
       function Internal (Style      : in System.Address)
         return System.Address;
-      pragma Import (C, Internal, "ada_style_get_white");
+      pragma Import (C, Internal, "ada_style_get_font");
       Result : Gdk.Font.Gdk_Font;
    begin
       Set_Object (Result, Internal (Get_Object (Style)));
