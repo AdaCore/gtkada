@@ -122,6 +122,7 @@ package Gtk.Container is
      (Container         : access Gtk_Container_Record;
       Focusable_Widgets : Gtk.Widget.Widget_List.Glist);
    --  Set the chain of widgets that can take the focus for a given Container.
+   --  The list should be freed by the user
 
    procedure Unset_Focus_Chain (Container : access Gtk_Container_Record);
    --  Unset the focus chain.
