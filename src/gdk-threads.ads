@@ -29,12 +29,15 @@
 
 package Gdk.Threads is
 
+   procedure Init;
+
    procedure Enter;
 
    procedure Leave;
 
 private
 
+   pragma Import (C, Init, "g_thread_init");
    pragma Import (C, Enter, "gdk_threads_enter");
    pragma Import (C, Leave, "gdk_threads_leave");
 
