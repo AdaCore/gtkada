@@ -48,6 +48,12 @@ convert_i (gint s)
    return (void*)s;
 }
 
+guint
+ada_get_type (GtkObject* object)
+{
+  return object->klass->type;
+}
+
 /*
  * Creating new widgets
  *
