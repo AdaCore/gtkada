@@ -164,7 +164,8 @@ package Gtk.Clist is
                              return          Gtk.Adjustment.Gtk_Adjustment;
 
    procedure Gtk_New (Widget : out Gtk_Clist; Columns : in Gint);
-   procedure Initialize (Widget : access Gtk_Clist_Record; Columns : in Gint);
+   procedure Initialize
+     (Widget : access Gtk_Clist_Record'Class; Columns : in Gint);
 
    procedure Gtk_New
      (Widget  : out Gtk_Clist;
