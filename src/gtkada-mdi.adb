@@ -3155,13 +3155,7 @@ package body Gtkada.MDI is
       elsif Child.State = Floating
         and then Realized_Is_Set (Child.Initial)
       then
-         declare
-            Win : constant Gtk_Window :=
-              Gtk_Window (Get_Toplevel (Child.Initial));
-         begin
-            Gtk.Window.Deiconify (Win);
-            Gdk.Window.Gdk_Raise (Get_Window (Win));
-         end;
+         Present (Gtk_Window (Get_Toplevel (Child.Initial)));
 
       elsif Realized_Is_Set (Child) then
          Gdk.Window.Gdk_Raise (Get_Window (Child));
@@ -3293,9 +3287,7 @@ package body Gtkada.MDI is
            (C.MDI.Close_Menu_Item, (C.Flags and Destroy_Button) /= 0);
       end if;
 
-      if C.Menu_Item /= null
-        and then not Get_Active (C.Menu_Item)
-      then
+      if C.Menu_Item /= null then
          Set_Active (C.Menu_Item, True);
       end if;
 
