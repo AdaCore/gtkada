@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -141,6 +141,13 @@ package Gtk.Extra.Plot_Canvas is
    --  Redraw each of the items included in the canvas. The painting is done
    --  in the double-buffer, and must be drawn on the screen with Refresh.
 
+   procedure Freeze (Canvas : access Gtk_Plot_Canvas_Record);
+   --  Freeze all graphical updates to the screen. This significanly speeds up
+   --  the updates to the plot
+
+   procedure Thaw (Canvas : access Gtk_Plot_Canvas_Record);
+   --  Reactivate all graphical updates to the screen
+
    function Get_Pixmap (Canvas : access Gtk_Plot_Canvas_Record)
                        return Gdk.Pixmap.Gdk_Pixmap;
    --  Return the pixmap associated with the Canvas.
@@ -230,6 +237,15 @@ package Gtk.Extra.Plot_Canvas is
       Background : Gdk.Color.Gdk_Color);
    --  Set the background color for the canvas.
 
+   procedure Set_Transparent
+     (Canvas : access Gtk_Plot_Canvas_Record; Transparent : Boolean);
+   --  Whether the canvas should be transparent. If Transparent is True, all
+   --  background attributes are ignored
+
+   function Transparent
+     (Canvas : access Gtk_Plot_Canvas_Record) return Boolean;
+   --  Whether the canvas is currently transparent
+
    procedure Get_Pixel
      (Canvas : access Gtk_Plot_Canvas_Record;
       Px     : in Gdouble;
@@ -275,6 +291,11 @@ package Gtk.Extra.Plot_Canvas is
    function Get_Active_Item (Canvas  : access Gtk_Plot_Canvas_Record)
                             return Gtk_Plot_Canvas_Child;
    --  Return the currently selected item.
+
+   procedure Remove_Child
+     (Canvas : access Gtk_Plot_Canvas_Record;
+      Child  : Gtk_Plot_Canvas_Child);
+   --  Remove a child from the canvas
 
    function Put_Text
      (Canvas        : access Gtk_Plot_Canvas_Record;
@@ -348,6 +369,12 @@ package Gtk.Extra.Plot_Canvas is
       Fill       : Boolean := False)
      return Gtk_Plot_Canvas_Child;
    --  Draw an ellipse in the canvas.
+
+   function Put_Pixmap
+     (Canvas     : access Gtk_Plot_Canvas_Record;
+      Pixmap     : Gdk.Pixmap.Gdk_Pixmap;
+      X1, Y1     : Gdouble) return Gtk_Plot_Canvas_Child;
+   --  Draw a pixmap
 
    procedure Line_Set_Attributes
      (Child : Gtk_Plot_Canvas_Child;
@@ -582,3 +609,9 @@ private
    Arrow_Origin : constant Plot_Canvas_Arrow := 1;
    Arrow_End    : constant Plot_Canvas_Arrow := 2;
 end Gtk.Extra.Plot_Canvas;
+
+
+--  Unbound
+--    gtk_plot_canvas_set_pc
+--    gtk_plot_canvas_child_set_selection
+--    gtk_plot_canvas_child_set_selection_mode

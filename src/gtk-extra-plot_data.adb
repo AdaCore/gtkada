@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2003 ACT Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,9 +32,15 @@ with Glib;         use Glib;
 with Gtk.Widget;   use Gtk.Widget;
 with Gtkada.Types; use Gtkada.Types;
 with Gdk.Color;    use Gdk.Color;
+with Gdk.GC;       use Gdk.GC;
 with Interfaces.C; use Interfaces.C;
+with Ada.Unchecked_Conversion;
 
 package body Gtk.Extra.Plot_Data is
+
+   type Color_Access is access Gdk_Color;
+   function Convert is new Ada.Unchecked_Conversion
+     (System.Address, Color_Access);
 
    -------------
    -- Gtk_New --
@@ -600,14 +607,18 @@ package body Gtk.Extra.Plot_Data is
    -------------------------
 
    procedure Set_Line_Attributes
-     (Data  : access Gtk_Plot_Data_Record;
-      Style : Plot_Line_Style;
-      Width : Gfloat;
-      Color : Gdk.Color.Gdk_Color)
+     (Data       : access Gtk_Plot_Data_Record;
+      Style      : Plot_Line_Style;
+      Cap_Style  : Gdk.GC.Gdk_Cap_Style;
+      Join_Style : Gdk.GC.Gdk_Join_Style;
+      Width      : Gfloat;
+      Color      : Gdk.Color.Gdk_Color)
    is
       procedure Internal
         (Data  : System.Address;
          Style : Plot_Line_Style;
+         Cap_Style : Gdk_Cap_Style;
+         Join_Style : Gdk_Join_Style;
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_data_set_line_attributes");
@@ -615,7 +626,8 @@ package body Gtk.Extra.Plot_Data is
       C : aliased Gdk_Color := Color;
 
    begin
-      Internal (Get_Object (Data), Style, Width, C'Address);
+      Internal
+        (Get_Object (Data), Style, Cap_Style, Join_Style, Width, C'Address);
    end Set_Line_Attributes;
 
    -------------------------
@@ -623,20 +635,25 @@ package body Gtk.Extra.Plot_Data is
    -------------------------
 
    procedure Get_Line_Attributes
-     (Data  : access Gtk_Plot_Data_Record;
-      Style : out Plot_Line_Style;
-      Width : out Gfloat;
-      Color : out Gdk.Color.Gdk_Color)
+     (Data       : access Gtk_Plot_Data_Record;
+      Style      : out Plot_Line_Style;
+      Cap_Style  : out Gdk.GC.Gdk_Cap_Style;
+      Join_Style : out Gdk.GC.Gdk_Join_Style;
+      Width      : out Gfloat;
+      Color      : out Gdk.Color.Gdk_Color)
    is
       procedure Internal
-        (Data  : System.Address;
-         Style : out Plot_Line_Style;
-         Width : out Gfloat;
-         Color : System.Address);
+        (Data       : System.Address;
+         Style      : out Plot_Line_Style;
+         Cap_Style  : out Gdk.GC.Gdk_Cap_Style;
+         Join_Style : out Gdk.GC.Gdk_Join_Style;
+         Width      : out Gfloat;
+         Color      : System.Address);
       pragma Import (C, Internal, "gtk_plot_data_get_line_attributes");
       C : aliased Gdk_Color;
    begin
-      Internal (Get_Object (Data), Style, Width, C'Address);
+      Internal
+        (Get_Object (Data), Style, Cap_Style, Join_Style, Width, C'Address);
       Color := C;
    end Get_Line_Attributes;
 
@@ -645,14 +662,18 @@ package body Gtk.Extra.Plot_Data is
    ----------------------
 
    procedure Set_X_Attributes
-     (Data  : access Gtk_Plot_Data_Record;
-      Style : Plot_Line_Style;
-      Width : Gfloat;
-      Color : Gdk.Color.Gdk_Color)
+     (Data       : access Gtk_Plot_Data_Record;
+      Style      : Plot_Line_Style;
+      Cap_Style  : Gdk.GC.Gdk_Cap_Style;
+      Join_Style : Gdk.GC.Gdk_Join_Style;
+      Width      : Gfloat;
+      Color      : Gdk.Color.Gdk_Color)
    is
       procedure Internal
         (Data  : System.Address;
          Style : Plot_Line_Style;
+         Cap_Style : Gdk_Cap_Style;
+         Join_Style : Gdk_Join_Style;
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_data_set_x_attributes");
@@ -660,7 +681,8 @@ package body Gtk.Extra.Plot_Data is
       C : aliased Gdk_Color := Color;
 
    begin
-      Internal (Get_Object (Data), Style, Width, C'Address);
+      Internal
+        (Get_Object (Data), Style, Cap_Style, Join_Style, Width, C'Address);
    end Set_X_Attributes;
 
    ----------------------
@@ -668,22 +690,27 @@ package body Gtk.Extra.Plot_Data is
    ----------------------
 
    procedure Set_Y_Attributes
-     (Data  : access Gtk_Plot_Data_Record;
-      Style : Plot_Line_Style;
-      Width : Gfloat;
-      Color : Gdk.Color.Gdk_Color)
+     (Data       : access Gtk_Plot_Data_Record;
+      Style      : Plot_Line_Style;
+      Cap_Style  : Gdk.GC.Gdk_Cap_Style;
+      Join_Style : Gdk.GC.Gdk_Join_Style;
+      Width      : Gfloat;
+      Color      : Gdk.Color.Gdk_Color)
    is
       procedure Internal
-        (Data  : System.Address;
-         Style : Plot_Line_Style;
-         Width : Gfloat;
-         Color : System.Address);
+        (Data       : System.Address;
+         Style      : Plot_Line_Style;
+         Cap_Style  : Gdk.GC.Gdk_Cap_Style;
+         Join_Style : Gdk.GC.Gdk_Join_Style;
+         Width      : Gfloat;
+         Color      : System.Address);
       pragma Import (C, Internal, "gtk_plot_data_set_y_attributes");
 
       C : aliased Gdk_Color := Color;
 
    begin
-      Internal (Get_Object (Data), Style, Width, C'Address);
+      Internal
+        (Get_Object (Data), Style, Cap_Style, Join_Style, Width, C'Address);
    end Set_Y_Attributes;
 
    ----------------------
@@ -691,22 +718,27 @@ package body Gtk.Extra.Plot_Data is
    ----------------------
 
    procedure Set_Z_Attributes
-     (Data  : access Gtk_Plot_Data_Record;
-      Style : Plot_Line_Style;
-      Width : Gfloat;
-      Color : Gdk.Color.Gdk_Color)
+     (Data       : access Gtk_Plot_Data_Record;
+      Style      : Plot_Line_Style;
+      Cap_Style  : Gdk.GC.Gdk_Cap_Style;
+      Join_Style : Gdk.GC.Gdk_Join_Style;
+      Width      : Gfloat;
+      Color      : Gdk.Color.Gdk_Color)
    is
       procedure Internal
-        (Data  : System.Address;
-         Style : Plot_Line_Style;
-         Width : Gfloat;
-         Color : System.Address);
+        (Data       : System.Address;
+         Style      : Plot_Line_Style;
+         Cap_Style  : Gdk.GC.Gdk_Cap_Style;
+         Join_Style : Gdk.GC.Gdk_Join_Style;
+         Width      : Gfloat;
+         Color      : System.Address);
       pragma Import (C, Internal, "gtk_plot_data_set_z_attributes");
 
       C : aliased Gdk_Color := Color;
 
    begin
-      Internal (Get_Object (Data), Style, Width, C'Address);
+      Internal
+        (Get_Object (Data), Style, Cap_Style, Join_Style, Width, C'Address);
    end Set_Z_Attributes;
 
    -------------------
@@ -1033,4 +1065,254 @@ package body Gtk.Extra.Plot_Data is
    begin
       Internal (Get_Object (Data));
    end Remove_Link;
+
+   ------------
+   -- Update --
+   ------------
+
+   procedure Update (Data : access Gtk_Plot_Data_Record) is
+      procedure Internal (Data : System.Address);
+      pragma Import (C, Internal, "gtk_plot_data_update");
+   begin
+      Internal (Get_Object (Data));
+   end Update;
+
+   -----------------
+   -- Set_A_Scale --
+   -----------------
+
+   procedure Set_A_Scale
+     (Data : access Gtk_Plot_Data_Record; A_Scale : Gdouble)
+   is
+      procedure Internal (Data : System.Address; A_Scale : Gdouble);
+      pragma Import (C, Internal, "gtk_plot_data_set_a_scale");
+   begin
+      Internal (Get_Object (Data), A_Scale);
+   end Set_A_Scale;
+
+   -----------------
+   -- Get_A_Scale --
+   -----------------
+
+   function Get_A_Scale
+     (Data : access Gtk_Plot_Data_Record) return Gdouble
+   is
+      function Internal (Data : System.Address) return Gdouble;
+      pragma Import (C, Internal, "gtk_plot_data_get_a_scale");
+   begin
+      return Internal (Get_Object (Data));
+   end Get_A_Scale;
+
+   --------------------
+   -- Reset_Gradient --
+   --------------------
+
+   procedure Reset_Gradient (Data : access Gtk_Plot_Data_Record) is
+      procedure Internal (Data : System.Address);
+      pragma Import (C, Internal, "gtk_plot_data_reset_gradient");
+   begin
+      Internal (Get_Object (Data));
+   end Reset_Gradient;
+
+   ---------------------------
+   -- Reset_Gradient_Colors --
+   ---------------------------
+
+   procedure Reset_Gradient_Colors (Data : access Gtk_Plot_Data_Record) is
+      procedure Internal (Data : System.Address);
+      pragma Import (C, Internal, "gtk_plot_data_reset_gradient_colors");
+   begin
+      Internal (Get_Object (Data));
+   end Reset_Gradient_Colors;
+
+   ----------------------------
+   -- Set_Gradient_Nth_Color --
+   ----------------------------
+
+   procedure Set_Gradient_Nth_Color
+     (Data  : access Gtk_Plot_Data_Record;
+      Level : Guint;
+      Color : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Data : System.Address; Level : Guint; Color : System.Address);
+      pragma Import (C, Internal, "gtk_plot_data_set_gradient_nth_color");
+      C : aliased Gdk_Color := Color;
+   begin
+      Internal (Get_Object (Data), Level, C'Address);
+   end Set_Gradient_Nth_Color;
+
+   ----------------------------
+   -- Get_Gradient_Nth_Color --
+   ----------------------------
+
+   function Get_Gradient_Nth_Color
+     (Data  : access Gtk_Plot_Data_Record; Level : Guint)
+      return Gdk.Color.Gdk_Color
+   is
+      function Internal (Data : System.Address; Level : Guint)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_plot_data_get_gradient_nth_color");
+
+      C : constant Color_Access :=
+        Convert (Internal (Get_Object (Data), Level));
+   begin
+      return C.all;
+   end Get_Gradient_Nth_Color;
+
+   -------------------------------
+   -- Set_Gradient_Outer_Colors --
+   -------------------------------
+
+   procedure Set_Gradient_Outer_Colors
+     (Data : access Gtk_Plot_Data_Record;
+      Min, Max : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal (D, Min, Max : System.Address);
+      pragma Import (C, Internal, "gtk_plot_data_set_gradient_outer_colors");
+      Mi : aliased Gdk_Color := Min;
+      Ma : aliased Gdk_Color := Max;
+   begin
+      Internal (Get_Object (Data), Mi'Address, Ma'Address);
+   end Set_Gradient_Outer_Colors;
+
+   -------------------
+   -- Draw_Gradient --
+   -------------------
+
+   procedure Draw_Gradient
+     (Data : access Gtk_Plot_Data_Record; X, Y : Gint)
+   is
+      procedure Internal (Data : System.Address; X, Y : Gint);
+      pragma Import (C, Internal, "gtk_plot_data_draw_gradient");
+   begin
+      Internal (Get_Object (Data), X, Y);
+   end Draw_Gradient;
+
+   --------------------------
+   -- Gradient_Autoscale_A --
+   --------------------------
+
+   procedure Gradient_Autoscale_A (Data : access Gtk_Plot_Data_Record) is
+      procedure Internal (Data : System.Address);
+      pragma Import (C, Internal, "gtk_plot_data_gradient_autoscale_a");
+   begin
+      Internal (Get_Object (Data));
+   end Gradient_Autoscale_A;
+
+   ---------------------------
+   -- Gradient_Autoscale_Da --
+   ---------------------------
+
+   procedure Gradient_Autoscale_Da (Data : access Gtk_Plot_Data_Record) is
+      procedure Internal (Data : System.Address);
+      pragma Import (C, Internal, "gtk_plot_data_gradient_autoscale_da");
+   begin
+      Internal (Get_Object (Data));
+   end Gradient_Autoscale_Da;
+
+   --------------------------
+   -- Gradient_Autoscale_Z --
+   --------------------------
+
+   procedure Gradient_Autoscale_Z (Data : access Gtk_Plot_Data_Record) is
+      procedure Internal (Data : System.Address);
+      pragma Import (C, Internal, "gtk_plot_data_gradient_autoscale_z");
+   begin
+      Internal (Get_Object (Data));
+   end Gradient_Autoscale_Z;
+
+   ------------------------
+   -- Gradient_Set_Style --
+   ------------------------
+
+   procedure Gradient_Set_Style
+     (Data      : access Gtk_Plot_Data_Record;
+      Style     : Plot_Label_Style;
+      Precision : Gint)
+   is
+      procedure Internal (D : System.Address; S : Plot_Label_Style; P : Gint);
+      pragma Import (C, Internal, "gtk_plot_data_gradient_set_style");
+   begin
+      Internal (Get_Object (Data), Style, Precision);
+   end Gradient_Set_Style;
+
+   ------------------------
+   -- Gradient_Set_Scale --
+   ------------------------
+
+   procedure Gradient_Set_Scale
+     (Data      : access Gtk_Plot_Data_Record;
+      Scale     : Plot_Scale)
+   is
+      procedure Internal (Data : System.Address; Scale : Plot_Scale);
+      pragma Import (C, Internal, "gtk_plot_data_gradient_set_scale");
+   begin
+      Internal (Get_Object (Data), Scale);
+   end Gradient_Set_Scale;
+
+   ----------------
+   -- Add_Marker --
+   ----------------
+
+   function Add_Marker
+     (Data : access Gtk_Plot_Data_Record; Point : Guint)
+      return Gtk_Plot_Marker
+   is
+      function Internal (D : System.Address; P : Guint) return Gtk_Plot_Marker;
+      pragma Import (C, Internal, "gtk_plot_data_add_marker");
+   begin
+      return Internal (Get_Object (Data), Point);
+   end Add_Marker;
+
+   -------------------
+   -- Remove_Marker --
+   -------------------
+
+   procedure Remove_Marker
+     (Data : access Gtk_Plot_Data_Record; Marker : Gtk_Plot_Marker)
+   is
+      procedure Internal (Data : System.Address; Marker : Gtk_Plot_Marker);
+      pragma Import (C, Internal, "gtk_plot_data_remove_marker");
+   begin
+      Internal (Get_Object (Data), Marker);
+   end Remove_Marker;
+
+   --------------------
+   -- Remove_Markers --
+   --------------------
+
+   procedure Remove_Markers (Data : access Gtk_Plot_Data_Record) is
+      procedure Internal (Data : System.Address);
+      pragma Import (C, Internal, "gtk_plot_data_remove_markers");
+   begin
+      Internal (Get_Object (Data));
+   end Remove_Markers;
+
+   ------------------
+   -- Show_Markers --
+   ------------------
+
+   procedure Show_Markers
+     (Data : access Gtk_Plot_Data_Record; Show : Boolean)
+   is
+      procedure Internal (Data : System.Address; Show : Integer);
+      pragma Import (C, Internal, "gtk_plot_data_show_markers");
+   begin
+      Internal (Get_Object (Data), Boolean'Pos (Show));
+   end Show_Markers;
+
+   ---------------------
+   -- Markers_Visible --
+   ---------------------
+
+   function Markers_Visible (Data : access Gtk_Plot_Data_Record)
+      return Boolean
+   is
+      function Internal (Data : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_plot_data_markers_visible");
+   begin
+      return Boolean'Val (Internal (Get_Object (Data)));
+   end Markers_Visible;
+
 end Gtk.Extra.Plot_Data;

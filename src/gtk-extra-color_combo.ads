@@ -41,7 +41,6 @@
 
 with Gdk.Color;
 with Gtk.Extra.Combo_Box;
-with Gtkada.Types;
 
 package Gtk.Extra.Color_Combo is
 
@@ -57,35 +56,42 @@ package Gtk.Extra.Color_Combo is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   procedure Gtk_New (Widget      : out Gtk_Color_Combo;
-                      Nrows       : in Gint;
-                      Ncols       : in Gint;
-                      Color_Names : in Gtkada.Types.Chars_Ptr_Array);
+   procedure Gtk_New
+     (Widget : out Gtk_Color_Combo;
+      Nrows  : Gint;
+      Ncols  : Gint;
+      Values : Gdk.Color.Gdk_Color_Array);
    --  Create a new combo box with a specific list of colors.
    --  Note that Color_Names must contain at least Nrows * Ncols elements.
 
-   procedure Initialize (Widget      : access Gtk_Color_Combo_Record;
-                         Nrows       : in Gint;
-                         Ncols       : in Gint;
-                         Color_Names : in Gtkada.Types.Chars_Ptr_Array);
+   procedure Initialize
+     (Widget : access Gtk_Color_Combo_Record;
+      Nrows  : Gint;
+      Ncols  : Gint;
+      Values : Gdk.Color.Gdk_Color_Array);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Color_Combo.
 
-   function Get_Color_At (Widget : access Gtk_Color_Combo_Record;
-                          Row    : Gint;
-                          Col    : Gint)
-                         return String;
+   function Get_Color_At
+     (Widget : access Gtk_Color_Combo_Record;
+      Row    : Gint;
+      Col    : Gint) return Gdk.Color.Gdk_Color;
    --  Return the name of the color at specific coordinates.
 
-   procedure Find_Color (Color_Combo : access Gtk_Color_Combo_Record;
-                         Color       : in Gdk.Color.Gdk_Color;
-                         Row         : out Gint;
-                         Col         : out Gint);
+   procedure Find_Color
+     (Color_Combo : access Gtk_Color_Combo_Record;
+      Color       : Gdk.Color.Gdk_Color;
+      Row         : out Gint;
+      Col         : out Gint);
    --  Return the coordinates in which a color appear in the popup window.
    --  (-1, -1) is returned if the color was not found in the combo box.
+
+   function Get_Selection (Color_Combo : access Gtk_Color_Combo_Record)
+      return Gdk.Color.Gdk_Color;
+   --  Return the current selection in the combo.
 
    function Set_Color
      (Color_Combo : access Gtk_Color_Combo_Record;
@@ -101,15 +107,6 @@ package Gtk.Extra.Color_Combo is
    --  Set the new current color. Color must have been allocated first.  If the
    --  color is not found in the list of colors provided in the popup window,
    --  False is returned.
-
-   function Get_Column (Color_Combo : access Gtk_Color_Combo_Record)
-      return Gint;
-   --  Return the currently selected column in the popup window. You can get
-   --  the currently selected color by using Get_Color_At and passing it the
-   --  current Row and Column.
-
-   function Get_Row (Color_Combo : access Gtk_Color_Combo_Record) return Gint;
-   --  Return The currently selected row.
 
    function Get_Ncols (Color_Combo : access Gtk_Color_Combo_Record)
       return Gint;

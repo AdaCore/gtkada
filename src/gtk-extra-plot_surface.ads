@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                     Copyright (C) 2001-2003                       --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -164,6 +164,17 @@ package Gtk.Extra.Plot_Surface is
       Foreground : Gdk.Color.Gdk_Color);
    --  Set the foreground color to use for the grid
 
+   procedure Set_Transparent
+     (Data : access Gtk_Plot_Surface_Record; Transparent : Boolean);
+   --  Whether the plot is transparent. If Transparent is true, all background
+   --  attributes are ignored
+
+   procedure Build_Mesh (Data : access Gtk_Plot_Surface_Record);
+   --  ???
+
+   procedure Recalc_Nodes (Data : access Gtk_Plot_Surface_Record);
+   --  ???
+
    ---------------------
    -- Lightning model --
    ---------------------
@@ -175,6 +186,13 @@ package Gtk.Extra.Plot_Surface is
    procedure Set_Light
      (Data : access Gtk_Plot_Surface_Record; X, Y, Z : Gdouble);
    --  Set the orientation of the light vector
+
+   procedure Use_Height_Gradient
+     (Data : access Gtk_Plot_Surface_Record; Use_Gradient : Boolean);
+   --  ???
+
+   procedure Use_Amplitud
+     (Data : access Gtk_Plot_Surface_Record; Amplitud : Boolean);
 
    -------------
    -- Signals --

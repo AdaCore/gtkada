@@ -72,9 +72,13 @@ package Gtk.Extra.Item_Entry is
       Justification : in Gtk.Enums.Gtk_Justification);
    --  Change the text in the entry.
 
-   function Get_Justification (Item_Entry    : access Gtk_IEntry_Record)
-                              return Gtk.Enums.Gtk_Justification;
-   --  Return the current justification for the entry.
+   procedure Set_Cursor_Visible
+     (Item_Entry : access Gtk_IEntry_Record; Visible : Boolean);
+   --  Whether the cursor should be visible
+
+   function Get_Cursor_Visible
+     (Item_Entry : access Gtk_IEntry_Record) return Boolean;
+   --  Whether the cursor is visible
 
    -------------
    -- Signals --

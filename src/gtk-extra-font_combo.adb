@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with Pango.Font; use Pango.Font;
 
 package body Gtk.Extra.Font_Combo is
 
@@ -98,69 +99,13 @@ package body Gtk.Extra.Font_Combo is
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_font_combo_new");
+
+      procedure Psfont_Init;
+      pragma Import (C, Psfont_Init, "gtk_psfont_init");
    begin
+      Psfont_Init;
       Set_Object (Widget, Internal);
    end Initialize;
-
-   --------------------
-   -- Get_Name_Combo --
-   --------------------
-
-   function Get_Name_Combo (Font_Combo : access Gtk_Font_Combo_Record)
-                           return Gtk.Combo.Gtk_Combo
-   is
-      function Internal (Font_Combo : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_gtk_font_combo_get_name_combo");
-      Stub : Gtk.Combo.Gtk_Combo_Record;
-   begin
-      return Gtk.Combo.Gtk_Combo
-        (Get_User_Data (Internal (Get_Object (Font_Combo)), Stub));
-   end Get_Name_Combo;
-
-   --------------------
-   -- Get_Size_Combo --
-   --------------------
-
-   function Get_Size_Combo (Font_Combo : access Gtk_Font_Combo_Record)
-                           return Gtk.Combo.Gtk_Combo
-   is
-      function Internal (Font_Combo : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_gtk_font_combo_get_size_combo");
-      Stub : Gtk.Combo.Gtk_Combo_Record;
-   begin
-      return Gtk.Combo.Gtk_Combo
-        (Get_User_Data (Internal (Get_Object (Font_Combo)), Stub));
-   end Get_Size_Combo;
-
-   ---------------------
-   -- Get_Bold_Button --
-   ---------------------
-
-   function Get_Bold_Button (Font_Combo : access Gtk_Font_Combo_Record)
-                            return Gtk.Toggle_Button.Gtk_Toggle_Button
-   is
-      function Internal (Font_Combo : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_gtk_font_combo_get_bold_button");
-      Stub : Gtk.Toggle_Button.Gtk_Toggle_Button_Record;
-   begin
-      return Gtk.Toggle_Button.Gtk_Toggle_Button
-        (Get_User_Data (Internal (Get_Object (Font_Combo)), Stub));
-   end Get_Bold_Button;
-
-   -----------------------
-   -- Get_Italic_Button --
-   -----------------------
-
-   function Get_Italic_Button (Font_Combo : access Gtk_Font_Combo_Record)
-                              return Gtk.Toggle_Button.Gtk_Toggle_Button
-   is
-      function Internal (Font_Combo : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_gtk_font_combo_get_italic_button");
-      Stub : Gtk.Toggle_Button.Gtk_Toggle_Button_Record;
-   begin
-      return Gtk.Toggle_Button.Gtk_Toggle_Button
-        (Get_User_Data (Internal (Get_Object (Font_Combo)), Stub));
-   end Get_Italic_Button;
 
    --------------
    -- Get_Font --
@@ -171,9 +116,36 @@ package body Gtk.Extra.Font_Combo is
    is
       function Internal (Font_Combo : System.Address)
                         return Gdk.Font.Gdk_Font;
-      pragma Import (C, Internal, "ada_gtk_font_combo_get_font");
+      pragma Import (C, Internal, "gtk_font_combo_get_gdkfont");
    begin
       return Internal (Get_Object (Font_Combo));
    end Get_Font;
+
+   ---------------------
+   -- Get_Font_Height --
+   ---------------------
+
+   function Get_Font_Height
+     (Font_Combo : access Gtk_Font_Combo_Record)  return Glib.Gint
+   is
+      function Internal (Combo : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_font_combo_get_font_height");
+   begin
+      return Internal (Get_Object (Font_Combo));
+   end Get_Font_Height;
+
+   --------------------------
+   -- Get_Font_Description --
+   --------------------------
+
+   function Get_Font_Description
+     (Font_Combo : access Gtk_Font_Combo_Record)
+      return Pango.Font.Pango_Font_Description
+   is
+      function Internal (Combo : System.Address) return Pango_Font_Description;
+      pragma Import (C, Internal, "gtk_font_combo_get_font_description");
+   begin
+      return Internal (Get_Object (Font_Combo));
+   end Get_Font_Description;
 
 end Gtk.Extra.Font_Combo;

@@ -35,11 +35,11 @@
 
 with Gtk.Adjustment;  use Gtk.Adjustment;
 with Gtk.Container;
-with Gtk.Enums;
+with Gtk.Enums;       use Gtk.Enums;
 with Gdk.Rectangle;
 with Gdk.Color;
 with Gdk.GC;
-with Gdk.Font;
+with Pango.Font;
 with Gtk.Widget;
 
 package Gtk.Extra.Sheet is
@@ -196,6 +196,21 @@ package Gtk.Extra.Sheet is
    --  whereas (1.0, 1.0) is at the bottom-right corner.
    --  If Row or Column is negative, there is no change.
 
+   procedure Set_Background
+     (Sheet : access Gtk_Sheet_Record; Color : Gdk.Color.Gdk_Color);
+   --  Change the background color of the cells.
+
+   procedure Set_Grid
+     (Sheet : access Gtk_Sheet_Record; Color : Gdk.Color.Gdk_Color);
+   --  Set the color to use for the grid.
+
+   procedure Show_Grid
+     (Sheet : access Gtk_Sheet_Record; Show : Boolean);
+   --  Whether the grid should be made visible
+
+   function Grid_Visible (Sheet : access Gtk_Sheet_Record) return Boolean;
+   --  Whether the grid is currently visible
+
    ----------------------------
    -- Selection and Clipping --
    ----------------------------
@@ -224,6 +239,46 @@ package Gtk.Extra.Sheet is
    --  Replace the current selection with a specific row.
    --  The range is highlighted.
 
+   procedure Set_Autoresize
+     (Sheet : access Gtk_Sheet_Record; Autoresize : Boolean);
+   --  Whether cells should automatically resize to fit their contents
+
+   function Autoresize (Sheet : access Gtk_Sheet_Record) return Boolean;
+   --  Whether cells automatically resize to fit their contents
+
+   procedure Set_Autoscroll
+     (Sheet : access Gtk_Sheet_Record; Autoscroll : Boolean);
+   --  Whether the sheet should automatically scroll to show the active cell at
+   --  all times.
+
+   function Autoscroll (Sheet : access Gtk_Sheet_Record) return Boolean;
+   --  Whether the sheet automatically scrolls to show the active cell at all
+   --  times.
+
+   procedure Set_Clip_Text
+     (Sheet : access Gtk_Sheet_Record; Clip : Boolean);
+   --  Set when the text contained in the cells is automatically clipped to
+   --  their width.
+
+   function Clip_Text (Sheet : access Gtk_Sheet_Record) return Boolean;
+   --  Whether the text contained in the cells is automatically clipped to
+   --  their width.
+
+   procedure Set_Justify_Entry
+     (Sheet : access Gtk_Sheet_Record; Justify_Entry : Boolean);
+   --  Set when the justification attribute for entries should be taken into
+   --  account
+
+   function Justify_Entry (Sheet : access Gtk_Sheet_Record) return Boolean;
+   --  Whether the justification attribute is used for entries
+
+   procedure Set_Locked
+     (Sheet : access Gtk_Sheet_Record; Locked : Boolean);
+   --  If Locked is true, the cells are no longer editable
+
+   function Locked (Sheet : access Gtk_Sheet_Record) return Boolean;
+   --  Whether cells are currently read-only
+
    procedure Select_Range (Sheet     : access Gtk_Sheet_Record;
                            The_Range : in Gtk_Sheet_Range);
    --  Select a new range of cells.
@@ -234,11 +289,14 @@ package Gtk.Extra.Sheet is
 
    procedure Clip_Range (Sheet     : access Gtk_Sheet_Record;
                          The_Range : in Gtk_Sheet_Range);
-   --  Create a new clip range.
+   --  Create a new clip range, which is copied to the clipboard
    --  That range is flashed on the screen.
 
    procedure Unclip_Range (Sheet : access Gtk_Sheet_Record);
    --  Destroy the clip area.
+
+   function In_Clip (Sheet : access Gtk_Sheet_Record) return Boolean;
+   --  Whether a range was copied to the clipboard
 
    function Set_Active_Cell (Sheet  : access Gtk_Sheet_Record;
                              Row    : in Gint;
@@ -247,6 +305,8 @@ package Gtk.Extra.Sheet is
    --  Set active cell where the entry will be displayed.
    --  Returns FALSE if the current cell can not be deactivated or if the
    --  requested cell can't be activated.
+   --  Depending on the value passed to Set_Autoscroll, the sheet might be
+   --  scrolled.
 
    procedure Get_Active_Cell (Sheet  : access Gtk_Sheet_Record;
                               Row    : out Gint;
@@ -271,14 +331,18 @@ package Gtk.Extra.Sheet is
                              return String;
    --  Return the title of a specific column.
 
-   procedure Set_Column_Titles_Height (Sheet  : access Gtk_Sheet_Record;
-                                       Height : in Guint);
+   procedure Set_Column_Titles_Height
+     (Sheet  : access Gtk_Sheet_Record; Height : Guint);
    --  Modify the height of the row in which the column titles appear.
 
    procedure Column_Button_Add_Label (Sheet  : access Gtk_Sheet_Record;
                                       Column : in Gint;
                                       Label  : in String);
    --  Modify the label of the button that appears at the top of each column.
+
+   function Column_Button_Get_Label
+     (Sheet : access Gtk_Sheet_Record; Column : Gint) return String;
+   --  Return the label for the button that appears at the top of each column
 
    procedure Column_Button_Justify
       (Sheet         : access Gtk_Sheet_Record;
@@ -291,6 +355,11 @@ package Gtk.Extra.Sheet is
 
    procedure Hide_Column_Titles (Sheet : access Gtk_Sheet_Record);
    --  Hide the row in which the column titles appear.
+
+   function Column_Titles_Visible
+     (Sheet : access Gtk_Sheet_Record) return Boolean;
+   --  Whether a special row is added at the top to show the title of the
+   --  columns.
 
    procedure Columns_Set_Sensitivity (Sheet     : access Gtk_Sheet_Record;
                                       Sensitive : in Boolean);
@@ -309,6 +378,13 @@ package Gtk.Extra.Sheet is
                                     Column  : in Gint;
                                     Visible : in Boolean);
    --  Change the visibility of a column.
+
+   procedure Columns_Set_Resizable
+     (Sheet : access Gtk_Sheet_Record; Resizable : Boolean);
+   --  Whether columns are resizable
+
+   function Columns_Resizable (Sheet : access Gtk_Sheet_Record) return Boolean;
+   --  Whether columns are resizable
 
    procedure Column_Label_Set_Visibility
      (Sheet   : access Gtk_Sheet_Record;
@@ -366,19 +442,22 @@ package Gtk.Extra.Sheet is
    --  Note that this title does not appear on the screen, and can only be
    --  used internally to find a specific row.
 
-   function Get_Row_Title (Sheet  : access Gtk_Sheet_Record;
-                           Row : Gint)
-                          return String;
+   function Get_Row_Title
+     (Sheet  : access Gtk_Sheet_Record; Row : Gint) return String;
    --  Return the title of a specific row.
 
-   procedure Set_Row_Titles_Width (Sheet : access Gtk_Sheet_Record;
-                                   Width : in Guint);
+   procedure Set_Row_Titles_Width
+     (Sheet : access Gtk_Sheet_Record; Width : Guint);
    --  Modify the width of the column that has the row titles.
 
    procedure Row_Button_Add_Label (Sheet : access Gtk_Sheet_Record;
                                    Row   : in Gint;
                                    Label : in String);
-   --  Modify the label of the button that appears at the left of each row.
+   --  Modify the label of the button that appears on the left of each row.
+
+   function Row_Button_Get_Label
+     (Sheet : access Gtk_Sheet_Record; Row : Gint) return String;
+   --  Return the label for the button that appears on the left of each row.
 
    procedure Row_Button_Justify
       (Sheet         : access Gtk_Sheet_Record;
@@ -391,6 +470,11 @@ package Gtk.Extra.Sheet is
 
    procedure Hide_Row_Titles (Sheet : access Gtk_Sheet_Record);
    --  Hide the column in which the row titles appear.
+
+   function Row_Titles_Visible
+     (Sheet : access Gtk_Sheet_Record) return Boolean;
+   --  Whether a special column is added to the left to show the title of the
+   --  rows.
 
    procedure Rows_Set_Sensitivity (Sheet     : access Gtk_Sheet_Record;
                                    Sensitive : in Boolean);
@@ -420,6 +504,13 @@ package Gtk.Extra.Sheet is
      (Sheet   : access Gtk_Sheet_Record;
       Visible : Boolean := True);
    --  Change the visibility for all the row labels.
+
+   procedure Rows_Set_Resizable
+     (Sheet : access Gtk_Sheet_Record; Resizable : Boolean);
+   --  Whether rows are resizable
+
+   function Rows_Resizable (Sheet : access Gtk_Sheet_Record) return Boolean;
+   --  Whether rows are resizable
 
    procedure Set_Row_Height (Sheet  : access Gtk_Sheet_Record;
                              Row    : in Gint;
@@ -503,7 +594,7 @@ package Gtk.Extra.Sheet is
 
    procedure Range_Set_Font (Sheet     : access Gtk_Sheet_Record;
                              The_Range : in Gtk_Sheet_Range;
-                             Font      : in Gdk.Font.Gdk_Font);
+                             Font      : Pango.Font.Pango_Font_Description);
    --  Change the font of the cells in the range.
 
    -----------
@@ -586,16 +677,31 @@ package Gtk.Extra.Sheet is
    --  Put a new child at a specific location (in pixels) in the sheet.
 
    procedure Attach
-      (Sheet   : access Gtk_Sheet_Record;
-       Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Row     : in Gint;
-       Col     : in Gint;
-       X_Align : in Gfloat;
-       Y_Align : in Gfloat);
+      (Sheet    : access Gtk_Sheet_Record;
+       Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
+       Row      : Gint;
+       Col      : Gint;
+       Xoptions : Gtk.Enums.Gtk_Attach_Options := Expand or Fill;
+       Yoptions : Gtk.Enums.Gtk_Attach_Options := Expand or Fill;
+       Xpadding : Gint := 0;
+       Ypadding : Gint := 0);
    --  Attach a child to a specific Cell in the sheet.
    --  X_Align and Y_Align should be between 0.0 and 1.0, indicating that
    --  the child should be aligned from the Left (resp. Top) to the Right
    --  (resp. Bottom) of the cell.
+   --  If Row or Col is negative, the widget is attached to the row buttons or
+   --  column buttons.
+   --  Widget will not be moved if the cell is moved.
+
+   procedure Attach_Floating
+      (Sheet    : access Gtk_Sheet_Record;
+       Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
+       Row      : Gint;
+       Col      : Gint);
+   --  Attach a child at the current location or (Row, Col).
+   --  If the cell is moved because of resizing or other reasons, Widget will
+   --  be moved as well.
+
 
    procedure Move_Child
       (Sheet  : access Gtk_Sheet_Record;
@@ -617,10 +723,8 @@ package Gtk.Extra.Sheet is
    procedure Button_Attach
      (Sheet   : access Gtk_Sheet_Record;
       Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Row     : in Gint;
-      Col     : in Gint;
-      X_Align : in Gfloat;
-      Y_Align : in Gfloat);
+      Row     : Gint;
+      Col     : Gint);
    --  Attach a new button in the row or column title.
    --  One of Row or Col must be negative (but only one).
    --  This can be used to modify the standard buttons that appear at the top
@@ -660,105 +764,6 @@ package Gtk.Extra.Sheet is
                           Row   : in Gint;
                           Col   : in Gint);
    --  Delete the user data associated with the cell.
-
-
-
-   -----------
-   -- Flags --
-   -----------
-   --  Some flags are defined for this widget. You can not access them through
-   --  the usual interface in Gtk.Object.Flag_Is_Set since this widget is not
-   --  part of the standard gtk+ packages. Instead, use the functions below.
-   --
-   --  - "Is_Locked"
-   --    Set if the cells are editable
-   --
-   --  - "Is_Frozen"
-   --    Set if the sheet is temporary frozen, ie does not redisplay itself
-   --    after each modification. See the subprograms Freeze and Thaw.
-   --
-   --  - "In_Xdrag"
-   --    Set while a column is being dynamically resized by the user.
-   --
-   --  - "In_Ydrag"
-   --    Set while a row is being dynamically resized by the user.
-   --
-   --  - "In_Drag"
-   --    Set while the active cell's is being dragged.
-   --
-   --  - "In_Selection"
-   --    Set while the user is selecting a block of cells.
-   --
-   --  - "In_Resize"
-   --    Set while the sheet itself is being dynamically resized by the user.
-   --
-   --  - "In_Clip"
-   --    See the subprograms Clip_Range and Unclip_Range.
-   --
-   --  - "Row_Frozen"
-   --    Set when the user can not dynamically resize the rows.
-   --
-   --  - "Column_Frozen"
-   --    Set when the user can not dynamically resize the columns.
-   --
-   --  - "Auto_Resize"
-   --    Set when the columns automatically resize themselves when their
-   --    content is longer than their width.
-   --
-   --  - "Clip_Text"
-   --    Set when the text contained in the cells is automatically clipped to
-   --    their width.
-   --
-   --  - "Row_Titles_Visible"
-   --    Set when a special column is added to the left to show the title of
-   --    the rows.
-   --
-   --  - "Column_Titles_Visible"
-   --    Set when a special row is added at the top to show the title of the
-   --    columns.
-   --
-   --  - "Auto_Scroll"
-   --    Set when the sheet should automatically scroll to show the active
-   --    cell at all times.
-   --
-   --  - "Justify_Entry"
-   --    Set when the justification attribute for entries should be taken into
-   --    account
-
-   Is_Locked             : constant := 2 ** 0;
-   Is_Frozen             : constant := 2 ** 1;
-   In_Xdrag              : constant := 2 ** 2;
-   In_Ydrag              : constant := 2 ** 3;
-   In_Drag               : constant := 2 ** 4;
-   In_Selection          : constant := 2 ** 5;
-   In_Resize             : constant := 2 ** 6;
-   In_Clip               : constant := 2 ** 7;
-   Row_Frozen            : constant := 2 ** 8;
-   Column_Frozen         : constant := 2 ** 9;
-   Auto_Resize           : constant := 2 ** 10;
-   Clip_Text             : constant := 2 ** 11;
-   Row_Titles_Visible    : constant := 2 ** 12;
-   Column_Titles_Visible : constant := 2 ** 13;
-   Auto_Scroll           : constant := 2 ** 14;
-   Justify_Entry         : constant := 2 ** 15;
-
-   function Sheet_Flag_Is_Set (Sheet : access Gtk_Sheet_Record;
-                               Flag  : Guint16)
-                              return Boolean;
-   --  Test whether one of the flags for a Gtk_Sheet widget or its children
-   --  is set. This can only be used for the flags defined in the
-   --  Gtk.Extra.Gtk_Sheet package.
-
-   procedure Sheet_Set_Flags  (Sheet : access Gtk_Sheet_Record;
-                               Flags : Guint16);
-   --  Set the flags for a Gtk_Sheet widget or its children. Note that the
-   --  flags currently set are not touched by this function. This can only be
-   --  used for the flags defined in the Gtk.Extra.Gtk_Sheet package.
-
-   procedure Sheet_Unset_Flags  (Sheet : access Gtk_Sheet_Record;
-                                 Flags : Guint16);
-   --  Unset the flags in the widget.
-
 
    -------------
    -- Signals --
@@ -907,3 +912,7 @@ private
    All_Borders   : constant Gtk_Sheet_Border := 15;
    pragma Convention (C, Gtk_Sheet_Range);
 end Gtk.Extra.Sheet;
+
+
+--  Unbounded:
+--  gtk_sheet_get_entry_widget

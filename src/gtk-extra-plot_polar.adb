@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2003 ACT Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -78,4 +79,16 @@ package body Gtk.Extra.Plot_Polar is
    begin
       Internal (Get_Object (Polar), Angle);
    end Rotate;
+
+   ---------------
+   -- Get_Angle --
+   ---------------
+
+   function Get_Angle (Polar : access Gtk_Plot_Polar_Record) return Gdouble is
+      function Internal (Polar : System.Address) return Gdouble;
+      pragma Import (C, Internal, "gtk_plot_polar_get_angle");
+   begin
+      return Internal (Get_Object (Polar));
+   end Get_Angle;
+
 end Gtk.Extra.Plot_Polar;

@@ -29,8 +29,15 @@
 
 with Gtk.Enums; use Gtk.Enums;
 with System;
+with Glib.Type_Conversion_Hooks;
+pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.Extra.Item_Entry is
+
+   function Type_Conversion (Type_Name : String) return GObject;
+   --  This function is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    -------------
    -- Gtk_New --
@@ -96,18 +103,45 @@ package body Gtk.Extra.Item_Entry is
                 Justification);
    end Set_Text;
 
-   -----------------------
-   -- Get_Justification --
-   -----------------------
+   ------------------------
+   -- Set_Cursor_Visible --
+   ------------------------
 
-   function Get_Justification (Item_Entry    : access Gtk_IEntry_Record)
-                              return Gtk.Enums.Gtk_Justification
+   procedure Set_Cursor_Visible
+     (Item_Entry : access Gtk_IEntry_Record; Visible : Boolean)
    is
-      function Internal (Item_Entry : System.Address) return Gint;
-      pragma Import (C, Internal, "ada_gtk_item_entry_get_justification");
+      procedure Internal (Ent : System.Address; Visible : Gboolean);
+      pragma Import (C, Internal, "gtk_item_entry_set_cursor_visible");
    begin
-      return Gtk.Enums.Gtk_Justification'Val
-        (Internal (Get_Object (Item_Entry)));
-   end Get_Justification;
+      Internal (Get_Object (Item_Entry), Boolean'Pos (Visible));
+   end Set_Cursor_Visible;
 
+   ------------------------
+   -- Get_Cursor_Visible --
+   ------------------------
+
+   function Get_Cursor_Visible
+     (Item_Entry : access Gtk_IEntry_Record) return Boolean
+   is
+      function Internal (Ent : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_item_entry_get_cursor_visible");
+   begin
+      return Boolean'Val (Internal (Get_Object (Item_Entry)));
+   end Get_Cursor_Visible;
+
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return GObject is
+   begin
+      if Type_Name = "GtkItemEntry" then
+         return new Gtk_Item_Entry_Record;
+      else
+         return null;
+      end if;
+   end Type_Conversion;
+
+begin
+   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Extra.Item_Entry;

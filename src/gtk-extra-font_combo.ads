@@ -37,9 +37,8 @@
 --  <c_version>gtk+extra 0.99.14</c_version>
 
 with Gtk.Toolbar;
-with Gtk.Combo;
-with Gtk.Toggle_Button;
 with Gdk.Font;
+with Pango.Font;
 
 package Gtk.Extra.Font_Combo is
 
@@ -72,26 +71,17 @@ package Gtk.Extra.Font_Combo is
                                     Height     : in Gint);
    --  Selects the nth font in the combo box.
 
-   function Get_Name_Combo (Font_Combo : access Gtk_Font_Combo_Record)
-                           return Gtk.Combo.Gtk_Combo;
-   --  Return the combo box used to select the name of the font.
-
-   function Get_Size_Combo (Font_Combo : access Gtk_Font_Combo_Record)
-                           return Gtk.Combo.Gtk_Combo;
-   --  Return the combo box used to select the size of the font.
-
-   function Get_Bold_Button (Font_Combo : access Gtk_Font_Combo_Record)
-                            return Gtk.Toggle_Button.Gtk_Toggle_Button;
-   --  Return the toggle button that indicates whether the font is
-   --  bold.
-
-   function Get_Italic_Button (Font_Combo : access Gtk_Font_Combo_Record)
-                              return Gtk.Toggle_Button.Gtk_Toggle_Button;
-   --  Return the toggle button that indicates whether the font is
-   --  italic.
+   function Get_Font_Height
+     (Font_Combo : access Gtk_Font_Combo_Record)  return Glib.Gint;
+   --  Return the height of the selected font
 
    function Get_Font (Font_Combo : access Gtk_Font_Combo_Record)
                      return Gdk.Font.Gdk_Font;
+   --  Return the selected font.
+
+   function Get_Font_Description
+     (Font_Combo : access Gtk_Font_Combo_Record)
+     return Pango.Font.Pango_Font_Description;
    --  Return the selected font.
 
    -------------

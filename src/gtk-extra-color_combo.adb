@@ -29,9 +29,9 @@
 
 with Gdk.Color;   use Gdk.Color;
 with System;
-with Interfaces.C.Strings;
 with System;
 with Gtk.Widget;
+with Ada.Unchecked_Conversion;
 
 package body Gtk.Extra.Color_Combo is
 
@@ -44,6 +44,10 @@ package body Gtk.Extra.Color_Combo is
      (Combo  : access Gtk_Color_Combo_Record'Class;
       Column : Gint);
    --  Set the selected column in the widget
+
+   type Color_Access is access Gdk_Color;
+   function Convert is new Ada.Unchecked_Conversion
+     (System.Address, Color_Access);
 
    ----------------
    -- Find_Color --
@@ -96,34 +100,34 @@ package body Gtk.Extra.Color_Combo is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget      : out Gtk_Color_Combo;
-                      Nrows       : in Gint;
-                      Ncols       : in Gint;
-                      Color_Names : in Gtkada.Types.Chars_Ptr_Array)
-   is
+   procedure Gtk_New
+     (Widget : out Gtk_Color_Combo;
+      Nrows  : Gint;
+      Ncols  : Gint;
+      Values : Gdk.Color.Gdk_Color_Array) is
    begin
       Widget := new Gtk_Color_Combo_Record;
-      Initialize (Widget, Nrows, Ncols, Color_Names);
+      Initialize (Widget, Nrows, Ncols, Values);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget      : access Gtk_Color_Combo_Record;
-                         Nrows       : in Gint;
-                         Ncols       : in Gint;
-                         Color_Names : in Gtkada.Types.Chars_Ptr_Array)
+   procedure Initialize
+     (Widget : access Gtk_Color_Combo_Record;
+      Nrows  : Gint;
+      Ncols  : Gint;
+      Values : Gdk.Color.Gdk_Color_Array)
    is
-      function Internal (Nrows       : in Gint;
-                         Ncols       : in Gint;
-                         Color_Names : in System.Address)
-                        return           System.Address;
+      function Internal (Nrows  : in Gint;
+                         Ncols  : in Gint;
+                         Values : in System.Address)
+                        return System.Address;
       pragma Import (C, Internal, "gtk_color_combo_new_with_values");
    begin
-      Set_Object (Widget, Internal (Nrows,
-                                    Ncols,
-                                    Color_Names (Color_Names'First)'Address));
+      Set_Object
+        (Widget, Internal (Nrows, Ncols,  Values (Values'First)'Address));
    end Initialize;
 
    ------------------
@@ -133,16 +137,18 @@ package body Gtk.Extra.Color_Combo is
    function Get_Color_At (Widget : access Gtk_Color_Combo_Record;
                           Row    : Gint;
                           Col    : Gint)
-                         return String
+                         return Gdk_Color
    is
-      function Internal (Widget : System.Address;
-                         Row    : Gint;
-                         Col    : Gint)
-                        return Interfaces.C.Strings.chars_ptr;
+      function Internal
+        (Widget : System.Address;
+         Row    : Gint;
+         Col    : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_color_combo_get_color_at");
+
+      Color : Color_Access;
    begin
-      return Interfaces.C.Strings.Value
-        (Internal (Get_Object (Widget), Row, Col));
+      Color := Convert (Internal (Get_Object (Widget), Row, Col));
+      return Color.all;
    end Get_Color_At;
 
    ---------------
@@ -199,40 +205,15 @@ package body Gtk.Extra.Color_Combo is
         (Combo     : System.Address;
          Signal    : String;
          Selection : Gint;
-         Name      : String);
+         Color     : System.Address);
       pragma Import (C, Internal, "gtk_signal_emit_by_name");
+
+      C : aliased constant Gdk_Color := Get_Color_At (Color_Combo, Row, Col);
    begin
       Internal (Get_Object (Color_Combo), "changed" & ASCII.NUL,
-                Row * Get_Ncols (Color_Combo) + Col,
-                Get_Color_At (Color_Combo, Row, Col) & ASCII.NUL);
+                Row * Get_Ncols (Color_Combo) + Col, C'Address);
    end Changed;
 
-
-   ----------------
-   -- Get_Column --
-   ----------------
-
-   function Get_Column (Color_Combo : access Gtk_Color_Combo_Record)
-      return Gint
-   is
-      function Internal (Combo : System.Address) return Gint;
-      pragma Import (C, Internal, "ada_gtk_extra_color_combo_get_column");
-   begin
-      return Internal (Get_Object (Color_Combo));
-   end Get_Column;
-
-   -------------
-   -- Get_Row --
-   -------------
-
-   function Get_Row (Color_Combo : access Gtk_Color_Combo_Record)
-      return Gint
-   is
-      function Internal (Combo : System.Address) return Gint;
-      pragma Import (C, Internal, "ada_gtk_extra_color_combo_get_row");
-   begin
-      return Internal (Get_Object (Color_Combo));
-   end Get_Row;
 
    ---------------
    -- Get_Ncols --
@@ -287,5 +268,21 @@ package body Gtk.Extra.Color_Combo is
    begin
       Internal (Get_Object (Combo), Column);
    end Set_Column;
+
+   -------------------
+   -- Get_Selection --
+   -------------------
+
+   function Get_Selection (Color_Combo : access Gtk_Color_Combo_Record)
+      return Gdk.Color.Gdk_Color
+   is
+      function Internal (Combo : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_color_combo_get_selection");
+
+      C : constant Color_Access :=
+        Convert (Internal (Get_Object (Color_Combo)));
+   begin
+      return C.all;
+   end Get_Selection;
 
 end Gtk.Extra.Color_Combo;

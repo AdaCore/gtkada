@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2003 ACT Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -61,6 +62,9 @@ package Gtk.Extra.Plot_Polar is
 
    procedure Rotate (Polar : access Gtk_Plot_Polar_Record; Angle : Gdouble);
    --  Rotate the graph by a given amount of radians.
+
+   function Get_Angle (Polar : access Gtk_Plot_Polar_Record) return Gdouble;
+   --  Return the current angle for the polar plot
 
 private
    type Gtk_Plot_Polar_Record is new Gtk.Extra.Plot.Gtk_Plot_Record

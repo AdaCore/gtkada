@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                     Copyright (C) 2001-2003                       --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -854,5 +854,40 @@ package body Gtk.Extra.Plot_3D is
    begin
       Internal (Get_Object (Plot), Min,  Max);
    end Set_Zrange;
+
+   --------------------
+   -- Axis_Set_Scale --
+   --------------------
+
+   procedure Axis_Set_Scale
+     (Plot  : access Gtk_Plot_3D_Record;
+      Axis  : Gtk.Extra.Plot.Plot_Axis_Pos;
+      Scale : Gtk.Extra.Plot.Plot_Scale)
+   is
+      procedure Internal
+        (Plot : System.Address;
+         Axis : Plot_Axis_Pos;
+         Scale : Gtk.Extra.Plot.Plot_Scale);
+      pragma Import (C, Internal, "gtk_plot3d_axis_set_scale");
+   begin
+      Internal (Get_Object (Plot), Axis, Scale);
+   end Axis_Set_Scale;
+
+   --------------------
+   -- Axis_Get_Scale --
+   --------------------
+
+   function Axis_Get_Scale
+     (Plot  : access Gtk_Plot_3D_Record;
+      Axis  : Gtk.Extra.Plot.Plot_Axis_Pos)
+      return Gtk.Extra.Plot.Plot_Scale
+   is
+      function Internal
+        (Plot : System.Address; Axis : Plot_Axis_Pos)
+         return Gtk.Extra.Plot.Plot_Scale;
+      pragma Import (C, Internal, "gtk_plot3d_axis_get_scale");
+   begin
+      return Internal (Get_Object (Plot), Axis);
+   end Axis_Get_Scale;
 
 end Gtk.Extra.Plot_3D;

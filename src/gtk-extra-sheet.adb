@@ -27,53 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gdk.Color; use Gdk.Color;
 with Gtk.Enums; use Gtk.Enums;
+with Pango.Font; use Pango.Font;
 with System;
 with Interfaces.C.Strings;
 with Unchecked_Conversion;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Extra.Sheet is
-
-   -----------------------
-   -- Sheet_Flag_Is_Set --
-   -----------------------
-
-   function Sheet_Flag_Is_Set (Sheet : access Gtk_Sheet_Record;
-                               Flag  : Guint16)
-                              return Boolean
-   is
-      function Internal (Sheet : System.Address; Flag : Guint16)
-                        return Gint;
-      pragma Import (C, Internal, "ada_gtk_extra_sheet_flag_is_set");
-   begin
-      return Internal (Get_Object (Sheet), Flag) /= 0;
-   end Sheet_Flag_Is_Set;
-
-   ---------------------
-   -- Sheet_Set_Flags --
-   ---------------------
-
-   procedure Sheet_Set_Flags  (Sheet : access Gtk_Sheet_Record;
-                               Flags : Guint16)
-   is
-      procedure Internal (Sheet : System.Address; Flags : Guint16);
-      pragma Import (C, Internal, "ada_gtk_extra_sheet_set_flags");
-   begin
-      Internal (Get_Object (Sheet), Flags);
-   end Sheet_Set_Flags;
-
-   -----------------------
-   -- Sheet_Unset_Flags --
-   -----------------------
-
-   procedure Sheet_Unset_Flags  (Sheet  : access Gtk_Sheet_Record;
-                                 Flags : Guint16)
-   is
-      procedure Internal (Sheet : System.Address; Flags : Guint16);
-      pragma Import (C, Internal, "ada_gtk_extra_sheet_unset_flags");
-   begin
-      Internal (Get_Object (Sheet), Flags);
-   end Sheet_Unset_Flags;
 
    -------------
    -- Gtk_New --
@@ -1400,11 +1362,11 @@ package body Gtk.Extra.Sheet is
 
    procedure Range_Set_Font (Sheet     : access Gtk_Sheet_Record;
                              The_Range : in Gtk_Sheet_Range;
-                             Font      : in Gdk.Font.Gdk_Font)
+                             Font      : Pango.Font.Pango_Font_Description)
    is
-      procedure Internal (Sheet     : in System.Address;
-                          The_Range : in Gtk_Sheet_Range;
-                          Font      : in Gdk.Font.Gdk_Font);
+      procedure Internal (Sheet     : System.Address;
+                          The_Range : Gtk_Sheet_Range;
+                          Font      : Pango_Font_Description);
       pragma Import (C, Internal, "gtk_sheet_range_set_font");
    begin
       Internal (Get_Object (Sheet), The_Range, Font);
@@ -1434,23 +1396,25 @@ package body Gtk.Extra.Sheet is
    -- Attach --
    ------------
 
-   procedure Attach (Sheet   : access Gtk_Sheet_Record;
-                     Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-                     Row     : in Gint;
-                     Col     : in Gint;
-                     X_Align : in Gfloat;
-                     Y_Align : in Gfloat)
+   procedure Attach
+      (Sheet    : access Gtk_Sheet_Record;
+       Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
+       Row      : Gint;
+       Col      : Gint;
+       Xoptions : Gtk.Enums.Gtk_Attach_Options := Expand or Fill;
+       Yoptions : Gtk.Enums.Gtk_Attach_Options := Expand or Fill;
+       Xpadding : Gint := 0;
+       Ypadding : Gint := 0)
    is
-      procedure Internal (Sheet   : in System.Address;
-                          Widget  : in System.Address;
-                          Row     : in Gint;
-                          Col     : in Gint;
-                          X_Align : in Gfloat;
-                          Y_Align : in Gfloat);
+      procedure Internal (Sheet   : System.Address;
+                          Widget  : System.Address;
+                          Row, Col : Gint;
+                          Xoptions, Yoptions : Gtk_Attach_Options;
+                          Xpadding, Ypadding : Gint);
       pragma Import (C, Internal, "gtk_sheet_attach");
    begin
       Internal (Get_Object (Sheet), Get_Object (Widget), Row,  Col,
-                X_Align, Y_Align);
+                Xoptions, Yoptions, Xpadding, Ypadding);
    end Attach;
 
    ----------------
@@ -1549,7 +1513,7 @@ package body Gtk.Extra.Sheet is
    is
       function Internal (Sheet : System.Address; Column : Gint)
                         return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "ada_gtk_sheet_get_column_title");
+      pragma Import (C, Internal, "gtk_sheet_get_column_title");
       use type Interfaces.C.Strings.chars_ptr;
       C : Interfaces.C.Strings.chars_ptr;
    begin
@@ -1571,7 +1535,7 @@ package body Gtk.Extra.Sheet is
    is
       function Internal (Sheet : System.Address; Row : Gint)
                         return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "ada_gtk_sheet_get_row_title");
+      pragma Import (C, Internal, "gtk_sheet_get_row_title");
       use type Interfaces.C.Strings.chars_ptr;
       C : Interfaces.C.Strings.chars_ptr;
    begin
@@ -1622,22 +1586,69 @@ package body Gtk.Extra.Sheet is
    procedure Button_Attach
      (Sheet   : access Gtk_Sheet_Record;
       Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Row     : in Gint;
-      Col     : in Gint;
-      X_Align : in Gfloat;
-      Y_Align : in Gfloat)
+      Row     : Gint;
+      Col     : Gint)
    is
       procedure Internal (Sheet   : System.Address;
                           Widget  : System.Address;
                           Row     : Gint;
-                          Col     : Gint;
-                          X_Align : Gfloat;
-                          Y_Align : Gfloat);
+                          Col     : Gint);
       pragma Import (C, Internal, "gtk_sheet_button_attach");
    begin
-      Internal (Get_Object (Sheet), Get_Object (Widget), Row, Col,
-                X_Align, Y_Align);
+      Internal (Get_Object (Sheet), Get_Object (Widget), Row, Col);
    end Button_Attach;
+
+   --------------------
+   -- Set_Background --
+   --------------------
+
+   procedure Set_Background
+     (Sheet : access Gtk_Sheet_Record; Color : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal (Sheet : System.Address; Color : System.Address);
+      pragma Import (C, Internal, "gtk_sheet_set_background");
+      C : aliased Gdk_Color := Color;
+   begin
+      Internal (Get_Object (Sheet), C'Address);
+   end Set_Background;
+
+   --------------
+   -- Set_Grid --
+   --------------
+
+   procedure Set_Grid
+     (Sheet : access Gtk_Sheet_Record; Color : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal (Sheet : System.Address; Color : System.Address);
+      pragma Import (C, Internal, "gtk_sheet_set_grid");
+      C : aliased Gdk_Color := Color;
+   begin
+      Internal (Get_Object (Sheet), C'Address);
+   end Set_Grid;
+
+   ---------------
+   -- Show_Grid --
+   ---------------
+
+   procedure Show_Grid
+     (Sheet : access Gtk_Sheet_Record; Show : Boolean)
+   is
+      procedure Internal (Sheet : System.Address; Show : Integer);
+      pragma Import (C, Internal, "gtk_sheet_show_grid");
+   begin
+      Internal (Get_Object (Sheet), Boolean'Pos (Show));
+   end Show_Grid;
+
+   ------------------
+   -- Grid_Visible --
+   ------------------
+
+   function Grid_Visible (Sheet : access Gtk_Sheet_Record) return Boolean is
+      function Internal (Sheet : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_sheet_grid_visible");
+   begin
+      return Boolean'Val (Internal (Get_Object (Sheet)));
+   end Grid_Visible;
 
    --------------------
    -- Get_Attributes --
@@ -1661,5 +1672,260 @@ package body Gtk.Extra.Sheet is
 --                                      Col,
 --                                      Attributes));
 --     end Get_Attributes;
+
+   --------------------
+   -- Set_Autoresize --
+   --------------------
+
+   procedure Set_Autoresize
+     (Sheet : access Gtk_Sheet_Record; Autoresize : Boolean)
+   is
+      procedure Internal (Sheet : System.Address; Autoresize : Integer);
+      pragma Import (C, Internal, "gtk_sheet_set_autoresize");
+   begin
+      Internal (Get_Object (Sheet), Boolean'Pos (Autoresize));
+   end Set_Autoresize;
+
+   ----------------
+   -- Autoresize --
+   ----------------
+
+   function Autoresize (Sheet : access Gtk_Sheet_Record) return Boolean is
+      function Internal (Sheet : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_sheet_autoresize");
+   begin
+      return Boolean'Val (Internal (Get_Object (Sheet)));
+   end Autoresize;
+
+   --------------------
+   -- Set_Autoscroll --
+   --------------------
+
+   procedure Set_Autoscroll
+     (Sheet : access Gtk_Sheet_Record; Autoscroll : Boolean)
+   is
+      procedure Internal (Sheet : System.Address; Autoscroll : Integer);
+      pragma Import (C, Internal, "gtk_sheet_set_autoscroll");
+   begin
+      Internal (Get_Object (Sheet), Boolean'Pos (Autoscroll));
+   end Set_Autoscroll;
+
+   ----------------
+   -- Autoscroll --
+   ----------------
+
+   function Autoscroll (Sheet : access Gtk_Sheet_Record) return Boolean is
+      function Internal (Sheet : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_sheet_autoscroll");
+   begin
+      return Boolean'Val (Internal (Get_Object (Sheet)));
+   end Autoscroll;
+
+   -------------------
+   -- Set_Clip_Text --
+   -------------------
+
+   procedure Set_Clip_Text
+     (Sheet : access Gtk_Sheet_Record; Clip : Boolean)
+   is
+      procedure Internal (Sheet : System.Address; Clip : Integer);
+      pragma Import (C, Internal, "gtk_sheet_set_clip_text");
+   begin
+      Internal (Get_Object (Sheet), Boolean'Pos (Clip));
+   end Set_Clip_Text;
+
+   ---------------
+   -- Clip_Text --
+   ---------------
+
+   function Clip_Text (Sheet : access Gtk_Sheet_Record) return Boolean is
+      function Internal (Sheet : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_sheet_clip_text");
+   begin
+      return Boolean'Val (Internal (Get_Object (Sheet)));
+   end Clip_Text;
+
+   -----------------------
+   -- Set_Justify_Entry --
+   -----------------------
+
+   procedure Set_Justify_Entry
+     (Sheet : access Gtk_Sheet_Record; Justify_Entry : Boolean)
+   is
+      procedure Internal (Sheet : System.Address; Justify : Integer);
+      pragma Import (C, Internal, "gtk_sheet_set_justify_entry");
+   begin
+      Internal (Get_Object (Sheet), Boolean'Pos (Justify_Entry));
+   end Set_Justify_Entry;
+
+   -------------------
+   -- Justify_Entry --
+   -------------------
+
+   function Justify_Entry (Sheet : access Gtk_Sheet_Record) return Boolean is
+      function Internal (Sheet : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_sheet_justify_entry");
+   begin
+      return Boolean'Val (Internal (Get_Object (Sheet)));
+   end Justify_Entry;
+
+   ----------------
+   -- Set_Locked --
+   ----------------
+
+   procedure Set_Locked
+     (Sheet : access Gtk_Sheet_Record; Locked : Boolean)
+   is
+      procedure Internal (Sheet : System.Address; Justify : Integer);
+      pragma Import (C, Internal, "gtk_sheet_set_locked");
+   begin
+      Internal (Get_Object (Sheet), Boolean'Pos (Locked));
+   end Set_Locked;
+
+   ------------
+   -- Locked --
+   ------------
+
+   function Locked (Sheet : access Gtk_Sheet_Record) return Boolean is
+      function Internal (Sheet : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_sheet_locked");
+   begin
+      return Boolean'Val (Internal (Get_Object (Sheet)));
+   end Locked;
+
+   -------------
+   -- In_Clip --
+   -------------
+
+   function In_Clip (Sheet : access Gtk_Sheet_Record) return Boolean is
+      function Internal (Sheet : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_sheet_in_clip");
+   begin
+      return Boolean'Val (Internal (Get_Object (Sheet)));
+   end In_Clip;
+
+   -----------------------------
+   -- Column_Button_Get_Label --
+   -----------------------------
+
+   function Column_Button_Get_Label
+     (Sheet : access Gtk_Sheet_Record; Column : Gint) return String
+   is
+      function Internal (S : System.Address; Column : Gint) return chars_ptr;
+      pragma Import (C, Internal, "gtk_sheet_column_button_get_label");
+      S : constant chars_ptr := Internal (Get_Object (Sheet), Column);
+   begin
+      --  Do not free S, this references internal values
+      return Value (S);
+   end Column_Button_Get_Label;
+
+   ---------------------------
+   -- Column_Titles_Visible --
+   ---------------------------
+
+   function Column_Titles_Visible
+     (Sheet : access Gtk_Sheet_Record) return Boolean
+   is
+      function Internal (Sheet : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_sheet_column_titles_visible");
+   begin
+      return Boolean'Val (Internal (Get_Object (Sheet)));
+   end Column_Titles_Visible;
+
+   ---------------------------
+   -- Columns_Set_Resizable --
+   ---------------------------
+
+   procedure Columns_Set_Resizable
+     (Sheet : access Gtk_Sheet_Record; Resizable : Boolean)
+   is
+      procedure Internal (Sheet : System.Address; Resizable : Integer);
+      pragma Import (C, Internal, "gtk_sheet_columns_set_resizable");
+   begin
+      Internal (Get_Object (Sheet), Boolean'Pos (Resizable));
+   end Columns_Set_Resizable;
+
+   -----------------------
+   -- Columns_Resizable --
+   -----------------------
+
+   function Columns_Resizable (Sheet : access Gtk_Sheet_Record)
+      return Boolean
+   is
+      function Internal (Sheet : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_sheet_columns_resizable");
+   begin
+      return Boolean'Val (Internal (Get_Object (Sheet)));
+   end Columns_Resizable;
+
+   --------------------------
+   -- Row_Button_Get_Label --
+   --------------------------
+
+   function Row_Button_Get_Label
+     (Sheet : access Gtk_Sheet_Record; Row : Gint) return String
+   is
+      function Internal (S : System.Address; Row : Gint) return chars_ptr;
+      pragma Import (C, Internal, "gtk_sheet_row_button_get_label");
+      S : constant chars_ptr := Internal (Get_Object (Sheet), Row);
+   begin
+      --  Do not free S, this references internal values
+      return Value (S);
+   end Row_Button_Get_Label;
+
+   ------------------------
+   -- Row_Titles_Visible --
+   ------------------------
+
+   function Row_Titles_Visible
+     (Sheet : access Gtk_Sheet_Record) return Boolean
+   is
+      function Internal (Sheet : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_sheet_row_titles_visible");
+   begin
+      return Boolean'Val (Internal (Get_Object (Sheet)));
+   end Row_Titles_Visible;
+
+   ------------------------
+   -- Rows_Set_Resizable --
+   ------------------------
+
+   procedure Rows_Set_Resizable
+     (Sheet : access Gtk_Sheet_Record; Resizable : Boolean)
+   is
+      procedure Internal (Sheet : System.Address; Resizable : Integer);
+      pragma Import (C, Internal, "gtk_sheet_rows_set_resizable");
+   begin
+      Internal (Get_Object (Sheet), Boolean'Pos (Resizable));
+   end Rows_Set_Resizable;
+
+   --------------------
+   -- Rows_Resizable --
+   --------------------
+
+   function Rows_Resizable (Sheet : access Gtk_Sheet_Record)
+      return Boolean
+   is
+      function Internal (Sheet : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_sheet_rows_resizable");
+   begin
+      return Boolean'Val (Internal (Get_Object (Sheet)));
+   end Rows_Resizable;
+
+   ---------------------
+   -- Attach_Floating --
+   ---------------------
+
+   procedure Attach_Floating
+      (Sheet    : access Gtk_Sheet_Record;
+       Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
+       Row      : Gint;
+       Col      : Gint)
+   is
+      procedure Internal (Sheet, Widget : System.Address; R, C : Gint);
+      pragma Import (C, Internal, "gtk_sheet_attach_floating");
+   begin
+      Internal (Get_Object (Sheet), Get_Object (Widget), Row, Col);
+   end Attach_Floating;
 
 end Gtk.Extra.Sheet;

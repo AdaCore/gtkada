@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                     Copyright (C) 2001-2003                       --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -410,5 +410,66 @@ package body Gtk.Extra.Plot_Surface is
    begin
       Internal (Get_Object (Data), Step);
    end Set_Ystep;
+
+   ----------------
+   -- Build_Mesh --
+   ----------------
+
+   procedure Build_Mesh (Data : access Gtk_Plot_Surface_Record) is
+      procedure Internal (Data : System.Address);
+      pragma Import (C, Internal, "gtk_plot_surface_build_mesh");
+   begin
+      Internal (Get_Object (Data));
+   end Build_Mesh;
+
+   ------------------
+   -- Recalc_Nodes --
+   ------------------
+
+   procedure Recalc_Nodes (Data : access Gtk_Plot_Surface_Record) is
+      procedure Internal (Data : System.Address);
+      pragma Import (C, Internal, "gtk_plot_surface_recalc_nodes");
+   begin
+      Internal (Get_Object (Data));
+   end Recalc_Nodes;
+
+   -------------------------
+   -- Use_Height_Gradient --
+   -------------------------
+
+   procedure Use_Height_Gradient
+     (Data : access Gtk_Plot_Surface_Record; Use_Gradient : Boolean)
+   is
+      procedure Internal (Data : System.Address; Gradient : Integer);
+      pragma Import (C, Internal, "gtk_plot_surface_use_height_gradient");
+   begin
+      Internal (Get_Object (Data), Boolean'Pos (Use_Gradient));
+   end Use_Height_Gradient;
+
+   ------------------
+   -- Use_Amplitud --
+   ------------------
+
+   procedure Use_Amplitud
+     (Data : access Gtk_Plot_Surface_Record; Amplitud : Boolean)
+   is
+      procedure Internal (Data : System.Address; Amplitud : Integer);
+      pragma Import (C, Internal, "gtk_plot_surface_use_amplitud");
+   begin
+      Internal (Get_Object (Data), Boolean'Pos (Amplitud));
+   end Use_Amplitud;
+
+   ---------------------
+   -- Set_Transparent --
+   ---------------------
+
+   procedure Set_Transparent
+     (Data : access Gtk_Plot_Surface_Record; Transparent : Boolean)
+   is
+      procedure Internal (Data : System.Address; Transparent : Integer);
+      pragma Import (C, Internal, "gtk_plot_surface_set_transparent");
+   begin
+      Internal (Get_Object (Data), Boolean'Pos (Transparent));
+   end Set_Transparent;
 
 end Gtk.Extra.Plot_Surface;

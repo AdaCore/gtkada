@@ -793,4 +793,84 @@ package body Gtk.Extra.Plot_Canvas is
       Internal (Get_Object (Canvas));
    end Paint;
 
+   ------------
+   -- Freeze --
+   ------------
+
+   procedure Freeze (Canvas : access Gtk_Plot_Canvas_Record) is
+      procedure Internal (Canvas : System.Address);
+      pragma Import (C, Internal, "gtk_plot_canvas_freeze");
+   begin
+      Internal (Get_Object (Canvas));
+   end Freeze;
+
+   ----------
+   -- Thaw --
+   ----------
+
+   procedure Thaw (Canvas : access Gtk_Plot_Canvas_Record) is
+      procedure Internal (Canvas : System.Address);
+      pragma Import (C, Internal, "gtk_plot_canvas_thaw");
+   begin
+      Internal (Get_Object (Canvas));
+   end Thaw;
+
+   ---------------------
+   -- Set_Transparent --
+   ---------------------
+
+   procedure Set_Transparent
+     (Canvas : access Gtk_Plot_Canvas_Record; Transparent : Boolean)
+   is
+      procedure Internal (Canvas : System.Address; Transparent : Integer);
+      pragma Import (C, Internal, "gtk_plot_canvas_set_transparent");
+   begin
+      Internal (Get_Object (Canvas), Boolean'Pos (Transparent));
+   end Set_Transparent;
+
+   -----------------
+   -- Transparent --
+   -----------------
+
+   function Transparent
+     (Canvas : access Gtk_Plot_Canvas_Record) return Boolean
+   is
+      function Internal (Canvas : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_plot_canvas_transparent");
+   begin
+      return Boolean'Val (Internal (Get_Object (Canvas)));
+   end Transparent;
+
+   ------------------
+   -- Remove_Child --
+   ------------------
+
+   procedure Remove_Child
+     (Canvas : access Gtk_Plot_Canvas_Record;
+      Child  : Gtk_Plot_Canvas_Child)
+   is
+      procedure Internal (C : System.Address; Child : Gtk_Plot_Canvas_Child);
+      pragma Import (C, Internal, "gtk_plot_canvas_remove_child");
+   begin
+      Internal (Get_Object (Canvas), Child);
+   end Remove_Child;
+
+   ----------------
+   -- Put_Pixmap --
+   ----------------
+
+   function Put_Pixmap
+     (Canvas     : access Gtk_Plot_Canvas_Record;
+      Pixmap     : Gdk.Pixmap.Gdk_Pixmap;
+      X1, Y1     : Gdouble) return Gtk_Plot_Canvas_Child
+   is
+      function Internal
+        (Canvas : System.Address;
+         Pixmap : Gdk.Gdk_Pixmap;
+         X1, Y1 : Gdouble) return Gtk_Plot_Canvas_Child;
+      pragma Import (C, Internal, "gtk_plot_canvas_put_pixmap");
+   begin
+      return Internal (Get_Object (Canvas), Pixmap, X1, Y1);
+   end Put_Pixmap;
+
 end Gtk.Extra.Plot_Canvas;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -67,6 +67,7 @@ with Gtk.Widget;
 with Unchecked_Conversion;
 with System;
 with Gtk.Extra.Plot_Data;   use Gtk.Extra.Plot_Data;
+with Gdk.Pixmap;
 
 package Gtk.Extra.Plot is
 
@@ -151,9 +152,8 @@ package Gtk.Extra.Plot is
    -- Enum types --
    ----------------
 
-   type Plot_Scale is (Scale_Linear, Scale_Log10);
-   --  Type of scale used for each axis of a graph.
-   pragma Convention (C, Plot_Scale);
+   subtype Plot_Scale is Gtk.Extra.Plot_Data.Plot_Scale;
+   subtype Plot_Label_Style is Gtk.Extra.Plot_Data.Plot_Label_Style;
 
    type Plot_Border_Style is
      (Border_None,
@@ -187,10 +187,6 @@ package Gtk.Extra.Plot is
    type Plot_Orientation is (Axis_X, Axis_Y, Axis_Z);
    --  How to reference axis in 3D plots
    pragma Convention (C, Plot_Orientation);
-
-   type Plot_Label_Style is (Label_Float, Label_Exp, Label_Pow);
-   --  The style of labels (floating point, or scientific notation)
-   pragma Convention (C, Plot_Label_Style);
 
    type Plot_Angle is (Angle_0, Angle_90, Angle_180, Angle_270);
    --  Valid values for the angles of texts and titles.
@@ -256,6 +252,18 @@ package Gtk.Extra.Plot is
    --  Note that this has no effect if the plot has been set to transparent
    --  (see the flags below).
    --  The Plot is also redrawn as soon as you modify this color.
+
+   procedure Set_Background_Pixmap
+     (Plot : access Gtk_Plot_Record; Pixmap : Gdk.Pixmap.Gdk_Pixmap);
+   --  Specificy a background pixmap to use for the plot
+
+   procedure Set_Transparent
+     (Plot : access Gtk_Plot_Record; Transparent : Boolean);
+   --  Whether the plot is transparent. If Transparent is True, all background
+   --  attributes are ignored (pixmap, color,...)
+
+   function Is_Transparent (Plot : access Gtk_Plot_Record) return Boolean;
+   --  Whether the plot is current transparent
 
    procedure Paint (Plot : access Gtk_Plot_Record);
    --  Force an immediate repaint of the widget in its pixmap.
@@ -401,6 +409,18 @@ package Gtk.Extra.Plot is
                        return      Plot_Scale;
    --  Get the type of the Y axis.
 
+   procedure Reflect_X (Plot : access Gtk_Plot_Record; Reflect : Boolean);
+   --  Reverse the direction of the X axis
+
+   function Is_X_Reflected (Plot : access Gtk_Plot_Record) return Boolean;
+   --  Whether the X axis is currently reflected
+
+   procedure Reflect_Y (Plot : access Gtk_Plot_Record; Reflect : Boolean);
+   --  Reverse the direction of the Y axis
+
+   function Is_Y_Reflected (Plot : access Gtk_Plot_Record) return Boolean;
+   --  Whether the Y axis is currently reflected
+
    ----------
    -- Axis --
    ----------
@@ -527,7 +547,7 @@ package Gtk.Extra.Plot is
    --  Set the style of the ticks.
 
    procedure Axis_Set_Ticks_Limits (Plot        : access Gtk_Plot_Record;
-                                    Orientation : in Gtk.Enums.Gtk_Orientation;
+                                    Orientation : in Plot_Orientation;
                                     Ticks_Beg   : in Gdouble;
                                     Ticks_End   : in Gdouble);
    --  Indicate the area of the axis that should have ticks.
@@ -538,6 +558,19 @@ package Gtk.Extra.Plot is
       Orientation : in Plot_Orientation);
    --  Cancel the ticks limits set by a previous call to
    --  Axis_Set_Ticks_Limits.
+
+   procedure Axis_Set_Break
+     (Plot         : access Gtk_Plot_Record;
+      Orient       : Plot_Orientation;
+      Min, Max     : Gdouble;
+      Step_After   : Gdouble;
+      Nminor_After : Gint;
+      Scale_After  : Plot_Scale);
+   --  ???
+
+   procedure Axis_Remove_Break
+     (Plot : access Gtk_Plot_Record; Orient : Plot_Orientation);
+   --  ???
 
    procedure Axis_Show_Labels
      (Plot        : access Gtk_Plot_Record;
@@ -551,7 +584,7 @@ package Gtk.Extra.Plot is
    procedure Axis_Title_Set_Attributes
      (Plot          : access Gtk_Plot_Record;
       Axis          : in Plot_Axis_Pos;
-      Ps_Font       : in String;
+      Font          : in String;
       Height        : in Gint;
       Angle         : in Plot_Angle;
       Foreground    : in Gdk.Color.Gdk_Color;
@@ -564,7 +597,7 @@ package Gtk.Extra.Plot is
    procedure Axis_Set_Labels_Attributes
      (Plot          : access Gtk_Plot_Record;
       Axis          : in Plot_Axis_Pos;
-      Ps_Font       : in String;
+      Font          : in String;
       Height        : in Gint;
       Angle         : in Plot_Angle;
       Foreground    : in Gdk.Color.Gdk_Color;
@@ -574,21 +607,41 @@ package Gtk.Extra.Plot is
    --  Set the attributes to be used for the ticks labels.
    --  Ps_Font should be a postscript font (see Gtk.Plot.PsFont).
 
-   procedure Axis_Set_Labels_Numbers (Plot      : access Gtk_Plot_Record;
-                                      Axis      : in Plot_Axis_Pos;
-                                      Style     : in Plot_Label_Style;
-                                      Precision : in Gint);
-   --  Set the style of labels.
-   --  This indicates whether the labels should be displayed as floating
-   --  point values or in the scientific notation.
-   --  Precision is the number of digits to be printed.
-
    procedure Axis_Use_Custom_Tick_Labels (Plot   : access Gtk_Plot_Record;
                                           Axis   : in Plot_Axis_Pos;
                                           Custom : in Boolean := True);
    --  Indicate which kind of labels should be used for major ticks.
    --  If Custom is True, then the labels set by Axis_Set_Tick_Labels will
    --  be used.
+
+   procedure Axis_Set_Labels_Offset
+     (Plot   : access Gtk_Plot_Record;
+      Axis   : Plot_Axis_Pos;
+      Offset : Gint);
+   --  Set the distance between the axis and its labels
+
+   function Axis_Get_Labels_Offset
+     (Plot : access Gtk_Plot_Record;
+      Axis : Plot_Axis_Pos) return Gint;
+   --  Get the distance between the axis and its labels.
+
+   procedure Axis_Set_Labels_Style
+     (Plot      : access Gtk_Plot_Record;
+      Axis      : Plot_Axis_Pos;
+      Style     : Gint;
+      Precision : Gint);
+   --  Set the style of labels.
+   --  This indicates whether the labels should be displayed as floating
+   --  point values or in the scientific notation.
+   --  Precision is the number of digits to be printed.
+
+   --  <doc_ignore>
+   procedure Axis_Set_Labels_Numbers
+     (Plot      : access Gtk_Plot_Record;
+      Axis      : Plot_Axis_Pos;
+      Style     : Gint;
+      Precision : Gint) renames Axis_Set_Labels_Style;
+   --  </doc_ignore>
 
    procedure Axis_Set_Labels_Suffix
      (Plot : access Gtk_Plot_Record;
@@ -651,6 +704,13 @@ package Gtk.Extra.Plot is
                                     Width : in Gfloat;
                                     Color : in Gdk.Color.Gdk_Color);
    --  Set the attributes of the line at Y=0
+
+   procedure Grids_Set_On_Top
+     (Plot : access Gtk_Plot_Record; On_Top : Boolean);
+   --  Whether the grid should be displayed on top of the plots
+
+   function Grids_On_Top (Plot : access Gtk_Plot_Record) return Boolean;
+   --  Whether the gris is currently displayed on top of the plots
 
    procedure Grids_Set_Visible (Plot   : access Gtk_Plot_Record;
                                 Vmajor : in Boolean;
@@ -755,7 +815,7 @@ package Gtk.Extra.Plot is
      (Plot          : access Gtk_Plot_Record;
       X             : in Gdouble;
       Y             : in Gdouble;
-      Ps_Font       : in String := "";
+      Font          : in String := "";
       Font_Height   : in Gint := 10;
       Angle         : in Plot_Angle;
       Foreground    : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
@@ -832,6 +892,14 @@ package Gtk.Extra.Plot is
                         Text : Gtk_Plot_Text);
    --  Draw the text
 
+   procedure Text_Set_Border
+     (Text         : Gtk_Plot_Text;
+      Border       : Plot_Border_Style;
+      Border_Space : Gint;
+      Border_Width : Gint;
+      Shadow_Width : Gint);
+   --  Set the border attributes for the text
+
    --------------
    -- Datasets --
    --------------
@@ -865,36 +933,6 @@ package Gtk.Extra.Plot is
    --  The newly allocated set should be freed by calling Free above.
    --  The set is automatically added to the plot, so you don't need to
    --  explicitly call Add_Dataset.
-
-   -----------
-   -- Flags --
-   -----------
-   --  Some flags are defined for this widget. You can not access them through
-   --  the usual interface in Gtk.Object.Flag_Is_Set since this widget is not
-   --  part of the standard gtk+ packages. Instead, use the functions below.
-   --
-   --  - "transparent"
-   --    If this flag is set, the widget's background is not filled, and thus
-   --    the widget's parent's background is seen through it.
-
-   Transparent : constant := 2 ** 0;
-
-   function Plot_Flag_Is_Set (Plot : access Gtk_Plot_Record;
-                              Flag : Guint8)
-                             return Boolean;
-   --  Test whether one of the flags for a Gtk_Plot widget or its children
-   --  is set. This can only be used for the flags defined in the
-   --  Gtk.Extra.Gtk_Plot package.
-
-   procedure Plot_Set_Flags  (Plot  : access Gtk_Plot_Record;
-                              Flags : Guint8);
-   --  Set the flags for a Gtk_Plot widget or its children. Note that the
-   --  flags currently set are not touched by this function. This can only be
-   --  used for the flags defined in the Gtk.Extra.Gtk_Plot package.
-
-   procedure Plot_Unset_Flags  (Plot  : access Gtk_Plot_Record;
-                                Flags : Guint8);
-   --  Unset the flags in the widget.
 
    -------------
    -- Signals --
@@ -963,4 +1001,9 @@ private
    pragma Import (C, Get_Text_Position, "ada_gtk_plot_get_text_position");
    pragma Import (C, Set_Line_Style, "ada_gtk_plot_set_line_style");
    pragma Import (C, Set_Line_Width, "ada_gtk_plot_set_line_width");
+   pragma Import (C, Text_Set_Border, "gtk_plot_text_set_border");
 end Gtk.Extra.Plot;
+
+
+--  Unbound:
+--    gtk_plot_set_pc

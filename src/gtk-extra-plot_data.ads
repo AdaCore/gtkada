@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -43,9 +43,20 @@ with Glib; use Glib;
 with Gtk.Widget;
 with Gtkada.Types;
 with Gdk.Color;
+with Gdk.GC;
 with Unchecked_Conversion;
 
 package Gtk.Extra.Plot_Data is
+
+   type Plot_Label_Style is (Label_Float, Label_Exp, Label_Pow);
+   --  The style of labels (floating point, or scientific notation)
+   pragma Convention (C, Plot_Label_Style);
+
+
+   type Plot_Scale is (Scale_Linear, Scale_Log10);
+   --  Type of scale used for each axis of a graph.
+   pragma Convention (C, Plot_Scale);
+
 
    type Gtk_Plot_Data_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Plot_Data is access all Gtk_Plot_Data_Record'Class;
@@ -205,6 +216,10 @@ package Gtk.Extra.Plot_Data is
    procedure Paint (Data : access Gtk_Plot_Data_Record);
    --  Emits the "draw_data" signal to request a redrawing of the data set.
 
+   procedure Update (Data : access Gtk_Plot_Data_Record);
+   --  Indicates that the data has changed, and the graphical view should
+   --  reflect this.
+
    procedure Draw_Points (Data : access Gtk_Plot_Data_Record; N : Gint);
    --  Draw the N last (most recent) values of the Data set on the screen.
    --  If N is greater than the actual number of values in Data, then they are
@@ -265,6 +280,12 @@ package Gtk.Extra.Plot_Data is
    --
    --  "A" is used to specify the size of the symbols. When plotting boxes in
    --  two dimensions, "Z" is used to specify the size of the box.
+
+   procedure Set_A_Scale
+     (Data : access Gtk_Plot_Data_Record; A_Scale : Gdouble);
+   function Get_A_Scale
+     (Data : access Gtk_Plot_Data_Record) return Gdouble;
+   --  Changes the scale used for the "A" coordinate
 
    procedure Set_Dx
      (Data : access Gtk_Plot_Data_Record; Dx : Gdouble_Array_Access);
@@ -388,38 +409,48 @@ package Gtk.Extra.Plot_Data is
    --  Return the connector style used for the data set.
 
    procedure Set_Line_Attributes
-     (Data  : access Gtk_Plot_Data_Record;
-      Style : Plot_Line_Style;
-      Width : Gfloat;
-      Color : Gdk.Color.Gdk_Color);
+     (Data       : access Gtk_Plot_Data_Record;
+      Style      : Plot_Line_Style;
+      Cap_Style  : Gdk.GC.Gdk_Cap_Style;
+      Join_Style : Gdk.GC.Gdk_Join_Style;
+      Width      : Gfloat;
+      Color      : Gdk.Color.Gdk_Color);
    --  Set the line style used for the connectors.
 
    procedure Get_Line_Attributes
-     (Data  : access Gtk_Plot_Data_Record;
-      Style : out Plot_Line_Style;
-      Width : out Gfloat;
-      Color : out Gdk.Color.Gdk_Color);
+     (Data       : access Gtk_Plot_Data_Record;
+      Style      : out Plot_Line_Style;
+      Cap_Style  : out Gdk.GC.Gdk_Cap_Style;
+      Join_Style : out Gdk.GC.Gdk_Join_Style;
+      Width      : out Gfloat;
+      Color      : out Gdk.Color.Gdk_Color);
    --  Return the line attributes used for the connectors.
 
    procedure Set_X_Attributes
-     (Data  : access Gtk_Plot_Data_Record;
-      Style : Plot_Line_Style;
-      Width : Gfloat;
-      Color : Gdk.Color.Gdk_Color);
+     (Data       : access Gtk_Plot_Data_Record;
+      Style      : Plot_Line_Style;
+      Cap_Style  : Gdk.GC.Gdk_Cap_Style;
+      Join_Style : Gdk.GC.Gdk_Join_Style;
+      Width      : Gfloat;
+      Color      : Gdk.Color.Gdk_Color);
    --  Set the style of the lines used to connect the symbols to the X axis.
 
    procedure Set_Y_Attributes
-     (Data  : access Gtk_Plot_Data_Record;
-      Style : Plot_Line_Style;
-      Width : Gfloat;
-      Color : Gdk.Color.Gdk_Color);
+     (Data       : access Gtk_Plot_Data_Record;
+      Style      : Plot_Line_Style;
+      Cap_Style  : Gdk.GC.Gdk_Cap_Style;
+      Join_Style : Gdk.GC.Gdk_Join_Style;
+      Width      : Gfloat;
+      Color      : Gdk.Color.Gdk_Color);
    --  Set the style of the lines used to connect the symbols to the Y axis.
 
    procedure Set_Z_Attributes
-     (Data  : access Gtk_Plot_Data_Record;
-      Style : Plot_Line_Style;
-      Width : Gfloat;
-      Color : Gdk.Color.Gdk_Color);
+     (Data       : access Gtk_Plot_Data_Record;
+      Style      : Plot_Line_Style;
+      Cap_Style  : Gdk.GC.Gdk_Cap_Style;
+      Join_Style : Gdk.GC.Gdk_Join_Style;
+      Width      : Gfloat;
+      Color      : Gdk.Color.Gdk_Color);
    --  Set the style of the lines used to connect the symbols to the Z axis.
 
    procedure Show_Xerrbars (Data : access Gtk_Plot_Data_Record);
@@ -473,6 +504,12 @@ package Gtk.Extra.Plot_Data is
    --  they can also compute their own color by picking it in a gradient,
    --  depending on the value.
 
+   procedure Reset_Gradient (Data : access Gtk_Plot_Data_Record);
+   --  Reset the gradient to its default value
+
+   procedure Reset_Gradient_Colors (Data : access Gtk_Plot_Data_Record);
+   --  Reset the colors of the gradient to their default values
+
    procedure Set_Gradient_Mask
      (Data : access Gtk_Plot_Data_Record; Mask : Plot_Gradient);
    --  Indicates which component of the colors vary along the gradient.
@@ -500,6 +537,22 @@ package Gtk.Extra.Plot_Data is
       Min, Max : out Gdk.Color.Gdk_Color);
    --  Return the colors that define the range
 
+   procedure Set_Gradient_Nth_Color
+     (Data  : access Gtk_Plot_Data_Record;
+      Level : Guint;
+      Color : Gdk.Color.Gdk_Color);
+   --  Set the nth color in the gradient
+
+   function Get_Gradient_Nth_Color
+     (Data  : access Gtk_Plot_Data_Record; Level : Guint)
+      return Gdk.Color.Gdk_Color;
+   --  Get the nth color of the gradient
+
+   procedure Set_Gradient_Outer_Colors
+     (Data : access Gtk_Plot_Data_Record;
+      Min, Max : Gdk.Color.Gdk_Color);
+   --  Set the outer colors for the gradient
+
    procedure Set_Gradient
      (Data     : access Gtk_Plot_Data_Record;
       Min, Max : Gdouble;
@@ -521,6 +574,55 @@ package Gtk.Extra.Plot_Data is
    --  Return the color associated with a specific level.
    --  The color depends on the parameters to Set_Gradient and
    --  Set_Gradient_Colors.
+
+   procedure Draw_Gradient
+     (Data : access Gtk_Plot_Data_Record; X, Y : Gint);
+   --  Draw the gradient ast specific coordinates
+
+   procedure Gradient_Autoscale_A (Data : access Gtk_Plot_Data_Record);
+   --  ???
+
+   procedure Gradient_Autoscale_Da (Data : access Gtk_Plot_Data_Record);
+   --  ???
+
+   procedure Gradient_Autoscale_Z (Data : access Gtk_Plot_Data_Record);
+   --  ???
+
+   procedure Gradient_Set_Style
+     (Data      : access Gtk_Plot_Data_Record;
+      Style     : Plot_Label_Style;
+      Precision : Gint);
+   --  ???
+
+   procedure Gradient_Set_Scale
+     (Data      : access Gtk_Plot_Data_Record;
+      Scale     : Plot_Scale);
+   --  Set the scale of the gradient
+
+   -------------
+   -- Markers --
+   -------------
+
+   type Gtk_Plot_Marker is new Glib.C_Proxy;
+
+   function Add_Marker
+     (Data : access Gtk_Plot_Data_Record; Point : Guint)
+      return Gtk_Plot_Marker;
+   --  Add a new marker
+
+   procedure Remove_Marker
+     (Data : access Gtk_Plot_Data_Record; Marker : Gtk_Plot_Marker);
+   --  Remove a marker from the plot
+
+   procedure Remove_Markers (Data : access Gtk_Plot_Data_Record);
+   --  Remove all markers
+
+   procedure Show_Markers (Data : access Gtk_Plot_Data_Record; Show : Boolean);
+   --  Whether markers should be shown
+
+   function Markers_Visible (Data : access Gtk_Plot_Data_Record)
+      return Boolean;
+   --  Whether markers are currently visible
 
    ---------------
    -- User Data --
@@ -561,3 +663,8 @@ private
 
    pragma Import (C, Get_Type, "gtk_plot_data_get_type");
 end Gtk.Extra.Plot_Data;
+
+--  Unbound:
+--    gtk_plot_data_new_iterator
+--    gtk_plot_data_clone
+--    gtk_plot_data_get_gradient_outer_colors
