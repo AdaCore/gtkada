@@ -2192,7 +2192,17 @@ void
 ada_text_attributes_set_font (GtkTextAttributes* text_attr,
                               PangoFontDescription* font)
 {
+  g_return_if_fail (font != NULL);
+
+  /* Free the family name pointer if already allocated */
+  if (text_attr->font.family_name)
+     g_free (text_attr->font.family_name);
+
+  /* set the font. Make sure to strdup the font->family_name field
+     to avoid dangling pointers. This memory will be deallocated
+     during the final unref */
   text_attr->font = *font;
+  text_attr->font.family_name = g_strdup (font->family_name);
 }
 
 /******************************************
