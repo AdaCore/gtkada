@@ -141,6 +141,7 @@ This binding was tested on the following systems:
 @item Linux version 2.0.35
 @item SunOS 5.5.1
 @item Dec Unix 4.0b
+@item SGI IRIX 6.5
 @end itemize
 using the following compilers:
 @itemize @bullet
@@ -150,8 +151,8 @@ using the following compilers:
 
 and the following versions of gtk:
 @itemize @bullet
-@item Gtk 1.1.16
 @item Gtk 1.2.0
+@item Gtk 1.2.1
 @end itemize
 
 Although versions up to 0.2.1 were compatible with Gtk-1.0, this one is
