@@ -135,6 +135,7 @@ Gtk.Enums:
   Gtk_Trough_Type: removed.
   Selection_Extended: removed, use Selection_Multiple instead.
   Gtk_Scroll_Type: Scroll_Page_Start/End renamed Scroll_Start/End
+Gtk.Extra.PsFont: Removed, replaced by Pango.Font
 Gtk.File_Selection:
   now a child of Gtk_Dialog
 Gtk.Fixed:
