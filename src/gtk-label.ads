@@ -92,7 +92,8 @@ package Gtk.Label is
    --  the Gtk_Label is larger than the text (its default width is the same
    --  as the text) and contains multiple lines.
    --  To justify a single line label, you should instead call Set_Alignment
-   --  and make sure that the label fills its horizontal allocated space.
+   --  and make sure that the label or any surrounding container fills its
+   --  horizontal allocated space.
 
    procedure Set_Pattern
      (Label   : access Gtk_Label_Record;
