@@ -46,11 +46,10 @@ package body View_Gl is
    -------------
 
    procedure Init_GL is
-      type Glfloat_Array is array (0 .. 3) of aliased Glfloat;
-      Light0_Pos   : Glfloat_Array := (-50.0, 50.0, 0.0, 0.0);
-      Light0_Color : Glfloat_Array := (0.6, 0.6, 0.6, 1.0);
-      Light1_Pos   : Glfloat_Array := (50.0, 50.0, 0.0, 0.0);
-      Light1_Color : Glfloat_Array := (0.4, 0.4, 1.0, 1.0);
+      Light0_Pos   : Glfloat_Vec_4 := (-50.0, 50.0, 0.0, 0.0);
+      Light0_Color : Glfloat_Vec_4:= (0.6, 0.6, 0.6, 1.0);
+      Light1_Pos   : Glfloat_Vec_4:= (50.0, 50.0, 0.0, 0.0);
+      Light1_Color : Glfloat_Vec_4 := (0.4, 0.4, 1.0, 1.0);
 
    begin
 
@@ -68,10 +67,10 @@ package body View_Gl is
 
       -- Light
 
-      Gllightfv (GL_LIGHT0, GL_POSITION, Light0_Pos (0)'Unchecked_Access);
-      Gllightfv (GL_LIGHT0, GL_DIFFUSE,  Light0_Color (0)'Unchecked_Access);
-      Gllightfv (GL_LIGHT1, GL_POSITION, Light1_Pos (0)'Unchecked_Access);
-      Gllightfv (GL_LIGHT1, GL_DIFFUSE,  Light1_Color (0)'Unchecked_Access);
+      Gllightfv (GL_LIGHT0, GL_POSITION, Light0_Pos);
+      Gllightfv (GL_LIGHT0, GL_DIFFUSE,  Light0_Color);
+      Gllightfv (GL_LIGHT1, GL_POSITION, Light1_Pos);
+      Gllightfv (GL_LIGHT1, GL_DIFFUSE,  Light1_Color);
       Glenable (GL_LIGHT0);
       Glenable (GL_LIGHT1);
       Glenable (GL_LIGHTING);
