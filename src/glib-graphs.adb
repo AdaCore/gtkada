@@ -377,6 +377,16 @@ package body Glib.Graphs is
             end if;
          end if;
 
+         --  In the second pass, we must ignore the recursive links to the
+         --  item, since they have already been counted.
+         if not E.First_Pass then
+            while E.Current_Edge /= null
+              and then E.Current_Edge.E.Src = E.Current_Edge.E.Dest
+            loop
+               E.Current_Edge := E.Current_Edge.Next;
+            end loop;
+         end if;
+
       elsif E.Dest = null then
          if E.Current_Vertex /= null then
             while E.Current_Edge = null loop
@@ -393,6 +403,16 @@ package body Glib.Graphs is
          then
             E.First_Pass   := False;
             E.Current_Edge := E.Dest.Out_Edges;
+         end if;
+
+         --  In the second pass, we must ignore the recursive links to the
+         --  item, since they have already been counted.
+         if not E.First_Pass then
+            while E.Current_Edge /= null
+              and then E.Current_Edge.E.Src = E.Current_Edge.E.Dest
+            loop
+               E.Current_Edge := E.Current_Edge.Next;
+            end loop;
          end if;
       end if;
    end Move_To_Next;
