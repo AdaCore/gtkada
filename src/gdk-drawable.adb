@@ -193,7 +193,7 @@ package body Gdk.Drawable is
        Gc          : in Gdk.GC.Gdk_GC;
        X           : in Gint;
        Y           : in Gint;
-       Wide_Text        : in Gdk.Types.Gdk_WString)
+       Wide_Text   : in Gdk.Types.Gdk_WString)
    is
       procedure Internal
         (Drawable    : in Gdk_Drawable;
