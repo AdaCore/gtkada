@@ -563,22 +563,22 @@ ada_gtk_menu_item_get_submenu (GtkMenuItem* item) {
  * Paned
  ********************/
 
-gint
+gboolean
 ada_paned_get_child1_resize (GtkPaned* widget) {
   return widget->child1_resize;
 }
 
-gint
+gboolean
 ada_paned_get_child2_resize (GtkPaned* widget) {
   return widget->child2_resize;
 }
 
-gint
+gboolean
 ada_paned_get_child1_shrink (GtkPaned* widget) {
   return widget->child1_shrink;
 }
 
-gint
+gboolean
 ada_paned_get_child2_shrink (GtkPaned* widget) {
   return widget->child2_shrink;
 }
@@ -969,13 +969,13 @@ GdkDevice *ada_gdk_event_get_device_id (GdkEvent * event)
 }
 
 void
-ada_gdk_event_get_area (GdkEvent * event, GdkRectangle* area)
+ada_gdk_event_get_area (GdkEvent *event, GdkRectangle *area)
 {
   if (event->type == GDK_EXPOSE)
     *area = event->expose.area;
   else
     {
-      area->width = ada_gdk_invalid_guint16_value;
+      area->width = ada_gdk_invalid_gint_value;
     }
 }
 
