@@ -58,6 +58,19 @@ package body Gtk.Window is
       return To_Boolean (Internal (Get_Object (Window)));
    end Activate_Focus;
 
+   ---------------------
+   -- Add_Accel_Group --
+   ---------------------
+
+   procedure Add_Accel_Group (Window      : access Gtk_Window_Record;
+                              Accel_Group : in Gtk_Accel_Group'Class) is
+      procedure Internal (Window : System.Address;
+                          Accel_Group : System.Address);
+      pragma Import (C, Internal, "gtk_window_add_accel_group");
+   begin
+      Internal (Get_Object (Window), Get_Object (Accel_Group));
+   end Add_Accel_Group;
+
    -------------
    -- Gtk_New --
    -------------
@@ -81,6 +94,19 @@ package body Gtk.Window is
       Set_Object (Window, Internal (Gtk_Window_Type'Pos (The_Type)));
       Initialize_User_Data (Window);
    end Initialize;
+
+   ------------------------
+   -- Remove_Accel_Group --
+   ------------------------
+
+   procedure Remove_Accel_Group (Window : access Gtk_Window_Record;
+                                 Accel_Group : in Gtk_Accel_Group'Class) is
+      procedure Internal (Window : System.Address;
+                          Accel_Group : System.Address);
+      pragma Import (C, Internal, "gtk_window_remove_accel_group");
+   begin
+      Internal (Get_Object (Window), Get_Object (Accel_Group));
+   end Remove_Accel_Group;
 
    -----------------
    -- Set_Default --

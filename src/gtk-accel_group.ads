@@ -35,12 +35,8 @@ with Gtk.Object;
 
 package Gtk.Accel_Group is
 
-   type Gtk_Accel_Group_Record is new Root_Type with private;
-   type Gtk_Accel_Group is access all Gtk_Accel_Group_Record'Class;
-
-   type Gtk_Accel_Entry_Record is new Root_Type with private;
-   type Gtk_Accel_Entry is access all Gtk_Accel_Entry_Record'Class;
-
+   type Gtk_Accel_Group is new Root_Type with private;
+   type Gtk_Accel_Entry is new Root_Type with private;
 
    type Gtk_Accel_Flags is new Guint;
    Accel_Visible        : constant Gtk_Accel_Flags;
@@ -54,60 +50,59 @@ package Gtk.Accel_Group is
    --------------------------
 
    procedure Gtk_New (Widget : out Gtk_Accel_Group);
-   procedure Initialize (Widget : access Gtk_Accel_Group_Record);
 
    function Get_Default return Gtk_Accel_Group;
 
    --  procedure Ref
    --  procedure Unref
 
-   function Activate (Accel_Group : access Gtk_Accel_Group_Record;
-                      Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
-                      Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type)
-                      return               Boolean;
+   function Activate (Accel_Group : in Gtk_Accel_Group;
+                      Accel_Key   : in Gdk.Types.Gdk_Key_Type;
+                      Accel_Mods  : in Gdk.Types.Gdk_Modifier_Type)
+                      return        Boolean;
 
    function Accel_Groups_Activate
      (Object     : access Gtk.Object.Gtk_Object_Record'Class;
-      Accel_Key  : in     Gdk.Types.Gdk_Key_Type;
-      Accel_Mods : in     Gdk.Types.Gdk_Modifier_Type)
-      return              Boolean;
+      Accel_Key  : in Gdk.Types.Gdk_Key_Type;
+      Accel_Mods : in Gdk.Types.Gdk_Modifier_Type)
+      return       Boolean;
 
-   procedure Attach (Accel_Group : access Gtk_Accel_Group_Record;
+   procedure Attach (Accel_Group : in Gtk_Accel_Group;
                      Object      : access Gtk.Object.Gtk_Object_Record'Class);
 
-   procedure Detach (Accel_Group : access Gtk_Accel_Group_Record;
+   procedure Detach (Accel_Group : in Gtk_Accel_Group;
                      Object      : access Gtk.Object.Gtk_Object_Record'Class);
 
-   procedure Lock (Accel_Group : access Gtk_Accel_Group_Record);
+   procedure Lock (Accel_Group : in Gtk_Accel_Group);
 
-   procedure Unlock (Accel_Group : access Gtk_Accel_Group_Record);
+   procedure Unlock (Accel_Group : in Gtk_Accel_Group);
 
 
    ---------------------------------
    --  Accelerator Group Entries  --
    ---------------------------------
 
-   function Get_Entry (Accel_Group : access Gtk_Accel_Group_Record;
-                       Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
-                       Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type)
-                       return               Gtk_Accel_Entry;
+   function Get_Entry (Accel_Group : in Gtk_Accel_Group;
+                       Accel_Key   : in Gdk.Types.Gdk_Key_Type;
+                       Accel_Mods  : in Gdk.Types.Gdk_Modifier_Type)
+                       return        Gtk_Accel_Entry'Class;
 
-   procedure Lock_Entry (Accel_Group : access Gtk_Accel_Group_Record;
-                         Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
-                         Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type);
+   procedure Lock_Entry (Accel_Group : in Gtk_Accel_Group;
+                         Accel_Key   : in Gdk.Types.Gdk_Key_Type;
+                         Accel_Mods  : in Gdk.Types.Gdk_Modifier_Type);
 
-   procedure Unlock_Entry (Accel_Group : access Gtk_Accel_Group_Record;
-                           Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
-                           Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type);
+   procedure Unlock_Entry (Accel_Group : in Gtk_Accel_Group;
+                           Accel_Key   : in Gdk.Types.Gdk_Key_Type;
+                           Accel_Mods  : in Gdk.Types.Gdk_Modifier_Type);
 
-   procedure Add (Accel_Group  : access Gtk_Accel_Group_Record;
+   procedure Add (Accel_Group  : in Gtk_Accel_Group;
                   Accel_Key    : in     Gdk.Types.Gdk_Key_Type;
                   Accel_Mods   : in     Gdk.Types.Gdk_Modifier_Type;
                   Accel_Flags  : in     Gtk_Accel_Flags;
                   Object       : access Gtk.Object.Gtk_Object_Record'Class;
                   Accel_Signal : in     String);
 
-   procedure Remove (Accel_Group : access Gtk_Accel_Group_Record;
+   procedure Remove (Accel_Group : in Gtk_Accel_Group;
                      Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
                      Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type;
                      Object      : access Gtk.Object.Gtk_Object_Record'Class);
@@ -120,14 +115,14 @@ package Gtk.Accel_Group is
    procedure Handle_Add
      (Object          : access Gtk.Object.Gtk_Object_Record'Class;
       Accel_Signal_Id : in     Guint;
-      Accel_Group     : access Gtk_Accel_Group_Record;
+      Accel_Group     : in     Gtk_Accel_Group;
       Accel_Key       : in     Gdk.Types.Gdk_Key_Type;
       Accel_Mods      : in     Gdk.Types.Gdk_Modifier_Type;
       Accel_Flags     : in     Gtk_Accel_Flags);
 
    procedure Handle_Remove
      (Object      : access Gtk.Object.Gtk_Object_Record'Class;
-      Accel_Group : access Gtk_Accel_Group_Record;
+      Accel_Group : in     Gtk_Accel_Group;
       Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
       Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type);
 
@@ -171,9 +166,8 @@ package Gtk.Accel_Group is
 
 private
 
-   type Gtk_Accel_Group_Record is new Root_Type with null record;
-
-   type Gtk_Accel_Entry_Record is new Root_Type with null record;
+   type Gtk_Accel_Group is new Root_Type with null record;
+   type Gtk_Accel_Entry is new Root_Type with null record;
 
    Accel_Visible        : constant Gtk_Accel_Flags := 2 ** 0;
    Accel_Signal_Visible : constant Gtk_Accel_Flags := 2 ** 1;

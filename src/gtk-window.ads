@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Accel_Group; use Gtk.Accel_Group;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Bin;    use Gtk.Bin;
 with Gtk.Enums;  use Gtk.Enums;
@@ -75,12 +76,18 @@ package Gtk.Window is
                           Wmclass_Name  : in String;
                           Wmclass_Class : in String);
 
+   procedure Add_Accel_Group (Window      : access Gtk_Window_Record;
+                              Accel_Group : in Gtk_Accel_Group'Class);
+
+   procedure Remove_Accel_Group (Window : access Gtk_Window_Record;
+                                 Accel_Group : in Gtk_Accel_Group'Class);
+
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Window : in out Gtk_Object; N : in Node_Ptr);
 
 private

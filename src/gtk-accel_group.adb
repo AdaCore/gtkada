@@ -113,10 +113,10 @@ package body Gtk.Accel_Group is
    -- Activate --
    --------------
 
-   function Activate (Accel_Group : access Gtk_Accel_Group_Record;
-                      Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
-                      Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type)
-                      return               Boolean
+   function Activate (Accel_Group : in Gtk_Accel_Group;
+                      Accel_Key   : in Gdk.Types.Gdk_Key_Type;
+                      Accel_Mods  : in Gdk.Types.Gdk_Modifier_Type)
+                      return        Boolean
    is
       function Internal (Accel_Group : in System.Address;
                          Accel_Key   : in Gint;
@@ -134,7 +134,7 @@ package body Gtk.Accel_Group is
    -- Add --
    ---------
 
-   procedure Add (Accel_Group  : access Gtk_Accel_Group_Record;
+   procedure Add (Accel_Group  : in     Gtk_Accel_Group;
                   Accel_Key    : in     Gdk.Types.Gdk_Key_Type;
                   Accel_Mods   : in     Gdk.Types.Gdk_Modifier_Type;
                   Accel_Flags  : in     Gtk_Accel_Flags;
@@ -161,7 +161,7 @@ package body Gtk.Accel_Group is
    -- Attach --
    ------------
 
-   procedure Attach (Accel_Group : access Gtk_Accel_Group_Record;
+   procedure Attach (Accel_Group : in     Gtk_Accel_Group;
                      Object      : access Gtk.Object.Gtk_Object_Record'Class)
    is
       procedure Internal (Accel_Group : in System.Address;
@@ -176,7 +176,7 @@ package body Gtk.Accel_Group is
    -- Detach --
    ------------
 
-   procedure Detach (Accel_Group : access Gtk_Accel_Group_Record;
+   procedure Detach (Accel_Group : in     Gtk_Accel_Group;
                      Object      : access Gtk.Object.Gtk_Object_Record'Class)
    is
       procedure Internal
@@ -195,32 +195,33 @@ package body Gtk.Accel_Group is
    function Get_Default return Gtk_Accel_Group is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_accel_group_get_default");
-      Stub : Gtk_Accel_Group_Record;
+      Stub : Gtk_Accel_Group;
    begin
-      return Gtk_Accel_Group (Get_User_Data (Internal, Stub));
+      Set_Object (Stub, Internal);
+      return Stub;
    end Get_Default;
 
    ---------------
    -- Get_Entry --
    ---------------
 
-   function Get_Entry (Accel_Group : access Gtk_Accel_Group_Record;
-                       Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
-                       Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type)
-                       return               Gtk_Accel_Entry
+   function Get_Entry (Accel_Group : in Gtk_Accel_Group;
+                       Accel_Key   : in Gdk.Types.Gdk_Key_Type;
+                       Accel_Mods  : in Gdk.Types.Gdk_Modifier_Type)
+                       return        Gtk_Accel_Entry'Class
    is
       function Internal (Accel_Group : in System.Address;
                          Accel_Key   : in Gint;
                          Accel_Mods  : in Gint)
                          return           System.Address;
       pragma Import (C, Internal, "gtk_accel_group_get_entry");
-      Stub : Gtk_Accel_Entry_Record;
+      Stub : Gtk_Accel_Entry;
    begin
-      return Gtk_Accel_Entry
-        (Get_User_Data (Internal
-                        (Get_Object (Accel_Group),
-                         Gdk.Types.Gdk_Key_Type'Pos (Accel_Key),
-                         Gdk.Types.Gdk_Modifier_Type'Pos (Accel_Mods)), Stub));
+      Set_Object (Stub,
+                  Internal (Get_Object (Accel_Group),
+                            Gdk.Types.Gdk_Key_Type'Pos (Accel_Key),
+                            Gdk.Types.Gdk_Modifier_Type'Pos (Accel_Mods)));
+      return Stub;
    end Get_Entry;
 
    -------------
@@ -228,9 +229,10 @@ package body Gtk.Accel_Group is
    -------------
 
    procedure Gtk_New (Widget : out Gtk_Accel_Group) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_accel_group_new");
    begin
-      Widget := new Gtk_Accel_Group_Record;
-      Initialize (Widget);
+      Set_Object (Widget, Internal);
    end Gtk_New;
 
    ----------------
@@ -240,7 +242,7 @@ package body Gtk.Accel_Group is
    procedure Handle_Add
      (Object          : access Gtk.Object.Gtk_Object_Record'Class;
       Accel_Signal_Id : in     Guint;
-      Accel_Group     : access Gtk_Accel_Group_Record;
+      Accel_Group     : in     Gtk_Accel_Group;
       Accel_Key       : in     Gdk.Types.Gdk_Key_Type;
       Accel_Mods      : in     Gdk.Types.Gdk_Modifier_Type;
       Accel_Flags     : in     Gtk_Accel_Flags)
@@ -267,7 +269,7 @@ package body Gtk.Accel_Group is
 
    procedure Handle_Remove
      (Object      : access Gtk.Object.Gtk_Object_Record'Class;
-      Accel_Group : access Gtk_Accel_Group_Record;
+      Accel_Group : in     Gtk_Accel_Group;
       Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
       Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type)
    is
@@ -283,23 +285,11 @@ package body Gtk.Accel_Group is
                 Gdk.Types.Gdk_Modifier_Type'Pos (Accel_Mods));
    end Handle_Remove;
 
-   ------------------
-   --  Initialize  --
-   ------------------
-
-   procedure Initialize (Widget : access Gtk_Accel_Group_Record) is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_accel_group_new");
-   begin
-      Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
-   end Initialize;
-
    ----------
    -- Lock --
    ----------
 
-   procedure Lock (Accel_Group : access Gtk_Accel_Group_Record)
+   procedure Lock (Accel_Group : in Gtk_Accel_Group)
    is
       procedure Internal (Accel_Group : in System.Address);
       pragma Import (C, Internal, "gtk_accel_group_lock");
@@ -311,9 +301,9 @@ package body Gtk.Accel_Group is
    -- Lock_Entry --
    ----------------
 
-   procedure Lock_Entry (Accel_Group : access Gtk_Accel_Group_Record;
-                         Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
-                         Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type)
+   procedure Lock_Entry (Accel_Group : in Gtk_Accel_Group;
+                         Accel_Key   : in Gdk.Types.Gdk_Key_Type;
+                         Accel_Mods  : in Gdk.Types.Gdk_Modifier_Type)
    is
       procedure Internal (Accel_Group : in System.Address;
                           Accel_Key   : in Gint;
@@ -329,7 +319,7 @@ package body Gtk.Accel_Group is
    -- Remove --
    ------------
 
-   procedure Remove (Accel_Group : access Gtk_Accel_Group_Record;
+   procedure Remove (Accel_Group : in     Gtk_Accel_Group;
                      Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
                      Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type;
                      Object      : access Gtk.Object.Gtk_Object_Record'Class)
@@ -350,7 +340,7 @@ package body Gtk.Accel_Group is
    -- Unlock --
    ------------
 
-   procedure Unlock (Accel_Group : access Gtk_Accel_Group_Record)
+   procedure Unlock (Accel_Group : in Gtk_Accel_Group)
    is
       procedure Internal (Accel_Group : in System.Address);
       pragma Import (C, Internal, "gtk_accel_group_unlock");
@@ -362,9 +352,9 @@ package body Gtk.Accel_Group is
    -- Unlock_Entry --
    ------------------
 
-   procedure Unlock_Entry (Accel_Group : access Gtk_Accel_Group_Record;
-                           Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
-                           Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type)
+   procedure Unlock_Entry (Accel_Group : in Gtk_Accel_Group;
+                           Accel_Key   : in Gdk.Types.Gdk_Key_Type;
+                           Accel_Mods  : in Gdk.Types.Gdk_Modifier_Type)
    is
       procedure Internal (Accel_Group : in System.Address;
                           Accel_Key   : in Gint;

@@ -38,6 +38,7 @@ with Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Visual;      use Gdk.Visual;
 with Gdk.Window;
+with Gtk.Accel_Group;
 with Gtk.Enums;
 with Gtk.Object;
 with Glib.Glist;
@@ -170,6 +171,42 @@ package Gtk.Widget is
 
    procedure Event (Widget : access Gtk_Widget_Record'Class;
                     Event  : Gdk.Event.Gdk_Event);
+
+   -------------------
+   --  Accelerators --
+   -------------------
+
+   procedure Add_Accelerator
+     (Widget       : access Gtk_Widget_Record;
+      Accel_Signal : in String;
+      Accel_Group  : in Gtk.Accel_Group.Gtk_Accel_Group;
+      Accel_Key    : in Gdk.Types.Gdk_Key_Type;
+      Accel_Mods   : in Gdk.Types.Gdk_Modifier_Type;
+      Accel_Flags  : in Gtk.Accel_Group.Gtk_Accel_Flags);
+
+   procedure Remove_Accelerator
+     (Widget       : access Gtk_Widget_Record;
+      Accel_Group  : in Gtk.Accel_Group.Gtk_Accel_Group;
+      Accel_Key    : in Gdk.Types.Gdk_Key_Type;
+      Accel_Mods   : in Gdk.Types.Gdk_Modifier_Type);
+
+   procedure Remove_Accelerators
+     (Widget       : access Gtk_Widget_Record;
+      Accel_Signal : in String;
+      Visible_Only : in Boolean);
+
+   function Accelerator_Signal
+     (Widget       : access Gtk_Widget_Record;
+      Accel_Group  : in Gtk.Accel_Group.Gtk_Accel_Group;
+      Accel_Key    : in Gdk.Types.Gdk_Key_Type;
+      Accel_Mods   : in Gdk.Types.Gdk_Modifier_Type)
+     return Guint;
+
+   procedure Lock_Accelerators
+     (Widget       : access Gtk_Widget_Record);
+
+   procedure Unlock_Accelerators
+     (Widget       : access Gtk_Widget_Record);
 
    --------------------
    --  Widget flags  --
