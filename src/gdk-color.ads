@@ -39,20 +39,6 @@
 --  to always use the system default Colormap. All the functions to get
 --  these colormap are found in Gtk.Widget.
 --
---  Here is an example how you can allocate a new color, when you know
---  its red/green/blue components:
---     Color   : Gdk_Color;
---     Success : Boolean;
---     Set_Rbg (Color, 255, 255, 255);
---     Alloc_Color (Colormap   => Gtk.Widget.Get_Default_Colormap,
---                  Color      => Color,
---                  Writeable  => False,
---                  Best_Match => True,
---                  Success    => Success);
---     if not Success then
---         ...;  --  allocation failed
---     end if;
---
 --  Getting the Red/Green/Blue components can be done through Parse, and is
 --  actually recommended, since the exact color generally depends on the
 --  visual your application is running on.
@@ -277,3 +263,20 @@ private
    pragma Inline (Pixel);
    pragma Import (C, Get_System_Size, "gdk_colormap_get_system_size");
 end Gdk.Color;
+
+--  <example>
+--  --  Here is an example how you can allocate a new color, when you know
+--  --  its red/green/blue components:
+--     Color   : Gdk_Color;
+--     Success : Boolean;
+--     Set_Rbg (Color, 255, 255, 255);
+--     Alloc_Color (Colormap   => Gtk.Widget.Get_Default_Colormap,
+--                  Color      => Color,
+--                  Writeable  => False,
+--                  Best_Match => True,
+--                  Success    => Success);
+--     if not Success then
+--         ...;  --  allocation failed
+--     end if;
+--  </example>
+--
