@@ -36,43 +36,46 @@ package Gtk.Spin_Button is
    type Gtk_Spin_Button is new Gtk.GEntry.Gtk_Entry with private;
 
    procedure Configure
-      (Spin_Button : in Gtk_Spin_Button;
-       Adjustment  : in Gtk.Adjustment.Gtk_Adjustment'Class;
-       Climb_Rate  : in Gfloat;
-       The_Digits  : in Gint);
+     (Spin_Button : in Gtk_Spin_Button;
+      Adjustment  : in Gtk.Adjustment.Gtk_Adjustment'Class;
+      Climb_Rate  : in Gfloat;
+      The_Digits  : in Gint);
    function Get_Adjustment (Spin_Button : in Gtk_Spin_Button)
-                            return     Gtk.Adjustment.Gtk_Adjustment'Class;
+     return Gtk.Adjustment.Gtk_Adjustment'Class;
    function Get_Value_As_Float (Spin_Button : in Gtk_Spin_Button)
-                                return           Gfloat;
+     return Gfloat;
    function Get_Value_As_Int (Spin_Button : in Gtk_Spin_Button)
-                              return           Gint;
+     return Gint;
    procedure Gtk_New
-      (Widget     : out Gtk_Spin_Button;
-       Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class;
-       Climb_Rate : in Gfloat;
-       The_Digits : in Gint);
+     (Widget     : out Gtk_Spin_Button;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class;
+      Climb_Rate : in Gfloat;
+      The_Digits : in Gint);
    procedure Set_Adjustment
-      (Spin_Button : in Gtk_Spin_Button;
-       Adjustment  : in Gtk.Adjustment.Gtk_Adjustment'Class);
+     (Spin_Button : in Gtk_Spin_Button;
+      Adjustment  : in Gtk.Adjustment.Gtk_Adjustment'Class);
    procedure Set_Digits
-      (Spin_Button : in Gtk_Spin_Button;
-       The_Digits  : in Gint);
+     (Spin_Button : in Gtk_Spin_Button;
+      The_Digits  : in Gint);
    procedure Set_Numeric
-      (Spin_Button : in Gtk_Spin_Button;
-       Numeric     : in Boolean);
+     (Spin_Button : in Gtk_Spin_Button;
+      Numeric     : in Boolean);
+   procedure Set_Snap_To_Ticks
+    (Spin_Button   : in Gtk_Spin_Button;
+     Snap_To_Ticks : in Boolean);
    procedure Set_Update_Policy
-      (Spin_Button : in Gtk_Spin_Button;
-       Policy      : in Gtk_Spin_Button_Update_Policy);
+     (Spin_Button : in Gtk_Spin_Button;
+      Policy      : in Gtk_Spin_Button_Update_Policy);
    procedure Set_Value
-      (Spin_Button : in Gtk_Spin_Button;
-       Value       : in Gfloat);
+     (Spin_Button : in Gtk_Spin_Button;
+      Value       : in Gfloat);
    procedure Set_Wrap
-      (Spin_Button : in Gtk_Spin_Button;
-       Wrap        : in Boolean);
+     (Spin_Button : in Gtk_Spin_Button;
+      Wrap        : in Boolean);
    procedure Spin
-      (Spin_Button : in Gtk_Spin_Button;
-       Direction   : in Gtk.Enums.Gtk_Arrow_Type;
-       Step        : in Gfloat);
+     (Spin_Button : in Gtk_Spin_Button;
+      Direction   : in Gtk.Enums.Gtk_Arrow_Type;
+      Step        : in Gfloat);
 
 private
    type Gtk_Spin_Button is new Gtk.GEntry.Gtk_Entry with null record;
