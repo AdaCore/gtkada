@@ -144,9 +144,16 @@ package body Glib.Glade is
       while P /= null loop
          if P.Tag.all = "class" then
 
+            --  In some cases, Glade will have the child_name be the full name
+            --  (e.g GtkDialog), whereas in some other cases it deletes the
+            --  prefix (e.g Dialog). We have to handle both cases here
+
+            if P.Value.all = Class then
+               return P;
+
             --  Class can be shorter than the real class name
 
-            if (P.Value'Length >= Class'Length + 3 and then
+            elsif (P.Value'Length >= Class'Length + 3 and then
                 P.Value (P.Value'First + 3 .. P.Value'First + 2 + Class'Length)
                   = Class)
 
@@ -539,19 +546,19 @@ package body Glib.Glade is
       P   : String_Ptr;
       Cur : String_Ptr;
       Top : String_Ptr;
- 
+
    begin
       if N.Specific_Data.Created then
          return;
       end if;
- 
+
       P := Get_Field (N, "name");
       Cur := Get_Field (N, "name");
       Top := Get_Field (Find_Top_Widget (N), "name");
- 
+
       if P /= null then
          Add_Package (Class);
- 
+
          if Cur = Top then
             Put (File, "   Gtk." & Class & ".Initialize");
          else
@@ -597,15 +604,22 @@ package body Glib.Glade is
    procedure Gen_Child (N, Child : Node_Ptr; File : File_Type) is
       P   : String_Ptr := Get_Field (N, "name");
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Parent : Node_Ptr;
+      Parent_Top : String_Ptr;
 
    begin
       if P /= null then
-         Put_Line
-           (File, "   " & To_Ada (Top.all) & "." & To_Ada (P.all) &
-            " := Get_" & To_Ada (Get_Part (Child.Value.all, 2)) & " (" &
-            To_Ada (Find_Tag (Find_Parent
-              (N.Parent, Get_Part (Child.Value.all, 1)),
-              "name").Value.all) & ");");
+         Parent := Find_Parent (N.Parent, Get_Part (Child.Value.all, 1));
+         Parent_Top := Get_Field (Find_Top_Widget (Parent), "name");
+
+         Put (File, "   " & To_Ada (Top.all) & "." & To_Ada (P.all) &
+              " := Get_" & To_Ada (Get_Part (Child.Value.all, 2)) & " (");
+
+         if Parent_Top /= null then
+            Put (File, To_Ada (Parent_Top.all) & ".");
+         end if;
+
+         Put_Line (File, To_Ada (Find_Tag (Parent, "name").Value.all) & ");");
       end if;
    end Gen_Child;
 
