@@ -1,0 +1,85 @@
+.SUFFIXES:
+.SUFFIXES: .c .o .ads .adb .ali
+ 
+.PHONY:
+.PHONY: clean-generic mostlyclean-generic \
+	clean distclean mostlyclean maintainer-clean
+
+CFLAGS = @CFLAGS@ -Wall @GTK_CFLAGS@ -I. $(FPIC)
+ 
+SONAME        = libgtkada_gl.so
+LIBNAME       = libgtkada_gl.so
+ARCHIVENAME   = libgtkada_gl.a
+
+HAVE_OPENGL=@HAVE_OPENGL@
+ 
+ifeq ($(HAVE_OPENGL),True)
+OPENGL_C_OBJECTS=gtkglarea.o gdkgl.o
+OPENGL_SOURCES=gdk-gl.adb gtk-glarea.adb
+OPENGL_OBJECTS=$(OPENGL_SOURCES:%.adb=%.o)
+OPENGL_LIBS=@GL_LIBS@
+OPENGL_FLAGS=@GL_CFLAGS@
+MESA_SPECS=gl_h.ads glu_h.ads
+else
+OPENGL_C_OBJECTS=
+OPENGL_SOURCES=
+OPENGL_OBJECTS=
+OPENGL_LIBS=
+OPENGL_FLAGS=
+MESA_SPECS=
+endif
+
+all: $(LIBNAME) $(ARCHIVENAME)
+
+$(LIBNAME):: $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
+	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) gdk*.o gtk*.o @GTK_LIBS@ -L.. -lgtkada
+	-@if [ ! -f ../.devel ]; then \
+	   strip $(LIBNAME); \
+	fi
+ 
+$(ARCHIVENAME):: $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
+	$(AR) $(ARFLAGS) $(ARCHIVENAME) gdk*.o gtk*.o
+	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
+	   $(RANLIB) $(ARCHIVENAME); \
+	fi
+
+$(OPENGL_OBJECTS):: force
+	@if [ -f ../.devel ]; then \
+	   $(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS) $(FPIC) -q -c $(patsubst %.o,%.adb,$@); \
+	else \
+	   $(GNATMAKE) -I.. $(GNATFLAGS) $(FPIC) -q -c $(patsubst %.o,%.adb,$@); \
+	fi
+ 
+gtkglarea.o: gtkglarea.h gtkglarea.c
+	$(CC) -c $(CFLAGS) $(OPENGL_FLAGS) gtkglarea.c
+gdkgl.o:     gdkgl.h gdkgl.c
+	$(CC) -c $(CFLAGS) $(OPENGL_FLAGS) gdkgl.c
+
+install: all
+	$(INSTALL_DATA) $(ARCHIVENAME) $(libdir)
+	$(INSTALL_DATA) $(LIBNAME) $(libdir)
+	$(CP) $(MESA_SPECS) $(incdir)
+	$(CP) gdk*.ads gdk*.adb $(incdir)
+	$(CP) gtk*.ads gtk*.adb $(incdir)
+	$(CP) gdk*.ali gtk*.ali $(alidir)
+	$(CHMOD) -w $(alidir)/*.ali
+
+clean-generic:
+	-${RM} *.o *.ali *~ b_*.c b~*.ad? core
+	-${RM} $(ARCHIVENAME) $(LIBNAME)
+	-${RM} .\#*
+ 
+mostlyclean-generic: clean-generic
+	-${RM} Makefile
+	-${RM} $(GATE)
+	-${RM} $(GTKADA_CONFIG)
+ 
+clean: clean-generic
+ 
+distclean: mostlyclean-generic
+ 
+mostlyclean: mostlyclean-generic
+ 
+maintainer-clean: mostlyclean-generic
+
+force:
