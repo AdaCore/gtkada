@@ -42,12 +42,12 @@
 --  <c_version>1.3.6</c_version>
 
 with Glib.Properties;
-with Gtk.Widget;
+with Gtk.Editable;
 
 package Gtk.GEntry is
 
    --  <doc_ignore>
-   type Gtk_Entry_Record is new Gtk.Widget.Gtk_Widget_Record with private;
+   type Gtk_Entry_Record is new Gtk.Editable.Gtk_Editable_Record with private;
    type Gtk_Entry is access all Gtk_Entry_Record'Class;
    subtype Gtk_GEntry is Gtk_Entry;
    --  </doc_ignore>
@@ -208,7 +208,7 @@ package Gtk.GEntry is
 
 private
    type Gtk_Entry_Record is new
-     Gtk.Widget.Gtk_Widget_Record with null record;
+     Gtk.Editable.Gtk_Editable_Record with null record;
 
    Text_Position_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("text_position");
