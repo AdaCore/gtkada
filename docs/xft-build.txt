@@ -16,7 +16,8 @@ expat at ftp://ftp.jclark.com/pub/xml/
 
 prefix=/opt/gtk-2.0
 
-First make sure pkgconfig is installed, following instructions in gtk-build.txt
+First make sure pkgconfig and zlib are installed, following instructions in
+gtk-build.txt
 
 #########
 # expat #
