@@ -118,12 +118,17 @@ package body Gtk.Glade is
       P, Q : Node_Ptr;
       S : constant String := Get_Attribute (N, "class");
       C : Boolean;
+      Is_Internal : Boolean := False;
 
    begin
+      Is_Internal := Get_Attribute (N.Parent, "internal-child") /= "";
+
       C := N.Specific_Data.Created;
 
-      Get_Gate (S) (N, File);
-      End_Generate (Project, N, File);
+      if not Is_Internal then
+         Get_Gate (S) (N, File);
+         End_Generate (Project, N, File);
+      end if;
 
       if not C and then S /= "placeholder" then
          New_Line (File);
@@ -132,17 +137,18 @@ package body Gtk.Glade is
       P := N.Child;
 
       while P /= null loop
-         if P.Tag.all = "child"
-           and then Get_Attribute (P, "internal-child") = ""
-         then
+         if P.Tag.all = "child" then
             Q := P.Child;
+
             while Q /= null loop
                if Q.Tag.all = "widget" then
                   Print_Initialize_Procedure (Project, Q, File);
                end if;
+
                Q := Q.Next;
             end loop;
          end if;
+
          P := P.Next;
       end loop;
    end Print_Initialize_Procedure;
@@ -255,10 +261,15 @@ package body Gtk.Glade is
 
       begin
          while P /= null loop
-            if P.Tag.all = "child"
-              and then Get_Attribute (P, "internal-child") = ""
-            then
-               T := Find_Tag (P.Child, "widget");
+            if P.Tag.all = "child" then
+               if Get_Attribute (P, "internal-child") = "" then
+                  T := Find_Tag (P.Child, "widget");
+               else
+                  T := null;
+                  Print_Var
+                    (P.Child.Child, File, Kind, False,
+                     Accelerator, Tooltip);
+               end if;
             else
                T := P;
             end if;
