@@ -2,7 +2,7 @@
 --                   Gate - GtkAda Components                        --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -417,7 +417,8 @@ package body Gtk_Generates is
       Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
       Top        : constant String := Get_Name (Top_Widget);
       Has_Items  : Boolean := False;
-      Child : Node_Ptr := Find_Tag (N.Child, "widget");
+      Child      : constant Node_Ptr := Find_Tag (N.Child, "widget");
+
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_combo_get_type");
 

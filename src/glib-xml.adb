@@ -403,7 +403,7 @@ package body Glib.XML is
    --------------
 
    function Get_Node (Buf : String; Index : access Natural) return Node_Ptr is
-      N : Node_Ptr := new Node;
+      N : constant Node_Ptr := new Node;
       Q : Node_Ptr;
       S : String_Ptr;
       Empty_Node : Boolean;

@@ -1206,7 +1206,7 @@ package body Gtkada.MDI is
 
    procedure Realize_MDI (MDI : access Gtk_Widget_Record'Class) is
       Window_Attr : Gdk.Window_Attr.Gdk_Window_Attr;
-      M           : MDI_Window := MDI_Window (MDI);
+      M           : constant MDI_Window := MDI_Window (MDI);
       Cursor      : Gdk_Cursor;
 
    begin
@@ -1386,8 +1386,9 @@ package body Gtkada.MDI is
 
    procedure Destroy_Child (Child : access Gtk_Widget_Record'Class) is
       use type Widget_SList.GSlist;
-      C : MDI_Child := MDI_Child (Child);
+      C   : constant MDI_Child := MDI_Child (Child);
       MDI : constant MDI_Window := C.MDI;
+
    begin
       --  We know at that stage that Child has already been unparent-ed
 
@@ -1610,7 +1611,7 @@ package body Gtkada.MDI is
       Event  : Gdk_Event) return Boolean
    is
       C      : constant MDI_Child := MDI_Child (Child);
-      MDI    : MDI_Window := C.MDI;
+      MDI    : constant MDI_Window := C.MDI;
       Cursor : Gdk.Cursor.Gdk_Cursor;
       Tmp    : Gdk_Grab_Status;
       pragma Unreferenced (Tmp);
@@ -1733,7 +1734,7 @@ package body Gtkada.MDI is
    is
       C     : constant MDI_Child := MDI_Child (Child);
       C2    : MDI_Child;
-      MDI   : MDI_Window := C.MDI;
+      MDI   : constant MDI_Window := C.MDI;
       Alloc : Gtk_Allocation;
 
       Buttons_Width : constant := 100;
@@ -1927,7 +1928,7 @@ package body Gtkada.MDI is
       Event  : Gdk_Event) return Boolean
    is
       C       : constant MDI_Child := MDI_Child (Child);
-      MDI     : MDI_Window := C.MDI;
+      MDI     : constant MDI_Window := C.MDI;
       Delta_X : Gint;
       Delta_Y : Gint;
       Cursor  : Gdk_Cursor;
@@ -2214,7 +2215,7 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      MDI    : MDI_Window := MDI_Child (Child).MDI;
+      MDI : constant MDI_Window := MDI_Child (Child).MDI;
    begin
       --  Ignore this event if we are currently resizing otherwise it becomes
       --  a move operation (reset of MDI.Current_Cursor).

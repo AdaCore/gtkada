@@ -273,7 +273,7 @@ package body Glib.Object is
       Stub : GObject_Record'Class) return GObject
    is
       Object : GObject := GObject (Obj);
-      Result : GObject := new GObject_Record'Class'(Stub);
+      Result : constant GObject := new GObject_Record'Class'(Stub);
 
       procedure Set_User_Data
         (Obj     : System.Address;

@@ -438,7 +438,7 @@ package body Gtkada.Canvas is
    ----------------------
 
    procedure Canvas_Destroyed (Canvas : access Gtk_Widget_Record'Class) is
-      C : Interactive_Canvas := Interactive_Canvas (Canvas);
+      C : constant Interactive_Canvas := Interactive_Canvas (Canvas);
       Child : Vertex_Iterator;
       V : Vertex_Access;
    begin
@@ -475,7 +475,7 @@ package body Gtkada.Canvas is
    is
       Hadj : constant System.Address := Get_Address (Nth (Args, 1));
       Vadj : constant System.Address := Get_Address (Nth (Args, 2));
-      Canv : Interactive_Canvas := Interactive_Canvas (Canvas);
+      Canv : constant Interactive_Canvas := Interactive_Canvas (Canvas);
       Stub : Gtk_Adjustment_Record;
 
    begin
@@ -937,7 +937,7 @@ package body Gtkada.Canvas is
    --------------
 
    procedure Realized (Canvas : access Gtk_Widget_Record'Class) is
-      Canv   : Interactive_Canvas := Interactive_Canvas (Canvas);
+      Canv   : constant Interactive_Canvas := Interactive_Canvas (Canvas);
       Window : Gdk_Window;
    begin
       if Canv.Black_GC /= null then
@@ -2282,7 +2282,7 @@ package body Gtkada.Canvas is
      (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
+      Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
       Item : Canvas_Item;
       Xbase : constant Gint := Left_World_Coordinates (Canvas);
       Ybase : constant Gint := Top_World_Coordinates (Canvas);
@@ -2404,7 +2404,7 @@ package body Gtkada.Canvas is
      (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      Canvas       : Interactive_Canvas := Interactive_Canvas (Canv);
+      Canvas       : constant Interactive_Canvas := Interactive_Canvas (Canv);
       Tmp          : Item_Selection_List;
       Xbase        : constant Gint := Left_World_Coordinates (Canvas);
       Ybase        : constant Gint := Top_World_Coordinates (Canvas);
@@ -2561,7 +2561,7 @@ package body Gtkada.Canvas is
      (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
+      Canvas : constant Interactive_Canvas := Interactive_Canvas (Canv);
       X_Scroll, Y_Scroll : Gint;
    begin
       if Get_Window (Event) /= Get_Window (Canvas) then
