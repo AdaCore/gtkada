@@ -1532,7 +1532,7 @@ This time, @code{Initialize} has to do two things:
    --  modify with the following call:
 
    Gtk.Object.Initialize_Class_Record
-       (Widget, Signals, Class_Record);
+     (Widget, Signals, Class_Record);
    --  This initializes the "class record" for the widget and
    --  creates the signals.
 @end example
@@ -1546,9 +1546,7 @@ This is the widget that you want to initialize
 This is an array of string access containing the name of the signals
 you want to create. For instance, you could create Signals with
 @example
-   Signals      : Gtk.Object.Signal_Array (0 .. 1) :=
-     (0 => @b{new} String' ("bullseye" & ASCII.Nul),
-      1 => @b{new} String' ("missed" & ASCII.Nul));
+   Signals : Gtkada.Types.Chars_Ptr_Array := "bullseye" + "missed";
 @end example
 This will create two signals, named "bullseye" and "missed", whose callbacks
 do not take any argument (apart from the usual user's data). This is the only
