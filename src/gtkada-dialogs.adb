@@ -92,7 +92,7 @@ package body Gtkada.Dialogs is
         (Label'Unchecked_Access,
          Get_Object (Get_Child (Gtk_Button (Button))));
 
-      if Get (Label'Unchecked_Access) = -"Help" then
+      if Get_Text (Label'Unchecked_Access) = -"Help" then
          Result := Message_Dialog
            (Gtkada_Dialog (Get_Toplevel (Button)).Help_Msg.all,
             Buttons => Button_OK, Title => -"Help");
@@ -101,7 +101,7 @@ package body Gtkada.Dialogs is
 
       for J in Button_Range loop
          if Trim (-Dialog_Button_String (J), Right) =
-           Get (Label'Unchecked_Access)
+           Get_Text (Label'Unchecked_Access)
          then
             Gtkada_Dialog (Get_Toplevel (Button)).Value := 2 ** Integer (J);
             Main_Quit;
