@@ -100,6 +100,34 @@ package body Gtk.Label is
       Internal (Get_Object (Label), Str & ASCII.NUL);
    end Set_Text;
 
+   -----------------
+   -- Set_Pattern --
+   -----------------
+
+   procedure Set_Pattern (Label   : access Gtk_Label_Record;
+                          Pattern : in String)
+   is
+      procedure Internal (Label   : in System.Address;
+                          Pattern : in String);
+      pragma Import (C, Internal, "gtk_label_set_pattern");
+   begin
+      Internal (Get_Object (Label), Pattern & ASCII.NUL);
+   end Set_Pattern;
+
+   -------------------
+   -- Set_Line_Wrap --
+   -------------------
+
+   procedure Set_Line_Wrap (Label : access Gtk_Label_Record;
+                            Wrap  : in Boolean)
+   is
+      procedure Internal (Label : in System.Address;
+                          Wrap  : in Gint);
+      pragma Import (C, Internal, "gtk_label_set_line_wrap");
+   begin
+      Internal (Get_Object (Label), Boolean'Pos (Wrap));
+   end Set_Line_Wrap;
+
    --------------
    -- Generate --
    --------------
@@ -140,6 +168,7 @@ package body Gtk.Label is
         File => File, Delim => '"');
       Misc.Generate (N, File);
       Gen_Set (N, "Label", "justify", File);
+      Gen_Set (N, "Label", "Line_Wrap", "wrap", File);
 
       if Child_Name /= null then
          if Get_Part (Child_Name.all, 2) = "tab" then
@@ -194,6 +223,12 @@ package body Gtk.Label is
       if S /= null then
          Set_Justify (Gtk_Label (Label),
            Enums.Gtk_Justification'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      S := Get_Field (N, "wrap");
+
+      if S /= null then
+         Set_Line_Wrap (Gtk_Label (Label), Boolean'Value (S.all));
       end if;
 
       if Child_Name /= null then

@@ -47,6 +47,12 @@ package Gtk.Label is
    procedure Set_Justify (Label : access Gtk_Label_Record;
                           Jtype : in Enums.Gtk_Justification);
 
+   procedure Set_Pattern (Label   : access Gtk_Label_Record;
+                          Pattern : in String);
+
+   procedure Set_Line_Wrap (Label : access Gtk_Label_Record;
+                            Wrap  : in Boolean);
+
    function Get (Label : access Gtk_Label_Record) return String;
 
    --  The two following procedures are used to generate and create widgets
