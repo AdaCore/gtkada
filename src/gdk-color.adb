@@ -352,12 +352,12 @@ package body Gdk.Color is
    -------------
 
    procedure Set_Rgb (Color   : out Gdk_Color;
-                      R, G, B : in Gushort)
+                      Red, Green, Blue : in Gushort)
    is
    begin
-      Color.Red := R;
-      Color.Green := G;
-      Color.Blue := B;
+      Color.Red := Red;
+      Color.Green := Green;
+      Color.Blue := Blue;
    end Set_Rgb;
 
    -----------

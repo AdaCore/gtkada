@@ -127,7 +127,7 @@ package Gdk.Color is
    --------------------------------------
 
    procedure Set_Rgb (Color   : out Gdk_Color;
-                      R, G, B : in Gushort);
+                      Red, Green, Blue : in Gushort);
    procedure Set_Pixel (Color : in out Gdk_Color; Pixel : Gulong);
    function Red (Color : in Gdk_Color) return Gushort;
    function Green (Color : in Gdk_Color) return Gushort;
