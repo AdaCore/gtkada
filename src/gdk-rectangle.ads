@@ -32,31 +32,33 @@ with Glib; use Glib;
 package Gdk.Rectangle is
 
    type Gdk_Rectangle is record
-      X      : Gint16;
-      Y      : Gint16;
-      Width  : Guint16;
-      Height : Guint16;
+      X      : Gint;
+      Y      : Gint;
+      Width  : Gint;
+      Height : Gint;
    end record;
-   pragma Pack (Gdk_Rectangle);
+   pragma Convention (C, Gdk_Rectangle);
 
    Full_Area : constant Gdk_Rectangle;
    --  The constant above can be used in Gtk.Widget.Draw when you want to
    --  redraw the whole widget
 
    procedure Intersect
-     (Src1      : in     Gdk_Rectangle;
-      Src2      : in     Gdk_Rectangle;
-      Dest      :    out Gdk_Rectangle;
-      Intersect :    out Boolean);
+     (Src1      : Gdk_Rectangle;
+      Src2      : Gdk_Rectangle;
+      Dest      : out Gdk_Rectangle;
+      Intersect : out Boolean);
 
    procedure Union
-     (Src1 : in     Gdk_Rectangle;
-      Src2 : in     Gdk_Rectangle;
-      Dest :    out Gdk_Rectangle);
+     (Src1 : Gdk_Rectangle;
+      Src2 : Gdk_Rectangle;
+      Dest : out Gdk_Rectangle);
 
 private
 
    Full_Area : constant Gdk_Rectangle :=
-     (Gint16'First, Gint16'First, Guint16'Last, Guint16'Last);
+     (Gint'First, Gint'First, Gint'Last, Gint'Last);
+
+   pragma Import (C, Union, "gdk_rectangle_union");
 
 end Gdk.Rectangle;
