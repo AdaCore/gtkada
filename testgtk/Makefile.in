@@ -18,7 +18,7 @@ GNATFLAGS = @CFLAGS@ -gnata
 GNATFLAGS_DEVEL = @CFLAGS@ -g -gnatawu
 
 GNATMAKE = gnatmake
-GNATMAKELDFLAGS = -largs -L$(src_dir) @GTK_LIBS@ -lgtkada
+GNATMAKELDFLAGS = -largs -L$(src_dir) -lgtkada @GTK_LIBS@
 
 CP = cp -f
 
