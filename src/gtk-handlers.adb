@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                 Copyright (C) 2000-2002 ACT-Europe                --
+--                 Copyright (C) 2000-2004 ACT-Europe                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -148,7 +148,7 @@ package body Gtk.Handlers is
    is
       function Internal
         (Instance  : System.Address;
-         Signal_Id : Guint;
+         Id        : Guint;
          Detail    : GQuark := Unknown_Quark;
          Closure   : GClosure;
          After     : Gint := 0) return Signal_Id;
@@ -174,9 +174,9 @@ package body Gtk.Handlers is
 
       Id.Signal := Internal
         (Get_Object (Object),
-         Signal_Id => Signal,
-         Closure   => Id.Closure,
-         After     => Boolean'Pos (After));
+         Id      => Signal,
+         Closure => Id.Closure,
+         After   => Boolean'Pos (After));
 
       --  If we have connected with Object_Connect, we want to automatically
       --  disconnect the signal as well.
