@@ -409,16 +409,14 @@ package body Gtk.Toolbar is
       Stock_Id             : String;
       Tooltip_Text         : String := "";
       Tooltip_Private_Text : String := "";
-      Position             : Gint)
-     return Gtk.Button.Gtk_Button
+      Position             : Gint := -1) return Gtk.Button.Gtk_Button
    is
       function Internal
         (Toolbar              : System.Address;
          Stock_Id             : String;
          Tooltip_Text         : System.Address;
          Tooltip_Private_Text : System.Address;
-         Position             : Gint)
-        return System.Address;
+         Position             : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_insert_stock");
 
       Stub : Gtk.Button.Gtk_Button_Record;
