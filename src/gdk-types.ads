@@ -50,7 +50,7 @@ package Gdk.Types is
       Y : Gint16;
    end record;
    pragma Pack (Gdk_Point);
-   for Gdk_Point'Size use 32;
+   for Gdk_Point'Size use Gint'Size;
 
    type Gdk_Points_Array is array (Positive range <>) of Gdk_Point;
    pragma Pack (Gdk_Points_Array);
