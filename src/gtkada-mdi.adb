@@ -95,6 +95,7 @@ with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Tags;         use Ada.Tags;
 with System;           use System;
+with System.Address_Image;
 
 with Ada.Exceptions; use Ada.Exceptions;
 with GNAT.IO; use GNAT.IO;
@@ -102,6 +103,9 @@ with GNAT.IO; use GNAT.IO;
 package body Gtkada.MDI is
 
    use Glib.Xml_Int;
+
+   Traces : constant Boolean := True;
+   --  True if traces should be activated
 
    Default_Title_Bar_Focus_Color : constant String := "#000088";
    --  Default color to use for the title bar of the child that has
@@ -3763,14 +3767,28 @@ package body Gtkada.MDI is
          Width  := Gint'Value (Get_Attribute (Child_Node, "Width", "-1"));
          Height := Gint'Value (Get_Attribute (Child_Node, "Height", "-1"));
 
-         Notebook := null;
+         if Traces then
+            Put_Line ("MDI Parse_Notebook_Node Width=" & Width'Img
+                      & " Height=" & Height'Img);
+         end if;
 
---           if Child_Node.Child = null then
---              Notebook := Find_Empty_Notebook (MDI);
---           end if;
+         Notebook := null;
+         if Child_Node.Child = null then
+            Notebook := Find_Empty_Notebook (MDI);
+            if Notebook /= null
+              and then Traces
+            then
+               Put_Line ("MDI Using existing empty notebook "
+                         & System.Address_Image (Notebook.all'Address));
+            end if;
+         end if;
 
          if Notebook = null then
             Notebook := Create_Notebook (MDI);
+            if Traces then
+               Put_Line ("MDI About to create new notebook "
+                         & System.Address_Image (Notebook.all'Address));
+            end if;
          end if;
 
          Set_Child_Visible (Notebook, True);
@@ -3827,6 +3845,10 @@ package body Gtkada.MDI is
          Raised   := False;
          State    := Normal;
 
+         if Traces then
+            Put_Line ("MDI About to parse and insert child");
+         end if;
+
          while Child = null and then Register /= null loop
             Child := Register.Load
               (MDI_Window (MDI), Child_Node.Child, User);
@@ -3835,6 +3857,11 @@ package body Gtkada.MDI is
 
          if Child = null then
             return;
+         end if;
+
+         if Traces then
+            Put_Line ("MDI Parse child node " & Child.Title.all
+                      & " position=" & Child.Position'Img);
          end if;
 
          Child.Position := Child_Position'Value
@@ -3894,7 +3921,12 @@ package body Gtkada.MDI is
          Ref_Pane : Pane := Initial_Ref_Pane;
          Is_First : Boolean := True;
          Orient : Gtk_Orientation;
+         Must_Unref : Boolean;
       begin
+         if Traces then
+            Put_Line ("MDI Parsing pane node " & Orientation'Img);
+         end if;
+
          N := Node.Child;
          while N /= null loop
             if Is_First then
@@ -3906,9 +3938,22 @@ package body Gtkada.MDI is
 
             if N.Tag.all = "Notebook" then
                Parse_Notebook_Node
-                  (MDI, N, User, Focus_Child, Width, Height, Note);
+                 (MDI, N, User, Focus_Child, Width, Height, Note);
+
+               Must_Unref := False;
+               if Get_Parent (Note) /= null then
+                  --  We reused an existing notebook (likely an empty one)
+                  Ref (Note);
+                  Must_Unref := True;
+                  Remove (Gtk_Container (Get_Parent (Note)), Note);
+               end if;
 
                if Ref_Item /= null then
+                  if Traces then
+                     Put_Line ("MDI Notebook inserted, splitting ref_item "
+                               & System.Address_Image (Ref_Item.all'Address)
+                               & " orient=" & Orient'Img);
+                  end if;
                   Split (MDI,
                          Ref_Widget  => Ref_Item,
                          New_Child   => Note,
@@ -3916,6 +3961,10 @@ package body Gtkada.MDI is
                          Height      => Height,
                          Orientation => Orient);
                else
+                  if Traces then
+                     Put_Line ("MDI Notebook inserted, splitting ref_pane "
+                               & Orient'Img);
+                  end if;
                   Split (MDI,
                          Ref_Pane    => Ref_Pane,
                          New_Child   => Note,
@@ -3926,6 +3975,9 @@ package body Gtkada.MDI is
                Ref_Item := Gtk_Widget (Note);
                Ref_Pane := Root_Pane;
 
+               if Must_Unref then
+                  Unref (Note);
+               end if;
 
             elsif N.Tag.all = "Pane" then
                Parse_Pane_Node
@@ -3964,6 +4016,10 @@ package body Gtkada.MDI is
          if From_Tree /= null then
             Child_Node := From_Tree.Child;
             pragma Assert (From_Tree.Tag.all = "MDI");
+         end if;
+
+         if Traces then
+            Put_Line ("MDI Restore_Desktop");
          end if;
 
          while Child_Node /= null loop
