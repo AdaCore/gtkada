@@ -183,6 +183,8 @@ package Gtk.Signal is
 
    procedure Emit_Stop_By_Name (Object : in Gtk.Object.Gtk_Object'Class;
                                 Name   : in String);
+   procedure Emit_By_Name (Object : in Gtk.Object.Gtk_Object'Class;
+                           Name   : in String);
 
    procedure Handler_Block (Obj        : in Gtk.Object.Gtk_Object'Class;
                             Handler_Id : in Guint);

@@ -583,6 +583,20 @@ package body Gtk.Signal is
                 Id  => Handler_Id);
    end Disconnect;
 
+   ------------------
+   -- Emit_By_Name --
+   ------------------
+
+   procedure Emit_By_Name (Object : in Gtk.Object.Gtk_Object'Class;
+                           Name   : in String)
+   is
+      procedure Internal (Object : in System.Address;
+                          Name   : in String);
+      pragma Import (C, Internal, "gtk_signal_emit_by_name");
+   begin
+      Internal (Get_Object (Object), Name & Ascii.NUL);
+   end Emit_By_Name;
+
    -----------------------
    -- Emit_Stop_By_Name --
    -----------------------
