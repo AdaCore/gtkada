@@ -523,7 +523,7 @@ package body Gtkada.MDI is
    function Set_Focus_Child_MDI_Floating
      (Child : access Gtk_Widget_Record'Class) return Boolean is
    begin
-      Set_Focus_Child (MDI_Child (Child), Force_Focus => False);
+      Set_Focus_Child (MDI_Child (Child), Force_Focus => True);
       return False;
    end Set_Focus_Child_MDI_Floating;
 
@@ -3251,22 +3251,22 @@ package body Gtkada.MDI is
       --  Make sure the page containing Child in a notebook is put on top.
       --  The actual raise is done in an idle loop. Otherwise, if the child
       --  hasn't been properly resized yet, there would be a lot of
-      --  flickering. When possible, we try and raise immediately. Most
-      --  notably, this is needed from Close_Child, since we need to change
-      --  the notebook page before removing the child from it.
+      --  flickering.
+      --  It isn't possible to immediately do the raise, since this breaks
+      --  a number of focus-related things: if there are two text_view in a
+      --  notebook, switching from one page to the other doesn't properly give
+      --  back the focus to the editor. Likewise, if Set_Focus_Child is called
+      --  for a child which is then floated, the MDI flickers and the current
+      --  page in the notebooks might change
 
       if Child.MDI.Raise_Id /= 0 then
          Idle_Remove (Child.MDI.Raise_Id);
       end if;
 
       if Child.State /= Floating then
-         if Realized_Is_Set (Child) then
-            Tmp := Raise_Child_Idle ((Child.MDI, C));
-         else
-            Child.MDI.Raise_Id :=
-              Widget_Idle.Add (Raise_Child_Idle'Access, (Child.MDI, C),
-                               Destroy => Destroy_Raise_Child_Idle'Access);
-         end if;
+         Child.MDI.Raise_Id :=
+           Widget_Idle.Add (Raise_Child_Idle'Access, (Child.MDI, C),
+                            Destroy => Destroy_Raise_Child_Idle'Access);
       end if;
 
       if Old /= null
