@@ -29,7 +29,6 @@
 
 with Glib;             use Glib;
 with Gdk.Event;        use Gdk.Event;
-with Gdk.Types;        use Gdk.Types;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Object;       use Gtk.Object;
