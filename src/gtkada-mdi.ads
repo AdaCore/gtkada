@@ -32,6 +32,8 @@ with Glib.Xml_Int;
 with Gdk.GC;
 with Gdk.Color;
 with Gdk.Cursor;  use Gdk.Cursor;
+with Gdk.Event;
+with Gdk.Types;
 with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Box;
@@ -56,11 +58,6 @@ package Gtkada.MDI is
    type MDI_Window is access all MDI_Window_Record'Class;
    --  Although this widget is implemented as a gtk_layout, you shouldn't
    --  use the standard Gtk_Layout functions like Put and Move yourself.
-   --  If you are doing a Show_All on this widget (or one of its parents in the
-   --  GUI), you should always call Maximize_Children afterward to make sure
-   --  that the internal state is properly setup. Otherwise, it might happen
-   --  that some of the children are not visible because another widget is
-   --  displayed on top of them.
 
    type MDI_Child_Record is new Gtk.Event_Box.Gtk_Event_Box_Record
      with private;
@@ -213,56 +210,12 @@ package Gtkada.MDI is
    function Get_Short_Title (Child : access MDI_Child_Record) return String;
    --  Return the name of the notebook tab used when children are maximized.
 
-   procedure Raise_Child (Child : access MDI_Child_Record'Class);
-   --  Put Child in the foreground.
-   --  Note that this does not give the focus to this child.
-
-   procedure Lower_Child (Child : access MDI_Child_Record'Class);
-   --  Put Child in the background.
-   --  If the children are maximized, this selected the next page from the
-   --  notebook.
-
    function Get_State (Child : access MDI_Child_Record) return State_Type;
    --  Return the current state of the child
 
-   procedure Highlight_Child
-     (Child : access MDI_Child_Record; Highlight : Boolean := True);
-   --  Highlight the child until it is selected by the user.
-   --  The color of its menu label and of the text in the notebook tabs is
-   --  changed.
-   --  Nothing is done if the child is already fully visible (either in the
-   --  active page in one of the docks, or the child that has the selection in
-   --  the layout).
-   --  This is meant to be used as a graphical note to the user that the child
-   --  has been updated and the user should look at it.
-
-   procedure Minimize_Child
-     (Child : access MDI_Child_Record'Class; Minimize : Boolean);
-   --  Change the minimized state of a child.
-   --  If the child was floating, it is first put back in the MDI
-
-   procedure Maximize_Children
-     (MDI : access MDI_Window_Record; Maximize : Boolean := True);
-   --  All windows, except docked and floating ones, are maximized and occupy
-   --  as much space as possible in MDI.
-   --  This function has no effect unless there is already at least one child
-   --  in MDI.
-
-   function Get_Focus_Child
-     (MDI : access MDI_Window_Record) return MDI_Child;
-   --  Return the child that currently has the MDI focus.
-   --  null is returned if no child has the focus.
-
-   procedure Set_Focus_Child
-     (MDI : access MDI_Window_Record;
-      Containing : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Give the focus to the child containing Containing. This will not
-   --  Grab_Focus for the child in all cases, since you might want to give the
-   --  focus to some specific part of your widget (an entry field,...) in some
-   --  cases.
-
-   procedure Set_Focus_Child (Child : access MDI_Child_Record'Class);
-   --  Make Child the active widget, and raise it at the top.
+   -----------
+   -- Menus --
+   -----------
 
    function Create_Menu (MDI   : access MDI_Window_Record)
       return Gtk.Menu.Gtk_Menu;
@@ -281,6 +234,58 @@ package Gtkada.MDI is
    --  Note: This menu will not be automatically updated, for instance if
    --  you change the fact that Child can or cannot be docked. You need to get
    --  a new instance of the menu in that case.
+
+   ------------------------
+   -- Selecting children --
+   ------------------------
+
+   procedure Highlight_Child
+     (Child : access MDI_Child_Record; Highlight : Boolean := True);
+   --  Highlight the child until it is selected by the user.
+   --  The color of its menu label and of the text in the notebook tabs is
+   --  changed.
+   --  Nothing is done if the child is already fully visible (either in the
+   --  active page in one of the docks, or the child that has the selection in
+   --  the layout).
+   --  This is meant to be used as a graphical note to the user that the child
+   --  has been updated and the user should look at it.
+
+   function Get_Focus_Child
+     (MDI : access MDI_Window_Record) return MDI_Child;
+   --  Return the child that currently has the MDI focus.
+   --  null is returned if no child has the focus.
+
+   procedure Set_Focus_Child
+     (MDI : access MDI_Window_Record;
+      Containing : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Give the focus to the child containing Containing. This will not
+   --  Grab_Focus for the child in all cases, since you might want to give the
+   --  focus to some specific part of your widget (an entry field,...) in some
+   --  cases.
+
+   procedure Set_Focus_Child (Child : access MDI_Child_Record'Class);
+   --  Make Child the active widget, and raise it at the top.
+
+   function Check_Interactive_Selection_Dialog
+     (MDI                   : access MDI_Window_Record;
+      Event                 : Gdk.Event.Gdk_Event;
+      Switch_Child_Modifier : Gdk.Types.Gdk_Modifier_Type;
+      Next_Child_Key        : Gdk.Types.Gdk_Key_Type;
+      Previous_Child_Key    : Gdk.Types.Gdk_Key_Type) return Boolean;
+   --  Check whether Event should act on the interactive selection dialog.
+   --  If Event is a key event and the key is
+   --  Switch_Child_Modifier/Switch_Child_Key, the selection dialog is
+   --  display. If it was already displayed, it moves to the next child.
+   --  This function is not internal to the MDI since connecting to the
+   --  key_press_event and key_release_event should be done in the gtk_window
+   --  that contains the MDI. Otherwise, some events are intercepted by gtk+,
+   --  for instance the key_release_events, and the key_press_events for some
+   --  specified keys.
+   --  It also gives the choice to the application of whether this feature is
+   --  wanted or not.
+   --
+   --  True is returned if the event acted for the selection of another child.
+   --  In this case, the event should not be propagated.
 
    -----------------------------------------
    -- MDI_Child and encapsulated children --
@@ -357,9 +362,35 @@ package Gtkada.MDI is
       Force : Boolean := False);
    --  Same as Close, but applies directly to a MDI_Child.
 
+   procedure Set_All_Floating_Mode
+     (MDI : access MDI_Window_Record; All_Floating : Boolean);
+   --  If All_Floating is set to true, the MDI will have a size of 0x0, and all
+   --  children are set to floating. This can be used if you wish to let the
+   --  window manager handle the windows. If All_Floating is True, children
+   --  can no longer be maximized.
+
    ---------------------------
    -- Reorganizing children --
    ---------------------------
+
+   procedure Raise_Child (Child : access MDI_Child_Record'Class);
+   --  Put Child in the foreground.
+   --  Note that this does not give the focus to this child.
+
+   procedure Lower_Child (Child : access MDI_Child_Record'Class);
+   --  Put Child in the background.
+   --  If the children are maximized, this selected the next page from the
+   --  notebook.
+
+   procedure Minimize_Child
+     (Child : access MDI_Child_Record'Class; Minimize : Boolean);
+   --  Change the minimized state of a child.
+   --  If the child was floating, it is first put back in the MDI
+
+   procedure Maximize_Children
+     (MDI : access MDI_Window_Record; Maximize : Boolean := True);
+   --  All windows, except docked and floating ones, are maximized and occupy
+   --  as much space as possible in MDI.
 
    procedure Cascade_Children (MDI : access MDI_Window_Record);
    --  All the children are stacked so that the focus widget is on top.
@@ -731,11 +762,17 @@ private
       Title_Bar_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Focus_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
 
+      Selection_Dialog : Gtk.Widget.Gtk_Widget;
+      --  The interactive dialog for selecting new children.
+
       Group : Gtk.Accel_Group.Gtk_Accel_Group;
 
       Prevent_Focus_On_Page_Switch : Boolean := False;
       --  Set to True when we want to enable page switching in notebooks
-      --  without giving the focus to the childs.
+      --  without giving the focus to the children.
+
+      All_Floating_Mode : Boolean := False;
+      --  Set to true if all windows should be set to floating
    end record;
 
    pragma Inline (Get_Window);
