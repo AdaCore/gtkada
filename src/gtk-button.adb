@@ -41,11 +41,11 @@ package body Gtk.Button is
    ---------------
 
    procedure Gtk_New (Widget : out Gtk_Button;
-                      With_Label  : in String) is
+                      Label  : in String) is
       function Internal (S : String) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_with_label");
    begin
-      Set_Object (Widget, Internal (With_Label & Ascii.NUL));
+      Set_Object (Widget, Internal (Label & Ascii.NUL));
    end Gtk_New;
 
    -------------

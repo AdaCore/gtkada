@@ -9,7 +9,7 @@ package Gtk.Button is
    --  mapping: Create_New gtkbutton.h gtk_button_new
 
    procedure Gtk_New (Widget      : out Gtk_Button;
-                      With_Label  : in String);
+                      Label  : in String);
    --  mapping: Create_New gtkbutton.h gtk_button_new_with_label
 
    ---------------
