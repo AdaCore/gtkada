@@ -127,7 +127,7 @@ toolkit, one of the official GNU toolkit. It makes it easy to create
 portable user interfaces for multiple platforms, including most
 platforms that have a X11 server, and Win32 platforms.
 
-Altough it is based on a C library, GtkAda uses some advanced Ada95
+Although it is based on a C library, GtkAda uses some advanced Ada95
 features like tagged types, generic packages, access to subprograms,
 exceptions, etc@dots{} to make it easier to use and design interfaces.
 For efficiency reasons, it does not use controlled types, but takes care
@@ -139,7 +139,7 @@ As a result, this library provides a @i{secure}, @i{easy to use} and
 Compared to the C library, GtkAda provides type safety (especially in the
 callbacks area), and object-oriented programming. As opposed to common
 knowledge, it requires @i{less} type casting than with in C.
-Its effiency is about the same as the C library through the use of inline
+Its efficiency is about the same as the C library through the use of inline
 subprograms.
 
 GtkAda comes with a complete integration to the graphical interface
@@ -170,7 +170,7 @@ release number.
 This documentation is distributed with GtkAda @b{version
 @value{GtkAdaVersion}}.  Every widget from @w{gtk+ 1.2} has been
 implemented, and the test program found in the gtk release has been
-reimplemented in Ada (have a look at the @code{testgtk/} directory in the
+re-implemented in Ada (have a look at the @code{testgtk/} directory in the
 distribution).
 
 This binding was tested on the following systems:
@@ -187,7 +187,7 @@ This binding was tested on the following systems:
 @item SCO UnixWare 7.1
 @end itemize
 
-with the latest version of the @code{GNAT} compiler, developped by
+with the latest version of the @code{GNAT} compiler, developed by
 Ada Core Technologies (see @uref{http://www.gnat.com}).
 
 If you manage to use it on other systems (which should probably be
@@ -198,12 +198,12 @@ This version of GtkAda is compatible with @code{gtk+} up to @b{version
 1.2.6}. This release is no longer compatible with older versions of gtk+
 (up to 1.0). If you really need to use such an old version, please
 consider downloading GtkAda 0.2.1 (but be aware that your code will
-never work with recent versions, since the API has been completly
+never work with recent versions, since the API has been completely
 rewritten since then).
 
 This version of GtkAda is compatible with @code{Glade} @b{version
 0.5.5}.  Due to some modification in the output format of Glade, this
-release will not work with older versions. It is also not garanteed to
+release will not work with older versions. It is also not guaranteed to
 work with more recent versions. Please update your version of Glade.
 
 This document does not describe all the widgets available in GtkAda, nor
@@ -257,8 +257,8 @@ On Unix systems, you need to first install the gtk+ libraries. Download
 the compatible packages from the gtk+ web site, and make sure that
 the @code{gtk-config} script is in your @var{PATH} environment variable.
 
-Optionaly, you can also install the @code{Glade} interface builder. Get
-the compatible packages from the Glade web site, compile and install it.
+Optionally, you can also install the @code{Glade} interface builder. Get
+the compatible package from the Glade web site, compile and install it.
 
 You can then get the latest version of GtkAda from the web site.
 Untar and uncompress the package, then simply do the following
@@ -296,17 +296,17 @@ one of the following:
 @c ----------------------------------------------------------------------
 
 In addition to the full sources, the GtkAda package contains a lot of
-heavily commented examples. If you did not get access to them, we really
-recommend that you look at them and try to understand them, since they
-contain some examples of code that you might find interesting for your
-own application.
+heavily commented examples. If you haven't visited those examples, we
+really recommend that you look at them and try to understand them, since
+they contain some examples of code that you might find interesting for
+your own application.
 
 @itemize @bullet
 
 @item @file{testgtk/} directory:
 
 This directory contains an application that tests all the widgets in GtkAda.
-It gives you a quick overview of what you can find in the toolkit, as well
+It gives you a quick overview of what can be found in the toolkit, as well
 as some detailed information on the widgets and their parameters.
 
 All the demos are associated with a contextual help that points to its
