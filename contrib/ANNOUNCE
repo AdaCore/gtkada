@@ -1,10 +1,17 @@
-GtkAda 1.2.11 release
+GtkAda 1.2.12 release
 ---------------------
 
 GtkAda is an Ada95 graphical toolkit based on Gtk+ version >= 1.2.2. It
 allows you to develop graphical applications in Ada95 using Gtk+.
 
 The primary download site is http://libre.act-europe.fr/GtkAda
+
+New features in 1.2.12 include
+
+- The GtkAda.Canvas now provides zooming capabilities. It also draws curve
+  links with Bezier splines instead of circles.
+  For efficiency, the items in the canvas are no longer double-buffered. Use
+  Buffered_Items if you want to keep the old behavior.
 
 New features in 1.2.11 include:
 
