@@ -74,8 +74,8 @@ package Gtk.Cell_Renderer_Text is
 
    --  The following properties are defined for this cell_renderer :
    --
-   --   Attribute             Type                      Mode
-   --   =========             ====                      ====
+   --   Attribute             Type in Model             Mode
+   --   =========             =============             ====
    --
    --   "text"                String                    Read / Write
    --   "markup"              String                    Write
