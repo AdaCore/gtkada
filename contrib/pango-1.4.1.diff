@@ -1,0 +1,54 @@
+Thu Dec 06 2004  Arnaud Charlet  <charlet@adacore.com>
+
+	* pango/pango-context.c (itemize_state_fill_shaper): Avoid
+	dereferencing null font.
+
+Thu Nov 27 2003  Arnaud Charlet  <charlet@adacore.com>
+
+	* configure: Add missing G_DISABLE_CAST_CHECKS when
+	using --disable-debug
+
+	* pango/pango-layout.c: Do not call utf8_validate when assertions
+	are disabled.
+
+	To be submitted.
+
+--- configure	2003/11/26 13:59:18	1.1
++++ configure	2003/11/26 13:59:29
+@@ -18533,7 +18533,7 @@
+   PANGO_DEBUG_FLAGS="-DG_DISABLE_CAST_CHECKS"
+ 
+   if test "x$enable_debug" = "xno"; then
+-    PANGO_DEBUG_FLAGS="$GLIB_DEBUG_FLAGS -DG_DISABLE_ASSERT -DG_DISABLE_CHECKS"
++    PANGO_DEBUG_FLAGS="$GLIB_DEBUG_FLAGS -DG_DISABLE_ASSERT -DG_DISABLE_CHECKS $PANGO_DEBUG_FLAGS"
+   fi
+ fi
+ 
+--- pango/pango-layout.c	2003/11/26 14:16:48	1.1
++++ pango/pango-layout.c	2003/11/22 14:37:36
+@@ -730,7 +730,11 @@ pango_layout_set_text (PangoLayout *layo
+ 
+   old_text = layout->text;
+ 
++#ifdef G_DISABLE_ASSERT
++  if (length == -1)
++#else
+   if (length != 0)
++#endif
+     {
+       if (!g_utf8_validate (text, length, &end))
+ 	g_warning ("Invalid UTF8 string passed to pango_layout_set_text()");
+--- pango/pango-context.c.old	2004-12-06 16:01:05.000000000 +0100
++++ pango/pango-context.c	2004-12-06 16:01:49.000000000 +0100
+@@ -722,7 +722,10 @@ itemize_state_fill_shaper (ItemizeState 
+       PangoItem *item = l->data;
+       if (item->analysis.shape_engine)
+ 	break;
+-      item->analysis.font = g_object_ref (font);
++      if (font == NULL)
++	item->analysis.font = NULL;
++      else
++	item->analysis.font = g_object_ref (font);
+       item->analysis.shape_engine = shape_engine;
+     }
+ }
