@@ -18,7 +18,7 @@ package Gtk.Style is
    --  mapping: Copy gtkstyle.h gtk_style_copy
 
    function Attach (Style  : in Gtk_Style;
-                    Window : in Gdk.window.Gdk_Window) return Gtk_Style;
+                    Window : in Gdk.Window.Gdk_Window) return Gtk_Style;
    --  mapping: Attach gtkstyle.h gtk_style_attach
 
    procedure Detach (Style : in out Gtk_Style);

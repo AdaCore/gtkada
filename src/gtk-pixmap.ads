@@ -1,5 +1,6 @@
 
 with Gdk.Bitmap;
+with Gdk.Pixmap;
 with Gtk.Misc;
 
 package Gtk.Pixmap is
@@ -8,15 +9,15 @@ package Gtk.Pixmap is
 
    procedure Get
       (Pixmap : in Gtk_Pixmap'Class;
-       Val    : in Gdk_Pixmap'Class;
+       Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
    procedure Gtk_New
       (Widget : out Gtk_Pixmap;
-       Pixmap : in Gdk_Pixmap'Class;
+       Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
    procedure Set
       (Pixmap : in Gtk_Pixmap'Class;
-       Val    : in Gdk_Pixmap'Class;
+       Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
 
 private

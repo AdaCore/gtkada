@@ -4,12 +4,12 @@ with Gdk.GC;
 with Gdk.Visual;
 with Gdk.Window;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Preview_Info;
 with Gtk.Widget;
 
 package Gtk.Preview is
 
    type Gtk_Preview is new Gtk.Widget.Gtk_Widget with private;
+   type Gtk_Preview_Info is new Gtk.Widget.Gtk_Widget with private;
 
    procedure Draw_Row
       (Preview : in Gtk_Preview'Class;
@@ -18,7 +18,7 @@ package Gtk.Preview is
        Y       : in Gint;
        W       : in Gint);
    function Get_Cmap return Gdk.Colormap.Gdk_Colormap'Class;
-   function Get_Info return Gtk.Preview_Info.Gtk_Preview_Info'Class;
+   function Get_Info return Gtk_Preview_Info;
    function Get_Visual return Gdk.Visual.Gdk_Visual'Class;
    procedure Gtk_New (Widget   : out Gtk_Preview;
                       The_Type : in Gtk_Preview_Type);
@@ -48,7 +48,7 @@ package Gtk.Preview is
    procedure Set_Expand
       (Preview : in Gtk_Preview'Class;
        Expand  : in Gint);
-   procedure Set_Gamma (Gamma : in double);
+   procedure Set_Gamma (Gamma : in Gdouble);
    procedure Set_Install_Cmap (Install_Cmap : in Gint);
    procedure Set_Reserved (Nreserved : in Gint);
    procedure Size
@@ -59,6 +59,7 @@ package Gtk.Preview is
 
 private
    type Gtk_Preview is new Gtk.Widget.Gtk_Widget with null record;
+   type Gtk_Preview_Info is new Gtk.Widget.Gtk_Widget with null record;
 
    --  mapping: Draw_Row gtkpreview.h gtk_preview_draw_row
    --  mapping: Get_Cmap gtkpreview.h gtk_preview_get_cmap

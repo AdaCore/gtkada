@@ -16,7 +16,6 @@ with Gtk.Menu; use Gtk.Menu;
 with Gtk.Menu_Bar; use Gtk.Menu_Bar;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
 with Gtk.Object; use Gtk.Object;
-with Gtk.Progress_Bar; use Gtk.Progress_Bar;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Tooltips; use Gtk.Tooltips;
@@ -39,8 +38,6 @@ package body Test is
    package ICS renames Interfaces.C.Strings;
 
    Status   : Gtk_Status_Bar;
-
-   Progress : Gtk_Progress_Bar;
 
    procedure Hello (Widget : in out Gtk.Button.Gtk_Button'Class;
                     S      : in out String);
@@ -190,31 +187,6 @@ package body Test is
       Menu_Item : Gtk_Menu_Item;
       Tooltips  : Gtk_Tooltips;
 
-      task Progress_Task is
-         entry Start;
-      end Progress_Task;
-
-      -------------------
-      -- Progress_Task --
-      -------------------
-
-      task body Progress_Task is
-         Period : constant Duration := 2.0;
-      begin
-         select
-            accept Start;
-         or
-            terminate;
-         end select;
-
-         loop
-            for I in 0 .. 100 loop
-               Update (Progress, Gfloat (I) / 100.0);
-               delay Period / 100.0;
-            end loop;
-         end loop;
-      end Progress_Task;
-
    begin
       Init;
       --  Initialize the library (how can we pass the command line arguments ?)
@@ -289,12 +261,6 @@ package body Test is
       Pack_Start (V_Box, Status, True, True, 10);
       Show (Status);
 
-      --  Progress Bar
-      Gtk_New (Progress);
-      Pack_Start (V_Box, Progress, True, True, 10);
-      Show (Progress);
-      Progress_Task.Start;
-
       --  Create tooltips
       Gtk_New (Tooltips);
 
@@ -333,7 +299,6 @@ package body Test is
 
       Gtk.Main.Main;
 
-      abort Progress_Task;
    end Main;
 
 end Test;

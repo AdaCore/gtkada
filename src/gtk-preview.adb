@@ -1,4 +1,4 @@
-
+with Gdk; use Gdk;
 
 package body Gtk.Preview is
 
@@ -46,11 +46,11 @@ package body Gtk.Preview is
    -- Get_Info --
    --------------
 
-   function Get_Info return Gtk.Preview_Info.Gtk_Preview_Info'Class
+   function Get_Info return Gtk_Preview_Info
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_preview_get_info");
-      Widget : Gtk.Preview_Info.Gtk_Preview_Info;
+      Widget : Gtk_Preview_Info;
    begin
       Set_Object (Widget, Internal);
       return Widget;
@@ -207,12 +207,12 @@ package body Gtk.Preview is
    -- Set_Gamma --
    ---------------
 
-   procedure Set_Gamma (Gamma : in double)
+   procedure Set_Gamma (Gamma : in Gdouble)
    is
-      procedure Internal (Gamma : in Gint);
+      procedure Internal (Gamma : in Gdouble);
       pragma Import (C, Internal, "gtk_preview_set_gamma");
    begin
-      Internal (double'Pos (Gamma));
+      Internal (Gamma);
    end Set_Gamma;
 
    ----------------------

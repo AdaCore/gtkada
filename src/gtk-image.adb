@@ -1,4 +1,5 @@
 
+with Gdk; use Gdk;
 
 package body Gtk.Image is
 
@@ -8,7 +9,7 @@ package body Gtk.Image is
 
    procedure Get
       (Image : in Gtk_Image'Class;
-       Val   : in Gdk_Image'Class;
+       Val   : in Gdk.Image.Gdk_Image'Class;
        Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is
       procedure Internal
@@ -28,7 +29,7 @@ package body Gtk.Image is
 
    procedure Gtk_New
       (Widget : out Gtk_Image;
-       Val    : in Gdk_Image'Class;
+       Val    : in Gdk.Image.Gdk_Image'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is
       function Internal
@@ -47,7 +48,7 @@ package body Gtk.Image is
 
    procedure Set
       (Image : in Gtk_Image'Class;
-       Val   : in Gdk_Image'Class;
+       Val   : in Gdk.Image.Gdk_Image'Class;
        Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is
       procedure Internal

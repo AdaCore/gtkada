@@ -558,7 +558,7 @@ sub ada_func_name
 sub convert_ada_type
   {
     my ($type) = shift;
-    
+
     if ($type =~ /^gint(.*)/) {
       return "Gint$1";
     } elsif ($type =~ /^guint(.*)/) {
@@ -572,7 +572,7 @@ sub convert_ada_type
       my ($prefix) = $1;
       return "Object'Class" if ($t eq "Object");
       $t =~ s/(.)([A-Z])/$1_$2/g;
-      if ($t ne $current_package)
+      if ("$prefix\_$t" ne "Gtk_$current_package")
 	{
 	  $with_list {"with $prefix.$t"} ++;
 	  return "$prefix.$t.$prefix\_$t\'Class";
