@@ -150,8 +150,8 @@ package Gtk.Notebook is
    --  Remove a page from the notebook.
    --  The first position in the list of pages is 0.
 
-   function Get_Child (Page : in Gtk_Notebook_Page)
-                      return Gtk.Widget.Gtk_Widget;
+   function Get_Child
+     (Page : in Gtk_Notebook_Page) return Gtk.Widget.Gtk_Widget;
    --  Return the child from a page.
    --  A page is automatically created by GtkAda when you inserted a
    --  widget in the notebook. The child is the widget you created itself.
@@ -165,20 +165,18 @@ package Gtk.Notebook is
    --  Get the number of the current page.
    --  The first page has the number 0.
 
-   function Get_Cur_Page (Widget : access Gtk_Notebook_Record'Class)
-                         return Gtk_Notebook_Page;
+   function Get_Cur_Page
+     (Widget : access Gtk_Notebook_Record'Class) return Gtk_Notebook_Page;
    --  Return the current page.
 
    --  Note: This function returns a record type instead of an access type
    --  because there is no easy way to automatically free the memory for a
    --  Gtk_Notebook_Page..
 
-   function Get_Nth_Page (Widget   : access Gtk_Notebook_Record'Class;
-                          Page_Num : Gint)
-                         return Gtk_Notebook_Page;
+   function Get_Nth_Page
+     (Widget   : access Gtk_Notebook_Record'Class;
+      Page_Num : Gint) return Gtk_Widget;
    --  Convert from a page number to the real page.
-   --  Note that this is not exactly the widget you put in the notebook. You
-   --  have to convert with Get_Child first.
 
    function Page_Num (Widget : access Gtk_Notebook_Record'Class;
                       Child  : access Gtk.Widget.Gtk_Widget_Record'Class)

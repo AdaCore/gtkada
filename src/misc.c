@@ -2341,10 +2341,10 @@ ada_notebook_get_tab_label (GtkNotebookPage* widget)
  ** Functions for NotebookPage
  **********************************************/
 
-GtkNotebookPage*
+GtkWidget*
 ada_notebook_page_get_child (GtkNotebookPage* widget)
 {
-  return (GtkNotebookPage*)widget->child;
+  return widget->child;
 }
 
 /**********************************************

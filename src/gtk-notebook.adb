@@ -132,11 +132,11 @@ package body Gtk.Notebook is
    -- Get_Cur_Page --
    ------------------
 
-   function Get_Cur_Page (Widget : access Gtk_Notebook_Record'Class)
-                          return Gtk_Notebook_Page
+   function Get_Cur_Page
+     (Widget : access Gtk_Notebook_Record'Class) return Gtk_Notebook_Page
    is
-      function Internal (Widget : in System.Address)
-                        return Gtk_Notebook_Page;
+      function Internal
+        (Widget : in System.Address) return Gtk_Notebook_Page;
       pragma Import (C, Internal, "ada_notebook_get_cur_page");
    begin
       return Internal (Get_Object (Widget));
@@ -188,16 +188,15 @@ package body Gtk.Notebook is
    -- Get_Nth_Page --
    ------------------
 
-   function Get_Nth_Page (Widget   : access Gtk_Notebook_Record'Class;
-                          Page_Num : Gint)
-                         return Gtk_Notebook_Page
+   function Get_Nth_Page
+     (Widget   : access Gtk_Notebook_Record'Class;
+      Page_Num : Gint) return Gtk_Widget
    is
       function Internal (Widget   : in System.Address;
-                         Page_Num : Gint)
-                        return Gtk_Notebook_Page;
+                         Page_Num : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_notebook_get_nth_page");
    begin
-      return Internal (Get_Object (Widget), Page_Num);
+      return Convert (Internal (Get_Object (Widget), Page_Num));
    end Get_Nth_Page;
 
    --------------
