@@ -34,6 +34,9 @@
 --  menu).
 --  This is the best way to organize complicated interfaces that have a lot
 --  of widgets, by putting the children into groups of coherent widgets.
+--
+--  You can hide some of the pages of the notebook by simply calling Hide on
+--  the widget that is contained in the page (or returned from Get_Nth_Page).
 --  </description>
 --  <c_version>1.3.11</c_version>
 
