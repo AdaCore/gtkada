@@ -20,7 +20,12 @@
 
 with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Strings.Fixed; use Ada.Strings; use Ada.Strings.Fixed;
+with Glib.GObjects; use Glib.GObjects;
 with Gtk; use Gtk;
+--  ??? We should not "with" Gtk from the Glib hierarchy. This dependency
+--  ??? is still needed because of Argument_Type and Count_Arguments, which
+--  ??? should also be moved to Glib.GObjects... Remove this as soon as the
+--  ??? Migration is done.
 
 package body Glib.Glade is
 
@@ -812,7 +817,7 @@ package body Glib.Glade is
       Name     : String_Ptr;
       Object   : String_Ptr;
       After    : String_Ptr;
-      Returned : Gtk_Type;
+      Returned : GType;
       Rename   : String_Ptr;
 
       function Simple_Class (Class : String_Ptr) return String_Ptr;
@@ -922,7 +927,7 @@ package body Glib.Glade is
       Prev_SR  : Signal_Rec;
       Count    : Guint;
       Kind     : String_Ptr;
-      Returned : Gtk_Type;
+      Returned : GType;
 
    begin
       if Num_Signal_Instantiations > 0 then
