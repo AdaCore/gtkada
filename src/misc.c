@@ -497,28 +497,58 @@ ada_widget_drawable (GtkWidget * widget)
   return GTK_WIDGET_DRAWABLE (widget);
 }
 
-guint16
+guint
 ada_widget_allocation_height (GtkWidget* widget)
 {
-  return widget->allocation.height;
+  return (guint) widget->allocation.height;
 }
 
-guint16
+guint
 ada_widget_allocation_width (GtkWidget* widget)
 {
-  return widget->allocation.width;
+  return (guint) widget->allocation.width;
 }
 
-gint16
+gint
 ada_widget_allocation_x (GtkWidget* widget)
 {
-  return widget->allocation.x;
+  return (gint) widget->allocation.x;
 }
 
-gint16
+gint
 ada_widget_allocation_y (GtkWidget* widget)
 {
-  return widget->allocation.y;
+  return (gint) widget->allocation.y;
+}
+
+/*
+ *
+ * Notebook page
+ *
+ */
+
+guint
+ada_notebook_page_allocation_height (GtkNotebookPage* page)
+{
+  return (guint) page->allocation.height;
+}
+
+guint
+ada_notebook_page_allocation_width (GtkNotebookPage* page)
+{
+  return (guint) page->allocation.width;
+}
+
+gint
+ada_notebook_page_allocation_x (GtkNotebookPage* page)
+{
+  return (gint) page->allocation.x;
+}
+
+gint
+ada_notebook_page_allocation_y (GtkNotebookPage* page)
+{
+  return (gint) page->allocation.y;
 }
 
 /*
@@ -2281,7 +2311,7 @@ ada_aspect_frame_get_yalign (GtkAspectFrame* widget)
 }
 
 /******************************************
- ** Functions for Gtk_Layout
+ ** Functions for Layout
  ******************************************/
 
 guint
@@ -2307,6 +2337,15 @@ ada_gtk_layout_get_height (GtkLayout* layout) {
 GdkWindow*
 ada_gtk_layout_get_bin_window (GtkLayout* layout) {
   return layout->bin_window;
+}
+
+/******************************************
+ ** Functions for Viewport
+ ******************************************/
+
+GdkWindow*
+ada_gtk_viewport_get_bin_window (GtkViewport* viewport) {
+  return viewport->bin_window;
 }
 
 /******************************************
