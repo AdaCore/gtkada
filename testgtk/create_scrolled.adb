@@ -39,8 +39,6 @@ with Gtk;                 use Gtk;
 package body Create_Scrolled is
 
    Has_Parent   : Boolean := False;
-   Parent       : Gtk_Widget;
-   Float_Parent : Gtk_Window;
 
    ----------
    -- Help --
