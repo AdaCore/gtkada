@@ -71,13 +71,19 @@ package Gdk.Main is
    function Get_Display return String;
    --  Return the name of the display.
 
+   type Gdk_Grab_Status is (Grab_Success,
+                            Grab_Already_Grabbed,
+                            Gdk_Grab_Invalid_Time,
+                            Gdk_Grab_Not_Viewable,
+                            Gdk_Grab_Frozen);
+
    function Pointer_Grab
      (Window       : Gdk.Window.Gdk_Window;
       Owner_Events : Boolean := True;
       Event_Mask   : Gdk.Event.Gdk_Event_Mask;
       Confine_To   : Gdk.Window.Gdk_Window := Gdk.Window.Null_Window;
       Cursor       : Gdk.Cursor.Gdk_Cursor := Gdk.Cursor.Null_Cursor;
-      Time         : Guint32) return Boolean;
+      Time         : Guint32) return Gdk_Grab_Status;
    --  Grab the pointer to a specific window.
    --    - Window is the window which will receive the grab
    --    - Owner_Events specifies whether events will be reported as is,
@@ -97,7 +103,7 @@ package Gdk.Main is
    function Keyboard_Grab
      (Window       : Gdk.Window.Gdk_Window;
       Owner_Events : Boolean := True;
-      Time         : Guint32) return Boolean;
+      Time         : Guint32) return Gdk_Grab_Status;
    --  Grab the keyboard to a specific window.
    --    - Window is the window which will receive the grab
    --    - Owner_Events specifies whether events will be reported as is,
@@ -138,6 +144,14 @@ private
    pragma Import (C, Set_Double_Click_Time, "gdk_set_double_click_time");
    pragma Import (C, Flush, "gdk_flush");
    pragma Import (C, Beep, "gdk_beep");
+
+   for Gdk_Grab_Status use
+     (Grab_Success => 0,
+      Grab_Already_Grabbed => 1,
+      Gdk_Grab_Invalid_Time => 2,
+      Gdk_Grab_Not_Viewable => 3,
+      Gdk_Grab_Frozen => 4);
+
 end Gdk.Main;
 
 --  missing:
