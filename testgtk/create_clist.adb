@@ -40,7 +40,6 @@ with Gtk.Clist;           use Gtk.Clist;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Option_Menu;     use Gtk.Option_Menu;
-with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Style;           use Gtk.Style;
@@ -272,17 +271,6 @@ package body Create_Clist is
    begin
       Gtk.Clist.Undo_Selection (List);
    end Undo_Selection;
-
-   ---------------------
-   -- Toggle_Sel_Mode --
-   ---------------------
-
-   procedure Toggle_Sel_Mode (List : access Gtk_Clist_Record'Class) is
-      I : Integer := Selected_Button (Clist_Omenu_Group);
-
-   begin
-      Set_Selection_Mode (List, Gtk_Selection_Mode'Val (3 - I));
-   end Toggle_Sel_Mode;
 
    ------------------
    -- Click_Column --
