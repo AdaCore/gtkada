@@ -231,7 +231,6 @@ package body Gtk.Glade is
    is
       Accelerator : Boolean := True;
       Tooltip     : Boolean := True;
-      Image       : Boolean := True;
       Printed     : Boolean := False;
 
       procedure Print_Var
@@ -332,19 +331,6 @@ package body Gtk.Glade is
                                  To_Ada (Get_Attribute (T, "id")) &
                                  "_Items : String_List.Glist;");
                               Printed := True;
-                           end if;
-
-                           --  Declare a Gdk_Image and a Gdk_Visual if any
-                           --  Gtk_Image needs to be created in this widget
-
-                           if S = "GtkImage" then
-                              if Image then
-                                 Put_Line (File, "   The_Image  : Gdk_Image;");
-                                 Put_Line (File,
-                                    "   The_Visual : Gdk_Visual;");
-                                 Image := False;
-                                 Printed := True;
-                              end if;
                            end if;
 
                            --  Declare an Accel_Group if any accelerator needs
@@ -684,8 +670,7 @@ begin
    SHT.Set (new String'("GtkTextView"), Text_View_Generate'Access);
    SHT.Set (new String'("GtkToggleButton"), Toggle_Button_Generate'Access);
    SHT.Set (new String'("GtkToolbar"), Toolbar_Generate'Access);
-   SHT.Set (new String'("GtkTree"), Tree_Generate'Access);
-   SHT.Set (new String'("GtkTreeItem"), Tree_Item_Generate'Access);
+   SHT.Set (new String'("GtkTreeView"), Tree_View_Generate'Access);
    SHT.Set (new String'("GtkVButtonBox"), Vbutton_Box_Generate'Access);
    SHT.Set (new String'("GtkViewport"), Viewport_Generate'Access);
    SHT.Set (new String'("GtkWindow"), Window_Generate'Access);
