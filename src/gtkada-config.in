@@ -17,6 +17,7 @@ Options:
         [--version|-v]
         [--libs]
         [--cflags]
+        [--static]
         [--help|-h]
 EOF
         exit $1
