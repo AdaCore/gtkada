@@ -1217,7 +1217,7 @@ package Gtk.Widget is
    --    "draw" signal. However, for instance for Gtk_Drawing_Area widgets,
    --    you have to use this, after setting the correct event mask with
    --    Set_Events.
-   --    If the handler returns False, the event might be pass to the parent
+   --    If the handler returns False, the event might be passed to the parent
    --    of widget (if no other handler of widget has returned True).
    --
    --  - "key_press_event"
