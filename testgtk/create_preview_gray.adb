@@ -55,11 +55,13 @@ package body Create_Preview_Gray is
       return True;
    end Gray_Idle_Func;
 
-   procedure Preview_Destroy (Widget : in out Gtk_Widget'Class) is
+   procedure Preview_Destroy (Dummy  : in out Gtk_Widget'Class;
+                              Widget : in out Gtk_Widget_Access) is
+      pragma Warnings (Off, Dummy);
    begin
       Idle_Remove (Gray_Idle);
       Gray_Idle := 0;
-      Gtk.Widget.Destroy (Widget);
+      Gtk.Widget.Destroy (Widget.all);
    end Preview_Destroy;
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
@@ -69,7 +71,7 @@ package body Create_Preview_Gray is
    begin
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+         Id := Widget2_Cb.Connect (Window, "destroy", Preview_Destroy'Access,
                                    Window'Access);
          Set_Title (Window, "test");
          Border_Width (Window, Border_Width => 10);
