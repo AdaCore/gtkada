@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1240,6 +1240,9 @@ GdkEvent * ada_gdk_event_create (gint type, GdkWindow* win)
   gdk_window_ref (win);
   switch (type)
     {
+    case GDK_EXPOSE:
+      static_event.expose.region = NULL;
+      break;
     case GDK_KEY_PRESS:
     case GDK_KEY_RELEASE:
       static_event.key.string = NULL;
@@ -2288,6 +2291,18 @@ GtkAdjustment*
 ada_text_view_get_vadj (GtkTextView* widget)
 {
   return widget->vadjustment;
+}
+
+gboolean
+ada_text_view_get_disable_scroll_on_focus (GtkTextView* widget)
+{
+  return widget->disable_scroll_on_focus;
+}
+
+void
+ada_text_view_set_disable_scroll_on_focus (GtkTextView* widget, gboolean flag)
+{
+  widget->disable_scroll_on_focus = flag;
 }
 
 /******************************************
