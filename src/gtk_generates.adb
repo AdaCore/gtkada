@@ -824,15 +824,25 @@ package body Gtk_Generates is
       pragma Import (C, Build_Type, "gtk_image_get_type");
       Name : constant String := To_Ada (Get_Name (N));
       Top  : constant String := To_Ada (Get_Name (Find_Top_Widget (N)));
+      Stock : constant String := Get_Property (N, "stock", "");
 
    begin
       Widget := Widget_New (Build_Type);
       if not N.Specific_Data.Created then
          Add_Package ("Image");
-         Put_Line
-           (File,
-            "   Gtk_New (" & Top & "." & Name & " , """
-            & Get_Property (N, "pixbuf", "") & """);");
+
+         if Stock = "" then
+            Put_Line
+              (File,
+               "   Gtk_New (" & Top & "." & Name & " , """
+               & Get_Property (N, "pixbuf", "") & """);");
+         else
+            Put_Line
+              (File,
+               "   Gtk_New (" & Top & "." & Name & " , """
+               & Stock & """, Gtk_Icon_Size'Val (" &
+               Get_Property (N, "icon_size", "4") & "));");
+         end if;
       end if;
 
       Widget_Destroy (Widget);
