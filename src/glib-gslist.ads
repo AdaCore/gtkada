@@ -37,7 +37,7 @@
 --  See the documentation of Glib.Glist for more information, it provides
 --  the same API as this package.
 --  Single linked lists are traversed the same way as double-linked lists,
---  even though most subprograms below are less efficient than their
+--  even though most subprograms are less efficient than their
 --  double-linked counterparts.
 --
 --  </description>
