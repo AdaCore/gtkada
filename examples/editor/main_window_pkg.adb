@@ -154,11 +154,11 @@ begin
    Set_Tooltips (Main_Window.Toolbar1, True);
    Set_Button_Relief (Main_Window.Toolbar1, Relief_Normal);
    Main_Window.Button1 := Append_Item (Main_Window.Toolbar1, "New", "", "",
-     Create_Pixmap ("new.xpm", Main_Window));
+     Gtk_Widget (Create_Pixmap ("new.xpm", Main_Window)));
    Main_Window.Button2 := Append_Item (Main_Window.Toolbar1, "Open", "", "",
-     Create_Pixmap ("open.xpm", Main_Window));
+     Gtk_Widget (Create_Pixmap ("open.xpm", Main_Window)));
    Main_Window.Button3 := Append_Item (Main_Window.Toolbar1, "Save", "", "",
-     Create_Pixmap ("save.xpm", Main_Window));
+     Gtk_Widget (Create_Pixmap ("save.xpm", Main_Window)));
 
    Button_Callback.Connect
      (Main_Window.Button1, "clicked",
