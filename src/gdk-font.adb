@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Pango.Font;        use Pango.Font;
 with Interfaces.C;
 
 package body Gdk.Font is
@@ -94,6 +95,20 @@ package body Gdk.Font is
    begin
       Font := Internal (Fontset_Name & ASCII.NUL);
    end Fontset_Load;
+
+   ----------------------
+   -- From_Description --
+   ----------------------
+
+   procedure From_Description
+     (Font      : out Gdk_Font;
+      Font_Desc : Pango.Font.Pango_Font_Description)
+   is
+      function Internal (Desc : Pango_Font_Description) return Gdk_Font;
+      pragma Import (C, Internal, "gdk_font_from_description");
+   begin
+      Font := Internal (Font_Desc);
+   end From_Description;
 
    ----------
    -- Load --
