@@ -519,6 +519,22 @@ package Gtkada.Canvas is
    --  links do not overlap (for instance, the default is to draw the first
    --  link straight, and the others as arcs).
 
+   type Item_Side is (East, West, North, South);
+   --  Each side of an item, along its rectangle bounding box
+
+   procedure Draw_Straight_Line
+     (Link      : access Canvas_Link_Record;
+      Window    : Gdk.Window.Gdk_Window;
+      GC        : Gdk.GC.Gdk_GC;
+      Src_Side  : Item_Side;
+      X1, Y1    : Glib.Gint;
+      Dest_Side : Item_Side;
+      X2, Y2    : Glib.Gint);
+   --  Draw a straight link between two points. This could be overriden if you
+   --  need to draw an something along the link.
+   --  The links goes from (Src, X1, Y1) (origin item)
+   --  to (Dest, X2, Y2) (dest. item)
+
    procedure Destroy (Link : in out Canvas_Link_Record);
    --  Method called every time a link is destroyed. You should override this
    --  if you define your own link types.

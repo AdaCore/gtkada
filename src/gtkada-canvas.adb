@@ -90,7 +90,7 @@ package body Gtkada.Canvas is
    --  Width and height of the surrounding box in which "infinite"
    --  scrolling is provided.
 
-   Scrolling_Amount : constant := 4;
+   Scrolling_Amount : constant := 10;
    --  Number of pixels to scroll while the mouse is in the surrounding box.
 
    Links_Threshold_While_Moving : constant := 20;
@@ -174,6 +174,7 @@ package body Gtkada.Canvas is
       To_Y  : in Gint;
       X_Pos : in Gfloat;
       Y_Pos : in Gfloat;
+      Side  : out Item_Side;
       X_Out : out Gint;
       Y_Out : out Gint);
    --  Clip the line that goes from the middle of Rect to (To_X, To_Y).
@@ -1060,6 +1061,7 @@ package body Gtkada.Canvas is
       To_Y  : in Gint;
       X_Pos : in Gfloat;
       Y_Pos : in Gfloat;
+      Side  : out Item_Side;
       X_Out : out Gint;
       Y_Out : out Gint)
    is
@@ -1076,9 +1078,10 @@ package body Gtkada.Canvas is
          Offset := (Src_X * To_Y - To_X * Src_Y);
 
          if Delta_Y < 0 then
-            --  Intersection with north side ?
+            Side := North;
             Y_Out := Rect.Y;
          else
+            Side := South;
             Y_Out := Rect.Y + Gint (Rect.Height);
          end if;
 
@@ -1097,10 +1100,10 @@ package body Gtkada.Canvas is
          Offset := (To_X * Src_Y - Src_X * To_Y);
 
          if Delta_X < 0 then
-            --  Intersection with West side ?
+            Side := West;
             X_Out := Rect.X;
          else
-            --  Intersection with East side ?
+            Side := East;
             X_Out := Rect.X + Gint (Rect.Width);
          end if;
 
@@ -1508,6 +1511,24 @@ package body Gtkada.Canvas is
    end Draw_Orthogonal_Link;
 
    ------------------------
+   -- Draw_Straight_Line --
+   ------------------------
+
+   procedure Draw_Straight_Line
+     (Link : access Canvas_Link_Record;
+      Window : Gdk_Window;
+      GC : Gdk.GC.Gdk_GC;
+      Src_Side : Item_Side;
+      X1, Y1 : Glib.Gint;
+      Dest_Side : Item_Side;
+      X2, Y2 : Glib.Gint)
+   is
+      pragma Unreferenced (Link, Src_Side, Dest_Side);
+   begin
+      Draw_Line (Window, GC, X1, Y1, X2, Y2);
+   end Draw_Straight_Line;
+
+   ------------------------
    -- Draw_Straight_Link --
    ------------------------
 
@@ -1522,6 +1543,7 @@ package body Gtkada.Canvas is
       Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
       Src   : constant Canvas_Item := Canvas_Item (Get_Src (Link));
       Dest  : constant Canvas_Item := Canvas_Item (Get_Dest (Link));
+      Src_Side, Dest_Side : Item_Side;
 
    begin
       Clip_Line
@@ -1529,19 +1551,20 @@ package body Gtkada.Canvas is
          Dest.Coord.X + Gint (Gfloat (Dest.Coord.Width) * Link.Dest_X_Pos),
          Dest.Coord.Y + Gint (Gfloat (Dest.Coord.Height) * Link.Dest_Y_Pos),
          X_Pos => Link.Src_X_Pos, Y_Pos => Link.Src_Y_Pos,
-         X_Out => X1, Y_Out => Y1);
+         Side => Src_Side, X_Out => X1, Y_Out => Y1);
       Clip_Line
         (Dest.Coord,
          Src.Coord.X + Gint (Gfloat (Src.Coord.Width) * Link.Src_X_Pos),
          Src.Coord.Y + Gint (Gfloat (Src.Coord.Height) * Link.Src_Y_Pos),
          X_Pos => Link.Dest_X_Pos, Y_Pos => Link.Dest_Y_Pos,
-         X_Out => X2, Y_Out => Y2);
+         Side => Dest_Side, X_Out => X2, Y_Out => Y2);
       X1 := To_Canvas_Coordinates (Canvas, X1) - Xbase;
       Y1 := To_Canvas_Coordinates (Canvas, Y1) - Ybase;
       X2 := To_Canvas_Coordinates (Canvas, X2) - Xbase;
       Y2 := To_Canvas_Coordinates (Canvas, Y2) - Ybase;
 
-      Draw_Line (Window, GC, X1, Y1, X2, Y2);
+      Draw_Straight_Line
+        (Link, Window, GC, Src_Side, X1, Y1, Dest_Side, X2, Y2);
 
       --  Draw the end arrow head
 
@@ -1713,6 +1736,7 @@ package body Gtkada.Canvas is
         Float (To_Canvas_Coordinates (Canvas, Canvas.Arc_Link_Offset));
       Src         : constant Canvas_Item := Canvas_Item (Get_Src (Link));
       Dest        : constant Canvas_Item := Canvas_Item (Get_Dest (Link));
+      Src_Side, Dest_Side : Item_Side;
 
    begin
       --  We will first compute the extra intermediate point between the
@@ -1749,9 +1773,10 @@ package body Gtkada.Canvas is
       --  Clip to the border of the boxes
 
       Clip_Line
-        (Src.Coord, X2, Y2, Link.Src_X_Pos, Link.Src_Y_Pos, X1, Y1);
+        (Src.Coord, X2, Y2, Link.Src_X_Pos, Link.Src_Y_Pos, Src_Side, X1, Y1);
       Clip_Line
-        (Dest.Coord, X2, Y2, Link.Dest_X_Pos, Link.Dest_Y_Pos, X3, Y3);
+        (Dest.Coord, X2, Y2, Link.Dest_X_Pos, Link.Dest_Y_Pos,
+         Dest_Side, X3, Y3);
 
       X1 := To_Canvas_Coordinates (Canvas, X1) - Xbase;
       Y1 := To_Canvas_Coordinates (Canvas, Y1) - Ybase;
