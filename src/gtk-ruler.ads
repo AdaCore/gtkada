@@ -41,19 +41,30 @@ package Gtk.Ruler is
    subtype Gtk_Hruler is Gtk_Ruler;
    subtype Gtk_Vruler is Gtk_Ruler;
 
-   procedure Draw_Pos (Ruler : access Gtk_Ruler_Record);
-   procedure Draw_Ticks (Ruler : access Gtk_Ruler_Record);
-   function Get_Lower (Ruler : access Gtk_Ruler_Record) return Gfloat;
-   function Get_Max_Size (Ruler : access Gtk_Ruler_Record) return Gfloat;
-   function Get_Position (Ruler : access Gtk_Ruler_Record) return Gfloat;
-   function Get_Upper (Ruler : access Gtk_Ruler_Record) return Gfloat;
    procedure Gtk_New_Hruler (Ruler : out Gtk_Ruler);
+
    procedure Gtk_New_Vruler (Ruler : out Gtk_Ruler);
+
    procedure Initialize_Hruler (Ruler : access Gtk_Ruler_Record'Class);
+
    procedure Initialize_Vruler (Ruler : access Gtk_Ruler_Record'Class);
+
+   procedure Draw_Pos (Ruler : access Gtk_Ruler_Record);
+
+   procedure Draw_Ticks (Ruler : access Gtk_Ruler_Record);
+
+   function Get_Lower (Ruler : access Gtk_Ruler_Record) return Gfloat;
+
+   function Get_Max_Size (Ruler : access Gtk_Ruler_Record) return Gfloat;
+
+   function Get_Position (Ruler : access Gtk_Ruler_Record) return Gfloat;
+
+   function Get_Upper (Ruler : access Gtk_Ruler_Record) return Gfloat;
+
    procedure Set_Metric
      (Ruler  : access Gtk_Ruler_Record;
       Metric : in Gtk_Metric_Type);
+
    procedure Set_Range
      (Ruler    : access Gtk_Ruler_Record;
       Lower    : in Gfloat;
@@ -64,11 +75,9 @@ package Gtk.Ruler is
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (N     : in Node_Ptr;
-                       File  : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
 
-   procedure Generate (Ruler : in out Gtk_Object;
-                       N     : in Node_Ptr);
+   procedure Generate (Ruler : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Ruler_Record is new Gtk.Widget.Gtk_Widget_Record with null record;

@@ -38,56 +38,69 @@ package Gtk.List is
    type Gtk_List is access all Gtk_List_Record'Class;
 
    procedure Append_Items
-      (List  : access Gtk_List_Record;
-       Items : in Widget_List.Glist);
+     (List  : access Gtk_List_Record;
+      Items : in Widget_List.Glist);
+
    function Child_Position
-      (List   : access Gtk_List_Record;
-       Child  : in Gtk.Widget.Gtk_Widget)
-       return      Gint;
+     (List   : access Gtk_List_Record;
+      Child  : in Gtk.Widget.Gtk_Widget) return Gint;
+
    procedure Clear_Items
-      (List    : access Gtk_List_Record;
-       Start   : in Gint;
-       The_End : in Gint);
-   function Get_Children (Widget : access Gtk.List.Gtk_List_Record)
-                          return      Widget_List.Glist;
-   function Get_Selection (Widget : access Gtk.List.Gtk_List_Record)
-                           return      Widget_List.Glist;
+     (List    : access Gtk_List_Record;
+      Start   : in Gint;
+      The_End : in Gint);
+
+   function Get_Children
+     (Widget : access Gtk.List.Gtk_List_Record) return Widget_List.Glist;
+
+   function Get_Selection
+     (Widget : access Gtk.List.Gtk_List_Record) return Widget_List.Glist;
+
    procedure Gtk_New (Widget : out Gtk_List);
+
    procedure Initialize (Widget : access Gtk_List_Record'Class);
+
    procedure Insert_Items
-      (List     : access Gtk_List_Record;
-       Items    : in Widget_List.Glist;
-       Position : in Gint);
+     (List     : access Gtk_List_Record;
+      Items    : in Widget_List.Glist;
+      Position : in Gint);
+
    procedure Prepend_Items
-      (List  : access Gtk_List_Record;
-       Items : in Widget_List.Glist);
+     (List  : access Gtk_List_Record;
+      Items : in Widget_List.Glist);
+
    procedure Remove_Items
-      (List  : access Gtk_List_Record;
-       Items : in Widget_List.Glist);
+     (List  : access Gtk_List_Record;
+      Items : in Widget_List.Glist);
+
    procedure Remove_Items_No_Unref
-      (List  : access Gtk_List_Record;
-       Items : in Widget_List.Glist);
+     (List  : access Gtk_List_Record;
+      Items : in Widget_List.Glist);
+
    procedure Select_Child
-      (List  : access Gtk_List_Record;
-       Child : in Gtk.Widget.Gtk_Widget);
+     (List  : access Gtk_List_Record;
+      Child : in Gtk.Widget.Gtk_Widget);
+
    procedure Select_Item
-      (List : access Gtk_List_Record;
-       Item : in Gint);
+     (List : access Gtk_List_Record;
+      Item : in Gint);
+
    procedure Set_Selection_Mode
-      (List : access Gtk_List_Record;
-       Mode : in Gtk_Selection_Mode);
+     (List : access Gtk_List_Record;
+      Mode : in Gtk_Selection_Mode);
+
    procedure Unselect_Child
-      (List  : access Gtk_List_Record;
-       Child : in Gtk.Widget.Gtk_Widget);
+     (List  : access Gtk_List_Record;
+      Child : in Gtk.Widget.Gtk_Widget);
+
    procedure Unselect_Item
-      (List : access Gtk_List_Record;
-       Item : in Gint);
+     (List : access Gtk_List_Record;
+      Item : in Gint);
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
 
    procedure Generate (List : in out Gtk_Object; N : in Node_Ptr);
 

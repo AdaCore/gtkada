@@ -37,8 +37,9 @@ package Gtk.Radio_Menu_Item is
      Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record with private;
    type Gtk_Radio_Menu_Item is access all Gtk_Radio_Menu_Item_Record'Class;
 
-   function Group (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
-     return Widget_SList.GSlist;
+   function Group
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
+      return Widget_SList.GSlist;
 
    procedure Gtk_New
      (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
@@ -55,8 +56,8 @@ package Gtk.Radio_Menu_Item is
       Group           : in Widget_SList.GSlist);
 
    function Selected_Button (In_Group : in Widget_SList.GSlist) return Natural;
-   --  Returns the button number of the selected button in the group
-   --  NOTE: This function is not part of Gtk itself, but is provided as a
+   --  Returns the button number of the selected button in the group.
+   --  NOTE: This function is not part of Gtk+ itself, but is provided as a
    --  convenient function
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);

@@ -42,28 +42,36 @@ package Gtk.Scale is
    subtype Gtk_Hscale is Gtk_Scale;
    subtype Gtk_Vscale is Gtk_Scale;
 
-   procedure Draw_Value (Scale : access Gtk_Scale_Record);
    procedure Gtk_New_Hscale
      (Scale      : out Gtk_Scale;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
    procedure Gtk_New_Vscale
      (Scale      : out Gtk_Scale;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
    procedure Initialize_Hscale
      (Scale      : access Gtk_Scale_Record'Class;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
    procedure Initialize_Vscale
      (Scale      : access Gtk_Scale_Record'Class;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
+   procedure Draw_Value (Scale : access Gtk_Scale_Record);
+
    procedure Set_Digits
      (Scale      : access Gtk_Scale_Record;
       The_Digits : in Gint);
+
    procedure Set_Draw_Value
      (Scale      : access Gtk_Scale_Record;
       Draw_Value : in Boolean);
+
    procedure Set_Value_Pos
      (Scale : access Gtk_Scale_Record;
       Pos   : in Gtk_Position_Type);
+
    function Get_Value_Width (Scale  : access Gtk_Scale_Record) return Gint;
 
    --  The two following procedures are used to generate and create widgets

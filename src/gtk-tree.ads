@@ -37,51 +37,66 @@ package Gtk.Tree is
    type Gtk_Tree_Record is new Gtk.Container.Gtk_Container_Record with private;
    type Gtk_Tree is access all Gtk_Tree_Record'Class;
 
+   procedure Gtk_New (Widget : out Gtk_Tree);
+
+   procedure Initialize (Widget : access Gtk_Tree_Record'Class);
+
    procedure Append
      (Tree      : access Gtk_Tree_Record;
       Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class);
+
    function Child_Position
      (Tree   : access Gtk_Tree_Record;
-      Child  : access Gtk.Widget.Gtk_Widget_Record'Class)
-      return      Gint;
+      Child  : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
+
    procedure Clear_Items
      (Tree    : access Gtk_Tree_Record;
       Start   : in Gint;
       The_End : in Gint);
-   function Get_Children (Widget : access Gtk.Tree.Gtk_Tree_Record)
-                          return      Widget_List.Glist;
-   function Get_Selection (Widget : access Gtk.Tree.Gtk_Tree_Record)
-                           return      Widget_List.Glist;
-   procedure Gtk_New (Widget : out Gtk_Tree);
-   procedure Initialize (Widget : access Gtk_Tree_Record'Class);
+
+   function Get_Children
+     (Widget : access Gtk.Tree.Gtk_Tree_Record) return Widget_List.Glist;
+
+   function Get_Selection
+     (Widget : access Gtk.Tree.Gtk_Tree_Record) return Widget_List.Glist;
+
    procedure Insert
      (Tree      : access Gtk_Tree_Record;
       Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position  : in Gint);
+
    procedure Prepend
      (Tree      : access Gtk_Tree_Record;
       Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class);
+
    procedure Remove_Items
      (Tree  : access Gtk_Tree_Record;
       Items : in Widget_List.Glist);
+
    procedure Select_Child
      (Tree      : access Gtk_Tree_Record;
       Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class);
+
    procedure Select_Item
      (Tree : access Gtk_Tree_Record;
       Item : in Gint);
+
    procedure Set_Selection_Mode
      (Tree : access Gtk_Tree_Record;
       Mode : in Gtk_Selection_Mode);
+
    procedure Set_View_Lines
      (Tree : access Gtk_Tree_Record;
       Flag : in Boolean);
+
    procedure Set_View_Mode
      (Tree : access Gtk_Tree_Record;
       Mode : in Gtk_Tree_View_Mode);
+
    procedure Unselect_Child
      (Tree      : access Gtk_Tree_Record;
       Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class);
+
    procedure Unselect_Item
      (Tree : access Gtk_Tree_Record;
       Item : in Gint);

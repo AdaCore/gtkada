@@ -45,11 +45,11 @@ package Gtk.Preview is
    type Gtk_Preview_Info is access all Gtk_Preview_Info_Record'Class;
 
    procedure Draw_Row
-      (Preview : access Gtk_Preview_Record;
-       Data    : in Guchar_Array;
-       X       : in Gint;
-       Y       : in Gint;
-       W       : in Gint);
+     (Preview : access Gtk_Preview_Record;
+      Data    : in Guchar_Array;
+      X       : in Gint;
+      Y       : in Gint;
+      W       : in Gint);
    --  The size required for Data depends of the color depth of the
    --  preview. No verification is done by Ada, everything is left to
    --  gtk. You might get some segmentation fault !
@@ -57,12 +57,18 @@ package Gtk.Preview is
    --  for a grey preview, Data'Length = W;
 
    function Get_Cmap return Gdk.Color.Gdk_Colormap;
+
    function Get_Info return Gtk_Preview_Info;
+
    function Get_Visual return Gdk.Visual.Gdk_Visual;
-   procedure Gtk_New (Preview  : out Gtk_Preview;
-                      The_Type : in Gtk_Preview_Type);
-   procedure Initialize (Preview  : access Gtk_Preview_Record'Class;
-                         The_Type : in Gtk_Preview_Type);
+
+   procedure Gtk_New
+     (Preview  : out Gtk_Preview; The_Type : in Gtk_Preview_Type);
+
+   procedure Initialize
+     (Preview  : access Gtk_Preview_Record'Class;
+      The_Type : in Gtk_Preview_Type);
+
    procedure Put
      (Preview : access Gtk_Preview_Record;
       Window  : in Gdk.Window.Gdk_Window;
@@ -75,37 +81,44 @@ package Gtk.Preview is
       Height  : in Gint);
 
    procedure Reset;
+
    procedure Set_Color_Cube
      (Nred_Shades   : in Guint;
       Ngreen_Shades : in Guint;
       Nblue_Shades  : in Guint;
       Ngray_Shades  : in Guint);
+
    procedure Set_Expand
      (Preview : access Gtk_Preview_Record;
       Expand  : in Boolean);
+
    procedure Set_Gamma (Gamma : in Gdouble);
+
    procedure Set_Install_Cmap (Install_Cmap : in Gint);
+
    procedure Set_Reserved (Nreserved : in Gint);
+
    procedure Size
      (Preview : access Gtk_Preview_Record;
       Width   : in Gint;
       Height  : in Gint);
+
    procedure Uninit;
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (N       : in Node_Ptr;
-                       File    : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
 
-   procedure Generate (Preview : in out Gtk_Object;
-                       N       : in Node_Ptr);
+   procedure Generate (Preview : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Preview_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;
+
    type Gtk_Preview_Info_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;
+
    pragma Import (C, Get_Visual, "gtk_preview_get_visual");
    pragma Import (C, Get_Cmap, "gtk_preview_get_cmap");
 end Gtk.Preview;

@@ -39,6 +39,7 @@ package Gtk.Menu_Bar is
    type Gtk_Menu_Bar is access all Gtk_Menu_Bar_Record'Class;
 
    procedure Gtk_New (Menu_Bar : out Gtk_Menu_Bar);
+
    procedure Initialize (Menu_Bar : access Gtk_Menu_Bar_Record'Class);
 
    function Get_Type return Gtk.Gtk_Type;
@@ -47,10 +48,12 @@ package Gtk.Menu_Bar is
    procedure Append
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
+
    procedure Insert
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
       Position : in Gint);
+
    procedure Prepend
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
@@ -62,8 +65,7 @@ package Gtk.Menu_Bar is
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
 
    procedure Generate (Menu_Bar : in out Gtk_Object; N : in Node_Ptr);
 

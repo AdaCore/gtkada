@@ -44,12 +44,15 @@ package Gtk.Scrollbar is
    procedure Gtk_New_Hscrollbar
      (Widget     : out Gtk_Scrollbar;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
    procedure Gtk_New_Vscrollbar
      (Widget     : out Gtk_Scrollbar;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
    procedure Initialize_Hscrollbar
      (Widget     : access Gtk_Scrollbar_Record'Class;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
    procedure Initialize_Vscrollbar
      (Widget     : access Gtk_Scrollbar_Record'Class;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);

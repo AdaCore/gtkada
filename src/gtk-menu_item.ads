@@ -37,26 +37,29 @@ package Gtk.Menu_Item is
    type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with private;
    type Gtk_Menu_Item is access all Gtk_Menu_Item_Record'Class;
 
-   procedure Gtk_New (Menu_Item : out Gtk_Menu_Item;
-                      Label     : in  String := "");
+   procedure Gtk_New
+     (Menu_Item : out Gtk_Menu_Item; Label : in  String := "");
 
-   procedure Initialize (Menu_Item : access Gtk_Menu_Item_Record'Class;
-                         Label     : in  String);
+   procedure Initialize
+     (Menu_Item : access Gtk_Menu_Item_Record'Class; Label : in  String);
 
-   procedure Set_Submenu (Menu_Item : access Gtk_Menu_Item_Record;
-                          Submenu   : access Widget.Gtk_Widget_Record'Class);
+   procedure Set_Submenu
+     (Menu_Item : access Gtk_Menu_Item_Record;
+      Submenu   : access Widget.Gtk_Widget_Record'Class);
 
    procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record);
 
-   function Get_Submenu (Menu_Item : access Gtk_Menu_Item_Record)
-                        return Gtk.Widget.Gtk_Widget;
+   function Get_Submenu
+     (Menu_Item : access Gtk_Menu_Item_Record) return Gtk.Widget.Gtk_Widget;
 
-   procedure Set_Placement (Menu_Item : access Gtk_Menu_Item_Record;
-                            Placement : in     Enums.Gtk_Submenu_Placement);
+   procedure Set_Placement
+     (Menu_Item : access Gtk_Menu_Item_Record;
+      Placement : in     Enums.Gtk_Submenu_Placement);
 
-   procedure Configure (Menu_Item              : access Gtk_Menu_Item_Record;
-                        Show_Toggle_Indicator  : in     Boolean;
-                        Show_Submenu_Indicator : in     Boolean);
+   procedure Configure
+     (Menu_Item              : access Gtk_Menu_Item_Record;
+      Show_Toggle_Indicator  : in     Boolean;
+      Show_Submenu_Indicator : in     Boolean);
 
    procedure Gtk_Select (Menu_Item : access Gtk_Menu_Item_Record);
 
@@ -75,8 +78,7 @@ package Gtk.Menu_Item is
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
 
    procedure Generate (Menu_Item : in out Gtk_Object; N : in Node_Ptr);
 

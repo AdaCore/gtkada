@@ -43,14 +43,15 @@ package Gtk.Spin_Button is
       Climb_Rate  : in Gfloat;
       The_Digits  : in Gint);
 
-   function Get_Adjustment (Spin_Button : access Gtk_Spin_Button_Record)
-     return Gtk.Adjustment.Gtk_Adjustment;
+   function Get_Adjustment
+     (Spin_Button : access Gtk_Spin_Button_Record)
+      return Gtk.Adjustment.Gtk_Adjustment;
 
-   function Get_Value_As_Float (Spin_Button : access Gtk_Spin_Button_Record)
-     return Gfloat;
+   function Get_Value_As_Float
+     (Spin_Button : access Gtk_Spin_Button_Record) return Gfloat;
 
-   function Get_Value_As_Int (Spin_Button : access Gtk_Spin_Button_Record)
-     return Gint;
+   function Get_Value_As_Int
+     (Spin_Button : access Gtk_Spin_Button_Record) return Gint;
 
    procedure Gtk_New
      (Spin_Button : out Gtk_Spin_Button;

@@ -37,16 +37,22 @@ package Gtk.Tree_Item is
    type Gtk_Tree_Item_Record is new Gtk.Item.Gtk_Item_Record with private;
    type Gtk_Tree_Item is access all Gtk_Tree_Item_Record'Class;
 
+   procedure Gtk_New (Tree_Item : out Gtk_Tree_Item; Label : in String := "");
+
+   procedure Initialize
+     (Tree_Item : access Gtk_Tree_Item_Record'Class; Label : in String := "");
+
    procedure Collapse (Tree_Item : access Gtk_Tree_Item_Record);
+
    procedure Deselect (Tree_Item : access Gtk_Tree_Item_Record);
+
    procedure Expand (Tree_Item : access Gtk_Tree_Item_Record);
-   function Get_Subtree (Tree_Item : access Gtk_Tree_Item_Record)
-     return Gtk.Tree.Gtk_Tree;
-   procedure Gtk_New (Tree_Item : out Gtk_Tree_Item;
-                      Label     : in String := "");
-   procedure Initialize (Tree_Item : access Gtk_Tree_Item_Record'Class;
-                         Label     : in String := "");
+
+   function Get_Subtree
+     (Tree_Item : access Gtk_Tree_Item_Record) return Gtk.Tree.Gtk_Tree;
+
    procedure Gtk_Select (Tree_Item : access Gtk_Tree_Item_Record);
+
    procedure Remove_Subtree (Tree_Item : access Gtk_Tree_Item_Record);
 
    procedure Set_Subtree
@@ -55,19 +61,12 @@ package Gtk.Tree_Item is
    --  Note: Tree_Item must already have a parent, i.e have been inserted into
    --  a tree before you can set a subtree for it
 
-
-   --  GtkAda0.6 : From_Tree and To_Tree have been removed. Please use
-   --  Gdk.Unchecked_Cast insted
-
-
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (N         : in Node_Ptr;
-                       File      : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
 
-   procedure Generate (Tree_Item : in out Gtk_Object;
-                       N         : in Node_Ptr);
+   procedure Generate (Tree_Item : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Tree_Item_Record is new Gtk.Item.Gtk_Item_Record with null record;

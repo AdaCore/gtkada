@@ -37,8 +37,8 @@ package Gtk.Rc is
 
    procedure Parse_String (Rc_String : in String);
 
-   function Get_Style (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-     return Gtk_Rc_Style;
+   function Get_Style
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Gtk_Rc_Style;
 
    procedure Add_Widget_Name_Style
      (Style   : in Gtk_Rc_Style;

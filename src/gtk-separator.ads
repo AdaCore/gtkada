@@ -41,9 +41,12 @@ package Gtk.Separator is
    subtype Gtk_Vseparator is Gtk_Separator;
 
    procedure Gtk_New_Hseparator (Separator : out Gtk_Separator);
+
    procedure Gtk_New_Vseparator (Separator : out Gtk_Separator);
+
    procedure Initialize_Hseparator
      (Separator : access Gtk_Separator_Record'Class);
+
    procedure Initialize_Vseparator
      (Separator : access Gtk_Separator_Record'Class);
 
