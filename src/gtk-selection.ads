@@ -59,6 +59,9 @@
 --  data is accompanied by a type (an atom), and a format (an integer,
 --  representing the number of bits per item).
 --
+--  See also http://www.freedesktop.org/standards/clipboards.txt for more
+--  information on the way selection works on X-Window systems.
+--
 --  </description>
 --  <c_version>1.3.6</c_version>
 
