@@ -1,8 +1,8 @@
 all:
 	gnatmake -g main `gtkada-config`
 run:
-	main
+	./main
 
 clean: 
-	${RM} main *.o *.ali b_main.c
+	${RM} main *.o *.ali b_main.c b~*
 
