@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Box;
 with Gtk.Button;
 with Gtk.Widget;
@@ -76,12 +77,13 @@ package Gtk.File_Selection is
    procedure Show_Fileop_Buttons
      (File_Selection : access Gtk_File_Selection_Record);
 
-   procedure Generate (File_Selection : access Gtk_File_Selection_Record;
-                       N              : in Node_Ptr;
-                       File           : in File_Type);
-
-   procedure Generate (File_Selection : access Gtk_File_Selection_Record;
-                       N              : in Node_Ptr);
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+ 
+   procedure Generate (File_Selection : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_File_Selection_Record is new Gtk.Window.Gtk_Window_Record

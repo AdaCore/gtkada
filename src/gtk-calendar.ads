@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Calendar is
@@ -74,12 +75,13 @@ package Gtk.Calendar is
        Day      : in Guint)
        return        Gint;
 
-   procedure Generate (Calendar : access Gtk_Calendar_Record;
-                       N      : in Node_Ptr;
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
-
-   procedure Generate (Calendar : access Gtk_Calendar_Record;
-                       N        : in Node_Ptr);
+ 
+   procedure Generate (Calendar : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Calendar_Record is new Gtk.Widget.Gtk_Widget_Record

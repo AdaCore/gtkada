@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Dialog;
 
 package Gtk.Input_Dialog is
@@ -37,12 +38,13 @@ package Gtk.Input_Dialog is
    procedure Gtk_New (Input_Dialog : out Gtk_Input_Dialog);
    procedure Initialize (Input_Dialog : access Gtk_Input_Dialog_Record);
 
-   procedure Generate (Input_Dialog : access Gtk_Input_Dialog_Record;
-                       N      : in Node_Ptr;
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
-
-   procedure Generate (Input_Dialog : access Gtk_Input_Dialog_Record;
-                       N      : in Node_Ptr);
+ 
+   procedure Generate (Input_Dialog : in out Gtk_Object; N : in Node_Ptr);
 
 private
 

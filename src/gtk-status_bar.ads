@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Box;
 with Interfaces.C.Strings;
 with Glib.GSlist;
@@ -77,13 +78,11 @@ package Gtk.Status_Bar is
    --  The following two procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (Statusbar : access Gtk_Status_Bar_Record;
-                       N         : in Node_Ptr;
+   procedure Generate (N         : in Node_Ptr;
                        File      : in File_Type);
 
-   procedure Generate (Statusbar : access Gtk_Status_Bar_Record;
+   procedure Generate (Statusbar : in out Gtk_Object;
                        N         : in Node_Ptr);
-
 
 private
    type Gtk_Status_Bar_Record is new Gtk.Box.Gtk_Box_Record with null record;

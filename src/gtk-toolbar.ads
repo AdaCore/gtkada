@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
+with Gtk.Object; use Gtk.Object;
 with Gtk.Button;
 with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
@@ -143,12 +143,13 @@ package Gtk.Toolbar is
                                 Relief  : in Gtk_Relief_Style);
    function Get_Button_Relief (Toolbar : access Gtk_Toolbar_Record)
                                return Gtk_Relief_Style;
+
    --  The following two procedures are used to generate and create widgets
    --  from a Node.
-   procedure Generate (Toolbar : access Gtk_Toolbar_Record;
-                       N       : in Node_Ptr;
+
+   procedure Generate (N       : in Node_Ptr;
                        File    : in File_Type);
-   procedure Generate (Toolbar : access Gtk_Toolbar_Record;
+   procedure Generate (Toolbar : in out Gtk_Object;
                        N       : in Node_Ptr);
 
 private

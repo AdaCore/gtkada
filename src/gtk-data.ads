@@ -34,6 +34,16 @@ package Gtk.Data is
    type Gtk_Data_Record is new Object.Gtk_Object_Record with private;
    type Gtk_Data is access all Gtk_Data_Record'Class;
 
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type)
+     renames Gtk.Object.Generate;
+ 
+   procedure Generate (Data : in out Gtk.Object.Gtk_Object; N : in Node_Ptr)
+     renames Gtk.Object.Generate;
+
 private
 
    type Gtk_Data_Record is new Object.Gtk_Object_Record with null record;

@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Bin;
 
 package Gtk.Item is
@@ -39,6 +40,16 @@ package Gtk.Item is
    procedure Item_Deselect (Item : access Gtk_Item_Record);
 
    procedure Toggle (Item : access Gtk_Item_Record);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type)
+     renames Gtk.Bin.Generate;
+ 
+   procedure Generate (Container : in out Gtk_Object; N : in Node_Ptr)
+     renames Gtk.Bin.Generate;
 
 private
 

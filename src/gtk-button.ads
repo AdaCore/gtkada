@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Bin;
 with Gtk.Enums;
 
@@ -44,12 +45,13 @@ package Gtk.Button is
    function Get_Relief (Button : access Gtk_Button_Record)
                         return Gtk.Enums.Gtk_Relief_Style;
 
-   procedure Generate (Button : access Gtk_Button_Record;
-                       N      : in Node_Ptr;
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
-
-   procedure Generate (Button : access Gtk_Button_Record;
-                       N      : in Node_Ptr);
+ 
+   procedure Generate (Button : in out Gtk_Object; N : in Node_Ptr);
 
    ---------------
    --  Signals  --

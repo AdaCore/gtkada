@@ -31,8 +31,8 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
---   with Gtk.Container; use Gtk.Container;
---   with Gtk.Notebook; use Gtk.Notebook;
+with Gtk.Container; use Gtk.Container;
+with Gtk.Notebook; use Gtk.Notebook;
 
 package body Gtk.Label is
 
@@ -104,11 +104,8 @@ package body Gtk.Label is
    -- Generate --
    --------------
 
-   procedure Generate (Label : access Gtk_Label_Record;
-                       N     : in Node_Ptr;
+   procedure Generate (N     : in Node_Ptr;
                        File  : in File_Type) is
-      use Misc;
-
       Child_Name : String_Ptr := Get_Field (N, "child_name");
       S          : String_Ptr;
       P          : Node_Ptr;
@@ -117,7 +114,7 @@ package body Gtk.Label is
    begin
       Gen_New (N, "Label", Find_Tag (N.Child, "label").Value.all,
         File => File, Delim => '"');
-      Generate (Gtk_Misc (Label), N, File);
+      Misc.Generate (N, File);
       Gen_Set (N, "Label", "justify", File);
 
       if Child_Name /= null then
@@ -149,60 +146,55 @@ package body Gtk.Label is
       end if;
    end Generate;
 
-   procedure Generate (Label : access Gtk_Label_Record;
+   procedure Generate (Label : in out Gtk_Object;
                        N     : in Node_Ptr) is
-      use Misc;
-
---         Child_Name : String_Ptr := Get_Field (N, "child_name");
---         S          : String_Ptr;
---         P          : Node_Ptr;
---         Page_Num   : Gint;
+      Child_Name : String_Ptr := Get_Field (N, "child_name");
+      S          : String_Ptr;
+      P          : Node_Ptr;
+      Page_Num   : Gint;
 
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (Label, Get_Field (N, "label").all);
---            Set_Object (Get_Field (N, "name"), Label'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Label (Label), Get_Field (N, "label").all);
+         Set_Object (Get_Field (N, "name"), Label);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Misc (Label), N);
+      Misc.Generate (Label, N);
 
---         S := Get_Field (N, "justify");
+      S := Get_Field (N, "justify");
 
---         if S /= null then
---            Set_Justify (Label,
---              Enums.Gtk_Justification'Value (S (S'First + 4 .. S'Last)));
---         end if;
+      if S /= null then
+         Set_Justify (Gtk_Label (Label),
+           Enums.Gtk_Justification'Value (S (S'First + 4 .. S'Last)));
+      end if;
 
---         if Child_Name /= null then
---            if Get_Part (Child_Name.all, 2) = "tab" then
---               P := N.Parent.Child;
---               Page_Num := 0;
+      if Child_Name /= null then
+         if Get_Part (Child_Name.all, 2) = "tab" then
+            P := N.Parent.Child;
+            Page_Num := 0;
 
---               while P /= N loop
---                  S := Get_Field (P, "child_name");
+            while P /= N loop
+               S := Get_Field (P, "child_name");
 
---                  if S /= null and then S.all = Child_Name.all then
---                     Page_Num := Page_Num + 1;
---                  end if;
+               if S /= null and then S.all = Child_Name.all then
+                  Page_Num := Page_Num + 1;
+               end if;
 
---                  P := P.Next;
---               end loop;
+               P := P.Next;
+            end loop;
 
---               Set_Tab
---                 (Gtk_Notebook (Get_Object (Find_Tag
---                    (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
---                     "name").Value).all), Page_Num, Label);
---            end if;
+            Set_Tab
+              (Gtk_Notebook (Get_Object (Find_Tag
+                 (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
+                  "name").Value)), Page_Num, Widget.Gtk_Widget (Label));
+         end if;
 
---         else
---            Container.Add
---              (Gtk_Container
---                (Get_Object (Get_Field (N.Parent, "name")).all),
---               Label);
---         end if;
-      null;
+      else
+         Container.Add
+           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+            Widget.Gtk_Widget (Label));
+      end if;
    end Generate;
 
 end Gtk.Label;
-

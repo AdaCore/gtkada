@@ -30,7 +30,6 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
---  with Gtk.Container; use Gtk.Container;
 
 package body Gtk.Check_Menu_Item is
 
@@ -114,51 +113,47 @@ package body Gtk.Check_Menu_Item is
    -- Generate --
    --------------
 
-   procedure Generate (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
-                       N               : in Node_Ptr;
+   procedure Generate (N               : in Node_Ptr;
                        File            : in File_Type) is
-      use Menu_Item;
-
    begin
       Gen_New (N, "Check_Menu_Item", Get_Field (N, "label").all,
         File => File, Delim => '"');
-      Generate (Gtk_Menu_Item (Check_Menu_Item), N, File);
+      Menu_Item.Generate (N, File);
       Gen_Set (N, "Check_Menu_Item", "active", File);
       Gen_Set (N, "Check_Menu_Item", "always_show_toggle", File => File);
    end Generate;
 
-   procedure Generate (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
+   procedure Generate (Check_Menu_Item : in out Gtk_Object;
                        N               : in Node_Ptr) is
-      use Menu_Item;
-
---         S : String_Ptr;
+      S : String_Ptr;
    begin
---         if not N.Specific_Data.Created then
---            S := Get_Field (N, "label");
+      if not N.Specific_Data.Created then
+         S := Get_Field (N, "label");
 
---            if S = null then
---               Gtk_New (Check_Menu_Item);
---            else
---               Gtk_New (Check_Menu_Item, S.all);
---            end if;
+         if S = null then
+            Gtk_New (Gtk_Check_Menu_Item (Check_Menu_Item));
+         else
+            Gtk_New (Gtk_Check_Menu_Item (Check_Menu_Item), S.all);
+         end if;
 
---        Set_Object (Get_Field (N, "name"), Check_Menu_Item'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+         Set_Object (Get_Field (N, "name"), Check_Menu_Item);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Menu_Item (Check_Menu_Item), N);
---         S := Get_Field (N, "active");
+      Menu_Item.Generate (Check_Menu_Item, N);
+      S := Get_Field (N, "active");
 
---         if S /= null then
---            Set_Active (Check_Menu_Item, Boolean'Value (S.all));
---         end if;
+      if S /= null then
+         Set_Active
+           (Gtk_Check_Menu_Item (Check_Menu_Item), Boolean'Value (S.all));
+      end if;
 
---         S := Get_Field (N, "always_show_toggle");
+      S := Get_Field (N, "always_show_toggle");
 
---         if S /= null then
---            Set_Show_Toggle (Check_Menu_Item, Boolean'Value (S.all));
---         end if;
-      null;
+      if S /= null then
+         Set_Show_Toggle
+           (Gtk_Check_Menu_Item (Check_Menu_Item), Boolean'Value (S.all));
+      end if;
    end Generate;
 
 end Gtk.Check_Menu_Item;

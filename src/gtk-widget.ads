@@ -212,12 +212,13 @@ package Gtk.Widget is
    function Get_Default_Motion_Notify_Event (Widget : access Gtk_Widget_Record)
                                              return System.Address;
 
-   procedure Generate (Widget : access Gtk_Widget_Record;
-                       N      : in Node_Ptr;
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
-
-   procedure Generate (Widget : access Gtk_Widget_Record;
-                       N      : in Node_Ptr);
+ 
+   procedure Generate (Widget : in out Object.Gtk_Object; N : in Node_Ptr);
 
    ------------------------
    --  Definitions for lists of widgets

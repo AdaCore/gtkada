@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Menu_Item;
 
 package Gtk.Check_Menu_Item is
@@ -42,6 +43,10 @@ package Gtk.Check_Menu_Item is
    procedure Set_Show_Toggle
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
       Always          : in Boolean);
+   procedure Set_Always_Show_Toggle
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
+      Always          : in Boolean)
+      renames Set_Show_Toggle;
 
    procedure Set_Active (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
                          Is_active       : in Boolean);
@@ -54,11 +59,10 @@ package Gtk.Check_Menu_Item is
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
-                       N               : in Node_Ptr;
+   procedure Generate (N               : in Node_Ptr;
                        File            : in File_Type);
 
-   procedure Generate (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
+   procedure Generate (Check_Menu_Item : in out Gtk_Object;
                        N               : in Node_Ptr);
 
 private

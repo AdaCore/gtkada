@@ -70,28 +70,24 @@ package body Gtk.List_Item is
    -- Generate --
    --------------
 
-   procedure Generate (List_Item : access Gtk_List_Item_Record;
-                       N         : in Node_Ptr;
+   procedure Generate (N         : in Node_Ptr;
                        File      : in File_Type) is
-      use Item;
    begin
       Gen_New (N, "List_Item", Get_Field (N, "label").all,
         File => File, Delim => '"');
-      Generate (Gtk_Item (List_Item), N, File);
+      Item.Generate (N, File);
    end Generate;
 
-   procedure Generate (List_Item : access Gtk_List_Item_Record;
+   procedure Generate (List_Item : in out Gtk_Object;
                        N         : in Node_Ptr) is
-      use Item;
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (List_Item, Get_Field (N, "label").all);
---            Set_Object (Get_Field (N, "name"), List_Item'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_List_Item (List_Item), Get_Field (N, "label").all);
+         Set_Object (Get_Field (N, "name"), List_Item);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Item (List_Item), N);
-      null;
+      Item.Generate (List_Item, N);
    end Generate;
 
    ----------------
@@ -109,4 +105,3 @@ package body Gtk.List_Item is
    end Initialize;
 
 end Gtk.List_Item;
-

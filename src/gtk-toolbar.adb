@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Toolbar is
 
@@ -506,55 +507,51 @@ package body Gtk.Toolbar is
    -- Generate --
    --------------
 
-   procedure Generate (Toolbar : access Gtk_Toolbar_Record;
-                       N       : in Node_Ptr;
+   procedure Generate (N       : in Node_Ptr;
                        File    : in File_Type) is
-      use Container;
    begin
       Gen_New (N, "Toolbar", "orientation", "type", File => File);
-      Generate (Gtk_Container (Toolbar), N, File);
+      Container.Generate (N, File);
       Gen_Set (N, "Toolbar", "space_size", File);
       Gen_Set (N, "Toolbar", "space_style", File);
       Gen_Set (N, "Toolbar", "tooltips", File);
    end Generate;
 
-   procedure Generate (Toolbar : access Gtk_Toolbar_Record;
+   procedure Generate (Toolbar : in out Gtk_Object;
                        N       : in Node_Ptr) is
-      use Container;
-
---      S, S2 : String_Ptr;
+      S, S2 : String_Ptr;
    begin
---         if not N.Specific_Data.Created then
---            S := Get_Field (N, "orientation");
---            S2 := Get_Field (N, "type");
---       Gtk_New (Toolbar, Gtk_Orientation'Value (S (S'First + 4 .. S'Last)),
---              Gtk_Toolbar_Style'Value (S2 (S2'First + 4 .. S'Last)));
---            Set_Object (Get_Field (N, "name"), Toolbar'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         S := Get_Field (N, "orientation");
+         S2 := Get_Field (N, "type");
+         Gtk_New (Gtk_Toolbar (Toolbar),
+           Gtk_Orientation'Value (S (S'First + 4 .. S'Last)),
+           Gtk_Toolbar_Style'Value (S2 (S2'First + 4 .. S'Last)));
+         Set_Object (Get_Field (N, "name"), Toolbar);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Container (Toolbar), N);
+      Container.Generate (Toolbar, N);
 
---         S := Get_Field (N, "space_size");
+      S := Get_Field (N, "space_size");
 
---         if S /= null then
---            Set_Space_Size (Toolbar, Gint'Value (S.all));
---         end if;
+      if S /= null then
+         Set_Space_Size (Gtk_Toolbar (Toolbar), Gint'Value (S.all));
+      end if;
 
---         S := Get_Field (N, "space_style");
+      S := Get_Field (N, "space_style");
 
---         if S /= null then
---            Set_Space_Style
---              (Toolbar,
---               Gtk_Toolbar_Space_Style'Value (S (S'First + 4 .. S'Last)));
---         end if;
+      if S /= null then
+         Set_Space_Style
+           (Gtk_Toolbar (Toolbar),
+            Gtk_Toolbar_Space_Style'Value (S (S'First + 4 .. S'Last)));
+      end if;
 
---         S := Get_Field (N, "tooltips");
+      S := Get_Field (N, "tooltips");
 
---         if S /= null then
---            Set_Tooltips (Toolbar, Boolean'Value (S.all));
---         end if;
-      null;
+      if S /= null then
+         Set_Tooltips (Gtk_Toolbar (Toolbar), Boolean'Value (S.all));
+      end if;
    end Generate;
 
 end Gtk.Toolbar;

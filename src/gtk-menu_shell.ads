@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Container;
 with Gtk.Widget;
 
@@ -47,6 +48,16 @@ package Gtk.Menu_Shell is
    procedure Prepend
      (Menu_Shell : access Gtk_Menu_Shell_Record;
       Child      : in Gtk.Widget.Gtk_Widget);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type)
+     renames Gtk.Container.Generate;
+ 
+   procedure Generate (Menu_Shell : in out Gtk_Object; N : in Node_Ptr)
+     renames Gtk.Container.Generate;
 
 private
    type Gtk_Menu_Shell_Record is new Gtk.Container.Gtk_Container_Record

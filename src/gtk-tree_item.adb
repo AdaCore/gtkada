@@ -159,28 +159,24 @@ package body Gtk.Tree_Item is
    -- Generate --
    --------------
 
-   procedure Generate (Tree_Item : access Gtk_Tree_Item_Record;
-                       N         : in Node_Ptr;
+   procedure Generate (N         : in Node_Ptr;
                        File      : in File_Type) is
-      use Item;
    begin
       Gen_New (N, "Tree_Item", Get_Field (N, "label").all,
         File => File, Delim => '"');
-      Generate (Gtk_Item (Tree_Item), N, File);
+      Item.Generate (N, File);
    end Generate;
 
-   procedure Generate (Tree_Item : access Gtk_Tree_Item_Record;
+   procedure Generate (Tree_Item : in out Gtk_Object;
                        N         : in Node_Ptr) is
-      use Item;
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (Tree_Item, Get_Field (N, "label").all);
---            Set_Object (Get_Field (N, "name"), Tree_Item'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Tree_Item (Tree_Item), Get_Field (N, "label").all);
+         Set_Object (Get_Field (N, "name"), Tree_Item);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Item (Tree_Item), N);
-      null;
+      Item.Generate (Tree_Item, N);
    end Generate;
 
 end Gtk.Tree_Item;

@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Editable is
@@ -86,6 +87,16 @@ package Gtk.Editable is
                            Position : Gint);
 
    function Get_Position (Editable : access Gtk_Editable_Record) return Gint;
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type)
+     renames Gtk.Widget.Generate;
+ 
+   procedure Generate (Editable : in out Gtk_Object; N : in Node_Ptr)
+     renames Gtk.Widget.Generate;
 
 private
    type Gtk_Editable_Record is new Gtk.Widget.Gtk_Widget_Record

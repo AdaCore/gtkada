@@ -224,27 +224,23 @@ package body Gtk.Calendar is
    -- Generate --
    --------------
 
-   procedure Generate (Calendar : access Gtk_Calendar_Record;
-                       N        : in Node_Ptr;
+   procedure Generate (N        : in Node_Ptr;
                        File     : in File_Type) is
-      use Widget;
    begin
       Gen_New (N, "Calendar", File => File);
-      Generate (Gtk_Widget (Calendar), N, File);
+      Widget.Generate (N, File);
    end Generate;
 
-   procedure Generate (Calendar : access Gtk_Calendar_Record;
+   procedure Generate (Calendar : in out Gtk_Object;
                        N        : in Node_Ptr) is
-      use Widget;
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (Calendar);
---            Set_Object (Get_Field (N, "name"), Calendar);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Calendar (Calendar));
+         Set_Object (Get_Field (N, "name"), Calendar);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Widget (Calendar), N);
-      null;
+      Widget.Generate (Calendar, N);
    end Generate;
 
 end Gtk.Calendar;

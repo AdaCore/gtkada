@@ -161,28 +161,23 @@ package body Gtk.Status_Bar is
    -- Generate --
    --------------
 
-   procedure Generate (Statusbar : access Gtk_Status_Bar_Record;
-                       N         : in Node_Ptr;
+   procedure Generate (N         : in Node_Ptr;
                        File      : in File_Type) is
-      use Box;
    begin
       Gen_New (N, "Status_Bar", File => File);
-      Generate (Gtk_Box (Statusbar), N, File);
+      Box.Generate (N, File);
    end Generate;
 
-   procedure Generate (Statusbar : access Gtk_Status_Bar_Record;
+   procedure Generate (Statusbar : in out Gtk_Object;
                        N         : in Node_Ptr) is
-      use Box;
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (Statusbar);
---            Set_Object (Get_Field (N, "name"), Statusbar'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Status_Bar (Statusbar));
+         Set_Object (Get_Field (N, "name"), Statusbar);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Box (Statusbar), N);
-      null;
+      Box.Generate (Statusbar, N);
    end Generate;
-
 
 end Gtk.Status_Bar;

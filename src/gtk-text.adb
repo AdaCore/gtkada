@@ -31,7 +31,7 @@ with System;
 with Interfaces.C.Strings;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
---  with Gtk.Container; use Gtk.Container;
+with Gtk.Container; use Gtk.Container;
 
 package body Gtk.Text is
 
@@ -332,55 +332,50 @@ package body Gtk.Text is
    -- Generate --
    --------------
 
-   procedure Generate (Text : access Gtk_Text_Record;
-                       N    : in Node_Ptr;
+   procedure Generate (N    : in Node_Ptr;
                        File : in File_Type) is
-      use Editable;
    begin
       Gen_New (N, "Text", File => File);
-      Generate (Gtk_Editable (Text), N, File);
+      Editable.Generate (N, File);
       Gen_Set (N, "Text", "editable", File);
       Gen_Set (N, "Text", "point", File);
       Gen_Set (N, "Text", "word_wrap", File);
       Gen_Call_Child (N, null, "Container", "Add", File => File);
    end Generate;
 
-   procedure Generate (Text : access Gtk_Text_Record;
+   procedure Generate (Text : in out Gtk_Object;
                        N    : in Node_Ptr) is
-      use Editable;
-
---      S : String_Ptr;
+      S : String_Ptr;
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (Text);
---            Set_Object (Get_Field (N, "name"), Text'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Text (Text));
+         Set_Object (Get_Field (N, "name"), Text);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Editable (Text), N);
+      Editable.Generate (Text, N);
 
---         S := Get_Field (N, "editable");
+      S := Get_Field (N, "editable");
 
---         if S /= null then
---            Set_Editable (Text, Boolean'Value (S.all));
---         end if;
+      if S /= null then
+         Set_Editable (Gtk_Text (Text), boolean'Value (S.all));
+      end if;
 
---         S := Get_Field (N, "point");
+      S := Get_Field (N, "point");
 
---         if S /= null then
---            Set_Point (Text, Guint'Value (S.all));
---         end if;
+      if S /= null then
+         Set_Point (Gtk_Text (Text), Guint'Value (S.all));
+      end if;
 
---         S := Get_Field (N, "word_wrap");
+      S := Get_Field (N, "word_wrap");
 
---         if S /= null then
---            Set_Word_Wrap (Text, Boolean'Value (S.all));
---         end if;
+      if S /= null then
+         Set_Word_Wrap (Gtk_Text (Text), Boolean'Value (S.all));
+      end if;
 
---         Container.Add
---      (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all), Text);
-      null;
+      Container.Add
+        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+         Widget.Gtk_Widget (Text));
    end Generate;
 
 end Gtk.Text;
-

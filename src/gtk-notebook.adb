@@ -39,8 +39,8 @@ package body Gtk.Notebook is
 
    procedure Append_Page
      (Notebook  : access Gtk_Notebook_Record;
-      Child     : in Gtk.Widget.Gtk_Widget;
-      Tab_Label : in Gtk.Widget.Gtk_Widget)
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
         (Notebook  : in System.Address;
@@ -60,9 +60,9 @@ package body Gtk.Notebook is
 
    procedure Append_Page_Menu
      (Notebook   : access Gtk_Notebook_Record;
-      Child      : in Gtk.Widget.Gtk_Widget;
-      Tab_Label  : in Gtk.Widget.Gtk_Widget;
-      Menu_Label : in Gtk.Widget.Gtk_Widget)
+      Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
         (Notebook   : in System.Address;
@@ -193,8 +193,8 @@ package body Gtk.Notebook is
 
    procedure Insert_Page
      (Notebook  : access Gtk_Notebook_Record;
-      Child     : in Gtk.Widget.Gtk_Widget;
-      Tab_Label : in Gtk.Widget.Gtk_Widget;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position  : in Gint)
    is
       procedure Internal
@@ -217,9 +217,9 @@ package body Gtk.Notebook is
 
    procedure Insert_Page_Menu
      (Notebook   : access Gtk_Notebook_Record;
-      Child      : in Gtk.Widget.Gtk_Widget;
-      Tab_Label  : in Gtk.Widget.Gtk_Widget;
-      Menu_Label : in Gtk.Widget.Gtk_Widget;
+      Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position   : in Gint)
    is
       procedure Internal
@@ -277,8 +277,8 @@ package body Gtk.Notebook is
 
    procedure Prepend_Page
      (Notebook  : access Gtk_Notebook_Record;
-      Child     : in Gtk.Widget.Gtk_Widget;
-      Tab_Label : in Gtk.Widget.Gtk_Widget)
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
         (Notebook  : in System.Address;
@@ -298,9 +298,9 @@ package body Gtk.Notebook is
 
    procedure Prepend_Page_Menu
      (Notebook   : access Gtk_Notebook_Record;
-      Child      : in Gtk.Widget.Gtk_Widget;
-      Tab_Label  : in Gtk.Widget.Gtk_Widget;
-      Menu_Label : in Gtk.Widget.Gtk_Widget)
+      Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
         (Notebook   : in System.Address;
@@ -398,7 +398,7 @@ package body Gtk.Notebook is
 
    procedure Set_Tab (Notebook  : access Gtk_Notebook_Record;
                       Page_Num  : in Gint;
-                      Tab_Label : in Gtk.Widget.Gtk_Widget) is
+                      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class) is
       Notebook_Page : Gtk_Notebook_Page;
 
       function Internal (Notebook_Page : in System.Address)
@@ -446,13 +446,11 @@ package body Gtk.Notebook is
    -- Generate --
    --------------
 
-   procedure Generate (Notebook : access Gtk_Notebook_Record;
-                       N        : in Node_Ptr;
+   procedure Generate (N        : in Node_Ptr;
                        File     : in File_Type) is
-      use Container;
    begin
       Gen_New (N, "Notebook", File => File);
-      Generate (Gtk_Container (Notebook), N, File);
+      Container.Generate (N, File);
       Gen_Set (N, "Notebook", "scrollable", File);
       Gen_Set (N, "Notebook", "show_border", File);
       Gen_Set (N, "Notebook", "show_tabs", File);
@@ -460,52 +458,49 @@ package body Gtk.Notebook is
       Gen_Set (N, "Notebook", "tab_pos", File);
    end Generate;
 
-   procedure Generate (Notebook : access Gtk_Notebook_Record;
+   procedure Generate (Notebook : in out Gtk_Object;
                        N        : in Node_Ptr) is
-      use Container;
-
---         S : String_Ptr;
+      S : String_Ptr;
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (Notebook);
---            Set_Object (Get_Field (N, "name"), Notebook'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Notebook (Notebook));
+         Set_Object (Get_Field (N, "name"), Notebook);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Container (Notebook), N);
+      Container.Generate (Notebook, N);
 
---         S := Get_Field (N, "scrollable");
+      S := Get_Field (N, "scrollable");
 
---         if S /= null then
---            Set_Scrollable (Notebook, Boolean'Value (S.all));
---         end if;
+      if S /= null then
+         Set_Scrollable (Gtk_Notebook (Notebook), Boolean'Value (S.all));
+      end if;
 
---         S := Get_Field (N, "show_border");
+      S := Get_Field (N, "show_border");
 
---         if S /= null then
---            Set_Show_Border (Notebook, Boolean'Value (S.all));
---         end if;
+      if S /= null then
+         Set_Show_Border (Gtk_Notebook (Notebook), Boolean'Value (S.all));
+      end if;
 
---         S := Get_Field (N, "show_tabs");
+      S := Get_Field (N, "show_tabs");
 
---         if S /= null then
---            Set_Show_Tabs (Notebook, Boolean'Value (S.all));
---         end if;
+      if S /= null then
+         Set_Show_Tabs (Gtk_Notebook (Notebook), Boolean'Value (S.all));
+      end if;
 
---         S := Get_Field (N, "tab_border");
+      S := Get_Field (N, "tab_border");
 
---         if S /= null then
---            Set_Tab_Border (Notebook, Gint'Value (S.all));
---         end if;
+      if S /= null then
+         Set_Tab_Border (Gtk_Notebook (Notebook), Gint'Value (S.all));
+      end if;
 
---         S := Get_Field (N, "tab_pos");
+      S := Get_Field (N, "tab_pos");
 
---         if S /= null then
---            Set_Tab_Pos
---              (Notebook,
---               Gtk_Position_Type'Value (S (S'First + 4 .. S'Last)));
---         end if;
-      null;
+      if S /= null then
+         Set_Tab_Pos
+           (Gtk_Notebook (Notebook),
+            Gtk_Position_Type'Value (S (S'First + 4 .. S'Last)));
+      end if;
    end Generate;
 
 end Gtk.Notebook;

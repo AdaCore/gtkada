@@ -27,12 +27,23 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Container; use Gtk.Container;
 
 package Gtk.Bin is
 
    type Gtk_Bin_Record is new Container.Gtk_Container_Record with private;
    type Gtk_Bin is access all Gtk_Bin_Record'Class;
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type)
+     renames Gtk.Container.Generate;
+ 
+   procedure Generate (Container : in out Gtk_Object; N : in Node_Ptr)
+     renames Gtk.Container.Generate;
 
 private
 

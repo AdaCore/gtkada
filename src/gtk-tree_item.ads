@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Item;
 with Gtk.Tree;
 with Gtk.Widget;
@@ -58,11 +59,10 @@ package Gtk.Tree_Item is
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (Tree_Item : access Gtk_Tree_Item_Record;
-                       N         : in Node_Ptr;
+   procedure Generate (N         : in Node_Ptr;
                        File      : in File_Type);
 
-   procedure Generate (Tree_Item : access Gtk_Tree_Item_Record;
+   procedure Generate (Tree_Item : in out Gtk_Object;
                        N         : in Node_Ptr);
 
 private

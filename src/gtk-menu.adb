@@ -232,32 +232,27 @@ package body Gtk.Menu is
    -- Generate --
    --------------
 
-   procedure Generate (Menu : access Gtk_Menu_Record;
-                       N    : in Node_Ptr;
+   procedure Generate (N    : in Node_Ptr;
                        File : in File_Type) is
-      use Menu_Shell;
    begin
       Gen_New (N, "Menu", File => File);
-      Generate (Gtk_Menu_Shell (Menu), N, File);
+      Menu_Shell.Generate (N, File);
       Gen_Call_Child (N, null, "Menu_Item", "Set_Submenu", File => File);
    end Generate;
 
-   procedure Generate (Menu : access Gtk_Menu_Record;
+   procedure Generate (Menu : in out Gtk_Object;
                        N    : in Node_Ptr) is
-      use Menu_Shell;
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (Menu);
---            Set_Object (Get_Field (N, "name"), Menu'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Menu (Menu));
+         Set_Object (Get_Field (N, "name"), Menu);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Menu_Shell (Menu), N);
---         Menu_Item.Set_Submenu
---           (Gtk_Menu_Item
---             (Get_Object (Get_Field (N.Parent, "name")).all),
---            Menu);
-      null;
+      Menu_Shell.Generate (Menu, N);
+      Menu_Item.Set_Submenu
+        (Gtk_Menu_Item (Get_Object (Get_Field (N.Parent, "name"))),
+         Widget.Gtk_Widget (Menu));
    end Generate;
 
 end Gtk.Menu;

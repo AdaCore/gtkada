@@ -29,7 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
---  with Gtk.Container; use Gtk.Container;
+with Gtk.Container; use Gtk.Container;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Menu_Bar is
@@ -108,31 +108,27 @@ package body Gtk.Menu_Bar is
    -- Generate --
    --------------
 
-   procedure Generate (Menu_Bar : access Gtk_Menu_Bar_Record;
-                       N    : in Node_Ptr;
+   procedure Generate (N    : in Node_Ptr;
                        File : in File_Type) is
-      use Menu_Shell;
    begin
       Gen_New (N, "Menu_Bar", File => File);
-      Generate (Gtk_Menu_Shell (Menu_Bar), N, File);
+      Menu_Shell.Generate (N, File);
       Gen_Call_Child (N, null, "Container", "Add", File => File);
    end Generate;
 
-   procedure Generate (Menu_Bar : access Gtk_Menu_Bar_Record;
-                       N    : in Node_Ptr) is
-      use Menu_Shell;
+   procedure Generate (Menu_Bar : in out Gtk_Object;
+                       N        : in Node_Ptr) is
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (Menu_Bar);
---            Set_Object (Get_Field (N, "name"), Menu_Bar'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Menu_Bar (Menu_Bar));
+         Set_Object (Get_Field (N, "name"), Menu_Bar);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Menu_Shell (Menu_Bar), N);
---         Container.Add
---           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
---            Menu_Bar);
-      null;
+      Menu_Shell.Generate (Menu_Bar, N);
+      Container.Add
+        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+         Widget.Gtk_Widget (Menu_Bar));
    end Generate;
 
 end Gtk.Menu_Bar;

@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Enums;
 with Gtk.Item;
 with Gtk.Widget;
@@ -43,7 +44,7 @@ package Gtk.Menu_Item is
                          Label     : in  String);
 
    procedure Set_Submenu (Menu_Item : access Gtk_Menu_Item_Record;
-                          Submenu   : in     Widget.Gtk_Widget);
+                          Submenu   : access Widget.Gtk_Widget_Record'Class);
 
    procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record);
 
@@ -62,12 +63,13 @@ package Gtk.Menu_Item is
 
    procedure Right_Justify (Menu_Item : access Gtk_Menu_Item_Record);
 
-   procedure Generate (Menu_Item : access Gtk_Menu_Item_Record;
-                       N         : in Node_Ptr;
-                       File      : in File_Type);
-
-   procedure Generate (Menu_Item : access Gtk_Menu_Item_Record;
-                       N         : in Node_Ptr);
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+ 
+   procedure Generate (Menu_Item : in out Gtk_Object; N : in Node_Ptr);
 
 private
 

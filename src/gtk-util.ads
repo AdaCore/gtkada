@@ -27,18 +27,19 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object;
 with Gtk.Widget;
 with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
 with System;
 
 package Gtk.Util is
 
-   procedure Set_Object (Name : String_Ptr; Object : Gtk.Widget.Gtk_Widget);
+   procedure Set_Object (Name : String_Ptr; Object : Gtk.Object.Gtk_Object);
    --  Associates Object with the specified Name. It is up to the caller to
    --  choose unique names.
 
-   function Get_Object (Name : String_Ptr) return Gtk.Widget.Gtk_Widget;
-   --  Return a widget associated (via a call to Set_Object) with Name
+   function Get_Object (Name : String_Ptr) return Gtk.Object.Gtk_Object;
+   --  Return an object associated (via a call to Set_Object) with Name
 
    type Private_Object is private;
    --  Internal representation of a widget as given by the low level signal

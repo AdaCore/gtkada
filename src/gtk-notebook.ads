@@ -44,13 +44,13 @@ package Gtk.Notebook is
 
    procedure Append_Page
      (Notebook  : access Gtk_Notebook_Record;
-      Child     : in Gtk.Widget.Gtk_Widget;
-      Tab_Label : in Gtk.Widget.Gtk_Widget);
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
    procedure Append_Page_Menu
      (Notebook   : access Gtk_Notebook_Record;
-      Child      : in Gtk.Widget.Gtk_Widget;
-      Tab_Label  : in Gtk.Widget.Gtk_Widget;
-      Menu_Label : in Gtk.Widget.Gtk_Widget);
+      Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
    function Get_Current_Page (Notebook : access Gtk_Notebook_Record)
                               return Gint;
    function Get_Children (Widget : access Gtk_Notebook_Record)
@@ -67,27 +67,27 @@ package Gtk.Notebook is
    procedure Initialize (Widget : access Gtk_Notebook_Record);
    procedure Insert_Page
      (Notebook  : access Gtk_Notebook_Record;
-      Child     : in Gtk.Widget.Gtk_Widget;
-      Tab_Label : in Gtk.Widget.Gtk_Widget;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position  : in Gint);
    procedure Insert_Page_Menu
      (Notebook   : access Gtk_Notebook_Record;
-      Child      : in Gtk.Widget.Gtk_Widget;
-      Tab_Label  : in Gtk.Widget.Gtk_Widget;
-      Menu_Label : in Gtk.Widget.Gtk_Widget;
+      Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position   : in Gint);
    procedure Next_Page (Notebook : access Gtk_Notebook_Record);
    procedure Popup_Disable (Notebook : access Gtk_Notebook_Record);
    procedure Popup_Enable (Notebook : access Gtk_Notebook_Record);
    procedure Prepend_Page
      (Notebook  : access Gtk_Notebook_Record;
-      Child     : in Gtk.Widget.Gtk_Widget;
-      Tab_Label : in Gtk.Widget.Gtk_Widget);
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
    procedure Prepend_Page_Menu
      (Notebook   : access Gtk_Notebook_Record;
-      Child      : in Gtk.Widget.Gtk_Widget;
-      Tab_Label  : in Gtk.Widget.Gtk_Widget;
-      Menu_Label : in Gtk.Widget.Gtk_Widget);
+      Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
    procedure Prev_Page (Notebook : in out Gtk_Notebook);
    procedure Remove_Page
      (Notebook : access Gtk_Notebook_Record;
@@ -116,14 +116,13 @@ package Gtk.Notebook is
 
    procedure Set_Tab (Notebook  : access Gtk_Notebook_Record;
                       Page_Num  : in Gint;
-                      Tab_Label : in Gtk.Widget.Gtk_Widget);
+                      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Set Notebook tab widget
 
-   procedure Generate (Notebook : access Gtk_Notebook_Record;
-                       N        : in Node_Ptr;
+   procedure Generate (N        : in Node_Ptr;
                        File     : in File_Type);
 
-   procedure Generate (Notebook : access Gtk_Notebook_Record;
+   procedure Generate (Notebook : in out Gtk_Object;
                        N        : in Node_Ptr);
 
 private

@@ -145,34 +145,25 @@ package body Gtk.Color_Selection_Dialog is
    -- Generate --
    --------------
 
-   procedure Generate
-     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record;
-      N      : in Node_Ptr;
-      File   : in File_Type)
-   is
-      use Window;
+   procedure Generate (N : in Node_Ptr; File   : in File_Type) is
    begin
       Gen_New (N, "Color_Selection_Dialog", Get_Field (N, "title").all,
         File => File, Delim => '"');
-      Generate (Gtk_Window (Color_Selection_Dialog), N, File);
+      Window.Generate (N, File);
    end Generate;
 
    procedure Generate
-     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record;
-      N                      : in Node_Ptr)
-   is
-      use Window;
+     (Color_Selection_Dialog : in out Gtk_Object;
+      N                      : in Node_Ptr) is
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (Color_Selection_Dialog, Get_Field (N, "title").all);
---            Set_Object (Get_Field (N, "name"),
---              Color_Selection_Dialog'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Color_Selection_Dialog (Color_Selection_Dialog),
+           Get_Field (N, "title").all);
+         Set_Object (Get_Field (N, "name"), Color_Selection_Dialog);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Window (Color_Selection_Dialog), N);
-      null;
+      Window.Generate (Color_Selection_Dialog, N);
    end Generate;
 
 end Gtk.Color_Selection_Dialog;
-

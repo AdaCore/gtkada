@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Drawing_Area is
@@ -42,12 +43,13 @@ package Gtk.Drawing_Area is
       Width  : in Gint;
       Height : in Gint);
 
-   procedure Generate (Drawing_Area : access Gtk_Drawing_Area_Record;
-                       N            : in Node_Ptr;
-                       File         : in File_Type);
-
-   procedure Generate (Drawing_Area : access Gtk_Drawing_Area_Record;
-                       N            : in Node_Ptr);
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+ 
+   procedure Generate (Drawing_Area : in out Gtk_Object; N : in Node_Ptr);
 
 private
 

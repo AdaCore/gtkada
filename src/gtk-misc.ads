@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Misc is
@@ -42,12 +43,13 @@ package Gtk.Misc is
                           Xpad : in     Gint;
                           Ypad : in     Gint);
 
-   procedure Generate (Misc : access Gtk_Misc_Record;
-                       N    : in Node_Ptr;
-                       File : in File_Type);
-
-   procedure Generate (Misc : access Gtk_Misc_Record;
-                       N    : in Node_Ptr);
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+ 
+   procedure Generate (Misc : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Misc_Record is new Widget.Gtk_Widget_Record with null record;

@@ -199,40 +199,35 @@ package body Gtk.Window is
    -- Generate --
    --------------
 
-   procedure Generate (Window : access Gtk_Window_Record;
-                       N      : in Node_Ptr;
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
-      use Bin;
    begin
       Gen_New (N, "Window", Get_Field (N, "type").all, File => File);
-      Generate (Gtk_Bin (Window), N, File);
+      Bin.Generate (N, File);
       Gen_Set (N, "Window", "title", File, '"');
       Gen_Set (N, "Window", "Policy", "allow_shrink", "allow_grow",
         "auto_shrink", "", File);
       Gen_Set (N, "Window", "position", File);
    end Generate;
 
-   procedure Generate (Window : access Gtk_Window_Record;
+   procedure Generate (Window : in out Gtk_Object;
                        N      : in Node_Ptr) is
-      use Bin;
-
       S, S2, S3 : String_Ptr;
    begin
       if not N.Specific_Data.Created then
          S := Get_Field (N, "type");
-         --  Gtk_New (Window,
-         --           Gtk_Window_Type'Value (S (S'First + 4 .. S'Last)));
-         --  Window.all := Win.all;  --  MANU???? TBD
-         --  Set_Object (Get_Field (N, "name"), Window);
+         Gtk_New (Gtk_Window (Window),
+                  Gtk_Window_Type'Value (S (S'First + 4 .. S'Last)));
+         Set_Object (Get_Field (N, "name"), Window);
          N.Specific_Data.Created := True;
       end if;
 
-      Generate (Gtk_Bin (Window), N);
+      Bin.Generate (Window, N);
 
       S := Get_Field (N, "title");
 
       if S /= null then
-         Set_Title (Window, S.all);
+         Set_Title (Gtk_Window (Window), S.all);
       end if;
 
       S := Get_Field (N, "allow_shrink");
@@ -240,14 +235,15 @@ package body Gtk.Window is
       S3 := Get_Field (N, "auto_shrink");
 
       if S /= null and then S2 /= null and then S3 /= null then
-         Set_Policy (Window, Boolean'Value (S.all), Boolean'Value (S2.all),
-           Boolean'Value (S3.all));
+         Set_Policy
+           (Gtk_Window (Window), Boolean'Value (S.all), Boolean'Value (S2.all),
+            Boolean'Value (S3.all));
       end if;
 
       S := Get_Field (N, "position");
 
       if S /= null then
-         Set_Position (Window,
+         Set_Position (Gtk_Window (Window),
            Enums.Gtk_Window_Position'Value (S (S'First + 4 .. S'Last)));
       end if;
    end Generate;

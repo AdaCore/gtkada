@@ -276,43 +276,38 @@ package body Gtk.Preview is
    -- Generate --
    --------------
 
-   procedure Generate (Preview : access Gtk_Preview_Record;
-                       N         : in Node_Ptr;
+   procedure Generate (N         : in Node_Ptr;
                        File      : in File_Type) is
-      use Widget;
    begin
       if Get_Field (N, "type").all = "True" then
          Gen_New (N, "Preview", "Preview_Color", File => File);
          Gen_New (N, "Preview", "Preview_Grayscale", File => File);
       end if;
 
-      Generate (Gtk_Widget (Preview), N, File);
+      Widget.Generate (N, File);
       Gen_Set (N, "Preview", "expand", File);
    end Generate;
 
-   procedure Generate (Preview : access Gtk_Preview_Record;
-                       N         : in Node_Ptr) is
-      use Widget;
-
---      S : String_Ptr;
+   procedure Generate (Preview : in out Gtk_Object;
+                       N       : in Node_Ptr) is
+      S : String_Ptr;
    begin
---         if not N.Specific_Data.Created then
---            if Get_Field (N, "type").all = "True" then
---               Gtk_New (Preview, Preview_Color);
---               Gtk_New (Preview, Preview_Grayscale);
---            end if;
+      if not N.Specific_Data.Created then
+         if Get_Field (N, "type").all = "True" then
+            Gtk_New (Gtk_Preview (Preview), Preview_Color);
+            Gtk_New (Gtk_Preview (Preview), Preview_Grayscale);
+         end if;
 
---            Set_Object (Get_Field (N, "name"), Preview'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+         Set_Object (Get_Field (N, "name"), Preview);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Widget (Preview), N);
---         S := Get_Field (N, "expand");
+      Widget.Generate (Preview, N);
+      S := Get_Field (N, "expand");
 
---         if S /= null then
---            Set_Expand (Preview, Boolean'Value (S.all));
---         end if;
-      null;
+      if S /= null then
+         Set_Expand (Gtk_Preview (Preview), Boolean'Value (S.all));
+      end if;
    end Generate;
 
 end Gtk.Preview;

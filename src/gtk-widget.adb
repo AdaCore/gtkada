@@ -706,16 +706,13 @@ package body Gtk.Widget is
    -- Generate --
    --------------
 
-   procedure Generate (Widget : access Gtk_Widget_Record;
-                       N      : in Node_Ptr;
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
-      use Object;
-
       Child : Node_Ptr := Find_Tag (N.Child, "child");
       Q     : Node_Ptr;
 
    begin
-      Generate (Gtk_Object (Widget), N, File);
+      Object.Generate (N, File);
       Gen_Set (N, "Widget", "name", File, '"');
       Gen_Set (N, "Widget", "sensitive", File);
       Gen_Set (N, "Widget", "UPosition", "x", "y", "", "", File);
@@ -736,10 +733,8 @@ package body Gtk.Widget is
       Gen_Signal (N, File);
    end Generate;
 
-   procedure Generate (Widget : access Gtk_Widget_Record;
+   procedure Generate (Widget : in out Object.Gtk_Object;
                        N      : in Node_Ptr) is
-      use Object;
-
       S, S2, S3  : String_Ptr;
       Child      : Node_Ptr := Find_Tag (N.Child, "child");
       Q          : Node_Ptr;
@@ -753,38 +748,42 @@ package body Gtk.Widget is
          Func_Data     : System.Address);
       pragma Import (C, Signal_Connect, "gtk_signal_connect");
 
+      use Object;
+
    begin
-      Generate (Gtk_Object (Widget), N);
+      Object.Generate (Widget, N);
       S := Get_Field (N, "name");
 
       if S /= null then
-         Set_Name (Widget, S.all);
+         Set_Name (Gtk_Widget (Widget), S.all);
       end if;
 
       S := Get_Field (N, "sensitive");
 
       if S /= null then
-         Set_Sensitive (Widget, Boolean'Value (S.all));
+         Set_Sensitive (Gtk_Widget (Widget), Boolean'Value (S.all));
       end if;
 
       S := Get_Field (N, "x");
       S2 := Get_Field (N, "y");
 
       if S /= null and then S2 /= null then
-         Set_UPosition (Widget, Gint'Value (S.all), Gint'Value (S2.all));
+         Set_UPosition
+           (Gtk_Widget (Widget), Gint'Value (S.all), Gint'Value (S2.all));
       end if;
 
       S := Get_Field (N, "width");
       S2 := Get_Field (N, "height");
 
       if S /= null and then S2 /= null then
-         Set_USize (Widget, Gint'Value (S.all), Gint'Value (S2.all));
+         Set_USize
+           (Gtk_Widget (Widget), Gint'Value (S.all), Gint'Value (S2.all));
       end if;
 
       S := Get_Field (N, "state");
 
       if S /= null then
-         Set_State (Widget, Enums.Gtk_State_Type'Value (S.all));
+         Set_State (Gtk_Widget (Widget), Enums.Gtk_State_Type'Value (S.all));
       end if;
 
       --  ??? Need to find a better way to call Pack_Start
@@ -801,7 +800,7 @@ package body Gtk.Widget is
                Gtk.Box.Pack_Start
                  (Gtk_Box (Get_Object (Find_Tag
                    (Find_Parent (N.Parent, "Box"), "name").Value)),
-                  Get_Object (Get_Field (N, "name")),
+                  Gtk_Widget (Get_Object (Get_Field (N, "name"))),
                   Boolean'Value (S.all), Boolean'Value (S2.all),
                   Gint'Value (S3.all));
             end if;

@@ -251,14 +251,13 @@ package body Gtk.Object is
    -- Generate --
    --------------
 
-   procedure Generate (Object : access Gtk_Object_Record;
-                       N      : in Node_Ptr;
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
    begin
       Gen_Set (N, "Object", "flags", File);
    end Generate;
 
-   procedure Generate (Object : access Gtk_Object_Record;
+   procedure Generate (Object : in out Gtk_Object;
                        N      : in Node_Ptr) is
       S : String_Ptr := Get_Field (N, "flags");
 

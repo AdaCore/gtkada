@@ -47,27 +47,23 @@ package body Gtk.Input_Dialog is
    -- Generate --
    --------------
 
-   procedure Generate (Input_Dialog : access Gtk_Input_Dialog_Record;
-                       N      : in Node_Ptr;
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
-      use Dialog;
    begin
       Gen_New (N, "Input_Dialog", File => File);
-      Generate (Gtk_Dialog (Input_Dialog), N, File);
+      Dialog.Generate (N, File);
    end Generate;
 
-   procedure Generate (Input_Dialog : access Gtk_Input_Dialog_Record;
-                       N        : in Node_Ptr) is
-      use Dialog;
+   procedure Generate (Input_Dialog : in out Gtk_Object;
+                       N            : in Node_Ptr) is
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (Input_Dialog);
---        Set_Object (Get_Field (N, "name"), Input_Dialog'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Input_Dialog (Input_Dialog));
+         Set_Object (Get_Field (N, "name"), Input_Dialog);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Dialog (Input_Dialog), N);
-      null;
+      Dialog.Generate (Input_Dialog, N);
    end Generate;
 
    ----------------
@@ -81,6 +77,5 @@ package body Gtk.Input_Dialog is
       Set_Object (Input_Dialog, Internal);
       Initialize_User_Data (Input_Dialog);
    end Initialize;
-
 
 end Gtk.Input_Dialog;

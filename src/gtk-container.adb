@@ -120,32 +120,29 @@ package body Gtk.Container is
    -- Generate --
    --------------
 
-   procedure Generate (Container : access Gtk_Container_Record;
-                       N         : in Node_Ptr;
+   procedure Generate (N         : in Node_Ptr;
                        File      : in File_Type) is
    begin
-      Generate (Gtk_Widget (Container), N, File);
+      Widget.Generate (N, File);
       Gen_Set (N, "Container", "border_width", File);
-      --  ??? Missing Set_Focus_Hadjustment
-      --  ??? Missing Set_Focus_Vadjustment
       Gen_Set (N, "Container", "resize_mode", File);
    end Generate;
 
-   procedure Generate (Container : access Gtk_Container_Record;
-                       N         : in Node_Ptr) is
+   procedure Generate (Container : in out Gtk_Object; N : in Node_Ptr) is
       S : String_Ptr;
    begin
-      Generate (Gtk_Widget (Container), N);
+      Widget.Generate (Container, N);
       S := Get_Field (N, "border_width");
 
       if S /= null then
-         Set_Border_Width (Container, Gint'Value (S.all));
+         Set_Border_Width (Gtk_Container (Container), Gint'Value (S.all));
       end if;
 
       S := Get_Field (N, "resize_mode");
 
       if S /= null then
-         Set_Resize_Mode (Container, Gtk_Resize_Mode'Value (S.all));
+         Set_Resize_Mode
+           (Gtk_Container (Container), Gtk_Resize_Mode'Value (S.all));
       end if;
    end Generate;
 

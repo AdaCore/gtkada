@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
 
@@ -61,11 +62,10 @@ package Gtk.Ruler is
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (Ruler : access Gtk_Ruler_Record;
-                       N     : in Node_Ptr;
+   procedure Generate (N     : in Node_Ptr;
                        File  : in File_Type);
 
-   procedure Generate (Ruler : access Gtk_Ruler_Record;
+   procedure Generate (Ruler : in out Gtk_Object;
                        N     : in Node_Ptr);
 
 private

@@ -96,16 +96,13 @@ package Gtk.Object is
                      Id     : in String := "user_data");
    end User_Data;
 
-   -----------------------
-   --  Support for Gate --
-   -----------------------
-
-   procedure Generate (Object : access Gtk_Object_Record;
-                       N      : in Node_Ptr;
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
-
-   procedure Generate (Object : access Gtk_Object_Record;
-                       N      : in Node_Ptr);
+ 
+   procedure Generate (Object : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Object_Record is new Root_Type with null record;

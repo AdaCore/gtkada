@@ -29,7 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
---  with Gtk.Container; use Gtk.Container;
+with Gtk.Container; use Gtk.Container;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Menu_Item is
@@ -147,7 +147,7 @@ package body Gtk.Menu_Item is
    -----------------
 
    procedure Set_Submenu (Menu_Item : access Gtk_Menu_Item_Record;
-                          Submenu   : in     Widget.Gtk_Widget) is
+                          Submenu   : access Widget.Gtk_Widget_Record'Class) is
       procedure Internal (Menu_Item : in System.Address;
                           Submenu   : in System.Address);
       pragma Import (C, Internal, "gtk_menu_item_set_submenu");
@@ -159,42 +159,36 @@ package body Gtk.Menu_Item is
    -- Generate --
    --------------
 
-   procedure Generate (Menu_Item : access Gtk_Menu_Item_Record;
-                       N         : in Node_Ptr;
+   procedure Generate (N         : in Node_Ptr;
                        File      : in File_Type) is
-      use Item;
-
    begin
       Gen_New (N, "Menu_Item", Get_Field (N, "label").all,
         File => File, Delim => '"');
-      Generate (Gtk_Item (Menu_Item), N, File);
+      Item.Generate (N, File);
       Gen_Call_Child (N, null, "Container", "Add", File => File);
    end Generate;
 
-   procedure Generate (Menu_Item : access Gtk_Menu_Item_Record;
+   procedure Generate (Menu_Item : in out Gtk_Object;
                        N         : in Node_Ptr) is
-      use Item;
-
---      S : String_Ptr;
+      S : String_Ptr;
    begin
---         if not N.Specific_Data.Created then
---            S := Get_Field (N, "label");
+      if not N.Specific_Data.Created then
+         S := Get_Field (N, "label");
 
---            if S = null then
---               Gtk_New (Menu_Item);
---            else
---               Gtk_New (Menu_Item, S.all);
---            end if;
+         if S = null then
+            Gtk_New (Gtk_Menu_Item (Menu_Item));
+         else
+            Gtk_New (Gtk_Menu_Item (Menu_Item), S.all);
+         end if;
 
---            Set_Object (Get_Field (N, "name"), Menu_Item'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+         Set_Object (Get_Field (N, "name"), Menu_Item);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Item (Menu_Item), N);
---         Container.Add
---           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
---            Menu_Item);
-      null;
+      Item.Generate (Menu_Item, N);
+      Container.Add
+        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+         Widget.Gtk_Widget (Menu_Item));
    end Generate;
 
 end Gtk.Menu_Item;

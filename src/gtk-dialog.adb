@@ -91,27 +91,23 @@ package body Gtk.Dialog is
    -- Generate --
    --------------
 
-   procedure Generate (Dialog : access Gtk_Dialog_Record;
-                       N      : in Node_Ptr;
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
-      use Window;
    begin
       Gen_New (N, "Dialog", File => File);
-      Generate (Gtk_Window (Dialog), N, File);
+      Window.Generate (N, File);
    end Generate;
 
-   procedure Generate (Dialog : access Gtk_Dialog_Record;
+   procedure Generate (Dialog : in out Gtk_Object;
                        N      : in Node_Ptr) is
-      use Window;
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (Dialog);
---            Set_Object (Get_Field (N, "name"), Dialog'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Dialog (Dialog));
+         Set_Object (Get_Field (N, "name"), Dialog);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Window (Dialog), N);
-      null;
+      Window.Generate (Dialog, N);
    end Generate;
 
 end Gtk.Dialog;

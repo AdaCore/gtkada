@@ -27,9 +27,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gdk.Color;
 with Gdk.Font;
+with Gtk.Object; use Gtk.Object;
 with Gtk.Adjustment;
 with Gtk.Editable;
 
@@ -85,12 +85,13 @@ package Gtk.Text is
        Word_Wrap : in Boolean);
    procedure Thaw (Text : access Gtk_Text_Record);
 
-   procedure Generate (Text : access Gtk_Text_Record;
-                       N    : in Node_Ptr;
-                       File : in File_Type);
-
-   procedure Generate (Text : access Gtk_Text_Record;
-                       N    : in Node_Ptr);
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+ 
+   procedure Generate (Text : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Text_Record is new Gtk.Editable.Gtk_Editable_Record

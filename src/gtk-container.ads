@@ -29,6 +29,7 @@
 
 with Gtk.Adjustment;
 with Gtk.Enums;  use Gtk.Enums;
+with Gtk.Object; use Gtk.Object;
 with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Container is
@@ -56,12 +57,13 @@ package Gtk.Container is
    procedure Set_Resize_Mode (Container   : access Gtk_Container_Record;
                               Resize_Mode : in Gtk_Resize_Mode);
 
-   procedure Generate (Container : access Gtk_Container_Record;
-                       N         : in Node_Ptr;
-                       File      : in File_Type);
-
-   procedure Generate (Container : access Gtk_Container_Record;
-                       N         : in Node_Ptr);
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+ 
+   procedure Generate (Container : in out Gtk_Object; N : in Node_Ptr);
 
 private
 

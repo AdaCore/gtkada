@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
+with Gtk.Object; use Gtk.Object;
 with Gtk.Window;
 with Gtk.Button;
 with Gtk.Color_Selection;
@@ -67,13 +67,10 @@ package Gtk.Color_Selection_Dialog is
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate
-     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record;
-      N                      : in Node_Ptr;
-      File                   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
 
    procedure Generate
-     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record;
+     (Color_Selection_Dialog : in out Gtk_Object;
       N                      : in Node_Ptr);
 
 private

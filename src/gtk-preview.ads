@@ -31,6 +31,7 @@ with Gdk.Color;
 with Gdk.GC;
 with Gdk.Visual;
 with Gdk.Window;
+with Gtk.Object; use Gtk.Object;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
 
@@ -94,11 +95,10 @@ package Gtk.Preview is
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (Preview : access Gtk_Preview_Record;
-                       N       : in Node_Ptr;
+   procedure Generate (N       : in Node_Ptr;
                        File    : in File_Type);
 
-   procedure Generate (Preview : access Gtk_Preview_Record;
+   procedure Generate (Preview : in out Gtk_Object;
                        N       : in Node_Ptr);
 
 private

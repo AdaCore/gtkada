@@ -30,10 +30,9 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
---  with Gtk.Widget; use Gtk.Widget;
 with Gtk.Container; use Gtk.Container;
---   with Gtk.File_Selection; use Gtk.File_Selection;
---   with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
+with Gtk.File_Selection; use Gtk.File_Selection;
+with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
 
 package body Gtk.Button is
 
@@ -145,11 +144,8 @@ package body Gtk.Button is
    -- Generate --
    --------------
 
-   procedure Generate (Button : access Gtk_Button_Record;
-                       N      : in Node_Ptr;
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
-      use Container;
-
       Child_Name : Node_Ptr   := Find_Tag (N.Child, "child_name");
       Label      : String_Ptr := Get_Field (N, "label");
 
@@ -164,72 +160,71 @@ package body Gtk.Button is
          Gen_Child (N, Child_Name, File);
       end if;
 
-      Generate (Gtk_Container (Button), N, File);
+      Container.Generate (N, File);
       Gen_Set (N, "Button", "relief", File);
    end Generate;
 
-   procedure Generate (Button : access Gtk_Button_Record;
+   procedure Generate (Button : in out Gtk_Object;
                        N      : in Node_Ptr) is
-      use Container;
-
---         Child_Name      : String_Ptr := Get_Field (N, "child_name");
---         S               : String_Ptr := Get_Field (N, "label");
---         File_Selection  : Gtk_File_Selection;
---         Color_Selection : Gtk_Color_Selection_Dialog;
+      Child_Name      : String_Ptr := Get_Field (N, "child_name");
+      S               : String_Ptr := Get_Field (N, "label");
+      File_Selection  : Gtk_File_Selection;
+      Color_Selection : Gtk_Color_Selection_Dialog;
 
    begin
---         if not N.Specific_Data.Created then
---            if Child_Name = null then
---               if S = null then
---                  --  Gtk_New (Button);
---               else
---                  --  Gtk_New (Button, S.all);
---               end if;
---            else
---               declare
---                  Selection : Gtk_Widget :=
---                    Get_Object (Find_Tag
---                      (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
---                       "name").Value).all;
+      if not N.Specific_Data.Created then
+         if Child_Name = null then
+            if S = null then
+               Gtk_New (Gtk_Button (Button));
+            else
+               Gtk_New (Gtk_Button (Button), S.all);
+            end if;
+         else
+            declare
+               Selection : Gtk_Object :=
+                 Get_Object (Find_Tag
+                   (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
+                    "name").Value);
 
---               begin
---                  if Get_Part (Child_Name.all, 1) = "FileSel" then
---                     File_Selection := Gtk_File_Selection (Selection);
+            begin
+               if Get_Part (Child_Name.all, 1) = "FileSel" then
+                  File_Selection := Gtk_File_Selection (Selection);
 
---                     if Get_Part (Child_Name.all, 2) = "ok_button" then
---                        Button := Get_Ok_Button (File_Selection);
---                  elsif Get_Part (Child_Name.all, 2) = "cancel_button" then
---                        Button := Get_Cancel_Button (File_Selection);
---                     elsif Get_Part (Child_Name.all, 2) = "help_button" then
---                        Button := Get_Help_Button (File_Selection);
---                     end if;
+                  if Get_Part (Child_Name.all, 2) = "ok_button" then
+                     Button := Gtk_Object (Get_Ok_Button (File_Selection));
+                  elsif Get_Part (Child_Name.all, 2) = "cancel_button" then
+                     Button := Gtk_Object (Get_Cancel_Button (File_Selection));
+                  elsif Get_Part (Child_Name.all, 2) = "help_button" then
+                     Button := Gtk_Object (Get_Help_Button (File_Selection));
+                  end if;
 
---                  elsif Get_Part (Child_Name.all, 1) = "ColorSel" then
---                  Color_Selection := Gtk_Color_Selection_Dialog (Selection);
+               elsif Get_Part (Child_Name.all, 1) = "ColorSel" then
+                  Color_Selection := Gtk_Color_Selection_Dialog (Selection);
 
---                     if Get_Part (Child_Name.all, 2) = "ok_button" then
---                        Button := Get_OK_Button (Color_Selection);
---                  elsif Get_Part (Child_Name.all, 2) = "cancel_button" then
---                        Button := Get_Cancel_Button (Color_Selection);
---                     elsif Get_Part (Child_Name.all, 2) = "help_button" then
---                        Button := Get_Help_Button (Color_Selection);
---                     end if;
---                  end if;
---               end;
---            end if;
+                  if Get_Part (Child_Name.all, 2) = "ok_button" then
+                     Button := Gtk_Object (Get_OK_Button (Color_Selection));
+                  elsif Get_Part (Child_Name.all, 2) = "cancel_button" then
+                     Button :=
+                       Gtk_Object (Get_Cancel_Button (Color_Selection));
+                  elsif Get_Part (Child_Name.all, 2) = "help_button" then
+                     Button := Gtk_Object (Get_Help_Button (Color_Selection));
+                  end if;
+               end if;
+            end;
+         end if;
 
---            Set_Object (Get_Field (N, "name"), Button'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+         Set_Object (Get_Field (N, "name"), Button);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Container (Button), N);
+      Container.Generate (Button, N);
 
---         S := Get_Field (N, "relief");
+      S := Get_Field (N, "relief");
 
---         if S /= null then
---            Set_Relief (Button, Gtk.Enums.Gtk_Relief_Style'Value (S.all));
---         end if;
-      null;
+      if S /= null then
+         Set_Relief
+           (Gtk_Button (Button), Gtk.Enums.Gtk_Relief_Style'Value (S.all));
+      end if;
    end Generate;
 
 end Gtk.Button;

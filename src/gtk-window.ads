@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Bin;    use Gtk.Bin;
 with Gtk.Enums;  use Gtk.Enums;
 with Gtk.Widget; use Gtk.Widget;
@@ -74,12 +75,13 @@ package Gtk.Window is
                           Wmclass_Name  : in String;
                           Wmclass_Class : in String);
 
-   procedure Generate (Window : access Gtk_Window_Record;
-                       N      : in Node_Ptr;
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
-
-   procedure Generate (Window : access Gtk_Window_Record;
-                       N      : in Node_Ptr);
+ 
+   procedure Generate (Window : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Window_Record is new Bin.Gtk_Bin_Record with null record;

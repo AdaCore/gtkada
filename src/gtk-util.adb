@@ -55,7 +55,7 @@ package body Gtk.Util is
 
    package Objects is new GNAT.HTable.Simple_HTable
      (Header_Num => Hash_Header,
-      Element    => Gtk.Widget.Gtk_Widget,
+      Element    => Gtk.Object.Gtk_Object,
       No_Element => null,
       Key        => String_Ptr,
       Hash       => Hash,
@@ -99,7 +99,7 @@ package body Gtk.Util is
    -- Get_Object --
    ----------------
 
-   function Get_Object (Name : String_Ptr) return Gtk.Widget.Gtk_Widget is
+   function Get_Object (Name : String_Ptr) return Gtk.Object.Gtk_Object is
    begin
       return Objects.Get (Name);
    end Get_Object;
@@ -108,7 +108,7 @@ package body Gtk.Util is
    -- Set_Object --
    ----------------
 
-   procedure Set_Object (Name : String_Ptr; Object : Gtk.Widget.Gtk_Widget) is
+   procedure Set_Object (Name : String_Ptr; Object : Gtk.Object.Gtk_Object) is
    begin
       Objects.Set (Name, Object);
    end Set_Object;

@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Enums;
 with Gtk.Misc;
 
@@ -48,12 +49,13 @@ package Gtk.Label is
 
    function Get (Label : access Gtk_Label_Record) return String;
 
-   procedure Generate (Label : access Gtk_Label_Record;
-                       N     : in Node_Ptr;
-                       File  : in File_Type);
-
-   procedure Generate (Label : access Gtk_Label_Record;
-                       N     : in Node_Ptr);
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+ 
+   procedure Generate (Label : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Label_Record is new Misc.Gtk_Misc_Record with null record;

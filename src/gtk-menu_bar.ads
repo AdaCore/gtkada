@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Menu_Shell;
 with Gtk.Widget;
 
@@ -49,12 +50,13 @@ package Gtk.Menu_Bar is
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       Child    : in Gtk.Widget.Gtk_Widget);
 
-   procedure Generate (Menu_Bar : access Gtk_Menu_Bar_Record;
-                       N        : in Node_Ptr;
-                       File     : in File_Type);
-
-   procedure Generate (Menu_Bar : access Gtk_Menu_Bar_Record;
-                       N        : in Node_Ptr);
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+ 
+   procedure Generate (Menu_Bar : in out Gtk_Object; N : in Node_Ptr);
 
 private
 

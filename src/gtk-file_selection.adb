@@ -290,28 +290,25 @@ package body Gtk.File_Selection is
    -- Generate --
    --------------
 
-   procedure Generate (File_Selection : access Gtk_File_Selection_Record;
-                       N      : in Node_Ptr;
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
-      use Window;
    begin
       Gen_New (N, "File_Selection", Get_Field (N, "title").all,
         File => File, Delim => '"');
-      Generate (Gtk_Window (File_Selection), N, File);
+      Window.Generate (N, File);
    end Generate;
 
-   procedure Generate (File_Selection : access Gtk_File_Selection_Record;
+   procedure Generate (File_Selection : in out Gtk_Object;
                        N              : in Node_Ptr) is
-      use Window;
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (File_Selection, Get_Field (N, "title").all);
---        Set_Object (Get_Field (N, "name"), File_Selection'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New
+           (Gtk_File_Selection (File_Selection), Get_Field (N, "title").all);
+         Set_Object (Get_Field (N, "name"), File_Selection);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Window (File_Selection), N);
-      null;
+      Window.Generate (File_Selection, N);
    end Generate;
 
 end Gtk.File_Selection;

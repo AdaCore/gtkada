@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object; use Gtk.Object;
 with Gtk.Box;
 with Gtk.Window;
 
@@ -42,12 +43,13 @@ package Gtk.Dialog is
    procedure Gtk_New (Dialog : out Gtk_Dialog);
    procedure Initialize (Dialog : access Gtk_Dialog_Record);
 
-   procedure Generate (Dialog : access Gtk_Dialog_Record;
-                       N      : in Node_Ptr;
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
-
-   procedure Generate (Dialog : access Gtk_Dialog_Record;
-                       N      : in Node_Ptr);
+ 
+   procedure Generate (Dialog : in out Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Dialog_Record is new Gtk.Window.Gtk_Window_Record with null record;

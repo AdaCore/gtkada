@@ -29,7 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
---  with Gtk.Container; use Gtk.Container;
+with Gtk.Container; use Gtk.Container;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Drawing_Area is
@@ -77,31 +77,27 @@ package body Gtk.Drawing_Area is
    -- Generate --
    --------------
 
-   procedure Generate (Drawing_Area : access Gtk_Drawing_Area_Record;
-                       N            : in Node_Ptr;
+   procedure Generate (N            : in Node_Ptr;
                        File         : in File_Type) is
-      use Widget;
    begin
       Gen_New (N, "Drawing_Area", File => File);
-      Generate (Gtk_Widget (Drawing_Area), N, File);
+      Widget.Generate (N, File);
       Gen_Call_Child (N, null, "Container", "Add", File => File);
    end Generate;
 
-   procedure Generate (Drawing_Area : access Gtk_Drawing_Area_Record;
+   procedure Generate (Drawing_Area : in out Gtk_Object;
                        N            : in Node_Ptr) is
-      use Widget;
    begin
---         if not N.Specific_Data.Created then
---            Gtk_New (Drawing_Area);
---        Set_Object (Get_Field (N, "name"), Drawing_Area'Unchecked_Access);
---            N.Specific_Data.Created := True;
---         end if;
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Drawing_Area (Drawing_Area));
+         Set_Object (Get_Field (N, "name"), Drawing_Area);
+         N.Specific_Data.Created := True;
+      end if;
 
---         Generate (Gtk_Widget (Drawing_Area), N);
---         Container.Add
---           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
---            Drawing_Area);
-      null;
+      Widget.Generate (Drawing_Area, N);
+      Container.Add
+        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+         Widget.Gtk_Widget (Drawing_Area));
    end Generate;
 
 end Gtk.Drawing_Area;
