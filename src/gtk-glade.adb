@@ -138,15 +138,16 @@ package body Gtk.Glade is
 
    type Variable_Kind is (Global, Local);
 
-   procedure Print_Var
+   function Print_Var
      (N           : Node_Ptr;
       File        : File_Type;
-      Kind        : Variable_Kind);
+      Kind        : Variable_Kind) return Boolean;
 
    --  Print variable declarations for a given "create" function to file.
    --  If Kind is Global, print only the field as described in the node N,
    --  otherwise print only the variables used internally to support the
    --  global variables (e.g temporary lists, ...)
+   --  Return True if at least one variable has been printed.
 
    -----------
    -- Equal --
@@ -325,14 +326,15 @@ package body Gtk.Glade is
    -- Print_Var --
    ---------------
 
-   procedure Print_Var
+   function Print_Var
      (N           : Node_Ptr;
       File        : File_Type;
-      Kind        : Variable_Kind)
+      Kind        : Variable_Kind) return Boolean
   is
       Option_Menu : Boolean := True;
       Callback    : Boolean := True;
       Accelerator : Boolean := True;
+      Printed     : Boolean := False;
 
       procedure Print_Var
         (N     : Node_Ptr;
@@ -369,6 +371,7 @@ package body Gtk.Glade is
                      if not First then
                         Put_Line (File, "      " & To_Ada (Q.Value.all) &
                           " : " & To_Ada (S.all) & ";");
+                        Printed := True;
                      end if;
 
                   elsif Kind = Local then
@@ -471,6 +474,12 @@ package body Gtk.Glade is
 
    begin
       Print_Var (N, File, Kind, True, Option_Menu, Callback, Accelerator);
+
+      if Kind = Local then
+         return True;
+      else
+         return Printed;
+      end if;
    end Print_Var;
 
    ------------------------
@@ -496,6 +505,7 @@ package body Gtk.Glade is
         To_Ada (Get_Field (Find_Tag (N.Child, "project"), "name").all);
       Name        : String_Ptr;
       Class       : String_Ptr;
+      Printed     : Boolean;
 
    begin
       Print_Header (N, Output);
@@ -513,7 +523,11 @@ package body Gtk.Glade is
             New_Line (Output);
             Put_Line (Output, "   type " & To_Ada (Name.all) &
               "_Record is new " & To_Ada (Class.all) & "_Record with record");
-            Print_Var (M, Output, Global);
+
+            if not Print_Var (M, Output, Global) then
+               Put_Line (Output, "      null;");
+            end if;
+
             Put_Line (Output, "   end record;");
             Put_Line (Output, "   type " & To_Ada (Name.all) &
               "_Access is access all " & To_Ada (Name.all) & "_Record'Class;");
@@ -567,7 +581,7 @@ package body Gtk.Glade is
             Put_Line (Output, "procedure Initialize (" &
               To_Ada (Name.all) & " : access " & To_Ada (Name.all) &
               "_Record'Class) is");
-            Print_Var (M, Output, Local);
+            Printed := Print_Var (M, Output, Local);
             New_Line (Output);
             Put_Line (Output, "begin");
             Print_Initialize_Procedure (M, Output, True);
