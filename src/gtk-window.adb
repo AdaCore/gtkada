@@ -252,6 +252,8 @@ package body Gtk.Window is
         "auto_shrink", "", File);
       Gen_Set (N, "Window", "position", File);
       Gen_Set (N, "Window", "modal", File);
+      Gen_Set (N, "Window", "Default_Size", "default_width", "default_height",
+        "", "", File);
    end Generate;
 
    procedure Generate (Window : in out Gtk_Object;
@@ -296,6 +298,15 @@ package body Gtk.Window is
       if S /= null then
          Set_Modal (Gtk_Window (Window), Boolean'Value (S.all));
       end if;
+
+      S := Get_Field (N, "default_width");
+      S2 := Get_Field (N, "default_height");
+
+      if S /= null and then S2 /= null then
+         Set_Default_Size
+           (Gtk_Window (Window), Gint'Value (S.all), Gint'Value (S2.all));
+      end if;
+
    end Generate;
 
 end Gtk.Window;

@@ -205,13 +205,8 @@ package Gtk.Window is
    --  This is the easiest way to show a dialog to which the user has to
    --  answer before the application can continue.
 
-   ----------------------------
-   -- Support for GATE/DGATE --
-   ----------------------------
-
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
-   --  Gate internal function
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal procedure
 
    procedure Generate (Window : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
    --  Dgate internal function
