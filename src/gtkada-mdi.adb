@@ -1736,6 +1736,8 @@ package body Gtkada.MDI is
 
       Ref (C);
 
+      C.Tab_Label := null;
+
       --  The child of the MDI_Child has now been taken care of, thus we need
       --  to take care of the MDI_Child itself now.
 
@@ -5030,7 +5032,6 @@ package body Gtkada.MDI is
    is
       Tab     : Gtk_Widget;
       Note    : Gtk_Notebook;
-      Label   : Gtk_Label;
       Style   : Gtk_Style;
    begin
       if (Child.State = Normal
@@ -5041,8 +5042,6 @@ package body Gtkada.MDI is
       elsif Child.State = Docked then
          Note := Child.MDI.Docks (Child.Dock);
       end if;
-
-      Label := Child.Tab_Label;
 
       if Highlight then
          --  Do nothing if:
@@ -5084,8 +5083,8 @@ package body Gtkada.MDI is
          end;
       end if;
 
-      if Label /= null then
-         Set_Style (Label, Style);
+      if Child.Tab_Label /= null then
+         Set_Style (Child.Tab_Label, Style);
       end if;
    end Highlight_Child;
 
