@@ -59,6 +59,7 @@ with Gtk.Font_Selection_Dialog;
 with Gtk.Frame;
 with Gtk.Gamma_Curve;
 with Gtk.GEntry;
+with Gtk.GLArea;
 with Gtk.GRange;
 with Gtk.Handle_Box;
 with Gtk.Hbutton_Box;
@@ -211,6 +212,8 @@ package body Gtk.Type_Conversion is
          when 'G' =>
             if Type_Name = "GtkGammaCurve" then
                return new Gtk.Gamma_Curve.Gtk_Gamma_Curve_Record;
+            elsif Type_Name = "GtkGlArea" then
+               return new Gtk.GLArea.Gtk_GLArea_Record;
             end if;
          when 'H' =>
             if Type_Name = "GtkHBox" then
