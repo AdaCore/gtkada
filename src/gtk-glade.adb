@@ -27,32 +27,31 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  with Gtk.Adjustment;
---  with Gtk.Alignment;
+with Gtk.Alignment;
 with Gtk.Arrow;
 with Gtk.Aspect_Frame;
 with Gtk.Box;
 with Gtk.Button;
 --  with Gtk.Button_Box;
 with Gtk.Calendar;
---  with Gtk.Check_Button;
+with Gtk.Check_Button;
 with Gtk.Check_Menu_Item;
 --  with Gtk.Clist;
 --  with Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog;
---  with Gtk.Combo;
+with Gtk.Combo;
+--  with Gtk.Ctree;
 --  with Gtk.Curve;
 with Gtk.Dialog;
 with Gtk.Drawing_Area;
 with Gtk.Editable;
---  with Gtk.Event_Box;
+with Gtk.Event_Box;
 with Gtk.File_Selection;
 --  with Gtk.Fixed;
 --  with Gtk.Font_Selection;
 with Gtk.Frame;
 --  with Gtk.Gamma_Curve;
 --  with Gtk.GEntry;
---  with Gtk.GRange;
 --  with Gtk.Handle_Box;
 --  with Gtk.Hbutton_Box;
 --  with Gtk.Image;
@@ -66,25 +65,24 @@ with Gtk.Menu_Bar;
 with Gtk.Menu_Item;
 with Gtk.Menu_Shell;
 with Gtk.Notebook;
---  with Gtk.Option_Menu;
+with Gtk.Option_Menu;
 --  with Gtk.Paned;
 --  with Gtk.Pixmap;
 with Gtk.Preview;
---  with Gtk.Progress;
---  with Gtk.Progress_Bar;
---  with Gtk.Radio_Button;
+with Gtk.Progress_Bar;
+with Gtk.Radio_Button;
 --  with Gtk.Radio_Menu_Item;
 with Gtk.Ruler;
---  with Gtk.Scale;
---  with Gtk.Scrollbar;
+with Gtk.Scale;
+with Gtk.Scrollbar;
 with Gtk.Scrolled_Window;
---  with Gtk.Separator;
---  with Gtk.Spin_Button;
+with Gtk.Separator;
+with Gtk.Spin_Button;
 with Gtk.Status_Bar;
 with Gtk.Table;
 with Gtk.Text;
 --  with Gtk.Tips_Query;
---  with Gtk.Toggle_Button;
+with Gtk.Toggle_Button;
 with Gtk.Toolbar;
 --  with Gtk.Tooltips;
 with Gtk.Tree;
@@ -208,9 +206,8 @@ package body Gtk.Glade is
 
    begin
       if S /= null then
-         Put_Line (File, "   --  WARNING: Unsupported widget");
-         Put_Line (File, "   --  " & Get_Field (N, "class").all &
-           " (" & S.all & ")");
+         Put_Line (File, "   --  WARNING: Unsupported widget " &
+           Get_Field (N, "class").all & " (" & S.all & ")");
       end if;
    exception
       when Constraint_Error =>
@@ -228,8 +225,9 @@ package body Gtk.Glade is
 
    begin
       if S /= null then
-         Put_Line ("WARNING: Unsupported widget");
-         Put_Line (Get_Field (N, "class").all & " (" & S.all & ")");
+         New_Line;
+         Put_Line ("GtkAda-WARNING *: Unsupported widget " &
+           Get_Field (N, "class").all & " (" & S.all & ")");
       end if;
    exception
       when Constraint_Error =>
@@ -244,10 +242,13 @@ package body Gtk.Glade is
      (N : Node_Ptr; File : File_Type; First : Boolean := False)
    is
       P : Node_Ptr;
-   begin
-      Get_Gate (Get_Field (N, "class").all) (N, File);
+      S : String_Ptr;
 
-      if not First then
+   begin
+      S := Get_Field (N, "class");
+      Get_Gate (S.all) (N, File);
+
+      if not First and then S.all /= "Placeholder" then
          New_Line (File);
       end if;
 
@@ -295,24 +296,32 @@ package body Gtk.Glade is
 
       loop
          exit when M = null;
+
          P := Get_Field (M, "name");
          Q := Get_Field (M, "class");
-         Put_Line ("with Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) &
-           "; use Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) & ";");
-         Put_Line ("with Create_" & To_Ada (P.all) & ";");
+
+         if P /= null and Q /= null then
+            Put_Line ("with Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) &
+              "; use Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) & ";");
+            Put_Line ("with Create_" & To_Ada (P.all) & ";");
+         end if;
+
          M := M.Next;
       end loop;
 
       New_Line;
       Put_Line ("procedure " & To_Ada (R.all) & " is");
-
       M := N.Child.Next;
 
       loop
          exit when M = null;
          P := Get_Field (M, "name");
          Q := Get_Field (M, "class");
-         Put_Line ("   " & To_Ada (P.all) & " : " & To_Ada (Q.all) & ";");
+
+         if P /= null and Q /= null then
+            Put_Line ("   " & To_Ada (P.all) & " : " & To_Ada (Q.all) & ";");
+         end if;
+
          M := M.Next;
       end loop;
 
@@ -320,34 +329,40 @@ package body Gtk.Glade is
       Put_Line ("begin");
       Put_Line ("   Gtk.Main.Set_Locale;");
       Put_Line ("   Gtk.Main.Init;");
-
       M := N.Child.Next;
 
       loop
          exit when M = null;
          P := Get_Field (M, "name");
-         Put_Line ("   " & To_Ada (P.all) & " := Create_" &
-           To_Ada (P.all) & ";");
-         Put_Line ("   Widget.Show_All (Gtk_Widget (" &
-           To_Ada (P.all) & "));");
+
+         if P /= null then
+            Put_Line ("   " & To_Ada (P.all) & " := Create_" &
+              To_Ada (P.all) & ";");
+            Put_Line ("   Widget.Show_All (Gtk_Widget (" &
+              To_Ada (P.all) & "));");
+         end if;
+
          M := M.Next;
       end loop;
 
       Put_Line ("   Gtk.Main.Main;");
       Put_Line ("end " & To_Ada (R.all) & ";");
-
       M := N.Child.Next;
 
       loop
          exit when M = null;
          P := Get_Field (M, "name");
          Q := Get_Field (M, "class");
-         New_Line;
-         Put_Line ("with Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) &
-           "; use Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) & ";");
-         New_Line;
-         Put_Line ("function Create_" & To_Ada (P.all) & " return " &
-           To_Ada (Q.all) & ";");
+
+         if P /= null and Q /= null then
+            New_Line;
+            Put_Line ("with Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) &
+              "; use Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) & ";");
+            New_Line;
+            Put_Line ("function Create_" & To_Ada (P.all) & " return " &
+              To_Ada (Q.all) & ";");
+         end if;
+
          M := M.Next;
       end loop;
    end Print_Header;
@@ -361,6 +376,8 @@ package body Gtk.Glade is
    is
       P : Node_Ptr := N;
       Q : Node_Ptr;
+      S : String_Ptr;
+      First_Option_Menu : Boolean := True;
 
    begin
       while P /= null loop
@@ -368,8 +385,55 @@ package body Gtk.Glade is
             Q := Find_Tag (P.Child, "name");
 
             if Q /= null then
+               S := Get_Field (P, "class");
                Put_Line (File, "   " & To_Ada (Q.Value.all) & " : " &
-                 To_Ada (Get_Field (P, "class").all) & ";");
+                 To_Ada (S.all) & ";");
+
+               --  Special cases:
+               --  Declare a Gtk_Adjustment with each Gtk_Spin_Button,
+               --  Gtk_Scale and Gtk_Scrollbar
+
+               if S.all = "GtkSpinButton" or else S.all = "GtkHScale"
+                 or else S.all = "GtkVScale"
+                 or else S.all = "GtkHScrollbar"
+                 or else S.all = "GtkVScrollbar"
+               then
+                  Put_Line (File, "   " & To_Ada (Q.Value.all) &
+                    "_Adj : Gtk_Adjustment;");
+               end if;
+
+               --  Declare a GSList with each Widget containing radio buttons
+
+               if S.all = "GtkRadioButton" then
+                  if not P.Parent.Specific_Data.Has_Radio_Button_Group then
+                     Put_Line (File, "   " &
+                       To_Ada (Get_Field (P.Parent, "name").all) &
+                       "_Group : Widget_SList.GSList;");
+                     P.Parent.Specific_Data.Has_Radio_Button_Group := True;
+                  end if;
+               end if;
+
+               --  Declare a Glist with each combo box
+
+               if S.all = "GtkCombo" then
+                  Put_Line (File, "   " &
+                    To_Ada (Get_Field (P.Parent, "name").all) &
+                    "_Items : String_List.Glist;");
+               end if;
+
+               --  Declare a menu with each option menu
+
+               if S.all = "GtkOptionMenu" then
+                  Put_Line (File, "   " &
+                    To_Ada (Get_Field (P.Parent, "name").all) &
+                    "_Menu : Gtk_Menu;");
+
+                  if First_Option_Menu then
+                     Put_Line (File, "   Menu_Item : Gtk_Menu_Item;");
+                     First_Option_Menu := False;
+                  end if;
+               end if;
+
                Print_Var (P.Child, File, False);
             end if;
          end if;
@@ -401,6 +465,8 @@ package body Gtk.Glade is
       Output      : File_Type;
       Project     : String :=
         To_Ada (Get_Field (Find_Tag (N.Child, "project"), "name").all);
+      Name        : String_Ptr;
+      Class       : String_Ptr;
 
    begin
       Print_Header (N, Output);
@@ -409,50 +475,56 @@ package body Gtk.Glade is
       loop
          exit when M = null;
 
-         Create (Output);
-         Put_Line (Output, "function Create_" &
-           To_Ada (Get_Field (M, "name").all) & " return " &
-           To_Ada (Get_Field (M, "class").all) & " is");
-         Put_Line (Output, "   Cb_Id : Glib.Guint;");
-         Put_Line (Output, "   The_Accel_Group : Gtk_Accel_Group;");
-         Print_Var (M, Output);
-         New_Line (Output);
-         Put_Line (Output, "begin");
-         Print_Create_Function (M, Output, True);
-         Print_Foot_Page (M, Output);
-         New_Line;
-         Put_Line ("with Glib;");
-         Put_Line ("with Gtk; use Gtk;");
+         Name  := Get_Field (M, "name");
+         Class := Get_Field (M, "class");
 
-         --  ??? It would be nice to determine when these packages are needed
+         if Name /= null and Class /= null then
+            Create (Output);
+            Put_Line (Output, "function Create_" &
+              To_Ada (Name.all) & " return " & To_Ada (Class.all) & " is");
+            Put_Line (Output, "   Cb_Id : Glib.Guint;");
+            Put_Line (Output, "   The_Accel_Group : Gtk_Accel_Group;");
+            Print_Var (M, Output);
+            New_Line (Output);
+            Put_Line (Output, "begin");
+            Print_Create_Function (M, Output, True);
+            Print_Foot_Page (M, Output);
+            New_Line;
+            Put_Line ("with Glib;");
+            Put_Line ("with Gtk; use Gtk;");
 
-         Put_Line ("with Gdk.Types;");
-         Put_Line ("with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;");
-         Put_Line ("with Gtk.Enums;  use Gtk.Enums;");
-         Put_Line ("with Gtk.Button; use Gtk.Button;");
-         Put_Line ("with Gtk.Widget; use Gtk.Widget;");
-         Put_Line ("with Gtk.Window; use Gtk.Window;");
-         Put_Line ("with Gtk.Pixmap; use Gtk.Pixmap;");
-         Put_Line ("with Gtk.Accel_Group; use Gtk.Accel_Group;");
+            --  ??? It would be nice to determine when these packages are
+            --  needed
 
-         Put_Line ("with Callbacks_" & Project &
-           "; use Callbacks_" & Project & ";");
-         Gen_Packages (Standard_Output);
-         Reset_Packages;
-         New_Line;
-         Reset (Output, In_File);
+            Put_Line ("with Gdk.Types; use Gdk.Types;");
+            Put_Line ("with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;");
+            Put_Line ("with Gtk.Enums;  use Gtk.Enums;");
+            Put_Line ("with Gtk.Button; use Gtk.Button;");
+            Put_Line ("with Gtk.Widget; use Gtk.Widget;");
+            Put_Line ("with Gtk.Window; use Gtk.Window;");
+            Put_Line ("with Gtk.Pixmap; use Gtk.Pixmap;");
+            Put_Line ("with Gtk.Accel_Group; use Gtk.Accel_Group;");
 
-         while not End_Of_File (Output) loop
-            Get_Line (Output, Buffer, Len);
+            Put_Line ("with Callbacks_" & Project &
+              "; use Callbacks_" & Project & ";");
+            Gen_Packages (Standard_Output);
+            Reset_Packages;
+            New_Line;
+            Reset (Output, In_File);
 
-            if Len < Buffer'Length then
-               Put_Line (Buffer (1 .. Len));
-            else
-               Put (Buffer);
-            end if;
-         end loop;
+            while not End_Of_File (Output) loop
+               Get_Line (Output, Buffer, Len);
 
-         Close (Output);
+               if Len < Buffer'Length then
+                  Put_Line (Buffer (1 .. Len));
+               else
+                  Put (Buffer);
+               end if;
+            end loop;
+
+            Delete (Output);
+         end if;
+
          M := M.Next;
       end loop;
 
@@ -476,7 +548,11 @@ package body Gtk.Glade is
 
       loop
          exit when P = null;
-         Create_Widget (P);
+
+         if Get_Field (P, "class") /= null then
+            Create_Widget (P);
+         end if;
+
          P := P.Next;
       end loop;
    end Instanciate;
@@ -516,10 +592,8 @@ package body Gtk.Glade is
    end Get_Dgate;
 
 begin
-   --  SHT.Set (new String '("GtkAdjustement"),
-   --    (Gtk.Adjustment.Generate'Access, Gtk.Adjustment.Generate'Access));
-   --  SHT.Set (new String '("GtkAlignment"),
-   --    (Gtk.Alignment.Generate'Access, Gtk.Alignment.Generate'Access));
+   SHT.Set (new String '("GtkAlignment"),
+     (Gtk.Alignment.Generate'Access, Gtk.Alignment.Generate'Access));
    SHT.Set (new String '("GtkArrow"),
      (Gtk.Arrow.Generate'Access, Gtk.Arrow.Generate'Access));
    SHT.Set (new String '("GtkAspectFrame"),
@@ -536,8 +610,8 @@ begin
    --    (Gtk.Button_Box.Generate'Access, Gtk.Button_Box.Generate'Access));
    SHT.Set (new String '("GtkCalendar"),
      (Gtk.Calendar.Generate'Access, Gtk.Calendar.Generate'Access));
-   --  SHT.Set (new String '("GtkCheckButton"),
-   --    (Gtk.Check_Button.Generate'Access, Gtk.Check_Button.Generate'Access));
+   SHT.Set (new String '("GtkCheckButton"),
+     (Gtk.Check_Button.Generate'Access, Gtk.Check_Button.Generate'Access));
    SHT.Set (new String '("GtkCheckMenuItem"),
      (Gtk.Check_Menu_Item.Generate'Access,
       Gtk.Check_Menu_Item.Generate'Access));
@@ -549,8 +623,10 @@ begin
    SHT.Set (new String '("GtkColorSelectionDialog"),
      (Gtk.Color_Selection_Dialog.Generate'Access,
       Gtk.Color_Selection_Dialog.Generate'Access));
-   --  SHT.Set (new String '("GtkCombo"),
-   --    (Gtk.Combo.Generate'Access, Gtk.Combo.Generate'Access));
+   SHT.Set (new String '("GtkCombo"),
+     (Gtk.Combo.Generate'Access, Gtk.Combo.Generate'Access));
+   --  SHT.Set (new String '("GtkCtree"),
+   --    (Gtk.Ctree.Generate'Access, Gtk.Ctree.Generate'Access));
    --  SHT.Set (new String '("GtkCurve"),
    --    (Gtk.Curve.Generate'Access, Gtk.Curve.Generate'Access));
    SHT.Set (new String '("GtkDialog"),
@@ -559,8 +635,8 @@ begin
      (Gtk.Drawing_Area.Generate'Access, Gtk.Drawing_Area.Generate'Access));
    SHT.Set (new String '("GtkEditable"),
      (Gtk.Editable.Generate'Access, Gtk.Editable.Generate'Access));
-   --  SHT.Set (new String '("GtkEventBox"),
-   --    (Gtk.Event_Box.Generate'Access, Gtk.Event_Box.Generate'Access));
+   SHT.Set (new String '("GtkEventBox"),
+     (Gtk.Event_Box.Generate'Access, Gtk.Event_Box.Generate'Access));
    SHT.Set (new String '("GtkFileSelection"),
      (Gtk.File_Selection.Generate'Access, Gtk.File_Selection.Generate'Access));
    --  SHT.Set (new String '("GtkFixed"),
@@ -574,8 +650,6 @@ begin
    --    (Gtk.Gamma_Curve.Generate'Access, Gtk.Gamma_Curve.Generate'Access));
    --  SHT.Set (new String '("GtkGentry"),
    --    (Gtk.GEntry.Generate'Access, Gtk.GEntry.Generate'Access));
-   --  SHT.Set (new String '("GtkGrange"),
-   --    (Gtk.GRange.Generate'Access, Gtk.GRange.Generate'Access));
    --  SHT.Set (new String '("GtkHandleBox"),
    --    (Gtk.Handle_Box.Generate'Access, Gtk.Handle_Box.Generate'Access));
    --  SHT.Set (new String '("GtkHButtonBox"),
@@ -602,20 +676,18 @@ begin
      (Gtk.Menu_Shell.Generate'Access, Gtk.Menu_Shell.Generate'Access));
    SHT.Set (new String '("GtkNotebook"),
      (Gtk.Notebook.Generate'Access, Gtk.Notebook.Generate'Access));
-   --  SHT.Set (new String '("GtkOptionMenu"),
-   --    (Gtk.Option_Menu.Generate'Access, Gtk.Option_Menu.Generate'Access));
+   SHT.Set (new String '("GtkOptionMenu"),
+     (Gtk.Option_Menu.Generate'Access, Gtk.Option_Menu.Generate'Access));
    --  SHT.Set (new String '("GtkPaned"),
    --    (Gtk.Paned.Generate'Access, Gtk.Paned.Generate'Access));
    --  SHT.Set (new String '("GtkPixmap"),
    --    (Gtk.Pixmap.Generate'Access, Gtk.Pixmap.Generate'Access));
    SHT.Set (new String '("GtkPreview"),
      (Gtk.Preview.Generate'Access, Gtk.Preview.Generate'Access));
-   --  SHT.Set (new String '("GtkProgress"),
-   --    (Gtk.Progress.Generate'Access, Gtk.Progress.Generate'Access));
-   --  SHT.Set (new String '("GtkProgressBar"),
-   --    (Gtk.Progress_Bar.Generate'Access, Gtk.Progress_Bar.Generate'Access));
-   --  SHT.Set (new String '("GtkRadioButton"),
-   --    (Gtk.Radio_Button.Generate'Access, Gtk.Radio_Button.Generate'Access));
+   SHT.Set (new String '("GtkProgressBar"),
+     (Gtk.Progress_Bar.Generate'Access, Gtk.Progress_Bar.Generate'Access));
+   SHT.Set (new String '("GtkRadioButton"),
+     (Gtk.Radio_Button.Generate'Access, Gtk.Radio_Button.Generate'Access));
    --  SHT.Set (new String '("GtkRadioMenuItem"),
    --    (Gtk.Radio_Menu_Item.Generate'Access,
    --     Gtk.Radio_Menu_Item.Generate'Access));
@@ -625,17 +697,23 @@ begin
      (Gtk.Ruler.Generate'Access, Gtk.Ruler.Generate'Access));
    SHT.Set (new String '("GtkVRuler"),
      (Gtk.Ruler.Generate'Access, Gtk.Ruler.Generate'Access));
-   --  SHT.Set (new String '("GtkScale"),
-   --    (Gtk.Scale.Generate'Access, Gtk.Scale.Generate'Access));
-   --  SHT.Set (new String '("GtkScrollbar"),
-   --    (Gtk.Scrollbar.Generate'Access, Gtk.Scrollbar.Generate'Access));
+   SHT.Set (new String '("GtkHScale"),
+     (Gtk.Scale.Generate'Access, Gtk.Scale.Generate'Access));
+   SHT.Set (new String '("GtkVScale"),
+     (Gtk.Scale.Generate'Access, Gtk.Scale.Generate'Access));
+   SHT.Set (new String '("GtkHScrollbar"),
+     (Gtk.Scrollbar.Generate'Access, Gtk.Scrollbar.Generate'Access));
+   SHT.Set (new String '("GtkVScrollbar"),
+     (Gtk.Scrollbar.Generate'Access, Gtk.Scrollbar.Generate'Access));
    SHT.Set (new String '("GtkScrolledWindow"),
      (Gtk.Scrolled_Window.Generate'Access,
       Gtk.Scrolled_Window.Generate'Access));
-   --  SHT.Set (new String '("GtkSeparator"),
-   --    (Gtk.Separator.Generate'Access, Gtk.Separator.Generate'Access));
-   --  SHT.Set (new String '("GtkSpinButton"),
-   --    (Gtk.Spin_Button.Generate'Access, Gtk.Spin_Button.Generate'Access));
+   SHT.Set (new String '("GtkHSeparator"),
+     (Gtk.Separator.Generate'Access, Gtk.Separator.Generate'Access));
+   SHT.Set (new String '("GtkVSeparator"),
+     (Gtk.Separator.Generate'Access, Gtk.Separator.Generate'Access));
+   SHT.Set (new String '("GtkSpinButton"),
+     (Gtk.Spin_Button.Generate'Access, Gtk.Spin_Button.Generate'Access));
    SHT.Set (new String '("GtkStatusbar"),
      (Gtk.Status_Bar.Generate'Access, Gtk.Status_Bar.Generate'Access));
    SHT.Set (new String '("GtkTable"),
@@ -644,9 +722,9 @@ begin
      (Gtk.Text.Generate'Access, Gtk.Text.Generate'Access));
    --  SHT.Set (new String '("GtkTipsQuery"),
    --    (Gtk.Tips_Query.Generate'Access, Gtk.Tips_Query.Generate'Access));
-   --  SHT.Set (new String '("GtkToggleButton"),
-   --    (Gtk.Toggle_Button.Generate'Access,
-   --     Gtk.Toggle_Button.Generate'Access));
+   SHT.Set (new String '("GtkToggleButton"),
+     (Gtk.Toggle_Button.Generate'Access,
+      Gtk.Toggle_Button.Generate'Access));
    SHT.Set (new String '("GtkToolbar"),
      (Gtk.Toolbar.Generate'Access, Gtk.Toolbar.Generate'Access));
    --  SHT.Set (new String '("GtkTooltips"),
