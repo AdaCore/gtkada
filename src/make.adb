@@ -110,7 +110,6 @@ with Gtkada;
 with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Color_Context;
-with Gdk.Cursor.Pixmap;
 with Gdk.Cursor;
 with Gdk.Drawable;
 with Gdk.Event;
