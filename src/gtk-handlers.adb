@@ -60,25 +60,7 @@ package body Gtk.Handlers is
       Slot_Object : System.Address := System.Null_Address) return Handler_Id;
    --  Internal function used to connect the signal.
 
-   type Destroy_Data_Record is record
-      Id, Id2, Id3 : Handler_Id;
-      Obj1, Obj2   : System.Address;
-   end record;
-
-   type Destroy_Data_Access is access Destroy_Data_Record;
-   procedure Free is new Unchecked_Deallocation
-     (Destroy_Data_Record, Destroy_Data_Access);
-
-   procedure Destroy_Func
-     (Object : System.Address;
-      Data   : Destroy_Data_Access);
-   pragma Convention (C, Destroy_Func);
-   --  Handler used to disconnect Object from any signal where it was
-   --  connected with Object_Connect and given as the slot object.
-   --  Otherwise, a handler could be called with Object as the parameter when
-   --  it has been destroyed.
-
-   procedure Disconnect_Internal (Obj : System.Address; Id : Handler_Id);
+   procedure Disconnect_Internal (Obj : System.Address; Id : Signal_Id);
    pragma Import (C, Disconnect_Internal, "g_signal_handler_disconnect");
    --  Internal version of Disconnect
 
@@ -96,8 +78,6 @@ package body Gtk.Handlers is
    -- Glib.Closure small binding --
    --------------------------------
 
-   type GClosure is new Glib.C_Proxy;
-
    function CClosure_New
      (Callback  : System.Address;
       User_Data : System.Address;
@@ -110,6 +90,10 @@ package body Gtk.Handlers is
    function Get_Data (Closure : GClosure) return System.Address;
    pragma Import (C, Get_Data, "ada_gclosure_get_data");
 
+   procedure Watch_Closure (Object : System.Address; Closure : GClosure);
+   pragma Import (C, Watch_Closure, "g_object_watch_closure");
+   --  The closure will be destroyed when Object is destroyed.
+
    --------------------
    -- Type_Of_Return --
    --------------------
@@ -119,11 +103,11 @@ package body Gtk.Handlers is
       return Glib.GType
    is
       Q  : Signal_Query;
-      Id : constant Handler_Id :=
+      Id : constant Signal_Id :=
         Lookup (Get_Type (Object), Signal & ASCII.NUL);
 
    begin
-      if Id = Invalid_Handler_Id or else Id = Null_Handler_Id then
+      if Id = Invalid_Signal_Id or else Id = Null_Signal_Id then
          return GType_Invalid;
       else
          Query (Id, Q);
@@ -140,33 +124,15 @@ package body Gtk.Handlers is
       return Guint
    is
       Q : Signal_Query;
-      Id : Handler_Id := Lookup (Get_Type (Object), Signal & ASCII.Nul);
+      Id : Signal_Id := Lookup (Get_Type (Object), Signal & ASCII.Nul);
    begin
-      if Id = Invalid_Handler_Id then
+      if Id = Invalid_Signal_Id then
          return 0;
       else
          Query (Id, Q);
          return Params (Q)'Length;
       end if;
    end Count_Arguments;
-
-   ------------------
-   -- Destroy_Func --
-   ------------------
-
-   procedure Destroy_Func
-     (Object : System.Address; Data : Destroy_Data_Access)
-   is
-      D : Destroy_Data_Access := Data;
-   begin
-      --  Ensure that this function is only called once by disconnecting
-      --  all associated connections to this handler.
-
-      Disconnect_Internal (Data.Obj1, Data.Id);
-      Disconnect_Internal (Data.Obj1, Data.Id2);
-      Disconnect_Internal (Data.Obj2, Data.Id3);
-      Free (D);
-   end Destroy_Func;
 
    -----------------------
    -- Do_Signal_Connect --
@@ -187,7 +153,7 @@ package body Gtk.Handlers is
          Signal_Id : Guint;
          Detail    : GQuark := Unknown_Quark;
          Closure   : GClosure;
-         After     : Gint := 0) return Handler_Id;
+         After     : Gint := 0) return Signal_Id;
       pragma Import (C, Internal, "g_signal_connect_closure_by_id");
 
       function Get_Type (Object : System.Address) return GType;
@@ -195,58 +161,51 @@ package body Gtk.Handlers is
 
       use type System.Address;
       Id      : Handler_Id;
-      Data    : Destroy_Data_Access;
-      Closure : GClosure;
-      Signal_Id : Guint;
+      Signal  : Guint;
 
    begin
-      Closure := CClosure_New (Handler, Func_Data, Destroy);
-      Set_Marshal (Closure, Marshaller);
-      Signal_Id := Signal_Lookup (Name & ASCII.NUL, Get_Type (Object));
+      --  When the handler is destroyed, for instance because Object is
+      --  destroyed, then the closure is destroyed as well, and Destroy gets
+      --  called.
+      --  The closure is invoked when the signal is emitted. As a result,
+      --  Handler is called, with Func_Data as a parameter.
 
-      pragma Assert (Signal_Id /= 0,
+      Id.Closure := CClosure_New (Handler, Func_Data, Destroy);
+      Set_Marshal (Id.Closure, Marshaller);
+      Signal := Signal_Lookup (Name & ASCII.NUL, Get_Type (Object));
+
+      pragma Assert (Signal /= 0,
                      "Trying to connect to unknown signal");
 
-      Id := Internal
+      Id.Signal := Internal
         (Get_Object (Object),
-         Signal_Id => Signal_Id,
-         Closure => Closure, After => Boolean'Pos (After));
+         Signal_Id => Signal,
+         Closure   => Id.Closure,
+         After     => Boolean'Pos (After));
+
+      --  If we have connected with Object_Connect, we want to automatically
+      --  disconnect the signal as well.
+      --  ??? In fact, we should provide a general, high-level function, to
+      --  indicate that a handler should be destroyed when a specific object is
+      --  destroyed.
 
       if Slot_Object /= System.Null_Address then
-         --  The destroy signal doesn't exist when we are connect a GObject
-         Signal_Id := Signal_Lookup
-           ("destroy" & ASCII.NUL, Get_Type (Object));
-
-         if Signal_Id /= 0 then
-            Data := new Destroy_Data_Record;
-            Data.Id := Id;
-            Data.Obj1 := Get_Object (Object);
-            Data.Obj2 := Slot_Object;
-
-            --  Destroy_Func will remove the following two connections when
-            --  called the first time, so that Destroy_Func is only called
-            --  once.
-
-            Closure := CClosure_New
-              (Destroy_Func'Address, Data.all'Address, System.Null_Address);
-            Data.Id2 := Internal
-              (Instance => Get_Object (Object),
-               Signal_Id => Signal_Lookup
-                 ("destroy" & ASCII.NUL, Get_Type (Object)),
-               Closure => Closure);
-
-            Closure := CClosure_New
-              (Destroy_Func'Address, Data.all'Address, System.Null_Address);
-            Data.Id3 := Internal
-              (Instance => Slot_Object,
-               Signal_Id =>
-                 Signal_Lookup ("destroy" & ASCII.NUL, Get_Type (Slot_Object)),
-               Closure => Closure);
-         end if;
+         Watch_Closure (Slot_Object, Id.Closure);
       end if;
 
       return Id;
    end Do_Signal_Connect;
+
+   ---------------
+   -- Add_Watch --
+   ---------------
+
+   procedure Add_Watch
+     (Id : Handler_Id; Object : access Glib.Object.GObject_Record'Class) is
+   begin
+      pragma Assert (Id.Closure /= null);
+      Watch_Closure (Get_Object (Object), Id.Closure);
+   end Add_Watch;
 
    ---------------------
    -- Return_Callback --
@@ -1635,7 +1594,7 @@ package body Gtk.Handlers is
      (Object : access Glib.Object.GObject_Record'Class;
       Id     : Handler_Id) is
    begin
-      Disconnect_Internal (Obj => Get_Object (Object), Id  => Id);
+      Disconnect_Internal (Obj => Get_Object (Object), Id  => Id.Signal);
    end Disconnect;
 
    -----------------------

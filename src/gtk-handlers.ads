@@ -147,8 +147,14 @@ package Gtk.Handlers is
 
    pragma Elaborate_Body;
 
-   subtype Handler_Id is Glib.Handler_Id;
+   type GClosure is new Glib.C_Proxy;
+
+   type Handler_Id is record
+      Signal : Signal_Id;
+      Closure : GClosure;
+   end record;
    --  This uniquely identifies a connection widget<->signal.
+   --  Closure is an internal data, that you should use.
 
    ---------------------------------------------------------
    --  These handlers should return a value
@@ -794,6 +800,15 @@ package Gtk.Handlers is
    ------------------------------------------------------------------
    --  General functions
    ------------------------------------------------------------------
+
+   procedure Add_Watch
+     (Id : Handler_Id; Object : access Glib.Object.GObject_Record'Class);
+   --  Make sure that when Object is destroyed, the handler Id is also
+   --  destroyed. This function should mostly be used in cases where you use a
+   --  User_Data that is Object. If you don't destroy the callback at the same
+   --  time, then the next time the callback is called it will try to access
+   --  some invalid memory (Object being destroyed), and you will likely get a
+   --  Storage_Error.
 
    procedure Disconnect
      (Object : access Glib.Object.GObject_Record'Class;
