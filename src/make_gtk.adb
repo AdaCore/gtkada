@@ -185,7 +185,8 @@ with Gtk.Extra.Border_Combo;
 with Gtk.Extra.Color_Combo;
 with Gtk.Extra.Combo_Box;
 with Gtk.Extra.Font_Combo;
---  XXX ???
+with Gtk.Extra.PsFont;
+--  disabled for now, until these widgets have been ported to Gtk+ 2.0:
 --  with Gtk.Extra.Check_Item;
 --  with Gtk.Extra.Item_Entry;
 --  with Gtk.Extra.Plot;
@@ -197,7 +198,6 @@ with Gtk.Extra.Font_Combo;
 --  with Gtk.Extra.Plot_3D;
 --  with Gtk.Extra.Plot_Surface;
 --  with Gtk.Extra.Plot_Ps;
-with Gtk.Extra.PsFont;
 --  with Gtk.Extra.Sheet;
 
 with Gtkada.Canvas;
@@ -205,6 +205,7 @@ with Gtkada.Dialogs;
 with Gtkada.File_Selection;
 with Gtkada.Handlers;
 with Gtkada.Intl;
+with Gtkada.MDI;
 with Gtkada.Pixmaps;
 with Gtkada.Types;
 
