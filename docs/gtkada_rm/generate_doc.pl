@@ -401,7 +401,7 @@ foreach $source_file (@source_files) {
 		    }
 		}
 		if ($return eq "") {
-		    $profile .= ";";
+		    $profile .= ";" if (scalar (@params) != 0);
 		} else {
 		    $profile .= "\n" . " " x 3 if (scalar (@params) > 0);
 		    $profile .=  "\@b{return} $return;";
