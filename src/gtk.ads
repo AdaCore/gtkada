@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +28,12 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
+
+with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
+with Ada.Text_IO; use Ada.Text_IO;
+pragma Warnings (Off, Glib.Glade);
+pragma Warnings (Off, Glib_XML);
+pragma Warnings (Off, Ada.Text_IO);
 
 package Gtk is
 
