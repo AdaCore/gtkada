@@ -32,6 +32,9 @@ with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 package body Glib.Unicode is
 
+   procedure C_Free (S : Interfaces.C.Strings.chars_ptr);
+   pragma Import (C, C_Free, "free");
+
    -------------------
    -- UTF8_Validate --
    -------------------
@@ -144,9 +147,6 @@ package body Glib.Unicode is
       function Internal (Str : UTF8_String) return ICS.chars_ptr;
       pragma Import (C, Internal, "g_utf8_strdown");
 
-      procedure C_Free (S : ICS.chars_ptr);
-      pragma Import (C, C_Free, "free");
-
       S : constant chars_ptr := Internal (Str & ASCII.NUL);
       Result : constant String := Value (S);
    begin
@@ -162,10 +162,10 @@ package body Glib.Unicode is
       function Internal (Str : UTF8_String) return ICS.chars_ptr;
       pragma Import (C, Internal, "g_utf8_strup");
 
-      S : chars_ptr := Internal (Str & ASCII.NUL);
+      S : constant chars_ptr := Internal (Str & ASCII.NUL);
       Result : constant String := Value (S);
    begin
-      Free (S);
+      C_Free (S);
       return Result;
    end UTF8_Strup;
 
