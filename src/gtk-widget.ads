@@ -104,6 +104,10 @@ package Gtk.Widget is
                        New_Parent : in Gtk_Widget'Class);
    --  mapping: Reparent gtkwidget.h gtk_widget_reparent
 
+   function Get_Parent (Widget : in Gtk_Widget'Class)
+                        return Gtk_Widget'Class;
+   --  mapping: Get_Parent gtkwidget.h GtkWidget->parent
+
    procedure Popup (Widget : in out Gtk_Widget'Class;
                     X, Y : in Gint);
    --  mapping: Popup gtkwidget.h gtk_widget_popup

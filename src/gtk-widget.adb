@@ -88,6 +88,21 @@ package body Gtk.Widget is
       return Internal (Get_Object (Widget));
    end Get_Events;
 
+   ----------------
+   -- Get_Parent --
+   ----------------
+
+   function Get_Parent (Widget : in Gtk_Widget'Class)
+                        return Gtk_Widget'Class
+   is
+      function Internal (Widget : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_widget_get_parent");
+      Parent : Gtk_Widget;
+   begin
+      Set_Object (Parent, Internal (Get_Object (Widget)));
+      return Parent;
+   end Get_Parent;
+
    --------------------
    --  Get_Toplevel  --
    --------------------
