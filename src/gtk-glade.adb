@@ -310,7 +310,8 @@ package body Gtk.Glade is
 
          if P /= null then
             Put_Line ("   Gtk_New (" & To_Ada (P.all) & ");");
-            Put_Line ("   Show_All (" & To_Ada (P.all) & ");");
+            Put_Line ("   Widget.Show_All (Gtk_Widget (" & To_Ada (P.all) &
+              "));");
          end if;
 
          M := M.Next;
@@ -612,7 +613,7 @@ package body Gtk.Glade is
       Instanciate (Parse (File));
    end Instanciate;
 
-   procedure Instanciate (N : Node_Ptr) is
+   procedure Instanciate (N : Node_Ptr; Display : Boolean := True) is
       P : Node_Ptr;
    begin
       P := N.Child.Next;
@@ -621,7 +622,7 @@ package body Gtk.Glade is
          exit when P = null;
 
          if Get_Field (P, "class") /= null then
-            Create_Widget (P);
+            Create_Widget (P, Display);
          end if;
 
          P := P.Next;
