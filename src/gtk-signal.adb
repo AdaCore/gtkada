@@ -350,6 +350,9 @@ package body Gtk.Signal is
            (Data_Type_Record, Data_Type_Access);
          D : Data_Type_Access := Convert (Data);
       begin
+         Ref (D.Data);
+         --  Cf Connect: we did not keep a reference on Slot_Object, so we
+         --  certainly do not want to suppress what we did not created.
          Internal (D);
       end Free;
 
@@ -384,7 +387,13 @@ package body Gtk.Signal is
          D : Data_Type_Access
            := new Data_Type_Record'(Data => Widget_Type (Slot_Object),
                                     Func => Func);
+         Tmp : Widget_Type := Widget_Type (Slot_Object);
       begin
+         Unref (Tmp);
+         --  To avoid some circular dependencies when Obj can not be
+         --  destroyed while Slot_Object is not destroyed, and the callback
+         --  is not removed while Obj is not destroyed (cf create_spin.adb in
+         --  testgtk), we do not want to keep a reference for Slot_Object.
          return Do_Signal_Connect (Obj,
                                    Name,
                                    Marshaller'Address,
