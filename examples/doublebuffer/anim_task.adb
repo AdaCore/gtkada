@@ -100,7 +100,9 @@ package body Anim_Task is
       end Area_Task;
 
    begin
+      Gdk.Threads.Enter;
       Gtk.Main.Main;
+      Gdk.Threads.Leave;
    end Animate;
 
    ----------
