@@ -126,6 +126,42 @@ package body Gtk.CTree is
    end Expand_To_Depth;
 
 
+   ------------
+   --  Find  --
+   ------------
+
+   function Find (Ctree : access Gtk_Ctree_Record;
+                  Node  : in     Gtk_Ctree_Node;
+                  Child : in     Gtk_Ctree_Node) return Boolean is
+      function Internal (Ctree : in System.Address;
+                         Node  : in System.Address;
+                         Child : in System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_ctree_find");
+   begin
+      return To_Boolean (Internal (Get_Object (Ctree),
+                                   Get_Object (Node),
+                                   Get_Object (Child)));
+   end Find;
+
+
+   ---------------------
+   --  Find_Node_Ptr  --
+   ---------------------
+
+   function Find_Node_Ptr (Ctree     : access Gtk_Ctree_Record;
+                           Ctree_Row : in     Gtk_Ctree_Row)
+     return Gtk_Ctree_Node is
+      function Internal (Ctree     : in System.Address;
+                         Ctree_Row : in System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_ctree_find_node_ptr");
+      Result : Gtk_Ctree_Node;
+   begin
+      Set_Object (Result, Internal (Get_Object (Ctree),
+                                    Get_Object (Ctree_Row)));
+      return Result;
+   end Find_Node_Ptr;
+
+
    --------------------------
    --  Get_Expander_Style  --
    --------------------------
@@ -1229,6 +1265,98 @@ package body Gtk.CTree is
       Internal (Get_Object (Ctree), Get_Object (Node));
    end Unselect_Recursive;
 
+   -------------------
+   --  Ctree_Gnode  --
+   -------------------
+
+   package body Ctree_Gnode is
+
+      type Ctree_Gnode_Func_Record is
+         record
+            Func : Gtk_Ctree_Gnode_Func;
+            Data : Data_Type_Access;
+         end record;
+      type Ctree_Gnode_Func_Record_Access is
+        access all Ctree_Gnode_Func_Record;
+
+      function Convert is new Unchecked_Conversion
+        (System.Address, Ctree_Gnode_Func_Record_Access);
+
+      function C_Ctree_Gnode_Func (C_Ctree : in System.Address;
+                                   Depth : in Guint;
+                                   C_Gnode : in System.Address;
+                                   C_Cnode : in System.Address;
+                                   C_Data  : in System.Address)
+        return Gboolean;
+      pragma Convention (C, C_Ctree_Gnode_Func);
+
+      --------------------------
+      --  C_Ctree_Gnode_Func  --
+      --------------------------
+
+      function C_Ctree_Gnode_Func (C_Ctree : in System.Address;
+                                   Depth : in Guint;
+                                   C_Gnode : in System.Address;
+                                   C_Cnode : in System.Address;
+                                   C_Data  : in System.Address)
+        return Gboolean is
+         Stub : Gtk.Ctree.Gtk_Ctree_Record;
+         Ctree : constant Gtk.Ctree.Gtk_Ctree :=
+           Gtk.Ctree.Gtk_Ctree (Get_User_Data (C_Ctree, Stub));
+         Gnode : Glib.Gnodes.Gnode;
+         Cnode : Gtk_Ctree_Node;
+         Data_Access : constant Ctree_Gnode_Func_Record_Access :=
+           Convert (C_Data);
+      begin
+         Glib.Gnodes.Set_Object (Gnode, C_Gnode);
+         Set_Object (Cnode, C_Cnode);
+         return To_Gboolean (Data_Access.Func (Ctree, Depth, Gnode,
+                                               Cnode, Data_Access.Data));
+      end C_Ctree_Gnode_Func;
+
+
+      -----------------------
+      --  Export_To_Gnode  --
+      -----------------------
+
+      function Export_To_Gnode (Ctree   : access Gtk_Ctree_Record'Class;
+                                Parent  : in     Glib.Gnodes.Gnode;
+                                Sibling : in     Glib.Gnodes.Gnode;
+                                Node    : in     Gtk_Ctree_Node;
+                                Func    : in     Gtk_Ctree_Gnode_Func;
+                                Data    : in     Data_Type_Access)
+        return Glib.Gnodes.Gnode is
+         function Internal (Ctree   : in System.Address;
+                            Parent  : in System.Address;
+                            Sibling : in System.Address;
+                            Node    : in System.Address;
+                            Func    : in System.Address;
+                            Data    : in System.Address)
+           return System.Address;
+         pragma Import (C, Internal, "gtk_ctree_export_to_gnode");
+         C_Func_Address : System.Address;
+         Local_Data : constant Ctree_Gnode_Func_Record := (Func => Func,
+                                                           Data => Data);
+         Result : Glib.Gnodes.Gnode;
+      begin
+         if Func = null then
+            C_Func_Address := System.Null_Address;
+         else
+            C_Func_Address := C_Ctree_Gnode_Func'Address;
+         end if;
+         Glib.Gnodes.Set_Object (Result,
+                                 Internal (Get_Object (Ctree),
+                                           Glib.Gnodes.Get_Object (Parent),
+                                           Glib.Gnodes.Get_Object (Sibling),
+                                           Get_Object (Node),
+                                           C_Func_Address,
+                                           Local_Data'Address));
+         return Result;
+      end Export_To_Gnode;
+
+   end Ctree_Gnode;
+
+
    ---------------
    -- Row_Data --
    ---------------
@@ -1328,6 +1456,67 @@ package body Gtk.CTree is
       end Node_Set_Row_Data;
 
 
+      --------------------
+      -- Post_Recursive --
+      --------------------
+
+      procedure Post_Recursive (Ctree : access Gtk_Ctree_Record'Class;
+                                Node  : in     Gtk_Ctree_Node;
+                                Func  : in     Gtk_Ctree_Func;
+                                Data  : in     Data_Type_Access) is
+         procedure Internal (Ctree : in System.Address;
+                             Node  : in System.Address;
+                             Func  : in System.Address;
+                             Data  : in System.Address);
+         pragma Import (C, Internal, "gtk_ctree_post_recursive");
+         C_Func_Address : System.Address;
+         Local_Data : constant Ctree_Func_Record := (Func => Func,
+                                                     Data => Data);
+      begin
+         if Func = null then
+            C_Func_Address := System.Null_Address;
+         else
+            C_Func_Address := C_Ctree_Func'Address;
+         end if;
+         Internal (Get_Object (Ctree),
+                   Get_Object (Node),
+                   C_Ctree_Func'Address,
+                   Data => Local_Data'Address);
+      end Post_Recursive;
+
+
+      -----------------------------
+      -- Post_Recursive_To_Depth --
+      -----------------------------
+
+      procedure Post_Recursive_To_Depth (Ctree : access Gtk_Ctree_Record'Class;
+                                         Node  : in     Gtk_Ctree_Node;
+                                         Depth : in     Gint;
+                                         Func  : in     Gtk_Ctree_Func;
+                                         Data  : in     Data_Type_Access) is
+         procedure Internal (Ctree : in System.Address;
+                             Node  : in System.Address;
+                             Depth : in Gint;
+                             Func  : in System.Address;
+                             Data  : in System.Address);
+         pragma Import (C, Internal, "gtk_ctree_post_recursive_to_depth");
+         C_Func_Address : System.Address;
+         Local_Data : constant Ctree_Func_Record := (Func => Func,
+                                                     Data => Data);
+      begin
+         if Func = null then
+            C_Func_Address := System.Null_Address;
+         else
+            C_Func_Address := C_Ctree_Func'Address;
+         end if;
+         Internal (Get_Object (Ctree),
+                   Get_Object (Node),
+                   Depth,
+                   C_Ctree_Func'Address,
+                   Data => Local_Data'Address);
+      end Post_Recursive_To_Depth;
+
+
       -------------------
       -- Pre_Recursive --
       -------------------
@@ -1355,6 +1544,38 @@ package body Gtk.CTree is
                    C_Ctree_Func'Address,
                    Data => Local_Data'Address);
       end Pre_Recursive;
+
+      ----------------------------
+      -- Pre_Recursive_To_Depth --
+      ----------------------------
+
+      procedure Pre_Recursive_To_Depth (Ctree : access Gtk_Ctree_Record'Class;
+                                        Node  : in     Gtk_Ctree_Node;
+                                        Depth : in     Gint;
+                                        Func  : in     Gtk_Ctree_Func;
+                                        Data  : in     Data_Type_Access) is
+         procedure Internal (Ctree : in System.Address;
+                             Node  : in System.Address;
+                             Depth : in Gint;
+                             Func  : in System.Address;
+                             Data  : in System.Address);
+         pragma Import (C, Internal, "gtk_ctree_pre_recursive_to_depth");
+         C_Func_Address : System.Address;
+         Local_Data : constant Ctree_Func_Record := (Func => Func,
+                                                     Data => Data);
+      begin
+         if Func = null then
+            C_Func_Address := System.Null_Address;
+         else
+            C_Func_Address := C_Ctree_Func'Address;
+         end if;
+         Internal (Get_Object (Ctree),
+                   Get_Object (Node),
+                   Depth,
+                   C_Ctree_Func'Address,
+                   Data => Local_Data'Address);
+      end Pre_Recursive_To_Depth;
+
 
    end Row_Data;
 
