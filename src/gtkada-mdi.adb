@@ -3830,10 +3830,17 @@ package body Gtkada.MDI is
 
                   case State is
                      when Docked =>
-                        Size_Allocate (Child,
-                                       (-1, -1,
-                                        Allocation_Int (Width),
-                                        Allocation_Int (Height)));
+                        --  Give a minimal size to the child. If we give it the
+                        --  real size, with Set_Size_Request, this forces a
+                        --  minimal size for the MDI window. If we give it a
+                        --  minimal size with Size_Allocate, then the buttons
+                        --  in the title bar will not be shown in the size is
+                        --  smaller than the natural size of the child.
+                        --  If we don't give it a size at all, it seems we get
+                        --  random Constraint_Errors when resizing the MDI
+                        --  interactively.
+                        Size_Allocate
+                          (Child, (-1, -1, 1, 1));
                      when Floating | Normal =>
                         Set_Size_Request (Child, Gint (Width), Gint (Height));
                      when Iconified =>
