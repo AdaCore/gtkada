@@ -128,13 +128,11 @@ gtk_gl_area_share_new (int *attrlist, GtkGLArea *share)
 
   /* use colormap and visual suitable for OpenGL rendering */
   gtk_widget_push_colormap(gdk_colormap_new(visual,TRUE));
-  gtk_widget_push_visual(visual);
   
   gl_area = gtk_type_new (gtk_gl_area_get_type());
   gl_area->glcontext = glcontext;
 
   /* pop back defaults */
-  gtk_widget_pop_visual();
   gtk_widget_pop_colormap();
 
 #else
