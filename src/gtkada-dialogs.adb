@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --     Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet      --
---               Copyright (C) 2001-2003 ACT-Europe                  --
+--               Copyright (C) 2001-2004 ACT-Europe                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,6 +30,8 @@
 with Glib;              use Glib;
 with Gdk.Pixmap;        use Gdk.Pixmap;
 with Gdk.Color;         use Gdk.Color;
+with Gdk.Event;         use Gdk.Event;
+with Gdk.Window;        use Gdk.Window;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Dialog;        use Gtk.Dialog;
 with Gtk.Enums;         use Gtk.Enums;
@@ -105,6 +107,14 @@ package body Gtkada.Dialogs is
    begin
       if Parent = null then
          Set_Position (Dialog, Win_Pos_Mouse);
+
+      elsif (Get_State (Get_Window (Parent))
+             and Window_State_Iconified) /= 0
+      then
+         --  If the parent is not visible, do not center the dialog on it,
+         --  let the window manager decide the position instead.
+
+         Set_Position (Dialog, Win_Pos_None);
       end if;
 
       for J in Button_Range loop
