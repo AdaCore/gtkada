@@ -1,9 +1,9 @@
-EXEC=contextual
+EXEC=contextual banner toggle
 
 all: ${EXEC}
 
-contextual::
-	gnatmake -g contextual `gtkada-config`
+${EXEC}::
+	gnatmake -g $@ `gtkada-config`
 
 clean::
 	${RM} *.o *.ali b~* ${EXEC}

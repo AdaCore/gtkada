@@ -27,8 +27,8 @@ procedure Contextual is
    end Popup_Menu_Handler;
 
 
-   Menu   : Gtk_Menu;
-   Win    : Gtk_Window;
+   Menu  : Gtk_Menu;
+   Win   : Gtk_Window;
    Item  : Gtk_Menu_Item;
 begin
    Gtk.Main.Init;
