@@ -381,6 +381,9 @@ package Gtk.Text_Buffer is
    --  which can be pretty inefficient since the temporarily-selected region
    --  will force stuff to be recomputed. This function moves them as a unit,
    --  which can be optimized.
+   --
+   --  If you want to get the position of the cursor, the simplest way is
+   --      Get_Iter_At_Mark (Buffer, Iter, Get_Insert (Buffer));
 
    --  gtk_text_buffer_create_tag not bound: variable number of arguments
    --  ??? Discuss this with the Gtk+ team.
