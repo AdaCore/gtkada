@@ -58,5 +58,45 @@ package body Gdk.Bitmap is
       Internal (Get_Object (GC), Get_Object (Mask));
    end Set_Clip_Mask;
 
+   -------------
+   -- Gdk_New --
+   -------------
+
+   procedure Gdk_New (Bitmap : out Gdk_Bitmap;
+                      Window : in  Gdk.Window.Gdk_Window'Class;
+                      Width  : in  Gint;
+                      Height : in  Gint) is
+      function Internal (Window : in System.Address;
+                         Width  : in Gint;
+                         Height : in Gint;
+                         Depth  : in Gint) return System.Address;
+      pragma Import (C, Internal, "gdk_pixmap_new");
+   begin
+      Set_Object (Bitmap, Internal (Get_Object (Window),
+                                    Width, Height, 1));
+
+   end Gdk_New;
+
+   -----------------
+   -- Null_Bitmap --
+   -----------------
+
+   function Null_Bitmap return Gdk_Bitmap is
+      Bitmap : Gdk_Bitmap;
+   begin
+      return Bitmap;
+   end Null_Bitmap;
+
+   ------------------
+   -- Unref_Bitmap --
+   ------------------
+
+   procedure Unref_Bitmap (Bitmap : in out Gdk_Bitmap) is
+      procedure Internal (Pixmap : in System.Address);
+      pragma Import (C, Internal, "gdk_bitmap_unref");
+   begin
+      Internal (Get_Object (Bitmap));
+      Set_Object (Bitmap, System.Null_Address);
+   end Unref_Bitmap;
 
 end Gdk.Bitmap;
