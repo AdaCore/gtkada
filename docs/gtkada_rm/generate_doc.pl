@@ -136,7 +136,12 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 		       "gtkclist.h/fake_unselect_all"    => 0,
 		       "gtkclist.h/set_cell_contents"    => 0,
 		       "gtkclist.h/resync_selection"     => 0,
-		       "gtkcheckitem.h/draw_indicator"   => 0
+		       "gtkcheckitem.h/draw_indicator"   => 0,
+		       "gtkeditable.h/set_position"      => 0,
+		       "gtkeditable.h/set_editable"      => 0,
+		       "gtkeditable.h/update_text"       => 0,
+		       "gtkeditable.h/get_chars"         => 0,
+		       "gtkeditable.h/set_selection"     => 0
 		       );
 %package_from_type = ("Gtk_Plot"         => "Gtk.Extra.Plot",
 		      "Gtk_Check_Item"   => "Gtk.Extra.Check_Item",
