@@ -21,7 +21,7 @@ while test $# -gt 0; do
 
   case $1 in
     -h|--help)
-	echo $(usage)
+	echo ${usage}
         exit 1
         ;;
     --prefix)
