@@ -31,8 +31,10 @@ pragma Warnings (Off);
 with Glib.Enums;
 with Glib.Glist;
 with Glib.Gnodes;
+with Glib.GObjects;
 with Glib.GSlist;
 with Glib.Module;
+with Glib.Type_Conversion_Hooks;
 with Glib.Values;
 with Glib.XML;
 
@@ -60,7 +62,6 @@ with Gdk.Window;
 with Gdk.Window_Attr;
 
 with Gtk.Type_Conversion;
-with Gtk.Type_Conversion_Hooks;
 with Gtk.Accel_Group;
 with Gtk.Accel_Label;
 with Gtk.Adjustment;
