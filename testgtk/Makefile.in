@@ -12,6 +12,7 @@ SHELL = /bin/sh
 target  = testgtk
 src_dir = ../src
 
+CC = @CC@
 GTKADA_CONFIG=gtkada-config
 GNATFLAGS = @CFLAGS@ -gnata
 GNATFLAGS_DEVEL = @CFLAGS@ -g -gnatawu
