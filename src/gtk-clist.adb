@@ -1493,6 +1493,28 @@ package body Gtk.Clist is
    end Set_Cell_Contents;
 
    --------------
+   -- Get_Rows --
+   --------------
+
+   function Get_Rows (Clist : access Gtk_Clist_Record) return Gint is
+      function Internal (Clist : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_clist_get_rows");
+   begin
+      return Internal (Get_Object (Clist));
+   end Get_Rows;
+
+   -----------------
+   -- Get_Columns --
+   -----------------
+
+   function Get_Columns (Clist : access Gtk_Clist_Record) return Gint is
+      function Internal (Clist : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_clist_get_columns");
+   begin
+      return Internal (Get_Object (Clist));
+   end Get_Columns;
+
+   --------------
    -- Row_Data --
    --------------
 

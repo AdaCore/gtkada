@@ -294,6 +294,9 @@ package Gtk.Clist is
    -- Columns --
    -------------
 
+   function Get_Columns (Clist : access Gtk_Clist_Record) return Gint;
+   --  Return the number of columns in the clist.
+
    procedure Column_Titles_Hide (Clist : access Gtk_Clist_Record);
    --  Hide the column titles for the list.
    --  This is the default behavior if no column titles were given when the
@@ -367,6 +370,10 @@ package Gtk.Clist is
       Column  : in Gint;
       Visible : in Boolean);
    --  Modify the visibility of a column.
+   --  Note that GtkAda prevents the last visible column to be hidden. Nothing
+   --  will be done if you try to hide that last column.
+   --  See the example below for an example how to hide all the columns but
+   --  one.
 
    procedure Set_Column_Resizeable
      (Clist    : access Gtk_Clist_Record;
@@ -420,6 +427,9 @@ package Gtk.Clist is
    ----------
    -- Rows --
    ----------
+
+   function Get_Rows (Clist : access Gtk_Clist_Record) return Gint;
+   --  Return the number of rows in the clist.
 
    procedure Set_Row_Height
      (Clist  : access Gtk_Clist_Record;
@@ -890,3 +900,7 @@ private
 
    pragma Import (C, Get_Type, "gtk_clist_get_type");
 end Gtk.Clist;
+
+--  <example>
+--  <include>../examples/documentation/clist.adb</include>
+--  </example>
