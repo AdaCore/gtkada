@@ -66,16 +66,34 @@ package Glib.Glade is
    procedure Gen_New
      (N : Node_Ptr; Class, Param1, Param2, New_Name : String := "";
       File : File_Type; Delim : Character := ' ');
-   --  Output a call to Gtk_New in File. ??? Need more comments
+   --  Output a call to <Class>.Gtk_New in File.
+   --  N is the node containing the widget to create.
+   --  If Param<n> is not null, it represents a parameter of Gtk_New.
+   --  New_Name if not null is a name appended to Gtk_New_,
+   --  e.g Gtk_New_Vbox if New_Name = Vbox.
+   --  If Delim is not a space, Param1 is surrounded by it.
 
    procedure Gen_Child (N, Child : Node_Ptr; File : File_Type);
-   --  Output an assignment in File. ??? Need more comments here
+   --  Output an assignment in File of the form:
+   --  <Name> := Get_<Child-2> (<Parent>);
+   --  where Name is the name of the widget represented by N,
+   --        Child-2 is the second part of Child.Value, the delimitor being ':'
+   --         (e.g Child-2 = Vbox if Child.Value = Dialog:vbox)
+   --        Parent is the first parent of N whose class is the first part of
+   --         Child.Value (e.g Dialog if Child.Value = Dialog:vbox)
 
    procedure Gen_Call_Child (N, Child : Node_Ptr;
      Class, Call : String;
      Param1, Param2, Param3 : String := "";
      File : File_Type);
-   --  Output a call to Call in File. ??? Need more comments here
+   --  If N has a field "name", Output a call to Call in File of the form:
+   --    <Class>.<Call> (Gtk_<Class> (Parent (N)), N)
+   --  if Child is null, or
+   --    <Class>.<Call> (<Parent>, N)
+   --  where Parent (N) is the name of N.Parent and <Parent> is the name of the
+   --  first parent of N whose class is <Class>
+   --  Param<n> when non null, represents a field of Child (Child musn't be
+   --  null) and is added to the parameters of <Call>
 
    procedure Gen_Packages (File : File_Type);
    --  Output to file all the packages that have been referenced in previous

@@ -432,7 +432,8 @@ package body Glib.Glade is
          Add_Signal_Instanciation (Class);
          Add_Signal (Handler, Class);
          Put_Line (File, "   Cb_Id := " &
-           Class (Class'First + 3 .. Class'Last) & "_Callback.Connect");
+           To_Ada (Class (Class'First + 3 .. Class'Last)) &
+           "_Callback.Connect");
          Put_Line (File, "     (" & To_Ada (Get_Field (N, "name").all) &
            ", """ & Get_Field (P, "name").all & """, " & To_Ada (Handler.all) &
            "'Access);");
@@ -445,14 +446,17 @@ package body Glib.Glade is
    -------------------------------
 
    function Gen_Signal_Instanciations (File : File_Type) return Natural is
+      S : String_Ptr;
+
    begin
       if Num_Signal_Instanciations > 0 then
          Put_Line (File, "with Gtk.Signal;");
 
          for J in Signal_Range'First .. Num_Signal_Instanciations loop
-            Put_Line (File, "with " &
-              To_Ada (Signal_Instanciations (J).all, '.') & "; use " &
-              To_Ada (Signal_Instanciations (J).all, '.') & ";");
+            S := Signal_Instanciations (J);
+            Put_Line (File, "with Gtk." &
+              To_Ada (S (S'First + 3 .. S'Last)) & "; use Gtk." &
+              To_Ada (S (S'First + 3 .. S'Last)) & ";");
          end loop;
 
          New_Line (File);
@@ -460,12 +464,11 @@ package body Glib.Glade is
          New_Line (File);
 
          for J in Signal_Range'First .. Num_Signal_Instanciations loop
+            S := Signal_Instanciations (J);
             Put_Line (File, "   package " &
-              Signal_Instanciations (J)
-                (Signal_Instanciations (J)'First + 3 ..
-                 Signal_Instanciations (J)'Last) & "_Callback is new");
+              To_Ada (S (S'First + 3 .. S'Last)) & "_Callback is new");
             Put_Line (File, "     Gtk.Signal.Void_Callback (" &
-              To_Ada (Signal_Instanciations (J).all) & ");");
+              To_Ada (S.all) & ");");
             New_Line (File);
          end loop;
 
