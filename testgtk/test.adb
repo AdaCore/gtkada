@@ -40,6 +40,7 @@ with Create_Spin;
 with Create_Status;
 with Create_Test_Idle;
 with Create_Test_Timeout;
+with Create_Toggle_Buttons;
 with Create_Main_Loop;
 with Create_Toolbar;
 
@@ -128,7 +129,7 @@ package body Test is
       (US ("test selection"), null),
       (US ("test timeout"), Create_Test_Timeout.Run'Access),
       (US ("text"), null),
-      (US ("toggle buttons"), null),
+      (US ("toggle buttons"), Create_Toggle_Buttons.Run'Access),
       (US ("toolbar"), Create_Toolbar.Run'Access),
       (US ("tooltips"), null),
       (US ("tree"), null),
