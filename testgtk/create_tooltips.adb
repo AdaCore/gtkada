@@ -29,10 +29,8 @@
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
-with Gtk.Label; use Gtk.Label;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Separator; use Gtk.Separator;
@@ -74,9 +72,9 @@ package body Create_Tooltips is
    begin
       if Is_Active (Toggle) then
          if Tip_Text'Length /= 0 then
-            Gtk.Label.Set (Tips_Query, "There is a Tip!");
+            Set (Tips_Query, "There is a Tip!");
          else
-            Gtk.Label.Set (Tips_Query, "There is no Tip!");
+            Set (Tips_Query, "There is no Tip!");
          end if;
          --  Don't let GtkTipsQuery reset it's label
          Emit_Stop_By_Name (Tips_Query, "widget_entered");

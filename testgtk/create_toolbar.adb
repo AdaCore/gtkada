@@ -29,7 +29,6 @@
 
 with Gdk.Bitmap; use Gdk.Bitmap;
 with Gdk.Color; use Gdk.Color;
-with Gtk.Container; use Gtk.Container;
 with Gdk.Pixmap; use Gdk.Pixmap;
 with Gdk.Window; use Gdk.Window;
 with Glib; use Glib;

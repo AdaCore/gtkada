@@ -33,12 +33,10 @@ with Gtk;                  use Gtk;
 with Gtk.Adjustment;
 with Gtk.Box;              use Gtk.Box;
 with Gtk.Button;           use Gtk.Button;
-with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Separator;        use Gtk.Separator;
 with Gtk.Label;            use Gtk.Label;
 with Gtk.Main;
-with Gtk.Object;
 with Gtk.Rc;
 with Gtk.Scrolled_Window;  use Gtk.Scrolled_Window;
 with Gtk.Signal;
@@ -199,7 +197,7 @@ package body Test is
                                         Func => Exit_Main'Access);
 
       Box.Gtk_New_Vbox (Widget => Box1, Homogeneous => False, Spacing => 0);
-      Container.Add (Container => Main_Window, Widget => Box1);
+      Add (Container => Main_Window, Widget => Box1);
       Show (Box1);
 
       Label.Gtk_New (Label => A_Label,
@@ -209,23 +207,23 @@ package body Test is
                       Expand => False, Fill => False);
 
       Scrolled_Window.Gtk_New (Scrolled_Window => A_Scrolled_Window);
-      Container.Border_Width (Container => A_Scrolled_Window,
-                              Border_Width => 10);
+      Border_Width (Container => A_Scrolled_Window,
+                    Border_Width => 10);
       Scrolled_Window.Set_Policy
         (Scrolled_Window => A_Scrolled_Window,
          H_Scrollbar_Policy => Enums.Policy_Automatic,
          V_Scrollbar_Policy => Enums.Policy_Automatic);
-      Object.Unset_Flags (Object => A_Scrolled_Window,
-                          Flags => Widget.Can_Focus);
+      Unset_Flags (Object => A_Scrolled_Window,
+                   Flags => Widget.Can_Focus);
       Box.Pack_Start (In_Box => Box1, Child => A_Scrolled_Window,
                       Expand => True, Fill => True);
       Show (A_Scrolled_Window);
 
       Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 0);
-      Container.Border_Width (Container => Box2, Border_Width => 10);
-      Container.Add (Container => A_Scrolled_Window, Widget => Box2);
+      Border_Width (Container => Box2, Border_Width => 10);
+      Add (Container => A_Scrolled_Window, Widget => Box2);
       Temp := Scrolled_Window.Get_Vadjustment (Scrolled_Window => A_Scrolled_Window);
-      Container.Set_Focus_Vadjustment (Container => Box2, Adjustment => Temp);
+      Set_Focus_Vadjustment (Container => Box2, Adjustment => Temp);
       Show (Box2);
 
       for Index in Buttons'Range loop
@@ -249,7 +247,7 @@ package body Test is
       Show (Separator);
 
       Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
-      Container.Border_Width (Container => Box2, Border_Width => 10);
+      Border_Width (Container => Box2, Border_Width => 10);
       Box.Pack_Start (In_Box => Box1, Child => Box2,
                        Expand => False, Fill => True);
       Show (Box2);
@@ -260,7 +258,7 @@ package body Test is
                                         Func_Data => Main_Window);
       Box.Pack_Start (In_Box => Box2, Child => A_Button,
                       Expand => True, Fill => True);
-      Object.Set_Flags (Object => A_Button, Flags => Widget.Can_Default);
+      Set_Flags (Object => A_Button, Flags => Widget.Can_Default);
       Grab_Default (A_Button);
       Show (A_Button);
 

@@ -35,7 +35,6 @@ with Gtk.Button;
 with Gtk.Enums;
 with Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window;
 with Ada.Text_IO;
 with Common; use Common;
 
@@ -96,7 +95,7 @@ package body Create_Color_Selection is
          Gtk_New (Dialog, Title => "Color Selection Dialog");
          Set_Opacity (Get_Colorsel (Dialog), True);
          Set_Update_Policy (Get_Colorsel (Dialog), Enums.Update_Continuous);
-         Window.Position (Dialog, Enums.Win_Pos_Mouse);
+         Position (Dialog, Enums.Win_Pos_Mouse);
 
          Cb_Id := Widget2_Cb.Connect (Dialog,
                                       "destroy",

@@ -28,7 +28,6 @@
 
 with Glib; use Glib;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Container; use Gtk.Container;
 with Gtk.Curve; use Gtk.Curve;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Gamma_Curve; use Gtk.Gamma_Curve;

@@ -28,7 +28,6 @@
 
 with Glib; use Glib;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
 with Gtk.Paned; use Gtk.Paned;

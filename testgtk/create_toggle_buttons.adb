@@ -30,7 +30,6 @@ with Glib;               use Glib;
 with Gtk;                use Gtk;
 with Gtk.Box;            use Gtk.Box;
 with Gtk.Button;         use Gtk.Button;
-with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Object;
 with Gtk.Toggle_Button;  use Gtk.Toggle_Button;
@@ -69,15 +68,14 @@ package body Create_Toggle_Buttons is
                                       New_Window'Access);
          Window.Set_Title (Window => New_Window,
                            Title => "Toggle buttons");
-         Container.Border_Width (Container => New_Window,
-                                 Border_Width => 0);
+         Border_Width (Container => New_Window, Border_Width => 0);
 
          Box.Gtk_New_Vbox (Widget => Box1, Homogeneous => False, Spacing => 0);
-         Container.Add (Container => New_Window, Widget => Box1);
+         Add (Container => New_Window, Widget => Box1);
          Show (Box1);
 
          Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
-         Container.Border_Width (Container => Box2, Border_Width => 10);
+         Border_Width (Container => Box2, Border_Width => 10);
          Box.Pack_Start (In_Box => Box1, Child => Box2);
          Show (Box2);
 
@@ -99,7 +97,7 @@ package body Create_Toggle_Buttons is
          Show (A_Separator);
 
          Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
-         Container.Border_Width (Container => Box2, Border_Width => 10);
+         Border_Width (Container => Box2, Border_Width => 10);
          Box.Pack_Start (In_Box => Box1, Child => Box2, Expand => False);
          Show (Box2);
 
@@ -109,8 +107,7 @@ package body Create_Toggle_Buttons is
                                    Func => Gtk.Widget.Destroy'Access,
                                    Slot_Object => New_Window);
          Box.Pack_Start (In_Box => Box2, Child => A_Button);
-         Object.Set_Flags (Object => A_Button,
-                           Flags => Gtk.Widget.Can_Default);
+         Set_Flags (Object => A_Button, Flags => Gtk.Widget.Can_Default);
          Grab_Default (A_Button);
          Show (A_Button);
 

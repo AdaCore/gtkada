@@ -39,13 +39,11 @@ with Gtk;              use Gtk;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Button;       use Gtk.Button;
-with Gtk.Container;
 with Gtk.Dialog;       use Gtk.Dialog;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Scrollbar;    use Gtk.Scrollbar;
 with Gtk.Signal;
 with Gtk.Style;
-with Gtk.Window;       use Gtk.Window;
 with Gtk.Widget;       use Gtk.Widget;
 with Common;           use Common;
 
@@ -221,8 +219,8 @@ package body Create_Scroll_Test is
          Id := Widget2_Cb.Connect (Dialog, "destroy",
                                    Destroyed'Access,
                                    Dialog'Access);
-         Gtk.Window.Set_Title (Window => Dialog, Title => "Scroll Test");
-         Container.Border_Width (Dialog, 0);
+         Set_Title (Window => Dialog, Title => "Scroll Test");
+         Border_Width (Dialog, 0);
 
          Box.Gtk_New_Hbox (Widget => Hbox, Homogeneous => False, Spacing => 0);
          Box.Pack_Start (In_Box => Gtk.Dialog.Get_Vbox (Dialog), Child => Hbox);

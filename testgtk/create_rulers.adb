@@ -29,7 +29,6 @@
 with Glib; use Glib;
 with Gdk.Types; use Gdk.Types;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Ruler; use Gtk.Ruler;
 with Gtk.Signal; use Gtk.Signal;

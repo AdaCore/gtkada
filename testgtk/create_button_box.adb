@@ -31,7 +31,6 @@ with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Button_Box; use Gtk.Button_Box;
-with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Hbutton_Box; use Gtk.Hbutton_Box;
 with Gtk.Signal; use Gtk.Signal;

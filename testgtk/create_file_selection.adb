@@ -33,7 +33,6 @@ with Gtk.Enums; use Gtk.Enums;
 with Gtk.File_Selection; use Gtk.File_Selection;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Common; use Common;
 with Gtk; use Gtk;
 
