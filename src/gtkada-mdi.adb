@@ -28,6 +28,7 @@
 
 with Glib;             use Glib;
 with Glib.Object;      use Glib.Object;
+with Pango.Font;       use Pango.Font;
 with Gdk;              use Gdk;
 with Gdk.Color;        use Gdk.Color;
 with Gdk.Cursor;       use Gdk.Cursor;
@@ -66,7 +67,6 @@ with Gtk.Style;        use Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
 with Gtk.Window;       use Gtk.Window;
 with Gtkada.Handlers;  use Gtkada.Handlers;
-with Pango.Font;       use Pango.Font;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 with Ada.Unchecked_Deallocation;
