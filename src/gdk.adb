@@ -54,6 +54,12 @@ package body Gdk is
       return Object.Ptr /= System.Null_Address;
    end Is_Created;
 
+   function Is_Created (Object : in System.Address) return Boolean is
+      use type System.Address;
+   begin
+      return Object /= System.Null_Address;
+   end Is_Created;
+
    ------------------
    --  Set_Object  --
    ------------------
