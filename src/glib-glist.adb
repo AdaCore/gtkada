@@ -1,14 +1,41 @@
 with Unchecked_Conversion;
+with Gtk;
+with Interfaces.C.Strings;
 
 package body Glib.Glist is
 
-   package body Generic_List
-   is
-      function Convert is new Unchecked_Conversion (Gpointer,
-                                                    System.Address);
-      function Reverse_Convert is new Unchecked_Conversion (System.Address,
-                                                            Gpointer);
+   -------------
+   -- Convert --
+   -------------
 
+   function Convert (S : String) return System.Address is
+      function Internal is new Unchecked_Conversion
+        (Interfaces.C.Strings.chars_ptr, System.Address);
+   begin
+      return Internal (Interfaces.C.Strings.New_String (S));
+   end Convert;
+
+   function Convert (S : System.Address) return String is
+      function Internal is new Unchecked_Conversion
+        (System.Address, Interfaces.C.Strings.chars_ptr);
+   begin
+      return Interfaces.C.Strings.Value (Internal (S));
+   end Convert;
+
+   function Convert (W : Gtk.Widget.Gtk_Widget'Class) return System.Address is
+   begin
+      return Gtk.Get_Object (W);
+   end Convert;
+
+   function Convert (W : System.Address) return Gtk.Widget.Gtk_Widget'Class is
+      Widget : Gtk.Widget.Gtk_Widget;
+   begin
+      Gtk.Set_Object (Widget, W);
+      return Widget;
+   end Convert;
+
+
+   package body Generic_List is
       -----------
       -- Alloc --
       -----------
@@ -222,7 +249,7 @@ package body Glib.Glist is
                             return System.Address;
          pragma Import (C, Internal, "g_list_nth_data");
       begin
-         return Reverse_Convert (Internal (Get_Object (List), N));
+         return Convert (Internal (Get_Object (List), N));
       end Nth_Data;
 
       --------------
@@ -302,7 +329,7 @@ package body Glib.Glist is
       begin
          Obj.Ptr := Value;
       end Set_Object;
-   end Generic_List;
 
+   end Generic_List;
 end Glib.Glist;
 

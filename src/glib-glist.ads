@@ -1,10 +1,18 @@
 
 with System;
+with Gtk.Widget;
 
 package Glib.Glist is
 
+   function Convert (S : String) return System.Address;
+   function Convert (S : System.Address) return String;
+   function Convert (W : Gtk.Widget.Gtk_Widget'Class) return System.Address;
+   function Convert (W : System.Address) return Gtk.Widget.Gtk_Widget'Class;
+
    generic
-      type Gpointer is private;
+      type Gpointer (<>) is private;
+      with function Convert (P : Gpointer) return System.Address is <>;
+      with function Convert (S : System.Address) return Gpointer is <>;
    package Generic_List is
 
       type Glist is private;
@@ -60,7 +68,6 @@ package Glib.Glist is
             Ptr : System.Address := System.Null_Address;
          end record;
    end Generic_List;
-
    --  mapping: Alloc glib.h g_list_alloc
    --  mapping: Append glib.h g_list_append
    --  mapping: Concat glib.h g_list_concat
@@ -83,3 +90,7 @@ package Glib.Glist is
    --  mapping: Remove_Link glib.h g_list_remove_link
 
 end Glib.Glist;
+
+
+
+
