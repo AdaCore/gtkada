@@ -1,0 +1,5 @@
+This directory contains a simple presentation viewer written using GtkAda.
+
+It demonstrates the simplicity of use of the gdk-pixbuf library and also
+is an example of a new widget (Image_Drawing) created in GtkAda that redefines
+its resizing and drawing handling.
