@@ -44,4 +44,34 @@ package Glib.Unicode is
    --  Validate a UTF8 string.
    --  Set Valid to True if valid, set Invalid_Pos to first invalid char.
 
+   function Is_Space (Char : Gunichar) return Boolean;
+   --  True if Char is a space character
+
+   function Is_Alnum (Char : Gunichar) return Boolean;
+   --  True if Char is an alphabetical or numerical character
+
+   function Is_Alpha (Char : Gunichar) return Boolean;
+   --  True if Char is an alphabetical character
+
+   function Is_Digit (Char : Gunichar) return Boolean;
+   --  True if Char is a digit
+
+   function Is_Lower (Char : Gunichar) return Boolean;
+   --  True if Char is a lower-case character
+
+   function Is_Upper (Char : Gunichar) return Boolean;
+   --  True if Char is an upper-case character
+
+   function Is_Punct (Char : Gunichar) return Boolean;
+   --  True if Char is a punctuation character
+
+   function To_Lower (Char : Gunichar) return Gunichar;
+   --  Convert Char to lower cases
+
+   function To_Upper (Char : Gunichar) return Gunichar;
+   --  Convert Char to upper cases
+
+private
+   pragma Import (C, To_Upper, "g_unichar_toupper");
+   pragma Import (C, To_Lower, "g_unichar_tolower");
 end Glib.Unicode;

@@ -53,4 +53,80 @@ package body Glib.Unicode is
       end if;
    end UTF8_Validate;
 
+   --------------
+   -- Is_Space --
+   --------------
+
+   function Is_Space (Char : Gunichar) return Boolean is
+      function Internal (Char : Gunichar) return Integer;
+      pragma Import (C, Internal, "g_unichar_isspace");
+   begin
+      return Boolean'Val (Internal (Char));
+   end Is_Space;
+
+   --------------
+   -- Is_Alnum --
+   --------------
+
+   function Is_Alnum (Char : Gunichar) return Boolean is
+      function Internal (Char : Gunichar) return Integer;
+      pragma Import (C, Internal, "g_unichar_isalnum");
+   begin
+      return Boolean'Val (Internal (Char));
+   end Is_Alnum;
+
+   --------------
+   -- Is_Alpha --
+   --------------
+
+   function Is_Alpha (Char : Gunichar) return Boolean is
+      function Internal (Char : Gunichar) return Integer;
+      pragma Import (C, Internal, "g_unichar_isalpha");
+   begin
+      return Boolean'Val (Internal (Char));
+   end Is_Alpha;
+
+   --------------
+   -- Is_Digit --
+   --------------
+
+   function Is_Digit (Char : Gunichar) return Boolean is
+      function Internal (Char : Gunichar) return Integer;
+      pragma Import (C, Internal, "g_unichar_isdigit");
+   begin
+      return Boolean'Val (Internal (Char));
+   end Is_Digit;
+
+   --------------
+   -- Is_Lower --
+   --------------
+
+   function Is_Lower (Char : Gunichar) return Boolean is
+      function Internal (Char : Gunichar) return Integer;
+      pragma Import (C, Internal, "g_unichar_islower");
+   begin
+      return Boolean'Val (Internal (Char));
+   end Is_Lower;
+
+   --------------
+   -- Is_Upper --
+   --------------
+
+   function Is_Upper (Char : Gunichar) return Boolean is
+      function Internal (Char : Gunichar) return Integer;
+      pragma Import (C, Internal, "g_unichar_isupper");
+   begin
+      return Boolean'Val (Internal (Char));
+   end Is_Upper;
+
+   --------------
+   -- Is_Punct --
+   --------------
+
+   function Is_Punct (Char : Gunichar) return Boolean is
+      function Internal (Char : Gunichar) return Integer;
+      pragma Import (C, Internal, "g_unichar_ispunct");
+   begin
+      return Boolean'Val (Internal (Char));
+   end Is_Punct;
 end Glib.Unicode;
