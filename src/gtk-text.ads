@@ -308,7 +308,9 @@ package Gtk.Text is
 
 private
 
-   type Gtk_Text_Record is
-     new Gtk.Text_View.Gtk_Text_View_Record with null record;
+   type Gtk_Text_Record is new Gtk.Text_View.Gtk_Text_View_Record with record
+      Handling_Insert_Text : Boolean := False;
+      --  Needed to avoid recursion in Insert_Text_Handler
+   end record;
 
 end Gtk.Text;
