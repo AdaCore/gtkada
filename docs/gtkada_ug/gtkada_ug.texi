@@ -119,7 +119,7 @@ Object-oriented features
 The home page for GtkAda, that will always contain the latest news for
 this binding, is
 
-     @uref{http://ada.eu.org/gtkada/}
+     @uref{http://gtkada.eu.org}
 
 @noindent     
 The home page for gtk is
