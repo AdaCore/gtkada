@@ -617,30 +617,41 @@ package body Gtk.Widget is
       return To_Boolean (Internal (Get_Object (Widget)));
    end Sensitive_Is_Set;
 
+   ------------------
+   -- Set_Colormap --
+   ------------------
+
+   procedure Set_Colormap (Widget : access Gtk_Widget_Record;
+                           Cmap : Gdk_Colormap)
+   is
+      procedure Internal (Widget : System.Address; Cmap : System.Address);
+      pragma Import (C, Internal, "gtk_widget_set_colormap");
+   begin
+      Internal (Get_Object (Widget), Get_Object (Cmap));
+   end Set_Colormap;
+
    --------------------------
    -- Set_Default_Colormap --
    --------------------------
 
-   procedure Set_Default_Colormap (Widget : access Gtk_Widget_Record;
-                                   Cmap : Gdk_Colormap)
+   procedure Set_Default_Colormap (Cmap : Gdk_Colormap)
    is
-      procedure Internal (Widget : System.Address; Cmap : System.Address);
+      procedure Internal (Cmap : System.Address);
       pragma Import (C, Internal, "gtk_widget_set_default_colormap");
    begin
-      Internal (Get_Object (Widget), Get_Object (Cmap));
+      Internal (Get_Object (Cmap));
    end Set_Default_Colormap;
 
    ------------------------
    -- Set_Default_Visual --
    ------------------------
 
-   procedure Set_Default_Visual (Widget : access Gtk_Widget_Record;
-                                 Visual : Gdk_Visual)
+   procedure Set_Default_Visual (Visual : Gdk_Visual)
    is
-      procedure Internal (Widget : System.Address; Visual : System.Address);
+      procedure Internal (Visual : System.Address);
       pragma Import (C, Internal, "gtk_widget_set_default_visual");
    begin
-      Internal (Get_Object (Widget), Get_Object (Visual));
+      Internal (Get_Object (Visual));
    end Set_Default_Visual;
 
    ------------------
@@ -734,6 +745,19 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Width, Height);
    end Set_USize;
+
+   ----------------
+   -- Set_Visual --
+   ----------------
+
+   procedure Set_Visual (Widget : access Gtk_Widget_Record;
+                         Visual : Gdk_Visual)
+   is
+      procedure Internal (Widget : System.Address; Visual : System.Address);
+      pragma Import (C, Internal, "gtk_widget_set_visual");
+   begin
+      Internal (Get_Object (Widget), Get_Object (Visual));
+   end Set;
 
    ------------
    --  Show  --
