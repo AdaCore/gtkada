@@ -1,15 +1,15 @@
-with Glib; use Glib;
+with Glib;                    use Glib;
 with Gdk.Window;
-with Gdk.Font; use Gdk.Font;
-with Gdk.Color; use Gdk.Color;
-with Gtk.Status_Bar; use Gtk.Status_Bar;
-with Gtk.Text; use Gtk.Text;
-with GNAT.OS_Lib; use GNAT.OS_Lib;
+with Gdk.Font;                use Gdk.Font;
+with Gdk.Color;               use Gdk.Color;
+with Gtk.Status_Bar;          use Gtk.Status_Bar;
+with Gtk.Text;                use Gtk.Text;
+with GNAT.OS_Lib;             use GNAT.OS_Lib;
 with Unchecked_Deallocation;
-with Main_Window_Pkg; use Main_Window_Pkg;
+with Main_Window_Pkg;         use Main_Window_Pkg;
 with Open_File_Selection_Pkg; use Open_File_Selection_Pkg;
 with Save_File_Selection_Pkg; use Save_File_Selection_Pkg;
-with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Text_IO;             use Ada.Text_IO;
 
 package body File_Utils is
 
@@ -100,6 +100,7 @@ package body File_Utils is
    end Real_Open_File;
 
    procedure Real_Save_File (Filename : String) is
+      pragma Unreferenced (Filename);
    begin
       null;
    end Real_Save_File;
