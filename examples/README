@@ -21,7 +21,7 @@ Note that you need to first install GtkAda to use these examples.
 
     $ gate menu.glade
 
-  This will generate a set of files. Optionaly modify callbacks_menu.adb
+  This will generate a set of files. Optionally modify callbacks_menu.adb
   to customize it, then compile and run it:
 
     $ gnatmake menu `gtkada-config`
