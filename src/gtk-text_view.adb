@@ -143,10 +143,10 @@ package body Gtk.Text_View is
    procedure Scroll_To_Mark
      (Text_View     : access Gtk_Text_View_Record;
       Mark          : access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class;
-      Within_Margin : Gdouble;
-      Use_Align     : Boolean;
-      Xalign        : Gdouble;
-      Yalign        : Gdouble)
+      Within_Margin : Gdouble := 0.0;
+      Use_Align     : Boolean := False;
+      Xalign        : Gdouble := 0.0;
+      Yalign        : Gdouble := 0.0)
    is
       procedure Internal
         (Text_View     : System.Address;
