@@ -106,8 +106,6 @@ package body Gtk_Generates is
    -- Aspect_Frame_Generate --
    ---------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Aspect_Frame_Generate (N : Node_Ptr; File : File_Type) is
       S  : String_Ptr;
       function Build_Type return Glib.GType;
@@ -115,31 +113,31 @@ package body Gtk_Generates is
 
    begin
       Widget := Widget_New (Build_Type);
-      S := Get_Field (N, "label");
+      S := Get_Property (N, "label");
 
       if S /= null then
          if Gettext_Support (N) then
-            Gen_New (N, "Aspect_Frame", S.all,
-              To_Float (Get_Field (N, "xalign").all),
-              To_Float (Get_Field (N, "yalign").all),
-              To_Float (Get_Field (N, "ratio").all),
-              Get_Field (N, "obey_child").all,
-              File, "-""", """");
+            Gen_New (N, "Aspect_Frame", Adjust (S.all),
+                     To_Float (Get_Property (N, "xalign", "0.0")),
+                     To_Float (Get_Property (N, "yalign", "0.0")),
+                     To_Float (Get_Property (N, "ratio", "1")),
+                     Get_Property (N, "obey_child", "False"),
+                     File, "-(""", """)");
          else
-            Gen_New (N, "Aspect_Frame", S.all,
-              To_Float (Get_Field (N, "xalign").all),
-              To_Float (Get_Field (N, "yalign").all),
-              To_Float (Get_Field (N, "ratio").all),
-              Get_Field (N, "obey_child").all,
-              File, """", """");
+            Gen_New (N, "Aspect_Frame", Adjust (S.all),
+                     To_Float (Get_Property (N, "xalign", "0.0")),
+                     To_Float (Get_Property (N, "yalign", "0.0")),
+                     To_Float (Get_Property (N, "ratio", "1")),
+                     Get_Property (N, "obey_child", "False"),
+                     File, """", """");
          end if;
       else
          Gen_New (N, "Aspect_Frame", "",
-           To_Float (Get_Field (N, "xalign").all),
-           To_Float (Get_Field (N, "yalign").all),
-           To_Float (Get_Field (N, "ratio").all),
-           Get_Field (N, "obey_child").all,
-           File, """", """");
+                  To_Float (Get_Property (N, "xalign", "0.0")),
+                  To_Float (Get_Property (N, "yalign", "0.0")),
+                  To_Float (Get_Property (N, "ratio", "1")),
+                  Get_Property (N, "obey_child", "False"),
+                  File, """", """");
       end if;
 
       Widget_Destroy (Widget);
@@ -560,8 +558,6 @@ package body Gtk_Generates is
    -- Curve_Generate --
    --------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Curve_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_curve_get_type");
@@ -596,8 +592,6 @@ package body Gtk_Generates is
    ---------------------------
    -- Drawing_Area_Generate --
    ---------------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Drawing_Area_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -656,8 +650,6 @@ package body Gtk_Generates is
    -- Fixed_Generate --
    --------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Fixed_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_fixed_get_type");
@@ -714,28 +706,13 @@ package body Gtk_Generates is
    -- Frame_Generate --
    --------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Frame_Generate (N : Node_Ptr; File : File_Type) is
-      S  : String_Ptr;
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_frame_get_type");
 
    begin
       Widget := Widget_New (Build_Type);
-      S := Get_Field (N, "label");
-
-      if S /= null then
-         if Gettext_Support (N) then
-            Gen_New (N, "Frame", S.all,
-              File => File, Prefix => "-""", Postfix => """");
-         else
-            Gen_New (N, "Frame", S.all,
-              File => File, Prefix => """", Postfix => """");
-         end if;
-      else
-         Gen_New (N, "Frame", File => File);
-      end if;
+      Gen_New (N, "Frame", File => File);
 
       Widget_Destroy (Widget);
       Bin_Generate (N, File);
@@ -750,8 +727,6 @@ package body Gtk_Generates is
    -- Gamma_Curve_Generate --
    --------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Gamma_Curve_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_gamma_curve_get_type");
@@ -763,12 +738,12 @@ package body Gtk_Generates is
       Box_Generate (N, File);
       Add_Package ("Curve");
       Put_Line (File, "   Set_Range (Get_Curve (" &
-        To_Ada (Get_Field (Find_Top_Widget (N), "name").all) & "." &
-        To_Ada (Get_Field (N, "name").all) & "), " &
-        To_Float (Get_Field (N, "min_x").all) & ", " &
-        To_Float (Get_Field (N, "max_x").all) & ", " &
-        To_Float (Get_Field (N, "min_y").all) & ", " &
-        To_Float (Get_Field (N, "max_y").all) & ");");
+        To_Ada (Get_Name (Find_Top_Widget (N))) & "." &
+        To_Ada (Get_Name (N) & "), " &
+        To_Float (Get_Property (N, "min_x", "0")) & ", " &
+        To_Float (Get_Property (N, "max_x", "1")) & ", " &
+        To_Float (Get_Property (N, "min_y", "0")) & ", " &
+        To_Float (Get_Property (N, "max_y", "1")) & ");"));
    end Gamma_Curve_Generate;
 
    ---------------------
