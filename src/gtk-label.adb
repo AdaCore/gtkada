@@ -34,6 +34,7 @@ with Gtk.Util; use Gtk.Util;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Notebook; use Gtk.Notebook;
+with Gtk.Clist; use Gtk.Clist;
 
 package body Gtk.Label is
 
@@ -154,31 +155,9 @@ package body Gtk.Label is
       S          : String_Ptr;
       Top        : String_Ptr := Get_Field (Find_Top_Widget (N), "name");
       P          : Node_Ptr;
-      Page_Num   : Gint;
-
-      function Adjust (S : String) return String;
-      --  Replace non "compilable" characters (e.g ASCII.LF) and return
-      --  a printable and "compilable" Ada string.
-
-      function Adjust (S : String) return String is
-         T : String (1 .. S'Length + 256);
-         K : Natural := 1;
-
-      begin
-         for J in S'Range loop
-            if S (J) = ASCII.LF then
-               T (K .. K + 15) := """ & ASCII.LF & """;
-               K := K + 16;
-
-            --  Skip additional CR present on Win32
-            elsif S (J) /= ASCII.CR then
-               T (K) := S (J);
-               K := K + 1;
-            end if;
-         end loop;
-
-         return T (1 .. K - 1);
-      end Adjust;
+      Num        : Gint;
+      Is_Tab,
+      Is_Title   : Boolean;
 
    begin
       Gen_New (N, "Label", Adjust (Get_Field (N, "label").all),
@@ -188,34 +167,44 @@ package body Gtk.Label is
       Gen_Set (N, "Label", "Line_Wrap", "wrap", File);
 
       if Child_Name /= null then
-         if Get_Part (Child_Name.all, 2) = "tab" then
-            P := N.Parent.Child;
-            Page_Num := 0;
+         Is_Tab := Get_Part (Child_Name.all, 2) = "tab";
+         Is_Title := Get_Part (Child_Name.all, 2) = "title";
+
+         if Is_Tab or else Is_Title then
+
+            --  This label is part of a notebook (tab) or a clist (title)
+
+            P   := N.Parent.Child;
+            Num := 0;
 
             while P /= N loop
                S := Get_Field (P, "child_name");
 
                if S /= null and then S.all = Child_Name.all then
-                  Page_Num := Page_Num + 1;
+                  Num := Num + 1;
                end if;
 
                P := P.Next;
             end loop;
 
+            if Is_Tab then
+               Add_Package ("Notebook");
+               Put (File, "   Set_Tab (");
+
+            elsif Is_Title then
+               Add_Package ("Clist");
+               Put (File, "   Set_Column_Widget (");
+            end if;
+
             Put_Line (File,
-              "   Notebook.Set_Tab (" &
               To_Ada (Top.all) & "." &
               To_Ada (Find_Tag
                 (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
                  "name").Value.all) & "," &
-              Gint'Image (Page_Num) & ", " &
+              Gint'Image (Num) & ", " &
               To_Ada (Top.all) & "." &
               To_Ada (Get_Field (N, "name").all) & ");");
          end if;
-
-      elsif not N.Specific_Data.Has_Container then
-         Gen_Call_Child (N, null, "Container", "Add", File => File);
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 
@@ -224,7 +213,9 @@ package body Gtk.Label is
       Child_Name : String_Ptr := Get_Field (N, "child_name");
       S          : String_Ptr;
       P          : Node_Ptr;
-      Page_Num   : Gint;
+      Num        : Gint;
+      Is_Tab,
+      Is_Title   : Boolean;
 
    begin
       if not N.Specific_Data.Created then
@@ -249,31 +240,36 @@ package body Gtk.Label is
       end if;
 
       if Child_Name /= null then
-         if Get_Part (Child_Name.all, 2) = "tab" then
+         Is_Tab := Get_Part (Child_Name.all, 2) = "tab";
+         Is_Title := Get_Part (Child_Name.all, 2) = "title";
+
+         if Is_Tab or else Is_Title then
             P := N.Parent.Child;
-            Page_Num := 0;
+            Num := 0;
 
             while P /= N loop
                S := Get_Field (P, "child_name");
 
                if S /= null and then S.all = Child_Name.all then
-                  Page_Num := Page_Num + 1;
+                  Num := Num + 1;
                end if;
 
                P := P.Next;
             end loop;
 
-            Set_Tab
-              (Gtk_Notebook (Get_Object (Find_Tag
-                 (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                  "name").Value)), Page_Num, Widget.Gtk_Widget (Label));
-         end if;
+            if Is_Tab then
+               Set_Tab
+                 (Gtk_Notebook (Get_Object (Find_Tag
+                    (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
+                     "name").Value)), Num, Widget.Gtk_Widget (Label));
 
-      elsif not N.Specific_Data.Has_Container then
-         Container.Add
-           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-            Widget.Gtk_Widget (Label));
-         N.Specific_Data.Has_Container := True;
+            elsif Is_Title then
+               Set_Column_Widget
+                 (Gtk_Clist (Get_Object (Find_Tag
+                    (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
+                     "name").Value)), Num, Widget.Gtk_Widget (Label));
+            end if;
+         end if;
       end if;
    end Generate;
 
