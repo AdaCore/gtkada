@@ -172,7 +172,7 @@ gtk_font_combo_init (GtkFontCombo * font_combo)
   gtk_widget_set_usize(font_combo->size_combo, req.width, req.height);
   gtk_toolbar_append_widget(toolbar, font_combo->size_combo, NULL, NULL);
 
-  gtk_toolbar_set_space_size(toolbar, 20);
+  /* gtk_toolbar_set_space_size(toolbar, 20); */
   gtk_toolbar_append_space(toolbar);
   gtk_toolbar_append_widget(toolbar, font_combo->bold_button, "Bold", "Bold");
   gtk_toolbar_append_widget(toolbar, font_combo->italic_button, "Italic", "Italic");
