@@ -53,7 +53,7 @@ package Gtk.Bin is
      renames Gtk.Container.Generate;
    --  Gate internal function
 
-   procedure Generate (Container : in out Gtk_Object; N : in Node_Ptr)
+   procedure Generate (Bin : in out Gtk_Object; N : in Node_Ptr)
      renames Gtk.Container.Generate;
    --  Dgate internal function
 
