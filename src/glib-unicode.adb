@@ -145,8 +145,8 @@ package body Glib.Unicode is
 
    function UTF8_Strdown (Str : UTF8_String) return UTF8_String is
       function Internal
-        (Str : Utf8_String; Len : Natural) return ICS.chars_ptr;
-      Pragma Import (C, Internal, "g_utf8_strdown");
+        (Str : UTF8_String; Len : Natural) return ICS.chars_ptr;
+      pragma Import (C, Internal, "g_utf8_strdown");
 
       S : constant chars_ptr := Internal (Str, Str'Length);
       Result : constant String := Value (S);
@@ -161,8 +161,8 @@ package body Glib.Unicode is
 
    function UTF8_Strup (Str : UTF8_String) return UTF8_String is
       function Internal
-        (Str : Utf8_String; Length : Natural) return ICS.chars_ptr;
-      Pragma Import (C, Internal, "g_utf8_strup");
+        (Str : UTF8_String; Length : Natural) return ICS.chars_ptr;
+      pragma Import (C, Internal, "g_utf8_strup");
 
       S : constant chars_ptr := Internal (Str, Str'Length);
       Result : constant String := Value (S);
