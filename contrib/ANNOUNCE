@@ -34,6 +34,9 @@ New features in 1.2.1 include:
 - Gdk.RGB has been bound
 - Updated features in Gtk.Style and Gtk.Table
 - The editor example has been completed
+- GtkAda is now capable of fully converting any C widget to the correct Ada
+  widget, even if the C widget was not created by GtkAda itself. This
+  provides a full dynamic dispatching capability that was still missing.
 
 New features in 1.2.0 include:
 
