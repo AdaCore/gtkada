@@ -263,4 +263,8 @@ pango-font.h:
     *result = *desc;
 >>
  pango_font_description_from_string (): should also be a procedure.
+ weight_map[]: This map seems out of sync the actual PangoWeight enum...
+  Recommend to the pango folks to get rid of the numbers, and use the
+  enum values instead. This breaks pango_font_description_from_string ().
+  
  
