@@ -106,6 +106,7 @@ with Create_Selection;
 with Create_Size_Groups;
 with Create_Sheet;
 with Create_Spin;
+with Create_Splittable;
 with Create_Status;
 with Create_Test_Idle;
 with Create_Test_Timeout;
@@ -255,6 +256,8 @@ package body Main_Windows is
       (NS ("menus"),            Base,    Create_Menu.Run'Access,
                                          Create_Menu.Help'Access),
       (NS ("modal window"),     Base,    null, null),
+      (NS ("multi paned"),      Gtkada,  Create_Splittable.Run'Access,
+                                         Create_Splittable.Help'Access),
       (NS ("notebook"),         Box,     Create_Notebook.Run'Access,
                                          Create_Notebook.Help'Access),
       (NS ("panes"),            Box,     Create_Paned.Run'Access,
