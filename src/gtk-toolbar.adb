@@ -609,7 +609,8 @@ package body Gtk.Toolbar is
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
       P, Child : Node_Ptr;
-      Top  : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Top_Widget : Node_Ptr := Find_Top_Widget (N);
+      Top  : constant String_Ptr := Get_Field (Top_Widget, "name");
       Cur  : constant String_Ptr := Get_Field (N, "name");
       S, T : String_Ptr;
 
@@ -662,14 +663,24 @@ package body Gtk.Toolbar is
 
                if S /= null then
                   Put_Line (File, ",");
-                  Put (File, "      Text => """ & S.all & '"');
+
+                  if Gettext_Support (Top_Widget) then
+                     Put (File, "      Text => -""" & S.all & '"');
+                  else
+                     Put (File, "      Text => """ & S.all & '"');
+                  end if;
                end if;
 
                S := Get_Field (P, "tooltip");
 
                if S /= null then
                   Put_Line (File, ",");
-                  Put (File, "      Tooltip_Text => """ & S.all & '"');
+
+                  if Gettext_Support (Top_Widget) then
+                     Put (File, "      Tooltip_Text => -""" & S.all & '"');
+                  else
+                     Put (File, "      Tooltip_Text => """ & S.all & '"');
+                  end if;
                end if;
 
                T := Get_Field (P, "icon");

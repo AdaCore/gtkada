@@ -158,8 +158,14 @@ package body Gtk.Label is
       Is_Title   : Boolean;
 
    begin
-      Gen_New (N, "Label", Adjust (Get_Field (N, "label").all),
-        File => File, Delim => '"');
+      if Gettext_Support (N) then
+         Gen_New (N, "Label", Adjust (Get_Field (N, "label").all),
+           File => File, Prefix => "-(""", Postfix => """)");
+      else
+         Gen_New (N, "Label", Get_Field (N, "label").all,
+           File => File, Prefix => """", Postfix => """");
+      end if;
+
       Misc.Generate (N, File);
       Gen_Set (N, "Label", "justify", File);
       Gen_Set (N, "Label", "Line_Wrap", "wrap", File);

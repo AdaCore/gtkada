@@ -137,8 +137,13 @@ package body Gtk.Option_Menu is
                Last := S'Last + 1;
             end if;
 
-            Put_Line (File, "   Menu_Item.Gtk_New (The_Menu_Item, """ &
-              S (First .. Last - 1) & """);");
+            Put (File, "   Menu_Item.Gtk_New (The_Menu_Item, ");
+
+            if Gettext_Support (N) then
+               Put (File, '-');
+            end if;
+
+            Put_Line (File, '"' & S (First .. Last - 1) & """);");
             Put_Line (File, "   Menu.Append (" &
               To_Ada (Get_Field (N, "name").all) & "_Menu, The_Menu_Item);");
 

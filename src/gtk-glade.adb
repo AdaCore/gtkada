@@ -501,10 +501,12 @@ package body Gtk.Glade is
         To_Ada (Get_Field (Find_Tag (N.Child, "project"), "name").all);
       Name        : String_Ptr;
       Class       : String_Ptr;
+      Gettext     : Boolean;
 
    begin
       Print_Header (N, Output);
       M := N.Child.Next;
+      Gettext := Gettext_Support (M);
 
       loop
          exit when M = null;
@@ -543,11 +545,18 @@ package body Gtk.Glade is
             --  ??? It would be nice to determine when these packages are
             --  needed
 
-            Put_Line (Output, "with Gdk.Types; use Gdk.Types;");
-            Put_Line (Output, "with Gtk.Widget; use Gtk.Widget;");
-            Put_Line (Output, "with Gtk.Enums;  use Gtk.Enums;");
+            Put_Line (Output, "with Gdk.Types;       use Gdk.Types;");
+            Put_Line (Output, "with Gtk.Widget;      use Gtk.Widget;");
+            Put_Line (Output, "with Gtk.Enums;       use Gtk.Enums;");
+            Put_Line (Output, "with Gtkada.Handlers; use Gtkada.Handlers;");
             Put_Line (Output, "with Callbacks_" & Project &
               "; use Callbacks_" & Project & ";");
+
+            if Gettext then
+               Put_Line
+                 (Output, "with " & Project & "_Intl; use " & Project &
+                  "_Intl;");
+            end if;
 
             if Find_Child (M.Child, "handler") /= null then
                Put_Line (Output, "with " & To_Ada (Name.all) &
@@ -586,11 +595,9 @@ package body Gtk.Glade is
             --  Add "predefined" packages
 
             Add_Package ("Button");
-            Add_Package ("Window");
 
             Gen_Packages (Standard_Output);
             Reset_Packages;
-            New_Line;
             Reset (Output, In_File);
 
             while not End_Of_File (Output) loop
@@ -608,6 +615,25 @@ package body Gtk.Glade is
 
          M := M.Next;
       end loop;
+
+      if Gettext then
+         Put_Line ("package " & Project & "_Intl is");
+         New_Line;
+         Put_Line ("   function ""-"" (Msg : String) return String;");
+         Put_Line ("   --  Convenient shortcut to the Gettext function.");
+         New_Line;
+         Put_Line ("end " & Project & "_Intl;");
+         Put_Line ("with Gtkada.Intl; use Gtkada.Intl;");
+         New_Line;
+         Put_Line ("package body " & Project & "_Intl is");
+         New_Line;
+         Put_Line ("   function ""-"" (Msg : String) return String is");
+         Put_Line ("   begin");
+         Put_Line ("      return Dgettext (""" & Project & """, Msg);");
+         Put_Line ("   end ""-"";");
+         New_Line;
+         Put_Line ("end " & Project & "_Intl;");
+      end if;
 
       Num_Signals := Gen_Signal_Instantiations (Project, Standard_Output);
    end Generate;

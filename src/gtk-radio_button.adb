@@ -155,7 +155,8 @@ package body Gtk.Radio_Button is
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
       Label : constant String_Ptr := Get_Field (N, "label");
       Name  : constant String_Ptr := Get_Field (N, "name");
-      Top   : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Top_Widget : Node_Ptr := Find_Top_Widget (N);
+      Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
 
    begin
       if N.Specific_Data.Initialized then
@@ -169,7 +170,13 @@ package body Gtk.Radio_Button is
            To_Ada (Get_Field (N.Parent, "name").all) & "_Group");
 
          if Label /= null then
-            Put (File, ", """ & Label.all & '"');
+            Put (File, ", ");
+
+            if Gettext_Support (Top_Widget) then
+               Put (File, '-');
+            end if;
+
+            Put (File, '"' & Label.all & '"');
          end if;
 
          Put_Line (File, ");");

@@ -199,7 +199,13 @@ package body Gtk.GEntry is
       Gen_Set (N, "GEntry", "editable", File);
       Gen_Set (N, "GEntry", "Max_Length", "text_max_length", "", "", "", File);
       Gen_Set (N, "GEntry", "position", File);
-      Gen_Set (N, "GEntry", "text", File, '"');
+
+      if Gettext_Support (N) then
+         Gen_Set (N, "GEntry", "text", File, "-""", """");
+      else
+         Gen_Set (N, "GEntry", "text", File, """", """");
+      end if;
+
       Gen_Set (N, "GEntry", "Visibility", "text_visible", "", "", "", File);
    end Generate;
 

@@ -323,8 +323,14 @@ package body Gtk.File_Selection is
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
    begin
-      Gen_New (N, "File_Selection", Get_Field (N, "title").all,
-        File => File, Delim => '"');
+      if Gettext_Support (N) then
+         Gen_New (N, "File_Selection", Get_Field (N, "title").all,
+           File => File, Prefix => "-""", Postfix => """");
+      else
+         Gen_New (N, "File_Selection", Get_Field (N, "title").all,
+           File => File, Prefix => """", Postfix => """");
+      end if;
+
       Gen_Set (N, "File_Selection", "show_file_op_buttons", File);
       Window.Generate (N, File);
    end Generate;

@@ -62,6 +62,7 @@ package body Gtk.Frame is
             Set_Object (Frame, Internal (S'Address));
          end;
       end if;
+
       Initialize_User_Data (Frame);
    end Initialize;
 
@@ -77,7 +78,9 @@ package body Gtk.Frame is
         (Frame : in System.Address;
          Label : in System.Address);
       pragma Import (C, Internal, "gtk_frame_set_label");
+
       S : aliased constant String := Label & ASCII.NUL;
+
    begin
       if Label = "" then
          Internal (Get_Object (Frame), System.Null_Address);
@@ -132,7 +135,13 @@ package body Gtk.Frame is
       S := Get_Field (N, "label");
 
       if S /= null then
-         Gen_New (N, "Frame", S.all, File => File, Delim => '"');
+         if Gettext_Support (N) then
+            Gen_New (N, "Frame", S.all,
+              File => File, Prefix => "-""", Postfix => """");
+         else
+            Gen_New (N, "Frame", S.all,
+              File => File, Prefix => """", Postfix => """");
+         end if;
       else
          Gen_New (N, "Frame", File => File);
       end if;

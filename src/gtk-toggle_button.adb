@@ -145,8 +145,13 @@ package body Gtk.Toggle_Button is
          if Label = null then
             Gen_New (N, "Toggle_Button", File => File);
          else
-            Gen_New (N, "Toggle_Button", Label.all, File => File,
-              Delim => '"');
+            if Gettext_Support (N) then
+               Gen_New (N, "Toggle_Button", Label.all,
+                 File => File, Prefix => "-""", Postfix => """");
+            else
+               Gen_New (N, "Toggle_Button", Label.all,
+                 File => File, Prefix => """", Postfix => """");
+            end if;
          end if;
       end if;
 
