@@ -1242,15 +1242,21 @@ package body Gtk_Generates is
    -- Paned_Generate --
    --------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Paned_Generate (N : Node_Ptr; File : File_Type) is
-      Class : constant String_Ptr := Get_Field (N, "class");
-      function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_paned_get_type");
+      Class : constant String := Get_Class (N);
+      function Build_Vpaned return Glib.GType;
+      pragma Import (C, Build_Vpaned, "gtk_vpaned_get_type");
+      function Build_Hpaned return Glib.GType;
+      pragma Import (C, Build_Hpaned, "gtk_hpaned_get_type");
 
    begin
-      Widget := Widget_New (Build_Type);
+      if Class = "GtkVPaned" then
+         Widget := Widget_New (Build_Vpaned);
+      else
+         Widget := Widget_New (Build_Hpaned);
+      end if;
+
       Gen_New
         (N, "Paned",
          New_Name => Class (Class'First + 3) & "paned",
@@ -2342,6 +2348,26 @@ package body Gtk_Generates is
                            (Get_Property
                               (Packing, "tab_pack", "Pack_Start")) & ");");
             end if;
+
+
+         elsif Parent_Class = "GtkVPaned"
+           or else Parent_Class = "GtkHPaned"
+         then
+            --  Check if we are adding the first or the second child.
+
+            Q := Find_Tag (Parent.Child, "child");
+
+            if Q.Child /= null and then Q.Child = N then
+               Put (File, "   Pack1 (");
+            else
+               Put (File, "   Pack2 (");
+            end if;
+
+            Put (File, Top_Name & "." & Parent_Name & ", ");
+            Put (File, Top_Name & "." & Cur & ", ");
+
+            Put (File, Get_Property (Packing, "resize", "True") & ", ");
+            Put_Line (File, Get_Property (Packing, "shrink", "True") & ");");
          end if;
 
          --  ??? Need to implement specific "adding" functions for widgets
