@@ -46,6 +46,7 @@ with Gdk.Font;
 with Gdk.Window;
 with Gtk.Adjustment;
 with Gtk.Text_View;
+with Pango.Font;
 
 package Gtk.Text is
 
@@ -260,7 +261,24 @@ package Gtk.Text is
    --  widget will use the ones defined in the style for Text (see Gtk.Style
    --  for more information about styles).
    --
-   --  Note that Font is ignored (not supported as is).
+   --  Note that Font is ignored (not supported).
+
+   procedure Insert
+     (Text      : access Gtk_Text_Record;
+      Font_Desc : Pango.Font.Pango_Font_Description := null;
+      Fore      : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Back      : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Chars     : String := "";
+      Length    : Gint := -1);
+   --  Insert the given string (Chars) inside the text of the text widget.
+   --  Use the specified Font, foreground (Fore) and background
+   --  (Back) colors. Only the first "Length" characters are inserted,
+   --  unless Length is set to -1, in which case the complete string is
+   --  inserted.
+   --  Note that the colors must be allocated first, and the font loaded.
+   --  If the default parameters are passed for font and colors, the text
+   --  widget will use the ones defined in the style for Text (see Gtk.Style
+   --  for more information about styles).
 
    procedure Set_Adjustments (Text : access Gtk_Text_Record;
                               Hadj : Gtk.Adjustment.Gtk_Adjustment;
