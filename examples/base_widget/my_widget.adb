@@ -5,18 +5,11 @@ with Gdk.Color;       use Gdk.Color;
 with Gdk.Drawable;    use Gdk.Drawable;
 with Gdk.Event;       use Gdk.Event;
 with Gdk.GC;          use Gdk.GC;
-with Gdk.Rectangle;   use Gdk.Rectangle;
-with Gdk.Types;       use Gdk.Types;
 with Gtk.Widget;      use Gtk.Widget;
 with Gdk.Window;      use Gdk.Window;
 with Gtk.Object;      use Gtk.Object;
-with Gtk.Arguments;   use Gtk.Arguments;
 with Gtk.Handlers;    use Gtk.Handlers;
-with Gtk.Marshallers; use Gtk.Marshallers;
 with Gtkada.Types;    use Gtkada.Types;
-with Unchecked_Conversion;
-
-with System;
 
 package body My_Widget is
 
@@ -49,7 +42,8 @@ package body My_Widget is
    --    * Connect a function to the "destroy" callback to take care of
    --      the finalization of the object.
 
-   package Draw_Cb is new Handlers.Callback (Target_Widget_Record);
+   package Return_Boolean_Cb is new Handlers.Return_Callback
+     (Target_Widget_Record, Boolean);
 
    --  Define our own marshaller, since this is not one of the
    --  standard one.
@@ -62,16 +56,19 @@ package body My_Widget is
      Allocation_Cb.Marshallers.Generic_Marshaller
        (Gtk_Allocation_Access, Gtk.Widget.Get_Allocation);
 
-   package Button_Cb is new Handlers.User_Callback
-     (Target_Widget_Record, Integer);
-
    -----------------
    -- Draw_Target --
    -----------------
 
-   procedure Draw_Target (Widget  : access Target_Widget_Record'Class)
-     --  This function is called when we need to redraw the widget (for
-     --  instance whenever part of it has been cleared
+   function Draw_Target
+     (Widget  : access Target_Widget_Record'Class)
+      return Boolean;
+
+   function Draw_Target
+     (Widget  : access Target_Widget_Record'Class)
+      return Boolean
+      --  This function is called when we need to redraw the widget (for
+      --  instance whenever part of it has been cleared
    is
       Width, Height : Gint;
       Win  : Gdk.Window.Gdk_Window := Get_Window (Widget);
@@ -83,14 +80,14 @@ package body My_Widget is
             Color := Gdk.Color.Parse ("Red");
             Gdk.Color.Alloc (Gtk.Widget.Get_Default_Colormap, Color);
 
-            Gdk.Gc.Gdk_New (Widget.GC_In, Win);
-            Gdk.Gc.Set_Foreground (Widget.GC_In, Color);
+            Gdk.GC.Gdk_New (Widget.Gc_In, Win);
+            Gdk.GC.Set_Foreground (Widget.Gc_In, Color);
 
             Color := Gdk.Color.Parse ("Blue");
             Gdk.Color.Alloc (Gtk.Widget.Get_Default_Colormap, Color);
 
-            Gdk.Gc.Gdk_New (Widget.GC_Out, Win);
-            Gdk.Gc.Set_Foreground (Widget.GC_Out, Color);
+            Gdk.GC.Gdk_New (Widget.Gc_Out, Win);
+            Gdk.GC.Set_Foreground (Widget.Gc_Out, Color);
          end;
       end if;
 
@@ -113,21 +110,28 @@ package body My_Widget is
          Height => Widget.Radius / 2,
          Angle1 => 0,
          Angle2 => 360*64);
+      return True;
    end Draw_Target;
 
    ------------------
    -- Size_Request --
    ------------------
 
-   procedure Size_Request (Widget      : access Target_Widget_Record'Class;
-                           Requisition : Gtk_Requisition_Access)
-     --  This function is called by gtk+ when the widget is realized.
-     --  It should modify Requisition to ask for a appropriate size for
-     --  the widget. Note that the widget will not necessary have that size,
-     --  it could be bigger, depending on what it is contained into.
-     --  See the signal "size_allocate" too.
-     --  More information on the size requisition process can be found in the
-     --  book "Gtk+/Gnome Application Development" by Havoc Pennington.
+   procedure Size_Request
+     (Widget      : access Target_Widget_Record'Class;
+      Requisition : in Gtk_Requisition_Access);
+
+   procedure Size_Request
+     (Widget      : access Target_Widget_Record'Class;
+      Requisition : in Gtk_Requisition_Access)
+      --  This function is called by gtk+ when the widget is realized.
+      --  It should modify Requisition to ask for a appropriate size
+      --  for the widget. Note that the widget will not necessary have
+      --  that size, it could be bigger, depending on what it is
+      --  contained into. See the signal "size_allocate" too. More
+      --  information on the size requisition process can be found in
+      --  the book "Gtk+/Gnome Application Development" by Havoc
+      --  Pennington.
    is
    begin
       Requisition.Width := Widget.Radius;
@@ -142,15 +146,20 @@ package body My_Widget is
    -- Size_Allocate --
    -------------------
 
-   procedure Size_Allocate (Widget     : access Target_Widget_Record'Class;
-                            Allocation : Gtk_Allocation_Access)
-     --  This function is called once gtk has decided what size and position
-     --  the widget will actually have, or everytime the widget is resized.
-     --  This would be a good time for instance for resizing the component
-     --  sub-widgets.
-     --  Note that we have to move and resize the widget ourselves, and that
-     --  for such a simple case, we could simply rely on the ancestor's
-     --  size_allocation function.
+   procedure Size_Allocate
+     (Widget     : access Target_Widget_Record'Class;
+      Allocation : in     Gtk_Allocation_Access);
+
+   procedure Size_Allocate
+     (Widget     : access Target_Widget_Record'Class;
+      Allocation : in     Gtk_Allocation_Access)
+      --  This function is called once gtk has decided what size and
+      --  position the widget will actually have, or everytime the
+      --  widget is resized. This would be a good time for instance
+      --  for resizing the component sub-widgets. Note that we have to
+      --  move and resize the widget ourselves, and that for such a
+      --  simple case, we could simply rely on the ancestor's
+      --  size_allocation function.
    is
    begin
       if Realized_Is_Set (Widget) then
@@ -168,10 +177,15 @@ package body My_Widget is
    -- Clicked --
    -------------
 
-   procedure Clicked (Widget : access Target_Widget_Record'Class;
-                      Event  : in Gdk_Event;
-                      Dummy  : Integer)
-     -- called when the mouse is clicked within the widget
+   function Clicked
+     (Widget : access Target_Widget_Record'Class;
+      Event  : in     Gdk_Event)
+      return Boolean;
+   function Clicked
+     (Widget : access Target_Widget_Record'Class;
+      Event  : in     Gdk_Event)
+      return Boolean
+      --  called when the mouse is clicked within the widget
    is
       Tmp_X, Tmp_Y : Gint;
       Width, Height : Gint;
@@ -188,6 +202,7 @@ package body My_Widget is
       else
          Internal_Cb.Emit_By_Name (Widget, "missed");
       end if;
+      return True;
    end Clicked;
 
    -------------
@@ -233,14 +248,18 @@ package body My_Widget is
                   or Button_Press_Mask);
 
       --  Set up the appropriate callbacks to redraw, ...
-      Draw_Cb.Connect (Widget, "expose_event",
-                       Draw_Cb.To_Marshaller (Draw_Target'Access), True);
+      Return_Boolean_Cb.Connect
+         (Widget, "expose_event",
+          Return_Boolean_Cb.To_Marshaller (Draw_Target'Access), True);
+
       Size_Cb.Connect
         (Widget, "size_request",
          Requisition_Marshaller.To_Marshaller (Size_Request'Access));
-      Button_Cb.Connect
+
+      Return_Boolean_Cb.Connect
         (Widget, "button_release_event",
-         Button_Cb.To_Marshaller (Clicked'Access), 0);
+         Return_Boolean_Cb.To_Marshaller (Clicked'Access));
+
       Allocation_Cb.Connect
         (Widget, "size_allocate",
          Allocation_Marshaller.To_Marshaller (Size_Allocate'Access));

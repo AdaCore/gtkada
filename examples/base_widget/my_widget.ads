@@ -1,5 +1,5 @@
 with Glib; use Glib;
-with Gdk.Gc;
+with Gdk.GC;
 with Gtk.Drawing_Area;
 
 package My_Widget is

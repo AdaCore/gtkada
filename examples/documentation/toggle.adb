@@ -24,4 +24,4 @@ begin
 
    --  Add the pixmap to the button
    Gtk.Toggle_Button.Add (Toggle, PixmapWid);
-end;
+end Toggle;

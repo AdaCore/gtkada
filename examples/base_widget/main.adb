@@ -1,12 +1,8 @@
-with Glib;             use Glib;
 with Gtk.Box;          use Gtk.Box;
-with Gtk.Button;       use Gtk.Button;
-with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Label;        use Gtk.Label;
 with Gtk.Main;         use Gtk.Main;
 with Gtk.Handlers;     use Gtk.Handlers;
-with Gtk.Widget;       use Gtk.Widget;
 with Gtk.Window;       use Gtk.Window;
 
 with My_Widget; use My_Widget;
@@ -17,16 +13,30 @@ procedure Main is
    package Target_Cb is new Gtk.Handlers.User_Callback
      (Target_Widget_Record, String);
 
-   package Window_Cb is new Gtk.Handlers.Callback (Gtk_Window_Record);
+   package Window_Cb is new Gtk.Handlers.Return_Callback
+     (Gtk_Window_Record, Boolean);
 
-   procedure On_Main_Window_Delete_Event
-     (Object : access Gtk_Window_Record'Class) is
+   function On_Main_Window_Delete_Event
+     (Object : access Gtk_Window_Record'Class) return Boolean;
+   --  Callback for delete_event.
+
+   function On_Main_Window_Delete_Event
+     (Object : access Gtk_Window_Record'Class) return Boolean
+   is
+      pragma Unreferenced (Object);
    begin
       Gtk.Main.Gtk_Exit (0);
+      return True;
    end On_Main_Window_Delete_Event;
 
-   procedure Won (Widget : access Target_Widget_Record'Class;
-                  Message : String) is
+   procedure Won
+     (Widget  : access Target_Widget_Record'Class;
+      Message : in     String);
+   procedure Won
+     (Widget  : access Target_Widget_Record'Class;
+      Message : in     String)
+   is
+      pragma Unreferenced (Widget);
    begin
       Text_IO.Put_Line (Message);
    end Won;

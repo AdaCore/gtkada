@@ -1,7 +1,5 @@
 with Gtk.Separator;
-with Gtk.Container;
 with Gtk.Enums;
-with Gtk.Widget;
 
 package body My_Dialog is
 

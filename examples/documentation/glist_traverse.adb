@@ -1,5 +1,6 @@
-with Glib, Glib.Glist, Gtk.Enums, Ada.Text_IO;
-use  Glib, Ada.Text_IO;
+with Glib; use Glib;
+with Gtk.Enums;
+with Ada.Text_IO; use Ada.Text_IO;
 
 procedure Glist_Traverse is
    use Gtk.Enums.Gint_List;

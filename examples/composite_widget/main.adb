@@ -1,4 +1,3 @@
-with Glib;         use Glib;
 with Gtk.Box;      use Gtk.Box;
 with Gtk.Button;   use Gtk.Button;
 with Gtk.Enums;    use Gtk.Enums;
@@ -16,14 +15,26 @@ procedure Main is
 
    package Button_Cb is new Callback (Gtk_Button_Record);
    package Dialog_Cb is new Callback (Gtk_Widget_Record);
+   package Main_Cb is new Return_Callback (Gtk_Widget_Record, Boolean);
 
-   procedure On_Main_Window_Delete_Event
-     (Object : access Gtk_Widget_Record'Class) is
+   function On_Main_Window_Delete_Event
+     (Object : access Gtk_Widget_Record'Class) return Boolean;
+   --  Callback for delete_event
+
+   procedure Open_Dialog (B : access Gtk_Button_Record'Class);
+
+   function On_Main_Window_Delete_Event
+     (Object : access Gtk_Widget_Record'Class) return Boolean
+   is
+      pragma Unreferenced (Object);
    begin
       Gtk.Main.Gtk_Exit (0);
+      return True;
    end On_Main_Window_Delete_Event;
 
    procedure Open_Dialog (B : access Gtk_Button_Record'Class) is
+      pragma Unreferenced (B);
+
       Dialog : My_Dialog.My_Dialog;
       Button : Gtk_Button;
       Label  : Gtk_Label;
@@ -62,9 +73,9 @@ begin
                       Button_Cb.To_Marshaller (Open_Dialog'Access));
    Show (Ok);
 
-   Dialog_Cb.Connect
+   Main_Cb.Connect
      (Main_W, "delete_event",
-      Dialog_Cb.To_Marshaller (On_Main_Window_Delete_Event'Access));
+      Main_Cb.To_Marshaller (On_Main_Window_Delete_Event'Access));
 
    Show (Main_W);
 

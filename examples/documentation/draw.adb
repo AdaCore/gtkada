@@ -14,11 +14,11 @@ procedure Draw (Drawing : in out Gtk.Drawing_Area.Gtk_Drawing_Area) is
 begin
    -- Get the Gdk window
 
-   Gdkw := Gtk.Drawing_Area.Get_Window (Drawing) ;
+   Gdkw := Gtk.Drawing_Area.Get_Window (Drawing);
 
    -- Clear the window
 
-   GDK.Window.Clear (Gdkw) ;
+   Gdk.Window.Clear (Gdkw);
 
    -- Create a graphic context associated with this window
 
@@ -36,7 +36,7 @@ begin
 
    Gdk.Drawable.Draw_Arc
      (Drawable => Gdkw,
-      Gc       => gc,
+      Gc       => GC,
       Filled   => True,
       X        => 100,
       Y        => 100,
@@ -52,7 +52,7 @@ begin
    Gdk.Drawable.Draw_Text
      (Drawable    => Gdkw,
       Font        => Font,
-      Gc          => gc,
+      Gc          => GC,
       X           => 50,
       Y           => 50,
       Text        => "Hello World");

@@ -16,7 +16,7 @@ begin
                Allow_Grow   => False,
                Auto_Shrink  => False);
    Set_Position (Win, Win_Pos_Center);
-   Set_Usize (Win, 300, 300);
+   Set_Size_Request (Win, 300, 300);
 
    Gtk_New (Label, "You should show a pixmap instead...");
    Add (Win, Label);

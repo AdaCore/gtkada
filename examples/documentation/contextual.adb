@@ -1,28 +1,32 @@
 --  This example shows how you create contextual menus with the third mouse
 --  button.
 
-with Gtk.Handlers, Gtk.Menu, Gtk.Widget, Gdk.Types, Gdk.Event, Glib;
-with Gtk.Window, Gtk.Menu_Item, Gtk.Enums, Gtk.Main;
-use  Gtk.Handlers, Gtk.Menu, Gtk.Widget, Gdk.Types, Gdk.Event, Glib;
-use  Gtk.Window, Gtk.Menu_Item, Gtk.Enums, Gtk.Main;
+with Gtk.Handlers; use Gtk.Handlers;
+with Gtk.Menu; use Gtk.Menu;
+with Gdk.Event; use Gdk.Event;
+with Glib; use Glib;
+with Gtk.Window; use Gtk.Window;
+with Gtk.Menu_Item; use Gtk.Menu_Item;
+with Gtk.Enums; use Gtk.Enums;
+with Gtk.Main; use Gtk.Main;
 
 procedure Contextual is
 
    package Menu_Cb is new Gtk.Handlers.Return_Callback
      (Widget_Type => Gtk_Menu_Record,  Return_Type => Boolean);
 
-   function Popup_Menu_Handler (Menu  : access Gtk_Menu_Record'Class;
-                                Event : Gdk.Event.Gdk_Event)
-                               return Boolean
-   is
+   function Popup_Menu_Handler
+     (Menu  : access Gtk_Menu_Record'Class;
+      Event : Gdk.Event.Gdk_Event) return Boolean is
    begin
       if Gdk.Event.Get_Event_Type (Event) = Button_Press
         and then Gdk.Event.Get_Button (Event) = 3
       then
          Popup (Menu,
-                Button            => Gdk.Event.Get_Button (Event),
-                Activate_Time     => Gdk.Event.Get_Time (Event));
+                Button        => Gdk.Event.Get_Button (Event),
+                Activate_Time => Gdk.Event.Get_Time (Event));
       end if;
+
       return False;
    end Popup_Menu_Handler;
 
