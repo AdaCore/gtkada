@@ -1257,17 +1257,27 @@ package body Gtk.Macro is
    -- Save_Configure_Event --
    --------------------------
 
-   procedure Save_Configure_Event (Widget : access Gtk_Widget_Record'Class;
-                                     Event  : Gdk_Event_Configure)
-   is
+   procedure Save_Configure_Event
+     (Widget : access Gtk_Widget_Record'Class;
+      Event  : Gdk_Event_Configure) is
    begin
       null;
    end Save_Configure_Event;
 
-   function Parse_Cmd_Line (Switch : String) return Gint;
+   gnat_argc : Integer;
+   pragma Import (C, gnat_argc);
+
+   gnat_argv : System.Address;
+   pragma Import (C, gnat_argv);
+
+   function Parse_Cmd_Line
+     (Argc, Argv : System.Address; Switch : String) return Gint;
    pragma Import (C, Parse_Cmd_Line, "ada_gtk_parse_cmd_line");
+
 begin
-   if Parse_Cmd_Line ("--gtkada_macro" & ASCII.NUL) /= 0 then
+   if Parse_Cmd_Line
+     (gnat_argc'Address, gnat_argv, "--gtkada_macro" & ASCII.NUL) /= 0
+   then
       Gtk.Main.Init_Add (Initialize_Macro'Access, System.Null_Address);
    end if;
 end Gtk.Macro;

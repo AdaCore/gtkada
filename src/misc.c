@@ -120,20 +120,19 @@ ada_gtk_get_real_name (GtkWidget* w) {
  ********************************************************************/
 
 int
-ada_gtk_parse_cmd_line (char* macro_switch) {
+ada_gtk_parse_cmd_line (int *gnat_argc, char **gnat_argv, char* macro_switch)
+{
   int i;
-  extern int gnat_argc;
-  extern char** gnat_argv;
 
-  for (i=1; i<gnat_argc; i++)
+  for (i=1; i<*gnat_argc; i++)
     {
       if (! strcmp (gnat_argv[i], macro_switch)) {
-	while (i < gnat_argc - 1) {
+	while (i < * gnat_argc - 1) {
 	  gnat_argv [i] = gnat_argv [i + 1];
 	  i++;
 	}
 	gnat_argv [i] = NULL;
-	gnat_argc--;
+	*gnat_argc--;
 	return 1;
       }
     }
@@ -770,6 +769,16 @@ ada_gdk_gc_set_ts_origin (GdkGCValues* values,
  **  Support for events
  **********************************************************/
 
+#ifdef _WIN32
+#define ada_gdk_invalid_gdouble_value 1.79769313486232e308
+#define ada_gdk_invalid_gint_value (2<<31-1)
+#define ada_gdk_invalid_gint16_value (2<<15-1)
+#define ada_gdk_invalid_guint_value (2<<32-1)
+#define ada_gdk_invalid_guint16_value (2<<16-1)
+#define ada_gdk_invalid_guint32_value (2<<32-1)
+#define ada_gdk_invalid_gulong_value (2<<32-1)
+
+#else
 extern const gdouble ada_gdk_invalid_gdouble_value;
 extern const gint    ada_gdk_invalid_gint_value;
 extern const gint16  ada_gdk_invalid_gint16_value;
@@ -777,6 +786,7 @@ extern const guint   ada_gdk_invalid_guint_value;
 extern const guint16 ada_gdk_invalid_guint16_value;
 extern const guint32 ada_gdk_invalid_guint32_value;
 extern const gulong  ada_gdk_invalid_gulong_value;
+#endif
 
 gdouble ada_gdk_event_get_x (GdkEvent * event)
 {
