@@ -49,7 +49,8 @@ package Gdk.Event is
    --  Definition of the types --
    ------------------------------
 
-   type Gdk_Event is private;
+   type Gdk_Event is new Gdk.C_Proxy;
+
    subtype Gdk_Event_Any is Gdk_Event;
    --  Change from GtkAda1.2.3: There is no longer a tagged type
    --  hierarchy, only one type.
@@ -346,6 +347,10 @@ package Gdk.Event is
    procedure Set_Button (Event : in Gdk_Event; Button : Guint);
    --  Set the Button field of an event.
 
+   procedure Set_Time (Event : in Gdk_Event; Time : Guint32);
+   --  Set the time for the event.
+   --  If Time is 0, then it is set to the current time.
+
    procedure Set_State  (Event : in Gdk_Event;
                          State : in Gdk.Types.Gdk_Modifier_Type);
    --  Set the State field of an event.
@@ -403,6 +408,9 @@ package Gdk.Event is
 
    procedure Set_Message_Type (Event : in Gdk_Event; Typ : Gdk.Types.Gdk_Atom);
    --  Set the Message_Type field of an event.
+
+   procedure Set_String (Event : in Gdk_Event; Str : String);
+   --  Set the string associated with an event.
 
    -----------------------
    -- General functions --
@@ -467,24 +475,26 @@ package Gdk.Event is
    procedure Free (Event : in out Gdk_Event);
    --  Free the memory (and C structure) associated with an event.
    --  You need to call this function only if the event was created through
-   --  Allocate, not if it was created by GtkAda itself.
+   --  Allocate, not if it was created by GtkAda itself (or you would get
+   --  a segmentation fault).
 
-   type Event_Handler_Func is access procedure (Event : System.Address);
-   --  Function that can used as a new event handler.
+   type Event_Handler_Func is access procedure
+     (Event : System.Address; Data : System.Address);
+   --  Function that can be used as a new event handler.
    --  Use From_Address below to convert to a real event type.
    --  This function should dispatch all the events properly, since it replaces
    --  completly the default event handler. However, it can call
    --  Gtk.Main.Do_Event to take care of the events it does not know how to
    --  handle.
 
-   procedure Event_Handler_Set (Func : Event_Handler_Func);
+   procedure Event_Handler_Set
+     (Func : Event_Handler_Func; Data : System.Address);
    --  Set up a new event handler.
    --  This handler replaces the default GtkAda event handler, and thus should
    --  make sure that all events are correctly handled.
    --
-   --  Note that the C version of Event_Handler_Set allows extra data to be
-   --  passed to the handler, but since this function will rarely be used
-   --  anyway, it has not been implemented as a generic package.
+   --  Note that managing the memory for Data is your responsability, and
+   --  Data is passed as is to Func.
 
    function From_Address (C : System.Address) return Gdk_Event;
    --  Convert a C handler to the matching Event structure.
@@ -495,16 +505,18 @@ package Gdk.Event is
    function Is_Created (E : Gdk_Event) return Boolean;
    --  Return True if the underlying C event has been created.
 
-private
-
-   type Gdk_Event is record
-      Ptr          : Gdk.C_Proxy;
-      User_Created : Boolean := False;  --  True if allocated by the user
-   end record;
-
    -------------------
    -- Design issues --
    -------------------
    --  See gdk-event.adb for some of the design issues behing that package.
+
+private
+   pragma Import (C, Get_Event_Type, "ada_gdk_event_get_type");
+   pragma Import (C, Get_Window, "ada_gdk_event_get_window");
+   pragma Import (C, Get_Time, "gdk_event_get_time");
+   pragma Import (C, Put, "gdk_event_put");
+   pragma Import
+     (C, Send_Client_Message_To_All, "gdk_event_send_clientmessage_toall");
+   pragma Import (C, Set_Window, "ada_gdk_event_set_window");
 
 end Gdk.Event;
