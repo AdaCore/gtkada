@@ -74,7 +74,7 @@ package body Gtk.Adjustment is
    begin
       Internal (Get_Object (Adjustment), Page_Increment);
    end Set_Page_Increment;
- 
+
    -----------------
    --  Get_Value  --
    -----------------
@@ -114,6 +114,19 @@ package body Gtk.Adjustment is
                             Page_Increment, Page_Size));
    end Gtk_New;
 
+
+   ------------------------
+   -- Get_Step_Increment --
+   ------------------------
+
+   function Get_Step_Increment (Adjustment : in Gtk_Adjustment'Class)
+                                return Gfloat
+   is
+      function Internal (Adj : in System.Address) return Gfloat;
+      pragma Import (C, Internal, "gtk_adjustment_get_step_increment");
+   begin
+      return Internal (Get_Object (Adjustment));
+   end Get_Step_Increment;
 
    ---------------------------
    --  Null_Gtk_Adjustment  --

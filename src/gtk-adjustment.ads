@@ -45,6 +45,10 @@ package Gtk.Adjustment is
 
    function Get_Value (Adjustment : in Gtk_Adjustment'Class) return Gfloat;
 
+   function Get_Step_Increment (Adjustment : in Gtk_Adjustment'Class)
+                                return Gfloat;
+   --  mapping: Get_Step_Increment gtkadjustment.h adjustment->step_increment
+
    procedure Set_Value (Adjustment : in out Gtk_Adjustment'Class;
                         Value      : in     Gfloat);
    --  mapping: Set_Value gtkadjustment.h gtk_adjustment_set_value
