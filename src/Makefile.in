@@ -78,7 +78,7 @@ dirs:: force
 	-$(MKDIR) $(LIB_DIR)
 	-$(CHMOD) +x $(GATE) $(GTKADA_CONFIG)
 
-$(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects) $(c_extra_objects)
+$(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
 ifeq ($(BUILD_SHARED),yes)
 	$(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
 	  $(SO_OPTS)$(SONAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o \
@@ -92,7 +92,7 @@ ifeq ($(BUILD_SHARED),yes)
 	fi
 endif
 
-$(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects) $(c_extra_objects)
+$(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
 	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(LIB_DIR)/pango*.o $(c_objects) $(c_extra_objects)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) $(ARCHIVENAME); \
