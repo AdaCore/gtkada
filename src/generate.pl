@@ -232,7 +232,7 @@ sub parse_definition_file
       # Get the package name from the name of the structure. Given the
       # various casing used in Gtk+/Gnome, there are a few exceptions that
       # we need to handle manually
-      
+
       $current_package = ($1 eq "GnomeDEntryEdit") ? "Dentry_Edit" :$1;
       $current_package = &create_ada_name ($current_package);
 
@@ -543,6 +543,7 @@ sub print_new_declaration
 sub print_initialize_declaration
 {
     my ($func_name) = shift;
+    my ($in_spec) = shift;
     my (@arguments) = @_;
     my ($string);
     my ($indent) = "";
@@ -552,10 +553,12 @@ sub print_initialize_declaration
     $indent = ' ' x (length ($string));
     &print_arguments ($indent, "void", \&convert_ada_type,
 		      3, 2, @arguments);
-    push (@output,
-	  ";\n   --  Internal initialization function.\n",
-	  "   --  See the section \"Creating your own widgets\" in "
-	  . "the documentation.\n\n");
+    if ($in_spec) {
+      push (@output,
+	    ";\n   --  Internal initialization function.\n",
+	    "   --  See the section \"Creating your own widgets\" in "
+	    . "the documentation.\n\n");
+    }
 }
 
 #########################
@@ -634,8 +637,10 @@ sub print_arguments
 	    # to the access type.
 	    } elsif ($type =~ /(.*)\*$/) {
 	      $type = $1;
-	      $type = "$1_Access" if ($type =~ /(.*)\*$/);
-	      $type = "out $type";
+	      if ($type !~ /^Gdk/) {
+		$type = "$1_Access" if ($type =~ /(.*)\*$/);
+		$type = "out $type";
+	      }
 
 	    # Else, simply an "in" parameter
 	    } else {
@@ -766,7 +771,7 @@ sub print_declaration
       {
 	&print_new_declaration ($func_name, @arguments);
 	push (@output, ";\n\n");
-	&print_initialize_declaration ($func_name, @arguments);
+	&print_initialize_declaration ($func_name, 1, @arguments);
 	if ($has_get_type_subprogram) {
 	  push (@output, "   function Get_Type return Gtk.Gtk_Type;\n");
 	  push (@output, "   --  Return the internal value associated with"
@@ -820,7 +825,7 @@ sub print_body
  	push (@output, "   " . '-' x length ($string) . "\n");
  	push (@output, "   " . $string . "\n");
  	push (@output, "   " . '-' x length ($string) . "\n\n");
- 	&print_initialize_declaration ($func_name, @arguments);
+ 	&print_initialize_declaration ($func_name, 0, @arguments);
  	$adaname = "Initialize";
       }
     else
@@ -946,9 +951,12 @@ sub convert_ada_type
     } elsif ($type eq "Root_Type") {
 	return "Root_Type";
     } elsif ($type =~ /GSList\*/) {
-      $with_list {"with Glib.GSList"};
+      $with_list {"with Glib.GSList"} ++;
       return "GSList";
-    } elsif ($type =~ /(G[dt]k|Gnome)([^*]+)\*/) {
+    } elsif ($type =~ /Gdk([^*]+)\*/) {
+      $with_list {"with Gdk.$1"} ++;
+      return "Gdk.$1.Gdk_$1";
+    } elsif ($type =~ /(Gtk|Gnome)([^*]+)\*/) {
       my ($t) = $2;
       my ($prefix) = $1;
       return "Object'Class" if ($t eq "Object");
@@ -1000,6 +1008,9 @@ sub convert_c_type
 
     } elsif ($type eq "gfloat") {
       return "Gfloat";
+
+    } elsif ($type =~ /^(Gdk[^*]*)\*/) {
+      return $1;
 
     } elsif ($type =~ /(const)?g?char\*/) {
       return "String";
