@@ -1,0 +1,42 @@
+Here are the API changes that occured between GtkAda 1.2 and GtkAda 2.0:
+
+Glib:
+  GType_* constants replace Gtk.Gtk_Type_*
+Gdk.Event:
+  Get_Pressure, Get_Xtilt, Get_Ytilt, Get_Source: removed
+  Get_Type: replace Gtk.Gtk_Type_Gdk_Event
+  Get_Event: replace Gtk.Arguments.To_Event
+Gdk.Region:
+  Union_With_Rect, Intersect, Union, Substract, Gdk_Xor: Profile changed,
+    Source1 is now in out (both source and result).
+Gdk.Rgb:
+  Get_8, Set_8: removed
+Gtk:
+  Gtk_Type_* constants replaced by Glib.GType_*
+  Gtk_Type_Gdk_Event: replace by Gdk.Event.Get_Type
+Gtk.Arguments obsolete, use Glib.Values instead
+Gtk.Color_Selection:
+  Set_Opacity: removed
+Gtk.Color_Selection_Dialog:
+  Get_Reset_Button: removed
+Gtk.Container:
+  Get_Toplevels, Register_Toplevel, Unregister_Toplevel: removed
+Gtk.Editable:
+  Claim_Selection: removed
+  Get_Selection_End_Pos/Start_Pos: replaced by Get_Selection_Bounds.
+Gtk.Font_Selection:
+  Set_Filter: removed
+Gtk.Handlers:
+  Use Glib.Values instead of Gtk.Arguments.
+  Relatively good compatibility kept however.
+Gtk.Marshallers:
+  Use Glib.Values instead of Gtk.Arguments.
+Gtk.Menu:
+  Append, Insert, Prepend: removed since redundant with Gtk.Menu_Shell
+Gtk.Notebook:
+  Get_Notebook_Page: replace Gtk.Arguments.To_Notebook_Page
+Gtk.Paned:
+  Set/Get_Gutter_Size: removed since there is no longer a gutter
+Gtk.Widget:
+  Get_Visual: removed
+
