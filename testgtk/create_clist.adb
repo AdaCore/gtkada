@@ -68,26 +68,23 @@ package body Create_Clist is
    Clist_Omenu_Group  : Widget_Slist.GSlist;
 
    Titles : constant Chars_Ptr_Array (1 .. Clist_Columns):=
-     (ICS.New_String ("Auto resize"),
-      ICS.New_String ("Not resizable"),
-      ICS.New_String ("Max width 100"),
-      ICS.New_String ("Min Width 50"),
-      ICS.New_String ("Hide column"),
-      ICS.New_String ("Title 5"),
-      ICS.New_String ("Title 6"),
-      ICS.New_String ("Title 7"),
-      ICS.New_String ("Title 8"),
-      ICS.New_String ("Title 9"),
-      ICS.New_String ("Title 10"),
-      ICS.New_String ("Title 11"));
+     "Auto resize" +
+     "Not resizable" +
+     "Max width 100" +
+     "Min Width 50" +
+     "Hide column" +
+     "Title 5" +
+     "Title 6" +
+     "Title 7" +
+     "Title 8" +
+     "Title 9" +
+     "Title 10" +
+     "Title 11";
    --  Put at the library level to avoid having to allocate/free the
    --  memory each time "Run" is called...
 
    Items : constant Chars_Ptr_Array :=
-     (ICS.New_String ("Single"),
-      ICS.New_String ("Browse"),
-      ICS.New_String ("Multiple"),
-      ICS.New_String ("Extended"));
+     "Single" + "Browse" + "Multiple" + "Extended";
 
    ----------
    -- Help --
@@ -178,10 +175,7 @@ package body Create_Clist is
       for I in 4 .. Clist_Columns - 1 loop
          Texts (I) := ICS.New_String ("Column" & IC.size_t'Image (I));
       end loop;
-      Texts (3) := ICS.Null_Ptr;
-      Texts (1) := ICS.New_String ("Right");
-      Texts (2) := ICS.New_String ("Center");
-      Texts (0) := ICS.Null_Ptr;
+      Texts (0 .. 3) := Null_Ptr + "Right" + "Center" + Null_Ptr;
       Freeze (List);
 
       for I in 0 .. 999 loop
@@ -211,16 +205,16 @@ package body Create_Clist is
       for I in 3 .. Clist_Columns - 1 loop
          Texts (I) := ICS.New_String ("Column" & IC.size_t'Image (I));
       end loop;
-      Texts (1) := ICS.New_String ("Right");
-      Texts (2) := ICS.New_String ("Center");
-      Texts (0) := ICs.Null_Ptr;
 
+      Texts (0 .. 2) := Null_Ptr + "Right" + "Center";
       Freeze (List);
+
       for I in 0 .. 9999 loop
          Ics.Free (Texts (0));
          Texts (0) := ICS.New_String ("Row" & Integer'Image (I));
          Row := Append (List, Texts);
       end loop;
+
       Clist_Rows := Clist_Rows + 10000;
       Free (Texts);
       Thaw (List);
@@ -231,19 +225,10 @@ package body Create_Clist is
    ----------------
 
    procedure Insert_Row (List : access Gtk_Clist_Record'Class) is
-      Texts  : Chars_Ptr_Array (0 .. Clist_Columns - 1)
-        := (ICS.New_String ("This"),
-            ICS.New_String ("is an"),
-            ICS.New_String ("inserted"),
-            ICS.New_String ("row"),
-            ICS.New_String ("This"),
-            ICS.New_String ("is an"),
-            ICS.New_String ("inserted"),
-            ICS.New_String ("row"),
-            ICS.New_String ("This"),
-            ICS.New_String ("is an"),
-            ICS.New_String ("inserted"),
-            ICS.New_String ("row"));
+      Texts  : Chars_Ptr_Array (0 .. Clist_Columns - 1) :=
+        "This" + "is an" + "inserted" + "row" +
+        "This" + "is an" + "inserted" + "row" +
+        "This" + "is an" + "inserted" + "row";
       Col1 : Gdk_Color;
       Col2 : Gdk_Color;
       Row  : Gint;

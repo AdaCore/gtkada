@@ -44,21 +44,15 @@ with Gtkada.Types;        use Gtkada.Types;
 
 with Ada.Text_IO;   use Ada.Text_IO;
 with Common; use Common;
-with Interfaces.C.Strings;
 
 package body Create_List is
-
-   package ICS renames Interfaces.C.Strings;
 
    package List_Cb is new Handlers.Callback (Gtk_List_Record);
 
    Num_Item : Natural := 0;
 
    Items : constant Chars_Ptr_Array :=
-     (ICS.New_String ("Single"),
-      ICS.New_String ("Browse"),
-      ICS.New_String ("Multiple"),
-      ICS.New_String ("Extended"));
+     "Single" + "Browse" + "Multiple" + "Extended";
 
    List : Gtk_List;
    Omenu_Group  : Widget_Slist.GSlist;

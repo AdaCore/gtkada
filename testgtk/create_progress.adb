@@ -47,23 +47,15 @@ with Gtk;                 use Gtk;
 with Gtkada.Types;        use Gtkada.Types;
 
 with Common; use Common;
-with Interfaces.C.Strings;
 
 package body Create_Progress is
-
-   package ICS renames Interfaces.C.Strings;
 
    package Time_Cb  is new Gtk.Main.Timeout (Gtk_Progress_Bar);
 
    Items1 : constant Chars_Ptr_Array :=
-     (ICS.New_String ("Left-Right"),
-      ICS.New_String ("Right-Left"),
-      ICS.New_String ("Bottom-Top"),
-      ICS.New_String ("Top-Bottom"));
+     "Left-Right" + "Right-Left" + "Bottom-Top" + "Top-Bottom";
 
-   Items2 : constant Chars_Ptr_Array :=
-     (ICS.New_String ("Continuous"),
-      ICS.New_String ("Discrete"));
+   Items2 : constant Chars_Ptr_Array := "Continuous" + "Discrete";
 
    type Simple_Cb_Func is access
      procedure (Wiget : access Gtk_Widget_Record'Class);

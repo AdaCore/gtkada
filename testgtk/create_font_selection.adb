@@ -30,7 +30,6 @@
 with Gtk.Font_Selection;   use Gtk.Font_Selection;
 with Gtk;                  use Gtk;
 with Gtkada.Types;         use Gtkada.Types;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Create_Font_Selection is
 
@@ -51,7 +50,6 @@ package body Create_Font_Selection is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Font       : Gtk_Font_Selection;
    begin
-
       Set_Label (Frame, "Font Selection");
 
       Gtk_New (Font);
@@ -60,15 +58,8 @@ package body Create_Font_Selection is
 
       Set_Filter (Font,
                   Filter_Type  => Font_Filter_User,
-                  Slants => (New_String ("italic"),
-                             New_String ("roman")),
-                  Weights => (1 => New_String ("bold"))
-                  );
---        Set_Filter (Font,
---                    Filter_Type  => Font_Filter_Base,
---                    Weights => (1 => New_String ("bold"))
---                    );
-
+                  Slants => "italic" + "roman",
+                  Weights => Null_Array + "bold");
    end Run;
 
 end Create_Font_Selection;

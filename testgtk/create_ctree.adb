@@ -56,13 +56,11 @@ with Gtkada.Types;
 with Ada.Numerics.Discrete_Random;
 with Ada.Text_IO;
 with Common;
-with Interfaces.C.Strings;
 
 package body Create_Ctree is
 
-   package ICS renames Interfaces.C.Strings;
-
    use type Gtk.Window.Gtk_Window;
+   use Gtkada.Types;
 
    package Ctree_Style_Row_Data is new Gtk.Ctree.Row_Data (Gtk.Style.Gtk_Style);
 
@@ -97,34 +95,21 @@ package body Create_Ctree is
    Books : Gint := 0;
    Pages : Gint := 0;
 
-   Title : constant Gtkada.Types.Chars_Ptr_Array :=
-     (ICS.New_String ("Tree"),
-      ICS.New_String ("Info"));
+   Title : constant Chars_Ptr_Array := "Tree" + "Info";
 
-   Items1 : constant Gtkada.Types.Chars_Ptr_Array :=
-     (ICS.New_String ("No lines"),
-      ICS.New_String ("Solid"),
-      ICS.New_String ("Dotted"),
-      ICS.New_String ("Tabbed"));
+   Items1 : constant Chars_Ptr_Array :=
+     "No lines" + "Solid" + "Dotted" + "Tabbed";
 
-   Items2 : constant Gtkada.Types.Chars_Ptr_Array :=
-     (ICS.New_String ("None"),
-      ICS.New_String ("Square"),
-      ICS.New_String ("Triangle"),
-      ICS.New_String ("Circular"));
+   Items2 : constant Chars_Ptr_Array :=
+     "None" + "Square" + "Triangle" + "Circular";
 
-   Items3 : constant Gtkada.Types.Chars_Ptr_Array :=
-     (ICS.New_String ("Left"),
-      ICS.New_String ("Right"));
+   Items3 : constant Chars_Ptr_Array := "Left" + "Right";
 
-   Items4 : constant Gtkada.Types.Chars_Ptr_Array :=
-     (ICS.New_String ("Single"),
-      ICS.New_String ("Browse"),
-      ICS.New_String ("Multiple"),
-      ICS.New_String ("Extended"));
+   Items4 : constant Chars_Ptr_Array :=
+     "Single" + "Browse" + "Multiple" + "Extended";
+
    --  Put at the package level, because we would like to avoid allocating
    --  then freeing the memory every time we click on the "ctree" button.
-
 
    ----------
    -- Help --
@@ -531,7 +516,7 @@ package body Create_Ctree is
                               Num_Pages : in     Gint;
                               Parent    : in     Gtk.Ctree.Gtk_Ctree_Node) is
 
-      Text : Gtkada.Types.Chars_Ptr_Array (1 .. Title'length);
+      Text : Chars_Ptr_Array (Title'Range);
       Gen : Gint_Random.Generator;
       Sibling : Gtk.Ctree.Gtk_Ctree_Node;
       Style : Gtk.Style.Gtk_Style;
@@ -544,11 +529,8 @@ package body Create_Ctree is
       Gint_Random.Reset (Gen);
 
       for I in reverse Num_Books + 1 .. Num_Pages + Num_Books loop
-
          Pages := Pages + 1;
-         Text (1) := ICS.New_String
-           ("Page" & Gint'Image (Gint_Random.Random (Gen) mod 100));
-         Text (2) := ICS.New_String
+         Text := "Page" & Gint'Image (Gint_Random.Random (Gen) mod 100) +
            ("Item" & Gint'Image (Cur_Depth) & "-" & Common.Image_Of (I));
          Sibling := Gtk.Ctree.Insert_Node
            (Ctree,
@@ -571,8 +553,7 @@ package body Create_Ctree is
                Style => Gtk.Ctree.Node_Get_Row_Style (Ctree, Node => Parent));
          end if;
 
-         Gtkada.Types.Free (Text);
-
+         Free (Text);
       end loop;
 
       if Cur_Depth = Depth then
@@ -580,11 +561,8 @@ package body Create_Ctree is
       end if;
 
       for I in reverse 1 .. Num_Books loop
-
          Books := Books + 1;
-         Text (1) := ICS.New_String
-           ("Book" & Gint'Image (Gint_Random.Random (Gen) mod 100));
-         Text (2) := ICS.New_String
+         Text := "Book" & Gint'Image (Gint_Random.Random (Gen) mod 100) +
            ("Item" & Gint'Image (Cur_Depth) & "-" & Common.Image_Of (I));
          Sibling := Gtk.Ctree.Insert_Node
            (Ctree,
@@ -600,6 +578,7 @@ package body Create_Ctree is
             Expanded => False);
 
          Gtk.Style.Gtk_New (Style);
+
          case Cur_Depth mod 3 is
             when 0 =>
                Gdk.Color.Set_Rgb
@@ -638,13 +617,11 @@ package body Create_Ctree is
               (Ctree, Node => Sibling, Style => Style);
          end if;
 
-         Gtkada.Types.Free (Text);
+         Free (Text);
 
          Build_Recursive (Ctree, Cur_Depth + 1, Depth, Num_Books,
                           Num_Pages, Sibling);
-
       end loop;
-
    end Build_Recursive;
 
    ------------------
@@ -653,15 +630,13 @@ package body Create_Ctree is
 
    procedure Rebuild_Tree (Ctree : in Gtk.Ctree.Gtk_Ctree) is
       B, D, P, N : Gint;
-      Text : Gtkada.Types.Chars_Ptr_Array (1 .. Title'length);
+      Text : Chars_Ptr_Array (Title'Range);
       Parent : Gtk.Ctree.Gtk_Ctree_Node;
       Style : Gtk.Style.Gtk_Style;
       Tmp_Color : Gdk.Color.Gdk_Color;
 
    begin
-
-      Text (1) := ICS.New_String ("Root");
-      Text (2) := ICS.New_String ("");
+      Text := "Root" + "";
 
       D := Gtk.Spin_Button.Get_Value_As_Int (Spin1);
       B := Gtk.Spin_Button.Get_Value_As_Int (Spin2);
@@ -695,6 +670,7 @@ package body Create_Ctree is
                                        Mask_Opened => Mask2,
                                        Is_Leaf => False,
                                        Expanded => True);
+      Free (Text);
 
       Gtk.Style.Gtk_New (Style);
       Gdk.Color.Set_Rgb (Tmp_Color, Red => 0, Green => 45_000, Blue => 55_000);
