@@ -960,6 +960,7 @@ package body Gtk.Macro is
       Show_All (Win);
       Set_Style (Global_Rec, Toolbar_Icons);
 
+      --  ??? Could we use gdk_window_add_filter instead ?
       Event_Handler_Set
         (My_Event_Handler'Access,
          To_System_Address (Global_Rec));
