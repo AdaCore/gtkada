@@ -44,7 +44,7 @@
   	      y = 0;
   	      gdk_window_get_size (window, &w, &h);
   	    }
-! 	  paint_selection (ancestor->window, gc, 0, 0, w, h);
+! 	  paint_selection (ancestor->window, gc, x, y, w, h);
   	}
         /* SPECIAL CODE: Don't try to paint selection boxes around ancestors of
   	 a viewport, as the coordinates are completely different. */
