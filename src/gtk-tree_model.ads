@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -52,6 +51,7 @@
 --  model, not a fixed row.
 --
 --  </description>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Object;
 with Glib.Values;
@@ -82,8 +82,7 @@ package Gtk.Tree_Model is
    --  Return the number of columns supported by Tree_Model.
 
    function Get_Column_Type
-     (Tree_Model : access Gtk_Tree_Model_Record; Index : Gint)
-     return GType;
+     (Tree_Model : access Gtk_Tree_Model_Record; Index : Gint) return GType;
    --  Return the type of the Index-th column in the model.
 
    ------------------------
@@ -104,8 +103,9 @@ package Gtk.Tree_Model is
    --  This string is a colon-separated list of numbers, as described above.
 
    procedure Append_Index (Path : Gtk_Tree_Path; Index : Gint);
-   --  Append a new index to a path.  As a result, the depth of the path is
-   --  increased.. See Path_Up for the opposite operation.
+   --  Append a new index to a path.
+   --  As a result, the depth of the path is increased. See Path_Up for the
+   --  opposite operation.
 
    procedure Prepend_Index (Path : Gtk_Tree_Path; Index : Gint);
    --  Prepend a new index to a path.  As a result, the depth of the path is
@@ -155,8 +155,6 @@ package Gtk.Tree_Model is
    function Is_Descendant (Path, Ancestor : Gtk_Tree_Path) return Boolean;
    --  Return True if Path is contained inside Ancestor.
 
-   pragma Import (C, Next, "gtk_tree_path_next");
-
    --------------------------------
    -- Row_Reference manipulation --
    --------------------------------
@@ -179,11 +177,8 @@ package Gtk.Tree_Model is
    function Valid (Reference : Gtk_Tree_Row_Reference) return Boolean;
    --  Return True if Reference is non null and is still valid.
 
-   procedure Free (Reference : Gtk_Tree_Row_Reference);
+   procedure Row_Reference_Free (Reference : Gtk_Tree_Row_Reference);
    --  Free the memory occupied by Reference.
-
-   pragma Import (C, Get_Path, "gtk_tree_row_reference_get_path");
-   pragma Import (C, Free,     "gtk_tree_row_reference_free");
 
    ---------------
    -- Iterators --
@@ -212,7 +207,7 @@ package Gtk.Tree_Model is
    function Get_Path
      (Tree_Model : access Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter) return Gtk_Tree_Path;
-   --  Returns a newly created Gtk_Tree_Path referenced by Iter.
+   --  Return a newly created Gtk_Tree_Path referenced by Iter.
    --  This path must be freed with Path_Free.
 
    procedure Next
@@ -225,7 +220,7 @@ package Gtk.Tree_Model is
      (Tree_Model : access Gtk_Tree_Model_Record;
       Parent     : Gtk_Tree_Iter) return Gtk_Tree_Iter;
    --  Return the first child of Parent.
-   --  If Parent has no children, Iter is set to Null_Iter.
+   --  If Parent has no children, return Null_Iter.
    --  Parent will remain a valid node after this function has been called.
 
    function Has_Child
@@ -236,8 +231,9 @@ package Gtk.Tree_Model is
    function N_Children
      (Tree_Model : access Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter := Null_Iter) return Gint;
-   --  Returns the number of children that Iter has.  As a special case, if
-   --  Iter is Null_Iter, then the number of toplevel nodes is returned.
+   --  Return the number of children that Iter has.
+   --  As a special case, if Iter is Null_Iter, then the number of toplevel
+   --  nodes is returned.
 
    function Nth_Child
      (Tree_Model : access Gtk_Tree_Model_Record;
@@ -245,37 +241,38 @@ package Gtk.Tree_Model is
       N          : Gint) return Gtk_Tree_Iter;
    --  Return the child of Parent, using the given index.
    --  The First index is 0. If Index is too big, or Parent has no children,
-   --  Iter is set to Null_Iter.
+   --  return Null_Iter.
    --  If Parent is Null_Iter, then the nth root node is set.
 
    function Parent
      (Tree_Model : access Gtk_Tree_Model_Record;
-      Child      : Gtk_Tree_Iter)
-      return Gtk_Tree_Iter;
+      Child      : Gtk_Tree_Iter) return Gtk_Tree_Iter;
    --  Return the parent of Child.
    --  If Child is at the toplevel, and doesn't have a parent, then Null_Iter
-   --  is returned;
+   --  is returned.
 
    procedure Ref_Node
      (Tree_Model : access Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter);
-   --  Lets the tree reference the node.  This is an optional method for
-   --  models to implement.  To be more specific, models may ignore this
-   --  call as it exists  primarily for performance reasons.   This function
-   --  is primarily meant as a way for views to let caching model know  when
-   --  nodes are being displayed (and hence, whether or not to cache that node)
-   --  For example, a file-system based model would not want to keep the
-   --  entire file-heirarchy in memory, just the sections that are currently
-   --  being  displayed by every current view.
+   --  Let the tree reference the node.
+   --  This is an optional method for models to implement.
+   --  To be more specific, models may ignore this call as it exists primarily
+   --  for performance reasons. This function is primarily meant as a way for
+   --  views to let caching model know when nodes are being displayed (and
+   --  hence, whether or not to cache that node). For example, a file-system
+   --  based model would not want to keep the entire file-hierarchy in memory,
+   --  just the sections that are currently being displayed by every current
+   --  view.
 
    procedure Unref_Node
      (Tree_Model : access Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter);
-   --  Lets the tree unref the node.  This is an optional method for models
-   --  to implement.  To be more specific, models may ignore this call as it
-   --  exists  primarily for performance reasons.  For more information on what
-   --  this means, please see Tree_Model_Ref_Node. Please note that nodes that
-   --  are deleted are not unreferenced.
+   --  Let the tree unref the node.
+   --  This is an optional method for models to implement. To be more specific,
+   --  models may ignore this call as it exists primarily for performance
+   --  reasons. For more information on what this means, please see
+   --  Tree_Model_Ref_Node. Please note that nodes that are deleted are not
+   --  unreferenced.
 
    procedure Get_Value
      (Tree_Model : access Gtk_Tree_Model_Record;
@@ -410,9 +407,8 @@ private
    Null_Iter : constant Gtk_Tree_Iter :=
      (0, System.Null_Address, System.Null_Address, System.Null_Address);
 
-   for Null_Iter'Address use System.Null_Address;
-
    pragma Import (C, Get_Type,      "gtk_tree_model_get_type");
+   pragma Import (C, Row_Reference_Free, "gtk_tree_row_reference_free");
    pragma Import (C, Append_Index,  "gtk_tree_path_append_index");
    pragma Import (C, Prepend_Index, "gtk_tree_path_prepend_index");
    pragma Import (C, Get_Depth,     "gtk_tree_path_get_depth");
@@ -421,7 +417,6 @@ private
    pragma Import (C, Compare,       "gtk_tree_path_compare");
    pragma Import (C, Down,          "gtk_tree_path_down");
 end Gtk.Tree_Model;
-
 
 --  Not bound:
 --  gtk_tree_row_reference_new_proxy ()

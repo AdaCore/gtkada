@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,11 +36,11 @@ package body Gtk.Tree_Model_Sort is
    -- Get_Model --
    ---------------
 
-   function Get_Model (Tree_Model : access Gtk_Tree_Model_Sort_Record)
-                       return Gtk.Tree_Model.Gtk_Tree_Model
+   function Get_Model
+     (Tree_Model : access Gtk_Tree_Model_Sort_Record)
+      return Gtk.Tree_Model.Gtk_Tree_Model
    is
-      function Internal (Tree_Model : System.Address)
-                         return System.Address;
+      function Internal (Tree_Model : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_tree_model_sort_get_model");
 
       Stub : Gtk.Tree_Model.Gtk_Tree_Model_Record;
@@ -83,14 +82,13 @@ package body Gtk.Tree_Model_Sort is
    is
       procedure Internal
         (Tree_Model_Sort : System.Address;
-         Sort_Iter       : System.Address;
-         Child_Iter      : System.Address);
-      pragma Import (C, Internal,
-                     "gtk_tree_model_sort_convert_child_iter_to_iter");
+         Sort_Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Child_Iter      : Gtk.Tree_Model.Gtk_Tree_Iter);
+      pragma Import
+        (C, Internal, "gtk_tree_model_sort_convert_child_iter_to_iter");
+
    begin
-      Internal (Get_Object (Tree_Model_Sort),
-                Sort_Iter'Address,
-                Child_Iter'Address);
+      Internal (Get_Object (Tree_Model_Sort), Sort_Iter, Child_Iter);
    end Convert_Child_Iter_To_Iter;
 
    --------------------------------
@@ -104,15 +102,13 @@ package body Gtk.Tree_Model_Sort is
    is
       function Internal
         (Tree_Model_Sort : System.Address;
-         Sorted_Path     : System.Address)
+         Sorted_Path     : Gtk.Tree_Model.Gtk_Tree_Path)
          return Gtk.Tree_Model.Gtk_Tree_Path;
-      pragma Import (C, Internal,
-                     "gtk_tree_model_sort_convert_path_to_child_path");
-
+      pragma Import
+        (C, Internal, "gtk_tree_model_sort_convert_path_to_child_path");
 
    begin
-      return Internal (Get_Object (Tree_Model_Sort),
-                       Sorted_Path.all'Address);
+      return Internal (Get_Object (Tree_Model_Sort), Sorted_Path);
    end Convert_Path_To_Child_Path;
 
    --------------------------------
@@ -126,14 +122,13 @@ package body Gtk.Tree_Model_Sort is
    is
       procedure Internal
         (Tree_Model_Sort : System.Address;
-         Child_Iter      : System.Address;
-         Sorted_Iter     : System.Address);
-      pragma Import (C, Internal,
-                     "gtk_tree_model_sort_convert_iter_to_child_iter");
+         Child_Iter      : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Sorted_Iter     : Gtk.Tree_Model.Gtk_Tree_Iter);
+      pragma Import
+        (C, Internal, "gtk_tree_model_sort_convert_iter_to_child_iter");
+
    begin
-      Internal (Get_Object (Tree_Model_Sort),
-                Child_Iter'Address,
-                Sorted_Iter'Address);
+      Internal (Get_Object (Tree_Model_Sort), Child_Iter, Sorted_Iter);
    end Convert_Iter_To_Child_Iter;
 
    -----------------------------

@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,10 +26,10 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Tree_Model;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk; use Gtk;
+with Gtk.Enums;      use Gtk.Enums;
+with Gtk.Tree_Model; use Gtk.Tree_Model;
+with Gtk.Widget;     use Gtk.Widget;
+with Gtk;            use Gtk;
 with System;
 
 package body Gtk.Tree_Selection is
@@ -44,17 +43,36 @@ package body Gtk.Tree_Selection is
       procedure Selected_Foreach
         (Selection : access Gtk_Tree_Selection_Record'Class;
          Func      : Foreach_Func;
-         Data      : Data_Type)
+         Data      : Data_Type_Access)
       is
+
+         procedure C_Foreach_Func
+           (Model : System.Address;
+            Path  : Gtk_Tree_Path;
+            Iter  : Gtk_Tree_Iter;
+            Data  : Data_Type_Access);
+         pragma Convention (C, C_Foreach_Func);
+
+         procedure C_Foreach_Func
+           (Model : System.Address;
+            Path  : Gtk_Tree_Path;
+            Iter  : Gtk_Tree_Iter;
+            Data  : Data_Type_Access)
+         is
+            Stub : Gtk_Tree_Model_Record;
+         begin
+            Func
+              (Gtk_Tree_Model (Get_User_Data (Model, Stub)), Path, Iter, Data);
+         end C_Foreach_Func;
+
          procedure Internal
            (Selection : System.Address;
-            Func      : Foreach_Func;
-            Data      : System.Address);
+            Func      : System.Address;
+            Data      : Data_Type_Access);
          pragma Import (C, Internal, "gtk_tree_selection_selected_foreach");
+
       begin
-         Internal (Get_Object (Selection),
-                   Func,
-                   Data'Address);
+         Internal (Get_Object (Selection), C_Foreach_Func'Address, Data);
       end Selected_Foreach;
 
    end Selection_Foreach;
@@ -69,25 +87,26 @@ package body Gtk.Tree_Selection is
    is
       procedure Internal
         (Selection : System.Address;
-         The_Type  : Gint);
+         The_Type  : Gtk_Selection_Mode);
       pragma Import (C, Internal, "gtk_tree_selection_set_mode");
+
    begin
-      Internal (Get_Object (Selection),
-                Gtk_Selection_Mode'Pos (The_Type));
+      Internal (Get_Object (Selection), The_Type);
    end Set_Mode;
 
    --------------
    -- Get_Mode --
    --------------
 
-   function Get_Mode (Selection : access Gtk_Tree_Selection_Record'Class)
-                      return Gtk_Selection_Mode
+   function Get_Mode
+     (Selection : access Gtk_Tree_Selection_Record'Class)
+      return Gtk_Selection_Mode
    is
-      function Internal (Selection : System.Address)
-                         return Gint;
+      function Internal (Selection : System.Address) return Gtk_Selection_Mode;
       pragma Import (C, Internal, "gtk_tree_selection_get_mode");
+
    begin
-      return Gtk_Selection_Mode'Val (Internal (Get_Object (Selection)));
+      return Internal (Get_Object (Selection));
    end Get_Mode;
 
 --    -------------------------
@@ -102,15 +121,13 @@ package body Gtk.Tree_Selection is
 --    is
 --       procedure Internal
 --         (Selection : System.Address;
---          Func      : Gint;
+--          Func      : Gtk_Tree_Selection_Func;
 --          Data      : Integer;
---          Destroy   : Gint);
+--          Destroy   : Gtk_Destroy_Notify);
 --       pragma Import (C, Internal, "gtk_tree_selection_set_select_function");
+--
 --    begin
---       Internal (Get_Object (Selection),
---                 Gtk_Tree_Selection_Func'Pos (Func),
---                 Data,
---                 Gtk_Destroy_Notify'Pos (Destroy));
+--       Internal (Get_Object (Selection), Func, Data, Destroy);
 --    end Set_Select_Function;
 
 --    -------------------
@@ -119,10 +136,9 @@ package body Gtk.Tree_Selection is
 
 --    function Get_User_Data
 --     (Selection : access Gtk_Tree_Selection_Record'Class)
---                            return gpointer
+--                            return System.Address
 --    is
---       function Internal (Selection : System.Address)
---                          return Integer;
+--       function Internal (Selection : System.Address) return System.Address;
 --       pragma Import (C, Internal, "gtk_tree_selection_get_user_data");
 --    begin
 --       return Internal (Get_Object (Selection));
@@ -132,37 +148,44 @@ package body Gtk.Tree_Selection is
    -- Get_Tree_View --
    -------------------
 
-   function Get_Tree_View (Selection : access Gtk_Tree_Selection_Record'Class)
-                           return Gtk.Widget.Gtk_Widget
+   function Get_Tree_View
+     (Selection : access Gtk_Tree_Selection_Record'Class)
+      return Gtk.Widget.Gtk_Widget
    is
-      function Internal (Selection : System.Address)
-                         return System.Address;
+      function Internal (Selection : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_tree_selection_get_tree_view");
+
    begin
-      return (Widget.Convert (Internal (Get_Object (Selection))));
+      return Widget.Convert (Internal (Get_Object (Selection)));
    end Get_Tree_View;
 
    ------------------
    -- Get_Selected --
    ------------------
 
-   function Get_Selected
+   procedure Get_Selected
      (Selection : access Gtk_Tree_Selection_Record'Class;
-      Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
-      Iter      : Gtk.Tree_Model.Gtk_Tree_Iter)
-      return Boolean
+      Model     : out Gtk_Tree_Model;
+      Iter      : out Gtk_Tree_Iter)
    is
       function Internal
         (Selection : System.Address;
-         Model     : System.Address;
-         Iter      : System.Address)
-         return Gint;
+         Model     : access System.Address;
+         Iter      : access Gtk_Tree_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_tree_selection_get_selected");
-      M : System.Address := Get_Object (Model);
+
+      M           : aliased System.Address;
+      Local_Model : Gtk_Tree_Model_Record;
+      It          : aliased Gtk_Tree_Iter;
+
    begin
-      return Boolean'Val (Internal (Get_Object (Selection),
-                                    M'Address,
-                                    Iter'Address));
+      if Internal (Get_Object (Selection), M'Access, It'Access) = 0 then
+         Iter  := Null_Iter;
+         Model := null;
+      else
+         Model := Gtk_Tree_Model (Get_User_Data (M, Local_Model));
+         Iter := It;
+      end if;
    end Get_Selected;
 
    -----------------
@@ -171,15 +194,15 @@ package body Gtk.Tree_Selection is
 
    procedure Select_Path
      (Selection : access Gtk_Tree_Selection_Record'Class;
-      Path      : Gtk.Tree_Model.Gtk_Tree_Path)
+      Path      : Gtk_Tree_Path)
    is
       procedure Internal
         (Selection : System.Address;
-         Path      : System.Address);
+         Path      : Gtk_Tree_Path);
       pragma Import (C, Internal, "gtk_tree_selection_select_path");
+
    begin
-      Internal (Get_Object (Selection),
-                Path.all'Address);
+      Internal (Get_Object (Selection), Path);
    end Select_Path;
 
    -------------------
@@ -188,15 +211,15 @@ package body Gtk.Tree_Selection is
 
    procedure Unselect_Path
      (Selection : access Gtk_Tree_Selection_Record'Class;
-      Path      : Gtk.Tree_Model.Gtk_Tree_Path)
+      Path      : Gtk_Tree_Path)
    is
       procedure Internal
         (Selection : System.Address;
-         Path      : System.Address);
+         Path      : Gtk_Tree_Path);
       pragma Import (C, Internal, "gtk_tree_selection_unselect_path");
+
    begin
-      Internal (Get_Object (Selection),
-                Path.all'Address);
+      Internal (Get_Object (Selection), Path);
    end Unselect_Path;
 
    -----------------
@@ -205,15 +228,15 @@ package body Gtk.Tree_Selection is
 
    procedure Select_Iter
      (Selection : access Gtk_Tree_Selection_Record'Class;
-      Iter      : Gtk.Tree_Model.Gtk_Tree_Iter)
+      Iter      : Gtk_Tree_Iter)
    is
       procedure Internal
         (Selection : System.Address;
-         Iter      : System.Address);
+         Iter      : Gtk_Tree_Iter);
       pragma Import (C, Internal, "gtk_tree_selection_select_iter");
+
    begin
-      Internal (Get_Object (Selection),
-                Iter'Address);
+      Internal (Get_Object (Selection), Iter);
    end Select_Iter;
 
    -------------------
@@ -222,15 +245,15 @@ package body Gtk.Tree_Selection is
 
    procedure Unselect_Iter
      (Selection : access Gtk_Tree_Selection_Record'Class;
-      Iter      : Gtk.Tree_Model.Gtk_Tree_Iter)
+      Iter      : Gtk_Tree_Iter)
    is
       procedure Internal
         (Selection : System.Address;
-         Iter      : System.Address);
+         Iter      : Gtk_Tree_Iter);
       pragma Import (C, Internal, "gtk_tree_selection_unselect_iter");
+
    begin
-      Internal (Get_Object (Selection),
-                Iter'Address);
+      Internal (Get_Object (Selection), Iter);
    end Unselect_Iter;
 
    ----------------------
@@ -239,17 +262,16 @@ package body Gtk.Tree_Selection is
 
    function Path_Is_Selected
      (Selection : access Gtk_Tree_Selection_Record'Class;
-      Path      : Gtk.Tree_Model.Gtk_Tree_Path)
+      Path      : Gtk_Tree_Path)
       return Boolean
    is
       function Internal
         (Selection : System.Address;
-         Path      : System.Address)
-         return Gint;
+         Path      : Gtk_Tree_Path) return Gboolean;
       pragma Import (C, Internal, "gtk_tree_selection_path_is_selected");
+
    begin
-      return Boolean'Val (Internal (Get_Object (Selection),
-                                    Path.all'Address));
+      return To_Boolean (Internal (Get_Object (Selection), Path));
    end Path_Is_Selected;
 
    ----------------------
@@ -258,27 +280,25 @@ package body Gtk.Tree_Selection is
 
    function Iter_Is_Selected
      (Selection : access Gtk_Tree_Selection_Record'Class;
-      Iter      : Gtk.Tree_Model.Gtk_Tree_Iter)
-      return Boolean
+      Iter      : Gtk_Tree_Iter) return Boolean
    is
       function Internal
         (Selection : System.Address;
-         Iter      : System.Address)
-         return Gint;
+         Iter      : Gtk_Tree_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_tree_selection_iter_is_selected");
+
    begin
-      return Boolean'Val (Internal (Get_Object (Selection),
-                                    Iter'Address));
+      return To_Boolean (Internal (Get_Object (Selection), Iter));
    end Iter_Is_Selected;
 
    ----------------
    -- Select_All --
    ----------------
 
-   procedure Select_All (Selection : access Gtk_Tree_Selection_Record'Class)
-   is
+   procedure Select_All (Selection : access Gtk_Tree_Selection_Record'Class) is
       procedure Internal (Selection : System.Address);
       pragma Import (C, Internal, "gtk_tree_selection_select_all");
+
    begin
       Internal (Get_Object (Selection));
    end Select_All;
@@ -287,7 +307,8 @@ package body Gtk.Tree_Selection is
    -- Unselect_All --
    ------------------
 
-   procedure Unselect_All (Selection : access Gtk_Tree_Selection_Record'Class)
+   procedure Unselect_All
+     (Selection : access Gtk_Tree_Selection_Record'Class)
    is
       procedure Internal (Selection : System.Address);
       pragma Import (C, Internal, "gtk_tree_selection_unselect_all");
@@ -301,18 +322,17 @@ package body Gtk.Tree_Selection is
 
    procedure Select_Range
      (Selection  : access Gtk_Tree_Selection_Record'Class;
-      Start_Path : Gtk.Tree_Model.Gtk_Tree_Path;
-      End_Path   : Gtk.Tree_Model.Gtk_Tree_Path)
+      Start_Path : Gtk_Tree_Path;
+      End_Path   : Gtk_Tree_Path)
    is
       procedure Internal
         (Selection  : System.Address;
-         Start_Path : System.Address;
-         End_Path   : System.Address);
+         Start_Path : Gtk_Tree_Path;
+         End_Path   : Gtk_Tree_Path);
       pragma Import (C, Internal, "gtk_tree_selection_select_range");
+
    begin
-      Internal (Get_Object (Selection),
-                Start_Path.all'Address,
-                End_Path.all'Address);
+      Internal (Get_Object (Selection), Start_Path, End_Path);
    end Select_Range;
 
 end Gtk.Tree_Selection;

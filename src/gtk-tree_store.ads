@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,6 +36,7 @@
 --
 --  Adding new values in the model is done as in the example at the end.
 --  </description>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Values; use Glib.Values;
 with Gtk;
@@ -49,27 +49,32 @@ package Gtk.Tree_Store is
    type Gtk_Tree_Store is access all Gtk_Tree_Store_Record'Class;
 
    procedure Gtk_New
-     (Widget    : out Gtk_Tree_Store;
-      N_Columns : Gint;
-      Types     : GType_Array);
-   --  Creates a new tree store as with N_Columns columns each of
-   --  the types passed in.
+     (Tree_Store : out Gtk_Tree_Store;
+      Types      : GType_Array);
+   --  Create a new tree store using Types to fill the columns.
 
    procedure Initialize
-     (Widget    : access Gtk_Tree_Store_Record'Class;
-      N_Columns : Gint;
-      Types     : GType_Array);
+     (Tree_Store : access Gtk_Tree_Store_Record'Class;
+      Types      : GType_Array);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with this widget.
+
+   procedure Set_Column_Types
+     (Tree_Store : access Gtk_Tree_Store_Record;
+      Types      : GType_Array);
+   --  This function is meant primarily for GObjects that inherit from
+   --  Gtk_Tree_Store, and should only be used when constructing a new
+   --  Gtk_Tree_Store. It will not function after a row has been added, or a
+   --  method on the Gtk_Tree_Model interface is called.
 
    procedure Set_Value
      (Tree_Store : access Gtk_Tree_Store_Record;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Gint;
-      Value      : in out Glib.Values.GValue);
+      Value      : Glib.Values.GValue);
    --  Set a new value in the model. The value is added in the column Column,
    --  and in the line Iter.
 
@@ -129,85 +134,86 @@ package Gtk.Tree_Store is
 
    procedure Remove
      (Tree_Store : access Gtk_Tree_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter);
-   --  Removes Iter from Tree_Store.  After being removed, Iter is set to
-   --  the next valid row at that level, or invalidated if it previeously
-   --  pointed to the last one.
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter);
+   --  Remove Iter from Tree_Store.
+   --  After being removed, Iter is set to the next valid row at that level, or
+   --  invalidated if it previeously pointed to the last one.
 
    procedure Insert
      (Tree_Store : access Gtk_Tree_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk.Tree_Model.Gtk_Tree_Iter;
       Position   : Gint);
-   --  Creates a new row at Position.  If parent is non-null, then the row
-   --  will be made a child of Parent. Otherwise, the row will be created at
-   --  the toplevel. If Position is larger than the number of rows at that
-   --  level, then the new row will be inserted to the end of the list.  Iter
-   --  will be changed to point to this new row.  The row will be empty before
-   --  this function is called.  To fill in values, you need to call Set_Value.
+   --  Create a new row at Position.
+   --  If parent is non-null, then the row will be made a child of Parent.
+   --  Otherwise, the row will be created at the toplevel. If Position is
+   --  larger than the number of rows at that level, then the new row will be
+   --  inserted to the end of the list. Iter will be changed to point to this
+   --  new row. The row will be empty before this function is called. To fill
+   --  in values, you need to call Set_Value.
 
    procedure Insert_Before
      (Tree_Store : access Gtk_Tree_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk.Tree_Model.Gtk_Tree_Iter;
       Sibling    : Gtk.Tree_Model.Gtk_Tree_Iter);
-   --  Inserts a new row before Sibling.  If Sibling is Null_Iter, then the
-   --  row will be appended to the beginning of the Parent 's children.
-   --  If Parent and Sibling are Null_Iter, then the row will be appended to
-   --  the toplevel.  If both Sibling and Parent are set, then Parent must
-   --  be the parent of Sibling. When Sibling is set, Parent is optional.
-   --  Iter will be changed to point to this new row.  The row will be empty
-   --  after this function is called.  To fill in values, you need to call
-   --  Set_Value.
+   --  Insert a new row before Sibling.
+   --  If Sibling is Null_Iter, then the row will be appended to the beginning
+   --  of the Parent's children. If Parent and Sibling are Null_Iter, then the
+   --  row will be appended to the toplevel. If both Sibling and Parent are
+   --  set, then Parent must be the parent of Sibling. When Sibling is set,
+   --  Parent is optional. Iter will be changed to point to this new row. The
+   --  row will be empty after this function is called. To fill in values, you
+   --  need to call Set_Value.
 
    procedure Insert_After
      (Tree_Store : access Gtk_Tree_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk.Tree_Model.Gtk_Tree_Iter;
       Sibling    : Gtk.Tree_Model.Gtk_Tree_Iter);
-   --  Inserts a new row after Sibling.  If Sibling is Null_Iter, then the
-   --  row will be prepended to the beginning of the Parent 's children.
-   --  If Parent and Sibling are Null_Iter, then the row will be prepended
-   --  to the toplevel.  If both Sibling and Parent are set, then Parent
-   --  must be the parent of Sibling When Sibling is set, Parent is optional.
-   --  Iter will be changed to point to this new row.  The row will be empty
-   --  after this function is called.  To fill in values, you need to call
-   --  Set_Value.
+   --  Insert a new row after Sibling.
+   --  If Sibling is Null_Iter, then the row will be prepended to the beginning
+   --  of the Parent's children. If Parent and Sibling are Null_Iter, then the
+   --  row will be prepended to the toplevel. If both Sibling and Parent are
+   --  set, then Parent must be the parent of Sibling. When Sibling is set,
+   --  Parent is optional. Iter will be changed to point to this new row. The
+   --  row will be empty after this function is called. To fill in values, you
+   --  need to call Set_Value.
 
    procedure Prepend
      (Tree_Store : access Gtk_Tree_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk.Tree_Model.Gtk_Tree_Iter);
-   --  Prepends a new row to Tree_Store.  If Parent is non-NULL, then it
-   --  will prepend the new row before the first child of Parent, otherwise
-   --  it will prepend a row to the top level.  Iter will be changed to point
-   --  to this new row.  The row will be empty after this function is called.
-   --  To fill in values, you need to call Set_Value.
+   --  Prepend a new row to Tree_Store.
+   --  If Parent is non-null, then it will prepend the new row before the first
+   --  child of Parent, otherwise it will prepend a row to the top level. Iter
+   --  will be changed to point to this new row. The row will be empty after
+   --  this function is called. To fill in values, you need to call Set_Value.
 
    procedure Append
      (Tree_Store : access Gtk_Tree_Store_Record;
       Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk.Tree_Model.Gtk_Tree_Iter);
-   --  Appends a new row to Tree_Store.  If Parent is non-NULL, then it will
-   --  append the new row after the last child of Parent, otherwise it will
-   --  append a row to the top level.  Iter will be changed to point to this
-   --  new row.  The row will be empty after this function is called.  To
-   --  fill in values, you need to call Set_Value.
+   --  Append a new row to Tree_Store.
+   --  If Parent is non-null, then it will append the new row after the last
+   --  child of Parent, otherwise it will append a row to the top level. Iter
+   --  will be changed to point to this new row. The row will be empty after
+   --  this function is called. To fill in values, you need to call Set_Value.
 
    function Is_Ancestor
      (Tree_Store : access Gtk_Tree_Store_Record;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Descendant : Gtk.Tree_Model.Gtk_Tree_Iter)
-      return Boolean;
-   --  Returns True if Iter is an ancestor of Descendant.  That is, Iter is the
-   --  parent (or grandparent or great-grandparent) of Descendant.
+      Descendant : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
+   --  Return True if Iter is an ancestor of Descendant.
+   --  That is, Iter is the parent (or grandparent or great-grandparent) of
+   --  Descendant.
 
    function Iter_Depth
      (Tree_Store : access Gtk_Tree_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
-     return Gint;
-   --  Returns the depth of Iter.  This will be 0 for anything on the root
-   --  level, 1 for anything down a level, etc.
+      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Gint;
+   --  Returns the depth of Iter.
+   --  This will be 0 for anything on the root level, 1 for anything down a
+   --  level, etc.
 
    procedure Clear (Tree_Store : access Gtk_Tree_Store_Record);
    --  Removes all rows from Tree_Store
@@ -266,14 +272,15 @@ end Gtk.Tree_Store;
 --      Column2 : Gint; Value2 : Boolean)
 --  is
 --      procedure Internal
---        (Tree, Iter : System.Address;
+--        (Tree : System.Address;
+--         Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
 --         Column1 : Gint; Value1 : String;
 --         Column2 : Gint; Value2 : Gint;
 --         Final : Gint := -1);
 --      pragma Import (C, Internal, "gtk_tree_store_set");
 --   begin
 --      Internal
---        (Get_Object (Tree_Store), Iter'Address,
+--        (Get_Object (Tree_Store), Iter,
 --         Column1, Value1 & ASCII.NUL, Column2, Boolean'Pos (Value2));
 --   end Set;
 --

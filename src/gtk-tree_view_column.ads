@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
 --  General organization of the tree_view widgets:
 --
 --    ______________Tree_View___________________________________
@@ -52,6 +52,9 @@
 --
 --  The renderers are then divided into lines, which are typically pointed to
 --  by iterators (Gtk_Tree_Iter).
+--  </description>
+
+--  <c_version>1.3.11</c_version>
 
 with Gdk.Rectangle;
 with Gdk.Window;
@@ -63,7 +66,7 @@ with Gtk.Tree_Model;
 with Gtk.Widget;
 
 with Glib.Glist;
-with Unchecked_Conversion;
+with Ada.Unchecked_Conversion;
 
 package Gtk.Tree_View_Column is
 
@@ -71,18 +74,18 @@ package Gtk.Tree_View_Column is
      new Gtk.Object.Gtk_Object_Record with private;
    type Gtk_Tree_View_Column is access all Gtk_Tree_View_Column_Record'Class;
 
-   function Convert is new Unchecked_Conversion
+   function Convert is new Ada.Unchecked_Conversion
      (Gtk_Tree_View_Column, System.Address);
-   function Convert is new Unchecked_Conversion
+   function Convert is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Tree_View_Column);
-   package Column_List is
-      new Glib.Glist.Generic_List (Gtk_Tree_View_Column);
+   package Column_List is new Glib.Glist.Generic_List (Gtk_Tree_View_Column);
 
    type Gtk_Tree_View_Column_Sizing is
      (Tree_View_Column_Grow_Only,
       Tree_View_Column_Resizable,
       Tree_View_Column_Autosize,
       Tree_View_Column_Fixed);
+   pragma Convention (C, Gtk_Tree_View_Column_Sizing);
 
    procedure Gtk_New (Widget : out Gtk_Tree_View_Column);
    --  Create a new Gtk_Tree_View_Column.
@@ -91,7 +94,7 @@ package Gtk.Tree_View_Column is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with this widget.
 
    ---------------------------------------
@@ -244,11 +247,20 @@ package Gtk.Tree_View_Column is
    procedure Set_Visible
      (Tree_Column : access Gtk_Tree_View_Column_Record;
       Visible     : Boolean);
-   --  Sets the visibility of Tree_Column.
+   --  Set the visibility of Tree_Column.
 
    function Get_Visible
      (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
    --  Return True if Tree_Column is visible.
+
+   procedure Set_Resizable
+     (Tree_Column : access Gtk_Tree_View_Column_Record;
+      Resizable   : Boolean);
+   --  Set whether the Tree_Column is resizable.
+
+   function Get_Resizable
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return Boolean;
+   --  Return whether Tree_Column is resizable.
 
    procedure Set_Sizing
      (Tree_Column : access Gtk_Tree_View_Column_Record;
@@ -313,6 +325,10 @@ package Gtk.Tree_View_Column is
       Title       : String);
    --  Set the title of the Tree_Column.
    --  If a custom widget has been set, then this value is ignored.
+
+   function Get_Title
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return String;
+   --  Return the title of the Tree_Column.
 
    procedure Set_Clickable
      (Tree_Column : access Gtk_Tree_View_Column_Record;
@@ -427,8 +443,14 @@ package Gtk.Tree_View_Column is
       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
       Expose_Area     : Gdk.Rectangle.Gdk_Rectangle;
       Flags           : Guint);
-   --  Renders the cell contained by Tree_Column.
+   --  Render the cell contained by Tree_Column.
    --  This is used primarily by the Gtk_Tree_View.
+   --  Window: a Gdk_Drawable to draw to
+   --  Background_Area: entire cell area (including tree expanders and maybe
+   --  padding on the sides)
+   --  Cell_Area: area normally rendered by a cell renderer
+   --  Expose_Area: area that actually needs updating
+   --  Flags: flags that affect rendering
 
    function Cell_Focus
      (Tree_Column : access Gtk_Tree_View_Column_Record;
@@ -465,13 +487,3 @@ private
 
    pragma Import (C, Get_Type, "gtk_tree_view_column_get_type");
 end Gtk.Tree_View_Column;
-
---  ??? missing :
---
---    function Cell_Event
---      (Tree_Column     : access Gtk_Tree_View_Column_Record;
---       Event           : Gdk.Event.Gdk_Event;
---       Path_String     : String;
---       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
---       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
---       Flags           : Guint) return Boolean;
