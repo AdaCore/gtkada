@@ -119,6 +119,15 @@ package Pango.Font is
    --  the chars_ptr stored in the font description record. It also takes
    --  care of the memory management.
 
+   function Get_Size (Desc : Pango_Font_Description) return Gint;
+   --  Return value: the size field for the font description in pango units.
+   --  (PANGO_SCALE pango units equals one point). Returns 0 if Desc hasn't
+   --  been initialized.
+
+   procedure Set_Size (Desc : Pango_Font_Description; Size : Gint);
+   --  Set the size for the font description in pango units.  (PANGO_SCALE
+   --  pango units equals one point)
+
    ----------------
    -- Properties --
    ----------------
@@ -133,4 +142,6 @@ package Pango.Font is
 
 private
    pragma Import (C, Copy, "pango_font_description_copy");
+   pragma Import (C, Get_Size, "pango_font_description_get_size");
+   pragma Import (C, Set_Size, "pango_font_description_set_size");
 end Pango.Font;
