@@ -48,7 +48,8 @@ These functions were tested on the following systems :
    - SCO UnixWare 7.1
    - FreeBSD 3.2
 using the following compilers:
-   - Gnat 3.12
+   - Gnat 3.12a[23]
+   - Gnat 3.12p
 
 the following versions of gtk:
    - Gtk+ 1.2.0 -> 1.2.6
