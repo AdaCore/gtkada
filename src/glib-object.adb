@@ -264,7 +264,9 @@ package body Glib.Object is
          Parameters     : System.Address;
          Max_Parameters : Gint;
          Class_Record   : GObject_Class;
-         Type_Name      : String) return GObject_Class;
+         Type_Name      : String;
+         Num_Virtual    : Gint;
+         Virtual        : System.Address) return GObject_Class;
       pragma Import (C, Internal, "ada_initialize_class_record");
 
       Default_Params : Signal_Parameter_Types (1 .. Signals'Length, 1 .. 0) :=
@@ -279,23 +281,23 @@ package body Glib.Object is
          Num := Parameters'Length (2);
       end if;
 
-      Class_Record :=
-        Internal
-          (Get_Object (Object),
-           Signals'Length,
-           Signals'Address,
-           Pa,
-           Num,
-           Class_Record,
-           Type_Name & ASCII.NUL);
+      Class_Record := Internal
+        (Get_Object (Object),
+         Signals'Length,
+         Signals'Address,
+         Pa,
+         Num,
+         Class_Record,
+         Type_Name & ASCII.NUL,
+         0, System.Null_Address);
    end Initialize_Class_Record;
 
    --------------
    -- List_Ids --
    --------------
 
-   function List_Ids (Typ : Glib.GType) return Handler_Id_Array is
-      type Flat_Id_Array is array (Guint) of Handler_Id;
+   function List_Ids (Typ : Glib.GType) return Signal_Id_Array is
+      type Flat_Id_Array is array (Guint) of Signal_Id;
       type Flat_Id_Array_Access is access Flat_Id_Array;
       type Guint_Access is access all Guint;
       function Internal (Typ : GType; N_Ids : Guint_Access)
@@ -308,8 +310,8 @@ package body Glib.Object is
          return (1 .. 0 => 0);
       else
          declare
-            Res : Handler_Id_Array (0 .. N_Ids - 1) :=
-              Handler_Id_Array (Result (0 .. N_Ids - 1));
+            Res : Signal_Id_Array (0 .. N_Ids - 1) :=
+              Signal_Id_Array (Result (0 .. N_Ids - 1));
          begin
             return Res;
          end;
@@ -358,9 +360,9 @@ package body Glib.Object is
    -- Lookup --
    ------------
 
-   function Lookup (Object : GType; Signal : String) return Glib.Handler_Id
+   function Lookup (Object : GType; Signal : String) return Glib.Signal_Id
    is
-      function Internal (Signal : String; Object : GType) return Handler_Id;
+      function Internal (Signal : String; Object : GType) return Signal_Id;
       pragma Import (C, Internal, "g_signal_lookup");
    begin
       return Internal (Signal & ASCII.Nul, Object);

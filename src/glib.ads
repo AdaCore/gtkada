@@ -194,11 +194,11 @@ package Glib is
    -- Signals --
    -------------
 
-   type Handler_Id is private;
+   type Signal_Id is private;
    --  This uniquely identifies a connection widget<->signal.
 
-   Invalid_Handler_Id : constant Handler_Id;
-   Null_Handler_Id : constant Handler_Id;
+   Invalid_Signal_Id : constant Signal_Id;
+   Null_Signal_Id : constant Signal_Id;
 
    ----------------
    -- Properties --
@@ -320,9 +320,9 @@ private
    type Property is new String;
    type Param_Spec is new Glib.C_Proxy;
 
-   type Handler_Id is new Guint;
-   Invalid_Handler_Id : constant Handler_Id := -1;
-   Null_Handler_Id : constant Handler_Id := 0;
+   type Signal_Id is new Guint;
+   Invalid_Signal_Id : constant Signal_Id := -1;
+   Null_Signal_Id : constant Signal_Id := 0;
 
    pragma Import (C, Fundamental, "ada_gtype_fundamental");
    pragma Import (C, Parent, "g_type_parent");

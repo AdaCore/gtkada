@@ -1,4 +1,4 @@
------------------------------------------------------------------------
+----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --                   Copyright (C) 2001 ACT-Europe                   --
@@ -117,30 +117,30 @@ package Glib.Object is
    --  possible to query the list of signals defined for a specific widget,
    --  as well as their parameters and return types.
 
-   type Handler_Id_Array is array (Guint range <>) of Glib.Handler_Id;
+   type Signal_Id_Array is array (Guint range <>) of Glib.Signal_Id;
 
    type Signal_Query is private;
 
    function Lookup (Object : Glib.GType; Signal : String)
-      return Glib.Handler_Id;
+      return Glib.Signal_Id;
    --  Returns the signal Id associated with a specific Object/Signal pair.
-   --  Invalid_Handler_Id is returned if no such signal exists for Object.
+   --  Invalid_Signal_Id is returned if no such signal exists for Object.
    --  You can then use the Query procedure to get more information on the
    --  signal.
 
-   function List_Ids (Typ : Glib.GType) return Handler_Id_Array;
+   function List_Ids (Typ : Glib.GType) return Signal_Id_Array;
    --  Return the list of signals defined for Typ. You can get more information
    --  on each of this signals by using the Query function below.
    --  See also the function Get_Type above to convert from an object instance
    --  to its type. Using a GType as the parameter makes it easier to find the
    --  signals for a widget and its ancestors (using Glib.Parent).
 
-   procedure Query (Id : Glib.Handler_Id; Result : out Signal_Query);
+   procedure Query (Id : Glib.Signal_Id; Result : out Signal_Query);
    --  Return the description associated with the signal Id. You can get the
    --  various fields from Query with one of the functions below.
-   --  Result is undefined if Id is Invalid_Handler_Id
+   --  Result is undefined if Id is Invalid_Signal_Id
 
-   function Id (Q : Signal_Query) return Glib.Handler_Id;
+   function Id (Q : Signal_Query) return Glib.Signal_Id;
    --  Return the signal Id. Each Id is specific to a widget/signal name pair.
    --  These Ids can then be used to temporarily block a signal for instance,
    --  through the subprograms in Gtk.Handlers.
