@@ -1388,7 +1388,7 @@ package body Gtk.Clist is
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
       package ICS renames Interfaces.C.Strings;
-      Columns, S : String_Ptr;
+      Columns : String_Ptr;
 
    begin
       Columns := Get_Field (N, "columns");
@@ -1396,7 +1396,8 @@ package body Gtk.Clist is
       if Columns /= null then
          declare
             Titles : Chars_Ptr_Array (1 .. Gint'Value (Columns.all));
-            Name   : constant String := Get_Field (N, "name").all & "_Titles";
+            Name   : constant String :=
+              To_Ada (Get_Field (N, "name").all) & "_Titles";
          begin
             Build_Title_List (N, Titles);
             Output_Titles (Name, Titles, File);
@@ -1407,12 +1408,8 @@ package body Gtk.Clist is
       end if;
 
       Container.Generate (N, File);
-
-      S := Get_Field (N, "selection_mode");
-
-      if S /= null then
-         Gen_Set (N, "Clist", S.all, File => File);
-      end if;
+      Gen_Set (N, "Clist", "selection_mode", File => File);
+      Gen_Set (N, "Clist", "shadow_type", File => File);
 
       if not N.Specific_Data.Has_Container then
          Gen_Call_Child (N, null, "Container", "Add", File => File);
@@ -1445,6 +1442,13 @@ package body Gtk.Clist is
       if S /= null then
          Set_Selection_Mode (Gtk_Clist (Clist),
            Gtk_Selection_Mode'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      S := Get_Field (N, "shadow_type");
+
+      if S /= null then
+         Set_Shadow_Type (Gtk_Clist (Clist),
+           Gtk_Shadow_Type'Value (S (S'First + 4 .. S'Last)));
       end if;
 
       if not N.Specific_Data.Has_Container then
