@@ -128,7 +128,7 @@ package body Gdk.Font is
                           Descent  :    out Gint);
       pragma Import (C, Internal, "gdk_string_extents");
    begin
-      Internal (Font, Str & ASCII.Nul, Lbearing, Rbearing,
+      Internal (Font, Str & ASCII.NUL, Lbearing, Rbearing,
                 Width, Ascent, Descent);
    end String_Extents;
 

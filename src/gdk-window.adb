@@ -248,7 +248,7 @@ package body Gdk.Window is
       pragma Import (C, Internal, "gdk_window_set_icon_name");
 
    begin
-      Internal (Window, Name & ASCII.Nul);
+      Internal (Window, Name & ASCII.NUL);
    end Set_Icon_Name;
 
    ---------------------------
@@ -276,7 +276,7 @@ package body Gdk.Window is
       pragma Import (C, Internal, "gdk_window_set_role");
 
    begin
-      Internal (Window, Role & ASCII.Nul);
+      Internal (Window, Role & ASCII.NUL);
    end Set_Role;
 
    ---------------
@@ -287,7 +287,7 @@ package body Gdk.Window is
       procedure Internal (Window : in Gdk_Window; Title  : in String);
       pragma Import (C, Internal, "gdk_window_set_title");
    begin
-      Internal (Window, Title & ASCII.Nul);
+      Internal (Window, Title & ASCII.NUL);
    end Set_Title;
 
    -----------------------

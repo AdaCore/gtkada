@@ -113,7 +113,7 @@ package body Gdk.Pixmap is
 
       Pixmap :=
         Internal
-          (Window, Tmp'Address, Transparent_A, Filename & ASCII.Nul);
+          (Window, Tmp'Address, Transparent_A, Filename & ASCII.NUL);
       Mask := Tmp;
    end Create_From_Xpm;
 
@@ -158,7 +158,7 @@ package body Gdk.Pixmap is
            Colormap => Colormap,
            Mask => Tmp'Address,
            Transparent => Transparent_A,
-           Filename => Filename & ASCII.Nul);
+           Filename => Filename & ASCII.NUL);
       Mask := Tmp;
    end Create_From_Xpm;
 

@@ -164,7 +164,7 @@ package body Gdk.Window_Attr is
                           Title : in String);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_title");
    begin
-      Internal (Window_Attr, Title & ASCII.Nul);
+      Internal (Window_Attr, Title & ASCII.NUL);
    end Set_Title;
 
    -----------------------
@@ -177,7 +177,7 @@ package body Gdk.Window_Attr is
                           Wmclass_Class : in String);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_wmclass_class");
    begin
-      Internal (Window_Attr, Wmclass_Class & ASCII.Nul);
+      Internal (Window_Attr, Wmclass_Class & ASCII.NUL);
    end Set_Wmclass_Class;
 
    ----------------------
@@ -190,7 +190,7 @@ package body Gdk.Window_Attr is
                           Wmclass_Name : in String);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_wmclass_name");
    begin
-      Internal (Window_Attr, Wmclass_Name & ASCII.Nul);
+      Internal (Window_Attr, Wmclass_Name & ASCII.NUL);
    end Set_Wmclass_Name;
 
 end Gdk.Window_Attr;
