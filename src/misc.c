@@ -2405,12 +2405,6 @@ ada_notebook_get_menu_label (GtkNotebookPage* widget)
   return widget->menu_label;
 }
 
-GtkWidget*
-ada_notebook_get_tab_label (GtkNotebookPage* widget)
-{
-  return widget->tab_label;
-}
-
 /**********************************************
  ** Functions for NotebookPage
  **********************************************/

@@ -271,8 +271,10 @@ package Gtk.Notebook is
    -- Page properties --
    ---------------------
 
-   function Get_Tab_Label (Page : in Gtk_Notebook_Page)
-                          return Gtk.Widget.Gtk_Widget;
+   function Get_Tab_Label
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class)
+     return Gtk.Widget.Gtk_Widget;
    --  Return the widget displayed in the tab used to select Page.
    --  This widget is in fact the one given in argument to Insert_Page,etc.
    --  when the page was created.

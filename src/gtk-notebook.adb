@@ -161,14 +161,19 @@ package body Gtk.Notebook is
    -- Get_Tab_Label --
    -------------------
 
-   function Get_Tab_Label (Page : in Gtk_Notebook_Page)
+   function Get_Tab_Label
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class)
      return Gtk.Widget.Gtk_Widget
    is
-      function Internal (Widget : in Gtk_Notebook_Page) return System.Address;
-      pragma Import (C, Internal, "ada_notebook_get_tab_label");
+      function Internal (Widget : in System.Address;
+                         Child  : in System.Address)
+                        return System.Address;
+      pragma Import (C, Internal, "gtk_notebook_get_tab_label");
       Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Page), Stub));
+      return Gtk.Widget.Gtk_Widget (Get_User_Data
+         (Internal (Get_Object (Notebook), Get_Object (Child)), Stub));
    end Get_Tab_Label;
 
    -----------------
