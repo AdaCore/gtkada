@@ -40,6 +40,7 @@ Gdk.Pixmap:
   Destroy: deprecated, use Unref instead.
 Gdk.Rectangle:
   Gdk_Rectangle now takes gint instead of gint16 and guint16.
+  GRectangle_Coord, GRectangle_Length: New subtypes provided for better compat.
 Gdk.Region:
   Union_With_Rect, Intersect, Union, Substract, Gdk_Xor: Profile changed,
     Source1 is now in out (both source and result).
@@ -263,7 +264,6 @@ Gtk.Window:
   Maximize, Unmaximize: new procedures.
   Set_Policy, Set_Default_Size: deprecated.
 ====
-<<<<<<< 2.0-transition.txt
 missing features in gtk+1.3.4:
 
 gtkbbox.h should have a Layout property
@@ -271,12 +271,10 @@ properties should be associated with quarks, for efficiency
   
 
 ====
-=======
 GtkExtra code:
   call to gtk_toolbar_set_space_size commented out in gtkfontcombo.c
    since this procedure is not provided yet.
 ====
->>>>>>> 1.12
 
 Not bound yet:
 gerror.h
@@ -308,7 +306,6 @@ gtkgc.h
 gtkhsv.h
 gtkiconfactory.h
 gtkimage.h: add documentation
-gtkimagemenuitem.h
 gtkimcontext.h
 gtkimmodule.h
 gtkimmulticontext.h
@@ -321,7 +318,6 @@ gtkselection.h: see "missing" section in gtk-selection.ads
 gtkseparatormenuitem.h
 gtksettings.h
 gtksizegroup.h
-gtkstock.h (will replace Gtkada.Pixmaps)
 gtkstyle.h: now a GObject with signals. see "missing" section.
             need to update field accessors.
 gtktreednd.h
