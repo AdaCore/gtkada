@@ -27,12 +27,19 @@ OPENGL_LIBS=@GL_LIBS@
 OPENGL_FLAGS=@GL_CFLAGS@
 MESA_SPECS=gl_h.ads glu_h.ads
 
+ifeq ($(BUILD_SHARED),yes)
 all: $(LIBNAME) $(ARCHIVENAME)
+else
+all: $(ARCHIVENAME)
+endif
+
 install: all
 	$(INSTALL_DATA) $(ARCHIVENAME) $(libdir)
-	$(INSTALL_DATA) $(SONAME) $(libdir)
-	$(RM) $(libdir)/$(LIBNAME)
-	$(LN) $(SONAME) $(libdir)/$(LIBNAME)
+	if [ $(BUILD_SHARED) = yes ]; then \
+	  $(INSTALL_DATA) $(SONAME) $(libdir); \
+	  $(RM) $(libdir)/$(LIBNAME); \
+	  $(LN) $(SONAME) $(libdir)/$(LIBNAME); \
+	fi
 	$(CP) $(MESA_SPECS) $(incdir)
 	$(CP) gdk*.ads gdk*.adb $(incdir)
 	$(CP) gtk*.ads gtk*.adb $(incdir)
@@ -52,7 +59,7 @@ install:
 endif
 
 $(LIBNAME):: $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
-	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
+	$(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
 	  $(SO_OPTS)$(SONAME) $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS) \
 	  @GTK_LIBS@ -L.. -lgtkada $(OPENGL_LIBS)
 	$(RM) $(LIBNAME)
