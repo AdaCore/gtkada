@@ -70,19 +70,6 @@ package body Gtk.Tree_Item is
       Internal (Get_Object (Tree_Item));
    end Expand;
 
-   ---------------
-   -- From_Tree --
-   ---------------
-
-   function From_Tree (Tree : in Gtk.Tree.Gtk_Tree)
-     return Gtk_Tree_Item
-   is
-      Tree_Item : Gtk_Tree_Item;
-   begin
-      Set_Object (Tree_Item, Get_Object (Tree));
-      return Tree_Item;
-   end From_Tree;
-
    -----------------
    -- Get_Subtree --
    -----------------
@@ -93,11 +80,11 @@ package body Gtk.Tree_Item is
       function Internal (Tree_Item : in System.Address)
         return System.Address;
       pragma Import (C, Internal, "ada_tree_item_get_subtree");
-      Tree : Gtk.Tree.Gtk_Tree;
+      Stub : Gtk.Tree.Gtk_Tree_Record;
 
    begin
-      Set_Object (Tree, Internal (Get_Object (Tree_Item)));
-      return Tree;
+      return Gtk.Tree.Gtk_Tree
+        (Get_User_Data (Internal (Get_Object (Tree_Item)), Stub));
    end Get_Subtree;
 
    -------------
@@ -167,19 +154,6 @@ package body Gtk.Tree_Item is
       Internal (Get_Object (Tree_Item),
                 Get_Object (Subtree));
    end Set_Subtree;
-
-   -------------
-   -- To_Tree --
-   -------------
-
-   function To_Tree (Tree_Item : access Gtk_Tree_Item_Record)
-                     return Gtk.Tree.Gtk_Tree
-   is
-      Tree : Gtk.Tree.Gtk_Tree;
-   begin
-      Set_Object (Tree, Get_Object (Tree_Item));
-      return Tree;
-   end To_Tree;
 
    --------------
    -- Generate --

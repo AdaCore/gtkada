@@ -77,11 +77,10 @@ package body Gtk.Preview is
    function Get_Info return Gtk_Preview_Info is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_preview_get_info");
-      Widget : Gtk_Preview_Info;
-
+      Stub : Gtk_Preview_Info_Record;
    begin
-      Set_Object (Widget, Internal);
-      return Widget;
+      return Gtk_Preview_Info
+        (Get_User_Data (Internal, Stub));
    end Get_Info;
 
    ----------------

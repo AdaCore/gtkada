@@ -89,10 +89,10 @@ package body Gtk.Menu is
       function Internal (Menu : System.Address)
                          return System.Address;
       pragma Import (C, Internal, "gtk_menu_get_active");
-      Item : Gtk.Menu_Item.Gtk_Menu_Item;
+      Stub : Gtk.Menu_Item.Gtk_Menu_Item_Record;
    begin
-      Set_Object (Item, Internal (Get_Object (Menu)));
-      return Item;
+      return Gtk.Menu_Item.Gtk_Menu_Item
+        (Get_User_Data (Internal (Get_Object (Menu)), Stub));
    end Get_Active;
 
    -----------------------
@@ -105,10 +105,10 @@ package body Gtk.Menu is
       function Internal (Menu : System.Address)
                          return System.Address;
       pragma Import (C, Internal, "gtk_menu_get_attach_widget");
-      Widget : Gtk.Widget.Gtk_Widget;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      Set_Object (Widget, Internal (Get_Object (Menu)));
-      return Widget;
+      return Gtk.Widget.Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (Menu)), Stub));
    end Get_Attach_Widget;
 
    -------------

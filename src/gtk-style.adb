@@ -44,8 +44,10 @@ package body Gtk.Style is
       pragma Import (C, Internal, "gtk_style_attach");
       Result : Gtk_Style;
    begin
+      Result := new Gtk_Style_Record;
       Set_Object (Result, Internal (Get_Object (Style),
                                     Get_Object (Window)));
+      Initialize_User_Data (Result);
       return Result;
    end Attach;
 
@@ -428,7 +430,6 @@ package body Gtk.Style is
    begin
       if Get_Object (Object) /= System.Null_Address then
          Internal (Get_Object (Object));
-         Set_Object (Object, System.Null_Address);
       end if;
    end Unref;
 

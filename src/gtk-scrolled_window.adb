@@ -76,10 +76,6 @@ package body Gtk.Scrolled_Window is
       pragma Import (C, Internal, "gtk_scrolled_window_get_vadjustment");
       Stub : Adjustment.Gtk_Adjustment_Record;
    begin
---        Tmp := new Adjustment.Gtk_Adjustment_Record;
---        Set_Object (Tmp, Internal (Get_Object (Scrolled_Window)));
---        Initialize_User_Data (Tmp);
---        return Tmp;
       return Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub));
    end Get_Vadjustment;

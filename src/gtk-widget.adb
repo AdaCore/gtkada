@@ -89,7 +89,6 @@ package body Gtk.Widget is
       --  We use a Tmp variable, because when the C widget is destroyed,
       --  the Ada structure might be freed (or not), and we always want
       --  to set the Object back to Null_Address;
-      --  Internal (Get_Object (Widget));
       Set_Object (Widget, System.Null_Address);
       Internal (Tmp);
    end Destroy;

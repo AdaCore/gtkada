@@ -42,10 +42,10 @@ package body Gtk.Option_Menu is
       function Internal (Option_Menu : in System.Address)
                          return System.Address;
       pragma Import (C, Internal, "gtk_option_menu_get_menu");
-      Menu : Gtk.Menu.Gtk_Menu;
+      Stub : Gtk.Menu.Gtk_Menu_Record;
    begin
-      Set_Object (Menu, Internal (Get_Object (Option_Menu)));
-      return Menu;
+      return Gtk.Menu.Gtk_Menu
+        (Get_User_Data (Internal (Get_Object (Option_Menu)), Stub));
    end Get_Menu;
 
    -------------

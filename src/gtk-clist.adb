@@ -204,10 +204,10 @@ package body Gtk.Clist is
                          Column : in Gint)
                          return System.Address;
       pragma Import (C, Internal, "ada_clist_get_column_button");
-      Button : Gtk.Button.Gtk_Button;
+      Stub : Gtk.Button.Gtk_Button_Record;
    begin
-      Set_Object (Button, Internal (Get_Object (Clist), Column));
-      return Button;
+      return Gtk.Button.Gtk_Button
+        (Get_User_Data (Internal (Get_Object (Clist), Column), Stub));
    end Get_Column_Button;
 
    ----------------

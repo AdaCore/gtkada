@@ -39,7 +39,6 @@ package Gtk.Tree_Item is
    procedure Collapse (Tree_Item : access Gtk_Tree_Item_Record);
    procedure Deselect (Tree_Item : access Gtk_Tree_Item_Record);
    procedure Expand (Tree_Item : access Gtk_Tree_Item_Record);
-   function From_Tree (Tree : in Gtk.Tree.Gtk_Tree) return Gtk_Tree_Item;
    function Get_Subtree (Tree_Item : access Gtk_Tree_Item_Record)
      return Gtk.Tree.Gtk_Tree;
    procedure Gtk_New (Tree_Item : out Gtk_Tree_Item;
@@ -51,8 +50,10 @@ package Gtk.Tree_Item is
    procedure Set_Subtree
      (Tree_Item : access Gtk_Tree_Item_Record;
       Subtree   : in Gtk.Widget.Gtk_Widget);
-   function To_Tree (Tree_Item : access Gtk_Tree_Item_Record)
-                     return Gtk.Tree.Gtk_Tree;
+
+   --  GtkAda0.6 : From_Tree and To_Tree have been removed. Please use
+   --  Gdk.Unchecked_Cast insted
+
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.

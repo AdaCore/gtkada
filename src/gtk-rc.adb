@@ -66,17 +66,16 @@ package body Gtk.Rc is
    -- Get_Style --
    ---------------
 
-   procedure Get_Style
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Style  :    out Gtk.Style.Gtk_Style)
+   function Get_Style
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+     return Gtk.Style.Gtk_Style
    is
       function Internal (Widget : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_rc_get_style");
+      Stub : Gtk.Style.Gtk_Style_Record;
    begin
-      Style := new Gtk.Style.Gtk_Style_Record;
-      Set_Object (Style, Internal (Get_Object (Widget)));
-      Initialize_User_Data (Style);
-      --  TBD??? Check if there is memory leak here
+      return Gtk.Style.Gtk_Style
+        (Get_User_Data (Internal (Get_Object (Widget)), Stub));
    end Get_Style;
 
    -----------
