@@ -42,18 +42,6 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Activate;
 
-   --------------------
-   --  Basic_Is_Set  --
-   --------------------
-
-   function Basic_Is_Set (Widget : in Gtk_Widget'Class) return Boolean is
-      function Internal (Widget : in System.Address) return Guint32;
-      pragma Import (C, Internal, "ada_widget_basic");
-   begin
-      return To_Boolean (Internal (Get_Object (Widget)));
-   end Basic_Is_Set;
-
-
    ------------------------
    --  Can_Focus_Is_Set  --
    ------------------------

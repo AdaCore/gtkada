@@ -173,7 +173,6 @@ package Gtk.Widget is
    function Has_Focus_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
    function Has_Default_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
    function Has_Grab_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function Basic_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
    function Rc_Style_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
 
    -----------------------
