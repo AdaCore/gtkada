@@ -99,7 +99,7 @@ package body Gtk.Tooltips is
      (Tooltips    : access Gtk_Tooltips_Record;
       Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tip_Text    : in String;
-      Tip_Private : in String)
+      Tip_Private : in String := "")
    is
       procedure Internal (Tooltips : System.Address;
                           Widget   : System.Address;

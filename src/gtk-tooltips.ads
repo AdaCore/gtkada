@@ -46,7 +46,7 @@ package Gtk.Tooltips is
      (Tooltips    : access Gtk_Tooltips_Record;
       Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tip_Text    : in String;
-      Tip_Private : in String);
+      Tip_Private : in String := "");
 
 private
    type Gtk_Tooltips_Record is new Gtk.Data.Gtk_Data_Record with null record;
