@@ -868,7 +868,7 @@ package body Gtkada.Canvas is
    begin
       while Item /= null loop
          Tmp := Item.Next;
-         exit when not  Execute (Canvas, Item.Item);
+         exit when not Execute (Canvas, Item.Item);
          Item := Tmp;
       end loop;
    end For_Each_Item;
