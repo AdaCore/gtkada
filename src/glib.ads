@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -176,6 +176,46 @@ package Glib is
    function Quark_Try_String (Id : in String) return GQuark;
    --  Return the quark associated with the string, if it exists.
    --  If it does not exist, return Unknown_Quark.
+
+   -----------
+   -- GType --
+   -----------
+
+   type GType is new Guint;
+   --  This type describes an internal type in Glib.
+   --  You shouldn't have to use it in your own applications, however it might
+   --  be useful sometimes.
+   --  Every object type is associated with a specific value, created
+   --  dynamically at run time the first time you instantiate an object of that
+   --  type (thus if you have never used e.g a Gtk_File_Selection, it won't
+   --  have any GType associated with it).
+   --  You can get the exact type value for each type by using the functions
+   --  Get_Type provided in all the packages in GtkAda.
+   --  You can get the specific value for an existing widget by using the
+   --  function Gtk.Object.Get_Type.
+
+   GType_Invalid   : constant GType := 0;
+   GType_None      : constant GType := 1;
+   GType_Interface : constant GType := 2;
+
+   --  Glib type ids
+   GType_Char      : constant GType := 3;
+   GType_Uchar     : constant GType := 4;
+   GType_Bool      : constant GType := 5;
+   GType_Int       : constant GType := 6;
+   GType_Uint      : constant GType := 7;
+   GType_Long      : constant GType := 8;
+   GType_Ulong     : constant GType := 9;
+   GType_Enum      : constant GType := 10;
+   GType_Flags     : constant GType := 11;
+
+   GType_Float     : constant GType := 12;
+   GType_Double    : constant GType := 13;
+   GType_String    : constant GType := 14; --  Null terminated string.
+   GType_Pointer   : constant GType := 15; --  a general pointer type.
+   GType_Boxed     : constant GType := 16;
+   GType_Param     : constant GType := 17;
+   GType_Object    : constant GType := 18; --  One of the widgets/objects
 
 private
    type C_Dummy is null record;
