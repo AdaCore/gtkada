@@ -23,6 +23,7 @@ with Create_Color_Selection;
 with Create_Dialog;
 with Create_Entry;
 with Create_File_Selection;
+with Create_Gamma_Curve;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
 
@@ -84,7 +85,7 @@ package body Test is
       (US ("dnd"), null),
       (US ("entry"), Create_Entry.Run'Access),
       (US ("file selection"), Create_File_Selection.Run'Access),
-      (US ("gamma curve"), null),
+      (US ("gamma curve"), Create_Gamma_Curve.Run'Access),
       (US ("handle box"), null),
       (US ("list"), null),
       (US ("menus"), null),
