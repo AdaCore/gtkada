@@ -35,6 +35,7 @@ with System;
 with DGate_Callbacks;
 with Unchecked_Conversion;
 with GNAT.OS_Lib;
+with GNAT.Command_Line; use GNAT.Command_Line;
  
 procedure DGate is
 
@@ -42,11 +43,16 @@ procedure DGate is
    use Glib.Glade;
    use Glib.Glade.Glib_XML;
 
-   N : Node_Ptr;
- 
+   package My_Timeout is new Gtk.Main.Timeout (Integer);
+
    type String_Access is access all String;
    for String_Access'Size use Standard'Address_Size;
 
+   N        : Node_Ptr;
+   Id       : Guint;
+   Timeout  : Guint32 := 0;
+   Filename : String_Ptr;
+ 
    function To_Address is new Unchecked_Conversion
      (String_Access, System.Address);
  
@@ -95,23 +101,50 @@ begin
    if Argument_Count = 0 then
       Usage;
    else
-      if not GNAT.OS_Lib.Is_Regular_File (Argument (1)) then
-         Put_Line (Argument (1) & " is not a regular file");
+      loop
+         case Getopt ("timeout:") is
+            when Ascii.NUL => exit;
+
+            when 't' =>
+               if Full_Switch = "timeout" then
+                  Timeout := Guint32'Value (Parameter);
+               else
+                  raise Program_Error;
+               end if;
+
+            when others =>
+               raise Program_Error;         -- cannot occur!
+         end case;
+      end loop;
+
+      Filename := new String '(Get_Argument);
+
+      if not GNAT.OS_Lib.Is_Regular_File (Filename.all) then
+         Put_Line (Filename.all & " is not a regular file");
          return;
       end if;
 
       Gtk.Main.Set_Locale;
       Gtk.Main.Init;
-      N := Parse (Argument (1));
+      N := Parse (Filename.all);
       Register_Signals (N);
       Instantiate (N);
+
+      if Timeout > 0 then
+         --  Let the application run for timeout seconds and then quit
+
+         Id := My_Timeout.Add (Timeout, DGate_Callbacks.Quit'Access, 0);
+      end if;
+
       Gtk.Main.Main;
    end if;
 
 exception
+   when Invalid_Switch | Invalid_Parameter =>
+      Usage;
    when others =>
       Put_Line
         ("DGATE: Internal error. Please send a bug report with the XML");
-      Put_Line ("file " & Argument (1) & " and the GtkAda version to " &
+      Put_Line ("file " & Filename.all & " and the GtkAda version to " &
         "gtkada@ada.eu.org");
 end DGate;

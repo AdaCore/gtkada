@@ -29,5 +29,8 @@ package DGate_Callbacks is
      (Object : in Private_Object; Data : in System.Address);
    --  This callback will print on standard output the string pointed to by
    --  Data.
+
+   function Quit (Id : Integer) return Boolean;
+   --  This function is used to connect a timeout to DGATE
  
 end DGate_Callbacks;

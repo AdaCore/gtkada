@@ -22,6 +22,7 @@
 
 with Ada.Text_IO;
 with Unchecked_Conversion;
+with Gtk.Main;
  
 package body DGate_Callbacks is
  
@@ -30,12 +31,26 @@ package body DGate_Callbacks is
  
    function To_String is new Unchecked_Conversion
      (System.Address, String_Ptr);
- 
+
+   ----------------------
+   -- Generic_Callback --
+   ----------------------
+
    procedure Generic_Callback
      (Object : in Private_Object;
       Data   : in System.Address) is
    begin
       Ada.Text_IO.Put_Line ("Callback called.");
    end Generic_Callback;
+
+   ----------
+   -- Quit --
+   ----------
+
+   function Quit (Id : Integer) return Boolean is
+   begin
+      Gtk.Main.Gtk_Exit (0);
+      return False;
+   end Quit;
  
 end DGate_Callbacks;
