@@ -342,17 +342,12 @@ package Gtk.Ctree is
    --  This changes the type of the cell to Cell_Text. The pixmap (if any)
    --  will no longer be displayed.
 
-   procedure Node_Get_Text (Ctree   : access Gtk_Ctree_Record;
-                            Node    : in     Gtk_Ctree_Node;
-                            Column  : in     Gint;
-                            Text    :    out Interfaces.C.Strings.chars_ptr;
-                            Success :    out Boolean);
+   function Node_Get_Text (Ctree   : access Gtk_Ctree_Record;
+                           Node    : in     Gtk_Ctree_Node;
+                           Column  : in     Gint) return String;
    --  Return the text contained in cell.
-   --  The type of the cell should be either Cell_Text or Cell_Pixtext.
-   --  If there was a problem, a null-length string is returned and Success is
-   --  set to False.
-   --  The problem might appear in case the Node or the Column are
-   --  invalid, or if the cell does not contain any text.
+   --  An empty string is returned if Column is invalid or if the Cell did not
+   --  contain any text (only a pixmap)
 
    procedure Node_Set_Pixmap (Ctree  : access Gtk_Ctree_Record;
                               Node   : in     Gtk_Ctree_Node;

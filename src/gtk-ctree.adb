@@ -720,22 +720,44 @@ package body Gtk.CTree is
    -- Node_Get_Text --
    -------------------
 
-   procedure Node_Get_Text (Ctree   : access Gtk_Ctree_Record;
-                            Node    : in     Gtk_Ctree_Node;
-                            Column  : in     Gint;
-                            Text    :    out Interfaces.C.Strings.chars_ptr;
-                            Success :    out Boolean)
+   function Node_Get_Text (Ctree   : access Gtk_Ctree_Record;
+                           Node    : in     Gtk_Ctree_Node;
+                           Column  : in     Gint) return String
    is
-      function Internal (Ctree  : in System.Address;
-                         Node   : in Gtk_Ctree_Node;
-                         Column : in Gint;
-                         Text   : in System.Address)
-                         return      Gint;
+      function Internal
+        (Ctree  : in System.Address;
+         Node   : in Gtk_Ctree_Node;
+         Column : in Gint;
+         Text   : access Interfaces.C.Strings.chars_ptr) return Gint;
       pragma Import (C, Internal, "gtk_ctree_node_get_text");
 
+      function Internal2
+        (Clist   : in System.Address;
+         Node    : in Gtk_Ctree_Node;
+         Column  : in Gint;
+         Text    : access Interfaces.C.Strings.chars_ptr;
+         Spacing : in System.Address;
+         Pixmap  : in System.Address;
+         Mask    : access System.Address) return Gint;
+      pragma Import (C, Internal2, "gtk_ctree_node_get_pixtext");
+
+      Mask : aliased System.Address;
+      Text : aliased Interfaces.C.Strings.chars_ptr;
+      Success : Gint;
    begin
-      Success := To_Boolean
-        (Internal (Get_Object (Ctree), Node, Column, Text'Address));
+      if Node_Get_Cell_Type (Ctree, Node, Column) = Cell_Text then
+         Success := Internal (Get_Object (Ctree), Node, Column, Text'Access);
+      else
+         Success := Internal2
+           (Get_Object (Ctree), Node, Column, Text'Access,
+            System.Null_Address, System.Null_Address, Mask'Access);
+      end if;
+
+      if Success = 0 then
+         return "";
+      else
+         return Interfaces.C.Strings.Value (Text);
+      end if;
    end Node_Get_Text;
 
    ---------------------
