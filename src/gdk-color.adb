@@ -423,6 +423,7 @@ package body Gdk.Color is
       return Color;
    end White;
 
+--  Why is this code (and assert) commented out ???
 --     function Ada_Gdk_Color_Size return Guint;
 --     pragma Import (C, Ada_Gdk_Color_Size);
 begin
