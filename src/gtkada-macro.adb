@@ -599,7 +599,7 @@ package body Gtkada.Macro is
      (Item : Macro_Item_Mouse_Press) return Gdk_Event
    is
       E      : Gdk_Event;
-      Widget : Gtk_Widget := Find_Widget (Item);
+      Widget : constant Gtk_Widget := Find_Widget (Item);
    begin
       if Widget = null then
          return null;
@@ -620,7 +620,7 @@ package body Gtkada.Macro is
      (Item : Macro_Item_Crossing) return Gdk_Event
    is
       E      : Gdk_Event;
-      Widget : Gtk_Widget := Find_Widget (Item);
+      Widget : constant Gtk_Widget := Find_Widget (Item);
    begin
       if Widget = null then
          return null;
@@ -668,7 +668,7 @@ package body Gtkada.Macro is
      (Item : Macro_Item_Motion) return Gdk.Event.Gdk_Event
    is
       E      : Gdk_Event;
-      Widget : Gtk_Widget := Find_Widget (Item);
+      Widget : constant Gtk_Widget := Find_Widget (Item);
    begin
       if Widget = null then
          return null;
