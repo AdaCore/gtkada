@@ -719,7 +719,7 @@ package body Gtk.Widget is
       procedure Signal_Connect
         (Object        : System.Address;
          Name          : String;
-         Func          : System.Address;
+         Func          : Void_Signal;
          Func_Data     : System.Address := System.Null_Address);
       pragma Import (C, Signal_Connect, "gtk_signal_connect");
 
