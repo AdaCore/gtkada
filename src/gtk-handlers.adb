@@ -345,7 +345,10 @@ package body Gtk.Handlers is
          use type Marshallers.Handler_Proxy;
 
          Data   : constant Data_Type_Access := Convert (Get_Data (Closure));
+
          Stub   : Widget_Type;
+         pragma Warnings (Off, Stub);
+
          Value  : aliased Return_Type;
          Values : GValues;
 
