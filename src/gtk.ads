@@ -153,6 +153,12 @@ package Gtk is
    --  If the Data is not set, return a new access type, that points to
    --  a structure with the same tag as Stub.
 
+   function Unchecked_Cast
+     (Obj  : access Root_Type'Class;
+      Stub : Root_Type'Class) return Root_Type_Access;
+   --  Cast Obj in an object of type Stub'Class.
+   --  Return the resulting object and free Obj.
+
    function Count_Arguments
      (The_Type : Gtk_Type; Name : in String) return Guint;
    --  Return the number of arguments used in the handlers for the signal.

@@ -223,9 +223,9 @@ package body Gtk is
       return Object.Ptr /= System.Null_Address;
    end Is_Created;
 
-   ------------------
-   --  Set_Object  --
-   ------------------
+   ----------------
+   -- Set_Object --
+   ----------------
 
    procedure Set_Object
      (Object : access Root_Type'Class;
@@ -233,5 +233,34 @@ package body Gtk is
    begin
       Object.Ptr := Value;
    end Set_Object;
+
+   --------------------
+   -- Unchecked_Cast --
+   --------------------
+
+   function Unchecked_Cast
+     (Obj  : access Root_Type'Class;
+      Stub : Root_Type'Class) return Root_Type_Access
+   is
+      Object : Root_Type_Access := Root_Type_Access (Obj);
+      Result : Root_Type_Access := new Root_Type'Class' (Stub);
+
+      procedure Set_User_Data
+        (Obj     : System.Address;
+         Name    : Glib.GQuark;
+         Data    : Root_Type_Access;
+         Destroy : System.Address);
+      pragma Import (C, Set_User_Data, "gtk_object_set_data_by_id_full");
+
+      procedure Free is new Unchecked_Deallocation
+        (Root_Type'Class, Root_Type_Access);
+
+   begin
+      Result.Ptr := Obj.Ptr;
+      Set_User_Data
+        (Obj.Ptr, GtkAda_String_Quark, Result, Free_User_Data'Address);
+      Free (Object);
+      return Result;
+   end Unchecked_Cast;
 
 end Gtk;
