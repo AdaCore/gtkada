@@ -77,6 +77,22 @@ package body Gtk.Combo is
         (Get_User_Data (Internal (Get_Object (Combo_Box)), Stub));
    end Get_List;
 
+   ----------------------
+   -- Get_Popup_Window --
+   ----------------------
+
+   function Get_Popup_Window
+     (Combo_Box : access Gtk_Combo_Record) return Gtk.Window.Gtk_Window
+   is
+      function Internal (Combo_Box : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_combo_get_popwin");
+
+      Stub : Gtk.Window.Gtk_Window_Record;
+   begin
+      return Gtk.Window.Gtk_Window
+        (Get_User_Data (Internal (Get_Object (Combo_Box)), Stub));
+   end Get_Popup_Window;
+
    -------------
    -- Gtk_New --
    -------------

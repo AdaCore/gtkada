@@ -57,6 +57,7 @@ with Gtk.GEntry;
 with Gtk.List;
 with Gtk.Box;
 with Gtk.Item;
+with Gtk.Window;
 with Gtk.Enums; use Gtk.Enums;
 
 package Gtk.Combo is
@@ -95,6 +96,10 @@ package Gtk.Combo is
    --  Return the list of items associated with a Combo_Box.
    --  Add (Gtk.Container.Add) Gtk_List_Items to this list to insert new
    --  entries in the popdown menu.
+
+   function Get_Popup_Window
+     (Combo_Box : access Gtk_Combo_Record) return Gtk.Window.Gtk_Window;
+   --  Return the popup window associated with a Combo_Box.
 
    procedure Set_Case_Sensitive
      (Combo_Box : access Gtk_Combo_Record; Val : Boolean := True);
