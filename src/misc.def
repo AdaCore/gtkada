@@ -364,11 +364,10 @@ EXPORTS
 	ada_set_real_set_property_handler
 	ada_g_object_get_type
 	ada_gtype_fundamental
-	ada_gtk_list_store_set_value
-	ada_gtk_tree_store_set_value
-	ada_gtk_tree_model_get
 	ada_gtk_widget_set_default_size_allocate_handler
 	ada_initialize_class_record
+	ada_get_nth_virtual_function
+	ada_c_gtk_text_iter_size
 
 	ada_editable_get_editable
 	ada_editable_set_editable
