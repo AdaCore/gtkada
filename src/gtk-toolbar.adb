@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -554,8 +554,7 @@ package body Gtk.Toolbar is
    -- Generate --
    --------------
 
-   procedure Generate (N       : in Node_Ptr;
-                       File    : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
       P   : Node_Ptr;
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
       Cur : constant String_Ptr := Get_Field (N, "name");
@@ -587,9 +586,18 @@ package body Gtk.Toolbar is
                   Put (File, To_Ada (Top.all) & ".");
                end if;
 
+               Add_Package ("Pixmap");
                Put_Line (File, To_Ada (Cur.all) & ", """ &
-                 Get_Field (P, "label").all & """, """", """",");
-               Put_Line (File, "     Create_Pixmap (" & '"' &
+                 Get_Field (P, "label").all & """,");
+               S := Get_Field (P, "tooltip");
+
+               if S /= null then
+                  Put (File, "     """ & S.all & '"');
+               else
+                  Put (File, "     """"");
+               end if;
+
+               Put_Line (File, ", """", Create_Pixmap (" & '"' &
                  Get_Field (P, "icon").all &
                  """, " & To_Ada (Top.all) & "));");
                P.Specific_Data.Created := True;
@@ -601,12 +609,13 @@ package body Gtk.Toolbar is
       end loop;
    end Generate;
 
-   procedure Generate (Toolbar : in out Gtk_Object;
-                       N       : in Node_Ptr) is
+   procedure Generate (Toolbar : in out Gtk_Object; N : in Node_Ptr) is
       P, Top : Node_Ptr;
       S, S2  : String_Ptr;
+      Null_String : aliased String := "";
 
       use Gtk.Widget;
+
    begin
       if not N.Specific_Data.Created then
          S := Get_Field (N, "orientation");
@@ -658,10 +667,16 @@ package body Gtk.Toolbar is
             if S /= null and then Get_Part (S.all, 1) = "Toolbar" then
                begin
                   Top := Find_Top_Widget (N);
+                  S := Get_Field (P, "tooltip");
+
+                  if S = null then
+                     S := Null_String'Unchecked_Access;
+                  end if;
+
                   Set_Object (Get_Field (P, "name"),
                     Gtk_Object (
                       Append_Item (Gtk_Toolbar (Toolbar),
-                        Get_Field (P, "label").all, "", "",
+                        Get_Field (P, "label").all, S.all, "",
                         Create_Pixmap (Get_Field (P, "icon").all,
                           (Gtk_Window
                             (Get_Object (Get_Field (Top, "name"))))))));
