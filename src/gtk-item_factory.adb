@@ -32,7 +32,6 @@ with Gtk.Accel_Group;
 with Gtk.Widget;
 with Interfaces.C.Strings;
 with System;
-with Unchecked_Conversion;
 
 package body Gtk.Item_Factory is
 
@@ -284,13 +283,13 @@ package body Gtk.Item_Factory is
       procedure Create_Item
         (Ifactory      : access Gtk_Item_Factory_Record'Class;
          Ientry        : in Gtk_Item_Factory_Entry;
-         Callback_Data : in Data_Type;
+         Callback_Data : in Data_Type_Access;
          Callback_Type : in Guint)
       is
          procedure Internal
            (Ifactory      : in System.Address;
             Ientry        : in Gtk_Item_Factory_Entry;
-            Callback_Data : in Data_Type;
+            Callback_Data : in Data_Type_Access;
             Callback_Type : in Guint);
          pragma Import (C, Internal, "gtk_item_factory_create_item");
       begin
@@ -307,7 +306,7 @@ package body Gtk.Item_Factory is
       procedure Create_Items
         (Ifactory      : access Gtk_Item_Factory_Record'Class;
          Entries       : in Gtk_Item_Factory_Entry_Array;
-         Callback_Data : in Data_Type)
+         Callback_Data : in Data_Type_Access)
       is
          procedure Internal
            (Ifactory      : in System.Address;
@@ -354,7 +353,8 @@ package body Gtk.Item_Factory is
       is
          function Item_Type_String (Item_Type : Item_Type_Enum) return String;
 
-         function Item_Type_String (Item_Type : Item_Type_Enum) return String is
+         function Item_Type_String
+           (Item_Type : Item_Type_Enum) return String is
          begin
             case Item_Type is
                when Title       => return "<Title>";
@@ -381,9 +381,6 @@ package body Gtk.Item_Factory is
          Item_Type       : in String := "";
          Callback_Action : in Guint := 0) return Gtk_Item_Factory_Entry
       is
-         function To_Address is new
-           Unchecked_Conversion (Gtk_Item_Factory_Callback, System.Address);
-
          Ientry : Gtk_Item_Factory_Entry;
       begin
          Ientry.Path := ICS.New_String (Path);
@@ -394,7 +391,7 @@ package body Gtk.Item_Factory is
             Ientry.Accelerator := ICS.New_String (Accelerator);
          end if;
 
-         Ientry.Callback        := To_Address (Callback);
+         Ientry.Callback        := Callback.all'Address;
          Ientry.Callback_Action := Callback_Action;
 
          if Item_Type = "" then
@@ -443,7 +440,7 @@ package body Gtk.Item_Factory is
 
       procedure Popup_With_Data
         (Ifactory     : access Gtk_Item_Factory_Record'Class;
-         Popup_Data   : in Data_Type;
+         Popup_Data   : in Data_Type_Access;
          Destroy      : in System.Address;  --  Gtk_Destroy_Notify ???
          X            : in Guint;
          Y            : in Guint;
@@ -452,7 +449,7 @@ package body Gtk.Item_Factory is
       is
          procedure Internal
            (Ifactory     : in System.Address;
-            Popup_Data   : in Data_Type;
+            Popup_Data   : in Data_Type_Access;
             Destroy      : in System.Address;
             X            : in Guint;
             Y            : in Guint;
@@ -474,7 +471,9 @@ package body Gtk.Item_Factory is
       -- Print_Func --
       ----------------
 
-      procedure Print_Func (File_Pointer : in Data_Type; Str : in String) is
+      procedure Print_Func
+        (File_Pointer : in Data_Type_Access; Str : in String)
+      is
          procedure Internal
            (FILE_Pointer : in System.Address;
             Str          : in String);
@@ -490,13 +489,13 @@ package body Gtk.Item_Factory is
       procedure Set_Translate_Func
         (Ifactory : access Gtk_Item_Factory_Record'Class;
          Func     : in Gtk_Translate_Func;
-         Data     : in Data_Type;
+         Data     : in Data_Type_Access;
          Notify   : in System.Address)  --  Gtk_Destroy_Notify ???
       is
          procedure Internal
            (Ifactory : in System.Address;
             Func     : in Gtk_Translate_Func;  --  ???
-            Data     : in Data_Type;
+            Data     : in Data_Type_Access;
             Notify   : in System.Address);
          pragma Import (C, Internal, "gtk_item_factory_set_translate_func");
 

@@ -66,6 +66,8 @@ package Gtk.Item_Factory is
       Last_Branch
       --  Create a right justified item to hold sub items
      );
+   --  Identify the predefined item types used to create a
+   --  Gtk_Item_Factory_Entry.
 
    type Gtk_Item_Factory_Entry is private;
    type Gtk_Item_Factory_Entry_Array is array (Gint range <>) of
@@ -150,12 +152,12 @@ package Gtk.Item_Factory is
       type Data_Type_Access is access all Data_Type;
 
       type Gtk_Print_Func is access procedure
-        (Func_Data : Data_Type;
+        (Func_Data : Data_Type_Access;
          Str       : String);  --  gchar* ???
 
       type Gtk_Translate_Func is access function
         (Path        : String;  --  const gchar* ???
-         Func_Data   : Data_Type) return Gtkada.Types.Chars_Ptr;
+         Func_Data   : Data_Type_Access) return Gtkada.Types.Chars_Ptr;
 
       type Limited_Widget is limited private;
 
@@ -163,7 +165,7 @@ package Gtk.Item_Factory is
         (Widget : in Limited_Widget) return Gtk.Widget.Gtk_Widget;
 
       type Gtk_Item_Factory_Callback is access procedure
-        (Callback_Data   : in Data_Type;
+        (Callback_Data   : in Data_Type_Access;
          Callback_Action : in Guint;
          Widget          : in Limited_Widget);
 
@@ -196,7 +198,7 @@ package Gtk.Item_Factory is
       procedure Create_Item
         (Ifactory      : access Gtk_Item_Factory_Record'Class;
          Ientry        : in Gtk_Item_Factory_Entry;
-         Callback_Data : in Data_Type;
+         Callback_Data : in Data_Type_Access;
          Callback_Type : in Guint);
       --  Callback_Type = 0 -> Gtk_Item_Factory_Callback
       --  Callback_Type = 1 -> Gtk_Item_Factory_Callback1
@@ -204,7 +206,7 @@ package Gtk.Item_Factory is
       procedure Create_Items
         (Ifactory      : access Gtk_Item_Factory_Record'Class;
          Entries       : in Gtk_Item_Factory_Entry_Array;
-         Callback_Data : in Data_Type);
+         Callback_Data : in Data_Type_Access);
 
       function Popup_Data
         (Ifactory : access Gtk_Item_Factory_Record'Class)
@@ -216,7 +218,7 @@ package Gtk.Item_Factory is
 
       procedure Popup_With_Data
         (Ifactory     : access Gtk_Item_Factory_Record'Class;
-         Popup_Data   : in Data_Type;
+         Popup_Data   : in Data_Type_Access;
          Destroy      : in System.Address; --  Gtk_Destroy_Notify ???
          X            : in Guint;
          Y            : in Guint;
@@ -224,13 +226,13 @@ package Gtk.Item_Factory is
          Time         : in Guint32);
 
       procedure Print_Func
-        (File_Pointer : in Data_Type;
+        (File_Pointer : in Data_Type_Access;
          Str          : in String);
 
       procedure Set_Translate_Func
         (Ifactory : access Gtk_Item_Factory_Record'Class;
          Func     : in Gtk_Translate_Func;
-         Data     : in Data_Type;
+         Data     : in Data_Type_Access;
          Notify   : in System.Address);  --  Gtk_Destroy_Notify ???
 
    private
