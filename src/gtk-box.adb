@@ -56,8 +56,8 @@ package body Gtk.Box is
    ------------------
 
    procedure Gtk_New_Vbox (Box         : in out Gtk_Box;
-                           Homogeneous : in  Boolean;
-                           Spacing     : in  Gint)
+                           Homogeneous : in  Boolean := False;
+                           Spacing     : in  Gint := 0)
    is
    begin
       Box := new Gtk_Box_Record;
@@ -69,8 +69,8 @@ package body Gtk.Box is
    ------------------
 
    procedure Gtk_New_Hbox (Box         : in out Gtk_Box;
-                           Homogeneous : in  Boolean;
-                           Spacing     : in  Gint)
+                           Homogeneous : in  Boolean := False;
+                           Spacing     : in  Gint := 0)
    is
    begin
       Box := new Gtk_Box_Record;
@@ -82,8 +82,8 @@ package body Gtk.Box is
    ---------------------
 
    procedure Initialize_Hbox (Box         : access Gtk_Box_Record'Class;
-                              Homogeneous : in  Boolean;
-                              Spacing     : in  Gint) is
+                              Homogeneous : in  Boolean := False;
+                              Spacing     : in  Gint := 0) is
       function Internal (Homogeneous : Gint;
                          Spacing     : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_hbox_new");
@@ -97,8 +97,8 @@ package body Gtk.Box is
    ---------------------
 
    procedure Initialize_Vbox (Box         : access Gtk_Box_Record'Class;
-                              Homogeneous : in  Boolean;
-                              Spacing     : in  Gint) is
+                              Homogeneous : in  Boolean := False;
+                              Spacing     : in  Gint := 0) is
       function Internal (Homogeneous : Gint;
                          Spacing     : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_vbox_new");

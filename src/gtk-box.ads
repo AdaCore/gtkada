@@ -43,18 +43,18 @@ package Gtk.Box is
                        return Gtk_Widget;
 
    procedure Gtk_New_Vbox (Box         : in out Gtk_Box;
-                           Homogeneous : in  Boolean;
-                           Spacing     : in  Gint);
+                           Homogeneous : in  Boolean := False;
+                           Spacing     : in  Gint := 0);
    procedure Initialize_Vbox (Box         : access Gtk_Box_Record'Class;
-                              Homogeneous : in  Boolean;
-                              Spacing     : in  Gint);
+                              Homogeneous : in  Boolean := False;
+                              Spacing     : in  Gint := 0);
 
    procedure Gtk_New_Hbox (Box         : in out Gtk_Box;
-                           Homogeneous : in  Boolean;
-                           Spacing     : in  Gint);
+                           Homogeneous : in  Boolean := False;
+                           Spacing     : in  Gint := 0);
    procedure Initialize_Hbox (Box         : access Gtk_Box_Record'Class;
-                              Homogeneous : in  Boolean;
-                              Spacing     : in  Gint);
+                              Homogeneous : in  Boolean := False;
+                              Spacing     : in  Gint := 0);
 
    procedure Pack_Start
      (In_Box  : access Gtk_Box_Record;
