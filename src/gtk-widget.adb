@@ -824,8 +824,9 @@ package body Gtk.Widget is
 
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
-      Child : Node_Ptr := Find_Tag (N.Child, "child");
-      Q     : Node_Ptr;
+      Child  : Node_Ptr := Find_Tag (N.Child, "child");
+      Q, Top : Node_Ptr;
+      S      : String_Ptr;
 
    begin
       Object.Generate (N, File);
@@ -843,6 +844,30 @@ package body Gtk.Widget is
             Gen_Call_Child (N, Child, "Box", "Pack_Start",
               "expand", "fill", "padding", File);
             N.Specific_Data.Has_Container := True;
+         end if;
+      end if;
+
+      Q := Find_Tag (N.Child, "accelerator");
+
+      if Q /= null then
+         Top := Find_Top_Widget (N);
+
+         if not Top.Specific_Data.Has_Accel_Group then
+            Put_Line (File, "   Accel_Group.Gtk_New (The_Accel_Group);");
+            Top.Specific_Data.Has_Accel_Group := True;
+         end if;
+
+         Put_Line (File, "   Widget.Add_Accelerator (Gtk_Widget (" &
+            Get_Field (N, "name").all & "), """ & Get_Field (Q, "signal").all &
+            """,");
+         S := Get_Field (Q, "modifiers");
+         Put (File, "     The_Accel_Group, " & Get_Field (Q, "key").all);
+
+         if S'Length > 4 and then S (S'First .. S'First + 3) = "GDK_" then
+            Put_Line (File, ", Gdk.Types." & To_Ada (S.all) &
+              ", Accel_Visible);");
+         else
+            Put_Line (File, ", " & S.all & ", Accel_Visible);");
          end if;
       end if;
 

@@ -396,6 +396,7 @@ package body Gtk.Glade is
            To_Ada (Get_Field (M, "name").all) & " return " &
            To_Ada (Get_Field (M, "class").all) & " is");
          Put_Line (Output, "   Cb_Id : Glib.Guint;");
+         Put_Line (Output, "   The_Accel_Group : Gtk_Accel_Group;");
          Print_Var (M, Output);
          New_Line (Output);
          Put_Line (Output, "begin");
@@ -404,8 +405,18 @@ package body Gtk.Glade is
          New_Line;
          Put_Line ("with Glib;");
          Put_Line ("with Gtk; use Gtk;");
-         Put_Line ("with Gtk.Enums; use Gtk.Enums;");
+
+         --  ??? It would be nice to determine when these packages are needed
+
+         Put_Line ("with Gdk.Types;");
+         Put_Line ("with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;");
+         Put_Line ("with Gtk.Enums;  use Gtk.Enums;");
          Put_Line ("with Gtk.Button; use Gtk.Button;");
+         Put_Line ("with Gtk.Widget; use Gtk.Widget;");
+         Put_Line ("with Gtk.Window; use Gtk.Window;");
+         Put_Line ("with Gtk.Pixmap; use Gtk.Pixmap;");
+         Put_Line ("with Gtk.Accel_Group; use Gtk.Accel_Group;");
+
          Put_Line ("with Callbacks_" & Project &
            "; use Callbacks_" & Project & ";");
          Gen_Packages (Standard_Output);

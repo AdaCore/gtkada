@@ -38,6 +38,9 @@ package Glib.Glade is
 
       Has_Container : Boolean := False;
       --  True if object has a container
+
+      Has_Accel_Group : Boolean := False;
+      --  True if object has created an accelerator group
    end record;
 
    package Glib_XML is new Glib.XML (XML_Data);
@@ -45,6 +48,9 @@ package Glib.Glade is
 
    function Find_Parent (N : Node_Ptr; Class : String) return Node_Ptr;
    --  Find a node in the ancestors of N with a given class
+
+   function Find_Top_Widget (N : Node_Ptr) return Node_Ptr;
+   --  Find a node in the ancestors of N that represents a root widget
 
    function To_Ada (S : String; Separator : Character := '_') return String;
    --  Convert S by adding a separator before each upper case character and

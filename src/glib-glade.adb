@@ -170,6 +170,24 @@ package body Glib.Glade is
       end if;
    end Find_Parent;
 
+   ---------------------
+   -- Find_Top_Widget --
+   ---------------------
+
+   function Find_Top_Widget (N : Node_Ptr) return Node_Ptr is
+      P, Q : Node_Ptr;
+   begin
+      Q := N;
+      P := N.Parent;
+
+      while P.Tag.all /= "GTK-Interface" loop
+         Q := P;
+         P := P.Parent;
+      end loop;
+
+      return Q;
+   end Find_Top_Widget;
+
    ------------
    -- To_Ada --
    ------------
@@ -201,7 +219,10 @@ package body Glib.Glade is
 
       Has_Sep := Has_Separator (S);
 
-      if S'Length > 4 and then S (S'First .. S'First + 3) = "GTK_" then
+      if S'Length > 4 and then
+        (S (S'First .. S'First + 3) = "GTK_"
+          or else S (S'First .. S'First + 3) = "GDK_")
+      then
          First := S'First + 4;
       else
          First := S'First;
