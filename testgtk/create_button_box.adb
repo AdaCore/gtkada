@@ -92,6 +92,7 @@ package body Create_Button_Box is
    end Create_Bbox_Window;
 
    procedure Test_Hbbox (Widget : in out Gtk_Button'Class) is
+      pragma Warnings (Off, Widget);
    begin
       Create_Bbox_Window (True, "Spread", 50,40, 85, 28, Spread);
       Create_Bbox_Window (True, "Edge", 200, 40, 85, 25, Edge);
@@ -100,6 +101,7 @@ package body Create_Button_Box is
    end Test_Hbbox;
 
    procedure Test_Vbbox (Widget : in out Gtk_Button'Class) is
+      pragma Warnings (Off, Widget);
    begin
       Create_Bbox_Window (False, "Spread", 50, 40, 85, 25, Spread);
       Create_Bbox_Window (False, "Edge", 250, 40, 85, 28, Edge);

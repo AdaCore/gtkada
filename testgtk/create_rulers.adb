@@ -1,21 +1,14 @@
 with Glib; use Glib;
 with Gdk.Types; use Gdk.Types;
-with Gtk.Adjustment; use Gtk.Adjustment;
-with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
-with Gtk.GRange; use Gtk.GRange;
 with Gtk.Hbox; use Gtk.Hbox;
 with Gtk.HRuler; use Gtk.HRuler;
-with Gtk.Hscale; use Gtk.Hscale;
-with Gtk.Hscrollbar; use Gtk.Hscrollbar;
 with Gtk.Hseparator; use Gtk.Hseparator;
 with Gtk.Label; use Gtk.Label;
-with Gtk.Object; use Gtk.Object;
 with Gtk.Ruler; use Gtk.Ruler;
-with Gtk.Scale; use Gtk.Scale;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Table; use Gtk.Table;
 with Gtk.Vbox; use Gtk.Vbox;
@@ -23,8 +16,6 @@ with Gtk.Vruler; use Gtk.VRuler;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
-
-with Ada.Text_IO;
 
 package body Create_Rulers is
 

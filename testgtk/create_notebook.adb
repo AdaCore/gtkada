@@ -241,6 +241,7 @@ package body Create_Notebook is
                           Page     : in out Gtk_Notebook_Page;
                           Page_Num : in out Gtk_Notebook)
    is
+      pragma Warnings (Off, Page_Num);
       function Convert is new Gtk.Unchecked_Cast (Gtk_Pixmap);
       Old_Page : Gtk_Notebook_Page := Get_Cur_Page (Notebook);
       Box      : Gtk_Box;
