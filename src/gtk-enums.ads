@@ -120,14 +120,14 @@ package Gtk.Enums is
                               Toolbar_Text,
                               Toolbar_Both);
 
-   type Gtk_Toolbar_Child_Type is (Gtk_Toolbar_Child_Space,
-                                   Gtk_Toolbar_Child_Button,
-                                   Gtk_Toolbar_Child_Togglebutton,
-                                   Gtk_Toolbar_Child_Radiobutton,
-                                   Gtk_Toolbar_Child_Widget);
+   type Gtk_Toolbar_Child_Type is (Child_Space,
+                                   Child_Button,
+                                   Child_Togglebutton,
+                                   Child_Radiobutton,
+                                   Child_Widget);
 
-   type Gtk_Tree_View_Mode is (Gtk_Tree_View_Line,
-                               Gtk_Tree_View_Item);
+   type Gtk_Tree_View_Mode is (View_Line,
+                               View_Item);
 
    type Gtk_Visibility is (Visibility_None,
                            Visibility_Partial,
