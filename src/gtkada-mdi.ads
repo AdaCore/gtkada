@@ -298,6 +298,9 @@ package Gtkada.MDI is
    --  your responsability to call this procedure when the user presses
    --  the keys to move between children.
    --
+   --  If Event is null, then no dialog is displayed. Instead, the next or
+   --  previous child is immediately selected.
+   --
    --  This function is not internal to the MDI since connecting to the
    --  key_press_event and key_release_event should be done in the gtk_window
    --  that contains the MDI. Otherwise, some events are intercepted by gtk+,

@@ -832,6 +832,23 @@ package body Gtkada.MDI is
          return;
       end if;
 
+      if Event = null then
+         declare
+            List : Widget_List.Glist;
+         begin
+            if Move_To_Next then
+               List := Next (First (MDI.Items));
+            else
+               List := Last (MDI.Items);
+            end if;
+
+            if List /= Null_List then
+               Set_Focus_Child (MDI_Child (Widget_List.Get_Data (List)));
+            end if;
+         end;
+         return;
+      end if;
+
       if MDI.Selection_Dialog = null then
          D := new Selection_Dialog_Record;
          Initialize (D, Window_Popup);
