@@ -84,7 +84,6 @@ with Gtk.Scrolled_Window;
 with Gtk.Separator;
 with Gtk.Spin_Button;
 with Gtk.Status_Bar;
-with Gtk.Style;
 with Gtk.Table;
 with Gtk.Text;
 with Gtk.Tips_Query;
@@ -478,7 +477,6 @@ begin
    SHT.Set (new String '("GtkSpinButton"),
             new Gtk.Spin_Button.Gtk_Spin_Button);
    SHT.Set (new String '("GtkStatusBar"), new Gtk.Status_Bar.Gtk_Status_Bar);
-   SHT.Set (new String '("GtkStyle"), new Gtk.Style.Gtk_Style);
    SHT.Set (new String '("GtkTable"), new Gtk.Table.Gtk_Table);
    SHT.Set (new String '("GtkText"), new Gtk.Text.Gtk_Text);
    SHT.Set (new String '("GtkTipsQuery"), new Gtk.Tips_Query.Gtk_Tips_Query);
