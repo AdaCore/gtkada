@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -39,6 +39,153 @@ package body Gtk.Main is
 
    package C renames Interfaces.C;
 
+   --------------
+   -- Do_Event --
+   --------------
+
+   procedure Do_Event (Event : in Gdk.Event.Gdk_Event) is
+      procedure Internal (Event : System.Address);
+      pragma Import (C, Internal, "gtk_main_do_event");
+   begin
+      Internal (Get_Object (Event));
+   end Do_Event;
+
+   --------------------
+   -- Events_Pending --
+   --------------------
+
+   function Events_Pending return Boolean is
+      function Internal return Gint;
+      pragma Import (C, Internal, "gtk_events_pending");
+   begin
+      return Boolean'Val (Internal);
+   end Events_Pending;
+
+   --------------
+   -- Quit_Add --
+   --------------
+
+   function Quit_Add (Main_Level : Guint;
+                      Func       : Quit_Function)
+                     return Quit_Handler_Id
+   is
+      function Internal (Main_Level : Guint;
+                         Func       : Quit_Function;
+                         Data       : System.Address)
+                        return Quit_Handler_Id;
+      pragma Import (C, Internal, "gtk_quit_add");
+   begin
+      return Internal (Main_Level, Func, System.Null_Address);
+   end Quit_Add;
+
+   ----------
+   -- Quit --
+   ----------
+
+   package body Quit is
+      type Data_Type_Access is access Data_Type;
+      type Cb_Record is
+         record
+            Func : Quit_Function;
+            Data : Data_Type_Access;
+         end record;
+      type Cb_Record_Access is access Cb_Record;
+
+      procedure Free_Data (D : in System.Address);
+      pragma Convention (C, Free_Data);
+
+      function Convert is new Unchecked_Conversion
+        (System.Address, Cb_Record_Access);
+
+      function General_Cb (D : in System.Address) return Gint;
+      pragma Convention (C, General_Cb);
+
+      ----------
+      -- Free --
+      ----------
+
+      procedure Free_Data (D : in System.Address) is
+         procedure Internal is new Unchecked_Deallocation
+           (Cb_Record, Cb_Record_Access);
+         procedure Internal2 is new Unchecked_Deallocation
+           (Data_Type, Data_Type_Access);
+         Data : Cb_Record_Access := Convert (D);
+      begin
+         Internal2 (Data.Data);
+         Internal (Data);
+      end Free_Data;
+
+      ----------------
+      -- General_Cb --
+      ----------------
+
+      function General_Cb (D : in System.Address) return Gint is
+         Data : Cb_Record_Access := Convert (D);
+      begin
+         return Boolean'Pos (Data.Func (Data.Data.all));
+      end General_Cb;
+
+      ---------
+      -- Add --
+      ---------
+
+      function Quit_Add (Main_Level : Guint;
+                         Func       : Quit_Function;
+                         Data       : Data_Type)
+                        return Quit_Handler_Id
+      is
+         function Internal (Main_Level : in Guint;
+                            Func       : in System.Address;
+                            Marshal    : in System.Address;
+                            Data       : in System.Address;
+                            Destroy    : in System.Address)
+                            return     Quit_Handler_Id;
+         pragma Import (C, Internal, "gtk_quit_add_full");
+         function Convert is new Unchecked_Conversion
+           (Cb_Record_Access, System.Address);
+         D : Cb_Record_Access
+           := new Cb_Record'(Func => Func,
+                             Data => new Data_Type'(Data));
+      begin
+         return Internal (Main_Level, General_Cb'Address, System.Null_Address,
+                          Convert (D), Free_Data'Address);
+      end Quit_Add;
+   end Quit;
+
+   ----------------------
+   -- Quit_Add_Destroy --
+   ----------------------
+
+   function Quit_Add_Destroy
+     (Main_Level : Guint;
+      Object     : access Gtk.Object.Gtk_Object_Record'Class)
+     return Quit_Handler_Id
+   is
+      function Internal (Main_Level : Guint;
+                         Object     : System.Address)
+                        return Quit_Handler_Id;
+      pragma Import (C, Internal, "gtk_quit_add_destroy");
+   begin
+      return Internal (Main_Level, Get_Object (Object));
+   end Quit_Add_Destroy;
+
+   --------------
+   -- Idle_Add --
+   --------------
+
+   function Idle_Add (Cb       : in Idle_Callback;
+                      Priority : in Idle_Priority := Priority_Default_Idle)
+                     return Idle_Handler_Id
+   is
+      function Internal (Priority : in Idle_Priority;
+                         Func     : in Idle_Callback;
+                         Data     : System.Address)
+                        return Idle_Handler_Id;
+      pragma Import (C, Internal, "gtk_idle_add_priority");
+   begin
+      return Internal (Priority, Cb, System.Null_Address);
+   end Idle_Add;
+
    ----------
    -- Init --
    ----------
@@ -56,6 +203,40 @@ package body Gtk.Main is
    begin
       Internal (gnat_argc'Address, gnat_argv'Address);
    end Init;
+
+   ----------------
+   -- Init_Check --
+   ----------------
+
+   function Init_Check return Boolean is
+      gnat_argc : Interfaces.C.int;
+      pragma Import (C, gnat_argc);
+
+      gnat_argv : System.Address;
+      pragma Import (C, gnat_argv);
+
+      function Internal (argc : System.Address; argv : System.Address)
+                        return Gboolean;
+      pragma Import (C, Internal, "gtk_init_check");
+
+   begin
+      return Boolean'Val (Internal (gnat_argc'Address, gnat_argv'Address));
+   end Init_Check;
+
+   ----------------------
+   -- Get_Event_Widget --
+   ----------------------
+
+   function Get_Event_Widget (Event : in Gdk.Event.Gdk_Event)
+                             return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Event : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_get_event_widget");
+      Stub : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (Event)), Stub));
+   end Get_Event_Widget;
 
    --------------
    -- Grab_Add --
@@ -81,19 +262,28 @@ package body Gtk.Main is
       Internal (Get_Object (Widget));
    end Grab_Remove;
 
-   ----------
-   -- Main --
-   ----------
+   ----------------------
+   -- Grab_Get_Current --
+   ----------------------
 
-   procedure Main is
-      procedure Internal;
-      pragma Import (C, Internal, "gtk_main");
+   function Grab_Get_Current return Gtk.Widget.Gtk_Widget is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_grab_get_current");
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      if Main_Hook /= null then
-         Main_Hook.all;
-      end if;
-      Internal;
-   end Main;
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal, Stub));
+   end Grab_Get_Current;
+
+   --------------------
+   -- Main_Iteration --
+   --------------------
+
+   function Main_Iteration (Blocking : Boolean := True) return Boolean is
+      function Internal (Blocking : Boolean) return Gint;
+      pragma Import (C, Internal, "gtk_main_iteration_do");
+   begin
+      return Boolean'Val (Internal (Blocking));
+   end Main_Iteration;
 
    ----------------
    -- Set_Locale --
@@ -112,6 +302,23 @@ package body Gtk.Main is
    begin
       null;
    end Set_Locale;
+
+   -----------------
+   -- Timeout_Add --
+   -----------------
+
+   function Timeout_Add (Interval : in Guint32;
+                         Func : Timeout_Callback)
+                        return Timeout_Handler_Id
+   is
+      function Internal (Interval : Guint32;
+                         Func     : Timeout_Callback;
+                         Data     : System.Address)
+                        return Timeout_Handler_Id;
+      pragma Import (C, Internal, "gtk_timeout_add");
+   begin
+      return Internal (Interval, Func, System.Null_Address);
+   end Timeout_Add;
 
    ----------
    -- Idle --
@@ -165,20 +372,24 @@ package body Gtk.Main is
       -- Add --
       ---------
 
-      function Add (Cb : in Callback;  D : in Data_Type) return Guint is
-         function Internal (Priority : in Gint;
+      function Add (Cb       : in Callback;
+                    D        : in Data_Type;
+                    Priority : in Idle_Priority := Priority_Default_Idle)
+                   return Idle_Handler_Id
+      is
+         function Internal (Priority : in Idle_Priority;
                             Func     : in System.Address;
                             Marshal  : in System.Address;
                             Data     : in System.Address;
                             Destroy  : in System.Address)
-                            return        Guint;
+                            return        Idle_Handler_Id;
          pragma Import (C, Internal, "gtk_idle_add_full");
          function Convert is new Unchecked_Conversion
            (Cb_Record_Access, System.Address);
          Data : Cb_Record_Access := new Cb_Record'(Func => Cb,
                                                    Data => new Data_Type'(D));
       begin
-         return Internal (0, General_Cb'Address, System.Null_Address,
+         return Internal (Priority, General_Cb'Address, System.Null_Address,
                           Convert (Data), Free_Data'Address);
       end Add;
 
@@ -239,14 +450,14 @@ package body Gtk.Main is
       function Add (Interval : in Guint32;
                     Func     : in Callback;
                     D : in Data_Type)
-                    return Guint
+                    return Timeout_Handler_Id
       is
          function Internal (Interval : in Guint32;
                             Func     : in System.Address;
                             Marshal  : in System.Address;
                             Data     : in System.Address;
                             Destroy  : in System.Address)
-                            return        Guint;
+                            return        Timeout_Handler_Id;
          pragma Import (C, Internal, "gtk_timeout_add_full");
          function Convert is new Unchecked_Conversion
            (Cb_Record_Access, System.Address);
