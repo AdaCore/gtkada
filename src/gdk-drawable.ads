@@ -96,9 +96,9 @@ package Gdk.Drawable is
       Y1       : in Gint;
       X2       : in Gint;
       Y2       : in Gint);
-  --  Draw a line, using the foreground color and other attributes of the Gc.
-  --  (X1, Y1) is coordinate of the start point.
-  --  (X2, Y2) is coordinate of the end point.
+   --  Draw a line, using the foreground color and other attributes of the Gc.
+   --  (X1, Y1) is coordinate of the start point.
+   --  (X2, Y2) is coordinate of the end point.
 
    procedure Draw_Lines
      (Drawable : in Gdk_Drawable;
@@ -208,7 +208,7 @@ package Gdk.Drawable is
    --  Width is the width of the area to be copied, or -1 to make the area
    --  extend to the right edge of the source pixmap.
    --  Height is the height of the area to be copied, or -1 to make the area
-   --  extend to the bottom edge of the source pixmap. 
+   --  extend to the bottom edge of the source pixmap.
 
    procedure Draw_Image
      (Drawable : in Gdk_Drawable;
@@ -230,7 +230,7 @@ package Gdk.Drawable is
    --  Width is the width of the area to be copied, or -1 to make the area
    --  extend to the right edge of image.
    --  Height is the height of the area to be copied, or -1 to make the area
-   --  extend to the bottom edge of image. 
+   --  extend to the bottom edge of image.
 
 private
    Null_Drawable : constant Gdk_Drawable := null;

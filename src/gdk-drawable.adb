@@ -193,7 +193,7 @@ package body Gdk.Drawable is
        Gc          : in Gdk.GC.Gdk_GC;
        X           : in Gint;
        Y           : in Gint;
-       Text        : in Gdk.Types.Gdk_WString)
+       Wide_Text        : in Gdk.Types.Gdk_WString)
    is
       procedure Internal
         (Drawable    : in Gdk_Drawable;
@@ -207,8 +207,9 @@ package body Gdk.Drawable is
 
    begin
       Internal
-        (Drawable, Font, Gc, X, Y, C.To_C (Item => Text, Append_Nul => False),
-         Text'Length);
+        (Drawable, Font, Gc, X, Y,
+         C.To_C (Item => Wide_Text, Append_Nul => False),
+         Wide_Text'Length);
    end Draw_Text;
 
 end Gdk.Drawable;
