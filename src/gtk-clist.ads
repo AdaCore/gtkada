@@ -36,8 +36,7 @@ with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Style; use Gtk.Style;
 with Gtk.Widget;
-
-with Interfaces.C.Strings;
+with Gtkada.Types; use Gtkada.Types;
 
 package Gtk.Clist is
 
@@ -45,16 +44,10 @@ package Gtk.Clist is
      with private;
    type Gtk_Clist is access all Gtk_Clist_Record'Class;
 
-   type Line_Data is array (Gint range <>)
-     of Interfaces.C.Strings.chars_ptr;
 
-   procedure Free_Line_Data (Data : in out Line_Data);
-   --  Free all the strings in Data
-
-   function Append
-     (Clist : access Gtk_Clist_Record;
-      Text  : in Line_Data)
-      return      Gint;
+   function Append (Clist : access Gtk_Clist_Record;
+                    Text  : in     Chars_Ptr_Array)
+                    return      Gint;
    --  Return the index of the row
 
    procedure Clear (Clist : access Gtk_Clist_Record);
@@ -134,9 +127,6 @@ package Gtk.Clist is
    function Get_Selection (Widget : access Gtk_Clist_Record)
                            return Gint_List.Glist;
 
-   function Get_Selection_Mode (Clist : access Gtk_Clist_Record)
-                                return Gtk_Selection_Mode;
-
    procedure Get_Selection_Info
      (Clist    : access Gtk_Clist_Record;
       X        : in Gint;
@@ -145,6 +135,9 @@ package Gtk.Clist is
       Column   : out Gint;
       Is_Valid : out Boolean);
    --  The result is valid only if Is_Valid is true
+
+   function Get_Selection_Mode (Clist : access Gtk_Clist_Record)
+                                return Gtk_Selection_Mode;
 
    function Get_Text
      (Clist    : access Gtk_Clist_Record;
@@ -162,17 +155,16 @@ package Gtk.Clist is
 
    procedure Gtk_New
      (Widget  : out Gtk_Clist;
-      Columns : in Gint;
-      Titles  : in Line_Data);
+      Columns : in  Gint;
+      Titles  : in  Chars_Ptr_Array);
    procedure Initialize
      (Widget  : access Gtk_Clist_Record;
       Columns : in Gint;
-      Titles  : in Line_Data);
+      Titles  : in Chars_Ptr_Array);
 
-   procedure Insert
-     (Clist : access Gtk_Clist_Record;
-      Row   : in Gint;
-      Text  : in Line_Data);
+   procedure Insert (Clist : access Gtk_Clist_Record;
+                     Row   : in     Gint;
+                     Text  : in     Chars_Ptr_Array);
 
    procedure Moveto
      (Clist     : access Gtk_Clist_Record;
@@ -181,13 +173,17 @@ package Gtk.Clist is
       Row_Align : in Gfloat;
       Col_Align : in Gfloat);
 
+   function Optimal_Column_Width
+     (Clist : access Gtk_Clist_Record; Column : Gint) return Gint;
+
+   function Prepend (Clist : access Gtk_Clist_Record;
+                     Text  : in     Chars_Ptr_Array)
+                     return         Gint;
+
    procedure Remove (Clist : access Gtk_Clist_Record; Row : in Gint);
 
    function Row_Is_Visible (Clist : access Gtk_Clist_Record; Row  : in Gint)
                             return      Gtk_Visibility;
-
-   function Prepend (Clist : access Gtk_Clist_Record; Text  : in Line_Data)
-                     return      Gint;
 
    procedure Row_Move (Clist      : access Gtk_Clist_Record;
                        Source_Row : in     Gint;
@@ -199,6 +195,8 @@ package Gtk.Clist is
      (Clist  : access Gtk_Clist_Record;
       Row    : in Gint;
       Column : in Gint);
+
+   --  gtk_clist_set_auto_sort
 
    procedure Set_Background
      (Clist : access Gtk_Clist_Record;
@@ -255,6 +253,8 @@ package Gtk.Clist is
       Column : in Gint;
       Width  : in Gint);
 
+   --  gtk_clist_set_compare_func ([...])
+
    procedure Set_Foreground
      (Clist : access Gtk_Clist_Record;
       Row   : in Gint;
@@ -306,6 +306,9 @@ package Gtk.Clist is
       Vertical   : in Gint;
       Horizontal : in Gint);
 
+   --  gtk_clist_set_sort_column
+   --  gtk_clist_set_sort_type
+
    procedure Set_Text
      (Clist  : access Gtk_Clist_Record;
       Row    : in Gint;
@@ -319,17 +322,20 @@ package Gtk.Clist is
      (Clist      : access Gtk_Clist_Record;
       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
+   --  gtk_clist_sort
+
+   procedure Swap_Rows (Clist : access Gtk_Clist_Record;
+                        Row1  : in     Gint;
+                        Row2  : in     Gint);
+
    procedure Thaw (Clist : access Gtk_Clist_Record);
 
-   function Optimal_Column_Width
-     (Clist : access Gtk_Clist_Record; Column : Gint) return Gint;
+   procedure Undo_Selection (Clist  : access Gtk_Clist_Record);
 
    procedure Unselect_Row
      (Clist  : access Gtk_Clist_Record;
       Row    : in Gint;
       Column : in Gint);
-
-   procedure Undo_Selection (Clist  : access Gtk_Clist_Record);
 
    procedure Unselect_All (Clist : access Gtk_Clist_Record);
 
@@ -346,6 +352,10 @@ package Gtk.Clist is
       procedure Set (Object : access Gtk_Clist_Record;
                      Row    : in Gint;
                      Data   : in Data_Type);
+      --  Note : maps gtk_clist_set_row_data_full
+
+      --  gint gtk_clist_find_row_from_data ([...])
+
    end Row_Data;
 
    --  The previous package implements the Row_Data stuff.

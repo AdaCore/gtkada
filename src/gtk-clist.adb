@@ -44,11 +44,12 @@ package body Gtk.Clist is
    -- Append --
    ------------
 
-   function Append (Clist : access Gtk_Clist_Record; Text  : in Line_Data)
-                    return Gint
+   function Append (Clist : access Gtk_Clist_Record;
+                    Text  : in     Chars_Ptr_Array)
+                    return         Gint
    is
-      function Internal (Clist : in System.Address; Text  : in System.Address)
-                         return      Gint;
+      function Internal (Clist : in System.Address; Text : in System.Address)
+                         return Gint;
       pragma Import (C, Internal, "gtk_clist_append");
    begin
       return Internal (Get_Object (Clist), Text'Address);
@@ -146,17 +147,6 @@ package body Gtk.Clist is
    begin
       return Internal (Get_Object (Clist));
    end Columns_Autosize;
-
-   --------------------
-   -- Free_Line_Data --
-   --------------------
-
-   procedure Free_Line_Data (Data : in out Line_Data) is
-   begin
-      for J in Data'Range loop
-         Interfaces.C.Strings.Free (Data (J));
-      end loop;
-   end Free_Line_Data;
 
    ------------
    -- Freeze --
@@ -492,8 +482,8 @@ package body Gtk.Clist is
    -------------
 
    procedure Gtk_New (Widget  : out Gtk_Clist;
-                      Columns : in Gint;
-                      Titles  : in Line_Data)
+                      Columns : in  Gint;
+                      Titles  : in  Chars_Ptr_Array)
    is
    begin
       Widget := new Gtk_Clist_Record;
@@ -518,13 +508,12 @@ package body Gtk.Clist is
    ----------------
 
    procedure Initialize (Widget  : access Gtk_Clist_Record;
-                         Columns : in Gint;
-                         Titles  : in Line_Data)
+                         Columns : in     Gint;
+                         Titles  : in     Chars_Ptr_Array)
    is
-      function Internal
-        (Columns : in Gint;
-         Titles  : in System.Address)
-         return       System.Address;
+      function Internal (Columns : in Gint;
+                         Titles  : in System.Address)
+                         return       System.Address;
       pragma Import (C, Internal, "gtk_clist_new_with_titles");
    begin
       Set_Object (Widget, Internal (Columns, Titles'Address));
@@ -535,19 +524,16 @@ package body Gtk.Clist is
    -- Insert --
    ------------
 
-   procedure Insert
-     (Clist : access Gtk_Clist_Record;
-      Row   : in Gint;
-      Text  : in Line_Data)
+   procedure Insert (Clist : access Gtk_Clist_Record;
+                     Row   : in     Gint;
+                     Text  : in     Chars_Ptr_Array)
    is
-      procedure Internal
-        (Clist : in System.Address;
-         Row   : in Gint;
-         Text  : in System.Address);
+      procedure Internal (Clist : in System.Address;
+                          Row   : in Gint;
+                          Text  : in System.Address);
       pragma Import (C, Internal, "gtk_clist_insert");
    begin
-      Internal (Get_Object (Clist),
-                Row, Text'Address);
+      Internal (Get_Object (Clist), Row, Text'Address);
    end Insert;
 
    ------------
@@ -576,12 +562,25 @@ package body Gtk.Clist is
                 Col_Align);
    end Moveto;
 
+   ---------------------------
+   -- Optimal_Column_Widget --
+   ---------------------------
+
+   function Optimal_Column_Width
+     (Clist : access Gtk_Clist_Record; Column : Gint) return Gint is
+      function Internal (Clist : System.Address; Column : Gint) return Gint;
+      pragma Import (C, Internal, "gtk_clist_optimal_column_width");
+   begin
+      return Internal (Get_Object (Clist), Column);
+   end Optimal_Column_Width;
+
    -------------
    -- Prepend --
    -------------
 
-   function Prepend (Clist : access Gtk_Clist_Record; Text  : in Line_Data)
-                     return Gint
+   function Prepend (Clist : access Gtk_Clist_Record;
+                     Text  : in     Chars_Ptr_Array)
+                     return         Gint
    is
       function Internal (Clist : in System.Address; Text  : in System.Address)
                          return      Gint;
@@ -1118,17 +1117,21 @@ package body Gtk.Clist is
                 Get_Object (Adjustment));
    end Set_Vadjustment;
 
-   ---------------------------
-   -- Optimal_Column_Widget --
-   ---------------------------
+   ---------------
+   -- Swap_Rows --
+   ---------------
 
-   function Optimal_Column_Width
-     (Clist : access Gtk_Clist_Record; Column : Gint) return Gint is
-      function Internal (Clist : System.Address; Column : Gint) return Gint;
-      pragma Import (C, Internal, "gtk_clist_optimal_column_width");
+   procedure Swap_Rows (Clist : access Gtk_Clist_Record;
+                        Row1  : in     Gint;
+                        Row2  : in     Gint)
+   is
+      procedure Internal (Clist : in System.Address;
+                          Row1  : in Gint;
+                          Row2  : in Gint);
+      pragma Import (C, Internal, "gtk_clist_swap_rows");
    begin
-      return Internal (Get_Object (Clist), Column);
-   end Optimal_Column_Width;
+      Internal (Get_Object (Clist), Row1, Row2);
+   end Swap_Rows;
 
    ----------
    -- Thaw --
