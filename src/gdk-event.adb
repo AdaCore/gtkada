@@ -39,11 +39,36 @@ package body Gdk.Event is
    end Get;
 
 
+   ----------------
+   --  Get_Area  --
+   ----------------
+
+   procedure Get_Area (Event : in     Gdk_Event_Expose;
+                       Area  :    out Rectangle.Gdk_Rectangle'Class) is
+      function Internal (Event : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_expose_get_area");
+   begin
+      Set_Object (Area, Internal (Get_Object (Event)));
+   end Get_Area;
+
+
+   -----------------
+   --  Get_Count  --
+   -----------------
+
+   function Get_Count (Event : in Gdk_Event_Expose) return Gint is
+      function Internal (Event : in System.Address) return Gint;
+      pragma Import (C, Internal, "ada_gdk_event_expose_get_count");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Count;
+
+
    ----------------------
    --  Get_Event_Type  --
    ----------------------
 
-   function Get_Event_Type (Event : in Gdk_Event'Class)
+   function Get_Event_Type (Event : in Gdk_Event)
                             return Types.Gdk_Event_Type is
       function Internal (Event : in System.Address)
                          return Types.Gdk_Event_Type;
@@ -66,11 +91,23 @@ package body Gdk.Event is
    end Get_Graphics_Expose;
 
 
+   ------------------
+   --  Get_Height  --
+   ------------------
+
+   function Get_Height (Event : in Gdk_Event_Configure) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_configure_get_height");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Height;
+
+
    ----------------------
    --  Get_Send_Event  --
    ----------------------
 
-   function Get_Send_Event (Event : in Gdk_Event'Class) return Boolean is
+   function Get_Send_Event (Event : in Gdk_Event) return Boolean is
       function Internal (Event : in System.Address) return Gint8;
       pragma Import (C, Internal, "ada_gdk_event_any_get_send_event");
    begin
@@ -90,17 +127,53 @@ package body Gdk.Event is
    end Get_Show_Events;
 
 
+   -----------------
+   --  Get_Width  --
+   -----------------
+
+   function Get_Width (Event : in Gdk_Event_Configure) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_configure_get_width");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Width;
+
+
    ------------------
    --  Get_Window  --
    ------------------
 
-   procedure Get_Window (Event  : in     Gdk_Event'Class;
+   procedure Get_Window (Event  : in     Gdk_Event;
                          Window :    out Gdk_Window'Class) is
       function Internal (Event : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gdk_event_any_get_window");
    begin
       Set_Object (Window, Internal (Get_Object (Event)));
    end Get_Window;
+
+
+   -------------
+   --  Get_X  --
+   -------------
+
+   function Get_X (Event : in Gdk_Event_Configure) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_configure_get_x");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_X;
+
+
+   -------------
+   --  Get_Y  --
+   -------------
+
+   function Get_Y (Event : in Gdk_Event_Configure) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_configure_get_y");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Y;
 
 
    -----------
@@ -115,11 +188,37 @@ package body Gdk.Event is
    end Put;
 
 
+   ----------------
+   --  Set_Area  --
+   ----------------
+
+   procedure Set_Area (Event : in out Gdk_Event_Expose;
+                       Area  : in     Rectangle.Gdk_Rectangle'Class) is
+      procedure Internal (Event, Area : in System.Address);
+      pragma Import (C, Internal, "ada_gdk_event_expose_set_area");
+   begin
+      Internal (Get_Object (Event), Get_Object (Area));
+   end Set_Area;
+
+
+   -----------------
+   --  Set_Count  --
+   -----------------
+
+   procedure Set_Count (Event : in out Gdk_Event_Expose;
+                        Count : in     Gint) is
+      procedure Internal (Event : in System.Address; Count : in Gint);
+      pragma Import (C, Internal, "ada_gdk_event_expose_set_count");
+   begin
+      Internal (Get_Object (Event), Count);
+   end Set_Count;
+
+
    ----------------------
    --  Set_Event_Type  --
    ----------------------
 
-   procedure Set_Event_Type (Event      : in out Gdk_Event'Class;
+   procedure Set_Event_Type (Event      : in out Gdk_Event;
                              Event_Type : in     Types.Gdk_Event_Type) is
       procedure Internal (Event : in System.Address;
                           Event_Type : in Types.Gdk_Event_Type);
@@ -129,11 +228,24 @@ package body Gdk.Event is
    end Set_Event_Type;
 
 
+   ------------------
+   --  Set_Height  --
+   ------------------
+
+   procedure Set_Height (Event : in out Gdk_Event_Configure;
+                         Height : in Gint16) is
+      procedure Internal (Event : in System.Address; Height : in Gint16);
+      pragma Import (C, Internal, "ada_gdk_event_configure_set_height");
+   begin
+      Internal (Get_Object (Event), Height);
+   end Set_Height;
+
+
    ----------------------
    --  Set_Send_Event  --
    ----------------------
 
-   procedure Set_Send_Event (Event      : in out Gdk_Event'Class;
+   procedure Set_Send_Event (Event      : in out Gdk_Event;
                              Send_Event : in     Boolean := True) is
       procedure Internal (Event : in System.Address;
                           Send_Event : in Gint8);
@@ -156,16 +268,54 @@ package body Gdk.Event is
    end Set_Show_Events;
 
 
+   -----------------
+   --  Set_Width  --
+   -----------------
+
+   procedure Set_Width (Event : in out Gdk_Event_Configure;
+                        Width : in Gint16) is
+      procedure Internal (Event : in System.Address; Width : in Gint16);
+      pragma Import (C, Internal, "ada_gdk_event_configure_set_width");
+   begin
+      Internal (Get_Object (Event), Width);
+   end Set_Width;
+
+
    ------------------
    --  Set_Window  --
    ------------------
 
-   procedure Set_Window (Event  : in out Gdk_Event'Class;
+   procedure Set_Window (Event  : in out Gdk_Event;
                          Window : in     Gdk.Window.Gdk_Window'Class) is
       procedure Internal (Event, Window : in System.Address);
       pragma Import (C, Internal, "ada_gdk_event_any_set_window");
    begin
       Internal (Get_Object (Event), Get_Object (Window));
    end Set_Window;
+
+
+   -------------
+   --  Set_X  --
+   -------------
+
+   procedure Set_X (Event : in out Gdk_Event_Configure; X : in Gint16) is
+      procedure Internal (Event : in System.Address; X : in Gint16);
+      pragma Import (C, Internal, "ada_gdk_event_configure_set_x");
+   begin
+      Internal (Get_Object (Event), X);
+   end Set_X;
+
+
+   -------------
+   --  Set_Y  --
+   -------------
+
+   procedure Set_Y (Event : in out Gdk_Event_Configure; Y : in Gint16) is
+      procedure Internal (Event : in System.Address; Y : in Gint16);
+      pragma Import (C, Internal, "ada_gdk_event_configure_set_y");
+   begin
+      Internal (Get_Object (Event), Y);
+   end Set_Y;
+
 
 end Gdk.Event;
