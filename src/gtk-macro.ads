@@ -43,7 +43,6 @@ private
      (File : Ada.Text_IO.File_Type; Item : out Macro_Item);
    --  Load an item from the disk
 
-
    type Macro_Item_Mouse_Press is new Macro_Item with record
       Button : Guint;
       State  : Gdk.Types.Gdk_Modifier_Type;
