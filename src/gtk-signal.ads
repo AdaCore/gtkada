@@ -27,20 +27,23 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  !! Important Note !!
+--  This package is obsolete. It is provided only for backward compatibility
+--  only, and is known to be missing the capacity to interface to some specific
+--  types of signals.
+--  Consider using @pxref{Package_Gtk.Handlers} and
+--  @pxref{Package_Gtk.Marshallers} instead.
+--  </description>
+
 with Gdk;
 with Gtk.Object;
 with Gtk.Widget;
 with Gtk.Tips_Query;
 
---  !! Important Note !!
---  This package is obsolete. It is provided only for backward compatibility
---  only, and is known to be missing the capacity to interface to some specific
---  types of signals.
---  Consider using Gtk.Handlers and Gtk.Marshallers instead.
-
-
 package Gtk.Signal is
 
+   --  <doc_ignore>
    --  Every Connect function accepts 'null' for the function to call. In
    --  this case, the callback behaves as if you were calling a function
    --  with a null body
@@ -285,5 +288,7 @@ package Gtk.Signal is
    procedure Handler_Unblock
      (Obj        : access Gtk.Object.Gtk_Object_Record'Class;
       Handler_Id : in Guint);
+
+   --  </doc_ignore>
 
 end Gtk.Signal;
