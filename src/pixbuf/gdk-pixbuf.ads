@@ -303,9 +303,10 @@ package Gdk.Pixbuf is
                     Filter_Level : in Gdk.Art.Pixbuf.Art_Filter_Level :=
                       Gdk.Art.Pixbuf.Filter_Bilinear);
    --  Transform the source image by scaling by Scale_x and Scale_y then
-   --  translating by Offset_x and Offset_y, then renders the rectangle
-   --  (Dest_x,Dest_y,Dest_width,Dest_height) of the resulting image onto the
-   --  destination drawable replacing the previous contents.
+   --  translating by Offset_x and Offset_y.
+   --  The image is then rendered in the rectangle (Dest_x, Dest_y,
+   --  Dest_width, Dest_height) of the resulting image onto the destination
+   --  drawable replacing the previous contents.
 
    procedure Composite (Src           : in Gdk_Pixbuf;
                         Dest          : in Gdk_Pixbuf;
@@ -322,9 +323,8 @@ package Gdk.Pixbuf is
                         Overall_Alpha : in Gint := 128);
    --  Transform the source image by scaling by Scale_x and Scale_y then
    --  translating by Offset_x and Offset_y, then composite the rectangle
-   --  (Dest_X,Dest_Y,Dest_Width,Dest_Height) of the resulting image onto the
-   --  destination drawable.
-   --  Alpha should be in 0 .. 255
+   --  (Dest_X, Dest_Y, Dest_Width, Dest_Height) of the resulting image onto
+   --  the destination drawable.  Alpha should be in 0 .. 255
 
    procedure Composite_Color
      (Src           : in Gdk_Pixbuf;
@@ -347,7 +347,7 @@ package Gdk.Pixbuf is
       Color2        : in Gdk.Art.Pixbuf.Art_U32 := 0);
    --  Transform the source image by scaling by Scale_x and Scale_y then
    --  translating by Offset_x and Offset_y, then composites the rectangle
-   --  (Dest_X,Dest_Y,Dest_Width,Dest_Height) of the resulting image with
+   --  (Dest_X, Dest_Y, Dest_Width, Dest_Height) of the resulting image with
    --  a checkboard of the colors Color1 and Color2 and renders it onto the
    --  destination drawable.
    --  The origin of checkboard is at (Check_x, Check_y)
