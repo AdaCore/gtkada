@@ -486,14 +486,14 @@ package body Glib.XML is
    function Parse (File : String) return Node_Ptr is
 
       procedure Fast_Read (The_File : in String;
-                           Buf      : in String_Ptr);
+                           Buf      : in out String_Ptr);
       --  Read Buf'length characters in The_File and store it in Buf.
       --  This procedure performs a single call to Read, so it is supposed to
       --  be more efficient than the previous implementation (read character
       --  by character).
 
       procedure Fast_Read (The_File : in String;
-                           Buf      : in String_Ptr) is
+                           Buf      : in out String_Ptr) is
          type Fixed_String is new String (Buf'Range);
 
          package Dir_Fast is new Ada.Direct_IO (Fixed_String);
@@ -505,6 +505,11 @@ package body Glib.XML is
          Dir_Fast.Open (F, In_File, The_File);
          Dir_Fast.Read (F, Fixed_String (Buf.all));
          Dir_Fast.Close (F);
+      exception
+         when others =>
+            Free (Buf);
+            Dir_Fast.Close (F);
+            raise;
       end Fast_Read;
 
       use Dir;
@@ -515,9 +520,17 @@ package body Glib.XML is
       XML_Version : String_Ptr;
 
    begin
-      Open (F, In_File, File);
-      Buf := new String (1 .. Natural (Size (F)));
-      Close (F);
+      begin
+         Open (F, In_File, File);
+         Buf := new String (1 .. Natural (Size (F)));
+         Close (F);
+      exception
+         when others =>
+            Free (Buf);
+            Close (F);
+            raise;
+      end;
+
       Fast_Read (File, Buf);
       Get_Buf (Buf.all, Index, '>', XML_Version);
       return Get_Node (Buf.all, Index'Unchecked_Access);
