@@ -31,11 +31,14 @@ with Glib; use Glib;
 
 package Gdk.Rectangle is
 
+   subtype GRectangle_Coord is Gint;
+   subtype GRectangle_Length is Gint;
+
    type Gdk_Rectangle is record
-      X      : Gint;
-      Y      : Gint;
-      Width  : Gint;
-      Height : Gint;
+      X      : GRectangle_Coord;
+      Y      : GRectangle_Coord;
+      Width  : GRectangle_Length;
+      Height : GRectangle_Length;
    end record;
    pragma Convention (C, Gdk_Rectangle);
 
