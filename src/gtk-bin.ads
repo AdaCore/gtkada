@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,6 +27,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  Base class for containers that have only one child.
+--  This widget can not be instantiated directly.
+--  </description>
+--  <c_version>1.2.6</c_version>
+
 with Gtk.Object; use Gtk.Object;
 with Gtk.Container; use Gtk.Container;
 
@@ -35,18 +41,27 @@ package Gtk.Bin is
    type Gtk_Bin_Record is new Container.Gtk_Container_Record with private;
    type Gtk_Bin is access all Gtk_Bin_Record'Class;
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
- 
+   ----------------------------
+   -- Support for GATE/DGATE --
+   ----------------------------
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type)
      renames Gtk.Container.Generate;
- 
+   --  Gate internal function
+
    procedure Generate (Container : in out Gtk_Object; N : in Node_Ptr)
      renames Gtk.Container.Generate;
+   --  Dgate internal function
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
 
 private
-
    type Gtk_Bin_Record is new Container.Gtk_Container_Record with null record;
-
 end Gtk.Bin;
