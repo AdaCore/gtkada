@@ -755,7 +755,7 @@ package Gtk.Clist is
    --                       Column : Gint;
    --                       Event  : Gdk.Event.Gdk_Event);
    --
-   --    Emitted to request the selection of a row. Event will be NULL most of
+   --    Emitted to request the selection of a row. Event will be null most of
    --    the time when the event is emitted directly by GtkAda. You should use
    --    Select_Row instead.
    --
@@ -765,7 +765,7 @@ package Gtk.Clist is
    --                       Column : Gint;
    --                       Event  : Gdk.Event.Gdk_Event);
    --
-   --    Emitted to request the unselection of a row. Event will be NULL most
+   --    Emitted to request the unselection of a row. Event will be null most
    --    of the time when the event is emitted directly by GtkAda. You should
    --    use Unselect_Row instead.
    --
