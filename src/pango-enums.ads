@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Glib; use Glib;
+
 package Pango.Enums is
 
    --  Enum types are bound with the following algorithm:
@@ -40,6 +42,7 @@ package Pango.Enums is
      (Pango_Alignment_Left,
       Pango_Alignment_Center,
       Pango_Alignment_Right);
+   for Alignment'Size use Gint'Size;
 
    type Attr_Type is
      (Pango_Attr_Invalid,
@@ -58,18 +61,21 @@ package Pango.Enums is
       Pango_Attr_Rise,
       Pango_Attr_Shape,
       Pango_Attr_Scale);
+   for Attr_Type'Size use Gint'Size;
 
    type Coverage_Level is
      (Pango_Underline_None,
       Pango_Underline_Fallback,
       Pango_Underline_Approximate,
       Pango_Underline_Exact);
+   for Coverage_Level'Size use Gint'Size;
 
    type Direction is
      (Pango_Direction_Ltr,
       Pango_Direction_Rtl,
       Pango_Direction_Ttb_Ltr,
       Pango_Direction_Ttb_Rtl);
+   for Direction'Size use Gint'Size;
 
    --  ??? There are some PANGO_SCALE_* macros in pango-font.h that are
    --  ??? not bound yet. Are they needed ???
@@ -84,21 +90,25 @@ package Pango.Enums is
       Pango_Stretch_Expanded,
       Pango_Stretch_Extra_Expanded,
       Pango_Stretch_Ultra_Expanded);
+   for Stretch'Size use Gint'Size;
 
    type Style is
      (Pango_Style_Normal,
       Pango_Style_Oblique,
       Pango_Style_Italic);
+   for Style'Size use Gint'Size;
 
    type Underline is
      (Pango_Underline_None,
       Pango_Underline_Single,
       Pango_Underline_Double,
       Pango_Underline_Low);
+   for Underline'Size use Gint'Size;
 
    type Variant is
      (Pango_Variant_Normal,
       Pango_Variant_Small_Caps);
+   for Variant'Size use Gint'Size;
 
    type Weight is
      (Pango_Weight_Ultralight,
@@ -107,6 +117,7 @@ package Pango.Enums is
       Pango_Weight_Bold,
       Pango_Weight_Ultrabold,
       Pango_Weight_Heavy);
+   for Weight'Size use Gint'Size;
    for Weight use
      (Pango_Weight_Ultralight => 200,
       Pango_Weight_Light => 300,
@@ -118,5 +129,6 @@ package Pango.Enums is
    type Wrap_Mode is
      (Pango_Wrap_Word,
       Pango_Wrap_Char);
+   for Wrap_Mode'Size use Gint'Size;
 
 end Pango.Enums;
