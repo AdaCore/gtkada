@@ -1147,6 +1147,7 @@ sub get_subprograms () {
 	  my ($all, $tname, $taccess, $ttype)
 	      = ($profile =~ /(\s*([\w\s,]+)\s*:\s*(in out|in|out|access)?\s*([^;]+);?)/);
 	  push (@param_list, [$tname, $taccess, $ttype]);
+          $all =~ s/([()])/\\\1/g;
 	  $profile =~ s/$all//;
       }
       # Ignore the special subprogram "Generate" and "Initialize"
