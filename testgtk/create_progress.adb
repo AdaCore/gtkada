@@ -41,25 +41,33 @@ with Gtk.Gentry; use Gtk.Gentry;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Main; use Gtk.Main;
 with Gtk.Menu; use Gtk.Menu;
+with Gtk.Option_Menu; use Gtk.Option_Menu;
 with Gtk.Progress_Bar; use Gtk.Progress_Bar;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
 with Gtk.Spin_Button; use Gtk.Spin_Button;
 with Gtk.Table;       use Gtk.Table;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
+with Gtkada.Types; use Gtkada.Types;
+
+with Common; use Common;
+with Interfaces.C.Strings;
 
 package body Create_Progress is
 
+   package ICS renames Interfaces.C.Strings;
+
    package Time_Cb   is new Gtk.Main.Timeout (Gtk_Progress_Bar);
 
-   Items1 : constant Array_Of_String :=
-     ("Left-Right",
-      "Right-Left",
-      "Bottom-Top",
-      "Top-Bottom");
-   Items2 : constant Array_Of_String :=
-     ("Continuous",
-      "Discrete  ");
+   Items1 : constant Chars_Ptr_Array :=
+     (ICS.New_String ("Left-Right"),
+      ICS.New_String ("Right-Left"),
+      ICS.New_String ("Bottom-Top"),
+      ICS.New_String ("Top-Bottom"));
+
+   Items2 : constant Chars_Ptr_Array :=
+     (ICS.New_String ("Continuous"),
+      ICS.New_String ("Discrete"));
 
    type Simple_Cb_Func is access procedure (Wiget : access Gtk_Widget_Record);
 
@@ -196,34 +204,6 @@ package body Create_Progress is
    begin
       Set_Format_String (Pdata.Pbar, Get_Text (Pdata.Gentry));
    end Entry_Changed;
-
-
-   procedure Build_Option_Menu (Omenu   : out Gtk_Option_Menu;
-                                Gr      : out Widget_Slist.GSlist;
-                                Items   : Array_Of_String;
-                                History : Natural;
-                                Cb      : Widget_Cb.Callback)
-   is
-      Menu      : Gtk_Menu;
-      Menu_Item : Gtk_Radio_Menu_Item;
-      Id        : Guint;
-   begin
-      Gtk_New (OMenu);
-      Gtk_New (Menu);
-
-      for I in Items'Range loop
-         Gtk_New (Menu_Item, Gr, String (Items (I)));
-         Id := Widget_Cb.Connect (Menu_Item, "activate", Cb, Menu_Item);
-         Gr := Group (Menu_Item);
-         Append (Menu, Menu_Item);
-         if I = History then
-            Set_Active (Menu_Item, True);
-         end if;
-         Show (Menu_Item);
-      end loop;
-      Set_Menu (Omenu, Menu);
-      Set_History (Omenu, Gint (History));
-   end Build_Option_Menu;
 
 
    procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
