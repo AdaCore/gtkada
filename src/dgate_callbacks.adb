@@ -17,18 +17,18 @@
 -- if not,  write to the  Free Software Foundation, Inc.,  59 Temple --
 -- Place - Suite 330, Boston, MA 02111-1307, USA.                    --
 -----------------------------------------------------------------------
- 
+
 --  This package provides to DGATE a generic callback
 
 with Ada.Text_IO;
 with Unchecked_Conversion;
 with Gtk.Main;
- 
+
 package body DGate_Callbacks is
- 
+
    type String_Ptr is access all String;
    for String_Ptr'Size use Standard'Address_Size;
- 
+
    function To_String is new Unchecked_Conversion
      (System.Address, String_Ptr);
 
@@ -52,5 +52,5 @@ package body DGate_Callbacks is
       Gtk.Main.Gtk_Exit (0);
       return False;
    end Quit;
- 
+
 end DGate_Callbacks;

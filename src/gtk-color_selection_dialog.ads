@@ -108,7 +108,7 @@ package Gtk.Color_Selection_Dialog is
    -------------
    -- Signals --
    -------------
-   
+
    --  <signals>
    --  The following new signals are defined for this widget:
    --

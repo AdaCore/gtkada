@@ -332,7 +332,7 @@ package body Gtk.Item_Factory is
          ICS.Free (Ientry.Accelerator);
          ICS.Free (Ientry.Item_Type);
       end Free;
- 
+
       procedure Free (Ientries : in out Gtk_Item_Factory_Entry_Array) is
       begin
          for J in Ientries'Range loop
@@ -539,7 +539,7 @@ package body Gtk.Item_Factory is
       Ifactory := new Gtk_Item_Factory_Record;
       Initialize (Ifactory, Container_Type, Path, Accel_Group);
    end Gtk_New;
-   
+
    ----------------
    -- Initialize --
    ----------------

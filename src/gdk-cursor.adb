@@ -61,7 +61,7 @@ package body Gdk.Cursor is
           Y      : in Glib.Gint)
           return Gdk_Cursor;
       pragma Import (C, Internal, "gdk_cursor_new_from_pixmap");
- 
+
       Col_Fg : aliased Gdk.Color.Gdk_Color := Fg;
       Col_Bg : aliased Gdk.Color.Gdk_Color := Bg;
       --  Need to use a local variable to avoid problems with 'Address if

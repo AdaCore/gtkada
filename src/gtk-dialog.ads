@@ -45,10 +45,10 @@ package Gtk.Dialog is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Dialog : in out Gtk_Object; N : in Node_Ptr);
 
 private

@@ -174,7 +174,7 @@ package Gdk.Window is
    procedure Set_Back_Pixmap (Window          : in Gdk_Window;
                               Pixmap          : in Gdk.Gdk_Pixmap;
                               Parent_Relative : in Gint);
- 
+
    procedure Set_Cursor (Window : in Gdk_Window;
                          Cursor : in Gdk.Cursor.Gdk_Cursor);
    --  Note: the window must be realized first, ie have an associated X11

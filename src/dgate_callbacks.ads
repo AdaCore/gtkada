@@ -17,14 +17,14 @@
 -- if not,  write to the  Free Software Foundation, Inc.,  59 Temple --
 -- Place - Suite 330, Boston, MA 02111-1307, USA.                    --
 -----------------------------------------------------------------------
- 
+
 --  This package provides to DGATE a generic callback
- 
+
 with Gtk.Util; use Gtk.Util;
 with System;
- 
+
 package DGate_Callbacks is
- 
+
    procedure Generic_Callback
      (Object : in Private_Object;
       Data   : in System.Address);
@@ -33,5 +33,5 @@ package DGate_Callbacks is
 
    function Quit (Id : Integer) return Boolean;
    --  This function is used to connect a timeout to DGATE
- 
+
 end DGate_Callbacks;
