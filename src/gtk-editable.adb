@@ -253,17 +253,15 @@ package body Gtk.Editable is
          (Editable        : in System.Address;
           New_Text        : in String;
           New_Text_Length : in Gint;
-          Position        : in System.Address);
+          Position        :    in out Gint);
       pragma Import (C, Internal, "gtk_editable_insert_text");
-      Pos : aliased Gint := Position;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
+
    begin
-      Internal (Get_Object (Editable),
-                New_Text & ASCII.Nul,
-                New_Text'Length,
-                Pos'Address);
-      Position := Pos;
+      Internal
+        (Get_Object (Editable),
+         New_Text & ASCII.Nul,
+         New_Text'Length,
+         Position);
    end Insert_Text;
 
    ---------------------

@@ -212,19 +212,21 @@ package body Gtk.CTree is
       Mask_Opened   :    out Gdk.Bitmap.Gdk_Bitmap;
       Is_Leaf       :    out Boolean;
       Expanded      :    out Boolean;
-      Success       :    out Boolean) is
-      function Internal (Ctree         : in System.Address;
-                         Node          : in Gtk_Ctree_Node;
-                         Text          : in System.Address;
-                         Spacing       : in System.Address;
-                         Pixmap_Closed : in System.Address;
-                         Mask_Closed   : in System.Address;
-                         Pixmap_Opened : in System.Address;
-                         Mask_Opened   : in System.Address;
-                         Is_Leaf       : in System.Address;
-                         Expanded      : in System.Address)
-                         return             Gint;
+      Success       :    out Boolean)
+   is
+      function Internal
+        (Ctree         : in System.Address;
+         Node          : in Gtk_Ctree_Node;
+         Text          : in System.Address;
+         Spacing       : in System.Address;
+         Pixmap_Closed : in System.Address;
+         Mask_Closed   : in System.Address;
+         Pixmap_Opened : in System.Address;
+         Mask_Opened   : in System.Address;
+         Is_Leaf       : in System.Address;
+         Expanded      : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_ctree_get_node_info");
+
       Tmp_Is_Leaf, Tmp_Expanded : Gboolean;
       Tmp_Pixmap_Closed : aliased Gdk.Pixmap.Gdk_Pixmap;
       Tmp_Mask_Closed : aliased Gdk.Bitmap.Gdk_Bitmap;
@@ -232,16 +234,17 @@ package body Gtk.CTree is
       Tmp_Mask_Opened : aliased Gdk.Bitmap.Gdk_Bitmap;
 
    begin
-      Success := To_Boolean (Internal (Get_Object (Ctree),
-                                       Node,
-                                       Text'Address,
-                                       Spacing'Address,
-                                       Tmp_Pixmap_Closed'Address,
-                                       Tmp_Mask_Closed'Address,
-                                       Tmp_Pixmap_Opened'Address,
-                                       Tmp_Mask_Opened'Address,
-                                       Tmp_Is_Leaf'Address,
-                                       Tmp_Expanded'Address));
+      Success := To_Boolean (Internal
+        (Get_Object (Ctree),
+         Node,
+         Text'Address,
+         Spacing'Address,
+         Tmp_Pixmap_Closed'Address,
+         Tmp_Mask_Closed'Address,
+         Tmp_Pixmap_Opened'Address,
+         Tmp_Mask_Opened'Address,
+         Tmp_Is_Leaf'Address,
+         Tmp_Expanded'Address));
       Pixmap_Closed := Tmp_Pixmap_Closed;
       Mask_Closed := Tmp_Mask_Closed;
       Pixmap_Opened := Tmp_Pixmap_Opened;
@@ -254,8 +257,8 @@ package body Gtk.CTree is
    -- Get_Node_List --
    -------------------
 
-   function Get_Node_List (Ctree : access Gtk_Ctree_Record)
-                           return         Node_List.Glist
+   function Get_Node_List
+     (Ctree : access Gtk_Ctree_Record) return Node_List.Glist
    is
       function Internal (Ctree : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_clist_get_row_list");
@@ -263,6 +266,7 @@ package body Gtk.CTree is
       --  explains why the imported C routine applies to a clist.
       --  Note also that the row_list is actually a GtkCtreeNode list...
       List : Node_List.Glist;
+
    begin
       Node_List.Set_Object (List, Internal (Get_Object (Ctree)));
       return List;
@@ -272,8 +276,8 @@ package body Gtk.CTree is
    -- Get_Row_List --
    ------------------
 
-   function Get_Row_List (Ctree : access Gtk_Ctree_Record)
-                          return         Row_List.Glist
+   function Get_Row_List
+     (Ctree : access Gtk_Ctree_Record) return Row_List.Glist
    is
       function Internal (Ctree : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_clist_get_row_list");
@@ -616,29 +620,29 @@ package body Gtk.CTree is
    -- Node_Get_Pixmap --
    ---------------------
 
-   procedure Node_Get_Pixmap (Ctree   : access Gtk_Ctree_Record;
-                              Node    : in     Gtk_Ctree_Node;
-                              Column  : in     Gint;
-                              Pixmap  :    out Gdk.Pixmap.Gdk_Pixmap;
-                              Mask    :    out Gdk.Bitmap.Gdk_Bitmap;
-                              Success :    out Boolean)
+   procedure Node_Get_Pixmap
+     (Ctree   : access Gtk_Ctree_Record;
+      Node    : in     Gtk_Ctree_Node;
+      Column  : in     Gint;
+      Pixmap  :    out Gdk.Pixmap.Gdk_Pixmap;
+      Mask    :    out Gdk.Bitmap.Gdk_Bitmap;
+      Success :    out Boolean)
    is
-      function Internal (Ctree  : in System.Address;
-                         Node   : in Gtk_Ctree_Node;
-                         Column : in Gint;
-                         Pixmap : in System.Address;
-                         Mask   : in System.Address)
-                         return Gint;
+      function Internal
+        (Ctree  : in System.Address;
+         Node   : in Gtk_Ctree_Node;
+         Column : in Gint;
+         Pixmap : in System.Address;
+         Mask   : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_ctree_node_get_pixmap");
+
       Pixmap_Address : aliased Gdk.Pixmap.Gdk_Pixmap;
       Mask_Address : aliased Gdk.Bitmap.Gdk_Bitmap;
 
    begin
-      Success := To_Boolean (Internal (Get_Object (Ctree),
-                                       Node,
-                                       Column,
-                                       Pixmap_Address'Address,
-                                       Mask_Address'Address));
+      Success := To_Boolean (Internal
+        (Get_Object (Ctree), Node, Column,
+         Pixmap_Address'Address, Mask_Address'Address));
       Pixmap := Pixmap_Address;
       Mask := Mask_Address;
    end Node_Get_Pixmap;
@@ -647,35 +651,33 @@ package body Gtk.CTree is
    -- Node_Get_Pixtext --
    ----------------------
 
-   procedure Node_Get_Pixtext (Ctree   : access Gtk_Ctree_Record;
-                               Node    : in     Gtk_Ctree_Node;
-                               Column  : in     Gint;
-                               Text    :    out Interfaces.C.Strings.chars_ptr;
-                               Spacing :    out Guint8;
-                               Pixmap  :    out Gdk.Pixmap.Gdk_Pixmap;
-                               Mask    :    out Gdk.Bitmap.Gdk_Bitmap;
-                               Success :    out Boolean)
+   procedure Node_Get_Pixtext
+     (Ctree   : access Gtk_Ctree_Record;
+      Node    : in     Gtk_Ctree_Node;
+      Column  : in     Gint;
+      Text    :    out Interfaces.C.Strings.chars_ptr;
+      Spacing :    out Guint8;
+      Pixmap  :    out Gdk.Pixmap.Gdk_Pixmap;
+      Mask    :    out Gdk.Bitmap.Gdk_Bitmap;
+      Success :    out Boolean)
    is
-      function Internal (Ctree   : in System.Address;
-                         Node    : in Gtk_Ctree_Node;
-                         Column  : in Gint;
-                         Text    : in System.Address;
-                         Spacing : in System.Address;
-                         Pixmap  : in System.Address;
-                         Mask    : in System.Address)
-                         return Gint;
+      function Internal
+        (Ctree   : in System.Address;
+         Node    : in Gtk_Ctree_Node;
+         Column  : in Gint;
+         Text    : in System.Address;
+         Spacing : in System.Address;
+         Pixmap  : in System.Address;
+         Mask    : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_ctree_node_get_pixtext");
+
       Pixmap_Address : aliased Gdk.Pixmap.Gdk_Pixmap;
       Mask_Address : aliased Gdk.Bitmap.Gdk_Bitmap;
 
    begin
-      Success := To_Boolean (Internal (Get_Object (Ctree),
-                                       Node,
-                                       Column,
-                                       Text'Address,
-                                       Spacing'Address,
-                                       Pixmap_Address'Address,
-                                       Mask_Address'Address));
+      Success := To_Boolean (Internal
+        (Get_Object (Ctree), Node, Column, Text'Address, Spacing'Address,
+         Pixmap_Address'Address, Mask_Address'Address));
       Pixmap := Pixmap_Address;
       Mask := Mask_Address;
    end Node_Get_Pixtext;
@@ -1395,6 +1397,7 @@ package body Gtk.CTree is
                             Data    : in System.Address)
                            return Glib.Gnodes.Gnode;
          pragma Import (C, Internal, "gtk_ctree_export_to_gnode");
+
          C_Func_Address : System.Address;
          Local_Data : aliased constant Ctree_Gnode_Func_Record :=
            (Func => Func, Data => Data);
@@ -1406,12 +1409,9 @@ package body Gtk.CTree is
             C_Func_Address := C_Ctree_Gnode_Func'Address;
          end if;
 
-         return Internal (Get_Object (Ctree),
-                          Parent,
-                          Sibling,
-                          Node,
-                          C_Func_Address,
-                          Local_Data'Address);
+         return Internal
+           (Get_Object (Ctree), Parent, Sibling, Node,
+            C_Func_Address, Local_Data'Address);
       end Export_To_Gnode;
 
       function Insert_Gnode (Ctree   : access Gtk_Ctree_Record'Class;
