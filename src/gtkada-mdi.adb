@@ -432,6 +432,10 @@ package body Gtkada.MDI is
    --  Called when the widget that has the keyboard focus has changed. This is
    --  used to automatically select its parent MDI_Child.
 
+   function Set_Focus_Child_MDI_Floating
+     (Child : access Gtk_Widget_Record'Class) return Boolean;
+   --  Same as Set_Focus_Child_MDI, but for floating windows
+
    type Raise_Idle_Data is record
       MDI   : MDI_Window;
       Child : MDI_Child;
@@ -494,6 +498,17 @@ package body Gtkada.MDI is
          end if;
       end if;
    end Set_Focus_Child_MDI;
+
+   ----------------------------------
+   -- Set_Focus_Child_MDI_Floating --
+   ----------------------------------
+
+   function Set_Focus_Child_MDI_Floating
+     (Child : access Gtk_Widget_Record'Class) return Boolean is
+   begin
+      Set_Focus_Child (MDI_Child (Child));
+      return False;
+   end Set_Focus_Child_MDI_Floating;
 
    -------------
    -- Gtk_New --
@@ -3030,7 +3045,6 @@ package body Gtkada.MDI is
       --  Be lazy. And avoid infinite loop when updating the MDI menu...
 
       if C = Old
-        or else not Realized_Is_Set (Child.MDI)
         or else Child.MDI.Prevent_Focus_On_Page_Switch
       then
          return;
@@ -3359,6 +3373,13 @@ package body Gtkada.MDI is
          Return_Callback.Object_Connect
            (Win, "delete_event",
             Return_Callback.To_Marshaller (Delete_Child'Access), Child);
+
+         Add_Events (Win, Enter_Notify_Mask);
+         Return_Callback.Object_Connect
+           (Win, "focus_in_event",
+            Return_Callback.To_Marshaller
+               (Set_Focus_Child_MDI_Floating'Access),
+            Child);
 
          --  Forward all key events to the toplevel of the MDI. This provides
          --  proper handling of menu key shortcuts.
