@@ -56,11 +56,6 @@ package Gtk.Scrolled_Window is
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
       Child           : access Gtk.Widget.Gtk_Widget_Record'Class);
 
-   procedure Add
-     (Scrolled_Window : access Gtk_Scrolled_Window_Record;
-      Child           : access Gtk.Widget.Gtk_Widget_Record'Class)
-     renames Add_With_Viewport;
-
    function Get_Hadjustment
      (Scrolled_Window : access Gtk_Scrolled_Window_Record)
       return               Adjustment.Gtk_Adjustment;
