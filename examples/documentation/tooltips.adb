@@ -11,8 +11,8 @@
 --      }
 --      widget "gtk-tooltips*" style "postie"
 
-with Gtk.Tooltips, Gtk.Style, Gtk.Enums, Gdk.Color;
-use Gtk.Tooltips, Gtk.Style, Gtk.Enums, Gdk.Color;
+with Gtk.Tooltips, Gtk.Style, Gtk.Enums, Gtk.Widget, Gdk.Color;
+use Gtk.Tooltips, Gtk.Style, Gtk.Enums, Gtk.Widget, Gdk.Color;
 
 procedure Tooltips is
    Style : Gtk_Style;
@@ -23,12 +23,12 @@ begin
 
    --  blue foreground
    Set_Rgb (Color, 255, 255, 65535);
-   Alloc (Gdk.Color.Get_System, Color);
+   Alloc (Get_Default_Colormap, Color);
    Set_Foreground (Style, State_Normal, Color);
 
    --  green background
    Set_Rgb (Color, 255, 65535, 255);
-   Alloc (Gdk.Color.Get_System, Color);
+   Alloc (Get_Default_Colormap, Color);
    Set_Background (Style, State_Normal, Color);
 
    Gtk_New (Tips);

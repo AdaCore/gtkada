@@ -319,7 +319,7 @@ package body Full_Test is
 
       Gdk.GC.Gdk_New (White_Gc, Get_Window (Buffer));
       Color := Gdk.Color.Parse ("black");
-      Gdk.Color.Alloc (Gdk.Color.Get_System, Color);
+      Gdk.Color.Alloc (Get_Default_Colormap, Color);
       Gdk.GC.Set_Foreground (White_Gc, Color);
 
       Reset (Buffer);
@@ -331,7 +331,7 @@ package body Full_Test is
       Colors (4) := Gdk.Color.Parse ("yellow");
       Colors (5) := Gdk.Color.Parse ("orange");
 
-      Alloc_Colors (Gdk.Color.Get_System,
+      Alloc_Colors (Get_Default_Colormap,
                     Colors,
                     Writeable  => False,
                     Best_Match => True,
