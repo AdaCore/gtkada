@@ -23,13 +23,13 @@ fi
 
 set $info
 
-if [ $1 = "<no_name>" ]; then
+if [ "$1" = "<no_name>" ]; then
    prj=default
 else
    prj=$1
 fi
 
-if [ $2 = "<no_name>" ]; then
+if [ "$2" = "<no_name>" ]; then
    srcdir=.
    psrcdir="the current directory"
 else
@@ -42,8 +42,8 @@ pixdir="$3"
 
 mkdir -p $dir/$srcdir
 
-if [ $pixdir != "<no_name>" -a -d $dir/$pixdir ]; then
-   cp $dir/$pixdir/*.xpm $dir/$srcdir
+if [ "$pixdir" != "<no_name>" -a -d $dir/$pixdir ]; then
+   cp $dir/$pixdir/*.xpm $dir/$srcdir > /dev/null 2>&1
 fi
 
 owd=`pwd`
@@ -102,4 +102,4 @@ else
   echo .rej files have been generated to help merging manually if needed.
 fi
 
-mv -f $tmp/* $gt/
+cp -f $tmp/* $gt/
