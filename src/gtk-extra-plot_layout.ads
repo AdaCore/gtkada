@@ -55,7 +55,7 @@ package Gtk.Extra.Plot_Layout is
    procedure Gtk_New (Widget : out Gtk_Plot_Layout;
                       Width  : in Gint;
                       Height : in Gint);
-   --  Creates a new layout, with a known initial size.
+   --  Create a new layout, with a known initial size.
    --  Initially, this widget is empty, and will simply modify its background
    --  color, depending on the choice made by Set_Background.
 
