@@ -41,7 +41,19 @@ package body Gdk.Event is
       Set_Object (Destination, Internal (Get_Object (Source)));
    end Copy;
 
+   -----------
+   -- Event --
+   -----------
 
+   procedure Event (Widget : Gtk.Widget.Gtk_Widget'Class;
+                    Event  : Gdk_Event'Class)
+   is
+      procedure Internal (Widget : System.Address; Event : System.Address);
+      pragma Import (C, Internal, "gtk_widget_event");
+   begin
+      Internal (Get_Object (Widget), Get_Object (Event));
+   end Event;
+ 
    ------------
    --  Free  --
    ------------
@@ -110,14 +122,14 @@ package body Gdk.Event is
    --  Get_Graphics_Expose  --
    ---------------------------
 
-   procedure Get_Graphics_Expose (Event : out Gdk_Event'Class;
-                                  Window : in Gdk_Window'Class) is
+   procedure Get_Graphics_Expose (Event  : out Gdk_Event_Expose'Class;
+                                  Window : in Gdk_Window'Class)
+   is
       function Internal (Window : in System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_event_get_graphics_expose");
    begin
       Set_Object (Event, Internal (Get_Object (Window)));
    end Get_Graphics_Expose;
-
 
    ------------------
    --  Get_Height  --

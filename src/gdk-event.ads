@@ -29,6 +29,7 @@
 with Glib; use Glib;
 with Gdk.Rectangle;
 with Gdk.Types; use Gdk.Types;
+with Gtk.Widget; use Gtk.Widget;
 with Gdk.Window; use Gdk.Window;
 
 package Gdk.Event is
@@ -39,6 +40,7 @@ package Gdk.Event is
    -----------------
 
    type Gdk_Event is new Root_Type with private;
+
    --
    --  Should probably be abstract but it would oblige us to
    --  define some of the following services as abstract.
@@ -48,10 +50,6 @@ package Gdk.Event is
 
    procedure Get (Event : out Gdk_Event'Class);
    --  mapping: Get gdk.h gdk_event_get
-
-   procedure Get_Graphics_Expose (Event : out Gdk_Event'Class;
-                                  Window : in Gdk_Window'Class);
-   --  mapping: Get_Graphics_Expose gdk.h gdk_event_get_graphics_expose
 
    procedure Put (Event : in Gdk_Event'Class);
    --  mapping: Put gdk.h gdk_event_put
@@ -126,6 +124,9 @@ package Gdk.Event is
 
    type Gdk_Event_Expose is new Gdk_Event with private;
 
+   procedure Get_Graphics_Expose (Event  : out Gdk_Event_Expose'Class;
+                                  Window : in Gdk_Window'Class);
+   --  mapping: Get_Graphics_Expose gdk.h gdk_event_get_graphics_expose
 
    procedure Get_Area (Event : in     Gdk_Event_Expose;
                        Area  :    out Rectangle.Gdk_Rectangle'Class);
@@ -164,6 +165,15 @@ package Gdk.Event is
    function Get_Y (Event : in Gdk_Event_Motion) return Gint16;
 
    function Get_State (Event : in Gdk_Event_Motion) return Gdk_Modifier_Mask;
+
+   ----------------
+   -- Gtk_Widget --
+   ----------------
+
+   procedure Event (Widget : Gtk.Widget.Gtk_Widget'Class;
+                    Event  : Gdk_Event'Class);
+   --  mapping: Event gtkwidget.h gtk_widget_event
+
 
 private
 
