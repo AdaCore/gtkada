@@ -63,7 +63,7 @@ constructs. This avoid the use of User_Data, and of course also provides a
 stronger typing mechanism than User_Data provides. 
  
 - GtkAda now provides a configure script to ease the build and installation of
-this binding. 
+this toolkit. 
  
-- Some effort has been made to make this binding available on 64 bits machines,
+- Some effort has been made to make this toolkit available on 64 bits machines,
 GtkAda has actually been tested on Dec Unix.
