@@ -128,6 +128,7 @@ Gtk.Enums:
   New type Gtk_Text_Direction, Gtk_Anchor_Type, Gtk_Side_Type,
    Gtk_Wrap_Mode
   Gtk_Trough_Type: removed.
+  Selection_Extended: removed.
 Gtk.File_Selection:
   now a child of Gtk_Dialog
 Gtk.Fixed:
