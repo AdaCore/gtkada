@@ -200,7 +200,7 @@ package body Create_Clist is
          --  small example!
          Style1 := Copy (Style'Access);
          Set_Base (Style1, State_Normal, Col1);
-         Set_Base (Style2, State_Selected, Col2);
+         Set_Base (Style1, State_Selected, Col2);
 
          Style2 := Copy (Style'Access);
          Set_Foreground (Style2, State_Normal, Col1);
