@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,12 +37,9 @@ package body Gtk.GEntry is
    -----------------
 
    procedure Append_Text
-     (The_Entry : access Gtk_Entry_Record;
-      Text      : in String)
+     (The_Entry : access Gtk_Entry_Record; Text : String)
    is
-      procedure Internal
-        (The_Entry : in System.Address;
-         Text  : in String);
+      procedure Internal (The_Entry : System.Address; Text : String);
       pragma Import (C, Internal, "gtk_entry_append_text");
 
    begin
@@ -53,11 +50,9 @@ package body Gtk.GEntry is
    -- Get_Text --
    --------------
 
-   function Get_Text (The_Entry : access Gtk_Entry_Record)
-     return String
-   is
-      function Internal (The_Entry : in System.Address)
-        return Interfaces.C.Strings.chars_ptr;
+   function Get_Text (The_Entry : access Gtk_Entry_Record) return String is
+      function Internal
+        (The_Entry : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_entry_get_text");
 
    begin
@@ -68,7 +63,7 @@ package body Gtk.GEntry is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Entry; Max : in Guint16) is
+   procedure Gtk_New (Widget : out Gtk_Entry; Max : Guint16) is
    begin
       Widget := new Gtk_Entry_Record;
       Initialize (Widget, Max);
@@ -88,10 +83,11 @@ package body Gtk.GEntry is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Entry_Record'Class;
-                         Max : in Guint16)
+   procedure Initialize
+     (Widget : access Gtk_Entry_Record'Class;
+      Max    : Guint16)
    is
-      function Internal (Max    : in Guint16) return System.Address;
+      function Internal (Max : Guint16) return System.Address;
       pragma Import (C, Internal, "gtk_entry_new_with_max_length");
 
    begin
@@ -117,17 +113,28 @@ package body Gtk.GEntry is
    ------------------
 
    procedure Prepend_Text
-     (The_Entry : access Gtk_Entry_Record;
-      Text      : in String)
+     (The_Entry : access Gtk_Entry_Record; Text : String)
    is
-      procedure Internal
-        (The_Entry : in System.Address;
-         Text      : in String);
+      procedure Internal (The_Entry : System.Address; Text : String);
       pragma Import (C, Internal, "gtk_entry_prepend_text");
 
    begin
       Internal (Get_Object (The_Entry), Text & ASCII.NUL);
    end Prepend_Text;
+
+   ------------------
+   -- Set_Editable --
+   ------------------
+
+   procedure Set_Editable
+     (The_Entry : access Gtk_Entry_Record; Editable : Boolean)
+   is
+      procedure Internal (The_Entry : System.Address; Editable : Gboolean);
+      pragma Import (C, Internal, "gtk_entry_set_editable");
+
+   begin
+      Internal (Get_Object (The_Entry), To_Gboolean (Editable));
+   end Set_Editable;
 
    --------------------
    -- Set_Max_Length --
@@ -135,11 +142,9 @@ package body Gtk.GEntry is
 
    procedure Set_Max_Length
      (The_Entry : access Gtk_Entry_Record;
-      Max       : in Guint16)
+      Max       : Guint16)
    is
-      procedure Internal
-        (The_Entry : in System.Address;
-         Max       : in Guint16);
+      procedure Internal (The_Entry : System.Address; Max : Guint16);
       pragma Import (C, Internal, "gtk_entry_set_max_length");
 
    begin
@@ -150,13 +155,8 @@ package body Gtk.GEntry is
    -- Set_Text --
    --------------
 
-   procedure Set_Text
-     (The_Entry : access Gtk_Entry_Record;
-      Text      : in String)
-   is
-      procedure Internal
-        (The_Entry : in System.Address;
-         Text      : in String);
+   procedure Set_Text (The_Entry : access Gtk_Entry_Record; Text : String) is
+      procedure Internal (The_Entry : System.Address; Text : String);
       pragma Import (C, Internal, "gtk_entry_set_text");
 
    begin
@@ -168,12 +168,9 @@ package body Gtk.GEntry is
    --------------------
 
    procedure Set_Visibility
-     (The_Entry : access Gtk_Entry_Record;
-      Visible   : in Boolean)
+     (The_Entry : access Gtk_Entry_Record; Visible : Boolean)
    is
-      procedure Internal
-        (The_Entry : in System.Address;
-         Visible   : in Gint);
+      procedure Internal (The_Entry : System.Address; Visible : Gint);
       pragma Import (C, Internal, "gtk_entry_set_visibility");
 
    begin

@@ -59,17 +59,17 @@
 --  initially have a shortcut.
 --
 --  </description>
---  <c_version> 1.2.6 </c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Accel_Group;
-with Gtk.Menu_Item;   use Gtk.Menu_Item;
+with Gtk.Menu_Item; use Gtk.Menu_Item;
 with Gtk.Menu_Shell;
 with Gtk.Widget;
 
 package Gtk.Menu is
 
-   type Gtk_Menu_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
-     with private;
+   type Gtk_Menu_Record is new
+     Gtk.Menu_Shell.Gtk_Menu_Shell_Record with private;
    type Gtk_Menu is access all Gtk_Menu_Record'Class;
 
    type Gtk_Menu_Detach_Func is access procedure
@@ -92,17 +92,21 @@ package Gtk.Menu is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Menu.
 
-   procedure Reorder_Child
-     (Menu     : access Gtk_Menu_Record;
-      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Position : in     Gint);
-   --  Move an existing menu_item within the menu.
-   --  Its new position is given by Position, 0 being the first item in the
-   --  menu.
-   --  If Child does not exist in the menu, nothing is done.
+   procedure Set_Active (Menu : access Gtk_Menu_Record; Index : Guint);
+   --  Select a specified item in the menu.
+   --  You will almost never need this function, it is used internally by
+   --  Gtk_Option_Menu.
+   --  Note that the item is not considered as being pressed by the user, and
+   --  thus no callback is called as a result.
 
-   procedure Set_Tearoff_State (Menu     : access Gtk_Menu_Record;
-                                Torn_Off : in     Boolean);
+   function Get_Active
+     (Menu : access Gtk_Menu_Record) return Gtk.Menu_Item.Gtk_Menu_Item;
+   --  Get the active menu item.
+   --  In a Gtk_Option_Menu, this is the item that is currently shown in the
+   --  button.
+
+   procedure Set_Tearoff_State
+     (Menu : access Gtk_Menu_Record; Torn_Off : Boolean);
    --  Modify the tearoff status of the menu.
    --  If Torn_Off is False, the menu is displayed as a drop down menu which
    --  disappears when the menu is not active. If Torn_Off is True, the menu
@@ -110,26 +114,20 @@ package Gtk.Menu is
    --  Note that you can give the user access to this functionality by
    --  inserting a Gtk_Tearoff_Menu_Item in the menu.
 
-   procedure Set_Title (Menu  : access Gtk_Menu_Record;
-                        Title : in     String);
+   procedure Set_Title
+     (Menu : access Gtk_Menu_Record; Title : String);
    --  Set the title of the menu.
    --  Title is displayed when the menu is displayed as a tearoff menu in an
    --  independent window.
 
-   procedure Set_Active
-     (Menu  : access Gtk_Menu_Record;
-      Index : in Guint);
-   --  Select a specified item in the menu.
-   --  You will almost never need this function, it is used internally by
-   --  Gtk_Option_Menu.
-   --  Note that the item is not considered as being pressed by the user, and
-   --  thus no callback is called as a result.
-
-   function Get_Active (Menu : access Gtk_Menu_Record)
-                        return Gtk.Menu_Item.Gtk_Menu_Item;
-   --  Get the active menu item.
-   --  In a Gtk_Option_Menu, this is the item that is currently shown in the
-   --  button.
+   procedure Reorder_Child
+     (Menu     : access Gtk_Menu_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Position : Gint);
+   --  Move an existing menu_item within the menu.
+   --  Its new position is given by Position, 0 being the first item in the
+   --  menu.
+   --  If Child does not exist in the menu, nothing is done.
 
    -----------------------
    -- Displaying a menu --
@@ -214,13 +212,13 @@ package Gtk.Menu is
    --------------------------------
 
    procedure Set_Accel_Group
-      (Menu     : access Gtk_Menu_Record;
-       Accel    : in Accel_Group.Gtk_Accel_Group);
+     (Menu  : access Gtk_Menu_Record;
+      Accel : Accel_Group.Gtk_Accel_Group);
    --  Set the Accel_Group that holds the global accelerators and key bindings
    --  for the menu.
 
-   function Get_Accel_Group (Menu : access Gtk_Menu_Record)
-                            return Accel_Group.Gtk_Accel_Group;
+   function Get_Accel_Group
+     (Menu : access Gtk_Menu_Record) return Accel_Group.Gtk_Accel_Group;
    --  Get the accelerator group used to set the key bindings in the menu.
 
    ----------------------------------
@@ -230,7 +228,7 @@ package Gtk.Menu is
    procedure Attach_To_Widget
      (Menu          : access Gtk_Menu_Record;
       Attach_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Detacher      : in Gtk_Menu_Detach_Func);
+      Detacher      : Gtk_Menu_Detach_Func);
    --  Attach a menu to the widget.
    --  When the menu is detached from the widget (for instance when it is
    --  destroyed), the procedure Detached will be called.
@@ -244,8 +242,8 @@ package Gtk.Menu is
    --  Detach the menu from its widget, and call the Detacher set in
    --  Attach_To_Widget.
 
-   function Get_Attach_Widget (Menu : access Gtk_Menu_Record)
-                              return Gtk.Widget.Gtk_Widget;
+   function Get_Attach_Widget
+     (Menu : access Gtk_Menu_Record) return Gtk.Widget.Gtk_Widget;
    --  Return the widget to which the menu was attached.
    --  If the menu was not attached, this function returns null.
 

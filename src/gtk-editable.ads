@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,7 +36,7 @@
 --  application can connect to to modify the behavior of a widget.
 --
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Widget;
 
@@ -44,60 +44,20 @@ package Gtk.Editable is
 
    type Gtk_Editable_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Editable is access all Gtk_Editable_Record'Class;
+   --  Gtk_Editable is now an interface, not an object per se.
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Editable.
 
-   procedure Changed (Editable : access Gtk_Editable_Record);
-   --  Cause the "changed" signal to be emitted.
-
-   procedure Copy_Clipboard
+   procedure Select_Region
      (Editable : access Gtk_Editable_Record;
-      Time     : in Guint32);
-   --  Copy the characters in the current selection to the clipboard.
-
-   procedure Cut_Clipboard
-     (Editable : access Gtk_Editable_Record;
-      Time     : in Guint32);
-   --  Copy the characters in the current selection to the clipboard.
-   --  The selection is then deleted.
-
-   procedure Delete_Selection (Editable : access Gtk_Editable_Record);
-   --  Disclaim and delete the current selection.
-
-   procedure Delete_Text
-     (Editable  : access Gtk_Editable_Record;
-      Start_Pos : in Gint := 0;
-      End_Pos   : in Gint := -1);
-   --  Delete the characters from Start_Pos to End_Pos.
-   --  If End_Pos is negative, the characters are deleted from Start_Pos to the
-   --  end of the text.
-
-   function Get_Chars
-      (Editable  : access Gtk_Editable_Record;
-       Start_Pos : in Gint := 0;
-       End_Pos   : in Gint := -1) return String;
-   --  Get the text from Start_Pos to End_Pos.
-   --  If End_Pos is negative, the text from Start_Pos to the end is returned.
-
-   function Get_Clipboard_Text
-     (Widget : access Gtk_Editable_Record) return String;
-   --  Return the last text copied from the clipboard.
-
-   function Get_Editable
-     (Widget : access Gtk_Editable_Record) return Boolean;
-   --  Return True if the widget is editable by the user.
-
-   procedure Set_Editable
-     (Widget : access Gtk_Editable_Record;
-      Editable : in Boolean := True);
-   --  Set the editable status of the entry.
-   --  If Editable is False, the user can not modify the contents of the entry.
-   --  This does not affect the user of the insertion functions above.
-
-   function Get_Has_Selection
-     (Widget : access Gtk_Editable_Record) return Boolean;
-   --  Return True if the selection is owned by the widget.
+      Start    : Gint;
+      The_End  : Gint := -1);
+   --  Select the region of text from Start to The_End.
+   --  The characters that are selected are those characters at positions
+   --  from Start up to, but not including The_End. If The_End_Pos is
+   --  negative, then the characters selected will be those characters
+   --  from Start to the end of the text.
 
    procedure Get_Selection_Bounds
      (Widget    : access Gtk_Editable_Record;
@@ -109,26 +69,45 @@ package Gtk.Editable is
 
    procedure Insert_Text
      (Editable : access Gtk_Editable_Record;
-      New_Text : in String;
+      New_Text : String;
       Position : in out Gint);
    --  Insert the given string at the given position.
    --  Position is set to the new cursor position.
 
+   procedure Delete_Text
+     (Editable  : access Gtk_Editable_Record;
+      Start_Pos : Gint := 0;
+      End_Pos   : Gint := -1);
+   --  Delete the characters from Start_Pos to End_Pos.
+   --  If End_Pos is negative, the characters are deleted from Start_Pos to the
+   --  end of the text.
+
+   function Get_Chars
+     (Editable  : access Gtk_Editable_Record;
+      Start_Pos : Gint := 0;
+      End_Pos   : Gint := -1) return String;
+   --  Get the text from Start_Pos to End_Pos.
+   --  If End_Pos is negative, the text from Start_Pos to the end is returned.
+
+   procedure Cut_Clipboard
+     (Editable : access Gtk_Editable_Record;
+      Time     : Guint32);
+   --  Copy the characters in the current selection to the clipboard.
+   --  The selection is then deleted.
+
+   procedure Copy_Clipboard
+     (Editable : access Gtk_Editable_Record;
+      Time     : Guint32);
+   --  Copy the characters in the current selection to the clipboard.
+
    procedure Paste_Clipboard
      (Editable : access Gtk_Editable_Record;
-      Time     : in Guint32);
+      Time     : Guint32);
    --  The contents of the clipboard is pasted into the given widget at
    --  the current cursor position.
 
-   procedure Select_Region
-     (Editable : access Gtk_Editable_Record;
-      Start    : in Gint;
-      The_End  : in Gint := -1);
-   --  Select the region of text from Start to The_End.
-   --  The characters that are selected are those characters at positions
-   --  from Start up to, but not including The_End. If The_End_Pos is
-   --  negative, then the characters selected will be those characters
-   --  from Start to the end of the text.
+   procedure Delete_Selection (Editable : access Gtk_Editable_Record);
+   --  Disclaim and delete the current selection.
 
    procedure Set_Position
      (Editable : access Gtk_Editable_Record;
@@ -144,17 +123,19 @@ package Gtk.Editable is
    function Get_Position (Editable : access Gtk_Editable_Record) return Gint;
    --  Return the position of the cursor.
 
+   procedure Set_Editable
+     (Widget   : access Gtk_Editable_Record;
+      Editable : Boolean := True);
+   --  Set the editable status of the entry.
+   --  If Editable is False, the user can not modify the contents of the entry.
+   --  This does not affect the user of the insertion functions above.
+
    ---------------
    --  Signals  --
    ---------------
 
    --  <signals>
    --  The following new signals are defined for this widget:
-   --
-   --  - "changed"
-   --    procedure Handler (Widget : access Gtk_Editable_Record'Class);
-   --
-   --    emitted when the user has changed the text of the widget.
    --
    --  - "insert_text"
    --    procedure Handler (Widget   : access Gtk_Editable_Record'Class;
@@ -180,90 +161,6 @@ package Gtk.Editable is
    --    "insert-text" handler, it is possible to override the default
    --    behavior by connecting a handler to this signal, and then
    --    stopping the signal.
-   --
-   --  - "activate"
-   --    procedure Handler (Widget : access Gtk_Editable_Record'Class);
-   --
-   --    Emitted when the user has activated the widget in some fashion.
-   --
-   --  - "set-editable"
-   --    procedure Handler (Widget     : access Gtk_Editable_Record'Class;
-   --                       Is_Editable: in Boolean);
-   --
-   --    Emitting this signal is equivalent to calling Set_Editable.
-   --
-   --  - "move_cursor"
-   --    procedure Handler (Widget : access Gtk_Editable_Record'Class;
-   --                       X, Y   : in Gint);
-   --
-   --    Emitting this signal will move the cursor position for X
-   --    characters horizontally, and Y characters vertically.
-   --
-   --  - "move_word"
-   --    procedure Handler (Widget : access Gtk_Editable_Record'Class;
-   --                       N      : in Gint);
-   --
-   --    Emitting this signal will move the cursor by N words (N can be
-   --    negative).
-   --
-   --  - "move_page"
-   --    procedure Handler (Widget : access Gtk_Editable_Record'Class;
-   --                       X, Y   : in Gint);
-   --
-   --    Emitting this signal will move the cursor for X pages
-   --    horizontally, and Y pages vertically.
-   --
-   --  - "move_to_row"
-   --    procedure Handler (Widget : access Gtk_Editable_Record'Class;
-   --                       Row    : in Gint);
-   --
-   --    Emitting this signal will move the cursor to the given row.
-   --
-   --  - "move_to_column"
-   --    procedure Handler (Widget : access Gtk_Editable_Record'Class;
-   --                       Column : in Gint);
-   --
-   --    Emitting this signal will move the cursor to the given column.
-   --
-   --  - "kill_char"
-   --    procedure Handler (Widget    : access Gtk_Editable_Record'Class;
-   --                       Direction : in Gint);
-   --
-   --    Emitting this signal deletes a single character. If Direction
-   --    is positive, delete forward, else delete backward.
-   --
-   --  - "kill_word"
-   --    procedure Handler (Widget    : access Gtk_Editable_Record'Class;
-   --                       Direction : in Gint);
-   --
-   --    Emitting this signal deletes a single word. If Direction is
-   --    positive, delete forward, otherwise delete backward.
-   --
-   --  - "kill_line"
-   --    procedure Handler (Widget    : access Gtk_Editable_Record'Class;
-   --                       Direction : in Gint);
-   --
-   --    Emitting this signal deletes a single line. If Direction is
-   --    positive, delete forward, otherwise delete backward.
-   --
-   --  - "cut_clipboard"
-   --    procedure Handler (Widget : access Gtk_Editable_Record'Class);
-   --
-   --    Emitting this signal will cut the current selection to the
-   --    clipboard.
-   --
-   --  - "copy_clipboard"
-   --    procedure Handler (Widget : access Gtk_Editable_Record'Class);
-   --
-   --    Emitting this signal will copy the current selection to the
-   --    clipboard.
-   --
-   --  - "paste_clipboard"
-   --    procedure Handler (Widget : access Gtk_Editable_Record'Class);
-   --
-   --    Emitting this signal will paste the clipboard into the text
-   --    of the widget at the current cursor position.
-   --
    --  </signals>
 
 private

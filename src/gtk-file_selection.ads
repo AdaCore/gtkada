@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,51 +34,52 @@
 --  renaming,...
 --  Currently, only one file can be selected in the dialog.
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Box;
 with Gtk.Button;
 with Gtk.Widget;
-with Gtk.Window;
+with Gtk.Dialog;
 
 package Gtk.File_Selection is
 
-   type Gtk_File_Selection_Record is new Gtk.Window.Gtk_Window_Record
-     with private;
+   type Gtk_File_Selection_Record is new
+     Gtk.Dialog.Gtk_Dialog_Record with private;
    type Gtk_File_Selection is access all Gtk_File_Selection_Record'Class;
 
    ------------------------------
    -- Operations on the dialog --
    ------------------------------
 
-   procedure Gtk_New (File_Selection : out Gtk_File_Selection;
-                      Title          : in String);
+   procedure Gtk_New (File_Selection : out Gtk_File_Selection; Title : String);
    --  Create a new file selection dialog.
    --  Title is the name of the dialog, as displayed in its title bar.
 
    procedure Initialize
      (File_Selection : access Gtk_File_Selection_Record'Class;
-      Title          : in String);
+      Title          : String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_File_Selection.
 
-   procedure Set_Filename (File_Selection  : access Gtk_File_Selection_Record;
-                           Filename        : in String);
+   procedure Set_Filename
+     (File_Selection : access Gtk_File_Selection_Record;
+      Filename       : String);
    --  Highlight the given file in the dialog.
    --  Note that this does not close the dialog.
    --  You can also use this procedure to select the directory to be displayed
    --  in the dialog. Along with Complete, this allows you to set some filters
    --  in the dialog.
 
-   function Get_Filename (File_Selection : access Gtk_File_Selection_Record)
-                         return String;
+   function Get_Filename
+     (File_Selection : access Gtk_File_Selection_Record) return String;
    --  Get the selected file name.
 
-   procedure Complete (File_Selection : access Gtk_File_Selection_Record;
-                       Pattern        : in String);
+   procedure Complete
+     (File_Selection : access Gtk_File_Selection_Record;
+      Pattern        : String);
    --  Set the filter used to display the files.
    --  The pattern is displayed in the entry at the bottom of the dialog, and
    --  the list of files displayed in the list.
@@ -96,8 +97,6 @@ package Gtk.File_Selection is
      (File_Selection : access Gtk_File_Selection_Record;
       Flag           : Boolean);
    --  Choose whether to display or not the file operation buttons.
-   --  This button is kept for backward compatibility only.
-   --
    --  If Flag is true, calls Show_Fileop_Buttons, otherwise calls
    --  Hide_Fileop_Buttons.
 
@@ -110,61 +109,67 @@ package Gtk.File_Selection is
    --  the top part that contains the list of files, and the button area which
    --  is the bottom part that contains the OK and Cancel buttons.
 
-   function Get_Action_Area (File_Selection : access Gtk_File_Selection_Record)
-                            return Gtk.Box.Gtk_Box;
+   function Get_Action_Area
+     (File_Selection : access Gtk_File_Selection_Record)
+      return Gtk.Box.Gtk_Box;
    --  Return the action area.
    --  This is the area that contains the list of files, the filter entry,etc.
 
-   function Get_Button_Area (File_Selection : access Gtk_File_Selection_Record)
-                            return Gtk.Box.Gtk_Box;
+   function Get_Button_Area
+     (File_Selection : access Gtk_File_Selection_Record)
+      return Gtk.Box.Gtk_Box;
    --  Return the button area.
    --  This is the area that contains the OK and Cancel buttons.
 
-   function Get_Dir_List (File_Selection : access Gtk_File_Selection_Record)
-                         return Gtk.Widget.Gtk_Widget;
+   function Get_Dir_List
+     (File_Selection : access Gtk_File_Selection_Record)
+      return Gtk.Widget.Gtk_Widget;
    --  Return the list that display the list of directories.
 
-   function Get_File_List (File_Selection : access Gtk_File_Selection_Record)
-                          return Gtk.Widget.Gtk_Widget;
+   function Get_File_List
+     (File_Selection : access Gtk_File_Selection_Record)
+      return Gtk.Widget.Gtk_Widget;
    --  Return the list that display the list of files in the selected directory
 
    function Get_Cancel_Button
      (File_Selection : access Gtk_File_Selection_Record)
-     return Gtk.Button.Gtk_Button;
+      return Gtk.Button.Gtk_Button;
    --  Return the Cancel button.
    --  To remove this button from the dialog, call Hide on the return value.
    --  The callbacks on this button should simply close the dialog, but should
    --  ignore the file selected by the user.
 
-   function Get_Help_Button (File_Selection : access Gtk_File_Selection_Record)
-                            return Gtk.Button.Gtk_Button;
+   function Get_Help_Button
+     (File_Selection : access Gtk_File_Selection_Record)
+      return Gtk.Button.Gtk_Button;
    --  Return the Help button.
    --  To remove this button from the dialog, call Hide on the return value.
    --  The callbacks on this button should display a new dialog that explain
    --  what file the user should select.
 
-   function Get_Ok_Button (File_Selection : access Gtk_File_Selection_Record)
-                          return Gtk.Button.Gtk_Button;
+   function Get_Ok_Button
+     (File_Selection : access Gtk_File_Selection_Record)
+      return Gtk.Button.Gtk_Button;
    --  Return the OK button.
    --  The callbacks on this button should close the dialog and do something
    --  with the file selected by the user.
 
    function Get_History_Pulldown
      (File_Selection : access Gtk_File_Selection_Record)
-     return Gtk.Widget.Gtk_Widget;
+      return Gtk.Widget.Gtk_Widget;
    --  Return the menu that display the history of directories
    --  for easy access by the user.
 
    function Get_Selection_Entry
      (File_Selection : access Gtk_File_Selection_Record)
-     return Gtk.Widget.Gtk_Widget;
+      return Gtk.Widget.Gtk_Widget;
    --  Return the entry used to set the filter on the list of directories.
    --  The simplest way to insert text in this entry is to use the
    --  Complete procedure above.
 
    function Get_Selection_Text
      (File_Selection : access Gtk_File_Selection_Record)
-     return Gtk.Widget.Gtk_Widget;
+      return Gtk.Widget.Gtk_Widget;
    --  Return the text displayed just above the Selection_Entry.
 
    -------------
@@ -176,7 +181,7 @@ package Gtk.File_Selection is
    --  </signals>
 
 private
-   type Gtk_File_Selection_Record is new Gtk.Window.Gtk_Window_Record
-     with null record;
+   type Gtk_File_Selection_Record is new
+     Gtk.Dialog.Gtk_Dialog_Record with null record;
    pragma Import (C, Get_Type, "gtk_file_selection_get_type");
 end Gtk.File_Selection;

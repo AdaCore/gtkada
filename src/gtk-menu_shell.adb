@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,10 +40,12 @@ package body Gtk.Menu_Shell is
       Item             : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
       Force_Deactivate : Boolean)
    is
-      procedure Internal (Menu_Shell : System.Address;
-                          Item       : System.Address;
-                          Force      : Gint);
+      procedure Internal
+        (Menu_Shell : System.Address;
+         Item       : System.Address;
+         Force      : Gint);
       pragma Import (C, Internal, "gtk_menu_shell_activate_item");
+
    begin
       Internal (Get_Object (Menu_Shell), Get_Object (Item),
                 Boolean'Pos (Force_Deactivate));
@@ -57,10 +59,9 @@ package body Gtk.Menu_Shell is
      (Menu_Shell : access Gtk_Menu_Shell_Record;
       Child      : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
    is
-      procedure Internal
-        (Menu_Shell : System.Address;
-         Child      : System.Address);
+      procedure Internal (Menu_Shell : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_menu_shell_append");
+
    begin
       Internal (Get_Object (Menu_Shell), Get_Object (Child));
    end Append;
@@ -69,10 +70,10 @@ package body Gtk.Menu_Shell is
    -- Deactivate --
    ----------------
 
-   procedure Deactivate (Menu_Shell : access Gtk_Menu_Shell_Record)
-   is
+   procedure Deactivate (Menu_Shell : access Gtk_Menu_Shell_Record) is
       procedure Internal (Menu_Shell : System.Address);
       pragma Import (C, Internal, "gtk_menu_shell_deactivate");
+
    begin
       Internal (Get_Object (Menu_Shell));
    end Deactivate;
@@ -84,12 +85,14 @@ package body Gtk.Menu_Shell is
    procedure Insert
      (Menu_Shell : access Gtk_Menu_Shell_Record;
       Child      : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
-      Position   : in Gint)
+      Position   : Gint)
    is
-      procedure Internal (Menu_Shell : System.Address;
-                          Child      : System.Address;
-                          Position   : Gint);
+      procedure Internal
+        (Menu_Shell : System.Address;
+         Child      : System.Address;
+         Position   : Gint);
       pragma Import (C, Internal, "gtk_menu_shell_insert");
+
    begin
       Internal (Get_Object (Menu_Shell), Get_Object (Child), Position);
    end Insert;
@@ -102,9 +105,11 @@ package body Gtk.Menu_Shell is
      (Menu_Shell : access Gtk_Menu_Shell_Record;
       Child      : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
    is
-      procedure Internal (Menu_Shell : System.Address;
-                          Child      : System.Address);
+      procedure Internal
+        (Menu_Shell : System.Address;
+         Child      : System.Address);
       pragma Import (C, Internal, "gtk_menu_shell_prepend");
+
    begin
       Internal (Get_Object (Menu_Shell), Get_Object (Child));
    end Prepend;
@@ -117,9 +122,11 @@ package body Gtk.Menu_Shell is
      (Menu_Shell : access Gtk_Menu_Shell_Record;
       Item       : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
    is
-      procedure Internal (Menu_Shell : System.Address;
-                          Child      : System.Address);
+      procedure Internal
+        (Menu_Shell : System.Address;
+         Child      : System.Address);
       pragma Import (C, Internal, "gtk_menu_shell_select_item");
+
    begin
       Internal (Get_Object (Menu_Shell), Get_Object (Item));
    end Select_Item;
@@ -131,6 +138,7 @@ package body Gtk.Menu_Shell is
    procedure Deselect (Menu_Shell : access Gtk_Menu_Shell_Record) is
       procedure Internal (Menu_Shell : System.Address);
       pragma Import (C, Internal, "gtk_menu_shell_deselect");
+
    begin
       Internal (Get_Object (Menu_Shell));
    end Deselect;

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -42,9 +42,10 @@
 --  widgets.
 --
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Bin;
+with Gtk.Widget;
 with Gtk.Enums; use Gtk.Enums;
 
 package Gtk.Frame is
@@ -52,28 +53,36 @@ package Gtk.Frame is
    type Gtk_Frame_Record is new Gtk.Bin.Gtk_Bin_Record with private;
    type Gtk_Frame is access all Gtk_Frame_Record'Class;
 
-   procedure Gtk_New (Frame : out Gtk_Frame;
-                      Label : in String := "");
+   procedure Gtk_New (Frame : out Gtk_Frame; Label : String := "");
    --  Create a new frame.
    --  If Label is not the empty string, the frame will have a title.
 
-   procedure Initialize (Frame : access Gtk_Frame_Record'Class;
-                         Label : in String := "");
+   procedure Initialize
+     (Frame : access Gtk_Frame_Record'Class; Label : String := "");
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Frame.
 
-   procedure Set_Label (Frame : access Gtk_Frame_Record;
-                        Label : in String := "");
+   procedure Set_Label (Frame : access Gtk_Frame_Record; Label : String := "");
    --  Change the label of the frame dynamically.
    --  If Label is the empty string, the frame's label is deleted.
 
+   function Get_Label (Frame : access Gtk_Frame_Record) return String;
+   --  Return the label associated with the frame.
+
+   procedure Set_Label_Widget
+     (Frame        : access Gtk_Frame_Record;
+      Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Set the label widget for the frame.
+   --  This is the widget that will appear embedded in the top edge of the
+   --  frame as a title.
+
    procedure Set_Label_Align
      (Frame  : access Gtk_Frame_Record;
-      Xalign : in Gfloat := 0.0;
-      Yalign : in Gfloat := 0.0);
+      Xalign : Gfloat := 0.0;
+      Yalign : Gfloat := 0.0);
    --  Change the alignment of the title in the frame.
    --  Xalign and Yalign are both percents that indicate the exact position
    --  of the label relative to the top-left corner of the frame.
@@ -83,7 +92,7 @@ package Gtk.Frame is
 
    procedure Set_Shadow_Type
      (Frame    : access Gtk_Frame_Record;
-      The_Type : in Gtk_Shadow_Type);
+      The_Type : Gtk_Shadow_Type);
    --  Change the visual aspect of the frame.
 
    -------------

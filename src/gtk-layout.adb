@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,11 +35,12 @@ package body Gtk.Layout is
    -- Get_Hadjustment --
    ---------------------
 
-   function Get_Hadjustment (Layout : access Gtk_Layout_Record)
-     return Gtk.Adjustment.Gtk_Adjustment
+   function Get_Hadjustment
+     (Layout : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment
    is
-      function Internal (Layout : in System.Address) return System.Address;
+      function Internal (Layout : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_layout_get_hadjustment");
+
       Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
 
    begin
@@ -51,11 +52,12 @@ package body Gtk.Layout is
    -- Get_Vadjustment --
    ---------------------
 
-   function Get_Vadjustment (Layout : access Gtk_Layout_Record)
-     return Gtk.Adjustment.Gtk_Adjustment
+   function Get_Vadjustment
+     (Layout : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment
    is
-      function Internal (Layout : in System.Address) return System.Address;
+      function Internal (Layout : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_layout_get_vadjustment");
+
       Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
 
    begin
@@ -81,14 +83,13 @@ package body Gtk.Layout is
    -----------------
 
    procedure Initialize
-     (Layout : access Gtk_Layout_Record'Class;
+     (Layout      : access Gtk_Layout_Record'Class;
       Hadjustment : Gtk.Adjustment.Gtk_Adjustment;
       Vadjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
       function Internal
-        (Hadjustment : in System.Address;
-         Vadjustment : in System.Address)
-         return System.Address;
+        (Hadjustment : System.Address;
+         Vadjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_layout_new");
 
       Hadj, Vadj : System.Address;
@@ -119,14 +120,14 @@ package body Gtk.Layout is
    procedure Move
      (Layout : access Gtk_Layout_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      X      : in     Gint;
-      Y      : in     Gint)
+      X      : Gint;
+      Y      : Gint)
    is
       procedure Internal
-        (Layout : in System.Address;
-         Widget : in System.Address;
-         X      : in Gint;
-         Y      : in Gint);
+        (Layout : System.Address;
+         Widget : System.Address;
+         X      : Gint;
+         Y      : Gint);
       pragma Import (C, Internal, "gtk_layout_move");
 
    begin
@@ -140,14 +141,14 @@ package body Gtk.Layout is
    procedure Put
      (Layout : access Gtk_Layout_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      X      : in     Gint;
-      Y      : in     Gint)
+      X      : Gint;
+      Y      : Gint)
    is
       procedure Internal
-        (Layout : in System.Address;
-         Widget : in System.Address;
-         X      : in Gint;
-         Y      : in Gint);
+        (Layout : System.Address;
+         Widget : System.Address;
+         X      : Gint;
+         Y      : Gint);
       pragma Import (C, Internal, "gtk_layout_put");
 
    begin
@@ -162,10 +163,13 @@ package body Gtk.Layout is
      (Layout     : access Gtk_Layout_Record;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
-      procedure Internal (Layout     : in System.Address;
-                          Adjustment : in System.Address);
+      procedure Internal
+        (Layout     : System.Address;
+         Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_layout_set_hadjustment");
+
       use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
       if Adjustment = null then
          Internal (Get_Object (Layout), System.Null_Address);
@@ -178,14 +182,17 @@ package body Gtk.Layout is
    -- Set_Size --
    --------------
 
-   procedure Set_Size (Layout : access Gtk_Layout_Record;
-                       Width  : in     Guint;
-                       Height : in     Guint)
+   procedure Set_Size
+     (Layout : access Gtk_Layout_Record;
+      Width  : Guint;
+      Height : Guint)
    is
-      procedure Internal (Layout : in System.Address;
-                          Width  : in Guint;
-                          Height : in Guint);
+      procedure Internal
+        (Layout : System.Address;
+         Width  : Guint;
+         Height : Guint);
       pragma Import (C, Internal, "gtk_layout_set_size");
+
    begin
       Internal (Get_Object (Layout), Width, Height);
    end Set_Size;
@@ -198,10 +205,13 @@ package body Gtk.Layout is
      (Layout     : access Gtk_Layout_Record;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
-      procedure Internal (Layout     : in System.Address;
-                          Adjustment : in System.Address);
+      procedure Internal
+        (Layout     : System.Address;
+         Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_layout_set_vadjustment");
+
       use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
       if Adjustment = null then
          Internal (Get_Object (Layout), System.Null_Address);
@@ -210,35 +220,14 @@ package body Gtk.Layout is
       end if;
    end Set_Vadjustment;
 
-   ------------
-   -- Freeze --
-   ------------
-
-   procedure Freeze (Layout : access Gtk_Layout_Record) is
-      procedure Internal (Layout : in System.Address);
-      pragma Import (C, Internal, "gtk_layout_freeze");
-   begin
-      Internal (Get_Object (Layout));
-   end Freeze;
-
-   ----------
-   -- Thaw --
-   ----------
-
-   procedure Thaw (Layout : access Gtk_Layout_Record) is
-      procedure Internal (Layout : in System.Address);
-      pragma Import (C, Internal, "gtk_layout_thaw");
-   begin
-      Internal (Get_Object (Layout));
-   end Thaw;
-
    -----------------
    -- Get_Xoffset --
    -----------------
 
    function Get_Xoffset (Layout : access Gtk_Layout_Record) return Guint is
-      function Internal (Layout : in System.Address) return Guint;
+      function Internal (Layout : System.Address) return Guint;
       pragma Import (C, Internal, "ada_gtk_layout_get_xoffset");
+
    begin
       return Internal (Get_Object (Layout));
    end Get_Xoffset;
@@ -248,8 +237,9 @@ package body Gtk.Layout is
    -----------------
 
    function Get_Yoffset (Layout : access Gtk_Layout_Record) return Guint is
-      function Internal (Layout : in System.Address) return Guint;
+      function Internal (Layout : System.Address) return Guint;
       pragma Import (C, Internal, "ada_gtk_layout_get_yoffset");
+
    begin
       return Internal (Get_Object (Layout));
    end Get_Yoffset;
@@ -259,8 +249,9 @@ package body Gtk.Layout is
    ---------------
 
    function Get_Width (Layout : access Gtk_Layout_Record) return Guint is
-      function Internal (Layout : in System.Address) return Guint;
+      function Internal (Layout : System.Address) return Guint;
       pragma Import (C, Internal, "ada_gtk_layout_get_width");
+
    begin
       return Internal (Get_Object (Layout));
    end Get_Width;
@@ -270,8 +261,9 @@ package body Gtk.Layout is
    ----------------
 
    function Get_Height (Layout : access Gtk_Layout_Record) return Guint is
-      function Internal (Layout : in System.Address) return Guint;
+      function Internal (Layout : System.Address) return Guint;
       pragma Import (C, Internal, "ada_gtk_layout_get_height");
+
    begin
       return Internal (Get_Object (Layout));
    end Get_Height;
@@ -285,6 +277,7 @@ package body Gtk.Layout is
    is
       function Internal (Layout : System.Address) return Gdk.Window.Gdk_Window;
       pragma Import (C, Internal, "ada_gtk_layout_get_bin_window");
+
    begin
       return Internal (Get_Object (Widget));
    end Get_Bin_Window;

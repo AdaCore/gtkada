@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,19 +39,21 @@
 --  user can draw the points of the curve freely, and they are not connected at
 --  all.
 --  </description>
---  <c_version>1.2.8</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Drawing_Area;
 
 package Gtk.Curve is
 
-   type Gtk_Curve_Record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record
-     with private;
+   type Gtk_Curve_Record is new
+     Gtk.Drawing_Area.Gtk_Drawing_Area_Record with private;
    type Gtk_Curve is access all Gtk_Curve_Record'Class;
 
-   type Gtk_Curve_Type is (Curve_Type_Linear,
-                           Curve_Type_Spline,
-                           Curve_Type_Free);
+   type Gtk_Curve_Type is
+     (Curve_Type_Linear,
+      Curve_Type_Spline,
+      Curve_Type_Free);
+   for Gtk_Curve_Type'Size use Gint'Size;
 
    procedure Gtk_New (Curve : out Gtk_Curve);
    --  Create a new Curve.
@@ -69,7 +71,7 @@ package Gtk.Curve is
    --  x & y values (i.e. from the bottom-left to the top-right corners).
    --  The curve type is not changed.
 
-   procedure Set_Gamma (Curve : access Gtk_Curve_Record; Gamma : in Gfloat);
+   procedure Set_Gamma (Curve : access Gtk_Curve_Record; Gamma : Gfloat);
    --  Recompute the entire curve using the given gamma value.
    --  A gamma value of 1.0 results in a straight line. Values greater than 1.0
    --  result in a curve above the straight line. Values less than 1.0 result
@@ -78,16 +80,16 @@ package Gtk.Curve is
 
    procedure Set_Range
      (Curve : access Gtk_Curve_Record;
-      Min_X : in Gfloat;
-      Max_X : in Gfloat;
-      Min_Y : in Gfloat;
-      Max_Y : in Gfloat);
+      Min_X : Gfloat;
+      Max_X : Gfloat;
+      Min_Y : Gfloat;
+      Max_Y : Gfloat);
    --  Set the minimum and maximum x & y values of the curve.
    --  The curve is also reset with a call to Reset.
 
    procedure Set_Vector
      (Curve  : access Gtk_Curve_Record;
-      Vector : in Gfloat_Array);
+      Vector : Gfloat_Array);
    --  Set the vector of points on the curve.
    --  The curve type is set to Curve_Type_Free.
 
@@ -98,7 +100,7 @@ package Gtk.Curve is
 
    procedure Set_Curve_Type
      (Curve      : access Gtk_Curve_Record;
-      Curve_Type : in Gtk_Curve_Type);
+      Curve_Type : Gtk_Curve_Type);
    --  Set the type of the curve.
    --  The curve will remain unchanged except when changing from a free curve
    --  to a linear or spline curve, in which case the curve will be changed as

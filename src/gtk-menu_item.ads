@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.4</c_version>
+
 with Gtk.Enums;
 with Gtk.Item;
 with Gtk.Widget;
@@ -36,11 +38,10 @@ package Gtk.Menu_Item is
    type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with private;
    type Gtk_Menu_Item is access all Gtk_Menu_Item_Record'Class;
 
-   procedure Gtk_New
-     (Menu_Item : out Gtk_Menu_Item; Label : in  String := "");
+   procedure Gtk_New (Menu_Item : out Gtk_Menu_Item; Label : String := "");
 
    procedure Initialize
-     (Menu_Item : access Gtk_Menu_Item_Record'Class; Label : in  String);
+     (Menu_Item : access Gtk_Menu_Item_Record'Class; Label : String);
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Menu_Item.
@@ -56,12 +57,12 @@ package Gtk.Menu_Item is
 
    procedure Set_Placement
      (Menu_Item : access Gtk_Menu_Item_Record;
-      Placement : in     Enums.Gtk_Submenu_Placement);
+      Placement : Enums.Gtk_Submenu_Placement);
 
    procedure Configure
      (Menu_Item              : access Gtk_Menu_Item_Record;
-      Show_Toggle_Indicator  : in     Boolean;
-      Show_Submenu_Indicator : in     Boolean);
+      Show_Toggle_Indicator  : Boolean;
+      Show_Submenu_Indicator : Boolean);
 
    procedure Gtk_Select (Menu_Item : access Gtk_Menu_Item_Record);
 
@@ -82,3 +83,7 @@ private
 
    pragma Import (C, Get_Type, "gtk_menu_item_get_type");
 end Gtk.Menu_Item;
+
+--  missing:
+--  Toggle_Size_Request
+--  Toggle_Size_Allocate

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                  Copyright (C) 2001 ACT-Europe                    --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,8 +47,9 @@ package body Gtk.List_Item is
    --------------
 
    procedure Deselect (List_Item : access Gtk_List_Item_Record) is
-      procedure Internal (List_Item : in System.Address);
+      procedure Internal (List_Item : System.Address);
       pragma Import (C, Internal, "gtk_list_item_deselect");
+
    begin
       Internal (Get_Object (List_Item));
    end Deselect;
@@ -57,9 +58,7 @@ package body Gtk.List_Item is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New
-     (List_Item : out Gtk_List_Item;
-      Label     : in String := "") is
+   procedure Gtk_New (List_Item : out Gtk_List_Item; Label : String := "") is
    begin
       List_Item := new Gtk_List_Item_Record;
       Initialize (List_Item, Label);
@@ -70,8 +69,9 @@ package body Gtk.List_Item is
    ----------------
 
    procedure Gtk_Select (List_Item : access Gtk_List_Item_Record) is
-      procedure Internal (List_Item : in System.Address);
+      procedure Internal (List_Item : System.Address);
       pragma Import (C, Internal, "gtk_list_item_select");
+
    begin
       Internal (Get_Object (List_Item));
    end Gtk_Select;
@@ -81,10 +81,9 @@ package body Gtk.List_Item is
    ----------------
 
    procedure Initialize
-     (List_Item : access Gtk_List_Item_Record'Class;
-      Label     : in String := "")
+     (List_Item : access Gtk_List_Item_Record'Class; Label : String := "")
    is
-      function Internal (Label : in String) return System.Address;
+      function Internal (Label : String) return System.Address;
       pragma Import (C, Internal, "gtk_list_item_new_with_label");
 
    begin

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  Any widgets contained in the Gtk_Plug then will appear inside the first
 --  applications window.
 --  </description>
---  <c_version>1.2.8</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Window;
 
@@ -47,19 +47,22 @@ package Gtk.Plug is
    type Gtk_Plug_Record is new Gtk.Window.Gtk_Window_Record with private;
    type Gtk_Plug is access all Gtk_Plug_Record'Class;
 
-   procedure Gtk_New (Widget    : out Gtk_Plug;
-                      Socket_Id : in Guint32);
+   procedure Gtk_New (Widget : out Gtk_Plug; Socket_Id : Guint32);
    --  Create a new plug widget inside the Gtk_Socket identified by socket_id.
    --  Socket_Id is the XID of the socket's window.
 
    procedure Initialize
-     (Widget    : access Gtk_Plug_Record'Class;
-      Socket_Id : in     Guint32);
+     (Widget : access Gtk_Plug_Record'Class; Socket_Id : Guint32);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Plug.
 
 private
 
    type Gtk_Plug_Record is new Gtk.Window.Gtk_Window_Record with null record;
+
+   pragma Import (C, Get_Type, "gtk_plug_get_type");
 
 end Gtk.Plug;

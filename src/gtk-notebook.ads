@@ -35,7 +35,7 @@
 --  This is the best way to organize complicated interfaces that have a lot
 --  of widgets, by putting the children into groups of coherent widgets.
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Glib.Glist;
 with Glib.Values;
@@ -118,7 +118,7 @@ package Gtk.Notebook is
      (Notebook  : access Gtk_Notebook_Record;
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Position  : in Gint);
+      Position  : Gint);
    --  Insert a new page at a specific position in Notebook.
    --  The page is put at the beginning of the list of pages.
    --  The user will select it through a button that contains the
@@ -132,7 +132,7 @@ package Gtk.Notebook is
       Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Position   : in Gint);
+      Position   : Gint);
    --  Insert a new page at a specific position in Notebook.
    --  The page is put at the beginning of the list of pages.
    --  The user will select it through a button that contains the
@@ -143,8 +143,7 @@ package Gtk.Notebook is
    --  The first position in the list of pages is 0.
 
    procedure Remove_Page
-     (Notebook : access Gtk_Notebook_Record;
-      Page_Num : in Gint);
+     (Notebook : access Gtk_Notebook_Record; Page_Num : Gint);
    --  Remove a page from the notebook.
    --  The first position in the list of pages is 0.
 
@@ -191,13 +190,13 @@ package Gtk.Notebook is
 
    procedure Set_Show_Border
      (Notebook    : access Gtk_Notebook_Record;
-      Show_Border : in Boolean := True);
+      Show_Border : Boolean := True);
    --  Indicate whether the notebook should display borders.
    --  This border gives a 3D aspect to the notebook.
 
    procedure Set_Show_Tabs
      (Notebook  : access Gtk_Notebook_Record;
-      Show_Tabs : in Boolean := True);
+      Show_Tabs : Boolean := True);
    --  Indicate whether the tabs should be displayed.
    --  If the tabs are not displayed, the only way for the user to select a
    --  new page is through the contextual menu, and thus you should make sure
@@ -205,7 +204,7 @@ package Gtk.Notebook is
 
    procedure Set_Tab_Pos
      (Notebook : access Gtk_Notebook_Record;
-      Pos      : in Gtk.Enums.Gtk_Position_Type);
+      Pos      : Gtk.Enums.Gtk_Position_Type);
    --  Change the position of the tabs.
    --  The tabs can be displayed on any of the four sides of the notebook.
 
@@ -252,15 +251,15 @@ package Gtk.Notebook is
    --  if the pages were inserted with Insert_Page_Menu, Append_Page_Menu or
    --  Prepend_Page_Menu.
 
-   procedure Popup_Disable (Notebook : access Gtk_Notebook_Record);
-   --  Disable the popup menu.
-   --  This menu won't be display any more when the user pressed the right
-   --  mouse button.
-
    procedure Popup_Enable (Notebook : access Gtk_Notebook_Record);
    --  Enable the popup menu.
    --  When the user pressed the right mouse button, a menu is selected that
    --  allows him to select a new page.
+
+   procedure Popup_Disable (Notebook : access Gtk_Notebook_Record);
+   --  Disable the popup menu.
+   --  This menu won't be display any more when the user pressed the right
+   --  mouse button.
 
    ---------------------
    -- Page properties --
@@ -285,7 +284,7 @@ package Gtk.Notebook is
    procedure Set_Tab_Label_Text
      (Notebook : access Gtk_Notebook_Record;
       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tab_Text : in String);
+      Tab_Text : String);
    --  Modify the text displayed in the tab for the page that contains Child.
    --  This is a less general form of Set_Tab_Label above.
 
@@ -307,7 +306,7 @@ package Gtk.Notebook is
    procedure Set_Menu_Label_Text
      (Notebook  : access Gtk_Notebook_Record;
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Menu_Text : in String);
+      Menu_Text : String);
    --  Modify the text displayed in the contextual menu for the page that
    --  contains Child.
    --  This is a less general form of Set_Menu_Label above.
@@ -325,9 +324,9 @@ package Gtk.Notebook is
    procedure Set_Tab_Label_Packing
      (Notebook  : access Gtk_Notebook_Record;
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Expand    : in Boolean;
-      Fill      : in Boolean;
-      Pack_Type : in Gtk.Enums.Gtk_Pack_Type);
+      Expand    : Boolean;
+      Fill      : Boolean;
+      Pack_Type : Gtk.Enums.Gtk_Pack_Type);
    --  Modify the packing used for the tab associated with the page that
    --  contains Child.
 
@@ -369,9 +368,10 @@ package Gtk.Notebook is
    --  The following new signals are defined for this widget:
    --
    --  - "switch_page"
-   --    procedure Handler (Notebook : access Gtk_Notebook_Record'Class;
-   --                       Page     : in Gtk_Notebook_Page;
-   --                       Page_Num : Guint);
+   --    procedure Handler
+   --      (Notebook : access Gtk_Notebook_Record'Class;
+   --       Page     : Gtk_Notebook_Page;
+   --       Page_Num : Guint);
    --
    --   Notify when the current page is modified in the notebook.
    --   This is called every time the user selected a new page, or the

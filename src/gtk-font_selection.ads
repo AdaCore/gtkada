@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -45,47 +45,27 @@
 --  interactively by the user.
 --
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gdk.Font;
+with Gtk.Box;
 with Gtk.Button;
-with Gtk.Notebook;
-with Gtk.Window;
+with Gtk.Dialog;
 
 package Gtk.Font_Selection is
 
-   type Gtk_Font_Selection_Dialog_Record is
-     new Gtk.Window.Gtk_Window_Record with private;
-   type Gtk_Font_Selection_Dialog
-     is access all Gtk_Font_Selection_Dialog_Record'Class;
+   type Gtk_Font_Selection_Dialog_Record is new
+     Gtk.Dialog.Gtk_Dialog_Record with private;
+   type Gtk_Font_Selection_Dialog is access all
+     Gtk_Font_Selection_Dialog_Record'Class;
 
-   type Gtk_Font_Selection_Record is new Gtk.Notebook.Gtk_Notebook_Record
-     with private;
+   type Gtk_Font_Selection_Record is new
+     Gtk.Box.Gtk_Box_Record with private;
    type Gtk_Font_Selection is access all Gtk_Font_Selection_Record'Class;
 
-   type Gtk_Font_Metric_Type is (Font_Metric_Pixels,
-                                 Font_Metric_Points);
-   --  Used to determine whether point or pixel sizes are used.
-
-   subtype Gtk_Font_Type is Gint;
-   --  Used for determining the type of a font style (bitmap, scalable,...),
-   --  and also for setting filters.  These can be combined if a style has
-   --  bitmaps and scalable fonts available.
-
-   Font_Bitmap          : constant Gtk_Font_Type;
-   Font_Scalable        : constant Gtk_Font_Type;
-   Font_Scalable_Bitmap : constant Gtk_Font_Type;
-   Font_All             : constant Gtk_Font_Type;
-
-   type Gtk_Font_Filter_Type is (Font_Filter_Base,
-                                 Font_Filter_User);
-   --  These are the two types of filter available - base and user. The
-   --  base filter is set by the application and can't be changed by the
-   --  user.
-
-   -------------------------------
-   --  Font_Selection functions --
-   -------------------------------
+   ------------------------------
+   -- Font_Selection functions --
+   ------------------------------
 
    procedure Gtk_New (Widget : out Gtk_Font_Selection);
    --  Create a new font selection widget.
@@ -98,63 +78,61 @@ package Gtk.Font_Selection is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Font_Selection.
 
-   function Get_Font_Name (Fontsel : access Gtk_Font_Selection_Record)
-                          return String;
+   function Get_Font_Name
+     (Fontsel : access Gtk_Font_Selection_Record) return String;
    --  Return the name of the font selected by the user.
    --  It returns an empty string if not font is selected.
    --  The string has the same format as excepted in the Gdk.Font package.
    --  This is also the standard format on X11 systems.
 
-   function Get_Font (Fontsel : access Gtk_Font_Selection_Record)
-                     return Gdk.Font.Gdk_Font;
+   function Get_Font
+     (Fontsel : access Gtk_Font_Selection_Record) return Gdk.Font.Gdk_Font;
    --  Allocate and return the font selected by the user.
    --  This newly created font can be used as is by all the drawing functions
    --  in the Gdk.Drawable package.
    --  If not font has been selected, Gdk.Font.Null_Font is returned.
 
-   function Set_Font_Name (Fontsel  : access Gtk_Font_Selection_Record;
-                           Fontname : in String)
-                          return Boolean;
+   function Set_Font_Name
+     (Fontsel  : access Gtk_Font_Selection_Record;
+      Fontname : String) return Boolean;
    --  Set the name and attributes of the selected font in Fontsel.
    --  Fontname should have the standard format on X11 systems, that fully
    --  describe the family, weight, size, slant, etc. of the font.
 
-   function Get_Preview_Text (Fontsel : access Gtk_Font_Selection_Record)
-                             return String;
+   function Get_Preview_Text
+     (Fontsel : access Gtk_Font_Selection_Record) return String;
    --  Return the string used to preview the selected font in the dialog.
 
-   procedure Set_Preview_Text (Fontsel : access Gtk_Font_Selection_Record;
-                               Text    : in String);
+   procedure Set_Preview_Text
+     (Fontsel : access Gtk_Font_Selection_Record; Text : String);
    --  Set the string to use to preview the selected font.
 
-   --------------------------------------
-   --  Font_Selection_Dialog functions --
-   --------------------------------------
+   -------------------------------------
+   -- Font_Selection_Dialog functions --
+   -------------------------------------
 
-   procedure Gtk_New (Widget : out Gtk_Font_Selection_Dialog;
-                      Title :  in  String);
+   procedure Gtk_New (Widget : out Gtk_Font_Selection_Dialog; Title : String);
    --  Create a new dialog to select a font.
    --  The font selection widget has its own window, whose title is chosen
    --  by Title.
 
    procedure Initialize
-     (Widget : access Gtk_Font_Selection_Dialog_Record'Class;
-      Title  : in     String);
+     (Widget : access Gtk_Font_Selection_Dialog_Record'Class; Title : String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Dialog_Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Font_Selection_Dialog.
 
-   function Get_Font_Name (Fsd : access Gtk_Font_Selection_Dialog_Record)
-                          return String;
+   function Get_Font_Name
+     (Fsd : access Gtk_Font_Selection_Dialog_Record) return String;
    --  Return the name of the font selected by the user.
    --  It returns an empty string if not font is selected.
    --  The string has the same format as excepted in the Gdk.Font package.
    --  This is also the standard format on X11 systems.
 
-   function Get_Font (Fsd : access Gtk_Font_Selection_Dialog_Record)
-                     return Gdk.Font.Gdk_Font;
+   function Get_Font
+     (Fsd : access Gtk_Font_Selection_Dialog_Record) return Gdk.Font.Gdk_Font;
    --  Allocate and return the font selected by the user.
    --  This newly created font can be used as is by all the drawing functions
    --  in the Gdk.Drawable package.
@@ -162,36 +140,37 @@ package Gtk.Font_Selection is
 
    function Set_Font_Name
      (Fsd      : access Gtk_Font_Selection_Dialog_Record;
-      Fontname : in String)
-     return Boolean;
+      Fontname : String) return Boolean;
    --  Set the name and attributes of the selected font in Fontsel.
    --  Fontname should have the standard format on X11 systems, that fully
    --  describe the family, weight, size, slant, etc. of the font.
 
-   function Get_Preview_Text (Fsd : access Gtk_Font_Selection_Dialog_Record)
-                             return String;
+   function Get_Preview_Text
+     (Fsd : access Gtk_Font_Selection_Dialog_Record) return String;
    --  Return the string used to preview the selected font in the dialog.
 
    procedure Set_Preview_Text
-     (Fsd  : access Gtk_Font_Selection_Dialog_Record;
-      Text : in String);
+     (Fsd : access Gtk_Font_Selection_Dialog_Record; Text : String);
    --  Set the string to use to preview the selected font.
 
-   function Get_Cancel_Button (Fsd : access Gtk_Font_Selection_Dialog_Record)
-                              return Gtk.Button.Gtk_Button;
+   function Get_Cancel_Button
+     (Fsd : access Gtk_Font_Selection_Dialog_Record)
+      return Gtk.Button.Gtk_Button;
    --  Return the Id of the cancel button of the dialog.
    --  You can use this to set up a callback on that button.
    --  The callback should close the dialog, and ignore any value that has been
    --  set in it.
 
-   function Get_OK_Button (Fsd : access Gtk_Font_Selection_Dialog_Record)
-                          return Gtk.Button.Gtk_Button;
+   function Get_OK_Button
+     (Fsd : access Gtk_Font_Selection_Dialog_Record)
+      return Gtk.Button.Gtk_Button;
    --  Return the Id of the Ok button.
    --  The callback set on this button should close the dialog if the selected
    --  font is valid, and do whatever if should with it.
 
-   function Get_Apply_Button (Fsd : access Gtk_Font_Selection_Dialog_Record)
-                             return Gtk.Button.Gtk_Button;
+   function Get_Apply_Button
+     (Fsd : access Gtk_Font_Selection_Dialog_Record)
+      return Gtk.Button.Gtk_Button;
    --  Return the Id of the Apply button.
    --  The callback on this button should temporarily apply the font, but
    --  should be able to cancel its effect if the Cancel button is selected.
@@ -205,16 +184,13 @@ package Gtk.Font_Selection is
    --  </signals>
 
 private
-   type Gtk_Font_Selection_Dialog_Record is new Gtk.Window.Gtk_Window_Record
-     with null record;
-   type Gtk_Font_Selection_Record is new Gtk.Notebook.Gtk_Notebook_Record
-     with null record;
+   type Gtk_Font_Selection_Dialog_Record is new
+     Gtk.Dialog.Gtk_Dialog_Record with null record;
+
+   type Gtk_Font_Selection_Record is new
+     Gtk.Box.Gtk_Box_Record with null record;
+
    pragma Import (C, Get_Type, "gtk_font_selection_get_type");
    pragma Import (C, Dialog_Get_Type, "gtk_font_selection_dialog_get_type");
-
-   Font_Bitmap          : constant Gtk_Font_Type := 1;
-   Font_Scalable        : constant Gtk_Font_Type := 2;
-   Font_Scalable_Bitmap : constant Gtk_Font_Type := 4;
-   Font_All             : constant Gtk_Font_Type := 7;
 
 end Gtk.Font_Selection;

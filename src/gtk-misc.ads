@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +32,7 @@
 --  alignment and padding.
 --  This widget can not be instantiated directly.
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Widget;
 
@@ -41,9 +41,11 @@ package Gtk.Misc is
    type Gtk_Misc_Record is new Widget.Gtk_Widget_Record with private;
    type Gtk_Misc is access all Gtk_Misc_Record'Class;
 
-   procedure Set_Alignment (Misc   : access Gtk_Misc_Record;
-                            Xalign : in     Gfloat;
-                            Yalign : in     Gfloat);
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Misc.
+
+   procedure Set_Alignment
+     (Misc : access Gtk_Misc_Record; Xalign : Gfloat; Yalign : Gfloat);
    --  Modify the alignment for the widget.
    --  Xalign and Yalign are both values between 0.0 and 1.0 that specify the
    --  alignment: if Xalign is 0.0, the widget will be left aligned; if it is
@@ -53,14 +55,10 @@ package Gtk.Misc is
    --  Note that if the widget fills its allocated area, these two parameters
    --  won't have any effect.
 
-   procedure Set_Padding (Misc : access Gtk_Misc_Record;
-                          Xpad : in     Gint;
-                          Ypad : in     Gint);
+   procedure Set_Padding
+     (Misc : access Gtk_Misc_Record; Xpad : Gint; Ypad : Gint);
    --  Set the padding (i.e. the extra spaces on the side of the widget).
    --  If Xpad or Ypad is negative, they will be changed to 0.
-
-   function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Misc.
 
    -------------
    -- Signals --

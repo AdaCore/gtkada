@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,14 +38,14 @@ package body Gtk.Enums is
    -------------
 
    function Convert (S : String) return System.Address is
-      function Internal is new Unchecked_Conversion
-        (Interfaces.C.Strings.chars_ptr, System.Address);
+      function Internal is new
+        Unchecked_Conversion (Interfaces.C.Strings.chars_ptr, System.Address);
    begin
       return Internal (Interfaces.C.Strings.New_String (S));
    end Convert;
 
-   function Convert_Chars_Ptr is new Unchecked_Conversion
-     (System.Address, Interfaces.C.Strings.chars_ptr);
+   function Convert_Chars_Ptr is new
+     Unchecked_Conversion (System.Address, Interfaces.C.Strings.chars_ptr);
 
    function Convert (S : System.Address) return String is
    begin
@@ -58,14 +58,17 @@ package body Gtk.Enums is
 
    procedure Free_String_List (List : in out String_List.Glist) is
       use type String_List.Glist;
-      Tmp : String_List.Glist := List;
+
+      Tmp   : String_List.Glist := List;
       Chars : Interfaces.C.Strings.chars_ptr;
+
    begin
       while Tmp /= String_List.Null_List loop
          Chars := Convert_Chars_Ptr (String_List.Get_Data_Address (Tmp));
          Interfaces.C.Strings.Free (Chars);
          Tmp := String_List.Next (Tmp);
       end loop;
+
       String_List.Free (List);
    end Free_String_List;
 

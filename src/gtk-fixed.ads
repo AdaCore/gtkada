@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,15 +38,15 @@
 --  as font size changes easily.
 --
 --  </description>
---  <c_version>1.2.8</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Container;
 with Gtk.Widget;
 
 package Gtk.Fixed is
 
-   type Gtk_Fixed_Record is new Gtk.Container.Gtk_Container_Record
-     with private;
+   type Gtk_Fixed_Record is new
+     Gtk.Container.Gtk_Container_Record with private;
    type Gtk_Fixed is access all Gtk_Fixed_Record'Class;
 
    procedure Gtk_New (Fixed : out Gtk_Fixed);
@@ -59,15 +59,15 @@ package Gtk.Fixed is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Fixed.
 
-   function Get_Children (Fixed : access Gtk_Fixed_Record)
-     return Widget.Widget_List.Glist;
+   function Get_Children
+     (Fixed : access Gtk_Fixed_Record) return Widget.Widget_List.Glist;
    --  Return the list of Widgets contained in a Gtk_Fixed.
 
    procedure Move
      (Fixed  : access Gtk_Fixed_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      X      : in Gint16;
-      Y      : in Gint16);
+      X      : Gint16;
+      Y      : Gint16);
    --  Move a child of a GtkFixed container to the given position.
    --  X indicates the horizontal position to place the widget at.
    --  Y is the vertical position to place the widget at.
@@ -75,8 +75,8 @@ package Gtk.Fixed is
    procedure Put
      (Fixed  : access Gtk_Fixed_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      X      : in Gint16;
-      Y      : in Gint16);
+      X      : Gint16;
+      Y      : Gint16);
    --  Add Widget to a Fixed container at the given position.
    --  X indicates the horizontal position to place the widget at.
    --  Y is the vertical position to place the widget at.

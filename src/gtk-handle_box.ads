@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,7 +48,7 @@
 --  as the height of the handlebox shrinks, so the snap edge should be set to
 --  Pos_Bottom.
 --  </description>
---  <c_version>1.2.8</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Bin;
 with Gtk.Enums;
@@ -61,8 +61,7 @@ package Gtk.Handle_Box is
    procedure Gtk_New (Handle_Box : out Gtk_Handle_Box);
    --  Create a new Handle_Box.
 
-   procedure Initialize
-     (Handle_Box : access Gtk_Handle_Box_Record'Class);
+   procedure Initialize (Handle_Box : access Gtk_Handle_Box_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -71,17 +70,17 @@ package Gtk.Handle_Box is
 
    procedure Set_Shadow_Type
      (Handle_Box : access Gtk_Handle_Box_Record;
-      Typ        : in Enums.Gtk_Shadow_Type);
+      Typ        : Enums.Gtk_Shadow_Type);
    --  Set the type of shadow to be drawn around the border of the Handle_Box.
 
    procedure Set_Handle_Position
      (Handle_Box : access  Gtk_Handle_Box_Record;
-      Position   : in Enums.Gtk_Position_Type);
+      Position   : Enums.Gtk_Position_Type);
    --  Set the side of the Handle_Box where the handle is drawn.
 
    procedure Set_Snap_Edge
      (Handle_Box : access  Gtk_Handle_Box_Record;
-      Edge       : in Enums.Gtk_Position_Type);
+      Edge       : Enums.Gtk_Position_Type);
    --  Set the snap edge of a Handle_Box.
    --  The snap edge is the edge of the detached child that must be aligned
    --  with the corresponding edge of the "ghost" left behind when the child

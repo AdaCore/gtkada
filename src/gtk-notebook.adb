@@ -44,9 +44,9 @@ package body Gtk.Notebook is
       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
-        (Notebook  : in System.Address;
-         Child     : in System.Address;
-         Tab_Label : in System.Address);
+        (Notebook  : System.Address;
+         Child     : System.Address;
+         Tab_Label : System.Address);
       pragma Import (C, Internal, "gtk_notebook_append_page");
 
    begin
@@ -66,10 +66,10 @@ package body Gtk.Notebook is
       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
-        (Notebook   : in System.Address;
-         Child      : in System.Address;
-         Tab_Label  : in System.Address;
-         Menu_Label : in System.Address);
+        (Notebook   : System.Address;
+         Child      : System.Address;
+         Tab_Label  : System.Address;
+         Menu_Label : System.Address);
       pragma Import (C, Internal, "gtk_notebook_append_page_menu");
 
    begin
@@ -86,8 +86,9 @@ package body Gtk.Notebook is
    function Get_Current_Page
      (Notebook : access Gtk_Notebook_Record) return Gint
    is
-      function Internal (Notebook : in System.Address) return Gint;
+      function Internal (Notebook : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_notebook_get_current_page");
+
    begin
       return Internal (Get_Object (Notebook));
    end Get_Current_Page;
@@ -99,8 +100,9 @@ package body Gtk.Notebook is
    function Get_Children
      (Widget : access Gtk_Notebook_Record) return Page_List.Glist
    is
-      function Internal (Widget : in System.Address) return System.Address;
+      function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_notebook_get_children");
+
       use Page_List;
       List : Page_List.Glist;
 
@@ -137,15 +139,12 @@ package body Gtk.Notebook is
       return Gtk.Widget.Gtk_Widget
    is
       function Internal
-        (Widget : in System.Address;
-         Child  : in System.Address) return System.Address;
+        (Widget : System.Address;
+         Child  : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_notebook_get_tab_label");
 
-      Stub : Gtk.Widget.Gtk_Widget_Record;
-
    begin
-      return Gtk.Widget.Gtk_Widget (Get_User_Data
-         (Internal (Get_Object (Notebook), Get_Object (Child)), Stub));
+      return Convert (Internal (Get_Object (Notebook), Get_Object (Child)));
    end Get_Tab_Label;
 
    -----------------
@@ -155,7 +154,7 @@ package body Gtk.Notebook is
    function Get_Tab_Pos
      (Widget : access Gtk_Notebook_Record) return Gtk_Position_Type
    is
-      function Internal (Widget : in System.Address) return Gint;
+      function Internal (Widget : System.Address) return Gint;
       pragma Import (C, Internal, "ada_notebook_get_tab_pos");
 
    begin
@@ -171,8 +170,7 @@ package body Gtk.Notebook is
       Page_Num : Gint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
-        (Widget   : in System.Address;
-         Page_Num : Gint) return System.Address;
+        (Widget : System.Address; Page_Num : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_notebook_get_nth_page");
 
    begin
@@ -188,8 +186,7 @@ package body Gtk.Notebook is
       Child  : access Gtk_Widget_Record'Class) return Gint
    is
       function Internal
-        (Widget : in System.Address;
-         Child  : in System.Address) return Gint;
+        (Widget : System.Address; Child : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_notebook_page_num");
 
    begin
@@ -213,6 +210,7 @@ package body Gtk.Notebook is
    procedure Initialize (Widget : access Gtk_Notebook_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_notebook_new");
+
    begin
       Set_Object (Widget, Internal);
       Initialize_User_Data (Widget);
@@ -226,13 +224,13 @@ package body Gtk.Notebook is
      (Notebook  : access Gtk_Notebook_Record;
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Position  : in Gint)
+      Position  : Gint)
    is
       procedure Internal
-        (Notebook  : in System.Address;
-         Child     : in System.Address;
-         Tab_Label : in System.Address;
-         Position  : in Gint);
+        (Notebook  : System.Address;
+         Child     : System.Address;
+         Tab_Label : System.Address;
+         Position  : Gint);
       pragma Import (C, Internal, "gtk_notebook_insert_page");
 
    begin
@@ -251,14 +249,14 @@ package body Gtk.Notebook is
       Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Position   : in Gint)
+      Position   : Gint)
    is
       procedure Internal
-        (Notebook   : in System.Address;
-         Child      : in System.Address;
-         Tab_Label  : in System.Address;
-         Menu_Label : in System.Address;
-         Position   : in Gint);
+        (Notebook   : System.Address;
+         Child      : System.Address;
+         Tab_Label  : System.Address;
+         Menu_Label : System.Address;
+         Position   : Gint);
       pragma Import (C, Internal, "gtk_notebook_insert_page_menu");
 
    begin
@@ -274,8 +272,9 @@ package body Gtk.Notebook is
    ---------------
 
    procedure Next_Page (Notebook : access Gtk_Notebook_Record) is
-      procedure Internal (Notebook : in System.Address);
+      procedure Internal (Notebook : System.Address);
       pragma Import (C, Internal, "gtk_notebook_next_page");
+
    begin
       Internal (Get_Object (Notebook));
    end Next_Page;
@@ -285,8 +284,9 @@ package body Gtk.Notebook is
    -------------------
 
    procedure Popup_Disable (Notebook : access Gtk_Notebook_Record) is
-      procedure Internal (Notebook : in System.Address);
+      procedure Internal (Notebook : System.Address);
       pragma Import (C, Internal, "gtk_notebook_popup_disable");
+
    begin
       Internal (Get_Object (Notebook));
    end Popup_Disable;
@@ -296,8 +296,9 @@ package body Gtk.Notebook is
    ------------------
 
    procedure Popup_Enable (Notebook : access Gtk_Notebook_Record) is
-      procedure Internal (Notebook : in System.Address);
+      procedure Internal (Notebook : System.Address);
       pragma Import (C, Internal, "gtk_notebook_popup_enable");
+
    begin
       Internal (Get_Object (Notebook));
    end Popup_Enable;
@@ -312,9 +313,9 @@ package body Gtk.Notebook is
       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
-        (Notebook  : in System.Address;
-         Child     : in System.Address;
-         Tab_Label : in System.Address);
+        (Notebook  : System.Address;
+         Child     : System.Address;
+         Tab_Label : System.Address);
       pragma Import (C, Internal, "gtk_notebook_prepend_page");
 
    begin
@@ -334,11 +335,12 @@ package body Gtk.Notebook is
       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
-        (Notebook   : in System.Address;
-         Child      : in System.Address;
-         Tab_Label  : in System.Address;
-         Menu_Label : in System.Address);
+        (Notebook   : System.Address;
+         Child      : System.Address;
+         Tab_Label  : System.Address;
+         Menu_Label : System.Address);
       pragma Import (C, Internal, "gtk_notebook_prepend_page_menu");
+
    begin
       Internal (Get_Object (Notebook),
                 Get_Object (Child),
@@ -351,8 +353,9 @@ package body Gtk.Notebook is
    ---------------
 
    procedure Prev_Page (Notebook : access Gtk_Notebook_Record) is
-      procedure Internal (Notebook : in System.Address);
+      procedure Internal (Notebook : System.Address);
       pragma Import (C, Internal, "gtk_notebook_prev_page");
+
    begin
       Internal (Get_Object (Notebook));
    end Prev_Page;
@@ -369,15 +372,16 @@ package body Gtk.Notebook is
       Pack_Type  : out Gtk_Pack_Type)
    is
       procedure Internal
-        (Notebook : System.Address;
-         Child : System.Address;
-         Expand : out Gint;
-         Fill : out Gint;
+        (Notebook  : System.Address;
+         Child     : System.Address;
+         Expand    : out Gint;
+         Fill      : out Gint;
          Pack_Type : out Gint);
       pragma Import (C, Internal, "gtk_notebook_query_tab_label_packing");
+
       Expand_Ptr : Gint;
-      Fill_Ptr : Gint;
-      Pack_Ptr : Gint;
+      Fill_Ptr   : Gint;
+      Pack_Ptr   : Gint;
 
    begin
       Internal (Get_Object (Notebook), Get_Object (Child),
@@ -392,11 +396,11 @@ package body Gtk.Notebook is
    -----------------
 
    procedure Remove_Page
-     (Notebook : access Gtk_Notebook_Record;
-      Page_Num : in Gint)
+     (Notebook : access Gtk_Notebook_Record; Page_Num : Gint)
    is
-      procedure Internal (Notebook : in System.Address; Page_Num : in Gint);
+      procedure Internal (Notebook : System.Address; Page_Num : Gint);
       pragma Import (C, Internal, "gtk_notebook_remove_page");
+
    begin
       Internal (Get_Object (Notebook), Page_Num);
    end Remove_Page;
@@ -407,10 +411,11 @@ package body Gtk.Notebook is
 
    procedure Set_Homogeneous_Tabs
      (Notebook    : access Gtk_Notebook_Record;
-      Homogeneous : in Boolean := True)
+      Homogeneous : Boolean := True)
    is
       procedure Internal (Notebook : System.Address; Homogeneous : Gint);
       pragma Import (C, Internal, "gtk_notebook_set_homogeneous_tabs");
+
    begin
       Internal (Get_Object (Notebook), Boolean'Pos (Homogeneous));
    end Set_Homogeneous_Tabs;
@@ -420,11 +425,11 @@ package body Gtk.Notebook is
    --------------
 
    procedure Set_Page
-     (Notebook : access Gtk_Notebook_Record;
-      Page_Num : in Gint := -1)
+     (Notebook : access Gtk_Notebook_Record; Page_Num : Gint := -1)
    is
-      procedure Internal (Notebook : in System.Address; Page_Num : in Gint);
+      procedure Internal (Notebook : System.Address; Page_Num : Gint);
       pragma Import (C, Internal, "gtk_notebook_set_page");
+
    begin
       Internal (Get_Object (Notebook), Page_Num);
    end Set_Page;
@@ -437,8 +442,9 @@ package body Gtk.Notebook is
      (Notebook   : access Gtk_Notebook_Record;
       Scrollable : Boolean := True)
    is
-      procedure Internal (Notebook : in System.Address; Scrollable : in Gint);
+      procedure Internal (Notebook : System.Address; Scrollable : Gint);
       pragma Import (C, Internal, "gtk_notebook_set_scrollable");
+
    begin
       Internal (Get_Object (Notebook), Boolean'Pos (Scrollable));
    end Set_Scrollable;
@@ -451,9 +457,9 @@ package body Gtk.Notebook is
      (Notebook    : access Gtk_Notebook_Record;
       Show_Border : Boolean := True)
    is
-      procedure Internal (Notebook    : in System.Address;
-                          Show_Border : in Gint);
+      procedure Internal (Notebook : System.Address; Show_Border : Gint);
       pragma Import (C, Internal, "gtk_notebook_set_show_border");
+
    begin
       Internal (Get_Object (Notebook), Boolean'Pos (Show_Border));
    end Set_Show_Border;
@@ -464,21 +470,26 @@ package body Gtk.Notebook is
 
    procedure Set_Tab_Label_Packing
      (Notebook  : access Gtk_Notebook_Record;
-      Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Expand     : in Boolean;
-      Fill       : in Boolean;
-      Pack_Type  : in Gtk_Pack_Type)
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Expand    : Boolean;
+      Fill      : Boolean;
+      Pack_Type : Gtk_Pack_Type)
    is
       procedure Internal
-        (Notebook : System.Address;
-         Child : System.Address;
-         Expand : in Boolean;
-         Fill : in Boolean;
-         Pack_Type : in Gtk_Pack_Type);
+        (Notebook  : System.Address;
+         Child     : System.Address;
+         Expand    : Gint;
+         Fill      : Gint;
+         Pack_Type : Gtk_Pack_Type);
       pragma Import (C, Internal, "gtk_notebook_set_tab_label_packing");
+
    begin
-      Internal (Get_Object (Notebook), Get_Object (Child),
-                Expand, Fill, Pack_Type);
+      Internal
+        (Get_Object (Notebook),
+         Get_Object (Child),
+         Boolean'Pos (Expand),
+         Boolean'Pos (Fill),
+         Pack_Type);
    end Set_Tab_Label_Packing;
 
    -------------------
@@ -489,8 +500,9 @@ package body Gtk.Notebook is
      (Notebook  : access Gtk_Notebook_Record;
       Show_Tabs : Boolean := True)
    is
-      procedure Internal (Notebook : in System.Address; Show_Tabs : in Gint);
+      procedure Internal (Notebook : System.Address; Show_Tabs : Gint);
       pragma Import (C, Internal, "gtk_notebook_set_show_tabs");
+
    begin
       Internal (Get_Object (Notebook), Boolean'Pos (Show_Tabs));
    end Set_Show_Tabs;
@@ -500,11 +512,11 @@ package body Gtk.Notebook is
    --------------------
 
    procedure Set_Tab_Border
-     (Notebook : access Gtk_Notebook_Record;
-      Border_Width : Gint)
+     (Notebook : access Gtk_Notebook_Record; Border_Width : Gint)
    is
       procedure Internal (Notebook : System.Address; Border_Width : Gint);
       pragma Import (C, Internal, "gtk_notebook_set_tab_border");
+
    begin
       Internal (Get_Object (Notebook), Border_Width);
    end Set_Tab_Border;
@@ -514,11 +526,11 @@ package body Gtk.Notebook is
    ---------------------
 
    procedure Set_Tab_Hborder
-     (Notebook : access Gtk_Notebook_Record;
-      Border_Width : Gint)
+     (Notebook : access Gtk_Notebook_Record; Border_Width : Gint)
    is
       procedure Internal (Notebook : System.Address; Border_Width : Gint);
       pragma Import (C, Internal, "gtk_notebook_set_tab_hborder");
+
    begin
       Internal (Get_Object (Notebook), Border_Width);
    end Set_Tab_Hborder;
@@ -528,11 +540,11 @@ package body Gtk.Notebook is
    --------------------
 
    procedure Set_Tab_Vborder
-     (Notebook : access Gtk_Notebook_Record;
-      Border_Width : Gint)
+     (Notebook : access Gtk_Notebook_Record; Border_Width : Gint)
    is
       procedure Internal (Notebook : System.Address; Border_Width : Gint);
       pragma Import (C, Internal, "gtk_notebook_set_tab_vborder");
+
    begin
       Internal (Get_Object (Notebook), Border_Width);
    end Set_Tab_Vborder;
@@ -542,13 +554,13 @@ package body Gtk.Notebook is
    -----------------
 
    procedure Set_Tab_Pos
-     (Notebook : access Gtk_Notebook_Record;
-      Pos : Gtk_Position_Type)
+     (Notebook : access Gtk_Notebook_Record; Pos : Gtk_Position_Type)
    is
-      procedure Internal (Notebook : in System.Address; Pos : in Gint);
+      procedure Internal (Notebook : System.Address; Pos : Gtk_Position_Type);
       pragma Import (C, Internal, "gtk_notebook_set_tab_pos");
+
    begin
-      Internal (Get_Object (Notebook), Gtk_Position_Type'Pos (Pos));
+      Internal (Get_Object (Notebook), Pos);
    end Set_Tab_Pos;
 
    -------------------
@@ -578,7 +590,7 @@ package body Gtk.Notebook is
    procedure Set_Tab_Label_Text
      (Notebook : access Gtk_Notebook_Record;
       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tab_Text : in String)
+      Tab_Text : String)
    is
       procedure Internal
         (Notebook : System.Address;
@@ -618,11 +630,11 @@ package body Gtk.Notebook is
    procedure Set_Menu_Label_Text
      (Notebook  : access Gtk_Notebook_Record;
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Menu_Text : in String)
+      Menu_Text : String)
    is
       procedure Internal
-        (Notebook : System.Address;
-         Child    : System.Address;
+        (Notebook  : System.Address;
+         Child     : System.Address;
          Menu_Text : String);
       pragma Import (C, Internal, "gtk_notebook_set_menu_label_text");
 

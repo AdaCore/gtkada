@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.4</c_version>
+
 with Gtk.Dialog;
 
 package Gtk.Input_Dialog is
@@ -35,10 +37,15 @@ package Gtk.Input_Dialog is
    type Gtk_Input_Dialog is access all Gtk_Input_Dialog_Record'Class;
 
    procedure Gtk_New (Input_Dialog : out Gtk_Input_Dialog);
+
    procedure Initialize (Input_Dialog : access Gtk_Input_Dialog_Record'Class);
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Input_Dialog.
+
+   --  signals
+   --  - "enable_device"
+   --  - "disable_device"
 
 private
    type Gtk_Input_Dialog_Record is new Dialog.Gtk_Dialog_Record

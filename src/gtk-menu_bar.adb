@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -43,6 +43,7 @@ package body Gtk.Menu_Bar is
         (Menu_Bar : System.Address;
          Child    : System.Address);
       pragma Import (C, Internal, "gtk_menu_bar_append");
+
    begin
       Internal (Get_Object (Menu_Bar), Get_Object (Child));
    end Append;
@@ -54,12 +55,14 @@ package body Gtk.Menu_Bar is
    procedure Insert
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
-      Position : in Gint)
+      Position : Gint)
    is
-      procedure Internal (Menu_Bar : System.Address;
-                          Child    : System.Address;
-                          Position : Gint);
+      procedure Internal
+        (Menu_Bar : System.Address;
+         Child    : System.Address;
+         Position : Gint);
       pragma Import (C, Internal, "gtk_menu_bar_insert");
+
    begin
       Internal (Get_Object (Menu_Bar), Get_Object (Child), Position);
    end Insert;
@@ -81,6 +84,7 @@ package body Gtk.Menu_Bar is
    procedure Initialize (Menu_Bar : access Gtk_Menu_Bar_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_menu_bar_new");
+
    begin
       Set_Object (Menu_Bar, Internal);
       Initialize_User_Data (Menu_Bar);
@@ -94,9 +98,9 @@ package body Gtk.Menu_Bar is
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
    is
-      procedure Internal (Menu_Bar : System.Address;
-                          Child    : System.Address);
+      procedure Internal (Menu_Bar : System.Address; Child : System.Address);
       pragma Import (C, Internal, "gtk_menu_bar_prepend");
+
    begin
       Internal (Get_Object (Menu_Bar), Get_Object (Child));
    end Prepend;
@@ -107,14 +111,13 @@ package body Gtk.Menu_Bar is
 
    procedure Set_Shadow_Type
      (Menu_Bar : access Gtk_Menu_Bar_Record;
-      The_Type : in Gtk_Shadow_Type)
+      The_Type : Gtk_Shadow_Type)
    is
-      procedure Internal
-        (Menu_Bar : in System.Address;
-         The_Type : in Gint);
+      procedure Internal (Menu_Bar : System.Address; Typ : Gtk_Shadow_Type);
       pragma Import (C, Internal, "gtk_menu_bar_set_shadow_type");
+
    begin
-      Internal (Get_Object (Menu_Bar), Gtk_Shadow_Type'Pos (The_Type));
+      Internal (Get_Object (Menu_Bar), The_Type);
    end Set_Shadow_Type;
 
 end Gtk.Menu_Bar;

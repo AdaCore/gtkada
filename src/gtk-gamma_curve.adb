@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -52,6 +52,7 @@ package body Gtk.Gamma_Curve is
       pragma Import (C, Internal, "ada_gamma_curve_get_curve");
 
       Stub : Gtk.Curve.Gtk_Curve_Record;
+
    begin
       return Gtk.Curve.Gtk_Curve
         (Get_User_Data (Internal (Get_Object (Gamma_Curve)), Stub));
@@ -61,11 +62,12 @@ package body Gtk.Gamma_Curve is
    -- Get_Gamma --
    ---------------
 
-   function Get_Gamma (Gamma_Curve : access Gtk_Gamma_Curve_Record)
-                       return Gfloat
+   function Get_Gamma
+     (Gamma_Curve : access Gtk_Gamma_Curve_Record) return Gfloat
    is
       function Internal (Widget : System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_gamma_curve_get_gamma");
+
    begin
       return Internal (Get_Object (Gamma_Curve));
    end Get_Gamma;
@@ -77,6 +79,7 @@ package body Gtk.Gamma_Curve is
    procedure Initialize (Gamma_Curve : access Gtk_Gamma_Curve_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_gamma_curve_new");
+
    begin
       Set_Object (Gamma_Curve, Internal);
       Initialize_User_Data (Gamma_Curve);

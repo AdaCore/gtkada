@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,23 +40,27 @@
 --  submenu (if any) displayed.
 --
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Container;
-with Gtk.Menu_Item;   use Gtk.Menu_Item;
+with Gtk.Menu_Item; use Gtk.Menu_Item;
 
 package Gtk.Menu_Shell is
 
-   type Gtk_Menu_Shell_Record is new Gtk.Container.Gtk_Container_Record
-     with private;
+   type Gtk_Menu_Shell_Record is new
+     Gtk.Container.Gtk_Container_Record with private;
    type Gtk_Menu_Shell is access all Gtk_Menu_Shell_Record'Class;
 
-   type Gtk_Menu_Direction_Type is (Menu_Dir_Parent,
-                                    Menu_Dir_Child,
-                                    Menu_Dir_Next,
-                                    Menu_Dir_Prev);
+   type Gtk_Menu_Direction_Type is
+     (Menu_Dir_Parent,
+      Menu_Dir_Child,
+      Menu_Dir_Next,
+      Menu_Dir_Prev);
    --  Direction where to move the selection. See the signal "selection-done"
    --  below.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Menu_Shell.
 
    procedure Append
      (Menu_Shell : access Gtk_Menu_Shell_Record;
@@ -71,10 +75,19 @@ package Gtk.Menu_Shell is
    procedure Insert
      (Menu_Shell : access Gtk_Menu_Shell_Record;
       Child      : access Gtk_Menu_Item_Record'Class;
-      Position   : in Gint);
+      Position   : Gint);
    --  Add a new item at a specific position in the menu.
    --  The first item is at position 0. To insert as the last item in the menu,
    --  set Position to -1.
+
+   ----------------------
+   -- Signals emission --
+   ----------------------
+
+   procedure Deactivate (Menu_Shell : access Gtk_Menu_Shell_Record);
+   --  Emit the "deactivate" signal.
+   --  This deselects the selected item, ungrabs the mouse and keyboard, and
+   --  erase the Menu_Shell from the screen.
 
    procedure Select_Item
      (Menu_Shell : access Gtk_Menu_Shell_Record;
@@ -92,18 +105,6 @@ package Gtk.Menu_Shell is
    --  If Force_Deactivate is True or the menu_shell sets this property,
    --  Menu_Shell and all its parent menus are deactivated and erased from
    --  the screen.
-
-   function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Menu_Shell.
-
-   ----------------------
-   -- Signals emission --
-   ----------------------
-
-   procedure Deactivate (Menu_Shell : access Gtk_Menu_Shell_Record);
-   --  Emit the "deactivate" signal.
-   --  This deselects the selected item, ungrabs the mouse and keyboard, and
-   --  erase the Menu_Shell from the screen.
 
    -------------
    -- Signals --
@@ -147,7 +148,7 @@ package Gtk.Menu_Shell is
    --  </signals>
 
 private
-   type Gtk_Menu_Shell_Record is new Gtk.Container.Gtk_Container_Record
-     with null record;
+   type Gtk_Menu_Shell_Record is new
+     Gtk.Container.Gtk_Container_Record with null record;
    pragma Import (C, Get_Type, "gtk_menu_shell_get_type");
 end Gtk.Menu_Shell;

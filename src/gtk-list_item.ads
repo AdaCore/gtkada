@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.4</c_version>
+
 with Gtk.Item;
 
 package Gtk.List_Item is
@@ -34,20 +36,20 @@ package Gtk.List_Item is
    type Gtk_List_Item_Record is new Gtk.Item.Gtk_Item_Record with private;
    type Gtk_List_Item is access all Gtk_List_Item_Record'Class;
 
-   procedure Deselect (List_Item : access Gtk_List_Item_Record);
-
    procedure Gtk_New
      (List_Item : out Gtk_List_Item;
-      Label     : in String := "");
+      Label     : String := "");
 
    procedure Initialize
      (List_Item : access Gtk_List_Item_Record'Class;
-      Label     : in String := "");
+      Label     : String := "");
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_List_Item.
 
    procedure Gtk_Select (List_Item : access Gtk_List_Item_Record);
+
+   procedure Deselect (List_Item : access Gtk_List_Item_Record);
 
 private
    type Gtk_List_Item_Record is new Gtk.Item.Gtk_Item_Record with null record;

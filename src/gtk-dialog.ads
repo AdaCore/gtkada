@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,7 +47,7 @@
 --
 --  @pxref{Package_Gtkada.Dialogs} for a higher level dialog interface.
 --  </description>
---  <c_version>1.2.8</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Box;
 with Gtk.Window;
@@ -56,6 +56,52 @@ package Gtk.Dialog is
 
    type Gtk_Dialog_Record is new Gtk.Window.Gtk_Window_Record with private;
    type Gtk_Dialog is access all Gtk_Dialog_Record'Class;
+
+   type Gtk_Dialog_Flags is
+     (Gtk_Dialog_Modal,
+      --  Call Gtk.Window.Set_Modal (Win, True)
+
+      Gtk_Dialog_Destroy_With_Parent,
+      --  Call Gtk.Window.Set_Destroy_With_Parent
+
+      Gtk_Dialog_No_Separator
+      --  No separator bar above buttons
+     );
+   --  Parameters for dialog construction
+
+   type Gtk_Response_Type is new Gint;
+   --  Type used for Response_Id's.
+   --  Positive values are totally user-interpreted.
+   --  GtkAda will sometimes return Gtk_Response_None if no Response_Id is
+   --  available.
+   --
+   --  Typical usage is:
+   --    if Gtk.Dialog.Run (Dialog) = Gtk_Response_Accept then
+   --       blah;
+   --    end if;
+
+   Gtk_Response_None : constant Gtk_Response_Type := -1;
+   --  GtkAda returns this if a response widget has no Response_Id,
+   --  or if the dialog gets programmatically hidden or destroyed.
+
+   Gtk_Response_Reject : constant Gtk_Response_Type := -2;
+   Gtk_Response_Accept : constant Gtk_Response_Type := -3;
+   --  GtkAda won't return these unless you pass them in
+   --  as the response for an action widget. They are
+   --  for your convenience.
+
+   Gtk_Response_Delete_Event : constant Gtk_Response_Type := -4;
+   --  If the dialog is deleted.
+
+   Gtk_Response_OK     : constant Gtk_Response_Type := -5;
+   Gtk_Response_Cancel : constant Gtk_Response_Type := -6;
+   Gtk_Response_Close  : constant Gtk_Response_Type := -7;
+   Gtk_Response_Yes    : constant Gtk_Response_Type := -8;
+   Gtk_Response_No     : constant Gtk_Response_Type := -9;
+   Gtk_Response_Apply  : constant Gtk_Response_Type := -10;
+   Gtk_Response_Help   : constant Gtk_Response_Type := -11;
+   --  These are returned from dialogs, and you can also use them
+   --  yourself if you like.
 
    procedure Gtk_New (Dialog : out Gtk_Dialog);
    --  Create a new dialog.
@@ -83,6 +129,13 @@ package Gtk.Dialog is
 
    --  <signals>
    --  The following new signals are defined for this widget:
+   --
+   --  - "response"
+   --    procedure Handler
+   --      (Dialog      : access Gtk_Fialog_Record'Class;
+   --       Response_Id : Gint);
+   --
+   --    The user has selected a response for the dialog.
    --  </signals>
 
 private
@@ -90,3 +143,50 @@ private
 
    pragma Import (C, Get_Type, "gtk_dialog_get_type");
 end Gtk.Dialog;
+
+--  missing:
+--  GtkWidget* Gtk_New
+--    (const gchar     *title,
+--     GtkWindow       *parent,
+--     GtkDialogFlags   flags,
+--     const gchar     *first_button_text,
+--     ...);
+
+--  procedure add_action_widget
+--    (GtkDialog   *dialog,
+--     GtkWidget   *child,
+--     Gtk_Response_Type response_id);
+
+--  GtkWidget* add_button
+--    (GtkDialog   *dialog,
+--     const gchar *button_text,
+--     Gtk_Response_Type response_id);
+
+--  procedure add_buttons
+--    (GtkDialog   *dialog,
+--     const gchar *first_button_text,
+--     ...);
+
+--  procedure set_response_sensitive
+--    (GtkDialog *dialog,
+--     Gtk_Response_Type response_id,
+--     gboolean   setting);
+
+--  procedure set_default_response
+--    (GtkDialog *dialog,
+--     Gtk_Response_Type response_id);
+
+--  procedure set_has_separator
+--    (GtkDialog *dialog,
+--     gboolean   setting);
+
+--  gboolean get_has_separator (GtkDialog *dialog);
+
+--  procedure Response
+--    (GtkDialog *dialog,
+--     Gtk_Response_Type response_id);
+--  Emit response signal
+
+--  function Run (GtkDialog *dialog) return Gtk_Response_Type;
+--  Return response_id
+

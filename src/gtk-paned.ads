@@ -59,15 +59,15 @@
 --  canceled.
 --
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Container;
 with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Paned is
 
-   type Gtk_Paned_Record is new Gtk.Container.Gtk_Container_Record
-     with private;
+   type Gtk_Paned_Record is new
+     Gtk.Container.Gtk_Container_Record with private;
 
    --  <doc_ignore>
    subtype Gtk_Hpaned_Record is Gtk_Paned_Record;
@@ -94,27 +94,29 @@ package Gtk.Paned is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Paned.
 
-   function Get_Type_Vpaned return Gtk.Gtk_Type;
+   function Get_Type_Vpaned return Glib.GType;
    --  Return the internal value associated with a vertical Gtk_Paned.
 
-   function Get_Type_Hpaned return Gtk.Gtk_Type;
+   function Get_Type_Hpaned return Glib.GType;
    --  Return the internal value associated with a horizontal Gtk_Paned.
 
-   procedure Add1 (Paned : access Gtk_Paned_Record;
-                   Child : access Gtk_Widget_Record'Class);
+   procedure Add1
+     (Paned : access Gtk_Paned_Record;
+      Child : access Gtk_Widget_Record'Class);
    --  Add the first child of the container.
    --  The child will be displayed either in the top or in the left pane,
    --  depending on the orientation of the container.
    --  This is equivalent to using the Pack1 procedure with its default
    --  parameters.
 
-   procedure Pack1 (Paned : access Gtk_Paned_Record;
-                    Child : access Gtk_Widget_Record'Class;
-                    Resize : in Boolean := False;
-                    Shrink : in Boolean := True);
+   procedure Pack1
+     (Paned  : access Gtk_Paned_Record;
+      Child  : access Gtk_Widget_Record'Class;
+      Resize : Boolean := False;
+      Shrink : Boolean := True);
    --  Add a child to the top or left pane.
    --  You can not change dynamically the attributes Resize and Shrink.
    --  Instead, you have to remove the child from the container, and put it
@@ -123,21 +125,25 @@ package Gtk.Paned is
    --  when you remove it, and Gtk.Object.Unref it at the end. See the
    --  example in testgtk/ in the GtkAda distribution.
 
-   procedure Add2 (Paned : access Gtk_Paned_Record;
-                   Child : access Gtk_Widget_Record'Class);
+   procedure Add2
+     (Paned : access Gtk_Paned_Record;
+      Child : access Gtk_Widget_Record'Class);
    --  Add the second child of the container.
    --  It will be displayed in the bottom or right pane, depending on the
    --  container's orientation.
    --  This is equivalent to using Pack2 with its default parameters.
 
-   procedure Pack2 (Paned : access Gtk_Paned_Record;
-                    Child : access Gtk_Widget_Record'Class;
-                    Resize : in Boolean := False;
-                    Shrink : in Boolean := False);
+   procedure Pack2
+     (Paned  : access Gtk_Paned_Record;
+      Child  : access Gtk_Widget_Record'Class;
+      Resize : Boolean := False;
+      Shrink : Boolean := False);
    --  Add a child to the bottom or right pane.
 
-   procedure Set_Position (Paned    : access Gtk_Paned_Record;
-                           Position : Gint);
+   function Get_Position (Paned : access Gtk_Paned_Record) return Gint;
+   --  Return the position of the separator.
+
+   procedure Set_Position (Paned : access Gtk_Paned_Record; Position : Gint);
    --  Change the position of the separator.
    --  If position is negative, the remembered position is forgotten,
    --  and the division is recomputed from the requisitions of the
@@ -145,15 +151,16 @@ package Gtk.Paned is
    --  Position is in fact the size (either vertically or horizontally,
    --  depending on the container) set for the first child.
 
-   function Get_Child1 (Paned : access Gtk_Paned_Record)
-                       return Gtk.Widget.Gtk_Widget;
+   function Get_Child1
+     (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
    --  Return the child displayed in the top or left pane.
 
-   function Get_Child2 (Paned : access Gtk_Paned_Record)
-                       return Gtk.Widget.Gtk_Widget;
+   function Get_Child2
+     (Paned : access Gtk_Paned_Record) return Gtk.Widget.Gtk_Widget;
    --  Return the child displayed in the bottom or right pane.
 
-   function Get_Child1_Resize (Paned : access Gtk_Paned_Record) return Boolean;
+   function Get_Child1_Resize
+     (Paned : access Gtk_Paned_Record) return Boolean;
    --  Get the value of the resize attribute for the first child.
 
    function Get_Child2_Resize (Paned : access Gtk_Paned_Record) return Boolean;

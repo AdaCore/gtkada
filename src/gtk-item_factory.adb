@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                        Copyright (C) 2000                         --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,7 +28,7 @@
 
 with Gdk; use Gdk;
 with Gtk.Accel_Group;
-with Gtk.Widget;
+with Gtk.Widget; use Gtk.Widget;
 with Interfaces.C.Strings;
 with System;
 
@@ -43,24 +42,25 @@ package body Gtk.Item_Factory is
 
    procedure Add_Foreign
      (Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Full_Path    : in String;
-      Accel_Group  : in Gtk.Accel_Group.Gtk_Accel_Group;
-      Keyval       : in Guint;
-      Modifiers    : in Gdk.Types.Gdk_Modifier_Type)
+      Full_Path    : String;
+      Accel_Group  : Gtk.Accel_Group.Gtk_Accel_Group;
+      Keyval       : Guint;
+      Modifiers    : Gdk.Types.Gdk_Modifier_Type)
    is
       procedure Internal
-        (Accel_Widget : in System.Address;
-         Full_Path    : in String;
-         Accel_Group  : in Gtk.Accel_Group.Gtk_Accel_Group;
-         Keyval       : in Guint;
-         Modifiers    : in Gint);
+        (Accel_Widget : System.Address;
+         Full_Path    : String;
+         Accel_Group  : Gtk.Accel_Group.Gtk_Accel_Group;
+         Keyval       : Guint;
+         Modifiers    : Gdk.Types.Gdk_Modifier_Type);
       pragma Import (C, Internal, "gtk_item_factory_add_foreign");
+
    begin
       Internal (Get_Object (Accel_Widget),
                 Full_Path & ASCII.NUL,
                 Accel_Group,
                 Keyval,
-                Gdk.Types.Gdk_Modifier_Type'Pos (Modifiers));
+                Modifiers);
    end Add_Foreign;
 
    --------------------
@@ -69,12 +69,12 @@ package body Gtk.Item_Factory is
 
    procedure Delete_Entries
      (Ifactory  : access Gtk_Item_Factory_Record;
-      Entries   : in Gtk_Item_Factory_Entry_Array)
+      Entries   : Gtk_Item_Factory_Entry_Array)
    is
       procedure Internal
-        (Ifactory  : in System.Address;
-         N_Entries : in Guint;
-         Entries   : in System.Address);
+        (Ifactory  : System.Address;
+         N_Entries : Guint;
+         Entries   : System.Address);
       pragma Import (C, Internal, "gtk_item_factory_delete_entries");
 
    begin
@@ -87,12 +87,13 @@ package body Gtk.Item_Factory is
 
    procedure Delete_Entry
      (Ifactory : access Gtk_Item_Factory_Record;
-      Ientry   : in Gtk_Item_Factory_Entry)
+      Ientry   : Gtk_Item_Factory_Entry)
    is
       procedure Internal
-        (Ifactory : in System.Address;
-         Ientry   : in Gtk_Item_Factory_Entry);
+        (Ifactory : System.Address;
+         Ientry   : Gtk_Item_Factory_Entry);
       pragma Import (C, Internal, "gtk_item_factory_delete_entry");
+
    begin
       Internal (Get_Object (Ifactory), Ientry);
    end Delete_Entry;
@@ -103,15 +104,15 @@ package body Gtk.Item_Factory is
 
    procedure Delete_Item
      (Ifactory : access Gtk_Item_Factory_Record;
-      Path     : in String)
+      Path     : String)
    is
       procedure Internal
-        (Ifactory : in System.Address;
-         Path     : in String);
+        (Ifactory : System.Address;
+         Path     : String);
       pragma Import (C, Internal, "gtk_item_factory_delete_item");
+
    begin
-      Internal (Get_Object (Ifactory),
-                Path & ASCII.NUL);
+      Internal (Get_Object (Ifactory), Path & ASCII.NUL);
    end Delete_Item;
 
    -----------------
@@ -122,9 +123,11 @@ package body Gtk.Item_Factory is
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
       return Gtk_Item_Factory
    is
-      function Internal (Widget : in System.Address) return System.Address;
+      function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_item_factory_from_widget");
+
       Stub : Gtk_Item_Factory_Record;
+
    begin
       return Gtk_Item_Factory
         (Get_User_Data (Internal (Get_Object (Widget)), Stub));
@@ -136,19 +139,15 @@ package body Gtk.Item_Factory is
 
    function Get_Item
      (Ifactory : access Gtk_Item_Factory_Record;
-      Path     : in String) return Gtk.Widget.Gtk_Widget
+      Path     : String) return Gtk.Widget.Gtk_Widget
    is
       function Internal
-        (Ifactory : in System.Address;
-         Path     : in String) return System.Address;
+        (Ifactory : System.Address;
+         Path     : String) return System.Address;
       pragma Import (C, Internal, "gtk_item_factory_get_item");
 
-      Stub : Gtk.Widget.Gtk_Widget_Record;
-
    begin
-      return Gtk.Widget.Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Ifactory), Path & ASCII.NUL),
-                        Stub));
+      return Convert (Internal (Get_Object (Ifactory), Path & ASCII.NUL));
    end Get_Item;
 
    ------------------------
@@ -157,18 +156,15 @@ package body Gtk.Item_Factory is
 
    function Get_Item_By_Action
      (Ifactory : access Gtk_Item_Factory_Record;
-      Action   : in Guint) return Gtk.Widget.Gtk_Widget
+      Action   : Guint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
-        (Ifactory : in System.Address;
-         Action   : in Guint) return System.Address;
+        (Ifactory : System.Address;
+         Action   : Guint) return System.Address;
       pragma Import (C, Internal, "gtk_item_factory_get_item_by_action");
 
-      Stub : Gtk.Widget.Gtk_Widget_Record;
-
    begin
-      return Gtk.Widget.Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Ifactory), Action), Stub));
+      return Convert (Internal (Get_Object (Ifactory), Action));
    end Get_Item_By_Action;
 
    ----------------
@@ -177,19 +173,15 @@ package body Gtk.Item_Factory is
 
    function Get_Widget
      (Ifactory : access Gtk_Item_Factory_Record;
-      Path     : in String) return Gtk.Widget.Gtk_Widget
+      Path     : String) return Gtk.Widget.Gtk_Widget
    is
       function Internal
-        (Ifactory : in System.Address;
-         Path     : in String) return System.Address;
+        (Ifactory : System.Address;
+         Path     : String) return System.Address;
       pragma Import (C, Internal, "gtk_item_factory_get_widget");
 
-      Stub : Gtk.Widget.Gtk_Widget_Record;
-
    begin
-      return Gtk.Widget.Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Ifactory), Path & ASCII.NUL),
-                        Stub));
+      return Convert (Internal (Get_Object (Ifactory), Path & ASCII.NUL));
    end Get_Widget;
 
    --------------------------
@@ -198,27 +190,25 @@ package body Gtk.Item_Factory is
 
    function Get_Widget_By_Action
      (Ifactory : access Gtk_Item_Factory_Record;
-      Action   : in Guint) return Gtk.Widget.Gtk_Widget
+      Action   : Guint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
-        (Ifactory : in System.Address;
-         Action   : in Guint) return System.Address;
+        (Ifactory : System.Address;
+         Action   : Guint) return System.Address;
       pragma Import (C, Internal, "gtk_item_factory_get_widget_by_action");
 
-      Stub : Gtk.Widget.Gtk_Widget_Record;
-
    begin
-      return Gtk.Widget.Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Ifactory), Action), Stub));
+      return Convert (Internal (Get_Object (Ifactory), Action));
    end Get_Widget_By_Action;
 
    --------------
    -- Parse_Rc --
    --------------
 
-   procedure Parse_Rc (File_Name : in String) is
-      procedure Internal (File_Name : in String);
+   procedure Parse_Rc (File_Name : String) is
+      procedure Internal (File_Name : String);
       pragma Import (C, Internal, "gtk_item_factory_parse_rc");
+
    begin
       Internal (File_Name & ASCII.NUL);
    end Parse_Rc;
@@ -227,9 +217,10 @@ package body Gtk.Item_Factory is
    -- Parse_Rc_String --
    ---------------------
 
-   procedure Parse_Rc_String (Rc_String : in String) is
-      procedure Internal (Rc_String : in String);
+   procedure Parse_Rc_String (Rc_String : String) is
+      procedure Internal (Rc_String : String);
       pragma Import (C, Internal, "gtk_item_factory_parse_rc_string");
+
    begin
       Internal (Rc_String & ASCII.NUL);
    end Parse_Rc_String;
@@ -242,8 +233,9 @@ package body Gtk.Item_Factory is
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return String
    is
       function Internal
-        (Widget : in System.Address) return Interfaces.C.Strings.chars_ptr;
+        (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_item_factory_path_from_widget");
+
    begin
       return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
    end Path_From_Widget;
@@ -254,18 +246,19 @@ package body Gtk.Item_Factory is
 
    procedure Popup
      (Ifactory     : access Gtk_Item_Factory_Record;
-      X            : in Guint;
-      Y            : in Guint;
-      Mouse_Button : in Guint;
-      Time         : in Guint32)
+      X            : Guint;
+      Y            : Guint;
+      Mouse_Button : Guint;
+      Time         : Guint32)
    is
       procedure Internal
-        (Ifactory     : in System.Address;
-         X            : in Guint;
-         Y            : in Guint;
-         Mouse_Button : in Guint;
-         Time         : in Guint32);
+        (Ifactory     : System.Address;
+         X            : Guint;
+         Y            : Guint;
+         Mouse_Button : Guint;
+         Time         : Guint32);
       pragma Import (C, Internal, "gtk_item_factory_popup");
+
    begin
       Internal (Get_Object (Ifactory), X, Y, Mouse_Button, Time);
    end Popup;
@@ -282,16 +275,17 @@ package body Gtk.Item_Factory is
 
       procedure Create_Item
         (Ifactory      : access Gtk_Item_Factory_Record'Class;
-         Ientry        : in Gtk_Item_Factory_Entry;
-         Callback_Data : in Data_Type_Access;
-         Callback_Type : in Guint)
+         Ientry        : Gtk_Item_Factory_Entry;
+         Callback_Data : Data_Type_Access;
+         Callback_Type : Guint)
       is
          procedure Internal
-           (Ifactory      : in System.Address;
-            Ientry        : in Gtk_Item_Factory_Entry;
-            Callback_Data : in Data_Type_Access;
-            Callback_Type : in Guint);
+           (Ifactory      : System.Address;
+            Ientry        : Gtk_Item_Factory_Entry;
+            Callback_Data : Data_Type_Access;
+            Callback_Type : Guint);
          pragma Import (C, Internal, "gtk_item_factory_create_item");
+
       begin
          Internal (Get_Object (Ifactory),
                    Ientry,
@@ -305,14 +299,14 @@ package body Gtk.Item_Factory is
 
       procedure Create_Items
         (Ifactory      : access Gtk_Item_Factory_Record'Class;
-         Entries       : in Gtk_Item_Factory_Entry_Array;
-         Callback_Data : in Data_Type_Access)
+         Entries       : Gtk_Item_Factory_Entry_Array;
+         Callback_Data : Data_Type_Access)
       is
          procedure Internal
-           (Ifactory      : in System.Address;
-            N_Entries     : in Guint;
-            Entries       : in System.Address;
-            Callback_Data : in System.Address);
+           (Ifactory      : System.Address;
+            N_Entries     : Guint;
+            Entries       : System.Address;
+            Callback_Data : System.Address);
          pragma Import (C, Internal, "gtk_item_factory_create_items");
 
       begin
@@ -345,11 +339,11 @@ package body Gtk.Item_Factory is
       -------------
 
       function Gtk_New
-        (Path            : in  String;
-         Accelerator     : in  String := "";
-         Callback        : in  Gtk_Item_Factory_Callback := null;
-         Item_Type       : in  Item_Type_Enum;
-         Callback_Action : in  Guint := 0) return Gtk_Item_Factory_Entry
+        (Path            : String;
+         Accelerator     : String := "";
+         Callback        : Gtk_Item_Factory_Callback := null;
+         Item_Type       : Item_Type_Enum;
+         Callback_Action : Guint := 0) return Gtk_Item_Factory_Entry
       is
          function Item_Type_String (Item_Type : Item_Type_Enum) return String;
 
@@ -375,11 +369,11 @@ package body Gtk.Item_Factory is
       end Gtk_New;
 
       function Gtk_New
-        (Path            : in String;
-         Accelerator     : in String := "";
-         Callback        : in Gtk_Item_Factory_Callback := null;
-         Item_Type       : in String := "";
-         Callback_Action : in Guint := 0) return Gtk_Item_Factory_Entry
+        (Path            : String;
+         Accelerator     : String := "";
+         Callback        : Gtk_Item_Factory_Callback := null;
+         Item_Type       : String := "";
+         Callback_Action : Guint := 0) return Gtk_Item_Factory_Entry
       is
          Ientry : Gtk_Item_Factory_Entry;
       begin
@@ -416,9 +410,9 @@ package body Gtk.Item_Factory is
         (Ifactory : access Gtk_Item_Factory_Record'Class)
          return Data_Type_Access
       is
-         function Internal
-           (Ifactory : in System.Address) return Data_Type_Access;
+         function Internal (Ifactory : System.Address) return Data_Type_Access;
          pragma Import (C, Internal, "gtk_item_factory_popup_data");
+
       begin
          return Internal (Get_Object (Ifactory));
       end Popup_Data;
@@ -431,10 +425,10 @@ package body Gtk.Item_Factory is
         (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
          return Data_Type_Access
       is
-         function Internal
-           (Widget : in System.Address) return Data_Type_Access;
-         pragma Import (C, Internal,
-           "gtk_item_factory_popup_data_from_widget");
+         function Internal (Widget : System.Address) return Data_Type_Access;
+         pragma Import
+           (C, Internal, "gtk_item_factory_popup_data_from_widget");
+
       begin
          return Internal (Get_Object (Widget));
       end Popup_Data_From_Widget;
@@ -445,21 +439,21 @@ package body Gtk.Item_Factory is
 
       procedure Popup_With_Data
         (Ifactory     : access Gtk_Item_Factory_Record'Class;
-         Popup_Data   : in Data_Type_Access;
-         Destroy      : in System.Address;  --  Gtk_Destroy_Notify ???
-         X            : in Guint;
-         Y            : in Guint;
-         Mouse_Button : in Guint;
-         Time         : in Guint32)
+         Popup_Data   : Data_Type_Access;
+         Destroy      : System.Address;  --  Gtk_Destroy_Notify ???
+         X            : Guint;
+         Y            : Guint;
+         Mouse_Button : Guint;
+         Time         : Guint32)
       is
          procedure Internal
-           (Ifactory     : in System.Address;
-            Popup_Data   : in Data_Type_Access;
-            Destroy      : in System.Address;
-            X            : in Guint;
-            Y            : in Guint;
-            Mouse_Button : in Guint;
-            Time         : in Guint32);
+           (Ifactory     : System.Address;
+            Popup_Data   : Data_Type_Access;
+            Destroy      : System.Address;
+            X            : Guint;
+            Y            : Guint;
+            Mouse_Button : Guint;
+            Time         : Guint32);
          pragma Import (C, Internal, "gtk_item_factory_popup_with_data");
 
       begin
@@ -476,13 +470,12 @@ package body Gtk.Item_Factory is
       -- Print_Func --
       ----------------
 
-      procedure Print_Func
-        (File_Pointer : in Data_Type_Access; Str : in String)
-      is
+      procedure Print_Func (File_Pointer : Data_Type_Access; Str : String) is
          procedure Internal
-           (FILE_Pointer : in System.Address;
-            Str          : in String);
+           (FILE_Pointer : System.Address;
+            Str          : String);
          pragma Import (C, Internal, "gtk_item_factory_print_func");
+
       begin
          Internal (File_Pointer'Address, Str & ASCII.NUL);
       end Print_Func;
@@ -493,22 +486,19 @@ package body Gtk.Item_Factory is
 
       procedure Set_Translate_Func
         (Ifactory : access Gtk_Item_Factory_Record'Class;
-         Func     : in Gtk_Translate_Func;
-         Data     : in Data_Type_Access;
-         Notify   : in System.Address)  --  Gtk_Destroy_Notify ???
+         Func     : Gtk_Translate_Func;
+         Data     : Data_Type_Access;
+         Notify   : System.Address)  --  Gtk_Destroy_Notify ???
       is
          procedure Internal
-           (Ifactory : in System.Address;
-            Func     : in Gtk_Translate_Func;  --  ???
-            Data     : in Data_Type_Access;
-            Notify   : in System.Address);
+           (Ifactory : System.Address;
+            Func     : Gtk_Translate_Func;  --  ???
+            Data     : Data_Type_Access;
+            Notify   : System.Address);
          pragma Import (C, Internal, "gtk_item_factory_set_translate_func");
 
       begin
-         Internal (Get_Object (Ifactory),
-                   Func,
-                   Data,
-                   Notify);
+         Internal (Get_Object (Ifactory), Func, Data, Notify);
       end Set_Translate_Func;
 
       ---------------
@@ -516,12 +506,9 @@ package body Gtk.Item_Factory is
       ---------------
 
       function To_Widget
-        (Widget : in Limited_Widget) return Gtk.Widget.Gtk_Widget
-      is
-         Stub : Gtk.Widget.Gtk_Widget_Record;
+        (Widget : Limited_Widget) return Gtk.Widget.Gtk_Widget is
       begin
-         return Gtk.Widget.Gtk_Widget (Get_User_Data
-           (System.Address (Widget), Stub));
+         return Convert (System.Address (Widget));
       end To_Widget;
 
    end Data_Item;
@@ -532,9 +519,9 @@ package body Gtk.Item_Factory is
 
    procedure Gtk_New
      (Ifactory       : out Gtk_Item_Factory;
-      Container_Type : in     Gtk_Type;
-      Path           : in     String;
-      Accel_Group    : in     Gtk.Accel_Group.Gtk_Accel_Group) is
+      Container_Type : Gtk_Type;
+      Path           : String;
+      Accel_Group    : Gtk.Accel_Group.Gtk_Accel_Group) is
    begin
       Ifactory := new Gtk_Item_Factory_Record;
       Initialize (Ifactory, Container_Type, Path, Accel_Group);
@@ -546,20 +533,21 @@ package body Gtk.Item_Factory is
 
    procedure Initialize
      (Ifactory       : access Gtk_Item_Factory_Record'Class;
-      Container_Type : in Gtk_Type;
-      Path           : in String := "";
-      Accel_Group    : in Gtk.Accel_Group.Gtk_Accel_Group)
+      Container_Type : Gtk_Type;
+      Path           : String := "";
+      Accel_Group    : Gtk.Accel_Group.Gtk_Accel_Group)
    is
       function Internal
-        (Container_Type : in Gtk_Type;
-         Path           : in String;
-         Accel_Group    : in Gtk.Accel_Group.Gtk_Accel_Group)
+        (Container_Type : Gtk_Type;
+         Path           : String;
+         Accel_Group    : Gtk.Accel_Group.Gtk_Accel_Group)
          return System.Address;
       pragma Import (C, Internal, "gtk_item_factory_new");
+
    begin
-      Set_Object (Ifactory, Internal (Container_Type,
-                                      Path & ASCII.NUL,
-                                      Accel_Group));
+      Set_Object
+        (Ifactory,
+         Internal (Container_Type, Path & ASCII.NUL, Accel_Group));
    end Initialize;
 
 end Gtk.Item_Factory;

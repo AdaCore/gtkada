@@ -36,9 +36,8 @@
 --  the ASCII.LF character. However, this is not the recommended way
 --  to display long texts (see the Gtk_Text widget instead)
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
-with Gdk.Types;
 with Gtk.Enums;
 with Gtk.Misc;
 
@@ -47,27 +46,45 @@ package Gtk.Label is
    type Gtk_Label_Record is new Misc.Gtk_Misc_Record with private;
    type Gtk_Label is access all Gtk_Label_Record'Class;
 
-   procedure Gtk_New (Label :    out Gtk_Label;
-                      Str   : in     String := "");
+   procedure Gtk_New (Label : out Gtk_Label; Str : String := "");
    --  Create a new label.
    --  Str is the string to be displayed.
 
-   procedure Initialize (Label : access Gtk_Label_Record'Class;
-                         Str   : in     String);
+   procedure Gtk_New_With_Mnemonic (Label : out Gtk_Label; Str : String);
+   --  Create a new label containing the text in Str.
+   --  If characters in Str are preceded by an underscore, they are underlined
+   --  indicating that they represent a keyboard accelerator called a mnemonic.
+   --  The mnemonic key can be used to activate another widget, chosen
+   --  automatically or explicitely using Set_Mnemonic_Widget.
+
+   procedure Initialize
+     (Label : access Gtk_Label_Record'Class; Str : String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   function Get_Type return Gtk.Gtk_Type;
+   procedure Initialize_With_Mnemonic
+     (Label : access Gtk_Label_Record'Class; Str : String);
+   --  Internal initialization function.
+
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Label.
 
-   procedure Set_Text (Label : access Gtk_Label_Record;
-                       Str   : in String);
+   procedure Set_Text (Label : access Gtk_Label_Record; Str : String);
    --  Change the text of the label.
    --  The new text is visible on the screen at once. Note that the underline
    --  pattern is not modified.
 
-   procedure Set_Justify (Label : access Gtk_Label_Record;
-                          Jtype : in Enums.Gtk_Justification);
+   function Get_Text (Label : access Gtk_Label_Record) return String;
+   --  Get the current value of the text displayed in the label.
+
+   function Get
+     (Label : access Gtk_Label_Record) return String renames Get_Text;
+   --  Same as Get_Text.
+   --  pragma Deprecated (Get);
+
+   procedure Set_Justify
+     (Label : access Gtk_Label_Record;
+      Jtype : Enums.Gtk_Justification);
    --  Set the justification for the label.
    --  The default value is Justify_Center, which means that the text will be
    --  centered in the label. Note that this setting has an impact only when
@@ -76,8 +93,9 @@ package Gtk.Label is
    --  To justify a single line label, you should instead change the properties
    --  of the container handling the label (box, table, ...).
 
-   procedure Set_Pattern (Label   : access Gtk_Label_Record;
-                          Pattern : in String);
+   procedure Set_Pattern
+     (Label   : access Gtk_Label_Record;
+      Pattern : String);
    --  Change the underlines pattern.
    --  Pattern is a simple string made of underscore and space characters,
    --  matching the ones in the string. GtkAda will underline every letter
@@ -86,22 +104,11 @@ package Gtk.Label is
    --  example: If the text is FooBarBaz and the Pattern is "___   ___"
    --  then both "Foo" and "Baz" will be underlined, but not "Bar".
 
-   procedure Set_Line_Wrap (Label : access Gtk_Label_Record;
-                            Wrap  : in Boolean);
+   procedure Set_Line_Wrap (Label : access Gtk_Label_Record; Wrap : Boolean);
    --  Toggle line wrapping within Label.
    --  if Wrap is True, then Label will break lines if the text is larger
    --  then the widget's size. If Wrap is False, then the text is simply
    --  cut off.
-
-   function Get (Label : access Gtk_Label_Record) return String;
-   --  Get the current value of the text displayed in the label.
-
-   function Parse_Uline
-     (Label : access Gtk_Label_Record;
-      Text  : String) return Gdk.Types.Gdk_Key_Type;
-   --  Create both the text and the underscore pattern from a single string.
-   --  Text is parsed for underscores. The next character is converted to
-   --  an underlined character.
 
    -------------
    -- Signals --
@@ -115,3 +122,16 @@ private
    type Gtk_Label_Record is new Misc.Gtk_Misc_Record with null record;
    pragma Import (C, Get_Type, "gtk_label_get_type");
 end Gtk.Label;
+
+--  missing:
+--  Set_Attributes
+--  Set_Markup
+--  Set_Markup_With_Mnemonic
+--  Get_Mnemonic_Keyval
+--  Set_Mnemonic_Widget
+--  Set_Text_With_Mnemonic
+--  Set_Selectable
+--  Get_Selectable
+--  Select_Region
+--  Get_Layout_Offsets
+

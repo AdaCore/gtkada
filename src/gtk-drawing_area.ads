@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -50,14 +50,14 @@
 --  flickering in your drawings.
 --
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Widget;
 
 package Gtk.Drawing_Area is
 
-   type Gtk_Drawing_Area_Record is new Gtk.Widget.Gtk_Widget_Record
-     with private;
+   type Gtk_Drawing_Area_Record is new
+     Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Drawing_Area is access all Gtk_Drawing_Area_Record'Class;
 
    procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area);
@@ -72,11 +72,13 @@ package Gtk.Drawing_Area is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Drawing_Area.
 
-   procedure Size (Darea  : access Gtk_Drawing_Area_Record;
-                   Width  : in Gint;
-                   Height : in Gint);
+   procedure Size
+     (Darea  : access Gtk_Drawing_Area_Record;
+      Width  : Gint;
+      Height : Gint);
    --  Request a new size for the area.
    --  This queues a resize request for the area.
+   --  pragma Deprecated (Size);
 
    -------------
    -- Signals --

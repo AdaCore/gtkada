@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,17 +35,32 @@ package body Gtk.Option_Menu is
    -- Get_Menu --
    --------------
 
-   function Get_Menu (Option_Menu : access Gtk_Option_Menu_Record)
-                      return Gtk.Menu.Gtk_Menu
+   function Get_Menu
+     (Option_Menu : access Gtk_Option_Menu_Record) return Gtk.Menu.Gtk_Menu
    is
-      function Internal (Option_Menu : in System.Address)
-                         return System.Address;
+      function Internal (Option_Menu : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_option_menu_get_menu");
+
       Stub : Gtk.Menu.Gtk_Menu_Record;
+
    begin
       return Gtk.Menu.Gtk_Menu
         (Get_User_Data (Internal (Get_Object (Option_Menu)), Stub));
    end Get_Menu;
+
+   -----------------
+   -- Get_History --
+   -----------------
+
+   function Get_History
+     (Option_Menu : access Gtk_Option_Menu_Record) return Gint
+   is
+      function Internal (Option_Menu : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_option_menu_get_history");
+
+   begin
+      return Internal (Get_Object (Option_Menu));
+   end Get_History;
 
    -------------
    -- Gtk_New --
@@ -64,6 +79,7 @@ package body Gtk.Option_Menu is
    procedure Initialize (Option_Menu : access Gtk_Option_Menu_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_option_menu_new");
+
    begin
       Set_Object (Option_Menu, Internal);
       Initialize_User_Data (Option_Menu);
@@ -73,11 +89,13 @@ package body Gtk.Option_Menu is
    -- Remove_Menu --
    -----------------
 
-   procedure Remove_Menu (Option_Menu : access Gtk_Option_Menu_Record;
-                          Menu        : access Widget.Gtk_Widget_Record'Class)
+   procedure Remove_Menu
+     (Option_Menu : access Gtk_Option_Menu_Record;
+      Menu        : access Widget.Gtk_Widget_Record'Class)
    is
-      procedure Internal (Option_Menu, Menu : in System.Address);
+      procedure Internal (Option_Menu, Menu : System.Address);
       pragma Import (C, Internal, "gtk_option_menu_remove_menu");
+
    begin
       Internal (Get_Object (Option_Menu), Get_Object (Menu));
    end Remove_Menu;
@@ -86,10 +104,12 @@ package body Gtk.Option_Menu is
    -- Set_History --
    -----------------
 
-   procedure Set_History (Option_Menu : access Gtk_Option_Menu_Record;
-                          Index       : in     Gint) is
-      procedure Internal (Option_Menu : in System.Address; Index : in Gint);
+   procedure Set_History
+     (Option_Menu : access Gtk_Option_Menu_Record; Index : Gint)
+   is
+      procedure Internal (Option_Menu : System.Address; Index : Gint);
       pragma Import (C, Internal, "gtk_option_menu_set_history");
+
    begin
       Internal (Get_Object (Option_Menu), Index);
    end Set_History;
@@ -98,10 +118,13 @@ package body Gtk.Option_Menu is
    -- Set_Menu --
    --------------
 
-   procedure Set_Menu (Option_Menu : access Gtk_Option_Menu_Record;
-                       Menu        : access Widget.Gtk_Widget_Record'Class) is
-      procedure Internal (Option_Menu, Menu : in System.Address);
+   procedure Set_Menu
+     (Option_Menu : access Gtk_Option_Menu_Record;
+      Menu        : access Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Option_Menu, Menu : System.Address);
       pragma Import (C, Internal, "gtk_option_menu_set_menu");
+
    begin
       Internal (Get_Object (Option_Menu), Get_Object (Menu));
    end Set_Menu;

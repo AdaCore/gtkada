@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -42,7 +42,7 @@
 --  widgets, a Gtk_Layout does not try to resize itself to show all its
 --  children.
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gdk.Window;
 with Gtk.Adjustment;
@@ -51,8 +51,8 @@ with Gtk.Widget;
 
 package Gtk.Layout is
 
-   type Gtk_Layout_Record is new Gtk.Container.Gtk_Container_Record
-     with private;
+   type Gtk_Layout_Record is new
+     Gtk.Container.Gtk_Container_Record with private;
    type Gtk_Layout is access all Gtk_Layout_Record'Class;
 
    procedure Gtk_New
@@ -76,70 +76,62 @@ package Gtk.Layout is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Layout.
 
-   procedure Put (Layout : access Gtk_Layout_Record;
-                  Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-                  X      : in     Gint;
-                  Y      : in     Gint);
+   procedure Put
+     (Layout : access Gtk_Layout_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      X      : Gint;
+      Y      : Gint);
    --  Insert a new child in the layout.
    --  The child will be displayed on the screen only if at least part of
    --  it intersects the visible area of the layout.
    --  The layout does not resize itself to automatically show the widget.
 
-   procedure Move (Layout : access Gtk_Layout_Record;
-                   Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-                   X      : in     Gint;
-                   Y      : in     Gint);
+   procedure Move
+     (Layout : access Gtk_Layout_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      X      : Gint;
+      Y      : Gint);
    --  Move a child of the layout.
    --  Nothing is done if Widget is not already a child of Layout.
 
-   function Get_Bin_Window (Widget : access Gtk_Layout_Record)
-                           return Gdk.Window.Gdk_Window;
+   function Get_Bin_Window
+     (Widget : access Gtk_Layout_Record) return Gdk.Window.Gdk_Window;
    --  Return the window associated with the layout.
    --  You should use this one rather than Gtk.Widget.Get_Window.
 
-   procedure Set_Size (Layout : access Gtk_Layout_Record;
-                       Width  : in     Guint;
-                       Height : in     Guint);
+   procedure Set_Size
+     (Layout : access Gtk_Layout_Record;
+      Width  : Guint;
+      Height : Guint);
    --  Specify an absolute size for the layout.
    --  This is not the size on the screen, but the internal size of the widget.
    --  The screen's size can be set with Gtk.Widget.Set_Usize.
 
-   function Get_Hadjustment (Layout : access Gtk_Layout_Record)
-                            return Gtk.Adjustment.Gtk_Adjustment;
+   function Get_Hadjustment
+     (Layout : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment;
    --  Return the adjustment that indicate the horizontal visual area
    --  of the layout.
    --  You generally do not have to modify the value of this adjustment
    --  yourself, since this is done automatically when the layout has
    --  been put in a Gtk_Scrolled_Window.
 
-   function Get_Vadjustment (Layout : access Gtk_Layout_Record)
-                            return Gtk.Adjustment.Gtk_Adjustment;
+   function Get_Vadjustment
+     (Layout : access Gtk_Layout_Record) return Gtk.Adjustment.Gtk_Adjustment;
    --  Return the adjustment that indicate the vertical visual area
    --  of the layout.
    --  You generally do not have to modify the value of this adjustment
    --  yourself, since this is done automatically when the layout has
    --  been put in a Gtk_Scrolled_Window.
 
-   procedure Set_Hadjustment (Layout     : access Gtk_Layout_Record;
-                              Adjustment : Gtk.Adjustment.Gtk_Adjustment);
+   procedure Set_Hadjustment
+     (Layout     : access Gtk_Layout_Record;
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
    --  Specify a new adjustment to use for the horizontal visual area.
 
-   procedure Set_Vadjustment (Layout     : access Gtk_Layout_Record;
-                              Adjustment : Gtk.Adjustment.Gtk_Adjustment);
+   procedure Set_Vadjustment
+     (Layout     : access Gtk_Layout_Record;
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
    --  Specify a new adjustment to use for the vertical visual area.
-
-   procedure Freeze (Layout : access Gtk_Layout_Record);
-   --  Temporarily freezes the refreshing of the layout on the screen.
-   --  This should be used before doing long modifications to the children
-   --  to speed up the update.
-   --  Note that each call to Freeze increments an internal counter, and the
-   --  widget will only be thawed when the counter reaches 0;
-
-   procedure Thaw (Layout : access Gtk_Layout_Record);
-   --  Force an immediate update of the layout.
-   --  Every time a child is modified, the screen is refreshed.
-   --  This is the opposite of Freeze.
-   --  This subprogram decrements the internal counter.
 
    function Get_Xoffset (Layout : access Gtk_Layout_Record) return Guint;
    --  Get the current offset of the top-left corner.

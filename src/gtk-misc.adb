@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,12 +35,12 @@ package body Gtk.Misc is
    -- Set_Alignment --
    -------------------
 
-   procedure Set_Alignment (Misc   : access Gtk_Misc_Record;
-                            Xalign : in     Gfloat;
-                            Yalign : in     Gfloat) is
-      procedure Internal (Misc           : in System.Address;
-                          Xalign, Yalign : in Gfloat);
+   procedure Set_Alignment
+     (Misc : access Gtk_Misc_Record; Xalign : Gfloat; Yalign : Gfloat)
+   is
+      procedure Internal (Misc : System.Address; Xalign, Yalign : Gfloat);
       pragma Import (C, Internal, "gtk_misc_set_alignment");
+
    begin
       Internal (Get_Object (Misc), Xalign, Yalign);
    end Set_Alignment;
@@ -49,12 +49,15 @@ package body Gtk.Misc is
    -- Set_Padding --
    -----------------
 
-   procedure Set_Padding (Misc : access Gtk_Misc_Record;
-                          Xpad : in     Gint;
-                          Ypad : in     Gint) is
-      procedure Internal (Misc       : in System.Address;
-                          Xpad, Ypad : in Gint);
+   procedure Set_Padding
+     (Misc : access Gtk_Misc_Record;
+      Xpad : Gint;
+      Ypad : Gint)
+   is
+      procedure Internal
+        (Misc : System.Address; Xpad, Ypad : Gint);
       pragma Import (C, Internal, "gtk_misc_set_padding");
+
    begin
       Internal (Get_Object (Misc), Xpad, Ypad);
    end Set_Padding;

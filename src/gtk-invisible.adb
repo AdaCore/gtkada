@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,6 +38,7 @@ package body Gtk.Invisible is
    procedure Gtk_New (Widget : out Gtk_Invisible) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_invisible_new");
+
    begin
       Widget := new Gtk_Invisible_Record;
       Initialize (Widget);
@@ -50,6 +51,7 @@ package body Gtk.Invisible is
    procedure Initialize (Widget : access Gtk_Invisible_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_invisible_new");
+
    begin
       Set_Object (Widget, Internal);
       Initialize_User_Data (Widget);

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,10 +36,13 @@
 --  to store the pixel data on the server side (thus not allowing manipulation
 --  of the data after creation) you should use Gtk_Pixmap.
 --  </description>
---  <c_version>1.2.8</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gdk.Bitmap;
+with Gdk.Pixbuf;
+with Gdk.Pixmap;
 with Gdk.Image;
+with Gtk.Enums;
 with Gtk.Misc;
 
 package Gtk.Image is
@@ -47,20 +50,121 @@ package Gtk.Image is
    type Gtk_Image_Record is new Gtk.Misc.Gtk_Misc_Record with private;
    type Gtk_Image is access all Gtk_Image_Record'Class;
 
+   type Gtk_Icon_Set is new Glib.C_Proxy;
+   --  Move this declaration in Gtk.Icon_Factory when it is bound ???
+
+   type Gtk_Image_Type is
+     (Image_Empty,
+      Image_Pixmap,
+      Image_Image,
+      Image_Pixbuf,
+      Image_Stock,
+      Image_Icon_Set);
+
    procedure Gtk_New
      (Image : out Gtk_Image;
-      Val   : in Gdk.Image.Gdk_Image;
-      Mask  : in Gdk.Bitmap.Gdk_Bitmap);
+      Val   : Gdk.Image.Gdk_Image;
+      Mask  : Gdk.Bitmap.Gdk_Bitmap);
+
+   procedure Gtk_New
+     (Image  : out Gtk_Image;
+      Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : Gdk.Bitmap.Gdk_Bitmap);
+
+   procedure Gtk_New
+     (Image    : out Gtk_Image;
+      Filename : String);
+
+   procedure Gtk_New
+     (Image  : out Gtk_Image;
+      Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
+
+   procedure Gtk_New
+     (Image    : out Gtk_Image;
+      Stock_Id : String;
+      Size     : Gtk.Enums.Gtk_Icon_Size);
+
+   procedure Gtk_New
+     (Image    : out Gtk_Image;
+      Icon_Set : Gtk_Icon_Set;
+      Size     : Gtk.Enums.Gtk_Icon_Size);
 
    procedure Initialize
      (Image : access Gtk_Image_Record'Class;
-      Val   : in Gdk.Image.Gdk_Image;
-      Mask  : in Gdk.Bitmap.Gdk_Bitmap);
+      Val   : Gdk.Image.Gdk_Image;
+      Mask  : Gdk.Bitmap.Gdk_Bitmap);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   function Get_Type return Gtk.Gtk_Type;
+   procedure Initialize
+     (Image  : access Gtk_Image_Record'Class;
+      Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : Gdk.Bitmap.Gdk_Bitmap);
+   --  Internal initialization function.
+
+   procedure Initialize
+     (Image    : access Gtk_Image_Record'Class;
+      Filename : String);
+   --  Internal initialization function.
+
+   procedure Initialize
+     (Image  : access Gtk_Image_Record'Class;
+      Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
+   --  Internal initialization function.
+
+   procedure Initialize
+     (Image    : access Gtk_Image_Record'Class;
+      Stock_Id : String;
+      Size     : Gtk.Enums.Gtk_Icon_Size);
+   --  Internal initialization function.
+
+   procedure Initialize
+     (Image    : access Gtk_Image_Record'Class;
+      Icon_Set : Gtk_Icon_Set;
+      Size     : Gtk.Enums.Gtk_Icon_Size);
+   --  Internal initialization function.
+
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Image.
+
+   procedure Set
+     (Image  : access Gtk_Image_Record;
+      Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : Gdk.Bitmap.Gdk_Bitmap);
+   --  Set the value of a Gtk_Image.
+   --  Mask indicates which parts of the image should be transparent.
+
+   procedure Set
+     (Image : access Gtk_Image_Record;
+      Val   : Gdk.Image.Gdk_Image;
+      Mask  : Gdk.Bitmap.Gdk_Bitmap);
+   --  Set the value of a Gtk_Image.
+   --  Mask indicates which parts of the image should be transparent.
+
+   procedure Set (Image : access Gtk_Image_Record; File : String);
+
+   procedure Set
+     (Image : access Gtk_Image_Record; Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
+
+   procedure Set
+     (Image    : access Gtk_Image_Record;
+      Stock_Id : String;
+      Size     : Gtk.Enums.Gtk_Icon_Size);
+
+   procedure Set
+     (Image    : access Gtk_Image_Record;
+      Icon_Set : Gtk_Icon_Set;
+      Size     : Gtk.Enums.Gtk_Icon_Size);
+
+   function Get_Storage_Type
+     (Image : access Gtk_Image_Record) return Gtk_Image_Type;
+
+   procedure Get
+     (Image  : access Gtk_Image_Record;
+      Pixmap : out Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : out Gdk.Bitmap.Gdk_Bitmap);
+   --  Get the values of a Gtk_Image.
+   --  Mask indicates which parts of the image should be transparent.
 
    procedure Get
      (Image : access Gtk_Image_Record;
@@ -69,12 +173,16 @@ package Gtk.Image is
    --  Get the values of a Gtk_Image.
    --  Mask indicates which parts of the image should be transparent.
 
-   procedure Set
+   function Get (Image : access Gtk_Image_Record) return Gdk.Pixbuf.Gdk_Pixbuf;
+
+   function Get
      (Image : access Gtk_Image_Record;
-      Val   : in Gdk.Image.Gdk_Image;
-      Mask  : in Gdk.Bitmap.Gdk_Bitmap);
-   --  Set the values of a Gtk_Image.
-   --  Mask indicates which parts of the image should be transparent.
+      Size  : access Gtk.Enums.Gtk_Icon_Size) return String;
+
+   procedure Get
+     (Image    : access Gtk_Image_Record;
+      Icon_Set : out Gtk_Icon_Set;
+      Size     : out Gtk.Enums.Gtk_Icon_Size);
 
    -------------
    -- Signals --

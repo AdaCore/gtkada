@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,16 +28,27 @@
 -----------------------------------------------------------------------
 
 with System;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Frame is
+
+   ---------------
+   -- Get_Label --
+   ---------------
+
+   function Get_Label (Frame : access Gtk_Frame_Record) return String is
+      function Internal (Label : System.Address) return chars_ptr;
+      pragma Import (C, Internal, "gtk_frame_get_label");
+
+   begin
+      return Value (Internal (Get_Object (Frame)));
+   end Get_Label;
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New
-     (Frame : out Gtk_Frame;
-      Label : in String := "") is
+   procedure Gtk_New (Frame : out Gtk_Frame; Label : String := "") is
    begin
       Frame := new Gtk_Frame_Record;
       Initialize (Frame, Label);
@@ -48,11 +59,11 @@ package body Gtk.Frame is
    ----------------
 
    procedure Initialize
-     (Frame : access Gtk_Frame_Record'Class;
-      Label : in String := "")
+     (Frame : access Gtk_Frame_Record'Class; Label : String := "")
    is
-      function Internal (Label  : in System.Address) return System.Address;
+      function Internal (Label : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_frame_new");
+
    begin
       if Label = "" then
          Set_Object (Frame, Internal (System.Null_Address));
@@ -73,11 +84,9 @@ package body Gtk.Frame is
 
    procedure Set_Label
      (Frame : access Gtk_Frame_Record;
-      Label : in String := "")
+      Label : String := "")
    is
-      procedure Internal
-        (Frame : in System.Address;
-         Label : in System.Address);
+      procedure Internal (Frame : System.Address; Label : System.Address);
       pragma Import (C, Internal, "gtk_frame_set_label");
 
       S : aliased constant String := Label & ASCII.NUL;
@@ -96,13 +105,11 @@ package body Gtk.Frame is
 
    procedure Set_Label_Align
      (Frame  : access Gtk_Frame_Record;
-      Xalign : in Gfloat := 0.0;
-      Yalign : in Gfloat := 0.0)
+      Xalign : Gfloat := 0.0;
+      Yalign : Gfloat := 0.0)
    is
       procedure Internal
-        (Frame  : in System.Address;
-         Xalign : in Gfloat;
-         Yalign : in Gfloat);
+        (Frame : System.Address; Xalign : Gfloat; Yalign : Gfloat);
       pragma Import (C, Internal, "gtk_frame_set_label_align");
 
    begin
@@ -115,14 +122,28 @@ package body Gtk.Frame is
 
    procedure Set_Shadow_Type
      (Frame    : access Gtk_Frame_Record;
-      The_Type : in Gtk_Shadow_Type)
+      The_Type : Gtk_Shadow_Type)
    is
-      procedure Internal
-        (Frame    : in System.Address;
-         The_Type : in Gint);
+      procedure Internal (Frame : System.Address; The_Type : Gtk_Shadow_Type);
       pragma Import (C, Internal, "gtk_frame_set_shadow_type");
+
    begin
-      Internal (Get_Object (Frame), Gtk_Shadow_Type'Pos (The_Type));
+      Internal (Get_Object (Frame), The_Type);
    end Set_Shadow_Type;
+
+   ----------------------
+   -- Set_Widget_Label --
+   ----------------------
+
+   procedure Set_Label_Widget
+     (Frame        : access Gtk_Frame_Record;
+      Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Frame, Widget : System.Address);
+      pragma Import (C, Internal, "gtk_frame_set_label_widget");
+
+   begin
+      Internal (Get_Object (Frame), Get_Object (Label_Widget));
+   end Set_Label_Widget;
 
 end Gtk.Frame;

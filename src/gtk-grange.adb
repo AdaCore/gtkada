@@ -84,11 +84,11 @@ package body Gtk.GRange is
    is
       procedure Internal
         (The_Range : System.Address;
-         Policy    : Gint);
+         Policy    : Gtk_Update_Type);
       pragma Import (C, Internal, "gtk_range_set_update_policy");
 
    begin
-      Internal (Get_Object (The_Range), Gtk_Update_Type'Pos (Policy));
+      Internal (Get_Object (The_Range), Policy);
    end Set_Update_Policy;
 
    ------------------

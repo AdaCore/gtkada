@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                  Copyright (C) 2001 ACT-Europe                    --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,8 +47,9 @@ package body Gtk.Menu_Item is
    --------------
 
    procedure Activate (Menu_Item : access Gtk_Menu_Item_Record) is
-      procedure Internal (Menu_Item : in System.Address);
+      procedure Internal (Menu_Item : System.Address);
       pragma Import (C, Internal, "gtk_menu_item_activate");
+
    begin
       Internal (Get_Object (Menu_Item));
    end Activate;
@@ -57,16 +58,21 @@ package body Gtk.Menu_Item is
    -- Configure --
    ---------------
 
-   procedure Configure (Menu_Item              : access Gtk_Menu_Item_Record;
-                        Show_Toggle_Indicator  : in     Boolean;
-                        Show_Submenu_Indicator : in     Boolean) is
-      procedure Internal (Menu_Item : System.Address;
-                          Show_Toggle_Indicator : in Boolean;
-                          Show_Submenu_Indicator : in Boolean);
+   procedure Configure
+     (Menu_Item              : access Gtk_Menu_Item_Record;
+      Show_Toggle_Indicator  : Boolean;
+      Show_Submenu_Indicator : Boolean)
+   is
+      procedure Internal
+        (Menu_Item              : System.Address;
+         Show_Toggle_Indicator  : Boolean;
+         Show_Submenu_Indicator : Boolean);
       pragma Import (C, Internal, "gtk_menu_item_configure");
+
    begin
-      Internal (Get_Object (Menu_Item), Show_Toggle_Indicator,
-                Show_Submenu_Indicator);
+      Internal
+        (Get_Object (Menu_Item),
+         Show_Toggle_Indicator, Show_Submenu_Indicator);
    end Configure;
 
    --------------
@@ -74,8 +80,9 @@ package body Gtk.Menu_Item is
    --------------
 
    procedure Deselect (Menu_Item : access Gtk_Menu_Item_Record) is
-      procedure Internal (Menu_Item : in System.Address);
+      procedure Internal (Menu_Item : System.Address);
       pragma Import (C, Internal, "gtk_menu_item_deselect");
+
    begin
       Internal (Get_Object (Menu_Item));
    end Deselect;
@@ -84,8 +91,7 @@ package body Gtk.Menu_Item is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Menu_Item : out Gtk_Menu_Item;
-                      Label     : in  String := "") is
+   procedure Gtk_New (Menu_Item : out Gtk_Menu_Item; Label : String := "") is
    begin
       Menu_Item := new Gtk_Menu_Item_Record;
       Initialize (Menu_Item, Label);
@@ -96,8 +102,9 @@ package body Gtk.Menu_Item is
    ----------------
 
    procedure Gtk_Select (Menu_Item : access Gtk_Menu_Item_Record) is
-      procedure Internal (Menu_Item : in System.Address);
+      procedure Internal (Menu_Item : System.Address);
       pragma Import (C, Internal, "gtk_menu_item_select");
+
    begin
       Internal (Get_Object (Menu_Item));
    end Gtk_Select;
@@ -106,18 +113,23 @@ package body Gtk.Menu_Item is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Menu_Item : access Gtk_Menu_Item_Record'Class;
-                         Label     : in  String) is
-      function Internal (Label : in String) return System.Address;
+   procedure Initialize
+     (Menu_Item : access Gtk_Menu_Item_Record'Class;
+      Label     : String)
+   is
+      function Internal (Label : String) return System.Address;
       pragma Import (C, Internal, "gtk_menu_item_new_with_label");
+
       function Internal2 return System.Address;
       pragma Import (C, Internal2, "gtk_menu_item_new");
+
    begin
       if Label = "" then
          Set_Object (Menu_Item, Internal2);
       else
          Set_Object (Menu_Item, Internal (Label & ASCII.NUL));
       end if;
+
       Initialize_User_Data (Menu_Item);
    end Initialize;
 
@@ -125,15 +137,14 @@ package body Gtk.Menu_Item is
    -- Get_Submenu --
    -----------------
 
-   function Get_Submenu (Menu_Item : access Gtk_Menu_Item_Record)
-                        return Gtk.Widget.Gtk_Widget
+   function Get_Submenu
+     (Menu_Item : access Gtk_Menu_Item_Record) return Gtk.Widget.Gtk_Widget
    is
       function Internal (Menu_Item : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_menu_item_get_submenu");
-      Stub : Gtk.Widget.Gtk_Widget_Record;
+
    begin
-      return Gtk.Widget.Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Menu_Item)), Stub));
+      return Gtk.Widget.Convert (Internal (Get_Object (Menu_Item)));
    end Get_Submenu;
 
    --------------------
@@ -141,8 +152,9 @@ package body Gtk.Menu_Item is
    --------------------
 
    procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record) is
-      procedure Internal (Menu_Item : in System.Address);
+      procedure Internal (Menu_Item : System.Address);
       pragma Import (C, Internal, "gtk_menu_item_remove_submenu");
+
    begin
       Internal (Get_Object (Menu_Item));
    end Remove_Submenu;
@@ -152,8 +164,9 @@ package body Gtk.Menu_Item is
    --------------------
 
    procedure Right_Justify (Menu_Item : access Gtk_Menu_Item_Record) is
-      procedure Internal (Menu_Item : in System.Address);
+      procedure Internal (Menu_Item : System.Address);
       pragma Import (C, Internal, "gtk_menu_item_right_justify");
+
    begin
       Internal (Get_Object (Menu_Item));
    end Right_Justify;
@@ -162,11 +175,15 @@ package body Gtk.Menu_Item is
    -- Set_Placement --
    -------------------
 
-   procedure Set_Placement (Menu_Item : access Gtk_Menu_Item_Record;
-                            Placement : in     Enums.Gtk_Submenu_Placement) is
-      procedure Internal (Menu_Item : in System.Address;
-                          Placement : in Enums.Gtk_Submenu_Placement);
+   procedure Set_Placement
+     (Menu_Item : access Gtk_Menu_Item_Record;
+      Placement : Enums.Gtk_Submenu_Placement)
+   is
+      procedure Internal
+        (Menu_Item : System.Address;
+         Placement : Enums.Gtk_Submenu_Placement);
       pragma Import (C, Internal, "gtk_menu_item_set_placement");
+
    begin
       Internal (Get_Object (Menu_Item), Placement);
    end Set_Placement;
@@ -175,11 +192,15 @@ package body Gtk.Menu_Item is
    -- Set_Submenu --
    -----------------
 
-   procedure Set_Submenu (Menu_Item : access Gtk_Menu_Item_Record;
-                          Submenu   : access Widget.Gtk_Widget_Record'Class) is
-      procedure Internal (Menu_Item : in System.Address;
-                          Submenu   : in System.Address);
+   procedure Set_Submenu
+     (Menu_Item : access Gtk_Menu_Item_Record;
+      Submenu   : access Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal
+        (Menu_Item : System.Address;
+         Submenu   : System.Address);
       pragma Import (C, Internal, "gtk_menu_item_set_submenu");
+
    begin
       Internal (Get_Object (Menu_Item), Get_Object (Submenu));
    end Set_Submenu;

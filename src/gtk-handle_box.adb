@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,6 +48,7 @@ package body Gtk.Handle_Box is
    procedure Initialize (Handle_Box : access Gtk_Handle_Box_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_handle_box_new");
+
    begin
       Set_Object (Handle_Box, Internal);
       Initialize_User_Data (Handle_Box);
@@ -59,14 +60,14 @@ package body Gtk.Handle_Box is
 
    procedure Set_Handle_Position
      (Handle_Box : access Gtk_Handle_Box_Record;
-      Position   : in Enums.Gtk_Position_Type)
+      Position   : Enums.Gtk_Position_Type)
    is
-      procedure Internal (Handle_Box : System.Address;
-                          Position   : Gint);
+      procedure Internal
+        (Handle_Box : System.Address; Position : Enums.Gtk_Position_Type);
       pragma Import (C, Internal, "gtk_handle_box_set_handle_position");
+
    begin
-      Internal (Get_Object (Handle_Box),
-                Enums.Gtk_Position_Type'Pos (Position));
+      Internal (Get_Object (Handle_Box), Position);
    end Set_Handle_Position;
 
    ---------------------
@@ -75,14 +76,14 @@ package body Gtk.Handle_Box is
 
    procedure Set_Shadow_Type
      (Handle_Box : access Gtk_Handle_Box_Record;
-      Typ        : in Enums.Gtk_Shadow_Type)
+      Typ        : Enums.Gtk_Shadow_Type)
    is
-      procedure Internal (Handle_Box : System.Address;
-                          Typ        : Gint);
+      procedure Internal
+        (Handle_Box : System.Address; Typ : Enums.Gtk_Shadow_Type);
       pragma Import (C, Internal, "gtk_handle_box_set_shadow_type");
+
    begin
-      Internal (Get_Object (Handle_Box),
-                Enums.Gtk_Shadow_Type'Pos (Typ));
+      Internal (Get_Object (Handle_Box), Typ);
    end Set_Shadow_Type;
 
    -------------------
@@ -91,14 +92,14 @@ package body Gtk.Handle_Box is
 
    procedure Set_Snap_Edge
      (Handle_Box : access Gtk_Handle_Box_Record;
-      Edge       : in Enums.Gtk_Position_Type)
+      Edge       : Enums.Gtk_Position_Type)
    is
-      procedure Internal (Handle_Box : System.Address;
-                          Edgde      : Gint);
+      procedure Internal
+        (Handle_Box : System.Address; Edge : Enums.Gtk_Position_Type);
       pragma Import (C, Internal, "gtk_handle_box_set_snap_edge");
+
    begin
-      Internal (Get_Object (Handle_Box),
-                Enums.Gtk_Position_Type'Pos (Edge));
+      Internal (Get_Object (Handle_Box), Edge);
    end Set_Snap_Edge;
 
 end Gtk.Handle_Box;

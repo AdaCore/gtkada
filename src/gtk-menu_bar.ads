@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,7 +33,7 @@
 --  items. Gtk_Menu_Bar allows for a shadow type to be set for aesthetic
 --  purposes. The shadow types are defined in the Set_Shadow_Type function.
 --  </description>
---  <c_version>1.2.8</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Menu_Shell;
@@ -41,8 +41,8 @@ with Gtk.Menu_Item;
 
 package Gtk.Menu_Bar is
 
-   type Gtk_Menu_Bar_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
-     with private;
+   type Gtk_Menu_Bar_Record is new
+     Gtk.Menu_Shell.Gtk_Menu_Shell_Record with private;
    type Gtk_Menu_Bar is access all Gtk_Menu_Bar_Record'Class;
 
    procedure Gtk_New (Menu_Bar : out Gtk_Menu_Bar);
@@ -60,21 +60,21 @@ package Gtk.Menu_Bar is
       Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
    --  Add a new Gtk_Menu_Item to the end of the Gtk_Menu_Bar.
 
-   procedure Insert
-     (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
-      Position : in Gint);
-   --  Add a new Gtk_Menu_Item to the Gtk_Menu_Bar at a specified position.
-   --  The first element of a menu bar is at position 0.
-
    procedure Prepend
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
    --  Add a new Gtk_Menu_Item to the beginning of the Gtk_Menu_Bar.
 
+   procedure Insert
+     (Menu_Bar : access Gtk_Menu_Bar_Record;
+      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
+      Position : Gint);
+   --  Add a new Gtk_Menu_Item to the Gtk_Menu_Bar at a specified position.
+   --  The first element of a menu bar is at position 0.
+
    procedure Set_Shadow_Type
      (Menu_Bar : access Gtk_Menu_Bar_Record;
-      The_Type : in Gtk_Shadow_Type);
+      The_Type : Gtk_Shadow_Type);
    --  Set the shadow type to use on the Gtk_Menu_Bar.
 
    -------------

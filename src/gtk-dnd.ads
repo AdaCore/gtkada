@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 2000                            --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -85,7 +84,7 @@
 --  call Finish, to warn the source widget that the drag and drop operation
 --  is finished, and whether it was successful or not.
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Glib; use Glib;
 with Gdk.Bitmap;
@@ -167,22 +166,21 @@ package Gtk.Dnd is
    --  Structure that holds information about a drag in progress.
    --  This is used on both source and destination sides.
 
-   function Get_Actions (Context : in Drag_Context) return Drag_Action;
+   function Get_Actions (Context : Drag_Context) return Drag_Action;
    --  Return the possible actions associated with the context.
    --  This is the list of actions defined by the source of the drag-and-drop
    --  operation, in Source_Set.
    --  (for instance, if Source_Set was used with Action_Copy + Action_Move,
    --  the result will be exactly this sum, whatever was used for Dest_Set).
 
-   function Get_Suggested_Action
-     (Context : in Drag_Context) return Drag_Action;
+   function Get_Suggested_Action (Context : Drag_Context) return Drag_Action;
    --  Return the suggested action for that context.
    --  This is the highest priority action that was set by the source of the
    --  drag-and-drop, ie the one it would rather use. The action that is
    --  actually used is the one returned by Get_Action, and depends on the
    --  mask set by the target.
 
-   function Get_Action (Context : in Drag_Context) return Drag_Action;
+   function Get_Action (Context : Drag_Context) return Drag_Action;
    --  Return the action selected for the drag-and-drop operation.
    --  This is the highest priority action common between the drag site and the
    --  drop widget (for instance, if Source_Set was used with Action_Copy +
@@ -190,7 +188,7 @@ package Gtk.Dnd is
    --  be Action_Move).
 
    function Get_Targets
-     (Context : in Drag_Context) return Gtk.Enums.Guint_List.Glist;
+     (Context : Drag_Context) return Gtk.Enums.Guint_List.Glist;
    --  List of all the targets common to the drag source and the drop site.
    --  The Guint in the list are the ones given in the Info field in the
    --  Target_Entry structure below.
@@ -220,10 +218,10 @@ package Gtk.Dnd is
    Dest_Default_Drop      : constant Dest_Defaults;
    --  If set for a widget, when a drop occurs, GtkAda+ will check if the drag
    --  matches this widget's list of possible targets and actions. If so,
-   --  GtkAda will call Drag_Get_Data on behalf of the widget. Whether or not
+   --  GtkAda will call Get_Data on behalf of the widget. Whether or not
    --  the drop is succesful, GtkAda will call Drag_Finish. If the
    --  action was a move, then if the drag was succesful, then True will be
-   --  passed for the delete parameter to Drag_Finish.
+   --  passed for the delete parameter to Finish.
 
    Dest_Default_All       : constant Dest_Defaults;
    --  If set, specifies that all default actions should be taken.
@@ -232,20 +230,21 @@ package Gtk.Dnd is
    -- To be moved to Gdk.Dnd --
    ----------------------------
 
-   procedure Drag_Status (Context : in Drag_Context;
-                          Action  : in Drag_Action;
-                          Time    : in Guint32 := 0);
+   procedure Drag_Status
+     (Context : Drag_Context;
+      Action  : Drag_Action;
+      Time    : Guint32 := 0);
    --  Set the action for the context and warns the drag source about the
    --  change.
 
---     procedure Drop_Reply (Context : in Drag_Context;
---                           Ok      : in Boolean;
---                           Time    : in Guint32);
---     procedure Drop_Finish (Contex  : in Drag_Context;
---                            Success : in Boolean;
---                            Time    : in Guint32);
-   function Drag_Get_Selection (Context : in Drag_Context)
-                               return Gdk.Types.Gdk_Atom;
+--     procedure Drop_Reply (Context : Drag_Context;
+--                           Ok      : Boolean;
+--                           Time    : Guint32);
+--     procedure Drop_Finish (Contex  : Drag_Context;
+--                            Success : Boolean;
+--                            Time    : Guint32);
+   function Drag_Get_Selection
+     (Context : Drag_Context) return Gdk.Types.Gdk_Atom;
 
 --     function Get_Protocol (Xid  : Guint32;
 --                        Protocol : access Drag_Protocol)
@@ -260,9 +259,9 @@ package Gtk.Dnd is
 
    procedure Dest_Set
      (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags   : in Dest_Defaults := Dest_No_Default;
-      Targets : in Target_Entry_Array := Any_Target_Entry;
-      Actions : in Drag_Action := Action_Any);
+      Flags   : Dest_Defaults := Dest_No_Default;
+      Targets : Target_Entry_Array := Any_Target_Entry;
+      Actions : Drag_Action := Action_Any);
    --  Set a widget as a potential drop destination.
    --
    --  Flags specifies what action GtkAda should take on behalf of a widget for
@@ -282,9 +281,9 @@ package Gtk.Dnd is
 
    procedure Dest_Set_Proxy
      (Widget          : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Proxy_Window    : in Gdk.Window.Gdk_Window;
-      Protocol        : in Drag_Protocol;
-      Use_Coordinates : in Boolean);
+      Proxy_Window    : Gdk.Window.Gdk_Window;
+      Protocol        : Drag_Protocol;
+      Use_Coordinates : Boolean);
    --  Set this widget as a proxy for drops to another window.
    --  All drag events on Widget will be forwarded to Proxy_Window.
    --  Protocol is the drag protocol that Proxy_Window accepts. You can use
@@ -303,9 +302,9 @@ package Gtk.Dnd is
 
    procedure Source_Set
      (Widget            : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Start_Button_Mask : in Gdk.Types.Gdk_Modifier_Type;
-      Targets           : in Target_Entry_Array;
-      Actions           : in Drag_Action);
+      Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
+      Targets           : Target_Entry_Array;
+      Actions           : Drag_Action);
    --  Set up a widget so that GtkAda will start a drag operation when the
    --  user clicks and drags on the widget. The widget must have a window.
    --
@@ -329,20 +328,22 @@ package Gtk.Dnd is
    -- The drag-and-drop operation --
    ---------------------------------
 
-   procedure Finish (Context : in Drag_Context;
-                     Success : in Boolean;
-                     Del     : in Boolean;
-                     Time    : in Guint32 := 0);
+   procedure Finish
+     (Context : Drag_Context;
+      Success : Boolean;
+      Del     : Boolean;
+      Time    : Guint32 := 0);
    --  Inform the drag source that the drop is finished, and that the data of
    --  the drag will no longer be required.
    --  Success should indicate whether the drop was successful.
    --  Del should be set to True if the source should delete the original
    --  data (this should be True for a move).
 
-   procedure Get_Data (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-                       Context : in Drag_Context;
-                       Target  : in Gdk.Types.Gdk_Atom;
-                       Time    : in Guint32 := 0);
+   procedure Get_Data
+     (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Context : Drag_Context;
+      Target  : Gdk.Types.Gdk_Atom;
+      Time    : Guint32 := 0);
    --  Get the data associated with a drag. When the data is received or the
    --  retrieval fails, GtkAda will emit a "drag_data_received"
    --  signal. Failure of the retrieval is indicated by the length field of
@@ -354,8 +355,8 @@ package Gtk.Dnd is
    --  Time is a timestamp to retrive the data, and will be given to
    --  "drag_data_motion" or "drag_data_drop" signals.
 
-   function Get_Source_Widget (Context : in Drag_Context)
-                              return Gtk.Widget.Gtk_Widget;
+   function Get_Source_Widget
+     (Context : Drag_Context) return Gtk.Widget.Gtk_Widget;
    --  Determine the source widget for a drag.
    --  If the drag is occuring within a single application, this function
    --  returns the source widget. Otherwise, it returns null.
@@ -366,12 +367,12 @@ package Gtk.Dnd is
    procedure Unhighlight (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Remove a highlight set by Highlight.
 
-   function Drag_Begin (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-                        Targets : in Target_List;
-                        Actions : in Drag_Action;
-                        Button  : in Gint;
-                        Event   : in Gdk.Event.Gdk_Event)
-                       return Drag_Context;
+   function Drag_Begin
+     (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Targets : Target_List;
+      Actions : Drag_Action;
+      Button  : Gint;
+      Event   : Gdk.Event.Gdk_Event) return Drag_Context;
    --  Initiate a drag on the source side. The function only needs to be used
    --  when the application is starting drags itself, and is not needed when
    --  Source_Set is used.
@@ -386,10 +387,10 @@ package Gtk.Dnd is
    -----------
 
    procedure Set_Icon_Widget
-     (Context : in Drag_Context;
+     (Context : Drag_Context;
       Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Hot_X   : in Gint;
-      Hot_Y   : in Gint);
+      Hot_X   : Gint;
+      Hot_Y   : Gint);
    --  Change the icon for a drag.
    --  GtkAda will not destroy the icon, so if you don't want it to persist,
    --  you should connect to the "drag_end" signal and destroy it yourself.
@@ -398,34 +399,36 @@ package Gtk.Dnd is
    --  coordinates of the hot point (that will be just under the mouse) within
    --  Widget.
 
-   procedure Set_Icon_Pixmap (Context  : in Drag_Context;
-                              Colormap : in Gdk.Color.Gdk_Colormap;
-                              Pixmap   : in Gdk.Pixmap.Gdk_Pixmap;
-                              Mask     : in Gdk.Bitmap.Gdk_Bitmap;
-                              Hot_X    : in Gint;
-                              Hot_Y    : in Gint);
+   procedure Set_Icon_Pixmap
+     (Context  : Drag_Context;
+      Colormap : Gdk.Color.Gdk_Colormap;
+      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
+      Mask     : Gdk.Bitmap.Gdk_Bitmap;
+      Hot_X    : Gint;
+      Hot_Y    : Gint);
    --  Sets a given pixmap as the icon for a given drag. GtkAda retains a
    --  reference count for the arguments, and will release them when they are
    --  no longer needed.
    --  (Hot_X, Hot_Y) is the coordinates of the hotspot within Pixmap.
 
-   procedure Set_Icon_Default (Context : in Drag_Context);
+   procedure Set_Icon_Default (Context : Drag_Context);
    --  Set the icon for a particular drag to the default icon.
    --  This must be called with a context for the source side of a drag.
 
-   procedure Set_Default_Icon (Colormap : in Gdk.Color.Gdk_Colormap;
-                               Pixmap   : in Gdk.Pixmap.Gdk_Pixmap;
-                               Mask     : in Gdk.Bitmap.Gdk_Bitmap;
-                               Hot_X    : in Gint;
-                               Hot_Y    : in Gint);
+   procedure Set_Default_Icon
+     (Colormap : Gdk.Color.Gdk_Colormap;
+      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
+      Mask     : Gdk.Bitmap.Gdk_Bitmap;
+      Hot_X    : Gint;
+      Hot_Y    : Gint);
    --  Change the default drag icon. GtkAda retains a reference count for the
    --  arguments, and will release them when they are no longer needed.
 
    procedure Source_Set_Icon
      (Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Colormap : in Gdk.Color.Gdk_Colormap;
-      Pixmap   : in Gdk.Pixmap.Gdk_Pixmap;
-      Mask     : in Gdk.Bitmap.Gdk_Bitmap);
+      Colormap : Gdk.Color.Gdk_Colormap;
+      Pixmap   : Gdk.Pixmap.Gdk_Pixmap;
+      Mask     : Gdk.Bitmap.Gdk_Bitmap);
    --  Set the icon that will be used for drags from a particular widget.
    --  GtkAda retains a reference count for the arguments, and will release
    --  them when they are no longer needed.
@@ -554,9 +557,9 @@ package Gtk.Dnd is
 
 private
    Dest_No_Default        : constant Dest_Defaults := 0;
-   Dest_Default_Motion    : constant Dest_Defaults := 1;
-   Dest_Default_Highlight : constant Dest_Defaults := 2;
-   Dest_Default_Drop      : constant Dest_Defaults := 4;
+   Dest_Default_Motion    : constant Dest_Defaults := 2 ** 0;
+   Dest_Default_Highlight : constant Dest_Defaults := 2 ** 1;
+   Dest_Default_Drop      : constant Dest_Defaults := 2 ** 2;
    Dest_Default_All       : constant Dest_Defaults := 7;
 
    Action_Default : constant Drag_Action := 1;
@@ -576,3 +579,23 @@ private
    pragma Import (C, Set_Icon_Default, "gtk_drag_set_icon_default");
    pragma Import (C, Set_Default_Icon, "gtk_drag_set_default_icon");
 end Gtk.Dnd;
+
+--  missing:
+--  GdkAtom        Dest_Find_Target
+--    (GtkWidget      *widget,
+--     GdkDragContext *context,
+--     GtkTargetList  *target_list);
+
+--  GtkTargetList* Dest_Get_Target_List
+--    (GtkWidget      *widget);
+
+--  procedure Dest_Set_Target_List
+--    (GtkWidget      *widget,
+--     GtkTargetList  *target_list);
+
+--  gboolean Check_Threshold
+--    (GtkWidget *widget,
+--     gint       start_x,
+--     gint       start_y,
+--     gint       current_x,
+--     gint       current_y);

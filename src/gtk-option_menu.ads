@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,12 +28,12 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  A GtkOptionMenu is a widget that allows the user to choose from a list of
---  valid choices. The GtkOptionMenu displays the selected choice. When
---  activated, the GtkOptionMenu displays a popup GtkMenu which allows the
+--  A Gtk_Option_Menu is a widget that allows the user to choose from a list of
+--  valid choices. The Gtk_Option_Menu displays the selected choice. When
+--  activated, the Gtk_Option_Menu displays a popup Gtk_Menu which allows the
 --  user to make a new choice.
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Button;
 with Gtk.Menu;
@@ -51,25 +51,31 @@ package Gtk.Option_Menu is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Option_Menu.
 
-   function Get_Menu (Option_Menu : access Gtk_Option_Menu_Record)
-     return Gtk.Menu.Gtk_Menu;
+   function Get_Menu
+     (Option_Menu : access Gtk_Option_Menu_Record) return Gtk.Menu.Gtk_Menu;
    --  Return the Gtk_Menu associated with the Gtk_Option_Menu.
 
-   procedure Set_Menu (Option_Menu : access Gtk_Option_Menu_Record;
-                       Menu        : access Widget.Gtk_Widget_Record'Class);
+   procedure Set_Menu
+     (Option_Menu : access Gtk_Option_Menu_Record;
+      Menu        : access Widget.Gtk_Widget_Record'Class);
    --  Provide the Gtk_Menu that is popped up to allow the user to choose a new
    --  value. You should provide a simple menu avoiding the use of tearoff menu
    --  items, submenus, and accelerators.
 
-   procedure Remove_Menu (Option_Menu : access Gtk_Option_Menu_Record;
-                          Menu        : access Widget.Gtk_Widget_Record'Class);
+   procedure Remove_Menu
+     (Option_Menu : access Gtk_Option_Menu_Record;
+      Menu        : access Widget.Gtk_Widget_Record'Class);
    --  Remove the menu from the option menu.
 
-   procedure Set_History (Option_Menu : access Gtk_Option_Menu_Record;
-                          Index       : in     Gint);
+   function Get_History
+     (Option_Menu : access Gtk_Option_Menu_Record) return Gint;
+   --  Return the index corresponding to the menu item selected.
+
+   procedure Set_History
+     (Option_Menu : access Gtk_Option_Menu_Record; Index : Gint);
    --  Select the menu item specified by index making it the newly selected
    --  value for the option menu.
 

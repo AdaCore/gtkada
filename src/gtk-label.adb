@@ -47,36 +47,42 @@ package body Gtk.Label is
    -- Get --
    ---------
 
-   function Get (Label : access Gtk_Label_Record) return String is
-      procedure Internal
-        (Label : System.Address; Str : out C.Strings.chars_ptr);
-      pragma Import (C, Internal, "gtk_label_get");
-      Temp : chars_ptr;
+   function Get_Text (Label : access Gtk_Label_Record) return String is
+      function Internal (Label : System.Address) return C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_label_get_text");
 
    begin
-      Internal (Get_Object (Label), Temp);
-      return Value (Temp);
-   end Get;
+      return Value (Internal (Get_Object (Label)));
+   end Get_Text;
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Label : out Gtk_Label; Str : in String := "") is
+   procedure Gtk_New (Label : out Gtk_Label; Str : String := "") is
    begin
       Label := new Gtk_Label_Record;
       Initialize (Label, Str);
    end Gtk_New;
+
+   ---------------------------
+   -- Gtk_New_With_Mnemonic --
+   ---------------------------
+
+   procedure Gtk_New_With_Mnemonic (Label : out Gtk_Label; Str : String) is
+   begin
+      Label := new Gtk_Label_Record;
+      Initialize_With_Mnemonic (Label, Str);
+   end Gtk_New_With_Mnemonic;
 
    ----------------
    -- Initialize --
    ----------------
 
    procedure Initialize
-     (Label : access Gtk_Label_Record'Class;
-      Str   : in     String)
+     (Label : access Gtk_Label_Record'Class; Str : String)
    is
-      function Internal (Str : in String) return System.Address;
+      function Internal (Str : String) return System.Address;
       pragma Import (C, Internal, "gtk_label_new");
 
    begin
@@ -84,16 +90,31 @@ package body Gtk.Label is
       Initialize_User_Data (Label);
    end Initialize;
 
+   ------------------------------
+   -- Initialize_With_Mnemonic --
+   ------------------------------
+
+   procedure Initialize_With_Mnemonic
+     (Label : access Gtk_Label_Record'Class; Str : String)
+   is
+      function Internal (Str : String) return System.Address;
+      pragma Import (C, Internal, "gtk_label_new_with_mnemonic");
+
+   begin
+      Set_Object (Label, Internal (Str & ASCII.NUL));
+      Initialize_User_Data (Label);
+   end Initialize_With_Mnemonic;
+
    -----------------
    -- Set_Justify --
    -----------------
 
    procedure Set_Justify
      (Label : access Gtk_Label_Record;
-      Jtype : in Enums.Gtk_Justification)
+      Jtype : Enums.Gtk_Justification)
    is
       procedure Internal
-        (Label : in System.Address; Jtype : in Enums.Gtk_Justification);
+        (Label : System.Address; Jtype : Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_label_set_justify");
 
    begin
@@ -104,10 +125,7 @@ package body Gtk.Label is
    -- Set_Text --
    --------------
 
-   procedure Set_Text
-     (Label : access Gtk_Label_Record;
-      Str   : in String)
-   is
+   procedure Set_Text (Label : access Gtk_Label_Record; Str : String) is
       procedure Internal (Label : System.Address; Str : String);
       pragma Import (C, Internal, "gtk_label_set_text");
 
@@ -119,10 +137,7 @@ package body Gtk.Label is
    -- Set_Pattern --
    -----------------
 
-   procedure Set_Pattern
-     (Label   : access Gtk_Label_Record;
-      Pattern : in String)
-   is
+   procedure Set_Pattern (Label : access Gtk_Label_Record; Pattern : String) is
       procedure Internal (Label : System.Address; Pattern : String);
       pragma Import (C, Internal, "gtk_label_set_pattern");
 
@@ -134,32 +149,13 @@ package body Gtk.Label is
    -- Set_Line_Wrap --
    -------------------
 
-   procedure Set_Line_Wrap
-     (Label : access Gtk_Label_Record;
-      Wrap  : in Boolean)
-   is
+   procedure Set_Line_Wrap (Label : access Gtk_Label_Record; Wrap : Boolean) is
       procedure Internal (Label : System.Address; Wrap : Gint);
       pragma Import (C, Internal, "gtk_label_set_line_wrap");
 
    begin
       Internal (Get_Object (Label), Boolean'Pos (Wrap));
    end Set_Line_Wrap;
-
-   -----------------
-   -- Parse_Uline --
-   -----------------
-
-   function Parse_Uline
-     (Label : access Gtk_Label_Record;
-      Text  : String) return Gdk.Types.Gdk_Key_Type
-   is
-      function Internal
-        (Label : System.Address; Text : String) return Gdk.Types.Gdk_Key_Type;
-      pragma Import (C, Internal, "gtk_label_parse_uline");
-
-   begin
-      return Internal (Get_Object (Label), Text & ASCII.NUL);
-   end Parse_Uline;
 
    ---------------------
    -- Type_Conversion --

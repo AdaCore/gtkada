@@ -92,7 +92,7 @@
 --        the memory used by the object and its user_data is freed.
 --
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Glib.GObjects;
 with Gtkada.Types;
@@ -179,36 +179,33 @@ package Gtk.Object is
    function Flags (Object : access Gtk_Object_Record) return Guint32;
    --  Return the flags that are set for the object, as a binary mask.
 
-   procedure Set_Flags (Object : access Gtk_Object_Record;
-                        Flags  : in     Guint32);
+   procedure Set_Flags (Object : access Gtk_Object_Record; Flags : Guint32);
    --  Set some specific flags for the object.
    --  Flags is a mask that will be added to the current flags of the object.
 
-   procedure Unset_Flags (Object : access Gtk_Object_Record;
-                          Flags  : in     Guint32);
+   procedure Unset_Flags (Object : access Gtk_Object_Record; Flags : Guint32);
    --  Unset some specific flags for the object.
    --  Flags is a mask that will be deleted from the current flags of the
    --  object.
 
-   function Flag_Is_Set (Object : access Gtk_Object_Record;
-                         Flag   : in     Guint32)
-                        return Boolean;
+   function Flag_Is_Set
+     (Object : access Gtk_Object_Record; Flag : Guint32) return Boolean;
    --  Return True if the specific flag Flag is set for the object.
 
-   function Destroyed_Is_Set (Object : access Gtk_Object_Record'Class)
-                             return Boolean;
+   function Destroyed_Is_Set
+     (Object : access Gtk_Object_Record'Class) return Boolean;
    --  Test if the Destroyed flag is set for the object.
 
-   function Floating_Is_Set (Object : access Gtk_Object_Record'Class)
-                            return Boolean;
+   function Floating_Is_Set
+     (Object : access Gtk_Object_Record'Class) return Boolean;
    --  Test if the Floating flag is set for the object.
 
-   function Connected_Is_Set (Object : access Gtk_Object_Record'Class)
-                             return Boolean;
+   function Connected_Is_Set
+     (Object : access Gtk_Object_Record'Class) return Boolean;
    --  Test if the Connected flag is set for the object.
 
-   function Constructed_Is_Set (Object : access Gtk_Object_Record'Class)
-                               return Boolean;
+   function Constructed_Is_Set
+     (Object : access Gtk_Object_Record'Class) return Boolean;
    --  Test if the Constructed flag is set for the object
 
    --------------------------
@@ -220,8 +217,8 @@ package Gtk.Object is
    --  See the GtkAda user's guide for more information on how to create your
    --  own widget types in Ada.
 
-   type Signal_Parameter_Types is array (Natural range <>, Natural range <>)
-     of Gtk_Type;
+   type Signal_Parameter_Types is
+     array (Natural range <>, Natural range <>) of Gtk_Type;
    --  The description of the parameters for each event.
    --  Each event defined with Initialize_Class_Record below should have an
    --  entry in this table. If Gtk_Type_None is found in the table, it is
@@ -283,36 +280,39 @@ package Gtk.Object is
    generic
       type Data_Type (<>) is private;
    package User_Data is
-      function Get (Object : access Gtk_Object_Record'Class;
-                    Id     : in String := "user_data") return Data_Type;
+      function Get
+        (Object : access Gtk_Object_Record'Class;
+         Id     : String := "user_data") return Data_Type;
       --  Get the information associated with the key ID.
       --  Raise Gtkada.Types.Data_Error if there is none.
 
-      procedure Set (Object : access Gtk_Object_Record'Class;
-                     Data   : in Data_Type;
-                     Id     : in String := "user_data");
+      procedure Set
+        (Object : access Gtk_Object_Record'Class;
+         Data   : Data_Type;
+         Id     : String := "user_data");
       --  Associate some new user data with the object.
       --  The strings starting with "gtkada_" are reserved for GtkAda's
       --  internal use, please avoid using them.
 
-      procedure Remove (Object : access Gtk_Object_Record'Class;
-                        Id     : in String := "user_data");
+      procedure Remove
+        (Object : access Gtk_Object_Record'Class; Id : String := "user_data");
       --  Remove some data from the object
 
-      function Get (Object : access Gtk_Object_Record'Class;
-                    Id     : in Glib.GQuark)
-                   return Data_Type;
+      function Get
+        (Object : access Gtk_Object_Record'Class;
+         Id     : Glib.GQuark) return Data_Type;
       --  Same function as Get above, but uses directly the Quark associated
       --  with the string, which speeds up the access time significantly.
 
-      procedure Set (Object : access Gtk_Object_Record'Class;
-                     Data   : in Data_Type;
-                     Id     : in Glib.GQuark);
+      procedure Set
+        (Object : access Gtk_Object_Record'Class;
+         Data   : Data_Type;
+         Id     : Glib.GQuark);
       --  Same function as Set above, but uses directly the Quark associated
       --  with the string, which speeds up the access time significantly.
 
-      procedure Remove (Object : access Gtk_Object_Record'Class;
-                        Id     : in Glib.GQuark);
+      procedure Remove
+        (Object : access Gtk_Object_Record'Class; Id : Glib.GQuark);
       --  Same function as Remove above, but uses directly the Quark associated
       --  with the string, which speeds up the access time significantly.
 
@@ -347,20 +347,3 @@ private
    pragma Inline (Constructed_Is_Set);
 
 end Gtk.Object;
-
---  Functions that have no Ada equivalent:
---  - gtk_object_class_user_signal_new
---  - gtk_object_class_user_signal_newv
---  - gtk_object_new
---  - gtk_object_newv
---  - gtk_object_default_construct
---  - gtk_object_constructed
---  - gtk_object_weakref
---  - gtk_object_weakunref
---  - gtk_object_getv
---  - gtk_object_get
---  - gtk_object_set
---  - gtk_object_setv
---  - gtk_object_query_args
---  - gtk_object_class_add_signals => in Initialize_Class_Record
---  - gtk_object_add_arg_type

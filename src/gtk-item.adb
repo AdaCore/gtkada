@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                  Copyright (C) 2001 ACT-Europe                    --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,8 +47,9 @@ package body Gtk.Item is
    -----------------
 
    procedure Item_Select (Item : access Gtk_Item_Record) is
-      procedure Internal (Item : in System.Address);
+      procedure Internal (Item : System.Address);
       pragma Import (C, Internal, "gtk_item_select");
+
    begin
       Internal (Get_Object (Item));
    end Item_Select;
@@ -58,8 +59,9 @@ package body Gtk.Item is
    -------------------
 
    procedure Item_Deselect (Item : access Gtk_Item_Record) is
-      procedure Internal (Item : in System.Address);
+      procedure Internal (Item : System.Address);
       pragma Import (C, Internal, "gtk_item_deselect");
+
    begin
       Internal (Get_Object (Item));
    end Item_Deselect;
@@ -69,8 +71,9 @@ package body Gtk.Item is
    ------------
 
    procedure Toggle (Item : access Gtk_Item_Record) is
-      procedure Internal (Item : in System.Address);
+      procedure Internal (Item : System.Address);
       pragma Import (C, Internal, "gtk_item_toggle");
+
    begin
       Internal (Get_Object (Item));
    end Toggle;
