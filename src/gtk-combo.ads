@@ -41,6 +41,11 @@ package Gtk.Combo is
    type Gtk_Combo is access all Gtk_Combo_Record'Class;
 
    procedure Disable_Activate (Combo_Box : access Gtk_Combo_Record);
+   --  Disable the standard handler for the <return> key in the entry field.
+   --  The default behavior is to popdown the combo box list, so that the user
+   --  can choose from it. However, if you want to add your own callback
+   --  for the return key, you need to call this subprogram, and connect
+   --  a handler to the "activate" signal for the entry.
 
    function Get_Entry (Combo_Box : access Gtk_Combo_Record)
      return Gtk.GEntry.Gtk_Entry;
@@ -52,7 +57,10 @@ package Gtk.Combo is
    --  Return the internal value associated with a Gtk_Sheet.
 
    function Get_List (Combo_Box : access Gtk_Combo_Record)
-     return Gtk.List.Gtk_List;
+                     return Gtk.List.Gtk_List;
+   --  Add (Gtk.Container.Add) Gtk_List_Items to this list to insert new
+   --  entries in the popdown menu.
+
 
    procedure Gtk_New (Combo_Box : out Gtk_Combo);
    procedure Initialize (Combo_Box : access Gtk_Combo_Record'Class);
