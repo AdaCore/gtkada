@@ -30,6 +30,7 @@ End
 
 New features in 1.2.5 include:
 
+- Gate has been updated to Glade 0.5.5
 - Tested on HP-UX 11.00
 - Tested on SCO UnixWare 7.1
 
