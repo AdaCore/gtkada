@@ -895,25 +895,20 @@ package body Gtk_Generates is
    -- Image_Generate --
    --------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Image_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_image_get_type");
+      Name : constant String := To_Ada (Get_Name (N));
+      Top  : constant String := To_Ada (Get_Name (Find_Top_Widget (N)));
 
    begin
       Widget := Widget_New (Build_Type);
       if not N.Specific_Data.Created then
-         Add_Package ("Gdk.Image");
-         Add_Package ("Gdk.Bitmap");
-         Add_Package ("Gdk.Visual");
-
-         Put_Line (File, "   Get_System (The_Visual);");
-         Put_Line (File, "   Gdk_New (The_Image, " &
-           To_Ada (Get_Field (N, "image_type").all) & ", The_Visual, " &
-           Get_Field (N, "image_width").all & ", " &
-           Get_Field (N, "image_height").all & ");");
-         Gen_New (N, "Image", "The_Image", "Null_Bitmap", File => File);
+         Add_Package ("Image");
+         Put_Line
+           (File,
+            "   Gtk_New (" & Top & "." & Name & " , """
+            & Get_Property (N, "pixbuf", "") & """);");
       end if;
 
       Widget_Destroy (Widget);
@@ -929,8 +924,6 @@ package body Gtk_Generates is
       Use_Stock : constant String := Get_Property (N, "use_stock", "True");
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_image_menu_item_get_type");
-
-      --  ??? What about the "Visible" property ?
 
    begin
       Widget := Widget_New (Build_Type);
@@ -1994,49 +1987,24 @@ package body Gtk_Generates is
       end loop;
    end Toolbar_Generate;
 
-   -------------------
-   -- Tree_Generate --
-   -------------------
+   ------------------------
+   -- Tree_View_Generate --
+   ------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
-   procedure Tree_Generate (N : Node_Ptr; File : File_Type) is
+   procedure Tree_View_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_tree_get_type");
+      pragma Import (C, Build_Type, "gtk_tree_view_get_type");
 
    begin
       Widget := Widget_New (Build_Type);
-      Gen_New (N, "Tree", File => File);
+      Gen_New (N, "Tree_View", File => File);
       Widget_Destroy (Widget);
-      Container_Generate (N, File);
-      Gen_Set (N, "selection_mode", File);
-      Gen_Set (N, "view_lines", File);
-      Gen_Set (N, "view_mode", File);
-   end Tree_Generate;
 
-   ------------------------
-   -- Tree_Item_Generate --
-   ------------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
-   procedure Tree_Item_Generate (N : Node_Ptr; File : File_Type) is
-      function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_tree_item_get_type");
-
-   begin
-      Widget := Widget_New (Build_Type);
-      if Gettext_Support (N) then
-         Gen_New (N, "Tree_Item", Get_Field (N, "label").all,
-           File => File, Prefix => "-""", Postfix => """");
-      else
-         Gen_New (N, "Tree_Item", Get_Field (N, "label").all,
-           File => File, Prefix => """", Postfix => """");
-      end if;
-
-      Widget_Destroy (Widget);
-      Item_Generate (N, File);
-   end Tree_Item_Generate;
+      Gen_Set (N, "headers_visible", File);
+      Gen_Set (N, "rules_hint", File);
+      Gen_Set (N, "reorderable", File);
+      Gen_Set (N, "enable_search", File);
+   end Tree_View_Generate;
 
    --------------------------
    -- Vbutton_Box_Generate --
