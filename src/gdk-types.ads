@@ -114,26 +114,27 @@ package Gdk.Types is
                             Cursor_Is_Pixmap);
 
    type Gdk_Event_Mask is new Guint;
-   Exposure_Mask            : constant Gdk_Event_Mask := 2 ** 0;
-   Pointer_Motion_Mask      : constant Gdk_Event_Mask := 2 ** 1;
-   Pointer_Motion_Hint_Mask : constant Gdk_Event_Mask := 2 ** 2;
-   Button_Motion_Mask       : constant Gdk_Event_Mask := 2 ** 3;
-   Button_1_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 4;
-   Button_2_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 5;
-   Button_3_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 6;
-   Button_Press_Mask        : constant Gdk_Event_Mask := 2 ** 7;
-   Button_Release_Mask      : constant Gdk_Event_Mask := 2 ** 8;
-   Key_Press_Mask           : constant Gdk_Event_Mask := 2 ** 9;
-   Key_Release_Mask         : constant Gdk_Event_Mask := 2 ** 10;
-   Enter_Notify_Mask        : constant Gdk_Event_Mask := 2 ** 11;
-   Leave_Notify_Mask        : constant Gdk_Event_Mask := 2 ** 12;
-   Focus_Change_Mask        : constant Gdk_Event_Mask := 2 ** 13;
-   Structure_Mask           : constant Gdk_Event_Mask := 2 ** 14;
-   Property_Change_Mask     : constant Gdk_Event_Mask := 2 ** 15;
-   Visibility_Notify_Mask   : constant Gdk_Event_Mask := 2 ** 16;
-   Proximity_In_Mask        : constant Gdk_Event_Mask := 2 ** 17;
-   All_Events_Mask          : constant Gdk_Event_Mask := 2 ** 18;
+   Exposure_Mask            : constant Gdk_Event_Mask := 2 ** 1;
+   Pointer_Motion_Mask      : constant Gdk_Event_Mask := 2 ** 2;
+   Pointer_Motion_Hint_Mask : constant Gdk_Event_Mask := 2 ** 3;
+   Button_Motion_Mask       : constant Gdk_Event_Mask := 2 ** 4;
+   Button_1_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 5;
+   Button_2_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 6;
+   Button_3_Motion_Mask     : constant Gdk_Event_Mask := 2 ** 7;
+   Button_Press_Mask        : constant Gdk_Event_Mask := 2 ** 8;
+   Button_Release_Mask      : constant Gdk_Event_Mask := 2 ** 9;
+   Key_Press_Mask           : constant Gdk_Event_Mask := 2 ** 10;
+   Key_Release_Mask         : constant Gdk_Event_Mask := 2 ** 11;
+   Enter_Notify_Mask        : constant Gdk_Event_Mask := 2 ** 12;
+   Leave_Notify_Mask        : constant Gdk_Event_Mask := 2 ** 13;
+   Focus_Change_Mask        : constant Gdk_Event_Mask := 2 ** 14;
+   Structure_Mask           : constant Gdk_Event_Mask := 2 ** 15;
+   Property_Change_Mask     : constant Gdk_Event_Mask := 2 ** 16;
+   Visibility_Notify_Mask   : constant Gdk_Event_Mask := 2 ** 17;
+   Proximity_In_Mask        : constant Gdk_Event_Mask := 2 ** 18;
    Proximity_Out_Mask       : constant Gdk_Event_Mask := 2 ** 19;
+   All_Events_Mask          : constant Gdk_Event_Mask := 16#7FFFF#;
+
 
    type Gdk_Event_Type is (Nothing,
                            Delete,

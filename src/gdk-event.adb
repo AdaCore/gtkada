@@ -345,5 +345,51 @@ package body Gdk.Event is
       Internal (Get_Object (Event), Y);
    end Set_Y;
 
+   -------------
+   --  Get_X  --
+   -------------
+
+   function Get_X (Event : in Gdk_Event_Button) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_x");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_X;
+
+
+   -------------
+   --  Get_Y  --
+   -------------
+
+   function Get_Y (Event : in Gdk_Event_Button) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_button_get_y");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Y;
+
+   -------------
+   --  Get_X  --
+   -------------
+
+   function Get_X (Event : in Gdk_Event_Motion) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_x");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_X;
+
+
+   -------------
+   --  Get_Y  --
+   -------------
+
+   function Get_Y (Event : in Gdk_Event_Motion) return Gint16 is
+      function Internal (Event : in System.Address) return Gint16;
+      pragma Import (C, Internal, "ada_gdk_event_motion_get_y");
+   begin
+      return Internal (Get_Object (Event));
+   end Get_Y;
+
 
 end Gdk.Event;

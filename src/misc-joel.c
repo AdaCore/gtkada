@@ -662,6 +662,54 @@ ada_gdk_event_configure_set_height (GdkEventConfigure * event, gint16 height)
 
 /*
  *
+ * GdkEventButton
+ *
+ */
+
+gint16
+ada_gdk_event_button_get_x (GdkEventButton * event)
+{
+  return event->x;
+}
+
+void
+ada_gdk_event_button_set_x (GdkEventButton * event, gint16 x)
+{
+  event->x = x;
+}
+
+gint16
+ada_gdk_event_button_get_y (GdkEventButton * event)
+{
+  return event->y;
+}
+
+void
+ada_gdk_event_button_set_y (GdkEventButton * event, gint16 y)
+{
+  event->y = y;
+}
+
+/*
+ *
+ * GdkEventMotion
+ *
+ */
+
+gint16
+ada_gdk_event_motion_get_x (GdkEventMotion * event)
+{
+  return event->x;
+}
+
+gint16
+ada_gdk_event_motion_get_y (GdkEventMotion * event)
+{
+  return event->y;
+}
+
+/*
+ *
  * GtkAdjustment
  *
  */

@@ -141,12 +141,35 @@ package Gdk.Event is
                         Count : in     Gint);
 
 
+   ------------------------
+   --  Gdk_Event_Button  --
+   ------------------------
+
+   type Gdk_Event_Button is new Gdk_Event with private;
+
+   function Get_X (Event : in Gdk_Event_Button) return Gint16;
+
+   function Get_Y (Event : in Gdk_Event_Button) return Gint16;
+
+   ------------------------
+   --  Gdk_Event_Motion  --
+   ------------------------
+
+   type Gdk_Event_Motion is new Gdk_Event with private;
+
+   function Get_X (Event : in Gdk_Event_Motion) return Gint16;
+
+   function Get_Y (Event : in Gdk_Event_Motion) return Gint16;
+
+
 private
 
    type Gdk_Event is new Root_Type with null record;
    type Gdk_Event_Any is new Gdk_Event with null record;
    type Gdk_Event_Configure is new Gdk_Event with null record;
    type Gdk_Event_Expose is new Gdk_Event with null record;
+   type Gdk_Event_Button is new Gdk_Event with null record;
+   type Gdk_Event_Motion is new Gdk_Event with null record;
 
    pragma Import (C, Events_Pending, "gdk_events_pending");
 
