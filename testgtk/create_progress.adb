@@ -55,25 +55,19 @@ package body Create_Progress is
    Items1 : constant Chars_Ptr_Array :=
      "Left-Right" + "Right-Left" + "Bottom-Top" + "Top-Bottom";
 
-   Items2 : constant Chars_Ptr_Array := "Continuous" + "Discrete";
-
-   type Simple_Cb_Func is access
-     procedure (Wiget : access Gtk_Widget_Record'Class);
-
-   type ProgressData is
-      record
-         Pbar            : Gtk_Progress_Bar;
-         Block_Spin      : Gtk_Spin_Button;
-         X_Align_Spin    : Gtk_Spin_Button;
-         Y_Align_Spin    : Gtk_Spin_Button;
-         Step_Spin       : Gtk_Spin_Button;
-         Act_Blocks_Spin : Gtk_Spin_Button;
-         Label           : Gtk_Label;
-         Omenu1          : Gtk_Option_Menu;
-         Omenu1_Group    : Widget_Slist.GSlist;
-         Gentry          : Gtk_Entry;
-         Timer           : Timeout_Handler_Id;
-      end record;
+   type ProgressData is record
+      Pbar            : Gtk_Progress_Bar;
+      Block_Spin      : Gtk_Spin_Button;
+      X_Align_Spin    : Gtk_Spin_Button;
+      Y_Align_Spin    : Gtk_Spin_Button;
+      Step_Spin       : Gtk_Spin_Button;
+      Act_Blocks_Spin : Gtk_Spin_Button;
+      Label           : Gtk_Label;
+      Omenu1          : Gtk_Option_Menu;
+      Omenu1_Group    : Widget_Slist.GSlist;
+      Gentry          : Gtk_Entry;
+      Timer           : Timeout_Handler_Id;
+   end record;
 
    Pdata : ProgressData;
 
