@@ -54,13 +54,13 @@ package Gtk.Icon_Factory is
    --  icons, which will allow themes to override the icons for the
    --  application.
 
-   type Icon_Factory_Record is new Glib.Object.GObject_Record with private;
-   type Icon_Factory is access all Icon_Factory_Record'Class;
+   type Gtk_Icon_Factory_Record is new Glib.Object.GObject_Record with private;
+   type Gtk_Icon_Factory is access all Gtk_Icon_Factory_Record'Class;
 
-   procedure Gtk_New (Widget : out Icon_Factory);
+   procedure Gtk_New (Widget : out Gtk_Icon_Factory);
    --  Create a new Icon_Factory.
 
-   procedure Initialize (Widget : access Icon_Factory_Record'Class);
+   procedure Initialize (Widget : access Gtk_Icon_Factory_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -79,12 +79,12 @@ package Gtk.Icon_Factory is
    --  directly. The one case where you'd use an icon set is to create
    --  application-specific icon sets to place in an icon factory.
 
-   type Icon_Set is new Glib.C_Proxy;
+   type Gtk_Icon_Set is new Glib.C_Proxy;
 
-   function Gtk_New return Icon_Set;
-   --  Create an empty Icon_Set.
+   function Gtk_New return Gtk_Icon_Set;
+   --  Create an empty Gtk_Icon_Set.
 
-   function Gtk_New (Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf) return Icon_Set;
+   function Gtk_New (Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf) return Gtk_Icon_Set;
    --  Creates a new icon set with Pixbuf as the default/fallback source
    --  image. If you don't add any additional icon sources (see below) to the
    --  icon set, all variants of the icon will be created from Pixbuf,
@@ -121,15 +121,15 @@ package Gtk.Icon_Factory is
    --  icon source will be used as the base icon for any desired text
    --  direction, widget state, or icon size.
 
-   type Icon_Source is new Glib.C_Proxy;
+   type Gtk_Icon_Source is new Glib.C_Proxy;
 
-   function Gtk_New return Icon_Source;
+   function Gtk_New return Gtk_Icon_Source;
    --  Create a new icon source.
 
    procedure Add
-     (Factory  : access Icon_Factory_Record;
+     (Factory  : access Gtk_Icon_Factory_Record;
       Stock_Id : String;
-      Set      : Icon_Set);
+      Set      : Gtk_Icon_Set);
    --  Adds the given icon set to the icon factory, under the name Stock_Id.
    --  Stock_Id should be namespaced for your application, e.g.
    --  "myapp-whatever-icon".  Normally applications create an icon factory,
@@ -141,16 +141,16 @@ package Gtk.Icon_Factory is
    --  replaced with the new icon set.
 
    function Lookup
-     (Factory  : access Icon_Factory_Record;
+     (Factory  : access Gtk_Icon_Factory_Record;
       Stock_Id : String)
-      return Icon_Set;
+      return Gtk_Icon_Set;
    --  Looks up Stock_Id in the icon factory, returning an icon set if found,
    --  otherwise null. For display to the user, you should use
    --  Gtk.Style.Lookup_Icon_Set on the Gtk_Style for the widget that will
    --  display the icon, instead of using this function directly, so that
    --  themes are taken into account.
 
-   procedure Add_Default (Factory : access Icon_Factory_Record);
+   procedure Add_Default (Factory : access Gtk_Icon_Factory_Record);
    --  Adds an icon factory to the list of icon factories searched by
    --  Gtk.Style.Lookup_Icon_Set. This means that, for example,
    --  Gtk.Image.New_From_Stock will be able to find icons in Factory.
@@ -158,14 +158,14 @@ package Gtk.Icon_Factory is
    --  application that comes with icons. The default icon factories
    --  can be overridden by themes.
 
-   procedure Remove_Default (Factory : access Icon_Factory_Record);
+   procedure Remove_Default (Factory : access Gtk_Icon_Factory_Record);
    --  Removes an icon factory from the list of default icon
    --  factories. Not normally used; you might use it for a library that
    --  can be unloaded or shut down.
 
    function Lookup_Default
      (Stock_Id : String)
-      return Icon_Set;
+      return Gtk_Icon_Set;
    --  Looks for an icon in the list of default icon factories.  For
    --  display to the user, you should use Gtk.Style.Lookup_Icon_Set on
    --  the Gtk_Style for the widget that will display the icon, instead of
@@ -173,8 +173,8 @@ package Gtk.Icon_Factory is
    --  account.
 
    procedure Add_Source
-     (Set    : Icon_Set;
-      Source : Icon_Source);
+     (Set    : Gtk_Icon_Set;
+      Source : Gtk_Icon_Source);
    --  Icon sets have a list of icon sources, which they use as base
    --  icons for rendering icons in different states and sizes. Icons are
    --  scaled, made to look insensitive, etc. in Gtk.Icon.Set_Render_Icon,
@@ -191,17 +191,17 @@ package Gtk.Icon_Factory is
    --  icon set would contain all those variants of the icon, and you might
    --  add a separate source for each one.
 
-   procedure Free (Source : Icon_Source);
+   procedure Free (Source : Gtk_Icon_Source);
    --  Free memory allocated to Source.
 
    procedure Set_Filename
-     (Source   : Icon_Source;
+     (Source   : Gtk_Icon_Source;
       Filename : String);
    --  Sets the name of an image file to use as a base image when creating
    --  icon variants for an icon set. The filename must be absolute.
 
    procedure Set_Pixbuf
-     (Source : Icon_Source;
+     (Source : Gtk_Icon_Source;
       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
    --  Sets a pixbuf to use as a base image when creating icon variants
    --  for an icon set. If an icon source has both a filename and a pixbuf
@@ -216,7 +216,7 @@ package Gtk.Icon_Factory is
    --  </signals>
 
 private
-   type Icon_Factory_Record is
+   type Gtk_Icon_Factory_Record is
      new Glib.Object.GObject_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_icon_factory_get_type");

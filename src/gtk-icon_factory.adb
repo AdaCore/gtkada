@@ -38,9 +38,9 @@ package body Gtk.Icon_Factory is
    -- Gtk_New --
    -------------
 
-   function Gtk_New return Icon_Set
+   function Gtk_New return Gtk_Icon_Set
    is
-      function Internal return Icon_Set;
+      function Internal return Gtk_Icon_Set;
       pragma Import (C, Internal, "gtk_icon_set_new");
    begin
       return Internal;
@@ -50,9 +50,9 @@ package body Gtk.Icon_Factory is
    -- Gtk_New --
    -------------
 
-   function Gtk_New return Icon_Source
+   function Gtk_New return Gtk_Icon_Source
    is
-      function Internal return Icon_Source;
+      function Internal return Gtk_Icon_Source;
       pragma Import (C, Internal, "gtk_icon_source_new");
    begin
       return Internal;
@@ -62,7 +62,7 @@ package body Gtk.Icon_Factory is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Icon_Factory_Record'Class)
+   procedure Initialize (Widget : access Gtk_Icon_Factory_Record'Class)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_icon_factory_new");
@@ -75,14 +75,14 @@ package body Gtk.Icon_Factory is
    ---------
 
    procedure Add
-     (Factory  : access Icon_Factory_Record;
+     (Factory  : access Gtk_Icon_Factory_Record;
       Stock_Id : String;
-      Set      : Icon_Set)
+      Set      : Gtk_Icon_Set)
    is
       procedure Internal
         (Factory  : System.Address;
          Stock_Id : String;
-         Set      : Icon_Set);
+         Set      : Gtk_Icon_Set);
       pragma Import (C, Internal, "gtk_icon_factory_add");
    begin
       Internal
@@ -96,14 +96,14 @@ package body Gtk.Icon_Factory is
    ------------
 
    function Lookup
-     (Factory  : access Icon_Factory_Record;
+     (Factory  : access Gtk_Icon_Factory_Record;
       Stock_Id : String)
-      return Icon_Set
+      return Gtk_Icon_Set
    is
       function Internal
         (Factory  : System.Address;
          Stock_Id : String)
-         return Icon_Set;
+         return Gtk_Icon_Set;
       pragma Import (C, Internal, "gtk_icon_factory_lookup");
    begin
       return Internal (Get_Object (Factory), Stock_Id & ASCII.NUL);
@@ -113,7 +113,7 @@ package body Gtk.Icon_Factory is
    -- Add_Default --
    -----------------
 
-   procedure Add_Default (Factory : access Icon_Factory_Record)
+   procedure Add_Default (Factory : access Gtk_Icon_Factory_Record)
    is
       procedure Internal (Factory : System.Address);
       pragma Import (C, Internal, "gtk_icon_factory_add_default");
@@ -125,7 +125,7 @@ package body Gtk.Icon_Factory is
    -- Remove_Default --
    --------------------
 
-   procedure Remove_Default (Factory : access Icon_Factory_Record)
+   procedure Remove_Default (Factory : access Gtk_Icon_Factory_Record)
    is
       procedure Internal (Factory : System.Address);
       pragma Import (C, Internal, "gtk_icon_factory_remove_default");
@@ -137,10 +137,10 @@ package body Gtk.Icon_Factory is
    -- Lookup_Default --
    --------------------
 
-   function Lookup_Default (Stock_Id : String)
-                            return Icon_Set
+   function Lookup_Default
+     (Stock_Id : String) return Gtk_Icon_Set
    is
-      function Internal (Stock_Id : String) return Icon_Set;
+      function Internal (Stock_Id : String) return Gtk_Icon_Set;
       pragma Import (C, Internal, "gtk_icon_factory_lookup_default");
    begin
       return Internal (Stock_Id & ASCII.NUL);
@@ -150,10 +150,10 @@ package body Gtk.Icon_Factory is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Icon_Factory)
+   procedure Gtk_New (Widget : out Gtk_Icon_Factory)
    is
    begin
-      Widget := new Icon_Factory_Record;
+      Widget := new Gtk_Icon_Factory_Record;
       Gtk.Icon_Factory.Initialize (Widget);
    end Gtk_New;
 
@@ -161,9 +161,9 @@ package body Gtk.Icon_Factory is
    -- Gtk_New --
    -------------
 
-   function Gtk_New (Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf) return Icon_Set is
+   function Gtk_New (Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf) return Gtk_Icon_Set is
       function Internal
-        (Pixbuf : Gdk_Pixbuf) return Icon_Set;
+        (Pixbuf : Gdk_Pixbuf) return Gtk_Icon_Set;
       pragma Import (C, Internal, "gtk_icon_set_new_from_pixbuf");
    begin
       return Internal (Pixbuf);
@@ -174,12 +174,12 @@ package body Gtk.Icon_Factory is
    ----------------
 
    procedure Add_Source
-     (Set    : Icon_Set;
-      Source : Icon_Source)
+     (Set    : Gtk_Icon_Set;
+      Source : Gtk_Icon_Source)
    is
       procedure Internal
-        (Set    : Icon_Set;
-         Source : Icon_Source);
+        (Set    : Gtk_Icon_Set;
+         Source : Gtk_Icon_Source);
       pragma Import (C, Internal, "gtk_icon_set_add_source");
    begin
       Internal (Set, Source);
@@ -189,9 +189,9 @@ package body Gtk.Icon_Factory is
    -- Free --
    ----------
 
-   procedure Free (Source : Icon_Source)
+   procedure Free (Source : Gtk_Icon_Source)
    is
-      procedure Internal (Source : Icon_Source);
+      procedure Internal (Source : Gtk_Icon_Source);
       pragma Import (C, Internal, "gtk_icon_source_free");
    begin
       Internal (Source);
@@ -202,11 +202,11 @@ package body Gtk.Icon_Factory is
    ------------------
 
    procedure Set_Filename
-     (Source   : Icon_Source;
+     (Source   : Gtk_Icon_Source;
       Filename : String)
    is
       procedure Internal
-        (Source   : Icon_Source;
+        (Source   : Gtk_Icon_Source;
          Filename : String);
       pragma Import (C, Internal, "gtk_icon_source_set_filename");
    begin
@@ -218,11 +218,11 @@ package body Gtk.Icon_Factory is
    ----------------
 
    procedure Set_Pixbuf
-     (Source : Icon_Source;
+     (Source : Gtk_Icon_Source;
       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf)
    is
       procedure Internal
-        (Source : Icon_Source;
+        (Source : Gtk_Icon_Source;
          Pixbuf : Gdk_Pixbuf);
       pragma Import (C, Internal, "gtk_icon_source_set_pixbuf");
    begin
