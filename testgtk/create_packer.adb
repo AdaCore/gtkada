@@ -312,6 +312,7 @@ package body Create_Packer is
    N : Natural := 0;
 
    procedure Add_Widget (Button : access Gtk_Button_Record'Class) is
+      pragma Warnings (Off, Button);
       Widget : Gtk_Toggle_Button;
    begin
       Gtk_New (Widget, Natural'Image (N));
