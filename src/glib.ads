@@ -27,6 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This package provides definitions for the basic types used in Glib,
+--  Gdk and Gtk.
+--
+--  </description>
+
 with Ada.Unchecked_Deallocation;
 with Interfaces.C;
 
@@ -89,11 +96,22 @@ package Glib is
    ---------------------------
 
    function To_Boolean_Array (A : in Gboolean_Array) return Boolean_Array;
+   --  Convert a C-style boolean array into an Ada-style array.
+
    function To_Boolean (Value : in Gboolean) return Boolean;
+   --  Convert a C boolean into an Ada boolean.
+
    function To_Boolean (Value : in Gint) return Boolean;
+   --  Convert a C int into an Ada boolean.
+
    function To_Boolean (Value : in Guint) return Boolean;
+   --  Convert a C uint into an Ada boolean.
+
    function To_Gboolean (Bool : in Boolean) return Gboolean;
+   --  Convert an Ada boolean into a C boolean.
+
    function To_Gint (Bool : in Boolean) return Gint;
+   --  Convert an Ada boolean into a C int.
 
    -------------------------
    --  Some Access types  --
@@ -101,8 +119,10 @@ package Glib is
 
    type Guchar_Array_Access is access Guchar_Array;
 
+   --  <doc_ignore>
    procedure Free is new Ada.Unchecked_Deallocation
      (Object => Guchar_Array, Name => Guchar_Array_Access);
+   --  </doc_ignore>
 
    type String_Ptr is access all String;
 
@@ -121,12 +141,12 @@ package Glib is
    Unknown_Quark : constant GQuark := 0;
 
    function Quark_From_String (Id : in String) return GQuark;
-   --  Returns, or create, the quark associated with the string. Not that
-   --  if the quark does not already exist, an entry is created for it is
-   --  created in the global htable for quarks.
+   --  Return, or create the quark associated with the string.
+   --  Note that if the quark does not already exist, an entry is created for
+   --  it in the global htable for quarks.
 
    function Quark_Try_String (Id : in String) return GQuark;
-   --  Returns the quark associated with the string, if it exists.
-   --  If it does not exist, returns Unknown_Quark.
+   --  Return the quark associated with the string, if it exists.
+   --  If it does not exist, return Unknown_Quark.
 
 end Glib;
