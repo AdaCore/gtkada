@@ -52,7 +52,7 @@ libgtkada.a::
 	fi \
 
 $(TEST_LINK).o::
-	perl ./create_test_link.pl > $(TEST_LINK).adb
+#	perl ./create_test_link.pl > $(TEST_LINK).adb
 	$(GNATMAKE) -c $(TEST_LINK) -shared -fPIC $(GNATFLAGS)
 
 main: main.adb test.adb test.ads libgtkada.so
