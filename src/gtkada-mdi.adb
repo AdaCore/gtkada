@@ -1400,7 +1400,8 @@ package body Gtkada.MDI is
          --  Initial could be null if we are destroying a floating
          --  child explicitly (by closing its X11 window)
          if C.Initial /= null then
-            Float_Child (C, False);
+            --  Do not unfloat the child, since the toplevel is no longer a
+            --  Gtk_Window, and we would get a CE in Float_Child.
             Dock_Child (C, False);
          end if;
 
