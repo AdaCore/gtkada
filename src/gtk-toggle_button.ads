@@ -40,9 +40,9 @@ package Gtk.Toggle_Button is
    procedure Set_Mode
       (Toggle_Button  : in Gtk_Toggle_Button;
        Draw_Indicator : in Boolean);
-   procedure Set_State
+   procedure Set_Active
       (Toggle_Button : in Gtk_Toggle_Button;
-       Active        : in Boolean);
+       Is_Active     : in Boolean);
    procedure Toggled (Toggle_Button : in Gtk_Toggle_Button);
 
 private

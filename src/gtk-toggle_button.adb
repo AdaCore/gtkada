@@ -71,6 +71,22 @@ package body Gtk.Toggle_Button is
       Set_Object (Widget, Internal (Label & Ascii.NUL));
    end Gtk_New;
 
+   ----------------
+   -- Set_Active --
+   ----------------
+
+   procedure Set_Active
+      (Toggle_Button : in Gtk_Toggle_Button;
+       Is_Active     : in Boolean)
+   is
+      procedure Internal
+         (Toggle_Button : in System.Address;
+          Is_Active     : in Gint);
+      pragma Import (C, Internal, "gtk_toggle_button_set_active");
+   begin
+      Internal (Get_Object (Toggle_Button), Boolean'Pos (Is_Active));
+   end Set_Active;
+
    --------------
    -- Set_Mode --
    --------------
@@ -87,23 +103,6 @@ package body Gtk.Toggle_Button is
       Internal (Get_Object (Toggle_Button),
                 Boolean'Pos (Draw_Indicator));
    end Set_Mode;
-
-   ---------------
-   -- Set_State --
-   ---------------
-
-   procedure Set_State
-      (Toggle_Button : in Gtk_Toggle_Button;
-       Active        : in Boolean)
-   is
-      procedure Internal
-         (Toggle_Button : in System.Address;
-          State         : in Gint);
-      pragma Import (C, Internal, "gtk_toggle_button_set_state");
-   begin
-      Internal (Get_Object (Toggle_Button),
-                Boolean'Pos (Active));
-   end Set_State;
 
    -------------
    -- Toggled --
