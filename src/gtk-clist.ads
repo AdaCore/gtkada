@@ -182,8 +182,8 @@ package Gtk.Clist is
    function Get_Clist_Window (Clist : access Gtk_Clist_Record)
                               return Gdk.Window.Gdk_Window;
    --  Returns the scrolling window used in the clist. This function is
-   --  kept for backward compatible reasons, and you probably won't have to use
-   --  it.
+   --  kept for backward compatibility reasons, and you probably won't have
+   --  to use it.
    --  </doc_ignore>
 
    --------------------
