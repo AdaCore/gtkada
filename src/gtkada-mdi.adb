@@ -997,13 +997,14 @@ package body Gtkada.MDI is
      (MDI                       : access MDI_Window_Record;
       Opaque_Resize             : Boolean             := False;
       Close_Floating_Is_Unfloat : Boolean             := True;
-      Title_Font         : Pango_Font_Description := null;
-      Background_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Title_Bar_Color    : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Focus_Title_Color  : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Draw_Title_Bars    : Boolean             := True;
-      Tabs_Position      : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Bottom;
-      Show_Tabs_Policy   : Show_Tabs_Policy_Enum := Automatic)
+      Title_Font                : Pango_Font_Description := null;
+      Background_Color          : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Title_Bar_Color           : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Focus_Title_Color         : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Draw_Title_Bars           : Boolean             := True;
+      Tabs_Position             : Gtk.Enums.Gtk_Position_Type :=
+        Gtk.Enums.Pos_Bottom;
+      Show_Tabs_Policy          : Show_Tabs_Policy_Enum := Automatic)
    is
       Desc        : Pango_Font_Description;
       W, H        : Gint;
@@ -3601,8 +3602,8 @@ package body Gtkada.MDI is
    -- Create_Menu --
    -----------------
 
-   function Create_Menu (MDI   : access MDI_Window_Record)
-      return Gtk.Menu.Gtk_Menu
+   function Create_Menu
+     (MDI : access MDI_Window_Record) return Gtk.Menu.Gtk_Menu
    is
       Item  : Gtk_Menu_Item;
       Child : MDI_Child;
@@ -3612,14 +3613,14 @@ package body Gtkada.MDI is
       if MDI.Menu = null then
          Gtk_New (MDI.Menu);
 
-         Gtk_New (Item, "Split Horizontally");
+         Gtk_New (Item, "Split Side-by-Side");
          Append (MDI.Menu, Item);
          Widget_Callback.Object_Connect
            (Item, "activate",
             Widget_Callback.To_Marshaller (Split_H_Cb'Access), MDI);
          Set_Accel_Path (Item, "<gtkada>/window/split_horizontal", MDI.Group);
 
-         Gtk_New (Item, "Split Vertically");
+         Gtk_New (Item, "Split Up-Down");
          Append (MDI.Menu, Item);
          Widget_Callback.Object_Connect
            (Item, "activate",
