@@ -2270,6 +2270,12 @@ ada_combo_get_entry (GtkCombo* widget)
   return widget->entry;
 }
 
+GtkWidget*
+ada_combo_get_popwin (GtkCombo* widget)
+{
+  return widget->popwin;
+}
+
 void
 ada_combo_set_entry (GtkCombo* widget, GtkWidget* entry)
 {
