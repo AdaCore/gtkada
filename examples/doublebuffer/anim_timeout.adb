@@ -96,7 +96,7 @@ package body Anim_Timeout is
       Vbox,
       Hbox   : Gtk_Box;
       Label  : Gtk_Label;
-      Id     : Guint;
+      Id     : Timeout_Handler_Id;
 
    begin
       Put_Line ("This demo shows how you can use a Double_Buffer widget");
