@@ -17,6 +17,11 @@
 ##     lines, and contain any kind of text
 ##     It no such tag is found, no documentation is generated for
 ##     the package.
+##     Multiple such tags are concatenated.
+##     Lists are automatically replaced by @itemize items (a list
+##     is a set of paragraphs that start with '-'; the list ends
+##     at the first empty-line not followed by a paragraph that
+##     starts with '-').
 ##
 ## <c_version>...</c_version>
 ##     Version number of gtk+ that was used to generate this file.
@@ -51,16 +56,24 @@
 ##     containing this file).
 ##     Both tags (opening and closing) should be on the same line.
 ##
+## <signals>
+##    - "signal_name"
+##      signal description
+##    - "signal_name" ....
+## </signals>
+##     This tag describes all the new signals defined by a widget.
+##
+## <doc_ignore>...</doc_ignore>
+##     Indicates a section which should not be included in the documentation.
+##     All the subprograms inside the section will not be documented. The lines
+##     on which these tags are are completly deleted.
+##
 ## The functions and procedures are automatically associated with
 ## the comments that follow them, and that stops at the first blank
 ## line.
 ## No documentation is generated for the following special subprograms:
 ##   Initialize, Generate
 ##
-
-## TO BE DONE:
-## Print the signals (from the C file)
-
 
 $src_dir = "../../src/";
 # name of the source directory for GtkAda
@@ -94,6 +107,24 @@ local (@Ada95_keywords) = ('abstract', 'aliased', 'protected', 'requeue',
 			'tagged');
 local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 
+# List of pointer to functions that are not signals in the C files.
+%signals_exceptions = ("gtkcheckbutton.h/draw_indicator" => 0,
+		       "gtkmenushell.h/selection_done"   => 0,
+		       "gtkcontainer.h/forall"           => 0,
+		       "gtkcontainer.h/composite_name"   => 0,
+		       "gtkcontainer.h/child_type"       => 0,
+		       "gtkcontainer.h/set_child_arg"    => 0,
+		       "gtkcontainer.h/get_child_arg"    => 0,
+		       "gtkcontainer.h/set_focus_child"  => 0,
+		       "gtkobject.h/finalize"            => 0,
+		       "gtkobject.h/shutdown"            => 0,
+		       "gtkobject.h/set_arg"             => 0,
+		       "gtkobject.h/get_arg"             => 0,
+		       "gtkwidget.h/hide_all"            => 0,
+		       "gtkwidget.h/show_all"            => 0,
+		       "gtkwidget.h/debug_msg"           => 0   # is a signal
+		       );
+
 ## Contains the parent of each widget
 %parent = ();
 
@@ -101,83 +132,81 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 ## It is indexed on the package name
 %output = ();
 
+## Name of the package that is currently being proposed.
+$package_name="";
+
 # Prepares the menu
 
 foreach $source_file (@source_files) {
 
     open (FILE, $source_file);
-    @content = &expand_include (<FILE>);
+    @content = <FILE>;
     close (FILE);
 
     # Only generate documentation if we have a <description> tag
     if (grep (/\<description\>/, @content)) {
 
+	@content = &delete_ignore(&expand_include (@content));
 	print "Generating doc for $source_file\n";
 	
 	# Get the package name
-	my ($package_name) = &get_package_name (@content);
+	$package_name = &get_package_name (@content);
 	my ($cfile) = &get_c_file ($package_name);
 
-	push (@{$output{$package_name}},
-	      "\@cindex $package_name\n",
-	      "\@node Package $package_name\n",
-	      "\@section Package $package_name\n",
-	      "\n\@noindent\n");
+	&output ("\@page\n",
+		 "\@cindex $package_name\n",
+		 "\@node Package $package_name\n",
+		 "\@section Package $package_name\n",
+		 "\n\@noindent\n");
 
 	my ($description) = &clean_comment_marks
 	    (&get_tag_value ("description", @content), 0);
 	$description =~ s/^\s*//;
+	$description = &process_list ($description);
 	    
-	push (@{$output{$package_name}},
-	      "\n",
-	      "See also \@uref{http://www.gtk.org/docs/$cfile.html,$cfile.html} ",
-	      "for more information.\n");
+	&output ("$description\n",
+		 "See also \@uref{http://www.gtk.org/docs/$cfile.html,$cfile.html} ",
+		 "for more information.\n");
 
 	if (&get_tag_value ("screenshot", @content)) {
-	    push (@{$output{$package_name}},
-		  "\@iftex\n\@image{", &get_tag_value ("screenshot", @content),
-		  ",}\n\@end iftex\n\n");
+	    &output ("\@iftex\n\@image{",
+		     &get_tag_value ("screenshot", @content),
+		     ",}\n\@end iftex\n\n");
 	}
 
-	my (%signals) = &find_signals ($cfile . ".h");
+	my (%signals) = &find_signals ($cfile . ".h", @content);
 	my (@hierarchy) = &find_hierarchy (@content);
+	my (@subprogs) = &get_subprograms (@content);
+
 
 	## Prepare the submenu
 	
-	push (@{$output{$package_name}},
-	      "\@menu\n");
-	push (@{$output{$package_name}},
-	      "* $package_name Widget Hierarchy::\n") if (@hierarchy);
-	push (@{$output{$package_name}},
-	      "* $package_name Signals::\n")             if (keys %signals);
-	push (@{$output{$package_name}},
-	      "* $package_name Subprograms::\n");
+	&output ("\@menu\n");
+	&output ("* $package_name Widget Hierarchy::\n") if (@hierarchy);
+	&output ("* $package_name Signals::\n")          if (keys %signals);
+	&output ("* $package_name Subprograms::\n")      if (@subprogs);
 	
 	if (&get_tag_value ("example", @content)) {
-	    push (@{$output{$package_name}},
-		  "* $package_name Example::\n");
+	    &output ("* $package_name Example::\n");
 	}
-	push (@{$output{$package_name}}, "\@end menu\n\n");
+	&output ("\@end menu\n\n");
 
 	## Widget hierarchy
 	
 	if (@hierarchy) {
-	    push (@{$output{$package_name}},
-		  "\@node $package_name Widget Hierarchy\n",
-		  "\@subsection Widget Hierarchy\n",
-		  "\@multitable \@columnfractions .4 .6\n",
-		  "\@item \@b{Gtk_Object}\@tab (\@ref{Package Gtk.Object})\n");
+	    &output ("\@node $package_name Widget Hierarchy\n",
+		     "\@subsection Widget Hierarchy\n",
+		     "\@multitable \@columnfractions .4 .6\n",
+		     "\@item \@b{Gtk_Object}\@tab (\@ref{Package Gtk.Object})\n");
 	    
 	    for ($level = 1; $level < @hierarchy; $level ++) {
-		push (@{$output{$package_name}},
-		      "\@item ",
-		      "\@ " x ($level * 3 - 1), "\\_",
-		      "\@b{", $hierarchy[$level], "}\@tab (\@ref{Package ",
-		      &package_from_type ($hierarchy[$level]), "})\n");
+		&output ("\@item ",
+			 "\@ " x ($level * 3 - 1), "\\_",
+			 "\@b{", $hierarchy[$level], "}\@tab (\@ref{Package ",
+			 &package_from_type ($hierarchy[$level]), "})\n");
 	    }
 	
-	    push (@{$output{$package_name}},
-		  "\@end multitable\n\n");
+	    &output ("\@end multitable\n\n");
 	} else {
 	    $parent{$package_name} = "<>";
 	}
@@ -185,80 +214,87 @@ foreach $source_file (@source_files) {
 	## List of signals
 
 	if (keys %signals) {
-	    push (@{$output{$package_name}},
-		  "\@node $package_name Signals\n",
-		  "\@subsection Signals\n\n",
-		  "\@itemize \@bullet\n\n");
+	    &output ("\@node $package_name Signals\n",
+		     "\@subsection Signals\n\n",
+		     "\@itemize \@bullet\n\n");
 	    
 	    foreach $signal (sort keys %signals) {
-		push (@{$output{$package_name}},  "\@item $signal\n");
+		&output ("\@item \"\@b{$signal}\"\n\n",
+			 $signals{$signal}, "\n");
 	    }
-	    push (@{$output{$package_name}}, "\@end itemize\n\n");
+	    &output ("\@end itemize\n\n");
 	}
 
 	## List of subprograms (sorted)
 
-	push (@{$output{$package_name}},
-	      "\@node $package_name Subprograms\n",
-	      "\@subsection Subprograms\n\n",
-	      "\@itemize \@bullet\n\n");
-
-	my (@subprogs) = &get_subprograms (@content);
-
-        foreach $subprog (sort {$$a[1] cmp $$b[1]} @subprogs) {
-	    my ($name, $return, $comment, @params)
-		= ($$subprog[1], $$subprog[0], $$subprog[2], @{$$subprog[3]});
-
-	    next if ($name eq "Generate" || $name eq "Initialize");
-
-	    push (@{$output{$package_name}},
-		  "\@need ", (@params + 1), "\n",
-		  "\@findex $name (\@i{in} $package_name)\n",
-		  "\@item \@b{",
-
-		  ($return eq "")? "procedure $name} "  : "function $name} ",
-
-		  );
-
-	    if (scalar (@params) > 0) {
-		push (@{$output{$package_name}}, "(\@*\n");
-		my ($i);
-		for ($i=0; $i<@params; $i++) {
-		    push (@{$output{$package_name}},
-			  "\@	 		\@var{",
-			  $params[$i][0], "} : ",
-			  $params[$i][1], " ",
-			  $params[$i][2],
-
-			  ($i == $#params) ? ");@*\n" : ";\@*\n");
-		}
-	    } else {
-		push (@{$output{$package_name}}, "\n");
-	    }
+	if (@subprogs) {
+	    my ($has_itemize) = 0;
+	    &output ("\@node $package_name Subprograms\n",
+		     "\@subsection Subprograms\n\n");
 	    
-	    if ($comments ne "") {
-		push (@{$output{$package_name}},
-		      "\@ifhtml\n<BR>\n\@end ifhtml\n");
+	    foreach $subprog (@subprogs) {
+		my ($name, $return, $comment, @params)
+		    = ($$subprog[1], $$subprog[0], $$subprog[2],
+		       @{$$subprog[3]});
+		if ($return eq "--") {
+		    if ($has_itemize == 1) {
+			&output ("\@end itemize\n");
+			$has_itemize = 0;
+		    }
+		    &output ("\@subsubsection $name\n\n");
+		    next;
+		}
+
+		if ($has_itemize == 0) {
+		    &output ("\@itemize \@bullet\n\n");
+		    $has_itemize = 1;
+		}
+		
+		&output ("\@need ", (@params + 1), "\n",
+			 "\@findex $name (\@i{in} $package_name)\n",
+			 "\@item \@b{",
+			 ($return eq "")? "procedure $name} " : "function $name} ");
+		
+		if (scalar (@params) > 0) {
+		    &output ("(\@*\n");
+		    my ($i);
+		    for ($i=0; $i<@params; $i++) {
+			&output ("\@	 		\@var{",
+				 $params[$i][0], "} : ",
+				 $params[$i][1], " ",
+				 $params[$i][2],
+				 ($i == $#params) ? ")" : ";\@*\n");
+		    }
+		} else {
+		    &output ("\n");
+		}
+		if ($return eq "") {
+		    &output (";\@*\n");
+		} else {
+		    &output ("\@*\n\@	 		\@b{return} $return;\@*\n");
+		}
+		
+		if ($comments ne "") {
+		    &output ("\@ifhtml\n<BR>\n\@end ifhtml\n");
+		}
+		&output (&clean_comment_marks ($comment, 1), "\n\n",
+			 "\@ifhtml\n<BR><BR>\n\@end ifhtml\n");
 	    }
-	    push (@{$output{$package_name}},
-		  &clean_comment_marks ($comment, 1), "\n\n",
-		  "\@ifhtml\n<BR><BR>\n\@end ifhtml\n");
+	    if ($has_itemize == 1)  {
+		&output ("\@end itemize\n\n");
+	    }
 	}
-
-	push (@{$output{$package_name}},  "\@end itemize\n\n");
-
 
 	## Examples if any
 
 	if (&get_tag_value ("example", @content)) {
-	    push (@{$output{$package_name}},
-		  "\@node $package_name Example\n",
-		  "\@subsection Example\n\n\@example\n",
-		  &highlight_keywords
-		  (&clean_comment_marks (&get_tag_value
-					 ("example", @content),
-					 0)),
-		  "\n\@end example\n");
+	    &output ("\@node $package_name Example\n",
+		     "\@subsection Example\n\n\@example\n",
+		     &highlight_keywords
+		     (&clean_comment_marks (&get_tag_value
+					    ("example", @content),
+					    0)),
+		     "\n\@end example\n");
 	}
     }
 }
@@ -271,15 +307,15 @@ foreach $package_name (keys %parent) {
     $package_name = &package_from_type ($package_name);
     unless (defined $output{$package_name}) {
 
-	push (@{$output{$package_name}},
-	      "\@cindex $package_name\n",
-	      "\@node Package $package_name\n",
-	      "\@section Package $package_name\n\n");
+	&output ("\@cindex $package_name\n",
+		 "\@node Package $package_name\n",
+		 "\@section Package $package_name\n\n");
     }
 }
 
 
 ## Outputs the files
+## Requires the global variables $output and $package_name
 
 my (%packages) = ();
 
@@ -304,6 +340,11 @@ foreach $package_name (sort keys %output) {
 close OUT;
 
 
+# Outputs some lines
+sub output () {
+    push (@{$output{$package_name}},
+	  @_);
+}
 
 
 # Returns the name of the widget defined in the package whose contents is
@@ -359,7 +400,7 @@ sub expand_include () {
     my (@strings);
     my ($line);
 
-    foreach $line (@_) {
+    foreach $line (@content) {
 	if ($line =~ /(.*)\<include\>(.*)\<\/include\>(.*)/) {
 	    push (@strings, $1);
 	    my ($file, $rest) = ($2, $3);
@@ -378,39 +419,95 @@ sub expand_include () {
 }
 
 # Returns the list of signals defined in the C file $1.
+# The Ada file is defined in $2
+# If the Ada file has a "<signals>" tag, then this is used instead
 # ( signal_name => profile, signal_name => profile)
 sub find_signals () {
     my ($cfile) = shift;
+    my (@content) = @_;
+    my (%c_signals);
     my (%signals);
-    my ($gtk) = "gtk";
 
+    ## Parses the C file to find all the signals
+    my ($gtk) = "gtk";
+    
     if ($cfile =~ /^gdk/) {
 	$gtk = "gdk";
     }
-
+    
     open (FILE, $gtk_src_dir . "/$gtk/" . $cfile);
-    my (@content) = <FILE>;
+    my (@c_content) = <FILE>;
     close (FILE);
-
+    
     my ($in_struct) = 0;
     my ($line);
-    while (@content) {
-	$line = shift @content;
+    foreach $line (@c_content) {
 	if ($line =~ /^\s*struct\s/) {
 	    $in_struct = 1;
 	}
-
+	
 	if ($in_struct) {
-
+	    
 	    # A pointer to function ?
 	    if ($line =~ /\(\*\s*([^\)]+)/) {
-		$signals{$1} = "OK";
+		$c_signals{$1} = "";
 	    }
 	}
 	if ($line =~ /\s*\}/) {
 	    $in_struct = 0;
 	}
     }
+    
+    my ($ada_signals) = &get_tag_value ("signals", @content);
+
+    # If the tag is found in the Ada file, use it
+    if ($ada_signals ne "") {
+	my ($signal, $descr);
+	my (@lines) = split (/\n/, $ada_signals);
+	my ($in_handler) = 0;
+	foreach $line (@lines) {
+	    $line =~ s/^\s*--\s*//;
+	    if ($line =~ /- \"([^\"]+)\"/) {
+		$signals{$signal} = $descr if ($signal ne "");
+		$signal = $1;
+		$descr = "";
+		$in_handler = 1;
+	    } elsif ($line =~ /^\s*$/) {
+		if ($in_handler == 1) {
+		    $in_handler = 0;
+		    $descr .= "";
+		}
+		$descr .= "\n";
+	    } else {
+		if ($in_handler) {
+		    if ($line !~ /^procedure|function/) {
+			$line = ("\@ " x 27) . $line;
+		    }
+		    $descr .= $line . "\@*\n";
+		} else {
+		    $descr .= $line . "\n";
+		}
+	    }
+	}
+	$signals{$signal} = $descr if ($signal ne "");
+
+	# Check that all the signals are documented
+	foreach (keys %c_signals) {
+	    if (! defined $signals{$_}
+		&& ! defined $signals_exceptions{$cfile . "/" . $_})
+	    {
+		
+		print "  The signal $_ is not documented in the Ada file!\n";
+		$signals{$_} = "";
+	    }
+	}
+	
+    } else {
+	print "  Signals loaded from the C header file.\n"
+	    if (keys %c_signals);
+	return %c_signals;
+    }
+
     return %signals;
 }
 
@@ -477,6 +574,24 @@ sub get_c_file () {
     return $file;
 }
 
+# Delete all the sections that should be ignored in the documentation
+sub delete_ignore () {
+    my (@content) = @_;
+    my (@output) = ();
+    my ($ignore)=0;
+
+    foreach $line (@content) {
+	if ($line =~ /\<doc_ignore\>/) {
+	    $ignore=1;
+	}
+	push (@output, $line) if (! $ignore);
+	if ($line =~ /\<\/doc_ignore\>/) {
+	    $ignore=0;
+	}
+    }
+    return @output;
+}
+
 # Returns the package name from the file whose content is $1
 sub get_package_name () {
     my (@content) = @_;
@@ -506,6 +621,38 @@ sub clean_comment_marks () {
 	}
     }
     return $string;
+}
+
+# Processes the lists, and replaces them with some @itemize instructions.
+# A list is recognized when at least one line starts with '-' as the first
+# non-white character, and ends after the next empty line.
+
+sub process_list () {
+    my ($value) = shift;
+    my (@lines) = split (/\n/, $value);
+    my ($output);
+    my ($in_list) = 0;
+    my ($terminate_list) = 0;
+
+    foreach $line (@lines) {
+	if ($line =~ /^\s*-\s/) {
+	    $output .= "\@itemize \@bullet\n" if (! $in_list);
+	    $in_list = 1;
+	    $terminate_list = 0;
+	    $line =~ s/^\s*-/\@item /;
+	} elsif ($in_list && $line =~ /^\s*$/) {
+	    $terminate_list = 1;
+	} elsif ($terminate_list) {
+	    $output .= "\@end itemize\n";
+	    $terminate_list = 0;
+	    $in_list = 0;
+	}
+	
+	$output .= $line . "\n";
+    }
+    $output .= "\@end itemize\n" if ($terminate_list);
+	
+    return $output;
 }
 
 # Returns the value of the tag $1, in the file whose content is $2
@@ -541,7 +688,7 @@ sub get_tag_value () {
 # Returns a list of all the subprograms defined in the file whose
 # content is $1.
 # The format of the list is the following:
-# ( (subprogram_return_type,  # "" for a procedure
+# ( (subprogram_return_type,  # "" for a procedure  "--" for a separator
 #    subprogram_name,
 #    comments
 #    (param1_name,
@@ -558,11 +705,29 @@ sub get_subprograms () {
   my (@content) = @_;
   my ($line);
   my (@result);
+  my ($saw_package_start) = 0;
+  my ($last_was_section) = 0;
 
   while (@content) {
     $line = shift @content;
 
-    if ($line =~ /^\s*(procedure|function)\s+(\w+)\s*(.*)/) {
+    if ($line =~ /^package /) {
+	$saw_package_start = 1;
+	next;
+    }
+
+    if ($saw_package_start
+	&& $line =~ /^\s*------*/
+	&& $last_was_section == 0)
+    {
+
+	$line = shift @content;
+	$line =~ /-- (.*) --/;
+	push (@result, ['--', $1, "", ()]);
+	$line = shift @content;
+	$last_was_section = 1;
+	
+    } elsif ($line =~ /^\s*(procedure|function)\s+(\w+)\s*(.*)/) {
       my ($type)   = $1;
       my ($name)   = $2;
       my ($params) = $3;
@@ -581,7 +746,7 @@ sub get_subprograms () {
 
       $params =~ s/\s+/ /g;
 
-      my ($profile, $return) = ($params =~ /^\s*\(\s*([^\)]+)\)(.*)/);
+      my ($dummy, $profile, $return) = ($params =~ /^\s*(\(\s*([^\)]+)\))?(.*)/);
 
       # If we expect a return type, make sure we have it
       if ($type eq "function") {
@@ -610,8 +775,16 @@ sub get_subprograms () {
 	  $profile =~ s/$all//;
       }
 
-      push (@result, [ $ret_type, $name, $comments, \@param_list]);
+      # Ignore the special subprogram "Generate" and "Initialize"
+      if ($name ne "Generate" && $name ne "Initialize") {
+	  push (@result, [ $ret_type, $name, $comments, \@param_list]);
+	  $last_was_section = 0;
+      }
     }
+
+  }
+  if ($last_was_section == 1) {
+      pop @result;
   }
   return @result;
 }
