@@ -20,7 +20,7 @@ GNATFLAGS_DEVEL = @CFLAGS@ -g -gnatawu
 GNATMAKE = gnatmake
 GNATMAKELDFLAGS = -largs -L$(src_dir) @GTK_LIBS@ -lgtkada
 
-CP = cp -p -f
+CP = cp -f
 
 ## This variable should be set to either "opengl" or "no_opengl" depending on
 ## whether the opengl directories have been installed on the system or not
@@ -29,8 +29,10 @@ HAVE_OPENGL=@HAVE_OPENGL@
 
 ifeq ($(HAVE_OPENGL),opengl)
 OPENGL_C_OBJECTS=lw.o
+OPENGL_LIBS= @GL_LIBS@
 else
 OPENGL_C_OBJECTS=
+OPENGL_LIBS=
 endif
 
 all: opengl/view_gl.adb $(OPENGL_C_OBJECTS) $(target) 
@@ -40,9 +42,9 @@ $(target)::
 	@echo $(GNATMAKE) $(GNATFLAGS) $(target) '`'$(GTKADA_CONFIG)'`'
 	@echo "-------------------------------------"
 	@if [ -f $(src_dir)/.devel ]; then \
-	   $(GNATMAKE) $(GNATFLAGS_DEVEL) $(target) -I$(src_dir) -Iopengl -aO$(src_dir)/lib-obj -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS); \
+	   $(GNATMAKE) $(GNATFLAGS_DEVEL) $(target) -I$(src_dir) -Iopengl -aO$(src_dir)/lib-obj -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
 	else \
-	   $(GNATMAKE) $(GNATFLAGS) $(target) -I$(src_dir) -Iopengl -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS); \
+	   $(GNATMAKE) $(GNATFLAGS) $(target) -I$(src_dir) -Iopengl -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
 	fi
 
 opengl/view_gl.adb::
