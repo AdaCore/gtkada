@@ -10,6 +10,9 @@ Glib.GObjects: new package
 Glib.Properties.Creation:
   Gnew_Closure: removed.
 Gdk.Color_Context: removed, use Gdk.Color instead.
+Gdk.Color:
+  Get_System: removed, replace with Gtk.Widget.Get_Default_Colormap
+  Get_System_Size: removed
 Gtk.Combo:
   Get_Popup_Window: new procedure.
   Set_Value_In_List: Val is now a Boolean.
