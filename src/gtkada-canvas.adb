@@ -836,9 +836,6 @@ package body Gtkada.Canvas is
       --  everytime we do a Draw_Pixmap (for optimization purposes)
 
       if Canv.Black_GC = null then
-         Set_Exposures
-           (Get_Background_GC (Get_Style (Canvas), State_Normal), False);
-
          Gdk_New (Canv.Black_GC, Get_Window (Canvas));
          Set_Foreground
            (Canv.Black_GC, Black (Gtk.Widget.Get_Default_Colormap));
@@ -1432,7 +1429,7 @@ package body Gtkada.Canvas is
 
       Draw_Rectangle
         (Pix,
-         Get_Background_GC (Get_Style (Canvas), State_Normal),
+         Canvas.Clear_GC,
          Filled => True,
          X => Rect.X, Y => Rect.Y,
          Width  => Gint (Rect.Width),
