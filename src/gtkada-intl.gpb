@@ -27,10 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-#if HAVE_GETTEXT then
 with System;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
-#end if;
 
 package body Gtkada.Intl is
 
