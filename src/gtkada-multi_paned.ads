@@ -33,9 +33,6 @@ with Gtk.Fixed;
 with Gtk.Widget;
 with Gdk.Window;
 
---  ??? Do we want opaque resizing
-
-
 --  This widget implements a multi-paned widget, similar to the standard
 --  Gtk_Paned widget, but which can contain several children side to side.
 --
@@ -49,6 +46,11 @@ package Gtkada.Multi_Paned is
    procedure Gtk_New (Win : out Gtkada_Multi_Paned);
    procedure Initialize (Win : access Gtkada_Multi_Paned_Record'Class);
    --  Create a new paned window.
+
+   procedure Set_Opaque_Resizing
+     (Win : access Gtkada_Multi_Paned_Record; Opaque : Boolean);
+   --  Whether resizing of the widgets should be opaque or not. The default
+   --  is not to do opaque resizing for efficiency reasons
 
    procedure Add_Child
      (Win           : access Gtkada_Multi_Paned_Record;
@@ -116,6 +118,7 @@ private
       Anim_Offset            : Glib.Allocation_Int;
       --  Temporary variables, used while resizing windows
 
+      Opaque_Resizing        : Boolean := False;
    end record;
 
 end Gtkada.Multi_Paned;

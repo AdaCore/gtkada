@@ -144,6 +144,21 @@ package body Gtkada.Multi_Paned is
    function Is_Visible (Child : Child_Description_Access) return Boolean;
    --  Return True if Child is visible (or if any of its children is visible).
 
+   procedure Compute_Resize_Handle_Percent
+     (Split : access Gtkada_Multi_Paned_Record'Class);
+   --  Compute the new percent value for the handle being dragged
+
+   -------------------------
+   -- Set_Opaque_Resizing --
+   -------------------------
+
+   procedure Set_Opaque_Resizing
+     (Win : access Gtkada_Multi_Paned_Record; Opaque : Boolean)
+   is
+   begin
+      Win.Opaque_Resizing := Opaque;
+   end Set_Opaque_Resizing;
+
    ----------
    -- Free --
    ----------
@@ -562,6 +577,42 @@ package body Gtkada.Multi_Paned is
       end if;
    end Compute_Child_Position;
 
+   -----------------------------------
+   -- Compute_Resize_Handle_Percent --
+   -----------------------------------
+
+   procedure Compute_Resize_Handle_Percent
+     (Split : access Gtkada_Multi_Paned_Record'Class)
+   is
+      Parent_Pos : Gtk_Allocation;
+      Percent    : Float;
+   begin
+      Compute_Child_Position
+        (Split, Split.Selected_Handle_Parent, Parent_Pos);
+
+      case Split.Selected_Handle_Parent.Orientation is
+         when Orientation_Vertical =>
+            Percent := Float
+              (Split.Selected_Handle_Pos.Y - Split.Anim_Offset
+                 + Handle_Half_Width - Parent_Pos.Y) /
+                Float (Parent_Pos.Height);
+         when Orientation_Horizontal =>
+            Percent := Float
+              (Split.Selected_Handle_Pos.X - Split.Anim_Offset
+                 + Handle_Half_Width - Parent_Pos.X) /
+                Float (Parent_Pos.Width);
+      end case;
+
+      if Percent < 0.0 then
+         Percent := 0.0;
+      elsif Percent > 1.0 then
+         Percent := 1.0;
+      end if;
+
+      Split.Selected_Handle_Parent.Handles
+        (Split.Selected_Handle_Index).Percent := Percent;
+   end Compute_Resize_Handle_Percent;
+
    ----------------------
    -- Draw_Resize_Line --
    ----------------------
@@ -569,12 +620,17 @@ package body Gtkada.Multi_Paned is
    procedure Draw_Resize_Line
      (Split : access Gtkada_Multi_Paned_Record'Class) is
    begin
-      Draw_Line
-        (Get_Window (Split),
-         Split.GC, Split.Selected_Handle_Pos.X,
-         Split.Selected_Handle_Pos.Y,
-         Split.Selected_Handle_Pos.X + Split.Selected_Handle_Pos.Width,
-         Split.Selected_Handle_Pos.Y + Split.Selected_Handle_Pos.Height);
+      if not Split.Opaque_Resizing then
+         Draw_Line
+           (Get_Window (Split),
+            Split.GC, Split.Selected_Handle_Pos.X,
+            Split.Selected_Handle_Pos.Y,
+            Split.Selected_Handle_Pos.X + Split.Selected_Handle_Pos.Width,
+            Split.Selected_Handle_Pos.Y + Split.Selected_Handle_Pos.Height);
+      else
+         Compute_Resize_Handle_Percent (Split);
+         Queue_Resize (Split);
+      end if;
    end Draw_Resize_Line;
 
    --------------------
@@ -662,30 +718,13 @@ package body Gtkada.Multi_Paned is
    is
       pragma Unreferenced (Event);
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
-      Percent : Float;
-      Parent_Pos : Gtk_Allocation;
    begin
       if Split.Selected_Handle_Parent /= null then
          Draw_Resize_Line (Split);
 
-         Compute_Child_Position
-           (Split, Split.Selected_Handle_Parent, Parent_Pos);
-
-         case Split.Selected_Handle_Parent.Orientation is
-            when Orientation_Horizontal =>
-               Percent :=
-                 Float (Split.Selected_Handle_Pos.X - Split.Anim_Offset
-                          + Handle_Half_Width - Parent_Pos.X) /
-                 Float (Parent_Pos.Width);
-            when Orientation_Vertical =>
-               Percent :=
-                 Float (Split.Selected_Handle_Pos.Y - Split.Anim_Offset
-                          + Handle_Half_Width - Parent_Pos.Y) /
-                 Float (Parent_Pos.Height);
-         end case;
-
-         Split.Selected_Handle_Parent.Handles
-           (Split.Selected_Handle_Index).Percent := Percent;
+         if Split.Opaque_Resizing then
+            Compute_Resize_Handle_Percent (Split);
+         end if;
 
          Pointer_Ungrab (Time => 0);
 
@@ -929,9 +968,9 @@ package body Gtkada.Multi_Paned is
       Compute_Child_Position (Split, Parent, Parent_Pos);
 
       if Parent.Orientation = Orientation_Vertical then
-         Max := Float (Parent_Pos.Width);
-      else
          Max := Float (Parent_Pos.Height);
+      else
+         Max := Float (Parent_Pos.Width);
       end if;
 
       for C in Ref .. Parent.Handles'Last loop
