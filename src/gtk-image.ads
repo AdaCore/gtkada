@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -30,6 +30,7 @@
 with Gdk.Bitmap;
 with Gdk.Image;
 with Gtk.Misc;
+with Gtk.Object;
 
 package Gtk.Image is
 
@@ -37,21 +38,31 @@ package Gtk.Image is
    type Gtk_Image is access all Gtk_Image_Record'Class;
 
    procedure Get
-      (Image : access Gtk_Image_Record;
-       Val   : in Gdk.Image.Gdk_Image'Class;
-       Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
+     (Image : access Gtk_Image_Record;
+      Val   : in Gdk.Image.Gdk_Image'Class;
+      Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
+
    procedure Gtk_New
-      (Widget : out Gtk_Image;
-       Val    : in Gdk.Image.Gdk_Image'Class;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+     (Image : out Gtk_Image;
+      Val   : in Gdk.Image.Gdk_Image'Class;
+      Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
+
    procedure Initialize
-      (Widget : access Gtk_Image_Record'Class;
-       Val    : in Gdk.Image.Gdk_Image'Class;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+     (Image : access Gtk_Image_Record'Class;
+      Val   : in Gdk.Image.Gdk_Image'Class;
+      Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
+
    procedure Set
-      (Image : access Gtk_Image_Record;
-       Val   : in Gdk.Image.Gdk_Image'Class;
-       Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
+     (Image : access Gtk_Image_Record;
+      Val   : in Gdk.Image.Gdk_Image'Class;
+      Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
+
+   procedure Generate
+     (Image : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
    type Gtk_Image_Record is new Gtk.Misc.Gtk_Misc_Record with null record;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object;
 with Gtk.Box;
 with Gtk.Curve;
 
@@ -35,14 +36,22 @@ package Gtk.Gamma_Curve is
    type Gtk_Gamma_Curve_Record is new Gtk.Box.Gtk_Box_Record with private;
    type Gtk_Gamma_Curve is access all Gtk_Gamma_Curve_Record'Class;
 
-   procedure Gtk_New (Widget : out Gtk_Gamma_Curve);
-   procedure Initialize (Widget : access Gtk_Gamma_Curve_Record'Class);
+   procedure Gtk_New (Gamma_Curve : out Gtk_Gamma_Curve);
+   procedure Initialize (Gamma_Curve : access Gtk_Gamma_Curve_Record'Class);
 
-   function Get_Curve (Widget : access Gtk_Gamma_Curve_Record)
-                       return Gtk.Curve.Gtk_Curve;
+   function Get_Curve (Gamma_Curve : access Gtk_Gamma_Curve_Record)
+     return Gtk.Curve.Gtk_Curve;
 
-   function Get_Gamma (Widget : access Gtk_Gamma_Curve_Record)
-                       return Gfloat;
+   function Get_Gamma (Gamma_Curve : access Gtk_Gamma_Curve_Record)
+     return Gfloat;
+
+   procedure Generate (N    : in Node_Ptr;
+                       File : in File_Type);
+   --  Gate internal function
+
+   procedure Generate
+     (Gamma_Curve : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
 

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Handle_Box is
 
@@ -103,5 +104,53 @@ package body Gtk.Handle_Box is
       Internal (Get_Object (Handle_Box),
                 Enums.Gtk_Position_Type'Pos (Edge));
    end Set_Snap_Edge;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+   begin
+      Gen_New (N, "Handle_Box", File => File);
+      Bin.Generate (N, File);
+      Gen_Set (N, "Handle_Box", "shadow_type", File);
+      Gen_Set (N, "Handle_Box", "handle_position", File);
+      Gen_Set (N, "Handle_Box", "snap_edge", File);
+   end Generate;
+
+   procedure Generate
+     (Handle_Box : in out Object.Gtk_Object; N : in Node_Ptr)
+   is
+      S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Handle_Box (Handle_Box));
+         Set_Object (Get_Field (N, "name"), Handle_Box);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Bin.Generate (Handle_Box, N);
+
+      S := Get_Field (N, "shadow_type");
+
+      if S /= null then
+         Set_Shadow_Type (Gtk_Handle_Box (Handle_Box),
+           Enums.Gtk_Shadow_Type'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      S := Get_Field (N, "handle_position");
+
+      if S /= null then
+         Set_Handle_Position (Gtk_Handle_Box (Handle_Box),
+           Enums.Gtk_Position_Type'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      S := Get_Field (N, "snap_edge");
+
+      if S /= null then
+         Set_Snap_Edge (Gtk_Handle_Box (Handle_Box),
+           Enums.Gtk_Position_Type'Value (S (S'First + 4 .. S'Last)));
+      end if;
+   end Generate;
 
 end Gtk.Handle_Box;

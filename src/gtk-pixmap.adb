@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -32,6 +32,7 @@ with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Pixmap;
 with Gtk.Widget;
+with Gtk.Util; use Gtk.Util;
 with System;
 
 package body Gtk.Pixmap is
@@ -95,8 +96,7 @@ package body Gtk.Pixmap is
    procedure Gtk_New
       (Widget : out Gtk_Pixmap;
        Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
-   is
+       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class) is
    begin
       Widget := new Gtk_Pixmap_Record;
       Initialize (Widget, Pixmap, Mask);
@@ -142,6 +142,10 @@ package body Gtk.Pixmap is
                 Get_Object (Mask));
    end Set;
 
+   -------------------
+   -- Create_Pixmap --
+   -------------------
+
    function Create_Pixmap
      (Filename : in String;
       Window   : access Gtk.Window.Gtk_Window_Record'Class)
@@ -166,5 +170,53 @@ package body Gtk.Pixmap is
       Gdk.Bitmap.Unref (Mask);
       return Pixmap;
    end Create_Pixmap;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Cur : constant String_Ptr := Get_Field (N, "name");
+      S   : String_Ptr;
+
+   begin
+      if not N.Specific_Data.Created then
+         Add_Package ("Pixmap");
+
+         S := Get_Field (N, "filename");
+
+         if S /= null then
+            Put_Line (File, "   " & To_Ada (Top.all) & "." & To_Ada (Cur.all) &
+              " := Create_Pixmap (""" & S.all & """, " & To_Ada (Top.all) &
+              ");");
+            N.Specific_Data.Created := True;
+         end if;
+      end if;
+
+      Misc.Generate (N, File);
+   end Generate;
+
+   procedure Generate (Pixmap : in out Object.Gtk_Object; N : in Node_Ptr) is
+      Top : Node_Ptr;
+      S   : String_Ptr;
+
+   begin
+      if not N.Specific_Data.Created then
+         S := Get_Field (N, "filename");
+
+         if S /= null then
+            Top := Find_Top_Widget (N);
+            Pixmap := Object.Gtk_Object (Create_Pixmap (S.all,
+              Gtk.Window.Gtk_Window (Get_Object (Get_Field (Top, "name")))));
+            N.Specific_Data.Created := True;
+         end if;
+
+         Set_Object (Get_Field (N, "name"), Pixmap);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Misc.Generate (Pixmap, N);
+   end Generate;
 
 end Gtk.Pixmap;

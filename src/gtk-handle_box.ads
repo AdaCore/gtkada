@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,6 +29,7 @@
 
 with Gtk.Bin;
 with Gtk.Enums;
+with Gtk.Object;
 
 package Gtk.Handle_Box is
 
@@ -51,6 +52,13 @@ package Gtk.Handle_Box is
    procedure Set_Snap_Edge
      (Handle_Box : access  Gtk_Handle_Box_Record;
       Edge       : in Enums.Gtk_Position_Type);
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
+
+   procedure Generate
+     (Handle_Box : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
    type Gtk_Handle_Box_Record is new Gtk.Bin.Gtk_Bin_Record with null record;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -30,6 +30,7 @@
 with Gtk.Adjustment;
 with Gtk.Container;
 with Gtk.Widget;
+with Gtk.Object;
 
 package Gtk.Layout is
 
@@ -37,15 +38,15 @@ package Gtk.Layout is
      with private;
    type Gtk_Layout is access all Gtk_Layout_Record'Class;
 
-
    procedure Gtk_New
-     (Widget      : out Gtk_Layout;
-      Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
-      Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+     (Layout      : out Gtk_Layout;
+      Hadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
+      Vadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
+
    procedure Initialize
-     (Widget      : access Gtk_Layout_Record'Class;
-      Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
-      Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+     (Layout      : access Gtk_Layout_Record'Class;
+      Hadjustment : Gtk.Adjustment.Gtk_Adjustment;
+      Vadjustment : Gtk.Adjustment.Gtk_Adjustment);
 
    procedure Put (Layout : access Gtk_Layout_Record;
                   Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -62,10 +63,10 @@ package Gtk.Layout is
                        Height : in     Guint);
 
    function Get_Hadjustment (Layout : access Gtk_Layout_Record)
-                             return          Gtk.Adjustment.Gtk_Adjustment;
+     return Gtk.Adjustment.Gtk_Adjustment;
 
    function Get_Vadjustment (Layout : access Gtk_Layout_Record)
-                             return          Gtk.Adjustment.Gtk_Adjustment;
+     return Gtk.Adjustment.Gtk_Adjustment;
 
    procedure Set_Hadjustment
      (Layout     : access Gtk_Layout_Record;
@@ -78,6 +79,12 @@ package Gtk.Layout is
    --  procedure Freeze
    --  procedure Thaw
    --  Not bound because does not work in Gtk+ 1.2.0...
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
+
+   procedure Generate (Layout : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
 

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Layout is
 
@@ -36,11 +37,12 @@ package body Gtk.Layout is
    ---------------------
 
    function Get_Hadjustment (Layout : access Gtk_Layout_Record)
-                             return          Gtk.Adjustment.Gtk_Adjustment
+     return Gtk.Adjustment.Gtk_Adjustment
    is
       function Internal (Layout : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_layout_get_hadjustment");
       Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
+
    begin
       return Gtk.Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (Layout)), Stub));
@@ -51,11 +53,12 @@ package body Gtk.Layout is
    ---------------------
 
    function Get_Vadjustment (Layout : access Gtk_Layout_Record)
-                             return          Gtk.Adjustment.Gtk_Adjustment
+     return Gtk.Adjustment.Gtk_Adjustment
    is
       function Internal (Layout : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_layout_get_vadjustment");
       Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
+
    begin
       return Gtk.Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (Layout)), Stub));
@@ -66,13 +69,12 @@ package body Gtk.Layout is
    -------------
 
    procedure Gtk_New
-     (Widget      : out Gtk_Layout;
-      Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
-      Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
-   is
+     (Layout      : out Gtk_Layout;
+      Hadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
+      Vadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment) is
    begin
-      Widget := new Gtk_Layout_Record;
-      Initialize (Widget, Hadjustment, Vadjustment);
+      Layout := new Gtk_Layout_Record;
+      Initialize (Layout, Hadjustment, Vadjustment);
    end Gtk_New;
 
    -----------------
@@ -80,33 +82,54 @@ package body Gtk.Layout is
    -----------------
 
    procedure Initialize
-     (Widget : access Gtk_Layout_Record'Class;
-      Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
-      Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+     (Layout : access Gtk_Layout_Record'Class;
+      Hadjustment : Gtk.Adjustment.Gtk_Adjustment;
+      Vadjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
-      function Internal (Hadjustment : in System.Address;
-                         Vadjustment : in System.Address)
-                         return           System.Address;
+      function Internal
+        (Hadjustment : in System.Address;
+         Vadjustment : in System.Address)
+         return System.Address;
       pragma Import (C, Internal, "gtk_layout_new");
+
+      Hadj, Vadj : System.Address;
+
+      use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
-      Set_Object (Widget, Internal (Get_Object (Hadjustment),
-                                    Get_Object (Vadjustment)));
-      Initialize_User_Data (Widget);
+      if Hadjustment = null then
+         Hadj := System.Null_Address;
+      else
+         Hadj := Get_Object (Hadjustment);
+      end if;
+
+      if Vadjustment = null then
+         Vadj := System.Null_Address;
+      else
+         Vadj := Get_Object (Vadjustment);
+      end if;
+
+      Set_Object (Layout, Internal (Hadj, Vadj));
+      Initialize_User_Data (Layout);
    end Initialize;
 
    ----------
    -- Move --
    ----------
 
-   procedure Move (Layout : access Gtk_Layout_Record;
-                   Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-                   X      : in     Gint;
-                   Y      : in     Gint) is
-      procedure Internal (Layout : in System.Address;
-                          Widget : in System.Address;
-                          X      : in Gint;
-                          Y      : in Gint);
+   procedure Move
+     (Layout : access Gtk_Layout_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      X      : in     Gint;
+      Y      : in     Gint)
+   is
+      procedure Internal
+        (Layout : in System.Address;
+         Widget : in System.Address;
+         X      : in Gint;
+         Y      : in Gint);
       pragma Import (C, Internal, "gtk_layout_move");
+
    begin
       Internal (Get_Object (Layout), Get_Object (Widget), X, Y);
    end Move;
@@ -115,16 +138,19 @@ package body Gtk.Layout is
    -- Put --
    ---------
 
-   procedure Put (Layout : access Gtk_Layout_Record;
-                  Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-                  X      : in     Gint;
-                  Y      : in     Gint)
+   procedure Put
+     (Layout : access Gtk_Layout_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      X      : in     Gint;
+      Y      : in     Gint)
    is
-      procedure Internal (Layout : in System.Address;
-                          Widget : in System.Address;
-                          X      : in Gint;
-                          Y      : in Gint);
+      procedure Internal
+        (Layout : in System.Address;
+         Widget : in System.Address;
+         X      : in Gint;
+         Y      : in Gint);
       pragma Import (C, Internal, "gtk_layout_put");
+
    begin
       Internal (Get_Object (Layout), Get_Object (Widget), X, Y);
    end Put;
@@ -174,5 +200,49 @@ package body Gtk.Layout is
    begin
       Internal (Get_Object (Layout), Get_Object (Adjustment));
    end Set_Vadjustment;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Cur : constant String_Ptr := Get_Field (N, "name");
+      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+
+   begin
+      Gen_New (N, "Layout", File => File);
+      Container.Generate (N, File);
+
+      Gen_Set (N, "Layout", "Size", "area_width", "area_height", "", "",
+        File => File);
+      Add_Package ("Adjustment");
+      Put_Line (File, "   Set_Step_Increment (Get_Hadjustment (" &
+        To_Ada (Top.all) & "." & To_Ada (Cur.all) & "), " &
+        To_Float (Get_Field (N, "hstep").all) & ");");
+      Put_Line (File, "   Set_Step_Increment (Get_Vadjustment (" &
+        To_Ada (Top.all) & "." & To_Ada (Cur.all) & "), " &
+        To_Float (Get_Field (N, "vstep").all) & ");");
+   end Generate;
+
+   procedure Generate (Layout : in out Object.Gtk_Object; N : in Node_Ptr) is
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Layout (Layout));
+         Set_Object (Get_Field (N, "name"), Layout);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Container.Generate (Layout, N);
+
+      Set_Size (Gtk_Layout (Layout),
+        Guint'Value (Get_Field (N, "area_width").all),
+        Guint'Value (Get_Field (N, "area_height").all));
+      Adjustment.Set_Step_Increment
+        (Get_Hadjustment (Gtk_Layout (Layout)),
+         Gfloat'Value (Get_Field (N, "hstep").all));
+      Adjustment.Set_Step_Increment
+        (Get_Vadjustment (Gtk_Layout (Layout)),
+         Gfloat'Value (Get_Field (N, "vstep").all));
+   end Generate;
 
 end Gtk.Layout;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -31,6 +31,7 @@ with Gdk.Bitmap;
 with Gdk.Pixmap;
 with Gtk.Misc;
 with Gtk.Window;
+with Gtk.Object;
 
 package Gtk.Pixmap is
 
@@ -58,14 +59,17 @@ package Gtk.Pixmap is
       Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
 
-   --  The following routines are not part of the Gtk+ binding.
-   --  They provide additional routines used, e.g, by gate
-
    function Create_Pixmap
      (Filename : in String;
       Window   : access Gtk.Window.Gtk_Window_Record'Class)
       return Gtk_Pixmap;
    --  Create a pixmap given a window and a filename
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
+
+   procedure Generate (Pixmap : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
    type Gtk_Pixmap_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
