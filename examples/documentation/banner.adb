@@ -1,4 +1,4 @@
---  This example shows how you can display a banner whil your application is
+--  This example shows how you can display a banner while your application is
 --  loading
 
 with Gtk.Window, Gtk.Enums, Gtk.Main, Gtk.Label;
