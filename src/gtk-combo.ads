@@ -211,4 +211,5 @@ end Gtk.Combo;
 --
 --    Gtk_New (Combo);
 --    Set_Popdown_Strings (Combo, Items);
+--    Free (Items);
 --  </example>
