@@ -1,9 +1,9 @@
 with Gtk.Enums;
-with Gtk.Vbox;
+with Gtk.Window;
 
 package Gtk.Color_Selection is
 
-   type Gtk_Color_Selection is new Gtk.Vbox.Gtk_Vbox with private;
+   type Gtk_Color_Selection is new Gtk.Window.Gtk_Window with private;
 
    type Color_Index is (Red, Green, Blue, Opacity);
    type Color_Array is array (Color_Index'Range) of Gdouble;
@@ -30,7 +30,7 @@ package Gtk.Color_Selection is
 
 private
 
-   type Gtk_Color_Selection is new Gtk.Vbox.Gtk_Vbox with null record;
+   type Gtk_Color_Selection is new Gtk.Window.Gtk_Window with null record;
 
    --  mapping: USE_OBJECT_ORIENTED gtkcolorsel.h gtk_color_selection_get_type
 
