@@ -267,6 +267,7 @@ package body Gtkada.Dialogs is
       end if;
 
       Gtk_New (Label, Msg);
+      Set_Selectable (Label, True);
       Set_Justify (Label, Justification);
       Pack_Start (Box, Label, Padding => 10);
 
