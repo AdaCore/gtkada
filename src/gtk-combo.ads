@@ -2,14 +2,12 @@
 with Gtk.GEntry;
 with Gtk.Hbox;
 with Gtk.Item;
-with Glib.Glist;
-with Interfaces.C.Strings;
+with Glib.Glist; use Glib.Glist;
 
 package Gtk.Combo is
 
    --   type String_Access is access all String;
-   package String_List is new Glib.Glist.Generic_List
-     (Interfaces.C.Strings.chars_ptr);
+   package String_List is new Glib.Glist.Generic_List (String);
 
    type Gtk_Combo is new Gtk.Hbox.Gtk_Hbox with private;
 
