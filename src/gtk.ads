@@ -1,7 +1,4 @@
 with System;
-with Glib;
-with Ada.Finalization;
-
 with Glib; use Glib;
 
 package Gtk is
@@ -36,7 +33,7 @@ package Gtk is
 
 private
 
-   type Root_Type is new Ada.Finalization.Controlled with
+   type Root_Type is tagged
       record
          Ptr : System.Address := System.Null_Address;
       end record;

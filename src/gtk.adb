@@ -66,9 +66,7 @@ package body Gtk is
                          Value  : in     System.Address) is
       use type System.Address;
    begin
-      Finalize (Object);
       Object.Ptr := Value;
-      Adjust (Object);
    end Set_Object;
 
    ---------------
