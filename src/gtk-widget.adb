@@ -31,6 +31,7 @@ with Interfaces.C.Strings;
 with Gdk.Visual; use Gdk.Visual;
 with Gdk.Color;  use Gdk.Color;
 with Ada.Unchecked_Conversion;
+with Pango.Context; use Pango.Context;
 
 package body Gtk.Widget is
 
@@ -121,6 +122,19 @@ package body Gtk.Widget is
    begin
       return Gtk_Widget (Get_User_Data (W, Stub));
    end Convert;
+
+   --------------------------
+   -- Create_Pango_Context --
+   --------------------------
+
+   function Create_Pango_Context (Widget : access Gtk_Widget_Record)
+      return Pango.Context.Pango_Context
+   is
+      function Internal (Widget : System.Address) return Pango_Context;
+      pragma Import (C, Internal, "gtk_widget_create_pango_context");
+   begin
+      return Internal (Get_Object (Widget));
+   end Create_Pango_Context;
 
    ----------------
    -- Destroy_Cb --
@@ -253,7 +267,7 @@ package body Gtk.Widget is
    end Get_Allocation_Y;
 
    ----------------
-   -- Get_Object --
+   -- Get_Events --
    ----------------
 
    function Get_Events
@@ -266,6 +280,19 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget));
    end Get_Events;
+
+   -----------------------
+   -- Get_Pango_Context --
+   -----------------------
+
+   function Get_Pango_Context (Widget : access Gtk_Widget_Record)
+      return Pango.Context.Pango_Context
+   is
+      function Internal (Widget : System.Address) return Pango_Context;
+      pragma Import (C, Internal, "gtk_widget_get_pango_context");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Pango_Context;
 
    --------------
    -- Get_Name --

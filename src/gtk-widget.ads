@@ -50,6 +50,7 @@ with Glib.GSlist;
 pragma Elaborate_All (Glib.GSlist);
 with Glib.Values;
 
+with Pango.Context;
 with Pango.Font;
 
 with Gdk.Color;
@@ -533,6 +534,32 @@ package Gtk.Widget is
    procedure Reset_Rc_Styles (Widget : access Gtk_Widget_Record);
    --  Restore the Rc style recursively for widget and its children.
 
+   function Get_Pango_Context (Widget : access Gtk_Widget_Record)
+      return Pango.Context.Pango_Context;
+   --  Get a Pango_Context with the appropriate colormap, font description and
+   --  base direction for this widget. Unlike the context returned by
+   --  Create_Pango_Context, this context is owned by the widget (it can be
+   --  used as long as widget exists), and will be updated to match any changes
+   --  to the widget's attributes.
+   --
+   --  If you create and keep a Pango_Layout using this context, you must deal
+   --  with changes to the context by calling Pango_Layout.Context_Changed on
+   --  the layout in response to the ::style_set and ::direction_set signals
+   --  for the widget.
+
+   function Create_Pango_Context (Widget : access Gtk_Widget_Record)
+      return Pango.Context.Pango_Context;
+   --  Create a new Pango_Context with the appropriate colormap, font
+   --  description, and base direction for drawing text for this widget. See
+   --  also Get_Pango_Context.
+   --  The returned context must be freed by the caller.
+
+   procedure Modify_Font
+     (Widget : access Gtk_Widget_Record;
+      Desc   : Pango.Font.Pango_Font_Description);
+   --  Modify the font used for the widget.
+   --  Desc must be freed by the caller to avoid memory leaks
+
    -------------------
    -- Widgets' tree --
    -------------------
@@ -690,15 +717,6 @@ package Gtk.Widget is
    --  behavior.
    --
    --  Null is returned if Stock_Id wasn't known.
-
-   ------------
-   -- Styles --
-   ------------
-
-   procedure Modify_Font
-     (Widget : access Gtk_Widget_Record;
-      Desc   : Pango.Font.Pango_Font_Description);
-   --  Modify the font used for the widget.
 
    --------------------------
    -- Creating new widgets --
@@ -1577,8 +1595,6 @@ end Gtk.Widget;
 --  - gtk_widget_modify_bg
 --  - gtk_widget_modify_text
 --  - gtk_widget_modify_base
---  - gtk_widget_create_pango_context
---  - gtk_widget_get_pango_context
 --  - gtk_widget_create_pango_layout
 --  - gtk_widget_class_install_style_property
 --  - gtk_widget_class_install_style_property_parser
