@@ -67,11 +67,12 @@ package body Gtk.Accel_Map is
    ---------------
 
    procedure Add_Entry
-     (Accel_Path : String;
+     (Accel_Path : UTF8_String;
       Accel_Key  : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type)
    is
-      procedure Internal (P : String; K : Gdk_Key_Type; M : Gdk_Modifier_Type);
+      procedure Internal
+        (P : UTF8_String; K : Gdk_Key_Type; M : Gdk_Modifier_Type);
       pragma Import (C, Internal, "gtk_accel_map_add_entry");
    begin
       Internal (Accel_Path & ASCII.NUL, Accel_Key, Accel_Mods);
@@ -82,13 +83,13 @@ package body Gtk.Accel_Map is
    ------------------
 
    procedure Lookup_Entry
-     (Accel_Path : String;
+     (Accel_Path : UTF8_String;
       Key        : out Gtk.Accel_Group.Gtk_Accel_Key;
       Found      : out Boolean)
    is
       type Gtk_Accel_Key_Access is access all Gtk_Accel_Key;
       function Internal
-        (Path : String; Key : Gtk_Accel_Key_Access) return Integer;
+        (Path : UTF8_String; Key : Gtk_Accel_Key_Access) return Integer;
       pragma Import (C, Internal, "gtk_accel_map_lookup_entry");
 
       K : aliased Gtk_Accel_Key;
@@ -103,13 +104,14 @@ package body Gtk.Accel_Map is
    ------------------
 
    procedure Change_Entry
-     (Accel_Path : String;
+     (Accel_Path : UTF8_String;
       Accel_Key  : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
       Replace    : Boolean)
    is
       procedure Internal
-        (P : String; K : Gdk_Key_Type; M : Gdk_Modifier_Type; R : Integer);
+        (P : UTF8_String;
+         K : Gdk_Key_Type; M : Gdk_Modifier_Type; R : Integer);
       pragma Import (C, Internal, "gtk_accel_map_change_entry");
    begin
       Internal (Accel_Path & ASCII.NUL, Accel_Key, Accel_Mods,

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -50,7 +50,7 @@ package Gtk.Image_Menu_Item is
 
    procedure Gtk_New
      (Widget : out Gtk_Image_Menu_Item;
-      Label  : String);
+      Label  : UTF8_String);
    --  Create a new Gtk_Image_Menu_Item.
    --  If label is non null, set the label of the menu item.
 
@@ -63,13 +63,13 @@ package Gtk.Image_Menu_Item is
 
    procedure Gtk_New_With_Mnemonic
      (Widget : out Gtk_Image_Menu_Item;
-      Label  : String);
+      Label  : UTF8_String);
    --  Create a new Gtk_Image_Menu_Item with a label.
    --  If label contains an underscore, a mnemonic is created accordingly.
 
    procedure Initialize
      (Widget : access Gtk_Image_Menu_Item_Record'Class;
-      Label  : String);
+      Label  : UTF8_String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -81,7 +81,7 @@ package Gtk.Image_Menu_Item is
 
    procedure Initialize_With_Mnemonic
      (Widget : access Gtk_Image_Menu_Item_Record'Class;
-      Label  : String);
+      Label  : UTF8_String);
    --  ditto.
 
    function Get_Type return Gtk.Gtk_Type;

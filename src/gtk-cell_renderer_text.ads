@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -61,8 +61,8 @@ package Gtk.Cell_Renderer_Text is
    --  - "edited"
    --    procedure Handler
    --     (Widget : access Gtk_Cell_Renderer_Text_Record'Class;
-   --       Path : String;
-   --       New_Text : String);
+   --       Path : UTF8_String;
+   --       New_Text : UTF8_String);
    --
    --    Called when the text has been edited interactively . Note that you
    --    also need to set the attribute "editable" for users to be able to
@@ -80,7 +80,7 @@ package Gtk.Cell_Renderer_Text is
    --   Attribute             Type in Model             Mode
    --   =========             =============             ====
    --
-   --   "text"                String                    Read / Write
+   --   "text"                UTF8_String               Read / Write
    --   "markup"              String                    Write
    --   "attributes"          PangoAttrList             Read / Write
    --   "background"          String                    Write

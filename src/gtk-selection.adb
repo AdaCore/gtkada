@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,7 +34,9 @@ package body Gtk.Selection is
    -- Get_Data_As_String --
    ------------------------
 
-   function Get_Data_As_String (Selection : Selection_Data) return String is
+   function Get_Data_As_String
+     (Selection : Selection_Data) return String
+   is
       function Internal
         (Selection : Selection_Data) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gtk_dnd_get_data");

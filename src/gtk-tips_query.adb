@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -76,13 +76,13 @@ package body Gtk.Tips_Query is
 
    procedure Set_Labels
      (Tips_Query     : access Gtk_Tips_Query_Record;
-      Label_Inactive : String;
-      Label_No_Tip   : String)
+      Label_Inactive : UTF8_String;
+      Label_No_Tip   : UTF8_String)
    is
       procedure Internal
         (Tips_Query     : System.Address;
-         Label_Inactive : String;
-         Label_No_Tip   : String);
+         Label_Inactive : UTF8_String;
+         Label_No_Tip   : UTF8_String);
       pragma Import (C, Internal, "gtk_tips_query_set_labels");
 
    begin

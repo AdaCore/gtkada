@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -128,12 +128,12 @@ package body Gtk.Status_Bar is
    function Push
      (Statusbar : access Gtk_Status_Bar_Record;
       Context   : Context_Id;
-      Text      : String) return Message_Id
+      Text      : UTF8_String) return Message_Id
    is
       function Internal
         (Statusbar : System.Address;
          Context   : Context_Id;
-         Text      : String) return Message_Id;
+         Text      : UTF8_String) return Message_Id;
       pragma Import (C, Internal, "gtk_statusbar_push");
 
    begin

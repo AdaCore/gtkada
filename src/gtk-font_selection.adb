@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -138,7 +138,7 @@ package body Gtk.Font_Selection is
    ----------------------
 
    function Get_Preview_Text
-     (Fsd : access Gtk_Font_Selection_Dialog_Record) return String
+     (Fsd : access Gtk_Font_Selection_Dialog_Record) return UTF8_String
    is
       function Internal
         (Fsd : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -171,9 +171,9 @@ package body Gtk.Font_Selection is
    ----------------------
 
    procedure Set_Preview_Text
-     (Fsd : access Gtk_Font_Selection_Dialog_Record; Text : String)
+     (Fsd : access Gtk_Font_Selection_Dialog_Record; Text : UTF8_String)
    is
-      procedure Internal (Fsd : System.Address; Text : String);
+      procedure Internal (Fsd : System.Address; Text : UTF8_String);
       pragma Import
         (C, Internal, "gtk_font_selection_dialog_set_preview_text");
 
@@ -229,7 +229,7 @@ package body Gtk.Font_Selection is
    ----------------------
 
    function Get_Preview_Text
-     (Fontsel : access Gtk_Font_Selection_Record) return String
+     (Fontsel : access Gtk_Font_Selection_Record) return UTF8_String
    is
       function Internal
         (Fontsel : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -244,7 +244,7 @@ package body Gtk.Font_Selection is
    -------------
 
    procedure Gtk_New
-     (Widget : out Gtk_Font_Selection_Dialog; Title : String) is
+     (Widget : out Gtk_Font_Selection_Dialog; Title : UTF8_String) is
    begin
       Widget := new Gtk_Font_Selection_Dialog_Record;
       Initialize (Widget, Title);
@@ -266,9 +266,9 @@ package body Gtk.Font_Selection is
 
    procedure Initialize
      (Widget : access Gtk_Font_Selection_Dialog_Record'Class;
-      Title  : String)
+      Title  : UTF8_String)
    is
-      function Internal (Title : String) return System.Address;
+      function Internal (Title : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_dialog_new");
 
    begin
@@ -308,9 +308,9 @@ package body Gtk.Font_Selection is
    ----------------------
 
    procedure Set_Preview_Text
-     (Fontsel : access Gtk_Font_Selection_Record; Text : String)
+     (Fontsel : access Gtk_Font_Selection_Record; Text : UTF8_String)
    is
-      procedure Internal (Fontsel : System.Address; Text : String);
+      procedure Internal (Fontsel : System.Address; Text : UTF8_String);
       pragma Import (C, Internal, "gtk_font_selection_set_preview_text");
 
    begin

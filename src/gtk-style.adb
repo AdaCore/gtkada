@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -119,14 +119,14 @@ package body Gtk.Style is
       Window      : Gdk.Window.Gdk_Window;
       State_Type  : Enums.Gtk_State_Type;
       X, Y        : Gint;
-      Str         : String)
+      Str         : UTF8_String)
    is
       procedure Internal
         (Style         : Gtk_Style;
          Window        : Gdk.Window.Gdk_Window;
          State_Type    : Enums.Gtk_State_Type;
          X, Y          : Gint;
-         Str           : String);
+         Str           : UTF8_String);
       pragma Import (C, Internal, "gtk_draw_string");
 
    begin

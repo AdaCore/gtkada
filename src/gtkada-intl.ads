@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -62,10 +62,10 @@
 --  The recommended way to use the gettext capability in your application is
 --  to use Dgettext with your own domain, and define the following shortcut:
 --
---  function "-" (Msg : String) return String;
+--  function "-" (Msg : UTF8_String) return UTF8_String;
 --  --  Convenient shortcut to the Gettext function.
 --
---  function "-" (Msg : String) return String is
+--  function "-" (Msg : UTF8_String) return UTF8_String is
 --  begin
 --     return Dgettext ("my_domain", Msg);
 --  end "-";
@@ -105,22 +105,26 @@
 --
 --  </description>
 
+with Glib;
+
 package Gtkada.Intl is
    pragma Preelaborate;
 
-   function Gettext (Msg : String) return String;
+   function Gettext (Msg : Glib.UTF8_String) return Glib.UTF8_String;
    --  Look up Msg in the current default message catalog.
    --  Use the current locale as specified by LC_MESSAGES. If not found, return
    --  Msg itself (the default text).
 
-   function Dgettext (Domain : String; Msg : String) return String;
+   function Dgettext
+     (Domain : String; Msg : Glib.UTF8_String) return Glib.UTF8_String;
    --  Look up Msg in the Domain message catalog for the current locale.
 
-   function "-" (Msg : String) return String;
+   function "-" (Msg : Glib.UTF8_String) return Glib.UTF8_String;
    --  Shortcut for Dgettext ("GtkAda", Msg)
 
    function Dcgettext
-     (Domain : String; Msg : String; Category : Integer) return String;
+     (Domain : String; Msg : Glib.UTF8_String; Category : Integer)
+      return Glib.UTF8_String;
    --  Look up Msg in the Domain message catalog for the Category locale.
 
    function Default_Text_Domain return String;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -326,7 +326,7 @@ package Gtk.Tree_Model is
    function Get_String
      (Tree_Model : access Gtk_Tree_Model_Record;
       Iter       : Gtk_Tree_Iter;
-      Column     : Gint) return String;
+      Column     : Gint) return UTF8_String;
    --  Get the string stored at a specific location in the model.
 
    function Get_Address

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -109,7 +109,7 @@ package Gtk.Cell_Renderer is
      (Cell            : access Gtk_Cell_Renderer_Record;
       Event           : Gdk.Event.Gdk_Event;
       Widget          : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Path            : String;
+      Path            : UTF8_String;
       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
       Flags           : Gtk_Cell_Renderer_State) return Boolean;
@@ -122,7 +122,7 @@ package Gtk.Cell_Renderer is
      (Cell            : access Gtk_Cell_Renderer_Record;
       Event           : Gdk.Event.Gdk_Event;
       Widget          : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Path            : String;
+      Path            : UTF8_String;
       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
       Flags           : Gtk_Cell_Renderer_State) return Glib.Object.GObject;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -108,7 +108,7 @@ package Gtk.Combo is
    procedure Set_Item_String
      (Combo_Box  : access Gtk_Combo_Record;
       Item       : Gtk.Item.Gtk_Item;
-      Item_Value : String);
+      Item_Value : UTF8_String);
    --  Set the string to place in the Gtk_Entry field when a particular list
    --  item is selected. This is needed if the list item is not a simple label.
 

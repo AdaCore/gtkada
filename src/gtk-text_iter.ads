@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -99,7 +99,7 @@ package Gtk.Text_Iter is
 
    function Get_Slice
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter) return String;
+      The_End : Gtk_Text_Iter) return UTF8_String;
    --  Return the text in the given range.
    --  A "slice" is an array of characters encoded in UTF-8 format, including
    --  the Unicode "unknown" character 16#FFFC# for iterable non-character
@@ -117,7 +117,7 @@ package Gtk.Text_Iter is
 
    function Get_Text
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter) return String;
+      The_End : Gtk_Text_Iter) return UTF8_String;
    --  Return text in the given range.
    --  If the range contains non-text elements such as images, the character
    --  and byte offsets in the returned string will not correspond to character
@@ -126,14 +126,14 @@ package Gtk.Text_Iter is
 
    function Get_Visible_Slice
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter) return String;
+      The_End : Gtk_Text_Iter) return UTF8_String;
    --  Like Get_Slice, but invisible text is not included.
    --  Invisible text is usually invisible because a Gtk_Text_Tag with the
    --  "invisible" attribute turned on has been applied to it.
 
    function Get_Visible_Text
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter) return String;
+      The_End : Gtk_Text_Iter) return UTF8_String;
    --  Like Get_Text, but invisible text is not included.
    --  Invisible text is usually invisible because a Gtk_Text_Tag with the
    --  "invisible" attribute turned on has been applied to it.
@@ -299,7 +299,7 @@ package Gtk.Text_Iter is
    --  applying the effects of any tags present at Iter. If any tags affected
    --  values, the function returns True.
 
-   function Get_Language (Iter : Gtk_Text_Iter) return String;
+   function Get_Language (Iter : Gtk_Text_Iter) return UTF8_String;
    --  A convenience wrapper around Get_Attributes,
    --  which returns the language in effect at Iter. If no tags affecting
    --  language apply to Iter, the return value is identical to that of
@@ -569,7 +569,7 @@ package Gtk.Text_Iter is
 
    procedure Forward_Search
      (Iter         : Gtk_Text_Iter;
-      Str          : String;
+      Str          : UTF8_String;
       Visible_Only : Boolean := False;
       Slice        : Boolean;
       Match_Start  : out Gtk_Text_Iter;
@@ -592,7 +592,7 @@ package Gtk.Text_Iter is
 
    procedure Backward_Search
      (Iter         : Gtk_Text_Iter;
-      Str          : String;
+      Str          : UTF8_String;
       Visible_Only : Boolean := False;
       Slice        : Boolean;
       Match_Start  : out Gtk_Text_Iter;

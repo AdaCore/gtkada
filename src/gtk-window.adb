@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -152,7 +152,7 @@ package body Gtk.Window is
    -- Get_Title --
    ---------------
 
-   function Get_Title (Window : access Gtk_Window_Record) return String is
+   function Get_Title (Window : access Gtk_Window_Record) return UTF8_String is
       function Internal
         (Window : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_window_get_title");
@@ -558,9 +558,9 @@ package body Gtk.Window is
 
    procedure Set_Title
      (Window : access Gtk_Window_Record;
-      Title  : String)
+      Title  : UTF8_String)
    is
-      procedure Internal (W : System.Address; T : String);
+      procedure Internal (W : System.Address; T : UTF8_String);
       pragma Import (C, Internal, "gtk_window_set_title");
 
    begin

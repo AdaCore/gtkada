@@ -432,7 +432,7 @@ package Gtk.Text_View is
    --
    --  - "insert_at_cursor"
    --    procedure Handler
-   --      (Widget : access Gtk_Text_View_Record'Class; Str : String);
+   --      (Widget : access Gtk_Text_View_Record'Class; Str : UTF8_String);
    --
    --  - "delete_from_cursor"
    --    procedure Handler

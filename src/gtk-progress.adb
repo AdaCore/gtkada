@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -103,7 +103,7 @@ package body Gtk.Progress is
    ----------------------
 
    function Get_Current_Text
-     (Progress : access Gtk_Progress_Record) return String
+     (Progress : access Gtk_Progress_Record) return UTF8_String
    is
       function Internal
         (Progress : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -135,7 +135,7 @@ package body Gtk.Progress is
 
    function Get_Text_From_Value
      (Progress : access Gtk_Progress_Record;
-      Value    : Gdouble) return String
+      Value    : Gdouble) return UTF8_String
    is
       function Internal
         (Progress : System.Address;
@@ -209,11 +209,11 @@ package body Gtk.Progress is
 
    procedure Set_Format_String
      (Progress : access Gtk_Progress_Record;
-      Format   : String)
+      Format   : UTF8_String)
    is
       procedure Internal
         (Progress : System.Address;
-         Format   : String);
+         Format   : UTF8_String);
       pragma Import (C, Internal, "gtk_progress_set_format_string");
 
    begin

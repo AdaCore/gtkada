@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -50,22 +50,23 @@ package Gtk.Menu_Item is
    type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with private;
    type Gtk_Menu_Item is access all Gtk_Menu_Item_Record'Class;
 
-   procedure Gtk_New (Menu_Item : out Gtk_Menu_Item; Label : String := "");
+   procedure Gtk_New
+     (Menu_Item : out Gtk_Menu_Item; Label : UTF8_String := "");
 
    procedure Gtk_New_With_Mnemonic
      (Menu_Item : out Gtk_Menu_Item;
-      Label     : String);
+      Label     : UTF8_String);
    --  Create a new Gtk_Menu_Item containing a label.
    --  The label is created using Gtk.Label.Gtk_New_With_Mnemonic, so
    --  underscores in Label indicate the mnemonic for the menu item.
 
    procedure Initialize
-     (Menu_Item : access Gtk_Menu_Item_Record'Class; Label : String);
+     (Menu_Item : access Gtk_Menu_Item_Record'Class; Label : UTF8_String);
    --  Internal initialization procedure.
 
    procedure Initialize_With_Mnemonic
      (Menu_Item : access Gtk_Menu_Item_Record'Class;
-      Label     : String);
+      Label     : UTF8_String);
    --  Internal initialization procedure.
 
    function Get_Type return Gtk.Gtk_Type;
@@ -105,7 +106,7 @@ package Gtk.Menu_Item is
 
    procedure Set_Accel_Path
      (Menu_Item  : access Gtk_Menu_Item_Record;
-      Accel_Path : String);
+      Accel_Path : UTF8_String);
    --  Set the path that will be used to reference the widget in calls to the
    --  subprograms in Gtk.Accel_Map. This means, for instance, that the widget
    --  is fully setup for interactive modification of the shortcuts by the

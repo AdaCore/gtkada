@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -49,9 +49,9 @@ package body Gtk.GEntry is
    -----------------
 
    procedure Append_Text
-     (The_Entry : access Gtk_Entry_Record; Text : String)
+     (The_Entry : access Gtk_Entry_Record; Text : UTF8_String)
    is
-      procedure Internal (The_Entry : System.Address; Text : String);
+      procedure Internal (The_Entry : System.Address; Text : UTF8_String);
       pragma Import (C, Internal, "gtk_entry_append_text");
 
    begin
@@ -220,7 +220,9 @@ package body Gtk.GEntry is
    -- Get_Text --
    --------------
 
-   function Get_Text (The_Entry : access Gtk_Entry_Record) return String is
+   function Get_Text
+     (The_Entry : access Gtk_Entry_Record) return UTF8_String
+   is
       function Internal
         (The_Entry : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_entry_get_text");
@@ -281,9 +283,9 @@ package body Gtk.GEntry is
    ------------------
 
    procedure Prepend_Text
-     (The_Entry : access Gtk_Entry_Record; Text : String)
+     (The_Entry : access Gtk_Entry_Record; Text : UTF8_String)
    is
-      procedure Internal (The_Entry : System.Address; Text : String);
+      procedure Internal (The_Entry : System.Address; Text : UTF8_String);
       pragma Import (C, Internal, "gtk_entry_prepend_text");
 
    begin
@@ -323,8 +325,10 @@ package body Gtk.GEntry is
    -- Set_Text --
    --------------
 
-   procedure Set_Text (The_Entry : access Gtk_Entry_Record; Text : String) is
-      procedure Internal (The_Entry : System.Address; Text : String);
+   procedure Set_Text
+     (The_Entry : access Gtk_Entry_Record; Text : UTF8_String)
+   is
+      procedure Internal (The_Entry : System.Address; Text : UTF8_String);
       pragma Import (C, Internal, "gtk_entry_set_text");
 
    begin

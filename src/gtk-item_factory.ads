@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -93,7 +93,7 @@ package Gtk.Item_Factory is
    procedure Initialize
      (Ifactory       : access Gtk_Item_Factory_Record'Class;
       Container_Type : Gtk_Type;
-      Path           : String := "";
+      Path           : UTF8_String := "";
       Accel_Group    : Gtk.Accel_Group.Gtk_Accel_Group);
 
    function Get_Type return Gtk_Type;
@@ -101,7 +101,7 @@ package Gtk.Item_Factory is
 
    procedure Add_Foreign
      (Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Full_Path    : String;
+      Full_Path    : UTF8_String;
       Accel_Group  : Gtk.Accel_Group.Gtk_Accel_Group;
       Keyval       : Guint;
       Modifiers    : Gdk.Types.Gdk_Modifier_Type);
@@ -111,15 +111,15 @@ package Gtk.Item_Factory is
       return Gtk_Item_Factory;
 
    function Path_From_Widget
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return String;
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return UTF8_String;
 
    function Get_Item
      (Ifactory : access Gtk_Item_Factory_Record;
-      Path     : String) return Gtk.Widget.Gtk_Widget;
+      Path     : UTF8_String) return Gtk.Widget.Gtk_Widget;
 
    function Get_Widget
      (Ifactory : access Gtk_Item_Factory_Record;
-      Path     : String) return Gtk.Widget.Gtk_Widget;
+      Path     : UTF8_String) return Gtk.Widget.Gtk_Widget;
 
    function Get_Widget_By_Action
      (Ifactory : access Gtk_Item_Factory_Record;
@@ -131,7 +131,7 @@ package Gtk.Item_Factory is
 
    procedure Delete_Item
      (Ifactory : access Gtk_Item_Factory_Record;
-      Path     : String);
+      Path     : UTF8_String);
 
    procedure Delete_Entry
      (Ifactory : access Gtk_Item_Factory_Record;
@@ -159,7 +159,7 @@ package Gtk.Item_Factory is
          Str       : String);  --  gchar* ???
 
       type Gtk_Translate_Func is access function
-        (Path      : String;  --  const gchar* ???
+        (Path      : UTF8_String;  --  const gchar* ???
          Func_Data : Data_Type_Access) return Gtkada.Types.Chars_Ptr;
 
       type Limited_Widget is limited private;
@@ -174,7 +174,7 @@ package Gtk.Item_Factory is
          Widget          : Limited_Widget);
 
       function Gtk_New
-        (Path            : String;
+        (Path            : UTF8_String;
          Accelerator     : String := "";
          Callback        : Gtk_Item_Factory_Callback := null;
          Item_Type       : Item_Type_Enum;
@@ -184,7 +184,7 @@ package Gtk.Item_Factory is
       --  leaks.
 
       function Gtk_New
-        (Path            : String;
+        (Path            : UTF8_String;
          Accelerator     : String := "";
          Callback        : Gtk_Item_Factory_Callback := null;
          Item_Type       : String := "";
@@ -194,7 +194,7 @@ package Gtk.Item_Factory is
       --  leaks.
 
       function Gtk_New
-        (Path            : String;
+        (Path            : UTF8_String;
          Accelerator     : String := "";
          Stock_Id        : String;
          Callback        : Gtk_Item_Factory_Callback := null;
@@ -204,7 +204,7 @@ package Gtk.Item_Factory is
       --  leaks.
 
       function Gtk_New
-        (Path            : String;
+        (Path            : UTF8_String;
          Accelerator     : String := "";
          Callback        : Gtk_Item_Factory_Callback := null;
          Pixbuf          : access Guchar_Array;

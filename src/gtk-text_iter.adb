@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -144,7 +144,7 @@ package body Gtk.Text_Iter is
 
    function Get_Slice
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter) return String
+      The_End : Gtk_Text_Iter) return UTF8_String
    is
       Str : constant Interfaces.C.Strings.chars_ptr :=
         Get_Slice (Start, The_End);
@@ -161,7 +161,7 @@ package body Gtk.Text_Iter is
 
    function Get_Text
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter) return String
+      The_End : Gtk_Text_Iter) return UTF8_String
    is
       function Internal
         (Start   : Gtk_Text_Iter;
@@ -187,7 +187,7 @@ package body Gtk.Text_Iter is
 
    function Get_Visible_Slice
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter) return String
+      The_End : Gtk_Text_Iter) return UTF8_String
    is
       function Internal
         (Start   : Gtk_Text_Iter;
@@ -211,7 +211,7 @@ package body Gtk.Text_Iter is
 
    function Get_Visible_Text
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter) return String
+      The_End : Gtk_Text_Iter) return UTF8_String
    is
       function Internal
         (Start   : Gtk_Text_Iter;
@@ -515,7 +515,7 @@ package body Gtk.Text_Iter is
    -- Get_Language --
    ------------------
 
-   function Get_Language (Iter : Gtk_Text_Iter) return String is
+   function Get_Language (Iter : Gtk_Text_Iter) return UTF8_String is
       function Internal
         (Iter : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_language");
@@ -1080,7 +1080,7 @@ package body Gtk.Text_Iter is
 
    procedure Forward_Search
      (Iter         : Gtk_Text_Iter;
-      Str          : String;
+      Str          : UTF8_String;
       Visible_Only : Boolean := False;
       Slice        : Boolean;
       Match_Start  : out Gtk_Text_Iter;
@@ -1090,7 +1090,7 @@ package body Gtk.Text_Iter is
    is
       function Internal
         (Iter         : Gtk_Text_Iter;
-         Str          : String;
+         Str          : UTF8_String;
          Visible_Only : Gboolean;
          Slice        : Gboolean;
          Match_Start  : System.Address;
@@ -1116,7 +1116,7 @@ package body Gtk.Text_Iter is
 
    procedure Backward_Search
      (Iter         : Gtk_Text_Iter;
-      Str          : String;
+      Str          : UTF8_String;
       Visible_Only : Boolean := False;
       Slice        : Boolean;
       Match_Start  : out Gtk_Text_Iter;
@@ -1126,7 +1126,7 @@ package body Gtk.Text_Iter is
    is
       function Internal
         (Iter         : Gtk_Text_Iter;
-         Str          : String;
+         Str          : UTF8_String;
          Visible_Only : Gboolean;
          Slice        : Gboolean;
          Match_Start  : System.Address;

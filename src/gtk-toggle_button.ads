@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -52,7 +52,7 @@ package Gtk.Toggle_Button is
 
    procedure Gtk_New
      (Toggle_Button : out Gtk_Toggle_Button;
-      Label         : String := "");
+      Label         : UTF8_String := "");
    --  Initialize a button.
    --  If Label is "", then no label is created inside the button and
    --  you will have to provide your own child through a call to
@@ -61,20 +61,20 @@ package Gtk.Toggle_Button is
 
    procedure Gtk_New_With_Mnemonic
      (Toggle_Button : out Gtk_Toggle_Button;
-      Label         : String);
+      Label         : UTF8_String);
    --  Create a Gtk_Toggle_Button containing Label. The Label will be created
    --  using Gtk.Label.Gtk_New_With_Mnemonic, so underscores in Label indicate
    --  the mnemonic for the button.
 
    procedure Initialize
      (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
-      Label         : String := "");
+      Label         : UTF8_String := "");
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    procedure Initialize_With_Mnemonic
      (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
-      Label         : String);
+      Label         : UTF8_String);
    --  Internal initialization function.
 
    function Get_Type return Glib.GType;

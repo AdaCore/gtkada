@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -71,7 +71,7 @@ package body Gtk.Button is
    ---------------
 
    function Get_Label
-     (Button : access Gtk_Button_Record) return String
+     (Button : access Gtk_Button_Record) return UTF8_String
    is
       function Internal (Button : System.Address) return chars_ptr;
       pragma Import (C, Internal, "gtk_button_get_label");
@@ -127,7 +127,7 @@ package body Gtk.Button is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Button : out Gtk_Button; Label : in String := "") is
+   procedure Gtk_New (Button : out Gtk_Button; Label : UTF8_String := "") is
    begin
       Button := new Gtk_Button_Record;
       Initialize (Button, Label);
@@ -149,7 +149,7 @@ package body Gtk.Button is
    ---------------------------
 
    procedure Gtk_New_With_Mnemonic
-     (Button : out Gtk_Button; Label : String) is
+     (Button : out Gtk_Button; Label : UTF8_String) is
    begin
       Button := new Gtk_Button_Record;
       Initialize_With_Mnemonic (Button, Label);
@@ -161,7 +161,7 @@ package body Gtk.Button is
 
    procedure Initialize
      (Button : access Gtk_Button_Record'Class;
-      Label  : String)
+      Label  : UTF8_String)
    is
       function Internal (S : String) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_with_label");
@@ -198,7 +198,7 @@ package body Gtk.Button is
 
    procedure Initialize_With_Mnemonic
      (Button : access Gtk_Button_Record'Class;
-      Label  : String)
+      Label  : UTF8_String)
    is
       function Internal (Label : String) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_with_mnemonic");
@@ -249,7 +249,7 @@ package body Gtk.Button is
 
    procedure Set_Label
      (Button : access Gtk_Button_Record;
-      Label  : String)
+      Label  : UTF8_String)
    is
       procedure Internal
         (Button : System.Address;

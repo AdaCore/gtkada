@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -104,7 +104,7 @@ package Gtk.Status_Bar is
    function Push
      (Statusbar : access Gtk_Status_Bar_Record;
       Context   : Context_Id;
-      Text      : String) return Message_Id;
+      Text      : UTF8_String) return Message_Id;
    --  Push a new message on the queue, associated with a specific context.
    --  This message is directly displayed in the status bar.
    --  A new unique message id is associated with this message.

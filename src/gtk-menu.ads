@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -117,12 +117,12 @@ package Gtk.Menu is
    function Get_Tearoff_State (Menu : access Gtk_Menu_Record) return Boolean;
    --  Return the tearoff status of the menu.
 
-   procedure Set_Title (Menu : access Gtk_Menu_Record; Title : String);
+   procedure Set_Title (Menu : access Gtk_Menu_Record; Title : UTF8_String);
    --  Set the title of the menu.
    --  Title is displayed when the menu is displayed as a tearoff menu in an
    --  independent window.
 
-   function Get_Title (Menu : access Gtk_Menu_Record) return String;
+   function Get_Title (Menu : access Gtk_Menu_Record) return UTF8_String;
    --  Return the tiel of the menu.
 
    procedure Reorder_Child
@@ -228,7 +228,7 @@ package Gtk.Menu is
 
    procedure Set_Accel_Path
      (Menu       : access Gtk_Menu_Record;
-      Accel_Path : String);
+      Accel_Path : UTF8_String);
    --  Set an accelerator path for this menu from which accelerator paths
    --  for its immediate children, its menu items, can be constructed.
    --  The main purpose of this function is to spare the programmer the

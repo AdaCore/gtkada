@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2002 ACT-Europe                   --
+--                Copyright (C) 2002-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -103,7 +103,7 @@ package Gtk.Clipboard is
 
    procedure Set_Text
      (Clipboard : Gtk_Clipboard;
-      Text      : String);
+      Text      : UTF8_String);
    --  Set the contents of the clipboard.
 
    --  procedure Request_Contents
@@ -121,7 +121,7 @@ package Gtk.Clipboard is
    --    (Clipboard : Gtk_Clipboard;
    --     Target    : Gdk_Atom) return Gtk_Selection_Data;
 
-   --  function Wait_For_Text (Clipboard : Gtk_Clipboard) return String;
+   --  function Wait_For_Text (Clipboard : Gtk_Clipboard) return UTF8_String;
 
    --  function Wait_Is_Text_Available
    --    (Clipboard : Gtk_Clipboard) return Boolean;

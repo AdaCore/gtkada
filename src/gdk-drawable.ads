@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -152,7 +152,7 @@ package Gdk.Drawable is
       Gc          : Gdk.Gdk_GC;
       X           : Gint;
       Y           : Gint;
-      Text        : String);
+      Text        : UTF8_String);
    --  Draw a string in the given font or fontset.
    --  X is the x coordinate of the left edge of the text.
    --  Y is the y coordinate of the baseline of the text.

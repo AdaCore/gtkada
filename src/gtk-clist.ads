@@ -354,13 +354,13 @@ package Gtk.Clist is
    procedure Set_Column_Title
      (Clist  : access Gtk_Clist_Record;
       Column : in Gint;
-      Title  : in String);
+      Title  : in UTF8_String);
    --  Set the text for the button of the column's title.
    --  See Set_Column_Widget if you want to put a pixmap inside the button.
 
    function Get_Column_Title
      (Clist  : access Gtk_Clist_Record;
-      Column : in Gint) return String;
+      Column : in Gint) return UTF8_String;
    --  Return the text used for the title's column.
    --  This is a copy of the title, so you can't modify it to automatically
    --  change the column's title.
@@ -577,7 +577,7 @@ package Gtk.Clist is
      (Clist  : access Gtk_Clist_Record;
       Row    : in Gint;
       Column : in Gint;
-      Text   : in String);
+      Text   : in UTF8_String);
    --  Set the cell's text, replacing its current contents.
    --  This changes the type of the cell to Cell_Text. The pixmap (if any)
    --  will no longer be displayed.
@@ -585,7 +585,7 @@ package Gtk.Clist is
    function Get_Text
      (Clist    : access Gtk_Clist_Record;
       Row      : in Gint;
-      Column   : in Gint) return String;
+      Column   : in Gint) return UTF8_String;
    --  Return the text contained in cell. The type of the cell should be
    --  either Cell_Text or Cell_Pixtext.
    --  If there was a problem, a null-length string is returned.
@@ -595,7 +595,7 @@ package Gtk.Clist is
    function Get_Text
      (Clist    : access Gtk_Clist_Record;
       Row      : Gtk_Clist_Row;
-      Column   : in Gint) return String;
+      Column   : in Gint) return UTF8_String;
    --  Return the text contained in cell. The Row can be obtained from
    --  Get_Row_List, this function speeds up the access a little compared
    --  to the other Get_Text above.
@@ -637,7 +637,7 @@ package Gtk.Clist is
      (Clist   : access Gtk_Clist_Record;
       Row     : in Gint;
       Column  : in Gint;
-      Text    : in String;
+      Text    : in UTF8_String;
       Spacing : in Guint8;
       Pixmap  : in Gdk.Pixmap.Gdk_Pixmap;
       Mask    : in Gdk.Bitmap.Gdk_Bitmap);
@@ -687,7 +687,7 @@ package Gtk.Clist is
       Row       : Gtk_Clist_Row;
       Column    : Gint;
       Cell_Type : Gtk_Cell_Type;
-      Text      : String;
+      Text      : UTF8_String;
       Spacing   : Guint8;
       Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
       Mask      : Gdk.Bitmap.Gdk_Bitmap);

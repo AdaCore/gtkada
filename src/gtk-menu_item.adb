@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -70,7 +70,8 @@ package body Gtk.Menu_Item is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Menu_Item : out Gtk_Menu_Item; Label : String := "") is
+   procedure Gtk_New
+     (Menu_Item : out Gtk_Menu_Item; Label : UTF8_String := "") is
    begin
       Menu_Item := new Gtk_Menu_Item_Record;
       Initialize (Menu_Item, Label);
@@ -82,7 +83,7 @@ package body Gtk.Menu_Item is
 
    procedure Gtk_New_With_Mnemonic
      (Menu_Item : out Gtk_Menu_Item;
-      Label     : String) is
+      Label     : UTF8_String) is
    begin
       Menu_Item := new Gtk_Menu_Item_Record;
       Initialize_With_Mnemonic (Menu_Item, Label);
@@ -106,9 +107,9 @@ package body Gtk.Menu_Item is
 
    procedure Initialize
      (Menu_Item : access Gtk_Menu_Item_Record'Class;
-      Label     : String)
+      Label     : UTF8_String)
    is
-      function Internal (Label : String) return System.Address;
+      function Internal (Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_menu_item_new_with_label");
 
       function Internal2 return System.Address;
@@ -128,9 +129,9 @@ package body Gtk.Menu_Item is
 
    procedure Initialize_With_Mnemonic
      (Menu_Item : access Gtk_Menu_Item_Record'Class;
-      Label     : String)
+      Label     : UTF8_String)
    is
-      function Internal (Label : String) return System.Address;
+      function Internal (Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_menu_item_new_with_mnemonic");
    begin
       Set_Object (Menu_Item, Internal (Label & ASCII.NUL));
@@ -189,11 +190,11 @@ package body Gtk.Menu_Item is
 
    procedure Set_Accel_Path
      (Menu_Item  : access Gtk_Menu_Item_Record;
-      Accel_Path : String)
+      Accel_Path : UTF8_String)
    is
       procedure Internal
         (Menu_Item  : System.Address;
-         Accel_Path : String);
+         Accel_Path : UTF8_String);
       pragma Import (C, Internal, "gtk_menu_item_set_accel_path");
 
    begin

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -49,7 +49,7 @@ package Gdk.Window_Attr is
 
    procedure Gdk_New
      (Window_Attr       : out Gdk_Window_Attr;
-      Title             : String := "";
+      Title             : Glib.UTF8_String := "";
       Event_Mask        : Gdk.Event.Gdk_Event_Mask := 0;
       X, Y              : Glib.Gint := 0;
       Width             : Glib.Gint := 0;
@@ -72,9 +72,9 @@ package Gdk.Window_Attr is
 
    procedure Set_Title
      (Window_Attr : Gdk_Window_Attr;
-      Title       : String);
+      Title       : Glib.UTF8_String);
 
-   function Get_Title (Window_Attr : Gdk_Window_Attr) return String;
+   function Get_Title (Window_Attr : Gdk_Window_Attr) return Glib.UTF8_String;
 
    procedure Set_Event_Mask
      (Window_Attr : Gdk_Window_Attr;

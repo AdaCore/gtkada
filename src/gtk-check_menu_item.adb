@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -74,7 +74,7 @@ package body Gtk.Check_Menu_Item is
 
    procedure Gtk_New
      (Check_Menu_Item : out Gtk_Check_Menu_Item;
-      Label           : String := "") is
+      Label           : UTF8_String := "") is
    begin
       Check_Menu_Item := new Gtk_Check_Menu_Item_Record;
       Initialize (Check_Menu_Item, Label);
@@ -86,9 +86,9 @@ package body Gtk.Check_Menu_Item is
 
    procedure Initialize
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record'Class;
-      Label           : String := "")
+      Label           : UTF8_String := "")
    is
-      function Internal (Label : String) return System.Address;
+      function Internal (Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_check_menu_item_new_with_label");
       function Internal_No_Label return System.Address;
       pragma Import (C, Internal_No_Label, "gtk_check_menu_item_new");
@@ -106,7 +106,7 @@ package body Gtk.Check_Menu_Item is
 
    procedure Gtk_New_With_Mnemonic
      (Check_Menu_Item : out Gtk_Check_Menu_Item;
-      Label           : String) is
+      Label           : UTF8_String) is
    begin
       Check_Menu_Item := new Gtk_Check_Menu_Item_Record;
       Initialize_With_Mnemonic (Check_Menu_Item, Label);
@@ -118,9 +118,9 @@ package body Gtk.Check_Menu_Item is
 
    procedure Initialize_With_Mnemonic
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record'Class;
-      Label           : String)
+      Label           : UTF8_String)
    is
-      function Internal (Label : String) return System.Address;
+      function Internal (Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_check_menu_item_new_with_mnemonic");
 
    begin

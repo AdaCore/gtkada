@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -495,14 +495,15 @@ package Gtkada.Canvas is
    procedure Configure
      (Link   : access Canvas_Link_Record;
       Arrow  : in Arrow_Type := End_Arrow;
-      Descr  : in String := "");
+      Descr  : in Glib.UTF8_String := "");
    --  Configure a link.
    --  The link is an oriented bound between two items on the canvas.
    --  If Descr is not the empty string, it will be displayed in the middle
    --  of the link, and should indicate what the link means.
    --  Arrow indicates whether some arrows should be printed as well.
 
-   function Get_Descr (Link : access Canvas_Link_Record) return String;
+   function Get_Descr
+     (Link : access Canvas_Link_Record) return Glib.UTF8_String;
    --  Return the description for the link, or "" if there is none
 
    function Get_Arrow_Type
@@ -534,7 +535,7 @@ package Gtkada.Canvas is
    function Has_Link
      (Canvas   : access Interactive_Canvas_Record;
       From, To : access Canvas_Item_Record'Class;
-      Name     : String := "") return Boolean;
+      Name     : Glib.UTF8_String := "") return Boolean;
    --  Test whether there is a link from From to To, with the same name.
    --  If Name is the empty string "", then no check is done on the name,
    --  and True if returned if there is any link between the two items.
@@ -545,7 +546,7 @@ package Gtkada.Canvas is
       Src    : access Canvas_Item_Record'Class;
       Dest   : access Canvas_Item_Record'Class;
       Arrow  : in Arrow_Type := End_Arrow;
-      Descr  : in String := "");
+      Descr  : in Glib.UTF8_String := "");
    --  Add Link in the canvas. This connects the two items Src and Dest.
    --  Simpler procedure to add a standard link.
    --  This takes care of memory allocation, as well as adding the link to
@@ -878,7 +879,7 @@ package Gtkada.Canvas is
 
 private
 
-   type String_Access is access String;
+   type String_Access is access Glib.UTF8_String;
 
    type Canvas_Link_Record is new Glib.Graphs.Edge with record
       Descr  : String_Access;

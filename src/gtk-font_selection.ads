@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -101,24 +101,26 @@ package Gtk.Font_Selection is
    --  Fontname should have the format described in Pango.Font.
 
    function Get_Preview_Text
-     (Fontsel : access Gtk_Font_Selection_Record) return String;
+     (Fontsel : access Gtk_Font_Selection_Record) return UTF8_String;
    --  Return the string used to preview the selected font in the dialog.
 
    procedure Set_Preview_Text
-     (Fontsel : access Gtk_Font_Selection_Record; Text : String);
+     (Fontsel : access Gtk_Font_Selection_Record; Text : UTF8_String);
    --  Set the string to use to preview the selected font.
 
    -------------------------------------
    -- Font_Selection_Dialog functions --
    -------------------------------------
 
-   procedure Gtk_New (Widget : out Gtk_Font_Selection_Dialog; Title : String);
+   procedure Gtk_New
+     (Widget : out Gtk_Font_Selection_Dialog; Title : UTF8_String);
    --  Create a new dialog to select a font.
    --  The font selection widget has its own window, whose title is chosen
    --  by Title.
 
    procedure Initialize
-     (Widget : access Gtk_Font_Selection_Dialog_Record'Class; Title : String);
+     (Widget : access Gtk_Font_Selection_Dialog_Record'Class;
+      Title  : UTF8_String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -150,11 +152,11 @@ package Gtk.Font_Selection is
    --  describe the family, weight, size, slant, etc. of the font.
 
    function Get_Preview_Text
-     (Fsd : access Gtk_Font_Selection_Dialog_Record) return String;
+     (Fsd : access Gtk_Font_Selection_Dialog_Record) return UTF8_String;
    --  Return the string used to preview the selected font in the dialog.
 
    procedure Set_Preview_Text
-     (Fsd : access Gtk_Font_Selection_Dialog_Record; Text : String);
+     (Fsd : access Gtk_Font_Selection_Dialog_Record; Text : UTF8_String);
    --  Set the string to use to preview the selected font.
 
    function Get_Cancel_Button

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2001                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -146,7 +146,7 @@ package Gtk.Text is
    --  Gtk.Editable.Set_Position instead).
 
    --  <doc_ignore>
-   function Get_Text (Text : access Gtk_Text_Record) return String;
+   function Get_Text (Text : access Gtk_Text_Record) return UTF8_String;
    --  Should probably be deleted (does not work, fails to capture
    --  user changes). Use Gtk.Editable.Get_Chars instead.
    --  </doc_ignore>
@@ -156,7 +156,7 @@ package Gtk.Text is
       Font   : in Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
       Fore   : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Back   : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Chars  : in String := "";
+      Chars  : in UTF8_String := "";
       Length : in Gint := -1);
    --  Insert the given string (Chars) inside the text of the text widget.
    --  Use the specified Font, foreground (Fore) and background

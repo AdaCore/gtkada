@@ -38,7 +38,7 @@ package Glib.Unicode is
    pragma Preelaborate;
 
    procedure UTF8_Validate
-     (Str         : String;
+     (Str         : UTF8_String;
       Valid       : out Boolean;
       Invalid_Pos : out Natural);
    --  Validate a UTF8 string.

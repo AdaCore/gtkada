@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -56,10 +56,10 @@ package Gtk.Tooltips is
    type Tooltips_Data
      (Text_Length : Natural; Private_Length : Natural) is
    record
-      Tooltips     : Gtk_Tooltips;    --  the group of the tooltip
-      Widget       : Gtk.Widget.Gtk_Widget; --  the widget to which it applies
-      Text         : String (1 .. Text_Length); --  the text of the tooltip
-      Text_Private : String (1 .. Private_Length); --  the private text
+      Tooltips     : Gtk_Tooltips;    -- the group of the tooltip
+      Widget       : Gtk.Widget.Gtk_Widget; -- the widget to which it applies
+      Text         : UTF8_String (1 .. Text_Length); -- the text of the tooltip
+      Text_Private : UTF8_String (1 .. Private_Length); -- the private text
    end record;
    --  </doc_ignore>
 
@@ -96,8 +96,8 @@ package Gtk.Tooltips is
    procedure Set_Tip
      (Tooltips    : access Gtk_Tooltips_Record;
       Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tip_Text    : String;
-      Tip_Private : String := "");
+      Tip_Text    : UTF8_String;
+      Tip_Private : UTF8_String := "");
    --  Add a new tooltip to Widget.
    --  The message that appears in the tooltip is Tip_Text, and the tooltip
    --  belongs to the group Tooltips.

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,7 +37,7 @@ package body Gtk.Check_Button is
 
    procedure Gtk_New
      (Check_Button : out Gtk_Check_Button;
-      Label        : String := "") is
+      Label        : UTF8_String := "") is
    begin
       Check_Button := new Gtk_Check_Button_Record;
       Initialize (Check_Button, Label);
@@ -49,7 +49,7 @@ package body Gtk.Check_Button is
 
    procedure Gtk_New_With_Mnemonic
      (Check_Button : out Gtk_Check_Button;
-      Label        : String) is
+      Label        : UTF8_String) is
    begin
       Check_Button := new Gtk_Check_Button_Record;
       Initialize_With_Mnemonic (Check_Button, Label);
@@ -61,9 +61,9 @@ package body Gtk.Check_Button is
 
    procedure Initialize
      (Check_Button : access Gtk_Check_Button_Record'Class;
-      Label        : String := "")
+      Label        : UTF8_String := "")
    is
-      function Internal (Label : String) return System.Address;
+      function Internal (Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_check_button_new_with_label");
 
       function Internal2 return System.Address;
@@ -83,9 +83,9 @@ package body Gtk.Check_Button is
 
    procedure Initialize_With_Mnemonic
      (Check_Button : access Gtk_Check_Button_Record'Class;
-      Label        : String)
+      Label        : UTF8_String)
    is
-      function Internal (Label : String) return System.Address;
+      function Internal (Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_check_button_new_with_mnemonic");
 
    begin

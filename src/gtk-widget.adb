@@ -142,10 +142,10 @@ package body Gtk.Widget is
    -------------------------
 
    function Create_Pango_Layout
-     (Widget : access Gtk_Widget_Record; Text : String := "")
+     (Widget : access Gtk_Widget_Record; Text : UTF8_String := "")
       return Pango.Layout.Pango_Layout
    is
-      function Internal (Widget : System.Address; Text : String)
+      function Internal (Widget : System.Address; Text : UTF8_String)
          return System.Address;
       pragma Import (C, Internal, "gtk_widget_create_pango_layout");
 
@@ -327,7 +327,7 @@ package body Gtk.Widget is
    -- Get_Name --
    --------------
 
-   function Get_Name (Widget : access Gtk_Widget_Record) return String is
+   function Get_Name (Widget : access Gtk_Widget_Record) return UTF8_String is
       function Internal
         (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_widget_get_name");
@@ -1054,8 +1054,10 @@ package body Gtk.Widget is
    -- Set_Name --
    --------------
 
-   procedure Set_Name (Widget : access Gtk_Widget_Record; Name : String) is
-      procedure Internal (Widget : System.Address; Name : String);
+   procedure Set_Name
+     (Widget : access Gtk_Widget_Record; Name : UTF8_String)
+   is
+      procedure Internal (Widget : System.Address; Name : UTF8_String);
       pragma Import (C, Internal, "gtk_widget_set_name");
 
    begin
@@ -1334,7 +1336,7 @@ package body Gtk.Widget is
      (Widget   : access Gtk_Widget_Record;
       Stock_Id : String;
       Size     : Gtk.Enums.Gtk_Icon_Size;
-      Detail   : String := "") return Gdk.Pixbuf.Gdk_Pixbuf
+      Detail   : UTF8_String := "") return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal
         (Widget : System.Address;
@@ -1487,12 +1489,12 @@ package body Gtk.Widget is
 
    procedure Set_Accel_Path
      (Widget     : access Gtk_Widget_Record;
-      Accel_Path : String;
+      Accel_Path : UTF8_String;
       Group      : Gtk.Accel_Group.Gtk_Accel_Group)
    is
       procedure Internal
         (Widget     : System.Address;
-         Accel_Path : String;
+         Accel_Path : UTF8_String;
          Group      : System.Address);
       pragma Import (C, Internal, "gtk_widget_set_accel_path");
    begin

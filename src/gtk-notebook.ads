@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -325,13 +325,13 @@ package Gtk.Notebook is
    procedure Set_Tab_Label_Text
      (Notebook : access Gtk_Notebook_Record;
       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tab_Text : String);
+      Tab_Text : UTF8_String);
    --  Modify the text displayed in the tab for the page that contains Child.
    --  This is a less general form of Set_Tab_Label above.
 
    function Get_Tab_Label_Text
      (Notebook : access Gtk_Notebook_Record;
-      Child    : access Gtk.Widget.Gtk_Widget_Record'Class) return String;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class) return UTF8_String;
    --  Return the text displayed in the tab for the page that contains Child.
 
    procedure Set_Tab
@@ -359,14 +359,15 @@ package Gtk.Notebook is
    procedure Set_Menu_Label_Text
      (Notebook  : access Gtk_Notebook_Record;
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Menu_Text : String);
+      Menu_Text : UTF8_String);
    --  Modify the text displayed in the contextual menu for the page that
    --  contains Child.
    --  This is a less general form of Set_Menu_Label above.
 
    function Get_Menu_Label_Text
      (Notebook  : access Gtk_Notebook_Record;
-      Child     : access Gtk.Widget.Gtk_Widget_Record'Class) return String;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return UTF8_String;
    --  Return the text displayed in the contextual menu for the page that
    --  contains Child.
 

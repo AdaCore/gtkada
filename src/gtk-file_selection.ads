@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -52,13 +52,14 @@ package Gtk.File_Selection is
    -- Operations on the dialog --
    ------------------------------
 
-   procedure Gtk_New (File_Selection : out Gtk_File_Selection; Title : String);
+   procedure Gtk_New
+     (File_Selection : out Gtk_File_Selection; Title : UTF8_String);
    --  Create a new file selection dialog.
    --  Title is the name of the dialog, as displayed in its title bar.
 
    procedure Initialize
      (File_Selection : access Gtk_File_Selection_Record'Class;
-      Title          : String);
+      Title          : UTF8_String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -67,7 +68,7 @@ package Gtk.File_Selection is
 
    procedure Set_Filename
      (File_Selection : access Gtk_File_Selection_Record;
-      Filename       : String);
+      Filename       : UTF8_String);
    --  Highlight the given file in the dialog.
    --  Note that this does not close the dialog.
    --  You can also use this procedure to select the directory to be displayed
@@ -75,12 +76,12 @@ package Gtk.File_Selection is
    --  in the dialog.
 
    function Get_Filename
-     (File_Selection : access Gtk_File_Selection_Record) return String;
+     (File_Selection : access Gtk_File_Selection_Record) return UTF8_String;
    --  Get the selected file name.
 
    procedure Complete
      (File_Selection : access Gtk_File_Selection_Record;
-      Pattern        : String);
+      Pattern        : UTF8_String);
    --  Set the filter used to display the files.
    --  The pattern is displayed in the entry at the bottom of the dialog, and
    --  the list of files displayed in the list.
@@ -182,7 +183,7 @@ package Gtk.File_Selection is
    --  Glib.Properties for more information on properties.
    --
    --  - Name:  Filename_Property
-   --    Type:  String
+   --    Type:  UTF8_String
    --    Flags: read-write
    --    Descr: The currently selected filename.
    --    See also: Set_Filename and Get_Filename

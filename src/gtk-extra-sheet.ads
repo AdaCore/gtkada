@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -109,7 +109,7 @@ package Gtk.Extra.Sheet is
    procedure Gtk_New (Sheet      : out Gtk_Sheet;
                       Rows       : in Guint;
                       Columns    : in Guint;
-                      Title      : in String := "";
+                      Title      : in UTF8_String := "";
                       Entry_Type : in Gtk_Type := GType_Invalid);
    --  Create a new sheet with a specific number of rows and columns.
    --  You can fully specify which type the entry used to modify the value of
@@ -120,7 +120,7 @@ package Gtk.Extra.Sheet is
    procedure Initialize (Sheet      : access Gtk_Sheet_Record'Class;
                          Rows       : in Guint;
                          Columns    : in Guint;
-                         Title      : in String := "";
+                         Title      : in UTF8_String := "";
                          Entry_Type : in Gtk_Type := GType_Invalid);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
@@ -128,7 +128,7 @@ package Gtk.Extra.Sheet is
    procedure Gtk_New_Browser (Sheet   : out Gtk_Sheet;
                               Rows    : in Guint;
                               Columns : in Guint;
-                              Title   : in String := "");
+                              Title   : in UTF8_String := "");
    --  Create a new sheet browser with a specific number of rows and columns.
    --  This is a standard Gtk_Sheet, except that it is read-only and that its
    --  cells will automatically resize themselves depending on their contents.
@@ -136,7 +136,7 @@ package Gtk.Extra.Sheet is
    procedure Initialize_Browser (Sheet   : access Gtk_Sheet_Record'Class;
                                  Rows    : in Guint;
                                  Columns : in Guint;
-                                 Title   : in String := "");
+                                 Title   : in UTF8_String := "");
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -173,7 +173,7 @@ package Gtk.Extra.Sheet is
    --  Return the entry used to modify the content of the cells.
 
    procedure Set_Title (Sheet : access Gtk_Sheet_Record;
-                        Title : in String);
+                        Title : in UTF8_String);
    --  Change the title of the sheet.
 
    procedure Freeze (Sheet : access Gtk_Sheet_Record);
@@ -320,7 +320,7 @@ package Gtk.Extra.Sheet is
 
    procedure Set_Column_Title (Sheet  : access Gtk_Sheet_Record;
                                Column : in Gint;
-                               Title  : in String);
+                               Title  : in UTF8_String);
    --  Modify the title of a column.
    --  The first column on the left has the number 0.
    --  Note that this title does not appear on the screen, and can only be
@@ -328,7 +328,7 @@ package Gtk.Extra.Sheet is
 
    function Get_Column_Title (Sheet  : access Gtk_Sheet_Record;
                               Column : Gint)
-                             return String;
+                             return UTF8_String;
    --  Return the title of a specific column.
 
    procedure Set_Column_Titles_Height
@@ -337,11 +337,11 @@ package Gtk.Extra.Sheet is
 
    procedure Column_Button_Add_Label (Sheet  : access Gtk_Sheet_Record;
                                       Column : in Gint;
-                                      Label  : in String);
+                                      Label  : in UTF8_String);
    --  Modify the label of the button that appears at the top of each column.
 
    function Column_Button_Get_Label
-     (Sheet : access Gtk_Sheet_Record; Column : Gint) return String;
+     (Sheet : access Gtk_Sheet_Record; Column : Gint) return UTF8_String;
    --  Return the label for the button that appears at the top of each column
 
    procedure Column_Button_Justify
@@ -436,14 +436,14 @@ package Gtk.Extra.Sheet is
 
    procedure Set_Row_Title (Sheet : access Gtk_Sheet_Record;
                             Row   : in Gint;
-                            Title : in String);
+                            Title : in UTF8_String);
    --  Modify the title of a row.
    --  The first row at the top has the number 0.
    --  Note that this title does not appear on the screen, and can only be
    --  used internally to find a specific row.
 
    function Get_Row_Title
-     (Sheet  : access Gtk_Sheet_Record; Row : Gint) return String;
+     (Sheet  : access Gtk_Sheet_Record; Row : Gint) return UTF8_String;
    --  Return the title of a specific row.
 
    procedure Set_Row_Titles_Width
@@ -452,11 +452,11 @@ package Gtk.Extra.Sheet is
 
    procedure Row_Button_Add_Label (Sheet : access Gtk_Sheet_Record;
                                    Row   : in Gint;
-                                   Label : in String);
+                                   Label : in UTF8_String);
    --  Modify the label of the button that appears on the left of each row.
 
    function Row_Button_Get_Label
-     (Sheet : access Gtk_Sheet_Record; Row : Gint) return String;
+     (Sheet : access Gtk_Sheet_Record; Row : Gint) return UTF8_String;
    --  Return the label for the button that appears on the left of each row.
 
    procedure Row_Button_Justify
@@ -605,21 +605,21 @@ package Gtk.Extra.Sheet is
                        Row           : in Gint;
                        Col           : in Gint;
                        Justification : in Gtk.Enums.Gtk_Justification;
-                       Text          : in String);
+                       Text          : in UTF8_String);
    --  Set the cell contents.
    --  Set Text to the empty string to delete the content of the cell.
 
    procedure Set_Cell_Text (Sheet : access Gtk_Sheet_Record;
                             Row   : in Gint;
                             Col   : in Gint;
-                            Text  : in String);
+                            Text  : in UTF8_String);
    --  Set the cell contents.
    --  The justification used is the previous one used in that cell.
 
    function Cell_Get_Text (Sheet  : access Gtk_Sheet_Record;
                            Row    : in Gint;
                            Col    : in Gint)
-                          return      String;
+                          return      UTF8_String;
    --  Return the text put in a specific cell.
    --  The empty string is returned if there is no text in that cell.
 

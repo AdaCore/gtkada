@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --                   Copyright (C) 2003 ACT-Europe                   --
 --                                                                   --
@@ -96,12 +96,12 @@ package body Glib.Messages is
    procedure Log_Default_Handler
      (Log_Domain : String;
       Log_Levels : Log_Level_Flags;
-      Message    : String)
+      Message    : UTF8_String)
    is
       procedure Internal
         (Log_Domain : String;
          Log_Levels : Log_Level_Flags;
-         Message    : String);
+         Message    : UTF8_String);
       pragma Import (C, Internal, "g_log_default_handler");
 
    begin
@@ -115,13 +115,13 @@ package body Glib.Messages is
    procedure Log
      (Log_Domain : String;
       Log_Levels : Log_Level_Flags;
-      Message    : String)
+      Message    : UTF8_String)
    is
       procedure Internal
         (Log_Domain : String;
          Log_Levels : Log_Level_Flags;
          Format     : String;
-         Message    : String);
+         Message    : UTF8_String);
       pragma Import (C, Internal, "g_log");
 
    begin

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -79,7 +79,7 @@ package body Gtk.Toggle_Button is
 
    procedure Gtk_New
      (Toggle_Button : out Gtk_Toggle_Button;
-      Label         : String := "") is
+      Label         : UTF8_String := "") is
    begin
       Toggle_Button := new Gtk_Toggle_Button_Record;
       Initialize (Toggle_Button, Label);
@@ -91,7 +91,7 @@ package body Gtk.Toggle_Button is
 
    procedure Gtk_New_With_Mnemonic
      (Toggle_Button : out Gtk_Toggle_Button;
-      Label         : String) is
+      Label         : UTF8_String) is
    begin
       Toggle_Button := new Gtk_Toggle_Button_Record;
       Initialize_With_Mnemonic (Toggle_Button, Label);
@@ -103,9 +103,9 @@ package body Gtk.Toggle_Button is
 
    procedure Initialize
      (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
-      Label         : String := "")
+      Label         : UTF8_String := "")
    is
-      function Internal (Label : String) return System.Address;
+      function Internal (Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_toggle_button_new_with_label");
 
       function Internal2 return System.Address;
@@ -125,9 +125,9 @@ package body Gtk.Toggle_Button is
 
    procedure Initialize_With_Mnemonic
      (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
-      Label         : String)
+      Label         : UTF8_String)
    is
-      function Internal (Label : String) return System.Address;
+      function Internal (Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_toggle_button_new_with_mnemonic");
    begin
       Set_Object (Toggle_Button, Internal (Label & ASCII.NUL));

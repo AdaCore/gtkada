@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -46,14 +46,14 @@ package Gtk.Check_Button is
 
    procedure Gtk_New
      (Check_Button : out Gtk_Check_Button;
-      Label        : String := "");
+      Label        : UTF8_String := "");
    --  Create a check button.
    --  if Label is null, then no widget is associated with the button, and
    --  any widget can be added to the button (with Gtk.Container.Add).
 
    procedure Gtk_New_With_Mnemonic
      (Check_Button : out Gtk_Check_Button;
-      Label        : String);
+      Label        : UTF8_String);
    --  Create a new check button containing a label.
    --  If characters in Label are preceded by an underscore, they are
    --  underlined indicating that they represent a keyboard accelerator called
@@ -64,13 +64,13 @@ package Gtk.Check_Button is
 
    procedure Initialize
      (Check_Button : access Gtk_Check_Button_Record'Class;
-      Label        : String := "");
+      Label        : UTF8_String := "");
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    procedure Initialize_With_Mnemonic
      (Check_Button : access Gtk_Check_Button_Record'Class;
-      Label        : String);
+      Label        : UTF8_String);
    --  Internal initialization function.
 
    function Get_Type return Glib.GType;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -75,11 +75,11 @@ package body Gtk.File_Selection is
 
    procedure Complete
      (File_Selection : access Gtk_File_Selection_Record;
-      Pattern        : String)
+      Pattern        : UTF8_String)
    is
       procedure Internal
         (File_Selection : System.Address;
-         Pattern        : String);
+         Pattern        : UTF8_String);
       pragma Import (C, Internal, "gtk_file_selection_complete");
 
    begin
@@ -142,7 +142,7 @@ package body Gtk.File_Selection is
    ------------------
 
    function Get_Filename
-     (File_Selection : access Gtk_File_Selection_Record) return String
+     (File_Selection : access Gtk_File_Selection_Record) return UTF8_String
    is
       function Internal
         (File_Selection : System.Address)
@@ -245,7 +245,7 @@ package body Gtk.File_Selection is
 
    procedure Gtk_New
      (File_Selection : out Gtk_File_Selection;
-      Title          : String) is
+      Title          : UTF8_String) is
    begin
       File_Selection := new Gtk_File_Selection_Record;
       Initialize (File_Selection, Title);
@@ -271,9 +271,9 @@ package body Gtk.File_Selection is
 
    procedure Initialize
      (File_Selection : access Gtk_File_Selection_Record'Class;
-      Title          : String)
+      Title          : UTF8_String)
    is
-      function Internal (Title : String) return System.Address;
+      function Internal (Title : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_file_selection_new");
 
    begin
@@ -286,9 +286,10 @@ package body Gtk.File_Selection is
 
    procedure Set_Filename
      (File_Selection : access Gtk_File_Selection_Record;
-      Filename       : String)
+      Filename       : UTF8_String)
    is
-      procedure Internal (File_Selection : System.Address; Filename : String);
+      procedure Internal
+        (File_Selection : System.Address; Filename : UTF8_String);
       pragma Import (C, Internal, "gtk_file_selection_set_filename");
 
    begin

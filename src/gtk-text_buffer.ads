@@ -84,7 +84,7 @@ package Gtk.Text_Buffer is
 
    procedure Set_Text
      (Buffer : access Gtk_Text_Buffer_Record;
-      Text   : String);
+      Text   : UTF8_String);
    --  Delete current contents of Buffer, and insert Text instead.
    --  If Text doesn't end with a newline, a newline is added;
    --  Gtk_Text_Buffer contents must always end with a newline. If Text
@@ -94,7 +94,7 @@ package Gtk.Text_Buffer is
    procedure Insert
      (Buffer : access Gtk_Text_Buffer_Record;
       Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
-      Text   : String);
+      Text   : UTF8_String);
    --  Insert Text at position Iter.
    --  Emit the "insert_text" signal; insertion actually occurs
    --  in the default handler for the signal. Iter is invalidated when
@@ -105,11 +105,10 @@ package Gtk.Text_Buffer is
 
    procedure Insert_At_Cursor
      (Buffer : access Gtk_Text_Buffer_Record;
-      Text   : String);
+      Text   : UTF8_String);
    --  Call Buffer_Insert, using the current cursor position
    --  as the insertion point.
    --  Text: UTF-8 format text to insert.
-   --  Len: The length of the string. Computed automatically if -1.
 
    procedure Insert_At_Cursor
      (Buffer : access Gtk_Text_Buffer_Record;
@@ -122,7 +121,7 @@ package Gtk.Text_Buffer is
    procedure Insert_Interactive
      (Buffer           : access Gtk_Text_Buffer_Record;
       Iter             : in out Gtk.Text_Iter.Gtk_Text_Iter;
-      Text             : String;
+      Text             : UTF8_String;
       Default_Editable : Boolean;
       Result           : out Boolean);
    --  Like Insert, but the insertion will not occur if Iter is at a
@@ -138,7 +137,7 @@ package Gtk.Text_Buffer is
 
    function Insert_Interactive_At_Cursor
      (Buffer           : access Gtk_Text_Buffer_Record;
-      Text             : String;
+      Text             : UTF8_String;
       Default_Editable : Boolean) return Boolean;
    --  Call Insert_Interactive at the cursor position.
    --  Text: UTF-8 format text to insert.
@@ -210,7 +209,7 @@ package Gtk.Text_Buffer is
      (Buffer               : access Gtk_Text_Buffer_Record;
       Start                : Gtk.Text_Iter.Gtk_Text_Iter;
       The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
-      Include_Hidden_Chars : Boolean := False) return String;
+      Include_Hidden_Chars : Boolean := False) return UTF8_String;
    --  Return the text in the range [Start,End).
    --  Exclude undisplayed text (text marked with tags that set the
    --  invisibility attribute) if Include_Hidden_Chars is False. Does not
@@ -233,7 +232,7 @@ package Gtk.Text_Buffer is
      (Buffer               : access Gtk_Text_Buffer_Record;
       Start                : Gtk.Text_Iter.Gtk_Text_Iter;
       The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
-      Include_Hidden_Chars : Boolean := False) return String;
+      Include_Hidden_Chars : Boolean := False) return UTF8_String;
    --  Return the text in the range [Start,End).
    --  Exclude undisplayed text (text marked with tags that set the
    --  invisibility attribute) if Include_Hidden_Chars is False. The returned
@@ -614,7 +613,7 @@ package Gtk.Text_Buffer is
    --    procedure Handler
    --      (Widget : access Gtk_Text_Buffer_Record'Class;
    --       Pos    : Gtk.Text_Iter.Gtk_Text_Iter;
-   --       Text   : String;
+   --       Text   : UTF8_String;
    --       Length : Gint);
    --
    --  - "insert_pixbuf"

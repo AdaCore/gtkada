@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -79,7 +79,7 @@ package Gtk.Cell_Renderer_Toggle is
    --  - "toggled"
    --    procedure Handler
    --     (Widget : access Gtk_Cell_Renderer_Toggle_Record'Class;
-   --       Path : String);
+   --       Path : UTF8_String);
    --
    --  </signals>
 

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -70,7 +70,7 @@ package body Gtk.Radio_Menu_Item is
    procedure Gtk_New
      (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
       Group           : Widget_SList.GSlist;
-      Label           : String := "") is
+      Label           : UTF8_String := "") is
    begin
       Radio_Menu_Item := new Gtk_Radio_Menu_Item_Record;
       Initialize (Radio_Menu_Item, Group, Label);
@@ -83,7 +83,7 @@ package body Gtk.Radio_Menu_Item is
    procedure Gtk_New_With_Mnemonic
      (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
       Group           : Widget_SList.GSlist;
-      Label           : String) is
+      Label           : UTF8_String) is
    begin
       Radio_Menu_Item := new Gtk_Radio_Menu_Item_Record;
       Initialize_With_Mnemonic (Radio_Menu_Item, Group, Label);
@@ -96,10 +96,10 @@ package body Gtk.Radio_Menu_Item is
    procedure Initialize
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
       Group           : Widget_SList.GSlist;
-      Label           : String := "")
+      Label           : UTF8_String := "")
    is
       function Internal
-        (Group : System.Address; Label : String) return System.Address;
+        (Group : System.Address; Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_radio_menu_item_new_with_label");
       function Internal2
         (Group : System.Address) return System.Address;
@@ -120,10 +120,10 @@ package body Gtk.Radio_Menu_Item is
    procedure Initialize_With_Mnemonic
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
       Group           : Widget_SList.GSlist;
-      Label           : String)
+      Label           : UTF8_String)
    is
       function Internal
-        (Group : System.Address; Label : String) return System.Address;
+        (Group : System.Address; Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_radio_menu_item_new_with_mnemonic");
    begin
       Set_Object

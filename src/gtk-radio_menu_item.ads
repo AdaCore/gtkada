@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -41,22 +41,22 @@ package Gtk.Radio_Menu_Item is
    procedure Gtk_New
      (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
       Group           : Widget_SList.GSlist;
-      Label           : String := "");
+      Label           : UTF8_String := "");
 
    procedure Gtk_New_With_Mnemonic
      (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
       Group           : Widget_SList.GSlist;
-      Label           : String);
+      Label           : UTF8_String);
 
    procedure Initialize
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
       Group           : Widget_SList.GSlist;
-      Label           : String := "");
+      Label           : UTF8_String := "");
 
    procedure Initialize_With_Mnemonic
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
       Group           : Widget_SList.GSlist;
-      Label           : String);
+      Label           : UTF8_String);
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Radio_Menu_Item.

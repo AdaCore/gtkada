@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                        Copyright (C) 2000                         --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,6 +33,7 @@
 --
 --  </description>
 
+with Glib;
 with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Enums;  use Gtk.Enums;
 with Gtk.Window; use Gtk.Window;
@@ -78,12 +79,12 @@ package Gtkada.Dialogs is
    --  Used by the Message_Dialog function.
 
    function Message_Dialog
-     (Msg            : String;
+     (Msg            : Glib.UTF8_String;
       Dialog_Type    : Message_Dialog_Type := Information;
       Buttons        : Message_Dialog_Buttons := Button_OK or Button_Help;
       Default_Button : Message_Dialog_Buttons := Button_OK;
-      Help_Msg       : String := "";
-      Title          : String := "";
+      Help_Msg       : Glib.UTF8_String := "";
+      Title          : Glib.UTF8_String := "";
       Justification  : Gtk_Justification := Justify_Center;
       Parent         : Gtk.Window.Gtk_Window := null)
       return Message_Dialog_Buttons;
@@ -114,9 +115,9 @@ package Gtkada.Dialogs is
    --    - Button_All
 
    function Create_Gtk_Dialog
-     (Msg           : String;
+     (Msg           : Glib.UTF8_String;
       Dialog_Type   : Message_Dialog_Type := Information;
-      Title         : String := "";
+      Title         : Glib.UTF8_String := "";
       Justification : Gtk_Justification := Justify_Center;
       Parent        : Gtk.Window.Gtk_Window := null)
       return Gtk.Dialog.Gtk_Dialog;

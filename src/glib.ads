@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -77,6 +77,10 @@ package Glib is
    type Gsize is new C.size_t;
 
    type Gunichar is new Guint32;
+
+   subtype UTF8_String is String;
+   --  A string that accepts only valid UTF8 sequences.
+   --  Most Gtk+ function expect valid UTF8 strings instead of regular strings.
 
    type GTime_Val is record
       TV_Sec  : Glong;

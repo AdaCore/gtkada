@@ -326,12 +326,12 @@ package Gtk.Tree_View_Column is
 
    procedure Set_Title
      (Tree_Column : access Gtk_Tree_View_Column_Record;
-      Title       : String);
+      Title       : UTF8_String);
    --  Set the title of the Tree_Column.
    --  If a custom widget has been set, then this value is ignored.
 
    function Get_Title
-     (Tree_Column : access Gtk_Tree_View_Column_Record) return String;
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return UTF8_String;
    --  Return the title of the Tree_Column.
 
    procedure Set_Clickable

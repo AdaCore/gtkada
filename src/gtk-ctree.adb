@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -718,7 +718,7 @@ package body Gtk.Ctree is
 
    function Node_Get_Text (Ctree   : access Gtk_Ctree_Record;
                            Node    : in     Gtk_Ctree_Node;
-                           Column  : in     Gint) return String
+                           Column  : in     Gint) return UTF8_String
    is
       function Internal
         (Ctree  : in System.Address;
@@ -906,7 +906,7 @@ package body Gtk.Ctree is
    procedure Node_Set_Pixtext (Ctree   : access Gtk_Ctree_Record;
                                Node    : in     Gtk_Ctree_Node;
                                Column  : in     Gint;
-                               Text    : in     String;
+                               Text    : in     UTF8_String;
                                Spacing : in     Guint8;
                                Pixmap  : in     Gdk.Pixmap.Gdk_Pixmap;
                                Mask    : in     Gdk.Bitmap.Gdk_Bitmap)
@@ -914,7 +914,7 @@ package body Gtk.Ctree is
       procedure Internal (Ctree   : in System.Address;
                           Node    : in Gtk_Ctree_Node;
                           Column  : in Gint;
-                          Text    : in String;
+                          Text    : in UTF8_String;
                           Spacing : in Guint8;
                           Pixmap  : in Gdk.Pixmap.Gdk_Pixmap;
                           Mask    : in Gdk.Bitmap.Gdk_Bitmap);
@@ -988,12 +988,12 @@ package body Gtk.Ctree is
    procedure Node_Set_Text (Ctree  : access Gtk_Ctree_Record;
                             Node   : in     Gtk_Ctree_Node;
                             Column : in     Gint;
-                            Text   : in     String)
+                            Text   : in     UTF8_String)
    is
       procedure Internal (Ctree  : in System.Address;
                           Node   : in Gtk_Ctree_Node;
                           Column : in Gint;
-                          Text   : in String);
+                          Text   : in UTF8_String);
       pragma Import (C, Internal, "gtk_ctree_node_set_text");
 
    begin
@@ -1206,7 +1206,7 @@ package body Gtk.Ctree is
 
    procedure Set_Node_Info (Ctree         : access Gtk_Ctree_Record;
                             Node          : in     Gtk_Ctree_Node;
-                            Text          : in     String;
+                            Text          : in     UTF8_String;
                             Spacing       : in     Guint8;
                             Pixmap_Closed : in     Gdk.Pixmap.Gdk_Pixmap;
                             Mask_Closed   : in     Gdk.Bitmap.Gdk_Bitmap;
@@ -1217,7 +1217,7 @@ package body Gtk.Ctree is
    is
       procedure Internal (Ctree         : in System.Address;
                           Node          : in Gtk_Ctree_Node;
-                          Text          : in String;
+                          Text          : in UTF8_String;
                           Spacing       : in Guint8;
                           Pixmap_Closed : in Gdk.Pixmap.Gdk_Pixmap;
                           Mask_Closed   : in Gdk.Bitmap.Gdk_Bitmap;

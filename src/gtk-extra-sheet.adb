@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
 --                Copyright (C) 2000-2003 ACT-Europe                 --
@@ -45,7 +45,7 @@ package body Gtk.Extra.Sheet is
      (Sheet      : out Gtk_Sheet;
       Rows       : Guint;
       Columns    : Guint;
-      Title      : String := "";
+      Title      : UTF8_String := "";
       Entry_Type : Gtk_Type := GType_Invalid) is
    begin
       Sheet := new Gtk_Sheet_Record;
@@ -60,7 +60,7 @@ package body Gtk.Extra.Sheet is
      (Sheet      : access Gtk_Sheet_Record'Class;
       Rows       : Guint;
       Columns    : Guint;
-      Title      : String := "";
+      Title      : UTF8_String := "";
       Entry_Type : Gtk_Type := GType_Invalid)
    is
       function Internal
@@ -76,7 +76,7 @@ package body Gtk.Extra.Sheet is
          Entry_Type : Gtk_Type) return System.Address;
       pragma Import (C, Internal2, "gtk_sheet_new_with_custom_entry");
 
-      S  : aliased String := Title & ASCII.NUL;
+      S  : aliased UTF8_String := Title & ASCII.NUL;
       Sa : System.Address := S'Address;
 
    begin
@@ -99,7 +99,7 @@ package body Gtk.Extra.Sheet is
      (Sheet   : out Gtk_Sheet;
       Rows    : Guint;
       Columns : Guint;
-      Title   : String := "") is
+      Title   : UTF8_String := "") is
    begin
       Sheet := new Gtk_Sheet_Record;
       Initialize_Browser (Sheet, Rows, Columns, Title);
@@ -113,7 +113,7 @@ package body Gtk.Extra.Sheet is
      (Sheet   : access Gtk_Sheet_Record'Class;
       Rows    : Guint;
       Columns : Guint;
-      Title   : String := "")
+      Title   : UTF8_String := "")
    is
       function Internal
         (Rows    : Guint;
@@ -121,7 +121,7 @@ package body Gtk.Extra.Sheet is
          Title   : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_sheet_new_browser");
 
-      S  : aliased String := Title & ASCII.NUL;
+      S  : aliased UTF8_String := Title & ASCII.NUL;
       Sa : System.Address := S'Address;
 
    begin
@@ -252,9 +252,9 @@ package body Gtk.Extra.Sheet is
 
    procedure Set_Title
      (Sheet : access Gtk_Sheet_Record;
-      Title : String)
+      Title : UTF8_String)
    is
-      procedure Internal (Sheet : System.Address; Title : String);
+      procedure Internal (Sheet : System.Address; Title : UTF8_String);
       pragma Import (C, Internal, "gtk_sheet_set_title");
 
    begin
@@ -290,12 +290,12 @@ package body Gtk.Extra.Sheet is
    procedure Set_Column_Title
      (Sheet  : access Gtk_Sheet_Record;
       Column : Gint;
-      Title  : String)
+      Title  : UTF8_String)
    is
       procedure Internal
         (Sheet  : System.Address;
          Column : Gint;
-         Title  : String);
+         Title  : UTF8_String);
       pragma Import (C, Internal, "gtk_sheet_set_column_title");
 
    begin
@@ -309,12 +309,12 @@ package body Gtk.Extra.Sheet is
    procedure Set_Row_Title
      (Sheet : access Gtk_Sheet_Record;
       Row   : Gint;
-      Title : String)
+      Title : UTF8_String)
    is
       procedure Internal
         (Sheet : System.Address;
          Row   : Gint;
-         Title : String);
+         Title : UTF8_String);
       pragma Import (C, Internal, "gtk_sheet_set_row_title");
 
    begin
@@ -328,12 +328,12 @@ package body Gtk.Extra.Sheet is
    procedure Row_Button_Add_Label
      (Sheet : access Gtk_Sheet_Record;
       Row   : Gint;
-      Label : String)
+      Label : UTF8_String)
    is
       procedure Internal
         (Sheet : System.Address;
          Row   : Gint;
-         Label : String);
+         Label : UTF8_String);
       pragma Import (C, Internal, "gtk_sheet_row_button_add_label");
 
    begin
@@ -347,12 +347,12 @@ package body Gtk.Extra.Sheet is
    procedure Column_Button_Add_Label
      (Sheet  : access Gtk_Sheet_Record;
       Column : Gint;
-      Label  : String)
+      Label  : UTF8_String)
    is
       procedure Internal
         (Sheet  : System.Address;
          Column : Gint;
-         Label  : String);
+         Label  : UTF8_String);
       pragma Import (C, Internal, "gtk_sheet_column_button_add_label");
 
    begin
@@ -844,7 +844,7 @@ package body Gtk.Extra.Sheet is
       Row           : Gint;
       Col           : Gint;
       Justification : Gtk.Enums.Gtk_Justification;
-      Text          : String)
+      Text          : UTF8_String)
    is
       procedure Internal
         (Sheet         : System.Address;
@@ -854,7 +854,7 @@ package body Gtk.Extra.Sheet is
          Text          : System.Address);
       pragma Import (C, Internal, "gtk_sheet_set_cell");
 
-      T : aliased String := Text & ASCII.NUL;
+      T : aliased UTF8_String := Text & ASCII.NUL;
       Ta : System.Address := T'Address;
 
    begin
@@ -873,7 +873,7 @@ package body Gtk.Extra.Sheet is
      (Sheet : access Gtk_Sheet_Record;
       Row   : Gint;
       Col   : Gint;
-      Text  : String)
+      Text  : UTF8_String)
    is
       procedure Internal
         (Sheet : System.Address;
@@ -882,7 +882,7 @@ package body Gtk.Extra.Sheet is
          Text  : System.Address);
       pragma Import (C, Internal, "gtk_sheet_set_cell_text");
 
-      T : aliased String := Text & ASCII.NUL;
+      T : aliased UTF8_String := Text & ASCII.NUL;
       Ta : System.Address := T'Address;
 
    begin
@@ -900,7 +900,7 @@ package body Gtk.Extra.Sheet is
    function Cell_Get_Text
      (Sheet  : access Gtk_Sheet_Record;
       Row    : Gint;
-      Col    : Gint) return String
+      Col    : Gint) return UTF8_String
    is
       function Internal
         (Sheet  : System.Address;
@@ -1589,7 +1589,7 @@ package body Gtk.Extra.Sheet is
 
    function Get_Column_Title (Sheet  : access Gtk_Sheet_Record;
                               Column : Gint)
-                             return String
+                             return UTF8_String
    is
       function Internal (Sheet : System.Address; Column : Gint)
                         return Interfaces.C.Strings.chars_ptr;
@@ -1611,7 +1611,7 @@ package body Gtk.Extra.Sheet is
 
    function Get_Row_Title (Sheet  : access Gtk_Sheet_Record;
                            Row : Gint)
-                          return String
+                          return UTF8_String
    is
       function Internal (Sheet : System.Address; Row : Gint)
                         return Interfaces.C.Strings.chars_ptr;
@@ -1889,7 +1889,7 @@ package body Gtk.Extra.Sheet is
    -----------------------------
 
    function Column_Button_Get_Label
-     (Sheet : access Gtk_Sheet_Record; Column : Gint) return String
+     (Sheet : access Gtk_Sheet_Record; Column : Gint) return UTF8_String
    is
       function Internal (S : System.Address; Column : Gint) return chars_ptr;
       pragma Import (C, Internal, "gtk_sheet_column_button_get_label");
@@ -1943,7 +1943,7 @@ package body Gtk.Extra.Sheet is
    --------------------------
 
    function Row_Button_Get_Label
-     (Sheet : access Gtk_Sheet_Record; Row : Gint) return String
+     (Sheet : access Gtk_Sheet_Record; Row : Gint) return UTF8_String
    is
       function Internal (S : System.Address; Row : Gint) return chars_ptr;
       pragma Import (C, Internal, "gtk_sheet_row_button_get_label");

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -148,7 +148,7 @@ package body Gtk.Text is
    -- Get_Text --
    --------------
 
-   function Get_Text (Text : access Gtk_Text_Record) return String  is
+   function Get_Text (Text : access Gtk_Text_Record) return UTF8_String is
       function Internal (Text : in System.Address)
         return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_text_get_text");
@@ -254,7 +254,7 @@ package body Gtk.Text is
       Font   : in Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
       Fore   : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Back   : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Chars  : in String := "";
+      Chars  : in UTF8_String := "";
       Length : in Gint := -1)
    is
       procedure Internal
@@ -262,7 +262,7 @@ package body Gtk.Text is
          Font   : in Gdk.Font.Gdk_Font;
          Fore   : in System.Address;
          Back   : in System.Address;
-         Chars  : in String;
+         Chars  : in UTF8_String;
          Length : in Gint);
       pragma Import (C, Internal, "gtk_text_insert");
       use type Gdk.Color.Gdk_Color;

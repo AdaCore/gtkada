@@ -402,7 +402,7 @@ package Gdk.Window is
       Geometry : in out Gdk_Geometry;
       Flags    : Gdk_Window_Hints);
 
-   procedure Set_Title (Window : Gdk_Window; Title : String);
+   procedure Set_Title (Window : Gdk_Window; Title : UTF8_String);
 
    procedure Set_Role (Window : Gdk_Window; Role : String);
 
@@ -494,7 +494,7 @@ package Gdk.Window is
 
    procedure Set_Icon_Name
      (Window : Gdk_Window;
-      Name   : String);
+      Name   : UTF8_String);
 
    procedure Set_Group (Window : Gdk_Window; Leader : Gdk_Window);
 

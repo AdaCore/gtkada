@@ -31,12 +31,12 @@ with System.Storage_Elements; use System.Storage_Elements;
 package body Glib.Unicode is
 
    procedure UTF8_Validate
-     (Str         : String;
+     (Str         : UTF8_String;
       Valid       : out Boolean;
       Invalid_Pos : out Natural)
    is
       function UTF8_Validate
-        (Str         : String;
+        (Str         : UTF8_String;
          Len         : Gsize;
          Invalid_Pos : access System.Address) return Gboolean;
       pragma Import (C, UTF8_Validate, "g_utf8_validate");

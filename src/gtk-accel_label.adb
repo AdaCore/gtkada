@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -76,7 +76,7 @@ package body Gtk.Accel_Label is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Accel_Label : out Gtk_Accel_Label; Str : String) is
+   procedure Gtk_New (Accel_Label : out Gtk_Accel_Label; Str : UTF8_String) is
    begin
       Accel_Label := new Gtk_Accel_Label_Record;
       Initialize (Accel_Label, Str);
@@ -87,7 +87,7 @@ package body Gtk.Accel_Label is
    ----------------
 
    procedure Initialize
-     (Accel_Label : access Gtk_Accel_Label_Record'Class; Str : String)
+     (Accel_Label : access Gtk_Accel_Label_Record'Class; Str : UTF8_String)
    is
       function Internal (Str : String) return System.Address;
       pragma Import (C, Internal, "gtk_accel_label_new");

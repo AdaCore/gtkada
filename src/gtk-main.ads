@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -187,7 +187,6 @@ package Gtk.Main is
    --  Return a copy of the event being processed by gtk+. The returned
    --  value must be freed by the caller.
    --  If there is no current event, null is returned.
-
 
    --------------------
    -- Grab functions --

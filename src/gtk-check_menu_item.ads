@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -49,25 +49,25 @@ package Gtk.Check_Menu_Item is
 
    procedure Gtk_New
      (Check_Menu_Item : out Gtk_Check_Menu_Item;
-      Label           : String := "");
+      Label           : UTF8_String := "");
    --  Create a new Gtk_Check_Menu_Item with a label, if label isn't null.
 
    procedure Initialize
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record'Class;
-      Label           : String := "");
+      Label           : UTF8_String := "");
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    procedure Gtk_New_With_Mnemonic
      (Check_Menu_Item : out Gtk_Check_Menu_Item;
-      Label           : String);
+      Label           : UTF8_String);
    --  Create a new Gtk_Check_Menu_Item containing a label. The label
    --  will be created will be created using Gtk.Label.New_With_Mnemonic,
    --  so underscores in the label indicate the mnemonic for the menu item.
 
    procedure Initialize_With_Mnemonic
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record'Class;
-      Label           : String);
+      Label           : UTF8_String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 

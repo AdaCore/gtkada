@@ -401,7 +401,7 @@ package Gtk.Widget is
 
    procedure Set_Accel_Path
      (Widget     : access Gtk_Widget_Record;
-      Accel_Path : String;
+      Accel_Path : UTF8_String;
       Group      : Gtk.Accel_Group.Gtk_Accel_Group);
    --  Set the path that will be used to reference the widget in calls to the
    --  subprograms in Gtk.Accel_Map. This means, for instance, that the widget
@@ -629,7 +629,7 @@ package Gtk.Widget is
    --  The returned context must be freed by the caller.
 
    function Create_Pango_Layout
-     (Widget : access Gtk_Widget_Record; Text : String := "")
+     (Widget : access Gtk_Widget_Record; Text : UTF8_String := "")
      return Pango.Layout.Pango_Layout;
    --  Return a new pango_layout that displays Text. This fully handles
    --  internationalization, and should be the preferred way to display text,
@@ -648,12 +648,12 @@ package Gtk.Widget is
 
    procedure Set_Name
      (Widget : access Gtk_Widget_Record;
-      Name   : String);
+      Name   : UTF8_String);
    --  Set the name for the widget.
    --  This name is used purely internally to identify the widget, and does not
    --  give any visual clue.
 
-   function Get_Name (Widget : access Gtk_Widget_Record) return String;
+   function Get_Name (Widget : access Gtk_Widget_Record) return UTF8_String;
    --  Return the name of the widget if it was set by Set_Name.
    --  Return the name of its class otherwise.
 
@@ -790,7 +790,7 @@ package Gtk.Widget is
      (Widget   : access Gtk_Widget_Record;
       Stock_Id : String;
       Size     : Gtk.Enums.Gtk_Icon_Size;
-      Detail   : String := "") return Gdk.Pixbuf.Gdk_Pixbuf;
+      Detail   : UTF8_String := "") return Gdk.Pixbuf.Gdk_Pixbuf;
    --  A convenience function that uses the theme engine for Widget, to lookup
    --  a Stock_Id (see Gtk.Stock) and render it to a pixbuf (see Gdk.Pixbuf).
    --  Detail should be a string that identifies the widget or code doing the
@@ -1056,7 +1056,7 @@ package Gtk.Widget is
    --  Glib.Properties for more information on properties.
    --
    --  - Name:  Name_Property
-   --    Type:  String
+   --    Type:  UTF8_String
    --    Flags: read-write
    --    Descr: The name of the widget
    --    See also:  Set_Name procedure

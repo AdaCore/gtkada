@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -141,13 +141,14 @@ package Gtk.GEntry is
      (The_Entry : access Gtk_Entry_Record'Class) return Gint;
    --  Return number of characters to leave space for in the entry.
 
-   procedure Set_Text (The_Entry : access Gtk_Entry_Record; Text : String);
+   procedure Set_Text
+     (The_Entry : access Gtk_Entry_Record; Text : UTF8_String);
    --  Modify the text in the entry.
    --  The text is cut at the maximum length that was set when the entry was
    --  created.
    --  The text replaces the current contents.
 
-   function Get_Text (The_Entry : access Gtk_Entry_Record) return String;
+   function Get_Text (The_Entry : access Gtk_Entry_Record) return UTF8_String;
    --  Return the current text written in the entry.
 
    procedure Get_Layout_Offsets
@@ -183,17 +184,17 @@ package Gtk.GEntry is
    --  the entry so need not be freed by the caller.
 
    --  <doc_ignore>
-   function Get_Chars (The_Entry : access Gtk_Entry_Record) return String
+   function Get_Chars (The_Entry : access Gtk_Entry_Record) return UTF8_String
      renames Get_Text;
    --  Convenience function provided for compatibility with GtkAda 1.2
 
    procedure Append_Text
-     (The_Entry : access Gtk_Entry_Record; Text : String);
+     (The_Entry : access Gtk_Entry_Record; Text : UTF8_String);
    --  Append a new string at the end of the existing one.
    --  pragma Deprecated (Append_Text);
 
    procedure Prepend_Text
-     (The_Entry : access Gtk_Entry_Record; Text : String);
+     (The_Entry : access Gtk_Entry_Record; Text : UTF8_String);
    --  Insert some text at the beginning of the entry.
    --  pragma Deprecated (Prepend_Text);
 

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,7 +36,7 @@ package body Gtk.Frame is
    -- Get_Label --
    ---------------
 
-   function Get_Label (Frame : access Gtk_Frame_Record) return String is
+   function Get_Label (Frame : access Gtk_Frame_Record) return UTF8_String is
       function Internal (Frame : System.Address) return chars_ptr;
       pragma Import (C, Internal, "gtk_frame_get_label");
 
@@ -81,7 +81,7 @@ package body Gtk.Frame is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Frame : out Gtk_Frame; Label : String := "") is
+   procedure Gtk_New (Frame : out Gtk_Frame; Label : UTF8_String := "") is
    begin
       Frame := new Gtk_Frame_Record;
       Initialize (Frame, Label);
@@ -92,7 +92,7 @@ package body Gtk.Frame is
    ----------------
 
    procedure Initialize
-     (Frame : access Gtk_Frame_Record'Class; Label : String := "")
+     (Frame : access Gtk_Frame_Record'Class; Label : UTF8_String := "")
    is
       function Internal (Label : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_frame_new");
@@ -102,7 +102,7 @@ package body Gtk.Frame is
          Set_Object (Frame, Internal (System.Null_Address));
       else
          declare
-            S : aliased constant String := Label & ASCII.NUL;
+            S : aliased constant UTF8_String := Label & ASCII.NUL;
          begin
             Set_Object (Frame, Internal (S'Address));
          end;
@@ -115,12 +115,12 @@ package body Gtk.Frame is
 
    procedure Set_Label
      (Frame : access Gtk_Frame_Record;
-      Label : String := "")
+      Label : UTF8_String := "")
    is
       procedure Internal (Frame : System.Address; Label : System.Address);
       pragma Import (C, Internal, "gtk_frame_set_label");
 
-      S : aliased constant String := Label & ASCII.NUL;
+      S : aliased constant UTF8_String := Label & ASCII.NUL;
 
    begin
       if Label = "" then

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2002 ACT-Europe                   --
+--                Copyright (C) 2002-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,11 +33,11 @@ with Gdk.Types;
 package body Gtk.Clipboard is
    procedure Set_Text
      (Clipboard : Gtk_Clipboard;
-      Text      : String)
+      Text      : UTF8_String)
    is
       procedure Internal
         (Clipboard : Gtk_Clipboard;
-         Str       : String;
+         Str       : UTF8_String;
          Len       : Integer);
       pragma Import (C, Internal, "gtk_clipboard_set_text");
 

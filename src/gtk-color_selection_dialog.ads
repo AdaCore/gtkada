@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -49,12 +49,12 @@ package Gtk.Color_Selection_Dialog is
 
    procedure Gtk_New
      (Color_Selection_Dialog : out Gtk_Color_Selection_Dialog;
-      Title                  : String);
+      Title                  : UTF8_String);
    --  Create a new Color_Selection_Dialog with a specified title.
 
    procedure Initialize
      (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record'Class;
-      Title                  : String);
+      Title                  : UTF8_String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2002                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -242,7 +242,7 @@ package body Gtk.Clist is
 
    function Get_Column_Title
      (Clist  : access Gtk_Clist_Record; Column : in Gint)
-      return String
+      return UTF8_String
    is
       function Internal (Clist : System.Address; Column : Gint)
                          return Interfaces.C.Strings.chars_ptr;
@@ -514,7 +514,7 @@ package body Gtk.Clist is
    function Get_Text
      (Clist    : access Gtk_Clist_Record;
       Row      : in Gint;
-      Column   : in Gint) return String
+      Column   : in Gint) return UTF8_String
    is
       function Internal
         (Clist  : in System.Address;
@@ -561,7 +561,7 @@ package body Gtk.Clist is
    function Get_Text
      (Clist    : access Gtk_Clist_Record;
       Row      : Gtk_Clist_Row;
-      Column   : in Gint) return String
+      Column   : in Gint) return UTF8_String
    is
       function Internal
         (Clist  : in System.Address;
@@ -958,12 +958,12 @@ package body Gtk.Clist is
    procedure Set_Column_Title
      (Clist  : access Gtk_Clist_Record;
       Column : in Gint;
-      Title  : in String)
+      Title  : in UTF8_String)
    is
       procedure Internal
         (Clist  : in System.Address;
          Column : in Gint;
-         Title  : in String);
+         Title  : in UTF8_String);
       pragma Import (C, Internal, "gtk_clist_set_column_title");
    begin
       Internal (Get_Object (Clist),
@@ -1150,7 +1150,7 @@ package body Gtk.Clist is
      (Clist   : access Gtk_Clist_Record;
       Row     : in Gint;
       Column  : in Gint;
-      Text    : in String;
+      Text    : in UTF8_String;
       Spacing : in Guint8;
       Pixmap  : in Gdk.Pixmap.Gdk_Pixmap;
       Mask    : in Gdk.Bitmap.Gdk_Bitmap)
@@ -1159,7 +1159,7 @@ package body Gtk.Clist is
         (Clist   : in System.Address;
          Row     : in Gint;
          Column  : in Gint;
-         Text    : in String;
+         Text    : in UTF8_String;
          Spacing : in Guint8;
          Pixmap  : in Gdk.Pixmap.Gdk_Pixmap;
          Mask    : in Gdk.Bitmap.Gdk_Bitmap);
@@ -1337,13 +1337,13 @@ package body Gtk.Clist is
      (Clist  : access Gtk_Clist_Record;
       Row    : in Gint;
       Column : in Gint;
-      Text   : in String)
+      Text   : in UTF8_String)
    is
       procedure Internal
         (Clist  : in System.Address;
          Row    : in Gint;
          Column : in Gint;
-         Text   : in String);
+         Text   : in UTF8_String);
       pragma Import (C, Internal, "gtk_clist_set_text");
    begin
       Internal (Get_Object (Clist),
@@ -1470,14 +1470,15 @@ package body Gtk.Clist is
    -- Set_Cell_Contents --
    -----------------------
 
-   procedure Set_Cell_Contents (Clist     : access Gtk_Clist_Record;
-                                Row       : Gtk_Clist_Row;
-                                Column    : Gint;
-                                Cell_Type : Gtk_Cell_Type;
-                                Text      : String;
-                                Spacing   : Guint8;
-                                Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
-                                Mask      : Gdk.Bitmap.Gdk_Bitmap)
+   procedure Set_Cell_Contents
+     (Clist     : access Gtk_Clist_Record;
+      Row       : Gtk_Clist_Row;
+      Column    : Gint;
+      Cell_Type : Gtk_Cell_Type;
+      Text      : UTF8_String;
+      Spacing   : Guint8;
+      Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
+      Mask      : Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal (Clist     : System.Address;
                           Row       : Gtk_Clist_Row;

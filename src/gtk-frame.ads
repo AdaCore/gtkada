@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -54,23 +54,24 @@ package Gtk.Frame is
    type Gtk_Frame_Record is new Gtk.Bin.Gtk_Bin_Record with private;
    type Gtk_Frame is access all Gtk_Frame_Record'Class;
 
-   procedure Gtk_New (Frame : out Gtk_Frame; Label : String := "");
+   procedure Gtk_New (Frame : out Gtk_Frame; Label : UTF8_String := "");
    --  Create a new frame.
    --  If Label is not the empty string, the frame will have a title.
 
    procedure Initialize
-     (Frame : access Gtk_Frame_Record'Class; Label : String := "");
+     (Frame : access Gtk_Frame_Record'Class; Label : UTF8_String := "");
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Frame.
 
-   procedure Set_Label (Frame : access Gtk_Frame_Record; Label : String := "");
+   procedure Set_Label
+     (Frame : access Gtk_Frame_Record; Label : UTF8_String := "");
    --  Change the label of the frame dynamically.
    --  If Label is the empty string, the frame's label is deleted.
 
-   function Get_Label (Frame : access Gtk_Frame_Record) return String;
+   function Get_Label (Frame : access Gtk_Frame_Record) return UTF8_String;
    --  Return the label associated with the frame.
 
    procedure Set_Label_Widget
@@ -115,7 +116,7 @@ package Gtk.Frame is
    --  Glib.Properties for more information on properties.
    --
    --  - Name:  Label_Property
-   --    Type:  String
+   --    Type:  UTF8_String
    --    Flags: read-write
    --    Descr: Text of the frame's label.
    --    See also: Set_Label and Get_Label

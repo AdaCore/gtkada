@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -68,7 +68,7 @@ package Gtk.Progress_Bar is
    --  Set_Pulse_Step).
 
    procedure Set_Text
-     (Progress_Bar : access Gtk_Progress_Bar_Record; Text : String);
+     (Progress_Bar : access Gtk_Progress_Bar_Record; Text : UTF8_String);
    --  Causes the given Text to appear superimposed on the progress bar.
    --  Text: a UTF-8 string.
 
@@ -91,7 +91,7 @@ package Gtk.Progress_Bar is
    --  (left-to-right, right-to-left, top-to-bottom, or bottom-to-top).
 
    function Get_Text
-     (Progress_Bar : access Gtk_Progress_Bar_Record) return String;
+     (Progress_Bar : access Gtk_Progress_Bar_Record) return UTF8_String;
    --  Retrieve the text displayed superimposed on the progress bar.
 
    function Get_Fraction
@@ -142,7 +142,7 @@ package Gtk.Progress_Bar is
    --    See also: Set_Pulse_Step and Get_Pulse_Step
    --
    --  - Name:  Text_Property
-   --    Type:  String
+   --    Type:  UTF8_String
    --    Flags: read-write
    --    Descr: Text to be displayed in the progress bar
    --    See also: Set_Text and Get_Text

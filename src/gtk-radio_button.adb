@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -57,7 +57,7 @@ package body Gtk.Radio_Button is
    procedure Gtk_New
      (Radio_Button : out Gtk_Radio_Button;
       Group        : Widget_SList.GSlist := Widget_SList.Null_List;
-      Label        : String := "") is
+      Label        : UTF8_String := "") is
    begin
       Radio_Button := new Gtk_Radio_Button_Record;
       Initialize (Radio_Button, Group, Label);
@@ -70,7 +70,7 @@ package body Gtk.Radio_Button is
    procedure Gtk_New
      (Radio_Button : out Gtk_Radio_Button;
       Group        : Gtk_Radio_Button;
-      Label        : String := "") is
+      Label        : UTF8_String := "") is
    begin
       Radio_Button := new Gtk_Radio_Button_Record;
       Initialize (Radio_Button, Group, Label);
@@ -83,7 +83,7 @@ package body Gtk.Radio_Button is
    procedure Gtk_New_With_Mnemonic
      (Radio_Button : out Gtk_Radio_Button;
       Group        : Widget_SList.GSlist := Widget_SList.Null_List;
-      Label        : String) is
+      Label        : UTF8_String) is
    begin
       Radio_Button := new Gtk_Radio_Button_Record;
       Initialize_With_Mnemonic (Radio_Button, Group, Label);
@@ -96,7 +96,7 @@ package body Gtk.Radio_Button is
    procedure Gtk_New_With_Mnemonic
      (Radio_Button : out Gtk_Radio_Button;
       Group        : Gtk_Radio_Button;
-      Label        : String) is
+      Label        : UTF8_String) is
    begin
       Radio_Button := new Gtk_Radio_Button_Record;
       Initialize_With_Mnemonic (Radio_Button, Group, Label);
@@ -109,10 +109,10 @@ package body Gtk.Radio_Button is
    procedure Initialize
      (Radio_Button : access Gtk_Radio_Button_Record'Class;
       Group        : Widget_SList.GSlist;
-      Label        : String)
+      Label        : UTF8_String)
    is
       function Internal
-        (Group : System.Address; Label : String) return System.Address;
+        (Group : System.Address; Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_radio_button_new_with_label");
 
       function Internal2 (Group : System.Address) return System.Address;
@@ -134,10 +134,10 @@ package body Gtk.Radio_Button is
    procedure Initialize
      (Radio_Button : access Gtk_Radio_Button_Record'Class;
       Group        : Gtk_Radio_Button;
-      Label        : String)
+      Label        : UTF8_String)
    is
       function Internal
-        (Group : System.Address; Label : String) return System.Address;
+        (Group : System.Address; Label : UTF8_String) return System.Address;
       pragma Import
         (C, Internal, "gtk_radio_button_new_with_label_from_widget");
 
@@ -165,10 +165,10 @@ package body Gtk.Radio_Button is
    procedure Initialize_With_Mnemonic
      (Radio_Button : access Gtk_Radio_Button_Record'Class;
       Group        : Widget_SList.GSlist;
-      Label        : String)
+      Label        : UTF8_String)
    is
       function Internal
-        (Group : System.Address; Label : String) return System.Address;
+        (Group : System.Address; Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_radio_button_new_with_mnemonic");
    begin
       Set_Object
@@ -182,10 +182,10 @@ package body Gtk.Radio_Button is
    procedure Initialize_With_Mnemonic
      (Radio_Button : access Gtk_Radio_Button_Record'Class;
       Group        : Gtk_Radio_Button;
-      Label        : String)
+      Label        : UTF8_String)
    is
       function Internal
-        (Group : System.Address; Label : String) return System.Address;
+        (Group : System.Address; Label : UTF8_String) return System.Address;
       pragma Import
         (C, Internal, "gtk_radio_button_new_with_mnemonic_from_widget");
    begin

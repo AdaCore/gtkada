@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -41,9 +41,9 @@ package body Gtk.Toolbar is
      (Toolbar              : access Gtk_Toolbar_Record;
       The_Type             : Gtk_Toolbar_Child_Type;
       Widget               : Gtk.Widget.Gtk_Widget := null;
-      Text                 : String := "";
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Text                 : UTF8_String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Widget.Gtk_Widget
    is
@@ -59,11 +59,11 @@ package body Gtk.Toolbar is
          User_Data            : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_append_element");
 
-      T    : aliased constant String := Text & ASCII.NUL;
+      T    : aliased constant UTF8_String := Text & ASCII.NUL;
       TA   : System.Address := T'Address;
-      TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
+      TT   : aliased constant UTF8_String := Tooltip_Text & ASCII.NUL;
       TTA  : System.Address := TT'Address;
-      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
+      TPT  : aliased constant UTF8_String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
       W    : System.Address;
       I    : System.Address;
@@ -107,9 +107,9 @@ package body Gtk.Toolbar is
 
    function Append_Item
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : String := "";
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Text                 : UTF8_String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Button.Gtk_Button
    is
@@ -125,11 +125,11 @@ package body Gtk.Toolbar is
       pragma Import (C, Internal, "gtk_toolbar_append_item");
 
       Stub : Gtk.Button.Gtk_Button_Record;
-      T    : aliased constant String := Text & ASCII.NUL;
+      T    : aliased constant UTF8_String := Text & ASCII.NUL;
       TA   : System.Address := T'Address;
-      TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
+      TT   : aliased constant UTF8_String := Tooltip_Text & ASCII.NUL;
       TTA  : System.Address := TT'Address;
-      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
+      TPT  : aliased constant UTF8_String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
       I    : System.Address;
 
@@ -178,8 +178,8 @@ package body Gtk.Toolbar is
    procedure Append_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "")
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "")
    is
       procedure Internal
         (Toolbar              : System.Address;
@@ -188,9 +188,9 @@ package body Gtk.Toolbar is
          Tooltip_Private_Text : System.Address);
       pragma Import (C, Internal, "gtk_toolbar_append_widget");
 
-      TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
+      TT   : aliased constant UTF8_String := Tooltip_Text & ASCII.NUL;
       TTA  : System.Address := TT'Address;
-      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
+      TPT  : aliased constant UTF8_String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
 
    begin
@@ -319,9 +319,9 @@ package body Gtk.Toolbar is
      (Toolbar              : access Gtk_Toolbar_Record;
       The_Type             : Gtk_Toolbar_Child_Type;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Text                 : String := "";
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Text                 : UTF8_String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null;
       Position             : Gint) return Gtk.Widget.Gtk_Widget
    is
@@ -338,11 +338,11 @@ package body Gtk.Toolbar is
          Position             : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_insert_element");
 
-      T    : aliased constant String := Text & ASCII.NUL;
+      T    : aliased constant UTF8_String := Text & ASCII.NUL;
       TA   : System.Address := T'Address;
-      TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
+      TT   : aliased constant UTF8_String := Tooltip_Text & ASCII.NUL;
       TTA  : System.Address := TT'Address;
-      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
+      TPT  : aliased constant UTF8_String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
       I    : System.Address;
 
@@ -382,9 +382,9 @@ package body Gtk.Toolbar is
 
    function Insert_Item
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : String := "";
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Text                 : UTF8_String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null;
       Position             : Gint) return Gtk.Button.Gtk_Button
    is
@@ -400,11 +400,11 @@ package body Gtk.Toolbar is
       pragma Import (C, Internal, "gtk_toolbar_insert_item");
 
       Stub : Gtk.Button.Gtk_Button_Record;
-      T    : aliased constant String := Text & ASCII.NUL;
+      T    : aliased constant UTF8_String := Text & ASCII.NUL;
       TA   : System.Address := T'Address;
-      TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
+      TT   : aliased constant UTF8_String := Tooltip_Text & ASCII.NUL;
       TTA  : System.Address := TT'Address;
-      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
+      TPT  : aliased constant UTF8_String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
       I    : System.Address;
 
@@ -472,8 +472,8 @@ package body Gtk.Toolbar is
    function Insert_Stock
      (Toolbar              : access Gtk_Toolbar_Record;
       Stock_Id             : String;
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Position             : Gint := -1) return Gtk.Button.Gtk_Button
    is
       function Internal
@@ -487,9 +487,9 @@ package body Gtk.Toolbar is
       pragma Import (C, Internal, "gtk_toolbar_insert_stock");
 
       Stub : Gtk.Button.Gtk_Button_Record;
-      TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
+      TT   : aliased constant UTF8_String := Tooltip_Text & ASCII.NUL;
       TTA  : System.Address := TT'Address;
-      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
+      TPT  : aliased constant UTF8_String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
 
    begin
@@ -515,8 +515,8 @@ package body Gtk.Toolbar is
    procedure Insert_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Position             : Gint)
    is
       procedure Internal
@@ -527,9 +527,9 @@ package body Gtk.Toolbar is
          Position             : Gint);
       pragma Import (C, Internal, "gtk_toolbar_insert_widget");
 
-      TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
+      TT   : aliased constant UTF8_String := Tooltip_Text & ASCII.NUL;
       TTA  : System.Address := TT'Address;
-      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
+      TPT  : aliased constant UTF8_String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
 
    begin
@@ -553,9 +553,9 @@ package body Gtk.Toolbar is
      (Toolbar              : access Gtk_Toolbar_Record;
       The_Type             : Gtk_Toolbar_Child_Type;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Text                 : String := "";
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Text                 : UTF8_String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Widget.Gtk_Widget
    is
@@ -571,11 +571,11 @@ package body Gtk.Toolbar is
          User_Data            : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_prepend_element");
 
-      T    : aliased constant String := Text & ASCII.NUL;
+      T    : aliased constant UTF8_String := Text & ASCII.NUL;
       TA   : System.Address := T'Address;
-      TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
+      TT   : aliased constant UTF8_String := Tooltip_Text & ASCII.NUL;
       TTA  : System.Address := TT'Address;
-      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
+      TPT  : aliased constant UTF8_String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
       I    : System.Address;
 
@@ -613,9 +613,9 @@ package body Gtk.Toolbar is
 
    function Prepend_Item
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : String := "";
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Text                 : UTF8_String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Button.Gtk_Button
    is
@@ -631,11 +631,11 @@ package body Gtk.Toolbar is
       pragma Import (C, Internal, "gtk_toolbar_prepend_item");
 
       Stub : Gtk.Button.Gtk_Button_Record;
-      T    : aliased constant String := Text & ASCII.NUL;
+      T    : aliased constant UTF8_String := Text & ASCII.NUL;
       TA   : System.Address := T'Address;
-      TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
+      TT   : aliased constant UTF8_String := Tooltip_Text & ASCII.NUL;
       TTA  : System.Address := TT'Address;
-      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
+      TPT  : aliased constant UTF8_String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
       I    : System.Address;
 
@@ -686,8 +686,8 @@ package body Gtk.Toolbar is
    procedure Prepend_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "")
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "")
    is
       procedure Internal
         (Toolbar              : System.Address;
@@ -696,9 +696,9 @@ package body Gtk.Toolbar is
          Tooltip_Private_Text : System.Address);
       pragma Import (C, Internal, "gtk_toolbar_prepend_widget");
 
-      TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
+      TT   : aliased constant UTF8_String := Tooltip_Text & ASCII.NUL;
       TTA  : System.Address := TT'Address;
-      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
+      TPT  : aliased constant UTF8_String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
 
    begin

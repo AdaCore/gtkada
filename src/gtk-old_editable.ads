@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-1999 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -87,12 +87,12 @@ package Gtk.Old_Editable is
    function Get_Chars
      (Editable  : access Gtk_Old_Editable_Record;
       Start_Pos : Gint := 0;
-      End_Pos   : Gint := -1) return String;
+      End_Pos   : Gint := -1) return UTF8_String;
    --  Get the text from Start_Pos to End_Pos.
    --  If End_Pos is negative, the text from Start_Pos to the end is returned.
 
    function Get_Clipboard_Text
-     (Widget : access Gtk_Old_Editable_Record) return String;
+     (Widget : access Gtk_Old_Editable_Record) return UTF8_String;
    --  Return the last text copied from the clipboard.
 
    function Get_Editable
@@ -120,7 +120,7 @@ package Gtk.Old_Editable is
 
    procedure Insert_Text
      (Editable : access Gtk_Old_Editable_Record;
-      New_Text : String;
+      New_Text : UTF8_String;
       Position : in out Gint);
    --  Insert the given string at the given position.
    --  Position is set to the new cursor position.
@@ -170,7 +170,7 @@ package Gtk.Old_Editable is
    --
    --  - "insert_text"
    --    procedure Handler (Widget   : access Gtk_Old_Editable_Record'Class;
-   --                       Text     : in String;
+   --                       Text     : in UTF8_String;
    --                       Length   : in Gint;
    --                       Position : in Gint_Access);
    --

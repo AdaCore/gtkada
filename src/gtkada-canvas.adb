@@ -2768,7 +2768,7 @@ package body Gtkada.Canvas is
    function Has_Link
      (Canvas   : access Interactive_Canvas_Record;
       From, To : access Canvas_Item_Record'Class;
-      Name     : String := "") return Boolean
+      Name     : UTF8_String := "") return Boolean
    is
       Current : Edge_Iterator := First
         (Canvas.Children,
@@ -3064,7 +3064,7 @@ package body Gtkada.Canvas is
    procedure Configure
      (Link   : access Canvas_Link_Record;
       Arrow  : in Arrow_Type := End_Arrow;
-      Descr  : in String := "") is
+      Descr  : in UTF8_String := "") is
    begin
       Link.Arrow := Arrow;
       Free (Link.Descr);
@@ -3081,7 +3081,7 @@ package body Gtkada.Canvas is
       Src    : access Canvas_Item_Record'Class;
       Dest   : access Canvas_Item_Record'Class;
       Arrow  : in Arrow_Type := End_Arrow;
-      Descr  : in String := "") is
+      Descr  : in UTF8_String := "") is
    begin
       Configure (Link, Arrow, Descr);
       Add_Edge (Canvas.Children, Link, Src, Dest);
@@ -3148,7 +3148,7 @@ package body Gtkada.Canvas is
    -- Get_Descr --
    ---------------
 
-   function Get_Descr (Link : access Canvas_Link_Record) return String is
+   function Get_Descr (Link : access Canvas_Link_Record) return UTF8_String is
    begin
       if Link.Descr = null then
          return "";

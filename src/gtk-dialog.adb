@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -78,7 +78,7 @@ package body Gtk.Dialog is
 
    procedure Gtk_New
      (Dialog : out Gtk_Dialog;
-      Title  : String;
+      Title  : UTF8_String;
       Parent : Gtk.Window.Gtk_Window;
       Flags  : Gtk_Dialog_Flags) is
    begin
@@ -100,12 +100,12 @@ package body Gtk.Dialog is
 
    procedure Initialize
      (Dialog : access Gtk_Dialog_Record'Class;
-      Title  : String;
+      Title  : UTF8_String;
       Parent : Gtk.Window.Gtk_Window;
       Flags  : Gtk_Dialog_Flags)
    is
       function Internal
-        (Title     : String;
+        (Title     : UTF8_String;
          Parent    : System.Address;
          Flags     : Gtk_Dialog_Flags;
          Null_Args : System.Address := System.Null_Address)
@@ -145,11 +145,11 @@ package body Gtk.Dialog is
 
    function Add_Button
      (Dialog      : access Gtk_Dialog_Record;
-      Text        : String;
+      Text        : UTF8_String;
       Response_Id : Gtk_Response_Type) return Gtk.Widget.Gtk_Widget
    is
       function Internal
-        (Dialog : System.Address; Text : String; Id : Gtk_Response_Type)
+        (Dialog : System.Address; Text : UTF8_String; Id : Gtk_Response_Type)
          return System.Address;
       pragma Import (C, Internal, "gtk_dialog_add_button");
 

@@ -237,7 +237,8 @@ package body Gtkada.MDI is
 
    type Children_Array is array (Natural range <>) of Widget_List.Glist;
 
-   procedure Free is new Ada.Unchecked_Deallocation (String, String_Access);
+   procedure Free is new
+     Ada.Unchecked_Deallocation (UTF8_String, String_Access);
 
    function Button_Pressed
      (Child : access Gtk_Widget_Record'Class;
@@ -655,7 +656,7 @@ package body Gtkada.MDI is
    is
       D : constant Selection_Dialog_Access :=
         Selection_Dialog_Access (MDI.Selection_Dialog);
-      Str : constant String := Get_Text (D.Ent);
+      Str : constant UTF8_String := Get_Text (D.Ent);
       Children : constant Children_Array :=
         Matching_Children (MDI, To_Lower (Str));
       Index : Integer := Children'First;
@@ -2812,8 +2813,8 @@ package body Gtkada.MDI is
          MDI.Default_Y := MDI.Default_Y + 10;
       end if;
 
-      C.Title       := new String'(" ");
-      C.Short_Title := new String'(" ");
+      C.Title       := new UTF8_String'(" ");
+      C.Short_Title := new UTF8_String'(" ");
 
       --  We need to show the widget before inserting it in a notebook,
       --  otherwise the notebook page will not be made visible.
@@ -2860,7 +2861,7 @@ package body Gtkada.MDI is
    -- Get_Title --
    ---------------
 
-   function Get_Title (Child : access MDI_Child_Record) return String is
+   function Get_Title (Child : access MDI_Child_Record) return UTF8_String is
    begin
       return Child.Title.all;
    end Get_Title;
@@ -2869,7 +2870,8 @@ package body Gtkada.MDI is
    -- Get_Short_Title --
    ---------------------
 
-   function Get_Short_Title (Child : access MDI_Child_Record) return String is
+   function Get_Short_Title
+     (Child : access MDI_Child_Record) return UTF8_String is
    begin
       return Child.Short_Title.all;
    end Get_Short_Title;
@@ -2945,8 +2947,8 @@ package body Gtkada.MDI is
 
    procedure Set_Title
      (Child       : access MDI_Child_Record;
-      Title       : String;
-      Short_Title : String := "")
+      Title       : UTF8_String;
+      Short_Title : UTF8_String := "")
    is
       The_Title       : String_Access;
       The_Short_Title : String_Access;
@@ -2955,12 +2957,12 @@ package body Gtkada.MDI is
 
       Label           : Gtk_Accel_Label;
    begin
-      The_Title := new String'(Title);
+      The_Title := new UTF8_String'(Title);
 
       if Short_Title /= "" then
-         The_Short_Title := new String'(Short_Title);
+         The_Short_Title := new UTF8_String'(Short_Title);
       else
-         The_Short_Title := new String'(Title);
+         The_Short_Title := new UTF8_String'(Title);
       end if;
 
       Free (Child.Title);
@@ -4545,8 +4547,8 @@ package body Gtkada.MDI is
       Y           : Integer := 100;
       Width       : Integer := 100;
       Height      : Integer := 100;
-      Short_Title : String := "";
-      Title       : String := "";
+      Short_Title : UTF8_String := "";
+      Title       : UTF8_String := "";
       State       : State_Type := Normal;
       Dock        : Dock_Side := None;
       Focus       : Boolean := False;

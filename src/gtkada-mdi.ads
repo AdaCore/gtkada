@@ -195,8 +195,8 @@ package Gtkada.MDI is
 
    procedure Set_Title
      (Child : access MDI_Child_Record;
-      Title : String;
-      Short_Title : String := "");
+      Title : UTF8_String;
+      Short_Title : UTF8_String := "");
    --  Set the title for a child. Title is the title put in titlebar of
    --  the children, whereas Short_Title is the name of the notebook tab when
    --  children are maximized. By default, it is the same as Title.
@@ -208,10 +208,11 @@ package Gtkada.MDI is
    --  In every case, this title will be the one used for the window when the
    --  child is set to floating state.
 
-   function Get_Title (Child : access MDI_Child_Record) return String;
+   function Get_Title (Child : access MDI_Child_Record) return UTF8_String;
    --  Return the title for a specific child
 
-   function Get_Short_Title (Child : access MDI_Child_Record) return String;
+   function Get_Short_Title
+     (Child : access MDI_Child_Record) return UTF8_String;
    --  Return the name of the notebook tab used when children are maximized.
 
    function Get_State (Child : access MDI_Child_Record) return State_Type;
@@ -452,8 +453,8 @@ package Gtkada.MDI is
       Y           : Integer := 100;
       Width       : Integer := 100;
       Height      : Integer := 100;
-      Short_Title : String := "";
-      Title       : String := "";
+      Short_Title : UTF8_String := "";
+      Title       : UTF8_String := "";
       State       : State_Type := Normal;
       Dock        : Dock_Side := None;
       Focus       : Boolean := False;
@@ -607,7 +608,7 @@ package Gtkada.MDI is
    --  </signals>
 
 private
-   type String_Access is access all String;
+   type String_Access is access all UTF8_String;
 
    type MDI_Child_Record is new Gtk.Event_Box.Gtk_Event_Box_Record with record
       Initial : Gtk.Widget.Gtk_Widget;

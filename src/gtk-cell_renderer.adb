@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -109,7 +109,7 @@ package body Gtk.Cell_Renderer is
      (Cell            : access Gtk_Cell_Renderer_Record;
       Event           : Gdk.Event.Gdk_Event;
       Widget          : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Path            : String;
+      Path            : UTF8_String;
       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
       Flags           : Gtk_Cell_Renderer_State) return Boolean
@@ -118,7 +118,7 @@ package body Gtk.Cell_Renderer is
         (Cell            : System.Address;
          Event           : Gdk.Event.Gdk_Event;
          Widget          : System.Address;
-         Path            : String;
+         Path            : UTF8_String;
          Background_Area : Gdk.Rectangle.Gdk_Rectangle;
          Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
          Flags           : Gint) return Gboolean;
@@ -143,7 +143,7 @@ package body Gtk.Cell_Renderer is
      (Cell            : access Gtk_Cell_Renderer_Record;
       Event           : Gdk.Event.Gdk_Event;
       Widget          : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Path            : String;
+      Path            : UTF8_String;
       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
       Flags           : Gtk_Cell_Renderer_State)
@@ -153,13 +153,13 @@ package body Gtk.Cell_Renderer is
         (Cell            : System.Address;
          Event           : Gdk.Event.Gdk_Event;
          Widget          : System.Address;
-         Path            : String;
+         Path            : UTF8_String;
          Background_Area : Gdk.Rectangle.Gdk_Rectangle;
          Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-         Flags           : Gint)
-         return System.Address;
+         Flags           : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_cell_renderer_start_editing");
       Stub : GObject_Record;
+
    begin
       return GObject (Get_User_Data
                       (Internal

@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -50,7 +49,7 @@ package body Gtk.Image_Menu_Item is
 
    procedure Gtk_New
      (Widget : out Gtk_Image_Menu_Item;
-      Label  : String) is
+      Label  : UTF8_String) is
    begin
       Widget := new Gtk_Image_Menu_Item_Record;
       Initialize (Widget, Label);
@@ -71,7 +70,7 @@ package body Gtk.Image_Menu_Item is
 
    procedure Gtk_New_With_Mnemonic
      (Widget : out Gtk_Image_Menu_Item;
-      Label  : String) is
+      Label  : UTF8_String) is
    begin
       Widget := new Gtk_Image_Menu_Item_Record;
       Initialize_With_Mnemonic (Widget, Label);
@@ -83,12 +82,12 @@ package body Gtk.Image_Menu_Item is
 
    procedure Initialize
      (Widget : access Gtk_Image_Menu_Item_Record'Class;
-      Label  : String)
+      Label  : UTF8_String)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_image_menu_item_new");
 
-      function Internal2 (S : String) return System.Address;
+      function Internal2 (S : UTF8_String) return System.Address;
       pragma Import (C, Internal2, "gtk_image_menu_item_new_with_label");
 
    begin
@@ -120,9 +119,9 @@ package body Gtk.Image_Menu_Item is
 
    procedure Initialize_With_Mnemonic
      (Widget : access Gtk_Image_Menu_Item_Record'Class;
-      Label  : String)
+      Label  : UTF8_String)
    is
-      function Internal (Label : String) return System.Address;
+      function Internal (Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_image_menu_item_new_with_mnemonic");
 
    begin

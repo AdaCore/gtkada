@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Interfaces.C.Strings;
+with Glib; use Glib;
 
 package body Gdk.Window_Attr is
 
@@ -50,7 +51,7 @@ package body Gdk.Window_Attr is
 
    procedure Gdk_New
      (Window_Attr       : out Gdk_Window_Attr;
-      Title             : String := "";
+      Title             : UTF8_String := "";
       Event_Mask        : Gdk.Event.Gdk_Event_Mask := 0;
       X, Y              : Glib.Gint := 0;
       Width             : Glib.Gint := 0;
@@ -106,7 +107,7 @@ package body Gdk.Window_Attr is
    -- Get_Title --
    ---------------
 
-   function Get_Title (Window_Attr : Gdk_Window_Attr) return String is
+   function Get_Title (Window_Attr : Gdk_Window_Attr) return UTF8_String is
       function Internal
         (Window_Attr : Gdk_Window_Attr) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gdk_window_attr_get_title");
@@ -168,11 +169,11 @@ package body Gdk.Window_Attr is
 
    procedure Set_Title
      (Window_Attr : Gdk_Window_Attr;
-      Title       : String)
+      Title       : UTF8_String)
    is
       procedure Internal
         (Window_Attr : Gdk_Window_Attr;
-         Title       : String);
+         Title       : UTF8_String);
       pragma Import (C, Internal, "ada_gdk_window_attr_set_title");
 
    begin

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -142,7 +142,7 @@ package body Gtk.Arguments is
    -- To_String --
    ---------------
 
-   function To_String  (Args : Gtk_Args; Num : Positive) return String is
+   function To_String  (Args : Gtk_Args; Num : Positive) return UTF8_String is
    begin
       return Get_String (Nth (Args, Guint (Num)));
    end To_String;

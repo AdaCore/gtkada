@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -137,7 +137,7 @@ package body Gtk.Menu is
    -- Get_Title --
    ---------------
 
-   function Get_Title (Menu : access Gtk_Menu_Record) return String is
+   function Get_Title (Menu : access Gtk_Menu_Record) return UTF8_String is
       function Internal (Menu : System.Address) return chars_ptr;
       pragma Import (C, Internal, "gtk_menu_get_title");
 
@@ -233,9 +233,9 @@ package body Gtk.Menu is
 
    procedure Set_Accel_Path
      (Menu       : access Gtk_Menu_Record;
-      Accel_Path : String)
+      Accel_Path : UTF8_String)
    is
-      procedure Internal (Menu : System.Address; Accel_Path : String);
+      procedure Internal (Menu : System.Address; Accel_Path : UTF8_String);
       pragma Import (C, Internal, "gtk_menu_set_accel_path");
 
    begin
@@ -258,8 +258,8 @@ package body Gtk.Menu is
    -- Set_Title --
    ---------------
 
-   procedure Set_Title (Menu : access Gtk_Menu_Record; Title : String) is
-      procedure Internal (Menu : System.Address; Title : String);
+   procedure Set_Title (Menu : access Gtk_Menu_Record; Title : UTF8_String) is
+      procedure Internal (Menu : System.Address; Title : UTF8_String);
       pragma Import (C, Internal, "gtk_menu_set_title");
 
    begin

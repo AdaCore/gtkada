@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --     Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet      --
 --               Copyright (C) 2001-2003 ACT-Europe                  --
@@ -82,12 +82,12 @@ package body Gtkada.Dialogs is
    --------------------
 
    function Message_Dialog
-     (Msg            : String;
+     (Msg            : UTF8_String;
       Dialog_Type    : Message_Dialog_Type := Information;
       Buttons        : Message_Dialog_Buttons := Button_OK or Button_Help;
       Default_Button : Message_Dialog_Buttons := Button_OK;
-      Help_Msg       : String := "";
-      Title          : String := "";
+      Help_Msg       : UTF8_String := "";
+      Title          : UTF8_String := "";
       Justification  : Gtk_Justification := Justify_Center;
       Parent         : Gtk.Window.Gtk_Window := null)
       return Message_Dialog_Buttons
@@ -194,9 +194,9 @@ package body Gtkada.Dialogs is
    -----------------------
 
    function Create_Gtk_Dialog
-     (Msg           : String;
+     (Msg           : UTF8_String;
       Dialog_Type   : Message_Dialog_Type := Information;
-      Title         : String := "";
+      Title         : UTF8_String := "";
       Justification : Gtk_Justification := Justify_Center;
       Parent        : Gtk.Window.Gtk_Window := null)
       return Gtk.Dialog.Gtk_Dialog

@@ -117,11 +117,11 @@ package body Gtk.Text_Buffer is
 
    procedure Set_Text
      (Buffer : access Gtk_Text_Buffer_Record;
-      Text   : String)
+      Text   : UTF8_String)
    is
       procedure Internal
         (Buffer : System.Address;
-         Text   : String;
+         Text   : UTF8_String;
          Len    : Gint);
       pragma Import (C, Internal, "gtk_text_buffer_set_text");
 
@@ -136,12 +136,12 @@ package body Gtk.Text_Buffer is
    procedure Insert
      (Buffer : access Gtk_Text_Buffer_Record;
       Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
-      Text   : String)
+      Text   : UTF8_String)
    is
       procedure Internal
         (Buffer : System.Address;
          Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
-         Text   : String;
+         Text   : UTF8_String;
          Len    : Gint);
       pragma Import (C, Internal, "gtk_text_buffer_insert");
 
@@ -155,11 +155,11 @@ package body Gtk.Text_Buffer is
 
    procedure Insert_At_Cursor
      (Buffer : access Gtk_Text_Buffer_Record;
-      Text   : String)
+      Text   : UTF8_String)
    is
       procedure Internal
         (Buffer : System.Address;
-         Text   : String;
+         Text   : UTF8_String;
          Len    : Gint);
       pragma Import (C, Internal, "gtk_text_buffer_insert_at_cursor");
 
@@ -189,14 +189,14 @@ package body Gtk.Text_Buffer is
    procedure Insert_Interactive
      (Buffer           : access Gtk_Text_Buffer_Record;
       Iter             : in out Gtk.Text_Iter.Gtk_Text_Iter;
-      Text             : String;
+      Text             : UTF8_String;
       Default_Editable : Boolean;
       Result           : out Boolean)
    is
       function Internal
         (Buffer           : System.Address;
          Iter             : Gtk.Text_Iter.Gtk_Text_Iter;
-         Text             : String;
+         Text             : UTF8_String;
          Len              : Gint;
          Default_Editable : Gboolean) return Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_insert_interactive");
@@ -214,12 +214,12 @@ package body Gtk.Text_Buffer is
 
    function Insert_Interactive_At_Cursor
      (Buffer           : access Gtk_Text_Buffer_Record;
-      Text             : String;
+      Text             : UTF8_String;
       Default_Editable : Boolean) return Boolean
    is
       function Internal
         (Buffer           : System.Address;
-         Text             : String;
+         Text             : UTF8_String;
          Len              : Gint;
          Default_Editable : Gboolean) return Gboolean;
       pragma Import
@@ -356,7 +356,7 @@ package body Gtk.Text_Buffer is
      (Buffer               : access Gtk_Text_Buffer_Record;
       Start                : Gtk.Text_Iter.Gtk_Text_Iter;
       The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
-      Include_Hidden_Chars : Boolean := False) return String
+      Include_Hidden_Chars : Boolean := False) return UTF8_String
    is
       Str : constant Interfaces.C.Strings.chars_ptr :=
         Get_Text (Buffer, Start, The_End, Include_Hidden_Chars);
@@ -397,7 +397,7 @@ package body Gtk.Text_Buffer is
      (Buffer               : access Gtk_Text_Buffer_Record;
       Start                : Gtk.Text_Iter.Gtk_Text_Iter;
       The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
-      Include_Hidden_Chars : Boolean := False) return String
+      Include_Hidden_Chars : Boolean := False) return UTF8_String
    is
       Str : constant Interfaces.C.Strings.chars_ptr :=
         Get_Slice (Buffer, Start, The_End, Include_Hidden_Chars);

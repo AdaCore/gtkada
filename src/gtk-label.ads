@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,11 +47,11 @@ package Gtk.Label is
    type Gtk_Label_Record is new Misc.Gtk_Misc_Record with private;
    type Gtk_Label is access all Gtk_Label_Record'Class;
 
-   procedure Gtk_New (Label : out Gtk_Label; Str : String := "");
+   procedure Gtk_New (Label : out Gtk_Label; Str : UTF8_String := "");
    --  Create a new label.
    --  Str is the string to be displayed.
 
-   procedure Gtk_New_With_Mnemonic (Label : out Gtk_Label; Str : String);
+   procedure Gtk_New_With_Mnemonic (Label : out Gtk_Label; Str : UTF8_String);
    --  Create a new label containing the text in Str.
    --  If characters in Str are preceded by an underscore, they are underlined
    --  indicating that they represent a keyboard accelerator called a mnemonic.
@@ -59,28 +59,28 @@ package Gtk.Label is
    --  automatically or explicitely using Set_Mnemonic_Widget.
 
    procedure Initialize
-     (Label : access Gtk_Label_Record'Class; Str : String);
+     (Label : access Gtk_Label_Record'Class; Str : UTF8_String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    procedure Initialize_With_Mnemonic
-     (Label : access Gtk_Label_Record'Class; Str : String);
+     (Label : access Gtk_Label_Record'Class; Str : UTF8_String);
    --  Internal initialization function.
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Label.
 
-   procedure Set_Text (Label : access Gtk_Label_Record; Str : String);
+   procedure Set_Text (Label : access Gtk_Label_Record; Str : UTF8_String);
    --  Change the text of the label.
    --  The new text is visible on the screen at once. Note that the underline
    --  pattern is not modified.
 
-   function Get_Text (Label : access Gtk_Label_Record) return String;
+   function Get_Text (Label : access Gtk_Label_Record) return UTF8_String;
    --  Get the current value of the text displayed in the label.
 
    --  <doc_ignore>
    function Get
-     (Label : access Gtk_Label_Record) return String renames Get_Text;
+     (Label : access Gtk_Label_Record) return UTF8_String renames Get_Text;
    --  Same as Get_Text.
    --  pragma Deprecated (Get);
    --  </doc_ignore>
@@ -123,7 +123,7 @@ package Gtk.Label is
    --  Glib.Properties for more information on properties.
    --
    --  - Name:  Label_Property
-   --    Type:  String
+   --    Type:  UTF8_String
    --    Flags: read-write
    --    Descr: The text of the label.
    --    See also: Set_Text and Get_Text

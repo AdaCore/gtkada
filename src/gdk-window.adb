@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -340,8 +340,8 @@ package body Gdk.Window is
    -- Set_Icon_Name --
    -------------------
 
-   procedure Set_Icon_Name (Window : Gdk_Window; Name : String) is
-      procedure Internal (Window : Gdk_Window; Name : String);
+   procedure Set_Icon_Name (Window : Gdk_Window; Name : UTF8_String) is
+      procedure Internal (Window : Gdk_Window; Name : UTF8_String);
       pragma Import (C, Internal, "gdk_window_set_icon_name");
 
    begin
@@ -411,8 +411,8 @@ package body Gdk.Window is
    -- Set_Title --
    ---------------
 
-   procedure Set_Title (Window : Gdk_Window; Title : String) is
-      procedure Internal (Window : Gdk_Window; Title : String);
+   procedure Set_Title (Window : Gdk_Window; Title : UTF8_String) is
+      procedure Internal (Window : Gdk_Window; Title : UTF8_String);
       pragma Import (C, Internal, "gdk_window_set_title");
    begin
       Internal (Window, Title & ASCII.NUL);

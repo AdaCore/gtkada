@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -83,11 +83,12 @@ package Gtk.Window is
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Window.
 
-   procedure Set_Title (Window : access Gtk_Window_Record; Title : String);
+   procedure Set_Title
+     (Window : access Gtk_Window_Record; Title : UTF8_String);
    --  Change the title of the window, as it appears in the title bar.
    --  Note that on some systems you might not be able to change it.
 
-   function Get_Title (Window : access Gtk_Window_Record) return String;
+   function Get_Title (Window : access Gtk_Window_Record) return UTF8_String;
    --  Return the title of the window, or "" if there is none
 
    procedure Set_Wmclass
@@ -512,7 +513,7 @@ package Gtk.Window is
    --    See also:  Gtk_New
    --
    --  - Name:  Title_Property
-   --    Type:  String
+   --    Type:  UTF8_String
    --    Flags: read-write
    --    Descr: The title of the window
    --    See also:  Set_Title and Get_Title

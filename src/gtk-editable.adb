@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -94,7 +94,7 @@ package body Gtk.Editable is
    function Get_Chars
      (Editable  : access Gtk_Editable_Record;
       Start_Pos : Gint := 0;
-      End_Pos   : Gint := -1) return String
+      End_Pos   : Gint := -1) return UTF8_String
    is
       function Internal
         (Editable  : System.Address;
@@ -184,12 +184,12 @@ package body Gtk.Editable is
 
    procedure Insert_Text
      (Editable : access Gtk_Editable_Record;
-      New_Text : String;
+      New_Text : UTF8_String;
       Position : in out Gint)
    is
       procedure Internal
         (Editable        : System.Address;
-         New_Text        : String;
+         New_Text        : UTF8_String;
          New_Text_Length : Gint;
          Position        : in out Gint);
       pragma Import (C, Internal, "gtk_editable_insert_text");

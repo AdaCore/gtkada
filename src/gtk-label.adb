@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,7 +47,7 @@ package body Gtk.Label is
    -- Get --
    ---------
 
-   function Get_Text (Label : access Gtk_Label_Record) return String is
+   function Get_Text (Label : access Gtk_Label_Record) return UTF8_String is
       function Internal (Label : System.Address) return C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_label_get_text");
 
@@ -59,7 +59,7 @@ package body Gtk.Label is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Label : out Gtk_Label; Str : String := "") is
+   procedure Gtk_New (Label : out Gtk_Label; Str : UTF8_String := "") is
    begin
       Label := new Gtk_Label_Record;
       Initialize (Label, Str);
@@ -69,7 +69,8 @@ package body Gtk.Label is
    -- Gtk_New_With_Mnemonic --
    ---------------------------
 
-   procedure Gtk_New_With_Mnemonic (Label : out Gtk_Label; Str : String) is
+   procedure Gtk_New_With_Mnemonic
+     (Label : out Gtk_Label; Str : UTF8_String) is
    begin
       Label := new Gtk_Label_Record;
       Initialize_With_Mnemonic (Label, Str);
@@ -80,9 +81,9 @@ package body Gtk.Label is
    ----------------
 
    procedure Initialize
-     (Label : access Gtk_Label_Record'Class; Str : String)
+     (Label : access Gtk_Label_Record'Class; Str : UTF8_String)
    is
-      function Internal (Str : String) return System.Address;
+      function Internal (Str : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_label_new");
 
    begin
@@ -94,9 +95,9 @@ package body Gtk.Label is
    ------------------------------
 
    procedure Initialize_With_Mnemonic
-     (Label : access Gtk_Label_Record'Class; Str : String)
+     (Label : access Gtk_Label_Record'Class; Str : UTF8_String)
    is
-      function Internal (Str : String) return System.Address;
+      function Internal (Str : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_label_new_with_mnemonic");
 
    begin
@@ -123,8 +124,8 @@ package body Gtk.Label is
    -- Set_Text --
    --------------
 
-   procedure Set_Text (Label : access Gtk_Label_Record; Str : String) is
-      procedure Internal (Label : System.Address; Str : String);
+   procedure Set_Text (Label : access Gtk_Label_Record; Str : UTF8_String) is
+      procedure Internal (Label : System.Address; Str : UTF8_String);
       pragma Import (C, Internal, "gtk_label_set_text");
 
    begin
@@ -135,7 +136,9 @@ package body Gtk.Label is
    -- Set_Pattern --
    -----------------
 
-   procedure Set_Pattern (Label : access Gtk_Label_Record; Pattern : String) is
+   procedure Set_Pattern
+     (Label : access Gtk_Label_Record; Pattern : String)
+   is
       procedure Internal (Label : System.Address; Pattern : String);
       pragma Import (C, Internal, "gtk_label_set_pattern");
 

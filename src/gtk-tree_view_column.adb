@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -562,11 +562,11 @@ package body Gtk.Tree_View_Column is
 
    procedure Set_Title
      (Tree_Column : access Gtk_Tree_View_Column_Record;
-      Title       : String)
+      Title       : UTF8_String)
    is
       procedure Internal
         (Tree_Column : System.Address;
-         Title       : String);
+         Title       : UTF8_String);
       pragma Import (C, Internal, "gtk_tree_view_column_set_title");
 
    begin
@@ -578,7 +578,7 @@ package body Gtk.Tree_View_Column is
    ---------------
 
    function Get_Title
-     (Tree_Column : access Gtk_Tree_View_Column_Record) return String
+     (Tree_Column : access Gtk_Tree_View_Column_Record) return UTF8_String
    is
       function Internal (Tree_Column : System.Address) return chars_ptr;
       pragma Import (C, Internal, "gtk_tree_view_column_get_title");

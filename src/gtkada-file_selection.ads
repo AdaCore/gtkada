@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                        Copyright (C) 2000                         --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,10 +32,12 @@
 --  dialogs by handling the signals internally.
 --  </description>
 
+with Glib;
+
 package Gtkada.File_Selection is
 
    function File_Selection_Dialog
-     (Title       : String := "Select File";
+     (Title       : Glib.UTF8_String := "Select File";
       Default_Dir : String := "";
       Dir_Only    : Boolean := False;
       Must_Exist  : Boolean := False) return String;

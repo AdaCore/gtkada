@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -73,7 +73,7 @@ package Gtk.Button is
    type Gtk_Button_Record is new Bin.Gtk_Bin_Record with private;
    type Gtk_Button is access all Gtk_Button_Record'Class;
 
-   procedure Gtk_New (Button : out Gtk_Button; Label : String := "");
+   procedure Gtk_New (Button : out Gtk_Button; Label : UTF8_String := "");
    --  Create a new button.
    --  if Label is not the empty string, then the text appears in the
    --  button (and the child of the button is a Gtk_Label). On the other
@@ -90,7 +90,7 @@ package Gtk.Button is
    --  Stock_Id: the name of the stock item.
 
    procedure Gtk_New_With_Mnemonic
-     (Button : out Gtk_Button; Label : String);
+     (Button : out Gtk_Button; Label : UTF8_String);
    --  Create a new button containing a label.
    --  Label: The text of the button, with an underscore in front of the
    --         mnemonic character
@@ -100,7 +100,7 @@ package Gtk.Button is
 
    procedure Initialize
      (Button : access Gtk_Button_Record'Class;
-      Label  : String);
+      Label  : UTF8_String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -111,7 +111,7 @@ package Gtk.Button is
 
    procedure Initialize_With_Mnemonic
      (Button : access Gtk_Button_Record'Class;
-      Label  : String);
+      Label  : UTF8_String);
    --  Internal initialization function.
 
    function Get_Type return Gtk.Gtk_Type;
@@ -129,11 +129,11 @@ package Gtk.Button is
 
    procedure Set_Label
      (Button : access Gtk_Button_Record;
-      Label  : String);
+      Label  : UTF8_String);
    --  Set the label of the button.
 
    function Get_Label
-     (Button : access Gtk_Button_Record) return String;
+     (Button : access Gtk_Button_Record) return UTF8_String;
    --  Return the label of the button.
 
    procedure Set_Use_Underline
@@ -182,7 +182,7 @@ package Gtk.Button is
    --  Glib.Properties for more information on properties.
    --
    --  - Name:  Label_Property
-   --    Type:  String
+   --    Type:  UTF8_String
    --    Flags: read-write
    --    Descr: Changes the text contained in the button.
    --    See also: Same as calling Set_Label directly.

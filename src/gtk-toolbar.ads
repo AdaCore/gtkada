@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -72,9 +72,9 @@ package Gtk.Toolbar is
 
    function Append_Item
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : String := "";
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Text                 : UTF8_String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Button.Gtk_Button;
    --  Note : you have to set the callback yourself, as opposed to what is
@@ -82,17 +82,17 @@ package Gtk.Toolbar is
 
    function Prepend_Item
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : String := "";
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Text                 : UTF8_String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Button.Gtk_Button;
 
    function Insert_Item
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : String := "";
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Text                 : UTF8_String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null;
       Position             : Gint)
       return Gtk.Button.Gtk_Button;
@@ -103,9 +103,9 @@ package Gtk.Toolbar is
 
    function Insert_Stock
      (Toolbar              : access Gtk_Toolbar_Record;
-      Stock_Id             : String;
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Stock_Id             : UTF8_String;
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Position             : Gint := -1) return Gtk.Button.Gtk_Button;
 
    -----------------
@@ -130,9 +130,9 @@ package Gtk.Toolbar is
      (Toolbar              : access Gtk_Toolbar_Record;
       The_Type             : Gtk_Toolbar_Child_Type;
       Widget               : Gtk.Widget.Gtk_Widget := null;
-      Text                 : String := "";
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Text                 : UTF8_String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Widget.Gtk_Widget;
    --  Note : you have to set the "clicked" callback yourself, as opposed to
@@ -142,9 +142,9 @@ package Gtk.Toolbar is
      (Toolbar              : access Gtk_Toolbar_Record;
       The_Type             : Gtk_Toolbar_Child_Type;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Text                 : String := "";
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Text                 : UTF8_String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Widget.Gtk_Widget;
 
@@ -152,9 +152,9 @@ package Gtk.Toolbar is
      (Toolbar              : access Gtk_Toolbar_Record;
       The_Type             : Gtk_Toolbar_Child_Type;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Text                 : String := "";
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Text                 : UTF8_String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null;
       Position             : Gint)
       return Gtk.Widget.Gtk_Widget;
@@ -168,20 +168,20 @@ package Gtk.Toolbar is
    procedure Append_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "");
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "");
 
    procedure Prepend_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "");
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "");
 
    procedure Insert_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : String := "";
-      Tooltip_Private_Text : String := "";
+      Tooltip_Text         : UTF8_String := "";
+      Tooltip_Private_Text : UTF8_String := "";
       Position             : Gint);
 
    ---------------------

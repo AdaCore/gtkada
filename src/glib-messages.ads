@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --                   Copyright (C) 2003 ACT-Europe                   --
 --                                                                   --
@@ -67,7 +67,7 @@ package Glib.Messages is
    type Log_Function is access procedure
      (Log_Domain : String;
       Log_Level  : Log_Level_Flags;
-      Message    : String);
+      Message    : UTF8_String);
 
    type Log_Handler_Id is new Guint;
 
@@ -87,14 +87,14 @@ package Glib.Messages is
    procedure Log_Default_Handler
      (Log_Domain : String;
       Log_Levels : Log_Level_Flags;
-      Message    : String);
+      Message    : UTF8_String);
    --  The default log handler.
    --  Can be called e.g. within a user defined log handler.
 
    procedure Log
      (Log_Domain : String;
       Log_Levels : Log_Level_Flags;
-      Message    : String);
+      Message    : UTF8_String);
    --  Log a message through the glib logging facility.
 
    function Log_Set_Fatal_Mask

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -59,7 +59,7 @@ package Gtk.Stock is
    procedure Gtk_New
      (Item               : out Gtk_Stock_Item;
       Stock_Id           : String;
-      Label              : String;
+      Label              : UTF8_String;
       Modifier           : Gdk.Types.Gdk_Modifier_Type;
       Keyval             : Gdk.Types.Gdk_Key_Type;
       Translation_Domain : String);

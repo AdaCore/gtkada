@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -79,7 +79,7 @@ package body Gtk.Aspect_Frame is
 
    procedure Gtk_New
      (Aspect_Frame : out Gtk_Aspect_Frame;
-      Label        : String;
+      Label        : UTF8_String;
       Xalign       : Gfloat;
       Yalign       : Gfloat;
       Ratio        : Gfloat;
@@ -95,7 +95,7 @@ package body Gtk.Aspect_Frame is
 
    procedure Initialize
      (Aspect_Frame : access Gtk_Aspect_Frame_Record'Class;
-      Label        : String;
+      Label        : UTF8_String;
       Xalign       : Gfloat;
       Yalign       : Gfloat;
       Ratio        : Gfloat;

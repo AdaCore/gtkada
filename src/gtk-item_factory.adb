@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -43,14 +43,14 @@ package body Gtk.Item_Factory is
 
    procedure Add_Foreign
      (Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Full_Path    : String;
+      Full_Path    : UTF8_String;
       Accel_Group  : Gtk.Accel_Group.Gtk_Accel_Group;
       Keyval       : Guint;
       Modifiers    : Gdk.Types.Gdk_Modifier_Type)
    is
       procedure Internal
         (Accel_Widget : System.Address;
-         Full_Path    : String;
+         Full_Path    : UTF8_String;
          Accel_Group  : System.Address;
          Keyval       : Guint;
          Modifiers    : Gdk.Types.Gdk_Modifier_Type);
@@ -105,11 +105,11 @@ package body Gtk.Item_Factory is
 
    procedure Delete_Item
      (Ifactory : access Gtk_Item_Factory_Record;
-      Path     : String)
+      Path     : UTF8_String)
    is
       procedure Internal
         (Ifactory : System.Address;
-         Path     : String);
+         Path     : UTF8_String);
       pragma Import (C, Internal, "gtk_item_factory_delete_item");
 
    begin
@@ -140,11 +140,11 @@ package body Gtk.Item_Factory is
 
    function Get_Item
      (Ifactory : access Gtk_Item_Factory_Record;
-      Path     : String) return Gtk.Widget.Gtk_Widget
+      Path     : UTF8_String) return Gtk.Widget.Gtk_Widget
    is
       function Internal
         (Ifactory : System.Address;
-         Path     : String) return System.Address;
+         Path     : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_item_factory_get_item");
 
    begin
@@ -174,11 +174,11 @@ package body Gtk.Item_Factory is
 
    function Get_Widget
      (Ifactory : access Gtk_Item_Factory_Record;
-      Path     : String) return Gtk.Widget.Gtk_Widget
+      Path     : UTF8_String) return Gtk.Widget.Gtk_Widget
    is
       function Internal
         (Ifactory : System.Address;
-         Path     : String) return System.Address;
+         Path     : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_item_factory_get_widget");
 
    begin
@@ -207,7 +207,7 @@ package body Gtk.Item_Factory is
    ----------------------
 
    function Path_From_Widget
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return String
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return UTF8_String
    is
       function Internal
         (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
@@ -301,7 +301,7 @@ package body Gtk.Item_Factory is
          use Interfaces.C.Strings;
       begin
          if Ientry.Item_Type /= Null_Ptr
-           and then String'(Value (Ientry.Item_Type)) /= "<ImageItem>"
+           and then UTF8_String'(Value (Ientry.Item_Type)) /= "<ImageItem>"
          then
             ICS.Free (Ientry.Extra_Data);
          end if;
@@ -323,7 +323,7 @@ package body Gtk.Item_Factory is
       -------------
 
       function Gtk_New
-        (Path            : String;
+        (Path            : UTF8_String;
          Accelerator     : String := "";
          Callback        : Gtk_Item_Factory_Callback := null;
          Item_Type       : Item_Type_Enum;
@@ -355,7 +355,7 @@ package body Gtk.Item_Factory is
       end Gtk_New;
 
       function Gtk_New
-        (Path            : String;
+        (Path            : UTF8_String;
          Accelerator     : String := "";
          Callback        : Gtk_Item_Factory_Callback := null;
          Item_Type       : String := "";
@@ -389,7 +389,7 @@ package body Gtk.Item_Factory is
       end Gtk_New;
 
       function Gtk_New
-        (Path            : String;
+        (Path            : UTF8_String;
          Accelerator     : String := "";
          Stock_Id        : String;
          Callback        : Gtk_Item_Factory_Callback := null;
@@ -404,7 +404,7 @@ package body Gtk.Item_Factory is
       end Gtk_New;
 
       function Gtk_New
-        (Path            : String;
+        (Path            : UTF8_String;
          Accelerator     : String := "";
          Callback        : Gtk_Item_Factory_Callback := null;
          Pixbuf          : access Guchar_Array;
@@ -526,7 +526,7 @@ package body Gtk.Item_Factory is
    procedure Gtk_New
      (Ifactory       : out Gtk_Item_Factory;
       Container_Type : Gtk_Type;
-      Path           : String;
+      Path           : UTF8_String;
       Accel_Group    : Gtk.Accel_Group.Gtk_Accel_Group) is
    begin
       Ifactory := new Gtk_Item_Factory_Record;
@@ -540,12 +540,12 @@ package body Gtk.Item_Factory is
    procedure Initialize
      (Ifactory       : access Gtk_Item_Factory_Record'Class;
       Container_Type : Gtk_Type;
-      Path           : String := "";
+      Path           : UTF8_String := "";
       Accel_Group    : Gtk.Accel_Group.Gtk_Accel_Group)
    is
       function Internal
         (Container_Type : Gtk_Type;
-         Path           : String;
+         Path           : UTF8_String;
          Accel_Group    : System.Address)
          return System.Address;
       pragma Import (C, Internal, "gtk_item_factory_new");

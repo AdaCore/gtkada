@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -58,7 +58,8 @@ package body Gtk.List_Item is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (List_Item : out Gtk_List_Item; Label : String := "") is
+   procedure Gtk_New
+     (List_Item : out Gtk_List_Item; Label : UTF8_String := "") is
    begin
       List_Item := new Gtk_List_Item_Record;
       Initialize (List_Item, Label);
@@ -81,9 +82,9 @@ package body Gtk.List_Item is
    ----------------
 
    procedure Initialize
-     (List_Item : access Gtk_List_Item_Record'Class; Label : String := "")
+     (List_Item : access Gtk_List_Item_Record'Class; Label : UTF8_String := "")
    is
-      function Internal (Label : String) return System.Address;
+      function Internal (Label : UTF8_String) return System.Address;
       pragma Import (C, Internal, "gtk_list_item_new_with_label");
 
    begin

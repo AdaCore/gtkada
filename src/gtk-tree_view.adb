@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -381,7 +381,7 @@ package body Gtk.Tree_View is
 --    function Insert_Column_With_Data_Func
 --      (Tree_View : access Gtk_Tree_View_Record;
 --       Position  : Gint;
---       Title     : String;
+--       Title     : UTF8_String;
 --       Cell      : access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
 --       Func      : Gtk_Tree_Cell_Data_Func;
 --       Data      : gpointer;
@@ -391,7 +391,7 @@ package body Gtk.Tree_View is
 --       function Internal
 --         (Tree_View : System.Address;
 --          Position  : Gint;
---          Title     : String;
+--          Title     : UTF8_String;
 --          Cell      : System.Address;
 --          Func      : Gint;
 --          Data      : Integer;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -54,7 +54,7 @@ package Gtk.Radio_Button is
    procedure Gtk_New
      (Radio_Button : out Gtk_Radio_Button;
       Group        : Widget_SList.GSlist := Widget_SList.Null_List;
-      Label        : String := "");
+      Label        : UTF8_String := "");
    --  Create a new radio button, belonging to Group.
    --  If Label is left as the empty string, then the button will not have any
    --  child and you are free to put any thing you want in it, including a
@@ -66,7 +66,7 @@ package Gtk.Radio_Button is
    procedure Gtk_New
      (Radio_Button : out Gtk_Radio_Button;
       Group        : Gtk_Radio_Button;
-      Label        : String := "");
+      Label        : UTF8_String := "");
    --  Create a new radio button in the same group as Group.
    --  If Label is left as the empty string, Radio_Button is created without
    --  any child and you can put whatever you want in it, including a pixmap.
@@ -78,7 +78,7 @@ package Gtk.Radio_Button is
    procedure Gtk_New_With_Mnemonic
      (Radio_Button : out Gtk_Radio_Button;
       Group        : Widget_SList.GSlist := Widget_SList.Null_List;
-      Label        : String);
+      Label        : UTF8_String);
    --  Create a new Gtk_Radio_Button containing a Label. The Label is created
    --  using Gtk.Label.New_With_Mnemonic, so underscores in Label indicate
    --  the mnemonic for the button.
@@ -90,7 +90,7 @@ package Gtk.Radio_Button is
    procedure Gtk_New_With_Mnemonic
      (Radio_Button : out Gtk_Radio_Button;
       Group        : Gtk_Radio_Button;
-      Label        : String);
+      Label        : UTF8_String);
    --  Create a new radio button in the same group as Group. The label is
    --  created using Gtk.Label.New_With_Mnemonic, so underscores in Label
    --  indicate the mnemonic for the button.
@@ -102,26 +102,26 @@ package Gtk.Radio_Button is
    procedure Initialize
      (Radio_Button : access Gtk_Radio_Button_Record'Class;
       Group        : Widget_SList.GSlist;
-      Label        : String);
+      Label        : UTF8_String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    procedure Initialize
      (Radio_Button : access Gtk_Radio_Button_Record'Class;
       Group        : Gtk_Radio_Button;
-      Label        : String);
+      Label        : UTF8_String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    procedure Initialize_With_Mnemonic
      (Radio_Button : access Gtk_Radio_Button_Record'Class;
       Group        : Widget_SList.GSlist;
-      Label        : String);
+      Label        : UTF8_String);
 
    procedure Initialize_With_Mnemonic
      (Radio_Button : access Gtk_Radio_Button_Record'Class;
       Group        : Gtk_Radio_Button;
-      Label        : String);
+      Label        : UTF8_String);
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Radio_Button.

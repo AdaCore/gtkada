@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -101,7 +101,7 @@ package Gtk.Tree_Store is
      (Tree_Store : access Gtk_Tree_Store_Record;
       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
       Column     : Gint;
-      Value      : String);
+      Value      : UTF8_String);
    --  Same as Generic_Set, but tailored to use with a string.
 
    procedure Set
@@ -267,13 +267,13 @@ end Gtk.Tree_Store;
 --  procedure My_Set
 --     (Tree_Store : access Gtk_Tree_Store_Record'Class;
 --      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
---      Column1 : Gint; Value1 : String;
+--      Column1 : Gint; Value1 : UTF8_String;
 --      Column2 : Gint; Value2 : Boolean)
 --  is
 --      procedure Internal
 --        (Tree : System.Address;
 --         Iter : Gtk.Tree_Model.Gtk_Tree_Iter;
---         Column1 : Gint; Value1 : String;
+--         Column1 : Gint; Value1 : UTF8_String;
 --         Column2 : Gint; Value2 : Gint;
 --         Final : Gint := -1);
 --      pragma Import (C, Internal, "gtk_tree_store_set");

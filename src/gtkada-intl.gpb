@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --     Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet      --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,6 +29,7 @@
 
 with System;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Glib; use Glib;
 
 package body Gtkada.Intl is
 
@@ -42,12 +43,12 @@ package body Gtkada.Intl is
    -- Gettext --
    -------------
 
-   function Gettext (Msg : String) return String is
-      function Internal (Msg : String) return chars_ptr;
+   function Gettext (Msg : UTF8_String) return UTF8_String is
+      function Internal (Msg : UTF8_String) return chars_ptr;
       pragma Import (C, Internal, "gettext");
    begin
 #if HAVE_GETTEXT then
-      return Value (Internal (Msg & ASCII.Nul));
+      return Value (Internal (Msg & ASCII.NUL));
 #else
       return Msg;
 #end if;
@@ -57,12 +58,14 @@ package body Gtkada.Intl is
    -- Dgettext --
    --------------
 
-   function Dgettext (Domain : String; Msg : String) return String is
-      function Internal (Domain, Msg : String) return chars_ptr;
+   function Dgettext (Domain : String; Msg : UTF8_String) return UTF8_String is
+      function Internal
+        (Domain : String;
+         Msg    : UTF8_String) return chars_ptr;
       pragma Import (C, Internal, "dgettext");
    begin
 #if HAVE_GETTEXT then
-      return Value (Internal (Domain & ASCII.Nul, Msg & ASCII.Nul));
+      return Value (Internal (Domain & ASCII.NUL, Msg & ASCII.NUL));
 #else
       return Msg;
 #end if;
@@ -72,7 +75,7 @@ package body Gtkada.Intl is
    -- "-" --
    ---------
 
-   function "-" (Msg : String) return String is
+   function "-" (Msg : UTF8_String) return UTF8_String is
    begin
       return Dgettext ("GtkAda", Msg);
    end "-";
@@ -82,14 +85,16 @@ package body Gtkada.Intl is
    ---------------
 
    function Dcgettext
-     (Domain : String; Msg : String; Category : Integer) return String
+     (Domain : String; Msg : UTF8_String; Category : Integer) return String
    is
       function Internal
-        (Domain, Msg : String; Category : Integer) return chars_ptr;
+        (Domain : String;
+         Msg    : UTF8_String;
+         Category : Integer) return chars_ptr;
       pragma Import (C, Internal, "dcgettext");
    begin
 #if HAVE_GETTEXT then
-      return Value (Internal (Domain & ASCII.Nul, Msg & ASCII.Nul, Category));
+      return Value (Internal (Domain & ASCII.NUL, Msg & ASCII.NUL, Category));
 #else
       return Msg;
 #end if;
@@ -119,7 +124,7 @@ package body Gtkada.Intl is
       pragma Import (C, Internal, "textdomain");
    begin
 #if HAVE_GETTEXT then
-      Internal (Domain & ASCII.Nul);
+      Internal (Domain & ASCII.NUL);
 #else
       null;
 #end if;
@@ -134,7 +139,7 @@ package body Gtkada.Intl is
       pragma Import (C, Internal, "bindtextdomain");
    begin
 #if HAVE_GETTEXT then
-      Internal (Domain & ASCII.Nul, Dirname & ASCII.Nul);
+      Internal (Domain & ASCII.NUL, Dirname & ASCII.NUL);
 #else
       null;
 #end if;
