@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                      Copyright (C) 1999                           --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -381,9 +381,7 @@ package body Glib.XML is
    -- Print --
    -----------
 
-   procedure Print
-     (N : Node_Ptr; Indent : Natural := 0; File_Name : String := "")
-   is
+   procedure Print (N : Node_Ptr; File_Name : String := "") is
       File : File_Type;
 
       procedure Do_Indent (Indent : Natural);

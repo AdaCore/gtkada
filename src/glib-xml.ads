@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                      Copyright (C) 1999                           --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -83,7 +83,7 @@ package Glib.XML is
    --  Parse File and return the first node representing the XML file.
 
    procedure Print
-     (N : Node_Ptr; Indent : Natural := 0; File_Name : String := "");
+     (N : Node_Ptr; File_Name : String := "");
    --  Write the tree starting with N into a file File_Name. The generated
    --  file is valid XML, and can be parsed with the Parse function.
    --  If File_Name is the empty string, then the tree is printed on the
