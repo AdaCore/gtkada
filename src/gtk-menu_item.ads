@@ -59,6 +59,10 @@ package Gtk.Menu_Item is
    --  Create a new Gtk_Menu_Item containing a label.
    --  The label is created using Gtk.Label.Gtk_New_With_Mnemonic, so
    --  underscores in Label indicate the mnemonic for the menu item.
+   --  Warning: the menu_item will not be properly destroyed when you remove
+   --  it from its parent menu, if you created it with a non-empty Label. In
+   --  this case, you first need to destroy the child of the Menu_Item, and
+   --  then remove it from its parent menu.
 
    procedure Initialize
      (Menu_Item : access Gtk_Menu_Item_Record'Class; Label : UTF8_String);
