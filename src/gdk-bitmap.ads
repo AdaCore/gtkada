@@ -47,6 +47,10 @@ package Gdk.Bitmap is
    --  This is the usual way to destroy a bitmap. The memory is freed when
    --  there is no more reference
 
+   procedure Ref (Bitmap : in out Gdk_Bitmap);
+
+   procedure Unref (Bitmap : in out Gdk_Bitmap);
+
    procedure Create_From_Data (Bitmap :    out Gdk_Bitmap;
                                Window : in     Gdk.Window.Gdk_Window'Class;
                                Data   : in     String;

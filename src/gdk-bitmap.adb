@@ -46,6 +46,20 @@ package body Gdk.Bitmap is
                                     Width, Height));
    end Create_From_Data;
 
+
+   -----------
+   --  Ref  --
+   -----------
+
+   procedure Ref (Bitmap : in out Gdk_Bitmap) is
+      function Internal (Bitmap : in System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_bitmap_ref");
+      S : System.Address;
+   begin
+      S := Internal (Get_Object (Bitmap));
+   end Ref;
+
+
    ---------------------
    --  Set_Clip_Mask  --
    ---------------------
@@ -57,6 +71,19 @@ package body Gdk.Bitmap is
    begin
       Internal (Get_Object (GC), Get_Object (Mask));
    end Set_Clip_Mask;
+
+
+   -------------
+   --  Unref  --
+   -------------
+
+   procedure Unref (Bitmap : in out Gdk_Bitmap) is
+      procedure Internal (Bitmap : in System.Address);
+      pragma Import (C, Internal, "gdk_bitmap_unref");
+   begin
+      Internal (Get_Object (Bitmap));
+      Set_Object (Bitmap, System.Null_Address);
+   end Unref;
 
    -------------
    -- Gdk_New --
