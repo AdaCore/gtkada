@@ -1509,12 +1509,16 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      C     : constant MDI_Child := MDI_Child (Child);
-      C2    : MDI_Child;
-      MDI   : constant MDI_Window := C.MDI;
-      Current : Gtk_Widget;
-      Note  : Gtk_Notebook;
+      C        : constant MDI_Child := MDI_Child (Child);
+      C2       : MDI_Child;
+      MDI      : constant MDI_Window := C.MDI;
+      Current  : Gtk_Widget;
+      Note     : Gtk_Notebook;
       Position : Child_Position;
+      Move_Whole_Notebook : constant Boolean :=
+        (Get_State (Event) and Control_Mask) /= 0;
+      Copy_Instead_Of_Move : constant Boolean :=
+        (Get_State (Event) and Shift_Mask) /= 0;
    begin
       if Get_Window (Child) /= Get_Window (Event) then
          return False;
@@ -1533,8 +1537,7 @@ package body Gtkada.MDI is
             Draw_Dnd_Rectangle (C.MDI);
             Get_Dnd_Target (C.MDI, Current, Position, C.MDI.Dnd_Rectangle);
 
-            C2 := Dnd_Data
-              (C, Copy => (Get_State (Event) and Shift_Mask) /= 0);
+            C2 := Dnd_Data (C, Copy => Copy_Instead_Of_Move);
 
             if Current = null then
                --  Floating child ?
@@ -1573,13 +1576,28 @@ package body Gtkada.MDI is
                      end if;
                   end;
 
-                  Ref (C2);
                   if Position = Position_Default then
                      Note := Gtk_Notebook (Current);
                   else
                      Note := Create_Notebook (MDI);
                   end if;
-                  Put_In_Notebook (C.MDI, C2, Note);
+
+                  if Move_Whole_Notebook then
+                     declare
+                        Children : Widget_List.Glist :=
+                          Get_Children (Get_Notebook (C2));
+                        L : Widget_List.Glist := Children;
+                     begin
+                        while L /= Null_List loop
+                           Put_In_Notebook
+                             (C.MDI, MDI_Child (Get_Data (L)), Note);
+                           L := Next (L);
+                        end loop;
+                        Free (Children);
+                     end;
+                  else
+                     Put_In_Notebook (C.MDI, C2, Note);
+                  end if;
 
                   case Position is
                      when Position_Bottom =>
@@ -1605,8 +1623,6 @@ package body Gtkada.MDI is
                      when others =>
                         null;
                   end case;
-
-                  Unref (C2);
                end if;
             end if;
 
