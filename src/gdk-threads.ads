@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -56,7 +56,7 @@ package Gdk.Threads is
    --  GtkAda).
 
 private
-   pragma Linker_Options ("-lgthread-1.3");
+   pragma Linker_Options ("-lgthread-2.0");
    --  This is needed to resolve g_thread_init
 
    pragma Import (C, Init, "g_thread_init");
