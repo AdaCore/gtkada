@@ -31,6 +31,11 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
 	* gtk+/gdk/win32/gdkgeometry-win32.c: ask for a repaint of the
 	invalidate zone to address smoothness issues
 
+Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
+
+	* gtk+/gdk/win32/gdkevents-win32.c: handle WM_NCPAINT. Fixes the
+	bad window display update when window is in backrgound
+
 #########################################
 # Ctrl-C
 #########################################
@@ -616,3 +621,60 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
  }
  
  /* This utility function is duplicated here and in pango-layout.c; should it be
+
+
+
+################################################################
+# Fixes wrong update in window display when window in background
+################################################################
+--- gdk/win32/gdkevents-win32.c.old	2002-03-06 01:36:08.000000000 +0100
++++ gdk/win32/gdkevents-win32.c	2002-09-20 18:50:35.000000000 +0200
+@@ -1899,7 +1904,9 @@
+ 
+   gchar buf[256];
+   gboolean return_val = FALSE;
+   
++  HRGN	ncPaintRGN ;
++
+   if (ret_val_flagp)
+     *ret_val_flagp = FALSE;
+ 
+@@ -2880,7 +2887,37 @@
+       *ret_valp = 1;
+ 
+       break;
++    case WM_NCPAINT:
++      /* gets the region to be updated */
++      ncPaintRGN = (HRGN) (msg->wParam) ;
++      if (ncPaintRGN == 0)
++        break ;
++      if (ncPaintRGN == 1)
++        {
++          GetClientRect (msg->hwnd, &rect) ;
++	} else {
++          /* get the update region, and deduce a rectangle....*/
++          hrgn = CreateRectRgn (0,0,0,0) ;
++          GetUpdateRgn (msg->hwnd, hrgn, FALSE) ;
++          GetRgnBox (hrgn, &rect) ;
++	  DeleteObject (hrgn) ;
++        }
++      /* then, if region is not empty, notify the */
++      if ((rect.left != rect.right) && (rect.top != rect.bottom))
++        {
++          GdkRectangle expose_rect;
++
++	  _gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
++          expose_rect.x = rect.left + xoffset;
++          expose_rect.y = rect.top + yoffset;
++          expose_rect.width = rect.right - rect.left;
++          expose_rect.height = rect.bottom - rect.top;
+ 
++	  _gdk_window_process_expose (window, msg->time, &expose_rect);
++
++	    return_val = FALSE;
++	 }
++      break ;
+     case WM_PAINT:
+       if (!GetUpdateRect (msg->hwnd, NULL, FALSE))
+ 	{
+
