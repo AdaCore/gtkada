@@ -54,7 +54,6 @@ libgtkada.a: $(TEST_LINK).o $(c_objects)
 test_link.o: 
 	#perl ./create_test_link.pl > test_link.adb
 	$(GNATMAKE) -c test_link -shared -fPIC $(GNATFLAGS)
-	-$(RM) test_link.o 
 
 main: main.adb test.adb test.ads libgtkada.so
 	$(GNATMAKE) $@ $(GNATMAKEFLAGS) $(GNATMAKELDFLAGS) 
