@@ -287,7 +287,8 @@ package body Gtk.File_Selection is
                        File   : in File_Type) is
       use Window;
    begin
-      Gen_New (N, "File_Selection", Get_Field (N, "title").all, File => File);
+      Gen_New (N, "File_Selection", Get_Field (N, "title").all,
+        File => File, Delim => '"');
       Generate (Gtk_Window (File_Selection), N, File);
    end Generate;
 
