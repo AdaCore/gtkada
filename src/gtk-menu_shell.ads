@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,9 +27,24 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Object; use Gtk.Object;
+--  <description>
+--
+--  This widget is a base class for all menu widgets. It contains a list of
+--  items that can be navigated, selected and activated by the user.
+--  It can not be instanciated directly.
+--
+--  A menu is considered "active" when it is displayed on the screen, or, in
+--  the case of a menu_bar when one of its menus is active.
+--
+--  An item is "selected" if it is displayed in a prelight state and its
+--  submenu (if any) displayed.
+--
+--  </description>
+--  <c_version>1.2.6</c_version>
+
+with Gtk.Object;
 with Gtk.Container;
-with Gtk.Widget;
+with Gtk.Menu_Item;
 
 package Gtk.Menu_Shell is
 
@@ -37,27 +52,111 @@ package Gtk.Menu_Shell is
      with private;
    type Gtk_Menu_Shell is access all Gtk_Menu_Shell_Record'Class;
 
+   type Gtk_Menu_Direction_Type is (Menu_Dir_Parent,
+                                    Menu_Dir_Child,
+                                    Menu_Dir_Next,
+                                    Menu_Dir_Prev);
+   --  Direction where to move the selection. See the signal "selection-done"
+   --  below.
+
    procedure Append
      (Menu_Shell : access Gtk_Menu_Shell_Record;
-      Child      : in Gtk.Widget.Gtk_Widget);
-   procedure Deactivate (Menu_Shell : access Gtk_Menu_Shell_Record);
-   procedure Insert
-     (Menu_Shell : access Gtk_Menu_Shell_Record;
-      Child      : in Gtk.Widget.Gtk_Widget;
-      Position   : in Gint);
+      Child      : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
+   --  Adds a new item at the end of the menu.
+
    procedure Prepend
      (Menu_Shell : access Gtk_Menu_Shell_Record;
-      Child      : in Gtk.Widget.Gtk_Widget);
+      Child      : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
+   --  Adds a new item at the beginning of the menu
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
- 
+   procedure Insert
+     (Menu_Shell : access Gtk_Menu_Shell_Record;
+      Child      : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
+      Position   : in Gint);
+   --  Adds a new item at a specific position in the menu.
+   --  The first item is at position 0. To insert as the last item in the menu,
+   --  set POSITION to -1.
+
+   procedure Select_Item
+     (Menu_Shell : access Gtk_Menu_Shell_Record;
+      Item       : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
+   --  Selects a new item in the menu, after deselecting the current item.
+
+   procedure Deselect (Menu_Shell : access Gtk_Menu_Shell_Record);
+   --  Deselects the currently selected item.
+
+   procedure Activate_Item
+     (Menu_Shell       : access Gtk_Menu_Shell_Record;
+      Item             : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
+      Force_Deactivate : Boolean);
+   --  Activates the item.
+   --  If FORCE_DEACTIVATE is True or the menu_shell sets this property,
+   --  MENU_SHELL and all its parent menus are deactivated and erased from
+   --  the screen.
+
+   ----------------------
+   -- Signals emission --
+   ----------------------
+
+   procedure Deactivate (Menu_Shell : access Gtk_Menu_Shell_Record);
+   --  Emits the "deactivate" signal.
+   --  This deselects the selected item, ungrabs the mouse and keyboard, and
+   --  erase the MENU_SHELL from the screen.
+
+   ----------------------------
+   -- Support for GATE/DGATE --
+   ----------------------------
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type)
      renames Gtk.Container.Generate;
- 
-   procedure Generate (Menu_Shell : in out Gtk_Object; N : in Node_Ptr)
+   --  Gate internal function
+
+   procedure Generate (Menu_Shell : in out Gtk.Object.Gtk_Object;
+                       N : in Node_Ptr)
      renames Gtk.Container.Generate;
+   --  Dgate internal function
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "deactivate"
+   --    procedure Handler (Menu_Shell : access Gtk_Menu_Shell_Record'Class);
+   --
+   --    Emitted when the menu is deactivated, ie is erased from the screen.
+   --
+   --  - "selection-done"
+   --    procedure Handler (Menu_Shell : access Gtk_Menu_Shell_Record'Class);
+   --
+   --    Emitted when an item has been selected. The menu shell might not be
+   --    activated when the signal is emitted.
+   --
+   --  - "move_current"
+   --    procedure Handler (Menu_Shell : access Gtk_Menu_Shell_Record'Class;
+   --                       Direction  : Gtk_Menu_Direction_Type);
+   --
+   --    An action signal which selects another menu item (given by direction).
+   --    In a menu, this is bound by default to the arrow keys to move the
+   --    the selection.
+   --
+   --  - "activate_current"
+   --    procedure Handler (Menu_Shell : access Gtk_Menu_Shell_Record'Class;
+   --                       Force_Hide : Gboolean);
+   --
+   --    Activates the current menu item within the Menu_Shell.
+   --    if FORCE_HIDE is True, hide the menu afterwards.
+   --
+   --  - "cancel"
+   --    procedure Handler (Menu_Shell : access Gtk_Menu_Shell_Record'Class);
+   --
+   --    Cancels the selection within the menu_shell. Causes a "selection-done"
+   --    signal to be emitted.
+   --
+   --  </signals>
 
 private
    type Gtk_Menu_Shell_Record is new Gtk.Container.Gtk_Container_Record
