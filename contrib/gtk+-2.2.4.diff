@@ -1,0 +1,36 @@
+Wed Oct 15 18:21:58 CEST 2003	Arnaud Charlet	<charlet@act-europe.fr>
+
+	* gtk/gtktextview.c (gtk_text_view_scroll_[h]pages): Undo
+	1.216.2.12 change, since this is creating a regression in the
+	handling of scrolling (#78513)
+
+--- gtk/gtktextview.c	2003/10/15 16:03:30	1.1
++++ gtk/gtktextview.c	2003/10/15 16:20:38
+@@ -4761,13 +4761,6 @@ gtk_text_view_scroll_pages
+   
+   adj = text_view->vadjustment;
+ 
+-  /* Make sure we start from the current cursor position, even
+-   * if it was offscreen.
+-   */
+-  gtk_text_view_scroll_mark_onscreen (text_view,
+-				      gtk_text_buffer_get_mark (get_buffer (text_view),
+-								"insert"));
+-  
+ /* Validate the region that will be brought into view by the cursor motion
+    */
+   if (count < 0)
+@@ -4844,13 +4837,6 @@ gtk_text_view_scroll_hpages
+   
+   adj = text_view->hadjustment;
+ 
+-  /* Make sure we start from the current cursor position, even
+-   * if it was offscreen.
+-   */
+-  gtk_text_view_scroll_mark_onscreen (text_view,
+-				      gtk_text_buffer_get_mark (get_buffer (text_view),
+-								"insert"));
+-  
+   /* Validate the line that we're moving within.
+    */
+   gtk_text_buffer_get_iter_at_mark (get_buffer (text_view),
