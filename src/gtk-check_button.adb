@@ -52,9 +52,15 @@ package body Gtk.Check_Button is
                          With_Label   : in String := "") is
       function Internal (Label : in String) return System.Address;
       pragma Import (C, Internal, "gtk_check_button_new_with_label");
+      function Internal2 (Label : in String) return System.Address;
+      pragma Import (C, Internal2, "gtk_check_button_new");
 
    begin
-      Set_Object (Check_Button, Internal (With_Label & ASCII.NUL));
+      if Label = "" then
+         Set_Object (Check_Button, Internal2);
+      else
+         Set_Object (Check_Button, Internal (With_Label & ASCII.NUL));
+      end if;
       Initialize_User_Data (Check_Button);
    end Initialize;
 
