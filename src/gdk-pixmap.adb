@@ -152,13 +152,15 @@ package body Gdk.Pixmap is
       Transparent : in     Gdk.Color.Gdk_Color;
       Data        : in     Gtkada.Types.Chars_Ptr_Array)
    is
-      function Internal (Window      : in Gdk.Window.Gdk_Window;
-                         Mask        : in System.Address;
-                         Transparent : in System.Address;
-                         Data        : in Gtkada.Types.Chars_Ptr_Array)
-                         return           Gdk_Pixmap;
+      function Internal
+        (Window      : in Gdk.Window.Gdk_Window;
+         Mask        : in System.Address;
+         Transparent : in System.Address;
+         Data        : in Gtkada.Types.Chars_Ptr_Array) return Gdk_Pixmap;
       pragma Import (C, Internal, "gdk_pixmap_create_from_xpm_d");
+
       use type Gdk.Color.Gdk_Color;
+
       Tmp : aliased Gdk.Bitmap.Gdk_Bitmap := Mask;
       Transp_Col : aliased Gdk.Color.Gdk_Color := Transparent;
       --  Need to use a local variable to avoid problems with 'Address if
@@ -170,10 +172,10 @@ package body Gdk.Pixmap is
       if Transparent = Gdk.Color.Null_Color then
          Transparent_A := System.Null_Address;
       end if;
-      Pixmap :=  Internal (Window, Tmp'Address, Transparent_A, Data);
+
+      Pixmap := Internal (Window, Tmp'Address, Transparent_A, Data);
       Mask := Tmp;
    end Create_From_Xpm_D;
-
 
    -----------------------
    -- Create_From_Xpm_D --
