@@ -59,20 +59,6 @@ package body Gtk.Label is
       Set_Object (Label, Internal (Str & ASCII.NUL));
    end Gtk_New;
 
-
-   -----------
-   --  Set  --
-   -----------
-
-   procedure Set (Label : in Gtk_Label;
-                  Str   : in String) is
-      procedure Internal (Label : in System.Address;
-                          Str   : in String);
-      pragma Import (C, Internal, "gtk_label_set");
-   begin
-      Internal (Get_Object (Label), Str & ASCII.NUL);
-   end Set;
-
    -------------------
    --  Set_Justify  --
    -------------------
@@ -85,5 +71,18 @@ package body Gtk.Label is
    begin
       Internal (Get_Object (Label), Jtype);
    end Set_Justify;
+
+   ----------------
+   --  Set_Text  --
+   ----------------
+
+   procedure Set_Text (Label : in Gtk_Label;
+                       Str   : in String) is
+      procedure Internal (Label : in System.Address;
+                          Str   : in String);
+      pragma Import (C, Internal, "gtk_label_set_text");
+   begin
+      Internal (Get_Object (Label), Str & ASCII.NUL);
+   end Set_Text;
 
 end Gtk.Label;

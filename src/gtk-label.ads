@@ -36,8 +36,8 @@ package Gtk.Label is
    procedure Gtk_New (Label :    out Gtk_Label;
                       Str   : in     String);
 
-   procedure Set (Label : in Gtk_Label;
-                  Str   : in String);
+   procedure Set_Text (Label : in Gtk_Label;
+                       Str   : in String);
 
    procedure Set_Justify (Label : in Gtk_Label;
                           Jtype : in Enums.Gtk_Justification);
