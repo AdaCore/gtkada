@@ -165,6 +165,17 @@ package Glib.Properties.Creation is
    --  creating new Param_Spec types based on existing types. You should not
    --  change the type if you haven't created param yourself.
 
+   function Get_Qdata (Param : Param_Spec; Quark : GQuark) return Glib.C_Proxy;
+   --  Return the user data set for Param
+
+   procedure Set_Qdata
+     (Param   : Param_Spec;
+      Quark   : GQuark;
+      Data    : Glib.C_Proxy;
+      Destroy : G_Destroy_Notify := null);
+   --  Associate some named data with Param. Destroy is called when Param is
+   --  destroyed.
+
    --  Value_Type returns GType_Char
    type Param_Spec_Char is new Param_Spec;
    function Minimum (Param : Param_Spec_Char) return Glib.Gint8;
@@ -427,6 +438,8 @@ private
    pragma Import (C, Enumeration, "ada_gparam_get_enum_class_enum");
    pragma Import (C, Install_Property, "g_object_class_install_property");
    pragma Import (C, Unref, "g_param_spec_unref");
+   pragma Import (C, Get_Qdata, "g_param_spec_get_gdata");
+   pragma Import (C, Set_Qdata, "g_param_spec_set_gdata_full");
    pragma Inline (Description);
    pragma Inline (Name);
 
