@@ -1,11 +1,18 @@
-This is a patch against Gtk+ 2.0.7 sources that fixes Windows specific problems.
+This is a patch against Gtk+ 2.0.9 sources that fixes Windows specific problems.
+
+Mon Nov 25 12:00:14  2002	Arnaud Charlet <charlet@gnat.com>
+
+	* gtk+/gdk/win32/Makefile.am: Remove gdk-win32res.lo dependency,
+	since we do not want to use the default Gtk+ icon.
+
+	* gtk+/gdk/win32/gdkmain-win32.c: Define dummy symbol when
+	G_ENABLE_DEBUG is not defined, to work around undefined symbol.
 
 Tue Nov  5 11:54:18  2002	Arnaud Charlet <charlet@gnat.com>
 
 	* glib/glib/glib.def: Add missing symbol.
 
 	* gtk+/gdk/win32/gdkwindow-win32.c
-	(gdk_window_get_frame_extents): Fix miscomputation of y coordinate.
 	(gdk_window_unstick): Remove spurious warning.
 	(gdk_window_set_transient_for): Use TOPMOST after all, since
 	NO_TOPMOST is too confusing.
@@ -13,21 +20,10 @@ Tue Nov  5 11:54:18  2002	Arnaud Charlet <charlet@gnat.com>
 	* gtk+/gdk/win32/gdkevents-win32.c (gdk_event_translate): Add handling
 	of maximized and minimized events.
 
-Fri Sep 20 18:58:40  2002	Florent Duguet <duguet@gnat.com>
-
-	* gtk+/gdk/win32/gdkevents-win32.c: Handle WM_NCPAINT. Fixes the
-	bad window display update when window is in background.
-
 Mon Sep 16 12:39:09  2002	Florent Duguet <duguet@gnat.com>
 
 	* pango/pango/pangowin32.c: Optimization of the pango rendering through
 	caching.
-
-Thu Sep 12 18:03:02 2002	Florent Duguet <duguet@gnat.com>
-
-	* gtk+/gdk/win32/gdkevents-win32.c: Force an update when paint message
-	is received this forces a refresh of zones which are actually
-	invalidated and visible.
 
 Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
 
@@ -83,21 +79,6 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
 +      else
          WIN32_API_FAILED ("ScrollWindowEx");
      }
- 
---- gtk+/gdk/win32/gdkevents-win32.c.old	2002-11-05 11:19:14 +0100
-+++ gtk+/gdk/win32/gdkevents-win32.c	2002-11-05 11:19:33 +0100
-@@ -3073,6 +3073,12 @@
- 
- 	  _gdk_window_process_expose (window, _gdk_win32_get_next_tick (msg->time), &expose_rect);
- 	  return_val = FALSE;
-+
-+         /* Force a process_all_updates to refresh visible windows
-+          * when receiving a paint message. */
-+
-+         if (!GDK_WINDOW_DESTROYED (window) && gdk_window_is_visible (window))
-+           gdk_window_process_updates (window, FALSE);
-         }
-       break;
  
 #########################################
 # Optimization of rendering
@@ -377,59 +358,6 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
  }
  
  /* This utility function is duplicated here and in pango-layout.c; should it be
-################################################################
-# Fixes wrong update in window display when window in background
-################################################################
---- gtk+/gdk/win32/gdkevents-win32.c.old	2002-11-05 11:19:14 +0100
-+++ gtk+/gdk/win32/gdkevents-win32.c	2002-11-05 17:27:08 +0100
-@@ -1986,6 +1986,8 @@
-   gchar buf[256];
-   gboolean return_val = FALSE;
-   
-+  HRGN ncPaintRGN;
-+
-   if (ret_val_flagp)
-     *ret_val_flagp = FALSE;
- 
-@@ -2972,6 +2974,38 @@
-       *ret_valp = 1;
-       break;
- 
-+    case WM_NCPAINT:
-+      /* gets the region to be updated */
-+      ncPaintRGN = (HRGN) (msg->wParam);
-+      if (ncPaintRGN == 0)
-+	break;
-+      if (ncPaintRGN == 1)
-+	{
-+	  GetClientRect (msg->hwnd, &rect);
-+	} else {
-+	  /* get the update region, and deduce a rectangle....*/
-+	  hrgn = CreateRectRgn (0,0,0,0);
-+	  GetUpdateRgn (msg->hwnd, hrgn, FALSE);
-+	  GetRgnBox (hrgn, &rect);
-+	  DeleteObject (hrgn);
-+	}
-+      /* then, if region is not empty, notify the */
-+      if ((rect.left != rect.right) && (rect.top != rect.bottom))
-+	{
-+	  GdkRectangle expose_rect;
-+
-+	  _gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
-+	  expose_rect.x = rect.left + xoffset;
-+	  expose_rect.y = rect.top + yoffset;
-+	  expose_rect.width = rect.right - rect.left;
-+	  expose_rect.height = rect.bottom - rect.top;
-+
-+	  _gdk_window_process_expose (window, msg->time, &expose_rect);
-+
-+	  return_val = FALSE;
-+	}
-+      break;
-+
-     case WM_PAINT:
-       if (!GetUpdateRect (msg->hwnd, NULL, FALSE))
- 	{
 --- glib/glib/glib.def.old	2002-11-05 11:52:22 +0100
 +++ glib/glib/glib.def	2002-11-05 11:52:35 +0100
 @@ -333,6 +333,7 @@
@@ -451,15 +379,6 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
                       SWP_NOMOVE | SWP_NOSIZE))
      WIN32_API_FAILED ("SetWindowPos");
  #endif
-@@ -1837,7 +1837,7 @@
-     WIN32_API_FAILED ("GetWindowRect");
- 
-   rect->x = r.left;
--  rect->y = r.right;
-+  rect->y = r.top;
-   rect->width = r.right - r.left;
-   rect->height = r.bottom - r.top;
- }
 @@ -2397,11 +2397,7 @@
    if (GDK_WINDOW_DESTROYED (window))
      return;
@@ -499,3 +418,27 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
  	  if (private->resize_count > 1)
  	    private->resize_count -= 1;
  	  
+--- gtk+/gdk/win32/Makefile.am	2002/11/25 10:58:36	1.1
++++ gtk+/gdk/win32/Makefile.am	2002/11/25 10:59:18
+@@ -79,4 +79,4 @@
+ libgdkinclude_HEADERS =		\
+ 	gdkwin32.h
+ 
+-libgdk_win32_la_LIBADD = rc/gdk-win32res.lo
++libgdk_win32_la_LIBADD =
+--- gtk+/gdk/win32/gdkmain-win32.c	2002/11/25 11:17:43	1.1
++++ gtk+/gdk/win32/gdkmain-win32.c	2002/11/25 11:20:28
+@@ -964,4 +964,13 @@
+       : ((v = gdk_drawable_get_visual (d)) ? v->depth : gdk_visual_get_system ()->depth)));
+ }
+ 
++#else
++
++gchar *
++gdk_win32_gdkrectangle_to_string (const GdkRectangle *rect)
++{
++  return "";
++}
++
+ #endif /* G_ENABLE_DEBUG */
++
