@@ -38,6 +38,7 @@
 with Gtk.Handlers;
 pragma Elaborate_All (Gtk.Handlers);
 
+with Glib.Object;
 with Gtk.Widget;
 
 package Gtkada.Handlers is
@@ -48,5 +49,11 @@ package Gtkada.Handlers is
    package Return_Callback is new Gtk.Handlers.Return_Callback
      (Gtk.Widget.Gtk_Widget_Record, Boolean);
    --  Emit_By_Name shouldn't be used, since it should really return a Gboolean
+
+   package Object_Callback is new
+     Gtk.Handlers.Callback (Glib.Object.GObject_Record);
+
+   package Object_Return_Callback is new Gtk.Handlers.Return_Callback
+     (Glib.Object.GObject_Record, Boolean);
 
 end Gtkada.Handlers;
