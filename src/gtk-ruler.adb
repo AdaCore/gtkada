@@ -55,54 +55,6 @@ package body Gtk.Ruler is
       Internal (Get_Object (Ruler));
    end Draw_Ticks;
 
-   ---------------
-   -- Get_Lower --
-   ---------------
-
-   function Get_Lower (Ruler : access Gtk_Ruler_Record) return Gdouble is
-      function Internal (Widget : System.Address) return Gdouble;
-      pragma Import (C, Internal, "ada_ruler_get_lower");
-
-   begin
-      return Internal (Get_Object (Ruler));
-   end Get_Lower;
-
-   ------------------
-   -- Get_Max_Size --
-   ------------------
-
-   function Get_Max_Size (Ruler : access Gtk_Ruler_Record) return Gdouble is
-      function Internal (Widget : System.Address) return Gdouble;
-      pragma Import (C, Internal, "ada_ruler_get_max_size");
-
-   begin
-      return Internal (Get_Object (Ruler));
-   end Get_Max_Size;
-
-   ------------------
-   -- Get_Position --
-   ------------------
-
-   function Get_Position (Ruler : access Gtk_Ruler_Record) return Gdouble is
-      function Internal (Widget : System.Address) return Gdouble;
-      pragma Import (C, Internal, "ada_ruler_get_position");
-
-   begin
-      return Internal (Get_Object (Ruler));
-   end Get_Position;
-
-   ---------------
-   -- Get_Upper --
-   ---------------
-
-   function Get_Upper (Ruler : access Gtk_Ruler_Record) return Gdouble is
-      function Internal (Widget : System.Address) return Gdouble;
-      pragma Import (C, Internal, "ada_ruler_get_upper");
-
-   begin
-      return Internal (Get_Object (Ruler));
-   end Get_Upper;
-
    --------------------
    -- Gtk_New_Hruler --
    --------------------
@@ -164,6 +116,20 @@ package body Gtk.Ruler is
       Internal (Get_Object (Ruler), Metric);
    end Set_Metric;
 
+   ----------------
+   -- Get_Metric --
+   ----------------
+
+   function Get_Metric
+     (Ruler  : access Gtk_Ruler_Record) return Gtk_Metric_Type
+   is
+      function Internal (Ruler : System.Address) return Gtk_Metric_Type;
+      pragma Import (C, Internal, "gtk_ruler_get_metric");
+
+   begin
+      return Internal (Get_Object (Ruler));
+   end Get_Metric;
+
    ---------------
    -- Set_Range --
    ---------------
@@ -186,5 +152,29 @@ package body Gtk.Ruler is
    begin
       Internal (Get_Object (Ruler), Lower, Upper, Position, Max_Size);
    end Set_Range;
+
+   ---------------
+   -- Get_Range --
+   ---------------
+
+   procedure Get_Range
+     (Ruler    : access Gtk_Ruler_Record;
+      Lower    : out Gdouble;
+      Upper    : out Gdouble;
+      Position : out Gdouble;
+      Max_Size : out Gdouble)
+   is
+      procedure Internal
+        (Ruler    : System.Address;
+         Lower    : out Gdouble;
+         Upper    : out Gdouble;
+         Position : out Gdouble;
+         Max_Size : out Gdouble);
+      pragma Import (C, Internal, "gtk_ruler_get_range");
+
+   begin
+      Internal (Get_Object (Ruler), Lower, Upper, Position, Max_Size);
+   end Get_Range;
+
 
 end Gtk.Ruler;

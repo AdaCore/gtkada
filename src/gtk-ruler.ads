@@ -57,17 +57,12 @@ package Gtk.Ruler is
 
    procedure Draw_Pos (Ruler : access Gtk_Ruler_Record);
 
-   function Get_Lower (Ruler : access Gtk_Ruler_Record) return Gdouble;
-
-   function Get_Max_Size (Ruler : access Gtk_Ruler_Record) return Gdouble;
-
-   function Get_Position (Ruler : access Gtk_Ruler_Record) return Gdouble;
-
-   function Get_Upper (Ruler : access Gtk_Ruler_Record) return Gdouble;
-
    procedure Set_Metric
      (Ruler  : access Gtk_Ruler_Record;
       Metric : Gtk_Metric_Type);
+
+   function Get_Metric
+     (Ruler  : access Gtk_Ruler_Record) return Gtk_Metric_Type;
 
    procedure Set_Range
      (Ruler    : access Gtk_Ruler_Record;
@@ -75,6 +70,13 @@ package Gtk.Ruler is
       Upper    : Gdouble;
       Position : Gdouble;
       Max_Size : Gdouble);
+
+   procedure Get_Range
+     (Ruler    : access Gtk_Ruler_Record;
+      Lower    : out Gdouble;
+      Upper    : out Gdouble;
+      Position : out Gdouble;
+      Max_Size : out Gdouble);
 
    ----------------
    -- Properties --
