@@ -2224,15 +2224,6 @@ ada_text_view_get_vadj (GtkTextView* widget)
   return widget->vadjustment;
 }
 
-void
-ada_text_view_set_adjustments (GtkTextView* widget,
-                               GtkAdjustment* hadj,
-                               GtkAdjustment* vadj)
-{
-  g_signal_emit_by_name
-    (G_OBJECT (widget), "set_scroll_adjustments", hadj, vadj);
-}
-
 GtkTextLayout*
 ada_text_view_get_layout (GtkTextView* widget)
 {
