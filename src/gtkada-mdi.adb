@@ -3404,34 +3404,36 @@ package body Gtkada.MDI is
          Set_Sensitive (Child.Minimize_Button, True);
       end if;
 
-      if Len = 0 then
-         --  Destroy a notebook when embedded in a paned widget, so that the
-         --  pane automatically hides the handles if necessary
-         --  If the parent is not a paned widget, then either the notebook
-         --  is a dock or there is no pane widget and the notebook is in the
-         --  central area.
+      if not Gtk.Object.In_Destruction_Is_Set (Note) then
+         Set_Show_Tabs (Gtk_Notebook (Note), Len > 1);
 
-         Parent := Get_Parent (Note);
-         if Parent.all in Gtkada_Multi_Paned_Record'Class then
-            --  A dock ?
-            if Get_Parent (Parent).all
-               not in Gtkada_Multi_Paned_Record'Class
-            then
-               Set_Child_Visible (Note, False);
-            else
-               Children := Get_Children (Gtk_Container (Parent));
-               Len := Length (Children);
-               Free (Children);
+         if Len = 0 then
+            --  Destroy a notebook when embedded in a paned widget, so that the
+            --  pane automatically hides the handles if necessary
+            --  If the parent is not a paned widget, then either the notebook
+            --  is a dock or there is no pane widget and the notebook is in the
+            --  central area.
 
-               --  Always keep at least one notebook in the paned, for
-               --  drag-and-drop purposes
-               if Len /= 1 then
-                  Destroy (Note);
+            Parent := Get_Parent (Note);
+            if Parent.all in Gtkada_Multi_Paned_Record'Class then
+               --  A dock ?
+               if Get_Parent (Parent).all
+                 not in Gtkada_Multi_Paned_Record'Class
+               then
+                  Set_Child_Visible (Note, False);
+               else
+                  Children := Get_Children (Gtk_Container (Parent));
+                  Len := Length (Children);
+                  Free (Children);
+
+                  --  Always keep at least one notebook in the paned, for
+                  --  drag-and-drop purposes
+                  if Len /= 1 then
+                     Destroy (Note);
+                  end if;
                end if;
             end if;
          end if;
-      else
-         Set_Show_Tabs (Gtk_Notebook (Note), Len > 1);
       end if;
    end Removed_From_Notebook;
 
