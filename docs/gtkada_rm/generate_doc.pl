@@ -1121,7 +1121,7 @@ sub get_subprograms () {
 	}
       }
 
-      my ($ret_type) = ($return =~ /return ([^\s;]+)/);
+      my ($ret_type) = ($return =~ /return\s+([^\s;]+)/);
 
       # Memorizes the comments
       my ($comments) = "";
