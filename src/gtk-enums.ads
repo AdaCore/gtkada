@@ -43,7 +43,7 @@ package Gtk.Enums is
                             Update_Discontinuous,
                             Update_Delayed);
 
-   type Gtk_Attach_Options is new Glib.Gint;
+   type Gtk_Attach_Options is new Glib.Guint32;
    Expand : constant Gtk_Attach_Options := 1;
    Shrink : constant Gtk_Attach_Options := 2;
    Fill   : constant Gtk_Attach_Options := 4;
@@ -110,11 +110,11 @@ package Gtk.Enums is
    type Gtk_Orientation is (Orientation_Horizontal,
                             Orientation_Vertical);
 
-   type Gtk_Spin_Button_Update_Policy is new Glib.Gint;
+   type Gtk_Spin_Button_Update_Policy is new Glib.Guint32;
    Update_Always        : constant Gtk_Spin_Button_Update_Policy := 1;
    Update_If_Valid      : constant Gtk_Spin_Button_Update_Policy := 2;
    Update_Snap_To_Ticks : constant Gtk_Spin_Button_Update_Policy := 4;
-                                         
+
 
    type Gtk_Toolbar_Style is (Toolbar_Icons,
                               Toolbar_Text,
