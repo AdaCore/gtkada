@@ -749,7 +749,7 @@ private
       Coord   : Gdk.Rectangle.Gdk_Rectangle := (0, 0, 10, 10);
       Visible : Boolean := True;
 
-      From_Auto_Layout : Boolean := False;
+      From_Auto_Layout : Boolean := True;
       --  True if the item's current location is the result of the automatic
       --  layout algorithm.
    end record;
