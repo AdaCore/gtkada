@@ -148,12 +148,6 @@ package Gtk.Notebook is
    --  Remove a page from the notebook.
    --  The first position in the list of pages is 0.
 
-   function Get_Child
-     (Page : in Gtk_Notebook_Page) return Gtk.Widget.Gtk_Widget;
-   --  Return the child from a page.
-   --  A page is automatically created by GtkAda when you inserted a
-   --  widget in the notebook. The child is the widget you created itself.
-
    --------------------------------------------
    -- Modifying and getting the current page --
    --------------------------------------------
@@ -162,10 +156,6 @@ package Gtk.Notebook is
      (Notebook : access Gtk_Notebook_Record) return Gint;
    --  Get the number of the current page.
    --  The first page has the number 0.
-
-   function Get_Cur_Page
-     (Widget : access Gtk_Notebook_Record'Class) return Gtk_Notebook_Page;
-   --  Return the current page.
 
    function Get_Nth_Page
      (Widget   : access Gtk_Notebook_Record'Class;
@@ -217,7 +207,7 @@ package Gtk.Notebook is
      (Notebook : access Gtk_Notebook_Record;
       Pos      : in Gtk.Enums.Gtk_Position_Type);
    --  Change the position of the tabs.
-   --  The tabs can be display on any of the four sides of the notebook.
+   --  The tabs can be displayed on any of the four sides of the notebook.
 
    function Get_Tab_Pos
      (Widget : access Gtk_Notebook_Record) return Gtk.Enums.Gtk_Position_Type;
@@ -276,18 +266,6 @@ package Gtk.Notebook is
    -- Page properties --
    ---------------------
 
-   function Get_Allocation_Width (Page : Gtk_Notebook_Page) return Guint;
-   --  Return the current width of the page.
-
-   function Get_Allocation_Height (Page : Gtk_Notebook_Page) return Guint;
-   --  Return the current height of the page.
-
-   function Get_Allocation_X (Page : Gtk_Notebook_Page) return Gint;
-   --  Return the current position of the page, relative to its parent.
-
-   function Get_Allocation_Y (Page : Gtk_Notebook_Page) return Gint;
-   --  Return the current position of the page, relative to its parent.
-
    function Get_Tab_Label
      (Notebook  : access Gtk_Notebook_Record;
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class)
@@ -295,11 +273,6 @@ package Gtk.Notebook is
    --  Return the widget displayed in the tab used to select Page.
    --  This widget is in fact the one given in argument to Insert_Page,etc.
    --  when the page was created.
-
-   function Get_Tab_Label (Page : Gtk_Notebook_Page)
-     return Gtk.Widget.Gtk_Widget;
-   --  Same as the previous function, but this applies on a specific page,
-   --  which you can get for instance as the result of Get_Cur_Page.
 
    procedure Set_Tab_Label
      (Notebook  : access Gtk_Notebook_Record;
@@ -316,20 +289,13 @@ package Gtk.Notebook is
    --  Modify the text displayed in the tab for the page that contains Child.
    --  This is a less general form of Set_Tab_Label above.
 
-   --  <doc_ignore>
-   --  This function is now obsolete, please do not use it.
-   procedure Set_Tab
-     (Notebook  : access Gtk_Notebook_Record;
-      Page_Num  : in Gint;
-      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Set Notebook tab widget
-   --  </doc_ignore>
-
    function Get_Menu_Label
-     (Page : in Gtk_Notebook_Page) return Gtk.Widget.Gtk_Widget;
-   --  Return the widget displayed in the contextual menu for the page.
+     (Notebook : access Gtk_Notebook_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Gtk.Widget.Gtk_Widget;
+   --  Return the widget displayed in the contextual menu for the Child.
    --  This is the widget given in argument to Insert_Page_Menu,
-   --  Append_Page_Menu and Prepend_Page_Menu
+   --  Append_Page_Menu and Prepend_Page_Menu.
 
    procedure Set_Menu_Label
      (Notebook   : access Gtk_Notebook_Record;
@@ -415,11 +381,5 @@ private
    type Gtk_Notebook_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
    pragma Import (C, Get_Type, "gtk_notebook_get_type");
-   pragma Import
-     (C, Get_Allocation_Width, "ada_notebook_page_allocation_width");
-   pragma Import
-     (C, Get_Allocation_Height, "ada_notebook_page_allocation_height");
-   pragma Import (C, Get_Allocation_X, "ada_notebook_page_allocation_x");
-   pragma Import (C, Get_Allocation_Y, "ada_notebook_page_allocation_y");
 
 end Gtk.Notebook;
