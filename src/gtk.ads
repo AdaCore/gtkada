@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
+--                     Copyright (C) 1998-2001                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -39,13 +39,6 @@
 with Glib;                use Glib;
 with Gdk;                 use Gdk;
 with System;
-with Glib.Glade; use Glib.Glade, Glib.Glade.Glib_XML;
-with Ada.Text_IO; use Ada.Text_IO;
-pragma Warnings (Off, Glib.Glade);
-pragma Warnings (Off, Glib_XML);
-pragma Warnings (Off, Ada.Text_IO);
---  Text_IO is required by almost all the package for Gate,
---  so we put the 'with' here.
 
 package Gtk is
 
