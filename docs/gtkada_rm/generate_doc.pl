@@ -153,6 +153,7 @@ $chapter_bg="#FFF0D0";
 $chapter_fg="#000000";
 $section_bg="#FFD0D0";
 $section_fg="#000000";
+$subsection_bg="#FFF0D0";
 $subprog_bg="#D6E8FF";
 $hierarchy_bg="#FFF0D0";
 $tab1_width="7%";
@@ -186,7 +187,7 @@ foreach $source_file (@source_files) {
 
 	&output ("\@page\n",
 		 "\@cindex $package_name\n");
-	&output ("\@node Package $package_name\n",
+	&output ("\@node Package_$package_name\n",
 		 "\@chapter Package $pack\n");
 	&output ("\n\@noindent\n");
 
@@ -228,17 +229,17 @@ foreach $source_file (@source_files) {
 			   "\@section Widget Hierarchy\n");
 	    &html_output ("<TABLE WIDTH=100%><TR><TD WIDTH=$tab1_width></TD>",
 			  "<TD BGCOLOR=$hierarchy_bg>");
-	    &output ("\@multitable \@columnfractions .4 .6\n",
-		     "\@item \@b{Gtk_Object}\@tab (\@ref{Package Gtk.Object})\n");
-	    
+	    my ($hierarchy) = "";
+	    $hierarchy = sprintf ("\@b{%-30s (\@pxref{Package_%s})\n",
+				  "Gtk_Object}", "Gtk.Object");
 	    for ($level = 1; $level < @hierarchy; $level ++) {
-		&output ("\@item ",
-			 "\@ " x ($level * 3 - 1), "\\_",
-			 "\@b{", $hierarchy[$level], "}\@tab (\@ref{Package ",
-			 &package_from_type ($hierarchy[$level]), "})\n");
+		$hierarchy .= " " x ($level * 3)
+		    . sprintf ("\\___ \@b{%-" . (25 - $level * 3)
+			          . "s (\@pxref{Package_%s})\n",
+			       $hierarchy[$level] . "}",
+			       &package_from_type ($hierarchy[$level]));
 	    }
-	
-	    &output ("\@end multitable\n\n");
+	    &output ("\@example\n$hierarchy\n\@end example");
 	    &html_output ("</TD></TR></TABLE>");
 	} else {
 	    $parent{$package_name} = "<>";
@@ -273,14 +274,15 @@ foreach $source_file (@source_files) {
 		my ($name, $return, $comment, @params)
 		    = ($$subprog[1], $$subprog[0], $$subprog[2],
 		       @{$$subprog[3]});
+
 		if ($return eq "--") {
 		    if ($has_itemize == 1) {
 			&output ("\@end itemize\n");
 			$has_itemize = 0;
 		    }
-		    &html_output ("<TR><TD colspan=3>");
+		    &html_output ("<TR><TD colspan=3 BGCOLOR=$subsection_bg>");
 		    &output ("\@subsection $name\n\n");
-		    &html_output ("</TD></TR>");
+		    &html_output ("</TD></TR><TR><TD><BR></TD></TR>");
 		    $comment =~ s/^\s*//;
 		    $comment = &process_list
 			(&clean_comment_marks ($comment, 1));
@@ -292,49 +294,43 @@ foreach $source_file (@source_files) {
 		    &output ("\@itemize \@bullet\n\n");
 		    $has_itemize = 1;
 		}
-		&html_output ("<TR>",
-			      "<TD WIDTH=$tab1_width></TD>",
-			      "<TD BGCOLOR=$subprog_bg valign=top WIDTH=$tab2_width>");
-#		&tex_output ("\\settabs 2 \\columns\n\\+");
-		&output ("\@findex $name (\@i{in} $package_name)\n",
-			 "\@item \@b{",
-			 ($return eq "")? "procedure $name} " : "function $name} ");
-		if (scalar (@params) == 0) {
-		    &output ("\n");
+
+		my ($profile) = "";
+		if ($return eq ""  && scalar (@params) == 0) {
+		    $name .= ";";
 		}
-		&html_output ("</TD><TD BGCOLOR=$subprog_bg valign=top WIDTH=$tab3_width>");
-#		&tex_output (" & ");
-		
+		$profile = sprintf ("%-35s",
+				    ($return eq "") ? "\@b{procedure} $name"
+				                    : "\@b{function} $name");
 		if (scalar (@params) > 0) {
-		    my ($i);
-		    &output ("(");
-		    &output ("\n\@tex\n\\hfil\\break\n\@end tex\n");
-		    &output ("\@ifinfo\n\@*  \n\@end ifinfo\n");
-		    for ($i=0; $i<@params; $i++) {
-			&output ("\@	 		\@var{",
-				 $params[$i][0], "} : ",
-				 $params[$i][1], " ",
-				 $params[$i][2],
-				 ($i == $#params) ? ")" : ";\@*\n");
+		    $profile .= "\n  (";
+		    for ($i=0; $i<=$#params; $i++) {
+			$profile .= " " x 3     if ($i != 0);
+			$profile .= sprintf ("%-18s : \@b{%-6s} %s",
+					     $params[$i][0],
+					     $params[$i][1],
+					     $params[$i][2])
+				. (($i == $#params) ? ")" : ";\n");
 		    }
 		}
 		if ($return eq "") {
-		    &output (";\@*\n");
+		    $profile .= ";";
 		} else {
-		    if (scalar (@params) > 0) {
-			&output ("\@*\n");
-		    }
-		    &output ("\@	 		\@b{return} $return;\@*\n");
+		    $profile .= "\n" . " " x 3 if (scalar (@params) > 0);
+		    $profile .=  "\@b{return} $return;";
 		}
-		&html_output ("</TD></TR>");
-#		&tex_output ("&\\cr");
+		    
+		&html_output ("<TR>",
+			      "<TD WIDTH=$tab1_width></TD>",
+			      "<TD BGCOLOR=$subprog_bg valign=top WIDTH=$tab23_width>");
+		&output ("\@smallexample\n\@exdent $profile\n\@end smallexample");
 		
 		$comment =~ s/^\s*//;
 		$comment = &process_list (&clean_comment_marks ($comment, 1));
-		&html_output ("<TR>",
+		&html_output ("</TD></TR><TR>",
 			      "<TD WIDTH=$tab1_width></TD>",
 			      "<TD colspan=2 WIDTH=$tab23_width>");
-		&output ($comment, "\n\n",
+		&output ($comment, "\@*\n",
 			 "\@ifhtml\n<BR><BR>\n\@end ifhtml\n");
 		&html_output ("</TD></TR>");
 	    }
@@ -369,7 +365,7 @@ foreach $package_name (keys %parent) {
     unless (defined $output{$package_name}) {
 
 	&output ("\@cindex $package_name\n",
-		 "\@node Package $package_name\n",
+		 "\@node Package_$package_name\n",
 		 "\@chapter Package $package_name\n\n");
     }
 }
@@ -386,7 +382,7 @@ foreach (keys %parent) {
 
 open (MENU, ">$menu_file_name");
 print MENU "\@menu\n";
-print MENU "* Package ", join ("::\n* Package ", sort keys %packages), "::\n";
+print MENU "* Package_", join ("::\n* Package_", sort keys %packages), "::\n";
 print MENU "* Index::\n";
 print MENU "\@end menu\n";
 close MENU;
@@ -791,7 +787,7 @@ sub get_tag_value () {
 sub get_subprograms () {
   my (@content) = @_;
   my ($line);
-  my (@result);
+  my (@result) = ();
   my ($saw_package_start) = 0;
   my ($last_was_section) = 0;
 
@@ -864,11 +860,10 @@ sub get_subprograms () {
 
       while ($profile !~ /^ *$/) {
 	  my ($all, $tname, $taccess, $ttype)
-	      = ($profile =~ /(([\w\s,]+)\s*:\s*(in out|in|out|access)?\s*([^;]+);?)/);
+	      = ($profile =~ /(\s*([\w\s,]+)\s*:\s*(in out|in|out|access)?\s*([^;]+);?)/);
 	  push (@param_list, [$tname, $taccess, $ttype]);
 	  $profile =~ s/$all//;
       }
-
       # Ignore the special subprogram "Generate" and "Initialize"
       if ($name ne "Generate" && $name ne "Initialize") {
 	  push (@result, [ $ret_type, $name, $comments, \@param_list]);
