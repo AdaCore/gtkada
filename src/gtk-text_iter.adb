@@ -194,13 +194,14 @@ package body Gtk.Text_Iter is
          The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_visible_slice");
 
-      Str : Interfaces.C.Strings.chars_ptr := Internal (Start, The_End);
+      Str : constant Interfaces.C.Strings.chars_ptr :=
+        Internal (Start, The_End);
 
    begin
       declare
          S : constant String := Interfaces.C.Strings.Value (Str);
       begin
-         Interfaces.C.Strings.Free (Str);
+         g_free (Str);
          return S;
       end;
    end Get_Visible_Slice;
@@ -218,13 +219,14 @@ package body Gtk.Text_Iter is
          The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_visible_text");
 
-      Str : Interfaces.C.Strings.chars_ptr := Internal (Start, The_End);
+      Str : constant Interfaces.C.Strings.chars_ptr :=
+        Internal (Start, The_End);
 
    begin
       declare
          S : constant String := Interfaces.C.Strings.Value (Str);
       begin
-         Interfaces.C.Strings.Free (Str);
+         g_free (Str);
          return S;
       end;
    end Get_Visible_Text;
@@ -520,13 +522,13 @@ package body Gtk.Text_Iter is
         (Iter : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_language");
 
-      Str : Interfaces.C.Strings.chars_ptr := Internal (Iter);
+      Str : constant Interfaces.C.Strings.chars_ptr := Internal (Iter);
 
    begin
       declare
          S : constant String := Interfaces.C.Strings.Value (Str);
       begin
-         Interfaces.C.Strings.Free (Str);
+         g_free (Str);
          return S;
       end;
    end Get_Language;
