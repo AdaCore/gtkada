@@ -837,7 +837,7 @@ package body Gtk_Generates is
          if Stock = "" then
             Put_Line
               (File,
-               "   Gtk_New (" & Top & "." & Name & " , """
+               "   Gtk_New (" & Top & "." & Name & " , Pixmaps_Dir & """
                & Get_Property (N, "pixbuf", "") & """);");
          else
             Put_Line
@@ -858,24 +858,51 @@ package body Gtk_Generates is
 
    procedure Image_Menu_Item_Generate (N : Node_Ptr; File : File_Type) is
       Label     : constant String := Get_Property (N, "label", "");
-      Use_Stock : constant String := Get_Property (N, "use_stock", "True");
+      Use_Stock : constant String := Get_Property (N, "use_stock", "False");
+      Name : constant String := To_Ada (Get_Name (N));
+      Top  : constant String := To_Ada (Get_Name (Find_Top_Widget (N)));
+      Image_Node : Node_Ptr;
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_image_menu_item_get_type");
 
    begin
       Widget := Widget_New (Build_Type);
 
-      if Use_Stock = "True"
-        or else not Gettext_Support (N)
-      then
-         Gen_New
-           (N, "Image_Menu_Item", Label,
-            File => File, Prefix => """", Postfix => """",
-            New_Name => "From_Stock");
+      if Use_Stock = "True" then
+         if not Gettext_Support (N) then
+            Gen_New
+              (N, "Image_Menu_Item", Label,
+               File => File, Prefix => """", Postfix => """",
+               New_Name => "From_Stock");
+         else
+            Gen_New
+              (N, "Image_Menu_Item", Label,
+               File => File, Prefix => "-""", Postfix => """",
+               New_Name => "From_Stock");
+         end if;
+
       else
-         Gen_New
-           (N, "Image_Menu_Item", Label,
-            File => File, Prefix => "-""", Postfix => """");
+         if not Gettext_Support (N) then
+            Gen_New
+              (N, "Image_Menu_Item", Label,
+               File => File, Prefix => """", Postfix => """");
+         else
+            Gen_New
+              (N, "Image_Menu_Item", Label,
+               File => File, Prefix => "-""", Postfix => """");
+         end if;
+      end if;
+
+      if Use_Stock /= "True" then
+         Image_Node := Find_Tag_With_Attribute
+           (N.Child, "child", "internal-child", "image");
+
+         if Image_Node /= null then
+            Image_Generate (Image_Node.Child, File);
+            Put_Line
+              (File, "   Set_Image (" & Top & "." & Name & ", "
+               & Top & "." & To_Ada (Get_Name (Image_Node.Child)) & ");");
+         end if;
       end if;
 
       Widget_Destroy (Widget);
@@ -1532,7 +1559,8 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Container_Generate (N, File);
       Gen_Set (N, "Policy", "hscrollbar_policy",
-        "vscrollbar_policy", "", "", File);
+               "vscrollbar_policy", "", "", File);
+      Gen_Set (N, "Shadow_Type", "shadow_type", File);
    end Scrolled_Window_Generate;
 
    ------------------------
