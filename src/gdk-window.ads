@@ -182,9 +182,9 @@ package Gdk.Window is
      (Window : in Gdk_Window; Color : in Gdk.Color.Gdk_Color);
 
    procedure Set_Back_Pixmap
-     (Window          : in Gdk_Window;
-      Pixmap          : in Gdk.Gdk_Pixmap;
-      Parent_Relative : in Gint);
+     (Window          : Gdk_Window;
+      Pixmap          : Gdk.Gdk_Pixmap;
+      Parent_Relative : Boolean);
 
    procedure Set_Cursor
      (Window : in Gdk_Window; Cursor : in Gdk.Cursor.Gdk_Cursor);
@@ -328,5 +328,4 @@ private
    pragma Import (C, Get_Visual, "gdk_window_get_visual");
    pragma Import (C, Set_Colormap, "gdk_window_set_colormap");
    pragma Import (C, Set_Icon, "gdk_window_set_icon");
-   pragma Import (C, Set_Back_Pixmap, "gdk_window_set_back_pixmap");
 end Gdk.Window;

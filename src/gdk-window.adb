@@ -213,6 +213,23 @@ package body Gdk.Window is
       return Boolean'Val (Internal (Window));
    end Is_Visible;
 
+   ---------------------
+   -- Set_Back_Pixmap --
+   ---------------------
+
+   procedure Set_Back_Pixmap
+     (Window          : Gdk_Window;
+      Pixmap          : Gdk.Gdk_Pixmap;
+      Parent_Relative : Boolean)
+   is
+      procedure Internal
+        (Window : Gdk_Window; Pixmap : Gdk.Gdk_Pixmap; Relative : Gint);
+      pragma Import (C, Internal, "gdk_window_set_back_pixmap");
+
+   begin
+      Internal (Window, Pixmap, Boolean'Pos (Parent_Relative));
+   end Set_Back_Pixmap;
+
    --------------------
    -- Set_Background --
    --------------------
