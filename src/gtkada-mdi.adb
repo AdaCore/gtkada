@@ -149,24 +149,6 @@ package body Gtkada.MDI is
    --  pointer is within Corner_Size in both coordinates, then we are clicking
    --  on the corner)
 
-   Draw_Title_Bars : constant Boolean := True;
-   --  Whether title bars should be drawn when in maximized mode. They are
-   --  always visible in non-maximized mode
-
-   Position_Of_Tabs : constant Gtk.Enums.Gtk_Position_Type := Pos_Bottom;
-   --  Where the tabs of the notebooks should be
-
-   type Show_Tabs_Policy is (Always, Never, As_Needed);
-   Show_Tabs : Show_Tabs_Policy := As_Needed;
-   pragma Warnings (Off, Show_Tabs);
-   --  Whether tabs in notebooks should be visible
-   --  (not a constant to avoid warnings below about condition being always
-   --  True or False)
-
-   Highlight_Page : constant Boolean := not Draw_Title_Bars;
-   --  Whether the notebook page containing the current widget should be
-   --  highlighted.
-
    MDI_Class_Record        : Gtk.Object.GObject_Class :=
      Gtk.Object.Uninitialized_Class;
    Child_Class_Record      : Gtk.Object.GObject_Class :=
@@ -275,8 +257,20 @@ package body Gtkada.MDI is
      (Child : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Internal version of Close, for a MDI_Child
 
-   function Create_Notebook return Gtk_Notebook;
+   function Create_Notebook
+     (MDI : access MDI_Window_Record'Class) return Gtk_Notebook;
    --  Create a notebook, and set it up for drag-and-drop
+
+   procedure Configure_Notebook_Tabs
+     (MDI : access MDI_Window_Record'Class;
+      Notebook : access Gtk_Notebook_Record'Class);
+   --  Configure the visibility and position of notebook tabs
+
+   procedure Update_Tab_Color
+     (Child : access MDI_Child_Record'Class;
+      Force : Boolean := False);
+   --  Change the background color of the notebook tab containing child,
+   --  depending on whether the child is selected or not.
 
    function Side
      (Child : access MDI_Child_Record'Class; X, Y : Gint)
@@ -476,6 +470,9 @@ package body Gtkada.MDI is
    --  Internal version of Float_Child, where the user can choose whether the
    --  new floating window should be located where the mouse is, or at
    --  coordinates specified by (Child.X, Child.Y)
+
+   procedure Set_Child_Title_Bar (Child : access MDI_Child_Record'Class);
+   --  Hide or display the title bar of the child, depending on its status.
 
    ------------------
    -- Get_Notebook --
@@ -688,13 +685,13 @@ package body Gtkada.MDI is
          Xoptions => Gtk.Enums.Fill, Yoptions => 0);
       Set_Size_Request (Drop_Site, -1, Drop_Area_Thickness);
 
-      MDI.Docks (Top) := Create_Notebook;
+      MDI.Docks (Top) := Create_Notebook (MDI);
       Add_Child
         (MDI.Main_Pane, MDI.Docks (Top), Orientation_Vertical, Height => -1,
          Fixed_Size => True);
       Set_Child_Visible (MDI.Docks (Top), False);
 
-      MDI.Docks (Bottom) := Create_Notebook;
+      MDI.Docks (Bottom) := Create_Notebook (MDI);
       Split
         (MDI.Main_Pane, MDI.Docks (Top), MDI.Docks (Bottom),
          Orientation_Vertical, Height => -1, Fixed_Size => True);
@@ -712,7 +709,7 @@ package body Gtkada.MDI is
          Xoptions => 0, Yoptions => Gtk.Enums.Fill);
       Set_Size_Request (Drop_Site, Drop_Area_Thickness, -1);
 
-      MDI.Docks (Left) := Create_Notebook;
+      MDI.Docks (Left) := Create_Notebook (MDI);
       Split
         (MDI.Main_Pane, MDI.Docks (Top), MDI.Docks (Left),
          Orientation_Vertical, Width => -1, Fixed_Size => True);
@@ -724,7 +721,7 @@ package body Gtkada.MDI is
         (MDI.Main_Pane, MDI.Docks (Left), MDI.Central.Container,
          Orientation_Horizontal);
 
-      Add_Child (MDI.Central.Container, Create_Notebook);
+      Add_Child (MDI.Central.Container, Create_Notebook (MDI));
       Set_Child_Visible (MDI.Central.Container, False);
 
       Gtk_New (MDI.Central.Layout);
@@ -739,7 +736,7 @@ package body Gtkada.MDI is
       Split (MDI.Main_Pane, MDI.Central.Container, MDI.Central.Layout,
              Orientation_Horizontal);
 
-      MDI.Docks (Right) := Create_Notebook;
+      MDI.Docks (Right) := Create_Notebook (MDI);
       Split
         (MDI.Main_Pane, MDI.Central.Layout, MDI.Docks (Right),
          Orientation_Horizontal, Width => -1, Fixed_Size => True);
@@ -1113,21 +1110,28 @@ package body Gtkada.MDI is
       Opaque_Resize             : Boolean             := False;
       Opaque_Move               : Boolean             := False;
       Close_Floating_Is_Unfloat : Boolean             := True;
-      Title_Font                : Pango_Font_Description := null;
-      Background_Color          : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Title_Bar_Color           : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Focus_Title_Color         : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color)
+      Title_Font         : Pango_Font_Description := null;
+      Background_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Title_Bar_Color    : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Focus_Title_Color  : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Draw_Title_Bars    : Boolean             := True;
+      Tabs_Position      : Gtk.Enums.Gtk_Position_Type := Gtk.Enums.Pos_Bottom;
+      Show_Tabs_Policy   : Show_Tabs_Policy_Enum := Automatic)
    is
       Desc        : Pango_Font_Description;
       W, H        : Gint;
       List        : Widget_List.Glist;
       C           : MDI_Child;
-      Need_Redraw : Boolean := False;
+      Need_Redraw : Boolean := MDI.Draw_Title_Bars /= Draw_Title_Bars;
+      Iter        : Gtkada.Multi_Paned.Child_Iterator;
 
    begin
       MDI.Opaque_Resize := Opaque_Resize;
       MDI.Opaque_Move   := Opaque_Move;
       MDI.Close_Floating_Is_Unfloat := Close_Floating_Is_Unfloat;
+      MDI.Draw_Title_Bars  := Draw_Title_Bars;
+      MDI.Tabs_Position    := Tabs_Position;
+      MDI.Show_Tabs_Policy := Show_Tabs_Policy;
 
       Set_Opaque_Resizing (MDI.Main_Pane, Opaque_Resize);
       Set_Opaque_Resizing (MDI.Central.Container, Opaque_Resize);
@@ -1142,15 +1146,6 @@ package body Gtkada.MDI is
 
       Get_Pixel_Size (MDI.Title_Layout, W, H);
       MDI.Title_Bar_Height := 2 + H;
-
-      --  Resize the title bar of all children already in the MDI
-
-      List := First (MDI.Items);
-      while List /= Null_List loop
-         C := MDI_Child (Get_Data (List));
-         Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
-         List := Widget_List.Next (List);
-      end loop;
 
       --  Ignore changes in colors, unless the MDI is realized
 
@@ -1185,6 +1180,19 @@ package body Gtkada.MDI is
            (MDI.Highlight_Style, State_Insensitive, MDI.Focus_Title_Color);
       end if;
 
+      --  Change the position of tabs for all notebooks
+
+      for N in MDI.Docks'Range loop
+         Configure_Notebook_Tabs (MDI, MDI.Docks (N));
+      end loop;
+      Iter := Start (MDI.Central.Container);
+      while not At_End (Iter) loop
+         if Get_Widget (Iter) /= null then
+            Configure_Notebook_Tabs (MDI, Gtk_Notebook (Get_Widget (Iter)));
+         end if;
+         Next (Iter);
+      end loop;
+
       if Realized_Is_Set (MDI) then
          if Background_Color /= Null_Color then
             Set_Background (Get_Window (MDI.Main_Pane), Background_Color);
@@ -1206,6 +1214,17 @@ package body Gtkada.MDI is
             Set_Foreground (MDI.Focus_GC, Focus_Title_Color);
             Need_Redraw := True;
          end if;
+
+         --  Resize the title bar of all children already in the MDI
+
+         List := First (MDI.Items);
+         while List /= Null_List loop
+            C := MDI_Child (Get_Data (List));
+            Set_Child_Title_Bar (C);
+            Update_Tab_Color (C, Force => True);
+            Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
+            List := Widget_List.Next (List);
+         end loop;
 
          if Need_Redraw then
             Queue_Draw (MDI);
@@ -1480,6 +1499,24 @@ package body Gtkada.MDI is
       end if;
    end Destroy_Initial_Child;
 
+   -------------------------
+   -- Set_Child_Title_Bar --
+   -------------------------
+
+   procedure Set_Child_Title_Bar (Child : access MDI_Child_Record'Class) is
+   begin
+      if not Child.MDI.Draw_Title_Bars
+        and then (Child.State /= Normal
+                  or else Child.MDI.Central.Children_Are_Maximized)
+      then
+         Hide (Child.Title_Box);
+         Set_Child_Visible (Child.Title_Box, False);
+      else
+         Show (Child.Title_Box);
+         Set_Child_Visible (Child.Title_Box, True);
+      end if;
+   end Set_Child_Title_Bar;
+
    ----------------
    -- Draw_Child --
    ----------------
@@ -1492,32 +1529,20 @@ package body Gtkada.MDI is
 
       GC : Gdk.Gdk_GC := Child.MDI.Non_Focus_GC;
       W, H : Gint;
-
       Border_Thickness : constant Gint :=
         Gint (Get_Border_Width (Child.Main_Box));
-
       X : Gint := 1;
-      Note : constant Gtk_Notebook := Get_Notebook (Child);
-      Label : Gtk_Widget;
-      Color : Gdk_Color := Child.MDI.Default_Title_Color;
    begin
       --  Call this function so that for a dock item is highlighted if the
       --  current page is linked to the focus child.
 
       if Child.MDI.Focus_Child = MDI_Child (Child) then
          GC := Child.MDI.Focus_GC;
-         Color := Child.MDI.Focus_Title_Color;
       end if;
 
       --  Set the color of the notebook page and label.
 
-      if Highlight_Page and then Note /= null then
-         Modify_Bg (Note, State_Normal, Color);
-         Label := Get_Tab_Label (Note, Child);
-         if Label /= null then
-            Modify_Bg (Label, State_Normal, Color);
-         end if;
-      end if;
+      Update_Tab_Color (Child);
 
       if Realized_Is_Set (Child.Title_Area) then
          Draw_Rectangle
@@ -1864,7 +1889,7 @@ package body Gtkada.MDI is
                   if Side = None then
                      Note := Gtk_Notebook (Current);
                   else
-                     Note := Create_Notebook;
+                     Note := Create_Notebook (MDI);
                   end if;
 
                   Put_In_Notebook (C.MDI, None, C2, Note);
@@ -2567,9 +2592,7 @@ package body Gtkada.MDI is
       --  otherwise the notebook page will not be made visible.
 
       Show_All (C);
-      if MDI.Central.Children_Are_Maximized and then not Draw_Title_Bars then
-         Hide_All (C.Title_Box);
-      end if;
+      Set_Child_Title_Bar (C);
 
       Widget_List.Prepend (MDI.Items, Gtk_Widget (C));
 
@@ -2933,6 +2956,33 @@ package body Gtkada.MDI is
            (Child.MDI.Float_Menu_Item, Child.MDI.Float_Menu_Item_Id);
       end if;
    end Update_Float_Menu;
+
+   ----------------------
+   -- Update_Tab_Color --
+   ----------------------
+
+   procedure Update_Tab_Color
+     (Child : access MDI_Child_Record'Class;
+      Force : Boolean := False)
+   is
+      Color : Gdk_Color := Null_Color;
+      Note  : constant Gtk_Notebook := Get_Notebook (Child);
+      Label : Gtk_Widget;
+   begin
+      if not Force and then MDI_Child (Child) = Child.MDI.Focus_Child then
+         Color := Child.MDI.Focus_Title_Color;
+      end if;
+
+      if (Force or else not Child.MDI.Draw_Title_Bars)
+        and then Note /= null
+      then
+         Modify_Bg (Note, State_Normal, Color);
+         Label := Get_Tab_Label (Note, Child);
+         if Label /= null then
+            Modify_Bg (Label, State_Normal, Color);
+         end if;
+      end if;
+   end Update_Tab_Color;
 
    ---------------------
    -- Set_Focus_Child --
@@ -3446,12 +3496,13 @@ package body Gtkada.MDI is
    -- Create_Notebook --
    ---------------------
 
-   function Create_Notebook return Gtk_Notebook is
+   function Create_Notebook
+     (MDI : access MDI_Window_Record'Class) return Gtk_Notebook
+   is
       Notebook : Gtk_Notebook;
    begin
       Gtk_New (Notebook);
-      Set_Tab_Pos (Notebook, Position_Of_Tabs);
-      Set_Show_Tabs (Notebook, Show_Tabs = Always);
+      Configure_Notebook_Tabs (MDI, Notebook);
       Set_Show_Border (Notebook, False);
       Set_Border_Width (Notebook, 0);
       Set_Scrollable (Notebook);
@@ -3462,6 +3513,23 @@ package body Gtkada.MDI is
         (Notebook, "set_focus_child", Set_Focus_Child_Notebook'Access);
       return Notebook;
    end Create_Notebook;
+
+   -----------------------------
+   -- Configure_Notebook_Tabs --
+   -----------------------------
+
+   procedure Configure_Notebook_Tabs
+     (MDI : access MDI_Window_Record'Class;
+      Notebook : access Gtk_Notebook_Record'Class) is
+   begin
+      Set_Tab_Pos   (Notebook, MDI.Tabs_Position);
+
+      if Get_Nth_Page (Notebook, 1) /= null then
+         Set_Show_Tabs (Notebook, MDI.Show_Tabs_Policy /= Never);
+      else
+         Set_Show_Tabs (Notebook, MDI.Show_Tabs_Policy = Always);
+      end if;
+   end Configure_Notebook_Tabs;
 
    ----------------------
    -- Update_Tab_Label --
@@ -3474,7 +3542,6 @@ package body Gtkada.MDI is
       Mask   : Gdk_Bitmap;
       Pixmap : Gtk_Pixmap;
       Note   : constant Gtk_Notebook := Get_Notebook (Child);
-      Label  : Gtk_Widget;
    begin
       if Note /= null
         and then (Child.State = Docked
@@ -3498,18 +3565,7 @@ package body Gtkada.MDI is
          end if;
 
          Set_Tab_Label (Note, Child, Event);
-
-         --  Set the background in the tab label.
-
-         if Highlight_Page
-           and then Child.MDI.Focus_Child = MDI_Child (Child)
-         then
-            Label := Get_Tab_Label (Note, Child);
-
-            if Label /= null then
-               Modify_Bg (Label, State_Normal, Child.MDI.Focus_Title_Color);
-            end if;
-         end if;
+         Update_Tab_Color (Child);
 
          Show_All (Event);
 
@@ -3563,13 +3619,13 @@ package body Gtkada.MDI is
       Append_Page (Note, Child);
 
       if Get_Nth_Page (Note, 1) /= null then
-         Set_Show_Tabs (Note, Show_Tabs /= Never);
          Set_Border_Width (Child.Main_Box, 0);
          Set_Border_Width (MDI_Child (Get_Nth_Page (Note, 0)).Main_Box, 0);
       else
-         Set_Show_Tabs (Note, Show_Tabs = Always);
          Set_Border_Width (Child.Main_Box, Guint (Small_Border_Thickness));
       end if;
+
+      Configure_Notebook_Tabs (MDI, Note);
 
       Update_Tab_Label (Child);
 
@@ -3668,10 +3724,7 @@ package body Gtkada.MDI is
             Remove (Child.Title_Box, Child.Minimize_Button);
          end if;
 
-         if not Draw_Title_Bars then
-            Set_Child_Visible (Child.Title_Box, False);
-            Hide_All (Child.Title_Box);
-         end if;
+         Set_Child_Title_Bar (Child);
 
       elsif not Dock and then Child.State = Docked then
          Ref (Child);
@@ -3690,12 +3743,7 @@ package body Gtkada.MDI is
                  (Child, Child.Uniconified_Width, Child.Uniconified_Height);
             end if;
 
-            if MDI.Central.Children_Are_Maximized
-               and then not Draw_Title_Bars
-            then
-               Set_Child_Visible (Child.Title_Box, True);
-               Show_All (Child.Title_Box);
-            end if;
+            Set_Child_Title_Bar (Child);
          end if;
 
          Unref (Child);
@@ -3842,10 +3890,7 @@ package body Gtkada.MDI is
 
             if C.State = Normal or else C.State = Iconified then
                Put_In_Notebook (MDI, None, C);
-               if not Draw_Title_Bars then
-                  Set_Child_Visible (C.Title_Box, False);
-                  Hide_All (C.Title_Box);
-               end if;
+               Set_Child_Title_Bar (C);
             end if;
          end loop;
 
@@ -4043,12 +4088,8 @@ package body Gtkada.MDI is
       end if;
 
       if not Gtk.Object.In_Destruction_Is_Set (Note) then
-         if Len > 1 then
-            Set_Show_Tabs (Gtk_Notebook (Note), Show_Tabs /= Never);
-
-         elsif Len = 1 then
-            Set_Show_Tabs (Gtk_Notebook (Note), Show_Tabs = Always);
-
+         Configure_Notebook_Tabs (Child.MDI, Gtk_Notebook (Note));
+         if Len = 1 then
             First_Child := MDI_Child (Get_Nth_Page (Gtk_Notebook (Note), 0));
             Set_Border_Width
               (First_Child.Main_Box, Guint (Small_Border_Thickness));
@@ -4130,7 +4171,7 @@ package body Gtkada.MDI is
            (MDI.Central.Container, Note, Orientation, After));
 
          if not Reuse_If_Possible or else Note2 = null then
-            Note2 := Create_Notebook;
+            Note2 := Create_Notebook (MDI);
             Split (MDI.Central.Container,
                    Ref_Widget  => Note,
                    New_Child   => Note2,
@@ -4950,7 +4991,7 @@ package body Gtkada.MDI is
          Raised_Child : MDI_Child;
       begin
          if Notebook = null then
-            Notebook := Create_Notebook;
+            Notebook := Create_Notebook (MDI);
          end if;
 
          while N /= null loop
@@ -5563,9 +5604,7 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record; Highlight : Boolean := True)
    is
       Note    : constant Gtk_Notebook := Get_Notebook (Child);
-      Label   : Gtk_Widget;
       Style   : Gtk_Style;
-      Color   : Gdk_Color;
    begin
       if Highlight then
          --  Do nothing if:
@@ -5586,23 +5625,8 @@ package body Gtkada.MDI is
          end if;
 
          Style := Child.MDI.Highlight_Style;
-         Color := Child.MDI.Focus_Title_Color;
       else
          Style := null;
-         Color := Child.MDI.Default_Title_Color;
-      end if;
-
-      --  Highlight the notebook if necessary.
-
-      if Highlight_Page
-        and then Note /= null
-        and then MDI_Child (Child) /= null
-      then
-         Label := Get_Tab_Label (Note, MDI_Child (Child));
-
-         if Label /= null then
-            Modify_Bg (Label, State_Normal, Color);
-         end if;
       end if;
 
       --  Might be null if we haven't created the MDI menu yet
