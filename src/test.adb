@@ -8,12 +8,14 @@ with Gtk.Combo;  use Gtk.Combo;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Curve; use Gtk.Curve;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
+with Gtk.Enums; use Gtk.Enums;
 with Gtk.Gamma_Curve; use Gtk.Gamma_Curve;
 with Gtk.Hbox;   use Gtk.Hbox;
 with Gtk.Main; use Gtk.Main;
 with Gtk.Menu; use Gtk.Menu;
 with Gtk.Menu_Bar; use Gtk.Menu_Bar;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
+with Gtk.Object; use Gtk.Object;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Tooltips; use Gtk.Tooltips;
@@ -30,6 +32,7 @@ package body Test is
    package Void_Cb   is new Void_Callback (Gtk.Window.Gtk_Window);
    package Void_Cb_Button is new Void_Callback (Gtk.Button.Gtk_Button);
    package ColSel_Cb is new Object_Callback (Gtk_Color_Selection_Dialog);
+   package ColSel_Widget_Cb is new Object_Callback (Gtk_Object);
    package Gamma_Cb is new Callback (Gtk_Gamma_Curve, Gtk_Button);
    use Gtk.Combo.String_List;
 
@@ -87,8 +90,8 @@ package body Test is
       Show (Dialog);
       Id := ColSel_Cb.Connect (Get_OK_Button (Dialog), "clicked",
                                Print_Color'Access, Dialog);
---       Id := ColSel_Cb.Connect (Get_Cancel_Button (Dialog), "clicked",
---                                Gtk.Destroy'Access, Dialog);
+      Id := ColSel_Widget_Cb.Connect (Get_Cancel_Button (Dialog), "clicked",
+                                      Gtk.Object.Destroy'Access, Dialog);
    end Launch_Dialog;
 
    --------------------
