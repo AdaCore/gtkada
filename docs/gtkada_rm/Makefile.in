@@ -34,7 +34,7 @@ gtkada_rm.info: generated.texi
 	makeinfo --force --no-headers --no-split -o gtkada_rm.txt gtkada_rm.texi
 
 install:
-	$(MKDIR) $(docdir)
+	-$(MKDIR) $(docdir)
 	for i in `ls *.html *.info* *.ps *.texi *.txt *.tex *.jpg`; \
 	do \
 	  $(INSTALL_DATA) $$i $(docdir); \

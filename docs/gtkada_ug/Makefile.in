@@ -17,7 +17,7 @@ all: gtkada_ug.texi
 	-$(RM) *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
 
 install:
-	$(MKDIR) $(docdir)
+	-$(MKDIR) $(docdir)
 	for i in `ls *.html *.info* *.ps *.texi *.txt *.tex *.gif *.jpg`; \
 	do \
 	   $(INSTALL_DATA) $$i $(docdir); \
