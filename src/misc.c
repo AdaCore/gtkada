@@ -267,7 +267,7 @@ ada_check_menu_item_get_active (GtkCheckMenuItem* item) {
  ********************/
 
 GtkAdjustment*
-ada_progress_bar_get_adjustment (GtkProgress* widget) {
+ada_progress_get_adjustment (GtkProgress* widget) {
   return widget->adjustment;
 }
 
