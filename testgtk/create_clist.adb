@@ -433,7 +433,7 @@ package body Create_Clist is
       Set_Column_Resizeable (Clist, 1, False);
       Set_Column_Max_Width (Clist, 2, 100);
       Set_Column_Min_Width (Clist, 3, 50);
-      Set_Selection_Mode (Clist, Selection_Extended);
+      Set_Selection_Mode (Clist, Selection_Multiple);
       Set_Column_Justification (Clist, 1, Justify_Right);
       Set_Column_Justification (Clist, 2, Justify_Center);
 

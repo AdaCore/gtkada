@@ -354,7 +354,7 @@ package body Create_Ctree is
 
       end loop;
 
-      if Gtk.Ctree.Get_Selection_Mode (Ctree) = Selection_Extended and then
+      if Gtk.Ctree.Get_Selection_Mode (Ctree) = Selection_Multiple and then
         not Is_Created (Gtk.Ctree.Get_Selection (Ctree)) and then
         Gtk.Ctree.Get_Focus_Row (Ctree)>= 0 then
 
@@ -805,7 +805,7 @@ package body Create_Ctree is
       Gtk.Ctree.Set_Column_Auto_Resize (Ctree, Column => 0,
                                         Auto_Resize => True);
       Gtk.Ctree.Set_Column_Width (Ctree, Column => 1, Width => 200);
-      Gtk.Ctree.Set_Selection_Mode (Ctree, Mode => Selection_Extended);
+      Gtk.Ctree.Set_Selection_Mode (Ctree, Mode => Selection_Multiple);
       Gtk.Ctree.Set_Line_Style (Ctree, Line_Style => Ctree_Lines_Dotted);
       Line_Style := Ctree_Lines_Dotted;
 
