@@ -711,9 +711,8 @@ the Button and User_Data parameter. However, it is not possible to drop
 the Button parameter while keeping the User_Data.
 
 Beware that adding new arguments is not possible! When connecting a
-handler, GtkAda will verify that your handler does not have more
-arguments than expected. *****FIXME: Explain what happens in such a
-case*****. 
+handler, GtkAda will not verify that your handler does not have more
+arguments than expected, so caution is recommended. 
 
 All the signal-handling work is performed by using the services provided
 by the Gtk.Handlers package. This package is completely self-documented,
