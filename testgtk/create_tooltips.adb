@@ -52,6 +52,7 @@ package body Create_Tooltips is
      (Gtk_Tips_Query_Record, Gtk_Toggle_Button);
    package Selected_Cb is new Handlers.Return_Callback
      (Gtk_Tips_Query_Record, Gint);
+   package Button_Cb is new Handlers.Callback (Gtk_Button_Record);
 
    ----------
    -- Help --
@@ -137,6 +138,18 @@ package body Create_Tooltips is
       Gtk.Tips_Query.Start_Query (Tips_Query);
    end Start_Query;
 
+   -----------------
+   -- Get_Data_Cb --
+   -----------------
+
+   procedure Get_Data_Cb (Button : access Gtk_Button_Record'Class) is
+      Data : Gtk.Tooltips.Tooltips_Data := Gtk.Tooltips.Get_Data (Button);
+   begin
+      Ada.Text_IO.Put_Line ("Result of call to Gtk.Tooltips.Get_Data:");
+      Ada.Text_IO.Put_Line ("   Text=" & Data.Text);
+      Ada.Text_IO.Put_Line ("   Text_Private=" & Data.Text_Private);
+   end Get_Data_Cb;
+
    ---------
    -- Run --
    ---------
@@ -173,13 +186,15 @@ package body Create_Tooltips is
       Set_Tip (Tooltips, button, "This is button 1",
                "ContextHelp/buttons/1");
 
-      Gtk_New (Button, "Button2");
+      Gtk_New (Button, "(Print result of Get_Data)");
       Pack_Start (Box2, Button, False, False, 0);
       Set_Tip (Tooltips, Button,
                "This is button 2. This is also a really long tool tip which"
                &" probably won't fit on a single line and will therefore "
                & "need to be wrapped. Hopefully the wrapping will work "
                & "correctly.", "ContextHelp/buttons/2");
+      Button_Cb.Connect (Button, "clicked",
+                         Button_Cb.To_Marshaller (Get_Data_Cb'Access));
 
       Gtk_New (Toggle, "Override TipsQuery Label");
       Pack_Start (Box2, Toggle, False, False, 0);
