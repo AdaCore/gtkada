@@ -318,9 +318,10 @@ package body Gtkada.Canvas is
          return True;
       end Location_Is_Free;
 
-      Tmp      : Canvas_Item_List := null;
       Src_Item : Canvas_Item := null;
       Links    : Link_Access := Canvas.Links;
+      X1       : Gint;
+      Y1       : Gint;
 
    begin
       if X /= Gint'First and then Y /= Gint'First then
@@ -347,8 +348,6 @@ package body Gtkada.Canvas is
 
          if Src_Item /= null then
             declare
-               X1  : Gint;
-               Y1  : Gint;
                Num : Gint := 0;
             begin
                loop
@@ -362,30 +361,21 @@ package body Gtkada.Canvas is
                   end if;
                   exit when Location_Is_Free (X1, Y1);
                end loop;
-               Item.Coord.X := X1;
-               Item.Coord.Y := Y1;
             end;
 
-         --  Else find the bottom of the item list
+         --  Else put the item in the first column, at the first possible
+         --  location
 
          else
-
-            Item.Coord.Y := Gint (Canvas.Grid_Size);
-            Tmp := Canvas.Children;
-            while Tmp /= null loop
-               if Tmp.Item /= Canvas_Item (Item)
-                 and then Tmp.Item.Coord.Y + Gint16 (Tmp.Item.Coord.Height)
-                 > Item.Coord.Y
-               then
-                  Item.Coord.Y := Tmp.Item.Coord.Y
-                    + Gint (Tmp.Item.Coord.Height);
-               end if;
-               Tmp := Tmp.Next;
+            X1 := Gint (Canvas.Grid_Size);
+            Y1 := Gint (Canvas.Grid_Size);
+            while not Location_Is_Free (X1, Y1) loop
+               Y1 := Y1 + Gint (Canvas.Grid_Size) * 2;
             end loop;
-
-            Item.Coord.X := Gint (Canvas.Grid_Size);
-            Item.Coord.Y := Item.Coord.Y + Gint (Canvas.Grid_Size);
          end if;
+
+         Item.Coord.X := X1;
+         Item.Coord.Y := Y1;
       end if;
 
       if Canvas.Align_On_Grid then
@@ -1000,6 +990,7 @@ package body Gtkada.Canvas is
          Gdk.Pixmap.Unref (Item.Pixmap);
       end if;
 
+      --  Create the pixmap
       Gdk_New (Item.Pixmap, Win, Width, Height);
    end Initialize;
 
@@ -1011,22 +1002,14 @@ package body Gtkada.Canvas is
    begin
       --  Clean everything in the canvas.
 
-      Draw_Rectangle
-        (Get_Window (Canvas.Drawing_Area),
-         GC     => Canvas.Clear_GC,
-         Filled => True,
-         X      => 0,
-         Y      => 0,
-         Width  => Gint (Get_Allocation_Width (Canvas)) - 1,
-         Height => Gint (Get_Allocation_Height (Canvas)) - 1);
+      Clear_Area_E (Get_Window (Canvas.Drawing_Area), 0, 0,
+                    Gint (Get_Allocation_Width (Canvas)) - 1,
+                    Gint (Get_Allocation_Height (Canvas)) - 1);
 
       --  Adjust the scrollable area
 
       Update_Adjustments (Canvas);
 
-      --  Redraw the canvas.
-
-      Queue_Draw (Canvas);
    end Redraw_Canvas;
 
    --------------------
