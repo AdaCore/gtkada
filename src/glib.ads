@@ -78,6 +78,7 @@ package Glib is
    type Gulong_Array   is array (Natural range <>) of Gulong;
    type Gfloat_Array   is array (Natural range <>) of Gfloat;
    type Guchar_Array   is array (Natural range <>) of Guchar;
+   type Gdouble_Array  is array (Natural range <>) of Gdouble;
 
    type Boolean_Array  is array (Natural range <>) of Boolean;
 
