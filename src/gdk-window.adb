@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Glib.Object; use Glib.Object;
+
 package body Gdk.Window is
 
    ---------------
@@ -415,6 +417,20 @@ package body Gdk.Window is
    begin
       Internal (Window, Title & ASCII.NUL);
    end Set_Title;
+
+   -------------------
+   -- Set_User_Data --
+   -------------------
+
+   procedure Set_User_Data
+     (Window : Gdk.Gdk_Window;
+      Widget : access Glib.Object.GObject_Record'Class)
+   is
+      procedure Internal (Window : Gdk_Window; Widget : System.Address);
+      pragma Import (C, Internal, "gdk_window_set_user_data");
+   begin
+      Internal (Window, Get_Object (Widget));
+   end Set_User_Data;
 
    -----------------------
    -- Window_At_Pointer --

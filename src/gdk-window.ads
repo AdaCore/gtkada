@@ -50,6 +50,7 @@
 
 with System;
 with Glib; use Glib;
+with Glib.Object;
 with Glib.Glist;
 with Gdk;
 with Gdk.Color;
@@ -185,8 +186,36 @@ package Gdk.Window is
    procedure Gdk_New
      (Window          : out Gdk_Window;
       Parent          : Gdk_Window;
-      Attributes      : Gdk.Gdk_Window_Attr;
+      Attributes      : Gdk_Window_Attr;
       Attributes_Mask : Gdk_Window_Attributes_Type);
+   --  Creates a new gdk_window.
+   --  There are few reasons for creating such windows yourself, and almost
+   --  none if you are not creating a new widget.
+   --  One nice thing with using such a window (rather than drawing directly on
+   --  a gtk_widget is that you can get separate Events for this window
+   --  (Expose, Button_Press, ...) without having do detect yourself where the
+   --  event applied.
+   --  Note that you should almost always call Set_User_Data on the newly
+   --  created window, so that events are redirected to a specific widget.
+   --
+   --  You cannot pass a null value for Attributes.
+   --
+   --  Attributes_Mask indicates which fields are relevant in Attributes. Some
+   --  of the fields are always taken into account, and thus do not have an
+   --  associated mask.
+   --
+   --  See the package Gdk.Window_Attr for more information on window
+   --  attributes.
+
+   procedure Set_User_Data
+     (Window : Gdk.Gdk_Window;
+      Widget : access Glib.Object.GObject_Record'Class);
+   --  Sets a special field in the window.
+   --  All the events reported by the Xserver (or the Windows server) for
+   --  Window will be redirected to Widget through the standard signals
+   --  "expose_event", "button_press_event", ...
+   --  You almost always need to call this function after creating a new
+   --  Gdk_Window yourself, or you won't be able to handle the events.
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with Gdk_Window.
