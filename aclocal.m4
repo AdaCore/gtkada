@@ -449,18 +449,18 @@ AC_DEFUN(AM_CHECK_OPENGL,
    saved_LIBS="$LIBS"
  
    AC_MSG_CHECKING([for OpenGL])
-   LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lGL"
+   LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lGLU -lGL"
    AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_GL=yes, have_GL=no)
    AC_MSG_RESULT($have_GL)
    
    AC_MSG_CHECKING([for Mesa])
-   LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGL"
+   LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGLU -lMesaGL"
    AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL=yes, have_MesaGL=no)
    AC_MSG_RESULT($have_MesaGL)
 
    if test "x$have_MesaGL" = "xno"; then
      AC_MSG_CHECKING([Mesa with pthreads])
-     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGL -lpthread"
+     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
      AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL_pthread=yes, have_MesaGL_pthread=no)
      AC_MSG_RESULT($have_MesaGL_pthread)
    fi
