@@ -112,6 +112,8 @@ foreach $source_file (@source_files) {
     # Only generate documentation if we have a <description> tag
     if (grep (/\<description\>/, @content)) {
 
+	print "Generating doc for $source_file\n";
+	
 	# Get the package name
 	my ($package_name) = &get_package_name (@content);
 	my ($cfile) = &get_c_file ($package_name);
@@ -138,11 +140,14 @@ foreach $source_file (@source_files) {
 	}
 
 	my (%signals) = &find_signals ($cfile . ".h");
+	my (@hierarchy) = &find_hierarchy (@content);
 
 	## Prepare the submenu
 	
 	push (@{$output{$package_name}},
-	      "\@menu\n* $package_name Widget Hierarchy::\n");
+	      "\@menu\n");
+	push (@{$output{$package_name}},
+	      "* $package_name Widget Hierarchy::\n") if (@hierarchy);
 	push (@{$output{$package_name}},
 	      "* $package_name Signals::\n")             if (keys %signals);
 	push (@{$output{$package_name}},
@@ -156,23 +161,26 @@ foreach $source_file (@source_files) {
 
 	## Widget hierarchy
 	
-	push (@{$output{$package_name}},
-	      "\@node $package_name Widget Hierarchy\n",
-	      "\@subsection Widget Hierarchy\n",
-	      "\@multitable \@columnfractions .4 .6\n",
-	      "\@item \@b{Gtk_Object}\@tab (\@ref{Package Gtk.Object})\n");
-	
-	my (@hierarchy) = &find_hierarchy (@content);
-	for ($level = 1; $level < @hierarchy; $level ++) {
+	if (@hierarchy) {
 	    push (@{$output{$package_name}},
-		  "\@item ",
-		  "\@ " x ($level * 3 - 1), "\\_",
-		  "\@b{", $hierarchy[$level], "}\@tab (\@ref{Package ",
-		  &package_from_type ($hierarchy[$level]), "})\n");
-	}
+		  "\@node $package_name Widget Hierarchy\n",
+		  "\@subsection Widget Hierarchy\n",
+		  "\@multitable \@columnfractions .4 .6\n",
+		  "\@item \@b{Gtk_Object}\@tab (\@ref{Package Gtk.Object})\n");
+	    
+	    for ($level = 1; $level < @hierarchy; $level ++) {
+		push (@{$output{$package_name}},
+		      "\@item ",
+		      "\@ " x ($level * 3 - 1), "\\_",
+		      "\@b{", $hierarchy[$level], "}\@tab (\@ref{Package ",
+		      &package_from_type ($hierarchy[$level]), "})\n");
+	    }
 	
-	push (@{$output{$package_name}},
-	      "\@end multitable\n\n");
+	    push (@{$output{$package_name}},
+		  "\@end multitable\n\n");
+	} else {
+	    $parent{$package_name} = "<>";
+	}
 
 	## List of signals
 
@@ -412,7 +420,11 @@ sub find_signals () {
 sub find_hierarchy () {
     my (@content) = @_;
     my ($origin) = &find_type_in_package (@content);
-    return &find_hierarchy_array ($origin);
+    if ($origin =~ /^Gtk/) {
+	return &find_hierarchy_array ($origin);
+    } else {
+	return ();
+    }
 }
 
 sub find_hierarchy_array () {
@@ -441,7 +453,7 @@ sub find_hierarchy_array () {
 
 sub package_from_type () {
     my ($string) = shift;
-    $string =~ s/Gtk_/Gtk./;
+    $string =~ s/(G[td]k)_/$1./;
     return $string;
 }
 
@@ -593,7 +605,7 @@ sub get_subprograms () {
 
       while ($profile !~ /^ *$/) {
 	  my ($all, $tname, $taccess, $ttype)
-	      = ($profile =~ /((\w+)\s*:\s*(in out|in|out|access)?\s*([^;]+);?)/);
+	      = ($profile =~ /(([\w\s,]+)\s*:\s*(in out|in|out|access)?\s*([^;]+);?)/);
 	  push (@param_list, [$tname, $taccess, $ttype]);
 	  $profile =~ s/$all//;
       }
