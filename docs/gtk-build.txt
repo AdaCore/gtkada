@@ -227,6 +227,9 @@ cd gtk+-2.2.4
 # aclocal
 # autoconf
 
+# This patch fixes regressions in Gtk+
+patch -p0 < .../GtkAda/contrib/gtk+-2.2.4.diff
+
 # Under HP-UX, make sure that libX11.sl, libXt.sl and libXext.sl can be found
 # under e.g /usr/lib
 
