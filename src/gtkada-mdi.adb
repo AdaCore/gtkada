@@ -1744,28 +1744,32 @@ package body Gtkada.MDI is
             end case;
 
             Float_Child (Child, False);
+
+            if MDI_Child (Child) = MDI.Focus_Child then
+               --  Set the focus on the child that had the focus just before,
+               --  and in the same notebook.
+
+               Item := MDI.Items;
+               while Item /= Widget_List.Null_List loop
+                  It := MDI_Child (Get_Data (Item));
+
+                  if It /= MDI_Child (Child)
+                    and then
+                      ((Dock = None and then It.State = Normal)
+                       or else (Dock /= None
+                                and then It.State = Docked
+                                and then It.Dock = Dock))
+                  then
+                     Set_Focus_Child (It, Force_Focus => True);
+                     exit;
+                  end if;
+
+                  Item := Widget_List.Next (Item);
+               end loop;
+            end if;
+
             Destroy (Child);
-
-            --  Set the focus on the child that had the focus just before, and
-            --  in the same notebook. This might result in an extra flicker
-            --  while pages are switches...
-
-            Item := MDI.Items;
-            while Item /= Widget_List.Null_List loop
-               It := MDI_Child (Get_Data (Item));
-
-               if (Dock = None and then It.State = Normal)
-                 or else (Dock /= None and then It.State = Docked)
-               then
-                  Set_Focus_Child (It, Force_Focus => True);
-                  exit;
-               end if;
-
-               Item := Widget_List.Next (Item);
-            end loop;
          end if;
-
-         Free (Event);
       end if;
 
    exception
@@ -1800,8 +1804,6 @@ package body Gtkada.MDI is
       if C.Menu_Item /= null then
          Destroy (C.Menu_Item);
       end if;
-
-      Widget_List.Remove (C.MDI.Items, Gtk_Widget (C));
 
       if not Gtk.Object.In_Destruction_Is_Set (C.MDI) then
          --  Initial could be null if we are destroying a floating
@@ -1848,23 +1850,17 @@ package body Gtkada.MDI is
       Free (C.Title);
       Free (C.Short_Title);
 
-      --  Reset the focus child, but only after we have finished manipulating
-      --  the notebooks. Otherwise, we get a switch_page event, that calls
-      --  Set_Focus_Child again.
-      --  Also send the signal only after destroying the child, so that the
-      --  signal is not sent to C
-
+      --  Do not transfer the focus elsewhere: for an interactive close, this
+      --  is done in Close_Child, otherwise we do not want to change the focus
       if C = MDI.Focus_Child then
-         Unref (C);
          MDI.Focus_Child := null;
-
-         --  Give the focus back to the last child that had it.
-         if MDI.Items /= Widget_List.Null_List then
-            Set_Focus_Child (MDI_Child (Get_Data (First (MDI.Items))));
-         end if;
-      else
-         Unref (C);
       end if;
+
+      --  Only remove it from the list of children at the end, since some of
+      --  calls above might result in calls to Raise_Child_Idle, which tries
+      --  to manipulate that list.
+      Widget_List.Remove (C.MDI.Items, Gtk_Widget (C));
+      Unref (C);
    end Destroy_Child;
 
    ---------------------------
@@ -3240,6 +3236,8 @@ package body Gtkada.MDI is
       Old : constant MDI_Child := Child.MDI.Focus_Child;
       C   : constant MDI_Child := MDI_Child (Child);
       Focus : Gtk_Widget;
+      Tmp  : Boolean;
+      pragma Unreferenced (Tmp);
 
    begin
       --  Be lazy. And avoid infinite loop when updating the MDI menu...
@@ -3253,16 +3251,22 @@ package body Gtkada.MDI is
       --  Make sure the page containing Child in a notebook is put on top.
       --  The actual raise is done in an idle loop. Otherwise, if the child
       --  hasn't been properly resized yet, there would be a lot of
-      --  flickering.
+      --  flickering. When possible, we try and raise immediately. Most
+      --  notably, this is needed from Close_Child, since we need to change
+      --  the notebook page before removing the child from it.
 
       if Child.MDI.Raise_Id /= 0 then
          Idle_Remove (Child.MDI.Raise_Id);
       end if;
 
       if Child.State /= Floating then
-         Child.MDI.Raise_Id :=
-           Widget_Idle.Add (Raise_Child_Idle'Access, (Child.MDI, C),
-                            Destroy => Destroy_Raise_Child_Idle'Access);
+         if Realized_Is_Set (Child) then
+            Tmp := Raise_Child_Idle ((Child.MDI, C));
+         else
+            Child.MDI.Raise_Id :=
+              Widget_Idle.Add (Raise_Child_Idle'Access, (Child.MDI, C),
+                               Destroy => Destroy_Raise_Child_Idle'Access);
+         end if;
       end if;
 
       if Old /= null
