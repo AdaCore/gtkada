@@ -306,6 +306,7 @@ package body Gtk.Paned is
       Container.Generate (N, File);
       Gen_Set (N, "Paned", "handle_size", File);
       Gen_Set (N, "Paned", "gutter_size", File);
+      Gen_Set (N, "Paned", "position", File);
    end Generate;
 
    procedure Generate (Paned : in out Gtk_Object; N : in Node_Ptr) is
@@ -335,6 +336,12 @@ package body Gtk.Paned is
 
       if S /= null then
          Set_Gutter_Size (Gtk_Paned (Paned), Guint16'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "position");
+
+      if S /= null then
+         Set_Position (Gtk_Paned (Paned), Gint'Value (S.all));
       end if;
    end Generate;
 
