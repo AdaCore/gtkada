@@ -136,8 +136,8 @@ package body Gtk.Container is
    -- Generate --
    --------------
 
-   procedure Generate (N         : in Node_Ptr;
-                       File      : in File_Type) is
+   procedure Generate (N    : in Node_Ptr;
+                       File : in File_Type) is
    begin
       Widget.Generate (N, File);
       Gen_Set (N, "Container", "border_width", File);
@@ -158,7 +158,8 @@ package body Gtk.Container is
 
       if S /= null then
          Set_Resize_Mode
-           (Gtk_Container (Container), Gtk_Resize_Mode'Value (S.all));
+           (Gtk_Container (Container),
+            Gtk_Resize_Mode'Value (S (S'First + 4 .. S'Last)));
       end if;
    end Generate;
 
