@@ -1,6 +1,6 @@
 
 
-package body Gtk.Gtk_Range is
+package body Gtk.GRange is
 
    ---------------------
    -- Default_Hmotion --
@@ -263,4 +263,4 @@ package body Gtk.Gtk_Range is
                           Jump_Perc'Address);
    end Trough_Click;
 
-end Gtk.Gtk_Range;
+end Gtk.GRange;

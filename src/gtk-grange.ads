@@ -3,7 +3,7 @@ with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
 
-package Gtk.Gtk_Range is
+package Gtk.GRange is
 
    type Gtk_Range is new Gtk.Widget.Gtk_Widget with private;
 
@@ -82,4 +82,4 @@ private
    --  mapping: Set_Update_Policy gtkrange.h gtk_range_set_update_policy
    --  mapping: Slider_Update gtkrange.h gtk_range_slider_update
    --  mapping: Trough_Click gtkrange.h gtk_range_trough_click
-end Gtk.Gtk_Range;
+end Gtk.GRange;

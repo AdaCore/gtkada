@@ -37,7 +37,7 @@ package body Gtk.Scale is
 
    procedure Set_Draw_Value
       (Scale      : in Gtk_Scale'Class;
-       Draw_Value : in Gint)
+       Draw_Value : in Boolean)
    is
       procedure Internal
          (Scale      : in System.Address;
@@ -45,7 +45,7 @@ package body Gtk.Scale is
       pragma Import (C, Internal, "gtk_scale_set_draw_value");
    begin
       Internal (Get_Object (Scale),
-                Draw_Value);
+                Boolean'Pos (Draw_Value));
    end Set_Draw_Value;
 
    -------------------
