@@ -32,6 +32,13 @@ with Gdk.Types;
 
 package Gdk.Font is
 
+   --  This package is an interface to the font system in gtk+.
+   --  Before using a font, you need to load it. The names are quite
+   --  complicated, and follow the X11 standard.
+   --  The best way to create the name of a font un Unix systems is
+   --  to use the programs `xfontsel' and `xlsfont' to find which fonts are
+   --  installed on the system.
+
    type Gdk_Font is new Root_Type with private;
    Null_Font : constant Gdk_Font;
 
