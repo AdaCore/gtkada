@@ -5,8 +5,18 @@ Since version 0.6, GtkAda comes with a configure script that should
 simplify the installation. We have tested it on as many machines as
 possible, please report any problem you might have.
 
+If you have a previous version of GtkAda on your system, we recommend that
+you remove it using the following command:
+
+   $ rm -rf <prefix>/include/gtkada
+
+where <prefix> is the prefix you used to configure GtkAda the first time.
+The default prefix is /usr/local. If you don't have the rights to remove
+these files, then you should at least make sure that your ADA_INCLUDE_PATH
+and your ADA_OBJECTS_PATH don't include this directory before building GtkAda.
+
 To install GtkAda, you first need to install glib and gtk+, then
-try the following :
+do the following:
    $ ./configure --prefix=<installation_directory>
    $ make
    $ make install
