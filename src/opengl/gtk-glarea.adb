@@ -28,12 +28,12 @@
 -----------------------------------------------------------------------
 
 with Gtk.Drawing_Area;
-with Gtk.Type_Conversion_Hooks;
-pragma Elaborate_All (Gtk.Type_Conversion_Hooks);
+with Glib.Type_Conversion_Hooks;
+pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.GLArea is
 
-   function Type_Conversion (Type_Name : String) return Root_Type_Access;
+   function Type_Conversion (Type_Name : String) return GObject;
 
    -------------
    -- Gtk_New --
@@ -132,7 +132,7 @@ package body Gtk.GLArea is
    -- Type_Conversion --
    ---------------------
 
-   function Type_Conversion (Type_Name : String) return Root_Type_Access is
+   function Type_Conversion (Type_Name : String) return GObject is
    begin
       if Type_Name = "GtkGlArea" then
          return new Gtk.GLArea.Gtk_GLArea_Record;
@@ -141,5 +141,5 @@ package body Gtk.GLArea is
    end Type_Conversion;
 
 begin
-   Gtk.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
+   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.GLArea;
