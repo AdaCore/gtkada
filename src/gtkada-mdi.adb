@@ -493,27 +493,32 @@ package body Gtkada.MDI is
       Tmp : Boolean;
       pragma Unreferenced (Tmp);
    begin
-      --  Let the even through if the child already has the focus. This way,
-      --  the notebook tab of the focus child can still be used for
-      --  drag-and-drop
-      if MDI_Child (Child).MDI.Focus_Child = MDI_Child (Child) then
+      if Get_Event_Type (Event) = Button_Release then
+         Tmp := Button_Release (Child => Child, Event => Event);
          return False;
 
       else
-         --  Process the button press event to select the child and start a
-         --  drag-and-drop operation
+         --  Let the event through if the child already has the focus. This way
+         --  the notebook tab of the focus child can still be used for
+         --  drag-and-drop
+         if MDI_Child (Child).MDI.Focus_Child = MDI_Child (Child) then
+            return False;
 
-         Tmp := Button_Pressed_Forced (Child => Child, Event => Event);
+         else
+            --  Process the button press event to select the child and start a
+            --  drag-and-drop operation
 
-         --  We must return True here, to stop the propagation. This function
-         --  is called as a result of a button_press event in the notebook's.
-         --  tabs The call to Set_Focus_Child above raises the child and gives
-         --  it the focus appropriately. However, if we let the signal go
-         --  through it will be handled by the notebook, which will not see a
-         --  change in the current page, and will give the focus to the tab
-         --  itself, not to the page's contents.
+            Tmp := Button_Pressed_Forced (Child => Child, Event => Event);
 
-         return True;
+            --  is called as a result of a button_press event in the
+            --  notebook's. tabs The call to Set_Focus_Child above raises the
+            --  child and gives it the focus appropriately. However, if we let
+            --  the signal go through it will be handled by the notebook, which
+            --  will not see change in the current page, and will give the
+            --  focus to the tab itself, not to the page's contents.
+
+            return True;
+         end if;
       end if;
    end Set_Focus_Child_MDI_From_Tab;
 
@@ -1504,6 +1509,9 @@ package body Gtkada.MDI is
       --  Start a drag-and-drop operation. This won't be effective unless
       --  the user actually drags the mouse a while
 
+      if Traces then
+         Put_Line ("Button_Pressed_Forced");
+      end if;
       return Child_Drag_Begin (C, Event);
    end Button_Pressed_Forced;
 
@@ -1526,7 +1534,12 @@ package body Gtkada.MDI is
       Copy_Instead_Of_Move : constant Boolean :=
         (Get_State (Event) and Shift_Mask) /= 0;
    begin
+      if Traces then
+         Put_Line ("Button release, drag=" & C.MDI.In_Drag'Img);
+      end if;
+
       if Get_Window (Child) /= Get_Window (Event) then
+         C.MDI.In_Drag := No_Drag;
          return False;
       end if;
 
@@ -1535,8 +1548,6 @@ package body Gtkada.MDI is
       case C.MDI.In_Drag is
          when In_Pre_Drag =>
             Destroy_Dnd_Window (C.MDI);
-            C.MDI.In_Drag := No_Drag;
-            return True;
 
          when In_Drag =>
             Destroy_Dnd_Window (C.MDI);
@@ -1641,15 +1652,12 @@ package body Gtkada.MDI is
 
             Raise_Child (C2, False);
             Set_Focus_Child (C2);
-            C.MDI.In_Drag := No_Drag;
-            return True;
 
          when No_Drag =>
             null;
       end case;
 
       C.MDI.In_Drag := No_Drag;
-
       return True;
    end Button_Release;
 
@@ -1674,6 +1682,10 @@ package body Gtkada.MDI is
    begin
       if Get_Window (Child) /= Get_Window (Event) then
          return False;
+      end if;
+
+      if Traces then
+         Put_Line ("Button motion drag=" & C.MDI.In_Drag'Img);
       end if;
 
       case C.MDI.In_Drag is
@@ -2751,6 +2763,11 @@ package body Gtkada.MDI is
 
          Return_Callback.Object_Connect
            (Event, "button_press_event",
+            Return_Callback.To_Marshaller
+            (Set_Focus_Child_MDI_From_Tab'Access),
+            Child);
+         Return_Callback.Object_Connect
+           (Event, "button_release_event",
             Return_Callback.To_Marshaller
             (Set_Focus_Child_MDI_From_Tab'Access),
             Child);
@@ -4562,7 +4579,6 @@ package body Gtkada.MDI is
       C.MDI.Drag_Start_X := Gint (Get_X_Root (Event));
       C.MDI.Drag_Start_Y := Gint (Get_Y_Root (Event));
       C.MDI.In_Drag := In_Pre_Drag;
-
 
       --  Let the event through, the drag hasn't started yet
       return False;
