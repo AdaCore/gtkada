@@ -127,7 +127,9 @@ package Gtk.Text is
 
    procedure Set_Point (Text  : access Gtk_Text_Record;
                         Index : in Guint);
-   --  Set the insertion point (cursor) position.
+   --  Set the insertion point position.
+   --  This does not modify the position of the visible cursor (see
+   --  Gtk.Editable.Set_Position instead).
 
    --  <doc_ignore>
    function Get_Text (Text : access Gtk_Text_Record) return String;
