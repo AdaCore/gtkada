@@ -59,7 +59,13 @@
 --
 --  A socket can also be used to swallow arbitrary pre-existing top-level
 --  windows using Steal, though the integration when this is done will not be
---  as close as between a Gtk_Plug and a Gtk_Socket.
+--  as close as between a Gtk_Plug and a Gtk_Socket. All you need in that case
+--  is the X11 window identifier for the external process.
+--
+--  Note that it is recommended that the external window be first hidden before
+--  being swallowed, so that Gtk.Socket works with most window managers. If
+--  you start with visible windows, some window managers will not be able to
+--  correctly merge the two windows (Enlightenment for instance).
 --  </description>
 --  <c_version>1.2.8</c_version>
 
