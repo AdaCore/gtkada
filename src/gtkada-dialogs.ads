@@ -47,8 +47,8 @@ package Gtkada.Dialogs is
 
    Button_None   : constant Message_Dialog_Buttons := 0;
    Button_Yes    : constant Message_Dialog_Buttons := 2 ** 0;
-   Button_All    : constant Message_Dialog_Buttons := 2 ** 1;
-   Button_No     : constant Message_Dialog_Buttons := 2 ** 2;
+   Button_No     : constant Message_Dialog_Buttons := 2 ** 1;
+   Button_All    : constant Message_Dialog_Buttons := 2 ** 2;
    Button_OK     : constant Message_Dialog_Buttons := 2 ** 3;
    Button_Cancel : constant Message_Dialog_Buttons := 2 ** 4;
    Button_Abort  : constant Message_Dialog_Buttons := 2 ** 5;
