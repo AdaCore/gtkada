@@ -174,7 +174,7 @@ package Gdk.Types is
    type Gdk_Device_Id is new Guint32;
    --  This type is specific to GtkAda. In Gdk, guint32 is used instead.
 
-   type Gdk_Event_Mask is new Guint;
+   type Gdk_Event_Mask is mod 2 ** 21;
    --  Note that you need to change the event mask of a widget if you want
    --  to be able to get some events. To change this mask, the widget
    --  must first be Unrealized.
