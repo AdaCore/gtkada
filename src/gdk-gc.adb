@@ -29,7 +29,6 @@
 
 package body Gdk.GC is
 
-
    ------------
    --  Copy  --
    ------------
@@ -45,7 +44,6 @@ package body Gdk.GC is
       Set_Object (Dst_GC, Temp);
    end Copy;
 
-
    ---------------
    --  Destroy  --
    ---------------
@@ -57,7 +55,6 @@ package body Gdk.GC is
       Internal (Get_Object (GC));
       Set_Object (GC, System.Null_Address);
    end Destroy;
-
 
    ------------------
    --  Get_Values  --
@@ -74,7 +71,6 @@ package body Gdk.GC is
       Set_Object (Values, Temp);
    end Get_Values;
 
-
    --------------
    -- Gdk_New  --
    --------------
@@ -87,7 +83,6 @@ package body Gdk.GC is
    begin
       Set_Object (GC, Internal (Get_Object (Window)));
    end Gdk_New;
-
 
    --------------
    -- Gdk_New  --
@@ -107,6 +102,29 @@ package body Gdk.GC is
                                 Values_Mask));
    end Gdk_New;
 
+   -------------
+   -- Gdk_New --
+   -------------
+
+   function Gdk_New return Gdk_GC_Values is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "ada_gdk_gc_new_values");
+      Values : Gdk_GC_Values;
+   begin
+      Set_Object (Values, Internal);
+      return Values;
+   end Gdk_New;
+
+   ----------
+   -- Free --
+   ----------
+
+   procedure Free (Values : in out Gdk_GC_Values) is
+      procedure Internal (Values : System.Address);
+      pragma Import (C, Internal, "ada_gdk_gc_free_values");
+   begin
+      Internal (Get_Object (Values));
+   end Free;
 
    -----------
    --  Ref  --
@@ -120,13 +138,13 @@ package body Gdk.GC is
       S := Internal (Get_Object (GC));
    end Ref;
 
-
    ----------------------
    --  Set_Background  --
    ----------------------
 
    procedure Set_Background (GC     : in Gdk_GC;
-                             Color  : in Gdk.Color.Gdk_Color) is
+                             Color  : in Gdk.Color.Gdk_Color)
+   is
       procedure Internal (GC, Color : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_background");
       use type Gdk.Color.Gdk_Color;
@@ -142,19 +160,53 @@ package body Gdk.GC is
       end if;
    end Set_Background;
 
+   --------------------
+   -- Set_Background --
+   --------------------
+
+   procedure Set_Background (Values : in Gdk_GC_Values;
+                             Color  : in Gdk.Color.Gdk_Color)
+   is
+      procedure Internal (GC, Color : in System.Address);
+      pragma Import (C, Internal, "ada_gdk_gc_set_background");
+      use type Gdk.Color.Gdk_Color;
+
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+   begin
+      if Color = Gdk.Color.Null_Color then
+         Internal (Get_Object (Values), System.Null_Address);
+      else
+         Internal (Get_Object (Values), Col'Address);
+      end if;
+   end Set_Background;
 
    -----------------------
    --  Set_Clip_Origin  --
    -----------------------
 
    procedure Set_Clip_Origin (GC   : in Gdk_GC;
-                              X, Y : in Gint) is
+                              X, Y : in Gint)
+   is
       procedure Internal (GC : in System.Address; X, Y : in Gint);
       pragma Import (C, Internal, "gdk_gc_set_clip_origin");
    begin
       Internal (Get_Object (GC), X, Y);
    end Set_Clip_Origin;
 
+   ---------------------
+   -- Set_Clip_Origin --
+   ---------------------
+
+   procedure Set_Clip_Origin (Values : in Gdk_GC_Values;
+                              X, Y : in Gint)
+   is
+      procedure Internal (GC : in System.Address; X, Y : in Gint);
+      pragma Import (C, Internal, "ada_gdk_gc_set_clip_origin");
+   begin
+      Internal (Get_Object (Values), X, Y);
+   end Set_Clip_Origin;
 
    --------------------------
    --  Set_Clip_Rectangle  --
@@ -162,7 +214,8 @@ package body Gdk.GC is
 
    procedure Set_Clip_Rectangle
      (GC        : in Gdk_GC;
-      Rectangle : in Gdk.Rectangle.Gdk_Rectangle) is
+      Rectangle : in Gdk.Rectangle.Gdk_Rectangle)
+   is
       procedure Internal (GC, Rectangle : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_clip_rectangle");
 
@@ -172,7 +225,6 @@ package body Gdk.GC is
    begin
       Internal (Get_Object (GC), Rec'Address);
    end Set_Clip_Rectangle;
-
 
    -----------------------
    --  Set_Clip_Region  --
@@ -186,26 +238,24 @@ package body Gdk.GC is
       Internal (Get_Object (GC), Get_Object (Region));
    end Set_Clip_Region;
 
-
    ----------------
    -- Set_Dashes --
    ----------------
 
    procedure Set_Dashes (Gc          : in Gdk_GC;
                          Dash_Offset : in Gint;
-                         Dash_List   : in Gint_Array) is
+                         Dash_List   : in Guchar_Array) is
       procedure Internal (Gc          : in System.Address;
                           Dash_Offset : in Gint;
-                          Dash_List   : in Gint_Array;
+                          Dash_List   : in System.Address;
                           N           : in Gint);
       pragma Import (C, Internal, "gdk_gc_set_dashes");
    begin
       Internal (Get_Object (Gc),
                 Dash_Offset,
-                Dash_List,
+                Dash_List'Address,
                 Dash_List'Length);
    end Set_Dashes;
-
 
    ---------------------
    --  Set_Exposures  --
@@ -219,6 +269,17 @@ package body Gdk.GC is
       Internal (Get_Object (GC), Boolean'Pos (Exposures));
    end Set_Exposures;
 
+   -------------------
+   -- Set_Exposures --
+   -------------------
+
+   procedure Set_Exposures (Values    : in Gdk_GC_Values;
+                            Exposures : in Boolean) is
+      procedure Internal (GC : in System.Address; Exposures : in Gint);
+      pragma Import (C, Internal, "ada_gdk_gc_set_exposures");
+   begin
+      Internal (Get_Object (Values), Boolean'Pos (Exposures));
+   end Set_Exposures;
 
    ----------------
    --  Set_Fill  --
@@ -232,6 +293,17 @@ package body Gdk.GC is
       Internal (Get_Object (GC), Fill);
    end Set_Fill;
 
+   --------------
+   -- Set_Fill --
+   --------------
+
+   procedure Set_Fill (Values : in Gdk_GC_Values;
+                       Fill   : in Types.Gdk_Fill) is
+      procedure Internal (GC : in System.Address; Fill : in Types.Gdk_Fill);
+      pragma Import (C, Internal, "ada_gdk_gc_set_fill");
+   begin
+      Internal (Get_Object (Values), Fill);
+   end Set_Fill;
 
    ----------------
    --  Set_Font  --
@@ -245,6 +317,17 @@ package body Gdk.GC is
       Internal (Get_Object (GC), Get_Object (Font));
    end Set_Font;
 
+   --------------
+   -- Set_Font --
+   --------------
+
+   procedure Set_Font (Values : in Gdk_GC_Values;
+                       Font   : in Gdk.Font.Gdk_Font'Class) is
+      procedure Internal (GC, Font : in System.Address);
+      pragma Import (C, Internal, "ada_gdk_gc_set_font");
+   begin
+      Internal (Get_Object (Values), Get_Object (Font));
+   end Set_Font;
 
    ----------------------
    --  Set_Foreground  --
@@ -267,6 +350,26 @@ package body Gdk.GC is
       end if;
    end Set_Foreground;
 
+   --------------------
+   -- Set_Foreground --
+   --------------------
+
+   procedure Set_Foreground (Values : in Gdk_GC_Values;
+                             Color  : in Gdk.Color.Gdk_Color) is
+      procedure Internal (GC, Color : in System.Address);
+      pragma Import (C, Internal, "ada_gdk_gc_set_foreground");
+      use type Gdk.Color.Gdk_Color;
+
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+   begin
+      if Color = Gdk.Color.Null_Color then
+         Internal (Get_Object (Values), System.Null_Address);
+      else
+         Internal (Get_Object (Values), Col'Address);
+      end if;
+   end Set_Foreground;
 
    --------------------
    --  Set_Function  --
@@ -281,6 +384,18 @@ package body Gdk.GC is
       Internal (Get_Object (GC), Func);
    end Set_Function;
 
+   ------------------
+   -- Set_Function --
+   ------------------
+
+   procedure Set_Function (Values : in Gdk_GC_Values;
+                           Func   : in Types.Gdk_Function) is
+      procedure Internal (GC   : in System.Address;
+                          Func : in Types.Gdk_Function);
+      pragma Import (C, Internal, "ada_gdk_gc_set_function");
+   begin
+      Internal (Get_Object (Values), Func);
+   end Set_Function;
 
    ---------------------------
    --  Set_Line_Attributes  --
@@ -302,6 +417,25 @@ package body Gdk.GC is
                 Cap_Style, Join_Style);
    end Set_Line_Attributes;
 
+   -------------------------
+   -- Set_Line_Attributes --
+   -------------------------
+
+   procedure Set_Line_Attributes (Values     : in Gdk_GC_Values;
+                                  Line_Width : in Gint;
+                                  Line_Style : in Types.Gdk_Line_Style;
+                                  Cap_Style  : in Types.Gdk_Cap_Style;
+                                  Join_Style : in Types.Gdk_Join_Style) is
+      procedure Internal (GC : in System.Address;
+                          Line_Width : in     Gint;
+                          Line_Style : in     Types.Gdk_Line_Style;
+                          Cap_Style  : in     Types.Gdk_Cap_Style;
+                          Join_Style : in     Types.Gdk_Join_Style);
+      pragma Import (C, Internal, "ada_gdk_gc_set_line_attributes");
+   begin
+      Internal (Get_Object (Values), Line_Width, Line_Style,
+                Cap_Style, Join_Style);
+   end Set_Line_Attributes;
 
    ---------------------
    --  Set_Subwindow  --
@@ -316,6 +450,18 @@ package body Gdk.GC is
       Internal (Get_Object (GC), Mode);
    end Set_Subwindow;
 
+   -------------------
+   -- Set_Subwindow --
+   -------------------
+
+   procedure Set_Subwindow (Values : in Gdk_GC_Values;
+                            Mode   : in Types.Gdk_Subwindow_Mode) is
+      procedure Internal (GC : in System.Address;
+                          Mode : in Types.Gdk_Subwindow_Mode);
+      pragma Import (C, Internal, "ada_gdk_gc_set_subwindow");
+   begin
+      Internal (Get_Object (Values), Mode);
+   end Set_Subwindow;
 
    ---------------------
    --  Set_Ts_Origin  --
@@ -329,6 +475,17 @@ package body Gdk.GC is
       Internal (Get_Object (GC), X, Y);
    end Set_Ts_Origin;
 
+   -------------------
+   -- Set_Ts_Origin --
+   -------------------
+
+   procedure Set_Ts_Origin (Values : in Gdk_GC_Values;
+                            X, Y   : in Gint) is
+      procedure Internal (GC : in System.Address; X, Y : in Gint);
+      pragma Import (C, Internal, "ada_gdk_gc_set_ts_origin");
+   begin
+      Internal (Get_Object (Values), X, Y);
+   end Set_Ts_Origin;
 
    -------------
    --  Unref  --
@@ -341,6 +498,5 @@ package body Gdk.GC is
       Internal (Get_Object (GC));
       Set_Object (GC, System.Null_Address);
    end Unref;
-
 
 end Gdk.GC;
