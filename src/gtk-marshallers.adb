@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -29,7 +29,7 @@
 
 with Unchecked_Conversion;
 with System; use System;
-with Gtk.Arguments; use Gtk.Arguments;
+with Glib.Values; use Glib.Values;
 
 package body Gtk.Marshallers is
 
@@ -45,23 +45,23 @@ package body Gtk.Marshallers is
 
       package body Generic_Marshaller is
 
-         function To_Handler is new Unchecked_Conversion
-           (General_Handler, Handler);
-         function To_General_Handler is new Unchecked_Conversion
-           (Handler, General_Handler);
+         function To_Handler is new
+           Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
          ----------
 
-         function Call (Widget  : access Widget_Type'Class;
-                        Params  : Gtk.Arguments.Gtk_Args;
-                        Cb      : General_Handler)
-                       return Return_Type
+         function Call
+           (Widget : access Widget_Type'Class;
+            Params : Glib.Values.GValues;
+            Cb     : General_Handler) return Return_Type
          is
             Func : constant Handler := To_Handler (Cb);
          begin
-            return Func (Widget, Conversion (Params, 1));
+            return Func (Widget, Conversion (Nth (Params, 1)));
          end Call;
 
          -------------------
@@ -76,7 +76,7 @@ package body Gtk.Marshallers is
             --  arguments
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
 
-            return (Func  => To_General_Handler (Cb), Proxy => Call'Access);
+            return (Func => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------
@@ -85,14 +85,14 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : in String;
-            Param  : Base_Type)
-           return Return_Type
+            Name   : String;
+            Param  : Base_Type) return Return_Type
          is
-            procedure Internal (Object : in System.Address;
-                                Name   : in String;
-                                Param  : in Base_Type;
-                                Ret    :    out Return_Type);
+            procedure Internal
+              (Object : System.Address;
+               Name   : String;
+               Param  : Base_Type;
+               Ret    : out Return_Type);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
 
             B : Return_Type;
@@ -108,13 +108,14 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name_Generic
            (Object : access Widget_Type'Class;
-            Name   : in String;
+            Name   : String;
             Param  : Base_Type) return Return_Type
          is
-            procedure Internal (Object : in System.Address;
-                                Name   : in String;
-                                Param  : in System.Address;
-                                Ret    :    out Return_Type);
+            procedure Internal
+              (Object : System.Address;
+               Name   : String;
+               Param  : System.Address;
+               Ret    : out Return_Type);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
             B : Return_Type;
 
@@ -132,31 +133,31 @@ package body Gtk.Marshallers is
       -------------------------------
 
       package body Generic_Widget_Marshaller is
-         function To_Handler is new Unchecked_Conversion
-           (General_Handler, Handler);
-         function To_General_Handler is new Unchecked_Conversion
-           (Handler, General_Handler);
+         function To_Handler is new
+           Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
          ----------
 
          function Call
-           (Widget  : access Widget_Type'Class;
-            Params  : Gtk.Arguments.Gtk_Args;
-            Cb      : General_Handler) return Return_Type
+           (Widget : access Widget_Type'Class;
+            Params : Glib.Values.GValues;
+            Cb     : General_Handler) return Return_Type
          is
-            use type Gtk.Object.Gtk_Object;
+            use Gtk.Widget;
 
             Func : constant Handler := To_Handler (Cb);
-            O    : Gtk.Object.Gtk_Object := To_Object (Params, 1);
+            Obj  : Gtk_Widget := Convert (Get_Address (Nth (Params, 1)));
             B    : aliased Base_Type;
 
          begin
-            if O = null then
+            if Obj = null then
                return Func (Widget, B'Access);
             else
-               return Func (Widget, Access_Type (O));
+               return Func (Widget, Access_Type (Obj));
             end if;
          end Call;
 
@@ -169,7 +170,7 @@ package body Gtk.Marshallers is
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
 
-            return (Func  => To_General_Handler (Cb), Proxy => Call'Access);
+            return (Func => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------
@@ -178,14 +179,14 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : in String;
-            Param  : access Base_Type'Class)
-           return Return_Type
+            Name   : String;
+            Param  : access Base_Type'Class) return Return_Type
          is
-            procedure Internal (Object : in System.Address;
-                                Name   : in String;
-                                Param  : in System.Address;
-                                Ret    :    out Return_Type);
+            procedure Internal
+              (Object : System.Address;
+               Name   : String;
+               Param  : System.Address;
+               Ret    : out Return_Type);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
 
             R : Return_Type;
@@ -204,19 +205,19 @@ package body Gtk.Marshallers is
       ---------------------
 
       package body Void_Marshaller is
-         function To_Handler is new Unchecked_Conversion
-           (General_Handler, Handler);
-         function To_General_Handler is new Unchecked_Conversion
-           (Handler, General_Handler);
+         function To_Handler is new
+           Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
          ----------
 
-         function Call (Widget  : access Widget_Type'Class;
-                        Params  : Gtk.Arguments.Gtk_Args;
-                        Cb      : General_Handler)
-                       return Return_Type
+         function Call
+           (Widget : access Widget_Type'Class;
+            Params : Glib.Values.GValues;
+            Cb     : General_Handler) return Return_Type
          is
             Func : constant Handler := To_Handler (Cb);
          begin
@@ -238,12 +239,12 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : in String) return Return_Type
+            Name   : String) return Return_Type
          is
             procedure Internal
-              (Object : in System.Address;
-               Name   : in String;
-               Ret    :    out Return_Type);
+              (Object : System.Address;
+               Name   : String;
+               Ret    : out Return_Type);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
 
             R : Return_Type;
@@ -269,24 +270,24 @@ package body Gtk.Marshallers is
 
       package body Generic_Marshaller is
 
-         function To_Handler is new Unchecked_Conversion
-           (General_Handler, Handler);
-         function To_General_Handler is new Unchecked_Conversion
-           (Handler, General_Handler);
+         function To_Handler is new
+           Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
          ----------
 
-         function Call (Widget    : access Widget_Type'Class;
-                        Params    : Gtk.Arguments.Gtk_Args;
-                        Cb        : General_Handler;
-                        User_Data : User_Type)
-                       return Return_Type
+         function Call
+           (Widget    : access Widget_Type'Class;
+            Params    : Glib.Values.GValues;
+            Cb        : General_Handler;
+            User_Data : User_Type) return Return_Type
          is
             Func : constant Handler := To_Handler (Cb);
          begin
-            return Func (Widget, Conversion (Params, 1), User_Data);
+            return Func (Widget, Conversion (Nth (Params, 1)), User_Data);
          end Call;
 
          -------------------
@@ -295,7 +296,7 @@ package body Gtk.Marshallers is
 
          function To_Marshaller (Cb : Handler) return Marshaller is
          begin
-            --  We must have at least one argument in the real callback.
+            --  We must have at least one argument the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
 
             return (Func => To_General_Handler (Cb), Proxy => Call'Access);
@@ -307,14 +308,14 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : in String;
+            Name   : String;
             Param  : Base_Type) return Return_Type
          is
             procedure Internal
-              (Object : in System.Address;
-               Name   : in String;
-               Param  : in Base_Type;
-               Ret    :    out Return_Type);
+              (Object : System.Address;
+               Name   : String;
+               Param  : Base_Type;
+               Ret    : out Return_Type);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
 
             B : Return_Type;
@@ -330,14 +331,14 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name_Generic
            (Object : access Widget_Type'Class;
-            Name   : in String;
+            Name   : String;
             Param  : Base_Type) return Return_Type
          is
             procedure Internal
-              (Object : in System.Address;
-               Name   : in String;
-               Param  : in System.Address;
-               Ret    :    out Return_Type);
+              (Object : System.Address;
+               Name   : String;
+               Param  : System.Address;
+               Ret    : out Return_Type);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
 
             B : Return_Type;
@@ -357,10 +358,10 @@ package body Gtk.Marshallers is
 
       package body Generic_Widget_Marshaller is
 
-         function To_Handler is new Unchecked_Conversion
-           (General_Handler, Handler);
-         function To_General_Handler is new Unchecked_Conversion
-           (Handler, General_Handler);
+         function To_Handler is new
+           Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
@@ -368,20 +369,20 @@ package body Gtk.Marshallers is
 
          function Call
            (Widget    : access Widget_Type'Class;
-            Params    : Gtk.Arguments.Gtk_Args;
+            Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type) return Return_Type
          is
-            use type Gtk.Object.Gtk_Object;
+            use Gtk.Widget;
             Func : constant Handler := To_Handler (Cb);
-            O    : Gtk.Object.Gtk_Object := To_Object (Params, 1);
+            Obj  : Gtk_Widget := Convert (Get_Address (Nth (Params, 1)));
             B    : aliased Base_Type;
 
          begin
-            if O = null then
+            if Obj = null then
                return Func (Widget, B'Access, User_Data);
             else
-               return Func (Widget, Access_Type (O), User_Data);
+               return Func (Widget, Access_Type (Obj), User_Data);
             end if;
          end Call;
 
@@ -403,14 +404,14 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : in String;
+            Name   : String;
             Param  : access Base_Type'Class) return Return_Type
          is
             procedure Internal
-              (Object : in System.Address;
-               Name   : in String;
-               Param  : in System.Address;
-               Ret    :    out Return_Type);
+              (Object : System.Address;
+               Name   : String;
+               Param  : System.Address;
+               Ret    : out Return_Type);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
 
             R : Return_Type;
@@ -430,20 +431,20 @@ package body Gtk.Marshallers is
 
       package body Void_Marshaller is
 
-         function To_Handler is new Unchecked_Conversion
-           (General_Handler, Handler);
-         function To_General_Handler is new Unchecked_Conversion
-           (Handler, General_Handler);
+         function To_Handler is new
+           Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
          ----------
 
-         function Call (Widget    : access Widget_Type'Class;
-                        Params    : Gtk.Arguments.Gtk_Args;
-                        Cb        : General_Handler;
-                        User_Data : User_Type)
-                       return Return_Type
+         function Call
+           (Widget    : access Widget_Type'Class;
+            Params    : Glib.Values.GValues;
+            Cb        : General_Handler;
+            User_Data : User_Type) return Return_Type
          is
             Func : constant Handler := To_Handler (Cb);
          begin
@@ -465,11 +466,12 @@ package body Gtk.Marshallers is
 
          function Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : in String) return Return_Type
+            Name   : String) return Return_Type
          is
-            procedure Internal (Object : in System.Address;
-                                Name   : in String;
-                                Ret    :    out Return_Type);
+            procedure Internal
+              (Object : System.Address;
+               Name   : String;
+               Ret    : out Return_Type);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
 
             R : Return_Type;
@@ -495,22 +497,23 @@ package body Gtk.Marshallers is
       ------------------------
 
       package body Generic_Marshaller is
-         function To_Handler is new Unchecked_Conversion
-           (General_Handler, Handler);
-         function To_General_Handler is new Unchecked_Conversion
-           (Handler, General_Handler);
+         function To_Handler is new
+           Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
          ----------
 
-         procedure Call (Widget  : access Widget_Type'Class;
-                         Params  : Gtk.Arguments.Gtk_Args;
-                         Cb      : General_Handler)
+         procedure Call
+           (Widget  : access Widget_Type'Class;
+            Params  : Glib.Values.GValues;
+            Cb      : General_Handler)
          is
             Func : constant Handler := To_Handler (Cb);
          begin
-            Func (Widget, Conversion (Params, 1));
+            Func (Widget, Conversion (Nth (Params, 1)));
          end Call;
 
          -------------------
@@ -531,13 +534,15 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : in String;
+            Name   : String;
             Param  : Base_Type)
          is
-            procedure Internal (Object : in System.Address;
-                                Name   : in String;
-                                Param  : in Base_Type);
+            procedure Internal
+              (Object : System.Address;
+               Name   : String;
+               Param  : Base_Type);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
+
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
             Internal (Get_Object (Object), Name & ASCII.NUL, Param);
@@ -549,17 +554,19 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name_Generic
            (Object : access Widget_Type'Class;
-            Name   : in String;
+            Name   : String;
             Param  : Base_Type)
          is
-            procedure Internal (Object : in System.Address;
-                                Name   : in String;
-                                Param  : in System.Address);
+            procedure Internal
+              (Object : System.Address;
+               Name   : String;
+               Param  : System.Address);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
+
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object), Name & ASCII.NUL,
-                      Conversion (Param));
+            Internal
+              (Get_Object (Object), Name & ASCII.NUL, Conversion (Param));
          end Emit_By_Name_Generic;
 
       end Generic_Marshaller;
@@ -569,30 +576,31 @@ package body Gtk.Marshallers is
       -------------------------------
 
       package body Generic_Widget_Marshaller is
-         function To_Handler is new Unchecked_Conversion
-           (General_Handler, Handler);
-         function To_General_Handler is new Unchecked_Conversion
-           (Handler, General_Handler);
+         function To_Handler is new
+           Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
          ----------
 
-         procedure Call (Widget  : access Widget_Type'Class;
-                         Params  : Gtk.Arguments.Gtk_Args;
-                         Cb      : General_Handler)
+         procedure Call
+           (Widget : access Widget_Type'Class;
+            Params : Glib.Values.GValues;
+            Cb     : General_Handler)
          is
-            use type Gtk.Object.Gtk_Object;
+            use Gtk.Widget;
 
             Func : constant Handler := To_Handler (Cb);
-            O    : Gtk.Object.Gtk_Object := To_Object (Params, 1);
+            Obj  : Gtk_Widget := Convert (Get_Address (Nth (Params, 1)));
             B    : aliased Base_Type;
 
          begin
-            if O = null then
+            if Obj = null then
                Func (Widget, B'Access);
             else
-               Func (Widget, Access_Type (O));
+               Func (Widget, Access_Type (Obj));
             end if;
          end Call;
 
@@ -614,17 +622,19 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : in String;
+            Name   : String;
             Param  : access Base_Type'Class)
-           is
-            procedure Internal (Object : in System.Address;
-                                Name   : in String;
-                                Param  : in System.Address);
+         is
+            procedure Internal
+              (Object : System.Address;
+               Name   : String;
+               Param  : System.Address);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
+
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object), Name & ASCII.NUL,
-                      Get_Object (Param));
+            Internal
+              (Get_Object (Object), Name & ASCII.NUL, Get_Object (Param));
          end Emit_By_Name;
 
       end Generic_Widget_Marshaller;
@@ -634,18 +644,19 @@ package body Gtk.Marshallers is
       ---------------------
 
       package body Void_Marshaller is
-         function To_Handler is new Unchecked_Conversion
-           (General_Handler, Handler);
-         function To_General_Handler is new Unchecked_Conversion
-           (Handler, General_Handler);
+         function To_Handler is new
+           Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
          ----------
 
-         procedure Call (Widget  : access Widget_Type'Class;
-                         Params  : Gtk.Arguments.Gtk_Args;
-                         Cb      : General_Handler)
+         procedure Call
+           (Widget : access Widget_Type'Class;
+            Params : Glib.Values.GValues;
+            Cb     : General_Handler)
          is
             Func : constant Handler := To_Handler (Cb);
          begin
@@ -667,11 +678,11 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : in String)
+            Name   : String)
          is
-            procedure Internal (Object : in System.Address;
-                                Name   : in String);
+            procedure Internal (Object : System.Address; Name : String);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
+
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 0);
             Internal (Get_Object (Object), Name & ASCII.NUL);
@@ -693,23 +704,24 @@ package body Gtk.Marshallers is
 
       package body Generic_Marshaller is
 
-         function To_Handler is new Unchecked_Conversion
-           (General_Handler, Handler);
-         function To_General_Handler is new Unchecked_Conversion
-           (Handler, General_Handler);
+         function To_Handler is new
+           Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
          ----------
 
-         procedure Call (Widget    : access Widget_Type'Class;
-                         Params    : Gtk.Arguments.Gtk_Args;
-                         Cb        : General_Handler;
-                         User_Data : User_Type)
+         procedure Call
+           (Widget    : access Widget_Type'Class;
+            Params    : Glib.Values.GValues;
+            Cb        : General_Handler;
+            User_Data : User_Type)
          is
             Func : constant Handler := To_Handler (Cb);
          begin
-            Func (Widget, Conversion (Params, 1), User_Data);
+            Func (Widget, Conversion (Nth (Params, 1)), User_Data);
          end Call;
 
          -------------------
@@ -730,13 +742,15 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : in String;
+            Name   : String;
             Param  : Base_Type)
          is
-            procedure Internal (Object : in System.Address;
-                                Name   : in String;
-                                Param  : Base_Type);
+            procedure Internal
+              (Object : System.Address;
+               Name   : String;
+               Param  : Base_Type);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
+
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
             Internal (Get_Object (Object), Name & ASCII.NUL, Param);
@@ -748,17 +762,19 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name_Generic
            (Object : access Widget_Type'Class;
-            Name   : in String;
+            Name   : String;
             Param  : Base_Type)
          is
-            procedure Internal (Object : in System.Address;
-                                Name   : in String;
-                                Param  : in System.Address);
+            procedure Internal
+              (Object : System.Address;
+               Name   : String;
+               Param  : System.Address);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
+
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object), Name & ASCII.NUL,
-                      Conversion (Param));
+            Internal
+              (Get_Object (Object), Name & ASCII.NUL, Conversion (Param));
          end Emit_By_Name_Generic;
 
       end Generic_Marshaller;
@@ -769,31 +785,32 @@ package body Gtk.Marshallers is
 
       package body Generic_Widget_Marshaller is
 
-         function To_Handler is new Unchecked_Conversion
-           (General_Handler, Handler);
-         function To_General_Handler is new Unchecked_Conversion
-           (Handler, General_Handler);
+         function To_Handler is new
+           Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
          ----------
 
-         procedure Call (Widget    : access Widget_Type'Class;
-                         Params    : Gtk.Arguments.Gtk_Args;
-                         Cb        : General_Handler;
-                         User_Data : User_Type)
+         procedure Call
+           (Widget    : access Widget_Type'Class;
+            Params    : Glib.Values.GValues;
+            Cb        : General_Handler;
+            User_Data : User_Type)
          is
-            use type Gtk.Object.Gtk_Object;
+            use Gtk.Widget;
 
             Func : constant Handler := To_Handler (Cb);
-            O    : Gtk.Object.Gtk_Object := To_Object (Params, 1);
+            Obj  : Gtk_Widget := Convert (Get_Address (Nth (Params, 1)));
             B    : aliased Base_Type;
 
          begin
-            if O = null then
+            if Obj = null then
                Func (Widget, B'Access, User_Data);
             else
-               Func (Widget, Access_Type (O), User_Data);
+               Func (Widget, Access_Type (Obj), User_Data);
             end if;
          end Call;
 
@@ -815,17 +832,19 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : in String;
+            Name   : String;
             Param  : access Base_Type'Class)
          is
-            procedure Internal (Object : in System.Address;
-                                Name   : in String;
-                                Param  : in System.Address);
+            procedure Internal
+              (Object : System.Address;
+               Name   : String;
+               Param  : System.Address);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
+
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-            Internal (Get_Object (Object), Name & ASCII.NUL,
-                      Get_Object (Param));
+            Internal
+              (Get_Object (Object), Name & ASCII.NUL, Get_Object (Param));
          end Emit_By_Name;
 
       end Generic_Widget_Marshaller;
@@ -836,19 +855,20 @@ package body Gtk.Marshallers is
 
       package body Void_Marshaller is
 
-         function To_Handler is new Unchecked_Conversion
-           (General_Handler, Handler);
-         function To_General_Handler is new Unchecked_Conversion
-           (Handler, General_Handler);
+         function To_Handler is new
+           Unchecked_Conversion (General_Handler, Handler);
+         function To_General_Handler is new
+           Unchecked_Conversion (Handler, General_Handler);
 
          ----------
          -- Call --
          ----------
 
-         procedure Call (Widget    : access Widget_Type'Class;
-                         Params    : Gtk.Arguments.Gtk_Args;
-                         Cb        : General_Handler;
-                         User_Data : User_Type)
+         procedure Call
+           (Widget    : access Widget_Type'Class;
+            Params    : Glib.Values.GValues;
+            Cb        : General_Handler;
+            User_Data : User_Type)
          is
             Func : constant Handler := To_Handler (Cb);
          begin
@@ -870,11 +890,11 @@ package body Gtk.Marshallers is
 
          procedure Emit_By_Name
            (Object : access Widget_Type'Class;
-            Name   : in String)
+            Name   : String)
          is
-            procedure Internal (Object : in System.Address;
-                                Name   : in String);
+            procedure Internal (Object : System.Address; Name : String);
             pragma Import (C, Internal, "gtk_signal_emit_by_name");
+
          begin
             pragma Assert (Count_Arguments (Get_Type (Object), Name) = 0);
             Internal (Get_Object (Object), Name & ASCII.NUL);

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -58,7 +58,7 @@
 --
 --     A Handler_Proxy is a subprogram that calls its associated
 --     handler with the appropriate arguments (from an array of arguments
---     stored in Gtk.Arguments.Gtk_Args)
+--     stored in Glib.Values.GValues)
 --
 --     A Marshaller is the association of a General_Handler and a
 --     Handler_Proxy.
@@ -111,7 +111,8 @@
 --  </description>
 
 with Gtk.Object;
-with Gtk.Arguments;
+with Gtk.Widget;
+with Glib.Values;
 
 package Gtk.Marshallers is
 
@@ -128,11 +129,10 @@ package Gtk.Marshallers is
       type Return_Type is private;
    package Return_Marshallers is
 
-      type Handler_Proxy is access
-        function (Widget  : access Widget_Type'Class;
-                  Params  : Gtk.Arguments.Gtk_Args;
-                  Cb      : General_Handler)
-                  return Return_Type;
+      type Handler_Proxy is access function
+        (Widget  : access Widget_Type'Class;
+         Params  : Glib.Values.GValues;
+         Cb      : General_Handler) return Return_Type;
 
       type Marshaller is record
          Func  : General_Handler;   --  User callback
@@ -142,70 +142,77 @@ package Gtk.Marshallers is
       --  Basic Marshaller
       generic
          type Base_Type is private;
-         with function Conversion (Args : Gtk.Arguments.Gtk_Args;
-                                   Num : Positive)
-                                  return Base_Type;
+         with function Conversion
+           (Value : Glib.Values.GValue) return Base_Type;
+
       package Generic_Marshaller is
-         type Handler is access function (Widget : access Widget_Type'Class;
-                                          Param  : Base_Type)
-                                         return Return_Type;
+         type Handler is access function
+           (Widget : access Widget_Type'Class;
+            Param  : Base_Type) return Return_Type;
+
          function To_Marshaller (Cb : Handler) return Marshaller;
 
-         function Emit_By_Name (Object : access Widget_Type'Class;
-                                Name   : in String;
-                                Param  : Base_Type)
-                               return Return_Type;
-         --  The function above should be used when BASE_TYPE can be passed
+         function Emit_By_Name
+           (Object : access Widget_Type'Class;
+            Name   : String;
+            Param  : Base_Type) return Return_Type;
+         --  The function above should be used when Base_Type can be passed
          --  as is to C.
 
          generic
             with function Conversion (Param : Base_Type) return System.Address;
-         function Emit_By_Name_Generic (Object : access Widget_Type'Class;
-                                        Name   : in String;
-                                        Param  : Base_Type)
-                                       return Return_Type;
+         function Emit_By_Name_Generic
+           (Object : access Widget_Type'Class;
+            Name   : String;
+            Param  : Base_Type) return Return_Type;
          --  Provide an explicit conversion function for PARAM.
 
       private
-         function Call (Widget  : access Widget_Type'Class;
-                        Params  : Gtk.Arguments.Gtk_Args;
-                        Cb      : General_Handler)
-                       return Return_Type;
+         function Call
+           (Widget : access Widget_Type'Class;
+            Params : Glib.Values.GValues;
+            Cb     : General_Handler) return Return_Type;
       end Generic_Marshaller;
 
       --  Widget Marshaller
       generic
-         type Base_Type   is new Gtk.Object.Gtk_Object_Record with private;
+         type Base_Type is new Gtk.Widget.Gtk_Widget_Record with private;
          type Access_Type is access all Base_Type'Class;
       package Generic_Widget_Marshaller is
-         type Handler is access function (Widget : access Widget_Type'Class;
-                                          Param  : access Base_Type'Class)
-                                         return Return_Type;
+         type Handler is access function
+           (Widget : access Widget_Type'Class;
+            Param  : access Base_Type'Class) return Return_Type;
+
          function To_Marshaller (Cb : Handler) return Marshaller;
-         function Emit_By_Name (Object : access Widget_Type'Class;
-                                Name   : in String;
-                                Param  : access Base_Type'Class)
-                               return Return_Type;
+
+         function Emit_By_Name
+           (Object : access Widget_Type'Class;
+            Name   : String;
+            Param  : access Base_Type'Class) return Return_Type;
+
       private
-         function Call (Widget  : access Widget_Type'Class;
-                        Params  : Gtk.Arguments.Gtk_Args;
-                        Cb      : General_Handler)
-                       return Return_Type;
+         function Call
+           (Widget : access Widget_Type'Class;
+            Params : Glib.Values.GValues;
+            Cb     : General_Handler) return Return_Type;
       end Generic_Widget_Marshaller;
 
       --  Void Marshaller
       package Void_Marshaller is
-         type Handler is access function (Widget : access Widget_Type'Class)
-                                         return Return_Type;
+         type Handler is access function
+           (Widget : access Widget_Type'Class) return Return_Type;
+
          function To_Marshaller (Cb : Handler) return Marshaller;
-         function Emit_By_Name (Object : access Widget_Type'Class;
-                                Name   : in String)
-                               return Return_Type;
+
+         function Emit_By_Name
+           (Object : access Widget_Type'Class;
+            Name   : String) return Return_Type;
+
       private
-         function Call (Widget  : access Widget_Type'Class;
-                        Params  : Gtk.Arguments.Gtk_Args;
-                        Cb      : General_Handler)
-                       return Return_Type;
+         function Call
+           (Widget : access Widget_Type'Class;
+            Params : Glib.Values.GValues;
+            Cb     : General_Handler) return Return_Type;
       end Void_Marshaller;
    end Return_Marshallers;
 
@@ -219,12 +226,11 @@ package Gtk.Marshallers is
       type User_Type (<>) is private;
    package User_Return_Marshallers is
 
-      type Handler_Proxy is access
-        function (Widget    : access Widget_Type'Class;
-                  Params    : Gtk.Arguments.Gtk_Args;
-                  Cb        : General_Handler;
-                  User_Data : User_Type)
-                  return Return_Type;
+      type Handler_Proxy is access function
+        (Widget    : access Widget_Type'Class;
+         Params    : Glib.Values.GValues;
+         Cb        : General_Handler;
+         User_Data : User_Type) return Return_Type;
 
       type Marshaller is record
          Func  : General_Handler;
@@ -234,75 +240,81 @@ package Gtk.Marshallers is
       --  Basic Marshaller
       generic
          type Base_Type is private;
-         with function Conversion (Args : Gtk.Arguments.Gtk_Args;
-                                   Num : Positive)
-                                  return Base_Type;
+         with function Conversion
+           (Value : Glib.Values.GValue) return Base_Type;
+
       package Generic_Marshaller is
-         type Handler is access function (Widget : access Widget_Type'Class;
-                                          Param  : Base_Type;
-                                          User_Data : User_Type)
-                                         return Return_Type;
+         type Handler is access function
+           (Widget    : access Widget_Type'Class;
+            Param     : Base_Type;
+            User_Data : User_Type) return Return_Type;
          function To_Marshaller (Cb : Handler) return Marshaller;
 
-         function Emit_By_Name (Object    : access Widget_Type'Class;
-                                Name      : in String;
-                                Param     : Base_Type)
-                               return Return_Type;
+         function Emit_By_Name
+           (Object : access Widget_Type'Class;
+            Name   : String;
+            Param  : Base_Type) return Return_Type;
          --  The function above should be used when BASE_TYPE can be passed
          --  as is to C.
 
          generic
             with function Conversion (Param : Base_Type) return System.Address;
-         function Emit_By_Name_Generic (Object : access Widget_Type'Class;
-                                        Name   : in String;
-                                        Param  : Base_Type)
-                                       return Return_Type;
+         function Emit_By_Name_Generic
+           (Object : access Widget_Type'Class;
+            Name   : String;
+            Param  : Base_Type) return Return_Type;
          --  Provide an explicit conversion function for PARAM.
       private
-         function Call (Widget    : access Widget_Type'Class;
-                        Params    : Gtk.Arguments.Gtk_Args;
-                        Cb        : General_Handler;
-                        User_Data : User_Type)
-                       return Return_Type;
+         function Call
+           (Widget    : access Widget_Type'Class;
+            Params    : Glib.Values.GValues;
+            Cb        : General_Handler;
+            User_Data : User_Type) return Return_Type;
       end Generic_Marshaller;
 
       --  Widget Marshaller
       generic
-         type Base_Type is new Gtk.Object.Gtk_Object_Record with private;
+         type Base_Type is new Gtk.Widget.Gtk_Widget_Record with private;
          type Access_Type is access all Base_Type'Class;
       package Generic_Widget_Marshaller is
-         type Handler is access function (Widget    : access Widget_Type'Class;
-                                          Param     : access Base_Type'Class;
-                                          User_Data : User_Type)
-                                         return Return_Type;
+         type Handler is access function
+           (Widget    : access Widget_Type'Class;
+            Param     : access Base_Type'Class;
+            User_Data : User_Type) return Return_Type;
+
          function To_Marshaller (Cb : Handler) return Marshaller;
-         function Emit_By_Name (Object    : access Widget_Type'Class;
-                                Name      : in String;
-                                Param     : access Base_Type'Class)
-                               return Return_Type;
+
+         function Emit_By_Name
+           (Object : access Widget_Type'Class;
+            Name   : String;
+            Param  : access Base_Type'Class) return Return_Type;
+
       private
-         function Call (Widget    : access Widget_Type'Class;
-                        Params    : Gtk.Arguments.Gtk_Args;
-                        Cb        : General_Handler;
-                        User_Data : User_Type)
-                       return Return_Type;
+         function Call
+           (Widget    : access Widget_Type'Class;
+            Params    : Glib.Values.GValues;
+            Cb        : General_Handler;
+            User_Data : User_Type) return Return_Type;
       end Generic_Widget_Marshaller;
 
       --  Void Marshaller
       package Void_Marshaller is
-         type Handler is access function (Widget    : access Widget_Type'Class;
-                                          User_Data : User_Type)
-                                         return Return_Type;
+         type Handler is access function
+           (Widget    : access Widget_Type'Class;
+            User_Data : User_Type) return Return_Type;
+
          function To_Marshaller (Cb : Handler) return Marshaller;
-         function Emit_By_Name (Object    : access Widget_Type'Class;
-                                Name      : in String)
-                               return Return_Type;
+
+         function Emit_By_Name
+           (Object : access Widget_Type'Class;
+            Name   : String) return Return_Type;
+
       private
-         function Call (Widget    : access Widget_Type'Class;
-                        Params    : Gtk.Arguments.Gtk_Args;
-                        Cb        : General_Handler;
-                        User_Data : User_Type)
-                       return Return_Type;
+         function Call
+           (Widget    : access Widget_Type'Class;
+            Params    : Glib.Values.GValues;
+            Cb        : General_Handler;
+            User_Data : User_Type) return Return_Type;
       end Void_Marshaller;
 
    end User_Return_Marshallers;
@@ -315,10 +327,10 @@ package Gtk.Marshallers is
       type Widget_Type is new Gtk.Object.Gtk_Object_Record with private;
    package Void_Marshallers is
 
-      type Handler_Proxy is access
-        procedure (Widget  : access Widget_Type'Class;
-                   Params  : Gtk.Arguments.Gtk_Args;
-                   Cb      : General_Handler);
+      type Handler_Proxy is access procedure
+        (Widget : access Widget_Type'Class;
+         Params : Glib.Values.GValues;
+         Cb     : General_Handler);
 
       type Marshaller is record
          Func  : General_Handler;
@@ -328,63 +340,79 @@ package Gtk.Marshallers is
       --  Basic Marshaller
       generic
          type Base_Type is private;
-         with function Conversion (Args : Gtk.Arguments.Gtk_Args;
-                                   Num : Positive)
-                                  return Base_Type;
+         with function Conversion
+           (Value : Glib.Values.GValue) return Base_Type;
+
       package Generic_Marshaller is
-         type Handler is access procedure (Widget : access Widget_Type'Class;
-                                           Param  : Base_Type);
+         type Handler is access procedure
+           (Widget : access Widget_Type'Class;
+            Param  : Base_Type);
+
          function To_Marshaller (Cb : Handler) return Marshaller;
 
-         procedure Emit_By_Name (Object : access Widget_Type'Class;
-                                 Name   : in String;
-                                 Param  : Base_Type);
+         procedure Emit_By_Name
+           (Object : access Widget_Type'Class;
+            Name   : String;
+            Param  : Base_Type);
          --  The function above should be used when BASE_TYPE can be passed
          --  as is to C.
 
          generic
             with function Conversion (Param : Base_Type) return System.Address;
-         procedure Emit_By_Name_Generic (Object : access Widget_Type'Class;
-                                         Name   : in String;
-                                         Param  : Base_Type);
+         procedure Emit_By_Name_Generic
+           (Object : access Widget_Type'Class;
+            Name   : String;
+            Param  : Base_Type);
          --  Provide an explicit conversion function for PARAM.
+
       private
-         procedure Call (Widget  : access Widget_Type'Class;
-                         Params  : Gtk.Arguments.Gtk_Args;
-                         Cb      : General_Handler);
+         procedure Call
+           (Widget : access Widget_Type'Class;
+            Params : Glib.Values.GValues;
+            Cb     : General_Handler);
       end Generic_Marshaller;
 
       --  Widget Marshaller
       generic
-         type Base_Type is new Gtk.Object.Gtk_Object_Record with private;
+         type Base_Type is new Gtk.Widget.Gtk_Widget_Record with private;
          type Access_Type is access all Base_Type'Class;
       package Generic_Widget_Marshaller is
-         type Handler is access procedure (Widget : access Widget_Type'Class;
-                                           Param  : access Base_Type'Class);
+         type Handler is access procedure
+           (Widget : access Widget_Type'Class;
+            Param  : access Base_Type'Class);
+
          function To_Marshaller (Cb : Handler) return Marshaller;
-         procedure Emit_By_Name (Object : access Widget_Type'Class;
-                                 Name   : in String;
-                                 Param  : access Base_Type'Class);
+
+         procedure Emit_By_Name
+           (Object : access Widget_Type'Class;
+            Name   : String;
+            Param  : access Base_Type'Class);
+
       private
-         procedure Call (Widget  : access Widget_Type'Class;
-                         Params  : Gtk.Arguments.Gtk_Args;
-                         Cb      : General_Handler);
+         procedure Call
+           (Widget : access Widget_Type'Class;
+            Params : Glib.Values.GValues;
+            Cb     : General_Handler);
       end Generic_Widget_Marshaller;
 
       --  Void Marshaller
       package Void_Marshaller is
          type Handler is access procedure (Widget : access Widget_Type'Class);
+
          function To_Marshaller (Cb : Handler) return Marshaller;
-         procedure Emit_By_Name (Object : access Widget_Type'Class;
-                                 Name   : in String);
+
+         procedure Emit_By_Name
+           (Object : access Widget_Type'Class;
+            Name   : String);
+
       private
-         procedure Call (Widget  : access Widget_Type'Class;
-                         Params  : Gtk.Arguments.Gtk_Args;
-                         Cb      : General_Handler);
+         procedure Call
+           (Widget : access Widget_Type'Class;
+            Params : Glib.Values.GValues;
+            Cb     : General_Handler);
       end Void_Marshaller;
 
    end Void_Marshallers;
-
 
    ----------------------------------------------------------------------
    --  User_Callback_Marshallers: Do not return a value, have user data
@@ -394,11 +422,11 @@ package Gtk.Marshallers is
       type Widget_Type is new Gtk.Object.Gtk_Object_Record with private;
       type User_Type (<>) is private;
    package User_Void_Marshallers is
-      type Handler_Proxy is access
-        procedure (Widget   : access Widget_Type'Class;
-                   Params   : Gtk.Arguments.Gtk_Args;
-                   Cb       : General_Handler;
-                   User_Data : User_Type);
+      type Handler_Proxy is access procedure
+        (Widget    : access Widget_Type'Class;
+         Params    : Glib.Values.GValues;
+         Cb        : General_Handler;
+         User_Data : User_Type);
 
       type Marshaller is record
          Func  : General_Handler;
@@ -408,65 +436,83 @@ package Gtk.Marshallers is
       --  Basic Marshaller
       generic
          type Base_Type is private;
-         with function Conversion (Args : Gtk.Arguments.Gtk_Args;
-                                   Num : Positive)
-                                  return Base_Type;
+         with function Conversion
+           (Value : Glib.Values.GValue) return Base_Type;
+
       package Generic_Marshaller is
-         type Handler is access procedure (Widget : access Widget_Type'Class;
-                                           Param  : Base_Type;
-                                           User_Data : User_Type);
+         type Handler is access procedure
+           (Widget    : access Widget_Type'Class;
+            Param     : Base_Type;
+            User_Data : User_Type);
+
          function To_Marshaller (Cb : Handler) return Marshaller;
 
-         procedure Emit_By_Name (Object    : access Widget_Type'Class;
-                                 Name      : in String;
-                                 Param     : Base_Type);
+         procedure Emit_By_Name
+           (Object : access Widget_Type'Class;
+            Name   : String;
+            Param  : Base_Type);
          --  The function above should be used when BASE_TYPE can be passed
          --  as is to C.
 
          generic
             with function Conversion (Param : Base_Type) return System.Address;
-         procedure Emit_By_Name_Generic (Object : access Widget_Type'Class;
-                                         Name   : in String;
-                                         Param  : Base_Type);
+         procedure Emit_By_Name_Generic
+           (Object : access Widget_Type'Class;
+            Name   : String;
+            Param  : Base_Type);
          --  Provide an explicit conversion function for PARAM.
+
       private
-         procedure Call (Widget    : access Widget_Type'Class;
-                         Params    : Gtk.Arguments.Gtk_Args;
-                         Cb        : General_Handler;
-                         User_Data : User_Type);
+         procedure Call
+           (Widget    : access Widget_Type'Class;
+            Params    : Glib.Values.GValues;
+            Cb        : General_Handler;
+            User_Data : User_Type);
       end Generic_Marshaller;
 
       --  Widget Marshaller
       generic
-         type Base_Type is new Gtk.Object.Gtk_Object_Record with private;
+         type Base_Type is new Gtk.Widget.Gtk_Widget_Record with private;
          type Access_Type is access all Base_Type'Class;
       package Generic_Widget_Marshaller is
-         type Handler is access procedure (Widget   : access Widget_Type'Class;
-                                           Param     : access Base_Type'Class;
-                                           User_Data : User_Type);
+         type Handler is access procedure
+           (Widget    : access Widget_Type'Class;
+            Param     : access Base_Type'Class;
+            User_Data : User_Type);
+
          function To_Marshaller (Cb : Handler) return Marshaller;
-         procedure Emit_By_Name (Object    : access Widget_Type'Class;
-                                 Name      : in String;
-                                 Param     : access Base_Type'Class);
+
+         procedure Emit_By_Name
+           (Object : access Widget_Type'Class;
+            Name   : String;
+            Param  : access Base_Type'Class);
+
       private
-         procedure Call (Widget    : access Widget_Type'Class;
-                         Params    : Gtk.Arguments.Gtk_Args;
-                         Cb        : General_Handler;
-                         User_Data : User_Type);
+         procedure Call
+           (Widget    : access Widget_Type'Class;
+            Params    : Glib.Values.GValues;
+            Cb        : General_Handler;
+            User_Data : User_Type);
       end Generic_Widget_Marshaller;
 
       --  Void Marshaller
       package Void_Marshaller is
-         type Handler is access procedure (Widget   : access Widget_Type'Class;
-                                           User_Data : User_Type);
+         type Handler is access procedure
+           (Widget    : access Widget_Type'Class;
+            User_Data : User_Type);
+
          function To_Marshaller (Cb : Handler) return Marshaller;
-         procedure Emit_By_Name (Object    : access Widget_Type'Class;
-                                 Name      : in String);
+
+         procedure Emit_By_Name
+           (Object : access Widget_Type'Class;
+            Name   : String);
+
       private
-         procedure Call (Widget    : access Widget_Type'Class;
-                         Params    : Gtk.Arguments.Gtk_Args;
-                         Cb        : General_Handler;
-                         User_Data : User_Type);
+         procedure Call
+           (Widget    : access Widget_Type'Class;
+            Params    : Glib.Values.GValues;
+            Cb        : General_Handler;
+            User_Data : User_Type);
       end Void_Marshaller;
 
    end User_Void_Marshallers;
