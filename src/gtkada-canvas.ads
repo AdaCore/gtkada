@@ -143,11 +143,16 @@ package Gtkada.Canvas is
    -- Creating a canvas --
    -----------------------
 
-   procedure Gtk_New (Canvas : out Interactive_Canvas);
+   procedure Gtk_New
+     (Canvas : out Interactive_Canvas; Auto_Layout : Boolean := True);
    --  Create a new empty Canvas.
    --  The canvas includes a grid in its background.
+   --  If Auto_Layout is True, then the items are automatically positioned as
+   --  they are put in the canvas, if no coordinates are specified.
 
-   procedure Initialize (Canvas : access Interactive_Canvas_Record'Class);
+   procedure Initialize
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Auto_Layout : Boolean := True);
    --  Internal function used to initialize the canvas.
 
    procedure Configure
@@ -180,11 +185,9 @@ package Gtkada.Canvas is
       X, Y   : Glib.Gint := Glib.Gint'First);
    --  Move the item in the canvas.
    --  Item is assumed to be already in the canvas.
-   --  If at least one of X or Y has the default value, then the item
-   --  is placed automatically in a free area of the canvas.
-   --  Its new position depends on whether it has links to other existing
-   --  items (in which case it is placed to the right of it), or not (in which
-   --  case it is placed at the bottom of the leftmost column).
+   --  If you leave both coordinates X and Y to their default value, then the
+   --  item's location will be automatically computed when you layout the
+   --  canvas (it is your responsability to call Layout).
 
    procedure Put
      (Canvas : access Interactive_Canvas_Record;
@@ -192,13 +195,10 @@ package Gtkada.Canvas is
       X, Y   : Glib.Gint := Glib.Gint'First);
    --  Add a new item to the canvas.
    --  The item is added at a specific location.
-   --  If at least one of X or Y has the default value, then the item
-   --  is placed automatically in a free area of the canvas.
-   --  Its new position depends on whether it has links to other existing
-   --  items (in which case it is placed to the right of it), or not (in which
-   --  case it is placed at the bottom of the leftmost column).
-   --  Note also that the current size of the item is used to compute the new
-   --  location, so it should depend on the current zoom.
+   --  If you leave both X and Y to their default value, the item's location
+   --  will be computed automatically when you call Layout on the canvas,
+   --  unless Auto_Layout has been set, in which case the position will be
+   --  computed immediately.
 
    procedure Remove
      (Canvas : access Interactive_Canvas_Record;
@@ -293,6 +293,52 @@ package Gtkada.Canvas is
       X      : Glib.Gint) return Glib.Gint;
    --  Scale the scalar X depending by the zoom level (map from canvas
    --  coordinates to world coordinates)
+
+   ---------------------
+   -- Layout of items --
+   ---------------------
+
+   type Layout_Algorithm is access procedure
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Graph : Glib.Graphs.Graph;
+      Force : Boolean := False);
+   --  A general layout algorithm. It should compute the position of all the
+   --  vertices of the graph, and set them directly in the graph itself.
+   --  NoteL all the vertices in the graph are of time Canvad_Item_Record'Class
+   --  and you should use that to set the coordinates through a call to
+   --  Move_To.
+   --  if Force is False, then only the item at location (Gint'First,
+   --  Gint'First) should be moved.
+   --
+   --  This function doesn't need to align items, this is done automatically by
+   --  the canvas if necessary.
+
+   procedure Set_Layout_Algorithm
+     (Canvas    : access Interactive_Canvas_Record;
+      Algorithm : Layout_Algorithm);
+   --  Set the layout algorithm to use to compute the position of the items.
+   --  Algorithm mustn't be null.
+
+   procedure Default_Layout_Algorithm
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Graph : Glib.Graphs.Graph;
+      Force : Boolean := False);
+   --  The default algorithm used in the canvas.
+   --  Basically, items are put next to each other, unless there is a link
+   --  between two items. In that case, the second item is put below the first,
+   --  as space allows.
+
+   procedure Set_Auto_Layout
+     (Canvas : access Interactive_Canvas_Record;
+      Auto_Layout : Boolean);
+   --  If Auto_Layout is true, then the items will be automatically layed out
+   --  when inserted in the canvas, if no coordinates are specified.
+
+   procedure Layout (Canvas : access Interactive_Canvas_Record;
+                     Force  : Boolean := False);
+   --  Recompute the layout of the canvas.
+   --  If Force is False, only the items that don't already have a location are
+   --  moved.
 
    -----------
    -- Links --
@@ -537,6 +583,10 @@ private
      Gtk.Drawing_Area.Gtk_Drawing_Area_Record
    with record
       Children          : Glib.Graphs.Graph;
+
+      Layout            : Layout_Algorithm := Default_Layout_Algorithm'Access;
+      Auto_Layout       : Boolean := True;
+      --  The algorithm to use when laying out items on the canvas.
 
       Selection         : Item_Selection_List := null;
       --  List of currently selected items that will be moved when the mouse

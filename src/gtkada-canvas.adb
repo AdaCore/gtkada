@@ -39,6 +39,7 @@ with Gdk.Event;        use Gdk.Event;
 with Gdk.Font;         use Gdk.Font;
 with Gdk.GC;           use Gdk.GC;
 with Gdk.Pixmap;       use Gdk.Pixmap;
+with Gdk.Region;       use Gdk.Region;
 with Gdk.Types;        use Gdk.Types;
 with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
 with Gdk.Rectangle;    use Gdk.Rectangle;
@@ -316,17 +317,22 @@ package body Gtkada.Canvas is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Canvas : out Interactive_Canvas) is
+   procedure Gtk_New
+     (Canvas : out Interactive_Canvas; Auto_Layout : Boolean := True)
+   is
    begin
       Canvas := new Interactive_Canvas_Record;
-      Gtkada.Canvas.Initialize (Canvas);
+      Gtkada.Canvas.Initialize (Canvas, True);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Canvas : access Interactive_Canvas_Record'Class) is
+   procedure Initialize
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Auto_Layout : Boolean := True)
+   is
       Signal_Parameters : constant Signal_Parameter_Types :=
         (1 => (1 => Gdk.Event.Get_Type, 2 => GType_None),
          2 => (1 => GType_Pointer,      2 => GType_None),
@@ -341,6 +347,7 @@ package body Gtkada.Canvas is
       Gtk.Drawing_Area.Initialize (Canvas);
 
       Set_Directed (Canvas.Children, True);
+      Canvas.Auto_Layout := Auto_Layout;
 
       --  The following call is required to initialize the class record,
       --  and the new signals created for this widget.
@@ -627,6 +634,175 @@ package body Gtkada.Canvas is
       Changed (Canvas.Vadj);
    end Update_Adjustments;
 
+   ------------------------------
+   -- Default_Layout_Algorithm --
+   ------------------------------
+
+   procedure Default_Layout_Algorithm
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Graph : Glib.Graphs.Graph;
+      Force : Boolean := False)
+   is
+      Step       : Gint := Gint (Canvas.Grid_Size);
+      Region     : Gdk_Region;
+      Items      : Vertex_Iterator;
+      Item       : Canvas_Item;
+      Links      : Edge_Iterator;
+      Src_Item   : Canvas_Item := null;
+      X1, X3, Y1 : Gint;
+      Num        : Gint;
+      Coord      : Gdk_Rectangle;
+
+   begin
+      if Step = 0 then
+         Step := Gint (Default_Grid_Size);
+      end if;
+
+      --  First, check every item that won't be moved
+
+      Gdk_New (Region);
+      Items := First (Graph);
+      while not At_End (Items) loop
+         Item := Canvas_Item (Get (Items));
+         if Item.Coord.X /= Gint'First
+           or else Item.Coord.Y /= Gint'First
+         then
+            Union_With_Rect (Region, Item.Coord);
+         end if;
+
+         Next (Items);
+      end loop;
+
+      Items := First (Graph);
+      while not At_End (Items) loop
+         Item := Canvas_Item (Get (Items));
+         if Item.Coord.X = Gint'First
+           and then Item.Coord.Y = Gint'First
+         then
+
+            --  Check if there is any link that has for destination or source
+            --  the widget we are adding.
+
+            Links := First (Canvas.Children, Src => Vertex_Access (Item));
+            if not At_End (Links) then
+               Src_Item := Canvas_Item (Get_Dest (Get (Links)));
+            else
+               Links := First (Canvas.Children, Dest => Vertex_Access (Item));
+               if not At_End (Links) then
+                  Src_Item := Canvas_Item (Get_Src (Get (Links)));
+               else
+                  Src_Item := null;
+               end if;
+            end if;
+
+            --  The rule is the following when we have a link to an existing
+            --  item: We first try to put the new item below the old one, then,
+            --  if that place is already occupied, to the bottom-right, then
+            --  the bottom-left, then two down, ...
+
+            if Src_Item /= null then
+               Num := 0;
+               X3 := Src_Item.Coord.X;
+               Y1 := Src_Item.Coord.Y + Gint (Src_Item.Coord.Height) + Step;
+
+               loop
+                  case Num mod 3 is
+                     when 0 =>
+                        X1 := X3;
+                     when 1 =>
+                        X1 := X3 - Step - Gint (Item.Coord.Width);
+                     when 2 =>
+                        X1 := X3 + Step + Gint (Src_Item.Coord.Width);
+                     when others => null;
+                  end case;
+
+                  Coord := (X1, Y1, Item.Coord.Width, Item.Coord.Height);
+                  exit when Rect_In (Region, Coord) = Overlap_Rectangle_Out;
+
+                  Num := Num + 1;
+                  if Num mod 3 = 0 then
+                     Y1 := Y1 + 2 * Step;
+                  end if;
+               end loop;
+
+            else
+               --  Else put the item in the first line, at the first possible
+               --  location
+               X1 := Gint (Get_Lower (Canvas.Hadj)) + Step;
+               Y1 := Gint (Get_Lower (Canvas.Vadj)) + Step;
+
+               loop
+                  Coord := (X1, Y1, Item.Coord.Width, Item.Coord.Height);
+                  exit when Rect_In (Region, Coord) = Overlap_Rectangle_Out;
+
+                  X1 := X1 + 2 * Step;
+               end loop;
+            end if;
+
+            Item.Coord.X := X1;
+            Item.Coord.Y := Y1;
+
+            Union_With_Rect (Region, Item.Coord);
+         end if;
+
+         Next (Items);
+      end loop;
+
+      Destroy (Region);
+   end Default_Layout_Algorithm;
+
+   ---------------------
+   -- Set_Auto_Layout --
+   ---------------------
+
+   procedure Set_Auto_Layout
+     (Canvas : access Interactive_Canvas_Record;
+      Auto_Layout : Boolean) is
+   begin
+      Canvas.Auto_Layout := Auto_Layout;
+   end Set_Auto_Layout;
+
+   ------------
+   -- Layout --
+   ------------
+
+   procedure Layout (Canvas : access Interactive_Canvas_Record;
+                     Force  : Boolean := False)
+   is
+      Step  : Gint := Gint (Canvas.Grid_Size);
+      Items : Vertex_Iterator;
+      Item : Canvas_Item;
+   begin
+      Canvas.Layout (Canvas, Canvas.Children);
+
+      if Canvas.Align_On_Grid then
+         Items := First (Canvas.Children);
+         while not At_End (Items) loop
+            Item := Canvas_Item (Get (Items));
+            if Item.Coord.X mod Step /= 0 then
+               Item.Coord.X := Item.Coord.X + Step - Item.Coord.X mod Step;
+            end if;
+            if Item.Coord.Y mod Step /= 0 then
+               Item.Coord.Y := Item.Coord.Y + Step - Item.Coord.Y mod Step;
+            end if;
+            Next (Items);
+         end loop;
+      end if;
+   end Layout;
+
+   --------------------------
+   -- Set_Layout_Algorithm --
+   --------------------------
+
+   procedure Set_Layout_Algorithm
+     (Canvas    : access Interactive_Canvas_Record;
+      Algorithm : Layout_Algorithm) is
+   begin
+      if Canvas.Layout /= null then
+         Canvas.Layout := Algorithm;
+      end if;
+   end Set_Layout_Algorithm;
+
    -------------
    -- Move_To --
    -------------
@@ -634,164 +810,10 @@ package body Gtkada.Canvas is
    procedure Move_To
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class;
-      X, Y   : Glib.Gint := Glib.Gint'First)
-   is
-      Step  : Gint := Gint (Canvas.Grid_Size);
-      Zoom_Step : Gint;
-
-      function Location_Is_Free (X, Y : Gint; Return_X : Boolean) return Gint;
-      --  Return X if the location (X, Y) for the new item would be
-      --  acceptable,
-      --  Return the next X coordinate (if Return_X is true) or Y coordinate
-      --  (otherwise) to test if (X, Y) overlaps an existing item.
-      --  Keeps a space of at least Grid_Size around each item.
-
-      ----------------------
-      -- Location_Is_Free --
-      ----------------------
-
-      function Location_Is_Free (X, Y : Gint; Return_X : Boolean)
-         return Gint
-      is
-         Tmp   : Vertex_Iterator := First (Canvas.Children);
-         Tmp_Item : Canvas_Item;
-         Dest  : Gdk.Rectangle.Gdk_Rectangle;
-         Inter : Boolean := False;
-         W     : constant Gint := Item.Coord.Width;
-         H     : constant Gint := Item.Coord.Height;
-         X_Tmp, Y_Tmp : Gint;
-      begin
-         --  Keep an appropriate marging around the item.
-         Item.Coord.X := X - Zoom_Step;
-         Item.Coord.Y := Y - Zoom_Step;
-         Item.Coord.Width := W + 2 * Gint (Zoom_Step);
-         Item.Coord.Height := H + 2 * Gint (Zoom_Step);
-
-         while not At_End (Tmp) loop
-            Tmp_Item := Canvas_Item (Get (Tmp));
-            if Tmp_Item.Visible
-              and then Tmp_Item /= Canvas_Item (Item)
-            then
-               X_Tmp := To_Canvas_Coordinates (Canvas, Tmp_Item.Coord.X);
-               Y_Tmp := To_Canvas_Coordinates (Canvas, Tmp_Item.Coord.Y);
-               Intersect ((X_Tmp,
-                           Y_Tmp,
-                           Tmp_Item.Coord.Width,
-                           Tmp_Item.Coord.Height),
-                          Item.Coord, Dest, Inter);
-               exit when Inter;
-            end if;
-
-            Next (Tmp);
-         end loop;
-
-         Item.Coord.Width := W;
-         Item.Coord.Height := H;
-         if Return_X then
-            if Inter then
-               return X_Tmp + Zoom_Step + Gint (Tmp_Item.Coord.Width);
-            end if;
-            return X;
-         else
-            if Inter then
-               return Y_Tmp + Zoom_Step + Gint (Tmp_Item.Coord.Height);
-            end if;
-            return Y;
-         end if;
-      end Location_Is_Free;
-
-      Src_Item : Canvas_Item := null;
-      Links    : Edge_Iterator;
-      X1, X2   : Gint;
-      Y1       : Gint;
-
+      X, Y   : Glib.Gint := Glib.Gint'First) is
    begin
-      --  When no grid is drawn...
-
-      if Step = 0 then
-         Step := Gint (Default_Grid_Size);
-      end if;
-      Zoom_Step := To_Canvas_Coordinates (Canvas, Step);
-
-      if X /= Gint'First and then Y /= Gint'First then
-         Item.Coord.X := X;
-         Item.Coord.Y := Y;
-      else
-         --  Check if there is any link that has for destination or source the
-         --  widget we are adding.
-
-         Links := First (Canvas.Children, Src => Vertex_Access (Item));
-         if not At_End (Links) then
-            Src_Item := Canvas_Item (Get_Dest (Get (Links)));
-         else
-            Links := First (Canvas.Children, Dest => Vertex_Access (Item));
-            if not At_End (Links) then
-               Src_Item := Canvas_Item (Get_Src (Get (Links)));
-            end if;
-         end if;
-
-         --  The rule is the following when we have a link to an existing item:
-         --  We first try to put the new item below the old one, then, if that
-         --  place is already occupied, to the bottom-right, then the
-         --  bottom-left, then two down, ...
-
-         if Src_Item /= null then
-            declare
-               Num : Gint := 0;
-               Next_Y : array (Gint range 0 .. 2) of Gint;
-               X3 : constant Gint :=
-                 To_Canvas_Coordinates (Canvas, Src_Item.Coord.X);
-            begin
-               Y1 := To_Canvas_Coordinates (Canvas, Src_Item.Coord.Y)
-                 + Gint (Src_Item.Coord.Height) + Zoom_Step;
-               Next_Y := (others => Y1);
-
-               loop
-                  case Num mod 3 is
-                     when 0 =>
-                        X1 := X3;
-                     when 1 =>
-                        X1 := X3 - Zoom_Step - Gint (Item.Coord.Width);
-                     when 2 =>
-                        X1 := X3 + Zoom_Step + Gint (Src_Item.Coord.Width);
-                     when others => null;
-                  end case;
-
-                  Y1 := Next_Y (Num mod 3);
-                  X2 := Location_Is_Free (X1, Y1, False);
-                  exit when  X2 = Y1;
-                  Next_Y (Num mod 3) := X2;
-
-                  Num := Num + 1;
-               end loop;
-            end;
-
-         --  Else put the item in the first line, at the first possible
-         --  location
-
-         else
-            X1 := Gint (Get_Lower (Canvas.Hadj)) + Zoom_Step;
-            Y1 := Gint (Get_Lower (Canvas.Vadj)) + Zoom_Step;
-
-            loop
-               X2 := Location_Is_Free (X1, Y1, True);
-               exit when X2 = X1;
-               X1 := X2;
-            end loop;
-         end if;
-
-         Item.Coord.X := To_World_Coordinates (Canvas, X1);
-         Item.Coord.Y := To_World_Coordinates (Canvas, Y1);
-      end if;
-
-      if Canvas.Align_On_Grid then
-         if Item.Coord.X mod Step /= 0 then
-            Item.Coord.X := Item.Coord.X + Step - Item.Coord.X mod Step;
-         end if;
-         if Item.Coord.Y mod Step /= 0 then
-            Item.Coord.Y := Item.Coord.Y + Step - Item.Coord.Y mod Step;
-         end if;
-      end if;
+      Item.Coord.X := X;
+      Item.Coord.Y := Y;
    end Move_To;
 
    ---------
@@ -806,6 +828,13 @@ package body Gtkada.Canvas is
       Add_Vertex (Canvas.Children, Item);
       Move_To (Canvas, Item, X, Y);
       Update_Adjustments (Canvas);
+
+      if Canvas.Auto_Layout
+        and then X = Gint'First
+        and then Y = Gint'First
+      then
+         Layout (Canvas);
+      end if;
    end Put;
 
    --------------
@@ -838,13 +867,16 @@ package body Gtkada.Canvas is
 
          Gdk_New (Canv.Anim_GC, Get_Window (Canvas));
          Set_Function (Canv.Anim_GC, Invert);
-         --  ??? Why is the following code commented out
+
+         --  Do not draw the lines dashed while we are moving items, since this
+         --  becomes too slow when there are a lot of links to move around.
          --  Set_Line_Attributes
          --    (Canv.Anim_GC,
          --     Line_Width => 0,
          --     Line_Style => Line_On_Off_Dash,
          --     Cap_Style  => Cap_Butt,
          --     Join_Style => Join_Miter);
+
          Set_Exposures (Canv.Anim_GC, False);
       end if;
    end Realized;
