@@ -12,7 +12,7 @@ with Gtk; use Gtk;
 package body Create_Preview_Color is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Preview_Idle is new Gtk.Main.Idle_Func (Gtk_Preview);
+   package Preview_Idle is new Gtk.Main.Idle (Gtk_Preview);
 
    Window : Gtk.Window.Gtk_Window;
 
