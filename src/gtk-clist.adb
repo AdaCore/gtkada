@@ -242,7 +242,6 @@ package body Gtk.CList is
       (Clist    : in Gtk_CList;
        Row      : in Gint;
        Column   : in Gint;
-       Text     : in out String;
        Spacing  : in out Guint8;
        Pixmap   : in out Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask     : in out Gdk.Bitmap.Gdk_Bitmap'Class;
@@ -272,7 +271,6 @@ package body Gtk.CList is
                                          Msk'Address));
       Gdk.Set_Object (Pixmap, Pix);
       Gdk.Set_Object (Mask, Msk);
-      Text := Interfaces.C.Strings.Value (S);
    end Get_Pixtext;
 
    -------------------

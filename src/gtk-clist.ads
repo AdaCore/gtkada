@@ -97,12 +97,12 @@ package Gtk.CList is
       (Clist    : in Gtk_CList;
        Row      : in Gint;
        Column   : in Gint;
-       Text     : in out String;
        Spacing  : in out Guint8;
        Pixmap   : in out Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask     : in out Gdk.Bitmap.Gdk_Bitmap'Class;
        Is_Valid : out Boolean);
    --  The result is not meaningful if Is_Valid is false
+   --  The only way to get the string is to use Get_Text (See below)
 
    function Get_Selection (Widget : in Gtk_CList) return Gint_List.Glist;
 
