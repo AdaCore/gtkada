@@ -5105,18 +5105,22 @@ package body Gtkada.MDI is
       end if;
 
       --  Might be null if we haven't created the MDI menu yet
+
       if Child.Menu_Item /= null then
          declare
             Children : Widget_List.Glist := Get_Children
               (Gtk_Box (Get_Child (Child.Menu_Item)));
             Tmp      : Widget_List.Glist := Children;
+
          begin
             while Tmp /= Null_List loop
-               if Get_Data (Tmp)'Tag = Gtk_Accel_Label_Record'Tag then
+               if Get_Data (Tmp).all'Tag = Gtk_Accel_Label_Record'Tag then
                   Set_Style (Get_Data (Tmp), Style);
                end if;
+
                Tmp := Next (Tmp);
             end loop;
+
             Free (Children);
          end;
       end if;
