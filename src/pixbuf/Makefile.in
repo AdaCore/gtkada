@@ -1,0 +1,88 @@
+.SUFFIXES:
+.SUFFIXES: .c .o .ads .adb .ali
+ 
+.PHONY:
+.PHONY: clean-generic mostlyclean-generic \
+	clean distclean mostlyclean maintainer-clean
+
+include ../Makefile.common
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
+CFLAGS = @CFLAGS@ -Wall @PIXBUF_CFLAGS@ -I. $(FPIC)
+ 
+SONAME        = libgtkada_art$(SO_EXT)
+LIBNAME       = libgtkada_art$(SO_EXT)
+ARCHIVENAME   = libgtkada_art.a
+
+HAVE_PIXBUF=@HAVE_PIXBUF@
+ 
+ifeq ($(HAVE_PIXBUF),True)
+PIXBUF_C_OBJECTS=misc_pixbuf.o
+PIXBUF_SOURCES=gdk-art-pixbuf.ads gdk-art.ads gdk-pixbuf.adb
+PIXBUF_OBJECTS=gdk-art-pixbuf.o gdk-art.o gdk-pixbuf.o
+PIXBUF_LIBS=@PIXBUF_LIBS@
+PIXBUF_FLAGS=@PIXBUF_CFLAGS@
+
+all: $(LIBNAME) $(ARCHIVENAME)
+install: all
+	$(INSTALL_DATA) $(ARCHIVENAME) $(libdir)
+	$(INSTALL_DATA) $(LIBNAME) $(libdir)
+	$(CP) gdk*.ads gdk*.adb $(incdir)
+	$(CP) *.ali $(alidir)
+	$(CHMOD) -w $(alidir)/*.ali
+
+else
+PIXBUF_C_OBJECTS=
+PIXBUF_SOURCES=
+PIXBUF_OBJECTS=
+PIXBUF_LIBS=
+PIXBUF_FLAGS=
+
+all:
+install:
+endif
+
+$(LIBNAME):: $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS)
+	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS) @GTK_LIBS@ -L.. -lgtkada $(PIXBUF_LIBS)
+	-@if [ ! -f ../.devel ]; then \
+	   strip $(LIBNAME); \
+	fi
+ 
+$(ARCHIVENAME):: $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS)
+	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS)
+	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
+	   $(RANLIB) $(ARCHIVENAME); \
+	fi
+
+$(PIXBUF_OBJECTS):
+	@if [ -f ../.devel ]; then \
+	   $(CC) -I.. -aO../lib-obj $(GNATFLAGS_DEVEL) $(FPIC) -c $(PIXBUF_SOURCES); \
+	else \
+	   $(GNATMAKE) -I.. $(GNATFLAGS) $(FPIC) -c $(PIXBUF_SOURCES); \
+	fi
+
+misc_pixbuf.o: misc_pixbuf.c
+	$(CC) -c $(CFLAGS) $(PIXBUF_FLAGS) misc_pixbuf.c
+
+clean-generic:
+	-${RM} *.o *.ali *~ b_*.c b~*.ad? core
+	-${RM} $(ARCHIVENAME) $(LIBNAME)
+	-${RM} .\#*
+ 
+mostlyclean-generic: clean-generic
+	-${RM} Makefile
+	-${RM} $(GATE)
+	-${RM} $(GTKADA_CONFIG)
+ 
+clean: clean-generic
+ 
+distclean: mostlyclean-generic
+ 
+mostlyclean: mostlyclean-generic
+ 
+maintainer-clean: mostlyclean-generic
+
+force:
