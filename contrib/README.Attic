@@ -1,0 +1,209 @@
+General Information
+===================
+
+This is GtkAda version 0.1. This  package is an  Ada95 binding for the
+Gimp Toolkit, which means these are a set of  packages to allow you to
+easily create some  graphical interfaces under  X11, using Ada95  as a
+programming language.
+
+This is still  a alpha version, although it  is already pretty usable.
+Every widget from gtk 1.0.4 as been implemented,  and the test program
+found in the gtk release has been converted to Ada (have a look at the
+testgtk/ directory).
+
+These functions were tested on the following systems :
+   - Linux version 2.0.34
+   - SunOS 5.5.1
+using the following compilers :
+   - Gnat 3.10p
+   - Gnat 3.11p
+and the following version of gtk :
+   - Gtk 1.0.4 
+
+If you  manage to use  it on other systems   (which should probably be
+straight forward - just recompile GtkAda),  please let us know so that
+we can add to the above list.
+
+Disclaimer
+==========
+
+GtkAda is free software; you can redistribute it and/or modify it
+under terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2, or (at your option) any later
+version.  GtkAda is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY -- or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.  You should have received a
+copy of the GNU General -- Public License distributed with GtkAda; see
+file COPYING.  If not, write to the Free Software Foundation, 59
+Temple Place - Suite 330, Boston, -- MA 02111-1307, USA.
+
+Ada Core Technologies Inc. (developpers of Gnat) is not responsible in
+any way for this binding, and can not provide any support for it.
+
+Content
+=======
+
+The full set of widget that comes with gtk 1.0.4 as been bound, and
+you should be able to use all of them from your Ada program.
+
+We have inserted special comments in our sources that give the mapping
+between the Ada functions and the C functions, so that you can easily
+use the documents, tutorial,... already written for the gtk itself.
+
+A little  Perl script  is provided  (mapping.pl) to  allow you to find
+quicky the function you are looking for :
+
+   $ perl mapping.pl  gtk_misc_set_padding
+   gtk_misc_set_padding (file gtkmisc.h) is mapped to
+      Set_Padding (file gtk-misc.ads)
+
+We have tried to adopt a consistent naming scheme for Ada identifiers :
+
+- The widget names are the same as in C, expect an underscore sign (_)
+is used to separated words
+
+    ex/   Gtk_Button   Gtk_Color_Selection_Dialog
+
+- The function names are  the same as in  C, ignoring the leading gtk_
+and the widget name
+
+    ex/   gtk_misc_set_padding        ->  Set_Padding
+          gtk_toggle_button_set_state ->  Set_State
+
+- All the enum types have been grouped in the gtk-enums.ads file
+
+- The only tricky part is for the callbacks, the timeout functions,
+the idle functions, and the data that can be attached to every
+Object. In these cases, we have used generic package to provide type
+safety. Please have a look at the files in testgtk to see how these
+functions are implemented.
+
+
+Installing and compiling your programs
+======================================
+
+This is still alpha software, so the installation is very basic : just
+use the makefile, after copying the gtk-config file distributed with
+gtk in the current directory
+
+   $ cp <directoy>/gtk-config .
+   $ make
+
+This will create to files, libgtkada.a and libgtkada.so
+
+To install, copy these two files, plus all the .ads, .adb and .ali
+files into a directory.
+
+   $ cp libgtkada.* *.ads *.adb *.ali <your_directory>
+   $ cd <your_directory>
+   $ chmod a-w *.ali
+
+Then, when you want to compile your application, use the -I switch
+for gnatmake (see the Makefile in testgtk/ for an example)
+
+   $ gnatmake -I<your_directory> <your_application> -largs \
+      -L<your_directory> -lgtk -lgdk -lglib -lXext -lX11 -lsocket \
+      -lnsl -lm -lgtkada
+
+Or even better use the gtk-config script :
+
+   $ gnatmake `gtk-config --cflags` -largs `gtk-config --libs` -lgtkada
+
+
+Creating and Binding new widgets
+================================
+
+There is at present no support in this binding for creating new
+widgets directly from Ada. You will have to do it in C, and then
+create an Ada binding for your new widget.
+
+we provide a Perl script to help you create this binding (this is the
+script we have used ourselves).  This will not fully automate the
+process, although it should really speed things up. You will probably
+need less than 15 min to create a new binding once you will get used
+to the way GtkAda works.
+
+Here are the steps to create a new binding :
+
+- Give the 'generate.pl' script the C header file
+
+- The perl script should ask you for every field in the C structure if
+you want to create a function to make it accessible from Ada. Answer
+'y' or 'n' (the defaultm just press ENTER).
+
+   $ perl generate.pl ../include/gtk/gtkbutton.h > temporary
+     Create a function for the field child (of type GtkWidget*) [n]?
+     Create a function for the field in_button (of type guint) [n]?
+     Create a function for the field button_down (of type guint) [n]?
+
+- If you answered yes to at least one of the above questions, create a
+new C file, and move the C part of the 'temporary' file created by
+generate.pl to this C file.
+
+- Do a gnatchop on the 'temporary' file created by generate.pl
+
+   $ gnatchop temporary
+
+  This should create two Ada files (specification and body)
+
+- Edit these two files if needed (generally to change some parameters
+  from Gint to Boolean for instance). It can be a little bit tricky
+  when one of your functions returns a GList* of a GSList*. Please have
+  a look at gtk-combo.ads for instance for how to do this.
+
+
+
+How to report bugs
+==================
+
+This library is still in its version alpha, it is thus likely that you
+will find bugs.  We have tried to test it as much as possible,
+essentially by converted the testgtk.c file found in the gtk
+distribution.  We have been able to reprogram all the tests. Please
+have a look at the testgtk, which can give you a lot of examples of
+how to use this binding.
+
+For more general questions about gtk itself, please ask your questions
+to the gtk mailing list. The authors of this binding are far from
+beeing specialists of gtk, as it was our first project with gtk.
+
+There are two kinds of problems you can encounter :
+
+- If the gtk library itself was compiled with warnings turned on, you
+may get some warnings messages, mainly because of types problems.
+These warnings should not appear, as we have tried to be as type safe
+as possible in this package.  To know exactly were the problem is,
+please recompile a static version of your program, run gdb, and set a
+breakpoint on the function 'g_warning'.  Then run your program as
+usual, using the 'run' command. Then send us the result of the 'bt'
+command. Here is a summary :
+
+   $ make static
+   $ gdb <your_program_name>
+   gdb> break g_warning
+   gdb> run
+   ....
+   gdb> bt
+
+- In some (hopefully) rare cases, you can even get a segmentation
+fault within gtk. That means there is definitevly something wrong
+either your program or the binding. Please check your program
+carefully, and if you think this is a problem in the binding, send us
+a mail.
+
+
+To report errors, send a mail to both authors (see the email addresses
+at the end of this document) explaining exactly what your are doing,
+what it the expected result and what you actually get. Please include
+the required sources to reproduced the problem, in a format usable by
+'gnatchop' (basically, insert all the required sources at the end of
+the mail). Please try to provide a subset of your sources as small as
+possible.
+
+
+AUTHORS
+=======
+
+Emmanuel Briot  <Emmanuel.Briot@enst-bretagne.fr>
+Joel Brobecker  <Joel.Brobecker@enst-bretagne.fr>
