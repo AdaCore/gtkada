@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -30,6 +30,7 @@
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Menu_Shell;
+with Gtk.Menu_Item;
 with Gtk.Widget;
 
 package Gtk.Menu_Bar is
@@ -42,14 +43,14 @@ package Gtk.Menu_Bar is
    procedure Initialize (Menu_Bar : access Gtk_Menu_Bar_Record'Class);
    procedure Append
      (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : access Gtk.Widget.Gtk_Widget_Record'Class);
+      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
    procedure Insert
      (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
       Position : in Gint);
    procedure Prepend
      (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : access Gtk.Widget.Gtk_Widget_Record'Class);
+      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
 
    procedure Set_Shadow_Type
      (Menu_Bar : access Gtk_Menu_Bar_Record;

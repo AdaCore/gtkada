@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -40,7 +40,7 @@ package body Gtk.Menu_Bar is
 
    procedure Append
      (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : access Gtk.Widget.Gtk_Widget_Record'Class)
+      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
    is
       procedure Internal
         (Menu_Bar : System.Address;
@@ -56,7 +56,7 @@ package body Gtk.Menu_Bar is
 
    procedure Insert
      (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
       Position : in Gint)
    is
       procedure Internal (Menu_Bar : System.Address;
@@ -95,7 +95,7 @@ package body Gtk.Menu_Bar is
 
    procedure Prepend
      (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : access Gtk.Widget.Gtk_Widget_Record'Class)
+      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
    is
       procedure Internal (Menu_Bar : System.Address;
                           Child    : System.Address);
