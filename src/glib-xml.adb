@@ -292,6 +292,7 @@ package body Glib.XML is
       while Index < N.Attributes'Last loop
          Get_Next_Word (N.Attributes.all, Index, Key);
          Get_Buf (N.Attributes.all, Index, '=', Value);
+         Free (Value);
          Get_Next_Word (N.Attributes.all, Index, Value);
 
          if Attribute_Name = Key.all then
@@ -301,6 +302,8 @@ package body Glib.XML is
             Free (Value);
          end if;
       end loop;
+
+      Free (Key);
 
       if Value = null then
          return "";
