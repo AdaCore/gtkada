@@ -135,13 +135,9 @@ package Gtk.Object is
    pragma Import (C, Get_Type, "gtk_object_get_type");
 
    function Get_Type (Object : access Gtk_Object_Record) return Gtk_Type;
-   --  Return the type of Object.
-   --  This function is mostly used internally, since in Ada you can simply
-   --  test whether an object belong to a class with a statement like:
-   --
-   --     if Object in Gtk_Button_Record'Class then ...
-   --
-   --  which is easier.
+   --  This function is now obsolete, and is temporarily kept for backward
+   --  compatibility only. Use Glib.GObjects.Get_Type instead.
+   --  ???
 
    -------------
    --  Flags  --
