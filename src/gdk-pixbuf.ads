@@ -354,7 +354,7 @@ package Gdk.Pixbuf is
      (Pixbuf          : Gdk_Pixbuf;
       Pixmap          : out Gdk.Pixmap.Gdk_Pixmap;
       Mask            : out Gdk.Bitmap.Gdk_Bitmap;
-      Alpha_Threshold : out Alpha_Range);
+      Alpha_Threshold : Alpha_Range);
 
    function Get_From_Drawable
      (Dest   : Gdk_Pixbuf;
