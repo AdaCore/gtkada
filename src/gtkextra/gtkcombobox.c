@@ -72,7 +72,6 @@ gtk_combobox_destroy (GtkObject * combobox)
 {
   if (GTK_COMBO_BOX (combobox)->popwin) {
     gtk_widget_destroy (GTK_COMBO_BOX (combobox)->popwin);
-    gtk_widget_unref (GTK_COMBO_BOX (combobox)->popwin);
     GTK_COMBO_BOX (combobox)->popwin = NULL;
   }
 
@@ -125,7 +124,6 @@ gtk_combobox_get_pos (GtkComboBox * combobox, gint * x, gint * y, gint * height,
 
   *width = work_width + child_requisition.width;
   *height = work_height + child_requisition.height;
-  
 }
 
 
