@@ -32,6 +32,8 @@ with Gtk;                   use Gtk;
 with Interfaces.C.Strings;
 with System;                use System;
 
+with Gtkada.Types;
+
 package body Gtk.Tree_Model is
 
    ---------------
@@ -624,10 +626,12 @@ package body Gtk.Tree_Model is
       if A = Null_Ptr then
          return "";
       else
-         --  No need to free A, since it returns a handle to the internal
-         --  pointer of Gtk+
-
-         return Value (A);
+         declare
+            S : constant String := Interfaces.C.Strings.Value (A);
+         begin
+            Gtkada.Types.g_free (A);
+            return S;
+         end;
       end if;
    end Get_String;
 
