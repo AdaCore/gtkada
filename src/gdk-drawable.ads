@@ -107,7 +107,7 @@ package Gdk.Drawable is
    procedure Draw_Pixmap
       (Drawable : in Gdk_Drawable'Class;
        Gc       : in Gdk.GC.Gdk_GC;
-       Src      : in Gdk_Drawable;
+       Src      : in Gdk_Drawable'Class;
        Xsrc     : in Gint;
        Ysrc     : in Gint;
        Xdest    : in Gint;
