@@ -36,7 +36,6 @@ package body Anim_Task is
 
    procedure Draw_Complex (Pixmap : Gdk_Drawable) is
    begin
-      --Gdk.Threads.Enter;
       Draw_Rectangle (Pixmap, White_Gc, Filled => True,
                       X     => 0,   Y      => 0,
                       Width => 400, Height => 400);
@@ -56,7 +55,6 @@ package body Anim_Task is
                          Width => X_Pos+80, Height => 190);
       end loop;
       X_Pos := (X_Pos + 1) mod 140;
-      --Gdk.Threads.Leave;
    end Draw_Complex;
 
    ----------
@@ -83,8 +81,10 @@ package body Anim_Task is
       task body Double_Buffer_Task is
       begin
 	 while not Abort_Animations_Tasks loop
+	    Gdk.Threads.Enter;
 	    Draw_Complex (Get_Pixmap (Buffer));
 	    Draw (Buffer);
+	    Gdk.Threads.Leave;
 	    delay 0.01;
 	 end loop;
       end Double_Buffer_Task;
@@ -92,7 +92,9 @@ package body Anim_Task is
       task body Area_Task is
       begin
 	 while not Abort_Animations_Tasks loop
+	    Gdk.Threads.Enter;
 	    Draw_Complex (Get_Window (Area));
+	    Gdk.Threads.Leave;
 	    delay 0.01;
 	 end loop;
       end Area_Task;
