@@ -387,6 +387,12 @@ package body Gtkada.Canvas is
 
       if Modified then
 
+         --  Resize the canvas, so that scrolling can take place.
+
+         Size (Canvas.Drawing_Area,
+               Canvas.Xmax + X_Thickness (Get_Style (Canvas)),
+               Canvas.Ymax + Y_Thickness (Get_Style (Canvas)));
+
          --  Update the scrollbars.
 
          Set_Lower (Get_Hadjustment (Canvas), 0.0);
@@ -396,12 +402,6 @@ package body Gtkada.Canvas is
          Set_Lower (Get_Vadjustment (Canvas), 0.0);
          Set_Upper (Get_Vadjustment (Canvas), Gfloat (Canvas.Ymax));
          Changed (Get_Vadjustment (Canvas));
-
-         --  Resize the canvas, so that scrolling can take place.
-
-         Size (Canvas.Drawing_Area,
-               Canvas.Xmax + X_Thickness (Get_Style (Canvas)),
-               Canvas.Ymax + Y_Thickness (Get_Style (Canvas)));
 
       end if;
    end Update_Adjustments;
@@ -557,14 +557,23 @@ package body Gtkada.Canvas is
    begin
 
       --  Create all the graphic contexts if necessary.
+      --  Set Exposures to False, since we want to handle the redraw
+      --  events ourselves, and not have them generated automatically
+      --  everytime we do a Draw_Pixmap (for optimization purposes)
+
       if Canvas.Black_GC = null then
+         Set_Exposures
+           (Get_Background_GC (Get_Style (Canvas), State_Normal), False);
+
          Gdk_New (Canvas.Black_GC, Get_Window (Canvas.Drawing_Area));
          Set_Foreground (Canvas.Black_GC,
                          Black (Gtk.Widget.Get_Default_Colormap));
+         Set_Exposures (Canvas.Black_GC, False);
 
          Gdk_New (Canvas.Clear_GC, Get_Window (Canvas.Drawing_Area));
          Set_Foreground (Canvas.Clear_GC,
                          Get_Background (Get_Style (Canvas), State_Normal));
+         Set_Exposures (Canvas.Clear_GC, False);
 
          --  Note: when setting the line attributes below, it is very important
          --  for the Line_Width to be 0 so has to get algorithms as fast as
@@ -577,6 +586,7 @@ package body Gtkada.Canvas is
                               Line_Style => Line_On_Off_Dash,
                               Cap_Style  => Cap_Butt,
                               Join_Style => Join_Miter);
+         Set_Exposures (Canvas.Anim_GC, False);
 
          Canvas.Font := Get_Gdkfont (Canvas.Annotation_Font.all,
                                      Canvas.Annotation_Height);
@@ -1062,6 +1072,7 @@ package body Gtkada.Canvas is
       Tmp : Canvas_Item_List := Canvas.Children;
       X : Guint := Canvas.Grid_Size;
       Y : Guint := Canvas.Grid_Size;
+      W, H : Gint;
    begin
       --  If the GC was not created, do not do anything
 
@@ -1071,13 +1082,14 @@ package body Gtkada.Canvas is
 
       --  Clear the canvas
 
+      Get_Size (Canvas.Double_Pixmap, W, H);
       Draw_Rectangle
         (Canvas.Double_Pixmap,
          Get_Background_GC (Get_Style (Canvas), State_Normal),
          Filled => True,
          X => 0, Y => 0,
-         Width  => Gint (Get_Allocation_Width (Canvas.Drawing_Area)),
-         Height => Gint (Get_Allocation_Height (Canvas.Drawing_Area)));
+         Width  => Gint (W),
+         Height => Gint (H));
 
       --  Draw the background dots.
 
@@ -1127,17 +1139,19 @@ package body Gtkada.Canvas is
    is
       Area : Gdk_Rectangle := Get_Area (Event);
    begin
-      Gdk.Drawable.Copy_Area
-        (Get_Window (Canvas.Drawing_Area),
-         Canvas.Black_GC,
-         X        => Area.X,
-         Y        => Area.Y,
-         Source   => Canvas.Double_Pixmap,
-         Source_X => Area.X,
-         Source_Y => Area.Y,
-         Width    => Gint (Area.Width),
-         Height   => Gint (Area.Height));
-      return True;
+      if Get_Count (Event) = 0 then
+         Gdk.Drawable.Copy_Area
+           (Get_Window (Canvas.Drawing_Area),
+            Canvas.Black_GC,
+            X        => Area.X,
+            Y        => Area.Y,
+            Source   => Canvas.Double_Pixmap,
+            Source_X => Area.X,
+            Source_Y => Area.Y,
+            Width    => Gint (Area.Width),
+            Height   => Gint (Area.Height));
+      end if;
+      return False;
    end Expose;
 
    ----------------
@@ -1453,20 +1467,7 @@ package body Gtkada.Canvas is
 
          --  Scroll the canvas so as to show the right-most item from the
          --  selection
-         Min_X := Gint'Last;
-         Min_Y := Gint'Last;
-
-         Selected := Canvas.Selection;
-         while Selected /= null loop
-            Min_X := Gint'Min (Min_X, Selected.Item.Coord.X);
-            Min_Y := Gint'Min (Min_Y, Selected.Item.Coord.Y);
-            Selected := Selected.Next;
-         end loop;
-
-         Set_Value (Get_Hadjustment (Canvas),
-                    Gfloat (Min_X - Gint (Canvas.Grid_Size)));
-         Set_Value (Get_Vadjustment (Canvas),
-                    Gfloat (Min_Y - Gint (Canvas.Grid_Size)));
+         Show_Item (Canvas, Canvas.Selection.Item);
 
       --  If the user did not move the mouse while it was pressed, this is
       --  because he only wanted to select the item.
