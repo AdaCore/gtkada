@@ -194,6 +194,7 @@ package body Gtk.Viewport is
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
    begin
       Gen_New (N, "Viewport", File => File);
+      Gtk.Bin.Generate (N, File);
       Gen_Set (N, "Viewport", "shadow_type", File => File);
    end Generate;
 
@@ -204,9 +205,10 @@ package body Gtk.Viewport is
       if not N.Specific_Data.Created then
          Gtk_New (Gtk_Viewport (Viewport));
          Set_Object (Get_Field (N, "name"), Viewport);
-
          N.Specific_Data.Created := True;
       end if;
+
+      Gtk.Bin.Generate (Viewport, N);
 
       S := Get_Field (N, "shadow_type");
 
