@@ -149,13 +149,16 @@ package body Gtk.Label is
    -- Parse_Uline --
    -----------------
 
-   procedure Parse_Uline (Label : access Gtk_Label_Record; Text : in String) is
-      function Internal (Label : System.Address; Text : String) return Guint;
+   function Parse_Uline
+     (Label : access Gtk_Label_Record;
+      Text  : String) return Gdk.Types.Gdk_Key_Type
+   is 
+      function Internal
+        (Label : System.Address; Text : String) return Gdk.Types.Gdk_Key_Type;
       pragma Import (C, Internal, "gtk_label_parse_uline");
-      Keyval : Guint;
 
    begin
-      Keyval := Internal (Get_Object (Label), Text & ASCII.NUL);
+      return Internal (Get_Object (Label), Text & ASCII.NUL);
    end Parse_Uline;
 
    ---------------------

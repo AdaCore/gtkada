@@ -95,16 +95,12 @@ package Gtk.Label is
    function Get (Label : access Gtk_Label_Record) return String;
    --  Get the current value of the text displayed in the label.
 
-   procedure Parse_Uline (Label : access Gtk_Label_Record;
-                          Text  : in     String);
+   function Parse_Uline
+     (Label : access Gtk_Label_Record;
+      Text  : String) return Gdk.Types.Gdk_Key_Type;
    --  Create both the text and the underscore pattern from a single string.
    --  Text is parsed for underscores. The next character is converted to
    --  an underlined character.
-   --
-   --  Note: as opposed to the C version, this subprogram does not return the
-   --  accelerator keyval associated with the last character underlined. This
-   --  feature is only used internally by gtk+ to create menus, and is not
-   --  useful for end-users.
 
    -------------
    -- Signals --
