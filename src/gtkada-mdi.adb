@@ -369,6 +369,16 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class) return Boolean;
    --  Same as Set_Focus_Child_MDI, but for floating windows
 
+   function Set_Focus_Child_MDI_From_Tab
+     (Child : access Gtk_Widget_Record'Class) return Boolean;
+   --  Gives the focus to Child when the notebook tab associated with it is
+   --  pressed.
+
+   function Toplevel_Focus_In
+     (MDI : access Gtk_Widget_Record'Class) return Boolean;
+   --  Called when the toplevel window that contains a the MDI gains the focus
+   --  from the window manager
+
    procedure Give_Focus_To_Child (Child : MDI_Child);
    --  Give the focus to a specific MDI child
    --  You should never call Grab_Focus directly
@@ -483,6 +493,17 @@ package body Gtkada.MDI is
    function Set_Focus_Child_MDI_Floating
      (Child : access Gtk_Widget_Record'Class) return Boolean is
    begin
+      Set_Focus_Child (MDI_Child (Child));
+      return False;
+   end Set_Focus_Child_MDI_Floating;
+
+   ----------------------------------
+   -- Set_Focus_Child_MDI_From_Tab --
+   ----------------------------------
+
+   function Set_Focus_Child_MDI_From_Tab
+     (Child : access Gtk_Widget_Record'Class) return Boolean is
+   begin
       --  Let the even through if the child already has the focus. This way,
       --  the notebook tab of the focus child can still be used for
       --  drag-and-drop
@@ -502,7 +523,45 @@ package body Gtkada.MDI is
 
          return True;
       end if;
-   end Set_Focus_Child_MDI_Floating;
+   end Set_Focus_Child_MDI_From_Tab;
+
+   -----------------------
+   -- Toplevel_Focus_In --
+   -----------------------
+
+   function Toplevel_Focus_In
+     (MDI : access Gtk_Widget_Record'Class) return Boolean
+   is
+      M    : constant MDI_Window := MDI_Window (MDI);
+      Item : Widget_List.Glist := M.Items;
+      Child : MDI_Child;
+   begin
+      while Item /= Widget_List.Null_List loop
+         Child := MDI_Child (Get_Data (Item));
+
+         if Child.State /= Floating then
+            Set_Focus_Child (Child);
+            exit;
+         end if;
+
+         Item := Next (Item);
+      end loop;
+      return False;
+   end Toplevel_Focus_In;
+
+   ---------------------------
+   -- Setup_Toplevel_Window --
+   ---------------------------
+
+   procedure Setup_Toplevel_Window
+     (MDI    : access MDI_Window_Record;
+      Parent : access Gtk.Window.Gtk_Window_Record'Class) is
+   begin
+      Return_Callback.Object_Connect
+        (Parent, "focus_in_event",
+         Return_Callback.To_Marshaller (Toplevel_Focus_In'Access),
+         MDI);
+   end Setup_Toplevel_Window;
 
    -------------
    -- Gtk_New --
@@ -3138,7 +3197,7 @@ package body Gtkada.MDI is
          Return_Callback.Object_Connect
            (Event, "button_press_event",
             Return_Callback.To_Marshaller
-            (Set_Focus_Child_MDI_Floating'Access),
+            (Set_Focus_Child_MDI_From_Tab'Access),
             Child);
 
          --  Setup drag-and-drop, so that items can be moved from one location

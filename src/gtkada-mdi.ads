@@ -52,6 +52,7 @@ with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
 with Gtk.Table;
 with Gtk.Widget;
+with Gtk.Window;
 with Gtkada.Multi_Paned;
 with Pango.Font;
 with Pango.Layout;
@@ -110,12 +111,22 @@ package Gtkada.MDI is
    --  Create a new MDI window.
    --  Note that it is recommended that you modify the style (Set_Background
    --  in State_Normal) to have a different color.
+   --  You should call Setup_Toplevel_Window once you have added the MDI to a
+   --  toplevel widget, so that focus is correctly handled when the toplevel
+   --  window gains the focus
 
    procedure Initialize
      (MDI   : access MDI_Window_Record'Class;
       Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Setup_Toplevel_Window
+     (MDI    : access MDI_Window_Record;
+      Parent : access Gtk.Window.Gtk_Window_Record'Class);
+   --  Setup Parent to properly handle focus when the window manager changes
+   --  the window that currently has the focus.
+   --  Parent must be the toplevel window that contains the MDI.
 
    procedure Configure
      (MDI                       : access MDI_Window_Record;
