@@ -40,6 +40,10 @@ package Glib.Glade is
       Has_Container : Boolean := False;
       --  True if object has a container
 
+      Initialized : Boolean := False;
+      --  True if object has been initialized, in other words, no further
+      --  action is required on this widget.
+
       Has_Accel_Group : Boolean := False;
       --  True if object has created an accelerator group
 

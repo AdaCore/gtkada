@@ -759,6 +759,7 @@ package body Glib.Glade is
       M : Node_Ptr;
    begin
       N.Specific_Data.Created := False;
+      N.Specific_Data.Initialized := False;
       N.Specific_Data.Has_Container := False;
       N.Specific_Data.Has_Accel_Group := False;
       N.Specific_Data.Has_Radio_Group := False;
