@@ -26,7 +26,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Interfaces.C;
+
 package body Gdk.Drawable is
+
+   package C renames Interfaces.C;
 
    ---------------
    -- Copy_Area --
@@ -54,73 +58,12 @@ package body Gdk.Drawable is
                 Width, Height);
    end Copy_Area;
 
-   --------------------
-   -- Draw_Rectangle --
-   --------------------
-
-   procedure Draw_Rectangle (Drawable : in Gdk_Drawable'Class;
-                             Gc       : in Gdk.GC.Gdk_GC'Class;
-                             Filled   : in Boolean := False;
-                             X, Y     : in Gint;
-                             Width    : in Gint;
-                             Height   : in Gint) is
-      procedure Internal (Drawable : in System.Address;
-                          Gc       : in System.Address;
-                          Filled   : in Gint;
-                          X, Y     : in Gint;
-                          Width    : in Gint;
-                          Height   : in Gint);
-      pragma Import (C, Internal, "gdk_draw_rectangle");
-   begin
-      Internal (Get_Object (Drawable),
-                Get_Object (Gc),
-                To_Gint (Filled),
-                X, Y, Width, Height);
-   end Draw_Rectangle;
-
-   ----------------
-   -- Draw_Point --
-   ----------------
-
-   procedure Draw_Point (Drawable : in Gdk_Drawable'Class;
-                         Gc       : in Gdk.GC.Gdk_GC'Class;
-                         X        : in Gint;
-                         Y        : in Gint) is
-      procedure Internal (Drawable : in System.Address;
-                          Gc       : in System.Address;
-                          X, Y     : in Gint);
-      pragma Import (C, Internal, "gdk_draw_point");
-   begin
-      Internal (Get_Object (Drawable),
-                Get_Object (Gc),
-                X, Y);
-   end Draw_Point;
-
-   ---------------
-   -- Draw_Line --
-   ---------------
-
-   procedure Draw_Line (Drawable : in Gdk_Drawable'Class;
-                             Gc       : in Gdk.GC.Gdk_GC'Class;
-                             X1, Y1   : in Gint;
-                             X2, Y2   : in Gint) is
-      procedure Internal (Drawable : in System.Address;
-                          Gc       : in System.Address;
-                          X1, Y1   : in Gint;
-                          X2, Y2   : in Gint);
-      pragma Import (C, Internal, "gdk_draw_line");
-   begin
-      Internal (Get_Object (Drawable),
-                Get_Object (Gc),
-                X1, Y1, X2, Y2);
-   end Draw_Line;
-
    --------------
    -- Draw_Arc --
    --------------
 
-   procedure Draw_Arc (Drawable : in Gdk_Drawable'Class;
-                       Gc       : in Gdk.GC.Gdk_GC'Class;
+   procedure Draw_Arc (Drawable : in Gdk_Drawable;
+                       Gc       : in Gdk.GC.Gdk_GC;
                        Filled   : in Boolean := False;
                        X        : in Gint;
                        Y        : in Gint;
@@ -144,13 +87,92 @@ package body Gdk.Drawable is
                 X, Y, Width, Height, Angle1, Angle2);
    end Draw_Arc;
 
+   ----------------
+   -- Draw_Image --
+   ----------------
+
+   procedure Draw_Image
+      (Drawable : in Gdk_Drawable;
+       Gc       : in Gdk.GC.Gdk_GC;
+       Image    : in Gdk.Image.Gdk_Image;
+       Xsrc     : in Gint;
+       Ysrc     : in Gint;
+       Xdest    : in Gint;
+       Ydest    : in Gint;
+       Width    : in Gint;
+       Height   : in Gint)
+   is
+      procedure Internal
+         (Drawable : in System.Address;
+          Gc       : in System.Address;
+          Image    : in System.Address;
+          Xsrc     : in Gint;
+          Ysrc     : in Gint;
+          Xdest    : in Gint;
+          Ydest    : in Gint;
+          Width    : in Gint;
+          Height   : in Gint);
+      pragma Import (C, Internal, "gdk_draw_image");
+   begin
+      Internal (Get_Object (Drawable),
+                Get_Object (Gc),
+                Get_Object (Image),
+                Xsrc,
+                Ysrc,
+                Xdest,
+                Ydest,
+                Width,
+                Height);
+   end Draw_Image;
+
+   ---------------
+   -- Draw_Line --
+   ---------------
+
+   procedure Draw_Line (Drawable : in Gdk_Drawable;
+                             Gc       : in Gdk.GC.Gdk_GC;
+                             X1, Y1   : in Gint;
+                             X2, Y2   : in Gint) is
+      procedure Internal (Drawable : in System.Address;
+                          Gc       : in System.Address;
+                          X1, Y1   : in Gint;
+                          X2, Y2   : in Gint);
+      pragma Import (C, Internal, "gdk_draw_line");
+   begin
+      Internal (Get_Object (Drawable),
+                Get_Object (Gc),
+                X1, Y1, X2, Y2);
+   end Draw_Line;
+
+   ----------------
+   -- Draw_Lines --
+   ----------------
+
+   procedure Draw_Lines
+      (Drawable : in Gdk_Drawable;
+       Gc       : in Gdk.GC.Gdk_GC;
+       Points   : in Gdk.Types.Gdk_Points_Array)
+   is
+      procedure Internal
+         (Drawable : in System.Address;
+          Gc       : in System.Address;
+          Points   : in Gdk.Types.Gdk_Points_Array;
+          Npoints  : in Gint);
+      pragma Import (C, Internal, "gdk_draw_lines");
+   begin
+      Internal (Get_Object (Drawable),
+                Get_Object (Gc),
+                Points,
+                Points'Length);
+   end Draw_Lines;
+
    -----------------
    -- Draw_Pixmap --
    -----------------
 
-   procedure Draw_Pixmap (Drawable : in Gdk.Drawable.Gdk_Drawable'Class;
-                          Gc       : in Gdk.GC.Gdk_GC'Class;
-                          Src      : in Gdk.Drawable.Gdk_Drawable'Class;
+   procedure Draw_Pixmap (Drawable : in Gdk.Drawable.Gdk_Drawable;
+                          Gc       : in Gdk.GC.Gdk_GC;
+                          Src      : in Gdk.Drawable.Gdk_Drawable;
                           Xsrc     : in Gint;
                           Ysrc     : in Gint;
                           Xdest    : in Gint;
@@ -172,19 +194,59 @@ package body Gdk.Drawable is
                 Xsrc, Ysrc, Xdest, Ydest, Width, Height);
    end Draw_Pixmap;
 
+   ----------------
+   -- Draw_Point --
+   ----------------
+
+   procedure Draw_Point (Drawable : in Gdk_Drawable;
+                         Gc       : in Gdk.GC.Gdk_GC;
+                         X        : in Gint;
+                         Y        : in Gint) is
+      procedure Internal (Drawable : in System.Address;
+                          Gc       : in System.Address;
+                          X, Y     : in Gint);
+      pragma Import (C, Internal, "gdk_draw_point");
+   begin
+      Internal (Get_Object (Drawable),
+                Get_Object (Gc),
+                X, Y);
+   end Draw_Point;
+
+   -----------------
+   -- Draw_Points --
+   -----------------
+
+   procedure Draw_Points
+      (Drawable : in Gdk_Drawable;
+       Gc       : in Gdk.GC.Gdk_GC;
+       Points   : in Gdk.Types.Gdk_Points_Array)
+   is
+      procedure Internal
+         (Drawable : in System.Address;
+          Gc       : in System.Address;
+          Points   : in Gdk.Types.Gdk_Points_Array;
+          Npoints  : in Gint);
+      pragma Import (C, Internal, "gdk_draw_points");
+   begin
+      Internal (Get_Object (Drawable),
+                Get_Object (Gc),
+                Points,
+                Points'Length);
+   end Draw_Points;
+
    ------------------
    -- Draw_Polygon --
    ------------------
 
-   procedure Draw_Polygon (Drawable : in Gdk_Drawable'Class;
-                           Gc       : in Gdk.GC.Gdk_GC'Class;
+   procedure Draw_Polygon (Drawable : in Gdk_Drawable;
+                           Gc       : in Gdk.GC.Gdk_GC;
                            Filled   : in Boolean;
-                           Points   : in Gdk.Point.Gdk_Points_Array)
+                           Points   : in Gdk.Types.Gdk_Points_Array)
    is
       procedure Internal (Drawable : in System.Address;
                           Gc       : in System.Address;
                           Filled   : in Gint;
-                          Points   : in Gdk.Point.Gdk_Points_Array;
+                          Points   : in Gdk.Types.Gdk_Points_Array;
                           Npoints  : in Gint);
       pragma Import (C, Internal, "gdk_draw_polygon");
    begin
@@ -192,5 +254,110 @@ package body Gdk.Drawable is
                 Boolean'Pos (Filled), Points, Points'Length);
    end Draw_Polygon;
 
+   --------------------
+   -- Draw_Rectangle --
+   --------------------
+
+   procedure Draw_Rectangle (Drawable : in Gdk_Drawable;
+                             Gc       : in Gdk.GC.Gdk_GC;
+                             Filled   : in Boolean := False;
+                             X, Y     : in Gint;
+                             Width    : in Gint;
+                             Height   : in Gint) is
+      procedure Internal (Drawable : in System.Address;
+                          Gc       : in System.Address;
+                          Filled   : in Gint;
+                          X, Y     : in Gint;
+                          Width    : in Gint;
+                          Height   : in Gint);
+      pragma Import (C, Internal, "gdk_draw_rectangle");
+   begin
+      Internal (Get_Object (Drawable),
+                Get_Object (Gc),
+                To_Gint (Filled),
+                X, Y, Width, Height);
+   end Draw_Rectangle;
+
+   -------------------
+   -- Draw_Segments --
+   -------------------
+
+   procedure Draw_Segments
+      (Drawable : in Gdk.Drawable.Gdk_Drawable;
+       Gc       : in Gdk.GC.Gdk_GC;
+       Segs     : in Gdk.Types.Gdk_Segments_Array)
+   is
+      procedure Internal
+         (Drawable : in System.Address;
+          Gc       : in System.Address;
+          Segs     : in Gdk.Types.Gdk_Segments_Array;
+          Nsegs    : in Gint);
+      pragma Import (C, Internal, "gdk_draw_segments");
+   begin
+      Internal (Get_Object (Drawable),
+                Get_Object (Gc),
+                Segs,
+                Segs'Length);
+   end Draw_Segments;
+
+   -----------------
+   --  Draw_Text  --
+   -----------------
+
+   procedure Draw_Text
+      (Drawable    : in Gdk_Drawable;
+       Font        : in Gdk.Font.Gdk_Font;
+       Gc          : in Gdk.GC.Gdk_GC;
+       X           : in Gint;
+       Y           : in Gint;
+       Text        : in String) is
+      procedure Internal
+         (Drawable    : in System.Address;
+          Font        : in System.Address;
+          Gc          : in System.Address;
+          X           : in Gint;
+          Y           : in Gint;
+          Text        : in String;
+          Text_Length : in Gint);
+      pragma Import (C, Internal, "gdk_draw_text");
+   begin
+      Internal (Get_Object (Drawable),
+                Get_Object (Font),
+                Get_Object (Gc),
+                X,
+                Y,
+                Text,
+                Text'Length);
+   end Draw_Text;
+
+   -----------------
+   --  Draw_Text  --
+   -----------------
+
+   procedure Draw_Text
+      (Drawable    : in Gdk_Drawable;
+       Font        : in Gdk.Font.Gdk_Font;
+       Gc          : in Gdk.GC.Gdk_GC;
+       X           : in Gint;
+       Y           : in Gint;
+       Text        : in Gdk.Types.Gdk_WString) is
+      procedure Internal
+         (Drawable    : in System.Address;
+          Font        : in System.Address;
+          Gc          : in System.Address;
+          X           : in Gint;
+          Y           : in Gint;
+          Text        : in C.wchar_array;
+          Text_Length : in Gint);
+      pragma Import (C, Internal, "gdk_draw_text_wc");
+   begin
+      Internal (Get_Object (Drawable),
+                Get_Object (Font),
+                Get_Object (Gc),
+                X,
+                Y,
+                C.To_C (Item => Text, Append_Nul => False),
+                Text'Length);
+   end Draw_Text;
 
 end Gdk.Drawable;
