@@ -1370,8 +1370,8 @@ package body Gtkada.MDI is
          if not Return_Callback.Emit_By_Name
            (Child.Initial, "delete_event", Event)
          then
-         Float_Child (Child, False);
-         Destroy (Child);
+            Float_Child (Child, False);
+            Destroy (Child);
          end if;
 
          Free (Event);
@@ -1791,8 +1791,8 @@ package body Gtkada.MDI is
       end if;
 
       Set_Focus_Child (C);
-      Raise_Child (C); --  not done by Set_Focus_Child if the child already had
-                       --  the focus.
+      Raise_Child (C);
+      --  not done by Set_Focus_Child if the child already had the focus.
 
       MDI.X_Root := Gint (Get_X_Root (Event));
       MDI.Y_Root := Gint (Get_Y_Root (Event));
