@@ -3187,11 +3187,13 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record'Class;
       Float : Boolean)
    is
+      use Object_List;
       Diag  : Gtk_Dialog;
       Win   : Gtk_Window;
       Alloc : Gtk_Allocation;
       Cont  : Gtk_Container;
       Requisition : Gtk_Requisition;
+      Groups : Object_List.GSlist;
    begin
       if Child.State /= Floating and then Float then
          --  Ref is removed when the child is unfloated.
@@ -3232,6 +3234,17 @@ package body Gtkada.MDI is
             Set_Title (Win, Child.Title.all);
             Cont := Gtk_Container (Win);
          end if;
+
+         --  Set the accelerators for this window, so that menu key shortcuts
+         --  behave the same as in the main window.
+         --  ??? Should we do the same for mnemonics, even though the menu
+         --  bar isn't available on this floating window.
+
+         Groups := From_Object (Get_Toplevel (Child.MDI));
+         while Groups /= Object_List.Null_List loop
+            Add_Accel_Group (Win, Gtk_Accel_Group (Get_Data (Groups)));
+            Groups := Next (Groups);
+         end loop;
 
          Set_Position (Win, Win_Pos_Mouse);
 
