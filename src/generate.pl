@@ -1023,7 +1023,7 @@ sub print_declaration
       &print_new_declaration ($func_name, @arguments);
       push (@output, ";\n\n");
       &print_initialize_declaration ($func_name, 1, @arguments);
-      if ($has_get_type_subprogram) {
+      if ($has_get_type_subprogram == 1) {
 	push (@output, "   function Get_Type return Gtk.Gtk_Type;\n");
 	push (@output, "   --  Return the internal value associated with"
 	      . " this widget.\n\n");
