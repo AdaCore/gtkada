@@ -27,6 +27,28 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  Dialog boxes are a convenient way to prompt the user for a small amount of
+--  input, eg. to display a message, ask a question, or anything else that does
+--  not require extensive effort on the user's part.
+--
+--  Gtkada treats a dialog as a window split horizontally. The top section is a
+--  Gtk_Vbox, and is where widgets such as a Gtk_Label or a Gtk_Entry should be
+--  packed. The second area is known as the action_area. This is generally used
+--  for packing buttons into the dialog which may perform functions such as
+--  cancel, ok, or apply. The two areas are separated by a Gtk_Hseparator.
+--
+--  If 'dialog' is a newly created dialog, the two primary areas of the window
+--  can be accessed using Get_Vbox and Get_Action_Area as can be seen from the
+--  example, below.
+--
+--  A 'modal' dialog (that is, one which freezes the rest of the application
+--  from user input), can be created by calling Set_Modal on the dialog.
+--
+--  @pxref{Package_Gtkada.Dialogs} for a higher level dialog interface.
+--  </description>
+--  <c_version>1.2.8</c_version>
+
 with Gtk.Object; use Gtk.Object;
 with Gtk.Box;
 with Gtk.Window;
@@ -36,22 +58,46 @@ package Gtk.Dialog is
    type Gtk_Dialog_Record is new Gtk.Window.Gtk_Window_Record with private;
    type Gtk_Dialog is access all Gtk_Dialog_Record'Class;
 
-   function Get_Action_Area (Dialog : access Gtk_Dialog_Record)
-                             return      Gtk.Box.Gtk_Box;
-   function Get_Vbox (Dialog : access Gtk_Dialog_Record)
-                      return      Gtk.Box.Gtk_Box;
    procedure Gtk_New (Dialog : out Gtk_Dialog);
+   --  Create a new dialog.
+   --  Widgets should not be packed into this widget directly, but into the
+   --  vbox and action_area, as described above.
+
    procedure Initialize (Dialog : access Gtk_Dialog_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Dialog.
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   function Get_Action_Area
+     (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
+   --  Return the action area box associated with a Dialog.
+
+   function Get_Vbox
+     (Dialog : access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
+   --  Return the vertical box associated with a Dialog.
+
+   ----------------------------
+   -- Support for Gate/Dgate --
+   ----------------------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
 
    procedure Generate (Dialog : in out Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
 
 private
    type Gtk_Dialog_Record is new Gtk.Window.Gtk_Window_Record with null record;
 
+   pragma Import (C, Get_Type, "gtk_dialog_get_type");
 end Gtk.Dialog;
