@@ -50,11 +50,10 @@ unmodified in any copy.
 * Hierarchical composition of a window::
 * Signal handling::
 * Start an application with GtkAda::
-* Draw in a widget::
-* Resource files::
 * General GTK documentation::
 * Description of the GDK hierarchy::
 * Description of the Glib hierarchy::
+* Resource files::
 * Creating and Binding new widgets::
 * Threads::
 * How to report bugs::
@@ -82,7 +81,6 @@ General GTK documentation
 * Package Gtk.Label::
 * Package Gtk.Scrollbar::
 * Package Gtk.Drawing_Area::
-* Package Gtk.Editable::
 * Package Gtk.Text::
 * Package Gtk.Container::
 * Package Gtk.Table::
@@ -92,17 +90,20 @@ General GTK documentation
 * Package Gtk.Button::
 * Package Gtk.Toggle_Button::
 * Package Gtk.Check_Button::
-* Package Gtk.Bin::
 * Package Gtk.Event_Box::
 * Package Gtk.Window::
 * Package Gtk.File_Selection::
 * Package Gtk.Enums::
+
+Description of the GDK hierarchy
+
 * Package Gdk.Color::
 * Package Gdk.Point::
 * Package Gdk.Window::
 * Package Gdk.Drawable::
 * Package Gdk.GC::
 * Package Gdk.Font::
+* Draw in a widget::
 
 @end menu
 @end ifinfo
@@ -110,20 +111,20 @@ General GTK documentation
 @node Introduction
 @chapter Introduction
 @noindent
-The home page for GtkAda is
+The home page for GtkAda, that will always contain the latest news for
+this binding, is
 
      @cite{http://ada.eu.org/gtkada/}
 
+@noindent     
 The home page for gtk is
 
      @cite{http://www.gtk.org}
 
-This home page will always contain the latest news for this binding.
-
-This is GtkAda version 1.2.0. This package is an Ada95 binding for
-the Gimp Toolkit, which means this is a set of packages to allow you
-to easily create some graphical interfaces under X11, using Ada95 as a
-programming language.
+This is GtkAda version 1.2.0. This package is an Ada95 binding for the
+Gimp Toolkit, which means this is a set of packages to allow you to
+easily create some graphical interfaces under X11 or Win32, using Ada95
+as a programming language.
  
 This is the first stable version of this binding. From now on, major
 version numbers will follow Gtk+ (e.g 1.2, 1.3), meaning that stable
@@ -134,7 +135,7 @@ Every widget from gtk 1.2 has been implemented, and the test
 program found in the gtk release has been reimplemented in Ada (have a
 look at the @code{testgtk/} directory).
    
-These functions were tested on the following systems:
+This binding was tested on the following systems:
 @itemize @bullet
 @item Linux version 2.0.35
 @item SunOS 5.5.1
@@ -142,8 +143,8 @@ These functions were tested on the following systems:
 @end itemize
 using the following compilers:
 @itemize @bullet
-@item Gnat 3.11p
 @item Gnat 3.11b2
+@item Gnat 3.11p
 @end itemize
 
 and the following versions of gtk:
@@ -226,10 +227,10 @@ windowing library (X-Window or Win32).
 +----------------------+  +-------------------+
 @end example
 
-GTK is the most used interface but it is sometimes needed to use directly
-GDK and GLIB.
+GTK is the interface you will use most,but it is sometimes needed to use
+directly GDK and GLIB.
 
-The Gtk components (rep. Gdk and Glib) are available in packages whose
+The Gtk components (resp. Gdk and Glib) are available in packages whose
 name start with @code{Gtk_} (resp. @code{Gdk_} and @code{Glib}).
 
 GtkAda uses an object oriented approach of the components (called
@@ -328,24 +329,21 @@ The number represents the type's depth in the hierarchy.
 @node Contents
 @chapter Contents
 
-The almost full set of widget that comes with Gtk 1.2 have been bound,
-and you should be able to use all of them from your Ada program.
+The almost full set of widget that comes with Gtk 1.2 has been bound,
+and you should be able to use all of these widgets from your Ada
+program.
 
 Although it is not quite complete yet, the Gdk binding (the low level
-layer) will probably not evolve soon, unless some people (why not
-you?) send us patches, or at least ask for specific functions.
+layer) will probably not evolve soon, unless some people (why not you?)
+send us patches, or at least ask for specific functions.
 
-It is important to know that only a subset of the gdk binding has
-actually been tested, and therefore errors are still likely to appear.
-
-The specs have been evolving a lot since version 0.5, but things
-should really stabilize now. We hope that the changes in the next
-versions will not break your code, but we certainly can not guaranty
-anything.
+The specs have been evolving a lot since version 0.5, but things should
+really stabilize now. We hope that the changes in the next versions will
+not break existing code, but we certainly can not guaranty anything.
 
 We have tried to adopt a consistent naming scheme for Ada identifiers:
 @itemize @bullet
-@item The widget names are the same as in C, excepted that an underscore
+@item The widget names are the same as in C, except that an underscore
 sign (_) is used to separate words, e.g
 
 @example
@@ -363,10 +361,10 @@ gtk_toggle_button_set_state ->  Set_State
 @item All the enum types have been grouped in the gtk-enums.ads file
 
 @item The only tricky part is for the callbacks, the timeout functions,
-the idle functions, and the data that can be attached to every
-Object. In these cases, we have used generic package to provide type
+the idle functions, and the data that can be attached to any
+object. In these cases, we have used generic package to provide type
 safety. Please have a look at the files in testgtk to see how these
-functions are implemented.
+functions are used.
 @end itemize
 
 @var{WARNING:} all the generic functions allocate some memory for
@@ -390,13 +388,13 @@ Each component is a widget (Window Gadget), even the windows.
 @node Signal handling
 @chapter Signal handling
 
-A signal is @samp{generated} by a widget when an action is performed by the
-user on this widget. If the widget has one or more procedures associated
+A signal is @samp{emited} by a widget when an action is performed by the
+user on this widget. If the widget has one or more procedures attached
 to this signal, they are then executed.
-Such procedure will be called @code{callback} in the following.
+Such procedure will be called @code{callback} in this document.
 
 To associate a callback to a widget, you have to connect this callback to
-the specific widget specifying which signal will be handled. This is
+the specific widget, specifying which signal will be handled. This is
 done with the @code{Connect} function.
 
 Depending on their type, the widgets can emit zero (e.g @code{Gtk_Label}),
@@ -404,11 +402,11 @@ one or several different signals.
 
 A signal is identified by a string, e.g
 @itemize @bullet
-@item clicked
-@item destroy
-@item delete_event
-@item configure_event
-@item expose_event
+@item "clicked"
+@item "destroy"
+@item "delete_event"
+@item "configure_event"
+@item "expose_event"
 @end itemize
 
 For a specific widget, you can connect several callbacks on the same signal.
@@ -420,19 +418,25 @@ on different widgets.
 The choice made by GtkAda to use generics may look complicated but is
 actually simple to use and more important, ensures type checking.
 
-For example, you can connect on a @code{Gtk_Button} an action to
+For example, you can connect to a @code{Gtk_Button} an action to
 execute each time the button is clicked (signal @code{"clicked"}).
 Here is how to do it:
 @example
+@c @group
+@c @cartouche
+@b{declare}
    Button : Gtk.Button.Gtk_Button;
    Cb_Id  : Glib.Guint;
 
-begin
-   Gtk.Button.Gtk_New (Widget => Button, Label => "Load");
+@b{begin}
+   Gtk.Button.Gtk_New (Button => Button, Label => "Load");
    Cb_Id := Callbacks.Button_Callback.Connect (
       Obj  => Button,                     --  the emitting widget
       Name => "clicked",                  --  the generated signal
       Func => Callbacks.Load'Access);     --  the signal handler
+@b{end};
+@c @end cartouche
+@c @end group
 @end example
 
 The package @code{Button_Callback} is an instanciation of the
@@ -448,15 +452,17 @@ The callbacks provided to this function have to respect the
 this package.
 
 @example
-with Gtk.Signal;
-with Gtk.Button;
+@c @group
+@c @cartouche
+@b{with} Gtk.Signal;
+@b{with} Gtk.Button;
 
-package Callbacks is
+@b{package} Callbacks @b{is}
    --  Define callbacks that apply on the widget that detected the
    --  corresponding signal.
    --  These callbacks have only one parameter: the widget itself
 
-   package Button_Callback is new Gtk.Signal.Void_Callback
+   @b{package} Button_Callback @b{is} @b{new} Gtk.Signal.Void_Callback
      (Widget_Type => Gtk.Button.Gtk_Button_Record);
 
    --  Which is equivalent to:
@@ -476,37 +482,42 @@ package Callbacks is
    --
    --     end Button_Callback;
 
-   procedure Load (Widget : access Gtk.Button.Gtk_Button_Record);
+   @b{procedure} Load (Widget : @b{access} Gtk.Button.Gtk_Button_Record);
    --  The callback procedure
 
-end Callbacks;
+@b{end} Callbacks;
+@c @end cartouche
+@c @end group
 @end example
 
 @code{Callbacks.Load} is a procedure that can be used to handle a signal
 since its profile conforms with @code{Button_Callback.Callback}.
 
-Note that @code{Callbacks.Load} must be declared at the library level
+Note that @code{Callbacks} must be declared at the library level
 to ensure its lifetime and the presence of its variables during the execution
-of the application.
+of the application. This is needed so that GtkAda can take care of freeing
+memory.
 
 @node Start an application with GtkAda
 @chapter Start an application with GtkAda
 
 You need to perform some initializations to start a GtkAda application:
 @example
+@c @group
+@c @cartouche
 --  predefined units of the library
-with Gtk.Rc;
-with Gtk.Main;
-with Gtk.Enums;
-with Gtk.Window;
+@b{with} Gtk.Rc;
+@b{with} Gtk.Main;
+@b{with} Gtk.Enums;
+@b{with} Gtk.Window;
 ...
 --  My units
-with Callbacks;
+@b{with} Callbacks;
 ...
-procedure Application is
-   procedure Create_Window is ...
+@b{procedure} Application is
+   @b{procedure} Create_Window @b{is} ...
 
-begin
+@b{begin}
    --  Set the locale specific datas (e.g time and date format)
    Gtk.Main.Set_Locale;
 
@@ -521,16 +532,20 @@ begin
 
    --  Signal handling loop
    Gtk.Main.Main;
-end Application;
+@b{end} Application;
+@c @end cartouche
+@c @end group
 @end example
 
 the @code{Create_Window} procedure looks like
 
 @example
-   procedure Create_Window is
+@c @group
+@c @cartouche
+   @b{procedure} Create_Window @b{is}
       Main_Window : Gtk.Window.Gtk_Window;
       ...
-   begin
+   @b{begin}
       Gtk.Window.Gtk_New
         (Window   => Main_Window,
          The_Type => Gtk.Enums.Window_Toplevel);
@@ -542,131 +557,9 @@ the @code{Create_Window} procedure looks like
 
       ...
       Gtk.Window.Show_All (Main_Window);
-   end Create_Window;
-@end example
-
-@node Draw in a widget
-@chapter Draw in a widget
-
-To select a drawing area, use a @code{Gtk_Drawing} widget.
-The drawing procedures apply to the Gdk window
-(see @code{Gdk_Window} and @code{Gdk_Drawable}) of the
-@code{Gtk_Drawing} widget via a graphic context (see @code{Gtk_Gc}).
-
-Typically the code will look like:
-
-@example
-with Glib;
-with Gdk.Window;
-with Gdk.Drawable;
-with Gdk.GC;
-with Gdk.Font;
-
-procedure Draw (Drawing : in out Gtk.Drawing_Area.Gtk_Drawing_Area) is
-   Gdkw : Gdk.Window.Gdk_Window;
-   GC   : Gdk.GC.Gdk_GC;
-   Font : Gdk.Font.Gdk_Font;
-   use type Glib.Gint;
-
-begin
-   -- Get the Gdk window
-
-   Gdkw := Gtk.Drawing_Area.Get_Window (Drawing) ;
-
-   -- Clear the window
-
-   GDK.Window.Clear (Gdkw) ;
-
-   -- Create a graphic context associated with this window
-
-   Gdk.GC.Gdk_New (GC, Gdkw);
-
-   -- Draw a line in this window
-
-   Gdk.Drawable.Draw_Line
-     (Drawable => Gdkw,
-      GC => GC,
-      X1 =>   0, Y1 =>   0,
-      X2 => 100, Y2 => 100);
-
-   -- Draw an arc
-
-   Gdk.Drawable.Draw_Arc
-     (Drawable => Gdkw,
-      Gc       => gc,
-      Filled   => True,
-      X        => 100,
-      Y        => 100,
-      Width    => 200,
-      Height   => 100,
-      Angle1   => 0 * 64,
-      Angle2   => 270 * 64);
-
-   -- Ask for a given font
-
-   Gdk.Font.Load (Font, "-adobe-courier-medium-i-*-*-15-*-*-*-*-*-*-*");
-   Gdk.Drawable.Draw_Text
-     (Drawable    => Gdkw,
-      Font        => Font,
-      Gc          => gc,
-      X           => 50,
-      Y           => 50,
-      Text        => "Hello World");
-   Gdk.Font.Destroy (Font);
-   Gdk.GC.Destroy (GC);
-end Draw;
-@end example
-
-@node Resource files
-@chapter Resource files
-
-Resource files let you parametrize the aspect of the widgets of a GtkAda
-application without having to recompile it.
-The file @code{"application.rc"} of the previous example is a resource file.
-
-A resource file needs to be loaded (@code{Gtk.Rc.Parse}) @var{before} setting
-the corresponding window.
-
-In this file, it is possible to specify the visual characteristics of the
-widgets (colors, fonts, @dots{}).
-Under X, the @code{xfontsel} command allows you to select easily a font.
-The FontSelection widget is also a simple way to select fonts.
-
-Here is an example of a resource file:
-@example
-# application.rc
-#
-# resource file for "Application"
-
-# Buttons style
-style "button"
-@{
-# BackGround Colors
-#                  Red  Green  Blue
-  bg[PRELIGHT] = @{ 0.0,  0.75, 0.0 @} # Green when the mouse is on
-                                     # the button
-  bg[ACTIVE]   = @{ 0.75, 0.0,  0.0 @} # Red on click
-# ForeGround Colors
-#                  Red  Green  Blue
-  fg[PRELIGHT] = @{ 1.0,  1.0,  1.0 @} # White when the mouse is on
-                                     # the button
-  fg[ACTIVE]   = @{ 1.0,  1.0,  1.0 @} # White on click
-@}
-
-# All the buttons will have the style "button"
-widget_class "*GtkButton*" style "button"
-
-# Text style
-style "text"
-@{
-  font = "-adobe-courier-medium-r-normal-*-15-*-*-*-*-*-*-*"
-  text[NORMAL] = @{ 0.0, 0.0, 0.0 @} # black
-  fg[NORMAL]   = @{ 0.0, 0.0, 0.0 @} # black
-  base[NORMAL] = @{ 1.0, 1.0, 1.0 @} # white : background color
-@}
-
-# All Gtk_Text will have the "text" style
-widget_class "*GtkText" style "text"
+   @b{end} Create_Window;
+@c @end cartouche
+@c @end group
 @end example
 
 @node General GTK documentation
@@ -679,10 +572,10 @@ documentation for all general GTK topics.
 The GTK toolkit is based on two lower level layers: GDK and Glib.
 It is sometimes needed to call these layers directly. @xref{Description of the GDK hierarchy} for a brief description of these packages.
 
-Each widget is declared in a separate package.
-The file, package and type names can be automatically retrieved one from each
-other. For example, the type @code{Gtk_Text} is defined in the package
-@code{Gtk.Text} which is defined in the file @code{gtk-text.ads}.
+Each widget is declared in a separate package.  The file, package and
+type names can be automatically retrieved from one another. For example,
+the type @code{Gtk_Text} is defined in the package @code{Gtk.Text} which
+is defined in the file @code{gtk-text.ads}.
 
 You may want to look at the sources themselves to find informations on a
 specific widget.
@@ -696,7 +589,6 @@ specific widget.
 * Package Gtk.Label::
 * Package Gtk.Scrollbar::
 * Package Gtk.Drawing_Area::
-* Package Gtk.Editable::
 * Package Gtk.Text::
 * Package Gtk.Container::
 * Package Gtk.Table::
@@ -706,17 +598,10 @@ specific widget.
 * Package Gtk.Button::
 * Package Gtk.Toggle_Button::
 * Package Gtk.Check_Button::
-* Package Gtk.Bin::
 * Package Gtk.Event_Box::
 * Package Gtk.Window::
 * Package Gtk.File_Selection::
 * Package Gtk.Enums::
-* Package Gdk.Color::
-* Package Gdk.Point::
-* Package Gdk.Window::
-* Package Gdk.Drawable::
-* Package Gdk.GC::
-* Package Gdk.Font::
 @end menu
 
 @node Package Gtk.Main - high level routines
@@ -762,30 +647,34 @@ You can connect as many callback per signal and widgets as needed.
 For a given widget and signal, the various callbacks will be executed
 in the order in which they have been connected.
 
-On the other hand, a same callback routine can be connected on several
+On the other hand, a same callback routine can be connected to several
 widgets and signals.
 The @code{Connect} function returns an integer (@code{Glib.Guint}) that
 identifies the connection, allowing you to destroy it later by giving
 this identifier and the appropriate widget.
-It is also possible to destroy all the connections of a widget.
+It is also possible to destroy all the connections to a widget.
 
-This first package (@code{Void_Callback}) provides a way to create callbacks
-that has no specific parameter other than the emitting widget:
+The first package (@code{Void_Callback}) provides a way to create callbacks
+that have no specific parameter other than the emitting widget:
 @example
-generic
-   type Base_Type is new Gtk.Object.Gtk_Object_Record with private;
+@c @group
+@c @cartouche
+@b{generic}
+   @b{type} Base_Type @b{is} new Gtk.Object.Gtk_Object_Record @b{with} @b{private};
 
-package Void_Callback is
+@b{package} Void_Callback @b{is}
 
-   type Callback is access procedure (Widget : access Base_Type);
+   @b{type} Callback @b{is} @b{access} @b{procedure} (Widget : @b{access} Base_Type);
 
-   function Connect
-     (Obj    : access Base_Type'Class;
-      Name   : in String;
-      Func   : in Callback;
-      After  : in Boolean := False)
-      return Guint;
-end Void_Callback;
+   @b{function} Connect
+     (Obj    : @b{access} Base_Type'Class;
+      Name   : @b{in} String;
+      Func   : @b{in} Callback;
+      After  : @b{in} Boolean := False)
+      @b{return} Guint;
+@b{end} Void_Callback;
+@c @end cartouche
+@c @end group
 @end example
 
 The callback procedure that can be connected with the @code{Connect} function
@@ -797,44 +686,46 @@ For the @code{Connect} function, the parameters are:
 @item [Obj] The widget associated with the signal,
 @item [Name] The signal name (@code{"clicked", "destroy", "delete_event"}, @dots{}),
 @item [Func] A pointer to the callback routine,
-@item [After] Indicates whether the callback should be executed after the
- automatic widget's class behavior.
+@item [After] Indicates whether the callback should be executed before or after
+ the widget's automatic class behavior.
 @end itemize
 
-This second package (@code{Callback}) whose callbacks accept an additional
+The second package (@code{Callback}) whose callbacks accept an additional
 data dynamically allocated during the call to @code{Connect} and whose
 initial value is set by the @code{Func_Data} parameter
 
 @example
-generic
-   type Base_Type is new Gtk.Object.Gtk_Object_Record with private;
+@c @group
+@c @cartouche
+@b{generic}
+   @b{type} Base_Type @b{is new} Gtk.Object.Gtk_Object_Record @b{with private};
 
-   type Data_Type (<>) is private;
+   @b{type} Data_Type (<>) @b{is private};
    --  The type of the data for the callback
    --  This type need not be an access type (as opposed as what
    --  happens in C). A new access is created by the connect function.
 
-package Callback is
+@b{package} Callback @b{is}
 
-   type Callback is access procedure
-     (Widget : access Base_Type;
-      Data   : in Data_Type);
+   @b{type} Callback @b{is access procedure}
+     (Widget : @b{access} Base_Type;
+      Data   : @b{in} Data_Type);
    --  Callback function for Signal_Connect below
-   --  Data is now an 'in' parameter, since you are anyway not
-   --  modifying the original data you gave, but a copy of it.
 
-   function Connect
-     (Obj       : access Base_Type'Class;
-      Name      : in String;
-      Func      : in Callback;
-      Func_Data : in Data_Type;
-      After     : in Boolean := False)
-      return Guint;
-end Callback;
+   @b{function} Connect
+     (Obj       : @b{access} Base_Type'@b{Class};
+      Name      : @b{in} String;
+      Func      : @b{in} Callback;
+      Func_Data : @b{in} Data_Type;
+      After     : @b{in} Boolean := False)
+      @b{return} Guint;
+@b{end} Callback;
+@c @end cartouche
+@c @end group
 @end example
 
 The last package @code{Object_Callback}
-provides callbacks that can be connected on any kind of widget.
+provides callbacks that can be connected to any kind of widget.
 (the @code{Obj} parameter can be any kind of object),
 but the callback parameter, as for previous packages will still have to
 be the same as the one specified during the instanciation.
@@ -846,20 +737,24 @@ This is for example useful when you need to handle a button click
 depending on the window that contains the button instead of the button itself.
 
 @example
-generic
-   type Base_Type is new Gtk.Object.Gtk_Object_Record with private;
+@c @group
+@c @cartouche
+@b{generic}
+   @b{type} Base_Type @b{is new} Gtk.Object.Gtk_Object_Record @b{with private};
 
-package Object_Callback is
-   type Callback is access procedure (Object : access Base_Type);
+@b{package} Object_Callback @b{is}
+   @b{type} Callback @b{is access procedure} (Object : @b{access} Base_Type);
 
-   function Connect
-     (Obj         : access Gtk.Object.Gtk_Object_Record'Class;
-      Name        : in String;
-      Func        : in Callback;
-      Slot_Object : access Base_Type'Class;
-      After       : in Boolean := False)
-      return Guint;
-end Object_Callback;
+   @b{function} Connect
+     (Obj         : @b{access} Gtk.Object.Gtk_Object_Record'@b{Class};
+      Name        : @b{in} String;
+      Func        : @b{in} Callback;
+      Slot_Object : @b{access} Base_Type'@b{Class};
+      After       : @b{in} Boolean := False)
+      @b{return} Guint;
+@b{end} Object_Callback;
+@c @end cartouche
+@c @end group
 @end example
 
 Here a sample code extracted from a text editor that corresponds to the
@@ -873,29 +768,31 @@ the @code{Callbacks.Ok} procedure is called with the parameter selection
 window.
 
 @example
-with Gtk.Button;
-package Callbacks is
+@c @group
+@c @cartouche
+@b{with} Gtk.Button;
+@b{package} Callbacks @b{is}
 
-   procedure Load (Widget : in out Gtk.Button.Gtk_Button);
-   --  Callback for the ``Load'' button og the text editor
+   @b{procedure} Load (Widget : @b{in out} Gtk.Button.Gtk_Button);
+   --  Callback for the ``Load'' button of the text editor
 
-end Callbacks;
+@b{end} Callbacks;
 
-with Gtk.Signal, Gtk.Window, Gtk.Main;
-with Gtk.Widget, Gtk.File_Selection, Glib;
-with Editor;
+@b{with} Gtk.Signal, Gtk.Window, Gtk.Main;
+@b{with} Gtk.Widget, Gtk.File_Selection, Glib;
+@b{with} Editor;
 
-package body Callbacks is
+@b{package body} Callbacks @b{is}
 
-   package Files_Cb is new Gtk.Signal.Object_Callback
+   @b{package} Files_Cb @b{is new} Gtk.Signal.Object_Callback
      (Gtk.File_Selection.Gtk_File_Selection);
 
    --  A callback of type File_Cb.Callback corresponding to the
    --  Cancel button of the file selection window.
 
-   procedure Cancel
-     (Files : in out Gtk.File_Selection.Gtk_File_Selection) is
-   begin
+   @b{procedure} Cancel
+     (Files : @b{access} Gtk.File_Selection.Gtk_File_Selection_Record) @b{is}
+   @b{begin}
       --  Hide the file selection window
 
       Gtk.File_Selection.Hide (Files);
@@ -903,28 +800,28 @@ package body Callbacks is
       --  This window is no longer modal
 
       Gtk.Main.Grab_Remove (Files);
-   end Cancel;
+   @b{end} Cancel;
 
    -- A callback of type File_Cb.Callback corresponding to the ``OK''
    -- button of the file selection window.
 
-   procedure Ok
-     (Files : in out Gtk.File_Selection.Gtk_File_Selection) is
-   begin
+   @b{procedure} Ok
+     (Files : @b{access} Gtk.File_Selection.Gtk_File_Selection_Record) @b{is}
+   @b{begin}
       Editor.Load (Gtk.File_Selection.Get_Filename (Files));
       Gtk.File_Selection.Hide (Files);
       Gtk.Main.Grab_Remove (Files);
-   end Ok;
+   @b{end} Ok;
 
    -- Internal procedure to initialize a Gtk_File_Selection
 
-   procedure Initialize_File_Selection
-     (Files : in out Gtk.File_Selection.Gtk_File_Selection;
+   @b{procedure} Initialize_File_Selection
+     (Files : @b{access} Gtk.File_Selection.Gtk_File_Selection_Record;
       Label : String;
       OK_CB : Files_Cb.Callback)
-   is
+   @b{is}
       Cb_Id : Glib.Guint;
-   begin
+   @b{begin}
       Gtk.File_Selection.Gtk_New (Files, Label);
 
       --  Hide the create/remove buttons
@@ -932,7 +829,7 @@ package body Callbacks is
       Gtk.File_Selection.Hide_Fileop_Buttons (Files);
       Cb_Id := Files_Cb.Connect (
          Obj         => Gtk.File_Selection.Get_Ok_Button (Files),
-         --  The signal is related to the OK button
+         --  The signal applies to the OK button
 
          Name        => "clicked", -- Event to detect
          Func        => OK_CB,     -- Callback procedure
@@ -943,7 +840,7 @@ package body Callbacks is
          Name        => "clicked",
          Func        => Cancel'access,
          Slot_Object => Files);
-   end Initialize_File_Selection;
+   @b{end} Initialize_File_Selection;
 
    -- The file selection window
 
@@ -952,54 +849,50 @@ package body Callbacks is
 
    -- The ``Load'' callback body
 
-   procedure Load (Widget : in out Gtk.Button.Gtk_Button) is
-   begin
-      if not Input_File_Sel_Existe then
+   @b{procedure} Load (Widget : @b{access} Gtk.Button.Gtk_Button_Record) @b{is}
+   @b{begin}
+      @b{if not} Input_File_Sel_Existe @b{then}
          Initialize_File_Selection
            (Input_File_Sel, "File to load ?", OK'Access);
          Input_File_Sel_Existe := True;
-      end if ;
+      @b{end if};
 
       Gtk.Main.Grab_Add (Input_File_Sel);
 
       --  Show the file selection window
 
       Gtk.File_Selection.Show (Input_File_Sel);
-   end Load;
+   @b{end} Load;
 
-end Callbacks;
+@b{end} Callbacks;
+@c @end cartouche
+@c @end group
 @end example
 
 Two procedures to destroy a specific or any connection.
 
 @example
-procedure Disconnect
-  (Object     : access Gtk.Object.Gtk_Object_Record'Class;
-   Handler_Id : in Guint);
+@c @group
+@c @cartouche
+@b{procedure} Disconnect
+  (Object     : @b{access} Gtk.Object.Gtk_Object_Record'@b{Class};
+   Handler_Id : @b{in} Guint);
 
-procedure Handlers_Destroy
-  (Obj : access Object.Gtk_Object_Record'Class);
+@b{procedure} Handlers_Destroy
+  (Obj : @b{access} Object.Gtk_Object_Record'@b{Class});
+@c @end cartouche
+@c @end group
 @end example
-
-@c gdk:   type Root_Type is abstract tagged
-
-@c Package Gtk.Style:
-@c    type Gtk_Style_Record is new Root_Type with private;
-@c    type Gtk_Style is access all Gtk_Style_Record'Class;
-
-@c Package Gtk.Object:
-@c    type Gtk_Object_Record is new Root_Type with private;
-@c    type Gtk_Object is access all Gtk_Object_Record'Class;
-
-@c Package Gtk.Data:
-@c    type Gtk_Data_Record is new Object.Gtk_Object_Record with private;
-@c    type Gtk_Data is access all Gtk_Data_Record'Class;
 
 @node Package Gtk.Tooltips
 @section Package Gtk.Tooltips
 @example
-type Gtk_Tooltips_Record is new Gtk.Data.Gtk_Data_Record with private;
-type Gtk_Tooltips is access all Gtk_Tooltips_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Tooltips_Record @b{is new} Gtk.Data.Gtk_Data_Record @b{with private};
+@b{type} Gtk_Tooltips @b{is access all} Gtk_Tooltips_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 The message hint that pops up in a little window when the mouse stay
@@ -1008,8 +901,12 @@ on a widget long enough without moving.
 @node Package Gtk.Adjustment
 @section Package Gtk.Adjustment
 @example
-type Gtk_Adjustment_Record is new Data.Gtk_Data_Record with private;
-type Gtk_Adjustment is access all Gtk_Adjustment_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Adjustment_Record @b{is new} Data.Gtk_Data_Record @b{with private};
+@b{type} Gtk_Adjustment @b{is access all} Gtk_Adjustment_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 These objects allow you to create a link between a scrollbar and a
@@ -1018,8 +915,12 @@ scrollable widget (text, scrolled_window).
 @node Package Gtk.Widget
 @section Package Gtk.Widget
 @example
-type Gtk_Widget_Record is new Object.Gtk_Object_Record with null record;
-type Gtk_Widget is access all Gtk_Widget_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Widget_Record @b{is new} Object.Gtk_Object_Record @b{with null record};
+@b{type} Gtk_Widget @b{is access all} Gtk_Widget_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 Root of the widget tree. Here are a few useful primitives that are inherited
@@ -1028,162 +929,172 @@ by all the widgets.
 @itemize @bullet
 @item Destroy the widget
 @example
-procedure Destroy (Widget : access Gtk_Widget_Record);
+@c @group
+@c @cartouche
+@b{procedure} Destroy (Widget : @b{access} Gtk_Widget_Record);
+@c @end cartouche
+@c @end group
 @end example
 
 @item The Widget can be referenced in a resource file under a specified name
 
 @example
-procedure Set_Name
-  (Widget : access Gtk_Widget_Record; Name : in String);
+@c @group
+@c @cartouche
+@b{procedure} Set_Name
+  (Widget : @b{access} Gtk_Widget_Record; Name : in String);
+@c @end cartouche
+@c @end group
 @end example
 
 @item The @code{Widget} is displayed
 
 @example
-procedure Show (Widget : access Gtk_Widget_Record);
+@c @group
+@c @cartouche
+@b{procedure} Show (Widget : @b{access} Gtk_Widget_Record);
+@c @end cartouche
+@c @end group
 @end example
 
-@item The @code{Widget} and its components are displayed
+@item The @code{Widget} and its child widgets are displayed
 
 @example
-procedure Show_All (Widget : access Gtk_Widget_Record);
+@c @group
+@c @cartouche
+@b{procedure} Show_All (Widget : @b{access} Gtk_Widget_Record);
+@c @end cartouche
+@c @end group
 @end example
 
 @item Hide the @code{Widget}.
 
 @example
-procedure Hide (Widget : access Gtk_Widget_Record);
+@c @group
+@c @cartouche
+@b{procedure} Hide (Widget : @b{access} Gtk_Widget_Record);
+@c @end cartouche
+@c @end group
 @end example
 
 @item To manipulate the color tables (see, e.g @code{Gdk.Color.White})
 
 @example
-function Get_Colormap (Widget : access Gtk_Widget_Record)
-  return Gdk_Colormap;
+@c @group
+@c @cartouche
+@b{function} Get_Colormap (Widget : @b{access} Gtk_Widget_Record)
+  @b{return} Gdk_Colormap;
 
-function Get_Default_Colormap return Gdk_Colormap;
+@b{function} Get_Default_Colormap @b{return} Gdk_Colormap;
 
-procedure Set_Default_Colormap
-  (Widget : access Gtk_Widget_Record; Cmap : Gdk_Colormap);
+@b{procedure} Set_Default_Colormap
+  (Widget : @b{access} Gtk_Widget_Record; Cmap : Gdk_Colormap);
+@c @end cartouche
+@c @end group
 @end example
-@end itemize
 
-To (de)associate a Gdk_Window to a widget:
+@item To (de)associate a Gdk_Window to a widget:
 @example
-procedure Realize   (Widget : access Gtk_Widget_Record);
-procedure Unrealize (Widget : access Gtk_Widget_Record);
-function  Realized_Is_Set (Widget : access Gtk_Widget_Record'Class)
-  return Boolean;
+@c @group
+@c @cartouche
+@b{procedure} Realize (Widget : @b{access} Gtk_Widget_Record);
+@b{procedure} Unrealize (Widget : @b{access} Gtk_Widget_Record);
+@b{function}  Realized_Is_Set (Widget : @b{access} Gtk_Widget_Record'@b{Class})
+  @b{return} Boolean;
+@c @end cartouche
+@c @end group
 @end example
 
 You need to use @code{Realize} when for example you want to insert text in a
 @code{Gtk_Text} before calling @code{Show}.
 
-To make a widget (un)sensitive so that it won't generate any signal:
+@item To make a widget (un)sensitive so that it won't generate any signal:
 @example
-procedure Set_Sensitive
-  (Widget    : access Gtk_Widget_Record;
-   Sensitive : in Boolean := True);
+@c @group
+@c @cartouche
+@b{procedure} Set_Sensitive
+  (Widget    : @b{access} Gtk_Widget_Record;
+   Sensitive : @b{in} Boolean := True);
+@c @end cartouche
+@c @end group
 @end example
 @code{Set_Sensitive} can be used to temporarily disable a button or a
-container. When it is not sensible, its visual aspect changes.
+container. When it is not sensitive, its visual aspect changes.
 
-To know whether a widget has no parent (usually a main window):
+@item To know whether a widget has no parent (usually a main window):
 @example
-function Toplevel_Is_Set (Widget : access Gtk_Widget_Record'Class)
-  return Boolean;
+@c @group
+@c @cartouche
+@b{function} Toplevel_Is_Set (Widget : @b{access} Gtk_Widget_Record'@b{Class})
+  @b{return} Boolean;
+@c @end cartouche
+@c @end group
 @end example
 
-To get the parent widget:
+@item To get the parent widget:
 @example
-function Get_Parent (Widget : access Gtk_Widget_Record)
-  return Gtk_Widget;
+@c @group
+@c @cartouche
+@b{function} Get_Parent (Widget : @b{access} Gtk_Widget_Record)
+  @b{return} Gtk_Widget;
+@c @end cartouche
+@c @end group
 @end example
 
-To get the low level window (@code{Gdk_Window}) associated with a widget:
+@item To get the low level window (@code{Gdk_Window}) associated with a widget:
 @example
-function Get_Window (Widget : access Gtk_Widget_Record)
-  return Gdk.Window.Gdk_Window;
+@c @group
+@c @cartouche
+@b{function} Get_Window (Widget : @b{access} Gtk_Widget_Record)
+  @b{return} Gdk.Window.Gdk_Window;
+@c @end cartouche
+@c @end group
 @end example
 
-@c Package Gtk.Separator:
-@c    type Gtk_Separator_Record is new Gtk.Widget.Gtk_Widget_Record with private;
-@c    type Gtk_Separator is access all Gtk_Separator_Record'Class;
-
-@c Package Gtk.Ruler:
-@c    type Gtk_Ruler_Record is new Gtk.Widget.Gtk_Widget_Record with private;
-@c    type Gtk_Ruler is access all Gtk_Ruler_Record'Class;
-
-@c Package Gtk.Preview:
-@c    type Gtk_Preview_Record is new Gtk.Widget.Gtk_Widget_Record with private;
-@c    type Gtk_Preview is access all Gtk_Preview_Record'Class;
-
-@c Package Gtk.Preview:
-@c    type Gtk_Preview_Info_Record is new Gtk.Widget.Gtk_Widget_Record
-@c      with private;
-@c    type Gtk_Preview_Info is access all Gtk_Preview_Info_Record'Class;
-
-@c Package Gtk.Progress_Bar:
-@c    type Gtk_Progress_Bar_Record is new Gtk.Progress.Gtk_Progress_Record
-@c      with private;
-@c    type Gtk_Progress_Bar is access all Gtk_Progress_Bar_Record'Class;
-
-@c Package Gtk.Misc:
-@c    type Gtk_Misc_Record is new Widget.Gtk_Widget_Record with private;
-@c    type Gtk_Misc is access all Gtk_Misc_Record'Class;
-
-@c Package Gtk.Pixmap:
-@c    type Gtk_Pixmap_Record is new Gtk.Misc.Gtk_Misc_Record with private;
-@c    type Gtk_Pixmap is access all Gtk_Pixmap_Record'Class;
-
-@c Package Gtk.Arrow:
-@c    type Gtk_Arrow_Record is new Gtk.Misc.Gtk_Misc_Record with private;
-@c    type Gtk_Arrow is access all Gtk_Arrow_Record'Class;
+@end itemize
 
 @node Package Gtk.Label
 @section Package Gtk.Label
 @example
-type Gtk_Label_Record is new Misc.Gtk_Misc_Record with private;
-type Gtk_Label is access all Gtk_Label_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Label_Record @b{is new} Misc.Gtk_Misc_Record @b{with private};
+@b{type} Gtk_Label @b{is access} all Gtk_Label_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
-To put and then modify a string.
+To display and then modify a simple string.
 A @code{Gtk_Label} can emit no signal (see @code{Event_Box} if you want to
 connect a signal)
 
 Create a new label
 @example
-procedure Gtk_New (Label : out Gtk_Label; Str : in String);
+@c @group
+@c @cartouche
+@b{procedure} Gtk_New (Label : @b{out} Gtk_Label; Str : @b{in} String);
+@c @end cartouche
+@c @end group
 @end example
 
 Change the label string
 @example
-procedure Set_Text (Label : access Gtk_Label_Record; Str : in String);
+@c @group
+@c @cartouche
+@b{procedure} Set_Text (Label : @b{access} Gtk_Label_Record; Str : @b{in} String);
+@c @end cartouche
+@c @end group
 @end example
-
-@c Package Gtk.Tips_Query:
-@c    type Gtk_Tips_Query_Record is new Gtk.Label.Gtk_Label_Record with private;
-@c    type Gtk_Tips_Query is access all Gtk_Tips_Query_Record'Class;
-
-@c Package Gtk.Image:
-@c    type Gtk_Image_Record is new Gtk.Misc.Gtk_Misc_Record with private;
-@c    type Gtk_Image is access all Gtk_Image_Record'Class;
-
-@c Package Gtk.GRange:
-@c    type Gtk_Range_Record is new Gtk.Widget.Gtk_Widget_Record with private;
-@c    type Gtk_Range is access all Gtk_Range_Record'Class;
-
-@c Package Gtk.Scale:
-@c    type Gtk_Scale_Record is new Gtk.GRange.Gtk_Range_Record with private;
-@c    type Gtk_Scale is access all Gtk_Scale_Record'Class;
 
 @node Package Gtk.Scrollbar
 @section Package Gtk.Scrollbar
 @example
-type Gtk_Scrollbar_Record is new
-  Gtk.GRange.Gtk_Range_Record with private;
-type Gtk_Scrollbar is access all Gtk_Scrollbar_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Scrollbar_Record @b{is new} Gtk.GRange.Gtk_Range_Record @b{with private};
+@b{type} Gtk_Scrollbar @b{is access all} Gtk_Scrollbar_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 Horizontal or vertical scrollbars that can be associated with the
@@ -1191,36 +1102,43 @@ Horizontal or vertical scrollbars that can be associated with the
 @code{Adjustment} (see, eg @code{Gtk.Text.Get_Vadj}).
 
 @example
-procedure Gtk_New_Hscrollbar
-  (Widget     : out Gtk_Scrollbar;
-   Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+@c @group
+@c @cartouche
+@b{procedure} Gtk_New_Hscrollbar
+  (Widget     : @b{out} Gtk_Scrollbar;
+   Adjustment : @b{in} Gtk.Adjustment.Gtk_Adjustment);
 
-procedure Gtk_New_Vscrollbar
-  (Widget     : out Gtk_Scrollbar;
-   Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+@b{procedure} Gtk_New_Vscrollbar
+  (Widget     : @b{out} Gtk_Scrollbar;
+   Adjustment : @b{in} Gtk.Adjustment.Gtk_Adjustment);
+@c @end cartouche
+@c @end group
 @end example
 
 @node Package Gtk.Drawing_Area
 @section Package Gtk.Drawing_Area
 @example
-type Gtk_Drawing_Area_Record is new Gtk.Widget.Gtk_Widget_Record
-  with private;
-type Gtk_Drawing_Area is access all Gtk_Drawing_Area_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Drawing_Area_Record @b{is new} Gtk.Widget.Gtk_Widget_Record
+  @b{with private};
+@b{type} Gtk_Drawing_Area @b{is access all} Gtk_Drawing_Area_Record'@b{Class};
 
-procedure Gtk_New (Widget : out Gtk_Drawing_Area);
-procedure Size
-  (Darea  : access Gtk_Drawing_Area_Record;
-   Width  : in Glib.Gint;
-   Height : in Glib.Gint);
+@b{procedure} Gtk_New (Widget : @b{out} Gtk_Drawing_Area);
+@b{procedure} Size
+  (Darea  : @b{access} Gtk_Drawing_Area_Record;
+   Width  : @b{in} Glib.Gint;
+   Height : @b{in} Glib.Gint);
+@c @end cartouche
+@c @end group
 @end example
 
 You can get the @code{Gdk_Window} associated with a widget to draw in it
 using the GDK primitives of @code{Gdk_Drawable} which is a @code{subtype}
 of @code{Gdk_Window}, see the GDK section.
 
-This window exists only when the widget is actually displayed, e.g after the
-call to @code{Show} of the window containing the
-@code{Gtk_Drawing_Area}.
+This window exists only when the widget is actually realized, e.g after the
+call to @code{Realize} or @code{Show} of the @code{Gtk_Drawing_Area}.
 
 It is possible to draw in the initialization procedure after the procedure
 @code{Show} or when the @code{Gtk.Main.Main} loop is running,
@@ -1232,84 +1150,78 @@ is not redrawn automatically. It is up to the application to handle the
 expose event, by connecting a callback on the
 @code{"expose_event"} signal.
 
-@c Package Gtk.Curve:
-@c    type Gtk_Curve_Record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record
-@c      with private;
-@c    type Gtk_Curve is access all Gtk_Curve_Record'Class;
-
-@node Package Gtk.Editable
-@section Package Gtk.Editable
-@example
-type Gtk_Editable_Record is new
-  Gtk.Widget.Gtk_Widget_Record with private;
-type Gtk_Editable is access all Gtk_Editable_Record'Class;
-@end example
-
-Parent of the editable widgets, such as @code{Text}.
-
-@c Package Gtk.GEntry:
-@c    type Gtk_Entry_Record is new Gtk.Editable.Gtk_Editable_Record with private;
-@c    type Gtk_Entry is access all Gtk_Entry_Record'Class;
-
-@c Package Gtk.Spin_Button:
-@c    type Gtk_Spin_Button_Record is new Gtk.GEntry.Gtk_Entry_Record with private;
-@c    type Gtk_Spin_Button is access all Gtk_Spin_Button_Record'Class;
-
 @node Package Gtk.Text
 @section Package Gtk.Text
 To manipulate text.
 @example
-type Gtk_Text_Record is new
-  Gtk.Editable.Gtk_Editable_Record with private;
-type Gtk_Text is access all Gtk_Text_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Text_Record @b{is new}
+  Gtk.Editable.Gtk_Editable_Record @b{with private};
+@b{type} Gtk_Text @b{is access} all Gtk_Text_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
-End of line are marked by a @code{Ascii.LF}.
-When the application modify the text (using, e.g @code{Insert}), it can first
-freeze it (@code{Freeze}) to prevent any change from the user, then
-unfreeze it (@code{Thaw}) to allow the user to interact again.
+End of line are marked by a @code{Ascii.LF}.  When the application
+modifies the text (using, e.g @code{Insert}), it can first freeze it
+(@code{Freeze}) to prevent any change from the user and any automatic
+update of the display, then unfreeze it (@code{Thaw}) to allow the user
+to interact again.
 
 @example
-procedure Gtk_New
-  (Widget : out Gtk_Text;
-   Hadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
+@c @group
+@c @cartouche
+@b{procedure} Gtk_New
+  (Widget : @b{out} Gtk_Text;
+   Hadj   : @b{access} Gtk.Adjustment.Gtk_Adjustment_Record'@b{Class}
      := Gtk.Adjustment.Null_Adjustment;
-   Vadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
+   Vadj   : @b{access} Gtk.Adjustment.Gtk_Adjustment_Record'@b{Class}
      := Gtk.Adjustment.Null_Adjustment);
 
-procedure Freeze (Text : access Gtk_Text_Record);
+@b{procedure} Freeze (Text : @b{access} Gtk_Text_Record);
 
-procedure Thaw (Text : access Gtk_Text_Record);
+@b{procedure} Thaw (Text : @b{access} Gtk_Text_Record);
 
-function Get_Hadj (Widget : access Gtk_Text_Record)
-  return Gtk.Adjustment.Gtk_Adjustment;
+@b{function} Get_Hadj (Widget : @b{access} Gtk_Text_Record)
+  @b{return} Gtk.Adjustment.Gtk_Adjustment;
 
-function Get_Vadj (Widget : access Gtk_Text_Record)
-  return Gtk.Adjustment.Gtk_Adjustment;
+@b{function} Get_Vadj (Widget : @b{access} Gtk_Text_Record)
+  @b{return} Gtk.Adjustment.Gtk_Adjustment;
 
-function Get_Length (Text : in Gtk_Text) return Guint;
+@b{function} Get_Length (Text : @b{in} Gtk_Text) @b{return} Guint;
 
-procedure Insert
-  (Text   : access Gtk_Text_Record;
-   Font   : in Gdk.Font.Gdk_Font'Class;
-   Fore   : in Gdk.Color.Gdk_Color;
-   Back   : in Gdk.Color.Gdk_Color;
-   Chars  : in String;
-   Length : in Gint);
+@b{procedure} Insert
+  (Text   : @b{access} Gtk_Text_Record;
+   Font   : @b{in} Gdk.Font.Gdk_Font'@b{Class};
+   Fore   : @b{in} Gdk.Color.Gdk_Color;
+   Back   : @b{in} Gdk.Color.Gdk_Color;
+   Chars  : @b{in} String;
+   Length : @b{in} Gint);
+@c @end cartouche
+@c @end group
 @end example
 
 By default, the text shown is not modifiable by the user. To change this,
 use the @code{Set_Editable} procedure:
 @example
-procedure Set_Editable
-  (Text : access Gtk_Text_Record; Editable : in Boolean);
+@c @group
+@c @cartouche
+@b{procedure} Set_Editable
+  (Text : @b{access} Gtk_Text_Record; Editable : @b{in} Boolean);
+@c @end cartouche
+@c @end group
 @end example
 
 To avoid cutting words at the end of a line:
 @example
-procedure Set_Word_Wrap
-  (Text      : access Gtk_Text_Record;
-   Word_Wrap : in Boolean);
+@c @group
+@c @cartouche
+@b{procedure} Set_Word_Wrap
+  (Text      : @b{access} Gtk_Text_Record;
+   Word_Wrap : @b{in} Boolean);
+@c @end cartouche
+@c @end group
 @end example
 
 Also inherits primitives from @code{Gtk.Editable.Gtk_Editable}:
@@ -1317,15 +1229,19 @@ Also inherits primitives from @code{Gtk.Editable.Gtk_Editable}:
 
 @item Destroy a text section
 @example
-procedure Delete_Text
-  (Editable  : access Gtk_Editable_Record;
-   Start_Pos : in Gint;
-   End_Pos   : in Gint);   --  e.g Glib.Gint (Get_Length (...))
+@c @group
+@c @cartouche
+@b{procedure} Delete_Text
+  (Editable  : @b{access} Gtk_Editable_Record;
+   Start_Pos : @b{in} Gint;
+   End_Pos   : @b{in} Gint);   --  e.g Glib.Gint (Get_Length (...))
+@c @end cartouche
+@c @end group
 @end example
 
 @item Get the current postion of the cursor
 @example
-function Get_Current_Pos (Widget : access Gtk_Editable_Record)
+@b{function} Get_Current_Pos (Widget : access Gtk_Editable_Record)
   return Guint;
 @end example
 @end itemize
@@ -1333,9 +1249,13 @@ function Get_Current_Pos (Widget : access Gtk_Editable_Record)
 @node Package Gtk.Container
 @section Package Gtk.Container
 @example
-type Gtk_Container_Record is new
-  Gtk.Widget.Gtk_Widget_Record with private;
-type Gtk_Container is access all Gtk_Container_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Container_Record @b{is new}
+  Gtk.Widget.Gtk_Widget_Record @b{with private};
+@b{type} Gtk_Container @b{is access all} Gtk_Container_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 General notion that permits to create a hierarchical structure of widgets, such
@@ -1344,50 +1264,59 @@ as @code{Gtk_Box, Gtk_Table, Gtk_EventBox}, @dots{}
 To add/remove a widget in a @code{Gtk_Container}:
 
 @example
-procedure Add
-  (Container : access Gtk_Container_Record;
-   Widget    : access Gtk.Widget.Gtk_Widget_Record'Class);
+@c @group
+@c @cartouche
+@b{procedure} Add
+  (Container : @b{access} Gtk_Container_Record;
+   Widget    : @b{access} Gtk.Widget.Gtk_Widget_Record'@b{Class});
 
-procedure Remove
-  (Container : access Gtk_Container_Record;
-   Widget    : access Gtk.Widget.Gtk_Widget_Record'Class);
+@b{procedure} Remove
+  (Container : @b{access} Gtk_Container_Record;
+   Widget    : @b{access} Gtk.Widget.Gtk_Widget_Record'@b{Class});
+@c @end cartouche
+@c @end group
 @end example
 
-The procedures @code{Pack_Start} and @code{Pack_End} of @code{Gtk_Box} and
+The @b{procedure}s @code{Pack_Start} and @code{Pack_End} of @code{Gtk_Box} and
 @code{Attach} of @code{Gtk_Table} let you add widgets and specify their
 position.
 
 To set the width of the border around the @code{Gtk_Container}:
 @example
-procedure Border_Width
-  (Container    : access Gtk_Container_Record;
-   Border_Width : in Gint);
+@c @group
+@c @cartouche
+@b{procedure} Border_Width
+  (Container    : @b{access} Gtk_Container_Record;
+   Border_Width : @b{in} Gint);
+@c @end cartouche
+@c @end group
 @end example
-
-@c @section Package Gtk.Toolbar
-@c @example
-@c    type Gtk_Toolbar_Record is new Gtk.Container.Gtk_Container_Record
-@c      with private;
-@c    type Gtk_Toolbar is access all Gtk_Toolbar_Record'Class;
-@c @end example
 
 @node Package Gtk.Table
 @section Package Gtk.Table
 @example
-type Gtk_Table_Record is new Gtk.Container.Gtk_Container_Record
-  with private;
-type Gtk_Table is access all Gtk_Table_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Table_Record @b{is new} Gtk.Container.Gtk_Container_Record
+  @b{with private};
+@b{type} Gtk_Table @b{is access all} Gtk_Table_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 To group widgets in a table. The same widget can cover several boxes of the
-table. The size of the boxes depend on what they contain.
+table. The size of the boxes depends on what they contain.
 
 @example
-procedure Gtk_New
-  (Widget      : out Gtk_Table;
-   Rows        : in Glib.Gint;
-   Columns     : in Glib.Gint;
-   Homogeneous : in Boolean);
+@c @group
+@c @cartouche
+@b{procedure} Gtk_New
+  (Widget      : @b{out} Gtk_Table;
+   Rows        : @b{in} Glib.Gint;
+   Columns     : @b{in} Glib.Gint;
+   Homogeneous : @b{in} Boolean);
+@c @end cartouche
+@c @end group
 @end example
 
 If @code{Homogeneous} is True, all the boxes will have the same size, determined
@@ -1397,25 +1326,29 @@ by the largest widget of the column.
 
 To attach a widget to a table
 @example
-procedure Attach
-  (Table         : access Gtk_Table_Record;
-   Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
-   Left_Attach   : in Gint;
-   Right_Attach  : in Gint;
-   Top_Attach    : in Gint;
-   Bottom_Attach : in Gint;
-   Xoptions      : in Gtk_Attach_Options;
-   Yoptions      : in Gtk_Attach_Options;
-   Xpadding      : in Gint;
-   Ypadding      : in Gint);
+@c @group
+@c @cartouche
+@b{procedure} Attach
+  (Table         : @b{access} Gtk_Table_Record;
+   Child         : @b{access} Gtk.Widget.Gtk_Widget_Record'@b{Class};
+   Left_Attach   : @b{in} Gint;
+   Right_Attach  : @b{in} Gint;
+   Top_Attach    : @b{in} Gint;
+   Bottom_Attach : @b{in} Gint;
+   Xoptions      : @b{in} Gtk_Attach_Options;
+   Yoptions      : @b{in} Gtk_Attach_Options;
+   Xpadding      : @b{in} Gint;
+   Ypadding      : @b{in} Gint);
 
-procedure Attach_Defaults
-  (Table         : access Gtk_Table_Record;
-   Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
-   Left_Attach   : in Gint;
-   Right_Attach  : in Gint;
-   Top_Attach    : in Gint;
-   Bottom_Attach : in Gint);
+@b{procedure} Attach_Defaults
+  (Table         : @b{access} Gtk_Table_Record;
+   Widget        : @b{access} Gtk.Widget.Gtk_Widget_Record'@b{Class};
+   Left_Attach   : @b{in} Gint;
+   Right_Attach  : @b{in} Gint;
+   Top_Attach    : @b{in} Gint;
+   Bottom_Attach : @b{in} Gint);
+@c @end cartouche
+@c @end group
 @end example
 
 Attach the widget @code{Child} to the position indicated by
@@ -1425,27 +1358,31 @@ These indexes start from 0 to the number of column or rows specified at
 table creation. The origin (0, 0) of the frontiers is located in upper left.
 
 @example
+@c @group
+@c @cartouche
     0          1          2
    0+----------+----------+
     |          |          |
    1+----------+----------+
     |          |          |
    2+----------+----------+
+@c @end cartouche
+@c @end group
 @end example
 
-The values of @code{Xoptions} @code{Yoptions} can be a logical @var{or} of
+The values of @code{Xoptions} and @code{Yoptions} can be a logical @var{or} of
 several values:
 @itemize @bullet
 @item [Gtk.Enums.Expand] The table will use all the remaining space in the
  window.
 @item [Gtk.Enums.Shrink] If the widget has less space than needed, it will
  shrink instead of disappearing.
-@item [Gtk.Enums.Fill] The widget take the whole space that has been allocated
+@item [Gtk.Enums.Fill] The widget takes the whole space that has been allocated
  for it.
 @end itemize
 
-@code{Xpadding} and @code{Ypadding} give the widths in number of pixels of the
- free spaces reserved around the widget.
+@code{Xpadding} and @code{Ypadding} give the widths in pixels of the
+ free space reserved around the widget.
 
 For the @code{Attach_Defaults} procedure, the default values of @code{Xoptions}
 and @code{Yoptions} are equals to @code{Expand or Fill} and those of
@@ -1454,9 +1391,13 @@ and @code{Yoptions} are equals to @code{Expand or Fill} and those of
 @node Package Gtk.Scrolled_Window
 @section Package Gtk.Scrolled_Window
 @example
-type Gtk_Scrolled_Window_Record is new Container.Gtk_Container_Record
-  with private;
-type Gtk_Scrolled_Window is access all Gtk_Scrolled_Window_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Scrolled_Window_Record @b{is new} Container.Gtk_Container_Record
+  @b{with private};
+@b{type} Gtk_Scrolled_Window @b{is access all} Gtk_Scrolled_Window_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 To create a scrollable zone in which you can put any kind of widget, like
@@ -1464,87 +1405,103 @@ e.g a table of buttons.
 If the window is too small, all the widgets won't be visible, but they will
 remain accessible using the scrollbars.
 @example
-procedure Gtk_New
-  (Scrolled_Window :    out Gtk_Scrolled_Window;
-   Hadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
+@c @group
+@c @cartouche
+@b{procedure} Gtk_New
+  (Scrolled_Window :    @b{out} Gtk_Scrolled_Window;
+   Hadjustment     : @b{access} Adjustment.Gtk_Adjustment_Record'@b{Class}
      := Adjustment.Null_Adjustment;
-   Vadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
+   Vadjustment     : @b{access} Adjustment.Gtk_Adjustment_Record'@b{Class}
      := Adjustment.Null_Adjustment);
+@c @end cartouche
+@c @end group
 @end example
 
 Create a @code{Gtk_Scrolled_Window} by optionally specifying adjustment rules.
 
-To get the adjutment rules (to attach scrollbars).
+To get the adjustment rules (to attach scrollbars).
 @example
-function Get_Hadjustment
-  (Scrolled_Window : access Gtk_Scrolled_Window_Record)
-   return Adjustment.Gtk_Adjustment;
+@c @group
+@c @cartouche
+@b{function} Get_Hadjustment
+  (Scrolled_Window : @b{access} Gtk_Scrolled_Window_Record)
+   @b{return} Adjustment.Gtk_Adjustment;
 
-function Get_Vadjustment
-  (Scrolled_Window : access Gtk_Scrolled_Window_Record)
-   return Adjustment.Gtk_Adjustment;
+@b{function} Get_Vadjustment
+  (Scrolled_Window : @b{access} Gtk_Scrolled_Window_Record)
+   @b{return} Adjustment.Gtk_Adjustment;
+@c @end cartouche
+@c @end group
 @end example
 
 @c Package Gtk.Paned:
-@c    type Gtk_Paned_Record is new Gtk.Container.Gtk_Container_Record
+@c    @b{type} Gtk_Paned_Record is new Gtk.Container.Gtk_Container_Record
 @c      with private;
-@c    type Gtk_Paned is access all Gtk_Paned_Record'Class;
+@c    @b{type} Gtk_Paned is @b{access} all Gtk_Paned_Record'@b{Class};
 
 @c Package Gtk.Tree:
-@c    type Gtk_Tree_Record is new Gtk.Container.Gtk_Container_Record with private;
-@c    type Gtk_Tree is access all Gtk_Tree_Record'Class;
+@c    @b{type} Gtk_Tree_Record is new Gtk.Container.Gtk_Container_Record with private;
+@c    @b{type} Gtk_Tree is @b{access} all Gtk_Tree_Record'@b{Class};
 
 @c Package Gtk.Menu_Shell:
-@c    type Gtk_Menu_Shell_Record is new Gtk.Container.Gtk_Container_Record
+@c    @b{type} Gtk_Menu_Shell_Record is new Gtk.Container.Gtk_Container_Record
 @c      with private;
-@c    type Gtk_Menu_Shell is access all Gtk_Menu_Shell_Record'Class;
+@c    @b{type} Gtk_Menu_Shell is @b{access} all Gtk_Menu_Shell_Record'@b{Class};
 
 @c Package Gtk.Menu:
-@c    type Gtk_Menu_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
+@c    @b{type} Gtk_Menu_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
 @c      with private;
-@c    type Gtk_Menu is access all Gtk_Menu_Record'Class;
+@c    @b{type} Gtk_Menu is @b{access} all Gtk_Menu_Record'@b{Class};
 
 @c Package Gtk.Menu_Bar:
-@c    type Gtk_Menu_Bar_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
+@c    @b{type} Gtk_Menu_Bar_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
 @c      with private;
-@c    type Gtk_Menu_Bar is access all Gtk_Menu_Bar_Record'Class;
+@c    @b{type} Gtk_Menu_Bar is @b{access} all Gtk_Menu_Bar_Record'@b{Class};
 
 @c Package Gtk.List:
-@c    type Gtk_List_Record is new Gtk.Container.Gtk_Container_Record with private;
-@c    type Gtk_List is access all Gtk_List_Record'Class;
+@c    @b{type} Gtk_List_Record is new Gtk.Container.Gtk_Container_Record with private;
+@c    @b{type} Gtk_List is @b{access} all Gtk_List_Record'@b{Class};
 
 @c Package Gtk.Fixed:
-@c    type Gtk_Fixed_Record is new Gtk.Container.Gtk_Container_Record
+@c    @b{type} Gtk_Fixed_Record is new Gtk.Container.Gtk_Container_Record
 @c      with private;
-@c    type Gtk_Fixed is access all Gtk_Fixed_Record'Class;
+@c    @b{type} Gtk_Fixed is @b{access} all Gtk_Fixed_Record'@b{Class};
 
 @node Package Gtk.Notebook
 @section Package Gtk.Notebook
 @example
-type Gtk_Notebook_Record is new Gtk.Container.Gtk_Container_Record
-  with private;
-type Gtk_Notebook is access all Gtk_Notebook_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Notebook_Record @b{is new} Gtk.Container.Gtk_Container_Record
+  @b{with private};
+@b{type} Gtk_Notebook @b{is access all} Gtk_Notebook_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 The NoteBook Widget is a collection of @var{pages} that overlap each other,
 each page containing different information.
 This widget has become more common lately in GUI programming,
-and it is a good way to show blocks similar information that warrant
+and it is a good way to show blocks of similar information that warrant
 separation in their display. 
 
 @c Package Gtk.CList:
-@c    type Gtk_Clist_Record is new Gtk.Container.Gtk_Container_Record
+@c    @b{type} Gtk_Clist_Record is new Gtk.Container.Gtk_Container_Record
 @c      with private;
-@c    type Gtk_Clist is access all Gtk_Clist_Record'Class;
+@c    @b{type} Gtk_Clist is @b{access} all Gtk_Clist_Record'@b{Class};
 
 @node Package Gtk.Box
 @section Package Gtk.Box
 @example
-type Gtk_Box_Record is new
-  Gtk.Container.Gtk_Container_Record with private;
-type Gtk_Box is access all Gtk_Box_Record'Class;
-subtype Gtk_Vbox is Gtk_Box;
-subtype Gtk_Hbox is Gtk_Box;
+@c @group
+@c @cartouche
+@b{type} Gtk_Box_Record @b{is new}
+  Gtk.Container.Gtk_Container_Record @b{with private};
+@b{type} Gtk_Box @b{is access all} Gtk_Box_Record'@b{Class};
+@b{subtype} Gtk_Vbox @b{is} Gtk_Box;
+@b{subtype} Gtk_Hbox @b{is} Gtk_Box;
+@c @end cartouche
+@c @end group
 @end example
 
 Horizontal (@code{Gtk_New_Hbox}) and vertical (@code{Gtk_New_Vbox}) boxes
@@ -1557,90 +1514,102 @@ you can add widgets from
 @end itemize
 
 @example
-procedure Gtk_New_Vbox
-  (Box         : in out Gtk_Box;
-   Homogeneous : in  Boolean;
-   Spacing     : in  Gint);
-procedure Initialize_Vbox
-  (Box         : access Gtk_Box_Record;
-   Homogeneous : in  Boolean;
-   Spacing     : in  Gint);
+@c @group
+@c @cartouche
+@b{procedure} Gtk_New_Vbox
+  (Box         : @b{in} out Gtk_Box;
+   Homogeneous : @b{in}  Boolean;
+   Spacing     : @b{in}  Gint);
+@b{procedure} Initialize_Vbox
+  (Box         : @b{access} Gtk_Box_Record;
+   Homogeneous : @b{in}  Boolean;
+   Spacing     : @b{in}  Gint);
 
-procedure Gtk_New_Hbox
-  (Box         : in out Gtk_Box;
-   Homogeneous : in  Boolean;
-   Spacing     : in  Gint);A
-procedure Initialize_Hbox
-  (Box         : access Gtk_Box_Record;
-   Homogeneous : in  Boolean;
-   Spacing     : in  Gint);
+@b{procedure} Gtk_New_Hbox
+  (Box         : @b{in} out Gtk_Box;
+   Homogeneous : @b{in}  Boolean;
+   Spacing     : @b{in}  Gint);
+@b{procedure} Initialize_Hbox
+  (Box         : @b{access} Gtk_Box_Record;
+   Homogeneous : @b{in}  Boolean;
+   Spacing     : @b{in}  Gint);
 
-procedure Pack_Start
-  (In_Box  : access Gtk_Box_Record;
-   Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
-   Expand  : in Boolean := True;
-   Fill    : in Boolean := True;
-   Padding : in Gint    := 0);
+@b{procedure} Pack_Start
+  (In_Box  : @b{access} Gtk_Box_Record;
+   Child   : @b{access} Gtk.Widget.Gtk_Widget_Record'@b{Class};
+   Expand  : @b{in} Boolean := True;
+   Fill    : @b{in} Boolean := True;
+   Padding : @b{in} Gint    := 0);
 
-procedure Pack_End
-  (In_Box  : access Gtk_Box_Record;
-   Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
-   Expand  : in Boolean := True;
-   Fill    : in Boolean := True;
-   Padding : in Gint    := 0);
+@b{procedure} Pack_End
+  (In_Box  : @b{access} Gtk_Box_Record;
+   Child   : @b{access} Gtk.Widget.Gtk_Widget_Record'@b{Class};
+   Expand  : @b{in} Boolean := True;
+   Fill    : @b{in} Boolean := True;
+   Padding : @b{in} Gint    := 0);
+@c @end cartouche
+@c @end group
 @end example
 
 @xref{Package Gtk.Table}
 
 @c Package Gtk.Status_Bar:
-@c    type Gtk_Status_Bar_Record is new Gtk.Box.Gtk_Box_Record with private;
-@c    type Gtk_Status_Bar is access all Gtk_Status_Bar_Record'Class;
+@c    @b{type} Gtk_Status_Bar_Record is new Gtk.Box.Gtk_Box_Record with private;
+@c    @b{type} Gtk_Status_Bar is @b{access} all Gtk_Status_Bar_Record'@b{Class};
 
 @c Package Gtk.Color_Selection:
-@c    type Gtk_Color_Selection_Record is new Gtk.Box.Gtk_Box_Record with private;
-@c    type Gtk_Color_Selection is access all Gtk_Color_Selection_Record'Class;
+@c    @b{type} Gtk_Color_Selection_Record is new Gtk.Box.Gtk_Box_Record with private;
+@c    @b{type} Gtk_Color_Selection is @b{access} all Gtk_Color_Selection_Record'@b{Class};
 
 @c Package Gtk.Button_Box:
-@c    type Gtk_Button_Box_Record is new Gtk.Box.Gtk_Box_Record with private;
-@c    type Gtk_Button_Box is access all Gtk_Button_Box_Record'Class;
+@c    @b{type} Gtk_Button_Box_Record is new Gtk.Box.Gtk_Box_Record with private;
+@c    @b{type} Gtk_Button_Box is @b{access} all Gtk_Button_Box_Record'@b{Class};
 
 @c Package Gtk.VButton_Box:
-@c    type Gtk_VButton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record
+@c    @b{type} Gtk_VButton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record
 @c      with private;
-@c    type Gtk_VButton_Box is access all Gtk_VButton_Box_Record'Class;
+@c    @b{type} Gtk_VButton_Box is @b{access} all Gtk_VButton_Box_Record'@b{Class};
 
 @c Package Gtk.HButton_Box:
-@c    type Gtk_Hbutton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record
+@c    @b{type} Gtk_Hbutton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record
 @c      with private;
-@c    type Gtk_Hbutton_Box is access all Gtk_Hbutton_Box_Record'Class;
+@c    @b{type} Gtk_Hbutton_Box is @b{access} all Gtk_Hbutton_Box_Record'@b{Class};
 
 @c Package Gtk.Gamma_Curve:
-@c    type Gtk_Gamma_Curve_Record is new Gtk.Box.Gtk_Box_Record with private;
-@c    type Gtk_Gamma_Curve is access all Gtk_Gamma_Curve_Record'Class;
+@c    @b{type} Gtk_Gamma_Curve_Record is new Gtk.Box.Gtk_Box_Record with private;
+@c    @b{type} Gtk_Gamma_Curve is @b{access} all Gtk_Gamma_Curve_Record'@b{Class};
 
 @c Package Gtk.Combo:
-@c    type Gtk_Combo_Record is new Gtk.Box.Gtk_Box_Record with private;
-@c    type Gtk_Combo is access all Gtk_Combo_Record'Class;
+@c    @b{type} Gtk_Combo_Record is new Gtk.Box.Gtk_Box_Record with private;
+@c    @b{type} Gtk_Combo is @b{access} all Gtk_Combo_Record'@b{Class};
 
 @node Package Gtk.Button
 @section Package Gtk.Button
 @example
-type Gtk_Button_Record is new Bin.Gtk_Bin_Record with private;
-type Gtk_Button is access all Gtk_Button_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Button_Record @b{is new} Bin.Gtk_Bin_Record @b{with private};
+@b{type} Gtk_Button @b{is access all} Gtk_Button_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 A simple button with a label and signals (e.g @code{clicked}).
 
 @c Package Gtk.Option_Menu:
-@c    type Gtk_Option_Menu_Record is new Button.Gtk_Button_Record with private;
-@c    type Gtk_Option_Menu is access all Gtk_Option_Menu_Record'Class;
+@c    @b{type} Gtk_Option_Menu_Record is new Button.Gtk_Button_Record with private;
+@c    @b{type} Gtk_Option_Menu is @b{access} all Gtk_Option_Menu_Record'@b{Class};
 
 @node Package Gtk.Toggle_Button
 @section Package Gtk.Toggle_Button
 @example
-type Gtk_Toggle_Button_Record is new Gtk.Button.Gtk_Button_Record
-  with private;
-type Gtk_Toggle_Button is access all Gtk_Toggle_Button_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Toggle_Button_Record @b{is new} Gtk.Button.Gtk_Button_Record
+  @b{with private};
+@b{type} Gtk_Toggle_Button @b{is access all} Gtk_Toggle_Button_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 Toggle buttons are very similar to normal buttons, except they will always
@@ -1651,186 +1620,198 @@ pop back down.
 @node Package Gtk.Check_Button
 @section Package Gtk.Check_Button
 @example
-type Gtk_Check_Button_Record is new
-  Toggle_Button.Gtk_Toggle_Button_Record with private;
-type Gtk_Check_Button is access all Gtk_Check_Button_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Check_Button_Record @b{is new}
+  Toggle_Button.Gtk_Toggle_Button_Record @b{with private};
+@b{type} Gtk_Check_Button @b{is access all} Gtk_Check_Button_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
-Check buttons inherit many properties and functions from the the toggle
+Check buttons inherit many properties and @b{function}s from the the toggle
 buttons above, but look a little different.
 Rather than being buttons with text inside them, they are small squares with
 the text to the right of them. These are often seen for toggling
 options on and off in applications. 
 
-@c Package Gtk.Radio_Button:
-@c   type Gtk_Radio_Button is new Check_Button.Gtk_Check_Button with private;
-@node Package Gtk.Bin
-@section Package Gtk.Bin
-@example
-type Gtk_Bin is new Container.Gtk_Container with private;
-@end example
-
-@c Package Gtk.Item:
-@c    type Gtk_Item_Record is new Bin.Gtk_Bin_Record with private;
-@c    type Gtk_Item is access all Gtk_Item_Record'Class;
-
-@c Package Gtk.List_Item:
-@c    type Gtk_List_Item_Record is new Gtk.Item.Gtk_Item_Record with private;
-@c    type Gtk_List_Item is access all Gtk_List_Item_Record'Class;
-
-@c Package Gtk.Menu_Item:
-@c    type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with private;
-@c    type Gtk_Menu_Item is access all Gtk_Menu_Item_Record'Class;
-
-@c Package Gtk.Check_Menu_Item:
-@c    type Gtk_Check_Menu_Item_Record is new Gtk.Menu_Item.Gtk_Menu_Item_Record
-@c      with private;
-@c    type Gtk_Check_Menu_Item is access all Gtk_Check_Menu_Item_Record'Class;
-
-@c Package Gtk.Radio_Menu_Item:
-@c    type Gtk_Radio_Menu_Item_Record
-@c       is new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record with private;
-@c    type Gtk_Radio_Menu_Item is access all Gtk_Radio_Menu_Item_Record'Class;
-
-@c Package Gtk.Tree_Item:
-@c    type Gtk_Tree_Item_Record is new Gtk.Item.Gtk_Item_Record with private;
-@c    type Gtk_Tree_Item is access all Gtk_Tree_Item_Record'Class;
-
-@c Package Gtk.Handle_Box:
-@c    type Gtk_Handle_Box_Record is new Gtk.Bin.Gtk_Bin_Record with private;
-@c    type Gtk_Handle_Box is access all Gtk_Handle_Box_Record'Class;
-
-@c Package Gtk.Frame:
-@c    type Gtk_Frame_Record is new Gtk.Bin.Gtk_Bin_Record with private;
-@c    type Gtk_Frame is access all Gtk_Frame_Record'Class;
-
-@c Package Gtk.Aspect_Frame:
-@c    type Gtk_Aspect_Frame_Record is new Gtk.Frame.Gtk_Frame_Record with private;
-@c    type Gtk_Aspect_Frame is access all Gtk_Aspect_Frame_Record'Class;
-
 @node Package Gtk.Event_Box
 @section Package Gtk.Event_Box
 @example
-type Gtk_Event_Box_Record is new Gtk.Bin.Gtk_Bin_Record with private;
-type Gtk_Event_Box is access Gtk_Event_Box_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Event_Box_Record @b{is new} Gtk.Bin.Gtk_Bin_Record @b{with private};
+@b{type} Gtk_Event_Box @b{is access all} Gtk_Event_Box_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 To associate a callback or clip a widget that is not able to do it, like
-labels for example.
+labels for example. Note that this container can have only one child.
 
 @example
-procedure Gtk_New (Widget : out Gtk_Event_Box);
+@c @group
+@c @cartouche
+@b{procedure} Gtk_New (Widget : @b{out} Gtk_Event_Box);
+@c @end cartouche
+@c @end group
 @end example
 
 This widget is a child of @code{Gtk_Container} and inherits in particular of:
 
 @example
-procedure Add (Container : access Gtk_Container_Record;
-               Widget    : access Gtk.Widget.Gtk_Widget_Record'Class);
+@c @group
+@c @cartouche
+@b{procedure} Add (Container : @b{access} Gtk_Container_Record;
+               Widget    : @b{access} Gtk.Widget.Gtk_Widget_Record'@b{Class});
+@c @end cartouche
+@c @end group
 @end example
 
 @c Package Gtk.Viewport:
-@c    type Gtk_Viewport_Record is new Gtk.Bin.Gtk_Bin_Record with private;
-@c    type Gtk_Viewport is access all Gtk_Viewport_Record'Class;
+@c    @b{type} Gtk_Viewport_Record is new Gtk.Bin.Gtk_Bin_Record with private;
+@c    @b{type} Gtk_Viewport is @b{access} all Gtk_Viewport_Record'@b{Class};
 
 @node Package Gtk.Window
 @section Package Gtk.Window
 @example
-type Gtk_Window_Record is new Bin.Gtk_Bin_Record with private;
-type Gtk_Window is access all Gtk_Window_Record'Class;
+@c @group
+@c @cartouche
+@b{type} Gtk_Window_Record @b{is new} Bin.Gtk_Bin_Record @b{with private};
+@b{type} Gtk_Window @b{is access all} Gtk_Window_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 The base window, emits the signals @code{"destroy", "delete_event"}.
 
 @c Package Gtk.Color_Selection_Dialog:
-@c    type Gtk_Color_Selection_Dialog_Record is new Gtk.Window.Gtk_Window_Record
+@c    @b{type} Gtk_Color_Selection_Dialog_Record is new Gtk.Window.Gtk_Window_Record
 @c      with private;
-@c    type Gtk_Color_Selection_Dialog
-@c      is access all Gtk_Color_Selection_Dialog_Record'Class;
+@c    @b{type} Gtk_Color_Selection_Dialog
+@c      is @b{access} all Gtk_Color_Selection_Dialog_Record'@b{Class};
 
 @node Package Gtk.File_Selection
 @section Package Gtk.File_Selection
 @example
-type Gtk_File_Selection_Record is new Gtk.Window.Gtk_Window_Record
+@c @group
+@c @cartouche
+@b{type} Gtk_File_Selection_Record is new Gtk.Window.Gtk_Window_Record
   with private;
-type Gtk_File_Selection is access all Gtk_File_Selection_Record'Class;
+@b{type} Gtk_File_Selection is @b{access} all Gtk_File_Selection_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 To select a file in the directories tree. Nothing special to know about
 it, just use it!
 There are three buttons @code{Ok, Cancel and Help}.
 You can modify these buttons (e.g change the labels, connect callbacks, @dots{})
-with the various @code{Get_..._Button} functions.
+with the various @code{Get_..._Button} @b{function}s.
 
 @example
-procedure Gtk_New
-  (File_Selection : out Gtk_File_Selection; Title : in String);
+@c @group
+@c @cartouche
+@b{procedure} Gtk_New
+  (File_Selection : @b{out} Gtk_File_Selection; Title : @b{in} String);
+@c @end cartouche
+@c @end group
 @end example
 
 To associate a callback with the buttons of the file selector:
 @example
-function Get_Ok_Button
-  (File_Selection : access Gtk_File_Selection_Record)
-   return Gtk.Button.Gtk_Button;
+@c @group
+@c @cartouche
+@b{function} Get_Ok_Button
+  (File_Selection : @b{access} Gtk_File_Selection_Record)
+   @b{return} Gtk.Button.Gtk_Button;
 
-function Get_Cancel_Button
-  (File_Selection : access Gtk_File_Selection_Record)
-   return Gtk.Button.Gtk_Button;
+@b{function} Get_Cancel_Button
+  (File_Selection : @b{access} Gtk_File_Selection_Record)
+   @b{return} Gtk.Button.Gtk_Button;
+@c @end cartouche
+@c @end group
 @end example
 
 To consult or set the filename:
 @example
-function Get_Filename
-  (File_Selection : access Gtk_File_Selection_Record)
-   return String;
+@c @group
+@c @cartouche
+@b{function} Get_Filename
+  (File_Selection : @b{access} Gtk_File_Selection_Record)
+   @b{return} String;
 
-procedure Set_Filename
-  (File_Selection : access Gtk_File_Selection_Record;
-   Filename : in String);
+@b{procedure} Set_Filename
+  (File_Selection : @b{access} Gtk_File_Selection_Record;
+   Filename : @b{in} String);
+@c @end cartouche
+@c @end group
 @end example
 
 To hide the file manipulation buttons (destruction, @dots{}):
 
 @example
-procedure Hide_Fileop_Buttons
-  (File_Selection : access Gtk_File_Selection_Record);
+@c @group
+@c @cartouche
+@b{procedure} Hide_Fileop_Buttons
+  (File_Selection : @b{access} Gtk_File_Selection_Record);
+@c @end cartouche
+@c @end group
 @end example
 
 @c Package Gtk.Dialog:
-@c    type Gtk_Dialog_Record is new Gtk.Window.Gtk_Window_Record with private;
-@c    type Gtk_Dialog is access all Gtk_Dialog_Record'Class;
+@c    @b{type} Gtk_Dialog_Record is new Gtk.Window.Gtk_Window_Record with private;
+@c    @b{type} Gtk_Dialog is @b{access} all Gtk_Dialog_Record'@b{Class};
 
 @c Package Gtk.Input_Dialog:
-@c    type Gtk_Input_Dialog_Record is new Dialog.Gtk_Dialog_Record with private;
-@c    type Gtk_Input_Dialog is access all Gtk_Input_Dialog_Record'Class;
+@c    @b{type} Gtk_Input_Dialog_Record is new Dialog.Gtk_Dialog_Record with private;
+@c    @b{type} Gtk_Input_Dialog is @b{access} all Gtk_Input_Dialog_Record'@b{Class};
 
 @c Package Gtk.Alignment:
-@c    type Gtk_Alignment_Record is new Gtk.Bin.Gtk_Bin_Record with private;
-@c    type Gtk_Alignment is access Gtk_Alignment_Record'Class;
+@c    @b{type} Gtk_Alignment_Record is new Gtk.Bin.Gtk_Bin_Record with private;
+@c    @b{type} Gtk_Alignment is @b{access} Gtk_Alignment_Record'@b{Class};
 
 @node Package Gtk.Enums
 @section Package Gtk.Enums
-This package defines all the enumerated types used by the GTK hierarchy.
+This package defines all the enumerated @b{type}s used by the GTK hierarchy.
 
 @node Description of the GDK hierarchy
 @chapter Description of the GDK hierarchy
 GTK is based on a lower level layer called GDK that contains some simple
 drawing and window primitives.
 
+@menu
+* Package Gdk.Color::
+* Package Gdk.Point::
+* Package Gdk.Window::
+* Package Gdk.Drawable::
+* Package Gdk.GC::
+* Package Gdk.Font::
+* Draw in a widget::
+@end menu
+
 @node Package Gdk.Color
 @section Package Gdk.Color
 Color types and table of colors:
 @example
-type Gdk_Color is private;
-type Gdk_Colormap is new Root_Type with private;
+@c @group
+@c @cartouche
+@b{type} Gdk_Color @b{is private};
+@b{type} Gdk_Colormap @b{is new} Root_Type @b{with private};
+@c @end cartouche
+@c @end group
 @end example
 
 Allows one to get black and white colors by asking the
 @code{Gdk_Colormap} of a widget:
 @example
-function White (Colormap : in Gdk_Colormap) return Gdk_Color;
-function Black (Colormap : in Gdk_Colormap) return Gdk_Color;
-Wrong_Color : exception;
+@c @group
+@c @cartouche
+@b{function} White (Colormap : @b{in} Gdk_Colormap) @b{return} Gdk_Color;
+@b{function} Black (Colormap : @b{in} Gdk_Colormap) @b{return} Gdk_Color;
+Wrong_Color : @b{exception};
+@c @end cartouche
+@c @end group
 @end example
 
 See for example @code{Get_Default_Colormap}.
@@ -1838,84 +1819,108 @@ See for example @code{Get_Default_Colormap}.
 @node Package Gdk.Point
 @section Package Gdk.Point
 @example
-type Gdk_Point is private;
+@c @group
+@c @cartouche
+@b{type} Gdk_Point @b{is private};
+@c @end cartouche
+@c @end group
 @end example
 
 Used to describe polygons.
 
 @example
-type Gdk_Points_Array is array (Positive range <>) of Gdk_Point;
+@c @group
+@c @cartouche
+@b{type} Gdk_Points_Array @b{is array} (Positive @b{range} <>) @b{of} Gdk_Point;
 
-function Get_X (Point : in Gdk_Point) return Glib.Gint16;
-function Get_Y (Point : in Gdk_Point) return Glib.Gint16;
-procedure Set_X (Point : in out Gdk_Point; X : Glib.Gint16);
-procedure Set_Y (Point : in out Gdk_Point; Y : Glib.Gint16);
+@b{function} Get_X (Point : @b{in} Gdk_Point) @b{return} Glib.Gint16;
+@b{function} Get_Y (Point : @b{in} Gdk_Point) @b{return} Glib.Gint16;
+@b{procedure} Set_X (Point : @b{in out} Gdk_Point; X : Glib.Gint16);
+@b{procedure} Set_Y (Point : @b{in out} Gdk_Point; Y : Glib.Gint16);
+@c @end cartouche
+@c @end group
 @end example
  
 @node Package Gdk.Window
 @section Package Gdk.Window
 @example
-type Gdk_Window is new Root_Type with private;
+@c @group
+@c @cartouche
+@b{type} Gdk_Window @b{is new} Root_Type @b{with private};
+@c @end cartouche
+@c @end group
 @end example
 
 To clear a window (e.g before drawing ):
 @example
-procedure Clear (Window : in out Gdk_Window);
+@c @group
+@c @cartouche
+@b{procedure} Clear (Window : @b{in out} Gdk_Window);
+@c @end cartouche
+@c @end group
 @end example
  
 @node Package Gdk.Drawable
 @section Package Gdk.Drawable
 @example
-subtype Gdk_Drawable is Gdk.Window.Gdk_Window;
+@c @group
+@c @cartouche
+@b{subtype} Gdk_Drawable @b{is} Gdk.Window.Gdk_Window;
+@c @end cartouche
+@c @end group
 @end example
 
 @example
-   procedure Draw_Rectangle (Drawable : in Gdk_Drawable'Class;
-                             Gc       : in Gdk.GC.Gdk_GC'Class;
-                             Filled   : in Boolean := False;
-                             X        : in Gint;
-                             Y        : in Gint;
-                             Width    : in Gint;
-                             Height   : in Gint);
+@c @group
+@c @cartouche
+   @b{procedure} Draw_Rectangle (Drawable : @b{in} Gdk_Drawable'@b{Class};
+                             Gc       : @b{in} Gdk.GC.Gdk_GC'@b{Class};
+                             Filled   : @b{in} Boolean := False;
+                             X        : @b{in} Gint;
+                             Y        : @b{in} Gint;
+                             Width    : @b{in} Gint;
+                             Height   : @b{in} Gint);
  
-   procedure Draw_Point (Drawable : in Gdk_Drawable'Class;
-                         Gc       : in Gdk.GC.Gdk_GC'Class;
-                         X        : in Gint;
-                         Y        : in Gint);
+   @b{procedure} Draw_Point (Drawable : @b{in} Gdk_Drawable'@b{Class};
+                         Gc       : @b{in} Gdk.GC.Gdk_GC'@b{Class};
+                         X        : @b{in} Gint;
+                         Y        : @b{in} Gint);
  
-   procedure Draw_Line (Drawable : in Gdk_Drawable'Class;
+   @b{procedure} Draw_Line (Drawable : @b{in} Gdk_Drawable'@b{Class};
  
-   procedure Draw_Line (Drawable : in Gdk_Drawable'Class;
-                        Gc       : in Gdk.GC.Gdk_GC'Class;
-                        X1       : in Gint;
-                        Y1       : in Gint;
-                        X2       : in Gint;
-                        Y2       : in Gint);
+   @b{procedure} Draw_Line (Drawable : @b{in} Gdk_Drawable'@b{Class};
+                        Gc       : @b{in} Gdk.GC.Gdk_GC'@b{Class};
+                        X1       : @b{in} Gint;
+                        Y1       : @b{in} Gint;
+                        X2       : @b{in} Gint;
+                        Y2       : @b{in} Gint);
  
-   procedure Draw_Arc (Drawable : in Gdk_Drawable'Class;
-                       Gc       : in Gdk.GC.Gdk_GC'Class;
-                       Filled   : in Boolean := False;
-                       X        : in Gint;
-                       Y        : in Gint;
-                       Width    : in Gint;
-                       Height   : in Gint;
-                       Angle1   : in Gint;
-                       Angle2   : in Gint);
+   @b{procedure} Draw_Arc (Drawable : @b{in} Gdk_Drawable'@b{Class};
+                       Gc       : @b{in} Gdk.GC.Gdk_GC'@b{Class};
+                       Filled   : @b{in} Boolean := False;
+                       X        : @b{in} Gint;
+                       Y        : @b{in} Gint;
+                       Width    : @b{in} Gint;
+                       Height   : @b{in} Gint;
+                       Angle1   : @b{in} Gint;
+                       Angle2   : @b{in} Gint);
  
-   procedure Draw_Polygon (Drawable : in Gdk_Drawable'Class;
-                           Gc       : in Gdk.GC.Gdk_GC'Class;
-                           Filled   : in Boolean;
-                           Points   : in Gdk.Point.Gdk_Points_Array);
-   procedure Draw_Text
-     (Drawable    : in Gdk_Drawable'Class;
-      Font        : in Gdk.Font.Gdk_Font;
-      Gc          : in Gdk.GC.Gdk_GC;
-      X           : in Glib.Gint;
-      Y           : in Glib.Gint;
-      Text        : in String);
+   @b{procedure} Draw_Polygon (Drawable : @b{in} Gdk_Drawable'@b{Class};
+                           Gc       : @b{in} Gdk.GC.Gdk_GC'@b{Class};
+                           Filled   : @b{in} Boolean;
+                           Points   : @b{in} Gdk.Point.Gdk_Points_Array);
+   @b{procedure} Draw_Text
+     (Drawable    : @b{in} Gdk_Drawable'@b{Class};
+      Font        : @b{in} Gdk.Font.Gdk_Font;
+      Gc          : @b{in} Gdk.GC.Gdk_GC;
+      X           : @b{in} Glib.Gint;
+      Y           : @b{in} Glib.Gint;
+      Text        : @b{in} String);
+@c @end cartouche
+@c @end group
 @end example
 
-for all the procedures (in particular @code{Draw_Arc}), the parameter are:
+for all the @b{procedure}s (in particular @code{Draw_Arc}), the parameters are:
 @itemize @bullet
  
 @item [X, Y] Position of the point or of the upper left corner or the rectangle.
@@ -1930,8 +1935,12 @@ containing an ellipse.
 @item [Font]  A font, that can be loaded using @code{Gdk.Font.Load}.
               For example:
 @example
+@c @group
+@c @cartouche
    Gdk.Font.Load
      (Font, "-adobe-courier-medium-i-*-*-15-*-*-*-*-*-*-*");
+@c @end cartouche
+@c @end group
 @end example
 @end itemize
 
@@ -1943,21 +1952,25 @@ primitive of @code{Gdk_Drawable}.
 A @code{Gdk_GC} let you, for example, set the colors to use for a drawing.
 
 @example
-   type Gdk_GC is new Root_Type with private;
+@c @group
+@c @cartouche
+   @b{type} Gdk_GC @b{is new} Root_Type @b{with private};
  
-   procedure Gdk_New (GC     :    out Gdk_GC;
-                      Window : in     Gdk.Window.Gdk_Window'Class);
+   @b{procedure} Gdk_New (GC     :    @b{out} Gdk_GC;
+                      Window : @b{in}     Gdk.Window.Gdk_Window'@b{Class});
  
-   procedure Destroy (GC : in out Gdk_GC);
+   @b{procedure} Destroy (GC : @b{in out} Gdk_GC);
  
-   procedure Set_Foreground (GC    : in out Gdk_GC;
-                             Color : in     Gdk.Color.Gdk_Color);
+   @b{procedure} Set_Foreground (GC    : @b{in out} Gdk_GC;
+                             Color : @b{in}     Gdk.Color.Gdk_Color);
  
-   procedure Set_Background (GC    : in out Gdk_GC;
-                             Color : in     Gdk.Color.Gdk_Color);
+   @b{procedure} Set_Background (GC    : @b{in out} Gdk_GC;
+                             Color : @b{in}     Gdk.Color.Gdk_Color);
  
-   procedure Set_Font (GC   : in out Gdk_GC;
-                       Font : in     Gdk.Font.Gdk_Font'Class);
+   @b{procedure} Set_Font (GC   : @b{in out} Gdk_GC;
+                       Font : @b{in}     Gdk.Font.Gdk_Font'@b{Class});
+@c @end cartouche
+@c @end group
 @end example
  
 @node Package Gdk.Font
@@ -1967,63 +1980,199 @@ kind, @dots{}.
 
 Under @code{X11}, each font has a name of the form:
 @example
+@c @group
+@c @cartouche
 "-adobe-courier-medium-i-*-*-15-*-*-*-*-*-*-*"
+@c @end cartouche
+@c @end group
 @end example
 
-The X command @code{xfontsel} let select you a font and build its associated
+The X command @code{xfontsel} lets you select a font and build its associated
 name automatically.
  
 @example
-   type Gdk_Font is new Root_Type with private;
+@c @group
+@c @cartouche
+   @b{type} Gdk_Font @b{is new} Root_Type @b{with private};
  
-   procedure Load
-     (Font      :    out Gdk_Font;
-      Font_Name : in     String);
+   @b{procedure} Load
+     (Font      :    @b{out} Gdk_Font;
+      Font_Name : @b{in}     String);
  
-   procedure Fontset_Load
-     (Font         :   out Gdk_Font;
-      Fontset_Name : in    String);
+   @b{procedure} Fontset_Load
+     (Font         :   @b{out} Gdk_Font;
+      Fontset_Name : @b{in}    String);
  
-   function Id (Font : in Gdk_Font) return Gint;
+   @b{function} Id (Font : @b{in} Gdk_Font) @b{return} Gint;
  
-   function "=" (Fonta, Fontb : in Gdk_Font) return Boolean;
+   @b{function} "=" (Fonta, Fontb : @b{in} Gdk_Font) @b{return} Boolean;
  
-   function String_Width
-     (Font : in Gdk_Font;
-      Str  : in String) return Gint;
+   @b{function} String_Width
+     (Font : @b{in} Gdk_Font;
+      Str  : @b{in} String) @b{return} Gint;
  
-   function Text_Width
-     (Font : in Gdk_Font;
-      Text : in String) return Gint;
+   @b{function} Text_Width
+     (Font : @b{in} Gdk_Font;
+      Text : @b{in} String) @b{return} Gint;
  
-   function Char_Width
-     (Font : in Gdk_Font;
-      Char : in Character) return Gint;
+   @b{function} Char_Width
+     (Font : @b{in} Gdk_Font;
+      Char : @b{in} Character) @b{return} Gint;
  
-   function String_Measure
-     (Font : in Gdk_Font;
-      Str  : in String) return Gint;
+   @b{function} String_Measure
+     (Font : @b{in} Gdk_Font;
+      Str  : @b{in} String) @b{return} Gint;
  
-   function Text_Measure
-     (Font : in Gdk_Font;
-      Text : in String) return Gint;
+   @b{function} Text_Measure
+     (Font : @b{in} Gdk_Font;
+      Text : @b{in} String) @b{return} Gint;
  
-   function Char_Measure
-     (Font : in Gdk_Font;
-      Char : in Character) return Gint;
+   @b{function} Char_Measure
+     (Font : @b{in} Gdk_Font;
+      Char : @b{in} Character) @b{return} Gint;
+@c @end cartouche
+@c @end group
 @end example
 
 @code{Width} gives the sum of the characters' widths,
 @code{Measure} gives a value similar to @code{Width} except that it takes
-info account the kind of the font (e.g @code{italic}).
+into account the attributes of the font (e.g @code{italic}).
+
+@node Draw in a widget
+@section Draw in a widget
+
+To select a drawing area, use a @code{Gtk_Drawing_Area} widget.
+The drawing procedures apply to the Gdk window
+(see @code{Gdk_Window} and @code{Gdk_Drawable}) of the
+@code{Gtk_Drawing_Area} widget via a graphic context (see @code{Gtk_Gc}).
+
+Typically the code will look like:
+
+@example
+@c @group
+@c @cartouche
+@b{with} Glib;
+@b{with} Gdk.Window;
+@b{with} Gdk.Drawable;
+@b{with} Gdk.GC;
+@b{with} Gdk.Font;
+
+@b{procedure} Draw (Drawing : @b{in} @b{out} Gtk.Drawing_Area.Gtk_Drawing_Area) @b{is}
+   Gdkw : Gdk.Window.Gdk_Window;
+   GC   : Gdk.GC.Gdk_GC;
+   Font : Gdk.Font.Gdk_Font;
+   @b{use} @b{type} Glib.Gint;
+
+@b{begin}
+   -- Get the Gdk window
+
+   Gdkw := Gtk.Drawing_Area.Get_Window (Drawing) ;
+
+   -- Clear the window
+
+   GDK.Window.Clear (Gdkw) ;
+
+   -- Create a graphic context associated with this window
+
+   Gdk.GC.Gdk_New (GC, Gdkw);
+
+   -- Draw a line in this window
+
+   Gdk.Drawable.Draw_Line
+     (Drawable => Gdkw,
+      GC => GC,
+      X1 =>   0, Y1 =>   0,
+      X2 => 100, Y2 => 100);
+
+   -- Draw an arc
+
+   Gdk.Drawable.Draw_Arc
+     (Drawable => Gdkw,
+      Gc       => gc,
+      Filled   => True,
+      X        => 100,
+      Y        => 100,
+      Width    => 200,
+      Height   => 100,
+      Angle1   => 0 * 64,
+      Angle2   => 270 * 64);
+
+   -- Ask for a given font
+
+   Gdk.Font.Load (Font, "-adobe-courier-medium-i-*-*-15-*-*-*-*-*-*-*");
+   Gdk.Drawable.Draw_Text
+     (Drawable    => Gdkw,
+      Font        => Font,
+      Gc          => gc,
+      X           => 50,
+      Y           => 50,
+      Text        => "Hello World");
+   Gdk.Font.Destroy (Font);
+   Gdk.GC.Destroy (GC);
+@b{end} Draw;
+@c @end cartouche
+@c @end group
+@end example
 
 @node Description of the Glib hierarchy
 @chapter Description of the Glib hierarchy
 
-Glib is the low-level layer and provides various types such as
+Glib is the low-level layer and provides various @b{type}s such as
 @code{Gint, Guint}, @dots{}.
 
 @c Glib.XML
+
+@node Resource files
+@chapter Resource files
+
+Resource files let you parametrize the aspect of the widgets of a GtkAda
+application without having to recompile it.
+
+A resource file needs to be loaded (@code{Gtk.Rc.Parse}) @var{before} setting
+the corresponding window.
+
+In this file, it is possible to specify the visual characteristics of the
+widgets (colors, fonts, @dots{}).
+Under X, the @code{xfontsel} command allows you to easily select a font.
+The FontSelection widget is also a simple way to select fonts.
+
+Here is an example of a resource file:
+@example
+# application.rc
+#
+# resource file for "Application"
+
+# Buttons style
+style "button"
+@{
+# BackGround Colors
+#                  Red  Green  Blue
+  bg[PRELIGHT] = @{ 0.0,  0.75, 0.0 @} # Green when the mouse is on
+                                     # the button
+  bg[ACTIVE]   = @{ 0.75, 0.0,  0.0 @} # Red on click
+# ForeGround Colors
+#                  Red  Green  Blue
+  fg[PRELIGHT] = @{ 1.0,  1.0,  1.0 @} # White when the mouse is on
+                                     # the button
+  fg[ACTIVE]   = @{ 1.0,  1.0,  1.0 @} # White on click
+@}
+
+# All the buttons will have the style "button"
+widget_class "*GtkButton*" style "button"
+
+# Text style
+style "text"
+@{
+  font = "-adobe-courier-medium-r-normal-*-15-*-*-*-*-*-*-*"
+  text[NORMAL] = @{ 0.0, 0.0, 0.0 @} # black
+  fg[NORMAL]   = @{ 0.0, 0.0, 0.0 @} # black
+  base[NORMAL] = @{ 1.0, 1.0, 1.0 @} # white : background color
+@}
+
+# All Gtk_Text will have the "text" style
+widget_class "*GtkText" style "text"
+@end example
+
 
 @node Creating and Binding new widgets
 @chapter Creating and Binding new widgets
@@ -2032,9 +2181,9 @@ New since version 0.6, GtkAda has now a basic support for creating new
 widgets directly in Ada (although you can't create your own signals
 yet, we are still working on it).
 
-Since GtkAda has an Object Oriented conception (well, at least you can
+Since GtkAda has an object oriented conception (well, at least you can
 program by extension), it is easy, if you want to associate your
-own data with a widget, to create your own type. Please see the
+own data with a widget, to create your own type. See the
 examples below. You should also have a look at the @code{testgtk/}
  directory.
 
@@ -2042,8 +2191,9 @@ We provide a Perl script to help you create a binding to a C widget
 (this is the script we have used ourselves).  This will not fully
 automate the process, although it should really speed things up. You
 will probably need less than 15 min to create a new binding once you
-will get used to the way GtkAda works. Note that your C file should
-have the same format as the one used by Gtk+ itself.
+will get used to the way GtkAda works. Note that your C file should have
+the same format as the one used by Gtk+ itself, as far as indentation
+and style are concerned.
 
 Here are the steps to create a new binding:
 
@@ -2055,25 +2205,34 @@ you want to create a function to make it accessible from Ada. Answer
 @var{y} or @var{n} (the default value is @var{n}, just press ENTER).
 
 @example
+@c @group
+@c @cartouche
 $ perl generate.pl ../include/gtk/gtkbutton.h > temporary
   Create a function for the field child (of type GtkWidget*) [n]?
   Create a function for the field in_button (of type guint) [n]?
   Create a function for the field button_down (of type guint) [n]?
+@c @end cartouche
+@c @end group
 @end example
 
 @item If you answered yes to at least one of the above questions, create a
 new C file, and move the C part of the @var{temporary} file created by
 generate.pl to this C file.
 
-@item Do a gnatchop on the @var{temporary} file created by generate.pl
+@item Do a gnatchop on the @var{temporary} file created by generate.pl, after
+deleting the C part from above.
 
 @example
+@c @group
+@c @cartouche
 $ gnatchop temporary
+@c @end cartouche
+@c @end group
 @end example
 
 This should create two Ada files (specification and body)
 
-@item Edit these two files if needed (generally to change some parameters
+@item Edit these two files if needed (to change some parameters
   from Gint to Boolean for instance). It can be a little bit tricky
   when one of your functions returns a GList* or a GSList*. Please have
   a look at gtk-combo.ads for examples how to do this.
@@ -2102,7 +2261,7 @@ examples of how to use this binding.
 
 For more general questions about gtk itself, please ask your questions
 to the  gtk  mailing list. The  authors of  this binding  are far from
-beeing specialists of gtk, as it was one of our first project with gtk.
+beeing specialists of gtk, as it was one of our first projects with gtk.
 
 There are two kinds of problems you can encounter:
 @itemize @bullet
@@ -2116,6 +2275,8 @@ using the @code{run} command. Then send us the result of the @code{where}
 command. Here is a summary:
 
 @example
+@c @group
+@c @cartouche
 $ gnatmake -f -g <your_program_name> `gtkada-config`
 $ gdb <your_program_name>
 (gdb) break main
@@ -2124,18 +2285,19 @@ $ gdb <your_program_name>
 (gdb) continue
 ....
 (gdb) where
+@c @end cartouche
+@c @end group
 @end example
 
 @item In  some  (hopefully) rare cases,   you can even get a  segmentation
-fault  within gtk.  That  means there is  definitevly  something wrong
-either  your program  or   the  binding.  Please  check   your program
-carefully, and if you think this is a problem in  the binding, send us
-an e-mail.
+fault within gtk.  That means there is definitly something wrong either
+in your program or in the binding.  Please check your program carefully,
+and if you think this is a problem in the binding, send us an e-mail.
 @end itemize
 
 To report errors, send a mail to the authors (@code{gtkada@@ada.eu.org})
 explaining exactly what your
-are  doing,  what  it  the  expected  result  and  what  you  actually
+are  doing,  what  is  the  expected  result  and  what  you  actually
 get. Please include the required sources to reproduce the problem, in
 a  format usable  by @code{gnatchop}  (basically, insert  all  the required
 sources at  the end of  the mail). Please  try to provide a  subset of
@@ -2172,15 +2334,23 @@ about that, this is for the better!).
   modified like this:
 
 @example
+@c @group
+@c @cartouche
 package My_Cb is new Signal.Void_Callback (Gtk_Widget_Record);
                                                      ^^^^^^^
+@c @end cartouche
+@c @end group
 @end example
 
   Then you have to modify the spec of the subprogram iself:
 
 @example
-procedure My_Func (Button : access Gtk.Button.Gtk_Button_Record;
-                   Data   : in Gint);
+@c @group
+@c @cartouche
+@b{procedure} My_Func (Button : @b{access} Gtk.Button.Gtk_Button_Record;
+                   Data   : @b{in} Gint);
+@c @end cartouche
+@c @end group
 @end example
 
   Note that the first parameter is an anonymous access to a record
@@ -2196,16 +2366,20 @@ homogeneous within GtkAda.
 @chapter Using tagged types to extend Gtk widgets
 
 Since version 0.6 of this binding, it is possible to associate your
-own data with existing widgets, simply by creating new types. This
-file will show you a simple example, but you should rather read the
+own data with existing widgets, simply by creating new @b{type}s. This
+section will show you a simple example, but you should rather read the
 source code in testgtk/ where we used this feature instead of using
 @code{user_data} as in the C version.
 
 @example
-type My_Button_Record is new Gtk_Button_Record with record
+@c @group
+@c @cartouche
+@b{type} My_Button_Record @b{is new} Gtk_Button_Record @b{with record}
     --  whatever data you want to associate with your button
-end record;
-type My_Button is access all My_Button_Record'Class;
+@b{end record};
+@b{type} My_Button @b{is access all} My_Button_Record'@b{Class};
+@c @end cartouche
+@c @end group
 @end example
 
 With the above statements, your new type is defined. Every function
@@ -2214,23 +2388,31 @@ Of course, as with every tagged type in Ada, you can create your own
 primitive functions, with the following prototype:
 
 @example
-procedure My_Primitive_Func (Myb : access My_Button_Record);
+@c @group
+@c @cartouche
+@b{procedure} My_Primitive_Func (Myb : @b{access} My_Button_Record);
+@c @end cartouche
+@c @end group
 @end example
 
 To instanciate an object of type @code{My_Button} in your application, do
 the following:
 
 @example
-declare
+@c @group
+@c @cartouche
+@b{declare}
    Myb : My_Button;
-begin
-   Myb := new My_Button_Record;
+@b{begin}
+   Myb := @b{new} My_Button_Record;
    Initialize (Myb);   --  from Gtk.Button
-end;
+@b{end};
+@c @end cartouche
+@c @end group
 @end example
 
 The first line creates the Ada type, whereas the @code{Initialize} call
-actually creates the C widget and associate with the Ada type.
+actually creates the C widget and associates it with the Ada type.
 
 @node Support for Glade the Gtk GUI builder
 @chapter Support for Glade, the Gtk GUI builder
@@ -2239,7 +2421,7 @@ GtkAda now comes with a support for the GUI builder Glade (this is not
 the glade released with Gnat for distributed systems).
 Not all widgets are supported yet, but we eventually hope to have all
 of them. If you really need one, it is easy to add the two required
-functions @dots{}
+functions @dots{} (and to send us patches...)
 
 We actually provide two versions: a dynamic one and a static one. In
 both cases, you first need to get and install glade (http://glade.pn.org).
@@ -2251,10 +2433,10 @@ should be in the next version). In the meanwhile, save your project as
 an XML file.
 
 @itemize @bullet
-@item DGATE is the dynamic version of our support. This is an Ada program
-that takes the XML file in argument. It also provides default
-callbacks for your application, we recommand using it while you are
-trying to design your interface.
+@item DGATE (Dynamic Glade Ada Translator and Evaluator) is the dynamic
+version of our support. This is an Ada program that takes the XML file
+in argument. It also provides default callbacks for your application, we
+recommand using it while you are trying to design your interface.
 
 @item GATE is the static version of our support. This tool
 takes the XML file in argument and generates a set of Ada files that,
@@ -2285,86 +2467,88 @@ connected three times: on the @code{"Quit"} button and two times on the
 main window.
 
 @example
-with Gtk.Signal;
-with Gtk.Button;
-with Gtk.Window;
+@c @group
+@c @cartouche
+@b{with} Gtk.Signal;
+@b{with} Gtk.Button;
+@b{with} Gtk.Window;
 
-package Callbacks is
+@b{package} Callbacks @b{is}
 
-   package Button_Callback is new Gtk.Signal.Void_Callback
-     (Widget_Type => Gtk.Button.Gtk_Button);
-   procedure Increment (Widget : in out Gtk.Button.Gtk_Button);
+   @b{package} Button_Callback @b{is new} Gtk.Signal.Void_Callback
+     (Widget_Type => Gtk.Button.Gtk_Button_Record);
+   @b{procedure} Increment (Widget : @b{access} Gtk.Button.Gtk_Button_Record);
 
-   package Button_Message is new Gtk.Signal.Callback
-     (Widget_Type => Gtk.Button.Gtk_Button,
+   @b{package} Button_Message @b{is new} Gtk.Signal.Callback
+     (Widget_Type => Gtk.Button.Gtk_Button_Record,
       Data_Type => String);
 
-   procedure Message
-     (Widget : in out Gtk.Button.Gtk_Button; Data : in out String);
+   @b{procedure} Message
+     (Widget : @b{access} Gtk.Button.Gtk_Button_Record; Data : @b{in} String);
 
-   package Window_Callback is new Gtk.Signal.Object_Callback
-     (Widget_Type => Gtk.Window.Gtk_Window);
+   package Window_Callback @b{is new} Gtk.Signal.Object_Callback
+     (Widget_Type => Gtk.Window.Gtk_Window_Record);
 
-   procedure Bye (Window : in out Gtk.Window.Gtk_Window);
+   @b{procedure} Bye (Window : @b{access} Gtk.Window.Gtk_Window_Record);
 
-end Callbacks;
+@b{end} Callbacks;
 
-with Gtk.Main;
-with Ada.Text_Io;
+@b{with} Gtk.Main;
+@b{with} Ada.Text_Io;
 
-package body Callbacks is
+@b{package body} Callbacks @b{is}
 
    Counter : Natural := 0;
 
-   procedure Increment (Widget : in out Gtk.Button.Gtk_Button) is
-   begin
+   @b{procedure} Increment (Widget : @b{access} Gtk.Button.Gtk_Button_Record) @b{is}
+   @b{begin}
       Counter := Counter + 1;
-      Ada.Text_Io.Put_Line (Natural'Image (compteur));
-   end Increment;
+      Ada.Text_Io.Put_Line (Natural'Image (Counter));
+   @b{end} Increment;
 
-   procedure Message
-     (Widget : in out Gtk.Button.Gtk_Button; Data : in out String) is
-   begin
+   @b{procedure} Message
+     (Widget : @b{access} Gtk.Button.Gtk_Button_Record; Data : @b{in} String) @b{is}
+   @b{begin}
       Ada.Text_Io.Put_Line (Data);
-   end Message;
+   @b{end} Message;
 
-   procedure Bye (Window : in out Gtk.Window.Gtk_Window) is
-   begin
+   @b{procedure} Bye (Window : @b{access} Gtk.Window.Gtk_Window_Record) @b{is}
+   @b{begin}
       Gtk.Window.Destroy (Window);
       Gtk.Main.Main_Quit;
-   end Bye;
+   @b{end} Bye;
 
-end Callbacks;
+@b{end} Callbacks;
 
-with Gtk.Rc;
-with Gtk.Main;
-with Gtk.Enums;
-with Gtk.Window;
-with Gtk.Box;
-with Gtk.Label;
-with Gtk.Button;
-with Callbacks;
-with Glib;
+@b{with} Gtk.Rc;
+@b{with} Gtk.Main;
+@b{with} Gtk.Enums;
+@b{with} Gtk.Window;
+@b{with} Gtk.Box;
+@b{with} Gtk.Label;
+@b{with} Gtk.Button;
+@b{with} Callbacks;
+@b{with} Glib;
 
-procedure Example is
+@b{procedure} Example @b{is}
 
-   procedure Fix_Label (Box : in out Gtk.Box.Gtk_Box; Str : String) is
+   @b{procedure} Fix_Label (Box : @b{access} Gtk.Box.Gtk_Box_Record; Str : String) @b{is}
       Label : Gtk.Label.Gtk_Label;
-   begin
+   @b{begin}
       Gtk.Label.Gtk_New (Label => Label, Str => Str);
       Gtk.Box.Pack_Start
         (In_Box => Box, Child => Label, Expand => False, Fill => False);
-   end Fix_Label;
+   @b{end} Fix_Label;
 
-   procedure Create_Box
-     (W : in out Gtk.Window.Gtk_Window;
+   @b{procedure} Create_Box
+     (W : @b{access} Gtk.Window.Gtk_Window_Record;
       Str : String)
-   is
+   @b{is}
       Box    : Gtk.Box.Gtk_Box;
       Button : Gtk.Button.Gtk_Button;
       Cb_Id  : Glib.Guint;
 
-   begin
+   @b{begin}
       Gtk.Box.Gtk_New_Vbox
         (Widget => Box, Homogeneous => True, Spacing => 0);
       Gtk.Window.Add (Container => W, Widget => Box);
@@ -2393,13 +2577,13 @@ procedure Example is
          Name => "clicked",
          Func => Callbacks.Bye'Access,
          Slot_Object => W);
-   end Create_Box;
+   @b{end} Create_Box;
 
-   procedure Window is
+   @b{procedure} Window @b{is}
       Main_Window : Gtk.Window.Gtk_Window;
       Cb_Id : Glib.Guint;
 
-   begin
+   @b{begin}
       Gtk.Window.Gtk_New
         (Window => Main_Window, The_Type => Gtk.Enums.Window_Toplevel);
 
@@ -2422,14 +2606,18 @@ procedure Example is
          Func => Callbacks.Bye'Access,
          Slot_Object => Main_Window);
       Gtk.Window.Show_All (Main_Window);
-   end Window;
+   @b{end} Window;
 
-begin
+@b{begin}
    Gtk.Main.Set_Locale;
    Gtk.Main.Init;
    Gtk.Rc.Parse ("example.rc"); 
    Window;
    Gtk.Main.Main;
-end Example;
+@b{end} Example;
+@c @end cartouche
+@c @end group
 @end example
+
+@contents
 @bye
