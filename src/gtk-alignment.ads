@@ -32,12 +32,12 @@
 --  A Gtk_Alignment controls the size and alignment of its single child inside
 --  the area allocated to the alignment widget.
 --
---  The scale/size settings indicates how much the child will expand to fill
+--  The scale/size settings indicate how much the child will expand to fill
 --  the container. The values should be in the range 0.0 (no expansion) to 1.0
 --  (full expansion). Note that the scale only indicates the minimal size for
 --  the child, it does not force an absolute size.
 --
---  The alignment settings indicates where in the alignment widget the child
+--  The alignment settings indicate where in the alignment widget the child
 --  should be located. The values are in the range 0.0 (top or left) to 1.0
 --  (bottom or right). These settings are irrelevant if the child is fully
 --  expanded.
@@ -58,7 +58,7 @@ package Gtk.Alignment is
                       Yalign    : in Gfloat;
                       Xscale    : in Gfloat;
                       Yscale    : in Gfloat);
-   --  Creates a new alignment widget, with initial values for the settings.
+   --  Create a new alignment widget, with initial values for the settings.
    --  See the description of the settings above.
 
    procedure Initialize (Alignment : access Gtk_Alignment_Record'Class;
@@ -70,31 +70,31 @@ package Gtk.Alignment is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Alignment internally.
+   --  Return the internal value associated with a Gtk_Alignment internally.
 
    procedure Set (Alignment : access Gtk_Alignment_Record;
                   Xalign    : in Gfloat;
                   Yalign    : in Gfloat;
                   Xscale    : in Gfloat;
                   Yscale    : in Gfloat);
-   --  Modifies the settings for the alignment. See the description of the
-   --  settings above.
+   --  Modify the settings for the alignment.
+   --  See the description of the settings above.
 
    function Get_Xalign (Alignment : access Gtk_Alignment_Record) return Gfloat;
-   --  Returns the X alignment value. Its value is in the range 0.0 .. 1.0,
-   --  from left to right.
+   --  Return the X alignment value.
+   --  Its value is in the range 0.0 .. 1.0, from left to right.
 
    function Get_Yalign (Alignment : access Gtk_Alignment_Record) return Gfloat;
-   --  Returns the Y alignment value. Its value is in the range 0.0 .. 1.0,
-   --  from top to bottom.
+   --  Return the Y alignment value.
+   --  Its value is in the range 0.0 .. 1.0, from top to bottom.
 
    function Get_Xscale (Alignment : access Gtk_Alignment_Record) return Gfloat;
-   --  Returns the X expansion value, in the range 0.0 .. 1.0, from no
-   --  expansion to full expansion.
+   --  Return the X expansion value, in the range 0.0 .. 1.0.
+   --  0.0 means no expansion while 1.0 means full expansion.
 
    function Get_Yscale (Alignment : access Gtk_Alignment_Record) return Gfloat;
-   --  Returns the Y expansion value, in the range 0.0 .. 1.0, from no
-   --  expansion to full expansion.
+   --  Return the Y expansion value, in the range 0.0 .. 1.0
+   --  0.0 means no expansion while 1.0 means full expansion.
 
    ----------------------------
    -- Support for GATE/DGATE --

@@ -57,15 +57,15 @@ package Gtk.Adjustment is
                       Step_Increment : in     Gfloat;
                       Page_Increment : in     Gfloat;
                       Page_Size      : in     Gfloat);
-   --  Creates a new adjustment.
-   --  VALUE is the initial value of the adjustment. It must be in the
-   --  range (LOWER .. UPPER) and the adjustment's value will never be
+   --  Create a new adjustment.
+   --  Value is the initial value of the adjustment. It must be in the
+   --  range (Lower .. Upper) and the adjustment's value will never be
    --  outside this range.
-   --  STEP_INCREMENT is the value used to make minor adjustments, such
+   --  Step_Increment is the value used to make minor adjustments, such
    --  as when the user clicks on the arrows of a scrollbar.
-   --  PAGE_INCREMENT is used to make major adjustments, such as when
+   --  Page_Increment is used to make major adjustments, such as when
    --  the user clicks in the through on a scrollbar.
-   --  PAGE_SIZE is the size of the area that is currently visible
+   --  Page_Size is the size of the area that is currently visible
    --  (for instance in a Gtk_Scrolled_Window).
 
    procedure Initialize (Adjustment     : access Gtk_Adjustment_Record'Class;
@@ -79,7 +79,7 @@ package Gtk.Adjustment is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Adjustment internally.
+   --  Return the internal value associated with a Gtk_Adjustment internally.
 
    --------------------
    -- Read functions --
@@ -87,27 +87,27 @@ package Gtk.Adjustment is
 
    function Get_Value (Adjustment : access Gtk_Adjustment_Record)
                       return Gfloat;
-   --  Returns the current value of the adjustment.
+   --  Return the current value of the adjustment.
 
    function Get_Lower (Adjustment : access Gtk_Adjustment_Record)
                       return Gfloat;
-   --  Returns the lower bound of the adjustment.
+   --  Return the lower bound of the adjustment.
 
    function Get_Upper (Adjustment : access Gtk_Adjustment_Record)
                       return Gfloat;
-   --  Returns the upper bound of the adjustment.
+   --  Return the upper bound of the adjustment.
 
    function Get_Step_Increment (Adjustment : access Gtk_Adjustment_Record)
                                return Gfloat;
-   --  Returns the step increment of the adjustment.
+   --  Return the step increment of the adjustment.
 
    function Get_Page_Increment (Adjustment : access Gtk_Adjustment_Record)
                                return Gfloat;
-   --  Returns the page increment of the adjustment.
+   --  Return the page increment of the adjustment.
 
    function Get_Page_Size (Adjustment : access Gtk_Adjustment_Record)
                           return Gfloat;
-   --  Returns the page size of the adjustment.
+   --  Return the page size of the adjustment.
 
    ---------------------
    -- Write functions --
@@ -115,34 +115,34 @@ package Gtk.Adjustment is
 
    procedure Set_Upper (Adjustment : access Gtk_Adjustment_Record;
                         Upper      : in Gfloat);
-   --  Modifies the upper bound of the adjustment.
-   --  You should call Changed() after modifying this value.
+   --  Modify the upper bound of the adjustment.
+   --  You should call Changed after modifying this value.
 
    procedure Set_Lower (Adjustment : access Gtk_Adjustment_Record;
                         Lower      : in Gfloat);
-   --  Modifies the lower bound of the adjustment.
-   --  You should call Changed() after modifying this value.
+   --  Modify the lower bound of the adjustment.
+   --  You should call Changed after modifying this value.
 
    procedure Set_Value (Adjustment : access Gtk_Adjustment_Record;
                         Value      : in Gfloat);
-   --  Modifies the current value of the adjustment.
+   --  Modify the current value of the adjustment.
    --  You do not need to call Value_Changed after modifying this value,
    --  this is done automatically.
 
    procedure Set_Page_Size (Adjustment : access Gtk_Adjustment_Record;
                             Page_Size  : in Gfloat);
-   --  Modifies the page size of the adjustment.
-   --  You should call Changed() after modifying this value.
+   --  Modify the page size of the adjustment.
+   --  You should call Changed after modifying this value.
 
    procedure Set_Page_Increment (Adjustment     : access Gtk_Adjustment_Record;
                                  Page_Increment : in Gfloat);
-   --  Modifies the page increment of the adjustment.
-   --  You should call Changed() after modifying this value.
+   --  Modify the page increment of the adjustment.
+   --  You should call Changed after modifying this value.
 
    procedure Set_Step_Increment (Adjustment : access Gtk_Adjustment_Record;
                                  Step_Increment : in Gfloat);
-   --  Modifies the step increment of the adjustment.
-   --  You should call Changed() after modifying this value.
+   --  Modify the step increment of the adjustment.
+   --  You should call Changed after modifying this value.
 
    --------------------
    -- Misc functions --
@@ -151,8 +151,8 @@ package Gtk.Adjustment is
    procedure Clamp_Page (Adjustment : access Gtk_Adjustment_Record;
                          Lower      : in     Gfloat;
                          Upper      : in     Gfloat);
-   --  Updates the Adjustment value to ensure that the range between LOWER and
-   --  UPPER is in the current page (i.e. between value and value +
+   --  Update the Adjustment value to ensure that the range between Lower and
+   --  Upper is in the current page (i.e. between value and value +
    --  page_size). If the range is larger than the page size, then only the
    --  start of it will be in the current page.
    --  A "value_changed" signal will be emitted if the value is changed.
@@ -162,12 +162,12 @@ package Gtk.Adjustment is
    ----------------------
 
    procedure Changed (Adjustment : access Gtk_Adjustment_Record);
-   --  Emits the "changed" signal on ADJUSTMENT.
+   --  Emit the "changed" signal on Adjustment.
    --  This warns any listener that some field other than the value has been
    --  changed.
 
    procedure Value_Changed (Adjustment : access Gtk_Adjustment_Record);
-   --  Emits the "value_changed" signal on ADJUSTMENT.
+   --  Emit the "value_changed" signal on Adjustment.
    --  This warns any listener that the value has been changed.
 
    -------------
