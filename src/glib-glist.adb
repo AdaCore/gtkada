@@ -105,17 +105,16 @@ package body Glib.Glist is
 
       function Find
         (List : in Glist;
-         Data : in Gpointer)
-         return Glist
+         Data : in Gpointer) return Glist
       is
-         function Internal (List : System.Address;
-                            Data : System.Address)
-                            return System.Address;
+         function Internal
+           (List : System.Address;
+            Data : System.Address) return System.Address;
          pragma Import (C, Internal, "g_list_find");
          Tmp : Glist;
+
       begin
-         Set_Object (Tmp, Internal (Get_Object (List),
-                                    Convert (Data)));
+         Set_Object (Tmp, Internal (Get_Object (List), Convert (Data)));
          return Tmp;
       end Find;
 
@@ -123,13 +122,11 @@ package body Glib.Glist is
       -- First --
       -----------
 
-      function First (List : in Glist)
-                      return Glist
-      is
-         function Internal (List : System.Address)
-                            return System.Address;
+      function First (List : in Glist) return Glist is
+         function Internal (List : System.Address) return System.Address;
          pragma Import (C, Internal, "g_list_first");
          Tmp : Glist;
+
       begin
          Set_Object (Tmp, Internal (Get_Object (List)));
          return Tmp;
@@ -144,6 +141,7 @@ package body Glib.Glist is
          pragma Import (C, Internal, "g_list_free");
       begin
          Internal (Get_Object (List));
+         List := Null_List;
       end Free;
 
       --------------
@@ -183,8 +181,7 @@ package body Glib.Glist is
       -- Get_Object --
       ----------------
 
-      function Get_Object (Obj : in Glist)
-                           return System.Address is
+      function Get_Object (Obj : in Glist) return System.Address is
       begin
          return Obj.Ptr;
       end Get_Object;
@@ -193,18 +190,14 @@ package body Glib.Glist is
       -- Index --
       -----------
 
-      function Index
-        (List : in Glist;
-         Data : in Gpointer)
-         return Gint
-      is
-         function Internal (List : System.Address;
-                            Data : System.Address)
-                            return Gint;
+      function Index (List : in Glist; Data : in Gpointer) return Gint is
+         function Internal
+           (List : System.Address;
+            Data : System.Address) return Gint;
          pragma Import (C, Internal, "g_list_index");
+
       begin
-         return Internal (Get_Object (List),
-                          Convert (Data));
+         return Internal (Get_Object (List), Convert (Data));
       end Index;
 
       ------------------
@@ -221,8 +214,7 @@ package body Glib.Glist is
       ----------
 
       function Last (List : in Glist) return Glist is
-         function Internal (List : System.Address)
-                            return System.Address;
+         function Internal (List : System.Address) return System.Address;
          pragma Import (C, Internal, "g_list_last");
          Tmp : Glist;
       begin
@@ -235,8 +227,7 @@ package body Glib.Glist is
       ------------
 
       function Length (List : in Glist) return Guint is
-         function Internal (List : System.Address)
-                            return Guint;
+         function Internal (List : System.Address) return Guint;
          pragma Import (C, Internal, "g_list_length");
       begin
          return Internal (Get_Object (List));
@@ -247,8 +238,7 @@ package body Glib.Glist is
       ------------------
 
       procedure List_Reverse (List : in out Glist) is
-         function Internal (List : System.Address)
-                            return System.Address;
+         function Internal (List : System.Address) return System.Address;
          pragma Import (C, Internal, "g_list_reverse");
       begin
          Set_Object (List, Internal (Get_Object (List)));
@@ -259,8 +249,7 @@ package body Glib.Glist is
       ----------
 
       function Next (List : in Glist) return Glist is
-         function Internal (List : System.Address)
-                            return System.Address;
+         function Internal (List : System.Address) return System.Address;
          pragma Import (C, Internal, "ada_list_next");
          Tmp : Glist;
       begin
@@ -272,16 +261,12 @@ package body Glib.Glist is
       -- Nth --
       ---------
 
-      function Nth
-        (List : in Glist;
-         N    : in Guint)
-         return Glist
-      is
-         function Internal (List : System.Address;
-                            N    : Guint)
-                            return System.Address;
+      function Nth (List : in Glist; N    : in Guint) return Glist is
+         function Internal
+           (List : System.Address; N : Guint) return System.Address;
          pragma Import (C, Internal, "g_list_nth");
          Tmp : Glist;
+
       begin
          Set_Object (Tmp, Internal (Get_Object (List), N));
          return Tmp;
@@ -293,13 +278,12 @@ package body Glib.Glist is
 
       function Nth_Data
         (List : in Glist;
-         N    : in Guint)
-         return Gpointer
+         N    : in Guint) return Gpointer
       is
-         function Internal (List : System.Address;
-                            N    : Guint)
-                            return System.Address;
+         function Internal
+           (List : System.Address; N : Guint) return System.Address;
          pragma Import (C, Internal, "g_list_nth_data");
+
       begin
          return Convert (Internal (Get_Object (List), N));
       end Nth_Data;
@@ -310,12 +294,10 @@ package body Glib.Glist is
 
       function Position
         (List : in Glist;
-         Link : in Glist)
-         return Gint
+         Link : in Glist) return Gint
       is
          function Internal (List : System.Address;
-                            Link : System.Address)
-                            return Gint;
+                            Link : System.Address) return Gint;
          pragma Import (C, Internal, "g_list_position");
       begin
          return Internal (Get_Object (List), Get_Object (Link));

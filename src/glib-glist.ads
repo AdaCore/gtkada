@@ -55,7 +55,6 @@ with System;
 
 package Glib.Glist is
 
-
    generic
       --  <doc_ignore>
 
