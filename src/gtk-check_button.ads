@@ -33,7 +33,7 @@
 --  (usually a Gtk_Label).
 
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 --  <screenshot>checkbutton</screenshot>
 
 with Gtk.Toggle_Button;

@@ -39,7 +39,7 @@
 --  user can draw the points of the curve freely, and they are not connected at
 --  all.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Drawing_Area;
 with Glib.Generic_Properties; use Glib.Generic_Properties;

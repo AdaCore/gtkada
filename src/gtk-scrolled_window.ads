@@ -55,7 +55,7 @@
 --  Set_Scroll_Adjustments in the call to Gtk.Object.Initialize_Class_Record.
 --
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Adjustment; use Gtk.Adjustment;
 with Gtk.Bin;

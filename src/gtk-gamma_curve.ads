@@ -37,7 +37,7 @@
 --  free), and the other 2 set the curve to a particular gamma value, or reset
 --  it to a straight line.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Box;
 with Gtk.Curve;

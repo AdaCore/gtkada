@@ -31,7 +31,7 @@
 --  A table is a collection of tags where you can Add, Remove, Lookup
 --  or traverse (Foreach) a tag.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Text_Tag;
 

@@ -41,7 +41,7 @@
 --  Arrows are created with a call to Gtk_New. The direction or style of an
 --  arrow can be changed after creation by using Set.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Enums;
 with Gtk.Misc;

@@ -38,7 +38,7 @@
 --  above two instead.
 --
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Box;
 with Gtk.Enums;

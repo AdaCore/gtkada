@@ -52,7 +52,7 @@
 --  multiple accelerators and even signal names, though it is almost always
 --  used to display just one accelerator key.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Label;
 with Gtk.Widget;

@@ -31,7 +31,7 @@
 --  The progress bar provides a convenient way of displayed a state of
 --  completion for typically lenghty tasks.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Glib.Properties;
 with Gtk.Enums; use Gtk.Enums;

@@ -48,7 +48,7 @@
 --  error messages). You can then selectively remove the most recent message
 --  of each category.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Box;
 with Interfaces.C.Strings;

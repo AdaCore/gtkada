@@ -40,7 +40,7 @@
 --  submenu (if any) displayed.
 --
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Container;
 with Gtk.Menu_Item; use Gtk.Menu_Item;

@@ -33,7 +33,7 @@
 --  activated, the Gtk_Option_Menu displays a popup Gtk_Menu which allows the
 --  user to make a new choice.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Button;
 with Gtk.Menu;

@@ -47,7 +47,7 @@
 --
 --  @pxref{Package_Gtkada.Dialogs} for a higher level dialog interface.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Glib.Properties;
 with Gtk.Box;

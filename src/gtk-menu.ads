@@ -59,7 +59,7 @@
 --  initially have a shortcut.
 --
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Accel_Group;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
