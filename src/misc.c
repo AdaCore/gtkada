@@ -1154,7 +1154,7 @@ gint ada_gdk_event_get_key_val (GdkEvent * event)
 }
 
 guint16 ada_gdk_event_get_hardware_keycode (GdkEvent * event)
-{ 
+{
   if (!event)
     return 0;
 
@@ -1170,7 +1170,7 @@ guint16 ada_gdk_event_get_hardware_keycode (GdkEvent * event)
 }
 
 guint8 ada_gdk_event_get_group (GdkEvent * event)
-{ 
+{
   if (!event)
     return 0;
 
@@ -1273,36 +1273,11 @@ GdkAtom ada_gdk_event_get_message_type (GdkEvent * event)
 
 GdkEvent * ada_gdk_event_create (gint type, GdkWindow* win)
 {
-  GdkEvent static_event;
   GdkEvent* event;
 
-  static_event.any.type   = type;
-  static_event.any.window = win;
+  event = gdk_event_new (type);
+  event->any.window = win;
   gdk_window_ref (win);
-  switch (type)
-    {
-    case GDK_EXPOSE:
-      static_event.expose.region = NULL;
-      break;
-    case GDK_KEY_PRESS:
-    case GDK_KEY_RELEASE:
-      static_event.key.string = NULL;
-      break;
-    case GDK_ENTER_NOTIFY:
-    case GDK_LEAVE_NOTIFY:
-      static_event.crossing.subwindow = NULL;
-      break;
-    case GDK_DRAG_ENTER:
-    case GDK_DRAG_LEAVE:
-    case GDK_DRAG_MOTION:
-    case GDK_DRAG_STATUS:
-    case GDK_DROP_START:
-    case GDK_DROP_FINISHED:
-      /* ??? will create an error in gdk_event_copy */
-      static_event.dnd.context = NULL;
-      break;
-    }
-  event = gdk_event_copy(&static_event);
   return event;
 }
 
