@@ -16,7 +16,7 @@ LSM entry follows :
 Begin3
  Title:  GtkAda
  Version: 1.2.0
- Entered-date: 24MAR99
+ Entered-date: 06APR99
  Description: Ada95 binding to Gtk+ (version 1.2.0) 
  Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade
  Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
