@@ -91,7 +91,7 @@ package body Create_Tooltips is
       --  Tip_Private : String := To_String (Params, 3);
 
    begin
-      if Is_Active (Toggle) then
+      if Get_Active (Toggle) then
          if Tip_Text'Length /= 0 then
             Set_Text (Tips_Query, "There is a Tip!");
          else

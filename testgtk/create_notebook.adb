@@ -89,7 +89,7 @@ package body Create_Notebook is
    begin
       Query_Tab_Label_Packing (Notebook, Child, Expand, Fill, Typ);
       Set_Tab_Label_Packing
-        (Notebook, Child, Expand, Is_Active (Button), Typ);
+        (Notebook, Child, Expand, Get_Active (Button), Typ);
    end Tab_Fill;
 
    ----------------
@@ -103,7 +103,7 @@ package body Create_Notebook is
    begin
       Query_Tab_Label_Packing (Notebook, Child, Expand, Fill, Typ);
       Set_Tab_Label_Packing
-        (Notebook, Child, Is_Active (Button), Fill, Typ);
+        (Notebook, Child, Get_Active (Button), Fill, Typ);
    end Tab_Expand;
 
    ----------
@@ -143,7 +143,7 @@ package body Create_Notebook is
       Typ          : Gtk_Pack_Type;
    begin
       Query_Tab_Label_Packing (Notebook, Child, Expand, Fill, Typ);
-      if Is_Active (Button) then
+      if Get_Active (Button) then
          Set_Tab_Label_Packing
            (Notebook, Child, Expand, Fill, Pack_Start);
       else
@@ -305,7 +305,7 @@ package body Create_Notebook is
    procedure Notebook_Popup (Button : access Gtk_Check_Button_Record'Class;
                              Notebook : in Gtk_Notebook) is
    begin
-      if Is_Active (Button) then
+      if Get_Active (Button) then
          Popup_Enable (Notebook);
       else
          Popup_Disable (Notebook);
@@ -319,7 +319,7 @@ package body Create_Notebook is
    procedure Homogeneous (Button : access Gtk_Check_Button_Record'Class;
                           Notebook : in Gtk_Notebook) is
    begin
-      Set_Homogeneous_Tabs (Notebook, Is_Active (Button));
+      Set_Homogeneous_Tabs (Notebook, Get_Active (Button));
    end Homogeneous;
 
    -----------------

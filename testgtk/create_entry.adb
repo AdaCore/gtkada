@@ -60,7 +60,7 @@ package body Create_Entry is
                               The_Entry : in Gtk_Entry)
    is
    begin
-      Set_Editable (The_Entry, Is_Active (Button));
+      Set_Editable (The_Entry, Get_Active (Button));
    end Toggle_Editable;
 
    ----------------------
@@ -71,7 +71,7 @@ package body Create_Entry is
                                The_Entry : in Gtk_Entry)
    is
    begin
-      Set_Sensitive (The_Entry, Is_Active (Button));
+      Set_Sensitive (The_Entry, Get_Active (Button));
    end Toggle_Sensitive;
 
    -----------------------
@@ -82,7 +82,7 @@ package body Create_Entry is
                                 The_Entry : in Gtk_Entry)
    is
    begin
-      Set_Visibility (The_Entry, Is_Active (Button));
+      Set_Visibility (The_Entry, Get_Active (Button));
    end Toggle_Visibility;
 
    ---------

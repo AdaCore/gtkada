@@ -60,7 +60,7 @@ package body Common is
                                         Slot_Object => Menu_Item);
          Gr := Group (Menu_Item);
          Append (Menu, Menu_Item);
-         if I = History then
+         if Gint (I) = History then
             Set_Active (Menu_Item, True);
          end if;
          Show (Menu_Item);

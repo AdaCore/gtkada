@@ -88,7 +88,7 @@ package body Create_Text is
                               Text   : in Gtk_Text)
    is
    begin
-      Set_Editable (Text, Is_Active (Toggle));
+      Set_Editable (Text, Get_Active (Toggle));
    end Toggle_Editable;
 
    ---------------
@@ -99,7 +99,7 @@ package body Create_Text is
                         Text   : in Gtk_Text)
    is
    begin
-      Set_Word_Wrap (Text, Is_Active (Toggle));
+      Set_Word_Wrap (Text, Get_Active (Toggle));
    end Word_Wrap;
 
    ---------

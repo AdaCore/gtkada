@@ -151,10 +151,10 @@ package body Create_Progress is
    is
    begin
       Set_Show_Text (Progress  => Pdata.Pbar,
-                     Show_Text => Is_Active (Widget));
-      Set_Sensitive (Pdata.Gentry, Is_Active (Widget));
-      Set_Sensitive (Pdata.X_Align_Spin, Is_Active (Widget));
-      Set_Sensitive (Pdata.Y_Align_Spin, Is_Active (Widget));
+                     Show_Text => Get_Active (Widget));
+      Set_Sensitive (Pdata.Gentry, Get_Active (Widget));
+      Set_Sensitive (Pdata.X_Align_Spin, Get_Active (Widget));
+      Set_Sensitive (Pdata.Y_Align_Spin, Get_Active (Widget));
    end Toggle_Show_Text;
 
    ----------------------
@@ -239,9 +239,9 @@ package body Create_Progress is
      (Widget : access Gtk_Check_Button_Record'Class)
    is
    begin
-      Set_Activity_Mode (Pdata.Pbar, Is_Active (Widget));
-      Set_Sensitive (Pdata.Step_Spin, Is_Active (Widget));
-      Set_Sensitive (Pdata.Act_Blocks_Spin, Is_Active (Widget));
+      Set_Activity_Mode (Pdata.Pbar, Get_Active (Widget));
+      Set_Sensitive (Pdata.Step_Spin, Get_Active (Widget));
+      Set_Sensitive (Pdata.Act_Blocks_Spin, Get_Active (Widget));
    end Toggle_Activity_Mode;
 
    -------------------

@@ -51,21 +51,23 @@ with Common;              use Common;
 with Interfaces.C.Strings;
 
 package body Create_Clist is
+   package IC renames Interfaces.C;
    package ICS renames Interfaces.C.Strings;
 
    package Clist_Cb is new Handlers.Callback (Gtk_Clist_Record);
    package Check_Cb is new Handlers.User_Callback
      (Gtk_Check_Button_Record, Gtk_Clist);
 
-   Clist_Columns      : constant Gint := 12;
+   use type Interfaces.C.size_t;
+
+   Clist_Columns      : constant Interfaces.C.size_t := 12;
    Clist_Rows         : Integer := 0;
    Style1             : Gtk_Style;
    Style2             : Gtk_Style;
    Style3             : Gtk_Style;
    Clist_Omenu_Group  : Widget_Slist.GSlist;
 
-   Titles : constant Chars_Ptr_Array (1 .. Clist_Columns) :=
-     --  FIXME : What is this size initialization ???
+   Titles : constant Chars_Ptr_Array (1 .. Clist_Columns):=
      (ICS.New_String ("Auto resize"),
       ICS.New_String ("Not resizable"),
       ICS.New_String ("Max width 100"),
@@ -141,7 +143,7 @@ package body Create_Clist is
    procedure Toggle_Titles (Button : access Gtk_Check_Button_Record'Class;
                             List : in Gtk_Clist) is
    begin
-      if Is_Active (Button) then
+      if Get_Active (Button) then
          Column_Titles_Show (List);
       else
          Column_Titles_Hide (List);
@@ -155,7 +157,7 @@ package body Create_Clist is
    procedure Toggle_Reorderable (Button : access Gtk_Check_Button_Record'Class;
                                  List : in Gtk_Clist) is
    begin
-      Set_Reorderable (List, Is_Active (Button));
+      Set_Reorderable (List, Get_Active (Button));
    end Toggle_Reorderable;
 
    -------------
@@ -174,7 +176,7 @@ package body Create_Clist is
                          Mask, Get_White (Style),
                          Gtk_Mini_Xpm);
       for I in 4 .. Clist_Columns - 1 loop
-         Texts (I) := ICS.New_String ("Column" & Gint'Image (I));
+         Texts (I) := ICS.New_String ("Column" & IC.size_t'Image (I));
       end loop;
       Texts (3) := ICS.Null_Ptr;
       Texts (1) := ICS.New_String ("Right");
@@ -207,7 +209,7 @@ package body Create_Clist is
 
    begin
       for I in 3 .. Clist_Columns - 1 loop
-         Texts (I) := ICS.New_String ("Column" & Gint'Image (I));
+         Texts (I) := ICS.New_String ("Column" & IC.size_t'Image (I));
       end loop;
       Texts (1) := ICS.New_String ("Right");
       Texts (2) := ICS.New_String ("Center");
@@ -331,7 +333,7 @@ package body Create_Clist is
       Set_Border_Width (Scrolled, 5);
       Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
 
-      Gtk_New (Clist, Clist_Columns, Titles);
+      Gtk_New (Clist, Gint (Clist_Columns), Titles);
       Add (Scrolled, Clist);
       --  TBD: Callback for click column
 
@@ -417,7 +419,7 @@ package body Create_Clist is
       Set_Usize (Clist, -1, 300);
 
       for I in 0 .. Clist_Columns - 1 loop
-         Set_Column_Width (Clist, I, 80);
+         Set_Column_Width (Clist, Gint (I), 80);
       end loop;
 
       Set_Column_Auto_Resize (Clist, 0, True);
@@ -429,7 +431,7 @@ package body Create_Clist is
       Set_Column_Justification (Clist, 2, Justify_Center);
 
       for I in 1 .. Clist_Columns - 1 loop
-            Texts (I) := ICS.New_String ("Columns " & Gint'Image (I));
+            Texts (I) := ICS.New_String ("Columns " & IC.size_t'Image (I));
       end loop;
 
       Set_Rgb (Col1, 56000, 0, 0);

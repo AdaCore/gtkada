@@ -342,18 +342,18 @@ package body Create_Tree is
       Recursion_Level : Gint;
    begin
       --  Get Selection Mode Choice
-      if Is_Active (Single_Button) then
+      if Get_Active (Single_Button) then
          Selection_Mode := Selection_Single;
-      elsif Is_Active (Browse_Button) then
+      elsif Get_Active (Browse_Button) then
          Selection_Mode := Selection_Browse;
       else
          Selection_Mode := Selection_Multiple;
       end if;
 
       --  Get options choice
-      Draw_Line    := Is_Active (Draw_Line_Button);
-      View_Line    := Is_Active (View_Line_Button);
-      No_Root_Item := Is_Active (No_Root_Item_Button);
+      Draw_Line    := Get_Active (Draw_Line_Button);
+      View_Line    := Get_Active (View_Line_Button);
+      No_Root_Item := Get_Active (No_Root_Item_Button);
 
       --  Get levels
       Nb_Item         := Get_Value_As_Int (Nb_Item_Spinner);
