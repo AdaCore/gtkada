@@ -642,6 +642,7 @@ package Gtkada.MDI is
    --    used to change some global information at the MDI level. You should
    --    connect to "selected" (see below) instead if you want to change some
    --    information at the child level.
+   --    Child might be null if no child has the focus anymore
    --
    --  - "float_child"
    --    procedure Handler

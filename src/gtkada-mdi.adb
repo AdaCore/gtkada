@@ -2534,11 +2534,17 @@ package body Gtkada.MDI is
                        and then It.Dock = Dock))
          then
             Set_Focus_Child (It);
-            exit;
+            return;
          end if;
 
          Item := Widget_List.Next (Item);
       end loop;
+
+      --  No such child, report it still
+      Child.MDI.Focus_Child := null;
+      Emit_By_Name_Child
+        (Get_Object (Child.MDI), "child_selected" & ASCII.NUL,
+         System.Null_Address);
    end Give_Focus_To_Previous_Child;
 
    ---------
