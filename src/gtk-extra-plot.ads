@@ -666,7 +666,7 @@ package Gtk.Extra.Plot is
    procedure Axis_Set_Labels_Style
      (Plot      : access Gtk_Plot_Record;
       Axis      : Plot_Axis_Pos;
-      Style     : Gint;
+      Style     : Plot_Label_Style;
       Precision : Gint);
    --  Set the style of labels.
    --  This indicates whether the labels should be displayed as floating
@@ -677,7 +677,7 @@ package Gtk.Extra.Plot is
    procedure Axis_Set_Labels_Numbers
      (Plot      : access Gtk_Plot_Record;
       Axis      : Plot_Axis_Pos;
-      Style     : Gint;
+      Style     : Plot_Label_Style;
       Precision : Gint) renames Axis_Set_Labels_Style;
    --  </doc_ignore>
 

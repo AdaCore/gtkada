@@ -1962,13 +1962,16 @@ package body Gtk.Extra.Plot is
    procedure Axis_Set_Labels_Style
      (Plot      : access Gtk_Plot_Record;
       Axis      : Plot_Axis_Pos;
-      Style     : Gint;
+      Style     : Plot_Label_Style;
       Precision : Gint)
    is
-      procedure Internal (P : System.Address;
-                          Axis : Plot_Axis_Pos;
-                          Style, Precision : Gint);
+      procedure Internal
+        (P         : System.Address;
+         Axis      : Plot_Axis_Pos;
+         Style     : Plot_Label_Style;
+         Precision : Gint);
       pragma Import (C, Internal, "gtk_plot_axis_set_labels_style");
+
    begin
       Internal (Get_Object (Plot), Axis, Style, Precision);
    end Axis_Set_Labels_Style;
