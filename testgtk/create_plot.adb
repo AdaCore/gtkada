@@ -31,6 +31,7 @@ with Gdk.Color;             use Gdk.Color;
 with Gdk.Event;             use Gdk.Event;
 with Glib;                  use Glib;
 with Gtk.Adjustment;        use Gtk.Adjustment;
+with Gtk.Arguments;         use Gtk.Arguments;
 with Gtk.Box;               use Gtk.Box;
 with Gtk.Button;            use Gtk.Button;
 with Gtk.Toggle_Button;     use Gtk.Toggle_Button;
@@ -193,8 +194,24 @@ package body Create_Plot is
                              Plot_Portrait,
                              False,
                              Plot_Letter);
-
    end Print;
+
+   -----------------
+   -- Select_Item --
+   -----------------
+
+   function Select_Item (Canvas : access Gtk_Plot_Canvas_Record'Class;
+                         Args   : Gtk_Args)
+                        return Boolean
+   is
+      Item  : Gtk_Plot_Canvas_Item
+        := Gtk_Plot_Canvas_Item (To_C_Proxy (Args, 2));
+      Tmp : Boolean;
+   begin
+      Ada.Text_IO.Put_Line (Plot_Canvas_Type'Image (Get_Item_Type (Item)));
+      Tmp := Activate_Plot (Canvas);
+      return True;
+   end Select_Item;
 
    -----------------------------
    -- Active_Plot_With_Button --
@@ -354,16 +371,14 @@ package body Create_Plot is
       Set_Border_Width (Scrollw1, 0);
       Set_Policy (Scrollw1, Policy_Always, Policy_Always);
       Pack_Start (Vbox1, Scrollw1, True, True, 0);
-      Show (Scrollw1);
 
       --  Create the canvas in which the plot will be drawn
       Gtk_New (Canvas, 612, 792);
-      Set_Usize (Canvas, 612, 792);
+      Set_Size (Canvas => Canvas, Width => 612, Height => 792);
       Plot_Canvas_Set_Flags (Canvas, Dnd_Flags);
       Add (Scrollw1, Canvas);
       Set_Step_Increment (Get_Hadjustment (Canvas), 5.0);
       Set_Step_Increment (Get_Vadjustment (Canvas), 5.0);
-      Show (Canvas);
 
       Active_Plot := New_Layer (Canvas);
       Set_Range (Active_Plot, -1.0, 1.0, -1.0, 1.4);
@@ -404,8 +419,9 @@ package body Create_Plot is
       Show (Active_Plot);
       Build_Example2 (Active_Plot);
 
---        gtk_signal_connect(GTK_OBJECT(canvas), "select_item",
---                       (GtkSignalFunc) select_item, NULL);
+
+      Event_Cb.Connect (Canvas, "select_item",
+                        Select_Item'Access);
 
       Put_Text (Canvas, 0.40, 0.02, 0,
                 "Times-BoldItalic", 16, Null_Color, Null_Color,
