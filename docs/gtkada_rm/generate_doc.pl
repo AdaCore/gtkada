@@ -225,6 +225,10 @@ foreach $source_file (@source_files) {
 	$description =~ s/^\s*//;
 	$description = &process_list ($description);
 
+	# Add support for <example> tags in the description
+	$description =~ s/^\s+<(small)?example>/\@\2example\n/gm;
+	$description =~ s/^\s+<\/(small)?example>/\@end \2example\n/gm;
+
 	&output ("$description\n");
 
 	if (&get_tag_value ("screenshot", @content)) {
