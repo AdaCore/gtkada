@@ -77,6 +77,12 @@ package Gtkada.Types is
    --  terminated Strings. The user is responsible for calling Free on the
    --  resulting array.
 
+   function "+" (S1 : Chars_Ptr; S2 : String) return Chars_Ptr_Array;
+   --  Create an array containing S1 and S2.
+   --  Note that this function allocates memory to store S2 as a null
+   --  terminated string. The user is responsible for calling Free on the
+   --  resulting array.
+
    procedure Free (A : in out Chars_Ptr_Array);
    --  Frees all the strings in A
 

@@ -58,6 +58,11 @@ package body Gtkada.Types is
       return Result;
    end "+";
 
+   function "+" (S1 : Chars_Ptr; S2 : String) return Chars_Ptr_Array is
+   begin
+      return (0 => S1, 1 => New_String (S2));
+   end "+";
+
    ----------
    -- Free --
    ----------
