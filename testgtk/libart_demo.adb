@@ -170,11 +170,8 @@ package body Libart_Demo is
       Pack_Start (Vbox, Hbox);
 
       --  Creating the images.
-      --  We use the BMP format since it does not require any external
-      --  libraries to load these files. But if the libjpeg is installed
-      --  on the system, we could as well use JPEG images.
 
-      Gdk_New_From_File (Pix, "alps.bmp", Error);
+      Gdk_New_From_File (Pix, "alps.png", Error);
 
       if Pix = Null_Pixbuf then
          Gtk_New (Label, "Pixmaps not found. Please run testgtk from the"
@@ -188,7 +185,7 @@ package body Libart_Demo is
         (Pix,
          Gint (550) - Get_Width (Pix),
          Get_Height (Pix) / 2);
-      Gdk_New_From_File (Pix3, "lightning.bmp", Error);
+      Gdk_New_From_File (Pix3, "lightning.png", Error);
 
       if Pix3 = Null_Pixbuf then
          Gtk_New (Label, "Pixmaps not found. Please run testgtk from the"
