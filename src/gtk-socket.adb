@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -57,10 +57,8 @@ package body Gtk.Socket is
    -- Steal --
    -----------
 
-   procedure Steal (Socket : access Gtk_Socket_Record;
-                    Wid    : in     Guint32) is
-      procedure Internal (Socket : in System.Address;
-                          Wid    : in Guint32);
+   procedure Steal (Socket : access Gtk_Socket_Record; Wid : in Guint32) is
+      procedure Internal (Socket : in System.Address; Wid : in Guint32);
       pragma Import (C, Internal, "gtk_socket_steal");
    begin
       Internal (Get_Object (Socket), Wid);

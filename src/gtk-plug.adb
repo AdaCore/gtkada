@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -31,27 +31,11 @@ with System;
 
 package body Gtk.Plug is
 
-   ---------------
-   -- Construct --
-   ---------------
-
-   procedure Construct (Plug      : access Gtk_Plug_Record;
-                        Socket_Id : in     Guint32)
-   is
-      procedure Internal (Plug      : in System.Address;
-                          Socket_Id : in Guint32);
-      pragma Import (C, Internal, "gtk_plug_construct");
-   begin
-      Internal (Get_Object (Plug),
-                Socket_Id);
-   end Construct;
-
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget    : out Gtk_Plug;
-                      Socket_Id : in Guint32) is
+   procedure Gtk_New (Widget : out Gtk_Plug; Socket_Id : in Guint32) is
    begin
       Widget := new Gtk_Plug_Record;
       Initialize (Widget, Socket_Id);
@@ -61,14 +45,16 @@ package body Gtk.Plug is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget    : access Gtk_Plug_Record'Class;
-                         Socket_Id : in     Guint32) is
+   procedure Initialize
+     (Widget    : access Gtk_Plug_Record'Class;
+      Socket_Id : in     Guint32)
+   is
       function Internal (Socket_Id : in Guint32) return System.Address;
       pragma Import (C, Internal, "gtk_plug_new");
+
    begin
       Set_Object (Widget, Internal (Socket_Id));
       Initialize_User_Data (Widget);
    end Initialize;
-
 
 end Gtk.Plug;

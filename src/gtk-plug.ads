@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -47,7 +47,7 @@ package Gtk.Plug is
 
    procedure Gtk_New (Widget    : out Gtk_Plug;
                       Socket_Id : in Guint32);
-   --  Create a new plug widget inside the GtkSocket identified by socket_id.
+   --  Create a new plug widget inside the Gtk_Socket identified by socket_id.
    --  Socket_Id is the XID of the socket's window.
 
    procedure Initialize
@@ -55,14 +55,6 @@ package Gtk.Plug is
       Socket_Id : in     Guint32);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
-
-   procedure Construct
-     (Plug      : access Gtk_Plug_Record;
-      Socket_Id : in     Guint32);
-   --  Finish the creation of a Gtk_Plug widget.
-   --  This function will generally only be used by classes deriving from
-   --  Gtk_Plug.
-   --  Socket_Id is the XID of the socket's window.
 
 private
 

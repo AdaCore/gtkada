@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -50,10 +50,10 @@
 --  structure. If this field is non-NULL, then the plug has been succesfully
 --  created inside of the socket.
 --
---  When GTK+ is notified that the embedded window has been destroyed, then it
---  will destroy the socket as well. You should always, therefore, be prepared
---  for your sockets to be destroyed at any time when the main event loop is
---  running.
+--  When GtkAda is notified that the embedded window has been destroyed, then
+--  it will destroy the socket as well. You should always, therefore, be
+--  prepared for your sockets to be destroyed at any time when the main event
+--  loop is running.
 --
 --  A socket can also be used to swallow arbitrary pre-existing top-level
 --  windows using Steal, though the integration when this is done will not be
@@ -79,7 +79,7 @@ package Gtk.Socket is
    procedure Steal
      (Socket : access Gtk_Socket_Record;
       Wid    : in     Guint32);
-   --  Reparent a pre-existing toplevel window into a GtkSocket.
+   --  Reparent a pre-existing toplevel window into a Gtk_Socket.
    --  Wid is the XID of an existing toplevel window.
 
 private
