@@ -1,29 +1,29 @@
 
-GtkAda 0.5 release (Beta code)
+GtkAda 0.6 release (Beta code)
 ------------------------------
-     
-GtkAda is  an Ada95 binding of  Gtk+ version 1.1.14.   It allows you to
+
+GtkAda is an Ada95 binding of Gtk+ version 1.2.0. It allows you to
 develop graphical applications in Ada95 using Gtk+.
 
-Currently, all widgets  of the  Gtk+ 1.1 series  have  been bound. The
-binding  for the Gdk part is  not complete yet,  but is already pretty
+Currently, all widgets  of the Gtk+ 1.2 series have  been bound. The
+binding  for the Gdk part is not complete yet,  but is already pretty
 much in place.
-     
-To  test our binding, the testgtk  program have been almost completely 
+
+To test our binding, the testgtk program have been almost completely 
 re-implemented and is also distributed with the binding.
-     
+
 LSM entry follows :
 Begin3
  Title:  GtkAda
- Version: 0.5
- Entered-date: 03FEB99
- Description: Ada95 binding to Gtk+ (version 1.1.14) 
- Keywords: Ada95 Ada Gtk+ Gtk X Gui
- Author: Emmanuel Briot <briot@gnat.com> and Joel Brobecker <jbrobecker@west.raytheon.com>
- Maintained-by: <briot@gnat.com> and <jbrobecker@west.raytheon.com> 
+ Version: 0.6
+ Entered-date: 1MAR99
+ Description: Ada95 binding to Gtk+ (version 1.2.0) 
+ Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade
+ Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
+ Maintained-by: <briot@gnat.com>, <jbrobecker@west.raytheon.com> and <charlet@gnat.com>
  Primary-site:  http://ada.eu.org/gtkada/
  Original-site: http://ada.eu.org/gtkada/ 
- Platforms: SunOS-5.5.1 Linux-2.0.35 Linux-2.0.36
+ Platforms: SunOS-5.5.1 Linux-2.0.35 Linux-2.0.36 DECUnix-4.0
  Copying-policy: GPL (with a slight modification, see headers of *.ad[bs] files
 End
 
