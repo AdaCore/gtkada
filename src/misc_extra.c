@@ -2,13 +2,14 @@
 #include <gtk/gtk.h>
 
 #include "gtkextra/gtkpsfont.h"
+#include "gtkextra/gtkcombobox.h"
+#include "gtkextra/gtkfontcombo.h"
+
 /* XXX ??? */
 #if 0
 #include "gtkextra/gtkplot.h"
 #include "gtkextra/gtkplotcanvas.h"
 #include "gtkextra/gtksheet.h"
-#include "gtkextra/gtkcombobox.h"
-#include "gtkextra/gtkfontcombo.h"
 #include "gtkextra/gtkcolorcombo.h"
 #include "gtkextra/gtkitementry.h"
 
@@ -183,6 +184,8 @@ ada_gtk_sheet_get_row_height (GtkSheet* sheet, gint row) {
   return sheet->row[row].height;
 }
 
+#endif
+
 /********************************************************************
  **
  **  Gtk_Combo_Box widget
@@ -234,6 +237,9 @@ GdkFont*
 ada_gtk_font_combo_get_font (GtkFontCombo* combo) {
   return combo->font;
 }
+
+// ???
+#if 0
 
 /********************************************************************
  **
