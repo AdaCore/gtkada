@@ -30,7 +30,6 @@
 with Glib; use Glib;
 with Gdk.Bitmap;
 with Gdk.Color;
-with Gdk.Font;
 with Gdk.Pixmap;
 with Gtk; use Gtk;
 with Gtk.Adjustment;
@@ -51,6 +50,7 @@ with Gtk.Tooltips;
 with Gtk.Widget;
 with Gtk.Window;
 with Gtkada.Types;
+with Pango.Font; use Pango.Font;
 
 with Ada.Numerics.Discrete_Random;
 with Ada.Text_IO;
@@ -301,15 +301,7 @@ package body Create_Ctree is
                                    State_Type => State_Normal,
                                    Color      => Col2);
 
-         declare
-            Tmp_Font : Gdk.Font.Gdk_Font := Gtk.Style.Get_Font (Style2);
-         begin
-            Gdk.Font.Unref (Tmp_Font);
-            Gdk.Font.Load
-              (Font => Tmp_Font,
-               Font_Name => "-*-courier-medium-*-*-*-*-300-*-*-*-*-*-*");
-            Gtk.Style.Set_Font (Style => Style2, Font  => Tmp_Font);
-         end;
+         Set_Font_Description (Style2, From_String ("Courier 30"));
 
       end if;
 

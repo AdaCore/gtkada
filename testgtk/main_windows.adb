@@ -53,6 +53,7 @@ with Gtk.Clist;           use Gtk.Clist;
 with Gtk.Ctree;           use Gtk.Ctree;
 with Gtk.Widget;          use Gtk.Widget;
 with Gtk.Window;          use Gtk.Window;
+with Pango.Font;          use Pango.Font;
 
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with Ada.Strings.Fixed;
@@ -674,7 +675,6 @@ package body Main_Windows is
       Vbox2    : Gtk.Box.Gtk_Box;
       Tree     : Gtk.Ctree.Gtk_Ctree;
       Scrolled : Gtk_Scrolled_Window;
-      Font     : Gdk.Font.Gdk_Font;
       Style    : Gtk_Style;
       Button   : Gtk.Button.Gtk_Button;
       Bbox     : Gtk.Hbutton_Box.Gtk_Hbutton_Box;
@@ -693,11 +693,7 @@ package body Main_Windows is
 
       --  Label
       Style := Copy (Get_Style (Win));
-      Load (Font, "-adobe-helvetica-bold-*-*-*-*-180-*-*-*-*-*-*");
-
-      if Font /= null then
-         Set_Font (Style, Font);
-      end if;
+      Set_Font_Description (Style, From_String ("Helvetica Bold 18"));
 
       Gtk_New (Label, "GtkAda, the portable Ada95 GUI");
       Set_Style (Label, Style);

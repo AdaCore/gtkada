@@ -30,7 +30,6 @@
 with Glib;                use Glib;
 with Gdk;                 use Gdk;
 with Gdk.Color;           use Gdk.Color;
-with Gdk.Font;            use Gdk.Font;
 with Gdk.Pixmap;          use Gdk.Pixmap;
 with Gdk.Bitmap;          use Gdk.Bitmap;
 with Gtk;                 use Gtk;
@@ -47,6 +46,7 @@ with Gtk.Handlers;        use Gtk.Handlers;
 with Gtk.Style;           use Gtk.Style;
 with Gtk.Widget;          use Gtk.Widget;
 with Gtkada.Types;        use Gtkada.Types;
+with Pango.Font;          use Pango.Font;
 with Common;              use Common;
 with Interfaces.C.Strings;
 
@@ -232,7 +232,6 @@ package body Create_Clist is
       Col1 : Gdk_Color;
       Col2 : Gdk_Color;
       Row  : Gint;
-      Font : Gdk.Gdk_Font;
       Style : Gtk_Style := Get_Style (List);
 
    begin
@@ -255,8 +254,7 @@ package body Create_Clist is
          Set_Foreground (Style3, State_Normal, Col1);
          Set_Base (Style3, State_Normal, Col2);
 
-         Load (Font, "-*-courier-medium-*-*-*-*-120-*-*-*-*-*-*");
-         Set_Font (Style3, Font);
+         Set_Font_Description (Style3, From_String ("Courier 120"));
       end if;
 
       Set_Cell_Style (List, Row, 3, Style1);
@@ -326,7 +324,6 @@ package body Create_Clist is
       Col1      : Gdk_Color;
       Col2      : Gdk_Color;
       Style     : Gtk_Style;
-      Font      : Gdk.Gdk_Font;
 
    begin
 
@@ -450,8 +447,7 @@ package body Create_Clist is
       Gtk_New (Style);
       Set_Foreground (Style, State_Normal, Col1);
       Set_Base (Style, State_Normal, Col2);
-      Load (Font, "-adobe-helvetica-bold-r-*-*-*-140-*-*-*-*-*-*");
-      Set_Font (Style, Font);
+      Set_Font_Description (Style, From_String ("Helvetica Bold 14"));
 
       for I in Gint'(0) .. 9 loop
          Texts (0) := ICS.New_String ("ClistRow " & Integer'Image (Clist_Rows));
