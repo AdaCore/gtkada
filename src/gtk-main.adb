@@ -94,8 +94,8 @@ package body Gtk.Main is
          end record;
       type Cb_Record_Access is access Cb_Record;
 
-      procedure Free (D : in System.Address);
-      pragma Convention (C, Free);
+      procedure Free_Data (D : in System.Address);
+      pragma Convention (C, Free_Data);
 
       function Convert is new Unchecked_Conversion
         (System.Address, Cb_Record_Access);
@@ -107,7 +107,7 @@ package body Gtk.Main is
       -- Free --
       ----------
 
-      procedure Free (D : in System.Address) is
+      procedure Free_Data (D : in System.Address) is
          procedure Internal is new Unchecked_Deallocation
            (Cb_Record, Cb_Record_Access);
          procedure Internal2 is new Unchecked_Deallocation
@@ -116,7 +116,7 @@ package body Gtk.Main is
       begin
          Internal2 (Data.Data);
          Internal (Data);
-      end Free;
+      end Free_Data;
 
       ----------------
       -- General_Cb --
@@ -146,7 +146,7 @@ package body Gtk.Main is
                                                    Data => new Data_Type'(D));
       begin
          return Internal (0, General_Cb'Address, System.Null_Address,
-                          Convert (Data), Free'Address);
+                          Convert (Data), Free_Data'Address);
       end Add;
 
    end Idle;
@@ -165,8 +165,8 @@ package body Gtk.Main is
          end record;
       type Cb_Record_Access is access Cb_Record;
 
-      procedure Free (D : in System.Address);
-      pragma Convention (C, Free);
+      procedure Free_Data (D : in System.Address);
+      pragma Convention (C, Free_Data);
 
       function Convert is new Unchecked_Conversion
         (System.Address, Cb_Record_Access);
@@ -178,7 +178,7 @@ package body Gtk.Main is
       -- Free --
       ----------
 
-      procedure Free (D : in System.Address) is
+      procedure Free_Data (D : in System.Address) is
          procedure Internal is new Unchecked_Deallocation
            (Cb_Record, Cb_Record_Access);
          procedure Internal2 is new Unchecked_Deallocation
@@ -187,7 +187,7 @@ package body Gtk.Main is
       begin
          Internal2 (Data.Data);
          Internal (Data);
-      end Free;
+      end Free_Data;
 
       ----------------
       -- General_Cb --
@@ -221,7 +221,7 @@ package body Gtk.Main is
                                                    Data => new Data_Type'(D));
       begin
          return Internal (Interval, General_Cb'Address, System.Null_Address,
-                          Convert (Data), Free'Address);
+                          Convert (Data), Free_Data'Address);
       end Add;
 
    end Timeout;

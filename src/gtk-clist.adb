@@ -779,14 +779,14 @@ package body Gtk.CList is
 
       function Convert is new Unchecked_Conversion (System.Address,
                                                     Cb_Record_Access);
-      procedure Free (Data : in System.Address);
-      pragma Convention (C, Free);
+      procedure Free_Data (Data : in System.Address);
+      pragma Convention (C, Free_Data);
 
       ----------
       -- Free --
       ----------
 
-      procedure Free (Data : in System.Address) is
+      procedure Free_Data (Data : in System.Address) is
          procedure Internal is new Unchecked_Deallocation (Cb_Record,
                                                            Cb_Record_Access);
          procedure Internal2 is new Unchecked_Deallocation (Data_Type,
@@ -795,7 +795,7 @@ package body Gtk.CList is
       begin
          Internal2 (D.Ptr);
          Internal (D);
-      end Free;
+      end Free_Data;
 
       ---------
       -- Get --
@@ -838,7 +838,7 @@ package body Gtk.CList is
          Internal (Get_Object (Object),
                    Row,
                    Convert (D),
-                   Free'Address);
+                   Free_Data'Address);
       end Set;
 
    end Row_Data;
