@@ -1,0 +1,41 @@
+.TH GATE 1 "29 March 1999" "GNU Debian/Linux" "GtkAda programming manual"
+.SH NAME
+gate \- generate Ada applications from a GLADE XML file
+.SH SYNOPSIS
+.B gate
+.I file
+.SH DESCRIPTION
+\fIgate\fP is the static version of the program transforming
+a file produced by \fIglade(1)\fP, the Gtk GUI builder, into an Ada
+program.
+It will generate a set of Ada files that, when compiled, will
+recreate the interface you just designed in \fIglade(1)\fP.
+The most important file created by Gate is called
+.\" .IR "callback_<project_name>.adb" .
+.IB "callback_" "<project_name>" ".adb"
+and contains stubs for all the callbacks you declared in Glade.
+.PP
+Note that you can easily go back to Glade any time, modify your interface,
+and have \fIgate\fP regenerate a set of files. All your modifications will be
+kept in the new files. For that, \fIgate\fP creates a directory
+.B .gate
+in the current directory. Please do not delete it if you want \fIgate\fP to be able to
+keep your changes from one version to the next.
+Also note that to be able to keep track of your modifications, gate relies on
+patch and diff being available on your system. If you don't have a working set
+of diff/patch, configure will simply replace them by null operations.
+.SH "SEE ALSO"
+.BR gtkada-config (1),
+.BR dgate (1),
+.BR glade (1)
+.SH "COPYRIGHT FOR THIS MAN PAGE"
+This man page has been written by Samuel Tardieu
+for the Debian GNU/Linux distribution, from informations given
+by the GtkAda authors Emmanuel Briot, Joel Brobecker and Arnaud Charlet.
+
+Permission to use, copy, modify, and distribute this documentation
+for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation.
+
