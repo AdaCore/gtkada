@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                    Copyright (C) 1999                             --
+--                    Copyright (C) 1999-2000                        --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Accel_Label;
 with Gtk.Alignment;
 with Gtk.Arrow;
 with Gtk.Aspect_Frame;
@@ -36,27 +37,28 @@ with Gtk.Calendar;
 with Gtk.Check_Button;
 with Gtk.Check_Menu_Item;
 with Gtk.Clist;
---  with Gtk.Color_Selection;
+with Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog;
 with Gtk.Combo;
 with Gtk.Ctree;
---  with Gtk.Curve;
+with Gtk.Curve;
 with Gtk.Dialog;
 with Gtk.Drawing_Area;
 with Gtk.Editable;
 with Gtk.Event_Box;
 with Gtk.File_Selection;
---  with Gtk.Fixed;
---  with Gtk.Font_Selection;
+with Gtk.Fixed;
+with Gtk.Font_Selection;
 with Gtk.Frame;
---  with Gtk.Gamma_Curve;
+with Gtk.Gamma_Curve;
 with Gtk.GEntry;
---  with Gtk.Handle_Box;
+with Gtk.Handle_Box;
 with Gtk.Hbutton_Box;
---  with Gtk.Image;
+with Gtk.Image;
 with Gtk.Input_Dialog;
 with Gtk.Item;
 with Gtk.Label;
+with Gtk.Layout;
 with Gtk.List;
 with Gtk.List_Item;
 with Gtk.Menu;
@@ -67,11 +69,11 @@ with Gtk.Notebook;
 with Gtk.Option_Menu;
 with Gtk.Packer;
 with Gtk.Paned;
---  with Gtk.Pixmap;
+with Gtk.Pixmap;
 with Gtk.Preview;
 with Gtk.Progress_Bar;
 with Gtk.Radio_Button;
---  with Gtk.Radio_Menu_Item;
+with Gtk.Radio_Menu_Item;
 with Gtk.Ruler;
 with Gtk.Scale;
 with Gtk.Scrollbar;
@@ -81,10 +83,8 @@ with Gtk.Spin_Button;
 with Gtk.Status_Bar;
 with Gtk.Table;
 with Gtk.Text;
---  with Gtk.Tips_Query;
 with Gtk.Toggle_Button;
 with Gtk.Toolbar;
---  with Gtk.Tooltips;
 with Gtk.Tree;
 with Gtk.Tree_Item;
 with Gtk.Vbutton_Box;
@@ -129,9 +129,8 @@ package body Gtk.Glade is
    --  widget
 
    procedure Print_Initialize_Procedure
-     (N : Node_Ptr; File : File_Type; First : Boolean := False);
-   --  Print body of a given "Initialize" procedure to file. First is used only
-   --  internally when this procedure is called recursively.
+     (N : Node_Ptr; File : File_Type);
+   --  Print body of a given "Initialize" procedure to file.
 
    procedure Print_Header (N : Node_Ptr; File : File_Type);
    --  Print the main procedure with the name of the project contained in N
@@ -143,7 +142,6 @@ package body Gtk.Glade is
      (N           : Node_Ptr;
       File        : File_Type;
       Kind        : Variable_Kind) return Boolean;
-
    --  Print variable declarations for a given "create" function to file.
    --  If Kind is Global, print only the field as described in the node N,
    --  otherwise print only the variables used internally to support the
@@ -230,8 +228,8 @@ package body Gtk.Glade is
 
    begin
       if S /= null then
-         New_Line;
-         Put_Line ("GtkAda-WARNING **: Unsupported widget " &
+         New_Line (Standard_Error);
+         Put_Line (Standard_Error, "GtkAda-WARNING **: Unsupported widget " &
            Get_Field (N, "class").all & " (" & S.all & ")");
       end if;
    exception
@@ -243,17 +241,18 @@ package body Gtk.Glade is
    -- Print_Initialize_Procedure --
    --------------------------------
 
-   procedure Print_Initialize_Procedure
-     (N : Node_Ptr; File : File_Type; First : Boolean := False)
-   is
+   procedure Print_Initialize_Procedure (N : Node_Ptr; File : File_Type) is
       P : Node_Ptr;
       S : String_Ptr;
+      C : Boolean;
 
    begin
+      C := N.Specific_Data.Created;
+
       S := Get_Field (N, "class");
       Get_Gate (S.all) (N, File);
 
-      if not First and then S.all /= "Placeholder" then
+      if not C and then S.all /= "Placeholder" then
          New_Line (File);
       end if;
 
@@ -334,6 +333,7 @@ package body Gtk.Glade is
   is
       Option_Menu : Boolean := True;
       Accelerator : Boolean := True;
+      Image       : Boolean := True;
       Printed     : Boolean := False;
 
       procedure Print_Var
@@ -384,20 +384,23 @@ package body Gtk.Glade is
                      then
                         Put_Line (File, "   " & To_Ada (Q.Value.all) &
                           "_Adj : Gtk_Adjustment;");
+                        Printed := True;
                      end if;
 
                      --  Declare a GSList for each Widget containing radio
-                     --  buttons
+                     --  buttons or radio menu items
 
-                     if S.all = "GtkRadioButton" then
+                     if S.all = "GtkRadioButton"
+                      or else S.all = "GtkRadioMenuItem"
+                     then
                         if not
-                          P.Parent.Specific_Data.Has_Radio_Button_Group
+                          P.Parent.Specific_Data.Has_Radio_Group
                         then
                            Put_Line (File, "   " &
                              To_Ada (Get_Field (P.Parent, "name").all) &
                              "_Group : Widget_SList.GSList;");
-                           P.Parent.Specific_Data.Has_Radio_Button_Group :=
-                             True;
+                           P.Parent.Specific_Data.Has_Radio_Group := True;
+                           Printed := True;
                         end if;
                      end if;
 
@@ -407,6 +410,7 @@ package body Gtk.Glade is
                         Put_Line (File, "   " &
                           To_Ada (Get_Field (P, "name").all) &
                           "_Items : String_List.Glist;");
+                        Printed := True;
                      end if;
 
                      --  Declare a menu with each option menu
@@ -415,11 +419,24 @@ package body Gtk.Glade is
                         Put_Line (File, "   " &
                           To_Ada (Get_Field (P, "name").all) &
                           "_Menu : Gtk_Menu;");
+                        Printed := True;
 
                         if Option_Menu then
                            Put_Line (File,
                              "   The_Menu_Item : Gtk_Menu_Item;");
                            Option_Menu := False;
+                        end if;
+                     end if;
+
+                     --  Declare a Gdk_Image and a Gdk_Visual if any Gtk_Image
+                     --  needs to be created in this widget
+
+                     if S.all = "GtkImage" then
+                        if Image then
+                           Put_Line (File, "   The_Image  : Gdk_Image;");
+                           Put_Line (File, "   The_Visual : Gdk_Visual;");
+                           Image := False;
+                           Printed := True;
                         end if;
                      end if;
 
@@ -431,20 +448,7 @@ package body Gtk.Glade is
                            Put_Line (File,
                              "   The_Accel_Group : Gtk_Accel_Group;");
                            Accelerator := False;
-                        end if;
-                     end if;
-
-                     --  Declare an array of strings for each Clist/Ctree with
-                     --  a "columns" field.
-
-                     if S.all = "GtkCList" or else S.all = "GtkCTree" then
-                        S := Get_Field (P, "columns");
-
-                        if S /= null then
-                           Put_Line (File, "   " &
-                             To_Ada (Get_Field (P, "name").all) & "_Titles" &
-                               " : Chars_Ptr_Array (1 .. " &
-                             S.all & ");");
+                           Printed := True;
                         end if;
                      end if;
                   end if;
@@ -462,12 +466,7 @@ package body Gtk.Glade is
 
    begin
       Print_Var (N, File, Kind, True, Option_Menu, Accelerator);
-
-      if Kind = Local then
-         return True;
-      else
-         return Printed;
-      end if;
+      return Printed;
    end Print_Var;
 
    ------------------------
@@ -493,7 +492,6 @@ package body Gtk.Glade is
         To_Ada (Get_Field (Find_Tag (N.Child, "project"), "name").all);
       Name        : String_Ptr;
       Class       : String_Ptr;
-      Printed     : Boolean;
 
    begin
       Print_Header (N, Output);
@@ -537,16 +535,12 @@ package body Gtk.Glade is
             --  needed
 
             Put_Line (Output, "with Gdk.Types; use Gdk.Types;");
-            Put_Line (Output,
-              "with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;");
             Put_Line (Output, "with Gtk.Widget; use Gtk.Widget;");
             Put_Line (Output, "with Gtk.Enums;  use Gtk.Enums;");
-            Put_Line (Output, "with Gtk.Pixmap; use Gtk.Pixmap;");
-            Put_Line (Output, "with Gtk.Accel_Group; use Gtk.Accel_Group;");
             Put_Line (Output, "with Callbacks_" & Project &
               "; use Callbacks_" & Project & ";");
 
-            if Find_Child (M.Child, "signal") /= null then
+            if Find_Child (M.Child, "handler") /= null then
                Put_Line (Output, "with " & To_Ada (Name.all) &
                  "_Pkg.Callbacks; use " & To_Ada (Name.all) &
                  "_Pkg.Callbacks;");
@@ -569,10 +563,13 @@ package body Gtk.Glade is
             Put_Line (Output, "procedure Initialize (" &
               To_Ada (Name.all) & " : access " & To_Ada (Name.all) &
               "_Record'Class) is");
-            Printed := Print_Var (M, Output, Local);
-            New_Line (Output);
+
+            if Print_Var (M, Output, Local) then
+               New_Line (Output);
+            end if;
+
             Put_Line (Output, "begin");
-            Print_Initialize_Procedure (M, Output, True);
+            Print_Initialize_Procedure (M, Output);
             Put_Line (Output, "end Initialize;");
             New_Line (Output);
             Put_Line (Output, "end " & To_Ada (Name.all) & "_Pkg;");
@@ -666,6 +663,8 @@ package body Gtk.Glade is
    end Get_Dgate;
 
 begin
+   SHT.Set (new String '("GtkAccelLabel"),
+     (Gtk.Accel_Label.Generate'Access, Gtk.Accel_Label.Generate'Access));
    SHT.Set (new String '("GtkAlignment"),
      (Gtk.Alignment.Generate'Access, Gtk.Alignment.Generate'Access));
    SHT.Set (new String '("GtkArrow"),
@@ -689,9 +688,9 @@ begin
       Gtk.Check_Menu_Item.Generate'Access));
    SHT.Set (new String '("GtkCList"),
      (Gtk.Clist.Generate'Access, Gtk.Clist.Generate'Access));
-   --  SHT.Set (new String '("GtkColorSelection"),
-   --    (Gtk.Color_Selection.Generate'Access,
-   --     Gtk.Color_Selection.Generate'Access));
+   SHT.Set (new String '("GtkColorSelection"),
+     (Gtk.Color_Selection.Generate'Access,
+      Gtk.Color_Selection.Generate'Access));
    SHT.Set (new String '("GtkColorSelectionDialog"),
      (Gtk.Color_Selection_Dialog.Generate'Access,
       Gtk.Color_Selection_Dialog.Generate'Access));
@@ -699,8 +698,8 @@ begin
      (Gtk.Combo.Generate'Access, Gtk.Combo.Generate'Access));
    SHT.Set (new String '("GtkCTree"),
      (Gtk.Ctree.Generate'Access, Gtk.Ctree.Generate'Access));
-   --  SHT.Set (new String '("GtkCurve"),
-   --    (Gtk.Curve.Generate'Access, Gtk.Curve.Generate'Access));
+   SHT.Set (new String '("GtkCurve"),
+     (Gtk.Curve.Generate'Access, Gtk.Curve.Generate'Access));
    SHT.Set (new String '("GtkDialog"),
      (Gtk.Dialog.Generate'Access, Gtk.Dialog.Generate'Access));
    SHT.Set (new String '("GtkDrawingArea"),
@@ -711,29 +710,34 @@ begin
      (Gtk.Event_Box.Generate'Access, Gtk.Event_Box.Generate'Access));
    SHT.Set (new String '("GtkFileSelection"),
      (Gtk.File_Selection.Generate'Access, Gtk.File_Selection.Generate'Access));
-   --  SHT.Set (new String '("GtkFixed"),
-   --    (Gtk.Fixed.Genrate'Access, Gtk.Fixed.Genrate'Access));
-   --  SHT.Set (new String '("GtkFontSelection"),
-   --    (Gtk.Font_Selection.Generate'Access,
-   --     Gtk.Font_Selection.Generate'Access));
+   SHT.Set (new String '("GtkFixed"),
+     (Gtk.Fixed.Generate'Access, Gtk.Fixed.Generate'Access));
+   SHT.Set (new String '("GtkFontSelection"),
+     (Gtk.Font_Selection.Generate'Access,
+      Gtk.Font_Selection.Generate'Access));
+   SHT.Set (new String '("GtkFontSelectionDialog"),
+     (Gtk.Font_Selection.Generate_Dialog'Access,
+      Gtk.Font_Selection.Generate_Dialog'Access));
    SHT.Set (new String '("GtkFrame"),
      (Gtk.Frame.Generate'Access, Gtk.Frame.Generate'Access));
-   --  SHT.Set (new String '("GtkGammaCurve"),
-   --    (Gtk.Gamma_Curve.Generate'Access, Gtk.Gamma_Curve.Generate'Access));
+   SHT.Set (new String '("GtkGammaCurve"),
+     (Gtk.Gamma_Curve.Generate'Access, Gtk.Gamma_Curve.Generate'Access));
    SHT.Set (new String '("GtkEntry"),
      (Gtk.GEntry.Generate'Access, Gtk.GEntry.Generate'Access));
-   --  SHT.Set (new String '("GtkHandleBox"),
-   --    (Gtk.Handle_Box.Generate'Access, Gtk.Handle_Box.Generate'Access));
+   SHT.Set (new String '("GtkHandleBox"),
+     (Gtk.Handle_Box.Generate'Access, Gtk.Handle_Box.Generate'Access));
    SHT.Set (new String '("GtkHButtonBox"),
      (Gtk.Hbutton_Box.Generate'Access, Gtk.Hbutton_Box.Generate'Access));
-   --  SHT.Set (new String '("GtkImage"),
-   --    (Gtk.Image.Generate'Access, Gtk.Image.Generate'Access));
+   SHT.Set (new String '("GtkImage"),
+     (Gtk.Image.Generate'Access, Gtk.Image.Generate'Access));
    SHT.Set (new String '("GtkInputDialog"),
      (Gtk.Input_Dialog.Generate'Access, Gtk.Input_Dialog.Generate'Access));
    SHT.Set (new String '("GtkItem"),
      (Gtk.Item.Generate'Access, Gtk.Item.Generate'Access));
    SHT.Set (new String '("GtkLabel"),
      (Gtk.Label.Generate'Access, Gtk.Label.Generate'Access));
+   SHT.Set (new String '("GtkLayout"),
+     (Gtk.Layout.Generate'Access, Gtk.Layout.Generate'Access));
    SHT.Set (new String '("GtkList"),
      (Gtk.List.Generate'Access, Gtk.List.Generate'Access));
    SHT.Set (new String '("GtkListItem"),
@@ -752,23 +756,21 @@ begin
      (Gtk.Option_Menu.Generate'Access, Gtk.Option_Menu.Generate'Access));
    SHT.Set (new String '("GtkPacker"),
      (Gtk.Packer.Generate'Access, Gtk.Packer.Generate'Access));
-   --  SHT.Set (new String '("GtkPaned"),
-   --    (Gtk.Paned.Generate'Access, Gtk.Paned.Generate'Access));
    SHT.Set (new String '("GtkHPaned"),
      (Gtk.Paned.Generate'Access, Gtk.Paned.Generate'Access));
    SHT.Set (new String '("GtkVPaned"),
      (Gtk.Paned.Generate'Access, Gtk.Paned.Generate'Access));
-   --  SHT.Set (new String '("GtkPixmap"),
-   --    (Gtk.Pixmap.Generate'Access, Gtk.Pixmap.Generate'Access));
+   SHT.Set (new String '("GtkPixmap"),
+     (Gtk.Pixmap.Generate'Access, Gtk.Pixmap.Generate'Access));
    SHT.Set (new String '("GtkPreview"),
      (Gtk.Preview.Generate'Access, Gtk.Preview.Generate'Access));
    SHT.Set (new String '("GtkProgressBar"),
      (Gtk.Progress_Bar.Generate'Access, Gtk.Progress_Bar.Generate'Access));
    SHT.Set (new String '("GtkRadioButton"),
      (Gtk.Radio_Button.Generate'Access, Gtk.Radio_Button.Generate'Access));
-   --  SHT.Set (new String '("GtkRadioMenuItem"),
-   --    (Gtk.Radio_Menu_Item.Generate'Access,
-   --     Gtk.Radio_Menu_Item.Generate'Access));
+   SHT.Set (new String '("GtkRadioMenuItem"),
+     (Gtk.Radio_Menu_Item.Generate'Access,
+      Gtk.Radio_Menu_Item.Generate'Access));
    SHT.Set (new String '("GtkRuler"),
      (Gtk.Ruler.Generate'Access, Gtk.Ruler.Generate'Access));
    SHT.Set (new String '("GtkHRuler"),
@@ -798,15 +800,11 @@ begin
      (Gtk.Table.Generate'Access, Gtk.Table.Generate'Access));
    SHT.Set (new String '("GtkText"),
      (Gtk.Text.Generate'Access, Gtk.Text.Generate'Access));
-   --  SHT.Set (new String '("GtkTipsQuery"),
-   --    (Gtk.Tips_Query.Generate'Access, Gtk.Tips_Query.Generate'Access));
    SHT.Set (new String '("GtkToggleButton"),
      (Gtk.Toggle_Button.Generate'Access,
       Gtk.Toggle_Button.Generate'Access));
    SHT.Set (new String '("GtkToolbar"),
      (Gtk.Toolbar.Generate'Access, Gtk.Toolbar.Generate'Access));
-   --  SHT.Set (new String '("GtkTooltips"),
-   --    (Gtk.Tooltips.Generate'Access, Gtk.Tooltips.Generate'Access));
    SHT.Set (new String '("GtkTree"),
      (Gtk.Tree.Generate'Access, Gtk.Tree.Generate'Access));
    SHT.Set (new String '("GtkTreeItem"),
