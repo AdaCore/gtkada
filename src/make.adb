@@ -1,6 +1,5 @@
 pragma Warnings (Off);
 with Glib.Enums;
-with Glib.Glade;
 with Glib.Glist;
 with Glib.Gnodes;
 with Glib.GSlist;
@@ -68,7 +67,6 @@ with Gtk.Font_Selection_Dialog;
 with Gtk.Frame;
 with Gtk.Gamma_Curve;
 with Gtk.GEntry;
-with Gtk.Glade;
 with Gtk.GRange;
 with Gtk.Handle_Box;
 with Gtk.Handlers;
