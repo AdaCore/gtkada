@@ -40,16 +40,17 @@ with Gtk; use Gtk;
 package body Create_Shapes is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Win_Cb is new Signal.Two_Callback (Gtk_Window, Gint,
                                               Gdk_Event_Button);
    package Win_Cb2 is new Signal.Void_Callback (Gtk_Window);
    package Win_Cb3 is new Signal.Two_Callback (Gtk_Window, Gint,
                                                Gdk_Event_Motion);
 
-   Modeller : Gtk_Window;
-   Sheets   : Gtk_Window;
-   Rings    : Gtk_Window;
-   Root_Win : Gdk_Window;
+   Modeller : aliased Gtk_Window;
+   Sheets   : aliased Gtk_Window;
+   Rings    : aliased Gtk_Window;
+   Root_Win : aliased Gdk_Window;
 
    type Cursor_Offset is
       record
@@ -160,8 +161,8 @@ package body Create_Shapes is
       if not Is_Created (Modeller) then
          Modeller := Shape_Create_Icon ("Modeller.xpm", 440, 140, 0, 0,
                                         Popup);
-         Id := Widget_Cb.Connect (Modeller, "destroy", Destroy'Access,
-                                  Modeller);
+         Id := Widget2_Cb.Connect (Modeller, "destroy", Destroyed'Access,
+                                  Modeller'Access);
       else
          Destroy (Modeller);
       end if;
@@ -169,8 +170,8 @@ package body Create_Shapes is
       if not Is_Created (Sheets) then
          Modeller := Shape_Create_Icon ("FilesQueue.xpm", 440, 140, 0, 0,
                                         Popup);
-         Id := Widget_Cb.Connect (Sheets, "destroy", Destroy'Access,
-                                  Sheets);
+         Id := Widget2_Cb.Connect (Sheets, "destroy", Destroyed'Access,
+                                   Sheets'Access);
       else
          Destroy (Sheets);
       end if;
@@ -178,8 +179,8 @@ package body Create_Shapes is
       if not Is_Created (Rings) then
          Rings := Shape_Create_Icon ("3DRings.xpm", 440, 140, 0, 0,
                                      Popup);
-         Id := Widget_Cb.Connect (Rings, "destroy", Destroy'Access,
-                                  Rings);
+         Id := Widget2_Cb.Connect (Rings, "destroy", Destroyed'Access,
+                                  Rings'Access);
       else
          Destroy (Rings);
       end if;

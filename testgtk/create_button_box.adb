@@ -36,9 +36,10 @@ with Gtk; use Gtk;
 package body Create_Button_Box is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Void_Cb is new Signal.Void_Callback (Gtk_Button);
 
-   Window : Gtk_Window;
+   Window : aliased Gtk_Window;
 
    procedure Create_Bbox_Window (Horizontal : in Boolean;
                                  Title      : in String;
@@ -48,7 +49,6 @@ package body Create_Button_Box is
                                  Child_H    : in Gint;
                                  Layout     : in Gtk_Button_Box_Style)
    is
-      Window : Gtk_Window;
       Id     : Guint;
       Box1   : Gtk_Box;
       Bbox   : Gtk_Button_Box;
@@ -56,7 +56,8 @@ package body Create_Button_Box is
    begin
       Gtk_New (Window, Window_Toplevel);
       Set_Title (Window, Title);
-      Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
+      Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                Window'Access);
 
       if Horizontal then
          Set_Usize (Window, 550, 60);

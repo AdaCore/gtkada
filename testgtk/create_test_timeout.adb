@@ -36,10 +36,11 @@ with Gtk; use Gtk;
 package body Create_Test_Timeout is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Label_Timeout is new Timeout (Gtk_Label'Class);
    package Label_Cb is new Signal.Object_Callback (Gtk_Label);
 
-   Dialog : Gtk_Dialog;
+   Dialog : aliased Gtk_Dialog;
    Timeout   : Guint;
    Count  : Integer := 0;
 
@@ -82,8 +83,8 @@ package body Create_Test_Timeout is
 
       if not Is_Created (Dialog) then
          Gtk_New (Dialog);
-         Id := Widget_Cb.Connect (Dialog, "destroy", Destroy_Timeout'Access,
-                                  Dialog);
+         Id := Widget2_Cb.Connect (Dialog, "destroy", Destroyed'Access,
+                                   Dialog'Access);
          Set_Title (Dialog, "Timeout Test");
          Border_Width (Dialog, Border_Width => 0);
 

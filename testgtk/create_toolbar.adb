@@ -39,6 +39,7 @@ package body Create_Toolbar is
 
    package Toolbar_Cb is new Signal.Object_Callback (Gtk_Toolbar);
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
    function New_Pixmap (Filename   : in String;
                         Window     : in Gdk_Window'Class;
@@ -187,7 +188,7 @@ package body Create_Toolbar is
    end Make_Toolbar;
 
 
-   Window : Gtk_Window;
+   Window : aliased Gtk_Window;
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id      : Guint;
@@ -197,7 +198,8 @@ package body Create_Toolbar is
          Gtk_New (Window, Window_Toplevel);
          Set_Title (Window, "Toolbar test");
          Set_Policy (Window, False, True, False);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Border_Width (Window, 0);
       end if;
       if Visible_Is_Set (Window) then

@@ -38,9 +38,10 @@ with Interfaces.C.Strings;
 package body Create_Status is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Status_Cb is new Signal.Object_Callback (Gtk_Status_Bar);
 
-   Window  : Gtk.Window.Gtk_Window;
+   Window  : aliased Gtk.Window.Gtk_Window;
    Counter : Gint := 1;
 
    procedure Push (Status : in out Gtk_Status_Bar'Class) is
@@ -127,7 +128,8 @@ package body Create_Status is
 
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Set_Title (Window, "Status");
          Border_Width (Window, Border_Width => 0);
 

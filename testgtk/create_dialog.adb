@@ -35,8 +35,9 @@ package body Create_Dialog is
 
    package Label_Cb is new Signal.Object_Callback (Gtk_Label);
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
-   Dialog       : Gtk.Dialog.Gtk_Dialog;
+   Dialog       : aliased Gtk.Dialog.Gtk_Dialog;
    Global_Label : Gtk_Label;
 
    procedure Label_Toggle (Label : in out Gtk_Label'Class) is
@@ -60,7 +61,8 @@ package body Create_Dialog is
    begin
       if not Is_Created (Dialog) then
          Gtk_New (Dialog);
-         Id := Widget_Cb.Connect (Dialog, "destroy", Destroy'Access, Dialog);
+         Id := Widget2_Cb.Connect (Dialog, "destroy", Destroyed'Access,
+                                   Dialog'Access);
          Set_Title (Dialog, "dialog");
          Border_Width (Dialog, 0);
 

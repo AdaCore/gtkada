@@ -34,9 +34,10 @@ with Ada.Text_IO;
 package body Create_File_Selection is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Files_Cb is new Signal.Object_Callback (Gtk_File_Selection);
 
-   Window : Gtk_File_Selection;
+   Window : aliased Gtk_File_Selection;
 
    procedure Ok (Files : in out Gtk_File_Selection'Class) is
    begin
@@ -54,8 +55,8 @@ package body Create_File_Selection is
          Gtk_New (Window, Title => "File Selection Dialog");
          Hide_Fileop_Buttons (Window);
          Position (Window, Win_Pos_Mouse);
-         Id := Widget_Cb.Connect (Window, "destroy", Gtk.Widget.Destroy'Access,
-                                  Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                  Window'Access);
          Id := Files_Cb.Connect (Get_Ok_Button (Window), "clicked",
                                  Ok'Access, Window);
          Id := Widget_Cb.Connect (Get_Cancel_Button (Window), "clicked",

@@ -31,15 +31,16 @@ with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Drawing_Area;
 with Gtk.Scrollbar;
 with Gtk.Signal;
-with Gtk.Widget;
+with Gtk.Widget; use Gtk.Widget;
 
 package body Create_Scroll_Test is
 
    package Widget_Cb is new Signal.Object_Callback (Widget.Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
    Scroll_Test_Pos : Integer := 0;
    Scroll_Test_GC : Gdk.GC.Gdk_GC;
-   Dialog : Gtk.Dialog.Gtk_Dialog;
+   Dialog : aliased Gtk.Dialog.Gtk_Dialog;
 
 
    -----------
@@ -57,9 +58,9 @@ package body Create_Scroll_Test is
       if not Is_Created (Dialog) then
 
          Gtk.Dialog.Gtk_New (Dialog);
-         Id := Widget_Cb.Connect (Dialog, "destroy",
-                                  Gtk.Widget.Destroy'Access,
-                                  Dialog);
+         Id := Widget2_Cb.Connect (Dialog, "destroy",
+                                   Destroyed'Access,
+                                   Dialog'Access);
          Gtk.Dialog.Set_Title (Window => Dialog, Title => "Scroll Test");
          Container.Border_Width (Dialog, 0);
 

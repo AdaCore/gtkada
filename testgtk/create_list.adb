@@ -37,9 +37,11 @@ with Gtk; use Gtk;
 package body Create_List is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package List_Cb is new Signal.Object_Callback (Gtk_List);
 
-   Window : Gtk.Window.Gtk_Window;
+
+   Window : aliased Gtk.Window.Gtk_Window;
 
    type String10 is new String (1 .. 10);
    List_Items : array (Positive range <>) of String10 :=
@@ -100,7 +102,8 @@ package body Create_List is
 
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Set_Title (Window, "list");
          Border_Width (Window, Border_Width => 0);
 

@@ -40,8 +40,9 @@ with Gtk; use Gtk;
 package body Create_Scrolled is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
-   Window : Gtk.Dialog.Gtk_Dialog;
+   Window : aliased Gtk.Dialog.Gtk_Dialog;
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id        : Guint;
@@ -55,7 +56,8 @@ package body Create_Scrolled is
 
       if not Is_Created (Window) then
          Gtk_New (Window);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                  Window'Access);
          Set_Title (Window, "Scrolled Window");
          Border_Width (Window, Border_Width => 0);
 

@@ -37,10 +37,11 @@ package body Create_Gamma_Curve is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
    package Float_P is new Ada.Numerics.Generic_Elementary_Functions (Gfloat);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
-   Window : Gtk_Window;
+   Window : aliased Gtk_Window;
    Count  : Gint := 0;
-   Curve : Gtk_Gamma_Curve;
+   Curve  : Gtk_Gamma_Curve;
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id    : Guint;
@@ -52,8 +53,8 @@ package body Create_Gamma_Curve is
          Gtk_New (Window, WIndow_Toplevel);
          Set_Title (Window, "test");
          Border_Width (Window, 10);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
-
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Gtk_New (Curve);
          Add (Window, Curve);
          Show (Curve);

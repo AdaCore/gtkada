@@ -33,9 +33,10 @@ with Gtk; use Gtk;
 package body Create_Preview_Gray is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Preview_Idle is new Gtk.Main.Idle (Gtk_Preview);
 
-   Window : Gtk.Window.Gtk_Window;
+   Window : aliased Gtk.Window.Gtk_Window;
 
    Gray_Idle : Guint  := 0;
    Count     : Guchar := 1;
@@ -68,8 +69,8 @@ package body Create_Preview_Gray is
    begin
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget_Cb.Connect (Window, "destroy", Preview_Destroy'Access,
-                                  Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Set_Title (Window, "test");
          Border_Width (Window, Border_Width => 10);
 

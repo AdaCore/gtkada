@@ -40,8 +40,9 @@ package body Create_Entry is
    package Entry_Cb is new Signal.Callback (Widget_Type => Gtk_Check_Button,
                                             Data_Type   => Gtk_Entry);
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
-   Window : Gtk_Window;
+   Window : aliased Gtk_Window;
 
    procedure Toggle_Editable (Button : in out Gtk_Check_Button'Class;
                               The_Entry : in out Gtk_Entry)
@@ -79,7 +80,8 @@ package body Create_Entry is
          Append (List, "item9 item9");
 
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Set_Title (Window, "entry");
          Border_Width (Window, 0);
 

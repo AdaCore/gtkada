@@ -38,9 +38,10 @@ with Gtk; use Gtk;
 package body Create_Progress is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Time_Cb   is new Gtk.Main.Timeout (Gtk_Progress_Bar);
 
-   Window     : Gtk.Dialog.Gtk_Dialog;
+   Window     : aliased Gtk.Dialog.Gtk_Dialog;
    Timeout_Id : Guint := 0;
 
    procedure Destroy_Progress (Window : in out Gtk_Widget'Class) is
@@ -73,8 +74,8 @@ package body Create_Progress is
 
       if not Is_Created (Window) then
          Gtk_New (Window);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy_Progress'Access,
-                                  Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Set_Title (Window, "progress bar");
          Border_Width (Window, Border_Width => 0);
 

@@ -47,9 +47,10 @@ with Gtk; use Gtk;
 package body Create_Tree is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Tree_Cb is new Signal.Object_Callback (Gtk_Tree);
 
-   Window : Gtk.Window.Gtk_Window;
+   Window : aliased Gtk.Window.Gtk_Window;
 
    Default_Number_Of_Item  : Gfloat := 3.0;
    Default_Recursion_Level : Gfloat := 3.0;
@@ -368,7 +369,8 @@ package body Create_Tree is
 
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Set_Title (Window, "Tree Mode Selection Window");
          Border_Width (Window, Border_Width => 0);
 

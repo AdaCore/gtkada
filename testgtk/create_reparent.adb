@@ -38,11 +38,12 @@ with Ada.Text_IO;
 package body Create_Reparent is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Box_Cb is new Signal.Callback (Gtk_Button, Gtk_Box'Class);
    package Int_Cb is new Signal.Two_Callback (Gtk_Label, Gint, Gtk_Widget);
    package Label_User is new User_Data (Gtk_Label);
 
-   Window : Gtk.Window.Gtk_Window;
+   Window : aliased Gtk.Window.Gtk_Window;
 
    procedure Set_Parent_Signal (Child      : in out Gtk_Label'Class;
                                 Old_Parent : in out Gtk_Widget;
@@ -92,7 +93,8 @@ package body Create_Reparent is
 
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Set_Title (Window, "reparent");
          Border_Width (Window, Border_Width => 0);
 

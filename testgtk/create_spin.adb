@@ -40,13 +40,14 @@ with Gtk; use Gtk;
 package body Create_Spin is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Label_User is new User_Data (Gtk_Label);
    package Spin_O_Cb is new Signal.Object_Callback (Gtk_Spin_Button);
    package Spin_Cb is new Signal.Callback (Gtk_Toggle_Button,
                                            Gtk_Spin_Button);
    package Button_Cb is new Signal.Callback (Gtk_Button, Gint);
 
-   Window   : Gtk.Window.Gtk_Window;
+   Window   : aliased Gtk.Window.Gtk_Window;
    Spinner1 : Gtk_Spin_Button;
 
    procedure Change_Digits (Spin : in out Gtk_Spin_Button'Class) is
@@ -100,7 +101,8 @@ package body Create_Spin is
 
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Set_Title (Window, "spin buttons");
          Border_Width (Window, Border_Width => 0);
 
@@ -119,36 +121,36 @@ package body Create_Spin is
          Gtk_New_Hbox (Hbox, False, 0);
          Pack_Start (VBox, Hbox, True, True, 5);
 
---          Gtk_New_Vbox (Vbox2, False, 0);
---          Pack_Start (Hbox, Vbox2, True, True, 5);
---          Gtk_New (Label, "Day:");
---          Set_Alignment (Label, 0.0, 0.5);
---          Pack_Start (Vbox2, Label, False, True, 0);
---          Gtk_New (Adj, 1.0, 1.0, 31.0, 1.0, 5.0, 0.0);
---          Gtk_New (Spinner, Adj, 0.0, 0);
---          Set_Wrap (Spinner, True);
---          Pack_Start (Vbox2, Spinner, False, True, 0);
+         Gtk_New_Vbox (Vbox2, False, 0);
+         Pack_Start (Hbox, Vbox2, True, True, 5);
+         Gtk_New (Label, "Day:");
+         Set_Alignment (Label, 0.0, 0.5);
+         Pack_Start (Vbox2, Label, False, True, 0);
+         Gtk_New (Adj, 1.0, 1.0, 31.0, 1.0, 5.0, 0.0);
+         Gtk_New (Spinner, Adj, 0.0, 0);
+         Set_Wrap (Spinner, True);
+         Pack_Start (Vbox2, Spinner, False, True, 0);
 
---          Gtk_New_Vbox (Vbox2, False, 0);
---          Pack_Start (Hbox, Vbox2, True, True, 5);
---          Gtk_New (Label, "Month:");
---          Set_Alignment (Label, 0.0, 0.5);
---          Pack_Start (Vbox2, Label, False, True, 0);
---          Gtk_New (Adj, 1.0, 1.0, 12.0, 1.0, 5.0, 0.0);
---          Gtk_New (Spinner, Adj, 0.0, 0);
---          Set_Wrap (Spinner, True);
---          Pack_Start (Vbox2, Spinner, False, True, 0);
+         Gtk_New_Vbox (Vbox2, False, 0);
+         Pack_Start (Hbox, Vbox2, True, True, 5);
+         Gtk_New (Label, "Month:");
+         Set_Alignment (Label, 0.0, 0.5);
+         Pack_Start (Vbox2, Label, False, True, 0);
+         Gtk_New (Adj, 1.0, 1.0, 12.0, 1.0, 5.0, 0.0);
+         Gtk_New (Spinner, Adj, 0.0, 0);
+         Set_Wrap (Spinner, True);
+         Pack_Start (Vbox2, Spinner, False, True, 0);
 
---          Gtk_New_Vbox (Vbox2, False, 0);
---          Pack_Start (Hbox, Vbox2, True, True, 5);
---          Gtk_New (Label, "Year:");
---          Set_Alignment (Label, 0.0, 0.5);
---          Pack_Start (Vbox2, Label, False, True, 0);
---          Gtk_New (Adj, 1998.0, 0.0, 2100.0, 1.0, 100.0, 0.0);
---          Gtk_New (Spinner, Adj, 0.0, 0);
---          Set_Wrap (Spinner, True);
---          Set_Usize (Spinner, 55, 0);
---          Pack_Start (Vbox2, Spinner, False, True, 0);
+         Gtk_New_Vbox (Vbox2, False, 0);
+         Pack_Start (Hbox, Vbox2, True, True, 5);
+         Gtk_New (Label, "Year:");
+         Set_Alignment (Label, 0.0, 0.5);
+         Pack_Start (Vbox2, Label, False, True, 0);
+         Gtk_New (Adj, 1998.0, 0.0, 2100.0, 1.0, 100.0, 0.0);
+         Gtk_New (Spinner, Adj, 0.0, 0);
+         Set_Wrap (Spinner, True);
+         Set_Usize (Spinner, 55, 0);
+         Pack_Start (Vbox2, Spinner, False, True, 0);
 
          Gtk_New (Frame, "Accelerated");
          Pack_Start (Main_Box, Frame, True, True, 0);

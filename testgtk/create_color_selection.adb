@@ -27,6 +27,7 @@ with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
 with Gtk.Button;
 with Gtk.Enums;
 with Gtk.Signal;
+with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window;
 with Ada.Text_IO;
 
@@ -40,6 +41,7 @@ package body Create_Color_Selection is
    package Exit_Cb is new Signal.Object_Callback
      (Widget_Type => Gtk.Widget.Gtk_Widget);
    --  Must be instanciated at library level !
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
 
    procedure Color_Changed (Dialog : in out Gtk_Color_Selection'Class);
@@ -76,7 +78,7 @@ package body Create_Color_Selection is
       end loop;
    end Color_Changed;
 
-   Dialog : Gtk_Color_Selection_Dialog;
+   Dialog : aliased Gtk_Color_Selection_Dialog;
 
    procedure Run
      (Widget : in out Button.Gtk_Button'Class)
@@ -90,10 +92,10 @@ package body Create_Color_Selection is
          Set_Update_Policy (Get_Colorsel (Dialog), Enums.Update_Continuous);
          Window.Position (Dialog, Enums.Win_Pos_Mouse);
 
-         Cb_Id := Exit_Cb.Connect (Obj => Dialog,
-                                   Name => "destroy",
-                                   Func => Gtk.Widget.Destroy'Access,
-                                   Slot_Object => Dialog);
+         Cb_Id := Widget2_Cb.Connect (Dialog,
+                                      "destroy",
+                                      Destroyed'Access,
+                                      Dialog'Access);
 
          Cb_Id := Color_Changed_Cb.Connect (Get_Colorsel (Dialog),
                                             "color_changed",

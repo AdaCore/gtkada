@@ -40,10 +40,11 @@ with Create_Toolbar;
 package body Create_Handle_Box is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Handle_Cb is new Signal.Two_Callback (Gtk_Handle_Box,
                                                  String,
                                                  Gtk_Widget);
-   Window : Gtk_Window;
+   Window : aliased Gtk_Window;
 
 
    procedure Child_Signal (Handle : in out Gtk_Handle_Box'Class;
@@ -73,7 +74,8 @@ package body Create_Handle_Box is
          Set_Title (Window, "Handle Box Test");
          Set_Policy (Window, Allow_Shrink => True,
                      Allow_Grow => True, Auto_Shrink => False);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Border_Width (Window, 20);
 
          Gtk_New_Vbox (Vbox, False, 0);

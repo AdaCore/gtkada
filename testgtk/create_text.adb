@@ -47,9 +47,10 @@ with Ada.Text_IO; use Ada.Text_IO;
 package body Create_Text is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Text_Cb is new Signal.Callback (Gtk_Toggle_Button, Gtk_Text);
 
-   Window : Gtk_Window;
+   Window : aliased Gtk_Window;
 
    procedure Toggle_Editable (Toggle : in out Gtk_Toggle_Button'Class;
                               Text   : in out Gtk_Text)
@@ -82,8 +83,8 @@ package body Create_Text is
 
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access,
-                                  Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                  Window'Access);
          Set_Name (Window, "text window");
          Set_Title (Window, "test");
          Set_Usize (Window, 500, 500);

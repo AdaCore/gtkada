@@ -37,8 +37,9 @@ with Ada.Text_IO;
 package body Create_Main_Loop is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
-   Window : Gtk.Dialog.Gtk_Dialog;
+   Window : aliased Gtk.Dialog.Gtk_Dialog;
 
    procedure Loop_Destroy (Window : in out Gtk_Widget'Class) is
    begin
@@ -54,8 +55,8 @@ package body Create_Main_Loop is
 
       if not Is_Created (Window) then
          Gtk_New (Window);
-         Id := Widget_Cb.Connect (Window, "destroy", Loop_Destroy'Access,
-                                  Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Set_Title (Window, "test_main_loop");
          Border_Width (Window, Border_Width => 0);
 

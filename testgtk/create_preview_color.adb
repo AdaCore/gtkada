@@ -34,8 +34,9 @@ package body Create_Preview_Color is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
    package Preview_Idle is new Gtk.Main.Idle (Gtk_Preview);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
-   Window : Gtk.Window.Gtk_Window;
+   Window : aliased Gtk.Window.Gtk_Window;
 
    Color_Idle : Guint  := 0;
    Count      : Guchar := 1;
@@ -74,8 +75,8 @@ package body Create_Preview_Color is
    begin
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget_Cb.Connect (Window, "destroy", Preview_Destroy'Access,
-                                  Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Set_Title (Window, "test");
          Border_Width (Window, Border_Width => 10);
 

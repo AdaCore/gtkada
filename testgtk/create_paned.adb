@@ -33,8 +33,9 @@ with Gtk; use Gtk;
 package body Create_Paned is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
-   Window : Gtk.Window.Gtk_Window;
+   Window : aliased Gtk.Window.Gtk_Window;
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       VPaned : Gtk_Paned;
@@ -46,7 +47,8 @@ package body Create_Paned is
 
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Set_Title (Window, "Panes");
          Border_Width (Window, Border_Width => 0);
 

@@ -28,7 +28,7 @@ with Gtk.Enums;
 with Gtk.Object;
 with Gtk.Separator;
 with Gtk.Signal;
-with Gtk.Widget;
+with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window;use Gtk.Window;
 
 package body Create_Check_Buttons is
@@ -37,8 +37,10 @@ package body Create_Check_Buttons is
      (Widget_Type => Gtk.Widget.Gtk_Widget);
    --  Must be instanciated at library level !
 
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
-   New_Window : Window.Gtk_Window;
+
+   New_Window : aliased Window.Gtk_Window;
 
 
    ----------------------------------------------------------------------
@@ -54,10 +56,10 @@ package body Create_Check_Buttons is
       if not Is_Created (New_Window) then
          Window.Gtk_New (Window => New_Window,
                          The_Type => Enums.Window_Toplevel);
-         Cb_Id := Exit_Cb.Connect (Obj => New_Window,
-                                   Name => "destroy",
-                                   Func => Gtk.Widget.Destroy'Access,
-                                   Slot_Object => New_Window);
+         Cb_Id := Widget2_Cb.Connect (New_Window,
+                                      "destroy",
+                                      Destroyed'Access,
+                                      New_Window'Access);
          Window.Set_Title (Window => New_Window,
                            Title => "check buttons");
          Container.Border_Width (Container => New_Window,

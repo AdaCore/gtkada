@@ -42,11 +42,12 @@ with Ada.Text_IO;
 package body Create_Tooltips is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Tooltips_Data is new User_Data (Gtk_Tooltips);
    package Query_Cb is new Object_Callback (Gtk_Tips_Query);
    package Entered_Cb is new Tips_Query_Callback (Gtk_Toggle_Button);
 
-   Window  : Gtk.Window.Gtk_Window;
+   Window  : aliased Gtk.Window.Gtk_Window;
 
    procedure Tooltips_Destroy (Widget : in out Gtk_Widget'Class) is
       Tt : Gtk_Tooltips;
@@ -115,8 +116,8 @@ package body Create_Tooltips is
 
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget_Cb.Connect (Window, "destroy", Tooltips_Destroy'Access,
-                                  Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Set_Title (Window, "Tooltips");
          Border_Width (Window, Border_Width => 0);
          Set_Policy (Window, True, False, False);

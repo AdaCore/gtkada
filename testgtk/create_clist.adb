@@ -41,9 +41,10 @@ package body Create_Clist is
    package ICS renames Interfaces.C.Strings;
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Clist_Cb  is new Signal.Object_Callback (Gtk_Clist);
 
-   Window : Gtk.Window.Gtk_Window;
+   Window : aliased Gtk.Window.Gtk_Window;
    Clist_Columns      : constant Gint := 7;
    Clist_Rows         : Integer := 0;
    Clist_Selected_Row : Gint:= 0;
@@ -158,7 +159,8 @@ package body Create_Clist is
 
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
          Set_Title (Window, "clist");
          Border_Width (Window, Border_Width => 0);
 

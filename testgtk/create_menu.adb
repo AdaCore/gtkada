@@ -40,8 +40,9 @@ with Gtk; use Gtk;
 package body Create_Menu is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
+   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
-   Window : Gtk_Window;
+   Window : aliased Gtk_Window;
 
    function Create_Menu (Depth : Integer) return Gtk_Menu is
       Menu      : Gtk_Menu;
@@ -87,10 +88,8 @@ package body Create_Menu is
          Gtk_New (Window, Window_Toplevel);
          Set_Title (Window, "Menus");
          Border_Width (Window, 0);
-         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
-         Id := Widget_Cb.Connect (Window, "delete_event", Destroy'Access,
-                                  Window);
-         -- FIXME : the previous line should use Gtk_True
+         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+                                   Window'Access);
 
          Gtk_New_Vbox (Box1, False, 0);
          Add (Window, Box1);
@@ -138,7 +137,8 @@ package body Create_Menu is
          Show (Box2);
 
          Gtk_New (Button, "Close");
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
+         Id := Widget_Cb.Connect (Button, "clicked", Gtk.Widget.Destroy'Access,
+                                  Window);
          Pack_Start (Box2, Button, True, True, 0);
          Set_Flags (Button, Can_Default);
          Grab_Default (Button);
