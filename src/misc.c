@@ -37,7 +37,7 @@
 #include <strings.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktypeutils.h>
-#include "gtkextra/gtkextra.h"
+#include "gtkextra/gtkplot.h"
 
 #ifndef _WIN32  /* Assuming X11 */
 #include <gdk/gdkx.h>
