@@ -38,8 +38,9 @@
 --
 --  $ export LANG=fr
 --
---  The following environment variables can be set to change the default
---  settings of locale parameters:
+--  Depending on the specific implementation of gettext, the following
+--  environment variables may be set to change the default settings of locale
+--  parameters:
 --
 --    - LANG Specifies locale name.
 --
@@ -55,6 +56,8 @@
 --          Specifies the pathname to the message database, and  if
 --          present replaces the default (e.g /usr/lib/locale on Solaris,
 --          /usr/share/locale on Linux).
+--
+--  See the gettext documentation of your specific OS for more details.
 --
 --  The recommended way to use the gettext capability in your application is
 --  to use Dgettext with your own domain, and define the following shortcut:
