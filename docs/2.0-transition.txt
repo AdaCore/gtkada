@@ -155,7 +155,7 @@ Gtk.Label:
   Get: deprecated. use Get_Text instead.
   Parse_Uline: removed (replaced by Gtk_New_With_Mnemonic).
 Gtk.Layout:
-  Freeze, Thaw: removed, deprecated.
+  Freeze, Thaw: now empty since no longer needed.
 Gtk.List: deprecated, use Gtk_Tree_View instead.
 Gtk.Marshallers:
   Use Glib.Values instead of Gtk.Arguments.
@@ -164,14 +164,14 @@ Gtk.Menu:
   Ensure_Uline_Accel_Group, Get_Uline_Accel_Group: removed
 Gtk.Notebook:
   Get_Notebook_Page: replace Gtk.Arguments.To_Notebook_Page
-  Get_Cur_Page, Get_Tab_Label, Get_Allocation_*, Get_Child, Set_Tab: removed
+  Get_Cur_Page, Get_Tab_Label, Get_Allocation_*, Get_Child: removed
   Get_Menu_Label: spec modified to take a notebook+widget instead of a
     Gtk_Notebook_Page
 Gtk.Option_Menu:
   Get_History: new function.
 Gtk.Paned:
-  Set/Get_Gutter_Size: removed since there is no longer a gutter
-  Set/Get_Handle_Size: remove
+  Set/Get_Gutter_Size: stubs provided for compatbility only.
+  Set/Get_Handle_Size: stubs provided for compatibility only.
   Get_Position: new function.
 Gtk.Pixmap: deprecated.
 Gtk.Preview: deprecated.
