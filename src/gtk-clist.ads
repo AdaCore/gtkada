@@ -559,7 +559,7 @@ package Gtk.Clist is
 
    procedure Set_Show_Titles (Clist : access Gtk_Clist_Record; Show : Boolean);
    --  If show is true, call Column_Titles_Show. Do nothing otherwise.
-   --  This procedure is primarily used by GATE generated code.
+   --  This procedure is primarily used by Gate generated code.
 
    --  gtk_clist_set_sort_column
    --  gtk_clist_set_sort_type
