@@ -3647,6 +3647,16 @@ package body Gtkada.MDI is
             end if;
          end if;
       end if;
+
+   exception
+      when E : others =>
+         --  Silently ignore the exceptions for now, to avoid crashes.
+         --  The application using the MDI can not do it, since this callback
+         --  is called directly from the menu in Create_Menu.
+         pragma Debug
+           (Put_Line
+              ("Unexpected exception: " & Exception_Information (E)));
+         null;
    end Removed_From_Notebook;
 
    -------------------
