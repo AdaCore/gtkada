@@ -31,7 +31,7 @@
 --  A Gtk_Sheet is a table like the one you can find in most spreadsheets.
 --  Each cell can contain some text or any kind of widgets.
 --  </description>
---  <c_version>gtk+extra 0.99.1</c_version>
+--  <c_version>gtk+extra 0.99.4</c_version>
 
 with Gtk.Adjustment;  use Gtk.Adjustment;
 with Gtk.Container;
@@ -588,6 +588,18 @@ package Gtk.Extra.Sheet is
 
    function Get_Widget (Child : Gtk_Sheet_Child) return Gtk.Widget.Gtk_Widget;
    --  Return the widget in the child.
+
+   procedure Button_Attach
+     (Sheet   : access Gtk_Sheet_Record;
+      Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Row     : in Gint;
+      Col     : in Gint;
+      X_Align : in Gfloat;
+      Y_Align : in Gfloat);
+   --  Attach a new button in the row or column title.
+   --  One of Row or Col must be negative (but only one).
+   --  This can be used to modify the standard buttons that appear at the top
+   --  of each column, or on the left of each row.
 
    -----------------------
    -- Links / User_Data --

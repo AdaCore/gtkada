@@ -1524,6 +1524,30 @@ package body Gtk.Extra.Sheet is
       return Internal (Get_Object (Sheet), Row);
    end Get_Row_Height;
 
+   -------------------
+   -- Button_Attach --
+   -------------------
+
+   procedure Button_Attach
+     (Sheet   : access Gtk_Sheet_Record;
+      Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Row     : in Gint;
+      Col     : in Gint;
+      X_Align : in Gfloat;
+      Y_Align : in Gfloat)
+   is
+      procedure Internal (Sheet   : System.Address;
+                          Widget  : System.Address;
+                          Row     : Gint;
+                          Col     : Gint;
+                          X_Align : Gfloat;
+                          Y_Align : Gfloat);
+      pragma Import (C, Internal, "gtk_sheet_button_attach");
+   begin
+      Internal (Get_Object (Sheet), Get_Object (Widget), Row, Col,
+                X_Align, Y_Align);
+   end Button_Attach;
+
    --------------------
    -- Get_Attributes --
    --------------------
