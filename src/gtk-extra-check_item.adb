@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk; use Gdk;
+with Gdk;        use Gdk;
 with System;
 
 package body Gtk.Extra.Check_Item is
@@ -40,8 +40,8 @@ package body Gtk.Extra.Check_Item is
                       Label : in String := "")
    is
    begin
-      Widget := new Gtk_Check_Item_Record;
-      Initialize (Widget, Label);
+      Item := new Gtk_Check_Item_Record;
+      Initialize (Item, Label);
    end Gtk_New;
 
    ----------------
@@ -54,7 +54,7 @@ package body Gtk.Extra.Check_Item is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_check_item_new");
       function Internal2 (Label  : in String) return System.Address;
-      pragma Import (C, Internal, "gtk_check_item_new_with_label");
+      pragma Import (C, Internal2, "gtk_check_item_new_with_label");
    begin
       if Label = "" then
          Set_Object (Item, Internal);

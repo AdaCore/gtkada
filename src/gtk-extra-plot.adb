@@ -297,9 +297,9 @@ package body Gtk.Extra.Plot is
                      Width  : in Gdouble;
                      Height : in Gdouble)
    is
-      procedure Internal(Plot   : in System.Address;
-                         Width  : in Gdouble;
-                         Height : in Gdouble);
+      procedure Internal (Plot   : in System.Address;
+                          Width  : in Gdouble;
+                          Height : in Gdouble);
       pragma Import (C, Internal, "gtk_plot_resize");
    begin
       Internal (Get_Object (Plot), Width, Height);
@@ -390,7 +390,7 @@ package body Gtk.Extra.Plot is
                          Ymax : in Gdouble := 1.0)
    is
       procedure Internal (Plot : in System.Address;
-                          Ymin : in gdouble;
+                          Ymin : in Gdouble;
                           Ymax : in Gdouble);
       pragma Import (C, Internal, "gtk_plot_set_yrange");
    begin

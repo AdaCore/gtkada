@@ -75,7 +75,7 @@ package body Gtk.Extra.PsFont is
       function Internal (Name   : in String;
                          Italic : in Gint;
                          Bold   : in Gint)
-                        return      Gtk_Psfont;
+                        return      Gtk_PsFont;
       pragma Import (C, Internal, "gtk_psfont_find_by_family");
    begin
       return Internal (Name & Ascii.NUL,
@@ -119,8 +119,8 @@ package body Gtk.Extra.PsFont is
    -- Getfont --
    -------------
 
-   function Getfont (Name   : in String) return Gtk_Psfont is
-      function Internal (Name   : in String) return Gtk_Psfont;
+   function Getfont (Name   : in String) return Gtk_PsFont is
+      function Internal (Name   : in String) return Gtk_PsFont;
       pragma Import (C, Internal, "gtk_psfont_getfont");
    begin
       return Internal (Name & Ascii.NUL);

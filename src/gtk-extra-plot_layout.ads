@@ -48,7 +48,8 @@ with Gtk.Extra.Plot;
 
 package Gtk.Extra.Plot_Layout is
 
-   type Gtk_Plot_Layout_Record is new Gtk.Layout.Gtk_Layout_Record with private;
+   type Gtk_Plot_Layout_Record is new Gtk.Layout.Gtk_Layout_Record
+     with private;
    type Gtk_Plot_Layout is access all Gtk_Plot_Layout_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Plot_Layout;
@@ -120,6 +121,7 @@ package Gtk.Extra.Plot_Layout is
    --  </signals>
 
 private
-   type Gtk_Plot_Layout_Record is new Gtk.Layout.Gtk_Layout_Record with null record;
+   type Gtk_Plot_Layout_Record is new Gtk.Layout.Gtk_Layout_Record
+     with null record;
    pragma Import (C, Get_Type, "gtk_plot_layout_get_type");
 end Gtk.Extra.Plot_Layout;

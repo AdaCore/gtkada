@@ -72,6 +72,7 @@ package Gtk.Extra.Plot is
    type Gtk_Plot_Axis is private;
    type Gtk_Plot_Text is new System.Address;
 
+   --  <doc_ignore>
    function Convert (S : System.Address) return Gtk_Plot_Data;
    function Convert (S : Gtk_Plot_Data) return System.Address;
    package Datasets_List is new Glib.Glist.Generic_List (Gtk_Plot_Data);
@@ -79,6 +80,8 @@ package Gtk.Extra.Plot is
    function Convert (S : System.Address) return Gtk_Plot_Text;
    function Convert (S : Gtk_Plot_Text) return System.Address;
    package Texts_List is new Glib.Glist.Generic_List (Gtk_Plot_Text);
+
+   --  </doc_ignore>
 
    type No_Range_Gdouble_Array is array (Natural) of Gdouble;
    type No_Range_Gdouble_Array_Access is access all No_Range_Gdouble_Array;
@@ -98,6 +101,7 @@ package Gtk.Extra.Plot is
    --  The points are indexed from 0 to Num_Points-1.
    --  Note that you can't use 'Range, 'First or 'Last on Points.
 
+   --  <doc_ignore>
    generic
       with function Func (Plot  : access Gtk_Plot_Record'Class;
                           Set   : in     Gtk_Plot_Data;
@@ -110,6 +114,7 @@ package Gtk.Extra.Plot is
                                    Error : access Gboolean)
                                   return Gdouble;
    --  Generic function that can be instanciated for Plot_Function below.
+   --  </doc_ignore>
 
 
    type Plot_Function is access function (Plot  : System.Address;
@@ -268,8 +273,8 @@ package Gtk.Extra.Plot is
                            Y    : out Gdouble);
    --  Return the position of the Plot within its drawable.
    --  X and Y are in the range 0.0 .. 1.0, where (0.0, 0.0) is the top-left
-   --  corner and (1.0, 1.0) the bottom-right corner. The position can be modified
-   --  by Move below.
+   --  corner and (1.0, 1.0) the bottom-right corner. The position can be
+   --  modified by Move below.
 
    procedure Get_Size (Plot   : access Gtk_Plot_Record;
                        Width  : out Gdouble;
@@ -726,7 +731,7 @@ package Gtk.Extra.Plot is
    --  Return the list of all the datasets associated with Plot.
 
    procedure Draw_Dataset (Plot : access Gtk_Plot_Record;
-                           Gc   : in Gdk.Gc.Gdk_GC;
+                           Gc   : in Gdk.GC.Gdk_GC;
                            Data : in Gtk_Plot_Data);
    --  Force a redraw of the dataset.
    --  The set is redrawn immediatly. You should probably rather queue a draw
@@ -1007,7 +1012,7 @@ private
    pragma Import (C, Dataset_Show_Yerrbars, "gtk_plot_dataset_show_yerrbars");
    pragma Import (C, Dataset_Hide_Xerrbars, "gtk_plot_dataset_hide_xerrbars");
    pragma Import (C, Dataset_Hide_Yerrbars, "gtk_plot_dataset_hide_yerrbars");
-   pragma Import (C, dataset_show_legend, "gtk_plot_dataset_show_legend");
+   pragma Import (C, Dataset_Show_Legend, "gtk_plot_dataset_show_legend");
    pragma Import (C, Dataset_Hide_Legend, "gtk_plot_dataset_hide_legend");
    pragma Import (C, Show_Dataset, "gtk_plot_show_dataset");
    pragma Import (C, Hide_Dataset, "gtk_plot_hide_dataset");

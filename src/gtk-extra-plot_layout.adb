@@ -132,8 +132,8 @@ package body Gtk.Extra.Plot_Layout is
    --------------
 
    procedure Put_Text (Layout        : access Gtk_Plot_Layout_Record;
-                       X             : in gdouble;
-                       Y             : in gdouble;
+                       X             : in Gdouble;
+                       Y             : in Gdouble;
                        Angle         : in Gint;
                        Ps_Font       : in String;
                        Height        : in Gint;
