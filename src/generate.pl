@@ -289,7 +289,7 @@ sub parse_definition_file
     $file =~ s/-//g;  # Handle Gnome naming convention, e.g gnome-dock-band
 
     my ($line) = &parse_enums (@deffile);
-    
+
     if ($line < $#deffile) {
       $deffile[$line] =~ /struct\s+_(\w*)/;
 
@@ -325,30 +325,35 @@ sub parse_definition_file
 	  my ($in_comment) = 0;
 
 	  # Search for the new field. Ignore empty lines and comments
-	  while ($in_comment || $deffile[$line] =~ /^\s*$/)
-	    {
-	      $line++;
-              if ($in_comment && $deffile[$line] =~ /\*\//) {
-		$deffile[$line] =~ s/.*\*\///;
-                $in_comment = 0;
-	      }
-
-	      $deffile[$line] =~ s$/\*.*\*/$$g;
-	      if ($deffile[$line] =~ /\/\*/) {
-		$in_comment = 1;
-		$deffile[$line] =~ s/\/*.*$//;  
-	      }
+	  while (1) {
+	    $deffile[$line] =~ s$/\*.*\*/$$g;
+	    if ($deffile[$line] =~ /\/\*/) {
+	      $in_comment = 1;
+	      $deffile[$line] =~ s/\/*.*$//;
 	    }
+	    if ($in_comment && $deffile[$line] =~ /\*\//) {
+	      $deffile[$line] =~ s/.*\*\///;
+	      $in_comment = 0;
+	    }
+
+	    last if (!$in_comment && $deffile[$line] !~ /^\s*$/);
+	    $line++;
+	  }
 
 	  chop ($deffile[$line]);
 	  $deffile[$line] =~ s/\s+/ /g;
 	  $deffile[$line] =~ s/ $//;
 	  $deffile[$line] =~ s/^ //;
-	  $deffile[$line] =~ s/ \*/\* /;  ## attach the pointer to the type not to the field
+	  $deffile[$line] =~ s/\s\*/\* /g; ## attach the pointer to the type not to the field
 	  $deffile[$line] =~ s/;//;
-	  my ($type, $field) = split (/ /, $deffile[$line]);
+	  $deffile[$line] =~ s/:\s*\d+//; ##  <type> <name> : <width>
 
-	  print STDERR "Create a function for the field $field (of type $type) [n]?";
+	  # Types must be a single word, or split below will be confused
+	  $deffile[$line] =~ s/unsigned ((g)?int)/$1/;
+	  my ($type, $field) = split (/\s+/, $deffile[$line]);
+
+	  print STDERR
+	    "Create a function for the field $field (of type $type) [n]?";
 	  my ($answer) = scalar (<STDIN>);
 	  if ($answer =~ /^y/)
 	    {
@@ -841,28 +846,24 @@ sub print_declaration
       push (@output,
 	    "   --  $func_name not bound: variable number of arguments\n\n");
 
+    } elsif ($adaname =~ /New/) {
+      &print_new_declaration ($func_name, @arguments);
+      push (@output, ";\n\n");
+      &print_initialize_declaration ($func_name, 1, @arguments);
+      if ($has_get_type_subprogram) {
+	push (@output, "   function Get_Type return Gtk.Gtk_Type;\n");
+	push (@output, "   --  Return the internal value associated with"
+	      . " this widget.\n\n");
+      }
+
     } else {
-      if ($adaname =~ /New/)
-	{
-	  &print_new_declaration ($func_name, @arguments);
-	  push (@output, ";\n\n");
-	  &print_initialize_declaration ($func_name, 1, @arguments);
-	  if ($has_get_type_subprogram) {
-	    push (@output, "   function Get_Type return Gtk.Gtk_Type;\n");
-	    push (@output, "   --  Return the internal value associated with"
-		  . " this widget.\n\n");
-	  }
-	}
-      else
-	{
-	  $string = ($return eq "void" ? "procedure" : "function");
-	  $string .=  " $adaname";
-	  push (@output, "   $string");
-	  $indent = ' ' x (length ($string) + 3);
-	  &print_arguments ($indent, $return, \&convert_ada_type,
-			    3, 0, @arguments);
-	  push (@output, ";\n\n");
-	}
+      $string = ($return eq "void" ? "procedure" : "function");
+      $string .=  " $adaname";
+      push (@output, "   $string");
+      $indent = ' ' x (length ($string) + 3);
+      &print_arguments ($indent, $return, \&convert_ada_type,
+			3, 0, @arguments);
+      push (@output, ";\n\n");
     }
   }
 
