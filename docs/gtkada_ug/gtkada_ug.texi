@@ -1132,8 +1132,8 @@ in the application.
 
 In GtkAda itself, a ``user_data'' is associated with each object
 allocated by a @code{Gtk_New} procedure. A ``destroy'' callback is also
-associated to be called when the object to which the 
-user_data belongs is destroyed (see Gtk.Initialize_User_Data).
+associated, to be called when the object to which the 
+user_data belongs is destroyed.
 Thus, every time a C object is destroyed, the equivalent Ada structure is also
 destroyed (see Gtk.Free_User_Data).
  
