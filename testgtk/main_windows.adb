@@ -93,6 +93,7 @@ with Create_Pixmap;
 --  XXX ???
 --  with Create_Plot;
 --  with Create_Plot_3D;
+--  with Create_Plot_Realtime;
 with Create_Preview_Color;
 with Create_Preview_Gray;
 with Create_Progress;
@@ -119,6 +120,7 @@ with View_GL; use View_GL;
 
 with Libart_Demo;  use Libart_Demo;
 
+with Ada.Text_IO; use Ada.Text_IO;
 
 package body Main_Windows is
 
@@ -271,6 +273,8 @@ package body Main_Windows is
       --                                     Create_Plot.Help'Access),
       --  (NS ("plot 3D"),          Complex, Create_Plot_3D.Run'Access,
       --                                     Create_Plot_3D.Help'Access),
+      --  (NS ("plot realtime"),    Complex, Create_Plot_Realtime.Run'Access,
+      --                                     Create_Plot_Realtime.Help'Access),
       (NS ("properties"),       Misc,    null, null),
       (NS ("preview color"),    Gimp,    Create_Preview_Color.Run'Access,
                                          Create_Preview_Color.Help'Access),
