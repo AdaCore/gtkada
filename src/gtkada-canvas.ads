@@ -728,8 +728,6 @@ private
       Anim_GC         : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
       Annotation_Font : Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
 
-      Double_Buffer : Gdk.Pixmap.Gdk_Pixmap;
-
       Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;
       Scrolling_Timeout_Id : Gtk.Main.Timeout_Handler_Id := 0;
       Dashed_Line_Visible : Boolean := False;

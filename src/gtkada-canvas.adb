@@ -91,14 +91,6 @@ package body Gtkada.Canvas is
    Scrolling_Amount : constant := 4;
    --  Number of pixels to scroll while the mouse is in the surrounding box.
 
-   Use_Double_Buffer : constant Boolean := True;
-   --  Whether drawing should be done through a double buffer.
-   --  The only reason to set this to False is if you don't have any link in
-   --  the canvas and the items are fast to draw (for instance if they use
-   --  double-buffer themselves).
-   --  ??? This could be configurable at the canvas level
-   --  ??? This might be set to False with gtk+2.0
-
    Signals : constant chars_ptr_array :=
      (1 => New_String ("background_click"),
       2 => New_String ("item_selected"),
@@ -420,7 +412,6 @@ package body Gtkada.Canvas is
            or Key_Press_Mask
            or Key_Release_Mask);
       Set_Flags (Canvas, Can_Focus);
-      Set_Double_Buffered (Canvas, False);
 
       --  Configure with default values
       Configure (Canvas);
@@ -458,7 +449,6 @@ package body Gtkada.Canvas is
       end if;
       Destroy (C.Hadj);
       Destroy (C.Vadj);
-      Gdk.Pixmap.Unref (C.Double_Buffer);
    end Canvas_Destroyed;
 
    ----------------------------
@@ -567,12 +557,6 @@ package body Gtkada.Canvas is
       Set_Page_Increment (Canvas.Vadj, Get_Page_Size (Canvas.Vadj) / 2.0);
 
       Update_Adjustments (Canvas);
-
-      if Use_Double_Buffer and then Canvas.Double_Buffer /= null then
-         Gdk.Pixmap.Unref (Canvas.Double_Buffer);
-      end if;
-
-      Canvas.Double_Buffer := null;
    end Size_Allocate;
 
    -------------------
@@ -1908,27 +1892,12 @@ package body Gtkada.Canvas is
       Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
       Grid  : constant Gint :=
         Gint (Canvas.Grid_Size) * Gint (Canvas.Zoom) / 100;
-      Pix : Gdk_Pixmap;
+      Pix : Gdk_Pixmap := Get_Window (Canvas);
 
    begin
-      if Use_Double_Buffer then
-         if Canvas.Double_Buffer = null then
-            Gdk_New
-              (Canvas.Double_Buffer, Get_Window (Canvas),
-               Gint (Get_Allocation_Width (Canvas)),
-               Gint (Get_Allocation_Height (Canvas)));
-         end if;
-
-         Pix := Canvas.Double_Buffer;
-      else
-         Pix := Get_Window (Canvas);
-      end if;
-
       --  If the GC was not created, do not do anything
 
-      if Canvas.Clear_GC = Null_GC
-        or else (Use_Double_Buffer and then Canvas.Double_Buffer = null)
-      then
+      if Canvas.Clear_GC = Null_GC then
          return False;
       end if;
 
@@ -1996,19 +1965,6 @@ package body Gtkada.Canvas is
 
          Next (Tmp);
       end loop;
-
-      if Use_Double_Buffer then
-         Draw_Drawable
-           (Get_Window (Canvas),
-            GC     => Canvas.Black_GC,
-            Src    => Pix,
-            Xsrc   => Rect.X,
-            Ysrc   => Rect.Y,
-            Xdest  => Rect.X,
-            Ydest  => Rect.Y,
-            Width  => Gint (Rect.Width),
-            Height => Gint (Rect.Height));
-      end if;
 
       --  The dashed line (while moving items) have been deleted, and are no
       --  longer visible
@@ -2575,7 +2531,10 @@ package body Gtkada.Canvas is
            (Canvas,
             To_Canvas_Coordinates (Canvas, Item.Coord.X) - Xbase,
             To_Canvas_Coordinates (Canvas, Item.Coord.Y) - Ybase,
-            Gint (Item.Coord.Width), Gint (Item.Coord.Height));
+            Gint (Item.Coord.Width
+                  * GRectangle_Length (Canvas.Zoom) / 100),
+            Gint (Item.Coord.Height
+                  * GRectangle_Length (Canvas.Zoom) / 100));
       end if;
    end Item_Updated;
 
@@ -2591,6 +2550,7 @@ package body Gtkada.Canvas is
 
       --  Have to redraw everything, since there might have been some
       --  links.
+      --  ??? Note very efficient when removing several items.
       Refresh_Canvas (Canvas);
    end Remove;
 
@@ -2652,7 +2612,9 @@ package body Gtkada.Canvas is
       Item   : access Canvas_Item_Record'Class) is
    begin
       Move_To_Front (Canvas.Children, Item);
-      Queue_Draw (Canvas);
+
+      --  Redraw just the part of the canvas that is impacted.
+      Item_Updated (Canvas, Item);
    end Lower_Item;
 
    ----------------
@@ -2664,8 +2626,9 @@ package body Gtkada.Canvas is
       Item   : access Canvas_Item_Record'Class) is
    begin
       Move_To_Back (Canvas.Children, Item);
-      --  Have to redraw everything, since there might have been some links.
-      Queue_Draw (Canvas);
+
+      --  Redraw just the part of the canvas that is impacted.
+      Item_Updated (Canvas, Item);
    end Raise_Item;
 
    ---------------
