@@ -3,6 +3,7 @@
 --
 with Interfaces.C;
 with Interfaces.C.Extensions;
+with System;
 
 package gl_h is
    GL_VERSION_1_1     : constant := 1;
@@ -10,7 +11,7 @@ package gl_h is
 
    --  Data types (may be architecture dependent in some cases)
 
-   type Void is null record ;
+   type Void is null record;
    subtype GLvoid          is Void;
    subtype GLboolean       is Interfaces.C.unsigned_char;
    subtype GLbyte          is Interfaces.C.signed_char;    --  1-byte signed
@@ -21,9 +22,11 @@ package gl_h is
    type    GLubyte_Ptr     is access GLubyte;
    subtype GLushort        is Interfaces.C.unsigned_short;  --  2-byte unsigned
    subtype GLuint          is Interfaces.C.unsigned;        --  4-byte unsigned
+   type    GLuint_Vec      is array (Natural range <>) of GLuint;
    subtype GLsizei         is Integer;                      --  4-byte signed
    subtype GLfloat         is Float;  --  single precision float
    type    GLfloat_Vec_16  is array (0 .. 15) of GLfloat;
+   type    GLfloat_Vec_4   is array (0 .. 3)  of GLfloat;
    subtype GLclampf        is Float;       --  single precision float in [0;1]
    subtype GLdouble        is Long_Float;  --  double precision float
    type    GLdouble_Vec_3  is array (0 .. 2) of GLdouble;
@@ -571,27 +574,27 @@ package gl_h is
 
    --  glPush/PopAttrib bits
    type GLbitfield is mod 16#100000#;
-   GL_CURRENT_BIT         : constant Glbitfield := 16#00000001#;
-   GL_POINT_BIT           : constant Glbitfield := 16#00000002#;
-   GL_LINE_BIT            : constant Glbitfield := 16#00000004#;
-   GL_POLYGON_BIT         : constant Glbitfield := 16#00000008#;
-   GL_POLYGON_STIPPLE_BIT : constant Glbitfield := 16#00000010#;
-   GL_PIXEL_MODE_BIT      : constant Glbitfield := 16#00000020#;
-   GL_LIGHTING_BIT        : constant Glbitfield := 16#00000040#;
-   GL_FOG_BIT             : constant Glbitfield := 16#00000080#;
-   GL_DEPTH_BUFFER_BIT    : constant Glbitfield := 16#00000100#;
-   GL_ACCUM_BUFFER_BIT    : constant Glbitfield := 16#00000200#;
-   GL_STENCIL_BUFFER_BIT  : constant Glbitfield := 16#00000400#;
-   GL_VIEWPORT_BIT        : constant Glbitfield := 16#00000800#;
-   GL_TRANSFORM_BIT       : constant Glbitfield := 16#00001000#;
-   GL_ENABLE_BIT          : constant Glbitfield := 16#00002000#;
-   GL_COLOR_BUFFER_BIT    : constant Glbitfield := 16#00004000#;
-   GL_HINT_BIT            : constant Glbitfield := 16#00008000#;
-   GL_EVAL_BIT            : constant Glbitfield := 16#00010000#;
-   GL_LIST_BIT            : constant Glbitfield := 16#00020000#;
-   GL_TEXTURE_BIT         : constant Glbitfield := 16#00040000#;
-   GL_SCISSOR_BIT         : constant Glbitfield := 16#00080000#;
-   GL_ALL_ATTRIB_BITS     : constant Glbitfield := 16#000fffff#;
+   GL_CURRENT_BIT         : constant GLbitfield := 16#00000001#;
+   GL_POINT_BIT           : constant GLbitfield := 16#00000002#;
+   GL_LINE_BIT            : constant GLbitfield := 16#00000004#;
+   GL_POLYGON_BIT         : constant GLbitfield := 16#00000008#;
+   GL_POLYGON_STIPPLE_BIT : constant GLbitfield := 16#00000010#;
+   GL_PIXEL_MODE_BIT      : constant GLbitfield := 16#00000020#;
+   GL_LIGHTING_BIT        : constant GLbitfield := 16#00000040#;
+   GL_FOG_BIT             : constant GLbitfield := 16#00000080#;
+   GL_DEPTH_BUFFER_BIT    : constant GLbitfield := 16#00000100#;
+   GL_ACCUM_BUFFER_BIT    : constant GLbitfield := 16#00000200#;
+   GL_STENCIL_BUFFER_BIT  : constant GLbitfield := 16#00000400#;
+   GL_VIEWPORT_BIT        : constant GLbitfield := 16#00000800#;
+   GL_TRANSFORM_BIT       : constant GLbitfield := 16#00001000#;
+   GL_ENABLE_BIT          : constant GLbitfield := 16#00002000#;
+   GL_COLOR_BUFFER_BIT    : constant GLbitfield := 16#00004000#;
+   GL_HINT_BIT            : constant GLbitfield := 16#00008000#;
+   GL_EVAL_BIT            : constant GLbitfield := 16#00010000#;
+   GL_LIST_BIT            : constant GLbitfield := 16#00020000#;
+   GL_TEXTURE_BIT         : constant GLbitfield := 16#00040000#;
+   GL_SCISSOR_BIT         : constant GLbitfield := 16#00080000#;
+   GL_ALL_ATTRIB_BITS     : constant GLbitfield := 16#000fffff#;
 
    --   GL 1.1 texturing
    GL_PROXY_TEXTURE_1D        : constant GLenum := 32867;
@@ -1155,7 +1158,7 @@ package gl_h is
                                 ptr     : access GLvoid);
    procedure glEdgeFlagPointer (stride : GLsizei; ptr : access GLboolean);
    procedure glGetPointerv (pname  : GLenum;
-                            params : access Interfaces.C.Extensions.Void_Ptr);
+                            params : access Interfaces.C.Extensions.void_ptr);
    procedure glArrayElement (i : GLint);
    procedure glDrawArrays (mode : GLenum; first : GLint; count : GLsizei);
    procedure glDrawElements (mode    : GLenum;
@@ -1175,7 +1178,7 @@ package gl_h is
    procedure glLighti (light : GLenum; pname : GLenum; param : GLint);
    procedure glLightfv (light  : GLenum;
                         pname  : GLenum;
-                        params : access GLfloat);
+                        params : GLfloat_Vec_4);
    procedure glLightiv
       (light : GLenum; pname : GLenum; params : access GLint);
    procedure glGetLightfv (light  : GLenum;
@@ -1192,7 +1195,7 @@ package gl_h is
    procedure glMateriali (face : GLenum; pname : GLenum; param : GLint);
    procedure glMaterialfv (face   : GLenum;
                            pname  : GLenum;
-                           params : access GLfloat);
+                           params : GLfloat_Vec_4);
    procedure glMaterialiv (face   : GLenum;
                            pname  : GLenum;
                            params : access GLint);
@@ -1301,7 +1304,7 @@ package gl_h is
    procedure glTexParameterf (target : GLenum;
                               pname  : GLenum;
                               param  : GLfloat);
-   procedure glTexParameteri (target : GLenum; pname : GLenum; param : GLint);
+   procedure glTexParameteri (target : GLenum; pname : GLenum; param : GLenum);
    procedure glTexParameterfv (target : GLenum;
                                pname  : GLenum;
                                params : access GLfloat);
@@ -1329,7 +1332,7 @@ package gl_h is
                            border         : GLint;
                            format         : GLenum;
                            type_Id        : GLenum;
-                           pixels         : access GLvoid);
+                           pixels         : System.Address);
    procedure glTexImage2D (target         : GLenum;
                            level          : GLint;
                            internalFormat : GLint;
@@ -1338,7 +1341,7 @@ package gl_h is
                            border         : GLint;
                            format         : GLenum;
                            type_Id        : GLenum;
-                           pixels         : access GLvoid);
+                           pixels         : System.Address);
    procedure glGetTexImage (target  : GLenum;
                             level   : GLint;
                             format  : GLenum;
@@ -1347,7 +1350,7 @@ package gl_h is
 
    --   1.1 functions
 
-   procedure glGenTextures (n : GLsizei; textures : access GLuint);
+   procedure glGenTextures (n : GLsizei; textures : in out GLuint_Vec);
    procedure glDeleteTextures (n : GLsizei; textures : access GLuint);
    procedure glBindTexture (target : GLenum; texture : GLuint);
    procedure glPrioritizeTextures (n          : GLsizei;
@@ -1479,8 +1482,8 @@ package gl_h is
    --
 
    procedure glFogf (pname : GLenum; param : GLfloat);
-   procedure glFogi (pname : GLenum; param : GLint);
-   procedure glFogfv (pname : GLenum; params : access GLfloat);
+   procedure glFogi (pname : GLenum; param : GLenum);
+   procedure glFogfv (pname : GLenum; params : GLfloat_Vec_4);
    procedure glFogiv (pname : GLenum; params : access GLint);
 
    --
@@ -1546,7 +1549,7 @@ package gl_h is
                                    ptr    : access GLboolean);
    procedure glGetPointervEXT
       (pname    : GLenum;
-         params : access Interfaces.C.Extensions.Void_Ptr);
+         params : access Interfaces.C.Extensions.void_ptr);
    procedure glArrayElementEXT (i : GLint);
    procedure glDrawArraysEXT (mode : GLenum; first : GLint; count : GLsizei);
 
@@ -2103,7 +2106,6 @@ private
    pragma Import (C, glShadeModel, "glShadeModel");
    pragma Import (C, glLightf, "glLightf");
    pragma Import (C, glLighti, "glLighti");
-   pragma Import (C, glLightfv, "glLightfv");
    pragma Import (C, glLightiv, "glLightiv");
    pragma Import (C, glGetLightfv, "glGetLightfv");
    pragma Import (C, glGetLightiv, "glGetLightiv");
@@ -2113,7 +2115,6 @@ private
    pragma Import (C, glLightModeliv, "glLightModeliv");
    pragma Import (C, glMaterialf, "glMaterialf");
    pragma Import (C, glMateriali, "glMateriali");
-   pragma Import (C, glMaterialfv, "glMaterialfv");
    pragma Import (C, glMaterialiv, "glMaterialiv");
    pragma Import (C, glGetMaterialfv, "glGetMaterialfv");
    pragma Import (C, glGetMaterialiv, "glGetMaterialiv");
@@ -2163,7 +2164,6 @@ private
    pragma Import (C, glTexImage1D, "glTexImage1D");
    pragma Import (C, glTexImage2D, "glTexImage2D");
    pragma Import (C, glGetTexImage, "glGetTexImage");
-   pragma Import (C, glGenTextures, "glGenTextures");
    pragma Import (C, glDeleteTextures, "glDeleteTextures");
    pragma Import (C, glBindTexture, "glBindTexture");
    pragma Import (C, glPrioritizeTextures, "glPrioritizeTextures");
@@ -2200,7 +2200,6 @@ private
    pragma Import (C, glEvalMesh2, "glEvalMesh2");
    pragma Import (C, glFogf, "glFogf");
    pragma Import (C, glFogi, "glFogi");
-   pragma Import (C, glFogfv, "glFogfv");
    pragma Import (C, glFogiv, "glFogiv");
    pragma Import (C, glFeedbackBuffer, "glFeedbackBuffer");
    pragma Import (C, glPassThrough, "glPassThrough");
