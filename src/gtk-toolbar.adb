@@ -404,25 +404,30 @@ package body Gtk.Toolbar is
    -- Insert_Stock --
    ------------------
 
-   procedure Insert_Stock
+   function Insert_Stock
      (Toolbar              : access Gtk_Toolbar_Record;
       Stock_Id             : String;
       Tooltip_Text         : String := "";
       Tooltip_Private_Text : String := "";
       Position             : Gint)
+     return Gtk.Button.Gtk_Button
    is
-      procedure Internal
+      function Internal
         (Toolbar              : System.Address;
          Stock_Id             : String;
          Tooltip_Text         : System.Address;
          Tooltip_Private_Text : System.Address;
-         Position             : Gint);
+         Position             : Gint)
+        return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_insert_stock");
 
+      Stub : Gtk.Button.Gtk_Button_Record;
       TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
       TTA  : System.Address := TT'Address;
       TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
       TPTA : System.Address := TPT'Address;
+
+      use type Gtk.Widget.Gtk_Widget;
 
    begin
       if Tooltip_Text'Length = 0 then
@@ -433,8 +438,10 @@ package body Gtk.Toolbar is
          TPTA := System.Null_Address;
       end if;
 
-      Internal
-        (Get_Object (Toolbar), Stock_Id & ASCII.NUL, TTA, TPTA, Position);
+      return Gtk.Button.Gtk_Button
+        (Get_User_Data (Internal (Get_Object (Toolbar),
+                                  Stock_Id & ASCII.NUL, TTA, TPTA, Position),
+                        Stub));
    end Insert_Stock;
 
    -------------------

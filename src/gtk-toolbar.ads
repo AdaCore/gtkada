@@ -105,12 +105,13 @@ package Gtk.Toolbar is
      (Toolbar   : access Gtk_Toolbar_Record;
       Icon_Size : Gtk_Icon_Size);
 
-   procedure Insert_Stock
+   function Insert_Stock
      (Toolbar              : access Gtk_Toolbar_Record;
       Stock_Id             : String;
       Tooltip_Text         : String := "";
       Tooltip_Private_Text : String := "";
-      Position             : Gint);
+      Position             : Gint)
+     return Gtk.Button.Gtk_Button;
 
    -----------------
    -- Space items --
