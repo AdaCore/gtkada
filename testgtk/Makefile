@@ -9,7 +9,7 @@ SHELL = /bin/sh
 target = testgtk
 
 CC = gcc
-CFLAGS = -O2 -g -Wall
+CFLAGS = -O2 -g -Wall -gnatwu
 
 ALL_CFLAGS = $(CFLAGS) -I../
 
