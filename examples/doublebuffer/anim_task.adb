@@ -130,6 +130,7 @@ package body Anim_Task is
       Put_Line ("The animation is done thanks to two Ada95 tasks");
 
       --  This demo uses multi-tasking
+      Gdk.Threads.G_Init;
       Gdk.Threads.Init;
 
       --  Double buffer demo
