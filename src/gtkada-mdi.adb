@@ -566,13 +566,14 @@ package body Gtkada.MDI is
 
       MDI.Docks (Top) := Create_Notebook;
       Add_Child
-        (MDI.Main_Pane, MDI.Docks (Top), Orientation_Vertical, Height => -1);
+        (MDI.Main_Pane, MDI.Docks (Top), Orientation_Vertical, Height => -1,
+         Fixed_Size => True);
       Set_Child_Visible (MDI.Docks (Top), False);
 
       MDI.Docks (Bottom) := Create_Notebook;
       Split
         (MDI.Main_Pane, MDI.Docks (Top), MDI.Docks (Bottom),
-         Orientation_Vertical, Height => -1);
+         Orientation_Vertical, Height => -1, Fixed_Size => True);
       Set_Child_Visible (MDI.Docks (Bottom), False);
 
       Gtk_New (Drop_Site);
@@ -590,7 +591,7 @@ package body Gtkada.MDI is
       MDI.Docks (Left) := Create_Notebook;
       Split
         (MDI.Main_Pane, MDI.Docks (Top), MDI.Docks (Left),
-         Orientation_Vertical, Width => -1);
+         Orientation_Vertical, Width => -1, Fixed_Size => True);
       Set_Child_Visible (MDI.Docks (Left), False);
 
       Gtk_New (MDI.Central.Container);
@@ -613,7 +614,7 @@ package body Gtkada.MDI is
       MDI.Docks (Right) := Create_Notebook;
       Split
         (MDI.Main_Pane, MDI.Central.Layout, MDI.Docks (Right),
-         Orientation_Horizontal, Width => -1);
+         Orientation_Horizontal, Width => -1, Fixed_Size => True);
       Set_Child_Visible (MDI.Docks (Right), False);
 
       Gtk_New (Drop_Site);
@@ -3214,6 +3215,13 @@ package body Gtkada.MDI is
       then
          Float_Child (Child, False);
          Minimize_Child (Child, False);
+
+         --  If there was no window docked yet, obey the size request for that
+         --  child.
+         if not Get_Child_Visible (MDI.Docks (Child.Dock)) then
+            Set_Size (MDI.Main_Pane, MDI.Docks (Child.Dock), -1, -1);
+         end if;
+
          Put_In_Notebook (MDI, Child.Dock, Child);
          Update_Dock_Menu (Child);
 
@@ -4191,6 +4199,7 @@ package body Gtkada.MDI is
         (MDI.Main_Pane,
          MDI.Docks (Prio (Prio'First)),
          Orientations (Prio (Prio'First)),
+         Fixed_Size => True,
          Width   => Widths  (Prio (Prio'First)),
          Height  => Heights (Prio (Prio'First)));
 
@@ -4207,7 +4216,8 @@ package body Gtkada.MDI is
                    New_Child   => MDI.Docks (Prio (Side)),
                    Orientation => Orientations (Prio (Side)),
                    After       => Prio (Side) = Right
-                     or else Prio (Side) = Bottom,
+                   or else Prio (Side) = Bottom,
+                   Fixed_Size  => True,
                    Width       => Widths (Prio (Side)),
                    Height      => Heights (Prio (Side)));
          else
@@ -4216,7 +4226,8 @@ package body Gtkada.MDI is
                    New_Child   => MDI.Docks (Prio (Side)),
                    Orientation => Orientations (Prio (Side - 1)),
                    After       => Prio (Side - 1) = Left
-                     or else Prio (Side - 1) = Top,
+                   or else Prio (Side - 1) = Top,
+                   Fixed_Size  => True,
                    Width       => Widths (Prio (Side)),
                    Height      => Heights (Prio (Side)));
          end if;
@@ -4881,7 +4892,7 @@ package body Gtkada.MDI is
             Current_Page : constant Gint := Get_Current_Page (Note);
          begin
             if Length > 0 then
-               for Page_Index in reverse 0 .. Length - 1 loop
+               for Page_Index in 0 .. Length - 1 loop
                   Save_Widget
                     (Parent,
                      Get_Child_From_Page
