@@ -12,6 +12,10 @@ package Gtk.Enums is
                             Window_Dialog,
                             Window_Popup);
 
+   type Gtk_Button_Box_Style is (Default_Style, Spread,
+                                 Edge, Start, Style_End);
+   --  mapping: Gtk_Button_Box_Style gtkbbox.h GtkButtonBoxStyle
+
    type Gtk_Direction_Type is (Dir_Tab_Forward,
                                Dir_Tab_Backward,
                                Dir_Up,
