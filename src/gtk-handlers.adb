@@ -29,15 +29,15 @@
 
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
+with Glib.GObjects; use Glib.GObjects;
 with Glib.Values; use Glib.Values;
-with Gtk.Object; use Gtk.Object;
 with Gtk.Widget;
 with System;
 
 package body Gtk.Handlers is
 
    function Do_Signal_Connect
-     (Object      : Gtk.Object.Gtk_Object;
+     (Object      : Glib.GObjects.GObject;
       Name        : String;
       Marshaller  : System.Address;
       Handler     : System.Address;
@@ -69,7 +69,7 @@ package body Gtk.Handlers is
    pragma Import (C, Disconnect_Internal, "g_signal_handler_disconnect");
    --  Internal version of Disconnect
 
-   function Signal_Lookup (Name : String; IType : Gtk_Type) return Guint;
+   function Signal_Lookup (Name : String; IType : GType) return Guint;
    pragma Import (C, Signal_Lookup, "g_signal_lookup");
 
    procedure Set_Value (Value : GValue; Val : System.Address);
@@ -120,7 +120,7 @@ package body Gtk.Handlers is
    -----------------------
 
    function Do_Signal_Connect
-     (Object      : Gtk.Object.Gtk_Object;
+     (Object      : Glib.GObjects.GObject;
       Name        : String;
       Marshaller  : System.Address;
       Handler     : System.Address;
@@ -259,7 +259,7 @@ package body Gtk.Handlers is
       --------------------
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -290,7 +290,7 @@ package body Gtk.Handlers is
       --------------------
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -390,7 +390,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
-           (Gtk.Object.Gtk_Object (Widget),
+           (Glib.GObjects.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Marsh.Proxy),
@@ -404,7 +404,7 @@ package body Gtk.Handlers is
       --------------------
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -425,7 +425,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
-           (Gtk.Object.Gtk_Object (Widget),
+           (Glib.GObjects.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Marsh.Proxy),
@@ -460,7 +460,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
-           (Gtk.Object.Gtk_Object (Widget),
+           (Glib.GObjects.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Cb),
@@ -474,7 +474,7 @@ package body Gtk.Handlers is
       --------------------
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -495,7 +495,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
-           (Gtk.Object.Gtk_Object (Widget),
+           (Glib.GObjects.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Cb),
@@ -702,7 +702,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
-           (Gtk.Object.Gtk_Object (Widget),
+           (Glib.GObjects.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Marsh.Proxy),
@@ -737,7 +737,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
-           (Gtk.Object.Gtk_Object (Widget),
+           (Glib.GObjects.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Cb),
@@ -901,7 +901,7 @@ package body Gtk.Handlers is
       --------------------
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -932,7 +932,7 @@ package body Gtk.Handlers is
       --------------------
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -969,7 +969,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
-           (Gtk.Object.Gtk_Object (Widget),
+           (Glib.GObjects.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Marsh.Proxy),
@@ -983,7 +983,7 @@ package body Gtk.Handlers is
       --------------------
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -1004,7 +1004,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
-           (Gtk.Object.Gtk_Object (Widget),
+           (Glib.GObjects.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Marsh.Proxy),
@@ -1037,7 +1037,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
-           (Gtk.Object.Gtk_Object (Widget),
+           (Glib.GObjects.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Cb),
@@ -1051,7 +1051,7 @@ package body Gtk.Handlers is
       --------------------
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -1072,7 +1072,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
-           (Gtk.Object.Gtk_Object (Widget),
+           (Glib.GObjects.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Cb),
@@ -1268,7 +1268,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
-           (Gtk.Object.Gtk_Object (Widget),
+           (Glib.GObjects.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Marsh.Proxy),
@@ -1301,7 +1301,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
-           (Gtk.Object.Gtk_Object (Widget),
+           (Glib.GObjects.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Cb),
@@ -1339,7 +1339,7 @@ package body Gtk.Handlers is
    ----------------
 
    procedure Disconnect
-     (Object : access Gtk.Object.Gtk_Object_Record'Class;
+     (Object : access Glib.GObjects.GObject_Record'Class;
       Id     : Handler_Id) is
    begin
       Disconnect_Internal (Obj => Get_Object (Object), Id  => Id);
@@ -1350,7 +1350,7 @@ package body Gtk.Handlers is
    -----------------------
 
    procedure Emit_Stop_By_Name
-     (Object : access Gtk.Object.Gtk_Object_Record'Class;
+     (Object : access Glib.GObjects.GObject_Record'Class;
       Name   : String)
    is
       procedure Internal (Object : System.Address; Name : String);
@@ -1365,7 +1365,7 @@ package body Gtk.Handlers is
    -------------------
 
    procedure Handler_Block
-     (Obj : access Gtk.Object.Gtk_Object_Record'Class;
+     (Obj : access Glib.GObjects.GObject_Record'Class;
       Id  : Handler_Id)
    is
       procedure Internal (Obj : System.Address; Id : Handler_Id);
@@ -1379,7 +1379,8 @@ package body Gtk.Handlers is
    -- Handlers_Destroy --
    ----------------------
 
-   procedure Handlers_Destroy (Obj : access Object.Gtk_Object_Record'Class) is
+   procedure Handlers_Destroy (Obj : access Glib.GObjects.GObject_Record'Class)
+   is
       procedure Internal (Obj : System.Address);
       pragma Import (C, Internal, "g_signal_handlers_destroy");
 
@@ -1392,7 +1393,7 @@ package body Gtk.Handlers is
    ---------------------
 
    procedure Handler_Unblock
-     (Obj : access Gtk.Object.Gtk_Object_Record'Class;
+     (Obj : access Glib.GObjects.GObject_Record'Class;
       Id  : Handler_Id)
    is
       procedure Internal (Obj : System.Address; Id : Handler_Id);
@@ -1414,7 +1415,7 @@ end Gtk.Handlers;
 --    possible return values: gboolean, gchar*, gint, guint, void
 --  * The first argument to a handler is always a Gtk Object.  since GtkAda is
 --    full object oriented, we could simply have the first parameter be a
---    Gtk_Object'Class, but this would require in most cases an explicit cast
+--    GObject'Class, but this would require in most cases an explicit cast
 --    from the user. It is nice to give the opportunity to have a specific
 --    type.
 --  * The standard callbacks can have any number of arguments (or even

@@ -110,7 +110,7 @@
 --
 --  </description>
 
-with Gtk.Object;
+with Glib.GObjects;
 with Gtk.Widget;
 with Glib.Values;
 
@@ -125,7 +125,7 @@ package Gtk.Marshallers is
    --------------------------------------------------------------
 
    generic
-      type Widget_Type is new Gtk.Object.Gtk_Object_Record with private;
+      type Widget_Type is new Glib.GObjects.GObject_Record with private;
       type Return_Type is private;
    package Return_Marshallers is
 
@@ -221,7 +221,7 @@ package Gtk.Marshallers is
    --------------------------------------------------------------
 
    generic
-      type Widget_Type is new Gtk.Object.Gtk_Object_Record with private;
+      type Widget_Type is new Glib.GObjects.GObject_Record with private;
       type Return_Type is private;
       type User_Type (<>) is private;
    package User_Return_Marshallers is
@@ -324,7 +324,7 @@ package Gtk.Marshallers is
    -----------------
 
    generic
-      type Widget_Type is new Gtk.Object.Gtk_Object_Record with private;
+      type Widget_Type is new Glib.GObjects.GObject_Record with private;
    package Void_Marshallers is
 
       type Handler_Proxy is access procedure
@@ -419,7 +419,7 @@ package Gtk.Marshallers is
    ----------------------------------------------------------------------
 
    generic
-      type Widget_Type is new Gtk.Object.Gtk_Object_Record with private;
+      type Widget_Type is new Glib.GObjects.GObject_Record with private;
       type User_Type (<>) is private;
    package User_Void_Marshallers is
       type Handler_Proxy is access procedure

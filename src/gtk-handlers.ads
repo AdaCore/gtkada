@@ -34,7 +34,7 @@
 --  services provided by this package, some definitions are necessary:
 --
 --    Signal: A signal is a kind of message that an object wants to
---    broadcast. All Gtk_Objects can emit signals. These messages are
+--    broadcast. All GObjects can emit signals. These messages are
 --    associated to certain events happening during the life of an
 --    object. For instance, when a user clicks on a button, the
 --    "clicked" signal is emitted by the button.
@@ -82,7 +82,7 @@
 --
 --  The common generic parameter to all sub-packages is the widget type,
 --  which is the basic widget manipulated. This can be
---  Gtk.Object.Gtk_Object_Record type if you want to reduce the number of
+--  Glib.GObjects.GObject_Record type if you want to reduce the number of
 --  instantiations, but the conversion to the original type will have to be
 --  done inside the handler.
 --
@@ -122,7 +122,7 @@
 --    As for the "To_Marshaller" functions, a series of "Emit_By_Name"
 --    procedures are also provided for the same most common types, to
 --    allow the user to easily emit signals. These procedures are mainly
---    intended for people building new Gtk_Objects.
+--    intended for people building new GObjects.
 --
 --  At the end of this package, some general services related to the
 --  management of signals and handlers are also provided. Each one of
@@ -136,7 +136,6 @@ with Glib.Values;
 with Gdk.Event;
 with Gtk.Marshallers;
 with Gtk.Notebook;
-with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Handlers is
@@ -154,7 +153,7 @@ package Gtk.Handlers is
    ---------------------------------------------------------
 
    generic
-      type Widget_Type is new Gtk.Object.Gtk_Object_Record with private;
+      type Widget_Type is new Glib.GObjects.GObject_Record with private;
       type Return_Type is private;
    package Return_Callback is
 
@@ -183,7 +182,7 @@ package Gtk.Handlers is
       --  Connects a Marshaller. The Handler_Id is dropped.
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -200,7 +199,7 @@ package Gtk.Handlers is
       --  Connects a Handler. The Handler_Id is dropped.
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -220,7 +219,7 @@ package Gtk.Handlers is
       --  Connects a Marshaller. Returns the Handler_Id.
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -237,7 +236,7 @@ package Gtk.Handlers is
       --  Connects a Handler. Returns the Handler_Id.
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -329,7 +328,7 @@ package Gtk.Handlers is
    ---------------------------------------------------------
 
    generic
-      type Widget_Type is new Gtk.Object.Gtk_Object_Record with private;
+      type Widget_Type is new Glib.GObjects.GObject_Record with private;
       type Return_Type is private;
       type User_Type (<>) is private;
    package User_Return_Callback is
@@ -456,7 +455,7 @@ package Gtk.Handlers is
    ---------------------------------------------------------
 
    generic
-      type Widget_Type is new Gtk.Object.Gtk_Object_Record with private;
+      type Widget_Type is new Glib.GObjects.GObject_Record with private;
    package Callback is
 
       type Handler is access procedure
@@ -475,7 +474,7 @@ package Gtk.Handlers is
          After   : Boolean := False);
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -488,7 +487,7 @@ package Gtk.Handlers is
          After   : Boolean := False);
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -504,7 +503,7 @@ package Gtk.Handlers is
          After   : Boolean := False) return Handler_Id;
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -517,7 +516,7 @@ package Gtk.Handlers is
          After   : Boolean := False) return Handler_Id;
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.GObjects.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -603,7 +602,7 @@ package Gtk.Handlers is
    ---------------------------------------------------------
 
    generic
-      type Widget_Type is new Gtk.Object.Gtk_Object_Record with private;
+      type Widget_Type is new Glib.GObjects.GObject_Record with private;
       type User_Type (<>) is private;
    package User_Callback is
 
@@ -726,29 +725,29 @@ package Gtk.Handlers is
    ------------------------------------------------------------------
 
    procedure Disconnect
-     (Object : access Gtk.Object.Gtk_Object_Record'Class;
+     (Object : access Glib.GObjects.GObject_Record'Class;
       Id     : Handler_Id);
    --  Disconnect the handler identified by the given Handler_Id.
 
    procedure Emit_Stop_By_Name
-     (Object : access Gtk.Object.Gtk_Object_Record'Class;
+     (Object : access Glib.GObjects.GObject_Record'Class;
       Name   : String);
    --  During a signal emission, invoking this procedure will halt the
    --  emission.
 
    procedure Handler_Block
-     (Obj : access Gtk.Object.Gtk_Object_Record'Class;
+     (Obj : access Glib.GObjects.GObject_Record'Class;
       Id  : Handler_Id);
    --  Blocks temporily the signal. For each call to this procedure,
    --  a call to Handler_Unblock must be performed in order to really
    --  unblock the signal.
 
    procedure Handlers_Destroy
-     (Obj : access Object.Gtk_Object_Record'Class);
+     (Obj : access Glib.GObjects.GObject_Record'Class);
    --  Destroys all the handlers associated to the given object.
 
    procedure Handler_Unblock
-     (Obj : access Gtk.Object.Gtk_Object_Record'Class;
+     (Obj : access Glib.GObjects.GObject_Record'Class;
       Id  : Handler_Id);
    --  See Handler_Block.
 
