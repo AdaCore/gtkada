@@ -4088,7 +4088,7 @@ package body Gtkada.MDI is
          Unref (Child);
          Set_Focus_Child (Child);
 
-         Show_All (Note2);
+         Show (Note2);
       end if;
    end Split;
 
@@ -5048,7 +5048,7 @@ package body Gtkada.MDI is
          Orientation : constant Gtk_Orientation := Gtk_Orientation'Value
            (Get_Attribute (Node, "Orientation"));
          N     : Node_Ptr;
-         Note, Previous : Gtk_Notebook;
+         Previous : Gtk_Notebook;
          Count : Natural := 0;
       begin
          --  Count the number of children (except for the first one, already
@@ -5071,13 +5071,13 @@ package body Gtkada.MDI is
             N := Node.Child.Next;
             while N /= null loop
                Parse_Notebook_Node
-                 (MDI, First_Widget_Child (N), User, Focus_Child, Note);
-               First (Count) := Note;
+                 (MDI, First_Widget_Child (N), User, Focus_Child,
+                  First (Count));
                Split (MDI.Central.Container,
                       Ref_Widget  => Previous,
-                      New_Child   => Note,
+                      New_Child   => First (Count),
                       Orientation => Orientation);
-               Previous := Note;
+               Previous := First (Count);
                N := N.Next;
                Count := Count + 1;
             end loop;
@@ -5404,8 +5404,6 @@ package body Gtkada.MDI is
                   Current := Current.Parent;
                end loop;
 
-               Depth := Get_Depth (Iter);
-
                if Get_Widget (Iter) /= null then
                   N := new Node;
                   N.Tag := new String'("Notebook");
@@ -5419,6 +5417,7 @@ package body Gtkada.MDI is
                      Gtk_Orientation'Image (Get_Orientation (Iter)));
                   Add_Child (Current, N, Append => True);
                   Current := N;
+                  Depth := Get_Depth (Iter);
                end if;
 
                Next (Iter);
