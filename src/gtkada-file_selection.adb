@@ -141,7 +141,7 @@ package body Gtkada.File_Selection is
                then
                   Destroy (Dialog);
                   return S;
-               else
+               elsif Is_Directory (S (S'First .. Last)) then
                   --  The user might have entered a name in the text field
                   --  and pressed enter, so we simply change the current
                   --  directory, and try again
@@ -149,6 +149,9 @@ package body Gtkada.File_Selection is
                   Set_Text (Gtk_Entry (Get_Selection_Entry (Dialog)), "");
                   Dialog.File_Selected := False;
                   Main;
+               else
+                  Destroy (Dialog);
+                  return "";
                end if;
             end;
          else
