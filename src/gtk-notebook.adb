@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -717,5 +717,15 @@ package body Gtk.Notebook is
    begin
       Internal (Get_Object (Notebook), Get_Object (Child), Position);
    end Reorder_Child;
+
+   -----------------------
+   -- Get_Notebook_Page --
+   -----------------------
+
+   function Get_Notebook_Page
+     (Value : Glib.Values.GValue) return Gtk_Notebook_Page is
+   begin
+      return Gtk_Notebook_Page (Glib.Values.Get_Proxy (Value));
+   end Get_Notebook_Page;
 
 end Gtk.Notebook;

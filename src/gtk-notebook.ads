@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,6 +38,7 @@
 --  <c_version>1.2.6</c_version>
 
 with Glib.Glist;
+with Glib.Values;
 with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Widget;
@@ -385,6 +386,14 @@ package Gtk.Notebook is
    function Get_Children
      (Widget : access Gtk_Notebook_Record) return Page_List.Glist;
    --  Return the list of all pages in the notebook.
+
+   --------------------
+   -- GValue support --
+   --------------------
+
+   function Get_Notebook_Page
+     (Value : Glib.Values.GValue) return Gtk_Notebook_Page;
+   --  Convert a Value into a notebook page.
 
    -------------
    -- Signals --
