@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001 ACT-Europe                   --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -155,8 +155,10 @@ package body Glib.Properties is
      (Object : access Glib.Object.GObject_Record'Class;
       Name : Property_Object) return Glib.Object.GObject
    is
-      A     : System.Address := Get_Property (Object, Property_Address (Name));
+      A     : constant System.Address :=
+        Get_Property (Object, Property_Address (Name));
       Stub  : GObject_Record;
+
    begin
       return Get_User_Data (A, Stub);
    end Get_Property;
