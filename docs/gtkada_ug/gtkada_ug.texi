@@ -73,6 +73,11 @@ Getting started with GtkAda
 * Architecture of the toolkit::
 * Widgets Hierarchy::
 
+Signal handling
+* Predefined signals::
+* Connecting signals::
+* Handling user data::
+
 Object-oriented features
 * Using tagged types to extend Gtk widgets::
 * Creating new widgets in Ada::
@@ -622,6 +627,18 @@ processing it needs. More than one handler can be connected to the
 same signal on the same object; the handlers are invoked in the order
 they were connected.
 
+@menu
+* Predefined signals::
+* Connecting signals::
+* Handling user data::
+@end menu
+
+@c ----------------------------------------------------------------------
+@node Predefined signals
+@section Predefined signals
+@c ----------------------------------------------------------------------
+
+@noindent
 Depending on their type, the widgets define zero (e.g
 @code{Gtk_Label}), one or several different signals. Of course, the signals,
 as every thing else, are inherited from the parents, thus every widget answers
@@ -631,7 +648,7 @@ The easiest way to find out what signals can be emitted by a widget is to
 look at the GtkAda reference manual. Hopefully, every widget will finally
 be documented there. That document explains when the signal is emitted,
 and the general form that handlers should have (although you can always add
-a User_Data is you wish).
+a User_Data is you wish, see below).
 
 In the meantime, you can also look directly at the C header files,
 distributed with the gtk+ library. Each widget is described in its own C
@@ -704,6 +721,12 @@ verify that your handler does not have more arguments than expected, so
 caution is recommended (it only does so if you use the @code{Gtk.Marshallers}
 package, see below).
 
+@c ----------------------------------------------------------------------
+@node Connecting signals
+@section Connecting signals
+@c ----------------------------------------------------------------------
+
+@noindent
 All the signal-handling work is performed by using the services provided
 by the Gtk.Handlers package. This package is completely self-documented,
 so please check the documentation for this package either in the GtkAda
@@ -809,6 +832,161 @@ Files_Cb.Object_Connect
    "clicked",               --  The name of the signal
    Files_Cb.To_Marshaller (Ok'Access),  --  The signal handler
    Slot_Object => Window);
+@end smallexample
+
+@c ----------------------------------------------------------------------
+@node Handling user data
+@section Handling user data
+@c ----------------------------------------------------------------------
+
+@noindent
+As described above, it is possible to define some data that is that
+passed to the callback when it is called. This data is called
+user_data, and is passed to the @code{Connect} or
+@code{Object_Connect} subprograms.
+
+GtkAda will automatically free any memory it has allocated internally
+to store these user data. For instance, if you instanciated the
+generic package @code{User_Callback} with a String, it means that you
+want to be able to have a callback of the form:
+
+@smallexample
+   procedure My_Callback (Widget : access Gtk_Widget_Record'Class;
+                           User_Data : String);
+@end smallexample
+
+and connect it with a call similar to:
+
+@smallexample
+   Connect (Button, "Clicked", To_Marshaller (My_Callback'Access),
+            User_Data => "any string");
+@end smallexample
+
+GtkAda needs to allocate some memory to store the string (an
+unconstrained type). However, this memory is automatically freed when
+the callback is destroyed.
+
+There are a few subtleties in the use of user_data, most importantly
+when the user data is itself a widget.
+
+The following four examples do exactly the same thing, ie create two
+buttons, and clicking on the first one will destroy the second
+one. They all work fine the first time, while the two buttons
+exist. However, some of them will fail if you press on the first
+button a second time.
+
+The code for this example can be found in the distribution, in the
+@file{examples/user_data} directory. The examples below do not include
+the creation of the main window, or of the buttons themselves, to
+emphasize the important part.
+
+@subsection First case: simple user data
+
+This code will fail: when @code{Button2} has been destroyed, the Ada
+type still points to some random memory, and the second call to
+@code{Destroy} will fail with a Storage_Error.
+
+@smallexample
+   package User_Callback is new Gtk.Handlers.User_Callback
+     (Gtk_Widget_Record, Gtk_Widget);
+
+   procedure My_Destroy2
+     (Button : access Gtk_Widget_Record'Class; Data : Gtk_Widget) is
+   begin
+      Destroy (Data);
+   end My_Destroy2;
+
+   begin
+      User_Callback.Connect
+        (Button1, "clicked",
+         User_Callback.To_Marshaller (My_Destroy2'Access),
+         Gtk_Widget (Button2));
+   end;
+@end smallexample
+
+@subsection Second case: using Object_Connect instead
+
+One of the solutions to fix the above problem is to use
+@code{Object_Connect} instead of @code{Connect}. In that case, GtkAda
+automatically takes care of disconnecting the callback when either of
+the two widgets is destroyed.
+
+@smallexample
+   procedure My_Destroy (Button : access Gtk_Widget_Record'Class) is
+   begin
+      Destroy (Button);
+   end My_Destroy;
+
+   begin
+      Widget_Callback.Object_Connect
+        (Button1, "clicked",
+         Widget_Callback.To_Marshaller (My_Destroy'Access),
+         Button2);
+   end;
+@end smallexample
+
+@subsection Third case: manually disconnecting the callback
+
+Using @code{Object_Connect} is not always possible. In that case, one
+of the possibilities is to store the @code{Id} of the callback, and
+properly disconnect it when appropriate. This is the most complex
+method, and very often is not applicable, since you cannot know for
+sure when the callback is no longer needed.
+
+@smallexample
+   type My_Data3 is record
+      Button, Object : Gtk_Widget;
+      Id             : Handler_Id;
+   end record;
+   type My_Data3_Access is access My_Data3;
+
+   package User_Callback3 is new Gtk.Handlers.User_Callback
+     (Gtk_Widget_Record, My_Data3_Access);
+
+   procedure My_Destroy3
+     (Button : access Gtk_Widget_Record'Class;
+      Data   : My_Data3_Access) is
+   begin
+      Destroy (Data.Button);
+      Disconnect (Data.Object, Data.Id);
+   end My_Destroy3;
+
+      Id : Handler_Id;
+   begin
+      Data3 := new My_Data3' (Object => Gtk_Widget (Button1),
+                              Button => Gtk_Widget (Button2),
+                              Id     => (Null_Signal_Id, null));
+      Id := User_Callback3.Connect
+        (Button1, "clicked",
+         User_Callback3.To_Marshaller (My_Destroy3'Access),
+         Data3);
+      Data3.Id := Id;
+   end;
+@end smallexample
+
+@subsection Fourth case: setting a watch on a specific widget
+
+GtkAda provides a function @code{Add_Watch}, that will automatically
+disconnect a callback when a given widget is destroyed. This is the
+function used internally by @code{Object_Connect}. In the example
+below, the callback is automatically disconnected whenever
+@code{Button2} is destroyed.
+
+@smallexample
+   procedure My_Destroy2
+     (Button : access Gtk_Widget_Record'Class; Data : Gtk_Widget) is
+   begin
+      Destroy (Data);
+   end My_Destroy2;
+
+      Id : Handler_Id;
+   begin
+      Id := User_Callback.Connect
+        (Button1, "clicked",
+         User_Callback.To_Marshaller (My_Destroy2'Access),
+         Gtk_Widget (Button2));
+      Add_Watch (Id, Button2);
+   end;
 @end smallexample
 
 
