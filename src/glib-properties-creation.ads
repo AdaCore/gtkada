@@ -322,13 +322,6 @@ package Glib.Properties.Creation is
    --  Value_Type returns GType_Param_Value_Array
    --  type Param_Spec_Value_Array is new Param_Spec;
 
-   --  Value_Type returns ???
-   type Param_Spec_Closure is new Param_Spec;
-   function Gnew_Closure
-     (Name, Nick, Blurb : String;
-      Flags : Param_Flags := Param_Readable or Param_Writable)
-      return Param_Spec;
-
    --  Value_Type returns GType_Object
    type Param_Spec_Object is new Param_Spec;
    function Gnew_Object

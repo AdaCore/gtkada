@@ -67,7 +67,7 @@ package body Glib.Properties.Creation is
    function Description (Param : Param_Spec) return String is
       function Internal (Param : Param_Spec)
          return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "g_param_get_blurb");
+      pragma Import (C, Internal, "g_param_spec_get_blurb");
    begin
       return Interfaces.C.Strings.Value (Internal (Param));
    end Description;
@@ -79,7 +79,7 @@ package body Glib.Properties.Creation is
    function Nick_Name (Param : Param_Spec) return String is
       function Internal (Param : Param_Spec)
          return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "g_param_get_nick");
+      pragma Import (C, Internal, "g_param_spec_get_nick");
    begin
       return Interfaces.C.Strings.Value (Internal (Param));
    end Nick_Name;
@@ -797,24 +797,6 @@ package body Glib.Properties.Creation is
       return Internal
         (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul, Flags);
    end Gnew_Pointer;
-
-   ------------------
-   -- Gnew_Closure --
-   ------------------
-
-   function Gnew_Closure
-     (Name, Nick, Blurb : String;
-      Flags : Param_Flags := Param_Readable or Param_Writable)
-      return Param_Spec
-   is
-      function Internal
-        (Name, Nick, Blurb : String;
-         Flags             : Param_Flags) return Param_Spec;
-      pragma Import (C, Internal, "g_param_spec_closure");
-   begin
-      return Internal
-        (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul, Flags);
-   end Gnew_Closure;
 
    -----------------
    -- Gnew_Object --
