@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 1.25 
+# From configure.in Revision: 1.26 
 #############################################################
 #
 #  Adding some OS specific flags and parameters
@@ -648,7 +648,7 @@ fi
 # Current release settings
 GTKADA_MAJOR_VERSION=1
 GTKADA_MINOR_VERSION=2
-GTKADA_MICRO_VERSION=9
+GTKADA_MICRO_VERSION=10
 GTKADA_VERSION=$GTKADA_MAJOR_VERSION.$GTKADA_MINOR_VERSION.$GTKADA_MICRO_VERSION
 
 ac_aux_dir=
