@@ -249,7 +249,7 @@ package body Gtk.Spin_Button is
       Step        : Gdouble)
    is
       function Internal (Min, Max, Step : Gdouble) return System.Address;
-      pragma Import (C, Internal, "gtk_spin_button_new");
+      pragma Import (C, Internal, "gtk_spin_button_new_with_range");
 
    begin
       Set_Object (Spin_Button, Internal (Min, Max, Step));
