@@ -4099,7 +4099,8 @@ package body Gtkada.MDI is
          MDI.Dock_Menu_Item_Id := Widget_Callback.Object_Connect
            (MDI.Dock_Menu_Item, "toggled",
             Widget_Callback.To_Marshaller (Dock_Cb'Access), MDI);
-         Set_Accel_Path (Item, "<gtkada>/window/docked", MDI.Group);
+         Set_Accel_Path
+           (MDI.Dock_Menu_Item, "<gtkada>/window/docked", MDI.Group);
 
          Gtk_New (MDI.Float_Menu_Item, "Floating");
          Append (MDI.Menu, MDI.Float_Menu_Item);
@@ -4109,7 +4110,8 @@ package body Gtkada.MDI is
          MDI.Float_Menu_Item_Id := Widget_Callback.Object_Connect
            (MDI.Float_Menu_Item, "toggled",
             Widget_Callback.To_Marshaller (Float_Cb'Access), MDI);
-         Set_Accel_Path (Item, "<gtkada>/window/floating", MDI.Group);
+         Set_Accel_Path
+           (MDI.Float_Menu_Item, "<gtkada>/window/floating", MDI.Group);
 
          Gtk_New (Item);
          Append (MDI.Menu, Item);
