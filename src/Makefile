@@ -42,16 +42,16 @@ RANLIB = ranlib
 
 all: libgtkada.so libgtkada.a
 
-libgtkada.so: $(TEST_LINK).o $(c_objects)
+libgtkada.so:: test_link.o
 	$(CC) -shared -o libgtkada.so g*.o $(c_objects)
 
-libgtkada.a: $(TEST_LINK).o $(c_objects)
+libgtkada.a::
 	$(AR) $(ARFLAGS) libgtkada.a g*.o $(c_objects)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) libgtkada.a; \
 	fi \
 
-test_link.o: 
+test_link.o::
 	#perl ./create_test_link.pl > test_link.adb
 	$(GNATMAKE) -c test_link -shared -fPIC $(GNATFLAGS)
 
