@@ -295,7 +295,7 @@ package body Gtk.Object is
            Convert (Internal (Get_Object (Object), Id & ASCII.NUL));
 
       begin
-         if D.Ptr = null then
+         if D = null or else D.Ptr = null then
             raise Gtkada.Types.Data_Error;
          else
             return D.Ptr.all;
@@ -318,7 +318,7 @@ package body Gtk.Object is
            Convert (Internal (Get_Object (Object), Id));
 
       begin
-         if D.Ptr = null then
+         if D = null or else D.Ptr = null then
             raise Gtkada.Types.Data_Error;
          else
             return D.Ptr.all;
