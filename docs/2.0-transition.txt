@@ -4,6 +4,8 @@ Glib:
   GType_* constants replace Gtk.Gtk_Type_*
 Glib.GObjects: new package
 Gdk.Color_Context: removed, use Gdk.Color instead.
+Gtk.Combo:
+  Get_Popup_Window: new procedure.
 Gdk.Cursor:
   Destroy: deprecated, use Unref instead.
   Ref/Unref: new procedures.
