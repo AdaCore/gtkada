@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,6 +27,29 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This package implements a generic double-linked list.
+--  Such lists are used throughout GtkAda to contain lists of widgets
+--  (for the children of containers, or for the list of selected widgets
+--  in a Gtk_Clist for instance), list of strings (for Gtk_Combo_Box),...
+--
+--  They provide a common interface to traverse these lists.
+--
+--  One useful note: you should only Free the lists that you have allocated
+--  yourself, and not the lists that are returned by the subprograms in
+--  GtkAda and should be left under GtkAda's control.
+--
+--  See the example below for an example how to traverse a list.
+--
+--  Instantiating the package Generic_List requires two functions to convert
+--  back and forth between your data type and a System.Address which is the
+--  type stored at the C level.
+--  Note that the lists used in GtkAda already have associated packages, like
+--  Gtk.Enums.Gint_List, Gtk.Enums.String_List or Gtk.Widget.Widget_List.
+--
+--  </description>
+--  <c_synchro>1.2.6</c_synchro>
 
 with System;
 
@@ -39,33 +62,76 @@ package Glib.Glist is
    package Generic_List is
 
       type Glist is private;
+      --  This type is both a list and an item in the list.
+      --  Each item points to its successor.
+
       Null_List : constant Glist;
 
       procedure Alloc (List : out Glist);
+      --  Allocates a new item in the list.
+      --  This item isn't associated with any data.
+      --  You probably don't have to use this subprogram, since Append,
+      --  Insert, Prepend, etc. already handle the allocation for you and
+      --  give a new value to the item.
+
       procedure Append (List : in out Glist;
                         Data : in Gpointer);
+      --  Add a new item at the end of the list.
+      --  The complexity of this operation is O(n)
+
       function Concat (List1 : in Glist;
                        List2 : in Glist)
-                       return Glist;
+                      return Glist;
+      --  Concat two lists, and return the result. List2 is added at the end
+      --  of List1.
+      --  The complexity is O(n1) (depends on the size of List1).
+
       procedure Insert (List : in out Glist;
                         Data : in Gpointer;
                         Position : in Gint);
+      --  Inserts an item in the middle of a list.
+      --  If POSITION is 0, the item is added at the beginning of the list, if
+      --  it is negative the item is added at the end.
+      --  The complexity is O(Position).
+
       function Find (List : in Glist;
                      Data : in Gpointer)
-                     return Glist;
-      function First (List : in Glist)
-                      return Glist;
+                    return Glist;
+      --  Find an value in the list, and return the first item that contains
+      --  this value.
+      --  Note that this function will not work if the function Convert does
+      --  not return the same value for two identical values.
+
+      function First (List : in Glist) return Glist;
+      --  Returns the first item in the list.
+      --  Note that if List is in fact an item of a larger list, the return
+      --  value is the first item in the larger list itself.
+
       procedure Free (List : in out Glist);
+      --  Frees the list (but does not free the data in each of its elements.
+      --  This only frees the memory associated with the list itself).
+      --  Note also that you should only use this function on the lists that
+      --  you have created yourself, not on the list that are returned by some
+      --  functions in GtkAda (like Gtk.Clist.Get_Selection). These functions
+      --  return directly the list managed by the underlying C widget, and you
+      --  should never free the result yourself.
+      --
+      --  Note also that the memory might not be actually freed. For efficiency
+      --  reasons, GtkAda will keep the memory allocated and try to reuse it as
+      --  much as possible.
 
       function Get_Data (List : in Glist) return Gpointer;
-      function Get_Data_Address (List : in Glist) return System.Address;
-      --  These two functions are basically the same, except that the first
-      --  one first converts the System.Address to Gpointer.
-      --  The second one is only useful if you need access directly to the
-      --  C pointer (e.g for String lists)
+      --  Returns the value pointed to by LIST.
+      --  The System.Address container in the C list is converted to a Gpointer
+      --  through a call to Convert.
 
+      function Get_Data_Address (List : in Glist) return System.Address;
+      --  Returns directly the System.Address contained in the C list.
+      --  This is used mainly internally in GtkAda to implement String lists,
+      --  and you should not have to use this subprogram yourself.
+
+      --  <doc_ignore>
       function Get_Gpointer (List : in Glist) return Gpointer;
-      --
       --  Sometimes, the data is not stored in the "data" field
       --  of each cell, but rather at each cell. In such cases,
       --  to retrieve the address of the data, we need to return
@@ -73,47 +139,95 @@ package Glib.Glist is
       --  pointed to by data.
       --
       --  Ex: the GtkCTree row_list.
+      --  </doc_ignore>
 
       function Index (List : in Glist;
                       Data : in Gpointer)
-                      return Gint;
-      function Last (List : in Glist)
-                     return Glist;
-      function Length (List : in Glist)
-                       return Guint;
+                     return Gint;
+      --  Returns the index of the first element in LIST that contains
+      --  DATA.
+      --  Note that this function is irrelevant if CONVERT does not return the
+      --  same value for two identical data.
+
+      function Last (List : in Glist) return Glist;
+      --  Returns the last element in the list.
+
+      function Length (List : in Glist) return Guint;
+      --  Returns the number of elements in the list.
+      --  The last item's index is Length - 1.
+
       procedure List_Reverse (List : in out Glist);
-      function Next (List : in Glist)
-                     return Glist;
+      --  Reverses the order of the list (the last item becomes the
+      --  first, etc.)
+
+      function Next (List : in Glist) return Glist;
+      --  Returns the Item following LIST in the global list that contains
+      --  both.
+      --  If there is no such item, returns Null_List. This is how you
+      --  stops iterating over a list.
+
       function Nth (List : in Glist;
                     N    : in Guint)
-                    return Glist;
+                   return Glist;
+      --  Gives the nth item following LIST in the global list that
+      --  contains both.
+      --  If there is no such item, returns Null_List.
+
       function Nth_Data (List : in Glist;
                          N : in Guint)
-                         return Gpointer;
+                        return Gpointer;
+      --  Returns the Data contained in the N-th item of the list LIST.
+      --  The result is undefined if there is no such item in the list.
+      --  The actual result in that case is the result of
+      --      Convert (System.Null_Address);
+      --  which might not mean anything.
+
       function Position (List : in Glist;
                          Link : in Glist)
-                         return Gint;
+                        return Gint;
+      --  Returns the position of LINK in the LIST.
+      --  If LINK is not contained in the list, -1 is returned.
+
       procedure Prepend (List : in out Glist;
                          Data : in Gpointer);
-      function Prev (List : in Glist)
-                     return Glist;
+      --  Adds an item at the beginning of the list.
+      --  This operation always succeed.
+
+      function Prev (List : in Glist) return Glist;
+      --  Returns the item before LIST in the global list that contains
+      --  both. Returns Null_List if there is no such item.
+
       procedure Remove (List : in out Glist;
                         Data : in Gpointer);
+      --  Removes the first item in LIST that contains DATA.
+      --  Note that this operation can succeed only if Convert always return
+      --  the same address for a given value.
+
       procedure Remove_Link (List : in out Glist;
                              Link : in Glist);
-
+      --  Removes LINK from the list to which it belongs.
+      --  If that list is not LIST, no error is returned, but LINK is removed
+      --  anyway.
 
       function Is_Created (List : in Glist) return Boolean;
+      --  Returns True if there is a C widget associated with LIST.
 
-      --  For Internal use only.
-      --
-      function Get_Object (Obj : in Glist)
-                           return System.Address;
+      ------------------------
+      -- Internal functions --
+      ------------------------
+      --  Please do not use the following functions. They are used internally
+      --  by GtkAda.
+      --  <doc_ignore>
+
+      function Get_Object (Obj : in Glist) return System.Address;
+      --  Returns the C object contained in OBJ.
       pragma Inline (Get_Object);
 
-      procedure Set_Object (Obj    : in out Glist;
-                            Value  : in     System.Address);
+      procedure Set_Object (Obj : in out Glist; Value  : in System.Address);
+      --  Modifies the C object contained in OBJ.
       pragma Inline (Set_Object);
+
+      --  </doc_ignore>
 
    private
 
@@ -126,6 +240,6 @@ package Glib.Glist is
 
 end Glib.Glist;
 
-
-
-
+--  <example>
+--  <include>../examples/documentation/glist_traverse.adb</include>
+--  </example>
