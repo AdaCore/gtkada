@@ -79,13 +79,19 @@ package Gdk.Rgb is
    --    - Gtk.Widget.Pop_Visual;
    --    - Gtk.Widget.Pop_Colormap;
 
-   type Rgb_Buffer is array (Natural range <>) of Glib.Guchar;
+   type Rgb_Buffer is array (Natural) of Glib.Guchar;
+   pragma Convention (C, Rgb_Buffer);
    --  This is the buffer that will contain the image. You can manipulate each
    --  byte in it independantly, although there is no high level routine
    --  to draw lines, circles, ...
    --  Once you are done drawing into this buffer, you can copy it to any
    --  drawable on the screen, *if* the widget was created with the correct
    --  visual and colormap (see above).
+
+   type Rgb_Buffer_Access is access all Rgb_Buffer;
+   pragma Convention (C, Rgb_Buffer_Access);
+   --  Type used By Gdk.Pixbufs.Get_Pixels below to return an array with no
+   --  bound checks that is comatible with C (also known as a flat array).
 
    type Gdk_Rgb_Dither is (Dither_None, Dither_Normal, Dither_Max);
    --  The three kinds of dithering that are implemented in this package:
