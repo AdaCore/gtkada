@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2001                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -70,45 +70,15 @@ package Gtk is
    --  Note that this is not necessarily the same as for GtkAda.
    --  If the version is 1.2.6, returns 6.
 
-   type Gtk_Type is new Guint;
-   --  This type describes an internal type in Gtk+.
-   --  You shouldn't have to use it in your own applications, however it might
-   --  be useful sometimes.
-   --  Every widget type is associated with a specific value, created
-   --  dynamically at run time the first time you instantiate a widget of that
-   --  type (thus if you have never used a Gtk_File_Selection, it won't have
-   --  any Gtk_Type associated with it).
-   --  You can get the exact type value for each type by using the functions
-   --  Get_Type provided in all the packages in GtkAda.
-   --  You can get the specific value for an existing widget by using the
-   --  function Gtk.Object.Get_Type.
-
-   Gtk_Type_Invalid : constant Gtk_Type := 0;
-   Gtk_Type_None    : constant Gtk_Type := 1;
-   Gtk_Type_Char    : constant Gtk_Type := 2;
-   Gtk_Type_Uchar   : constant Gtk_Type := 3;
-   Gtk_Type_Bool    : constant Gtk_Type := 4;
-   Gtk_Type_Int     : constant Gtk_Type := 5;
-   Gtk_Type_Uint    : constant Gtk_Type := 6;
-   Gtk_Type_Long    : constant Gtk_Type := 7;
-   Gtk_Type_Ulong   : constant Gtk_Type := 8;
-   Gtk_Type_Float   : constant Gtk_Type := 9;
-   Gtk_Type_Double  : constant Gtk_Type := 10;
-   Gtk_Type_String  : constant Gtk_Type := 11;  --  Null terminated string.
-   Gtk_Type_Enum    : constant Gtk_Type := 12;
-   Gtk_Type_Flags   : constant Gtk_Type := 13;
-   Gtk_Type_Boxed   : constant Gtk_Type := 14;
-   Gtk_Type_Pointer : constant Gtk_Type := 15;  --  a general pointer type.
-   Gtk_Type_Object  : constant Gtk_Type := 21;  --  One of the widgets/objects
+   subtype Gtk_Type is Glib.GType;
+   --  Renaming used for compatiblity.
+   --  Note: Gtk_Type_* constants have been replaced by GType_* constants
+   --  in Glib.
 
    type Gtk_Notebook_Page is new Gdk.C_Proxy;
    --  A page of the notebook.
    --  It can contain a single child, and is also associated with a tab
    --  label used to select that page in the notebook.
-
-   function Gtk_Type_Gdk_Event return Gtk_Type;
-   --  Return the type corresponding to a Gdk_Event.
-   --  Note that this function must be called after Gtk+ has been initialized.
 
    function Type_Name (Type_Num : in Gtk_Type) return String;
    --  Return the type name corresponding to a Gtk_Type.
@@ -213,5 +183,4 @@ private
    pragma Import (C, Major_Version, "ada_gtk_major_version");
    pragma Import (C, Minor_Version, "ada_gtk_minor_version");
    pragma Import (C, Micro_Version, "ada_gtk_micro_version");
-   pragma Import (C, Gtk_Type_Gdk_Event, "ada_gtk_type_gdk_event");
 end Gtk;
