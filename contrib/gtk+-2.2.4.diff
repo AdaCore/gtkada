@@ -4,6 +4,12 @@ Thu Nov 27 2003  Arnaud Charlet  <charlet@act-europe.fr>
 	of characters validated at each call, this gives a better behavior
 	when loading big files.
 
+	* gtk/gtktextbtree.c, gtk/gtktextiter.c: Remove some function calls
+	when assertions are disabled.
+
+	* gtk/gtktextlayout.c: Use local buffer to avoid dynamic memory
+	allocation.
+
 Wed Oct 15 2003  Arnaud Charlet  <charlet@act-europe.fr>
 
 	* gtk/gtktextview.c (gtk_text_view_scroll_[h]pages): Undo
@@ -51,3 +57,116 @@ Wed Oct 15 2003  Arnaud Charlet  <charlet@act-europe.fr>
  
    gtk_text_view_update_adjustments (text_view);
    
+--- gtk/gtktextbtree.c	2003/11/22 00:11:14	1.1
++++ gtk/gtktextbtree.c	2003/11/22 00:40:42
+@@ -3149,13 +3149,9 @@ ensure_end_iter_line (GtkTextBTree *tree
+ {
+   if (tree->end_iter_line_stamp != tree->chars_changed_stamp)
+     {
+-      int n_lines;
+       int real_line;
+ 
+-      /* n_lines is without the magic line at the end */
+-      n_lines = _gtk_text_btree_line_count (tree);
+- 
+-      g_assert (n_lines >= 1);
++      g_assert (_gtk_text_btree_line_count (tree) >= 1);
+ 
+       tree->end_iter_line = _gtk_text_btree_get_line_no_last (tree, -1, &real_line);
+       
+--- gtk/gtktextiter.c	2003/11/21 23:46:35	1.1
++++ gtk/gtktextiter.c	2003/11/22 00:07:39
+@@ -150,6 +150,11 @@ iter_set_from_segment (GtkTextRealIter *
+    truly computed lazily; often we don't need to do the full make_real
+    work. This ensures the btree and line are valid, but doesn't
+    update the segments. */
++
++#ifdef G_DISABLE_ASSERT
++#define gtk_text_iter_make_surreal(iter) ((GtkTextRealIter*)iter)
++
++#else
+ static GtkTextRealIter*
+ gtk_text_iter_make_surreal (const GtkTextIter *_iter)
+ {
+@@ -188,6 +193,7 @@ gtk_text_iter_make_surreal (const GtkTex
+ 
+   return iter;
+ }
++#endif
+ 
+ static GtkTextRealIter*
+ gtk_text_iter_make_real (const GtkTextIter *_iter)
+@@ -385,15 +391,15 @@ is_segment_start (GtkTextRealIter *real)
+   return real->segment_byte_offset == 0 || real->segment_char_offset == 0;
+ }
+ 
+-#if 1
++#ifdef G_DISABLE_ASSERT
++#define check_invariants(iter)
++#else
+ static void
+ check_invariants (const GtkTextIter *iter)
+ {
+   if (gtk_debug_flags & GTK_DEBUG_TEXT)
+     _gtk_text_iter_check (iter);
+ }
+-#else
+-#define check_invariants (x)
+ #endif
+ 
+ /**
++++ gtk/gtktextlayout.c	2003/11/22 14:54:29
+@@ -1686,11 +1686,14 @@ gtk_text_layout_get_line_display (GtkTex
+                                   GtkTextLine   *line,
+                                   gboolean       size_only)
+ {
++#define TEXT_CACHE_SIZE 256
++  static gchar cached_text[TEXT_CACHE_SIZE];
++
+   GtkTextLineDisplay *display;
+   GtkTextLineSegment *seg;
+   GtkTextIter iter;
+   GtkTextAttributes *style;
+-  gchar *text;
++  gchar *text = cached_text;
+   PangoAttrList *attrs;
+   gint text_allocated, layout_byte_offset, buffer_byte_offset;
+   PangoRectangle extents;
+@@ -1734,7 +1737,9 @@ gtk_text_layout_get_line_display (GtkTex
+   /* Allocate space for flat text for buffer
+    */
+   text_allocated = _gtk_text_line_byte_count (line);
+-  text = g_malloc (text_allocated);
++
++  if (text_allocated > TEXT_CACHE_SIZE)
++    text = g_malloc (text_allocated);
+ 
+   attrs = pango_attr_list_new ();
+ 
+@@ -1896,7 +1901,15 @@ gtk_text_layout_get_line_display (GtkTex
+ 	      if (layout->preedit_len > 0)
+ 		{
+ 		  text_allocated += layout->preedit_len;
+-		  text = g_realloc (text, text_allocated);
++
++		  if (text_allocated > TEXT_CACHE_SIZE)
++		    if (text == cached_text)
++		      {
++			text = g_malloc (text_allocated);
++			memcpy (text, cached_text, text_allocated - layout->preedit_len);
++		      }
++		    else
++		      text = g_realloc (text, text_allocated);
+ 
+ 		  style = get_style (layout, &iter);
+ 		  add_preedit_attrs (layout, style, attrs, layout_byte_offset, size_only);
+@@ -1984,7 +1997,8 @@ gtk_text_layout_get_line_display (GtkTex
+   if (layout->wrap_loop_count == 0)
+     invalidate_cached_style (layout);
+ 
+-  g_free (text);
++  if (text != cached_text)
++    g_free (text);
+   pango_attr_list_unref (attrs);
+ 
+   layout->one_display_cache = display;
