@@ -53,6 +53,9 @@ package Gdk.Event is
 
    type Gdk_Event is new Gdk.C_Proxy;
 
+   function Get_Type return GType;
+   --  Return the type corresponding to a Gdk_Event.
+
    subtype Gdk_Event_Any is Gdk_Event;
    --  Change from GtkAda1.2.3: There is no longer a tagged type
    --  hierarchy, only one type.
@@ -504,6 +507,7 @@ package Gdk.Event is
    --  See gdk-event.adb for some of the design issues behing that package.
 
 private
+   pragma Import (C, Get_Type, "gdk_event_get_type");
    pragma Import (C, Get_Event_Type, "ada_gdk_event_get_type");
    pragma Import (C, Get_Window, "ada_gdk_event_get_window");
    pragma Import (C, Get_Time, "gdk_event_get_time");
