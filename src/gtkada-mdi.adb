@@ -3662,13 +3662,12 @@ package body Gtkada.MDI is
             Pack_Start (Box, Pixmap, Expand => False);
             Pack_Start (Box, Child.Tab_Label,  Expand => True, Fill => True);
             Add (Event, Box);
-            Show_All (Box);
          else
             Add (Event, Child.Tab_Label);
-            Show_All (Child.Tab_Label);
          end if;
 
          Set_Tab_Label (Child.MDI.Docks (Side), Child, Event);
+         Show_All (Event);
 
          --  Setup drag-and-drop, so that items can be moved from one location
          --  to another.
@@ -3957,6 +3956,7 @@ package body Gtkada.MDI is
       end if;
 
       if Maximize and then not MDI.Children_Are_Maximized then
+         MDI.Children_Are_Maximized := True;
          if MDI.Docks (None) /= null then
             Set_Child_Visible (MDI.Docks (None), True);
          else
@@ -3974,7 +3974,6 @@ package body Gtkada.MDI is
          end loop;
 
          Set_Child_Visible (MDI.Layout, False);
-         MDI.Children_Are_Maximized := True;
 
       elsif not Maximize and then MDI.Children_Are_Maximized then
          --  The middle notebook was already destroyed by the last call to
