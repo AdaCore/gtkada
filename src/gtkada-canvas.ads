@@ -194,6 +194,13 @@ package Gtkada.Canvas is
    --  However, Item should resize its pixmap and redraw itself before
    --  calling this procedure.
 
+   type Item_Processor is access
+     procedure (Canvas : access Interactive_Canvas_Record'Class;
+                Item   : access Canvas_Item_Record'Class);
+   procedure For_Each_Item (Canvas  : access Interactive_Canvas_Record;
+                            Execute : Item_Processor);
+   --  Execute an action on each of the items contained in the canvas.
+
    ------------------------
    -- Items manipulation --
    ------------------------

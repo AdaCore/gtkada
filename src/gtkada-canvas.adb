@@ -6,6 +6,7 @@ with Gdk.Font;         use Gdk.Font;
 with Gdk.GC;           use Gdk.GC;
 with Gdk.Pixmap;       use Gdk.Pixmap;
 with Gdk.Types;        use Gdk.Types;
+with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gdk.Window;       use Gdk.Window;
 with Glib;             use Glib;
@@ -71,6 +72,12 @@ package body Gtkada.Canvas is
                           return Boolean;
    --  Called when the user moves the mouse while a button is pressed.
    --  If an item was selected, the item is moved.
+
+   function Key_Press (Canvas : access Interactive_Canvas_Record'Class;
+                       Event : Gdk_Event)
+                      return Boolean;
+   --  Handle key events, to provide scrolling through Page Up, Page Down, and
+   --  arrow keys.
 
    procedure Clip_Line (From   : access Canvas_Item_Record'Class;
                         To_X   : in Gint;
@@ -165,13 +172,20 @@ package body Gtkada.Canvas is
         (Canvas.Drawing_Area, "motion_notify_event",
          Event_Handler.To_Marshaller (Button_Motion'Access),
          Slot_Object => Canvas);
+      Event_Handler.Object_Connect
+        (Canvas.Drawing_Area, "key_press_event",
+         Event_Handler.To_Marshaller (Key_Press'Access),
+         Slot_Object => Canvas);
 
       --  We want to be sure to get all the mouse events, that are required
       --  for the animation.
 
       Add_Events (Canvas.Drawing_Area, Gdk.Types.Button_Press_Mask
                   or Gdk.Types.Button_Motion_Mask
-                  or Gdk.Types.Button_Release_Mask);
+                  or Gdk.Types.Button_Release_Mask
+                  or Gdk.Types.Key_Press_Mask
+                  or Gdk.Types.Key_Release_Mask);
+      Set_Flags (Canvas.Drawing_Area, Can_Focus);
 
       Canvas.Annotation_Font := new String'(Default_Annotation_Font);
       Canvas.Arrow_Angle
@@ -431,6 +445,21 @@ package body Gtkada.Canvas is
          end if;
       end if;
    end Realized;
+
+   -------------------
+   -- For_Each_Item --
+   -------------------
+
+   procedure For_Each_Item (Canvas  : access Interactive_Canvas_Record;
+                            Execute : Item_Processor)
+   is
+      Item : Canvas_Item_List := Canvas.Children;
+   begin
+      while Item /= null loop
+         Execute (Canvas, Item.Item);
+         Item := Item.Next;
+      end loop;
+   end For_Each_Item;
 
    --------------
    -- Add_Link --
@@ -988,10 +1017,6 @@ package body Gtkada.Canvas is
       Item.Coord.Width  := Guint (Width);
       Item.Coord.Height := Guint (Height);
 
-      if Item.Pixmap /= null then
-         Gdk.Pixmap.Unref (Item.Pixmap);
-      end if;
-
       --  Create the pixmap
       Gdk_New (Item.Pixmap, Win, Width, Height);
    end Initialize;
@@ -1014,6 +1039,113 @@ package body Gtkada.Canvas is
 
    end Redraw_Canvas;
 
+   ---------------
+   -- Key_Press --
+   ---------------
+
+   function Key_Press (Canvas : access Interactive_Canvas_Record'Class;
+                       Event : Gdk_Event)
+                      return Boolean
+   is
+      Value : constant Gfloat := Get_Value (Get_Vadjustment (Canvas));
+      Upper : constant Gfloat := Get_Upper (Get_Vadjustment (Canvas));
+      Lower : constant Gfloat := Get_Lower (Get_Vadjustment (Canvas));
+      Page_Incr : constant Gfloat :=
+        Get_Page_Increment (Get_Vadjustment (Canvas));
+      Page_Size : constant Gfloat :=
+        Get_Page_Size (Get_Vadjustment (Canvas));
+      Step_Incr : constant Gfloat :=
+        Get_Step_Increment (Get_Vadjustment (Canvas));
+   begin
+      case Get_Key_Val (Event) is
+         when GDK_Home =>
+            Set_Value (Get_Vadjustment (Canvas), Lower);
+            Changed (Get_Vadjustment (Canvas));
+            return True;
+
+         when GDK_End =>
+            Set_Value (Get_Vadjustment (Canvas), Upper - Page_Size);
+            Changed (Get_Vadjustment (Canvas));
+            return True;
+
+         when GDK_Page_Up =>
+            if Value >= Lower + Page_Incr then
+               Set_Value (Get_Vadjustment (Canvas), Value - Page_Incr);
+            else
+               Set_Value (Get_Vadjustment (Canvas), Lower);
+            end if;
+            Changed (Get_Vadjustment (Canvas));
+            return True;
+
+         when GDK_Page_Down =>
+            if Value + Page_Incr + Page_Size <= Upper then
+               Set_Value (Get_Vadjustment (Canvas), Value + Page_Incr);
+            else
+               Set_Value (Get_Vadjustment (Canvas), Upper - Page_Size);
+            end if;
+            Changed (Get_Vadjustment (Canvas));
+            return True;
+
+         when GDK_Up | GDK_KP_Up =>
+            if Value - Step_Incr >= Lower then
+               Set_Value (Get_Vadjustment (Canvas), Value - Step_Incr);
+            else
+               Set_Value (Get_Vadjustment (Canvas), Lower);
+            end if;
+            Changed (Get_Vadjustment (Canvas));
+            Emit_Stop_By_Name (Canvas.Drawing_Area, "key_press_event");
+            return True;
+
+         when GDK_Down | GDK_KP_Down =>
+            if Value + Step_Incr + Page_Size <= Upper then
+               Set_Value (Get_Vadjustment (Canvas), Value + Step_Incr);
+            else
+               Set_Value (Get_Vadjustment (Canvas), Upper - Page_Size);
+            end if;
+            Changed (Get_Vadjustment (Canvas));
+            Emit_Stop_By_Name (Canvas.Drawing_Area, "key_press_event");
+            return True;
+
+         when GDK_Left | GDK_KP_Left =>
+            if Get_Value (Get_Hadjustment (Canvas))
+              - Get_Step_Increment (Get_Hadjustment (Canvas))
+              >= Get_Lower (Get_Hadjustment (Canvas))
+            then
+               Set_Value (Get_Hadjustment (Canvas),
+                          Get_Value (Get_Hadjustment (Canvas))
+                          - Get_Step_Increment (Get_Hadjustment (Canvas)));
+            else
+               Set_Value (Get_Hadjustment (Canvas),
+                          Get_Lower (Get_Hadjustment (Canvas)));
+            end if;
+            Changed (Get_Hadjustment (Canvas));
+            Emit_Stop_By_Name (Canvas.Drawing_Area, "key_press_event");
+            return True;
+
+         when GDK_Right | GDK_KP_Right =>
+            if Get_Value (Get_Hadjustment (Canvas))
+              + Get_Step_Increment (Get_Hadjustment (Canvas))
+              + Get_Page_Size (Get_Hadjustment (Canvas))
+              <= Get_Upper (Get_Hadjustment (Canvas))
+            then
+               Set_Value (Get_Hadjustment (Canvas),
+                          Get_Value (Get_Hadjustment (Canvas))
+                          + Get_Step_Increment (Get_Hadjustment (Canvas)));
+            else
+               Set_Value (Get_Hadjustment (Canvas),
+                          Get_Upper (Get_Hadjustment (Canvas))
+                          - Get_Page_Size (Get_Hadjustment (Canvas)));
+            end if;
+            Changed (Get_Hadjustment (Canvas));
+            Emit_Stop_By_Name (Canvas.Drawing_Area, "key_press_event");
+            return True;
+
+         when others =>
+            null;
+      end case;
+      return False;
+   end Key_Press;
+
    --------------------
    -- Button_Pressed --
    --------------------
@@ -1027,6 +1159,9 @@ package body Gtkada.Canvas is
       Y : Gint := Gint (Get_Y (Event));
       Item    : Canvas_Item;
    begin
+
+      Grab_Focus (Canvas.Drawing_Area);
+      Set_Flags (Canvas.Drawing_Area, Has_Focus);
 
       Canvas.Selected_Child := null;
 
