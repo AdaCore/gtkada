@@ -39,8 +39,14 @@ package body Gtk.Main is
    function Convert is new Unchecked_Conversion
      (Timeout_Callback, System.Address);
 
+   function Convert is new Unchecked_Conversion
+     (Idle_Callback, System.Address);
+
    function Timeout_Marshaller (Func : Timeout_Callback) return Gint;
    --  Marshaller for Timeout_Callbacks.
+
+   function Idle_Marshaller (Func : Idle_Callback) return Gint;
+   --  Marshaller for Idle_Callbacks.
 
    --------------
    -- Do_Event --
@@ -177,6 +183,19 @@ package body Gtk.Main is
       return Internal (Main_Level, Get_Object (Object));
    end Quit_Add_Destroy;
 
+   ---------------------
+   -- Idle_Marshaller --
+   ---------------------
+
+   function Idle_Marshaller (Func : Idle_Callback) return Gint is
+   begin
+      if Func = null then
+         return Boolean'Pos (False);
+      else
+         return Boolean'Pos (Func.all);
+      end if;
+   end Idle_Marshaller;
+
    --------------
    -- Idle_Add --
    --------------
@@ -187,12 +206,17 @@ package body Gtk.Main is
    is
       function Internal
         (Priority : Idle_Priority;
-         Func     : Idle_Callback;
-         Data     : System.Address) return Idle_Handler_Id;
-      pragma Import (C, Internal, "gtk_idle_add_priority");
+         Func     : System.Address;
+         Marshal  : System.Address := System.Null_Address;
+         Data     : System.Address := System.Null_Address;
+         Destroy  : System.Address := System.Null_Address)
+         return Idle_Handler_Id;
+      pragma Import (C, Internal, "gtk_idle_add_full");
 
    begin
-      return Internal (Priority, Cb, System.Null_Address);
+      return Internal
+        (Priority, Idle_Marshaller'Address,
+         System.Null_Address, Convert (Cb), System.Null_Address);
    end Idle_Add;
 
    ----------
