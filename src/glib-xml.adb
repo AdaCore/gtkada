@@ -105,7 +105,7 @@ package body Glib.XML is
       Terminator : Character;
       S          : out String_Ptr)
    is
-      Start : Natural := Index;
+      Start : constant Natural := Index;
 
    begin
       while Buf (Index) /= Terminator loop
@@ -559,7 +559,7 @@ package body Glib.XML is
    ---------------
 
    function Get_Field (N : Node_Ptr; Field : String) return String_Ptr is
-      P : Node_Ptr := Find_Tag (N.Child, Field);
+      P : constant Node_Ptr := Find_Tag (N.Child, Field);
 
    begin
       if P /= null then
