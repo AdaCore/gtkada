@@ -33,6 +33,7 @@ with Gdk.Color; use Gdk.Color;
 with Gdk.Font;  use Gdk.Font;
 with Gdk.Pixmap; use Gdk.Pixmap;
 with Gdk.Bitmap; use Gdk.Bitmap;
+with Gtk; use Gtk;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Check_Button; use Gtk.Check_Button;
@@ -47,8 +48,8 @@ with Gtk.Separator; use Gtk.Separator;
 with Gtk.Style; use Gtk.Style;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
+with Gtkada.Types; use Gtkada.Types;
 with Common; use Common;
-with Gtk; use Gtk;
 
 with Create_Progress; use Create_Progress;
 with Interfaces.C.Strings;
@@ -118,7 +119,7 @@ package body Create_Clist is
    procedure Add1000 (List : access Gtk_Clist_Record) is
       Pixmap : Gdk_Pixmap;
       Mask   : Gdk_Bitmap;
-      Texts  : Line_Data (0 .. Clist_Columns - 1);
+      Texts  : Chars_Ptr_Array (0 .. Clist_Columns - 1);
       Row    : Gint;
       Style  : Gtk_Style := Get_Style (List);
    begin
@@ -142,7 +143,7 @@ package body Create_Clist is
       end loop;
       Clist_Rows := Clist_Rows + 1000;
 
-      Free_Line_Data (Texts);
+      Free (Texts);
 
       Thaw (List);
       Unref (Pixmap);
@@ -150,7 +151,7 @@ package body Create_Clist is
    end Add1000;
 
    procedure Add10000 (List : access Gtk_Clist_Record) is
-      Texts  : Line_Data (0 .. Clist_Columns - 1);
+      Texts  : Chars_Ptr_Array (0 .. Clist_Columns - 1);
       Row    : Gint;
    begin
       for I in 3 .. Clist_Columns - 1 loop
@@ -167,12 +168,12 @@ package body Create_Clist is
          Row := Append (List, Texts);
       end loop;
       Clist_Rows := Clist_Rows + 10000;
-      Free_Line_Data (Texts);
+      Free (Texts);
       Thaw (List);
    end Add10000;
 
    procedure Insert_Row (List : access Gtk_Clist_Record) is
-      Texts  : Line_Data (0 .. Clist_Columns - 1)
+      Texts  : Chars_Ptr_Array (0 .. Clist_Columns - 1)
         := (ICS.New_String ("This"),
             ICS.New_String ("is an"),
             ICS.New_String ("inserted"),
@@ -219,7 +220,7 @@ package body Create_Clist is
       Set_Cell_Style (List, Row, 4, Style2);
       Set_Cell_Style (List, Row, 0, Style3);
       Clist_Rows := Clist_Rows + 1;
-      Free_Line_Data (Texts);
+      Free (Texts);
    end Insert_Row;
 
    procedure Undo_Selection (List : access Gtk_Clist_Record) is
@@ -237,7 +238,7 @@ package body Create_Clist is
    procedure Run (Widget : access Gtk.Button.Gtk_Button_Record) is
       Items : constant Array_Of_String :=
         ("Single    ", "Browse    ", "Multiple  ", "Extended  ");
-      Titles : Line_Data (1 .. Clist_Columns) := (ICS.New_String ("Auto resize"),
+      Titles : Chars_Ptr_Array (1 .. Clist_Columns) := (ICS.New_String ("Auto resize"),
                                                   ICS.New_String ("Not resizable"),
                                                   ICS.New_String ("Max width 100"),
                                                   ICS.New_String ("Min Width 50"),
@@ -249,7 +250,7 @@ package body Create_Clist is
                                                   ICS.New_String ("Title 9"),
                                                   ICS.New_String ("Title 10"),
                                                   ICS.New_String ("Title 11"));
-      Texts     : Line_Data (0 .. Clist_Columns - 1);
+      Texts     : Chars_Ptr_Array (0 .. Clist_Columns - 1);
       Id        : Guint;
       VBox,
         HBox    : Gtk_Box;
