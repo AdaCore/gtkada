@@ -158,8 +158,7 @@ package Gtkada.MDI is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   type Child_Position is new Natural;
-   Position_Float   : constant Child_Position := 0;
+   type Child_Position is new Positive;
    Position_Bottom  : constant Child_Position := 1;
    Position_Top     : constant Child_Position := 2;
    Position_Left    : constant Child_Position := 3;
@@ -196,7 +195,6 @@ package Gtkada.MDI is
    --
    --  Position is used to place the new widget at the right position in the
    --  MDI. The algorithm is the following:
-   --  - If position is Position_Float, then the child is floated immediately.
    --  - If position is Bottom, then the MDI first check
    --      whether there is already a child with that attribute.
    --      * If yes, the new child is put in the same notebook as that one.
@@ -476,11 +474,6 @@ package Gtkada.MDI is
    procedure Add_To_Tree
      (Tree        : in out Glib.Xml_Int.Node_Ptr;
       ID_Node     : Glib.Xml_Int.Node_Ptr;
-      X           : Integer := 100;
-      Y           : Integer := 100;
-      Width       : Integer := 100;
-      Height      : Integer := 100;
-      State       : State_Type := Normal;
       Position    : Child_Position := Position_Default;
       Focus       : Boolean := False;
       Raised      : Boolean := False);
@@ -490,6 +483,7 @@ package Gtkada.MDI is
    --  values relative to the MDI.
    --  If Focus is True, then the widget will be given the focus, unless
    --  another widget is also registered later on with Focus set to True.
+   --  It isn't possible to define a floating child as a default
 
    generic
       type User_Data (<>) is private;

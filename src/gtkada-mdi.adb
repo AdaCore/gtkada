@@ -621,6 +621,8 @@ package body Gtkada.MDI is
       --  Put an empty notebook in the MDI, which will act as a recipient for
       --  the Position_Default widgets
       Add_Child (MDI, New_Child => Create_Notebook (MDI),
+                 Width       => -1,
+                 Height      => -1,
                  Orientation => Orientation_Vertical);
 
       Widget_Callback.Connect
@@ -1980,13 +1982,9 @@ package body Gtkada.MDI is
       Show_All (C);
       Set_Child_Title_Bar (C);
 
-      if MDI.All_Floating_Mode or else Position = Position_Float then
-         C.Position := Position_Default;
-         Float_Child (C, True);
-      else
-         C.State := Normal;
-         Put_In_Notebook (MDI, C);
-      end if;
+      C.State := Normal;
+      Float_Child (C, False);
+      Put_In_Notebook (MDI, C);
 
       Widget_List.Prepend (MDI.Items, Gtk_Widget (C));
 
@@ -2874,7 +2872,7 @@ package body Gtkada.MDI is
                if First_Non_Side = null then
                   First_Non_Side := Get_Notebook (C);
                end if;
-            elsif C.Position /= Position_Float then
+            else
                Sides (C.Position) := Get_Notebook (C);
             end if;
          end if;
@@ -2908,28 +2906,28 @@ package body Gtkada.MDI is
                          New_Child   => Note,
                          Ref_Widget  => Empty,
                          Orientation => Orientation_Vertical,
-                         Height      => 200,
+                         Height      => -1,
                          After       => True);
                when Position_Top =>
                   Split (MDI,
                          New_Child   => Note,
                          Ref_Widget  => Empty,
                          Orientation => Orientation_Vertical,
-                         Height      => 200,
+                         Height      => -1,
                          After       => False);
                when Position_Left =>
                   Split (MDI,
                          New_Child   => Note,
                          Ref_Widget  => Empty,
                          Orientation => Orientation_Horizontal,
-                         Width       => 200,
+                         Width       => -1,
                          After       => False);
                when Position_Right =>
                   Split (MDI,
                          New_Child   => Note,
                          Ref_Widget  => Empty,
                          Orientation => Orientation_Horizontal,
-                         Width       => 200,
+                         Width       => -1,
                          After       => True);
                when others =>
                   Add_Child (MDI, New_Child => Note);
@@ -2941,28 +2939,28 @@ package body Gtkada.MDI is
                          New_Child   => Note,
                          Ref_Pane    => Root_Pane,
                          Orientation => Orientation_Vertical,
-                         Height      => 200,
+                         Height      => -1,
                          After       => True);
                when Position_Top =>
                   Split (MDI,
                          New_Child   => Note,
                          Ref_Pane    => Root_Pane,
                          Orientation => Orientation_Vertical,
-                         Height      => 200,
+                         Height      => -1,
                          After       => False);
                when Position_Left =>
                   Split (MDI,
                          New_Child   => Note,
                          Ref_Pane    => Root_Pane,
                          Orientation => Orientation_Horizontal,
-                         Width       => 200,
+                         Width       => -1,
                          After       => False);
                when Position_Right =>
                   Split (MDI,
                          New_Child   => Note,
                          Ref_Pane    => Root_Pane,
                          Orientation => Orientation_Horizontal,
-                         Width       => 200,
+                         Width       => -1,
                          After       => True);
                when others =>
                   if Sides (Position_Bottom) /= null then
@@ -2983,28 +2981,28 @@ package body Gtkada.MDI is
                                New_Child   => Note,
                                Ref_Widget  => First_Non_Side,
                                Orientation => Orientation_Vertical,
-                               Height      => 200,
+                               Height      => -1,
                                After       => False);
                      when Position_Top =>
                         Split (MDI,
                                New_Child   => Note,
                                Ref_Widget  => First_Non_Side,
                                Orientation => Orientation_Vertical,
-                               Height      => 200,
+                               Height      => -1,
                                After       => True);
                      when Position_Left =>
                         Split (MDI,
                                New_Child   => Note,
                                Ref_Widget  => First_Non_Side,
                                Orientation => Orientation_Horizontal,
-                               Width       => 200,
+                               Width       => -1,
                                After       => True);
                      when Position_Right =>
                         Split (MDI,
                                New_Child   => Note,
                                Ref_Widget  => First_Non_Side,
                                Orientation => Orientation_Horizontal,
-                               Width       => 200,
+                               Width       => -1,
                                After       => False);
                      when others =>
                         null;
@@ -3651,31 +3649,11 @@ package body Gtkada.MDI is
    procedure Add_To_Tree
      (Tree        : in out Glib.Xml_Int.Node_Ptr;
       ID_Node     : Glib.Xml_Int.Node_Ptr;
-      X           : Integer := 100;
-      Y           : Integer := 100;
-      Width       : Integer := 100;
-      Height      : Integer := 100;
-      State       : State_Type := Normal;
       Position    : Child_Position := Position_Default;
       Focus       : Boolean := False;
       Raised      : Boolean := False)
    is
-      --  ??? some code duplication from Save_Desktop, see below.
-
       Child_Node : Node_Ptr;
-
-      procedure Add (Name, Value : String);
-      --  Add a new child to Child_Node
-
-      procedure Add (Name, Value : String) is
-         N : Node_Ptr;
-      begin
-         N := new Node;
-         N.Tag := new String'(Name);
-         N.Value := new String'(Value);
-         Add_Child (Child_Node, N);
-      end Add;
-
    begin
       if Tree = null then
          Tree := new Node;
@@ -3688,13 +3666,7 @@ package body Gtkada.MDI is
       Child_Node := new Node;
       Child_Node.Tag := new String'("Child");
       Set_Attribute (Child_Node, "Focus", Boolean'Image (Focus));
-      Set_Attribute (Child_Node, "State", State_Type'Image (State));
-      if State = Floating then
-         Add ("Height", Integer'Image (Height));
-         Add ("Width", Integer'Image (Width));
-         Add ("Y", Integer'Image (Y));
-         Add ("X", Integer'Image (X));
-      end if;
+      Set_Attribute (Child_Node, "State", State_Type'Image (Normal));
       Set_Attribute (Child_Node, "Raised", Boolean'Image (Raised));
       Set_Attribute (Child_Node, "Position", Child_Position'Image (Position));
 
@@ -3849,6 +3821,7 @@ package body Gtkada.MDI is
       is
          N          : Node_Ptr;
          Register   : Register_Node;
+         W, H       : Allocation_Int := -1;
       begin
          Register := Registers;
          Child    := null;
@@ -3883,6 +3856,14 @@ package body Gtkada.MDI is
            (Get_Attribute (Child_Node, "Raised", "False"));
          if Boolean'Value (Get_Attribute (Child_Node, "Focus", "False")) then
             Focus_Child := Child;
+         end if;
+
+         W := Allocation_Int'Value
+           (Get_Attribute (Child_Node, "Width", "-1"));
+         H := Allocation_Int'Value
+           (Get_Attribute (Child_Node, "Height", "-1"));
+         if W /= -1 or else H /= -1 then
+            Set_Size_Request (Child, W, H);
          end if;
 
          N := Child_Node.Child.Next;
@@ -4046,7 +4027,6 @@ package body Gtkada.MDI is
          Raised     : Boolean;
          X, Y       : Gint;
          First_Notebook : Gtk_Notebook;
-         Width, Height : Gint;
 
       begin
          if From_Tree /= null then
@@ -4081,12 +4061,6 @@ package body Gtkada.MDI is
                if Child /= null then
                   case State is
                      when Floating =>
-                        Width := 200;
-                        Height := 200;  --  MANU ???
-                        Size_Allocate
-                          (Child, (X, Y,
-                                   Allocation_Int (Width),
-                                   Allocation_Int (Height)));
                         Internal_Float_Child
                           (Child, True, Position_At_Mouse => False,
                            X => X, Y => Y);
