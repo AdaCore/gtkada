@@ -84,14 +84,15 @@ package body Gtkada.Dialogs is
       Parent         : Gtk.Window.Gtk_Window := null)
       return Message_Dialog_Buttons
    is
-      Dialog : constant Gtk_Dialog := Create_Gtk_Dialog
+      Dialog   : constant Gtk_Dialog := Create_Gtk_Dialog
         (Msg           => Msg,
          Dialog_Type   => Dialog_Type,
          Title         => Title,
          Justification => Justification,
          Parent        => Parent);
-      Button : Gtk_Widget;
-      Result : Message_Dialog_Buttons;
+      Button   : Gtk_Widget;
+      Result   : Message_Dialog_Buttons;
+      Response : Gtk_Response_Type;
 
    begin
       if Parent = null then
@@ -121,34 +122,42 @@ package body Gtkada.Dialogs is
       Show_All (Dialog);
 
       loop
-         Result := Message_Dialog_Buttons (Run (Dialog));
+         Response := Run (Dialog);
 
-         case Result is
-            when Button_Yes
-              | Button_No
-              | Button_All
-              | Button_OK
-              | Button_Cancel
-              | Button_Abort
-              | Button_Retry
-              | Button_Ignore =>
+         if Response = Gtk_Response_Delete_Event then
+            Destroy (Dialog);
+            return Button_None;
 
-               Destroy (Dialog);
-               return Result;
+         elsif Response in 0 .. Gtk_Response_Type'Last then
+            Result := Message_Dialog_Buttons (Response);
 
-            when Button_Help =>
-               if Help_Msg /= "" then
-                  Result := Message_Dialog
-                    (Help_Msg, Buttons => Button_OK, Title => -"Help");
-               else
-                  Result := Message_Dialog
-                    (-"No help available",
-                     Buttons => Button_OK, Title => -"Help");
-               end if;
+            case Result is
+               when Button_Yes
+                    | Button_No
+                    | Button_All
+                    | Button_OK
+                    | Button_Cancel
+                    | Button_Abort
+                    | Button_Retry
+                    | Button_Ignore =>
 
-            when others =>
-               null;
-         end case;
+                  Destroy (Dialog);
+                  return Result;
+
+               when Button_Help =>
+                  if Help_Msg /= "" then
+                     Result := Message_Dialog
+                       (Help_Msg, Buttons => Button_OK, Title => -"Help");
+                  else
+                     Result := Message_Dialog
+                       (-"No help available",
+                        Buttons => Button_OK, Title => -"Help");
+                  end if;
+
+               when others =>
+                  null;
+            end case;
+         end if;
       end loop;
 
       return Button_None;
