@@ -48,6 +48,15 @@ package Glib.GObjects is
    --  any of the widgets) is "null", since this relates to the underlying
    --  C object.
 
+   function Get_Type (Object : access GObject_Record) return GType;
+   --  Return the type of Object.
+   --  This function is mostly used internally, since in Ada you can simply
+   --  test whether an object belong to a class with a statement like:
+   --
+   --     if Object in Gtk_Button_Record'Class then ...
+   --
+   --  which is easier.
+
    function Type_Name (Type_Num : in GType) return String;
    --  Return the type name corresponding to a GType.
    --  This might be useful in debug messages.

@@ -121,6 +121,18 @@ package body Glib.GObjects is
       return Object.Ptr;
    end Get_Object;
 
+   --------------
+   -- Get_Type --
+   --------------
+
+   function Get_Type (Object : access GObject_Record) return GType is
+      function Internal (Object : System.Address) return GType;
+      pragma Import (C, Internal, "ada_gobject_get_type");
+
+   begin
+      return Internal (Get_Object (Object));
+   end Get_Type;
+
    -------------------
    -- Get_User_Data --
    -------------------
