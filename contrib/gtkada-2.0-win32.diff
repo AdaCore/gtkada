@@ -140,8 +140,8 @@ Tue Jul  9 11:48:58 2002  Arnaud Charlet  <charlet@gnat.com>
        --  return an invalid style when doing so.
 +      --  Under Win32, using Get_Style (MDI) works fine.
  
--      Highlight_Style := Copy (Get_Default_Style);
-+      Highlight_Style := Copy (Get_Style (MDI));
+-      MDI.Highlight_Style := Copy (Get_Default_Style);
++      MDI.Highlight_Style := Copy (Get_Style (MDI));
  
        if Focus_Title_Color /= Null_Color then
           MDI.Focus_Title_Color := Focus_Title_Color;
