@@ -34,6 +34,7 @@
 --  <c_version>1.2.6</c_version>
 
 with Gtk.Object; use Gtk.Object;
+with Gtk.Widget; use Gtk.Widget;
 with Gtk.Container; use Gtk.Container;
 
 package Gtk.Bin is
@@ -43,6 +44,9 @@ package Gtk.Bin is
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Bin.
+
+   function Get_Child (Bin : access Gtk_Bin_Record) return Gtk_Widget;
+   --  Return the child associated with Bin.
 
    ----------------------------
    -- Support for GATE/DGATE --
