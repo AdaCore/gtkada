@@ -128,7 +128,7 @@ package body Glib.Properties is
       Value : GValue;
       B : Boolean;
    begin
-      Init (Value, GType_String);
+      Init (Value, GType_Bool);
       Get (Get_Object (Object), Property (Name), Value);
       B := Get_Boolean (Value);
       Unset (Value);
