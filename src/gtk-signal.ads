@@ -24,7 +24,7 @@ package Gtk.Signal is
    package Callback is
 
       type Callback is access procedure
-        (Widget : in Gtk.Widget.Widget'Class;
+        (Widget : in Gtk.Widget.Gtk_Widget'Class;
          Data   : access Data_Type);
       --  Callback function for Signal_Connect below
 
@@ -52,7 +52,7 @@ package Gtk.Signal is
    -----------------------------------------------------------------
 
    type Void_Callback is access procedure
-     (Widget : in Gtk.Widget.Widget'Class);
+     (Widget : in Gtk.Widget.Gtk_Widget'Class);
 
    function Connect
      (Obj    : in Object'Class;
@@ -72,7 +72,7 @@ package Gtk.Signal is
    --  The following functions are for callbacks send to another object
    ------------------------------------------------------------------
    type Signal_Func is access procedure
-     (Object : in Gtk.Widget.Widget'Class);
+     (Object : in Gtk.Widget.Gtk_Widget'Class);
 
    function Connect_Object
      (Obj         : in Object'Class;
