@@ -71,7 +71,7 @@ package Gtk.Spin_Button is
        Wrap        : in Boolean);
    procedure Spin
       (Spin_Button : in Gtk_Spin_Button'Class;
-       Direction   : in Guint;
+       Direction   : in Gtk.Enums.Gtk_Arrow_Type;
        Step        : in Gfloat);
 
 private

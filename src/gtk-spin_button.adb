@@ -228,7 +228,7 @@ package body Gtk.Spin_Button is
 
    procedure Spin
       (Spin_Button : in Gtk_Spin_Button'Class;
-       Direction   : in Guint;
+       Direction   : in Gtk.Enums.Gtk_Arrow_Type;
        Step        : in Gfloat)
    is
       procedure Internal
@@ -238,7 +238,7 @@ package body Gtk.Spin_Button is
       pragma Import (C, Internal, "gtk_spin_button_spin");
    begin
       Internal (Get_Object (Spin_Button),
-                Direction,
+                Gtk.Enums.Gtk_Arrow_Type'Pos (Direction),
                 Step);
    end Spin;
 
