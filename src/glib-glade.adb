@@ -927,6 +927,7 @@ package body Glib.Glade is
    begin
       if Num_Signal_Instantiations > 0 then
          Put_Line (File, "with Gtk.Handlers;");
+         Put_Line (File, "pragma Elaborate_All (Gtk.Handlers);");
       end if;
 
       for J in Signal_Range'First .. Num_Signal_Instantiations loop
