@@ -290,8 +290,8 @@ package Glib is
    GType_Uint      : constant GType := 7;
    GType_Long      : constant GType := 8;
    GType_Ulong     : constant GType := 9;
-   GType_Int64     : constant Gtype := 10;
-   GType_UInt64    : constant Gtype := 11;
+   GType_Int64     : constant GType := 10;
+   GType_UInt64    : constant GType := 11;
    GType_Enum      : constant GType := 12;
    GType_Flags     : constant GType := 13;
    GType_Float     : constant GType := 14;
