@@ -264,23 +264,24 @@ package body Bonobo.Dock_Item is
          The_Type  : Gint);
       pragma Import (C, Internal, "bonobo_dock_item_set_shadow_type");
    begin
-      Internal (Get_Object (Dock_Item),
-                Gtk_Shadow_Type'Pos (The_Type));
+      Internal
+        (Get_Object (Dock_Item), Gtk_Shadow_Type'Pos (The_Type));
    end Set_Shadow_Type;
 
    ------------------
    -- Get_Behavior --
    ------------------
 
-   function Get_Behavior (Dock_Item : access Bonobo_Dock_Item_Record)
-                         return Bonobo_Dock_Item_Behavior is
+   function Get_Behavior
+     (Dock_Item : access Bonobo_Dock_Item_Record)
+      return Bonobo_Dock_Item_Behavior
+   is
       function Internal
-        (Dock_Item : System.Address)
-        return Bonobo_Dock_Item_Behavior;
+        (Dock_Item : System.Address) return Bonobo_Dock_Item_Behavior;
       pragma Import (C, Internal, "bonobo_dock_item_get_behavior");
-   begin
-      return Internal(Get_Object(Dock_Item));
-   end Get_Behavior;
 
+   begin
+      return Internal (Get_Object (Dock_Item));
+   end Get_Behavior;
 
 end Bonobo.Dock_Item;
