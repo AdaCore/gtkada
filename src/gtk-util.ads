@@ -27,6 +27,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This package provides useful routines in cunjunction with the run time
+--  loading of XML files.
+--  @pxref{Package_Gtk.Glade}.
+--
+--  </description>
+
 with Gtk.Object;
 with Gtk.Widget;
 with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
