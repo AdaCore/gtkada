@@ -56,7 +56,7 @@ package body Glib.Values is
    -- Get_String --
    ----------------
 
-   function  Get_String (Value : GValue; Length : Gint) return String is
+   function Get_String (Value : GValue; Length : Gint) return String is
       function Internal (Value : GValue) return chars_ptr;
       pragma Import (C, Internal, "g_value_get_string");
    begin
