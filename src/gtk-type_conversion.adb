@@ -75,6 +75,7 @@ with Gtk.Image;
 with Gtk.Input_Dialog;
 with Gtk.Invisible;
 with Gtk.Item;
+with Gtk.Item_Factory;
 with Gtk.Label;
 with Gtk.Layout;
 with Gtk.List;
@@ -256,6 +257,8 @@ package body Gtk.Type_Conversion is
                return new Gtk.Invisible.Gtk_Invisible_Record;
             elsif Type_Name = "GtkItem" then
                return new Gtk.Item.Gtk_Item_Record;
+            elsif Type_Name = "GtkItemFactory" then
+               return new Gtk.Item_Factory.Gtk_Item_Factory_Record;
             end if;
          when 'L' =>
             if Type_Name = "GtkLabel" then
