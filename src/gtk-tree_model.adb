@@ -861,7 +861,7 @@ package body Gtk.Tree_Model is
       Column     : Gint)
      return String
    is
-      A : Chars_Ptr := New_String ("");
+      A : chars_ptr := New_String ("");
       procedure Internal
         (Tree_Model : System.Address;
          Iter       : System.Address;

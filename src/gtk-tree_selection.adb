@@ -53,7 +53,7 @@ package body Gtk.Tree_Selection is
          pragma Import (C, Internal, "gtk_tree_selection_selected_foreach");
       begin
          Internal (Get_Object (Selection),
-		   Func,
+                   Func,
                    Data'Address);
       end Selected_Foreach;
 
@@ -117,7 +117,8 @@ package body Gtk.Tree_Selection is
 --    -- Get_User_Data --
 --    -------------------
 
---    function Get_User_Data (Selection : access Gtk_Tree_Selection_Record'Class)
+--    function Get_User_Data
+--     (Selection : access Gtk_Tree_Selection_Record'Class)
 --                            return gpointer
 --    is
 --       function Internal (Selection : System.Address)

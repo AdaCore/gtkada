@@ -42,13 +42,13 @@ package Gtk.Tree_Selection is
    generic
       type Data_Type is private;
    package Selection_Foreach is
-      
+
       type Foreach_Func is access procedure
-	(Model : Gtk.Tree_Model.Gtk_Tree_Model;
-	 Path  : Gtk.Tree_Model.Gtk_Tree_Path;
+        (Model : Gtk.Tree_Model.Gtk_Tree_Model;
+         Path  : Gtk.Tree_Model.Gtk_Tree_Path;
          Iter  : Gtk.Tree_Model.Gtk_Tree_Iter;
-	 Data  : Data_Type);
-      
+         Data  : Data_Type);
+
       procedure Selected_Foreach
         (Selection : access Gtk_Tree_Selection_Record'Class;
          Func      : Foreach_Func;
@@ -139,7 +139,8 @@ package Gtk.Tree_Selection is
    --  The following new signals are defined for this widget:
    --
    --  - "changed"
-   --    procedure Handler (Widget : access Gtk_Tree_Selection_Record'Class'Class);
+   --    procedure Handler
+   --      (Widget : access Gtk_Tree_Selection_Record'Class'Class);
    --
    --  </signals>
 
@@ -157,8 +158,9 @@ end Gtk.Tree_Selection;
 --       Data      : gpointer;
 --       Destroy   : Gtk_Destroy_Notify);
 --
---    function Get_User_Data (Selection : access Gtk_Tree_Selection_Record'Class)
---                            return gpointer;
+--    function Get_User_Data
+--      (Selection : access Gtk_Tree_Selection_Record'Class)
+--      return gpointer;
 --
 --    procedure Selected_Foreach
 --      (Selection : access Gtk_Tree_Selection_Record'Class;
