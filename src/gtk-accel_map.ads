@@ -56,6 +56,11 @@ package Gtk.Accel_Map is
    --  File->Open would be
    --     <testgtk>/file/open
    --
+   --  Generally, the path need to be set explicitely for an item, through a
+   --  call to Gtk.Menu_Item.Set_Accel_Path or
+   --  Gtk.Widget.Set_Accel_Path. However, if the widget is created
+   --  automatically through a Gtk.Item_Factory, this is done automatically.
+   --
    --  It is better to use this function instead of Add_Accelerator, since when
    --  the accelerators are changed interactively by the user, the new value
    --  will be shown properly in the menu, which wouldn't happen if they had
