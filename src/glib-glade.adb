@@ -1166,9 +1166,15 @@ package body Glib.Glade is
                               Kind := new String'("String");
                            end if;
 
-                           Put (File, "      Arg" &
-                                Trim (Guint'Image (K - P'First + 1), Left) &
-                                " : " & Kind.all & " := ");
+                           if Kind.all = "Gchararray" then
+                              Put (File, "      Arg" &
+                                   Trim (Guint'Image (K - P'First + 1), Left) &
+                                   " : UTF8_String := ");
+                           else
+                              Put (File, "      Arg" &
+                                   Trim (Guint'Image (K - P'First + 1), Left) &
+                                   " : " & Kind.all & " := ");
+                           end if;
 
                            --  ??? This whole section is ugly. Need to find a
                            --  cleaner and more automated way of generating the
@@ -1197,6 +1203,8 @@ package body Glib.Glade is
                              = "Gdk"
                            then
                               Put (File, Kind.all & " (To_Gint");
+                           elsif Kind.all = "Gchararray" then
+                              Put (File, "To_String");
                            else
                               Put (File, "To_" & Kind.all);
                            end if;
