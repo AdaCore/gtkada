@@ -25,7 +25,7 @@
 --  the development.
  
 with Ada.Command_Line; use Ada.Command_Line;
-with Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
 with Glib.Glade;
 with Gtk; use Gtk;
 with Gtk.Glade; use Gtk.Glade;
@@ -104,7 +104,8 @@ begin
 
 exception
    when others =>
-      Ada.Text_IO.Put_Line
-        ("DGATE: Internal error. This usually means that the specified");
-      Ada.Text_IO.Put_Line ("project file has some syntax errors.");
+      Put_Line
+        ("DGATE: Internal error. Please send a bug report with the XML");
+      Put_Line ("file " & Argument (1) & " and the GtkAda version to " &
+        "gtkada@ada.eu.org");
 end DGate;
