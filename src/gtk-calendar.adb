@@ -29,6 +29,8 @@
 
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
+with Gtk.Container; use Gtk.Container;
+with Gtk.Widget; use Gtk.Widget;
 with System;
 
 package body Gtk.Calendar is
@@ -229,6 +231,11 @@ package body Gtk.Calendar is
    begin
       Gen_New (N, "Calendar", File => File);
       Widget.Generate (N, File);
+
+      if not N.Specific_Data.Has_Container then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
    procedure Generate (Calendar : in out Gtk_Object;
@@ -241,6 +248,13 @@ package body Gtk.Calendar is
       end if;
 
       Widget.Generate (Calendar, N);
+
+      if not N.Specific_Data.Has_Container then
+         Container.Add
+           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+            Gtk_Widget (Calendar));
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
 
 end Gtk.Calendar;
