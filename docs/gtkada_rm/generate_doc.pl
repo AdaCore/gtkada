@@ -148,6 +148,12 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 ## Name of the package that is currently being proposed.
 $package_name="";
 
+## Colors used
+$chapter_bg="#C00000";
+$chapter_fg="#CCCCCC";
+$section_bg="#AAAAAA";
+$section_fg="#000000";
+
 # Prepares the menu
 
 foreach $source_file (@source_files) {
@@ -171,12 +177,13 @@ foreach $source_file (@source_files) {
 	# font just for them...
 	local ($pack) = $package_name;
 	$pack =~ s/_/\@code{_}/g;
-	
+
 	&output ("\@page\n",
-		 "\@cindex $package_name\n",
-		 "\@node Package $package_name\n",
-		 "\@chapter Package $pack\n",
-		 "\n\@noindent\n");
+		 "\@cindex $package_name\n");
+	&color_output ($chapter_bg, $chapter_fg,
+		       "\@node Package $package_name\n",
+		       "\@chapter Package $pack\n");
+	&output ("\n\@noindent\n");
 
 	my ($description) = &clean_comment_marks
 	    (&get_tag_value ("description", @content), 0);
@@ -211,9 +218,10 @@ foreach $source_file (@source_files) {
 	## Widget hierarchy
 	
 	if (@hierarchy) {
-	    &output ("\@node $package_name Widget Hierarchy\n",
-		     "\@section Widget Hierarchy\n",
-		     "\@multitable \@columnfractions .4 .6\n",
+	    &color_output ($section_bg, $section_fg,
+			   "\@node $package_name Widget Hierarchy\n",
+			   "\@section Widget Hierarchy\n");
+	    &output ("\@multitable \@columnfractions .4 .6\n",
 		     "\@item \@b{Gtk_Object}\@tab (\@ref{Package Gtk.Object})\n");
 	    
 	    for ($level = 1; $level < @hierarchy; $level ++) {
@@ -231,9 +239,10 @@ foreach $source_file (@source_files) {
 	## List of signals
 
 	if (keys %signals) {
-	    &output ("\@node $package_name Signals\n",
-		     "\@section Signals\n\n",
-		     "\@itemize \@bullet\n\n");
+	    &color_output ($section_bg, $section_fg,
+			   "\@node $package_name Signals\n",
+			   "\@section Signals\n\n");
+	    &output ("\@itemize \@bullet\n\n");
 	    
 	    foreach $signal (sort keys %signals) {
 		&output ("\@item \"\@b{$signal}\"\n\n",
@@ -246,9 +255,11 @@ foreach $source_file (@source_files) {
 
 	if (@subprogs) {
 	    my ($has_itemize) = 0;
-	    &output ("\@node $package_name Subprograms\n",
-		     "\@section Subprograms\n\n");
-	    
+	    &color_output ($section_bg, $section_fg,
+			   "\@node $package_name Subprograms\n",
+			   "\@section Subprograms\n\n");
+
+	    &html_output ("<TABLE WIDTH=\"100%\">");
 	    foreach $subprog (@subprogs) {
 		my ($name, $return, $comment, @params)
 		    = ($$subprog[1], $$subprog[0], $$subprog[2],
@@ -258,7 +269,9 @@ foreach $source_file (@source_files) {
 			&output ("\@end itemize\n");
 			$has_itemize = 0;
 		    }
+		    &html_output ("<TR><TD colspan=2>");
 		    &output ("\@subsection $name\n\n");
+		    &html_output ("</TD></TR>");
 		    $comment =~ s/^\s*//;
 		    $comment = &process_list
 			(&clean_comment_marks ($comment, 1));
@@ -270,17 +283,19 @@ foreach $source_file (@source_files) {
 		    &output ("\@itemize \@bullet\n\n");
 		    $has_itemize = 1;
 		}
-		
-		&output ("\@need ", (@params + 1), "\n",
-			 "\@findex $name (\@i{in} $package_name)\n",
+		&html_output ("<TR><TD WIDTH=\"40\"></TD><TD BGCOLOR=\"#AAAAAA\">",
+			      "<TABLE><TR><TD valign=top>");
+		&tex_output ("\\begin{tabular}{ll}");
+		&output ("\@findex $name (\@i{in} $package_name)\n",
 			 "\@item \@b{",
 			 ($return eq "")? "procedure $name} " : "function $name} ");
-		
 		if (scalar (@params) > 0) {
-		    &output ("(\@*\n");
+		    &output ("( \@*");
+		    &html_output ("</TD><TD>");
+		    &tex_output (" & ");
 		    my ($i);
 		    for ($i=0; $i<@params; $i++) {
-			&output ("\@	 		\@var{",
+			&output ("\@                    \@var{",
 				 $params[$i][0], "} : ",
 				 $params[$i][1], " ",
 				 $params[$i][2],
@@ -294,25 +309,29 @@ foreach $source_file (@source_files) {
 		} else {
 		    &output ("\@*\n\@	 		\@b{return} $return;\@*\n");
 		}
+		&html_output ("</TD></TR></TABLE>");
+		&tex_output ("\\end{tabular}");
 		
-		if ($comments ne "") {
-		    &output ("\@ifhtml\n<BR>\n\@end ifhtml\n");
-		}
 		$comment =~ s/^\s*//;
 		$comment = &process_list (&clean_comment_marks ($comment, 1));
+		&html_output ("</TD></TR><TR><TD WIDTH=\"40\"></TD><TD>");
 		&output ($comment, "\n\n",
 			 "\@ifhtml\n<BR><BR>\n\@end ifhtml\n");
+		&html_output ("</TD></TR><TR><TD></TD></TR>");
 	    }
 	    if ($has_itemize == 1)  {
 		&output ("\@end itemize\n\n");
 	    }
+	    &html_output ("</TABLE>");
 	}
 
 	## Examples if any
 
 	if (&get_tag_value ("example", @content)) {
-	    &output ("\@node $package_name Example\n",
-		     "\@section Example\n\n\@example\n",
+	    &color_output ($section_bg, $section_fg,
+			   "\@node $package_name Example\n",
+			   "\@section Example\n");
+	    &output ("\n\@example\n",
 		     &highlight_keywords
 		     (&clean_comment_marks (&get_tag_value
 					    ("example", @content),
@@ -366,6 +385,34 @@ sub output () {
 	  @_);
 }
 
+# Outputs the block, only for html
+
+sub html_output () {
+    &output ("\n\@ifhtml\n", @_, "\n\@end ifhtml\n");
+}
+
+# Outputs the block, only for tex
+
+sub tex_output () {
+#    &output ("\n\@tex\n", @_, "\n\@end tex\n");
+}
+
+# Print some output with special colors
+#   $1 = background color
+#   $2 = foreground color
+#   $3,.. = text (array of lines)
+
+sub color_output ()
+{
+    my ($bg) = shift;
+    my ($fg) = shift;
+
+    &html_output ("<TABLE WIDTH=\"100%\"><TR>",
+		  "<TH BGCOLOR=\"$bg\"><FONT COLOR=\"$fg\">");
+    &output (@_);
+    &html_output ("</FONT></TH></TR></TABLE>");
+}
+
 
 # Returns the name of the widget defined in the package whose contents is
 # @1.
@@ -409,6 +456,7 @@ sub find_type_in_package () {
     }
     return $origin;
 }
+
 
 # Expands a given <include>...</include> and replace it with the content of
 # the file
