@@ -65,6 +65,7 @@ with Gtk.Box;          use Gtk.Box;
 with Gtk.Button;       use Gtk.Button;
 with Gtk.Check_Menu_Item; use Gtk.Check_Menu_Item;
 with Gtk.Container;    use Gtk.Container;
+with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Dialog;       use Gtk.Dialog;
 with Gtk.Dnd;          use Gtk.Dnd;
 with Gtk.Enums;        use Gtk.Enums;
@@ -122,6 +123,10 @@ package body Gtkada.MDI is
 
    Border_Thickness : constant Gint := 4;
    --  Thickness of the separators in the MDI
+
+   Small_Border_Thickness : constant Gint := 2;
+   --  The width of the borders around children that do not belong to a
+   --  notebook with multiple pages.
 
    Drop_Area_Thickness : constant Gint := 4;
    --  Thickness of the Dnd drop areas on each side of the MDI.
@@ -1462,7 +1467,11 @@ package body Gtkada.MDI is
 
       GC : Gdk.Gdk_GC := Child.MDI.Non_Focus_GC;
       W, H : Gint;
-      X : Gint := Border_Thickness + 3;
+
+      Border_Thickness : constant Gint :=
+        Gint (Get_Border_Width (Child.Main_Box));
+
+      X : Gint := 1;
    begin
       --  Call this function so that for a dock item is highlighted if the
       --  current page is linked to the focus child.
@@ -1472,12 +1481,9 @@ package body Gtkada.MDI is
       end if;
 
       Draw_Rectangle
-        (Get_Window (Child),
-         GC,
-         True,
-         Border_Thickness,
-         Border_Thickness,
-         Gint (Get_Allocation_Width (Child)) - 2 * Border_Thickness,
+        (Get_Window (Child.Title_Area),
+         GC, True, 0, 0,
+         Gint (Get_Allocation_Width (Child.Title_Area)),
          Child.MDI.Title_Bar_Height);
 
       if Child.Icon /= null then
@@ -1486,11 +1492,11 @@ package body Gtkada.MDI is
 
          Render_To_Drawable_Alpha
            (Child.Icon,
-            Get_Window (Child),
+            Get_Window (Child.Title_Area),
             Src_X  => 0,
             Src_Y  => 0,
             Dest_X => X,
-            Dest_Y => Border_Thickness + (Child.MDI.Title_Bar_Height - H) / 2,
+            Dest_Y => (Child.MDI.Title_Bar_Height - H) / 2,
             Width  => W,
             Height => H,
             Alpha  => Alpha_Full,
@@ -1502,20 +1508,22 @@ package body Gtkada.MDI is
       Set_Text (Child.MDI.Title_Layout, Child.Title.all);
       Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
       Draw_Layout
-        (Get_Window (Child),
+        (Get_Window (Child.Title_Area),
          Get_White_GC (Get_Style (Child.MDI)),
          X,
-         Border_Thickness + (Child.MDI.Title_Bar_Height - H) / 2,
+         0,
          Child.MDI.Title_Layout);
 
-      Draw_Shadow
-        (Get_Style (Child),
-         Get_Window (Child),
-         State_Normal,
-         Shadow_Out,
-         1, 1,
-         Gint (Get_Allocation_Width (Child)) - 1,
-         Gint (Get_Allocation_Height (Child)) - 1);
+      if Border_Thickness /= 0 then
+         Draw_Shadow
+           (Get_Style (Child),
+            Get_Window (Child),
+            State_Normal,
+            Shadow_Out,
+            0, 0,
+            Gint (Get_Allocation_Width (Child)),
+            Gint (Get_Allocation_Height (Child)));
+      end if;
    end Draw_Child;
 
    ----------------
@@ -2307,7 +2315,6 @@ package body Gtkada.MDI is
          2 => (1 => GType_None),
          3 => (1 => GType_None));
       Button    : Gtk_Button;
-      Box       : Gtk_Box;
       Pix       : Gdk_Pixbuf;
       Pixmap    : Gtk_Image;
       Event     : Gtk_Event_Box;
@@ -2353,19 +2360,32 @@ package body Gtkada.MDI is
       Return_Callback.Connect
         (Child, "leave_notify_event",
          Return_Callback.To_Marshaller (Leave_Child'Access));
-      Return_Callback.Connect
-        (Child, "expose_event",
-         Return_Callback.To_Marshaller (Draw_Child'Access), After => True);
 
-      Gtk_New_Vbox (Box, Homogeneous => False, Spacing => 0);
-      Add (Child, Box);
+
+      Gtk_New_Vbox (Child.Main_Box, Homogeneous => False, Spacing => 0);
+      Add (Child, Child.Main_Box);
 
       --  Buttons in the title bar
 
       Gtk_New_Hbox (Child.Title_Box, Homogeneous => False);
-      Pack_Start (Box, Child.Title_Box, Expand => False, Fill => False);
+      Pack_Start
+        (Child.Main_Box, Child.Title_Box, Expand => False, Fill => False);
 
-      Set_Border_Width (Box, Guint (Border_Thickness));
+      Gtk_New (Child.Title_Area);
+      Pack_Start
+        (Child.Title_Box, Child.Title_Area, Expand => True, Fill => True);
+
+      Return_Callback.Object_Connect
+        (Child.Title_Area, "expose_event",
+         Return_Callback.To_Marshaller (Draw_Child'Access),
+         Slot_Object => Child,
+         After => True);
+
+      Return_Callback.Object_Connect
+        (Child, "expose_event",
+         Return_Callback.To_Marshaller (Draw_Child'Access),
+         Slot_Object => Child,
+         After => True);
 
       if (Flags and Destroy_Button) /= 0 then
          Pix := Gdk_New_From_Xpm_Data (Close_Xpm);
@@ -2407,7 +2427,8 @@ package body Gtkada.MDI is
       --  This internal Event box is needed when the child is floated
       Gtk_New (Event);
       Add (Event, Widget);
-      Pack_Start (Box, Event, Expand => True, Fill => True, Padding => 0);
+      Pack_Start
+        (Child.Main_Box, Event, Expand => True, Fill => True, Padding => 0);
 
       Widget_Callback.Object_Connect
         (Child.Initial, "destroy",
@@ -2546,6 +2567,7 @@ package body Gtkada.MDI is
          Put_In_Notebook (MDI, None, C);
       else
          Put (MDI.Central.Layout, C, C.X, C.Y);
+         Set_Border_Width (C.Main_Box, Guint (Border_Thickness));
       end if;
 
       if MDI.Menu /= null then
@@ -3429,7 +3451,16 @@ package body Gtkada.MDI is
       end if;
 
       Append_Page (Note, Child);
-      Set_Show_Tabs (Note, Get_Nth_Page (Note, 1) /= null);
+
+      if Get_Nth_Page (Note, 1) /= null then
+         Set_Show_Tabs (Note, True);
+         Set_Border_Width (Child.Main_Box, 0);
+         Set_Border_Width (MDI_Child (Get_Nth_Page (Note, 0)).Main_Box, 0);
+      else
+         Set_Show_Tabs (Note, False);
+         Set_Border_Width (Child.Main_Box, Guint (Small_Border_Thickness));
+      end if;
+
       Update_Tab_Label (Child);
 
       Set_Child_Visible (Note, True);
@@ -3517,8 +3548,12 @@ package body Gtkada.MDI is
          Put_In_Notebook (MDI, Child.Dock, Child);
          Update_Dock_Menu (Child);
 
-         Set_Child_Visible (Child.Maximize_Button, False);
-         Set_Child_Visible (Child.Minimize_Button, False);
+         Ref (Child.Maximize_Button);
+         Remove (Child.Title_Box, Child.Maximize_Button);
+
+         Ref (Child.Minimize_Button);
+         Remove (Child.Title_Box, Child.Minimize_Button);
+
 
       elsif not Dock and then Child.State = Docked then
          Ref (Child);
@@ -3541,8 +3576,10 @@ package body Gtkada.MDI is
          Unref (Child);
          Queue_Resize (Child);
 
-         Set_Child_Visible (Child.Maximize_Button, True);
-         Set_Child_Visible (Child.Minimize_Button, True);
+         Pack_End (Child.Title_Box, Child.Maximize_Button, False, False);
+         Unref (Child.Maximize_Button);
+         Pack_End (Child.Title_Box, Child.Minimize_Button, False, False);
+         Unref (Child.Minimize_Button);
 
          Update_Dock_Menu (Child);
       end if;
@@ -3695,6 +3732,7 @@ package body Gtkada.MDI is
                --  Remove from middle notebook and put in layout
                Ref (C);
                Remove (Gtk_Container (Get_Parent (C)), C);
+               Set_Border_Width (C.Main_Box, Guint (Border_Thickness));
                Put (MDI.Central.Layout, C, C.X, C.Y);
                Unref (C);
             end if;
@@ -3850,6 +3888,7 @@ package body Gtkada.MDI is
       Child : MDI_Child;
       Parent   : Gtk_Widget;
       Len      : Guint;
+      First_Child : MDI_Child;
    begin
       if C.all not in MDI_Child_Record'Class then
          return;
@@ -3866,9 +3905,16 @@ package body Gtkada.MDI is
       end if;
 
       if not Gtk.Object.In_Destruction_Is_Set (Note) then
-         Set_Show_Tabs (Gtk_Notebook (Note), Len > 1);
+         if Len > 1 then
+            Set_Show_Tabs (Gtk_Notebook (Note), True);
 
-         if Len = 0 then
+         elsif Len = 1 then
+            Set_Show_Tabs (Gtk_Notebook (Note), False);
+
+            First_Child := MDI_Child (Get_Nth_Page (Gtk_Notebook (Note), 0));
+            Set_Border_Width
+              (First_Child.Main_Box, Guint (Small_Border_Thickness));
+         elsif Len = 0 then
             --  Destroy a notebook when embedded in a paned widget, so that the
             --  pane automatically hides the handles if necessary
             --  If the parent is not a paned widget, then either the notebook
