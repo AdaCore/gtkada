@@ -2,7 +2,7 @@
 --                   Gate - GtkAda Components                        --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -316,7 +316,7 @@ package body Gtk.Glade is
                                       "image");
                               begin
                                  if Image /= null then
-                                    Put_Line (File, "   " &
+                                    Put_Line (File, "      " &
                                               To_Ada (Get_Name (Image.Child))
                                               & " : Gtk_Image;");
                                  end if;
