@@ -145,6 +145,7 @@ clean-generic:
 
 mostlyclean-generic: clean-generic
 	-${RM} Makefile
+	-${RM} $(GATE)
 	-${RM} create_test_link.pl
 	-${RM} $(GTKADA_CONFIG)
 

@@ -48,7 +48,7 @@ EOF
 
 #############################################################
 #
-#  Checking for Gnat
+#  Checking for Perl
 #
 #############################################################
 
@@ -241,3 +241,122 @@ main ()
   rm -f conf.gtktest
 ])
 
+#############################################################
+#
+#  Checking for diff and patch
+#
+#############################################################
+
+file_to_patch="conftest"
+patch_file="conftest.dif"
+result_file="conftest.res"
+
+AC_DEFUN(AM_PATH_DIFF_AND_PATCH,
+[   
+   ### Let's try to find a diff somewhere...
+
+   AC_PATH_PROG(DIFF, diff, true)
+
+   ### ... and see how it works
+
+   if test x$DIFF = xtrue ; then
+
+      AC_MSG_WARN([-----------------------------------------------------------])
+      AC_MSG_WARN([--  The diff utility has not been found! However, gate])
+      AC_MSG_WARN([--  needs it to handle merges, so merges have been disabled])
+      AC_MSG_WARN([--  (replaced by true)])
+      AC_MSG_WARN([-----------------------------------------------------------])
+
+   else
+
+      cat > $file_to_patch <<EOF
+This is the first line
+This is the second line
+EOF
+      
+      cat > $result_file <<EOF
+This is the first line
+An inserted line
+This is the second line
+EOF
+
+      AC_MSG_CHECKING(the correct diff option)
+
+      if $DIFF -u $file_to_patch $file_to_patch >& /dev/null ; then
+         AC_MSG_RESULT(-u)
+         DIFF="$DIFF -u"
+
+      elif $DIFF -c $file_to_patch $file_to_patch >& /dev/null ; then
+         AC_MSG_RESULT(-c)
+         DIFF="$DIFF -c"
+      
+      else
+         AC_MSG_RESULT(** none **);
+	 DIFF=true
+	 AC_MSG_WARN([--------------------------------------------------------])
+	 AC_MSG_WARN([--  $DIFF does not accept the -u nor -c option, which is])
+	 AC_MSG_WARN([--  need by gate to perform merges, so merges have been])
+	 AC_MSG_WARN([--  disabled])
+	 AC_MSG_WARN([--------------------------------------------------------])
+
+      fi
+
+   fi
+
+   ### if we've found a working diff, then DIFF should not be
+   ### equal to true. So we can start looking for patch...
+
+   if test "x$DIFF" != "xtrue" ; then
+
+      AC_PATH_PROG(PATCH, patch, true)
+ 
+      if test x$PATCH = xtrue ; then
+
+	 AC_MSG_WARN([-----------------------------------------------------------])
+	 AC_MSG_WARN([--  The patch utility has not been found! However, gate])
+	 AC_MSG_WARN([--  needs it to handle merges, so merges have been disabled])
+	 AC_MSG_WARN([--  (replaced by true)])
+	 AC_MSG_WARN([-----------------------------------------------------------])
+
+      else
+
+	 AC_MSG_CHECKING(the correct patch option)
+
+	 cat > $patch_file <<EOF
+--- $file_to_patch.ori Mon Mar  1 21:21:34 1999
++++ $file_to_patch     Mon Mar  1 21:22:04 1999
+@@ -1,2 +1,3 @@
+ This is the first line
++An inserted line
+ This is the second line
+EOF
+
+	 if $PATCH -f < $patch_file  >/dev/null 2>/dev/null ; then
+	    AC_MSG_RESULT(-f)
+	    PATCH="$PATCH -f"
+
+	 else
+	    AC_MSG_RESULT(** none  **)
+	    PATCH=true
+	    AC_MSG_WARN([--------------------------------------------------------])
+	    AC_MSG_WARN([--  A patch utility has been found. However, it does not])
+	    AC_MSG_WARN([--  seem to work with the -f option. As gate needs])
+	    AC_MSG_WARN([--  patch to perform merges, they have been disabled.])
+	    AC_MSG_WARN([--------------------------------------------------------])
+
+	 fi
+
+      fi
+
+   fi
+
+   ###  End of tests, cleanup and string replacements...
+
+   rm -f $file_to_patch
+   rm -f $patch_file
+   rm -f $result_file
+
+   AC_SUBST(DIFF)
+   AC_SUBST(PATCH)
+
+])

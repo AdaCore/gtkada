@@ -10,6 +10,7 @@ GTKADA_VERSION=$GTKADA_MAJOR_VERSION.$GTKADA_MINOR_VERSION.$GTKADA_MICRO_VERSION
 AC_CANONICAL_HOST
 
 # checking for local tools
+AM_PATH_DIFF_AND_PATCH
 AC_PROG_CC
 AM_PATH_GNAT
 AM_PATH_PERL
@@ -26,4 +27,4 @@ AC_SUBST(GTKADA_VERSION)
 EXEC_PREFIX="$prefix"
 AC_SUBST(EXEC_PREFIX)
 
-AC_OUTPUT(Makefile testgtk/Makefile create_test_link.pl gtkada-config)
+AC_OUTPUT(Makefile testgtk/Makefile create_test_link.pl gtkada-config gate)

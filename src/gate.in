@@ -1,0 +1,59 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]; then
+  echo "Usage: gate project-file"
+  exit 1
+fi
+
+echo Generating Ada files...
+
+prj=`gate.ex -p $*`
+gt=".gate/$prj"
+mkdir -p $gt > /dev/null 2>&1
+tmp=$gt/tmp
+/bin/rm -rf $tmp
+mkdir $tmp
+wd=`pwd`
+gate.ex $* > $tmp/gate.ada
+
+if [ $? != 0 ]; then
+  echo "Couldn't generate Ada code. Exiting."
+  exit 1
+fi
+
+cd $tmp
+gnatchop gate.ada > /dev/null 2>&1
+/bin/rm -f gate.ada
+files=`echo *`
+cd $wd
+/bin/rm -f $gt/gate.difs
+
+for j in $files; do
+  @DIFF@ $gt/$j $j >> $gt/gate.difs 2>/dev/null
+done
+
+/bin/cp -f $tmp/* .
+/bin/rm -f *.rej *.orig
+
+if cat $gt/gate.difs | @PATCH@ > $gt/patch.out 2>&1; then
+  echo "The following files have been created/updated:"
+
+  for j in $files; do
+    echo "  "$j
+  done
+
+  echo done.
+  /bin/rm -f *.orig
+else
+  echo "The following files have been updated:"
+
+  for j in $files; do
+    echo "  "$j
+  done
+
+  echo Merge of some changes failed. It usually means that some modified code
+  echo is obsolete in the current project file.
+  echo .rej files have been generated to help merging manually if needed.
+fi
+
+/bin/mv -f $tmp/* $gt/
