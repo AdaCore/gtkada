@@ -936,11 +936,6 @@ package body Gtkada.Canvas is
    begin
       Destroy (Canvas.Children);
       Canvas.Children := Items;
-
-      if Canvas.Auto_Layout then
-         Layout (Canvas);
-      end if;
-      Update_Adjustments (Canvas);
    end Set_Items;
 
    --------------
