@@ -536,11 +536,11 @@ package body Gtkada.Canvas is
    is
       Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
    begin
-      Set_Page_Size (Canvas.Hadj, Gfloat (Get_Allocation_Width (Canvas)));
+      Set_Page_Size (Canvas.Hadj, Gdouble (Get_Allocation_Width (Canvas)));
       Set_Step_Increment (Canvas.Hadj, 10.0);
       Set_Page_Increment (Canvas.Hadj, Get_Page_Size (Canvas.Hadj) / 2.0);
 
-      Set_Page_Size (Canvas.Vadj, Gfloat (Get_Allocation_Height (Canvas)));
+      Set_Page_Size (Canvas.Vadj, Gdouble (Get_Allocation_Height (Canvas)));
       Set_Step_Increment (Canvas.Vadj, 10.0);
       Set_Page_Increment (Canvas.Vadj, Get_Page_Size (Canvas.Vadj) / 2.0);
 
@@ -620,19 +620,21 @@ package body Gtkada.Canvas is
       --  contains no item, we can delete that part. However, avoid any visible
       --  scrolling, which is disturbing for the user.
       Set_Lower
-        (Canvas.Hadj, Gfloat'Min (Get_Value (Canvas.Hadj), Gfloat (X_Min)));
+        (Canvas.Hadj, Gdouble'Min (Get_Value (Canvas.Hadj), Gdouble (X_Min)));
       Set_Upper
         (Canvas.Hadj,
-         Gfloat'Max (Get_Value (Canvas.Hadj) + Get_Page_Size (Canvas.Hadj),
-                     Gfloat (X_Max)));
+         Gdouble'Max
+           (Get_Value (Canvas.Hadj) + Get_Page_Size (Canvas.Hadj),
+            Gdouble (X_Max)));
       Changed (Canvas.Hadj);
 
       Set_Lower
-        (Canvas.Vadj, Gfloat'Min (Get_Value (Canvas.Vadj), Gfloat (Y_Min)));
+        (Canvas.Vadj, Gdouble'Min (Get_Value (Canvas.Vadj), Gdouble (Y_Min)));
       Set_Upper
         (Canvas.Vadj,
-         Gfloat'Max (Get_Value (Canvas.Vadj) + Get_Page_Size (Canvas.Vadj),
-                     Gfloat (Y_Max)));
+         Gdouble'Max
+           (Get_Value (Canvas.Vadj) + Get_Page_Size (Canvas.Vadj),
+            Gdouble (Y_Max)));
       Changed (Canvas.Vadj);
    end Update_Adjustments;
 
@@ -665,15 +667,15 @@ package body Gtkada.Canvas is
          Tmp   : Canvas_Item_List := Canvas.Children;
          Dest  : Gdk.Rectangle.Gdk_Rectangle;
          Inter : Boolean := False;
-         W     : constant Guint := Item.Coord.Width;
-         H     : constant Guint := Item.Coord.Height;
+         W     : constant Gint := Item.Coord.Width;
+         H     : constant Gint := Item.Coord.Height;
          X_Tmp, Y_Tmp : Gint;
       begin
          --  Keep an appropriate marging around the item.
          Item.Coord.X := X - Zoom_Step;
          Item.Coord.Y := Y - Zoom_Step;
-         Item.Coord.Width := W + 2 * Guint (Zoom_Step);
-         Item.Coord.Height := H + 2 * Guint (Zoom_Step);
+         Item.Coord.Width := W + 2 * Gint (Zoom_Step);
+         Item.Coord.Height := H + 2 * Gint (Zoom_Step);
 
          while Tmp /= null loop
             if Tmp.Item.Visible
@@ -1518,8 +1520,8 @@ package body Gtkada.Canvas is
      (Item   : access Canvas_Item_Record;
       Width, Height  : Gint) is
    begin
-      Item.Coord.Width  := Guint (Width);
-      Item.Coord.Height := Guint (Height);
+      Item.Coord.Width  := Width;
+      Item.Coord.Height := Height;
    end Set_Screen_Size;
 
    ---------------
@@ -1531,12 +1533,12 @@ package body Gtkada.Canvas is
       Event : Gdk_Event) return Boolean
    is
       Canvas    : Interactive_Canvas := Interactive_Canvas (Canv);
-      Value     : constant Gfloat := Get_Value (Canvas.Vadj);
-      Upper     : constant Gfloat := Get_Upper (Canvas.Vadj);
-      Lower     : constant Gfloat := Get_Lower (Canvas.Vadj);
-      Page_Incr : constant Gfloat := Get_Page_Increment (Canvas.Vadj);
-      Page_Size : constant Gfloat := Get_Page_Size (Canvas.Vadj);
-      Step_Incr : constant Gfloat := Get_Step_Increment (Canvas.Vadj);
+      Value     : constant Gdouble := Get_Value (Canvas.Vadj);
+      Upper     : constant Gdouble := Get_Upper (Canvas.Vadj);
+      Lower     : constant Gdouble := Get_Lower (Canvas.Vadj);
+      Page_Incr : constant Gdouble := Get_Page_Increment (Canvas.Vadj);
+      Page_Size : constant Gdouble := Get_Page_Size (Canvas.Vadj);
+      Step_Incr : constant Gdouble := Get_Step_Increment (Canvas.Vadj);
 
    begin
       case Get_Key_Val (Event) is
@@ -2258,7 +2260,7 @@ package body Gtkada.Canvas is
       --  Do we need to scroll the canvas to the right to show the item?
 
       if X2 > Gint (Get_Upper (Canvas.Hadj)) then
-         Set_Upper (Canvas.Hadj, Gfloat (X2));
+         Set_Upper (Canvas.Hadj, Gdouble (X2));
          Changed (Canvas.Hadj);
       end if;
 
@@ -2278,40 +2280,40 @@ package body Gtkada.Canvas is
       --                                      X2
 
       if X2 > Gint (Get_Value (Canvas.Hadj) + Get_Page_Size (Canvas.Hadj)) then
-         Set_Value (Canvas.Hadj, Gfloat (X2) - Get_Page_Size (Canvas.Hadj));
+         Set_Value (Canvas.Hadj, Gdouble (X2) - Get_Page_Size (Canvas.Hadj));
       end if;
 
       --  Do we need to scroll the canvas to the left ?
 
       if X1 < Gint (Get_Lower (Canvas.Hadj)) then
-         Set_Lower (Canvas.Hadj, Gfloat (X1));
+         Set_Lower (Canvas.Hadj, Gdouble (X1));
          Changed (Canvas.Hadj);
       end if;
 
       if X1 < Gint (Get_Value (Canvas.Hadj)) then
-         Set_Value (Canvas.Hadj, Gfloat (X1));
+         Set_Value (Canvas.Hadj, Gdouble (X1));
       end if;
 
       --  Do we need to scroll the canvas to the top to show the selection?
 
       if Y2 > Gint (Get_Upper (Canvas.Vadj)) then
-         Set_Upper (Canvas.Vadj, Gfloat (Y2));
+         Set_Upper (Canvas.Vadj, Gdouble (Y2));
          Changed (Canvas.Vadj);
       end if;
 
       if Y2 > Gint (Get_Value (Canvas.Vadj) + Get_Page_Size (Canvas.Vadj)) then
-         Set_Value (Canvas.Vadj, Gfloat (Y2) - Get_Page_Size (Canvas.Vadj));
+         Set_Value (Canvas.Vadj, Gdouble (Y2) - Get_Page_Size (Canvas.Vadj));
       end if;
 
       --  Do we need to scroll the canvas to the bottom ?
 
       if Y1 < Gint (Get_Lower (Canvas.Vadj)) then
-         Set_Lower (Canvas.Vadj, Gfloat (Y1));
+         Set_Lower (Canvas.Vadj, Gdouble (Y1));
          Changed (Canvas.Vadj);
       end if;
 
       if Y1 < Gint (Get_Value (Canvas.Vadj)) then
-         Set_Value (Canvas.Vadj, Gfloat (Y1));
+         Set_Value (Canvas.Vadj, Gdouble (Y1));
       end if;
    end Show_Item;
 
@@ -2675,12 +2677,12 @@ package body Gtkada.Canvas is
    procedure Zoom_Internal
      (Canvas : access Interactive_Canvas_Record'Class; Percent : Guint)
    is
-      Z : constant Gfloat := Gfloat (Canvas.Zoom);
-      H : Gfloat := Get_Value (Canvas.Hadj) / Z * 100.0;
-      V : Gfloat := Get_Value (Canvas.Vadj) / Z * 100.0;
-      Lh : Gfloat := Get_Page_Size (Canvas.Hadj) / Z * 100.0;
-      Lv : Gfloat := Get_Page_Size (Canvas.Vadj) / Z * 100.0;
-      L : Gfloat;
+      Z  : constant Gdouble := Gdouble (Canvas.Zoom);
+      H  : Gdouble := Get_Value (Canvas.Hadj) / Z * 100.0;
+      V  : Gdouble := Get_Value (Canvas.Vadj) / Z * 100.0;
+      Lh : Gdouble := Get_Page_Size (Canvas.Hadj) / Z * 100.0;
+      Lv : Gdouble := Get_Page_Size (Canvas.Vadj) / Z * 100.0;
+      L  : Gdouble;
       Font_Size : Gint;
    begin
       Canvas.Zoom := Percent;
@@ -2704,26 +2706,26 @@ package body Gtkada.Canvas is
       --  When zooming in, we want to keep the same center as before
       --  (reverse of zoom out)
 
-      if Gfloat (Canvas.Zoom) < Z then  --  zoom out
-         L := (Z / Gfloat (Canvas.Zoom) - 1.0) / 2.0;
-         H := (H - L * Lh) * Gfloat (Canvas.Zoom) / 100.0;
-         V := (V - L * Lv) * Gfloat (Canvas.Zoom) / 100.0;
-         Lh := Lh * (L * 2.0 + 1.0) * Gfloat (Canvas.Zoom) / 100.0;
-         Lv := Lv * (L * 2.0 + 1.0) * Gfloat (Canvas.Zoom) / 100.0;
+      if Gdouble (Canvas.Zoom) < Z then  --  zoom out
+         L := (Z / Gdouble (Canvas.Zoom) - 1.0) / 2.0;
+         H := (H - L * Lh) * Gdouble (Canvas.Zoom) / 100.0;
+         V := (V - L * Lv) * Gdouble (Canvas.Zoom) / 100.0;
+         Lh := Lh * (L * 2.0 + 1.0) * Gdouble (Canvas.Zoom) / 100.0;
+         Lv := Lv * (L * 2.0 + 1.0) * Gdouble (Canvas.Zoom) / 100.0;
 
       else  --  zoom in
-         L := (1.0 - Z / Gfloat (Canvas.Zoom)) / 2.0;
-         H := (H + Lh * L) * Gfloat (Canvas.Zoom) / 100.0;
-         V := (V + Lv * L) * Gfloat (Canvas.Zoom) / 100.0;
+         L := (1.0 - Z / Gdouble (Canvas.Zoom)) / 2.0;
+         H := (H + Lh * L) * Gdouble (Canvas.Zoom) / 100.0;
+         V := (V + Lv * L) * Gdouble (Canvas.Zoom) / 100.0;
          Lh := Lh * Z / 100.0;
          Lv := Lv * Z / 100.0;
       end if;
 
-      Set_Lower (Canvas.Hadj, Gfloat'Min (H, Get_Lower (Canvas.Hadj)));
-      Set_Upper (Canvas.Hadj, Gfloat'Max (H + Lh, Get_Upper (Canvas.Hadj)));
+      Set_Lower (Canvas.Hadj, Gdouble'Min (H, Get_Lower (Canvas.Hadj)));
+      Set_Upper (Canvas.Hadj, Gdouble'Max (H + Lh, Get_Upper (Canvas.Hadj)));
 
-      Set_Lower (Canvas.Vadj, Gfloat'Min (V, Get_Lower (Canvas.Vadj)));
-      Set_Upper (Canvas.Vadj, Gfloat'Max (V + Lv, Get_Upper (Canvas.Vadj)));
+      Set_Lower (Canvas.Vadj, Gdouble'Min (V, Get_Lower (Canvas.Vadj)));
+      Set_Upper (Canvas.Vadj, Gdouble'Max (V + Lv, Get_Upper (Canvas.Vadj)));
 
       Set_Value (Canvas.Hadj, H);
       Set_Value (Canvas.Vadj, V);
