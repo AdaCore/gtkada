@@ -562,3 +562,37 @@ ada_status_get_messages (GtkStatusbar* widget)
 {
   return widget->messages;
 }
+
+
+/******************************************
+ ** Functions for GtkList
+ ******************************************/
+
+GList*
+ada_list_get_children (GtkList* widget)
+{
+   return widget->children;
+}
+
+GList*
+ada_list_get_selection (GtkList* widget)
+{
+   return widget->selection;
+}
+
+/******************************************
+ ** Functions for Tree
+ ******************************************/
+
+GList*
+ada_tree_get_children (GtkTree* widget)
+{
+   return widget->children;
+}
+
+GList*
+ada_tree_get_selection (GtkTree* widget)
+{
+   return widget->selection;
+}
+
