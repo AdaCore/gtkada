@@ -3,7 +3,7 @@
 
 prefix=@prefix@
 
-gtk_libs="@GTK_LIBS@"
+gtk_libs="@GTK_LIBS@ @PIXBUF_LIBS@"
 gtkada_libs="-L$prefix/include/gtkada -L$prefix/lib"
 gtkada_cflags="-I$prefix/include/gtkada"
 gtkada_lflags="-lgtkada"
@@ -45,7 +45,7 @@ while test $# -gt 0; do
       gtk_conf_pre=`gtk-config --prefix`
       glib_conf_pre=`glib-config --prefix`
       my_gtk_flags=`gtk-config --libs | sed -e 's/-lglib//g' -e 's/-lgtk//g' -e 's/-lgdk//g'`
-      gtk_libs="$gtk_conf_pre/lib/libgtk.a $gtk_conf_pre/lib/libgdk.a $glib_conf_pre/lib/libglib.a $my_gtk_flags @GL_LIBS@"
+      gtk_libs="$gtk_conf_pre/lib/libgtk.a $gtk_conf_pre/lib/libgdk.a $glib_conf_pre/lib/libglib.a $my_gtk_flags @GL_LIBS@ @PIXBUF_STATIC_LIBS@"
       gtkada_lflags=""
       ;;  
     --prefix)
