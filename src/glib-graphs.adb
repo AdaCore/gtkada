@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001 ACT-Europe                   --
+--                 Copyright (C) 2001-2002 ACT-Europe                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -93,7 +93,9 @@ package body Glib.Graphs is
    procedure Add_Edge
      (G            : in out Graph;
       E            : access Edge'Class;
-      Source, Dest : access Vertex'Class) is
+      Source, Dest : access Vertex'Class)
+   is
+      pragma Unreferenced (G);
    begin
       pragma Assert (E.Src = null and then E.Dest = null);
       E.Src  := Vertex_Access (Source);
@@ -107,8 +109,11 @@ package body Glib.Graphs is
    ------------
 
    procedure Remove (G : in out Graph; E : access Edge'Class) is
+      pragma Unreferenced (G);
+
       procedure Free is new Unchecked_Deallocation (Edge'Class, Edge_Access);
       E2 : Edge_Access := Edge_Access (E);
+
    begin
       Remove (E.Src.Out_Edges, E);
       Remove (E.Dest.In_Edges, E);
@@ -837,6 +842,7 @@ package body Glib.Graphs is
    ---------------
 
    function In_Degree (G : Graph; V : access Vertex'Class) return Natural is
+      pragma Unreferenced (G);
    begin
       return Length (V.In_Edges);
    end In_Degree;
@@ -846,6 +852,7 @@ package body Glib.Graphs is
    ----------------
 
    function Out_Degree (G : Graph; V : access Vertex'Class) return Natural is
+      pragma Unreferenced (G);
    begin
       return Length (V.Out_Edges);
    end Out_Degree;
@@ -917,8 +924,11 @@ package body Glib.Graphs is
    -----------------
 
    procedure Revert_Edge (G : Graph; E : Edge_Access) is
+      pragma Unreferenced (G);
+
       Src  : Vertex_Access := E.Src;
       Dest : Vertex_Access := E.Dest;
+
    begin
       Remove (E.Src.Out_Edges, E);
       Remove (E.Dest.In_Edges, E);
