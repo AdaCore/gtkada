@@ -264,6 +264,15 @@ package Gtk.Main is
    --  A timeout is a function that is called after a specified amount
    --  of time. You can of course use Ada tasks for the same role, however
    --  this might provide an easier way of doing things.
+   --
+   --  In case your timeout function takes longer to execute than the specific
+   --  delay (for instance it takes 200ms for an internal of 100ms), then
+   --  no invocation is queued, and they are simply discarded. There is no
+   --  queue of expired timers. On the other hand, standard events are still
+   --  processed, but slowly (since they have the same priority as timeouts).
+   --
+   --  The redrawing and resizing of widgets, which are being done as idles
+   --  with lower priority will not take place.
 
    type Timeout_Handler_Id is new Guint;
    --  Id for Timeout handlers.
