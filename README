@@ -30,12 +30,12 @@ using the following compilers :
    - Gnat 3.10p
    - Gnat 3.11p
      
-Although the previous  versions were compatible  with Gtk1.0, this one
-is Gtk1.1 specific. If you are looking for a binding to Gtk1.0, please
-consider downloading GtkAda 0.2.1.
-     
 and the following version of gtk :
-   - Gtk 1.1.9 
+   - Gtk 1.1.12
+     
+   Although versions up to 0.2.1 were compatible with Gtk1.0, this one
+   is Gtk-1.1  specific.  If you are  looking for a binding to Gtk1.0,
+   please consider downloading GtkAda 0.2.1.
      
 If you manage to  use it on other systems   (which should probably  be
 straightforward - just  recompile GtkAda), please let  us know so that
@@ -61,10 +61,10 @@ any way for this binding, and can not provide any support for it.
 Content
 =======
      
-The full set of widget that comes with  gtk 1.1.9 have been bound, and
-you should be able to  use all of them  from your Ada program. The Gdk
-binding is not complete yet, although a big part of it  is done. It is
-important to know  that only a subset of  this part of the binding has
+The full set of widget that comes with gtk 1.1.12 have been bound, and
+you should be able to use all of them from  your Ada program.  The Gdk
+binding is not complete yet, although a big part  of it is done. It is
+important to know that  only a subset of this  part of the binding has
 been actually tested, and therefore errors are still likely to appear.
 
 It is also important to understand  that the specs are still evolving,
@@ -132,8 +132,10 @@ or copy the gtkada-config script somewhere in your path
 or
    $ export PATH=<installation_directory>:$PATH
      
-Finally,     update your LD_LIBRARY_PATH    variable  to  include that
-directory, so that the linker can find the libraries.
+Finally, update  your   LD_LIBRARY_PATH  variable   to  include   that
+directory, so   that the linker  can  find  the libraries.   The other
+alternative  if you  have access to  root  priviledges is  to add this
+'prefix' directory added in /etc/ld.conf and then run ldconfig.
      
 Then,  when you  want to  compile  your  application,  simply use  the
 gtkada-config script:
@@ -179,16 +181,17 @@ generate.pl to this C file.
      
 - Edit these two files if needed (generally to change some parameters
   from Gint to Boolean for instance). It can be a little bit tricky 
-  when one of your functions returns a GList* of a GSList*. Please have 
+  when one of your functions returns a GList* or a GSList*. Please have 
   a look at gtk-combo.ads for instance for how to do this.
      
      
 Threads
 =======
 
-The 1.1 series of   Gtk+  should be thread   safe provided  that   you
-compiled it with thread-safe    enabled.  The usage of tasks    inside
-programs using this binding should not cause any problem.
+The 1.1  series   of Gtk+ should   be thread  safe  provided that  you
+compiled it with  thread-safe   enabled.  The usage of   tasks  inside
+programs using  this binding should  not cause any problem although we
+have not tested it ourselves.
 
      
 How to report bugs
