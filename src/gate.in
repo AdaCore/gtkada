@@ -43,7 +43,7 @@ pixdir="$3"
 mkdir -p $dir/$srcdir
 
 if [ "$pixdir" != "<no_name>" -a -d $dir/$pixdir ]; then
-   cp $dir/$pixdir/*.xpm $dir/$srcdir > /dev/null 2>&1
+   cp $dir/$pixdir/*xpm $dir/$srcdir > /dev/null 2>&1
 fi
 
 owd=`pwd`
