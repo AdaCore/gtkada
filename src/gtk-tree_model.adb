@@ -520,11 +520,11 @@ package body Gtk.Tree_Model is
       Internal (Iter'Address);
    end Tree_Iter_Free;
 
-   ------------------------------
-   -- Tree_Model_Get_N_Columns --
-   ------------------------------
+   -------------------
+   -- Get_N_Columns --
+   -------------------
 
-   function Tree_Model_Get_N_Columns
+   function Get_N_Columns
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class)
      return Gint
    is
@@ -533,13 +533,13 @@ package body Gtk.Tree_Model is
       pragma Import (C, Internal, "gtk_tree_model_get_n_columns");
    begin
       return Internal (Get_Object (Tree_Model));
-   end Tree_Model_Get_N_Columns;
+   end Get_N_Columns;
 
-   --------------------------------
-   -- Tree_Model_Get_Column_Type --
-   --------------------------------
+   ---------------------
+   -- Get_Column_Type --
+   ---------------------
 
-   function Tree_Model_Get_Column_Type
+   function Get_Column_Type
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Index      : Gint)
       return GType
@@ -552,13 +552,13 @@ package body Gtk.Tree_Model is
    begin
       return Internal (Get_Object (Tree_Model),
                        Index);
-   end Tree_Model_Get_Column_Type;
+   end Get_Column_Type;
 
-   -------------------------
-   -- Tree_Model_Get_Iter --
-   -------------------------
+   --------------
+   -- Get_Iter --
+   --------------
 
-   procedure Tree_Model_Get_Iter
+   procedure Get_Iter
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter       : out Gtk_Tree_Iter;
       Path       : Gtk.Tree_Model.Gtk_Tree_Path;
@@ -575,13 +575,13 @@ package body Gtk.Tree_Model is
       Success := Boolean'Val (Internal (Get_Object (Tree_Model),
                                         Iter'Address,
                                         Path.all'Address));
-   end Tree_Model_Get_Iter;
+   end Get_Iter;
 
-   -------------------------------------
-   -- Tree_Model_Get_Iter_From_String --
-   -------------------------------------
+   --------------------------
+   -- Get_Iter_From_String --
+   --------------------------
 
-   procedure Tree_Model_Get_Iter_From_String
+   procedure Get_Iter_From_String
      (Tree_Model  : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter        : out Gtk_Tree_Iter;
       Path_String : String;
@@ -597,13 +597,13 @@ package body Gtk.Tree_Model is
       Success := Boolean'Val (Internal (Get_Object (Tree_Model),
                                         Iter'Address,
                                         Path_String & ASCII.NUL));
-   end Tree_Model_Get_Iter_From_String;
+   end Get_Iter_From_String;
 
-   ------------------------------
-   -- Tree_Model_Get_Iter_Root --
-   ------------------------------
+   -------------------
+   -- Get_Iter_Root --
+   -------------------
 
-   procedure Tree_Model_Get_Iter_Root
+   procedure Get_Iter_Root
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter       : out Gtk_Tree_Iter;
       Success    : out Boolean)
@@ -616,13 +616,13 @@ package body Gtk.Tree_Model is
    begin
       Success := Boolean'Val (Internal (Get_Object (Tree_Model),
                                     Iter'Address));
-   end Tree_Model_Get_Iter_Root;
+   end Get_Iter_Root;
 
-   -------------------------
-   -- Tree_Model_Get_Path --
-   -------------------------
+   --------------
+   -- Get_Path --
+   --------------
 
-   function Tree_Model_Get_Path
+   function Get_Path
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter)
       return Gtk.Tree_Model.Gtk_Tree_Path
@@ -635,13 +635,13 @@ package body Gtk.Tree_Model is
    begin
       return Internal (Get_Object (Tree_Model),
                        Iter'Address);
-   end Tree_Model_Get_Path;
+   end Get_Path;
 
-   --------------------------
-   -- Tree_Model_Get_Value --
-   --------------------------
+   ---------------
+   -- Get_Value --
+   ---------------
 
-   procedure Tree_Model_Get_Value
+   procedure Get_Value
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint;
@@ -658,13 +658,13 @@ package body Gtk.Tree_Model is
                 Iter'Address,
                 Column,
                 Value);
-   end Tree_Model_Get_Value;
+   end Get_Value;
 
-   --------------------------
-   -- Tree_Model_Iter_Next --
-   --------------------------
+   ---------------
+   -- Iter_Next --
+   ---------------
 
-   procedure Tree_Model_Iter_Next
+   procedure Iter_Next
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter       : in out Gtk_Tree_Iter;
       Success    : out Boolean)
@@ -677,13 +677,13 @@ package body Gtk.Tree_Model is
    begin
       Success := Boolean'Val (Internal (Get_Object (Tree_Model),
                                         Iter'Address));
-   end Tree_Model_Iter_Next;
+   end Iter_Next;
 
-   ------------------------------
-   -- Tree_Model_Iter_Children --
-   ------------------------------
+   -------------------
+   -- Iter_Children --
+   -------------------
 
-   procedure Tree_Model_Iter_Children
+   procedure Iter_Children
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter       : out Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter;
@@ -699,13 +699,13 @@ package body Gtk.Tree_Model is
       Success := Boolean'Val (Internal (Get_Object (Tree_Model),
                                         Iter'Address,
                                         Parent'Address));
-   end Tree_Model_Iter_Children;
+   end Iter_Children;
 
-   -------------------------------
-   -- Tree_Model_Iter_Has_Child --
-   -------------------------------
+   --------------------
+   -- Iter_Has_Child --
+   --------------------
 
-   function Tree_Model_Iter_Has_Child
+   function Iter_Has_Child
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter)
       return Boolean
@@ -718,13 +718,13 @@ package body Gtk.Tree_Model is
    begin
       return Boolean'Val (Internal (Get_Object (Tree_Model),
                                     Iter'Address));
-   end Tree_Model_Iter_Has_Child;
+   end Iter_Has_Child;
 
-   --------------------------------
-   -- Tree_Model_Iter_N_Children --
-   --------------------------------
+   ---------------------
+   -- Iter_N_Children --
+   ---------------------
 
-   function Tree_Model_Iter_N_Children
+   function Iter_N_Children
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter)
       return Gint
@@ -742,13 +742,13 @@ package body Gtk.Tree_Model is
          return Internal (Get_Object (Tree_Model),
                           Iter'Address);
       end if;
-   end Tree_Model_Iter_N_Children;
+   end Iter_N_Children;
 
-   -------------------------------
-   -- Tree_Model_Iter_Nth_Child --
-   -------------------------------
+   --------------------
+   -- Iter_Nth_Child --
+   --------------------
 
-   function Tree_Model_Iter_Nth_Child
+   function Iter_Nth_Child
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter;
@@ -767,13 +767,13 @@ package body Gtk.Tree_Model is
                                     Iter'Address,
                                     Parent'Address,
                                     N));
-   end Tree_Model_Iter_Nth_Child;
+   end Iter_Nth_Child;
 
-   ----------------------------
-   -- Tree_Model_Iter_Parent --
-   ----------------------------
+   -----------------
+   -- Iter_Parent --
+   -----------------
 
-   function Tree_Model_Iter_Parent
+   function Iter_Parent
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter;
       Child      : Gtk_Tree_Iter)
@@ -789,13 +789,13 @@ package body Gtk.Tree_Model is
       return Boolean'Val (Internal (Get_Object (Tree_Model),
                                     Iter'Address,
                                     Child'Address));
-   end Tree_Model_Iter_Parent;
+   end Iter_Parent;
 
-   -------------------------
-   -- Tree_Model_Ref_Node --
-   -------------------------
+   --------------
+   -- Ref_Node --
+   --------------
 
-   procedure Tree_Model_Ref_Node
+   procedure Ref_Node
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter)
    is
@@ -806,13 +806,13 @@ package body Gtk.Tree_Model is
    begin
       Internal (Get_Object (Tree_Model),
                 Iter'Address);
-   end Tree_Model_Ref_Node;
+   end Ref_Node;
 
-   ---------------------------
-   -- Tree_Model_Unref_Node --
-   ---------------------------
+   ----------------
+   -- Unref_Node --
+   ----------------
 
-   procedure Tree_Model_Unref_Node
+   procedure Unref_Node
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter)
    is
@@ -823,7 +823,7 @@ package body Gtk.Tree_Model is
    begin
       Internal (Get_Object (Tree_Model),
                 Iter'Address);
-   end Tree_Model_Unref_Node;
+   end Unref_Node;
 
    ----------------
    -- Model_Data --
@@ -878,10 +878,10 @@ package body Gtk.Tree_Model is
    end Get_String;
 
 --    ---------------------------
---    -- Tree_Model_Get_Valist --
+--    -- Get_Valist --
 --    ---------------------------
 
---    procedure Tree_Model_Get_Valist
+--    procedure Get_Valist
 --      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
 --       Iter       : Gtk_Tree_Iter;
 --       Var_Args   : va_list)
@@ -895,13 +895,13 @@ package body Gtk.Tree_Model is
 --       Internal (Get_Object (Tree_Model),
 --                 Iter'Address,
 --                 va_list'Pos (Var_Args));
---    end Tree_Model_Get_Valist;
+--    end Get_Valist;
 
 --    ------------------------
---    -- Tree_Model_Foreach --
+--    -- Foreach --
 --    ------------------------
 
---    procedure Tree_Model_Foreach
+--    procedure Foreach
 --      (Model     : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
 --       Func      : Gtk_Tree_Model_Foreach_Func;
 --       User_Data : gpointer)
@@ -915,13 +915,13 @@ package body Gtk.Tree_Model is
 --       Internal (Get_Object (Model),
 --                 Gtk_Tree_Model_Foreach_Func'Pos (Func),
 --                 User_Data);
---    end Tree_Model_Foreach;
+--    end Foreach;
 
-   ----------------------------
-   -- Tree_Model_Row_Changed --
-   ----------------------------
+   -----------------
+   -- Row_Changed --
+   -----------------
 
-   procedure Tree_Model_Row_Changed
+   procedure Row_Changed
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Path       : Gtk.Tree_Model.Gtk_Tree_Path;
       Iter       : Gtk_Tree_Iter)
@@ -935,13 +935,13 @@ package body Gtk.Tree_Model is
       Internal (Get_Object (Tree_Model),
                 Path.all'Address,
                 Iter'Address);
-   end Tree_Model_Row_Changed;
+   end Row_Changed;
 
-   -----------------------------
-   -- Tree_Model_Row_Inserted --
-   -----------------------------
+   ------------------
+   -- Row_Inserted --
+   ------------------
 
-   procedure Tree_Model_Row_Inserted
+   procedure Row_Inserted
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Path       : Gtk.Tree_Model.Gtk_Tree_Path;
       Iter       : Gtk_Tree_Iter)
@@ -955,13 +955,13 @@ package body Gtk.Tree_Model is
       Internal (Get_Object (Tree_Model),
                 Path.all'Address,
                 Iter'Address);
-   end Tree_Model_Row_Inserted;
+   end Row_Inserted;
 
-   --------------------------------------
-   -- Tree_Model_Row_Has_Child_Toggled --
-   --------------------------------------
+   ---------------------------
+   -- Row_Has_Child_Toggled --
+   ---------------------------
 
-   procedure Tree_Model_Row_Has_Child_Toggled
+   procedure Row_Has_Child_Toggled
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Path       : Gtk.Tree_Model.Gtk_Tree_Path;
       Iter       : Gtk_Tree_Iter)
@@ -975,13 +975,13 @@ package body Gtk.Tree_Model is
       Internal (Get_Object (Tree_Model),
                 Path.all'Address,
                 Iter'Address);
-   end Tree_Model_Row_Has_Child_Toggled;
+   end Row_Has_Child_Toggled;
 
-   ----------------------------
-   -- Tree_Model_Row_Deleted --
-   ----------------------------
+   -----------------
+   -- Row_Deleted --
+   -----------------
 
-   procedure Tree_Model_Row_Deleted
+   procedure Row_Deleted
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Path       : Gtk.Tree_Model.Gtk_Tree_Path)
    is
@@ -992,13 +992,13 @@ package body Gtk.Tree_Model is
    begin
       Internal (Get_Object (Tree_Model),
                 Path.all'Address);
-   end Tree_Model_Row_Deleted;
+   end Row_Deleted;
 
-   -------------------------------
-   -- Tree_Model_Rows_Reordered --
-   -------------------------------
+   --------------------
+   -- Rows_Reordered --
+   --------------------
 
-   procedure Tree_Model_Rows_Reordered
+   procedure Rows_Reordered
      (Tree_Model : access Gtk.Tree_Model.Gtk_Tree_Model_Record'Class;
       Path       : Gtk.Tree_Model.Gtk_Tree_Path;
       Iter       : Gtk_Tree_Iter;
@@ -1015,6 +1015,6 @@ package body Gtk.Tree_Model is
                 Path.all'Address,
                 Iter'Address,
                 New_Order);
-   end Tree_Model_Rows_Reordered;
+   end Rows_Reordered;
 
 end Gtk.Tree_Model;

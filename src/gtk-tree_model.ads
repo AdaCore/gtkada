@@ -215,25 +215,25 @@ package Gtk.Tree_Model is
    procedure Tree_Iter_Free (Iter : Gtk_Tree_Iter);
    --  Free memory allocated to Iter.
 
-   function Tree_Model_Get_N_Columns
+   function Get_N_Columns
      (Tree_Model : access Gtk_Tree_Model_Record'Class)
      return Gint;
    --  Return the number of columns supported by Tree_Model.
 
-   function Tree_Model_Get_Column_Type
+   function Get_Column_Type
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Index      : Gint)
      return GType;
    --  Return the type of the column.
 
-   procedure Tree_Model_Get_Iter
+   procedure Get_Iter
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Iter       : out Gtk_Tree_Iter;
       Path       : Gtk_Tree_Path;
       Success    : out Boolean);
    --  Sets Iter to a valid iterator pointing to Path.
 
-   procedure Tree_Model_Get_Iter_From_String
+   procedure Get_Iter_From_String
      (Tree_Model  : access Gtk_Tree_Model_Record'Class;
       Iter        : out Gtk_Tree_Iter;
       Path_String : String;
@@ -241,21 +241,21 @@ package Gtk.Tree_Model is
    --  Sets Iter to a valid iterator pointing to Path_String, if it
    --  exists. Otherwise, Iter is left invalid and success set to False.
 
-   procedure Tree_Model_Get_Iter_Root
+   procedure Get_Iter_Root
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Iter       : out Gtk_Tree_Iter;
       Success    : out Boolean);
    --  Initialize Iter with the root iterator in the tree (the one at the root
    --  path). Success indicates whether Iter was set.
 
-   function Tree_Model_Get_Path
+   function Get_Path
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter)
      return Gtk_Tree_Path;
    --  Returns a newly created Gtk_Tree_Path referenced by Iter.
    --  This path should be freed with Tree_Path_Free.
 
-   procedure Tree_Model_Get_Value
+   procedure Get_Value
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter;
       Column     : Gint;
@@ -263,7 +263,7 @@ package Gtk.Tree_Model is
    --  Sets initializes and sets Value to that at Column.
    --  Value must be freed by the user.
 
-   procedure Tree_Model_Iter_Next
+   procedure Iter_Next
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Iter       : in out Gtk_Tree_Iter;
       Success    : out Boolean);
@@ -271,7 +271,7 @@ package Gtk.Tree_Model is
    --  If there is none, Iter is set to be invalid and Success is set
    --  to False.
 
-   procedure Tree_Model_Iter_Children
+   procedure Iter_Children
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Iter       : out Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter;
@@ -281,20 +281,20 @@ package Gtk.Tree_Model is
    --  to be invalid.  Parent will remain a valid node after this function
    --  has been called.
 
-   function Tree_Model_Iter_Has_Child
+   function Iter_Has_Child
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter)
      return Boolean;
    --  Return True if Iter has children, False otherwise.
 
-   function Tree_Model_Iter_N_Children
+   function Iter_N_Children
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter)
      return Gint;
    --  Returns the number of children that Iter has.  As a special case, if
    --  Iter is Null_Iter, then the number of toplevel nodes is returned.
 
-   function Tree_Model_Iter_Nth_Child
+   function Iter_Nth_Child
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter;
@@ -306,7 +306,7 @@ package Gtk.Tree_Model is
    --  Parent will remain a Valid  node after this function has been called.
    --  If Parent is Null_Iter, then the nth root node is set.
 
-   function Tree_Model_Iter_Parent
+   function Iter_Parent
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter;
       Child      : Gtk_Tree_Iter)
@@ -316,7 +316,7 @@ package Gtk.Tree_Model is
    --  and False is returned.  Child will remain a valid node after this
    --  function has been called.
 
-   procedure Tree_Model_Ref_Node
+   procedure Ref_Node
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter);
    --  Lets the tree reference the node.  This is an optional method for
@@ -328,7 +328,7 @@ package Gtk.Tree_Model is
    --  entire file-heirarchy in memory, just the sections that are currently
    --  being  displayed by every current view.
 
-   procedure Tree_Model_Unref_Node
+   procedure Unref_Node
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Iter       : Gtk_Tree_Iter);
    --  Lets the tree unref the node.  This is an optional method for models
@@ -359,42 +359,42 @@ package Gtk.Tree_Model is
          Iter       : Gtk_Tree_Iter;
          Column     : Gint)
         return String;
-   --  procedure Tree_Model_Get_Valist
+   --  procedure Get_Valist
    --  (Tree_Model : access Gtk_Tree_Model_Record'Class;
    --   Iter       : Gtk_Tree_Iter;
    --   Var_Args   : va_list);
 
-   --    procedure Tree_Model_Foreach
+   --    procedure Foreach
    --      (Model     : access Gtk_Tree_Model_Record'Class;
    --       Func      : Gtk_Tree_Model_Foreach_Func;
    --       User_Data : gpointer);
 
-   procedure Tree_Model_Row_Changed
+   procedure Row_Changed
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Path       : Gtk_Tree_Path;
       Iter       : Gtk_Tree_Iter);
    --  Emits the "row_changed" signal on Tree_Model.
 
-   procedure Tree_Model_Row_Inserted
+   procedure Row_Inserted
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Path       : Gtk_Tree_Path;
       Iter       : Gtk_Tree_Iter);
    --  Emits the "row_inserted" signal on Tree_Model.
 
-   procedure Tree_Model_Row_Has_Child_Toggled
+   procedure Row_Has_Child_Toggled
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Path       : Gtk_Tree_Path;
       Iter       : Gtk_Tree_Iter);
    --  Emits the "row_has_child_toggled" signal on Tree_Model.
    --  This should be called by models after the child state of a node changes.
 
-   procedure Tree_Model_Row_Deleted
+   procedure Row_Deleted
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Path       : Gtk_Tree_Path);
    --  Emits the "row_has_child_toggled" signal on Tree_Model.
    --  This should be called by models after the child state of a node changes.
 
-   procedure Tree_Model_Rows_Reordered
+   procedure Rows_Reordered
      (Tree_Model : access Gtk_Tree_Model_Record'Class;
       Path       : Gtk_Tree_Path;
       Iter       : Gtk_Tree_Iter;
