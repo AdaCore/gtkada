@@ -5,6 +5,7 @@ DIRECTORIES=base_widget \
   dynamic_cast          \
   editor                \
   gtk_examples          \
+  tutorial              \
   handlers
 
 SHELL=sh
