@@ -2941,9 +2941,9 @@ package body Gtkada.MDI is
          if Child.MDI.Present_Window_On_Child_Focus
            and then Previous_Focus_Child /= null
            and then Realized_Is_Set
-             (Gtk_Window (Get_Toplevel (Previous_Focus_Child.Initial)))
+             (Get_Toplevel (Previous_Focus_Child.Initial))
            and then Get_Property
-             (Gtk_Window (Get_Toplevel (Previous_Focus_Child.Initial)),
+             (Get_Toplevel (Previous_Focus_Child.Initial),
               Has_Toplevel_Focus_Property)
          then
             Present (Gtk_Window (Get_Toplevel (C)));
@@ -3342,7 +3342,7 @@ package body Gtkada.MDI is
          --  Reassign the widget to Child instead of the notebook
 
          Win := Gtk_Window (Get_Toplevel (Child.Initial));
-         Reparent (Get_Child (Win), Gtk_Box (Get_Child (Child)));
+         Reparent (Get_Child (Win), New_Parent => Gtk_Box (Get_Child (Child)));
          Child.State := Normal;
          Destroy (Win);
 
