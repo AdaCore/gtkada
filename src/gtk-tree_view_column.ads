@@ -137,7 +137,8 @@ package Gtk.Tree_View_Column is
    function Get_Cell_Renderers
      (Tree_Column : access Gtk_Tree_View_Column_Record)
       return Gtk.Cell_Renderer.Cell_Renderer_List.Glist;
-   --  Return the list of cell renderers set in the column
+   --  Return the list of cell renderers set in the column. The returned list
+   --  must be freed by the caller.
 
    ------------------------------------
    -- Specifying the data to display --
