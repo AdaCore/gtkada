@@ -10,8 +10,11 @@ package Gdk is
    --  outside of the binding.
    --
    function Get_Object (Object : in Root_Type'Class) return System.Address;
+   pragma Inline (Get_Object);
+
    procedure Set_Object (Object : in out Root_Type'Class;
                          Value  : in     System.Address);
+   pragma Inline (Set_Object);
 
 private
 
