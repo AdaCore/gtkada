@@ -32,6 +32,8 @@ with Gtk.Frame;
 package Libart_Demo is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
-   --  Create the demo for libart and Gdk_Pixbuf.
+   --  Create the scaling demo for Gdk_Pixbuf.
+
+   function Help return String;
 
 end Libart_Demo;

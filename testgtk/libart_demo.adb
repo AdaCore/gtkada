@@ -59,6 +59,18 @@ package body Libart_Demo is
       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf;
       Title  : String);
 
+   ----------
+   -- Help --
+   ----------
+
+   function Help return String is
+   begin
+      return
+        "A @bGdk_Pixbuf@B represents an image, normally in RGB or RGBA format."
+        & " Pixbufs are normally used to load files from disk and perform"
+        & " image scaling.";
+   end Help;
+
    ------------------------
    -- Callbacks packages --
    ------------------------
