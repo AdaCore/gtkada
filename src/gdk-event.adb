@@ -41,19 +41,6 @@ package body Gdk.Event is
       Set_Object (Destination, Internal (Get_Object (Source)));
    end Copy;
 
-   -----------
-   -- Event --
-   -----------
-
-   procedure Event (Widget : Gtk.Widget.Gtk_Widget'Class;
-                    Event  : Gdk_Event)
-   is
-      procedure Internal (Widget : System.Address; Event : System.Address);
-      pragma Import (C, Internal, "gtk_widget_event");
-   begin
-      Internal (Get_Object (Widget), Get_Object (Event));
-   end Event;
-
    ------------
    --  Free  --
    ------------
@@ -249,6 +236,18 @@ package body Gdk.Event is
    begin
       Internal (Get_Object (Event));
    end Put;
+
+
+   ----------------------------------
+   --  Send_Client_Message_To_All  --
+   ----------------------------------
+
+   procedure Send_Client_Message_To_All (Event : in Gdk_Event) is
+      procedure Internal (Event : in System.Address);
+      pragma Import (C, Internal, "gdk_event_send_clientmessage_toall");
+   begin
+      Internal (Get_Object (Event));
+   end Send_Client_Message_To_All;
 
 
    ----------------

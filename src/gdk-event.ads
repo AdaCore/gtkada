@@ -29,7 +29,6 @@
 with Glib; use Glib;
 with Gdk.Rectangle;
 with Gdk.Types; use Gdk.Types;
-with Gtk.Widget; use Gtk.Widget;
 with Gdk.Window; use Gdk.Window;
 
 package Gdk.Event is
@@ -77,6 +76,8 @@ package Gdk.Event is
    procedure Set_Send_Event (Event      : in out Gdk_Event;
                              Send_Event : in     Boolean := True);
 
+
+   procedure Send_Client_Message_To_All (Event : in Gdk_Event);
 
    ---------------------
    --  Gdk_Event_Any  --
@@ -156,14 +157,6 @@ package Gdk.Event is
    function Get_Y (Event : in Gdk_Event_Motion) return Gint16;
 
    function Get_State (Event : in Gdk_Event_Motion) return Gdk_Modifier_Type;
-
-   ----------------
-   -- Gtk_Widget --
-   ----------------
-
-   procedure Event (Widget : Gtk.Widget.Gtk_Widget'Class;
-                    Event  : Gdk_Event);
-
 
 private
 
