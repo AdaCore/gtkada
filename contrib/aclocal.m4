@@ -26,7 +26,12 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       BUILD_SHARED=no
       FPIC=
       ;;
-   *sysv* | *solaris*)
+   i?86-*sysv*)
+      SO_OPTS=-Wl,-h,
+      BUILD_SHARED=no
+      FPIC=
+      ;;
+   *solaris*)
       SO_OPTS=-Wl,-h,
       ;;
    *irix*)
