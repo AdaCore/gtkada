@@ -35,8 +35,9 @@ cd ..
 # FreeType #
 ############
 
-tar xzvf freetype-2.1.7.tar.gz
-cd freetype-2.1.7
+(Note: pango/gtk 2.2 are incompatible with freetype-2.1.7)
+tar xzvf freetype-2.1.5.tar.gz
+cd freetype-2.1.5
 ./configure --prefix=$prefix
 make
 make install
@@ -82,7 +83,6 @@ cd ..
 tar xzvf xft-2.1.2.tar.gz
 cd xft-2.1.2
 ./configure --prefix=$prefix
-patch < .../GtkAda/contrib/xft-2.1.2.diff
 make
 make install
 cd ..
