@@ -29,6 +29,11 @@
 
 --  <description>
 --  Base class for widgets that have children.
+--
+--  When writing your own container widgets, you need to fully handle the
+--  size_allocate event, by also resizing all the children (based on their size
+--  requisition). The size_allocate event will always be sent to the parent
+--  when a child calls Gtk.Widget.Queue_Resize.
 --  </description>
 --  <c_version>1.3.11</c_version>
 
@@ -87,6 +92,7 @@ package Gtk.Container is
      (Container : access Gtk_Container_Record)
       return Gtk.Widget.Widget_List.Glist;
    --  Return a list of all the children of the container.
+   --  The caller must free the returned list.
 
    function Children
      (Container : access Gtk_Container_Record)
