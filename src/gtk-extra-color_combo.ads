@@ -39,7 +39,6 @@
 
 with Gdk.Color;
 with Gtk.Extra.Combo_Box;
-with Gtk.Enums;
 with Gtkada.Types;
 
 package Gtk.Extra.Color_Combo is

@@ -29,7 +29,6 @@
 
 with Gdk.Color;
 with Gdk; use Gdk;
-with Gtk.Enums; use Gtk.Enums;
 with System;
 with Interfaces.C.Strings;
 
