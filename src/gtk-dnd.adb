@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -167,14 +167,13 @@ package body Gtk.Dnd is
    --------------------------
 
    function Dest_Get_Target_List
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-     return Target_List
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Target_List
    is
       function Internal (Widget : System.Address)
                         return System.Address;
       pragma Import (C, Internal, "gtk_drag_dest_get_target_list");
    begin
-      return Convert (Internal (Get_Object (Widget)));
+      return To_Proxy (Internal (Get_Object (Widget)));
    end Dest_Get_Target_List;
 
    ----------------------
@@ -184,8 +183,7 @@ package body Gtk.Dnd is
    function Dest_Find_Target
      (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Context     : Drag_Context;
-      Target_List : Gtk.Selection.Target_List)
-      return Gdk.Types.Gdk_Atom
+      Target_List : Gtk.Selection.Target_List) return Gdk.Types.Gdk_Atom
    is
       function Internal
         (Widget      : System.Address;
@@ -194,9 +192,7 @@ package body Gtk.Dnd is
          return Gdk_Atom;
       pragma Import (C, Internal, "gtk_drag_dest_find_target");
    begin
-      return Internal (Get_Object (Widget),
-                       Context,
-                       Target_List.all'Address);
+      return Internal (Get_Object (Widget), Context, Target_List.all'Address);
    end Dest_Find_Target;
 
    --------------

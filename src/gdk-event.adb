@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1286,7 +1286,7 @@ package body Gdk.Event is
 
    function From_Address (C : System.Address) return Gdk_Event is
    begin
-      return Gdk_Event (C_Proxy'(Glib.Convert (C)));
+      return Gdk_Event (Glib.C_Proxy'(Glib.To_Proxy (C)));
    end From_Address;
 
    ----------------
@@ -1295,7 +1295,7 @@ package body Gdk.Event is
 
    function To_Address (C : Gdk_Event) return System.Address is
    begin
-      return Glib.Convert (Gdk.C_Proxy (C));
+      return Glib.To_Address (Gdk.C_Proxy (C));
    end To_Address;
 
    ----------------
