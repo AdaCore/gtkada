@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Common;       use Common;
-with Glib;         use Glib;
 with Gtk.Box;      use Gtk.Box;
 with Gtk.Button;   use Gtk.Button;
 with Gtk.Dialog;   use Gtk.Dialog;

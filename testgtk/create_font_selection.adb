@@ -27,8 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib;                use Glib;
-with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Font_Selection;  use Gtk.Font_Selection;
 with Gtk;                 use Gtk;
 

@@ -30,11 +30,9 @@
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Separator; use Gtk.Separator;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 
 package body Create_Box is

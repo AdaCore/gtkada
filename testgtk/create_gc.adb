@@ -6,10 +6,8 @@ with Gdk.Drawable; use Gdk.Drawable;
 with Gdk.Event;    use Gdk.Event;
 with Gdk.Font;     use Gdk.Font;
 with Gdk.Types;    use Gdk.Types;
-with Gtk.Enums;    use Gtk.Enums;
 with Gtk.Frame;    use Gtk.Frame;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
-with Gtk.Window;   use Gtk.Window;
 with Gtk.Handlers; use Gtk.Handlers;
 
 package body Create_Gc is
@@ -40,25 +38,29 @@ package body Create_Gc is
    -- Draw_Text_And_Line --
    ------------------------
 
-   procedure Draw_Text_And_Line (Area      : access Gtk_Drawing_Area_Record'Class;
-                                 Y         : Gint;
-                                 Text      : String;
-                                 Num_Lines : Positive := 1)
-   is
+   procedure Draw_Text_And_Line
+     (Area      : access Gtk_Drawing_Area_Record'Class;
+      Y         : Gint;
+      Text      : String;
+      Num_Lines : Positive := 1) is
    begin
-      Draw_Text (Drawable    => Get_Window (Area),
-                 Font        => Font,
-                 Gc          => Gc,
-                 X           => 3,
-                 Y           => Y,
-                 Text        => Text);
+      Draw_Text
+        (Drawable => Get_Window (Area),
+         Font     => Font,
+         Gc       => Gc,
+         X        => 3,
+         Y        => Y,
+         Text     => Text);
+
       if Num_Lines = 1 then
-         Draw_Line (Drawable => Get_Window (Area),
-                    Gc       => Gc,
-                    X1       => 10,
-                    Y1       => Y + 7,
-                    X2       => 200,
-                    Y2       => Y + 7);
+         Draw_Line
+           (Drawable => Get_Window (Area),
+            Gc       => Gc,
+            X1       => 10,
+            Y1       => Y + 7,
+            X2       => 200,
+            Y2       => Y + 7);
+
       else
          Draw_Lines
            (Drawable => Get_Window (Area),
@@ -73,13 +75,13 @@ package body Create_Gc is
    -- Expose --
    ------------
 
-   function Expose (Area  : access Gtk_Drawing_Area_Record'Class;
-                    Event : Gdk_Event)
-                   return Boolean
+   function Expose
+     (Area  : access Gtk_Drawing_Area_Record'Class;
+      Event : Gdk_Event)
+      return Boolean
    is
       pragma Warnings (Off, Event);
    begin
-
       Set_Foreground (Gc, Blue);
       Set_Background (Gc, Red);
 
@@ -117,7 +119,6 @@ package body Create_Gc is
                            Cap_Style  => Gdk.Types.Cap_Butt,
                            Join_Style => Gdk.Types.Join_Miter);
       Draw_Text_And_Line (Area, 135, "Line_Style = Line_Double_Dash");
-
 
       Set_Line_Attributes (Gc,
                            Line_Width => 4,
@@ -165,6 +166,7 @@ package body Create_Gc is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Area    : Gtk_Drawing_Area;
       Success : Boolean;
+
    begin
       Gtk.Frame.Set_Label (Frame, "Graphic contexts");
 

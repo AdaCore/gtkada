@@ -32,7 +32,6 @@ with Gdk.Bitmap;   use Gdk.Bitmap;
 with Gdk.Color;    use Gdk.Color;
 with Gdk.Pixmap;   use Gdk.Pixmap;
 with Gdk.Window;   use Gdk.Window;
-with Glib;         use Glib;
 with Gtk.Enums;    use Gtk.Enums;
 with Gtk.GEntry;   use Gtk.GEntry;
 with Gtk.Handlers; use Gtk.Handlers;

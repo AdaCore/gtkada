@@ -12,7 +12,6 @@ with Gtk.Handlers;     use Gtk.Handlers;
 with Interfaces.C;     use Interfaces.C;
 with Lwobjects;        use Lwobjects;
 with Trackball;        use Trackball;
-with Main_Windows;     use Main_Windows;
 
 package body View_Gl is
 
@@ -42,8 +41,7 @@ package body View_Gl is
    -- Init_GL --
    -------------
 
-   procedure Init_GL
-   is
+   procedure Init_GL is
       type Glfloat_Array is array (0 .. 3) of aliased Glfloat;
       Light0_Pos   : Glfloat_Array := (-50.0, 50.0, 0.0, 0.0);
       Light0_Color : Glfloat_Array := (0.6, 0.6, 0.6, 1.0);

@@ -43,7 +43,6 @@ with Gtk.Spin_Button;     use Gtk.Spin_Button;
 with Gtk.Tree;            use Gtk.Tree;
 with Gtk.Tree_Item;       use Gtk.Tree_Item;
 with Gtk.Widget;          use Gtk.Widget;
-with Gtk.Window;          use Gtk.Window;
 with Gtk;                 use Gtk;
 with Common;              use Common;
 
