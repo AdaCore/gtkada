@@ -89,17 +89,17 @@ package body Create_Cursors is
       White_GC   : Gdk_GC := Get_White_GC (Style);
       Black_GC   : Gdk_GC := Get_Black_GC (Style);
       Gray_GC    : Gdk_GC := Get_Bg_GC (Style, State_Normal);
-      Max_Width  : Guint  := Get_Allocation_Width (Darea);
-      Max_Height : Guint  := Get_Allocation_Height (Darea);
+      Max_Width  : Gint  := Get_Allocation_Width (Darea);
+      Max_Height : Gint  := Get_Allocation_Height (Darea);
 
    begin
       Draw_Rectangle (Draw, White_GC, True, 0, 0,
-                      Gint (Max_Width), Gint (Max_Height / 2));
-      Draw_Rectangle (Draw, Black_GC, True, 0, Gint (Max_Height / 2),
-                      Gint (Max_Width), Gint (Max_Height / 2));
-      Draw_Rectangle (Draw, Gray_GC, True, Gint (Max_Width / 3),
-                      Gint (Max_Height / 3), Gint (Max_Width / 3),
-                      Gint (Max_Height / 3));
+                      Max_Width, Max_Height / 2);
+      Draw_Rectangle (Draw, Black_GC, True, 0, Max_Height / 2,
+                      Max_Width, Max_Height / 2);
+      Draw_Rectangle (Draw, Gray_GC, True, Max_Width / 3,
+                      Max_Height / 3, Max_Width / 3,
+                      Max_Height / 3);
       return 0;
    end Cursor_Expose_Event;
 
