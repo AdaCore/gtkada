@@ -48,6 +48,8 @@ my (@output) = ();
 my (%with_list) = ();
 
 my ($current_package) = &create_ada_name ($file);
+$current_package = "progress_bar" if ($current_package eq "progressbar");
+
 $file = uc ($file);
 
 $file = "GTKFILESELECTION" if ($file eq "GTKFILESEL");
