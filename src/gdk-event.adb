@@ -453,7 +453,7 @@ package body Gdk.Event is
 
       use type Interfaces.C.Strings.chars_ptr;
 
-      Event_Type : Gdk_Event_Type := Get_Event_Type (Event);
+      Event_Type : constant Gdk_Event_Type := Get_Event_Type (Event);
 
    begin
       if Event_Type = Key_Press or else Event_Type = Key_Release then
