@@ -27,7 +27,44 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Menu;             use Gtk.Menu;
+with Gtk.Radio_Menu_Item;  use Gtk.Radio_Menu_Item;
+
+with Ada.Strings.Fixed;
+
 package body Common is
+
+   -------------------------
+   --  Build_Option_Menu  --
+   -------------------------
+
+   procedure Build_Option_Menu (Omenu   : out Gtk.Option_Menu.Gtk_Option_Menu;
+                                Gr      : out Widget_Slist.GSlist;
+                                Items   : Chars_Ptr_Array;
+                                History : Gint;
+                                Cb      : Widget_Cb.Callback)
+   is
+      Menu      : Gtk_Menu;
+      Menu_Item : Gtk_Radio_Menu_Item;
+      Id        : Guint;
+   begin
+      Gtk.Option_Menu.Gtk_New (OMenu);
+      Gtk_New (Menu);
+
+      for I in Items'Range loop
+         Gtk_New (Menu_Item, Gr, ICS.Value (Items (I)));
+         Id := Widget_Cb.Connect (Menu_Item, "activate", Cb, Menu_Item);
+         Gr := Group (Menu_Item);
+         Append (Menu, Menu_Item);
+         if I = History then
+            Set_Active (Menu_Item, True);
+         end if;
+         Show (Menu_Item);
+      end loop;
+      Gtk.Option_Menu.Set_Menu (Omenu, Menu);
+      Gtk.Option_Menu.Set_History (Omenu, Gint (History));
+   end Build_Option_Menu;
+
 
    --------------------
    -- Destroy_Window --
@@ -48,5 +85,14 @@ package body Common is
    begin
       Ptr.all := null;
    end Destroy_Dialog;
+
+   --------------
+   -- Image_Of --
+   --------------
+
+   function Image_Of (I : in Gint) return String is
+   begin
+      return Ada.Strings.Fixed.Trim (Gint'Image (I), Ada.Strings.Left);
+   end Image_Of;
 
 end Common;

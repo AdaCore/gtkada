@@ -27,21 +27,27 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Glib; use Glib;
 with Gtk; use Gtk;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Dialog;       use Gtk.Dialog;
-with Gtk.Signal;
 with Gtk.Label; use Gtk.Label;
+with Gtk.Option_Menu;
+with Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
+with Gtkada.Types; use Gtkada.Types;
 with Interfaces.C.Strings;
 
 package Common is
 
-    --  This package is created to avoid the instanciation of the
-    --  generic packages for callbacks. This provides a much smaller
-    --  executable
+   --  This package is created to avoid the instanciation of the
+   --  generic packages for callbacks. This provides a much smaller
+   --  executable
+
+   --  It also contains services that are used in 2 or more examples
+   --  of testgtk.
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget_Record);
    package Widget2_Cb is new Signal.Callback (Gtk_Widget_Record, Gtk_Widget);
@@ -62,6 +68,22 @@ package Common is
                                                      Gtk_Dialog_Access);
    procedure Destroy_Dialog (Win : access Gtk.Dialog.Gtk_Dialog_Record;
                              Ptr : in Gtk_Dialog_Access);
+
+
+   procedure Build_Option_Menu (Omenu   : out Gtk.Option_Menu.Gtk_Option_Menu;
+                                Gr      : out Widget_Slist.GSlist;
+                                Items   : Chars_Ptr_Array;
+                                History : Gint;
+                                Cb      : Widget_Cb.Callback);
+   --
+   --  Builds an option menu with the given list of items.
+   --  If 'History' is in Items'Range, then item number 'History'
+   --  will be set to active.
+
+   function Image_Of (I : in Gint) return String;
+   --
+   --  Returns the image of the given Gint. The leading spaces are
+   --  stripped.
 
    package ICS renames Interfaces.C.Strings;
    Book_Open_Xpm    : ICS.chars_ptr_array :=
