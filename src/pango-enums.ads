@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -113,8 +113,14 @@ package Pango.Enums is
      (Pango_Underline_None,
       Pango_Underline_Single,
       Pango_Underline_Double,
-      Pango_Underline_Low);
+      Pango_Underline_Low,
+      Pango_Underline_Reserved1);
    pragma Convention (C, Underline);
+
+   function Pango_Underline_Error return Underline;
+   --  Return a value corresponding to error underlining (red wave line),
+   --  if supported by Gtk+. Default to Pango_Underline_Single if not
+   --  supported.
 
    type Variant is
      (Pango_Variant_Normal,
@@ -170,4 +176,6 @@ package Pango.Enums is
    type Property_Stretch is new Stretch_Properties.Property;
    type Property_Underline is new Underline_Properties.Property;
 
+private
+   pragma Import (C, Pango_Underline_Error, "ada_pango_underline_error");
 end Pango.Enums;
