@@ -34,7 +34,6 @@ with Gdk.Color;
 with Gdk.Cursor;  use Gdk.Cursor;
 with Gdk.Event;
 with Gdk.Pixbuf;
-with Gdk.Types;
 with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Box;
@@ -282,16 +281,23 @@ package Gtkada.MDI is
    --  Make Child the active widget, and raise it at the top.
    --  If Force_Focus is True, Grab_Focus on that child.
 
-   function Check_Interactive_Selection_Dialog
-     (MDI                   : access MDI_Window_Record;
-      Event                 : Gdk.Event.Gdk_Event;
-      Switch_Child_Modifier : Gdk.Types.Gdk_Modifier_Type;
-      Next_Child_Key        : Gdk.Types.Gdk_Key_Type;
-      Previous_Child_Key    : Gdk.Types.Gdk_Key_Type) return Boolean;
-   --  Check whether Event should act on the interactive selection dialog.
-   --  If Event is a key event and the key is
-   --  Switch_Child_Modifier/Switch_Child_Key, the selection dialog is
-   --  display. If it was already displayed, it moves to the next child.
+   procedure Check_Interactive_Selection_Dialog
+     (MDI    : access MDI_Window_Record;
+      Event  : Gdk.Event.Gdk_Event;
+      Move_To_Next : Boolean);
+   --  Open the interactive dialog for selecting windows.
+   --  This dialog should be open as a result of a key press event.
+   --  Move_To_Next indicates whether we want to select the next child (True)
+   --  or the previous child (False).
+   --  This dialog will be closed only when the key that opened it is fully
+   --  released. For instance, if the dialog was opened as a result of
+   --  pressing Ctrl-Tab, the dialog will only be closed when Ctrl itself is
+   --  released.
+   --  You can call this procedure even if a dialog is currently open. This
+   --  simply forces a move to the next or previous child. In fact, it is
+   --  your responsability to call this procedure when the user presses
+   --  the keys to move between children.
+   --
    --  This function is not internal to the MDI since connecting to the
    --  key_press_event and key_release_event should be done in the gtk_window
    --  that contains the MDI. Otherwise, some events are intercepted by gtk+,
@@ -299,9 +305,6 @@ package Gtkada.MDI is
    --  specified keys.
    --  It also gives the choice to the application of whether this feature is
    --  wanted or not.
-   --
-   --  True is returned if the event acted for the selection of another child.
-   --  In this case, the event should not be propagated.
 
    -----------------------------------------
    -- MDI_Child and encapsulated children --

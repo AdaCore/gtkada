@@ -231,8 +231,6 @@ package body Gtkada.MDI is
       Ent           : Gtk_Entry;
       Length        : Natural := 0;
       Modifier      : Gdk_Modifier_Type;
-      Next_Key      : Gdk_Key_Type;
-      Prev_Key      : Gdk_Key_Type;
       Icon          : Gtk.Pixmap.Gtk_Pixmap;
    end record;
    type Selection_Dialog_Access is access all Selection_Dialog_Record'Class;
@@ -670,6 +668,7 @@ package body Gtkada.MDI is
       Children : constant Children_Array :=
         Matching_Children (MDI, To_Lower (Str));
       Index : Integer := Children'First;
+      Tmp   : Integer;
 
    begin
       --  Update graphically the list of children matching the filter
@@ -678,23 +677,8 @@ package body Gtkada.MDI is
       Append_Text (D.Ent, " {");
       Set_Position (D.Ent, Gint (D.Length));
 
-      for C in Children'Range loop
-         if C /= Children'First then
-            Append_Text (D.Ent, ",");
-         end if;
-         Append_Text
-           (D.Ent, Locale_To_UTF8
-              (Get_Short_Title (MDI_Child (Get_Data (Children (C))))));
-      end loop;
-
-      Append_Text (D.Ent, "}");
-
-      --  Check the list of children matching the filter, and update the
-      --  current child accordingly
-
-      if Children'Length = 0 then
-         D.Current_Child := Null_List;
-      else
+      --  Find the index of the current child
+      if Children'Length /= 0 then
          while Index <= Children'Last loop
             exit when Children (Index) = D.Current_Child;
             Index := Index + 1;
@@ -708,8 +692,28 @@ package body Gtkada.MDI is
             Index := Children'Last;
          end if;
 
+         Tmp := Index;
+         loop
+            if Tmp /= Index then
+               Append_Text (D.Ent, ",");
+            end if;
+
+            Append_Text
+              (D.Ent, Locale_To_UTF8
+                 (Get_Short_Title (MDI_Child (Get_Data (Children (Tmp))))));
+
+            Tmp := (Tmp + 1 - Children'First) mod Children'Length
+              + Children'First;
+            exit when Tmp = Index;
+         end loop;
+
          D.Current_Child := Children (Index);
+
+      else
+         D.Current_Child := Null_List;
       end if;
+
+      Append_Text (D.Ent, "}");
 
       if D.Current_Child = Null_List then
          Set_Text (D.Label, "");
@@ -744,31 +748,79 @@ package body Gtkada.MDI is
       Event : Gdk_Event) return Boolean
    is
       M : constant MDI_Window := MDI_Window (MDI);
+      D : constant Selection_Dialog_Access :=
+        Selection_Dialog_Access (M.Selection_Dialog);
+      Close : Boolean := False;
+      Tmp   : Boolean;
+      pragma Unreferenced (Tmp);
    begin
-      return Check_Interactive_Selection_Dialog
-        (M,
-         Event,
-         Switch_Child_Modifier => Selection_Dialog_Access
-           (M.Selection_Dialog).Modifier,
-         Next_Child_Key        => Selection_Dialog_Access
-           (M.Selection_Dialog).Next_Key,
-         Previous_Child_Key     => Selection_Dialog_Access
-           (M.Selection_Dialog).Prev_Key);
+      --  This isn't a key press for the next_child or previous_child
+      --  functions, since those are handled by the outside application.
+
+      if Get_Event_Type (Event) = Key_Press then
+         if Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_BackSpace
+           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Delete
+         then
+            Delete_Text (D.Ent, Gint (D.Length) - 1, -1);
+         else
+            Delete_Text (D.Ent, Gint (D.Length), -1);
+
+            Set_State (Event, 0);
+            Tmp := Return_Callback.Emit_By_Name
+              (D.Ent, "key_press_event", Event);
+         end if;
+
+         Update_Selection_Dialog (M, 0);
+         return True;
+
+      elsif Get_Event_Type (Event) = Key_Release then
+         --  As soon as one of the modifiers of the initial key is released,
+         --  we close the dialog
+         if (D.Modifier and Control_Mask) /= 0
+           and then
+             (Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Control_L
+              or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Control_R)
+         then
+            Close := True;
+         end if;
+
+         if (D.Modifier and Mod1_Mask) /= 0
+         and then (Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Meta_L
+                   or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Meta_R
+                   or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Alt_L
+                   or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Alt_R)
+         then
+            Close := True;
+         end if;
+
+         if Close then
+            if D.Current_Child /= Null_List then
+               Set_Focus_Child
+                 (MDI_Child (Widget_List.Get_Data (D.Current_Child)));
+            end if;
+
+            Keyboard_Ungrab (Time => 0);
+            Grab_Remove (M.Selection_Dialog);
+            Destroy (M.Selection_Dialog);
+            M.Selection_Dialog := null;
+         end if;
+
+         return True;
+      end if;
+
+      return False;
    end Key_Event_Selection_Dialog;
 
    ----------------------------------------
    -- Check_Interactive_Selection_Dialog --
    ----------------------------------------
 
-   function Check_Interactive_Selection_Dialog
-     (MDI                       : access MDI_Window_Record;
-      Event                     : Gdk.Event.Gdk_Event;
-      Switch_Child_Modifier     : Gdk.Types.Gdk_Modifier_Type;
-      Next_Child_Key            : Gdk.Types.Gdk_Key_Type;
-      Previous_Child_Key        : Gdk.Types.Gdk_Key_Type) return Boolean
+   procedure Check_Interactive_Selection_Dialog
+     (MDI    : access MDI_Window_Record;
+      Event  : Gdk.Event.Gdk_Event;
+      Move_To_Next : Boolean)
    is
       use type Widget_List.Glist;
-      C : MDI_Child;
       D : Selection_Dialog_Access;
       Box, HBox : Gtk_Box;
       Frame : Gtk_Frame;
@@ -776,127 +828,74 @@ package body Gtkada.MDI is
       pragma Unreferenced (Tmp);
 
    begin
-      if Get_Event_Type (Event) = Key_Press
-        and then
-        (Get_State (Event) = Switch_Child_Modifier
-         or else Get_State (Event) = (Switch_Child_Modifier or Shift_Mask))
-        and then (Get_Key_Val (Event) = Next_Child_Key
-                  or else Get_Key_Val (Event) = Previous_Child_Key)
-        and then MDI.Items /= Null_List
-      then
-         if MDI.Selection_Dialog = null then
-            D := new Selection_Dialog_Record;
-            Initialize (D, Window_Popup);
-
-            if MDI.All_Floating_Mode then
-               Set_Position (D, Win_Pos_Mouse);
-            else
-               Set_Transient_For (D, Gtk_Window (Get_Toplevel (MDI)));
-               Set_Position (D, Win_Pos_Center_On_Parent);
-            end if;
-            Set_Default_Size (D, 300, 70);
-
-            Gtk_New (Frame);
-            Add (D, Frame);
-
-            --  By default, switch between the last two selected items
-            D.Current_Child := First (MDI.Items);
-
-            Gtk_New_Vbox (Box, Homogeneous => False);
-            Add (Frame, Box);
-
-            Gtk_New_Hbox (HBox, Homogeneous => False);
-            Pack_Start (Box, HBox, Expand => False);
-
-            Gtk_New (D.Icon);
-            Pack_Start (HBox, D.Icon, Expand => False);
-
-            Gtk_New (D.Label);
-            Pack_Start (HBox, D.Label, Expand => True, Fill => True);
-
-            Gtk_New (D.Ent);
-            Pack_Start (Box, D.Ent, Expand => True);
-            Set_Editable (D.Ent, False);
-
-            Show_All (D);
-            D.Modifier := Switch_Child_Modifier;
-            D.Next_Key := Next_Child_Key;
-            D.Prev_Key := Previous_Child_Key;
-
-            MDI.Selection_Dialog := Gtk_Widget (D);
-
-            --  Make sure all the key events are forwarded to us, as otherwise
-            --  if the mouse was moving out of the window we wouldn't the
-            --  events
-            Tmp := Keyboard_Grab (Get_Window (D), True, Time => 0);
-
-            Return_Callback.Object_Connect
-              (D, "key_release_event",
-               Return_Callback.To_Marshaller
-               (Key_Event_Selection_Dialog'Access), MDI);
-            Return_Callback.Object_Connect
-              (D, "key_press_event",
-               Return_Callback.To_Marshaller
-               (Key_Event_Selection_Dialog'Access), MDI);
-         else
-            D := Selection_Dialog_Access (MDI.Selection_Dialog);
-            Delete_Text (D.Ent, Gint (D.Length), -1);
-         end if;
-
-         if Get_Key_Val (Event) = Next_Child_Key then
-            Update_Selection_Dialog (MDI, +1);
-         else
-            Update_Selection_Dialog (MDI, -1);
-         end if;
-
-         return True;
-
-      elsif Get_Event_Type (Event) = Key_Press
-        and then MDI.Selection_Dialog /= null
-      then
-         D := Selection_Dialog_Access (MDI.Selection_Dialog);
-
-         if Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_BackSpace
-           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Delete
-         then
-            Delete_Text (D.Ent, Gint (D.Length) - 1, -1);
-         else
-            Delete_Text (D.Ent, Gint (D.Length), -1);
-            Append_Text
-              (D.Ent, Locale_To_UTF8 (Get_String (Event)));
-         end if;
-
-         Update_Selection_Dialog (MDI, 0);
-
-         return True;
-
-      elsif Get_Event_Type (Event) = Key_Release
-        and then
-          ((Switch_Child_Modifier and Control_Mask) = 0
-           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Control_L
-           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Control_R)
-        and then
-          ((Switch_Child_Modifier and Mod1_Mask) = 0
-           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Meta_L
-           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Meta_R
-           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Alt_L
-           or else Get_Key_Val (Event) = Gdk.Types.Keysyms.GDK_Alt_R)
-        and then MDI.Selection_Dialog /= null
-      then
-         D := Selection_Dialog_Access (MDI.Selection_Dialog);
-         if D.Current_Child /= Null_List then
-            C := MDI_Child (Widget_List.Get_Data (D.Current_Child));
-            Set_Focus_Child (C);
-         end if;
-
-         Keyboard_Ungrab (Time => 0);
-         Destroy (MDI.Selection_Dialog);
-         MDI.Selection_Dialog := null;
-
-         return True;
+      if MDI.Items = Null_List then
+         return;
       end if;
 
-      return False;
+      if MDI.Selection_Dialog = null then
+         D := new Selection_Dialog_Record;
+         Initialize (D, Window_Popup);
+
+         if MDI.All_Floating_Mode then
+            Set_Position (D, Win_Pos_Mouse);
+         else
+            Set_Transient_For (D, Gtk_Window (Get_Toplevel (MDI)));
+            Set_Position (D, Win_Pos_Center_On_Parent);
+         end if;
+         Set_Default_Size (D, 300, 70);
+
+         Gtk_New (Frame);
+         Add (D, Frame);
+
+         --  By default, switch between the last two selected items
+         D.Current_Child := First (MDI.Items);
+
+         Gtk_New_Vbox (Box, Homogeneous => False);
+         Add (Frame, Box);
+
+         Gtk_New_Hbox (HBox, Homogeneous => False);
+         Pack_Start (Box, HBox, Expand => False);
+
+         Gtk_New (D.Icon);
+         Pack_Start (HBox, D.Icon, Expand => False);
+
+         Gtk_New (D.Label);
+         Pack_Start (HBox, D.Label, Expand => True, Fill => True);
+
+         Gtk_New (D.Ent);
+         Pack_Start (Box, D.Ent, Expand => True);
+
+         Show_All (D);
+         D.Modifier := Get_State (Event);
+
+         MDI.Selection_Dialog := Gtk_Widget (D);
+
+         --  Make sure all the key events are forwarded to us, as otherwise
+         --  if the mouse was moving out of the window we wouldn't the
+         --  events
+         Tmp := Keyboard_Grab (Get_Window (D), True, Time => 0);
+         Grab_Add (D);
+
+         Grab_Focus (D.Ent);
+
+         Return_Callback.Object_Connect
+           (D, "key_release_event",
+            Return_Callback.To_Marshaller
+              (Key_Event_Selection_Dialog'Access), MDI);
+         Return_Callback.Object_Connect
+           (D, "key_press_event",
+            Return_Callback.To_Marshaller
+              (Key_Event_Selection_Dialog'Access), MDI);
+      else
+         D := Selection_Dialog_Access (MDI.Selection_Dialog);
+         Delete_Text (D.Ent, Gint (D.Length), -1);
+      end if;
+
+      if Move_To_Next then
+         Update_Selection_Dialog (MDI, +1);
+      else
+         Update_Selection_Dialog (MDI, -1);
+      end if;
    end Check_Interactive_Selection_Dialog;
 
    ---------------
