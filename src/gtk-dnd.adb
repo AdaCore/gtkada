@@ -34,7 +34,6 @@ with Gdk.Pixmap;    use Gdk.Pixmap;
 with Gdk.Types;     use Gdk.Types;
 with Gdk.Window;    use Gdk.Window;
 with Gtk.Widget;    use Gtk.Widget;
-with Gtk.Enums;     use Gtk.Enums;
 
 package body Gtk.Dnd is
 

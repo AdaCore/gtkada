@@ -98,7 +98,6 @@ with Gdk.Dnd; use Gdk.Dnd;
 with Gdk.Window;
 with Gtk.Widget;
 with Gtk.Selection;  use Gtk.Selection;
-with Gtk.Enums;
 
 package Gtk.Dnd is
 
