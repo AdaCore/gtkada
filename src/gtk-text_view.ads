@@ -40,7 +40,6 @@ with Gtk.Text_Buffer;
 with Gtk.Text_Child;
 with Gtk.Text_Iter;
 with Gtk.Text_Mark;
-with Gtk.Text_Attributes;
 with Gtk.Widget;
 
 package Gtk.Text_View is
