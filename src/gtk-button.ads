@@ -58,6 +58,9 @@ package Gtk.Button is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Button internally.
+
    procedure Set_Relief (Button   : access Gtk_Button_Record;
                          NewStyle : in     Gtk.Enums.Gtk_Relief_Style);
    --  Modifies the relief style for the button.
@@ -142,4 +145,5 @@ package Gtk.Button is
 private
    type Gtk_Button_Record is new Bin.Gtk_Bin_Record with null record;
 
+   pragma Import (C, Get_Type, "gtk_button_get_type");
 end Gtk.Button;

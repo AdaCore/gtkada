@@ -154,6 +154,9 @@ package Gtk.Widget is
    --  This does not destroy the widget itself, only its server-side
    --  ressources.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Widget internally.
+
    ----------------------
    -- Drawing a widget --
    ----------------------
@@ -1140,6 +1143,7 @@ private
 
    pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
    pragma Import (C, Pop_Visual, "gtk_widget_pop_visual");
+   pragma Import (C, Get_Type, "gtk_widget_get_type");
    pragma Inline (Toplevel_Is_Set);
    pragma Inline (No_Window_Is_Set);
    pragma Inline (Realized_Is_Set);

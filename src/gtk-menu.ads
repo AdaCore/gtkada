@@ -73,6 +73,9 @@ package Gtk.Menu is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Menu internally.
+
    procedure Append
      (Menu  : access Gtk_Menu_Record;
       Child : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
@@ -278,7 +281,7 @@ package Gtk.Menu is
 private
    type Gtk_Menu_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
      with null record;
-
+   pragma Import (C, Get_Type, "gtk_menu_get_type");
 end Gtk.Menu;
 
 --  <example>

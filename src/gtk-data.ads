@@ -44,6 +44,9 @@ package Gtk.Data is
    type Gtk_Data_Record is new Object.Gtk_Object_Record with private;
    type Gtk_Data is access all Gtk_Data_Record'Class;
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Data internally.
+
    ----------------------------
    -- Support for GATE/DGATE --
    ----------------------------
@@ -72,4 +75,5 @@ package Gtk.Data is
 
 private
    type Gtk_Data_Record is new Object.Gtk_Object_Record with null record;
+   pragma Import (C, Get_Type, "gtk_data_get_type");
 end Gtk.Data;

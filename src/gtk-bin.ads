@@ -41,6 +41,9 @@ package Gtk.Bin is
    type Gtk_Bin_Record is new Container.Gtk_Container_Record with private;
    type Gtk_Bin is access all Gtk_Bin_Record'Class;
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Bin internally.
+
    ----------------------------
    -- Support for GATE/DGATE --
    ----------------------------
@@ -64,4 +67,5 @@ package Gtk.Bin is
 
 private
    type Gtk_Bin_Record is new Container.Gtk_Container_Record with null record;
+   pragma Import (C, Get_Type, "gtk_bin_get_type");
 end Gtk.Bin;

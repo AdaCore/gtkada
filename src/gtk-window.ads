@@ -74,6 +74,9 @@ package Gtk.Window is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Window internally.
+
    procedure Set_Title (Window : access Gtk_Window_Record;
                         Title  : in String);
    --  Changes the title of the window, as it appears in the title bar.
@@ -232,7 +235,7 @@ package Gtk.Window is
 
 private
    type Gtk_Window_Record is new Bin.Gtk_Bin_Record with null record;
-
+   pragma Import (C, Get_Type, "gtk_window_get_type");
 end Gtk.Window;
 
 --  <example>

@@ -60,6 +60,9 @@ package Gtk.Misc is
    --  Sets the padding (ie the extra spaces on the side of the widget).
    --  If XPAD or YPAD is negative, they will be changed to 0.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Misc internally.
+
    ----------------------------
    -- Support for GATE/DGATE --
    ----------------------------
@@ -82,5 +85,5 @@ package Gtk.Misc is
 
 private
    type Gtk_Misc_Record is new Widget.Gtk_Widget_Record with null record;
-
+   pragma Import (C, Get_Type, "gtk_misc_get_type");
 end Gtk.Misc;

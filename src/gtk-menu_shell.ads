@@ -94,6 +94,9 @@ package Gtk.Menu_Shell is
    --  MENU_SHELL and all its parent menus are deactivated and erased from
    --  the screen.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Menu_Shell internally.
+
    ----------------------
    -- Signals emission --
    ----------------------
@@ -161,5 +164,5 @@ package Gtk.Menu_Shell is
 private
    type Gtk_Menu_Shell_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
-
+   pragma Import (C, Get_Type, "gtk_menu_shell_get_type");
 end Gtk.Menu_Shell;

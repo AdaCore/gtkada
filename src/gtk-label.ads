@@ -57,6 +57,9 @@ package Gtk.Label is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Label internally.
+
    procedure Set_Text (Label : access Gtk_Label_Record;
                        Str   : in String);
    --  Changes the text of the label
@@ -124,5 +127,5 @@ package Gtk.Label is
 
 private
    type Gtk_Label_Record is new Misc.Gtk_Misc_Record with null record;
-
+   pragma Import (C, Get_Type, "gtk_label_get_type");
 end Gtk.Label;

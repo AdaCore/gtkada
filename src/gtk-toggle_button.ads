@@ -62,6 +62,10 @@ package Gtk.Toggle_Button is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Toggle_Button
+   --  internally.
+
    procedure Set_Mode (Toggle_Button  : access Gtk_Toggle_Button_Record;
                        Draw_Indicator : in Boolean);
    --  Changes the mode of the button.
@@ -117,7 +121,7 @@ package Gtk.Toggle_Button is
 private
    type Gtk_Toggle_Button_Record is new Gtk.Button.Gtk_Button_Record
      with null record;
-
+   pragma Import (C, Get_Type, "gtk_toggle_button_get_type");
 end Gtk.Toggle_Button;
 
 --  <example>

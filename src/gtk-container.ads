@@ -70,6 +70,9 @@ package Gtk.Container is
                      return Gtk.Widget.Widget_List.Glist;
    --  Returns a list of all the children of the container.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Container internally.
+
    -----------------------
    -- Foreach functions --
    -----------------------
@@ -211,10 +214,10 @@ package Gtk.Container is
    --  </signals>
 
 private
-
    type Gtk_Container_Record is new Gtk.Widget.Gtk_Widget_Record
      with null record;
 
+   pragma Import (C, Get_Type, "gtk_container_get_type");
 end Gtk.Container;
 
 --  functions that have no equivalent in GtkAda:

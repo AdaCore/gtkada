@@ -56,6 +56,9 @@ package Gtk.Check_Button is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Check_Button
+   --  internally.
 
    ----------------------------
    -- Support for GATE/DGATE --
@@ -81,4 +84,5 @@ private
    type Gtk_Check_Button_Record is
      new Gtk.Toggle_Button.Gtk_Toggle_Button_Record
      with null record;
+   pragma Import (C, Get_Type, "gtk_check_button_get_type");
 end Gtk.Check_Button;

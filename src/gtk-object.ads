@@ -86,6 +86,11 @@ package Gtk.Object is
    --  Marks the object for destruction.
    --  ???  Should explain the 3-steps destruction process.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Object internally.
+   pragma Import (C, Get_Type, "gtk_object_get_type");
+
+
    function Get_Type (Object : access Gtk_Object_Record) return Gtk_Type;
    --  Returns the type of OBJECT.
    --  This function is mostly used internally, since in Ada you can simply

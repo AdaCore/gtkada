@@ -78,6 +78,9 @@ package Gtk.Adjustment is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Adjustment internally.
+
    --------------------
    -- Read functions --
    --------------------
@@ -194,4 +197,5 @@ private
    Null_Adjustment_Record : aliased Gtk_Adjustment_Record;
    Null_Adjustment : constant Gtk_Adjustment := Null_Adjustment_Record'Access;
 
+   pragma Import (C, Get_Type, "gtk_adjustment_get_type");
 end Gtk.Adjustment;
