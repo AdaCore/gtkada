@@ -84,7 +84,7 @@ package body Gtkada.Dialogs is
       Parent         : Gtk.Window.Gtk_Window := null)
       return Message_Dialog_Buttons
    is
-      Dialog : Gtk_Dialog := Create_Gtk_Dialog
+      Dialog : constant Gtk_Dialog := Create_Gtk_Dialog
         (Msg           => Msg,
          Dialog_Type   => Dialog_Type,
          Title         => Title,
