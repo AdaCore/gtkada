@@ -153,6 +153,7 @@ with Gtk.Scrollbar;
 with Gtk.Scrolled_Window;
 with Gtk.Selection;
 with Gtk.Separator;
+with Gtk.Separator_Menu_Item;
 with Gtk.Size_Group;
 with Gtk.Socket;
 with Gtk.Spin_Button;
