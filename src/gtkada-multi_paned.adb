@@ -52,6 +52,9 @@ with System.Address_Image;
 
 package body Gtkada.Multi_Paned is
 
+   Traces : constant Boolean := False;
+   --  Whether debug traces should be displayed on stdout
+
    Handle_Half_Width : constant := 3;
    --  Half the width, in pixels, of the resizing handles.
    --  ??? Should be read from theme with
@@ -216,6 +219,8 @@ package body Gtkada.Multi_Paned is
          Put_Line (Prefix & "<pane orientation="
                    & Child.Orientation'Img
                    & """ handles=""" & Child.Handles'Length'Img
+                   & """ req_width=""" & Child.Width'Img
+                   & """ req_height=""" & Child.Height'Img
                    & """ width=""" & Alloc.Width'Img
                    & """ height=""" & Alloc.Height'Img
                    & """>");
@@ -1266,6 +1271,10 @@ package body Gtkada.Multi_Paned is
                end loop;
             end if;
          end if;
+         if Traces then
+            Put_Line ("Compute_Requisition, at end");
+            Dump (Split, Split.Children);
+         end if;
       end Compute_Requisition;
 
       ---------------------
@@ -1326,6 +1335,25 @@ package body Gtkada.Multi_Paned is
                Tmp := Tmp.Next;
             end loop;
 
+            case Current.Orientation is
+               when Orientation_Horizontal =>
+                  Propagate_Sizes
+                    (Tmp,
+                     Allocation_Int
+                       (Float (Width)
+                        * (1.0
+                           - Current.Handles (Current.Handles'Last).Percent)),
+                     Height);
+               when Orientation_Vertical =>
+                  Propagate_Sizes
+                    (Tmp,
+                     Width,
+                     Allocation_Int
+                       (Float (Height)
+                        * (1.0
+                           - Current.Handles (Current.Handles'Last).Percent)));
+            end case;
+
          elsif Current /= null then
             if not Current.Fixed_Size then
                Current.Width := 0;
@@ -1333,10 +1361,6 @@ package body Gtkada.Multi_Paned is
             end if;
          end if;
       end Propagate_Sizes;
-
-      Allocation_Changed : constant Boolean :=
-        Get_Allocation_Width (Split) /= Alloc.Width
-        or else Get_Allocation_Height (Split) /= Alloc.Height;
 
    begin
       Set_Allocation (Split, Alloc);
@@ -1392,10 +1416,11 @@ package body Gtkada.Multi_Paned is
          Next (Iter);
       end loop;
 
-      if Allocation_Changed then
-         Compute_Requisition (Split.Children);
-         Propagate_Sizes (Split.Children, Alloc.Width, Alloc.Height);
+      if Traces then
+         Put_Line ("Size_Allocate_Multi_Paned: Recomputed children sizes");
       end if;
+      Compute_Requisition (Split.Children);
+      Propagate_Sizes (Split.Children, Alloc.Width, Alloc.Height);
 
       --  Move the handles first, in case some need to be moved to make enough
       --  space for the children. This must be a separate loop from above,
@@ -1924,6 +1949,12 @@ package body Gtkada.Multi_Paned is
       end if;
 
       Put (Win, New_Child, 0, 0);
+
+      if Traces then
+         Put_Line ("Split_Internal: After inserting "
+                   & System.Address_Image (New_Child.all'Address));
+         Dump (Win, Win.Children);
+      end if;
    end Split_Internal;
 
    -----------
