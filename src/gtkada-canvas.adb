@@ -1295,6 +1295,9 @@ package body Gtkada.Canvas is
       Delta_X, Delta_Y : Gint := 0;
       Min_X, Min_Y : Gint := Gint'Last;
    begin
+
+      Grab_Remove (Canvas.Drawing_Area);
+
       if Canvas.Selected_Child = null then
          return False;
       end if;
@@ -1375,8 +1378,6 @@ package body Gtkada.Canvas is
       end if;
 
       --  Other widgets can now receive events as well.
-
-      Grab_Remove (Canvas.Drawing_Area);
 
       return False;
    end Button_Release;
