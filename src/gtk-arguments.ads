@@ -44,6 +44,7 @@
 with System;
 with Gdk.Event;
 with Gtk.Object;
+with Gtk.Widget;
 with Gtk.Notebook;
 
 package Gtk.Arguments is
@@ -65,9 +66,9 @@ package Gtk.Arguments is
    --  Returns the Num-th element from Args. You should only have to use it if
    --  you write your own conversion functions.
 
-   -----------------------------------------------------
-   --  Conversion functions, interfacing to Gtk_Args
-   -----------------------------------------------------
+   ---------------------------------------------------
+   -- Conversion functions, interfacing to Gtk_Args --
+   ---------------------------------------------------
 
    function To_Gint    (Args : Gtk_Args; Num : Positive) return Gint;
    function To_Guint   (Args : Gtk_Args; Num : Positive) return Guint;
@@ -75,16 +76,20 @@ package Gtk.Arguments is
    function To_Event   (Args : Gtk_Args; Num : Positive)
      return Gdk.Event.Gdk_Event;
    function To_String  (Args : Gtk_Args; Num : Positive) return String;
-   function To_Notebook_Page (Args : Gtk_Args; Num : Positive)
-     return Gtk.Notebook.Gtk_Notebook_Page;
+   function To_Notebook_Page
+     (Args : Gtk_Args; Num : Positive) return Gtk.Notebook.Gtk_Notebook_Page;
    function To_Address (Args : Gtk_Args; Num : Positive) return System.Address;
    function To_C_Proxy (Args : Gtk_Args; Num : Positive) return Gdk.C_Proxy;
-   function To_Object (Args : Gtk_Args; Num : Positive)
-     return Gtk.Object.Gtk_Object;
+   function To_Object
+     (Args : Gtk_Args; Num : Positive) return Gtk.Object.Gtk_Object;
    --  This function can return null, if the C object was not created.
+   function To_Requisition (Args : Gtk_Args; Num : Positive)
+      return Gtk.Widget.Gtk_Requisition_Access;
+   function To_Allocation
+     (Args : Gtk_Args; Num : Positive) return Gtk.Widget.Gtk_Allocation_Access;
 
    ----------------------------------
-   --  General conversion functions
+   -- General conversion functions --
    ----------------------------------
 
    function To_Gint          (C : System.Address) return Gint;
@@ -99,11 +104,11 @@ package Gtk.Arguments is
    function To_C_Proxy       (C : System.Address) return Gdk.C_Proxy;
 
    ----------------------------------
-   --  Reverse conversion functions
+   -- Reverse conversion functions --
    ----------------------------------
 
-   function To_Address       (E : Gdk.Event.Gdk_Event) return System.Address
-                             renames Gdk.Event.To_Address;
+   function To_Address (E : Gdk.Event.Gdk_Event) return System.Address
+     renames Gdk.Event.To_Address;
 
 private
    type Gtk_Args is record

@@ -174,6 +174,34 @@ package body Gtk.Arguments is
       return Get_Nth (Args, Num);
    end To_Address;
 
+   ----------------
+   -- To_Address --
+   ----------------
+
+   function To_Requisition (Args : Gtk_Args; Num : Positive)
+     return Gtk.Widget.Gtk_Requisition_Access
+   is
+      function Internal is new
+        Unchecked_Conversion
+          (System.Address, Gtk.Widget.Gtk_Requisition_Access);
+   begin
+      return Internal (Get_Nth (Args, Num));
+   end To_Requisition;
+
+   ----------------
+   -- To_Address --
+   ----------------
+
+   function To_Allocation
+     (Args : Gtk_Args; Num : Positive) return Gtk.Widget.Gtk_Allocation_Access
+   is
+      function Internal is new
+        Unchecked_Conversion
+          (System.Address, Gtk.Widget.Gtk_Allocation_Access);
+   begin
+      return Internal (Get_Nth (Args, Num));
+   end To_Allocation;
+
    ---------------
    -- To_String --
    ---------------
