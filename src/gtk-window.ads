@@ -82,23 +82,26 @@ package Gtk.Window is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Window.
 
-   procedure Set_Title (Window : access Gtk_Window_Record;
-                        Title  : in String);
+   procedure Set_Title
+     (Window : access Gtk_Window_Record;
+      Title  : in String);
    --  Change the title of the window, as it appears in the title bar.
    --  Note that on some systems you might not be able to change it.
 
-   procedure Set_Wmclass (Window        : access Gtk_Window_Record;
-                          Wmclass_Name  : in String;
-                          Wmclass_Class : in String);
+   procedure Set_Wmclass
+     (Window        : access Gtk_Window_Record;
+      Wmclass_Name  : in String;
+      Wmclass_Class : in String);
    --  Specify the string to look for in the user's configuration files
    --  (Xdefault...) for windows specific resources. See some X11
    --  documentation for more information (man XSetClassHint)
    --  The window should not be realized when you call this function.
 
-   procedure Set_Policy (Window       : access Gtk_Window_Record;
-                         Allow_Shrink : in     Boolean;
-                         Allow_Grow   : in     Boolean;
-                         Auto_Shrink  : in     Boolean);
+   procedure Set_Policy
+     (Window       : access Gtk_Window_Record;
+      Allow_Shrink : in     Boolean;
+      Allow_Grow   : in     Boolean;
+      Auto_Shrink  : in     Boolean);
    --  Specify the behavior of the window with regards to size modifications.
    --  Default values when the window is created are:
    --
@@ -127,8 +130,9 @@ package Gtk.Window is
       Accel_Group : in Gtk.Accel_Group.Gtk_Accel_Group);
    --  Remove the specified accelerator group for the window.
 
-   procedure Set_Position (Window   : access Gtk_Window_Record;
-                           Position : in     Gtk.Enums.Gtk_Window_Position);
+   procedure Set_Position
+     (Window   : access Gtk_Window_Record;
+      Position : in     Gtk.Enums.Gtk_Window_Position);
    --  Specify how the position of the window should be computed.
    --  If Position is Win_Pos_Center_Always or Win_Pos_Center, then the window
    --  is centered on the screen. In the first case, it is also recentered
@@ -148,8 +152,8 @@ package Gtk.Window is
    --  Return True if the widget could be activated, False otherwise.
    --  The Focus widget is set through a signal "set_focus".
 
-   function Activate_Default (Window : access Gtk_Window_Record)
-                              return Boolean;
+   function Activate_Default
+     (Window : access Gtk_Window_Record) return Boolean;
    --  Activate the default widget in the window.
    --  In other words, send an "activate" signal to that widget. Note that
    --  this signal is a virtual one and is mapped to some widget specific
@@ -163,8 +167,9 @@ package Gtk.Window is
    --     Gtk.Widget.Grab_Default (Widget);
 
 
-   procedure Set_Transient_For (Window : access Gtk_Window_Record;
-                                Parent : access Gtk_Window_Record'Class);
+   procedure Set_Transient_For
+     (Window : access Gtk_Window_Record;
+      Parent : access Gtk_Window_Record'Class);
    --  Specify that Window is a transient window.
    --  A transient window is a temporary window, like a popup menu or a
    --  dialog box). Parent is the toplevel window of the application to which
@@ -206,9 +211,10 @@ package Gtk.Window is
    --  will always be resized so that the ratio between its width and its
    --  height remains in the range Min_Aspect .. Max_Aspect.
 
-   procedure Set_Default_Size (Window : access Gtk_Window_Record;
-                               Width  : in Gint;
-                               Height : in Gint);
+   procedure Set_Default_Size
+     (Window : access Gtk_Window_Record;
+      Width  : in Gint;
+      Height : in Gint);
    --  Specify a minimal size for the window.
    --  If its content needs to be bigger, then the actual window will grow
    --  accordingly.
@@ -216,15 +222,17 @@ package Gtk.Window is
    --  size for the widget.
    --  This has no effect on Popup windows (set in call to Gtk_New).
 
-   procedure Set_Modal (Window : access Gtk_Window_Record;
-                        Modal  : in Boolean := True);
+   procedure Set_Modal
+     (Window : access Gtk_Window_Record;
+      Modal  : in Boolean := True);
    --  Define the window as being Modal.
    --  It will grab the input from the keyboard and the mouse while it is
    --  displayed and will release it when it is hidden. The grab is only in
    --  effect for the windows that belong to the same application, and will not
    --  affect other applications running on the same screen.
-   --  This is the easiest way to show a dialog to which the user has to
-   --  answer before the application can continue.
+   --  In cunjunction with Gtk.Main.Main, this is the easiest way to show a
+   --  dialog to which the user has to answer before the application can
+   --  continue.
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal procedure
