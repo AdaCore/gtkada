@@ -1,7 +1,7 @@
 
 gtkada_rm:
 	./generate_doc.pl ../../src/*.ads
-	tex gtkada_rm.texi
+	echo x | tex gtkada_rm.texi
 	texindex gtkada_rm.cp
 	tex gtkada_rm.texi
 	dvips gtkada_rm.dvi -o gtkada_rm.ps

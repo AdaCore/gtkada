@@ -1,5 +1,5 @@
 all: gtkada_ug.texi
-	tex gtkada_ug.texi
+	echo x | tex gtkada_ug.texi
 	texindex gtkada_ug.cp
 	tex gtkada_ug.texi
 	dvips gtkada_ug.dvi -o gtkada_ug.ps
