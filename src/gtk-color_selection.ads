@@ -78,15 +78,6 @@ package Gtk.Color_Selection is
    --  color only when the mouse is released and Update_Delayed to update when
    --  the mouse is released or has been motionless for a while.
 
-   procedure Set_Opacity (Colorsel    : access Gtk_Color_Selection_Record;
-                          Use_Opacity : in Boolean);
-   --  Indicate whether the dialog should provide a way to change the
-   --  opacity of the color.
-   --  Since not every application can handle transparent colors, it is better
-   --  to deactivate this feature if you don't intend to use it.
-   --  Note also that if you deactivated that feature, Get_Color will not
-   --  set a valid value for the Opacity index of its return type.
-
    procedure Set_Color (Colorsel : access Gtk_Color_Selection_Record;
                         Color    : in Color_Array);
    --  Modify the current color.
