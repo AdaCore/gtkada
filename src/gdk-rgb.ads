@@ -157,9 +157,9 @@ package Gdk.Rgb is
       Dith          : in Gdk_Rgb_Dither;
       Rgb_Buf       : in Rgb_Buffer;
       Rowstride     : in Glib.Gint);
-   --  Renders a Gdb buffer with 24 bit Data. Such a buffer is a one dimensional
-   --  array of bytes, where every byte triplet makes up a pixel (byte 0 is red,
-   --  byte 1 is green and byte 2 is blue).
+   --  Renders a Gdb buffer with 24 bit Data. Such a buffer is a one
+   --  dimensional array of bytes, where every byte triplet makes up a pixel
+   --  (byte 0 is red, byte 1 is green and byte 2 is blue).
    --  Width: Number of pixels (byte triplets) per row of the image
    --  Height: Number of rows in the image
    --  RowStride: Number of bytes between rows... (row n+1 will start at byte
@@ -212,7 +212,7 @@ package Gdk.Rgb is
 
 
 private
-   type Gdk_Rgb_Cmap is System.Address;
+   type Gdk_Rgb_Cmap is new System.Address;
 
    pragma Inline (Get);
    pragma Inline (Set);

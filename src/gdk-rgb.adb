@@ -208,7 +208,7 @@ package body Gdk.Rgb is
    function Get (Cmap : Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index) return Rgb_Item
    is
       function Internal (Cmap : Gdk_Rgb_Cmap;
-                         Index : Natural)
+                         Index : Rgb_Cmap_Index)
                         return Rgb_Item;
       pragma Import (C, Internal, "ada_rgb_cmap_get");
    begin
@@ -223,7 +223,7 @@ package body Gdk.Rgb is
                   return Glib.Guchar
    is
       function Internal (Cmap : Gdk_Rgb_Cmap;
-                         Index : Natural)
+                         Index : Rgb_Cmap_Index)
                         return Glib.Guchar;
       pragma Import (C, Internal, "ada_rgb_cmap_get8");
    begin
@@ -268,7 +268,7 @@ package body Gdk.Rgb is
                         return Gdk_Rgb_Cmap;
       pragma Import (C, Internal, "gdk_rgb_cmap_new");
    begin
-      return Internal (Colors'Address, Colors'Length);
+      Cmap := Internal (Colors'Address, Colors'Length);
    end Gtk_New;
 
    ---------
@@ -279,7 +279,7 @@ package body Gdk.Rgb is
      (Cmap : in out Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index; Value : Rgb_Item)
    is
       procedure Internal (Cmap : Gdk_Rgb_Cmap;
-                          Index : Natural;
+                          Index : Rgb_Cmap_Index;
                           Value : Rgb_Item);
       pragma Import (C, Internal, "ada_rgb_cmap_set");
    begin
@@ -294,7 +294,7 @@ package body Gdk.Rgb is
      (Cmap : in out Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index; Value : Glib.Guchar)
    is
       procedure Internal (Cmap : Gdk_Rgb_Cmap;
-                          Index : Natural;
+                          Index : Rgb_Cmap_Index;
                           Value : Glib.Guchar);
       pragma Import (C, Internal, "ada_rgb_cmap_set8");
    begin

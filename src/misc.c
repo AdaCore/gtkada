@@ -169,25 +169,25 @@ ada_initialize_class_record (GtkObject*  object,
  *********************************************************************/
 
 guint32
-ada_rgb_cmap_get (GdkRbgCmap* cmap, gint index)
+ada_rgb_cmap_get (GdkRgbCmap* cmap, gint index)
 {
   return cmap->colors [index];
 }
 
 guchar
-ada_rgb_cmap_get8 (GdkRbgCmap* cmap, gint index)
+ada_rgb_cmap_get8 (GdkRgbCmap* cmap, gint index)
 {
   return cmap->lut [index];
 }
 
 void
-ada_rgb_cmap_set (GdkRbgCmap* cmap, gint index, guint32 value)
+ada_rgb_cmap_set (GdkRgbCmap* cmap, gint index, guint32 value)
 {
   cmap->colors [index] = value;
 }
 
 void
-ada_rgb_cmap_set8 (GdkRbgCmap* cmap, gint index, guchar value)
+ada_rgb_cmap_set8 (GdkRgbCmap* cmap, gint index, guchar value)
 {
   cmap->lut [index] = value;
 }
