@@ -82,6 +82,26 @@ package body Gtk.Radio_Menu_Item is
       Set_Object (Widget, Internal (Get_Object (Group)));
    end Gtk_New;
 
+   ---------------------
+   -- Selected_Button --
+   ---------------------
+
+   function Selected_Button (In_Group : in Widget_SList.GSlist)
+                             return Natural
+   is
+      function To_Radio_Menu_Item is
+        new Unchecked_Cast (Gtk_Radio_Menu_Item);
+      I   : Natural := 0;
+      Tmp : Widget_SList.GSlist := In_Group;
+   begin
+      while Tmp /= Widget_SList.Null_List loop
+         exit when Get_Active (To_Radio_Menu_Item (Get_Data (Tmp)));
+         Tmp := Next (Tmp);
+         I := I + 1;
+      end loop;
+      return I;
+   end Selected_Button;
+
    ---------------
    -- Set_Group --
    ---------------

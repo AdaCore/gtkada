@@ -46,6 +46,12 @@ package Gtk.Radio_Menu_Item is
       (Radio_Menu_Item : in Gtk_Radio_Menu_Item;
        Group           : in Widget_SList.GSlist);
 
+
+   function Selected_Button (In_Group : in Widget_SList.GSlist) return Natural;
+   --  Returns the button number of the selected button in the group
+   --  NOTE: This function is not part of Gtk itself, but is provided as a
+   --  convenient function
+
 private
    type Gtk_Radio_Menu_Item is new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item
      with null record;
