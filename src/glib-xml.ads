@@ -27,6 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This package provides a simple minded XML parser to be used with
+--  Gate.
+--
+--  </description>
+
 with Unchecked_Deallocation;
 
 generic
@@ -34,7 +41,9 @@ generic
 
 package Glib.XML is
 
+   --  <doc_ignore>
    procedure Free is new Unchecked_Deallocation (String, String_Ptr);
+   --  </doc_ignore>
 
    type Node;
    type Node_Ptr is access all Node;
@@ -69,15 +78,15 @@ package Glib.XML is
    --  Simple print procedure. Print the whole tree starting with N.
 
    function Find_Tag (N : Node_Ptr; Tag : String) return Node_Ptr;
-   --  Find a tag Tag in N and its brothers
+   --  Find a tag Tag in N and its brothers.
 
    function Get_Field (N : Node_Ptr; Field : String) return String_Ptr;
-   --  Return the value of the field 'Field' if present in the children of N,
-   --  null otherwise
+   --  Return the value of the field 'Field' if present in the children of N.
+   --  Return null otherwise.
 
    function Get_Attribute
      (N : in Node_Ptr;
       Attribute_Name : in String) return String_Ptr;
-   --  Return the value of the attibute 'Attribute_Name' if present,
-   --  null otherwise
+   --  Return the value of the attibute 'Attribute_Name' if present.
+   --  Return null otherwise.
 end Glib.XML;
