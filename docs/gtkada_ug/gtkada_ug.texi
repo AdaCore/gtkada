@@ -2848,7 +2848,6 @@ Here is the list of widgets that are currently not supported by GATE/DGATE.
 
 @itemize @bullet
 @item Gtk_Accel_Label
-@item Gtk_Clist
 @item Gtk_Color_Selection
 @item Gtk_Ctree
 @item Gtk_Curve
@@ -2860,9 +2859,7 @@ Here is the list of widgets that are currently not supported by GATE/DGATE.
 @item Gtk_Image
 @item Gtk_Invisible
 @item Gtk_Layout
-@item Gtk_List
 @item Gtk_Packer
-@item Gtk_Paned
 @item Gtk_Pixmap
 @item Gtk_Plug
 @item Gtk_Preview_Info
@@ -2871,7 +2868,6 @@ Here is the list of widgets that are currently not supported by GATE/DGATE.
 @item Gtk_Tearoff_Menu_Item
 @item Gtk_Tips_Query
 @item Gtk_Tooltips
-@item Gtk_Viewport
 @end itemize
 
 @node A complete example
