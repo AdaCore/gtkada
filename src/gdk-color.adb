@@ -1,6 +1,18 @@
 package body Gdk.Color is
 
 
+   -----------
+   --  "="  --
+   -----------
+
+   function "=" (Colora, Colorb : in Gdk_Color'Class) return Boolean is
+      function Internal (Colora, Colorb : in System.Address) return Gint;
+      pragma Import (C, Internal, "gdk_color_equal");
+   begin
+      return To_Boolean (Internal (Get_Object (Colora), Get_Object (Colorb)));
+   end "=";
+
+
    -------------
    --  Alloc  --
    -------------

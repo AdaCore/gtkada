@@ -16,7 +16,7 @@ Date : 30/06/1998
 * Joel : Regarder comment passer la ligne de commande a gtk_init, et comment
           recuperer la ligne de commande epuree apres gtk_init
 * Joel : Faire les GtkButtons
-- Joel : Jeter un oeil au mapping de gdk
+* Joel : Jeter un oeil au mapping de gdk
 
 * Manu : Liberation de la memoire pour les callback.
 * Manu : Faire les GtkBox
@@ -29,8 +29,6 @@ Date : 03/07/1998
   On ne met pas tout l'arbre de l'heritage dans le nom.
 
 * Joel : fait le skelette de testgtk
-- Tous : Pour testgtk, les differents boutons sont implementes comme des packages 'separate',
-         ou chacun developpe les packages pour tester ses widgets.
 * Joel : Rajoute des \ dans les commentaire "mapping" si ceux-ci tiennent sur
          plus d'une ligne.
 * Tous : Les procedures qui emettent des signaux (ex gtk_button_clicked). On
@@ -89,7 +87,7 @@ Date : 13/07/1998
 * Joel : Marquer d'une '*' toutes les taches terminees.
 - Manu : Terminer les widgets restantes.
 - Manu : Revoir Gtk.Toolbar
-- Joel : Commencer a voir Gdk.
+* Joel : Commencer a voir Gdk.
 * tous : Gtk_New reste un procedure pour le moment.
 * tous : Utiliser generate.pl pour generer les widgets. Parait qu'on gagne
          du temps.
@@ -131,13 +129,13 @@ Reunion du 17 Juillet 1997
 - Manu : Regarder le gros pb des callback.
   Joel : P*****, ca va marcher oui!
 - Joel : Regarder du cote des libtools pour faire une lib dynamique
-- Joel : Modifier le script mapping.pl
+* Joel : Modifier le script mapping.pl
     > s/\s+/ /;  # pour supprimer les blancs multiples.
     > s/ (\*+)/$1 / ; # pour attacher les etoiles au type
     > puis la fonction originale
     > > if (/^(\S+)\s+(g[td]k_\S+)\s+\((.*)/)
 - Joel : Aller voir les fichier .defs de guile-gtk
          (home page GTK, aller voir la FAQ rubrique sur les bindings).
-- Joel : comment faire pour passer un GdkBitmap**.
+* Joel : comment faire pour passer un GdkBitmap**.
 
          
