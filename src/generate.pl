@@ -136,7 +136,10 @@ open (FILE, $ARGV [0]);
 close (FILE);
 
 
-my (%functions) = &parse_functions;
+## The list of functions defined in the file
+## This is an array of arrays:
+##    (  (name, return_type, arguments) ...)
+my (@functions) = &parse_functions;
 
 my ($abstract) = 0;
 # 1 if the type is an abstract type
@@ -156,8 +159,9 @@ if ($parent eq "gpointer") {
 
 foreach (keys %fields)
   {
-    push (@{$functions{"ada_" . lc ($current_package) . "_get_$_"}},
-	  $fields{$_}, "$ctype_package Widget");
+    push (@functions,
+	  ["ada_" . lc ($current_package) . "_get_$_",
+	   $fields{$_}, "$ctype_package Widget"]);
   }
 
 &print_copyright_notice;
@@ -570,9 +574,9 @@ sub generate_specifications
     %with_list = ("with Gtk" => 1);
     @output = ();
     $with_list {"with " . &package_name ($parent)} ++;
-    foreach (sort func_sort keys %functions)
+    foreach (@functions)
       {
-	&print_declaration ($_, @{$functions{$_}});
+	&print_declaration ($_->[0], @{$_}[1 .. 2]);
       }
 
     $parent_prefix = "Gtk"   if ($parent =~ /^gtk/i);
@@ -628,9 +632,9 @@ sub generate_body
     @output = ();
     push (@output, "package body $prefix.$current_package is\n\n");
 
-    foreach (sort func_sort keys %functions)
+    foreach (@functions)
       {
-	&print_body ($_, @{$functions{$_}});
+	&print_body ($_->[0], @{$_}[1 .. 2]);
       }
 
     push (@output, "end $prefix.$current_package;\n");
@@ -725,7 +729,7 @@ sub parse_functions
   {
     my ($func_name, $return);
     my (@arguments);
-    my (%functions);
+    my (@functions);
 
     while ($_ = shift @cfile)
       {
@@ -761,11 +765,11 @@ sub parse_functions
 
 	  if (($unit_name eq "" && $func_name ne "")
 	      || $func_name =~ /$prefix\_$unit_name/i) {
-	    push (@{$functions{$func_name}}, $return, @arguments);
+	    push (@functions, [$func_name, $return, @arguments]);
 	  }
 	}
       }
-    return %functions;
+    return @functions;
   }
 
 
