@@ -1,3 +1,9 @@
+Known problems fixed in GtkAda 2.4.0
+
+- Memory leak in Gtk.Tree_Model.Get_String (D823-006)
+  Problem:    Calling Gtk.Tree_Model.Get_String causes a memory leak.
+  Workaround: There is no known workaround.
+
 Known problems fixed in GtkAda 2.2.1
 
 - Gate has no support for including images in menu items (C929-003)
