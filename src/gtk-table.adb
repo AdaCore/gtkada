@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -262,11 +262,6 @@ package body Gtk.Table is
       Container.Generate (N, File);
       Gen_Set (N, "Table", "Row_Spacings", "row_spacing", File);
       Gen_Set (N, "Table", "Col_Spacings", "column_spacing", File);
-
-      if not N.Specific_Data.Has_Container then
-         Gen_Call_Child (N, null, "Container", "Add", File => File);
-         N.Specific_Data.Has_Container := True;
-      end if;
    end Generate;
 
    procedure Generate (Table : in out Gtk.Object.Gtk_Object;
@@ -295,13 +290,6 @@ package body Gtk.Table is
 
       if S /= null then
          Set_Col_Spacings (Gtk_Table (Table), Gint'Value (S.all));
-      end if;
-
-      if not N.Specific_Data.Has_Container then
-         Container.Add
-           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-            Gtk.Widget.Gtk_Widget (Table));
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 
