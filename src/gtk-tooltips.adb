@@ -138,8 +138,8 @@ package body Gtk.Tooltips is
       pragma Import (C, Internal, "gtk_tooltips_set_tip");
    begin
       Internal (Get_Object (Tooltips), Get_Object (Widget),
-                Tip_Text & ASCII.Nul,
-                Tip_Private & ASCII.Nul);
+                Tip_Text & ASCII.NUL,
+                Tip_Private & ASCII.NUL);
    end Set_Tip;
 
    --------------

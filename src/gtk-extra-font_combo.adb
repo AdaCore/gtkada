@@ -49,7 +49,7 @@ package body Gtk.Extra.Font_Combo is
       pragma Import (C, Internal, "gtk_font_combo_select");
    begin
       Internal (Get_Object (Font_Combo),
-                Family & ASCII.Nul,
+                Family & ASCII.NUL,
                 Boolean'Pos (Bold),
                 Boolean'Pos (Italic),
                 Height);

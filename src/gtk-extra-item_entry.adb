@@ -90,7 +90,7 @@ package body Gtk.Extra.Item_Entry is
       pragma Import (C, Internal, "gtk_item_entry_set_text");
    begin
       Internal (Get_Object (Item_Entry),
-                Text & ASCII.Nul,
+                Text & ASCII.NUL,
                 Gtk.Enums.Gtk_Justification'Pos (Justification));
    end Set_Text;
 

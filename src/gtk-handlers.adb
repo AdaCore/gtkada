@@ -69,7 +69,7 @@ package body Gtk.Handlers is
    begin
       return Internal
         (Get_Object (Object),
-         Name & ASCII.Nul,
+         Name & ASCII.NUL,
          System.Null_Address,
          Marshaller,
          Func_Data,
@@ -418,7 +418,7 @@ package body Gtk.Handlers is
          B : Return_Type;
       begin
          pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-         Internal (Get_Object (Object), Name & ASCII.Nul,
+         Internal (Get_Object (Object), Name & ASCII.NUL,
                    Gdk.Event.To_Address (Param), B);
          return B;
       end Emit_By_Name;
@@ -653,7 +653,7 @@ package body Gtk.Handlers is
          B : Return_Type;
       begin
          pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-         Internal (Get_Object (Object), Name & ASCII.Nul,
+         Internal (Get_Object (Object), Name & ASCII.NUL,
                    Gdk.Event.To_Address (Param), B);
          return B;
       end Emit_By_Name;
@@ -955,7 +955,7 @@ package body Gtk.Handlers is
          pragma Import (C, Internal, "gtk_signal_emit_by_name");
       begin
          pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-         Internal (Get_Object (Object), Name & ASCII.Nul,
+         Internal (Get_Object (Object), Name & ASCII.NUL,
                    Gdk.Event.To_Address (Param));
       end Emit_By_Name;
 
@@ -1160,7 +1160,7 @@ package body Gtk.Handlers is
          pragma Import (C, Internal, "gtk_signal_emit_by_name");
       begin
          pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
-         Internal (Get_Object (Object), Name & ASCII.Nul,
+         Internal (Get_Object (Object), Name & ASCII.NUL,
                    Gdk.Event.To_Address (Param));
       end Emit_By_Name;
 
@@ -1194,7 +1194,7 @@ package body Gtk.Handlers is
                           Name   : in String);
       pragma Import (C, Internal, "gtk_signal_emit_stop_by_name");
    begin
-      Internal (Get_Object (Object), Name & ASCII.Nul);
+      Internal (Get_Object (Object), Name & ASCII.NUL);
    end Emit_Stop_By_Name;
 
    -------------------

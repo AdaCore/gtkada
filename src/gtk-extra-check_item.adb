@@ -58,7 +58,7 @@ package body Gtk.Extra.Check_Item is
       if Label = "" then
          Set_Object (Item, Internal);
       else
-         Set_Object (Item, Internal2 (Label & ASCII.Nul));
+         Set_Object (Item, Internal2 (Label & ASCII.NUL));
       end if;
       Initialize_User_Data (Item);
    end Initialize;

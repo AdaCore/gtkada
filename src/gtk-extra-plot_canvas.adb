@@ -441,10 +441,10 @@ package body Gtk.Extra.Plot_Canvas is
       end if;
 
       return Internal
-        (Get_Object (Canvas), X, Y, Angle, Ps_Font & ASCII.Nul, Height,
+        (Get_Object (Canvas), X, Y, Angle, Ps_Font & ASCII.NUL, Height,
          F, B, Boolean'Pos (Transparent),
          Gtk.Enums.Gtk_Justification'Pos (Justification),
-         Text & ASCII.Nul);
+         Text & ASCII.NUL);
    end Put_Text;
 
    --------------

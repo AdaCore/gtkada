@@ -1,4 +1,3 @@
-
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
@@ -53,9 +52,9 @@ package body Gtk.Extra.PsFont is
                           Bold     : in Gint);
       pragma Import (C, Internal, "gtk_psfont_add_font");
    begin
-      Internal (Fontname & ASCII.Nul,
-                Psname & ASCII.Nul,
-                Family & ASCII.Nul,
+      Internal (Fontname & ASCII.NUL,
+                Psname & ASCII.NUL,
+                Family & ASCII.NUL,
                 Xstring (Xstring'First)'Address,
                 Boolean'Pos (Italic),
                 Boolean'Pos (Bold));
@@ -76,7 +75,7 @@ package body Gtk.Extra.PsFont is
                         return      Gtk_PsFont;
       pragma Import (C, Internal, "gtk_psfont_find_by_family");
    begin
-      return Internal (Name & ASCII.Nul,
+      return Internal (Name & ASCII.NUL,
                        Boolean'Pos (Italic),
                        Boolean'Pos (Bold));
    end Find_By_Family;
@@ -94,7 +93,7 @@ package body Gtk.Extra.PsFont is
                         return      Gdk.Font.Gdk_Font;
       pragma Import (C, Internal, "gtk_psfont_get_gdkfont");
    begin
-      return Internal (Name & ASCII.Nul, Height);
+      return Internal (Name & ASCII.NUL, Height);
    end Get_Gdkfont;
 
    --------------------
@@ -108,7 +107,7 @@ package body Gtk.Extra.PsFont is
                          return      Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_psfont_get_psfontname");
    begin
-      return Interfaces.C.Strings.Value (Internal (Name & ASCII.Nul));
+      return Interfaces.C.Strings.Value (Internal (Name & ASCII.NUL));
    end Get_Psfontname;
 
    -------------
@@ -119,7 +118,7 @@ package body Gtk.Extra.PsFont is
       function Internal (Name   : in String) return Gtk_PsFont;
       pragma Import (C, Internal, "gtk_psfont_get_font");
    begin
-      return Internal (Name & ASCII.Nul);
+      return Internal (Name & ASCII.NUL);
    end Getfont;
 
    ----------------

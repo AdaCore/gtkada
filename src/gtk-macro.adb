@@ -1119,7 +1119,7 @@ package body Gtk.Macro is
       File   : aliased File_Buffer;
       F      : File_Descriptor;
       Length : Positive;
-      N      : constant String := Name & ".gtkada_macro" & ASCII.Nul;
+      N      : constant String := Name & ".gtkada_macro" & ASCII.NUL;
    begin
 
       --  Read the size of the file, we first try locally.

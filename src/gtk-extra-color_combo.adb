@@ -204,9 +204,9 @@ package body Gtk.Extra.Color_Combo is
          Name      : String);
       pragma Import (C, Internal, "gtk_signal_emit_by_name");
    begin
-      Internal (Get_Object (Color_Combo), "changed" & ASCII.Nul,
+      Internal (Get_Object (Color_Combo), "changed" & ASCII.NUL,
                 Row * Get_Ncols (Color_Combo) + Col,
-                Get_Color_At (Color_Combo, Row, Col) & ASCII.Nul);
+                Get_Color_At (Color_Combo, Row, Col) & ASCII.NUL);
    end Changed;
 
 

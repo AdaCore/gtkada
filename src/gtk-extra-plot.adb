@@ -575,14 +575,14 @@ package body Gtk.Extra.Plot is
                    System.Null_Address, Font_Height, Forea, Backa,
                    Boolean'Pos (Transparent),
                    Gtk.Enums.Gtk_Justification'Pos (Justification),
-                   Text & ASCII.Nul);
+                   Text & ASCII.NUL);
       else
          Internal (Get_Object (Plot), X, Y,
                    Plot_Angle'Pos (Angle),
                    F'Address, Font_Height, Forea, Backa,
                    Boolean'Pos (Transparent),
                    Gtk.Enums.Gtk_Justification'Pos (Justification),
-                   Text & ASCII.Nul);
+                   Text & ASCII.NUL);
       end if;
    end Put_Text;
 
@@ -636,7 +636,7 @@ package body Gtk.Extra.Plot is
    begin
       Internal (Get_Object (Plot),
                 Plot_Axis_Pos'Pos (Axis),
-                Title & ASCII.Nul);
+                Title & ASCII.NUL);
    end Axis_Set_Title;
 
    ---------------------
@@ -954,7 +954,7 @@ package body Gtk.Extra.Plot is
       end if;
 
       Internal
-        (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Ps_Font & ASCII.Nul,
+        (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Ps_Font & ASCII.NUL,
          Height, Plot_Angle'Pos (Angle), Fa, Ba);
    end Axis_Title_Set_Attributes;
 
@@ -994,7 +994,7 @@ package body Gtk.Extra.Plot is
       end if;
 
       Internal
-        (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Ps_Font & ASCII.Nul,
+        (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Ps_Font & ASCII.NUL,
          Height, Plot_Angle'Pos (Angle), Fa, Ba);
    end Axis_Labels_Set_Attributes;
 
@@ -1903,7 +1903,7 @@ package body Gtk.Extra.Plot is
       pragma Import (C, Internal, "gtk_plot_data_set_name");
 
    begin
-      Internal (Data, Name & ASCII.Nul);
+      Internal (Data, Name & ASCII.NUL);
    end Data_Set_Name;
 
    -------------------
@@ -2090,9 +2090,9 @@ package body Gtk.Extra.Plot is
          Backa := System.Null_Address;
       end if;
 
-      Internal (Text, Font & ASCII.Nul, Height, Plot_Angle'Pos (Angle),
+      Internal (Text, Font & ASCII.NUL, Height, Plot_Angle'Pos (Angle),
                 Forea, Backa, Boolean'Pos (Transparent),
                 Gtk.Enums.Gtk_Justification'Pos (Justification),
-                Str & ASCII.Nul);
+                Str & ASCII.NUL);
    end Text_Set_Attributes;
 end Gtk.Extra.Plot;

@@ -44,8 +44,8 @@ with Ada.Text_IO; use Ada.Text_IO;
 pragma Warnings (Off, Glib.Glade);
 pragma Warnings (Off, Glib_XML);
 pragma Warnings (Off, Ada.Text_IO);
---  Text_IO is required by almost all the package for Gate and
---  DGate, so we put the 'with' here.
+--  Text_IO is required by almost all the package for Gate,
+--  so we put the 'with' here.
 
 package Gtk is
 
@@ -192,7 +192,7 @@ private
    --  If you use type inheritance for new widgets, you should not need
    --  these functions.
 
-   GtkAda_String : constant String := "_GtkAda" & ASCII.Nul;
+   GtkAda_String : constant String := "_GtkAda" & ASCII.NUL;
    GtkAda_String_Quark : Glib.GQuark := Glib.Unknown_Quark;
    --  The name for the user data that we set in the objects.
    --  The Quark version is to speed up the string lookup (this is done

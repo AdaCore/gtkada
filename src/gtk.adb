@@ -48,7 +48,7 @@ package body Gtk is
         (The_Type : Gtk_Type; Name : String; Num  : Gint) return Gtk_Type;
       pragma Import (C, Internal, "ada_signal_argument_type");
    begin
-      return Internal (The_Type, Name & ASCII.Nul, Num);
+      return Internal (The_Type, Name & ASCII.NUL, Num);
    end Argument_Type;
 
    ---------------------
@@ -62,7 +62,7 @@ package body Gtk is
       pragma Import (C, Internal, "ada_signal_count_arguments");
 
    begin
-      return Internal (The_Type, Name & ASCII.Nul);
+      return Internal (The_Type, Name & ASCII.NUL);
    end Count_Arguments;
 
    --------------------
@@ -200,7 +200,7 @@ package body Gtk is
       function Internal (Name : String) return Gtk_Type;
       pragma Import (C, Internal, "gtk_type_from_name");
    begin
-      return Internal (Name & ASCII.Nul);
+      return Internal (Name & ASCII.NUL);
    end Type_From_Name;
 
    ------------------

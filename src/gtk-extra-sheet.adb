@@ -114,7 +114,7 @@ package body Gtk.Extra.Sheet is
          Entry_Type : in Gtk_Type) return System.Address;
       pragma Import (C, Internal2, "gtk_sheet_new_with_custom_entry");
 
-      S : aliased String := Title & ASCII.Nul;
+      S : aliased String := Title & ASCII.NUL;
       Sa : System.Address := S'Address;
 
    begin
@@ -160,7 +160,7 @@ package body Gtk.Extra.Sheet is
          Title   : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_sheet_new_browser");
 
-      S : aliased String := Title & ASCII.Nul;
+      S : aliased String := Title & ASCII.NUL;
       Sa : System.Address := S'Address;
 
    begin
@@ -286,7 +286,7 @@ package body Gtk.Extra.Sheet is
                           Title : in String);
       pragma Import (C, Internal, "gtk_sheet_set_title");
    begin
-      Internal (Get_Object (Sheet), Title & ASCII.Nul);
+      Internal (Get_Object (Sheet), Title & ASCII.NUL);
    end Set_Title;
 
    ------------
@@ -326,7 +326,7 @@ package body Gtk.Extra.Sheet is
                           Title  : in String);
       pragma Import (C, Internal, "gtk_sheet_set_column_title");
    begin
-      Internal (Get_Object (Sheet), Column, Title & ASCII.Nul);
+      Internal (Get_Object (Sheet), Column, Title & ASCII.NUL);
    end Set_Column_Title;
 
    -------------------
@@ -342,7 +342,7 @@ package body Gtk.Extra.Sheet is
                           Title : in String);
       pragma Import (C, Internal, "gtk_sheet_set_row_title");
    begin
-      Internal (Get_Object (Sheet), Row, Title & ASCII.Nul);
+      Internal (Get_Object (Sheet), Row, Title & ASCII.NUL);
    end Set_Row_Title;
 
    --------------------------
@@ -358,7 +358,7 @@ package body Gtk.Extra.Sheet is
                           Label : in String);
       pragma Import (C, Internal, "gtk_sheet_row_button_add_label");
    begin
-      Internal (Get_Object (Sheet), Row, Label & ASCII.Nul);
+      Internal (Get_Object (Sheet), Row, Label & ASCII.NUL);
    end Row_Button_Add_Label;
 
    -----------------------------
@@ -374,7 +374,7 @@ package body Gtk.Extra.Sheet is
                           Label  : in String);
       pragma Import (C, Internal, "gtk_sheet_column_button_add_label");
    begin
-      Internal (Get_Object (Sheet), Column, Label & ASCII.Nul);
+      Internal (Get_Object (Sheet), Column, Label & ASCII.NUL);
    end Column_Button_Add_Label;
 
    ------------------------
@@ -837,7 +837,7 @@ package body Gtk.Extra.Sheet is
                           Text          : in System.Address);
       pragma Import (C, Internal, "gtk_sheet_set_cell");
 
-      T : aliased String := Text & ASCII.Nul;
+      T : aliased String := Text & ASCII.NUL;
       Ta : System.Address := T'Address;
 
    begin
@@ -865,7 +865,7 @@ package body Gtk.Extra.Sheet is
                           Text  : in System.Address);
       pragma Import (C, Internal, "gtk_sheet_set_cell_text");
 
-      T : aliased String := Text & ASCII.Nul;
+      T : aliased String := Text & ASCII.NUL;
       Ta : System.Address := T'Address;
 
    begin
