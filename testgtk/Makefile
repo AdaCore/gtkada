@@ -36,7 +36,7 @@ GNATMAKEFLAGS = $(ALL_GNATFLAGS)
 GNATMAKELDFLAGS = `gtk-config --libs` ../libgtkada.a
 GNATMAKELDFLAGS_STATIC = `gtk-config --prefix`/lib/libgtk.a \
    `gtk-config --prefix`/lib/libglib.a \
-   `gtk-config --libs | sed 's/-lglib//'` ../libgtkada.a
+   `gtk-config --libs | sed 's/-lglib//' | sed 's/-lgtk//'` ../libgtkada.a
 #MALLOC_FLAGS= ../debug/wrap.o -Wl,--wrap=malloc -Wl,--wrap=free -Wl,--wrap=strdup
 MALLOC_FLAGS=
 

@@ -36,6 +36,7 @@ with Create_Range;
 with Create_Reparent;
 with Create_Rulers;
 with Create_Scrolled;
+with Create_Spin;
 with Create_Toolbar;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
@@ -115,7 +116,7 @@ package body Test is
       (US ("rulers"), Create_Rulers.Run'Access),
       (US ("scrolled windows"), Create_Scrolled.Run'Access),
       (US ("shapes"), null),
-      (US ("spinbutton"), null),
+      (US ("spinbutton"), Create_Spin.Run'Access),
       (US ("statusbar"), null),
       (US ("test idle"), null),
       (US ("test mainloop"), null),
