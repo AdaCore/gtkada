@@ -15,7 +15,7 @@
 
 @titlepage
 @title GtkAda Reference Manual
-@subtitle Version 2.2.2
+@subtitle Version 2.2.3
 @subtitle Document revision level $Revision$
 @subtitle Date: $Date$
 @author E. Briot, J. Brobecker, A. Charlet
