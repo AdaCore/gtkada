@@ -303,17 +303,11 @@ Gtk.Window:
   Maximize, Unmaximize: new procedures.
   Set_Policy, Set_Default_Size: deprecated.
   Get_Transient_Parent: renamed Get_Transient_For
-====
-missing features in gtk+1.3.4:
-
-gtkbbox.h should have a Layout property
-properties should be associated with quarks, for efficiency
-  
 
 ====
 GtkExtra code:
   call to gtk_toolbar_set_space_size commented out in gtkfontcombo.c
-   since this procedure is not provided yet.
+   since this procedure is not provided (use of style is now recommended).
 ====
 
 Not bound yet:
@@ -359,36 +353,4 @@ gtktreednd.h
 
 gtkwidget.h: see "missing" section. check signals.
 gtkwindow.h: see "missing" section.
-
-=======
-Here are some problems found while binding Gtk+:
-gtkenums.h:
-   GTK_DELETE_PARAGRAPH_ENDS and GTK_DELETE_PARAGRAPHS: poor naming if
-   the associated comments are correct.
-
-=======
-Here are some problems found while binding Pango:
-pango-font.h: 
- field PangoFontDescription.size should be Gint, not int.
- pango_font_description_copy (): is currently a function that returns a
-  PangoFontDescription rather than a procedure. Also: it allocates the
-  memory, but does not check the result => if memory exhausted, then SEGV.
-  suggested patch:
-<<
-*** fonts.c.orig        Wed Jun  6 14:39:22 2001
---- fonts.c     Wed Jun  6 14:39:39 2001
-*************** PangoFontDescription *
-*** 41,46 ****
---- 41,47 ----
-  pango_font_description_copy  (const PangoFontDescription  *desc)
-  {
-    PangoFontDescription *result = g_new (PangoFontDescription, 1);
-+   g_return_val_if_fail (result != NULL, NULL);
-
-    *result = *desc;
->>
- pango_font_description_from_string (): should also be a procedure.
- weight_map[]: This map seems out of sync the actual PangoWeight enum...
-  Recommend to the pango folks to get rid of the numbers, and use the
-  enum values instead. This breaks pango_font_description_from_string ().
 
