@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -885,6 +885,9 @@ package body Glib.XML is
    ---------------
 
    function Deep_Copy (N : Node_Ptr) return Node_Ptr is
+
+      New_N : Node_Ptr;
+
       function Deep_Copy_Internal
         (N : Node_Ptr; Parent : Node_Ptr := null) return Node_Ptr;
       --  Internal version of Deep_Copy. Returns a deep copy of N, whose
@@ -913,14 +916,16 @@ package body Glib.XML is
                Attributes => Attr,
                Value => Value,
                Parent => Parent,
-               Child => Deep_Copy_Internal (N.Child, Parent => N),
+               Child => Deep_Copy_Internal (N.Child, Parent => New_N),
                Next => Deep_Copy_Internal (N.Next, Parent => Parent),
                Specific_Data => N.Specific_Data);
          end if;
       end Deep_Copy_Internal;
 
    begin
-      return Deep_Copy_Internal (N);
+      New_N := Deep_Copy_Internal (N);
+
+      return New_N;
    end Deep_Copy;
 
 end Glib.XML;
