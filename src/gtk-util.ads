@@ -80,7 +80,7 @@ package Gtk.Util is
       Func      :    out Callback;
       Func_Data :    out System.Address);
    --  Return a Signal and a Data associated (via a call to Set_Signal) with
-   --  Name
+   --  Name.
 
 private
    type Private_Object is new System.Address;
