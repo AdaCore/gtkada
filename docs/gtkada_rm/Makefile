@@ -4,12 +4,16 @@ gtkada_rm:
 	tex gtkada_rm.texi
 	texindex gtkada_rm.cp
 	tex gtkada_rm.texi
+	dvips gtkada_rm.dvi -o gtkada_rm.ps
 	makeinfo gtkada_rm.texi
-	perl ../texi2html gtkada_rm.texi
+	perl ../texi2html -menu -monolithic gtkada_rm.texi
+	makeinfo --force -o gtkada_rm.info gtkada_rm.texi
+	makeinfo --force --no-headers --no-split -o gtkada_rm.txt gtkada_rm.texi
+	-${RM} *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
+	-${RM} generated.texi generated_menu.texi generated_submenu.texi
 
 clean:
-	${RM} gtkada_rm.aux gtkada_rm.cp gtkada_rm.dvi gtkada_rm.fn gtkada_rm.html 
-	${RM} gtkada_rm.info* gtkada_rm.ky gtkada_rm.log gtkada_rm.pg gtkada_rm.toc
-	${RM} gtkada_rm.tp gtkada_rm.vr gtkada_rm_stoc.html gtkada_rm_toc.html 
-	${RM} generated.texi generated_menu.texi gtkada_rm.cps generated_submenu.texi
+	${RM} *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
+	${RM} *.ps *.html *.info* *.txt
+	${RM} generated.texi generated_menu.texi generated_submenu.texi
 
