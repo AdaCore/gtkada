@@ -34,7 +34,6 @@ with Gdk.Color;
 with Gdk.Event;
 with Gdk.Pixbuf;
 with Gdk.Rectangle;
-with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Box;
 with Gtk.Drawing_Area;
@@ -43,12 +42,10 @@ with Gtk.Event_Box;
 with Gtk.Handlers;
 with Gtk.Label;
 with Gtk.Menu;
-with Gtk.Notebook;
 with Gtk.Menu_Item;
 with Gtk.Style;
 with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
-with Gtk.Table;
 with Gtk.Widget;
 with Gtk.Window;
 with Gtkada.Multi_Paned;
@@ -73,32 +70,13 @@ package Gtkada.MDI is
    type MDI_Child_Array is array (Natural range <>) of MDI_Child;
    No_Children : constant MDI_Child_Array := (1 .. 0 => null);
 
-   type State_Type is (Normal, Floating, Docked);
+   type State_Type is (Normal, Floating);
    --  This type indicates the state of an item in the MDI:
    --  - Normal: the item can be manipulated (moved and resized) by the user.
    --      It is found either in the middle notebook (maximized items), or
    --      in the layout.
    --  - Floating: the item has its own toplevel window, and is thus managed
    --      by the window manager.
-   --  - Docked: The item has been put in one of the notebooks on the sides.
-   --      (the middle notebook only contains Normal items).
-
-   type Dock_Side is (Left, Right, Top, Bottom, None);
-   subtype Dock_Side_Not_Central is Dock_Side range Left .. Bottom;
-   --  Side on which a child will be docked. If None, the child cannot be
-   --  docked.
-   --  Order is important, since items docked on the left or right will
-   --  occupy the whole height of MDI, whereas the ones on top or bottom will
-   --  occupy the full width minus the left and right docks.
-
-   type Priorities_Array is array (1 .. 4) of Dock_Side_Not_Central;
-   --  The priorities for the docks on each side of MDI. The docks are resized
-   --  in the order in which they are found in this array. As a result, if
-   --  Left is seen before Bottom, then the dock on the left side will occupy
-   --  the full height of the MDI, whereas the dock at the bottom will occupy
-   --  the full width minus the width of the left dock.
-   --  Note: sides mustn't be duplicated in this area, each of them must
-   --  appear only once.
 
    procedure Gtk_New
      (MDI   : out MDI_Window;
@@ -180,20 +158,25 @@ package Gtkada.MDI is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
+   type Child_Position is new Natural;
+   Position_Float   : constant Child_Position := 0;
+   Position_Bottom  : constant Child_Position := 1;
+   Position_Top     : constant Child_Position := 2;
+   Position_Left    : constant Child_Position := 3;
+   Position_Right   : constant Child_Position := 4;
+   Position_Default : constant Child_Position := 5;
+
    function Put
-     (MDI   : access MDI_Window_Record;
-      Child : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags : Child_Flags := All_Buttons;
-      Focus_Widget : Gtk.Widget.Gtk_Widget := null;
-      Default_Width, Default_Height : Glib.Gint := -1) return MDI_Child;
+     (MDI          : access MDI_Window_Record;
+      Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Position     : Child_Position := Position_Default;
+      Flags        : Child_Flags := All_Buttons;
+      Focus_Widget : Gtk.Widget.Gtk_Widget := null) return MDI_Child;
    --  Add a new child to the MDI window, and return its embedding widget.
    --  Child mustn't be a Gtk_Window (or one of its inheriting types).
    --  Otherwise, Program_Error is raised.
    --
    --  Flags indicates which buttons should be made visible in the title bar.
-   --
-   --  (Default_Width, Default_Height) indicate the default size of the
-   --  widget. If they are set to -1, the size request of the widget is used.
    --
    --  You shouldn't access Child directly afterwards, but should manipulate
    --  its MDI_Child instead. However, as a special exception, you can
@@ -210,6 +193,32 @@ package Gtkada.MDI is
    --
    --  Calling Put does not give the focus to the newly inserted widget.
    --  To do that, you should call Set_Focus_Child.
+   --
+   --  Position is used to place the new widget at the right position in the
+   --  MDI. The algorithm is the following:
+   --  - If position is Position_Float, then the child is floated immediately.
+   --  - If position is Bottom, then the MDI first check
+   --      whether there is already a child with that attribute.
+   --      * If yes, the new child is put in the same notebook as that one.
+   --      * If no, a new window is created below all others, splitting the MDI
+   --        as needed. The new child is put in that new window and has the
+   --        attribute Bottom.
+   --      When the user moves (through drag-and-drop or split) a Bottom window
+   --      out of the notebook, that window keeps its Bottom attribute. As a
+   --      result, there can be multiple notebooks with this attribute.
+   --  - Likewise for Top, Left and Right
+   --  - If position is something other: the MDI checks whether the current
+   --    notebook has a window with the same attribute value. If yet, the new
+   --    child is put in that same notebook. If no, it looks for the first
+   --    notebook with at least one child with that attribute. The goal of this
+   --    rule is to ensure that larger windows, like editors, are not put on
+   --    smaller windows, like a project view, even if the latter currently has
+   --    the focus.
+   --    If there is no window with a child with the same position, then the
+   --    window is placed in the default area (empty initially)
+   --
+   --  You can create new Position types as needed, for instance if you want
+   --  to group similar windows together automatically.
 
    procedure Close
      (MDI   : access MDI_Window_Record;
@@ -280,11 +289,8 @@ package Gtkada.MDI is
      (Child : access MDI_Child_Record'Class) return Gtk.Menu.Gtk_Menu;
    --  Create and return a static menu that should be put in a child-specific
    --  menu bar. The recommended way to use this is to put this menu in the
-   --  menu bar for a floating child. This will allow thie child to be
-   --  unfloated, or even docked.
-   --  Note: This menu will not be automatically updated, for instance if
-   --  you change the fact that Child can or cannot be docked. You need to get
-   --  a new instance of the menu in that case.
+   --  menu bar for a floating child. This will allow the child to be
+   --  unfloated.
 
    ------------------------
    -- Selecting children --
@@ -296,8 +302,8 @@ package Gtkada.MDI is
    --  The color of its menu label and of the text in the notebook tabs is
    --  changed.
    --  Nothing is done if the child is already fully visible (either in the
-   --  active page in one of the docks, or the child that has the selection in
-   --  the layout).
+   --  active page in one of the notebooks, or the child that has the selection
+   --  in the layout).
    --  This is meant to be used as a graphical note to the user that the child
    --  has been updated and the user should look at it.
 
@@ -391,13 +397,8 @@ package Gtkada.MDI is
    --  If Iterator is no longer valid, null is returned.
 
    -----------------------------------
-   -- Floating and docking children --
+   -- Floating and closing children --
    -----------------------------------
-
-   procedure Set_Priorities
-     (MDI : access MDI_Window_Record; Prio : Priorities_Array);
-   --  Set the priorities to use for the docks (see description of
-   --  Priorities_Array).
 
    procedure Float_Child
      (Child : access MDI_Child_Record'Class; Float : Boolean);
@@ -406,18 +407,6 @@ package Gtkada.MDI is
    function Is_Floating
      (Child : access MDI_Child_Record'Class) return Boolean;
    --  Return True if Child is currently in a separate window
-
-   procedure Dock_Child
-     (Child : access MDI_Child_Record'Class;
-      Dock : Boolean := True);
-   --  Change the docking start of a child.
-   --  If the child was floating, it is first put back in the MDI.
-
-   procedure Set_Dock_Side
-     (Child : access MDI_Child_Record'Class; Side : Dock_Side);
-   --  Specify where a child should be docked. Note that this doesn't
-   --  actually dock the child.
-   --  If the child was already docked, its location is changed accordingly.
 
    procedure Close_Child
      (Child : access MDI_Child_Record'Class;
@@ -491,10 +480,8 @@ package Gtkada.MDI is
       Y           : Integer := 100;
       Width       : Integer := 100;
       Height      : Integer := 100;
-      Short_Title : UTF8_String := "";
-      Title       : UTF8_String := "";
       State       : State_Type := Normal;
-      Dock        : Dock_Side := None;
+      Position    : Child_Position := Position_Default;
       Focus       : Boolean := False;
       Raised      : Boolean := False);
    --  Add an item to a Tree that can then be loaded through
@@ -503,9 +490,6 @@ package Gtkada.MDI is
    --  values relative to the MDI.
    --  If Focus is True, then the widget will be given the focus, unless
    --  another widget is also registered later on with Focus set to True.
-   --  If Raised is True and the child is docked, then this widget will appear
-   --  on top unless another widget is also registered later on with Raised set
-   --  to True and in the same Dock.
 
    generic
       type User_Data (<>) is private;
@@ -546,13 +530,14 @@ package Gtkada.MDI is
       --  specific widget types.
       --  Neither Save nor Load can be null.
 
-      procedure Restore_Desktop
+      function Restore_Desktop
         (MDI       : access MDI_Window_Record'Class;
          From_Tree : Glib.Xml_Int.Node_Ptr;
-         User      : User_Data);
+         User      : User_Data) return Boolean;
       --  Restore the contents of the MDI from its saved XML tree.
       --  User is passed as a parameter to all of the Load_Desktop_Function
       --  registered by the widgets.
+      --  Return False if the desktop couldn't be loaded
 
       function Save_Desktop
         (MDI : access MDI_Window_Record'Class) return Glib.Xml_Int.Node_Ptr;
@@ -669,28 +654,20 @@ private
       Main_Box : Gtk.Box.Gtk_Box;
       --  The main container.
 
-      X, Y : Glib.Gint;
-      --  Note: the coordinates of children are the coordinates inside
-      --  MDI.Layout.
-
       State : State_Type := Normal;
+
+      Position : Child_Position := Position_Default;
+      --  The attribute of the child.
 
       Title       : String_Access;
       Short_Title : String_Access;
       --  Title of the item, as it appears in the title bar.
       --  These are UTF8-Encoded
 
-      Dock : Dock_Side := None;
-      --  The size on which the item should be docked. If None, then the item
-      --  can not be docked, and nothing will happen when calling Dock_Child.
-
-      Uniconified_State : State_Type;
-      --  The state the child had before being floated
-
       MDI : MDI_Window;
       --  The MDI to which the child belongs. We cannot get this information
-      --  directly from Get_Parent since some children are actually embedded
-      --  in docks (aka Gtk_Notebooks), and do not belong to the MDI anymore.
+      --  directly from Get_Parent since some children are actually floating
+      --  and do not belong to the MDI anymore.
 
       Menu_Item : Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item;
       --  The item in the dynamic menu that represents this child.
@@ -717,23 +694,12 @@ private
       Iter : Gtk.Widget.Widget_List.Glist;
    end record;
 
-   type Notebook_Array is array (Left .. Bottom) of Gtk.Notebook.Gtk_Notebook;
-   type Window_Array is array (Left .. Bottom) of Gdk.Window.Gdk_Window;
    type Drag_Status is (No_Drag, In_Pre_Drag, In_Drag);
 
-   type MDI_Window_Record is new Gtk.Table.Gtk_Table_Record with record
-      Main_Pane : Gtkada.Multi_Paned.Gtkada_Multi_Paned;
-
+   type MDI_Window_Record is new Gtkada.Multi_Paned.Gtkada_Multi_Paned_Record
+   with record
       Items : Gtk.Widget.Widget_List.Glist := Gtk.Widget.Widget_List.Null_List;
       --  The list of all MDI children.
-
-      Docks : Notebook_Array := (others => null);
-      --  The five possible docks (one on each side and one in the middle.
-      --  Note that the one in the middle might not be visible, or even
-      --  created, if it is replaced by a Gtk_Layout.
-
-      Central : Gtkada.Multi_Paned.Gtkada_Multi_Paned;
-      --  The central area
 
       Desktop_Was_Loaded : Boolean := False;
       --  True if a desktop was loaded
@@ -741,9 +707,6 @@ private
       Present_Window_On_Child_Focus : Boolean := True;
       --  Whether the window containing a child should be Presented when the
       --  child gets the focus.
-
-      Selected : Dock_Side := None;
-      --  The handle that was selected for the resize operation.
 
       Focus_GC     : Gdk.GC.Gdk_GC;
       Non_Focus_GC : Gdk.GC.Gdk_GC;
@@ -755,8 +718,6 @@ private
       --  apply to this child only.
 
       Menu               : Gtk.Menu.Gtk_Menu;
-      Dock_Menu_Item     : Gtk.Check_Menu_Item.Gtk_Check_Menu_Item;
-      Dock_Menu_Item_Id  : Gtk.Handlers.Handler_Id;
       Float_Menu_Item    : Gtk.Check_Menu_Item.Gtk_Check_Menu_Item;
       Float_Menu_Item_Id : Gtk.Handlers.Handler_Id;
       Close_Menu_Item    : Gtk.Menu_Item.Gtk_Menu_Item;
