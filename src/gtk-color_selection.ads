@@ -126,6 +126,12 @@ package Gtk.Color_Selection is
 
    --  <signals>
    --  The following new signals are defined for this widget:
+   --
+   --  - "color_changed"
+   --    procedure Handler
+   --       (Selection : access Gtk_Color_Selection_Record'Class);
+   --
+   --    Called every time a new color is selected in the dialog
    --  </signals>
 
 private
