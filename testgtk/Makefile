@@ -28,16 +28,17 @@ CFLAGS = -O2 -g -Wall
 ALL_CFLAGS = $(CFLAGS) `gtk-config --cflags`
 
 GNATCC = gcc
-GNATFLAGS = -O2 -g -gnatg
+GNATFLAGS = -O2 -g 
 ALL_GNATFLAGS = $(GNATFLAGS) -I..
 
 GNATMAKE = gnatmake
 GNATMAKEFLAGS = $(ALL_GNATFLAGS)
-GNATMAKELDFLAGS = `gtk-config --libs` $(c_objects)
+GNATMAKELDFLAGS = `gtk-config --libs` ../libgtkada.a
+GNATMAKELDFLAGS = -L/nile.d/briot/gtk/lib /nile.d/briot/gtk/lib/libgtk.a -lgtk -lgdk -lglib -lXext -lX11 -lsocket -lnsl -lm ../libgtkada.a
 
 all: $(target)
 
-$(target): $(c_objects) ../*.ad[sb] *.ad[sb]
+$(target): ../*.ad[sb] *.ad[sb]
 	$(GNATMAKE) $(GNATMAKEFLAGS) $(target) -largs $(GNATMAKELDFLAGS)
 
 
