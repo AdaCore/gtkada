@@ -35,14 +35,16 @@ with Gtk.Object;
 package Gtk.Accel_Group is
 
    type Gtk_Accel_Group is new Root_Type with private;
+   type Gtk_Accel_Group_Access is access all Gtk_Accel_Group'Class;
+
    type Gtk_Accel_Entry is new Root_Type with private;
+   type Gtk_Accel_Entry_Access is access all Gtk_Accel_Entry'Class;
 
    type Gtk_Accel_Flags is new Guint;
    Accel_Visible        : constant Gtk_Accel_Flags;
    Accel_Signal_Visible : constant Gtk_Accel_Flags;
    Accel_Locked         : constant Gtk_Accel_Flags;
    Accel_Mask           : constant Gtk_Accel_Flags;
-
 
    --------------------------
    --  Accelerator Groups  --
@@ -76,7 +78,6 @@ package Gtk.Accel_Group is
 
    procedure Unlock (Accel_Group : in Gtk_Accel_Group);
 
-
    ---------------------------------
    --  Accelerator Group Entries  --
    ---------------------------------
@@ -106,7 +107,6 @@ package Gtk.Accel_Group is
                      Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type;
                      Object      : access Gtk.Object.Gtk_Object_Record'Class);
 
-
    ---------------------------
    --  Accelerator Signals  --
    ---------------------------
@@ -130,14 +130,12 @@ package Gtk.Accel_Group is
    --  procedure Marshal_Add
    --  procedure Marshal_Remove
 
-
    ---------------------
    --  Miscellaneous  --
    ---------------------
 
    --  function Accel_Groups_From_Object
    --  function Entries_From_Object
-
 
    --------------------
    --  Accelerators  --
