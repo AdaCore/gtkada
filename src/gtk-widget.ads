@@ -85,8 +85,8 @@ package Gtk.Widget is
    type Gtk_Allocation is record
       X      : Gint;
       Y      : Gint;
-      Width  : Gint;
-      Height : Gint;
+      Width  : Allocation_Int;
+      Height : Allocation_Int;
    end record;
    --  Gtk_Allocation indicates a size and position a widget was allocated.
    --  See the section in the user guide on how to create new widgets for more
@@ -726,7 +726,7 @@ package Gtk.Widget is
    --    end;
 
    procedure Set_Default_Size_Allocate_Handler
-     (Widget : Glib.Object.GObject_Class;
+     (Klass   : Glib.Object.GObject_Class;
       Handler : Size_Allocate_Handler);
    --  Override the default size_allocate handler for this class. This handler
    --  is automatically called in several cases (when a widget is dynamically

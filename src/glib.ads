@@ -80,6 +80,9 @@ package Glib is
    subtype Gcolor_Int is Guint16;
    --  Provided for better compatibility between GtkAda 1.2 and 2.0
 
+   subtype Allocation_Int is Gint;
+   --  Provided for better compatibility between GtkAda 1.2 and 2.0
+
    ----------------------
    -- Some Array types --
    ----------------------
