@@ -79,21 +79,15 @@ package body Create_Clist is
       use Gint_List;
       Selection : Gint_List.Glist;
       Tmp : Gint_List.Glist;
+      I : Gint;
    begin
       Freeze (List);
-      Selection := Get_Selection (List);
-
-      Tmp := First (Selection);
-      if Length (Selection) = 0 then
-         return;
-      end if;
-
       loop
+         exit when Length (Get_Selection (List)) = 0;
          Clist_Rows := Clist_Rows - 1;
-         Remove (List, Get_Data (Tmp));
+         I := Get_Data (First (Get_Selection (List)));
+         Remove (List, I);
          exit when Get_Selection_Mode (List) = Selection_Browse;
-         Tmp := Next (Tmp);
-         exit when Tmp = Last (Selection);
       end loop;
 
       Thaw (List);
