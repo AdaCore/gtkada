@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,6 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  The Gtk_Color_Selection_Dialog provides a standard dialog which allows the
+--  user to select a color much like the Gtk_File_Selection provides a standard
+--  dialog for file selection.
+--
+--  </description>
+--  <c_version>1.2.7</c_version>
+
 with Gtk.Object; use Gtk.Object;
 with Gtk.Window;
 with Gtk.Button;
@@ -41,41 +50,74 @@ package Gtk.Color_Selection_Dialog is
 
    procedure Gtk_New (Color_Selection_Dialog : out Gtk_Color_Selection_Dialog;
                       Title  : in String);
+   --  Create a new Color_Selection_Dialog with a specified title.
 
    procedure Initialize
      (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record'Class;
       Title  : in String);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
 
-   --  Functions to get the fields of the dialog
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Menu.
+
+   -----------------------------------------------
+   -- Functions to get the fields of the dialog --
+   -----------------------------------------------
 
    function Get_Colorsel
      (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Color_Selection.Gtk_Color_Selection;
+   --  Get the Gtk_Color_Selection widget contained within the dialog.
+   --  Use this widget and its Gtk.Color_Selection.Get_Color function to gain
+   --  access to the selected color. Connect a handler for this widget's
+   --  color_changed signal to be notified when the color changes.
+
    function Get_OK_Button
      (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Button.Gtk_Button;
+   --  Get the OK button widget contained within the dialog.
+
    function Get_Reset_Button
      (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Button.Gtk_Button;
+   --  Get the reset button widget contained within the dialog.
+
    function Get_Cancel_Button
      (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Button.Gtk_Button;
+   --  Get the cancel button widget contained within the dialog.
+
    function Get_Help_Button
      (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Button.Gtk_Button;
+   --  Get the help button widget contained within the dialog.
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------------
+   -- Support for Gate/Dgate --
+   ----------------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
 
    procedure Generate
      (Color_Selection_Dialog : in out Gtk_Object;
       N                      : in Node_Ptr);
+   --  Dgate internal function
+
+   -------------
+   -- Signals --
+   -------------
+   
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  </signals>
 
 private
-
    type Gtk_Color_Selection_Dialog_Record is new
      Gtk.Window.Gtk_Window_Record with null record;
+
+   pragma Import (C, Get_Type, "gtk_color_selection_dialog_get_type");
 
 end Gtk.Color_Selection_Dialog;
