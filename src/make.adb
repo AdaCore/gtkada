@@ -49,6 +49,7 @@ with Gdk.Image;
 with Gdk.Input;
 with Gdk.Keyval;
 with Gdk.Main;
+with Gdk.Pixbuf;
 with Gdk.Pixmap;
 with Gdk.Property;
 with Gdk.Rectangle;
