@@ -32,29 +32,29 @@ with System;
 package Gdk is
 
    type Root_Type is abstract tagged private;
+   type Root_Type_Access is access all Root_Type'Class;
 
-
-   function Is_Created (Object : in Root_Type) return Boolean;
-   --  Test if the corresponding object has been created (ie the associated
-   --  pointer is not null and the object is not tagged as destroyed.
+   --  GtkAda0.6: Is_Created has been deleted. You should simply check
+   --  whether the Widget is 'null', since we now use pointers everywhere
 
    generic
       type To is new Root_Type with private;
-   function Unchecked_Cast (From : in Root_Type'Class)
-                            return To;
+   function Unchecked_Cast (From : in Root_Type'Class) return To;
    --  This function allows the conversion any two widget types.
    --  Warning : no verification is done at Ada level. The only verification
-   --  are done by gtk itself. Whenever possible, avoir using this function
+   --  are done by gtk itself. Whenever possible, avoid using this function
 
 
-   --  The following 2 services are for INTERNAL use only. They are not
-   --  declared inside the private part for visibilty issues. Do NOT use them
-   --  outside of the binding.
-   --
+   --  The following services are for INTERNAL use only. They are not
+   --  declared inside the private part for visibility issues. Do NOT
+   --  use them outside of the binding.
    function Get_Object (Object : in Root_Type'Class) return System.Address;
+   function Get_Object (Object : access Root_Type'Class) return System.Address;
    pragma Inline (Get_Object);
 
    procedure Set_Object (Object : in out Root_Type'Class;
+                         Value  : in     System.Address);
+   procedure Set_Object (Object : access Root_Type'Class;
                          Value  : in     System.Address);
    pragma Inline (Set_Object);
 

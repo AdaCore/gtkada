@@ -38,15 +38,11 @@ package body Gdk is
       return Object.Ptr;
    end Get_Object;
 
-   ------------------
-   --  Is_Created  --
-   ------------------
-
-   function Is_Created (Object : in Root_Type) return Boolean is
-      use type System.Address;
+   function Get_Object (Object : access Root_Type'Class) return System.Address
+   is
    begin
-      return Get_Object (Object) /= System.Null_Address;
-   end Is_Created;
+      return Object.Ptr;
+   end Get_Object;
 
    ------------------
    --  Set_Object  --
@@ -58,13 +54,17 @@ package body Gdk is
       Object.Ptr := Value;
    end Set_Object;
 
+   procedure Set_Object (Object : access Root_Type'Class;
+                         Value  : in     System.Address) is
+   begin
+      Object.Ptr := Value;
+   end Set_Object;
+
    --------------------
    -- Unchecked_Cast --
    --------------------
 
-   function Unchecked_Cast (From : in Root_Type'Class)
-                            return To
-   is
+   function Unchecked_Cast (From : in Root_Type'Class) return To is
       T : To;
    begin
       Set_Object (T, Get_Object (From));
