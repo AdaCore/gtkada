@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 1998-1999                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2003 ACT Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,6 +40,7 @@ with Gtk.Widget;       use Gtk.Widget;
 with Gtk.Window;       use Gtk.Window;
 with Gtkada.Types;     use Gtkada.Types;
 with Interfaces.C.Strings;
+with Gtk.Extra.Plot;
 
 package Common is
 
@@ -72,19 +74,21 @@ package Common is
 
    procedure Build_Option_Menu
      (Omenu   : out Gtk.Option_Menu.Gtk_Option_Menu;
-      Gr      : out Widget_Slist.GSlist;
+      Gr      : in out Widget_Slist.GSlist;
       Items   : Chars_Ptr_Array;
       History : Gint;
       Cb      : Widget_Handler.Marshallers.Void_Marshaller.Handler);
-   --
    --  Builds an option menu with the given list of items.
    --  If 'History' is in Items'Range, then item number 'History'
    --  will be set to active.
 
    function Image_Of (I : in Gint) return String;
-   --
    --  Returns the image of the given Gint. The leading spaces are
    --  stripped.
+
+   procedure Set_Default_Plot_Attributes
+     (Plot : access Gtk.Extra.Plot.Gtk_Plot_Record'Class);
+   --  Set the default attributes for a plot (fonts,...)
 
    package ICS renames Interfaces.C.Strings;
    Book_Open_Xpm    : ICS.chars_ptr_array :=
