@@ -13,6 +13,9 @@ with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Color_Selection; use Gtk.Color_Selection;
 with Interfaces.C.Strings;
 with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
+with Gtk.Gamma_Curve; use Gtk.Gamma_Curve;
+with Gtk.Drawing_Area; use Gtk.Drawing_Area;
+with Gtk.Curve; use Gtk.Curve;
 
 package body Test is
 
@@ -21,39 +24,44 @@ package body Test is
    package Void_Cb   is new Void_Callback (Gtk.Window.Gtk_Window);
    package Void_Cb_Button is new Void_Callback (Gtk.Button.Gtk_Button);
    package ColSel_Cb is new Object_Callback (Gtk_Color_Selection_Dialog);
+   package Gamma_Cb is new Callback (Gtk_Gamma_Curve, Gtk_Button);
    use Gtk.Combo.String_List;
 
    package ICS renames Interfaces.C.Strings;
 
    Status   : Gtk_Status_Bar;
 
-   procedure Hello (Widget : in out Gtk.Button.Gtk_Button;
+   procedure Hello (Widget : access Gtk.Button.Gtk_Button'Class;
                     S      : in     String7);
-   procedure Destroy (Object : in out Gtk.Window.Gtk_Window);
-   procedure Launch_Dialog (Object : in out Gtk.Button.Gtk_Button);
-   procedure Print_Color (Dialog : in out Gtk_Color_Selection_Dialog'Class);
+   procedure App_Destroy (Object : access Gtk.Window.Gtk_Window'Class);
+   procedure Launch_Dialog (Object : access Gtk.Button.Gtk_Button'Class);
+   procedure Launch_Drawing (Object : access Gtk.Button.Gtk_Button'Class);
+   procedure Launch_Gamma (Object : access Gtk.Button.Gtk_Button'Class);
+   procedure Print_Color (Dialog : access Gtk_Color_Selection_Dialog'Class);
+   procedure Print_Gamma_Vector (Button : access Gtk_Button'Class;
+                                 Gamma  : in Gtk_Gamma_Curve);
 
    -----------
    -- Hello --
    -----------
 
-   procedure Hello (Widget : in out Gtk.Button.Gtk_Button;
+   procedure Hello (Widget : access Gtk.Button.Gtk_Button'Class;
                     S      : in     String7) is
       Message : Message_Id;
    begin
       Ada.Text_IO.Put_Line ("Hello World  => String was=" & S);
       Message := Push (Status, 1, S);
-      Gtk.Destroy (Widget);
+--      Gtk.Destroy (Widget);
    end Hello;
 
    -----------------
    -- Print_Color --
    -----------------
 
-   procedure Print_Color (Dialog : in out Gtk_Color_Selection_Dialog'Class) is
+   procedure Print_Color (Dialog : access Gtk_Color_Selection_Dialog'Class) is
       Color : Color_Array;
    begin
-      Get_Color (Get_Colorsel (Dialog), Color);
+      Get_Color (Get_Colorsel (Dialog.all), Color);
       for I in Red .. Opacity loop
          Ada.Text_IO.Put_Line (Color_Index'Image (I)
                                & " => "
@@ -65,8 +73,8 @@ package body Test is
    -- Launch_Dialog --
    -------------------
 
-   procedure Launch_Dialog (Object : in out Gtk.Button.Gtk_Button) is
-      Dialog : aliased Gtk_Color_Selection_Dialog;
+   procedure Launch_Dialog (Object : access Gtk.Button.Gtk_Button'Class) is
+      Dialog : Gtk_Color_Selection_Dialog;
       Id     : Guint;
    begin
       Gtk_New (Dialog);
@@ -75,18 +83,83 @@ package body Test is
       Id := ColSel_Cb.Connect (Get_OK_Button (Dialog), "clicked",
                                Print_Color'Access, Dialog);
 --       Id := ColSel_Cb.Connect (Get_Cancel_Button (Dialog), "clicked",
---                                Destroy'Access, Dialog);
+--                                Gtk.Destroy'Access, Dialog);
    end Launch_Dialog;
+
+   --------------------
+   -- Launch_Drawing --
+   --------------------
+
+   procedure Launch_Drawing (Object : access Gtk.Button.Gtk_Button'Class) is
+      Drawing  : Gtk_Drawing_Area;
+      Dialog : Gtk_Window;
+   begin
+      Gtk_New (Dialog, Window_Toplevel);
+      Gtk_New (Drawing);
+      Add (Dialog, Drawing);
+      Show (Drawing);
+      Show (Dialog);
+   end Launch_Drawing;
+
+   -----------------
+   -- Lauch_Gamma --
+   -----------------
+
+   procedure Launch_Gamma (Object : access Gtk.Button.Gtk_Button'Class) is
+      Gamma  : Gtk_Gamma_Curve;
+      Dialog : Gtk_Window;
+      Box    : Gtk_Vbox;
+      Button : Gtk_Button;
+      Id     : Guint;
+   begin
+      Gtk_New (Dialog, Window_Toplevel);
+
+      Gtk_New (Box, False, 0);
+
+      Gtk_New (Gamma);
+      Add (Box, Gamma);
+      Show (Gamma);
+
+      Gtk_New (Button, With_Label => "Print Vector");
+      Add (Box, Button);
+      Id := Gamma_Cb.Connect (Button, "clicked",
+                              Print_Gamma_Vector'Access, Gamma);
+      Show (Button);
+
+      Show (Box);
+      Add (Dialog, Box);
+      Show (Dialog);
+
+      Set_Range (Get_Curve (Gamma), 0.0, 127.0, 0.0, 127.0);
+   end Launch_Gamma;
+
+   ------------------------
+   -- Print_Gamma_Vector --
+   ------------------------
+
+   procedure Print_Gamma_Vector (Button : access Gtk_Button'Class;
+                                 Gamma  : in Gtk_Gamma_Curve)
+   is
+      Vector : Curve_Vector (10);
+   begin
+      Get_Vector (Get_Curve (Gamma), Vector);
+
+      Ada.Text_IO.Put_Line ("Gamma vector");
+      for I in Vector.Vector'Range loop
+         Ada.Text_IO.Put_Line (Gfloat'Image (Vector.Vector (I)));
+      end loop;
+
+   end Print_Gamma_Vector;
 
    -------------
    -- Destroy --
    -------------
 
-   procedure Destroy (Object : in out Gtk.Window.Gtk_Window) is
+   procedure App_Destroy (Object : access Gtk.Window.Gtk_Window'Class) is
    begin
       Ada.Text_IO.Put_Line ("Destroy");
       Main_Quit;
-   end Destroy;
+   end App_Destroy;
 
    ----------
    -- Main --
@@ -110,7 +183,7 @@ package body Test is
       Gtk_New (A_Window, Window_Toplevel);
       Set_Title (A_Window, "Hello buttons");
       Border_Width (A_Window, 10);
-      Id := Void_Cb.Connect (A_Window, "destroy", Destroy'Access);
+      Id := Void_Cb.Connect (A_Window, "destroy", App_Destroy'Access);
 
       --  Create the box to store the buttons
       Gtk_New (V_Box, False, 0);
@@ -162,6 +235,20 @@ package body Test is
       Pack_Start (V_Box, A_Button, True, True, 5);
       Show (A_Button);
 
+      --  Launch gamma curve
+      Gtk_New (A_Button, With_Label => "Gamma Curve");
+      Id := Void_Cb_Button.Connect (A_Button, "clicked",
+                                    Launch_Gamma'Access);
+      Pack_Start (V_Box, A_Button, True, True, 5);
+      Show (A_Button);
+
+      --  Launch drawing area
+      Gtk_New (A_Button, With_Label => "Drawing Area");
+      Id := Void_Cb_Button.Connect (A_Button, "clicked",
+                                    Launch_Drawing'Access);
+      Pack_Start (V_Box, A_Button, True, True, 5);
+      Show (A_Button);
+
       --  Show the box
       Show (A_Box);
       Show (V_Box);
@@ -169,7 +256,6 @@ package body Test is
       Show (A_Window);
 
       Gtk.Main;
-      --  Call the main loop   (gtk_main)
    end Main;
 
 end Test;
