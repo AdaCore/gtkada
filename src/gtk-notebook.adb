@@ -190,7 +190,7 @@ package body Gtk.Notebook is
 
    function Get_Nth_Page
      (Widget   : access Gtk_Notebook_Record'Class;
-      Page_Num : Gint) return Gtk_Widget
+      Page_Num : Gint) return Gtk.Widget.Gtk_Widget
    is
       function Internal (Widget   : in System.Address;
                          Page_Num : Gint) return System.Address;
