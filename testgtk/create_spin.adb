@@ -105,7 +105,8 @@ package body Create_Spin is
 
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
-         Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
+         Id := Widget2_Cb.Connect (Window, "destroy",
+                                   Gtk.Widget.Destroyed'Access,
                                    Window'Access);
          Set_Title (Window, "spin buttons");
          Set_Border_Width (Window, Border_Width => 0);
