@@ -60,9 +60,14 @@ package body Create_Calendar is
       Add (Frame, Box1);
       Show (Box1);
 
-      Gtk_New (Calendar);
-      Pack_Start (Box1, Calendar, False, False, 0);
-      Show (Calendar);
+      --  ??? To be investigated :
+      --  the following lines cause testgtk to crash when selecting the
+      --  calendar and then selecting another test. Most likely a bug in the
+      --  calendar itself.
+
+      --       Gtk_New (Calendar);
+      --       Pack_Start (Box1, Calendar, False, False, 0);
+      --       Show (Calendar);
    end Run;
 
 end Create_Calendar;
