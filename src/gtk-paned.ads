@@ -36,12 +36,35 @@ package Gtk.Paned is
      with private;
    type Gtk_Paned is access all Gtk_Paned_Record'Class;
 
-   procedure Add1 (Paned : access Gtk_Paned_Record; Child : in Gtk_Widget);
-   procedure Add2 (Paned : access Gtk_Paned_Record; Child : in Gtk_Widget);
+   procedure Add1 (Paned : access Gtk_Paned_Record;
+                   Child : access Gtk_Widget_Record'Class);
+   procedure Add2 (Paned : access Gtk_Paned_Record;
+                   Child : access Gtk_Widget_Record'Class);
+   function Get_Child1 (Paned : access Gtk_Paned_Record)
+                        return Gtk.Widget.Gtk_Widget;
+
+   --  Get the fields from the C structures
+   function Get_Child1_Resize (Paned : access Gtk_Paned_Record) return Boolean;
+   function Get_Child2_Resize (Paned : access Gtk_Paned_Record) return Boolean;
+   function Get_Child1_Shrink (Paned : access Gtk_Paned_Record) return Boolean;
+   function Get_Child2_Shrink (Paned : access Gtk_Paned_Record) return Boolean;
+
+
+   function Get_Child2 (Paned : access Gtk_Paned_Record)
+                        return Gtk.Widget.Gtk_Widget;
    procedure Gtk_New_Vpaned (Widget : out Gtk_Paned);
    procedure Gtk_New_Hpaned (Widget : out Gtk_Paned);
    procedure Initialize_Vpaned (Widget : access Gtk_Paned_Record);
    procedure Initialize_Hpaned (Widget : access Gtk_Paned_Record);
+   procedure Pack1 (Paned : access Gtk_Paned_Record;
+                    Child : access Gtk_Widget_Record'Class;
+                    Resize : in Boolean;
+                    Shrink : in Boolean);
+   procedure Pack2 (Paned : access Gtk_Paned_Record;
+                    Child : access Gtk_Widget_Record'Class;
+                    Resize : in Boolean;
+                    Shrink : in Boolean);
+
    procedure Set_Gutter_Size (Paned : access Gtk_Paned_Record;
                               Size  : in Guint16);
    procedure Set_Handle_Size (Paned : access Gtk_Paned_Record;

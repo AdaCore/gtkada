@@ -38,7 +38,7 @@ package body Gtk.Paned is
 
    procedure Add1
       (Paned : access Gtk_Paned_Record;
-       Child : in Gtk.Widget.Gtk_Widget)
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Paned : in System.Address;
@@ -54,7 +54,7 @@ package body Gtk.Paned is
 
    procedure Add2
       (Paned : access Gtk_Paned_Record;
-       Child : in Gtk.Widget.Gtk_Widget)
+       Child : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Paned : in System.Address;
@@ -63,6 +63,88 @@ package body Gtk.Paned is
    begin
       Internal (Get_Object (Paned), Get_Object (Child));
    end Add2;
+
+   ----------------
+   -- Get_Child1 --
+   ----------------
+
+   function Get_Child1 (Paned : access Gtk_Paned_Record)
+                        return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Paned : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_paned_get_child1");
+      Stub : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (Paned)), Stub));
+   end Get_Child1;
+
+   ----------------
+   -- Get_Child2 --
+   ----------------
+
+   function Get_Child2 (Paned : access Gtk_Paned_Record)
+                        return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Paned : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_paned_get_child2");
+      Stub : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (Paned)), Stub));
+   end Get_Child2;
+
+   -----------------------
+   -- Get_Child1_Resize --
+   -----------------------
+
+   function Get_Child1_Resize (Paned : access Gtk_Paned_Record)
+                               return Boolean
+   is
+      function Internal (Paned : System.Address) return Boolean;
+      pragma Import (C, Internal, "ada_paned_get_child1_resize");
+   begin
+      return Internal (Get_Object (Paned));
+   end Get_Child1_Resize;
+
+   -----------------------
+   -- Get_Child2_Resize --
+   -----------------------
+
+   function Get_Child2_Resize (Paned : access Gtk_Paned_Record)
+                               return Boolean
+   is
+      function Internal (Paned : System.Address) return Boolean;
+      pragma Import (C, Internal, "ada_paned_get_child2_resize");
+   begin
+      return Internal (Get_Object (Paned));
+   end Get_Child2_Resize;
+
+   -----------------------
+   -- Get_Child1_Shrink --
+   -----------------------
+
+   function Get_Child1_Shrink (Paned : access Gtk_Paned_Record)
+                               return Boolean
+   is
+      function Internal (Paned : System.Address) return Boolean;
+      pragma Import (C, Internal, "ada_paned_get_child1_shrink");
+   begin
+      return Internal (Get_Object (Paned));
+   end Get_Child1_Shrink;
+
+   -----------------------
+   -- Get_Child2_Shrink --
+   -----------------------
+
+   function Get_Child2_Shrink (Paned : access Gtk_Paned_Record)
+                               return Boolean
+   is
+      function Internal (Paned : System.Address) return Boolean;
+      pragma Import (C, Internal, "ada_paned_get_child2_shrink");
+   begin
+      return Internal (Get_Object (Paned));
+   end Get_Child2_Shrink;
 
    --------------------
    -- Gtk_New_Hpaned --
@@ -107,6 +189,42 @@ package body Gtk.Paned is
       Set_Object (Widget, Internal);
       Initialize_User_Data (Widget);
    end Initialize_Vpaned;
+
+   -----------
+   -- Pack1 --
+   -----------
+
+   procedure Pack1 (Paned : access Gtk_Paned_Record;
+                    Child : access Gtk_Widget_Record'Class;
+                    Resize : in Boolean;
+                    Shrink : in Boolean)
+   is
+      procedure Internal
+        (Paned : System.Address; Child : System.Address;
+         Resize : Gint; Shrinkk : Gint);
+      pragma Import (C, Internal, "gtk_paned_pack1");
+   begin
+      Internal (Get_Object (Paned), Get_Object (Child),
+                Boolean'Pos (Resize), Boolean'Pos (Shrink));
+   end Pack1;
+
+   -----------
+   -- Pack2 --
+   -----------
+
+   procedure Pack2 (Paned : access Gtk_Paned_Record;
+                    Child : access Gtk_Widget_Record'Class;
+                    Resize : in Boolean;
+                    Shrink : in Boolean)
+   is
+      procedure Internal
+        (Paned : System.Address; Child : System.Address;
+         Resize : Gint; Shrinkk : Gint);
+      pragma Import (C, Internal, "gtk_paned_pack2");
+   begin
+      Internal (Get_Object (Paned), Get_Object (Child),
+                Boolean'Pos (Resize), Boolean'Pos (Shrink));
+   end Pack2;
 
    ---------------------
    -- Set_Gutter_Size --
