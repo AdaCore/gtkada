@@ -49,5 +49,4 @@ private
 
    type Gdk_Bitmap is new Gdk.Drawable.Gdk_Drawable with null record;
 
-
 end Gdk.Bitmap;
