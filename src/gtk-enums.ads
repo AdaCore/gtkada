@@ -157,6 +157,17 @@ package Gtk.Enums is
                            Visibility_Partial,
                            Visibility_Full);
 
+   type Gtk_Progress_Bar_Style is (Continuous,
+                                   Discrete);
+   --  enum type introduced in gtk1.1
+
+   type Gtk_Progress_Bar_Orientation is (Left_To_Right,
+                                         Right_To_Left,
+                                         Bottom_To_Top,
+                                         Top_To_Bottom);
+   --  enum type introduced in gtk1.1
+
+
    --  Some Glib instanciations
 
    function Convert (S : String) return System.Address;
