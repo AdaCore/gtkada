@@ -687,6 +687,9 @@ private
       Initial : Gtk.Widget.Gtk_Widget;
       --  The widget we used to build this child.
 
+      Main_Box : Gtk.Box.Gtk_Box;
+      --  The main containes.
+
       X, Y : Glib.Gint;
       --  Note: the coordinates of children are the coordinates inside
       --  MDI.Layout.
