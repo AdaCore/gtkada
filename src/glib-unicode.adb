@@ -136,10 +136,10 @@ package body Glib.Unicode is
    end Is_Punct;
 
    ------------------
-   -- Utf8_Strdown --
+   -- UTF8_Strdown --
    ------------------
 
-   function Utf8_Strdown (Str : UTF8_String) return UTF8_String is
+   function UTF8_Strdown (Str : UTF8_String) return UTF8_String is
       function Internal (Str : UTF8_String) return ICS.chars_ptr;
       pragma Import (C, Internal, "g_utf8_strdown");
 
@@ -148,13 +148,13 @@ package body Glib.Unicode is
    begin
       Free (S);
       return Result;
-   end Utf8_Strdown;
+   end UTF8_Strdown;
 
    ----------------
-   -- Utf8_Strup --
+   -- UTF8_Strup --
    ----------------
 
-   function Utf8_Strup (Str : UTF8_String) return UTF8_String is
+   function UTF8_Strup (Str : UTF8_String) return UTF8_String is
       function Internal (Str : UTF8_String) return ICS.chars_ptr;
       pragma Import (C, Internal, "g_utf8_strup");
 
@@ -163,13 +163,13 @@ package body Glib.Unicode is
    begin
       Free (S);
       return Result;
-   end Utf8_Strup;
+   end UTF8_Strup;
 
    -------------------------
-   -- Utf8_Find_Next_Char --
+   -- UTF8_Find_Next_Char --
    -------------------------
 
-   function Utf8_Find_Next_Char
+   function UTF8_Find_Next_Char
      (Str : UTF8_String; Index : Natural) return Natural
    is
       function Internal (Str, Str_End : System.Address) return System.Address;
@@ -180,13 +180,13 @@ package body Glib.Unicode is
       Result := Internal (Str'Address + Storage_Offset (Index),
                           Str'Address + Storage_Offset (Str'Length));
       return Natural (Result - Str'Address);
-   end Utf8_Find_Next_Char;
+   end UTF8_Find_Next_Char;
 
    -------------------------
-   -- Utf8_Find_Prev_Char --
+   -- UTF8_Find_Prev_Char --
    -------------------------
 
-   function Utf8_Find_Prev_Char
+   function UTF8_Find_Prev_Char
      (Str : UTF8_String; Index : Natural) return Natural
    is
       function Internal (Start, Str : System.Address) return System.Address;
@@ -197,7 +197,7 @@ package body Glib.Unicode is
       Result := Internal (Str'Address,
                           Str'Address + Storage_Offset (Index));
       return Natural (Result - Str'Address);
-   end Utf8_Find_Prev_Char;
+   end UTF8_Find_Prev_Char;
 
    ---------------------
    -- Unichar_To_UTF8 --
@@ -206,43 +206,43 @@ package body Glib.Unicode is
    function Unichar_To_UTF8
      (C : Gunichar; Buffer : UTF8_String) return Natural
    is
-      function Internal (C : Gunichar; Buffer : System.Address) return Natural;
+      function Internal (C : Gunichar; Buffer : System.Address) return Integer;
       pragma Import (C, Internal, "g_unichar_to_utf8");
    begin
       return Internal (C, Buffer'Address);
    end Unichar_To_UTF8;
 
    -------------------
-   -- Utf8_Get_Char --
+   -- UTF8_Get_Char --
    -------------------
 
-   function Utf8_Get_Char (Str : UTF8_String) return Gunichar is
+   function UTF8_Get_Char (Str : UTF8_String) return Gunichar is
       function Internal (Str : System.Address) return Gunichar;
       pragma Import (C, Internal, "g_utf8_get_char");
    begin
       return Internal (Str'Address);
-   end Utf8_Get_Char;
+   end UTF8_Get_Char;
 
    -----------------------------
-   -- Utf8_Get_Char_Validated --
+   -- UTF8_Get_Char_Validated --
    -----------------------------
 
-   function Utf8_Get_Char_Validated (Str : UTF8_String) return Gunichar is
+   function UTF8_Get_Char_Validated (Str : UTF8_String) return Gunichar is
       function Internal (Str : System.Address) return Gunichar;
       pragma Import (C, Internal, "g_utf8_get_char_validated");
    begin
       return Internal (Str'Address);
-   end Utf8_Get_Char_Validated;
+   end UTF8_Get_Char_Validated;
 
    -----------------
-   -- Utf8_Strlen --
+   -- UTF8_Strlen --
    -----------------
 
-   function Utf8_Strlen (Str : UTF8_String) return Glong is
+   function UTF8_Strlen (Str : UTF8_String) return Glong is
       function Internal (Str : System.Address; Max : Integer) return Glong;
       pragma Import (C, Internal, "g_utf8_strlen");
    begin
       return Internal (Str'Address, Str'Length);
-   end Utf8_Strlen;
+   end UTF8_Strlen;
 
 end Glib.Unicode;

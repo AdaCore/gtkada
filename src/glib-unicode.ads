@@ -121,50 +121,50 @@ package Glib.Unicode is
    function To_Upper (Char : Gunichar) return Gunichar;
    --  Convert Char to upper cases
 
-   function Utf8_Strdown
+   function UTF8_Strdown
      (Str : ICS.chars_ptr; Len : Integer) return ICS.chars_ptr;
-   pragma Import (C, Utf8_Strdown, "g_utf8_strdown");
+   pragma Import (C, UTF8_Strdown, "g_utf8_strdown");
    --  Convert all characters in Str to lowercase. The resulting string
    --  must be freed by the user. It can have a different length than
    --  Str.
 
-   function Utf8_Strdown (Str : UTF8_String) return UTF8_String;
+   function UTF8_Strdown (Str : UTF8_String) return UTF8_String;
    --  Convert Str to lower cases
 
-   function Utf8_Strup
+   function UTF8_Strup
      (Str : ICS.chars_ptr; Len : Integer) return ICS.chars_ptr;
-   pragma Import (C, Utf8_Strup, "g_utf8_strup");
+   pragma Import (C, UTF8_Strup, "g_utf8_strup");
    --  Convert all characters in Str to uppercase. The resulting string is
    --  newly allocated, and can have a different length than Str (for
    --  instance, the german ess-zet is converted to SS).
    --  The returned string must be freed by the caller.
 
-   function Utf8_Strup (Str : UTF8_String) return UTF8_String;
+   function UTF8_Strup (Str : UTF8_String) return UTF8_String;
    --  Convert Str to upper cases
 
    ---------------------------
    --  Manipulating strings --
    ---------------------------
 
-   function Utf8_Strlen
+   function UTF8_Strlen
      (Str : ICS.chars_ptr; Max : Integer := -1) return Glong;
-   pragma Import (C, Utf8_Strlen, "g_utf8_strlen");
+   pragma Import (C, UTF8_Strlen, "g_utf8_strlen");
    --  Return the length of a utf8-encoded string.
    --  Max is the maximal number of bytes to examine. If it is negative, then
    --  the string is assumed to be nul-terminated.
 
-   function Utf8_Strlen (Str : UTF8_String) return Glong;
+   function UTF8_Strlen (Str : UTF8_String) return Glong;
    --  Return the number of characters in Str
 
-   function Utf8_Find_Next_Char
+   function UTF8_Find_Next_Char
      (Str     : ICS.chars_ptr;
       Str_End : ICS.chars_ptr := ICS.Null_Ptr) return ICS.chars_ptr;
-   pragma Import (C, Utf8_Find_Next_Char, "g_utf8_find_next_char");
+   pragma Import (C, UTF8_Find_Next_Char, "g_utf8_find_next_char");
    --  Find the start of the next UTF8 character after Str.
    --  Str_End points to the end of the string. If Null_Ptr, the string must
    --  be nul-terminated
 
-   function Utf8_Find_Next_Char
+   function UTF8_Find_Next_Char
      (Str : UTF8_String; Index : Natural) return Natural;
    --  Find the start of the next UTF8 character after the Index-th byte.
    --  Index doesn't need to be on the start of a character.
@@ -172,14 +172,14 @@ package Glib.Unicode is
    --  character.
    --  Null_Ptr is returned if there is no previous character
 
-   function Utf8_Find_Prev_Char
+   function UTF8_Find_Prev_Char
      (Str_Start : ICS.chars_ptr; Str : ICS.chars_ptr) return ICS.chars_ptr;
-   pragma Import (C, Utf8_Find_Prev_Char, "g_utf8_find_prev_char");
+   pragma Import (C, UTF8_Find_Prev_Char, "g_utf8_find_prev_char");
    --  Find the start of the previous UTF8 character before Str.
    --  Str_Start is a pointer to the beginning of the string.
    --  Null_Ptr is returned if there is no previous character
 
-   function Utf8_Find_Prev_Char
+   function UTF8_Find_Prev_Char
      (Str : UTF8_String; Index : Natural) return Natural;
    --  Find the start of the previous UTF8 character after the Index-th byte.
    --  Index doesn't need to be on the start of a character.
@@ -203,12 +203,12 @@ package Glib.Unicode is
    --  Encode C into Buffer. Buffer must have at least 6 bytes free.
    --  Return the number of bytes written in Buffer.
 
-   function Utf8_Get_Char (Str : UTF8_String) return Gunichar;
+   function UTF8_Get_Char (Str : UTF8_String) return Gunichar;
    --  Converts a sequence of bytes encoded as UTF8 to a unicode character.
    --  If Str doesn't point to a valid UTF8 encoded character, the result is
    --  undefined.
 
-   function Utf8_Get_Char_Validated (Str : UTF8_String) return Gunichar;
+   function UTF8_Get_Char_Validated (Str : UTF8_String) return Gunichar;
    --  Same as above. However, if the sequence if an incomplete start of a
    --  possibly valid character, it returns -2. If the sequence is invalid,
    --  returns -1.
