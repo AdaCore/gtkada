@@ -31,6 +31,10 @@
 --  It provides initialization routines.
 --  </description>
 
+pragma Warnings (Off);
+with Glib.GObjects; use Glib.GObjects;
+pragma Warnings (On);
+
 package Gnome is
    pragma Elaborate_Body;
 
