@@ -1,9 +1,11 @@
 with Ada.Strings.Fixed;
+with Ada.Strings.Unbounded;
 with Glib; use Glib;
 with Gtk; use Gtk;
 with Gtk.Box;
 with Gtk.Button;
 with Gtk.Container;
+with Gtk.HSeparator;
 with Gtk.Label;
 with Gtk.Main;
 with Gtk.Rc;
@@ -14,21 +16,91 @@ with Gtk.Widget;
 with Gtk.Window;
 
 
-with Ada.Text_IO; use Ada.Text_IO;
+--  with Ada.Text_IO; use Ada.Text_IO;
 
 package body Test is
 
+   package ASU renames Ada.Strings.Unbounded;
+
+
    procedure Create_Main_Window;
+
+   procedure Do_Exit (Widget : in out Gtk.Widget.Gtk_Widget'Class;
+                      Data : in out Window.Gtk_Window);
    procedure Exit_Main (Object : in out Window.Gtk_Window'Class);
+
    function Gtk_Version_Number return String;
+
 
    -------------------------------
    --  Callback instantiations  --
    -------------------------------
 
+   package Button_Callback is new Signal.Void_Callback
+     (Widget_Type => Button.Gtk_Button);
+   use type Button_Callback.Callback;
+
+   package Do_Exit_Callback is new Signal.Callback
+     (Data_Type => Window.Gtk_Window, Widget_Type => Widget.Gtk_Widget);
+
    package Window_Callback is new Signal.Void_Callback
      (Widget_Type => Window.Gtk_Window);
 
+
+   ----------------------
+   --  The buttons...  --
+   ----------------------
+
+   type Button_Information is
+      record
+         Label : ASU.Unbounded_String;
+         Cb : Button_Callback.Callback;
+      end record;
+
+   type Buttons_Array is array (Positive range <>) of Button_Information;
+
+   Buttons : constant Buttons_Array :=
+     ((ASU.To_Unbounded_String ("button box"), null),
+      (ASU.To_Unbounded_String ("buttons"), null),
+      (ASU.To_Unbounded_String ("check buttons"), null),
+      (ASU.To_Unbounded_String ("clist"), null),
+      (ASU.To_Unbounded_String ("color selection"), null),
+      (ASU.To_Unbounded_String ("cursors"), null),
+      (ASU.To_Unbounded_String ("dialog"), null),
+      (ASU.To_Unbounded_String ("dnd"), null),
+      (ASU.To_Unbounded_String ("entry"), null),
+      (ASU.To_Unbounded_String ("file selection"), null),
+      (ASU.To_Unbounded_String ("gamma curve"), null),
+      (ASU.To_Unbounded_String ("handle box"), null),
+      (ASU.To_Unbounded_String ("list"), null),
+      (ASU.To_Unbounded_String ("menus"), null),
+      (ASU.To_Unbounded_String ("miscellaneous"), null),
+      (ASU.To_Unbounded_String ("notebook"), null),
+      (ASU.To_Unbounded_String ("panes"), null),
+      (ASU.To_Unbounded_String ("pixmap"), null),
+      (ASU.To_Unbounded_String ("preview color"), null),
+      (ASU.To_Unbounded_String ("preview gray"), null),
+      (ASU.To_Unbounded_String ("progress bar"), null),
+      (ASU.To_Unbounded_String ("radio buttons"), null),
+      (ASU.To_Unbounded_String ("range controls"), null),
+      (ASU.To_Unbounded_String ("reparent"), null),
+      (ASU.To_Unbounded_String ("rulers"), null),
+      (ASU.To_Unbounded_String ("scrolled windows"), null),
+      (ASU.To_Unbounded_String ("shapes"), null),
+      (ASU.To_Unbounded_String ("spinbutton"), null),
+      (ASU.To_Unbounded_String ("statusbar"), null),
+      (ASU.To_Unbounded_String ("test idle"), null),
+      (ASU.To_Unbounded_String ("test mainloop"), null),
+      (ASU.To_Unbounded_String ("test scrolling"), null),
+      (ASU.To_Unbounded_String ("test selection"), null),
+      (ASU.To_Unbounded_String ("test timeout"), null),
+      (ASU.To_Unbounded_String ("text"), null),
+      (ASU.To_Unbounded_String ("toggle buttons"), null),
+      (ASU.To_Unbounded_String ("toolbar"), null),
+      (ASU.To_Unbounded_String ("tooltips"), null),
+      (ASU.To_Unbounded_String ("tree"), null),
+      (ASU.To_Unbounded_String ("WM hints"), null)
+      );
 
    --------------------------
    --  Create_Main_Window  --
@@ -42,19 +114,20 @@ package body Test is
       A_Scrolled_Window : Scrolled_Window.Gtk_Scrolled_Window;
       Temp : Adjustment.Gtk_Adjustment;
       A_Button : Button.Gtk_Button;
+      Separator : HSeparator.Gtk_HSeparator;
    begin
       Window.Gtk_New (Window => Main_Window,
-                      The_Type => Window.Window_Toplevel);
+                      The_Type => Enums.Window_Toplevel);
       Widget.Set_Name (Widget => Main_Window, Name => "main window");
       Widget.Set_USize (Widget => Main_Window, Width => 200, Height => 400);
       Widget.Set_UPosition (Widget => Main_Window, X => 20, Y => 20);
 
       Cb_Id := Window_Callback.Connect (Obj => Main_Window, Name => "destroy",
                                         Func => Exit_Main'Access);
-      Cb_Id := Window_Callback.Connect
-        (Obj => Main_Window,
-         Name => "delete_event",
-         Func => Window_Callback.Void_Callback_Procedure'Access);
+--       Cb_Id := Window_Callback.Connect
+--         (Obj => Main_Window,
+--          Name => "delete_event",
+--          Func => Exit_Main'Access);
 
       Vbox.Gtk_New (Widget => Box1, Homogeneous => False, Spacing => 0);
       Container.Add (Container => Main_Window, Widget => Box1);
@@ -73,9 +146,8 @@ package body Test is
         (Scrolled_Window => A_Scrolled_Window,
          H_Scrollbar_Policy => Enums.Policy_Automatic,
          V_Scrollbar_Policy => Enums.Policy_Automatic);
-      --  GTK_WIDGET_UNSET_FLAGS (GTK_SCROLLED_WINDOW
-      --  (scrolled_window)->vscrollbar, GTK_CAN_FOCUS);
-      --  FIXME : Not binded. What is this for???
+      Object.Unset_Flags (Object => A_Scrolled_Window,
+                          Flags => Widget.Can_Focus);
       Box.Pack_Start (In_Box => Box1, Child => A_Scrolled_Window,
                       Expand => True, Fill => True);
       Widget.Show (A_Scrolled_Window);
@@ -88,6 +160,26 @@ package body Test is
       Container.Set_Focus_Vadjustment (Container => Box2, Adjustment => Temp);
       Widget.Show (Box2);
 
+      for Index in Buttons'Range loop
+
+         Button.Gtk_New (Widget => A_Button,
+                         Label => ASU.To_String (Buttons (Index).Label));
+         if Buttons (Index).Cb /= null then
+            Cb_Id := Button_Callback.Connect (Obj => A_Button,
+                                              Name => "clicked",
+                                              Func => Buttons (Index).Cb);
+         else
+            Widget.Set_Sensitive (Widget => A_Button, Sensitive => False);
+         end if;
+         Box.Pack_Start (In_Box => Box2, Child => A_Button);
+         Widget.Show (A_Button);
+
+      end loop;
+
+      HSeparator.Gtk_New (Separator);
+      Box.Pack_Start (In_Box => Box1, Child => Separator, Expand => False);
+      Widget.Show (Separator);
+
       Vbox.Gtk_New (Widget => Box2, Homogeneous => False, Spacing => 10);
       Container.Border_Width (Container => Box2, Border_Width => 10);
       Box.Pack_Start (In_Box => Box1, Child => Box2,
@@ -95,10 +187,12 @@ package body Test is
       Widget.Show (Box2);
 
       Button.Gtk_New (Widget => A_Button, Label => "close");
-      --  Signal_Connect ....
+      Cb_Id := Do_Exit_Callback.Connect (Obj => A_Button, Name => "clicked",
+                                        Func => Do_Exit'Access,
+                                        Func_Data => Main_Window);
       Box.Pack_Start (In_Box => Box2, Child => A_Button,
                       Expand => True, Fill => True);
-      --  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+      Object.Set_Flags (Object => A_Button, Flags => Widget.Can_Default);
       Widget.Grab_Default (A_Button);
       Widget.Show (A_Button);
 
@@ -106,6 +200,18 @@ package body Test is
 
    end Create_Main_Window;
 
+
+   ---------------
+   --  Do_Exit  --
+   ---------------
+
+   procedure Do_Exit (Widget : in out Gtk.Widget.Gtk_Widget'Class;
+                      Data : in out Window.Gtk_Window) is
+   begin
+      Gtk.Widget.Destroy (Data);
+      --      Gtk.Main.Main_Quit;
+      --  Not necessary.
+   end Do_Exit;
 
    -----------------
    --  Exit_Main  --
@@ -115,7 +221,6 @@ package body Test is
    begin
       Gtk.Main.Main_Quit;
    end Exit_Main;
-
 
 
    --------------------------
