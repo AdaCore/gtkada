@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -163,8 +163,9 @@ package Glib is
    --  <doc_ignore>
    pragma Convention (C, C_Proxy);
 
-   function Convert is new Ada.Unchecked_Conversion (System.Address, C_Proxy);
-   function Convert is new Ada.Unchecked_Conversion (C_Proxy, System.Address);
+   function To_Proxy is new Ada.Unchecked_Conversion (System.Address, C_Proxy);
+   function To_Address is new
+     Ada.Unchecked_Conversion (C_Proxy, System.Address);
    --  Converts from a System.Address returned by a C function to an
    --  internal C_Proxy.
 
