@@ -76,10 +76,6 @@ package Gtk.Text_Tag is
    --  Event: the event.
    --  Iter: location where the event was received.
 
-   --  ??? Might need a binding for the GtkTextAttributes structure.
-   --  ??? If needed, might be better off in a separate package.
-   --  ??? Will need lots of accessors...
-
    ------------------
    --  Properties  --
    ------------------
