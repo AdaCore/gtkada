@@ -8,7 +8,7 @@ func:
 	perl ../texi2html func.texi
 
 clean:
-	${RM} func.aux func.cp func.dvi func.fn func.html func.info func.ky 
+	${RM} func.aux func.cp func.dvi func.fn func.html func.info* func.ky 
 	${RM} func.log func.pg func.toc func.tp func.vr func_stoc.html func_toc.html 
-	${RM} generated.texi generated_menu.texi func.cps
+	${RM} generated.texi generated_menu.texi func.cps generated_submenu.texi
 
