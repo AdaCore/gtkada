@@ -103,8 +103,11 @@ package Glib.XML is
    --  Return null otherwise.
    --  Do not free the returned value.
 
-   procedure Add_Child (N : Node_Ptr; Child : Node_Ptr);
+   procedure Add_Child
+     (N : Node_Ptr; Child : Node_Ptr; Append : Boolean := False);
    --  Add a new child to a node.
+   --  If Append is true, the child is added at the end of the current list of
+   --  children.
 
    function Deep_Copy (N : Node_Ptr) return Node_Ptr;
    --  Return a deep copy of the tree starting with N. N can then be freed

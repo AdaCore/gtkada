@@ -374,11 +374,26 @@ package body Glib.XML is
    -- Add_Child --
    ---------------
 
-   procedure Add_Child (N : Node_Ptr; Child : Node_Ptr) is
+   procedure Add_Child
+     (N : Node_Ptr; Child : Node_Ptr; Append : Boolean := False)
+   is
+      Tmp : Node_Ptr;
    begin
-      Child.Next := N.Child;
-      Child.Parent := N;
-      N.Child := Child;
+      if Append then
+         if N.Child = null then
+            N.Child := Child;
+         else
+            Tmp := N.Child;
+            while Tmp.Next /= null loop
+               Tmp := Tmp.Next;
+            end loop;
+            Tmp.Next := Child;
+         end if;
+      else
+         Child.Next := N.Child;
+         Child.Parent := N;
+         N.Child := Child;
+      end if;
    end Add_Child;
 
    --------------
