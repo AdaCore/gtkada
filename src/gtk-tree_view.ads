@@ -27,6 +27,10 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  See extended documentation in Gtk.Tree_View_Column and Gtk.Tree_Store.
+--  </description>
+
 with Gdk.Pixmap;
 with Gdk.Rectangle;
 with Gdk.Window;
