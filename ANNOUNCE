@@ -8,6 +8,9 @@ The primary download site is http://libre.act-europe.fr/GtkAda
 
 New features in 1.2.11 include:
 
+- Support for GNOME is detected and handled automatically by configure
+- Many additional GNOME widgets bound (but are provided as is: they have not
+  been tested).
 - A new utility is provided to ease the automatic generation of bindings for
   new Gtk+/GNOME widgets. See the GtkAda User's Guide for more details.
 - Under Windows, non ASCII characters are now displayed instead of being
