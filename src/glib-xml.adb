@@ -371,6 +371,7 @@ package body Glib.XML is
             Index.all := Index.all + 1;
             Get_Buf (Buf, Index.all, '>', S);
             pragma Assert (N.Tag.all = S.all);
+            Free (S);
          end if;
 
          return N;
