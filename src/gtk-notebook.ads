@@ -142,8 +142,9 @@ package Gtk.Notebook is
    --  made with Menu_Label.
    --  The first position in the list of pages is 0.
 
-   procedure Remove_Page (Notebook : access Gtk_Notebook_Record;
-                          Page_Num : in Gint);
+   procedure Remove_Page
+     (Notebook : access Gtk_Notebook_Record;
+      Page_Num : in Gint);
    --  Remove a page from the notebook.
    --  The first position in the list of pages is 0.
 
@@ -157,8 +158,8 @@ package Gtk.Notebook is
    -- Modifying and getting the current page --
    --------------------------------------------
 
-   function Get_Current_Page (Notebook : access Gtk_Notebook_Record)
-                             return Gint;
+   function Get_Current_Page
+     (Notebook : access Gtk_Notebook_Record) return Gint;
    --  Get the number of the current page.
    --  The first page has the number 0.
 
@@ -198,47 +199,55 @@ package Gtk.Notebook is
    -- Style and visual aspect --
    -----------------------------
 
-   procedure Set_Show_Border (Notebook    : access Gtk_Notebook_Record;
-                              Show_Border : in Boolean);
+   procedure Set_Show_Border
+     (Notebook    : access Gtk_Notebook_Record;
+      Show_Border : in Boolean := True);
    --  Indicate whether the notebook should display borders.
    --  This border gives a 3D aspect to the notebook.
 
-   procedure Set_Show_Tabs (Notebook  : access Gtk_Notebook_Record;
-                            Show_Tabs : in Boolean);
+   procedure Set_Show_Tabs
+     (Notebook  : access Gtk_Notebook_Record;
+      Show_Tabs : in Boolean := True);
    --  Indicate whether the tabs should be displayed.
    --  If the tabs are not displayed, the only way for the user to select a
    --  new page is through the contextual menu, and thus you should make sure
    --  that the pages were created with the Insert_Page_Menu, ... subprograms.
 
-   procedure Set_Tab_Pos (Notebook : access Gtk_Notebook_Record;
-                          Pos      : in Gtk.Enums.Gtk_Position_Type);
+   procedure Set_Tab_Pos
+     (Notebook : access Gtk_Notebook_Record;
+      Pos      : in Gtk.Enums.Gtk_Position_Type);
    --  Change the position of the tabs.
    --  The tabs can be display on any of the four sides of the notebook.
 
-   function Get_Tab_Pos (Widget : access Gtk_Notebook_Record)
-                        return Gtk.Enums.Gtk_Position_Type;
+   function Get_Tab_Pos
+     (Widget : access Gtk_Notebook_Record) return Gtk.Enums.Gtk_Position_Type;
    --  Return the current position of the tabs.
 
-   procedure Set_Homogeneous_Tabs (Notebook    : access Gtk_Notebook_Record;
-                                   Homogeneous : in Boolean);
+   procedure Set_Homogeneous_Tabs
+     (Notebook    : access Gtk_Notebook_Record;
+      Homogeneous : in Boolean := True);
    --  Indicate whether all the tabs should have the same size (width or
    --  height, depending on which side they are displayed on).
 
-   procedure Set_Tab_Border (Notebook     : access Gtk_Notebook_Record;
-                             Border_Width : in Gint);
+   procedure Set_Tab_Border
+     (Notebook     : access Gtk_Notebook_Record;
+      Border_Width : in Gint);
    --  Change the width of the tabs' borders.
    --  This modifies both the horizontal border and the vertical border.
 
-   procedure Set_Tab_Hborder (Notebook     : access Gtk_Notebook_Record;
-                              Border_Width : in Gint);
+   procedure Set_Tab_Hborder
+     (Notebook     : access Gtk_Notebook_Record;
+      Border_Width : in Gint);
    --  Modify the width of the horizontal borders of the tabs.
 
-   procedure Set_Tab_Vborder (Notebook     : access Gtk_Notebook_Record;
-                              Border_Width : in Gint);
+   procedure Set_Tab_Vborder
+     (Notebook     : access Gtk_Notebook_Record;
+      Border_Width : in Gint);
    --  Modify the height of the vertical borders of the tabs.
 
-   procedure Set_Scrollable (Notebook   : access Gtk_Notebook_Record;
-                             Scrollable : in Boolean);
+   procedure Set_Scrollable
+     (Notebook   : access Gtk_Notebook_Record;
+      Scrollable : in Boolean := True);
    --  Indicate whether Notebook display scrolling arrows when there are
    --  too many tabs.
    --  The default is not to display such scrolling arrows. Note also that
@@ -270,7 +279,7 @@ package Gtk.Notebook is
    function Get_Tab_Label
      (Notebook  : access Gtk_Notebook_Record;
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class)
-     return Gtk.Widget.Gtk_Widget;
+      return Gtk.Widget.Gtk_Widget;
    --  Return the widget displayed in the tab used to select Page.
    --  This widget is in fact the one given in argument to Insert_Page,etc.
    --  when the page was created.
@@ -297,14 +306,15 @@ package Gtk.Notebook is
 
    --  <doc_ignore>
    --  This function is now obsolete, please do not use it.
-   procedure Set_Tab (Notebook  : access Gtk_Notebook_Record;
-                      Page_Num  : in Gint;
-                      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Set_Tab
+     (Notebook  : access Gtk_Notebook_Record;
+      Page_Num  : in Gint;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Set Notebook tab widget
    --  </doc_ignore>
 
-   function Get_Menu_Label (Page : in Gtk_Notebook_Page)
-                           return Gtk.Widget.Gtk_Widget;
+   function Get_Menu_Label
+     (Page : in Gtk_Notebook_Page) return Gtk.Widget.Gtk_Widget;
    --  Return the widget displayed in the contextual menu for the page.
    --  This is the widget given in argument to Insert_Page_Menu,
    --  Append_Page_Menu and Prepend_Page_Menu
@@ -366,15 +376,15 @@ package Gtk.Notebook is
    --  Return the list of all pages in the notebook.
 
    ----------------------------
-   -- Support for GATE/DGATE --
+   -- Support for Gate/Dgate --
    ----------------------------
 
-   procedure Generate (N        : in Node_Ptr;
-                       File     : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
 
-   procedure Generate (Notebook : in out Gtk.Object.Gtk_Object;
-                       N        : in Node_Ptr);
+   procedure Generate
+     (Notebook : in out Gtk.Object.Gtk_Object;
+      N        : in Node_Ptr);
    --  Dgate internal function
 
    -------------
