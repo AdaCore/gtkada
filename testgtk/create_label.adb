@@ -93,6 +93,17 @@ package body Create_Label is
       Add (Frame2, Label);
       Pack_Start (Vbox, Frame2, False, False, 0);
 
+      Gtk_New (Frame2, "Selectable Label");
+      Gtk_New (Label, "This is a selectable label "
+               & ASCII.LF
+               & "you can select the text with the "
+               & ASCII.LF
+               & "mouse and paste it.");
+      Set_Selectable (Label, True);
+      Add (Frame2, Label);
+      Pack_Start (Vbox, Frame2, False, False, 0);
+
+
       Gtk_New_Vbox (Vbox, False, 5);
       Pack_Start (Hbox, Vbox, False, False, 0);
 
@@ -135,6 +146,29 @@ package body Create_Label is
       Set_Pattern (Label,
                    "_________________________ _ _________ _ _____ _ __"
                    & " __  ___ ____ _____");
+      Add (Frame2, Label);
+      Pack_Start (Vbox, Frame2, False, False, 0);
+
+      Gtk_New (Frame2, "Markup Label");
+      Gtk_New (Label);
+
+      Set_Markup (Label,
+         ("<span size=""x-large"" weight=""ultrabold"""
+          & "background=""darkblue"" color=""white"">"
+          & "This label has <i>markup</i>!</span>"
+          & ASCII.LF
+          & "You can make text <b>bold</b> <i>italic</i> "
+          & "<u>underline</u> <s>striken</s> <big>big</big>. "
+          & ASCII.LF
+          & "<tt>You can also use mono spaced font</tt>"
+          & " and write H<sub><small>2</small></sub>O "
+          & "and "
+          & ASCII.LF
+          & "<span weight=""light"" color=""red"" size=""xx-large"">"
+          & "y=Σx<sub><small>i</small></sub>"
+          & "<sup><small>2</small></sup> "
+          & "+ 3</span>"
+          & " besides other things..."));
       Add (Frame2, Label);
       Pack_Start (Vbox, Frame2, False, False, 0);
 
