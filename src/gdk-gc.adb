@@ -107,6 +107,19 @@ package body Gdk.GC is
    end Gdk_New;
 
 
+   -----------
+   --  Ref  --
+   -----------
+
+   procedure Ref (GC : in out Gdk_GC) is
+      function Internal (GC : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_gc_ref");
+      S : System.Address;
+   begin
+      S := Internal (Get_Object (GC));
+   end Ref;
+
+
    ----------------------
    --  Set_Background  --
    ----------------------
@@ -274,7 +287,17 @@ package body Gdk.GC is
    end Set_Ts_Origin;
 
 
-   --  //  --
+   -------------
+   --  Unref  --
+   -------------
+
+   procedure Unref (GC : in out Gdk_GC) is
+      procedure Internal (GC : in System.Address);
+      pragma Import (C, Internal, "gdk_gc_unref");
+   begin
+      Internal (Get_Object (GC));
+      Set_Object (GC, System.Null_Address);
+   end Unref;
 
 
 end Gdk.GC;

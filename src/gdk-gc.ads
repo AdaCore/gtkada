@@ -51,6 +51,10 @@ package Gdk.GC is
 
    procedure Destroy (GC : in out Gdk_GC);
 
+   procedure Ref (GC : in out Gdk_GC);
+
+   procedure Unref (GC : in out Gdk_GC);
+
    procedure Get_Values (GC     : in     Gdk_GC'Class;
                          Values :    out Gdk_GC_Values);
 
@@ -68,6 +72,12 @@ package Gdk.GC is
 
    procedure Set_Fill (GC   : in out Gdk_GC;
                        Fill : in     Types.Gdk_Fill);
+
+   --  procedure Set_Tile
+   --  procedure Set_Stipple
+   --
+   --  Have been moved to the Gdk.GC.Pixmap child package for
+   --  circular dependency reasons.
 
    procedure Set_Ts_Origin (GC   : in out Gdk_GC;
                             X, Y : in     Gint);
