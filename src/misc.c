@@ -1329,6 +1329,19 @@ ada_gtk_adjustment_get_value (GtkAdjustment * adjustment)
   return adjustment->value;
 }
 
+
+gfloat
+ada_gtk_adjustment_get_page_size (GtkAdjustment * adjustment)
+{
+  return adjustment->page_size;
+}
+
+gfloat
+ada_gtk_adjustment_get_page_increment (GtkAdjustment * adjustment)
+{
+  return adjustment->page_increment;
+}
+
 gfloat
 ada_adjustment_get_lower (GtkAdjustment * adjustment)
 {
@@ -1368,7 +1381,7 @@ ada_gtk_adjustment_set_upper (GtkAdjustment * adjustment, gfloat upper)
 }
 
 gfloat
-ada_adjustment_get_step_increment (GtkAdjustment * adjustment)
+ada_gtk_adjustment_get_step_increment (GtkAdjustment * adjustment)
 {
   return adjustment->step_increment;
 }
