@@ -81,8 +81,14 @@ package body Gdk.Keyval is
          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gdk_keyval_name");
 
+      use type Interfaces.C.Strings.chars_ptr;
+      P : constant Interfaces.C.Strings.chars_ptr := Internal (Keyval);
    begin
-      return C.Strings.Value (Internal (Keyval));
+      if P = Interfaces.C.Strings.Null_Ptr then
+         return "";
+      else
+         return C.Strings.Value (P);
+      end if;
    end Name;
 
 
