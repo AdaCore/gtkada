@@ -3442,8 +3442,13 @@ package body Gtkada.MDI is
       --  Note: the following works because we are connected after the standard
       --  keypress event. Otherwise, standard keys in the child (space in
       --  editors most notably) will not work as expected.
-      return Return_Callback.Emit_By_Name
-        (Win, "key_press_event", Event);
+      if Get_Event_Type (Event) = Key_Press then
+         return Return_Callback.Emit_By_Name
+           (Win, "key_press_event", Event);
+      else
+         return Return_Callback.Emit_By_Name
+           (Win, "key_release_event", Event);
+      end if;
    end Key_Event_In_Floating;
 
    -----------------
