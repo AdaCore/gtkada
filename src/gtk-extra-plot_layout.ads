@@ -39,7 +39,7 @@
 --  These relative coordinates makes it really easy to handle the resizing
 --  of this container.
 --  </description>
---  <c_version>gtk+extra 0.99</c_version>
+--  <c_version>gtk+extra 0.99.1</c_version>
 
 with Gdk.Color;
 with Gtk.Enums;
@@ -111,6 +111,12 @@ package Gtk.Extra.Plot_Layout is
                            Px          : out Gdouble;
                            Py          : out Gdouble);
    --  Convert from absolute coordinates to relative ones.
+
+   procedure Set_Size (Plot_Layout : access Gtk_Plot_Layout_Record;
+                       Width       : in Gint;
+                       Height      : in Gint);
+   --  Modify the size allocated for the layout, and the size of the pixmap
+   --  the children are displayed on.
 
    -------------
    -- Signals --

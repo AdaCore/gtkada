@@ -38,7 +38,7 @@
 --  Like any child of Gtk_Layout, this widget can have an almost unlimited
 --  size for its children, and provides scrolling.
 --  </description>
---  <c_version>gtk+extra 0.99</c_version>
+--  <c_version>gtk+extra 0.99.1</c_version>
 
 with Gtk.Enums;
 with Gtk.Extra.Plot;
@@ -113,6 +113,12 @@ package Gtk.Extra.Plot_Canvas is
                             return      Gtk.Extra.Plot.Gtk_Plot_Text;
    --  Return the active text.
    --  This is the one that was last clicked on.
+
+   procedure Set_Size (Canvas  : access Gtk_Plot_Canvas_Record;
+                       Width   : in Gint;
+                       Height  : in Gint);
+   --  Modify the size allocated for the canvas, and the size of the pixmap
+   --  the plots are displayed on.
 
    -----------
    -- Flags --

@@ -221,4 +221,20 @@ package body Gtk.Extra.Plot_Canvas is
       Internal (Get_Object (Plot_Canvas), Flags);
    end Plot_Canvas_Unset_Flags;
 
+   --------------
+   -- Set_Size --
+   --------------
+
+   procedure Set_Size (Canvas  : access Gtk_Plot_Canvas_Record;
+                       Width   : in Gint;
+                       Height  : in Gint)
+   is
+      procedure Internal (Canvas : System.Address;
+                          Width  : Gint;
+                          Height : Gint);
+      pragma Import (C, Internal, "gtk_plot_canvas_set_size");
+   begin
+      Internal (Get_Object (Canvas), Width, Height);
+   end Set_Size;
+
 end Gtk.Extra.Plot_Canvas;

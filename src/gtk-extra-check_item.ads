@@ -43,7 +43,7 @@
 --  to the user of your application through configuration files.
 --
 --  </description>
---  <c_version>gtk+extra0.99</c_version>
+--  <c_version>gtk+extra0.99.1</c_version>
 
 with Gtk.Toggle_Button;
 
@@ -67,6 +67,14 @@ package Gtk.Extra.Check_Item is
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Check_Item.
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
 
 private
    type Gtk_Check_Item_Record is

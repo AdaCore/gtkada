@@ -208,4 +208,20 @@ package body Gtk.Extra.Plot_Layout is
       Internal (Get_Object (Plot_Layout), C);
    end Set_Background;
 
+   --------------
+   -- Set_Size --
+   --------------
+
+   procedure Set_Size (Plot_Layout : access Gtk_Plot_Layout_Record;
+                       Width       : in Gint;
+                       Height      : in Gint)
+   is
+      procedure Internal (Layout : System.Address;
+                          Width  : Gint;
+                          Height : Gint);
+      pragma Import (C, Internal, "gtk_plot_layout_set_size");
+   begin
+      Internal (Get_Object (Plot_Layout), Width, Height);
+   end Set_Size;
+
 end Gtk.Extra.Plot_Layout;
