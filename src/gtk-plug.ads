@@ -27,6 +27,17 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  Together with Gtk_Socket, Gtk_Plug provides the ability to embed widgets
+--  from one process into another process in a fashion that is transparent to
+--  the user. One process creates a Gtk_Socket widget and, passes the XID of
+--  that widgets window to the other process, which then creates a Gtk_Plug
+--  window with that XID.
+--  Any widgets contained in the Gtk_Plug then will appear inside the first
+--  applications window.
+--  </description>
+--  <c_version>1.2.8</c_version>
+
 with Gtk.Window;
 
 package Gtk.Plug is
@@ -36,11 +47,22 @@ package Gtk.Plug is
 
    procedure Gtk_New (Widget    : out Gtk_Plug;
                       Socket_Id : in Guint32);
-   procedure Initialize (Widget    : access Gtk_Plug_Record'Class;
-                         Socket_Id : in     Guint32);
+   --  Create a new plug widget inside the GtkSocket identified by socket_id.
+   --  Socket_Id is the XID of the socket's window.
 
-   procedure Construct (Plug      : access Gtk_Plug_Record;
-                        Socket_Id : in     Guint32);
+   procedure Initialize
+     (Widget    : access Gtk_Plug_Record'Class;
+      Socket_Id : in     Guint32);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Construct
+     (Plug      : access Gtk_Plug_Record;
+      Socket_Id : in     Guint32);
+   --  Finish the creation of a Gtk_Plug widget.
+   --  This function will generally only be used by classes deriving from
+   --  Gtk_Plug.
+   --  Socket_Id is the XID of the socket's window. 
 
 private
 
