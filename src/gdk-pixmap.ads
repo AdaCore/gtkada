@@ -37,6 +37,7 @@ with Interfaces.C.Strings;
 package Gdk.Pixmap is
 
    type Gdk_Pixmap is new Gdk.Drawable.Gdk_Drawable with private;
+   Null_Pixmap : constant Gdk_Pixmap;
 
    procedure Gdk_New (Pixmap :    out Gdk_Pixmap;
                       Window : in     Gdk.Window.Gdk_Window'Class;
@@ -99,5 +100,6 @@ package Gdk.Pixmap is
 private
 
    type Gdk_Pixmap is new Gdk.Drawable.Gdk_Drawable with null record;
+   Null_Pixmap : constant Gdk_Pixmap := (Ptr => System.Null_Address);
 
 end Gdk.Pixmap;
