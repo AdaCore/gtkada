@@ -77,6 +77,59 @@ package body Gdk.Color is
       end if;
    end Alloc;
 
+
+   --------------------
+   --  Alloc_Colors  --
+   --------------------
+
+   procedure Alloc_Color (Colormap   : in out Gdk_Colormap;
+                          Color      : in     Gdk_Color;
+                          Writeable  : in     Boolean;
+                          Best_Match : in     Boolean;
+                          Success    :    out Boolean) is
+      function Internal (Colormap   : in System.Address;
+                         Color      : in System.Address;
+                         Writeable  : in Gboolean;
+                         Best_Match : in Gboolean) return Gboolean;
+      pragma Import (C, Internal, "gdk_colormap_alloc_color");
+   begin
+      Success := To_Boolean (Internal (Get_Object (Colormap),
+                                       Color'Address,
+                                       To_Gboolean (Writeable),
+                                       To_Gboolean (Best_Match)));
+   end Alloc_Color;
+
+
+   --------------------
+   --  Alloc_Colors  --
+   --------------------
+
+   procedure Alloc_Colors (Colormap   : in out Gdk_Colormap;
+                           Colors     : in     Gdk_Color_Array;
+                           Writeable  : in     Boolean;
+                           Best_Match : in     Boolean;
+                           Success    :    out Boolean_Array;
+                           Result     :    out Gint) is
+      function Internal (Colormap   : in System.Address;
+                         Colors     : in Gdk_Color_Array;
+                         N_Colors   : in Gint;
+                         Writeable  : in Gboolean;
+                         Best_Match : in Gboolean;
+                         Success    : in System.Address)
+                         return Gint;
+      pragma Import (C, Internal, "gdk_colormap_alloc_colors");
+      Tmp : Gboolean_Array (1 .. Colors'Length);
+   begin
+      Result := Internal (Get_Object (Colormap),
+                          Colors,
+                          Colors'Length,
+                          To_Gboolean (Writeable),
+                          To_Gboolean (Best_Match),
+                          Tmp (Tmp'First)'Address);
+      Success := To_Boolean_Array (Tmp);
+   end Alloc_Colors;
+
+
    -----------
    -- Black --
    -----------
@@ -158,6 +211,24 @@ package body Gdk.Color is
       Internal (Get_Object (Colormap), Pixels, Pixels'Length, Planes);
    end Free;
 
+
+   -----------------
+   -- Free_Colors --
+   -----------------
+
+   procedure Free_Colors (Colormap : in Gdk_Colormap;
+                          Colors   : in Gdk_Color_Array) is
+      procedure Internal (Colormap : in System.Address;
+                          Colors   : in Gdk_Color_Array;
+                          Ncolors  : in Gint);
+      pragma Import (C, Internal, "gdk_colormap_free_colors");
+   begin
+      Internal (Get_Object (Colormap),
+                Colors,
+                Colors'Length);
+   end Free_Colors;
+
+
    -------------
    -- Gdk_New --
    -------------
@@ -203,6 +274,20 @@ package body Gdk.Color is
    begin
       return Color.Green;
    end Green;
+
+
+   ------------
+   --  Hash  --
+   ------------
+
+   function Hash (Color_A : in Gdk_Color;
+                  Color_B : in Gdk_Color) return Guint is
+      function Internal (Color_A, Color_B : in System.Address) return Guint;
+      pragma Import (C, Internal, "gdk_color_hash");
+   begin
+      return Internal (Color_A'Address, Color_B'Address);
+   end Hash;
+
 
    -----------
    -- Parse --

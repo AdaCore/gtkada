@@ -43,6 +43,7 @@ package Gdk.Color is
 
    Wrong_Color : exception;
 
+
    procedure Gdk_New (Colormap     :    out Gdk_Colormap;
                       Visual       : in     Gdk.Visual.Gdk_Visual;
                       Private_Cmap : in     Gint);
@@ -57,6 +58,26 @@ package Gdk.Color is
 
    procedure Change (Colormap : in Gdk_Colormap;
                      Ncolors  : in Gint);
+
+   procedure Alloc_Colors (Colormap   : in out Gdk_Colormap;
+                           Colors     : in     Gdk_Color_Array;
+                           Writeable  : in     Boolean;
+                           Best_Match : in     Boolean;
+                           Success    :    out Boolean_Array;
+                           Result     :    out Gint);
+   --
+   --  The size of the Boolean_Array is equal to the length of the
+   --  Colors_Array. USAGE OF AN ARRAY OF A DIFFERENT SIZE WILL
+   --  PROBABLY LEAD TO A CONSTRAINT_ERROR.
+
+   procedure Alloc_Color (Colormap   : in out Gdk_Colormap;
+                          Color      : in     Gdk_Color;
+                          Writeable  : in     Boolean;
+                          Best_Match : in     Boolean;
+                          Success    :    out Boolean);
+
+   procedure Free_Colors (Colormap : in Gdk_Colormap;
+                          Colors   : in Gdk_Color_Array);
 
    procedure Store (Colormap : in out Gdk_Colormap;
                     Colors   : in     Gdk_Color_Array);
@@ -77,11 +98,16 @@ package Gdk.Color is
    function Parse (Spec      : in String) return Gdk_Color;
    procedure Alloc (Colormap  : in Gdk_Colormap;
                     Color     : in out Gdk_Color);
+   --
    --  The four previous functions raise Wrong_Color if the color could not
    --  be created
    --
    --  The usual way to allocate a new color is :
    --  Alloc (Get_Default_Colormap (Widget), Parse ("colorname"));
+
+
+   function Hash (Color_A : in Gdk_Color;
+                  Color_B : in Gdk_Color) return Guint;
 
    procedure Change (Colormap  : in out Gdk_Colormap;
                     Color     : in out Gdk_Color;
