@@ -160,6 +160,30 @@ package Gtk.Cell_Renderer is
    --  The following new signals are defined for this widget:
    --  </signals>
 
+   ----------------
+   -- Properties --
+   ----------------
+
+   --  The following properties are defined for this cell_renderer and its
+   --  children:
+   --
+   --   Attribute             Type in Model             Mode
+   --   =========             =============             ====
+   --
+   --   "mode"                Gtk_Cell_Renderer_Mode    Read / Write
+   --   "visible"             Boolean                   Read / Write
+   --   "xalign"              Gfloat                    Read / Write
+   --   "yalign"              Gfloat                    Read / Write
+   --   "xpad"                Guint                     Read / Write
+   --   "ypad"                Guint                     Read / Write
+   --   "width"               Gint                      Read / Write
+   --   "height"              Gint                      Read / Write
+   --   "is_expander"         Boolean                   Read / Write
+   --   "is_expanded"         Boolean                   Read / Write
+   --   "cell_background_gdk" Gdk_Color                 Read / Write
+   --   "cell_background"     String                    Write
+
+
 private
    type Gtk_Cell_Renderer_Record is
      new Gtk.Object.Gtk_Object_Record with null record;
