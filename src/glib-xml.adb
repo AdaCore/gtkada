@@ -448,20 +448,20 @@ package body Glib.XML is
             Do_Indent (Indent);
             Put_Line ("</" & N.Tag.all & ">");
 
-         else
-            if N.Value.all = "" then
-               --  The following handles the difference between what you got
-               --  when you parsed <tag/> vs. <tag />.
-               if N.Tag (N.Tag'Last) = '/' then
-                  Put_Line (">");
-               else
-                  Put_Line ("/>");
-               end if;
+         elsif N.Value = null
+           or else N.Value.all = ""
+         then
+            --  The following handles the difference between what you got
+            --  when you parsed <tag/> vs. <tag />.
+            if N.Tag (N.Tag'Last) = '/' then
+               Put_Line (">");
             else
-               Put (">");
-               Print_String (N.Value.all);
-               Put_Line ("</" & N.Tag.all & ">");
+               Put_Line ("/>");
             end if;
+         else
+            Put (">");
+            Print_String (N.Value.all);
+            Put_Line ("</" & N.Tag.all & ">");
          end if;
       end Print_Node;
 
