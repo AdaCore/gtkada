@@ -820,6 +820,32 @@ package body Gdk.Event is
    end Set_Y;
 
    ---------------
+   -- Set_Xroot --
+   ---------------
+
+   procedure Set_Xroot (Event : in Gdk_Event; Xroot : Gdouble) is
+      function Internal (Event : in Gdk_Event;  Xroot : Gdouble) return Gint;
+      pragma Import (C, Internal, "ada_gdk_event_set_xroot");
+   begin
+      if Internal (Event, Xroot) = 0 then
+         raise Invalid_Field;
+      end if;
+   end Set_Xroot;
+
+   ---------------
+   -- Set_Yroot --
+   ---------------
+
+   procedure Set_Yroot (Event : in Gdk_Event; Yroot : Gdouble) is
+      function Internal (Event : in Gdk_Event; Yroot : Gdouble) return Gint;
+      pragma Import (C, Internal, "ada_gdk_event_set_yroot");
+   begin
+      if Internal (Event, Yroot) = 0 then
+         raise Invalid_Field;
+      end if;
+   end Set_Yroot;
+
+   ---------------
    -- Set_Width --
    ---------------
 

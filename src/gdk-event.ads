@@ -339,6 +339,12 @@ package Gdk.Event is
    procedure Set_Y      (Event : in Gdk_Event; Y : Gdouble);
    --  Set the Y field of an event.
 
+   procedure Set_Xroot  (Event : in Gdk_Event; Xroot : Gdouble);
+   --  Set the Xroot field of an event.
+
+   procedure Set_Yroot  (Event : in Gdk_Event; Yroot : Gdouble);
+   --  Set the Yroot field of an event.
+
    procedure Set_Width  (Event : in Gdk_Event; Width : Gint16);
    --  Set the Width field of an event.
 
