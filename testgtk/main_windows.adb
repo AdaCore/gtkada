@@ -89,8 +89,9 @@ with Create_Notebook;
 with Create_Paned;
 with Create_Packer;
 with Create_Pixmap;
-with Create_Plot;
-with Create_Plot_3D;
+--  XXX ???
+--  with Create_Plot;
+--  with Create_Plot_3D;
 with Create_Preview_Color;
 with Create_Preview_Gray;
 with Create_Progress;
@@ -101,7 +102,7 @@ with Create_Rulers;
 with Create_Scrolled;
 with Create_Scroll_Test;
 with Create_Selection;
-with Create_Sheet;
+--  with Create_Sheet;
 with Create_Spin;
 with Create_Status;
 with Create_Test_Idle;
@@ -273,10 +274,10 @@ package body Main_Windows is
                                          Create_Paned.Help'Access),
       (NS ("pixmap"),           Base,    Create_Pixmap.Run'Access,
                                          Create_Pixmap.Help'Access),
-      (NS ("plot"),             Complex, Create_Plot.Run'Access,
-                                         Create_Plot.Help'Access),
-      (NS ("plot 3D"),          Complex, Create_Plot_3D.Run'Access,
-                                         Create_Plot_3D.Help'Access),
+      --  (NS ("plot"),             Complex, Create_Plot.Run'Access,
+      --                                     Create_Plot.Help'Access),
+      --  (NS ("plot 3D"),          Complex, Create_Plot_3D.Run'Access,
+      --                                     Create_Plot_3D.Help'Access),
       (NS ("preview color"),    Gimp,    Create_Preview_Color.Run'Access,
                                          Create_Preview_Color.Help'Access),
       (NS ("preview gray"),     Gimp,    Create_Preview_Gray.Run'Access,
@@ -298,8 +299,8 @@ package body Main_Windows is
       (NS ("selection"),        Complex, Create_Selection.Run'Access,
                                          Create_Selection.Help'Access),
       (NS ("shapes"),           Misc,    null, null),
-      (NS ("sheet"),            Complex, Create_Sheet.Run'Access,
-                                         Create_Sheet.Help'Access),
+      --  (NS ("sheet"),            Complex, Create_Sheet.Run'Access,
+      --                                     Create_Sheet.Help'Access),
       (NS ("spinbutton"),       Base,    Create_Spin.Run'Access,
                                          Create_Spin.Help'Access),
       (NS ("statusbar"),        Base,    Create_Status.Run'Access,
