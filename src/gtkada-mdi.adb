@@ -1666,12 +1666,38 @@ package body Gtkada.MDI is
 
                   if C2.State /= Normal
                     or else Current /= Get_Parent (C2)
-                    or else Get_Nth_Page (Gtk_Notebook (Current), 1) /= null
+                    or else (Side /= None
+                       and then
+                         Get_Nth_Page (Gtk_Notebook (Current), 1) /= null)
                   then
                      Dock_Child (C2, False);
 
+                     declare
+                        Item : Widget_List.Glist := MDI.Items;
+                        It   : MDI_Child;
+                     begin
+                        --  Raise the page that last had it in the same pane
+
+                        if C /= C2 then
+                           Raise_Child (C);
+                        else
+                           while Item /= Widget_List.Null_List loop
+                              It := MDI_Child (Get_Data (Item));
+                              if It /= C2
+                                and then Get_Parent (C2) = Get_Parent (It)
+                              then
+                                 Raise_Child (It);
+                                 exit;
+                              end if;
+
+                              Item := Widget_List.Next (Item);
+                           end loop;
+                        end if;
+                     end;
+
                      Ref (C2);
                      Remove (Gtk_Container (Get_Parent (C2)), C2);
+
                      if Side = None then
                         Note := Gtk_Notebook (Current);
                      else
@@ -1710,6 +1736,7 @@ package body Gtkada.MDI is
             end if;
 
             Raise_Child (C2);
+            Set_Focus_Child (C2);
             C.MDI.In_Drag := No_Drag;
             return True;
 
@@ -2553,6 +2580,7 @@ package body Gtkada.MDI is
    procedure Raise_Child (Child : access MDI_Child_Record'Class) is
       Old_Focus : constant MDI_Child := Child.MDI.Focus_Child;
       Note : Gtk_Notebook;
+      Current_Focus : MDI_Child;
    begin
       Ref (Child);
       Remove (Child.MDI.Items, Gtk_Widget (Child));
@@ -2567,7 +2595,14 @@ package body Gtkada.MDI is
                  and then Child.MDI.Central.Children_Are_Maximized)
       then
          Note := Get_Notebook (Child);
+
+         --  Temporary fool the system, so that the child doesn't necessarily
+         --  gain the focus. Otherwise, switching a notebook page gives the
+         --  child the focus.
+         Current_Focus := Child.MDI.Focus_Child;
+         Child.MDI.Focus_Child := MDI_Child (Child);
          Set_Current_Page (Note, Page_Num (Note, Child));
+         Child.MDI.Focus_Child := Current_Focus;
 
       elsif Child.State = Floating
         and then Realized_Is_Set (Child.Initial)
