@@ -89,6 +89,7 @@ with Gtk.Cell_Renderer_Text;
 with Gtk.Cell_Renderer_Toggle;
 with Gtk.Check_Button;
 with Gtk.Check_Menu_Item;
+with Gtk.Clipboard;
 with Gtk.Clist;
 with Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog;
