@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -43,11 +43,11 @@ with System;
 package Gtk.Util is
 
    procedure Set_Object (Name : String_Ptr; Object : Gtk.Object.Gtk_Object);
-   --  Associates Object with the specified Name. It is up to the caller to
-   --  choose unique names.
+   --  Associate Object with the specified Name.
+   --  It is up to the caller to choose unique names.
 
    function Get_Object (Name : String_Ptr) return Gtk.Object.Gtk_Object;
-   --  Return an object associated (via a call to Set_Object) with Name
+   --  Return an object associated (via a call to Set_Object) with Name.
 
    type Private_Object is private;
    --  Internal representation of a widget as given by the low level signal
@@ -62,8 +62,9 @@ package Gtk.Util is
    procedure Set_Object
      (Widget : access Gtk.Widget.Gtk_Widget_Record;
       Object : in     Private_Object);
-   --  Sets the "internal" contents of a given widget. This function is similar
-   --  to Gdk.Set_Object, but specific to callback functions.
+   --  Set the "internal" contents of a given widget.
+   --  This function is similar to Gdk.Set_Object, but specific to callback
+   --  functions.
    --  Note that the caller must ensure that Widget has the right type when
    --  calling this procedure.
 
@@ -71,16 +72,15 @@ package Gtk.Util is
      (Name      : in String;
       Func      : in Callback;
       Func_Data : in System.Address);
-   --  Associates a signal with the specified Name. It is up to the caller to
-   --  choose unique names. Signal is the address of a callback. Note that
-   --  no check is performed on Signal.
+   --  Associate a signal with the specified Name.
+   --  It is up to the caller to choose unique names. Signal is the address of
+   --  a callback. Note that no check is performed on Signal.
 
    procedure Get_Signal
      (Name      : in     String;
       Func      :    out Callback;
       Func_Data :    out System.Address);
-   --  Return a Signal and a Data associated (via a call to Set_Signal) with
-   --  Name.
+   --  Return Signal and Data associated (via a call to Set_Signal) with Name.
 
 private
    type Private_Object is new System.Address;
