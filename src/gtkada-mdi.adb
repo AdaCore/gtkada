@@ -1672,6 +1672,8 @@ package body Gtkada.MDI is
    is
       pragma Unreferenced (Event);
       M : MDI_Window := MDI_Window (MDI);
+      Min_Size : constant Gint := 30;
+      --  Minimal size of the central widget
    begin
       if M.Selected = None then
          return False;
@@ -1683,18 +1685,44 @@ package body Gtkada.MDI is
 
       case M.Selected is
          when Left =>
-            M.Docks_Size (Left) := M.Current_X;
+            --  Substract Handle_Size / 2, so that the handle is still under
+            --  the pointer, and the user can simply click again to resize
+            M.Docks_Size (Left) := M.Current_X - Handle_Size / 2;
+            if M.Docks_Size (Left) >
+              Gint (Get_Allocation_Width (M)) - M.Docks_Size (Right)
+            then
+               M.Docks_Size (Right) := Gint (Get_Allocation_Width (M)) -
+                 M.Docks_Size (Left) - 2 * Handle_Size - Min_Size;
+            end if;
 
          when Right =>
             M.Docks_Size (Right) :=
-              Gint (Get_Allocation_Width (M)) - M.Current_X;
+              Gint (Get_Allocation_Width (M)) - M.Current_X - Handle_Size;
+            if M.Docks_Size (Left) >
+              Gint (Get_Allocation_Width (M)) - M.Docks_Size (Right)
+            then
+               M.Docks_Size (Left) := Gint (Get_Allocation_Width (M)) -
+                 M.Docks_Size (Right) - 2 * Handle_Size - Min_Size;
+            end if;
 
          when Top =>
-            M.Docks_Size (Top) := M.Current_Y;
+            M.Docks_Size (Top) := M.Current_Y - Handle_Size;
+            if M.Docks_Size (Top) >
+              Gint (Get_Allocation_Height (M)) - M.Docks_Size (Bottom)
+            then
+               M.Docks_Size (Bottom) := Gint (Get_Allocation_Height (M)) -
+                 M.Docks_Size (Top) - 2 * Handle_Size - Min_Size;
+            end if;
 
          when Bottom =>
             M.Docks_Size (Bottom) :=
-              Gint (Get_Allocation_Height (M)) - M.Current_Y;
+              Gint (Get_Allocation_Height (M)) - M.Current_Y - Handle_Size / 2;
+            if M.Docks_Size (Top) >
+              Gint (Get_Allocation_Height (M)) - M.Docks_Size (Bottom)
+            then
+               M.Docks_Size (Top) := Gint (Get_Allocation_Height (M)) -
+                 M.Docks_Size (Bottom) - 2 * Handle_Size - Min_Size;
+            end if;
 
          when None =>
             null;
