@@ -1,5 +1,4 @@
-
-with Gdk.Colormap;
+with Gdk.Color;
 with Gdk.GC;
 with Gdk.Visual;
 with Gdk.Window;
@@ -23,7 +22,7 @@ package Gtk.Preview is
    --  for a color preview, Data'Length = W * 3  (for R, G ,B)
    --  for a grey preview, Data'Length = W;
 
-   function Get_Cmap return Gdk.Colormap.Gdk_Colormap'Class;
+   function Get_Cmap return Gdk.Color.Gdk_Colormap'Class;
    function Get_Info return Gtk_Preview_Info;
    function Get_Visual return Gdk.Visual.Gdk_Visual'Class;
    procedure Gtk_New (Widget   : out Gtk_Preview;

@@ -32,11 +32,11 @@ package body Gtk.Preview is
    -- Get_Cmap --
    --------------
 
-   function Get_Cmap return Gdk.Colormap.Gdk_Colormap'Class
+   function Get_Cmap return Gdk.Color.Gdk_Colormap'Class
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_preview_get_cmap");
-      Widget : Gdk.Colormap.Gdk_Colormap;
+      Widget : Gdk.Color.Gdk_Colormap;
    begin
       Set_Object (Widget, Internal);
       return Widget;
