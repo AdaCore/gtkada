@@ -99,11 +99,17 @@ package body Gtk.Font_Selection is
    function Get_Font_Name (Fsd    : in Gtk_Font_Selection_Dialog)
                            return      String
    is
+      use type Interfaces.C.Strings.chars_ptr;
       function Internal (Fsd    : in System.Address)
                          return      Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_font_selection_dialog_get_font_name");
+      S : Interfaces.C.Strings.chars_ptr := Internal (Get_Object (Fsd));
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Fsd)));
+      if S /= Interfaces.C.Strings.Null_Ptr then
+         return Interfaces.C.Strings.Value (Internal (Get_Object (Fsd)));
+      else
+         return "";
+      end if;
    end Get_Font_Name;
 
    ----------------------
