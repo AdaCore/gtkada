@@ -213,6 +213,9 @@ package Glib.Object is
    --  Return the internal gtk+ type that describes the newly created
    --  Class_Record
 
+   function Class_From_Type (Typ : GType) return GObject_Class;
+   --  Return the class record for a specific type
+
    -------------
    -- Signals --
    -------------
@@ -335,4 +338,5 @@ private
    pragma Import (C, Query, "g_signal_query");
    pragma Import (C, Id, "ada_gsignal_query_id");
    pragma Import (C, Return_Type, "ada_gsignal_query_return_type");
+   pragma Import (C, Class_From_Type, "gtk_type_class");
 end Glib.Object;
