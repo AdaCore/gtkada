@@ -5558,27 +5558,20 @@ package body Gtkada.MDI is
                    or else Current = Gtk_Widget (MDI.Central.Layout))
               or else Get_Parent (Current).all
                 not in Gtkada_Multi_Paned_Record'Class)
+           and then Get_Parent (Current) /= Gtk_Widget (MDI)
          loop
             Current := Get_Parent (Current);
          end loop;
 
+         --  If the cursor was put in a floating window, we should make the
+         --  new child floating as well.
          if Current = null or else Get_Parent (Current) = null then
-            if MDI.Central.Children_Are_Maximized then
-               Get_Pointer (MDI, X, Y);
-               if X > Get_Allocation_X (MDI.Central.Container)
-                 and then X < Get_Allocation_X (MDI.Central.Container)
-                   + Get_Allocation_Width (MDI.Central.Container)
-                 and then Y > Get_Allocation_Y (MDI.Central.Container)
-                 and then Y < Get_Allocation_Y (MDI.Central.Container)
-                   + Get_Allocation_Height (MDI.Central.Container)
-               then
-                  Parent := Gtk_Widget (MDI.Central.Container);
-               else
-                  Parent := Gtk_Widget (MDI);
-               end if;
-            else
-               Parent := Gtk_Widget (MDI);
-            end if;
+            Parent := null;
+            return;
+         end if;
+
+         if Get_Parent (Current) = Gtk_Widget (MDI) then
+            Parent := Gtk_Widget (MDI);
          else
             Parent := Current;
          end if;
