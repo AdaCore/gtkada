@@ -243,7 +243,8 @@ package Gtk.Enums is
    for Gtk_Scroll_Type'Size use Gint'Size;
 
    type Gtk_Selection_Mode is
-     (Selection_Single,
+     (Selection_None,
+      Selection_Single,
       Selection_Browse,
       Selection_Multiple,
       Selection_Extended);
