@@ -46,6 +46,9 @@ package Gtk.Container is
    procedure Remove (Container : access Gtk_Container_Record;
                      Widget    : access Gtk.Widget.Gtk_Widget_Record'Class);
 
+   function Children (Container : access Gtk_Container_Record)
+                      return Gtk.Widget.Widget_List.Glist;
+
    procedure Set_Focus_Hadjustment
      (Container  : access Gtk_Container_Record;
       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
@@ -59,10 +62,10 @@ package Gtk.Container is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Container : in out Gtk_Object; N : in Node_Ptr);
 
 private
