@@ -89,6 +89,7 @@ with Create_Notebook;
 with Create_Paned;
 with Create_Packer;
 with Create_Pixmap;
+with Create_Plot;
 with Create_Preview_Color;
 with Create_Preview_Gray;
 with Create_Progress;
@@ -264,6 +265,8 @@ package body Main_Windows is
                                          Create_Paned.Help'Access),
       (NS ("pixmap"),           Base,    Create_Pixmap.Run'Access,
                                          Create_Pixmap.Help'Access),
+      (NS ("plot"),             Complex, Create_Plot.Run'Access,
+                                         Create_Plot.Help'Access),
       (NS ("preview color"),    Gimp,    Create_Preview_Color.Run'Access,
                                          Create_Preview_Color.Help'Access),
       (NS ("preview gray"),     Gimp,    Create_Preview_Gray.Run'Access,
