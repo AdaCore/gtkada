@@ -1,4 +1,4 @@
-
+with Gtk.Enums;
 with Gtk.Vbox;
 
 package Gtk.Color_Selection is
@@ -24,14 +24,14 @@ package Gtk.Color_Selection is
    --  mapping: Set_Opacity gtkcolorsel.h gtk_color_selection_set_opacity
 
    procedure Set_Update_Policy (Colorsel : in Gtk_Color_Selection'Class;
-                                Policy   : in Gtk_Update_Type);
+                                Policy   : in Enums.Update_Type);
    --  mapping: Set_Update_Policy gtkcolorsel.h \
    --  mapping: gtk_color_selection_set_update_policy
-
-   --  mapping: NOT_IMPLEMENTED gtkcolorsel.h gtk_color_selection_get_type
 
 private
 
    type Gtk_Color_Selection is new Gtk.Vbox.Gtk_Vbox with null record;
+
+   --  mapping: USE_OBJECT_ORIENTED gtkcolorsel.h gtk_color_selection_get_type
 
 end Gtk.Color_Selection;
