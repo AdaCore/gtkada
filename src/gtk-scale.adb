@@ -31,49 +31,6 @@ with System;
 
 package body Gtk.Scale is
 
-   ----------------
-   -- Draw_Value --
-   ----------------
-
-   procedure Draw_Value (Scale : access Gtk_Scale_Record) is
-      procedure Internal (Scale : System.Address);
-      pragma Import (C, Internal, "gtk_scale_draw_value");
-
-   begin
-      Internal (Get_Object (Scale));
-   end Draw_Value;
-
-   --------------------
-   -- Get_Value_Size --
-   --------------------
-
-   procedure Get_Value_Size
-     (Scale  : access Gtk_Scale_Record;
-      Width  : out Gint;
-      Height : out Gint)
-   is
-      procedure Internal
-        (Scale  : System.Address;
-         Width  : out Gint;
-         Height : out Gint);
-      pragma Import (C, Internal, "gtk_scale_get_value_size");
-
-   begin
-      Internal (Get_Object (Scale), Width, Height);
-   end Get_Value_Size;
-
-   ---------------------
-   -- Get_Value_Width --
-   ---------------------
-
-   function Get_Value_Width (Scale : access Gtk_Scale_Record) return Gint is
-      function Internal (Scale : System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_scale_get_value_width");
-
-   begin
-      return Internal (Get_Object (Scale));
-   end Get_Value_Width;
-
    --------------------
    -- Gtk_New_Hscale --
    --------------------
@@ -90,12 +47,40 @@ package body Gtk.Scale is
    -- Gtk_New_Hscale --
    --------------------
 
+   procedure Gtk_New_Hscale
+     (Scale : out Gtk_Scale;
+      Min   : Gdouble;
+      Max   : Gdouble;
+      Step  : Gdouble) is
+   begin
+      Scale := new Gtk_Scale_Record;
+      Initialize_Hscale (Scale, Min, Max, Step);
+   end Gtk_New_Hscale;
+
+   --------------------
+   -- Gtk_New_Vscale --
+   --------------------
+
    procedure Gtk_New_Vscale
      (Scale      : out Gtk_Scale;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment) is
    begin
       Scale := new Gtk_Scale_Record;
       Initialize_Vscale (Scale, Adjustment);
+   end Gtk_New_Vscale;
+
+   --------------------
+   -- Gtk_New_Vscale --
+   --------------------
+
+   procedure Gtk_New_Vscale
+     (Scale : out Gtk_Scale;
+      Min   : Gdouble;
+      Max   : Gdouble;
+      Step  : Gdouble) is
+   begin
+      Scale := new Gtk_Scale_Record;
+      Initialize_Vscale (Scale, Min, Max, Step);
    end Gtk_New_Vscale;
 
    -----------------------
@@ -125,6 +110,24 @@ package body Gtk.Scale is
    end Initialize_Hscale;
 
    -----------------------
+   -- Initialize_Hscale --
+   -----------------------
+
+   procedure Initialize_Hscale
+     (Scale : access Gtk_Scale_Record'Class;
+      Min   : Gdouble;
+      Max   : Gdouble;
+      Step  : Gdouble)
+   is
+      function Internal
+        (Min  : Gdouble; Max  : Gdouble; Step : Gdouble) return System.Address;
+      pragma Import (C, Internal, "gtk_hscale_new_with_range");
+   begin
+      Set_Object (Scale, Internal (Min, Max, Step));
+      Initialize_User_Data (Scale);
+   end Initialize_Hscale;
+
+   -----------------------
    -- Initialize_Vscale --
    -----------------------
 
@@ -150,6 +153,24 @@ package body Gtk.Scale is
       Initialize_User_Data (Scale);
    end Initialize_Vscale;
 
+   -----------------------
+   -- Initialize_Vscale --
+   -----------------------
+
+   procedure Initialize_Vscale
+     (Scale : access Gtk_Scale_Record'Class;
+      Min   : Gdouble;
+      Max   : Gdouble;
+      Step  : Gdouble)
+   is
+      function Internal
+        (Min  : Gdouble; Max  : Gdouble; Step : Gdouble) return System.Address;
+      pragma Import (C, Internal, "gtk_vscale_new_with_range");
+   begin
+      Set_Object (Scale, Internal (Min, Max, Step));
+      Initialize_User_Data (Scale);
+   end Initialize_Vscale;
+
    ----------------
    -- Set_Digits --
    ----------------
@@ -161,6 +182,18 @@ package body Gtk.Scale is
    begin
       Internal (Get_Object (Scale), The_Digits);
    end Set_Digits;
+
+   ----------------
+   -- Get_Digits --
+   ----------------
+
+   function Get_Digits (Scale : access Gtk_Scale_Record) return Gint
+   is
+      function Internal (Scale : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_scale_get_digits");
+   begin
+      return Internal (Get_Object (Scale));
+   end Get_Digits;
 
    --------------------
    -- Set_Draw_Value --
@@ -176,6 +209,18 @@ package body Gtk.Scale is
       Internal (Get_Object (Scale), Boolean'Pos (Draw_Value));
    end Set_Draw_Value;
 
+   --------------------
+   -- Get_Draw_Value --
+   --------------------
+
+   function Get_Draw_Value (Scale : access Gtk_Scale_Record) return Boolean
+   is
+      function Internal (Scale : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_scale_get_draw_value");
+   begin
+      return To_Boolean (Internal (Get_Object (Scale)));
+   end Get_Draw_Value;
+
    -------------------
    -- Set_Value_Pos --
    -------------------
@@ -189,5 +234,18 @@ package body Gtk.Scale is
    begin
       Internal (Get_Object (Scale), Pos);
    end Set_Value_Pos;
+
+   -------------------
+   -- Get_Value_Pos --
+   -------------------
+
+   function Get_Value_Pos
+     (Scale : access Gtk_Scale_Record) return Gtk_Position_Type
+   is
+      function Internal (Scale : System.Address) return Gtk_Position_Type;
+      pragma Import (C, Internal, "gtk_scale_get_value_pos");
+   begin
+      return Internal (Get_Object (Scale));
+   end Get_Value_Pos;
 
 end Gtk.Scale;
