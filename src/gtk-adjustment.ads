@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -194,8 +194,7 @@ private
 
    type Gtk_Adjustment_Record is new Data.Gtk_Data_Record with null record;
 
-   Null_Adjustment_Record : aliased Gtk_Adjustment_Record;
-   Null_Adjustment : constant Gtk_Adjustment := Null_Adjustment_Record'Access;
+   Null_Adjustment : constant Gtk_Adjustment := null;
 
    pragma Import (C, Get_Type, "gtk_adjustment_get_type");
 end Gtk.Adjustment;
