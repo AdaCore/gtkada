@@ -1,5 +1,16 @@
+with Gdk; use Gdk;
+with Gtk.Enums; use Gtk.Enums;
+
 package body Gtk.Style is
 
+   ------------
+   -- Adjust --
+   ------------
+
+   procedure Adjust (Object : in out Gtk_Style) is
+   begin
+      Ref (Object);
+   end Adjust;
 
    --------------
    --  Attach  --
@@ -222,6 +233,24 @@ package body Gtk.Style is
                 State_Type, Y1, Y2, X);
    end Draw_Vline;
 
+   ------------
+   -- Get_Bg --
+   ------------
+
+   function Get_Bg (Style      : in Gtk_Style;
+                    State_Type : in Enums.Gtk_State_Type)
+                    return          Gdk.Color.Gdk_Color
+   is
+      function Internal (Style      : in System.Address;
+                         State_Type : in Gint)
+                        return System.Address;
+      pragma Import (C, Internal, "ada_style_get_bg");
+      Color : Gdk.Color.Gdk_Color;
+   begin
+      Set_Object (Color, Internal (Get_Object (Style),
+                                   Gtk_State_Type'Pos (State_Type)));
+      return Color;
+   end Get_Bg;
 
    ---------------
    --  Gtk_New  --
@@ -234,6 +263,53 @@ package body Gtk.Style is
       Set_Object (Style, Internal);
    end Gtk_New;
 
+   ---------------
+   -- Get_Style --
+   ---------------
+
+   function Get_Style (Widget : in Gtk.Widget.Gtk_Widget'Class)
+                      return       Gtk.Style.Gtk_Style'Class
+   is
+      function Internal (Widget : System.Address)
+                        return    System.Address;
+      pragma Import (C, Internal, "ada_widget_get_style");
+      Style : Gtk.Style.Gtk_Style;
+   begin
+      Set_Object (Style, Internal (Get_Object (Widget)));
+      return Style;
+   end Get_Style;
+
+   --------------
+   -- Finalize --
+   --------------
+
+   procedure Finalize (Object : in out Gtk_Style) is
+   begin
+      Unref (Object);
+   end Finalize;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Object : in out Gtk_Style) is
+   begin
+      Ref (Object);
+   end Initialize;
+
+   ---------
+   -- Ref --
+   ---------
+
+   procedure Ref (Object : in out Gtk_Style) is
+      procedure Internal (Object : in System.Address);
+      pragma Import (C, Internal, "gtk_style_ref");
+      use type System.Address;
+   begin
+      if Get_Object (Object) /= System.Null_Address then
+         Internal (Get_Object (Object));
+      end if;
+   end Ref;
 
    ----------------------
    --  Set_Background  --
@@ -249,5 +325,20 @@ package body Gtk.Style is
    begin
       Internal (Get_Object (Style), Gdk.Get_Object (Window), State_Type);
    end Set_Background;
+
+   -----------
+   -- Unref --
+   -----------
+
+   procedure Unref (Object : in out Gtk_Style) is
+      procedure Internal (Object : in System.Address);
+      pragma Import (C, Internal, "gtk_style_unref");
+      use type System.Address;
+   begin
+      if Get_Object (Object) /= System.Null_Address then
+         Internal (Get_Object (Object));
+      end if;
+   end Unref;
+
 
 end Gtk.Style;

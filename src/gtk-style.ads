@@ -1,7 +1,8 @@
+with Gdk.Color;
 with Gdk.Point;
 with Gdk.Window;
-
 with Gtk.Enums;
+with Gtk.Widget;
 
 package Gtk.Style is
 
@@ -28,6 +29,13 @@ package Gtk.Style is
                              Window     : in     Gdk.Window.Gdk_Window;
                              State_Type : in     Enums.Gtk_State_Type);
    --  mapping: Set_Background gtkstyle.h gtk_style_set_background
+
+   function Get_Bg (Style      : in Gtk_Style;
+                    State_Type : in Enums.Gtk_State_Type)
+                    return          Gdk.Color.Gdk_Color;
+
+   function Get_Style (Widget : in Gtk.Widget.Gtk_Widget'Class)
+                       return Gtk.Style.Gtk_Style'Class;
 
    procedure Draw_Hline (Style      : in Gtk_Style;
                          Window     : in Gdk.Window.Gdk_Window;
@@ -96,11 +104,18 @@ package Gtk.Style is
                           Str         : in String);
    --  mapping: Draw_String gtkstyle.h gtk_draw_string
 
+   procedure Ref (Object : in out Gtk_Style);
+   procedure Unref (Object : in out Gtk_Style);
+
 private
 
    type Gtk_Style is new Root_Type with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtkstyle.h gtk_style_ref
-   --  mapping: NOT_IMPLEMENTED gtkstyle.h gtk_style_unref
+   procedure Adjust (Object : in out Gtk_Style);
+   procedure Finalize (Object : in out Gtk_Style);
+   procedure Initialize (Object : in out Gtk_Style);
+
+   --  mapping: Ref gtkstyle.h gtk_style_ref
+   --  mapping: Unref gtkstyle.h gtk_style_unref
 
 end Gtk.Style;
