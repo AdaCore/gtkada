@@ -40,12 +40,14 @@ ARFLAGS = r
 
 RANLIB = ranlib
 
-all: libgtkada.so libgtkada.a testgtk
+all: libs testgtk
+
+libs:: libgtkada.so libgtkada.a
 
 libgtkada.so:: $(TEST_LINK).o $(c_objects)
 	$(CC) -shared -Wl,-soname,libgtkada.so -o libgtkada.so g*.o $(c_objects) `gtk-config --libs` -lc -lm
 
-libgtkada.a::
+libgtkada.a:: $(TEST_LINK).o $(c_objects)
 	$(AR) $(ARFLAGS) libgtkada.a g*.o $(c_objects)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) libgtkada.a; \
