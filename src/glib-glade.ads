@@ -86,15 +86,18 @@ package Glib.Glade is
    --  Get the Part-th part of S delimited by Separator.
 
    procedure Gen_Set
-     (N        : Node_Ptr;
-      Name     : String;
-      File     : File_Type;
-      Prefix   : String := "";
-      Postfix  : String := "";
-      Is_Float : Boolean := False);
+     (N             : Node_Ptr;
+      Name          : String;
+      File          : File_Type;
+      Prefix        : String  := "";
+      Postfix       : String  := "";
+      Is_Float      : Boolean := False;
+      Property_Name : String := "");
    --  Generate a Set_<Name> call in File.
    --  Name is surrounded by Prefix and Postfix.
    --  If Is_Float is true, call To_Float on the field <Name>.
+   --  Property_Name is the name of the property to look for in N;
+   --  if Property_Name is empty, use Name instead.
 
    procedure Gen_Set
      (N : Node_Ptr; Name, Field : String; File : File_Type);
@@ -143,7 +146,7 @@ package Glib.Glade is
    --        Parent is the first parent of N whose class is the first part of
    --         Child.Value (e.g Dialog if Child.Value = Dialog:vbox)
 
-   procedure Gen_Call_Child (N, Child : Node_Ptr;
+   procedure Gen_Call_Child (N, Child, Parent : Node_Ptr;
      Class, Call : String;
      Param1, Param2, Param3 : String := "";
      File : File_Type);

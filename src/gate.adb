@@ -30,7 +30,8 @@ with Ada.Exceptions; use Ada.Exceptions;
 with System.Assertions;
 
 procedure Gate is
-   N                      : Node_Ptr;
+   Project_Node           : Node_Ptr;
+   Interface_Node         : Node_Ptr;
    S                      : String_Ptr;
    Arg                    : Natural;
    Flag_Project           : Boolean := False;
@@ -75,19 +76,32 @@ begin
          return;
       end if;
 
+      --  With Glade-2 there are two files. file.gladep is the project
+      --  file while file.glade is the interface to be translated into
+      --  Ada code. file.gladep will be removed in Glade-3
+
+      --  Need to open both files.
+
+      if not GNAT.OS_Lib.Is_Regular_File (Argument (Arg) & "p") then
+         Put_Line (Argument (Arg) & "p is not a regular file");
+         Set_Exit_Status (2);
+         return;
+      end if;
+
       if not GNAT.OS_Lib.Is_Regular_File (Argument (Arg)) then
          Put_Line (Argument (Arg) & " is not a regular file");
          Set_Exit_Status (2);
          return;
       end if;
 
-      N := Parse (Argument (Arg));
+      Interface_Node := Parse (Argument (Arg));
+      Project_Node := Parse (Argument (Arg) & "p");
 
       if Flag_Project or else Flag_Source_Directory
         or else Flag_Pixmaps_Directory
       then
          if Flag_Project then
-            S := Get_Field (Find_Tag (N.Child, "project"), "program_name");
+            S := Get_Field (Project_Node, "program_name");
 
             if S = null then
                Put_Line ("<no_name>");
@@ -97,21 +111,21 @@ begin
          end if;
 
          if Flag_Source_Directory then
-            S := Get_Field (Find_Tag (N.Child, "project"), "source_directory");
+            S := Get_Field (Project_Node, "source_directory");
 
             if S = null then
-               Put_Line ("<no_name>");
+               Put_Line ("src");
             else
                Put_Line (S.all);
             end if;
          end if;
 
          if Flag_Pixmaps_Directory then
-            S := Get_Field (Find_Tag (N.Child, "project"),
+            S := Get_Field (Project_Node,
               "pixmaps_directory");
 
             if S = null then
-               Put_Line ("<no_name>");
+               Put_Line ("pixmaps");
             else
                Put_Line (S.all);
             end if;
@@ -119,20 +133,23 @@ begin
 
       else
          Gtk.Main.Init;
-         Generate (N);
+         Generate (Project_Node, Interface_Node);
       end if;
    end if;
 
 exception
    when System.Assertions.Assert_Failure =>
-      Put_Line ("GATE: the XML file seems to be corrupted. Please check it");
+      Put_Line ("GATE: the XML file seems to be corrupted. " &
+        "Please check it");
       Put_Line ("up manually, and try again");
       Set_Exit_Status (2);
 
    when E : others =>
       Put_Line ("Exception = " & Exception_Name (E));
-      Put_Line ("GATE: Internal error. Please send a bug report with the XML");
-      Put_Line ("file " & Argument (Arg) & " and the GtkAda version to " &
+      Put_Line ("GATE: Internal error. " &
+        "Please send a bug report with the XML");
+      Put_Line ("file " & Argument (Arg) &
+        " and the GtkAda version to " &
         "gtkada@lists.act-europe.fr");
       Set_Exit_Status (2);
 end Gate;
