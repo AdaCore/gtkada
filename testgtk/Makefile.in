@@ -37,30 +37,21 @@ OPENGL_C_OBJECTS=
 OPENGL_LIBS=
 endif
 
-## This variable should be set to True if the libart directories
-## have been installed on the system.
-
-HAVE_LIBART=False
-
-all: opengl/view_gl.adb pixbuf/libart_demo.adb $(OPENGL_C_OBJECTS) $(target) 
+all: opengl/view_gl.adb $(OPENGL_C_OBJECTS) $(target) 
 
 $(target)::
 	@echo "-------------------------------------"
 	@echo $(GNATMAKE) $(GNATFLAGS) $(target) '`'$(GTKADA_CONFIG)'`'
 	@echo "-------------------------------------"
 	@if [ -f $(src_dir)/.devel ]; then \
-	   $(GNATMAKE) $(GNATFLAGS_DEVEL) $(target) -I$(src_dir) -I$(src_dir)/opengl -Iopengl -I$(src_dir)/pixbuf -Ipixbuf -aO$(src_dir)/lib-obj -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
+	   $(GNATMAKE) $(GNATFLAGS_DEVEL) $(target) -I$(src_dir) -I$(src_dir)/opengl -Iopengl -aO$(src_dir)/lib-obj -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
 	else \
-	   $(GNATMAKE) $(GNATFLAGS) $(target) -I$(src_dir) -I$(src_dir)/opengl -Iopengl -I$(src_dir)/pixbuf -Ipixbuf -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
+	   $(GNATMAKE) $(GNATFLAGS) $(target) -I$(src_dir) -I$(src_dir)/opengl -Iopengl -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
 	fi
 
 opengl/view_gl.adb:: opengl/view_gl.gpb Makefile
 	gnatprep -r -c -DHAVE_GL=$(HAVE_OPENGL) -DWIN32=False \
 	  opengl/view_gl.gpb opengl/view_gl.adb
-
-pixbuf/libart_demo.adb:: pixbuf/libart_demo.gpb Makefile
-	gnatprep -r -c -DHAVE_LIBART=$(HAVE_LIBART) -DWIN32=False \
-	  pixbuf/libart_demo.gpb pixbuf/libart_demo.adb
 
 lw.o: opengl/lw.c opengl/lw.h
 	$(CC) -c opengl/lw.c -Iopengl @GTK_CFLAGS@
