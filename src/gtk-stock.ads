@@ -29,6 +29,10 @@
 --  <description>
 --  These functions provide an applications programmer with default
 --  images and buttons for toolbars, menu pixmaps, etc.
+--
+--  See the function Gtk.Widget.Render_Icon for a convenience function that
+--  converts a stock icon to an actual pixmap/pixbuf.
+--
 --  </description>
 
 --  <c_version>1.3.11</c_version>
