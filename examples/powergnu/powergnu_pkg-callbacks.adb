@@ -52,7 +52,7 @@ package body Powergnu_Pkg.Callbacks is
 
    begin
       case Get_Key_Val (Arg1) is
-         when GDK_backspace | GDK_Up | GDK_left =>
+         when GDK_BackSpace | GDK_Up | GDK_Left =>
             if Power.Current_Image > 1 then
                Power.Current_Image := Power.Current_Image - 1;
                Show_Image;
@@ -67,7 +67,7 @@ package body Powergnu_Pkg.Callbacks is
 
             Show_Image;
 
-         when GDK_space | GDK_Down | GDK_right =>
+         when GDK_space | GDK_Down | GDK_Right =>
             if Power.Current_Image < Power.Num_Images then
                Power.Current_Image := Power.Current_Image + 1;
                Show_Image;
@@ -94,7 +94,7 @@ package body Powergnu_Pkg.Callbacks is
                Show_Image;
             end if;
 
-         when GDK_q | GDK_LC_q =>
+         when GDK_Q | GDK_LC_q =>
             Emit_Stop_By_Name (Object, "key_press_event");
             Main_Quit;
 
@@ -144,11 +144,11 @@ package body Powergnu_Pkg.Callbacks is
       Power.Current_Image := 1;
       Power.Num_Images := 0;
 
-      while not End_OF_Line (File) loop
+      while not End_Of_Line (File) loop
          Get_Line (File, Str, Len);
          Power.Num_Images := Power.Num_Images + 1;
          Free (Power.Images (Power.Num_Images));
-         Power.Images (Power.Num_Images) := new String' (Str (1 .. Len));
+         Power.Images (Power.Num_Images) := new String'(Str (1 .. Len));
       end loop;
 
       Close (File);

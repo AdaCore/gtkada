@@ -1,6 +1,5 @@
 with Gtk; use Gtk;
 with Gtk.Main;
-with Gdk.Rgb; use Gdk.Rgb;
 with Powergnu_Pkg; use Powergnu_Pkg;
 with Powergnu_Pkg.Callbacks; use Powergnu_Pkg.Callbacks;
 with Ada.Command_Line; use Ada.Command_Line;
@@ -9,7 +8,6 @@ procedure Power is
 begin
    Gtk.Main.Set_Locale;
    Gtk.Main.Init;
-   Gdk.Rgb.Init;
    Gtk_New (Powergnu);
    Show_All (Powergnu);
 

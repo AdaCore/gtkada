@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 2000                            --
+--                     Copyright (C) 2000-2003                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,7 +27,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Ada.Text_IO;       use Ada.Text_IO;
 with Glib;              use Glib;
+with Glib.Error;        use Glib.Error;
 with Gdk.Event;         use Gdk.Event;
 with Gdk.Rgb;           use Gdk.Rgb;
 with Gtk.Arguments;     use Gtk.Arguments;
@@ -52,14 +54,8 @@ package body Power_GNU is
    package Destroy_Cb is new Gtk.Handlers.Callback
      (Image_Drawing_Record);
 
-   package Size_Cb is new Gtk.Handlers.Callback (Image_Drawing_Record);
-   package Requisition_Marshaller is new Size_Cb.Marshallers.Generic_Marshaller
-     (Gtk_Requisition_Access, To_Requisition);
-
-   package Allocation_Cb is new Gtk.Handlers.Callback (Image_Drawing_Record);
-   package Allocation_Marshaller is new
-     Allocation_Cb.Marshallers.Generic_Marshaller
-       (Gtk_Allocation_Access, To_Allocation);
+   package Image_Callback is new Gtk.Handlers.Callback
+     (Image_Drawing_Record);
 
    ------------------------
    -- Internal Callbacks --
@@ -69,11 +65,11 @@ package body Power_GNU is
 
    procedure Size_Request
      (Draw        : access Image_Drawing_Record'Class;
-      Requisition : Gtk_Requisition_Access);
+      Args        : Gtk_Args);
 
    procedure Size_Allocate
      (Draw       : access Image_Drawing_Record'Class;
-      Allocation : Gtk_Allocation_Access);
+      Args       : Gtk_Args);
 
    function Expose
      (Draw  : access Image_Drawing_Record'Class;
@@ -109,7 +105,7 @@ package body Power_GNU is
       Render_To_Drawable
         (Draw.Pix,
          Get_Window (Draw),
-         Gtk.Style.Get_Black_Gc (Get_Style (Draw)),
+         Gtk.Style.Get_Black_GC (Get_Style (Draw)),
          0, 0,
          0, 0,
          Get_Width (Draw.Pix), Get_Height (Draw.Pix),
@@ -128,12 +124,10 @@ package body Power_GNU is
       --  otherwise the image can not be rendered correctly.
 
       Gtk.Widget.Push_Colormap (Gdk.Rgb.Get_Cmap);
-      Gtk.Widget.Push_Visual   (Gdk.Rgb.Get_Visual);
 
       Draw := new Image_Drawing_Record;
       Power_GNU.Initialize (Draw);
       Gtk.Widget.Pop_Colormap;
-      Gtk.Widget.Pop_Visual;
    end Gtk_New;
 
    ----------------
@@ -147,12 +141,8 @@ package body Power_GNU is
       --  Set up the appropriate callbacks to redraw, ...
       Event_Cb.Connect
         (Draw, "expose_event", Event_Cb.To_Marshaller (Expose'Access), True);
-      Size_Cb.Connect
-        (Draw, "size_request",
-         Requisition_Marshaller.To_Marshaller (Size_Request'Access));
-      Allocation_Cb.Connect
-        (Draw, "size_allocate",
-         Allocation_Marshaller.To_Marshaller (Size_Allocate'Access));
+      Image_Callback.Connect (Draw, "size_request", Size_Request'Access);
+      Image_Callback.Connect (Draw, "size_allocate", Size_Allocate'Access);
       Destroy_Cb.Connect
         (Draw, "destroy",
          Destroy_Cb.To_Marshaller (Destroy'Access));
@@ -164,16 +154,20 @@ package body Power_GNU is
 
    procedure Set_Image
      (Draw  : in out Image_Drawing;
-      Image : String) is
+      Image : String)
+   is
+      Error : GError;
    begin
       if Draw.Orig /= Null_Pixbuf then
          Unref (Draw.Orig);
          Unref (Draw.Pix);
       end if;
 
-      Draw.Orig := New_From_File (Image);
+      Gdk_New_From_File (Draw.Orig, Image, Error);
 
-      if Draw.Orig = Null_Pixbuf then
+      if Error /= null then
+         Put_Line ("Error: " & Get_Message (Error));
+         Error_Free (Error);
          return;
       end if;
 
@@ -190,7 +184,9 @@ package body Power_GNU is
 
    procedure Size_Allocate
      (Draw       : access Image_Drawing_Record'Class;
-      Allocation : Gtk_Allocation_Access) is
+      Args       : Gtk_Args)
+   is
+      Allocation : Gtk_Allocation_Access := To_Allocation (Args, 1);
    begin
       if Draw.Pix = Null_Pixbuf then
          return;
@@ -210,7 +206,9 @@ package body Power_GNU is
 
    procedure Size_Request
      (Draw        : access Image_Drawing_Record'Class;
-      Requisition : Gtk_Requisition_Access) is
+      Args        : Gtk_Args)
+   is
+      Requisition : Gtk_Requisition_Access := To_Requisition (Args, 1);
    begin
       Requisition.Width := Default_Width;
       Requisition.Height := Default_Height;

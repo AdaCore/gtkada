@@ -3,6 +3,7 @@ with Gdk.Types;       use Gdk.Types;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtkada.Handlers; use Gtkada.Handlers;
 with Powergnu_Pkg.Callbacks; use Powergnu_Pkg.Callbacks;
+with Gdk.Event;       use Gdk.Event;
 
 package body Powergnu_Pkg is
 
@@ -43,8 +44,8 @@ begin
    Pack_Start (Powergnu.Vbox1, Powergnu.Statusbar1, False, False, 0);
 
    Gtk_New (Powergnu.Win, Window_Popup);
-   Set_Usize (Powergnu.Win, 1024, 768);
-   Set_Usize (Powergnu.Win, 800, 600);
+   Set_USize (Powergnu.Win, 1024, 768);
+   Set_USize (Powergnu.Win, 800, 600);
    Set_Position (Powergnu.Win, Win_Pos_Center);
    Set_Events (Powergnu.Win, Key_Press_Mask);
    Set_Transient_For (Powergnu.Win, Powergnu);
