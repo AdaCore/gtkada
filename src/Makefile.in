@@ -18,7 +18,7 @@ FPIC = -fPIC
 CFLAGS = @CFLAGS@ -Wall @GTK_CFLAGS@ -I.. $(FPIC)
 
 GNATFLAGS = -O2 -gnatny
-GNATFLAGS_DEVEL = -O2 -gnatawly -g
+GNATFLAGS_DEVEL = -O2 -gnatwlue -gnatay -g
 
 GNATMAKE = gnatmake
 GNATMAKELDFLAGS = -largs -L. @GTK_LIBS@ -lgtkada
@@ -128,7 +128,7 @@ $(LIB_DIR)/$(MAKE_ADB).o::
 	fi
 
 $(OPENGL_OBJECTS):: force
-	$(CD) $(LIB_DIR); $(GNATMAKE) $(GNATFLAGS) -c -q ../$(notdir $(patsubst %.o,%.adb,$@))
+	$(CD) $(LIB_DIR); $(GNATMAKE) $(GNATFLAGS) $(FPIC) -c -q ../$(notdir $(patsubst %.o,%.adb,$@))
 
 install: $(ARCHIVENAME) $(LIBNAME)
 	@if [ "$(prefix)" != `pwd` ]; then \
