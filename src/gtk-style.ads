@@ -29,7 +29,7 @@
 with Gdk; use Gdk;
 with Gdk.Color;
 with Gdk.GC;
-with Gdk.Point;
+with Gdk.Types;
 with Gdk.Window;
 with Gtk.Enums;
 with Gtk.Widget;
@@ -37,9 +37,6 @@ with Gtk.Widget;
 package Gtk.Style is
 
    type Gtk_Style is new Root_Type with private;
-
-   type Points_Array is array (Positive range <>) of Gdk.Point.Gdk_Point;
-
 
    procedure Gtk_New (Style : out Gtk_Style);
 
@@ -96,7 +93,7 @@ package Gtk.Style is
                            Window     : in Gdk.Window.Gdk_Window;
                            State_Type : in Enums.Gtk_State_Type;
                            Shadow_Type : in Enums.Gtk_Shadow_Type;
-                           Points     : in Points_Array;
+                           Points     : in Gdk.Types.Gdk_Points_Array;
                            Fill       : in Gint);
 
    procedure Draw_Arrow (Style       : in Gtk_Style;

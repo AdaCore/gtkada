@@ -157,9 +157,9 @@ package body Gdk.Region is
    ---------------
 
    procedure Polygon (Region    :    out Gdk_Region;
-                      Points    : in     Point.Gdk_Points_Array;
+                      Points    : in     Gdk.Types.Gdk_Points_Array;
                       Fill_Rule : in     Types.Gdk_Fill_Rule) is
-      function Internal (Points  : in Point.Gdk_Points_Array;
+      function Internal (Points  : in Gdk.Types.Gdk_Points_Array;
                          Npoints : in Gint;
                          Fill_Rule : in Types.Gdk_Fill_Rule)
                          return System.Address;

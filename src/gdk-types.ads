@@ -30,6 +30,30 @@ with Glib; use Glib;
 
 package Gdk.Types is
 
+   type Gdk_Point is record
+      X : Gint16;
+      Y : Gint16;
+   end record;
+   pragma Pack (Gdk_Point);
+   for Gdk_Point'Size use 32;
+
+   type Gdk_Points_Array is array (Positive range <>) of Gdk_Point;
+   pragma Pack (Gdk_Points_Array);
+
+     
+   type Gdk_Segment is record
+      X1 : Gint16;
+      Y1 : Gint16;
+      X2 : Gint16;
+      Y2 : Gint16;
+   end record;
+   pragma Pack (Gdk_Segment);
+   for Gdk_Segment'Size use 64;
+
+   type Gdk_Segments_Array is array (Positive range <>) of Gdk_Segment;
+   pragma Pack (Gdk_Segments_Array);
+
+
    --
    --  See at the end of the package a list of all the types that
    --  have not been "bound".
@@ -653,5 +677,3 @@ end Gdk.Types;
 --  The following types will probably be bound later (DnD).
 --
 --  + GdkDragAction
---  + GdkDragProtocol
---

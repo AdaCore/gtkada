@@ -27,7 +27,6 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
-with Gdk.Point;
 with Gdk.Rectangle;
 with Gdk.Types;
 
@@ -56,7 +55,7 @@ package Gdk.Region is
                      return Types.Gdk_Overlap_Type;
 
    procedure Polygon (Region :    out Gdk_Region;
-                      Points : in     Point.Gdk_Points_Array;
+                      Points : in     Gdk.Types.Gdk_Points_Array;
                       Fill_Rule : in     Types.Gdk_Fill_Rule);
 
    procedure Offset (Region : in out Gdk_Region;

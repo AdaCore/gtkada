@@ -178,12 +178,12 @@ package body Gtk.Style is
                            Window      : in Gdk.Window.Gdk_Window;
                            State_Type  : in Enums.Gtk_State_Type;
                            Shadow_Type : in Enums.Gtk_Shadow_Type;
-                           Points      : in Points_Array;
+                           Points      : in Gdk.Types.Gdk_Points_Array;
                            Fill        : in Gint) is
       procedure Internal (Style, Window : in System.Address;
                           State_Type    : in Enums.Gtk_State_Type;
                           Shadow_Type   : in Enums.Gtk_Shadow_Type;
-                          Points        : in Points_Array;
+                          Points        : in Gdk.Types.Gdk_Points_Array;
                           Npoints       : in Gint;
                           Fill          : in Gint);
       pragma Import (C, Internal, "gtk_draw_polygon");

@@ -90,25 +90,25 @@ package body Create_Scroll_Test is
          return;
       end if;
 
-      Set_Values (Rect, 0, 0, 0, 0);
+      Rect := (X => 0, Y => 0, Width => 0, Height => 0);
       --  This is actually different from C, since we can not
       --  create a C's GdkRectangle, only a C's GdkRectangle*
 
       if Source_Min < 0 then
-         Set_Width (Rect, Get_Allocation_Width (Widget));
-         Set_Height (Rect, Guint'Min (Guint (-Source_Min),
-                                      Get_Allocation_Height (Widget)));
+         Rect.Width := Get_Allocation_Width (Widget);
+         Rect.Height := Guint'Min (Guint (-Source_Min),
+                                   Get_Allocation_Height (Widget));
          Source_Min := 0;
-         Dest_Min   := Gint (Get_Height (Rect));
+         Dest_Min   := Gint (Rect.Height);
       else
-         Set_Y (Rect,
+         Rect.Y :=
                 Gint'Max (0, 2 * Gint (Get_Allocation_Height (Widget))
-                          - Source_Max));
-         Set_Width (Rect, Get_Allocation_Width (Widget));
-         Set_Height (Rect,
-                     Get_Allocation_Height (Widget) - Guint (Get_Y (Rect)));
+                          - Source_Max);
+         Rect.Width := Get_Allocation_Width (Widget);
+         Rect.Height := 
+                  Get_Allocation_Height (Widget) - Guint (Rect.Y);
          Source_Max := Gint (Get_Allocation_Height (Widget));
-         Dest_Max := Get_Y (Rect);
+         Dest_Max := Rect.Y;
       end if;
 
       if Source_Min /= Source_Max then
@@ -139,7 +139,7 @@ package body Create_Scroll_Test is
          end loop;
       end if;
 
-      if Get_Height (Rect) /= 0 then
+      if Rect.Height /= 0 then
          Draw (Widget, Rect);
       end if;
 
@@ -171,17 +171,17 @@ package body Create_Scroll_Test is
    begin
       Area := Gdk.Event.Get_Area (Event);
 
-      Imin := Get_X (Area) / 10;
-      Imax := (Get_X (Area) + Gint (Get_Width (Area)) + 9) / 10;
+      Imin := Area.X / 10;
+      Imax := (Area.X + Gint (Area.Width) + 9) / 10;
 
-      Jmin := (Gint (Adjustment.Get_Value (Adj)) + Get_Y (Area)) / 10;
-      Jmax := (Gint (Adjustment.Get_Value (Adj)) + Get_Y (Area)
-               + Gint (Get_Height (Area)) + 9) / 10;
+      Jmin := (Gint (Adjustment.Get_Value (Adj)) + Area.Y) / 10;
+      Jmax := (Gint (Adjustment.Get_Value (Adj)) + Area.Y
+               + Gint (Area.Height) + 9) / 10;
 
       Gdk.Window.Clear_Area (Window => Get_Window (Widget),
-                             X => Get_X (Area), Y => Get_Y (Area),
-                             Width => Gint (Get_Width (Area)),
-                             Height => Gint (Get_Height (Area)));
+                             X => Area.X, Y => Area.Y,
+                             Width => Gint (Area.Width),
+                             Height => Gint (Area.Height));
 
       for I in Imin .. Imax loop
          for J in Jmin .. Jmax loop
