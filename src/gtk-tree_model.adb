@@ -881,12 +881,17 @@ package body Gtk.Tree_Model is
                 Iter'Address,
                 Column,
                 A'Address);
-      declare
-         Result : constant String := Value (A);
-      begin
-         Free (A);
-         return Result;
-      end;
+
+      if A = Null_Ptr then
+         return "";
+      else
+         declare
+            Result : constant String := Value (A);
+         begin
+            Free (A);
+            return Result;
+         end;
+      end if;
    end Get_String;
 
 --    ---------------------------
