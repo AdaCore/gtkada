@@ -132,6 +132,7 @@ gtk_combobox_popup_display (GtkComboBox * combobox)
 {
   gint height, width, x, y;
   gint old_width, old_height;
+  GtkWindow* toplevel;
 
 
   old_width = combobox->popwin->allocation.width;
@@ -145,6 +146,10 @@ gtk_combobox_popup_display (GtkComboBox * combobox)
   gtk_widget_realize (combobox->popwin);
   gdk_window_resize (combobox->popwin->window, width, height);
   gtk_widget_show (combobox->popwin);
+
+  toplevel = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (combobox)));
+  gtk_window_set_transient_for (GTK_WINDOW (combobox->popwin), toplevel);
+  
 
   gtk_grab_add (combobox->popwin);
   gdk_pointer_grab (combobox->popwin->window, TRUE,
