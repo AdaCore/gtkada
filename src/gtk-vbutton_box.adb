@@ -30,8 +30,9 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Util; use Gtk.Util;
 
-package body Gtk.VButton_Box is
+package body Gtk.Vbutton_Box is
 
    ------------------------
    -- Get_Layout_Default --
@@ -61,10 +62,10 @@ package body Gtk.VButton_Box is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_VButton_Box)
+   procedure Gtk_New (Widget : out Gtk_Vbutton_Box)
    is
    begin
-      Widget := new Gtk_VButton_Box_Record;
+      Widget := new Gtk_Vbutton_Box_Record;
       Initialize (Widget);
    end Gtk_New;
 
@@ -72,7 +73,7 @@ package body Gtk.VButton_Box is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_VButton_Box_Record)
+   procedure Initialize (Widget : access Gtk_Vbutton_Box_Record)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vbutton_box_new");
@@ -105,4 +106,27 @@ package body Gtk.VButton_Box is
       Internal (Spacing);
    end Set_Spacing_Default;
 
-end Gtk.VButton_Box;
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type) is
+   begin
+      Gen_New (N, "Vbutton_Box", File => File);
+      Button_Box.Generate (N, File);
+   end Generate;
+
+   procedure Generate (Vbutton_Box : in out Object.Gtk_Object;
+                       N           : in Node_Ptr) is
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Vbutton_Box (Vbutton_Box));
+         Set_Object (Get_Field (N, "name"), Vbutton_Box);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Button_Box.Generate (Vbutton_Box, N);
+   end Generate;
+
+end Gtk.Vbutton_Box;

@@ -28,23 +28,33 @@
 -----------------------------------------------------------------------
 
 with Gtk.Button_Box;
+with Gtk.Object;
 with Gtk.Enums; use Gtk.Enums;
 
-package Gtk.VButton_Box is
+package Gtk.Vbutton_Box is
 
-   type Gtk_VButton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record
+   type Gtk_Vbutton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record
      with private;
-   type Gtk_VButton_Box is access all Gtk_VButton_Box_Record'Class;
+   type Gtk_Vbutton_Box is access all Gtk_Vbutton_Box_Record'Class;
 
    function Get_Layout_Default return Gtk_Button_Box_Style;
    function Get_Spacing_Default return Gint;
-   procedure Gtk_New (Widget : out Gtk_VButton_Box);
-   procedure Initialize (Widget : access Gtk_VButton_Box_Record);
+   procedure Gtk_New (Widget : out Gtk_Vbutton_Box);
+   procedure Initialize (Widget : access Gtk_Vbutton_Box_Record);
    procedure Set_Layout_Default (Layout : in Gtk_Button_Box_Style);
    procedure Set_Spacing_Default (Spacing : in Gint);
 
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+   
+   procedure Generate (N    : in Node_Ptr;
+                       File : in File_Type);
+   
+   procedure Generate
+     (Vbutton_Box : in out Object.Gtk_Object; N : in Node_Ptr);
+
 private
-   type Gtk_VButton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record
+   type Gtk_Vbutton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record
      with null record;
 
-end Gtk.VButton_Box;
+end Gtk.Vbutton_Box;

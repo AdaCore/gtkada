@@ -30,6 +30,7 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Hbutton_Box is
 
@@ -104,5 +105,28 @@ package body Gtk.Hbutton_Box is
    begin
       Internal (Spacing);
    end Set_Spacing_Default;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type) is
+   begin
+      Gen_New (N, "Hbutton_Box", File => File);
+      Button_Box.Generate (N, File);
+   end Generate;
+
+   procedure Generate (Hbutton_Box : in out Object.Gtk_Object;
+                       N           : in Node_Ptr) is
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Hbutton_Box (Hbutton_Box));
+         Set_Object (Get_Field (N, "name"), Hbutton_Box);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Button_Box.Generate (Hbutton_Box, N);
+   end Generate;
 
 end Gtk.Hbutton_Box;

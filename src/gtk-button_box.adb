@@ -37,17 +37,18 @@ package body Gtk.Button_Box is
    ------------------------
 
    procedure Get_Child_Ipadding
-      (Widget : access Gtk_Button_Box_Record;
-       Ipad_X : out Gint;
-       Ipad_Y : out Gint)
+     (Button_Box : access Gtk_Button_Box_Record;
+      Ipad_X     : out Gint;
+      Ipad_Y     : out Gint)
    is
       procedure Internal
-         (Widget : in System.Address;
-          Ipad_X : in out Gint;
-          Ipad_Y : in out Gint);
+        (Widget : in System.Address;
+         Ipad_X : in out Gint;
+         Ipad_Y : in out Gint);
       pragma Import (C, Internal, "gtk_button_box_get_child_ipadding");
+
    begin
-      Internal (Get_Object (Widget), Ipad_X, Ipad_Y);
+      Internal (Get_Object (Button_Box), Ipad_X, Ipad_Y);
    end Get_Child_Ipadding;
 
    --------------------------------
@@ -57,6 +58,7 @@ package body Gtk.Button_Box is
    procedure Get_Child_Ipadding_Default (Ipad_X, Ipad_Y : out Gint) is
       procedure Internal (Ipad_X : out Gint; Ipad_Y : out Gint);
       pragma Import (C, Internal, "gtk_button_box_get_child_ipadding_default");
+
    begin
       Internal (Ipad_X, Ipad_Y);
    end Get_Child_Ipadding_Default;
@@ -66,17 +68,18 @@ package body Gtk.Button_Box is
    --------------------
 
    procedure Get_Child_Size
-      (Widget     : access Gtk_Button_Box_Record;
-       Min_Width  : out Gint;
-       Min_Height : out Gint)
+     (Button_Box : access Gtk_Button_Box_Record;
+      Min_Width  : out Gint;
+      Min_Height : out Gint)
    is
       procedure Internal
-         (Widget     : in System.Address;
-          Min_Width  : out Gint;
-          Min_Height : out Gint);
+        (Widget     : in System.Address;
+         Min_Width  : out Gint;
+         Min_Height : out Gint);
       pragma Import (C, Internal, "gtk_button_box_get_child_size");
+
    begin
-      Internal (Get_Object (Widget), Min_Width, Min_Height);
+      Internal (Get_Object (Button_Box), Min_Width, Min_Height);
    end Get_Child_Size;
 
    ----------------------------
@@ -86,6 +89,7 @@ package body Gtk.Button_Box is
    procedure Get_Child_Size_Default (Min_Width, Min_Height  : out Gint) is
       procedure Internal (Min_Width  : out Gint; Min_Height : out Gint);
       pragma Import (C, Internal, "gtk_button_box_get_child_size_default");
+
    begin
       Internal (Min_Width, Min_Height);
    end Get_Child_Size_Default;
@@ -94,24 +98,29 @@ package body Gtk.Button_Box is
    -- Get_Layout --
    ----------------
 
-   function Get_Layout (Widget : access Gtk_Button_Box_Record)
-                        return Enums.Gtk_Button_Box_Style
+   function Get_Layout (Button_Box : access Gtk_Button_Box_Record)
+     return Enums.Gtk_Button_Box_Style
    is
       function Internal (Widget : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_button_box_get_layout");
+
    begin
-      return Enums.Gtk_Button_Box_Style'Val (Internal (Get_Object (Widget)));
+      return Enums.Gtk_Button_Box_Style'Val
+        (Internal (Get_Object (Button_Box)));
    end Get_Layout;
 
    -----------------
    -- Get_Spacing --
    -----------------
 
-   function Get_Spacing (Widget : access Gtk_Button_Box_Record) return Gint is
+   function Get_Spacing (Button_Box : access Gtk_Button_Box_Record)
+     return Gint
+   is
       function Internal (Widget : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_button_box_get_spacing");
+
    begin
-      return Internal (Get_Object (Widget));
+      return Internal (Get_Object (Button_Box));
    end Get_Spacing;
 
    ------------------------
@@ -119,17 +128,18 @@ package body Gtk.Button_Box is
    ------------------------
 
    procedure Set_Child_Ipadding
-      (Widget : access Gtk_Button_Box_Record;
-       Ipad_X : in Gint;
-       Ipad_Y : in Gint)
+     (Button_Box : access Gtk_Button_Box_Record;
+      Ipad_X     : in Gint;
+      Ipad_Y     : in Gint)
    is
       procedure Internal
-         (Widget : in System.Address;
-          Ipad_X : in Gint;
-          Ipad_Y : in Gint);
+        (Widget : in System.Address;
+         Ipad_X : in Gint;
+         Ipad_Y : in Gint);
       pragma Import (C, Internal, "gtk_button_box_set_child_ipadding");
+
    begin
-      Internal (Get_Object (Widget), Ipad_X, Ipad_Y);
+      Internal (Get_Object (Button_Box), Ipad_X, Ipad_Y);
    end Set_Child_Ipadding;
 
    --------------------------------
@@ -138,9 +148,10 @@ package body Gtk.Button_Box is
 
    procedure Set_Child_Ipadding_Default (Ipad_X : in Gint; Ipad_Y : in Gint) is
       procedure Internal
-         (Ipad_X : in Gint;
-          Ipad_Y : in Gint);
+        (Ipad_X : in Gint;
+         Ipad_Y : in Gint);
       pragma Import (C, Internal, "gtk_button_box_set_child_ipadding_default");
+
    begin
       Internal (Ipad_X, Ipad_Y);
    end Set_Child_Ipadding_Default;
@@ -150,17 +161,18 @@ package body Gtk.Button_Box is
    --------------------
 
    procedure Set_Child_Size
-      (Widget     : access Gtk_Button_Box_Record;
-       Min_Width  : in Gint;
-       Min_Height : in Gint)
+     (Button_Box : access Gtk_Button_Box_Record;
+      Min_Width  : in Gint;
+      Min_Height : in Gint)
    is
       procedure Internal
-         (Widget     : in System.Address;
-          Min_Width  : in Gint;
-          Min_Height : in Gint);
+        (Widget     : in System.Address;
+         Min_Width  : in Gint;
+         Min_Height : in Gint);
       pragma Import (C, Internal, "gtk_button_box_set_child_size");
+
    begin
-      Internal (Get_Object (Widget), Min_Width, Min_Height);
+      Internal (Get_Object (Button_Box), Min_Width, Min_Height);
    end Set_Child_Size;
 
    ----------------------------
@@ -170,6 +182,7 @@ package body Gtk.Button_Box is
    procedure Set_Child_Size_Default (Min_Width, Min_Height  : in Gint) is
       procedure Internal (Min_Width  : in Gint; Min_Height : in Gint);
       pragma Import (C, Internal, "gtk_button_box_set_child_size_default");
+
    begin
       Internal (Min_Width, Min_Height);
    end Set_Child_Size_Default;
@@ -179,15 +192,16 @@ package body Gtk.Button_Box is
    ----------------
 
    procedure Set_Layout
-      (Widget       : access Gtk_Button_Box_Record;
-       Layout_Style : in Enums.Gtk_Button_Box_Style)
+     (Button_Box   : access Gtk_Button_Box_Record;
+      Layout_Style : in Enums.Gtk_Button_Box_Style)
    is
       procedure Internal
-         (Widget       : in System.Address;
-          Layout_Style : in Gint);
+        (Widget       : in System.Address;
+         Layout_Style : in Gint);
       pragma Import (C, Internal, "gtk_button_box_set_layout");
+
    begin
-      Internal (Get_Object (Widget),
+      Internal (Get_Object (Button_Box),
                 Enums.Gtk_Button_Box_Style'Pos (Layout_Style));
    end Set_Layout;
 
@@ -195,13 +209,71 @@ package body Gtk.Button_Box is
    -- Set_Spacing --
    -----------------
 
-   procedure Set_Spacing (Widget  : access Gtk_Button_Box_Record;
-                          Spacing : in Gint)
+   procedure Set_Spacing (Button_Box : access Gtk_Button_Box_Record;
+                          Spacing    : in Gint)
    is
       procedure Internal (Widget  : in System.Address; Spacing : in Gint);
       pragma Import (C, Internal, "gtk_button_box_set_spacing");
+
    begin
-      Internal (Get_Object (Widget), Spacing);
+      Internal (Get_Object (Button_Box), Spacing);
    end Set_Spacing;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N    : in Node_Ptr;
+                       File : in File_Type) is
+   begin
+      Box.Generate (N, File);
+      Gen_Set (N, "Button_Box", "spacing", File);
+      Gen_Set (N, "Button_Box", "Layout", "layout_style", "", "", "", File);
+      Gen_Set (N, "Button_Box", "Child_Size",
+        "child_min_width", "child_min_height", "", "", File);
+      Gen_Set (N, "Button_Box", "Child_Ipadding",
+        "child_ipad_x", "child_ipad_y", "", "", File);
+   end Generate;
+
+   procedure Generate
+     (Button_Box : in out Object.Gtk_Object; N : in Node_Ptr)
+   is
+      S, S2 : String_Ptr;
+   begin
+      Box.Generate (Button_Box, N);
+      S := Get_Field (N, "spacing");
+
+      if S /= null then
+         Set_Spacing (Gtk_Button_Box (Button_Box), Gint'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "layout_style");
+
+      if S /= null then
+         Set_Layout
+           (Gtk_Button_Box (Button_Box),
+            Enums.Gtk_Button_Box_Style'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      S  := Get_Field (N, "child_min_width");
+      S2 := Get_Field (N, "child_min_height");
+
+      if S /= null and then S2 /= null then
+         Set_Child_Size
+           (Gtk_Button_Box (Button_Box),
+            Gint'Value (S.all),
+            Gint'Value (S2.all));
+      end if;
+
+      S  := Get_Field (N, "child_ipad_x");
+      S2 := Get_Field (N, "child_ipad_y");
+
+      if S /= null and then S2 /= null then
+         Set_Child_Ipadding
+           (Gtk_Button_Box (Button_Box),
+            Gint'Value (S.all),
+            Gint'Value (S2.all));
+      end if;
+   end Generate;
 
 end Gtk.Button_Box;

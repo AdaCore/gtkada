@@ -29,6 +29,9 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
+with Gtk.Container; use Gtk.Container;
+with Gtk.Widget; use Gtk.Widget;
 with Interfaces.C.Strings;
 
 package body Gtk.GEntry is
@@ -231,5 +234,77 @@ package body Gtk.GEntry is
    begin
       Internal (Get_Object (The_Entry), Boolean'Pos (Visible));
    end Set_Visibility;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+   begin
+      Gen_New (N, "GEntry", File => File);
+      Editable.Generate (N, File);
+      Gen_Set (N, "GEntry", "editable", File);
+      Gen_Set (N, "GEntry", "Max_Length", "text_max_length", "", "", "", File);
+      Gen_Set (N, "GEntry", "position", File);
+      Gen_Set (N, "GEntry", "text", File, '"');
+      Gen_Set (N, "GEntry", "Visibility", "text_visible", "", "", "", File);
+
+      if not N.Specific_Data.Has_Container then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
+      end if;
+   end Generate;
+
+   procedure Generate
+     (The_Entry : in out Object.Gtk_Object;
+      N : in Node_Ptr)
+   is
+      S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Entry (The_Entry));
+         Set_Object (Get_Field (N, "name"), The_Entry);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Editable.Generate (The_Entry, N);
+
+      S := Get_Field (N, "editable");
+
+      if S /= null then
+         Set_Editable (Gtk_Entry (The_Entry), Boolean'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "text_max_length");
+
+      if S /= null then
+         Set_Max_Length (Gtk_Entry (The_Entry), Guint16'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "position");
+
+      if S /= null then
+         Set_Position (Gtk_Entry (The_Entry), Gint'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "text");
+
+      if S /= null then
+         Set_Text (Gtk_Entry (The_Entry), S.all);
+      end if;
+
+      S := Get_Field (N, "text_visible");
+
+      if S /= null then
+         Set_Visibility (Gtk_Entry (The_Entry), Boolean'Value (S.all));
+      end if;
+
+      if not N.Specific_Data.Has_Container then
+         Container.Add
+           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+            Gtk_Widget (The_Entry));
+         N.Specific_Data.Has_Container := True;
+      end if;
+   end Generate;
 
 end Gtk.GEntry;

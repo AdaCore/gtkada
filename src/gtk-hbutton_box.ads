@@ -29,6 +29,7 @@
 
 with Gtk.Button_Box;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Object;
 
 package Gtk.Hbutton_Box is
 
@@ -42,6 +43,15 @@ package Gtk.Hbutton_Box is
    procedure Initialize (Widget : access Gtk_Hbutton_Box_Record);
    procedure Set_Layout_Default (Layout : in Gtk_Button_Box_Style);
    procedure Set_Spacing_Default (Spacing : in Gint);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (N    : in Node_Ptr;
+                       File : in File_Type);
+
+   procedure Generate
+     (Hbutton_Box : in out Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Hbutton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record

@@ -34,6 +34,7 @@ package Gtk.GEntry is
 
    type Gtk_Entry_Record is new Gtk.Editable.Gtk_Editable_Record with private;
    type Gtk_Entry is access all Gtk_Entry_Record'Class;
+   subtype Gtk_GEntry is Gtk_Entry;
 
    procedure Append_Text
      (The_Entry : access Gtk_Entry_Record;
@@ -73,11 +74,9 @@ package Gtk.GEntry is
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (N : in Node_Ptr; File : in File_Type)
-     renames Gtk.Editable.Generate;
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
 
-   procedure Generate (The_Entry : in out Object.Gtk_Object; N : in Node_Ptr)
-     renames Gtk.Editable.Generate;
+   procedure Generate (The_Entry : in out Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Entry_Record is new Gtk.Editable.Gtk_Editable_Record
