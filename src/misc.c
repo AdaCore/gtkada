@@ -55,14 +55,14 @@ convert_i (gint s)
  **  Returns -1 if the signal does not exist
  ********************************************************************/
 
-gint
-ada_signal_count_arguments (GtkObject* object, char* signal_name)
+guint
+ada_signal_count_arguments (gint type, char* signal_name)
 {
   /* Implementation note: using gtk_signal_query adds an extra call to
      malloc and free, but using the internal variables/macros for
      gtksignal.c would make this too dependent from the exact implementation
      of gtk+ */
-  guint signal_id = gtk_signal_lookup (signal_name, GTK_OBJECT_TYPE (object));
+  guint signal_id = gtk_signal_lookup (signal_name, type);
   GtkSignalQuery * signal;
   guint nparams;
   if (signal_id == 0)
@@ -80,13 +80,13 @@ ada_signal_count_arguments (GtkObject* object, char* signal_name)
  ********************************************************************/
 
 GtkType
-ada_signal_argument_type (GtkObject* object, char* signal_name, guint num)
+ada_signal_argument_type (gint type, char* signal_name, guint num)
 {
   /* Implementation note: using gtk_signal_query adds an extra call to
      malloc and free, but using the internal variables/macros for
      gtksignal.c would make this too dependent from the exact implementation
      of gtk+ */
-  guint signal_id = gtk_signal_lookup (signal_name, GTK_OBJECT_TYPE (object));
+  guint signal_id = gtk_signal_lookup (signal_name, type);
   GtkSignalQuery * signal = gtk_signal_query (signal_id);
 
   if (num >= signal->nparams)
@@ -228,7 +228,6 @@ ada_gnode_first_child (GNode * node)
   return g_node_first_child (node);
 }
 
- 
 /*
  *
  * object macros
@@ -390,8 +389,6 @@ ada_widget_allocation_y (GtkWidget* widget)
   return widget->allocation.y;
 }
 
-
-    
 /*
  * 
  * toggle_buttons
@@ -419,7 +416,6 @@ ada_radio_menu_item_new_from_widget (GtkRadioMenuItem *group)
     l = gtk_radio_menu_item_group (group);
   return gtk_radio_menu_item_new (l);
 }
-
 
 GtkWidget *
 ada_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
@@ -519,7 +515,6 @@ ada_gdk_point_size () {
   return sizeof (GdkPoint);
 }
 
-
 /*
  *
  *  GdkCursor
@@ -531,7 +526,6 @@ ada_gdk_cursor_new (gint cursor_type)
 {
   return gdk_cursor_new (cursor_type);
 }
-
 
 /**********************************************************
  **  Support for events
@@ -636,7 +630,6 @@ guint ada_gdk_event_get_button (GdkEvent * event)
   return 10000;
 }
 
-
 guint ada_gdk_event_get_state (GdkEvent * event)
 {
   switch (event->type)
@@ -661,7 +654,6 @@ guint ada_gdk_event_get_state (GdkEvent * event)
     }
   return 10000;
 }
-
 
 GdkWindow* ada_gdk_event_get_subwindow (GdkEvent * event)
 {
@@ -1055,7 +1047,6 @@ gint ada_gdk_event_set_button (GdkEvent * event, guint button)
   return 1;
 }
 
-
 gint ada_gdk_event_set_state (GdkEvent * event, guint state)
 {
   switch (event->type)
@@ -1080,7 +1071,6 @@ gint ada_gdk_event_set_state (GdkEvent * event, guint state)
     }
   return 1;
 }
-
 
 gint ada_gdk_event_set_subwindow (GdkEvent * event, GdkWindow* win)
 {
@@ -1400,10 +1390,6 @@ ada_style_get_base (GtkStyle* style, gint state)
   return style->base + state;
 }
 
-
-
-
-
 void
 ada_style_set_black (GtkStyle* style, GdkColor* color)
 {
@@ -1439,9 +1425,6 @@ ada_style_get_font (GtkStyle* style)
 {
   return style->font;
 }
-
-
-
 
 void
 ada_style_set_fg_gc (GtkStyle* style, gint state, GdkGC* gc)
@@ -2048,7 +2031,6 @@ ada_list_next (GList* list)
     return NULL;
 }
 
-
 GList*
 ada_list_prev (GList* list)
 {
@@ -2102,7 +2084,6 @@ ada_status_get_messages (GtkStatusbar* widget)
 {
   return widget->messages;
 }
-
 
 /******************************************
  ** Functions for GtkList
@@ -2545,7 +2526,6 @@ ada_gdk_window_attr_get_override_redirect (GdkWindowAttr * window_attr)
   return window_attr->override_redirect;
 }
 
-
 /*
  *
  * Gdk properties
@@ -2569,5 +2549,4 @@ ada_gdk_property_get (GdkWindow	 *window,
 			       pdelete, actual_property_type, actual_format,
 			       actual_length, data);
 }
-
 
