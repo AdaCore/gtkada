@@ -358,7 +358,6 @@ package body Glib.Glade is
 
    begin
       if P /= null then
-         Add_Package (Class);
          Put (File, "   Set_" & To_Ada (Name) & " (");
 
          if Top /= Cur then
@@ -388,7 +387,6 @@ package body Glib.Glade is
 
    begin
       if P /= null then
-         Add_Package (Class);
          Put (File, "   Set_" & To_Ada (Name) & " (");
 
          if Cur /= Top then
@@ -416,8 +414,6 @@ package body Glib.Glade is
    begin
       if P /= null then
          if Field2 = "" then
-            Add_Package (Class);
-
             if Is_Float then
                Put (File, "   Set_" & Name & " (");
 
@@ -445,8 +441,6 @@ package body Glib.Glade is
          elsif (Field3 = "" or else R /= null)
            and then (Field4 = "" or else S /= null)
          then
-            Add_Package (Class);
-
             Put (File, "   Set_" & Name & " (");
 
             if Cur /= Top then
@@ -650,6 +644,7 @@ package body Glib.Glade is
            (Find_Parent (N.Parent, Get_Part (Child.Value.all, 1)).Parent,
             "name");
 
+         Add_Package (To_Package_Name (Get_Field (N, "class").all));
          Put (File, "   " & To_Ada (Top.all) & "." & To_Ada (P.all) &
               " := Get_" & To_Ada (Get_Part (Child.Value.all, 2)) & " (");
 
@@ -677,8 +672,6 @@ package body Glib.Glade is
 
    begin
       if P /= null then
-         Add_Package (Class);
-
          if Child = null then
             Put (File, "   " & Call & " (");
 
@@ -782,7 +775,11 @@ package body Glib.Glade is
    -- Gen_Signal --
    ----------------
 
-   procedure Gen_Signal (N : Node_Ptr; File : File_Type) is
+   procedure Gen_Signal
+     (N            : Node_Ptr;
+      File         : File_Type;
+      Widget_Class : String_Ptr := null)
+   is
       P       : Node_Ptr := Find_Tag (N.Child, "signal");
       Top     : constant Node_Ptr := Find_Top_Widget (N);
       Current : constant String_Ptr := Get_Field (N, "name");
@@ -792,9 +789,14 @@ package body Glib.Glade is
       After   : String_Ptr;
 
    begin
+      if Widget_Class = null then
+         Class := Get_Field (N, "class");
+      else
+         Class := Widget_Class;
+      end if;
+
       while P /= null loop
          Handler := Get_Field (P, "handler");
-         Class := Get_Field (N, "class");
          Name := Get_Field (P, "name");
          After := Get_Field (P, "after");
          Add_Signal (Top, Handler, Name, Class);
