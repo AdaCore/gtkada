@@ -66,14 +66,10 @@ package body Gtk.Text_Iter is
    -- Copy --
    ----------
 
-   procedure Copy
-     (Source : Gtk_Text_Iter;
-      Dest   : out Gtk_Text_Iter)
-   is
-      procedure Internal
-        (Source : Gtk_Text_Iter;
-         Dest   : System.Address);
+   procedure Copy (Source : Gtk_Text_Iter; Dest : out Gtk_Text_Iter) is
+      procedure Internal (Source : Gtk_Text_Iter; Dest : System.Address);
       pragma Import (C, Internal, "ada_text_iter_copy");
+
    begin
       Internal (Source, Dest'Address);
    end Copy;
@@ -82,8 +78,7 @@ package body Gtk.Text_Iter is
    -- Get_Char --
    --------------
 
-   function Get_Char (Iter : Gtk_Text_Iter) return Gunichar
-   is
+   function Get_Char (Iter : Gtk_Text_Iter) return Gunichar is
       function Internal (Iter : Gtk_Text_Iter) return Gunichar;
       pragma Import (C, Internal, "gtk_text_iter_get_char");
       --  Note that the Get_Char function could have been directly imported
@@ -91,6 +86,7 @@ package body Gtk.Text_Iter is
       --  solution was prefered for cosmetic reasons: Having several different
       --  Get_Char functions, the "Import C" pragma would need to be located
       --  close to the function declaration, which we would like to avoid.
+
    begin
       return Internal (Iter);
    end Get_Char;
@@ -100,12 +96,14 @@ package body Gtk.Text_Iter is
    --------------
 
    function Get_Char (Iter : Gtk_Text_Iter) return Character is
-      Result : constant Gunichar := Get_Char (Iter);
+      Result         : constant Gunichar := Get_Char (Iter);
       Eight_LSB_Mask : constant := 2#1111_1111#;
+
    begin
       --  This function relies on the Get_Char function provided by gtk+,
       --  which returns a gunichar value. Only the 8 least significant bits
       --  are then kept to deduce the associated character.
+
       return Character'Val (Result and Eight_LSB_Mask);
    end Get_Char;
 
@@ -573,6 +571,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_chars");
+
    begin
       Result := To_Boolean (Internal (Iter, Count));
    end Forward_Chars;
@@ -588,6 +587,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_chars");
+
    begin
       Result := To_Boolean (Internal (Iter, Count));
    end Backward_Chars;
@@ -602,6 +602,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_line");
+
    begin
       Result := To_Boolean (Internal (Iter));
    end Forward_Line;
@@ -616,6 +617,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_line");
+
    begin
       Result := To_Boolean (Internal (Iter));
    end Backward_Line;
@@ -631,6 +633,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_lines");
+
    begin
       Result := To_Boolean (Internal (Iter, Count));
    end Forward_Lines;
@@ -646,6 +649,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_lines");
+
    begin
       Result := To_Boolean (Internal (Iter, Count));
    end Backward_Lines;
@@ -660,6 +664,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_word_end");
+
    begin
       Result := To_Boolean (Internal (Iter));
    end Forward_Word_End;
@@ -674,6 +679,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_word_start");
+
    begin
       Result := To_Boolean (Internal (Iter));
    end Backward_Word_Start;
@@ -689,6 +695,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_word_ends");
+
    begin
       Result := To_Boolean (Internal (Iter, Count));
    end Forward_Word_Ends;
@@ -704,6 +711,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_word_starts");
+
    begin
       Result := To_Boolean (Internal (Iter, Count));
    end Backward_Word_Starts;
@@ -718,6 +726,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_sentence_end");
+
    begin
       Result := To_Boolean (Internal (Iter));
    end Forward_Sentence_End;
@@ -732,6 +741,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_sentence_start");
+
    begin
       Result := To_Boolean (Internal (Iter));
    end Backward_Sentence_Start;
@@ -747,6 +757,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_sentence_ends");
+
    begin
       Result := To_Boolean (Internal (Iter, Count));
    end Forward_Sentence_Ends;
@@ -762,6 +773,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_sentence_starts");
+
    begin
       Result := To_Boolean (Internal (Iter, Count));
    end Backward_Sentence_Starts;
@@ -776,6 +788,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_cursor_position");
+
    begin
       Result := To_Boolean (Internal (Iter));
    end Forward_Cursor_Position;
@@ -790,6 +803,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_cursor_position");
+
    begin
       Result := To_Boolean (Internal (Iter));
    end Backward_Cursor_Position;
@@ -805,6 +819,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_cursor_positions");
+
    begin
       Result := To_Boolean (Internal (Iter, Count));
    end Forward_Cursor_Positions;
@@ -820,6 +835,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter; Count : Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_cursor_positions");
+
    begin
       Result := To_Boolean (Internal (Iter, Count));
    end Backward_Cursor_Positions;
@@ -836,6 +852,7 @@ package body Gtk.Text_Iter is
         (Iter        : Gtk_Text_Iter;
          Char_Offset : Gint);
       pragma Import (C, Internal, "gtk_text_iter_set_offset");
+
    begin
       Internal (Iter, Char_Offset);
    end Set_Offset;
@@ -852,6 +869,7 @@ package body Gtk.Text_Iter is
         (Iter        : Gtk_Text_Iter;
          Line_Number : Gint);
       pragma Import (C, Internal, "gtk_text_iter_set_line");
+
    begin
       Internal (Iter, Line_Number);
    end Set_Line;
@@ -868,6 +886,7 @@ package body Gtk.Text_Iter is
         (Iter         : Gtk_Text_Iter;
          Char_On_Line : Gint);
       pragma Import (C, Internal, "gtk_text_iter_set_line_offset");
+
    begin
       Internal (Iter, Char_On_Line);
    end Set_Line_Offset;
@@ -884,6 +903,7 @@ package body Gtk.Text_Iter is
         (Iter         : Gtk_Text_Iter;
          Byte_On_Line : Gint);
       pragma Import (C, Internal, "gtk_text_iter_set_line_index");
+
    begin
       Internal (Iter, Byte_On_Line);
    end Set_Line_Index;
@@ -898,6 +918,7 @@ package body Gtk.Text_Iter is
    is
       function Internal (Iter : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_to_line_end");
+
    begin
       Result := To_Boolean (Internal (Iter));
    end Forward_To_Line_End;
@@ -914,6 +935,7 @@ package body Gtk.Text_Iter is
       function Internal
         (Iter : Gtk_Text_Iter; Tag : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_to_tag_toggle");
+
    begin
       if Tag = null then
          Result := To_Boolean (Internal (Iter, System.Null_Address));
@@ -1014,9 +1036,9 @@ package body Gtk.Text_Iter is
          Slice        : Gboolean;
          Match_Start  : System.Address;
          Match_End    : System.Address;
-         Limit        : Gtk_Text_Iter)
-         return Gboolean;
+         Limit        : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_search");
+
    begin
       Result := To_Boolean
         (Internal
@@ -1092,6 +1114,7 @@ package body Gtk.Text_Iter is
          Start   : Gtk_Text_Iter;
          The_End : Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_in_range");
+
    begin
       return To_Boolean (Internal (Iter, Start, The_End));
    end In_Range;
@@ -1105,9 +1128,9 @@ package body Gtk.Text_Iter is
       Iter : out Gtk_Text_Iter) is
    begin
       Copy
-        (Source =>  Iter_Access_Address_Conversions.To_Pointer
-                      (Glib.Values.Get_Address (Val)).all,
-         Dest => Iter);
+        (Source => Iter_Access_Address_Conversions.To_Pointer
+                     (Glib.Values.Get_Address (Val)).all,
+         Dest   => Iter);
    end Get_Text_Iter;
 
    -------------------
