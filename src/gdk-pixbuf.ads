@@ -141,7 +141,7 @@ package Gdk.Pixbuf is
    for Pixbuf_Error'Size use Gint'Size;
 
    type File_Format is (JPEG, PNG);
-   --  Posibble formats when saving a file.
+   --  Possible formats when saving a file.
 
    type Image_Quality is range 0 .. 100;
    --  For a JPEG image only, quality of the image in percentage.
