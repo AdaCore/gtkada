@@ -3,6 +3,7 @@
 --                                                                   --
 --                     Copyright (C) 2000                            --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2003 ACT Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,6 +32,7 @@ with Gtk.Box;     use Gtk.Box;
 with Gtk.Enums;   use Gtk.Enums;
 with Gtk.Frame;   use Gtk.Frame;
 with Gtk.Label;   use Gtk.Label;
+with Glib.Convert; use Glib.Convert;
 
 package body Create_Label is
 
@@ -124,9 +126,11 @@ package body Create_Label is
       Pack_Start (Vbox, Frame2, False, False, 0);
 
       Gtk_New (Frame2, "Underlined Label");
-      Gtk_New (Label, "This label is underlined!"
-               & ASCII.LF
-               & "This one is underlined in 日本語の入用quite a funky fashion");
+      Gtk_New
+        (Label, Locale_To_UTF8
+         ("This label is underlined!"
+          & ASCII.LF
+          & "This one is underlined in 日本語の入用quite a funky fashion"));
       Set_Justify (Label, Justify_Left);
       Set_Pattern (Label,
                    "_________________________ _ _________ _ _____ _ __"
