@@ -154,11 +154,11 @@ package body Gtk.Notebook is
    function Get_Tab_Pos
      (Widget : access Gtk_Notebook_Record) return Gtk_Position_Type
    is
-      function Internal (Widget : System.Address) return Gint;
-      pragma Import (C, Internal, "ada_notebook_get_tab_pos");
+      function Internal (Widget : System.Address) return Gtk_Position_Type;
+      pragma Import (C, Internal, "gtk_notebook_get_tab_pos");
 
    begin
-      return Gtk_Position_Type'Val (Internal (Get_Object (Widget)));
+      return Internal (Get_Object (Widget));
    end Get_Tab_Pos;
 
    ------------------
