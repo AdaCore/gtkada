@@ -70,7 +70,7 @@ with Create_Ctree;
 with Create_Color_Selection;
 with Create_Cursors;
 with Create_Dialog;
---  with Create_Dnd;
+with Create_Dnd;
 with Create_Entry;
 with Create_Frame;
 with Create_File_Selection;
@@ -99,6 +99,7 @@ with Create_Reparent;
 with Create_Rulers;
 with Create_Scrolled;
 with Create_Scroll_Test;
+with Create_Selection;
 with Create_Sheet;
 with Create_Spin;
 with Create_Status;
@@ -136,6 +137,9 @@ package body Main_Windows is
    Help_Text   : Gtk.Text.Gtk_Text;
    --  The dialog used to display the help window
 
+   Gtk_Demo_Frames  : array (1 .. 2) of Gtk.Frame.Gtk_Frame;
+   --  Frames where the gtk demos should be displayed.
+
    type Demo_Function is
      access procedure (Frame : access Gtk_Frame_Record'Class);
    --  The type of function to call when an item in the tree is selected.
@@ -156,6 +160,7 @@ package body Main_Windows is
    type Demo_Tree_Item_Record is new Gtk_Tree_Item_Record with
       record
          Demo_Num  : Natural;
+         Frame     : Integer;
       end record;
    type Demo_Tree_Item is access all Demo_Tree_Item_Record'Class;
    procedure Gtk_New (Item  : out Demo_Tree_Item;
@@ -229,9 +234,8 @@ package body Main_Windows is
                                          Create_Cursors.Help'Access),
       (NS ("dialog"),           Base,    Create_Dialog.Run'Access,
                                          Create_Dialog.Help'Access),
-      (NS ("dnd"),              Complex, null, null),
-                                         --  Create_Dnd.Run'Access,
-                                         --  Create_Dnd.Help'Access),
+      (NS ("drag-and-drop"),    Complex, Create_Dnd.Run'Access,
+                                         Create_Dnd.Help'Access),
       (NS ("entry"),            Base,    Create_Entry.Run'Access,
                                          Create_Entry.Help'Access),
       (NS ("event watcher"),    Misc,    null, null),
@@ -288,6 +292,8 @@ package body Main_Windows is
       (NS ("saved position"),   Misc,    null, null),
       (NS ("scrolled windows"), Base,    Create_Scrolled.Run'Access,
                                          Create_Scrolled.Help'Access),
+      (NS ("selection"),        Complex, Create_Selection.Run'Access,
+                                         Create_Selection.Help'Access),
       (NS ("shapes"),           Misc,    null, null),
       (NS ("sheet"),            Complex, Create_Sheet.Run'Access,
                                          Create_Sheet.Help'Access),
@@ -326,7 +332,7 @@ package body Main_Windows is
       Item_Subtree : Gtk_Tree;
       Item_New     : Demo_Tree_Item;
       Item         : Gtk_Tree_Item;
-
+      Frame_Num    : Integer := 1;
    begin
       for Typ in Demo_Type'Range loop
          if ((not Gtkada_Demos)  and then Typ /= Gtkada)
@@ -339,7 +345,9 @@ package body Main_Windows is
                when Gimp    => Gtk_New (Item, "Gimp Widgets");
                when Misc    => Gtk_New (Item, "Misc. Demos");
                when GdkD    => Gtk_New (Item, "Gdk demos");
-               when Gtkada  => Gtk_New (Item, "GtkAda Widgets");
+               when Gtkada  =>
+                  Gtk_New (Item, "GtkAda Widgets");
+                  Frame_Num := 2;
                when others  => Gtk_New (Item, Demo_Type'Image (Typ));
             end case;
             Append (Tree, Item);
@@ -353,6 +361,7 @@ package body Main_Windows is
                   Gtk_New (Item_New,
                            Label => Gtk_Demos (Item_Num).Label.all,
                            Num   => Item_Num);
+                  Item_New.Frame := Frame_Num;
                   Append (Item_Subtree, Item_New);
                   Show (Item_New);
                end if;
@@ -603,15 +612,15 @@ package body Main_Windows is
 
          --  Remove the current demo from the frame
 
-         List := Gtk.Frame.Children (Gtk_Demo_Frame);
+         List := Gtk.Frame.Children (Gtk_Demo_Frames (Item.Frame));
          if Length (List) /= 0 then
-            Gtk.Frame.Remove (Container => Gtk_Demo_Frame,
+            Gtk.Frame.Remove (Container => Gtk_Demo_Frames (Item.Frame),
                               Widget    => Get_Data (List));
          end if;
 
          --  And then insert our own new demo
 
-         Gtk_Demos (Item.Demo_Num).Func (Gtk_Demo_Frame);
+         Gtk_Demos (Item.Demo_Num).Func (Gtk_Demo_Frames (Item.Frame));
          Set_Help (Gtk_Demos (Item.Demo_Num).Help);
       end if;
    end Tree_Select_Child;
@@ -743,14 +752,14 @@ package body Main_Windows is
       Add_With_Viewport (Scrolled, Tree);
       Fill_Gtk_Tree (Tree);
 
-      Gtk_New (Gtk_Demo_Frame);
-      Set_Shadow_Type (Gtk_Demo_Frame, The_Type => Gtk.Enums.Shadow_None);
+      Gtk_New (Gtk_Demo_Frames (1));
+      Set_Shadow_Type (Gtk_Demo_Frames (1), The_Type => Gtk.Enums.Shadow_None);
       Pack_End (In_Box  => Box,
-                Child   => Gtk_Demo_Frame,
+                Child   => Gtk_Demo_Frames (1),
                 Expand  => True,
                 Fill    => True,
                 Padding => 0);
-      Set_Usize (Gtk_Demo_Frame, 550, 500);
+      Set_Usize (Gtk_Demo_Frames (1), 550, 500);
 
       --  Second page: GtkAda widgets
 
@@ -785,14 +794,14 @@ package body Main_Windows is
       Add_With_Viewport (Scrolled, Tree);
       Fill_Gtk_Tree (Tree, True);
 
-      Gtk_New (Gtk_Demo_Frame);
-      Set_Shadow_Type (Gtk_Demo_Frame, The_Type => Gtk.Enums.Shadow_None);
+      Gtk_New (Gtk_Demo_Frames (2));
+      Set_Shadow_Type (Gtk_Demo_Frames (2), The_Type => Gtk.Enums.Shadow_None);
       Pack_End (In_Box  => Box,
-                Child   => Gtk_Demo_Frame,
+                Child   => Gtk_Demo_Frames (2),
                 Expand  => True,
                 Fill    => True,
                 Padding => 0);
-      Set_Usize (Gtk_Demo_Frame, 550, 500);
+      Set_Usize (Gtk_Demo_Frames (2), 550, 500);
 
       --  Third page: Libartdemos
 
