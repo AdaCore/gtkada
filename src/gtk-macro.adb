@@ -667,8 +667,7 @@ package body Gtk.Macro is
                        (Rec,
                         Text         => "Play",
                         Tooltip_Text => "Play current macro entirely",
-                        Tooltip_Private_Text => "",
-                        Icon         => Pixmap),
+                        Icon         => Gtk_Widget (Pixmap)),
                        "clicked",
                        Void_Cb.To_Marshaller (Play_Macro_Cb'Access));
 
@@ -679,8 +678,7 @@ package body Gtk.Macro is
         (Append_Item (Rec,
                       Text         => "Step",
                       Tooltip_Text => "Play next event in the macro",
-                      Tooltip_Private_Text => "",
-                      Icon         => Pixmap),
+                      Icon         => Gtk_Widget (Pixmap)),
          "clicked",
          Void_Cb.To_Marshaller (Step_Macro_Cb'Access));
 
@@ -692,8 +690,7 @@ package body Gtk.Macro is
          (Rec,
           Text         => "Stop",
           Tooltip_Text => "Stop recording macro, or reset reading",
-          Tooltip_Private_Text => "",
-          Icon         => Pixmap),
+          Icon         => Gtk_Widget (Pixmap)),
          "clicked",
          Rec_Cb.To_Marshaller (Stop_Macro_Cb'Access),
          Slot_Object => Rec);
@@ -708,8 +705,7 @@ package body Gtk.Macro is
         (Append_Item (Rec,
                       Text         => "Load",
                       Tooltip_Text => "Load selected macro",
-                      Tooltip_Private_Text => "",
-                      Icon         => Pixmap),
+                      Icon         => Gtk_Widget (Pixmap)),
          "clicked",
          List_Cb.To_Marshaller (Load_Cb'Access),
          Slot_Object => Rec.List);
@@ -721,8 +717,7 @@ package body Gtk.Macro is
         (Append_Item (Rec,
                       Text         => "Save",
                       Tooltip_Text => "Save current macro",
-                      Tooltip_Private_Text => "",
-                      Icon         => Pixmap),
+                      Icon         => Gtk_Widget (Pixmap)),
          "clicked",
          Void_Cb.To_Marshaller (Save_Cb'Access));
 
