@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001 ACT-Europe                   --
+--                   Copyright (C) 2001-2003 ACT-Europe              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -87,6 +87,30 @@ package Glib.Object is
    --  Decrement the reference counter for Object. When this reaches 0, the
    --  object is effectively destroy, all the callbacks associated with it are
    --  disconnected.
+
+
+   type Weak_Notify is access procedure
+     (Data                 : System.Address;
+      Where_The_Object_Was : System.Address);
+   pragma Convention (C, Weak_Notify);
+   --  Called when Where_The_Object_Was is destroyed (although you can still
+   --  use this to reset it). Data is the argument passed to Weak_Ref.
+   --  You should destroy and free the memory occupied by Data
+
+   procedure Weak_Ref
+     (Object : access GObject_Record'Class;
+      Notify : Weak_Notify;
+      Data   : System.Address := System.Null_Address);
+   --  This kind of reference doesn't increment the object's reference
+   --  counting. However, it can and should be used to monitor the object's
+   --  life cycle, in particular to detect is destruction.
+   --  When Object is destroyed, calls Notify
+
+   procedure Weak_Unref
+     (Object : access GObject_Record'Class;
+      Notify : Weak_Notify;
+      Data   : System.Address := System.Null_Address);
+   --  Cancels the settings of Weak_Ref.
 
    ------------------------
    -- Interfacing with C --
