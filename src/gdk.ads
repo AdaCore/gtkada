@@ -40,15 +40,13 @@ package Gdk is
 
    type C_Dummy_Record is limited private;
    type C_Proxy is access C_Dummy_Record;
-   --  This is the general type of handlers to C structures.
-   --  The value pointed as no important whatsoever, since only the pointer
-   --  itself is important (this is a pointer to any kind of underlying C
-   --  structure).
-   --  Using this type instead of a simpler System.Address has the advantage
-   --  that because of its access semantics, the pointers of this type are
-   --  always initialized automatically to null.
-   --  C_Proxy is a public type so that one can use the null value to test
-   --  whether it is initialized or not.
+   --  General proxy for C structures.
+   --  This type is used instead of System.Address so that the variables are
+   --  automatically initialized to 'null'.
+   --  The value pointed to is irrelevant, and in fact should not be accessed.
+   --  It has thus been made limited private with no subprogram to access it.
+   --  C_Proxy is a public type so that one can compare directly the value
+   --  of the variables with 'null'.
    --  Note also that for more security this type as a C convention.
 
    generic
@@ -99,10 +97,7 @@ private
       Ptr : System.Address := System.Null_Address;
    end record;
 
-   type C_Dummy_Record is
-      record
-         I : Character;
-      end record;
+   type C_Dummy_Record is null record;
    --  This array can contain anything, since it is never used in
    --  fact.
 
