@@ -246,7 +246,7 @@ package body Create_Canvas is
         & " graph structure, tha includes a number of useful algorithms for"
         & " layout: topological sort,..."
         & ASCII.LF
-        & "@bNon-rectangular items@B can also be used, since for instance the"
+        & "@bNon-rectangular items@B can also be used, see for instance the"
         & " two items 2 and 4 in the default layout."
         & ASCII.LF
         & "You can also redefine your own @btype of links@B. By default, links"
