@@ -32,10 +32,10 @@ with Gdk; use Gdk;
 package body Gtk.Spin_Button is
 
    ---------------
-   -- Construct --
+   -- Configure --
    ---------------
 
-   procedure Construct
+   procedure Configure
       (Spin_Button : in Gtk_Spin_Button;
        Adjustment  : in Gtk.Adjustment.Gtk_Adjustment'Class;
        Climb_Rate  : in Gfloat;
@@ -46,13 +46,13 @@ package body Gtk.Spin_Button is
           Adjustment  : in System.Address;
           Climb_Rate  : in Gfloat;
           The_Digits  : in Gint);
-      pragma Import (C, Internal, "gtk_spin_button_construct");
+      pragma Import (C, Internal, "gtk_spin_button_configure");
    begin
       Internal (Get_Object (Spin_Button),
                 Get_Object (Adjustment),
                 Climb_Rate,
                 The_Digits);
-   end Construct;
+   end Configure;
 
    --------------------
    -- Get_Adjustment --

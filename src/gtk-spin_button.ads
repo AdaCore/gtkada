@@ -34,7 +34,7 @@ package Gtk.Spin_Button is
 
    type Gtk_Spin_Button is new Gtk.GEntry.Gtk_Entry with private;
 
-   procedure Construct
+   procedure Configure
       (Spin_Button : in Gtk_Spin_Button;
        Adjustment  : in Gtk.Adjustment.Gtk_Adjustment'Class;
        Climb_Rate  : in Gfloat;
