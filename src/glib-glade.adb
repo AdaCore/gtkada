@@ -21,11 +21,6 @@
 with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Strings.Fixed; use Ada.Strings; use Ada.Strings.Fixed;
 with Glib.GObjects; use Glib.GObjects;
-with Gtk; use Gtk;
---  ??? We should not "with" Gtk from the Glib hierarchy. This dependency
---  ??? is still needed because of Argument_Type and Count_Arguments, which
---  ??? should also be moved to Glib.GObjects... Remove this as soon as the
---  ??? Migration is done.
 
 package body Glib.Glade is
 
