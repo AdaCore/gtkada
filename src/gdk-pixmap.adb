@@ -50,10 +50,19 @@ package body Gdk.Pixmap is
                          Fg     : in System.Address;
                          Bg     : in System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_pixmap_create_from_data");
+      use type Gdk.Color.Gdk_Color;
+      Fg_A : System.Address := Fg'Address;
+      Bg_A : System.Address := Bg'Address;
    begin
+      if Fg = Gdk.Color.Null_Color then
+         Fg_A := System.Null_Address;
+      end if;
+      if Bg = Gdk.Color.Null_Color then
+         Bg_A := System.Null_Address;
+      end if;
       Set_Object (Pixmap, Internal (Get_Object (Window), Data & ASCII.NUL,
                                     Width, Height, Depth,
-                                    Fg'Address, Bg'Address));
+                                    Fg_A, Bg_A));
    end Create_From_Data;
 
    ---------------------
@@ -72,10 +81,15 @@ package body Gdk.Pixmap is
                          Filename    : in String)
                          return           System.Address;
       pragma Import (C, Internal, "gdk_pixmap_create_from_xpm");
+      use type Gdk.Color.Gdk_Color;
       Tmp : System.Address := Get_Object (Mask);
+      Transparent_A : System.Address := Transparent'Address;
    begin
+      if Transparent = Gdk.Color.Null_Color then
+         Transparent_A := System.Null_Address;
+      end if;
       Set_Object (Pixmap, Internal (Get_Object (Window), Tmp'Address,
-                                    Transparent'Address,
+                                    Transparent_A,
                                     Filename & Ascii.NUL));
       Set_Object (Mask, Tmp);
    end Create_From_Xpm;
@@ -98,12 +112,17 @@ package body Gdk.Pixmap is
                          Filename    : in String)
                          return System.Address;
       pragma Import (C, Internal, "gdk_pixmap_colormap_create_from_xpm");
+      use type Gdk.Color.Gdk_Color;
       Tmp : System.Address := Get_Object (Mask);
+      Transparent_A : System.Address := Transparent'Address;
    begin
+      if Transparent = Gdk.Color.Null_Color then
+         Transparent_A := System.Null_Address;
+      end if;
       Set_Object (Pixmap, Internal (Window => Get_Object (Window),
                                     Colormap => Get_Object (Colormap),
                                     Mask => Tmp'Address,
-                                    Transparent => Transparent'Address,
+                                    Transparent => Transparent_A,
                                     Filename => Filename & Ascii.NUL));
       Set_Object (Mask, Tmp);
    end Create_From_Xpm;
@@ -126,11 +145,16 @@ package body Gdk.Pixmap is
                          Data        : in Interfaces.C.Strings.chars_ptr_array)
                          return           System.Address;
       pragma Import (C, Internal, "gdk_pixmap_create_from_xpm_d");
+      use type Gdk.Color.Gdk_Color;
       Tmp : System.Address;
+      Transparent_A : System.Address := Transparent'Address;
    begin
+      if Transparent = Gdk.Color.Null_Color then
+         Transparent_A := System.Null_Address;
+      end if;
       Set_Object (Pixmap, Internal (Get_Object (Window),
                                     Tmp'Address,
-                                    Transparent'Address,
+                                    Transparent_A,
                                     Data));
       Set_Object (Mask, Tmp);
    end Create_From_Xpm_D;
@@ -154,12 +178,17 @@ package body Gdk.Pixmap is
                          Data        : in Interfaces.C.Strings.chars_ptr_array)
                          return System.Address;
       pragma Import (C, Internal, "gdk_pixmap_colormap_create_from_xpm_d");
+      use type Gdk.Color.Gdk_Color;
       Tmp : System.Address := Get_Object (Mask);
+      Transparent_A : System.Address := Transparent'Address;
    begin
+      if Transparent = Gdk.Color.Null_Color then
+         Transparent_A := System.Null_Address;
+      end if;
       Set_Object (Pixmap, Internal (Get_Object (Window),
                                     Get_Object (Colormap),
                                     Tmp'Address,
-                                    Transparent'Address,
+                                    Transparent_A,
                                     Data));
       Set_Object (Mask, Tmp);
    end Create_From_Xpm_D;

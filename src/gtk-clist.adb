@@ -707,8 +707,13 @@ package body Gtk.Clist is
          Row   : in Gint;
          Color : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_background");
+      use type Gdk.Color.Gdk_Color;
+      Color_A : System.Address := Color'Address;
    begin
-      Internal (Get_Object (Clist), Row, Color'Address);
+      if Color = Gdk.Color.Null_Color then
+         Color_A := System.Null_Address;
+      end if;
+      Internal (Get_Object (Clist), Row, Color_A);
    end Set_Background;
 
    ------------------------
@@ -907,10 +912,13 @@ package body Gtk.Clist is
          Row   : in Gint;
          Color : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_foreground");
+      use type Gdk.Color.Gdk_Color;
+      Color_A : System.Address := Color'Address;
    begin
-      Internal (Get_Object (Clist),
-                Row,
-                Color'Address);
+      if Color = Gdk.Color.Null_Color then
+         Color_A := System.Null_Address;
+      end if;
+      Internal (Get_Object (Clist), Row, Color_A);
    end Set_Foreground;
 
    ---------------------

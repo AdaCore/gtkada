@@ -242,11 +242,20 @@ package body Gtk.Text is
          Chars  : in String;
          Length : in Gint);
       pragma Import (C, Internal, "gtk_text_insert");
+      use type Gdk.Color.Gdk_Color;
+      Fore_A : System.Address := Fore'Address;
+      Back_A : System.Address := Back'Address;
    begin
+      if Fore = Gdk.Color.Null_Color then
+         Fore_A := System.Null_Address;
+      end if;
+      if Back = Gdk.Color.Null_Color then
+         Back_A := System.Null_Address;
+      end if;
       Internal (Get_Object (Text),
                 Get_Object (Font),
-                Fore'Address,
-                Back'Address,
+                Fore_A,
+                Back_A,
                 Chars & Ascii.NUL,
                 Length);
    end Insert;

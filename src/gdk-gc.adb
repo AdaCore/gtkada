@@ -129,8 +129,13 @@ package body Gdk.GC is
                              Color  : in Gdk.Color.Gdk_Color) is
       procedure Internal (GC, Color : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_background");
+      use type Gdk.Color.Gdk_Color;
    begin
-      Internal (Get_Object (GC), Color'Address);
+      if Color = Gdk.Color.Null_Color then
+         Internal (Get_Object (GC), System.Null_Address);
+      else
+         Internal (Get_Object (GC), Color'Address);
+      end if;
    end Set_Background;
 
 
@@ -241,8 +246,13 @@ package body Gdk.GC is
                              Color : in Gdk.Color.Gdk_Color) is
       procedure Internal (GC, Color : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_foreground");
+      use type Gdk.Color.Gdk_Color;
    begin
-      Internal (Get_Object (GC), Color'Address);
+      if Color = Gdk.Color.Null_Color then
+         Internal (Get_Object (GC), System.Null_Address);
+      else
+         Internal (Get_Object (GC), Color'Address);
+      end if;
    end Set_Foreground;
 
 

@@ -551,8 +551,13 @@ package body Gdk.Window is
       procedure Internal (Window : in System.Address;
                           Color  : in System.Address);
       pragma Import (C, Internal, "gdk_window_set_background");
+      use type Gdk.Color.Gdk_Color;
+      Color_A : System.Address := Color'Address;
    begin
-      Internal (Get_Object (Window), Color'Address);
+      if Color = Gdk.Color.Null_Color then
+         Color_A := System.Null_Address;
+      end if;
+      Internal (Get_Object (Window), Color_A);
       --
       --  FIXME: This "'Address" stuff needs to be tested!
       --  FIXME: Another way to proceed is to pass declare the Color

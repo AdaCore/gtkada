@@ -743,8 +743,13 @@ package body Gtk.CTree is
                           Node  : in System.Address;
                           Color : in System.Address);
       pragma Import (C, Internal, "gtk_ctree_node_set_background");
+      use type Gdk.Color.Gdk_Color;
+      Color_A : System.Address := Color'Address;
    begin
-      Internal (Get_Object (Ctree), Get_Object (Node), Color'Address);
+      if Color = Gdk.Color.Null_Color then
+         Color_A := System.Null_Address;
+      end if;
+      Internal (Get_Object (Ctree), Get_Object (Node), Color_A);
    end Node_Set_Background;
 
    -------------------------
@@ -780,8 +785,13 @@ package body Gtk.CTree is
                           Node  : in System.Address;
                           Color : in System.Address);
       pragma Import (C, Internal, "gtk_ctree_node_set_foreground");
+      use type Gdk.Color.Gdk_Color;
+      Color_A : System.Address := Color'Address;
    begin
-      Internal (Get_Object (Ctree), Get_Object (Node), Color'Address);
+      if Color = Gdk.Color.Null_Color then
+         Color_A := System.Null_Address;
+      end if;
+      Internal (Get_Object (Ctree), Get_Object (Node), Color_A);
    end Node_Set_Foreground;
 
    ---------------------
