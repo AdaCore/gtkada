@@ -128,5 +128,4 @@ package Gtkada.Dialogs is
    --  As opposed to Message_Dialog, you can provide your own custom buttons if
    --  needed.
 
-
 end Gtkada.Dialogs;
