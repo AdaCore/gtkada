@@ -39,8 +39,8 @@
 --  decoration, etc.) but these are only hints to the window manager, which
 --  might not respect them.
 --
---  A window can also be modal, ie grab all the mouse and keyboard events
---  in the application while its is displayed.
+--  A window can also be modal, i.e. grab all the mouse and keyboard events
+--  in the application while it is displayed.
 --
 --  </description>
 --  <c_version>1.2.6</c_version>
@@ -60,8 +60,8 @@ package Gtk.Window is
    procedure Gtk_New
      (Window   : in out Gtk_Window;
       The_Type : in  Gtk.Enums.Gtk_Window_Type := Gtk.Enums.Window_Toplevel);
-   --  Creates a new window.
-   --  THE_TYPE specifies the type of the window, and can be either a
+   --  Create a new window.
+   --  The_Type specifies the type of the window, and can be either a
    --  top level window, a dialog or a popup window. You will most often only
    --  need to use Window_Toplevel, the other types are mostly used internally
    --  by gtk+.
@@ -75,17 +75,17 @@ package Gtk.Window is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Window internally.
+   --  Return the internal value associated with a Gtk_Window internally.
 
    procedure Set_Title (Window : access Gtk_Window_Record;
                         Title  : in String);
-   --  Changes the title of the window, as it appears in the title bar.
+   --  Change the title of the window, as it appears in the title bar.
    --  Note that on some systems you might not be able to change it.
 
    procedure Set_Wmclass (Window        : access Gtk_Window_Record;
                           Wmclass_Name  : in String;
                           Wmclass_Class : in String);
-   --  Specifies the string to look for in the user's configuration files
+   --  Specify the string to look for in the user's configuration files
    --  (Xdefault...) for windows specific ressources. See some X11
    --  documentation for more information (man XSetClassHint)
    --  The window should not be realized when you call this function.
@@ -96,22 +96,26 @@ package Gtk.Window is
                          Auto_Shrink  : in     Boolean);
    --  Specify the behavior of the window with regards to size modifications.
    --  Default values when the window is created are:
+   --
    --    Allow_Shrink => False,
+   --
    --    Allow_Grow   => True,
+   --
    --    Auto_Shrink  => False.
-   --  If ALLOW_SHRINK is False, then the minimum size of the window is
+   --
+   --  If Allow_Shrink is False, then the minimum size of the window is
    --  calculated once depending on its children, and the window can never be
    --  smaller.
-   --  If ALLOW_GROW is False, then the maximum size of the window is
+   --  If Allow_Grow is False, then the maximum size of the window is
    --  calculated once depending on its children, and the window can never be
    --  bigger.
-   --  If AUTO_SHRINK if False, then the window is not shrinked when its
+   --  If Auto_Shrink if False, then the window is not shrinked when its
    --  content changes.
 
    procedure Add_Accel_Group
      (Window      : access Gtk_Window_Record;
       Accel_Group : in Gtk.Accel_Group.Gtk_Accel_Group'Class);
-   --  Specifies an accelerator group for the window.
+   --  Specify an accelerator group for the window.
 
    procedure Remove_Accel_Group
      (Window      : access Gtk_Window_Record;
@@ -120,44 +124,47 @@ package Gtk.Window is
 
    procedure Set_Position (Window   : access Gtk_Window_Record;
                            Position : in     Gtk.Enums.Gtk_Window_Position);
-   --  Specifies how the position of the window should be computed.
-   --  If POSITION is WIN_POS_CENTER_ALWAYS or WIN_POS_CENTER, then the window
+   --  Specify how the position of the window should be computed.
+   --  If Position is Win_Pos_Center_Always or Win_Pos_Center, then the window
    --  is centered on the screen. In the first case, it is also recentered
    --  when the window is resized with Gtk.Widget.Set_Usize (ie except on
    --  user action).
-   --  If POSITION is WIN_POS_MOUSE, then the window is positioned so that it
+   --  If Position is Win_Pos_Mouse, then the window is positioned so that it
    --  centered around the mouse.
-   --  If POSITION is WIN_POS_NONE, no calculation is done. If
+   --  If Position is Win_Pos_None, no calculation is done. If
    --  Gtk.Widget.Set_Uposition as been called, it is respected. This is the
    --  default case.
 
    function Activate_Focus (Window : access Gtk_Window_Record) return Boolean;
-   --  Calls Gtk.Widget.Activate on the widget that currently has the focus in
+   --  Call Gtk.Widget.Activate on the widget that currently has the focus in
    --  the window, ie sends an "activate" signal to that widget. Note that this
    --  signal does not really exists and is mapped to some widget-specific
    --  signal.
-   --  Returns TRUE if the widget could be activated, FALSE otherwise.
+   --  Return True if the widget could be activated, False otherwise.
    --  The Focus widget is set through a signal "set_focus".
 
    function Activate_Default (Window : access Gtk_Window_Record)
                               return Boolean;
-   --  Activates the default widget in the window, ie sends an "activate"
-   --  signal to that widget. Note that this signal is a virtual one and is
-   --  mapped to some widget specific signal.
-   --  Returns FALSE is the widget could not be activated or if there was
+   --  Activate the default widget in the window.
+   --  In other words, send an "activate" signal to that widget. Note that
+   --  this signal is a virtual one and is mapped to some widget specific
+   --  signal.
+   --  Return False is the widget could not be activated or if there was
    --  no default widget.
    --  You can set the default widget with the following calls:
+   --
    --     Gtk.Widget.Set_Flags (Widget, Can_Default);
+   --
    --     Gtk.Widget.Grab_Default (Widget);
 
 
    procedure Set_Transient_For (Window : access Gtk_Window_Record;
                                 Parent : access Gtk_Window_Record'Class);
-   --  Specifies that WINDOW is a transient window (ie a temporary window,
-   --  like a popup menu or a dialog box). PARENT is the toplevel window
-   --  of the application to which WINDOW belongs. A window that has set
-   --  this can expect less decoration from the window manager (for instance
-   --  no title bar and no borders).
+   --  Specify that Window is a transient window.
+   --  A transcient window is a temporary window, like a popup menu or a
+   --  dialog box). Parent is the toplevel window of the application to which
+   --  Window belongs. A window that has set this can expect less decoration
+   --  from the window manager (for instance no title bar and no borders).
    --  (see XSetTransientForHint(3) on Unix systems)
 
    procedure Set_Geometry_Hints
@@ -165,12 +172,13 @@ package Gtk.Window is
       Geometry_Widget : Gtk.Widget.Gtk_Widget;
       Geometry        : Gdk.Types.Gdk_Geometry;
       Geom_Mask       : Gdk.Types.Gdk_Window_Hints);
-   --  Specifies some geometry hints for the window, like its minimal and
-   --  maximal sizes, ... These attributes are specified in GEOMETRY.
-   --  GEOM_MASK indicates which of the fields in GEOMETRY are set.
-   --  GEOMETRY_WIDGET can be null (and thus is not an access parameter). It
-   --  adds some extra size to GEOMETRY based on the actual size of
-   --  GEOMETRY_WIDGET (the extra amount is WINDOW'Size - GEOMETRY_WIDGET'Size)
+   --  Specify some geometry hints for the window.
+   --  This includes its minimal and maximal sizes, ...
+   --  These attributes are specified in Geometry.
+   --  Geom_Mask indicates which of the fields in Geometry are set.
+   --  Geometry_Widget can be null (and thus is not an access parameter). It
+   --  adds some extra size to Geometry based on the actual size of
+   --  Geometry_Widget (the extra amount is Window'Size - Geometry_Widget'Size)
    --
    --  Geometry.Base_* indicates the size that is used by the window manager
    --  to report the size: for instance, if Base_Width = 600 and actual width
@@ -192,7 +200,7 @@ package Gtk.Window is
    procedure Set_Default_Size (Window : access Gtk_Window_Record;
                                Width  : in Gint;
                                Height : in Gint);
-   --  Specifies a minimal size for the window.
+   --  Specify a minimal size for the window.
    --  If its content needs to be bigger, then the actual window will grow
    --  accordingly.
    --  This is different from Gtk.Widget.Set_Usize which sets an absolute
@@ -201,11 +209,11 @@ package Gtk.Window is
 
    procedure Set_Modal (Window : access Gtk_Window_Record;
                         Modal  : in Boolean);
-   --  Defines the window as being Modal, ie it will grab the input from the
-   --  keyboard and the mouse while it is displayed and will release it when
-   --  it is hidden. The grab is only in effect for the windows that belong
-   --  to the same application, and will not affect other applications
-   --  running on the same screen.
+   --  Define the window as being Modal.
+   --  It will grab the input from the keyboard and the mouse while it is
+   --  displayed and will release it when it is hidden. The grab is only in
+   --  effect for the windows that belong to the same application, and will not
+   --  affect other applications running on the same screen.
    --  This is the easiest way to show a dialog to which the user has to
    --  answer before the application can continue.
 
@@ -226,7 +234,7 @@ package Gtk.Window is
    --    procedure Handler (Window : access Gtk_Window_Record'Class;
    --                       Widget : access Gtk_Widget_Record'Class);
    --
-   --    This is called when the widget that has the focus has changed.
+   --    Called when the widget that has the focus has changed.
    --    This widget gets all keyboard events that happen in the window.
    --    You should not block the emission of this signal, since most of
    --    the work is done in the default handler.
