@@ -4776,13 +4776,17 @@ package body Gtkada.MDI is
                         Dock_Child (Child, True);
 
                      when Floating =>
-                        Set_Size_Request (Child, Gint (Width), Gint (Height));
+                        Size_Allocate
+                          (Child, (Child.X, Child.Y,
+                                   Allocation_Int (Width),
+                                   Allocation_Int (Height)));
                         Float_Child (Child, True);
 
                      when Normal =>
                         Float_Child (Child, False);
                         Dock_Child (Child, False);
-                        Set_Size_Request (Child, Gint (Width), Gint (Height));
+                        Child.Uniconified_Width := Gint (Width);
+                        Child.Uniconified_Height := Gint (Height);
 
                      when Iconified =>
                         Child.State := Iconified;
