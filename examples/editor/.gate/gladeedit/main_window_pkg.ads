@@ -47,6 +47,4 @@ package Main_Window_Pkg is
    procedure Gtk_New (Main_Window : out Main_Window_Access);
    procedure Initialize (Main_Window : access Main_Window_Record'Class);
 
-   Main_Window : Main_Window_Access;
-
 end Main_Window_Pkg;

@@ -6,6 +6,10 @@ with Open_File_Selection_Pkg; use Open_File_Selection_Pkg;
 with Save_File_Selection_Pkg; use Save_File_Selection_Pkg;
 
 procedure Gladeedit is
+   Main_Window : Main_Window_Access;
+   Open_File_Selection : Open_File_Selection_Access;
+   Save_File_Selection : Save_File_Selection_Access;
+
 begin
    Gtk.Main.Set_Locale;
    Gtk.Main.Init;

@@ -13,6 +13,4 @@ package Open_File_Selection_Pkg is
    procedure Gtk_New (Open_File_Selection : out Open_File_Selection_Access);
    procedure Initialize (Open_File_Selection : access Open_File_Selection_Record'Class);
 
-   Open_File_Selection : Open_File_Selection_Access;
-
 end Open_File_Selection_Pkg;

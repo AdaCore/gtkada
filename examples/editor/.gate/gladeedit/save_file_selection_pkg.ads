@@ -13,6 +13,4 @@ package Save_File_Selection_Pkg is
    procedure Gtk_New (Save_File_Selection : out Save_File_Selection_Access);
    procedure Initialize (Save_File_Selection : access Save_File_Selection_Record'Class);
 
-   Save_File_Selection : Save_File_Selection_Access;
-
 end Save_File_Selection_Pkg;
