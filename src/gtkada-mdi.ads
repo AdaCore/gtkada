@@ -121,7 +121,6 @@ package Gtkada.MDI is
      (MDI                       : access MDI_Window_Record;
       Opaque_Resize             : Boolean             := False;
       Opaque_Move               : Boolean             := False;
-      Opaque_Docks              : Boolean             := False;
       Close_Floating_Is_Unfloat : Boolean             := True;
       Title_Font                : Pango.Font.Pango_Font_Description := null;
       Background_Color          : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
@@ -134,8 +133,6 @@ package Gtkada.MDI is
    --  Title_Font is the font used in the title bars (if null, "sans 8"
    --  is used).
    --  The colors, when Null_Color, will not change the current setup.
-   --  Opaque_Docks should be true if resizing the docks with the handles
-   --  should be opaque.
 
    type Child_Flags is mod 2 ** 5;
    Iconify_Button       : constant Child_Flags := 2 ** 0;
@@ -806,9 +803,6 @@ private
 
       Opaque_Move : Boolean;
       --  True if the contents of windows should be displayed while moved
-
-      Opaque_Docks : Boolean;
-      --  True if resizing the docks should be opaque.
 
       Close_Floating_Is_Unfloat : Boolean;
       --  True if destroying a floating window will put the child back in the

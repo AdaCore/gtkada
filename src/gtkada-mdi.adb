@@ -992,7 +992,6 @@ package body Gtkada.MDI is
      (MDI                       : access MDI_Window_Record;
       Opaque_Resize             : Boolean             := False;
       Opaque_Move               : Boolean             := False;
-      Opaque_Docks              : Boolean             := False;
       Close_Floating_Is_Unfloat : Boolean             := True;
       Title_Font                : Pango_Font_Description := null;
       Background_Color          : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
@@ -1008,7 +1007,6 @@ package body Gtkada.MDI is
    begin
       MDI.Opaque_Resize := Opaque_Resize;
       MDI.Opaque_Move   := Opaque_Move;
-      MDI.Opaque_Docks  := Opaque_Docks;
       MDI.Close_Floating_Is_Unfloat := Close_Floating_Is_Unfloat;
 
       Set_Opaque_Resizing (MDI.Main_Pane, Opaque_Resize);
@@ -2944,11 +2942,7 @@ package body Gtkada.MDI is
          --  This could be called before the child even has a parent if
          --  All_Floating_Mode is set.
          if Get_Parent (Child) /= null then
-            if Child.MDI.Central.Children_Are_Maximized then
-               Remove (Get_Notebook (Child), Child);
-            else
-               Remove (Child.MDI.Central.Layout, Child);
-            end if;
+            Remove (Gtk_Container (Get_Parent (Child)), Child);
          end if;
 
          if (Child.Flags and Float_As_Transient) /= 0 then
@@ -3436,11 +3430,30 @@ package body Gtkada.MDI is
    is
       use Widget_List;
       List      : Widget_List.Glist := First (MDI.Items);
+      C : MDI_Child;
    begin
       if All_Floating /= MDI.All_Floating_Mode then
-         while List /= Null_List loop
-            Float_Child (MDI_Child (Get_Data (List)), All_Floating);
-            List := Next (List);
+         --  We cannot do a simple loop here. When a child is floated, it
+         --  can happen that the mouse enters the window, and the focus changes
+         --  immediately, resulting in a change in the order of children in the
+         --  list, even though not all windows have been floated yet.
+
+         loop
+            List := First (MDI.Items);
+
+            while List /= Null_List loop
+               C := MDI_Child (Get_Data (List));
+               if (C.State /= Floating and then All_Floating)
+                 or else (C.State = Floating and then not All_Floating)
+               then
+                  Float_Child (C, All_Floating);
+                  exit;
+               end if;
+
+               List := Next (List);
+            end loop;
+
+            exit when List = Null_List;
          end loop;
 
          Set_Sensitive (MDI.Dock_Menu_Item, not All_Floating);
