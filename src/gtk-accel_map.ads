@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2002 ACT-Europe                   --
+--                   Copyright (C) 2002-2003 ACT Europe              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -46,7 +46,7 @@ package Gtk.Accel_Map is
    --  Register a new accelerator for a given menu item, within the global
    --  accelerator map.
    --  This function should only be called once per Accel_Path. To change it
-   --  programmatically duing runtime, use Change_Entry.
+   --  programmatically during runtime, use Change_Entry.
    --  Accel_Path is of the form:
    --     <app>/Category1/Category2/.../Action",
    --  where "app" is a unique, application-specific identifier (for examples
@@ -84,12 +84,24 @@ package Gtk.Accel_Map is
    --  accelerators. Replace should be set to True if other accelerators may be
    --  deleted to resolve such conflicts.
 
+   type Gtk_Accel_Map_Foreach is access procedure
+     (Data       : System.Address;
+      Accel_Path : String;
+      Accel_Key  : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
+      Changed    : Boolean);
+   --  Changed is set to true if the keybinding was changed manually by the
+   --  user
+
+   procedure Foreach
+     (Data : System.Address; Func : Gtk_Accel_Map_Foreach);
+   --  Calls Func for each of the currently defined key shortcuts.
+   --  Data is passed as is to Func
 
 end Gtk.Accel_Map;
 
 
 --  Missing:
---    gtk_accel_map_foreach
 --    gtk_accel_map_load_fd
 --    gtk_accel_map_load_scanner
 --    gtk_accel_map_save_fd

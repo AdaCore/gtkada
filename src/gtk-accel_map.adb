@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2002 ACT-Europe                   --
+--                   Copyright (C) 2002-2003 ACT Europe              --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,10 +26,19 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk.Types;       use Gdk.Types;
-with Gtk.Accel_Group; use Gtk.Accel_Group;
+with Gdk.Types;            use Gdk.Types;
+with Gtk.Accel_Group;      use Gtk.Accel_Group;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Accel_Map is
+
+   type Gtk_Accel_Map_Foreach_Internal is access procedure
+     (Data       : System.Address;
+      Accel_Path : Interfaces.C.Strings.chars_ptr;
+      Accel_Key  : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
+      Changed    : Gboolean);
+   pragma Convention (C, Gtk_Accel_Map_Foreach_Internal);
 
    ----------
    -- Save --
@@ -106,5 +115,45 @@ package body Gtk.Accel_Map is
       Internal (Accel_Path & ASCII.NUL, Accel_Key, Accel_Mods,
                 Boolean'Pos (Replace));
    end Change_Entry;
+
+   -------------
+   -- Foreach --
+   -------------
+
+   procedure Foreach
+     (Data : System.Address; Func : Gtk_Accel_Map_Foreach)
+   is
+      procedure Internal
+        (Data : System.Address;
+         Func : Gtk_Accel_Map_Foreach_Internal);
+      pragma Import (C, Internal, "gtk_accel_map_foreach");
+
+      procedure First_Level
+        (Data       : System.Address;
+         Accel_Path : Interfaces.C.Strings.chars_ptr;
+         Accel_Key  : Gdk.Types.Gdk_Key_Type;
+         Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
+         Changed    : Gboolean);
+      pragma Convention (C, First_Level);
+      --  Internal handler
+
+      -----------------
+      -- First_Level --
+      -----------------
+
+      procedure First_Level
+        (Data       : System.Address;
+         Accel_Path : Interfaces.C.Strings.chars_ptr;
+         Accel_Key  : Gdk.Types.Gdk_Key_Type;
+         Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
+         Changed    : Gboolean)
+      is
+      begin
+         Func (Data, Value (Accel_Path), Accel_Key,
+               Accel_Mods, Boolean'Val (Changed));
+      end First_Level;
+   begin
+      Internal (Data, First_Level'Unrestricted_Access);
+   end Foreach;
 
 end Gtk.Accel_Map;
