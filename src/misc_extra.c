@@ -128,6 +128,16 @@ ada_gtk_sheet_get_row_title (GtkSheet* sheet, gint row) {
   return sheet->row[row].name;
 }
 
+gint
+ada_gtk_sheet_get_column_width (GtkSheet* sheet, gint col) {
+  return sheet->column[col].width;
+}
+
+gint
+ada_gtk_sheet_get_row_height (GtkSheet* sheet, gint row) {
+  return sheet->row[row].height;
+}
+
 /********************************************************************
  **
  **  Gtk_Combo_Box widget

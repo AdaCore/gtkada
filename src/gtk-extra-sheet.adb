@@ -70,7 +70,7 @@ package body Gtk.Extra.Sheet is
    procedure Sheet_Unset_Flags  (Sheet  : access Gtk_Sheet_Record;
                                  Flags : Guint16)
    is
-      procedure Internal (Sheet : System.Address; Flags : Guint8);
+      procedure Internal (Sheet : System.Address; Flags : Guint16);
       pragma Import (C, Internal, "ada_gtk_extra_sheet_unset_flags");
    begin
       Internal (Get_Object (Sheet), Flags);
@@ -859,13 +859,14 @@ package body Gtk.Extra.Sheet is
    -----------------
 
    procedure Range_Clear (Sheet     : access Gtk_Sheet_Record;
-                          The_Range : in Gtk_Sheet_Range_Access)
+                          The_Range : in Gtk_Sheet_Range)
    is
       procedure Internal (Sheet     : in System.Address;
-                          The_Range : in Gtk_Sheet_Range_Access);
+                          The_Range : in System.Address);
       pragma Import (C, Internal, "gtk_sheet_range_clear");
+      R : aliased Gtk_Sheet_Range := The_Range;
    begin
-      Internal (Get_Object (Sheet), The_Range);
+      Internal (Get_Object (Sheet), R'Address);
    end Range_Clear;
 
    ------------------
@@ -1094,13 +1095,13 @@ package body Gtk.Extra.Sheet is
       Internal (Get_Object (Sheet), Row, Nrows);
    end Insert_Rows;
 
-   -----------------
-   -- Insert_Cols --
-   -----------------
+   --------------------
+   -- Insert_Columns --
+   --------------------
 
-   procedure Insert_Cols (Sheet : access Gtk_Sheet_Record;
-                          Col   : in Gint;
-                          Ncols : in Gint)
+   procedure Insert_Columns (Sheet : access Gtk_Sheet_Record;
+                             Col   : in Gint;
+                             Ncols : in Gint)
    is
       procedure Internal (Sheet : in System.Address;
                           Col   : in Gint;
@@ -1108,7 +1109,7 @@ package body Gtk.Extra.Sheet is
       pragma Import (C, Internal, "gtk_sheet_insert_columns");
    begin
       Internal (Get_Object (Sheet), Col, Ncols);
-   end Insert_Cols;
+   end Insert_Columns;
 
    -----------------
    -- Delete_Rows --
@@ -1491,6 +1492,38 @@ package body Gtk.Extra.Sheet is
          return Interfaces.C.Strings.Value (C);
       end if;
    end Get_Row_Title;
+
+   ----------------------
+   -- Get_Column_Width --
+   ----------------------
+
+   function Get_Column_Width (Sheet  : access Gtk_Sheet_Record;
+                              Column : in Gint)
+                             return Gint
+   is
+      function Internal (Sheet  : System.Address;
+                         Column : Gint)
+                        return Gint;
+      pragma Import (C, Internal, "ada_gtk_sheet_get_column_width");
+   begin
+      return Internal (Get_Object (Sheet), Column);
+   end Get_Column_Width;
+
+   --------------------
+   -- Get_Row_Height --
+   --------------------
+
+   function Get_Row_Height (Sheet  : access Gtk_Sheet_Record;
+                            Row : in Gint)
+                           return Gint
+   is
+      function Internal (Sheet  : System.Address;
+                         Row : Gint)
+                        return Gint;
+      pragma Import (C, Internal, "ada_gtk_sheet_get_row_height");
+   begin
+      return Internal (Get_Object (Sheet), Row);
+   end Get_Row_Height;
 
    --------------------
    -- Get_Attributes --

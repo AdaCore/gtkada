@@ -299,13 +299,18 @@ package Gtk.Extra.Sheet is
                                Width  : in Gint);
    --  Modify the width in pixels of a specific column.
 
+   function Get_Column_Width (Sheet  : access Gtk_Sheet_Record;
+                              Column : in Gint)
+                             return Gint;
+   --  Return the width in pixels of the Column-nth in Sheet.
+
    procedure Add_Column (Sheet : access Gtk_Sheet_Record;
                          Ncols : in Gint);
    --  Add some empty columns at the end of the sheet.
 
-   procedure Insert_Cols (Sheet : access Gtk_Sheet_Record;
-                          Col   : in Gint;
-                          Ncols : in Gint);
+   procedure Insert_Columns (Sheet : access Gtk_Sheet_Record;
+                             Col   : in Gint;
+                             Ncols : in Gint);
    --  Add Ncols empty columns just before the columns number Col.
 
    procedure Delete_Columns (Sheet : access Gtk_Sheet_Record;
@@ -383,6 +388,11 @@ package Gtk.Extra.Sheet is
                              Height : in Gint);
    --  Set the height in pixels of a specific row.
 
+   function Get_Row_Height (Sheet   : access Gtk_Sheet_Record;
+                            Row     : in Gint)
+                           return Gint;
+   --  Return the height in pixels of the Row-th row in Sheet.
+
    procedure Add_Row (Sheet : access Gtk_Sheet_Record;
                       Nrows : in Gint);
    --  Append Nrows row at the end of the sheet.
@@ -405,9 +415,8 @@ package Gtk.Extra.Sheet is
    -----------
 
    procedure Range_Clear (Sheet     : access Gtk_Sheet_Record;
-                          The_Range : in Gtk_Sheet_Range_Access);
+                          The_Range : in Gtk_Sheet_Range);
    --  Clear the content of the range.
-   --  If The_Range is null, the whole sheet is cleared.
 
    procedure Range_Delete (Sheet     : access Gtk_Sheet_Record;
                            The_Range : in Gtk_Sheet_Range_Access);
