@@ -30,6 +30,7 @@
 with Gdk.Bitmap;
 with Gdk.Pixmap;
 with Gtk.Misc;
+with Gtk.Window;
 
 package Gtk.Pixmap is
 
@@ -60,8 +61,11 @@ package Gtk.Pixmap is
    --  The following routines are not part of the Gtk+ binding.
    --  They provide additional routines used, e.g, by gate
 
-   function Create_Pixmap (Filename : String) return Gtk_Pixmap;
-   --  Create a pixmap given a filename
+   function Create_Pixmap
+     (Filename : in String;
+      Window   : access Gtk.Window.Gtk_Window_Record'Class)
+      return Gtk_Pixmap;
+   --  Create a pixmap given a window and a filename
 
 private
    type Gtk_Pixmap_Record is new Gtk.Misc.Gtk_Misc_Record with null record;

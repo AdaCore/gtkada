@@ -31,7 +31,7 @@ with Gdk; use Gdk;
 with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Pixmap;
-with Gdk.Window;
+with Gtk.Widget;
 with System;
 
 package body Gtk.Pixmap is
@@ -142,15 +142,25 @@ package body Gtk.Pixmap is
                 Get_Object (Mask));
    end Set;
 
-   function Create_Pixmap (Filename : String) return Gtk_Pixmap is
+   function Create_Pixmap
+     (Filename : in String;
+      Window   : access Gtk.Window.Gtk_Window_Record'Class)
+      return Gtk_Pixmap
+   is
       Gdkpixmap : Gdk.Pixmap.Gdk_Pixmap;
       Mask      : Gdk.Bitmap.Gdk_Bitmap;
       Pixmap    : Gtk_Pixmap;
 
+      use Gtk.Widget;
+      use Gtk.Window;
+
    begin
+      if not Realized_Is_Set (Window) then
+         Gtk.Window.Realize (Window);
+      end if;
+
       Gdk.Pixmap.Create_From_Xpm
-        (Gdkpixmap, Gdk.Window.Null_Window, Mask,
-         Gdk.Color.Null_Color, Filename);
+        (Gdkpixmap, Get_Window (Window), Mask, Gdk.Color.Null_Color, Filename);
       Gtk_New (Pixmap, Gdkpixmap, Mask);
       Gdk.Pixmap.Unref (Gdkpixmap);
       Gdk.Bitmap.Unref (Mask);
