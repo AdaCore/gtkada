@@ -51,24 +51,32 @@ package Gtkada.Multi_Paned is
    --  Create a new paned window.
 
    procedure Add_Child
-     (Win        : access Gtkada_Multi_Paned_Record;
-      New_Child  : access Gtk.Widget.Gtk_Widget_Record'Class);
+     (Win           : access Gtkada_Multi_Paned_Record;
+      New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Width, Height : Glib.Gint := 0);
    --  Add new child, splitting as needed (in the direction of the main pane).
    --  This should be used when there is no child yet
+   --  The window is splitted in two by default. However, if Width and Height
+   --  are specified (or left to -1 for automatic computation), the window is
+   --  splitted so that amount of screen space is left to the widget
+   --  (leaving some minimum amount of space to other children as needed).
 
    procedure Split
-     (Win         : access Gtkada_Multi_Paned_Record;
-      Ref_Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      New_Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Orientation : Gtk.Enums.Gtk_Orientation;
-      Child_Percent : Float := 0.5;
-      After       : Boolean := True);
+     (Win           : access Gtkada_Multi_Paned_Record;
+      Ref_Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Orientation   : Gtk.Enums.Gtk_Orientation;
+      Width, Height : Glib.Gint := 0;
+      After         : Boolean := True);
    --  Split the pane containing Ref_Widget, and add New_Child
    --  in the new pane (on the right or at the bottom if After is True, on the
    --  left or at the top if After is False).
-   --  Child_Percent indicates what proportion of the area currently occupied
-   --  by Ref_Widget will now be occupied by New_Child. The area occupied by
-   --  Ref_Child is reduced accordingly.
+
+   procedure Set_Size
+     (Win           : access Gtkada_Multi_Paned_Record;
+      Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Width, Height : Glib.Gint := 0);
+   --  Force a specific size for Widget
 
 private
    type Resize_Handle is record
@@ -88,6 +96,7 @@ private
       case Is_Widget is
          when True  =>
             Widget      : Gtk.Widget.Gtk_Widget;
+            Width, Height : Glib.Gint;
          when False =>
             Orientation : Gtk.Enums.Gtk_Orientation;
             First_Child : Child_Description_Access;
