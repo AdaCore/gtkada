@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -412,6 +412,26 @@ package body Gtkada.Canvas is
       Configure (Canvas);
       Set_Scroll_Adjustments (Canvas, Null_Adjustment, Null_Adjustment);
    end Initialize;
+
+   --------------
+   -- Get_Vadj --
+   --------------
+
+   function Get_Vadj
+     (Canvas : access Interactive_Canvas_Record'Class) return Gtk_Adjustment is
+   begin
+      return Canvas.Vadj;
+   end Get_Vadj;
+
+   --------------
+   -- Get_Hadj --
+   --------------
+
+   function Get_Hadj
+     (Canvas : access Interactive_Canvas_Record'Class) return Gtk_Adjustment is
+   begin
+      return Canvas.Hadj;
+   end Get_Hadj;
 
    ----------------------
    -- Canvas_Destroyed --
@@ -1932,7 +1952,11 @@ package body Gtkada.Canvas is
 
    begin
       if Grid >= 5 then
-         Window := Get_Window (Interactive_Canvas (Canvas));
+         --  Do not dispatch on Get_Window, since we only want to display the
+         --  grid on real canvas, not when e.g. copying the contents to a
+         --  pixbuf.
+
+         Window := Get_Window (Canvas);
 
          if (Screen_Rect.Y + Y_Top) mod Grid = 0 then
             Y := Screen_Rect.Y;

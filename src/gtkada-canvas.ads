@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -215,6 +215,16 @@ package Gtkada.Canvas is
    --  canvas. Note that in that case you can never activate Align_On_Grid.
    --  This setting doesn't apply if you have redefined Draw_Background, which
    --  may not draw a grid.
+
+   function Get_Vadj
+     (Canvas : access Interactive_Canvas_Record'Class)
+      return Gtk.Adjustment.Gtk_Adjustment;
+   --  Return the vertical adjustment associated with Canvas
+
+   function Get_Hadj
+     (Canvas : access Interactive_Canvas_Record'Class)
+      return Gtk.Adjustment.Gtk_Adjustment;
+   --  Return the horizontal adjustment associated with Canvas
 
    procedure Draw_Area
      (Canvas : access Interactive_Canvas_Record'Class;
