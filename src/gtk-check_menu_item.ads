@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,54 +36,57 @@
 --  left side of the Gtk_Menu_Item. Activating the Gtk_Menu_Item toggles the
 --  value.
 --  </description>
---  <c_version>1.2.8</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Menu_Item;
 
 package Gtk.Check_Menu_Item is
 
-   type Gtk_Check_Menu_Item_Record is new Gtk.Menu_Item.Gtk_Menu_Item_Record
-     with private;
+   type Gtk_Check_Menu_Item_Record is new
+     Gtk.Menu_Item.Gtk_Menu_Item_Record with private;
    type Gtk_Check_Menu_Item is access all Gtk_Check_Menu_Item_Record'Class;
 
    procedure Gtk_New
      (Check_Menu_Item : out Gtk_Check_Menu_Item;
-      Label  : in String := "");
+      Label           : String := "");
    --  Create a new Gtk_Check_Menu_Item with a label, if label isn't null.
 
    procedure Initialize
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record'Class;
-      Label  : in String := "");
+      Label           : String := "");
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Calendar.
 
-   procedure Set_Show_Toggle
-     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
-      Always          : in Boolean);
-   --  Control whether the check box is shown at all times.
-   --  Normally the check box is shown only when it is active or while the
-   --  menu item is selected.
-
-   procedure Set_Always_Show_Toggle
-     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
-      Always          : in Boolean);
-   --  Same as Set_Show_Toggle.
-   --  Provided to simplify automated tools, such as Gate.
-
    procedure Set_Active
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
-      Is_Active       : in Boolean);
+      Is_Active       : Boolean);
    --  Set the active state of the menu item's check box.
-
-   procedure Toggled (Check_Menu_Item : access Gtk_Check_Menu_Item_Record);
-   --  Emit the "toggled" signal.
 
    function Get_Active
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record) return Boolean;
    --  Return True if the Item is active
+
+   procedure Toggled (Check_Menu_Item : access Gtk_Check_Menu_Item_Record);
+   --  Emit the "toggled" signal.
+
+   procedure Set_Inconsistent
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
+      Setting         : Boolean);
+   --  If the user has selected a range of elements (such as some text or
+   --  spreadsheet cells) that are affected by a boolean setting, and the
+   --  current values in that range are inconsistent, you may want to
+   --  display the check in an "in between" state. This function turns on
+   --  "in between" display.  Normally you would turn off the inconsistent
+   --  state again if the user explicitly selects a setting. This has to be
+   --  done manually, Set_Inconsistent only affects visual appearance, it
+   --  doesn't affect the semantics of the widget.
+
+   function Get_Inconsistent
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record) return Boolean;
+   --  Return True if the Item is inconsistent.
 
    -------------
    -- Signals --

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,7 +36,7 @@ package body Gtk.Combo is
    ----------------------
 
    procedure Disable_Activate (Combo_Box : access Gtk_Combo_Record) is
-      procedure Internal (Combo_Box  : in System.Address);
+      procedure Internal (Combo_Box : System.Address);
       pragma Import (C, Internal, "gtk_combo_disable_activate");
 
    begin
@@ -47,11 +47,10 @@ package body Gtk.Combo is
    -- Get_Entry --
    ---------------
 
-   function Get_Entry (Combo_Box : access Gtk_Combo_Record)
-     return Gtk.GEntry.Gtk_Entry
+   function Get_Entry
+     (Combo_Box : access Gtk_Combo_Record) return Gtk.GEntry.Gtk_Entry
    is
-      function Internal (Combo_Box : in System.Address)
-        return System.Address;
+      function Internal (Combo_Box : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_combo_get_entry");
 
       Stub : Gtk.GEntry.Gtk_Entry_Record;
@@ -65,11 +64,10 @@ package body Gtk.Combo is
    -- Get_List --
    --------------
 
-   function Get_List (Combo_Box : access Gtk_Combo_Record)
-     return Gtk.List.Gtk_List
+   function Get_List
+     (Combo_Box : access Gtk_Combo_Record) return Gtk.List.Gtk_List
    is
-      function Internal (Combo_Box : in System.Address)
-        return System.Address;
+      function Internal (Combo_Box : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_combo_get_list");
 
       Stub : Gtk.List.Gtk_List_Record;
@@ -107,10 +105,10 @@ package body Gtk.Combo is
    ------------------------
 
    procedure Set_Case_Sensitive
-     (Combo_Box : access Gtk_Combo_Record; Val : in Boolean := True)
+     (Combo_Box : access Gtk_Combo_Record; Val : Boolean := True)
    is
       procedure Internal
-        (Combo_Box : in System.Address; Val : in Gint);
+        (Combo_Box : System.Address; Val : Gint);
       pragma Import (C, Internal, "gtk_combo_set_case_sensitive");
 
    begin
@@ -121,12 +119,15 @@ package body Gtk.Combo is
    -- Set_Entry --
    ---------------
 
-   procedure Set_Entry (Combo_Box : access Gtk_Combo_Record;
-                        GEntry    : Gtk.GEntry.Gtk_Entry)
+   procedure Set_Entry
+     (Combo_Box : access Gtk_Combo_Record;
+      GEntry    : Gtk.GEntry.Gtk_Entry)
    is
-      procedure Internal (Combo_Box : in System.Address;
-                          GEntry    : in System.Address);
+      procedure Internal
+        (Combo_Box : System.Address;
+         GEntry    : System.Address);
       pragma Import (C, Internal, "ada_combo_set_entry");
+
    begin
       Internal (Get_Object (Combo_Box), Get_Object (GEntry));
    end Set_Entry;
@@ -137,12 +138,13 @@ package body Gtk.Combo is
 
    procedure Set_Item_String
      (Combo_Box  : access Gtk_Combo_Record;
-      Item       : in Gtk.Item.Gtk_Item;
-      Item_Value : in String)
+      Item       : Gtk.Item.Gtk_Item;
+      Item_Value : String)
    is
-      procedure Internal (Combo_Box  : in System.Address;
-                          Item       : in System.Address;
-                          Item_Value : in String);
+      procedure Internal
+        (Combo_Box  : System.Address;
+         Item       : System.Address;
+         Item_Value : String);
       pragma Import (C, Internal, "gtk_combo_set_item_string");
 
    begin
@@ -156,10 +158,11 @@ package body Gtk.Combo is
 
    procedure Set_Popdown_Strings
      (Combo_Box : access Gtk_Combo_Record;
-      Strings   : in String_List.Glist)
+      Strings   : String_List.Glist)
    is
-      procedure Internal (Combo_Box : in System.Address;
-                          Strings   : in System.Address);
+      procedure Internal
+        (Combo_Box : System.Address;
+         Strings   : System.Address);
       pragma Import (C, Internal, "gtk_combo_set_popdown_strings");
 
    begin
@@ -171,9 +174,9 @@ package body Gtk.Combo is
    --------------------
 
    procedure Set_Use_Arrows
-     (Combo_Box : access Gtk_Combo_Record; Val : in Boolean := True)
+     (Combo_Box : access Gtk_Combo_Record; Val : Boolean := True)
    is
-      procedure Internal (Combo_Box : in System.Address; Val : in Gint);
+      procedure Internal (Combo_Box : System.Address; Val : Gint);
       pragma Import (C, Internal, "gtk_combo_set_use_arrows");
 
    begin
@@ -185,9 +188,9 @@ package body Gtk.Combo is
    ---------------------------
 
    procedure Set_Use_Arrows_Always
-     (Combo_Box : access Gtk_Combo_Record; Val : in Boolean := True)
+     (Combo_Box : access Gtk_Combo_Record; Val : Boolean := True)
    is
-      procedure Internal (Combo_Box : in System.Address; Val : in Gint);
+      procedure Internal (Combo_Box : System.Address; Val : Gint);
       pragma Import (C, Internal, "gtk_combo_set_use_arrows_always");
 
    begin
@@ -200,12 +203,13 @@ package body Gtk.Combo is
 
    procedure Set_Value_In_List
      (Combo_Box   : access Gtk_Combo_Record;
-      Val         : in Gint;
-      Ok_If_Empty : in Boolean)
+      Val         : Gint;
+      Ok_If_Empty : Boolean)
    is
-      procedure Internal (Combo_Box   : in System.Address;
-                          Val         : in Gint;
-                          Ok_If_Empty : in Gint);
+      procedure Internal
+        (Combo_Box   : System.Address;
+         Val         : Gint;
+         Ok_If_Empty : Gint);
       pragma Import (C, Internal, "gtk_combo_set_value_in_list");
 
    begin

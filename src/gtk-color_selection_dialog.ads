@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,26 +34,27 @@
 --  dialog for file selection.
 --
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.4</c_version>
 
-with Gtk.Window;
+with Gtk.Dialog;
 with Gtk.Button;
 with Gtk.Color_Selection;
 
 package Gtk.Color_Selection_Dialog is
 
-   type Gtk_Color_Selection_Dialog_Record is new Gtk.Window.Gtk_Window_Record
-     with private;
+   type Gtk_Color_Selection_Dialog_Record is new
+     Gtk.Dialog.Gtk_Dialog_Record with private;
    type Gtk_Color_Selection_Dialog
      is access all Gtk_Color_Selection_Dialog_Record'Class;
 
-   procedure Gtk_New (Color_Selection_Dialog : out Gtk_Color_Selection_Dialog;
-                      Title  : in String);
+   procedure Gtk_New
+     (Color_Selection_Dialog : out Gtk_Color_Selection_Dialog;
+      Title                  : String);
    --  Create a new Color_Selection_Dialog with a specified title.
 
    procedure Initialize
      (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record'Class;
-      Title  : in String);
+      Title                  : String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -98,7 +99,7 @@ package Gtk.Color_Selection_Dialog is
 
 private
    type Gtk_Color_Selection_Dialog_Record is new
-     Gtk.Window.Gtk_Window_Record with null record;
+     Gtk.Dialog.Gtk_Dialog_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_color_selection_dialog_get_type");
 

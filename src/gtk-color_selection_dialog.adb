@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -41,7 +41,9 @@ package body Gtk.Color_Selection_Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_colorsel_dialog_get_colorsel");
+
       Stub : Gtk.Color_Selection.Gtk_Color_Selection_Record;
+
    begin
       return Gtk.Color_Selection.Gtk_Color_Selection
         (Get_User_Data (Internal (Get_Object (Color_Selection_Dialog)), Stub));
@@ -57,7 +59,9 @@ package body Gtk.Color_Selection_Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_colorsel_dialog_get_ok_button");
+
       Stub : Gtk.Button.Gtk_Button_Record;
+
    begin
       return Gtk.Button.Gtk_Button
         (Get_User_Data (Internal (Get_Object (Color_Selection_Dialog)), Stub));
@@ -73,7 +77,9 @@ package body Gtk.Color_Selection_Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_colorsel_dialog_get_cancel_button");
+
       Stub : Gtk.Button.Gtk_Button_Record;
+
    begin
       return Gtk.Button.Gtk_Button
         (Get_User_Data (Internal (Get_Object (Color_Selection_Dialog)), Stub));
@@ -89,7 +95,9 @@ package body Gtk.Color_Selection_Dialog is
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_colorsel_dialog_get_help_button");
+
       Stub : Gtk.Button.Gtk_Button_Record;
+
    begin
       return Gtk.Button.Gtk_Button
         (Get_User_Data (Internal (Get_Object (Color_Selection_Dialog)), Stub));
@@ -100,9 +108,8 @@ package body Gtk.Color_Selection_Dialog is
    -------------
 
    procedure Gtk_New
-     (Color_Selection_Dialog :    out Gtk_Color_Selection_Dialog;
-      Title                  : in     String)
-   is
+     (Color_Selection_Dialog : out Gtk_Color_Selection_Dialog;
+      Title                  : String) is
    begin
       Color_Selection_Dialog := new Gtk_Color_Selection_Dialog_Record;
       Initialize (Color_Selection_Dialog, Title);
@@ -114,10 +121,11 @@ package body Gtk.Color_Selection_Dialog is
 
    procedure Initialize
      (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record'Class;
-      Title                  : in     String)
+      Title                  : String)
    is
       function Internal (S : String) return System.Address;
       pragma Import (C, Internal, "gtk_color_selection_dialog_new");
+
    begin
       Set_Object (Color_Selection_Dialog, Internal (Title & ASCII.NUL));
       Initialize_User_Data (Color_Selection_Dialog);

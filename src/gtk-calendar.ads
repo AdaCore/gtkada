@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -42,13 +42,14 @@
 --  If performing many 'mark' operations, the calendar can be frozen to prevent
 --  flicker, using Freeze, and 'thawed' again using Thaw.
 --  </description>
---  <c_version>1.2.8</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Widget;
 
 package Gtk.Calendar is
 
    type Gtk_Calendar_Display_Options is private;
+
    Show_Heading : constant Gtk_Calendar_Display_Options;
    --  Specify that the month and year should be displayed.
 
@@ -65,8 +66,9 @@ package Gtk.Calendar is
    Week_Start_Monday : constant Gtk_Calendar_Display_Options;
    --  Start the calendar week on Monday, instead of the default Sunday.
 
-   function "and" (Left, Right : Gtk_Calendar_Display_Options)
-                   return Gtk_Calendar_Display_Options;
+   function "and"
+     (Left, Right : Gtk_Calendar_Display_Options)
+      return Gtk_Calendar_Display_Options;
 
    type Gtk_Calendar_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Calendar is access all Gtk_Calendar_Record'Class;
@@ -83,20 +85,20 @@ package Gtk.Calendar is
 
    function Select_Month
      (Calendar : access Gtk_Calendar_Record;
-      Month    : in Guint;
-      Year     : in Guint) return Boolean;
+      Month    : Guint;
+      Year     : Guint) return Boolean;
    --  Shift the calendar to a different month/year.
    --  Return True if sucessful.
 
    procedure Select_Day
      (Calendar : access Gtk_Calendar_Record;
-      Day      : in Guint);
+      Day      : Guint);
    --  Select a day from the current month.
    --  Only one day can be selected at a time.
 
    function Mark_Day
      (Calendar : access Gtk_Calendar_Record;
-      Day      : in Guint) return Boolean;
+      Day      : Guint) return Boolean;
    --  Set a specified Day as marked in the Calendar.
    --  This is shown visually as a painted box around the Day.
    --  Note that several days can be marked.
@@ -104,7 +106,7 @@ package Gtk.Calendar is
 
    function Unmark_Day
      (Calendar : access Gtk_Calendar_Record;
-      Day      : in Guint) return Boolean;
+      Day      : Guint) return Boolean;
    --  Undo the marking of Day.
    --  Return True if sucessful.
 
@@ -113,7 +115,7 @@ package Gtk.Calendar is
 
    procedure Display_Options
      (Calendar : access Gtk_Calendar_Record;
-      Flags    : in Gtk_Calendar_Display_Options);
+      Flags    : Gtk_Calendar_Display_Options);
    --  Change the display options.
    --  See individual Display_Option flags for more details.
 
@@ -142,6 +144,37 @@ package Gtk.Calendar is
    --
    --  Emitted when the user clicks a button to change the selected month on a
    --  calendar.
+   --
+   --  - "day_selected"
+   --    procedure Handler (Calendar : access Gtk_Calendar_Record'Class);
+   --
+   --  Emitted when the user selects a day on a calendar.
+   --
+   --  - "day_selected_double_click"
+   --    procedure Handler (Calendar : access Gtk_Calendar_Record'Class);
+   --
+   --  Emitted when the user double clicks a day on a calendar.
+   --
+   --  - "prev_month"
+   --    procedure Handler (Calendar : access Gtk_Calendar_Record'Class);
+   --
+   --  Emitted when the user selects the previous month on a calendar.
+   --
+   --  - "next_month"
+   --    procedure Handler (Calendar : access Gtk_Calendar_Record'Class);
+   --
+   --  Emitted when the user selects the next month on a calendar.
+   --
+   --  - "prev_year"
+   --    procedure Handler (Calendar : access Gtk_Calendar_Record'Class);
+   --
+   --  Emitted when the user selects the previous year on a calendar.
+   --
+   --  - "next_year"
+   --    procedure Handler (Calendar : access Gtk_Calendar_Record'Class);
+   --
+   --  Emitted when the user selects the next year on a calendar.
+   --
    --  </signals>
 
 private
@@ -151,10 +184,10 @@ private
    pragma Import (C, Get_Type, "gtk_calendar_get_type");
 
    type Gtk_Calendar_Display_Options is new Gint;
-   Show_Heading : constant Gtk_Calendar_Display_Options := 1;
-   Show_Day_Names : constant Gtk_Calendar_Display_Options := 2;
-   No_Month_Change : constant Gtk_Calendar_Display_Options := 4;
-   Show_Week_Number : constant Gtk_Calendar_Display_Options := 8;
-   Week_Start_Monday : constant Gtk_Calendar_Display_Options := 16;
+   Show_Heading      : constant Gtk_Calendar_Display_Options := 2 ** 0;
+   Show_Day_Names    : constant Gtk_Calendar_Display_Options := 2 ** 1;
+   No_Month_Change   : constant Gtk_Calendar_Display_Options := 2 ** 2;
+   Show_Week_Number  : constant Gtk_Calendar_Display_Options := 2 ** 3;
+   Week_Start_Monday : constant Gtk_Calendar_Display_Options := 2 ** 4;
 
 end Gtk.Calendar;

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -60,15 +60,15 @@ package body Gtk.Calendar is
 
    procedure Display_Options
      (Calendar : access Gtk_Calendar_Record;
-      Flags    : in Gtk_Calendar_Display_Options)
+      Flags    : Gtk_Calendar_Display_Options)
    is
       procedure Internal
-        (Calendar : in System.Address;
-         Flags    : in Gint);
+        (Calendar : System.Address;
+         Flags    : Gtk_Calendar_Display_Options);
       pragma Import (C, Internal, "gtk_calendar_display_options");
+
    begin
-      Internal (Get_Object (Calendar),
-                Gtk_Calendar_Display_Options'Pos (Flags));
+      Internal (Get_Object (Calendar), Flags);
    end Display_Options;
 
    ------------
@@ -76,8 +76,9 @@ package body Gtk.Calendar is
    ------------
 
    procedure Freeze (Calendar : access Gtk_Calendar_Record) is
-      procedure Internal (Calendar : in System.Address);
+      procedure Internal (Calendar : System.Address);
       pragma Import (C, Internal, "gtk_calendar_freeze");
+
    begin
       Internal (Get_Object (Calendar));
    end Freeze;
@@ -131,11 +132,11 @@ package body Gtk.Calendar is
 
    function Mark_Day
      (Calendar : access Gtk_Calendar_Record;
-      Day      : in Guint) return Boolean
+      Day      : Guint) return Boolean
    is
       function Internal
-        (Calendar : in System.Address;
-         Day      : in Guint) return Gint;
+        (Calendar : System.Address;
+         Day      : Guint) return Gint;
       pragma Import (C, Internal, "gtk_calendar_mark_day");
 
    begin
@@ -148,11 +149,11 @@ package body Gtk.Calendar is
 
    procedure Select_Day
      (Calendar : access Gtk_Calendar_Record;
-      Day      : in Guint)
+      Day      : Guint)
    is
       procedure Internal
-        (Calendar : in System.Address;
-         Day      : in Guint);
+        (Calendar : System.Address;
+         Day      : Guint);
       pragma Import (C, Internal, "gtk_calendar_select_day");
 
    begin
@@ -165,13 +166,13 @@ package body Gtk.Calendar is
 
    function Select_Month
      (Calendar : access Gtk_Calendar_Record;
-      Month    : in Guint;
-      Year     : in Guint) return Boolean
+      Month    : Guint;
+      Year     : Guint) return Boolean
    is
       function Internal
-        (Calendar : in System.Address;
-         Month    : in Guint;
-         Year     : in Guint) return Gint;
+        (Calendar : System.Address;
+         Month    : Guint;
+         Year     : Guint) return Gint;
       pragma Import (C, Internal, "gtk_calendar_select_month");
 
    begin
@@ -183,7 +184,7 @@ package body Gtk.Calendar is
    ----------
 
    procedure Thaw (Calendar : access Gtk_Calendar_Record) is
-      procedure Internal (Calendar : in System.Address);
+      procedure Internal (Calendar : System.Address);
       pragma Import (C, Internal, "gtk_calendar_thaw");
    begin
       Internal (Get_Object (Calendar));
@@ -195,11 +196,11 @@ package body Gtk.Calendar is
 
    function Unmark_Day
      (Calendar : access Gtk_Calendar_Record;
-      Day      : in Guint) return Boolean
+      Day      : Guint) return Boolean
    is
       function Internal
-        (Calendar : in System.Address;
-         Day      : in Guint) return Gint;
+        (Calendar : System.Address;
+         Day      : Guint) return Gint;
       pragma Import (C, Internal, "gtk_calendar_unmark_day");
 
    begin

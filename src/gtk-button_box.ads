@@ -38,7 +38,7 @@
 --  above two instead.
 --
 --  </description>
---  <c_version>1.3.3</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Box;
 with Gtk.Enums;
@@ -75,8 +75,8 @@ package Gtk.Button_Box is
 
    procedure Set_Child_Size
      (Button_Box : access Gtk_Button_Box_Record;
-      Min_Width  : in Gint;
-      Min_Height : in Gint);
+      Min_Width  : Gint;
+      Min_Height : Gint);
    --  Set the size to use for children of this specific box.
    --  You can modify the size for all the boxes at once by using
    --  Set_Child_Size_Default.

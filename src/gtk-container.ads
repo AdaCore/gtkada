@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,8 +30,9 @@
 --  <description>
 --  Base class for widgets that have children.
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
+with Gdk.Event;
 with Gtk.Adjustment;
 with Gtk.Enums;
 with Gtk.Widget;
@@ -41,36 +42,67 @@ package Gtk.Container is
    type Gtk_Container_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Container is access all Gtk_Container_Record'Class;
 
-   procedure Set_Border_Width (Container    : access Gtk_Container_Record;
-                               Border_Width : in Gint);
+   function Get_Type return Glib.GType;
+   --  Return the internal value associated with a Gtk_Container.
+
+   procedure Set_Border_Width
+     (Container    : access Gtk_Container_Record;
+      Border_Width : Gint);
    --  Modify the size of the frame that surrounds the widget.
    --  The exact visual impact depends on the specific widget class.
 
-   procedure Add (Container : access Gtk_Container_Record;
-                  Widget    : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Add
+     (Container : access Gtk_Container_Record;
+      Widget    : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Add a new child to the container.
    --  Note that some containers can have only one child. Nothing is done
    --  if there is already a child.
    --  This basically sends the "add" signal (see below)
 
-   procedure Remove (Container : access Gtk_Container_Record;
-                     Widget    : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Remove
+     (Container : access Gtk_Container_Record;
+      Widget    : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Remove a child from the container.
    --  Nothing is done if Widget is not a child of Container. Widget is not
    --  destroyed, but is deleted from the screen.
    --  This basically sends the "remove" signal (see below)
 
-   procedure Set_Resize_Mode (Container   : access Gtk_Container_Record;
-                              Resize_Mode : in Gtk.Enums.Gtk_Resize_Mode);
+   procedure Set_Resize_Mode
+     (Container   : access Gtk_Container_Record;
+      Resize_Mode : Gtk.Enums.Gtk_Resize_Mode);
    --  Change the resizing behavior for the Container.
    --  The default value is Resize_Parent.
 
-   function Children (Container : access Gtk_Container_Record)
-                     return Gtk.Widget.Widget_List.Glist;
+   function Children
+     (Container : access Gtk_Container_Record)
+      return Gtk.Widget.Widget_List.Glist;
    --  Return a list of all the children of the container.
 
-   function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Container.
+   procedure Propagate_Expose
+     (Container : access Gtk_Container_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Event     : Gdk.Event.Gdk_Event_Expose);
+   --  When a container receives an expose event, it must send synthetic
+   --  expose events to all children that don't have their own Gdk_Window.
+   --  This function provides a convenient way of doing this. A container,
+   --  when it receives an expose event, Propagate_Expose
+   --  once for each child, passing in the event the container received.
+   --
+   --  Propagate_Expose takes care of deciding whether
+   --  an expose event needs to be sent to the child, intersecting
+   --  the event's area with the child area, and sending the event.
+   --
+   --  In most cases, a container can simply either simply inherit the
+   --  expose implementation from Gtk_Container, or, do some drawing
+   --  and then chain to the expose implementation from Gtk_Container.
+
+   procedure Set_Focus_Chain
+     (Container         : access Gtk_Container_Record;
+      Focusable_Widgets : Gtk.Widget.Widget_List.Glist);
+   --  Set the chain of widgets that can take the focus for a given Container.
+
+   procedure Unset_Focus_Chain (Container : access Gtk_Container_Record);
+   --  Unset the focus chain.
 
    -----------------------
    -- Foreach functions --
@@ -81,8 +113,9 @@ package Gtk.Container is
    --  Function that can be call for each child of a container.
    --  This is called automatically by the Forall subprogram below.
 
-   procedure Forall (Container : access Gtk_Container_Record;
-                     Func      : Forall_Function);
+   procedure Forall
+     (Container : access Gtk_Container_Record;
+      Func      : Forall_Function);
    --  Execute Func for each of the children of Container.
    --  See also the generic package Forall_Pkg if you want to pass some
    --  extra data to Func.
@@ -95,10 +128,11 @@ package Gtk.Container is
         access procedure (Item : access Gtk.Widget.Gtk_Widget_Record'Class;
                           Data : Data_Type);
 
-      procedure Forall (Container : access Gtk_Container_Record;
-                        Func      : Forall_Function;
-                        Data      : Data_Type);
-      --  Execute FUNC for each of the children of CONTAINER
+      procedure Forall
+        (Container : access Gtk_Container_Record;
+         Func      : Forall_Function;
+         Data      : Data_Type);
+      --  Execute Func for each of the children of Container
 
    end Forall_Pkg;
    --  </doc_ignore>
@@ -107,8 +141,9 @@ package Gtk.Container is
    -- Widget-level methods --
    --------------------------
 
-   procedure Set_Reallocate_Redraws (Container : access Gtk_Container_Record;
-                                     Needs_Redraws : Boolean := False);
+   procedure Set_Reallocate_Redraws
+     (Container     : access Gtk_Container_Record;
+      Needs_Redraws : Boolean := False);
    --  Set the "needs_redraws" field.
    --  If Needs_Redraws is True, then a "draw" signal is emitted for the
    --  Container whenever one is emitted for a child.
@@ -131,11 +166,17 @@ package Gtk.Container is
    --  Container will make sure that Adjustment always matches the range
    --  for the focus widget's position (x .. x + width).
 
-   function Child_Type (Container : access Gtk_Container_Record)
-                       return Gtk.Gtk_Type;
+   function Child_Type
+     (Container : access Gtk_Container_Record) return Gtk.Gtk_Type;
    --  Return the type of the children in Container.
    --  If Container can contain any type of widget, Gtk_Type_None is
    --  returned.
+
+   procedure Resize_Children (Container : access Gtk_Container_Record);
+   --  The container hasn't changed size but one of its children
+   --  queued a resize request. Which means that the allocation
+   --  is not sufficient for the requisition of some child.
+   --  Run through the list of widgets and reallocate their size appropriately.
 
    ----------------------
    -- Signals emission --
@@ -144,9 +185,9 @@ package Gtk.Container is
    procedure Check_Resize (Container : access Gtk_Container_Record);
    --  Emit the "check_resize" signal
 
-   function Focus (Container : access Gtk_Container_Record;
-                   Direction : Gtk.Enums.Gtk_Direction_Type)
-                  return Boolean;
+   function Focus
+     (Container : access Gtk_Container_Record;
+      Direction : Gtk.Enums.Gtk_Direction_Type) return Boolean;
    --  Emit the "focus" signal
 
    procedure Set_Focus_Child
@@ -209,3 +250,4 @@ end Gtk.Container;
 --  - gtk_container_add_with_args
 --  - gtk_container_addv
 --  - gtk_container_child_set
+

@@ -95,13 +95,11 @@ package body Gtk.Button_Box is
    is
       procedure Internal
         (Widget       : System.Address;
-         Layout_Style : Gint);
+         Layout_Style : Enums.Gtk_Button_Box_Style);
       pragma Import (C, Internal, "gtk_button_box_set_layout");
 
    begin
-      Internal
-        (Get_Object (Button_Box),
-         Enums.Gtk_Button_Box_Style'Pos (Layout_Style));
+      Internal (Get_Object (Button_Box), Layout_Style);
    end Set_Layout;
 
 end Gtk.Button_Box;

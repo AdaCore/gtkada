@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
 --                Copyright (C) 2000-2001 ACT-Europe                 --
@@ -55,13 +55,26 @@ package body Gtk.Check_Menu_Item is
       return Internal (Get_Object (Check_Menu_Item)) /= 0;
    end Get_Active;
 
+   ----------------------
+   -- Get_Inconsistent --
+   ----------------------
+
+   function Get_Inconsistent
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record) return Boolean
+   is
+      function Internal (Item : System.Address) return Guint;
+      pragma Import (C, Internal, "gtk_check_menu_item_get_inconsistent");
+   begin
+      return Internal (Get_Object (Check_Menu_Item)) /= 0;
+   end Get_Inconsistent;
+
    -------------
    -- Gtk_New --
    -------------
 
    procedure Gtk_New
-     (Check_Menu_Item :    out Gtk_Check_Menu_Item;
-      Label           : in     String := "") is
+     (Check_Menu_Item : out Gtk_Check_Menu_Item;
+      Label           : String := "") is
    begin
       Check_Menu_Item := new Gtk_Check_Menu_Item_Record;
       Initialize (Check_Menu_Item, Label);
@@ -73,58 +86,54 @@ package body Gtk.Check_Menu_Item is
 
    procedure Initialize
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record'Class;
-      Label           : in     String := "")
+      Label           : String := "")
    is
-      function Internal (Label  : in String) return System.Address;
+      function Internal (Label : String) return System.Address;
       pragma Import (C, Internal, "gtk_check_menu_item_new_with_label");
+
    begin
       Set_Object (Check_Menu_Item, Internal (Label & ASCII.NUL));
       Initialize_User_Data (Check_Menu_Item);
    end Initialize;
 
-   ---------------------
-   -- Set_Show_Toggle --
-   ---------------------
-
-   procedure Set_Show_Toggle
-     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
-      Always          : in Boolean)
-   is
-      procedure Internal (Menu_Item : in System.Address; Always : in Gint);
-      pragma Import (C, Internal, "gtk_check_menu_item_set_show_toggle");
-   begin
-      Internal (Get_Object (Check_Menu_Item), Boolean'Pos (Always));
-   end Set_Show_Toggle;
-
-   ----------------------------
-   -- Set_Always_Show_Toggle --
-   ----------------------------
-
-   procedure Set_Always_Show_Toggle
-     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
-      Always          : in Boolean) renames Set_Show_Toggle;
-
    ----------------
    -- Set_Active --
    ----------------
 
-   procedure Set_Active (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
-                         Is_Active       : in Boolean)
+   procedure Set_Active
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
+      Is_Active       : Boolean)
    is
-      procedure Internal (Check_Menu_Item : in System.Address;
-                          Is_Active       : in Gint);
+      procedure Internal (Check_Menu_Item : System.Address; Is_Active : Gint);
       pragma Import (C, Internal, "gtk_check_menu_item_set_active");
+
    begin
       Internal (Get_Object (Check_Menu_Item), Boolean'Pos (Is_Active));
    end Set_Active;
+
+   ----------------------
+   -- Set_Inconsistent --
+   ----------------------
+
+   procedure Set_Inconsistent
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
+      Setting         : Boolean)
+   is
+      procedure Internal (Check_Menu_Item : System.Address; Setting : Gint);
+      pragma Import (C, Internal, "gtk_check_menu_item_set_inconsistent");
+
+   begin
+      Internal (Get_Object (Check_Menu_Item), Boolean'Pos (Setting));
+   end Set_Inconsistent;
 
    -------------
    -- Toggled --
    -------------
 
    procedure Toggled (Check_Menu_Item : access Gtk_Check_Menu_Item_Record) is
-      procedure Internal (Check_Menu_Item : in System.Address);
+      procedure Internal (Check_Menu_Item : System.Address);
       pragma Import (C, Internal, "gtk_check_menu_item_toggled");
+
    begin
       Internal (Get_Object (Check_Menu_Item));
    end Toggled;

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,30 +37,62 @@ package body Gtk.Check_Button is
 
    procedure Gtk_New
      (Check_Button : out Gtk_Check_Button;
-      With_Label   : in String := "") is
+      Label        : String := "") is
    begin
       Check_Button := new Gtk_Check_Button_Record;
-      Initialize (Check_Button, With_Label);
+      Initialize (Check_Button, Label);
    end Gtk_New;
+
+   ---------------------------
+   -- Gtk_New_With_Mnemonic --
+   ---------------------------
+
+   procedure Gtk_New_With_Mnemonic
+     (Check_Button : out Gtk_Check_Button;
+      Label        : String) is
+   begin
+      Check_Button := new Gtk_Check_Button_Record;
+      Initialize_With_Mnemonic (Check_Button, Label);
+   end Gtk_New_With_Mnemonic;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Check_Button : access Gtk_Check_Button_Record'Class;
-                         With_Label   : in String := "") is
-      function Internal (Label : in String) return System.Address;
+   procedure Initialize
+     (Check_Button : access Gtk_Check_Button_Record'Class;
+      Label        : String := "")
+   is
+      function Internal (Label : String) return System.Address;
       pragma Import (C, Internal, "gtk_check_button_new_with_label");
+
       function Internal2 return System.Address;
       pragma Import (C, Internal2, "gtk_check_button_new");
 
    begin
-      if With_Label = "" then
+      if Label = "" then
          Set_Object (Check_Button, Internal2);
       else
-         Set_Object (Check_Button, Internal (With_Label & ASCII.NUL));
+         Set_Object (Check_Button, Internal (Label & ASCII.NUL));
       end if;
+
       Initialize_User_Data (Check_Button);
    end Initialize;
+
+   ------------------------------
+   -- Initialize_With_Mnemonic --
+   ------------------------------
+
+   procedure Initialize_With_Mnemonic
+     (Check_Button : access Gtk_Check_Button_Record'Class;
+      Label        : String)
+   is
+      function Internal (Label : String) return System.Address;
+      pragma Import (C, Internal, "gtk_check_button_new_with_mnemonic");
+
+   begin
+      Set_Object (Check_Button, Internal (Label & ASCII.NUL));
+      Initialize_User_Data (Check_Button);
+   end Initialize_With_Mnemonic;
 
 end Gtk.Check_Button;
