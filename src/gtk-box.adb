@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -28,10 +28,13 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gdk; use Gdk;
-with Gtk.Dialog; use Gtk.Dialog;
+with Gdk;                use Gdk;
+with Gtk.Dialog;         use Gtk.Dialog;
+with Gtk.Enums;          use Gtk.Enums;
 with Gtk.File_Selection; use Gtk.File_Selection;
-with Gtk.Util; use Gtk.Util;
+with Gtk.Util;           use Gtk.Util;
+with Gtk.Object;         use Gtk.Object;
+with Gtk.Widget;         use Gtk.Widget;
 
 package body Gtk.Box is
 
@@ -45,10 +48,15 @@ package body Gtk.Box is
       function Internal (Box : in System.Address; Num : in Gint)
                          return  System.Address;
       pragma Import (C, Internal, "ada_box_get_child");
+      use type System.Address;
       Stub : Gtk_Widget_Record;
+      S    : System.Address := Internal (Get_Object (Box), Num);
    begin
-      return Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Box), Num), Stub));
+      if S /= System.Null_Address then
+         return Gtk_Widget (Get_User_Data (S, Stub));
+      else
+         return null;
+      end if;
    end Get_Child;
 
    ------------------
@@ -232,7 +240,7 @@ package body Gtk.Box is
       Expand   : out Boolean;
       Fill     : out Boolean;
       Padding  : out Gint;
-      PackType : out Gtk_Pack_Type)
+      PackType : out Gtk.Enums.Gtk_Pack_Type)
    is
       procedure Internal (In_Box   : in System.Address;
                           Child    : in System.Address;
