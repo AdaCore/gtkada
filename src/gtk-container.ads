@@ -131,17 +131,6 @@ package Gtk.Container is
    --  Container will make sure that Adjustment always matches the range
    --  for the focus widget's position (x .. x + width).
 
-   function Get_Toplevels return Gtk.Widget.Widget_List.Glist;
-   --  Return the list of all the toplevel widgets.
-   --  I.e. the ones that don't have any parent (windows, dialogs, ...)
-
-   procedure Register_Toplevel (Container : access Gtk_Container_Record);
-   --  Register Container as a toplevel widget, returned by the subprogram
-   --  Get_Toplevels.
-
-   procedure Unregister_Toplevel (Container : access Gtk_Container_Record);
-   --  Unregister Container as a toplevel widget.
-
    function Child_Type (Container : access Gtk_Container_Record)
                        return Gtk.Gtk_Type;
    --  Return the type of the children in Container.

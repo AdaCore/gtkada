@@ -86,19 +86,6 @@ package body Gtk.Container is
       return Internal (Get_Object (Container));
    end Child_Type;
 
-   -------------------
-   -- Get_Toplevels --
-   -------------------
-
-   function Get_Toplevels return Gtk.Widget.Widget_List.Glist is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_container_get_toplevels");
-      List : Gtk.Widget.Widget_List.Glist;
-   begin
-      Gtk.Widget.Widget_List.Set_Object (List, Internal);
-      return List;
-   end Get_Toplevels;
-
    ------------
    -- Remove --
    ------------
@@ -222,28 +209,6 @@ package body Gtk.Container is
    begin
       return Boolean'Val (Internal (Get_Object (Container), Direction));
    end Focus;
-
-   -----------------------
-   -- Register_Toplevel --
-   -----------------------
-
-   procedure Register_Toplevel (Container : access Gtk_Container_Record) is
-      procedure Internal (Container : System.Address);
-      pragma Import (C, Internal, "gtk_container_register_toplevel");
-   begin
-      Internal (Get_Object (Container));
-   end Register_Toplevel;
-
-   -------------------------
-   -- Unregister_Toplevel --
-   -------------------------
-
-   procedure Unregister_Toplevel (Container : access Gtk_Container_Record) is
-      procedure Internal (Container : System.Address);
-      pragma Import (C, Internal, "gtk_container_unregister_toplevel");
-   begin
-      Internal (Get_Object (Container));
-   end Unregister_Toplevel;
 
    ----------------
    -- Forall_Pkg --
