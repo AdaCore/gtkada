@@ -160,4 +160,9 @@ package Glib.Glade is
    --  The instanciations are all generated in a package called
    --  Callbacks_<Project>
 
+   function To_Package_Name (S : String) return String;
+   --  Transforms the name of a given Gtk+ widget into the corresponding GtkAda
+   --  package, by applying if needed GtkAda special exceptions in the naming
+   --  rules (e.g GtkEntry -> Gtk.GEntry, GtkHScale -> Gtk.Scale).
+
 end Glib.Glade;

@@ -692,19 +692,18 @@ package body Glib.Glade is
 
    procedure Gen_Packages (File : File_Type) is
       S : String_Ptr;
+
    begin
       for J in Package_Range'First .. Num_Packages loop
-         --  This special case is ugly ???
          S := Packages (J);
 
-         if S'Length > 9
-           and then S (S'First .. S'First + 9) = "Interfaces"
-         then
-            Put_Line (File, "with " & Packages (J).all & "; use " &
-              Packages (J).all & ";");
+         --  If the package is fully qualified (contains a dot), print it
+         --  as is. Otherwise, assume it is a child of Gtk.
+
+         if Index (S.all, ".") /= 0 then
+            Put_Line (File, "with " & S.all & "; use " & S.all & ";");
          else
-            Put_Line (File, "with Gtk." & Packages (J).all & "; use Gtk." &
-              Packages (J).all & ";");
+            Put_Line (File, "with Gtk." & S.all & "; use Gtk." & S.all & ";");
          end if;
       end loop;
    end Gen_Packages;
@@ -768,11 +767,9 @@ package body Glib.Glade is
       end if;
 
       for J in Signal_Range'First .. Num_Signal_Instanciations loop
-         S := Signal_Instanciations (J);
-
-         Put_Line (File, "with Gtk." &
-           To_Ada (S (S'First + 3 .. S'Last)) & "; use Gtk." &
-           To_Ada (S (S'First + 3 .. S'Last)) & ";");
+         S := new String' (To_Package_Name (Signal_Instanciations (J).all));
+         Put_Line (File, "with " & S.all & "; use " & S.all & ";");
+         Free (S);
       end loop;
 
       New_Line (File);
@@ -844,5 +841,44 @@ package body Glib.Glade is
 
       return Num_Signal_Instanciations;
    end Gen_Signal_Instanciations;
+
+   --  The following table is needed to transform wrong names (e.g Ada reserved
+   --  words) into the correct package names as can be found in the GtkAda
+   --  library
+
+   type Package_Mapping is record
+      Original_Package, New_Package : String_Ptr;
+   end record;
+
+   type Special_Packages_Type is array (Positive range <>) of Package_Mapping;
+
+   Special_Packages : constant Special_Packages_Type :=
+     ((new String '("GtkRange"),      new String '("Gtk.GRange")),
+      (new String '("GtkEntry"),      new String '("Gtk.GEntry")),
+      (new String '("GtkHScale"),     new String '("Gtk.Scale")),
+      (new String '("GtkVScale"),     new String '("Gtk.Scale")),
+      (new String '("GtkHBox"),       new String '("Gtk.Box")),
+      (new String '("GtkVBox"),       new String '("Gtk.Box")),
+      (new String '("GtkHPaned"),     new String '("Gtk.Paned")),
+      (new String '("GtkVPaned"),     new String '("Gtk.Paned")),
+      (new String '("GtkHRuler"),     new String '("Gtk.Ruler")),
+      (new String '("GtkVRuler"),     new String '("Gtk.Ruler")),
+      (new String '("GtkHScrollbar"), new String '("Gtk.Scrollbar")),
+      (new String '("GtkVScrollbar"), new String '("Gtk.Scrollbar")),
+      (new String '("GtkHSeparator"), new String '("Gtk.Separator")),
+      (new String '("GtkVSeparator"), new String '("Gtk.Separator")));
+
+   function To_Package_Name (S : String) return String is
+   begin
+      for J in Special_Packages'Range loop
+         if S = Special_Packages (J).Original_Package.all then
+            return Special_Packages (J).New_Package.all;
+         end if;
+      end loop;
+
+      --  No fix up needed
+
+      return "Gtk." & To_Ada (S (S'First + 3 .. S'Last));
+   end To_Package_Name;
 
 end Glib.Glade;
