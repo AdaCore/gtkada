@@ -32,25 +32,15 @@ with Gtkada.Types;
 
 package body Gtk.Object is
 
-   ----------------------
-   -- Connected_Is_Set --
-   ----------------------
+   ---------------------------
+   -- In_Destruction_Is_Set --
+   ---------------------------
 
-   function Connected_Is_Set
+   function In_Destruction_Is_Set
      (Object : access Gtk_Object_Record'Class) return Boolean is
    begin
-      return Flag_Is_Set (Object, Connected);
-   end Connected_Is_Set;
-
-   ------------------------
-   -- Constructed_Is_Set --
-   ------------------------
-
-   function Constructed_Is_Set
-     (Object : access Gtk_Object_Record'Class) return Boolean is
-   begin
-      return Flag_Is_Set (Object, Constructed);
-   end Constructed_Is_Set;
+      return Flag_Is_Set (Object, In_Destruction);
+   end In_Destruction_Is_Set;
 
    -------------
    -- Destroy --
@@ -85,16 +75,6 @@ package body Gtk.Object is
       --  field for Object is Null_Address.
       Unref_Internal (Ptr);
    end Destroy;
-
-   ---------------
-   -- Destroyed --
-   ---------------
-
-   function Destroyed_Is_Set
-     (Object : access Gtk_Object_Record'Class) return Boolean is
-   begin
-      return Flag_Is_Set (Object, Destroyed);
-   end Destroyed_Is_Set;
 
    -----------
    -- Flags --

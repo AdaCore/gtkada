@@ -165,10 +165,8 @@ package Gtk.Object is
    --     be fully constructed, and you shouldn't have to worry about that
    --     flag.
 
-   Destroyed   : constant := 2 ** 0;
-   Floating    : constant := 2 ** 1;
-   Connected   : constant := 2 ** 2;
-   Constructed : constant := 2 ** 3;
+   In_Destruction : constant := 2 ** 0;
+   Floating       : constant := 2 ** 1;
 
    function Flags (Object : access Gtk_Object_Record) return Guint32;
    --  Return the flags that are set for the object, as a binary mask.
@@ -186,21 +184,19 @@ package Gtk.Object is
      (Object : access Gtk_Object_Record; Flag : Guint32) return Boolean;
    --  Return True if the specific flag Flag is set for the object.
 
-   function Destroyed_Is_Set
+   function In_Destruction_Is_Set
      (Object : access Gtk_Object_Record'Class) return Boolean;
    --  Test if the Destroyed flag is set for the object.
+
+   --  <doc_ignore>
+   function Destroyed_Is_Set (Object : access Gtk_Object_Record'Class)
+      return Boolean renames In_Destruction_Is_Set;
+   --  backward compatibility only
+   --  </doc_ignore>
 
    function Floating_Is_Set
      (Object : access Gtk_Object_Record'Class) return Boolean;
    --  Test if the Floating flag is set for the object.
-
-   function Connected_Is_Set
-     (Object : access Gtk_Object_Record'Class) return Boolean;
-   --  Test if the Connected flag is set for the object.
-
-   function Constructed_Is_Set
-     (Object : access Gtk_Object_Record'Class) return Boolean;
-   --  Test if the Constructed flag is set for the object
 
    --------------------------
    -- Creating new widgets --
@@ -283,7 +279,6 @@ private
 
    pragma Inline (Destroyed_Is_Set);
    pragma Inline (Floating_Is_Set);
-   pragma Inline (Connected_Is_Set);
-   pragma Inline (Constructed_Is_Set);
+   pragma Inline (In_Destruction_Is_Set);
 
 end Gtk.Object;
