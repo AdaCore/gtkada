@@ -9,6 +9,10 @@ The primary download site is http://gtkada.eu.org
 New features in 1.2.11 include:
 
 - gmodule is now bound in Glib.Module
+- libglade is now bound in Glade and Glade.XML, and obsoletes the capability
+  previousely provided by Gtk.Glade
+- Gtk.Glade.Register_Generate allows to add easily support for new widgets
+  in Gate
 
 New features in 1.2.10/1.3.10 include:
 
