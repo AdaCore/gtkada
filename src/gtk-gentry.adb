@@ -2,7 +2,7 @@
 
 with Interfaces.C.Strings;
 
-package body Gtk.Gtk_Entry is
+package body Gtk.GEntry is
 
    -----------------
    -- Append_Text --
@@ -183,4 +183,4 @@ package body Gtk.Gtk_Entry is
                 Boolean'Pos (Visible));
    end Set_Visibility;
 
-end Gtk.Gtk_Entry;
+end Gtk.GEntry;

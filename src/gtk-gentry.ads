@@ -1,7 +1,7 @@
 
 with Gtk.Editable;
 
-package Gtk.Gtk_Entry is
+package Gtk.GEntry is
 
    type Gtk_Entry is new Gtk.Editable.Gtk_Editable with private;
 
@@ -51,4 +51,4 @@ private
    --  mapping: Set_Position gtkentry.h gtk_entry_set_position
    --  mapping: Set_Text gtkentry.h gtk_entry_set_text
    --  mapping: Set_Visibility gtkentry.h gtk_entry_set_visibility
-end Gtk.Gtk_Entry;
+end Gtk.GEntry;
