@@ -453,7 +453,7 @@ gtk_psfont_get_gdkfont(const gchar *name, gint height)
   gchar *buffer = NULL;
   gint i;
   gint auxheight;
-  gint min_height = 8;
+  gint min_height = 1;
 
   if (height <= 0) height = 1;
  
