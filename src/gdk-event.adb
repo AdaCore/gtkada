@@ -220,8 +220,8 @@ package body Gdk.Event is
    --  Get_State  --
    -----------------
 
-   function Get_State (Event : in Gdk_Event_Button) return Gdk_Modifier_Mask is
-      function Internal (Event : in System.Address) return Gdk_Modifier_Mask;
+   function Get_State (Event : in Gdk_Event_Button) return Gdk_Modifier_Type is
+      function Internal (Event : in System.Address) return Gdk_Modifier_Type;
       pragma Import (C, Internal, "ada_gdk_event_button_get_state");
    begin
       return Internal (Get_Object (Event));
@@ -385,8 +385,8 @@ package body Gdk.Event is
    --  Get_State  --
    -----------------
 
-   function Get_State (Event : in Gdk_Event_Motion) return Gdk_Modifier_Mask is
-      function Internal (Event : in System.Address) return Gdk_Modifier_Mask;
+   function Get_State (Event : in Gdk_Event_Motion) return Gdk_Modifier_Type is
+      function Internal (Event : in System.Address) return Gdk_Modifier_Type;
       pragma Import (C, Internal, "ada_gdk_event_motion_get_state");
    begin
       return Internal (Get_Object (Event));

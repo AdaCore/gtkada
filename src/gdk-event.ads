@@ -142,7 +142,7 @@ package Gdk.Event is
 
    function Get_Y (Event : in Gdk_Event_Button) return Gint16;
 
-   function Get_State (Event : in Gdk_Event_Button) return Gdk_Modifier_Mask;
+   function Get_State (Event : in Gdk_Event_Button) return Gdk_Modifier_Type;
    function Get_Button (Event : in Gdk_Event_Button) return Guint32;
 
 
@@ -156,7 +156,7 @@ package Gdk.Event is
 
    function Get_Y (Event : in Gdk_Event_Motion) return Gint16;
 
-   function Get_State (Event : in Gdk_Event_Motion) return Gdk_Modifier_Mask;
+   function Get_State (Event : in Gdk_Event_Motion) return Gdk_Modifier_Type;
 
    ----------------
    -- Gtk_Widget --
