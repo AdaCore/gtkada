@@ -187,6 +187,9 @@ with Gtkada.Intl;
 with Gtkada.Pixmaps;
 with Gtkada.Types;
 
+with Pango;
+with Pango.Enums;
+
 procedure Make is
 begin
    null;
