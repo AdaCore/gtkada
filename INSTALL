@@ -11,7 +11,7 @@ The default prefix is /usr/local. If you don't have the rights to remove
 these files, then you should at least make sure that your ADA_INCLUDE_PATH
 and your ADA_OBJECTS_PATH don't include this directory before building GtkAda.
 
-To install GtkAda, you first need to install glib and gtk+, then
+To install GtkAda, you first need to install GNU make, glib and gtk+, then
 do the following:
    $ ./configure --prefix=<installation_directory>
    $ make install
