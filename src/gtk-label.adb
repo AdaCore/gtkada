@@ -36,8 +36,8 @@ package body Gtk.Label is
    --  Set  --
    -----------
 
-   procedure Set (Label : in out Gtk_Label'Class;
-                  Str   : in     String) is
+   procedure Set (Label : in Gtk_Label'Class;
+                  Str   : in String) is
       procedure Internal (Label : in System.Address;
                           Str   : in String);
       pragma Import (C, Internal, "gtk_label_set");
@@ -49,8 +49,8 @@ package body Gtk.Label is
    --  Set_Justify  --
    -------------------
 
-   procedure Set_Justify (Label : in out Gtk_Label'Class;
-                          Jtype : in     Enums.Gtk_Justification) is
+   procedure Set_Justify (Label : in Gtk_Label'Class;
+                          Jtype : in Enums.Gtk_Justification) is
       procedure Internal (Label : in System.Address;
                           Jtype : in Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_label_set_justify");

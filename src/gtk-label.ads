@@ -9,12 +9,12 @@ package Gtk.Label is
                       Str   : in     String);
    --  mapping: Gtk_New gtklabel.h gtk_label_new
 
-   procedure Set (Label : in out Gtk_Label'Class;
-                  Str   : in     String);
+   procedure Set (Label : in Gtk_Label'Class;
+                  Str   : in String);
    --  mapping: Set gtklabel.h gtk_label_set
 
-   procedure Set_Justify (Label : in out Gtk_Label'Class;
-                          Jtype : in     Enums.Gtk_Justification);
+   procedure Set_Justify (Label : in Gtk_Label'Class;
+                          Jtype : in Enums.Gtk_Justification);
    --  mapping: NOT_IMPLEMENTED gtklabel.h gtk_label_set_justify
 
    function Get (Label : in Gtk_Label'Class) return String;
