@@ -104,7 +104,7 @@ package body Gtkada.MDI is
 
    use Glib.Xml_Int;
 
-   Traces : constant Boolean := True;
+   Traces : constant Boolean := False;
    --  True if traces should be activated
 
    Default_Title_Bar_Focus_Color : constant String := "#000088";
