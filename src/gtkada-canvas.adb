@@ -457,10 +457,13 @@ package body Gtkada.Canvas is
       end loop;
 
       Unref (C.Annotation_Layout);
-      Unref (C.Clear_GC);
-      Unref (C.Black_GC);
-      Unref (C.Link_GC);
-      Unref (C.Anim_GC);
+      if C.Clear_GC /= null then
+         Unref (C.Clear_GC);
+         Unref (C.Black_GC);
+         Unref (C.Link_GC);
+         Unref (C.Anim_GC);
+      end if;
+
       Destroy (C.Hadj);
       Destroy (C.Vadj);
    end Canvas_Destroyed;
