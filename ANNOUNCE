@@ -30,6 +30,7 @@ End
 
 New features in 1.2.1 include:
 
+- The docs/ directory now contains a set of slides describing GtkAda
 - Installation problems reported with 1.2.0 have been fixed
 - Gdk.RGB has been bound
 - Updated features in Gtk.Style and Gtk.Table
