@@ -38,6 +38,13 @@ package body Glib.Object is
    procedure Free_User_Data (Data : in System.Address);
    --  Free the user data Data. This function should not be called directly
 
+   procedure Set_User_Data
+     (Obj     : System.Address;
+      Quark   : Glib.GQuark;
+      Data    : System.Address;
+      Destroy : System.Address);
+   pragma Import (C, Set_User_Data, "g_object_set_qdata_full");
+
    -------------------------
    -- Conversion_Function --
    -------------------------
@@ -81,7 +88,6 @@ package body Glib.Object is
         (GObject_Record'Class, GObject);
 
       Obj : GObject := Convert (Data);
-
    begin
       Free (Obj);
    end Free_User_Data;
@@ -191,13 +197,6 @@ package body Glib.Object is
       Value  : System.Address)
    is
       use type System.Address;
-
-      procedure Set_User_Data
-        (Obj     : System.Address;
-         Quark   : Glib.GQuark;
-         Data    : System.Address;
-         Destroy : System.Address);
-      pragma Import (C, Set_User_Data, "g_object_set_qdata_full");
 
    begin
       Object.Ptr := Value;
@@ -601,5 +600,28 @@ package body Glib.Object is
          Internal (Get_Object (Object), Id);
       end Remove;
    end User_Data;
+
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (W : GObject) return System.Address is
+   begin
+      if W = null then
+         return System.Null_Address;
+      else
+         return Get_Object (W);
+      end if;
+   end Convert;
+
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (W : System.Address) return GObject is
+      Stub : GObject_Record;
+   begin
+      return GObject (Get_User_Data (W, Stub));
+   end Convert;
 
 end Glib.Object;

@@ -34,6 +34,8 @@
 --  </description>
 
 with Gtkada.Types;
+with Glib.GSlist;
+pragma Elaborate_All (Glib.GSlist);
 
 package Glib.Object is
 
@@ -310,6 +312,15 @@ package Glib.Object is
    end User_Data;
 
    --  </doc_ignore>
+
+   -----------
+   -- Lists --
+   -----------
+
+   function Convert (W : GObject) return System.Address;
+   function Convert (W : System.Address) return GObject;
+
+   package Object_List is new Glib.GSlist.Generic_SList (GObject);
 
 private
 
