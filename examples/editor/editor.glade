@@ -3,9 +3,10 @@
 
 <project>
   <name>gladeedit</name>
+  <program_name>gladeedit</program_name>
   <directory></directory>
-  <source_directory></source_directory>
-  <pixmaps_directory></pixmaps_directory>
+  <source_directory>.</source_directory>
+  <pixmaps_directory>.</pixmaps_directory>
   <language>Ada 95</language>
   <gnome_support>False</gnome_support>
   <gettext_support>False</gettext_support>
@@ -20,6 +21,7 @@
   <handler_header_file>gladesig.h</handler_header_file>
   <support_source_file>support.c</support_source_file>
   <support_header_file>support.h</support_header_file>
+  <translatable_strings_file></translatable_strings_file>
 </project>
 
 <widget>
