@@ -27,6 +27,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This is the top level package of the Gdk widget hierarchy.
+--  It provides the basic types and related functions needed throughout Gdk
+--  and Gtk.
+--
+--  </description>
+
 with System;
 
 package Gdk is
@@ -54,30 +62,32 @@ package Gdk is
       type To_Access is access all To'Class;
    package Unchecked_Cast is
       function Convert (From : access Root_Type'Class) return To_Access;
+      --  Convert between any widget type.
+      --  Note that the access type returned points to a global variable in
+      --  this package, that will be overidden the next time you call Convert.
+      --  You should make a copy of it if you need to reuse it.
+      --  Warning : no verification is done at Ada level. The only verification
+      --  are done by gtk itself.
+      --  @pxref{Package_Gtk.Type_Conversion} for help on how to convert
+      --  from C widgets to Ada widgets.
+      --
+      --  This function should not be required at all. If you absolutely need
+      --  to use it, please report it to the GtkAda team
+      --  (@uref{mailto:gtkada@@ada.eu.org}) so that we try and get rid of this
+      --  case if possible.
+
    private
       Returned : aliased To;
    end Unchecked_Cast;
-   --  This function allows the conversion to any widget type.
-   --  Note:
-   --   The access type returned points to a global variable in this package,
-   --   that will be overidden the next time you call Convert. You should make
-   --   a copy of it if you need to reuse it.
-   --  Warning : no verification is done at Ada level. The only verification
-   --  are done by gtk itself.
-   --  @pxref{Package_Gtk.Type_Conversion} for help on how to convert
-   --  from C widgets to Ada widgets.
-   --
-   --  This package should not be required at all. If you absolutely need to
-   --  use it, please report it to the GtkAda team (gtkada@ada.eu.org) so that
-   --  we try and get rid of this case if possible.
 
    function Is_Created (Object : in Root_Type'Class) return Boolean;
-   --  Return True if the associated C object has been created, False if no
-   --  C object is associated with Object.
+   --  Return True if the associated C object has been created.
+   --  False is returned if no C object is associated with Object.
    --  This is not the same as testing whether an access type (for instance
    --  any of the widgets) is "null", since this relates to the underlying
    --  C object.
 
+   --  <doc_ignore>
    --  The following services are for INTERNAL use only. They are not
    --  declared inside the private part for visibility issues. Do NOT
    --  use them outside of the binding.
@@ -90,6 +100,7 @@ package Gdk is
    procedure Set_Object (Object : access Root_Type'Class;
                          Value  : in     System.Address);
    pragma Inline (Set_Object);
+   --  </doc_ignore>
 
 private
 
