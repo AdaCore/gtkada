@@ -68,7 +68,7 @@ package Glib.XML is
       --  The first Child of this Node. The next child is Child.Next
 
       Next  : Node_Ptr;
-      --  Next "brother" node.
+      --  Next sibling node.
 
       Specific_Data : XML_Specific_Data;
       --  Use to store data specific to each implementation (e.g a boolean
