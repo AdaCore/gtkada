@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -71,14 +71,14 @@ package Gdk.Types is
       Axis_X_Tilt,
       Axis_Y_Tilt,
       Axis_Last);
-   for Gdk_Axis_Use'Size use Gint'Size;
+   pragma Convention (C, Gdk_Axis_Use);
 
    type Gdk_Byte_Order is (Lsb_First, Msb_First);
-   for Gdk_Byte_Order'Size use Gint'Size;
+   pragma Convention (C, Gdk_Byte_Order);
 
    type Gdk_Extension_Mode is
      (Extension_Events_None, Extension_Events_All, Extension_Events_Cursor);
-   for Gdk_Extension_Mode'Size use Gint'Size;
+   pragma Convention (C, Gdk_Extension_Mode);
 
    type Gdk_IC_Attributes_Type is new Guint;
    Ic_Style                : constant Gdk_IC_Attributes_Type;
@@ -121,17 +121,17 @@ package Gdk.Types is
    Im_Status_Mask       : constant Gdk_IM_Style;
 
    type Gdk_Input_Condition is (Input_Read, Input_Write, Input_Exception);
-   for Gdk_Input_Condition'Size use Gint'Size;
+   pragma Convention (C, Gdk_Input_Condition);
 
    type Gdk_Input_Mode is (Mode_Disabled, Mode_Screen, Mode_Window);
-   for Gdk_Input_Mode'Size use Gint'Size;
+   pragma Convention (C, Gdk_Input_Mode);
 
    type Gdk_Input_Source is
      (Source_Mouse,
       Source_Pen,
       Source_Eraser,
       Source_Cursor);
-   for Gdk_Input_Source'Size use Gint'Size;
+   pragma Convention (C, Gdk_Input_Source);
 
    type Gdk_Key_Type is new Guint;
    --  see Gdk.Types.Keysyms for key type constants

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -50,6 +50,7 @@ package Gdk.Visual is
       Visual_Pseudo_Color,
       Visual_True_Color,
       Visual_Direct_Color);
+   pragma Convention (C, Gdk_Visual_Type);
 
    type Gdk_Visual_Type_Array is array (Natural range <>) of Gdk_Visual_Type;
 
@@ -92,5 +93,4 @@ private
    pragma Import (C, Get_Best_Type, "gdk_visual_get_best_type");
    pragma Import (C, Get_System, "gdk_visual_get_system");
 
-   for Gdk_Visual_Type'Size use Gint'Size;
 end Gdk.Visual;

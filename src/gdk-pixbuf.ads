@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -44,6 +44,7 @@
 --  <c_version>1.3.11</c_version>
 
 with Glib; use Glib;
+with Glib.Error; use Glib.Error;
 with Gdk.Bitmap;
 with Gdk.Drawable;
 with Gdk.Color;
@@ -73,13 +74,13 @@ package Gdk.Pixbuf is
    --  Alpha compositing mode.
    --  This indicates how the alpha channel (for opacity) is handled when
    --  rendering.
-   for Alpha_Mode'Size use Gint'Size;
+   pragma Convention (C, Alpha_Mode);
 
    type Gdk_Colorspace is (Colorspace_RGB);
    --  Type of the image.
    --  The only possible value is currently RGB, but extensions will
    --  exist with CMYK, Gray, Lab, ...
-   for Gdk_Colorspace'Size use Gint'Size;
+   pragma Convention (C, Gdk_Colorspace);
 
    type Gdk_Interp_Type is
      (Interp_Nearest,
@@ -107,32 +108,31 @@ package Gdk.Pixbuf is
       --  and highest quality.
      );
    --  Interpolation methods.
-   for Gdk_Interp_Type'Size use Gint'Size;
+   pragma Convention (C, Gdk_Interp_Type);
 
-   type GError is new Glib.C_Proxy;
-   --  Glib error handling.
-   --  ??? Move this type to Glib.Error
+   ------------
+   -- Errors --
+   ------------
 
-   type Pixbuf_Error is
-     (Corrupt_Image,
-      --  image data hosed
+   --  Errors defined in the Pixbuf_Error domain:
 
-      Insufficient_Memory,
-      --  no mem to load image
+   Corrupt_Image         : constant := 0;
+   --  image data hosed
 
-      Bad_Option,
-      --  bad option passed to save routine
+   Insufficient_Memory   : constant := 1;
+   --  no mem to load image
 
-      Unknown_Type,
-      --  unsupported image type
+   Bad_Option            : constant := 2;
+   --  bad option passed to save routine
 
-      Unsupported_Operation,
-      --  unsupported operation (load, save) for image type
+   Unknown_Type          : constant := 3;
+   --  unsupported image type
 
-      Failed
-      --  Operation failed.
-     );
-   for Pixbuf_Error'Size use Gint'Size;
+   Unsupported_Operation : constant := 4;
+   --  unsupported operation (load, save) for image type
+
+   Failed                : constant := 5;
+   --  Operation failed.
 
    type File_Format is (JPEG, PNG);
    --  Possible formats when saving a file.
@@ -142,7 +142,7 @@ package Gdk.Pixbuf is
 
    type Alpha_Range is range 0 .. 255;
    --  Valid values for alpha parameters.
-   for Alpha_Range'Size use Gint'Size;
+   pragma Convention (C, Alpha_Range);
 
    --------------
    -- Get_Type --

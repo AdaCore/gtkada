@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,7 +40,7 @@ package Gdk.Region is
 
    type Gdk_Fill_Rule is (Even_Odd_Rule, Winding_Rule);
    --  GC fill rule for polygons.
-   for Gdk_Fill_Rule'Size use Gint'Size;
+   pragma Convention (C, Gdk_Fill_Rule);
 
    type Gdk_Overlap_Type is
      (Overlap_Rectangle_In,
@@ -53,7 +53,7 @@ package Gdk.Region is
       --  Rectangle is partially in region.
      );
    --  Types of overlapping between a rectangle and a region.
-   for Gdk_Overlap_Type'Size use Gint'Size;
+   pragma Convention (C, Gdk_Overlap_Type);
 
    procedure Gdk_New (Region : out Gdk_Region);
    --  Create a new region.

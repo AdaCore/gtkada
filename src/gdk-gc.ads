@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -71,10 +71,10 @@ package Gdk.GC is
    --  a single call to the server.
 
    type Gdk_Cap_Style is (Cap_Not_Last, Cap_Butt, Cap_Round, Cap_Projecting);
-   for Gdk_Cap_Style'Size use Gint'Size;
+   pragma Convention (C, Gdk_Cap_Style);
 
    type Gdk_Fill is (Solid, Tiled, Stippled, Opaque_Stippled);
-   for Gdk_Fill'Size use Gint'Size;
+   pragma Convention (C, Gdk_Fill);
 
    type Gdk_Function is
      (Copy,
@@ -92,16 +92,16 @@ package Gdk.GC is
       Or_Invert,
       Nand,
       Set);
-   for Gdk_Function'Size use Gint'Size;
+   pragma Convention (C, Gdk_Function);
 
    type Gdk_Join_Style is (Join_Miter, Join_Round, Join_Bevel);
-   for Gdk_Join_Style'Size use Gint'Size;
+   pragma Convention (C, Gdk_Join_Style);
 
    type Gdk_Line_Style is (Line_Solid, Line_On_Off_Dash, Line_Double_Dash);
-   for Gdk_Line_Style'Size use Gint'Size;
+   pragma Convention (C, Gdk_Line_Style);
 
    type Gdk_Subwindow_Mode is (Clip_By_Children, Include_Inferiors);
-   for Gdk_Subwindow_Mode'Size use Gint'Size;
+   pragma Convention (C, Gdk_Subwindow_Mode);
 
    type Gdk_GC_Values_Mask is mod 2 ** 32;
    GC_Foreground    : constant Gdk_GC_Values_Mask := 2 ** 0;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,7 +47,7 @@ package Gdk.Image is
    Null_Image : constant Gdk_Image;
 
    type Gdk_Image_Type is (Image_Normal, Image_Shared, Image_Fastest);
-   for Gdk_Image_Type'Size use Gint'Size;
+   pragma Convention (C, Gdk_Image_Type);
 
    procedure Gdk_New
      (Image      : out Gdk_Image;

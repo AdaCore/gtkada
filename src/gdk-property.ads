@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@ package Gdk.Property is
 
    type Gdk_Prop_Mode is
      (Prop_Mode_Replace, Prop_Mode_Prepend, Prop_Mode_Append);
-   for Gdk_Prop_Mode'Size use Gint'Size;
+   pragma Convention (C, Gdk_Prop_Mode);
 
    function Atom_Intern
      (Atom_Name      : String;
