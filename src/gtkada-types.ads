@@ -33,6 +33,8 @@ with Interfaces.C.Strings;
 
 package Gtkada.Types is
 
+   Data_Error : exception;
+
    type Chars_Ptr_Array is array (Gint range <>)
      of Interfaces.C.Strings.chars_ptr;
 
