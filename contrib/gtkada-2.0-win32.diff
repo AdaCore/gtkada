@@ -134,12 +134,14 @@ Tue Jul  9 11:48:58 2002  Arnaud Charlet  <charlet@gnat.com>
  end Gtk.Socket;
 --- gtkada-mdi.adb.old	2003-07-21 12:39:19 +0200
 +++ gtkada-mdi.adb	2003-07-21 12:39:40 +0200
-@@ -1052,7 +1052,7 @@
-          Unref (MDI.Highlight_Style);
-       end if;
+@@ -1042,8 +1042,9 @@
  
--      MDI.Highlight_Style := Copy (Get_Default_Style);
-+      MDI.Highlight_Style := Copy (Get_Style (MDI));
+       --  Using Get_Style (MDI) would be more appropriate, but Gtk+ sometimes
+       --  return an invalid style when doing so.
++      --  Under Win32, using Get_Style (MDI) works fine.
+ 
+-      Highlight_Style := Copy (Get_Default_Style);
++      Highlight_Style := Copy (Get_Style (MDI));
  
        if Focus_Title_Color /= Null_Color then
           MDI.Focus_Title_Color := Focus_Title_Color;
