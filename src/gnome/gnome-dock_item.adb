@@ -141,7 +141,7 @@ package body Gnome.Dock_Item is
                          return System.Address;
       pragma Import (C, Internal, "gnome_dock_item_get_child");
    begin
-      return Convert (Internal (Get_Object (Dock_Item)));
+      return Widget.Convert (Internal (Get_Object (Dock_Item)));
    end Get_Child;
 
    ---------------------------
@@ -159,9 +159,7 @@ package body Gnome.Dock_Item is
          Y    : out Gint);
       pragma Import (C, Internal, "gnome_dock_item_get_floating_position");
    begin
-      Internal (Get_Object (Item),
-                X,
-                Y);
+      Internal (Get_Object (Item), X, Y);
    end Get_Floating_Position;
 
    --------------

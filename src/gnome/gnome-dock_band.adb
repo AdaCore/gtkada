@@ -176,10 +176,12 @@ package body Gnome.Dock_Band is
       pragma Import (C, Internal, "gnome_dock_band_get_item_by_name");
 
       Pos, Off : aliased Guint;
+      Stub     : Gnome.Dock_Item.Gnome_Dock_Item_Record;
+
    begin
-      Item := Gnome.Dock_Item.Gnome_Dock_Item (Widget.Convert (Internal
+      Item := Gnome.Dock_Item.Gnome_Dock_Item (Get_User_Data (Internal
         (Get_Object (Band), Name & ASCII.NUL,
-         Pos'Unchecked_Access, Off'Unchecked_Access)));
+         Pos'Unchecked_Access, Off'Unchecked_Access), Stub));
       Position := Pos;
       Offset   := Off;
    end Get_Item_By_Name;

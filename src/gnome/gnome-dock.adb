@@ -174,14 +174,16 @@ package body Gnome.Dock is
       Local_Num_Band      : aliased Guint;
       Local_Band_Position : aliased Guint;
       Local_Offset        : aliased Guint;
+      Stub                : Gnome_Dock_Item_Record;
+
    begin
-      Dock_Item := Gnome_Dock_Item (Widget.Convert (Internal
+      Dock_Item := Gnome_Dock_Item (Get_User_Data (Internal
         (Get_Object (Dock),
          Name & ASCII.NUL,
          Local_Placement'Unchecked_Access,
          Local_Num_Band'Unchecked_Access,
          Local_Band_Position'Unchecked_Access,
-         Local_Offset'Unchecked_Access)));
+         Local_Offset'Unchecked_Access), Stub));
       Placement := Local_Placement;
       Num_Band  := Local_Num_Band;
       Band_Position := Local_Band_Position;
