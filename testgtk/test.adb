@@ -20,6 +20,7 @@ with Create_Buttons;
 with Create_Button_Box;
 with Create_Check_Buttons;
 with Create_Color_Selection;
+with Create_Dialog;
 with Create_File_Selection;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
@@ -78,7 +79,7 @@ package body Test is
       (US ("clist"), null),
       (US ("color selection"), Create_Color_Selection.Run'Access),
       (US ("cursors"), null),
-      (US ("dialog"), null),
+      (US ("dialog"), Create_Dialog.Run'Access),
       (US ("dnd"), null),
       (US ("entry"), null),
       (US ("file selection"), Create_File_Selection.Run'Access),
