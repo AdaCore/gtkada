@@ -78,13 +78,13 @@ package Glib.Object is
    --  new objects outside the Glib or Gtk package hierarchy.
    --  Only experienced users should make use of these functions.
 
-   function Get_Object (Object : access GObject_Record'Class)
-                        return System.Address;
+   function Get_Object
+     (Object : access GObject_Record'Class) return System.Address;
    --  Access the underlying C pointer.
 
    procedure Set_Object
      (Object : access GObject_Record'Class;
-      Value  : in     System.Address);
+      Value  : System.Address);
    --  Modify the underlying C pointer.
 
    procedure Initialize_User_Data (Obj : access GObject_Record'Class);
@@ -121,8 +121,7 @@ package Glib.Object is
 
    type Signal_Query is private;
 
-   function Lookup (Object : Glib.GType; Signal : String)
-      return Glib.Signal_Id;
+   function Lookup (Object : Glib.GType; Signal : String) return Glib.Signal_Id;
    --  Returns the signal Id associated with a specific Object/Signal pair.
    --  Invalid_Signal_Id is returned if no such signal exists for Object.
    --  You can then use the Query procedure to get more information on the

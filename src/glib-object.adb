@@ -79,7 +79,9 @@ package body Glib.Object is
       function Convert is new Unchecked_Conversion (System.Address, GObject);
       procedure Free is new Unchecked_Deallocation
         (GObject_Record'Class, GObject);
+
       Obj : GObject := Convert (Data);
+
    begin
       Free (Obj);
    end Free_User_Data;
@@ -103,6 +105,7 @@ package body Glib.Object is
         (Typ : GType; Last : System.Address := System.Null_Address)
          return System.Address;
       pragma Import (C, Internal, "g_object_new");
+
    begin
       Set_Object (Object, Internal (GType_Object));
       Initialize_User_Data (Object);
@@ -112,8 +115,8 @@ package body Glib.Object is
    -- Get_Object --
    ----------------
 
-   function Get_Object (Object : access GObject_Record'Class)
-                        return System.Address is
+   function Get_Object
+     (Object : access GObject_Record'Class) return System.Address is
    begin
       return Object.Ptr;
    end Get_Object;
@@ -146,6 +149,7 @@ package body Glib.Object is
       use type System.Address;
 
       R : GObject;
+
    begin
       if Obj = System.Null_Address then
          return null;
@@ -159,8 +163,10 @@ package body Glib.Object is
 
       if R = null then
          R := Conversion_Function (Obj, Stub);
+
          --  This function will either simply return what we expect (Stub), or
          --  try to create the exact Ada type corresponding to the C type.
+
          Set_Object (R, Obj);
          Initialize_User_Data (R);
       end if;
@@ -212,7 +218,7 @@ package body Glib.Object is
 
    procedure Set_Object
      (Object : access GObject_Record'Class;
-      Value  : in     System.Address) is
+      Value  : System.Address) is
    begin
       Object.Ptr := Value;
    end Set_Object;
@@ -300,11 +306,14 @@ package body Glib.Object is
       type Flat_Id_Array is array (Guint) of Signal_Id;
       type Flat_Id_Array_Access is access Flat_Id_Array;
       type Guint_Access is access all Guint;
-      function Internal (Typ : GType; N_Ids : Guint_Access)
-         return Flat_Id_Array_Access;
+
+      function Internal
+        (Typ : GType; N_Ids : Guint_Access) return Flat_Id_Array_Access;
       pragma Import (C, Internal, "g_signal_list_ids");
-      N_Ids : aliased Guint;
+
+      N_Ids  : aliased Guint;
       Result : Flat_Id_Array_Access := Internal (Typ, N_Ids'Access);
+
    begin
       if N_Ids = 0 then
          return (1 .. 0 => 0);
@@ -323,9 +332,10 @@ package body Glib.Object is
    -----------------
 
    function Signal_Name (Q : Signal_Query) return String is
-      function Internal (Q : Signal_Query)
-         return Interfaces.C.Strings.chars_ptr;
+      function Internal
+        (Q : Signal_Query) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gsignal_query_signal_name");
+
    begin
       return Interfaces.C.Strings.Value (Internal (Q));
    end Signal_Name;
@@ -338,11 +348,14 @@ package body Glib.Object is
       type Flat_GType_Array is array (Guint) of GType;
       type Flat_GType_Array_Access is access Flat_GType_Array;
       type Guint_Access is access all Guint;
-      function Internal (Q : Signal_Query; N_Ids : Guint_Access)
-         return Flat_GType_Array_Access;
+
+      function Internal
+        (Q : Signal_Query; N_Ids : Guint_Access) return Flat_GType_Array_Access;
       pragma Import (C, Internal, "ada_gsignal_query_params");
-      N_Ids : aliased Guint;
+
+      N_Ids  : aliased Guint;
       Result : Flat_GType_Array_Access := Internal (Q, N_Ids'Access);
+
    begin
       if N_Ids = 0 then
          return (1 .. 0 => GType_Invalid);
@@ -360,12 +373,12 @@ package body Glib.Object is
    -- Lookup --
    ------------
 
-   function Lookup (Object : GType; Signal : String) return Glib.Signal_Id
-   is
+   function Lookup (Object : GType; Signal : String) return Glib.Signal_Id is
       function Internal (Signal : String; Object : GType) return Signal_Id;
       pragma Import (C, Internal, "g_signal_lookup");
+
    begin
-      return Internal (Signal & ASCII.Nul, Object);
+      return Internal (Signal & ASCII.NUL, Object);
    end Lookup;
 
    ------------
@@ -378,8 +391,9 @@ package body Glib.Object is
    is
       procedure Internal (Object : System.Address; Name : String);
       pragma Import (C, Internal, "g_object_notify");
+
    begin
-      Internal (Get_Object (Object), Property_Name & ASCII.Nul);
+      Internal (Get_Object (Object), Property_Name & ASCII.NUL);
    end Notify;
 
    ---------------
@@ -535,6 +549,7 @@ package body Glib.Object is
       begin
          --  First make sure that the destroy callback is called, so that
          --  memory can be freed
+
          Set_Data_Internal
            (Get_Object (Object),
             Id & ASCII.NUL, System.Null_Address, System.Null_Address);
@@ -555,6 +570,7 @@ package body Glib.Object is
       begin
          --  First make sure that the destroy callback is called, so that
          --  memory can be freed
+
          Set_Data_Internal_Id
            (Get_Object (Object), Id, System.Null_Address, System.Null_Address);
          Internal (Get_Object (Object), Id);
