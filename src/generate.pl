@@ -224,11 +224,11 @@ sub parse_definition_file
       {
 	last if ($deffile[$line] =~ /^STRUCT\s+_$file\s*$/i);
       }
-    
+
     if ($line < $#deffile) {
       $deffile[$line] =~ /struct\s+_(.*)/;
       $current_package = &create_ada_name ($1);
-      
+
       my ($in_comment) = 0;
       $line += 2;  ## skip the '{' line
       if ($deffile[$line] =~ /\/\*/) ## If we have a comment, skip it
@@ -236,23 +236,36 @@ sub parse_definition_file
 	  1 while ($deffile[++$line] !~ /\*\//);
 	  $line++;
 	}
-      
-      ### Look for the parent widget
-      
+
+      ## Look for the parent widget.
+      ## This is the first statement line in the definition of the widget
+      ## structure. Note that this will be converted later on to Ada style,
+      ## we currently only store the C name
+
       $parent = (split (/\s+/, $deffile[$line])) [1];
-  
+
       $line++;
+
+      ## Check all the fields (ie until the end of the structure)
+
       while ($deffile[$line] !~ /\}/)
 	{
-	  if ($deffile[$line] =~ /\/\*/) ## If we have a comment, skip it
-	    {
-	      $line++ while ($deffile[$line] !~ /\*\//);
-	      $line++;
-	    }
-	  while ($deffile[$line] =~ /^\s*$/)
+	  my ($in_comment) = 0;
+
+	  # Search for the new field. Ignore empty lines and comments
+	  while ($in_comment || $deffile[$line] =~ /^\s*$/)
 	    {
 	      $line++;
+              if ($in_comment && $deffile[$line] =~ /\*\//) {
+		$deffile[$line] =~ s/.*\*\///;
+                $in_comment = 0;
+	      }
+
 	      $deffile[$line] =~ s$/\*.*\*/$$g;
+	      if ($deffile[$line] =~ /\/\*/) {
+		$in_comment = 1;
+		$deffile[$line] =~ s/\/*.*$//;  
+	      }
 	    }
 
 	  chop ($deffile[$line]);
@@ -262,7 +275,7 @@ sub parse_definition_file
 	  $deffile[$line] =~ s/ \*/\* /;  ## attach the pointer to the type not to the field
 	  $deffile[$line] =~ s/;//;
 	  my ($type, $field) = split (/ /, $deffile[$line]);
-	  
+
 	  print STDERR "Create a function for the field $field (of type $type) [n]?";
 	  my ($answer) = scalar (<STDIN>);
 	  if ($answer =~ /^y/)
@@ -273,7 +286,7 @@ sub parse_definition_file
 	}
     }
   }
-    
+
 ###################################
 ##  Generates the package specification file
 ###################################
@@ -289,17 +302,14 @@ sub generate_specifications
 	&print_declaration ($_, @{$functions{$_}});
       }
 
-    $parent_prefix = "Gtk" if ($parent =~ /^gtk/i);
-    $parent_prefix = "Gdk" if ($parent =~ /^gdk/i);
+    $parent_prefix = "Gtk"   if ($parent =~ /^gtk/i);
+    $parent_prefix = "Gdk"   if ($parent =~ /^gdk/i);
     $parent_prefix = "Gnome" if ($parent =~ /^gnome/i);
 
-    my ($parent_string) = &package_name ($parent). ".$parent_prefix\_" . &create_ada_name ($parent);
-    if ($parent eq "Root_Type") {
-	$parent_string = "Root_Type";
-    }
-    else {
-	$parent_string = "$parent_string\_Record";
-    }
+    my ($parent_string) = &package_name ($parent). ".$parent_prefix\_"
+	. &create_ada_name ($parent);
+    $parent_string = ($parent eq "Root_Type") ?
+	"Root_Type" : "$parent_string\_Record";
 
     unshift (@output, "   type $prefix\_$current_package is access all "
 	     . "$prefix\_$current_package\_Record'Class;\n\n");
@@ -307,16 +317,16 @@ sub generate_specifications
 	     . ($abstract ? "abstract " : "")
 	     . "new " . $parent_string . " with private;\n");
     unshift (@output, "package $prefix.$current_package is\n\n");
-    
+
     push (@output, "\nprivate\n");
     push (@output, "   type $prefix\_$current_package\_Record is "
 	  . ($abstract ? "abstract " : "")
 	  . "new ".
 	  &package_name ($parent). ".$parent_prefix\_", &create_ada_name ($parent).
 	  "_Record with null record;\n\n");
-    
+
     push (@output, "end $prefix.$current_package;\n");
-    
+
     print "\n", join (";\n", sort keys %with_list), ";\n"; 
     print "\n", join ("", @output);
   }
@@ -330,12 +340,12 @@ sub generate_body
 		  "with System" => 1);
     @output = ();
     push (@output, "package body $prefix.$current_package is\n\n");
-    
+
     foreach (sort {&ada_func_name ($a) cmp &ada_func_name ($b)} keys %functions)
       {
 	&print_body ($_, @{$functions{$_}});
       }
-    
+
     push (@output, "end $prefix.$current_package;\n");
 
     ## If there is indeed a body
@@ -380,9 +390,9 @@ sub create_ada_name
 
     $entity =~ s/-/_/g;
     $entity =~ s/([^_])([A-Z])/$1_$2/g;
-    
+
     substr ($entity, 0, 1) = uc (substr ($entity, 0, 1));
-    
+
     for ($i = 1; $i < length ($entity); $i ++)
       {
 	$char = substr ($entity, $i, 1); 
@@ -406,10 +416,11 @@ sub create_ada_name
 sub package_name
   {
     my ($entity) = shift;
-    
+
     $entity =~ s/(G[dt]k|Gnome)/$1./;
     $entity =~ s/([a-z])([A-Z])/$1_$2/g;
     $entity =~ s/Gtk\.Range/Gtk\.GRange/;
+    $entity =~ s/Gtk\.Entry/Gtk\.GEntry/;
     $entity =~ s/Gtk\.Entry/Gtk\.GEntry/;    
     $entity =~ s/Gnome(.*)\.Entry/Gnome$1\.GEntry/;    
     return $entity;
@@ -422,48 +433,50 @@ sub package_name
 #######################
 sub parse_functions
   {
-    my ($func_name);
-    my ($return);
+    my ($func_name, $return, $args);
     my (@arguments);
     my (%functions);
-    
+
     while ($_ = shift @cfile)
       {
-	chop;
-	s/\s*\*/\* /g;
-	if (/^(\S+)\s+((g[dt]k|gnome)_\S+)\s*$/)
-	  {
+	# If this looks like a subprogram start (<return_type>  <name>)
+
+	if (/^(\w\S+)\s+((g[dt]k|gnome)_\S+)/) {
+	  chop;
+
+	  # Read the whole subprogram definition at once. This makes it
+	  # easier to ignore comments, to handle subprograms defined on
+	  # multiple lines, ...
+
+	  while ($_ !~ /\);/) {
 	    $_ .= shift @cfile;
-	    s/\s*\*/\* /g;
+	    chop;
 	  }
 
-	if (/^(\S+)\s+((g[dt]k|gnome)_\S+)\s*\((.*)/)
-	  {
-	    $func_name = $2;
-	    $return = $1;
-	    my ($tmp) = $4;
-	    $tmp =~ s/,\s*$//;
-	    @arguments = split (/,/, $tmp);
-	    if ($4 !~ /\);/)
-	      {
-		while ($_ = shift @cfile)
-		  {
-		    chop;
-		    /\s+(.*)/;
-		    push (@arguments, grep ($_ !~ /^$/, split (/,/, $1)));
-		    last if ($1 =~ /\);/);
-		  }
-	      }
-	    if ($unit_name eq ""
-	       || $func_name =~ /$prefix\_$unit_name/i) {
-	      push (@{$functions{$func_name}},
-		    $return, @arguments);
-	    }
+	  # Associate pointers (return value) with the type instead of the
+	  # name. Preserve comments indications (*/)
+	  s/\s*\*([^\/])/\* $1/g;
+
+	  # Parse the definition
+
+	  /^(\w\S+)\s+((g[dt]k|gnome)_\S+)\s*\((.*)\);/;
+	  $return = $1;
+	  $func_name = $2;
+	  $args = $4;
+
+	  # Cleanup initial spaces and remove comments from the arguments list
+	  $args =~ s/\/\*.*?\*\///g;
+	  $args =~ s/\s+/ /g;
+	  @arguments = grep ($_ !~ /^\s*$/, split (/,/, $args));
+
+	  if ($unit_name eq ""
+	      || $func_name =~ /$prefix\_$unit_name/i) {
+	    push (@{$functions{$func_name}}, $return, @arguments);
 	  }
+	}
       }
     return %functions;
   }
-
 
 
 #########################
@@ -478,7 +491,7 @@ sub print_new_declaration
     my (@arguments) = @_;
     my ($string);
     my ($indent) = "";
-    
+
     $string = "   procedure $prefix\_New";
     push (@output, $string);
     $indent = ' ' x (length ($string));
@@ -599,23 +612,17 @@ sub print_arguments
 	push (@output, "\n$indent") if ($arguments[0] !~ /void/);
 	push (@output, "return ");
 	push (@output, ' ' x ($longest - 1)) if  ($arguments[0] !~ /void/);
-	if ($convert == \&convert_c_type) {
-	  if (&{$convert} ($return) eq "String") {
+	if ($convert == \&convert_c_type
+	    && &{$convert} ($return) eq "String")
+	{
 	    push (@output, "Interfaces.C.Strings.chars_ptr");
 	    $with_list {"with Interfaces.C.Strings"} ++;
-	  }
-	  elsif ($return eq "Gtk.Gtk_Type") {
-	    push (@output, $return);
-	  }
-	  else {
-	    push (@output, &{$convert} ($return));
-	  }
 	}
 	elsif ($return eq "Gtk.Gtk_Type") {
-	  push (@output, $return);
+	    push (@output, $return);
 	}
 	else {
-	  push (@output, &{$convert} ($return));
+	    push (@output, &{$convert} ($return));
 	}
       }
   }
@@ -794,17 +801,21 @@ sub print_body
       }
     else
       {
+	my ($terminate) = ";\n";
+	  
 	if (&convert_ada_type ($return) =~ /\'Class/)
 	  {
 	    my ($tmp) = &convert_ada_type ($return);
 	    $tmp =~ s/\'Class//;
 	    push (@output, "      Tmp : $tmp;\n   begin\n");
 	    $string = "      Set_Object (Tmp, Internal";
+	    $terminate = ");\n      return Tmp;\n";
 	  }
 	elsif (&convert_ada_type ($return) eq "String")
 	  {
 	    push (@output, "   begin\n");
 	    $string = "      return Interfaces.C.Strings.Value (Internal";
+	    $terminate = ");\n";
 	  }
 	elsif ($return eq "Gtk.Gtk_Type")
 	  {
@@ -815,7 +826,8 @@ sub print_body
 	  push (@output, "   begin\n");
 	  $string = "      return " . &convert_ada_type ($return)
 	    . "'Val (Internal";
-	}
+	  $terminate = ");\n";
+          }
 	elsif ($return ne "void")
 	  {
 	    push (@output, "   begin\n");
@@ -829,19 +841,7 @@ sub print_body
 	push (@output, $string);
 	
 	&print_arguments_call (' ' x length ($string), @arguments);
-	if (&convert_ada_type ($return) =~ /\'Class/) {
-	  push (@output, ");\n      return Tmp;\n");
-	}
-	elsif ($return eq "Gtk.Gtk_Type") {
-	  push (@output, ";\n");
-	}
-	elsif (&convert_ada_type ($return) eq "String"
-	      || $return =~ /^(G[dt]k|Gnome)/) {
-	  push (@output, ");\n");
-	}
-	else {
-	  push (@output, ";\n");
-	}
+	push (@output, $terminate);
       }
     push (@output, "   end $adaname;\n\n");
   }
