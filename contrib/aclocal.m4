@@ -24,6 +24,10 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       ;;
    *sysv* | *solaris*)
       SO_OPTS=-Wl,-h,
+   *irix*)
+      FPIC=
+   *osf*)
+      OS_SPECIFIC_LINK_OPTIONS=-Wl,-expect_unresolved,\*
    esac
 
   AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
