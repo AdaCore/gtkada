@@ -3038,7 +3038,7 @@ package body Gtkada.MDI is
          Child.State := Normal;
 
          if Gtk_Widget (Child.Initial) = Gtk_Widget (Win) then
-            Hide (Child.Initial);
+            Hide_All (Child.Initial);
          else
             Destroy (Win);
          end if;
@@ -4097,8 +4097,12 @@ package body Gtkada.MDI is
                end loop;
 
                if Widget /= null then
-                  Gtk_New (Child, Widget);
-                  Child := Put (MDI, Child);
+                  if Widget.all not in MDI_Child_Record'Class then
+                     Gtk_New (Child, Widget);
+                     Child := Put (MDI, Child);
+                  else
+                     Child := MDI_Child (Widget);
+                  end if;
 
                   N := Child_Node.Child.Next;
 
@@ -4161,6 +4165,8 @@ package body Gtkada.MDI is
                         Float_Child (Child, True);
 
                      when Normal =>
+                        Float_Child (Child, False);
+                        Dock_Child (Child, False);
                         Set_Size_Request (Child, Gint (Width), Gint (Height));
 
                      when Iconified =>

@@ -417,6 +417,9 @@ package Gtkada.MDI is
       --  As for Save_Desktop_Function, this function should return null if it
       --  doesn't know how to handle Node or if Node doesn't describe a widget
       --  type that it can handle.
+      --  The function can return directly a MDI_Child widget, but must put
+      --  it directly in the MDI before returning. This can be used if some
+      --  special attributes or callbacks need to be set on the MDI_Child.
 
       procedure Register_Desktop_Functions
         (Save : Save_Desktop_Function;
