@@ -29,8 +29,6 @@
 
 with Gtk.Main;
 with Gtk.Rc;
-with Gtk.Widget;
-with Gtk.Window;
 with Main_Windows;
 
 procedure Testgtk is

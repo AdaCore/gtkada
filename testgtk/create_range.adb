@@ -30,11 +30,9 @@
 with Glib; use Glib;
 with Gtk.Adjustment; use Gtk.Adjustment;
 with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Scale; use Gtk.Scale;
 with Gtk.Scrollbar; use Gtk.Scrollbar;
-with Gtk.Separator; use Gtk.Separator;
 with Gtk; use Gtk;
 
 package body Create_Range is
