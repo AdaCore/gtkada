@@ -37,8 +37,6 @@ with System;
 
 package body Gtk.Handlers is
 
-   use Gtk.Object;
-
    function Type_Of_Return
      (Object : access GObject_Record'Class; Signal : String)
       return Glib.GType;
@@ -197,39 +195,52 @@ package body Gtk.Handlers is
       Id      : Handler_Id;
       Data    : Destroy_Data_Access;
       Closure : GClosure;
+      Signal_Id : Guint;
 
    begin
       Closure := CClosure_New (Handler, Func_Data, Destroy);
       Set_Marshal (Closure, Marshaller);
+      Signal_Id := Signal_Lookup (Name & ASCII.NUL, Get_Type (Object));
+
+      pragma Assert (Signal_Id /= 0,
+                     "Trying to connect to unknown signal");
+
       Id := Internal
         (Get_Object (Object),
-         Signal_Id => Signal_Lookup (Name & ASCII.NUL, Get_Type (Object)),
+         Signal_Id => Signal_Id,
          Closure => Closure, After => Boolean'Pos (After));
 
       if Slot_Object /= System.Null_Address then
-         Data := new Destroy_Data_Record;
-         Data.Id := Id;
-         Data.Obj1 := Get_Object (Object);
-         Data.Obj2 := Slot_Object;
+         --  The destroy signal doesn't exist when we are connect a GObject
+         Signal_Id := Signal_Lookup
+           ("destroy" & ASCII.NUL, Get_Type (Object));
 
-         --  Destroy_Func will remove the following two connections when
-         --  called the first time, so that Destroy_Func is only called once.
+         if Signal_Id /= 0 then
+            Data := new Destroy_Data_Record;
+            Data.Id := Id;
+            Data.Obj1 := Get_Object (Object);
+            Data.Obj2 := Slot_Object;
 
-         Closure := CClosure_New
-           (Destroy_Func'Address, Data.all'Address, System.Null_Address);
-         Data.Id2 := Internal
-           (Instance => Get_Object (Object),
-            Signal_Id => Signal_Lookup
-                           ("destroy" & ASCII.NUL, Get_Type (Object)),
-            Closure => Closure);
+            --  Destroy_Func will remove the following two connections when
+            --  called the first time, so that Destroy_Func is only called
+            --  once.
 
-         Closure := CClosure_New
-           (Destroy_Func'Address, Data.all'Address, System.Null_Address);
-         Data.Id3 := Internal
-           (Instance => Slot_Object,
-            Signal_Id =>
-              Signal_Lookup ("destroy" & ASCII.NUL, Get_Type (Slot_Object)),
-            Closure => Closure);
+            Closure := CClosure_New
+              (Destroy_Func'Address, Data.all'Address, System.Null_Address);
+            Data.Id2 := Internal
+              (Instance => Get_Object (Object),
+               Signal_Id => Signal_Lookup
+                 ("destroy" & ASCII.NUL, Get_Type (Object)),
+               Closure => Closure);
+
+            Closure := CClosure_New
+              (Destroy_Func'Address, Data.all'Address, System.Null_Address);
+            Data.Id3 := Internal
+              (Instance => Slot_Object,
+               Signal_Id =>
+                 Signal_Lookup ("destroy" & ASCII.NUL, Get_Type (Slot_Object)),
+               Closure => Closure);
+         end if;
       end if;
 
       return Id;
@@ -309,7 +320,7 @@ package body Gtk.Handlers is
       --------------------
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -340,7 +351,7 @@ package body Gtk.Handlers is
       --------------------
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -453,7 +464,7 @@ package body Gtk.Handlers is
       --------------------
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -523,7 +534,7 @@ package body Gtk.Handlers is
       --------------------
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -950,7 +961,7 @@ package body Gtk.Handlers is
       --------------------
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -981,7 +992,7 @@ package body Gtk.Handlers is
       --------------------
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -1032,7 +1043,7 @@ package body Gtk.Handlers is
       --------------------
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -1100,7 +1111,7 @@ package body Gtk.Handlers is
       --------------------
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;

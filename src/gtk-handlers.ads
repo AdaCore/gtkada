@@ -134,7 +134,7 @@
 
 with Glib.Values;
 with Gdk.Event;
-with Gtk.Object;
+with Glib.Object;
 with Gtk.Marshallers;
 pragma Elaborate_All (Gtk.Marshallers);
 
@@ -185,7 +185,7 @@ package Gtk.Handlers is
       --  Connects a Marshaller. The Handler_Id is dropped.
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -203,7 +203,7 @@ package Gtk.Handlers is
       --  Connects a Handler. The Handler_Id is dropped.
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -224,7 +224,7 @@ package Gtk.Handlers is
       --  Connects a Marshaller. Returns the Handler_Id.
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -242,7 +242,7 @@ package Gtk.Handlers is
       --  Connects a Handler. Returns the Handler_Id.
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -481,7 +481,7 @@ package Gtk.Handlers is
          After   : Boolean := False);
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -494,7 +494,7 @@ package Gtk.Handlers is
          After   : Boolean := False);
 
       procedure Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -510,7 +510,7 @@ package Gtk.Handlers is
          After   : Boolean := False) return Handler_Id;
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -523,7 +523,7 @@ package Gtk.Handlers is
          After   : Boolean := False) return Handler_Id;
 
       function Object_Connect
-        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
+        (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
