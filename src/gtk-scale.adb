@@ -185,7 +185,7 @@ package body Gtk.Scale is
             To_Float (Get_Field (N, "hpage").all)  & ", " &
             To_Float (Get_Field (N, "hpage_size").all) & ");");
 
-         Gen_New (N, "Scale", S.all & "Adj", "",
+         Gen_New (N, "Scale", S.all & "_Adj", "",
            Class (Class'First + 3) & "scale", File => File);
       end if;
 
