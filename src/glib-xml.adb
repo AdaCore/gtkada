@@ -517,6 +517,7 @@ package body Glib.XML is
       F           : Dir.File_Type;
       Buf         : String_Ptr;
       XML_Version : String_Ptr;
+      Result      : Node_Ptr;
 
    begin
       begin
@@ -532,7 +533,10 @@ package body Glib.XML is
 
       Fast_Read (File, Buf);
       Get_Buf (Buf.all, Index, '>', XML_Version);
-      return Get_Node (Buf.all, Index'Unchecked_Access);
+      Result := Get_Node (Buf.all, Index'Unchecked_Access);
+      Free (Buf);
+      Free (XML_Version);
+      return Result;
    end Parse;
 
    --------------
