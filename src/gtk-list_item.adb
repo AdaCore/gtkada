@@ -29,8 +29,19 @@
 
 with System;
 with Gtk.Util; use Gtk.Util;
+with Gtk.Type_Conversion_Hooks;
+pragma Elaborate_All (Gtk.Type_Conversion_Hooks);
 
 package body Gtk.List_Item is
+
+   -----------------------
+   -- Local Subprograms --
+   -----------------------
+
+   function Type_Conversion (Type_Name : String) return Root_Type_Access;
+   --  This function is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    --------------
    -- Deselect --
@@ -47,8 +58,9 @@ package body Gtk.List_Item is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (List_Item : out Gtk_List_Item;
-                      Label     : in String := "") is
+   procedure Gtk_New
+     (List_Item : out Gtk_List_Item;
+      Label     : in String := "") is
    begin
       List_Item := new Gtk_List_Item_Record;
       Initialize (List_Item, Label);
@@ -69,8 +81,7 @@ package body Gtk.List_Item is
    -- Generate --
    --------------
 
-   procedure Generate (N         : in Node_Ptr;
-                       File      : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
    begin
       if Gettext_Support (N) then
          Gen_New (N, "List_Item", Get_Field (N, "label").all,
@@ -83,8 +94,7 @@ package body Gtk.List_Item is
       Item.Generate (N, File);
    end Generate;
 
-   procedure Generate (List_Item : in out Gtk_Object;
-                       N         : in Node_Ptr) is
+   procedure Generate (List_Item : in out Gtk_Object; N : in Node_Ptr) is
    begin
       if not N.Specific_Data.Created then
          Gtk_New (Gtk_List_Item (List_Item), Get_Field (N, "label").all);
@@ -99,14 +109,31 @@ package body Gtk.List_Item is
    -- Initialize --
    ----------------
 
-   procedure Initialize (List_Item : access Gtk_List_Item_Record'Class;
-                         Label     : in String := "") is
-      function Internal (Label : in String)
-                         return System.Address;
+   procedure Initialize
+     (List_Item : access Gtk_List_Item_Record'Class;
+      Label     : in String := "")
+   is
+      function Internal (Label : in String) return System.Address;
       pragma Import (C, Internal, "gtk_list_item_new_with_label");
+
    begin
       Set_Object (List_Item, Internal (Label & ASCII.Nul));
       Initialize_User_Data (List_Item);
    end Initialize;
 
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return Root_Type_Access is
+   begin
+      if Type_Name = "GtkListItem" then
+         return new Gtk_List_Item_Record;
+      else
+         return null;
+      end if;
+   end Type_Conversion;
+
+begin
+   Gtk.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.List_Item;
