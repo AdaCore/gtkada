@@ -26,10 +26,13 @@ AM_PATH_GTK(1.2.2,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for 
 # try to find OpenGL if present
 AM_CHECK_OPENGL
 
+# try to find libart & gdk-pixbuf if present
+AM_CHECK_PIXBUF
+
 # Set the version number of GtkAda
 AC_SUBST(GTKADA_VERSION)
 
 EXEC_PREFIX="$prefix"
 AC_SUBST(EXEC_PREFIX)
 
-AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/gtkada-config src/gate testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile)
+AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/gtkada-config src/gate testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/pixbuf/Makefile)
