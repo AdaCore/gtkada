@@ -141,8 +141,8 @@ package Gtk.Packer is
       Options : in     Gtk_Packer_Options);
    --  Add a new child in the container, with default values for its border
    --  width and its padding.
-   --  See the description of the types Gtk_Size_Type, Gtk_Anchor_Type and
-   --  Gtk_Packer_Options above for more information on these types.
+   --  See Gtk_Size_Type, Gtk_Anchor_Type and Gtk_Packer_Options above for
+   --  more information on these types.
 
    procedure Add (Packer       : access Gtk_Packer_Record;
                   Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -155,8 +155,8 @@ package Gtk.Packer is
                   I_Pad_X      : in     Guint;
                   I_Pad_Y      : in     Guint);
    --  Add a new child in the container.
-   --  See the description of the types Gtk_Size_Type, Gtk_Anchor_Type and
-   --  Gtk_Packer_Options above for more information on these types.
+   --  See Gtk_Size_Type, Gtk_Anchor_Type and Gtk_Packer_Options above for
+   --  more information on these types.
    --
    --  BORDER_WIDTH is the space left on each side of the child.
    --  PAD_X is additional space left on each horizontal side of the child

@@ -81,10 +81,10 @@
 --  argument too.
 --
 --  The common generic parameter to all sub-packages is the widget type,
---  which is the basic widget manipulated. To reduce the number of
---  instantiations, the Gtk.Object.Gtk_Object_Record type can be used,
---  but the conversion to the original type will have to be done inside
---  the handler.
+--  which is the basic widget manipulated. This can be
+--  Gtk.Object.Gtk_Object_Record type if you want to reduce the number of
+--  instantiations, but the conversion to the original type will have to be
+--  done inside the handler.
 --
 --  All sub-packages are organized in the same way.
 --
