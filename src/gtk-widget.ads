@@ -585,7 +585,8 @@ package Gtk.Widget is
       Hadj   : Gtk.Adjustment.Gtk_Adjustment;
       Vadj   : Gtk.Adjustment.Gtk_Adjustment);
    --  Emit the "set_scroll_adjustments" signal.
-   --  The exact signal emitted depends on the widget type.
+   --  The exact signal emitted depends on the widget type (see
+   --  Gtk.Object.Initialize_Class_Record).
    --  The handler creates the adjustments if null is passed as argument, and
    --  makes sure both adjustments are in the correct range.
 
@@ -980,7 +981,7 @@ package Gtk.Widget is
    --    be used for widgets that don't already have specific signals to cover
    --    that case (Gtk_Drawing_Area for instance).
    --
-   --    To get this signal, some widgets by have to use the Set_Events
+   --    To get this signal, some widgets may have to use the Set_Events
    --    subprogram first to get this event.
    --
    --    If the handler returns False, the event might be pass to the parent
