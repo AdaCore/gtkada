@@ -38,18 +38,14 @@ with Gtk.Widget;
 with Glib.Glist;
 pragma Elaborate_All (Glib.Glist);
 
-with Unchecked_Conversion;
-
 package Gtk.Cell_Renderer is
 
    type Gtk_Cell_Renderer_Record is
      new Gtk.Object.Gtk_Object_Record with private;
    type Gtk_Cell_Renderer is access all Gtk_Cell_Renderer_Record'Class;
 
-   function Convert is new Unchecked_Conversion
-     (Gtk_Cell_Renderer, System.Address);
-   function Convert is new Unchecked_Conversion
-     (System.Address, Gtk_Cell_Renderer);
+   function Convert (R : Gtk_Cell_Renderer) return System.Address;
+   function Convert (R : System.Address) return Gtk_Cell_Renderer;
    package Cell_Renderer_List is
       new Glib.Glist.Generic_List (Gtk_Cell_Renderer);
 

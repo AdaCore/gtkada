@@ -213,4 +213,24 @@ package body Gtk.Cell_Renderer is
                 Height);
    end Get_Fixed_Size;
 
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (R : Gtk_Cell_Renderer) return System.Address is
+   begin
+      return Get_Object (R);
+   end Convert;
+
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (R : System.Address) return Gtk_Cell_Renderer is
+      Stub        : Gtk_Cell_Renderer_Record;
+   begin
+      return Gtk_Cell_Renderer
+        (Glib.Object.Get_User_Data (R, Stub));
+   end Convert;
+
 end Gtk.Cell_Renderer;
