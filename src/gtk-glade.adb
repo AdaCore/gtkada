@@ -605,15 +605,15 @@ package body Gtk.Glade is
    end Generate;
 
    -----------------
-   -- Instanciate --
+   -- Instantiate --
    -----------------
 
-   procedure Instanciate (File : String) is
+   procedure Instantiate (File : String) is
    begin
-      Instanciate (Parse (File));
-   end Instanciate;
+      Instantiate (Parse (File));
+   end Instantiate;
 
-   procedure Instanciate (N : Node_Ptr; Display : Boolean := True) is
+   procedure Instantiate (N : Node_Ptr; Display : Boolean := True) is
       P : Node_Ptr;
    begin
       P := N.Child.Next;
@@ -627,7 +627,7 @@ package body Gtk.Glade is
 
          P := P.Next;
       end loop;
-   end Instanciate;
+   end Instantiate;
 
    --------------
    -- Get_Gate --

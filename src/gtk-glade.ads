@@ -68,10 +68,10 @@ package Gtk.Glade is
    --  Generate the Ada code corresponding the creation of to N and its
    --  children on standard output.
 
-   procedure Instanciate (File : String);
+   procedure Instantiate (File : String);
    --  Parse File, create and display the corresponding widgets.
 
-   procedure Instanciate (N : Node_Ptr; Display : Boolean := True);
+   procedure Instantiate (N : Node_Ptr; Display : Boolean := True);
    --  Create the widgets corresponding to N and its children, and
    --  optionally display them.
 
