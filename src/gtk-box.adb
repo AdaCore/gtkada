@@ -30,6 +30,7 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Dialog; use Gtk.Dialog;
+with Gtk.File_Selection; use Gtk.File_Selection;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Box is
@@ -282,9 +283,11 @@ package body Gtk.Box is
                        N      : in Node_Ptr) is
       use Container;
 
-      Child_Name : String_Ptr := Get_Field (N, "child_name");
-      Class      : String_Ptr := Get_Field (N, "class");
-      S          : String_Ptr;
+      Child_Name     : String_Ptr := Get_Field (N, "child_name");
+      Class          : String_Ptr := Get_Field (N, "class");
+      S              : String_Ptr;
+      Dialog         : Gtk_Dialog;
+      File_Selection : Gtk_File_Selection;
 
    begin
       if not N.Specific_Data.Created then
@@ -302,17 +305,31 @@ package body Gtk.Box is
                   Gint'Value (Get_Field (N, "spacing").all));
             end if;
          else
-            if Get_Part (Child_Name.all, 2) = "action_area" then
-               Box :=
-                 Get_Action_Area (Gtk_Dialog (Get_Object (Find_Tag
+            if Get_Part (Child_Name.all, 1) = "Dialog" then
+               Dialog :=
+                 Gtk_Dialog (Get_Object (Find_Tag
                    (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                    "name").Value).all));
+                    "name").Value).all);
 
+               if Get_Part (Child_Name.all, 2) = "action_area" then
+                  Box := Get_Action_Area (Dialog);
+               elsif Get_Part (Child_Name.all, 2) = "vbox" then
+                  Box := Get_Vbox (Dialog);
+               end if;
             else
-               Box :=
-                 Get_Vbox (Gtk_Dialog (Get_Object (Find_Tag
+
+               --  Assuming File_Selection
+
+               File_Selection :=
+                 Gtk_File_Selection (Get_Object (Find_Tag
                    (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                    "name").Value).all));
+                    "name").Value).all);
+
+               if Get_Part (Child_Name.all, 2) = "action_area" then
+                  Box := Get_Action_Area (File_Selection);
+               elsif Get_Part (Child_Name.all, 2) = "button_area" then
+                  Box := Get_Button_Area (File_Selection);
+               end if;
             end if;
          end if;
 
