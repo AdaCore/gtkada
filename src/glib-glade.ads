@@ -2,7 +2,7 @@
 --                   Gate - GtkAda Components                        --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -177,12 +177,15 @@ package Glib.Glade is
    procedure Gen_Signal
      (N            : Node_Ptr;
       File         : File_Type;
-      Widget_Class : String := "");
+      Widget_Class : String := "";
+      The_Object   : String := "");
    --  Output to file calls to connect if N contains any signal.
    --  Also register the class of the widget that uses signals.
    --  Widget_Class if not null specifies the class of the widget contained in
    --  N. If null, the class will be retrieved from the "class" field of N.
    --  This is useful when a downcast is needed.
+   --  If The_Object is specified, connect the signat to this object instead
+   --  of reading it from N.
 
    function Gen_Signal_Instantiations (Project : String; File : File_Type)
      return Natural;
