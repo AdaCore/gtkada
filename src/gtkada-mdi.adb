@@ -4592,7 +4592,8 @@ package body Gtkada.MDI is
          while Current /= null
            and then Current /= Gtk_Widget (MDI)
            and then Get_Parent (Current) /= null
-           and then Current.all not in Gtk_Notebook_Record'Class
+           and then (Current.all not in Gtk_Notebook_Record'Class
+                     or else Get_Parent (Current) /= Gtk_Widget (MDI))
            and then Get_Parent (Current) /= Gtk_Widget (MDI)
          loop
             Current := Get_Parent (Current);
