@@ -27,6 +27,19 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  The Gtk_Fixed widget is a container which can place child widgets at fixed
+--  positions and with fixed sizes, given in pixels.
+--
+--  Note that it is usually bad practice to use the Gtk_Fixed container in
+--  GtkAda. Instead, you should consider using one of the other many containers
+--  available, that will allow you to handle resizing of your windows, as well
+--  as font size changes easily.
+--
+--  </description>
+--  <c_version>1.2.8</c_version>
+
 with Gtk.Container;
 with Gtk.Widget;
 with Gtk.Object;
@@ -37,30 +50,60 @@ package Gtk.Fixed is
      with private;
    type Gtk_Fixed is access all Gtk_Fixed_Record'Class;
 
+   procedure Gtk_New (Fixed : out Gtk_Fixed);
+   --  Create a new fixed container.
+
+   procedure Initialize (Fixed : access Gtk_Fixed_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Fixed.
+
    function Get_Children (Fixed : access Gtk_Fixed_Record)
      return Widget.Widget_List.Glist;
-   procedure Gtk_New (Fixed : out Gtk_Fixed);
-   procedure Initialize (Fixed : access Gtk_Fixed_Record'Class);
+   --  Return the list of Widgets contained in a Gtk_Fixed.
+
    procedure Move
      (Fixed  : access Gtk_Fixed_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       X      : in Gint16;
       Y      : in Gint16);
+   --  Move a child of a GtkFixed container to the given position.
+   --  X indicates the horizontal position to place the widget at.
+   --  Y is the vertical position to place the widget at.
+
    procedure Put
      (Fixed  : access Gtk_Fixed_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       X      : in Gint16;
       Y      : in Gint16);
+   --  Add Widget to a Fixed container at the given position.
+   --  X indicates the horizontal position to place the widget at.
+   --  Y is the vertical position to place the widget at.
 
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type);
+   ----------------------------
+   -- Support for Gate/Dgate --
+   ----------------------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
 
    procedure Generate (Fixed : in out Object.Gtk_Object; N : in Node_Ptr);
    --  Dgate internal function
 
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
+
 private
    type Gtk_Fixed_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
+
+   pragma Import (C, Get_Type, "gtk_fixed_get_type");
 
 end Gtk.Fixed;
