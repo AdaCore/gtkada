@@ -29,7 +29,6 @@
 
 with System;
 with Gtk; use Gtk;
-with Gtk.Widget; use Gtk.Widget;
 
 package body Gnome.Color_Picker is
 
@@ -241,17 +240,5 @@ package body Gnome.Color_Picker is
    begin
       Internal (Get_Object (Cpicker), Boolean'Pos (Use_Alpha));
    end Set_Use_Alpha;
-
-   --------------
-   -- Generate --
-   --------------
-
-   procedure Generate
-     (N    : in Node_Ptr;
-      File : in File_Type) is
-   begin
-      Gen_New (N, "Color_Picker", File => File);
-      Widget.Generate (N, File);
-   end Generate;
 
 end Gnome.Color_Picker;

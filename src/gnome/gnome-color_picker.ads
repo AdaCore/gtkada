@@ -120,13 +120,6 @@ package Gnome.Color_Picker is
       Title   : in String);
    --  Set the title of the color selection dialog.
 
-   ----------------------
-   -- Support for Gate --
-   ----------------------
-
-   procedure Generate (N : in Node_Ptr; File : in File_Type);
-   --  Gate internal function
-
    -------------
    -- Signals --
    -------------
