@@ -2022,8 +2022,11 @@ package body Gtkada.MDI is
       Set_Child_Title_Bar (C);
 
       C.State := Normal;
-      Float_Child (C, False);
-      Put_In_Notebook (MDI, C);
+      Float_Child (C, MDI.All_Floating_Mode);
+
+      if not MDI.All_Floating_Mode then
+         Put_In_Notebook (MDI, C);
+      end if;
 
       Widget_List.Prepend (MDI.Items, Gtk_Widget (C));
 
@@ -2331,7 +2334,11 @@ package body Gtkada.MDI is
          --  child the focus.
          Current_Focus := Child.MDI.Focus_Child;
          Child.MDI.Focus_Child := MDI_Child (Child);
-         Set_Current_Page (Note, Page_Num (Note, Child));
+
+         --  There could be no parent if we are in all-floating mode
+         if Note /= null then
+            Set_Current_Page (Note, Page_Num (Note, Child));
+         end if;
          Child.MDI.Focus_Child := Current_Focus;
 
       elsif Child.State = Floating
@@ -4157,7 +4164,11 @@ package body Gtkada.MDI is
          end Remove_All_Items;
 
          Reuse_Empty_If_Needed : Boolean := True;
+         Initial_All_Floating_Mode : constant Boolean := MDI.All_Floating_Mode;
       begin
+         --  Temporarily disable the user of all floating mode, so that we can
+         --  properly restore the desktop even if notebooks are referenced.
+         MDI.All_Floating_Mode := False;
          Empty_Notebook_Filler := null;
 
          if From_Tree /= null then
@@ -4225,6 +4236,8 @@ package body Gtkada.MDI is
                Remove_Page (Note, 0);
             end;
          end if;
+
+         Set_All_Floating_Mode (MDI, Initial_All_Floating_Mode);
 
          return True;
       end Restore_Desktop;
