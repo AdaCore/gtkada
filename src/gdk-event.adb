@@ -94,6 +94,30 @@ package body Gdk.Event is
    --    Create_From_C to create the exact type (This can not be part of
    --    Gtk.Type_Conversions since the Gtk_Types do not exist for Gdk).
 
+
+   ----------------------------------
+   --  Some constants  used below  --
+   ----------------------------------
+   --  This constants have the '-1' since in some cases gtk itself uses
+   --  the extrema to return some meaningful value (for instance, the result
+   --  of Get_Area can have the values Guint16'Last to mean the whole area).
+
+   Invalid_Gdouble_Value : constant Gdouble := Gdouble'Last - 1.0;
+   Invalid_Gint_Value    : constant Gint    := Gint'Last - 1;
+   Invalid_Gint16_Value  : constant Gint16  := Gint16'Last - 1;
+   Invalid_Guint_Value   : constant Guint   := Guint'Last - 1;
+   Invalid_Guint16_Value : constant Guint16 := Guint16'Last - 1;
+   Invalid_Guint32_Value : constant Guint32 := Guint32'Last - 1;
+   Invalid_Gulong_Value  : constant Gulong  := Gulong'Last - 1;
+
+   pragma Export (C, Invalid_Gdouble_Value, "invalid_gdouble_value");
+   pragma Export (C, Invalid_Gint_Value, "invalid_gint_value");
+   pragma Export (C, Invalid_Gint16_Value, "invalid_gint16_value");
+   pragma Export (C, Invalid_Guint_Value, "invalid_guint_value");
+   pragma Export (C, Invalid_Guint16_Value, "invalid_guint16_value");
+   pragma Export (C, Invalid_Guint32_Value, "invalid_guint32_value");
+   pragma Export (C, Invalid_Gulong_Value, "invalid_gulong_value");
+
    --------------------
    -- Get_Event_Type --
    --------------------
@@ -149,7 +173,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_x");
       X : constant Gdouble := Internal (Get_Object (Event));
    begin
-      if X = -10000.0 then
+      if X = Invalid_Gdouble_Value then
          raise Invalid_Field;
       end if;
       return X;
@@ -164,7 +188,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_y");
       Y : constant Gdouble := Internal (Get_Object (Event));
    begin
-      if Y = -10000.0 then
+      if Y = Invalid_Gdouble_Value then
          raise Invalid_Field;
       end if;
       return Y;
@@ -179,7 +203,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_width");
       Width : constant Gint16 := Internal (Get_Object (Event));
    begin
-      if Width = -10000 then
+      if Width = Invalid_Gint16_Value then
          raise Invalid_Field;
       end if;
       return Width;
@@ -194,7 +218,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_height");
       Height : constant Gint16 := Internal (Get_Object (Event));
    begin
-      if Height = -10000 then
+      if Height = Invalid_Gint16_Value then
          raise Invalid_Field;
       end if;
       return Height;
@@ -209,7 +233,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_x_root");
       X : constant Gdouble := Internal (Get_Object (Event));
    begin
-      if X = -10000.0 then
+      if X = Invalid_Gdouble_Value then
          raise Invalid_Field;
       end if;
       return X;
@@ -224,7 +248,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_y_root");
       Y : constant Gdouble := Internal (Get_Object (Event));
    begin
-      if Y = -10000.0 then
+      if Y = Invalid_Gdouble_Value then
          raise Invalid_Field;
       end if;
       return Y;
@@ -239,7 +263,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_button");
       Button : constant Guint := Internal (Get_Object (Event));
    begin
-      if Button = 10000 then
+      if Button = Invalid_Guint_Value then
          raise Invalid_Field;
       end if;
       return Button;
@@ -254,7 +278,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_state");
       State : constant Guint := Internal (Get_Object (Event));
    begin
-      if State = 10000 then
+      if State = Invalid_Guint_Value then
          raise Invalid_Field;
       end if;
       return Gdk_Modifier_Type'Val (State);
@@ -287,7 +311,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_mode");
       Mode : constant Gint := Internal (Get_Object (Event));
    begin
-      if Mode = -10000 then
+      if Mode = Invalid_Gint_Value then
          raise Invalid_Field;
       end if;
       return Gdk_Crossing_Mode'Val (Mode);
@@ -302,7 +326,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_detail");
       Detail : constant Gint := Internal (Get_Object (Event));
    begin
-      if Detail = -10000 then
+      if Detail = Invalid_Gint_Value then
          raise Invalid_Field;
       end if;
       return Gdk_Notify_Type'Val (Detail);
@@ -317,7 +341,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_focus");
       Focus : constant Gint := Internal (Get_Object (Event));
    begin
-      if Focus = -10000 then
+      if Focus = Invalid_Gint_Value then
          raise Invalid_Field;
       end if;
       return Boolean'Val (Focus);
@@ -332,7 +356,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_pressure");
       Pressure : constant Gdouble := Internal (Get_Object (Event));
    begin
-      if Pressure = -10000.0 then
+      if Pressure = Invalid_Gdouble_Value then
          raise Invalid_Field;
       end if;
       return Pressure;
@@ -347,7 +371,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_xtilt");
       Xtilt : constant Gdouble := Internal (Get_Object (Event));
    begin
-      if Xtilt = -10000.0 then
+      if Xtilt = Invalid_Gdouble_Value then
          raise Invalid_Field;
       end if;
       return Xtilt;
@@ -362,7 +386,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_ytilt");
       Ytilt : constant Gdouble := Internal (Get_Object (Event));
    begin
-      if Ytilt = -10000.0 then
+      if Ytilt = Invalid_Gdouble_Value then
          raise Invalid_Field;
       end if;
       return Ytilt;
@@ -377,7 +401,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_source");
       Source : constant Gint := Internal (Get_Object (Event));
    begin
-      if Source = -10000 then
+      if Source = Invalid_Gint_Value then
          raise Invalid_Field;
       end if;
       return Gdk_Input_Source'Val (Source);
@@ -392,7 +416,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_device_id");
       Device : constant Guint32 := Internal (Get_Object (Event));
    begin
-      if Device = 10000 then
+      if Device = Invalid_Guint32_Value then
          raise Invalid_Field;
       end if;
       return Gdk_Device_Id (Device);
@@ -403,12 +427,12 @@ package body Gdk.Event is
    --------------
 
    function Get_Area (Event : in Gdk_Event) return Rectangle.Gdk_Rectangle is
-      function Internal (Event : in System.Address)
-                        return Gdk.Rectangle.Gdk_Rectangle;
+      procedure Internal (Event : System.Address; Area : System.Address);
       pragma Import (C, Internal, "ada_gdk_event_get_area");
-      Rec : constant Rectangle.Gdk_Rectangle := Internal (Get_Object (Event));
+      Rec : aliased Rectangle.Gdk_Rectangle;
    begin
-      if Rec.Width = -10000 then
+      Internal (Get_Object (Event), Rec'Address);
+      if Rec.Width = Invalid_Guint16_Value then
          raise Invalid_Field;
       end if;
       return Rec;
@@ -423,7 +447,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_count");
       Count : constant Gint := Internal (Get_Object (Event));
    begin
-      if Count = -10000 then
+      if Count = Invalid_Gint_Value then
          raise Invalid_Field;
       end if;
       return Count;
@@ -438,7 +462,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_in");
       Value : constant Gint := Internal (Get_Object (Event));
    begin
-      if Value = -10000 then
+      if Value = Invalid_Gint_Value then
          raise Invalid_Field;
       end if;
       return Boolean'Val (Value);
@@ -453,7 +477,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_is_hint");
       Hint : constant Gint := Internal (Get_Object (Event));
    begin
-      if Hint = -10000 then
+      if Hint = Invalid_Gint_Value then
          raise Invalid_Field;
       end if;
       return Boolean'Val (Hint);
@@ -468,7 +492,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_key_val");
       Key : constant Gint := Internal (Get_Object (Event));
    begin
-      if Key = -10000 then
+      if Key = Invalid_Gint_Value then
          raise Invalid_Field;
       end if;
       return Gdk_Key_Type (Key);
@@ -501,7 +525,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_atom");
       Atom : constant Gulong := Internal (Get_Object (Event));
    begin
-      if Atom = 100000 then
+      if Atom = Invalid_Gulong_Value then
          raise Invalid_Field;
       end if;
       return Gdk_Atom (Atom);
@@ -516,7 +540,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_property_state");
       State : constant Guint := Internal (Get_Object (Event));
    begin
-      if State = 100000 then
+      if State = Invalid_Guint_Value then
          raise Invalid_Field;
       end if;
       return State;
@@ -533,7 +557,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_visibility_state");
       State : constant Gint := Internal (Get_Object (Event));
    begin
-      if State = -10000 then
+      if State = Invalid_Gint_Value then
          raise Invalid_Field;
       end if;
       return Gdk_Visibility_State'Val (State);
@@ -548,7 +572,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_selection");
       Selection : constant Gulong := Internal (Get_Object (Event));
    begin
-      if Selection = 100000 then
+      if Selection = Invalid_Gulong_Value then
          raise Invalid_Field;
       end if;
       return Gdk_Atom (Selection);
@@ -563,7 +587,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_target");
       Target : constant Gulong := Internal (Get_Object (Event));
    begin
-      if Target = 100000 then
+      if Target = Invalid_Gulong_Value then
          raise Invalid_Field;
       end if;
       return Gdk_Atom (Target);
@@ -578,7 +602,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_property");
       Prop : constant Gulong := Internal (Get_Object (Event));
    begin
-      if Prop = 100000 then
+      if Prop = Invalid_Gulong_Value then
          raise Invalid_Field;
       end if;
       return Gdk_Atom (Prop);
@@ -593,7 +617,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_requestor");
       Req : constant Guint32 := Internal (Get_Object (Event));
    begin
-      if Req = 100000 then
+      if Req = Invalid_Guint32_Value then
          raise Invalid_Field;
       end if;
       return Req;
@@ -608,7 +632,7 @@ package body Gdk.Event is
       pragma Import (C, Internal, "ada_gdk_event_get_message_type");
       Message : constant Gulong := Internal (Get_Object (Event));
    begin
-      if Message = 100000 then
+      if Message = Invalid_Gulong_Value then
          raise Invalid_Field;
       end if;
       return Gdk_Atom (Message);

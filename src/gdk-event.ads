@@ -137,19 +137,6 @@ package Gdk.Event is
    --  Drag_Status, Drag_Start, Drag_Finished
 
 
-   ----------------------------------
-   --  Some constants  used below  --
-   ----------------------------------
-
-   Invalid_Gdouble_Value : constant Gdouble := Gdouble'Last;
-   Invalid_Gint_Value    : constant Gint    := Gint'Last;
-   Invalid_Gint16_Value  : constant Gint16  := Gint16'Last;
-   Invalid_Guint_Value   : constant Guint   := Guint'Last;
-   Invalid_Guint16_Value : constant Guint16 := Guint16'Last;
-   Invalid_Guint32_Value : constant Guint32 := Guint32'Last;
-   Invalid_Gulong_Value  : constant Gulong  := Gulong'Last;
-
-
    -----------------------------------------
    --  Specific definition for the fields --
    -----------------------------------------
@@ -397,14 +384,6 @@ private
       record
          User_Created : Boolean := False;  --  True if allocated by the user
       end record;
-
-   pragma Export (C, Invalid_Gdouble_Value, "invalid_gdouble_value");
-   pragma Export (C, Invalid_Gint_Value, "invalid_gint_value");
-   pragma Export (C, Invalid_Gint16_Value, "invalid_gint16_value");
-   pragma Export (C, Invalid_Guint_Value, "invalid_guint_value");
-   pragma Export (C, Invalid_Guint16_Value, "invalid_guint16_value");
-   pragma Export (C, Invalid_Guint32_Value, "invalid_guint32_value");
-   pragma Export (C, Invalid_Gulong_Value, "invalid_gulong_value");
 
    ---------------------
    --  Design issues  --

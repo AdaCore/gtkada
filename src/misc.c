@@ -990,15 +990,15 @@ guint32 ada_gdk_event_get_device_id (GdkEvent * event)
   return invalid_guint32_value;
 }
 
-GdkRectangle ada_gdk_event_get_area (GdkEvent * event)
+void
+ada_gdk_event_get_area (GdkEvent * event, GdkRectangle* area)
 {
   if (event->type == GDK_EXPOSE)
-    return event->expose.area;
+    *area = event->expose.area;
   else
     {
-      GdkRectangle area;
-      area.width = invalid_guint16_value;
-      return area;
+      fprintf (stderr, "event type=%d\n", event->type);
+      area->width = invalid_guint16_value;
     }
 }
 
