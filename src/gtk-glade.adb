@@ -29,8 +29,8 @@
 
 --  with Gtk.Adjustment;
 --  with Gtk.Alignment;
---  with Gtk.Arrow;
---  with Gtk.Aspect_Frame;
+with Gtk.Arrow;
+with Gtk.Aspect_Frame;
 with Gtk.Box;
 with Gtk.Button;
 --  with Gtk.Button_Box;
@@ -49,7 +49,7 @@ with Gtk.Editable;
 with Gtk.File_Selection;
 --  with Gtk.Fixed;
 --  with Gtk.Font_Selection;
---  with Gtk.Frame;
+with Gtk.Frame;
 --  with Gtk.Gamma_Curve;
 --  with Gtk.GEntry;
 --  with Gtk.GRange;
@@ -181,6 +181,7 @@ package body Gtk.Glade is
       P      : Node_Ptr;
       Object : Gtk.Object.Gtk_Object;
 
+      use type Gtk.Object.Gtk_Object;
    begin
       Get_Dgate (Get_Field (N, "class").all) (Object, N);
       P := N.Child;
@@ -193,8 +194,29 @@ package body Gtk.Glade is
          P := P.Next;
       end loop;
 
-      Widget.Show_All (Widget.Gtk_Widget (Object));
+      if Object /= null then
+         Widget.Show_All (Widget.Gtk_Widget (Object));
+      end if;
    end Create_Widget;
+
+   -----------------
+   -- Generic_Ptr --
+   -----------------
+
+   procedure Generic_Ptr (N : Node_Ptr; File : File_Type) is
+   begin
+      null;
+   end Generic_Ptr;
+ 
+   ------------------
+   -- Generic_DPtr --
+   ------------------
+
+   procedure Generic_DPtr
+     (Object : in out Gtk.Object.Gtk_Object; N : Node_Ptr) is
+   begin
+      null;
+   end Generic_DPtr;
 
    ---------------------------
    -- Print_Create_Function --
@@ -446,9 +468,16 @@ package body Gtk.Glade is
    --------------
 
    function Get_Gate (Class : String) return Generate_Ptr is
-      S : aliased String := Class;
+      S   : aliased String := Class;
+      Ptr : Generate_Ptr;
    begin
-      return SHT.Get (S'Unchecked_Access).Gate;
+      Ptr := SHT.Get (S'Unchecked_Access).Gate;
+
+      if Ptr = null then
+         return Generic_Ptr'Access;
+      else
+         return Ptr;
+      end if;
    end Get_Gate;
 
    ---------------
@@ -456,9 +485,16 @@ package body Gtk.Glade is
    ---------------
 
    function Get_Dgate (Class : String) return Dynamic_Generate_Ptr is
-      S : aliased String := Class;
+      S   : aliased String := Class;
+      Ptr : Dynamic_Generate_Ptr;
    begin
-      return SHT.Get (S'Unchecked_Access).Dgate;
+      Ptr := SHT.Get (S'Unchecked_Access).Dgate;
+
+      if Ptr = null then
+         return Generic_DPtr'Access;
+      else
+         return Ptr;
+      end if;
    end Get_Dgate;
 
 begin
@@ -466,10 +502,10 @@ begin
    --    (Gtk.Adjustment.Generate'Access, Gtk.Adjustment.Generate'Access));
    --  SHT.Set (new String '("GtkAlignment"),
    --    (Gtk.Alignment.Generate'Access, Gtk.Alignment.Generate'Access));
-   --  SHT.Set (new String '("GtkArrow"),
-   --    (Gtk.Arrow.Generate'Access, Gtk.Arrow.Generate'Access));
-   --  SHT.Set (new String '("GtkAspectFrame"),
-   --    (Gtk.Aspect_Frame.Generate'Access, Gtk.Aspect_Frame.Generate'Access));
+   SHT.Set (new String '("GtkArrow"),
+     (Gtk.Arrow.Generate'Access, Gtk.Arrow.Generate'Access));
+   SHT.Set (new String '("GtkAspectFrame"),
+     (Gtk.Aspect_Frame.Generate'Access, Gtk.Aspect_Frame.Generate'Access));
    SHT.Set (new String '("GtkBox"),
      (Gtk.Box.Generate'Access, Gtk.Box.Generate'Access));
    SHT.Set (new String '("GtkHBox"),
@@ -514,8 +550,8 @@ begin
    --  SHT.Set (new String '("GtkFontSelection"),
    --    (Gtk.Font_Selection.Generate'Access,
    --     Gtk.Font_Selection.Generate'Access));
-   --  SHT.Set (new String '("GtkFrame"),
-   --    (Gtk.Frame.Generate'Access, Gtk.Frame.Generate'Access));
+   SHT.Set (new String '("GtkFrame"),
+     (Gtk.Frame.Generate'Access, Gtk.Frame.Generate'Access));
    --  SHT.Set (new String '("GtkGammaCurve"),
    --    (Gtk.Gamma_Curve.Generate'Access, Gtk.Gamma_Curve.Generate'Access));
    --  SHT.Set (new String '("GtkGentry"),
