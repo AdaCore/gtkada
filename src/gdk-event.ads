@@ -120,8 +120,8 @@ package Gdk.Event is
    procedure Get_Graphics_Expose (Event  : out Gdk_Event_Expose'Class;
                                   Window : in Gdk_Window'Class);
 
-   procedure Get_Area (Event : in     Gdk_Event_Expose;
-                       Area  :    out Rectangle.Gdk_Rectangle'Class);
+   function Get_Area (Event : in     Gdk_Event_Expose)
+                      return Rectangle.Gdk_Rectangle;
 
    procedure Set_Area (Event : in out Gdk_Event_Expose;
                        Area  : in     Rectangle.Gdk_Rectangle'Class);

@@ -83,12 +83,15 @@ package body Gdk.Event is
    --  Get_Area  --
    ----------------
 
-   procedure Get_Area (Event : in     Gdk_Event_Expose;
-                       Area  :    out Rectangle.Gdk_Rectangle'Class) is
+   function Get_Area (Event : in     Gdk_Event_Expose)
+                      return Rectangle.Gdk_Rectangle
+   is
       function Internal (Event : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gdk_event_expose_get_area");
+      Area : Rectangle.Gdk_Rectangle;
    begin
       Set_Object (Area, Internal (Get_Object (Event)));
+      return Area;
    end Get_Area;
 
 
