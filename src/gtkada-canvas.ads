@@ -169,6 +169,18 @@ package Gtkada.Canvas is
    --  line or an arc, so as to avoid overloading links.
    --  An arrow is drawn at the end of the link, on the border of Dest.
 
+   procedure Move_To
+     (Canvas : access Interactive_Canvas_Record;
+      Item   : access Canvas_Item_Record'Class;
+      X, Y   : Glib.Gint := Glib.Gint'First);
+   --  Move the item in the canvas.
+   --  Item is assumed to be already in the canvas.
+   --  If at least one of X or Y has the default value, then the item
+   --  is placed automatically in a free area of the canvas.
+   --  Its new position depends on whether it has links to other existing
+   --  items (in which case it is placed to the right of it), or not (in which
+   --  case it is placed at the bottom of the leftmost column).
+
    procedure Put (Canvas : access Interactive_Canvas_Record;
                   Item   : access Canvas_Item_Record'Class;
                   X, Y   : Glib.Gint := Glib.Gint'First);

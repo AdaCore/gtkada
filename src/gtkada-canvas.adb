@@ -370,13 +370,14 @@ package body Gtkada.Canvas is
       end if;
    end Update_Adjustments;
 
-   ---------
-   -- Put --
-   ---------
+   -------------
+   -- Move_To --
+   -------------
 
-   procedure Put (Canvas : access Interactive_Canvas_Record;
-                  Item   : access Canvas_Item_Record'Class;
-                  X, Y   : Gint := Gint'First)
+   procedure Move_To
+     (Canvas : access Interactive_Canvas_Record;
+      Item   : access Canvas_Item_Record'Class;
+      X, Y   : Glib.Gint := Glib.Gint'First)
    is
       function Location_Is_Free (X, Y : Gint) return Boolean;
       --  Return True if the location X, Y for the new item would be
@@ -403,8 +404,8 @@ package body Gtkada.Canvas is
               and then Tmp.Item /= Canvas_Item (Item)
             then
                Intersect (Tmp.Item.Coord, Item.Coord, Dest, Inter);
-               Tmp := Tmp.Next;
             end if;
+            Tmp := Tmp.Next;
          end loop;
          Item.Coord.Width := Item.Coord.Width - 2 * Canvas.Grid_Size;
          Item.Coord.Height := Item.Coord.Height - 2 * Canvas.Grid_Size;
@@ -477,10 +478,21 @@ package body Gtkada.Canvas is
          Item.Coord.Y := (Item.Coord.Y / Gint (Canvas.Grid_Size))
            * Gint (Canvas.Grid_Size);
       end if;
+   end Move_To;
 
+   ---------
+   -- Put --
+   ---------
+
+   procedure Put (Canvas : access Interactive_Canvas_Record;
+                  Item   : access Canvas_Item_Record'Class;
+                  X, Y   : Gint := Gint'First)
+   is
+   begin
       Canvas.Children := new Canvas_Item_List_Record
         '(Item => Canvas_Item (Item),
           Next => Canvas.Children);
+      Move_To (Canvas, Item, X, Y);
 
       Update_Adjustments (Canvas);
 
@@ -1148,6 +1160,10 @@ package body Gtkada.Canvas is
       Item.Coord.Height := Guint (Height);
 
       --  Create the pixmap
+      if Item.Pixmap /= Null_Pixmap then
+         Gdk.Pixmap.Unref (Item.Pixmap);
+      end if;
+
       Gdk_New (Item.Pixmap, Win, Width, Height);
    end Initialize;
 
@@ -1520,15 +1536,19 @@ package body Gtkada.Canvas is
                  - Item.Coord.Y mod Gint (Canvas.Grid_Size);
             end if;
 
-            Draw_Rectangle (Get_Window (Canvas.Drawing_Area),
-                            GC     => Canvas.Anim_GC,
-                            Filled => False,
-                            X      => Item.Coord.X,
-                            Y      => Item.Coord.Y,
-                            Width  => Gint (Item.Coord.Width) - 1,
-                            Height => Gint (Item.Coord.Height) - 1);
+            if Item.Visible then
+               Draw_Rectangle (Get_Window (Canvas.Drawing_Area),
+                               GC     => Canvas.Anim_GC,
+                               Filled => False,
+                               X      => Item.Coord.X,
+                               Y      => Item.Coord.Y,
+                               Width  => Gint (Item.Coord.Width) - 1,
+                               Height => Gint (Item.Coord.Height) - 1);
+            end if;
+
             Update_Links
-              (Canvas, Get_Window (Canvas.Drawing_Area), Canvas.Anim_GC, Item);
+              (Canvas, Get_Window (Canvas.Drawing_Area),
+               Canvas.Anim_GC, Item);
 
             if Canvas.Align_On_Grid then
                Item.Coord.X := X;
@@ -1565,13 +1585,16 @@ package body Gtkada.Canvas is
               - Item.Coord.Y mod Gint (Canvas.Grid_Size);
          end if;
 
-         Draw_Rectangle (Get_Window (Canvas.Drawing_Area),
-                         GC     => Canvas.Anim_GC,
-                         Filled => False,
-                         X      => Item.Coord.X,
-                         Y      => Item.Coord.Y,
-                         Width  => Gint (Item.Coord.Width) - 1,
-                         Height => Gint (Item.Coord.Height) - 1);
+         if Item.Visible then
+            Draw_Rectangle (Get_Window (Canvas.Drawing_Area),
+                            GC     => Canvas.Anim_GC,
+                            Filled => False,
+                            X      => Item.Coord.X,
+                            Y      => Item.Coord.Y,
+                            Width  => Gint (Item.Coord.Width) - 1,
+                            Height => Gint (Item.Coord.Height) - 1);
+         end if;
+
          Update_Links
            (Canvas, Get_Window (Canvas.Drawing_Area), Canvas.Anim_GC, Item);
 
