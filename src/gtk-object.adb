@@ -35,6 +35,7 @@ package body Gtk.Object is
       pragma Import (C, Internal, "gtk_object_destroy");
    begin
       Internal (Get_Object (Object));
+      Set_Object (Object, System.Null_Address);
    end Destroy;
 
    ----------------

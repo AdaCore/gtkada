@@ -48,6 +48,7 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_destroy");
    begin
       Internal (Get_Object (Widget));
+      Set_Object (Widget, System.Null_Address);
    end Destroy;
 
    ----------
