@@ -14,7 +14,7 @@ package Gtk.Label is
    --  mapping: Set gtklabel.h gtk_label_set
 
    procedure Set_Justify (Label : in out Gtk_Label'Class;
-                          Jtype : in     Enums.Justification);
+                          Jtype : in     Enums.Gtk_Justification);
    --  mapping: NOT_IMPLEMENTED gtklabel.h gtk_label_set_justify
 
    function Get (Label : in Gtk_Label'Class) return String;

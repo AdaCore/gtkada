@@ -10,9 +10,9 @@ package body Gtk.Label is
 
    function Get (Label : in Gtk_Label'Class) return String is
       procedure Internal (Label : in     System.Address;
-                          Str   :    out C.Strings.Chars_Ptr);
+                          Str   :    out C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_get");
-      Temp : C.Strings.Chars_Ptr;
+      Temp : C.Strings.chars_ptr;
    begin
       Internal (Get_Object (Label), Temp);
       return C.Strings.Value (Temp);
@@ -50,9 +50,9 @@ package body Gtk.Label is
    -------------------
 
    procedure Set_Justify (Label : in out Gtk_Label'Class;
-                          Jtype : in     Enums.Justification) is
+                          Jtype : in     Enums.Gtk_Justification) is
       procedure Internal (Label : in System.Address;
-                          Jtype : in Enums.Justification);
+                          Jtype : in Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_label_set_justify");
    begin
       Internal (Get_Object (Label), Jtype);
