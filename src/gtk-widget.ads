@@ -4,6 +4,7 @@
 --  which actual widgets must adhere to.
 
 with Gtk.Object;
+with Gdk.Rectangle;
 
 package Gtk.Widget is
 
@@ -38,6 +39,17 @@ package Gtk.Widget is
 
    --  GET_WINDOW : to get the window field of a widget, please
    --  see package gtk-window.ads
+
+   procedure Draw
+     (Widget : in Gtk_Widget'Class;
+      Area   : in Gdk.Rectangle.Gdk_Rectangle := Gdk.Rectangle.Full_Area);
+
+   --  mapping: Draw gtkwidget.h gtk_widget_draw
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_draw_children
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_draw_focus
+   --  FIXME --  Need Gdk_Rectangle
+
+
 
    procedure Set_Name (Widget : in out Gtk_Widget'Class;
                        Name : in String);
@@ -79,11 +91,6 @@ package Gtk.Widget is
 
    procedure Unrealize (Widget : in out Gtk_Widget'Class);
    --  mapping: Unrealize gtkwidget.h gtk_widget_unrealize
-
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_draw
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_draw_children
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_draw_focus
-   --  FIXME --  Need Gdk_Rectangle
 
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_install_accelerator
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_remove_accelerator

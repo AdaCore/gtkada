@@ -1,3 +1,5 @@
+with Gdk;
+
 package body Gtk.Widget is
 
    ----------------
@@ -48,6 +50,20 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Destroy;
 
+   ----------
+   -- Draw --
+   ----------
+
+   procedure Draw
+     (Widget : in Gtk_Widget'Class;
+      Area   : in Gdk.Rectangle.Gdk_Rectangle := Gdk.Rectangle.Full_Area)
+   is
+      procedure Internal (Widget : in System.Address;
+                          Area   : in System.Address);
+      pragma Import (C, Internal, "gtk_widget_draw");
+   begin
+      Internal (Get_Object (Widget), Gdk.Get_Object (Area));
+   end Draw;
 
    -----------------------
    --  Drawable_Is_Set  --
