@@ -190,7 +190,8 @@ package Gtk.Widget is
 
    end Realize_Handling;
 
-   function Hide_On_Delete (Widget : access Gtk_Widget_Record'Class) return Boolean;
+   function Hide_On_Delete (Widget : access Gtk_Widget_Record'Class)
+      return Boolean;
    --  Hide widget and return True.
    --  This function is intended to be used as a callback.
 
