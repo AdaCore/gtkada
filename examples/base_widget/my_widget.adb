@@ -12,6 +12,7 @@ with Gtk.Object;      use Gtk.Object;
 with Gtk.Arguments;   use Gtk.Arguments;
 with Gtk.Handlers;    use Gtk.Handlers;
 with Gtk.Marshallers; use Gtk.Marshallers;
+with Gtkada.Types;    use Gtkada.Types;
 with Unchecked_Conversion;
 
 with System;
@@ -32,9 +33,7 @@ package body My_Widget is
    Class_Record : System.Address := System.Null_Address;
 
    --  Array of the signals created for this widget
-   Signals      : Gtk.Object.Signal_Array (0 .. 1) :=
-     (0 => new String'("bullseye" & Ascii.NUL),
-      1 => new String'("missed" & Ascii.NUL));
+   Signals : Chars_Ptr_Array := "bullseye" + "missed";
 
    package Internal_Cb is new Handlers.Callback (Target_Widget_Record);
    --  The type of callbacks for the signals above. This is used only to
