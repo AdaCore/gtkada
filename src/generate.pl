@@ -1133,6 +1133,12 @@ sub print_body
 	    $string = "      return Interfaces.C.Strings.Value (Internal";
 	    $terminate = ");\n";
 	  }
+	elsif ($return eq "gboolean")
+	  {
+	    push (@output, "   begin\n");
+	    $string = "      return Boolean'Val (Internal";
+	    $terminate = ");\n";
+	  }
 	elsif ($return =~ /^(G[dt]k|Gnome)/) {
 	  push (@output, "   begin\n");
 	  $string = "      return " . &convert_ada_type ($return)
