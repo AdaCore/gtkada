@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,7 +27,6 @@
 -----------------------------------------------------------------------
 
 with Gdk.Event;
-with Gtk.Widget;
 with Gdk.Types;
 with Ada.Text_IO;
 
@@ -82,7 +81,7 @@ private
 
    type Macro_Item is abstract tagged record
       Id           : Identifier;
-      Event_Type   : Gdk.Types.Gdk_Event_Type;
+      Event_Type   : Gdk.Event.Gdk_Event_Type;
       Next         : Macro_Item_Access;
       Widget_Depth : Natural := 0;
       X            : Gint := 0;
@@ -97,9 +96,7 @@ private
    --  no deeper than Widget_Depth, and while (X, Y) is in a child.
 
    function Create_Event
-     (Item : Macro_Item;
-      Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-      return Gdk.Event.Gdk_Event is abstract;
+     (Item : Macro_Item) return Gdk.Event.Gdk_Event is abstract;
    --  Creates the matching event. The event is considered to have been
    --  send to Widget.
 
@@ -123,9 +120,7 @@ private
      access all Macro_Item_Mouse_Press'Class;
 
    function Create_Event
-     (Item : Macro_Item_Mouse_Press;
-      Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-      return Gdk.Event.Gdk_Event;
+     (Item : Macro_Item_Mouse_Press) return Gdk.Event.Gdk_Event;
 
    procedure Save_To_Disk
      (File : Ada.Text_IO.File_Type; Item : Macro_Item_Mouse_Press);
@@ -138,18 +133,16 @@ private
    -------------------------
 
    type Macro_Item_Crossing is new Macro_Item with record
-      Mode   : Gdk.Types.Gdk_Crossing_Mode;
+      Mode   : Gdk.Event.Gdk_Crossing_Mode;
       State  : Gdk.Types.Gdk_Modifier_Type;
-      Detail : Gdk.Types.Gdk_Notify_Type;
+      Detail : Gdk.Event.Gdk_Notify_Type;
       Time   : Guint32 := 0;
       Focus  : Boolean;
    end record;
    type Macro_Item_Crossing_Access is access all Macro_Item_Crossing'Class;
 
    function Create_Event
-     (Item : Macro_Item_Crossing;
-      Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-      return Gdk.Event.Gdk_Event;
+     (Item : Macro_Item_Crossing) return Gdk.Event.Gdk_Event;
 
    procedure Save_To_Disk
      (File : Ada.Text_IO.File_Type;
@@ -172,9 +165,7 @@ private
    type Macro_Item_Key_Access is access all Macro_Item_Key'Class;
 
    function Create_Event
-     (Item : Macro_Item_Key;
-      Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-      return Gdk.Event.Gdk_Event;
+     (Item : Macro_Item_Key) return Gdk.Event.Gdk_Event;
 
    procedure Save_To_Disk
      (File : Ada.Text_IO.File_Type;
@@ -195,9 +186,7 @@ private
    type Macro_Item_Motion_Access is access all Macro_Item_Motion'Class;
 
    function Create_Event
-     (Item : Macro_Item_Motion;
-      Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-      return Gdk.Event.Gdk_Event;
+     (Item : Macro_Item_Motion) return Gdk.Event.Gdk_Event;
 
    procedure Save_To_Disk
      (File : Ada.Text_IO.File_Type;

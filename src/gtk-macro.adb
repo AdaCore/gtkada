@@ -1,3 +1,31 @@
+-----------------------------------------------------------------------
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
+--                                                                   --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU General Public               --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- General Public License for more details.                          --
+--                                                                   --
+-- You should have received a copy of the GNU General Public         --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+--                                                                   --
+-- As a special exception, if other files instantiate generics from  --
+-- this unit, or you link this unit with other files to produce an   --
+-- executable, this  unit  does not  by itself cause  the resulting  --
+-- executable to be covered by the GNU General Public License. This  --
+-- exception does not however invalidate any other reasons why the   --
+-- executable file  might be covered by the  GNU Public License.     --
+-----------------------------------------------------------------------
+
 with Gdk.Pixmap;
 with Gdk.Window;
 
@@ -270,7 +298,7 @@ package body Gtk.Macro is
 
    Macro_Window_Title : constant String := "@@gtkada_macro@@";
 
-   Delay_In_Play      : Gfloat := 0.1;
+   Delay_In_Play      : Gdouble := 0.1;
    --  Delay used when replaying a macro between each event
 
    Verbose            : constant Boolean := True;
@@ -322,11 +350,14 @@ package body Gtk.Macro is
      (Rec : access Recorder_Record'Class;
       Win : Gdk_Window);
 
-   procedure My_Event_Handler (Event : System.Address; Rec : System.Address);
+   procedure My_Event_Handler (Event : Gdk_Event; Rec : System.Address);
 
    function Get_Widget_From_Id
      (Id : Identifier; List : Widget_List.Glist) return Gtk_Widget;
-   --  Finds the widget whose Id is ID in the application.
+   --  Find the widget whose Id is ID in the application.
+
+   function Find_Widget (Item : Macro_Item'Class) return Gtk_Widget;
+   --  Find the widget associated with Item.
 
    function Child_From_Coordinates
      (Widget    : access Gtk_Widget_Record'Class;
@@ -359,9 +390,6 @@ package body Gtk.Macro is
 
    procedure Free is new Unchecked_Deallocation (String, String_Access);
 
-   package Widget_Cb is new Gtk.Handlers.Callback (Gtk_Widget_Record);
-   package Widget_Boolean_Cb is new Gtk.Handlers.Return_Callback
-     (Gtk_Widget_Record, Boolean);
    package Button_Cb is new Gtk.Handlers.User_Callback
      (Gtk_Button_Record, Recorder);
    package Rec_Cb is new Gtk.Handlers.Callback (Recorder_Record);
@@ -478,7 +506,7 @@ package body Gtk.Macro is
    is
       Tmp : Macro_Item_Access;
    begin
-      if Is_Active (Gtk_Toggle_Button (Button)) then
+      if Get_Active (Gtk_Toggle_Button (Button)) then
 
          --  Free the memory for the old macro, if any
          while Rec.Current_Macro.Item_List /= null loop
@@ -599,53 +627,59 @@ package body Gtk.Macro is
       Grab_Add (Rec.Step_Button);
    end Step_Macro_Cb;
 
+   -----------------
+   -- Find_Widget --
+   -----------------
+
+   function Find_Widget (Item : Macro_Item'Class) return Gtk_Widget is
+      W    : Gtk_Widget;
+      List : Widget_List.Glist;
+   begin
+      List := List_Toplevels;
+      W    := Get_Widget_From_Id (Item.Id, List_Toplevels);
+      Widget_List.Free (List);
+
+      --  Once we have the top-level widget, we go down as many levels as
+      --  required, using the mouse coordinates to find the appropriate
+      --  child.
+
+      if Item.Widget_Depth /= 0 and then W /= null then
+         W := Child_From_Coordinates (W, Item.Widget_Depth, Item.X, Item.Y);
+      end if;
+
+      if Get_Window (W) = Gdk.Window.Null_Window then
+         --  Window not mapped
+         return null;
+      end if;
+
+      return W;
+   end Find_Widget;
+
    ---------------
    -- Next_Step --
    ---------------
 
-   procedure Next_Step (Rec       : access Recorder_Record'Class;
-                        Num_Steps : Natural := Natural'Last)
+   procedure Next_Step
+     (Rec       : access Recorder_Record'Class;
+      Num_Steps : Natural := Natural'Last)
    is
-      N : Natural := Num_Steps;
-      E : Gdk_Event;
-      W : Gtk_Widget;
+      N    : Natural := Num_Steps;
+      E    : Gdk_Event;
       Dead : Boolean;
 
    begin
       while N /= 0
         and then Rec.Current_Macro.Current_Read /= null
       loop
-         W := Get_Widget_From_Id
-           (Rec.Current_Macro.Current_Read.Id, Get_Toplevels);
-
-         --  Once we have the top-level widget, we go down as many levels as
-         --  required, using the mouse coordinates to find the appropriate
-         --  child.
-
-         if Rec.Current_Macro.Current_Read.Widget_Depth /= 0
-           and then W /= null
-         then
-            W := Child_From_Coordinates
-              (W,
-               Rec.Current_Macro.Current_Read.Widget_Depth,
-               Rec.Current_Macro.Current_Read.X,
-               Rec.Current_Macro.Current_Read.Y);
-         end if;
+         E := Create_Event (Rec.Current_Macro.Current_Read.all);
 
          --  Send an event to the widget
 
-         if W = null then
+         if E = null then
             Put_Line (Rec.Current_Macro.Current_Read.Id.Id_Type'Img
                       & "=" & Rec.Current_Macro.Current_Read.Id.Id.all
                       & " not found");
-
-         elsif Get_Window (W) = Gdk.Window.Null_Window then
-            Put_Line (Rec.Current_Macro.Current_Read.Id.Id_Type'Img
-                      & "=" & Rec.Current_Macro.Current_Read.Id.Id.all
-                      & " not mapped");
-
          else
-            E := Create_Event (Rec.Current_Macro.Current_Read.all, W);
             if Verbose then
                Put (Natural'Image (Rec.Current_Macro.Current_Item)
                     & " / "
@@ -665,6 +699,7 @@ package body Gtk.Macro is
                exception
                   when Invalid_Field => null;
                end;
+
                New_Line;
             end if;
 
@@ -679,7 +714,6 @@ package body Gtk.Macro is
             --  propagation itself (for instance, key_press events for menu
             --  items should be sent to the menu shell rather than the item)
             Put (E);
-
             Free (E);
          end if;
 
@@ -706,16 +740,16 @@ package body Gtk.Macro is
    ----------------------
 
    procedure My_Event_Handler
-     (Event : System.Address; Rec : System.Address)
+     (Event : Gdk_Event; Rec : System.Address)
    is
-      E      : Gdk.Event.Gdk_Event := Gdk.Event.From_Address (Event);
-      Widget : Gtk.Widget.Gtk_Widget;
-      Global_Rec : constant Recorder := From_System_Address (Rec);
+      E           : Gdk.Event.Gdk_Event renames Event;
+      Widget      : Gtk.Widget.Gtk_Widget;
+      Global_Rec  : constant Recorder := From_System_Address (Rec);
       Motion_Mask : constant Gdk_Event_Mask :=
         Button_Motion_Mask or Button1_Motion_Mask or Button2_Motion_Mask or
         Button3_Motion_Mask or Pointer_Motion_Mask or Pointer_Motion_Hint_Mask;
-      Parent : Gtk.Widget.Gtk_Widget;
-      Mask_Ok : Boolean;
+      Parent      : Gtk.Widget.Gtk_Widget;
+      Mask_Ok     : Boolean;
 
    begin
       --  If we are recording the macro, and we are interested in that
@@ -885,9 +919,6 @@ package body Gtk.Macro is
          "clicked",
          Rec_Cb.To_Marshaller (Save_Cb'Access),
          Rec);
-
-      Set_Space_Size (Rec, 10);
-      Set_Button_Relief (Rec, Relief_None);
    end Initialize;
 
    ---------------
@@ -1132,7 +1163,7 @@ package body Gtk.Macro is
             S : String (1 .. Length);
          begin
             Length := Read (F, S'Address, Length);
-            File.Buffer := new String' (S);
+            File.Buffer := new String'(S);
          end;
 
          Close (F);
@@ -1278,10 +1309,10 @@ package body Gtk.Macro is
          if Get_Title (Gtk_Window (Widget)) /= "" then
             return (Title, new String'(Get_Title (Gtk_Window (Widget))));
 
-         elsif Get_Transient_Parent (Gtk_Window (Widget)) /= null then
+         elsif Get_Transient_For (Gtk_Window (Widget)) /= null then
             declare
                T : constant String :=
-                 Get_Title (Get_Transient_Parent (Gtk_Window (Widget)));
+                 Get_Title (Get_Transient_For (Gtk_Window (Widget)));
             begin
                if T /= "" then
                   return (Transient, new String'(T));
@@ -1481,11 +1512,15 @@ package body Gtk.Macro is
    ------------------
 
    function Create_Event
-     (Item : Macro_Item_Mouse_Press; Widget : access Gtk_Widget_Record'Class)
-      return Gdk_Event
+     (Item : Macro_Item_Mouse_Press) return Gdk_Event
    is
-      E : Gdk_Event;
+      E      : Gdk_Event;
+      Widget : Gtk_Widget := Find_Widget (Item);
    begin
+      if Widget = null then
+         return null;
+      end if;
+
       Allocate (Event      => E,
                 Event_Type => Item.Event_Type,
                 Window     => Get_Window (Widget));
@@ -1497,16 +1532,16 @@ package body Gtk.Macro is
       return E;
    end Create_Event;
 
-   ------------------
-   -- Create_Event --
-   ------------------
-
    function Create_Event
-     (Item : Macro_Item_Crossing; Widget : access Gtk_Widget_Record'Class)
-      return Gdk_Event
+     (Item : Macro_Item_Crossing) return Gdk_Event
    is
-      E   : Gdk_Event;
+      E      : Gdk_Event;
+      Widget : Gtk_Widget := Find_Widget (Item);
    begin
+      if Widget = null then
+         return null;
+      end if;
+
       Allocate (Event      => E,
                 Event_Type => Item.Event_Type,
                 Window     => Get_Window (Widget));
@@ -1522,16 +1557,16 @@ package body Gtk.Macro is
       return E;
    end Create_Event;
 
-   ------------------
-   -- Create_Event --
-   ------------------
-
    function Create_Event
-     (Item : Macro_Item_Key; Widget : access Gtk_Widget_Record'Class)
-      return Gdk_Event
+     (Item : Macro_Item_Key) return Gdk_Event
    is
-      E   : Gdk_Event;
+      E      : Gdk_Event;
+      Widget : Gtk_Widget := Find_Widget (Item);
    begin
+      if Widget = null then
+         return null;
+      end if;
+
       Allocate (Event      => E,
                 Event_Type => Item.Event_Type,
                 Window     => Get_Window (Widget));
@@ -1542,17 +1577,16 @@ package body Gtk.Macro is
       return E;
    end Create_Event;
 
-   ------------------
-   -- Create_Event --
-   ------------------
-
    function Create_Event
-     (Item : Macro_Item_Motion;
-      Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-      return Gdk.Event.Gdk_Event
+     (Item : Macro_Item_Motion) return Gdk.Event.Gdk_Event
    is
-      E   : Gdk_Event;
+      E      : Gdk_Event;
+      Widget : Gtk_Widget := Find_Widget (Item);
    begin
+      if Widget = null then
+         return null;
+      end if;
+
       Allocate (Event      => E,
                 Event_Type => Item.Event_Type,
                 Window     => Get_Window (Widget));
@@ -1702,7 +1736,7 @@ package body Gtk.Macro is
          Item.State        := Get_State (Event);
          Item.Time         := Get_Time (Event);
          Item.Keyval       := Get_Key_Val (Event);
-         Item.Str          := new String' (Get_String (Event));
+         Item.Str          := new String'(Get_String (Event));
          Add_Item (Rec.Current_Macro, Macro_Item_Access (Item));
       end if;
    end Save_Key_Event;
@@ -1821,7 +1855,9 @@ package body Gtk.Macro is
    procedure Save_Configure_Event
      (Rec    : access Recorder_Record'Class;
       Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event_Configure) is
+      Event  : Gdk_Event_Configure)
+   is
+      pragma Unreferenced (Rec, Widget, Event);
    begin
       null;
    end Save_Configure_Event;
