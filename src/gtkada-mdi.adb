@@ -2748,7 +2748,11 @@ package body Gtkada.MDI is
       while List /= Null_List loop
          C := MDI_Child (Get_Data (List));
 
-         if C.State = Normal or else C.State = Iconified then
+         if C.State = Iconified then
+            Minimize_Child (C, False);
+         end if;
+
+         if C.State = Normal then
             Num_Children := Num_Children + 1;
          end if;
 
@@ -2769,7 +2773,7 @@ package body Gtkada.MDI is
          C := MDI_Child (Get_Data (List));
          List := Widget_List.Next (List);
 
-         if (C.State = Normal or else C.State = Iconified) then
+         if C.State = Normal then
             C.X := (Num_Children - Level) * MDI.Title_Bar_Height;
             C.Y := C.X;
             C.Uniconified_Width  := W;
@@ -3124,7 +3128,9 @@ package body Gtkada.MDI is
       Append_Page (MDI.Docks (Side), Child, Event);
       Unref (Child);
 
-      Set_Sensitive (Child.Minimize_Button, False);
+      if Child.Minimize_Button /= null then
+         Set_Sensitive (Child.Minimize_Button, False);
+      end if;
 
       --  Setup drag-and-drop, so that items can be moved from one location to
       --  another.
@@ -3161,7 +3167,10 @@ package body Gtkada.MDI is
       end if;
 
       Child.State := Normal;
-      Set_Sensitive (Child.Minimize_Button, True);
+
+      if Child.Minimize_Button /= null then
+         Set_Sensitive (Child.Minimize_Button, True);
+      end if;
 
       if Page /= -1 then
          Unref (Child);
@@ -3179,13 +3188,14 @@ package body Gtkada.MDI is
       MDI   : constant MDI_Window := Child.MDI;
       Alloc : Gtk_Allocation;
    begin
-      Show_All (Child);
-
       if Dock and then Child.Dock /= None then
          Float_Child (Child, False);
          Minimize_Child (Child, False);
          Put_In_Notebook (MDI, Child.Dock, Child);
-         Set_Sensitive (Child.Maximize_Button, False);
+
+         if Child.Maximize_Button /= null then
+            Set_Sensitive (Child.Maximize_Button, False);
+         end if;
          Update_Dock_Menu (Child);
 
       elsif not Dock and then Child.State = Docked then
@@ -3205,7 +3215,9 @@ package body Gtkada.MDI is
          end if;
          Child.State := Normal;
 
-         Set_Sensitive (Child.Maximize_Button, True);
+         if Child.Maximize_Button /= null then
+            Set_Sensitive (Child.Maximize_Button, True);
+         end if;
          Update_Dock_Menu (Child);
       end if;
    end Dock_Child;
@@ -3282,7 +3294,10 @@ package body Gtkada.MDI is
                    Allocation_Int (Icons_Width),
                    Allocation_Int (Icons_Height));
          Size_Allocate (Child, Alloc);
-         Set_Sensitive (Child.Maximize_Button, False);
+
+         if Child.Maximize_Button /= null then
+            Set_Sensitive (Child.Maximize_Button, False);
+         end if;
 
       elsif Child.State = Iconified and then not Minimize then
          Child.State := Normal;
@@ -3292,7 +3307,10 @@ package body Gtkada.MDI is
                    Allocation_Int (Child.Uniconified_Width),
                    Allocation_Int (Child.Uniconified_Height));
          Size_Allocate (Child, Alloc);
-         Set_Sensitive (Child.Maximize_Button, True);
+
+         if Child.Maximize_Button /= null then
+            Set_Sensitive (Child.Maximize_Button, True);
+         end if;
       end if;
    end Minimize_Child;
 
@@ -4090,7 +4108,11 @@ package body Gtkada.MDI is
 
                      when Iconified =>
                         Child.State := Iconified;
-                        Set_Sensitive (Child.Maximize_Button, False);
+
+                        if Child.Maximize_Button /= null then
+                           Set_Sensitive (Child.Maximize_Button, False);
+                        end if;
+
                         Size_Allocate
                           (Child, (Child.X, Child.Y,
                                    Allocation_Int (Icons_Width),
