@@ -43,7 +43,6 @@ with Common; use Common;
 
 package body Create_Menu is
 
-
    Window : aliased Gtk_Window;
 
    function Create_Menu (Depth : Integer) return Gtk_Menu is

@@ -29,7 +29,6 @@
 with Glib; use Glib;
 with Gdk.Bitmap; use Gdk.Bitmap;
 with Gdk.Pixmap; use Gdk.Pixmap;
-with Gdk.Window; use Gdk.Window;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;

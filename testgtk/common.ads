@@ -27,6 +27,8 @@
 -----------------------------------------------------------------------
 
 with Gtk; use Gtk;
+with Gtk.Adjustment;   use Gtk.Adjustment;
+with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Signal;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Widget; use Gtk.Widget;
@@ -40,4 +42,6 @@ Package Common is
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
    package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Label_Cb is new Signal.Object_Callback (Gtk_Label);
+   package Adj_Cb is new Signal.Void_Callback (Gtk_Adjustment);
+   package Check_Cb is new Signal.Void_Callback (Gtk_Check_Button);
 end Common;
