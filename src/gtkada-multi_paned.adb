@@ -1286,6 +1286,7 @@ package body Gtkada.Multi_Paned is
       is
          Tmp    : Child_Description_Access;
          Changed : Boolean;
+         Percent : Float;
       begin
          if Current /= null
            and then not Current.Is_Widget
@@ -1335,23 +1336,24 @@ package body Gtkada.Multi_Paned is
                Tmp := Tmp.Next;
             end loop;
 
+            if Current.Handles'Length = 0 then
+               Percent := 1.0;
+            else
+               Percent :=
+                 1.0 - Current.Handles (Current.Handles'Last).Percent;
+            end if;
+
             case Current.Orientation is
                when Orientation_Horizontal =>
                   Propagate_Sizes
                     (Tmp,
-                     Allocation_Int
-                       (Float (Width)
-                        * (1.0
-                           - Current.Handles (Current.Handles'Last).Percent)),
+                     Allocation_Int (Float (Width) * Percent),
                      Height);
                when Orientation_Vertical =>
                   Propagate_Sizes
                     (Tmp,
                      Width,
-                     Allocation_Int
-                       (Float (Height)
-                        * (1.0
-                           - Current.Handles (Current.Handles'Last).Percent)));
+                     Allocation_Int (Float (Height) * Percent));
             end case;
 
          elsif Current /= null then
