@@ -2791,10 +2791,16 @@ package body Gtkada.MDI is
    begin
       if Note /= null and then Child.State = Normal then
          Gtk_New (Event);
-         Set_Flags (Event, No_Window);
 
-         --  From gtk+ 2.4.0 on, we could use instead
-         --  Set_Visible_Window (Event, False);
+         --  This fails with gtk+ 2.2.0,
+         --         Set_Flags (Event, No_Window);
+         --  Instead, for 2.4.0, we use the following proper call,
+         --  even though the corresponding function doesn't exist in
+         --  2.2. This means that 2.2 will have a bug that sometimes
+         --  the background color of tabs, when no title bars are
+         --  displayed, will not be correct, with a grey rectangle
+         --  where the label is.
+         Set_Visible_Window (Event, False);
 
          Gtk_New (Child.Tab_Label, Child.Short_Title.all);
 
