@@ -335,9 +335,9 @@ package body Gtkada.MDI is
    --  Update the state of the "Float" menu item associated with child.
 
    procedure Put_In_Notebook
-     (MDI : access MDI_Window_Record'Class;
-      Side : Dock_Side;
-      Child : access MDI_Child_Record'Class;
+     (MDI      : access MDI_Window_Record'Class;
+      Side     : Dock_Side;
+      Child    : access MDI_Child_Record'Class;
       Notebook : Gtk_Notebook := null);
    --  Remove Child from MDI, and put it under control of a dock box, on the
    --  specific Side.
@@ -361,18 +361,18 @@ package body Gtkada.MDI is
    --  Container. You must call this when Container has a specific expose
    --  callback.
 
-   procedure Cascade_Cb    (MDI   : access Gtk_Widget_Record'Class);
-   procedure Tile_H_Cb     (MDI   : access Gtk_Widget_Record'Class);
-   procedure Tile_V_Cb     (MDI   : access Gtk_Widget_Record'Class);
-   procedure Split_H_Cb     (MDI   : access Gtk_Widget_Record'Class);
-   procedure Split_V_Cb     (MDI   : access Gtk_Widget_Record'Class);
-   procedure Dock_Cb       (MDI   : access Gtk_Widget_Record'Class);
-   procedure Float_Cb      (MDI   : access Gtk_Widget_Record'Class);
-   procedure Close_Cb      (MDI   : access Gtk_Widget_Record'Class);
-   procedure Focus_Cb      (Child : access Gtk_Widget_Record'Class);
-   procedure Maximize_Child_Cb  (Child : access Gtk_Widget_Record'Class);
-   procedure Maximize_Cb   (MDI   : access Gtk_Widget_Record'Class);
-   procedure Unmaximize_Cb (MDI   : access Gtk_Widget_Record'Class);
+   procedure Cascade_Cb        (MDI   : access Gtk_Widget_Record'Class);
+   procedure Tile_H_Cb         (MDI   : access Gtk_Widget_Record'Class);
+   procedure Tile_V_Cb         (MDI   : access Gtk_Widget_Record'Class);
+   procedure Split_H_Cb        (MDI   : access Gtk_Widget_Record'Class);
+   procedure Split_V_Cb        (MDI   : access Gtk_Widget_Record'Class);
+   procedure Dock_Cb           (MDI   : access Gtk_Widget_Record'Class);
+   procedure Float_Cb          (MDI   : access Gtk_Widget_Record'Class);
+   procedure Close_Cb          (MDI   : access Gtk_Widget_Record'Class);
+   procedure Focus_Cb          (Child : access Gtk_Widget_Record'Class);
+   procedure Maximize_Child_Cb (Child : access Gtk_Widget_Record'Class);
+   procedure Maximize_Cb       (MDI   : access Gtk_Widget_Record'Class);
+   procedure Unmaximize_Cb     (MDI   : access Gtk_Widget_Record'Class);
    --  Callbacks for the menu
 
    procedure Set_Focus_Child_MDI
@@ -1589,7 +1589,7 @@ package body Gtkada.MDI is
 
    function Button_Pressed
      (Child : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean is
+      Event : Gdk_Event) return Boolean is
    begin
       --  It sometimes happens that widgets let events pass through (for
       --  instance scrollbars do that), and thus wouldn't be useable anymore
@@ -1730,7 +1730,7 @@ package body Gtkada.MDI is
 
    function Button_Release
      (Child : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean
+      Event : Gdk_Event) return Boolean
    is
       C     : constant MDI_Child := MDI_Child (Child);
       C2    : MDI_Child;
@@ -1741,9 +1741,9 @@ package body Gtkada.MDI is
       --  Approximative width of the three title bar buttons
 
       Minimal : constant := 10;
-      Side   : Dock_Side;
+      Side    : Dock_Side;
       Current : Gtk_Widget;
-      Note   : Gtk_Notebook;
+      Note    : Gtk_Notebook;
    begin
       if Get_Window (Child) /= Get_Window (Event) then
          return False;
@@ -2365,7 +2365,6 @@ package body Gtkada.MDI is
         (Child, "leave_notify_event",
          Return_Callback.To_Marshaller (Leave_Child'Access));
 
-
       Gtk_New_Vbox (Child.Main_Box, Homogeneous => False, Spacing => 0);
       Add (Child, Child.Main_Box);
 
@@ -2506,9 +2505,9 @@ package body Gtkada.MDI is
    ---------
 
    function Put
-     (MDI   : access MDI_Window_Record;
-      Child : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags : Child_Flags := All_Buttons;
+     (MDI          : access MDI_Window_Record;
+      Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Flags        : Child_Flags := All_Buttons;
       Focus_Widget : Gtk.Widget.Gtk_Widget := null;
       Default_Width, Default_Height : Gint := -1) return MDI_Child
    is
@@ -2609,11 +2608,11 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Update_Menu_Item (Child : access MDI_Child_Record'Class) is
-      Label : Gtk_Accel_Label;
+      Label  : Gtk_Accel_Label;
       Pixmap : Gtk_Pixmap;
-      Pix : Gdk_Pixmap;
-      Mask : Gdk_Bitmap;
-      Box  : Gtk_Box;
+      Pix    : Gdk_Pixmap;
+      Mask   : Gdk_Bitmap;
+      Box    : Gtk_Box;
    begin
       if Child.Menu_Item /= null then
          if Get_Child (Child.Menu_Item) /= null then
@@ -2748,9 +2747,9 @@ package body Gtkada.MDI is
    ---------------------------
 
    function Find_MDI_Child_By_Tag
-     (MDI    : access MDI_Window_Record;
-      Tag    : Ada.Tags.Tag)
-     return MDI_Child
+     (MDI : access MDI_Window_Record;
+      Tag : Ada.Tags.Tag)
+      return MDI_Child
    is
       Child : MDI_Child;
       Iter  : Child_Iterator := First_Child (MDI);
@@ -2791,7 +2790,7 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Lower_Child (Child : access MDI_Child_Record'Class) is
-      Num : Gint;
+      Num  : Gint;
       Note : Gtk_Notebook;
    begin
       Ref (Child);
@@ -2833,8 +2832,8 @@ package body Gtkada.MDI is
    procedure Raise_Child
      (Child : access MDI_Child_Record'Class; Give_Focus : Boolean := True)
    is
-      Old_Focus : constant MDI_Child := Child.MDI.Focus_Child;
-      Note : Gtk_Notebook;
+      Old_Focus     : constant MDI_Child := Child.MDI.Focus_Child;
+      Note          : Gtk_Notebook;
       Current_Focus : MDI_Child;
    begin
       --  For an docked item, we in fact want to raise its parent dock,
@@ -2915,7 +2914,7 @@ package body Gtkada.MDI is
    procedure Set_Focus_Child (Child : access MDI_Child_Record'Class) is
       Old : constant MDI_Child := Child.MDI.Focus_Child;
       C   : constant MDI_Child := MDI_Child (Child);
-      Tmp  : Boolean;
+      Tmp : Boolean;
       pragma Unreferenced (Tmp);
 
    begin
@@ -3215,12 +3214,12 @@ package body Gtkada.MDI is
       Float : Boolean)
    is
       use Object_List;
-      Diag  : Gtk_Dialog;
-      Win   : Gtk_Window;
-      Alloc : Gtk_Allocation;
-      Cont  : Gtk_Container;
+      Diag        : Gtk_Dialog;
+      Win         : Gtk_Window;
+      Alloc       : Gtk_Allocation;
+      Cont        : Gtk_Container;
       Requisition : Gtk_Requisition;
-      Groups : Object_List.GSlist;
+      Groups      : Object_List.GSlist;
    begin
       if Child.State /= Floating and then Float then
          --  Ref is removed when the child is unfloated.
@@ -3377,12 +3376,12 @@ package body Gtkada.MDI is
    ----------------------
 
    procedure Update_Tab_Label (Child : access MDI_Child_Record'Class) is
-      Event : Gtk_Event_Box;
-      Box   : Gtk_Box;
-      Pix   : Gdk_Pixmap;
-      Mask  : Gdk_Bitmap;
+      Event  : Gtk_Event_Box;
+      Box    : Gtk_Box;
+      Pix    : Gdk_Pixmap;
+      Mask   : Gdk_Bitmap;
       Pixmap : Gtk_Pixmap;
-      Note  : constant Gtk_Notebook := Get_Notebook (Child);
+      Note   : constant Gtk_Notebook := Get_Notebook (Child);
    begin
       if Note /= null
         and then (Child.State = Docked
@@ -3426,9 +3425,9 @@ package body Gtkada.MDI is
    ---------------------
 
    procedure Put_In_Notebook
-     (MDI : access MDI_Window_Record'Class;
-      Side : Dock_Side;
-      Child : access MDI_Child_Record'Class;
+     (MDI      : access MDI_Window_Record'Class;
+      Side     : Dock_Side;
+      Child    : access MDI_Child_Record'Class;
       Notebook : Gtk_Notebook := null)
    is
       Note : Gtk_Notebook;
@@ -3614,9 +3613,9 @@ package body Gtkada.MDI is
    is
       use type Widget_List.Glist;
 
-      MDI         : constant MDI_Window := Child.MDI;
-      List        : Widget_List.Glist;
-      C2          : MDI_Child;
+      MDI          : constant MDI_Window := Child.MDI;
+      List         : Widget_List.Glist;
+      C2           : MDI_Child;
       Icons_Height : constant Gint :=
         MDI.Title_Bar_Height + 2 * Border_Thickness;
 
@@ -4650,7 +4649,7 @@ package body Gtkada.MDI is
    ---------------------
 
    procedure Set_Focus_Child
-     (MDI : access MDI_Window_Record;
+     (MDI        : access MDI_Window_Record;
       Containing : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       pragma Unreferenced (MDI);
