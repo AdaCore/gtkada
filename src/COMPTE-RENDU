@@ -18,8 +18,8 @@ Date : 30/06/1998
 * Joel : Faire les GtkButtons
 - Joel : Jeter un oeil au mapping de gdk
 
-- Manu : Liberation de la memoire pour les callback.
-- Manu : Faire les GtkBox
+* Manu : Liberation de la memoire pour les callback.
+* Manu : Faire les GtkBox
 * Manu : Se renseigner pour l'utilisation des Inline pour les fonctions du binging
  
 
@@ -76,7 +76,7 @@ Date : 08/07/1998
 
 * Joel : Update du Makefile avec le gtk-config
 * Joel : Faire les marge pour remettre a jour tous les fichiers. Manu fera juste un ftp ensuite :-)
-- Manu : Utiliser les memes noms de parametres que dans gtk
+* Manu : Utiliser les memes noms de parametres que dans gtk
 * Tous : Regrouper les gktenums dans Gtk.ads
 * Manu : Gtk_Color_Selection_Dialog herite de Gtk_Window.
 * Joel : Creer un type abstract Gtk_Root pour le cas des objects qui n'heritent pas de Gtk_Object.
@@ -101,7 +101,7 @@ Date : 13/07/1998
          Demander a quelqu'un comment passer un type enumere au C.
 - tous : coder les widgets de l'autre dans testgtk.
 - Joel : passer le type Object en abstract.
-- Manu : changer generate.pl de sorte que les types qui n'ont pas de new
+* Manu : changer generate.pl de sorte que les types qui n'ont pas de new
          soient declares en abstract.
 - Manu : Je recopie tel-quels tes idees :
 <<Une premiere idee (non teste) serait de modifier gtk_new. A chaque fois
