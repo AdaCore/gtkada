@@ -48,9 +48,13 @@ package Gtk.Tree_Item is
                          Label     : in String := "");
    procedure Gtk_Select (Tree_Item : access Gtk_Tree_Item_Record);
    procedure Remove_Subtree (Tree_Item : access Gtk_Tree_Item_Record);
+
    procedure Set_Subtree
      (Tree_Item : access Gtk_Tree_Item_Record;
       Subtree   : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Note: Tree_Item must already have a parent, i.e have been inserted into
+   --  a tree before you can set a subtree for it
+
 
    --  GtkAda0.6 : From_Tree and To_Tree have been removed. Please use
    --  Gdk.Unchecked_Cast insted
