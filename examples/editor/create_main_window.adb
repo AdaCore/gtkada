@@ -159,11 +159,11 @@ begin
    Toolbar.Set_Space_Size (Gtk_Toolbar (Toolbar1), 5);
    Toolbar.Set_Tooltips (Gtk_Toolbar (Toolbar1), True);
    Button1 := Toolbar.Append_Item (toolbar1, "New", "", "",
-     Create_Pixmap ("new.xpm"));
+     Create_Pixmap ("new.xpm", Main_Window));
    Button2 := Toolbar.Append_Item (toolbar1, "Open", "", "",
-     Create_Pixmap ("open.xpm"));
+     Create_Pixmap ("open.xpm", Main_Window));
    Button3 := Toolbar.Append_Item (toolbar1, "Save", "", "",
-     Create_Pixmap ("save.xpm"));
+     Create_Pixmap ("save.xpm", Main_Window));
 
    Cb_Id := Button_Callback.Connect
      (Button1, "clicked", On_New_Button_Clicked'Access);
