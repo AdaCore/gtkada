@@ -123,4 +123,27 @@ package body Gdk.Pixmap is
                                     Width, Height, Depth));
    end Gtk_New;
 
+   ----------------
+   -- Ref_Pixmap --
+   ----------------
+
+   procedure Ref_Pixmap (Pixmap : in out Gdk_Pixmap) is
+      function Internal (Pixmap : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_pixmap_ref");
+      S : System.Address;
+   begin
+      S := Internal (Get_Object (Pixmap));
+   end Ref_Pixmap;
+
+   ------------------
+   -- Unref_Pixmap --
+   ------------------
+
+   procedure Unref_Pixmap (Pixmap : in out Gdk_Pixmap) is
+      procedure Internal (Pixmap : in System.Address);
+      pragma Import (C, Internal, "gdk_pixmap_unref");
+   begin
+      Internal (Get_Object (Pixmap));
+   end Unref_Pixmap;
+
 end Gdk.Pixmap;

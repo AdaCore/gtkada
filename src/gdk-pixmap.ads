@@ -34,13 +34,21 @@ with Interfaces.C.Strings;
 
 package Gdk.Pixmap is
 
-   type Gdk_Pixmap is new Root_Type with private;
+   type Gdk_Pixmap is new Gdk.Window.Gdk_Window with private;
 
    procedure Gtk_New (Pixmap :    out Gdk_Pixmap;
                       Window : in     Gdk.Window.Gdk_Window;
                       Width  : in     Gint;
                       Height : in     Gint;
                       Depth  : in     Gint);
+   --  Automatically reference the pixmap once
+
+   procedure Unref_Pixmap (Pixmap : in out Gdk_Pixmap);
+   --  This is the usual way to destroy a pixmap. The memory is freed when
+   --  there is no more reference
+
+   procedure Ref_Pixmap (Pixmap : in out Gdk_Pixmap);
+   --  Adds a reference to a pixmap
 
    procedure Create_From_Data (Pixmap :    out Gdk_Pixmap;
                                Window : in     Gdk.Window.Gdk_Window'Class;
@@ -67,7 +75,7 @@ package Gdk.Pixmap is
 
 private
 
-   type Gdk_Pixmap is new Root_Type with null record;
+   type Gdk_Pixmap is new Gdk.Window.Gdk_Window with null record;
 
 
 end Gdk.Pixmap;
