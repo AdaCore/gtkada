@@ -48,6 +48,7 @@ with Gtk.Label;
 with Gtk.Layout;
 with Gtk.List;
 with Gtk.List_Item;
+with Gtk.Macro;
 with Gtk.Main;
 with Gtk.Marshallers;
 with Gtk.Menu;
