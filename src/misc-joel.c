@@ -671,3 +671,16 @@ ada_gtk_adjustment_get_value (GtkAdjustment * adjustment)
 {
   return adjustment->value;
 }
+
+
+/*
+ *
+ * GtkStyle
+ *
+ */
+
+GdkGC *
+ada_gtk_style_get_black_gc (GtkStyle * style)
+{
+  return style->black_gc;
+}
