@@ -13,3 +13,6 @@ gtkada-2.2-win32.diff: a patch to run GtkAda 2.2.x properly under Windows
 
 glade-2.0.0.diff: a patch to enable Ada support in Glade 2.0.0
 
+gtk-wimp.diff: a patch against gtk-wimp, fixing handling of radio buttons
+and handles.
+
