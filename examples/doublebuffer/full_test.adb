@@ -32,9 +32,8 @@ package body Full_Test is
    package Void_Cb is new Gtk.Handlers.User_Callback
      (Widget_Type => Gtk_Toggle_Button_Record,
       User_Type   => Gtk_Double_Buffer);
-   package Button_Cb is new Gtk.Handlers.User_Callback
-     (Widget_Type => Gtk_Button_Record,
-      User_Type   => Gtk_Double_Buffer);
+   package Button_Cb is new Gtk.Handlers.Callback
+     (Widget_Type => Gtk_Double_Buffer_Record);
    package Quit_Cb is new Gtk.Handlers.Callback
      (Widget_Type => Gtk_Window_Record);
 
@@ -103,10 +102,7 @@ package body Full_Test is
    -- Draw --
    ----------
 
-   procedure Draw (Button : access Gtk_Button_Record'Class;
-                   Buffer : Gtk_Double_Buffer)
-   is
-      pragma Warnings (Off, Button);
+   procedure Draw (Buffer : access Gtk_Double_Buffer_Record'Class) is
       X : Gint := Gint (Gint_Random.Random (Gen));
       Y : Gint := Gint (Gint_Random.Random (Gen));
    begin
@@ -117,14 +113,23 @@ package body Full_Test is
                       X, Y, 50, 30);
    end Draw;
 
+   -----------
+   -- Reset --
+   -----------
+
+   procedure Reset (Buffer : access Gtk_Double_Buffer_Record'Class) is
+   begin
+      Draw_Rectangle (Get_Pixmap (Buffer),
+                      White_Gc, True, 0, 0,
+                      Gint (Get_Allocation_Width (Buffer)),
+                      Gint (Get_Allocation_Height (Buffer)));
+   end Reset;
+
    ----------------
    -- Force_Draw --
    ----------------
 
-   procedure Force_Draw (Button : access Gtk_Button_Record'Class;
-                         Buffer : Gtk_Double_Buffer)
-   is
-      pragma Warnings (Off, Button);
+   procedure Force_Draw (Buffer : access Gtk_Double_Buffer_Record'Class) is
    begin
       Double_Buffer.Draw (Buffer);
    end Force_Draw;
@@ -231,22 +236,28 @@ package body Full_Test is
       Pack_Start (Hbox, Box, Expand => False, Fill => False);
 
       Gtk_New (Buffer);
-      Set_Back_Store (Buffer, False);
+      Set_Back_Store (Buffer, True);
       Set_Triple_Buffer (Buffer, False);
       Set_Usize (Buffer, Pixmap_Width, Pixmap_Height);
       Pack_Start (Hbox, Buffer, Expand => True);
 
       Gtk_New (Button, "Rectangle");
       Pack_Start (Box, Button, Expand => False);
-      Button_Cb.Connect (Button, "clicked",
-                         Button_Cb.To_Marshaller (Draw'Access),
-                         Buffer);
+      Button_Cb.Object_Connect (Button, "clicked",
+                                Button_Cb.To_Marshaller (Draw'Access),
+                                Buffer);
 
       Gtk_New (Button, "Gtk.Widget.Draw");
       Pack_Start (Box, Button, Expand => False);
-      Button_Cb.Connect (Button, "clicked",
-                         Button_Cb.To_Marshaller (Force_Draw'Access),
-                         Buffer);
+      Button_Cb.Object_Connect (Button, "clicked",
+                                Button_Cb.To_Marshaller (Force_Draw'Access),
+                                Buffer);
+
+      Gtk_New (Button, "Reset");
+      Pack_Start (Box, Button, Expand => False);
+      Button_Cb.Object_Connect (Button, "clicked",
+                                Button_Cb.To_Marshaller (Reset'Access),
+                                Buffer);
 
       Gtk_New (Toggle, "Freeze");
       Pack_End (Box, Toggle, Expand => False);
@@ -255,6 +266,7 @@ package body Full_Test is
                        Buffer);
 
       Gtk_New (Toggle, "Back Store");
+      Set_Active (Toggle, True);
       Pack_End (Box, Toggle, Expand => False);
       Void_Cb.Connect (Toggle, "clicked",
                        Void_Cb.To_Marshaller (Toggle_Back_Store'Access),
@@ -302,9 +314,7 @@ package body Full_Test is
       Gdk.Color.Alloc (Get_Colormap (Buffer), Colors (5));
 
       Gdk.Gc.Gdk_New (Black_Gc, Get_Window (Buffer));
-      Draw_Rectangle (Get_Pixmap (Buffer),
-                      White_Gc, True, 0, 0, Pixmap_Width, Pixmap_Height);
-
+      Reset (Buffer);
    end Init;
 
 end Full_Test;
