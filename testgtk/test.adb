@@ -25,6 +25,7 @@ with Create_Entry;
 with Create_File_Selection;
 with Create_Gamma_Curve;
 with Create_Handle_Box;
+with Create_Toolbar;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
 
@@ -112,7 +113,7 @@ package body Test is
       (US ("test timeout"), null),
       (US ("text"), null),
       (US ("toggle buttons"), null),
-      (US ("toolbar"), null),
+      (US ("toolbar"), Create_Toolbar.Run'Access),
       (US ("tooltips"), null),
       (US ("tree"), null),
       (US ("WM hints"), null)

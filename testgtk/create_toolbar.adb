@@ -1,20 +1,23 @@
 
 with Gdk.Bitmap; use Gdk.Bitmap;
 with Gdk.Color; use Gdk.Color;
+with Gtk.Container; use Gtk.Container;
 with Gdk.Pixmap; use Gdk.Pixmap;
 with Gdk.Window; use Gdk.Window;
 with Glib; use Glib;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.GEntry; use Gtk.GEntry;
 with Gtk.Pixmap; use Gtk.Pixmap;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Style; use Gtk.Style;
 with Gtk.Widget; use Gtk.Widget;
+with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 
 package body Create_Toolbar is
 
    package Toolbar_Cb is new Signal.Object_Callback (Gtk_Toolbar);
-
+   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
 
    function New_Pixmap (Filename   : in String;
                         Window     : in Gdk_Window'Class;
@@ -75,11 +78,13 @@ package body Create_Toolbar is
       Set_Tooltips (Toolbar, False);
    end Set_Disable;
 
-   procedure Make_Toolbar (Toolbar  : out Gtk_Toolbar;
-                           Toplevel : in out Gtk_Window)
+   procedure Make_Toolbar (Toolbar    : out Gtk_Toolbar;
+                           Toplevel   : in out Gtk_Window;
+                           With_Entry : in Boolean := False)
    is
-      Id      : Guint;
-      Pixmap : Gtk_Pixmap;
+      Id        : Guint;
+      Pixmap    : Gtk_Pixmap;
+      The_Entry : Gtk_Entry;
    begin
       if not Realized_Is_Set (Toplevel) then
          Realize (Toplevel);
@@ -123,6 +128,15 @@ package body Create_Toolbar is
                                   Get_Bg (Get_Style (Toplevel), State_Normal))),
          "clicked", Set_Both'Access, Toolbar);
       Append_Space (Toolbar);
+
+      if With_Entry then
+         Gtk_New (The_Entry);
+         Show (The_Entry);
+         Append_Widget (Toolbar, The_Entry, "This is an unusable Gtk_Entry",
+                        "Hey dont't click me!!!");
+         Append_Space (Toolbar);
+      end if;
+
       Id := Toolbar_Cb.Connect
         (Append_Item (Toolbar, "Small", "Use small spaces", "",
                       New_Pixmap ("test.xpm",
@@ -150,6 +164,30 @@ package body Create_Toolbar is
          "clicked", Set_Disable'Access, Toolbar);
 
    end Make_Toolbar;
+
+
+   Window : Gtk_Window;
+
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+      Id      : Guint;
+      Toolbar : Gtk_Toolbar;
+   begin
+      if not Is_Created (Window) then
+         Gtk_New (Window, Window_Toplevel);
+         Set_Title (Window, "Toolbar test");
+         Set_Policy (Window, False, True, False);
+         Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
+         Border_Width (Window, 0);
+      end if;
+      if Visible_Is_Set (Window) then
+         Gtk.Widget.Destroy (Window);
+      else
+         Make_Toolbar (Toolbar, Window, True);
+         Add (Window, Toolbar);
+         Show (Toolbar);
+         Show (Window);
+      end if;
+   end Run;
 
 end Create_Toolbar;
 
