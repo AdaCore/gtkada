@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,33 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This package implements a client-side pixmap. As opposed to the pixmaps
+--  found in Gdk.Pixmap, this one simply implements a local buffer, which
+--  can be manipulated at the pixel level easily. This buffer then needs to
+--  be sent to the server.
+--  The major efficiency difference is that the same amount of data needs
+--  to be sent to the server no matter how much things were modified.
+--  Gdk.Pixmaps requires one communication with the server per drawing
+--  function.
+--  Some X servers are also optimized so that the buffers in this package
+--  can be implemented in shared memory with the server, which of course
+--  makes it much faster to transfer the data.
+--  This package is basically an implementation of XImage (on X-Window),
+--  which means that it handles transparently different depths, byte
+--  ordering,... It also provides some color dithering functions.
+--
+--  See the commands Get_Visual and Get_Cmap below on how to use the
+--  colormaps and visual with this package
+--
+--  Dithering simulates a higher number of colors than what is available on
+--  the current visual (only for 8-bit and 16-bit displays).
+--
+--  </description>
+
+--  <c_version>1.3.4</c_version>
+
 with Glib;
 with Gdk.Color;
 with Gdk.Visual;
@@ -34,39 +61,6 @@ with Gdk.GC;
 with Gdk.Drawable;
 
 package Gdk.Rgb is
-
-   --  <description>
-   --
-   --  This package implements a client-side pixmap. As opposed to the pixmaps
-   --  found in Gdk.Pixmap, this one simply implements a local buffer, which
-   --  can be manipulated at the pixel level easily. This buffer then needs to
-   --  be sent to the server.
-   --  The major efficiency difference is that the same amount of data needs
-   --  to be sent to the server no matter how much things were modified.
-   --  Gdk.Pixmaps requires one communication with the server per drawing
-   --  function.
-   --  Some X servers are also optimized so that the buffers in this package
-   --  can be implemented in shared memory with the server, which of course
-   --  makes it much faster to transfer the data.
-   --  This package is basically an implementation of XImage (on X-Window),
-   --  which means that it handles transparently different depths, byte
-   --  ordering,... It also provides some color dithering functions.
-   --
-   --  Note that you need to initialize this package before using it by
-   --  calling the Init procedure below.
-   --
-   --  See the commands Get_Visual and Get_Cmap below on how to use the
-   --  colormaps and visual with this package
-   --
-   --  Dithering simulates a higher number of colors than what is available on
-   --  the current visual (only for 8-bit and 16-bit displays).
-   --
-   --  </description>
-
-   procedure Init;
-   --  This function must be called before using any of the functions below.
-   --  It initializes internal data, such as the visual and the colormap that
-   --  will be used.
 
    function Get_Visual return Gdk.Visual.Gdk_Visual;
    --  See Get_Cmap.
@@ -85,19 +79,13 @@ package Gdk.Rgb is
    --    - Gtk.Widget.Pop_Visual;
    --    - Gtk.Widget.Pop_Colormap;
 
-   type Rgb_Buffer is array (Natural) of Glib.Guchar;
-   --  See Rgb_Buffer_Access.
-
-   type Rgb_Buffer_Access is access all Rgb_Buffer;
+   type Rgb_Buffer is array (Natural range <>) of Glib.Guchar;
    --  This is the buffer that will contain the image. You can manipulate each
    --  byte in it independantly, although there is no high level routine
    --  to draw lines, circles, ...
    --  Once you are done drawing into this buffer, you can copy it to any
    --  drawable on the screen, *if* the widget was created with the correct
    --  visual and colormap (see above).
-   --
-   --  Note also that this is a flat array, and that you can not check its
-   --  ranges.
 
    type Gdk_Rgb_Dither is (Dither_None, Dither_Normal, Dither_Max);
    --  The three kinds of dithering that are implemented in this package:
@@ -105,10 +93,11 @@ package Gdk.Rgb is
    --  - Dither_Normal: Specifies dithering on 8 bit displays, but not 16-bit.
    --                   Usually the best choice.
    --  - Dither_Max: Specifies dithering on every kind of display
+   for Gdk_Rgb_Dither'Size use Glib.Gint'Size;
 
-   --------------------------
-   --  Color manipulation  --
-   --------------------------
+   ------------------------
+   -- Color manipulation --
+   ------------------------
 
    subtype Rgb_Item is Glib.Guint32;
    --  This represents the coding for a rbg value. The exact encoding depends
@@ -116,55 +105,55 @@ package Gdk.Rgb is
 
    function Xpixel_From_Rgb (Value : in Rgb_Item) return Glib.Gulong;
    --  Convert the Rgb representation to the usual one found in Gdk.Color.
+   --  pragma Deprecated (Xpixel_From_Rgb);
 
    procedure GC_Set_Foreground
-     (GC : in Gdk.GC.Gdk_GC; Value : in Rgb_Item);
+     (GC : Gdk.GC.Gdk_GC; Value : Rgb_Item);
    --  See GC_Set_Background.
+   --  pragma Deprecated (GC_Set_Foreground);
 
    procedure GC_Set_Background
-     (GC : in Gdk.GC.Gdk_GC; Value : in Rgb_Item);
+     (GC : Gdk.GC.Gdk_GC; Value : Rgb_Item);
    --  Modify the foreground and the background of a graphic context with a
    --  value. These are exactly the same functions has found in Gdk.Gc, but do
-   --  not used the same parameters.
+   --  not use the same parameters.
+   --  pragma Deprecated (GC_Set_Background);
 
-   -----------------------------
-   --  Colormap manipulation  --
-   -----------------------------
+   ---------------------------
+   -- Colormap manipulation --
+   ---------------------------
 
    type Gdk_Rgb_Cmap is new Gdk.C_Proxy;
-   --  This is the full colormap, ie a set of 256 Rbg items.
+   --  This is the full colormap, ie a set of 256 Rgb items.
    --  You can extract values using the functions Get or Set below.
 
    type Rgb_Cmap_Index is new Natural range 0 .. 255;
 
-   function Get (Cmap  : in Gdk_Rgb_Cmap;
-                 Index : in Rgb_Cmap_Index) return Rgb_Item;
+   function Get (Cmap : Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index) return Rgb_Item;
    --  Access an item in a colormap.
 
-   procedure Set (Cmap  : in Gdk_Rgb_Cmap;
-                  Index : in Rgb_Cmap_Index;
-                  Value : in Rgb_Item);
+   procedure Set
+     (Cmap : Gdk_Rgb_Cmap; Index : Rgb_Cmap_Index; Value : Rgb_Item);
    --  Set an item in Cmap.
 
-   procedure Gtk_New
-     (Cmap : out Gdk_Rgb_Cmap; Colors : in Glib.Guint32_Array);
+   procedure Gdk_New (Cmap : out Gdk_Rgb_Cmap; Colors : Glib.Guint32_Array);
    --  Create a colormap.
 
-   procedure Free (Cmap : in out Gdk_Rgb_Cmap);
+   procedure Free (Cmap : Gdk_Rgb_Cmap);
    --  Free a colormap.
 
-   ----------------------
-   --  Drawing Images  --
-   ----------------------
+   --------------------
+   -- Drawing Images --
+   --------------------
 
    procedure Draw_Rgb_Image
-     (Drawable      : in Gdk.Drawable.Gdk_Drawable;
-      GC            : in Gdk.GC.Gdk_GC;
-      X, Y          : in Glib.Gint;
-      Width, Height : in Glib.Gint;
-      Dith          : in Gdk_Rgb_Dither;
-      Rgb_Buf       : in Rgb_Buffer;
-      Rowstride     : in Glib.Gint);
+     (Drawable      : Gdk.Drawable.Gdk_Drawable;
+      GC            : Gdk.GC.Gdk_GC;
+      X, Y          : Glib.Gint;
+      Width, Height : Glib.Gint;
+      Dith          : Gdk_Rgb_Dither;
+      Rgb_Buf       : Rgb_Buffer;
+      Rowstride     : Glib.Gint);
    --  Render a Gdk buffer with 24 bit Data.
    --  Such a buffer is a one dimensional array of bytes, where every byte
    --  triplet makes up a pixel (byte 0 is red, byte 1 is green and byte 2 is
@@ -179,54 +168,75 @@ package Gdk.Rgb is
    --     buffer to.
 
    procedure Draw_Rgb_Image_Dithalign
-     (Drawable      : in Gdk.Drawable.Gdk_Drawable;
-      GC            : in Gdk.GC.Gdk_GC;
-      X, Y          : in Glib.Gint;
-      Width, Height : in Glib.Gint;
-      Dith          : in Gdk_Rgb_Dither;
-      Rgb_Buf       : in Rgb_Buffer;
-      Rowstride     : in Glib.Gint;
-      Xdith, Ydith  : in Glib.Gint);
+     (Drawable      : Gdk.Drawable.Gdk_Drawable;
+      GC            : Gdk.GC.Gdk_GC;
+      X, Y          : Glib.Gint;
+      Width, Height : Glib.Gint;
+      Dith          : Gdk_Rgb_Dither;
+      Rgb_Buf       : Rgb_Buffer;
+      Rowstride     : Glib.Gint;
+      Xdith, Ydith  : Glib.Gint);
    --  Same kind of function as above, but for different buffer types (???).
 
    procedure Draw_Rgb_32_Image
-     (Drawable      : in Gdk.Drawable.Gdk_Drawable;
-      GC            : in Gdk.GC.Gdk_GC;
-      X, Y          : in Glib.Gint;
-      Width, Height : in Glib.Gint;
-      Dith          : in Gdk_Rgb_Dither;
-      Rgb_Buf       : in Rgb_Buffer;
-      Rowstride     : in Glib.Gint);
+     (Drawable      : Gdk.Drawable.Gdk_Drawable;
+      GC            : Gdk.GC.Gdk_GC;
+      X, Y          : Glib.Gint;
+      Width, Height : Glib.Gint;
+      Dith          : Gdk_Rgb_Dither;
+      Rgb_Buf       : Rgb_Buffer;
+      Rowstride     : Glib.Gint);
+   --  Same kind of function as above, but for different buffer types (???).
+
+   procedure Draw_Rgb_32_Image_Dithalign
+     (Drawable      : Gdk.Drawable.Gdk_Drawable;
+      GC            : Gdk.GC.Gdk_GC;
+      X, Y          : Glib.Gint;
+      Width, Height : Glib.Gint;
+      Dith          : Gdk_Rgb_Dither;
+      Rgb_Buf       : Rgb_Buffer;
+      Rowstride     : Glib.Gint;
+      Xdith, Ydith  : Glib.Gint);
    --  Same kind of function as above, but for different buffer types (???).
 
    procedure Draw_Gray_Image
-     (Drawable      : in Gdk.Drawable.Gdk_Drawable;
-      GC            : in Gdk.GC.Gdk_GC;
-      X, Y          : in Glib.Gint;
-      Width, Height : in Glib.Gint;
-      Dith          : in Gdk_Rgb_Dither;
-      Rgb_Buf       : in Rgb_Buffer;
-      Rowstride     : in Glib.Gint);
+     (Drawable      : Gdk.Drawable.Gdk_Drawable;
+      GC            : Gdk.GC.Gdk_GC;
+      X, Y          : Glib.Gint;
+      Width, Height : Glib.Gint;
+      Dith          : Gdk_Rgb_Dither;
+      Rgb_Buf       : Rgb_Buffer;
+      Rowstride     : Glib.Gint);
    --  Same kind of function as above, but for different buffer types (???).
 
    procedure Draw_Indexed_Image
-     (Drawable      : in Gdk.Drawable.Gdk_Drawable;
-      GC            : in Gdk.GC.Gdk_GC;
-      X, Y          : in Glib.Gint;
-      Width, Height : in Glib.Gint;
-      Dith          : in Gdk_Rgb_Dither;
-      Rgb_Buf       : in Rgb_Buffer;
-      Rowstride     : in Glib.Gint;
-      Cmap          : in Gdk_Rgb_Cmap);
+     (Drawable      : Gdk.Drawable.Gdk_Drawable;
+      GC            : Gdk.GC.Gdk_GC;
+      X, Y          : Glib.Gint;
+      Width, Height : Glib.Gint;
+      Dith          : Gdk_Rgb_Dither;
+      Rgb_Buf       : Rgb_Buffer;
+      Rowstride     : Glib.Gint;
+      Cmap          : Gdk_Rgb_Cmap);
    --  Same kind of function as above, but for different buffer types (???).
 
 private
    pragma Inline (Get);
    pragma Inline (Set);
 
-   pragma Import (C, Init, "gdk_rgb_init");
    pragma Import (C, GC_Set_Background, "gdk_rgb_gc_set_background");
    pragma Import (C, GC_Set_Foreground, "gdk_rgb_gc_set_foreground");
-   pragma Import (C, Get_Cmap, "gdk_rgb_get_cmap");
+   pragma Import (C, Get_Cmap, "gdk_rgb_get_colormap");
    pragma Import (C, Get_Visual, "gdk_rgb_get_visual");
+   pragma Import (C, Xpixel_From_Rgb, "gdk_rgb_xpixel_from_rgb");
+   pragma Import (C, Get, "ada_rgb_cmap_get");
+   pragma Import (C, Set, "ada_rgb_cmap_set");
+   pragma Import (C, Free, "gdk_rgb_cmap_free");
+   pragma Import (C, Draw_Rgb_Image, "gdk_draw_rgb_image");
+   pragma Import (C, Draw_Rgb_Image_Dithalign, "gdk_draw_rgb_image_dithalign");
+   pragma Import (C, Draw_Rgb_32_Image, "gdk_draw_rgb_32_image");
+   pragma Import
+     (C, Draw_Rgb_32_Image_Dithalign, "gdk_draw_rgb_32_image_dithalign");
+   pragma Import (C, Draw_Gray_Image, "gdk_draw_gray_image");
+   pragma Import (C, Draw_Indexed_Image, "gdk_draw_indexed_image");
 end Gdk.Rgb;
