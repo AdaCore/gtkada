@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Glib;              use Glib;
-with Glib.Object;       use Glib.Object;
 with Gdk.Pixmap;        use Gdk.Pixmap;
 with Gdk.Color;         use Gdk.Color;
 with Gtk.Main;          use Gtk.Main;
@@ -81,6 +80,11 @@ package body Gtkada.Dialogs is
    end record;
    type Gtkada_Dialog is access all Gtkada_Dialog_Record'Class;
 
+   type Dialog_Button_Record is new Gtk_Button_Record with record
+      Button : Message_Dialog_Buttons := 0;
+   end record;
+   type Dialog_Button is access all Dialog_Button_Record'Class;
+
    function Delete_Cb (Win : access Gtk_Widget_Record'Class) return Boolean;
    procedure Clicked_Cb (Button : access Gtk_Widget_Record'Class);
 
@@ -100,29 +104,20 @@ package body Gtkada.Dialogs is
    ----------------
 
    procedure Clicked_Cb (Button : access Gtk_Widget_Record'Class) is
-      Label  : aliased Gtk_Label_Record;
       Result : Message_Dialog_Buttons;
-   begin
-      Set_Object
-        (Label'Unchecked_Access,
-         Get_Object (Get_Child (Gtk_Button (Button))));
+      Value  : constant Message_Dialog_Buttons :=
+        Dialog_Button (Button).Button;
 
-      if Get_Text (Label'Unchecked_Access) = -"Help" then
+   begin
+      if Value = Button_Help then
          Result := Message_Dialog
            (Gtkada_Dialog (Get_Toplevel (Button)).Help_Msg.all,
             Buttons => Button_OK, Title => -"Help");
          return;
       end if;
 
-      for J in Button_Range loop
-         if Trim (-Dialog_Button_String (J), Right) =
-           Get_Text (Label'Unchecked_Access)
-         then
-            Gtkada_Dialog (Get_Toplevel (Button)).Value := 2 ** Integer (J);
-            Main_Quit;
-            return;
-         end if;
-      end loop;
+      Gtkada_Dialog (Get_Toplevel (Button)).Value := Value;
+      Main_Quit;
    end Clicked_Cb;
 
    --------------------
@@ -142,7 +137,7 @@ package body Gtkada.Dialogs is
    is
       Dialog      : Gtkada_Dialog;
       Label       : Gtk_Label;
-      Button      : Gtk_Button;
+      Button      : Dialog_Button;
       Box         : Gtk_Box;
       Value       : Message_Dialog_Buttons;
       Pix         : Gtk_Pixmap;
@@ -224,10 +219,13 @@ package body Gtkada.Dialogs is
          if (Buttons and
              2 ** Integer (J)) /= 0
          then
+            Button := new Dialog_Button_Record;
+            Button.Button := 2 ** Integer (J);
+
             if Dialog_Button_Stock (J) = null then
-               Gtk_New (Button, Trim (-Dialog_Button_String (J), Right));
+               Initialize (Button, Trim (-Dialog_Button_String (J), Right));
             else
-               Gtk_New_From_Stock (Button, Dialog_Button_Stock (J).all);
+               Initialize_From_Stock (Button, Dialog_Button_Stock (J).all);
             end if;
 
             Set_USize (Button, 80, -1);
