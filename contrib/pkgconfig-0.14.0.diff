@@ -1,0 +1,27 @@
+2004-01-07  J. Brobecker  <brobecker@gnat.com>
+
+	* pkg.c (verify_package): Fix a compilation failure when
+	building on IRIX with the SGI compiler.
+
+(The SGI C compiler does not like the addition of a void* and the offset)
+
+diff -c -p ../pkgconfig-0.14.0.orig/pkg.c ./pkg.c
+*** ../pkgconfig-0.14.0.orig/pkg.c	Wed Jan  7 09:00:23 2004
+--- ./pkg.c	Wed Jan  7 08:53:02 2004
+*************** verify_package (Package *pkg)
+*** 813,819 ****
+  	  system_dir_iter = system_directories;
+  	  while (system_dir_iter != NULL)
+  	    {
+! 	      if (strcmp (system_dir_iter->data, iter->data + offset) == 0)
+  		{
+  		  debug_spew ("Package %s has %s in Cflags\n",
+  			      pkg->name, (gchar *)iter->data);
+--- 813,819 ----
+  	  system_dir_iter = system_directories;
+  	  while (system_dir_iter != NULL)
+  	    {
+! 	      if (strcmp (system_dir_iter->data, (char *) iter->data + offset) == 0)
+  		{
+  		  debug_spew ("Package %s has %s in Cflags\n",
+  			      pkg->name, (gchar *)iter->data);
