@@ -685,10 +685,10 @@ private
 
    type MDI_Child_Record is new Gtk.Event_Box.Gtk_Event_Box_Record with record
       Initial : Gtk.Widget.Gtk_Widget;
-      --  The widget we used to build this child.
+      --  The widget we use to build this child.
 
       Main_Box : Gtk.Box.Gtk_Box;
-      --  The main containes.
+      --  The main container.
 
       X, Y : Glib.Gint;
       --  Note: the coordinates of children are the coordinates inside
