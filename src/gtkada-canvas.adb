@@ -453,7 +453,9 @@ package body Gtkada.Canvas is
       Unref (C.Clear_GC);
       Unref (C.Black_GC);
       Unref (C.Anim_GC);
-      Unref (C.Annotation_Font);
+      if C.Annotation_Font /= null then
+         Unref (C.Annotation_Font);
+      end if;
       Destroy (C.Hadj);
       Destroy (C.Vadj);
       Gdk.Pixmap.Unref (C.Double_Buffer);
