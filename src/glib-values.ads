@@ -138,7 +138,7 @@ package Glib.Values is
 private
    type GValue_Data is array (1 .. 2) of Guint64;
    type GValue is record
-      g_type : GType := 0;
+      g_type : GType := GType_Invalid;
       data   : GValue_Data;
    end record;
    pragma Convention (C, GValue);
