@@ -972,7 +972,7 @@ below), ensuring that all the functions executed in the task that started
 the main loop do not need to protect themselves again.
 
 Beware that the GtkAda main loop (Gtk.Main.Main) can only be be run inside
-one specific tasks. In other words, you cannot call Gtk.Main.Main from
+one specific task. In other words, you cannot call Gtk.Main.Main from
 any task other than the one that started the outer level main loop.
 
 Note that Gdk.Threads assumes that you are using a tasking run time that maps
