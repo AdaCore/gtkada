@@ -70,6 +70,9 @@ package Gtk.Accel_Group is
 
    procedure Attach (Accel_Group : in Gtk_Accel_Group;
                      Object      : access Gtk.Object.Gtk_Object_Record'Class);
+   --  Object should be able to get key_press and key_release events (ie
+   --  this won't work in a Gtk_Box which has no window).
+   --  The recommended way is to attach the Accel_Group to the toplevel window.
 
    procedure Detach (Accel_Group : in Gtk_Accel_Group;
                      Object      : access Gtk.Object.Gtk_Object_Record'Class);

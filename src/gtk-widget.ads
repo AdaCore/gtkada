@@ -309,7 +309,11 @@ package Gtk.Widget is
 
    procedure Lock_Accelerators (Widget : access Gtk_Widget_Record);
    --  Lock the accelerators for the widget.
-   --  No new accelerator can be added to Widget.
+   --  No new accelerator can be added to Widget (the default behavior is
+   --  that the user can dynamically create new accelerators, for instance
+   --  by pressing a not-yet assigned key on any menu item.
+   --  If you call this function on the menu_item, this behavior will not
+   --  longer be activated.
 
    procedure Unlock_Accelerators (Widget : access Gtk_Widget_Record);
    --  Unlock the accelerators for the widget.
