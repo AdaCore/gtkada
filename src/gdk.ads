@@ -34,9 +34,6 @@ package Gdk is
    type Root_Type is abstract tagged private;
    type Root_Type_Access is access all Root_Type'Class;
 
-   --  GtkAda0.6: Is_Created has been deleted. You should simply check
-   --  whether the Widget is 'null', since we now use pointers everywhere
-
    generic
       type To is new Root_Type with private;
       type To_Access is access all To'Class;
