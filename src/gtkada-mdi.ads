@@ -39,6 +39,7 @@ with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Box;
 with Gtk.Button;
+with Gtk.Drawing_Area;
 with Gtk.Enums;
 with Gtk.Fixed;
 with Gtk.Event_Box;
@@ -741,6 +742,9 @@ private
       Title_Box : Gtk.Box.Gtk_Box;
       --  Box that contains the title. It will be resized whenever the title
       --  font changes.
+
+      Title_Area : Gtk.Drawing_Area.Gtk_Drawing_Area;
+      --  Area used to draw the title and icon.
 
       Tab_Label : Gtk.Label.Gtk_Label;
       --  label used when child is in a notebook, null if not in a notebook
