@@ -73,6 +73,7 @@ enum
   GTK_SHEET_AUTO_SCROLL     = 1 << 14
 }; 
 
+#define GTK_TYPE_SHEET          (gtk_sheet_get_type ())
 #define GTK_SHEET(obj)          GTK_CHECK_CAST (obj, gtk_sheet_get_type (), GtkSheet)
 #define GTK_SHEET_CLASS(klass)  GTK_CHECK_CLASS_CAST (klass, gtk_sheet_get_type (), GtkSheetClass)
 #define GTK_IS_SHEET(obj)       GTK_CHECK_TYPE (obj, gtk_sheet_get_type ())
