@@ -1,4 +1,10 @@
-Wed Oct 15 18:21:58 CEST 2003	Arnaud Charlet	<charlet@act-europe.fr>
+Thu Nov 27 2003  Arnaud Charlet  <charlet@act-europe.fr>
+
+	* gtk/gtktextview.c (incremental_validate_callback): Increase amount
+	of characters validated at each call, this gives a better behavior
+	when loading big files.
+
+Wed Oct 15 2003  Arnaud Charlet  <charlet@act-europe.fr>
 
 	* gtk/gtktextview.c (gtk_text_view_scroll_[h]pages): Undo
 	1.216.2.12 change, since this is creating a regression in the
@@ -34,3 +40,14 @@ Wed Oct 15 18:21:58 CEST 2003	Arnaud Charlet	<charlet@act-europe.fr>
    /* Validate the line that we're moving within.
     */
    gtk_text_buffer_get_iter_at_mark (get_buffer (text_view),
+--- gtk/gtktextview.c	2003/11/22 12:54:08	1.2
++++ gtk/gtktextview.c	2003/11/27 17:54:03
+@@ -3150,7 +3150,7 @@ incremental_validate_callback (gpointer 
+   
+   DV(g_print(G_STRLOC"\n"));
+   
+-  gtk_text_layout_validate (text_view->layout, 2000);
++  gtk_text_layout_validate (text_view->layout, 20000);
+ 
+   gtk_text_view_update_adjustments (text_view);
+   
