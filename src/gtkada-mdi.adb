@@ -2790,6 +2790,9 @@ package body Gtkada.MDI is
 
          if Child.Initial.all in Gtk_Window_Record'Class then
             Win := Gtk_Window (Child.Initial);
+         else
+            Gtk_New (Win, Window_Toplevel);
+            Set_Title (Win, Child.Title.all);
 
             --  Delete_Event should be forwarded to the child, not to the
             --  toplevel window
@@ -2797,9 +2800,6 @@ package body Gtkada.MDI is
             Return_Callback.Object_Connect
               (Win, "delete_event",
                Return_Callback.To_Marshaller (Delete_Child'Access), Child);
-         else
-            Gtk_New (Win, Window_Toplevel);
-            Set_Title (Win, Child.Title.all);
          end if;
 
          Reparent (Get_Parent (Child.Initial_Child), Win);
