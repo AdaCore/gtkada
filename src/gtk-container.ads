@@ -36,8 +36,8 @@ package Gtk.Container is
    procedure Add (Container : in out Gtk_Container;
                   Widget       : in Gtk.Widget.Gtk_Widget'Class);
 
-   procedure Border_Width (Container : in Gtk_Container;
-                           Border_Width : in Gint);
+   procedure Set_Border_Width (Container : in Gtk_Container;
+                               Border_Width : in Gint);
 
    procedure Remove (Container : in out Gtk_Container;
                      Widget : in Gtk.Widget.Gtk_Widget'Class);

@@ -55,19 +55,6 @@ package body Gtk.Container is
       Internal (Get_Object (Container));
    end Block_Resize;
 
-   ------------------
-   -- Border_Width --
-   ------------------
-
-   procedure Border_Width (Container : in Gtk_Container;
-                           Border_Width : in Gint) is
-      procedure Internal (Container  : System.Address;
-                          Border_Widget : Gint);
-      pragma Import (C, Internal, "gtk_container_border_width");
-   begin
-      Internal (Get_Object (Container), Border_Width);
-   end Border_Width;
-
    -----------------
    -- Need_Resize --
    -----------------
@@ -92,6 +79,19 @@ package body Gtk.Container is
    begin
       Internal (Get_Object (Container), Get_Object (Widget));
    end Remove;
+
+   ----------------------
+   -- Set_Border_Width --
+   ----------------------
+
+   procedure Set_Border_Width (Container : in Gtk_Container;
+                           Border_Width : in Gint) is
+      procedure Internal (Container  : System.Address;
+                          Border_Widget : Gint);
+      pragma Import (C, Internal, "gtk_container_set_border_width");
+   begin
+      Internal (Get_Object (Container), Border_Width);
+   end Set_Border_Width;
 
    ---------------------------
    -- Set_Focus_Hadjustment --
