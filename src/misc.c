@@ -2147,6 +2147,17 @@ ada_text_attributes_set_font (GtkTextAttributes* text_attr,
 }
 
 /******************************************
+ ** Functions for Text_Iter
+ ******************************************/
+
+void
+ada_text_iter_copy (const GtkTextIter *source,
+                    GtkTextIter *dest)
+{
+  *dest = *source;
+}
+
+/******************************************
  ** Functions for Text_Layout
  ******************************************/
 
