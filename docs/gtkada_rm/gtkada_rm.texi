@@ -1,14 +1,19 @@
 \input texinfo   @c -*-texinfo-*-
-@settitle GtkAda User's Guide
+@settitle GtkAda Reference Manual
 @setfilename func.info
 @syncodeindex fn cp
 
+@c --------------------------------------------
+@finalout
+@c --------------------------------------------
+
+
 @titlepage
-@title GtkAda User's Guide
+@title GtkAda Reference Manual
 @subtitle Version 1.2.5
 @subtitle Document revision level $Revision$
 @subtitle Date: $Date$
-@author E. Briot, J. Brobecker, A. Charlet, P. Durif
+@author E. Briot, J. Brobecker, A. Charlet
      
 @page
 @vskip 0pt plus 1filll
@@ -18,7 +23,7 @@ Copyright @copyright{} 1999 E.Briot, A.Charlet, J.Brobecker
 
 @ifinfo
 @node Top
-@top GtkAda user's guide
+@top GtkAda Reference Manual
 
 @menu
 * The detailed documentation for packages::
@@ -28,12 +33,6 @@ Copyright @copyright{} 1999 E.Briot, A.Charlet, J.Brobecker
  --- The Detailed Node Listing ---
 
 The detailed documentation for packages
-
-* Package Gtk.Object::
-* Package Gtk.Widget::
-* Package Gtk.Container::
-* Package Gtk.Bin::
-* Package Gtk.Button::
 @include generated_menu.texi
 
 @end detailmenu
@@ -46,31 +45,7 @@ The detailed documentation for packages
 This section describes all the packages included in GtkAda.
 All the widgets are described, as well as their associated subprograms
 
-@menu
-* Package Gtk.Object::
-* Package Gtk.Widget::
-* Package Gtk.Container::
-* Package Gtk.Bin::
-* Package Gtk.Button::
-* Package Gtk.Check_Button::
-* Package Gtk.Toggle_Button::
-@end menu
-
-
-@node Package Gtk.Object
-@section Package Gtk.Object
-
-@node Package Gtk.Widget
-@section Package Gtk.Widget
-
-@node Package Gtk.Container
-@section Package Gtk.Container
-
-@node Package Gtk.Bin
-@section Package Gtk.Bin
-
-@node Package Gtk.Button
-@section Package Gtk.Button
+@include generated_submenu.texi
 
 @include generated.texi
 

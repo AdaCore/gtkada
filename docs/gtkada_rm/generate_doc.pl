@@ -1,6 +1,5 @@
 #! /usr/bin/env perl
 
-
 ## This script generates the GtkAda documentation from the sources
 ## All the .ads in the src/ subdirectory are searched for relevant
 ## tags, and the documentation is automatically generated.
@@ -70,16 +69,11 @@ $gtk_src_dir = "../..";
 # Name of the source directory for gtk+ (base directory for now,
 # the exact subdirectory is found below).
 
-*OUT = \*STDOUT;
-# the output is sent to OUT, which by default is the standard output
+$output_file_name  = "generated.texi";
+$menu_file_name    = "generated_menu.texi";
+$submenu_file_name = "generated_submenu.texi";
 
-*MENU = \*STDERR;
-# the menu that should be added to the beginning of the documentation
-# is written to MENU.
-
-opendir (DIR, $src_dir);
-@source_files = grep (/\.ads/, readdir (DIR));
-closedir (DIR);
+@source_files = @ARGV;
 
 opendir (DIR, $gtk_src_dir);
 $gtk_src_dir .= "/" . (grep (/gtk\+-/, readdir (DIR)))[0];
@@ -103,12 +97,15 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 ## Contains the parent of each widget
 %parent = ();
 
+## The output file (stored here so that we can sort the output)
+## It is indexed on the package name
+%output = ();
 
 # Prepares the menu
 
 foreach $source_file (@source_files) {
 
-    open (FILE, $src_dir . "/" . $source_file);
+    open (FILE, $source_file);
     @content = &expand_include (<FILE>);
     close (FILE);
 
@@ -118,63 +115,85 @@ foreach $source_file (@source_files) {
 	# Get the package name
 	my ($package_name) = &get_package_name (@content);
 	my ($cfile) = &get_c_file ($package_name);
-	
-	print MENU "* Package $package_name\::\n";
-	print OUT "\@cindex $package_name\n",
-	          "\@node Package $package_name\n",
-	          "\@section Package $package_name\n\n",
-	          "\@noindent\n";
-	print OUT &clean_comment_marks (&get_tag_value
-					 ("description", @content),
-					0),
-	                                "\n";
-	print OUT "See also \@uref{$cfile.html} for more information.\n\n";
+
+	push (@{$output{$package_name}},
+	      "\@cindex $package_name\n",
+	      "\@node Package $package_name\n",
+	      "\@section Package $package_name\n",
+	      "\n\@noindent\n");
+
+	my ($description) = &clean_comment_marks
+	    (&get_tag_value ("description", @content), 0);
+	$description =~ s/^\s*//;
+	    
+	push (@{$output{$package_name}},
+	      "\n",
+	      "See also \@uref{http://www.gtk.org/docs/$cfile.html,$cfile.html} ",
+	      "for more information.\n");
 
 	if (&get_tag_value ("screenshot", @content)) {
-	    print OUT "\@iftex\n\@image{", &get_tag_value ("screenshot", @content),
-	    ",}\n\@end iftex\n\n";
+	    push (@{$output{$package_name}},
+		  "\@iftex\n\@image{", &get_tag_value ("screenshot", @content),
+		  ",}\n\@end iftex\n\n");
 	}
 
-	print OUT "\@menu\n* $package_name Widget Hierarchy::\n",
-	          "* $package_name Signals::\n",
-	          "* $package_name Subprograms::\n";
+	my (%signals) = &find_signals ($cfile . ".h");
+
+	## Prepare the submenu
+	
+	push (@{$output{$package_name}},
+	      "\@menu\n* $package_name Widget Hierarchy::\n");
+	push (@{$output{$package_name}},
+	      "* $package_name Signals::\n")             if (keys %signals);
+	push (@{$output{$package_name}},
+	      "* $package_name Subprograms::\n");
+	
 	if (&get_tag_value ("example", @content)) {
-	    print OUT "* $package_name Example::\n";
+	    push (@{$output{$package_name}},
+		  "* $package_name Example::\n");
 	}
-	print OUT "\@end menu\n\n";
+	push (@{$output{$package_name}}, "\@end menu\n\n");
 
 	## Widget hierarchy
 	
-	print OUT "\@node $package_name Widget Hierarchy\n",
-	          "\@subsection Widget Hierarchy\n",
-      	          "\@multitable \@columnfractions .4 .6\n",
-	          "\@item \@b{Gtk_Object}\@tab (\@ref{Package Gtk.Object})\n";
+	push (@{$output{$package_name}},
+	      "\@node $package_name Widget Hierarchy\n",
+	      "\@subsection Widget Hierarchy\n",
+	      "\@multitable \@columnfractions .4 .6\n",
+	      "\@item \@b{Gtk_Object}\@tab (\@ref{Package Gtk.Object})\n");
+	
 	my (@hierarchy) = &find_hierarchy (@content);
 	for ($level = 1; $level < @hierarchy; $level ++) {
-	    print OUT "\@item ",
-	              "\@ " x ($level * 3 - 1), "\\_",
-	              "\@b{", $hierarchy[$level], "}\@tab (\@ref{Package ",
-	              &package_from_type ($hierarchy[$level]), "})\n";
+	    push (@{$output{$package_name}},
+		  "\@item ",
+		  "\@ " x ($level * 3 - 1), "\\_",
+		  "\@b{", $hierarchy[$level], "}\@tab (\@ref{Package ",
+		  &package_from_type ($hierarchy[$level]), "})\n");
 	}
 	
-        print OUT "\@end multitable\n\n";
+	push (@{$output{$package_name}},
+	      "\@end multitable\n\n");
 
 	## List of signals
 
-	print OUT "\@node $package_name Signals\n",
-	          "\@subsection Signals\n\n",
-       	          "\@itemize \@bullet\n\n";
-	my (%signals) = &find_signals ($cfile . ".h");
-	foreach $signal (sort keys %signals) {
-	    print OUT "\@item $signal\n";
+	if (keys %signals) {
+	    push (@{$output{$package_name}},
+		  "\@node $package_name Signals\n",
+		  "\@subsection Signals\n\n",
+		  "\@itemize \@bullet\n\n");
+	    
+	    foreach $signal (sort keys %signals) {
+		push (@{$output{$package_name}},  "\@item $signal\n");
+	    }
+	    push (@{$output{$package_name}}, "\@end itemize\n\n");
 	}
-	print OUT "\@end itemize\n\n";
 
 	## List of subprograms (sorted)
 
-	print OUT "\@node $package_name Subprograms\n",
+	push (@{$output{$package_name}},
+	      "\@node $package_name Subprograms\n",
 	      "\@subsection Subprograms\n\n",
-	      "\@itemize \@bullet\n\n";
+	      "\@itemize \@bullet\n\n");
 
 	my (@subprogs) = &get_subprograms (@content);
 
@@ -184,56 +203,100 @@ foreach $source_file (@source_files) {
 
 	    next if ($name eq "Generate" || $name eq "Initialize");
 
-	    print OUT "\@need ", (@params + 1), "\n";
-	    print OUT "\@findex $name ($package_name)\n";
-	    print OUT "\@item \@b{";
-	    if ($return eq "") {
-		print OUT "procedure $name} ";
-	    } else {
-		print OUT "function $name} ";
-	    }
+	    push (@{$output{$package_name}},
+		  "\@need ", (@params + 1), "\n",
+		  "\@findex $name (\@i{in} $package_name)\n",
+		  "\@item \@b{",
+
+		  ($return eq "")? "procedure $name} "  : "function $name} ",
+
+		  );
 
 	    if (scalar (@params) > 0) {
-		print OUT "(\@*\n";
+		push (@{$output{$package_name}}, "(\@*\n");
 		my ($i);
 		for ($i=0; $i<@params; $i++) {
-		    print OUT "\@	 		\@var{",
-		              $params[$i][0], "} : ",
-		              $params[$i][1], " ",
-   		              $params[$i][2];
-		    if ($i == $#params) {
-			print OUT ");@*\n";
-		    } else {
-			print OUT ";\@*\n";
-		    }
+		    push (@{$output{$package_name}},
+			  "\@	 		\@var{",
+			  $params[$i][0], "} : ",
+			  $params[$i][1], " ",
+			  $params[$i][2],
+
+			  ($i == $#params) ? ");@*\n" : ";\@*\n");
 		}
 	    } else {
-		print OUT "\n";
+		push (@{$output{$package_name}}, "\n");
 	    }
 	    
 	    if ($comments ne "") {
-		print OUT "\@ifhtml\n<BR>\n\@end ifhtml\n";
+		push (@{$output{$package_name}},
+		      "\@ifhtml\n<BR>\n\@end ifhtml\n");
 	    }
-	    print OUT &clean_comment_marks ($comment, 1), "\n\n";
-	    print OUT "\@ifhtml\n<BR><BR>\n\@end ifhtml\n";
+	    push (@{$output{$package_name}},
+		  &clean_comment_marks ($comment, 1), "\n\n",
+		  "\@ifhtml\n<BR><BR>\n\@end ifhtml\n");
 	}
 
-	print OUT "\@end itemize\n\n";
+	push (@{$output{$package_name}},  "\@end itemize\n\n");
 
 
 	## Examples if any
 
 	if (&get_tag_value ("example", @content)) {
-	    print OUT "\@node $package_name Example\n",
-	              "\@subsection Example\n\n\@example\n",
-	              &highlight_keywords
-			  (&clean_comment_marks (&get_tag_value
-						 ("example", @content),
-						 0));
-	    print OUT "\n\@end example\n";
+	    push (@{$output{$package_name}},
+		  "\@node $package_name Example\n",
+		  "\@subsection Example\n\n\@example\n",
+		  &highlight_keywords
+		  (&clean_comment_marks (&get_tag_value
+					 ("example", @content),
+					 0)),
+		  "\n\@end example\n");
 	}
     }
 }
+
+## Creates empty nodes for the packages that are referenced but not
+## already created.
+
+$parent{"Gtk_Object"} = "";
+foreach $package_name (keys %parent) {
+    $package_name = &package_from_type ($package_name);
+    unless (defined $output{$package_name}) {
+
+	push (@{$output{$package_name}},
+	      "\@cindex $package_name\n",
+	      "\@node Package $package_name\n",
+	      "\@section Package $package_name\n\n");
+    }
+}
+
+
+## Outputs the files
+
+my (%packages) = ();
+
+foreach (keys %parent) {
+    $packages{&package_from_type ($_)} = "";
+}
+
+open (MENU, ">$menu_file_name");
+print MENU "* Package ", join ("::\n* Package ", sort keys %packages), "::\n";
+close MENU;
+
+open (SUBMENU, ">$submenu_file_name");
+print SUBMENU "\@menu\n",
+      "* Package ", join ("::\n* Package ", sort keys %packages),
+      "::\n\@end menu\n";
+close SUBMENU;
+
+open (OUT, ">$output_file_name");
+foreach $package_name (sort keys %output) {
+    print OUT join ("", @{$output{$package_name}}), "\n";
+}
+close OUT;
+
+
+
 
 # Returns the name of the widget defined in the package whose contents is
 # @1.
@@ -295,7 +358,7 @@ sub expand_include () {
 
 	    open (INCLUDE_FILE, "$src_dir/$file") ||
 		die "Could not open $src_dir/$file";
-	    push (@strings, "--  " . join ("--  ", <INCLUDE_FILE>) . "\n" . $rest);
+	    push (@strings, "\n--  " . join ("--  ", <INCLUDE_FILE>) . "\n" . $rest);
 	    close (INCLUDE_FILE);
 
 	} else {
