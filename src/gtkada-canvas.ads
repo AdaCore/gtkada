@@ -133,6 +133,13 @@ package Gtkada.Canvas is
                        );
    --  Indicate whether the links have an arrow or not.
 
+   type Link_Side is (Straight, Right, Left, Automatic);
+   --  The type of each link.
+   --  For Straight, the link is drawn as a straight line between the two
+   --  items. The other two cases indicates curve links, to a specific side.
+   --  When Automatic, this package will decide itself of the best type to
+   --  use.
+
    -----------------------
    -- Creating a canvas --
    -----------------------
@@ -154,6 +161,8 @@ package Gtkada.Canvas is
       Arrow_Length      : Glib.Gint := Default_Arrow_Length;
       Motion_Threshold  : Glib.Gint := Default_Motion_Threshold);
    --  Change the parameters for the canvas.
+   --  A Grid_Size of 0 means than no grid should be drawn in the background of
+   --  canvas. Note that in that case you can never activate Align_On_Grid.
 
    procedure Align_On_Grid (Canvas : access Interactive_Canvas_Record;
                             Align  : Boolean := True);
@@ -273,12 +282,24 @@ package Gtkada.Canvas is
    function Get_Descr (Link : access Canvas_Link_Record) return String;
    --  Return the description for the link, or "" if there is none
 
+   procedure Set_Src_Pos
+     (Link : access Canvas_Link_Record; X_Pos, Y_Pos : Glib.Gfloat := 0.5);
+   --  Set the position of the link's attachment in its source item.
+   --  X_Pos and Y_Pos should be given between 0 and 100 (from left to right
+   --  or top to bottom).
+
+   procedure Set_Dest_Pos
+     (Link : access Canvas_Link_Record; X_Pos, Y_Pos : Glib.Gfloat := 0.5);
+   --  Same as Set_Src_Pos for the destination item
+
    procedure Add_Link
      (Canvas : access Interactive_Canvas_Record;
-      Link   : access Canvas_Link_Record'Class);
+      Link   : access Canvas_Link_Record'Class;
+      Side   : Link_Side := Automatic);
    --  Add an oriented link in the canvas.
-   --  This package automatically chooses whether the link should be a straight
-   --  line or an arc, so as to avoid overloading links.
+   --  This package can automatically choose whether the link should be a
+   --  straight line or an arc, so as to avoid overloading links. This behavior
+   --  is activated if Automatic is given for Side.
    --  Note that no copy of Link is made, and that you should allocate some
    --  memory yourself.
 
@@ -287,7 +308,8 @@ package Gtkada.Canvas is
       Src    : access Canvas_Item_Record'Class;
       Dest   : access Canvas_Item_Record'Class;
       Arrow  : in Arrow_Type := End_Arrow;
-      Descr  : in String := "");
+      Descr  : in String := "";
+      Side   : Link_Side := Automatic);
    --  Simpler procedure to add a standard link.
    --  This takes care of memory allocation, as well as adding the link to
    --  the canvas.
@@ -412,15 +434,16 @@ private
 
    type String_Access is access String;
 
-   type Link_Side is (Straight, Right, Left);
-   --  The type of each link.
-   --  For Straight, the link is drawn as a straight line between the two
-   --  items. The other two cases indicates curve links, to a specific side.
-
    type Canvas_Link_Record is tagged record
       Src    : Canvas_Item;
       Dest   : Canvas_Item;
       Descr  : String_Access;
+
+      Src_X_Pos  : Glib.Gfloat := 0.5;
+      Src_Y_Pos  : Glib.Gfloat := 0.5;
+      Dest_X_Pos : Glib.Gfloat := 0.5;
+      Dest_Y_Pos : Glib.Gfloat := 0.5;
+      --  Position of the link's attachment in each of the src and dest items.
 
       Arrow  : Arrow_Type;
 
