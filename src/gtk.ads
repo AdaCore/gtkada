@@ -49,10 +49,13 @@ pragma Warnings (Off, Ada.Text_IO);
 package Gtk is
 
    type Root_Type is tagged private;
-   type Root_Type_Access is access all Root_Type'Class;
    --  The base type of the hierarchy in GtkAda. It basically gives access
    --  to an underlying C object. This is not a controlled type, for efficiency
    --  reasons, and because gtk+ takes care of memory management on its own.
+
+   --  <doc_ignore>
+   type Root_Type_Access is access all Root_Type'Class;
+   --  </doc_ignore>
 
    function Major_Version return Guint;
    --  Return the major version number for Gtk+.
@@ -70,8 +73,6 @@ package Gtk is
    --  If the version is 1.2.6, returns 6.
 
    type Gtk_Type is new Guint;
-   Gtk_Type_Invalid : constant Gtk_Type := 0;
-   Gtk_Type_None    : constant Gtk_Type := 1;
    --  This type describes an internal type in Gtk+.
    --  You shouldn't have to use it in your own applications, however it might
    --  be useful sometimes.
@@ -83,6 +84,9 @@ package Gtk is
    --  Get_Type provided in all the packages in GtkAda.
    --  You can get the specific value for an existing widget by using the
    --  function Gtk.Object.Get_Type.
+
+   Gtk_Type_Invalid : constant Gtk_Type := 0;
+   Gtk_Type_None    : constant Gtk_Type := 1;
 
    function Type_Name (Type_Num : in Gtk_Type) return String;
    --  Return the type name corresponding to a Gtk_Type.
@@ -106,6 +110,15 @@ package Gtk is
    --  This is not the same as testing whether an access type (for instance
    --  any of the widgets) is "null", since this relates to the underlying
    --  C object.
+
+   function Get_Object (Object : access Root_Type'Class) return System.Address;
+   --  Access the underlying C pointer.
+   --  This function needs to be public so that one can easily create new
+   --  widgets, not in the Gtk package hierarchy.
+
+   procedure Set_Object (Object : access Root_Type'Class;
+                         Value  : in     System.Address);
+   --  Modify the underlying C pointer.
 
 private
 
@@ -151,11 +164,6 @@ private
    --  See Gtk.Type_Conversion for its use.
    --  Stub is the expect type (it is used by the simple conversion
    --  function only).
-
-   function Get_Object (Object : access Root_Type'Class) return System.Address;
-   procedure Set_Object (Object : access Root_Type'Class;
-                         Value  : in     System.Address);
-   --  Access the C underlying pointer.
 
    --  </doc_ignore>
 
