@@ -26,9 +26,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Bin;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Widget;
+with Gtk.Bin;    use Gtk.Bin;
+with Gtk.Enums;  use Gtk.Enums;
+with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Window is
 

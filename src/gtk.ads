@@ -30,10 +30,6 @@ with Glib; use Glib;
 
 package Gtk is
 
-   --
-   --  This type is an internal type used as a basis for all types
-   --  of Gtk.
-
    function Major_Version return Guint;
    function Minor_Version return Guint;
    function Micro_Version return Guint;

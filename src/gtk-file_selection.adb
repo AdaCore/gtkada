@@ -224,8 +224,7 @@ package body Gtk.File_Selection is
    -- Hide_Fileop_Buttons --
    -------------------------
 
-   procedure Hide_Fileop_Buttons (Filesel : in out Gtk_File_Selection'Class)
-   is
+   procedure Hide_Fileop_Buttons (Filesel : in out Gtk_File_Selection) is
       procedure Internal (Filesel : in System.Address);
       pragma Import (C, Internal, "gtk_file_selection_hide_fileop_buttons");
    begin
@@ -253,7 +252,7 @@ package body Gtk.File_Selection is
    -- Show_Fileop_Buttons --
    -------------------------
 
-   procedure Show_Fileop_Buttons (Filesel : in out Gtk_File_Selection'Class)
+   procedure Show_Fileop_Buttons (Filesel : in out Gtk_File_Selection)
    is
       procedure Internal (Filesel : in System.Address);
       pragma Import (C, Internal, "gtk_file_selection_show_fileop_buttons");

@@ -27,7 +27,7 @@
 -----------------------------------------------------------------------
 
 with Gtk.Adjustment;
-with Gtk.Widget;
+with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Container is
 

@@ -27,7 +27,6 @@
 -----------------------------------------------------------------------
 
 
-with Gtk.Enums;
 with Gtk.Container;
 with Gtk.Widget;
 
@@ -36,7 +35,7 @@ package Gtk.Fixed is
    type Gtk_Fixed is new Gtk.Container.Gtk_Container with private;
 
    function Get_Children (Widget : in Gtk.Fixed.Gtk_Fixed'Class)
-                          return      Enums.Widget_List.Glist;
+                          return      Widget.Widget_List.Glist;
    procedure Gtk_New (Widget : out Gtk_Fixed);
    procedure Move
       (Fixed  : in Gtk_Fixed'Class;

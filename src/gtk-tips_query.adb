@@ -48,7 +48,7 @@ package body Gtk.Tips_Query is
    ----------------
 
    procedure Set_Caller
-      (Tips_Query : in Gtk_Tips_Query'Class;
+      (Tips_Query : in Gtk_Tips_Query;
        Caller     : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
@@ -65,7 +65,7 @@ package body Gtk.Tips_Query is
    ----------------
 
    procedure Set_Labels
-      (Tips_Query     : in Gtk_Tips_Query'Class;
+      (Tips_Query     : in Gtk_Tips_Query;
        Label_Inactive : in String;
        Label_No_Tip   : in String)
    is
@@ -84,7 +84,7 @@ package body Gtk.Tips_Query is
    -- Start_Query --
    -----------------
 
-   procedure Start_Query (Tips_Query : in out Gtk_Tips_Query'Class)
+   procedure Start_Query (Tips_Query : in out Gtk_Tips_Query)
    is
       procedure Internal (Tips_Query : in System.Address);
       pragma Import (C, Internal, "gtk_tips_query_start_query");
@@ -96,7 +96,7 @@ package body Gtk.Tips_Query is
    -- Stop_Query --
    ----------------
 
-   procedure Stop_Query (Tips_Query : in out Gtk_Tips_Query'Class)
+   procedure Stop_Query (Tips_Query : in out Gtk_Tips_Query)
    is
       procedure Internal (Tips_Query : in System.Address);
       pragma Import (C, Internal, "gtk_tips_query_stop_query");

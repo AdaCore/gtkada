@@ -657,12 +657,6 @@ ada_object_get_type (GtkObject* object)
   return GTK_OBJECT_TYPE (object);
 }
 
-gchar*
-ada_type_name (gint type)
-{
-  return gtk_type_name (type);
-}
-
 /***************************************************
  *  Functions for GtkArg
  ***************************************************/

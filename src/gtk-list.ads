@@ -28,8 +28,8 @@
 
 
 with Gtk.Container;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Widget;
+with Gtk.Enums;  use Gtk.Enums;
+with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.List is
 

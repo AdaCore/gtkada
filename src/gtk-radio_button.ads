@@ -27,7 +27,7 @@
 -----------------------------------------------------------------------
 
 with Gtk.Check_Button;
-with Gtk.Enums; use Gtk.Enums;
+with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Radio_Button is
 

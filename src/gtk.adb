@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -67,11 +67,11 @@ package body Gtk is
    -- Type_Name --
    ---------------
 
-   function Type_Name (Type_Num : in Gint) return      String
+   function Type_Name (Type_Num : in Gint) return String
    is
       function Internal (Type_Num : in Gint)
                          return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "ada_type_name");
+      pragma Import (C, Internal, "gtk_type_name");
    begin
       return Interfaces.C.Strings.Value (Internal (Type_Num));
    end Type_Name;

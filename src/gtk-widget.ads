@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -31,10 +31,14 @@
 --  of screen real estate). It provides a common base and interface
 --  which actual widgets must adhere to.
 
-with Gtk.Object;
-with Gdk.Types;
+with Gdk.Color;       use Gdk.Color;
 with Gdk.Rectangle;
-with Gdk.Color;
+with Gdk.Types;
+with Gdk.Visual;      use Gdk.Visual;
+with Gtk.Enums;
+with Gtk.Object;
+with Glib.Glist;
+with Glib.GSlist;
 with System;
 
 package Gtk.Widget is
@@ -56,260 +60,240 @@ package Gtk.Widget is
    Reserved_3       : constant := 2 ** 17;
    Rc_Style         : constant := 2 ** 18;
 
-   type Gtk_Widget is new Object.Gtk_Object with private;
+   type Gtk_Widget is new Object.Gtk_Object with null record;
    type Gtk_Widget_Access is access all Gtk_Widget'Class;
 
+   procedure Activate (Widget : in out Gtk_Widget);
 
-   procedure Activate (Widget : in out Gtk_Widget'Class);
-   --  mapping: Activate gtkwidget.h gtk_widget_activate
+   procedure Destroy (Widget : in out Gtk_Widget);
 
-   procedure Destroy (Widget : in out Gtk_Widget'Class);
-   --  mapping: Destroy gtkwidget.h gtk_widget_destroy
-
-   procedure Destroyed (Dummy  : in out Gtk_Widget'Class;
+   procedure Destroyed (Dummy  : in out Gtk_Widget;
                         Widget : in out Gtk_Widget_Access);
-   --  mapping: Destroyed gtkwidget.h gtk_widget_destroyed
-   --  Set Widget to NULL
-
-   --  GET_WINDOW : to get the window field of a widget, please
-   --  see package gtk-window.ads
+   --  Destroyed sets Widget to NULL
 
    procedure Draw
-     (Widget : in Gtk_Widget'Class;
+     (Widget : in Gtk_Widget;
       Area   : in Gdk.Rectangle.Gdk_Rectangle := Gdk.Rectangle.Full_Area);
 
-   --  mapping: Draw gtkwidget.h gtk_widget_draw
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_draw_children
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_draw_focus
-   --  FIXME --  Need Gdk_Rectangle
+   procedure Set_Name (Widget : in out Gtk_Widget; Name : in String);
 
-
-
-   procedure Set_Name (Widget : in out Gtk_Widget'Class;
-                       Name : in String);
-   --  mapping: Set_Name gtkwidget.h gtk_widget_set_name
-
-   procedure Set_Sensitive (Widget    : in out Gtk_Widget'Class;
+   procedure Set_Sensitive (Widget    : in out Gtk_Widget;
                             Sensitive : in Boolean := True);
-   --  mapping: Set_Sensitive gtkwidget.h gtk_widget_set_sensitive
 
-   procedure Set_UPosition (Widget : in Gtk_Widget'Class;
-                            X, Y   : in Gint);
-   --  mapping: Set_UPosition gtkwidget.h gtk_widget_set_uposition
+   procedure Set_UPosition (Widget : in out Gtk_Widget; X, Y : in Gint);
 
-   procedure Set_USize (Widget : in Gtk_Widget'Class;
-                        Width  : in Gint;
-                        Height : in Gint);
-   --  mapping: Set_USize gtkwidget.h gtk_widget_set_usize
+   procedure Set_USize (Widget : in out Gtk_Widget; Width, Height : in Gint);
 
+   procedure Show (Widget : in out Gtk_Widget);
 
-   procedure Show (Widget : in out Gtk_Widget'Class);
-   --  mapping: Show gtkwidget.h gtk_widget_show
+   procedure Show_All (Widget : in out Gtk_Widget);
 
-   procedure Show_All (Widget : in out Gtk_Widget'Class);
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_show_all
+   procedure Hide (Widget : in out Gtk_Widget);
 
+   procedure Map (Widget : in out Gtk_Widget);
 
-   procedure Hide (Widget : in out Gtk_Widget'Class);
-   --  mapping: Hide gtkwidget.h gtk_widget_hide
+   procedure Unmap (Widget : in out Gtk_Widget);
 
+   procedure Realize (Widget : in out Gtk_Widget);
 
-   procedure Map (Widget : in out Gtk_Widget'Class);
-   --  mapping: Map gtkwidget.h gtk_widget_map
+   procedure Unrealize (Widget : in out Gtk_Widget);
 
-   procedure Unmap (Widget : in out Gtk_Widget'Class);
-   --  mapping: Unmap gtkwidget.h gtk_widget_unmap
-
-   procedure Realize (Widget : in out Gtk_Widget'Class);
-   --  mapping: Realize gtkwidget.h gtk_widget_realize
-
-   procedure Unrealize (Widget : in out Gtk_Widget'Class);
-   --  mapping: Unrealize gtkwidget.h gtk_widget_unrealize
-
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_install_accelerator
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_remove_accelerator
-   --  FIXME  --  need Gtk_Accelerator
-
-
-   function Get_Allocation_Width (Widget : Gtk_Widget'Class)
-                                   return Guint;
-   --  mapping: Get_Allocation_Width gtkwidget.h GtkWidget->allocation.width
-   
-   function Get_Allocation_Height (Widget : Gtk_Widget'Class)
-                                   return Guint;
-   --  mapping: Get_Allocation_Height gtkwidget.h GtkWidget->allocation.height
-
-   function Get_Allocation_X (Widget : Gtk_Widget'Class)
-                                   return Gint;
-   --  mapping: Get_Allocation_X gtkwidget.h GtkWidget->allocation.x
-
-   function Get_Allocation_Y (Widget : Gtk_Widget'Class)
-                                   return Gint;
-   --  mapping: Get_Allocation_Y gtkwidget.h GtkWidget->allocation.y
-
-   procedure Reparent (Widget : in out Gtk_Widget'Class;
+   procedure Reparent (Widget : in out Gtk_Widget;
                        New_Parent : in Gtk_Widget'Class);
-   --  mapping: Reparent gtkwidget.h gtk_widget_reparent
 
-   function Get_Parent (Widget : in Gtk_Widget'Class)
-                        return Gtk_Widget'Class;
-   --  mapping: Get_Parent gtkwidget.h GtkWidget->parent
+   function Get_Parent (Widget : in Gtk_Widget) return Gtk_Widget'Class;
 
-   procedure Popup (Widget : in out Gtk_Widget'Class;
-                    X, Y : in Gint);
-   --  mapping: Popup gtkwidget.h gtk_widget_popup
+   procedure Popup (Widget : in out Gtk_Widget; X, Y : in Gint);
 
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_intersect
-   --  FIXME  --  need Gdk_Rectangle
+   procedure Grab_Default (Widget : in out Gtk_Widget);
 
-   procedure Grab_Default (Widget : in out Gtk_Widget'Class);
-   --  mapping: Grab_Default gtkwidget.h gtk_widget_grab_default
+   procedure Grab_Focus (Widget : in out Gtk_Widget);
 
-   procedure Grab_Focus (Widget : in out Gtk_Widget'Class);
-   --  mapping: Grab_Focus gtkwidget.h gtk_widget_grab_focus
+   procedure Set_Parent (Widget : in out Gtk_Widget;
+                         Parent : in Gtk_Widget'Class);
 
-   function Get_Colormap (Widget : in Gtk_Widget'Class)
-                          return Gdk.Color.Gdk_Colormap;
-   --  mapping: Get_Colormap gtkwidget.h gtk_widget_get_default_colormap
+   function Get_Toplevel (Widget : in Gtk_Widget) return Gtk_Widget'Class;
 
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_colormap
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_default_colormap
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_default_colormap
-   --  FIXME  --  need Gdk_Colormap
+   function Get_Events (Widget : in Gtk_Widget) return Gint;
 
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_visual
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_default_visual
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_default_visual
-   --  FIXME  --  need Gdk_Visual
-
-   --  GET_STYLE : to get the style field of a widget, please see
-   --  package gtk-style.ads
-
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_default_style
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_style
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_default_style
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_restore_default_style
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_ensure_style
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_reset_rc_styles
-
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_state
-   --  FIXME  --  need Gtk_State (enumerated type)
-
-   procedure Set_Parent (Widget : in out Gtk_Widget'Class;
-                         Parent : in     Gtk_Widget'Class);
-   --  mapping: Set_Parent gtkwidget.h gtk_widget_set_parent
-
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_ancestor
-
-   procedure Get_Toplevel (Widget : in Gtk_Widget'Class;
-                           Result : out Gtk_Widget'Class);
-   --  mapping: Get_Toplevel gtkwidget.h gtk_widget_get_toplevel
-
-
-   function Get_Events (Widget : in Gtk_Widget'Class) return Gint;
-   --  mapping: Get_Events gtkwidget.h gtk_widget_get_events
-
-   procedure Set_Events (Widget : in out Gtk_Widget'Class;
+   procedure Set_Events (Widget : in out Gtk_Widget;
                          Events : in     Gdk.Types.Gdk_Event_Mask);
-   --  mapping: Set_Events gtkwidget.h gtk_widget_set_events
 
+   procedure Set_State (Widget : in out Gtk_Widget;
+                        State : in Enums.Gtk_State_Type);
+
+
+   --  (See also gtk-style for functions dealing with styles)
+
+   --  The following functions deal with Visuals
+
+   function Get_Visual (Widget : Gtk_Widget) return Gdk_Visual;
+   function Get_Default_Visual (Widget : Gtk_Widget) return Gdk_Visual;
+   procedure Set_Default_Visual (Widget : Gtk_Widget; Visual : Gdk_Visual);
+
+   --  The following functions deal with Colormaps
+
+   function Get_Colormap (Widget : Gtk_Widget) return Gdk_Colormap;
+   function Get_Default_Colormap (Widget : Gtk_Widget) return Gdk_Colormap;
+   procedure Set_Default_Colormap (Widget : Gtk_Widget; Cmap : Gdk_Colormap);
+
+   --  The following four functions get the size and position of the widget
+
+   function Get_Allocation_Width (Widget : in Gtk_Widget) return Guint;
+   function Get_Allocation_Height (Widget : in Gtk_Widget) return Guint;
+   function Get_Allocation_X (Widget : in Gtk_Widget) return Gint;
+   function Get_Allocation_Y (Widget : in Gtk_Widget) return Gint;
 
    --------------------
    --  Widget flags  --
    --------------------
 
-   function Toplevel_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
-   function No_Window_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
-   function Realized_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
-   function Mapped_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
-   function Visible_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
-   function Drawable_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
-   function Sensitive_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
-   function Parent_Sensitive_Is_Set (Widget : in Gtk_Widget'Class)
-                                     return Boolean;
-   function Is_Sensitive_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
-   function Can_Focus_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
-   function Has_Focus_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
-   function Has_Default_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
-   function Has_Grab_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
-   function Basic_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
-   function Rc_Style_Is_Set (Widget : in Gtk_Widget'Class) return Boolean;
+   function Toplevel_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function No_Window_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Realized_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Mapped_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Visible_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Drawable_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Sensitive_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Parent_Sensitive_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Is_Sensitive_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Can_Focus_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Has_Focus_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Has_Default_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Has_Grab_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Basic_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Rc_Style_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
 
-   --  Drag'n drop stuff, will be implemented later.
+   -----------------------
+   --  Default callbacks
+   --  These methods are available for use with Gtk.Signal.C_Unsafe_Connect
+   -----------------------
+
+   function Get_Default_Motion_Notify_Event (Widget : in Gtk_Widget)
+                                             return System.Address;
+
+   ------------------------
+   --  Definitions for lists of widgets
+   ------------------------
+
+   function Convert (W : Gtk.Widget.Gtk_Widget'Class) return System.Address;
+   function Convert (W : System.Address) return Gtk.Widget.Gtk_Widget'Class;
+   package Widget_List is new Glib.Glist.Generic_List
+     (Gtk.Widget.Gtk_Widget'Class);
+   package Widget_SList is new Glib.GSlist.Generic_SList
+     (Gtk.Widget.Gtk_Widget'Class);
+
+private
+
+   --  mapping: Activate gtkwidget.h gtk_widget_activate
+   --  mapping: Destroy gtkwidget.h gtk_widget_destroy
+   --  mapping: Destroyed gtkwidget.h gtk_widget_destroyed
+   --  mapping: Draw gtkwidget.h gtk_widget_draw
+   --  mapping: Get_Allocation_Height gtkwidget.h GtkWidget->allocation.height
+   --  mapping: Get_Allocation_Height gtkwidget.h GtkWidget->allocation.height
+   --  mapping: Get_Allocation_Width gtkwidget.h GtkWidget->allocation.width
+   --  mapping: Get_Allocation_X gtkwidget.h GtkWidget->allocation.x
+   --  mapping: Get_Allocation_Y gtkwidget.h GtkWidget->allocation.y
+   --  mapping: Get_Colormap gtkwidget.h gtk_widget_get_colormap
+   --  mapping: Get_Default_Colormap gtkwidget.h
+   --  mapping:                      gtk_widget_get_default_colormap
+   --  mapping: Get_Default_Visual gtkwidget.h gtk_widget_get_default_visual
+   --  mapping: Get_Events gtkwidget.h gtk_widget_get_events
+   --  mapping: Get_Parent gtkwidget.h GtkWidget->parent
+   --  mapping: Get_Toplevel gtkwidget.h gtk_widget_get_toplevel
+   --  mapping: Get_Visual gtkwidget.h gtk_widget_get_visual
+   --  mapping: Grab_Default gtkwidget.h gtk_widget_grab_default
+   --  mapping: Grab_Focus gtkwidget.h gtk_widget_grab_focus
+   --  mapping: Hide gtkwidget.h gtk_widget_hide
+   --  mapping: Map gtkwidget.h gtk_widget_map
+   --  mapping: Popup gtkwidget.h gtk_widget_popup
+   --  mapping: Realize gtkwidget.h gtk_widget_realize
+   --  mapping: Reparent gtkwidget.h gtk_widget_reparent
+   --  mapping: Set_Default_Colormap gtkwidget.h
+   --  mapping:                      gtk_widget_set_default_colormap
+   --  mapping: Set_Default_Visual gtkwidget.h gtk_widget_set_default_visual
+   --  mapping: Set_Events gtkwidget.h gtk_widget_set_events
+   --  mapping: Set_Name gtkwidget.h gtk_widget_set_name
+   --  mapping: Set_Parent gtkwidget.h gtk_widget_set_parent
+   --  mapping: Set_Sensitive gtkwidget.h gtk_widget_set_sensitive
+   --  mapping: Set_State gtkwidget.h gtk_widget_set_state
+   --  mapping: Set_UPosition gtkwidget.h gtk_widget_set_uposition
+   --  mapping: Set_USize gtkwidget.h gtk_widget_set_usize
+   --  mapping: Show gtkwidget.h gtk_widget_show
+   --  mapping: Show_All gtkwidget.h gtk_widget_show_all
+   --  mapping: Unmap gtkwidget.h gtk_widget_unmap
+   --  mapping: Unrealize gtkwidget.h gtk_widget_unrealize
+
+   --  mapping: Basic gtkwidget.h GTK_BASIC
+   --  mapping: Can_Default gtkwidget.h GTK_CAN_DEFAULT
+   --  mapping: Can_Focus gtkwidget.h GTK_CAN_FOCUS
+   --  mapping: Has_Default gtkwidget.h GTK_HAS_DEFAULT
+   --  mapping: Has_Focus gtkwidget.h GTK_HAS_FOCUS
+   --  mapping: Has_Grab gtkwidget.h GTK_HAS_GRAB
+   --  mapping: Mapped gtkwidget.h GTK_MAPPED
+   --  mapping: No_Window gtkwidget.h GTK_NOWINDOW
+   --  mapping: Parent_Sensitive gtkwidget.h GTK_PARENT_SENSITIVE
+   --  mapping: Rc_Style gtkwidget.h GTK_RC_STYLE
+   --  mapping: Realized gtkwidget.h GTK_REALIZED
+   --  mapping: Reserved_3 gtkwidget.h GTK_RESERVED_3
+   --  mapping: Sensitive gtkwidget.h GTK_SENSITIVE
+   --  mapping: TopLevel gtkwidget.h GTK_TOPLEVEL
+   --  mapping: Visible gtkwidget.h GTK_VISIBLE
+
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_dnd_data_set
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_dnd_drag_add
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_dnd_drag_set
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_dnd_drop_set
-   --  FIXME  --  need Gdk_Event
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_draw_children
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_draw_focus
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_ensure_style
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_default_style
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_install_accelerator
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_intersect
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_remove_accelerator
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_reset_rc_styles
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_restore_default_style
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_default_style
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_style
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_show_now
 
-   -----------------------
-   -- Default callbacks --
-   -----------------------
-
-   function Get_Default_Motion_Notify_Event (Widget : in Gtk_Widget'Class)
-                                             return System.Address;
-
-   --  These methods are available only for use with
-   --  Gtk.Signal.C_Unsafe_Connect
-
-private
-
-   type Gtk_Widget is new Object.Gtk_Object with null record;
-
-   --  mapping: TopLevel gtkwidget.h GTK_TOPLEVEL
-   --  mapping: No_Window gtkwidget.h GTK_NOWINDOW
-   --  mapping: Realized gtkwidget.h GTK_REALIZED
-   --  mapping: Mapped gtkwidget.h GTK_MAPPED
-   --  mapping: Visible gtkwidget.h GTK_VISIBLE
-   --  mapping: Sensitive gtkwidget.h GTK_SENSITIVE
-   --  mapping: Parent_Sensitive gtkwidget.h GTK_PARENT_SENSITIVE
-   --  mapping: Can_Focus gtkwidget.h GTK_CAN_FOCUS
-   --  mapping: Has_Focus gtkwidget.h GTK_HAS_FOCUS
-   --  mapping: Can_Default gtkwidget.h GTK_CAN_DEFAULT
-   --  mapping: Has_Default gtkwidget.h GTK_HAS_DEFAULT
-   --  mapping: Has_Grab gtkwidget.h GTK_HAS_GRAB
-   --  mapping: Basic gtkwidget.h GTK_BASIC
-   --  mapping: Reserved_3 gtkwidget.h GTK_RESERVED_3
-   --  mapping: Rc_Style gtkwidget.h GTK_RC_STYLE
-
-   --  mapping: USE_OBJECT_ORIENTED gtkwidget.h gtk_widget_get_type
-   --  mapping: USE_OBJECT_ORIENTED gtkwidget.h gtk_widget_new
-
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_basic
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_draw_default
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_init
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_propagate_default_style
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_size_allocate
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_size_request
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_get
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_get_extension_events
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_get_name
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_get_pointer
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_getv
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_hide_all
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_hide_on_delete
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_is_ancestor
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_is_child
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_newv
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_pop_colormap
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_pop_style
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_pop_visual
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_push_colormap
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_push_style
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_push_visual
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_queue_draw
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_queue_resize
-   --  mapping: INTERNAL gtkwidget.h gtk_widget_ref
 
    --  Services not mapped because they are probably not needed.
-   --
+
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_basic
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_draw_default
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_ancestor
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_extension_events
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_name
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_pointer
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_type
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_getv
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_hide_all
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_hide_on_delete
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_init
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_is_ancestor
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_is_child
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_new
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_newv
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_pop_colormap
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_pop_style
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_pop_visual
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_propagate_default_style
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_push_colormap
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_push_style
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_push_visual
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_queue_draw
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_queue_resize
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_ref
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_extension_events
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_parent_window
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_rc_style
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_setv
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_shape_combine_mask
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_show_now
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_size_allocate
+   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_size_request
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_unparent
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_unref
 

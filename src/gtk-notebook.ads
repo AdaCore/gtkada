@@ -27,10 +27,10 @@
 -----------------------------------------------------------------------
 
 with Gdk; use Gdk;
-with Gtk.Box;
+with Gtk.Box;    use Gtk.Box;
 with Gtk.Container;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Widget;
+with Gtk.Enums;  use Gtk.Enums;
+with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Notebook is
 
@@ -38,71 +38,66 @@ package Gtk.Notebook is
    type Gtk_Notebook_Page is new Root_Type with private;
 
    procedure Append_Page
-      (Notebook  : in Gtk_Notebook'Class;
+      (Notebook  : in Gtk_Notebook;
        Child     : in Gtk.Widget.Gtk_Widget'Class;
        Tab_Label : in Gtk.Box.Gtk_Box'Class);
    procedure Append_Page_Menu
-      (Notebook   : in Gtk_Notebook'Class;
+      (Notebook   : in Gtk_Notebook;
        Child      : in Gtk.Widget.Gtk_Widget'Class;
        Tab_Label  : in Gtk.Box.Gtk_Box'Class;
        Menu_Label : in Gtk.Box.Gtk_Box'Class);
-   function Current_Page (Notebook : in Gtk_Notebook'Class)
-                          return        Gint;
-   function Get_Children (Widget : in Gtk_Notebook'Class)
-                          return      Widget_List.Glist;
+   function Current_Page (Notebook : in Gtk_Notebook) return Gint;
+   function Get_Children (Widget : in Gtk_Notebook) return Widget_List.Glist;
    function Get_Cur_Page (Widget : in Gtk_Notebook'Class)
-                          return      Gtk_Notebook_Page;
-   function Get_Menu_Label (Page : in Gtk_Notebook_Page)
-                            return Gtk.Box.Gtk_Box;
-   function Get_Tab_Label (Page : in Gtk_Notebook_Page)
-                           return Gtk.Box.Gtk_Box;
-   function Get_Tab_Pos (Widget : in Gtk_Notebook'Class)
-                         return      Gtk_Position_Type;
+                          return Gtk_Notebook_Page;
+   function Get_Menu_Label (Page : in Gtk_Notebook_Page) return Gtk_Box;
+   function Get_Tab_Label (Page : in Gtk_Notebook_Page) return Gtk_Box;
+   function Get_Tab_Pos (Widget : in Gtk_Notebook) return Gtk_Position_Type;
    procedure Gtk_New (Widget : out Gtk_Notebook);
    procedure Insert_Page
-      (Notebook  : in Gtk_Notebook'Class;
+      (Notebook  : in Gtk_Notebook;
        Child     : in Gtk.Widget.Gtk_Widget'Class;
        Tab_Label : in Gtk.Box.Gtk_Box'Class;
        Position  : in Gint);
    procedure Insert_Page_Menu
-      (Notebook   : in Gtk_Notebook'Class;
+      (Notebook   : in Gtk_Notebook;
        Child      : in Gtk.Widget.Gtk_Widget'Class;
        Tab_Label  : in Gtk.Box.Gtk_Box'Class;
        Menu_Label : in Gtk.Box.Gtk_Box'Class;
        Position   : in Gint);
-   procedure Next_Page (Notebook : in out Gtk_Notebook'Class);
-   procedure Popup_Disable (Notebook : in Gtk_Notebook'Class);
-   procedure Popup_Enable (Notebook : in Gtk_Notebook'Class);
+   procedure Next_Page (Notebook : in out Gtk_Notebook);
+   procedure Popup_Disable (Notebook : in Gtk_Notebook);
+   procedure Popup_Enable (Notebook : in Gtk_Notebook);
    procedure Prepend_Page
-      (Notebook  : in Gtk_Notebook'Class;
+      (Notebook  : in Gtk_Notebook;
        Child     : in Gtk.Widget.Gtk_Widget'Class;
        Tab_Label : in Gtk.Box.Gtk_Box'Class);
    procedure Prepend_Page_Menu
-      (Notebook   : in Gtk_Notebook'Class;
+      (Notebook   : in Gtk_Notebook;
        Child      : in Gtk.Widget.Gtk_Widget'Class;
        Tab_Label  : in Gtk.Box.Gtk_Box'Class;
        Menu_Label : in Gtk.Box.Gtk_Box'Class);
-   procedure Prev_Page (Notebook : in out Gtk_Notebook'Class);
+   procedure Prev_Page (Notebook : in out Gtk_Notebook);
    procedure Remove_Page
-      (Notebook : in Gtk_Notebook'Class;
+      (Notebook : in Gtk_Notebook;
        Page_Num : in Gint);
    procedure Set_Page
-      (Notebook : in Gtk_Notebook'Class;
+      (Notebook : in Gtk_Notebook;
        Page_Num : in Gint);
    procedure Set_Scrollable
-      (Notebook   : in Gtk_Notebook'Class;
+      (Notebook   : in Gtk_Notebook;
        Scrollable : in Boolean);
    procedure Set_Show_Border
-      (Notebook    : in Gtk_Notebook'Class;
+      (Notebook    : in Gtk_Notebook;
        Show_Border : in Boolean);
    procedure Set_Show_Tabs
-      (Notebook  : in Gtk_Notebook'Class;
+      (Notebook  : in Gtk_Notebook;
        Show_Tabs : in Boolean);
    procedure Set_Tab_Border
-      (Notebook     : in Gtk_Notebook'Class;
+      (Notebook     : in Gtk_Notebook;
        Border_Width : in Gint);
    procedure Set_Tab_Pos
-      (Notebook : in Gtk_Notebook'Class;
+      (Notebook : in Gtk_Notebook;
        Pos      : in Gtk_Position_Type);
 
 private

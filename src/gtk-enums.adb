@@ -29,7 +29,6 @@
 with Unchecked_Conversion;
 with Interfaces.C.Strings;
 with System;
-with Gdk; use Gdk;
 
 package body Gtk.Enums is
 
@@ -49,18 +48,6 @@ package body Gtk.Enums is
         (System.Address, Interfaces.C.Strings.chars_ptr);
    begin
       return Interfaces.C.Strings.Value (Internal (S));
-   end Convert;
-
-   function Convert (W : Gtk.Widget.Gtk_Widget'Class) return System.Address is
-   begin
-      return Get_Object (W);
-   end Convert;
-
-   function Convert (W : System.Address) return Gtk.Widget.Gtk_Widget'Class is
-      Widget : Gtk.Widget.Gtk_Widget;
-   begin
-      Set_Object (Widget, W);
-      return Widget;
    end Convert;
 
    function Convert (I : Gint) return System.Address is

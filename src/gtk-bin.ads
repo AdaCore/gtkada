@@ -26,7 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Container;
+with Gtk.Container; use Gtk.Container;
 
 package Gtk.Bin is
 

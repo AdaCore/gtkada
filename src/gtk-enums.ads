@@ -28,8 +28,6 @@
 
 with Glib;
 with Glib.Glist;
-with Glib.GSlist;
-with Gtk.Widget;
 with System;
 
 package Gtk.Enums is
@@ -167,14 +165,9 @@ package Gtk.Enums is
    function Convert (S : System.Address) return String;
    function Convert (I : Gint) return System.Address;
    function Convert (S : System.Address) return Gint;
-   function Convert (W : Gtk.Widget.Gtk_Widget'Class) return System.Address;
-   function Convert (W : System.Address) return Gtk.Widget.Gtk_Widget'Class;
 
    package String_List is new Glib.Glist.Generic_List (String);
-   package Widget_List is new Glib.Glist.Generic_List
-     (Gtk.Widget.Gtk_Widget'Class);
-   package Widget_SList is new Glib.GSlist.Generic_SList
-     (Gtk.Widget.Gtk_Widget'Class);
+
    package Gint_List is new Glib.Glist.Generic_List (Gint);
 
 

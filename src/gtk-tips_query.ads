@@ -36,14 +36,14 @@ package Gtk.Tips_Query is
 
    procedure Gtk_New (Widget : out Gtk_Tips_Query);
    procedure Set_Caller
-      (Tips_Query : in Gtk_Tips_Query'Class;
+      (Tips_Query : in Gtk_Tips_Query;
        Caller     : in Gtk.Widget.Gtk_Widget'Class);
    procedure Set_Labels
-      (Tips_Query     : in Gtk_Tips_Query'Class;
+      (Tips_Query     : in Gtk_Tips_Query;
        Label_Inactive : in String;
        Label_No_Tip   : in String);
-   procedure Start_Query (Tips_Query : in out Gtk_Tips_Query'Class);
-   procedure Stop_Query (Tips_Query : in out Gtk_Tips_Query'Class);
+   procedure Start_Query (Tips_Query : in out Gtk_Tips_Query);
+   procedure Stop_Query (Tips_Query : in out Gtk_Tips_Query);
 
 private
    type Gtk_Tips_Query is new Gtk.Label.Gtk_Label with null record;
