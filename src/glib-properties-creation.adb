@@ -217,7 +217,7 @@ package body Glib.Properties.Creation is
         (Name, Nick, Blurb : String;
          Default           : Boolean;
          Flags             : Param_Flags) return Param_Spec;
-      pragma Import (C, Internal, "g_param_spec_uchar");
+      pragma Import (C, Internal, "g_param_spec_boolean");
    begin
       return Internal
         (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
@@ -476,8 +476,8 @@ package body Glib.Properties.Creation is
    -- Default --
    -------------
 
-   function Default (Param : Param_Spec_Enum) return Glib.Glong is
-      function Internal (Param : Param_Spec_Enum) return Glong;
+   function Default (Param : Param_Spec_Enum) return Glib.Gint is
+      function Internal (Param : Param_Spec_Enum) return Gint;
       pragma Import (C, Internal, "ada_gparam_get_default_enum");
    begin
       return Internal (Param);

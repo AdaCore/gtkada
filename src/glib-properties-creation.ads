@@ -75,6 +75,9 @@ package Glib.Properties.Creation is
    --  application, like a GUI-Builder for instance, or creating new properties
    --  for a new widget.
 
+   procedure Unref (Param : Param_Spec);
+   --  Decrement the reference counter. If it reaches 0, the memory is freed.
+
    ------------------
    -- Enum classes --
    ------------------
@@ -156,6 +159,11 @@ package Glib.Properties.Creation is
 
    function Value_Type (Param : Param_Spec) return Glib.GType;
    --  Return the type of param
+
+   procedure Set_Value_Type (Param : Param_Spec; Typ : Glib.GType);
+   --  Override the type of param. You should only use this function when
+   --  creating new Param_Spec types based on existing types. You should not
+   --  change the type if you haven't created param yourself.
 
    --  Value_Type returns GType_Char
    type Param_Spec_Char is new Param_Spec;
@@ -246,7 +254,7 @@ package Glib.Properties.Creation is
    --  properties based on an Ada enumeration type.
    type Param_Spec_Enum is new Param_Spec;
    function Enumeration (Param : Param_Spec_Enum) return Enum_Class;
-   function Default (Param : Param_Spec_Enum) return Glib.Glong;
+   function Default (Param : Param_Spec_Enum) return Glib.Gint;
 
    --  Value_Type returns GType_Flags
    type Param_Spec_Flags is new Param_Spec;
@@ -413,10 +421,12 @@ package Glib.Properties.Creation is
 private
    pragma Import (C, Flags, "ada_gparam_get_flags");
    pragma Import (C, Value_Type, "ada_gparam_get_value_type");
+   pragma Import (C, Set_Value_Type, "ada_gparam_set_value_type");
    pragma Import (C, Get_Value, "g_enum_get_value");
    pragma Import (C, Flags_Enumeration, "ada_gparam_get_flags_flags");
    pragma Import (C, Enumeration, "ada_gparam_get_enum_class_enum");
    pragma Import (C, Install_Property, "g_object_class_install_property");
+   pragma Import (C, Unref, "g_param_spec_unref");
    pragma Inline (Description);
    pragma Inline (Name);
 
