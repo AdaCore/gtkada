@@ -14,6 +14,16 @@ package Gtk.Box is
       Num : in Gint)
       return   Gtk.Widget.Gtk_Widget;
 
+   procedure Gtk_New_Vbox (Widget      : out Gtk_Box;
+                           Homogeneous : in  Boolean;
+                           Spacing     : in  Gint);
+   --  mapping: Gtk_New_Vbox gtkvbox.h gtk_vbox_new
+
+   procedure Gtk_New_Hbox (Widget      : out Gtk_Box;
+                           Homogeneous : in  Boolean;
+                           Spacing     : in  Gint);
+   --  mapping: Gtk_New_Hbox gtkhbox.h gtk_hbox_new
+
    procedure Pack_Start
      (In_Box  : in Gtk_Box'Class;
       Child   : in Gtk.Widget.Gtk_Widget'Class;

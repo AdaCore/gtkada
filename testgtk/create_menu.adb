@@ -4,16 +4,14 @@ with Gtk.Button; use Gtk.Button;
 with Gtk.Check_Menu_Item; use Gtk.Check_Menu_Item;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Hseparator; use Gtk.HSeparator;
-with Gtk.Hseparator; use Gtk.Hseparator;
 with Gtk.Menu; use Gtk.Menu;
 with Gtk.Menu_Bar; use Gtk.Menu_Bar;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Option_Menu; use Gtk.Option_Menu;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
+with Gtk.Separator; use Gtk.Separator;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
@@ -54,13 +52,13 @@ package body Create_Menu is
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id   : Guint;
-      Box1 : Gtk_Vbox;
-      Box2 : Gtk_Vbox;
+      Box1 : Gtk_Box;
+      Box2 : Gtk_Box;
       Menu_Bar  : Gtk_Menu_Bar;
       Menu : Gtk_Menu;
       Menu_Item : Gtk_Menu_Item;
       Option_Menu : Gtk_Option_Menu;
-      Separator   : Gtk_Hseparator;
+      Separator   : Gtk_Separator;
       Button : Gtk_Button;
    begin
 
@@ -73,7 +71,7 @@ package body Create_Menu is
                                   Window);
          -- FIXME : the previous line should use Gtk_True
 
-         Gtk_New (Box1, False, 0);
+         Gtk_New_Vbox (Box1, False, 0);
          Add (Window, Box1);
          Show (Box1);
 
@@ -98,7 +96,7 @@ package body Create_Menu is
          Append (Menu_Bar, Menu_Item);
          Show (Menu_Item);
 
-         Gtk_New (Box2, False, 10);
+         Gtk_New_Vbox (Box2, False, 10);
          Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, True, True, 0);
          Show (Box2);
@@ -109,11 +107,11 @@ package body Create_Menu is
          Pack_Start (Box2, Option_Menu, True, True, 0);
          Show (Option_Menu);
 
-         Gtk_New (Separator);
+         Gtk_New_Hseparator (Separator);
          Pack_Start (Box1, Separator, True, True, 0);
          Show (Separator);
 
-         Gtk_New (Box2, False, 10);
+         Gtk_New_Vbox (Box2, False, 10);
          Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, False, True, 0);
          Show (Box2);

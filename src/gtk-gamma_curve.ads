@@ -1,9 +1,9 @@
-with Gtk.Vbox;
+with Gtk.Box;
 with Gtk.Curve;
 
 package Gtk.Gamma_Curve is
 
-   type Gtk_Gamma_Curve is new Gtk.Vbox.Gtk_Vbox with private;
+   type Gtk_Gamma_Curve is new Gtk.Box.Gtk_Box with private;
 
    procedure Gtk_New (Widget : out Gtk_Gamma_Curve);
 
@@ -15,7 +15,7 @@ package Gtk.Gamma_Curve is
 
 private
 
-   type Gtk_Gamma_Curve is new Gtk.Vbox.Gtk_Vbox with null record;
+   type Gtk_Gamma_Curve is new Gtk.Box.Gtk_Box with null record;
 
    --  mapping: Gtk_New gtkgamma.h gtk_gamma_curve_new
 

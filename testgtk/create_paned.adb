@@ -3,10 +3,8 @@ with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
-with Gtk.HPaned; use Gtk.HPaned;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Paned; use Gtk.Paned;
-with Gtk.VPaned; use Gtk.VPaned;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
@@ -18,8 +16,8 @@ package body Create_Paned is
    Window : Gtk.Window.Gtk_Window;
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
-      VPaned : Gtk_VPaned;
-      HPaned : Gtk_HPaned;
+      VPaned : Gtk_Paned;
+      HPaned : Gtk_Paned;
       Frame  : Gtk_Frame;
       Button : Gtk_Button;
       Id     : Guint;
@@ -31,12 +29,12 @@ package body Create_Paned is
          Set_Title (Window, "Panes");
          Border_Width (Window, Border_Width => 0);
 
-         Gtk_New (VPaned);
+         Gtk_New_Vpaned (VPaned);
          Add (Window, VPaned);
          Border_Width (VPaned, 5);
          Show (VPaned);
 
-         Gtk_New (HPaned);
+         Gtk_New_Hpaned (HPaned);
          Add1 (Vpaned, HPaned);
 
          Gtk_New (Frame);

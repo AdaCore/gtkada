@@ -1,6 +1,6 @@
 
 with Gtk.GEntry;
-with Gtk.Hbox;
+with Gtk.Box;
 with Gtk.Item;
 with Glib.Glist; use Glib.Glist;
 
@@ -9,7 +9,7 @@ package Gtk.Combo is
    --   type String_Access is access all String;
    package String_List is new Glib.Glist.Generic_List (String);
 
-   type Gtk_Combo is new Gtk.Hbox.Gtk_Hbox with private;
+   type Gtk_Combo is new Gtk.Box.Gtk_Box with private;
 
    procedure Disable_Activate (Combo_Box : in Gtk_Combo'Class);
    --  mapping: Disable_Activate gtkcombo.h gtk_combo_disable_activate
@@ -52,6 +52,6 @@ package Gtk.Combo is
 
 private
 
-   type Gtk_Combo is new Gtk.Hbox.Gtk_Hbox with null record;
+   type Gtk_Combo is new Gtk.Box.Gtk_Box with null record;
 
 end Gtk.Combo;

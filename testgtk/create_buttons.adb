@@ -3,11 +3,10 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Hseparator; use Gtk.Hseparator;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
+with Gtk.Separator; use Gtk.Separator;
 with Gtk.Table; use Gtk.Table;
-with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
@@ -32,8 +31,8 @@ package body Create_Buttons is
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id      : Guint;
       Box1,
-        Box2  : Gtk_Vbox;
-      Separator : Gtk_Hseparator;
+        Box2  : Gtk_Box;
+      Separator : Gtk_Separator;
       Table   : Gtk_Table;
       Button  : array (0 .. 8) of Gtk_Button;
       Left_A  : array (0 .. 8) of Gint := (0, 1, 2, 0, 2, 1, 1, 2, 0);
@@ -49,7 +48,7 @@ package body Create_Buttons is
          Set_Title (Window, "buttons");
          Border_Width (Window, Border_Width => 0);
 
-         Gtk_New (Box1, Homogeneous => False, Spacing => 0);
+         Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
          Add (Window, Box1);
          Show (Box1);
 
@@ -75,12 +74,12 @@ package body Create_Buttons is
             Show (Button (J));
          end loop;
 
-         Gtk_New (Separator);
+         Gtk_New_Hseparator (Separator);
          Pack_Start (Box1, Separator, Expand => False, Fill => True,
                      Padding => 0);
          Show (Separator);
 
-         Gtk_New (Box2, Homogeneous => False, Spacing => 0);
+         Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 0);
          Border_Width (Box2, Border_Width => 10);
          Pack_Start (Box1, Box2, Expand => False, Fill => True, Padding => 0);
          Show (Box2);

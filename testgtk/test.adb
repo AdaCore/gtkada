@@ -6,13 +6,12 @@ with Gtk.Box;
 with Gtk.Button;
 with Gtk.Container;
 with Gtk.Enums;
-with Gtk.HSeparator;
+with Gtk.Separator;
 with Gtk.Label;
 with Gtk.Main;
 with Gtk.Rc;
 with Gtk.Scrolled_Window;
 with Gtk.Signal;
-with Gtk.Vbox;
 with Gtk.Widget;
 with Gtk.Window;
 
@@ -138,12 +137,12 @@ package body Test is
    procedure Create_Main_Window is
       Main_Window : Window.Gtk_Window;
       Cb_Id : Guint;
-      Box1, Box2 : Vbox.Gtk_Vbox;
+      Box1, Box2 : Box.Gtk_Box;
       A_Label : Label.Gtk_Label;
       A_Scrolled_Window : Scrolled_Window.Gtk_Scrolled_Window;
       Temp : Adjustment.Gtk_Adjustment;
       A_Button : Button.Gtk_Button;
-      Separator : HSeparator.Gtk_HSeparator;
+      Separator : Gtk.Separator.Gtk_Separator;
    begin
       Window.Gtk_New (Window => Main_Window,
                       The_Type => Enums.Window_Toplevel);
@@ -157,7 +156,7 @@ package body Test is
                                         Name => "delete_event",
                                         Func => Exit_Main'Access);
 
-      Vbox.Gtk_New (Widget => Box1, Homogeneous => False, Spacing => 0);
+      Box.Gtk_New_Vbox (Widget => Box1, Homogeneous => False, Spacing => 0);
       Container.Add (Container => Main_Window, Widget => Box1);
       Widget.Show (Box1);
 
@@ -180,7 +179,7 @@ package body Test is
                       Expand => True, Fill => True);
       Widget.Show (A_Scrolled_Window);
 
-      Vbox.Gtk_New (Widget => Box2, Homogeneous => False, Spacing => 0);
+      Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 0);
       Container.Border_Width (Container => Box2, Border_Width => 10);
       Container.Add (Container => A_Scrolled_Window, Widget => Box2);
       Temp := Scrolled_Window.Get_Vadjustment (Scrolled_Window => A_Scrolled_Window);
@@ -203,11 +202,11 @@ package body Test is
 
       end loop;
 
-      HSeparator.Gtk_New (Separator);
+      Gtk.Separator.Gtk_New_Hseparator (Separator);
       Box.Pack_Start (In_Box => Box1, Child => Separator, Expand => False);
       Widget.Show (Separator);
 
-      Vbox.Gtk_New (Widget => Box2, Homogeneous => False, Spacing => 10);
+      Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
       Container.Border_Width (Container => Box2, Border_Width => 10);
       Box.Pack_Start (In_Box => Box1, Child => Box2,
                        Expand => False, Fill => True);

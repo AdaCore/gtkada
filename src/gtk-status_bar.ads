@@ -1,8 +1,8 @@
-with Gtk.Hbox;
+with Gtk.Box;
 
 package Gtk.Status_Bar is
 
-   type Gtk_Status_Bar is new Gtk.Hbox.Gtk_Hbox with private;
+   type Gtk_Status_Bar is new Gtk.Box.Gtk_Box with private;
    type Context_Id is new Guint;
    type Message_Id is new Guint;
 
@@ -37,6 +37,6 @@ package Gtk.Status_Bar is
 
 private
 
-   type Gtk_Status_Bar is new Gtk.Hbox.Gtk_Hbox with null record;
+   type Gtk_Status_Bar is new Gtk.Box.Gtk_Box with null record;
 
 end Gtk.Status_Bar;

@@ -1,9 +1,9 @@
 with Glib; use Glib;
 with Gtk; use Gtk;
+with Gtk.Box;
 with Gtk.Check_Button;
-with Gtk.HSeparator;
+with Gtk.Separator;
 with Gtk.Signal;
-with Gtk.Vbox;
 with Gtk.Widget;
 with Gtk.Window;use Gtk.Window;
 
@@ -20,10 +20,10 @@ package body Create_Check_Buttons is
    ----------------------------------------------------------------------
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
-      Box1, Box2 : Vbox.Gtk_Vbox;
+      Box1, Box2 : Box.Gtk_Box;
       A_Button : Button.Gtk_Button;
       A_Check_Button : Check_Button.Gtk_Check_Button;
-      A_Separator : HSeparator.Gtk_HSeparator;
+      A_Separator : Separator.Gtk_Separator;
       Cb_Id : Guint;
    begin
 
@@ -39,11 +39,11 @@ package body Create_Check_Buttons is
          Container.Border_Width (Container => New_Window,
                                  Border_Width => 0);
 
-         Vbox.Gtk_New (Widget => Box1, Homogeneous => False, Spacing => 0);
+         Box.Gtk_New_Vbox (Widget => Box1, Homogeneous => False, Spacing => 0);
          Container.Add (Container => New_Window, Widget => Box1);
          Gtk.Widget.Show (Box1);
 
-         Vbox.Gtk_New (Widget => Box2, Homogeneous => False, Spacing => 10);
+         Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
          Container.Border_Width (Container => Box2, Border_Width => 10);
          Box.Pack_Start (In_Box => Box1, Child => Box2);
          Gtk.Widget.Show (Box2);
@@ -63,12 +63,12 @@ package body Create_Check_Buttons is
          Box.Pack_Start (In_Box => Box2, Child => A_Check_Button);
          Gtk.Widget.Show (A_Check_Button);
 
-         HSeparator.Gtk_New (A_Separator);
+         Gtk.Separator.Gtk_New_Hseparator (A_Separator);
          Box.Pack_Start (In_Box => Box1, Child => A_Separator,
                          Expand => False);
          Gtk.Widget.Show (A_Separator);
 
-         Vbox.Gtk_New (Widget => Box2, Homogeneous => False, Spacing => 10);
+         Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
          Container.Border_Width (Container => Box2, Border_Width => 10);
          Box.Pack_Start (In_Box => Box1, Child => Box2, Expand => False);
          Gtk.Widget.Show (Box2);

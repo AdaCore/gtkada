@@ -1,4 +1,5 @@
 
+with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.GRange;
 
@@ -7,6 +8,12 @@ package Gtk.Scale is
    type Gtk_Scale is new Gtk.GRange.Gtk_Range with private;
 
    procedure Draw_Value (Scale : in Gtk_Scale'Class);
+   procedure Gtk_New_Hscale
+     (Widget     : out Gtk_Scale;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class);
+   procedure Gtk_New_Vscale
+     (Widget     : out Gtk_Scale;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class);
    procedure Set_Digits
       (Scale      : in Gtk_Scale'Class;
        The_Digits : in Gint);

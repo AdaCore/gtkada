@@ -4,12 +4,10 @@ with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
-with Gtk.Hbox; use Gtk.Hbox;
-with Gtk.Hseparator; use Gtk.Hseparator;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Object; use Gtk.Object;
+with Gtk.Separator; use Gtk.Separator;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
@@ -62,13 +60,13 @@ package body Create_Reparent is
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id        : Guint;
-      Box1      : Gtk_Vbox;
-      Box2      : Gtk_Hbox;
-      Box3      : Gtk_Vbox;
+      Box1      : Gtk_Box;
+      Box2      : Gtk_Box;
+      Box3      : Gtk_Box;
       Label     : Gtk_Label;
       Frame     : Gtk_Frame;
       Button    : Gtk_Button;
-      Separator : Gtk_HSeparator;
+      Separator : Gtk_Separator;
    begin
 
       if not Is_Created (Window) then
@@ -77,11 +75,11 @@ package body Create_Reparent is
          Set_Title (Window, "reparent");
          Border_Width (Window, Border_Width => 0);
 
-         Gtk_New (Box1, False, 0);
+         Gtk_New_Vbox (Box1, False, 0);
          Add (Window, Box1);
          Show (Box1);
 
-         Gtk_New (Box2, False, 5);
+         Gtk_New_Hbox (Box2, False, 5);
          Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, True, True, 0);
          Show (Box2);
@@ -91,7 +89,7 @@ package body Create_Reparent is
          Gtk_New (Frame, "Frame 1");
          Pack_Start (Box2, Frame, True, True, 0);
          Show (Frame);
-         Gtk_New (Box3, False, 5);
+         Gtk_New_Vbox (Box3, False, 5);
          Border_Width (Box3, 5);
          Add (Frame, Box3);
          Show (Box3);
@@ -109,7 +107,7 @@ package body Create_Reparent is
          Gtk_New (Frame, "Frame 2");
          Pack_Start (Box2, Frame, True, True, 0);
          Show (Frame);
-         Gtk_New (Box3, False, 5);
+         Gtk_New_vbox (Box3, False, 5);
          Border_Width (Box3, 5);
          Add (Frame, Box3);
          Show (Box3);
@@ -119,11 +117,11 @@ package body Create_Reparent is
          Pack_Start (Box3, Button, False, True, 0);
          Show (Button);
 
-         Gtk_New (Separator);
+         Gtk_New_Hseparator (Separator);
          Pack_Start (Box1, Separator, False, True, 0);
          Show (Separator);
 
-         Gtk_New (Box3, False, 10);
+         Gtk_New_Vbox (Box3, False, 10);
          Border_Width (Box3, 10);
          Pack_Start (Box1, Box3, False, True, 0);
          Show (Box3);

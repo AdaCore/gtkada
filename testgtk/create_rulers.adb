@@ -4,15 +4,11 @@ with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
-with Gtk.Hbox; use Gtk.Hbox;
-with Gtk.HRuler; use Gtk.HRuler;
-with Gtk.Hseparator; use Gtk.Hseparator;
+with Gtk.Separator; use Gtk.Separator;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Ruler; use Gtk.Ruler;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Table; use Gtk.Table;
-with Gtk.Vbox; use Gtk.Vbox;
-with Gtk.Vruler; use Gtk.VRuler;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
@@ -26,15 +22,11 @@ package body Create_Rulers is
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id        : Guint;
-      Box1      : Gtk_Vbox;
-      Box2      : Gtk_Hbox;
-      Box3      : Gtk_Vbox;
       Label     : Gtk_Label;
       Frame     : Gtk_Frame;
       Button    : Gtk_Button;
-      Separator : Gtk_HSeparator;
-      Ruler     : GTk_HRuler;
-      VRuler    : Gtk_VRuler;
+      Separator : Gtk_Separator;
+      Ruler     : GTk_Ruler;
       Table     : Gtk_Table;
    begin
 
@@ -50,7 +42,7 @@ package body Create_Rulers is
          Add (Window, Table);
          Show (Table);
 
-         Gtk_New (Ruler);
+         Gtk_New_Hruler (Ruler);
          Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
          Id := C_Unsafe_Connect (Window, "motion_notify_event",
                                  Get_Default_Motion_Notify_Event (Ruler),
@@ -58,13 +50,13 @@ package body Create_Rulers is
          Attach (Table, Ruler, 1, 2, 0, 1, Expand + Enums.Fill, Enums.Fill, 0, 0);
          Show (Ruler);
 
-         Gtk_New (VRuler);
-         Set_Range (VRuler, 5.0, 15.0, 0.0, 20.0);
+         Gtk_New_Vruler (Ruler);
+         Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
          Id := C_Unsafe_Connect (Window, "motion_notify_event",
-                                 Get_Default_Motion_Notify_Event (VRuler),
-                                 VRuler);
-         Attach (Table, VRuler, 0, 1, 1, 2, Enums.Fill, Expand + Enums.Fill, 0, 0);
-         Show (VRuler);
+                                 Get_Default_Motion_Notify_Event (Ruler),
+                                 Ruler);
+         Attach (Table, Ruler, 0, 1, 1, 2, Enums.Fill, Expand + Enums.Fill, 0, 0);
+         Show (Ruler);
 
 
       end if;

@@ -10,9 +10,6 @@ with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.GEntry; use Gtk.GEntry;
 with Gtk.Frame; use Gtk.Frame;
-with Gtk.HSeparator; use Gtk.HSeparator;
-with Gtk.Hbox; use Gtk.Hbox;
-with Gtk.Hseparator; use Gtk.Hseparator;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Menu; use Gtk.Menu;
 with Gtk.Misc; use Gtk.Misc;
@@ -21,9 +18,9 @@ with Gtk.Object; use Gtk.Object;
 with Gtk.Option_Menu; use Gtk.Option_Menu;
 with Gtk.Pixmap; use Gtk.Pixmap;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
+with Gtk.Separator; use Gtk.Separator;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
@@ -97,8 +94,8 @@ package body Create_Notebook is
                            The_Start : Gint;
                            The_End   : Gint) is
       Child     : Gtk_Widget;
-      Label_Box : Gtk_Hbox;
-      Menu_Box  : Gtk_Hbox;
+      Label_Box : Gtk_Box;
+      Menu_Box  : Gtk_Box;
       Pixmap    : Gtk_Pixmap;
       Label     : Gtk_Label;
    begin
@@ -122,17 +119,17 @@ package body Create_Notebook is
             when 1 =>
                declare
                   Tmp    : Gtk_Frame;
-                  Box    : Gtk_Vbox;
+                  Box    : Gtk_Box;
                   Label  : Gtk_Label;
                   TEntry : Gtk_Entry;
-                  Hbox   : Gtk_Hbox;
+                  Hbox   : Gtk_Box;
                   Button : Gtk_Button;
                begin
                   Gtk_New (Tmp, "Page" & Gint'Image (I));
                   Border_Width (Tmp, 10);
                   Child := Gtk_Widget (Tmp);
 
-                  Gtk_New (Box, True, 0);
+                  Gtk_New_Vbox (Box, True, 0);
                   Border_Width (Box, 10);
                   Add (Tmp, Box);
 
@@ -142,7 +139,7 @@ package body Create_Notebook is
                   Gtk_New (TEntry);
                   Pack_Start (Box, TEntry, True, True, 5);
 
-                  Gtk_New (Hbox, True, 0);
+                  Gtk_New_Hbox (Hbox, True, 0);
                   Pack_Start (Box, Hbox, True, True, 5);
 
                   Gtk_New (Button, "Ok");
@@ -167,7 +164,7 @@ package body Create_Notebook is
 
          Show_All (Child);
 
-         Gtk_New (Label_Box, False, 0);
+         Gtk_New_Hbox (Label_Box, False, 0);
          Gtk_New (Pixmap, Book_Closed, Book_Closed_Mask);
          Pack_Start (Label_Box, Pixmap, False, True, 0);
          Set_Padding (Pixmap, 3, 1);
@@ -176,7 +173,7 @@ package body Create_Notebook is
          Pack_Start (Label_Box, Label, False, True, 0);
          Show_All (Label_Box);
 
-         Gtk_New (Menu_Box, False, 0);
+         Gtk_New_Vbox (Menu_Box, False, 0);
          Gtk_New (Pixmap, Book_Closed, Book_Closed_Mask);
          Pack_Start (Menu_Box, Pixmap, False, True, 0);
          Set_Padding (Pixmap, 3, 1);
@@ -244,7 +241,6 @@ package body Create_Notebook is
       pragma Warnings (Off, Page_Num);
       function Convert is new Gtk.Unchecked_Cast (Gtk_Pixmap);
       Old_Page : Gtk_Notebook_Page := Get_Cur_Page (Notebook);
-      Box      : Gtk_Box;
       Pixmap   : Gtk_Pixmap;
    begin
       if Old_Page = Page then
@@ -267,11 +263,11 @@ package body Create_Notebook is
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id              : Guint;
-      Box1            : Gtk_Vbox;
-      Box2            : Gtk_Hbox;
+      Box1            : Gtk_Box;
+      Box2            : Gtk_Box;
       Notebook        : Gtk_Notebook;
       Transparent     : Gdk_Color;
-      Separator       : Gtk_HSeparator;
+      Separator       : Gtk_Separator;
       Option_Menu     : Gtk_Option_Menu;
       Menu            : Gtk_Menu;
       Menu_Item       : Gtk_Radio_Menu_Item;
@@ -285,7 +281,7 @@ package body Create_Notebook is
          Set_Title (Window, "notebook");
          Border_Width (Window, Border_Width => 0);
 
-         Gtk_New (Box1, False, 0);
+         Gtk_New_Vbox (Box1, False, 0);
          Add (Window, Box1);
 
          Gtk_New (Notebook);
@@ -307,10 +303,10 @@ package body Create_Notebook is
 
          Create_Pages (Notebook, 1, 5);
 
-         Gtk_New (Separator);
+         Gtk_New_Hseparator (Separator);
          Pack_Start (Box1, Separator, False, True, 10);
 
-         Gtk_New (Box2, True, 5);
+         Gtk_New_Hbox (Box2, True, 5);
          Pack_Start (Box1, Box2, False, True, 0);
 
          Gtk_New (Option_Menu);
@@ -344,7 +340,7 @@ package body Create_Notebook is
          Id := Button_Cb.Connect (Button, "clicked",
                                   Notebook_Popup'Access, Notebook);
 
-         Gtk_New (Box2, False, 10);
+         Gtk_New_Hbox (Box2, False, 10);
          Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, False, True, 0);
 

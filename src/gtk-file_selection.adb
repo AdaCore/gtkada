@@ -7,12 +7,12 @@ package body Gtk.File_Selection is
    ---------------------
 
    function Get_Action_Area (Widget : in Gtk_File_Selection'Class)
-                             return      Gtk.Hbox.Gtk_Hbox
+                             return      Gtk.Box.Gtk_Box
    is
       function Internal (Widget : in System.Address)
                          return      System.Address;
       pragma Import (C, Internal, "ada_file_selection_get_action_area");
-      Tmp : Gtk.Hbox.Gtk_Hbox;
+      Tmp : Gtk.Box.Gtk_Box;
    begin
       Set_Object (Tmp, Internal (Get_Object (Widget)));
       return Tmp;
@@ -23,12 +23,12 @@ package body Gtk.File_Selection is
    ---------------------
 
    function Get_Button_Area (Widget : in Gtk_File_Selection'Class)
-                             return      Gtk.Hbox.Gtk_Hbox
+                             return      Gtk.Box.Gtk_Box
    is
       function Internal (Widget : in System.Address)
                          return      System.Address;
       pragma Import (C, Internal, "ada_file_selection_get_button_area");
-      Tmp : Gtk.Hbox.Gtk_Hbox;
+      Tmp : Gtk.Box.Gtk_Box;
    begin
       Set_Object (Tmp, Internal (Get_Object (Widget)));
       return Tmp;

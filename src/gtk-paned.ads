@@ -12,6 +12,8 @@ package Gtk.Paned is
    procedure Add2
       (Paned : in Gtk_Paned'Class;
        Child : in Gtk.Widget.Gtk_Widget'Class);
+   procedure Gtk_New_Vpaned (Widget : out Gtk_Paned);
+   procedure Gtk_New_Hpaned (Widget : out Gtk_Paned);
    procedure Gutter_Size
       (Paned : in Gtk_Paned'Class;
        Size  : in Guint16);
@@ -27,4 +29,7 @@ private
    --  mapping: NOT_IMPLEMENTED gtkpaned.h gtk_paned_get_type
    --  mapping: Gutter_Size gtkpaned.h gtk_paned_gutter_size
    --  mapping: Handle_Size gtkpaned.h gtk_paned_handle_size
+   --  mapping: Gtk_New_Vpaned gtkvpaned.h gtk_vpaned_new
+   --  mapping: Gtk_New_Hpaned gtkhpaned.h gtk_hpaned_new
 end Gtk.Paned;
+

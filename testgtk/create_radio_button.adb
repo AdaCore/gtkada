@@ -3,12 +3,11 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Hseparator; use Gtk.Hseparator;
+with Gtk.Separator; use Gtk.Separator;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Radio_Button; use Gtk.Radio_Button;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
@@ -22,8 +21,8 @@ package body Create_Radio_Button is
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id        : Guint;
       Box1,
-        Box2    : Gtk_VBox;
-      Separator : Gtk_Hseparator;
+        Box2    : Gtk_Box;
+      Separator : Gtk_Separator;
       Button    : Gtk_Radio_Button;
       Button2   : Gtk_Button;
    begin
@@ -34,11 +33,11 @@ package body Create_Radio_Button is
          Set_Title (Window, "radio buttons");
          Border_Width (Window, Border_Width => 0);
 
-         Gtk_New (Box1, False, 0);
+         Gtk_New_Vbox (Box1, False, 0);
          Add (Window, Box1);
          Show (Box1);
 
-         Gtk_New (Box2, False, 10);
+         Gtk_New_Vbox (Box2, False, 10);
          Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, True, True, 0);
          Show (Box2);
@@ -56,11 +55,11 @@ package body Create_Radio_Button is
          Pack_Start (Box2, Button, True, True, 0);
          Show (Button);
 
-         Gtk_New (Separator);
+         Gtk_New_Hseparator (Separator);
          Pack_Start (Box1, Separator, False, True, 0);
          Show (Separator);
 
-         Gtk_New (Box2, False, 10);
+         Gtk_New_Vbox (Box2, False, 10);
          Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, False, True, 0);
          Show (Box2);

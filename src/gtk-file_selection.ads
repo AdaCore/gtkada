@@ -1,5 +1,5 @@
 
-with Gtk.Hbox;
+with Gtk.Box;
 with Gtk.Button;
 with Gtk.Widget;
 with Gtk.Window;
@@ -9,9 +9,9 @@ package Gtk.File_Selection is
    type Gtk_File_Selection is new Gtk.Window.Gtk_Window with private;
 
    function Get_Action_Area (Widget : in Gtk_File_Selection'Class)
-                             return      Gtk.Hbox.Gtk_Hbox;
+                             return      Gtk.Box.Gtk_Box;
    function Get_Button_Area (Widget : in Gtk_File_Selection'Class)
-                             return      Gtk.Hbox.Gtk_Hbox;
+                             return      Gtk.Box.Gtk_Box;
    function Get_Cancel_Button (Widget : in Gtk_File_Selection'Class)
                                return      Gtk.Button.Gtk_Button;
    function Get_Dir_List (Widget : in Gtk_File_Selection'Class)

@@ -82,6 +82,30 @@ package body Gtk.Ruler is
       return Internal (Get_Object (Widget));
    end Get_Upper;
 
+   --------------------
+   -- Gtk_New_Hruler --
+   --------------------
+
+   procedure Gtk_New_Hruler (Widget : out Gtk_Ruler)
+   is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_hruler_new");
+   begin
+      Set_Object (Widget, Internal);
+   end Gtk_New_Hruler;
+
+   --------------------
+   -- Gtk_New_Vruler --
+   --------------------
+
+   procedure Gtk_New_Vruler (Widget : out Gtk_Ruler)
+   is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_vruler_new");
+   begin
+      Set_Object (Widget, Internal);
+   end Gtk_New_Vruler;
+
    ----------------
    -- Set_Metric --
    ----------------

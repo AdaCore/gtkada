@@ -1,15 +1,14 @@
 with Glib; use Glib;
+with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Handle_Box; use Gtk.Handle_Box;
-with Gtk.Hbox; use Gtk.Hbox;
-with Gtk.Hseparator; use Gtk.Hseparator;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Object; use Gtk.Object;
+with Gtk.Separator; use Gtk.Separator;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Toolbar; use Gtk.Toolbar;
-with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
@@ -40,10 +39,10 @@ package body Create_Handle_Box is
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id        : Guint;
-      Vbox      : Gtk_Vbox;
-      Hbox      : Gtk_Hbox;
+      Vbox      : Gtk_Box;
+      Hbox      : Gtk_Box;
       Label     : Gtk_Label;
-      Separator : Gtk_Hseparator;
+      Separator : Gtk_Separator;
       Handle    : Gtk_Handle_Box;
       Handle2   : Gtk_Handle_Box;
       Toolbar   : Gtk_Toolbar;
@@ -56,7 +55,7 @@ package body Create_Handle_Box is
          Id := Widget_Cb.Connect (Window, "destroy", Destroy'Access, Window);
          Border_Width (Window, 20);
 
-         Gtk_New (Vbox, False, 0);
+         Gtk_New_Vbox (Vbox, False, 0);
          Add (Window, Vbox);
          Show (Vbox);
 
@@ -64,15 +63,15 @@ package body Create_Handle_Box is
          Add (Vbox, Label);
          Show (Label);
 
-         Gtk_New (Separator);
+         Gtk_New_Hseparator (Separator);
          Add (Vbox, Separator);
          Show (Separator);
 
-         Gtk_New (Hbox, False, 10);
+         Gtk_New_Hbox (Hbox, False, 10);
          Add (Vbox, Hbox);
          Show (Hbox);
 
-         Gtk_New (Separator);
+         Gtk_New_Hseparator (Separator);
          Add (Vbox, Separator);
          Show (Separator);
 

@@ -16,6 +16,8 @@ package Gtk.Ruler is
                           return      Gfloat;
    function Get_Upper (Widget : in Gtk_Ruler'Class)
                        return      Gfloat;
+   procedure Gtk_New_Hruler (Widget : out Gtk_Ruler);
+   procedure Gtk_New_Vruler (Widget : out Gtk_Ruler);
    procedure Set_Metric
       (Ruler  : in Gtk_Ruler'Class;
        Metric : in Gtk_Metric_Type);
@@ -38,4 +40,6 @@ private
    --  mapping: Get_Upper gtkruler.h GtkRuler->upper
    --  mapping: Set_Metric gtkruler.h gtk_ruler_set_metric
    --  mapping: Set_Range gtkruler.h gtk_ruler_set_range
+   --  mapping: Gtk_New_Hruler gtkhruler.h gtk_hruler_new
+   --  mapping: Gtk_New_Vruler gtkvruler.h gtk_vruler_new
 end Gtk.Ruler;

@@ -7,39 +7,26 @@ with Gtk.Container; use Gtk.Container;
 with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
-with Gtk.Hbox; use Gtk.Hbox;
-with Gtk.HRuler; use Gtk.HRuler;
-with Gtk.Hseparator; use Gtk.Hseparator;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Object; use Gtk.Object;
-with Gtk.Ruler; use Gtk.Ruler;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Table; use Gtk.Table;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Gtk.Vbox; use Gtk.Vbox;
-with Gtk.Vruler; use Gtk.VRuler;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
 
 package body Create_Scrolled is
 
    package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Ruler_Cb is new Signal.Object_Callback (Gtk_Ruler);
 
    Window : Gtk.Dialog.Gtk_Dialog;
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id        : Guint;
-      Box1      : Gtk_Vbox;
-      Box2      : Gtk_Hbox;
-      Box3      : Gtk_Vbox;
       Label     : Gtk_Label;
       Frame     : Gtk_Frame;
       Button    : Gtk_Button;
-      Separator : Gtk_HSeparator;
-      Ruler     : GTk_HRuler;
-      VRuler    : Gtk_VRuler;
       Table     : Gtk_Table;
       Scrolled  : Gtk_Scrolled_Window;
       Toggle    : Gtk_Toggle_Button;

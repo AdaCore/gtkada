@@ -18,6 +18,38 @@ package body Gtk.Box is
       return W;
    end Get_Child;
 
+   ------------------
+   -- Gtk_New_Vbox --
+   ------------------
+
+   procedure Gtk_New_Vbox (Widget      : out Gtk_Box;
+                           Homogeneous : in  Boolean;
+                           Spacing     : in  Gint)
+   is
+      function Internal (Homogeneous : Gint;
+                         Spacing     : Gint) return System.Address;
+      pragma Import (C, Internal, "gtk_vbox_new");
+   begin
+      Set_Object (Widget, Internal (Boolean'Pos (Homogeneous),
+                                    Spacing));
+   end Gtk_New_Vbox;
+
+   ------------------
+   -- Gtk_New_Hbox --
+   ------------------
+
+   procedure Gtk_New_Hbox (Widget      : out Gtk_Box;
+                           Homogeneous : in  Boolean;
+                           Spacing     : in  Gint)
+   is
+      function Internal (Homogeneous : Gint;
+                         Spacing     : Gint) return System.Address;
+      pragma Import (C, Internal, "gtk_hbox_new");
+   begin
+      Set_Object (Widget, Internal (Boolean'Pos (Homogeneous),
+                                    Spacing));
+   end Gtk_New_Hbox;
+
    ----------------
    -- Pack_Start --
    ----------------

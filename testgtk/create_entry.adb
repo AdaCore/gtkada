@@ -6,11 +6,10 @@ with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Combo; use Gtk.Combo;
 with Gtk.GEntry; use Gtk.GEntry;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Hseparator; use Gtk.Hseparator;
+with Gtk.Separator; use Gtk.Separator;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Object; use Gtk.Object;
-with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
@@ -38,11 +37,11 @@ package body Create_Entry is
       List      : Glist;
       Id        : Guint;
       Box1,
-        Box2    : Gtk_Vbox;
+        Box2    : Gtk_Box;
       The_Entry : Gtk_Entry;
       Combo     : Gtk_Combo;
       Check     : Gtk_Check_Button;
-      Separator : Gtk_HSeparator;
+      Separator : Gtk_Separator;
       Button    : Gtk_Button;
    begin
       if not Is_Created (Window) then
@@ -63,11 +62,11 @@ package body Create_Entry is
          Set_Title (Window, "entry");
          Border_Width (Window, 0);
 
-         Gtk_New (Box1, False, 0);
+         Gtk_New_Vbox (Box1, False, 0);
          Add (Window, Box1);
          Show (Box1);
 
-         Gtk_New (Box2, False, 10);
+         Gtk_New_Vbox (Box2, False, 10);
          Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, True, True, 0);
          Show (Box2);
@@ -92,11 +91,11 @@ package body Create_Entry is
          Set_State (Check, True);
          Show (Check);
 
-         Gtk_New (Separator);
+         Gtk_New_Hseparator (Separator);
          Pack_Start (Box1, Separator, False, True, 0);
          Show (Separator);
 
-         Gtk_New (Box2, False, 10);
+         Gtk_New_Vbox (Box2, False, 10);
          Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, False, True, 0);
          Show (Box2);

@@ -7,7 +7,6 @@ with Gtk.Label; use Gtk.Label;
 with Gtk.Misc; use Gtk.Misc;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
-with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
 

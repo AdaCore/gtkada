@@ -36,6 +36,28 @@ package body Gtk.Paned is
                 Get_Object (Child));
    end Add2;
 
+   --------------------
+   -- Gtk_New_Hpaned --
+   --------------------
+
+   procedure Gtk_New_Hpaned (Widget : out Gtk_Paned) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_hpaned_new");
+   begin
+      Set_Object (Widget, Internal);
+   end Gtk_New_Hpaned;
+
+   --------------------
+   -- Gtk_New_Vpaned --
+   --------------------
+
+   procedure Gtk_New_Vpaned (Widget : out Gtk_Paned) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_vpaned_new");
+   begin
+      Set_Object (Widget, Internal);
+   end Gtk_New_Vpaned;
+
    -----------------
    -- Gutter_Size --
    -----------------

@@ -6,14 +6,12 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Hbox; use Gtk.Hbox;
-with Gtk.Hseparator; use Gtk.Hseparator;
+with Gtk.Separator; use Gtk.Separator;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Pixmap; use Gtk.Pixmap;
 with Gtk.Style; use Gtk.Style;
-with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
@@ -26,16 +24,16 @@ package body Create_Pixmap is
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id        : Guint;
-      Box1      : Gtk_Vbox;
-      Box2      : Gtk_Vbox;
-      Box3      : Gtk_Hbox;
+      Box1      : Gtk_Box;
+      Box2      : Gtk_Box;
+      Box3      : Gtk_Box;
       Button    : Gtk_Button;
       Style     : Gtk_Style;
       Pixmap    : Gdk_Pixmap;
       Mask      : Gdk_Bitmap;
       PixmapWid : Gtk_Pixmap;
       Label     : Gtk_Label;
-      Separator : Gtk_Hseparator;
+      Separator : Gtk_Separator;
    begin
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
@@ -44,11 +42,11 @@ package body Create_Pixmap is
          Border_Width (Window, Border_Width => 0);
          Realize (Window);
 
-         Gtk_New (Box1, False, 0);
+         Gtk_New_Vbox (Box1, False, 0);
          Add (Window, Box1);
          Show (Box1);
 
-         Gtk_New (Box2, False, 10);
+         Gtk_New_Vbox (Box2, False, 10);
          Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, True, True, 0);
          Show (Box2);
@@ -63,7 +61,7 @@ package body Create_Pixmap is
          Gtk_New (PixmapWid, Pixmap, Mask);
 
          Gtk_New (Label, "Pixmap" & Ascii.LF & "test");
-         Gtk_New (Box3, False, 0);
+         Gtk_New_Hbox (Box3, False, 0);
          Border_Width (Box3, 2);
          Add (Box3, PixmapWid);
          Add (Box3, Label);
@@ -72,11 +70,11 @@ package body Create_Pixmap is
          Show (Label);
          Show (Box3);
 
-         Gtk_New (Separator);
+         Gtk_New_Hseparator (Separator);
          Pack_Start (Box3, Separator, False, True, 0);
          Show (Separator);
 
-         Gtk_New (Box2, False, 10);
+         Gtk_New_Vbox (Box2, False, 10);
          Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, False, True, 0);
          Show (Box2);

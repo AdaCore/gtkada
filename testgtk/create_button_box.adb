@@ -7,7 +7,6 @@ with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Hbutton_Box; use Gtk.Hbutton_Box;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Vbutton_Box; use Gtk.Vbutton_Box;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
@@ -30,7 +29,7 @@ package body Create_Button_Box is
    is
       Window : Gtk_Window;
       Id     : Guint;
-      Box1   : Gtk_Vbox;
+      Box1   : Gtk_Box;
       Bbox   : Gtk_Button_Box;
       Button : Gtk_Button;
    begin
@@ -41,11 +40,11 @@ package body Create_Button_Box is
       if Horizontal then
          Set_Usize (Window, 550, 60);
          Set_Uposition (Window, 150, Pos);
-         Gtk_New (Box1, False, 0);
+         Gtk_New_Vbox (Box1, False, 0);
       else
          Set_Usize (Window, 150, 400);
          Set_Uposition (Window, Pos, 200);
-         Gtk_New (Box1, False, 0);
+         Gtk_New_Vbox (Box1, False, 0);
       end if;
 
       Add (Window, Box1);

@@ -5,13 +5,11 @@ with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.GRange; use Gtk.GRange;
-with Gtk.Hscale; use Gtk.Hscale;
-with Gtk.Hscrollbar; use Gtk.Hscrollbar;
-with Gtk.Hseparator; use Gtk.Hseparator;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Scale; use Gtk.Scale;
+with Gtk.Scrollbar; use Gtk.Scrollbar;
+with Gtk.Separator; use Gtk.Separator;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
@@ -24,12 +22,12 @@ package body Create_Range is
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id         : Guint;
-      Box1       : Gtk_Vbox;
-      Box2       : Gtk_Vbox;
+      Box1       : Gtk_Box;
+      Box2       : Gtk_Box;
       Adjustment : Gtk_Adjustment;
-      Scale      : Gtk_Hscale;
-      Scrollbar  : Gtk_Hscrollbar;
-      Separator  : Gtk_Hseparator;
+      Scale      : Gtk_Scale;
+      Scrollbar  : Gtk_Scrollbar;
+      Separator  : Gtk_Separator;
       Button     : Gtk_Button;
    begin
 
@@ -39,17 +37,17 @@ package body Create_Range is
          Set_Title (Window, "range");
          Border_Width (Window, Border_Width => 0);
 
-         Gtk_New (Box1, False, 0);
+         Gtk_New_Vbox (Box1, False, 0);
          Add (Window, Box1);
          Show (Box1);
 
-         Gtk_New (Box2, False, 10);
+         Gtk_New_Vbox (Box2, False, 10);
          Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, True, True, 0);
          Show (Box2);
 
          Gtk_New (Adjustment, 0.0, 0.0, 101.0, 0.1, 1.0, 1.0);
-         Gtk_New (Scale, Adjustment);
+         Gtk_New_Hscale (Scale, Adjustment);
          Set_Usize (Scale, 150, 30);
          Set_Update_Policy (Scale, Update_Delayed);
          Set_Digits (Scale, 1);
@@ -57,16 +55,16 @@ package body Create_Range is
          Pack_Start (Box2, Scale, True, True, 0);
          Show (Scale);
 
-         Gtk_New (Scrollbar, Adjustment);
+         Gtk_New_Hscrollbar (Scrollbar, Adjustment);
          Set_Update_Policy (Scrollbar, Update_Continuous);
          Pack_Start (Box2, Scrollbar, True, True, 0);
          Show (Scrollbar);
 
-         Gtk_New (Separator);
+         Gtk_New_Hseparator (Separator);
          Pack_Start (Box1, Separator, False, True, 0);
          Show (Separator);
 
-         Gtk_New (Box2, False, 10);
+         Gtk_New_Vbox (Box2, False, 10);
          Border_Width (Box2, 10);
          Pack_Start (Box1, Box2, False, True, 0);
          Show (Box2);

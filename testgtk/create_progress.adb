@@ -11,7 +11,6 @@ with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Progress_Bar; use Gtk.Progress_Bar;
 with Gtk.Tooltips; use Gtk.Tooltips;
-with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
 
@@ -45,7 +44,7 @@ package body Create_Progress is
    procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
       Id       : Guint;
       Tooltips : Gtk_Tooltips;
-      Vbox     : Gtk_Vbox;
+      Vbox     : Gtk_Box;
       Pbar     : Gtk_Progress_Bar;
       Button   : Gtk_Button;
       Label    : Gtk_Label;
@@ -60,7 +59,7 @@ package body Create_Progress is
 
          Gtk_New (Tooltips);
 
-         Gtk_New (Vbox, False, 5);
+         Gtk_New_Vbox (Vbox, False, 5);
          Border_Width (Vbox, 10);
          Pack_Start (Get_Vbox (Window), Vbox, True, True, 0);
          Show (Vbox);

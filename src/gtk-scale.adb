@@ -14,6 +14,36 @@ package body Gtk.Scale is
       Internal (Get_Object (Scale));
    end Draw_Value;
 
+   --------------------
+   -- Gtk_New_Hscale --
+   --------------------
+
+   procedure Gtk_New_Hscale
+     (Widget     : out Gtk_Scale;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class)
+   is
+      function Internal (Adjustment : in System.Address)
+                         return          System.Address;
+      pragma Import (C, Internal, "gtk_hscale_new");
+   begin
+      Set_Object (Widget, Internal (Get_Object (Adjustment)));
+   end Gtk_New_Hscale;
+
+   --------------------
+   -- Gtk_New_Hscale --
+   --------------------
+
+   procedure Gtk_New_Vscale
+     (Widget     : out Gtk_Scale;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class)
+   is
+      function Internal (Adjustment : in System.Address)
+                         return          System.Address;
+      pragma Import (C, Internal, "gtk_vscale_new");
+   begin
+      Set_Object (Widget, Internal (Get_Object (Adjustment)));
+   end Gtk_New_Vscale;
+
    ----------------
    -- Set_Digits --
    ----------------
