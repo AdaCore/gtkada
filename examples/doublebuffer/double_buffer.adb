@@ -42,6 +42,8 @@ package body Double_Buffer is
    package Event_Cb is new Gtk.Handlers.Return_Callback
      (Widget_Type => Gtk_Double_Buffer_Record,
       Return_Type => Boolean);
+   package Void_Cb is new Gtk.Handlers.Callback
+     (Widget_Type => Gtk_Double_Buffer_Record);
 
    function Configure (Buffer        : access Gtk_Double_Buffer_Record'Class;
                        Event         : Gdk.Event.Gdk_Event)
@@ -58,6 +60,9 @@ package body Double_Buffer is
      return Gdk.Pixmap.Gdk_Pixmap;
    --  Create one of the internal pixmaps used by the buffer, with the
    --  correct size.
+
+   procedure Destroy_Cb (Buffer : access Gtk_Double_Buffer_Record'Class);
+   --  Called when the widget is destroyed, to free up some memory
 
    -------------
    -- Gtk_New --
@@ -85,6 +90,8 @@ package body Double_Buffer is
                         Event_Cb.To_Marshaller (Configure'Access));
       Event_Cb.Connect (Buffer, "expose_event",
                         Event_Cb.To_Marshaller (Expose'Access));
+      Void_Cb.Connect (Buffer, "destroy",
+                       Void_Cb.To_Marshaller (Destroy_Cb'Access));
    end Initialize;
 
    ----------------------------
@@ -199,6 +206,20 @@ package body Double_Buffer is
 
       return True;
    end Configure;
+
+   ----------------
+   -- Destroy_Cb --
+   ----------------
+
+   procedure Destroy_Cb (Buffer : access Gtk_Double_Buffer_Record'Class) is
+   begin
+      if Gdk.Is_Created (Buffer.Pixmap) then
+         Gdk.Pixmap.Unref (Buffer.Pixmap);
+      end if;
+      if Gdk.Is_Created (Buffer.Triple_Buffer) then
+         Gdk.Pixmap.Unref (Buffer.Triple_Buffer);
+      end if;
+   end Destroy_Cb;
 
    ------------
    -- Expose --
