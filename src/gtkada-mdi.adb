@@ -95,7 +95,7 @@ package body Gtkada.MDI is
    Border_Thickness : constant Gint := 4;
    --  <preferences> Thickness of the windows in the MDI
 
-   Title_Font : constant String := "Helvetica 6";
+   Title_Font : constant String := "Helvetica 7";
    --  <preferences> Name of the font to use in the title bar
 
    Icons_Width : constant Gint := 100;
