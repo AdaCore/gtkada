@@ -852,7 +852,7 @@ package body Glib.Glade is
       end Simple_Class;
 
       Orig_Class : constant String := Simple_Class (Widget_Class);
-      Class      : constant String := Orig_Class; --  ??? fix when having obj
+      Class      : String_Ptr;
 
       function Yes_No_To_True_False (S : in String) return String;
       --  Transform "yes" to "True" and "no" to "False".
@@ -875,10 +875,21 @@ package body Glib.Glade is
             Object   : constant String := Get_Attribute (P, "object");
             After    : constant String :=
               Yes_No_To_True_False (Get_Attribute (P, "after"));
-            Id       : constant Signal_Id :=
-              Lookup (Type_From_Name (Orig_Class), Name);
+            Id       : Signal_Id := Lookup (Type_From_Name (Orig_Class), Name);
+            Connect_To_Buffer : Boolean := False;
 
          begin
+            if Id = Null_Signal_Id
+              and then Orig_Class = "GtkTextView"
+            then
+               Id := Lookup (Type_From_Name ("GtkTextBuffer"), Name);
+               Connect_To_Buffer := True;
+               Class := new String'("GtkTextBuffer");
+
+            else
+               Class := new String'(Orig_Class); --  ??? fix when having obj
+            end if;
+
             if Id = Invalid_Signal_Id
               or else Id = Null_Signal_Id
             then
@@ -894,11 +905,11 @@ package body Glib.Glade is
                  (Top,
                   new String'(Handler),
                   new String'(Name),
-                  new String'(Class),
+                  Class,
                   new String'(Orig_Class));
 
-               if Returned <= GType_None and then Class /= "GtkWidget" then
-                  Add_Signal_Instantiation (new String'(Class), Rename);
+               if Returned <= GType_None and then Class.all /= "GtkWidget" then
+                  Add_Signal_Instantiation (Class, Rename);
                end if;
 
                if Returned > GType_None then
@@ -917,11 +928,21 @@ package body Glib.Glade is
                Put_Line (File, "Connect");
                Put (File, "     (");
 
+               if Connect_To_Buffer then
+                  Put (File, "Get_Buffer (");
+               end if;
+
                if Top /= N then
                   Put (File, To_Ada (Get_Name (Top)) & ".");
                end if;
 
-               Put (File, To_Ada (Current) & ", """ & Name & """,");
+               Put (File, To_Ada (Current));
+
+               if Connect_To_Buffer then
+                  Put (File, ")");
+               end if;
+
+               Put (File, ", """ & Name & """,");
 
                if Params (Q)'Length = 0 then
                   New_Line (File);
