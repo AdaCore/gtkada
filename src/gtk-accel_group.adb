@@ -90,7 +90,7 @@ package body Gtk.Accel_Group is
          Accelerator_Mods :    out Gdk.Types.Gdk_Modifier_Type);
       pragma Import (C, Internal, "gtk_accelerator_parse");
    begin
-      Internal (Accelerator & ASCII.Nul, Accelerator_Key, Accelerator_Mods);
+      Internal (Accelerator & ASCII.NUL, Accelerator_Key, Accelerator_Mods);
    end Accelerator_Parse;
 
    -----------------------
@@ -154,7 +154,7 @@ package body Gtk.Accel_Group is
                 Gdk.Types.Gdk_Modifier_Type'Pos (Accel_Mods),
                 Gtk_Accel_Flags'Pos (Accel_Flags),
                 Get_Object (Object),
-                Accel_Signal & ASCII.Nul);
+                Accel_Signal & ASCII.NUL);
    end Add;
 
    ------------
