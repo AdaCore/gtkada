@@ -6,7 +6,7 @@
 
 @titlepage
 
-@set GtkAdaVersion 1.2.8
+@set GtkAdaVersion 1.2.9
 
 @title GtkAda User's Guide
 @subtitle Version @value{GtkAdaVersion}
@@ -166,14 +166,14 @@ straightforward - just recompile GtkAda), please let us know so that
 we can add to the above list.
 
 This version of GtkAda is compatible with @code{gtk+} @b{1.2.2} up to
-@b{version 1.2.6}. This release is no longer compatible with older versions
+@b{version 1.2.8}. This release is no longer compatible with older versions
 of gtk+ (up to 1.0). If you really need to use such an old version, please
 consider downloading GtkAda 0.2.1 (but be aware that your code will
 never work with recent versions, since the API has been completely
 rewritten since then).
 
 This version of GtkAda is compatible with @code{Glade} @b{version
-0.5.5}.  Due to some modification in the output format of Glade, this
+0.5.9}.  Due to some modification in the output format of Glade, this
 release will not work with older versions. It is also not guaranteed to
 work with more recent versions. Please update your version of Glade.
 
