@@ -24,3 +24,12 @@ easy to do. Actually, this is even the natural way to do. Things are
 much more difficult in Motif for instance when you want to create
 such composite widgets, because you have to emulate the object oriented
 behavior, whereas in Ada95, everything is already handled by the compiler.
+
+- Why is this better than creating the widget in C and create the binding ?
+
+Well this is of course much faster, easier, cleaner, ... (Hey, this is
+Ada, what do you expect ? :-)
+However, your widget will not be callable from your C routines, if you
+ever want to do that (This is because we don't create the records that
+a C implementation would expect), but don't worry, it will work
+fine from Ada.
