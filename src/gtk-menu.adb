@@ -82,11 +82,11 @@ package body Gtk.Menu is
         (Menu : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_menu_get_accel_group");
 
-      A : Accel_Group.Gtk_Accel_Group
-        := new Accel_Group.Gtk_Accel_Group_Record;
+      Stub : Accel_Group.Gtk_Accel_Group_Record;
+
    begin
-      Set_Object (A, Internal (Get_Object (Menu)));
-      return A;
+      return Accel_Group.Gtk_Accel_Group
+        (Get_User_Data (Internal (Get_Object (Menu)), Stub));
    end Get_Accel_Group;
 
    ----------------
