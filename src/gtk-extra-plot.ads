@@ -53,6 +53,45 @@
 --  See the package Gtk.Extra.Plot_Ps for a way to easily print a Gtk_Plot to
 --  a postscript file.
 --
+--  In this package, font parameters are sometimes required. Here is the
+--  list of possible fonts used by Gtk.Extra:
+--
+--   - "Times-Roman",
+--   - "Times-Italic",
+--   - "Times-Bold",
+--   - "Times-BoldItalic",
+--   - "AvantGarde-Book",
+--   - "AvantGarde-BookOblique",
+--   - "AvantGarde-Demi",
+--   - "AvantGarde-DemiOblique",
+--   - "Bookman-Light",
+--   - "Bookman-LightItalic",
+--   - "Bookman-Demi",
+--   - "Bookman-DemiItalic",
+--   - "Courier",
+--   - "Courier-Oblique",
+--   - "Courier-Bold",
+--   - "Courier-BoldOblique",
+--   - "Helvetica",
+--   - "Helvetica-Oblique",
+--   - "Helvetica-Bold",
+--   - "Helvetica-BoldOblique",
+--   - "Helvetica-Narrow",
+--   - "Helvetica-Narrow-Oblique",
+--   - "Helvetica-Narrow-Bold",
+--   - "Helvetica-Narrow-BoldOblique",
+--   - "NewCenturySchoolbook-Roman",
+--   - "NewCenturySchoolbook-Italic",
+--   - "NewCenturySchoolbook-Bold",
+--   - "NewCenturySchoolbook-BoldItalic",
+--   - "Palatino-Roman",
+--   - "Palatino-Italic",
+--   - "Palatino-Bold",
+--   - "Palatino-BoldItalic",
+--   - "Symbol",
+--   - "ZapfChancery-MediumItalic",
+--   - "ZapfDingbats",
+--
 --  </description>
 --  <c_version>gtk+extra 0.99.14<c_version>
 
@@ -592,7 +631,7 @@ package Gtk.Extra.Plot is
       Transparent   : in Boolean;
       Justification : in Gtk.Enums.Gtk_Justification);
    --  Set the attributes to be used for the title of the axis.
-   --  Ps_Font should be a postscript font (see Gtk.Plot.PsFont).
+   --  Font is a postscript font name (see ???).
 
    procedure Axis_Set_Labels_Attributes
      (Plot          : access Gtk_Plot_Record;
@@ -605,7 +644,6 @@ package Gtk.Extra.Plot is
       Transparent   : in Boolean;
       Justification : in Gtk.Enums.Gtk_Justification);
    --  Set the attributes to be used for the ticks labels.
-   --  Ps_Font should be a postscript font (see Gtk.Plot.PsFont).
 
    procedure Axis_Use_Custom_Tick_Labels (Plot   : access Gtk_Plot_Record;
                                           Axis   : in Plot_Axis_Pos;
@@ -792,7 +830,6 @@ package Gtk.Extra.Plot is
                                      Foreground : in Gdk.Color.Gdk_Color;
                                      Background : in Gdk.Color.Gdk_Color);
    --  Set the attributes to use when displaying the legend.
-   --  Ps_Font is the name of a postscript font (see Gtk.Plot.PsFont)
 
    ----------
    -- Line --
