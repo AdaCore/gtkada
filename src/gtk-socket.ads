@@ -28,7 +28,7 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  Note that this package is curretnyl not supported under Win32 systems.
+--  Note that this package is currently not supported under Win32 systems.
 --
 --  Together with Gtk_Plug, Gtk_Socket provides the ability to embed widgets
 --  from one process into another process in a fashion that is transparent to
