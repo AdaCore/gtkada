@@ -47,8 +47,8 @@
 --  automatically adds a Gtk_Accel_Label to the Gtk_Menu_Item and calls
 --  Set_Accel_Widget to set it up for you.
 --
---  A Gtk_Accel_Label will only display accelerators which have
---  Accel_Visible (see Gtk.Accel_Group) set. A Gtk_Accel_Label can display
+--  A Gtk_Accel_Label will only display accelerators which have the
+--  Accel_Visible (see Gtk.Accel_Group) flag set. A Gtk_Accel_Label can display
 --  multiple accelerators and even signal names, though it is almost always
 --  used to display just one accelerator key.
 --  </description>
@@ -144,5 +144,6 @@ end Gtk.Accel_Label;
 --  --  accelerators. We just need to make sure we use Accel_Visible here.
 --
 --  Add_Accelerator
---    (Save_Item, "activate", Accel_Group, GDK_S, Control_Mask, Accel_Visible);
+--    (Save_Item, "activate", Accel_Group,
+--     GDK_S, Control_Mask, Accel_Visible);
 --  </example>
