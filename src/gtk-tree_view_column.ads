@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -81,7 +81,6 @@ package Gtk.Tree_View_Column is
 
    type Gtk_Tree_View_Column_Sizing is
      (Tree_View_Column_Grow_Only,
-      Tree_View_Column_Resizable,
       Tree_View_Column_Autosize,
       Tree_View_Column_Fixed);
    pragma Convention (C, Gtk_Tree_View_Column_Sizing);
