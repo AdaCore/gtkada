@@ -123,7 +123,7 @@ package body Test is
       Add (Box, Gamma);
       Show (Gamma);
 
-      Gtk_New (Button, With_Label => "Print Vector");
+      Gtk_New (Button, Label => "Print Vector");
       Add (Box, Button);
       Id := Gamma_Cb.Connect (Button, "clicked",
                               Print_Gamma_Vector'Access, Gamma);
@@ -221,14 +221,14 @@ package body Test is
       Pack_Start (V_Box, A_Box);
 
       --  Create the first button
-      Gtk_New (A_Button, With_Label => "Button1");
+      Gtk_New (A_Button, Label => "Button1");
       Id := String_Cb.Connect (A_Button, "clicked",
                                Hello'Access, "Button1");
       Pack_Start (A_Box, A_Button, True, True, 0);
       Show (A_Button);
 
       --  Create the second button
-      Gtk_New (A_Button, With_Label => "Button2");
+      Gtk_New (A_Button, Label => "Button2");
       Id := String_Cb.Connect (A_Button, "clicked",
                                Hello'Access, "Button2");
       Pack_Start (A_Box, A_Button, True, True, 0);
@@ -260,7 +260,7 @@ package body Test is
       Gtk_New (Tooltips);
 
       --  Launch dialog
-      Gtk_New (A_Button, With_Label => "Color Selection");
+      Gtk_New (A_Button, Label => "Color Selection");
       Id := Void_Cb_Button.Connect (A_Button, "clicked",
                                     Launch_Dialog'Access);
       Pack_Start (V_Box, A_Button, True, True, 5);
@@ -269,7 +269,7 @@ package body Test is
                "private");
 
       --  Launch gamma curve
-      Gtk_New (A_Button, With_Label => "Gamma Curve");
+      Gtk_New (A_Button, Label => "Gamma Curve");
       Id := Void_Cb_Button.Connect (A_Button, "clicked",
                                     Launch_Gamma'Access);
       Pack_Start (V_Box, A_Button, True, True, 5);
@@ -278,7 +278,7 @@ package body Test is
                "private");
 
       --  Launch drawing area
-      Gtk_New (A_Button, With_Label => "Drawing Area");
+      Gtk_New (A_Button, Label => "Drawing Area");
       Id := Void_Cb_Button.Connect (A_Button, "clicked",
                                     Launch_Drawing'Access);
       Pack_Start (V_Box, A_Button, True, True, 5);
