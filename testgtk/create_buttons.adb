@@ -14,18 +14,17 @@ with Gtk; use Gtk;
 
 package body Create_Buttons is
 
-   package Button_Cb is new Signal.Callback (Gtk_Button, Gtk_Button);
+   package Button_Cb is new Signal.Object_Callback (Gtk_Button);
    package Window_Cb is new Signal.Object_Callback (Gtk_Widget);
 
    Window : Gtk.Window.Gtk_Window;
 
-   procedure Button_Window (Widget : in out Gtk_Button'Class;
-                            Data   : in out Gtk_Button) is
+   procedure Button_Window (Widget : in out Gtk_Button'Class) is
    begin
-      if Visible_Is_Set (Data) then
-         Hide (Data);
+      if Visible_Is_Set (Widget) then
+         Hide (Widget);
       else
-         Show (Data);
+         Show (Widget);
       end if;
    end Button_Window;
 
