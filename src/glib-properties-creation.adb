@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001 ACT-Europe                   --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -197,10 +197,10 @@ package body Glib.Properties.Creation is
    -------------
 
    function Default (Param : Param_Spec_Boolean) return Boolean is
-      function Internal (Param : Param_Spec_Boolean) return Boolean;
+      function Internal (Param : Param_Spec_Boolean) return Gboolean;
       pragma Import (C, Internal, "ada_gparam_get_default_boolean");
    begin
-      return Internal (Param);
+      return To_Boolean (Internal (Param));
    end Default;
 
    ------------------
@@ -215,13 +215,13 @@ package body Glib.Properties.Creation is
    is
       function Internal
         (Name, Nick, Blurb : String;
-         Default           : Boolean;
+         Default           : Gboolean;
          Flags             : Param_Flags) return Param_Spec;
       pragma Import (C, Internal, "g_param_spec_boolean");
    begin
       return Internal
         (Name & ASCII.Nul, Nick & ASCII.Nul, Blurb & ASCII.Nul,
-         Default, Flags);
+         To_Gboolean (Default), Flags);
    end Gnew_Boolean;
 
    -------------
@@ -711,10 +711,10 @@ package body Glib.Properties.Creation is
    ---------------------
 
    function Ensure_Non_Null (Param : Param_Spec_String) return Boolean is
-      function Internal (Param : Param_Spec_String) return Boolean;
+      function Internal (Param : Param_Spec_String) return Gboolean;
       pragma Import (C, Internal, "ada_gparam_ensure_non_null_string");
    begin
-      return Internal (Param);
+      return To_Boolean (Internal (Param));
    end Ensure_Non_Null;
 
    -----------------
