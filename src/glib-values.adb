@@ -30,6 +30,18 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Glib.Values is
 
+   ----------
+   -- Free --
+   ----------
+
+   procedure Free (Val : in out GValues) is
+      procedure Internal (Value_Array : System.Address);
+      pragma Import (C, Internal, "g_value_array_free");
+   begin
+      Internal (Val.Arr);
+      Val := (Nb => 0, Arr => System.Null_Address);
+   end Free;
+
    -----------------
    -- Get_Boolean --
    -----------------
@@ -68,10 +80,25 @@ package body Glib.Values is
    -- Make_Values --
    -----------------
 
+   function Make_Values (Nb : Guint) return GValues is
+      function Internal (N_Prealloced : Guint) return System.Address;
+      pragma Import (C, Internal, "g_value_array_new");
+   begin
+      return (Nb => Nb, Arr => Internal (Nb));
+   end Make_Values;
+
+   -----------------
+   -- Make_Values --
+   -----------------
+
    function Make_Values (Nb : Guint; Val : System.Address) return GValues is
    begin
       return (Nb => Nb, Arr => Val);
    end Make_Values;
+
+   ---------
+   -- Nth --
+   ---------
 
    function Nth (Val : GValues; Num : Guint) return GValue is
       function Internal (Val : System.Address; Num : Guint) return GValue;

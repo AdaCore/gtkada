@@ -51,9 +51,17 @@ package Glib.Values is
    --  table can be of any type.
    --  The index of the first element is always 1.
 
+   function Make_Values (Nb : Guint) return GValues;
+   --  Create a new GValues structure from scratch. This procedure
+   --  causes the allocation of an underlying C array, and this memory
+   --  should be deallocated after use using procedure Free (see below).
+
    function Make_Values (Nb : Guint; Val : System.Address) return GValues;
-   --  Build a Gvalues structure from the given C array. Nb should be the
+   --  Build a GValues structure from the given C array. Nb should be the
    --  number of elements in the Values array.
+
+   procedure Free (Val : in out GValues);
+   --  Deallocate the memory associated to the given Values array.
 
    function Nth (Val : GValues; Num : Guint) return GValue;
    --  Return the Num-th element from Values.
