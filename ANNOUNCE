@@ -9,6 +9,10 @@ The primary download site is http://libre.act-europe.fr/GtkAda
 This version represents a minor update compared to GtkAda 2.2.0, and is
 suitable for use with Gtk+ 2.2.0 and above.
 
-New features in 2.2.x:
+New features in 2.2.1:
+
 - New widget GtkAda.Multi_Paned
+- Improvements in GtkAda.MDI (more flexible drag-n-drop, ability to split
+  areas in multiple parts, ...)
+- New style-related functions bound in Gtk.widget
 
