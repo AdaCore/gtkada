@@ -18,7 +18,7 @@ INSTALL_DATA = @INSTALL_DATA@
 CFLAGS = @CFLAGS@ -Wall @GTK_CFLAGS@ -I.. $(FPIC)
 
 GNATMAKEBINDFLAGS =
-GNATMAKELDFLAGS = -largs -L. @GTKADA_LINK@ @GTK_LIBS@
+GNATMAKELDFLAGS = -largs -L. -lgtkada @GTK_LIBS@
 
 GETTEXT_INTL=@GETTEXT_INTL@
 HAVE_GETTEXT=@HAVE_GETTEXT@
@@ -30,7 +30,6 @@ MKDIR = mkdir -p
 RMDIR = rmdir
 MV = mv
 
-SONAME        = libgtkada$(SO_EXT)
 LIBNAME       = libgtkada$(SO_EXT)
 ARCHIVENAME   = libgtkada.a
 
@@ -48,7 +47,11 @@ c_extra_objects = gtkextra/gtk*.o
 
 all: dirs libs tools
 
+ifeq ($(BUILD_SHARED),yes)
 libs: extra $(LIBNAME) $(ARCHIVENAME) opengl pixbuf install_ali
+else
+libs: extra $(ARCHIVENAME) opengl pixbuf install_ali
+endif
 
 opengl: force
 	$(MAKE) -C opengl
@@ -68,7 +71,7 @@ dirs:: force
 	-$(CHMOD) +x $(GATE) $(GTKADA_CONFIG)
 
 $(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
-	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects) $(c_extra_objects) @GTK_LIBS@
+	$(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects) $(c_extra_objects) @GTK_LIBS@
 	-@if [ ! -f .devel ]; then \
 	  strip $(LIBNAME); \
 	  $(CHMOD) +x $(LIBNAME); \
@@ -88,21 +91,21 @@ install_ali::
 	test -f .devel || $(CP) $(LIB_DIR)/*.ali .
 	test -f .devel || $(CHMOD) -w glib*.ali gdk*.ali gtk*.ali
 
-$(GATE_EX):: $(GATE_SRC) $(LIBNAME)
+$(GATE_EX):: $(GATE_SRC) $(ARCHIVE_NAME)
 	@if [ -f .devel ]; then \
 	  $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	else \
 	  $(GNATMAKE) $(GNATFLAGS) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	fi
 
-$(DGATE):: $(DGATE).adb $(LIBNAME)
+$(DGATE):: $(DGATE).adb $(ARCHIVE_NAME)
 	@if [ -f .devel ]; then \
 	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) $(DGATE) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	else \
 	   $(GNATMAKE) $(GNATFLAGS) $(DGATE) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	fi
 
-$(GDIALOG):: $(GDIALOG).adb $(LIBNAME)
+$(GDIALOG):: $(GDIALOG).adb $(ARCHIVE_NAME)
 	@if [ -f .devel ]; then \
 	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) $(GDIALOG) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	else \
@@ -130,7 +133,7 @@ install: all
 	   $(MKDIR) $(incdir); \
 	   $(MKDIR) $(alidir); \
 	   $(INSTALL_DATA) $(ARCHIVENAME) $(libdir); \
-	   $(INSTALL_DATA) $(LIBNAME) $(libdir); \
+	   -$(INSTALL_DATA) $(LIBNAME) $(libdir); \
 	   $(CP) glib*.ads glib*.adb $(MESA_SPECS) $(incdir); \
 	   $(CP) gdk*.ads gdk*.adb $(incdir); \
 	   $(CP) gtk*.ads gtk*.adb $(incdir); \
