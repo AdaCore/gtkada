@@ -850,6 +850,7 @@ private
       Background_Color  : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Title_Bar_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Focus_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Default_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
 
       Selection_Dialog : Gtk.Widget.Gtk_Widget;
       --  The interactive dialog for selecting new children.
