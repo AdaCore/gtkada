@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -114,12 +114,15 @@ package body Gtk.Arguments is
    -- To_Requisition --
    --------------------
 
-   function To_Requisition (Args : Gtk_Args; Num : Positive)
-     return Gtk.Widget.Gtk_Requisition_Access
+   function To_Requisition
+     (Args : Gtk_Args; Num : Positive) return Gtk.Widget.Gtk_Requisition_Access
    is
-      function Internal is new
-        Unchecked_Conversion
-          (System.Address, Gtk.Widget.Gtk_Requisition_Access);
+      pragma Warnings (Off);
+      --  This UC is safe aliasing-wise, so kill warning
+      function Internal is new Unchecked_Conversion
+        (System.Address, Gtk.Widget.Gtk_Requisition_Access);
+      pragma Warnings (On);
+
    begin
       return Internal (Get_Address (Nth (Args, Guint (Num))));
    end To_Requisition;
@@ -129,11 +132,15 @@ package body Gtk.Arguments is
    ----------------
 
    function To_Allocation
-     (Args : Gtk_Args; Num : Positive) return Gtk.Widget.Gtk_Allocation_Access
+     (Args : Gtk_Args; Num : Positive)
+      return Gtk.Widget.Gtk_Allocation_Access
    is
-      function Internal is new
-        Unchecked_Conversion
-          (System.Address, Gtk.Widget.Gtk_Allocation_Access);
+      pragma Warnings (Off);
+      --  This UC is safe aliasing-wise, so kill warning
+      function Internal is new Unchecked_Conversion
+        (System.Address, Gtk.Widget.Gtk_Allocation_Access);
+      pragma Warnings (On);
+
    begin
       return Internal (Get_Address (Nth (Args, Guint (Num))));
    end To_Allocation;

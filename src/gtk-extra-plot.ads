@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -125,10 +125,6 @@ package Gtk.Extra.Plot is
    --  A simple line drawn on the plot.
 
    --  <doc_ignore>
-   function Convert is new Unchecked_Conversion
-     (Gtk_Plot_Data, System.Address);
-   function Convert is new Unchecked_Conversion
-     (System.Address, Gtk_Plot_Data);
    package Datasets_List is new Glib.Glist.Generic_List (Gtk_Plot_Data);
 
    function Convert is new Unchecked_Conversion

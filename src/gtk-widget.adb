@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -401,8 +401,12 @@ package body Gtk.Widget is
    function Get_Requisition
      (Value : Glib.Values.GValue) return Gtk_Requisition_Access
    is
+      pragma Warnings (Off);
+      --  This UC is safe aliasing-wise, so kill warning
       function To_Requisition is new
         Ada.Unchecked_Conversion (System.Address, Gtk_Requisition_Access);
+      pragma Warnings (On);
+
    begin
       return To_Requisition (Glib.Values.Get_Address (Value));
    end Get_Requisition;
@@ -414,8 +418,12 @@ package body Gtk.Widget is
    function Get_Allocation
      (Value : Glib.Values.GValue) return Gtk_Allocation_Access
    is
+      pragma Warnings (Off);
+      --  This UC is safe aliasing-wise, so kill warning
       function To_Allocation is new
         Ada.Unchecked_Conversion (System.Address, Gtk_Allocation_Access);
+      pragma Warnings (On);
+
    begin
       return To_Allocation (Glib.Values.Get_Address (Value));
    end Get_Allocation;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2003 ACT-Europe                 --
+--                Copyright (C) 2001-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -83,7 +83,11 @@ package body Glib.Object is
    --------------------
 
    procedure Free_User_Data (Data : in System.Address) is
+      pragma Warnings (Off);
+      --  This UC is safe aliasing-wise, so kill warning
       function Convert is new Unchecked_Conversion (System.Address, GObject);
+      pragma Warnings (On);
+
       procedure Free is new Unchecked_Deallocation
         (GObject_Record'Class, GObject);
 
