@@ -124,7 +124,7 @@ package body Gtkada.File_Selection is
          if Dialog.File_Selected then
             declare
                S    : constant String := Get_Filename (Dialog);
-               Last : Positive := S'Last;
+               Last : Natural := S'Last;
 
             begin
                while Last > S'First
