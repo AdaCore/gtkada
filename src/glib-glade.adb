@@ -734,7 +734,7 @@ package body Glib.Glade is
          Class := Get_Field (N, "class");
          Add_Signal_Instanciation (Class);
          Add_Signal (Top, Handler, Class);
-         Put_Line (File, "   Cb_Id := " &
+         Put_Line (File, "   " &
            To_Ada (Class (Class'First + 3 .. Class'Last)) &
            "_Callback.Connect");
          Put (File, "     (");
@@ -744,8 +744,12 @@ package body Glib.Glade is
          end if;
 
          Put_Line (File, To_Ada (Current.all) &
-           ", """ & Get_Field (P, "name").all & """, " & To_Ada (Handler.all) &
-           "'Access);");
+           ", """ & Get_Field (P, "name").all & """,");
+         Put_Line (File, "      " &
+           To_Ada (Class (Class'First + 3 .. Class'Last)) &
+           "_Callback.To_Marshaller (" &
+           To_Ada (Handler.all) &
+           "'Access));");
          P := Find_Tag (P.Next, "signal");
       end loop;
    end Gen_Signal;
@@ -763,7 +767,7 @@ package body Glib.Glade is
 
    begin
       if Num_Signal_Instanciations > 0 then
-         Put_Line (File, "with Gtk.Signal;");
+         Put_Line (File, "with Gtk.Handlers;");
       end if;
 
       for J in Signal_Range'First .. Num_Signal_Instanciations loop
@@ -780,7 +784,7 @@ package body Glib.Glade is
          S := Signal_Instanciations (J);
          Put_Line (File, "   package " &
            To_Ada (S (S'First + 3 .. S'Last)) & "_Callback is new");
-         Put_Line (File, "     Gtk.Signal.Void_Callback (" &
+         Put_Line (File, "     Gtk.Handlers.Callback (" &
            To_Ada (S.all) & "_Record);");
          New_Line (File);
       end loop;
@@ -800,7 +804,7 @@ package body Glib.Glade is
                   Put_Line (File, "   procedure " &
                     To_Ada (Signals (J).Signal.all));
                   Put_Line (File, "     (Object : access " &
-                    To_Ada (Signals (J).Class.all) & "_Record);");
+                    To_Ada (Signals (J).Class.all) & "_Record'Class);");
                   New_Line (File);
                end if;
             end loop;
@@ -825,7 +829,7 @@ package body Glib.Glade is
                      New_Line (File);
                      Put_Line (File, "   procedure " & Signal);
                      Put_Line (File, "     (Object : access " &
-                       To_Ada (Signals (J).Class.all) & "_Record) is");
+                       To_Ada (Signals (J).Class.all) & "_Record'Class) is");
                      Put_Line (File, "   begin");
                      Put_Line (File, "      null;");
                      Put_Line (File, "   end " & Signal & ";");
