@@ -49,7 +49,7 @@ install:
 endif
 
 $(LIBNAME):: $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
-	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) gdk*.o gtk*.o @GTK_LIBS@ -L.. -lgtkada
+	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) gdk*.o gtk*.o @GTK_LIBS@ -L.. -lgtkada @GL_LIBS@
 	-@if [ ! -f ../.devel ]; then \
 	   strip $(LIBNAME); \
 	fi
