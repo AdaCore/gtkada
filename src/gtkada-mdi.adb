@@ -4741,14 +4741,14 @@ package body Gtkada.MDI is
                      N := N.Next;
                   end loop;
 
-                  if Raised then
-                     Current_Pages (Child.Dock) := Child;
-                  end if;
-
                   --  Undock the child, since it is possible that its current
                   --  dock is different from the one registered in the desktop
                   Dock_Child (Child, False);
                   Child.Dock := Dock;
+
+                  if Raised then
+                     Current_Pages (Child.Dock) := Child;
+                  end if;
 
                   case State is
                      when Docked =>
