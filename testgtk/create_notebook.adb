@@ -327,12 +327,12 @@ package body Create_Notebook is
    -----------------
 
    procedure Page_Switch (Notebook : access Gtk_Notebook_Record'Class;
-                          Page     : in Gtk_Notebook_Page;
+                          Page     : in Gtk.Gtk_Notebook_Page;
                           Page_Num : in Gtk_Notebook)
    is
       pragma Warnings (Off, Page_Num);
-      Old_Page : Gtk_Notebook_Page := Get_Cur_Page (Notebook);
-      Pixmap  : Gtk_Pixmap;
+      Old_Page : Gtk.Gtk_Notebook_Page := Get_Cur_Page (Notebook);
+      Pixmap   : Gtk_Pixmap;
    begin
       Pixmap := Gtk_Pixmap
         (Get_Child (Gtk_Box (Get_Tab_Label (Page)), 0));
