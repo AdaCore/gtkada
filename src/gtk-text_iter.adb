@@ -62,6 +62,22 @@ package body Gtk.Text_Iter is
    package Iter_Access_Address_Conversions is
      new System.Address_To_Access_Conversions (Gtk_Text_Iter);
 
+   ----------
+   -- Copy --
+   ----------
+
+   procedure Copy
+     (Source : Gtk_Text_Iter;
+      Dest   : out Gtk_Text_Iter)
+   is
+      procedure Internal
+        (Source : Gtk_Text_Iter;
+         Dest   : System.Address);
+      pragma Import (C, Internal, "ada_text_iter_copy");
+   begin
+      Internal (Source, Dest'Address);
+   end Copy;
+
    --------------
    -- Get_Char --
    --------------

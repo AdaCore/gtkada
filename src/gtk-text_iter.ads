@@ -44,18 +44,10 @@ package Gtk.Text_Iter is
 
    type Gtk_Text_Iter is limited private;
 
-   --  | function Get_Buffer (Iter   : access Gtk_Text_Iter)
-   --  |                      return Gtk.Text_Buffer.Gtk_Text_Buffer;
-   --  This function is bound in Gtk.Text_Buffer to avoid a circular
-   --  dependency problem.
-   --  ??? Remember to bind this function in Gtk.Text_Buffer.
-
-   --  | GtkTextIter *gtk_text_iter_copy     (const GtkTextIter *iter);
-   --  | void         gtk_text_iter_free     (GtkTextIter       *iter);
-   --  These 2 functions do not need to be bound, they are only needed
-   --  by certain bindings. In our toolkit, we use direct assignment.
-   --  The deallocation is automatically performed as soon as a
-   --  Gtk_Text_Iter goes out of scope.
+   procedure Copy
+     (Source : Gtk_Text_Iter;
+      Dest   : out Gtk_Text_Iter);
+   --  Create a copy of Source.
 
    -----------------------------------------
    -- Convert to different kinds of index --
