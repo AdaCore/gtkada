@@ -57,7 +57,7 @@ $(ARCHIVENAME):: $(PIXBUF_OBJECTS) $(PIXBUF_C_OBJECTS)
 	   $(RANLIB) $(ARCHIVENAME); \
 	fi
 
-$(PIXBUF_OBJECTS):
+$(PIXBUF_OBJECTS)::
 	@if [ -f ../.devel ]; then \
 	   $(CC) -I.. -aO../lib-obj $(GNATFLAGS_DEVEL) $(FPIC) -c $(PIXBUF_SOURCES); \
 	else \
