@@ -185,10 +185,19 @@ package Gtk.Enums is
                                          Progress_Top_To_Bottom);
    --  enum type introduced in gtk1.1
 
-   type Gtk_Ctree_Line_Style is (Ctree_Lines_None,
-                                 Ctree_Lines_Solid,
-                                 Ctree_Lines_Dotted,
-                                 Ctree_Lines_Tabbed);
+   type Gtk_Ctree_Line_Style is
+     (Ctree_Lines_None,
+      --  No line will be drawn in the Ctree
+
+      Ctree_Lines_Solid,
+      --  Solid lines will be drawn
+
+      Ctree_Lines_Dotted,
+      --  Dotted lines will be drawn
+
+      Ctree_Lines_Tabbed
+      --  The tree won't be highlighted by lines but by tabs surrounding nodes
+     );
 
    type Gtk_Ctree_Expander_Style is (Ctree_Expander_None,
                                      Ctree_Expander_Square,
