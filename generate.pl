@@ -71,11 +71,51 @@ foreach (keys %fields)
 	  $fields{$_}, "$ctype_package Widget");
   }
 
+&print_copyright_notice;
 &generate_specifications;
+&print_copyright_notice;
 &generate_body;
 &generate_c_functions;
 
 ### END ###############
+
+######################################
+## Prints the copyright notice
+######################################
+
+sub print_copyright_notice
+{
+    print <<'EOF';
+-----------------------------------------------------------------------
+--          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--                                                                   --
+-- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU General Public               --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- General Public License for more details.                          --
+--                                                                   --
+-- You should have received a copy of the GNU General Public         --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+--                                                                   --
+-- As a special exception, if other files instantiate generics from  --
+-- this unit, or you link this unit with other files to produce an   --
+-- executable, this  unit  does not  by itself cause  the resulting  --
+-- executable to be covered by the GNU General Public License. This  --
+-- exception does not however invalidate any other reasons why the   --
+-- executable file  might be covered by the  GNU Public License.     --
+-----------------------------------------------------------------------
+EOF
+}
+
 
 ######################################
 ## Parse the definition file
@@ -168,11 +208,13 @@ sub generate_specifications
 	  . "new ".
 	  &package_name ($parent). ".$prefix\_", &create_ada_name ($parent).
 	  " with null record;\n\n");
-    
-    foreach (sort {&ada_func_name ($a) cmp &ada_func_name ($b)} keys %functions)
-      {
-	&print_comment ($_, @{$functions{$_}});
-      }
+
+    ## Since beta 0.2.1, we no longer print the mapping comments at the end
+    ## of the files
+#    foreach (sort {&ada_func_name ($a) cmp &ada_func_name ($b)} keys %functions)
+#      {
+#	&print_comment ($_, @{$functions{$_}});
+#      }
     
     
     push (@output, "end $prefix.$current_package;\n");
@@ -186,7 +228,8 @@ sub generate_specifications
 ###################################
 sub generate_body
   {
-    %with_list = ();
+    %with_list = ("with Gdk; use Gdk" => 1,
+		  "with System" => 1);
     @output = ();
     push (@output, "package body $prefix.$current_package is\n\n");
     
@@ -390,7 +433,9 @@ sub print_arguments
 	    my ($type, $name) = /^(.*[ *])(\w+)\s*$/;
 	    $type =~ s/\s//g;
 	    push (@variables, &create_ada_name ($name));
-	    push (@types, "in " . &{$convert} ($type));
+	    $type = &{$convert} ($type);
+	    $type =~ s/\'Class//;
+	    push (@types, "in " . $type);
 	  }
 
 	foreach (@variables)
@@ -707,11 +752,6 @@ sub convert_c_type
 	return "out Gint$1";
       }
       return "Gint$1";
-    } elsif ($type =~ /int(\*?)/) {
-      if ($1 ne "") {
-	return "out Integer";
-      }
-      return "Integer";
     } elsif ($type eq "gboolean") {
       return "gint";
     } elsif ($type =~ /guint([^*]*)(\*?)/) {
@@ -719,6 +759,11 @@ sub convert_c_type
 	return "out Guint$1";
       }
       return "Guint$1";
+    } elsif ($type =~ /int(\*?)/) {
+      if ($1 ne "") {
+	return "out Integer";
+      }
+      return "Integer";
     } elsif ($type eq "gfloat") {
       return "Gfloat";
     } elsif ($type =~ /(const)?g?char\*/) {
