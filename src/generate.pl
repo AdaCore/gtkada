@@ -551,7 +551,8 @@ sub parse_functions
 
 	  # Associate pointers (return value) with the type instead of the
 	  # name. Preserve comments indications (*/)
-	  s/\s*\*([^\/])/\* $1/g;
+	  s/(\w+)\[\]/* $1/g;   # "*argv[]" arguments (see gnome-client.h)
+	  s/\s*\*([^\/])/* $1/g;
 
 	  # Parse the definition
 
@@ -834,27 +835,35 @@ sub print_declaration
     my ($indent);
     my ($adaname) = &ada_func_name ($func_name);
 
-    if ($adaname =~ /New/)
-      {
-	&print_new_declaration ($func_name, @arguments);
-	push (@output, ";\n\n");
-	&print_initialize_declaration ($func_name, 1, @arguments);
-	if ($has_get_type_subprogram) {
-	  push (@output, "   function Get_Type return Gtk.Gtk_Type;\n");
-	  push (@output, "   --  Return the internal value associated with"
-		. " this widget.\n\n");
+    if (grep (/\.\.\./, @arguments)) {
+      print STDERR "\n\n!!!No code generated for $func_name (variable number",
+	" of arguments\n";
+      push (@output,
+	    "   --  $func_name not bound: variable number of arguments\n\n");
+
+    } else {
+      if ($adaname =~ /New/)
+	{
+	  &print_new_declaration ($func_name, @arguments);
+	  push (@output, ";\n\n");
+	  &print_initialize_declaration ($func_name, 1, @arguments);
+	  if ($has_get_type_subprogram) {
+	    push (@output, "   function Get_Type return Gtk.Gtk_Type;\n");
+	    push (@output, "   --  Return the internal value associated with"
+		  . " this widget.\n\n");
+	  }
 	}
-      }
-    else
-      {
-	$string = ($return eq "void" ? "procedure" : "function");
-	$string .=  " $adaname";
-	push (@output, "   $string");
-	$indent = ' ' x (length ($string) + 3);
-	&print_arguments ($indent, $return, \&convert_ada_type,
-			  3, 0, @arguments);
-	push (@output, ";\n\n");
-      }
+      else
+	{
+	  $string = ($return eq "void" ? "procedure" : "function");
+	  $string .=  " $adaname";
+	  push (@output, "   $string");
+	  $indent = ' ' x (length ($string) + 3);
+	  &print_arguments ($indent, $return, \&convert_ada_type,
+			    3, 0, @arguments);
+	  push (@output, ";\n\n");
+	}
+    }
   }
 
 #########################
@@ -872,6 +881,8 @@ sub print_body
     my ($string);
     my ($indent);
     my ($adaname) = &ada_func_name ($func_name); 
+
+    return if (grep (/\.\.\./, @arguments));
 
     $string = "-- $adaname --";
     push (@output, "   " . '-' x length ($string) . "\n");
@@ -1013,8 +1024,9 @@ sub convert_ada_type
       return "Boolean";
     } elsif ($type eq "gfloat") {
       return "Gfloat";
-    } elsif ($type =~ /(const)?(g?)char\*/) {
-      return "String";
+    } elsif ($type =~ /(const)?(g?)char\*(\*?)/) {
+      return (defined $3) ? "Chars_Ptr_Array" : "String";
+
     } elsif ($type eq "Root_Type") {
 	return "Root_Type";
     } elsif ($type =~ /GSList\*/) {
