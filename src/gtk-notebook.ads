@@ -36,6 +36,7 @@
 --  of widgets, by putting the children into groups of coherent widgets.
 --  </description>
 --  <c_version>1.2.6</c_version>
+
 with Gdk; use Gdk;
 with Glib.Glist;
 with Gtk.Object;
@@ -169,24 +170,21 @@ package Gtk.Notebook is
      (Widget : access Gtk_Notebook_Record'Class) return Gtk_Notebook_Page;
    --  Return the current page.
 
-   --  Note: This function returns a record type instead of an access type
-   --  because there is no easy way to automatically free the memory for a
-   --  Gtk_Notebook_Page..
-
    function Get_Nth_Page
      (Widget   : access Gtk_Notebook_Record'Class;
       Page_Num : Gint) return Gtk.Widget.Gtk_Widget;
    --  Convert from a page number to the real page.
 
-   function Page_Num (Widget : access Gtk_Notebook_Record'Class;
-                      Child  : access Gtk.Widget.Gtk_Widget_Record'Class)
-                     return Gint;
+   function Page_Num
+     (Widget : access Gtk_Notebook_Record'Class;
+      Child  : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
    --  Convert from a child to a page number.
    --  Note that Child is not the notebook page, but the widget you inserted
    --  with Insert_Page, Append_Page,...
 
-   procedure Set_Page (Notebook : access Gtk_Notebook_Record;
-                       Page_Num : in Gint);
+   procedure Set_Page
+     (Notebook : access Gtk_Notebook_Record;
+      Page_Num : in Gint);
    --  Modify the current page.
    --  The current page is the page that is currently visible on the screen.
    --  Nothing happens if there is no such page.
