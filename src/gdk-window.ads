@@ -30,6 +30,7 @@ with Glib; use Glib;
 with Gdk;
 with Gdk.Color;
 with Gdk.Cursor;
+with Gdk.Geometry;
 with Gdk.Types;
 with Gdk.Visual;
 with Gdk.Window_Attr;
@@ -144,10 +145,20 @@ package Gdk.Window is
                         Min_Height : in     Gint;
                         Max_Width  : in     Gint;
                         Max_Height : in     Gint;
-                        Flags      : in     Gdk.Types.Gdk_Window_Hint);
+                        Flags      : in     Gdk.Types.Gdk_Window_Hints);
+
+   procedure Set_Geometry_Hints (Window   : in out Gdk_Window;
+                                 Geometry : in out Gdk.Geometry.Gdk_Geometry;
+                                 Flags    : in     Gdk.Types.Gdk_Window_Hints);
 
    procedure Set_Title (Window : in out Gdk_Window;
                         Title  : in     String);
+
+   procedure Set_Role (Window : in out Gdk_Window;
+                       Role   : in     String);
+
+   procedure Set_Transient_For (Window : in out Gdk_Window;
+                                Leader : in     Gdk_Window);
 
    procedure Set_Background (Window : in out Gdk_Window;
                              Color  : in     Gdk.Color.Gdk_Color);

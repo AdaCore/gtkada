@@ -28,6 +28,7 @@
 
 package body Gdk.Window is
 
+
    -------------
    --  Clear  --
    -------------
@@ -38,6 +39,7 @@ package body Gdk.Window is
    begin
       Internal (Get_Object (Window));
    end Clear;
+
 
    ----------------
    -- Clear_Area --
@@ -55,6 +57,7 @@ package body Gdk.Window is
       Internal (Get_Object (Window), X, Y, Width, Height);
    end Clear_Area;
 
+
    --------------------
    --  Clear_Area_E  --
    --------------------
@@ -71,6 +74,7 @@ package body Gdk.Window is
       Internal (Get_Object (Window), X, Y, Width, Height);
    end Clear_Area_E;
 
+
    ---------------
    --  Destroy  --
    ---------------
@@ -83,6 +87,7 @@ package body Gdk.Window is
       Set_Object (Window, System.Null_Address);
    end Destroy;
 
+
    -------------------
    --  Foreign_New  --
    -------------------
@@ -94,6 +99,7 @@ package body Gdk.Window is
    begin
       Set_Object (Window, Internal (An_Id));
    end Foreign_New;
+
 
    ---------------
    --  Gdk_New  --
@@ -116,6 +122,7 @@ package body Gdk.Window is
                             Attributes => Get_Object (Attributes),
                             Attributes_Mask => Attributes_Mask));
    end Gdk_New;
+
 
    ------------------
    -- Get_Colormap --
@@ -165,6 +172,7 @@ package body Gdk.Window is
       return Internal (Get_Object (Window));
    end Get_Events;
 
+
    --------------------
    --  Get_Geometry  --
    --------------------
@@ -185,6 +193,7 @@ package body Gdk.Window is
       Internal (Get_Object (Window), X, Y, Width, Height, Depth);
    end Get_Geometry;
 
+
    ------------------
    --  Get_Origin  --
    ------------------
@@ -201,6 +210,7 @@ package body Gdk.Window is
                                        X'Address, Y'Address));
    end Get_Origin;
 
+
    -----------------
    --  Get_Parent --
    -----------------
@@ -212,6 +222,7 @@ package body Gdk.Window is
    begin
       Set_Object (Parent, Internal (Get_Object (Window)));
    end Get_Parent;
+
 
    --------------------
    --  Get_Position  --
@@ -258,6 +269,7 @@ package body Gdk.Window is
       Internal (Get_Object (Window), Width, Height);
    end Get_Size;
 
+
    --------------------
    --  Get_Toplevel  --
    --------------------
@@ -269,6 +281,7 @@ package body Gdk.Window is
    begin
       Set_Object (Toplevel, Internal (Get_Object (Window)));
    end Get_Toplevel;
+
 
    ----------------
    --  Get_Type  --
@@ -283,6 +296,7 @@ package body Gdk.Window is
       return Internal (Get_Object (Window));
    end Get_Type;
 
+
    ------------------
    --  Get_Visual  --
    ------------------
@@ -296,6 +310,7 @@ package body Gdk.Window is
       return Result;
    end Get_Visual;
 
+
    ------------
    --  Hide  --
    ------------
@@ -307,6 +322,7 @@ package body Gdk.Window is
       Internal (Get_Object (Window));
    end Hide;
 
+
    -------------
    --  Lower  --
    -------------
@@ -317,6 +333,7 @@ package body Gdk.Window is
    begin
       Internal (Get_Object (Window));
    end Lower;
+
 
    --------------------------
    --  Merge_Child_Shapes  --
@@ -344,6 +361,7 @@ package body Gdk.Window is
       Internal (Get_Object (Window), X, Y);
    end Move;
 
+
    -------------------
    --  Move_Resize  --
    -------------------
@@ -362,6 +380,7 @@ package body Gdk.Window is
       Internal (Get_Object (Window), X, Y, Width, Height);
    end Move_Resize;
 
+
    -------------
    --  Raise  --
    -------------
@@ -372,6 +391,7 @@ package body Gdk.Window is
    begin
       Internal (Get_Object (Window));
    end Gdk_Raise;
+
 
    -----------
    --  Ref  --
@@ -389,6 +409,7 @@ package body Gdk.Window is
       Internal (Get_Object (Window));
    end Ref;
 
+
    ----------------
    --  Reparent  --
    ----------------
@@ -405,6 +426,7 @@ package body Gdk.Window is
       Internal (Get_Object (Window), Get_Object (New_Parent), X, Y);
    end Reparent;
 
+
    --------------
    --  Resize  --
    --------------
@@ -419,6 +441,7 @@ package body Gdk.Window is
    begin
       Internal (Get_Object (Window), Width, Height);
    end Resize;
+
 
    ----------------------
    --  Set_Background  --
@@ -465,6 +488,7 @@ package body Gdk.Window is
       Internal (Get_Object (Window), Get_Object (Colormap));
    end Set_Colormap;
 
+
    ----------------
    -- Set_Cursor --
    ----------------
@@ -478,6 +502,7 @@ package body Gdk.Window is
    begin
       Internal (Get_Object (Window), Get_Object (Cursor));
    end Set_Cursor;
+
 
    ----------------------
    --  Set_Decoration  --
@@ -493,6 +518,7 @@ package body Gdk.Window is
       Internal (Get_Object (Window), Decorations);
    end Set_Decorations;
 
+
    ------------------
    --  Set_Events  --
    ------------------
@@ -505,6 +531,7 @@ package body Gdk.Window is
    begin
       Internal (Get_Object (Window), Event_Mask);
    end Set_Events;
+
 
    ---------------------
    --  Set_Functions  --
@@ -519,6 +546,24 @@ package body Gdk.Window is
       Internal (Get_Object (Window), Functions);
    end Set_Functions;
 
+
+   --------------------------
+   --  Set_Geometry_Hints  --
+   --------------------------
+
+   procedure Set_Geometry_Hints
+     (Window   : in out Gdk_Window;
+      Geometry : in out Gdk.Geometry.Gdk_Geometry;
+      Flags    : in     Gdk.Types.Gdk_Window_Hints) is
+      procedure Internal (Window   : in System.Address;
+                          Geometry : in out Gdk.Geometry.Gdk_Geometry;
+                          Flags    : in     Gdk.Types.Gdk_Window_Hints);
+      pragma Import (C, Internal, "gdk_window_set_geometry_hints");
+   begin
+      Internal (Get_Object (Window), Geometry, Flags);
+   end Set_Geometry_Hints;
+
+
    -----------------
    --  Set_Group  --
    -----------------
@@ -531,6 +576,7 @@ package body Gdk.Window is
       Internal (Get_Object (Window), Get_Object (Leader));
    end Set_Group;
 
+
    -----------------
    --  Set_Hints  --
    -----------------
@@ -542,18 +588,19 @@ package body Gdk.Window is
                         Min_Height : in     Gint;
                         Max_Width  : in     Gint;
                         Max_Height : in     Gint;
-                        Flags      : in     Gdk.Types.Gdk_Window_Hint) is
+                        Flags      : in     Gdk.Types.Gdk_Window_Hints) is
       procedure Internal
         (Window                : in System.Address;
          X, Y                  : in Gint;
          Min_Width, Min_Height : in Gint;
          Max_Width, Max_Height : in Gint;
-         Flags                 : in Gdk.Types.Gdk_Window_Hint);
+         Flags                 : in Gdk.Types.Gdk_Window_Hints);
       pragma Import (C, Internal, "gdk_window_set_hints");
    begin
       Internal (Get_Object (Window), X, Y, Min_Width, Min_Height,
                 Max_Width, Max_Height, Flags);
    end Set_Hints;
+
 
    -----------------------------
    --  Set_Override_Redirect  --
@@ -569,6 +616,21 @@ package body Gdk.Window is
       Internal (Get_Object (Window), To_Gboolean (Override_Redirect));
    end Set_Override_Redirect;
 
+
+   ----------------
+   --  Set_Role  --
+   ----------------
+
+   procedure Set_Role (Window : in out Gdk_Window;
+                       Role   : in     String) is
+      procedure Internal (Window : in System.Address;
+                          Role   : in String);
+      pragma Import (C, Internal, "gdk_window_set_role");
+   begin
+      Internal (Get_Object (Window), Role & Ascii.NUL);
+   end Set_Role;
+
+
    -----------------
    --  Set_Title  --
    -----------------
@@ -582,6 +644,21 @@ package body Gdk.Window is
       Internal (Get_Object (Window), Title & Ascii.NUL);
    end Set_Title;
 
+
+   -------------------------
+   --  Set_Transient_For  --
+   -------------------------
+
+   procedure Set_Transient_For (Window : in out Gdk_Window;
+                                Leader : in     Gdk_Window) is
+      procedure Internal (Window : in System.Address;
+                          Leader : in System.Address);
+      pragma Import (C, Internal, "gdk_window_set_transient_for");
+   begin
+      Internal (Get_Object (Window), Get_Object (Leader));
+   end Set_Transient_For;
+
+
    ------------
    --  Show  --
    ------------
@@ -592,6 +669,7 @@ package body Gdk.Window is
    begin
       Internal (Get_Object (Window));
    end Show;
+
 
    -------------
    --  Unref  --
@@ -604,6 +682,7 @@ package body Gdk.Window is
       Internal (Get_Object (Window));
       Set_Object (Window, System.Null_Address);
    end Unref;
+
 
    ----------------
    --  Withdraw  --
