@@ -29,6 +29,8 @@ with Create_Menu;
 with Create_Notebook;
 with Create_Paned;
 with Create_Pixmap;
+with Create_Preview_Color;
+with Create_Preview_Gray;
 with Create_Toolbar;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
@@ -99,8 +101,8 @@ package body Test is
       (US ("notebook"), Create_Notebook.Run'Access),
       (US ("panes"), Create_Paned.Run'Access),
       (US ("pixmap"), Create_Pixmap.Run'Access),
-      (US ("preview color"), null),
-      (US ("preview gray"), null),
+      (US ("preview color"), Create_Preview_Color.Run'Access),
+      (US ("preview gray"), Create_Preview_Gray.Run'Access),
       (US ("progress bar"), null),
       (US ("radio buttons"), null),
       (US ("range controls"), null),
