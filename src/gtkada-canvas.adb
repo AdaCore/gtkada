@@ -813,6 +813,7 @@ package body Gtkada.Canvas is
         '(Item => Canvas_Item (Item),
           Next => Canvas.Children);
       Move_To (Canvas, Item, X, Y);
+      Update_Adjustments (Canvas);
    end Put;
 
    --------------
@@ -1687,6 +1688,13 @@ package body Gtkada.Canvas is
          return False;
       end if;
 
+      Set_X (Event, Gdouble (Xbase) + Get_X (Event)
+             - Gdouble (To_Canvas_Coordinates
+                        (Canvas, Canvas.Selection.Item.Coord.X)));
+      Set_Y (Event, Gdouble (Ybase) + Get_Y (Event)
+             - Gdouble (To_Canvas_Coordinates
+                        (Canvas, Canvas.Selection.Item.Coord.Y)));
+
       --  Double-click events are transmitted directly to the item, and are
       --  not used to move an item.
       --  Clicks other than left mouse button are also transmitted directly
@@ -1694,12 +1702,6 @@ package body Gtkada.Canvas is
       if Get_Event_Type (Event) = Gdk_2button_Press
         or else Get_Button (Event) /= 1
       then
-         Set_X (Event, Gdouble (Xbase) + Get_X (Event)
-                - Gdouble (To_Canvas_Coordinates
-                           (Canvas, Canvas.Selection.Item.Coord.X)));
-         Set_Y (Event, Gdouble (Ybase) + Get_Y (Event)
-                - Gdouble (To_Canvas_Coordinates
-                           (Canvas, Canvas.Selection.Item.Coord.Y)));
          --  ??? Should do so for each item in the selection
          On_Button_Click (Canvas.Selection.Item, Event);
          return False;
@@ -1729,7 +1731,7 @@ package body Gtkada.Canvas is
       --  moving an item.
 
       Grab_Add (Canvas);
-
+      Deep_Copy (From => Event, To => Canvas.Event_Press);
       return False;
    end Button_Pressed;
 
@@ -1786,6 +1788,10 @@ package body Gtkada.Canvas is
       --  we actually clicked on should receive the button_click event.
 
       else
+         --  The button-press event wasn't forwarded, since we were expecting
+         --  that the item would move. We thus forward it now
+         On_Button_Click (Canvas.Selection.Item, Canvas.Event_Press);
+
          Set_X (Event, Gdouble (Get_Value (Canvas.Hadj)) +  Get_X (Event)
                 - Gdouble (To_Canvas_Coordinates
                            (Canvas, Canvas.Selection.Item.Coord.X)));
@@ -1794,6 +1800,8 @@ package body Gtkada.Canvas is
                            (Canvas, Canvas.Selection.Item.Coord.Y)));
          On_Button_Click (Canvas.Selection.Item, Event);
       end if;
+
+      Free (Canvas.Event_Press);
 
       return False;
    end Button_Release;
