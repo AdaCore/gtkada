@@ -2,6 +2,8 @@
 func:
 	./generate_doc.pl > generated.texi 2>generated_menu.texi
 	tex func.texi
+	texindex func.cp
+	tex func.texi
 	makeinfo func.texi
 	texi2html func.texi
 
