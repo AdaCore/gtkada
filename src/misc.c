@@ -321,34 +321,16 @@ ada_object_set_flags (GtkObject * object, guint32 flags)
   GTK_OBJECT_SET_FLAGS (object, flags);
 }
 
+gint
+ada_object_flag_is_set (GtkObject * object, guint32 flag)
+{
+  return ((GTK_OBJECT_FLAGS (object) & flag) != 0);
+}
+
 void 
 ada_object_unset_flags (GtkObject * object, guint32 flags)
 {
   GTK_OBJECT_UNSET_FLAGS (object, flags);
-}
-
-guint32
-ada_object_destroyed (GtkObject * object)
-{
-  return GTK_OBJECT_DESTROYED (object);
-}
-
-guint32
-ada_object_floating (GtkObject * object)
-{
-  return GTK_OBJECT_FLOATING (object);
-}
-
-guint32
-ada_object_connected (GtkObject * object)
-{
-  return GTK_OBJECT_CONNECTED (object);
-}
-
-guint32
-ada_object_constructed (GtkObject * object)
-{
-  return GTK_OBJECT_CONSTRUCTED (object);
 }
 
 /*
@@ -358,87 +340,15 @@ ada_object_constructed (GtkObject * object)
  */
 
 guint32 
-ada_widget_toplevel (GtkWidget * widget)
-{
-  return GTK_WIDGET_TOPLEVEL (widget);
-}
-
-guint32
-ada_widget_no_window (GtkWidget * widget)
-{
-  return GTK_WIDGET_NO_WINDOW (widget);
-}
-
-guint32
-ada_widget_realized (GtkWidget * widget)
-{
-  return GTK_WIDGET_REALIZED (widget);
-}
-
-guint32
-ada_widget_mapped (GtkWidget * widget)
-{
-  return GTK_WIDGET_MAPPED (widget);
-}
-
-guint32
-ada_widget_visible (GtkWidget * widget)
-{
-  return GTK_WIDGET_VISIBLE (widget);
-}
-
-guint32
-ada_widget_drawable (GtkWidget * widget)
-{
-  return GTK_WIDGET_DRAWABLE (widget);
-}
-
-guint32 
-ada_widget_sensitive (GtkWidget * widget)
-{
-  return GTK_WIDGET_SENSITIVE (widget);
-}
-
-guint32
-ada_widget_parent_sensitive (GtkWidget * widget)
-{
-  return GTK_WIDGET_PARENT_SENSITIVE (widget);
-}
-
-guint32
 ada_widget_is_sensitive (GtkWidget * widget)
 {
   return GTK_WIDGET_IS_SENSITIVE (widget);
 }
 
 guint32
-ada_widget_can_focus (GtkWidget * widget)
+ada_widget_drawable (GtkWidget * widget)
 {
-  return GTK_WIDGET_CAN_FOCUS (widget);
-}
-
-guint32
-ada_widget_has_focus (GtkWidget * widget)
-{
-  return GTK_WIDGET_HAS_FOCUS (widget);
-}
-
-guint32
-ada_widget_has_default (GtkWidget * widget)
-{
-  return GTK_WIDGET_HAS_DEFAULT (widget);
-}
-
-guint32
-ada_widget_has_grab (GtkWidget * widget)
-{
-  return GTK_WIDGET_HAS_GRAB (widget);
-}
-
-guint32
-ada_widget_rc_style (GtkWidget * widget)
-{
-  return GTK_WIDGET_RC_STYLE (widget);
+  return GTK_WIDGET_DRAWABLE (widget);
 }
 
 guint16
