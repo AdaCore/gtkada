@@ -69,6 +69,7 @@ while ($cfile[$line] !~ /\}/)
 
 
 my (%functions) = &parse_functions;
+my ($abstract) = 1;  # 1 if the type is an abstract type
 
 ## Create some new functions for every field to get
 my ($ctype_package) = "Gtk$current_package*";
@@ -94,17 +95,21 @@ sub generate_specifications
     %with_list = ();
     @output = ();
     $with_list {"with " . &package_name ($parent)} ++;
-    push (@output, "package Gtk.$current_package is\n\n");
-    push (@output, "   type Gtk_$current_package is new ".
-	  &package_name ($parent). ".Gtk_", &create_ada_name ($parent).
-	  " with private;\n\n");
-    
     foreach (sort {&ada_func_name ($a) cmp &ada_func_name ($b)} keys %functions)
       {
 	&print_declaration ($_, @{$functions{$_}});
       }
+    unshift (@output, "   type Gtk_$current_package is "
+	     . ($abstract ? "abstract " : "")
+	     . "new ".
+	     &package_name ($parent). ".Gtk_", &create_ada_name ($parent).
+	     " with private;\n\n");
+    unshift (@output, "package Gtk.$current_package is\n\n");
+    
     push (@output, "\nprivate\n");
-    push (@output, "   type Gtk_$current_package is new ".
+    push (@output, "   type Gtk_$current_package is "
+	  . ($abstract ? "abstract " : "")
+	  . "new ".
 	  &package_name ($parent). ".Gtk_", &create_ada_name ($parent).
 	  " with null record;\n\n");
     
@@ -266,6 +271,7 @@ sub print_new_declaration
     $indent = ' ' x (length ($string));
     &print_arguments ($indent, "void", \&convert_ada_type,
 		      3, 1, @arguments);
+    $abstract = 0;
   }
 
 #########################
