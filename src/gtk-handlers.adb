@@ -132,21 +132,13 @@ package body Gtk.Handlers is
       function Internal
         (Instance  : System.Address;
          Signal_Id : Guint;
-         Detail    : GQuark;
+         Detail    : GQuark := Unknown_Quark;
          Closure   : GClosure;
          After     : Gint) return Handler_Id;
       pragma Import (C, Internal, "g_signal_connect_closure_by_id");
 
-      function Internal2
-        (Object        : System.Address;
-         Name          : String;
-         Func          : System.Address;
-         Marshaller    : System.Address := System.Null_Address;
-         Func_Data     : Destroy_Data_Access;
-         Destroy       : System.Address := System.Null_Address;
-         Object_Signal : Gint := 0;
-         After         : Gint := 0) return Handler_Id;
-      pragma Import (C, Internal2, "gtk_signal_connect_full");
+      function Get_Type (Object : System.Address) return GType;
+      pragma Import (C, Get_Type, "ada_gobject_get_type");
 
       use type System.Address;
       Id      : Handler_Id;
@@ -158,8 +150,8 @@ package body Gtk.Handlers is
       Set_Marshal (Closure, Marshaller);
       Id := Internal
         (Get_Object (Object),
-         Signal_Lookup (Name & ASCII.NUL, Get_Type (Object)),
-         Unknown_Quark, Closure, Boolean'Pos (After));
+         Signal_Id => Signal_Lookup (Name & ASCII.NUL, Get_Type (Object)),
+         Closure => Closure, After => Boolean'Pos (After));
 
       if Slot_Object /= System.Null_Address then
          Data := new Destroy_Data_Record;
@@ -170,16 +162,23 @@ package body Gtk.Handlers is
          --  Destroy_Func will remove the following two connections when
          --  called the first time, so that Destroy_Func is only called once.
 
-         Data.Id2 := Internal2
-           (Get_Object (Object),
-            "destroy" & ASCII.NUL,
-            Destroy_Func'Address,
-            Func_Data => Data);
-         Data.Id3 := Internal2
-           (Slot_Object,
-            "destroy" & ASCII.NUL,
-            Destroy_Func'Address,
-            Func_Data => Data);
+         Closure := CClosure_New
+           (Destroy_Func'Address, Data.all'Address, System.Null_Address);
+         Data.Id2 := Internal
+           (Instance => Get_Object (Object),
+            Signal_Id => Signal_Lookup
+                           ("destroy" & ASCII.NUL, Get_Type (Object)),
+            Closure => Closure,
+            After => 0);
+
+         Closure := CClosure_New
+           (Destroy_Func'Address, Data.all'Address, System.Null_Address);
+         Data.Id3 := Internal
+           (Instance => Slot_Object,
+            Signal_Id => Signal_Lookup
+                           ("destroy" & ASCII.NUL, Get_Type (Slot_Object)),
+            Closure => Closure,
+            After => 0);
       end if;
 
       return Id;
@@ -519,7 +518,7 @@ package body Gtk.Handlers is
             Name   : String;
             Param  : System.Address;
             Ret    : out Return_Type);
-         pragma Import (C, Internal, "gtk_signal_emit_by_name");
+         pragma Import (C, Internal, "g_signal_emit_by_name");
 
          B : Return_Type;
       begin
@@ -760,7 +759,7 @@ package body Gtk.Handlers is
             Name   : String;
             Param  : System.Address;
             Ret    : out Return_Type);
-         pragma Import (C, Internal, "gtk_signal_emit_by_name");
+         pragma Import (C, Internal, "g_signal_emit_by_name");
 
          B : Return_Type;
 
@@ -1095,7 +1094,7 @@ package body Gtk.Handlers is
            (Object : System.Address;
             Name   : String;
             Param  : System.Address);
-         pragma Import (C, Internal, "gtk_signal_emit_by_name");
+         pragma Import (C, Internal, "g_signal_emit_by_name");
       begin
          pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
          Internal
@@ -1323,7 +1322,7 @@ package body Gtk.Handlers is
            (Object : System.Address;
             Name   : String;
             Param  : System.Address);
-         pragma Import (C, Internal, "gtk_signal_emit_by_name");
+         pragma Import (C, Internal, "g_signal_emit_by_name");
 
       begin
          pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
@@ -1353,11 +1352,15 @@ package body Gtk.Handlers is
      (Object : access Glib.GObjects.GObject_Record'Class;
       Name   : String)
    is
-      procedure Internal (Object : System.Address; Name : String);
-      pragma Import (C, Internal, "gtk_signal_emit_stop_by_name");
-
+      procedure Internal
+        (Object : System.Address;
+         Signal_Id : Guint;
+         Detail : GQuark := Unknown_Quark);
+      pragma Import (C, Internal, "g_signal_stop_emission");
    begin
-      Internal (Get_Object (Object), Name & ASCII.NUL);
+      Internal
+        (Get_Object (Object),
+         Signal_Lookup (Name & ASCII.NUL, Get_Type (Object)));
    end Emit_Stop_By_Name;
 
    -------------------
