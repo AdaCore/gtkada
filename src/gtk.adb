@@ -3,17 +3,6 @@ with Gtk.Signal;
 
 package body Gtk is
 
-   type Object_Internal is new Integer;
-
-   ----------------
-   -- Get_Object --
-   ----------------
-
-   function Get_Object (Obj : in Object'Class)
-                        return System.Address is
-   begin
-      return Obj.Ptr;
-   end Get_Object;
 
    -----------------
    -- Destroy --
@@ -33,23 +22,29 @@ package body Gtk is
       Internal (Get_Object (Obj));
    end Destroy;
 
+
+   ----------------
+   -- Get_Object --
+   ----------------
+
+   function Get_Object (Obj : in Object'Class)
+                        return System.Address is
+   begin
+      return Obj.Ptr;
+   end Get_Object;
+
+
    --------------
    -- Init --
    --------------
 
    procedure Init is
-      procedure Internal (Arg  : System.Address;
-                          Argv : System.Address);
-      pragma Import (C, Internal, "gtk_init");
-
-      Argc : Integer := 0;
+      procedure Internal;
+      pragma Import (C, Internal, "ag_gtk_init");
    begin
-      --  FIXME we have to pass the command line arguments to gtk_init,
-      --  FIXME so that -display,... are parsed.
-      --  FIXME We then have to rewrite some of Ada.Command_Line
-      --  FIXME functions, so that we skip already parsed arguments
-      Internal (Argc'Address, System.Null_Address);
+      Internal;
    end Init;
+
 
    --------------
    -- Main --
@@ -62,6 +57,7 @@ package body Gtk is
       Internal;
    end Main;
 
+
    -------------------
    -- Main_Quit --
    -------------------
@@ -73,6 +69,7 @@ package body Gtk is
       Internal;
    end Main_Quit;
 
+
    ----------------
    -- Set_Object --
    ----------------
@@ -83,5 +80,29 @@ package body Gtk is
    begin
       Obj.Ptr := Value;
    end Set_Object;
+
+
+   ------------------
+   --  To_Boolean  --
+   ------------------
+
+   function To_Boolean (Value : in GInt) return Boolean is
+   begin
+      return Value /= 0;
+   end To_Boolean;
+
+
+   ---------------
+   --  To_GInt  --
+   ---------------
+
+   function To_Gint (Bool : in Boolean) return GInt is
+   begin
+      if Bool then
+         return 1;
+      else
+         return 0;
+      end if;
+   end To_Gint;
 
 end Gtk;

@@ -65,9 +65,9 @@ package Gtk is
 private
 
    type Object is tagged
-     record
-        Ptr : System.Address := System.Null_Address;
-     end record;
+      record
+         Ptr : System.Address := System.Null_Address;
+      end record;
 
    function Get_Object (Obj : in Object'Class)
                         return System.Address;
@@ -76,5 +76,8 @@ private
    procedure Set_Object (Obj : in out Object'Class;
                          Value  : in     System.Address);
    pragma Inline (Set_Object);
+
+   function To_Boolean (Value : in GInt) return Boolean;
+   function To_Gint (Bool : in Boolean) return GInt;
 
 end Gtk;
