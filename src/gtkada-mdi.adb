@@ -2402,6 +2402,7 @@ package body Gtkada.MDI is
          --  the call to Modify_BG, which is quite costly since it causes
          --  a queue_resize on the notebook.
          --  Also avoids a potential loop caused by the behavior above.
+
          if not Color_Equal (Get_Bg (Get_Style (Note), State_Normal), Color)
            and then not Color_Equal
              (Get_Bg (Get_Modifier_Style (Note), State_Normal), Color)
