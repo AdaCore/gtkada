@@ -223,18 +223,19 @@ sub parse_definition_file
     my ($line) = 0;
     for ($line = 0; $line < $#deffile; $line ++)
       {
-	last if ($deffile[$line] =~ /^STRUCT\s+_$file\s*$/i);
+	last if ($deffile[$line] =~ /^STRUCT\s+_$file\s*/i);
       }
 
     if ($line < $#deffile) {
-      $deffile[$line] =~ /struct\s+_(.*)/;
+      $deffile[$line] =~ /struct\s+_(\w*)/;
       $current_package = &create_ada_name ($1);
 
       my ($in_comment) = 0;
-      $line += 2;  ## skip the '{' line
+      $line++ while ($deffile[$line] !~ /\{/);
+      $line++;
       if ($deffile[$line] =~ /\/\*/) ## If we have a comment, skip it
 	{
-	  1 while ($deffile[++$line] !~ /\*\//);
+	  while ($deffile[++$line] !~ /\*\//) {};
 	  $line++;
 	}
 
