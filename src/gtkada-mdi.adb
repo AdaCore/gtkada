@@ -2545,6 +2545,7 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Raise_Child (Child : access MDI_Child_Record'Class) is
+      Old_Focus : constant MDI_Child := Child.MDI.Focus_Child;
       Note : Gtk_Notebook;
    begin
       Ref (Child);
@@ -2574,7 +2575,7 @@ package body Gtkada.MDI is
       --  Give the focus to the Focus_Child, since the notebook page switch
       --  might have changed that.
 
-      Give_Focus_To_Child (Child.MDI.Focus_Child);
+      Give_Focus_To_Child (Old_Focus);
    end Raise_Child;
 
    ----------------------
