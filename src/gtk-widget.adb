@@ -1220,25 +1220,42 @@ package body Gtk.Widget is
 
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
-      Child       : Node_Ptr := Find_Tag (N.Child, "child");
-      Q           : Node_Ptr;
-      Top         : constant Node_Ptr := Find_Top_Widget (N);
-      Top_Name    : constant String_Ptr := Get_Field (Top, "name");
-      Cur         : constant String_Ptr := Get_Field (N, "name");
-      S           : String_Ptr;
-      Flag_Set    : Boolean;
-      Use_Default : Boolean;
-      First       : Natural;
-      Last        : Natural;
-      The_First   : Natural;
+      Child        : Node_Ptr := Find_Tag (N.Child, "child");
+      Q            : Node_Ptr;
+      Tree_Top     : Node_Ptr := Find_Top(N);
+      Top          : constant Node_Ptr := Find_Top_Widget (N);
+      Top_Name     : constant String_Ptr := Get_Field (Top, "name");
+      Cur          : constant String_Ptr := Get_Field (N, "name");
+      S            : String_Ptr;
+      Flag_Set     : Boolean;
+      Use_Default  : Boolean;
+      First        : Natural;
+      Last         : Natural;
+      The_First    : Natural;
 
    begin
+
       Object.Generate (N, File);
       Gen_Set (N, "Widget", "sensitive", File);
       Gen_Set (N, "Widget", "UPosition", "x", "y", "", "", File);
       Gen_Set (N, "Widget", "USize", "width", "height", "", "", File);
       Gen_Set (N, "Widget", "state", File);
       Gen_Set (N, "Widget", "extension_events", File);
+
+      -- Generate Set_Name Call
+      S := Get_Field(Find_Tag(Tree_Top.Child, "project"),
+                     "use_widget_names");
+
+      -- Generate call iff use_widget_names = True
+      if (S /= null) and then (S.all = "True") then
+         Put(File, "   Set_Name (");
+         if Top_Name /= Cur then
+            Put (File, To_Ada (Top_Name.all) & ".");
+         end if;
+         Put(File, To_Ada (Cur.all) & ", "); -- Widget.
+         Put(File, '"' & Cur.all & '"');     -- String name of widget.
+         Put_Line(File, ");");
+      end if;
 
       S := Get_Field (N, "can_default");
 

@@ -224,6 +224,27 @@ package body Glib.XML is
    end Get_Attribute;
 
    --------------
+   -- Find_Top --
+   --------------
+
+   function Find_Top
+     (N : Node_Ptr) return Node_Ptr
+   is
+      J : Node_Ptr := N;
+   begin
+
+      -- Given any node in the tree, return the root of the tree.
+      if J = null then
+         return null;
+      elsif J.Parent = null then
+         return J;
+      else
+         return Find_Top(J.Parent);
+      end if;
+
+   end Find_Top;
+
+   --------------
    -- Get_Node --
    --------------
 
