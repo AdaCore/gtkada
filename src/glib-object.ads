@@ -60,6 +60,17 @@ package Glib.Object is
    --
    --  which is easier.
 
+   procedure G_New (Object : out GObject);
+   --  Create a new GObject.
+   --  This is only required when you want to create an Ada tagged type to
+   --  which you can attach new signals. Most of the time, you only need to
+   --  directly create the appropriate Gtk Widget by calling the correct
+   --  Gtk_New procedure.
+
+   procedure Initialize (Object : access GObject_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
    ------------------------
    -- Interfacing with C --
    ------------------------

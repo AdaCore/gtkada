@@ -84,6 +84,30 @@ package body Glib.Object is
       Free (Obj);
    end Free_User_Data;
 
+   -----------
+   -- G_New --
+   -----------
+
+   procedure G_New (Object : out GObject) is
+   begin
+      Object := new GObject_Record;
+      Initialize (Object);
+   end G_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Object : access GObject_Record'Class) is
+      function Internal
+        (Typ : GType; Last : System.Address := System.Null_Address)
+         return System.Address;
+      pragma Import (C, Internal, "g_object_new");
+   begin
+      Set_Object (Object, Internal (GType_Object));
+      Initialize_User_Data (Object);
+   end Initialize;
+
    ----------------
    -- Get_Object --
    ----------------
