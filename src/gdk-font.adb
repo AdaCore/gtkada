@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -194,6 +194,21 @@ package body Gdk.Font is
       return Internal (Get_Object (Font), Str & ASCII.NUL);
    end String_Height;
 
+   -----------------
+   -- Text_Height --
+   -----------------
+
+   function Text_Height (Font : in Gdk_Font;
+                         Str  : in String)
+                        return Gint
+   is
+      function Internal (Font        : in System.Address;
+                         Text        : in String;
+                         Text_Length : in Gint) return Gint;
+      pragma Import (C, Internal, "gdk_text_height");
+   begin
+      return Internal (Get_Object (Font), Str, Str'Length);
+   end Text_Height;
 
    ----------------------
    --  String_Measure  --
