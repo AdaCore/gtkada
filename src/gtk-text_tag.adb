@@ -52,7 +52,7 @@ package body Gtk.Text_Tag is
    is
       function Internal (Name : String) return System.Address;
       function Internal (Name : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_text_attributes_new");
+      pragma Import (C, Internal, "gtk_text_tag_new");
 
    begin
       if Name = "" then
