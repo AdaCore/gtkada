@@ -1642,4 +1642,102 @@ package body Gtkada.Canvas is
       return False;
    end Has_Link;
 
+   ----------------
+   -- Lower_Item --
+   ----------------
+
+   procedure Lower_Item (Canvas : access Interactive_Canvas_Record;
+                         Item   : access Canvas_Item_Record'Class)
+   is
+      Previous     : Canvas_Item_List := Canvas.Children;
+      Current      : Canvas_Item_List;
+   begin
+      --  Already on top?
+
+      if Canvas.Children = null
+        or else Canvas.Children.Item = Canvas_Item (Item)
+      then
+         return;
+      end if;
+
+      Current := Canvas.Children.Next;
+
+      --  Look for the item.
+
+      while Current /= null loop
+         if Current.Item = Canvas_Item (Item) then
+
+            Previous.Next := Current.Next;
+            Current.Next := Canvas.Children;
+            Canvas.Children := Current;
+            exit;
+         end if;
+         Previous := Current;
+         Current := Current.Next;
+      end loop;
+
+      Draw_On_Double_Buffer (Canvas);
+   end Lower_Item;
+
+   ----------------
+   -- Raise_Item --
+   ----------------
+
+   procedure Raise_Item (Canvas : access Interactive_Canvas_Record;
+                         Item   : access Canvas_Item_Record'Class)
+   is
+      Previous     : Canvas_Item_List := null;
+      Current      : Canvas_Item_List := Canvas.Children;
+      To_Move      : Canvas_Item_List := null;
+   begin
+      --  A single item => Nothing to do
+      if Canvas.Children.Next = null then
+         return;
+      end if;
+
+      while Current /= null loop
+         if Current.Item = Canvas_Item (Item) then
+            To_Move := Current;
+            if Previous = null then
+               Canvas.Children := Current.Next;
+            else
+               Previous.Next := Current.Next;
+            end if;
+         else
+            Previous := Current;
+         end if;
+
+         Current := Current.Next;
+      end loop;
+
+      if Previous /= null and then To_Move /= null then
+         Previous.Next := To_Move;
+         To_Move.Next := null;
+      end if;
+
+      --  Have to redraw everything, since there might have been some
+      --  links.
+      Item_Updated (Canvas, Item);
+   end Raise_Item;
+
+   ---------------
+   -- Is_On_Top --
+   ---------------
+
+   function Is_On_Top (Canvas : access Interactive_Canvas_Record;
+                       Item   : access Canvas_Item_Record'Class)
+                      return Boolean
+   is
+      Current      : Canvas_Item_List := Canvas.Children;
+   begin
+      if Current = null then
+         return False;
+      end if;
+
+      while Current.Next /= null loop
+         Current := Current.Next;
+      end loop;
+      return Current.Item = Canvas_Item (Item);
+   end Is_On_Top;
+
 end Gtkada.Canvas;

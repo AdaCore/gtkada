@@ -207,6 +207,23 @@ package Gtkada.Canvas is
                      return Boolean;
    --  Test whether there is a link from From to To, with the same name.
 
+   procedure Raise_Item (Canvas : access Interactive_Canvas_Record;
+                         Item   : access Canvas_Item_Record'Class);
+   --  Raise the item so that it is displayed on top of all the others
+   --  The canvas is refreshed as needed to reflect the change.
+   --  Nothing happens if Item is not part of the canvas.
+
+   procedure Lower_Item (Canvas : access Interactive_Canvas_Record;
+                         Item   : access Canvas_Item_Record'Class);
+   --  Lower the item so that it is displayed below all the others.
+   --  The canvas is refreshed as needed to reflect the change.
+   --  Nothing happens if Item is not part of the canvas.
+
+   function Is_On_Top (Canvas : access Interactive_Canvas_Record;
+                       Item   : access Canvas_Item_Record'Class)
+                      return Boolean;
+   --  Return True if Item is displayed on top of all the others in the canvas.
+
    ------------------------
    -- Items manipulation --
    ------------------------
