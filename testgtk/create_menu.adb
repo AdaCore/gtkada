@@ -39,7 +39,6 @@ with Gtk.Object; use Gtk.Object;
 with Gtk.Option_Menu; use Gtk.Option_Menu;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
 with Gtk.Separator; use Gtk.Separator;
-with Gtk.Signal; use Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;

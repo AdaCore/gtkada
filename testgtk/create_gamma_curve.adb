@@ -32,7 +32,6 @@ with Gtk.Container; use Gtk.Container;
 with Gtk.Curve; use Gtk.Curve;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Gamma_Curve; use Gtk.Gamma_Curve;
-with Gtk.Signal; use Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;

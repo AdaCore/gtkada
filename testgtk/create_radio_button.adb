@@ -32,7 +32,6 @@ with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Separator; use Gtk.Separator;
-with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Radio_Button; use Gtk.Radio_Button;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;

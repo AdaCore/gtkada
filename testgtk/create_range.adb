@@ -37,7 +37,6 @@ with Gtk.Object; use Gtk.Object;
 with Gtk.Scale; use Gtk.Scale;
 with Gtk.Scrollbar; use Gtk.Scrollbar;
 with Gtk.Separator; use Gtk.Separator;
-with Gtk.Signal; use Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;

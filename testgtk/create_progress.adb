@@ -35,7 +35,6 @@ with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Main; use Gtk.Main;
 with Gtk.Misc; use Gtk.Misc;
-with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Progress_Bar; use Gtk.Progress_Bar;
 with Gtk.Tooltips; use Gtk.Tooltips;

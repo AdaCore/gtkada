@@ -31,7 +31,6 @@ with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
-with Gtk.Signal; use Gtk.Signal;
 with Gtk.Paned; use Gtk.Paned;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
