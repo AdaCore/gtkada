@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -36,7 +36,7 @@ package body Gtk.Tree_Item is
    -- Collapse --
    --------------
 
-   procedure Collapse (Tree_Item : in Gtk_Tree_Item'Class)
+   procedure Collapse (Tree_Item : in Gtk_Tree_Item)
    is
       procedure Internal (Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_item_collapse");
@@ -48,7 +48,7 @@ package body Gtk.Tree_Item is
    -- Deselect --
    --------------
 
-   procedure Deselect (Tree_Item : in Gtk_Tree_Item'Class)
+   procedure Deselect (Tree_Item : in Gtk_Tree_Item)
    is
       procedure Internal (Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_item_deselect");
@@ -60,7 +60,7 @@ package body Gtk.Tree_Item is
    -- Expand --
    ------------
 
-   procedure Expand (Tree_Item : in Gtk_Tree_Item'Class)
+   procedure Expand (Tree_Item : in Gtk_Tree_Item)
    is
       procedure Internal (Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_item_expand");
@@ -72,7 +72,7 @@ package body Gtk.Tree_Item is
    -- From_Tree --
    ---------------
 
-   function From_Tree (Tree : in Gtk.Tree.Gtk_Tree'Class)
+   function From_Tree (Tree : in Gtk.Tree.Gtk_Tree)
                        return Gtk_Tree_Item is
       Item : Gtk_Tree_Item;
    begin
@@ -84,7 +84,7 @@ package body Gtk.Tree_Item is
    -- Get_Subtree --
    -----------------
 
-   function Get_Subtree (Tree_Item : in Gtk_Tree_Item'Class)
+   function Get_Subtree (Tree_Item : in Gtk_Tree_Item)
                          return Gtk.Tree.Gtk_Tree
    is
       function Internal (Tree_Item : in System.Address)
@@ -126,7 +126,7 @@ package body Gtk.Tree_Item is
    -- Gtk_Select --
    ----------------
 
-   procedure Gtk_Select (Tree_Item : in Gtk_Tree_Item'Class)
+   procedure Gtk_Select (Tree_Item : in Gtk_Tree_Item)
    is
       procedure Internal (Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_item_select");
@@ -138,7 +138,7 @@ package body Gtk.Tree_Item is
    -- Remove_Subtree --
    --------------------
 
-   procedure Remove_Subtree (Tree_Item : in Gtk_Tree_Item'Class)
+   procedure Remove_Subtree (Tree_Item : in Gtk_Tree_Item)
    is
       procedure Internal (Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_item_remove_subtree");
@@ -151,7 +151,7 @@ package body Gtk.Tree_Item is
    -----------------
 
    procedure Set_Subtree
-      (Tree_Item : in Gtk_Tree_Item'Class;
+      (Tree_Item : in Gtk_Tree_Item;
        Subtree   : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
@@ -167,7 +167,7 @@ package body Gtk.Tree_Item is
    -- To_Tree --
    -------------
 
-   function To_Tree (Item : in Gtk_Tree_Item'Class) return Gtk.Tree.Gtk_Tree is
+   function To_Tree (Item : in Gtk_Tree_Item) return Gtk.Tree.Gtk_Tree is
       Tree : Gtk.Tree.Gtk_Tree;
    begin
       Set_Object (Tree, Get_Object (Item));

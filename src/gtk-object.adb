@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -33,21 +33,20 @@ with Gdk; use Gdk;
 
 package body Gtk.Object is
 
-   -----------------
-   --  Connected  --
-   -----------------
+   ---------------
+   -- Connected --
+   ---------------
 
-   function Connected (Object : in Gtk_Object'Class) return Boolean is
+   function Connected (Object : in Gtk_Object) return Boolean is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_connected");
    begin
       return To_Boolean (Internal (Get_Object (Object)));
    end Connected;
 
-
-   -----------------
+   -------------
    -- Destroy --
-   -----------------
+   -------------
 
    procedure Destroy (Object : in out Gtk_Object) is
       procedure Internal  (Object : in System.Address);
@@ -57,34 +56,33 @@ package body Gtk.Object is
       Set_Object (Object, System.Null_Address);
    end Destroy;
 
-   ----------------
-   --  Destroyed --
-   ----------------
+   ---------------
+   -- Destroyed --
+   ---------------
 
-   function Destroyed (Object : in Gtk_Object'Class) return Boolean is
+   function Destroyed (Object : in Gtk_Object) return Boolean is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_destroyed");
    begin
       return To_Boolean (Internal (Get_Object (Object)));
    end Destroyed;
 
-   -------------
-   --  Flags  --
-   -------------
+   -----------
+   -- Flags --
+   -----------
 
-   function Flags (Object : in Gtk_Object'Class) return Guint32 is
+   function Flags (Object : in Gtk_Object) return Guint32 is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_flags");
    begin
       return Internal (Get_Object (Object));
    end Flags;
 
+   --------------
+   -- Floating --
+   --------------
 
-   ----------------
-   --  Floating  --
-   ----------------
-
-   function Floating (Object : in Gtk_Object'Class) return Boolean is
+   function Floating (Object : in Gtk_Object) return Boolean is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_floating");
    begin
@@ -95,7 +93,7 @@ package body Gtk.Object is
    -- Get_Type --
    --------------
 
-   function Get_Type (Object : in Gtk_Object'Class) return Gint is
+   function Get_Type (Object : in Gtk_Object) return Gint is
       function Internal (Object : in System.Address) return Gint;
       pragma Import (C, Internal, "ada_object_get_type");
    begin
@@ -120,7 +118,7 @@ package body Gtk.Object is
    --  Set_Flags  --
    -----------------
 
-   procedure Set_Flags (Object : in out Gtk_Object'Class;
+   procedure Set_Flags (Object : in out Gtk_Object;
                         Flags  : in     Guint32) is
       procedure Internal (Object : in System.Address;
                           Flags  : in Guint32);
@@ -147,7 +145,7 @@ package body Gtk.Object is
    --  Unset_Flags  --
    -------------------
 
-   procedure Unset_Flags (Object : in out Gtk_Object'Class;
+   procedure Unset_Flags (Object : in out Gtk_Object;
                           Flags  : in     Guint32) is
       procedure Internal (Object : in System.Address;
                           Flags  : in Guint32);

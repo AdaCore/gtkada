@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,22 +26,20 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Bin;
 
 package Gtk.Item is
 
    type Gtk_Item is new Bin.Gtk_Bin with private;
 
-   procedure Item_Select (Item : in Gtk_Item'Class);
+   procedure Item_Select (Item : in Gtk_Item);
 
-   procedure Item_Deselect (Item : in Gtk_Item'Class);
+   procedure Item_Deselect (Item : in Gtk_Item);
 
-   procedure Toggle (Item : in Gtk_Item'Class);
+   procedure Toggle (Item : in Gtk_Item);
 
 private
 
    type Gtk_Item is new Gtk.Bin.Gtk_Bin with null record;
-
 
 end Gtk.Item;

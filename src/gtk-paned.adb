@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -36,7 +36,7 @@ package body Gtk.Paned is
    ----------
 
    procedure Add1
-      (Paned : in Gtk_Paned'Class;
+      (Paned : in Gtk_Paned;
        Child : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
@@ -44,8 +44,7 @@ package body Gtk.Paned is
           Child : in System.Address);
       pragma Import (C, Internal, "gtk_paned_add1");
    begin
-      Internal (Get_Object (Paned),
-                Get_Object (Child));
+      Internal (Get_Object (Paned), Get_Object (Child));
    end Add1;
 
    ----------
@@ -53,7 +52,7 @@ package body Gtk.Paned is
    ----------
 
    procedure Add2
-      (Paned : in Gtk_Paned'Class;
+      (Paned : in Gtk_Paned;
        Child : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
@@ -61,8 +60,7 @@ package body Gtk.Paned is
           Child : in System.Address);
       pragma Import (C, Internal, "gtk_paned_add2");
    begin
-      Internal (Get_Object (Paned),
-                Get_Object (Child));
+      Internal (Get_Object (Paned), Get_Object (Child));
    end Add2;
 
    --------------------
@@ -92,7 +90,7 @@ package body Gtk.Paned is
    -----------------
 
    procedure Gutter_Size
-      (Paned : in Gtk_Paned'Class;
+      (Paned : in Gtk_Paned;
        Size  : in Guint16)
    is
       procedure Internal
@@ -100,8 +98,7 @@ package body Gtk.Paned is
           Size  : in Gint);
       pragma Import (C, Internal, "gtk_paned_gutter_size");
    begin
-      Internal (Get_Object (Paned),
-                Guint16'Pos (Size));
+      Internal (Get_Object (Paned), Guint16'Pos (Size));
    end Gutter_Size;
 
    -----------------
@@ -109,7 +106,7 @@ package body Gtk.Paned is
    -----------------
 
    procedure Handle_Size
-      (Paned : in Gtk_Paned'Class;
+      (Paned : in Gtk_Paned;
        Size  : in Guint16)
    is
       procedure Internal
@@ -117,8 +114,7 @@ package body Gtk.Paned is
           Size  : in Gint);
       pragma Import (C, Internal, "gtk_paned_handle_size");
    begin
-      Internal (Get_Object (Paned),
-                Guint16'Pos (Size));
+      Internal (Get_Object (Paned), Guint16'Pos (Size));
    end Handle_Size;
 
 end Gtk.Paned;

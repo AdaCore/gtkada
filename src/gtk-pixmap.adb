@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -38,7 +38,7 @@ package body Gtk.Pixmap is
    ---------
 
    procedure Get
-      (Pixmap : in Gtk_Pixmap'Class;
+      (Pixmap : in Gtk_Pixmap;
        Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is
@@ -57,7 +57,7 @@ package body Gtk.Pixmap is
    -- Get_Mask --
    --------------
 
-   function Get_Mask (Widget : in Gtk_Pixmap'Class)
+   function Get_Mask (Widget : in Gtk_Pixmap)
                       return      Gdk.Bitmap.Gdk_Bitmap'Class
    is
       function Internal (Widget : in System.Address)
@@ -73,7 +73,7 @@ package body Gtk.Pixmap is
    -- Get_Pixmap --
    ----------------
 
-   function Get_Pixmap (Widget : in Gtk_Pixmap'Class)
+   function Get_Pixmap (Widget : in Gtk_Pixmap)
                         return      Gdk.Pixmap.Gdk_Pixmap'Class
    is
       function Internal (Widget : in System.Address)
@@ -109,7 +109,7 @@ package body Gtk.Pixmap is
    ---------
 
    procedure Set
-      (Pixmap : in Gtk_Pixmap'Class;
+      (Pixmap : in Gtk_Pixmap;
        Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is
@@ -125,4 +125,3 @@ package body Gtk.Pixmap is
    end Set;
 
 end Gtk.Pixmap;
-

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -40,7 +40,7 @@ package body Gtk.Tree is
    ------------
 
    procedure Append
-      (Tree      : in Gtk_Tree'Class;
+      (Tree      : in Gtk_Tree;
        Tree_Item : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
@@ -57,7 +57,7 @@ package body Gtk.Tree is
    --------------------
 
    function Child_Position
-      (Tree   : in Gtk_Tree'Class;
+      (Tree   : in Gtk_Tree;
        Child  : in Gtk.Widget.Gtk_Widget'Class)
        return      Gint
    is
@@ -76,7 +76,7 @@ package body Gtk.Tree is
    -----------------
 
    procedure Clear_Items
-      (Tree    : in Gtk_Tree'Class;
+      (Tree    : in Gtk_Tree;
        Start   : in Gint;
        The_End : in Gint)
    is
@@ -95,7 +95,7 @@ package body Gtk.Tree is
    -- Get_Children --
    ------------------
 
-   function Get_Children (Widget : in Gtk.Tree.Gtk_Tree'Class)
+   function Get_Children (Widget : in Gtk.Tree.Gtk_Tree)
                           return      Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
@@ -111,7 +111,7 @@ package body Gtk.Tree is
    -- Get_Selection --
    -------------------
 
-   function Get_Selection (Widget : in Gtk.Tree.Gtk_Tree'Class)
+   function Get_Selection (Widget : in Gtk.Tree.Gtk_Tree)
                            return      Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
@@ -140,7 +140,7 @@ package body Gtk.Tree is
    ------------
 
    procedure Insert
-      (Tree      : in Gtk_Tree'Class;
+      (Tree      : in Gtk_Tree;
        Tree_Item : in Gtk.Widget.Gtk_Widget'Class;
        Position  : in Gint)
    is
@@ -160,7 +160,7 @@ package body Gtk.Tree is
    -------------
 
    procedure Prepend
-      (Tree      : in Gtk_Tree'Class;
+      (Tree      : in Gtk_Tree;
        Tree_Item : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
@@ -177,7 +177,7 @@ package body Gtk.Tree is
    ------------------
 
    procedure Remove_Items
-      (Tree  : in Gtk_Tree'Class;
+      (Tree  : in Gtk_Tree;
        Items : in Widget_List.Glist)
    is
       procedure Internal
@@ -194,7 +194,7 @@ package body Gtk.Tree is
    ------------------
 
    procedure Select_Child
-      (Tree      : in Gtk_Tree'Class;
+      (Tree      : in Gtk_Tree;
        Tree_Item : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
@@ -211,7 +211,7 @@ package body Gtk.Tree is
    -----------------
 
    procedure Select_Item
-      (Tree : in Gtk_Tree'Class;
+      (Tree : in Gtk_Tree;
        Item : in Gint)
    is
       procedure Internal
@@ -228,7 +228,7 @@ package body Gtk.Tree is
    ------------------------
 
    procedure Set_Selection_Mode
-      (Tree : in Gtk_Tree'Class;
+      (Tree : in Gtk_Tree;
        Mode : in Gtk_Selection_Mode)
    is
       procedure Internal
@@ -245,7 +245,7 @@ package body Gtk.Tree is
    --------------------
 
    procedure Set_View_Lines
-      (Tree : in Gtk_Tree'Class;
+      (Tree : in Gtk_Tree;
        Flag : in Boolean)
    is
       procedure Internal
@@ -262,7 +262,7 @@ package body Gtk.Tree is
    -------------------
 
    procedure Set_View_Mode
-      (Tree : in Gtk_Tree'Class;
+      (Tree : in Gtk_Tree;
        Mode : in Gtk_Tree_View_Mode)
    is
       procedure Internal
@@ -279,7 +279,7 @@ package body Gtk.Tree is
    --------------------
 
    procedure Unselect_Child
-      (Tree      : in Gtk_Tree'Class;
+      (Tree      : in Gtk_Tree;
        Tree_Item : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
@@ -296,7 +296,7 @@ package body Gtk.Tree is
    -------------------
 
    procedure Unselect_Item
-      (Tree : in Gtk_Tree'Class;
+      (Tree : in Gtk_Tree;
        Item : in Gint)
    is
       procedure Internal

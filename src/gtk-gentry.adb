@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -37,7 +37,7 @@ package body Gtk.GEntry is
    -----------------
 
    procedure Append_Text
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Text      : in String)
    is
       procedure Internal
@@ -53,7 +53,7 @@ package body Gtk.GEntry is
    -- Get_Text --
    --------------
 
-   function Get_Text (The_Entry : in Gtk_Entry'Class)
+   function Get_Text (The_Entry : in Gtk_Entry)
                       return      String
    is
       function Internal (The_Entry : in System.Address)
@@ -94,7 +94,7 @@ package body Gtk.GEntry is
    ------------------
 
    procedure Prepend_Text
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Text      : in String)
    is
       procedure Internal
@@ -111,7 +111,7 @@ package body Gtk.GEntry is
    -------------------
 
    procedure Select_Region
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Start     : in Gint;
        The_End  : in Gint)
    is
@@ -131,7 +131,7 @@ package body Gtk.GEntry is
    ------------------
 
    procedure Set_Editable
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Editable  : in Boolean)
    is
       procedure Internal
@@ -148,7 +148,7 @@ package body Gtk.GEntry is
    --------------------
 
    procedure Set_Max_Length
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Max       : in Guint16)
    is
       procedure Internal
@@ -165,7 +165,7 @@ package body Gtk.GEntry is
    ------------------
 
    procedure Set_Position
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Position  : in Gint)
    is
       procedure Internal
@@ -182,7 +182,7 @@ package body Gtk.GEntry is
    --------------
 
    procedure Set_Text
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Text      : in String)
    is
       procedure Internal
@@ -199,7 +199,7 @@ package body Gtk.GEntry is
    --------------------
 
    procedure Set_Visibility
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Visible   : in Boolean)
    is
       procedure Internal

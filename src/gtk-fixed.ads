@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Container;
 with Gtk.Widget;
 
@@ -34,16 +33,16 @@ package Gtk.Fixed is
 
    type Gtk_Fixed is new Gtk.Container.Gtk_Container with private;
 
-   function Get_Children (Widget : in Gtk.Fixed.Gtk_Fixed'Class)
+   function Get_Children (Widget : in Gtk.Fixed.Gtk_Fixed)
                           return      Widget.Widget_List.Glist;
    procedure Gtk_New (Widget : out Gtk_Fixed);
    procedure Move
-      (Fixed  : in Gtk_Fixed'Class;
+      (Fixed  : in Gtk_Fixed;
        Widget : in Gtk.Widget.Gtk_Widget'Class;
        X      : in Gint16;
        Y      : in Gint16);
    procedure Put
-      (Fixed  : in Gtk_Fixed'Class;
+      (Fixed  : in Gtk_Fixed;
        Widget : in Gtk.Widget.Gtk_Widget'Class;
        X      : in Gint16;
        Y      : in Gint16);

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -55,9 +55,6 @@ package Gtk.Radio_Button is
                         Group  : in Widget_SList.GSlist);
 
 private
-
    type Gtk_Radio_Button is new Check_Button.Gtk_Check_Button with null record;
 
-
 end Gtk.Radio_Button;
-

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,7 +35,7 @@ package body Gtk.Toggle_Button is
    -- Is_Active --
    ---------------
 
-   function Is_Active (Widget : in Gtk_Toggle_Button'Class)
+   function Is_Active (Widget : in Gtk_Toggle_Button)
                         return      Boolean
    is
       function Internal (Widget : in System.Address)
@@ -76,7 +76,7 @@ package body Gtk.Toggle_Button is
    --------------
 
    procedure Set_Mode
-      (Toggle_Button  : in Gtk_Toggle_Button'Class;
+      (Toggle_Button  : in Gtk_Toggle_Button;
        Draw_Indicator : in Gint)
    is
       procedure Internal
@@ -93,7 +93,7 @@ package body Gtk.Toggle_Button is
    ---------------
 
    procedure Set_State
-      (Toggle_Button : in Gtk_Toggle_Button'Class;
+      (Toggle_Button : in Gtk_Toggle_Button;
        Active        : in Boolean)
    is
       procedure Internal
@@ -109,7 +109,7 @@ package body Gtk.Toggle_Button is
    -- Toggled --
    -------------
 
-   procedure Toggled (Toggle_Button : in Gtk_Toggle_Button'Class)
+   procedure Toggled (Toggle_Button : in Gtk_Toggle_Button)
    is
       procedure Internal (Toggle_Button : in System.Address);
       pragma Import (C, Internal, "gtk_toggle_button_toggled");

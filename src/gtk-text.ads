@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -37,57 +37,47 @@ package Gtk.Text is
    type Gtk_Text is new Gtk.Editable.Gtk_Editable with private;
 
    function Backward_Delete
-      (Text   : in Gtk_Text'Class;
+      (Text   : in Gtk_Text;
        Nchars : in Guint)
        return      Gint;
    function Forward_Delete
-      (Text   : in Gtk_Text'Class;
+      (Text   : in Gtk_Text;
        Nchars : in Guint)
        return      Gint;
-   procedure Freeze (Text : in Gtk_Text'Class);
-   function Get_Gap_Position (Widget : in Gtk_Text'Class)
-                              return      Guint;
-   function Get_Gap_Size (Widget : in Gtk_Text'Class)
-                          return      Guint;
-   function Get_Hadj (Widget : in Gtk_Text'Class)
+   procedure Freeze (Text : in Gtk_Text);
+   function Get_Gap_Position (Widget : in Gtk_Text) return Guint;
+   function Get_Gap_Size (Widget : in Gtk_Text) return Guint;
+   function Get_Hadj (Widget : in Gtk_Text)
                       return Gtk.Adjustment.Gtk_Adjustment;
-   function Get_Length (Text   : in Gtk_Text'Class)
-                        return      Guint;
-   function Get_Point (Text   : in Gtk_Text'Class)
-                       return      Guint;
-   function Get_Text (Widget : in Gtk_Text'Class)
-                      return      String;
-   function Get_Text_End (Widget : in Gtk_Text'Class)
-                          return      Guint;
+   function Get_Length (Text   : in Gtk_Text) return Guint;
+   function Get_Point (Text   : in Gtk_Text) return Guint;
+   function Get_Text (Widget : in Gtk_Text) return String;
+   function Get_Text_End (Widget : in Gtk_Text) return Guint;
    procedure Gtk_New
       (Widget : out Gtk_Text;
        Hadj   : in Gtk.Adjustment.Gtk_Adjustment'Class
                    := Gtk.Adjustment.Null_Adjustment;
        Vadj   : in Gtk.Adjustment.Gtk_Adjustment'Class
                    := Gtk.Adjustment.Null_Adjustment);
-   function Get_Vadj (Widget : in Gtk_Text'Class)
+   function Get_Vadj (Widget : in Gtk_Text)
                       return Gtk.Adjustment.Gtk_Adjustment;
    procedure Insert
-      (Text   : in Gtk_Text'Class;
+      (Text   : in Gtk_Text;
        Font   : in Gdk.Font.Gdk_Font'Class;
        Fore   : in Gdk.Color.Gdk_Color'Class;
        Back   : in Gdk.Color.Gdk_Color'Class;
        Chars  : in String;
        Length : in Gint);
    procedure Set_Adjustments
-      (Text : in Gtk_Text'Class;
+      (Text : in Gtk_Text;
        Hadj : in Gtk.Adjustment.Gtk_Adjustment'Class;
        Vadj : in Gtk.Adjustment.Gtk_Adjustment'Class);
-   procedure Set_Editable
-      (Text     : in Gtk_Text'Class;
-       Editable : in Boolean);
-   procedure Set_Point
-      (Text  : in Gtk_Text'Class;
-       Index : in Guint);
+   procedure Set_Editable (Text : in Gtk_Text; Editable : in Boolean);
+   procedure Set_Point (Text : in Gtk_Text; Index : in Guint);
    procedure Set_Word_Wrap
-      (Text      : in Gtk_Text'Class;
+      (Text      : in Gtk_Text;
        Word_Wrap : in Boolean);
-   procedure Thaw (Text : in Gtk_Text'Class);
+   procedure Thaw (Text : in Gtk_Text);
 
 private
    type Gtk_Text is new Gtk.Editable.Gtk_Editable with null record;

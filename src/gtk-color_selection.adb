@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,7 +35,7 @@ package body Gtk.Color_Selection is
    -- Get_Color --
    ---------------
 
-   procedure Get_Color (Colorsel : in Gtk_Color_Selection'Class;
+   procedure Get_Color (Colorsel : in Gtk_Color_Selection;
                         Color    : out Color_Array)
    is
       procedure Internal (Colorsel : in System.Address;
@@ -61,7 +61,7 @@ package body Gtk.Color_Selection is
    -- Set_Color --
    ---------------
 
-   procedure Set_Color (Colorsel : in Gtk_Color_Selection'Class;
+   procedure Set_Color (Colorsel : in Gtk_Color_Selection;
                         Color    : in Color_Array)
    is
       procedure Internal (Colorsel : in System.Address;
@@ -75,7 +75,7 @@ package body Gtk.Color_Selection is
    -- Set_Opacity --
    -----------------
 
-   procedure Set_Opacity (Colorsel    : in Gtk_Color_Selection'Class;
+   procedure Set_Opacity (Colorsel    : in Gtk_Color_Selection;
                           Use_Opacity : in Boolean)
    is
       procedure Internal (Colorsel    : in System.Address;
@@ -89,7 +89,7 @@ package body Gtk.Color_Selection is
    -- Set_Update_Policy --
    -----------------------
 
-   procedure Set_Update_Policy (Colorsel : in Gtk_Color_Selection'Class;
+   procedure Set_Update_Policy (Colorsel : in Gtk_Color_Selection;
                                 Policy   : in Enums.Gtk_Update_Type)
    is
       procedure Internal (Colorsel : in System.Address;

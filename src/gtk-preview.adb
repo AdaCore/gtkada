@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -36,7 +36,7 @@ package body Gtk.Preview is
    --------------
 
    procedure Draw_Row
-      (Preview : in Gtk_Preview'Class;
+      (Preview : in Gtk_Preview;
        Data    : in Guchar_Array;
        X       : in Gint;
        Y       : in Gint;
@@ -118,7 +118,7 @@ package body Gtk.Preview is
    ---------
 
    procedure Put
-      (Preview : in Gtk_Preview'Class;
+      (Preview : in Gtk_Preview;
        Window  : in Gdk.Window.Gdk_Window'Class;
        Gc      : in Gdk.GC.Gdk_GC'Class;
        Srcx    : in Gint;
@@ -156,7 +156,7 @@ package body Gtk.Preview is
    -------------
 
    procedure Put_Row
-      (Preview : in Gtk_Preview'Class;
+      (Preview : in Gtk_Preview;
        Src     : in Guchar_Array;
        Dest    : in Guchar_Array;
        X       : in Gint;
@@ -220,7 +220,7 @@ package body Gtk.Preview is
    ----------------
 
    procedure Set_Expand
-      (Preview : in Gtk_Preview'Class;
+      (Preview : in Gtk_Preview;
        Expand  : in Gint)
    is
       procedure Internal
@@ -273,7 +273,7 @@ package body Gtk.Preview is
    ----------
 
    procedure Size
-      (Preview : in Gtk_Preview'Class;
+      (Preview : in Gtk_Preview;
        Width   : in Gint;
        Height  : in Gint)
    is

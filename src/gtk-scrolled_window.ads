@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,34 +35,30 @@ package Gtk.Scrolled_Window is
    type Gtk_Scrolled_Window is new Container.Gtk_Container with private;
 
    procedure Gtk_New
-     (Scrolled_Window :    out Gtk_Scrolled_Window'Class;
+     (Scrolled_Window :    out Gtk_Scrolled_Window;
       Hadjustment     : in     Adjustment.Gtk_Adjustment'Class :=
         Adjustment.Null_Adjustment;
       Vadjustment     : in     Adjustment.Gtk_Adjustment'Class :=
         Adjustment.Null_Adjustment);
 
    procedure Construct
-     (Scrolled_Window : in out Gtk_Scrolled_Window'Class;
+     (Scrolled_Window : in out Gtk_Scrolled_Window;
       Hadjustment     : in     Adjustment.Gtk_Adjustment'Class :=
         Adjustment.Null_Adjustment;
       Vadjustment     : in     Adjustment.Gtk_Adjustment'Class :=
         Adjustment.Null_Adjustment);
 
-   function Get_Hadjustment
-     (Scrolled_Window : in Gtk_Scrolled_Window'Class)
-      return               Adjustment.Gtk_Adjustment;
+   function Get_Hadjustment (Scrolled_Window : in Gtk_Scrolled_Window)
+                             return               Adjustment.Gtk_Adjustment;
 
-   function Get_Vadjustment
-     (Scrolled_Window : in Gtk_Scrolled_Window'Class)
-      return               Adjustment.Gtk_Adjustment;
+   function Get_Vadjustment (Scrolled_Window : in Gtk_Scrolled_Window)
+                             return               Adjustment.Gtk_Adjustment;
 
-   procedure Set_Policy (Scrolled_Window    : in out Gtk_Scrolled_Window'Class;
+   procedure Set_Policy (Scrolled_Window    : in out Gtk_Scrolled_Window;
                          H_Scrollbar_Policy : in     Enums.Gtk_Policy_Type;
                          V_Scrollbar_Policy : in     Enums.Gtk_Policy_Type);
 
 private
-
    type Gtk_Scrolled_Window is new Container.Gtk_Container with null record;
-
 
 end Gtk.Scrolled_Window;

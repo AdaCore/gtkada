@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -25,7 +25,6 @@
 -- exception does not however invalidate any other reasons why the   --
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
-
 
 with Gdk.Bitmap;
 with Gdk.Color;
@@ -48,42 +47,45 @@ package Gtk.CList is
    procedure Free_Line_Data (Data : in out Line_Data);
    --  Free all the strings in Data
 
-
    function Append
-      (Clist : in Gtk_CList'Class;
+      (Clist : in Gtk_CList;
        Text  : in Line_Data)
        return      Gint;
    --  Return the index of the row
 
-   procedure Clear (Clist : in Gtk_CList'Class);
-   procedure Column_Title_Active
-      (Clist  : in Gtk_CList'Class;
-       Column : in Gint);
-   procedure Column_Title_Passive
-      (Clist  : in Gtk_CList'Class;
-       Column : in Gint);
-   procedure Column_Titles_Active (Clist : in Gtk_CList'Class);
-   procedure Column_Titles_Hide (Clist : in Gtk_CList'Class);
-   procedure Column_Titles_Passive (Clist : in Gtk_CList'Class);
-   procedure Column_Titles_Show (Clist : in Gtk_CList'Class);
-   procedure Freeze (Clist : in Gtk_CList'Class);
+   procedure Clear (Clist : in Gtk_CList);
+
+   procedure Column_Title_Active (Clist : in Gtk_CList; Column : in Gint);
+
+   procedure Column_Title_Passive (Clist : in Gtk_CList; Column : in Gint);
+
+   procedure Column_Titles_Active (Clist : in Gtk_CList);
+
+   procedure Column_Titles_Hide (Clist : in Gtk_CList);
+
+   procedure Column_Titles_Passive (Clist : in Gtk_CList);
+
+   procedure Column_Titles_Show (Clist : in Gtk_CList);
+
+   procedure Freeze (Clist : in Gtk_CList);
+
    function Get_Cell_Type
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Row    : in Gint;
        Column : in Gint)
        return      Gtk_Cell_Type;
 
-   function Get_Clist_Window (Clist : in Gtk_CList'Class)
-                              return     Gdk.Window.Gdk_Window;
+   function Get_Clist_Window (Clist : in Gtk_CList)
+                              return Gdk.Window.Gdk_Window;
 
-   function Get_Column_Button (Clist  : in Gtk_CList'Class;
+   function Get_Column_Button (Clist  : in Gtk_CList;
                                Column : in Gint)
                                return Gtk.Button.Gtk_Button;
    --  This function does not exist in C. It returns the button at the top
    --  of the column
 
    procedure Get_Pixmap
-     (Clist    : in Gtk_CList'Class;
+     (Clist    : in Gtk_CList;
       Row      : in Gint;
       Column   : in Gint;
       Pixmap   : out Gdk.Pixmap.Gdk_Pixmap'Class;
@@ -92,7 +94,7 @@ package Gtk.CList is
    --  The result is meaningful only if Is_Valid is True
 
    procedure  Get_Pixtext
-      (Clist    : in Gtk_CList'Class;
+      (Clist    : in Gtk_CList;
        Row      : in Gint;
        Column   : in Gint;
        Text     : in out String;
@@ -102,10 +104,10 @@ package Gtk.CList is
        Is_Valid : out Boolean);
    --  The result is not meaningful is Is_Valid is false
 
-   function Get_Selection (Widget : in Gtk_CList'Class)
-                           return      Gint_List.Glist;
+   function Get_Selection (Widget : in Gtk_CList) return Gint_List.Glist;
+
    procedure Get_Selection_Info
-      (Clist    : in Gtk_CList'Class;
+      (Clist    : in Gtk_CList;
        X        : in Gint;
        Y        : in Gint;
        Row      : out Gint;
@@ -114,108 +116,119 @@ package Gtk.CList is
    --  The result is valid only if Is_Valid is true
 
    procedure Get_Text
-     (Clist    : in Gtk_CList'Class;
+     (Clist    : in Gtk_CList;
       Row      : in Gint;
       Column   : in Gint;
       Text     : out String;
       Is_Valid : out Boolean);
    --  The result is meaningful only if Is_Valid is True
 
-   procedure Gtk_New (Widget  : out Gtk_CList;
-                      Columns : in Gint);
+   procedure Gtk_New (Widget : out Gtk_CList; Columns : in Gint);
+
    procedure Gtk_New
       (Widget  : out Gtk_CList;
        Columns : in Gint;
        Titles  : in Line_Data);
+
    procedure Insert
-      (Clist : in Gtk_CList'Class;
+      (Clist : in Gtk_CList;
        Row   : in Gint;
        Text  : in Line_Data);
+
    procedure Moveto
-      (Clist     : in Gtk_CList'Class;
+      (Clist     : in Gtk_CList;
        Row       : in Gint;
        Column    : in Gint;
        Row_Align : in Gfloat;
        Col_Align : in Gfloat);
-   procedure Remove
-      (Clist : in Gtk_CList'Class;
-       Row   : in Gint);
-   function Row_Is_Visible
-      (Clist  : in Gtk_CList'Class;
-       Row    : in Gint)
-       return      Gtk_Visibility;
+
+   procedure Remove (Clist : in Gtk_CList; Row : in Gint);
+
+   function Row_Is_Visible (Clist : in Gtk_CList; Row  : in Gint)
+                            return      Gtk_Visibility;
+
    procedure Select_Row
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Row    : in Gint;
        Column : in Gint);
+
    procedure Set_Background
-      (Clist : in Gtk_CList'Class;
+      (Clist : in Gtk_CList;
        Row   : in Gint;
        Color : in Gdk.Color.Gdk_Color'Class);
-   procedure Set_Border
-      (Clist  : in Gtk_CList'Class;
-       Border : in Gtk_Shadow_Type);
+
+   procedure Set_Border (Clist : in Gtk_CList; Border : in Gtk_Shadow_Type);
+
    procedure Set_Column_Justification
-      (Clist         : in Gtk_CList'Class;
+      (Clist         : in Gtk_CList;
        Column        : in Gint;
        Justification : in Gtk_Justification);
+
    procedure Set_Column_Title
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Column : in Gint;
        Title  : in String);
+
    procedure Set_Column_Widget
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Column : in Gint;
        Widget : in Gtk.Widget.Gtk_Widget'Class);
+
    procedure Set_Column_Width
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Column : in Gint;
        Width  : in Gint);
+
    procedure Set_Foreground
-      (Clist : in Gtk_CList'Class;
+      (Clist : in Gtk_CList;
        Row   : in Gint;
        Color : in Gdk.Color.Gdk_Color'Class);
+
    procedure Set_Pixmap
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Row    : in Gint;
        Column : in Gint;
        Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+
    procedure Set_Pixtext
-      (Clist   : in Gtk_CList'Class;
+      (Clist   : in Gtk_CList;
        Row     : in Gint;
        Column  : in Gint;
        Text    : in String;
        Spacing : in Guint8;
        Pixmap  : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask    : in Gdk.Bitmap.Gdk_Bitmap'Class);
+
    procedure Set_Policy
-      (Clist             : in Gtk_CList'Class;
+      (Clist             : in Gtk_CList;
        Vscrollbar_Policy : in Gtk_Policy_Type;
        Hscrollbar_Policy : in Gtk_Policy_Type);
-   procedure Set_Row_Height
-      (Clist  : in Gtk_CList'Class;
-       Height : in Gint);
-   procedure Set_Selection_Mode
-      (Clist : in Gtk_CList'Class;
-       Mode  : in Gtk_Selection_Mode);
+
+   procedure Set_Row_Height (Clist : in Gtk_CList; Height : in Gint);
+
+   procedure Set_Selection_Mode (Clist : in Gtk_CList;
+                                 Mode  : in Gtk_Selection_Mode);
+
    procedure Set_Shift
-      (Clist      : in Gtk_CList'Class;
+      (Clist      : in Gtk_CList;
        Row        : in Gint;
        Column     : in Gint;
        Vertical   : in Gint;
        Horizontal : in Gint);
+
    procedure Set_Text
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Row    : in Gint;
        Column : in Gint;
        Text   : in String);
-   procedure Thaw (Clist : in Gtk_CList'Class);
+
+   procedure Thaw (Clist : in Gtk_CList);
+
    procedure Unselect_Row
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Row    : in Gint;
        Column : in Gint);
-
 
    ---------------
    -- Row_Data --
@@ -224,11 +237,9 @@ package Gtk.CList is
    generic
       type Data_Type (<>) is private;
    package Row_Data is
-      function Get (Object : in Gtk_CList'Class;
-                    Row    : in Gint)
-                    return Data_Type;
+      function Get (Object : in Gtk_CList; Row : in Gint) return Data_Type;
 
-      procedure Set (Object : in Gtk_CList'Class;
+      procedure Set (Object : in Gtk_CList;
                      Row    : in Gint;
                      Data   : in Data_Type);
    end Row_Data;

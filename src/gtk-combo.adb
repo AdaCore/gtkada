@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,7 +35,7 @@ package body Gtk.Combo is
    -- Disable_Activate --
    ----------------------
 
-   procedure Disable_Activate (Combo_Box : in Gtk_Combo'Class) is
+   procedure Disable_Activate (Combo_Box : in Gtk_Combo) is
       procedure Internal (Combo_Box  : in System.Address);
       pragma Import (C, Internal, "gtk_combo_disable_activate");
    begin
@@ -46,9 +46,7 @@ package body Gtk.Combo is
    -- Get_Entry --
    ---------------
 
-   function Get_Entry (Combo_Box : in Gtk_Combo'Class)
-                       return         Gtk.GEntry.Gtk_Entry
-   is
+   function Get_Entry (Combo_Box : in Gtk_Combo) return Gtk.GEntry.Gtk_Entry is
       function Internal (Combo_Box : in System.Address)
                          return         System.Address;
       pragma Import (C, Internal, "ada_combo_get_entry");
@@ -62,7 +60,7 @@ package body Gtk.Combo is
    -- Get_List --
    --------------
 
-   function Get_List (Combo_Box : in Gtk_Combo'Class)
+   function Get_List (Combo_Box : in Gtk_Combo)
                       return         Gtk.List.Gtk_List
    is
       function Internal (Combo_Box : in System.Address)
@@ -89,10 +87,7 @@ package body Gtk.Combo is
    -- Set_Case_Sensitive --
    ------------------------
 
-   procedure Set_Case_Sensitive
-     (Combo_Box : in Gtk_Combo'Class;
-      Val       : in Boolean)
-   is
+   procedure Set_Case_Sensitive (Combo_Box : in Gtk_Combo; Val : in Boolean) is
       procedure Internal (Combo_Box : in System.Address;
                           Val       : in Gint);
       pragma Import (C, Internal, "gtk_combo_set_case_sensitive");
@@ -105,7 +100,7 @@ package body Gtk.Combo is
    ---------------------
 
    procedure Set_Item_String
-     (Combo_Box  : in Gtk_Combo'Class;
+     (Combo_Box  : in Gtk_Combo;
       Item       : in Gtk.Item.Gtk_Item'Class;
       Item_Value : in String)
    is
@@ -123,7 +118,7 @@ package body Gtk.Combo is
    -------------------------
 
    procedure Set_Popdown_Strings
-     (Combo_Box : in Gtk_Combo'Class;
+     (Combo_Box : in Gtk_Combo;
       Strings   : in String_List.Glist)
    is
       procedure Internal (Combo_Box : in System.Address;
@@ -138,12 +133,8 @@ package body Gtk.Combo is
    -- Set_Use_Arrows --
    --------------------
 
-   procedure Set_Use_Arrows
-     (Combo_Box : in Gtk_Combo'Class;
-      Val       : in Boolean)
-   is
-      procedure Internal (Combo_Box : in System.Address;
-                          Val       : in Gint);
+   procedure Set_Use_Arrows (Combo_Box : in Gtk_Combo; Val : in Boolean) is
+      procedure Internal (Combo_Box : in System.Address; Val : in Gint);
       pragma Import (C, Internal, "gtk_combo_set_use_arrows");
    begin
       Internal (Get_Object (Combo_Box), Boolean'Pos (Val));
@@ -153,12 +144,10 @@ package body Gtk.Combo is
    -- Set_Use_Arrows_Always --
    ---------------------------
 
-   procedure Set_Use_Arrows_Always
-     (Combo_Box : in Gtk_Combo'Class;
-      Val       : in Boolean)
+   procedure Set_Use_Arrows_Always (Combo_Box : in Gtk_Combo;
+                                    Val : in Boolean)
    is
-      procedure Internal (Combo_Box : in System.Address;
-                          Val       : in Gint);
+      procedure Internal (Combo_Box : in System.Address; Val : in Gint);
       pragma Import (C, Internal, "gtk_combo_set_use_arrows_always");
    begin
       Internal (Get_Object (Combo_Box), Boolean'Pos (Val));
@@ -169,7 +158,7 @@ package body Gtk.Combo is
    -----------------------
 
    procedure Set_Value_In_List
-     (Combo_Box   : in Gtk_Combo'Class;
+     (Combo_Box   : in Gtk_Combo;
       Val         : in Gint;
       Ok_If_Empty : in Boolean)
    is
@@ -182,4 +171,3 @@ package body Gtk.Combo is
    end Set_Value_In_List;
 
 end Gtk.Combo;
-

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -31,23 +31,22 @@ with Gdk; use Gdk;
 
 package body Gtk.Window is
 
-   ------------------------
-   --  Activate_Default  --
-   ------------------------
+   ----------------------
+   -- Activate_Default --
+   ----------------------
 
-   function Activate_Default (Window : in Gtk_Window'Class) return Boolean is
+   function Activate_Default (Window : in Gtk_Window) return Boolean is
       function Internal (Window : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_window_activate_default");
    begin
       return To_Boolean (Internal (Get_Object (Window)));
    end Activate_Default;
 
+   --------------------
+   -- Activate_Focus --
+   --------------------
 
-   ----------------------
-   --  Activate_Focus  --
-   ----------------------
-
-   function Activate_Focus (Window : in Gtk_Window'Class) return Boolean is
+   function Activate_Focus (Window : in Gtk_Window) return Boolean is
       function Internal (Window : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_window_activate_focus");
    begin
@@ -66,11 +65,11 @@ package body Gtk.Window is
       Set_Object (Window, Internal (Gtk_Window_Type'Pos (The_Type)));
    end Gtk_New;
 
-   ----------------
-   --  Position  --
-   ----------------
+   --------------
+   -- Position --
+   --------------
 
-   procedure Position (Window   : in out Gtk_Window'Class;
+   procedure Position (Window   : in out Gtk_Window;
                        Position : in     Gtk_Window_Position) is
       procedure Internal (Window : in System.Address;
                           Position : in Gtk_Window_Position);
@@ -79,12 +78,11 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Position);
    end Position;
 
+   -----------------
+   -- Set_Default --
+   -----------------
 
-   -------------------
-   --  Set_Default  --
-   -------------------
-
-   procedure Set_Default (Window   : in out Gtk_Window'Class;
+   procedure Set_Default (Window   : in out Gtk_Window;
                           Defaultw : in     Widget.Gtk_Widget'Class) is
       procedure Internal (Window, Defaultw : in System.Address);
       pragma Import (C, Internal, "gtk_window_set_default");
@@ -92,24 +90,22 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Get_Object (Defaultw));
    end Set_Default;
 
+   ---------------
+   -- Set_Focus --
+   ---------------
 
-   -----------------
-   --  Set_Focus  --
-   -----------------
-
-   procedure Set_Focus (Window : in out Gtk_Window'Class) is
+   procedure Set_Focus (Window : in out Gtk_Window) is
       procedure Internal (Window : in System.Address);
       pragma Import (C, Internal, "gtk_window_set_focus");
    begin
       Internal (Get_Object (Window));
    end Set_Focus;
 
+   ----------------
+   -- Set_Policy --
+   ----------------
 
-   ------------------
-   --  Set_Policy  --
-   ------------------
-
-   procedure Set_Policy (Window       : in out Gtk_Window'Class;
+   procedure Set_Policy (Window       : in out Gtk_Window;
                          Allow_Shrink : in     Boolean;
                          Allow_Grow   : in     Boolean;
                          Auto_Shrink  : in     Boolean) is
@@ -124,11 +120,11 @@ package body Gtk.Window is
    end Set_Policy;
 
 
-   -------------------
+   ---------------
    -- Set_Title --
-   -------------------
+   ---------------
 
-   procedure Set_Title (Window : in out Gtk_Window'Class;
+   procedure Set_Title (Window : in out Gtk_Window;
                         Title  : in     String) is
       procedure Internal (W : in System.Address;
                           T : in String);
@@ -136,6 +132,5 @@ package body Gtk.Window is
    begin
       Internal (Get_Object (Window), Title & Ascii.NUL);
    end Set_Title;
-
 
 end Gtk.Window;

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -36,7 +36,7 @@ package body Gtk.Menu is
    ------------
 
    procedure Append
-     (Menu  : in Gtk_Menu'Class;
+     (Menu  : in Gtk_Menu;
       Child : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal (Menu  : System.Address;
@@ -51,7 +51,7 @@ package body Gtk.Menu is
    ----------------------
 
    procedure Attach_To_Widget
-     (Menu          : in Gtk_Menu'Class;
+     (Menu          : in Gtk_Menu;
       Attach_Widget : in Gtk.Widget.Gtk_Widget'Class;
       Detacher      : in Gtk_Menu_Detach_Func)
    is
@@ -68,7 +68,7 @@ package body Gtk.Menu is
    -- Detach --
    ------------
 
-   procedure Detach (Menu : in Gtk_Menu'Class)
+   procedure Detach (Menu : in Gtk_Menu)
    is
       procedure Internal (Menu : System.Address);
       pragma Import (C, Internal, "gtk_menu_detach");
@@ -80,7 +80,7 @@ package body Gtk.Menu is
    -- Get_Active --
    ----------------
 
-   function Get_Active (Menu : in Gtk_Menu'Class)
+   function Get_Active (Menu : in Gtk_Menu)
                         return Gtk.Menu_Item.Gtk_Menu_Item
    is
       function Internal (Menu : System.Address)
@@ -96,7 +96,7 @@ package body Gtk.Menu is
    -- Get_Attach_Widget --
    -----------------------
 
-   function Get_Attach_Widget (Menu : in Gtk_Menu'Class)
+   function Get_Attach_Widget (Menu : in Gtk_Menu)
                                return Gtk.Widget.Gtk_Widget
    is
       function Internal (Menu : System.Address)
@@ -125,7 +125,7 @@ package body Gtk.Menu is
    ------------
 
    procedure Insert
-     (Menu     : in Gtk_Menu'Class;
+     (Menu     : in Gtk_Menu;
       Child    : in Gtk.Widget.Gtk_Widget'Class;
       Position : in Gint)
    is
@@ -141,7 +141,7 @@ package body Gtk.Menu is
    -- Popdown --
    -------------
 
-   procedure Popdown (Menu : in Gtk_Menu'Class)
+   procedure Popdown (Menu : in Gtk_Menu)
    is
       procedure Internal (Menu : System.Address);
       pragma Import (C, Internal, "gtk_menu_popdown");
@@ -154,7 +154,7 @@ package body Gtk.Menu is
    -------------
 
    procedure Prepend
-     (Menu  : in Gtk_Menu'Class;
+     (Menu  : in Gtk_Menu;
       Child : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal (Menu  : System.Address;
@@ -169,7 +169,7 @@ package body Gtk.Menu is
    ----------------
 
    procedure Set_Active
-     (Menu  : in Gtk_Menu'Class;
+     (Menu  : in Gtk_Menu;
       Index : in Guint)
    is
       procedure Internal (Menu  : System.Address;
@@ -187,7 +187,7 @@ package body Gtk.Menu is
       -----------
 
       procedure Popup
-        (Menu              : in Gtk_Menu'Class;
+        (Menu              : in Gtk_Menu;
          Parent_Menu_Shell : in Gtk.Menu_Shell.Gtk_Menu_Shell'Class;
          Parent_Menu_Item  : in Gtk.Menu_Item.Gtk_Menu_Item;
          Func              : in Gtk_Menu_Position_Func;
@@ -213,6 +213,5 @@ package body Gtk.Menu is
                    Activate_Time);
       end Popup;
    end Menu_Popup;
-
 
 end Gtk.Menu;

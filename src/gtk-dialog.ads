@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Box;
 with Gtk.Window;
 
@@ -34,9 +33,9 @@ package Gtk.Dialog is
 
    type Gtk_Dialog is new Gtk.Window.Gtk_Window with private;
 
-   function Get_Action_Area (Widget : in Gtk_Dialog'Class)
+   function Get_Action_Area (Widget : in Gtk_Dialog)
                              return      Gtk.Box.Gtk_Box;
-   function Get_Vbox (Widget : in Gtk_Dialog'Class)
+   function Get_Vbox (Widget : in Gtk_Dialog)
                       return      Gtk.Box.Gtk_Box;
    procedure Gtk_New (Widget : out Gtk_Dialog);
 

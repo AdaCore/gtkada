@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -31,12 +31,12 @@ with Gdk; use Gdk;
 
 package body Gtk.Scrolled_Window is
 
-   -----------------
-   --  Construct  --
-   -----------------
+   ---------------
+   -- Construct --
+   ---------------
 
    procedure Construct
-     (Scrolled_Window : in out Gtk_Scrolled_Window'Class;
+     (Scrolled_Window : in out Gtk_Scrolled_Window;
       Hadjustment     : in     Adjustment.Gtk_Adjustment'Class :=
         Adjustment.Null_Adjustment;
       Vadjustment     : in     Adjustment.Gtk_Adjustment'Class :=
@@ -49,13 +49,12 @@ package body Gtk.Scrolled_Window is
                 Get_Object (Hadjustment), Get_Object (Vadjustment));
    end Construct;
 
-
-   ------------------------
-   --  Get_Hadjustement  --
-   ------------------------
+   ----------------------
+   -- Get_Hadjustement --
+   ----------------------
 
    function Get_Hadjustment
-     (Scrolled_Window : in Gtk_Scrolled_Window'Class)
+     (Scrolled_Window : in Gtk_Scrolled_Window)
       return Adjustment.Gtk_Adjustment
    is
       function Internal (Scrolled_Window : in System.Address)
@@ -67,13 +66,12 @@ package body Gtk.Scrolled_Window is
       return Adjust;
    end Get_Hadjustment;
 
-
-   ------------------------
-   --  Get_Vadjustement  --
-   ------------------------
+   ----------------------
+   -- Get_Vadjustement --
+   ----------------------
 
    function Get_Vadjustment
-     (Scrolled_Window : in Gtk_Scrolled_Window'Class)
+     (Scrolled_Window : in Gtk_Scrolled_Window)
       return               Adjustment.Gtk_Adjustment
    is
       function Internal (Scrolled_Window : in System.Address)
@@ -85,13 +83,12 @@ package body Gtk.Scrolled_Window is
       return Adjust;
    end Get_Vadjustment;
 
-
-   ---------------
-   --  Gtk_New  --
-   ---------------
+   -------------
+   -- Gtk_New --
+   -------------
 
    procedure Gtk_New
-     (Scrolled_Window :    out Gtk_Scrolled_Window'Class;
+     (Scrolled_Window :    out Gtk_Scrolled_Window;
       Hadjustment     : in     Adjustment.Gtk_Adjustment'Class :=
         Adjustment.Null_Adjustment;
       Vadjustment     : in     Adjustment.Gtk_Adjustment'Class :=
@@ -104,7 +101,11 @@ package body Gtk.Scrolled_Window is
                                              Get_Object (Vadjustment)));
    end Gtk_New;
 
-   procedure Set_Policy (Scrolled_Window    : in out Gtk_Scrolled_Window'Class;
+   ----------------
+   -- Set_Policy --
+   ----------------
+
+   procedure Set_Policy (Scrolled_Window    : in out Gtk_Scrolled_Window;
                          H_Scrollbar_Policy : in     Enums.Gtk_Policy_Type;
                          V_Scrollbar_Policy : in     Enums.Gtk_Policy_Type) is
       procedure Internal (Scrolled_Window : in System.Address;
@@ -116,6 +117,5 @@ package body Gtk.Scrolled_Window is
                 H_Scrollbar_Policy,
                 V_Scrollbar_Policy);
    end Set_Policy;
-
 
 end Gtk.Scrolled_Window;

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -28,7 +28,6 @@
 
 with Gtk.Dialog;
 
-
 package Gtk.Input_Dialog is
 
    type Gtk_Input_Dialog is new Dialog.Gtk_Dialog with private;
@@ -38,6 +37,5 @@ package Gtk.Input_Dialog is
 private
 
    type Gtk_Input_Dialog is new Dialog.Gtk_Dialog with null record;
-
 
 end Gtk.Input_Dialog;

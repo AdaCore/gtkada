@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -42,27 +42,24 @@ package Gtk.Adjustment is
                       Page_Increment : in Gfloat;
                       Page_Size      : in Gfloat);
 
-   function Get_Value (Adjustment : in Gtk_Adjustment'Class) return Gfloat;
+   function Get_Value (Adjustment : in Gtk_Adjustment) return Gfloat;
 
-   function Get_Step_Increment (Adjustment : in Gtk_Adjustment'Class)
-                                return Gfloat;
+   function Get_Step_Increment (Adjustment : in Gtk_Adjustment) return Gfloat;
 
-   procedure Set_Value (Adjustment : in out Gtk_Adjustment'Class;
-                        Value      : in     Gfloat);
+   procedure Set_Value (Adjustment : in out Gtk_Adjustment; Value : in Gfloat);
 
-   procedure Clamp_Page (Adjustment : in out Gtk_Adjustment'Class;
+   procedure Clamp_Page (Adjustment : in out Gtk_Adjustment;
                          Lower      : in     Gfloat;
                          Upper      : in     Gfloat);
 
-   procedure Set_Page_Size (Adjustment : in out Gtk_Adjustment'Class;
+   procedure Set_Page_Size (Adjustment : in out Gtk_Adjustment;
                             Page_Size  : in Gfloat);
 
-   procedure Set_Page_Increment (Adjustment : in out Gtk_Adjustment'Class;
+   procedure Set_Page_Increment (Adjustment : in out Gtk_Adjustment;
                                  Page_Increment : in Gfloat);
 
 private
 
    type Gtk_Adjustment is new Data.Gtk_Data with null record;
-
 
 end Gtk.Adjustment;

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -33,39 +33,35 @@ package Gtk.Container is
 
    type Gtk_Container is new Gtk.Widget.Gtk_Widget with private;
 
-   procedure Add (Container : in out Gtk_Container'Class;
+   procedure Add (Container : in out Gtk_Container;
                   Widget       : in Gtk.Widget.Gtk_Widget'Class);
 
-   procedure Border_Width (Container : in Gtk_Container'Class;
+   procedure Border_Width (Container : in Gtk_Container;
                            Border_Width : in Gint);
 
-   procedure Remove (Container : in out Gtk_Container'Class;
+   procedure Remove (Container : in out Gtk_Container;
                      Widget : in Gtk.Widget.Gtk_Widget'Class);
 
-   procedure Disable_Resize (Container : in out Gtk_Container'Class);
+   procedure Disable_Resize (Container : in out Gtk_Container);
 
-   procedure Enable_Resize (Container : in out Gtk_Container'Class);
+   procedure Enable_Resize (Container : in out Gtk_Container);
 
-   procedure Block_Resize (Container : in out Gtk_Container'Class);
+   procedure Block_Resize (Container : in out Gtk_Container);
 
-   procedure Unblock_Resize (Container : in out Gtk_Container'Class);
+   procedure Unblock_Resize (Container : in out Gtk_Container);
 
-   function Need_Resize (Container : in Gtk_Container'Class) return Boolean;
+   function Need_Resize (Container : in Gtk_Container) return Boolean;
 
    procedure Set_Focus_Hadjustment
-     (Container  : in out Gtk_Container'Class;
+     (Container  : in out Gtk_Container;
       Adjustment : in     Gtk.Adjustment.Gtk_Adjustment'Class);
 
    procedure Set_Focus_Vadjustment
-     (Container  : in out Gtk_Container'Class;
+     (Container  : in out Gtk_Container;
       Adjustment : in     Gtk.Adjustment.Gtk_Adjustment'Class);
 
 private
 
    type Gtk_Container is new Gtk.Widget.Gtk_Widget with null record;
-
-
-   --  services not mapped because they are probably not needed.
-   --
 
 end Gtk.Container;

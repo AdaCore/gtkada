@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -34,7 +34,7 @@ package Gtk.Radio_Menu_Item is
    type Gtk_Radio_Menu_Item is new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item
      with private;
 
-   function Group (Radio_Menu_Item : in Gtk_Radio_Menu_Item'Class)
+   function Group (Radio_Menu_Item : in Gtk_Radio_Menu_Item)
                    return               Widget_SList.GSlist;
    procedure Gtk_New
       (Widget : out Gtk_Radio_Menu_Item;
@@ -43,7 +43,7 @@ package Gtk.Radio_Menu_Item is
    procedure Gtk_New (Widget : out Gtk_Radio_Menu_Item;
                       Group  : in Widget_SList.GSlist);
    procedure Set_Group
-      (Radio_Menu_Item : in Gtk_Radio_Menu_Item'Class;
+      (Radio_Menu_Item : in Gtk_Radio_Menu_Item;
        Group           : in Widget_SList.GSlist);
 
 private

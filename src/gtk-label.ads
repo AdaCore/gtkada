@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -36,17 +36,15 @@ package Gtk.Label is
    procedure Gtk_New (Label :    out Gtk_Label;
                       Str   : in     String);
 
-   procedure Set (Label : in Gtk_Label'Class;
+   procedure Set (Label : in Gtk_Label;
                   Str   : in String);
 
-   procedure Set_Justify (Label : in Gtk_Label'Class;
+   procedure Set_Justify (Label : in Gtk_Label;
                           Jtype : in Enums.Gtk_Justification);
 
-   function Get (Label : in Gtk_Label'Class) return String;
+   function Get (Label : in Gtk_Label) return String;
 
 private
-
    type Gtk_Label is new Misc.Gtk_Misc with null record;
-
 
 end Gtk.Label;

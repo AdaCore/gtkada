@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -291,7 +291,7 @@ package body Gtk.Style is
    --  Get_Black_GC  --
    --------------------
 
-   function Get_Black_GC (Style : in Gtk_Style'Class) return Gdk.GC.Gdk_GC is
+   function Get_Black_GC (Style : in Gtk_Style) return Gdk.GC.Gdk_GC is
       function Internal (Style : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_style_get_black_gc");
       Result : Gdk.GC.Gdk_GC;
@@ -304,7 +304,7 @@ package body Gtk.Style is
    --  Get_Bg_GC  --
    -----------------
 
-   function Get_Bg_GC (Style : in Gtk_Style'Class;
+   function Get_Bg_GC (Style : in Gtk_Style;
                        State : in Enums.Gtk_State_Type)
                        return Gdk.GC.Gdk_GC
    is
@@ -322,7 +322,7 @@ package body Gtk.Style is
    --  Get_White_GC  --
    --------------------
 
-   function Get_White_GC (Style : in Gtk_Style'Class) return Gdk.GC.Gdk_GC is
+   function Get_White_GC (Style : in Gtk_Style) return Gdk.GC.Gdk_GC is
       function Internal (Style : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_style_get_white_gc");
       Result : Gdk.GC.Gdk_GC;
@@ -414,6 +414,5 @@ package body Gtk.Style is
          Internal (Get_Object (Object));
       end if;
    end Unref;
-
 
 end Gtk.Style;

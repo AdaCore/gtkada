@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,23 +26,19 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Menu_Item;
 
 package Gtk.Check_Menu_Item is
 
    type Gtk_Check_Menu_Item is new Gtk.Menu_Item.Gtk_Menu_Item with private;
 
-   procedure Gtk_New (Widget : out Gtk_Check_Menu_Item;
-                      Label  : in String);
+   procedure Gtk_New (Widget : out Gtk_Check_Menu_Item; Label  : in String);
    procedure Gtk_New (Widget : out Gtk_Check_Menu_Item);
-   procedure Set_Show_Toggle
-      (Menu_Item : in Gtk_Check_Menu_Item'Class;
-       Always    : in Boolean);
-   procedure Set_State
-      (Check_Menu_Item : in Gtk_Check_Menu_Item'Class;
-       State           : in Gint);
-   procedure Toggled (Check_Menu_Item : in Gtk_Check_Menu_Item'Class);
+   procedure Set_Show_Toggle (Menu_Item : in Gtk_Check_Menu_Item;
+                              Always    : in Boolean);
+   procedure Set_State (Check_Menu_Item : in Gtk_Check_Menu_Item;
+                        State           : in Gint);
+   procedure Toggled (Check_Menu_Item : in Gtk_Check_Menu_Item);
 
 private
    type Gtk_Check_Menu_Item is new Gtk.Menu_Item.Gtk_Menu_Item

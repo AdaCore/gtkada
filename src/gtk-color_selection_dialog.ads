@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -39,19 +39,17 @@ package Gtk.Color_Selection_Dialog is
    procedure Gtk_New (Widget : out Gtk_Color_Selection_Dialog;
                       Title  : in String);
 
-   function Get_Colorsel (Dialog : in Gtk_Color_Selection_Dialog'Class)
+   function Get_Colorsel (Dialog : in Gtk_Color_Selection_Dialog)
                           return Gtk.Color_Selection.Gtk_Color_Selection;
-   function Get_OK_Button (Dialog : in Gtk_Color_Selection_Dialog'Class)
+   function Get_OK_Button (Dialog : in Gtk_Color_Selection_Dialog)
                            return Gtk.Button.Gtk_Button;
-   function Get_Reset_Button (Dialog : in Gtk_Color_Selection_Dialog'Class)
+   function Get_Reset_Button (Dialog : in Gtk_Color_Selection_Dialog)
                               return Gtk.Button.Gtk_Button;
-   function Get_Cancel_Button (Dialog : in  Gtk_Color_Selection_Dialog'Class)
+   function Get_Cancel_Button (Dialog : in  Gtk_Color_Selection_Dialog)
                                return Gtk.Button.Gtk_Button;
-   function Get_Help_Button (Dialog : in  Gtk_Color_Selection_Dialog'Class)
+   function Get_Help_Button (Dialog : in  Gtk_Color_Selection_Dialog)
                              return Gtk.Button.Gtk_Button;
    --  Functions to get the fields of the dialog
-
-
 
 private
 

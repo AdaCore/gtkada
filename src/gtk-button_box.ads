@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Box;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
@@ -40,44 +39,40 @@ package Gtk.Button_Box is
        Nvis_Children : in out Integer;
        Width         : in out Integer;
        Height        : in out Integer);
+
    procedure Get_Child_Ipadding
-      (Widget : in Gtk_Button_Box'Class;
-       Ipad_X : in out Gint;
-       Ipad_Y : in out Gint);
-   procedure Get_Child_Ipadding_Default
-      (Ipad_X : in out Gint;
-       Ipad_Y : in out Gint);
-   procedure Get_Child_Size
-      (Widget     : in Gtk_Button_Box'Class;
-       Min_Width  : in out Gint;
-       Min_Height : in out Gint);
-   procedure Get_Child_Size_Default
-      (Min_Width  : in out Gint;
-       Min_Height : in out Gint);
-   function Get_Layout (Widget : in Gtk_Button_Box'Class)
-                        return      Gtk_Button_Box_Style;
-   function Get_Spacing (Widget : in Gtk_Button_Box'Class)
-                         return      Gint;
-   procedure Set_Child_Ipadding
-      (Widget : in Gtk_Button_Box'Class;
-       Ipad_X : in Gint;
-       Ipad_Y : in Gint);
-   procedure Set_Child_Ipadding_Default
-      (Ipad_X : in Gint;
-       Ipad_Y : in Gint);
+      (Widget : in Gtk_Button_Box;
+       Ipad_X : out Gint;
+       Ipad_Y : out Gint);
+
+   procedure Get_Child_Ipadding_Default (Ipad_X, Ipad_Y : out Gint);
+
+   procedure Get_Child_Size (Widget : in Gtk_Button_Box;
+                             Min_Width, Min_Height : out Gint);
+
+   procedure Get_Child_Size_Default (Min_Width, Min_Height : out Gint);
+
+   function Get_Layout (Widget : Gtk_Button_Box) return Gtk_Button_Box_Style;
+
+   function Get_Spacing (Widget : in Gtk_Button_Box) return Gint;
+
+   procedure Set_Child_Ipadding (Widget : in Gtk_Button_Box;
+                                 Ipad_X : in Gint;
+                                 Ipad_Y : in Gint);
+
+   procedure Set_Child_Ipadding_Default (Ipad_X : in Gint; Ipad_Y : in Gint);
+
    procedure Set_Child_Size
-      (Widget     : in Gtk_Button_Box'Class;
+      (Widget     : in Gtk_Button_Box;
        Min_Width  : in Gint;
        Min_Height : in Gint);
-   procedure Set_Child_Size_Default
-      (Min_Width  : in Gint;
-       Min_Height : in Gint);
-   procedure Set_Layout
-      (Widget       : in Gtk_Button_Box'Class;
-       Layout_Style : in Gtk_Button_Box_Style);
-   procedure Set_Spacing
-      (Widget  : in Gtk_Button_Box'Class;
-       Spacing : in Gint);
+
+   procedure Set_Child_Size_Default (Min_Width, Min_Height : in Gint);
+
+   procedure Set_Layout (Widget       : in Gtk_Button_Box;
+                         Layout_Style : in Gtk_Button_Box_Style);
+
+   procedure Set_Spacing (Widget  : in Gtk_Button_Box; Spacing : in Gint);
 
 private
    type Gtk_Button_Box is new Gtk.Box.Gtk_Box with null record;

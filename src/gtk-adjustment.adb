@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -32,64 +32,47 @@ with Gdk; use Gdk;
 package body Gtk.Adjustment is
 
 
-   ------------------
-   --  Clamp_Page  --
-   ------------------
+   ----------------
+   -- Clamp_Page --
+   ----------------
 
-   procedure Clamp_Page (Adjustment : in out Gtk_Adjustment'Class;
+   procedure Clamp_Page (Adjustment : in out Gtk_Adjustment;
                          Lower      : in     Gfloat;
-                         Upper      : in     Gfloat) is
-
+                         Upper      : in     Gfloat)
+   is
       procedure Internal (Adjustment : in System.Address;
                           Lower      : in Gfloat;
                           Upper      : in Gfloat);
       pragma Import (C, Internal, "gtk_adjustment_clamp_page");
-
    begin
       Internal (Get_Object (Adjustment), Lower, Upper);
    end Clamp_Page;
 
-   -------------------
-   -- Set_Page_Size --
-   -------------------
-
-   procedure Set_Page_Size (Adjustment : in out Gtk_Adjustment'Class;
-                            Page_Size  : in Gfloat)
-   is
-      procedure Internal (Adj : System.Address; Value : Gfloat);
-      pragma Import (C, Internal, "ada_adjustment_set_page_size");
-   begin
-      Internal (Get_Object (Adjustment), Page_Size);
-   end Set_Page_Size;
-
    ------------------------
-   -- Set_Page_Increment --
+   -- Get_Step_Increment --
    ------------------------
 
-   procedure Set_Page_Increment (Adjustment : in out Gtk_Adjustment'Class;
-                                 Page_Increment : in Gfloat)
-   is
-      procedure Internal (Adj : System.Address; Value : Gfloat);
-      pragma Import (C, Internal, "ada_adjustment_set_page_increment");
+   function Get_Step_Increment (Adjustment : Gtk_Adjustment) return Gfloat is
+      function Internal (Adj : in System.Address) return Gfloat;
+      pragma Import (C, Internal, "gtk_adjustment_get_step_increment");
    begin
-      Internal (Get_Object (Adjustment), Page_Increment);
-   end Set_Page_Increment;
+      return Internal (Get_Object (Adjustment));
+   end Get_Step_Increment;
 
-   -----------------
-   --  Get_Value  --
-   -----------------
+   ---------------
+   -- Get_Value --
+   ---------------
 
-   function Get_Value (Adjustment : in Gtk_Adjustment'Class) return Gfloat is
+   function Get_Value (Adjustment : in Gtk_Adjustment) return Gfloat is
       function Internal (Adjustment : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_gtk_adjustment_get_value");
    begin
       return Internal (Get_Object (Adjustment));
    end Get_Value;
 
-
-   ---------------
-   --  Gtk_New  --
-   ---------------
+   -------------
+   -- Gtk_New --
+   -------------
 
    procedure Gtk_New (Adjustment : out Gtk_Adjustment;
                       Value          : in Gfloat;
@@ -114,23 +97,9 @@ package body Gtk.Adjustment is
                             Page_Increment, Page_Size));
    end Gtk_New;
 
-
-   ------------------------
-   -- Get_Step_Increment --
-   ------------------------
-
-   function Get_Step_Increment (Adjustment : in Gtk_Adjustment'Class)
-                                return Gfloat
-   is
-      function Internal (Adj : in System.Address) return Gfloat;
-      pragma Import (C, Internal, "gtk_adjustment_get_step_increment");
-   begin
-      return Internal (Get_Object (Adjustment));
-   end Get_Step_Increment;
-
-   ---------------------------
-   --  Null_Gtk_Adjustment  --
-   ---------------------------
+   -------------------------
+   -- Null_Gtk_Adjustment --
+   -------------------------
 
    function Null_Adjustment return Gtk_Adjustment is
       Result : Gtk_Adjustment;
@@ -139,21 +108,41 @@ package body Gtk.Adjustment is
       return Result;
    end Null_Adjustment;
 
+   ------------------------
+   -- Set_Page_Increment --
+   ------------------------
 
-   -----------------
-   --  set_Value  --
-   -----------------
+   procedure Set_Page_Increment (Adjustment : in out Gtk_Adjustment;
+                                 Page_Increment : in Gfloat)
+   is
+      procedure Internal (Adj : System.Address; Value : Gfloat);
+      pragma Import (C, Internal, "ada_adjustment_set_page_increment");
+   begin
+      Internal (Get_Object (Adjustment), Page_Increment);
+   end Set_Page_Increment;
 
-   procedure Set_Value (Adjustment : in out Gtk_Adjustment'Class;
-                        Value      : in     Gfloat) is
+   -------------------
+   -- Set_Page_Size --
+   -------------------
 
-      procedure Internal (Adjustment : in System.Address;
-                          Value      : in Gfloat);
+   procedure Set_Page_Size (Adjustment : in out Gtk_Adjustment;
+                            Page_Size  : in Gfloat)
+   is
+      procedure Internal (Adj : System.Address; Value : Gfloat);
+      pragma Import (C, Internal, "ada_adjustment_set_page_size");
+   begin
+      Internal (Get_Object (Adjustment), Page_Size);
+   end Set_Page_Size;
+
+   ---------------
+   -- Set_Value --
+   ---------------
+
+   procedure Set_Value (Adjustment : in out Gtk_Adjustment; Value : Gfloat) is
+      procedure Internal (Adjustment : in System.Address; Value : in Gfloat);
       pragma Import (C, Internal, "gtk_adjustment_set_value");
-
    begin
       Internal (Get_Object (Adjustment), Value);
    end Set_Value;
-
 
 end Gtk.Adjustment;

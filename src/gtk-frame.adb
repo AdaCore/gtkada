@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -50,7 +50,7 @@ package body Gtk.Frame is
    ---------------
 
    procedure Set_Label
-      (Frame : in Gtk_Frame'Class;
+      (Frame : in Gtk_Frame;
        Label : in String)
    is
       procedure Internal
@@ -67,7 +67,7 @@ package body Gtk.Frame is
    ---------------------
 
    procedure Set_Label_Align
-      (Frame  : in Gtk_Frame'Class;
+      (Frame  : in Gtk_Frame;
        Xalign : in Gfloat;
        Yalign : in Gfloat)
    is
@@ -87,7 +87,7 @@ package body Gtk.Frame is
    ---------------------
 
    procedure Set_Shadow_Type
-      (Frame    : in Gtk_Frame'Class;
+      (Frame    : in Gtk_Frame;
        The_Type : in Gtk_Shadow_Type)
    is
       procedure Internal

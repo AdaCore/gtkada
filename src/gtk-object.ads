@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -34,7 +34,7 @@ package Gtk.Object is
 
    procedure Destroy (Object : in out Gtk_Object);
 
-   function Get_Type (Object : in Gtk_Object'Class) return Gint;
+   function Get_Type (Object : in Gtk_Object) return Gint;
 
    procedure Ref (Object : in out Gtk_Object);
 
@@ -63,23 +63,22 @@ package Gtk.Object is
    --  Flags  --
    -------------
 
-   function Flags (Object : in Gtk_Object'Class) return Guint32;
+   function Flags (Object : in Gtk_Object) return Guint32;
 
-   procedure Set_Flags (Object : in out Gtk_Object'Class;
+   procedure Set_Flags (Object : in out Gtk_Object;
                         Flags  : in     Guint32);
 
-   procedure Unset_Flags (Object : in out Gtk_Object'Class;
+   procedure Unset_Flags (Object : in out Gtk_Object;
                           Flags  : in     Guint32);
 
 
-   function Destroyed (Object : in Gtk_Object'Class) return Boolean;
+   function Destroyed (Object : in Gtk_Object) return Boolean;
 
-   function Floating (Object : in Gtk_Object'Class) return Boolean;
+   function Floating (Object : in Gtk_Object) return Boolean;
 
-   function Connected (Object : in Gtk_Object'Class) return Boolean;
+   function Connected (Object : in Gtk_Object) return Boolean;
 
 private
-
    type Gtk_Object is new Root_Type with null record;
 
 end Gtk.Object;

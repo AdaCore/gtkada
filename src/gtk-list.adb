@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -40,7 +40,7 @@ package body Gtk.List is
    ------------------
 
    procedure Append_Items
-      (List  : in Gtk_List'Class;
+      (List  : in Gtk_List;
        Items : in Widget_List.Glist)
    is
       procedure Internal
@@ -57,7 +57,7 @@ package body Gtk.List is
    --------------------
 
    function Child_Position
-      (List   : in Gtk_List'Class;
+      (List   : in Gtk_List;
        Child  : in Gtk.Widget.Gtk_Widget'Class)
        return      Gint
    is
@@ -76,7 +76,7 @@ package body Gtk.List is
    -----------------
 
    procedure Clear_Items
-      (List    : in Gtk_List'Class;
+      (List    : in Gtk_List;
        Start   : in Gint;
        The_End : in Gint)
    is
@@ -95,7 +95,7 @@ package body Gtk.List is
    -- Get_Children --
    ------------------
 
-   function Get_Children (Widget : in Gtk.List.Gtk_List'Class)
+   function Get_Children (Widget : in Gtk.List.Gtk_List)
                           return      Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
@@ -111,7 +111,7 @@ package body Gtk.List is
    -- Get_Selection --
    -------------------
 
-   function Get_Selection (Widget : in Gtk.List.Gtk_List'Class)
+   function Get_Selection (Widget : in Gtk.List.Gtk_List)
                            return      Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
@@ -140,7 +140,7 @@ package body Gtk.List is
    ------------------
 
    procedure Insert_Items
-      (List     : in Gtk_List'Class;
+      (List     : in Gtk_List;
        Items    : in Widget_List.Glist;
        Position : in Gint)
    is
@@ -160,7 +160,7 @@ package body Gtk.List is
    -------------------
 
    procedure Prepend_Items
-      (List  : in Gtk_List'Class;
+      (List  : in Gtk_List;
        Items : in Widget_List.Glist)
    is
       procedure Internal
@@ -177,7 +177,7 @@ package body Gtk.List is
    ------------------
 
    procedure Remove_Items
-      (List  : in Gtk_List'Class;
+      (List  : in Gtk_List;
        Items : in Widget_List.Glist)
    is
       procedure Internal
@@ -194,7 +194,7 @@ package body Gtk.List is
    ---------------------------
 
    procedure Remove_Items_No_Unref
-      (List  : in Gtk_List'Class;
+      (List  : in Gtk_List;
        Items : in Widget_List.Glist)
    is
       procedure Internal
@@ -211,7 +211,7 @@ package body Gtk.List is
    ------------------
 
    procedure Select_Child
-      (List  : in Gtk_List'Class;
+      (List  : in Gtk_List;
        Child : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
@@ -228,7 +228,7 @@ package body Gtk.List is
    -----------------
 
    procedure Select_Item
-      (List : in Gtk_List'Class;
+      (List : in Gtk_List;
        Item : in Gint)
    is
       procedure Internal
@@ -245,7 +245,7 @@ package body Gtk.List is
    ------------------------
 
    procedure Set_Selection_Mode
-      (List : in Gtk_List'Class;
+      (List : in Gtk_List;
        Mode : in Gtk_Selection_Mode)
    is
       procedure Internal
@@ -262,7 +262,7 @@ package body Gtk.List is
    --------------------
 
    procedure Unselect_Child
-      (List  : in Gtk_List'Class;
+      (List  : in Gtk_List;
        Child : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
@@ -279,7 +279,7 @@ package body Gtk.List is
    -------------------
 
    procedure Unselect_Item
-      (List : in Gtk_List'Class;
+      (List : in Gtk_List;
        Item : in Gint)
    is
       procedure Internal
@@ -292,4 +292,3 @@ package body Gtk.List is
    end Unselect_Item;
 
 end Gtk.List;
-

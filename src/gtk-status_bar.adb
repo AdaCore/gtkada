@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -65,7 +65,7 @@ package body Gtk.Status_Bar is
    -- Get_Context_Id --
    --------------------
 
-   function Get_Context_Id (Statusbar : in Gtk_Status_Bar'Class;
+   function Get_Context_Id (Statusbar : in Gtk_Status_Bar;
                             Context_Description : in String)
                             return Context_Id
    is
@@ -82,7 +82,7 @@ package body Gtk.Status_Bar is
    -- Get_Messages --
    ------------------
 
-   function Get_Messages (Statusbar : in Gtk_Status_Bar'Class)
+   function Get_Messages (Statusbar : in Gtk_Status_Bar)
                           return Messages_List.GSlist
    is
       function Internal (Statusbar : in System.Address)
@@ -99,7 +99,7 @@ package body Gtk.Status_Bar is
    ----------
 
    function Push
-     (Statusbar : in Gtk_Status_Bar'Class;
+     (Statusbar : in Gtk_Status_Bar;
       Context   : in Context_Id;
       Text      : in String)
       return Message_Id
@@ -118,7 +118,7 @@ package body Gtk.Status_Bar is
    -- Pop --
    ---------
 
-   procedure Pop (Statusbar : in Gtk_Status_Bar'Class;
+   procedure Pop (Statusbar : in Gtk_Status_Bar;
                   Context   : in Context_Id)
    is
       procedure Internal (Statusbar : in System.Address;
@@ -132,7 +132,7 @@ package body Gtk.Status_Bar is
    -- Remove --
    ------------
 
-   procedure Remove (Statusbar : in Gtk_Status_Bar'Class;
+   procedure Remove (Statusbar : in Gtk_Status_Bar;
                      Context   : in Context_Id;
                      Message   : in Message_Id)
    is
@@ -143,6 +143,5 @@ package body Gtk.Status_Bar is
    begin
       Internal (Get_Object (Statusbar), Context, Message);
    end Remove;
-
 
 end Gtk.Status_Bar;

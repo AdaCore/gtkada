@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,7 +35,7 @@ package body Gtk.Tooltips is
    -- Enable --
    ------------
 
-   procedure Enable (Tooltips : in Gtk_Tooltips'Class) is
+   procedure Enable (Tooltips : in Gtk_Tooltips) is
       procedure Internal (Tooltips : System.Address);
       pragma Import (C, Internal, "gtk_tooltips_enable");
    begin
@@ -46,7 +46,7 @@ package body Gtk.Tooltips is
    -- Disable --
    -------------
 
-   procedure Disable (Tooltips : in Gtk_Tooltips'Class) is
+   procedure Disable (Tooltips : in Gtk_Tooltips) is
       procedure Internal (Tooltips : System.Address);
       pragma Import (C, Internal, "gtk_tooltips_disable");
    begin
@@ -69,7 +69,7 @@ package body Gtk.Tooltips is
    ---------------
 
    procedure Set_Delay
-     (Tooltips : in Gtk_Tooltips'Class;
+     (Tooltips : in Gtk_Tooltips;
       duration : in Guint)
    is
       procedure Internal (Tooltips : System.Address;
@@ -84,7 +84,7 @@ package body Gtk.Tooltips is
    -------------
 
    procedure Set_Tip
-     (Tooltips    : in Gtk_Tooltips'Class;
+     (Tooltips    : in Gtk_Tooltips;
       Widget      : in Gtk.Widget.Gtk_Widget'Class;
       Tip_Text    : in String;
       Tip_Private : in String)

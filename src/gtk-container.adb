@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -31,11 +31,11 @@ with Gdk; use Gdk;
 
 package body Gtk.Container is
 
-   -----------
-   --  Add  --
-   -----------
+   ---------
+   -- Add --
+   ---------
 
-   procedure Add (Container : in out Gtk_Container'Class;
+   procedure Add (Container : in out Gtk_Container;
                   Widget       : in Gtk.Widget.Gtk_Widget'Class) is
       procedure Internal (Container : System.Address;
                           Widget    : System.Address);
@@ -44,24 +44,22 @@ package body Gtk.Container is
       Internal (Get_Object (Container), Get_Object (Widget));
    end Add;
 
+   ------------------
+   -- Block_Resize --
+   ------------------
 
-   --------------------
-   --  Block_Resize  --
-   --------------------
-
-   procedure Block_Resize (Container : in out Gtk_Container'Class) is
+   procedure Block_Resize (Container : in out Gtk_Container) is
       procedure Internal (Container : in System.Address);
       pragma Import (C, Internal, "gtk_container_block_resize");
    begin
       Internal (Get_Object (Container));
    end Block_Resize;
 
+   ------------------
+   -- Border_Width --
+   ------------------
 
-   --------------------
-   --  Border_Width  --
-   --------------------
-
-   procedure Border_Width (Container : in Gtk_Container'Class;
+   procedure Border_Width (Container : in Gtk_Container;
                            Border_Width : in Gint) is
       procedure Internal (Container  : System.Address;
                           Border_Widget : Gint);
@@ -70,36 +68,33 @@ package body Gtk.Container is
       Internal (Get_Object (Container), Border_Width);
    end Border_Width;
 
+   --------------------
+   -- Disable_Resize --
+   --------------------
 
-   ----------------------
-   --  Disable_Resize  --
-   ----------------------
-
-   procedure Disable_Resize (Container : in out Gtk_Container'Class) is
+   procedure Disable_Resize (Container : in out Gtk_Container) is
       procedure Internal (Container : in System.Address);
       pragma Import (C, Internal, "gtk_container_disable_resize");
    begin
       Internal (Get_Object (Container));
    end Disable_Resize;
 
+   -------------------
+   -- Enable_Resize --
+   -------------------
 
-   ---------------------
-   --  Enable_Resize  --
-   ---------------------
-
-   procedure Enable_Resize (Container : in out Gtk_Container'Class) is
+   procedure Enable_Resize (Container : in out Gtk_Container) is
       procedure Internal (Container : in System.Address);
       pragma Import (C, Internal, "gtk_container_enable_resize");
    begin
       Internal (Get_Object (Container));
    end Enable_Resize;
 
+   -----------------
+   -- Need_Resize --
+   -----------------
 
-   -------------------
-   --  Need_Resize  --
-   -------------------
-
-   function Need_Resize (Container : in Gtk_Container'Class)
+   function Need_Resize (Container : in Gtk_Container)
                          return Boolean is
       function Internal (Container : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_container_need_resize");
@@ -107,12 +102,11 @@ package body Gtk.Container is
       return To_Boolean (Internal (Get_Object (Container)));
    end Need_Resize;
 
+   ------------
+   -- Remove --
+   ------------
 
-   --------------
-   --  Remove  --
-   --------------
-
-   procedure Remove (Container : in out Gtk_Container'Class;
+   procedure Remove (Container : in out Gtk_Container;
                      Widget : in Gtk.Widget.Gtk_Widget'Class) is
       procedure Internal (Container : System.Address;
                           Widget : System.Address);
@@ -121,13 +115,12 @@ package body Gtk.Container is
       Internal (Get_Object (Container), Get_Object (Widget));
    end Remove;
 
-
-   -----------------------------
-   --  Set_Focus_Hadjustment  --
-   -----------------------------
+   ---------------------------
+   -- Set_Focus_Hadjustment --
+   ---------------------------
 
    procedure Set_Focus_Hadjustment
-     (Container  : in out Gtk_Container'Class;
+     (Container  : in out Gtk_Container;
       Adjustment : in     Gtk.Adjustment.Gtk_Adjustment'Class) is
 
       procedure Internal (Container : in System.Address;
@@ -138,13 +131,12 @@ package body Gtk.Container is
       Internal (Get_Object (Container), Get_Object (Adjustment));
    end Set_Focus_Hadjustment;
 
-
-   -----------------------------
-   --  Set_Focus_Vadjustment  --
-   -----------------------------
+   ---------------------------
+   -- Set_Focus_Vadjustment --
+   ---------------------------
 
    procedure Set_Focus_Vadjustment
-     (Container  : in out Gtk_Container'Class;
+     (Container  : in out Gtk_Container;
       Adjustment : in     Gtk.Adjustment.Gtk_Adjustment'Class) is
 
       procedure Internal (Container : in System.Address;
@@ -155,12 +147,11 @@ package body Gtk.Container is
       Internal (Get_Object (Container), Get_Object (Adjustment));
    end Set_Focus_Vadjustment;
 
+   --------------------
+   -- Unblock_Resize --
+   --------------------
 
-   ----------------------
-   --  Unblock_Resize  --
-   ----------------------
-
-   procedure Unblock_Resize (Container : in out Gtk_Container'Class) is
+   procedure Unblock_Resize (Container : in out Gtk_Container) is
       procedure Internal (Container : in System.Address);
       pragma Import (C, Internal, "gtk_container_unblock_resize");
    begin

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -36,7 +36,7 @@ package body Gtk.File_Selection is
    -- Get_Action_Area --
    ---------------------
 
-   function Get_Action_Area (Widget : in Gtk_File_Selection'Class)
+   function Get_Action_Area (Widget : in Gtk_File_Selection)
                              return      Gtk.Box.Gtk_Box
    is
       function Internal (Widget : in System.Address)
@@ -52,7 +52,7 @@ package body Gtk.File_Selection is
    -- Get_Button_Area --
    ---------------------
 
-   function Get_Button_Area (Widget : in Gtk_File_Selection'Class)
+   function Get_Button_Area (Widget : in Gtk_File_Selection)
                              return      Gtk.Box.Gtk_Box
    is
       function Internal (Widget : in System.Address)
@@ -68,7 +68,7 @@ package body Gtk.File_Selection is
    -- Get_Cancel_Button --
    -----------------------
 
-   function Get_Cancel_Button (Widget : in Gtk_File_Selection'Class)
+   function Get_Cancel_Button (Widget : in Gtk_File_Selection)
                                return      Gtk.Button.Gtk_Button
    is
       function Internal (Widget : in System.Address)
@@ -84,7 +84,7 @@ package body Gtk.File_Selection is
    -- Get_Dir_List --
    ------------------
 
-   function Get_Dir_List (Widget : in Gtk_File_Selection'Class)
+   function Get_Dir_List (Widget : in Gtk_File_Selection)
                           return      Gtk.Widget.Gtk_Widget'Class
    is
       function Internal (Widget : in System.Address)
@@ -100,7 +100,7 @@ package body Gtk.File_Selection is
    -- Get_File_List --
    -------------------
 
-   function Get_File_List (Widget : in Gtk_File_Selection'Class)
+   function Get_File_List (Widget : in Gtk_File_Selection)
                            return      Gtk.Widget.Gtk_Widget'Class
    is
       function Internal (Widget : in System.Address)
@@ -116,7 +116,7 @@ package body Gtk.File_Selection is
    -- Get_Filename --
    ------------------
 
-   function Get_Filename (Filesel : in Gtk_File_Selection'Class)
+   function Get_Filename (Filesel : in Gtk_File_Selection)
                           return       String
    is
       function Internal (Filesel : in System.Address)
@@ -130,7 +130,7 @@ package body Gtk.File_Selection is
    -- Get_Help_Button --
    ---------------------
 
-   function Get_Help_Button (Widget : in Gtk_File_Selection'Class)
+   function Get_Help_Button (Widget : in Gtk_File_Selection)
                              return      Gtk.Button.Gtk_Button
    is
       function Internal (Widget : in System.Address)
@@ -146,7 +146,7 @@ package body Gtk.File_Selection is
    -- Get_History_Pulldown --
    --------------------------
 
-   function Get_History_Pulldown (Widget : in Gtk_File_Selection'Class)
+   function Get_History_Pulldown (Widget : in Gtk_File_Selection)
                                   return      Gtk.Widget.Gtk_Widget'Class
    is
       function Internal (Widget : in System.Address)
@@ -162,7 +162,7 @@ package body Gtk.File_Selection is
    -- Get_Ok_Button --
    -------------------
 
-   function Get_Ok_Button (Widget : in Gtk_File_Selection'Class)
+   function Get_Ok_Button (Widget : in Gtk_File_Selection)
                            return      Gtk.Button.Gtk_Button
    is
       function Internal (Widget : in System.Address)
@@ -178,7 +178,7 @@ package body Gtk.File_Selection is
    -- Get_Selection_Entry --
    -------------------------
 
-   function Get_Selection_Entry (Widget : in Gtk_File_Selection'Class)
+   function Get_Selection_Entry (Widget : in Gtk_File_Selection)
                                  return      Gtk.Widget.Gtk_Widget'Class
    is
       function Internal (Widget : in System.Address)
@@ -194,7 +194,7 @@ package body Gtk.File_Selection is
    -- Get_Selection_Text --
    ------------------------
 
-   function Get_Selection_Text (Widget : in Gtk_File_Selection'Class)
+   function Get_Selection_Text (Widget : in Gtk_File_Selection)
                                 return      Gtk.Widget.Gtk_Widget'Class
    is
       function Internal (Widget : in System.Address)
@@ -236,7 +236,7 @@ package body Gtk.File_Selection is
    ------------------
 
    procedure Set_Filename
-      (Filesel  : in Gtk_File_Selection'Class;
+      (Filesel  : in Gtk_File_Selection;
        Filename : in String)
    is
       procedure Internal

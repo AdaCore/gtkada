@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Drawing_Area;
 
 package Gtk.Curve is
@@ -36,25 +35,24 @@ package Gtk.Curve is
                            Gtk_Curve_Type_Spline,
                            Gtk_Curve_Type_Free);
 
-   procedure Get_Vector (Curve  : in Gtk_Curve'Class;
+   procedure Get_Vector (Curve  : in Gtk_Curve;
                          Vector : in out Gfloat_Array);
    procedure Gtk_New (Widget : out Gtk_Curve);
-   procedure Reset (Curve : in Gtk_Curve'Class);
-   procedure Set_Curve_Type (Curve      : in Gtk_Curve'Class;
+   procedure Reset (Curve : in Gtk_Curve);
+   procedure Set_Curve_Type (Curve      : in Gtk_Curve;
                              Curve_Type : in Gtk_Curve_Type);
-   procedure Set_Gamma (Curve : in Gtk_Curve'Class; Gamma : in Gfloat);
+   procedure Set_Gamma (Curve : in Gtk_Curve; Gamma : in Gfloat);
    procedure Set_Range
-     (Curve : in Gtk_Curve'Class;
+     (Curve : in Gtk_Curve;
       Min_X : in Gfloat;
       Max_X : in Gfloat;
       Min_Y : in Gfloat;
       Max_Y : in Gfloat);
-   procedure Set_Vector (Curve  : in Gtk_Curve'Class;
+   procedure Set_Vector (Curve  : in Gtk_Curve;
                          Vector : in Gfloat_Array);
 
 private
 
    type Gtk_Curve is new Gtk.Drawing_Area.Gtk_Drawing_Area with null record;
-
 
 end Gtk.Curve;

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -36,7 +36,7 @@ package body Gtk.Editable is
    -- Changed --
    -------------
 
-   procedure Changed (Editable : in Gtk_Editable'Class)
+   procedure Changed (Editable : in Gtk_Editable)
    is
       procedure Internal (Editable : in System.Address);
       pragma Import (C, Internal, "gtk_editable_changed");
@@ -49,7 +49,7 @@ package body Gtk.Editable is
    ---------------------
 
    procedure Claim_Selection
-      (Editable : in Gtk_Editable'Class;
+      (Editable : in Gtk_Editable;
        Claim    : in Boolean;
        Time     : in Guint32)
    is
@@ -69,7 +69,7 @@ package body Gtk.Editable is
    --------------------
 
    procedure Copy_Clipboard
-      (Editable : in Gtk_Editable'Class;
+      (Editable : in Gtk_Editable;
        Time     : in Guint32)
    is
       procedure Internal
@@ -86,7 +86,7 @@ package body Gtk.Editable is
    -------------------
 
    procedure Cut_Clipboard
-      (Editable : in Gtk_Editable'Class;
+      (Editable : in Gtk_Editable;
        Time     : in Guint32)
    is
       procedure Internal
@@ -102,7 +102,7 @@ package body Gtk.Editable is
    -- Delete_Selection --
    ----------------------
 
-   procedure Delete_Selection (Editable : in Gtk_Editable'Class)
+   procedure Delete_Selection (Editable : in Gtk_Editable)
    is
       procedure Internal (Editable : in System.Address);
       pragma Import (C, Internal, "gtk_editable_delete_selection");
@@ -115,7 +115,7 @@ package body Gtk.Editable is
    -----------------
 
    procedure Delete_Text
-      (Editable  : in Gtk_Editable'Class;
+      (Editable  : in Gtk_Editable;
        Start_Pos : in Gint;
        End_Pos   : in Gint)
    is
@@ -135,7 +135,7 @@ package body Gtk.Editable is
    ---------------
 
    function Get_Chars
-      (Editable  : in Gtk_Editable'Class;
+      (Editable  : in Gtk_Editable;
        Start_Pos : in Gint;
        End_Pos   : in Gint)
        return         String
@@ -157,7 +157,7 @@ package body Gtk.Editable is
    -- Get_Clipboard_Text --
    ------------------------
 
-   function Get_Clipboard_Text (Widget : in Gtk_Editable'Class)
+   function Get_Clipboard_Text (Widget : in Gtk_Editable)
                                  return      String
    is
       function Internal (Widget : in System.Address)
@@ -171,7 +171,7 @@ package body Gtk.Editable is
    -- Get_Current_Pos --
    ---------------------
 
-   function Get_Current_Pos (Widget : in Gtk_Editable'Class)
+   function Get_Current_Pos (Widget : in Gtk_Editable)
                              return      Guint
    is
       function Internal (Widget : in System.Address)
@@ -185,7 +185,7 @@ package body Gtk.Editable is
    -- Get_Editable --
    ------------------
 
-   function Get_Editable (Widget : in Gtk_Editable'Class)
+   function Get_Editable (Widget : in Gtk_Editable)
                           return      Boolean
    is
       function Internal (Widget : in System.Address)
@@ -199,7 +199,7 @@ package body Gtk.Editable is
    -- Set_Editable --
    ------------------
 
-   procedure Set_Editable (Widget : in Gtk_Editable'Class; Editable : boolean)
+   procedure Set_Editable (Widget : in Gtk_Editable; Editable : boolean)
    is
       procedure Internal (Widget : in System.Address; Editable : Guint);
       pragma Import (C, Internal, "ada_editable_set_editable");
@@ -211,7 +211,7 @@ package body Gtk.Editable is
    -- Get_Has_Selection --
    -----------------------
 
-   function Get_Has_Selection (Widget : in Gtk_Editable'Class)
+   function Get_Has_Selection (Widget : in Gtk_Editable)
                                return      Boolean
    is
       function Internal (Widget : in System.Address)
@@ -225,7 +225,7 @@ package body Gtk.Editable is
    -- Get_Selection_End_Pos --
    ---------------------------
 
-   function Get_Selection_End_Pos (Widget : in Gtk_Editable'Class)
+   function Get_Selection_End_Pos (Widget : in Gtk_Editable)
                                    return      Guint
    is
       function Internal (Widget : in System.Address)
@@ -239,7 +239,7 @@ package body Gtk.Editable is
    -- Get_Selection_Start_Pos --
    -----------------------------
 
-   function Get_Selection_Start_Pos (Widget : in Gtk_Editable'Class)
+   function Get_Selection_Start_Pos (Widget : in Gtk_Editable)
                                      return      Guint
    is
       function Internal (Widget : in System.Address)
@@ -254,7 +254,7 @@ package body Gtk.Editable is
    -----------------
 
    procedure Insert_Text
-      (Editable        : in Gtk_Editable'Class;
+      (Editable        : in Gtk_Editable;
        New_Text        : in String;
        New_Text_Length : in Gint;
        Position        : in out Gint)
@@ -277,7 +277,7 @@ package body Gtk.Editable is
    ---------------------
 
    procedure Paste_Clipboard
-      (Editable : in Gtk_Editable'Class;
+      (Editable : in Gtk_Editable;
        Time     : in Guint32)
    is
       procedure Internal
@@ -294,7 +294,7 @@ package body Gtk.Editable is
    -------------------
 
    procedure Select_Region
-      (Editable : in Gtk_Editable'Class;
+      (Editable : in Gtk_Editable;
        Start    : in Gint;
        The_End  : in Gint)
    is
@@ -310,4 +310,3 @@ package body Gtk.Editable is
    end Select_Region;
 
 end Gtk.Editable;
-

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,7 +35,7 @@ package body Gtk.Item is
    -- Item_Select --
    -----------------
 
-   procedure Item_Select (Item : in Gtk_Item'Class) is
+   procedure Item_Select (Item : in Gtk_Item) is
       procedure Internal (Item : in System.Address);
       pragma Import (C, Internal, "gtk_item_select");
    begin
@@ -46,7 +46,7 @@ package body Gtk.Item is
    -- Item_Deselect --
    -------------------
 
-   procedure Item_Deselect (Item : in Gtk_Item'Class) is
+   procedure Item_Deselect (Item : in Gtk_Item) is
       procedure Internal (Item : in System.Address);
       pragma Import (C, Internal, "gtk_item_deselect");
    begin
@@ -57,7 +57,7 @@ package body Gtk.Item is
    -- Toggle --
    ------------
 
-   procedure Toggle (Item : in Gtk_Item'Class) is
+   procedure Toggle (Item : in Gtk_Item) is
       procedure Internal (Item : in System.Address);
       pragma Import (C, Internal, "gtk_item_toggle");
    begin
@@ -65,4 +65,3 @@ package body Gtk.Item is
    end Toggle;
 
 end Gtk.Item;
-

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -28,60 +28,53 @@
 
 with System;
 with Gdk; use Gdk;
-with Interfaces.C;
+with Interfaces.C; use Interfaces.C;
 
 package body Gtk.Menu_Item is
 
-   package C renames Interfaces.C;
+   ----------------------
+   -- Accelerator_Size --
+   ----------------------
 
-   ------------------------
-   --  Accelerator_Size  --
-   ------------------------
-
-   procedure Accelerator_Size (Menu_Item : in out Gtk_Menu_Item'Class) is
+   procedure Accelerator_Size (Menu_Item : in out Gtk_Menu_Item) is
       procedure Internal (Menu_Item : in System.Address);
       pragma Import (C, Internal, "gtk_menu_item_accelerator_size");
    begin
       Internal (Get_Object (Menu_Item));
    end Accelerator_Size;
 
+   ----------------------
+   -- Accelerator_Text --
+   ----------------------
 
-   ------------------------
-   --  Accelerator_Text  --
-   ------------------------
-
-   function Accelerator_Text (Menu_Item : in Gtk_Menu_Item'Class)
-                              return String is
+   function Accelerator_Text (Menu_Item : in Gtk_Menu_Item) return String is
       procedure Internal (Menu_Item : in System.Address;
-                          Buffer    : in out C.char_array);
+                          Buffer    : in out char_array);
       pragma Import (C, Internal, "gtk_menu_item_accelerator_text");
-      Buffer : C.char_array (1 .. 32);
-      --
+      Buffer : char_array (1 .. 32);
       --  The size of the buffer has been taken from the source of gtk.
       --  (see gtk_menu_item_accelerator_size for confirmation).
    begin
       Internal (Get_Object (Menu_Item), Buffer);
-      return C.To_Ada (Buffer);
+      return To_Ada (Buffer);
    end Accelerator_Text;
 
+   --------------
+   -- Activate --
+   --------------
 
-   ----------------
-   --  Activate  --
-   ----------------
-
-   procedure Activate (Menu_Item : in out Gtk_Menu_Item'Class) is
+   procedure Activate (Menu_Item : in out Gtk_Menu_Item) is
       procedure Internal (Menu_Item : in System.Address);
       pragma Import (C, Internal, "gtk_menu_item_activate");
    begin
       Internal (Get_Object (Menu_Item));
    end Activate;
 
+   ---------------
+   -- Configure --
+   ---------------
 
-   -----------------
-   --  Configure  --
-   -----------------
-
-   procedure Configure (Menu_Item              : in out Gtk_Menu_Item'Class;
+   procedure Configure (Menu_Item              : in out Gtk_Menu_Item;
                         Show_Toggle_Indicator  : in     Boolean;
                         Show_Submenu_Indicator : in     Boolean) is
       procedure Internal (Menu_Item : System.Address;
@@ -93,21 +86,20 @@ package body Gtk.Menu_Item is
                 Show_Submenu_Indicator);
    end Configure;
 
+   --------------
+   -- Deselect --
+   --------------
 
-   ----------------
-   --  Deselect  --
-   ----------------
-
-   procedure Deselect (Menu_Item : in out Gtk_Menu_Item'Class) is
+   procedure Deselect (Menu_Item : in out Gtk_Menu_Item) is
       procedure Internal (Menu_Item : in System.Address);
       pragma Import (C, Internal, "gtk_menu_item_deselect");
    begin
       Internal (Get_Object (Menu_Item));
    end Deselect;
 
-   ---------------
-   --  Gtk_New  --
-   ---------------
+   -------------
+   -- Gtk_New --
+   -------------
 
    procedure Gtk_New (Menu_Item : out Gtk_Menu_Item) is
       function Internal return System.Address;
@@ -116,10 +108,9 @@ package body Gtk.Menu_Item is
       Set_Object (Menu_Item, Internal);
    end Gtk_New;
 
-
-   ---------------
-   --  Gtk_New  --
-   ---------------
+   -------------
+   -- Gtk_New --
+   -------------
 
    procedure Gtk_New (Menu_Item : out Gtk_Menu_Item;
                       Label     : in  String) is
@@ -129,48 +120,44 @@ package body Gtk.Menu_Item is
       Set_Object (Menu_Item, Internal (Label & ASCII.NUL));
    end Gtk_New;
 
+   ----------------
+   -- Gtk_Select --
+   ----------------
 
-   ------------------
-   --  Gtk_Select  --
-   ------------------
-
-   procedure Gtk_Select (Menu_Item : in out Gtk_Menu_Item'Class) is
+   procedure Gtk_Select (Menu_Item : in out Gtk_Menu_Item) is
       procedure Internal (Menu_Item : in System.Address);
       pragma Import (C, Internal, "gtk_menu_item_select");
    begin
       Internal (Get_Object (Menu_Item));
    end Gtk_Select;
 
+   --------------------
+   -- Remove_Submenu --
+   --------------------
 
-   ----------------------
-   --  Remove_Submenu  --
-   ----------------------
-
-   procedure Remove_Submenu (Menu_Item : in out Gtk_Menu_Item'Class) is
+   procedure Remove_Submenu (Menu_Item : in out Gtk_Menu_Item) is
       procedure Internal (Menu_Item : in System.Address);
       pragma Import (C, Internal, "gtk_menu_item_remove_submenu");
    begin
       Internal (Get_Object (Menu_Item));
    end Remove_Submenu;
 
+   -------------------
+   -- Right_Justify --
+   --------------------
 
-   ---------------------
-   --  Right_Justify  --
-   ---------------------
-
-   procedure Right_Justify (Menu_Item : in out Gtk_Menu_Item'Class) is
+   procedure Right_Justify (Menu_Item : in out Gtk_Menu_Item) is
       procedure Internal (Menu_Item : in System.Address);
       pragma Import (C, Internal, "gtk_menu_item_right_justify");
    begin
       Internal (Get_Object (Menu_Item));
    end Right_Justify;
 
+   -------------------
+   -- Set_Placement --
+   -------------------
 
-   ---------------------
-   --  Set_Placement  --
-   ---------------------
-
-   procedure Set_Placement (Menu_Item : in out Gtk_Menu_Item'Class;
+   procedure Set_Placement (Menu_Item : in out Gtk_Menu_Item;
                             Placement : in     Enums.Gtk_Submenu_Placement) is
       procedure Internal (Menu_Item : in System.Address;
                           Placement : in Enums.Gtk_Submenu_Placement);
@@ -179,12 +166,11 @@ package body Gtk.Menu_Item is
       Internal (Get_Object (Menu_Item), Placement);
    end Set_Placement;
 
+   -----------------
+   -- Set_Submenu --
+   -----------------
 
-   -------------------
-   --  Set_Submenu  --
-   -------------------
-
-   procedure Set_Submenu (Menu_Item : in out Gtk_Menu_Item'Class;
+   procedure Set_Submenu (Menu_Item : in out Gtk_Menu_Item;
                           Submenu   : in     Widget.Gtk_Widget'Class) is
       procedure Internal (Menu_Item : in System.Address;
                           Submenu   : in System.Address);

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,16 +35,14 @@ package Gtk.Gamma_Curve is
 
    procedure Gtk_New (Widget : out Gtk_Gamma_Curve);
 
-   function Get_Curve (Widget : in Gtk_Gamma_Curve'Class)
+   function Get_Curve (Widget : in Gtk_Gamma_Curve)
                        return Gtk.Curve.Gtk_Curve;
 
-   function Get_Gamma (Widget : in Gtk_Gamma_Curve'Class)
+   function Get_Gamma (Widget : in Gtk_Gamma_Curve)
                        return Gfloat;
 
 private
 
    type Gtk_Gamma_Curve is new Gtk.Box.Gtk_Box with null record;
-
-
 
 end Gtk.Gamma_Curve;

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -66,11 +66,11 @@ package Gtk.Style is
    function Get_Style (Widget : in Gtk.Widget.Gtk_Widget'Class)
                        return Gtk.Style.Gtk_Style;
 
-   function Get_Black_GC (Style : in Gtk_Style'Class) return Gdk.GC.Gdk_GC;
-   function Get_Bg_GC (Style : in Gtk_Style'Class;
+   function Get_Black_GC (Style : in Gtk_Style) return Gdk.GC.Gdk_GC;
+   function Get_Bg_GC (Style : in Gtk_Style;
                        State : in Enums.Gtk_State_Type)
                        return Gdk.GC.Gdk_GC;
-   function Get_White_GC (Style : in Gtk_Style'Class) return Gdk.GC.Gdk_GC;
+   function Get_White_GC (Style : in Gtk_Style) return Gdk.GC.Gdk_GC;
 
    procedure Draw_Hline (Style      : in Gtk_Style;
                          Window     : in Gdk.Window.Gdk_Window;
@@ -135,8 +135,6 @@ package Gtk.Style is
    procedure Unref (Object : in out Gtk_Style);
 
 private
-
    type Gtk_Style is new Root_Type with null record;
-
 
 end Gtk.Style;

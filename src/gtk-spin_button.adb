@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -36,7 +36,7 @@ package body Gtk.Spin_Button is
    ---------------
 
    procedure Construct
-      (Spin_Button : in Gtk_Spin_Button'Class;
+      (Spin_Button : in Gtk_Spin_Button;
        Adjustment  : in Gtk.Adjustment.Gtk_Adjustment'Class;
        Climb_Rate  : in Gfloat;
        The_Digits  : in Gint)
@@ -58,7 +58,7 @@ package body Gtk.Spin_Button is
    -- Get_Adjustment --
    --------------------
 
-   function Get_Adjustment (Spin_Button : in Gtk_Spin_Button'Class)
+   function Get_Adjustment (Spin_Button : in Gtk_Spin_Button)
                             return      Gtk.Adjustment.Gtk_Adjustment'Class
    is
       function Internal (Spin_Button : in System.Address)
@@ -74,7 +74,7 @@ package body Gtk.Spin_Button is
    -- Get_Value_As_Float --
    ------------------------
 
-   function Get_Value_As_Float (Spin_Button : in Gtk_Spin_Button'Class)
+   function Get_Value_As_Float (Spin_Button : in Gtk_Spin_Button)
                                 return           Gfloat
    is
       function Internal (Spin_Button : in System.Address)
@@ -88,7 +88,7 @@ package body Gtk.Spin_Button is
    -- Get_Value_As_Int --
    ----------------------
 
-   function Get_Value_As_Int (Spin_Button : in Gtk_Spin_Button'Class)
+   function Get_Value_As_Int (Spin_Button : in Gtk_Spin_Button)
                               return           Gint
    is
       function Internal (Spin_Button : in System.Address)
@@ -125,7 +125,7 @@ package body Gtk.Spin_Button is
    --------------------
 
    procedure Set_Adjustment
-      (Spin_Button : in Gtk_Spin_Button'Class;
+      (Spin_Button : in Gtk_Spin_Button;
        Adjustment  : in Gtk.Adjustment.Gtk_Adjustment'Class)
    is
       procedure Internal
@@ -142,7 +142,7 @@ package body Gtk.Spin_Button is
    ----------------
 
    procedure Set_Digits
-      (Spin_Button : in Gtk_Spin_Button'Class;
+      (Spin_Button : in Gtk_Spin_Button;
        The_Digits  : in Gint)
    is
       procedure Internal
@@ -159,7 +159,7 @@ package body Gtk.Spin_Button is
    -----------------
 
    procedure Set_Numeric
-      (Spin_Button : in Gtk_Spin_Button'Class;
+      (Spin_Button : in Gtk_Spin_Button;
        Numeric     : in Boolean)
    is
       procedure Internal
@@ -176,7 +176,7 @@ package body Gtk.Spin_Button is
    -----------------------
 
    procedure Set_Update_Policy
-      (Spin_Button : in Gtk_Spin_Button'Class;
+      (Spin_Button : in Gtk_Spin_Button;
        Policy      : in Gtk_Spin_Button_Update_Policy)
    is
       procedure Internal
@@ -193,7 +193,7 @@ package body Gtk.Spin_Button is
    ---------------
 
    procedure Set_Value
-      (Spin_Button : in Gtk_Spin_Button'Class;
+      (Spin_Button : in Gtk_Spin_Button;
        Value       : in Gfloat)
    is
       procedure Internal
@@ -210,7 +210,7 @@ package body Gtk.Spin_Button is
    --------------
 
    procedure Set_Wrap
-      (Spin_Button : in Gtk_Spin_Button'Class;
+      (Spin_Button : in Gtk_Spin_Button;
        Wrap        : in Boolean)
    is
       procedure Internal
@@ -227,7 +227,7 @@ package body Gtk.Spin_Button is
    ----------
 
    procedure Spin
-      (Spin_Button : in Gtk_Spin_Button'Class;
+      (Spin_Button : in Gtk_Spin_Button;
        Direction   : in Gtk.Enums.Gtk_Arrow_Type;
        Step        : in Gfloat)
    is

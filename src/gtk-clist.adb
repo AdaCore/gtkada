@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -43,27 +43,19 @@ package body Gtk.CList is
    -- Append --
    ------------
 
-   function Append
-      (Clist : in Gtk_CList'Class;
-       Text  : in Line_Data)
-       return     Gint
-   is
-      function Internal
-         (Clist : in System.Address;
-          Text  : in System.Address)
-          return      Gint;
+   function Append (Clist : in Gtk_CList; Text  : in Line_Data) return Gint is
+      function Internal (Clist : in System.Address; Text  : in System.Address)
+                         return      Gint;
       pragma Import (C, Internal, "gtk_clist_append");
    begin
-      return Internal (Get_Object (Clist),
-                       Text'Address);
+      return Internal (Get_Object (Clist), Text'Address);
    end Append;
 
    -----------
    -- Clear --
    -----------
 
-   procedure Clear (Clist : in Gtk_CList'Class)
-   is
+   procedure Clear (Clist : in Gtk_CList) is
       procedure Internal (Clist : in System.Address);
       pragma Import (C, Internal, "gtk_clist_clear");
    begin
@@ -74,42 +66,29 @@ package body Gtk.CList is
    -- Column_Title_Active --
    -------------------------
 
-   procedure Column_Title_Active
-      (Clist  : in Gtk_CList'Class;
-       Column : in Gint)
-   is
-      procedure Internal
-         (Clist  : in System.Address;
-          Column : in Gint);
+   procedure Column_Title_Active (Clist  : in Gtk_CList; Column : in Gint) is
+      procedure Internal (Clist  : in System.Address; Column : in Gint);
       pragma Import (C, Internal, "gtk_clist_column_title_active");
    begin
-      Internal (Get_Object (Clist),
-                Column);
+      Internal (Get_Object (Clist), Column);
    end Column_Title_Active;
 
    --------------------------
    -- Column_Title_Passive --
    --------------------------
 
-   procedure Column_Title_Passive
-      (Clist  : in Gtk_CList'Class;
-       Column : in Gint)
-   is
-      procedure Internal
-         (Clist  : in System.Address;
-          Column : in Gint);
+   procedure Column_Title_Passive (Clist : in Gtk_CList; Column : in Gint) is
+      procedure Internal (Clist  : in System.Address; Column : in Gint);
       pragma Import (C, Internal, "gtk_clist_column_title_passive");
    begin
-      Internal (Get_Object (Clist),
-                Column);
+      Internal (Get_Object (Clist), Column);
    end Column_Title_Passive;
 
    --------------------------
    -- Column_Titles_Active --
    --------------------------
 
-   procedure Column_Titles_Active (Clist : in Gtk_CList'Class)
-   is
+   procedure Column_Titles_Active (Clist : in Gtk_CList) is
       procedure Internal (Clist : in System.Address);
       pragma Import (C, Internal, "gtk_clist_column_titles_active");
    begin
@@ -120,8 +99,7 @@ package body Gtk.CList is
    -- Column_Titles_Hide --
    ------------------------
 
-   procedure Column_Titles_Hide (Clist : in Gtk_CList'Class)
-   is
+   procedure Column_Titles_Hide (Clist : in Gtk_CList) is
       procedure Internal (Clist : in System.Address);
       pragma Import (C, Internal, "gtk_clist_column_titles_hide");
    begin
@@ -132,8 +110,7 @@ package body Gtk.CList is
    -- Column_Titles_Passive --
    ---------------------------
 
-   procedure Column_Titles_Passive (Clist : in Gtk_CList'Class)
-   is
+   procedure Column_Titles_Passive (Clist : in Gtk_CList) is
       procedure Internal (Clist : in System.Address);
       pragma Import (C, Internal, "gtk_clist_column_titles_passive");
    begin
@@ -144,8 +121,7 @@ package body Gtk.CList is
    -- Column_Titles_Show --
    ------------------------
 
-   procedure Column_Titles_Show (Clist : in Gtk_CList'Class)
-   is
+   procedure Column_Titles_Show (Clist : in Gtk_CList) is
       procedure Internal (Clist : in System.Address);
       pragma Import (C, Internal, "gtk_clist_column_titles_show");
    begin
@@ -167,8 +143,7 @@ package body Gtk.CList is
    -- Freeze --
    ------------
 
-   procedure Freeze (Clist : in Gtk_CList'Class)
-   is
+   procedure Freeze (Clist : in Gtk_CList) is
       procedure Internal (Clist : in System.Address);
       pragma Import (C, Internal, "gtk_clist_freeze");
    begin
@@ -180,7 +155,7 @@ package body Gtk.CList is
    -------------------
 
    function Get_Cell_Type
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Row    : in Gint;
        Column : in Gint)
        return      Gtk_Cell_Type
@@ -192,17 +167,16 @@ package body Gtk.CList is
           return      Gint;
       pragma Import (C, Internal, "gtk_clist_get_cell_type");
    begin
-      return Gtk_Cell_Type'Val (Internal (Get_Object (Clist),
-                                          Row,
-                                          Column));
+      return Gtk_Cell_Type'Val (Internal (Get_Object (Clist), Row, Column));
    end Get_Cell_Type;
 
    ----------------------
    -- Get_Clist_Window --
    ----------------------
 
-   function Get_Clist_Window (Clist : in Gtk_CList'Class)
-                              return     Gdk.Window.Gdk_Window is
+   function Get_Clist_Window (Clist : in Gtk_CList)
+                              return     Gdk.Window.Gdk_Window
+   is
       function Internal (Clist : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_clist_get_clist_window");
       Window : Gdk.Window.Gdk_Window;
@@ -215,8 +189,7 @@ package body Gtk.CList is
    -- Get_Column_Button --
    -----------------------
 
-   function Get_Column_Button (Clist  : in Gtk_CList'Class;
-                               Column : in Gint)
+   function Get_Column_Button (Clist  : in Gtk_CList; Column : in Gint)
                                return Gtk.Button.Gtk_Button
    is
       function Internal (Clist  : in System.Address;
@@ -234,7 +207,7 @@ package body Gtk.CList is
    ----------------
 
    procedure Get_Pixmap
-      (Clist    : in Gtk_CList'Class;
+      (Clist    : in Gtk_CList;
        Row      : in Gint;
        Column   : in Gint;
        Pixmap   : out Gdk.Pixmap.Gdk_Pixmap'Class;
@@ -266,7 +239,7 @@ package body Gtk.CList is
    -----------------
 
    procedure Get_Pixtext
-      (Clist    : in Gtk_CList'Class;
+      (Clist    : in Gtk_CList;
        Row      : in Gint;
        Column   : in Gint;
        Text     : in out String;
@@ -306,11 +279,8 @@ package body Gtk.CList is
    -- Get_Selection --
    -------------------
 
-   function Get_Selection (Widget : in Gtk_CList'Class)
-                           return      Gint_List.Glist
-   is
-      function Internal (Widget : in System.Address)
-                         return      System.Address;
+   function Get_Selection (Widget : in Gtk_CList) return Gint_List.Glist is
+      function Internal (Widget : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_clist_get_selection");
       List : Gint_List.Glist;
    begin
@@ -323,7 +293,7 @@ package body Gtk.CList is
    ------------------------
 
    procedure Get_Selection_Info
-     (Clist   : in Gtk_CList'Class;
+     (Clist   : in Gtk_CList;
       X       : in Gint;
       Y       : in Gint;
       Row     : out Gint;
@@ -351,7 +321,7 @@ package body Gtk.CList is
    --------------
 
    procedure Get_Text
-      (Clist    : in Gtk_CList'Class;
+      (Clist    : in Gtk_CList;
        Row      : in Gint;
        Column   : in Gint;
        Text     : out String;
@@ -377,11 +347,8 @@ package body Gtk.CList is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget  : out Gtk_CList;
-                      Columns : in Gint)
-   is
-      function Internal (Columns : in Gint)
-                         return       System.Address;
+   procedure Gtk_New (Widget  : out Gtk_CList; Columns : in Gint) is
+      function Internal (Columns : in Gint) return System.Address;
       pragma Import (C, Internal, "gtk_clist_new");
    begin
       Set_Object (Widget, Internal (Columns));
@@ -391,10 +358,9 @@ package body Gtk.CList is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New
-      (Widget  : out Gtk_CList;
-       Columns : in Gint;
-       Titles  : in Line_Data)
+   procedure Gtk_New (Widget  : out Gtk_CList;
+                      Columns : in Gint;
+                      Titles  : in Line_Data)
    is
       function Internal
          (Columns : in Gint;
@@ -410,7 +376,7 @@ package body Gtk.CList is
    ------------
 
    procedure Insert
-      (Clist : in Gtk_CList'Class;
+      (Clist : in Gtk_CList;
        Row   : in Gint;
        Text  : in Line_Data)
    is
@@ -429,7 +395,7 @@ package body Gtk.CList is
    ------------
 
    procedure Moveto
-      (Clist     : in Gtk_CList'Class;
+      (Clist     : in Gtk_CList;
        Row       : in Gint;
        Column    : in Gint;
        Row_Align : in Gfloat;
@@ -454,56 +420,41 @@ package body Gtk.CList is
    -- Remove --
    ------------
 
-   procedure Remove
-      (Clist : in Gtk_CList'Class;
-       Row   : in Gint)
-   is
-      procedure Internal
-         (Clist : in System.Address;
-          Row   : in Gint);
+   procedure Remove (Clist : in Gtk_CList; Row   : in Gint) is
+      procedure Internal (Clist : in System.Address; Row   : in Gint);
       pragma Import (C, Internal, "gtk_clist_remove");
    begin
-      Internal (Get_Object (Clist),
-                Row);
+      Internal (Get_Object (Clist), Row);
    end Remove;
 
    --------------------
    -- Row_Is_Visible --
    --------------------
 
-   function Row_Is_Visible
-      (Clist  : in Gtk_CList'Class;
-       Row    : in Gint)
-       return      Gtk_Visibility
+   function Row_Is_Visible (Clist  : in Gtk_CList; Row : in Gint)
+                            return      Gtk_Visibility
    is
-      function Internal
-         (Clist  : in System.Address;
-          Row    : in Gint)
-          return      Gint;
+      function Internal (Clist  : in System.Address; Row    : in Gint)
+                         return      Gint;
       pragma Import (C, Internal, "gtk_clist_row_is_visible");
    begin
-      return Gtk_Visibility'Val (Internal (Get_Object (Clist),
-                                           Row));
+      return Gtk_Visibility'Val (Internal (Get_Object (Clist), Row));
    end Row_Is_Visible;
 
    ----------------
    -- Select_Row --
    ----------------
 
-   procedure Select_Row
-      (Clist  : in Gtk_CList'Class;
-       Row    : in Gint;
-       Column : in Gint)
+   procedure Select_Row (Clist  : in Gtk_CList;
+                         Row : in Gint;
+                         Column : in Gint)
    is
-      procedure Internal
-         (Clist  : in System.Address;
-          Row    : in Gint;
-          Column : in Gint);
+      procedure Internal (Clist  : in System.Address;
+                          Row    : in Gint;
+                          Column : in Gint);
       pragma Import (C, Internal, "gtk_clist_select_row");
    begin
-      Internal (Get_Object (Clist),
-                Row,
-                Column);
+      Internal (Get_Object (Clist), Row, Column);
    end Select_Row;
 
    --------------------
@@ -511,7 +462,7 @@ package body Gtk.CList is
    --------------------
 
    procedure Set_Background
-      (Clist : in Gtk_CList'Class;
+      (Clist : in Gtk_CList;
        Row   : in Gint;
        Color : in Gdk.Color.Gdk_Color'Class)
    is
@@ -531,7 +482,7 @@ package body Gtk.CList is
    ----------------
 
    procedure Set_Border
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Border : in Gtk_Shadow_Type)
    is
       procedure Internal
@@ -548,7 +499,7 @@ package body Gtk.CList is
    ------------------------------
 
    procedure Set_Column_Justification
-      (Clist         : in Gtk_CList'Class;
+      (Clist         : in Gtk_CList;
        Column        : in Gint;
        Justification : in Gtk_Justification)
    is
@@ -568,7 +519,7 @@ package body Gtk.CList is
    ----------------------
 
    procedure Set_Column_Title
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Column : in Gint;
        Title  : in String)
    is
@@ -588,7 +539,7 @@ package body Gtk.CList is
    -----------------------
 
    procedure Set_Column_Widget
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Column : in Gint;
        Widget : in Gtk.Widget.Gtk_Widget'Class)
    is
@@ -608,7 +559,7 @@ package body Gtk.CList is
    ----------------------
 
    procedure Set_Column_Width
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Column : in Gint;
        Width  : in Gint)
    is
@@ -628,7 +579,7 @@ package body Gtk.CList is
    --------------------
 
    procedure Set_Foreground
-      (Clist : in Gtk_CList'Class;
+      (Clist : in Gtk_CList;
        Row   : in Gint;
        Color : in Gdk.Color.Gdk_Color'Class)
    is
@@ -648,7 +599,7 @@ package body Gtk.CList is
    ----------------
 
    procedure Set_Pixmap
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Row    : in Gint;
        Column : in Gint;
        Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
@@ -674,7 +625,7 @@ package body Gtk.CList is
    -----------------
 
    procedure Set_Pixtext
-      (Clist   : in Gtk_CList'Class;
+      (Clist   : in Gtk_CList;
        Row     : in Gint;
        Column  : in Gint;
        Text    : in String;
@@ -706,7 +657,7 @@ package body Gtk.CList is
    ----------------
 
    procedure Set_Policy
-      (Clist             : in Gtk_CList'Class;
+      (Clist             : in Gtk_CList;
        Vscrollbar_Policy : in Gtk_Policy_Type;
        Hscrollbar_Policy : in Gtk_Policy_Type)
    is
@@ -725,17 +676,11 @@ package body Gtk.CList is
    -- Set_Row_Height --
    --------------------
 
-   procedure Set_Row_Height
-      (Clist  : in Gtk_CList'Class;
-       Height : in Gint)
-   is
-      procedure Internal
-         (Clist  : in System.Address;
-          Height : in Gint);
+   procedure Set_Row_Height (Clist  : in Gtk_CList; Height : in Gint) is
+      procedure Internal (Clist  : in System.Address; Height : in Gint);
       pragma Import (C, Internal, "gtk_clist_set_row_height");
    begin
-      Internal (Get_Object (Clist),
-                Height);
+      Internal (Get_Object (Clist), Height);
    end Set_Row_Height;
 
    ------------------------
@@ -743,7 +688,7 @@ package body Gtk.CList is
    ------------------------
 
    procedure Set_Selection_Mode
-      (Clist : in Gtk_CList'Class;
+      (Clist : in Gtk_CList;
        Mode  : in Gtk_Selection_Mode)
    is
       procedure Internal
@@ -760,7 +705,7 @@ package body Gtk.CList is
    ---------------
 
    procedure Set_Shift
-      (Clist      : in Gtk_CList'Class;
+      (Clist      : in Gtk_CList;
        Row        : in Gint;
        Column     : in Gint;
        Vertical   : in Gint;
@@ -786,7 +731,7 @@ package body Gtk.CList is
    --------------
 
    procedure Set_Text
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Row    : in Gint;
        Column : in Gint;
        Text   : in String)
@@ -808,7 +753,7 @@ package body Gtk.CList is
    -- Thaw --
    ----------
 
-   procedure Thaw (Clist : in Gtk_CList'Class)
+   procedure Thaw (Clist : in Gtk_CList)
    is
       procedure Internal (Clist : in System.Address);
       pragma Import (C, Internal, "gtk_clist_thaw");
@@ -821,7 +766,7 @@ package body Gtk.CList is
    ------------------
 
    procedure Unselect_Row
-      (Clist  : in Gtk_CList'Class;
+      (Clist  : in Gtk_CList;
        Row    : in Gint;
        Column : in Gint)
    is
@@ -875,7 +820,7 @@ package body Gtk.CList is
       -- Get --
       ---------
 
-      function Get (Object : in Gtk_CList'Class;
+      function Get (Object : in Gtk_CList;
                     Row    : in Gint)
                     return Data_Type
       is
@@ -896,7 +841,7 @@ package body Gtk.CList is
       -- Set --
       ---------
 
-      procedure Set (Object : in Gtk_CList'Class;
+      procedure Set (Object : in Gtk_CList;
                      Row    : in Gint;
                      Data   : in Data_Type)
       is
@@ -919,5 +864,3 @@ package body Gtk.CList is
 
 
 end Gtk.CList;
-
-

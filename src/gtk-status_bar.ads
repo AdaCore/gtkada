@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -49,31 +49,28 @@ package Gtk.Status_Bar is
 
    procedure Gtk_New (Widget : out Gtk_Status_Bar);
 
-   function Get_Context_Id (Statusbar           : in Gtk_Status_Bar'Class;
+   function Get_Context_Id (Statusbar           : in Gtk_Status_Bar;
                             Context_Description : in String)
                             return Context_Id;
 
-   function Get_Messages (Statusbar : in Gtk_Status_Bar'Class)
+   function Get_Messages (Statusbar : in Gtk_Status_Bar)
                           return Messages_List.GSlist;
 
    function Push
-     (Statusbar : in Gtk_Status_Bar'Class;
+     (Statusbar : in Gtk_Status_Bar;
       Context   : in Context_Id;
       Text      : in String)
       return Message_Id;
 
    procedure Pop
-     (Statusbar : in Gtk_Status_Bar'Class;
+     (Statusbar : in Gtk_Status_Bar;
       Context   : in Context_Id);
 
-   procedure Remove (Statusbar  : in Gtk_Status_Bar'Class;
+   procedure Remove (Statusbar  : in Gtk_Status_Bar;
                      Context    : in Context_Id;
                      Message    : in Message_Id);
 
-
-
 private
-
    type Gtk_Status_Bar is new Gtk.Box.Gtk_Box with null record;
 
 end Gtk.Status_Bar;

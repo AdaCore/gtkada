@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,11 +35,8 @@ package body Gtk.Alignment is
    -- Get_Xalign --
    ----------------
 
-   function Get_Xalign (Widget : in Gtk_Alignment'Class)
-                        return      Gfloat
-   is
-      function Internal (Widget : in System.Address)
-                         return      Gfloat;
+   function Get_Xalign (Widget : in Gtk_Alignment) return Gfloat is
+      function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_alignment_get_xalign");
    begin
       return Internal (Get_Object (Widget));
@@ -49,11 +46,8 @@ package body Gtk.Alignment is
    -- Get_Xscale --
    ----------------
 
-   function Get_Xscale (Widget : in Gtk_Alignment'Class)
-                        return      Gfloat
-   is
-      function Internal (Widget : in System.Address)
-                         return      Gfloat;
+   function Get_Xscale (Widget : in Gtk_Alignment) return Gfloat is
+      function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_alignment_get_xscale");
    begin
       return Internal (Get_Object (Widget));
@@ -63,11 +57,8 @@ package body Gtk.Alignment is
    -- Get_Yalign --
    ----------------
 
-   function Get_Yalign (Widget : in Gtk_Alignment'Class)
-                        return      Gfloat
-   is
-      function Internal (Widget : in System.Address)
-                         return      Gfloat;
+   function Get_Yalign (Widget : in Gtk_Alignment) return Gfloat is
+      function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_alignment_get_yalign");
    begin
       return Internal (Get_Object (Widget));
@@ -77,11 +68,8 @@ package body Gtk.Alignment is
    -- Get_Yscale --
    ----------------
 
-   function Get_Yscale (Widget : in Gtk_Alignment'Class)
-                        return      Gfloat
-   is
-      function Internal (Widget : in System.Address)
-                         return      Gfloat;
+   function Get_Yscale (Widget : in Gtk_Alignment) return Gfloat is
+      function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_alignment_get_yscale");
    begin
       return Internal (Get_Object (Widget));
@@ -117,7 +105,7 @@ package body Gtk.Alignment is
    ---------
 
    procedure Set
-      (Alignment : in Gtk_Alignment'Class;
+      (Alignment : in Gtk_Alignment;
        Xalign    : in Gfloat;
        Yalign    : in Gfloat;
        Xscale    : in Gfloat;
@@ -139,4 +127,3 @@ package body Gtk.Alignment is
    end Set;
 
 end Gtk.Alignment;
-

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Adjustment;
 with Gtk.Bin;
 with Gtk.Enums; use Gtk.Enums;
@@ -35,22 +34,22 @@ package Gtk.Viewport is
 
    type Gtk_Viewport is new Gtk.Bin.Gtk_Bin with private;
 
-   function Get_Hadjustment (Viewport : in Gtk_Viewport'Class)
+   function Get_Hadjustment (Viewport : in Gtk_Viewport)
                              return        Gtk.Adjustment.Gtk_Adjustment'Class;
-   function Get_Vadjustment (Viewport : in Gtk_Viewport'Class)
+   function Get_Vadjustment (Viewport : in Gtk_Viewport)
                              return        Gtk.Adjustment.Gtk_Adjustment'Class;
    procedure Gtk_New
       (Widget      : out Gtk_Viewport;
        Hadjustment : in Gtk.Adjustment.Gtk_Adjustment'Class;
        Vadjustment : in Gtk.Adjustment.Gtk_Adjustment'Class);
    procedure Set_Hadjustment
-      (Viewport   : in Gtk_Viewport'Class;
+      (Viewport   : in Gtk_Viewport;
        Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class);
    procedure Set_Shadow_Type
-      (Viewport : in Gtk_Viewport'Class;
+      (Viewport : in Gtk_Viewport;
        The_Type : in Gtk_Shadow_Type);
    procedure Set_Vadjustment
-      (Viewport   : in Gtk_Viewport'Class;
+      (Viewport   : in Gtk_Viewport;
        Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class);
 
 private

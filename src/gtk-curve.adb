@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,7 +35,7 @@ package body Gtk.Curve is
    -- Get_Vector --
    ----------------
 
-   procedure Get_Vector (Curve  : in Gtk_Curve'Class;
+   procedure Get_Vector (Curve  : in Gtk_Curve;
                          Vector : in out Gfloat_Array)
    is
       procedure Internal (Curve  : System.Address;
@@ -62,7 +62,7 @@ package body Gtk.Curve is
    -- Reset --
    -----------
 
-   procedure Reset (Curve : in Gtk_Curve'Class) is
+   procedure Reset (Curve : in Gtk_Curve) is
       procedure Internal (Curve : System.Address);
       pragma Import (C, Internal, "gtk_curve_reset");
    begin
@@ -73,7 +73,7 @@ package body Gtk.Curve is
    -- Set_Curve_Type --
    --------------------
 
-   procedure Set_Curve_Type (Curve      : in Gtk_Curve'Class;
+   procedure Set_Curve_Type (Curve      : in Gtk_Curve;
                              Curve_Type : in Gtk_Curve_Type)
    is
       procedure Internal (Curve      : System.Address;
@@ -87,7 +87,7 @@ package body Gtk.Curve is
    -- Set_Gamma --
    ---------------
 
-   procedure Set_Gamma (Curve : in Gtk_Curve'Class; Gamma : in Gfloat) is
+   procedure Set_Gamma (Curve : in Gtk_Curve; Gamma : in Gfloat) is
       procedure Internal (Curve : System.Address; Gamma : Gfloat);
       pragma Import (C, Internal, "gtk_curve_set_gamma");
    begin
@@ -99,7 +99,7 @@ package body Gtk.Curve is
    ---------------
 
    procedure Set_Range
-     (Curve : in Gtk_Curve'Class;
+     (Curve : in Gtk_Curve;
       Min_X : in Gfloat;
       Max_X : in Gfloat;
       Min_Y : in Gfloat;
@@ -120,7 +120,7 @@ package body Gtk.Curve is
    -- Set_Vector --
    ----------------
 
-   procedure Set_Vector (Curve  : in Gtk_Curve'Class;
+   procedure Set_Vector (Curve  : in Gtk_Curve;
                          Vector : in Gfloat_Array)
    is
       procedure Internal (Curve  : System.Address;
@@ -131,6 +131,5 @@ package body Gtk.Curve is
       Internal (Get_Object (Curve), Vector'Length,
                 Vector'Address);
    end Set_Vector;
-
 
 end Gtk.Curve;

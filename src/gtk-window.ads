@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -37,31 +37,27 @@ package Gtk.Window is
    procedure Gtk_New (Window   : out Gtk_Window;
                       The_Type : in  Gtk_Window_Type);
 
-   procedure Set_Title (Window : in out Gtk_Window'Class;
+   procedure Set_Title (Window : in out Gtk_Window;
                         Title  : in String);
 
-   procedure Set_Focus (Window : in out Gtk_Window'Class);
+   procedure Set_Focus (Window : in out Gtk_Window);
 
-   procedure Set_Default (Window   : in out Gtk_Window'Class;
+   procedure Set_Default (Window   : in out Gtk_Window;
                           Defaultw : in     Widget.Gtk_Widget'Class);
 
-   procedure Set_Policy (Window       : in out Gtk_Window'Class;
+   procedure Set_Policy (Window       : in out Gtk_Window;
                          Allow_Shrink : in     Boolean;
                          Allow_Grow   : in     Boolean;
                          Auto_Shrink  : in     Boolean);
 
-   procedure Position (Window   : in out Gtk_Window'Class;
+   procedure Position (Window   : in out Gtk_Window;
                        Position : in     Enums.Gtk_Window_Position);
 
-   function Activate_Focus (Window : in Gtk_Window'Class) return Boolean;
+   function Activate_Focus (Window : in Gtk_Window) return Boolean;
 
-   function Activate_Default (Window : in Gtk_Window'Class) return Boolean;
+   function Activate_Default (Window : in Gtk_Window) return Boolean;
 
 private
-
    type Gtk_Window is new Bin.Gtk_Bin with null record;
-
-
-   --  FIXME  --  need Gtk_Accelerator_Table
 
 end Gtk.Window;

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -36,22 +36,20 @@ package Gtk.Option_Menu is
 
    procedure Gtk_New (Option_Menu : out Gtk_Option_Menu);
 
-   procedure Get_Menu (Option_Menu : in  Gtk_Option_Menu'Class;
+   procedure Get_Menu (Option_Menu : in  Gtk_Option_Menu;
                        Menu        : out Widget.Gtk_Widget'Class);
 
-   procedure Set_Menu (Option_Menu : in out Gtk_Option_Menu'Class;
+   procedure Set_Menu (Option_Menu : in out Gtk_Option_Menu;
                        Menu        : in     Widget.Gtk_Widget'Class);
 
-   procedure Remove_Menu (Option_Menu : in out Gtk_Option_Menu'Class;
+   procedure Remove_Menu (Option_Menu : in out Gtk_Option_Menu;
                           Menu        : in     Widget.Gtk_Widget'Class);
 
-   procedure Set_History (Option_Menu : in out Gtk_Option_Menu'Class;
+   procedure Set_History (Option_Menu : in out Gtk_Option_Menu;
                           Index       : in     Gint);
 
 
 private
-
    type Gtk_Option_Menu is new Button.Gtk_Button with null record;
-
 
 end Gtk.Option_Menu;

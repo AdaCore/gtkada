@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -31,11 +31,11 @@ with Gdk; use Gdk;
 
 package body Gtk.Misc is
 
-   ---------------------
-   --  Set_Alignment  --
-   ---------------------
+   -------------------
+   -- Set_Alignment --
+   -------------------
 
-   procedure Set_Alignment (Misc   : in out Gtk_Misc'Class;
+   procedure Set_Alignment (Misc   : in out Gtk_Misc;
                             Xalign : in     Gfloat;
                             Yalign : in     Gfloat) is
       procedure Internal (Misc           : in System.Address;
@@ -45,12 +45,11 @@ package body Gtk.Misc is
       Internal (Get_Object (Misc), Xalign, Yalign);
    end Set_Alignment;
 
+   -----------------
+   -- Set_Padding --
+   -----------------
 
-   -------------------
-   --  Set_Padding  --
-   -------------------
-
-   procedure Set_Padding (Misc : in out Gtk_Misc'Class;
+   procedure Set_Padding (Misc : in out Gtk_Misc;
                           Xpad : in     Gint;
                           Ypad : in     Gint) is
       procedure Internal (Misc       : in System.Address;

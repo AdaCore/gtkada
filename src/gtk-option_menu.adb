@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -31,11 +31,11 @@ with Gdk; use Gdk;
 
 package body Gtk.Option_Menu is
 
-   ----------------
-   --  Get_Menu  --
-   ----------------
+   --------------
+   -- Get_Menu --
+   --------------
 
-   procedure Get_Menu (Option_Menu : in  Gtk_Option_Menu'Class;
+   procedure Get_Menu (Option_Menu : in  Gtk_Option_Menu;
                        Menu        : out Widget.Gtk_Widget'Class) is
       function Internal (Option_Menu : in System.Address)
                          return System.Address;
@@ -44,10 +44,9 @@ package body Gtk.Option_Menu is
       Set_Object (Menu, Internal (Get_Object (Option_Menu)));
    end Get_Menu;
 
-
-   ---------------
-   --  Gtk_New  --
-   ---------------
+   -------------
+   -- Gtk_New --
+   -------------
 
    procedure Gtk_New (Option_Menu : out Gtk_Option_Menu) is
       function Internal return System.Address;
@@ -56,12 +55,11 @@ package body Gtk.Option_Menu is
       Set_Object (Option_Menu, Internal);
    end Gtk_New;
 
+   -----------------
+   -- Remove_Menu --
+   -----------------
 
-   -------------------
-   --  Remove_Menu  --
-   -------------------
-
-   procedure Remove_Menu (Option_Menu : in out Gtk_Option_Menu'Class;
+   procedure Remove_Menu (Option_Menu : in out Gtk_Option_Menu;
                           Menu        : in     Widget.Gtk_Widget'Class) is
       procedure Internal (Option_Menu, Menu : in System.Address);
       pragma Import (C, Internal, "gtk_option_menu_remove_menu");
@@ -69,12 +67,11 @@ package body Gtk.Option_Menu is
       Internal (Get_Object (Option_Menu), Get_Object (Menu));
    end Remove_Menu;
 
+   -----------------
+   -- Set_History --
+   -----------------
 
-   -------------------
-   --  Set_History  --
-   -------------------
-
-   procedure Set_History (Option_Menu : in out Gtk_Option_Menu'Class;
+   procedure Set_History (Option_Menu : in out Gtk_Option_Menu;
                           Index       : in     Gint) is
       procedure Internal (Option_Menu : in System.Address; Index : in Gint);
       pragma Import (C, Internal, "gtk_option_menu_set_history");
@@ -82,18 +79,16 @@ package body Gtk.Option_Menu is
       Internal (Get_Object (Option_Menu), Index);
    end Set_History;
 
+   --------------
+   -- Set_Menu --
+   --------------
 
-   ----------------
-   --  Set_Menu  --
-   ----------------
-
-   procedure Set_Menu (Option_Menu : in out Gtk_Option_Menu'Class;
+   procedure Set_Menu (Option_Menu : in out Gtk_Option_Menu;
                        Menu        : in     Widget.Gtk_Widget'Class) is
       procedure Internal (Option_Menu, Menu : in System.Address);
       pragma Import (C, Internal, "gtk_option_menu_set_menu");
    begin
       Internal (Get_Object (Option_Menu), Get_Object (Menu));
    end Set_Menu;
-
 
 end Gtk.Option_Menu;

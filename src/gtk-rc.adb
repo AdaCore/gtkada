@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -31,9 +31,9 @@ with Gdk; use Gdk;
 
 package body Gtk.Rc is
 
-   ------------------------------
-   --  Add_Widget_Class_Style  --
-   ------------------------------
+   ----------------------------
+   -- Add_Widget_Class_Style --
+   ----------------------------
 
    procedure Add_Widget_Class_Style (Style   : in out Gtk.Style.Gtk_Style;
                                      Pattern : in     String) is
@@ -44,10 +44,9 @@ package body Gtk.Rc is
       Internal (Get_Object (Style), Pattern & ASCII.NUL);
    end Add_Widget_Class_Style;
 
-
-   -----------------------------
-   --  Add_Widget_Name_Style  --
-   -----------------------------
+   ---------------------------
+   -- Add_Widget_Name_Style --
+   ---------------------------
 
    procedure Add_Widget_Name_Style (Style   : in out Gtk.Style.Gtk_Style;
                                     Pattern : in     String) is
@@ -58,10 +57,9 @@ package body Gtk.Rc is
       Internal (Get_Object (Style), Pattern & ASCII.NUL);
    end Add_Widget_Name_Style;
 
-
-   -----------------
-   --  Get_Style  --
-   -----------------
+   ---------------
+   -- Get_Style --
+   ---------------
 
    procedure Get_Style (Widget : in     Gtk.Widget.Gtk_Widget'Class;
                         Style  :    out Gtk.Style.Gtk_Style) is
@@ -71,10 +69,9 @@ package body Gtk.Rc is
       Set_Object (Style, Internal (Get_Object (Widget)));
    end Get_Style;
 
-
-   -------------
-   --  Parse  --
-   -------------
+   -----------
+   -- Parse --
+   -----------
 
    procedure Parse (Filename : in String) is
       procedure Internal (Filename : in String);
@@ -83,10 +80,9 @@ package body Gtk.Rc is
       Internal (Filename & ASCII.NUL);
    end Parse;
 
-
-   --------------------
-   --  Parse_String  --
-   --------------------
+   ------------------
+   -- Parse_String --
+   ------------------
 
    procedure Parse_String (Rc_String : in String) is
       procedure Internal (Rc_String : in String);

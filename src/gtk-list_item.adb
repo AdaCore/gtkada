@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,7 +35,7 @@ package body Gtk.List_Item is
    -- Deselect --
    --------------
 
-   procedure Deselect (List_Item : in Gtk_List_Item'Class)
+   procedure Deselect (List_Item : in Gtk_List_Item)
    is
       procedure Internal (List_Item : in System.Address);
       pragma Import (C, Internal, "gtk_list_item_deselect");
@@ -73,7 +73,7 @@ package body Gtk.List_Item is
    -- Gtk_Select --
    ----------------
 
-   procedure Gtk_Select (List_Item : in Gtk_List_Item'Class)
+   procedure Gtk_Select (List_Item : in Gtk_List_Item)
    is
       procedure Internal (List_Item : in System.Address);
       pragma Import (C, Internal, "gtk_list_item_select");

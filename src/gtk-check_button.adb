@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -31,9 +31,9 @@ with Gdk; use Gdk;
 
 package body Gtk.Check_Button is
 
-   ---------------
-   --  Gtk_New  --
-   ---------------
+   -------------
+   -- Gtk_New --
+   -------------
 
    procedure Gtk_New (Widget : out Gtk_Check_Button) is
       function Internal return System.Address;
@@ -42,13 +42,11 @@ package body Gtk.Check_Button is
       Set_Object (Widget, Internal);
    end Gtk_New;
 
+   -------------
+   -- Gtk_New --
+   -------------
 
-   ---------------
-   --  Gtk_New  --
-   ---------------
-
-   procedure Gtk_New (Widget : out Gtk_Check_Button;
-                         With_Label : in String) is
+   procedure Gtk_New (Widget : out Gtk_Check_Button; With_Label : in String) is
       function Internal (Label : in String) return System.Address;
       pragma Import (C, Internal, "gtk_check_button_new_with_label");
    begin

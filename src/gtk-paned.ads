@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,31 +26,21 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Container;
-with Gtk.Widget;
+with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Paned is
 
    type Gtk_Paned is new Gtk.Container.Gtk_Container with private;
 
-   procedure Add1
-      (Paned : in Gtk_Paned'Class;
-       Child : in Gtk.Widget.Gtk_Widget'Class);
-   procedure Add2
-      (Paned : in Gtk_Paned'Class;
-       Child : in Gtk.Widget.Gtk_Widget'Class);
+   procedure Add1 (Paned : in Gtk_Paned; Child : in Gtk_Widget'Class);
+   procedure Add2 (Paned : in Gtk_Paned; Child : in Gtk_Widget'Class);
    procedure Gtk_New_Vpaned (Widget : out Gtk_Paned);
    procedure Gtk_New_Hpaned (Widget : out Gtk_Paned);
-   procedure Gutter_Size
-      (Paned : in Gtk_Paned'Class;
-       Size  : in Guint16);
-   procedure Handle_Size
-      (Paned : in Gtk_Paned'Class;
-       Size  : in Guint16);
+   procedure Gutter_Size (Paned : in Gtk_Paned; Size  : in Guint16);
+   procedure Handle_Size (Paned : in Gtk_Paned; Size  : in Guint16);
 
 private
    type Gtk_Paned is new Gtk.Container.Gtk_Container with null record;
 
 end Gtk.Paned;
-

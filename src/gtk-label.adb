@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,26 +26,24 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Interfaces.C.Strings;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
 with Gdk; use Gdk;
 
 package body Gtk.Label is
 
-   package C renames Interfaces.C;
-
    -----------
    --  Get  --
    -----------
 
-   function Get (Label : in Gtk_Label'Class) return String is
+   function Get (Label : in Gtk_Label) return String is
       procedure Internal (Label : in     System.Address;
                           Str   :    out C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_get");
-      Temp : C.Strings.chars_ptr;
+      Temp : chars_ptr;
    begin
       Internal (Get_Object (Label), Temp);
-      return C.Strings.Value (Temp);
+      return Value (Temp);
    end Get;
 
 
@@ -66,7 +64,7 @@ package body Gtk.Label is
    --  Set  --
    -----------
 
-   procedure Set (Label : in Gtk_Label'Class;
+   procedure Set (Label : in Gtk_Label;
                   Str   : in String) is
       procedure Internal (Label : in System.Address;
                           Str   : in String);
@@ -79,7 +77,7 @@ package body Gtk.Label is
    --  Set_Justify  --
    -------------------
 
-   procedure Set_Justify (Label : in Gtk_Label'Class;
+   procedure Set_Justify (Label : in Gtk_Label;
                           Jtype : in Enums.Gtk_Justification) is
       procedure Internal (Label : in System.Address;
                           Jtype : in Enums.Gtk_Justification);
@@ -87,6 +85,5 @@ package body Gtk.Label is
    begin
       Internal (Get_Object (Label), Jtype);
    end Set_Justify;
-
 
 end Gtk.Label;

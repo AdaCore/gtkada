@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,18 +26,17 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Item;
 
 package Gtk.List_Item is
 
    type Gtk_List_Item is new Gtk.Item.Gtk_Item with private;
 
-   procedure Deselect (List_Item : in Gtk_List_Item'Class);
+   procedure Deselect (List_Item : in Gtk_List_Item);
    procedure Gtk_New (Widget : out Gtk_List_Item;
                       Label  : in String);
    procedure Gtk_New (Widget : out Gtk_List_Item);
-   procedure Gtk_Select (List_Item : in Gtk_List_Item'Class);
+   procedure Gtk_Select (List_Item : in Gtk_List_Item);
 
 private
    type Gtk_List_Item is new Gtk.Item.Gtk_Item with null record;

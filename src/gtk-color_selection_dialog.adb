@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,7 +35,7 @@ package body Gtk.Color_Selection_Dialog is
    -- Get_Colorsel --
    ------------------
 
-   function Get_Colorsel (Dialog : in Gtk_Color_Selection_Dialog'Class)
+   function Get_Colorsel (Dialog : in Gtk_Color_Selection_Dialog)
                           return Gtk.Color_Selection.Gtk_Color_Selection
    is
       function Internal (Dialog : System.Address) return System.Address;
@@ -50,7 +50,7 @@ package body Gtk.Color_Selection_Dialog is
    -- Get_OK_Button --
    -------------------
 
-   function Get_OK_Button (Dialog : in Gtk_Color_Selection_Dialog'Class)
+   function Get_OK_Button (Dialog : in Gtk_Color_Selection_Dialog)
                            return Gtk.Button.Gtk_Button
    is
       function Internal (Dialog : System.Address) return System.Address;
@@ -65,7 +65,7 @@ package body Gtk.Color_Selection_Dialog is
    -- Get_Reset_Button --
    ----------------------
 
-   function Get_Reset_Button (Dialog : in Gtk_Color_Selection_Dialog'Class)
+   function Get_Reset_Button (Dialog : in Gtk_Color_Selection_Dialog)
                               return Gtk.Button.Gtk_Button
    is
       function Internal (Dialog : System.Address) return System.Address;
@@ -80,7 +80,7 @@ package body Gtk.Color_Selection_Dialog is
    -- Get_Cancel_Button --
    -----------------------
 
-   function Get_Cancel_Button (Dialog : in  Gtk_Color_Selection_Dialog'Class)
+   function Get_Cancel_Button (Dialog : in  Gtk_Color_Selection_Dialog)
                                return Gtk.Button.Gtk_Button
    is
       function Internal (Dialog : System.Address) return System.Address;
@@ -95,7 +95,7 @@ package body Gtk.Color_Selection_Dialog is
    -- Get_Help_Button --
    ---------------------
 
-   function Get_Help_Button (Dialog : in  Gtk_Color_Selection_Dialog'Class)
+   function Get_Help_Button (Dialog : in  Gtk_Color_Selection_Dialog)
                              return Gtk.Button.Gtk_Button
    is
       function Internal (Dialog : System.Address) return System.Address;

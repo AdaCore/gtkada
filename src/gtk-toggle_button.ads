@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,25 +26,24 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Button;
 
 package Gtk.Toggle_Button is
 
    type Gtk_Toggle_Button is new Gtk.Button.Gtk_Button with private;
 
-   function Is_Active (Widget : in Gtk_Toggle_Button'Class)
+   function Is_Active (Widget : in Gtk_Toggle_Button)
                         return      Boolean;
    procedure Gtk_New (Widget : out Gtk_Toggle_Button);
    procedure Gtk_New (Widget : out Gtk_Toggle_Button;
                       Label  : in String);
    procedure Set_Mode
-      (Toggle_Button  : in Gtk_Toggle_Button'Class;
+      (Toggle_Button  : in Gtk_Toggle_Button;
        Draw_Indicator : in Gint);
    procedure Set_State
-      (Toggle_Button : in Gtk_Toggle_Button'Class;
+      (Toggle_Button : in Gtk_Toggle_Button;
        Active        : in Boolean);
-   procedure Toggled (Toggle_Button : in Gtk_Toggle_Button'Class);
+   procedure Toggled (Toggle_Button : in Gtk_Toggle_Button);
 
 private
    type Gtk_Toggle_Button is new Gtk.Button.Gtk_Button with null record;

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -36,7 +36,7 @@ package body Gtk.Table is
    ------------
 
    procedure Attach
-      (Table         : in Gtk_Table'Class;
+      (Table         : in Gtk_Table;
        Child         : in Gtk.Widget.Gtk_Widget'Class;
        Left_Attach   : in Gint;
        Right_Attach  : in Gint;
@@ -77,7 +77,7 @@ package body Gtk.Table is
    ---------------------
 
    procedure Attach_Defaults
-      (Table         : in Gtk_Table'Class;
+      (Table         : in Gtk_Table;
        Widget        : in Gtk.Widget.Gtk_Widget'Class;
        Left_Attach   : in Gint;
        Right_Attach  : in Gint;
@@ -128,7 +128,7 @@ package body Gtk.Table is
    ---------------------
 
    procedure Set_Col_Spacing
-      (Table   : in Gtk_Table'Class;
+      (Table   : in Gtk_Table;
        Column  : in Gint;
        Spacing : in Gint)
    is
@@ -148,7 +148,7 @@ package body Gtk.Table is
    ----------------------
 
    procedure Set_Col_Spacings
-      (Table   : in Gtk_Table'Class;
+      (Table   : in Gtk_Table;
        Spacing : in Gint)
    is
       procedure Internal
@@ -165,7 +165,7 @@ package body Gtk.Table is
    ---------------------
 
    procedure Set_Homogeneous
-      (Table       : in Gtk_Table'Class;
+      (Table       : in Gtk_Table;
        Homogeneous : in Boolean)
    is
       procedure Internal
@@ -182,7 +182,7 @@ package body Gtk.Table is
    ---------------------
 
    procedure Set_Row_Spacing
-      (Table   : in Gtk_Table'Class;
+      (Table   : in Gtk_Table;
        Row     : in Gint;
        Spacing : in Gint)
    is
@@ -202,7 +202,7 @@ package body Gtk.Table is
    ----------------------
 
    procedure Set_Row_Spacings
-      (Table   : in Gtk_Table'Class;
+      (Table   : in Gtk_Table;
        Spacing : in Gint)
    is
       procedure Internal

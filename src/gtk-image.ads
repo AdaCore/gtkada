@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gdk.Bitmap;
 with Gdk.Image;
 with Gtk.Misc;
@@ -36,7 +35,7 @@ package Gtk.Image is
    type Gtk_Image is new Gtk.Misc.Gtk_Misc with private;
 
    procedure Get
-      (Image : in Gtk_Image'Class;
+      (Image : in Gtk_Image;
        Val   : in Gdk.Image.Gdk_Image'Class;
        Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
    procedure Gtk_New
@@ -44,7 +43,7 @@ package Gtk.Image is
        Val    : in Gdk.Image.Gdk_Image'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
    procedure Set
-      (Image : in Gtk_Image'Class;
+      (Image : in Gtk_Image;
        Val   : in Gdk.Image.Gdk_Image'Class;
        Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
 

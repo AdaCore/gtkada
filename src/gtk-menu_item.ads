@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -39,35 +39,33 @@ package Gtk.Menu_Item is
    procedure Gtk_New (Menu_Item : out Gtk_Menu_Item;
                       Label     : in  String);
 
-   procedure Set_Submenu (Menu_Item : in out Gtk_Menu_Item'Class;
+   procedure Set_Submenu (Menu_Item : in out Gtk_Menu_Item;
                           Submenu   : in     Widget.Gtk_Widget'Class);
 
-   procedure Remove_Submenu (Menu_Item : in out Gtk_Menu_Item'Class);
+   procedure Remove_Submenu (Menu_Item : in out Gtk_Menu_Item);
 
-   procedure Set_Placement (Menu_Item : in out Gtk_Menu_Item'Class;
+   procedure Set_Placement (Menu_Item : in out Gtk_Menu_Item;
                             Placement : in     Enums.Gtk_Submenu_Placement);
 
-   procedure Accelerator_Size (Menu_Item : in out Gtk_Menu_Item'Class);
+   procedure Accelerator_Size (Menu_Item : in out Gtk_Menu_Item);
 
-   function Accelerator_Text (Menu_Item : in Gtk_Menu_Item'Class)
-                              return String;
+   function Accelerator_Text (Menu_Item : in Gtk_Menu_Item) return String;
    --  This function returns the accelerator associated with the Menu_Item
 
-   procedure Configure (Menu_Item              : in out Gtk_Menu_Item'Class;
+   procedure Configure (Menu_Item              : in out Gtk_Menu_Item;
                         Show_Toggle_Indicator  : in     Boolean;
                         Show_Submenu_Indicator : in     Boolean);
 
-   procedure Gtk_Select (Menu_Item : in out Gtk_Menu_Item'Class);
+   procedure Gtk_Select (Menu_Item : in out Gtk_Menu_Item);
 
-   procedure Deselect (Menu_Item : in out Gtk_Menu_Item'Class);
+   procedure Deselect (Menu_Item : in out Gtk_Menu_Item);
 
-   procedure Activate (Menu_Item : in out Gtk_Menu_Item'Class);
+   procedure Activate (Menu_Item : in out Gtk_Menu_Item);
 
-   procedure Right_Justify (Menu_Item : in out Gtk_Menu_Item'Class);
+   procedure Right_Justify (Menu_Item : in out Gtk_Menu_Item);
 
 private
 
    type Gtk_Menu_Item is new Item.Gtk_Item with null record;
-
 
 end Gtk.Menu_Item;

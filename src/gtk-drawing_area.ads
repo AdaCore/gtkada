@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Widget;
 
 package Gtk.Drawing_Area is
@@ -35,13 +34,12 @@ package Gtk.Drawing_Area is
 
    procedure Gtk_New (Widget : out Gtk_Drawing_Area);
    procedure Size
-     (Darea  : in Gtk_Drawing_Area'Class;
+     (Darea  : in Gtk_Drawing_Area;
       Width  : in Gint;
       Height : in Gint);
 
 private
 
    type Gtk_Drawing_Area is new Gtk.Widget.Gtk_Widget with null record;
-
 
 end Gtk.Drawing_Area;

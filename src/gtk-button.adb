@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -31,33 +31,31 @@ with Gdk; use Gdk;
 
 package body Gtk.Button is
 
-   ---------------
-   --  Clicked  --
-   ---------------
+   -------------
+   -- Clicked --
+   -------------
 
-   procedure Clicked (Widget : in Gtk_Button'Class) is
+   procedure Clicked (Widget : in Gtk_Button) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_clicked");
    begin
       Internal (Get_Object (Widget));
    end Clicked;
 
+   -----------
+   -- Enter --
+   -----------
 
-   -------------
-   --  Enter  --
-   -------------
-
-   procedure Enter (Widget : in Gtk_Button'Class) is
+   procedure Enter (Widget : in Gtk_Button) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_enter");
    begin
       Internal (Get_Object (Widget));
    end Enter;
 
-
-   ---------------
-   --  Gtk_New  --
-   ---------------
+   -------------
+   -- Gtk_New --
+   -------------
 
    procedure Gtk_New (Widget : out Gtk_Button) is
       function Internal return System.Address;
@@ -66,58 +64,48 @@ package body Gtk.Button is
       Set_Object (Widget, Internal);
    end Gtk_New;
 
-   ---------------
-   --  Gtk_New  --
-   ---------------
+   -------------
+   -- Gtk_New --
+   -------------
 
-   procedure Gtk_New (Widget : out Gtk_Button;
-                      Label  : in String) is
+   procedure Gtk_New (Widget : out Gtk_Button; Label  : in String) is
       function Internal (S : String) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_with_label");
    begin
       Set_Object (Widget, Internal (Label & Ascii.NUL));
    end Gtk_New;
 
-   -------------
-   --  Leave  --
-   -------------
-   procedure Leave (Widget : in Gtk_Button'Class) is
+   -----------
+   -- Leave --
+   -----------
+
+   procedure Leave (Widget : in Gtk_Button) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_enter");
    begin
       Internal (Get_Object (Widget));
    end Leave;
 
+   -------------
+   -- Pressed --
+   -------------
 
-   ---------------
-   --  Pressed  --
-   ---------------
-
-   procedure Pressed (Widget : in Gtk_Button'Class) is
+   procedure Pressed (Widget : in Gtk_Button) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_pressed");
    begin
       Internal (Get_Object (Widget));
    end Pressed;
 
+   --------------
+   -- Released --
+   --------------
 
-   ----------------
-   --  Released  --
-   ----------------
-
-   procedure Released (Widget : in Gtk_Button'Class) is
+   procedure Released (Widget : in Gtk_Button) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_released");
    begin
       Internal (Get_Object (Widget));
    end Released;
 
-
 end Gtk.Button;
-
-
-
-
-
-
-

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -32,32 +32,21 @@ package Gtk.Button is
 
    type Gtk_Button is new Container.Gtk_Container with private;
 
-
    procedure Gtk_New (Widget : out Gtk_Button);
-
-   procedure Gtk_New (Widget      : out Gtk_Button;
-                      Label  : in String);
+   procedure Gtk_New (Widget : out Gtk_Button; Label  : in String);
 
    ---------------
    --  Signals  --
    ---------------
 
-   procedure Pressed (Widget : in Gtk_Button'Class);
-
-   procedure Released (Widget : in Gtk_Button'Class);
-
-   procedure Clicked (Widget : in Gtk_Button'Class);
-
-   procedure Enter (Widget : in Gtk_Button'Class);
-
-   procedure Leave (Widget : in Gtk_Button'Class);
+   procedure Pressed (Widget : in Gtk_Button);
+   procedure Released (Widget : in Gtk_Button);
+   procedure Clicked (Widget : in Gtk_Button);
+   procedure Enter (Widget : in Gtk_Button);
+   procedure Leave (Widget : in Gtk_Button);
 
 private
 
    type Gtk_Button is new Container.Gtk_Container with null record;
-
-   --  services NOT mapped...
-   --
-
 
 end Gtk.Button;

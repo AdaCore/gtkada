@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,57 +26,56 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Widget;
 
 package Gtk.Editable is
 
    type Gtk_Editable is new Gtk.Widget.Gtk_Widget with private;
 
-   procedure Changed (Editable : in Gtk_Editable'Class);
+   procedure Changed (Editable : in Gtk_Editable);
    procedure Claim_Selection
-      (Editable : in Gtk_Editable'Class;
+      (Editable : in Gtk_Editable;
        Claim    : in Boolean;
        Time     : in Guint32);
    procedure Copy_Clipboard
-      (Editable : in Gtk_Editable'Class;
+      (Editable : in Gtk_Editable;
        Time     : in Guint32);
    procedure Cut_Clipboard
-      (Editable : in Gtk_Editable'Class;
+      (Editable : in Gtk_Editable;
        Time     : in Guint32);
-   procedure Delete_Selection (Editable : in Gtk_Editable'Class);
+   procedure Delete_Selection (Editable : in Gtk_Editable);
    procedure Delete_Text
-      (Editable  : in Gtk_Editable'Class;
+      (Editable  : in Gtk_Editable;
        Start_Pos : in Gint;
        End_Pos   : in Gint);
    function Get_Chars
-      (Editable  : in Gtk_Editable'Class;
+      (Editable  : in Gtk_Editable;
        Start_Pos : in Gint;
        End_Pos   : in Gint)
        return         String;
-   function Get_Clipboard_Text (Widget : in Gtk_Editable'Class)
+   function Get_Clipboard_Text (Widget : in Gtk_Editable)
                                 return      String;
-   function Get_Current_Pos (Widget : in Gtk_Editable'Class)
+   function Get_Current_Pos (Widget : in Gtk_Editable)
                              return      Guint;
-   function Get_Editable (Widget : in Gtk_Editable'Class)
+   function Get_Editable (Widget : in Gtk_Editable)
                           return      Boolean;
-   procedure Set_Editable (Widget : in Gtk_Editable'Class; Editable : boolean);
-   function Get_Has_Selection (Widget : in Gtk_Editable'Class)
+   procedure Set_Editable (Widget : in Gtk_Editable; Editable : boolean);
+   function Get_Has_Selection (Widget : in Gtk_Editable)
                                return      Boolean;
-   function Get_Selection_End_Pos (Widget : in Gtk_Editable'Class)
+   function Get_Selection_End_Pos (Widget : in Gtk_Editable)
                                    return      Guint;
-   function Get_Selection_Start_Pos (Widget : in Gtk_Editable'Class)
+   function Get_Selection_Start_Pos (Widget : in Gtk_Editable)
                                      return      Guint;
    procedure Insert_Text
-      (Editable        : in Gtk_Editable'Class;
+      (Editable        : in Gtk_Editable;
        New_Text        : in String;
        New_Text_Length : in Gint;
        Position        : in out Gint);
    procedure Paste_Clipboard
-      (Editable : in Gtk_Editable'Class;
+      (Editable : in Gtk_Editable;
        Time     : in Guint32);
    procedure Select_Region
-      (Editable : in Gtk_Editable'Class;
+      (Editable : in Gtk_Editable;
        Start    : in Gint;
        The_End  : in Gint);
 

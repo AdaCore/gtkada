@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -36,7 +36,7 @@ package body Gtk.Menu_Bar is
    ------------
 
    procedure Append
-     (Menu_Bar : in Gtk_Menu_Bar'Class;
+     (Menu_Bar : in Gtk_Menu_Bar;
       Child    : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
@@ -52,7 +52,7 @@ package body Gtk.Menu_Bar is
    ------------
 
    procedure Insert
-     (Menu_Bar : in Gtk_Menu_Bar'Class;
+     (Menu_Bar : in Gtk_Menu_Bar;
       Child    : in Gtk.Widget.Gtk_Widget'Class;
       Position : in Gint)
    is
@@ -80,7 +80,7 @@ package body Gtk.Menu_Bar is
    -------------
 
    procedure Prepend
-     (Menu_Bar : in Gtk_Menu_Bar'Class;
+     (Menu_Bar : in Gtk_Menu_Bar;
       Child    : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal (Menu_Bar : System.Address;

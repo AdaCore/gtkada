@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,21 +26,16 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Bin;
 
 package Gtk.Alignment is
 
    type Gtk_Alignment is new Gtk.Bin.Gtk_Bin with private;
 
-   function Get_Xalign (Widget : in Gtk_Alignment'Class)
-                        return      Gfloat;
-   function Get_Xscale (Widget : in Gtk_Alignment'Class)
-                        return      Gfloat;
-   function Get_Yalign (Widget : in Gtk_Alignment'Class)
-                        return      Gfloat;
-   function Get_Yscale (Widget : in Gtk_Alignment'Class)
-                        return      Gfloat;
+   function Get_Xalign (Widget : in Gtk_Alignment) return Gfloat;
+   function Get_Xscale (Widget : in Gtk_Alignment) return Gfloat;
+   function Get_Yalign (Widget : in Gtk_Alignment) return Gfloat;
+   function Get_Yscale (Widget : in Gtk_Alignment) return Gfloat;
    procedure Gtk_New
       (Widget : out Gtk_Alignment;
        Xalign : in Gfloat;
@@ -48,7 +43,7 @@ package Gtk.Alignment is
        Xscale : in Gfloat;
        Yscale : in Gfloat);
    procedure Set
-      (Alignment : in Gtk_Alignment'Class;
+      (Alignment : in Gtk_Alignment;
        Xalign    : in Gfloat;
        Yalign    : in Gfloat;
        Xscale    : in Gfloat;

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,7 +35,7 @@ package body Gtk.Progress_Bar is
    -- Get_Percentage --
    --------------------
 
-   function Get_Percentage (Widget : in Gtk_Progress_Bar'Class)
+   function Get_Percentage (Widget : in Gtk_Progress_Bar)
                             return      Gfloat
    is
       function Internal (Widget : in System.Address) return Gfloat;
@@ -61,7 +61,7 @@ package body Gtk.Progress_Bar is
    ------------
 
    procedure Update
-      (Pbar       : in Gtk_Progress_Bar'Class;
+      (Pbar       : in Gtk_Progress_Bar;
        Percentage : in Gfloat)
    is
       procedure Internal

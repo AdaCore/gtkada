@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,19 +26,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Frame;
 
 package Gtk.Aspect_Frame is
 
    type Gtk_Aspect_Frame is new Gtk.Frame.Gtk_Frame with private;
 
-   function Get_Ratio (Widget : in Gtk_Aspect_Frame'Class)
-                       return      Gfloat;
-   function Get_Xalign (Widget : in Gtk_Aspect_Frame'Class)
-                        return      Gfloat;
-   function Get_Yalign (Widget : in Gtk_Aspect_Frame'Class)
-                        return      Gfloat;
+   function Get_Ratio (Widget : in Gtk_Aspect_Frame) return Gfloat;
+   function Get_Xalign (Widget : in Gtk_Aspect_Frame) return Gfloat;
+   function Get_Yalign (Widget : in Gtk_Aspect_Frame) return Gfloat;
    procedure Gtk_New
       (Widget     : out Gtk_Aspect_Frame;
        Label      : in String;
@@ -47,7 +43,7 @@ package Gtk.Aspect_Frame is
        Ratio      : in Gfloat;
        Obey_Child : in Gint);
    procedure Set
-      (Aspect_Frame : in Gtk_Aspect_Frame'Class;
+      (Aspect_Frame : in Gtk_Aspect_Frame;
        Xalign       : in Gfloat;
        Yalign       : in Gfloat;
        Ratio        : in Gfloat;

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.GRange;
@@ -35,7 +34,7 @@ package Gtk.Scale is
 
    type Gtk_Scale is new Gtk.GRange.Gtk_Range with private;
 
-   procedure Draw_Value (Scale : in Gtk_Scale'Class);
+   procedure Draw_Value (Scale : in Gtk_Scale);
    procedure Gtk_New_Hscale
      (Widget     : out Gtk_Scale;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class);
@@ -43,16 +42,15 @@ package Gtk.Scale is
      (Widget     : out Gtk_Scale;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class);
    procedure Set_Digits
-      (Scale      : in Gtk_Scale'Class;
+      (Scale      : in Gtk_Scale;
        The_Digits : in Gint);
    procedure Set_Draw_Value
-      (Scale      : in Gtk_Scale'Class;
+      (Scale      : in Gtk_Scale;
        Draw_Value : in Boolean);
    procedure Set_Value_Pos
-      (Scale : in Gtk_Scale'Class;
+      (Scale : in Gtk_Scale;
        Pos   : in Gtk_Position_Type);
-   function Value_Width (Scale  : in Gtk_Scale'Class)
-                         return      Gint;
+   function Value_Width (Scale  : in Gtk_Scale) return Gint;
 
 private
    type Gtk_Scale is new Gtk.GRange.Gtk_Range with null record;

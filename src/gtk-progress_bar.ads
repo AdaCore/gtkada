@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Widget;
 
 package Gtk.Progress_Bar is
@@ -34,11 +33,8 @@ package Gtk.Progress_Bar is
    type Gtk_Progress_Bar is new Gtk.Widget.Gtk_Widget with private;
 
    procedure Gtk_New (Widget : out Gtk_Progress_Bar);
-   procedure Update
-      (Pbar       : in Gtk_Progress_Bar'Class;
-       Percentage : in Gfloat);
-   function Get_Percentage (Widget : in Gtk_Progress_Bar'Class)
-                            return      Gfloat;
+   procedure Update (Pbar : in Gtk_Progress_Bar; Percentage : in Gfloat);
+   function Get_Percentage (Widget : in Gtk_Progress_Bar) return Gfloat;
 
 private
    type Gtk_Progress_Bar is new Gtk.Widget.Gtk_Widget with null record;

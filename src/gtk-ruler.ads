@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
 
@@ -34,23 +33,19 @@ package Gtk.Ruler is
 
    type Gtk_Ruler is new Gtk.Widget.Gtk_Widget with private;
 
-   procedure Draw_Pos (Ruler : in Gtk_Ruler'Class);
-   procedure Draw_Ticks (Ruler : in Gtk_Ruler'Class);
-   function Get_Lower (Widget : in Gtk_Ruler'Class)
-                       return      Gfloat;
-   function Get_Max_Size (Widget : in Gtk_Ruler'Class)
-                          return      Gfloat;
-   function Get_Position (Widget : in Gtk_Ruler'Class)
-                          return      Gfloat;
-   function Get_Upper (Widget : in Gtk_Ruler'Class)
-                       return      Gfloat;
+   procedure Draw_Pos (Ruler : in Gtk_Ruler);
+   procedure Draw_Ticks (Ruler : in Gtk_Ruler);
+   function Get_Lower (Widget : in Gtk_Ruler) return Gfloat;
+   function Get_Max_Size (Widget : in Gtk_Ruler) return Gfloat;
+   function Get_Position (Widget : in Gtk_Ruler) return Gfloat;
+   function Get_Upper (Widget : in Gtk_Ruler) return Gfloat;
    procedure Gtk_New_Hruler (Widget : out Gtk_Ruler);
    procedure Gtk_New_Vruler (Widget : out Gtk_Ruler);
    procedure Set_Metric
-      (Ruler  : in Gtk_Ruler'Class;
+      (Ruler  : in Gtk_Ruler;
        Metric : in Gtk_Metric_Type);
    procedure Set_Range
-      (Ruler    : in Gtk_Ruler'Class;
+      (Ruler    : in Gtk_Ruler;
        Lower    : in Gfloat;
        Upper    : in Gfloat;
        Position : in Gfloat;

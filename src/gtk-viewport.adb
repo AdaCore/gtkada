@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,7 +35,7 @@ package body Gtk.Viewport is
    -- Get_Hadjustment --
    ---------------------
 
-   function Get_Hadjustment (Viewport : in Gtk_Viewport'Class)
+   function Get_Hadjustment (Viewport : in Gtk_Viewport)
                              return        Gtk.Adjustment.Gtk_Adjustment'Class
    is
       function Internal (Viewport : in System.Address)
@@ -51,7 +51,7 @@ package body Gtk.Viewport is
    -- Get_Vadjustment --
    ---------------------
 
-   function Get_Vadjustment (Viewport : in Gtk_Viewport'Class)
+   function Get_Vadjustment (Viewport : in Gtk_Viewport)
                              return        Gtk.Adjustment.Gtk_Adjustment'Class
    is
       function Internal (Viewport : in System.Address)
@@ -87,7 +87,7 @@ package body Gtk.Viewport is
    ---------------------
 
    procedure Set_Hadjustment
-      (Viewport   : in Gtk_Viewport'Class;
+      (Viewport   : in Gtk_Viewport;
        Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class)
    is
       procedure Internal
@@ -104,7 +104,7 @@ package body Gtk.Viewport is
    ---------------------
 
    procedure Set_Shadow_Type
-      (Viewport : in Gtk_Viewport'Class;
+      (Viewport : in Gtk_Viewport;
        The_Type : in Gtk_Shadow_Type)
    is
       procedure Internal
@@ -121,7 +121,7 @@ package body Gtk.Viewport is
    ---------------------
 
    procedure Set_Vadjustment
-      (Viewport   : in Gtk_Viewport'Class;
+      (Viewport   : in Gtk_Viewport;
        Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class)
    is
       procedure Internal

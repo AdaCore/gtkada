@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,11 +35,8 @@ package body Gtk.Box is
    -- Get_Child --
    ---------------
 
-   function Get_Child (Box : in Gtk_Box;
-                       Num : in Gint)
-                       return   Gtk.Widget.Gtk_Widget is
-      function Internal (Box : in System.Address;
-                         Num : in Gint)
+   function Get_Child (Box : in Gtk_Box; Num : in Gint) return Gtk_Widget is
+      function Internal (Box : in System.Address; Num : in Gint)
                          return  System.Address;
       pragma Import (C, Internal, "ada_box_get_child");
       W : Gtk.Widget.Gtk_Widget;
@@ -85,7 +82,7 @@ package body Gtk.Box is
    ----------------
 
    procedure Pack_Start
-     (In_Box  : in Gtk_Box'Class;
+     (In_Box  : in Gtk_Box;
       Child   : in Gtk.Widget.Gtk_Widget'Class;
       Expand  : in Boolean := True;
       Fill    : in Boolean := True;
@@ -107,7 +104,7 @@ package body Gtk.Box is
    --------------
 
    procedure Pack_End
-     (In_Box  : in Gtk_Box'Class;
+     (In_Box  : in Gtk_Box;
       Child   : in Gtk.Widget.Gtk_Widget'Class;
       Expand  : in Boolean := True;
       Fill    : in Boolean := True;
@@ -128,11 +125,8 @@ package body Gtk.Box is
    -- Set_Homogeneous --
    ---------------------
 
-   procedure Set_Homogeneous (In_Box      : in Gtk_Box'Class;
-                              Homogeneous : in Boolean)
-   is
-      procedure Internal (In_Box      : in System.Address;
-                          Homogeneous : in Gint);
+   procedure Set_Homogeneous (In_Box : in Gtk_Box; Homogeneous : in Boolean) is
+      procedure Internal (In_Box : in System.Address; Homogeneous : in Gint);
       pragma Import (C, Internal, "gtk_box_set_homogeneous");
    begin
       Internal (Get_Object (In_Box), Boolean'Pos (Homogeneous));
@@ -142,11 +136,8 @@ package body Gtk.Box is
    -- Set_Spacing --
    -----------------
 
-   procedure Set_Spacing (In_Box  : in Gtk_Box'Class;
-                          Spacing : in Gint)
-   is
-      procedure Internal (In_Box  : in System.Address;
-                          Spacing : in Gint);
+   procedure Set_Spacing (In_Box  : in Gtk_Box; Spacing : in Gint) is
+      procedure Internal (In_Box  : in System.Address; Spacing : in Gint);
       pragma Import (C, Internal, "gtk_box_set_spacing");
    begin
       Internal (Get_Object (In_Box), Spacing);
@@ -157,7 +148,7 @@ package body Gtk.Box is
    -------------------
 
    procedure Reorder_Child
-     (In_Box : in Gtk_Box'Class;
+     (In_Box : in Gtk_Box;
       Child  : in Gtk.Widget.Gtk_Widget'Class;
       Pos    : in Guint)
    is
@@ -174,7 +165,7 @@ package body Gtk.Box is
    -------------------------
 
    procedure Query_Child_Packing
-     (In_Box   : in  Gtk_Box'Class;
+     (In_Box   : in  Gtk_Box;
       Child    : in  Gtk.Widget.Gtk_Widget'Class;
       Expand   : out Boolean;
       Fill     : out Boolean;
@@ -205,7 +196,7 @@ package body Gtk.Box is
    -----------------------
 
    procedure Set_Child_Packing
-     (In_Box    : in Gtk_Box'Class;
+     (In_Box    : in Gtk_Box;
       Child     : in Gtk.Widget.Gtk_Widget'Class;
       Expand    : in Boolean;
       Fill      : in Boolean;
@@ -224,6 +215,5 @@ package body Gtk.Box is
                 Boolean'Pos (Expand), Boolean'Pos (Fill), Padding,
                 Gtk_Pack_Type'Pos (PackType));
    end Set_Child_Packing;
-
 
 end Gtk.Box;

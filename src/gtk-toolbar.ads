@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -37,7 +37,7 @@ package Gtk.Toolbar is
    type Gtk_Toolbar is new Gtk.Container.Gtk_Container with private;
 
    function Append_Element
-      (Toolbar              : in Gtk_Toolbar'Class;
+      (Toolbar              : in Gtk_Toolbar;
        The_Type             : in Gtk_Toolbar_Child_Type;
        Widget               : in Gtk.Widget.Gtk_Widget'Class;
        Text                 : in String;
@@ -49,7 +49,7 @@ package Gtk.Toolbar is
    --  what is done in C.
 
    function Append_Item
-      (Toolbar              : in Gtk_Toolbar'Class;
+      (Toolbar              : in Gtk_Toolbar;
        Text                 : in String;
        Tooltip_Text         : in String;
        Tooltip_Private_Text : in String;
@@ -58,9 +58,9 @@ package Gtk.Toolbar is
    --  Note : you have to set the callback yourself, as opposed to what is
    --  done in C.
 
-   procedure Append_Space (Toolbar : in Gtk_Toolbar'Class);
+   procedure Append_Space (Toolbar : in Gtk_Toolbar);
    procedure Append_Widget
-      (Toolbar              : in Gtk_Toolbar'Class;
+      (Toolbar              : in Gtk_Toolbar;
        Widget               : in Gtk.Widget.Gtk_Widget'Class;
        Tooltip_Text         : in String;
        Tooltip_Private_Text : in String);
@@ -69,7 +69,7 @@ package Gtk.Toolbar is
        Orientation : in Gtk_Orientation;
        Style       : in Gtk_Toolbar_Style);
    function Insert_Element
-      (Toolbar              : in Gtk_Toolbar'Class;
+      (Toolbar              : in Gtk_Toolbar;
        The_Type             : in Gtk_Toolbar_Child_Type;
        Widget               : in Gtk.Widget.Gtk_Widget'Class;
        Text                 : in String;
@@ -82,7 +82,7 @@ package Gtk.Toolbar is
    --  done in C.
 
    function Insert_Item
-      (Toolbar              : in Gtk_Toolbar'Class;
+      (Toolbar              : in Gtk_Toolbar;
        Text                 : in String;
        Tooltip_Text         : in String;
        Tooltip_Private_Text : in String;
@@ -90,16 +90,16 @@ package Gtk.Toolbar is
        Position             : in Gint)
        return                    Gtk.Button.Gtk_Button;
    procedure Insert_Space
-      (Toolbar  : in Gtk_Toolbar'Class;
+      (Toolbar  : in Gtk_Toolbar;
        Position : in Gint);
    procedure Insert_Widget
-      (Toolbar              : in Gtk_Toolbar'Class;
+      (Toolbar              : in Gtk_Toolbar;
        Widget               : in Gtk.Widget.Gtk_Widget'Class;
        Tooltip_Text         : in String;
        Tooltip_Private_Text : in String;
        Position             : in Gint);
    function Prepend_Element
-      (Toolbar              : in Gtk_Toolbar'Class;
+      (Toolbar              : in Gtk_Toolbar;
        The_Type             : in Gtk_Toolbar_Child_Type;
        Widget               : in Gtk.Widget.Gtk_Widget'Class;
        Text                 : in String;
@@ -108,29 +108,29 @@ package Gtk.Toolbar is
        Icon                 : in Gtk.Widget.Gtk_Widget'Class)
        return                    Gtk.Widget.Gtk_Widget'Class;
    function Prepend_Item
-      (Toolbar              : in Gtk_Toolbar'Class;
+      (Toolbar              : in Gtk_Toolbar;
        Text                 : in String;
        Tooltip_Text         : in String;
        Tooltip_Private_Text : in String;
        Icon                 : in Gtk.Widget.Gtk_Widget'Class)
        return                    Gtk.Button.Gtk_Button;
-   procedure Prepend_Space (Toolbar : in Gtk_Toolbar'Class);
+   procedure Prepend_Space (Toolbar : in Gtk_Toolbar);
    procedure Prepend_Widget
-      (Toolbar              : in Gtk_Toolbar'Class;
+      (Toolbar              : in Gtk_Toolbar;
        Widget               : in Gtk.Widget.Gtk_Widget'Class;
        Tooltip_Text         : in String;
        Tooltip_Private_Text : in String);
    procedure Set_Orientation
-      (Toolbar     : in Gtk_Toolbar'Class;
+      (Toolbar     : in Gtk_Toolbar;
        Orientation : in Gtk_Orientation);
    procedure Set_Space_Size
-      (Toolbar    : in Gtk_Toolbar'Class;
+      (Toolbar    : in Gtk_Toolbar;
        Space_Size : in Gint);
    procedure Set_Style
-      (Toolbar : in Gtk_Toolbar'Class;
+      (Toolbar : in Gtk_Toolbar;
        Style   : in Gtk_Toolbar_Style);
    procedure Set_Tooltips
-      (Toolbar : in Gtk_Toolbar'Class;
+      (Toolbar : in Gtk_Toolbar;
        Enable  : in Boolean);
 
 private

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -191,12 +191,5 @@ package Gtk.Signal is
 
    procedure Handler_Unblock (Obj        : in Gtk.Object.Gtk_Object'Class;
                               Handler_Id : in Guint);
-
-   --  Functions which are not implemented because they are probably not needed
-   --    Actually, gtk_signal_disconnect_by_data can not be implemented since
-   --    we did a new memory allocation in the Connect function
-   --    The two 'block' can not be implemented
-   --    The two 'unblock' can not be implemented
-
 
 end Gtk.Signal;

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Editable;
 
 package Gtk.GEntry is
@@ -34,34 +33,34 @@ package Gtk.GEntry is
    type Gtk_Entry is new Gtk.Editable.Gtk_Editable with private;
 
    procedure Append_Text
-     (The_Entry : in Gtk_Entry'Class;
+     (The_Entry : in Gtk_Entry;
       Text      : in String);
-   function Get_Text (The_Entry : in Gtk_Entry'Class)
+   function Get_Text (The_Entry : in Gtk_Entry)
                       return      String;
    procedure Gtk_New (Widget : out Gtk_Entry;
                       Max    : in Guint16);
    procedure Gtk_New (Widget : out Gtk_Entry);
    procedure Prepend_Text
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Text      : in String);
    procedure Select_Region
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Start     : in Gint;
        The_End   : in Gint);
    procedure Set_Editable
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Editable  : in Boolean);
    procedure Set_Max_Length
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Max       : in Guint16);
    procedure Set_Position
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Position  : in Gint);
    procedure Set_Text
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Text      : in String);
    procedure Set_Visibility
-      (The_Entry : in Gtk_Entry'Class;
+      (The_Entry : in Gtk_Entry;
        Visible   : in Boolean);
 
 private

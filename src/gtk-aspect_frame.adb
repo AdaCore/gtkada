@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,11 +35,8 @@ package body Gtk.Aspect_Frame is
    -- Get_Ratio --
    ---------------
 
-   function Get_Ratio (Widget : in Gtk_Aspect_Frame'Class)
-                       return      Gfloat
-   is
-      function Internal (Widget : in System.Address)
-                         return      Gfloat;
+   function Get_Ratio (Widget : in Gtk_Aspect_Frame) return Gfloat is
+      function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_aspect_frame_get_ratio");
    begin
       return Internal (Get_Object (Widget));
@@ -49,11 +46,8 @@ package body Gtk.Aspect_Frame is
    -- Get_Xalign --
    ----------------
 
-   function Get_Xalign (Widget : in Gtk_Aspect_Frame'Class)
-                        return      Gfloat
-   is
-      function Internal (Widget : in System.Address)
-                         return      Gfloat;
+   function Get_Xalign (Widget : in Gtk_Aspect_Frame) return Gfloat is
+      function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_aspect_frame_get_xalign");
    begin
       return Internal (Get_Object (Widget));
@@ -63,11 +57,8 @@ package body Gtk.Aspect_Frame is
    -- Get_Yalign --
    ----------------
 
-   function Get_Yalign (Widget : in Gtk_Aspect_Frame'Class)
-                        return      Gfloat
-   is
-      function Internal (Widget : in System.Address)
-                         return      Gfloat;
+   function Get_Yalign (Widget : in Gtk_Aspect_Frame) return Gfloat is
+      function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_aspect_frame_get_yalign");
    begin
       return Internal (Get_Object (Widget));
@@ -106,7 +97,7 @@ package body Gtk.Aspect_Frame is
    ---------
 
    procedure Set
-      (Aspect_Frame : in Gtk_Aspect_Frame'Class;
+      (Aspect_Frame : in Gtk_Aspect_Frame;
        Xalign       : in Gfloat;
        Yalign       : in Gfloat;
        Ratio        : in Gfloat;
@@ -128,4 +119,3 @@ package body Gtk.Aspect_Frame is
    end Set;
 
 end Gtk.Aspect_Frame;
-

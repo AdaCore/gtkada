@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -37,7 +37,7 @@ package body Gtk.Radio_Menu_Item is
    -- Group --
    -----------
 
-   function Group (Radio_Menu_Item : in Gtk_Radio_Menu_Item'Class)
+   function Group (Radio_Menu_Item : in Gtk_Radio_Menu_Item)
                    return               Widget_SList.GSlist
    is
       function Internal (Radio_Menu_Item : in System.Address)
@@ -87,7 +87,7 @@ package body Gtk.Radio_Menu_Item is
    ---------------
 
    procedure Set_Group
-      (Radio_Menu_Item : in Gtk_Radio_Menu_Item'Class;
+      (Radio_Menu_Item : in Gtk_Radio_Menu_Item;
        Group           : in Widget_SList.GSlist)
    is
       procedure Internal

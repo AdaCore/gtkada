@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,7 +35,7 @@ package body Gtk.Dialog is
    -- Get_Action_Area --
    ---------------------
 
-   function Get_Action_Area (Widget : in Gtk_Dialog'Class)
+   function Get_Action_Area (Widget : in Gtk_Dialog)
                              return      Gtk.Box.Gtk_Box
    is
       function Internal (Widget : in System.Address)
@@ -51,7 +51,7 @@ package body Gtk.Dialog is
    -- Get_Vbox --
    --------------
 
-   function Get_Vbox (Widget : in Gtk_Dialog'Class)
+   function Get_Vbox (Widget : in Gtk_Dialog)
                       return      Gtk.Box.Gtk_Box
    is
       function Internal (Widget : in System.Address)
@@ -76,4 +76,3 @@ package body Gtk.Dialog is
    end Gtk_New;
 
 end Gtk.Dialog;
-

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-
 with Gtk.Box;
 with Gtk.Button;
 with Gtk.Widget;
@@ -36,33 +35,33 @@ package Gtk.File_Selection is
 
    type Gtk_File_Selection is new Gtk.Window.Gtk_Window with private;
 
-   function Get_Action_Area (Widget : in Gtk_File_Selection'Class)
+   function Get_Action_Area (Widget : in Gtk_File_Selection)
                              return      Gtk.Box.Gtk_Box;
-   function Get_Button_Area (Widget : in Gtk_File_Selection'Class)
+   function Get_Button_Area (Widget : in Gtk_File_Selection)
                              return      Gtk.Box.Gtk_Box;
-   function Get_Cancel_Button (Widget : in Gtk_File_Selection'Class)
+   function Get_Cancel_Button (Widget : in Gtk_File_Selection)
                                return      Gtk.Button.Gtk_Button;
-   function Get_Dir_List (Widget : in Gtk_File_Selection'Class)
+   function Get_Dir_List (Widget : in Gtk_File_Selection)
                           return      Gtk.Widget.Gtk_Widget'Class;
-   function Get_File_List (Widget : in Gtk_File_Selection'Class)
+   function Get_File_List (Widget : in Gtk_File_Selection)
                            return      Gtk.Widget.Gtk_Widget'Class;
-   function Get_Filename (Filesel : in Gtk_File_Selection'Class)
+   function Get_Filename (Filesel : in Gtk_File_Selection)
                           return       String;
-   function Get_Help_Button (Widget : in Gtk_File_Selection'Class)
+   function Get_Help_Button (Widget : in Gtk_File_Selection)
                              return      Gtk.Button.Gtk_Button;
-   function Get_History_Pulldown (Widget : in Gtk_File_Selection'Class)
+   function Get_History_Pulldown (Widget : in Gtk_File_Selection)
                                   return      Gtk.Widget.Gtk_Widget'Class;
-   function Get_Ok_Button (Widget : in Gtk_File_Selection'Class)
+   function Get_Ok_Button (Widget : in Gtk_File_Selection)
                            return      Gtk.Button.Gtk_Button;
-   function Get_Selection_Entry (Widget : in Gtk_File_Selection'Class)
+   function Get_Selection_Entry (Widget : in Gtk_File_Selection)
                                  return      Gtk.Widget.Gtk_Widget'Class;
-   function Get_Selection_Text (Widget : in Gtk_File_Selection'Class)
+   function Get_Selection_Text (Widget : in Gtk_File_Selection)
                                 return      Gtk.Widget.Gtk_Widget'Class;
    procedure Gtk_New (Widget : out Gtk_File_Selection;
                       Title  : in String);
    procedure Hide_Fileop_Buttons (Filesel : in out Gtk_File_Selection);
    procedure Set_Filename
-      (Filesel  : in Gtk_File_Selection'Class;
+      (Filesel  : in Gtk_File_Selection;
        Filename : in String);
    procedure Show_Fileop_Buttons (Filesel : in out Gtk_File_Selection);
 

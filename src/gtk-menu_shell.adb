@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -36,7 +36,7 @@ package body Gtk.Menu_Shell is
    ------------
 
    procedure Append
-     (Menu_Shell : in Gtk_Menu_Shell'Class;
+     (Menu_Shell : in Gtk_Menu_Shell;
       Child      : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
@@ -51,7 +51,7 @@ package body Gtk.Menu_Shell is
    -- Deactivate --
    ----------------
 
-   procedure Deactivate (Menu_Shell : in Gtk_Menu_Shell'Class)
+   procedure Deactivate (Menu_Shell : in Gtk_Menu_Shell)
    is
       procedure Internal (Menu_Shell : System.Address);
       pragma Import (C, Internal, "gtk_menu_shell_deactivate");
@@ -64,7 +64,7 @@ package body Gtk.Menu_Shell is
    ------------
 
    procedure Insert
-     (Menu_Shell : in Gtk_Menu_Shell'Class;
+     (Menu_Shell : in Gtk_Menu_Shell;
       Child      : in Gtk.Widget.Gtk_Widget'Class;
       Position   : in Gint)
    is
@@ -81,7 +81,7 @@ package body Gtk.Menu_Shell is
    -------------
 
    procedure Prepend
-     (Menu_Shell : in Gtk_Menu_Shell'Class;
+     (Menu_Shell : in Gtk_Menu_Shell;
       Child      : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal (Menu_Shell : System.Address;

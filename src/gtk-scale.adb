@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,7 +35,7 @@ package body Gtk.Scale is
    -- Draw_Value --
    ----------------
 
-   procedure Draw_Value (Scale : in Gtk_Scale'Class)
+   procedure Draw_Value (Scale : in Gtk_Scale)
    is
       procedure Internal (Scale : in System.Address);
       pragma Import (C, Internal, "gtk_scale_draw_value");
@@ -78,7 +78,7 @@ package body Gtk.Scale is
    ----------------
 
    procedure Set_Digits
-      (Scale      : in Gtk_Scale'Class;
+      (Scale      : in Gtk_Scale;
        The_Digits : in Gint)
    is
       procedure Internal
@@ -95,7 +95,7 @@ package body Gtk.Scale is
    --------------------
 
    procedure Set_Draw_Value
-      (Scale      : in Gtk_Scale'Class;
+      (Scale      : in Gtk_Scale;
        Draw_Value : in Boolean)
    is
       procedure Internal
@@ -112,7 +112,7 @@ package body Gtk.Scale is
    -------------------
 
    procedure Set_Value_Pos
-      (Scale : in Gtk_Scale'Class;
+      (Scale : in Gtk_Scale;
        Pos   : in Gtk_Position_Type)
    is
       procedure Internal
@@ -128,9 +128,7 @@ package body Gtk.Scale is
    -- Value_Width --
    -----------------
 
-   function Value_Width (Scale  : in Gtk_Scale'Class)
-                         return      Gint
-   is
+   function Value_Width (Scale  : in Gtk_Scale) return Gint is
       function Internal (Scale  : in System.Address)
                          return      Gint;
       pragma Import (C, Internal, "gtk_scale_value_width");

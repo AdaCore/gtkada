@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -35,7 +35,7 @@ package body Gtk.Ruler is
    -- Draw_Pos --
    --------------
 
-   procedure Draw_Pos (Ruler : in Gtk_Ruler'Class)
+   procedure Draw_Pos (Ruler : in Gtk_Ruler)
    is
       procedure Internal (Ruler : in System.Address);
       pragma Import (C, Internal, "gtk_ruler_draw_pos");
@@ -47,7 +47,7 @@ package body Gtk.Ruler is
    -- Draw_Ticks --
    ----------------
 
-   procedure Draw_Ticks (Ruler : in Gtk_Ruler'Class)
+   procedure Draw_Ticks (Ruler : in Gtk_Ruler)
    is
       procedure Internal (Ruler : in System.Address);
       pragma Import (C, Internal, "gtk_ruler_draw_ticks");
@@ -59,11 +59,8 @@ package body Gtk.Ruler is
    -- Get_Lower --
    ---------------
 
-   function Get_Lower (Widget : in Gtk_Ruler'Class)
-                       return      Gfloat
-   is
-      function Internal (Widget : in System.Address)
-                         return      Gfloat;
+   function Get_Lower (Widget : in Gtk_Ruler) return Gfloat is
+      function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_ruler_get_lower");
    begin
       return Internal (Get_Object (Widget));
@@ -73,11 +70,8 @@ package body Gtk.Ruler is
    -- Get_Max_Size --
    ------------------
 
-   function Get_Max_Size (Widget : in Gtk_Ruler'Class)
-                          return      Gfloat
-   is
-      function Internal (Widget : in System.Address)
-                         return      Gfloat;
+   function Get_Max_Size (Widget : in Gtk_Ruler) return Gfloat is
+      function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_ruler_get_max_size");
    begin
       return Internal (Get_Object (Widget));
@@ -87,11 +81,8 @@ package body Gtk.Ruler is
    -- Get_Position --
    ------------------
 
-   function Get_Position (Widget : in Gtk_Ruler'Class)
-                          return      Gfloat
-   is
-      function Internal (Widget : in System.Address)
-                         return      Gfloat;
+   function Get_Position (Widget : in Gtk_Ruler) return Gfloat is
+      function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_ruler_get_position");
    begin
       return Internal (Get_Object (Widget));
@@ -101,11 +92,8 @@ package body Gtk.Ruler is
    -- Get_Upper --
    ---------------
 
-   function Get_Upper (Widget : in Gtk_Ruler'Class)
-                       return      Gfloat
-   is
-      function Internal (Widget : in System.Address)
-                         return      Gfloat;
+   function Get_Upper (Widget : in Gtk_Ruler) return Gfloat is
+      function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_ruler_get_upper");
    begin
       return Internal (Get_Object (Widget));
@@ -115,8 +103,7 @@ package body Gtk.Ruler is
    -- Gtk_New_Hruler --
    --------------------
 
-   procedure Gtk_New_Hruler (Widget : out Gtk_Ruler)
-   is
+   procedure Gtk_New_Hruler (Widget : out Gtk_Ruler) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hruler_new");
    begin
@@ -140,7 +127,7 @@ package body Gtk.Ruler is
    ----------------
 
    procedure Set_Metric
-      (Ruler  : in Gtk_Ruler'Class;
+      (Ruler  : in Gtk_Ruler;
        Metric : in Gtk_Metric_Type)
    is
       procedure Internal
@@ -157,7 +144,7 @@ package body Gtk.Ruler is
    ---------------
 
    procedure Set_Range
-      (Ruler    : in Gtk_Ruler'Class;
+      (Ruler    : in Gtk_Ruler;
        Lower    : in Gfloat;
        Upper    : in Gfloat;
        Position : in Gfloat;
@@ -179,4 +166,3 @@ package body Gtk.Ruler is
    end Set_Range;
 
 end Gtk.Ruler;
-
