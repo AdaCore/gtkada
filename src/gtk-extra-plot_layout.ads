@@ -97,6 +97,19 @@ package Gtk.Extra.Plot_Layout is
    --  Ps_Font should be the name of a postscript font.
    --  (X, Y) are the relative coordinates to which the text should be drawn.
    --  The only legal values for Angle are 0, 90, 180 and 270 degrees.
+   --
+   --  Text can contain some special characters, that change is renderering.
+   --  They all begin with a '\' (backslash) character, followed by one of:
+   --  - '0' .. '9' : Change the font (take the nth font in the family
+   --  - 'g' : Select the "Symbol" font
+   --  - 'B' : Activate bold characters.
+   --  - 'i' : Activate italic characters.
+   --  - 'S' or '^' : Activate superscripts.
+   --  - 's' or '_' : Activate subscripts.
+   --  - '+' : Increment the fontsize by 3 pixels.
+   --  - '-' : Decrement the fontsize by 3 pixels.
+   --  - 'N' : Restore the default characteristics of the font.
+   --  - 'b' : Move back one character.
 
    procedure Remove_Text (Layout : access Gtk_Plot_Layout_Record;
                           Text   : Gtk.Extra.Plot.Gtk_Plot_Text);
