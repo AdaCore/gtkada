@@ -168,6 +168,9 @@ package Gtkada.MDI is
    --  size. This won't prevent it from being resized by the user.
    --
    --  If Child is a MDI_Child, its location is recomputed automatically.
+   --
+   --  You shouldn't call Show_All on the return child, since some of the title
+   --  bar buttons are hidden
 
    procedure Close
      (MDI : access MDI_Window_Record;
@@ -656,9 +659,9 @@ private
       --  MDI instead of destroying it. False if the child should be destroyed
       --  (provided it accepts so in its delete_event handler).
 
-      Background_Color  : Gdk.Color.Gdk_Color;
-      Title_Bar_Color   : Gdk.Color.Gdk_Color;
-      Focus_Title_Color : Gdk.Color.Gdk_Color;
+      Background_Color  : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Title_Bar_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Focus_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
    end record;
 
    pragma Inline (Get_Window);
