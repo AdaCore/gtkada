@@ -108,12 +108,16 @@ package Gtkada.MDI is
    --  the dock at the bottom will occupy the full width minus the width of
    --  the left dock).
 
-   procedure Gtk_New (MDI : out MDI_Window);
+   procedure Gtk_New
+     (MDI   : out MDI_Window;
+      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
    --  Create a new MDI window.
    --  Note that it is recommended that you modify the style (Set_Background
    --  in State_Normal) to have a different color.
 
-   procedure Initialize (MDI : access MDI_Window_Record'Class);
+   procedure Initialize
+     (MDI   : access MDI_Window_Record'Class;
+      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -250,9 +254,7 @@ package Gtkada.MDI is
    procedure Set_Focus_Child (Child : access MDI_Child_Record'Class);
    --  Make Child the active widget, and raise it at the top.
 
-   function Create_Menu
-     (MDI   : access MDI_Window_Record;
-      Group : Gtk.Accel_Group.Gtk_Accel_Group)
+   function Create_Menu (MDI   : access MDI_Window_Record)
       return Gtk.Menu.Gtk_Menu;
    --  Create a dynamic menu that can then be inserted into a menu bar. This
    --  menu is dynamic, ie its content will changed based on the focus
@@ -691,6 +693,8 @@ private
       Background_Color  : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Title_Bar_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Focus_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+
+      Group : Gtk.Accel_Group.Gtk_Accel_Group;
    end record;
 
    pragma Inline (Get_Window);

@@ -43,6 +43,7 @@ with Gdk.Types;        use Gdk.Types;
 with Gdk.Window;       use Gdk.Window;
 with Gdk.Window_Attr;  use Gdk.Window_Attr;
 with Gtk;              use Gtk;
+with Gtk.Accel_Group;  use Gtk.Accel_Group;
 with Gtk.Accel_Label;  use Gtk.Accel_Label;
 with Gtk.Arguments;    use Gtk.Arguments;
 with Gtk.Bin;          use Gtk.Bin;
@@ -446,23 +447,30 @@ package body Gtkada.MDI is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (MDI : out MDI_Window) is
+   procedure Gtk_New
+     (MDI   : out MDI_Window;
+      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class) is
    begin
       MDI := new MDI_Window_Record;
-      Gtkada.MDI.Initialize (MDI);
+      Gtkada.MDI.Initialize (MDI, Group);
    end Gtk_New;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (MDI : access MDI_Window_Record'Class) is
+   procedure Initialize
+     (MDI   : access MDI_Window_Record'Class;
+      Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
+   is
       Signal_Parameters : constant Signal_Parameter_Types :=
         (1 => (1 => GType_Pointer));
       No_Signals : constant chars_ptr_array (1 .. 0) := (others => Null_Ptr);
    begin
       Gtk.Fixed.Initialize (MDI);
       Set_Has_Window (MDI, True);
+
+      MDI.Group := Gtk_Accel_Group (Group);
 
       MDI.Title_Layout := Create_Pango_Layout (MDI, "Ap"); -- compute width
       MDI.Background_Color := Parse (Default_MDI_Background_Color);
@@ -2455,6 +2463,9 @@ package body Gtkada.MDI is
          Remove (Child.Menu_Item, Get_Child (Child.Menu_Item));
          Add (Child.Menu_Item, Label);
          Show (Label);
+         Set_Accel_Path
+           (Child.Menu_Item, "<gtkada>/window/child/" & Child.Short_Title.all,
+            Child.MDI.Group);
 
       --  Else in case the menu entry wasn't created before because there was
       --  no title yet, we just create it now.
@@ -3699,9 +3710,7 @@ package body Gtkada.MDI is
    -- Create_Menu --
    -----------------
 
-   function Create_Menu
-     (MDI   : access MDI_Window_Record;
-      Group : Gtk.Accel_Group.Gtk_Accel_Group)
+   function Create_Menu (MDI   : access MDI_Window_Record)
       return Gtk.Menu.Gtk_Menu
    is
       Item  : Gtk_Menu_Item;
@@ -3717,39 +3726,39 @@ package body Gtkada.MDI is
          Widget_Callback.Object_Connect
            (Item, "activate",
             Widget_Callback.To_Marshaller (Cascade_Cb'Access), MDI);
-         Set_Accel_Path (Item, "<gtkada>/window/cascade", Group);
+         Set_Accel_Path (Item, "<gtkada>/window/cascade", MDI.Group);
 
          Gtk_New (Item, "Tile Horizontally");
          Append (MDI.Menu, Item);
          Widget_Callback.Object_Connect
            (Item, "activate",
             Widget_Callback.To_Marshaller (Tile_H_Cb'Access), MDI);
-         Set_Accel_Path (Item, "<gtkada>/window/tile_horizontal", Group);
+         Set_Accel_Path (Item, "<gtkada>/window/tile_horizontal", MDI.Group);
 
          Gtk_New (Item, "Tile Vertically");
          Append (MDI.Menu, Item);
          Widget_Callback.Object_Connect
            (Item, "activate",
             Widget_Callback.To_Marshaller (Tile_V_Cb'Access), MDI);
-         Set_Accel_Path (Item, "<gtkada>/window/tile_vertical", Group);
+         Set_Accel_Path (Item, "<gtkada>/window/tile_vertical", MDI.Group);
 
          Gtk_New (Item, "Maximize All");
          Append (MDI.Menu, Item);
          Widget_Callback.Object_Connect
            (Item, "activate",
             Widget_Callback.To_Marshaller (Maximize_Cb'Access), MDI);
-         Set_Accel_Path (Item, "<gtkada>/window/maximize", Group);
+         Set_Accel_Path (Item, "<gtkada>/window/maximize", MDI.Group);
 
          Gtk_New (Item, "Unmaximize All");
          Append (MDI.Menu, Item);
          Widget_Callback.Object_Connect
            (Item, "activate",
             Widget_Callback.To_Marshaller (Unmaximize_Cb'Access), MDI);
-         Set_Accel_Path (Item, "<gtkada>/window/unmaximize", Group);
+         Set_Accel_Path (Item, "<gtkada>/window/unmaximize", MDI.Group);
 
          Gtk_New (Item, "Arrange Icons");
          Append (MDI.Menu, Item);
-         Set_Accel_Path (Item, "<gtkada>/window/arrange_icons", Group);
+         Set_Accel_Path (Item, "<gtkada>/window/arrange_icons", MDI.Group);
          Set_Sensitive (Item, False);
 
          Gtk_New (Item);
@@ -3763,7 +3772,7 @@ package body Gtkada.MDI is
          MDI.Dock_Menu_Item_Id := Widget_Callback.Object_Connect
            (MDI.Dock_Menu_Item, "toggled",
             Widget_Callback.To_Marshaller (Dock_Cb'Access), MDI);
-         Set_Accel_Path (Item, "<gtkada>/window/docked", Group);
+         Set_Accel_Path (Item, "<gtkada>/window/docked", MDI.Group);
 
          Gtk_New (MDI.Float_Menu_Item, "Floating");
          Append (MDI.Menu, MDI.Float_Menu_Item);
@@ -3773,7 +3782,7 @@ package body Gtkada.MDI is
          MDI.Float_Menu_Item_Id := Widget_Callback.Object_Connect
            (MDI.Float_Menu_Item, "toggled",
             Widget_Callback.To_Marshaller (Float_Cb'Access), MDI);
-         Set_Accel_Path (Item, "<gtkada>/window/floating", Group);
+         Set_Accel_Path (Item, "<gtkada>/window/floating", MDI.Group);
 
          Gtk_New (Item);
          Append (MDI.Menu, Item);
@@ -3783,7 +3792,7 @@ package body Gtkada.MDI is
          Widget_Callback.Object_Connect
            (MDI.Close_Menu_Item, "activate",
             Widget_Callback.To_Marshaller (Close_Cb'Access), MDI);
-         Set_Accel_Path (Item, "<gtkada>/window/close", Group);
+         Set_Accel_Path (Item, "<gtkada>/window/close", MDI.Group);
 
          Gtk_New (Item);
          Append (MDI.Menu, Item);
@@ -4341,7 +4350,7 @@ package body Gtkada.MDI is
 
          Style := Child.MDI.Highlight_Style;
       else
-         Style := Get_Style (Child.MDI);
+         Style := null;
       end if;
 
       Tab := Get_Child (Child.Menu_Item);
