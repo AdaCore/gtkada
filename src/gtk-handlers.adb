@@ -404,6 +404,30 @@ package body Gtk.Handlers is
                                    After);
       end Object_Connect;
 
+      ------------------
+      -- Emit_By_Name --
+      ------------------
+
+      function Emit_By_Name (Object : access Widget_Type'Class;
+                             Name   : in String;
+                             Param  : in Gdk.Event.Gdk_Event)
+                            return Return_Type
+      is
+         procedure Internal
+           (Object : in System.Address;
+            Name   : in String;
+            Param  : in System.Address;
+            Ret    :    out Return_Type);
+         pragma Import (C, Internal, "gtk_signal_emit_by_name");
+
+         B : Return_Type;
+      begin
+         pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
+         Internal (Get_Object (Object), Name & ASCII.Nul,
+                   Gdk.Event.To_Address (Param), B);
+         return B;
+      end Emit_By_Name;
+
    end Return_Callback;
 
 
@@ -608,6 +632,30 @@ package body Gtk.Handlers is
                                    Free_Data'Address,
                                    After);
       end Connect;
+
+      ------------------
+      -- Emit_By_Name --
+      ------------------
+
+      function Emit_By_Name (Object : access Widget_Type'Class;
+                             Name   : in String;
+                             Param  : in Gdk.Event.Gdk_Event)
+                            return Return_Type
+      is
+         procedure Internal
+           (Object : in System.Address;
+            Name   : in String;
+            Param  : in System.Address;
+            Ret    :    out Return_Type);
+         pragma Import (C, Internal, "gtk_signal_emit_by_name");
+
+         B : Return_Type;
+      begin
+         pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
+         Internal (Get_Object (Object), Name & ASCII.Nul,
+                   Gdk.Event.To_Address (Param), B);
+         return B;
+      end Emit_By_Name;
 
    end User_Return_Callback;
 
@@ -880,6 +928,24 @@ package body Gtk.Handlers is
                                    After);
       end Object_Connect;
 
+      ------------------
+      -- Emit_By_Name --
+      ------------------
+
+      procedure Emit_By_Name (Object : access Widget_Type'Class;
+                              Name   : in String;
+                              Param  : in Gdk.Event.Gdk_Event)
+      is
+         procedure Internal (Object : in System.Address;
+                             Name   : in String;
+                             Param  : in System.Address);
+         pragma Import (C, Internal, "gtk_signal_emit_by_name");
+      begin
+         pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
+         Internal (Get_Object (Object), Name & ASCII.Nul,
+                   Gdk.Event.To_Address (Param));
+      end Emit_By_Name;
+
    end Callback;
 
    -------------------
@@ -1060,6 +1126,24 @@ package body Gtk.Handlers is
                                    Free_Data'Address,
                                    After);
       end Connect;
+
+      ------------------
+      -- Emit_By_Name --
+      ------------------
+
+      procedure Emit_By_Name (Object : access Widget_Type'Class;
+                              Name   : in String;
+                              Param  : in Gdk.Event.Gdk_Event)
+      is
+         procedure Internal (Object : in System.Address;
+                             Name   : in String;
+                             Param  : in System.Address);
+         pragma Import (C, Internal, "gtk_signal_emit_by_name");
+      begin
+         pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
+         Internal (Get_Object (Object), Name & ASCII.Nul,
+                   Gdk.Event.To_Address (Param));
+      end Emit_By_Name;
 
    end User_Callback;
 

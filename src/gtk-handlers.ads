@@ -285,8 +285,10 @@ package Gtk.Handlers is
                              Param  : in Guint)
                             return Return_Type
                             renames Guint_Marshaller.Emit_By_Name;
-      function Emit_By_Name is
-         new Event_Marshaller.Emit_By_Name_Generic (Gtk.Arguments.To_Address);
+      function Emit_By_Name (Object : access Widget_Type'Class;
+                             Name   : in String;
+                             Param  : in Gdk.Event.Gdk_Event)
+                            return Return_Type;
       function Emit_By_Name
         (Object : access Widget_Type'Class;
          Name   : in String;
@@ -403,8 +405,10 @@ package Gtk.Handlers is
                              Param  : in Guint)
                             return Return_Type
                             renames Guint_Marshaller.Emit_By_Name;
-      function Emit_By_Name is
-         new Event_Marshaller.Emit_By_Name_Generic (Gtk.Arguments.To_Address);
+      function Emit_By_Name (Object : access Widget_Type'Class;
+                             Name   : in String;
+                             Param  : in Gdk.Event.Gdk_Event)
+                            return Return_Type;
       function Emit_By_Name
         (Object : access Widget_Type'Class;
          Name   : in String;
@@ -542,8 +546,7 @@ package Gtk.Handlers is
                              renames Guint_Marshaller.Emit_By_Name;
       procedure Emit_By_Name (Object : access Widget_Type'Class;
                               Name   : in String;
-                              Param  : in Gdk.Event.Gdk_Event)
-                             renames Event_Marshaller.Emit_By_Name;
+                              Param  : in Gdk.Event.Gdk_Event);
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
          Name   : in String;
@@ -655,8 +658,7 @@ package Gtk.Handlers is
                              renames Guint_Marshaller.Emit_By_Name;
       procedure Emit_By_Name (Object : access Widget_Type'Class;
                               Name   : in String;
-                              Param  : in Gdk.Event.Gdk_Event)
-                             renames Event_Marshaller.Emit_By_Name;
+                              Param  : in Gdk.Event.Gdk_Event);
       procedure Emit_By_Name
         (Object : access Widget_Type'Class;
          Name   : in String;

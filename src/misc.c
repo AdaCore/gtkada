@@ -224,6 +224,8 @@ void*
 ada_initialize_class_record (GtkObject*  object,
 			     gint        nsignals,
 			     char*       signals[],
+			     GtkType     parameters[],
+			     gint        max_parameters,
 			     void*       old_class_record)
 {
   if (old_class_record)
@@ -258,13 +260,23 @@ ada_initialize_class_record (GtkObject*  object,
 
       for (i = 0; i < nsignals; i++)
 	{
-	  signals_id [i] = gtk_signal_new
+	  int count = 0;
+	  while (count < max_parameters
+		 &&
+		 (parameters [i * max_parameters + count] != GTK_TYPE_NONE))
+	    {
+	      count ++;
+	    }
+	  
+	  signals_id [i] = gtk_signal_newv
 	    (signals[i],
 	     GTK_RUN_FIRST,
 	     object->klass->type,
 	     query->class_size + i * sizeof (void*) /*offset*/,
-	     gtk_marshal_NONE__NONE,
-	     GTK_TYPE_NONE, 0);
+	     gtk_marshal_NONE__NONE,  /* default marshaller, unused at the
+					 Ada level */
+	     GTK_TYPE_NONE, count,
+	     parameters  + i * max_parameters);
 	}
       gtk_object_class_add_signals (object->klass, signals_id, nsignals);
 

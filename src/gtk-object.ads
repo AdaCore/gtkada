@@ -220,9 +220,21 @@ package Gtk.Object is
    --  See the GtkAda user's guide for more information on how to create your
    --  own widget types in Ada.
 
+   type Signal_Parameter_Types is array (Natural range <>, Natural range <>)
+     of Gtk_Type;
+   --  The description of the parameters for each event.
+   --  Each event defined with Initialize_Class_Record below should have an
+   --  entry in this table. If Gtk_Type_None is found in the table, it is
+   --  ignored. For instance, a Signal_Parameter_Type like:
+   --    (1 => (1 => Gdk_Type_Gdk_Event, 2 => Gdk_Type_Nonde),
+   --     2 => (1 => Gdk_Type_Int,       2 => Gdk_Type_Int));
+   --  defines two signals, the first with a single Gdk_Event parameter, the
+   --  second with two ints parameters.
+
    procedure Initialize_Class_Record
      (Object       : access Gtk_Object_Record'Class;
       Signals      : Gtkada.Types.Chars_Ptr_Array;
+      Parameters   : Signal_Parameter_Types;
       Class_Record : in out System.Address);
    --  Create the class record for a new widget type.
    --  It is associated with Signals'Length new signals. A pointer to the
@@ -231,6 +243,10 @@ package Gtk.Object is
    --  performed, we just reuse it.
    --  Note: The underlying C widget must already have been initialized
    --  by a call to its parent's Initialize function.
+   --
+   --  Only the signals with no parameter can be connected from C. However,
+   --  any signal can be connected from Ada. This is due to the way we define
+   --  default marshallers for the signals.
 
    ---------------
    -- User_Data --
