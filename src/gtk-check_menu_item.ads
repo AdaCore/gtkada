@@ -37,8 +37,12 @@ package Gtk.Check_Menu_Item is
    procedure Set_Show_Toggle (Menu_Item : in Gtk_Check_Menu_Item;
                               Always    : in Boolean);
    procedure Set_State (Check_Menu_Item : in Gtk_Check_Menu_Item;
-                        State           : in Gint);
+                        State           : in Boolean);
    procedure Toggled (Check_Menu_Item : in Gtk_Check_Menu_Item);
+
+   function Get_Active (Check_Menu_Item : in Gtk_Check_Menu_Item)
+                        return Boolean;
+   --   Returns True if the Item is active
 
 private
    type Gtk_Check_Menu_Item is new Gtk.Menu_Item.Gtk_Menu_Item

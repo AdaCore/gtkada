@@ -31,6 +31,19 @@ with Gdk; use Gdk;
 
 package body Gtk.Check_Menu_Item is
 
+   ----------------
+   -- Get_Active --
+   ----------------
+
+   function Get_Active (Check_Menu_Item : in Gtk_Check_Menu_Item)
+                        return Boolean
+   is
+      function Internal (Item : System.Address) return Guint;
+      pragma Import (C, Internal, "ada_check_menu_item_get_active");
+   begin
+      return Internal (Get_Object (Check_Menu_Item)) /= 0;
+   end Get_Active;
+
    -------------
    -- Gtk_New --
    -------------
@@ -71,13 +84,13 @@ package body Gtk.Check_Menu_Item is
    ---------------
 
    procedure Set_State (Check_Menu_Item : in Gtk_Check_Menu_Item;
-                        State           : in Gint)
+                        State           : in Boolean)
    is
       procedure Internal (Check_Menu_Item : in System.Address;
                           State           : in Gint);
       pragma Import (C, Internal, "gtk_check_menu_item_set_state");
    begin
-      Internal (Get_Object (Check_Menu_Item), State);
+      Internal (Get_Object (Check_Menu_Item), Boolean'Pos (State));
    end Set_State;
 
    -------------
