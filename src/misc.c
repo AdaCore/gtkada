@@ -1942,12 +1942,6 @@ ada_editable_get_clipboard_text (GtkEditable* widget)
 }
 
 guint
-ada_editable_get_current_pos (GtkEditable* widget)
-{
-   return widget->current_pos;
-}
-
-guint
 ada_editable_get_has_selection (GtkEditable* widget)
 {
    return widget->has_selection;
