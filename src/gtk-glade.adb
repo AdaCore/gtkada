@@ -124,13 +124,13 @@ package body Gtk.Glade is
       --  Do not generate code for internal children, since these are handled
       --  directly by their parents
       Is_Internal := Get_Attribute (N.Parent, "internal-child") /= "";
-      if Is_Internal then
-         return;
-      end if;
 
       C := N.Specific_Data.Created;
-      Get_Gate (S) (N, File);
-      End_Generate (Project, N, File);
+
+      if not Is_Internal then
+         Get_Gate (S) (N, File);
+         End_Generate (Project, N, File);
+      end if;
 
       if not C and then S /= "placeholder" then
          New_Line (File);
@@ -269,7 +269,14 @@ package body Gtk.Glade is
                else
                   --  Do not generate variables for internal children, since
                   --  these are handled directly by their parents
+                  --  ??? The comment above is probably incorrect: we need to
+                  --  generate code for the children of internal children, and
+                  --  that's what we're doing below.
+
                   T := null;
+                  Print_Var
+                    (P.Child.Child, File, Kind, False,
+                     Accelerator, Tooltip);
                end if;
             else
                T := P;
