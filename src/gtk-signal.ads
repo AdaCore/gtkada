@@ -1,12 +1,10 @@
+with Gtk.Object;
+
 package Gtk.Signal is
 
    --  FIXME some signal can have a different declaration for a callback
    --  FIXME function, ie having more parameters. We probably need to
    --  FIXME defined some new generic package...
-
-   --  FIXME Joel : Add some Void_Callbacks / That is callbacks that
-   --  FIXME do nothing. This is sometimes convinient when you want to
-   --  FIXME a signal without doing anything.
 
    ---------------------------------------------------------------
    --  The following package is for callbacks requiring a data to
@@ -19,7 +17,7 @@ package Gtk.Signal is
       --  This type need not be an access type (as opposed as what happens in
       --  C). A new access is created by the connect function.
 
-      type Widget_Type is new Gtk_Object with private;
+      type Widget_Type is new Object.Gtk_Object with private;
       --  The type of the widget to which a callback is connected
 
    package Callback is
@@ -28,6 +26,11 @@ package Gtk.Signal is
         (Widget : in out Widget_Type'Class;
          Data   : in     Data_Type);
       --  Callback function for Signal_Connect below
+
+      procedure Void_Callback_Procedure (Widget : in out Widget_Type'Class;
+                                         Data   : in     Data_Type);
+      --
+      --  Null body procedure
 
       function Connect
         (Obj       : in Widget_Type'Class;
@@ -65,11 +68,16 @@ package Gtk.Signal is
    -----------------------------------------------------------------
 
    generic
-      type Widget_Type is new Gtk_Object with private;
+      type Widget_Type is new Object.Gtk_Object with private;
 
    package Void_Callback is
+
       type Callback is access procedure
         (Widget : in out Widget_Type'Class);
+
+      procedure Void_Callback_Procedure (Widget : in out Widget_Type'Class);
+      --
+      --  null body callback.
 
       function Connect
         (Obj    : in Widget_Type'Class;
@@ -104,13 +112,14 @@ package Gtk.Signal is
    ------------------------------------------------------------------
 
    generic
-      type Widget_Type is new Gtk_Object with private;
+      type Widget_Type is new Object.Gtk_Object with private;
 
    package Object_Callback is
       type Callback is access procedure
         (Object : in out Widget_Type'Class);
+
       function Connect
-        (Obj         : in Gtk_Object'Class;
+        (Obj         : in Object.Gtk_Object'Class;
          Name        : in String;
          Func        : in Callback;
          Slot_Object : in Widget_Type)
@@ -118,7 +127,7 @@ package Gtk.Signal is
       --  mapping: Connect_Object gtksignal.h gtk_signal_connect_object
 
       function Connect_After
-        (Obj         : in Gtk_Object'Class;
+        (Obj         : in Object.Gtk_Object'Class;
          Name        : in String;
          Func        : in Callback;
          Slot_Object : in Widget_Type)
@@ -130,11 +139,11 @@ package Gtk.Signal is
                             Handler_Id : in Guint);
       --  mapping: Signal_Disconnect gtksignal.h gtk_signal_disconnect
 
-      procedure Handler_Block (Obj        : in Gtk_Object'Class;
+      procedure Handler_Block (Obj        : in Object.Gtk_Object'Class;
                                Handler_Id : in Guint);
       --  mapping: Handler_Block gtksignal.h gtk_signal_handler_block
 
-      procedure Handler_Unblock (Obj        : in Gtk_Object'Class;
+      procedure Handler_Unblock (Obj        : in Object.Gtk_Object'Class;
                                  Handler_Id : in Guint);
       --  mapping: Handler_Unblock gtksignal.h gtk_signal_handler_unblock
 
@@ -144,7 +153,7 @@ package Gtk.Signal is
    --  More general functions
    ------------------------------------------------------------------
 
-   procedure Handlers_Destroy (Obj : in Gtk_Object'Class);
+   procedure Handlers_Destroy (Obj : in Object.Gtk_Object'Class);
    --  mapping: Handlers_Destroy gtksignal.h gtk_signal_handlers_destroy
 
 
