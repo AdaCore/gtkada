@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,6 +27,23 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This packages provides the implementation of a generic single-linked
+--  list.
+--  One instantiation is found in Gtk.Widget.Widget_Slist for a list of
+--  widgets.
+--
+--  See the documentation of Glib.Glist for more information, it provides
+--  the same API as this package.
+--  Single linked lists are traversed the same way as double-linked lists,
+--  even though most subprograms below are less efficient than their
+--  double-linked counterparts.
+--
+--  </description>
+--  <c_version>1.2.6</c_version>
+
+--  <doc_ignore>
 
 with System;
 
@@ -98,6 +115,4 @@ package Glib.GSlist is
 
 end Glib.GSlist;
 
-
-
-
+--  </doc_ignore>
