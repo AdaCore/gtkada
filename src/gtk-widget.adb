@@ -1322,6 +1322,19 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Hide_All;
 
+   --------------------
+   -- Set_Allocation --
+   --------------------
+
+   procedure Set_Allocation
+     (Widget : access Gtk_Widget_Record'Class; Alloc : Gtk_Allocation)
+   is
+      procedure Internal (Widget : System.Address; Alloc : Gtk_Allocation);
+      pragma Import (C, Internal, "ada_gtk_widget_set_allocation");
+   begin
+      Internal (Get_Object (Widget), Alloc);
+   end Set_Allocation;
+
    -----------------
    -- Set_Realize --
    -----------------
