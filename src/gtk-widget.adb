@@ -313,12 +313,12 @@ package body Gtk.Widget is
    ------------------
 
    procedure Set_Events (Widget : in out Gtk_Widget'Class;
-                         Events : in     Gint) is
+                         Events : in     Gdk.Types.Gdk_Event_Mask) is
       procedure Internal (Widget : in System.Address;
                           Events : in Gint);
       pragma Import (C, Internal, "gtk_widget_set_events");
    begin
-      Internal (Get_Object (Widget), Events);
+      Internal (Get_Object (Widget), Gdk.Types.Gdk_Event_Mask'Pos (Events));
    end Set_Events;
 
 

@@ -4,6 +4,7 @@
 --  which actual widgets must adhere to.
 
 with Gtk.Object;
+with Gdk.Types;
 with Gdk.Rectangle;
 
 package Gtk.Widget is
@@ -154,7 +155,7 @@ package Gtk.Widget is
    --  mapping: Get_Events gtkwidget.h gtk_widget_get_events
 
    procedure Set_Events (Widget : in out Gtk_Widget'Class;
-                         Events : in     Gint);
+                         Events : in     Gdk.Types.Gdk_Event_Mask);
    --  mapping: Set_Events gtkwidget.h gtk_widget_set_events
 
 
