@@ -1,0 +1,353 @@
+Thu Apr  3 17:50:27 CEST 2003	Arnaud Charlet	<charlet@gnat.com>
+
+	Changes to ease distributing gtk+ executables with no gtk+ install:
+
+	gtk/gtkimmodule.c: Handle more gracefully a missing immodule file
+	pango/pangox-fontmap.c: Provide a default set of aliases when none
+	 was found.
+
+--- gtk+-2.2.1/gtk/gtkimmodule.c	2003/04/03 15:11:23	1.1
++++ gtk+-2.2.1/gtk/gtkimmodule.c	2003/04/03 15:12:35
+@@ -279,9 +279,10 @@
+   file = fopen (filename, "r");
+   if (!file)
+     {
+-      g_warning ("Can not open Input Method module file '%s': %s",
+-		 filename, g_strerror (errno));
+-      /* We are leaking all kinds of memory here. */
++      /* The file does not exists, return immediately. */
++      g_string_free (line_buf, TRUE);
++      g_string_free (tmp_buf, TRUE);
++      g_free (filename);
+       return;
+     }
+ 
+--- pango-1.2.1/pango/pangox-fontmap.c	2003/04/03 15:16:10	1.1
++++ pango-1.2.1/pango/pangox-fontmap.c	2003/04/03 15:45:47
+@@ -772,110 +772,135 @@
+ }
+ 
+ 
+-static void
+-pango_x_font_map_read_alias_file (PangoXFontMap *xfontmap,
+-				  const char   *filename)
++static gboolean
++pango_x_scan_line (PangoXFontMap *xfontmap, const char *p)
+ {
+-  FILE *infile;
++  PangoXFace *xface = NULL;
++  PangoXFamily *font_family;
++  PangoStyle style;
++  PangoVariant variant;
++  PangoWeight weight;
++  PangoStretch stretch;
++  GString *tmp_buf = g_string_new (NULL);
+   char **xlfds;
+-  int lineno = 0;
+   int i;
+-  PangoXFace *xface = NULL;
+ 
+-  infile = fopen (filename, "r");
+-  if (infile)
++  if (!pango_skip_space (&p))
+     {
+-      GString *line_buf = g_string_new (NULL);
+-      GString *tmp_buf = g_string_new (NULL);
+-      gint lines_read;
++      g_string_free (tmp_buf, TRUE);
++      return TRUE;
++    }
+ 
+-      while ((lines_read = pango_read_line (infile, line_buf)))
+-	{
+-	  PangoXFamily *font_family;
+-	  PangoStyle style;
+-	  PangoVariant variant;
+-	  PangoWeight weight;
+-	  PangoStretch stretch;
++  if (!pango_scan_string (&p, tmp_buf))
++    goto error;
+ 
+-	  const char *p = line_buf->str;
+-	  
+-	  lineno += lines_read;
++  xface = g_object_new (PANGO_X_TYPE_FACE, NULL);
++  xface->xlfd = NULL;
++  xface->description = pango_font_description_new ();
+ 
+-	  if (!pango_skip_space (&p))
+-	    continue;
++  g_string_ascii_down (tmp_buf);
++  pango_font_description_set_family (xface->description, tmp_buf->str);
+ 
+-	  if (!pango_scan_string (&p, tmp_buf))
+-	    goto error;
++  if (!pango_scan_string (&p, tmp_buf))
++    goto error;
+ 
+-	  xface = g_object_new (PANGO_X_TYPE_FACE, NULL);
+-	  xface->xlfd = NULL;
+-	  xface->description = pango_font_description_new ();
+-	  
+-	  g_string_ascii_down (tmp_buf);
+-	  pango_font_description_set_family (xface->description, tmp_buf->str);
++  if (!pango_parse_style (tmp_buf->str, &style, TRUE))
++    goto error;
+ 
+-	  if (!pango_scan_string (&p, tmp_buf))
+-	    goto error;
++  pango_font_description_set_style (xface->description, style);
+ 
+-	  if (!pango_parse_style (tmp_buf->str, &style, TRUE))
+-	    goto error;
+-	  pango_font_description_set_style (xface->description, style);
++  if (!pango_scan_string (&p, tmp_buf))
++    goto error;
+ 
+-	  if (!pango_scan_string (&p, tmp_buf))
+-	    goto error;
++  if (!pango_parse_variant (tmp_buf->str, &variant, TRUE))
++    goto error;
+ 
+-	  if (!pango_parse_variant (tmp_buf->str, &variant, TRUE))
+-	    goto error;
+-	  pango_font_description_set_variant (xface->description, variant);
++  pango_font_description_set_variant (xface->description, variant);
+ 	  
+-	  if (!pango_scan_string (&p, tmp_buf))
+-	    goto error;
++  if (!pango_scan_string (&p, tmp_buf))
++    goto error;
+ 
+-	  if (!pango_parse_weight (tmp_buf->str, &weight, TRUE))
+-	    goto error;
+-	  pango_font_description_set_weight (xface->description, weight);
++  if (!pango_parse_weight (tmp_buf->str, &weight, TRUE))
++    goto error;
++
++  pango_font_description_set_weight (xface->description, weight);
+ 	  
+-	  if (!pango_scan_string (&p, tmp_buf))
+-	    goto error;
++  if (!pango_scan_string (&p, tmp_buf))
++    goto error;
+ 
+-	  if (!pango_parse_stretch (tmp_buf->str, &stretch, TRUE))
+-	    goto error;
+-	  pango_font_description_set_stretch (xface->description, stretch);
++  if (!pango_parse_stretch (tmp_buf->str, &stretch, TRUE))
++    goto error;
+ 
+-	  if (!pango_scan_string (&p, tmp_buf))
+-	    goto error;
++  pango_font_description_set_stretch (xface->description, stretch);
+ 
+-	  /* Remove excess whitespace and check for complete fields */
++  if (!pango_scan_string (&p, tmp_buf))
++    goto error;
+ 
+-	  xlfds = g_strsplit (tmp_buf->str, ",", -1);
+-	  for (i=0; xlfds[i]; i++)
+-	    {
+-	      char *trimmed = pango_trim_string (xlfds[i]);
+-	      g_free (xlfds[i]);
+-	      xlfds[i] = trimmed;
+-	      
+-	      if (!pango_x_is_xlfd_font_name (xlfds[i]))
+-		{
+-		  g_warning ("XLFD '%s' must be complete (14 fields)", xlfds[i]);
+-		  g_strfreev (xlfds);
+-		  goto error;
+-		}
+-	    }
++  /* Remove excess whitespace and check for complete fields */
+ 
+-	  xface->xlfd = g_strjoinv (",", xlfds);
++  xlfds = g_strsplit (tmp_buf->str, ",", -1);
++  for (i=0; xlfds[i]; i++)
++    {
++      char *trimmed = pango_trim_string (xlfds[i]);
++      g_free (xlfds[i]);
++      xlfds[i] = trimmed;
++      
++      if (!pango_x_is_xlfd_font_name (xlfds[i]))
++	{
++	  g_warning ("XLFD '%s' must be complete (14 fields)", xlfds[i]);
+ 	  g_strfreev (xlfds);
++	  goto error;
++	}
++    }
++
++  xface->xlfd = g_strjoinv (",", xlfds);
++  g_strfreev (xlfds);
+ 
+-	  /* Insert the font entry into our structures */
++  /* Insert the font entry into our structures */
+ 
+-	  font_family = pango_x_get_font_family (xfontmap,
+-						 pango_font_description_get_family (xface->description));
+-	  font_family->font_entries = g_slist_prepend (font_family->font_entries, xface);
+-	  xfontmap->n_fonts++;
+-
+-	  /* Save space by consolidating duplicated string */
+-	  pango_font_description_set_family_static (xface->description, font_family->family_name);
+-	  xface->cached_fonts = NULL;
+-	  xface->coverage = NULL;
++  font_family = pango_x_get_font_family (xfontmap,
++					 pango_font_description_get_family (xface->description));
++  font_family->font_entries = g_slist_prepend (font_family->font_entries, xface);
++  xfontmap->n_fonts++;
++
++  /* Save space by consolidating duplicated string */
++  pango_font_description_set_family_static (xface->description, font_family->family_name);
++  xface->cached_fonts = NULL;
++  xface->coverage = NULL;
++  g_string_free (tmp_buf, TRUE);
++  return TRUE;
++
++error:
++  if (xface)
++    {
++      if (xface->xlfd)
++	g_free (xface->xlfd);
++      if (xface->description)
++	pango_font_description_free (xface->description);
++      g_free (xface);
++    }
++  g_string_free (tmp_buf, TRUE);
++  return FALSE;
++}
++
++static gboolean
++pango_x_font_map_read_alias_file (PangoXFontMap *xfontmap,
++				  const char   *filename)
++{
++  FILE *infile;
++  int lineno = 0;
++
++  infile = fopen (filename, "r");
++  if (infile)
++    {
++      GString *line_buf = g_string_new (NULL);
++      gint lines_read;
++
++      while ((lines_read = pango_read_line (infile, line_buf)))
++	{
++	  lineno += lines_read;
++	  if (!pango_x_scan_line (xfontmap, line_buf->str))
++	    goto error;
+ 	}
+ 
+       if (ferror (infile))
+@@ -884,24 +909,17 @@
+       goto out;
+ 
+     error:
+-      if (xface)
+-	{
+-	  if (xface->xlfd)
+-	    g_free (xface->xlfd);
+-	  if (xface->description)
+-	    pango_font_description_free (xface->description);
+-	  g_free (xface);
+-	}
+-
+       g_warning ("Error parsing line %d of alias file '%s'", lineno, filename);
+ 
+     out:
+-      g_string_free (tmp_buf, TRUE);
+       g_string_free (line_buf, TRUE);
+ 
+       fclose (infile);
++
++      return TRUE;
+     }
+ 
++  return FALSE;
+ }
+ 
+ static void
+@@ -910,6 +928,7 @@
+   char **files;
+   char *files_str = pango_config_key_get ("PangoX/AliasFiles");
+   int n;
++  gboolean file_read = FALSE;
+ 
+   if (!files_str)
+     files_str = g_strdup ("~/.pangox_aliases:" SYSCONFDIR "/pango/pangox.aliases");
+@@ -921,10 +940,74 @@
+     n++;
+ 
+   while (n-- > 0)
+-    pango_x_font_map_read_alias_file (xfontmap, files[n]);
++    file_read |= pango_x_font_map_read_alias_file (xfontmap, files[n]);
+ 
+   g_strfreev (files);
+   g_free (files_str);
++
++  if (!file_read)
++    {
++      /* load a default font map to avoid failing */
++      pango_x_scan_line
++        (xfontmap,
++         "sans normal normal normal normal "
++         "\"-*-helvetica-medium-r-normal--*-*-*-*-*-*-*-*, "
++         "-*-fixed-medium-r-normal--*-*-*-*-*-*-*-*\"");
++      pango_x_scan_line
++        (xfontmap,
++         "sans italic normal normal normal "
++         "\"-*-helvetica-medium-o-normal--*-*-*-*-*-*-*-*, "
++         "-*-fixed-medium-r-normal--*-*-*-*-*-*-*-*\"");
++      pango_x_scan_line
++        (xfontmap,
++         "sans normal normal bold normal "
++         "\"-*-helvetica-bold-r-normal--*-*-*-*-*-*-*-*, "
++         "-*-fixed-medium-r-normal--*-*-*-*-*-*-*-*\"");
++      pango_x_scan_line
++        (xfontmap,
++         "sans italic normal bold normal "
++         "\"-*-helvetica-bold-o-normal--*-*-*-*-*-*-*-*, "
++         "-*-fixed-medium-r-normal--*-*-*-*-*-*-*-*\"");
++      pango_x_scan_line
++        (xfontmap,
++         "serif normal normal normal normal "
++         "\"-*-times-medium-r-normal--*-*-*-*-*-*-*-*, "
++         "-*-fixed-medium-r-normal--*-*-*-*-*-*-*-*\"");
++      pango_x_scan_line
++        (xfontmap,
++         "serif italic normal normal normal "
++         "\"-*-times-medium-i-normal--*-*-*-*-*-*-*-*, "
++         "-*-fixed-medium-r-normal--*-*-*-*-*-*-*-*\"");
++      pango_x_scan_line
++        (xfontmap,
++         "serif normal normal bold normal "
++         "\"-*-times-bold-r-normal--*-*-*-*-*-*-*-*, "
++         "-*-fixed-medium-r-normal--*-*-*-*-*-*-*-*\"");
++      pango_x_scan_line
++        (xfontmap,
++         "serif italic normal bold normal "
++         "\"-*-times-bold-i-normal--*-*-*-*-*-*-*-*, "
++         "-*-fixed-medium-r-normal--*-*-*-*-*-*-*-*\"");
++      pango_x_scan_line
++        (xfontmap,
++         "monospace normal normal normal normal "
++         "\"-*-fixed-medium-r-normal--*-*-*-*-*-*-*-*\"");
++      pango_x_scan_line
++        (xfontmap,
++         "monospace italic normal normal normal "
++         "\"-*-fixed-medium-i-normal--*-*-*-*-*-*-*-*, "
++         "-*-fixed-medium-r-normal--*-*-*-*-*-*-*-*\"");
++      pango_x_scan_line
++        (xfontmap,
++         "monospace normal normal bold normal "
++         "\"-*-fixed-bold-r-normal--*-*-*-*-*-*-*-*, "
++         "-*-fixed-medium-r-normal--*-*-*-*-*-*-*-*\"");
++      pango_x_scan_line
++        (xfontmap,
++         "monospace italic normal bold normal "
++         "\"-*-fixed-bold-i-normal--*-*-*-*-*-*-*-*, "
++         "-*-fixed-medium-r-normal--*-*-*-*-*-*-*-*\"");
++    }
+ }
+ 
+ /*
