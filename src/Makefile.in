@@ -51,9 +51,9 @@ c_extra_objects = gtkextra/gtk*.o
 all: dirs libs tools
 
 ifeq ($(BUILD_SHARED),yes)
-libs: extra $(LIBNAME) $(ARCHIVENAME) opengl pixbuf glade install_ali
+libs: extra $(LIBNAME) $(ARCHIVENAME) opengl pixbuf glade gnome install_ali
 else
-libs: extra $(ARCHIVENAME) opengl pixbuf glade install_ali
+libs: extra $(ARCHIVENAME) opengl pixbuf glade gnome install_ali
 endif
 
 opengl: force
@@ -67,6 +67,9 @@ extra: force
 
 glade: force
 	$(MAKE) -C glade
+
+gnome: force
+	$(MAKE) -C gnome
 
 tools: $(GATE_EX) $(GDIALOG)
 
@@ -163,6 +166,7 @@ install: all
            $(MAKE) -C opengl install; \
            $(MAKE) -C pixbuf install; \
            $(MAKE) -C glade install; \
+           $(MAKE) -C gnome install; \
 	fi
 	@echo '------------------------------------------------------------------'
 	@echo '--  GtkAda has now been installed.                              --'
@@ -188,24 +192,28 @@ clean: clean-generic
 	$(MAKE) -C opengl clean
 	$(MAKE) -C pixbuf clean
 	$(MAKE) -C glade clean
+	$(MAKE) -C gnome clean
 
 distclean: mostlyclean-generic
 	$(MAKE) -C gtkextra distclean
 	$(MAKE) -C opengl distclean
 	$(MAKE) -C pixbuf distclean
 	$(MAKE) -C glade distclean
+	$(MAKE) -C gnome distclean
 
 mostlyclean: mostlyclean-generic
 	$(MAKE) -C gtkextra mostlyclean
 	$(MAKE) -C opengl mostlyclean
 	$(MAKE) -C pixbuf mostlyclean
 	$(MAKE) -C glade mostlyclean
+	$(MAKE) -C gnome mostlyclean
 
 maintainer-clean: mostlyclean-generic
 	$(MAKE) -C gtkextra maintainer-clean
 	$(MAKE) -C opengl maintainer-clean
 	$(MAKE) -C pixbuf maintainer-clean
 	$(MAKE) -C glade maintainer-clean
+	$(MAKE) -C gnome maintainer-clean
 
 ## Building the C files: they all depend on the c file in the source directory
 ## The dependencies on the .h files have to be given explicitly
