@@ -136,8 +136,8 @@ package body Gtk.Object is
    procedure Initialize_Class_Record
      (Object       : access Gtk_Object_Record'Class;
       Signals      : Gtkada.Types.Chars_Ptr_Array;
-      Parameters   : Signal_Parameter_Types;
-      Class_Record : in out System.Address)
+      Class_Record : in out System.Address;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
    is
       function Internal (Object         : System.Address;
                          NSignals       : Gint;
@@ -148,12 +148,21 @@ package body Gtk.Object is
         return System.Address;
       pragma Import (C, Internal, "ada_initialize_class_record");
 
+      Default_Params : Signal_Parameter_Types (1 .. Signals'Length, 1 .. 0) :=
+        (others => (others => Gtk_None));
+      Pa  : System.Address := Default_Params'Address;
+      Num : Gint := 0;
    begin
+      if Parameters /= Null_Parameter_Types then
+         pragma Assert (Parameters'Length (1) = Signals'Length);
+         Pa := Parameters'Address;
+         Num := Parameters'Length (2);
+      end if;
       Class_Record := Internal (Get_Object (Object),
                                 Signals'Length,
                                 Signals'Address,
-                                Parameters'Address,
-                                Parameters'Length (2),
+                                Pa,
+                                Num,
                                 Class_Record);
    end Initialize_Class_Record;
 

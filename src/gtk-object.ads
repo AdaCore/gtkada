@@ -231,11 +231,15 @@ package Gtk.Object is
    --  defines two signals, the first with a single Gdk_Event parameter, the
    --  second with two ints parameters.
 
+   Null_Parameter_Types : constant Signal_Parameter_Types (1 .. 0, 1 .. 0) :=
+     (others => (others => Gtk_Type_None));
+   --  An empty array, used as a default parameter in Initialize_Class_Record.
+
    procedure Initialize_Class_Record
      (Object       : access Gtk_Object_Record'Class;
       Signals      : Gtkada.Types.Chars_Ptr_Array;
-      Parameters   : Signal_Parameter_Types;
-      Class_Record : in out System.Address);
+      Class_Record : in out System.Address;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types);
    --  Create the class record for a new widget type.
    --  It is associated with Signals'Length new signals. A pointer to the
    --  newly created structure is also returned in Class_Record.
@@ -243,6 +247,11 @@ package Gtk.Object is
    --  performed, we just reuse it.
    --  Note: The underlying C widget must already have been initialized
    --  by a call to its parent's Initialize function.
+   --  Parameters'Length should be the same as Signals'Length, or the result
+   --  is undefined.
+   --  As a special case, if Parameters has its default value, all signals are
+   --  created with no argument. This is done for backward compatibility
+   --  mainly, and you should instead give it an explicit value.
    --
    --  Only the signals with no parameter can be connected from C. However,
    --  any signal can be connected from Ada. This is due to the way we define
