@@ -4,7 +4,7 @@
 @settitle GtkAda User's Guide
 @syncodeindex fn cp
 
-@set GtkAdaVersion 1.2.11
+@set GtkAdaVersion 1.2.12
 
 @titlepage
 
