@@ -1132,6 +1132,7 @@ package body Gtkada.Canvas is
 
       X_Out := 0;
       Y_Out := 0;
+      Side := East;
    end Clip_Line;
 
    ---------------------
