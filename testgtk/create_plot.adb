@@ -228,12 +228,14 @@ package body Create_Plot is
       Gtk_New (Buttons (Num_Layers), Integer'Image (Num_Layers));
       Set_Usize (Buttons (Num_Layers), 20, 20);
       Put (Canvas, Buttons (Num_Layers), Gint (Num_Layers - 1) * 20, 0);
+      Show (Buttons (Num_Layers));
 
       Button_Cb.Connect
         (Buttons (Num_Layers), "toggled",
          Button_Cb.To_Marshaller (Active_Plot_With_Button'Access));
 
       Gtk_New (Plots (Num_Layers), Width => 0.5, Height => 0.25);
+      Show (Plots (Num_Layers));
 
       Event_Cb.Connect (Canvas, "click_on_plot",
                         Event_Cb.To_Marshaller (Activate_Plot'Access));
@@ -347,6 +349,7 @@ package body Create_Plot is
       Num_Layers := 0;
       Gtk_New_Vbox (Vbox1, False, 0);
       Add (Frame, Vbox1);
+      Show (Vbox1);
 
       --  Put the Plot in a scrolled window, in case it is too big for
       --  the screen
@@ -354,6 +357,7 @@ package body Create_Plot is
       Set_Border_Width (Scrollw1, 0);
       Set_Policy (Scrollw1, Policy_Always, Policy_Always);
       Pack_Start (Vbox1, Scrollw1, True, True, 0);
+      Show (Scrollw1);
 
       --  Create the canvas in which the plot will be drawn
       Gtk_New (Canvas, 600, 700);
@@ -363,6 +367,7 @@ package body Create_Plot is
       Add (Scrollw1, Canvas);
       Set_Step_Increment (Get_Hadjustment (Canvas), 5.0);
       Set_Step_Increment (Get_Vadjustment (Canvas), 5.0);
+      Show (Canvas);
 
       Event_Cb.Connect (Canvas, "click_on_point",
                         Event_Cb.To_Marshaller (Print_Dataset'Access));
@@ -380,6 +385,7 @@ package body Create_Plot is
       X0_Set_Visible (Active_Plot, True);
       Y0_Set_Visible (Active_Plot, True);
       Add_Plot (Canvas, Active_Plot, 0.15, 0.06);
+      Show (Active_Plot);
 
       Build_Example1 (Active_Plot);
 
@@ -402,7 +408,7 @@ package body Create_Plot is
       Axis_Hide_Title (Active_Plot, Axis_Right);
       Set_Legends_Border (Active_Plot, Border_Shadow, 2);
       Legends_Move (Active_Plot, 0.58, 0.05);
-
+      Show (Active_Plot);
       Build_Example2 (Active_Plot);
 
       Put_Text (Canvas, 0.40, 0.005, 0,

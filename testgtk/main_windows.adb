@@ -112,6 +112,9 @@ with Xpm;
 with Common; use Common;
 with View_GL; use View_GL;
 
+with Libart_Demo;  use Libart_Demo;
+
+
 package body Main_Windows is
 
    procedure Fill_Gtk_Tree (Tree : in out Gtk.Tree.Gtk_Tree);
@@ -797,6 +800,13 @@ package body Main_Windows is
                 Fill    => True,
                 Padding => 0);
       Set_Usize (Gtk_Demo_Frame, 550, 500);
+
+      --  Second page: Libartdemos
+      Gtk_New (Frame);
+      Gtk_New (Label, "Image manipulation");
+      Append_Page (Win.Notebook, Child => Frame, Tab_Label => Label);
+
+      Libart_Demo.Run (Frame);
 
       --  Second page: Gdk demos
 --        Gtk_New (Frame);

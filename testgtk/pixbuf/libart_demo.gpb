@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-#ifdef HAVE_LIBART
+#if HAVE_LIBART then
 
 with Glib;              use Glib;
 with Gtk.Frame;         use Gtk.Frame;
@@ -40,11 +40,11 @@ with Gtk.Widget;        use Gtk.Widget;
 with Gdk.Rgb;           use Gdk.Rgb;
 with Gtk.Label;         use Gtk.Label;
 
-#endif
+#end if;
 
 package body Libart_Demo is
 
-#ifdef HAVE_LIBART
+#if HAVE_LIBART
 
    --------------------------
    --  The type below is a special drawing area that displays the
@@ -134,8 +134,9 @@ package body Libart_Demo is
       Gtk_New (Draw.Area);
       Pack_Start (Draw, Draw.Area);
 
-      Expose_Cb.Connect (Draw, "expose_event",
-                         Expose_Cb.To_Marshaller (Expose'Access));
+      Expose_Cb.Object_Connect (Draw.Area, "expose_event",
+                                Expose_Cb.To_Marshaller (Expose'Access),
+                                Slot_Object => Draw);
       Destroy_Cb.Connect (Draw, "destroy",
                           Destroy_Cb.To_Marshaller (Destroy'Access));
 
@@ -153,9 +154,9 @@ package body Libart_Demo is
       Hbox            : Gtk_Box;
       Pix, Pix2, Pix3 : Gdk_Pixbuf;
       Draw            : Image_Drawing;
+      Label           : Gtk_Label;
    begin
       Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
-      Add (Frame, Vbox);
 
       Gtk_New_Hbox (Hbox, Homogeneous => False, Spacing => 0);
       Pack_Start (Vbox, Hbox);
@@ -169,11 +170,25 @@ package body Libart_Demo is
       --  on the system, we could as well use JPEG images.
 
       Pix := New_From_File ("alps.bmp");
+      if Pix = Null_Pixbuf then
+         Gtk_New (Label, "Pixmaps not found. Please run testgtk from the"
+               & " testgtk/ directory itself.");
+         Add (Frame, Label);
+         Show_All (Frame);
+         return;
+      end if;
       Pix2 := Scale_Simple
         (Pix,
          Gint (550) - Get_Width (Pix),
          Get_Height (Pix) / 2);
       Pix3 := New_From_File ("lightning.bmp");
+      if Pix3 = Null_Pixbuf then
+         Gtk_New (Label, "Pixmaps not found. Please run testgtk from the"
+               & " testgtk/ directory itself.");
+         Add (Frame, Label);
+         Show_All (Frame);
+         return;
+      end if;
       Composite (Src         => Pix,
                  Dest        => Pix3,
                  Dest_X      => 0,
@@ -185,6 +200,8 @@ package body Libart_Demo is
                  Overall_Alpha => 128);
 
       --  Creating the canvases
+      Add (Frame, Vbox);
+
       Gtk_New (Draw, Pix, "Initial Image");
       Pack_Start (Hbox, Draw, Expand => False, Fill => True);
 
@@ -211,6 +228,6 @@ package body Libart_Demo is
       Show_All (Frame);
    end Run;
 
-#endif
+#end if;
 
 end Libart_Demo;
