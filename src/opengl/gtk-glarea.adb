@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gtk.Drawing_Area;
-with Gtk.Enums; use Gtk.Enums;
 
 package body Gtk.GLArea is
 
@@ -37,8 +36,7 @@ package body Gtk.GLArea is
    -------------
 
    procedure Gtk_New (Widget    : out Gtk_GLArea;
-                      Attr_List : in  Attributes_Array)
-   is
+                      Attr_List : in  Attributes_Array) is
    begin
       Widget := new Gtk_GLArea_Record;
       Initialize (Widget, Attr_List);
@@ -74,8 +72,7 @@ package body Gtk.GLArea is
    procedure Gtk_New
      (Widget    :    out Gtk_GLArea;
       Attr_List : in     Attributes_Array;
-      Share     : access Gtk_GLArea_Record'Class)
-   is
+      Share     : access Gtk_GLArea_Record'Class) is
    begin
       Widget := new Gtk_GLArea_Record;
       Initialize (Widget, Attr_List, Share);
@@ -107,8 +104,7 @@ package body Gtk.GLArea is
    -- Make_Current --
    ------------------
 
-   function Make_Current
-     (Glarea : access Gtk_GLArea_Record'Class)
+   function Make_Current (Glarea : access Gtk_GLArea_Record'Class)
      return Boolean
    is
       function Internal (GLArea : System.Address) return Gint;
@@ -121,8 +117,7 @@ package body Gtk.GLArea is
    -- Swap_Buffers --
    ------------------
 
-   procedure Swap_Buffers (Glarea : access Gtk_GLArea_Record'Class)
-   is
+   procedure Swap_Buffers (Glarea : access Gtk_GLArea_Record'Class) is
       procedure Internal (Glarea : System.Address);
       pragma Import (C, Internal, "gtk_gl_area_swapbuffers");
    begin

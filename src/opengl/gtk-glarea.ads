@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gtk.Drawing_Area;
-with Gtk.Enums; use Gtk.Enums;
 with Gdk.GL; use Gdk.GL;
 
 package Gtk.GLArea is
