@@ -50,6 +50,7 @@ with Gtk.Extra.Border_Combo;  use Gtk.Extra.Border_Combo;
 with Gtk.Extra.Color_Combo;   use Gtk.Extra.Color_Combo;
 with Gtk.Extra.Font_Combo;    use Gtk.Extra.Font_Combo;
 with Gtk.Extra.Item_Entry;    use Gtk.Extra.Item_Entry;
+with Gtk.Extra.PsFont;        use Gtk.Extra.PsFont;
 with Gtk.Extra.Sheet;   use Gtk.Extra.Sheet;
 with Gtk.Frame;         use Gtk.Frame;
 with Gtk.GEntry;        use Gtk.GEntry;
@@ -1283,8 +1284,11 @@ package body Create_Sheet is
       Border_Combo       : Gtk_Border_Combo;
       Fg_Color_Combo     : Gtk_Color_Combo;
       Bg_Color_Combo     : Gtk_Color_Combo;
+      Tmp                : Gint;
 
    begin
+      Tmp := Gtk.Extra.PsFont.Init;
+
       Gtk.Frame.Set_Label (Frame, "Gtk_Sheet");
 
       Gtk_New_Vbox (Main_Vbox, Homogeneous => False, Spacing => 1);
