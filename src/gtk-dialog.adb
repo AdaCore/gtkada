@@ -82,7 +82,7 @@ package body Gtk.Dialog is
    procedure Gtk_New
      (Dialog : out Gtk_Dialog;
       Title  : String;
-      Parent : access Gtk.Window.Gtk_Window_Record'Class;
+      Parent : Gtk.Window.Gtk_Window;
       Flags  : Gtk_Dialog_Flags) is
    begin
       Dialog := new Gtk_Dialog_Record;
@@ -109,7 +109,7 @@ package body Gtk.Dialog is
    procedure Initialize
      (Dialog : access Gtk_Dialog_Record'Class;
       Title  : String;
-      Parent : access Gtk.Window.Gtk_Window_Record'Class;
+      Parent : Gtk.Window.Gtk_Window;
       Flags  : Gtk_Dialog_Flags)
    is
       function Internal
