@@ -7,12 +7,19 @@
   <source_directory></source_directory>
   <pixmaps_directory></pixmaps_directory>
   <language>Ada 95</language>
+  <gnome_support>False</gnome_support>
   <gettext_support>False</gettext_support>
   <use_widget_names>False</use_widget_names>
+  <output_main_file>False</output_main_file>
+  <output_support_files>True</output_support_files>
+  <output_build_files>True</output_build_files>
+  <backup_source_files>True</backup_source_files>
   <main_source_file>gladesrc.c</main_source_file>
   <main_header_file>gladesrc.h</main_header_file>
   <handler_source_file>gladesig.c</handler_source_file>
   <handler_header_file>gladesig.h</handler_header_file>
+  <support_source_file>support.c</support_source_file>
+  <support_header_file>support.h</support_header_file>
 </project>
 
 <widget>
@@ -28,6 +35,7 @@
   <title>The Editor</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
   <allow_shrink>True</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
@@ -41,6 +49,7 @@
     <widget>
       <class>GtkMenuBar</class>
       <name>menubar1</name>
+      <shadow_type>GTK_SHADOW_OUT</shadow_type>
       <child>
 	<padding>0</padding>
 	<expand>False</expand>
@@ -253,15 +262,17 @@
     <widget>
       <class>GtkToolbar</class>
       <name>toolbar1</name>
+      <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
+      <type>GTK_TOOLBAR_BOTH</type>
+      <space_size>5</space_size>
+      <space_style>GTK_TOOLBAR_SPACE_EMPTY</space_style>
+      <relief>GTK_RELIEF_NORMAL</relief>
+      <tooltips>True</tooltips>
       <child>
 	<padding>0</padding>
 	<expand>False</expand>
 	<fill>True</fill>
       </child>
-      <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
-      <type>GTK_TOOLBAR_BOTH</type>
-      <space_size>5</space_size>
-      <tooltips>True</tooltips>
 
       <widget>
 	<class>GtkButton</class>
@@ -306,15 +317,15 @@
     <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow1</name>
+      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
       <child>
 	<padding>0</padding>
 	<expand>True</expand>
 	<fill>True</fill>
       </child>
-      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
-      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
 
       <widget>
 	<class>GtkText</class>
@@ -354,10 +365,11 @@
   <title>Open File</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_MOUSE</position>
-  <show_file_op_buttons>True</show_file_op_buttons>
+  <modal>False</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
+  <show_file_op_buttons>True</show_file_op_buttons>
 
   <widget>
     <class>GtkButton</class>
@@ -394,6 +406,7 @@
   <title>About The Editor</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_MOUSE</position>
+  <modal>False</modal>
   <allow_shrink>True</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
@@ -409,17 +422,18 @@
     <widget>
       <class>GtkLabel</class>
       <name>label2</name>
+      <label>The Editor - v 1.0</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>12</xpad>
+      <ypad>0</ypad>
       <child>
 	<padding>10</padding>
 	<expand>True</expand>
 	<fill>True</fill>
       </child>
-      <label>The Editor - v 1.0</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>12</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -427,23 +441,18 @@
       <child_name>Dialog:action_area</child_name>
       <name>dialog-action_area2</name>
       <border_width>10</border_width>
+      <homogeneous>True</homogeneous>
+      <spacing>5</spacing>
       <child>
 	<padding>0</padding>
 	<expand>False</expand>
 	<fill>True</fill>
 	<pack>GTK_PACK_END</pack>
       </child>
-      <homogeneous>True</homogeneous>
-      <spacing>5</spacing>
 
       <widget>
 	<class>GtkButton</class>
 	<name>button7</name>
-	<child>
-	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>False</fill>
-	</child>
 	<can_default>True</can_default>
 	<has_default>True</has_default>
 	<can_focus>True</can_focus>
@@ -453,6 +462,11 @@
 	  <last_modification_time>Thu, 04 Feb 1999 18:20:58 GMT</last_modification_time>
 	</signal>
 	<label>OK</label>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	</child>
       </widget>
     </widget>
   </widget>
@@ -470,10 +484,11 @@
   <title>Save File</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_MOUSE</position>
-  <show_file_op_buttons>True</show_file_op_buttons>
+  <modal>False</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
+  <show_file_op_buttons>True</show_file_op_buttons>
 
   <widget>
     <class>GtkButton</class>
