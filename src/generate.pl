@@ -413,6 +413,7 @@ sub package_name
     $entity =~ s/Gtk\.Entry/Gtk\.GEntry/;    
     $entity =~ s/Gnome\.Entry/Gnome\.GEntry/;    
     $entity =~ s/Gnome\.File\.Entry/Gnome\.File\.GEntry/;    
+    $entity =~ s/Gnome\.Icon\.Entry/Gnome\.Icon\.GEntry/;    
     return $entity;
   }
 
