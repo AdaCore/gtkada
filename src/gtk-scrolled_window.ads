@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -41,16 +41,17 @@ package Gtk.Scrolled_Window is
 
    procedure Gtk_New
      (Scrolled_Window :    out Gtk_Scrolled_Window;
-      Hadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
-        := Adjustment.Null_Adjustment;
-      Vadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
-        := Adjustment.Null_Adjustment);
+      Hadjustment     : Adjustment.Gtk_Adjustment :=
+        Adjustment.Null_Adjustment;
+      Vadjustment     : Adjustment.Gtk_Adjustment :=
+        Adjustment.Null_Adjustment);
+
    procedure Initialize
      (Scrolled_Window : access Gtk_Scrolled_Window_Record'Class;
-      Hadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
-        := Adjustment.Null_Adjustment;
-      Vadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
-        := Adjustment.Null_Adjustment);
+      Hadjustment     : Adjustment.Gtk_Adjustment :=
+        Adjustment.Null_Adjustment;
+      Vadjustment     : Adjustment.Gtk_Adjustment :=
+        Adjustment.Null_Adjustment);
 
    procedure Add_With_Viewport
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
@@ -58,11 +59,11 @@ package Gtk.Scrolled_Window is
 
    function Get_Hadjustment
      (Scrolled_Window : access Gtk_Scrolled_Window_Record)
-      return               Adjustment.Gtk_Adjustment;
+      return Adjustment.Gtk_Adjustment;
 
    function Get_Vadjustment
      (Scrolled_Window : access Gtk_Scrolled_Window_Record)
-      return               Adjustment.Gtk_Adjustment;
+      return Adjustment.Gtk_Adjustment;
 
    procedure Set_Hadjustment
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
@@ -80,11 +81,12 @@ package Gtk.Scrolled_Window is
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
 
    procedure Generate
      (Scrolled_Window : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
    type Gtk_Scrolled_Window_Record is new Container.Gtk_Container_Record

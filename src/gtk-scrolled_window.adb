@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -40,10 +40,13 @@ package body Gtk.Scrolled_Window is
 
    procedure Add_With_Viewport
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
-      Child           : access Gtk.Widget.Gtk_Widget_Record'Class) is
-      procedure Internal (Scrolled_Window : System.Address;
-                          Child           : System.Address);
+      Child           : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal
+        (Scrolled_Window : System.Address;
+         Child           : System.Address);
       pragma Import (C, Internal, "gtk_scrolled_window_add_with_viewport");
+
    begin
       Internal (Get_Object (Scrolled_Window), Get_Object (Child));
    end Add_With_Viewport;
@@ -57,9 +60,10 @@ package body Gtk.Scrolled_Window is
       return Adjustment.Gtk_Adjustment
    is
       function Internal (Scrolled_Window : in System.Address)
-                         return System.Address;
+        return System.Address;
       pragma Import (C, Internal, "gtk_scrolled_window_get_hadjustment");
       Stub : Adjustment.Gtk_Adjustment_Record;
+
    begin
       return Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub));
@@ -71,12 +75,13 @@ package body Gtk.Scrolled_Window is
 
    function Get_Vadjustment
      (Scrolled_Window : access Gtk_Scrolled_Window_Record)
-      return               Adjustment.Gtk_Adjustment
+      return Adjustment.Gtk_Adjustment
    is
       function Internal (Scrolled_Window : in System.Address)
-                         return System.Address;
+        return System.Address;
       pragma Import (C, Internal, "gtk_scrolled_window_get_vadjustment");
       Stub : Adjustment.Gtk_Adjustment_Record;
+
    begin
       return Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (Scrolled_Window)), Stub));
@@ -87,11 +92,11 @@ package body Gtk.Scrolled_Window is
    -------------
 
    procedure Gtk_New
-     (Scrolled_Window :    out Gtk_Scrolled_Window;
-      Hadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
-        := Adjustment.Null_Adjustment;
-      Vadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
-        := Adjustment.Null_Adjustment)
+     (Scrolled_Window : out Gtk_Scrolled_Window;
+      Hadjustment     : Adjustment.Gtk_Adjustment :=
+        Adjustment.Null_Adjustment;
+      Vadjustment     : Adjustment.Gtk_Adjustment :=
+        Adjustment.Null_Adjustment)
    is
    begin
       Scrolled_Window := new Gtk_Scrolled_Window_Record;
@@ -104,17 +109,31 @@ package body Gtk.Scrolled_Window is
 
    procedure Initialize
      (Scrolled_Window : access Gtk_Scrolled_Window_Record'Class;
-      Hadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
-        := Adjustment.Null_Adjustment;
-      Vadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
-        := Adjustment.Null_Adjustment)
+      Hadjustment    : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
+      Vadjustment    : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment)
    is
       function Internal (Hadjustment, Vadjustment : in System.Address)
                          return System.Address;
       pragma Import (C, Internal, "gtk_scrolled_window_new");
+
+      Hadj, Vadj : System.Address;
+
+      use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
-      Set_Object (Scrolled_Window, Internal (Get_Object (Hadjustment),
-                                             Get_Object (Vadjustment)));
+      if Hadjustment = null then
+         Hadj := System.Null_Address;
+      else
+         Hadj := Get_Object (Hadjustment);
+      end if;
+
+      if Vadjustment = null then
+         Vadj := System.Null_Address;
+      else
+         Vadj := Get_Object (Vadjustment);
+      end if;
+
+      Set_Object (Scrolled_Window, Internal (Hadj, Vadj));
       Initialize_User_Data (Scrolled_Window);
    end Initialize;
 
@@ -178,11 +197,6 @@ package body Gtk.Scrolled_Window is
       Container.Generate (N, File);
       Gen_Set (N, "Scrolled_Window", "Policy", "hscrollbar_policy",
         "vscrollbar_policy", "", "", File);
-
-      if not N.Specific_Data.Has_Container then
-         Gen_Call_Child (N, null, "Container", "Add", File => File);
-         N.Specific_Data.Has_Container := True;
-      end if;
    end Generate;
 
    procedure Generate
@@ -205,14 +219,6 @@ package body Gtk.Scrolled_Window is
          Set_Policy (Gtk_Scrolled_Window (Scrolled_Window),
            Gtk_Policy_Type'Value (S (S'First + 4 .. S'Last)),
            Gtk_Policy_Type'Value (S2 (S2'First + 4 .. S2'Last)));
-      end if;
-
-      if not N.Specific_Data.Has_Container then
-         Container.Add
-           (Container.Gtk_Container
-            (Get_Object (Get_Field (N.Parent, "name"))),
-            Gtk.Widget.Gtk_Widget (Scrolled_Window));
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 
