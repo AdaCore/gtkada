@@ -201,6 +201,11 @@ package Gtkada.Canvas is
                             Execute : Item_Processor);
    --  Execute an action on each of the items contained in the canvas.
 
+   function Has_Link (Canvas   : access Interactive_Canvas_Record;
+                      From, To : access Canvas_Item_Record'Class)
+                     return Boolean;
+   --  Test whether there is a link from From to To.
+
    ------------------------
    -- Items manipulation --
    ------------------------

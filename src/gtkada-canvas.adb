@@ -406,6 +406,13 @@ package body Gtkada.Canvas is
           Next => Canvas.Children);
 
       Update_Adjustments (Canvas);
+
+      --  Change the adjustments so that the new item is automatically visible
+
+      Clamp_Page (Get_Hadjustment (Canvas), Gfloat (Item.Coord.X),
+                  Gfloat (Item.Coord.X + Gint (Item.Coord.Width)));
+      Clamp_Page (Get_Vadjustment (Canvas), Gfloat (Item.Coord.Y),
+                  Gfloat (Item.Coord.Y + Gint (Item.Coord.Height)));
    end Put;
 
    --------------
@@ -1036,7 +1043,6 @@ package body Gtkada.Canvas is
       Clear_Area_E (Get_Window (Canvas.Drawing_Area), 0, 0,
                     Gint (Get_Allocation_Width (Canvas)) - 1,
                     Gint (Get_Allocation_Height (Canvas)) - 1);
-
    end Redraw_Canvas;
 
    ---------------
@@ -1258,6 +1264,15 @@ package body Gtkada.Canvas is
          return False;
       end if;
 
+      --  Make sure the item is aligned on the grid if required.
+
+      if Canvas.Align_On_Grid then
+         Item.Coord.X := Item.Coord.X
+           - Item.Coord.X mod Gint (Canvas.Grid_Size);
+         Item.Coord.Y := Item.Coord.Y
+           - Item.Coord.Y mod Gint (Canvas.Grid_Size);
+      end if;
+
       --  Move the items if the new one was moved out of the canvas.
 
       if Item.Coord.X < Gint (Canvas.Grid_Size) then
@@ -1288,6 +1303,12 @@ package body Gtkada.Canvas is
          while Tmp /= null loop
             Tmp.Item.Coord.X := Tmp.Item.Coord.X + Delta_X;
             Tmp.Item.Coord.Y := Tmp.Item.Coord.Y + Delta_Y;
+            if Canvas.Align_On_Grid then
+               Tmp.Item.Coord.X := Tmp.Item.Coord.X
+                 - Tmp.Item.Coord.X mod Gint (Canvas.Grid_Size);
+               Tmp.Item.Coord.Y := Tmp.Item.Coord.Y
+                 - Tmp.Item.Coord.Y mod Gint (Canvas.Grid_Size);
+            end if;
             Tmp := Tmp.Next;
          end loop;
       end if;
@@ -1511,6 +1532,8 @@ package body Gtkada.Canvas is
          Previous := Current;
          Current := Current.Next;
       end loop;
+
+      Redraw_Canvas (Canvas);
    end Remove;
 
    ---------------------
@@ -1534,5 +1557,26 @@ package body Gtkada.Canvas is
    begin
       return Item.Coord;
    end Get_Coord;
+
+   --------------
+   -- Has_Link --
+   --------------
+
+   function Has_Link (Canvas   : access Interactive_Canvas_Record;
+                      From, To : access Canvas_Item_Record'Class)
+                     return Boolean
+   is
+      Current : Link_Access := Canvas.Links;
+   begin
+      while Current /= null loop
+         if Current.Src = Canvas_Item (From)
+           and then Current.Dest = Canvas_Item (To)
+         then
+            return True;
+         end if;
+         Current := Current.Next;
+      end loop;
+      return False;
+   end Has_Link;
 
 end Gtkada.Canvas;
