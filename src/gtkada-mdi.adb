@@ -163,7 +163,7 @@ package body Gtkada.MDI is
    --  (not a constant to avoid warnings below about condition being always
    --  True or False)
 
-   Highlight_Page : constant Boolean := False;
+   Highlight_Page : constant Boolean := not Draw_Title_Bars;
    --  Whether the notebook page containing the current widget should be
    --  highlighted.
 
@@ -468,6 +468,14 @@ package body Gtkada.MDI is
    procedure Emit_By_Name_Child
      (Object : System.Address; Name : String; Child : System.Address);
    pragma Import (C, Emit_By_Name_Child, "g_signal_emit_by_name");
+
+   procedure Internal_Float_Child
+     (Child             : access MDI_Child_Record'Class;
+      Float             : Boolean;
+      Position_At_Mouse : Boolean);
+   --  Internal version of Float_Child, where the user can choose whether the
+   --  new floating window should be located where the mouse is, or at
+   --  coordinates specified by (Child.X, Child.Y)
 
    ------------------
    -- Get_Notebook --
@@ -3254,7 +3262,19 @@ package body Gtkada.MDI is
 
    procedure Float_Child
      (Child : access MDI_Child_Record'Class;
-      Float : Boolean)
+      Float : Boolean) is
+   begin
+      Internal_Float_Child (Child, Float, Position_At_Mouse => True);
+   end Float_Child;
+
+   --------------------------
+   -- Internal_Float_Child --
+   --------------------------
+
+   procedure Internal_Float_Child
+     (Child             : access MDI_Child_Record'Class;
+      Float             : Boolean;
+      Position_At_Mouse : Boolean)
    is
       use Object_List;
       Diag        : Gtk_Dialog;
@@ -3347,7 +3367,12 @@ package body Gtkada.MDI is
             Groups := Next (Groups);
          end loop;
 
-         Set_Position (Win, Win_Pos_Mouse);
+         if Position_At_Mouse then
+            Set_Position (Win, Win_Pos_Mouse);
+         else
+            Set_Position (Win, Win_Pos_None);
+            Set_UPosition (Win, Child.X, Child.Y);
+         end if;
 
          --  Delete_Event should be forwarded to the child, not to the
          --  toplevel window
@@ -3412,7 +3437,7 @@ package body Gtkada.MDI is
          Unref (Child);
          Widget_Callback.Emit_By_Name (Child, "unfloat_child");
       end if;
-   end Float_Child;
+   end Internal_Float_Child;
 
    -----------------
    -- Is_Floating --
@@ -5200,7 +5225,8 @@ package body Gtkada.MDI is
                           (Child, (Child.X, Child.Y,
                                    Allocation_Int (Width),
                                    Allocation_Int (Height)));
-                        Float_Child (Child, True);
+                        Internal_Float_Child
+                          (Child, True, Position_At_Mouse => False);
 
                      when Normal =>
                         Float_Child (Child, False);
@@ -5239,19 +5265,15 @@ package body Gtkada.MDI is
             Child_Node := Child_Node.Next;
          end loop;
 
-         --  Need to set the focus child before raising the notebook pages,
-         --  since Raise_Child_Idle will restore the focus child, and thus
-         --  might prevent one of the notebooks to be properly raised
-
-         if Focus_Child /= null then
-            Set_Focus_Child (Focus_Child);
-         end if;
-
          for J in Current_Pages'Range loop
             if Current_Pages (J) /= null then
                Raise_Child (Current_Pages (J), False);
             end if;
          end loop;
+
+         if Focus_Child /= null then
+            Set_Focus_Child (Focus_Child);
+         end if;
 
          Queue_Resize (MDI);
       end Restore_Desktop;
