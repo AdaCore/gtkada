@@ -657,7 +657,7 @@ package body Main_Windows is
    -----------------
 
    procedure Switch_Page (Notebook : access Gtk_Notebook_Record'Class;
-                          Page     : in Gtk_Notebook_Page;
+                          Page     : in Gtk.Gtk_Notebook_Page;
                           User     : in Gtk_Notebook)
    is
       pragma Warnings (Off, Page);
