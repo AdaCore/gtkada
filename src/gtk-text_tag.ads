@@ -477,7 +477,7 @@ package Gtk.Text_Tag is
    Editable_Property           : constant Glib.Properties.Property_Boolean;
    Font_Property               : constant Glib.Properties.Property_String;
    Font_Desc_Property          : constant Pango.Font.Property_Font_Description;
-   Famility_Property           : constant Glib.Properties.Property_String;
+   Family_Property             : constant Glib.Properties.Property_String;
    Style_Property              : constant Pango.Enums.Property_Style;
    Variant_Property            : constant Pango.Enums.Property_Variant;
    Weight_Property             : constant Pango.Enums.Property_Weight;
@@ -569,9 +569,9 @@ private
      Glib.Properties.Build ("editable");
    Font_Property               : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("font");
-   Font_Desc_Property       : constant Pango.Font.Property_Font_Description :=
+   Font_Desc_Property        : constant Pango.Font.Property_Font_Description :=
      Pango.Font.Build ("font_desc");
-   Famility_Property           : constant Glib.Properties.Property_String :=
+   Family_Property             : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("family");
    Style_Property              : constant Pango.Enums.Property_Style :=
      Pango.Enums.Build ("style");
