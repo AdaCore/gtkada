@@ -128,6 +128,22 @@ package body Gtk.Label is
       Internal (Get_Object (Label), Boolean'Pos (Wrap));
    end Set_Line_Wrap;
 
+   -----------------
+   -- Parse_Uline --
+   -----------------
+
+   procedure Parse_Uline (Label : access Gtk_Label_Record;
+                          Text  : in     String)
+   is
+      function Internal (Label : in System.Address;
+                         Text  : in String)
+                        return Guint;
+      pragma Import (C, Internal, "gtk_label_parse_uline");
+      Keyval : Guint;
+   begin
+      Keyval := Internal (Get_Object (Label), Text & ASCII.NUL);
+   end Parse_Uline;
+
    --------------
    -- Generate --
    --------------
