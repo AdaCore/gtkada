@@ -1,0 +1,27 @@
+This is the GtkAda Examples Directory. Our goal is to provide the GtkAda user
+some pieces of code that are easy to understand, easy to modify and to play
+with.
+If you are insterested in sharing your own programs with the GtkAda community,
+please tune them with the latest GtkAda version and send it with appropriate
+documentation (and bug reports) to the authors.
+
+Note that you need to first install GtkAda to use these examples.
+
+1- menu
+ 
+  Demonstrates the use of gate/dgate with a glade project file.
+  To test dgate, simply type
+
+    $ dgate menu.glade
+
+  And play with the interface automatically generated.
+
+  To test gate, type
+
+    $ gate menu.glade
+
+  This will generate a set of files. Eventually modify callbacks_menu.adb
+  to customize it, the compile and run it:
+
+    $ gnatmake menu `gtkada-config`
+    $ menu
