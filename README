@@ -40,7 +40,7 @@ These functions were tested on the following systems:
 
 using the following compilers:
    - Gnat 3.16a1
-   - Gnat 5.00a
+   - Gnat 5.01a
 
 the following versions of gtk:
    - Gtk+ 2.2.1
