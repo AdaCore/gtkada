@@ -2841,7 +2841,7 @@ Similarly, DGATE generates a warning to the standard output when encountering
 an unsupported widget:
 
 @smallexample
-GtkAda-WARNING *: Unsupported widget GtkImage (image1)
+GtkAda-WARNING **: Unsupported widget GtkImage (image1)
 @end smallexample
 
 Here is the list of widgets that are currently not supported by GATE/DGATE.
