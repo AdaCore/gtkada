@@ -27,14 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib;         use Glib;
-with Gtk.Box;      use Gtk.Box;
-with Gtk.Button;   use Gtk.Button;
-with Gtk.Frame;    use Gtk.Frame;
-with Gtk.Label;    use Gtk.Label;
-with Gtk.Handlers; use Gtk.Handlers;
-with Gtk.Widget;   use Gtk.Widget;
-with Gtk;          use Gtk;
+with Glib;          use Glib;
+with Glib.GObjects; use Glib.GObjects;
+with Gtk.Box;       use Gtk.Box;
+with Gtk.Button;    use Gtk.Button;
+with Gtk.Frame;     use Gtk.Frame;
+with Gtk.Label;     use Gtk.Label;
+with Gtk.Handlers;  use Gtk.Handlers;
+with Gtk.Widget;    use Gtk.Widget;
+with Gtk;           use Gtk;
 
 with Ada.Text_IO;
 

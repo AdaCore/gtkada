@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Glib;            use Glib;
+with Glib.GObjects;   use Glib.GObjects;
 with Gtk.Box;         use Gtk.Box;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Handle_Box;  use Gtk.Handle_Box;
