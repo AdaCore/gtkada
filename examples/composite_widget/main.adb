@@ -10,7 +10,7 @@ with Gtk.Window; use Gtk.Window;
 
 with My_Dialog; use My_Dialog;
 
-procedure Test is
+procedure Main is
    Main_W : Gtk_Window;
    Ok     : Gtk_Button;
    Id     : Guint;
@@ -54,5 +54,5 @@ begin
    Show (Main_W);
 
    Gtk.Main.Main;
-end Test;
+end Main;
 

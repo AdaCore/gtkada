@@ -1,5 +1,8 @@
 all:
-	gnatmake test `gtkada-config`
+	gnatmake main `gtkada-config`
 run:
-	./test
+	./main
+
+clean: 
+	${RM} main *.o *.ali
 
