@@ -222,7 +222,7 @@ package Glib is
    --  You should use this function only if you are creating new widgets, and
    --  their properties. Normal usage of properties doesn't require the use
    --  of this function.
-   --  An ASCII.Nul character is automatically appended if necessary
+   --  An ASCII.NUL character is automatically appended if necessary
 
    function Property_Name (Prop : Property) return String;
    --  Return the name of the property.
