@@ -1721,14 +1721,18 @@ two different hash tables simultaneously. If two different tasks need to
 access the same hash table, the application is responsible for locking itself
 (by e.g using protected objects).
 
-When Glib is intialized to be task-safe, GtkAda is task aware. There is a
+When Glib is initialized to be task-safe, GtkAda is task aware. There is a
 single global lock that you must acquire with Gdk.Threads.Enter before making
 any Gdk/Gtk call, and release with Gdk.Threads.Leave afterwards. 
+
+Beware that the GtkAda main loop (Gtk.Main.Main) can only be be run inside
+one specific tasks. In other words, you cannot call Gtk.Main.Main from a
+different task that the one that started the outer level main loop.
 
 Note that Gdk.Threads assumes that you are using a tasking run time that maps
 Ada tasks to native threads. For example under Linux with GNAT, you need to
 change the default tasking run time for that purpose.
- 
+
 A minimal main program for a tasking GtkAda application looks like: 
 
 @example
