@@ -41,17 +41,17 @@ These functions were tested on the following systems :
    - Linux/ppc
    - Solaris/sparc
    - Solaris/x86
-   - Dec Unix 4.0b
+   - Dec Unix 4.0
    - SGI IRIX 6.5
-   - HP/UX 10.20
-   - HP/UX 11.00
+   - HP/UX
    - NT 4.0
+   - Windows 2000
    - AiX 4.3.2
    - SCO UnixWare 7.1
    - FreeBSD 3.2
 using the following compilers:
-   - Gnat 3.12a[23]
-   - Gnat 3.12p
+   - Gnat 3.13a1
+   - Gnat 3.13p
 
 the following versions of gtk:
    - Gtk+ 1.2.2 -> 1.2.8
