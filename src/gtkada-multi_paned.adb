@@ -185,7 +185,10 @@ package body Gtkada.Multi_Paned is
       H   : Natural;
       Alloc : Gtk_Allocation;
    begin
-      if Child.Is_Widget then
+      if Child = null then
+         Put_Line ("<null>");
+
+      elsif Child.Is_Widget then
          Compute_Child_Position (Split, Child, Alloc);
          Put_Line (Prefix & "<widget req_width=""" & Child.Width'Img
                    & """ req_height="""   & Child.Height'Img
@@ -213,6 +216,10 @@ package body Gtkada.Multi_Paned is
             end if;
             Tmp := Tmp.Next;
          end loop;
+
+         if H <= Child.Handles'Last then
+            Put_Line ("ERROR: Handle not followed by child");
+         end if;
       end if;
    end Dump;
 
@@ -451,6 +458,7 @@ package body Gtkada.Multi_Paned is
 
                if Child.Parent.First_Child = Child then
                   Child.Parent.First_Child := Child.First_Child;
+                  Child.First_Child.Next := Child.Next;
                else
                   Tmp := Child.Parent.First_Child;
                   while Tmp.Next /= Child loop
