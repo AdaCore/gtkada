@@ -41,12 +41,30 @@ package Gtk.Util is
    function Get_Object (Name : String_Ptr) return Gtk_Object_Ptr;
    --  Return a widget associated (via a call to Set_Object) with Name
 
-   procedure Set_Signal (Name : String_Ptr; Signal : System.Address);
+   type Private_Object is private;
+   --  Internal representation of a widget as given by the low level signal
+   --  manager. Use Set_Object (see below) to "convert" this object to an
+   --  appropriate widget.
+
+   type Void_Signal is access procedure (Object : in Private_Object);
+   --  The callback type.
+
+   procedure Set_Object
+     (Widget : in out Gtk.Widget.Gtk_Widget'Class;
+      Object : in     Private_Object);
+   --  Sets the "internal" contents of a given widget. This function is similar
+   --  to Gdk.Set_Object, but specific to callback functions.
+   --  Note that the caller must ensure that Widget has the right type when
+   --  calling this procedure.
+
+   procedure Set_Signal (Name : String; Signal : Void_Signal);
    --  Associates a signal with the specified Name. It is up to the caller to
    --  choose unique names. Signal is the address of a callback. Note that
    --  no check is performed on Signal.
 
-   function Get_Signal (Name : String_Ptr) return System.Address;
+   function Get_Signal (Name : String) return Void_Signal;
    --  Return a Signal associated (via a call to Set_Signal) with Name
 
+private
+   type Private_Object is new System.Address;
 end Gtk.Util;

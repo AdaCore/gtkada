@@ -26,6 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gdk; use Gdk;
 with GNAT.HTable;
 
 package body Gtk.Util is
@@ -54,8 +55,8 @@ package body Gtk.Util is
 
    package Signals is new GNAT.HTable.Simple_HTable
      (Header_Num => Hash_Header,
-      Element    => System.Address,
-      No_Element => System.Null_Address,
+      Element    => Void_Signal,
+      No_Element => null,
       Key        => String_Ptr,
       Hash       => Hash,
       Equal      => Equal);
@@ -105,21 +106,34 @@ package body Gtk.Util is
    end Set_Object;
 
    ----------------
+   -- Set_Object --
+   ----------------
+
+   procedure Set_Object
+     (Widget : in out Gtk.Widget.Gtk_Widget'Class;
+      Object : in     Private_Object) is
+   begin
+      Set_Object (Widget, System.Address (Object));
+   end Set_Object;
+
+   ----------------
    -- Get_Signal --
    ----------------
 
-   function Get_Signal (Name : String_Ptr) return System.Address is
+   function Get_Signal (Name : String) return Void_Signal is
+      S : aliased String := Name;
    begin
-      return Signals.Get (Name);
+      return Signals.Get (S'Unchecked_Access);
    end Get_Signal;
 
    ----------------
    -- Set_Signal --
    ----------------
 
-   procedure Set_Signal (Name : String_Ptr; Signal : System.Address) is
+   procedure Set_Signal (Name : String; Signal : Void_Signal) is
+      S : aliased String := Name;
    begin
-      Signals.Set (Name, Signal);
+      Signals.Set (S'Unchecked_Access, Signal);
    end Set_Signal;
 
 end Gtk.Util;
