@@ -2,7 +2,7 @@ Here are the API changes that occured between GtkAda 1.2 and GtkAda 2.0:
 
 Glib:
   GType_* constants replace Gtk.Gtk_Type_*
-Glib.GOjbects: new package
+Glib.GObjects: new package
 Gdk.Color_Context: removed
 Gdk.Event:
   Get_Pressure, Get_Xtilt, Get_Ytilt, Get_Source: removed
