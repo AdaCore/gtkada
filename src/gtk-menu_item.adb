@@ -206,7 +206,7 @@ package body Gtk.Menu_Item is
 
       S := Get_Field (N, "right_justify");
 
-      if Boolean'Value (S.all) then
+      if S /= null and then Boolean'Value (S.all) then
          Right_Justify (Gtk_Menu_Item (Menu_Item));
       end if;
 
