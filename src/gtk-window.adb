@@ -380,6 +380,24 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Boolean'Pos (Setting));
    end Set_Destroy_With_Parent;
 
+   ---------------
+   -- Set_Focus --
+   ---------------
+
+   procedure Set_Focus
+     (Window : access Gtk_Window_Record;
+      Focus  : Gtk.Widget.Gtk_Widget)
+   is
+      procedure Internal (Window, Focus : System.Address);
+      pragma Import (C, Internal, "gtk_window_set_focus");
+   begin
+      if Focus = null then
+         Internal (Get_Object (Window), System.Null_Address);
+      else
+         Internal (Get_Object (Window), Get_Object (Focus));
+      end if;
+   end Set_Focus;
+
    --------------------------
    -- Set_Frame_Dimensions --
    --------------------------

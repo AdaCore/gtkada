@@ -498,6 +498,16 @@ package Gtk.Window is
    --  Window itself has the focus. It currently has the focus
    --  only if Has_Focus_Is_Set returns True.
 
+   procedure Set_Focus
+     (Window : access Gtk_Window_Record;
+      Focus  : Gtk.Widget.Gtk_Widget);
+   --  Set the focus child for Window.
+   --  If Focus is not the current focus widget, and is focusable, sets
+   --  it as the focus widget for the window. If Focus is null, unsets
+   --  the focus widget for this window. To set the focus to a particular
+   --  widget in the toplevel, it is usually more convenient to use
+   --  gtk_widget_grab_focus() instead of this function.
+
    ----------------
    -- Properties --
    ----------------
