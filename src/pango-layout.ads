@@ -57,6 +57,7 @@
 --  </description>
 
 with Glib;
+with Pango.Attributes;
 with Pango.Context;
 with Pango.Font;
 with Glib.Object;
@@ -279,6 +280,20 @@ package Pango.Layout is
    function Get_Wrap (Layout : access Pango_Layout_Record)
       return Pango_Wrap_Mode;
    --  Return the current wrap style
+
+   ----------------
+   -- Attributes --
+   ----------------
+
+   procedure Set_Attributes
+     (Layout : access Pango_Layout_Record;
+      Attributes : Pango.Attributes.Pango_Attr_List);
+   --  Set the text attributes for a layout object.
+   --  Passing null removes the current list of attributes
+
+   function Get_Attributes (Layout : access Pango_Layout_Record)
+      return Pango.Attributes.Pango_Attr_List;
+   --  Get the text attributes from a layout object
 
 private
    type Pango_Layout_Record is new Glib.Object.GObject_Record with null record;

@@ -29,6 +29,7 @@
 with Glib;                 use Glib;
 with Glib.Object;          use Glib.Object;
 with Gdk.Rectangle;        use Gdk.Rectangle;
+with Pango.Attributes;     use Pango.Attributes;
 with Pango.Context;        use Pango.Context;
 with Pango.Font;           use Pango.Font;
 with System;               use System;
@@ -188,8 +189,13 @@ package body Pango.Layout is
    --------------
 
    function Get_Text (Layout : access Pango_Layout_Record) return String is
+      C : constant Gtkada.Types.Chars_Ptr := Get_Text (Layout);
    begin
-      return Value (Get_Text (Layout));
+      if C = Gtkada.Types.Null_Ptr then
+         return "";
+      else
+         return Value (C);
+      end if;
    end Get_Text;
 
    --------------------
@@ -348,6 +354,33 @@ package body Pango.Layout is
    begin
       return Internal (Get_Object (Layout), Line);
    end Get_Line;
+
+   --------------------
+   -- Set_Attributes --
+   --------------------
+
+   procedure Set_Attributes
+     (Layout : access Pango_Layout_Record;
+      Attributes : Pango.Attributes.Pango_Attr_List)
+   is
+      procedure Internal (Layout : System.Address; Attr : Pango_Attr_List);
+      pragma Import (C, Internal, "pango_layout_set_attributes");
+   begin
+      Internal (Get_Object (Layout), Attributes);
+   end Set_Attributes;
+
+   --------------------
+   -- Get_Attributes --
+   --------------------
+
+   function Get_Attributes (Layout : access Pango_Layout_Record)
+      return Pango.Attributes.Pango_Attr_List
+   is
+      function Internal (Layout : System.Address) return Pango_Attr_List;
+      pragma Import (C, Internal, "pango_layout_get_attributes");
+   begin
+      return Internal (Get_Object (Layout));
+   end Get_Attributes;
 
 end Pango.Layout;
 
