@@ -132,4 +132,29 @@ package body Gdk.Region is
       Region := Internal (Points, Points'Length, Fill_Rule);
    end Polygon;
 
+   ---------------------
+   -- Union_With_Rect --
+   ---------------------
+
+   procedure Union_With_Rect
+     (Region : in out Gdk_Region;
+      Rect   : Gdk.Rectangle.Gdk_Rectangle)
+   is
+      procedure Internal
+        (Region : in out Gdk_Region;
+         Rect   : Gdk.Rectangle.Gdk_Rectangle);
+      pragma Import (C, Internal, "gdk_region_union_with_rect");
+
+   begin
+      Internal (Region, Rect);
+   end Union_With_Rect;
+
+   procedure Union_With_Rect
+     (Result : in out Gdk_Region;
+      Region : Gdk_Region;
+      Rect   : Gdk.Rectangle.Gdk_Rectangle) is
+   begin
+      Union_With_Rect (Result, Rect);
+   end Union_With_Rect;
+
 end Gdk.Region;

@@ -103,6 +103,13 @@ package Gdk.Region is
      (Region : in out Gdk_Region;
       Rect   : Gdk.Rectangle.Gdk_Rectangle);
 
+   procedure Union_With_Rect
+     (Result : in out Gdk_Region;
+      Region : Gdk_Region;
+      Rect   : Gdk.Rectangle.Gdk_Rectangle);
+   --  Provided for backward compatibility.
+   --  Region must be equal to Result.
+
    procedure Intersect
      (Source1 : in out Gdk_Region;
       Source2 : Gdk_Region);
@@ -128,7 +135,6 @@ private
    pragma Import (C, Rect_In, "gdk_region_rect_in");
    pragma Import (C, Offset, "gdk_region_offset");
    pragma Import (C, Shrink, "gdk_region_shrink");
-   pragma Import (C, Union_With_Rect, "gdk_region_union_with_rect");
    pragma Import (C, Intersect, "gdk_region_intersect");
    pragma Import (C, Union, "gdk_region_union");
    pragma Import (C, Substract, "gdk_region_substract");
