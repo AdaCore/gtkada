@@ -191,8 +191,13 @@ package body Gdk.Window is
         return Gboolean;
       pragma Import (C, Internal, "gdk_window_get_deskrelative_origin");
       Result : Gboolean;
+      X_Out, Y_Out : aliased Gint;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
-      Result := Internal (Get_Object (Window), X'Address, Y'Address);
+      Result := Internal (Get_Object (Window), X_Out'Address, Y_Out'Address);
+      X := X_Out;
+      Y := Y_Out;
       Success := To_Boolean (Result);
    end Get_Desk_Relative_Origin;
 
@@ -243,11 +248,15 @@ package body Gdk.Window is
       function Internal (Window : in System.Address;
                          X, Y   : in System.Address) return Gint;
       pragma Import (C, Internal, "gdk_window_get_origin");
+      X_Out, Y_Out : aliased Gint;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
       Success := To_Boolean (Internal (Get_Object (Window),
-                                       X'Address, Y'Address));
+                                       X_Out'Address, Y_Out'Address));
+      X := X_Out;
+      Y := Y_Out;
    end Get_Origin;
-
 
    -----------------
    --  Get_Parent --
@@ -277,13 +286,19 @@ package body Gdk.Window is
                          Mask   : in System.Address)
                          return      System.Address;
       pragma Import (C, Internal, "gdk_window_get_pointer");
+      X_Out, Y_Out : aliased Gint;
+      Mask_Out : aliased Gdk.Types.Gdk_Modifier_Type;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
       Set_Object (Result, Internal (Get_Object (Window),
-                                    X'Address,
-                                    Y'Address,
-                                    Mask'Address));
+                                    X_Out'Address,
+                                    Y_Out'Address,
+                                    Mask_Out'Address));
+      X := X_Out;
+      Y := Y_Out;
+      Mask := Mask_Out;
    end Get_Pointer;
-
 
    --------------------
    --  Get_Position  --
@@ -552,18 +567,16 @@ package body Gdk.Window is
                           Color  : in System.Address);
       pragma Import (C, Internal, "gdk_window_set_background");
       use type Gdk.Color.Gdk_Color;
-      Color_A : System.Address := Color'Address;
+
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+      Color_A : System.Address := Col'Address;
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
       end if;
       Internal (Get_Object (Window), Color_A);
-      --
-      --  FIXME: This "'Address" stuff needs to be tested!
-      --  FIXME: Another way to proceed is to pass declare the Color
-      --  FIXME: parameter to be "in out" in the Internal procedure
-      --  FIXME: instead of "in". But semantically, I prefer this
-      --  FIXME: solution.
    end Set_Background;
 
 
@@ -799,11 +812,14 @@ package body Gdk.Window is
                          Win_Y  : in System.Address)
                          return System.Address;
       pragma Import (C, Internal, "gdk_window_at_pointer");
+      X_Out, Y_Out : aliased Gint;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
-      Set_Object (Window, Internal (Win_X'Address,
-                                    Win_Y'Address));
+      Set_Object (Window, Internal (X_Out'Address, Y_Out'Address));
+      Win_X := X_Out;
+      Win_Y := Y_Out;
    end Window_At_Pointer;
-
 
    ----------------
    --  Withdraw  --

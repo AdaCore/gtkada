@@ -60,11 +60,10 @@ package body Gtk.Menu is
    is
       procedure Internal (Menu          : System.Address;
                           Attach_Widget : System.Address;
-                          Detacher      : System.Address);
+                          Detacher      : Gtk_Menu_Detach_Func);
       pragma Import (C, Internal, "gtk_menu_attach_to_widget");
    begin
-      Internal (Get_Object (Menu), Get_Object (Attach_Widget),
-                Detacher'Address);
+      Internal (Get_Object (Menu), Get_Object (Attach_Widget), Detacher);
    end Attach_To_Widget;
 
    ------------
@@ -212,7 +211,7 @@ package body Gtk.Menu is
          procedure Internal (Menu          : System.Address;
                              Parent_M      : System.Address;
                              Parent_I      : System.Address;
-                             Func          : System.Address;
+                             Func          : Gtk_Menu_Position_Func;
                              Data          : System.Address;
                              Button        : Guint;
                              Activate_Time : Guint32);
@@ -221,7 +220,7 @@ package body Gtk.Menu is
          Internal (Get_Object (Menu),
                    Get_Object (Parent_Menu_Shell),
                    Get_Object (Parent_Menu_Item),
-                   Func'Address,
+                   Func,
                    Data.all'Address,
                    Button,
                    Activate_Time);

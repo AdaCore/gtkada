@@ -51,11 +51,16 @@ package body Gdk.Cursor.Pixmap is
           Y      : in Gint)
           return      System.Address;
       pragma Import (C, Internal, "gdk_cursor_new_from_pixmap");
+
+      Col_Fg : aliased Gdk.Color.Gdk_Color := Fg;
+      Col_Bg : aliased Gdk.Color.Gdk_Color := Bg;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
       Set_Object (Widget, Internal (Get_Object (Source),
                                     Get_Object (Mask),
-                                    Fg'Address,
-                                    Bg'Address,
+                                    Col_Fg'Address,
+                                    Col_Bg'Address,
                                     X,
                                     Y));
    end Gdk_New;

@@ -145,7 +145,7 @@ package body Gtk.Object is
    begin
       Class_Record := Internal (Get_Object (Object),
                                 Signals'Length,
-                                Signals'Address,
+                                Signals (Signals'First)'Address,
                                 Class_Record);
    end Initialize_Class_Record;
 

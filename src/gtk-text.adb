@@ -243,8 +243,12 @@ package body Gtk.Text is
          Length : in Gint);
       pragma Import (C, Internal, "gtk_text_insert");
       use type Gdk.Color.Gdk_Color;
-      Fore_A : System.Address := Fore'Address;
-      Back_A : System.Address := Back'Address;
+      Fore_Col : aliased Gdk.Color.Gdk_Color := Fore;
+      Back_Col : aliased Gdk.Color.Gdk_Color := Back;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+      Fore_A : System.Address := Fore_Col'Address;
+      Back_A : System.Address := Back_Col'Address;
    begin
       if Fore = Gdk.Color.Null_Color then
          Fore_A := System.Null_Address;

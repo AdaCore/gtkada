@@ -75,8 +75,12 @@ package body Gdk.Region is
       procedure Internal (Region    : in System.Address;
                           Rectangle : in System.Address);
       pragma Import (C, Internal, "gdk_region_get_clipbox");
+      Rec : aliased Gdk.Rectangle.Gdk_Rectangle;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
-      Internal (Get_Object (Region), Rectangle'Address);
+      Internal (Get_Object (Region), Rec'Address);
+      Rectangle := Rec;
    end Get_Clipbox;
 
    ---------------
@@ -180,8 +184,11 @@ package body Gdk.Region is
                          Rect   : in System.Address)
                          return Types.Gdk_Overlap_Type;
       pragma Import (C, Internal, "gdk_region_rect_in");
+      Rectangle : aliased Gdk.Rectangle.Gdk_Rectangle := Rect;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
-      return Internal (Get_Object (Region), Rect'Address);
+      return Internal (Get_Object (Region), Rectangle'Address);
    end Rect_In;
 
 
@@ -241,8 +248,11 @@ package body Gdk.Region is
       function Internal (Region, Rect : in System.Address)
                          return System.Address;
       pragma Import (C, Internal, "gdk_region_union_with_rect");
+      Rectangle : aliased Gdk.Rectangle.Gdk_Rectangle := Rect;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
-      Set_Object (Result, Internal (Get_Object (Region), Rect'Address));
+      Set_Object (Result, Internal (Get_Object (Region), Rectangle'Address));
    end Union_With_Rect;
 
 end Gdk.Region;

@@ -173,8 +173,11 @@ package body Gtk.Widget is
                           Area   : in System.Address);
       pragma Import (C, Internal, "gtk_widget_draw");
 
+      Rec : aliased Gdk.Rectangle.Gdk_Rectangle := Area;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
-      Internal (Get_Object (Widget), Area'Address);
+      Internal (Get_Object (Widget), Rec'Address);
    end Draw;
 
    ---------------------

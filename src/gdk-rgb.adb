@@ -79,10 +79,14 @@ package body Gdk.Rgb is
                           Rowstride           : Glib.Gint;
                           Cmap                : System.Address);
       pragma Import (C, Internal, "gdk_draw_indexed_image");
+
+      Color_Map : aliased Gdk_Rgb_Cmap := Cmap;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
       Internal (Get_Object (Drawable), Get_Object (GC), X, Y, Width, Height,
                 Gdk_Rgb_Dither'Pos (Dith),
-                Rgb_Buf'Address, Rowstride, Cmap'Address);
+                Rgb_Buf'Address, Rowstride, Color_Map'Address);
    end Draw_Indexed_Image;
 
    -----------------------

@@ -374,7 +374,10 @@ package body Gtk.Style is
         (Style : System.Address; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_fg");
       use type Gdk.Color.Gdk_Color;
-      Color_A : System.Address := Color'Address;
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+      Color_A : System.Address := Col'Address;
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
@@ -415,7 +418,10 @@ package body Gtk.Style is
         (Style : System.Address; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_bg");
       use type Gdk.Color.Gdk_Color;
-      Color_A : System.Address := Color'Address;
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+      Color_A : System.Address := Col'Address;
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
@@ -456,7 +462,11 @@ package body Gtk.Style is
         (Style : System.Address; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_light");
       use type Gdk.Color.Gdk_Color;
-      Color_A : System.Address := Color'Address;
+
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+      Color_A : System.Address := Col'Address;
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
@@ -497,7 +507,10 @@ package body Gtk.Style is
         (Style : System.Address; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_dark");
       use type Gdk.Color.Gdk_Color;
-      Color_A : System.Address := Color'Address;
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+      Color_A : System.Address := Col'Address;
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
@@ -538,7 +551,10 @@ package body Gtk.Style is
         (Style : System.Address; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_mid");
       use type Gdk.Color.Gdk_Color;
-      Color_A : System.Address := Color'Address;
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+      Color_A : System.Address := Col'Address;
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
@@ -579,7 +595,10 @@ package body Gtk.Style is
         (Style : System.Address; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_text");
       use type Gdk.Color.Gdk_Color;
-      Color_A : System.Address := Color'Address;
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+      Color_A : System.Address := Col'Address;
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
@@ -620,7 +639,10 @@ package body Gtk.Style is
         (Style : System.Address; State : Gint; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_base");
       use type Gdk.Color.Gdk_Color;
-      Color_A : System.Address := Color'Address;
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+      Color_A : System.Address := Col'Address;
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
@@ -657,7 +679,10 @@ package body Gtk.Style is
         (Style : System.Address; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_black");
       use type Gdk.Color.Gdk_Color;
-      Color_A : System.Address := Color'Address;
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+      Color_A : System.Address := Col'Address;
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
@@ -693,7 +718,10 @@ package body Gtk.Style is
         (Style : System.Address; Color : System.Address);
       pragma Import (C, Internal, "ada_style_set_white");
       use type Gdk.Color.Gdk_Color;
-      Color_A : System.Address := Color'Address;
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+      Color_A : System.Address := Col'Address;
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;

@@ -51,8 +51,14 @@ package body Gdk.Pixmap is
                          Bg     : in System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_pixmap_create_from_data");
       use type Gdk.Color.Gdk_Color;
-      Fg_A : System.Address := Fg'Address;
-      Bg_A : System.Address := Bg'Address;
+
+      Fg_Col : aliased Gdk.Color.Gdk_Color := Fg;
+      Bg_Col : aliased Gdk.Color.Gdk_Color := Bg;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+
+      Fg_A : System.Address := Fg_Col'Address;
+      Bg_A : System.Address := Bg_Col'Address;
    begin
       if Fg = Gdk.Color.Null_Color then
          Fg_A := System.Null_Address;
@@ -82,8 +88,13 @@ package body Gdk.Pixmap is
                          return           System.Address;
       pragma Import (C, Internal, "gdk_pixmap_create_from_xpm");
       use type Gdk.Color.Gdk_Color;
-      Tmp : System.Address := Get_Object (Mask);
-      Transparent_A : System.Address := Transparent'Address;
+      Tmp : aliased System.Address := Get_Object (Mask);
+
+      Transp_Col : aliased Gdk.Color.Gdk_Color := Transparent;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+
+      Transparent_A : System.Address := Transp_Col'Address;
    begin
       if Transparent = Gdk.Color.Null_Color then
          Transparent_A := System.Null_Address;
@@ -113,8 +124,13 @@ package body Gdk.Pixmap is
                          return System.Address;
       pragma Import (C, Internal, "gdk_pixmap_colormap_create_from_xpm");
       use type Gdk.Color.Gdk_Color;
-      Tmp : System.Address := Get_Object (Mask);
-      Transparent_A : System.Address := Transparent'Address;
+      Tmp : aliased System.Address := Get_Object (Mask);
+
+      Transp_Col : aliased Gdk.Color.Gdk_Color := Transparent;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+
+      Transparent_A : System.Address := Transp_Col'Address;
    begin
       if Transparent = Gdk.Color.Null_Color then
          Transparent_A := System.Null_Address;
@@ -146,8 +162,13 @@ package body Gdk.Pixmap is
                          return           System.Address;
       pragma Import (C, Internal, "gdk_pixmap_create_from_xpm_d");
       use type Gdk.Color.Gdk_Color;
-      Tmp : System.Address;
-      Transparent_A : System.Address := Transparent'Address;
+      Tmp : aliased System.Address;
+      Transp_Col : aliased Gdk.Color.Gdk_Color := Transparent;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+
+      Transparent_A : System.Address := Transp_Col'Address;
+
    begin
       if Transparent = Gdk.Color.Null_Color then
          Transparent_A := System.Null_Address;
@@ -179,8 +200,12 @@ package body Gdk.Pixmap is
                          return System.Address;
       pragma Import (C, Internal, "gdk_pixmap_colormap_create_from_xpm_d");
       use type Gdk.Color.Gdk_Color;
-      Tmp : System.Address := Get_Object (Mask);
-      Transparent_A : System.Address := Transparent'Address;
+      Tmp : aliased System.Address := Get_Object (Mask);
+      Transp_Col : aliased Gdk.Color.Gdk_Color := Transparent;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+
+      Transparent_A : System.Address := Transp_Col'Address;
    begin
       if Transparent = Gdk.Color.Null_Color then
          Transparent_A := System.Null_Address;

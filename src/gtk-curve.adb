@@ -45,7 +45,7 @@ package body Gtk.Curve is
       pragma Import (C, Internal, "gtk_curve_get_vector");
    begin
       Internal (Get_Object (Curve), Vector'Length,
-                Vector'Address);
+                Vector (Vector'First)'Address);
    end Get_Vector;
 
    -------------
@@ -141,7 +141,7 @@ package body Gtk.Curve is
       pragma Import (C, Internal, "gtk_curve_set_vector");
    begin
       Internal (Get_Object (Curve), Vector'Length,
-                Vector'Address);
+                Vector (Vector'First)'Address);
    end Set_Vector;
 
 end Gtk.Curve;

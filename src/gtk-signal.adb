@@ -542,7 +542,7 @@ package body Gtk.Signal is
          Data   : Data_Type_Access := Convert (User_Data);
          Tmp    : System.Address := Internal (Params, 0);
 
-         Rec    : Simple_Record;
+         Rec    : aliased Simple_Record;
          for Rec'Address use Tmp;
       begin
          if Data.Func /= null then

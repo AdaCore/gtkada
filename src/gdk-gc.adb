@@ -130,11 +130,15 @@ package body Gdk.GC is
       procedure Internal (GC, Color : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_background");
       use type Gdk.Color.Gdk_Color;
+
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
       if Color = Gdk.Color.Null_Color then
          Internal (Get_Object (GC), System.Null_Address);
       else
-         Internal (Get_Object (GC), Color'Address);
+         Internal (Get_Object (GC), Col'Address);
       end if;
    end Set_Background;
 
@@ -161,8 +165,12 @@ package body Gdk.GC is
       Rectangle : in Gdk.Rectangle.Gdk_Rectangle) is
       procedure Internal (GC, Rectangle : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_clip_rectangle");
+
+      Rec : aliased Gdk.Rectangle.Gdk_Rectangle := Rectangle;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
-      Internal (Get_Object (GC), Rectangle'Address);
+      Internal (Get_Object (GC), Rec'Address);
    end Set_Clip_Rectangle;
 
 
@@ -247,11 +255,15 @@ package body Gdk.GC is
       procedure Internal (GC, Color : in System.Address);
       pragma Import (C, Internal, "gdk_gc_set_foreground");
       use type Gdk.Color.Gdk_Color;
+
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
       if Color = Gdk.Color.Null_Color then
          Internal (Get_Object (GC), System.Null_Address);
       else
-         Internal (Get_Object (GC), Color'Address);
+         Internal (Get_Object (GC), Col'Address);
       end if;
    end Set_Foreground;
 

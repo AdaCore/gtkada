@@ -53,7 +53,7 @@ package body Gtk.Preview is
       pragma Import (C, Internal, "gtk_preview_draw_row");
 
    begin
-      Internal (Get_Object (Preview), Data'Address, X, Y, W);
+      Internal (Get_Object (Preview), Data (Data'First)'Address, X, Y, W);
    end Draw_Row;
 
    --------------

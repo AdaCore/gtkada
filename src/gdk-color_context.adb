@@ -119,13 +119,18 @@ package body Gdk.Color_Context is
                          Blue : in System.Address;
                          Failed : in System.Address) return Glib.Guchar;
       pragma Import (C, Internal, "gdk_color_context_get_index_from_palette");
-      Local_Failed : Glib.Gint;
+      Local_Failed : aliased Glib.Gint;
+
+      Col : aliased Color_Description := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
       Index := Glib.Gint (Internal (CC => Get_Object (CC),
-                                    Red => Color.Red'Address,
-                                    Green => Color.Green'Address,
-                                    Blue => Color.Blue'Address,
+                                    Red => Col.Red'Address,
+                                    Green => Col.Green'Address,
+                                    Blue => Col.Blue'Address,
                                     Failed => Local_Failed'Address));
+      Color := Col;
       Failed := Glib.To_Boolean (Local_Failed);
    end Get_Index_From_Palette;
 
@@ -168,7 +173,7 @@ package body Gdk.Color_Context is
                          Blue : in System.Address;
                          Failed : in System.Address) return Glib.Gulong;
       pragma Import (C, Internal, "gdk_color_context_get_pixel_from_palette");
-      Local_Failed : Glib.Gint;
+      Local_Failed : aliased Glib.Gint;
    begin
       Pixel := Internal (CC => Get_Object (CC),
                          Red => Color.Red'Address,

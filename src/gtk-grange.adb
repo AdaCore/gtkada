@@ -81,9 +81,12 @@ package body Gtk.GRange is
          Jump_Perc : in System.Address)
          return         Gint;
       pragma Import (C, Internal, "gtk_range_default_htrough_click");
-
+      Jump : aliased Gfloat := Jump_Perc;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
-      Result := Internal (Get_Object (The_Range), X, Y, Jump_Perc'Address);
+      Result := Internal (Get_Object (The_Range), X, Y, Jump'Address);
+      Jump_Perc := Jump;
    end Default_Htrough_Click;
 
    ---------------------
@@ -136,8 +139,12 @@ package body Gtk.GRange is
          return Gint;
       pragma Import (C, Internal, "gtk_range_default_vtrough_click");
 
+      Jump : aliased Gfloat := Jump_Perc;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
-      Result := Internal (Get_Object (The_Range), X, Y, Jump_Perc'Address);
+      Result := Internal (Get_Object (The_Range), X, Y, Jump'Address);
+      Jump_Perc := Jump;
    end Default_Vtrough_Click;
 
    ---------------------
@@ -283,8 +290,12 @@ package body Gtk.GRange is
          return Gint;
       pragma Import (C, Internal, "gtk_range_trough_click");
 
+      Jump : aliased Gfloat := Jump_Perc;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
-      Result := Internal (Get_Object (The_Range), X, Y, Jump_Perc'Address);
+      Result := Internal (Get_Object (The_Range), X, Y, Jump'Address);
+      Jump_Perc := Jump;
    end Trough_Click;
 
    --------------

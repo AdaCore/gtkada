@@ -80,7 +80,7 @@ package body Gtk.Color_Selection is
                           Color    : in System.Address);
       pragma Import (C, Internal, "gtk_color_selection_set_color");
    begin
-      Internal (Get_Object (Colorsel), Color'Address);
+      Internal (Get_Object (Colorsel), Color (Color'First)'Address);
    end Set_Color;
 
    -----------------

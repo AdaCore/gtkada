@@ -32,6 +32,7 @@ with Gdk; use Gdk;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Util; use Gtk.Util;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Frame is
 
@@ -52,18 +53,14 @@ package body Gtk.Frame is
 
    procedure Initialize (Frame : access Gtk_Frame_Record'Class;
                          Label : in String := "") is
-      function Internal (Label  : in System.Address)
+      function Internal (Label  : in Interfaces.C.Strings.chars_ptr)
         return System.Address;
       pragma Import (C, Internal, "gtk_frame_new");
    begin
       if Label = "" then
-         Set_Object (Frame, Internal (System.Null_Address));
+         Set_Object (Frame, Internal (Interfaces.C.Strings.Null_Ptr));
       else
-         declare
-            Tmp : constant String := Label & Ascii.NUL;
-         begin
-            Set_Object (Frame, Internal (Tmp'Address));
-         end;
+         Set_Object (Frame, Internal (New_String (Label)));
       end if;
       Initialize_User_Data (Frame);
    end Initialize;

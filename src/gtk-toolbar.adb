@@ -32,6 +32,7 @@ with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
 with Gtk.Pixmap; use Gtk.Pixmap;
 with Gtk.Window; use Gtk.Window;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Toolbar is
 
@@ -54,7 +55,7 @@ package body Gtk.Toolbar is
          The_Type             : in Gint;
          Widget               : in System.Address;
          Text                 : in String;
-         Tooltip_Text         : in System.Address;
+         Tooltip_Text         : in chars_ptr;
          Tooltip_Private_Text : in String;
          Icon                 : in System.Address;
          Callback             : in System.Address;
@@ -62,11 +63,10 @@ package body Gtk.Toolbar is
          return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_append_element");
       Stub : Gtk.Widget.Gtk_Widget_Record;
-      TT_S : constant String := Tooltip_Text & Ascii.NUL;
-      TT   : System.Address := TT_S'Address;
+      TT : chars_ptr := New_String (Tooltip_Text);
    begin
       if Tooltip_Text'Length = 0 then
-         TT := System.Null_Address;
+         TT := Null_Ptr;
       end if;
       return Gtk.Widget.Gtk_Widget
         (Get_User_Data (Internal (Get_Object (Toolbar),
@@ -94,7 +94,7 @@ package body Gtk.Toolbar is
       function Internal
         (Toolbar              : in System.Address;
          Text                 : in String;
-         Tooltip_Text         : in System.Address;
+         Tooltip_Text         : in chars_ptr;
          Tooltip_Private_Text : in String;
          Icon                 : in System.Address;
          Callback             : in System.Address;
@@ -102,11 +102,10 @@ package body Gtk.Toolbar is
          return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_append_item");
       Stub : Gtk.Button.Gtk_Button_Record;
-      TT_S : constant String := Tooltip_Text & Ascii.NUL;
-      TT   : System.Address := TT_S'Address;
+      TT   : chars_ptr := New_String (Tooltip_Text);
    begin
       if Tooltip_Text'Length = 0 then
-         TT := System.Null_Address;
+         TT := Null_Ptr;
       end if;
       return Gtk.Button.Gtk_Button
         (Get_User_Data (Internal (Get_Object (Toolbar),
@@ -142,14 +141,13 @@ package body Gtk.Toolbar is
       procedure Internal
         (Toolbar              : in System.Address;
          Widget               : in System.Address;
-         Tooltip_Text         : in System.Address;
+         Tooltip_Text         : in chars_ptr;
          Tooltip_Private_Text : in String);
       pragma Import (C, Internal, "gtk_toolbar_append_widget");
-      TT_S : constant String := Tooltip_Text & Ascii.NUL;
-      TT   : System.Address := TT_S'Address;
+      TT   : chars_ptr := New_String (Tooltip_Text);
    begin
       if Tooltip_Text'Length = 0 then
-         TT := System.Null_Address;
+         TT := Null_Ptr;
       end if;
       Internal (Get_Object (Toolbar),
                 Get_Object (Widget),
@@ -223,7 +221,7 @@ package body Gtk.Toolbar is
          The_Type             : in Gint;
          Widget               : in System.Address;
          Text                 : in String;
-         Tooltip_Text         : in System.Address;
+         Tooltip_Text         : in chars_ptr;
          Tooltip_Private_Text : in String;
          Icon                 : in System.Address;
          Callback             : in System.Address;
@@ -232,11 +230,10 @@ package body Gtk.Toolbar is
          return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_insert_element");
       Stub : Gtk.Widget.Gtk_Widget_Record;
-      TT_S : constant String := Tooltip_Text & Ascii.NUL;
-      TT   : System.Address := TT_S'Address;
+      TT   : chars_ptr := New_String (Tooltip_Text);
    begin
       if Tooltip_Text'Length = 0 then
-         TT := System.Null_Address;
+         TT := Null_Ptr;
       end if;
       return Gtk.Widget.Gtk_Widget
         (Get_User_Data (Internal (Get_Object (Toolbar),
@@ -267,7 +264,7 @@ package body Gtk.Toolbar is
       function Internal
         (Toolbar              : in System.Address;
          Text                 : in String;
-         Tooltip_Text         : in System.Address;
+         Tooltip_Text         : in chars_ptr;
          Tooltip_Private_Text : in String;
          Icon                 : in System.Address;
          Callback             : in System.Address;
@@ -276,11 +273,10 @@ package body Gtk.Toolbar is
          return                    System.Address;
       pragma Import (C, Internal, "gtk_toolbar_insert_item");
       Stub : Gtk.Button.Gtk_Button_Record;
-      TT_S : constant String := Tooltip_Text & Ascii.NUL;
-      TT   : System.Address := TT_S'Address;
+      TT   : chars_ptr := New_String (Tooltip_Text);
    begin
       if Tooltip_Text'Length = 0 then
-         TT := System.Null_Address;
+         TT := Null_Ptr;
       end if;
       return Gtk.Button.Gtk_Button
         (Get_User_Data (Internal (Get_Object (Toolbar),
@@ -322,15 +318,14 @@ package body Gtk.Toolbar is
       procedure Internal
         (Toolbar              : in System.Address;
          Widget               : in System.Address;
-         Tooltip_Text         : in System.Address;
+         Tooltip_Text         : in chars_ptr;
          Tooltip_Private_Text : in String;
          Position             : in Gint);
       pragma Import (C, Internal, "gtk_toolbar_insert_widget");
-      TT_S : constant String := Tooltip_Text & Ascii.NUL;
-      TT   : System.Address := TT_S'Address;
+      TT   : chars_ptr := New_String (Tooltip_Text);
    begin
       if Tooltip_Text'Length = 0 then
-         TT := System.Null_Address;
+         TT := Null_Ptr;
       end if;
       Internal
         (Get_Object (Toolbar), Get_Object (Widget), TT,
@@ -356,7 +351,7 @@ package body Gtk.Toolbar is
          The_Type             : in Gint;
          Widget               : in System.Address;
          Text                 : in String;
-         Tooltip_Text         : in System.Address;
+         Tooltip_Text         : in chars_ptr;
          Tooltip_Private_Text : in String;
          Icon                 : in System.Address;
          Callback             : in System.Address;
@@ -364,11 +359,10 @@ package body Gtk.Toolbar is
          return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_prepend_element");
       Stub : Gtk.Widget.Gtk_Widget_Record;
-      TT_S : constant String := Tooltip_Text & Ascii.NUL;
-      TT   : System.Address := TT_S'Address;
+      TT   : chars_ptr := New_String (Tooltip_Text);
    begin
       if Tooltip_Text'Length = 0 then
-         TT := System.Null_Address;
+         TT := Null_Ptr;
       end if;
       return Gtk.Widget.Gtk_Widget
         (Get_User_Data (Internal (Get_Object (Toolbar),
@@ -397,7 +391,7 @@ package body Gtk.Toolbar is
       function Internal
         (Toolbar              : in System.Address;
          Text                 : in String;
-         Tooltip_Text         : in System.Address;
+         Tooltip_Text         : in chars_ptr;
          Tooltip_Private_Text : in String;
          Icon                 : in System.Address;
          Callback             : in System.Address;
@@ -405,11 +399,10 @@ package body Gtk.Toolbar is
          return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_prepend_item");
       Stub : Gtk.Button.Gtk_Button_Record;
-      TT_S : constant String := Tooltip_Text & Ascii.NUL;
-      TT   : System.Address := TT_S'Address;
+      TT   : chars_ptr := New_String (Tooltip_Text);
    begin
       if Tooltip_Text'Length = 0 then
-         TT := System.Null_Address;
+         TT := Null_Ptr;
       end if;
       return Gtk.Button.Gtk_Button
         (Get_User_Data (Internal (Get_Object (Toolbar),
@@ -445,14 +438,13 @@ package body Gtk.Toolbar is
       procedure Internal
         (Toolbar              : in System.Address;
          Widget               : in System.Address;
-         Tooltip_Text         : in System.Address;
+         Tooltip_Text         : in chars_ptr;
          Tooltip_Private_Text : in String);
       pragma Import (C, Internal, "gtk_toolbar_prepend_widget");
-      TT_S : constant String := Tooltip_Text & Ascii.NUL;
-      TT   : System.Address := TT_S'Address;
+      TT   : chars_ptr := New_String (Tooltip_Text);
    begin
       if Tooltip_Text'Length = 0 then
-         TT := System.Null_Address;
+         TT := Null_Ptr;
       end if;
       Internal (Get_Object (Toolbar),
                 Get_Object (Widget),

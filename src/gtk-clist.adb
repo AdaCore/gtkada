@@ -65,7 +65,7 @@ package body Gtk.Clist is
                          return Gint;
       pragma Import (C, Internal, "gtk_clist_append");
    begin
-      return Internal (Get_Object (Clist), Text'Address);
+      return Internal (Get_Object (Clist), Text (Text'First)'Address);
    end Append;
 
    -----------
@@ -329,8 +329,8 @@ package body Gtk.Clist is
          Mask   : in System.Address)
          return      Gint;
       pragma Import (C, Internal, "gtk_clist_get_pixmap");
-      Pix : System.Address;
-      Msk : System.Address;
+      Pix : aliased System.Address;
+      Msk : aliased System.Address;
    begin
       Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
                                          Row,
@@ -365,9 +365,9 @@ package body Gtk.Clist is
          return       Gint;
       pragma Import (C, Internal, "gtk_clist_get_pixtext");
 
-      S    : Interfaces.C.Strings.chars_ptr;
-      Pix  : System.Address;
-      Msk : System.Address;
+      S    : aliased Interfaces.C.Strings.chars_ptr;
+      Pix  : aliased System.Address;
+      Msk  : aliased System.Address;
    begin
       Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
                                          Row,
@@ -461,12 +461,17 @@ package body Gtk.Clist is
          Column : in System.Address)
          return      Gint;
       pragma Import (C, Internal, "gtk_clist_get_selection_info");
+      Row_Out, Column_Out : aliased Gint;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
    begin
       Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
                                          X,
                                          Y,
-                                         Row'Address,
-                                         Column'Address));
+                                         Row_Out'Address,
+                                         Column_Out'Address));
+      Row := Row_Out;
+      Column := Column_Out;
    end Get_Selection_Info;
 
    ------------------------
@@ -499,7 +504,7 @@ package body Gtk.Clist is
          return      Gint;
       pragma Import (C, Internal, "gtk_clist_get_text");
       Is_Valid : Boolean;
-      S : Interfaces.C.Strings.chars_ptr;
+      S : aliased Interfaces.C.Strings.chars_ptr;
    begin
       Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
                                          Row,
@@ -578,7 +583,7 @@ package body Gtk.Clist is
                          return       System.Address;
       pragma Import (C, Internal, "gtk_clist_new_with_titles");
    begin
-      Set_Object (Widget, Internal (Columns, Titles'Address));
+      Set_Object (Widget, Internal (Columns, Titles (Titles'First)'Address));
       Initialize_User_Data (Widget);
    end Initialize;
 
@@ -595,7 +600,7 @@ package body Gtk.Clist is
                           Text  : in System.Address);
       pragma Import (C, Internal, "gtk_clist_insert");
    begin
-      Internal (Get_Object (Clist), Row, Text'Address);
+      Internal (Get_Object (Clist), Row, Text (Text'First)'Address);
    end Insert;
 
    ------------
@@ -648,7 +653,7 @@ package body Gtk.Clist is
                          return      Gint;
       pragma Import (C, Internal, "gtk_clist_prepend");
    begin
-      return Internal (Get_Object (Clist), Text'Address);
+      return Internal (Get_Object (Clist), Text (Text'First)'Address);
    end Prepend;
 
    ------------
@@ -734,7 +739,10 @@ package body Gtk.Clist is
          Color : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_background");
       use type Gdk.Color.Gdk_Color;
-      Color_A : System.Address := Color'Address;
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+      Color_A : System.Address := Col'Address;
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
@@ -939,7 +947,10 @@ package body Gtk.Clist is
          Color : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_foreground");
       use type Gdk.Color.Gdk_Color;
-      Color_A : System.Address := Color'Address;
+      Col : aliased Gdk.Color.Gdk_Color := Color;
+      --  Need to use a local variable to avoid problems with 'Address if
+      --  the parameter is passed in a register for instance.
+      Color_A : System.Address := Col'Address;
    begin
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
