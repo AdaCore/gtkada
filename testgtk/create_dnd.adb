@@ -439,19 +439,22 @@ package body Create_Dnd is
    --
    --  This is the general form for handlers of "drag_drop".
 
-   function Target_Drag_Drop (Widget : access Gtk_Widget_Record'Class;
-                              Args   : Gtk_Args)
-                             return Boolean
+   function Target_Drag_Drop
+     (Widget : access Gtk_Widget_Record'Class;
+      Args   : Gtk_Args) return Boolean
    is
       Context : Drag_Context := Drag_Context (To_C_Proxy (Args, 1));
-      X       : Gint := To_Gint (Args, 2);
-      Y       : Gint := To_Gint (Args, 3);
-      Time    : Guint := To_Guint (Args, 4);
+      X       : Gint         := To_Gint (Args, 2);
+      Y       : Gint         := To_Gint (Args, 3);
+      Time    : Guint        := To_Guint (Args, 4);
 
+      pragma Warnings (Off, Context);
       pragma Warnings (Off, X);
-      pragma Warnings (Off, Y);
+      pragma Warnings (Off, y);
+      pragma Warnings (Off, Time);
 
       use type Guint_List.Glist;
+
    begin
       Have_Drag := False;
       Put_Log ("Drop");
