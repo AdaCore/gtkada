@@ -149,7 +149,7 @@ package body Gtkada.MDI is
    --  pointer is within Corner_Size in both coordinates, then we are clicking
    --  on the corner)
 
-   Draw_Title_Bars : constant Boolean := False;
+   Draw_Title_Bars : constant Boolean := True;
    --  Whether title bars should be drawn when in maximized mode. They are
    --  always visible in non-maximized mode
 
