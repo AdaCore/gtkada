@@ -130,8 +130,22 @@ package Gtk.Widget is
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_remove_accelerator
    --  FIXME  --  need Gtk_Accelerator
 
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_event
-   --  FIXME  --   need Gdk_Event.
+
+   function Get_Allocation_Width (Widget : Gtk_Widget'Class)
+                                   return Guint;
+   --  mapping: Get_Allocation_Width gtkwidget.h GtkWidget->allocation.width
+   
+   function Get_Allocation_Height (Widget : Gtk_Widget'Class)
+                                   return Guint;
+   --  mapping: Get_Allocation_Height gtkwidget.h GtkWidget->allocation.height
+
+   function Get_Allocation_X (Widget : Gtk_Widget'Class)
+                                   return Gint;
+   --  mapping: Get_Allocation_X gtkwidget.h GtkWidget->allocation.x
+
+   function Get_Allocation_Y (Widget : Gtk_Widget'Class)
+                                   return Gint;
+   --  mapping: Get_Allocation_Y gtkwidget.h GtkWidget->allocation.y
 
    procedure Reparent (Widget : in out Gtk_Widget'Class;
                        New_Parent : in Gtk_Widget'Class);

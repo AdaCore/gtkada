@@ -117,6 +117,58 @@ package body Gtk.Widget is
       return To_Boolean (Internal (Get_Object (Widget)));
    end Drawable_Is_Set;
 
+   ---------------------------
+   -- Get_Allocation_Height --
+   ---------------------------
+
+   function Get_Allocation_Height (Widget : Gtk_Widget'Class)
+                                   return Guint
+   is
+      function Internal (Widget : System.Address) return Guint;
+      pragma Import (C, Internal, "ada_widget_allocation_height");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Allocation_Height;
+
+   --------------------------
+   -- Get_Allocation_Width --
+   --------------------------
+
+   function Get_Allocation_Width (Widget : Gtk_Widget'Class)
+                                  return Guint
+   is
+      function Internal (Widget : System.Address) return Guint;
+      pragma Import (C, Internal, "ada_widget_allocation_width");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Allocation_Width;
+
+   ----------------------
+   -- Get_Allocation_X --
+   ----------------------
+
+   function Get_Allocation_X (Widget : Gtk_Widget'Class)
+                              return Gint
+   is
+      function Internal (Widget : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_widget_allocation_x");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Allocation_X;
+
+   ----------------------
+   -- Get_Allocation_Y --
+   ----------------------
+
+   function Get_Allocation_Y (Widget : Gtk_Widget'Class)
+                              return Gint
+   is
+      function Internal (Widget : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_widget_allocation_y");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Allocation_Y;
+
    -------------------------------------
    -- Get_Default_Motion_Notify_Event --
    -------------------------------------
