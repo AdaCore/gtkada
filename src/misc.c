@@ -47,6 +47,10 @@
 #include <gtk/gtkwidget.h>
 
 #include <gtk/gtktreemodel.h>
+#include <gtk/gtktreestore.h>
+#include <gtk/gtktreesortable.h>
+#include <gtk/gtkenums.h>
+
 
 void
 ada_tree_model_get_value
@@ -268,8 +272,10 @@ ada_initialize_class_record
       class_info->base_finalize = NULL;
       class_info->class_init = NULL;
       class_info->class_finalize = NULL;
-      class_info->class_data = NULL; /* Would be nice to use this for the set_property???*/
-      class_info->instance_size = query.instance_size;  /* ??? should be parameter */
+      class_info->class_data = NULL;
+         /* Would be nice to use this for the set_property???*/
+      class_info->instance_size = query.instance_size;
+         /* ??? should be parameter */
       class_info->n_preallocs = 0;
       class_info->instance_init = NULL;
       class_info->value_table = NULL;
@@ -322,8 +328,9 @@ ada_initialize_class_record
 	      + sizeof (void*));
 
       virtual = (gpointer*) malloc (num_virtual_functions * sizeof (gpointer));
-      *((gpointer**)((char*)klass + query.class_size + nsignals * sizeof (void*)))
-	= virtual;
+      *((gpointer**)((char*)klass
+		     + query.class_size
+		     + nsignals * sizeof (void*))) = virtual;
 
       for (j = 0; j < num_virtual_functions; j++) {
 	virtual [j] = virtual_functions [j];
@@ -1081,12 +1088,12 @@ gint ada_gdk_event_get_direction (GdkEvent * event)
     return ada_gdk_invalid_gint_value;
 
   switch (event->type)
-    { 
+    {
     case GDK_SCROLL:
       return event->scroll.direction;
     default:
       break;
-    } 
+    }
   return ada_gdk_invalid_gint_value;
 }
 
@@ -3504,4 +3511,19 @@ ada_pango_underline_error (void)
 #else
   return PANGO_UNDERLINE_SINGLE;
 #endif
+}
+
+/******************************************
+ ** Handling of tree Freeze/Thaw         **
+ ******************************************/
+
+gint ada_gtk_tree_view_freeze_sort (GtkTreeStore* tree) {
+  gint save = tree->sort_column_id;
+  tree->sort_column_id = -2;
+  return save;
+}
+
+void ada_gtk_tree_view_thaw_sort (GtkTreeStore* tree, gint id) {
+  gtk_tree_sortable_set_sort_column_id
+    (GTK_TREE_SORTABLE (tree), id, tree->order);
 }
