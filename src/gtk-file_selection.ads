@@ -70,6 +70,9 @@ package Gtk.File_Selection is
                            Filename        : in String);
    --  Highlight the given file in the dialog.
    --  Note that this does not close the dialog.
+   --  You can also use this procedure to select the directory to be displayed
+   --  in the dialog. Along with Complete, this allows you to set some filters
+   --  in the dialog.
 
    function Get_Filename (File_Selection : access Gtk_File_Selection_Record)
                          return String;
