@@ -12,11 +12,11 @@ much in place.
 To test our toolkit, the testgtk program has been almost completely 
 re-implemented and is also distributed.
 
-LSM entry follows :
-Begin3
+LSM entry follows:
+Begin
 Title:  GtkAda
 Version: 1.2.5
-Entered-date: 15DEC99
+Entered-date: 05JAN00
 Description: Ada95 graphical toolkit based on Gtk+ (version >= 1.2.2) 
 Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade Win32
 Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
@@ -33,12 +33,12 @@ New features in 1.2.5 include:
 - New scheme for callbacks. This is much more complete than the old scheme,
   and will permit for instance the creation of callbacks that return a
   value (such as for the signal "delete_event"). It is also much more
-  systematic than the old one (less packages need to be instanciated).
+  systematic than the old one (less packages need to be instantiated).
 - Gate has been updated to Glade 0.5.5, plus various bug fixes
-- A new examples shows how to do some flicker-free animation with GtkAda
+- A new example shows how to do some flicker-free animation with GtkAda
 - Tested on HP-UX 11.00
 - Tested on SCO UnixWare 7.1
-- Add partial support for Gtk_Ctree in Gate/Dgate
+- Complete Gtk+ support for Gate/Dgate
 
 New features in 1.2.4 include:
 
@@ -55,28 +55,28 @@ New features in 1.2.4 include:
 - Handling of signals has been modified, so that GtkAda now tests that the
   handler provided are compatible argument-wise with what is expected in gtk+.
   The same test is done when emitting a signal.
-- New code generation in GATE:
+- New code generation in Gate:
     * take advantage of the composite types
     * generate a child package for callbacks related to each composite widget
     * generate comments in callback stubs to separate cleanly each callback,
       and to avoid occasional merge failures
 - Tested on AiX 4.3.2
-- New widgets supported by GATE/DGATE: Gtk_List, Gtk_Clist (partially),
+- New widgets supported by Gate/Dgate: Gtk_List, Gtk_Clist (partially),
   Gtk_Paned, Gtk_Viewport, Gtk_Vscrollbar
-- Fixed GATE support for Gtk_Frame (Label handling)
+- Fixed Gate support for Gtk_Frame (Label handling)
 - Simple minded support for XML attributes in Glib.XML
 
 New features in 1.2.3 include:
 
-- Minor bug fixes in GATE code generation
+- Minor bug fixes in Gate code generation
 - Cosmetic fixes
 - Screen_Width_MM & Screen_Height_MM are now bound in Gdk.Main
-- New widgets supported by GATE/DGATE: Gtk_Button_*Box, Gtk_Entry
+- New widgets supported by Gate/Dgate: Gtk_Button_*Box, Gtk_Entry
 
 New features in 1.2.2 include:
 
-- GATE/DGATE now generate a warning when encountering an unsupported widget
-- Most widgets and properties are now supported by GATE/DGATE (see the
+- Gate/Dgate now generate a warning when encountering an unsupported widget
+- Most widgets and properties are now supported by Gate/Dgate (see the
   documentation for a list of unsupported widgets)
 - Minor bug fixes
 - Tested on Solaris/x86
@@ -100,8 +100,8 @@ New features in 1.2.0 include:
 - All 1.2.0 widgets are now bound (including Gtk.Ctree)
 - New directory structure
 - First version of the documentation
-- Code generation simplified in GATE
-- New widgets supported by GATE/DGATE
+- Code generation simplified in Gate
+- New widgets supported by Gate/Dgate
 - Support for Accelerators in widgets
 - New examples in the example/ directory: how to create a widget directly
   in Ada (both composite widgets and widgets from scratch); a simple editor
