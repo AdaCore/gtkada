@@ -1,3 +1,4 @@
+with Ada.Text_IO; use Ada.Text_IO;
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
@@ -45,6 +46,7 @@ with Gdk.Window_Attr;  use Gdk.Window_Attr;
 with Gtk;              use Gtk;
 with Gtk.Accel_Label;  use Gtk.Accel_Label;
 with Gtk.Arguments;    use Gtk.Arguments;
+with Gtk.Bin;          use Gtk.Bin;
 with Gtk.Box;          use Gtk.Box;
 with Gtk.Button;       use Gtk.Button;
 with Gtk.Check_Menu_Item; use Gtk.Check_Menu_Item;
@@ -245,6 +247,11 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class;
       Event  : Gdk_Event) return Boolean;
    --  The pointer has left the mouse.
+
+   function Get_Tab_Label
+     (Child : access MDI_Child_Record'Class) return Gtk_Label;
+   --  Return the label displayed in the notebook tab that contains Child, or
+   --  null if Child is not in a notebook.
 
    procedure Reposition_Handles (M : access MDI_Window_Record'Class);
    --  Recompute the position of the four handles on each side of the MDI.
@@ -459,9 +466,23 @@ package body Gtkada.MDI is
       Set_Has_Window (MDI, True);
 
       MDI.Title_Layout := Create_Pango_Layout (MDI, "Ap"); -- compute width
+      MDI.Background_Color := Parse (Default_MDI_Background_Color);
+      Alloc (Get_Default_Colormap, MDI.Background_Color);
+
+      MDI.Title_Bar_Color := Parse (Default_Title_Bar_Color);
+      Alloc (Get_Default_Colormap, MDI.Title_Bar_Color);
+
+      MDI.Focus_Title_Color := Parse (Default_Title_Bar_Focus_Color);
+      Alloc (Get_Default_Colormap, MDI.Focus_Title_Color);
+
+      MDI.Highlight_Style := Copy (Get_Style (MDI));
+
       Configure (MDI,
-                 Opaque_Resize => True,
-                 Opaque_Move   => True);
+                 Opaque_Resize     => True,
+                 Opaque_Move       => True,
+                 Background_Color  => MDI.Background_Color,
+                 Title_Bar_Color   => MDI.Title_Bar_Color,
+                 Focus_Title_Color => MDI.Focus_Title_Color);
 
       Gtk.Object.Initialize_Class_Record
         (MDI,
@@ -479,15 +500,6 @@ package body Gtkada.MDI is
          Type_Name    => "GtkAdaMDI_Layout");
 
       Set_Dnd_Target (MDI_Window (MDI).Layout);
-
-      MDI.Background_Color := Parse (Default_MDI_Background_Color);
-      Alloc (Get_Default_Colormap, MDI.Background_Color);
-
-      MDI.Title_Bar_Color := Parse (Default_Title_Bar_Color);
-      Alloc (Get_Default_Colormap, MDI.Title_Bar_Color);
-
-      MDI.Focus_Title_Color := Parse (Default_Title_Bar_Focus_Color);
-      Alloc (Get_Default_Colormap, MDI.Focus_Title_Color);
 
       Put (MDI, MDI.Layout, Drop_Area_Thickness, Drop_Area_Thickness);
 
@@ -582,6 +594,17 @@ package body Gtkada.MDI is
 
       if Focus_Title_Color /= Null_Color then
          MDI.Focus_Title_Color := Focus_Title_Color;
+
+         Set_Foreground
+           (MDI.Highlight_Style, State_Normal, MDI.Focus_Title_Color);
+         Set_Foreground
+           (MDI.Highlight_Style, State_Active, MDI.Focus_Title_Color);
+         Set_Foreground
+           (MDI.Highlight_Style, State_Selected, MDI.Focus_Title_Color);
+         Set_Foreground
+           (MDI.Highlight_Style, State_Prelight, MDI.Focus_Title_Color);
+         Set_Foreground
+           (MDI.Highlight_Style, State_Insensitive, MDI.Focus_Title_Color);
       end if;
 
       if Realized_Is_Set (MDI) then
@@ -2359,6 +2382,31 @@ package body Gtkada.MDI is
       return Child.Short_Title.all;
    end Get_Short_Title;
 
+   -------------------
+   -- Get_Tab_Label --
+   -------------------
+
+   function Get_Tab_Label
+     (Child : access MDI_Child_Record'Class) return Gtk_Label
+   is
+      Note : Gtk_Notebook;
+   begin
+      if Child.State = Docked then
+         Note := Child.MDI.Docks (Child.Dock);
+
+      elsif Child.State = Normal
+        and then Children_Are_Maximized (Child.MDI)
+      then
+         Note := Child.MDI.Docks (None);
+      end if;
+
+      if Note /= null then
+         return Gtk_Label (Get_Child (Gtk_Bin (Get_Tab_Label (Note, Child))));
+      else
+         return null;
+      end if;
+   end Get_Tab_Label;
+
    ---------------
    -- Set_Title --
    ---------------
@@ -2374,6 +2422,7 @@ package body Gtkada.MDI is
       --  the Title parameter is in fact Child.Title
 
       Label           : Gtk_Accel_Label;
+      Tab             : Gtk_Label;
    begin
       The_Title := new String'(Title);
 
@@ -2389,21 +2438,9 @@ package body Gtkada.MDI is
       Child.Title := The_Title;
       Child.Short_Title := The_Short_Title;
 
-      if Child.State = Docked then
-         Set_Text
-           (Gtk_Label
-            (Get_Child (Gtk_Event_Box
-               (Get_Tab_Label (Child.MDI.Docks (Child.Dock), Child)))),
-            Child.Short_Title.all);
-
-      elsif Child.State = Normal
-        and then Children_Are_Maximized (Child.MDI)
-      then
-         Set_Text
-           (Gtk_Label
-            (Get_Child (Gtk_Event_Box
-               (Get_Tab_Label (Child.MDI.Docks (None), Child)))),
-            Child.Short_Title.all);
+      Tab := Get_Tab_Label (Child);
+      if Tab /= null then
+         Set_Text (Tab, Child.Short_Title.all);
       end if;
 
       --  Update the menu, if it exists
@@ -2701,6 +2738,8 @@ package body Gtkada.MDI is
 
       Set_Flags (C.Initial, Can_Focus);
       Grab_Focus (C.Initial);
+
+      Highlight_Child (C, False);
 
       Emit_By_Name_Child (Get_Object (C.MDI), "child_selected" & ASCII.NUL,
                           Get_Object (C));
@@ -4248,6 +4287,62 @@ package body Gtkada.MDI is
          return null;
       end if;
    end Get;
+
+   ---------------------
+   -- Highlight_Child --
+   ---------------------
+
+   procedure Highlight_Child
+     (Child : access MDI_Child_Record; Highlight : Boolean := True)
+   is
+      Tab     : Gtk_Widget;
+      Note    : Gtk_Notebook;
+      Label   : Gtk_Label;
+      Style   : Gtk_Style;
+   begin
+      if (Child.State = Normal
+          and then Children_Are_Maximized (Child.MDI))
+      then
+         Note := Child.MDI.Docks (None);
+
+      elsif Child.State = Docked then
+         Note := Child.MDI.Docks (Child.Dock);
+      end if;
+
+      Label := Get_Tab_Label (Child);
+
+      if Highlight then
+         --  Do nothing if:
+         --    - the child is in the layout and has the focus
+         --    - the child is in a notebook and is in the current page
+
+         if (Child.State = Normal
+             and then not Children_Are_Maximized (Child.MDI)
+             and then Child.MDI.Selected_Child = MDI_Child (Child))
+         then
+            return;
+         end if;
+
+         if Note /= null
+           and then Get_Current_Page (Note) = Page_Num (Note, Child)
+         then
+            return;
+         end if;
+
+         Style := Child.MDI.Highlight_Style;
+      else
+         Style := Get_Style (Child.MDI);
+      end if;
+
+      Put_Line ("Highlight_Child: " & Child.Title.all & " " & Highlight'Img);
+
+      Tab := Get_Child (Child.Menu_Item);
+      Set_Style (Tab, Style);
+
+      if Label /= null then
+         Set_Style (Label, Style);
+      end if;
+   end Highlight_Child;
 
    ------------------------
    -- Desktop_Was_Loaded --

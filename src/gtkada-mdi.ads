@@ -42,6 +42,7 @@ with Gtk.Main;
 with Gtk.Menu;
 with Gtk.Notebook;
 with Gtk.Menu_Item;
+with Gtk.Style;
 with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
 with Gtk.Widget;
@@ -212,6 +213,17 @@ package Gtkada.MDI is
    function Get_State (Child : access MDI_Child_Record) return State_Type;
    --  Return the current state of the child
 
+   procedure Highlight_Child
+     (Child : access MDI_Child_Record; Highlight : Boolean := True);
+   --  Highlight the child until it is selected by the user.
+   --  The color of its menu label and of the text in the notebook tabs is
+   --  changed.
+   --  Nothing is done if the child is already fully visible (either in the
+   --  active page in one of the docks, or the child that has the selection in
+   --  the layout).
+   --  This is meant to be used as a graphical note to the user that the child
+   --  has been updated and the user should look at it.
+
    procedure Minimize_Child
      (Child : access MDI_Child_Record'Class; Minimize : Boolean);
    --  Change the minimized state of a child.
@@ -255,7 +267,6 @@ package Gtkada.MDI is
    --  you change the fact that Child can or cannot be docked. You need to get
    --  a new instance of the menu in that case.
 
-   --  Return the first child matching Tag
    -----------------------------------------
    -- MDI_Child and encapsulated children --
    -----------------------------------------
@@ -669,6 +680,10 @@ private
       --  True if destroying a floating window will put the child back in the
       --  MDI instead of destroying it. False if the child should be destroyed
       --  (provided it accepts so in its delete_event handler).
+
+      Highlight_Style : Gtk.Style.Gtk_Style;
+      --  Style to use to highlight the tabs and menus for the highlighted
+      --  children.
 
       Background_Color  : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Title_Bar_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
