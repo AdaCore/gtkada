@@ -62,18 +62,37 @@ package Gdk.Pixmap is
                                Fg     : in     Color.Gdk_Color;
                                Bg     : in     Color.Gdk_Color);
 
-   procedure Create_From_Xpm (Pixmap      : out Gdk_Pixmap;
-                              Window      : in  Gdk.Window.Gdk_Window'Class;
-                              Mask        : out Gdk.Bitmap.Gdk_Bitmap;
-                              Transparent : in  Gdk.Color.Gdk_Color;
-                              Filename    : in  String);
+   procedure Create_From_Xpm (Pixmap      :    out Gdk_Pixmap;
+                              Window      : in     Gdk.Window.Gdk_Window'Class;
+                              Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
+                              Transparent : in     Gdk.Color.Gdk_Color;
+                              Filename    : in     String);
+
+   procedure Create_From_Xpm (Pixmap      :    out Gdk_Pixmap;
+                              Window      : in     Gdk.Window.Gdk_Window'Class;
+                              Colormap    : in     Gdk.Color.Gdk_Colormap;
+                              Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
+                              Transparent : in     Gdk.Color.Gdk_Color;
+                              Filename    : in     String);
 
    procedure Create_From_Xpm_D
-     (Pixmap      : out Gdk_Pixmap;
-      Window      : in  Gdk.Window.Gdk_Window'Class;
-      Mask        : out Gdk.Bitmap.Gdk_Bitmap;
-      Transparent : in  Gdk.Color.Gdk_Color;
-      Data        : in  Interfaces.C.Strings.chars_ptr_array);
+     (Pixmap      :    out Gdk_Pixmap;
+      Window      : in     Gdk.Window.Gdk_Window'Class;
+      Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
+      Transparent : in     Gdk.Color.Gdk_Color;
+      Data        : in     Interfaces.C.Strings.chars_ptr_array);
+   --
+   --  FIXME: There should be a better type than chars_ptr_array...
+
+   procedure Create_From_Xpm_D
+     (Pixmap      :    out Gdk_Pixmap;
+      Window      : in     Gdk.Window.Gdk_Window'Class;
+      Colormap    : in     Gdk.Color.Gdk_Colormap;
+      Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
+      Transparent : in     Gdk.Color.Gdk_Color;
+      Data        : in     Interfaces.C.Strings.chars_ptr_array);
+   --
+   --  FIXME: There should be a better type than chars_ptr_array...
 
 
 private

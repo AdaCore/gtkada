@@ -59,11 +59,11 @@ package body Gdk.Pixmap is
    -- Create_From_Xpm --
    ---------------------
 
-   procedure Create_From_Xpm (Pixmap      : out Gdk_Pixmap;
-                              Window      : in  Gdk.Window.Gdk_Window'Class;
-                              Mask        : out Gdk.Bitmap.Gdk_Bitmap;
-                              Transparent : in  Gdk.Color.Gdk_Color;
-                              Filename    : in  String)
+   procedure Create_From_Xpm (Pixmap      :    out Gdk_Pixmap;
+                              Window      : in     Gdk.Window.Gdk_Window'Class;
+                              Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
+                              Transparent : in     Gdk.Color.Gdk_Color;
+                              Filename    : in     String)
    is
       function Internal (Window      : in System.Address;
                          Mask        : in System.Address;
@@ -71,7 +71,7 @@ package body Gdk.Pixmap is
                          Filename    : in String)
                          return           System.Address;
       pragma Import (C, Internal, "gdk_pixmap_create_from_xpm");
-      Tmp : System.Address;
+      Tmp : System.Address := Get_Object (Mask);
    begin
       Set_Object (Pixmap, Internal (Get_Object (Window), Tmp'Address,
                                     Transparent'Address,
@@ -79,30 +79,90 @@ package body Gdk.Pixmap is
       Set_Object (Mask, Tmp);
    end Create_From_Xpm;
 
+
+   ---------------------
+   -- Create_From_Xpm --
+   ---------------------
+
+   procedure Create_From_Xpm (Pixmap      :    out Gdk_Pixmap;
+                              Window      : in     Gdk.Window.Gdk_Window'Class;
+                              Colormap    : in     Gdk.Color.Gdk_Colormap;
+                              Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
+                              Transparent : in     Gdk.Color.Gdk_Color;
+                              Filename    : in     String) is
+      function Internal (Window      : in System.Address;
+                         Colormap    : in System.Address;
+                         Mask        : in System.Address;
+                         Transparent : in System.Address;
+                         Filename    : in String)
+                         return System.Address;
+      pragma Import (C, Internal, "gdk_pixmap_colormap_create_from_xpm");
+      Tmp : System.Address := Get_Object (Mask);
+   begin
+      Set_Object (Pixmap, Internal (Window => Get_Object (Window),
+                                    Colormap => Get_Object (Colormap),
+                                    Mask => Tmp'Address,
+                                    Transparent => Transparent'Address,
+                                    Filename => Filename & Ascii.NUL));
+      Set_Object (Mask, Tmp);
+   end Create_From_Xpm;
+
+
    -----------------------
    -- Create_From_Xpm_D --
    -----------------------
 
    procedure Create_From_Xpm_D
-     (Pixmap      : out Gdk_Pixmap;
-      Window      : in  Gdk.Window.Gdk_Window'Class;
-      Mask        : out Gdk.Bitmap.Gdk_Bitmap;
-      Transparent : in  Gdk.Color.Gdk_Color;
-      Data        : in  Interfaces.C.Strings.chars_ptr_array)
+     (Pixmap      :    out Gdk_Pixmap;
+      Window      : in     Gdk.Window.Gdk_Window'Class;
+      Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
+      Transparent : in     Gdk.Color.Gdk_Color;
+      Data        : in     Interfaces.C.Strings.chars_ptr_array)
    is
       function Internal (Window      : in System.Address;
                          Mask        : in System.Address;
                          Transparent : in System.Address;
-                         Data        : in System.Address)
+                         Data        : in Interfaces.C.Strings.chars_ptr_array)
                          return           System.Address;
       pragma Import (C, Internal, "gdk_pixmap_create_from_xpm_d");
       Tmp : System.Address;
    begin
-      Set_Object (Pixmap, Internal (Get_Object (Window), Tmp'Address,
+      Set_Object (Pixmap, Internal (Get_Object (Window),
+                                    Tmp'Address,
                                     Transparent'Address,
-                                    Data (0)'Address));
+                                    Data));
       Set_Object (Mask, Tmp);
    end Create_From_Xpm_D;
+
+
+   -----------------------
+   -- Create_From_Xpm_D --
+   -----------------------
+
+   procedure Create_From_Xpm_D
+     (Pixmap      :    out Gdk_Pixmap;
+      Window      : in     Gdk.Window.Gdk_Window'Class;
+      Colormap    : in     Gdk.Color.Gdk_Colormap;
+      Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
+      Transparent : in     Gdk.Color.Gdk_Color;
+      Data        : in     Interfaces.C.Strings.chars_ptr_array) is
+      function Internal (Window      : in System.Address;
+                         Colormap    : in System.Address;
+                         Mask        : in System.Address;
+                         Transparent : in System.Address;
+                         Data        : in Interfaces.C.Strings.chars_ptr_array)
+                         return System.Address;
+      pragma Import (C, Internal, "gdk_pixmap_colormap_create_from_xpm_d");
+      Tmp : System.Address := Get_Object (Mask);
+   begin
+      Set_Object (Pixmap, Internal (Get_Object (Window),
+                                    Get_Object (Colormap),
+                                    Tmp'Address,
+                                    Transparent'Address,
+                                    Data));
+      Set_Object (Mask, Tmp);
+   end Create_From_Xpm_D;
+
 
    ---------------
    --  Gdk_New  --
