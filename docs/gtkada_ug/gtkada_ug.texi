@@ -60,6 +60,7 @@ unmodified in any copy.
 * Object-oriented features::
 * Support for Glade the Gtk GUI builder::
 * A complete example::
+* Bibliography::
 
  --- The Detailed Node Listing ---
 
@@ -529,6 +530,45 @@ Note that @code{Callbacks} must be declared at the library level
 to ensure its lifetime and the presence of its variables during the execution
 of the application. This is needed so that GtkAda can take care of freeing
 memory.
+
+Although GtkAda tries to check whether you gave enough arguments to your
+callback handlers, it is of course easier if you know what gtk+ expects!
+The easiest way to find out is to look at the C header files. Each
+widget is described in its own C file, and has two C structures
+associated with it. One of them is the "class" structure, and contains a
+serie of pointers to functions. Each of these functions has the same
+name as the signal name, and the arguments are the one that are expected
+in the handlers.
+
+For instance, consider the following extract from gtkbutton.h:
+@example
+@b{struct} _GtkButtonClass
+@{
+  GtkBinClass        parent_class;
+  
+  @b{void} (* pressed)  (GtkButton *button);
+  @b{void} (* released) (GtkButton *button);
+  @b{void} (* clicked)  (GtkButton *button);
+  @b{void} (* enter)    (GtkButton *button);
+  @b{void} (* leave)    (GtkButton *button);
+@};
+@end example
+
+This means that the Gtk_Button widget redefines five new signals, called
+respectively @code{"pressed"}, @code{"release"}, ...
+Each of them expects a handler looking like:
+
+@example
+   procedure Pressed_Handler (Button : access Gtk_Button_Record;
+                              Data   : ...);
+@end example
+
+The type of Data is given by one of the generic parameters to the
+packages in Gtk.Signal.
+
+For more information on how signals work, we recommand having a look at
+the book [1].
+
 
 @node Start an application with GtkAda
 @chapter Start an application with GtkAda
@@ -3032,6 +3072,26 @@ main window.
 @c @end cartouche
 @c @end group
 @end example
+
+@c --------------------------------------------------------------
+@node Bibliography
+@chapter Bibliography
+
+We recommand the following documents. Most of them were written with C
+in mind, but should be easily adapted most of the time after you read
+the rest of this document.
+
+@itemize @bullet
+@item [1] "Gtk+/Gome Application Development" -- Havoc Pennington
+This book, by one of the main authors of the the GNOME environment,
+describes in detail some of the inner mechanism of gtk+, including the
+signal handling, and a complete description of all the widgets and all
+the events found in @code{Gdk.Event}.
+
+It is worth noting that this book has been published under the Open
+Publication License. You can get an electronic copy of it at
+@url{http://www.opencontent.org/}.
+@end itemize
 
 @contents
 @bye
