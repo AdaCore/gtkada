@@ -5502,23 +5502,30 @@ package body Gtkada.MDI is
 
          Add (Root, "Maximized",
               Boolean'Image (MDI.Central.Children_Are_Maximized));
-         Add (Root, "Bottom_Dock_Height",
-              Gint'Image
-                (Gint (Get_Allocation_Height (MDI.Docks (Bottom)))
-                 + Y_Thickness (Get_Style (MDI.Docks (Bottom))) + 1));
-         Add (Root, "Top_Dock_Height",
-              Gint'Image
-                (Gint (Get_Allocation_Height (MDI.Docks (Top)))
-                 + Y_Thickness (Get_Style (MDI.Docks (Top))) + 1));
-         Add (Root, "Left_Dock_Width",
-              Gint'Image
-                (Gint (Get_Allocation_Width (MDI.Docks (Left)))
-                 + X_Thickness (Get_Style (MDI.Docks (Left))) + 1));
-         Add (Root, "Right_Dock_Width",
-              Gint'Image
-                (Gint (Get_Allocation_Width (MDI.Docks (Right)))
-                 + X_Thickness (Get_Style (MDI.Docks (Right))) + 1));
-
+         if Get_Child_Visible (MDI.Docks (Bottom)) then
+            Add (Root, "Bottom_Dock_Height",
+                 Gint'Image
+                   (Gint (Get_Allocation_Height (MDI.Docks (Bottom)))
+                    + Y_Thickness (Get_Style (MDI.Docks (Bottom))) + 1));
+         end if;
+         if Get_Child_Visible (MDI.Docks (Top)) then
+            Add (Root, "Top_Dock_Height",
+                 Gint'Image
+                   (Gint (Get_Allocation_Height (MDI.Docks (Top)))
+                    + Y_Thickness (Get_Style (MDI.Docks (Top))) + 1));
+         end if;
+         if Get_Child_Visible (MDI.Docks (Left)) then
+            Add (Root, "Left_Dock_Width",
+                 Gint'Image
+                   (Gint (Get_Allocation_Width (MDI.Docks (Left)))
+                    + X_Thickness (Get_Style (MDI.Docks (Left))) + 1));
+         end if;
+         if Get_Child_Visible (MDI.Docks (Right)) then
+            Add (Root, "Right_Dock_Width",
+                 Gint'Image
+                   (Gint (Get_Allocation_Width (MDI.Docks (Right)))
+                    + X_Thickness (Get_Style (MDI.Docks (Right))) + 1));
+         end if;
 
          --  Look through all the notebooks, and save the widgets in the
          --  notebook order.
