@@ -25,6 +25,7 @@ with Gtk.Glade; use Gtk.Glade;
 with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
 with Ada.Command_Line; use Ada.Command_Line;
 with Ada.Text_IO; use Ada.Text_IO;
+with GNAT.OS_Lib;
 
 procedure Gate is
    N            : Node_Ptr;
@@ -38,6 +39,7 @@ procedure Gate is
       Put_Line ("Usage: gate.ex switches project-file");
       New_Line;
       Put_Line ("  -p    Output the name of the project and exit");
+      GNAT.OS_Lib.OS_Exit (1);
    end Usage;
 
 begin
@@ -63,5 +65,13 @@ begin
       else
          Generate (N);
       end if;
+
+      GNAT.OS_Lib.OS_Exit (0);
    end if;
+
+exception
+   when others =>
+      Put_Line ("GATE: Internal error. This usually means that the specified"
+      Put_Line ("project file has some syntax errors.");
+      GNAT.OS_Lib.OS_Exit (2);
 end Gate;
