@@ -102,38 +102,6 @@ package body Gdk.Region is
       Region := Internal;
    end Gdk_New;
 
-   -------------
-   -- Gdk_Xor --
-   -------------
-
-   procedure Gdk_Xor
-     (Result  :     out Gdk_Region;
-      Source1 : in      Gdk_Region;
-      Source2 : in      Gdk_Region)
-   is
-      function Internal (Source1, Source2 : in Gdk_Region) return Gdk_Region;
-      pragma Import (C, Internal, "gdk_regions_xor");
-
-   begin
-      Result := Internal (Source1, Source2);
-   end Gdk_Xor;
-
-   ---------------
-   -- Intersect --
-   ---------------
-
-   procedure Intersect
-     (Result  :    out Gdk_Region;
-      Source1 : in     Gdk_Region;
-      Source2 : in     Gdk_Region)
-   is
-      function Internal (Source1, Source2 : in Gdk_Region) return Gdk_Region;
-      pragma Import (C, Internal, "gdk_regions_intersect");
-
-   begin
-      Result := Internal (Source1, Source2);
-   end Intersect;
-
    --------------
    -- Point_In --
    --------------
@@ -189,59 +157,5 @@ package body Gdk.Region is
    begin
       return Internal (Region, Rectangle'Address);
    end Rect_In;
-
-   ---------------
-   -- Substract --
-   ---------------
-
-   procedure Substract
-     (Result  :     out Gdk_Region;
-      Source1 : in      Gdk_Region;
-      Source2 : in      Gdk_Region)
-   is
-      function Internal (Source1, Source2 : in Gdk_Region) return Gdk_Region;
-      pragma Import (C, Internal, "gdk_regions_subtract");
-
-   begin
-      Result := Internal (Source1, Source2);
-   end Substract;
-
-   -----------
-   -- Union --
-   -----------
-
-   procedure Union
-     (Result  :     out Gdk_Region;
-      Source1 : in      Gdk_Region;
-      Source2 : in      Gdk_Region)
-   is
-      function Internal (Source1, Source2 : in Gdk_Region) return Gdk_Region;
-      pragma Import (C, Internal, "gdk_regions_union");
-
-   begin
-      Result := Internal (Source1, Source2);
-   end Union;
-
-   ---------------------
-   -- Union_With_Rect --
-   ---------------------
-
-   procedure Union_With_Rect
-     (Result :    out Gdk_Region;
-      Region : in     Gdk_Region;
-      Rect   : in     Rectangle.Gdk_Rectangle)
-   is
-      function Internal
-        (Region : in Gdk_Region;
-         Rect   : in System.Address) return Gdk_Region;
-      pragma Import (C, Internal, "gdk_region_union_with_rect");
-
-      Rectangle : aliased Gdk.Rectangle.Gdk_Rectangle := Rect;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
-
-   begin
-      Result := Internal (Region, Rectangle'Address);
-   end Union_With_Rect;
 
 end Gdk.Region;

@@ -72,32 +72,32 @@ package Gdk.Region is
       Dy     : in Gint);
 
    procedure Union_With_Rect
-     (Result :    out Gdk_Region;
-      Region : in     Gdk_Region;
+     (Region : in out Gdk_Region;
       Rect   : in     Rectangle.Gdk_Rectangle);
 
    procedure Intersect
-     (Result  :    out Gdk_Region;
-      Source1 : in     Gdk_Region;
+     (Source1 : in out Gdk_Region;
       Source2 : in     Gdk_Region);
 
    procedure Union
-     (Result  :     out Gdk_Region;
-      Source1 : in      Gdk_Region;
-      Source2 : in      Gdk_Region);
+     (Source1 : in out Gdk_Region;
+      Source2 : in     Gdk_Region);
 
    procedure Substract
-     (Result  :     out Gdk_Region;
-      Source1 : in      Gdk_Region;
-      Source2 : in      Gdk_Region);
+     (Source1 : in out Gdk_Region;
+      Source2 : in     Gdk_Region);
 
    procedure Gdk_Xor
-     (Result  :     out Gdk_Region;
-      Source1 : in      Gdk_Region;
-      Source2 : in      Gdk_Region);
+     (Source1 : in out Gdk_Region;
+      Source2 : in     Gdk_Region);
 
 private
    Null_Region : constant Gdk_Region := null;
    pragma Import (C, Offset, "gdk_region_offset");
    pragma Import (C, Shrink, "gdk_region_shrink");
+   pragma Import (C, Union_With_Rect, "gdk_region_union_with_rect");
+   pragma Import (C, Intersect, "gdk_region_intersect");
+   pragma Import (C, Union, "gdk_region_union");
+   pragma Import (C, Substract, "gdk_region_substract");
+   pragma Import (C, Gdk_Xor, "gdk_region_xor");
 end Gdk.Region;
