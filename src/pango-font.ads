@@ -30,6 +30,7 @@ with Glib; use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with Pango.Enums;
+with System;
 
 package Pango.Font is
 
@@ -112,8 +113,12 @@ package Pango.Font is
    --  use properties
 
    pragma Import (C, Get_Type, "pango_font_get_type");
+
+   function Internal_Copy (F : Pango_Font_Description) return System.Address;
+   pragma Import (C, Internal_Copy, "pango_font_description_copy");
+
    package Desc_Properties is new Generic_Internal_Boxed_Property
-     (Pango_Font_Description, Get_Type);
+     (Pango_Font_Description, Get_Type, Internal_Copy);
 
    type Property_Font_Description is new Desc_Properties.Property;
 
