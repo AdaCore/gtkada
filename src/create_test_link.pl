@@ -1,13 +1,16 @@
 #! /usr/local/bin/perl
 
-foreach (<gtk*.ads>)
+foreach (<g*.ads>)
 {
-    s/\.ads$//;                # remove the .ads extension
-    s/-/\./;                   # change the dashes into dots
-    s/(\w)(\w+)/\u$1$2/m;      # Uppercase the first letters of all words.
-    s/_(\w)/_\u$1/;            # Uppercase the first letters after _
+    if (/g(lib|dk|tk)/)
+    {
+	s/\.ads$//;                # remove the .ads extension
+	s/-/\./g;                  # change the dashes into dots
+	s/(\w+)/\u$1/g;            # Uppercase the first letters of all words.
+	s/_(\w)/_\u$1/g;           # Uppercase the first letters after _
 
-    print "with " . $_ . ";\n";    # output the result
+	print "with " . $_ . ";\n";    # output the result
+    }
 }
 
 print << "EOF"
