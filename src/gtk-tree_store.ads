@@ -233,7 +233,7 @@ package Gtk.Tree_Store is
    procedure Thaw_Sort
      (Tree      : access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class;
       Column_Id : Gint);
-   --  Thaw a freezed tree_view. Column_Id should be the value returned by
+   --  Thaw a frozen tree_view. Column_Id should be the value returned by
    --  the corresponding call to Freeze_Sort.
 
    -------------
