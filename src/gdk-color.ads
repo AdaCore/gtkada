@@ -199,7 +199,8 @@ package Gdk.Color is
    --  - "color_name" which can be any color name defined in the file rgb.txt
    --    of the user's system. You should always check that Wrong_Color was not
    --    raised, in case the color was not known on the user's system. This
-   --    string is case insensitive.
+   --    string is case insensitive. Color names are not supported on Windows
+   --    systems.
 
    function Equal (Colora, Colorb : Gdk_Color) return Boolean;
    --  True if the Red, Green and Blue components of both colors are equal.
