@@ -18,22 +18,22 @@
  */
 
 
-#ifndef __GTK_COMBO_BOX_H__
-#define __GTK_COMBO_BOX_H__
+#ifndef __GTK_EXTRA_COMBO_BOX_H__
+#define __GTK_EXTRA_COMBO_BOX_H__
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#define GTK_COMBO_BOX(obj)			GTK_CHECK_CAST (obj, gtk_combobox_get_type (), GtkComboBox)
-#define GTK_COMBO_BOX_CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, gtk_combobox_get_type (), GtkComboBoxClass)
-#define GTK_IS_COMBO_BOX(obj)       GTK_CHECK_TYPE (obj, gtk_combobox_get_type ())
+#define GTK_EXTRA_COMBO_BOX(obj)			GTK_CHECK_CAST (obj, gtk_extra_combobox_get_type (), GtkExtraComboBox)
+#define GTK_EXTRA_COMBO_BOX_CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, gtk_extra_combobox_get_type (), GtkExtraComboBoxClass)
+#define GTK_EXTRA_IS_COMBO_BOX(obj)       GTK_CHECK_TYPE (obj, gtk_extra_combobox_get_type ())
 
-typedef struct _GtkComboBox		GtkComboBox;
-typedef struct _GtkComboBoxClass	GtkComboBoxClass;
+typedef struct _GtkExtraComboBox	GtkExtraComboBox;
+typedef struct _GtkExtraComboBoxClass	GtkExtraComboBoxClass;
 
 /* you should access only the entry and list fields directly */
-struct _GtkComboBox {
+struct _GtkExtraComboBox {
 	GtkHBox hbox;
 
 	GtkWidget *button;
@@ -43,15 +43,15 @@ struct _GtkComboBox {
 	GtkWidget *frame;
 };
 
-struct _GtkComboBoxClass {
+struct _GtkExtraComboBoxClass {
 	GtkHBoxClass parent_class;
 };
 
-GtkType      gtk_combobox_get_type              (void);
+GtkType      gtk_extra_combobox_get_type              (void);
 
-GtkWidget *gtk_combobox_new                   (void);
+GtkWidget *gtk_extra_combobox_new                   (void);
 
-void	   gtk_combobox_hide_popdown_window   (GtkComboBox *combobox);
+void	   gtk_extra_combobox_hide_popdown_window   (GtkExtraComboBox *combobox);
 
 #ifdef __cplusplus
 }

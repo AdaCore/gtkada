@@ -27,19 +27,19 @@
 #include <gtk/gtkwindow.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkframe.h>
-#include "gtkcombobox.h"
+#include "gtkextracombobox.h"
 
-static void         gtk_combobox_class_init      (GtkComboBoxClass *klass);
-static void         gtk_combobox_init            (GtkComboBox      *combobox);
+static void         gtk_combobox_class_init      (GtkExtraComboBoxClass *klass);
+static void         gtk_combobox_init            (GtkExtraComboBox      *combobox);
 static void         gtk_combobox_destroy         (GtkObject     *combobox);
-static void         gtk_combobox_get_pos         (GtkComboBox      *combobox, 
+static void         gtk_combobox_get_pos         (GtkExtraComboBox      *combobox, 
                                                	  gint          *x, 
                                                   gint          *y, 
                                                   gint          *height, 
                                                   gint          *width);
-static void         gtk_combobox_popup_display   (GtkComboBox *combobox);
+static void         gtk_combobox_popup_display   (GtkExtraComboBox *combobox);
 static gint	    gtk_combobox_arrow_press     (GtkWidget * widget, 
-					  	  GtkComboBox * combobox);
+					  	  GtkExtraComboBox * combobox);
 static gint         gtk_combobox_button_press    (GtkWidget     *widget,
 				                  GdkEvent      *event,
                                                   gpointer data);
@@ -52,7 +52,7 @@ static void         gtk_combobox_size_request    (GtkWidget     *widget,
 static GtkHBoxClass *parent_class = NULL;
 
 static void
-gtk_combobox_class_init (GtkComboBoxClass * klass)
+gtk_combobox_class_init (GtkExtraComboBoxClass * klass)
 {
   GtkObjectClass *object_class;
   GtkWidgetClass *widget_class;
@@ -70,10 +70,10 @@ gtk_combobox_class_init (GtkComboBoxClass * klass)
 static void
 gtk_combobox_destroy (GtkObject * combobox)
 {
-  if (GTK_COMBO_BOX (combobox)->popwin) {
-     gtk_widget_destroy (GTK_COMBO_BOX (combobox)->popwin);
-     gtk_widget_unref (GTK_COMBO_BOX (combobox)->popwin);
-     GTK_COMBO_BOX (combobox)->popwin = NULL;
+  if (GTK_EXTRA_COMBO_BOX (combobox)->popwin) {
+     gtk_widget_destroy (GTK_EXTRA_COMBO_BOX (combobox)->popwin);
+     gtk_widget_unref (GTK_EXTRA_COMBO_BOX (combobox)->popwin);
+     GTK_EXTRA_COMBO_BOX (combobox)->popwin = NULL;
   }
 
   if (GTK_OBJECT_CLASS (parent_class)->destroy)
@@ -82,7 +82,7 @@ gtk_combobox_destroy (GtkObject * combobox)
 
 
 static void
-gtk_combobox_get_pos (GtkComboBox * combobox, gint * x, gint * y, gint * height, gint * width)
+gtk_combobox_get_pos (GtkExtraComboBox * combobox, gint * x, gint * y, gint * height, gint * width)
 {
   GtkBin *popwin;
   GtkWidget *widget;
@@ -132,7 +132,7 @@ gtk_combobox_get_pos (GtkComboBox * combobox, gint * x, gint * y, gint * height,
 
 
 static void
-gtk_combobox_popup_display (GtkComboBox * combobox)
+gtk_combobox_popup_display (GtkExtraComboBox * combobox)
 {
   gint height, width, x, y;
   GtkWindow* toplevel;
@@ -155,7 +155,7 @@ gtk_combobox_popup_display (GtkComboBox * combobox)
 }
 
 void
-gtk_combobox_hide_popdown_window(GtkComboBox *combobox)
+gtk_extra_combobox_hide_popdown_window(GtkExtraComboBox *combobox)
 {
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(combobox->arrow), FALSE);
 
@@ -165,7 +165,7 @@ gtk_combobox_hide_popdown_window(GtkComboBox *combobox)
 }
 
 static gint
-gtk_combobox_arrow_press (GtkWidget * widget, GtkComboBox * combobox)
+gtk_combobox_arrow_press (GtkWidget * widget, GtkExtraComboBox * combobox)
 {
   GtkToggleButton *button;
 
@@ -184,7 +184,7 @@ gtk_combobox_arrow_press (GtkWidget * widget, GtkComboBox * combobox)
 
 
 static void
-gtk_combobox_init (GtkComboBox * combobox)
+gtk_combobox_init (GtkExtraComboBox * combobox)
 {
   GtkWidget *event_box;
   GdkCursor *cursor;
@@ -239,7 +239,7 @@ gtk_combobox_init (GtkComboBox * combobox)
 }
 
 GtkType
-gtk_combobox_get_type ()
+gtk_extra_combobox_get_type ()
 {
   static GtkType combobox_type = 0;
 
@@ -247,9 +247,9 @@ gtk_combobox_get_type ()
     {
       GtkTypeInfo combobox_info =
       {
-	"GtkComboBox",
-	sizeof (GtkComboBox),
-	sizeof (GtkComboBoxClass),
+	"GtkExtraComboBox",
+	sizeof (GtkExtraComboBox),
+	sizeof (GtkExtraComboBoxClass),
 	(GtkClassInitFunc) gtk_combobox_class_init,
 	(GtkObjectInitFunc) gtk_combobox_init,
 	NULL,
@@ -262,11 +262,11 @@ gtk_combobox_get_type ()
 }
 
 GtkWidget *
-gtk_combobox_new ()
+gtk_extra_combobox_new ()
 {
-  GtkComboBox *combobox;
+  GtkExtraComboBox *combobox;
 
-  combobox = gtk_type_new (gtk_combobox_get_type ());
+  combobox = gtk_type_new (gtk_extra_combobox_get_type ());
 
   return(GTK_WIDGET(combobox));
 
@@ -292,7 +292,7 @@ gtk_combobox_button_press (GtkWidget * widget, GdkEvent * event, gpointer data)
   gtk_widget_hide (widget);
   gtk_grab_remove (widget);
   gdk_pointer_ungrab (GDK_CURRENT_TIME);
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(GTK_COMBO_BOX(data)->arrow), FALSE);
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(GTK_EXTRA_COMBO_BOX(data)->arrow), FALSE);
 
   return TRUE;
 }
@@ -301,16 +301,16 @@ static void
 gtk_combobox_size_request (GtkWidget *widget,
 			   GtkRequisition *requisition)
 {
-  GtkComboBox *combobox;
+  GtkExtraComboBox *combobox;
   GtkRequisition box_requisition;
 
   g_return_if_fail (widget != NULL);
-  g_return_if_fail (GTK_IS_COMBO_BOX (widget));
+  g_return_if_fail (GTK_EXTRA_IS_COMBO_BOX (widget));
   g_return_if_fail (requisition != NULL);
 
   GTK_WIDGET_CLASS (parent_class)->size_request (widget, &box_requisition);
 
-  combobox=GTK_COMBO_BOX(widget);
+  combobox=GTK_EXTRA_COMBO_BOX(widget);
 /*
   size = MIN(box_requisition.width, box_requisition.height);
   size = MIN(combobox->button->requisition.width, box_requisition.height);
@@ -328,16 +328,16 @@ static void
 gtk_combobox_size_allocate (GtkWidget     *widget,
 			 GtkAllocation *allocation)
 {
-  GtkComboBox *combobox;
+  GtkExtraComboBox *combobox;
   GtkAllocation button_allocation;
 
   g_return_if_fail (widget != NULL);
-  g_return_if_fail (GTK_IS_COMBO_BOX (widget));
+  g_return_if_fail (GTK_EXTRA_IS_COMBO_BOX (widget));
   g_return_if_fail (allocation != NULL);
 
   GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
 
-  combobox = GTK_COMBO_BOX (widget);
+  combobox = GTK_EXTRA_COMBO_BOX (widget);
 
   button_allocation = combobox->button->allocation;
 /*
