@@ -458,16 +458,17 @@ package body Gdk.Event is
    ----------------
 
    function Get_String  (Event : in Gdk_Event) return String is
-      function Internal (Event : in Gdk_Event)
-                         return Interfaces.C.Strings.chars_ptr;
+      function Internal
+        (Event : in Gdk_Event) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gdk_event_get_string");
       use type Interfaces.C.Strings.chars_ptr;
-      Str : constant Interfaces.C.Strings.chars_ptr
-        := Internal (Event);
+
+      Str : constant Interfaces.C.Strings.chars_ptr := Internal (Event);
    begin
       if Str = Interfaces.C.Strings.Null_Ptr then
          raise Invalid_Field;
       end if;
+
       return Interfaces.C.Strings.Value (Str);
    end Get_String;
 
