@@ -144,8 +144,10 @@ package body Gtk.Glade is
    procedure Print_Foot_Page (N : Node_Ptr; File : File_Type);
    --  Print end of each "create" function to file.
 
-   procedure Print_Var (N : Node_Ptr; File : File_Type);
+   procedure Print_Var
+     (N : Node_Ptr; File : File_Type; First : Boolean := True);
    --  Print variable declarations for a given "create" function to file.
+   --  First is only used internally.
 
    -----------
    -- Equal --
@@ -262,14 +264,14 @@ package body Gtk.Glade is
 
       loop
          exit when M = null;
-
+         P := Get_Field (M, "name");
          Q := Get_Field (M, "class");
          Put_Line ("with " & To_Ada (Q.all, '.') & "; use " &
            To_Ada (Q.all, '.') & ";");
+         Put_Line ("with Create_" & To_Ada (P.all) & ";");
          M := M.Next;
       end loop;
 
-      Put_Line ("with Create_" & To_Ada (P.all) & ";");
       New_Line;
       Put_Line ("procedure " & To_Ada (R.all) & " is");
 
@@ -277,6 +279,7 @@ package body Gtk.Glade is
 
       loop
          exit when M = null;
+         P := Get_Field (M, "name");
          Q := Get_Field (M, "class");
          Put_Line ("   " & To_Ada (P.all) & " : " & To_Ada (Q.all) & ";");
          M := M.Next;
@@ -286,17 +289,28 @@ package body Gtk.Glade is
       Put_Line ("begin");
       Put_Line ("   Gtk.Main.Set_Locale;");
       Put_Line ("   Gtk.Main.Init;");
-      Put_Line ("   " & To_Ada (P.all) & " := Create_" & To_Ada (P.all) & ";");
-      Put_Line ("   Widget.Show (Gtk_Widget (" & To_Ada (P.all) & "));");
-      Put_Line ("   Gtk.Main.Main;");
-      Put_Line ("end " & To_Ada (R.all) & ";");
-      New_Line;
 
       M := N.Child.Next;
 
       loop
          exit when M = null;
+         P := Get_Field (M, "name");
+         Put_Line ("   " & To_Ada (P.all) & " := Create_" &
+           To_Ada (P.all) & ";");
+         Put_Line ("   Widget.Show (Gtk_Widget (" & To_Ada (P.all) & "));");
+         M := M.Next;
+      end loop;
+
+      Put_Line ("   Gtk.Main.Main;");
+      Put_Line ("end " & To_Ada (R.all) & ";");
+
+      M := N.Child.Next;
+
+      loop
+         exit when M = null;
+         P := Get_Field (M, "name");
          Q := Get_Field (M, "class");
+         New_Line;
          Put_Line ("with " & To_Ada (Q.all, '.') & "; use " &
            To_Ada (Q.all, '.') & ";");
          New_Line;
@@ -310,7 +324,9 @@ package body Gtk.Glade is
    -- Print_Var --
    ---------------
 
-   procedure Print_Var (N : Node_Ptr; File : File_Type) is
+   procedure Print_Var
+     (N : Node_Ptr; File : File_Type; First : Boolean := True)
+   is
       P : Node_Ptr := N;
       Q : Node_Ptr;
 
@@ -322,9 +338,11 @@ package body Gtk.Glade is
             if Q /= null then
                Put_Line (File, "   " & To_Ada (Q.Value.all) & " : " &
                  To_Ada (Get_Field (P, "class").all) & ";");
-               Print_Var (P.Child, File);
+               Print_Var (P.Child, File, False);
             end if;
          end if;
+
+         exit when First;
 
          P := P.Next;
       end loop;
