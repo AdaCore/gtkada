@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --                   DGATE - GtkAda Components                       --
 --                                                                   --
---                      Copyright (C) 1999                           --
+--                      Copyright (C) 2000                           --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- Dynagate is free software;  you can redistribute it and/or modify --
@@ -17,13 +17,13 @@
 -- if not,  write to the  Free Software Foundation, Inc.,  59 Temple --
 -- Place - Suite 330, Boston, MA 02111-1307, USA.                    --
 -----------------------------------------------------------------------
- 
+
 --  DGATE stands for Dynamic GATE.
 --  Parse a Glade's XML project file, declare the required callbacks and
 --  create the widgets associated with the project file.
 --  DGATE can very easily be used in conjunction with GLADE to test during
 --  the development.
- 
+
 with Ada.Command_Line; use Ada.Command_Line;
 with Ada.Text_IO; use Ada.Text_IO;
 with Glib.Glade;
@@ -36,7 +36,7 @@ with DGate_Callbacks;
 with Unchecked_Conversion;
 with GNAT.OS_Lib;
 with GNAT.Command_Line; use GNAT.Command_Line;
- 
+
 procedure DGate is
 
    use Glib;
@@ -49,16 +49,16 @@ procedure DGate is
    for String_Access'Size use Standard'Address_Size;
 
    N        : Node_Ptr;
-   Id       : Guint;
+   Id       : Gtk.Main.Timeout_Handler_Id;
    Timeout  : Guint32 := 0;
    Filename : String_Ptr;
- 
+
    function To_Address is new Unchecked_Conversion
      (String_Access, System.Address);
- 
+
    procedure Register_Signals (N : Node_Ptr);
    --  Call Set_Signal for each signal declared in the N tree.
- 
+
    procedure Usage;
 
    procedure Register_Signals (N : Node_Ptr) is
@@ -66,7 +66,7 @@ procedure DGate is
       Name    : String_Ptr;
       Handler : String_Ptr;
       S       : String_Access;
- 
+
    begin
       if N.Tag.all = "signal" then
          Name := Get_Field (N, "name");
@@ -80,11 +80,11 @@ procedure DGate is
             return;
          end if;
       end if;
- 
+
       if N.Child /= null then
          Register_Signals (N.Child);
          P := N.Child.Next;
- 
+
          while P /= null loop
             Register_Signals (P);
             P := P.Next;
