@@ -95,23 +95,6 @@ package body Gtk.Container is
       return Internal (Get_Object (Container));
    end Child_Type;
 
-   -----------
-   -- Focus --
-   -----------
-
-   function Focus
-     (Container : access Gtk_Container_Record;
-      Direction : Gtk_Direction_Type) return Boolean
-   is
-      function Internal
-        (Container : System.Address;
-         Direction : Gtk_Direction_Type) return Gint;
-      pragma Import (C, Internal, "gtk_container_focus");
-
-   begin
-      return Boolean'Val (Internal (Get_Object (Container), Direction));
-   end Focus;
-
    ------------
    -- Forall --
    ------------

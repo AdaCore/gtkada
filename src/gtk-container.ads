@@ -30,7 +30,7 @@
 --  <description>
 --  Base class for widgets that have children.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gdk.Event;
 with Glib.Properties;
@@ -185,11 +185,6 @@ package Gtk.Container is
 
    procedure Check_Resize (Container : access Gtk_Container_Record);
    --  Emit the "check_resize" signal
-
-   function Focus
-     (Container : access Gtk_Container_Record;
-      Direction : Gtk.Enums.Gtk_Direction_Type) return Boolean;
-   --  Emit the "focus" signal
 
    procedure Set_Focus_Child
      (Container : access Gtk_Container_Record;
