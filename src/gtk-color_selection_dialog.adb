@@ -144,10 +144,16 @@ package body Gtk.Color_Selection_Dialog is
    -- Generate --
    --------------
 
-   procedure Generate (N : in Node_Ptr; File   : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
    begin
-      Gen_New (N, "Color_Selection_Dialog", Get_Field (N, "title").all,
-        File => File, Delim => '"');
+      if Gettext_Support (N) then
+         Gen_New (N, "Color_Selection_Dialog", Get_Field (N, "title").all,
+           File => File, Prefix => "-""", Postfix => """");
+      else
+         Gen_New (N, "Color_Selection_Dialog", Get_Field (N, "title").all,
+           File => File, Prefix => """", Postfix => """");
+      end if;
+
       Window.Generate (N, File);
    end Generate;
 

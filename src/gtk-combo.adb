@@ -221,7 +221,8 @@ package body Gtk.Combo is
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
       S : String_Ptr;
       First, Last : Natural;
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Top_Widget : Node_Ptr := Find_Top_Widget (N);
+      Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
       Child : Node_Ptr := Find_Tag (N.Child, "widget");
 
    begin
@@ -251,8 +252,14 @@ package body Gtk.Combo is
                Last := S'Last + 1;
             end if;
 
-            Put_Line (File, "   String_List.Append (" &
-              To_Ada (Get_Field (N, "name").all) & "_Items, """ &
+            Put (File, "   String_List.Append (" &
+              To_Ada (Get_Field (N, "name").all) & "_Items, ");
+
+            if Gettext_Support (Top_Widget) then
+               Put (File, '-');
+            end if;
+
+            Put_Line (File, '"' &
               S (First .. Last - 1) & """);");
 
             exit when Last >= S'Last;
