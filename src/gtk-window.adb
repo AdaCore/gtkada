@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with Gdk.Event;        use Gdk.Event;
 with Gdk.Types;        use Gdk.Types;
 with Gdk.Window;       use Gdk.Window;
 with Gtk.Accel_Group;  use Gtk.Accel_Group;
@@ -234,6 +235,10 @@ package body Gtk.Window is
 
    begin
       Set_Object (Window, Internal (The_Type));
+
+      if Get_Follow_Events then
+         Add_Events (Window, Pointer_Motion_Mask);
+      end if;
    end Initialize;
 
    --------------------

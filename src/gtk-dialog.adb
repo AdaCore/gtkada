@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with Gdk.Event;  use Gdk.Event;
 with Gtk.Window; use Gtk.Window;
 
 package body Gtk.Dialog is
@@ -96,6 +97,10 @@ package body Gtk.Dialog is
 
    begin
       Set_Object (Dialog, Internal);
+
+      if Get_Follow_Events then
+         Add_Events (Dialog, Pointer_Motion_Mask);
+      end if;
    end Initialize;
 
    procedure Initialize
@@ -119,6 +124,10 @@ package body Gtk.Dialog is
       else
          Set_Object
            (Dialog, Internal (Title & ASCII.NUL, Get_Object (Parent), Flags));
+      end if;
+
+      if Get_Follow_Events then
+         Add_Events (Dialog, Pointer_Motion_Mask);
       end if;
    end Initialize;
 
