@@ -98,6 +98,21 @@ package Gtk.Enums is
    --  See Gtk.Ctree.Set_Expander_Style for more details.
    for Gtk_Ctree_Expander_Style'Size use Gint'Size;
 
+   type Gtk_Delete_Type is
+     (Delete_Chars,
+      Delete_Word_Ends,
+      --  Delete only the portion of the word to the left/right of the cursor
+      --  if we are in the middle of a word.
+      Delete_Words,
+      Gtk_Delete_Display_Lines,
+      Gtk_Delete_Display_Line_Ends,
+      Gtk_Delete_Paragraph_Ends,
+      --  Delete until end of line ???
+      Gtk_Delete_Paragraphs,
+      --  Delete current line ???
+      Gtk_Delete_Whitespace);
+   for Gtk_Delete_Type'Size use Gint'Size;
+
    type Gtk_Direction_Type is
      (Dir_Tab_Forward,
       Dir_Tab_Backward,
@@ -167,7 +182,15 @@ package Gtk.Enums is
       Scroll_Step_Forward,
       Scroll_Page_Backward,
       Scroll_Page_Forward,
-      Scroll_Jump);
+      Scroll_Jump,
+      Scroll_Step_Up,
+      Scroll_Step_Down,
+      Scroll_Page_Up,
+      Scroll_Page_Down,
+      Scroll_Step_Left,
+      Scroll_Step_Right,
+      Scroll_Page_Left,
+      Scroll_Page_Right);
    for Gtk_Scroll_Type'Size use Gint'Size;
 
    type Gtk_Selection_Mode is
@@ -198,6 +221,12 @@ package Gtk.Enums is
 
    type Gtk_Submenu_Placement is (Top_Bottom, Left_Right);
    for Gtk_Submenu_Placement'Size use Gint'Size;
+
+   type Gtk_Text_Direction is
+     (Text_Dir_None,
+      Text_Dir_Ltr,
+      Text_Dir_Rtl);
+   for Gtk_Text_Direction'Size use Gint'Size;
 
    type Gtk_Text_Window_Type is
      (Text_Window_Private,
@@ -247,10 +276,11 @@ package Gtk.Enums is
      (Win_Pos_None,
       Win_Pos_Center,
       Win_Pos_Mouse,
-      Win_Pos_Center_Always);
+      Win_Pos_Center_Always,
+      Win_Pos_Center_On_Parent);
    for Gtk_Window_Position'Size use Gint'Size;
 
-   type Gtk_Window_Type is (Window_Toplevel, Window_Dialog, Window_Popup);
+   type Gtk_Window_Type is (Window_Toplevel, Window_Popup);
    for Gtk_Window_Type'Size use Gint'Size;
 
    type Gtk_Wrap_Mode is
