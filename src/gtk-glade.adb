@@ -39,7 +39,7 @@ with Gtk.Clist;
 --  with Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog;
 with Gtk.Combo;
---  with Gtk.Ctree;
+with Gtk.Ctree;
 --  with Gtk.Curve;
 with Gtk.Dialog;
 with Gtk.Drawing_Area;
@@ -446,10 +446,10 @@ package body Gtk.Glade is
                         end if;
                      end if;
 
-                     --  Declare an array of strings for each Clist with
+                     --  Declare an array of strings for each Clist/Ctree with
                      --  a "columns" field.
 
-                     if S.all = "GtkCList" then
+                     if S.all = "GtkCList" or else S.all = "GtkCTree" then
                         S := Get_Field (P, "columns");
 
                         if S /= null then
@@ -709,8 +709,8 @@ begin
       Gtk.Color_Selection_Dialog.Generate'Access));
    SHT.Set (new String '("GtkCombo"),
      (Gtk.Combo.Generate'Access, Gtk.Combo.Generate'Access));
-   --  SHT.Set (new String '("GtkCtree"),
-   --    (Gtk.Ctree.Generate'Access, Gtk.Ctree.Generate'Access));
+   SHT.Set (new String '("GtkCTree"),
+     (Gtk.Ctree.Generate'Access, Gtk.Ctree.Generate'Access));
    --  SHT.Set (new String '("GtkCurve"),
    --    (Gtk.Curve.Generate'Access, Gtk.Curve.Generate'Access));
    SHT.Set (new String '("GtkDialog"),

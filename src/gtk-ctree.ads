@@ -33,6 +33,7 @@ with Gdk.Pixmap;
 with Glib; use Glib;
 with Glib.Glist;
 with Glib.Gnodes;
+with Gtk.Object;
 with Gtk.Clist;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Style;
@@ -140,17 +141,17 @@ package Gtk.Ctree is
 
    procedure Gtk_New (Widget      :    out Gtk_Ctree;
                       Titles      : in     Chars_Ptr_Array;
-                      Tree_Column : in     Gint);
+                      Tree_Column : in     Gint := 0);
    procedure Initialize (Widget      : access Gtk_Ctree_Record'Class;
                          Titles      : in     Chars_Ptr_Array;
-                         Tree_Column : in     Gint);
+                         Tree_Column : in     Gint := 0);
 
    procedure Gtk_New (Widget      :    out Gtk_Ctree;
                       Columns     : in     Gint;
-                      Tree_Column : in     Gint);
+                      Tree_Column : in     Gint := 0);
    procedure Initialize (Widget      : access Gtk_Ctree_Record'Class;
                          Columns     : in     Gint;
-                         Tree_Column : in     Gint);
+                         Tree_Column : in     Gint := 0);
 
    procedure Gtk_Select (Ctree : access  Gtk_Ctree_Record;
                          Node  : in      Gtk_Ctree_Node);
@@ -507,6 +508,13 @@ package Gtk.Ctree is
    --  The previous package implements the Row_Data stuff.
    --  !! Warning !! No type verification is made to check if you are
    --  using the appropriate function Get. This is your own responsability
+
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+   --  Gate internal function
+ 
+   procedure Generate (Ctree : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
 

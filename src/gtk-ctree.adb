@@ -390,7 +390,7 @@ package body Gtk.CTree is
 
    procedure Gtk_New (Widget      :    out Gtk_Ctree;
                       Titles      : in     Chars_Ptr_Array;
-                      Tree_Column : in     Gint)
+                      Tree_Column : in     Gint := 0)
    is
    begin
       Widget := new Gtk_Ctree_Record;
@@ -403,7 +403,7 @@ package body Gtk.CTree is
 
    procedure Gtk_New (Widget      :    out Gtk_Ctree;
                       Columns     : in     Gint;
-                      Tree_Column : in     Gint)
+                      Tree_Column : in     Gint := 0)
    is
    begin
       Widget := new Gtk_Ctree_Record;
@@ -430,7 +430,7 @@ package body Gtk.CTree is
 
    procedure Initialize (Widget      : access Gtk_Ctree_Record'Class;
                          Titles      : in     Chars_Ptr_Array;
-                         Tree_Column : in     Gint)
+                         Tree_Column : in     Gint := 0)
    is
       function Internal (Columns     : in Gint;
                          Tree_Column : in Gint;
@@ -449,7 +449,7 @@ package body Gtk.CTree is
 
    procedure Initialize (Widget      : access Gtk_Ctree_Record'Class;
                          Columns     : in     Gint;
-                         Tree_Column : in     Gint)
+                         Tree_Column : in     Gint := 0)
    is
       function Internal (Columns     : in Gint;
                          Tree_Column : in Gint)
@@ -1915,8 +1915,22 @@ package body Gtk.CTree is
                    C_Ctree_Func'Address,
                    Data => Local_Data'Address);
       end Pre_Recursive_To_Depth;
-
-
    end Row_Data;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type) is
+   begin
+      Clist.Generate (N, File);
+   end Generate;
+ 
+   procedure Generate
+     (Ctree : in out Gtk.Object.Gtk_Object; N : in Node_Ptr) is
+   begin
+      Clist.Generate (Ctree, N);
+   end Generate;
 
 end Gtk.CTree;

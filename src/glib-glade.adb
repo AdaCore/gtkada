@@ -333,7 +333,7 @@ package body Glib.Glade is
             Put (File, To_Ada (Top.all) & ".");
          end if;
 
-         Put (File, To_Ada (Get_Field (N, "name").all) & ", ");
+         Put (File, To_Ada (Cur.all) & ", ");
 
          if Delim /= ' ' then
             Put_Line (File, Delim & P.all & Delim & ");");
@@ -855,6 +855,8 @@ package body Glib.Glade is
    Special_Packages : constant Special_Packages_Type :=
      ((new String '("GtkRange"),      new String '("Gtk.GRange")),
       (new String '("GtkEntry"),      new String '("Gtk.GEntry")),
+      (new String '("GtkCTree"),      new String '("Gtk.Ctree")),
+      (new String '("GtkCList"),      new String '("Gtk.Clist")),
       (new String '("GtkHScale"),     new String '("Gtk.Scale")),
       (new String '("GtkVScale"),     new String '("Gtk.Scale")),
       (new String '("GtkHBox"),       new String '("Gtk.Box")),

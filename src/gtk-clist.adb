@@ -37,6 +37,7 @@ with Unchecked_Deallocation;
 with Unchecked_Conversion;
 with System;
 with Gdk; use Gdk;
+with Gtk.Ctree; use Gtk.Ctree;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Clist is
@@ -1134,6 +1135,18 @@ package body Gtk.Clist is
                 Horizontal);
    end Set_Shift;
 
+   ---------------------
+   -- Set_Show_Titles --
+   ---------------------
+
+   procedure Set_Show_Titles
+     (Clist : access Gtk_Clist_Record; Show : Boolean) is
+   begin
+      if Show then
+         Column_Titles_Show (Clist);
+      end if;
+   end Set_Show_Titles;
+
    --------------
    -- Set_Text --
    --------------
@@ -1397,29 +1410,50 @@ package body Gtk.Clist is
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
       package ICS renames Interfaces.C.Strings;
-      Columns : String_Ptr;
+      Columns, S : String_Ptr;
+      Cur : constant String_Ptr := Get_Field (N, "name");
+      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
 
    begin
       Columns := Get_Field (N, "columns");
 
-      if Columns /= null then
+      if not N.Specific_Data.Created and then Columns /= null then
          declare
             Titles : Chars_Ptr_Array
               (1 .. Interfaces.C.size_t'Value (Columns.all));
-            Name   : constant String :=
-              To_Ada (Get_Field (N, "name").all) & "_Titles";
+            Name   : constant String := To_Ada (Cur.all) & "_Titles";
          begin
             Build_Title_List (N, Titles);
             Output_Titles (Name, Titles, File);
-            Gen_New (N, "Clist", Columns.all, Name, File => File);
+
+            if Get_Field (N, "class").all = "GtkCTree" then
+               Gen_New (N, "Ctree", Name, File => File);
+            else
+               Gen_New (N, "Clist", Columns.all, Name, File => File);
+            end if;
          end;
-      else
-         Gen_New (N, "Clist", File => File);
       end if;
 
       Container.Generate (N, File);
+
       Gen_Set (N, "Clist", "selection_mode", File => File);
       Gen_Set (N, "Clist", "shadow_type", File => File);
+      Gen_Set (N, "Clist", "show_titles", File);
+
+      S := Get_Field (N, "column_widths");
+
+      if S /= null then
+         for J in 0 .. Gint'Value (Columns.all) - 1 loop
+            Put (File, "   Set_Column_Width (");
+
+            if Top /= Cur then
+               Put (File, To_Ada (Top.all) & ".");
+            end if;
+
+            Put_Line (File, To_Ada (Cur.all) & "," & Gint'Image (J) &
+              ", " & Get_Part (S.all, Integer (J + 1), ',') & ");");
+         end loop;
+      end if;
 
       if not N.Specific_Data.Has_Container then
          Gen_Call_Child (N, null, "Container", "Add", File => File);
@@ -1432,13 +1466,20 @@ package body Gtk.Clist is
    begin
       if not N.Specific_Data.Created then
          Columns := Get_Field (N, "columns");
+
          if Columns /= null then
             declare
                Titles : Chars_Ptr_Array
                  (1 .. Interfaces.C.size_t'Value (Columns.all));
             begin
                Build_Title_List (N, Titles);
-               Gtk_New (Gtk_Clist (Clist), Gint'Value (Columns.all), Titles);
+
+               if Get_Field (N, "class").all = "GtkCTree" then
+                  Gtk_New (Gtk_Ctree (Clist), Titles);
+               else
+                  Gtk_New (Gtk_Clist (Clist), Gint'Value (Columns.all),
+                    Titles);
+               end if;
             end;
 
             Set_Object (Get_Field (N, "name"), Clist);
@@ -1460,6 +1501,21 @@ package body Gtk.Clist is
       if S /= null then
          Set_Shadow_Type (Gtk_Clist (Clist),
            Gtk_Shadow_Type'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      S := Get_Field (N, "show_titles");
+
+      if S /= null then
+         Set_Show_Titles (Gtk_Clist (Clist), Boolean'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "column_widths");
+
+      if S /= null then
+         for J in 0 .. Gint'Value (Columns.all) - 1 loop
+            Set_Column_Width (Gtk_Clist (Clist), J,
+              Gint'Value (Get_Part (S.all, Integer (J + 1), ',')));
+         end loop;
       end if;
 
       if not N.Specific_Data.Has_Container then
