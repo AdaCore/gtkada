@@ -42,9 +42,4 @@ package Gtk.List_Item is
 private
    type Gtk_List_Item is new Gtk.Item.Gtk_Item with null record;
 
-   --  mapping: Deselect gtklistitem.h gtk_list_item_deselect
-   --  mapping: NOT_IMPLEMENTED gtklistitem.h gtk_list_item_get_type
-   --  mapping: Gtk_New gtklistitem.h gtk_list_item_new_with_label
-   --  mapping: Gtk_New gtklistitem.h gtk_list_item_new
-   --  mapping: Gtk_Select gtklistitem.h gtk_list_item_select
 end Gtk.List_Item;

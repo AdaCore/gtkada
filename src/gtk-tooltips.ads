@@ -51,13 +51,5 @@ private
 
    type Gtk_Tooltips is new Gtk.Data.Gtk_Data with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtktooltips.h gtk_tooltips_get_type
-   --  mapping: Gtk_New gtktooltips.h gtk_tooltips_new
-   --  mapping: Enable gtktooltips.h gtk_tooltips_enable
-   --  mapping: Disable gtktooltips.h gtk_tooltips_disable
-   --  mapping: Set_Delay gtktooltips.h gtk_tooltips_set_delay
-   --  mapping: Set_Tip gtktooltips.h gtk_tooltips_set_tip
-   --  mapping: NOT_IMPLEMENTED gtktooltips.h gtk_tooltips_set_colors
-   --  mapping: NOT_IMPLEMENTED gtktooltips.h gtk_tooltips_data_get
 
 end Gtk.Tooltips;

@@ -56,10 +56,4 @@ package Gtk.Aspect_Frame is
 private
    type Gtk_Aspect_Frame is new Gtk.Frame.Gtk_Frame with null record;
 
-   --  mapping: Get_Ratio gtkaspectframe.h GtkAspectFrame->ratio
-   --  mapping: NOT_IMPLEMENTED gtkaspectframe.h gtk_aspect_frame_get_type
-   --  mapping: Get_Xalign gtkaspectframe.h GtkAspectFrame->xalign
-   --  mapping: Get_Yalign gtkaspectframe.h GtkAspectFrame->yalign
-   --  mapping: Gtk_New gtkaspectframe.h gtk_aspect_frame_new
-   --  mapping: Set gtkaspectframe.h gtk_aspect_frame_set
 end Gtk.Aspect_Frame;

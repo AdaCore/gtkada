@@ -48,11 +48,4 @@ private
    type Gtk_Check_Menu_Item is new Gtk.Menu_Item.Gtk_Menu_Item
      with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtkcheckmenuitem.h gtk_check_menu_item_get_type
-   --  mapping: Gtk_New gtkcheckmenuitem.h gtk_check_menu_item_new_with_label
-   --  mapping: Gtk_New gtkcheckmenuitem.h gtk_check_menu_item_new
-   --  mapping: Set_Show_Toggle gtkcheckmenuitem.h \
-   --  mapping:      gtk_check_menu_item_set_show_toggle
-   --  mapping: Set_State gtkcheckmenuitem.h gtk_check_menu_item_set_state
-   --  mapping: Toggled gtkcheckmenuitem.h gtk_check_menu_item_toggled
 end Gtk.Check_Menu_Item;

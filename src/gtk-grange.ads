@@ -89,25 +89,4 @@ package Gtk.GRange is
 private
    type Gtk_Range is new Gtk.Widget.Gtk_Widget with null record;
 
-   --  mapping: Default_Hmotion gtkrange.h gtk_range_default_hmotion
-   --  mapping: Default_Hslider_Update gtkrange.h \
-   --  mapping:    gtk_range_default_hslider_update
-   --  mapping: Default_Htrough_Click gtkrange.h  \
-   --  mapping:    gtk_range_default_htrough_click
-   --  mapping: Default_Vmotion gtkrange.h gtk_range_default_vmotion
-   --  mapping: Default_Vslider_Update gtkrange.h \
-   --  mapping:    gtk_range_default_vslider_update
-   --  mapping: Default_Vtrough_Click gtkrange.h \
-   --  mapping:    gtk_range_default_vtrough_click
-   --  mapping: Draw_Background gtkrange.h gtk_range_draw_background
-   --  mapping: Draw_Slider gtkrange.h gtk_range_draw_slider
-   --  mapping: Draw_Step_Back gtkrange.h gtk_range_draw_step_back
-   --  mapping: Draw_Step_Forw gtkrange.h gtk_range_draw_step_forw
-   --  mapping: Draw_Trough gtkrange.h gtk_range_draw_trough
-   --  mapping: Get_Adjustment gtkrange.h gtk_range_get_adjustment
-   --  mapping: NOT_IMPLEMENTED gtkrange.h gtk_range_get_type
-   --  mapping: Set_Adjustment gtkrange.h gtk_range_set_adjustment
-   --  mapping: Set_Update_Policy gtkrange.h gtk_range_set_update_policy
-   --  mapping: Slider_Update gtkrange.h gtk_range_slider_update
-   --  mapping: Trough_Click gtkrange.h gtk_range_trough_click
 end Gtk.GRange;

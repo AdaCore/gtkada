@@ -43,8 +43,4 @@ package Gtk.Dialog is
 private
    type Gtk_Dialog is new Gtk.Window.Gtk_Window with null record;
 
-   --  mapping: Get_Action_Area gtkdialog.h GtkDialog->action_area
-   --  mapping: NOT_IMPLEMENTED gtkdialog.h gtk_dialog_get_type
-   --  mapping: Get_Vbox gtkdialog.h GtkDialog->vbox
-   --  mapping: Gtk_New gtkdialog.h gtk_dialog_new
 end Gtk.Dialog;

@@ -48,10 +48,4 @@ package Gtk.Tips_Query is
 private
    type Gtk_Tips_Query is new Gtk.Label.Gtk_Label with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtktipsquery.h gtk_tips_query_get_type
-   --  mapping: Gtk_New gtktipsquery.h gtk_tips_query_new
-   --  mapping: Set_Caller gtktipsquery.h gtk_tips_query_set_caller
-   --  mapping: Set_Labels gtktipsquery.h gtk_tips_query_set_labels
-   --  mapping: Start_Query gtktipsquery.h gtk_tips_query_start_query
-   --  mapping: Stop_Query gtktipsquery.h gtk_tips_query_stop_query
 end Gtk.Tips_Query;

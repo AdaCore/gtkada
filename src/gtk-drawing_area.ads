@@ -43,8 +43,5 @@ private
 
    type Gtk_Drawing_Area is new Gtk.Widget.Gtk_Widget with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtkdrawingarea.h gtk_drawing_area_get_type
-   --  mapping: Gtk_New gtkdrawingarea.h gtk_drawing_area_new
-   --  mapping: Size gtkdrawingarea.h gtk_drawing_area_size
 
 end Gtk.Drawing_Area;

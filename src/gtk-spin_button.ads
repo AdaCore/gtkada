@@ -77,20 +77,4 @@ package Gtk.Spin_Button is
 private
    type Gtk_Spin_Button is new Gtk.GEntry.Gtk_Entry with null record;
 
-   --  mapping: Construct gtkspinbutton.h gtk_spin_button_construct
-   --  mapping: Get_Adjustment gtkspinbutton.h gtk_spin_button_get_adjustment
-   --  mapping: NOT_IMPLEMENTED gtkspinbutton.h gtk_spin_button_get_type
-   --  mapping: Get_Value_As_Float gtkspinbutton.h \
-   --  mapping:    gtk_spin_button_get_value_as_float
-   --  mapping: Get_Value_As_Int gtkspinbutton.h \
-   --  mapping:    gtk_spin_button_get_value_as_int
-   --  mapping: Gtk_New gtkspinbutton.h gtk_spin_button_new
-   --  mapping: Set_Adjustment gtkspinbutton.h gtk_spin_button_set_adjustment
-   --  mapping: Set_Digits gtkspinbutton.h gtk_spin_button_set_digits
-   --  mapping: Set_Numeric gtkspinbutton.h gtk_spin_button_set_numeric
-   --  mapping: Set_Update_Policy gtkspinbutton.h \
-   --  mapping:    gtk_spin_button_set_update_policy
-   --  mapping: Set_Value gtkspinbutton.h gtk_spin_button_set_value
-   --  mapping: Set_Wrap gtkspinbutton.h gtk_spin_button_set_wrap
-   --  mapping: Spin gtkspinbutton.h gtk_spin_button_spin
 end Gtk.Spin_Button;

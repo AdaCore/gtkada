@@ -38,7 +38,6 @@ package Gtk.Color_Selection_Dialog is
 
    procedure Gtk_New (Widget : out Gtk_Color_Selection_Dialog;
                       Title  : in String);
-   --  mapping: Gtk_New gtkcolorsel.h gtk_color_selection_dialog_new
 
    function Get_Colorsel (Dialog : in Gtk_Color_Selection_Dialog'Class)
                           return Gtk.Color_Selection.Gtk_Color_Selection;
@@ -52,8 +51,6 @@ package Gtk.Color_Selection_Dialog is
                              return Gtk.Button.Gtk_Button;
    --  Functions to get the fields of the dialog
 
-   --  mapping: NOT_IMPLEMENTED gtkcolorsel.h \
-   --  mapping:    gtk_color_selection_dialog_get_type
 
 
 private

@@ -43,7 +43,6 @@ package Gdk.Window is
                          Y      : in Gint;
                          Width  : in Gint;
                          Height : in Gint);
-   --  mapping: Clear_Area gdk.h gdk_window_clear_area
 
 
 private

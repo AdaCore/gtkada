@@ -98,20 +98,4 @@ private
    type Gtk_Preview is new Gtk.Widget.Gtk_Widget with null record;
    type Gtk_Preview_Info is new Gtk.Widget.Gtk_Widget with null record;
 
-   --  mapping: Draw_Row gtkpreview.h gtk_preview_draw_row
-   --  mapping: Get_Cmap gtkpreview.h gtk_preview_get_cmap
-   --  mapping: Get_Info gtkpreview.h gtk_preview_get_info
-   --  mapping: NOT_IMPLEMENTED gtkpreview.h gtk_preview_get_type
-   --  mapping: Get_Visual gtkpreview.h gtk_preview_get_visual
-   --  mapping: Gtk_New gtkpreview.h gtk_preview_new
-   --  mapping: Put gtkpreview.h gtk_preview_put
-   --  mapping: Put_Row gtkpreview.h gtk_preview_put_row
-   --  mapping: Reset gtkpreview.h gtk_preview_reset
-   --  mapping: Set_Color_Cube gtkpreview.h gtk_preview_set_color_cube
-   --  mapping: Set_Expand gtkpreview.h gtk_preview_set_expand
-   --  mapping: Set_Gamma gtkpreview.h gtk_preview_set_gamma
-   --  mapping: Set_Install_Cmap gtkpreview.h gtk_preview_set_install_cmap
-   --  mapping: Set_Reserved gtkpreview.h gtk_preview_set_reserved
-   --  mapping: Size gtkpreview.h gtk_preview_size
-   --  mapping: Uninit gtkpreview.h gtk_preview_uninit
 end Gtk.Preview;

@@ -44,7 +44,4 @@ package Gtk.Scrollbar is
 private
    type Gtk_Scrollbar is new Gtk.GRange.Gtk_Range with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtkscrollbar.h gtk_scrollbar_get_type
-   --  mapping: Gtk_New_Hscrollbar gtkhscrollbar.h gtk_hscrollbar_new
-   --  mapping: Gtk_New_Vscrollbar gtkvscrollbar.h gtk_vscrollbar_new
 end Gtk.Scrollbar;

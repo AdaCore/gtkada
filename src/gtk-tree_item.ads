@@ -54,13 +54,4 @@ package Gtk.Tree_Item is
 private
    type Gtk_Tree_Item is new Gtk.Item.Gtk_Item with null record;
 
-   --  mapping: Collapse gtktreeitem.h gtk_tree_item_collapse
-   --  mapping: Deselect gtktreeitem.h gtk_tree_item_deselect
-   --  mapping: Expand gtktreeitem.h gtk_tree_item_expand
-   --  mapping: NOT_IMPLEMENTED gtktreeitem.h gtk_tree_item_get_type
-   --  mapping: Gtk_New gtktreeitem.h gtk_tree_item_new_with_label
-   --  mapping: Gtk_New gtktreeitem.h gtk_tree_item_new
-   --  mapping: Gtk_Select gtktreeitem.h gtk_tree_item_select
-   --  mapping: Remove_Subtree gtktreeitem.h gtk_tree_item_remove_subtree
-   --  mapping: Set_Subtree gtktreeitem.h gtk_tree_item_set_subtree
 end Gtk.Tree_Item;

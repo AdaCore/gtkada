@@ -82,7 +82,6 @@ package Gdk.Rectangle is
                         Src2      : in     Gdk_Rectangle;
                         Dest      : in out Gdk_Rectangle;
                         Intersect :    out Boolean);
-   --  mapping: Intersect gdk.h gdk_rectangle_intersect
    --
    --  NOTE : Dest needs to be allocated first.
 private

@@ -56,13 +56,5 @@ private
 
    type Gtk_Curve is new Gtk.Drawing_Area.Gtk_Drawing_Area with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtkcurve.h gtk_curve_get_type
-   --  mapping: Gtk_New  gtkcurve.h gtk_curve_new
-   --  mapping: Reset gtkcurve.h gtk_curve_reset
-   --  mapping: Set_Gamma gtkcurve.h gtk_curve_set_gamma
-   --  mapping: Set_Range gtkcurve.h gtk_curve_set_range
-   --  mapping: Get_Vector gtkcurve.h gtk_curve_get_vector
-   --  mapping: Set_Vector gtkcurve.h gtk_curve_set_vector
-   --  mapping: Set_Curve_Type gtkcurve.h gtk_curve_set_curve_type
 
 end Gtk.Curve;

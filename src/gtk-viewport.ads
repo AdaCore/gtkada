@@ -56,11 +56,4 @@ package Gtk.Viewport is
 private
    type Gtk_Viewport is new Gtk.Bin.Gtk_Bin with null record;
 
-   --  mapping: Get_Hadjustment gtkviewport.h gtk_viewport_get_hadjustment
-   --  mapping: NOT_IMPLEMENTED gtkviewport.h gtk_viewport_get_type
-   --  mapping: Get_Vadjustment gtkviewport.h gtk_viewport_get_vadjustment
-   --  mapping: Gtk_New gtkviewport.h gtk_viewport_new
-   --  mapping: Set_Hadjustment gtkviewport.h gtk_viewport_set_hadjustment
-   --  mapping: Set_Shadow_Type gtkviewport.h gtk_viewport_set_shadow_type
-   --  mapping: Set_Vadjustment gtkviewport.h gtk_viewport_set_vadjustment
 end Gtk.Viewport;

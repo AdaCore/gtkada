@@ -104,24 +104,4 @@ private
    type Gtk_Notebook is new Gtk.Container.Gtk_Container with null record;
    type Gtk_Notebook_Page is new Root_Type with null record;
 
-   --  mapping: Append_Page gtknotebook.h gtk_notebook_append_page
-   --  mapping: Append_Page_Menu gtknotebook.h gtk_notebook_append_page_menu
-   --  mapping: Current_Page gtknotebook.h gtk_notebook_current_page
-   --  mapping: NOT_IMPLEMENTED gtknotebook.h gtk_notebook_get_type
-   --  mapping: Gtk_New gtknotebook.h gtk_notebook_new
-   --  mapping: Insert_Page gtknotebook.h gtk_notebook_insert_page
-   --  mapping: Insert_Page_Menu gtknotebook.h gtk_notebook_insert_page_menu
-   --  mapping: Next_Page gtknotebook.h gtk_notebook_next_page
-   --  mapping: Popup_Disable gtknotebook.h gtk_notebook_popup_disable
-   --  mapping: Popup_Enable gtknotebook.h gtk_notebook_popup_enable
-   --  mapping: Prepend_Page gtknotebook.h gtk_notebook_prepend_page
-   --  mapping: Prepend_Page_Menu gtknotebook.h gtk_notebook_prepend_page_menu
-   --  mapping: Prev_Page gtknotebook.h gtk_notebook_prev_page
-   --  mapping: Remove_Page gtknotebook.h gtk_notebook_remove_page
-   --  mapping: Set_Page gtknotebook.h gtk_notebook_set_page
-   --  mapping: Set_Scrollable gtknotebook.h gtk_notebook_set_scrollable
-   --  mapping: Set_Show_Border gtknotebook.h gtk_notebook_set_show_border
-   --  mapping: Set_Show_Tabs gtknotebook.h gtk_notebook_set_show_tabs
-   --  mapping: Set_Tab_Border gtknotebook.h gtk_notebook_set_tab_border
-   --  mapping: Set_Tab_Pos gtknotebook.h gtk_notebook_set_tab_pos
 end Gtk.Notebook;

@@ -136,22 +136,4 @@ package Gtk.Toolbar is
 private
    type Gtk_Toolbar is new Gtk.Container.Gtk_Container with null record;
 
-   --  mapping: Append_Element gtktoolbar.h gtk_toolbar_append_element
-   --  mapping: Append_Item gtktoolbar.h gtk_toolbar_append_item
-   --  mapping: Append_Space gtktoolbar.h gtk_toolbar_append_space
-   --  mapping: Append_Widget gtktoolbar.h gtk_toolbar_append_widget
-   --  mapping: NOT_IMPLEMENTED gtktoolbar.h gtk_toolbar_get_type
-   --  mapping: Gtk_New gtktoolbar.h gtk_toolbar_new
-   --  mapping: Insert_Element gtktoolbar.h gtk_toolbar_insert_element
-   --  mapping: Insert_Item gtktoolbar.h gtk_toolbar_insert_item
-   --  mapping: Insert_Space gtktoolbar.h gtk_toolbar_insert_space
-   --  mapping: Insert_Widget gtktoolbar.h gtk_toolbar_insert_widget
-   --  mapping: Prepend_Element gtktoolbar.h gtk_toolbar_prepend_element
-   --  mapping: Prepend_Item gtktoolbar.h gtk_toolbar_prepend_item
-   --  mapping: Prepend_Space gtktoolbar.h gtk_toolbar_prepend_space
-   --  mapping: Prepend_Widget gtktoolbar.h gtk_toolbar_prepend_widget
-   --  mapping: Set_Orientation gtktoolbar.h gtk_toolbar_set_orientation
-   --  mapping: Set_Space_Size gtktoolbar.h gtk_toolbar_set_space_size
-   --  mapping: Set_Style gtktoolbar.h gtk_toolbar_set_style
-   --  mapping: Set_Tooltips gtktoolbar.h gtk_toolbar_set_tooltips
 end Gtk.Toolbar;

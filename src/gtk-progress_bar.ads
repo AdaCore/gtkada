@@ -43,7 +43,4 @@ package Gtk.Progress_Bar is
 private
    type Gtk_Progress_Bar is new Gtk.Widget.Gtk_Widget with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtkprogressbar.h gtk_progress_bar_get_type
-   --  mapping: Gtk_New gtkprogressbar.h gtk_progress_bar_new
-   --  mapping: Update gtkprogressbar.h gtk_progress_bar_update
 end Gtk.Progress_Bar;

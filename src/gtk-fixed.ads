@@ -51,9 +51,4 @@ package Gtk.Fixed is
 private
    type Gtk_Fixed is new Gtk.Container.Gtk_Container with null record;
 
-   --  mapping: Get_Children gtkfixed.h GtkFixed->children
-   --  mapping: NOT_IMPLEMENTED gtkfixed.h gtk_fixed_get_type
-   --  mapping: Gtk_New gtkfixed.h gtk_fixed_new
-   --  mapping: Move gtkfixed.h gtk_fixed_move
-   --  mapping: Put gtkfixed.h gtk_fixed_put
 end Gtk.Fixed;

@@ -43,14 +43,4 @@ package Gtk.HButton_Box is
 private
    type Gtk_HButton_Box is new Gtk.Button_Box.Gtk_Button_Box with null record;
 
-   --  mapping: Get_Layout_Default gtkhbbox.h \
-   --  mapping:      gtk_hbutton_box_get_layout_default
-   --  mapping: Get_Spacing_Default gtkhbbox.h \
-   --  mapping:      gtk_hbutton_box_get_spacing_default
-   --  mapping: NOT_IMPLEMENTED gtkhbbox.h gtk_hbutton_box_get_type
-   --  mapping: Gtk_New gtkhbbox.h gtk_hbutton_box_new
-   --  mapping: Set_Layout_Default gtkhbbox.h \
-   --  mapping:      gtk_hbutton_box_set_layout_default
-   --  mapping: Set_Spacing_Default gtkhbbox.h \
-   --  mapping:      gtk_hbutton_box_set_spacing_default
 end Gtk.HButton_Box;

@@ -44,7 +44,6 @@ package Gtk.Enums is
 
    type Gtk_Button_Box_Style is (Default_Style, Spread,
                                  Edge, Start, Style_End);
-   --  mapping: Gtk_Button_Box_Style gtkbbox.h GtkButtonBoxStyle
 
    type Gtk_Direction_Type is (Dir_Tab_Forward,
                                Dir_Tab_Backward,
@@ -71,7 +70,6 @@ package Gtk.Enums is
                           Cell_Widget);
 
    type Gtk_Pack_Type is (Pack_Start, Pack_End);
-   --  mapping: Gtk_Pack_Type gtkenums.h GtkPackType
 
    type Gtk_Policy_Type is (Policy_Always,
                             Policy_Automatic);

@@ -45,8 +45,6 @@ private
 
    type Gtk_Gamma_Curve is new Gtk.Box.Gtk_Box with null record;
 
-   --  mapping: Gtk_New gtkgamma.h gtk_gamma_curve_new
 
-   --  mapping: NOT_IMPLEMENTED gtkgamma.h gtk_gamma_curve_get_type
 
 end Gtk.Gamma_Curve;

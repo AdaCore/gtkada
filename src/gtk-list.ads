@@ -83,20 +83,4 @@ package Gtk.List is
 private
    type Gtk_List is new Gtk.Container.Gtk_Container with null record;
 
-   --  mapping: Append_Items gtklist.h gtk_list_append_items
-   --  mapping: Child_Position gtklist.h gtk_list_child_position
-   --  mapping: Clear_Items gtklist.h gtk_list_clear_items
-   --  mapping: Get_Children gtklist.h GtkList->children
-   --  mapping: Get_Selection gtklist.h GtkList->selection
-   --  mapping: NOT_IMPLEMENTED gtklist.h gtk_list_get_type
-   --  mapping: Gtk_New gtklist.h gtk_list_new
-   --  mapping: Insert_Items gtklist.h gtk_list_insert_items
-   --  mapping: Prepend_Items gtklist.h gtk_list_prepend_items
-   --  mapping: Remove_Items gtklist.h gtk_list_remove_items
-   --  mapping: Remove_Items_No_Unref gtklist.h gtk_list_remove_items_no_unref
-   --  mapping: Select_Child gtklist.h gtk_list_select_child
-   --  mapping: Select_Item gtklist.h gtk_list_select_item
-   --  mapping: Set_Selection_Mode gtklist.h gtk_list_set_selection_mode
-   --  mapping: Unselect_Child gtklist.h gtk_list_unselect_child
-   --  mapping: Unselect_Item gtklist.h gtk_list_unselect_item
 end Gtk.List;

@@ -94,26 +94,6 @@ package Glib.GSlist is
          end record;
       Null_List : constant GSlist := (Ptr => System.Null_Address);
    end Generic_SList;
-   --  mapping: Alloc glib.h g_slist_alloc
-   --  mapping: Append glib.h g_slist_append
-   --  mapping: Concat glib.h g_slist_concat
-   --  mapping: Find glib.h g_slist_find
-   --  mapping: First glib.h g_slist_first
-   --  mapping: Free glib.h g_slist_free
-   --  mapping: Index glib.h g_slist_index
-   --  mapping: Insert glib.h g_slist_insert
-   --  mapping: Last glib.h g_slist_last
-   --  mapping: Length glib.h g_slist_length
-   --  mapping: List_Reverse glib.h g_slist_reverse
-   --  mapping: NOT_IMPLEMENTED glib.h g_slist_foreach
-   --  mapping: NOT_IMPLEMENTED glib.h g_slist_free_1
-   --  mapping: NOT_IMPLEMENTED glib.h g_slist_previous(list)
-   --  mapping: Nth glib.h g_slist_nth
-   --  mapping: Nth_Data glib.h g_slist_nth_data
-   --  mapping: Position glib.h g_slist_position
-   --  mapping: Prepend glib.h g_slist_prepend
-   --  mapping: Remove glib.h g_slist_remove
-   --  mapping: Remove_Link glib.h g_slist_remove_link
 
 end Glib.GSlist;
 

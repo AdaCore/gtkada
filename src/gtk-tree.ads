@@ -86,22 +86,4 @@ package Gtk.Tree is
 private
    type Gtk_Tree is new Gtk.Container.Gtk_Container with null record;
 
-   --  mapping: Append gtktree.h gtk_tree_append
-   --  mapping: Child_Position gtktree.h gtk_tree_child_position
-   --  mapping: Clear_Items gtktree.h gtk_tree_clear_items
-   --  mapping: Get_Children gtktree.h GtkTree->children
-   --  mapping: Get_Selection gtktree.h GtkTree->selection
-   --  mapping: NOT_IMPLEMENTED gtktree.h gtk_tree_get_type
-   --  mapping: Gtk_New gtktree.h gtk_tree_new
-   --  mapping: Insert gtktree.h gtk_tree_insert
-   --  mapping: Prepend gtktree.h gtk_tree_prepend
-   --  mapping: DEPRECATED gtktree.h gtk_tree_remove_item
-   --  mapping: Remove_Items gtktree.h gtk_tree_remove_items
-   --  mapping: Select_Child gtktree.h gtk_tree_select_child
-   --  mapping: Select_Item gtktree.h gtk_tree_select_item
-   --  mapping: Set_Selection_Mode gtktree.h gtk_tree_set_selection_mode
-   --  mapping: Set_View_Lines gtktree.h gtk_tree_set_view_lines
-   --  mapping: Set_View_Mode gtktree.h gtk_tree_set_view_mode
-   --  mapping: Unselect_Child gtktree.h gtk_tree_unselect_child
-   --  mapping: Unselect_Item gtktree.h gtk_tree_unselect_item
 end Gtk.Tree;

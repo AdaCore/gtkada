@@ -46,7 +46,4 @@ package Gtk.Arrow is
 private
    type Gtk_Arrow is new Gtk.Misc.Gtk_Misc with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtkarrow.h gtk_arrow_get_type
-   --  mapping: Gtk_New gtkarrow.h gtk_arrow_new
-   --  mapping: Set gtkarrow.h gtk_arrow_set
 end Gtk.Arrow;

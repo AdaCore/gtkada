@@ -55,10 +55,4 @@ package Gtk.Pixmap is
 private
    type Gtk_Pixmap is new Gtk.Misc.Gtk_Misc with null record;
 
-   --  mapping: Get gtkpixmap.h gtk_pixmap_get
-   --  mapping: Get_Mask gtkpixmap.h GtkPixmap->mask
-   --  mapping: Get_Pixmap gtkpixmap.h GtkPixmap->pixmap
-   --  mapping: NOT_IMPLEMENTED gtkpixmap.h gtk_pixmap_get_type
-   --  mapping: Gtk_New gtkpixmap.h gtk_pixmap_new
-   --  mapping: Set gtkpixmap.h gtk_pixmap_set
 end Gtk.Pixmap;

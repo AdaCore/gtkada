@@ -92,21 +92,4 @@ package Gtk.Text is
 private
    type Gtk_Text is new Gtk.Editable.Gtk_Editable with null record;
 
-   --  mapping: Backward_Delete gtktext.h gtk_text_backward_delete
-   --  mapping: Forward_Delete gtktext.h gtk_text_forward_delete
-   --  mapping: Freeze gtktext.h gtk_text_freeze
-   --  mapping: Get_Gap_Position gtktext.h GtkText->gap_position
-   --  mapping: Get_Gap_Size gtktext.h GtkText->gap_size
-   --  mapping: Get_Length gtktext.h gtk_text_get_length
-   --  mapping: Get_Point gtktext.h gtk_text_get_point
-   --  mapping: Get_Text gtktext.h GtkText->text
-   --  mapping: Get_Text_End gtktext.h GtkText->text_end
-   --  mapping: NOT_IMPLEMENTED gtktext.h gtk_text_get_type
-   --  mapping: Gtk_New gtktext.h gtk_text_new
-   --  mapping: Insert gtktext.h gtk_text_insert
-   --  mapping: Set_Adjustments gtktext.h gtk_text_set_adjustments
-   --  mapping: Set_Editable gtktext.h gtk_text_set_editable
-   --  mapping: Set_Point gtktext.h gtk_text_set_point
-   --  mapping: Set_Word_Wrap gtktext.h gtk_text_set_word_wrap
-   --  mapping: Thaw gtktext.h gtk_text_thaw
 end Gtk.Text;

@@ -49,11 +49,4 @@ package Gtk.Toggle_Button is
 private
    type Gtk_Toggle_Button is new Gtk.Button.Gtk_Button with null record;
 
-   --  mapping: Is_Active gtktogglebutton.h GtkToggleButton->active
-   --  mapping: NOT_IMPLEMENTED gtktogglebutton.h gtk_toggle_button_get_type
-   --  mapping: Gtk_New gtktogglebutton.h gtk_toggle_button_new
-   --  mapping: Gtk_New gtktogglebutton.h gtk_toggle_button_new_with_label
-   --  mapping: Set_Mode gtktogglebutton.h gtk_toggle_button_set_mode
-   --  mapping: Set_State gtktogglebutton.h gtk_toggle_button_set_state
-   --  mapping: Toggled gtktogglebutton.h gtk_toggle_button_toggled
 end Gtk.Toggle_Button;

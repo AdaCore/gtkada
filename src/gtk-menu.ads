@@ -91,18 +91,5 @@ package Gtk.Menu is
 private
    type Gtk_Menu is new Gtk.Menu_Shell.Gtk_Menu_Shell with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtkmenu.h gtk_menu_get_type
-   --  mapping: Gtk_New gtkmenu.h gtk_menu_new
-   --  mapping: Append gtkmenu.h gtk_menu_append
-   --  mapping: Prepend gtkmenu.h gtk_menu_prepend
-   --  mapping: Insert gtkmenu.h gtk_menu_insert
-   --  mapping: Popup gtkmenu.h gtk_menu_popup
-   --  mapping: Popdown gtkmenu.h gtk_menu_popdown
-   --  mapping: Get_Active gtkmenu.h gtk_menu_get_active
-   --  mapping: Set_Active gtkmenu.h gtk_menu_set_active
-   --  mapping: Set_Accelerator_Table gtkmenu.h gtk_menu_set_accelerator_table
-   --  mapping: Attach_To_Widget gtkmenu.h gtk_menu_attach_to_widget
-   --  mapping: Get_Attach_Widget gtkmenu.h gtk_menu_get_attach_widget
-   --  mapping: Detach gtkmenu.h gtk_menu_detach
 
 end Gtk.Menu;

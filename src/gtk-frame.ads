@@ -50,9 +50,4 @@ package Gtk.Frame is
 private
    type Gtk_Frame is new Gtk.Bin.Gtk_Bin with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtkframe.h gtk_frame_get_type
-   --  mapping: Gtk_New gtkframe.h gtk_frame_new
-   --  mapping: Set_Label gtkframe.h gtk_frame_set_label
-   --  mapping: Set_Label_Align gtkframe.h gtk_frame_set_label_align
-   --  mapping: Set_Shadow_Type gtkframe.h gtk_frame_set_shadow_type
 end Gtk.Frame;

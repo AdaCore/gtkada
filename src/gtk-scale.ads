@@ -57,10 +57,4 @@ package Gtk.Scale is
 private
    type Gtk_Scale is new Gtk.GRange.Gtk_Range with null record;
 
-   --  mapping: Draw_Value gtkscale.h gtk_scale_draw_value
-   --  mapping: NOT_IMPLEMENTED gtkscale.h gtk_scale_get_type
-   --  mapping: Set_Digits gtkscale.h gtk_scale_set_digits
-   --  mapping: Set_Draw_Value gtkscale.h gtk_scale_set_draw_value
-   --  mapping: Set_Value_Pos gtkscale.h gtk_scale_set_value_pos
-   --  mapping: Value_Width gtkscale.h gtk_scale_value_width
 end Gtk.Scale;

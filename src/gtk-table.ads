@@ -79,13 +79,4 @@ package Gtk.Table is
 private
    type Gtk_Table is new Gtk.Container.Gtk_Container with null record;
 
-   --  mapping: Attach gtktable.h gtk_table_attach
-   --  mapping: Attach_Defaults gtktable.h gtk_table_attach_defaults
-   --  mapping: NOT_IMPLEMENTED gtktable.h gtk_table_get_type
-   --  mapping: Gtk_New gtktable.h gtk_table_new
-   --  mapping: Set_Col_Spacing gtktable.h gtk_table_set_col_spacing
-   --  mapping: Set_Col_Spacings gtktable.h gtk_table_set_col_spacings
-   --  mapping: Set_Homogeneous gtktable.h gtk_table_set_homogeneous
-   --  mapping: Set_Row_Spacing gtktable.h gtk_table_set_row_spacing
-   --  mapping: Set_Row_Spacings gtktable.h gtk_table_set_row_spacings
 end Gtk.Table;

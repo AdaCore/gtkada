@@ -65,8 +65,6 @@ package Gtk.Signal is
          Func_Data : in Data_Type;
          After     : in Boolean := False)
          return Guint;
-      --  mapping: Connect gtksignal.h gtk_signal_connect
-      --  mapping: Connect gtksignal.h gtk_signal_connect_after
    end Callback;
 
    ---------------------------------------------------------------
@@ -97,8 +95,6 @@ package Gtk.Signal is
          Func_Data : in Data_Type;
          After     : in Boolean := False)
          return Guint;
-      --  mapping: Connect gtksignal.h gtk_signal_connect
-      --  mapping: Connect gtksignal.h gtk_signal_connect_after
    end Two_Callback;
 
    -----------------------------------------------------------------
@@ -120,8 +116,6 @@ package Gtk.Signal is
          Func   : in Callback;
          After  : in Boolean := False)
          return Guint;
-      --  mapping: Connect gtksignal.h gtk_signal_connect
-      --  mapping: Connect gtksignal.h gtk_signal_connect_after
    end Void_Callback;
 
    ------------------------------------------------------------------
@@ -142,8 +136,6 @@ package Gtk.Signal is
          Slot_Object : in Widget_Type'Class;
          After       : in Boolean := False)
          return Guint;
-      --  mapping: Connect gtksignal.h gtk_signal_connect_object
-      --  mapping: Connect gtksignal.h gtk_signal_connect_object_after
    end Object_Callback;
 
    ------------------------------------------------------------------
@@ -188,56 +180,23 @@ package Gtk.Signal is
 
    procedure Disconnect (Object     : in Gtk.Object.Gtk_Object'Class;
                          Handler_Id : in Guint);
-   --  mapping: Disconnect gtksignal.h gtk_signal_disconnect
 
    procedure Emit_Stop_By_Name (Object : in Gtk.Object.Gtk_Object'Class;
                                 Name   : in String);
-   --  mapping: Emit_Stop_By_Name gtksignal.h gtk_signal_emit_stop_by_name
 
    procedure Handler_Block (Obj        : in Gtk.Object.Gtk_Object'Class;
                             Handler_Id : in Guint);
-   --  mapping: Handler_Block gtksignal.h gtk_signal_handler_block
 
    procedure Handlers_Destroy (Obj : in Object.Gtk_Object'Class);
-   --  mapping: Handlers_Destroy gtksignal.h gtk_signal_handlers_destroy
 
    procedure Handler_Unblock (Obj        : in Gtk.Object.Gtk_Object'Class;
                               Handler_Id : in Guint);
-   --  mapping: Handler_Unblock gtksignal.h gtk_signal_handler_unblock
 
    --  Functions which are not implemented because they are probably not needed
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_init
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_new
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_newv
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_lookup
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_name
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_emit
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_emit_by_name
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_emitv
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_emitv_by_name
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_n_emissions
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_n_emissions_by_name
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_emit_stop
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_emit_stop_by_name
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_connect_full
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_connect_interp
-   --  mapping: NOT_IMPLEMENTED gtksignal.h \
-   --  mapping: gtk_signal_connect_object_while_alive
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_connect_while_alive
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_disconnect_by_func
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_disconnect_by_data
    --    Actually, gtk_signal_disconnect_by_data can not be implemented since
    --    we did a new memory allocation in the Connect function
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_handler_block_by_func
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_handler_block_by_data
    --    The two 'block' can not be implemented
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_handler_unblock_by_func
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_handler_unblock_by_data
    --    The two 'unblock' can not be implemented
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_handler_pending
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_default_marshaller
-   --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_set_funcs
 
-   --  mapping: INTERNAL gtksignal.h gtk_signal_query
 
 end Gtk.Signal;

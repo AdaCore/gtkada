@@ -46,26 +46,19 @@ package Gdk.Event is
    --  define some of the following services as abstract.
 
    function Events_Pending return Gint;
-   --  mapping: Events_Pending gdk.h gdk_events_pending
 
    procedure Get (Event : out Gdk_Event'Class);
-   --  mapping: Get gdk.h gdk_event_get
 
    procedure Put (Event : in Gdk_Event'Class);
-   --  mapping: Put gdk.h gdk_event_put
 
    procedure Copy (Source : in Gdk_Event'Class;
                    Destination : out Gdk_Event'Class);
-   --  mapping: Copy gdk.h gdk_event_copy
 
    procedure Free (Event : in out Gdk_Event'Class);
-   --  mapping: Free gdk.h gdk_event_free
 
    procedure Set_Show_Events (Show_Events : in Boolean := True);
-   --  mapping: Set_Show_Events gdk.h gdk_set_show_events
 
    function Get_Show_Events return Boolean;
-   --  mapping: Get_Show_Events gdk.h gdk_get_show_events
 
 
    function Get_Event_Type (Event : in Gdk_Event)
@@ -126,7 +119,6 @@ package Gdk.Event is
 
    procedure Get_Graphics_Expose (Event  : out Gdk_Event_Expose'Class;
                                   Window : in Gdk_Window'Class);
-   --  mapping: Get_Graphics_Expose gdk.h gdk_event_get_graphics_expose
 
    procedure Get_Area (Event : in     Gdk_Event_Expose;
                        Area  :    out Rectangle.Gdk_Rectangle'Class);
@@ -172,7 +164,6 @@ package Gdk.Event is
 
    procedure Event (Widget : Gtk.Widget.Gtk_Widget'Class;
                     Event  : Gdk_Event'Class);
-   --  mapping: Event gtkwidget.h gtk_widget_event
 
 
 private

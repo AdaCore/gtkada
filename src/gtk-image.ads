@@ -51,8 +51,4 @@ package Gtk.Image is
 private
    type Gtk_Image is new Gtk.Misc.Gtk_Misc with null record;
 
-   --  mapping: Get gtkimage.h gtk_image_get
-   --  mapping: NOT_IMPLEMENTED gtkimage.h gtk_image_get_type
-   --  mapping: Gtk_New gtkimage.h gtk_image_new
-   --  mapping: Set gtkimage.h gtk_image_set
 end Gtk.Image;

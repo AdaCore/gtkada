@@ -82,22 +82,4 @@ package Gtk.Button_Box is
 private
    type Gtk_Button_Box is new Gtk.Box.Gtk_Box with null record;
 
-   --  mapping: Child_Requisition gtkbbox.h gtk_button_box_child_requisition
-   --  mapping: Get_Child_Ipadding gtkbbox.h gtk_button_box_get_child_ipadding
-   --  mapping: Get_Child_Ipadding_Default gtkbbox.h \
-   --  mapping:      gtk_button_box_get_child_ipadding_default
-   --  mapping: Get_Child_Size gtkbbox.h gtk_button_box_get_child_size
-   --  mapping: Get_Child_Size_Default gtkbbox.h \
-   --  mapping:      gtk_button_box_get_child_size_default
-   --  mapping: Get_Layout gtkbbox.h gtk_button_box_get_layout
-   --  mapping: Get_Spacing gtkbbox.h gtk_button_box_get_spacing
-   --  mapping: NOT_IMPLEMENTED gtkbbox.h gtk_button_box_get_type
-   --  mapping: Set_Child_Ipadding gtkbbox.h gtk_button_box_set_child_ipadding
-   --  mapping: Set_Child_Ipadding_Default gtkbbox.h \
-   --  mapping:      gtk_button_box_set_child_ipadding_default
-   --  mapping: Set_Child_Size gtkbbox.h gtk_button_box_set_child_size
-   --  mapping: Set_Child_Size_Default gtkbbox.h \
-   --  mapping:      gtk_button_box_set_child_size_default
-   --  mapping: Set_Layout gtkbbox.h gtk_button_box_set_layout
-   --  mapping: Set_Spacing gtkbbox.h gtk_button_box_set_spacing
 end Gtk.Button_Box;

@@ -49,10 +49,5 @@ private
 
    type Gtk_Menu_Shell is new Gtk.Container.Gtk_Container with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtkmenushell.h gtk_menu_shell_get_type
-   --  mapping: Append gtkmenushell.h gtk_menu_shell_append
-   --  mapping: Prepend gtkmenushell.h gtk_menu_shell_prepend
-   --  mapping: Insert gtkmenushell.h gtk_menu_shell_insert
-   --  mapping: Deactivate gtkmenushell.h gtk_menu_shell_deactivate
 
 end Gtk.Menu_Shell;

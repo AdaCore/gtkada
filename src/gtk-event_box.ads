@@ -38,6 +38,4 @@ package Gtk.Event_Box is
 private
    type Gtk_Event_Box is new Gtk.Bin.Gtk_Bin with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtkeventbox.h gtk_event_box_get_type
-   --  mapping: Gtk_New gtkeventbox.h gtk_event_box_new
 end Gtk.Event_Box;

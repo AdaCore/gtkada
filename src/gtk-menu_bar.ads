@@ -50,10 +50,5 @@ private
 
    type Gtk_Menu_Bar is new Gtk.Menu_Shell.Gtk_Menu_Shell with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtkmenubar.h gtk_menu_bar_get_type
-   --  mapping: Gtk_New gtkmenubar.h gtk_menu_bar_new
-   --  mapping: Append gtkmenubar.h gtk_menu_bar_append
-   --  mapping: Prepend gtkmenubar.h gtk_menu_bar_prepend
-   --  mapping: Insert gtkmenubar.h gtk_menu_bar_insert
 
 end Gtk.Menu_Bar;

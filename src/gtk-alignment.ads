@@ -57,11 +57,4 @@ package Gtk.Alignment is
 private
    type Gtk_Alignment is new Gtk.Bin.Gtk_Bin with null record;
 
-   --  mapping: NOT_IMPLEMENTED gtkalignment.h gtk_alignment_get_type
-   --  mapping: Get_Xalign gtkalignment.h GtkAlignment->xalign
-   --  mapping: Get_Xscale gtkalignment.h GtkAlignment->xscale
-   --  mapping: Get_Yalign gtkalignment.h GtkAlignment->yalign
-   --  mapping: Get_Yscale gtkalignment.h GtkAlignment->yscale
-   --  mapping: Gtk_New gtkalignment.h gtk_alignment_new
-   --  mapping: Set gtkalignment.h gtk_alignment_set
 end Gtk.Alignment;

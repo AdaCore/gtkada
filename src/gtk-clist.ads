@@ -227,12 +227,10 @@ package Gtk.CList is
       function Get (Object : in Gtk_CList'Class;
                     Row    : in Gint)
                     return Data_Type;
-      --  mapping: Row_Data.Get gtkclist.h gtk_clist_get_row_data
 
       procedure Set (Object : in Gtk_CList'Class;
                      Row    : in Gint;
                      Data   : in Data_Type);
-      --  mapping: Row_Data.Set gtkclist.h gtk_clist_set_row_data
    end Row_Data;
 
    --  The previous package implements the Row_Data stuff.
@@ -243,48 +241,4 @@ package Gtk.CList is
 private
    type Gtk_CList is new Gtk.Container.Gtk_Container with null record;
 
-   --  mapping: Append gtkclist.h gtk_clist_append
-   --  mapping: Clear gtkclist.h gtk_clist_clear
-   --  mapping: Column_Title_Active gtkclist.h gtk_clist_column_title_active
-   --  mapping: Column_Title_Passive gtkclist.h gtk_clist_column_title_passive
-   --  mapping: Column_Titles_Active gtkclist.h gtk_clist_column_titles_active
-   --  mapping: Column_Titles_Hide gtkclist.h gtk_clist_column_titles_hide
-   --  mapping: Column_Titles_Passive gtkclist.h \
-   --  mapping:      gtk_clist_column_titles_passive
-   --  mapping: Column_Titles_Show gtkclist.h gtk_clist_column_titles_show
-   --  mapping: NOT_IMPLEMENTED gtkclist.h gtk_clist_construct
-   --  mapping: NOT_IMPLEMENTED gtkclist.h gtk_clist_find_row_from_data
-   --  mapping: Freeze gtkclist.h gtk_clist_freeze
-   --  mapping: Get_Cell_Type gtkclist.h gtk_clist_get_cell_type
-   --  mapping: Get_Pixmap gtkclist.h gtk_clist_get_pixmap
-   --  mapping: Get_Pixtext gtkclist.h gtk_clist_get_pixtext
-   --  mapping: Get_Selection gtkclist.h GtkCList->selection
-   --  mapping: Get_Selection_Info gtkclist.h gtk_clist_get_selection_info
-   --  mapping: Get_Text gtkclist.h gtk_clist_get_text
-   --  mapping: NOT_IMPLEMENTED gtkclist.h gtk_clist_get_type
-   --  mapping: Gtk_New gtkclist.h gtk_clist_new
-   --  mapping: Gtk_New gtkclist.h gtk_clist_new_with_titles
-   --  mapping: Insert gtkclist.h gtk_clist_insert
-   --  mapping: Moveto gtkclist.h gtk_clist_moveto
-   --  mapping: Remove gtkclist.h gtk_clist_remove
-   --  mapping: Row_Is_Visible gtkclist.h gtk_clist_row_is_visible
-   --  mapping: Select_Row gtkclist.h gtk_clist_select_row
-   --  mapping: Set_Background gtkclist.h gtk_clist_set_background
-   --  mapping: Set_Border gtkclist.h gtk_clist_set_border
-   --  mapping: Set_Column_Justification gtkclist.h \
-   --  mapping:      gtk_clist_set_column_justification
-   --  mapping: Set_Column_Title gtkclist.h gtk_clist_set_column_title
-   --  mapping: Set_Column_Widget gtkclist.h gtk_clist_set_column_widget
-   --  mapping: Set_Column_Width gtkclist.h gtk_clist_set_column_width
-   --  mapping: Set_Foreground gtkclist.h gtk_clist_set_foreground
-   --  mapping: Set_Pixmap gtkclist.h gtk_clist_set_pixmap
-   --  mapping: Set_Pixtext gtkclist.h gtk_clist_set_pixtext
-   --  mapping: Set_Policy gtkclist.h gtk_clist_set_policy
-   --  mapping: NOT_IMPLEMENTED gtkclist.h gtk_clist_set_row_data_full
-   --  mapping: Set_Row_Height gtkclist.h gtk_clist_set_row_height
-   --  mapping: Set_Selection_Mode gtkclist.h gtk_clist_set_selection_mode
-   --  mapping: Set_Shift gtkclist.h gtk_clist_set_shift
-   --  mapping: Set_Text gtkclist.h gtk_clist_set_text
-   --  mapping: Thaw gtkclist.h gtk_clist_thaw
-   --  mapping: Unselect_Row gtkclist.h gtk_clist_unselect_row
 end Gtk.CList;
