@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -266,6 +266,14 @@ package Gtk.Menu is
    procedure Generate (Menu : in out Gtk_Object; N : in Node_Ptr);
    --  Dgate internal function
 
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  </signals>
 
 private
    type Gtk_Menu_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,7 +29,12 @@
 
 with System;
 with Gdk; use Gdk;
+with Gdk.Types; use Gdk.Types;
 with Gtk.Util; use Gtk.Util;
+with Gtk.Accel_Group;  use Gtk.Accel_Group;
+with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Widget;       use Gtk.Widget;
+with Gtk.Object;       use Gtk.Object;
 
 package body Gtk.Window is
 
@@ -75,7 +80,7 @@ package body Gtk.Window is
    -------------
 
    procedure Gtk_New (Window   : in out Gtk_Window;
-                      The_Type : in  Gtk_Window_Type) is
+                      The_Type : in  Gtk_Window_Type := Window_Toplevel) is
    begin
       Window := new Gtk_Window_Record;
       Initialize (Window, The_Type);
@@ -107,18 +112,6 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Get_Object (Accel_Group));
    end Remove_Accel_Group;
 
-   -----------------
-   -- Set_Default --
-   -----------------
-
-   procedure Set_Default (Window   : access Gtk_Window_Record;
-                          Defaultw : in     Widget.Gtk_Widget) is
-      procedure Internal (Window, Defaultw : in System.Address);
-      pragma Import (C, Internal, "gtk_window_set_default");
-   begin
-      Internal (Get_Object (Window), Get_Object (Defaultw));
-   end Set_Default;
-
    ----------------------
    -- Set_Default_Size --
    ----------------------
@@ -134,18 +127,29 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Width, Height);
    end Set_Default_Size;
 
-   ---------------
-   -- Set_Focus --
-   ---------------
+   ------------------------
+   -- Set_Geometry_Hints --
+   ------------------------
 
-   procedure Set_Focus (Window : access Gtk_Window_Record;
-                        Focus  : in Gtk_Widget) is
-      procedure Internal (Window : in System.Address;
-                          Focus  : in System.Address);
-      pragma Import (C, Internal, "gtk_window_set_focus");
+   procedure Set_Geometry_Hints
+     (Window          : access Gtk_Window_Record;
+      Geometry_Widget : Gtk_Widget;
+      Geometry        : Gdk_Geometry;
+      Geom_Mask       : Gdk_Window_Hints)
+   is
+      procedure Internal (Window   : System.Address;
+                          Wid      : System.Address;
+                          Geometry : System.Address;
+                          Mask     : Gdk_Window_Hints);
+      pragma Import (C, Internal, "gtk_window_set_geometry_hints");
+      Geom : aliased Gdk_Geometry := Geometry;
+      Wid  : System.Address := System.Null_Address;
    begin
-      Internal (Get_Object (Window), Get_Object (Focus));
-   end Set_Focus;
+      if Geometry_Widget /= null then
+         Wid := Get_Object (Geometry_Widget);
+      end if;
+      Internal (Get_Object (Window), Wid, Geom'Address, Geom_Mask);
+   end Set_Geometry_Hints;
 
    ---------------
    -- Set_Modal --
@@ -189,6 +193,20 @@ package body Gtk.Window is
    begin
       Internal (Get_Object (Window), Position);
    end Set_Position;
+
+   -----------------------
+   -- Set_Transient_For --
+   -----------------------
+
+   procedure Set_Transient_For (Window : access Gtk_Window_Record;
+                                Parent : access Gtk_Window_Record'Class)
+   is
+      procedure Internal (Window : System.Address;
+                          Parent : System.Address);
+      pragma Import (C, Internal, "gtk_window_set_transient_for");
+   begin
+      Internal (Get_Object (Window), Get_Object (Parent));
+   end Set_Transient_For;
 
    ---------------
    -- Set_Title --

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,6 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  This widget is a base class for all the widgets that require an
+--  alignment and padding.
+--  This widget can not be instanciated directly.
+--  </description>
+--  <c_version>1.2.6</c_version>
+
 with Gtk.Object; use Gtk.Object;
 with Gtk.Widget;
 
@@ -38,18 +45,40 @@ package Gtk.Misc is
    procedure Set_Alignment (Misc   : access Gtk_Misc_Record;
                             Xalign : in     Gfloat;
                             Yalign : in     Gfloat);
+   --  Modifies the alignment for the widget.
+   --  XALIGN and YALIGN are both values between 0.0 and 1.0 that specify the
+   --  alignment: if XALIGN is 0.0, the widget will be left aligned; if it is
+   --  0.5, the widget will be centered; if it is 1.0 the widget will be
+   --  right aligned. YALIGN is from top (0.0) to bottom (1.0).
+   --  Both XALIGN and YALIGN will be constrained to the range 0.0 .. 1.0
+   --  Note that if the widget fills its allocated area, these two parameters
+   --  won't have any effect.
 
    procedure Set_Padding (Misc : access Gtk_Misc_Record;
                           Xpad : in     Gint;
                           Ypad : in     Gint);
+   --  Sets the padding (ie the extra spaces on the side of the widget).
+   --  If XPAD or YPAD is negative, they will be changed to 0.
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
- 
+   ----------------------------
+   -- Support for GATE/DGATE --
+   ----------------------------
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+   --  Gate internal function
+
    procedure Generate (Misc : in out Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  </signals>
 
 private
    type Gtk_Misc_Record is new Widget.Gtk_Widget_Record with null record;
