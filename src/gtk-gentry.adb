@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -31,8 +31,6 @@ with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
 with Gtk.Combo; use Gtk.Combo;
-with Gtk.Container; use Gtk.Container;
-with Gtk.Widget; use Gtk.Widget;
 with Interfaces.C.Strings;
 
 package body Gtk.GEntry is
@@ -259,11 +257,6 @@ package body Gtk.GEntry is
       Gen_Set (N, "GEntry", "position", File);
       Gen_Set (N, "GEntry", "text", File, '"');
       Gen_Set (N, "GEntry", "Visibility", "text_visible", "", "", "", File);
-
-      if not N.Specific_Data.Has_Container then
-         Gen_Call_Child (N, null, "Container", "Add", File => File);
-         N.Specific_Data.Has_Container := True;
-      end if;
    end Generate;
 
    procedure Generate
@@ -325,13 +318,6 @@ package body Gtk.GEntry is
 
       if S /= null then
          Set_Visibility (Gtk_Entry (The_Entry), Boolean'Value (S.all));
-      end if;
-
-      if not N.Specific_Data.Has_Container then
-         Container.Add
-           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-            Gtk_Widget (The_Entry));
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 

@@ -29,7 +29,6 @@
 
 with System;
 with Gdk; use Gdk;
-with Gtk.Container; use Gtk.Container;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Menu_Bar is
@@ -130,11 +129,6 @@ package body Gtk.Menu_Bar is
       Gen_New (N, "Menu_Bar", File => File);
       Menu_Shell.Generate (N, File);
       Gen_Set (N, "Menu_Bar", "shadow_type", File => File);
-
-      if not N.Specific_Data.Has_Container then
-         Gen_Call_Child (N, null, "Container", "Add", File => File);
-         N.Specific_Data.Has_Container := True;
-      end if;
    end Generate;
 
    procedure Generate (Menu_Bar : in out Gtk_Object;
@@ -154,13 +148,6 @@ package body Gtk.Menu_Bar is
       if S /= null then
          Set_Shadow_Type (Gtk_Menu_Bar (Menu_Bar),
            Gtk_Shadow_Type'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      if not N.Specific_Data.Has_Container then
-         Container.Add
-           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-            Widget.Gtk_Widget (Menu_Bar));
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 

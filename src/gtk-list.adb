@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -313,15 +313,8 @@ package body Gtk.List is
                        File   : in File_Type) is
    begin
       Gen_New (N, "List", File => File);
-
       Container.Generate (N, File);
-
       Gen_Set (N, "List", "selection_mode", File => File);
-
-      if not N.Specific_Data.Has_Container then
-         Gen_Call_Child (N, null, "Container", "Add", File => File);
-         N.Specific_Data.Has_Container := True;
-      end if;
    end Generate;
 
    procedure Generate (List : in out Gtk_Object; N : in Node_Ptr) is
@@ -341,14 +334,6 @@ package body Gtk.List is
       if S /= null then
          Set_Selection_Mode (Gtk_List (List),
            Gtk_Selection_Mode'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      if not N.Specific_Data.Has_Container then
-         Container.Add
-           (Container.Gtk_Container
-            (Get_Object (Get_Field (N.Parent, "name"))),
-            Gtk_Widget (List));
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 

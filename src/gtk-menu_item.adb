@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,7 +29,6 @@
 
 with System;
 with Gdk; use Gdk;
-with Gtk.Container; use Gtk.Container;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Menu_Item is
@@ -191,11 +190,6 @@ package body Gtk.Menu_Item is
       Item.Generate (N, File);
 
       Gen_Set (N, "Menu_Item", "right_justify", File);
-
-      if not N.Specific_Data.Has_Container then
-         Gen_Call_Child (N, null, "Container", "Add", File => File);
-         N.Specific_Data.Has_Container := True;
-      end if;
    end Generate;
 
    procedure Generate (Menu_Item : in out Gtk_Object;
@@ -221,13 +215,6 @@ package body Gtk.Menu_Item is
 
       if S /= null and then Boolean'Value (S.all) then
          Right_Justify (Gtk_Menu_Item (Menu_Item));
-      end if;
-
-      if not N.Specific_Data.Has_Container then
-         Container.Add
-           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-            Widget.Gtk_Widget (Menu_Item));
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 
