@@ -166,6 +166,7 @@ package body Glib.Graphs is
 
       --  Free the vertex
       Remove (G.Vertices, V);
+      G.Num_Vertices := G.Num_Vertices - 1;
       Destroy (V.all);
       Free (V2);
    end Remove;
