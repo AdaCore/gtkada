@@ -396,26 +396,30 @@ package body Gtk.Signal is
       -- Marshaller --
       ----------------
 
-      procedure Marshaller (Object    : in System.Address;
-                            User_Data : in System.Address;
-                            Nparams   : in Guint;
-                            Params    : in GtkArgArray)
+      procedure Marshaller
+        (Object    : in System.Address;
+         User_Data : in System.Address;
+         Nparams   : in Guint;
+         Params    : in GtkArgArray)
       is
-         function Internal (Params : in GtkArgArray;
-                            Num    : in Guint)
-                            return System.Address;
+         function Internal
+           (Params : in GtkArgArray; Num : in Guint) return System.Address;
          pragma Import (C, Internal, "ada_gtkarg_value_object");
+
          use type System.Address;
+
          Stub   : Base_Type;
          Stub2  : aliased Cb_Type;
          Data   : Data_Type_Access := Convert (User_Data);
          Tmp    : System.Address := Internal (Params, 0);
+
       begin
          if Nparams = 0 then
             Ada.Text_IO.Put_Line
               (Ada.Text_IO.Standard_Error,
                "Wrong number of arguments in Two_Callback");
          end if;
+
          if Data.Func /= null then
             if Tmp = System.Null_Address then
                Data.Func (Acc (Get_User_Data (Object, Stub)),
@@ -530,17 +534,20 @@ package body Gtk.Signal is
                             Nparams   : in Guint;
                             Params    : in GtkArgArray)
       is
-         function Internal (Params : in GtkArgArray;
-                            Num    : in Guint)
-                            return System.Address;
+         function Internal
+           (Params : in GtkArgArray;
+            Num    : in Guint) return System.Address;
          pragma Import (C, Internal, "ada_gtkarg_value_object");
+
          use type System.Address;
+
          Stub   : Base_Type;
          Data   : Data_Type_Access := Convert (User_Data);
          Tmp    : System.Address := Internal (Params, 0);
 
          Rec    : aliased Simple_Record;
          for Rec'Address use Tmp;
+
       begin
          if Data.Func /= null then
             Data.Func (Acc (Get_User_Data (Object, Stub)), Rec);
@@ -666,12 +673,13 @@ package body Gtk.Signal is
             end if;
          end To_String;
 
-         Data    : Data_Type_Access;
+         Data      : Data_Type_Access;
          Widget_R  : aliased Gtk.Tips_Query.Gtk_Tips_Query_Record;
-         Widget    : Gtk.Tips_Query.Gtk_Tips_Query
-           := Widget_R'Unchecked_Access;
+         Widget    : Gtk.Tips_Query.Gtk_Tips_Query :=
+           Widget_R'Unchecked_Access;
          Widget2_R : aliased Gtk.Widget.Gtk_Widget_Record;
          Widget2   : Gtk.Widget.Gtk_Widget := Widget2_R'Unchecked_Access;
+
       begin
          if Nparams < 3 then
             Ada.Text_IO.Put_Line
@@ -679,7 +687,9 @@ package body Gtk.Signal is
                "Wrong number of arguments in Tips_Query_Callback");
             return;
          end if;
+
          Data := Convert (User_Data);
+
          if Data.Func /= null then
             Set_Object (Widget, Object);
             Set_Object (Widget2, Internal (Params, 0));
