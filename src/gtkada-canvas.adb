@@ -714,7 +714,8 @@ package body Gtkada.Canvas is
                            X1 := X3 - Step - Gint (Item.Coord.Height);
                         when 2 =>
                            X1 := X3 + Step + Gint (Item.Coord.Height);
-                        when others => null;
+                        when others =>
+                           null;
                      end case;
 
                      Coord := (Y1, X1, Item.Coord.Width, Item.Coord.Height);
@@ -741,7 +742,8 @@ package body Gtkada.Canvas is
                            X1 := X3 - Step - Gint (Item.Coord.Width);
                         when 2 =>
                            X1 := X3 + Step + Gint (Item.Coord.Width);
-                        when others => null;
+                        when others =>
+                           null;
                      end case;
 
                      Coord := (X1, Y1, Item.Coord.Width, Item.Coord.Height);
@@ -2164,7 +2166,12 @@ package body Gtkada.Canvas is
          when others =>
             null;
       end case;
+
       return False;
+
+   exception
+      when others =>
+         return False;
    end Key_Press;
 
    -------------------
@@ -2195,16 +2202,18 @@ package body Gtkada.Canvas is
    begin
       --  Keep the last item found, since this is the one on top.
       --  ??? Not the most efficient way to search, since we have to traverse
-      --  ??? the whole list every time.
+      --  the whole list every time.
+
       while not At_End (Tmp) loop
          Item := Canvas_Item (Get (Tmp));
-         if Item.Visible
-           and then Point_In_Item (Item, X, Y)
-         then
+
+         if Item.Visible and then Point_In_Item (Item, X, Y) then
             Result := Item;
          end if;
+
          Next (Tmp);
       end loop;
+
       return Result;
    end Item_At_Coordinates;
 
@@ -2218,10 +2227,11 @@ package body Gtkada.Canvas is
    is
       Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
       Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
-      X : constant Gint := To_World_Coordinates
+      X     : constant Gint := To_World_Coordinates
         (Canvas, Gint (Get_X (Event)) + Xbase);
-      Y : constant Gint := To_World_Coordinates
+      Y     : constant Gint := To_World_Coordinates
         (Canvas, Gint (Get_Y (Event)) + Ybase);
+
    begin
       return Item_At_Coordinates (Canvas, X, Y);
    end Item_At_Coordinates;
@@ -2231,18 +2241,19 @@ package body Gtkada.Canvas is
    --------------------
 
    function Button_Pressed
-     (Canv : access Gtk_Widget_Record'Class;
+     (Canv  : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean
    is
-      Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
-      Item : Canvas_Item;
-      Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
-      X : constant Gint := To_World_Coordinates
+      Canvas   : Interactive_Canvas := Interactive_Canvas (Canv);
+      Item     : Canvas_Item;
+      Xbase    : constant Gint := Gint (Get_Value (Canvas.Hadj));
+      Ybase    : constant Gint := Gint (Get_Value (Canvas.Vadj));
+      X        : constant Gint := To_World_Coordinates
         (Canvas, Gint (Get_X (Event)) + Xbase);
-      Y : constant Gint := To_World_Coordinates
+      Y        : constant Gint := To_World_Coordinates
         (Canvas, Gint (Get_Y (Event)) + Ybase);
       Cursor   : Gdk.Cursor.Gdk_Cursor;
+
    begin
       if Get_Window (Event) /= Get_Window (Canvas) then
          return False;
@@ -2308,6 +2319,10 @@ package body Gtkada.Canvas is
       Grab_Add (Canvas);
       Deep_Copy (From => Event, To => Canvas.Event_Press);
       return True;
+
+   exception
+      when others =>
+         return False;
    end Button_Pressed;
 
    ----------------------------------------
@@ -2315,14 +2330,19 @@ package body Gtkada.Canvas is
    ----------------------------------------
 
    function Get_Background_Selection_Rectangle
-     (Canvas : access Interactive_Canvas_Record'Class)
-     return Gdk_Rectangle
+     (Canvas : access Interactive_Canvas_Record'Class) return Gdk_Rectangle
    is
-      X : Gint := Gint (Get_X (Canvas.Event_Press));
-      Y : Gint := Gint (Get_Y (Canvas.Event_Press));
+      X : Gint := 0;
+      Y : Gint := 0;
       W : Gint := Canvas.Bg_Selection_Width;
       H : Gint := Canvas.Bg_Selection_Height;
+
    begin
+      if Canvas.Event_Press /= null then
+         X := Gint (Get_X (Canvas.Event_Press));
+         Y := Gint (Get_Y (Canvas.Event_Press));
+      end if;
+
       if W < 0 then
          W := -W;
          X := X - W;
@@ -2341,19 +2361,20 @@ package body Gtkada.Canvas is
    --------------------
 
    function Button_Release
-     (Canv : access Gtk_Widget_Record'Class;
-      Event  : Gdk_Event) return Boolean
+     (Canv  : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event) return Boolean
    is
-      Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
-      Tmp : Item_Selection_List;
-      Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
-      Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
-      Rect, Coord  : Gdk_Rectangle;
-      Iter  : Item_Iterator;
+      Canvas      : Interactive_Canvas := Interactive_Canvas (Canv);
+      Tmp         : Item_Selection_List;
+      Xbase       : constant Gint := Gint (Get_Value (Canvas.Hadj));
+      Ybase       : constant Gint := Gint (Get_Value (Canvas.Vadj));
+      Rect, Coord : Gdk_Rectangle;
+      Iter        : Item_Iterator;
+
    begin
       Grab_Remove (Canvas);
 
-      --  restore the standard cursor
+      --  Restore the standard cursor
       Set_Cursor (Get_Window (Canvas), null);
 
       if Get_Window (Event) /= Get_Window (Canvas) then
@@ -2369,6 +2390,7 @@ package body Gtkada.Canvas is
          end if;
 
          --  Select all the items inside the rectangle
+
          Rect := Get_Background_Selection_Rectangle (Canvas);
          Rect := (To_World_Coordinates (Canvas, Rect.X + Xbase),
                   To_World_Coordinates (Canvas, Rect.Y + Ybase),
@@ -2445,6 +2467,10 @@ package body Gtkada.Canvas is
       end if;
 
       return False;
+
+   exception
+      when others =>
+         return False;
    end Button_Release;
 
    ------------------------
