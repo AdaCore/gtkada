@@ -19,11 +19,6 @@ do the following:
 This will create (and install) the GtkAda library and then compile the
 testgtk example.
 
-IMPORTANT Note: On some systems (e.g Digital Unix), make will generate
-warnings when creating the libgtkada.so shared library. You can usually
-safely ignore these warnings and continue the install procedure as
-described in this file.
-     
 Note that you might have to be root to install GtkAda on your system.
 
 You should also modify your PATH variable to include the installation
