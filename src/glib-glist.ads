@@ -16,6 +16,7 @@ package Glib.Glist is
    package Generic_List is
 
       type Glist is private;
+      Null_List : constant Glist;
 
       procedure Alloc (List : out Glist);
       procedure Append (List : in out Glist;
@@ -40,6 +41,8 @@ package Glib.Glist is
       function Length (List : in Glist)
                        return Guint;
       procedure List_Reverse (List : in out Glist);
+      function Next (List : in Glist)
+                     return Glist;
       function Nth (List : in Glist;
                     N    : in Guint)
                     return Glist;
@@ -51,6 +54,8 @@ package Glib.Glist is
                          return Gint;
       procedure Prepend (List : in out Glist;
                          Data : in Gpointer);
+      function Prev (List : in Glist)
+                     return Glist;
       procedure Remove (List : in out Glist;
                         Data : in Gpointer);
       procedure Remove_Link (List : in out Glist;
@@ -67,6 +72,7 @@ package Glib.Glist is
          record
             Ptr : System.Address := System.Null_Address;
          end record;
+      Null_List : constant Glist := (Ptr => System.Null_Address);
    end Generic_List;
    --  mapping: Alloc glib.h g_list_alloc
    --  mapping: Append glib.h g_list_append

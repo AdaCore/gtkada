@@ -216,6 +216,20 @@ package body Glib.Glist is
          Set_Object (List, Internal (Get_Object (List)));
       end List_Reverse;
 
+      ----------
+      -- Next --
+      ----------
+
+      function Next (List : in Glist) return Glist is
+         function Internal (List : System.Address)
+                            return System.Address;
+         pragma Import (C, Internal, "ada_list_next");
+         Tmp : Glist;
+      begin
+         Set_Object (Tmp, Internal (Get_Object (List)));
+         return Tmp;
+      end Next;
+
       ---------
       -- Nth --
       ---------
@@ -285,6 +299,20 @@ package body Glib.Glist is
          Set_Object (List, Internal (Get_Object (List),
                                      Convert (Data)));
       end Prepend;
+
+      ----------
+      -- Prev --
+      ----------
+
+      function Prev (List : in Glist) return Glist is
+         function Internal (List : System.Address)
+                            return System.Address;
+         pragma Import (C, Internal, "ada_list_prev");
+         Tmp : Glist;
+      begin
+         Set_Object (Tmp, Internal (Get_Object (List)));
+         return Tmp;
+      end Prev;
 
       ------------
       -- Remove --
