@@ -27,6 +27,15 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+
+--  A GtkCheckButton places a discrete GtkToggleButton next to a widget,
+--  (usually a GtkLabel).
+
+--  </description>
+--  <c_version> 1.2.6 </c_version>
+--  <screenshot>checkbutton</screenshot>
+
 with Gtk.Object;
 with Gtk.Toggle_Button;
 
@@ -38,21 +47,25 @@ package Gtk.Check_Button is
 
    procedure Gtk_New (Check_Button : out Gtk_Check_Button;
                       With_Label   : in String := "");
+   --  Initializes a button.
+   --  if WITH_LABEL is "", then no widget is associated with the button, and
+   --  any widget can be added to the button (with Gtk.Container.Add).
 
    procedure Initialize (Check_Button : access Gtk_Check_Button_Record'Class;
                          With_Label   : in String := "");
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
 
    procedure Generate
      (Check_Button : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
-
-   type Gtk_Check_Button_Record is new Toggle_Button.Gtk_Toggle_Button_Record
+   type Gtk_Check_Button_Record is
+     new Gtk.Toggle_Button.Gtk_Toggle_Button_Record
      with null record;
-
 end Gtk.Check_Button;

@@ -32,11 +32,13 @@
 --  A Gtk_Toggle_Button is like a regular button, but can be in one of
 --  two states, "active" or "inactive". Its visual aspect is modified
 --  when the state is changed.
+--
 --  You should consider using a Gtk_Check_Button instead, since it looks
---  nicer and provides more visual clues that the button can is toggleable.
+--  nicer and provides more visual clues that the button is toggleable.
 
 --  </description>
 --  <c_version> 1.2.6 </c_version>
+--  <screenshot>togglebutton</screenshot>
 
 with Gtk.Button;
 with Gtk.Object;
@@ -96,3 +98,34 @@ private
      with null record;
 
 end Gtk.Toggle_Button;
+
+--  <example>
+--  --  This examples creates a toggle button with a pixmap in it
+--
+--  with Gtk.Toggle_Button;
+--  with Gdk.Pixmap;
+--  with Gdk.Bitmap;
+--  with Gtk.Pixmap;
+--  with Gtk.Style;
+--  declare
+--     Toggle    : Gtk.Toggle_Button.Gtk_Toggle_Button;
+--     Style     : Gtk.Style.Gtk_Style;
+--     Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
+--     Mask      : Gdk.Bitmap.Gdk_Bitmap;
+--     PixmapWid : Gtk.Pixmap.Gtk_Pixmap;
+--  begin
+--     --  Do not specify a label
+--     Gtk.Toggle_Button.Gtk_New (Toggle);
+--
+--     Style := Gtk.Style.Get_Style (Button);
+--     Gdk.Pixmap.Create_From_Xpm (Pixmap,
+--                                 Gtk.Toggle_Button.Get_Window (Toggle),
+--                                 Mask,
+--                                 Gtk.Style.Get_Bg (Style, State_Normal),
+--                                 "icon.xpm");
+--     Gtk.Pixmap.Gtk_New (PixmapWid, Pixmap, Mask);
+--
+--     --  Add the pixmap to the button
+--     Gtk.Toggle_Button.Add (Toggle, PixmapWid);
+--  end;
+--  </example>
