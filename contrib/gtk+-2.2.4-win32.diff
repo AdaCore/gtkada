@@ -1,6 +1,7 @@
 This is a patch against Gtk+ 2.2.4 sources that fixes Windows specific problems
 
 2003-09-19  Tor Lillqvist  <tml@iki.fi>
+	    Arnaud Charlet  <charlet@gnat.com>
 
 	* gdk/win32/gdkkeys-win32.c (gdk_keymap_translate_keyboard_state): 
 	Handle Caps Lock correctly. (#120176, Ken Rastatter and Owen Taylor)
@@ -177,28 +178,42 @@ Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
  
 --- gtk+/gdk/win32/gdkkeys-win32.c	26 Jul 2003 01:43:24 -0000	1.16.2.1
 +++ gtk+/gdk/win32/gdkkeys-win32.c	19 Sep 2003 00:25:07 -0000	1.16.2.2
-@@ -661,8 +665,8 @@
+@@ -660,16 +660,18 @@
+   if (group < 0 || group >= 2)
      return FALSE;
  
-   if ((state & GDK_SHIFT_MASK) && (state & GDK_LOCK_MASK))
+-  if ((state & GDK_SHIFT_MASK) && (state & GDK_LOCK_MASK))
 -    shift_level = 0;		/* shift disables shift lock */
 -  else if ((state & GDK_SHIFT_MASK) || (state & GDK_LOCK_MASK))
++  update_keymap ();
++
++  keyvals = keysym_tab + hardware_keycode*4;
++
++  if ((keyvals[group*2] >= GDK_a && keyvals[group*2] <= GDK_z)
++     && (state & GDK_SHIFT_MASK) && (state & GDK_LOCK_MASK))
 +    shift_level = 0;		/* shift disables caps lock */
 +  else if (state & GDK_SHIFT_MASK)
      shift_level = 1;
    else
      shift_level = 0;
-@@ -717,6 +721,13 @@
  
+-  update_keymap ();
+-
+-  keyvals = keysym_tab + hardware_keycode*4;
+ 
+   /* Drop group and shift if there are no keysymbols on
+    * the key for those.
+@@ -718,6 +720,13 @@
    if (effective_group)
      *effective_group = group;
-+
+ 
 +  if (!(state & GDK_SHIFT_MASK) && (state & GDK_LOCK_MASK))
 +    {
 +      guint upper = gdk_keyval_to_upper (tmp_keyval);
 +      if (upper != tmp_keyval)
 +	tmp_keyval = upper;
 +    }
- 
++
    if (level)
      *level = shift_level;
+ 
