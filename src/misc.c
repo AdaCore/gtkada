@@ -497,16 +497,16 @@ ada_widget_drawable (GtkWidget * widget)
   return GTK_WIDGET_DRAWABLE (widget);
 }
 
-guint
+gint
 ada_widget_allocation_height (GtkWidget* widget)
 {
-  return (guint) widget->allocation.height;
+  return widget->allocation.height;
 }
 
-guint
+gint
 ada_widget_allocation_width (GtkWidget* widget)
 {
-  return (guint) widget->allocation.width;
+  return widget->allocation.width;
 }
 
 gint
