@@ -104,13 +104,10 @@ gtk_font_combo_class_init (GtkFontComboClass * klass)
   font_combo_signals[CHANGED] =
     gtk_signal_new ("changed",
                     GTK_RUN_LAST,
-                    object_class->type,
+                    GTK_CLASS_TYPE (object_class),
                     GTK_SIGNAL_OFFSET (GtkFontComboClass, changed),
                     gtk_marshal_NONE__NONE,
                     GTK_TYPE_NONE, 0);
-
-  gtk_object_class_add_signals (object_class, font_combo_signals, LAST_SIGNAL);
-
 }
 
 static void
