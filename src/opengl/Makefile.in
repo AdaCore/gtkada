@@ -19,7 +19,7 @@ HAVE_OPENGL=@HAVE_OPENGL@
  
 ifeq ($(HAVE_OPENGL),True)
 OPENGL_C_OBJECTS=gtkglarea.o gdkgl.o
-OPENGL_SOURCES=gdk-gl.adb gtk-glarea.adb
+OPENGL_SOURCES=gl_h.adb gdk-gl.adb gtk-glarea.adb
 OPENGL_OBJECTS=$(OPENGL_SOURCES:%.adb=%.o)
 OPENGL_LIBS=@GL_LIBS@
 OPENGL_FLAGS=@GL_CFLAGS@
