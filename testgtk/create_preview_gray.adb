@@ -43,7 +43,7 @@ package body Create_Preview_Gray is
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   Gray_Idle : Guint  := 0;
+   Gray_Idle : Idle_Handler_Id := 0;
    Count     : Guchar := 1;
 
    ----------

@@ -82,7 +82,7 @@ package body Create_Progress is
          Omenu2          : Gtk_Option_Menu;
          Omenu2_Group    : Widget_Slist.GSlist;
          Gentry          : Gtk_Entry;
-         Timer           : Guint;
+         Timer           : Timeout_Handler_Id;
       end record;
 
    Pdata : ProgressData;

@@ -40,8 +40,8 @@ package body Create_Test_Timeout is
 
    package Label_Timeout is new Timeout (Gtk_Label);
 
-   Timeout   : Guint;
-   Count  : Integer := 0;
+   Timeout : Timeout_Handler_Id;
+   Count   : Integer := 0;
 
    ----------
    -- Help --

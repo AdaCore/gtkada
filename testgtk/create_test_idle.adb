@@ -52,7 +52,7 @@ package body Create_Test_Idle is
    package My_Button_Cb is new Handlers.User_Callback
      (My_Button_Record, Gtk_Box);
 
-   Idle   : Guint;
+   Idle   : Idle_Handler_Id;
    Count  : Integer := 0;
 
    ----------

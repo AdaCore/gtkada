@@ -43,7 +43,7 @@ package body Create_Preview_Color is
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   Color_Idle : Guint  := 0;
+   Color_Idle : Idle_Handler_Id := 0;
    Count      : Guchar := 1;
 
    ----------
