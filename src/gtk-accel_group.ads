@@ -44,6 +44,13 @@ package Gtk.Accel_Group is
    Accel_Locked  : constant Gtk_Accel_Flags;
    Accel_Mask    : constant Gtk_Accel_Flags;
 
+   type Gtk_Accel_Key is record
+      Accel_Key  : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
+      Flags      : Gtk_Accel_Flags;
+   end record;
+   pragma Convention (C, Gtk_Accel_Key);
+
    ------------------------
    -- Accelerator Groups --
    ------------------------
