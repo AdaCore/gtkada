@@ -102,8 +102,14 @@ package body Gtk.Menu_Item is
                          Label     : in  String) is
       function Internal (Label : in String) return System.Address;
       pragma Import (C, Internal, "gtk_menu_item_new_with_label");
+      function Internal2 return System.Address;
+      pragma Import (C, Internal2, "gtk_menu_item_new");
    begin
-      Set_Object (Menu_Item, Internal (Label & ASCII.NUL));
+      if Label = "" then
+         Set_Object (Menu_Item, Internal2);
+      else
+         Set_Object (Menu_Item, Internal (Label & ASCII.NUL));
+      end if;
       Initialize_User_Data (Menu_Item);
    end Initialize;
 
