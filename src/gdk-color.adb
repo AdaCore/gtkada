@@ -370,7 +370,7 @@ package body Gdk.Color is
 
    begin
       Len := sprintf
-        (Result'Address, "%2X%2X%2X" & ASCII.NUL,
+        (Result'Address, "#%2X%2X%2X" & ASCII.NUL,
          Gint (Color.Red / 256),
          Gint (Color.Green / 256),
          Gint (Color.Blue / 256));
