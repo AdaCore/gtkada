@@ -29,14 +29,11 @@
 
 with Gdk.Color;             use Gdk.Color;
 with Gdk.Event;             use Gdk.Event;
-with Gdk.Rectangle;         use Gdk.Rectangle;
-with Gdk.Window;            use Gdk.Window;
 with Glib;                  use Glib;
 with Gtk.Adjustment;        use Gtk.Adjustment;
 with Gtk.Box;               use Gtk.Box;
 with Gtk.Button;            use Gtk.Button;
 with Gtk.Toggle_Button;     use Gtk.Toggle_Button;
-with Gtk.Drawing_Area;      use Gtk.Drawing_Area;
 with Gtk.Enums;             use Gtk.Enums;
 with Gtk.Extra.Plot;        use Gtk.Extra.Plot;
 with Gtk.Extra.Plot_Canvas; use Gtk.Extra.Plot_Canvas;
@@ -107,6 +104,7 @@ package body Create_Plot is
                            Event  : Gdk.Event.Gdk_Event_Button)
                           return Boolean
    is
+      pragma Warnings (Off, Event);
       Arr : Points_Array := Dataset_Get_Y (Get_Active_Dataset (Canvas));
    begin
       Ada.Text_IO.Put_Line ("Current values of points in the dataset:");
@@ -127,6 +125,8 @@ package body Create_Plot is
                           Error : access Boolean)
                          return Gdouble
    is
+      pragma Warnings (Off, Plot);
+      pragma Warnings (Off, Set);
    begin
       Error.all := False;
       return (-0.5 + 0.3 * Sin (3.0 * X) * Sin (50.0 * X));
@@ -144,6 +144,8 @@ package body Create_Plot is
                        Error : access Boolean)
                       return Gdouble
    is
+      pragma Warnings (Off, Plot);
+      pragma Warnings (Off, Set);
    begin
       Error.all := False;
       return 0.65 * Exp (-0.5 * (X - 0.5) * (X - 0.5) / 0.02);
@@ -158,6 +160,7 @@ package body Create_Plot is
    function Activate_Plot (C : access Gtk_Plot_Canvas_Record'Class)
                           return Boolean
    is
+      pragma Warnings (Off, C);
       P : Gtk_Plot;
    begin
       P := Get_Active_Plot (Canvas);
@@ -273,9 +276,12 @@ package body Create_Plot is
                                    Line_Solid,
                                    4, Color);
       Dataset_Set_Connector (Dataset (3), Connect_Straight);
-      Dataset_Set_Xy_Attributes (Dataset (3),
-                                 Line_Solid,
-                                 0, Get_Black (Get_Style (Active_Plot)));
+      Dataset_Set_X_Attributes (Dataset (3),
+                                Line_Solid,
+                                0, Get_Black (Get_Style (Active_Plot)));
+      Dataset_Set_Y_Attributes (Dataset (3),
+                                Line_Solid,
+                                0, Get_Black (Get_Style (Active_Plot)));
       Dataset_Set_Legend (Dataset (3), "Line + Symbol");
 
 
@@ -357,7 +363,7 @@ package body Create_Plot is
       Active_Plot := New_Layer (Canvas);
       Set_Range (Active_Plot, -1.0, 1.0, -1.0, 1.4);
       Legends_Move (Active_Plot, 0.5, 0.05);
-      Hide_Legends_Border (Active_Plot);
+      Set_Legends_Border (Active_Plot, Border_None, 0);
       Axis_Hide_Title (Active_Plot, Axis_Top);
       Axis_Show_Ticks (Active_Plot, Axis_Top, Ticks_All, Ticks_All);
       Axis_Set_Ticks (Active_Plot,  Orientation_Horizontal, 1.0, 0.5);
@@ -387,7 +393,7 @@ package body Create_Plot is
       Add_Plot (Canvas, Active_Plot, 0.15, 0.4);
       Axis_Hide_Title (Active_Plot, Axis_Top);
       Axis_Hide_Title (Active_Plot, Axis_Right);
-      Show_Legends_Border (Active_Plot, True, 3);
+      Set_Legends_Border (Active_Plot, Border_Shadow, 2);
       Legends_Move (Active_Plot, 0.58, 0.05);
 
       Build_Example2 (Active_Plot);
