@@ -1,11 +1,16 @@
+Fri May  2 15:18:09 CEST 2003	Arnaud Charlet	<charlet@gnat.com>
+
+	* gtk/gtktextview.c (gtk_text_view_move_cursor_internal): Add a default
+	to avoid dereferencing invalid memory (C424-015).
+
 Thu Apr  3 17:50:27 CEST 2003	Arnaud Charlet	<charlet@gnat.com>
 
 	Changes to ease distributing gtk+ executables with no gtk+ install:
 
-	gtk/gtkimmodule.c: Handle more gracefully a missing immodule file
+	* gtk/gtkimmodule.c: Handle more gracefully a missing immodule file
 
---- gtk+-2.2.1/gtk/gtkimmodule.c	2003/04/03 15:11:23	1.1
-+++ gtk+-2.2.1/gtk/gtkimmodule.c	2003/04/03 15:12:35
+--- gtk/gtkimmodule.c	2003/04/03 15:11:23	1.1
++++ gtk/gtkimmodule.c	2003/04/03 15:12:35
 @@ -279,9 +279,10 @@
    file = fopen (filename, "r");
    if (!file)
@@ -20,3 +25,15 @@ Thu Apr  3 17:50:27 CEST 2003	Arnaud Charlet	<charlet@gnat.com>
        return;
      }
  
+--- gtk/gtktextview.c.old	2003-04-30 18:40:36 +0200
++++ gtk/gtktextview.c	2003-05-02 15:03:51 +0200
+@@ -4569,6 +4569,9 @@
+         case GTK_MOVEMENT_PARAGRAPHS:
+ 	  adj = get_vadjustment (text_view);
+ 	  break;
++        default:
++          adj = get_vadjustment (text_view);
++	  break;
+ 	}
+       
+       if (count > 0)
