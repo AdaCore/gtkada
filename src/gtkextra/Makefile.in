@@ -7,7 +7,7 @@ SRC=gtkpsfont.c gtkcombobox.c gtkcolorcombo.c gtkbordercombo.c gtkfontcombo.c
 OBJ=${SRC:%.c=%.o}
 CC=@CC@
 FPIC=@FPIC@
-CFLAGS=-O2
+CFLAGS=@CFLAGS@
 ALL_CFLAGS=$(CFLAGS) @GTK_CFLAGS@ $(FPIC)
 
 all: gtkextramarshal.h gtkextramarshal.c $(OBJ)
