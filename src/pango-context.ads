@@ -26,20 +26,46 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.Object;
+with Glib;
+with Pango.Font;
 
 package Pango.Context is
 
-   type Pango_Context_Record is new Glib.Object.GObject_Record with private;
+   type Pango_Context is new Glib.C_Proxy;
+   --  A pango context is somewhat similar to a graphic context, and groups all
+   --  the information on how to handle the various international scripts
+   --  (font, color, direction,...)
 
-   type Pango_Context is access all Pango_Context_Record'Class;
+   --  <doc_ignore>
+   --  ??? There seem to be now way in gtk/gdk/pango to free such a
+   --  context. However, it is a GObject, so maybe we could do a cast and use
+   --  Unref.
+   --  </doc_ignore>
 
-   --  ??? Tempory binding of the type. The associated primitives will come
-   --  later.
+   function Get_Type return Glib.GType;
+   --  Return the internal value associated with a Pango_Context.
+
+   procedure Set_Font_Description
+     (Context     : Pango_Context;
+      Description : Pango.Font.Pango_Font_Description);
+
+   function Get_Font_Description (Context : Pango_Context)
+      return Pango.Font.Pango_Font_Description;
 
 private
-
-   type Pango_Context_Record is new Glib.Object.GObject_Record
-     with null record;
-
+   pragma Import (C, Get_Type, "pango_context_get_type");
+   pragma Import
+     (C, Set_Font_Description, "pango_context_set_font_description");
+   pragma Import
+     (C, Get_Font_Description, "pango_context_get_font_description");
 end Pango.Context;
+
+--  missing:
+--  pango_context_list_families
+--  pango_context_load_font
+--  pango_context_load_fontset
+--  pango_context_get_metrics
+--  pango_context_get_language
+--  pango_context_set_language
+--  pango_context_set_base_dir
+--  pango_context_get_base_dir
