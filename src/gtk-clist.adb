@@ -495,13 +495,36 @@ package body Gtk.Clist is
          Text   : in System.Address)
          return      Gint;
       pragma Import (C, Internal, "gtk_clist_get_text");
+      function Internal2
+        (Clist   : in System.Address;
+         Row     : in Gint;
+         Column  : in Gint;
+         Text    : in System.Address;
+         Spacing : in System.Address;
+         Pixmap  : in System.Address;
+         Mask    : in System.Address)
+         return       Gint;
+      pragma Import (C, Internal2, "gtk_clist_get_pixtext");
+
       Is_Valid : Boolean;
       S : aliased Interfaces.C.Strings.chars_ptr;
+      Mask : aliased System.Address;
    begin
-      Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
-                                         Row,
-                                         Column,
-                                         S'Address));
+      if Get_Cell_Type (Clist, Row, Column) = Cell_Text then
+         Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
+                                            Row,
+                                            Column,
+                                            S'Address));
+      else
+         Is_Valid := Boolean'Val (Internal2 (Get_Object (Clist),
+                                             Row,
+                                             Column,
+                                             S'Address,
+                                             System.Null_Address,
+                                             System.Null_Address,
+                                             Mask'Address));
+      end if;
+
       if Is_Valid then
          return Interfaces.C.Strings.Value (S);
       else
