@@ -194,7 +194,7 @@ package body Gtk.Glade is
          P := P.Next;
       end loop;
 
-      if Object /= null then
+      if Top_Level and then Object /= null then
          Widget.Show_All (Widget.Gtk_Widget (Object));
       end if;
    end Create_Widget;
@@ -226,8 +226,6 @@ package body Gtk.Glade is
      (N : Node_Ptr; File : File_Type; First : Boolean := False)
    is
       P : Node_Ptr;
-      S : String_Ptr;
-
    begin
       Get_Gate (Get_Field (N, "class").all) (N, File);
 
@@ -244,16 +242,6 @@ package body Gtk.Glade is
 
          P := P.Next;
       end loop;
-
-      S := Get_Field (N, "name");
-
-      if S /= null then
-         if First then
-            Put_Line (File, "   Widget.Show_All (Gtk_Widget (" &
-              To_Ada (S.all) & "));");
-         end if;
-      end if;
-
    end Print_Create_Function;
 
    ---------------------
@@ -322,7 +310,8 @@ package body Gtk.Glade is
          P := Get_Field (M, "name");
          Put_Line ("   " & To_Ada (P.all) & " := Create_" &
            To_Ada (P.all) & ";");
-         Put_Line ("   Widget.Show (Gtk_Widget (" & To_Ada (P.all) & "));");
+         Put_Line ("   Widget.Show_All (Gtk_Widget (" &
+           To_Ada (P.all) & "));");
          M := M.Next;
       end loop;
 
@@ -416,7 +405,6 @@ package body Gtk.Glade is
          Put_Line ("with Glib;");
          Put_Line ("with Gtk; use Gtk;");
          Put_Line ("with Gtk.Enums; use Gtk.Enums;");
-         Put_Line ("with Gtk.Widget; use Gtk.Widget;");
          Put_Line ("with Gtk.Button; use Gtk.Button;");
          Put_Line ("with Callbacks_" & Project &
            "; use Callbacks_" & Project & ";");
