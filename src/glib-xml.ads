@@ -97,9 +97,4 @@ package Glib.XML is
       Attribute_Name : in String) return String_Ptr;
    --  Return the value of the attribute 'Attribute_Name' if present.
    --  Return null otherwise.
-
-   function Find_Top (N : Node_Ptr) return Node_Ptr;
-   -- Given any node in the tree, return the root of the tree.
-
-
 end Glib.XML;
