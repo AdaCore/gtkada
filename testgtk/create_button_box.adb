@@ -118,7 +118,7 @@ package body Create_Button_Box is
       Show (Window);
    end Create_Bbox_Window;
 
-   procedure Test_Hbbox (Widget : in out Gtk_Button'Class) is
+   procedure Test_Hbbox (Widget : in out Gtk_Button) is
       pragma Warnings (Off, Widget);
    begin
       Create_Bbox_Window (True, "Spread", 50,40, 85, 28, Spread);
@@ -127,7 +127,7 @@ package body Create_Button_Box is
       Create_Bbox_Window (True, "End", 500, 15, 30, 25, Style_End);
    end Test_Hbbox;
 
-   procedure Test_Vbbox (Widget : in out Gtk_Button'Class) is
+   procedure Test_Vbbox (Widget : in out Gtk_Button) is
       pragma Warnings (Off, Widget);
    begin
       Create_Bbox_Window (False, "Spread", 50, 40, 85, 25, Spread);
@@ -136,7 +136,7 @@ package body Create_Button_Box is
       Create_Bbox_Window (False, "End", 650, 15, 30, 25, Style_end);
    end Test_Vbbox;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id     : Guint;
       Bbox   : Gtk_Hbutton_Box;
       Button : Gtk_Button;
@@ -166,7 +166,7 @@ package body Create_Button_Box is
       if not Visible_Is_Set (Window) then
          Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
    end Run;
 

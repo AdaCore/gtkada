@@ -118,7 +118,7 @@ package body Create_Notebook is
       ICS.New_String ("                "));
 
 
-   procedure Create_Pages (Notebook  : in out Gtk_Notebook'Class;
+   procedure Create_Pages (Notebook  : in out Gtk_Notebook;
                            The_Start : Gint;
                            The_End   : Gint) is
       Child     : Gtk_Widget;
@@ -214,7 +214,7 @@ package body Create_Notebook is
       end loop;
    end Create_Pages;
 
-   procedure Rotate_Notebook (Notebook : in out Gtk_Notebook'Class) is
+   procedure Rotate_Notebook (Notebook : in out Gtk_Notebook) is
    begin
       Set_Tab_Pos (Notebook,
                    Gtk_Position_Type'Val
@@ -222,7 +222,7 @@ package body Create_Notebook is
                     mod 4));
    end Rotate_Notebook;
 
-   procedure Standard_Notebook (Notebook : in out Gtk_Notebook'Class) is
+   procedure Standard_Notebook (Notebook : in out Gtk_Notebook) is
    begin
       Set_Show_Tabs (Notebook, True);
       Set_Scrollable (Notebook, False);
@@ -233,7 +233,7 @@ package body Create_Notebook is
       end if;
    end Standard_Notebook;
 
-   procedure Notabs_Notebook (Notebook : in out Gtk_Notebook'Class) is
+   procedure Notabs_Notebook (Notebook : in out Gtk_Notebook) is
    begin
       Set_Show_Tabs (Notebook, False);
       if Widget_List.Length (Get_Children (Notebook)) = 15 then
@@ -243,7 +243,7 @@ package body Create_Notebook is
       end if;
    end Notabs_Notebook;
 
-   procedure Scrollable_Notebook (Notebook : in out Gtk_Notebook'Class) is
+   procedure Scrollable_Notebook (Notebook : in out Gtk_Notebook) is
    begin
       Set_Show_Tabs (Notebook, True);
       Set_Scrollable (Notebook, True);
@@ -252,7 +252,7 @@ package body Create_Notebook is
       end if;
    end Scrollable_Notebook;
 
-   procedure Notebook_Popup (Button : in out Gtk_Check_Button'Class;
+   procedure Notebook_Popup (Button : in out Gtk_Check_Button;
                              Notebook : in out Gtk_Notebook) is
    begin
       if Is_Active (Button) then
@@ -262,7 +262,7 @@ package body Create_Notebook is
       end if;
    end Notebook_Popup;
 
-   procedure Page_Switch (Notebook : in out Gtk_Notebook'Class;
+   procedure Page_Switch (Notebook : in out Gtk_Notebook;
                           Page     : in out Gtk_Notebook_Page;
                           Page_Num : in out Gtk_Notebook)
    is
@@ -289,7 +289,7 @@ package body Create_Notebook is
       end if;
    end Page_Switch;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id              : Guint;
       Box1            : Gtk_Box;
       Box2            : Gtk_Box;
@@ -397,9 +397,9 @@ package body Create_Notebook is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show_All (Window);
+         Show_All (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

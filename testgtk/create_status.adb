@@ -50,19 +50,19 @@ package body Create_Status is
    Window  : aliased Gtk.Window.Gtk_Window;
    Counter : Gint := 1;
 
-   procedure Push (Status : in out Gtk_Status_Bar'Class) is
+   procedure Push (Status : in out Gtk_Status_Bar) is
       Id : Message_Id;
    begin
       Id := Push (Status, 1, "Something" & Gint'Image (Counter));
       Counter := Counter + 1;
    end Push;
 
-   procedure Pop (Status : in out Gtk_Status_Bar'Class) is
+   procedure Pop (Status : in out Gtk_Status_Bar) is
    begin
       Pop (Status, 1);
    end Pop;
 
-   procedure Popped (Status : in out Gtk_Status_Bar'Class) is
+   procedure Popped (Status : in out Gtk_Status_Bar) is
       use type Messages_List.GSlist;
    begin
       if Get_Messages (Status) = Messages_List.Null_List then
@@ -70,12 +70,12 @@ package body Create_Status is
       end if;
    end Popped;
 
-   procedure Steal (Status : in out Gtk_Status_Bar'Class) is
+   procedure Steal (Status : in out Gtk_Status_Bar) is
    begin
       Remove (Status, 1, 4);
    end Steal;
 
-   procedure Contexts (Status : in out Gtk_Status_Bar'Class) is
+   procedure Contexts (Status : in out Gtk_Status_Bar) is
    begin
       Ada.Text_IO.Put_Line ("Status_Bar : Context : "
                             & "any context"
@@ -104,7 +104,7 @@ package body Create_Status is
                                           (Status, "hit the mouse2")));
    end Contexts;
 
-   procedure Dump (Status : in out Gtk_Status_Bar'Class) is
+   procedure Dump (Status : in out Gtk_Status_Bar) is
       List : Messages_List.GSlist := Get_Messages (Status);
       use type Messages_List.GSlist;
    begin
@@ -123,7 +123,7 @@ package body Create_Status is
       end loop;
    end Dump;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id        : Guint;
       Box1,
         Box2    : Gtk_Box;
@@ -200,9 +200,9 @@ package body Create_Status is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

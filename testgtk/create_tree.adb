@@ -85,7 +85,7 @@ package body Create_Tree is
    package Tree_Data is new User_Data (STreeButtons_Access);
 
 
-   procedure Cb_Tree_Changed (Tree : in out Gtk_Tree'Class) is
+   procedure Cb_Tree_Changed (Tree : in out Gtk_Tree) is
       use Widget_List;
       Tree_Buttons  : STreeButtons_Access := Tree_Data.Get (Tree);
       Selected_List : Widget_List.Glist;
@@ -106,7 +106,7 @@ package body Create_Tree is
       end if;
    end Cb_Tree_Changed;
 
-   procedure Tree_Destroy (Widget : in out Gtk_Widget'Class) is
+   procedure Tree_Destroy (Widget : in out Gtk_Widget) is
       Tree_Buttons  : STreeButtons_Access := Tree_Data.Get (widget);
       procedure Free is new Unchecked_Deallocation (STreeButtons,
                                                     STreeButtons_Access);
@@ -116,7 +116,7 @@ package body Create_Tree is
    end Tree_Destroy;
 
 
-   procedure Cb_Add_New_Item (Tree : in out Gtk_Tree'Class) is
+   procedure Cb_Add_New_Item (Tree : in out Gtk_Tree) is
       use Widget_List;
       Tree_Buttons  : STreeButtons_Access := Tree_Data.Get (Tree);
       Selected_List : Widget_List.Glist;
@@ -143,7 +143,7 @@ package body Create_Tree is
       Tree_Buttons.Nb_Item_Add := Tree_Buttons.Nb_Item_Add + 1;
    end Cb_Add_New_Item;
 
-   procedure Cb_Remove_Item (Tree : in out Gtk_Tree'Class) is
+   procedure Cb_Remove_Item (Tree : in out Gtk_Tree) is
       use Widget_List;
       Selected_List : Widget_List.Glist;
       Clear_List    : Widget_List.Glist;
@@ -159,7 +159,7 @@ package body Create_Tree is
       Free (Clear_List);
    end Cb_Remove_Item;
 
-   procedure Cb_Remove_Subtree (Tree : in out Gtk_Tree'Class) is
+   procedure Cb_Remove_Subtree (Tree : in out Gtk_Tree) is
       use Widget_List;
       Selected_List : Widget_List.Glist;
       Item          : Gtk_Tree_Item;
@@ -326,7 +326,7 @@ package body Create_Tree is
       Show (Window);
    end Create_Tree_Sample;
 
-   procedure Cb_Create_Tree (Button : in out Gtk_Widget'Class) is
+   procedure Cb_Create_Tree (Button : in out Gtk_Widget) is
       pragma Warnings (Off, Button);
       Selection_Mode  : Gtk_Selection_Mode := Selection_Single;
       View_Line       : Boolean;
@@ -357,15 +357,13 @@ package body Create_Tree is
                           No_Root_Item, Nb_Item, Recursion_Level);
    end Cb_Create_Tree;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id       : Guint;
-      Close    : Gtk_Button;
       Box1,
         Box2,
         Box3,
         Box4,
         Box5   : Gtk_Box;
-      Tree     : Gtk_Tree;
       Button   : Gtk_Button;
       Sep      : Gtk_Separator;
       Frame    : Gtk_Frame;
@@ -507,9 +505,9 @@ package body Create_Tree is
 
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

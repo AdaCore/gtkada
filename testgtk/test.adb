@@ -28,22 +28,22 @@
 
 with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;
-with Glib; use Glib;
-with Gtk; use Gtk;
+with Glib;                 use Glib;
+with Gtk;                  use Gtk;
 with Gtk.Adjustment;
-with Gtk.Box;
-with Gtk.Button;
+with Gtk.Box;              use Gtk.Box;
+with Gtk.Button;           use Gtk.Button;
 with Gtk.Container;
 with Gtk.Enums;
-with Gtk.Separator;
-with Gtk.Label;
+with Gtk.Separator;        use Gtk.Separator;
+with Gtk.Label;            use Gtk.Label;
 with Gtk.Main;
 with Gtk.Object;
 with Gtk.Rc;
-with Gtk.Scrolled_Window;
+with Gtk.Scrolled_Window;  use Gtk.Scrolled_Window;
 with Gtk.Signal;
-with Gtk.Widget;
-with Gtk.Window;
+with Gtk.Widget;           use Gtk.Widget;
+with Gtk.Window;           use Gtk.Window;
 
 with Create_Button_Box;
 with Create_Buttons;
@@ -97,9 +97,9 @@ package body Test is
    ----------------------
 
    procedure Create_Main_Window;
-   procedure Do_Exit (Widget : in out Gtk.Widget.Gtk_Widget'Class;
+   procedure Do_Exit (Widget : in out Gtk_Widget;
                       Data : in out Window.Gtk_Window'Class);
-   procedure Exit_Main (Object : in out Window.Gtk_Window'Class);
+   procedure Exit_Main (Object : in out Gtk_Window);
    function Gtk_Version_Number return String;
 
 
@@ -188,9 +188,9 @@ package body Test is
    begin
       Window.Gtk_New (Window => Main_Window,
                       The_Type => Enums.Window_Toplevel);
-      Widget.Set_Name (Widget => Main_Window, Name => "main window");
-      Widget.Set_USize (Widget => Main_Window, Width => 200, Height => 400);
-      Widget.Set_UPosition (Widget => Main_Window, X => 20, Y => 20);
+      Set_Name (Widget => Main_Window, Name => "main window");
+      Set_USize (Widget => Main_Window, Width => 200, Height => 400);
+      Set_UPosition (Widget => Main_Window, X => 20, Y => 20);
 
       Cb_Id := Window_Callback.Connect (Obj => Main_Window, Name => "destroy",
                                         Func => Exit_Main'Access);
@@ -200,11 +200,11 @@ package body Test is
 
       Box.Gtk_New_Vbox (Widget => Box1, Homogeneous => False, Spacing => 0);
       Container.Add (Container => Main_Window, Widget => Box1);
-      Widget.Show (Box1);
+      Show (Box1);
 
       Label.Gtk_New (Label => A_Label,
                      Str => Gtk_Version_Number);
-      Widget.Show (A_Label);
+      Show (A_Label);
       Box.Pack_Start (In_Box => Box1, Child => A_Label,
                       Expand => False, Fill => False);
 
@@ -219,14 +219,14 @@ package body Test is
                           Flags => Widget.Can_Focus);
       Box.Pack_Start (In_Box => Box1, Child => A_Scrolled_Window,
                       Expand => True, Fill => True);
-      Widget.Show (A_Scrolled_Window);
+      Show (A_Scrolled_Window);
 
       Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 0);
       Container.Border_Width (Container => Box2, Border_Width => 10);
       Container.Add (Container => A_Scrolled_Window, Widget => Box2);
       Temp := Scrolled_Window.Get_Vadjustment (Scrolled_Window => A_Scrolled_Window);
       Container.Set_Focus_Vadjustment (Container => Box2, Adjustment => Temp);
-      Widget.Show (Box2);
+      Show (Box2);
 
       for Index in Buttons'Range loop
 
@@ -237,22 +237,22 @@ package body Test is
                                               Name => "clicked",
                                               Func => Buttons (Index).Cb);
          else
-            Widget.Set_Sensitive (Widget => A_Button, Sensitive => False);
+            Set_Sensitive (Widget => A_Button, Sensitive => False);
          end if;
          Box.Pack_Start (In_Box => Box2, Child => A_Button);
-         Widget.Show (A_Button);
+         Show (A_Button);
 
       end loop;
 
       Gtk.Separator.Gtk_New_Hseparator (Separator);
       Box.Pack_Start (In_Box => Box1, Child => Separator, Expand => False);
-      Widget.Show (Separator);
+      Show (Separator);
 
       Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
       Container.Border_Width (Container => Box2, Border_Width => 10);
       Box.Pack_Start (In_Box => Box1, Child => Box2,
                        Expand => False, Fill => True);
-      Widget.Show (Box2);
+      Show (Box2);
 
       Button.Gtk_New (Widget => A_Button, Label => "close");
       Cb_Id := Do_Exit_Callback.Connect (Obj => A_Button, Name => "clicked",
@@ -261,10 +261,10 @@ package body Test is
       Box.Pack_Start (In_Box => Box2, Child => A_Button,
                       Expand => True, Fill => True);
       Object.Set_Flags (Object => A_Button, Flags => Widget.Can_Default);
-      Widget.Grab_Default (A_Button);
-      Widget.Show (A_Button);
+      Grab_Default (A_Button);
+      Show (A_Button);
 
-      Widget.Show (Main_Window);
+      Show (Main_Window);
 
    end Create_Main_Window;
 
@@ -273,17 +273,17 @@ package body Test is
    --  Do_Exit  --
    ---------------
 
-   procedure Do_Exit (Widget : in out Gtk.Widget.Gtk_Widget'Class;
+   procedure Do_Exit (Widget : in out Gtk_Widget;
                       Data : in out Window.Gtk_Window'Class) is
    begin
-      Gtk.Widget.Destroy (Data);
+      Destroy (Data);
    end Do_Exit;
 
    -----------------
    --  Exit_Main  --
    -----------------
 
-   procedure Exit_Main (Object : in out Window.Gtk_Window'Class) is
+   procedure Exit_Main (Object : in out Gtk_Window) is
    begin
       Gtk.Main.Main_Quit;
    end Exit_Main;

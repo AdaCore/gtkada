@@ -61,47 +61,47 @@ package body Create_Toolbar is
       return GtkPixmap;
    end New_Pixmap;
 
-   procedure Set_Horizontal (Toolbar : in out Gtk_Toolbar'Class) is
+   procedure Set_Horizontal (Toolbar : in out Gtk_Toolbar) is
    begin
       Set_Orientation (Toolbar, Orientation_Horizontal);
    end Set_Horizontal;
 
-   procedure Set_Vertical (Toolbar : in out Gtk_Toolbar'Class) is
+   procedure Set_Vertical (Toolbar : in out Gtk_Toolbar) is
    begin
       Set_Orientation (Toolbar, Orientation_Vertical);
    end Set_Vertical;
 
-   procedure Set_Icons (Toolbar : in out Gtk_Toolbar'Class) is
+   procedure Set_Icons (Toolbar : in out Gtk_Toolbar) is
    begin
       Set_Style (Toolbar, Toolbar_Icons);
    end Set_Icons;
 
-   procedure Set_Text (Toolbar : in out Gtk_Toolbar'Class) is
+   procedure Set_Text (Toolbar : in out Gtk_Toolbar) is
    begin
       Set_Style (Toolbar, Toolbar_Text);
    end Set_Text;
 
-   procedure Set_Both (Toolbar : in out Gtk_Toolbar'Class) is
+   procedure Set_Both (Toolbar : in out Gtk_Toolbar) is
    begin
       Set_Style (Toolbar, Toolbar_Both);
    end Set_Both;
 
-   procedure Set_Small_Space (Toolbar : in out Gtk_Toolbar'Class) is
+   procedure Set_Small_Space (Toolbar : in out Gtk_Toolbar) is
    begin
       Set_Space_Size (Toolbar, 5);
    end Set_Small_Space;
 
-   procedure Set_Big_Space (Toolbar : in out Gtk_Toolbar'Class) is
+   procedure Set_Big_Space (Toolbar : in out Gtk_Toolbar) is
    begin
       Set_Space_Size (Toolbar, 10);
    end Set_Big_Space;
 
-   procedure Set_Enable (Toolbar : in out Gtk_Toolbar'Class) is
+   procedure Set_Enable (Toolbar : in out Gtk_Toolbar) is
    begin
       Set_Tooltips (Toolbar, True);
    end Set_Enable;
 
-   procedure Set_Disable (Toolbar : in out Gtk_Toolbar'Class) is
+   procedure Set_Disable (Toolbar : in out Gtk_Toolbar) is
    begin
       Set_Tooltips (Toolbar, False);
    end Set_Disable;
@@ -111,7 +111,6 @@ package body Create_Toolbar is
                            With_Entry : in Boolean := False)
    is
       Id        : Guint;
-      Pixmap    : Gtk_Pixmap;
       The_Entry : Gtk_Entry;
    begin
       if not Realized_Is_Set (Toplevel) then
@@ -196,7 +195,7 @@ package body Create_Toolbar is
 
    Window : aliased Gtk_Window;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id      : Guint;
       Toolbar : Gtk_Toolbar;
    begin
@@ -209,7 +208,7 @@ package body Create_Toolbar is
          Border_Width (Window, 0);
       end if;
       if Visible_Is_Set (Window) then
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       else
          Make_Toolbar (Toolbar, Window, True);
          Add (Window, Toolbar);

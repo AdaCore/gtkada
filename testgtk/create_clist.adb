@@ -55,29 +55,29 @@ package body Create_Clist is
    Clist_Rows         : Integer := 0;
    Clist_Selected_Row : Gint:= 0;
 
-   procedure Clear_List (List : in out Gtk_Clist'Class) is
+   procedure Clear_List (List : in out Gtk_Clist) is
    begin
       Clear (List);
       Clist_Rows := 0;
    end Clear_List;
 
-   procedure Remove_Row (List : in out Gtk_Clist'Class) is
+   procedure Remove_Row (List : in out Gtk_Clist) is
    begin
       Remove (List, Clist_Selected_Row);
       Clist_Rows := Clist_Rows - 1;
    end Remove_Row;
 
-   procedure Show_Titles (List : in out Gtk_Clist'Class) is
+   procedure Show_Titles (List : in out Gtk_Clist) is
    begin
       Column_Titles_Show (List);
    end Show_Titles;
 
-   procedure Hide_Titles (List : in out Gtk_Clist'Class) is
+   procedure Hide_Titles (List : in out Gtk_Clist) is
    begin
       Column_Titles_Hide (List);
    end Hide_Titles;
 
-   procedure Add1000 (List : in out Gtk_Clist'Class) is
+   procedure Add1000 (List : in out Gtk_Clist) is
       Pixmap : Gdk_Pixmap;
       Mask   : Gdk_Bitmap;
       Texts  : Line_Data (0 .. Clist_Columns - 1);
@@ -108,7 +108,7 @@ package body Create_Clist is
       Thaw (List);
    end Add1000;
 
-   procedure Add10000 (List : in out Gtk_Clist'Class) is
+   procedure Add10000 (List : in out Gtk_Clist) is
       Texts  : Line_Data (0 .. Clist_Columns - 1);
       Row    : Gint;
    begin
@@ -130,7 +130,7 @@ package body Create_Clist is
       Thaw (List);
    end Add10000;
 
-   procedure Insert_Row (List : in out Gtk_Clist'Class) is
+   procedure Insert_Row (List : in out Gtk_Clist) is
       Texts  : Line_Data (0 .. Clist_Columns - 1)
         := (ICS.New_String ("This"),
             ICS.New_String ("is"),
@@ -145,7 +145,7 @@ package body Create_Clist is
       Free_Line_Data (Texts);
    end Insert_Row;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Titles : Line_Data (1 .. Clist_Columns) := (ICS.New_String ("Title 0"),
                                                   ICS.New_String ("Title 1"),
                                                   ICS.New_String ("Title 2"),
@@ -278,10 +278,10 @@ package body Create_Clist is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
          Clist_Rows := 0;
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

@@ -43,20 +43,20 @@ with Common; use Common;
 
 package body Create_Test_Idle is
 
-   package Label_Idle is new Idle (Gtk_Label'Class);
+   package Label_Idle is new Idle (Gtk_Label);
 
    Dialog : aliased Gtk_Dialog;
    Idle   : Guint;
    Count  : Integer := 0;
 
-   function Idle_Test (Label : in Gtk_Label'Class) return Boolean is
+   function Idle_Test (Label : in Gtk_Label) return Boolean is
    begin
       Count := Count + 1;
       Set (Label, "count:" & Integer'Image (Count));
       return True;
    end Idle_Test;
 
-   procedure Stop_Idle (Label : in out Gtk_Label'Class) is
+   procedure Stop_Idle (Label : in out Gtk_Label) is
       pragma Warnings (Off, Label);
    begin
       if Idle /= 0 then
@@ -65,21 +65,21 @@ package body Create_Test_Idle is
       end if;
    end Stop_Idle;
 
-   procedure Destroy_Idle (Window : in out Gtk_Widget'Class) is
+   procedure Destroy_Idle (Window : in out Gtk_Widget) is
       Dummy_Label : Gtk_Label;
    begin
       Stop_Idle (Dummy_Label);
       Gtk.Widget.Destroy (Window);
    end Destroy_Idle;
 
-   procedure Start_Idle (Label : in out Gtk_Label'Class) is
+   procedure Start_Idle (Label : in out Gtk_Label) is
    begin
       if Idle = 0 then
          Idle := Label_Idle.Add (Idle_Test'Access, Label);
       end if;
    end Start_Idle;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id       : Guint;
       Button   : Gtk_Button;
       Label    : Gtk_Label;
@@ -119,9 +119,9 @@ package body Create_Test_Idle is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Dialog) then
-         Gtk.Widget.Show (Dialog);
+         Show (Dialog);
       else
-         Gtk.Widget.Destroy (Dialog);
+         Destroy (Dialog);
       end if;
 
    end Run;

@@ -56,12 +56,12 @@ package body Create_Spin is
    Window   : aliased Gtk.Window.Gtk_Window;
    Spinner1 : Gtk_Spin_Button;
 
-   procedure Change_Digits (Spin : in out Gtk_Spin_Button'Class) is
+   procedure Change_Digits (Spin : in out Gtk_Spin_Button) is
    begin
       Set_Digits (Spinner1, Get_Value_As_Int (Spin));
    end Change_Digits;
 
-   procedure Toggle_Snap (Widget : in out Gtk_Toggle_Button'Class;
+   procedure Toggle_Snap (Widget : in out Gtk_Toggle_Button;
                           Spin : in out Gtk_Spin_Button) is
    begin
       if Is_Active (Widget) then
@@ -71,13 +71,13 @@ package body Create_Spin is
       end if;
    end Toggle_Snap;
 
-   procedure Toggle_Numeric (Widget : in out Gtk_Toggle_Button'Class;
+   procedure Toggle_Numeric (Widget : in out Gtk_Toggle_Button;
                              Spin : in out Gtk_Spin_Button) is
    begin
       Set_Numeric (Spin, Is_Active (Widget));
    end Toggle_Numeric;
 
-   procedure Get_Value (Widget : in out Gtk_Button'Class;
+   procedure Get_Value (Widget : in out Gtk_Button;
                         Data   : in out Gint)
    is
       Label : Gtk_Label := Label_User.Get (Widget);
@@ -90,7 +90,7 @@ package body Create_Spin is
       end if;
    end Get_Value;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id       : Guint;
       Main_Box : Gtk_Box;
       VBox      : Gtk_Box;
@@ -234,9 +234,9 @@ package body Create_Spin is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show_All (Window);
+         Show_All (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

@@ -11,7 +11,7 @@
 -- This library is distributed in the hope that it will be useful,   --
 -- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
 -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
---         General Public License for more details.                  --
+-- General Public License for more details.                          --
 --                                                                   --
 -- You should have received a copy of the GNU General Public         --
 -- License along with this library; if not, write to the             --
@@ -30,6 +30,6 @@ with Gtk.Button;
 
 package Create_Preview_Color is
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class);
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button);
 
 end Create_Preview_Color;

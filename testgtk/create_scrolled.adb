@@ -28,14 +28,11 @@
 
 with Glib; use Glib;
 with Gdk.Types; use Gdk.Types;
-with Gtk.Adjustment; use Gtk.Adjustment;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Frame; use Gtk.Frame;
-with Gtk.Label; use Gtk.Label;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Table; use Gtk.Table;
@@ -49,10 +46,8 @@ package body Create_Scrolled is
 
    Window : aliased Gtk.Dialog.Gtk_Dialog;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id        : Guint;
-      Label     : Gtk_Label;
-      Frame     : Gtk_Frame;
       Button    : Gtk_Button;
       Table     : Gtk_Table;
       Scrolled  : Gtk_Scrolled_Window;
@@ -99,9 +94,9 @@ package body Create_Scrolled is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

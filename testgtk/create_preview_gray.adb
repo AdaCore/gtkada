@@ -60,7 +60,7 @@ package body Create_Preview_Gray is
       return True;
    end Gray_Idle_Func;
 
-   procedure Preview_Destroy (Dummy  : in out Gtk_Widget'Class;
+   procedure Preview_Destroy (Dummy  : in out Gtk_Widget;
                               Widget : in out Gtk_Widget_Access) is
       pragma Warnings (Off, Dummy);
    begin
@@ -69,7 +69,7 @@ package body Create_Preview_Gray is
       Gtk.Widget.Destroy (Widget.all);
    end Preview_Destroy;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id      : Guint;
       Preview : Gtk_Preview;
       Buf     : Guchar_Array (0 .. 255);
@@ -97,9 +97,9 @@ package body Create_Preview_Gray is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

@@ -45,14 +45,14 @@ package body Create_File_Selection is
 
    Window : aliased Gtk_File_Selection;
 
-   procedure Ok (Files : in out Gtk_File_Selection'Class) is
+   procedure Ok (Files : in out Gtk_File_Selection) is
    begin
       Ada.Text_IO.Put_Line ("Selected " & Get_Filename (Files));
-      Gtk.Widget.Destroy (Files);
+      Destroy (Files);
    end Ok;
 
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id     : Guint;
       Button : Gtk_Button;
    begin
@@ -83,9 +83,9 @@ package body Create_File_Selection is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

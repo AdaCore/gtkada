@@ -64,7 +64,7 @@ package body Create_Cursors is
    Window : aliased Gtk.Window.Gtk_Window;
 
 
-   procedure Cursor_Expose_Event (Darea : in out Gtk_Drawing_Area'Class) is
+   procedure Cursor_Expose_Event (Darea : in out Gtk_Drawing_Area) is
       Draw       : Gdk_Drawable := Gdk_Drawable (Get_Window (Darea));
       White_GC   : Gdk_GC := Get_White_GC (Get_Style (Darea));
       Black_GC   : Gdk_GC := Get_Black_GC (Get_Style (Darea));
@@ -83,7 +83,7 @@ package body Create_Cursors is
    end Cursor_Expose_Event;
 
 
-   procedure Set_Cursor (Spinner : in out Gtk_Spin_Button'Class;
+   procedure Set_Cursor (Spinner : in out Gtk_Spin_Button;
                          Widget  : in out Gtk_Drawing_Area)
    is
       C      : Gint := Get_Value_As_Int (Spinner);
@@ -95,7 +95,7 @@ package body Create_Cursors is
       Destroy (Cursor);
    end Set_Cursor;
 
-   procedure Cursor_Event (Darea   : in out Gtk_Widget'Class;
+   procedure Cursor_Event (Darea   : in out Gtk_Widget;
                            Event   : in out Gdk_Event_Button;
                            Spinner : in out Gtk_Spin_Button) is
       pragma Warnings (Off, Darea);
@@ -107,7 +107,7 @@ package body Create_Cursors is
       end if;
    end Cursor_Event;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id      : Guint;
       Main_Box,
         Vbox,
@@ -184,15 +184,8 @@ package body Create_Cursors is
          Set_Cursor (Spinner, Darea);
 
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
-
---       if not Gtk.Widget.Visible_Is_Set (Window) then
---          Gtk.Widget.Show (Window);
---       else
---       Gtk.Widget.Destroy (Window);
---       end if;
-
    end Run;
 
 end Create_Cursors;

@@ -50,7 +50,7 @@ package body Create_Progress is
    Window     : aliased Gtk.Dialog.Gtk_Dialog;
    Timeout_Id : Guint := 0;
 
-   procedure Destroy_Progress (Window : in out Gtk_Widget'Class) is
+   procedure Destroy_Progress (Window : in out Gtk_Widget) is
    begin
       Timeout_Remove (Timeout_Id);
       Timeout_Id := 0;
@@ -69,7 +69,7 @@ package body Create_Progress is
       return True;
    end Progress_Timeout;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id       : Guint;
       Tooltips : Gtk_Tooltips;
       Vbox     : Gtk_Box;
@@ -118,9 +118,9 @@ package body Create_Progress is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

@@ -26,18 +26,19 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk; use Gtk;
-with Gtk.Box;
-with Gtk.Check_Button;
+with Glib;              use Glib;
+with Gtk;               use Gtk;
+with Gtk.Box;           use Gtk.Box;
+with Gtk.Button;        use Gtk.Button;
+with Gtk.Check_Button;  use Gtk.Check_Button;
 with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Object;
-with Gtk.Separator;
+with Gtk.Separator;     use Gtk.Separator;
 with Gtk.Signal;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window;use Gtk.Window;
-with Common; use Common;
+with Gtk.Widget;        use Gtk.Widget;
+with Gtk.Window;        use Gtk.Window;
+with Common;            use Common;
 
 package body Create_Check_Buttons is
 
@@ -51,7 +52,7 @@ package body Create_Check_Buttons is
 
    ----------------------------------------------------------------------
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Box1, Box2 : Box.Gtk_Box;
       A_Button : Button.Gtk_Button;
       A_Check_Button : Check_Button.Gtk_Check_Button;
@@ -73,37 +74,37 @@ package body Create_Check_Buttons is
 
          Box.Gtk_New_Vbox (Widget => Box1, Homogeneous => False, Spacing => 0);
          Container.Add (Container => New_Window, Widget => Box1);
-         Gtk.Widget.Show (Box1);
+         Show (Box1);
 
          Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
          Container.Border_Width (Container => Box2, Border_Width => 10);
          Box.Pack_Start (In_Box => Box1, Child => Box2);
-         Gtk.Widget.Show (Box2);
+         Show (Box2);
 
          Check_Button.Gtk_New (Widget => A_Check_Button,
                                With_Label => "button1");
          Box.Pack_Start (In_Box => Box2, Child => A_Check_Button);
-         Gtk.Widget.Show (A_Check_Button);
+         Show (A_Check_Button);
 
          Check_Button.Gtk_New (Widget => A_Check_Button,
                                With_Label => "button2");
          Box.Pack_Start (In_Box => Box2, Child => A_Check_Button);
-         Gtk.Widget.Show (A_Check_Button);
+         Show (A_Check_Button);
 
          Check_Button.Gtk_New (Widget => A_Check_Button,
                                With_Label => "button3");
          Box.Pack_Start (In_Box => Box2, Child => A_Check_Button);
-         Gtk.Widget.Show (A_Check_Button);
+         Show (A_Check_Button);
 
          Gtk.Separator.Gtk_New_Hseparator (A_Separator);
          Box.Pack_Start (In_Box => Box1, Child => A_Separator,
                          Expand => False);
-         Gtk.Widget.Show (A_Separator);
+         Show (A_Separator);
 
          Box.Gtk_New_Vbox (Widget => Box2, Homogeneous => False, Spacing => 10);
          Container.Border_Width (Container => Box2, Border_Width => 10);
          Box.Pack_Start (In_Box => Box1, Child => Box2, Expand => False);
-         Gtk.Widget.Show (Box2);
+         Show (Box2);
 
          Button.Gtk_New (Widget => A_Button, Label => "close");
          Cb_Id := Exit_Cb.Connect (Obj => A_Button,
@@ -113,15 +114,15 @@ package body Create_Check_Buttons is
          Box.Pack_Start (In_Box => Box2, Child => A_Button);
          Object.Set_Flags (Object => A_Button,
                            Flags => Gtk.Widget.Can_Default);
-         Gtk.Widget.Grab_Default (A_Button);
-         Gtk.Widget.Show (A_Button);
+         Grab_Default (A_Button);
+         Show (A_Button);
 
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (New_Window) then
-         Gtk.Widget.Show (New_Window);
+         Show (New_Window);
       else
-         Gtk.Widget.Destroy (New_Window);
+         Destroy (New_Window);
       end if;
 
    end Run;

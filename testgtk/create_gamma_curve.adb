@@ -48,7 +48,7 @@ package body Create_Gamma_Curve is
    Count  : Gint := 0;
    Curve  : Gtk_Gamma_Curve;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id    : Guint;
       Max   : Gint := 127 + (Count mod 4) * 128;
       Vec   : Gfloat_Array (1 .. Positive (Max));
@@ -79,9 +79,9 @@ package body Create_Gamma_Curve is
 
 
       if not Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       elsif (Count mod 4 = 3) then
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
       Count := Count + 1;

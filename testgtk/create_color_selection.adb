@@ -50,12 +50,12 @@ package body Create_Color_Selection is
      (Widget_Type => Gtk.Widget.Gtk_Widget);
    --  Must be instanciated at library level !
 
-   procedure Color_Changed (Dialog : in out Gtk_Color_Selection'Class);
-   procedure Color_Ok (Widget : in out Button.Gtk_Button'Class;
+   procedure Color_Changed (Dialog : in out Gtk_Color_Selection);
+   procedure Color_Ok (Widget : in out Button.Gtk_Button;
                        Dialog : in out Gtk_Color_Selection_Dialog);
 
 
-   procedure Color_Ok (Widget : in out Button.Gtk_Button'Class;
+   procedure Color_Ok (Widget : in out Button.Gtk_Button;
                        Dialog : in out Gtk_Color_Selection_Dialog)
    is
       Color : Color_Array;
@@ -71,7 +71,7 @@ package body Create_Color_Selection is
    end Color_Ok;
 
 
-   procedure Color_Changed (Dialog : in out Gtk_Color_Selection'Class)
+   procedure Color_Changed (Dialog : in out Gtk_Color_Selection)
    is
       Color : Color_Array;
    begin
@@ -87,7 +87,7 @@ package body Create_Color_Selection is
    Dialog : aliased Gtk_Color_Selection_Dialog;
 
    procedure Run
-     (Widget : in out Button.Gtk_Button'Class)
+     (Widget : in out Button.Gtk_Button)
    is
       Cb_Id  : Guint;
    begin
@@ -117,9 +117,9 @@ package body Create_Color_Selection is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Dialog) then
-         Gtk.Widget.Show (Dialog);
+         Show (Dialog);
       else
-         Gtk.Widget.Destroy (Dialog);
+         Destroy (Dialog);
       end if;
    end Run;
 

@@ -55,15 +55,15 @@ package body Create_Tooltips is
 
    Window  : aliased Gtk.Window.Gtk_Window;
 
-   procedure Tooltips_Destroy (Widget : in out Gtk_Widget'Class) is
+   procedure Tooltips_Destroy (Widget : in out Gtk_Widget) is
       Tt : Gtk_Tooltips;
    begin
       Tt := Tooltips_Data.Get (Widget, "tooltips");
-      Gtk.Object.Destroy (Tt);
-      Gtk.Object.Destroy (Widget);
+      Destroy (Tt);
+      Destroy (Widget);
    end Tooltips_Destroy;
 
-   procedure Widget_Entered (Tips_Query  : in out Gtk_Tips_Query'Class;
+   procedure Widget_Entered (Tips_Query  : in out Gtk_Tips_Query;
                              Widget      : in out Gtk_Widget;
                              Tip_Text    : in String;
                              Tip_Private : in String;
@@ -83,7 +83,7 @@ package body Create_Tooltips is
       end if;
    end Widget_Entered;
 
-   procedure Widget_Selected (Tips_Query  : in out Gtk_Tips_Query'Class;
+   procedure Widget_Selected (Tips_Query  : in out Gtk_Tips_Query;
                               Widget      : in out Gtk_Widget;
                               Tip_Text    : in String;
                               Tip_Private : in String;
@@ -106,7 +106,7 @@ package body Create_Tooltips is
 --      return True;
    end Widget_Selected;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id         : Guint;
       Box1,
         Box2,
@@ -212,9 +212,9 @@ package body Create_Tooltips is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

@@ -31,9 +31,6 @@ with Gdk.Types; use Gdk.Types;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
-with Gtk.Frame; use Gtk.Frame;
-with Gtk.Separator; use Gtk.Separator;
-with Gtk.Label; use Gtk.Label;
 with Gtk.Ruler; use Gtk.Ruler;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Table; use Gtk.Table;
@@ -48,12 +45,8 @@ package body Create_Rulers is
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id        : Guint;
-      Label     : Gtk_Label;
-      Frame     : Gtk_Frame;
-      Button    : Gtk_Button;
-      Separator : Gtk_Separator;
       Ruler     : GTk_Ruler;
       Table     : Gtk_Table;
    begin
@@ -91,9 +84,9 @@ package body Create_Rulers is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

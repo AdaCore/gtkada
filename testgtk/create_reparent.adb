@@ -51,7 +51,7 @@ package body Create_Reparent is
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   procedure Set_Parent_Signal (Child      : in out Gtk_Label'Class;
+   procedure Set_Parent_Signal (Child      : in out Gtk_Label;
                                 Old_Parent : in out Gtk_Widget;
                                 Data       : in out Gint)
    is
@@ -77,7 +77,7 @@ package body Create_Reparent is
       Ada.Text_IO.Put_Line (" data = " & Gint'Image (Data));
    end Set_Parent_Signal;
 
-   procedure Reparent_Label (Widget     : in out Gtk_Button'Class;
+   procedure Reparent_Label (Widget     : in out Gtk_Button;
                              New_Parent : in out Gtk_Box'Class)
    is
       Label : Gtk_Label;
@@ -86,7 +86,7 @@ package body Create_Reparent is
       Reparent (Label, New_Parent);
    end Reparent_Label;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id        : Guint;
       Box1      : Gtk_Box;
       Box2      : Gtk_Box;
@@ -165,9 +165,9 @@ package body Create_Reparent is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

@@ -50,16 +50,14 @@ package body Create_Entry is
 
    Window : aliased Gtk_Window;
 
-   procedure Toggle_Editable (Button : in out Gtk_Check_Button'Class;
+   procedure Toggle_Editable (Button : in out Gtk_Check_Button;
                               The_Entry : in out Gtk_Entry)
    is
    begin
       Set_Editable (The_Entry, Is_Active (Button));
    end Toggle_Editable;
 
-
-
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       use String_List;
 
       List      : Glist;
@@ -140,7 +138,7 @@ package body Create_Entry is
       if not Visible_Is_Set (Window) then
          Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
    end Run;
 

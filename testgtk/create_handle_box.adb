@@ -53,7 +53,7 @@ package body Create_Handle_Box is
    Window : aliased Gtk_Window;
 
 
-   procedure Child_Signal (Handle : in out Gtk_Handle_Box'Class;
+   procedure Child_Signal (Handle : in out Gtk_Handle_Box;
                            Child  : in out Gtk_Widget;
                            Data   : in out String) is
    begin
@@ -65,7 +65,7 @@ package body Create_Handle_Box is
    end Child_Signal;
 
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id        : Guint;
       Vbox      : Gtk_Box;
       Hbox      : Gtk_Box;
@@ -142,7 +142,7 @@ package body Create_Handle_Box is
       end if;
 
       if Visible_Is_Set (Window) then
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       else
          Show (Window);
       end if;

@@ -44,7 +44,7 @@ package body Create_Dialog is
    Dialog       : aliased Gtk.Dialog.Gtk_Dialog;
    Global_Label : Gtk_Label;
 
-   procedure Label_Toggle (Label : in out Gtk_Label'Class) is
+   procedure Label_Toggle (Label : in out Gtk_Label) is
       Id : Guint;
    begin
       if not Is_Created (Label) then
@@ -54,12 +54,12 @@ package body Create_Dialog is
          Pack_Start (Get_Vbox (Dialog), Label, True, True, 0);
          Show (Label);
       else
-         Gtk.Widget.Destroy (Label);
+         Destroy (Label);
       end if;
    end Label_Toggle;
 
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id     : Guint;
       Button : Gtk_Button;
    begin
@@ -85,7 +85,7 @@ package body Create_Dialog is
       end if;
 
       if Visible_Is_Set (Dialog) then
-         Gtk.Widget.Destroy (Dialog);
+         Destroy (Dialog);
       else
          Show (Dialog);
       end if;

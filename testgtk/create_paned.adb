@@ -41,7 +41,7 @@ package body Create_Paned is
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       VPaned : Gtk_Paned;
       HPaned : Gtk_Paned;
       Frame  : Gtk_Frame;
@@ -90,9 +90,9 @@ package body Create_Paned is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

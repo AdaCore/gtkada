@@ -64,7 +64,7 @@ package body Create_List is
 
    Num_Item : Natural := 0;
 
-   procedure List_Add (List : in out Gtk_List'Class) is
+   procedure List_Add (List : in out Gtk_List) is
       Item : Gtk_List_Item;
    begin
       Gtk_New (Item, "added item" & Natural'Image (Num_Item));
@@ -73,7 +73,7 @@ package body Create_List is
       Show (Item);
    end List_Add;
 
-   procedure List_Remove (List : in out Gtk_List'Class) is
+   procedure List_Remove (List : in out Gtk_List) is
       use Widget_List;
       Tmp_List,
         Clear_List : Widget_List.Glist;
@@ -89,14 +89,13 @@ package body Create_List is
       Free (Clear_List);
    end List_Remove;
 
-   procedure List_Clear (List : in out Gtk_List'Class) is
+   procedure List_Clear (List : in out Gtk_List) is
    begin
       Clear_Items (List, 3 - 1, 5 - 1);
    end List_Clear;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id       : Guint;
-      Close    : Gtk_Button;
       Box1,
         Box2   : Gtk_Box;
       Scrolled : Gtk_Scrolled_Window;
@@ -176,9 +175,9 @@ package body Create_List is
 
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

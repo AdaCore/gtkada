@@ -29,7 +29,6 @@
 with Glib; use Glib;
 with Gdk.Color; use Gdk.Color;
 with Gdk.Font; use Gdk.Font;
-with Gtk.Adjustment; use Gtk.Adjustment;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Check_Button; use Gtk.Check_Button;
@@ -58,21 +57,21 @@ package body Create_Text is
 
    Window : aliased Gtk_Window;
 
-   procedure Toggle_Editable (Toggle : in out Gtk_Toggle_Button'Class;
+   procedure Toggle_Editable (Toggle : in out Gtk_Toggle_Button;
                               Text   : in out Gtk_Text)
    is
    begin
       Set_Editable (Text, Is_Active (Toggle));
    end Toggle_Editable;
 
-   procedure Word_Wrap (Toggle : in out Gtk_Toggle_Button'Class;
+   procedure Word_Wrap (Toggle : in out Gtk_Toggle_Button;
                         Text   : in out Gtk_Text)
    is
    begin
       Set_Word_Wrap (Text, Is_Active (Toggle));
    end Word_Wrap;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id           : Guint;
       Box1,
         Box2       : Gtk_Box;
@@ -191,15 +190,15 @@ package body Create_Text is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    exception
       when Name_Error =>
          Put_Line ("File create_text.adb not found....");
-         Gtk.WIdget.Destroy (Window);
+         Destroy (Window);
    end Run;
 
 end Create_Text;

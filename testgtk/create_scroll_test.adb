@@ -35,19 +35,19 @@ with Gdk.Rectangle; use Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Window;    use Gdk.Window;
 
-with Gtk; use Gtk;
-with Gtk.Adjustment; use Gtk.Adjustment;
-with Gtk.Box;
-with Gtk.Button;
+with Gtk;              use Gtk;
+with Gtk.Adjustment;   use Gtk.Adjustment;
+with Gtk.Box;          use Gtk.Box;
+with Gtk.Button;       use Gtk.Button;
 with Gtk.Container;
-with Gtk.Dialog; use Gtk.Dialog;
-with Gtk.Drawing_Area;
-with Gtk.Scrollbar;
+with Gtk.Dialog;       use Gtk.Dialog;
+with Gtk.Drawing_Area; use Gtk.Drawing_Area;
+with Gtk.Scrollbar;    use Gtk.Scrollbar;
 with Gtk.Signal;
 with Gtk.Style;
-with Gtk.Window; use Gtk.Window;
-with Gtk.Widget; use Gtk.Widget;
-with Common; use Common;
+with Gtk.Window;       use Gtk.Window;
+with Gtk.Widget;       use Gtk.Widget;
+with Common;           use Common;
 
 package body Create_Scroll_Test is
 
@@ -75,7 +75,7 @@ package body Create_Scroll_Test is
    -------------------------
 
    procedure Adjustment_Change
-     (Adj : in out Adjustment.Gtk_Adjustment'Class;
+     (Adj : in out Adjustment.Gtk_Adjustment;
       Widget   : in out Drawing_Area.Gtk_Drawing_Area)
    is
       Source_Min : Gint := Gint (Get_Value (Adj)) - Scroll_Test_Pos;
@@ -153,7 +153,7 @@ package body Create_Scroll_Test is
    --  Configure  --
    -----------------
 
-   procedure Configure (Widget  : in out Drawing_Area.Gtk_Drawing_Area'Class;
+   procedure Configure (Widget  : in out Drawing_Area.Gtk_Drawing_Area;
                         Cb_Data : in out Gdk.Event.Gdk_Event_Configure;
                         Adj     : in out Adjustment.Gtk_Adjustment) is
       pragma Warnings (Off, Cb_Data);
@@ -167,7 +167,7 @@ package body Create_Scroll_Test is
    --  Expose  --
    --------------
 
-   procedure Expose (Widget  : in out Drawing_Area.Gtk_Drawing_Area'Class;
+   procedure Expose (Widget  : in out Drawing_Area.Gtk_Drawing_Area;
                      Event   : in out Gdk.Event.Gdk_Event_Expose;
                      Adj     : in out Adjustment.Gtk_Adjustment) is
       Area : Gdk.Rectangle.Gdk_Rectangle;
@@ -207,7 +207,7 @@ package body Create_Scroll_Test is
    --  Run  --
    -----------
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id : Guint;
       Hbox : Box.Gtk_Box;
       Drawing_Area : Gtk.Drawing_Area.Gtk_Drawing_Area;
@@ -226,16 +226,16 @@ package body Create_Scroll_Test is
 
          Box.Gtk_New_Hbox (Widget => Hbox, Homogeneous => False, Spacing => 0);
          Box.Pack_Start (In_Box => Gtk.Dialog.Get_Vbox (Dialog), Child => Hbox);
-         Gtk.Widget.Show (Hbox);
+         Show (Hbox);
 
          Gtk.Drawing_Area.Gtk_New (Drawing_Area);
          Gtk.Drawing_Area.Size (Darea => Drawing_Area,
                                 Width => 200, Height => 200);
          Box.Pack_Start (In_Box => Hbox, Child => Drawing_Area);
-         Gtk.Widget.Show (Drawing_Area);
+         Show (Drawing_Area);
 
-         Gtk.Widget.Set_Events (Widget => Drawing_Area,
-                                Events => Gdk.Types.Exposure_Mask);
+         Set_Events (Widget => Drawing_Area,
+                     Events => Gdk.Types.Exposure_Mask);
 
          Adjustment.Gtk_New (Adjustment => Adj, Value => 0.0, Lower => 0.0,
                              Upper => 1000.0, Step_Increment => 1.0,
@@ -246,7 +246,7 @@ package body Create_Scroll_Test is
                                            Adjustment => Adj);
          Box.Pack_Start (In_Box => Hbox, Child => Scrollbar,
                          Expand => False, Fill => False);
-         Gtk.Widget.Show (Scrollbar);
+         Show (Scrollbar);
 
          Id := Event_Expose_Cb.Connect (Obj => Drawing_Area,
                                         Name => "expose_event",
@@ -269,14 +269,14 @@ package body Create_Scroll_Test is
          Id := Widget_Cb.Connect (Button, "clicked",
                                   Gtk.Widget.Destroy'Access,
                                   Dialog);
-         Gtk.Widget.Show (Button);
+         Show (Button);
 
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Dialog) then
-         Gtk.Widget.Show (Dialog);
+         Show (Dialog);
       else
-         Gtk.Widget.Destroy (Dialog);
+         Destroy (Dialog);
       end if;
 
    end Run;

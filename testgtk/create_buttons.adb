@@ -46,7 +46,7 @@ package body Create_Buttons is
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   procedure Button_Window (Widget : in out Gtk_Button'Class) is
+   procedure Button_Window (Widget : in out Gtk_Button) is
    begin
       if Visible_Is_Set (Widget) then
          Hide (Widget);
@@ -56,7 +56,7 @@ package body Create_Buttons is
    end Button_Window;
 
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id      : Guint;
       Box1,
         Box2  : Gtk_Box;
@@ -123,9 +123,9 @@ package body Create_Buttons is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
 
    end Run;

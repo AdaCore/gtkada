@@ -47,13 +47,13 @@ package body Create_Main_Loop is
 
    Window : aliased Gtk.Dialog.Gtk_Dialog;
 
-   procedure Loop_Destroy (Window : in out Gtk_Widget'Class) is
+   procedure Loop_Destroy (Window : in out Gtk_Widget) is
    begin
       Gtk.Widget.Destroy (Window);
       Main_Quit;
    end Loop_Destroy;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id     : Guint;
       Label  : Gtk_Label;
       Button : Gtk_Button;
@@ -80,12 +80,12 @@ package body Create_Main_Loop is
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
-         Gtk.Widget.Show (Window);
+         Show (Window);
          Ada.Text_IO.Put_Line ("Create_Mainloop: start");
          Gtk.Main.Main;
          Ada.Text_IO.Put_Line ("Create_Mainloop: done");
       else
-         Gtk.Widget.Destroy (Window);
+         Destroy (Window);
       end if;
    end Run;
 

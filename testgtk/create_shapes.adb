@@ -160,7 +160,7 @@ package body Create_Shapes is
       return Window;
    end Shape_Create_Icon;
 
-   procedure Run (Widget : in out Gtk.Button.Gtk_Button'Class) is
+   procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id      : Guint;
    begin
 
