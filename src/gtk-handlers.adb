@@ -36,6 +36,8 @@ with System;
 
 package body Gtk.Handlers is
 
+   use Gtk.Object;
+
    function Do_Signal_Connect
      (Object      : Glib.GObjects.GObject;
       Name        : String;
@@ -83,7 +85,7 @@ package body Gtk.Handlers is
    -- Glib.Closure small binding --
    --------------------------------
 
-   subtype GClosure is Glib.C_Proxy;
+   type GClosure is new Glib.C_Proxy;
 
    function CClosure_New
      (Callback  : System.Address;
@@ -134,7 +136,7 @@ package body Gtk.Handlers is
          Signal_Id : Guint;
          Detail    : GQuark := Unknown_Quark;
          Closure   : GClosure;
-         After     : Gint) return Handler_Id;
+         After     : Gint := 0) return Handler_Id;
       pragma Import (C, Internal, "g_signal_connect_closure_by_id");
 
       function Get_Type (Object : System.Address) return GType;
@@ -168,17 +170,15 @@ package body Gtk.Handlers is
            (Instance => Get_Object (Object),
             Signal_Id => Signal_Lookup
                            ("destroy" & ASCII.NUL, Get_Type (Object)),
-            Closure => Closure,
-            After => 0);
+            Closure => Closure);
 
          Closure := CClosure_New
            (Destroy_Func'Address, Data.all'Address, System.Null_Address);
          Data.Id3 := Internal
            (Instance => Slot_Object,
-            Signal_Id => Signal_Lookup
-                           ("destroy" & ASCII.NUL, Get_Type (Slot_Object)),
-            Closure => Closure,
-            After => 0);
+            Signal_Id =>
+              Signal_Lookup ("destroy" & ASCII.NUL, Get_Type (Slot_Object)),
+            Closure => Closure);
       end if;
 
       return Id;
@@ -258,7 +258,7 @@ package body Gtk.Handlers is
       --------------------
 
       procedure Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -289,7 +289,7 @@ package body Gtk.Handlers is
       --------------------
 
       procedure Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -403,7 +403,7 @@ package body Gtk.Handlers is
       --------------------
 
       function Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -417,10 +417,12 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_Invalid,
+           (Argument_Type (Get_Type (GObject (Widget)), Name, -1) /=
+              GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_None,
+           (Argument_Type (Get_Type (GObject (Widget)), Name, -1) /=
+              GType_None,
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
@@ -473,7 +475,7 @@ package body Gtk.Handlers is
       --------------------
 
       function Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -487,10 +489,12 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_Invalid,
+           (Argument_Type (Get_Type (GObject (Widget)), Name, -1) /=
+              GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_None,
+           (Argument_Type (Get_Type (GObject (Widget)), Name, -1) /=
+              GType_None,
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
@@ -900,7 +904,7 @@ package body Gtk.Handlers is
       --------------------
 
       procedure Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -931,7 +935,7 @@ package body Gtk.Handlers is
       --------------------
 
       procedure Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -982,7 +986,7 @@ package body Gtk.Handlers is
       --------------------
 
       function Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -996,11 +1000,13 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_Invalid,
+           (Argument_Type (Get_Type (GObject (Widget)), Name, -1) /=
+              GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) = GType_None,
-            "Handlers for this signal should return a value.");
+           (Argument_Type
+             (Get_Type (GObject (Widget)), Name, -1) = GType_None,
+            "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
            (Glib.GObjects.GObject (Widget),
@@ -1050,7 +1056,7 @@ package body Gtk.Handlers is
       --------------------
 
       function Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -1064,11 +1070,13 @@ package body Gtk.Handlers is
 
       begin
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) /= GType_Invalid,
+           (Argument_Type (Get_Type (GObject (Widget)), Name, -1) /=
+              GType_Invalid,
             "Invalid signal for this widget");
          pragma Assert
-           (Argument_Type (Get_Type (Widget), Name, -1) = GType_None,
-            "Handlers for this signal should return a value.");
+           (Argument_Type
+              (Get_Type (GObject (Widget)), Name, -1) = GType_None,
+            "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
            (Glib.GObjects.GObject (Widget),

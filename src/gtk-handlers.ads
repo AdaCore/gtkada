@@ -134,6 +134,7 @@
 
 with Glib.Values;
 with Gdk.Event;
+with Gtk.Object;
 with Gtk.Marshallers;
 with Gtk.Notebook;
 with Gtk.Widget;
@@ -182,14 +183,15 @@ package Gtk.Handlers is
       --  Connects a Marshaller. The Handler_Id is dropped.
 
       procedure Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False);
-      --  Connects a Marshaller. The Handler_Id is dropped.
+      --  Connect a Marshaller. The Handler_Id is dropped.
       --  This is automatically disconnected as soon as either Widget or
       --  Slot_Object is destroyed.
+      --  Slot_Object *must* be of type Gtk_Object or one of its children.
 
       procedure Connect
         (Widget  : access Widget_Type'Class;
@@ -199,14 +201,15 @@ package Gtk.Handlers is
       --  Connects a Handler. The Handler_Id is dropped.
 
       procedure Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False);
-      --  Connects a Handler. The Handler_Id is dropped.
+      --  Connect a Handler. The Handler_Id is dropped.
       --  This is automatically disconnected as soon as either Widget or
       --  Slot_Object is destroyed.
+      --  Slot_Object *must* be of type Gtk_Object or one of its children.
 
       pragma Inline (Connect);
       pragma Inline (Object_Connect);
@@ -219,14 +222,15 @@ package Gtk.Handlers is
       --  Connects a Marshaller. Returns the Handler_Id.
 
       function Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False) return Handler_Id;
-      --  Connects a Marshaller. Returns the Handler_Id.
+      --  Connect a Marshaller. Return the Handler_Id.
       --  This is automatically disconnected as soon as either Widget or
       --  Slot_Object is destroyed.
+      --  Slot_Object *must* be of type Gtk_Object or one of its children.
 
       function Connect
         (Widget  : access Widget_Type'Class;
@@ -236,14 +240,15 @@ package Gtk.Handlers is
       --  Connects a Handler. Returns the Handler_Id.
 
       function Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False) return Handler_Id;
-      --  Connects a Handler. Returns the Handler_Id.
+      --  Connect a Handler. Returns the Handler_Id.
       --  This is automatically disconnected as soon as either Widget or
       --  Slot_Object is destroyed.
+      --  Slot_Object *must* be of type Gtk_Object or one of its children.
 
       --  Some convenient functions to create marshallers
 
@@ -474,7 +479,7 @@ package Gtk.Handlers is
          After   : Boolean := False);
 
       procedure Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -487,7 +492,7 @@ package Gtk.Handlers is
          After   : Boolean := False);
 
       procedure Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
@@ -503,7 +508,7 @@ package Gtk.Handlers is
          After   : Boolean := False) return Handler_Id;
 
       function Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Marsh       : Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
@@ -516,7 +521,7 @@ package Gtk.Handlers is
          After   : Boolean := False) return Handler_Id;
 
       function Object_Connect
-        (Widget      : access Glib.GObjects.GObject_Record'Class;
+        (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : String;
          Cb          : Handler;
          Slot_Object : access Widget_Type'Class;
