@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  This package is deprecated
+
 with Gdk.Color;
 with Gdk.GC;
 with Gdk.Visual;
@@ -45,10 +47,10 @@ package Gtk.Preview is
 
    procedure Draw_Row
      (Preview : access Gtk_Preview_Record;
-      Data    : in Guchar_Array;
-      X       : in Gint;
-      Y       : in Gint;
-      W       : in Gint);
+      Data    : Guchar_Array;
+      X       : Gint;
+      Y       : Gint;
+      W       : Gint);
    --  The size required for Data depends of the color depth of the
    --  preview. No verification is done by Ada, everything is left to
    --  gtk. You might get some segmentation fault !
@@ -62,48 +64,48 @@ package Gtk.Preview is
    function Get_Visual return Gdk.Visual.Gdk_Visual;
 
    procedure Gtk_New
-     (Preview  : out Gtk_Preview; The_Type : in Gtk_Preview_Type);
+     (Preview  : out Gtk_Preview; The_Type : Gtk_Preview_Type);
 
    procedure Initialize
      (Preview  : access Gtk_Preview_Record'Class;
-      The_Type : in Gtk_Preview_Type);
+      The_Type : Gtk_Preview_Type);
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Preview.
 
    procedure Put
      (Preview : access Gtk_Preview_Record;
-      Window  : in Gdk.Window.Gdk_Window;
-      Gc      : in Gdk.GC.Gdk_GC;
-      Srcx    : in Gint;
-      Srcy    : in Gint;
-      Destx   : in Gint;
-      Desty   : in Gint;
-      Width   : in Gint;
-      Height  : in Gint);
+      Window  : Gdk.Window.Gdk_Window;
+      Gc      : Gdk.GC.Gdk_GC;
+      Srcx    : Gint;
+      Srcy    : Gint;
+      Destx   : Gint;
+      Desty   : Gint;
+      Width   : Gint;
+      Height  : Gint);
 
    procedure Reset;
 
    procedure Set_Color_Cube
-     (Nred_Shades   : in Guint;
-      Ngreen_Shades : in Guint;
-      Nblue_Shades  : in Guint;
-      Ngray_Shades  : in Guint);
+     (Nred_Shades   : Guint;
+      Ngreen_Shades : Guint;
+      Nblue_Shades  : Guint;
+      Ngray_Shades  : Guint);
 
    procedure Set_Expand
      (Preview : access Gtk_Preview_Record;
-      Expand  : in Boolean);
+      Expand  : Boolean);
 
-   procedure Set_Gamma (Gamma : in Gdouble);
+   procedure Set_Gamma (Gamma : Gdouble);
 
-   procedure Set_Install_Cmap (Install_Cmap : in Gint);
+   procedure Set_Install_Cmap (Install_Cmap : Gint);
 
-   procedure Set_Reserved (Nreserved : in Gint);
+   procedure Set_Reserved (Nreserved : Gint);
 
    procedure Size
      (Preview : access Gtk_Preview_Record;
-      Width   : in Gint;
-      Height  : in Gint);
+      Width   : Gint;
+      Height  : Gint);
 
    procedure Uninit;
 
@@ -117,4 +119,12 @@ private
    pragma Import (C, Get_Visual, "gtk_preview_get_visual");
    pragma Import (C, Get_Cmap, "gtk_preview_get_cmap");
    pragma Import (C, Get_Type, "gtk_preview_get_type");
+   pragma Import (C, Reset, "gtk_preview_reset");
+   pragma Import (C, Set_Gamma, "gtk_preview_set_gamma");
+   pragma Import (C, Set_Install_Cmap, "gtk_preview_set_install_cmap");
+   pragma Import (C, Set_Reserved, "gtk_preview_set_reserved");
+   pragma Import (C, Uninit, "gtk_preview_uninit");
+
+
+
 end Gtk.Preview;

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -59,12 +59,12 @@ package body Gtk.Pixmap is
    -- Get_Mask --
    --------------
 
-   function Get_Mask (Widget : access Gtk_Pixmap_Record)
-                      return      Gdk.Bitmap.Gdk_Bitmap
+   function Get_Mask
+     (Widget : access Gtk_Pixmap_Record) return Gdk.Bitmap.Gdk_Bitmap
    is
-      function Internal (Widget : in System.Address)
-                         return      Gdk.Bitmap.Gdk_Bitmap;
+      function Internal (Widget : System.Address) return Gdk.Bitmap.Gdk_Bitmap;
       pragma Import (C, Internal, "ada_pixmap_get_mask");
+
    begin
       return Internal (Get_Object (Widget));
    end Get_Mask;
@@ -73,12 +73,12 @@ package body Gtk.Pixmap is
    -- Get_Pixmap --
    ----------------
 
-   function Get_Pixmap (Widget : access Gtk_Pixmap_Record)
-                        return      Gdk.Pixmap.Gdk_Pixmap
+   function Get_Pixmap
+     (Widget : access Gtk_Pixmap_Record) return Gdk.Pixmap.Gdk_Pixmap
    is
-      function Internal (Widget : in System.Address)
-                         return      Gdk.Pixmap.Gdk_Pixmap;
+      function Internal (Widget : System.Address) return Gdk.Pixmap.Gdk_Pixmap;
       pragma Import (C, Internal, "ada_pixmap_get_pixmap");
+
    begin
       return Internal (Get_Object (Widget));
    end Get_Pixmap;
@@ -88,9 +88,9 @@ package body Gtk.Pixmap is
    -------------
 
    procedure Gtk_New
-      (Widget : out Gtk_Pixmap;
-       Pixmap : in Gdk.Pixmap.Gdk_Pixmap;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap) is
+     (Widget : out Gtk_Pixmap;
+      Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : Gdk.Bitmap.Gdk_Bitmap) is
    begin
       Widget := new Gtk_Pixmap_Record;
       Initialize (Widget, Pixmap, Mask);
@@ -101,15 +101,15 @@ package body Gtk.Pixmap is
    ----------------
 
    procedure Initialize
-      (Widget : access Gtk_Pixmap_Record'Class;
-       Pixmap : in Gdk.Pixmap.Gdk_Pixmap;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap)
+     (Widget : access Gtk_Pixmap_Record'Class;
+      Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : Gdk.Bitmap.Gdk_Bitmap)
    is
       function Internal
-         (Pixmap : in Gdk.Pixmap.Gdk_Pixmap;
-          Mask   : in Gdk.Bitmap.Gdk_Bitmap)
-          return      System.Address;
+        (Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+         Mask   : Gdk.Bitmap.Gdk_Bitmap) return System.Address;
       pragma Import (C, Internal, "gtk_pixmap_new");
+
    begin
       Set_Object (Widget, Internal (Pixmap, Mask));
       Initialize_User_Data (Widget);
@@ -120,15 +120,16 @@ package body Gtk.Pixmap is
    ---------
 
    procedure Set
-      (Pixmap : access Gtk_Pixmap_Record;
-       Val    : in Gdk.Pixmap.Gdk_Pixmap;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap)
+     (Pixmap : access Gtk_Pixmap_Record;
+      Val    : Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : Gdk.Bitmap.Gdk_Bitmap)
    is
       procedure Internal
-         (Pixmap : in System.Address;
-          Val    : in Gdk.Pixmap.Gdk_Pixmap;
-          Mask   : in Gdk.Bitmap.Gdk_Bitmap);
+        (Pixmap : System.Address;
+         Val    : Gdk.Pixmap.Gdk_Pixmap;
+         Mask   : Gdk.Bitmap.Gdk_Bitmap);
       pragma Import (C, Internal, "gtk_pixmap_set");
+
    begin
       Internal (Get_Object (Pixmap), Val, Mask);
    end Set;
@@ -144,9 +145,8 @@ package body Gtk.Pixmap is
    --  This is a dummy pixmap we use when a pixmap can't be found.
 
    function Create_Pixmap
-     (Filename : in String;
-      Window   : access Gtk.Window.Gtk_Window_Record'Class)
-      return Gtk_Pixmap
+     (Filename : String;
+      Window   : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap
    is
       Gdkpixmap : Gdk.Pixmap.Gdk_Pixmap;
       Mask      : Gdk.Bitmap.Gdk_Bitmap;
@@ -175,9 +175,8 @@ package body Gtk.Pixmap is
    end Create_Pixmap;
 
    function Create_Pixmap
-     (Data     : in Gtkada.Types.Chars_Ptr_Array;
-      Window   : access Gtk.Window.Gtk_Window_Record'Class)
-      return Gtk_Pixmap
+     (Data   : Gtkada.Types.Chars_Ptr_Array;
+      Window : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap
    is
       Gdkpixmap : Gdk.Pixmap.Gdk_Pixmap;
       Mask      : Gdk.Bitmap.Gdk_Bitmap;
@@ -194,6 +193,7 @@ package body Gtk.Pixmap is
       Gdk.Pixmap.Create_From_Xpm_D
         (Gdkpixmap, Get_Window (Window), Mask, Gdk.Color.Null_Color, Data);
       Gtk_New (Pixmap, Gdkpixmap, Mask);
+
       return Pixmap;
    end Create_Pixmap;
 

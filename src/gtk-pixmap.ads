@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,6 +26,9 @@
 -- exception does not however invalidate any other reasons why the   --
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
+
+--  This package is deprecated
+--  <c_version>1.3.4</c_version>
 
 with Gdk.Bitmap;
 with Gdk.Pixmap;
@@ -54,29 +57,27 @@ package Gtk.Pixmap is
 
    procedure Gtk_New
      (Widget : out Gtk_Pixmap;
-      Pixmap : in Gdk.Pixmap.Gdk_Pixmap;
-      Mask   : in Gdk.Bitmap.Gdk_Bitmap);
+      Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : Gdk.Bitmap.Gdk_Bitmap);
 
    procedure Initialize
      (Widget : access Gtk_Pixmap_Record'Class;
-      Pixmap : in Gdk.Pixmap.Gdk_Pixmap;
-      Mask   : in Gdk.Bitmap.Gdk_Bitmap);
+      Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : Gdk.Bitmap.Gdk_Bitmap);
 
    procedure Set
      (Pixmap : access Gtk_Pixmap_Record;
-      Val    : in Gdk.Pixmap.Gdk_Pixmap;
-      Mask   : in Gdk.Bitmap.Gdk_Bitmap);
+      Val    : Gdk.Pixmap.Gdk_Pixmap;
+      Mask   : Gdk.Bitmap.Gdk_Bitmap);
 
    function Create_Pixmap
-     (Filename : in String;
-      Window   : access Gtk.Window.Gtk_Window_Record'Class)
-      return Gtk_Pixmap;
+     (Filename : String;
+      Window   : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap;
    --  Create a pixmap given a window and a filename
 
    function Create_Pixmap
-     (Data     : in Gtkada.Types.Chars_Ptr_Array;
-      Window   : access Gtk.Window.Gtk_Window_Record'Class)
-      return Gtk_Pixmap;
+     (Data     : Gtkada.Types.Chars_Ptr_Array;
+      Window   : access Gtk.Window.Gtk_Window_Record'Class) return Gtk_Pixmap;
    --  Create a pixmap given a window and a buffer.
 
 private
