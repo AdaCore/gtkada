@@ -1,3 +1,10 @@
+Known problems fixed in GtkAda 2.0
+
+- Gtkada.File_Selection does not handle directory selection properly
+  Problem:    When typing a directory name and then pressing the enter key,
+              this generates a Constraint_Error instead of selecting the
+              directory.
+  Workaround: Use the tab key instead.
 
 - Printing an XML tree to Standard_Output
   Problem:    When trying to print an XML tree (Glib.XML) to standard_output,
