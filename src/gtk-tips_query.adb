@@ -55,7 +55,7 @@ package body Gtk.Tips_Query is
    -- Start_Query --
    -----------------
 
-   procedure Start_Query (Tips_Query : in Gtk_Tips_Query'Class)
+   procedure Start_Query (Tips_Query : in out Gtk_Tips_Query'Class)
    is
       procedure Internal (Tips_Query : in System.Address);
       pragma Import (C, Internal, "gtk_tips_query_start_query");
@@ -67,7 +67,7 @@ package body Gtk.Tips_Query is
    -- Stop_Query --
    ----------------
 
-   procedure Stop_Query (Tips_Query : in Gtk_Tips_Query'Class)
+   procedure Stop_Query (Tips_Query : in out Gtk_Tips_Query'Class)
    is
       procedure Internal (Tips_Query : in System.Address);
       pragma Import (C, Internal, "gtk_tips_query_stop_query");
