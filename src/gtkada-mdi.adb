@@ -3640,7 +3640,9 @@ package body Gtkada.MDI is
       Page_Num : constant Guint := To_Guint (Args, 2);
       Child    : MDI_Child;
    begin
-      if Page_Num = -1 then
+      if Page_Num = -1
+        or else Gtk.Object.In_Destruction_Is_Set (Docked_Child)
+      then
          return;
       end if;
 
