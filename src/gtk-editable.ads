@@ -31,7 +31,7 @@
 --
 --  This widget is an abstract widget designed to support the common
 --  functionalities of all widgets for editing text. It provides general
---  services to manuipulte an editable widget, a large number of action
+--  services to manipulate an editable widget, a large number of action
 --  signals used for key bindings, and several signals that an
 --  application can connect to to modify the behavior of a widget.
 --
@@ -171,7 +171,7 @@ package Gtk.Editable is
    --    procedure Handler (Widget   : access Gtk_Editable_Record'Class;
    --                       Text     : in String;
    --                       Length   : in Gint;
-   --                       Position : out Gint);
+   --                       Position : in Gint_Access);
    --
    --    Emitted when some text is inserted inside the widget by the
    --    user. The default handler inserts the text into the widget.
@@ -179,6 +179,8 @@ package Gtk.Editable is
    --    the signal with Gtk.Handlers.Emit_Stop_By_Name, it is possible
    --    to modify the inserted text, or even prevent it from being
    --    inserted.
+   --    Position.all should be modified by the callback, and indicates
+   --    the new position of the cursor after the text has been inserted.
    --
    --  - "delete_text"
    --    procedure Handler (Widget    : access Gtk_Editable_Record'Class;
