@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -38,36 +38,36 @@ package Gtk.Viewport is
    type Gtk_Viewport is access all Gtk_Viewport_Record'Class;
 
    function Get_Hadjustment (Viewport : access Gtk_Viewport_Record)
-                             return        Gtk.Adjustment.Gtk_Adjustment;
+     return Gtk.Adjustment.Gtk_Adjustment;
    function Get_Vadjustment (Viewport : access Gtk_Viewport_Record)
-                             return        Gtk.Adjustment.Gtk_Adjustment;
+     return Gtk.Adjustment.Gtk_Adjustment;
    procedure Gtk_New
-      (Widget      : out Gtk_Viewport;
-       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment
-         := Adjustment.Null_Adjustment;
-       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment
-         := Adjustment.Null_Adjustment);
+     (Viewport     : out Gtk_Viewport;
+      Hadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
+      Vadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
+
    procedure Initialize
-      (Widget      : access Gtk_Viewport_Record'Class;
-       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
-       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment);
+     (Viewport     : access Gtk_Viewport_Record'Class;
+      Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
+      Vadjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
    procedure Set_Hadjustment
-      (Viewport   : access Gtk_Viewport_Record;
-       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+     (Viewport   : access Gtk_Viewport_Record;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
    procedure Set_Shadow_Type
-      (Viewport : access Gtk_Viewport_Record;
-       The_Type : in Gtk_Shadow_Type);
+     (Viewport : access Gtk_Viewport_Record;
+      The_Type : in Gtk_Shadow_Type);
+
    procedure Set_Vadjustment
-      (Viewport   : access Gtk_Viewport_Record;
-       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+     (Viewport   : access Gtk_Viewport_Record;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
-
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type);
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
 
    procedure Generate (Viewport : in out Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
    type Gtk_Viewport_Record is new Gtk.Bin.Gtk_Bin_Record with null record;

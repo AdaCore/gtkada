@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -30,8 +30,6 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
-with Gtk.Container; use Gtk.Container;
-with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 
 package body Gtk.Viewport is
 
@@ -39,15 +37,17 @@ package body Gtk.Viewport is
    -- Get_Hadjustment --
    ---------------------
 
-   function Get_Hadjustment (Viewport : access Gtk_Viewport_Record)
-                             return        Gtk.Adjustment.Gtk_Adjustment
+   function Get_Hadjustment
+     (Viewport : access Gtk_Viewport_Record)
+      return Gtk.Adjustment.Gtk_Adjustment
    is
       function Internal (Viewport : in System.Address)
-                         return        System.Address;
+        return System.Address;
       pragma Import (C, Internal, "gtk_viewport_get_hadjustment");
       Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
+
    begin
-      return Gtk.Adjustment.Gtk_Adjustment
+      return Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (Viewport)), Stub));
    end Get_Hadjustment;
 
@@ -56,12 +56,12 @@ package body Gtk.Viewport is
    ---------------------
 
    function Get_Vadjustment (Viewport : access Gtk_Viewport_Record)
-                             return        Gtk.Adjustment.Gtk_Adjustment
+     return Gtk.Adjustment.Gtk_Adjustment
    is
-      function Internal (Viewport : in System.Address)
-                         return        System.Address;
+      function Internal (Viewport : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_viewport_get_vadjustment");
       Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
+
    begin
       return Gtk.Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (Viewport)), Stub));
@@ -72,14 +72,12 @@ package body Gtk.Viewport is
    -------------
 
    procedure Gtk_New
-      (Widget      : out Gtk_Viewport;
-       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment :=
-         Adjustment.Null_Adjustment;
-       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment :=
-         Adjustment.Null_Adjustment) is
+     (Viewport    : out Gtk_Viewport;
+      Hadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
+      Vadjustment : Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment) is
    begin
-      Widget := new Gtk_Viewport_Record;
-      Initialize (Widget, Hadjustment, Vadjustment);
+      Viewport := new Gtk_Viewport_Record;
+      Initialize (Viewport, Hadjustment, Vadjustment);
    end Gtk_New;
 
    ----------------
@@ -87,19 +85,35 @@ package body Gtk.Viewport is
    ----------------
 
    procedure Initialize
-      (Widget      : access Gtk_Viewport_Record'Class;
-       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
-       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment)
+     (Viewport    : access Gtk_Viewport_Record'Class;
+      Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
+      Vadjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
       function Internal
-         (Hadjustment : in System.Address;
-          Vadjustment : in System.Address)
-          return           System.Address;
+        (Hadjustment : in System.Address;
+         Vadjustment : in System.Address)
+         return System.Address;
       pragma Import (C, Internal, "gtk_viewport_new");
+
+      Hadj, Vadj : System.Address;
+
+      use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
-      Set_Object (Widget, Internal (Get_Object (Hadjustment),
-                                    Get_Object (Vadjustment)));
-      Initialize_User_Data (Widget);
+      if Hadjustment = null then
+         Hadj := System.Null_Address;
+      else
+         Hadj := Get_Object (Hadjustment);
+      end if;
+
+      if Vadjustment = null then
+         Vadj := System.Null_Address;
+      else
+         Vadj := Get_Object (Vadjustment);
+      end if;
+
+      Set_Object (Viewport, Internal (Hadj, Vadj));
+      Initialize_User_Data (Viewport);
    end Initialize;
 
    ---------------------
@@ -107,16 +121,26 @@ package body Gtk.Viewport is
    ---------------------
 
    procedure Set_Hadjustment
-      (Viewport   : access Gtk_Viewport_Record;
-       Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+     (Viewport   : access Gtk_Viewport_Record;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal
-         (Viewport   : in System.Address;
-          Adjustment : in System.Address);
+        (Viewport   : in System.Address;
+         Adjustment : in System.Address);
       pragma Import (C, Internal, "gtk_viewport_set_hadjustment");
+
+      Adj : System.Address;
+
+      use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
-      Internal (Get_Object (Viewport),
-                Get_Object (Adjustment));
+      if Adjustment = null then
+         Adj := System.Null_Address;
+      else
+         Adj := Get_Object (Adjustment);
+      end if;
+
+      Internal (Get_Object (Viewport), Adj);
    end Set_Hadjustment;
 
    ---------------------
@@ -124,16 +148,16 @@ package body Gtk.Viewport is
    ---------------------
 
    procedure Set_Shadow_Type
-      (Viewport : access Gtk_Viewport_Record;
-       The_Type : in Gtk_Shadow_Type)
+     (Viewport : access Gtk_Viewport_Record;
+      The_Type : in Gtk_Shadow_Type)
    is
       procedure Internal
-         (Viewport : in System.Address;
-          The_Type : in Gint);
+        (Viewport : in System.Address;
+         The_Type : in Gint);
       pragma Import (C, Internal, "gtk_viewport_set_shadow_type");
+
    begin
-      Internal (Get_Object (Viewport),
-                Gtk_Shadow_Type'Pos (The_Type));
+      Internal (Get_Object (Viewport), Gtk_Shadow_Type'Pos (The_Type));
    end Set_Shadow_Type;
 
    ---------------------
@@ -141,40 +165,36 @@ package body Gtk.Viewport is
    ---------------------
 
    procedure Set_Vadjustment
-      (Viewport   : access Gtk_Viewport_Record;
-       Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+     (Viewport   : access Gtk_Viewport_Record;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal
-         (Viewport   : in System.Address;
-          Adjustment : in System.Address);
+        (Viewport   : in System.Address;
+         Adjustment : in System.Address);
       pragma Import (C, Internal, "gtk_viewport_set_vadjustment");
+
+      Adj : System.Address;
+
+      use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
-      Internal (Get_Object (Viewport),
-                Get_Object (Adjustment));
+      if Adjustment = null then
+         Adj := System.Null_Address;
+      else
+         Adj := Get_Object (Adjustment);
+      end if;
+
+      Internal (Get_Object (Viewport), Adj);
    end Set_Vadjustment;
 
    --------------
    -- Generate --
    --------------
 
-   procedure Generate (N    : in Node_Ptr;
-                       File : in File_Type) is
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
    begin
       Gen_New (N, "Viewport", File => File);
       Gen_Set (N, "Viewport", "shadow_type", File => File);
-
-      if not N.Specific_Data.Has_Container then
-         if Get_Field (N.Parent, "class").all = "GtkScrolledWindow" then
-            Gen_Call_Child
-              (N, null, "Scrolled_window",
-               "Add_with_Viewport", File => File);
-
-         else
-            Gen_Call_Child (N, null, "Container", "Add", File => File);
-         end if;
-
-         N.Specific_Data.Has_Container := True;
-      end if;
    end Generate;
 
    procedure Generate (Viewport : in out Gtk_Object;
@@ -194,22 +214,6 @@ package body Gtk.Viewport is
          Set_Shadow_Type
            (Gtk_Viewport (Viewport),
             Gtk_Shadow_Type'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      if not N.Specific_Data.Has_Container then
-         if Get_Field (N.Parent, "class").all = "GtkScrolledWindow" then
-            Scrolled_Window.Add_With_Viewport
-              (Gtk_Scrolled_Window
-                (Get_Object (Get_Field (N.Parent, "name"))),
-               Gtk_Viewport (Viewport));
-
-         else
-            Container.Add
-              (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-               Gtk_Viewport (Viewport));
-         end if;
-
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 
