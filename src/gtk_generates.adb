@@ -426,13 +426,11 @@ package body Gtk_Generates is
    -- Combo_Generate --
    --------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Combo_Generate (N : Node_Ptr; File : File_Type) is
-      S     : String_Ptr;
-      First, Last : Natural;
-      Top_Widget  : constant Node_Ptr := Find_Top_Widget (N);
-      Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
+      P          : Node_Ptr;
+      Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
+      Top        : constant String := Get_Name (Top_Widget);
+      Has_Items  : Boolean := False;
       Child : Node_Ptr := Find_Tag (N.Child, "widget");
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_combo_get_type");
@@ -450,43 +448,107 @@ package body Gtk_Generates is
 
       Widget_Destroy (Widget);
       Box_Generate (N, File);
+
+      Gen_Set (N, "value_in_list", File);
+      Gen_Set (N, "use_arrows", File,
+               Property_Name => "enable_arrow_keys");
+      Gen_Set (N, "use_arrows_always", File,
+               Property_Name => "enable_arrow_always");
       Gen_Set (N, "case_sensitive", File);
-      Gen_Set (N, "use_arrows", File);
-      Gen_Set (N, "use_arrows_always", File);
 
-      S := Get_Field (N, "items");
+      --  Generate the properties of the entry.
 
-      if S /= null then
-         First := S'First;
+      P := Find_Tag_With_Attribute
+        (N.Child, "child", "internal-child", "entry");
 
-         loop
-            Last := Index (S (First .. S'Last), ASCII.LF & "");
+      if P /= null and then P.Child /= null then
+         Add_Package ("GEntry");
+         Add_Package ("Glib.Unicode");
 
-            if Last = 0 then
-               Last := S'Last + 1;
-            end if;
+         P := P.Child;
 
-            Put (File, "   String_List.Append (" &
-              To_Ada (Get_Field (N, "name").all) & "_Items, ");
+         P.Specific_Data.Created := True;
+         P.Specific_Data.Initialized := True;
+         P.Specific_Data.Has_Container := True;
 
-            if Gettext_Support (Top_Widget) then
-               Put (File, '-');
-            end if;
+         Put_Line
+           (File,
+            "   Set_Editable (Get_Entry ("
+            & To_Ada (Top) & "." & To_Ada (Get_Name (N)) & "), "
+            & Get_Property (P, "editable", "True") & ");");
+         Put_Line
+           (File,
+            "   Set_Max_Length (Get_Entry ("
+            & To_Ada (Top) & "." & To_Ada (Get_Name (N)) & "), "
+            & Get_Property (P, "max_length", "0") & ");");
+         Put_Line
+           (File,
+            "   Set_Text (Get_Entry ("
+            & To_Ada (Top) & "." & To_Ada (Get_Name (N)) & "), -("""
+            & Adjust (Get_Property (P, "text", "")) & """));");
+         Put_Line
+           (File,
+            "   Set_Invisible_Char (Get_Entry ("
+            & To_Ada (Top) & "." & To_Ada (Get_Name (N))
+            & "), UTF8_Get_Char ("""
+            & Get_Property (P, "invisible_char", "") & """));");
+         Put_Line
+           (File,
+            "   Set_Has_Frame (Get_Entry ("
+            & To_Ada (Top) & "." & To_Ada (Get_Name (N)) & "), "
+            & Get_Property (P, "has_frame", "False") & ");");
+      end if;
 
-            Put_Line (File, '"' &
-              S (First .. Last - 1) & """);");
+      --  Generate the list of items.
 
-            exit when Last >= S'Last;
+      P := Find_Tag_With_Attribute
+        (N.Child, "child", "internal-child", "list");
 
-            First := Last + 1;
-         end loop;
+      if P /= null and then P.Child /= null and then P.Child.Child /= null then
+         P := Find_Tag (P.Child.Child, "child");
+      end if;
 
+      if P /= null then
+         P := P.Child;
+      end if;
+
+      while P /= null loop
+         Has_Items := True;
+
+         Put (File, "   String_List.Append (" &
+              To_Ada (Get_Name (N)) & "_Items, ");
+
+         if Gettext_Support (Top_Widget) then
+            Put (File, "-(");
+         end if;
+
+         Put (File, '"' & Get_Property (P, "label", ""));
+
+         if Gettext_Support (Top_Widget) then
+            Put_Line (File, """));");
+         else
+            Put_Line (File, """);");
+         end if;
+
+         P.Specific_Data.Created := True;
+         P.Specific_Data.Initialized := True;
+         P.Specific_Data.Has_Container := True;
+
+         P := P.Parent.Next;
+
+         if P /= null then
+            P := P.Child;
+         end if;
+      end loop;
+
+      if Has_Items then
          Put_Line (File, "   Combo.Set_Popdown_Strings (" &
-                   To_Ada (Top.all) & "." &
-                   To_Ada (Get_Field (N, "name").all) & ", " &
-                   To_Ada (Get_Field (N, "name").all) & "_Items);");
+                   To_Ada (Top) & "." &
+                   To_Ada (Get_Name (N)) & ", " &
+                   To_Ada (Get_Name (N)) & "_Items);");
+
          Put_Line (File, "   Free_String_List (" &
-           To_Ada (Get_Field (N, "name").all) & "_Items);");
+                   To_Ada (Get_Name (N)) & "_Items);");
       end if;
    end Combo_Generate;
 
@@ -740,6 +802,8 @@ package body Gtk_Generates is
 
    procedure GEntry_Generate (N : Node_Ptr; File : File_Type) is
       Child_Name : constant Node_Ptr := Find_Tag (N.Child, "child_name");
+      Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
+      Top        : constant String := Get_Name (Top_Widget);
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_entry_get_type");
 
@@ -764,6 +828,13 @@ package body Gtk_Generates is
       end if;
 
       Gen_Set (N, "visibility", File);
+
+      Add_Package ("Glib.Unicode");
+
+      Put_Line (File, "   Set_Invisible_Char ("
+                & To_Ada (Top) & "." & To_Ada (Get_Name (N))
+                & ", UTF8_Get_Char ("""
+                & Get_Property (N, "invisible_char", "") & """));");
    end GEntry_Generate;
 
    ---------------------
@@ -1318,7 +1389,7 @@ package body Gtk_Generates is
    procedure Radio_Button_Generate (N : Node_Ptr; File : File_Type) is
       Label : constant String := Get_Property (N, "label", "");
       Name  : constant String := Get_Attribute (N, "id");
-      Group : constant String := Get_Property (N, "group", "default_group");
+      Group : constant String := Get_Property (N, "group", "");
       Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
       Top   : constant String := Get_Attribute (Top_Widget, "id");
       function Build_Type return Glib.GType;
