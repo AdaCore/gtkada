@@ -8,6 +8,8 @@ The primary download site is http://gtkada.eu.org
 
 New features in 1.2.11 include:
 
+- Under Windows, non ASCII characters are now displayed instead of being
+  truncated.
 - New routines to update and copy XML trees easliy in Glib.XML
 - Documentation additions
 - various refreshing/displaying problems fixed in the GUI builder under Windows
