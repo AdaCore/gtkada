@@ -69,6 +69,11 @@ Gtk.Editable:
    move_cursor, move_word, move_page, move_to_row, move_to_column,
    kill_char, kill_word, kill_line, cut_clipboard, copy_clipboard,
    paste_clipboard.
+Gtk.Enums:
+  Gtk_Scroll_Type has new values
+  Gtk_Window_Position has a new value
+  The Window_Dialog value has been removed from Gtk_Window_Type
+  New type Gtk_Text_Direction
 Gtk.File_Selection:
   now a child of Gtk_Dialog
 Gtk.Font_Selection:
@@ -240,6 +245,12 @@ gtktreeview.h
 gtktreeviewcolumn.h
 gtkwidget.h: see "missing" section. check signals.
 gtkwindow.h: see "missing" section.
+
+=======
+Here are some problems found while binding Gtk+:
+gtkenums.h:
+   GTK_DELETE_PARAGRAPH_ENDS and GTK_DELETE_PARAGRAPHS: poor naming if
+   the associated comments are correct.
 
 =======
 Here are some problems found while binding Pango:
