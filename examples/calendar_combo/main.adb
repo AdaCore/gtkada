@@ -9,6 +9,10 @@ procedure Main is
    Cal : Gtk_Calendar_Combo;
 
    function On_Main_Window_Delete_Event
+     (Object : access Gtk_Window_Record'Class) return Boolean;
+   --  Handler for the delete_event signal
+
+   function On_Main_Window_Delete_Event
      (Object : access Gtk_Window_Record'Class)
       return Boolean
    is
