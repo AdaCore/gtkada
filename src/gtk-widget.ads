@@ -29,7 +29,7 @@ package Gtk.Widget is
    type Gtk_Widget is new Object.Gtk_Object with private;
 
 
-   procedure Activate (Widget : in Gtk_Widget'Class);
+   procedure Activate (Widget : in out Gtk_Widget'Class);
    --  mapping: Activate gtkwidget.h gtk_widget_activate
 
    procedure Destroy (Widget : in out Gtk_Widget'Class);
@@ -56,7 +56,7 @@ package Gtk.Widget is
                        Name : in String);
    --  mapping: Set_Name gtkwidget.h gtk_widget_set_name
 
-   procedure Set_Sensitive (Widget    : in Gtk_Widget'Class;
+   procedure Set_Sensitive (Widget    : in out Gtk_Widget'Class;
                             Sensitive : in Boolean := True);
    --  mapping: Set_Sensitive gtkwidget.h gtk_widget_set_sensitive
 
@@ -70,21 +70,21 @@ package Gtk.Widget is
    --  mapping: Set_USize gtkwidget.h gtk_widget_set_usize
 
 
-   procedure Show (Widget : in Gtk_Widget'Class);
+   procedure Show (Widget : in out Gtk_Widget'Class);
    --  mapping: Show gtkwidget.h gtk_widget_show
 
-   procedure Show_All (Widget : in Gtk_Widget'Class);
+   procedure Show_All (Widget : in out Gtk_Widget'Class);
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_show_all
 
 
-   procedure Hide (Widget : in Gtk_Widget'Class);
+   procedure Hide (Widget : in out Gtk_Widget'Class);
    --  mapping: Hide gtkwidget.h gtk_widget_hide
 
 
-   procedure Map (Widget : in Gtk_Widget'Class);
+   procedure Map (Widget : in out Gtk_Widget'Class);
    --  mapping: Map gtkwidget.h gtk_widget_map
 
-   procedure Unmap (Widget : in Gtk_Widget'Class);
+   procedure Unmap (Widget : in out Gtk_Widget'Class);
    --  mapping: Unmap gtkwidget.h gtk_widget_unmap
 
    procedure Realize (Widget : in out Gtk_Widget'Class);
@@ -191,6 +191,16 @@ package Gtk.Widget is
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_dnd_drop_set
    --  FIXME  --  need Gdk_Event
    --  FIXME  -- A generic package will be needed (a new file?)
+
+   -----------------------
+   -- Default callbacks --
+   -----------------------
+
+   function Get_Default_Motion_Notify_Event (Widget : in Gtk_Widget'Class)
+                                             return System.Address;
+
+   --  These methods are available only for use with
+   --  Gtk.Signal.C_Unsafe_Connect
 
 private
 

@@ -365,6 +365,13 @@ ada_widget_get_parent (GtkWidget* widget)
   return widget->parent;
 }
 
+GtkSignalFunc
+ada_widget_get_motion_notify (GtkWidget* widget)
+{
+  return (GtkSignalFunc)(GTK_WIDGET_CLASS (GTK_OBJECT (widget)->klass)
+			 ->motion_notify_event);
+}
+
 /******************************************
  ** Functions for Pixmap
  ******************************************/

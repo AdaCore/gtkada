@@ -6,7 +6,7 @@ package body Gtk.Widget is
    --  Activate  --
    ----------------
 
-   procedure Activate (Widget : in Gtk_Widget'Class)
+   procedure Activate (Widget : in out Gtk_Widget'Class)
    is
       procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_activate");
@@ -76,6 +76,18 @@ package body Gtk.Widget is
       return To_Boolean (Internal (Get_Object (Widget)));
    end Drawable_Is_Set;
 
+   -------------------------------------
+   -- Get_Default_Motion_Notify_Event --
+   -------------------------------------
+
+   function Get_Default_Motion_Notify_Event (Widget : in Gtk_Widget'Class)
+                                             return System.Address
+   is
+      function Internal (Widget : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_widget_get_motion_notify");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Default_Motion_Notify_Event;
 
    ------------------
    --  Get_Object  --
@@ -179,7 +191,7 @@ package body Gtk.Widget is
    --  Hide  --
    ------------
 
-   procedure Hide (Widget : in Gtk_Widget'Class) is
+   procedure Hide (Widget : in out Gtk_Widget'Class) is
       procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_hide");
    begin
@@ -204,7 +216,7 @@ package body Gtk.Widget is
    --  Map  --
    -----------
 
-   procedure Map (Widget : in Gtk_Widget'Class) is
+   procedure Map (Widget : in out Gtk_Widget'Class) is
       procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_map");
    begin
@@ -367,7 +379,7 @@ package body Gtk.Widget is
    --  Set_Sensitive  --
    ---------------------
 
-   procedure Set_Sensitive (Widget    : in Gtk_Widget'Class;
+   procedure Set_Sensitive (Widget    : in out Gtk_Widget'Class;
                             Sensitive : in Boolean := True)
    is
       procedure Internal (Widget      : in System.Address;
@@ -411,7 +423,7 @@ package body Gtk.Widget is
    --  Show  --
    ------------
 
-   procedure Show (Widget : in Gtk_Widget'Class) is
+   procedure Show (Widget : in out Gtk_Widget'Class) is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_widget_show");
    begin
@@ -423,7 +435,7 @@ package body Gtk.Widget is
    --  Show_All  --
    ----------------
 
-   procedure Show_All (Widget : in Gtk_Widget'Class) is
+   procedure Show_All (Widget : in out Gtk_Widget'Class) is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_widget_show_all");
    begin
@@ -447,16 +459,16 @@ package body Gtk.Widget is
    --  Unmap  --
    -------------
 
-   procedure Unmap (Widget : in Gtk_Widget'Class) is
+   procedure Unmap (Widget : in out Gtk_Widget'Class) is
       procedure Internal (Widget : in System.Address);
       pragma Import (C, Internal, "gtk_widget_unmap");
    begin
       Internal (Get_Object (Widget));
    end Unmap;
 
-   --------------
-   -- Unrealize  --
-   -------------
+   ---------------
+   -- Unrealize --
+   ---------------
 
    procedure Unrealize (Widget : in out Gtk_Widget'Class) is
       procedure Internal (Widget : in System.Address);
@@ -466,9 +478,9 @@ package body Gtk.Widget is
    end Unrealize;
 
 
-   ----------------------
-   --  Visible_Is_Set  --
-   ----------------------
+   --------------------
+   -- Visible_Is_Set --
+   --------------------
 
    function Visible_Is_Set (Widget : in Gtk_Widget'Class) return Boolean is
       function Internal (Widget : in System.Address) return Guint32;
