@@ -1,5 +1,10 @@
 #! /usr/local/bin/perl
 
+open (VERSION, "gcc -gnatv gtk.ads 2> /dev/null | ");
+$version=join (" ", <VERSION>);
+close (VERSION);
+$create_warnings = ($version =~ /3\.11w/);
+
 foreach (<g*.ads>)
 {
     if (/g(lib|dk|tk)/)
@@ -13,7 +18,7 @@ foreach (<g*.ads>)
        $line =~ /package\s+(\S+)/;
        push (@list, $1);
        print "with $1;\n";
-       print "pragma Warnings (off, $1);\n";
+       print "pragma Warnings (off, $1);\n" if ($create_warnings);
     }
 }
 
