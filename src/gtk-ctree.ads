@@ -227,6 +227,8 @@ package Gtk.Ctree is
                       Row    : in     Guint)
                       return          Gtk_Ctree_Node;
    --  Return the Node corresponding to the nth row of a given Ctree.
+   --  This can be used to retrieve the root node of the tree, by passing 0 for
+   --  Row.
 
    function Find (Ctree : access Gtk_Ctree_Record;
                   Node  : in     Gtk_Ctree_Node;
