@@ -14,6 +14,7 @@ with Gtk.Menu_Bar; use Gtk.Menu_Bar;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
+with Gtk.Tooltips; use Gtk.Tooltips;
 with Gtk.Vbox;   use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
@@ -180,6 +181,7 @@ package body Test is
       Menu      : Gtk_Menu;
       Root_Item : Gtk_Menu_Item;
       Menu_Item : Gtk_Menu_Item;
+      Tooltips  : Gtk_Tooltips;
    begin
       Init;
       --  Initialize the library (how can we pass the command line arguments ?)
@@ -254,12 +256,17 @@ package body Test is
       Pack_Start (V_Box, Status, True, True, 10);
       Show (Status);
 
+      --  Create tooltips
+      Gtk_New (Tooltips);
+
       --  Launch dialog
       Gtk_New (A_Button, With_Label => "Color Selection");
       Id := Void_Cb_Button.Connect (A_Button, "clicked",
                                     Launch_Dialog'Access);
       Pack_Start (V_Box, A_Button, True, True, 5);
       Show (A_Button);
+      Set_Tip (Tooltips, A_Button, "Display a Color_Selection_Dialog",
+               "private");
 
       --  Launch gamma curve
       Gtk_New (A_Button, With_Label => "Gamma Curve");
@@ -267,6 +274,8 @@ package body Test is
                                     Launch_Gamma'Access);
       Pack_Start (V_Box, A_Button, True, True, 5);
       Show (A_Button);
+      Set_Tip (Tooltips, A_Button, "Display a Gamma_Curve",
+               "private");
 
       --  Launch drawing area
       Gtk_New (A_Button, With_Label => "Drawing Area");
@@ -274,6 +283,8 @@ package body Test is
                                     Launch_Drawing'Access);
       Pack_Start (V_Box, A_Button, True, True, 5);
       Show (A_Button);
+      Set_Tip (Tooltips, A_Button, "Display a Drawing_Area",
+               "private");
 
       --  Show the box
       Show (A_Box);
