@@ -45,29 +45,31 @@ package Gtk.Toolbar is
    function Append_Element
      (Toolbar              : access Gtk_Toolbar_Record;
       The_Type             : in Gtk_Toolbar_Child_Type;
-      Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Text                 : in String;
-      Tooltip_Text         : in String;
-      Tooltip_Private_Text : in String;
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
+      Widget               : Gtk.Widget.Gtk_Widget := null;
+      Text                 : in String := "";
+      Tooltip_Text         : in String := "";
+      Tooltip_Private_Text : in String := "";
+      Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Widget.Gtk_Widget;
    --  Note : you have to set the "clicked" callback yourself, as opposed to
    --  what is done in C.
+
    function Append_Item
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : in String;
-      Tooltip_Text         : in String;
-      Tooltip_Private_Text : in String;
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
+      Text                 : in String := "";
+      Tooltip_Text         : in String := "";
+      Tooltip_Private_Text : in String := "";
+      Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Button.Gtk_Button;
    --  Note : you have to set the callback yourself, as opposed to what is
    --  done in C.
+
    procedure Append_Space (Toolbar : access Gtk_Toolbar_Record);
    procedure Append_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : in String;
-      Tooltip_Private_Text : in String);
+      Tooltip_Text         : in String := "";
+      Tooltip_Private_Text : in String := "");
    procedure Gtk_New
      (Widget      : out Gtk_Toolbar;
       Orientation : in Gtk_Orientation;

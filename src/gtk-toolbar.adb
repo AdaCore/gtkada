@@ -42,41 +42,68 @@ package body Gtk.Toolbar is
    function Append_Element
      (Toolbar              : access Gtk_Toolbar_Record;
       The_Type             : in Gtk_Toolbar_Child_Type;
-      Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Text                 : in String;
-      Tooltip_Text         : in String;
-      Tooltip_Private_Text : in String;
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
+      Widget               : Gtk.Widget.Gtk_Widget := null;
+      Text                 : in String := "";
+      Tooltip_Text         : in String := "";
+      Tooltip_Private_Text : in String := "";
+      Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Widget.Gtk_Widget
    is
       function Internal
         (Toolbar              : in System.Address;
          The_Type             : in Gint;
          Widget               : in System.Address;
-         Text                 : in String;
+         Text                 : in System.Address;
          Tooltip_Text         : in System.Address;
-         Tooltip_Private_Text : in String;
+         Tooltip_Private_Text : in System.Address;
          Icon                 : in System.Address;
          Callback             : in System.Address;
          User_Data            : in System.Address)
          return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_append_element");
       Stub : Gtk.Widget.Gtk_Widget_Record;
-      TT_S : aliased constant String := Tooltip_Text & ASCII.Nul;
-      TT   : System.Address := TT_S'Address;
+      T    : aliased constant String := Text & ASCII.Nul;
+      TA   : System.Address := T'Address;
+      TT   : aliased constant String := Tooltip_Text & ASCII.Nul;
+      TTA  : System.Address := TT'Address;
+      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.Nul;
+      TPTA : System.Address := TPT'Address;
+      W    : System.Address;
+      I    : System.Address;
+
+      use type Gtk.Widget.Gtk_Widget;
+
    begin
-      if Tooltip_Text'Length = 0 then
-         TT := System.Null_Address;
+      if Text'Length = 0 then
+         TA := System.Null_Address;
       end if;
+
+      if Tooltip_Text'Length = 0 then
+         TTA := System.Null_Address;
+      end if;
+
+      if Tooltip_Private_Text'Length = 0 then
+         TPTA := System.Null_Address;
+      end if;
+
+      if Widget = null then
+         W := System.Null_Address;
+      else
+         W := Get_Object (Widget);
+      end if;
+
+      if Icon = null then
+         I := System.Null_Address;
+      else
+         I := Get_Object (Icon);
+      end if;
+
       return Gtk.Widget.Gtk_Widget
         (Get_User_Data (Internal (Get_Object (Toolbar),
                                   Gtk_Toolbar_Child_Type'Pos (The_Type),
-                                  Get_Object (Widget),
-                                  Text & ASCII.Nul,
-                                  TT,
-                                  Tooltip_Private_Text & ASCII.Nul,
-                                  Get_Object (Icon), System.Null_Address,
-                                  System.Null_Address), Stub));
+                                  W, TA, TTA, TPTA, I, System.Null_Address,
+                                  System.Null_Address),
+                        Stub));
    end Append_Element;
 
    -----------------
@@ -85,36 +112,56 @@ package body Gtk.Toolbar is
 
    function Append_Item
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : in String;
-      Tooltip_Text         : in String;
-      Tooltip_Private_Text : in String;
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
-     return Gtk.Button.Gtk_Button
+      Text                 : in String := "";
+      Tooltip_Text         : in String := "";
+      Tooltip_Private_Text : in String := "";
+      Icon                 : Gtk.Widget.Gtk_Widget := null)
+      return Gtk.Button.Gtk_Button
    is
       function Internal
         (Toolbar              : in System.Address;
-         Text                 : in String;
+         Text                 : in System.Address;
          Tooltip_Text         : in System.Address;
-         Tooltip_Private_Text : in String;
+         Tooltip_Private_Text : in System.Address;
          Icon                 : in System.Address;
          Callback             : in System.Address;
          User_Data            : in System.Address)
          return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_append_item");
       Stub : Gtk.Button.Gtk_Button_Record;
-      TT_S : aliased constant String := Tooltip_Text & ASCII.Nul;
-      TT   : System.Address := TT_S'Address;
+      T    : aliased constant String := Text & ASCII.Nul;
+      TA   : System.Address := T'Address;
+      TT   : aliased constant String := Tooltip_Text & ASCII.Nul;
+      TTA  : System.Address := TT'Address;
+      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.Nul;
+      TPTA : System.Address := TPT'Address;
+      I    : System.Address;
+
+      use type Gtk.Widget.Gtk_Widget;
+
    begin
-      if Tooltip_Text'Length = 0 then
-         TT := System.Null_Address;
+      if Text'Length = 0 then
+         TA := System.Null_Address;
       end if;
+ 
+      if Tooltip_Text'Length = 0 then
+         TTA := System.Null_Address;
+      end if;
+ 
+      if Tooltip_Private_Text'Length = 0 then
+         TPTA := System.Null_Address;
+      end if;
+ 
+      if Icon = null then
+         I := System.Null_Address;
+      else
+         I := Get_Object (Icon);
+      end if;
+
       return Gtk.Button.Gtk_Button
         (Get_User_Data (Internal (Get_Object (Toolbar),
-                                  Text & ASCII.Nul,
-                                  TT,
-                                  Tooltip_Private_Text & ASCII.Nul,
-                                  Get_Object (Icon),
-                                  System.Null_Address, System.Null_Address),
+                                  TA, TTA, TPTA, I, System.Null_Address,
+                                  System.Null_Address),
                         Stub));
    end Append_Item;
 
@@ -136,25 +183,30 @@ package body Gtk.Toolbar is
    procedure Append_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : in String;
-      Tooltip_Private_Text : in String)
+      Tooltip_Text         : in String := "";
+      Tooltip_Private_Text : in String := "")
    is
       procedure Internal
         (Toolbar              : in System.Address;
          Widget               : in System.Address;
          Tooltip_Text         : in System.Address;
-         Tooltip_Private_Text : in String);
+         Tooltip_Private_Text : in System.Address);
       pragma Import (C, Internal, "gtk_toolbar_append_widget");
-      TT_S : aliased constant String := Tooltip_Text & ASCII.Nul;
-      TT   : System.Address := TT_S'Address;
+      TT   : aliased constant String := Tooltip_Text & ASCII.Nul;
+      TTA  : System.Address := TT'Address;
+      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.Nul;
+      TPTA : System.Address := TPT'Address;
+
    begin
       if Tooltip_Text'Length = 0 then
-         TT := System.Null_Address;
+         TTA := System.Null_Address;
       end if;
-      Internal (Get_Object (Toolbar),
-                Get_Object (Widget),
-                TT,
-                Tooltip_Private_Text & ASCII.Nul);
+ 
+      if Tooltip_Private_Text'Length = 0 then
+         TPTA := System.Null_Address;
+      end if;
+
+      Internal (Get_Object (Toolbar), Get_Object (Widget), TTA, TPTA);
    end Append_Widget;
 
    -----------------------
@@ -687,9 +739,9 @@ package body Gtk.Toolbar is
                     Gtk_Object (
                       Append_Item (Gtk_Toolbar (Toolbar),
                         Get_Field (P, "label").all, S.all, "",
-                        Create_Pixmap (S2.all,
+                        Gtk.Widget.Gtk_Widget (Create_Pixmap (S2.all,
                           (Gtk_Window
-                            (Get_Object (Get_Field (Top, "name"))))))));
+                            (Get_Object (Get_Field (Top, "name")))))))));
                   P.Specific_Data.Created := True;
                   P.Specific_Data.Has_Container := True;
                exception
