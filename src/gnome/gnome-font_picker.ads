@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
-with Gdk.Font;
 with Gtk;
 with Gtk.Button;
 with Gtk.Widget;
@@ -39,8 +38,8 @@ package Gnome.Font_Picker is
      Gtk.Button.Gtk_Button_Record with private;
    type Gnome_Font_Picker is access all Gnome_Font_Picker_Record'Class;
 
-   type Gnome_Font_Picker_Mode is (
-      Mode_Pixmap,
+   type Gnome_Font_Picker_Mode is
+     (Mode_Pixmap,
       Mode_Font_Info,
       Mode_User_Widget,
       Mode_Unknown);
@@ -63,19 +62,15 @@ package Gnome.Font_Picker is
       Use_Font_In_Label : Boolean;
       Size              : Gint);
 
-   function Get_Font (Gfp    : access Gnome_Font_Picker_Record)
-                      return Gdk.Font.Gdk_Font;
+   function Get_Font_Name
+     (Gfp : access Gnome_Font_Picker_Record) return String;
 
-   function Get_Font_Name (Gfp    : access Gnome_Font_Picker_Record)
-                           return String;
-
-   function Get_Preview_Text (Gfp    : access Gnome_Font_Picker_Record)
-                              return String;
+   function Get_Preview_Text
+     (Gfp : access Gnome_Font_Picker_Record) return String;
 
    function Set_Font_Name
      (Gfp      : access Gnome_Font_Picker_Record;
-      Fontname : String)
-      return Boolean;
+      Fontname : String) return Boolean;
 
    procedure Set_Mode
      (Gfp  : access Gnome_Font_Picker_Record;

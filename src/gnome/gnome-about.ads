@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                  Copyright (C) 2000-2001                          --
+--                  Copyright (C) 2000-2002                          --
 --                            ACT-Europe                             --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gdk.Pixbuf;
 with Gtk;
 with Gnome.Dialog;
 with Gtkada.Types; use Gtkada.Types;
@@ -37,38 +38,42 @@ package Gnome.About is
    type Gnome_About is access all Gnome_About_Record'Class;
 
    procedure Gnome_New
-     (About     : out Gnome_About;
-      Title     : String;
-      Version   : String;
-      Copyright : String;
-      Authors   : Chars_Ptr_Array;
-      Comments  : String;
-      Logo      : String);
+     (About              : out Gnome_About;
+      Name               : String;
+      Version            : String;
+      Copyright          : String;
+      Comments           : String;
+      Authors            : Chars_Ptr_Array;
+      Documenters        : Chars_Ptr_Array;
+      Translator_Credits : String;
+      Logo               : Gdk.Pixbuf.Gdk_Pixbuf);
    --  Create a new about box.
-   --  Title is the name of the application.
+   --  Name is the name of the application.
    --  Version is the version string.
    --  Copyright is the copyright notice (one line.)
-   --  Authors is the list of authors.
    --  Comments provides other comments.
-   --  Logo is a logo pixmap file.
+   --  Authors is the list of authors.
+   --  Documenters is the list of Documenters
+   --  Translator_Credits is the names of Translators
+   --  Logo is a logo pixbuf file.
    --
    --  Usage:
    --    Gnome_New (About, -"GnoApp", "1.2b", -"Copyright FSF (c) 2001",
    --      "author1" + "author2",
    --      "Comment line 1" & ASCII.LF & "Comment Line 2",
-   --      "/usr/share/pixmaps/gnoapp-logo.xpm");
+   --      Logo);
    --    Show (About);
 
    procedure Initialize
-     (About     : access Gnome_About_Record'Class;
-      Title     : String;
-      Version   : String;
-      Copyright : String;
-      Authors   : Chars_Ptr_Array;
-      Comments  : String;
-      Logo      : String);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
+     (About              : access Gnome_About_Record'Class;
+      Name               : String;
+      Version            : String;
+      Copyright          : String;
+      Comments           : String;
+      Authors            : Chars_Ptr_Array;
+      Documenters        : Chars_Ptr_Array;
+      Translator_Credits : String;
+      Logo               : Gdk.Pixbuf.Gdk_Pixbuf);
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gnome_About.

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
 with Interfaces.C.Strings;
 with System;
@@ -68,76 +67,35 @@ package body Gnome.Icon_Entry is
       Initialize_User_Data (Widget);
    end Initialize;
 
-   ----------------
-   -- File_Entry --
-   ----------------
-
-   function File_Entry (Ientry : access Gnome_Icon_Entry_Record)
-                        return Gtk.Widget.Gtk_Widget
-   is
-      function Internal (Ientry : System.Address)
-                         return System.Address;
-      pragma Import (C, Internal, "gnome_icon_entry_gnome_file_entry");
-   begin
-      return Widget.Convert (Internal (Get_Object (Ientry)));
-   end File_Entry;
-
-   ---------------
-   -- Gtk_Entry --
-   ---------------
-
-   function Gtk_Entry
-     (Ientry : access Gnome_Icon_Entry_Record) return Gtk.Widget.Gtk_Widget
-   is
-      function Internal (Ientry : System.Address) return System.Address;
-      pragma Import (C, Internal, "gnome_icon_entry_gtk_entry");
-   begin
-      return Widget.Convert (Internal (Get_Object (Ientry)));
-   end Gtk_Entry;
-
-   -----------------
-   -- Gnome_Entry --
-   -----------------
-
-   function Gnome_Entry
-     (Ientry : access Gnome_Icon_Entry_Record) return Gtk.Widget.Gtk_Widget
-   is
-      function Internal (Ientry : System.Address) return System.Address;
-      pragma Import (C, Internal, "gnome_icon_entry_gnome_entry");
-   begin
-      return Widget.Convert (Internal (Get_Object (Ientry)));
-   end Gnome_Entry;
-
    ------------------
    -- Get_Filename --
    ------------------
 
-   function Get_Filename (Ientry : access Gnome_Icon_Entry_Record)
-                          return String
+   function Get_Filename
+     (Ientry : access Gnome_Icon_Entry_Record) return String
    is
-      function Internal (Ientry : System.Address)
-                         return Interfaces.C.Strings.chars_ptr;
+      function Internal
+        (Ientry : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gnome_icon_entry_get_filename");
    begin
       return Interfaces.C.Strings.Value (Internal (Get_Object (Ientry)));
    end Get_Filename;
 
-   --------------
-   -- Set_Icon --
-   --------------
+   ------------------
+   -- Set_Filename --
+   ------------------
 
-   procedure Set_Icon
+   procedure Set_Filename
      (Ientry   : access Gnome_Icon_Entry_Record;
       Filename : String)
    is
       procedure Internal
         (Ientry   : System.Address;
          Filename : String);
-      pragma Import (C, Internal, "gnome_icon_entry_set_icon");
+      pragma Import (C, Internal, "gnome_icon_entry_set_filename");
    begin
-      Internal (Get_Object (Ientry),
-                Filename & ASCII.NUL);
-   end Set_Icon;
+      Internal (Get_Object (Ientry), Filename & ASCII.NUL);
+   end Set_Filename;
 
    -----------------------
    -- Set_Pixmap_Subdir --

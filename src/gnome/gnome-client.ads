@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -85,8 +85,6 @@ package Gnome.Client is
    --  Return the internal value associated with this widget.
 
    --  gnome_client_add_static_arg not bound: variable number of arguments
-
-   function Cloned_Client return Gnome_Client;
 
    procedure Connect (Client : access Gnome_Client_Record);
 

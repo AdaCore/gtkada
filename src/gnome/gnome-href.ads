@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -50,13 +50,13 @@ package Gnome.HRef is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with this widget.
 
-   function Get_Label (Href : access Gnome_HRef_Record) return String;
+   function Get_Text (Href : access Gnome_HRef_Record) return String;
 
    function Get_Url (Href : access Gnome_HRef_Record) return String;
 
-   procedure Set_Label
-     (Href  : access Gnome_HRef_Record;
-      Label : String);
+   procedure Set_Text
+     (Href : access Gnome_HRef_Record;
+      Text : String);
 
    procedure Set_Url
      (Href : access Gnome_HRef_Record;

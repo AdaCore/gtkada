@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---               Copyright (C) 2000 Helix Code, Inc.                 --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--               Copyright (C) 2000-2002 ACT-Europe                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -86,16 +85,16 @@ package body Gnome.Date_Edit is
    end Initialize;
 
    --------------
-   -- Get_Date --
+   -- Get_Time --
    --------------
 
-   function Get_Date (Date_Edit : Gnome_Date_Edit) return Time_T is
+   function Get_Time (Date_Edit : Gnome_Date_Edit) return Time_T is
       function Internal (Date_Edit : System.Address) return Time_T;
-      pragma Import (C, Internal, "gnome_date_edit_get_date");
+      pragma Import (C, Internal, "gnome_date_edit_get_time");
 
    begin
       return Internal (Get_Object (Date_Edit));
-   end Get_Date;
+   end Get_Time;
 
    ---------------
    -- Get_Flags --

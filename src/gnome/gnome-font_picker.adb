@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,8 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk.Font;
-with Gdk; use Gdk;
 with Gtk.Widget;
 with Gtk; use Gtk;
 with Interfaces.C.Strings;
@@ -96,28 +94,15 @@ package body Gnome.Font_Picker is
                 Size);
    end Fi_Set_Use_Font_In_Label;
 
-   --------------
-   -- Get_Font --
-   --------------
-
-   function Get_Font
-     (Gfp : access Gnome_Font_Picker_Record) return Gdk.Font.Gdk_Font
-   is
-      function Internal (Gfp : System.Address) return Gdk.Font.Gdk_Font;
-      pragma Import (C, Internal, "gnome_font_picker_get_font");
-   begin
-      return Internal (Get_Object (Gfp));
-   end Get_Font;
-
    -------------------
    -- Get_Font_Name --
    -------------------
 
-   function Get_Font_Name (Gfp    : access Gnome_Font_Picker_Record)
-                           return String
+   function Get_Font_Name
+     (Gfp : access Gnome_Font_Picker_Record) return String
    is
-      function Internal (Gfp    : System.Address)
-                         return Interfaces.C.Strings.chars_ptr;
+      function Internal
+        (Gfp : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gnome_font_picker_get_font_name");
    begin
       return Interfaces.C.Strings.Value (Internal (Get_Object (Gfp)));

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                       Copyright (C) 2000                          --
+--                    Copyright (C) 2000-2002                        --
 --                            ACT-Europe                             --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,6 +29,7 @@
 
 with System;
 with Gtk; use Gtk;
+with Gdk.Pixbuf; use Gdk.Pixbuf;
 
 package body Gnome.About is
 
@@ -37,52 +38,65 @@ package body Gnome.About is
    ---------------
 
    procedure Gnome_New
-     (About     : out Gnome_About;
-      Title     : String;
-      Version   : String;
-      Copyright : String;
-      Authors   : Chars_Ptr_Array;
-      Comments  : String;
-      Logo      : String) is
+     (About              : out Gnome_About;
+      Name               : String;
+      Version            : String;
+      Copyright          : String;
+      Comments           : String;
+      Authors            : Chars_Ptr_Array;
+      Documenters        : Chars_Ptr_Array;
+      Translator_Credits : String;
+      Logo               : Gdk_Pixbuf) is
    begin
       About := new Gnome_About_Record;
-      Initialize (About, Title, Version, Copyright, Authors, Comments, Logo);
+      Initialize
+        (About, Name, Version, Copyright,
+         Comments, Authors, Documenters,
+         Translator_Credits, Logo);
    end Gnome_New;
 
    ----------------
    -- Initialize --
    ----------------
 
+
    procedure Initialize
-     (About     : access Gnome_About_Record'Class;
-      Title     : String;
-      Version   : String;
-      Copyright : String;
-      Authors   : Chars_Ptr_Array;
-      Comments  : String;
-      Logo      : String)
+     (About              : access Gnome_About_Record'Class;
+      Name               : String;
+      Version            : String;
+      Copyright          : String;
+      Comments           : String;
+      Authors            : Chars_Ptr_Array;
+      Documenters        : Chars_Ptr_Array;
+      Translator_Credits : String;
+      Logo               : Gdk_Pixbuf)
    is
       Authors_Padded : constant Chars_Ptr_Array := Authors + Null_Ptr;
+      Documenters_Padded : constant Chars_Ptr_Array := Documenters + Null_Ptr;
 
       function Internal
-        (Title     : String;
-         Version   : String;
-         Copyright : String;
-         Authors   : Chars_Ptr_Array;
-         Comments  : String;
-         Logo      : String) return System.Address;
+        (Name               : String;
+         Version            : String;
+         Copyright          : String;
+         Comments           : String;
+         Authors            : Chars_Ptr_Array;
+         Documenters        : Chars_Ptr_Array;
+         Translator_Credits : String;
+         Logo               : Gdk_Pixbuf) return System.Address;
       pragma Import (C, Internal, "gnome_about_new");
 
    begin
       Set_Object
         (About,
          Internal
-           (Title & ASCII.NUL,
-            Version & ASCII.NUL,
-            Copyright & ASCII.NUL,
-            Authors_Padded,
-            Comments & ASCII.NUL,
-            Logo & ASCII.NUL));
+         (Name & ASCII.NUL,
+          Version & ASCII.NUL,
+          Copyright & ASCII.NUL,
+          Comments & ASCII.NUL,
+          Authors_Padded,
+          Documenters_Padded,
+          Translator_Credits & ASCII.NUL,
+          Logo));
       Initialize_User_Data (About);
    end Initialize;
 

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -69,19 +69,6 @@ package body Gnome.Client is
 
       Initialize_User_Data (Widget);
    end Initialize;
-
-   -------------------
-   -- Cloned_Client --
-   -------------------
-
-   function Cloned_Client return Gnome_Client is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gnome_cloned_client");
-
-      Stub : Gnome_Client_Record;
-   begin
-      return Gnome_Client (Get_User_Data (Internal, Stub));
-   end Cloned_Client;
 
    -------------
    -- Connect --

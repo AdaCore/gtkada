@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--               Copyright (C) 2000-2002 ACT-Europe                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -42,14 +42,6 @@ package Gnome.UI_Defs is
    --  All-purpose padding. If you always use these instead of making up
    --  some arbitrary padding number that looks good on your screen,
    --  people can change the "spaciousness" of the GUI globally.
-
-   Yes    : constant := 0;
-   No     : constant := 1;
-   Ok     : constant := 0;
-   Cancel : constant := 1;
-   --  These are the button numbers on a yes-no or ok-cancel GnomeDialog,
-   --  and in the gnome-app-util callbacks. Make the program more
-   --  readable, is all.
 
    --  These are keybindings, in UI_Info format. USE THEM OR DIE!
    --  Add to the list as well..

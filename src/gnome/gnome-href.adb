@@ -64,17 +64,17 @@ package body Gnome.HRef is
       Initialize_User_Data (Widget);
    end Initialize;
 
-   ---------------
-   -- Get_Label --
-   ---------------
+   --------------
+   -- Get_Text --
+   --------------
 
-   function Get_Label (Href : access Gnome_HRef_Record) return String is
+   function Get_Text (Href : access Gnome_HRef_Record) return String is
       function Internal
         (Href : System.Address) return Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "gnome_href_get_label");
+      pragma Import (C, Internal, "gnome_href_get_text");
    begin
       return Interfaces.C.Strings.Value (Internal (Get_Object (Href)));
-   end Get_Label;
+   end Get_Text;
 
    -------------
    -- Get_Url --
@@ -88,19 +88,19 @@ package body Gnome.HRef is
       return Interfaces.C.Strings.Value (Internal (Get_Object (Href)));
    end Get_Url;
 
-   ---------------
-   -- Set_Label --
-   ---------------
+   --------------
+   -- Set_Text --
+   --------------
 
-   procedure Set_Label
-     (Href  : access Gnome_HRef_Record;
-      Label : String)
+   procedure Set_Text
+     (Href : access Gnome_HRef_Record;
+      Text : String)
    is
-      procedure Internal (Href : System.Address; Label : String);
-      pragma Import (C, Internal, "gnome_href_set_label");
+      procedure Internal (Href : System.Address; Text : String);
+      pragma Import (C, Internal, "gnome_href_set_text");
    begin
-      Internal (Get_Object (Href), Label & ASCII.NUL);
-   end Set_Label;
+      Internal (Get_Object (Href), Text & ASCII.NUL);
+   end Set_Text;
 
    -------------
    -- Set_Url --

@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---               Copyright (C) 2000 Helix Code, Inc.                 --
---               Copyright (C) 2000-2001 ACT-Europe                  --
+--               Copyright (C) 2000-2002 ACT-Europe                  --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -65,10 +64,8 @@ package Gnome.Date_Edit is
      (Date_Edit : Gnome_Date_Edit;
       The_Time  : Time_T);
 
-   function Get_Date (Date_Edit : Gnome_Date_Edit) return Time_T;
-
    function Get_Time
-     (Date_Edit : Gnome_Date_Edit) return Time_T renames Get_Date;
+     (Date_Edit : Gnome_Date_Edit) return Time_T;
 
    procedure Set_Popup_Range
      (Date_Edit : Gnome_Date_Edit;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,7 +29,6 @@
 
 with Gtk;
 with Gtk.Box;
-with Gtk.Widget;
 
 package Gnome.Icon_Entry is
 
@@ -51,19 +50,10 @@ package Gnome.Icon_Entry is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with this widget.
 
-   function File_Entry (Ientry : access Gnome_Icon_Entry_Record)
-                        return Gtk.Widget.Gtk_Widget;
+   function Get_Filename
+     (Ientry : access Gnome_Icon_Entry_Record) return String;
 
-   function Gtk_Entry
-     (Ientry : access Gnome_Icon_Entry_Record) return Gtk.Widget.Gtk_Widget;
-
-   function Gnome_Entry
-     (Ientry : access Gnome_Icon_Entry_Record) return Gtk.Widget.Gtk_Widget;
-
-   function Get_Filename (Ientry : access Gnome_Icon_Entry_Record)
-                          return String;
-
-   procedure Set_Icon
+   procedure Set_Filename
      (Ientry   : access Gnome_Icon_Entry_Record;
       Filename : String);
 
