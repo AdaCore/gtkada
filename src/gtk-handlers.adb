@@ -71,9 +71,6 @@ package body Gtk.Handlers is
    pragma Import (C, Set_Value, "ada_gvalue_set");
    --  Function used internally to specify the value returned by a callback.
 
-   function To_Address is new Unchecked_Conversion
-     (Gtk.Marshallers.General_Handler, System.Address);
-
    --------------------------------
    -- Glib.Closure small binding --
    --------------------------------
