@@ -134,14 +134,6 @@ package Gtk.Dnd is
    Dest_Default_All       : constant Dest_Defaults;
    --  If set, specifies that all default actions should be taken.
 
-   ------------------
-   -- Target_Flags --
-   ------------------
-
-   type Target_Flags is mod 2 ** 32;
-   Target_Same_App : constant Target_Flags := 2 ** 0;
-   Target_Same_Widget : constant Target_Flags := 2 ** 1;
-
    ------------------------------------------
    -- Setting up a widget as a destination --
    ------------------------------------------
