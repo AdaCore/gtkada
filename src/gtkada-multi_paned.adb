@@ -261,7 +261,9 @@ package body Gtkada.Multi_Paned is
       procedure Unchecked_Free is new Ada.Unchecked_Deallocation
         (Child_Description, Child_Description_Access);
    begin
-      if not Child.Is_Widget then
+      if Child /= null
+        and then not Child.Is_Widget
+      then
          for H in Child.Handles'Range loop
             if Child.Handles (H).Win /= null then
                Destroy (Child.Handles (H).Win);
@@ -542,19 +544,23 @@ package body Gtkada.Multi_Paned is
                Tmp := Tmp.Next;
             end loop;
 
+            --  Previous is now the last child of Child
+
             Add_Handle (Split, Child.Parent, Child, Child.Handles);
 
-            if Child.Parent.First_Child = Child then
-               Previous.Next := Child.Next;
-               Child.Parent.First_Child := Child.First_Child;
-            else
-               Tmp := Child.Parent.First_Child;
-               while Tmp.Next /= Child loop
-                  Tmp := Tmp.Next;
-               end loop;
+            if Previous /= null then
+               if Child.Parent.First_Child = Child then
+                  Previous.Next := Child.Next;
+                  Child.Parent.First_Child := Child.First_Child;
+               else
+                  Tmp := Child.Parent.First_Child;
+                  while Tmp.Next /= Child loop
+                     Tmp := Tmp.Next;
+                  end loop;
 
-               Previous.Next := Tmp.Next.Next;
-               Tmp.Next := Child.First_Child;
+                  Previous.Next := Tmp.Next.Next;
+                  Tmp.Next := Child.First_Child;
+               end if;
             end if;
 
             Free (Child);
@@ -566,6 +572,15 @@ package body Gtkada.Multi_Paned is
       C, D : Natural;
       Tmp, Parent : Child_Description_Access;
    begin
+      if Traces then
+         if Pane.Is_Widget then
+            Put_Line ("## Removing widget "
+                      & System.Address_Image (Pane.Widget.all'Address));
+         else
+            Put_Line ("## Removing pane");
+         end if;
+      end if;
+
       if Current /= null then
          Parent := Current.Parent;
          C := Parent.Handles'First;
@@ -604,13 +619,21 @@ package body Gtkada.Multi_Paned is
 
          if Parent /= null
             and then not Parent.Is_Widget
-            and then Parent.Parent /= null
             and then Parent.First_Child = null
          then
-            Remove_Child (Split, Parent);
+            if Parent.Parent /= null then
+               Remove_Child (Split, Parent);
+            else
+               Free (Parent);
+               Split.Children := null;
+            end if;
          end if;
 
          Queue_Resize (Split);
+      end if;
+
+      if Traces then
+         Dump (Split, Split.Children);
       end if;
    end Remove_Child;
 
@@ -1619,6 +1642,15 @@ package body Gtkada.Multi_Paned is
       end if;
    end Get_Pane;
 
+   --------------
+   -- Get_Pane --
+   --------------
+
+   function Get_Pane (Current_Pane : Pane) return Pane is
+   begin
+      return Pane (Current_Pane.Parent);
+   end Get_Pane;
+
    --------------------
    -- Split_Internal --
    --------------------
@@ -2047,6 +2079,9 @@ package body Gtkada.Multi_Paned is
    is
       Iter    : Child_Iterator := Start (Win);
       Current : Child_Description_Access;
+      Child   : Child_Description_Access;
+      Percent : Float;
+      Current_Percent : Float;
    begin
       loop
          Current := Get (Iter);
@@ -2055,9 +2090,63 @@ package body Gtkada.Multi_Paned is
          if Current.Is_Widget
            and then Current.Widget = Gtk_Widget (Widget)
          then
-            Current.Width := Width;
-            Current.Height := Height;
+            Win.Selected_Handle_Parent := null;
+            Child := Current.Parent.First_Child;
+            for H in Current.Parent.Handles'Range loop
+               if Child = Current then
+                  Win.Selected_Handle_Index := H;
+                  Win.Selected_Handle_Parent := Current.Parent;
+                  exit;
+               end if;
+               Child := Child.Next;
+            end loop;
+
+            case Current.Parent.Orientation is
+               when Orientation_Vertical =>
+                  if Height = 0 then
+                     return; --  Nothing to do, keep current height
+                  end if;
+                  Percent := Float (Height + Handle_Half_Width)
+                    / Float (Get_Allocation_Height (Widget));
+
+               when Orientation_Horizontal =>
+                  if Width = 0 then
+                     return; --  Nothing to do, keep current width
+                  end if;
+                  Percent := Float (Width + Handle_Half_Width)
+                    / Float (Get_Allocation_Width (Widget));
+            end case;
+
+            if Win.Selected_Handle_Parent = null then
+               Win.Selected_Handle_Index := Current.Parent.Handles'Last;
+               Win.Selected_Handle_Parent := Current.Parent;
+               Current_Percent :=
+                 Current.Parent.Handles (Win.Selected_Handle_Index).Percent;
+
+               Current.Parent.Handles (Win.Selected_Handle_Index).Percent :=
+                 1.0 - Percent * (1.0 - Current_Percent);
+
+            elsif Win.Selected_Handle_Index = Current.Parent.Handles'First then
+               Current_Percent :=
+                 Current.Parent.Handles (Win.Selected_Handle_Index).Percent;
+               Current.Parent.Handles (Win.Selected_Handle_Index).Percent :=
+                 Percent * Current_Percent;
+
+            else
+               Current_Percent :=
+                 Current.Parent.Handles (Win.Selected_Handle_Index).Percent;
+               Current.Parent.Handles (Win.Selected_Handle_Index).Percent :=
+                 Percent
+                   * (Current_Percent
+                      - Current.Parent.Handles
+                        (Win.Selected_Handle_Index - 1).Percent)
+                 + Current.Parent.Handles
+                 (Win.Selected_Handle_Index - 1).Percent;
+            end if;
+
             Current.Fixed_Size := Fixed_Size;
+
+            Move_Handles (Win, Current.Parent, Win.Selected_Handle_Index);
             exit;
          end if;
 

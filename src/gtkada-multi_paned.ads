@@ -119,6 +119,7 @@ package Gtkada.Multi_Paned is
    function Get_Pane
      (Win    : access Gtkada_Multi_Paned_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Pane;
+   function Get_Pane (Current_Pane : Pane) return Pane;
    --  Return the pane that contains the widget. See comment for Split below.
 
    procedure Split
