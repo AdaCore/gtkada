@@ -86,7 +86,7 @@ begin
 end Conftest;
 EOF
 
-   $GNATMAKE conftest > /dev/null 2>&1
+   $GNATMAKE conftest > /dev/null
 
    if ( test ! -x conftest ) then
       AC_MSG_RESULT(no)
