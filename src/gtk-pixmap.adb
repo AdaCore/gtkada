@@ -32,6 +32,7 @@ with Gdk.Color;
 with Gdk.Pixmap;
 with Gtk.Widget;
 with Gtk.Util; use Gtk.Util;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
 
 package body Gtk.Pixmap is
@@ -136,6 +137,12 @@ package body Gtk.Pixmap is
    -- Create_Pixmap --
    -------------------
 
+   Dummy_Pixmap : constant chars_ptr_array :=
+     (New_String ("1 1 1 1"),
+      New_String ("c None"),
+      New_String (" "));
+   --  This is a dummy pixmap we use when a pixmap can't be found.
+
    function Create_Pixmap
      (Filename : in String;
       Window   : access Gtk.Window.Gtk_Window_Record'Class)
@@ -153,8 +160,16 @@ package body Gtk.Pixmap is
          Gtk.Window.Realize (Window);
       end if;
 
-      Gdk.Pixmap.Create_From_Xpm
-        (Gdkpixmap, Get_Window (Window), Mask, Gdk.Color.Null_Color, Filename);
+      if Filename = "" then
+         Gdk.Pixmap.Create_From_Xpm_D
+           (Gdkpixmap, Get_Window (Window), Mask,
+            Gdk.Color.Null_Color, Dummy_Pixmap);
+      else
+         Gdk.Pixmap.Create_From_Xpm
+           (Gdkpixmap, Get_Window (Window), Mask,
+            Gdk.Color.Null_Color, Filename);
+      end if;
+
       Gtk_New (Pixmap, Gdkpixmap, Mask);
       return Pixmap;
    end Create_Pixmap;
@@ -197,12 +212,14 @@ package body Gtk.Pixmap is
 
          S := Get_Field (N, "filename");
 
-         if S /= null then
-            Put_Line (File, "   " & To_Ada (Top.all) & "." & To_Ada (Cur.all) &
-              " := Create_Pixmap (""" & S.all & """, " & To_Ada (Top.all) &
-              ");");
-            N.Specific_Data.Created := True;
+         if S = null then
+            S := new String' ("");
          end if;
+
+         Put_Line (File, "   " & To_Ada (Top.all) & "." & To_Ada (Cur.all) &
+           " := Create_Pixmap (""" & S.all & """, " & To_Ada (Top.all) &
+           ");");
+         N.Specific_Data.Created := True;
       end if;
 
       Misc.Generate (N, File);
@@ -216,12 +233,13 @@ package body Gtk.Pixmap is
       if not N.Specific_Data.Created then
          S := Get_Field (N, "filename");
 
-         if S /= null then
-            Top := Find_Top_Widget (N);
-            Pixmap := Object.Gtk_Object (Create_Pixmap (S.all,
-              Gtk.Window.Gtk_Window (Get_Object (Get_Field (Top, "name")))));
+         if S = null then
+            S := new String' ("");
          end if;
 
+         Top := Find_Top_Widget (N);
+         Pixmap := Object.Gtk_Object (Create_Pixmap (S.all,
+           Gtk.Window.Gtk_Window (Get_Object (Get_Field (Top, "name")))));
          Set_Object (Get_Field (N, "name"), Pixmap);
          N.Specific_Data.Created := True;
       end if;
