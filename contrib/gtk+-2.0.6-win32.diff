@@ -115,7 +115,7 @@
 
 --- gtk+/gdk/win32/save/gdkgeometry-win32.c	2002-02-10 14:18:50.000000000 +0100
 +++ gtk+/gdk/win32/gdkgeometry-win32.c	2002-09-02 18:38:33.000000000 +0200
-@@ -770,6 +770,24 @@
+@@ -770,6 +774,24 @@
  }
  
  static void
@@ -140,7 +140,7 @@
  gdk_window_queue_translation (GdkWindow *window,
  			      gint       dx,
  			      gint       dy)
-@@ -787,7 +805,8 @@
+@@ -787,7 +809,8 @@
  			     dx, dy));
  
    gdk_drawable_ref (window);
@@ -150,7 +150,7 @@
  }
  
  gboolean
-@@ -810,7 +829,8 @@
+@@ -810,7 +833,8 @@
  			     area->extents.x1, area->extents.y1));
  
    gdk_drawable_ref (window);
@@ -197,3 +197,37 @@
  
    if (event->button == 1)
      {
+
+#########################################
+# GtkTextView smoothness issues
+#########################################
+
+Wed Sep 11 16:55:47  2002  Florent Duguet <duguet@gnat.com>
+
+	* gdkgeometry-win32.c : ask for an UpdateWindow to address smoothness
+	issues
+
+--- gdk/win32/gdkgeometry-win32.c.old	2002-02-10 14:18:50.000000000 +0100
++++ gdk/win32/gdkgeometry-win32.c	2002-09-11 16:21:14.000000000 +0200
+@@ -134,14 +134,18 @@
+ 
+       gdk_window_queue_translation (window, dx, dy);
+ 
+-      if (!ScrollWindowEx (GDK_WINDOW_HWND (window),
++      if (ScrollWindowEx (GDK_WINDOW_HWND (window),
+                            dx, dy, /* in: scroll offsets */
+                            NULL, /* in: scroll rect, NULL == entire client area */
+                            &clipRect, /* in: restrict to */
+                            NULL, /* out: update region */
+                            NULL, /* out: update rect */
+                            SW_INVALIDATE))
+-        WIN32_API_FAILED ("ScrollWindowEx");
++      {
++          UpdateWindow (GDK_WINDOW_HWND (window));
++      } else {
++          WIN32_API_FAILED ("ScrollWindowEx");
++      }
+     }
+ 
+   tmp_list = obj->children;
+
