@@ -8,6 +8,7 @@ The primary download site is http://gtkada.eu.org
 
 New features in 1.2.7/1.3.7 include:
 
+- Add support for libart and gdk-pixbuf
 - The handling of arrays of null terminated strings has been greatly simplified
   (see GtkAda.Types for more details).
 - New widgets bound from GtkExtra: Gtk_Plot, Gtk_Plot_Canvas, Gtk_Plot_Layout,
