@@ -8,7 +8,7 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
 [
 
    case $build_os in
-   aix)
+   aix*)
       OS_SPECIFIC_LINK_OPTIONS=-Wl,-bexpall,-berok
       ;;
    esac
