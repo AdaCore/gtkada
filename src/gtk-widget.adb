@@ -784,7 +784,7 @@ package body Gtk.Widget is
          Signal_Connect
            (Gdk.Get_Object (Widget),
             Get_Field (Q, "name").all & ASCII.Nul,
-            Get_Signal (Get_Field (Q, "handler")));
+            Get_Signal (Get_Field (Q, "handler").all));
          Q := Find_Tag (Q.Next, "signal");
       end loop;
    end Generate;
