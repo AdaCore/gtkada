@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,6 +33,14 @@
 --  and the connections remain active while the items are moved.
 --
 --  It also supports scrolling if put in a Gtk_Scrolled_Window.
+--  The canvas will be scrolled (and the selected items moved) if an item is
+--  selected and the mouse is dragged on a small area on the side of the canvas
+--  or even directly outside of the canvas. Scrolling will continue until the
+--  mouse is either released or moved back inside the canvas.
+--
+--  The scrolling speed will slightly increase over time if the mouse is kept
+--  outside of the canvas. This makes the canvas much more comfortable to use
+--  for the user.
 --
 --  All items put in this canvas must inherit from the type Canvas_Item_Record.
 --  However, it is your responsability, as a programmer, to provide drawing
@@ -80,6 +88,10 @@
 --  pressed at the same time, multiple items can be selected.
 --  If the background is clicked (and control is not pressed), then all items
 --  are unselected.
+--  Pressing and dragging the mouse in the backgroudn draws a virtual box on
+--  the screen. All the items fully included in this box when it is released
+--  will be selected (this will replace the current selection if Control was
+--  not pressed).
 --
 --  </description>
 
@@ -901,6 +913,10 @@ private
 
       Orthogonal_Links : Boolean := False;
       --  True if the links should be orthogonal
+
+      Surround_Box_Scroll : Glib.Gfloat;
+      --  Amount of scrolling for each step while the cursor is left in the
+      --  surrounding box.
 
       Zoom : Glib.Guint := 100;
       --  Zoom level in percent (100% is normal size)

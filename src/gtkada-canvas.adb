@@ -83,15 +83,20 @@ package body Gtkada.Canvas is
    Timeout_Between_Scrolls : constant := 10;
    --  Time between two scrollings when the mouse is in the bounding box.
 
-   Timeout_Between_Zooms : constant := 20;
+   Timeout_Between_Zooms : constant := 15;
    --  Time between two zooms when smooth-scrolling the canvas
 
    Scrolling_Margin : constant := 10;
    --  Width and height of the surrounding box in which "infinite"
-   --  scrolling is provided.
+   --  scrolling is started (it will continue while the mouse is kept in this
+   --  area or moved outside of the canvas)
 
-   Scrolling_Amount : constant := 10;
-   --  Number of pixels to scroll while the mouse is in the surrounding box.
+   Scrolling_Amount_Min      : constant Gfloat := 10.0;
+   Scrolling_Amount_Max      : constant Gfloat := 50.0;
+   Scrolling_Amount_Increase : constant Gfloat := 1.05;  --  +5% every step
+   --  Number of pixels to scroll while the mouse is in the surrounding
+   --  box. This is the initial value, and will keep increasing while the mouse
+   --  is left in the box.
 
    Links_Threshold_While_Moving : constant := 20;
    --  Maximal number of links that are drawn while moving an item. This is
@@ -243,16 +248,14 @@ package body Gtkada.Canvas is
 
    procedure Test_Scrolling_Box
      (Canvas   : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Win      : Gdk_Window;
-      X, Y     : Gint;
       X_Scroll : out Gint;
       Y_Scroll : out Gint);
    --  We keep moving the selection (and scrolling the canvas) as long as the
-   --  mouse remains in a surrounding box around the canvas. This is done even
-   --  if the mouse doesn't move, so at to make it easier to move items.
-   --  This subprogram tests whether (X, Y) is found in that box, and returns
-   --  the extra scrolling that should be done. (0, 0) is returned if the
-   --  mouse is not in that box.
+   --  mouse remains in a surrounding box around the canvas, or even outside
+   --  the canvas. This is done even if the mouse doesn't move, so at to make
+   --  it easier to move items.  This subprogram tests whether the pointer is
+   --  found in that box, and returns the extra scrolling that should be
+   --  done. (0, 0) is returned if the mouse is not in that box.
 
    function Scrolling_Timeout (Canvas : Interactive_Canvas) return Boolean;
    --  Function called repeatedly while the mouse is in the scrolling box.
@@ -265,11 +268,15 @@ package body Gtkada.Canvas is
    --  Return True if the selection was actually moved, False if for some
    --  reason nothing happened
 
-   procedure Show_Item (Canvas : access Interactive_Canvas_Record'Class;
-                        Item   : access Canvas_Item_Record'Class;
-                        X, Y   : Gint);
+   procedure Show_Item
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Item   : access Canvas_Item_Record'Class;
+      X, Y   : Gint;
+      Report_Adj_Changed : Boolean := True);
    --  Like Show_Item, but use X, Y for the coordinates instead of the
    --  ones available in Item.
+   --  If Report_Adj_Changed is true, the "changed" signal might be sent if the
+   --  adjustments are changed. However, this might result in flickering.
 
    procedure Draw_Dashed_Selection
      (Canvas : access Interactive_Canvas_Record'Class);
@@ -2060,9 +2067,9 @@ package body Gtkada.Canvas is
       Value     : constant Gdouble := Get_Value (Canvas.Vadj);
       Upper     : constant Gdouble := Get_Upper (Canvas.Vadj);
       Lower     : constant Gdouble := Get_Lower (Canvas.Vadj);
-      Page_Incr : constant Gdouble := Get_Page_Increment (Canvas.Vadj);
+      Page_Incr : constant Gdouble := Gdouble (Scrolling_Amount_Max);
       Page_Size : constant Gdouble := Get_Page_Size (Canvas.Vadj);
-      Step_Incr : constant Gdouble := Get_Step_Increment (Canvas.Vadj);
+      Step_Incr : constant Gdouble := Gdouble (Scrolling_Amount_Min);
 
    begin
       case Get_Key_Val (Event) is
@@ -2292,6 +2299,7 @@ package body Gtkada.Canvas is
       Canvas.Bg_Selection_Width := 0;
       Canvas.Bg_Selection_Height := 0;
       Canvas.Mouse_Has_Moved := False;
+      Canvas.Surround_Box_Scroll := Scrolling_Amount_Min;
 
       --  Make sure that no other widget steal the events while we are
       --  moving an item.
@@ -2444,28 +2452,33 @@ package body Gtkada.Canvas is
 
    procedure Test_Scrolling_Box
      (Canvas   : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Win      : Gdk_Window;
-      X, Y     : Gint;
       X_Scroll : out Gint;
-      Y_Scroll : out Gint) is
+      Y_Scroll : out Gint)
+   is
+      C : constant Interactive_Canvas := Interactive_Canvas (Canvas);
+      X, Y, X2, Y2 : Gint;
+      Success : Boolean;
+      Mask : Gdk_Modifier_Type;
+      W : Gdk_Window;
    begin
       X_Scroll := 0;
       Y_Scroll := 0;
 
-      if Win = Get_Window (Canvas) then
-         if X < Scrolling_Margin then
-            X_Scroll := -Scrolling_Amount;
-         elsif X > Gint (Get_Allocation_Width (Canvas)) - Scrolling_Margin then
-            X_Scroll := Scrolling_Amount;
-         end if;
+      Get_Pointer (null, X, Y, Mask, W);
+      Get_Origin (Get_Window (Canvas), X2, Y2, Success);
+      X := X - X2;
+      Y := Y - Y2;
 
-         if Y < Scrolling_Margin then
-            Y_Scroll := -Scrolling_Amount;
-         elsif
-           Y > Gint (Get_Allocation_Height (Canvas)) - Scrolling_Margin
-         then
-            Y_Scroll := Scrolling_Amount;
-         end if;
+      if X < Scrolling_Margin then
+         X_Scroll := -Gint (C.Surround_Box_Scroll);
+      elsif X > Gint (Get_Allocation_Width (Canvas)) - Scrolling_Margin then
+         X_Scroll := Gint (C.Surround_Box_Scroll);
+      end if;
+
+      if Y < Scrolling_Margin then
+         Y_Scroll := -Gint (C.Surround_Box_Scroll);
+      elsif Y > Gint (Get_Allocation_Height (Canvas)) - Scrolling_Margin then
+         Y_Scroll := Gint (C.Surround_Box_Scroll);
       end if;
    end Test_Scrolling_Box;
 
@@ -2488,9 +2501,7 @@ package body Gtkada.Canvas is
          --  Are we in the scrolling box ? If yes, do not move the item
          --  directly, but establish the timeout callbacks that will take care
          --  of the scrolling
-         Test_Scrolling_Box
-           (Canv, Get_Window (Event), Gint (Get_X (Event)),
-            Gint (Get_Y (Event)), X_Scroll, Y_Scroll);
+         Test_Scrolling_Box (Canv, X_Scroll, Y_Scroll);
 
          if X_Scroll /= 0 or else Y_Scroll /= 0 then
             if Canvas.Scrolling_Timeout_Id = 0 then
@@ -2503,6 +2514,7 @@ package body Gtkada.Canvas is
 
       if Canvas.Scrolling_Timeout_Id /= 0 then
          Timeout_Remove (Canvas.Scrolling_Timeout_Id);
+         Canvas.Surround_Box_Scroll := Scrolling_Amount_Min;
          Canvas.Scrolling_Timeout_Id := 0;
       end if;
 
@@ -2529,21 +2541,25 @@ package body Gtkada.Canvas is
    -----------------------
 
    function Scrolling_Timeout (Canvas : Interactive_Canvas) return Boolean is
-      Win  : Gdk_Window;
-      X, Y : Gint;
       X_Scroll, Y_Scroll : Gint;
    begin
-      Window_At_Pointer (X, Y, Win);
-      Test_Scrolling_Box (Canvas, Win, X, Y, X_Scroll, Y_Scroll);
+      Test_Scrolling_Box (Canvas, X_Scroll, Y_Scroll);
       if (X_Scroll /= 0 or else Y_Scroll /= 0)
         and then Move_Selection (Canvas, X_Scroll, Y_Scroll)
       then
+         --  Keep increasing the speed
+         if Canvas.Surround_Box_Scroll < Scrolling_Amount_Max then
+            Canvas.Surround_Box_Scroll := Canvas.Surround_Box_Scroll
+              * Scrolling_Amount_Increase;
+         end if;
+
          --  Force an immediate draw, since Queue_Draw would only redraw in
          --  an idle event, and thus might not happen before the next timeout.
          --  With lots of items, this would break the scrolling.
          Draw (Canvas);
          return True;
       else
+         Canvas.Surround_Box_Scroll := Scrolling_Amount_Min;
          Canvas.Scrolling_Timeout_Id := 0;
          return False;
       end if;
@@ -2651,9 +2667,15 @@ package body Gtkada.Canvas is
       Draw_Dashed_Selection (Canvas);
 
       if Canvas.Selection /= null then
+         --  We must set Report_Adj_Changed to False, otherwise we get flickers
+         --  in the following scenario:
+         --  Start with a canvas with no scrollbar. Then move one of the items
+         --  to the left (in the scrollbox). The scrollbar would keep appearing
+         --  and disappearing, and slow down the whole process.
          Show_Item
            (Canvas, Canvas.Selection.Item,
-            Canvas.Selection.X, Canvas.Selection.Y);
+            Canvas.Selection.X, Canvas.Selection.Y,
+            Report_Adj_Changed => False);
       end if;
       return True;
    end Move_Selection;
@@ -2797,9 +2819,11 @@ package body Gtkada.Canvas is
    -- Show_Item --
    ---------------
 
-   procedure Show_Item (Canvas : access Interactive_Canvas_Record'Class;
-                        Item   : access Canvas_Item_Record'Class;
-                        X, Y   : Gint)
+   procedure Show_Item
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Item   : access Canvas_Item_Record'Class;
+      X, Y   : Gint;
+      Report_Adj_Changed : Boolean := True)
    is
       X1 : constant Gint := To_Canvas_Coordinates (Canvas, X);
       Y1 : constant Gint := To_Canvas_Coordinates (Canvas, Y);
@@ -2807,12 +2831,13 @@ package body Gtkada.Canvas is
         To_Canvas_Coordinates (Canvas, X + Gint (Item.Coord.Width));
       Y2 : constant Gint :=
         To_Canvas_Coordinates (Canvas, Y + Gint (Item.Coord.Height));
+      Adj_Changed : Boolean := False;
    begin
       --  Do we need to scroll the canvas to the right to show the item?
 
       if X2 > Gint (Get_Upper (Canvas.Hadj)) then
          Set_Upper (Canvas.Hadj, Gdouble (X2));
-         Changed (Canvas.Hadj);
+         Adj_Changed := True;
       end if;
 
       --  In case the item is larger than the canvas, make sure we display
@@ -2830,41 +2855,51 @@ package body Gtkada.Canvas is
       --                                      ^
       --                                      X2
 
-      if X2 > Gint (Get_Value (Canvas.Hadj) + Get_Page_Size (Canvas.Hadj)) then
-         Set_Value (Canvas.Hadj, Gdouble (X2) - Get_Page_Size (Canvas.Hadj));
-      end if;
-
       --  Do we need to scroll the canvas to the left ?
 
       if X1 < Gint (Get_Lower (Canvas.Hadj)) then
          Set_Lower (Canvas.Hadj, Gdouble (X1));
+         Adj_Changed := True;
+      end if;
+
+      if Report_Adj_Changed and then Adj_Changed then
          Changed (Canvas.Hadj);
       end if;
 
       if X1 < Gint (Get_Value (Canvas.Hadj)) then
          Set_Value (Canvas.Hadj, Gdouble (X1));
+      elsif Gdouble (X2) >
+        Get_Value (Canvas.Hadj) + Get_Page_Size (Canvas.Hadj)
+      then
+         Set_Value (Canvas.Hadj, Gdouble (X2) - Get_Page_Size (Canvas.Hadj));
       end if;
 
       --  Do we need to scroll the canvas to the top to show the selection?
 
+      Adj_Changed := False;
+
       if Y2 > Gint (Get_Upper (Canvas.Vadj)) then
          Set_Upper (Canvas.Vadj, Gdouble (Y2));
-         Changed (Canvas.Vadj);
-      end if;
-
-      if Y2 > Gint (Get_Value (Canvas.Vadj) + Get_Page_Size (Canvas.Vadj)) then
-         Set_Value (Canvas.Vadj, Gdouble (Y2) - Get_Page_Size (Canvas.Vadj));
+         Adj_Changed := True;
       end if;
 
       --  Do we need to scroll the canvas to the bottom ?
 
       if Y1 < Gint (Get_Lower (Canvas.Vadj)) then
          Set_Lower (Canvas.Vadj, Gdouble (Y1));
+         Adj_Changed := True;
+      end if;
+
+      if Report_Adj_Changed and then Adj_Changed then
          Changed (Canvas.Vadj);
       end if;
 
       if Y1 < Gint (Get_Value (Canvas.Vadj)) then
          Set_Value (Canvas.Vadj, Gdouble (Y1));
+      elsif Gdouble (Y2) >
+        Get_Value (Canvas.Vadj) + Get_Page_Size (Canvas.Vadj)
+      then
+         Set_Value (Canvas.Vadj, Gdouble (Y2) - Get_Page_Size (Canvas.Vadj));
       end if;
    end Show_Item;
 
@@ -3191,8 +3226,15 @@ package body Gtkada.Canvas is
       Set_Lower (Canvas.Vadj, Gdouble'Min (V, Get_Lower (Canvas.Vadj)));
       Set_Upper (Canvas.Vadj, Gdouble'Max (V + Lv, Get_Upper (Canvas.Vadj)));
 
-      Set_Value (Canvas.Hadj, H);
-      Set_Value (Canvas.Vadj, V);
+      if Canvas.Selection = null then
+         Set_Value (Canvas.Hadj, H);
+         Set_Value (Canvas.Vadj, V);
+      else
+         Show_Item
+           (Canvas, Canvas.Selection.Item,
+            Canvas.Selection.X, Canvas.Selection.Y,
+            Report_Adj_Changed => True);
+      end if;
 
       --  Do not report the modification to the scrollbar, since this does
       --  too much flickering and slows things done a lot when the canvas is
