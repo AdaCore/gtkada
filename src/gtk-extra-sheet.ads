@@ -901,5 +901,5 @@ private
    Top_Border    : constant Gtk_Sheet_Border := 4;
    Bottom_Border : constant Gtk_Sheet_Border := 8;
    All_Borders   : constant Gtk_Sheet_Border := 15;
-   pragma Convention (C_Pass_By_Copy, Gtk_Sheet_Range);
+   pragma Convention (C, Gtk_Sheet_Range);
 end Gtk.Extra.Sheet;
