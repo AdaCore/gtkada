@@ -94,7 +94,9 @@ gtk_combobox_get_pos (GtkComboBox * combobox, gint * x, gint * y, gint * height,
   widget = GTK_WIDGET(combobox);
   popwin = GTK_BIN (combobox->popwin);
 
-  gdk_window_get_origin (combobox->button->window, x, y);
+  gdk_window_get_origin (GTK_BUTTON(combobox->button)->event_window, x, y); 
+  /* *x = combobox->button->allocation.x;
+   *y = combobox->button->allocation.y; */
   real_height = combobox->button->allocation.height;
   real_width = combobox->button->allocation.width + combobox->arrow->allocation.width;
 
