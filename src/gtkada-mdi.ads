@@ -567,6 +567,11 @@ package Gtkada.MDI is
    --    A child was set as floating in the MDI. A similar signal is emitted on
    --    the child itself.
    --
+   --  - "child_title_changed"
+   --    procedure Handler
+   --      (MDI : access MDI_Window_Record'Class; Child : System.Address);
+   --
+   --    Emitted when the title of a child is changed.
    --
    --  </signals>
    --
@@ -622,7 +627,8 @@ private
 
       Title       : String_Access;
       Short_Title : String_Access;
-      --  Title of the item, as it appears in the title bar
+      --  Title of the item, as it appears in the title bar.
+      --  These are UTF8-Encoded
 
       Dock : Dock_Side := None;
       --  The size on which the item should be docked. If None, then the item

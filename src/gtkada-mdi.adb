@@ -42,7 +42,6 @@
 --  - contextual menu in the title bar of children to dock them, float them,...
 
 with Glib;             use Glib;
-with Glib.Convert;     use Glib.Convert;
 with Glib.Object;      use Glib.Object;
 with Pango.Font;       use Pango.Font;
 with Gdk;              use Gdk;
@@ -154,7 +153,8 @@ package body Gtkada.MDI is
 
    MDI_Signals : constant chars_ptr_array :=
      (1 => New_String ("child_selected"),
-      2 => New_String ("float_child"));
+      2 => New_String ("float_child"),
+      3 => New_String ("child_title_changed"));
 
    Child_Signals : constant chars_ptr_array :=
      (1 => New_String ("float_child"),
@@ -541,7 +541,8 @@ package body Gtkada.MDI is
    is
       Signal_Parameters : constant Signal_Parameter_Types :=
         (1 => (1 => GType_Pointer),
-         2 => (1 => GType_Pointer));
+         2 => (1 => GType_Pointer),
+         3 => (1 => GType_Pointer));
       No_Signals : constant chars_ptr_array (1 .. 0) := (others => Null_Ptr);
    begin
       Gtk.Fixed.Initialize (MDI);
@@ -691,8 +692,7 @@ package body Gtkada.MDI is
             end if;
 
             Append_Text
-              (D.Ent, Locale_To_UTF8
-                 (Get_Short_Title (MDI_Child (Get_Data (Children (Tmp))))));
+              (D.Ent, Get_Short_Title (MDI_Child (Get_Data (Children (Tmp)))));
 
             Tmp := (Tmp + 1 - Children'First) mod Children'Length
               + Children'First;
@@ -718,7 +718,7 @@ package body Gtkada.MDI is
             Scaled : Gdk_Pixbuf;
          begin
             C := MDI_Child (Get_Data (D.Current_Child));
-            Set_Text (D.Label, Locale_To_UTF8 (Get_Short_Title (C)));
+            Set_Text (D.Label, Get_Short_Title (C));
 
             Set_Child_Visible (D.Icon, C.Icon /= null);
             if C.Icon /= null then
@@ -1910,7 +1910,7 @@ package body Gtkada.MDI is
          X := X + W + 1;
       end if;
 
-      Set_Text (Child.MDI.Title_Layout, Locale_To_UTF8 (Child.Title.all));
+      Set_Text (Child.MDI.Title_Layout, Child.Title.all);
       Get_Pixel_Size (Child.MDI.Title_Layout, W, H);
       Draw_Layout
         (Get_Window (Child),
@@ -2900,7 +2900,7 @@ package body Gtkada.MDI is
             Pack_Start (Box, Pixmap, Expand => False);
          end if;
 
-         Gtk_New (Label, Locale_To_UTF8 (Child.Short_Title.all));
+         Gtk_New (Label, Child.Short_Title.all);
          Set_Alignment (Label, 0.0, 0.5);
          Set_Accel_Widget (Label, Child.Menu_Item);
          Pack_Start (Box, Label,  Expand => True, Fill => True);
@@ -2909,8 +2909,7 @@ package body Gtkada.MDI is
          Add (Child.Menu_Item, Box);
 
          Set_Accel_Path
-           (Child.Menu_Item, "<gtkada>/window/child/"
-            & Locale_To_UTF8 (Child.Short_Title.all),
+           (Child.Menu_Item, "<gtkada>/window/child/" & Child.Short_Title.all,
             Child.MDI.Group);
       end if;
    end Update_Menu_Item;
@@ -2972,8 +2971,7 @@ package body Gtkada.MDI is
       Child.Short_Title := The_Short_Title;
 
       if Child.State = Floating then
-         Set_Title (Gtk_Window (Get_Toplevel (Child.Initial)),
-                    Locale_To_UTF8 (Title));
+         Set_Title (Gtk_Window (Get_Toplevel (Child.Initial)), Title);
       end if;
 
       Update_Tab_Label (Child);
@@ -2993,6 +2991,10 @@ package body Gtkada.MDI is
       if Get_Window (Child) /= Null_Window then
          Queue_Draw (Child);
       end if;
+
+      Emit_By_Name_Child
+        (Get_Object (Child.MDI), "child_title_changed" & ASCII.NUL,
+         Get_Object (Child));
    end Set_Title;
 
    --------------------
@@ -3487,7 +3489,7 @@ package body Gtkada.MDI is
 
          if (Child.Flags and Float_As_Transient) /= 0 then
             Gtk_New (Diag,
-                     Title  => Locale_To_UTF8 (Child.Title.all),
+                     Title  => Child.Title.all,
                      Parent => Gtk_Window (Get_Toplevel (Child.MDI)),
                      Flags  => No_Separator or Destroy_With_Parent);
             Set_Has_Separator (Diag, False);
@@ -3495,7 +3497,7 @@ package body Gtkada.MDI is
             Cont := Gtk_Container (Get_Vbox (Diag));
          else
             Gtk_New (Win);
-            Set_Title (Win, Locale_To_UTF8 (Child.Title.all));
+            Set_Title (Win, Child.Title.all);
             Cont := Gtk_Container (Win);
          end if;
 
@@ -3630,7 +3632,7 @@ package body Gtkada.MDI is
          end if;
 
          Gtk_New (Event);
-         Gtk_New (Child.Tab_Label, Locale_To_UTF8 (Child.Short_Title.all));
+         Gtk_New (Child.Tab_Label, Child.Short_Title.all);
 
          if Child.Icon /= null then
             Gtk_New_Hbox (Box, Homogeneous => False);
