@@ -164,7 +164,8 @@ package body Gtk.Menu_Item is
       use Item;
 
    begin
-      Gen_New (N, "Menu_Item", "label", File => File);
+      Gen_New (N, "Menu_Item", Get_Field (N, "label").all,
+        File => File, Delim => '"');
       Generate (Gtk_Item (Menu_Item), N, File);
       Gen_Call_Child (N, null, "Container", "Add", File => File);
    end Generate;
