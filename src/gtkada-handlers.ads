@@ -45,7 +45,8 @@ package Gtkada.Handlers is
    package Widget_Callback is new
      Gtk.Handlers.Callback (Gtk.Widget.Gtk_Widget_Record);
 
-   package Return_Callback is new
-     Gtk.Handlers.Return_Callback (Gtk.Widget.Gtk_Widget_Record, Boolean);
+   package Return_Callback is new Gtk.Handlers.Return_Callback
+     (Gtk.Widget.Gtk_Widget_Record, Boolean);
+   --  Emit_By_Name shouldn't be used, since it should really return a Gboolean
 
 end Gtkada.Handlers;
