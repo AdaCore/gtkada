@@ -40,15 +40,11 @@ with Common; use Common;
 
 package body Create_Color_Selection is
 
-   package Color_Sel_Cb is new Signal.Callback
-     (Widget_Type => Button.Gtk_Button,
-      Data_Type   => Gtk_Color_Selection_Dialog);
-   package Exit_Cb is new Signal.Object_Callback
-     (Widget_Type => Gtk.Widget.Gtk_Widget);
+   package Color_Sel_Cb is new Signal.Object_Callback
+     (Gtk_Color_Selection_Dialog);
    --  Must be instanciated at library level !
 
-   procedure Color_Ok (Widget : in out Button.Gtk_Button;
-                       Dialog : in out Gtk_Color_Selection_Dialog)
+   procedure Color_Ok (Dialog : in out Gtk_Color_Selection_Dialog)
    is
       Color : Color_Array;
    begin
@@ -84,7 +80,7 @@ package body Create_Color_Selection is
                                         "clicked",
                                         Color_Ok'Access,
                                         Dialog);
-         Cb_Id := Exit_Cb.Connect (Get_Cancel_Button (Dialog),
+         Cb_Id := Widget_Cb.Connect (Get_Cancel_Button (Dialog),
                                    "clicked",
                                    Gtk.Widget.Destroy'Access,
                                    Dialog);

@@ -27,15 +27,12 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
-with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Font_Selection;  use Gtk.Font_Selection;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Separator; use Gtk.Separator;
 with Gtk.Table; use Gtk.Table;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Common; use Common;
 with Gtk; use Gtk;
 

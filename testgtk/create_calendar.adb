@@ -32,8 +32,6 @@ with Gtk.Button; use Gtk.Button;
 with Gtk.Calendar; use Gtk.Calendar;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Separator; use Gtk.Separator;
-with Gtk.Table; use Gtk.Table;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Common; use Common;
