@@ -547,15 +547,21 @@ sub find_type_in_package () {
     # Find the name of the type in the package @content
 
     while (@content && ! defined $p) {
+        # read the current line, and make sure we get the end of the current
+        # current declaration 
 	$line = shift @content;
-	if ($line =~ /type ([^ \t]+)_Record/) {
+	while (@content && line !~ /;/) {
+	  $line .= shift @content;
+	}
+
+	if ($line =~ /type ([^ \t]+)_Record\s+is\s+new\s/) {
 	    $origin = $1;
 
 	    # Do not keep the package name
 	    $origin =~ s/.*\.([^.]+)/$1/;
 
 	    unless ($parent{$origin}) {
-		if ($line =~ /is new ([^\s]+)/) {
+		if ($line =~ /is\s+new\s+([^\s]+)/) {
 		    if ($1 eq "") {
 			$line = shift @content;
 			$line =~ /\s+([^\s]+)/;
@@ -563,7 +569,7 @@ sub find_type_in_package () {
 		    $p = $1;
 		} else {
 		    $line = shift @content;
-		    $line =~ /((is)? new)? ([^\s]+)/;
+		    $line =~ /((is)?\s+new)? ([^\s]+)/;
 		    $p = $3;
 		}
 		$p =~ s/_Record//;
