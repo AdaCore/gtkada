@@ -38,6 +38,11 @@ package body Gtk is
    procedure Free_User_Data (Data : in System.Address);
    --  Free the user data Data. This function should not be called directly
 
+   function Simple_Conversion (Obj  : System.Address;
+                               Stub : Root_Type'Class)
+                              return Root_Type_Access;
+   --  Create a Gtk.Object around the C object Obj
+
    --------------------
    -- Free_User_Data --
    --------------------
@@ -47,10 +52,10 @@ package body Gtk is
         (System.Address, Root_Type_Access);
       procedure Free is new Unchecked_Deallocation
         (Root_Type'Class, Root_Type_Access);
-      pragma Warnings (Off);
-      function Convert is new Unchecked_Conversion
-        (System.Address, Integer);
-      pragma Warnings (On);
+--        pragma Warnings (Off);
+--        function Convert is new Unchecked_Conversion
+--          (System.Address, Integer);
+--        pragma Warnings (On);
       Obj : Root_Type_Access := Convert (Data);
    begin
 --        Ada.Text_IO.Put_Line
@@ -70,6 +75,8 @@ package body Gtk is
       function Internal (Object : in System.Address; Key : in String)
                          return Root_Type_Access;
       pragma Import (C, Internal, "gtk_object_get_data");
+      function Get_Type (Object : in System.Address) return Guint;
+      pragma Import (C, Get_Type, "ada_get_type");
       use type System.Address;
       R : Root_Type_Access;
    begin
@@ -78,11 +85,10 @@ package body Gtk is
       end if;
       R := Internal (Obj, GtkAda_String);
       if R = null then
-         R := new Root_Type'Class'(Stub);
-         --  R := new Gtk.Object.Gtk_Object_Record;
-         --  TBD??? Above, we should create the correct Ada type
-         --  TBD??? Or we get CONSTRAINT_ERROR
-         --  TBD??? The idea is to find the correct stub in a htable
+         R := Type_Conversion_Function (Obj, Stub);
+         --  We use the soft link function to create a stub. This function
+         --  will either simply return what we expect (Stub), or try to
+         --  create the Ada type depending on the C type.
          Set_Object (R, Obj);
          Initialize_User_Data (R);
       end if;
@@ -151,6 +157,17 @@ package body Gtk is
       return Number;
    end Minor_Version;
 
+   -----------------------
+   -- Simple_Conversion --
+   -----------------------
+
+   function Simple_Conversion (Obj  : System.Address;
+                               Stub : Root_Type'Class)
+                               return Root_Type_Access is
+   begin
+      return new Root_Type'Class'(Stub);
+   end Simple_Conversion;
+
    ---------------
    -- Type_Name --
    ---------------
@@ -164,4 +181,6 @@ package body Gtk is
       return Interfaces.C.Strings.Value (Internal (Type_Num));
    end Type_Name;
 
+begin
+   Type_Conversion_Function := Simple_Conversion'Access;
 end Gtk;
