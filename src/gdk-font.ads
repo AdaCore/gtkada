@@ -28,6 +28,17 @@
 -----------------------------------------------------------------------
 
 --  <description>
+--
+--  !!! Important note !!!: this package is now considered as deprecated in
+--  GtkAda 2.x. You should use the types and subprograms in the Pango
+--  hierarchy, which correctly support internationalization, right-to-left
+--  writings, easy resizing of fonts, truetype fonts....
+--
+--  For backward compatibility, a new subprogram From_Description has been
+--  added to this package, which gives access to the more advanced font
+--  handling.
+--
+--
 --  This is the base package for handling fonts.
 --  GtkAda knows about bitmap and vectorial fonts, and can draw both.
 --  The list of fonts available to you depends on what is installed on
