@@ -204,8 +204,8 @@
 
 Wed Sep 11 16:55:47  2002  Florent Duguet <duguet@gnat.com>
 
-	* gdkgeometry-win32.c : ask for an UpdateWindow to address smoothness
-	issues
+	* gdkgeometry-win32.c : ask for a repaint of the invalidate zone to 
+	address smoothness issues
 
 --- gdk/win32/gdkgeometry-win32.c.old	2002-02-10 14:18:50.000000000 +0100
 +++ gdk/win32/gdkgeometry-win32.c	2002-09-11 16:21:14.000000000 +0200
@@ -223,11 +223,33 @@ Wed Sep 11 16:55:47  2002  Florent Duguet <duguet@gnat.com>
                             SW_INVALIDATE))
 -        WIN32_API_FAILED ("ScrollWindowEx");
 +      {
-+          UpdateWindow (GDK_WINDOW_HWND (window));
++	  PostMessage (GDK_WINDOW_HWND (window), WM_PAINT, 0,0) ;
 +      } else {
 +          WIN32_API_FAILED ("ScrollWindowEx");
 +      }
      }
  
    tmp_list = obj->children;
+
+
+Thu Sep 12 18:03:02 2002  Florent Duguet <duguet@gnat.com>
+
+	* gdkevents-win32.c : force an update when paint message is received
+	this forces a refresh of zones which are actually invalidated and 
+	visible
+
+--- gdk/win32/gdkevents-win32.c.old	2002-03-06 01:36:08.000000000 +0100
++++ gdk/win32/gdkevents-win32.c	2002-09-12 17:37:07.000000000 +0200
+@@ -2972,6 +2976,13 @@
+ 	    _gdk_window_process_expose (window, msg->time, &expose_rect);
+ 
+ 	    return_val = FALSE;
++          /* fduguet : force a process_all_updates to refresh the window 
++           * when receiving a paint message.
++	   * -> only do this if window is visible */
++          if (!GDK_WINDOW_DESTROYED (window))
++            if (gdk_window_is_visible (window))
++              gdk_window_process_updates (window, FALSE) ;
+         }
+       break;
 
