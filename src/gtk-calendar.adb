@@ -89,22 +89,20 @@ package body Gtk.Calendar is
    --------------
 
    procedure Get_Date
-      (Calendar : access Gtk_Calendar_Record;
-       Year     : in out Guint;
-       Month    : in out Guint;
-       Day      : in out Guint)
+     (Calendar : access Gtk_Calendar_Record;
+      Year     : out Guint;
+      Month    : out Guint;
+      Day      : out Guint)
    is
       procedure Internal
-         (Calendar : in System.Address;
-          Year     : in out Guint;
-          Month    : in out Guint;
-          Day      : in out Guint);
+         (Calendar : System.Address;
+          Year     : out Guint;
+          Month    : out Guint;
+          Day      : out Guint);
       pragma Import (C, Internal, "gtk_calendar_get_date");
+
    begin
-      Internal (Get_Object (Calendar),
-                Year,
-                Month,
-                Day);
+      Internal (Get_Object (Calendar), Year, Month, Day);
    end Get_Date;
 
    -------------
