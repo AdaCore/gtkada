@@ -33,6 +33,7 @@ with Gdk.GC;
 with Gdk.Color;
 with Gdk.Cursor;  use Gdk.Cursor;
 with Gdk.Window;
+with Gtk.Accel_Group;
 with Gtk.Box;
 with Gtk.Button;
 with Gtk.Fixed;
@@ -250,7 +251,9 @@ package Gtkada.MDI is
    --  Make Child the active widget, and raise it at the top.
 
    function Create_Menu
-     (MDI : access MDI_Window_Record) return Gtk.Menu.Gtk_Menu;
+     (MDI   : access MDI_Window_Record;
+      Group : Gtk.Accel_Group.Gtk_Accel_Group)
+      return Gtk.Menu.Gtk_Menu;
    --  Create a dynamic menu that can then be inserted into a menu bar. This
    --  menu is dynamic, ie its content will changed based on the focus
    --  child.

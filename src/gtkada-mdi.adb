@@ -3700,7 +3700,9 @@ package body Gtkada.MDI is
    -----------------
 
    function Create_Menu
-     (MDI : access MDI_Window_Record) return Gtk.Menu.Gtk_Menu
+     (MDI   : access MDI_Window_Record;
+      Group : Gtk.Accel_Group.Gtk_Accel_Group)
+      return Gtk.Menu.Gtk_Menu
    is
       Item  : Gtk_Menu_Item;
       Child : MDI_Child;
@@ -3715,33 +3717,39 @@ package body Gtkada.MDI is
          Widget_Callback.Object_Connect
            (Item, "activate",
             Widget_Callback.To_Marshaller (Cascade_Cb'Access), MDI);
+         Set_Accel_Path (Item, "<gtkada>/window/cascade", Group);
 
          Gtk_New (Item, "Tile Horizontally");
          Append (MDI.Menu, Item);
          Widget_Callback.Object_Connect
            (Item, "activate",
             Widget_Callback.To_Marshaller (Tile_H_Cb'Access), MDI);
+         Set_Accel_Path (Item, "<gtkada>/window/tile_horizontal", Group);
 
          Gtk_New (Item, "Tile Vertically");
          Append (MDI.Menu, Item);
          Widget_Callback.Object_Connect
            (Item, "activate",
             Widget_Callback.To_Marshaller (Tile_V_Cb'Access), MDI);
+         Set_Accel_Path (Item, "<gtkada>/window/tile_vertical", Group);
 
          Gtk_New (Item, "Maximize All");
          Append (MDI.Menu, Item);
          Widget_Callback.Object_Connect
            (Item, "activate",
             Widget_Callback.To_Marshaller (Maximize_Cb'Access), MDI);
+         Set_Accel_Path (Item, "<gtkada>/window/maximize", Group);
 
          Gtk_New (Item, "Unmaximize All");
          Append (MDI.Menu, Item);
          Widget_Callback.Object_Connect
            (Item, "activate",
             Widget_Callback.To_Marshaller (Unmaximize_Cb'Access), MDI);
+         Set_Accel_Path (Item, "<gtkada>/window/unmaximize", Group);
 
          Gtk_New (Item, "Arrange Icons");
          Append (MDI.Menu, Item);
+         Set_Accel_Path (Item, "<gtkada>/window/arrange_icons", Group);
          Set_Sensitive (Item, False);
 
          Gtk_New (Item);
@@ -3755,6 +3763,7 @@ package body Gtkada.MDI is
          MDI.Dock_Menu_Item_Id := Widget_Callback.Object_Connect
            (MDI.Dock_Menu_Item, "toggled",
             Widget_Callback.To_Marshaller (Dock_Cb'Access), MDI);
+         Set_Accel_Path (Item, "<gtkada>/window/docked", Group);
 
          Gtk_New (MDI.Float_Menu_Item, "Floating");
          Append (MDI.Menu, MDI.Float_Menu_Item);
@@ -3764,6 +3773,7 @@ package body Gtkada.MDI is
          MDI.Float_Menu_Item_Id := Widget_Callback.Object_Connect
            (MDI.Float_Menu_Item, "toggled",
             Widget_Callback.To_Marshaller (Float_Cb'Access), MDI);
+         Set_Accel_Path (Item, "<gtkada>/window/floating", Group);
 
          Gtk_New (Item);
          Append (MDI.Menu, Item);
@@ -3773,6 +3783,7 @@ package body Gtkada.MDI is
          Widget_Callback.Object_Connect
            (MDI.Close_Menu_Item, "activate",
             Widget_Callback.To_Marshaller (Close_Cb'Access), MDI);
+         Set_Accel_Path (Item, "<gtkada>/window/close", Group);
 
          Gtk_New (Item);
          Append (MDI.Menu, Item);
