@@ -1386,6 +1386,23 @@ package body Gtkada.Multi_Paned is
                         Current.Handles (Handle).Percent :=
                           Float (Tmp.Width) / Float (Current.Width);
                         Changed := True;
+                     elsif Handle = Current.Handles'Last then
+                        --  Check whether the last widget has its own request
+                        if Tmp.Next.Width /= 0
+                          and then Current.Width /= 0
+                        then
+                           if Handle > Current.Handles'First then
+                              Current.Handles (Handle).Percent :=
+                               1.0
+                               - Float (Tmp.Next.Width) / Float (Current.Width)
+                               - 2.0 * Current.Handles (Handle - 1).Percent;
+                           else
+                              Current.Handles (Handle).Percent := 1.0
+                              - Float (Tmp.Next.Width) / Float (Current.Width);
+                           end if;
+
+                           Changed := True;
+                        end if;
                      end if;
                      Propagate_Sizes
                        (Tmp,
@@ -1400,6 +1417,26 @@ package body Gtkada.Multi_Paned is
                         Current.Handles (Handle).Percent :=
                           Float (Tmp.Height) / Float (Current.Height);
                         Changed := True;
+                     elsif Handle = Current.Handles'Last then
+                        --  Check whether the last widget has its own request
+                        if Tmp.Next.Height /= 0
+                          and then Current.Height /= 0
+                        then
+                           if Handle > Current.Handles'First then
+                              Current.Handles (Handle).Percent :=
+                                1.0
+                                - Float (Tmp.Next.Height)
+                                  / Float (Current.Height)
+                                - 2.0 * Current.Handles (Handle - 1).Percent;
+                           else
+                              Current.Handles (Handle).Percent :=
+                                1.0
+                                - Float (Tmp.Next.Height)
+                                  / Float (Current.Height);
+                           end if;
+
+                           Changed := True;
+                        end if;
                      end if;
                      Propagate_Sizes
                        (Tmp,
