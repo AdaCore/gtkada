@@ -151,25 +151,19 @@ release number.
 
 This documentation is distributed with GtkAda @b{version
 @value{GtkAdaVersion}}. At this stage, every widget found in @w{gtk+
-1.2} has been implemented, and the test program found in the gtk release
+2.2} has been implemented, and the test program found in the gtk release
 has been fully coded in Ada (have a look at the @code{testgtk/}
 directory in the distribution).
 
 This toolkit was tested on the following systems:
 @itemize @bullet
 @item GNU Linux/x86
-@item GNU Linux/sparc
-@item GNU Linux/ppc
 @item Solaris/sparc
-@item Solaris/x86
-@item Dec Unix
-@item SGI IRIX 6.5
+@item Tru64
 @item HP/UX
 @item NT 4.0
 @item Windows 2000
-@item AiX 4.3.2
-@item SCO UnixWare 7.1
-@item FreeBSD 3.2
+@item Windows XP
 @end itemize
 
 with the latest version of the @code{GNAT} compiler, developed and supported by
@@ -179,14 +173,13 @@ If you manage to use it on other systems (which should probably be
 straightforward - just recompile GtkAda), please let us know so that
 we can add to the above list.
 
-This version of GtkAda is known to be compatible with @code{gtk+} @b{1.3.4}.
-This release is no longer compatible with older versions
-of gtk+ (up to 1.3.3).
+This version of GtkAda is known to be compatible with @code{gtk+} @b{2.2.1}.
+This release is no longer compatible with older versions of gtk+.
 
 This version of GtkAda is compatible with @code{Glade} @b{version
-0.5.9}.  Due to some modification in the output format of Glade, this
+2.0.0}.  Due to some modification in the output format of Glade, this
 release will not work with older versions. It is also not guaranteed to
-work with more recent versions. Please update your version of Glade.
+work with more recent versions.
 
 This document does not describe all the widgets available in GtkAda, nor
 does it try to explain all the subprograms. The GtkAda Reference Manual
@@ -1594,40 +1587,33 @@ interaction you should consider using the Gtk_Fixed container. However, please
 read the GtkAda reference manual before considering using Gtk_Fixed.
 
 @section Using Glade
-Note that we only recommend using version 0.5.9 of Glade, as some previous
+Note that we only recommend using version 2.0.0 of Glade, as previous
 versions are not compatible. Using this version you can directly create Ada
 files from Glade by selecting Ada95 as the language under project options.
 Glade saves your interface in a project file whose syntax is XML
 based. In the following sections, we will refer to this file as either
-``the XML file'' or ``the project file'' interchangeably.
+@code{the XML file} or @code{the project file} interchangeably.
 
 @subsection Taking advantage of Glade's options
 In this XML file, Glade will save various options that Gate can take
 advantage of. In particular, going to the project options window, some General
-Options in the ``C Options'' section will also be used by Gate: Gettext support,
+Options in the @code{C Options} section will also be used by Gate: Gettext support,
 if enabled, will generate an additional package called <project>_intl that
 will use Gtkada.Intl;
-The ``Set Widget Names'' option is also recognized and will generate additional
+The @code{Set Widget Names} option is also recognized and will generate additional
 calls to Set_Name for each widget.
 
 @subsection Associating icons with buttons
 Up to now, the only way to specify an icon for a button was to associate a
-pixmap file to it. As an alternative, if the name specified in the ``Icon''
+pixmap file to it. As an alternative, if the name specified in the @code{Icon}
 field does not contain any dots, Gate will consider the name as a variable
 rather than a file name. It is up to you to provide the necessary definitions
 in order to compile properly the generated code.
 
 @subsection Note for GNU/Linux users
 Some GNU/Linux systems come with a precompiled version of Glade that will
-usually
-have support for Gnome. GtkAda and Gate currently do not provide support
-for Gnome (GtkAda instead provides portable alternatives to Gnome widgets,
-see e.g Gtkada.Canvas, Gtkada.Dialogs, Gtkada.Pixmaps), which means that
-you should not enable any Gnome specific features in Glade. In particular,
-you should disable Gnome support in the Project Options window, and make sure
-that you don't use the ``Stock Button'' property, nor the list of predefined
-Gnome icons provided with various widgets such as toolbar buttons and menu
-items.
+usually have support for Gnome. Gate currently does not provide support
+for Gnome, which means that you should not enable Gnome support in Glade.
 
 @section Gate
 @subsection Invoking Gate
@@ -1636,12 +1622,12 @@ takes the Glade XML file as an argument and generates a set of Ada files.
 When compiled, these files will recreate the interface you just designed with
 Glade.
 
-Gate is generally invoked through the ``Write source code'' button in
+Gate is generally invoked through the @code{Write source code} button in
 Glade's menu bar.
 
-However, you can also invoke it from the command line by providing a
+In addition, you can also invoke it from the command line by providing a
 Glade project file. This will generate Ada files in the directory set
-as the ``Source Directory'' project option, or otherwise in the
+as the @code{Source Directory} project option, or otherwise in the
 current working directory.
 
 @subsection Structure of the generated files
@@ -1711,15 +1697,8 @@ If you don't have a working set of @code{diff/patch}, @code{configure} will
 simply replace them by null operations, which means that regenerated
 files will override the previous ones.
 
-Under Win32 based systems, GtkAda now comes with a set of unix-like tools
-(including @code{patch} and @code{diff}) that provide the same functionality.
-Note that these tools are provided as is, and we recommend using your own
-supported set of utilities. In particular, these tools have known deficiencies
-under Windows 95 and Windows 98. Future versions of GtkAda will provide an
-alternate implementation of the shell script gate in Ada, in order to solve
-this portability issue in a cleaner way.
-You can find the complete package of the GNU utilities provided at
-@url{http://www.weihenstephan.de/~syring/win32/UnxUtils.html}.
+Under Win32 based systems, Gate will not attempt to merge changes. Instead,
+it will always regenerate and overwrite every file.
 
 In some cases, due to major changes in the project file, Gate may not be
 able to merge all the changes. In this case, it will notify you so, and
@@ -1732,8 +1711,8 @@ you do the merge manually.
 This section is intended for developpers that wish to add support for new
 GtkAda widgets in Gate. Note that this section is not complete yet.
 
-@subsubsection Implementing the ``Generate'' procedure
-To provide support for a new widget, you first need to write a ``Generate''
+@subsubsection Implementing the @code{Generate} procedure
+To provide support for a new widget, you first need to write a @code{Generate}
 procedure that will take care of generating the piece of code related to
 the widget's properties. Note that the parents properties do not
 have to be handled by this function.
@@ -1749,7 +1728,7 @@ automate most of the work for common widgets.
   @item Gen_Call_Child
   @item example
   @end itemize
-@item Registering ``Generate'' functions
+@item Registering @code{Generate} functions
   Gtk.Glade.Register_Generate (Widget, Func)
 This procedure associates a given Generate procedure with a given widget C name.
 @end itemize
@@ -1959,7 +1938,7 @@ and returns the internal reference counter for the widget. When this
 counter reaches 0, the memory allocated for the widget is
 automatically freed.
 
-This is mostly a debugging aid for persons writting their own
+This is mostly a debugging aid for people writting their own
 containers, and shouldn't generally be needed. You shouldn't rely on
 the internal reference counter in your actual code, which is why it
 isn't exported by default in GtkAda.
