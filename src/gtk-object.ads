@@ -75,7 +75,7 @@
 --  is decremented to 1, and the "floating" flag is cleared.
 --
 --  The same behavior as above happens when the object is registered as a
---  top-level widget (ie we know it won't have any parent).
+--  top-level widget (i.e. we know it won't have any parent).
 --
 --  Thus the normal life cycle of an object is to have a ref_count to 1, and
 --  not be a "floating" object.
@@ -88,7 +88,7 @@
 --          decremented to 1.
 --        The "destroy" signal is emitted, the user's handlers are called,
 --          and then all the handlers connected to the object are destroyed.
---     The object is unref-red. If its ref_count goes down to 0 (normal case),
+--     The object is unref-ed. If its ref_count goes down to 0 (normal case),
 --        the memory used by the object and its user_data is freed.
 --
 --  </description>
@@ -103,26 +103,26 @@ package Gtk.Object is
    type Gtk_Object is access all Gtk_Object_Record'Class;
 
    procedure Ref (Object : access Gtk_Object_Record);
-   --  Increments the reference count on the object. Since an object is not
-   --  deleted while its reference count is not null, this is a way to
-   --  keep an object in memory.
+   --  Increment the reference count on the object.
+   --  Since an object is not deleted while its reference count is not null,
+   --  this is a way to keep an object in memory.
    --  GtkAda mostly takes care of everything, and you should not need this
    --  function except in special cases.
 
    procedure Unref (Object : access Gtk_Object_Record);
-   --  Decrements the reference count for an object. If it passed from 1 to 0,
-   --  then the memory allocated for the object is freed, and the object no
-   --  longer usable.
+   --  Decrement the reference count for an object.
+   --  If it passed from 1 to 0, then the memory allocated for the object is
+   --  freed, and the object no longer usable.
    --  It is better to use Destroy than Unref to destroy an object, although
    --  both might be acceptable.
 
    procedure Sink (Object : access Gtk_Object_Record);
-   --  Sinks the object.
+   --  Sink the object.
    --  If the object is floating (does not have a parent yet), it is unref-ed
    --  once and the floating flag is cleared.
 
    procedure Destroy (Object : access Gtk_Object_Record);
-   --  Destroys the object.
+   --  Destroy the object.
    --  This emits a "destroy" signal, calls all your handlers, and then
    --  unconnects them all. The object is then unref-ed, and if its reference
    --  count goes down to 0, the memory associated with the object and its
@@ -131,12 +131,11 @@ package Gtk.Object is
    --  available.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Object internally.
+   --  Return the internal value associated with a Gtk_Object internally.
    pragma Import (C, Get_Type, "gtk_object_get_type");
 
-
    function Get_Type (Object : access Gtk_Object_Record) return Gtk_Type;
-   --  Returns the type of OBJECT.
+   --  Return the type of Object.
    --  This function is mostly used internally, since in Ada you can simply
    --  test whether an object belong to a class with a statement like:
    --
@@ -180,39 +179,39 @@ package Gtk.Object is
    Constructed : constant := 2 ** 3;
 
    function Flags (Object : access Gtk_Object_Record) return Guint32;
-   --  Returns the flags that are set for the object, as a binary mask.
+   --  Return the flags that are set for the object, as a binary mask.
 
    procedure Set_Flags (Object : access Gtk_Object_Record;
                         Flags  : in     Guint32);
-   --  Sets some specific flags for the object.
-   --  FLAGS is a mask that will be added to the current flags of the object.
+   --  Set some specific flags for the object.
+   --  Flags is a mask that will be added to the current flags of the object.
 
    procedure Unset_Flags (Object : access Gtk_Object_Record;
                           Flags  : in     Guint32);
-   --  Unsets some specific flags for the object.
-   --  FLAGS is a mask that will be deleted from the current flags of the
+   --  Unset some specific flags for the object.
+   --  Flags is a mask that will be deleted from the current flags of the
    --  object.
 
    function Flag_Is_Set (Object : access Gtk_Object_Record;
                          Flag   : in     Guint32)
                         return Boolean;
-   --  Returns True if the specific flag FLAG is set for the object
+   --  Return True if the specific flag Flag is set for the object.
 
    function Destroyed_Is_Set (Object : access Gtk_Object_Record'Class)
                              return Boolean;
-   --  Tests if the Destroyed flag is set for the object.
+   --  Test if the Destroyed flag is set for the object.
 
    function Floating_Is_Set (Object : access Gtk_Object_Record'Class)
                             return Boolean;
-   --  Tests if the Floating flag is set for the object.
+   --  Test if the Floating flag is set for the object.
 
    function Connected_Is_Set (Object : access Gtk_Object_Record'Class)
                              return Boolean;
-   --  Tests if the Connected flag is set for the object.
+   --  Test if the Connected flag is set for the object.
 
    function Constructed_Is_Set (Object : access Gtk_Object_Record'Class)
                                return Boolean;
-   --  Tests if the Constructed flag is set for the object
+   --  Test if the Constructed flag is set for the object
 
    --------------------------
    -- Creating new widgets --
@@ -220,7 +219,7 @@ package Gtk.Object is
    --  These types and functions are used only when creating new widget types
    --  directly in Ada. These functions initialize the classes so that they are
    --  correctly recognized by gtk+ itself
-   --  See the GtkAda user guide for more information on how to create your
+   --  See the GtkAda user's guide for more information on how to create your
    --  own widget types in Ada.
 
    type Signal_Array is array (Natural range <>) of String_Ptr;
@@ -229,9 +228,9 @@ package Gtk.Object is
      (Object       : access Gtk_Object_Record'Class;
       Signals      : Signal_Array;
       Class_Record : in out System.Address);
-   --  Creates the class record for a new widget type, which is associated
-   --  with Signals'Length new signals. A pointer to the newly created
-   --  structure is also returned in Class_Record.
+   --  Create the class record for a new widget type.
+   --  It is associated with Signals'Length new signals. A pointer to the
+   --  newly created structure is also returned in Class_Record.
    --  If Class_Record /= System.Null_Address, no memory allocation is
    --  performed, we just reuse it.
    --  Note: The underlying C widget must already have been initialized
@@ -255,13 +254,13 @@ package Gtk.Object is
    package User_Data is
       function Get (Object : access Gtk_Object_Record'Class;
                     Id     : in String := "user_data") return Data_Type;
-      --  Gets the information associated with the key ID.
-      --  Raises Gtkada.Types.Data_Error if there is none.
+      --  Get the information associated with the key ID.
+      --  Raise Gtkada.Types.Data_Error if there is none.
 
       procedure Set (Object : access Gtk_Object_Record'Class;
                      Data   : in Data_Type;
                      Id     : in String := "user_data");
-      --  Associates some new user data with the object.
+      --  Associate some new user data with the object.
       --  The strings starting with "gtkada_" are reserved for GtkAda's
       --  internal use, please avoid using them.
 

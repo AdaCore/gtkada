@@ -56,11 +56,11 @@ package Gtk.Radio_Button is
      (Radio_Button : out Gtk_Radio_Button;
       Group        : in Widget_SList.GSlist := Widget_SList.Null_List;
       Label        : in String := "");
-   --  Creates a new radio button, belonging to GROUP.
-   --  If LABEL is left as the empty string, then the button will not have any
+   --  Create a new radio button, belonging to Group.
+   --  If Label is left as the empty string, then the button will not have any
    --  child and you are free to put any thing you want in it, including a
    --  pixmap.
-   --  To initialize the group (when creating the first button), leave GROUP
+   --  To initialize the group (when creating the first button), leave Group
    --  to the Null_List. You can later get the new group that is created with
    --  a call to the Group subprogram below.
 
@@ -68,8 +68,8 @@ package Gtk.Radio_Button is
      (Radio_Button : out Gtk_Radio_Button;
       Group        : in Gtk_Radio_Button;
       Label        : in String := "");
-   --  Creates a new radio button in the same group as GROUP.
-   --  If LABEL is left as the empty string, RADIO_BUTTON is created without
+   --  Create a new radio button in the same group as Group.
+   --  If Label is left as the empty string, Radio_Button is created without
    --  any child and you can put whatever you want in it, including a pixmap.
    --
    --  To initialize a new group (when creating the first button), you should
@@ -90,18 +90,17 @@ package Gtk.Radio_Button is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Radio_Button
-   --  internally.
+   --  Return the internal value associated with a Gtk_Radio_Button internally.
 
    function Group (Radio_Button : access Gtk_Radio_Button_Record)
                   return Widget_SList.GSlist;
-   --  Returns the group to which RADIO_BUTTON belongs.
+   --  Return the group to which Radio_Button belongs.
    --  This can be used as an argument to the first version of Gtk_New above,
    --  or the list can also be traversed to get all the buttons.
 
    procedure Set_Group (Radio_Button : access Gtk_Radio_Button_Record;
                         Group        : in Widget_SList.GSlist);
-   --  Modifies the group to which the button belongs.
+   --  Modify the group to which the button belongs.
    --  This will not change anything visually.
 
    ----------------------------

@@ -51,8 +51,8 @@ package Gtk.Toggle_Button is
 
    procedure Gtk_New (Toggle_Button : out Gtk_Toggle_Button;
                       Label         : in String := "");
-   --  Initializes a button.
-   --  If LABEL is "", then no label is created inside the button and
+   --  Initialize a button.
+   --  If Label is "", then no label is created inside the button and
    --  you will have to provide your own child through a call to
    --  Gtk.Container.Add. This is the recommended way to put a pixmap
    --  inside a toggle button.
@@ -63,22 +63,21 @@ package Gtk.Toggle_Button is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Toggle_Button
-   --  internally.
+   --  Return the internal value associated with a Gtk_Toggle_Button internally
 
    procedure Set_Mode (Toggle_Button  : access Gtk_Toggle_Button_Record;
                        Draw_Indicator : in Boolean);
-   --  Changes the mode of the button.
-   --  If DRAW_INDICATOR is False, then the button is hidden.
+   --  Change the mode of the button.
+   --  If Draw_Indicator is False, then the button is hidden.
 
    procedure Set_Active (Toggle_Button : access Gtk_Toggle_Button_Record;
                          Is_Active     : in Boolean);
-   --  Changes the state of the button.
-   --  When IS_ACTIVE is True, the button is drawn as a pressed button.
+   --  Change the state of the button.
+   --  When Is_Active is True, the button is drawn as a pressed button.
 
    function Get_Active (Toggle_Button : access Gtk_Toggle_Button_Record)
                       return Boolean;
-   --  Returns true if the button is in its active state, i.e is pressed.
+   --  Return true if the button is in its active state, i.e is pressed.
 
    function Is_Active (Toggle_Button : access Gtk_Toggle_Button_Record)
                       return Boolean;
@@ -89,7 +88,7 @@ package Gtk.Toggle_Button is
    ----------------------
 
    procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record);
-   --  Emits the toggled signal on this widget.
+   --  Emit the toggled signal on this widget.
    --  Note that the state of the button is not changed, only the callbacks
    --  are called.
 

@@ -57,17 +57,17 @@ package Gtk.Packer is
    --  Gtk_Packer_Options Indicates how the child should fill its allocated
    --  area.
    --
-   --  If GTK_PACK_EXPAND is set, the child allocated area is expanded to
+   --  If Gtk_Pack_Expand is set, the child allocated area is expanded to
    --  occupy the whole width (or height) or the Package. The orientation
    --  depends on the side of the child (if Top or Bottom, the expansion
    --  is done vertically, otherwise it is done horizontally).
    --
-   --  If GTK_FILL_X or GTK_FILL_Y is set, the child is resized till it
+   --  If Gtk_Fill_X or Gtk_Fill_Y is set, the child is resized till it
    --  occupies all the area allocated to it.
    --  If the side of the widget is top or bottom, the widget can always
-   --  be filled horizontally with GTK_FILL_X (and will thus be as wide as
+   --  be filled horizontally with Gtk_Fill_X (and will thus be as wide as
    --  the Gtk_Packer itself. However, it can be filled vertically with
-   --  GTK_FILL_Y only if GTK_PACK_EXPAND is set.
+   --  Gtk_Fill_Y only if Gtk_Pack_Expand is set.
    --  </description>
 
    type Gtk_Side_Type is (Side_Top,
@@ -80,11 +80,11 @@ package Gtk.Packer is
    --  container.
    --  Each time a child is displayed, the available space for the remaining
    --  child is restrained. For instance, every time you put a child on the
-   --  SIDE_TOP or SIDE_BOTTOM, the available space is decreased so that no
+   --  Side_Top or Side_Bottom, the available space is decreased so that no
    --  other widget is inserted in the same line.
    --
-   --  For instance, if you put two widgets on SIDE_TOP, the second one will
-   --  appear below the first one. If you add two widgets on SIDE_RIGHT, the
+   --  For instance, if you put two widgets on Side_Top, the second one will
+   --  appear below the first one. If you add two widgets on Side_RighT, the
    --  second one will be placed on the left of the first.
    --  </description>
 
@@ -109,12 +109,12 @@ package Gtk.Packer is
    --  Gtk_Anchor_Type indicates the exact location of the widget on its
    --  side. Note that not all anchors are relevant for each side.
    --
-   --  For instance, if you put a widget on SIDE_RIGHT, with an anchor of
-   --  ANCHOR_NORTH, ANCHOR_NORTH_WEST or ANCHOR_NORTH_EAST, the widget will
+   --  For instance, if you put a widget on Side_Right, with an anchor of
+   --  Anchor_North, Anchor_North_West or Anchor_North_East, the widget will
    --  in fact appear on the upper right side of the remaining space in the
    --  container.
    --
-   --  Thus, if a previous child was added on SIDE_NORTH, then the new child
+   --  Thus, if a previous child was added on Side_North, then the new child
    --  will only appear on the second line in the container. The order the
    --  children are inserted into the container is important.
    --  </description>
@@ -124,14 +124,14 @@ package Gtk.Packer is
    --------------------------
 
    procedure Gtk_New (Widget : out Gtk_Packer);
-   --  Creates a new empty packer.
+   --  Create a new empty packer.
 
    procedure Initialize (Widget : access Gtk_Packer_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Packer internally.
+   --  Return the internal value associated with a Gtk_Packer internally.
 
    procedure Add_Defaults
      (Packer  : access Gtk_Packer_Record;
@@ -158,14 +158,14 @@ package Gtk.Packer is
    --  See Gtk_Size_Type, Gtk_Anchor_Type and Gtk_Packer_Options above for
    --  more information on these types.
    --
-   --  BORDER_WIDTH is the space left on each side of the child.
-   --  PAD_X is additional space left on each horizontal side of the child
+   --  Border_Width is the space left on each side of the child.
+   --  Pad_X is additional space left on each horizontal side of the child
    --     when it is not centered (the anchor is NE, E, NW, SW, W, SE)
-   --  PAD_Y is additional space left on each vertical side of the child
+   --  Pad_Y is additional space left on each vertical side of the child
    --     when it is not centered (the anchor is NW, N, NE, SE, S, SW)
-   --  I_PAD_X is additional space left on each horizontal side of the
+   --  I_Pad_X is additional space left on each horizontal side of the
    --     child when it is on the borders (anchor is N, Center, S)
-   --  I_PAD_Y is additional space left on each vertical side of the
+   --  I_Pad_Y is additional space left on each vertical side of the
    --     child when it is on the borders (anchor is E, Center, W)
 
    procedure Set_Child_Packing
@@ -179,9 +179,10 @@ package Gtk.Packer is
       Pad_Y        : in     Guint;
       I_Pad_X      : in     Guint;
       I_Pad_Y      : in     Guint);
-   --  Change the packing options for CHILD (see the documentation for
-   --  Add above for more information on the parameters).
-   --  Nothing is done if CHILD is not contained in PACKER.
+   --  Change the packing options for Child.
+   --  See the documentation for Add above for more information on the
+   --  parameters.
+   --  Nothing is done if Child is not contained in Packer.
 
    procedure Reorder_Child
      (Packer   : access Gtk_Packer_Record;
@@ -196,7 +197,7 @@ package Gtk.Packer is
 
    procedure Set_Spacing (Packer  : access Gtk_Packer_Record;
                           Spacing : in     Guint);
-   --  Modifies the spacing for the packer.
+   --  Modify the spacing for the packer.
    --  This parameter does not seem to be used in the gtk+ sources, you should
    --  be able to safely ignore it.
 
@@ -204,22 +205,22 @@ package Gtk.Packer is
 
    procedure Set_Default_Border_Width (Packer : access Gtk_Packer_Record;
                                        Border : in     Guint);
-   --  Modifies the default border width for all the children of PACKER.
+   --  Modify the default border width for all the children of Packer.
    --  This is the border_width that is used by Add_Defaults above.
    --  Its default value is 0.
 
    procedure Set_Default_Ipad (Packer  : access Gtk_Packer_Record;
                                I_Pad_X : in     Guint;
                                I_Pad_Y : in     Guint);
-   --  Sets the default Ipadding for all the children of PACKER. This is
-   --  the value used by Add_Defaults above.
+   --  Set the default Ipadding for all the children of Packer.
+   --  This is the value used by Add_Defaults above.
    --  The default values are 0.
 
    procedure Set_Default_Pad (Packer : access Gtk_Packer_Record;
                               Pad_X  : in     Guint;
                               Pad_Y  : in     Guint);
-   --  Sets the default Padding for all the children of PACKER. This is
-   --  the value used by Add_Defaults above.
+   --  Set the default Padding for all the children of Packer.
+   --  This is the value used by Add_Defaults above.
    --  The default values are 0.
 
    ------------------------
@@ -242,39 +243,39 @@ package Gtk.Packer is
    function Find_Child (Packer : access Gtk_Packer_Record;
                         Child  : access Gtk.Widget.Gtk_Widget_Record'Class)
                        return Gtk_Packer_Child;
-   --  Returns the child of PACKER that is associated with the widget CHILD.
-   --  Null_Packer_Child will be returned if CHILD is not contained in PACKER.
+   --  Return the child of Packer that is associated with the widget Child.
+   --  Null_Packer_Child will be returned if Child is not contained in Packer.
 
    function Get_Nth_Child (Packer : access Gtk_Packer_Record;
                            N      : Guint)
                           return Gtk_Packer_Child;
    --  Returns the Nth child of the packer.
    --  The first child is found at index 1.
-   --  Null_Packer_Child will be returned if there is no such child in PACKER.
+   --  Null_Packer_Child will be returned if there is no such child in Packer.
 
    function Get_Anchor (Child : Gtk_Packer_Child) return Gtk_Anchor_Type;
-   --  Returns the Anchor type for the child.
+   --  Return the Anchor type for the child.
 
    function Get_Side (Child : Gtk_Packer_Child) return Gtk_Side_Type;
-   --  Returns the side of the child.
+   --  Return the side of the child.
 
    function Get_Options (Chlid : Gtk_Packer_Child) return Gtk_Packer_Options;
-   --  Returns the options set for the child.
+   --  Return the options set for the child.
 
    function Get_Border_Width (Child : Gtk_Packer_Child) return Guint;
-   --  Returns the border width for the child.
+   --  Return the border width for the child.
 
    function Get_Pad_X (Child : Gtk_Packer_Child) return Guint;
-   --  Return the X padding for the child (when on the borders)
+   --  Return the X padding for the child (when on the borders).
 
    function Get_Pad_Y (Child : Gtk_Packer_Child) return Guint;
-   --  Return the Y padding for the child (when on the borders)
+   --  Return the Y padding for the child (when on the borders).
 
    function Get_I_Pad_X (Child : Gtk_Packer_Child) return Guint;
-   --  Return the X i_padding for the child (when not on the borders)
+   --  Return the X i_padding for the child (when not on the borders).
 
    function Get_I_Pad_Y (Child : Gtk_Packer_Child) return Guint;
-   --  Return the Y i_padding for the child (when not on the borders)
+   --  Return the Y i_padding for the child (when not on the borders).
 
    ----------------------------
    -- Support for GATE/DGATE --
