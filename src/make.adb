@@ -4,6 +4,7 @@ with Glib.Glade;
 with Glib.Glist;
 with Glib.Gnodes;
 with Glib.GSlist;
+with Glib.Module;
 with Glib.XML;
 
 with Gdk.Bitmap;
