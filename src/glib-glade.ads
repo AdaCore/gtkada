@@ -49,6 +49,8 @@ package Glib.Glade is
    procedure Add_Package (S : String);
    --  Add package S in the list of packages if S isn't already present
    --  This is used to generate the proper list of "with"ed packages.
+   --  Note that S is assumed to be a child of Gtk, e.g for Gtk.Table,
+   --  call Add_Package ("Table").
 
    function Find_Parent (N : Node_Ptr; Class : String) return Node_Ptr;
    --  Find a node in the ancestors of N with a given class
