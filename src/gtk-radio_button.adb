@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -57,7 +57,7 @@ package body Gtk.Radio_Button is
 
    procedure Gtk_New
      (Radio_Button : out Gtk_Radio_Button;
-      Group        : in  Widget_SList.GSlist;
+      Group        : in  Widget_SList.Gslist := Widget_SList.Null_List;
       Label        : in String := "") is
    begin
       Radio_Button := new Gtk_Radio_Button_Record;
