@@ -963,7 +963,7 @@ package body Gtk_Generates is
          S := Get_Field (N, "filename");
 
          if S = null then
-            S := new String' ("");
+            S := new String'("");
          end if;
 
          Put_Line (File, "   " & To_Ada (Top.all) & "." & To_Ada (Cur.all) &

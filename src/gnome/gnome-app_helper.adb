@@ -365,7 +365,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item, New_String (Label), New_String (Tooltip),
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address, Pixmap_Data, Xpm_Data'Address, 0, 0, Null_Address);
    end UI_Info_Item;
 
@@ -380,7 +380,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item, New_String (Label), New_String (Tooltip),
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, 0, 0, Null_Address);
    end UI_Info_Item_None;
@@ -397,7 +397,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item, New_String (Label), New_String (Tooltip),
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_Stock, Stock_Id'Address, 0, 0, Null_Address);
    end UI_Info_Item_Stock;
@@ -411,7 +411,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_About),
          0, Null_Address);
@@ -426,7 +426,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Clear),
          0, Null_Address);
@@ -441,7 +441,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Close),
          0, Null_Address);
@@ -456,7 +456,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Close_Window),
          0, Null_Address);
@@ -471,7 +471,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Copy),
          0, Null_Address);
@@ -486,7 +486,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Cut),
          0, Null_Address);
@@ -514,7 +514,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_End_Game),
          0, Null_Address);
@@ -529,7 +529,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Exit),
          0, Null_Address);
@@ -570,7 +570,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Find_Again),
          0, Null_Address);
@@ -585,7 +585,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Find),
          0, Null_Address);
@@ -626,7 +626,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Hint),
          0, Null_Address);
@@ -641,7 +641,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_New_Game),
          0, Null_Address);
@@ -658,7 +658,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, New_String (Label), New_String (Tooltip),
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_New),
          0, Null_Address);
@@ -687,7 +687,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_New_Window),
          0, Null_Address);
@@ -702,7 +702,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Open),
          0, Null_Address);
@@ -717,7 +717,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Paste),
          0, Null_Address);
@@ -732,7 +732,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Pause_Game),
          0, Null_Address);
@@ -747,7 +747,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Preferences),
          0, Null_Address);
@@ -762,7 +762,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Print),
          0, Null_Address);
@@ -777,7 +777,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Print_Setup),
          0, Null_Address);
@@ -792,7 +792,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Properties),
          0, Null_Address);
@@ -807,7 +807,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Redo),
          0, Null_Address);
@@ -822,7 +822,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Redo_Move),
          0, Null_Address);
@@ -837,7 +837,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Replace),
          0, Null_Address);
@@ -852,7 +852,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Restart_Game),
          0, Null_Address);
@@ -867,7 +867,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Revert),
          0, Null_Address);
@@ -882,7 +882,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Save_As),
          0, Null_Address);
@@ -897,7 +897,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Save),
          0, Null_Address);
@@ -912,7 +912,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Scores),
          0, Null_Address);
@@ -927,7 +927,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Select_All),
          0, Null_Address);
@@ -955,7 +955,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address,
          Pixmap_None, Null_Address, To_Gint (Configurable_Item_Undo),
          0, Null_Address);
@@ -970,7 +970,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item_Configurable, Null_Ptr, Null_Ptr,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address, Pixmap_None, Null_Address,
          To_Gint (Configurable_Item_Undo_Move), 0, Null_Address);
    end UI_Info_Menu_Undo_Move_Item;
@@ -1013,7 +1013,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Item, New_String (Label), New_String (Tooltip),
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address, Pixmap_Data, Xpm_Data'Address, 0, 0, Null_Address);
    end UI_Info_Radioitem;
 
@@ -1073,7 +1073,7 @@ package body Gnome.App_Helper is
    begin
       return
         (UI_Toggleitem, New_String (Label), New_String (Tooltip),
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address, Pixmap_Data, Xpm_Data'Address, 0, 0, Null_Address);
    end UI_Info_Toggleitem;
 
@@ -1109,7 +1109,7 @@ package body Gnome.App_Helper is
 
       return
         (UI_Item, New_String (Label), The_Hint,
-         First_Marshaller'Address, new Data_Type_Record' (Callback, null),
+         First_Marshaller'Address, new Data_Type_Record'(Callback, null),
          Null_Address, Pixmap_Type, Pixmap,
          Gint (Accelerator_Key), Ac_Mods, Null_Address);
    end UI_New_Item;

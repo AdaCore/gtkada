@@ -301,7 +301,7 @@ package body Gtk.Item_Factory is
          use Interfaces.C.Strings;
       begin
          if Ientry.Item_Type /= Null_Ptr
-           and then String' (Value (Ientry.Item_Type)) /= "<ImageItem>"
+           and then String'(Value (Ientry.Item_Type)) /= "<ImageItem>"
          then
             ICS.Free (Ientry.Extra_Data);
          end if;

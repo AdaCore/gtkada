@@ -145,7 +145,7 @@ package body Gtk.Main is
            (Cb_Record_Access, System.Address);
 
          D : constant Cb_Record_Access :=
-           new Cb_Record' (Func => Func, Data => new Data_Type'(Data));
+           new Cb_Record'(Func => Func, Data => new Data_Type'(Data));
 
       begin
          return Internal (Main_Level, General_Cb'Address, System.Null_Address,

@@ -1685,7 +1685,7 @@ package body Gtk.Ctree is
       begin
          Internal
            (Get_Object (Ctree),
-            Node, new Data_Type' (Data), Free_Data'Address);
+            Node, new Data_Type'(Data), Free_Data'Address);
       end Node_Set_Row_Data;
 
       --------------------

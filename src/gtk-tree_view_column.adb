@@ -297,7 +297,7 @@ package body Gtk.Tree_View_Column is
            (Get_Object (Tree_Column), Get_Object (Cell),
             Internal_Data_Cell_Data_Func'Address,
             new Data_Type_Record'
-              (Func => Func, Data => new Data_Type' (Data)),
+              (Func => Func, Data => new Data_Type'(Data)),
             Internal_Destroy_Notify'Address);
       end Set_Cell_Data_Func;
 

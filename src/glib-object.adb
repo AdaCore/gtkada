@@ -68,7 +68,7 @@ package body Glib.Object is
          Hooks := Hooks.Next;
       end loop;
 
-      return new GObject_Record'Class' (Stub);
+      return new GObject_Record'Class'(Stub);
    end Conversion_Function;
 
    --------------------
@@ -232,7 +232,7 @@ package body Glib.Object is
       Stub : GObject_Record'Class) return GObject
    is
       Object : GObject := GObject (Obj);
-      Result : GObject := new GObject_Record'Class' (Stub);
+      Result : GObject := new GObject_Record'Class'(Stub);
 
       procedure Set_User_Data
         (Obj     : System.Address;

@@ -1164,7 +1164,7 @@ package body Gtk.Handlers is
         return Handler_Id
       is
          D : constant Data_Type_Access :=
-           new Data_Type_Record' (Func => Cb, Proxy => null, Object => null);
+           new Data_Type_Record'(Func => Cb, Proxy => null, Object => null);
 
       begin
          pragma Assert
