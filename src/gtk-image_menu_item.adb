@@ -51,6 +51,7 @@ package body Gtk.Pixmap_Menu_Item is
       pragma Import (C, Internal, "gtk_pixmap_menu_item_new");
    begin
       Set_Object (Widget, Internal);
+      Initialize_User_Data (Widget);
    end Initialize;
 
    ----------------

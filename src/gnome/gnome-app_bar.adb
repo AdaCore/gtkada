@@ -72,6 +72,7 @@ package body Gnome.App_Bar is
            (Boolean'Pos (Has_Progress),
             Boolean'Pos (Has_Status),
             Gnome_Preferences_Type'Pos (Interactivity)));
+      Initialize_User_Data (Widget);
    end Initialize;
 
    -------------------------

@@ -66,6 +66,8 @@ package body Gnome.Client is
       else
          Set_Object (Widget, Internal2);
       end if;
+
+      Initialize_User_Data (Widget);
    end Initialize;
 
    -------------------

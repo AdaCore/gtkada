@@ -52,6 +52,7 @@ package body Gnome.Icon_Selection is
       pragma Import (C, Internal, "gnome_icon_selection_new");
    begin
       Set_Object (Widget, Internal);
+      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------------

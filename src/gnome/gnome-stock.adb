@@ -75,6 +75,7 @@ package body Gnome.Stock is
       pragma Import (C, Internal, "gnome_stock_new_with_icon");
    begin
       Set_Object (Widget, Internal (Icon & ASCII.NUL));
+      Initialize_User_Data (Widget);
    end Initialize;
 
    procedure Initialize (Widget : access Gnome_Stock_Record'Class) is
@@ -82,6 +83,7 @@ package body Gnome.Stock is
       pragma Import (C, Internal, "gnome_stock_new");
    begin
       Set_Object (Widget, Internal);
+      Initialize_User_Data (Widget);
    end Initialize;
 
    procedure Initialize
@@ -95,6 +97,7 @@ package body Gnome.Stock is
       pragma Import (C, Internal, "gnome_stock_pixmap_widget_new");
    begin
       Set_Object (Widget, Internal (Get_Object (Window), Icon & ASCII.NUL));
+      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------

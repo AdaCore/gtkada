@@ -53,6 +53,7 @@ package body Gtk.Clock is
       pragma Import (C, Internal, "gtk_clock_new");
    begin
       Set_Object (Widget, Internal (Gtk_Clock_Type'Pos (The_Type)));
+      Initialize_User_Data (Widget);
    end Initialize;
 
    ----------------

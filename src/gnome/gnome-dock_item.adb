@@ -65,6 +65,7 @@ package body Gnome.Dock_Item is
    begin
       Set_Object (Widget, Internal (Name & ASCII.NUL,
                                     Gnome_Dock_Item_Behavior'Pos (Behavior)));
+      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------

@@ -65,8 +65,8 @@ package body Gnome.Druid_Page_Standard is
    --     pragma Import
    --       (C, Internal, "gnome_druid_page_standard_new_with_vals");
    --  begin
-   --     Set_Object (Widget, Internal (Title & ASCII.NUL,
-   --                                   Logo));
+   --     Set_Object (Widget, Internal (Title & ASCII.NUL, Logo));
+   --     Initialize_User_Data (Widget);
    --  end Initialize;
 
    ---------------
@@ -90,6 +90,7 @@ package body Gnome.Druid_Page_Standard is
       pragma Import (C, Internal, "gnome_druid_page_standard_new");
    begin
       Set_Object (Widget, Internal);
+      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------------

@@ -62,6 +62,7 @@ package body Gnome.MDI is
       pragma Import (C, Internal, "gnome_mdi_new");
    begin
       Set_Object (Widget, Internal (Appname & ASCII.NUL, Title & ASCII.NUL));
+      Initialize_User_Data (Widget);
    end Initialize;
 
    ---------------

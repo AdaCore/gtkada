@@ -61,6 +61,7 @@ package body Gnome.HRef is
       pragma Import (C, Internal, "gnome_href_new");
    begin
       Set_Object (Widget, Internal (Url & ASCII.NUL, Label & ASCII.NUL));
+      Initialize_User_Data (Widget);
    end Initialize;
 
    ---------------

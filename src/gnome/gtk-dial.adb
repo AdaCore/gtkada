@@ -61,6 +61,7 @@ package body Gtk.Dial is
       pragma Import (C, Internal, "gtk_dial_new");
    begin
       Set_Object (Widget, Internal (Get_Object (Adjustment)));
+      Initialize_User_Data (Widget);
    end Initialize;
 
    --------------------

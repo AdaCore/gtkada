@@ -67,6 +67,7 @@ package body Gnome.File_Entry is
    begin
       Set_Object (Widget, Internal (History_Id & ASCII.NUL,
                                     Browse_Dialog_Title & ASCII.NUL));
+      Initialize_User_Data (Widget);
    end Initialize;
 
    -----------------

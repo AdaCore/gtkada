@@ -55,6 +55,7 @@ package body Gnome.Dock_Band is
       pragma Import (C, Internal, "gnome_dock_band_new");
    begin
       Set_Object (Widget, Internal);
+      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------

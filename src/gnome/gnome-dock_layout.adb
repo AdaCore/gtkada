@@ -40,8 +40,7 @@ package body Gnome.Dock_Layout is
    -- Gnome_New --
    ---------------
 
-   procedure Gnome_New (Widget : out Gnome_Dock_Layout)
-   is
+   procedure Gnome_New (Widget : out Gnome_Dock_Layout) is
    begin
       Widget := new Gnome_Dock_Layout_Record;
       Initialize (Widget);
@@ -51,12 +50,12 @@ package body Gnome.Dock_Layout is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gnome_Dock_Layout_Record'Class)
-   is
+   procedure Initialize (Widget : access Gnome_Dock_Layout_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gnome_dock_layout_new");
    begin
       Set_Object (Widget, Internal);
+      Initialize_User_Data (Widget);
    end Initialize;
 
    -----------------------

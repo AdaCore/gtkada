@@ -58,6 +58,7 @@ package body Gnome.GEntry is
       pragma Import (C, Internal, "gnome_entry_new");
    begin
       Set_Object (Widget, Internal (History_Id & ASCII.NUL));
+      Initialize_User_Data (Widget);
    end Initialize;
 
    --------------------------

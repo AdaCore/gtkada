@@ -63,8 +63,8 @@ package body Gnome.Animator is
          return System.Address;
       pragma Import (C, Internal, "gnome_animator_new_with_size");
    begin
-      Set_Object (Widget, Internal (Width,
-                                    Height));
+      Set_Object (Widget, Internal (Width, Height));
+      Initialize_User_Data (Widget);
    end Initialize;
 
    -------------

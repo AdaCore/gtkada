@@ -74,6 +74,7 @@ package body Gnome.Druid_Page_Start is
    --                                   Text & ASCII.NUL,
    --                                   Logo,
    --                                   Watermark));
+   --     Initialize_User_Data (Widget);
    --  end Initialize;
 
    ---------------
@@ -97,6 +98,7 @@ package body Gnome.Druid_Page_Start is
       pragma Import (C, Internal, "gnome_druid_page_start_new");
    begin
       Set_Object (Widget, Internal);
+      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------------

@@ -68,6 +68,7 @@ package body Gnome.Pixmap is
       pragma Import (C, Internal, "gnome_pixmap_new_from_xpm_d_at_size");
    begin
       Set_Object (Widget, Internal (Xpm_Data + Null_Ptr, Width, Height));
+      Initialize_User_Data (Widget);
    end Initialize;
 
    ---------------

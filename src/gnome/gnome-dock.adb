@@ -39,8 +39,7 @@ package body Gnome.Dock is
    -- Gnome_New --
    ---------------
 
-   procedure Gnome_New (Widget : out Gnome_Dock)
-   is
+   procedure Gnome_New (Widget : out Gnome_Dock) is
    begin
       Widget := new Gnome_Dock_Record;
       Initialize (Widget);
@@ -50,12 +49,12 @@ package body Gnome.Dock is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gnome_Dock_Record'Class)
-   is
+   procedure Initialize (Widget : access Gnome_Dock_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gnome_dock_new");
    begin
       Set_Object (Widget, Internal);
+      Initialize_User_Data (Widget);
    end Initialize;
 
    -----------------------

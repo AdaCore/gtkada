@@ -67,6 +67,7 @@ package body Gnome.Message_Box is
       Set_Object (Widget, Internal (Message & ASCII.NUL,
                                     Messagebox_Type & ASCII.NUL,
                                     Buttons + Null_Ptr));
+      Initialize_User_Data (Widget);
    end Initialize;
 
 end Gnome.Message_Box;
