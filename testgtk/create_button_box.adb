@@ -97,8 +97,6 @@ package body Create_Button_Box is
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id     : Guint;
-      Bbox   : Gtk_Hbutton_Box;
-      Button : Gtk_Button;
       Vbox   : Gtk_Box;
       Hbox   : Gtk_Box;
       Main_Vbox : Gtk_Box;

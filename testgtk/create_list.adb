@@ -106,11 +106,9 @@ package body Create_List is
    procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id           : Guint;
       Vbox,
-        Hbox,
-        Cbox       : Gtk_Box;
-      Scrolled     : Gtk_Scrolled_Window;
+      Hbox,
+      Cbox         : Gtk_Box;
       Button       : Gtk_Button;
-      Item         : Gtk_List_Item;
       Sep          : Gtk_Separator;
       Scrolled_Win : Gtk_Scrolled_Window;
       Label        : Gtk_Label;

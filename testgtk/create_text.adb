@@ -34,12 +34,10 @@ with Gtk.Button; use Gtk.Button;
 with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Hbutton_Box; use Gtk.Hbutton_Box;
-with Gtk.Signal; use Gtk.Signal;
 with Gtk.Separator; use Gtk.Separator;
-with Gtk.Scrollbar; use Gtk.Scrollbar;
+with Gtk.Signal; use Gtk.Signal;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
-with Gtk.Table; use Gtk.Table;
 with Gtk.Text; use Gtk.Text;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Widget; use Gtk.Widget;
@@ -92,11 +90,8 @@ package body Create_Text is
       Box1,
         Box2       : Gtk_Box;
       Hbox         : Gtk_HButton_Box;
-      Table        : Gtk_Table;
       Text         : Gtk_Text;
       Font         : Gdk_Font;
-      Hscrollbar,
-        Vscrollbar : Gtk_Scrollbar;
       Check        : Gtk_Check_Button;
       Separator    : Gtk_Separator;
       Button       : Gtk_Button;
