@@ -223,6 +223,7 @@ package body Gtk.Combo is
       S : String_Ptr;
       First, Last : Natural;
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Child : Node_Ptr := Find_Tag (N.Child, "widget");
 
    begin
       Gen_New (N, "Combo", File => File);
@@ -259,6 +260,14 @@ package body Gtk.Combo is
          Put_Line (File, "   String_List.Free (" &
            To_Ada (Get_Field (N, "name").all) & "_Items);");
       end if;
+
+      --  The child is the entry field associated with the combo box. It only
+      --  exists for Glade >= 0.5. Do not generate any "Add"
+
+      if Child /= null then
+         Child.Specific_Data.Has_Container := True;
+      end if;
+
    end Generate;
 
    procedure Generate
@@ -267,6 +276,7 @@ package body Gtk.Combo is
       S     : String_Ptr;
       Items : String_List.Glist;
       First, Last : Natural;
+      Child : Node_Ptr := Find_Tag (N.Child, "widget");
 
    begin
       if not N.Specific_Data.Created then
@@ -317,6 +327,14 @@ package body Gtk.Combo is
          Set_Popdown_Strings (Gtk_Combo (Combo_Box), Items);
          String_List.Free (Items);
       end if;
+
+      --  The child is the entry field associated with the combo box. It only
+      --  exists for Glade >= 0.5. Do not generate any "Add"
+
+      if Child /= null then
+         Child.Specific_Data.Has_Container := True;
+      end if;
+
    end Generate;
 
 end Gtk.Combo;

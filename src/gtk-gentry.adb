@@ -30,6 +30,7 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
+with Gtk.Combo; use Gtk.Combo;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Widget; use Gtk.Widget;
 with Interfaces.C.Strings;
@@ -242,8 +243,16 @@ package body Gtk.GEntry is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Child_Name : Node_Ptr := Find_Tag (N.Child, "child_name");
    begin
-      Gen_New (N, "GEntry", File => File);
+      if Child_Name = null then
+         if not N.Specific_Data.Created then
+            Gen_New (N, "GEntry", File => File);
+            N.Specific_Data.Created := True;
+         end if;
+      else
+         Gen_Child (N, Child_Name, File);
+      end if;
       Editable.Generate (N, File);
       Gen_Set (N, "GEntry", "editable", File);
       Gen_Set (N, "GEntry", "Max_Length", "text_max_length", "", "", "", File);
@@ -262,11 +271,28 @@ package body Gtk.GEntry is
       N : in Node_Ptr)
    is
       S : String_Ptr;
+      Child_Name : String_Ptr := Get_Field (N, "child_name");
+
    begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Gtk_Entry (The_Entry));
-         Set_Object (Get_Field (N, "name"), The_Entry);
-         N.Specific_Data.Created := True;
+      if Child_Name = null then
+         if not N.Specific_Data.Created then
+            Gtk_New (Gtk_Entry (The_Entry));
+            Set_Object (Get_Field (N, "name"), The_Entry);
+            N.Specific_Data.Created := True;
+         end if;
+      else
+
+         --  Assuming the field is part of a Combo Box
+
+         declare
+            Combo : Gtk_Combo;
+
+         begin
+            Combo := Gtk_Combo (Get_Object (Find_Tag
+               (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
+                "name").Value));
+            The_Entry := Object.Gtk_Object (Get_Entry (Combo));
+         end;
       end if;
 
       Editable.Generate (The_Entry, N);
