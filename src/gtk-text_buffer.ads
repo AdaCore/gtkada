@@ -483,10 +483,17 @@ package Gtk.Text_Buffer is
 
    procedure Paste_Primary
      (Buffer            : access Gtk_Text_Buffer_Record;
+      Default_Editable  : Boolean);
+   --  Paste the primary selection at the Insertion point.
+   --  (Note: pasting is asynchronous, that is, we'll ask for the paste data
+   --  and return, and at some point later after the main loop runs, the paste
+   --  data will be inserted.)
+
+   procedure Paste_Primary
+     (Buffer            : access Gtk_Text_Buffer_Record;
       Override_Location : Gtk.Text_Iter.Gtk_Text_Iter;
       Default_Editable  : Boolean);
-   --  Paste the primary selection at the insertion point, or at
-   --  Override_Location.
+   --  Paste the primary selection at the Override_Location.
    --  (Note: pasting is asynchronous, that is, we'll ask for the paste data
    --  and return, and at some point later after the main loop runs, the paste
    --  data will be inserted.)
@@ -508,17 +515,19 @@ package Gtk.Text_Buffer is
    --  and return, and at some point later after the main loop runs, the paste
    --  data will be inserted.)
 
+   function Selection_Exists
+     (Buffer : access Gtk_Text_Buffer_Record) return Boolean;
+   --  Return True if some text in the buffer is currently selected.
+
    procedure Get_Selection_Bounds
      (Buffer  : access Gtk_Text_Buffer_Record;
       Start   : out Gtk.Text_Iter.Gtk_Text_Iter;
       The_End : out Gtk.Text_Iter.Gtk_Text_Iter;
       Result  : out Boolean);
-   --  Place the bounds of the selection in Start and End.
-   --  If the selection has length 0, then Start and End are filled in with the
-   --  same value. Start and End will be in ascending order. If Start and End
-   --  are null, then they are not filled in, but the return value still
-   --  indicates whether text is selected.
-   --  Result: whether the selection has nonzero length.
+   --  Place the bounds of the selection in Start and End. If the selection
+   --  has length 0, then Start and End are filled in with the same value.
+   --  Start and End will be in ascending order. Result: whether the selection
+   --  has nonzero length.
 
    function Delete_Selection
      (Buffer           : access Gtk_Text_Buffer_Record;

@@ -942,6 +942,21 @@ package body Gtk.Text_Buffer is
 
    procedure Paste_Primary
      (Buffer            : access Gtk_Text_Buffer_Record;
+      Default_Editable  : Boolean)
+   is
+      procedure Internal
+        (Buffer            : System.Address;
+         Override_Location : System.Address := System.Null_Address;
+         Default_Editable  : Gboolean);
+      pragma Import (C, Internal, "gtk_text_buffer_paste_primary");
+   begin
+      Internal
+        (Get_Object (Buffer),
+         Default_Editable => To_Gboolean (Default_Editable));
+   end Paste_Primary;
+
+   procedure Paste_Primary
+     (Buffer            : access Gtk_Text_Buffer_Record;
       Override_Location : Gtk.Text_Iter.Gtk_Text_Iter;
       Default_Editable  : Boolean)
    is
@@ -1003,6 +1018,22 @@ package body Gtk.Text_Buffer is
       Internal (Get_Object (Buffer), To_Gboolean (Default_Editable));
    end Paste_Clipboard;
 
+   ----------------------
+   -- Selection_Exists --
+   ----------------------
+
+   function Selection_Exists
+     (Buffer : access Gtk_Text_Buffer_Record) return Boolean
+   is
+      function Internal
+        (Buffer  : System.Address;
+         Start   : System.Address := System.Null_Address;
+         The_End : System.Address := System.Null_Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_text_buffer_get_selection_bounds");
+   begin
+      return To_Boolean (Internal (Get_Object (Buffer)));
+   end Selection_Exists;
+
    --------------------------
    -- Get_Selection_Bounds --
    --------------------------
@@ -1018,7 +1049,6 @@ package body Gtk.Text_Buffer is
          Start   : System.Address;
          The_End : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_get_selection_bounds");
-
    begin
       Result := To_Boolean
         (Internal (Get_Object (Buffer), Start'Address, The_End'Address));
