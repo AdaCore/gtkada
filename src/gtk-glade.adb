@@ -94,8 +94,7 @@ package body Gtk.Glade is
    -----------------
 
    procedure Generic_Ptr (N : Node_Ptr; File : File_Type) is
-      S : String_Ptr := Get_Field (N, "name");
-
+      S : constant String_Ptr := Get_Field (N, "name");
    begin
       if S /= null then
          Put_Line (File, "   --  WARNING: Unsupported widget " &
@@ -398,7 +397,7 @@ package body Gtk.Glade is
       Len         : Natural;
       Num_Signals : Natural;
       Output      : File_Type;
-      Project     : String :=
+      Project     : constant String :=
         To_Ada (Get_Field (Find_Tag (N.Child, "project"), "name").all);
       Name        : String_Ptr;
       Class       : String_Ptr;

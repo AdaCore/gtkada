@@ -310,7 +310,7 @@ package body Gtk_Generates is
    procedure Combo_Generate (N : Node_Ptr; File : File_Type) is
       S     : String_Ptr;
       First, Last : Natural;
-      Top_Widget  : Node_Ptr := Find_Top_Widget (N);
+      Top_Widget  : constant Node_Ptr := Find_Top_Widget (N);
       Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
       Child : Node_Ptr := Find_Tag (N.Child, "widget");
       procedure Build_Type;
@@ -534,7 +534,7 @@ package body Gtk_Generates is
    end Gamma_Curve_Generate;
 
    procedure GEntry_Generate (N : Node_Ptr; File : File_Type) is
-      Child_Name : Node_Ptr := Find_Tag (N.Child, "child_name");
+      Child_Name : constant Node_Ptr := Find_Tag (N.Child, "child_name");
       procedure Build_Type;
       pragma Import (C, Build_Type, "gtk_entry_get_type");
 
@@ -626,9 +626,10 @@ package body Gtk_Generates is
    end Input_Dialog_Generate;
 
    procedure Label_Generate (N : Node_Ptr; File : File_Type) is
-      Child_Name : String_Ptr := Get_Field (N, "child_name");
+      Child_Name : constant String_Ptr := Get_Field (N, "child_name");
       S          : String_Ptr;
-      Top        : String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Top        : constant String_Ptr :=
+        Get_Field (Find_Top_Widget (N), "name");
       P          : Node_Ptr;
       Num        : Gint;
       Is_Tab,
@@ -743,7 +744,7 @@ package body Gtk_Generates is
    end List_Item_Generate;
 
    procedure Menu_Generate (N : Node_Ptr; File : File_Type) is
-      S  : String_Ptr := Get_Field (N.Parent, "class");
+      S  : constant String_Ptr := Get_Field (N.Parent, "class");
       procedure Build_Type;
       pragma Import (C, Build_Type, "gtk_menu_get_type");
 
@@ -961,7 +962,7 @@ package body Gtk_Generates is
    procedure Radio_Button_Generate (N : Node_Ptr; File : File_Type) is
       Label : constant String_Ptr := Get_Field (N, "label");
       Name  : constant String_Ptr := Get_Field (N, "name");
-      Top_Widget : Node_Ptr := Find_Top_Widget (N);
+      Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
       Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
       procedure Build_Type;
       pragma Import (C, Build_Type, "gtk_radio_button_get_type");
@@ -1006,7 +1007,7 @@ package body Gtk_Generates is
    procedure Radio_Menu_Item_Generate (N : Node_Ptr; File : File_Type) is
       Label : constant String_Ptr := Get_Field (N, "label");
       Name  : constant String_Ptr := Get_Field (N, "name");
-      Top_Widget : Node_Ptr := Find_Top_Widget (N);
+      Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
       Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
       procedure Build_Type;
       pragma Import (C, Build_Type, "gtk_radio_menu_item_get_type");
@@ -1273,7 +1274,7 @@ package body Gtk_Generates is
 
    procedure Toolbar_Generate (N : Node_Ptr; File : File_Type) is
       P, Child   : Node_Ptr;
-      Top_Widget : Node_Ptr := Find_Top_Widget (N);
+      Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
       Top  : constant String_Ptr := Get_Field (Top_Widget, "name");
       Cur  : constant String_Ptr := Get_Field (N, "name");
       S, T : String_Ptr;
@@ -1463,7 +1464,7 @@ package body Gtk_Generates is
    end Window_Generate;
 
    procedure End_Generate (N : Node_Ptr; File : File_Type) is
-      Child       : Node_Ptr := Find_Tag (N.Child, "child");
+      Child       : constant Node_Ptr := Find_Tag (N.Child, "child");
       Q           : Node_Ptr;
       Top         : constant Node_Ptr   := Find_Top_Widget (N);
       Top_Name    : constant String_Ptr := Get_Field (Top, "name");

@@ -125,7 +125,7 @@ package body Pango.Font is
       Stretch     : Enums.Stretch := Enums.Pango_Stretch_Normal;
       Size        : Gint := 0) return Pango_Font_Description
    is
-      Result : Pango_Font_Description :=
+      Result : constant Pango_Font_Description :=
         From_String (Family_Name & " " &
                      Style_Map (Style) & " " &
                      Variant_Map (Variant) &
@@ -144,7 +144,7 @@ package body Pango.Font is
         (Desc : Pango_Font_Description) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "pango_font_description_to_string");
 
-      C_Result : Interfaces.C.Strings.chars_ptr := Internal (Desc);
+      C_Result : constant Interfaces.C.Strings.chars_ptr := Internal (Desc);
       Result   : constant String := Interfaces.C.Strings.Value (C_Result);
 
    begin
@@ -161,7 +161,7 @@ package body Pango.Font is
         (Desc : Pango_Font_Description) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "pango_font_description_to_filename");
 
-      C_Result : Interfaces.C.Strings.chars_ptr := Internal (Desc);
+      C_Result : constant Interfaces.C.Strings.chars_ptr := Internal (Desc);
       Result   : constant String := Interfaces.C.Strings.Value (C_Result);
 
    begin
