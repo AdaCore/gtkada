@@ -234,6 +234,7 @@ package body Gtk.Window is
       Gen_Set (N, "Window", "Policy", "allow_shrink", "allow_grow",
         "auto_shrink", "", File);
       Gen_Set (N, "Window", "position", File);
+      Gen_Set (N, "Window", "modal", File);
    end Generate;
 
    procedure Generate (Window : in out Gtk_Object;
@@ -271,6 +272,12 @@ package body Gtk.Window is
       if S /= null then
          Set_Position (Gtk_Window (Window),
            Enums.Gtk_Window_Position'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      S := Get_Field (N, "modal");
+
+      if S /= null then
+         Set_Modal (Gtk_Window (Window), Boolean'Value (S.all));
       end if;
    end Generate;
 
