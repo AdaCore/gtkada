@@ -235,10 +235,10 @@ void 		gtk_plot3d_set_titles_offset 	(GtkPlot3D *plot,
                                                  gint offset);
 gint 		gtk_plot3d_get_titles_offset 	(GtkPlot3D *plot);
 void            gtk_plot3d_axis_set_scale       (GtkPlot3D *plot,
-                                                 GtkPlotAxisPos axis,
+                                                 GtkPlotOrientation axis,
                                                  GtkPlotScale scale);
 GtkPlotScale    gtk_plot3d_axis_get_scale       (GtkPlot3D *plot,
-                                                 GtkPlotAxisPos axis);
+                                                 GtkPlotOrientation axis);
 /* Grids */
 void            gtk_plot3d_major_grids_set_visible    (GtkPlot3D *plot,
 						       gboolean x,
