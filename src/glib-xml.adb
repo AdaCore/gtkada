@@ -411,6 +411,7 @@ package body Glib.XML is
 
    begin
       pragma Assert (Buf (Index.all) = '<');
+
       Index.all := Index.all + 1;
       Get_Buf (Buf, Index.all, '>', N.Tag);
 
@@ -470,6 +471,9 @@ package body Glib.XML is
 
          return N;
       end if;
+   exception
+      when others =>
+         return null;
    end Get_Node;
 
    -------------
