@@ -615,7 +615,7 @@ AC_DEFUN(AM_CHECK_GNOME,
     else
       AC_MSG_RESULT(yes)
       HAVE_GNOME="True"
-      GNOME_CFLAGS=`$PKG_CONFIG $GNOMEUI --cflags gnomeui`
+      GNOME_CFLAGS=`$PKG_CONFIG $GNOMEUI --cflags`
       GNOME_LIBS=`$PKG_CONFIG $GNOMEUI --libs`
       GNOME_STATIC_LIBS="$GNOME_PREFIX/lib/libgnomeui-2.a $GNOME_PREFIX/lib/libgnome-2.a $GNOME_PREFIX/lib/libart_lgpl.a $GNOME_PREFIX/lib/lib/libpopt.a $GNOME_PREFIX/lib/libbonoboui-2.a" 
     fi
