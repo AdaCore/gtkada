@@ -260,6 +260,7 @@ $html2_doctype = '<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0 Strict Level 2//E
 	    'c', 1,
 	    'comment', 1,
             'ifnothtml', 1,
+	    'ifnottex', 1,
 	    # useless
 	    'detailmenu', 1,
             'direntry', 1,
@@ -940,6 +941,9 @@ while ($_ = &next_line) {
     } elsif ($tag eq 'ifhtml') {
 	$in_html = $PROTECTTAG . ++$html_num;
 	push(@lines, $in_html);
+	next;
+    } elsif ($tag eq 'ifnothtml') {
+	&skip_until($tag);
 	next;
     }
     #
