@@ -29,7 +29,7 @@
 --  <description>
 --  This widget serves as separator between menu items.
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.2.1</c_version>
 
 with Gtk.Menu_Item;
 
