@@ -31,6 +31,27 @@ package body Glib is
 
 
    ------------------
+   --  Get_Object  --
+   ------------------
+
+   function Get_Object (Object : in Object_Type) return System.Address is
+   begin
+      return Object.Ptr;
+   end Get_Object;
+
+
+   ------------------
+   --  Set_Object  --
+   ------------------
+
+   procedure Set_Object (Object : in out Object_Type;
+                         Value  : in     System.Address) is
+   begin
+      Object.Ptr := Value;
+   end Set_Object;
+
+
+   ------------------
    --  To_Boolean  --
    ------------------
 

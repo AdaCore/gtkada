@@ -29,6 +29,7 @@
 
 with Ada.Unchecked_Deallocation;
 with Interfaces.C;
+with System;
 
 package Glib is
 
@@ -102,6 +103,34 @@ package Glib is
 
    procedure Free is new Ada.Unchecked_Deallocation
      (Object => Guchar_Array, Name => Guchar_Array_Access);
+
+
+   -------------------
+   --  Object_Type  --
+   -------------------
+
+   type Object_Type is private;
+
+   Null_Object_Type : constant Object_Type;
+
+   --  The following services are for INTERNAL use only. They are not
+   --  declared inside the private part for visibility issues. Do NOT
+   --  use them outside of the binding.
+   function Get_Object (Object : in Object_Type) return System.Address;
+   pragma Inline (Get_Object);
+
+   procedure Set_Object (Object : in out Object_Type;
+                         Value  : in     System.Address);
+   pragma Inline (Set_Object);
+
+private
+
+   type Object_Type is
+     record
+        Ptr : System.Address := System.Null_Address;
+     end record;
+
+   Null_Object_Type : constant Object_Type := (Ptr => System.Null_Address);
 
 end Glib;
 
