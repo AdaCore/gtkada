@@ -2791,6 +2791,7 @@ package body Gtkada.MDI is
    begin
       if Note /= null and then Child.State = Normal then
          Gtk_New (Event);
+         Set_Visible_Window (Event, False);
          Gtk_New (Child.Tab_Label, Child.Short_Title.all);
 
          if Child.Icon /= null then
@@ -2807,9 +2808,8 @@ package body Gtkada.MDI is
          end if;
 
          Set_Tab_Label (Note, Child, Event);
-         Update_Tab_Color (Child);
-
          Show_All (Event);
+         Update_Tab_Color (Child);
 
          Return_Callback.Object_Connect
            (Event, "button_press_event",
