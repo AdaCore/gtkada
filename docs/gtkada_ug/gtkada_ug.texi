@@ -536,6 +536,11 @@ Gtk_Object
         \__ Gtk_Container  @i{(Widgets that have children)}
         |     \__ Gtk_Bin  @i{(Widgets that have a single child)}
         |     |     \__ Gtk_Alignment
+        |     |     \__ Gtk_Button @i{(Widgets that you can click)}
+        |     |     |     \__ Gtk_Option_Menu
+        |     |     |     \__ Gtk_Toggle_Button
+        |     |     |     |     \__ Gtk_Check_Button
+        |     |     |     |     |     \__ Gtk_Radio_Button
         |     |     \__ Gtk_Event_Box
         |     |     \__ Gtk_Frame
         |     |     |     \__ Gtk_Aspect_Frame
@@ -564,11 +569,6 @@ Gtk_Object
         |     |     \__ Gtk_Combo
         |     |     \__ Gtk_Gamma_Curve
         |     |     \__ Gtk_Status_Bar
-        |     \__ Gtk_Button @i{(Widgets that you can click)}
-        |     |     \__ Gtk_Option_Menu
-        |     |     \__ Gtk_Toggle_Button
-        |     |          \__ Gtk_Check_Button
-        |     |                 \__ Gtk_Radio_Button
         |     \__ Gtk_Clist
         |     |     \__ Gtk_Ctree
         |     \__ Gtk_Fixed
