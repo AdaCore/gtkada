@@ -86,6 +86,35 @@ package body Pango.Font is
       return Internal (Str & ASCII.NUL);
    end From_String;
 
+   ------------------------
+   -- To_Font_Decription --
+   ------------------------
+
+   function To_Font_Description
+     (Family_Name : String := "";
+      Style       : Pango.Enums.Style := Pango.Enums.Pango_Style_Normal;
+      Variant     : Pango.Enums.Variant := Pango.Enums.Pango_Variant_Normal;
+      Weight      : Pango.Enums.Weight := Pango.Enums.Pango_Weight_Normal;
+      Stretch     : Pango.Enums.Stretch := Pango.Enums.Pango_Stretch_Normal;
+      Size        : Gint := 0) return Pango_Font_Description
+   is
+      --  The only function provided by Pango to build a new font descriptiion
+      --  is From_String. But it is an overkill to format the given parameters
+      --  into a string that From_String will then parse back! The approach
+      --  used here is to build a font description using the Family_Name only,
+      --  and then to set directly the other different parameters...
+      Result : Pango_Font_Description := From_String (Family_Name);
+   begin
+      Result.all :=
+        (Family_Name => Result.Family_Name,
+         Style => Style,
+         Variant => Variant,
+         Weight => Weight,
+         Stretch => Stretch,
+         Size => Size);
+      return Result;
+   end To_Font_Description;
+
    ---------------
    -- To_String --
    ---------------
