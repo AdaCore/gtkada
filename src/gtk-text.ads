@@ -57,12 +57,16 @@ package Gtk.Text is
    function Get_Text_End (Widget : access Gtk_Text_Record) return Guint;
    procedure Gtk_New
       (Widget : out Gtk_Text;
-       Hadj   : in Gtk.Adjustment.Gtk_Adjustment := null;
-       Vadj   : in Gtk.Adjustment.Gtk_Adjustment := null);
+       Hadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
+         := Gtk.Adjustment.Null_Adjustment;
+       Vadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
+         := Gtk.Adjustment.Null_Adjustment);
    procedure Initialize
       (Widget : access Gtk_Text_Record;
-       Hadj   : in Gtk.Adjustment.Gtk_Adjustment := null;
-       Vadj   : in Gtk.Adjustment.Gtk_Adjustment := null);
+       Hadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
+         := Gtk.Adjustment.Null_Adjustment;
+       Vadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
+         := Gtk.Adjustment.Null_Adjustment);
 
    function Get_Vadj (Widget : access Gtk_Text_Record)
                       return Gtk.Adjustment.Gtk_Adjustment;
@@ -75,8 +79,8 @@ package Gtk.Text is
        Length : in Gint);
    procedure Set_Adjustments
       (Text : access Gtk_Text_Record;
-       Hadj : in Gtk.Adjustment.Gtk_Adjustment;
-       Vadj : in Gtk.Adjustment.Gtk_Adjustment);
+       Hadj : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+       Vadj : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    procedure Set_Editable (Text : access Gtk_Text_Record;
                            Editable : in Boolean);
    procedure Set_Point (Text : access Gtk_Text_Record; Index : in Guint);
@@ -87,10 +91,10 @@ package Gtk.Text is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Text : in out Gtk_Object; N : in Node_Ptr);
 
 private

@@ -39,34 +39,34 @@ package Gtk.Tree is
 
    procedure Append
      (Tree      : access Gtk_Tree_Record;
-      Tree_Item : in Gtk.Widget.Gtk_Widget);
+      Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class);
    function Child_Position
      (Tree   : access Gtk_Tree_Record;
-      Child  : in Gtk.Widget.Gtk_Widget)
+      Child  : access Gtk.Widget.Gtk_Widget_Record'Class)
       return      Gint;
    procedure Clear_Items
      (Tree    : access Gtk_Tree_Record;
       Start   : in Gint;
       The_End : in Gint);
-   function Get_Children (Widget : in Gtk.Tree.Gtk_Tree)
+   function Get_Children (Widget : access Gtk.Tree.Gtk_Tree_Record)
                           return      Widget_List.Glist;
-   function Get_Selection (Widget : in Gtk.Tree.Gtk_Tree)
+   function Get_Selection (Widget : access Gtk.Tree.Gtk_Tree_Record)
                            return      Widget_List.Glist;
    procedure Gtk_New (Widget : out Gtk_Tree);
    procedure Initialize (Widget : access Gtk_Tree_Record);
    procedure Insert
      (Tree      : access Gtk_Tree_Record;
-      Tree_Item : in Gtk.Widget.Gtk_Widget;
+      Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position  : in Gint);
    procedure Prepend
      (Tree      : access Gtk_Tree_Record;
-      Tree_Item : in Gtk.Widget.Gtk_Widget);
+      Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class);
    procedure Remove_Items
      (Tree  : access Gtk_Tree_Record;
       Items : in Widget_List.Glist);
    procedure Select_Child
      (Tree      : access Gtk_Tree_Record;
-      Tree_Item : in Gtk.Widget.Gtk_Widget);
+      Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class);
    procedure Select_Item
      (Tree : access Gtk_Tree_Record;
       Item : in Gint);
@@ -81,7 +81,7 @@ package Gtk.Tree is
       Mode : in Gtk_Tree_View_Mode);
    procedure Unselect_Child
      (Tree      : access Gtk_Tree_Record;
-      Tree_Item : in Gtk.Widget.Gtk_Widget);
+      Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class);
    procedure Unselect_Item
      (Tree : access Gtk_Tree_Record;
       Item : in Gint);

@@ -87,21 +87,21 @@ package Gtk.Object is
    generic
       type Data_Type (<>) is private;
    package User_Data is
-      function Get (Object : in Gtk_Object;
+      function Get (Object : access Gtk_Object_Record'Class;
                     Id     : in String := "user_data") return Data_Type;
       --  Raises Constraint_Error if no Data is associated with this Id
 
-      procedure Set (Object : in Gtk_Object;
+      procedure Set (Object : access Gtk_Object_Record'Class;
                      Data   : in Data_Type;
                      Id     : in String := "user_data");
    end User_Data;
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Object : in out Gtk_Object; N : in Node_Ptr);
 
 private

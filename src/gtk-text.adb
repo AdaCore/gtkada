@@ -175,8 +175,10 @@ package body Gtk.Text is
 
    procedure Gtk_New
      (Widget : out Gtk_Text;
-      Hadj   : in Gtk.Adjustment.Gtk_Adjustment := null;
-      Vadj   : in Gtk.Adjustment.Gtk_Adjustment := null)
+      Hadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
+        := Gtk.Adjustment.Null_Adjustment;
+      Vadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
+        := Gtk.Adjustment.Null_Adjustment)
    is
    begin
       Widget := new Gtk_Text_Record;
@@ -205,8 +207,10 @@ package body Gtk.Text is
 
    procedure Initialize
      (Widget : access Gtk_Text_Record;
-      Hadj   : in Gtk.Adjustment.Gtk_Adjustment := null;
-      Vadj   : in Gtk.Adjustment.Gtk_Adjustment := null)
+      Hadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
+        := Gtk.Adjustment.Null_Adjustment;
+      Vadj   : access Gtk.Adjustment.Gtk_Adjustment_Record'Class
+        := Gtk.Adjustment.Null_Adjustment)
    is
       function Internal
         (Hadj   : in System.Address;
@@ -214,8 +218,7 @@ package body Gtk.Text is
          return      System.Address;
       pragma Import (C, Internal, "gtk_text_new");
    begin
-      Set_Object (Widget, Internal (Get_Object (Hadj),
-                                    Get_Object (Vadj)));
+      Set_Object (Widget, Internal (Get_Object (Hadj), Get_Object (Vadj)));
       Initialize_User_Data (Widget);
    end Initialize;
 
@@ -254,8 +257,8 @@ package body Gtk.Text is
 
    procedure Set_Adjustments
      (Text : access Gtk_Text_Record;
-      Hadj : in Gtk.Adjustment.Gtk_Adjustment;
-      Vadj : in Gtk.Adjustment.Gtk_Adjustment)
+      Hadj : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+      Vadj : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
         (Text : in System.Address;

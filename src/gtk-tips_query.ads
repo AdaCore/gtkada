@@ -39,7 +39,7 @@ package Gtk.Tips_Query is
    procedure Initialize (Widget : access Gtk_Tips_Query_Record);
    procedure Set_Caller
       (Tips_Query : access Gtk_Tips_Query_Record;
-       Caller     : in Gtk.Widget.Gtk_Widget);
+       Caller     : access Gtk.Widget.Gtk_Widget_Record'Class);
    procedure Set_Labels
       (Tips_Query     : access Gtk_Tips_Query_Record;
        Label_Inactive : in String;

@@ -44,7 +44,7 @@ package body Gtk.Tree is
 
    procedure Append
      (Tree      : access Gtk_Tree_Record;
-      Tree_Item : in Gtk.Widget.Gtk_Widget)
+      Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
         (Tree      : in System.Address;
@@ -61,7 +61,7 @@ package body Gtk.Tree is
 
    function Child_Position
      (Tree   : access Gtk_Tree_Record;
-      Child  : in Gtk.Widget.Gtk_Widget)
+      Child  : access Gtk.Widget.Gtk_Widget_Record'Class)
       return Gint
    is
       function Internal
@@ -96,7 +96,7 @@ package body Gtk.Tree is
    -- Get_Children --
    ------------------
 
-   function Get_Children (Widget : in Gtk.Tree.Gtk_Tree)
+   function Get_Children (Widget : access Gtk.Tree.Gtk_Tree_Record)
      return Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
@@ -112,7 +112,7 @@ package body Gtk.Tree is
    -- Get_Selection --
    -------------------
 
-   function Get_Selection (Widget : in Gtk.Tree.Gtk_Tree)
+   function Get_Selection (Widget : access Gtk.Tree.Gtk_Tree_Record)
       return Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
@@ -152,7 +152,7 @@ package body Gtk.Tree is
 
    procedure Insert
      (Tree      : access Gtk_Tree_Record;
-      Tree_Item : in Gtk.Widget.Gtk_Widget;
+      Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position  : in Gint)
    is
       procedure Internal
@@ -170,7 +170,7 @@ package body Gtk.Tree is
 
    procedure Prepend
      (Tree      : access Gtk_Tree_Record;
-      Tree_Item : in Gtk.Widget.Gtk_Widget)
+      Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
         (Tree      : in System.Address;
@@ -202,7 +202,7 @@ package body Gtk.Tree is
 
    procedure Select_Child
      (Tree      : access Gtk_Tree_Record;
-      Tree_Item : in Gtk.Widget.Gtk_Widget)
+      Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
         (Tree      : in System.Address;
@@ -282,7 +282,7 @@ package body Gtk.Tree is
 
    procedure Unselect_Child
      (Tree      : access Gtk_Tree_Record;
-      Tree_Item : in Gtk.Widget.Gtk_Widget)
+      Tree_Item : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
         (Tree      : in System.Address;

@@ -289,15 +289,124 @@ package body Gtk.Signal is
                                    Free_Data'Address,
                                    After);
       end Connect;
+
    end Two_Callback;
 
+   ----------------------
+   -- Two_Callback_Gtk --
+   ----------------------
+
+   package body Two_Callback_Gtk is
+      type Data_Access is access Data_Type;
+      type Data_Type_Record is
+         record
+            Data   : Data_Access;
+            Func   : Callback;
+         end record;
+      type Data_Type_Access is access all Data_Type_Record;
+      pragma Convention (C, Data_Type_Access);
+
+      function Convert is new Unchecked_Conversion
+        (Data_Type_Access, System.Address);
+      function Convert is new Unchecked_Conversion
+        (System.Address, Data_Type_Access);
+
+      procedure Free_Data (Data : in System.Address);
+      pragma Convention (C, Free_Data);
+      --  Free the memory associated with the callback's data
+
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray);
+      pragma Convention (C, Marshaller);
+
+      ---------------
+      -- Free_Data --
+      ---------------
+
+      procedure Free_Data (Data : in System.Address) is
+         procedure Internal is new Unchecked_Deallocation
+           (Data_Type_Record, Data_Type_Access);
+         procedure Internal_2 is new Unchecked_Deallocation
+           (Data_Type, Data_Access);
+         D : Data_Type_Access := Convert (Data);
+      begin
+         Internal_2 (D.Data);
+         Internal (D);
+      end Free_Data;
+
+      ----------------
+      -- Marshaller --
+      ----------------
+
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray)
+      is
+         function Internal (Params : in GtkArgArray;
+                            Num    : in Guint)
+                            return System.Address;
+         pragma Import (C, Internal, "ada_gtkarg_value_object");
+         use type System.Address;
+         type Acc is access all Base_Type;
+         type Acc2 is access all Cb_Type;
+         Stub   : Base_Type;
+         Stub2  : aliased Cb_Type;
+         Data   : Data_Type_Access := Convert (User_Data);
+         Tmp    : System.Address := Internal (Params, 0);
+      begin
+         if Nparams = 0 then
+            Ada.Text_IO.Put_Line
+              (Ada.Text_IO.Standard_Error,
+               "Wrong number of arguments in Two_Callback");
+         end if;
+         if Data.Func /= null then
+            if Tmp = System.Null_Address then
+               Data.Func (Acc (Get_User_Data (Object, Stub)),
+                          Stub2'Access,
+                          Data.Data.all);
+            else
+               Data.Func (Acc (Get_User_Data (Object, Stub)),
+                          Acc2 (Get_User_Data (Tmp, Stub2)),
+                          Data.Data.all);
+            end if;
+         end if;
+      end Marshaller;
+
+      -------------
+      -- Connect --
+      -------------
+
+      function Connect
+        (Obj       : access Base_Type'Class;
+         Name      : in String;
+         Func      : in Callback;
+         Func_Data : in Data_Type;
+         After     : in Boolean := False)
+         return Guint
+      is
+         D : Data_Type_Access :=
+          new Data_Type_Record'(Data => new Data_Type'(Func_Data),
+                                Func => Func);
+      begin
+         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
+                                   Name,
+                                   Marshaller'Address,
+                                   Convert (D),
+                                   Free_Data'Address,
+                                   After);
+      end Connect;
+
+   end Two_Callback_Gtk;
    -------------------------
    -- Tips_Query_Callback --
    -------------------------
 
    package body Tips_Query_Callback is
 
-      type Data_Access is access Data_Type;
+      type Data_Access is access Data_Type'Class;
       type Data_Type_Record is
          record
             Data   : Data_Access;
@@ -329,7 +438,7 @@ package body Gtk.Signal is
          procedure Internal is new Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
          procedure Internal_2 is new Unchecked_Deallocation
-           (Data_Type, Data_Access);
+           (Data_Type'Class, Data_Access);
          D : Data_Type_Access := Convert (Data);
       begin
          Internal_2 (D.Data);
@@ -382,7 +491,7 @@ package body Gtk.Signal is
             Data.Func (Widget'Access, Widget2'Access,
                        To_String (Internal (Params, 1)),
                        To_String (Internal (Params, 2)),
-                       Data.Data.all);
+                       Data.Data);
          end if;
       end Marshaller;
 
@@ -394,12 +503,12 @@ package body Gtk.Signal is
         (Obj   : access Gtk.Tips_Query.Gtk_Tips_Query_Record'Class;
          Name  : in String;
          Func  : in Callback;
-         Data  : in Data_Type;
+         Data  : access Data_Type'Class;
          After : in Boolean := False)
          return Guint
       is
          D : Data_Type_Access :=
-          new Data_Type_Record'(Data => new Data_Type'(Data),
+          new Data_Type_Record'(Data => new Data_Type'Class'(Data.all),
                                 Func => Func);
       begin
          return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
@@ -478,7 +587,7 @@ package body Gtk.Signal is
             Func : Callback;
             Data : Widget_Type;
          end record;
-      type Data_Type_Access is access all Data_Type_Record;
+      type Data_Type_Access is access Data_Type_Record;
 
       pragma Convention (C, Data_Type_Access);
 
@@ -553,11 +662,12 @@ package body Gtk.Signal is
    -- C_Unsafe_Connect --
    ----------------------
 
-   function C_Unsafe_Connect (Object      : in Gtk.Object.Gtk_Object;
-                              Name        : in String;
-                              Func        : in System.Address;
-                              Slot_Object : in Gtk.Object.Gtk_Object)
-                              return Guint
+   function C_Unsafe_Connect
+     (Object      : access Gtk.Object.Gtk_Object_Record'Class;
+      Name        : in String;
+      Func        : in System.Address;
+      Slot_Object : access Gtk.Object.Gtk_Object_Record'Class)
+      return Guint
    is
       function Internal (Object      : in System.Address;
                          Name        : in String;
@@ -575,7 +685,7 @@ package body Gtk.Signal is
    ----------------
 
    procedure Disconnect
-     (Object     : in Gtk.Object.Gtk_Object;
+     (Object     : access Gtk.Object.Gtk_Object_Record'Class;
       Handler_Id : in Guint)
    is
       procedure Internal (Obj : System.Address; Id  : Guint);
@@ -590,8 +700,9 @@ package body Gtk.Signal is
    -- Emit_By_Name --
    ------------------
 
-   procedure Emit_By_Name (Object : in Gtk.Object.Gtk_Object;
-                           Name   : in String)
+   procedure Emit_By_Name
+     (Object : access Gtk.Object.Gtk_Object_Record'Class;
+      Name   : in String)
    is
       procedure Internal (Object : in System.Address;
                           Name   : in String);
@@ -604,8 +715,9 @@ package body Gtk.Signal is
    -- Emit_Stop_By_Name --
    -----------------------
 
-   procedure Emit_Stop_By_Name (Object : in Gtk.Object.Gtk_Object;
-                                Name   : in String)
+   procedure Emit_Stop_By_Name
+     (Object : access Gtk.Object.Gtk_Object_Record'Class;
+      Name   : in String)
    is
       procedure Internal (Object : in System.Address;
                           Name   : in String);
@@ -619,7 +731,7 @@ package body Gtk.Signal is
    -------------------
 
    procedure Handler_Block
-     (Obj        : in Gtk.Object.Gtk_Object;
+     (Obj        : access Gtk.Object.Gtk_Object_Record'Class;
       Handler_Id : in Guint)
    is
       procedure Internal (Obj : in System.Address; Id  : in Guint);
@@ -632,7 +744,7 @@ package body Gtk.Signal is
    -- Handlers_Destroy --
    ----------------------
 
-   procedure Handlers_Destroy (Obj : in Object.Gtk_Object)
+   procedure Handlers_Destroy (Obj : access Object.Gtk_Object_Record'Class)
    is
       procedure Internal (Obj : System.Address);
       pragma Import (C, Internal, "gtk_signal_handlers_destroy");
@@ -644,8 +756,9 @@ package body Gtk.Signal is
    -- Handler_Unblock --
    ---------------------
 
-   procedure Handler_Unblock (Obj        : in Gtk.Object.Gtk_Object;
-                              Handler_Id : in Guint)
+   procedure Handler_Unblock
+     (Obj        : access Gtk.Object.Gtk_Object_Record'Class;
+      Handler_Id : in Guint)
    is
       procedure Internal (Obj : in System.Address; Id  : in Guint);
       pragma Import (C, Internal, "gtk_signal_handler_unblock");

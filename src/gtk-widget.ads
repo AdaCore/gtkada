@@ -112,7 +112,7 @@ package Gtk.Widget is
    procedure Unrealize (Widget : access Gtk_Widget_Record);
 
    procedure Reparent (Widget : access Gtk_Widget_Record;
-                       New_Parent : in Gtk_Widget);
+                       New_Parent : access Gtk_Widget_Record'Class);
 
    function Get_Parent (Widget : access Gtk_Widget_Record)
                         return Gtk_Widget;
@@ -168,7 +168,7 @@ package Gtk.Widget is
    --  Events --
    -------------
 
-   procedure Event (Widget : in Gtk_Widget;
+   procedure Event (Widget : access Gtk_Widget_Record'Class;
                     Event  : Gdk.Event.Gdk_Event);
 
    --------------------
@@ -214,10 +214,10 @@ package Gtk.Widget is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate (Widget : in out Object.Gtk_Object; N : in Node_Ptr);
 
    ------------------------

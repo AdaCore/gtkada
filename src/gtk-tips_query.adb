@@ -62,7 +62,7 @@ package body Gtk.Tips_Query is
 
    procedure Set_Caller
       (Tips_Query : access Gtk_Tips_Query_Record;
-       Caller     : in Gtk.Widget.Gtk_Widget)
+       Caller     : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Tips_Query : in System.Address;

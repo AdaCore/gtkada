@@ -50,7 +50,7 @@ package Gtk.Tree_Item is
    procedure Remove_Subtree (Tree_Item : access Gtk_Tree_Item_Record);
    procedure Set_Subtree
      (Tree_Item : access Gtk_Tree_Item_Record;
-      Subtree   : in Gtk.Widget.Gtk_Widget);
+      Subtree   : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    --  GtkAda0.6 : From_Tree and To_Tree have been removed. Please use
    --  Gdk.Unchecked_Cast insted

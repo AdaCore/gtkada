@@ -206,7 +206,7 @@ package body Gtk.Object is
       -- Get --
       ---------
 
-      function Get (Object : in Gtk_Object;
+      function Get (Object : access Gtk_Object_Record'Class;
                     Id     : in String := "user_data") return Data_Type is
          function Internal (Object : in System.Address;
                             Key    : in String)
@@ -226,7 +226,7 @@ package body Gtk.Object is
       -- Set --
       ---------
 
-      procedure Set (Object : in Gtk_Object;
+      procedure Set (Object : access Gtk_Object_Record'Class;
                      Data   : in Data_Type;
                      Id     : in String := "user_data")
       is

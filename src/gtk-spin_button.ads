@@ -38,7 +38,7 @@ package Gtk.Spin_Button is
 
    procedure Configure
      (Spin_Button : access Gtk_Spin_Button_Record;
-      Adjustment  : in Gtk.Adjustment.Gtk_Adjustment;
+      Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
       Climb_Rate  : in Gfloat;
       The_Digits  : in Gint);
 
@@ -52,20 +52,20 @@ package Gtk.Spin_Button is
      return Gint;
 
    procedure Gtk_New
-     (Widget     : out Gtk_Spin_Button;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment;
-      Climb_Rate : in Gfloat;
-      The_Digits : in Gint);
+     (Spin_Button : out Gtk_Spin_Button;
+      Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+      Climb_Rate  : in Gfloat;
+      The_Digits  : in Gint);
 
    procedure Initialize
-     (Widget     : access Gtk_Spin_Button_Record;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment;
-      Climb_Rate : in Gfloat;
-      The_Digits : in Gint);
+     (Spin_Button : access Gtk_Spin_Button_Record;
+      Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+      Climb_Rate  : in Gfloat;
+      The_Digits  : in Gint);
 
    procedure Set_Adjustment
      (Spin_Button : access Gtk_Spin_Button_Record;
-      Adjustment  : in Gtk.Adjustment.Gtk_Adjustment);
+      Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
    procedure Set_Digits
      (Spin_Button : access Gtk_Spin_Button_Record;
@@ -74,6 +74,10 @@ package Gtk.Spin_Button is
    procedure Set_Numeric
      (Spin_Button : access Gtk_Spin_Button_Record;
       Numeric     : in Boolean);
+
+   procedure Set_Snap_To_Ticks
+    (Spin_Button   : in Gtk_Spin_Button;
+     Snap_To_Ticks : in Boolean);
 
    procedure Set_Update_Policy
      (Spin_Button : access Gtk_Spin_Button_Record;

@@ -38,7 +38,7 @@ package body Gtk.Spin_Button is
 
    procedure Configure
      (Spin_Button : access Gtk_Spin_Button_Record;
-      Adjustment  : in Gtk.Adjustment.Gtk_Adjustment;
+      Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
       Climb_Rate  : in Gfloat;
       The_Digits  : in Gint)
    is
@@ -103,14 +103,14 @@ package body Gtk.Spin_Button is
    -------------
 
    procedure Gtk_New
-     (Widget     : out Gtk_Spin_Button;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment;
-      Climb_Rate : in Gfloat;
-      The_Digits : in Gint)
+     (Spin_Button : out Gtk_Spin_Button;
+      Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+      Climb_Rate  : in Gfloat;
+      The_Digits  : in Gint)
    is
    begin
-      Widget := new Gtk_Spin_Button_Record;
-      Initialize (Widget, Adjustment, Climb_Rate, The_Digits);
+      Spin_Button := new Gtk_Spin_Button_Record;
+      Initialize (Spin_Button, Adjustment, Climb_Rate, The_Digits);
    end Gtk_New;
 
    ----------------
@@ -118,10 +118,10 @@ package body Gtk.Spin_Button is
    ----------------
 
    procedure Initialize
-     (Widget     : access Gtk_Spin_Button_Record;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment;
-      Climb_Rate : in Gfloat;
-      The_Digits : in Gint)
+     (Spin_Button : access Gtk_Spin_Button_Record;
+      Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
+      Climb_Rate  : in Gfloat;
+      The_Digits  : in Gint)
    is
       function Internal
         (Adjustment : in System.Address;
@@ -130,10 +130,9 @@ package body Gtk.Spin_Button is
          return          System.Address;
       pragma Import (C, Internal, "gtk_spin_button_new");
    begin
-      Set_Object (Widget, Internal (Get_Object (Adjustment),
-                                    Climb_Rate,
-                                    The_Digits));
-      Initialize_User_Data (Widget);
+      Set_Object (Spin_Button,
+                  Internal (Get_Object (Adjustment), Climb_Rate, The_Digits));
+      Initialize_User_Data (Spin_Button);
    end Initialize;
 
    --------------------
@@ -142,7 +141,7 @@ package body Gtk.Spin_Button is
 
    procedure Set_Adjustment
      (Spin_Button : access Gtk_Spin_Button_Record;
-      Adjustment  : in Gtk.Adjustment.Gtk_Adjustment)
+      Adjustment  : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
         (Spin_Button : in System.Address;
@@ -183,6 +182,22 @@ package body Gtk.Spin_Button is
    begin
       Internal (Get_Object (Spin_Button), Boolean'Pos (Numeric));
    end Set_Numeric;
+
+   -----------------------
+   -- Set_Snap_To_Ticks --
+   -----------------------
+
+   procedure Set_Snap_To_Ticks
+    (Spin_Button   : in Gtk_Spin_Button;
+     Snap_To_Ticks : in Boolean)
+   is
+      procedure Internal
+        (Spin_Button   : in System.Address;
+         Snap_To_Ticks : in Gint);
+      pragma Import (C, Internal, "gtk_spin_button_set_snap_to_ticks");
+   begin
+      Internal (Get_Object (Spin_Button), Boolean'Pos (Snap_To_Ticks));
+   end Set_Snap_To_Ticks;
 
    -----------------------
    -- Set_Update_Policy --

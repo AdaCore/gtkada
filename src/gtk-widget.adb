@@ -125,7 +125,7 @@ package body Gtk.Widget is
    -- Event --
    -----------
 
-   procedure Event (Widget : in Gtk_Widget;
+   procedure Event (Widget : access Gtk_Widget_Record'Class;
                     Event  : Gdk.Event.Gdk_Event)
    is
       procedure Internal (Widget : System.Address; Event : System.Address);
@@ -493,7 +493,7 @@ package body Gtk.Widget is
    ----------------
 
    procedure Reparent (Widget : access Gtk_Widget_Record;
-                       New_Parent : in Gtk_Widget)
+                       New_Parent : access Gtk_Widget_Record'Class)
    is
       procedure Internal (Widget, New_Parent : in System.Address);
       pragma Import (C, Internal, "gtk_widget_reparent");

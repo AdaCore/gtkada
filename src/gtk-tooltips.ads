@@ -44,7 +44,7 @@ package Gtk.Tooltips is
       Duration : in Guint);
    procedure Set_Tip
      (Tooltips    : access Gtk_Tooltips_Record;
-      Widget      : in Gtk.Widget.Gtk_Widget;
+      Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tip_Text    : in String;
       Tip_Private : in String);
 

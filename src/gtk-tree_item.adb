@@ -144,7 +144,7 @@ package body Gtk.Tree_Item is
 
    procedure Set_Subtree
       (Tree_Item : access Gtk_Tree_Item_Record;
-       Subtree   : in Gtk.Widget.Gtk_Widget)
+       Subtree   : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Tree_Item : in System.Address;

@@ -39,8 +39,7 @@ package Gtk.Notebook is
      with private;
    type Gtk_Notebook is access all Gtk_Notebook_Record'Class;
 
-   type Gtk_Notebook_Page_Record is new Gtk_Widget_Record with private;
-   type Gtk_Notebook_Page is access all Gtk_Notebook_Page_Record'Class;
+   type Gtk_Notebook_Page is new Root_Type with private;
 
    procedure Append_Page
      (Notebook  : access Gtk_Notebook_Record;
@@ -51,18 +50,23 @@ package Gtk.Notebook is
       Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
-   function Get_Current_Page (Notebook : access Gtk_Notebook_Record)
-                              return Gint;
-   function Get_Children (Widget : access Gtk_Notebook_Record)
-                          return Widget_List.Glist;
-   function Get_Cur_Page (Widget : access Gtk_Notebook_Record)
-                          return Gtk_Notebook_Page;
-   function Get_Menu_Label (Page : access Gtk_Notebook_Page_Record)
-                            return Gtk_Widget;
-   function Get_Tab_Label (Page : access Gtk_Notebook_Page_Record)
-                           return Gtk_Widget;
-   function Get_Tab_Pos (Widget : access Gtk_Notebook_Record)
-                         return Gtk_Position_Type;
+   function Get_Current_Page
+     (Notebook : access Gtk_Notebook_Record) return Gint;
+   function Get_Children
+     (Widget : access Gtk_Notebook_Record) return Widget_List.Glist;
+
+   function Get_Cur_Page
+     (Widget : access Gtk_Notebook_Record'Class) return Gtk_Notebook_Page;
+   --  Note: This function returns a record type instead of an access type
+   --  because there is no easy way to automatically free the memory for a
+   --  Gtk_Notebook_Page
+
+   function Get_Menu_Label
+     (Page : in Gtk_Notebook_Page) return Gtk_Widget;
+   function Get_Tab_Label
+     (Page : in Gtk_Notebook_Page) return Gtk_Widget;
+   function Get_Tab_Pos
+     (Widget : access Gtk_Notebook_Record) return Gtk_Position_Type;
    procedure Gtk_New (Widget : out Gtk_Notebook);
    procedure Initialize (Widget : access Gtk_Notebook_Record);
    procedure Insert_Page
@@ -88,10 +92,19 @@ package Gtk.Notebook is
       Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
-   procedure Prev_Page (Notebook : in out Gtk_Notebook);
+   procedure Prev_Page (Notebook : access Gtk_Notebook_Record);
+   procedure Query_Tab_Label_Packing
+     (Notebook   : access Gtk_Notebook_Record;
+      Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Expand     : out Boolean;
+      Fill       : out Boolean;
+      Pack_Type  : out Gtk_Pack_Type);
    procedure Remove_Page
      (Notebook : access Gtk_Notebook_Record;
       Page_Num : in Gint);
+   procedure Set_Homogeneous_Tabs
+     (Notebook    : access Gtk_Notebook_Record;
+      Homogeneous : in Boolean);
    procedure Set_Page
      (Notebook : access Gtk_Notebook_Record;
       Page_Num : in Gint);
@@ -107,6 +120,12 @@ package Gtk.Notebook is
    procedure Set_Tab_Border
      (Notebook     : access Gtk_Notebook_Record;
       Border_Width : in Gint);
+   procedure Set_Tab_Label_Packing
+     (Notebook  : access Gtk_Notebook_Record;
+      Child      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Expand     : in Boolean;
+      Fill       : in Boolean;
+      Pack_Type  : in Gtk_Pack_Type);
    procedure Set_Tab_Pos
      (Notebook : access Gtk_Notebook_Record;
       Pos      : in Gtk_Position_Type);
@@ -128,6 +147,6 @@ package Gtk.Notebook is
 private
    type Gtk_Notebook_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
-   type Gtk_Notebook_Page_Record is new Gtk_Widget_Record with null record;
+   type Gtk_Notebook_Page is new Root_Type with null record;
 
 end Gtk.Notebook;
