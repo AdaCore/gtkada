@@ -38,6 +38,168 @@ with Gtk.Enums;     use Gtk.Enums;
 
 package body Gtk.Dnd is
 
+   ---------------------
+   -- Set_Icon_Pixbuf --
+   ---------------------
+
+   procedure Set_Icon_Pixbuf
+     (Context : Drag_Context;
+      Pixbuf  : Gdk.Pixbuf.Gdk_Pixbuf;
+      Hot_X   : Gint;
+      Hot_Y   : Gint)
+   is
+      procedure Internal
+        (Context : Drag_Context;
+         Pixbuf  : Gdk.Pixbuf.Gdk_Pixbuf;
+         Hot_X   : Gint;
+         Hot_Y   : Gint);
+      pragma Import (C, Internal, "gtk_drag_set_icon_pixbuf");
+   begin
+      Internal (Context,
+                Pixbuf,
+                Hot_X,
+                Hot_Y);
+   end Set_Icon_Pixbuf;
+
+   --------------------
+   -- Set_Icon_Stock --
+   --------------------
+
+   procedure Set_Icon_Stock
+     (Context  : Drag_Context;
+      Stock_Id : String;
+      Hot_X    : Gint;
+      Hot_Y    : Gint)
+   is
+      procedure Internal
+        (Context  : Drag_Context;
+         Stock_Id : String;
+         Hot_X    : Gint;
+         Hot_Y    : Gint);
+      pragma Import (C, Internal, "gtk_drag_set_icon_stock");
+   begin
+      Internal (Context,
+                Stock_Id & ASCII.NUL,
+                Hot_X,
+                Hot_Y);
+   end Set_Icon_Stock;
+
+   ----------------------------
+   -- Source_Set_Icon_Pixbuf --
+   ----------------------------
+
+   procedure Source_Set_Icon_Pixbuf
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf)
+   is
+      procedure Internal
+        (Widget : System.Address;
+         Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
+      pragma Import (C, Internal, "gtk_drag_source_set_icon_pixbuf");
+   begin
+      Internal (Get_Object (Widget),
+                Pixbuf);
+   end Source_Set_Icon_Pixbuf;
+
+   ---------------------------
+   -- Source_Set_Icon_Stock --
+   ---------------------------
+
+   procedure Source_Set_Icon_Stock
+     (Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Stock_Id : String)
+   is
+      procedure Internal
+        (Widget   : System.Address;
+         Stock_Id : String);
+      pragma Import (C, Internal, "gtk_drag_source_set_icon_stock");
+   begin
+      Internal (Get_Object (Widget),
+                Stock_Id & ASCII.NUL);
+   end Source_Set_Icon_Stock;
+
+   ---------------------
+   -- Check_Threshold --
+   ---------------------
+
+   function Check_Threshold
+     (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Start_X   : Gint;
+      Start_Y   : Gint;
+      Current_X : Gint;
+      Current_Y : Gint)
+      return Boolean
+   is
+      function Internal
+        (Widget    : System.Address;
+         Start_X   : Gint;
+         Start_Y   : Gint;
+         Current_X : Gint;
+         Current_Y : Gint)
+         return Gint;
+      pragma Import (C, Internal, "gtk_drag_check_threshold");
+   begin
+      return Boolean'Val (Internal (Get_Object (Widget),
+                                    Start_X,
+                                    Start_Y,
+                                    Current_X,
+                                    Current_Y));
+   end Check_Threshold;
+
+   --------------------------
+   -- Dest_Set_Target_List --
+   --------------------------
+
+   procedure Dest_Set_Target_List
+     (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Target_List : Gtk.Selection.Target_List)
+   is
+      procedure Internal
+        (Widget      : System.Address;
+         Target_List : System.Address);
+      pragma Import (C, Internal, "gtk_drag_dest_set_target_list");
+   begin
+      Internal (Get_Object (Widget),
+                Target_List.all'Address);
+   end Dest_Set_Target_List;
+
+   --------------------------
+   -- Dest_Get_Target_List --
+   --------------------------
+
+   function Dest_Get_Target_List
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+     return Target_List
+   is
+      function Internal (Widget : System.Address)
+                        return System.Address;
+      pragma Import (C, Internal, "gtk_drag_dest_get_target_list");
+   begin
+      return Convert (Internal (Get_Object (Widget)));
+   end Dest_Get_Target_List;
+
+   ----------------------
+   -- Dest_Find_Target --
+   ----------------------
+
+   function Dest_Find_Target
+     (Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Context     : Drag_Context;
+      Target_List : Gtk.Selection.Target_List)
+      return Gdk.Types.Gdk_Atom
+   is
+      function Internal
+        (Widget      : System.Address;
+         Context     : Drag_Context;
+         Target_List : System.Address)
+         return Gdk_Atom;
+      pragma Import (C, Internal, "gtk_drag_dest_find_target");
+   begin
+      return Internal (Get_Object (Widget),
+                       Context,
+                       Target_List.all'Address);
+   end Dest_Find_Target;
+
    --------------
    -- Dest_Set --
    --------------
@@ -289,20 +451,5 @@ package body Gtk.Dnd is
    begin
       Internal (Get_Object (Widget), Colormap, Pixmap, Mask);
    end Source_Set_Icon;
-
-   -----------------
-   -- Get_Targets --
-   -----------------
-
-   function Get_Targets (Context : Drag_Context) return Guint_List.Glist is
-      function Internal (Context : Drag_Context) return System.Address;
-      pragma Import (C, Internal, "ada_gtk_dnd_context_get_targets");
-
-      List : Guint_List.Glist;
-
-   begin
-      Guint_List.Set_Object (List, Internal (Context));
-      return List;
-   end Get_Targets;
 
 end Gtk.Dnd;
