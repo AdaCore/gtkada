@@ -1229,6 +1229,10 @@ The example we give in @file{examples/base_widget} is a small target on
 which the user can click, and that sends one of two signals "bullseye" or
 "missed", depending on where the user has clicked.
 
+See also the example in @file{examples/tutorial/gtkdial} for a more complex
+widget, that implements a gauge where the user can move the arrow to select
+a new value.
+
 Once again, the only two functions that you must create are @code{Gtk_New}
 and @code{Initialize}.
 This time, @code{Initialize} has to do two things:
@@ -1246,34 +1250,75 @@ This time, @code{Initialize} has to do two things:
    --  creates the signals.
 @end example
 
-In the above example, the new part is the second call. It takes three
+In the above example, the new part is the second call. It takes three or four
 arguments:
 @itemize @bullet
-@item Widget
+@item @code{Widget}
 This is the widget that you want to initialize
-@item Signals
+
+@item @code{Signals}
 This is an array of string access containing the name of the signals
 you want to create. For instance, you could create Signals with
 @example
    Signals : Gtkada.Types.Chars_Ptr_Array := "bullseye" + "missed";
 @end example
-This will create two signals, named "bullseye" and "missed", whose callbacks
-do not take any argument (apart from the usual user's data). This is the only
-restriction from GtkAda compared to gtk+: all the callbacks are created
-automatically, but you can not specify additional parameters to be sent
-automatically by GtkAda.
+This will create two signals, named "bullseye" and "missed", whose callbacks'
+arguments can be specified with the fourth parameter.
 
-@item Class_Record
+@item @code{Class_Record}
 Every widget in C is associated with two records. The first one, which exists
 only once per widget type, is the ``class record''. It contains the list of
 signals that are known by this widget type, the list of default callbacks for
 the signals, ...; the second record is an ``instance record'', which contains
 data specific to a particular instance.
+
 In GtkAda, the ``instance record'' is simply your tagged type and its fields.
 The call to @code{Initialize_Class_Record} is provided to initialize the
 ``class record''. As we said, there should be only one such record per widget
 type. This parameter ``Class_Record'' will point to this records, once it is
 created, and will be reused for every instanciation of the widget.
+
+@item @code{Parameters}
+This fourth argument is in fact optional, and is used to specify which
+kind of parameters each new signal is expecting.
+By default (ie if you don't give any value for this parameter), all the
+signals won't expect any argument, except of course a possible user_data.
+However, you can decide for instance that the first signal ("bullseye") should
+in fact take a second argument (say a Gint), and that "missed" will take
+two parameters (two Gints).
+
+@code{Parameters} should thus contain a value of
+@example
+   (1 => (1 => Gtk_Type_Int, 2 => Gtk_Type_None),
+    2 => (1 => Gtk_Type_Int, 2 => Gtk_Type_Int));
+@end example
+
+Due to the way arrays are handled in Ada, each component must have the same
+number of signals. However, if you specify a type of @code{Gtk_Type_None}, this
+will in fact be considered as no argument. Thus, the first signal above has
+only one parameter.
+
+Note also that to be able to emit a signal such a the second one, ie with
+multiple arguments, you will have to extend the packages defined in
+Gtk.Handlers. By default, the provided packages can only emit up to one
+argument (and only for a few specific types). Creating your own
+@code{Emit_By_Name} subprograms should not be hard if you look at what is done
+in @file{gtk-marshallers.adb}. Basically, something like:
+
+@example
+   @b{procedure} Emit_With_Two_Ints
+     (Object : @b{access} Widget_Type'Class;
+      Name   : String;
+      Arg1   : Gint;
+      Arg2   : Gint);
+   @b{pragma} Import (C, Emit_With_Two_Ints,
+       "gtk_signal_emit_by_name");
+
+   Emit_With_Two_Ints (Gtk.Get_Object (Your_Widget),
+       "missed" & ASCII.NUL, 1, 2);
+@end example
+
+will emit the "missed" signal with the two parameters 1 and 2.
 
 @end itemize
 
