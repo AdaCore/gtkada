@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -80,10 +80,18 @@ package Gtk.Toggle_Button is
                       return Boolean;
    --  Deprecated: this is the old name of Get_Active.
 
+   ----------------------
+   -- Signals emission --
+   ----------------------
+
    procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record);
    --  Emits the toggled signal on this widget.
    --  Note that the state of the button is not changed, only the callbacks
    --  are called.
+
+   ----------------------------
+   -- Support for GATE/DGATE --
+   ----------------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
@@ -92,6 +100,20 @@ package Gtk.Toggle_Button is
      (Toggle_Button : in out Object.Gtk_Object; N : in Node_Ptr);
    --  Dgate internal function
 
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "toggled"
+   --    procedure Handler (Toggle : access Gtk_Toggle_Button_Record'Class);
+   --
+   --    This signal is emitted every time the state of the button is
+   --    modified.
+   --  </signals>
+
 private
    type Gtk_Toggle_Button_Record is new Gtk.Button.Gtk_Button_Record
      with null record;
@@ -99,32 +121,5 @@ private
 end Gtk.Toggle_Button;
 
 --  <example>
---  --  This examples creates a toggle button with a pixmap in it
---
---  with Gtk.Toggle_Button;
---  with Gdk.Pixmap;
---  with Gdk.Bitmap;
---  with Gtk.Pixmap;
---  with Gtk.Style;
---  declare
---     Toggle    : Gtk.Toggle_Button.Gtk_Toggle_Button;
---     Style     : Gtk.Style.Gtk_Style;
---     Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
---     Mask      : Gdk.Bitmap.Gdk_Bitmap;
---     PixmapWid : Gtk.Pixmap.Gtk_Pixmap;
---  begin
---     --  Do not specify a label
---     Gtk.Toggle_Button.Gtk_New (Toggle);
---
---     Style := Gtk.Style.Get_Style (Button);
---     Gdk.Pixmap.Create_From_Xpm (Pixmap,
---                                 Gtk.Toggle_Button.Get_Window (Toggle),
---                                 Mask,
---                                 Gtk.Style.Get_Bg (Style, State_Normal),
---                                 "icon.xpm");
---     Gtk.Pixmap.Gtk_New (PixmapWid, Pixmap, Mask);
---
---     --  Add the pixmap to the button
---     Gtk.Toggle_Button.Add (Toggle, PixmapWid);
---  end;
+--  <include>../examples/documentation/toggle.adb</include>
 --  </example>
