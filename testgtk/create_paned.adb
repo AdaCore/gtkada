@@ -56,10 +56,18 @@ package body Create_Paned is
         & " minimum size set for the child by a call to @bSet_Usize@B is"
         & " enforced, and the child can never be shrinked more than that."
         & ASCII.LF
-        & "If @bResize@B is set to True for one of the children, then that"
-        & " child is expanded or shrinked when the pane is resized."
-        & " Setting Resize to False for both children is equivalent to"
-        & " setting it to True for both.";
+        & "If @bResize@B is set to True for one of the children only, then"
+        & " that child gets the exact size it requested, the other gets the"
+        & " remaining space. In the example, the two buttons have required"
+        & " the same size, and you can see the effect of the resize buttons"
+        & " by clicking on them."
+        & ASCII.LF
+        & "If both children have the same value for resize, their allocated"
+        & " size is a ratio between their respective sizes."
+        & ASCII.LF
+        & "Note that moving the handle to manually resize the widgets"
+        & " cancels the effect of the resize buttons, so you should click on"
+        & " them before playing with the handles...";
    end Help;
 
    -------------------

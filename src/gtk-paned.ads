@@ -38,6 +38,26 @@
 --  displayed in the bar, and then dragging the mouse.
 --
 --  No additional decoration is provided around the children.
+--
+--  Each child has two parameters, Resize and Shrink.
+--
+--  If Shrink is True, then the widget can be made smaller than its
+--  requisition size by the user. Set this to False if you want to
+--  set a minimum size.
+--
+--  if Resize is True, this means that the child accepts to be resized, and
+--  will not require any size. Thus, the size allocated to it will be
+--  the total size allocated to the container minus the size requested by
+--  the other child.
+--  If Resize is False, the child should ask for a specific size, which it
+--  will get. The other child will be resized accordingly.
+--  If both Child have the same value for Resize (either True or False), then
+--  the size allocated to each is a ratio between the size requested by both.
+--
+--  When you use Set_Position with a parameter other than -1, or the user
+--  moves the handle to resize the widgets, the behavior of Resize is
+--  canceled.
+--
 --  </description>
 --  <c_version>1.2.7</c_version>
 
@@ -97,15 +117,6 @@ package Gtk.Paned is
                     Resize : in Boolean := False;
                     Shrink : in Boolean := True);
    --  Add a child to the top or left pane.
-   --  If Resize is True, the child will expand or schrink when the paned
-   --  widget is resized. If this is false, the size of the child will not
-   --  change.
-   --  If Shrink is True, then the widget can be made smaller than its
-   --  requisition size by the user. Set this to False if you want to
-   --  set a minimum size.
-   --  Note that is Resize is False for both children, this is equivalent
-   --  to setting it to True for both children.
-   --
    --  You can not change dynamically the attributes Resize and Shrink.
    --  Instead, you have to remove the child from the container, and put it
    --  back with the new value of the attributes. You should also first
@@ -125,7 +136,6 @@ package Gtk.Paned is
                     Resize : in Boolean := False;
                     Shrink : in Boolean := False);
    --  Add a child to the bottom or right pane.
-   --  See Pack1 for a description of the parameters.
 
    procedure Set_Position (Paned    : access Gtk_Paned_Record;
                            Position : Gint);
@@ -163,19 +173,15 @@ package Gtk.Paned is
 
    function Get_Child1_Resize (Paned : access Gtk_Paned_Record) return Boolean;
    --  Get the value of the resize attribute for the child child.
-   --  See Pack1 for a description of this attribute.
 
    function Get_Child2_Resize (Paned : access Gtk_Paned_Record) return Boolean;
    --  Get the value of the resize attribute for the second child.
-   --  See Pack1 for a description of this attribute.
 
    function Get_Child1_Shrink (Paned : access Gtk_Paned_Record) return Boolean;
    --  Get the value of the shrink attribute for the child child.
-   --  See Pack1 for a description of this attribute.
 
    function Get_Child2_Shrink (Paned : access Gtk_Paned_Record) return Boolean;
    --  Get the value of the shrink attribute for the second child.
-   --  See Pack1 for a description of this attribute.
 
    ----------------------------
    -- Support for GATE/DGATE --
