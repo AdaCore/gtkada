@@ -292,15 +292,14 @@ main ()
 #
 #############################################################
 
-file1="conftest1"
-file2="conftest2"
-file3="conftest3"
-result_file="conftest.res"
-
 AC_DEFUN(AM_PATH_MERGE,
 [   
-   ### Let's try to find a merge somewhere...
+   file1="conftest1"
+   file2="conftest2"
+   file3="conftest3"
+   result_file="conftest.res"
 
+   ### Let's try to find a merge somewhere...
    MERGE_AVAIL=False
    AC_PATH_PROG(MERGE, merge, true)
 
@@ -355,12 +354,12 @@ EOF
 #
 #############################################################
 
-file_to_patch="conftest"
-patch_file="conftest.dif"
-result_file="conftest.res"
-
 AC_DEFUN(AM_PATH_DIFF_AND_PATCH,
 [   
+   file_to_patch="conftest"
+   patch_file="conftest.dif"
+   result_file="conftest.res"
+
    ### Let's try to find a diff somewhere...
 
    AC_PATH_PROG(DIFF, diff, true)
@@ -573,17 +572,22 @@ AC_DEFUN(AM_CHECK_OPENGL,
 
 AC_DEFUN(AM_CHECK_GNOME,
 [   
+  AC_MSG_CHECKING(for gnome2)
+  GNOME_CFLAGS=""
+  GNOME_LIBS=""
+  GNOME_STATIC_LIBS=""
+
   if test "$PKG_CONFIG" = "no" ; then
+    AC_MSG_RESULT(no)
     HAVE_GNOME="False"
-    GNOME_CFLAGS=""
-    GNOME_LIBS=""
-    GNOME_STATIC_LIBS=""
   else
     GNOMEUI="libgnomeui-2.0"
     GNOME_PREFIX=`$PKG_CONFIG $GNOMEUI --variable=prefix`
     if test "x$GNOME_PREFIX" = "x"; then
       HAVE_GNOME="False"
+      AC_MSG_RESULT(no)
     else
+      AC_MSG_RESULT(yes)
       HAVE_GNOME="True"
       GNOME_CFLAGS=`$PKG_CONFIG $GNOMEUI --cflags gnomeui`
       GNOME_LIBS=`$PKG_CONFIG $GNOMEUI --libs`
@@ -599,25 +603,30 @@ AC_DEFUN(AM_CHECK_GNOME,
 
 #############################################################
 #
-#  Checking for libglade
+#  Checking for libglade2
 #
 #############################################################
 
 AC_DEFUN(AM_CHECK_LIBGLADE,
 [   
-  AC_PATH_PROG(LIBGLADE_CONFIG, libglade-config, no)
+  AC_MSG_CHECKING(for libglade2)
 
-  if test "$LIBGLADE_CONFIG" = "no" ; then
+  if test "$PKG_CONFIG" = "no" ; then
+    AC_MSG_RESULT(no)
     HAVE_LIBGLADE="False"
-    LIBGLADE_CFLAGS=""
-    LIBGLADE_LIBS=""
-    LIBGLADE_STATIC_LIBS=""
   else
-    HAVE_LIBGLADE="True"
-    LIBGLADE_PREFIX=`$LIBGLADE_CONFIG --prefix`
-    LIBGLADE_CFLAGS=`$LIBGLADE_CONFIG --cflags`
-    LIBGLADE_LIBS="-L$LIBGLADE_PREFIX/lib -lglade -lxml"
-    LIBGLADE_STATIC_LIBS="$LIBGLADE_PREFIX/lib/libglade.a $LIBGLADE_PREFIX/lib/libxml.a"
+    LIBGLADE="libglade-2.0"
+    LIBGLADE_PREFIX=`$PKG_CONFIG $LIBGLADE --variable=prefix`
+    if test "x$LIBGLADE_PREFIX" = "x"; then
+      HAVE_LIBGLADE="False"
+      AC_MSG_RESULT(no)
+    else
+      AC_MSG_RESULT(yes)
+      HAVE_LIBGLADE="True"
+      LIBGLADE_CFLAGS=`$PKG_CONFIG $LIBGLADE --cflags`
+      LIBGLADE_LIBS=`$PKG_CONFIG $LIBGLADE --libs`
+      LIBGLADE_STATIC_LIBS="$LIBGLADE_PREFIX/lib/libglade-2.0.a $LIBGLADE_PREFIX/lib/libxml2.a"
+    fi
   fi
 
   AC_SUBST(LIBGLADE_CFLAGS)
