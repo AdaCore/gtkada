@@ -34,9 +34,11 @@ New features from 0.6 include:
 - New directory structure
 - First version of the documentation
 - Code generation simplified in GATE
+- New widgets supported by GATE/DGATE
 - Support for Accelerators in widgets
 - New examples in the example/ directory: how to create a widget directly
-  in Ada (both composite widgets and widgets from scratch)
+  in Ada (both composite widgets and widgets from scratch); a simple editor
+  generated using Glade.
 
 New features from 0.5 include:
 
