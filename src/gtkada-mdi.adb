@@ -4077,6 +4077,39 @@ package body Gtkada.MDI is
          State      : State_Type;
          Raised     : Boolean;
          X, Y       : Gint;
+         Items_Removed : Boolean := False;
+
+         procedure Remove_All_Items (Remove_All_Empty : Boolean);
+         --  Remove all the items currently in the MDI.
+         --  If Remove_All_Empty is False, then a single empty notebook is kept
+         --  if there is one.
+         --  Does nothing if called multiple times
+
+         procedure Remove_All_Items (Remove_All_Empty : Boolean) is
+            Children : Widget_List.Glist := Get_Children (MDI);
+            L : Widget_List.Glist := Children;
+            Found_Empty : Boolean := Remove_All_Empty;
+            Note : Gtk_Notebook;
+         begin
+            if not Items_Removed then
+               while L /= Null_List loop
+                  Note := Gtk_Notebook (Get_Data (L));
+                  if Get_Nth_Page (Note, 0) = null then
+                     if Found_Empty then
+                        Remove (MDI, Note);
+                     else
+                        Found_Empty := True;
+                     end if;
+                  else
+                     Remove (MDI, Note);
+                  end if;
+                  L := Next (L);
+               end loop;
+               Free (Children);
+               Items_Removed := True;
+            end if;
+         end Remove_All_Items;
+
          Reuse_Empty_If_Needed : Boolean := True;
       begin
          if From_Tree /= null then
@@ -4088,19 +4121,9 @@ package body Gtkada.MDI is
             Put_Line ("MDI Restore_Desktop");
          end if;
 
-         declare
-            Children : Widget_List.Glist := Get_Children (MDI);
-            L : Widget_List.Glist := Children;
-         begin
-            while L /= Null_List loop
-               Remove (MDI, Get_Data (L));
-               L := Next (L);
-            end loop;
-            Free (Children);
-         end;
-
          while Child_Node /= null loop
             if Child_Node.Tag.all = "Pane" then
+               Remove_All_Items (Remove_All_Empty => True);
                Parse_Pane_Node
                  (MDI, Child_Node, Focus_Child, User, null,
                   Reuse_Empty_If_Needed => Reuse_Empty_If_Needed);
@@ -4115,6 +4138,7 @@ package body Gtkada.MDI is
                --  Used for floating children, and children in the default
                --  desktop (see Add_To_Tree)
 
+               Remove_All_Items (Remove_All_Empty => False);
                Parse_Child_Node
                  (MDI, Child_Node, User,
                   Focus_Child, X, Y, Raised, State, Child);
