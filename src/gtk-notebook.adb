@@ -9,7 +9,7 @@ package body Gtk.Notebook is
    procedure Append_Page
       (Notebook  : in Gtk_Notebook'Class;
        Child     : in Gtk.Widget.Gtk_Widget'Class;
-       Tab_Label : in Gtk.Widget.Gtk_Widget'Class)
+       Tab_Label : in Gtk.Box.Gtk_Box'Class)
    is
       procedure Internal
          (Notebook  : in System.Address;
@@ -29,8 +29,8 @@ package body Gtk.Notebook is
    procedure Append_Page_Menu
       (Notebook   : in Gtk_Notebook'Class;
        Child      : in Gtk.Widget.Gtk_Widget'Class;
-       Tab_Label  : in Gtk.Widget.Gtk_Widget'Class;
-       Menu_Label : in Gtk.Widget.Gtk_Widget'Class)
+       Tab_Label  : in Gtk.Box.Gtk_Box'Class;
+       Menu_Label : in Gtk.Box.Gtk_Box'Class)
    is
       procedure Internal
          (Notebook   : in System.Address;
@@ -59,6 +59,79 @@ package body Gtk.Notebook is
       return Internal (Get_Object (Notebook));
    end Current_Page;
 
+   ------------------
+   -- Get_Children --
+   ------------------
+
+   function Get_Children (Widget : in Gtk_Notebook'Class)
+                          return      Children_List.Glist
+   is
+      function Internal (Widget : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_notebook_get_children");
+      List : Children_List.Glist;
+   begin
+      Children_List.Set_Object (List, Internal (Get_Object (Widget)));
+      return List;
+   end Get_Children;
+
+   ------------------
+   -- Get_Cur_Page --
+   ------------------
+
+   function Get_Cur_Page (Widget : in Gtk_Notebook'Class)
+                          return      Gtk_Notebook_Page
+   is
+      function Internal (Widget : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_notebook_get_cur_page");
+      Page : Gtk_Notebook_Page;
+   begin
+      Set_Object (Page, Internal (Get_Object (Widget)));
+      return Page;
+   end Get_Cur_Page;
+
+   --------------------
+   -- Get_Menu_Label --
+   --------------------
+
+   function Get_Menu_Label (Page : in Gtk_Notebook_Page)
+                            return Gtk.Box.Gtk_Box
+   is
+      function Internal (Widget : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_notebook_get_menu_label");
+      Box : Gtk.Box.Gtk_Box;
+   begin
+      Set_Object (Box, Internal (Get_Object (Page)));
+      return Box;
+   end Get_Menu_Label;
+
+   -------------------
+   -- Get_Tab_Label --
+   -------------------
+
+   function Get_Tab_Label (Page : in Gtk_Notebook_Page)
+                           return Gtk.Box.Gtk_Box
+   is
+      function Internal (Widget : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_notebook_get_tab_label");
+      Box : Gtk.Box.Gtk_Box;
+   begin
+      Set_Object (Box, Internal (Get_Object (Page)));
+      return Box;
+   end Get_Tab_Label;
+
+   -----------------
+   -- Get_Tab_Pos --
+   -----------------
+
+   function Get_Tab_Pos (Widget : in Gtk_Notebook'Class)
+                         return      Gtk_Position_Type
+   is
+      function Internal (Widget : in System.Address) return Gint;
+      pragma Import (C, Internal, "ada_notebook_get_tab_pos");
+   begin
+      return Gtk_Position_Type'Val (Internal (Get_Object (Widget)));
+   end Get_Tab_Pos;
+
    -------------
    -- Gtk_New --
    -------------
@@ -78,7 +151,7 @@ package body Gtk.Notebook is
    procedure Insert_Page
       (Notebook  : in Gtk_Notebook'Class;
        Child     : in Gtk.Widget.Gtk_Widget'Class;
-       Tab_Label : in Gtk.Widget.Gtk_Widget'Class;
+       Tab_Label : in Gtk.Box.Gtk_Box'Class;
        Position  : in Gint)
    is
       procedure Internal
@@ -101,8 +174,8 @@ package body Gtk.Notebook is
    procedure Insert_Page_Menu
       (Notebook   : in Gtk_Notebook'Class;
        Child      : in Gtk.Widget.Gtk_Widget'Class;
-       Tab_Label  : in Gtk.Widget.Gtk_Widget'Class;
-       Menu_Label : in Gtk.Widget.Gtk_Widget'Class;
+       Tab_Label  : in Gtk.Box.Gtk_Box'Class;
+       Menu_Label : in Gtk.Box.Gtk_Box'Class;
        Position   : in Gint)
    is
       procedure Internal
@@ -124,7 +197,7 @@ package body Gtk.Notebook is
    -- Next_Page --
    ---------------
 
-   procedure Next_Page (Notebook : in Gtk_Notebook'Class)
+   procedure Next_Page (Notebook : in out Gtk_Notebook'Class)
    is
       procedure Internal (Notebook : in System.Address);
       pragma Import (C, Internal, "gtk_notebook_next_page");
@@ -163,7 +236,7 @@ package body Gtk.Notebook is
    procedure Prepend_Page
       (Notebook  : in Gtk_Notebook'Class;
        Child     : in Gtk.Widget.Gtk_Widget'Class;
-       Tab_Label : in Gtk.Widget.Gtk_Widget'Class)
+       Tab_Label : in Gtk.Box.Gtk_Box'Class)
    is
       procedure Internal
          (Notebook  : in System.Address;
@@ -183,8 +256,8 @@ package body Gtk.Notebook is
    procedure Prepend_Page_Menu
       (Notebook   : in Gtk_Notebook'Class;
        Child      : in Gtk.Widget.Gtk_Widget'Class;
-       Tab_Label  : in Gtk.Widget.Gtk_Widget'Class;
-       Menu_Label : in Gtk.Widget.Gtk_Widget'Class)
+       Tab_Label  : in Gtk.Box.Gtk_Box'Class;
+       Menu_Label : in Gtk.Box.Gtk_Box'Class)
    is
       procedure Internal
          (Notebook   : in System.Address;
@@ -203,7 +276,7 @@ package body Gtk.Notebook is
    -- Prev_Page --
    ---------------
 
-   procedure Prev_Page (Notebook : in Gtk_Notebook'Class)
+   procedure Prev_Page (Notebook : in out Gtk_Notebook'Class)
    is
       procedure Internal (Notebook : in System.Address);
       pragma Import (C, Internal, "gtk_notebook_prev_page");
@@ -251,7 +324,7 @@ package body Gtk.Notebook is
 
    procedure Set_Scrollable
       (Notebook   : in Gtk_Notebook'Class;
-       Scrollable : in Gint)
+       Scrollable : in Boolean)
    is
       procedure Internal
          (Notebook   : in System.Address;
@@ -259,7 +332,7 @@ package body Gtk.Notebook is
       pragma Import (C, Internal, "gtk_notebook_set_scrollable");
    begin
       Internal (Get_Object (Notebook),
-                Scrollable);
+                Boolean'Pos (Scrollable));
    end Set_Scrollable;
 
    ---------------------
@@ -268,7 +341,7 @@ package body Gtk.Notebook is
 
    procedure Set_Show_Border
       (Notebook    : in Gtk_Notebook'Class;
-       Show_Border : in Gint)
+       Show_Border : in Boolean)
    is
       procedure Internal
          (Notebook    : in System.Address;
@@ -276,7 +349,7 @@ package body Gtk.Notebook is
       pragma Import (C, Internal, "gtk_notebook_set_show_border");
    begin
       Internal (Get_Object (Notebook),
-                Show_Border);
+                Boolean'Pos (Show_Border));
    end Set_Show_Border;
 
    -------------------
@@ -285,7 +358,7 @@ package body Gtk.Notebook is
 
    procedure Set_Show_Tabs
       (Notebook  : in Gtk_Notebook'Class;
-       Show_Tabs : in Gint)
+       Show_Tabs : in Boolean)
    is
       procedure Internal
          (Notebook  : in System.Address;
@@ -293,7 +366,7 @@ package body Gtk.Notebook is
       pragma Import (C, Internal, "gtk_notebook_set_show_tabs");
    begin
       Internal (Get_Object (Notebook),
-                Show_Tabs);
+                Boolean'Pos (Show_Tabs));
    end Set_Show_Tabs;
 
    --------------------
