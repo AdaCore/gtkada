@@ -23,6 +23,9 @@ AC_PROG_RANLIB
 # checking for gtk
 AM_PATH_GTK(2.2.0,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
 
+# checking for PANGO_UNDERLINE_ERROR
+AM_PANGO_UNDERLINE_ERROR
+
 # Gettext stuff
 ALL_LINGUAS="fr"
 AM_GNU_GETTEXT
@@ -45,4 +48,4 @@ AC_SUBST(GTKADA_MICRO_VERSION)
 EXEC_PREFIX="$prefix"
 AC_SUBST(EXEC_PREFIX)
 
-AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/gtkada-config src/gate testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/glade/Makefile src/gnome/Makefile docs/gtkada_ug/Makefile docs/gtkada_rm/Makefile)
+AC_OUTPUT(Makefile src/Makefile.common src/Makefile src/gtkada-config src/gate testgtk/Makefile src/gtkextra/Makefile src/opengl/Makefile src/glade/Makefile src/gnome/Makefile docs/gtkada_ug/Makefile docs/gtkada_rm/Makefile src/config.h)
