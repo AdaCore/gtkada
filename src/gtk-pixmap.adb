@@ -156,8 +156,6 @@ package body Gtk.Pixmap is
       Gdk.Pixmap.Create_From_Xpm
         (Gdkpixmap, Get_Window (Window), Mask, Gdk.Color.Null_Color, Filename);
       Gtk_New (Pixmap, Gdkpixmap, Mask);
-      Gdk.Pixmap.Unref (Gdkpixmap);
-      Gdk.Bitmap.Unref (Mask);
       return Pixmap;
    end Create_Pixmap;
 
