@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -74,14 +74,19 @@ package body Gtk.Frame is
 
    procedure Set_Label
      (Frame : access Gtk_Frame_Record;
-      Label : in String)
+      Label : in String := "")
    is
       procedure Internal
         (Frame : in System.Address;
-         Label : in String);
+         Label : in System.Address);
       pragma Import (C, Internal, "gtk_frame_set_label");
+      S : aliased constant String := Label & ASCII.NUL;
    begin
-      Internal (Get_Object (Frame), Label & Ascii.NUL);
+      if Label = "" then
+         Internal (Get_Object (Frame), System.Null_Address);
+      else
+         Internal (Get_Object (Frame), S'Address);
+      end if;
    end Set_Label;
 
    ---------------------
@@ -90,8 +95,8 @@ package body Gtk.Frame is
 
    procedure Set_Label_Align
      (Frame  : access Gtk_Frame_Record;
-      Xalign : in Gfloat;
-      Yalign : in Gfloat)
+      Xalign : in Gfloat := 0.0;
+      Yalign : in Gfloat := 0.0)
    is
       procedure Internal
         (Frame  : in System.Address;
