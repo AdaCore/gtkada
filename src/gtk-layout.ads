@@ -41,6 +41,13 @@
 --  layout (no automatic organization is done). But, as opposed to Gtk_Fixed
 --  widgets, a Gtk_Layout does not try to resize itself to show all its
 --  children.
+--
+--  Starting from GtkAda 2.0, you have to call Set_Size and specify the maximum
+--  size of the layout, otherwise children added with Put outside the size
+--  defined for the layout will never be visible.
+--  One way to do this is to systematically call Set_Size before calling Put,
+--  and make sure you specify a size big enough for the layout.
+--
 --  </description>
 --  <c_version>1.3.6</c_version>
 
@@ -86,6 +93,9 @@ package Gtk.Layout is
    --  The child will be displayed on the screen only if at least part of
    --  it intersects the visible area of the layout.
    --  The layout does not resize itself to automatically show the widget.
+   --  You also need to call Set_Size, if the size you initially defined is
+   --  smaller than (X, Y), or the child will never be visible even if the
+   --  layout is scrolled.
 
    procedure Move
      (Layout : access Gtk_Layout_Record;
@@ -134,17 +144,11 @@ package Gtk.Layout is
       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
    --  Specify a new adjustment to use for the vertical visual area.
 
-   function Get_Xoffset (Layout : access Gtk_Layout_Record) return Guint;
-   --  Get the current offset of the top-left corner.
-
-   function Get_Yoffset (Layout : access Gtk_Layout_Record) return Guint;
-   --  Get the current offset of the top-left corner.
-
    function Get_Width (Layout : access Gtk_Layout_Record) return Guint;
-   --  Get the width in pixels of the layout.
+   --  Get the width in pixels of the layout, as set with Set_Size
 
    function Get_Height (Layout : access Gtk_Layout_Record) return Guint;
-   --  Get the height in pixels of the layout.
+   --  Get the height in pixels of the layout, as set with Set_Size
 
    --  <doc_ignore>
 

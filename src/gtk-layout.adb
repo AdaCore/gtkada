@@ -220,30 +220,6 @@ package body Gtk.Layout is
       end if;
    end Set_Vadjustment;
 
-   -----------------
-   -- Get_Xoffset --
-   -----------------
-
-   function Get_Xoffset (Layout : access Gtk_Layout_Record) return Guint is
-      function Internal (Layout : System.Address) return Guint;
-      pragma Import (C, Internal, "ada_gtk_layout_get_xoffset");
-
-   begin
-      return Internal (Get_Object (Layout));
-   end Get_Xoffset;
-
-   -----------------
-   -- Get_Yoffset --
-   -----------------
-
-   function Get_Yoffset (Layout : access Gtk_Layout_Record) return Guint is
-      function Internal (Layout : System.Address) return Guint;
-      pragma Import (C, Internal, "ada_gtk_layout_get_yoffset");
-
-   begin
-      return Internal (Get_Object (Layout));
-   end Get_Yoffset;
-
    ---------------
    -- Get_Width --
    ---------------
