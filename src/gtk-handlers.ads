@@ -39,7 +39,7 @@ with Gtk.Widget;
 --  They represent the four possible kind of callbacks: they can return values
 --  or not, and they can have user specific data associated to them or not.
 --
---  They are generic packages. The common parameter is Base_Type, which
+--  They are generic packages. The common parameter is Widget_Type, which
 --  is the basic widget manipulated. If you do not want to instantiate too
 --  many of these packages, you can use Gtk.Object.Gtk_Object_Record. The
 --  callbacks will then have to do the conversions.
@@ -50,20 +50,20 @@ with Gtk.Widget;
 --    The callbacks in this package are as general as possible: they receive as
 --    an argument an array of all the specific values created by gtk+. It is
 --    your responsability to extract the values from it and convert them to
---    whatever Ada type they represent. The functions in Gtk.Marshallers will
+--    whatever Ada type they represent. The functions in Gtk.Arguments will
 --    help you to do this job.
 --  * A series of Connect function is given. They cover all the cases,
 --    from returning or not the "Handler_Id" of the newly create association,
---    connecting either a "Handler" or a "Generic_Marshaller", ...
+--    connecting either a "Handler" or a "Marshaller", ...
 --    There are four kinds of connect function in gtk+:
---      gtk_signal_connect: connect the widget to the signal
---      gtk_signal_connect_after: the new handler is put last on the list.
+--      Connect: connect the widget to the signal
+--      Connect_After: the new handler is put last on the list.
 --        Since we can have default values for parameters in Ada, this is
 --        represented by one more parameter, After, with a default value.
---      gtk_signal_connect_object: the user_data is an Gtk Object, which
+--      Connect_Object: the user_data is an Gtk Object, which
 --        is passed to the handler instead of the object to which the signal
 --        was connected. These functions never have a user data.
---      gtk_signal_connect_object_after: Same as above, but put the handler
+--      Connect_Object_After: Same as above, but put the handler
 --        at the end of the list. This is also implemented as a parameter
 --        with a default value.
 --
@@ -71,7 +71,7 @@ with Gtk.Widget;
 --  more natural way to use callbacks.
 --
 --  FIXME: The following was taken out of Gtk.Marshallers.
---  FIXME: Add thi to the future documentation of Gtk.Handlers.
+--  FIXME: Add this to the future documentation of Gtk.Handlers.
 --  Here is an example:
 --     We want to connect the "delete_event" signal to a widget. The
 --     handlers for this signal get an extra new argument that is the
