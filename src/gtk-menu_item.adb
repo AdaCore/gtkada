@@ -185,7 +185,7 @@ package body Gtk.Menu_Item is
       procedure Internal
         (Menu_Item : System.Address;
          Placement : Enums.Gtk_Submenu_Placement);
-      pragma Import (C, Internal, "gtk_menu_item_set_placement");
+      pragma Import (C, Internal, "_gtk_menu_item_set_placement");
 
    begin
       Internal (Get_Object (Menu_Item), Placement);
