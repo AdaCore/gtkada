@@ -805,10 +805,6 @@ private
 
       Group : Gtk.Accel_Group.Gtk_Accel_Group;
 
-      Prevent_Focus_On_Page_Switch : Boolean := False;
-      --  Set to True when we want to enable page switching in notebooks
-      --  without giving the focus to the children.
-
       All_Floating_Mode : Boolean := False;
       --  Set to true if all windows should be set to floating
    end record;
