@@ -2,7 +2,7 @@
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -90,10 +90,9 @@ with Create_Notebook;
 with Create_Paned;
 with Create_Pixbuf;
 with Create_Pixmap;
---  XXX ???
---  with Create_Plot;
---  with Create_Plot_3D;
---  with Create_Plot_Realtime;
+with Create_Plot;
+with Create_Plot_3D;
+with Create_Plot_Realtime;
 with Create_Preview_Color;
 with Create_Preview_Gray;
 with Create_Progress;
@@ -105,16 +104,16 @@ with Create_Scrolled;
 with Create_Scroll_Test;
 with Create_Selection;
 with Create_Size_Groups;
---  with Create_Sheet;
+with Create_Sheet;
 with Create_Spin;
 with Create_Status;
 with Create_Test_Idle;
 with Create_Test_Timeout;
-with Create_Text;
+with Create_Text_View;
 with Create_Toggle_Buttons;
 with Create_Toolbar;
 with Create_Tooltips;
---  with Create_Tree;
+with Create_Tree_View;
 with Common; use Common;
 with View_GL; use View_GL;
 
@@ -262,12 +261,12 @@ package body Main_Windows is
                                          Create_Paned.Help'Access),
       (NS ("pixmap"),           Base,    Create_Pixmap.Run'Access,
                                          Create_Pixmap.Help'Access),
-      --  (NS ("plot"),             Complex, Create_Plot.Run'Access,
-      --                                     Create_Plot.Help'Access),
-      --  (NS ("plot 3D"),          Complex, Create_Plot_3D.Run'Access,
-      --                                     Create_Plot_3D.Help'Access),
-      --  (NS ("plot realtime"),    Complex, Create_Plot_Realtime.Run'Access,
-      --                                     Create_Plot_Realtime.Help'Access),
+      (NS ("plot"),             Complex, Create_Plot.Run'Access,
+                                         Create_Plot.Help'Access),
+      (NS ("plot 3D"),          Complex, Create_Plot_3D.Run'Access,
+                                         Create_Plot_3D.Help'Access),
+      (NS ("plot realtime"),    Complex, Create_Plot_Realtime.Run'Access,
+                                         Create_Plot_Realtime.Help'Access),
       (NS ("properties"),       Misc,    null, null),
       (NS ("preview color"),    Gimp,    Create_Preview_Color.Run'Access,
                                          Create_Preview_Color.Help'Access),
@@ -293,8 +292,8 @@ package body Main_Windows is
       (NS ("selection"),        Complex, Create_Selection.Run'Access,
                                          Create_Selection.Help'Access),
       (NS ("shapes"),           Misc,    null, null),
-      --  (NS ("sheet"),            Complex, Create_Sheet.Run'Access,
-      --                                     Create_Sheet.Help'Access),
+      (NS ("sheet"),            Complex, Create_Sheet.Run'Access,
+                                         Create_Sheet.Help'Access),
       (NS ("size groups"),      Box,     Create_Size_Groups.Run'Access,
                                          Create_Size_Groups.Help'Access),
       (NS ("spinbutton"),       Base,    Create_Spin.Run'Access,
@@ -311,17 +310,16 @@ package body Main_Windows is
       (NS ("test selection"),   Misc,    null, null),
       (NS ("test timeout"),     Misc,    Create_Test_Timeout.Run'Access,
                                          Create_Test_Timeout.Help'Access),
-      (NS ("text"),             Complex, Create_Text.Run'Access,
-                                         Create_Text.Help'Access),
-      (NS ("text view"),        Complex, null, null),
+      (NS ("text view"),        Complex, Create_Text_View.Run'Access,
+                                         Create_Text_View.Help'Access),
       (NS ("toggle buttons"),   Base,    Create_Toggle_Buttons.Run'Access,
                                          Create_Toggle_Buttons.Help'Access),
       (NS ("toolbar"),          Box,     Create_Toolbar.Run'Access,
                                          Create_Toolbar.Help'Access),
       (NS ("tooltips"),         Complex, Create_Tooltips.Run'Access,
                                          Create_Tooltips.Help'Access),
-      --  (NS ("tree"),             Complex, Create_Tree.Run'Access,
-      --                                     Create_Tree.Help'Access),
+      (NS ("tree view"),        Complex, Create_Tree_View.Run'Access,
+                                         Create_Tree_View.Help'Access),
       (NS ("WM hints"),         Misc,    null, null)
       );
 
