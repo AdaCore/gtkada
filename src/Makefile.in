@@ -79,7 +79,7 @@ $(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 
 $(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects)
-	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) -o -f /usr/ccs/bin/$(RANLIB)]; then \
+	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) -o -f /usr/ccs/bin/$(RANLIB) ]; then \
 	  $(RANLIB) $(ARCHIVENAME); \
 	fi
 
