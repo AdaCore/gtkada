@@ -337,7 +337,7 @@ package body Create_Plot is
       Color       : Gdk_Color;
       Button      : Gtk_Button;
    begin
-
+      Num_Layers := 0;
       Gtk_New_Vbox (Vbox1, False, 0);
       Add (Frame, Vbox1);
 
