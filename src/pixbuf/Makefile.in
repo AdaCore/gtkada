@@ -49,6 +49,7 @@ $(LIBNAME): $(PIXBUF_OBJECTS)
 	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
 	  $(SO_OPTS)$(SONAME) $(PIXBUF_OBJECTS) @GTK_LIBS@ -L.. -lgtkada \
 	  $(PIXBUF_LIBS)
+	$(RM) $(LIBNAME)
 	$(LN) $(SONAME) $(LIBNAME)
 	-@if [ ! -f ../.devel ]; then \
 	   strip $(LIBNAME); \
