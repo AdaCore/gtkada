@@ -83,7 +83,7 @@ package body Gtk.Extra.Sheet is
                       Rows    : in Guint;
                       Columns : in Guint;
                       Title   : in String := "";
-                      Entry_Type : in Gtk_Type := Gtk_Type_Invalid)
+                      Entry_Type : in Gtk_Type := GType_Invalid)
    is
    begin
       Sheet := new Gtk_Sheet_Record;
@@ -99,7 +99,7 @@ package body Gtk.Extra.Sheet is
       Rows    : in Guint;
       Columns : in Guint;
       Title   : in String := "";
-      Entry_Type : in Gtk_Type := Gtk_Type_Invalid)
+      Entry_Type : in Gtk_Type := GType_Invalid)
    is
       function Internal
         (Rows    : in Guint;
@@ -122,7 +122,7 @@ package body Gtk.Extra.Sheet is
          Sa := System.Null_Address;
       end if;
 
-      if Entry_Type /= Gtk_Type_Invalid then
+      if Entry_Type /= GType_Invalid then
          Set_Object (Sheet, Internal2 (Rows, Columns, Sa, Entry_Type));
       else
          Set_Object (Sheet, Internal (Rows, Columns, Sa));
@@ -1358,14 +1358,14 @@ package body Gtk.Extra.Sheet is
                                The_Range  : in Gtk_Sheet_Range;
                                Mask       : in Gtk_Sheet_Border;
                                Width      : in Guint;
-                               Line_Style : in Gdk.Types.Gdk_Line_Style)
+                               Line_Style : in Gdk.GC.Gdk_Line_Style)
    is
       procedure Internal
         (Sheet      : System.Address;
          The_Range  : Gtk_Sheet_Range;
          Mask       : Gtk_Sheet_Border;
          Width      : Guint;
-         Line_Style : Gdk.Types.Gdk_Line_Style);
+         Line_Style : Gdk.GC.Gdk_Line_Style);
       pragma Import (C, Internal, "gtk_sheet_range_set_border");
 
    begin

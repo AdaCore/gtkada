@@ -38,7 +38,7 @@ with Gtk.Container;
 with Gtk.Enums;
 with Gdk.Rectangle;
 with Gdk.Color;
-with Gdk.Types;
+with Gdk.GC;
 with Gdk.Font;
 with Gtk.Widget;
 
@@ -110,7 +110,7 @@ package Gtk.Extra.Sheet is
                       Rows       : in Guint;
                       Columns    : in Guint;
                       Title      : in String := "";
-                      Entry_Type : in Gtk_Type := Gtk_Type_Invalid);
+                      Entry_Type : in Gtk_Type := GType_Invalid);
    --  Create a new sheet with a specific number of rows and columns.
    --  You can fully specify which type the entry used to modify the value of
    --  cells should have. The value of Entry_Type can be found by using one
@@ -121,7 +121,7 @@ package Gtk.Extra.Sheet is
                          Rows       : in Guint;
                          Columns    : in Guint;
                          Title      : in String := "";
-                         Entry_Type : in Gtk_Type := Gtk_Type_Invalid);
+                         Entry_Type : in Gtk_Type := GType_Invalid);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -493,7 +493,7 @@ package Gtk.Extra.Sheet is
                                The_Range  : in Gtk_Sheet_Range;
                                Mask       : in Gtk_Sheet_Border;
                                Width      : in Guint;
-                               Line_Style : in Gdk.Types.Gdk_Line_Style);
+                               Line_Style : in Gdk.GC.Gdk_Line_Style);
    --  Set the style of the border for the cells in the range.
 
    procedure Range_Set_Border_Color (Sheet     : access Gtk_Sheet_Record;
