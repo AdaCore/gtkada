@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                 Copyright (C) 2001-2003 ACT-Europe                --
+--                 Copyright (C) 2001-2004 ACT-Europe                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -2216,8 +2216,11 @@ package body Gtkada.MDI is
    is
       MDI    : MDI_Window := MDI_Child (Child).MDI;
    begin
+      --  Ignore this event if we are currently resizing otherwise it becomes
+      --  a move operation (reset of MDI.Current_Cursor).
       if Get_State (Event) = 0
         and then MDI.Current_Cursor /= Left_Ptr
+        and then MDI.Selected_Child = null
       then
          MDI.Current_Cursor := Left_Ptr;
          Gdk.Window.Set_Cursor (Get_Window (Child), null);
