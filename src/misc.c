@@ -1988,6 +1988,35 @@ ada_aspect_frame_get_yalign (GtkAspectFrame* widget)
 }
 
 /******************************************
+ ** Functions for Gtk_Layout
+ ******************************************/
+
+guint
+ada_gtk_layout_get_xoffset (GtkLayout* layout) {
+  return layout->xoffset;
+}
+
+guint
+ada_gtk_layout_get_yoffset (GtkLayout* layout) {
+  return layout->yoffset;
+}
+
+guint
+ada_gtk_layout_get_width (GtkLayout* layout) {
+  return layout->width;
+}
+
+guint
+ada_gtk_layout_get_height (GtkLayout* layout) {
+  return layout->height;
+}
+
+GdkWindow*
+ada_gtk_layout_get_bin_window (GtkLayout* layout) {
+  return layout->bin_window;
+}
+
+/******************************************
  ** Functions for Text
  ******************************************/
 
