@@ -29,6 +29,7 @@
 -----------------------------------------------------------------------
 */
 
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -3494,3 +3495,13 @@ ada_gdk_move_pointer (gint x, gint y)
 }
 
 #endif
+
+PangoUnderline
+ada_pango_underline_error (void)
+{
+#ifdef HAVE_PANGO_UNDERLINE_ERROR
+  return PANGO_UNDERLINE_ERROR;
+#else
+  return PANGO_UNDERLINE_SINGLE;
+#endif
+}
