@@ -151,7 +151,7 @@ dnl
   min_gtk_version=ifelse([$1], ,1.3.0,$1)
   AC_MSG_CHECKING(for GTK - version >= $min_gtk_version)
   no_gtk=""
-  GTK="gtk+-x11-2.0"
+  GTK="gtk+-2.0"
   if test "$PKG_CONFIG" = "no" ; then
     no_gtk=yes
   else
