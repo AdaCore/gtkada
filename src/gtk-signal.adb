@@ -34,7 +34,6 @@ with Interfaces.C.Strings;
 with Gdk; use Gdk;
 with System;
 with Ada.Text_IO;
-with Gtk.Handlers;  use Gtk.Handlers;
 
 --  This package tries to handle three problems encountered with callbacks
 --    1) the memory allocated internally by our Ada functions must be freed
