@@ -3501,7 +3501,8 @@ package body Gtkada.MDI is
          --  Reassign the widget to Child instead of the notebook
 
          Win := Gtk_Window (Get_Toplevel (Child.Initial));
-         Reparent (Get_Child (Win), New_Parent => Gtk_Box (Get_Child (Child)));
+         Reparent (Get_Parent (Child.Initial),
+                   New_Parent => Gtk_Box (Get_Child (Child)));
          Child.State := Normal;
          Destroy (Win);
 
