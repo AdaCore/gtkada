@@ -38,17 +38,17 @@ package Gtk.Status_Bar is
    type Context_Id is new Guint;
    type Message_Id is new Guint;
 
-   type Status_Bar_Msg is
-      record
-         Text    : Interfaces.C.Strings.chars_ptr;
-         Context : Context_Id;
-         Message : Message_Id;
-      end record;
+   type Status_Bar_Msg is record
+     Text    : Interfaces.C.Strings.chars_ptr;
+     Context : Context_Id;
+     Message : Message_Id;
+   end record;
+
    function Convert (Msg : Status_Bar_Msg) return System.Address;
    function Convert (Msg : System.Address) return Status_Bar_Msg;
    package Messages_List is new Glib.GSlist.Generic_SList (Status_Bar_Msg);
 
-   procedure Gtk_New (Widget : out Gtk_Status_Bar);
+   procedure Gtk_New (Statusbar : out Gtk_Status_Bar);
 
    function Get_Context_Id (Statusbar           : in Gtk_Status_Bar;
                             Context_Description : in String)
@@ -70,6 +70,16 @@ package Gtk.Status_Bar is
    procedure Remove (Statusbar  : in Gtk_Status_Bar;
                      Context    : in Context_Id;
                      Message    : in Message_Id);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+
+   procedure Generate (Statusbar : in Gtk_Status_Bar;
+                       N         : in Node_Ptr;
+                       File      : in File_Type);
+
+   procedure Generate (Statusbar : in out Gtk_Status_Bar;
+                       N         : in Node_Ptr);
 
 private
    type Gtk_Status_Bar is new Gtk.Box.Gtk_Box with null record;

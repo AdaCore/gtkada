@@ -31,6 +31,7 @@ with System;
 with Gdk; use Gdk;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Tree is
 
@@ -41,12 +42,12 @@ package body Gtk.Tree is
    ------------
 
    procedure Append
-      (Tree      : in Gtk_Tree;
-       Tree_Item : in Gtk.Widget.Gtk_Widget'Class)
+     (Tree      : in Gtk_Tree;
+      Tree_Item : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
-         (Tree      : in System.Address;
-          Tree_Item : in System.Address);
+        (Tree      : in System.Address;
+         Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_append");
    begin
       Internal (Get_Object (Tree),
@@ -58,18 +59,17 @@ package body Gtk.Tree is
    --------------------
 
    function Child_Position
-      (Tree   : in Gtk_Tree;
-       Child  : in Gtk.Widget.Gtk_Widget'Class)
-       return      Gint
+     (Tree   : in Gtk_Tree;
+      Child  : in Gtk.Widget.Gtk_Widget'Class)
+      return      Gint
    is
       function Internal
-         (Tree   : in System.Address;
-          Child  : in System.Address)
-          return      Gint;
+        (Tree   : in System.Address;
+         Child  : in System.Address)
+         return      Gint;
       pragma Import (C, Internal, "gtk_tree_child_position");
    begin
-      return Internal (Get_Object (Tree),
-                       Get_Object (Child));
+      return Internal (Get_Object (Tree), Get_Object (Child));
    end Child_Position;
 
    -----------------
@@ -77,34 +77,34 @@ package body Gtk.Tree is
    -----------------
 
    procedure Clear_Items
-      (Tree    : in Gtk_Tree;
-       Start   : in Gint;
-       The_End : in Gint)
+     (Tree    : in Gtk_Tree;
+      Start   : in Gint;
+      The_End : in Gint)
    is
       procedure Internal
-         (Tree    : in System.Address;
-          Start   : in Gint;
-          The_End : in Gint);
+        (Tree    : in System.Address;
+         Start   : in Gint;
+         The_End : in Gint);
       pragma Import (C, Internal, "gtk_tree_clear_items");
+
    begin
-      Internal (Get_Object (Tree),
-                Start,
-                The_End);
+      Internal (Get_Object (Tree), Start, The_End);
    end Clear_Items;
 
    ------------------
    -- Get_Children --
    ------------------
 
-   function Get_Children (Widget : in Gtk.Tree.Gtk_Tree)
-                          return      Widget_List.Glist
+   function Get_Children (Tree : in Gtk.Tree.Gtk_Tree)
+     return Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
-                         return      System.Address;
+        return System.Address;
       pragma Import (C, Internal, "ada_tree_get_children");
       List : Widget_List.Glist;
+
    begin
-      Set_Object (List, Internal (Get_Object (Widget)));
+      Set_Object (List, Internal (Get_Object (Tree)));
       return List;
    end Get_Children;
 
@@ -112,15 +112,16 @@ package body Gtk.Tree is
    -- Get_Selection --
    -------------------
 
-   function Get_Selection (Widget : in Gtk.Tree.Gtk_Tree)
-                           return      Widget_List.Glist
+   function Get_Selection (Tree : in Gtk.Tree.Gtk_Tree)
+     return Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
-                         return      System.Address;
+        return System.Address;
       pragma Import (C, Internal, "ada_tree_get_selection");
       List : Widget_List.Glist;
+
    begin
-      Set_Object (List, Internal (Get_Object (Widget)));
+      Set_Object (List, Internal (Get_Object (Tree)));
       return List;
    end Get_Selection;
 
@@ -128,12 +129,11 @@ package body Gtk.Tree is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Tree)
-   is
+   procedure Gtk_New (Tree : out Gtk_Tree) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tree_new");
    begin
-      Set_Object (Widget, Internal);
+      Set_Object (Tree, Internal);
    end Gtk_New;
 
    ------------
@@ -141,19 +141,17 @@ package body Gtk.Tree is
    ------------
 
    procedure Insert
-      (Tree      : in Gtk_Tree;
-       Tree_Item : in Gtk.Widget.Gtk_Widget'Class;
-       Position  : in Gint)
+     (Tree      : in Gtk_Tree;
+      Tree_Item : in Gtk.Widget.Gtk_Widget'Class;
+      Position  : in Gint)
    is
       procedure Internal
-         (Tree      : in System.Address;
-          Tree_Item : in System.Address;
-          Position  : in Gint);
+        (Tree      : in System.Address;
+         Tree_Item : in System.Address;
+         Position  : in Gint);
       pragma Import (C, Internal, "gtk_tree_insert");
    begin
-      Internal (Get_Object (Tree),
-                Get_Object (Tree_Item),
-                Position);
+      Internal (Get_Object (Tree), Get_Object (Tree_Item), Position);
    end Insert;
 
    -------------
@@ -161,16 +159,15 @@ package body Gtk.Tree is
    -------------
 
    procedure Prepend
-      (Tree      : in Gtk_Tree;
-       Tree_Item : in Gtk.Widget.Gtk_Widget'Class)
+     (Tree      : in Gtk_Tree;
+      Tree_Item : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
-         (Tree      : in System.Address;
-          Tree_Item : in System.Address);
+        (Tree      : in System.Address;
+         Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_prepend");
    begin
-      Internal (Get_Object (Tree),
-                Get_Object (Tree_Item));
+      Internal (Get_Object (Tree), Get_Object (Tree_Item));
    end Prepend;
 
    ------------------
@@ -178,16 +175,15 @@ package body Gtk.Tree is
    ------------------
 
    procedure Remove_Items
-      (Tree  : in Gtk_Tree;
-       Items : in Widget_List.Glist)
+     (Tree  : in Gtk_Tree;
+      Items : in Widget_List.Glist)
    is
       procedure Internal
-         (Tree  : in System.Address;
-          Items : in System.Address);
+        (Tree  : in System.Address;
+         Items : in System.Address);
       pragma Import (C, Internal, "gtk_tree_remove_items");
    begin
-      Internal (Get_Object (Tree),
-                Get_Object (Items));
+      Internal (Get_Object (Tree), Get_Object (Items));
    end Remove_Items;
 
    ------------------
@@ -195,16 +191,15 @@ package body Gtk.Tree is
    ------------------
 
    procedure Select_Child
-      (Tree      : in Gtk_Tree;
-       Tree_Item : in Gtk.Widget.Gtk_Widget'Class)
+     (Tree      : in Gtk_Tree;
+      Tree_Item : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
-         (Tree      : in System.Address;
-          Tree_Item : in System.Address);
+        (Tree      : in System.Address;
+         Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_select_child");
    begin
-      Internal (Get_Object (Tree),
-                Get_Object (Tree_Item));
+      Internal (Get_Object (Tree), Get_Object (Tree_Item));
    end Select_Child;
 
    -----------------
@@ -212,16 +207,15 @@ package body Gtk.Tree is
    -----------------
 
    procedure Select_Item
-      (Tree : in Gtk_Tree;
-       Item : in Gint)
+     (Tree : in Gtk_Tree;
+      Item : in Gint)
    is
       procedure Internal
-         (Tree : in System.Address;
-          Item : in Gint);
+        (Tree : in System.Address;
+         Item : in Gint);
       pragma Import (C, Internal, "gtk_tree_select_item");
    begin
-      Internal (Get_Object (Tree),
-                Item);
+      Internal (Get_Object (Tree), Item);
    end Select_Item;
 
    ------------------------
@@ -229,16 +223,15 @@ package body Gtk.Tree is
    ------------------------
 
    procedure Set_Selection_Mode
-      (Tree : in Gtk_Tree;
-       Mode : in Gtk_Selection_Mode)
+     (Tree : in Gtk_Tree;
+      Mode : in Gtk_Selection_Mode)
    is
       procedure Internal
-         (Tree : in System.Address;
-          Mode : in Gint);
+        (Tree : in System.Address;
+         Mode : in Gint);
       pragma Import (C, Internal, "gtk_tree_set_selection_mode");
    begin
-      Internal (Get_Object (Tree),
-                Gtk_Selection_Mode'Pos (Mode));
+      Internal (Get_Object (Tree), Gtk_Selection_Mode'Pos (Mode));
    end Set_Selection_Mode;
 
    --------------------
@@ -246,16 +239,15 @@ package body Gtk.Tree is
    --------------------
 
    procedure Set_View_Lines
-      (Tree : in Gtk_Tree;
-       Flag : in Boolean)
+     (Tree : in Gtk_Tree;
+      Flag : in Boolean)
    is
       procedure Internal
-         (Tree : in System.Address;
-          Flag : in Guint);
+        (Tree : in System.Address;
+         Flag : in Guint);
       pragma Import (C, Internal, "gtk_tree_set_view_lines");
    begin
-      Internal (Get_Object (Tree),
-                Boolean'Pos (Flag));
+      Internal (Get_Object (Tree), Boolean'Pos (Flag));
    end Set_View_Lines;
 
    -------------------
@@ -263,16 +255,15 @@ package body Gtk.Tree is
    -------------------
 
    procedure Set_View_Mode
-      (Tree : in Gtk_Tree;
-       Mode : in Gtk_Tree_View_Mode)
+     (Tree : in Gtk_Tree;
+      Mode : in Gtk_Tree_View_Mode)
    is
       procedure Internal
-         (Tree : in System.Address;
-          Mode : in Gint);
+        (Tree : in System.Address;
+         Mode : in Gint);
       pragma Import (C, Internal, "gtk_tree_set_view_mode");
    begin
-      Internal (Get_Object (Tree),
-                Gtk_Tree_View_Mode'Pos (Mode));
+      Internal (Get_Object (Tree), Gtk_Tree_View_Mode'Pos (Mode));
    end Set_View_Mode;
 
    --------------------
@@ -280,33 +271,81 @@ package body Gtk.Tree is
    --------------------
 
    procedure Unselect_Child
-      (Tree      : in Gtk_Tree;
-       Tree_Item : in Gtk.Widget.Gtk_Widget'Class)
+     (Tree      : in Gtk_Tree;
+      Tree_Item : in Gtk.Widget.Gtk_Widget'Class)
    is
       procedure Internal
-         (Tree      : in System.Address;
-          Tree_Item : in System.Address);
+        (Tree      : in System.Address;
+         Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_unselect_child");
    begin
-      Internal (Get_Object (Tree),
-                Get_Object (Tree_Item));
+      Internal (Get_Object (Tree), Get_Object (Tree_Item));
    end Unselect_Child;
 
    -------------------
    -- Unselect_Item --
    -------------------
 
-   procedure Unselect_Item
-      (Tree : in Gtk_Tree;
-       Item : in Gint)
-   is
-      procedure Internal
-         (Tree : in System.Address;
-          Item : in Gint);
+   procedure Unselect_Item (Tree : in Gtk_Tree; Item : in Gint) is
+      procedure Internal (Tree : in System.Address; Item : in Gint);
       pragma Import (C, Internal, "gtk_tree_unselect_item");
    begin
-      Internal (Get_Object (Tree),
-                Item);
+      Internal (Get_Object (Tree), Item);
    end Unselect_Item;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Tree : in Gtk_Tree;
+                       N    : in Node_Ptr;
+                       File : in File_Type) is
+      use Container;
+   begin
+      Gen_New (N, "Tree", File => File);
+      Generate (Gtk_Container (Tree), N, File);
+      Gen_Set (N, "Tree", "selection_mode", File);
+      Gen_Set (N, "Tree", "view_lines", File);
+      Gen_Set (N, "Tree", "view_mode", File);
+      Gen_Call_Child (N, null, "Container", "Add", File => File);
+   end Generate;
+
+   procedure Generate (Tree : in out Gtk_Tree;
+                       N    : in Node_Ptr) is
+      use Container;
+
+      S : String_Ptr;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Tree);
+         Set_Object (Get_Field (N, "name"), Tree'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Container (Tree), N);
+
+      S := Get_Field (N, "selection_mode");
+
+      if S /= null then
+         Set_Selection_Mode
+           (Tree, Gtk_Selection_Mode'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      S := Get_Field (N, "view_lines");
+
+      if S /= null then
+         Set_View_Lines (Tree, Boolean'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "view_mode");
+
+      if S /= null then
+         Set_View_Mode
+           (Tree, Gtk_Tree_View_Mode'Value (S (S'First + 4 .. S'Last)));
+      end if;
+
+      Container.Add
+        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all), Tree);
+   end Generate;
 
 end Gtk.Tree;

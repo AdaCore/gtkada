@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 with Unchecked_Conversion;
 
 package body Gtk.Status_Bar is
@@ -55,11 +56,11 @@ package body Gtk.Status_Bar is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Status_Bar) is
+   procedure Gtk_New (Statusbar : out Gtk_Status_Bar) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_statusbar_new");
    begin
-      Set_Object (Widget, Internal);
+      Set_Object (Statusbar, Internal);
    end Gtk_New;
 
    --------------------
@@ -144,5 +145,31 @@ package body Gtk.Status_Bar is
    begin
       Internal (Get_Object (Statusbar), Context, Message);
    end Remove;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Statusbar : in Gtk_Status_Bar;
+                       N         : in Node_Ptr;
+                       File      : in File_Type) is
+      use Box;
+   begin
+      Gen_New (N, "Status_Bar", File => File);
+      Generate (Gtk_Box (Statusbar), N, File);
+   end Generate;
+
+   procedure Generate (Statusbar : in out Gtk_Status_Bar;
+                       N         : in Node_Ptr) is
+      use Box;
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Statusbar);
+         Set_Object (Get_Field (N, "name"), Statusbar'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Box (Statusbar), N);
+   end Generate;
 
 end Gtk.Status_Bar;
