@@ -101,7 +101,6 @@ package Gnome.App_Helper is
 
    type UI_Info is private;
    type UI_Info_Array is array (Natural range <>) of UI_Info;
-   type UI_Info_Array_Access is access all UI_Info_Array;
    --  This is the structure that defines an item in a menu bar or toolbar. The
    --  idea is to create an array of such structures with the information
    --  needed to create menus or toolbars. The most convenient way to create
