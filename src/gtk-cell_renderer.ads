@@ -53,13 +53,13 @@ package Gtk.Cell_Renderer is
       new Glib.Glist.Generic_List (Gtk_Cell_Renderer);
 
    type Gtk_Cell_Renderer_State is mod 2 ** 32;
-   Cell_Renderer_Selected : constant Gtk_Cell_Renderer_State := 2 ** 0;
-   Cell_Renderer_Prelit : constant Gtk_Cell_Renderer_State := 2 ** 1;
-   Cell_Renderer_Insensitive : constant Gtk_Cell_Renderer_State := 2 ** 2;
-   Cell_Renderer_Sorted : constant Gtk_Cell_Renderer_State := 2 ** 3;
+   Cell_Renderer_Selected    : constant Gtk_Cell_Renderer_State;
+   Cell_Renderer_Prelit      : constant Gtk_Cell_Renderer_State;
+   Cell_Renderer_Insensitive : constant Gtk_Cell_Renderer_State;
+   Cell_Renderer_Sorted      : constant Gtk_Cell_Renderer_State;
 
-   type Cell_Renderer_Mode is (
-      Cell_Renderer_Mode_Inert,
+   type Cell_Renderer_Mode is
+     (Cell_Renderer_Mode_Inert,
       Cell_Renderer_Mode_Activatable,
       Cell_Renderer_Mode_Editable);
 
@@ -116,13 +116,14 @@ package Gtk.Cell_Renderer is
      (Cell   : access Gtk_Cell_Renderer_Record;
       Width  : Gint;
       Height : Gint);
-   --  Sets the renderer size to be explicit, independent of the properties set.
+   --  Sets the renderer size to be explicit, independent of the
+   --  properties set.
 
    procedure Get_Fixed_Size
      (Cell   : access Gtk_Cell_Renderer_Record;
       Width  : out Gint;
       Height : out Gint);
-   -- Fills in Width and Height with the appropriate size of Cell.
+   --  Fills in Width and Height with the appropriate size of Cell.
 
    -------------
    -- Signals --
@@ -174,5 +175,10 @@ package Gtk.Cell_Renderer is
 private
    type Gtk_Cell_Renderer_Record is
      new Gtk.Object.Gtk_Object_Record with null record;
+
+   Cell_Renderer_Selected    : constant Gtk_Cell_Renderer_State := 2 ** 0;
+   Cell_Renderer_Prelit      : constant Gtk_Cell_Renderer_State := 2 ** 1;
+   Cell_Renderer_Insensitive : constant Gtk_Cell_Renderer_State := 2 ** 2;
+   Cell_Renderer_Sorted      : constant Gtk_Cell_Renderer_State := 2 ** 3;
 
 end Gtk.Cell_Renderer;
