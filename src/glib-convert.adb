@@ -459,12 +459,20 @@ package body Glib.Convert is
          Error         : GError_Access := null) return chars_ptr;
       pragma Import (C, Internal, "g_locale_to_utf8");
 
-      S   : constant chars_ptr := Internal (OS_String, OS_String'Length);
-      Str : constant String := Value (S);
+      S : constant chars_ptr := Internal (OS_String, OS_String'Length);
 
    begin
-      g_free (S);
-      return Str;
+      if S = Null_Ptr then
+         return "";
+
+      else
+         declare
+            Str : constant String := Value (S);
+         begin
+            g_free (S);
+            return Str;
+         end;
+      end if;
    end Locale_To_UTF8;
 
 end Glib.Convert;
