@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -31,6 +31,7 @@ with Gdk.Font;
 with Gdk; use Gdk;
 with Interfaces.C.Strings;
 with System;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Font_Selection is
 
@@ -263,8 +264,7 @@ package body Gtk.Font_Selection is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Font_Selection)
-   is
+   procedure Gtk_New (Widget : out Gtk_Font_Selection) is
    begin
       Widget := new Gtk_Font_Selection_Record;
       Initialize (Widget);
@@ -372,5 +372,49 @@ package body Gtk.Font_Selection is
       Internal (Get_Object (Fontsel),
                 Text & Ascii.NUL);
    end Set_Preview_Text;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+   begin
+      Gen_New (N, "Font_Selection", File => File);
+      Notebook.Generate (N, File);
+   end Generate;
+
+   procedure Generate (Fontsel : in out Object.Gtk_Object; N : in Node_Ptr) is
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Font_Selection (Fontsel));
+         Set_Object (Get_Field (N, "name"), Fontsel);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Notebook.Generate (Fontsel, N);
+   end Generate;
+
+   ---------------------
+   -- Generate_Dialog --
+   ---------------------
+
+   procedure Generate_Dialog (N : in Node_Ptr; File : in File_Type) is
+   begin
+      Gen_New (N, "Font_Selection_Dialog", Adjust (Get_Field (N, "title").all),
+        File => File, Delim => '"');
+      Window.Generate (N, File);
+   end Generate_Dialog;
+
+   procedure Generate_Dialog
+     (Fsd : in out Object.Gtk_Object; N : in Node_Ptr) is
+   begin
+      if not N.Specific_Data.Created then
+         Gtk_New (Gtk_Font_Selection_Dialog (Fsd), Get_Field (N, "title").all);
+         Set_Object (Get_Field (N, "name"), Fsd);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Window.Generate (Fsd, N);
+   end Generate_Dialog;
 
 end Gtk.Font_Selection;

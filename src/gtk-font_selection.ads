@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -31,6 +31,7 @@ with Gdk.Font;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Notebook;
 with Gtk.Window;
+with Gtk.Object;
 
 package Gtk.Font_Selection is
 
@@ -139,8 +140,22 @@ package Gtk.Font_Selection is
       return Boolean;
 
    procedure Set_Preview_Text
-      (Fontsel : access Gtk_Font_Selection_Record;
-       Text    : in String);
+     (Fontsel : access Gtk_Font_Selection_Record;
+      Text    : in String);
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
+
+   procedure Generate
+     (Fontsel : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
+
+   procedure Generate_Dialog (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
+
+   procedure Generate_Dialog
+     (Fsd : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
 private
    type Gtk_Font_Selection_Record is new Gtk.Notebook.Gtk_Notebook_Record
