@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -162,8 +162,8 @@ package Gdk.Event is
    Proximity_In_Mask        : constant Gdk_Event_Mask := 2 ** 18;
    Proximity_Out_Mask       : constant Gdk_Event_Mask := 2 ** 19;
    Substructure_Mask        : constant Gdk_Event_Mask := 2 ** 20;
-   Scroll_Mask              : constant Gdk_Event_Mask := 2 ** 20;
-   All_Events_Mask          : constant Gdk_Event_Mask := 16#1FFFFF#;
+   Scroll_Mask              : constant Gdk_Event_Mask := 2 ** 21;
+   All_Events_Mask          : constant Gdk_Event_Mask := 16#3FFFFE#;
 
    type Gdk_Visibility_State is
      (Visibility_Unobscured,
