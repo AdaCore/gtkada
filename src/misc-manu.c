@@ -2,6 +2,8 @@
 #include <gdk/gdk.h>
 #include <glib.h>
 
+#undef GTKADA_DEBUG
+
 /***************************************************
  *  Functions for Objects
  ***************************************************/
@@ -25,16 +27,46 @@ ada_type_name (gint type)
 gpointer
 ada_gtkarg_value_object (GtkArg* args, guint num)
 {
-  if ((args [num].type % 256) == GTK_TYPE_OBJECT)
-    return (gpointer)GTK_VALUE_OBJECT (args [num]);
-  else if ((args [num].type % 256) == GTK_TYPE_POINTER)
-    return GTK_VALUE_POINTER (args [num]);
-  else
+  gpointer return_value = NULL;
+#ifdef GTKADA_DEBUG
+  fprintf (stderr, "ada_gtkarg_value_object read %d\n", args [num].type % 256);
+#endif
+  switch (args [num].type % 256)
     {
-      fprintf (stderr, "request for an Object value (%d) when we have a %d\n",
-	       GTK_TYPE_OBJECT, (args[num].type % 256));
-      return NULL;
+    case GTK_TYPE_OBJECT:
+#ifdef GTKADA_DEBUG
+      fprintf (stderr, "   was GTK_TYPE_OBJECT\n");
+#endif
+      return_value = (gpointer)GTK_VALUE_OBJECT (args [num]);
+      break;
+    case GTK_TYPE_POINTER:
+#ifdef GTKADA_DEBUG
+      fprintf (stderr, "   was GTK_TYPE_POINTER\n");
+#endif
+      return_value = (gpointer)GTK_VALUE_POINTER (args [num]);
+      break;
+    case GTK_TYPE_STRING:
+#ifdef GTKADA_DEBUG
+      fprintf (stderr, "   was GTK_TYPE_STRING\n");
+#endif
+      return_value = (gpointer)GTK_VALUE_STRING (args [num]);
+      break;
+    case GTK_TYPE_BOXED:
+#ifdef GTKADA_DEBUG
+      fprintf (stderr, "   was GTK_TYPE_BOXED\n");
+#endif
+      return_value = (gpointer)GTK_VALUE_BOXED (args [num]);
+      break;
+    default:
+      {
+	fprintf (stderr, "request for an Object value (%d) when we have a %d\n",
+		 GTK_TYPE_OBJECT, (args[num].type % 256));
+      }
     }
+#ifdef GTKADA_DEBUG
+  fprintf (stderr, "    ada_gtkarg_value_object return %p\n", return_value);
+#endif
+  return return_value;
 }
 
 /***************************************************
