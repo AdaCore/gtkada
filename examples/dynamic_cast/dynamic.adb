@@ -1,5 +1,3 @@
-
-
 --  This program shows how to dynamically change the label of a
 --  button, when the label was created automatically by gtk+.
 --  This program will change all the labels contained within the
@@ -79,10 +77,10 @@ procedure Dynamic is
    Window    : Gtk_Window;
    Id        : Guint;
    Box1,
-     Box2    : Gtk_Box;
+   Box2      : Gtk_Box;
    Button,
-     Button1,
-     Button2 : Gtk_Button;
+   Button1,
+   Button2   : Gtk_Button;
    Label     : Gtk_Label;
    Pixmap    : Gdk_Pixmap;
    Mask      : Gdk_Bitmap;
@@ -102,6 +100,7 @@ begin
 
    --  Create a button with only a label in it.
    --  The label is created automatically by gtk+
+
    Gtk_New (Button, "Button 1");
    Pack_Start (Box1, Button, False, False, 0);
    Show (Button);
@@ -129,7 +128,6 @@ begin
    Show (PixmapWid);
    Show (Box2);
    Show (Button2);
-
 
    --  Create the two action buttons
 
