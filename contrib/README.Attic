@@ -54,10 +54,10 @@ using the following compilers:
    - Gnat 3.12p
 
 the following versions of gtk:
-   - Gtk+ 1.2.2 -> 1.2.6
+   - Gtk+ 1.2.2 -> 1.2.8
 
 and the following versions of glade:
-   - Glade 0.5.5
+   - Glade 0.5.9
 
 Although versions up to 0.2.1 were compatible with Gtk1.0, this one is
 Gtk-1.2 specific. If you are looking for a binding to Gtk1.0, please consider
