@@ -1179,6 +1179,12 @@ package body Gtkada.Canvas is
          Tmp := Tmp.Next;
       end loop;
 
+      --  If there was none, nothing to do...
+
+      if Canvas.Selected_Child = null then
+         return False;
+      end if;
+
       --  Double-click events are transmitted directly to the item, and are
       --  not used to move an item.
 
@@ -1193,12 +1199,6 @@ package body Gtkada.Canvas is
       --  Only left mouse button clicks can select an item
 
       if Get_Button (Event) /= 1 then
-         return False;
-      end if;
-
-      --  If there was none, nothing to do...
-
-      if Canvas.Selected_Child = null then
          return False;
       end if;
 
