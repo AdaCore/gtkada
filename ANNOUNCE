@@ -21,6 +21,7 @@ New features in 1.2.8/1.3.8 include:
 - Gate now supports the gettext_support and use_widget_names Glade options.
 - Gate now generates callback *functions* when appropriate.
 - Gate now handles callbacks with same name.
+- Support for drag-and-drop, and selection handling, has been added.
 
 New features in 1.2.7/1.3.7 include:
 
