@@ -21,3 +21,11 @@ Known problems fixed in GtkAda 1.2.11/1.3.11
   Workaround: Use unique name among the project, or modify the generated code
               by hand.
 
+- Connecting signals with Object_Connect might raise CE later on
+  Problem:    When you connect a signal to object A with object_connect,
+              passign object B as the slot object, it might happen than B
+              is destroyed but not A. The next time the signal is emitted, you
+              will get a Constraint_Error, since B no longer exists
+  Workaround: Connect the "destroy" event to object B, so as to automatically
+              disconnect the first signal when B is destroyed. This is now
+              done automatically by GtkAda
