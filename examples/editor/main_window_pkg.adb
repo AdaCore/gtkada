@@ -33,7 +33,6 @@ begin
    Add (Main_Window, Main_Window.Vbox1);
 
    Gtk_New (Main_Window.Menubar1);
-   Set_Shadow_Type (Main_Window.Menubar1, Shadow_Out);
    Pack_Start (Main_Window.Vbox1, Main_Window.Menubar1, False, True, 0);
 
    Gtk_New (Main_Window.File, "File");
@@ -150,10 +149,7 @@ begin
    Add (Main_Window.Help_Menu, Main_Window.About);
 
    Gtk_New (Main_Window.Toolbar1, Orientation_Horizontal, Toolbar_Both);
-   Set_Space_Size (Main_Window.Toolbar1, 5);
-   Set_Space_Style (Main_Window.Toolbar1, Toolbar_Space_Empty);
    Set_Tooltips (Main_Window.Toolbar1, True);
-   Set_Button_Relief (Main_Window.Toolbar1, Relief_Normal);
    Main_Window.Button1 := Append_Element
      (Toolbar => Main_Window.Toolbar1,
       The_Type => Toolbar_Child_Button,

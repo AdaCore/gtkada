@@ -36,6 +36,7 @@ with Gdk.Window;       use Gdk.Window;
 with Gdk.Rectangle;    use Gdk.Rectangle;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Handlers;     use Gtk.Handlers;
+pragma Elaborate_All (Gtk.Handlers);
 
 package body Double_Buffer is
 
@@ -154,16 +155,16 @@ package body Double_Buffer is
                   Width  => Gdk.Event.Get_Width (Event),
                   Height => Gdk.Event.Get_Height (Event));
 
-               Gdk.Drawable.Copy_Area (Buffer.Pixmap,
-                                       Get_Foreground_GC (Get_Style (Buffer),
-                                                          State_Normal),
-                                       X        => 0,
-                                       Y        => 0,
-                                       Source   => Old_Pixmap,
-                                       Source_X => 0,
-                                       Source_Y => 0,
-                                       Width    => Old_Width,
-                                       Height   => Old_Height);
+               Gdk.Drawable.Draw_Drawable
+                 (Buffer.Pixmap,
+                  Get_Foreground_GC (Get_Style (Buffer), State_Normal),
+                  Src      => Old_Pixmap,
+                  Xsrc     => 0,
+                  Ysrc     => 0,
+                  Xdest    => 0,
+                  Ydest    => 0,
+                  Width    => Old_Width,
+                  Height   => Old_Height);
             end;
          end if;
 
@@ -193,16 +194,16 @@ package body Double_Buffer is
                   Width  => Gdk.Event.Get_Width (Event),
                   Height => Gdk.Event.Get_Height (Event));
 
-               Gdk.Drawable.Copy_Area (Buffer.Triple_Buffer,
-                                       Get_Foreground_GC (Get_Style (Buffer),
-                                                          State_Normal),
-                                       X        => 0,
-                                       Y        => 0,
-                                       Source   => Old_Triple,
-                                       Source_X => 0,
-                                       Source_Y => 0,
-                                       Width    => Old_Width,
-                                       Height   => Old_Height);
+               Gdk.Drawable.Draw_Drawable
+                 (Buffer.Triple_Buffer,
+                  Get_Foreground_GC (Get_Style (Buffer), State_Normal),
+                  Src      => Old_Triple,
+                  Xdest    => 0,
+                  Ydest    => 0,
+                  Xsrc     => 0,
+                  Ysrc     => 0,
+                  Width    => Old_Width,
+                  Height   => Old_Height);
             end;
          end if;
 
@@ -247,44 +248,43 @@ package body Double_Buffer is
             if Buffer.Is_Frozen then
                Buffer.Should_Update_On_Screen := True;
             else
-               Gdk.Drawable.Copy_Area
+               Gdk.Drawable.Draw_Drawable
                  (Buffer.Triple_Buffer,
-                  Get_Foreground_GC (Get_Style (Buffer),
-                                     State_Normal),
-                  X        => 0,
-                  Y        => 0,
-                  Source   => Buffer.Pixmap,
-                  Source_X => 0,
-                  Source_Y => 0,
+                  Get_Foreground_GC (Get_Style (Buffer), State_Normal),
+                  Src      => Buffer.Pixmap,
+                  Xdest    => 0,
+                  Ydest    => 0,
+                  Xsrc     => 0,
+                  Ysrc     => 0,
                   Width    => Gint (Get_Allocation_Width (Buffer)),
                   Height   => Gint (Get_Allocation_Height (Buffer)));
             end if;
          end if;
 
          --  Copy the triple buffer to the screen
-         Gdk.Drawable.Copy_Area (Get_Window (Buffer),
-                                 Get_Foreground_GC (Get_Style (Buffer),
-                                                    State_Normal),
-                                 X        => Area.X,
-                                 Y        => Area.Y,
-                                 Source   => Buffer.Triple_Buffer,
-                                 Source_X => Area.X,
-                                 Source_Y => Area.Y,
-                                 Width    => Gint (Area.Width),
-                                 Height   => Gint (Area.Height));
+         Gdk.Drawable.Draw_Drawable
+           (Get_Window (Buffer),
+            Get_Foreground_GC (Get_Style (Buffer), State_Normal),
+            Src      => Buffer.Triple_Buffer,
+            Xdest    => Area.X,
+            Ydest    => Area.Y,
+            Xsrc     => Area.X,
+            Ysrc     => Area.Y,
+            Width    => Gint (Area.Width),
+            Height   => Gint (Area.Height));
 
       elsif not Buffer.Is_Frozen then
          --  Copy the double buffer to the screen
-         Gdk.Drawable.Copy_Area (Get_Window (Buffer),
-                                 Get_Foreground_GC (Get_Style (Buffer),
-                                                    State_Normal),
-                                 X        => Area.X,
-                                 Y        => Area.Y,
-                                 Source   => Buffer.Pixmap,
-                                 Source_X => Area.X,
-                                 Source_Y => Area.Y,
-                                 Width    => Gint (Area.Width),
-                                 Height   => Gint (Area.Height));
+         Gdk.Drawable.Draw_Drawable
+           (Get_Window (Buffer),
+            Get_Foreground_GC (Get_Style (Buffer), State_Normal),
+            Src      => Buffer.Pixmap,
+            Xdest    => Area.X,
+            Ydest    => Area.Y,
+            Xsrc     => Area.X,
+            Ysrc     => Area.Y,
+            Width    => Gint (Area.Width),
+            Height   => Gint (Area.Height));
 
       else
          Buffer.Should_Update_On_Screen := True;
@@ -358,15 +358,14 @@ package body Double_Buffer is
          Buffer.Triple_Buffer := Create_Internal_Pixmap (Buffer);
 
          --  Copy the current value of the pixmap in it
-         Gdk.Drawable.Copy_Area
+         Gdk.Drawable.Draw_Drawable
            (Buffer.Triple_Buffer,
-            Get_Foreground_GC (Get_Style (Buffer),
-                               State_Normal),
-            X        => 0,
-            Y        => 0,
-            Source   => Buffer.Pixmap,
-            Source_X => 0,
-            Source_Y => 0,
+            Get_Foreground_GC (Get_Style (Buffer), State_Normal),
+            Src      => Buffer.Pixmap,
+            Xdest    => 0,
+            Ydest    => 0,
+            Xsrc     => 0,
+            Ysrc     => 0,
             Width    => Gint (Get_Allocation_Width (Buffer)),
             Height   => Gint (Get_Allocation_Height (Buffer)));
       end if;

@@ -31,7 +31,7 @@ private
       Policy : Gtk_Update_Type := Update_Continuous;
       --  Update Policy (Update_[Continuous/Delayed/Discontinuous])
 
-      Button : Guint8 := 0;
+      Button : Guint := 0;
       --  Button currently pressed or 0 if none
 
       Radius        : Gint := 0;
@@ -45,9 +45,9 @@ private
       Last_Angle : Gdouble;
       --  Current angle
 
-      Old_Value : Gfloat := 0.0;
-      Old_Lower : Gfloat := 0.0;
-      Old_Upper : Gfloat := 0.0;
+      Old_Value : Gdouble := 0.0;
+      Old_Lower : Gdouble := 0.0;
+      Old_Upper : Gdouble := 0.0;
       --  Old values from adjustment stored so we know when something changes
 
       Adjustment : Gtk_Adjustment;

@@ -31,10 +31,6 @@ begin
    Alloc (Gdk.Color.Get_System, Color);
    Set_Background (Style, State_Normal, Color);
 
-   --  temporarily change the default style while creating the tooltips.
-   Push_Style (Style);
    Gtk_New (tips);
    Force_Window (Tips);
-   Pop_Style;
-
 end Tooltips;

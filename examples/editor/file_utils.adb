@@ -2,7 +2,6 @@ with Glib; use Glib;
 with Gdk.Window;
 with Gdk.Font; use Gdk.Font;
 with Gdk.Color; use Gdk.Color;
-with Gtk.Editable; use Gtk.Editable;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Text; use Gtk.Text;
 with GNAT.OS_Lib; use GNAT.OS_Lib;
@@ -18,7 +17,7 @@ package body File_Utils is
 
    procedure New_File is
    begin
-      Gtk.Editable.Delete_Text (Gtk_Editable (Main_Window.Text1), 0, -1);
+      Delete_Text (Main_Window.Text1, 0, -1);
       Current_Filename := null;
       File_Changed := False;
       Set_Window_Title;
@@ -66,7 +65,7 @@ package body File_Utils is
    begin
       Gtk.Status_Bar.Pop (Main_Window.Statusbar1, 1);
       Gtk.Text.Freeze (Main_Window.Text1);
-      Gtk.Editable.Delete_Text (Gtk_Editable (Main_Window.Text1), 0, -1);
+      Delete_Text (Main_Window.Text1, 0, -1);
       File_Changed := False;
 
       Fp := Open_Read (File'Address, Text);

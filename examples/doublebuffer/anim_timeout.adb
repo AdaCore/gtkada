@@ -9,9 +9,11 @@ with Gtk.Window;        use Gtk.Window;
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Handlers;      use Gtk.Handlers;
+pragma Elaborate_All (Gtk.Handlers);
 with Gtk.Label;         use Gtk.Label;
 with Gtk.Widget;        use Gtk.Widget;
 with Gtk.Main;          use Gtk.Main;
+pragma Elaborate_All (Gtk.Main);
 
 with Ada.Text_IO;   use Ada.Text_IO;
 

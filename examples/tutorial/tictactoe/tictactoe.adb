@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with System;
+with Glib.Object; use Glib.Object;
 with Gtk.Object, Gtk.Handlers, Gtk.Main, Gtk.Table;
 with Gtkada.Types; use Gtkada.Types;
 with Ada.Text_IO; use Ada.Text_IO;
@@ -42,7 +43,7 @@ package body Tictactoe is
       Tictactoe : Gtk_Tictactoe);
    --  Signal handler for "toggled" signal.
 
-   Class_Record : System.Address := System.Null_Address;
+   Class_Record : GObject_Class := Uninitialized_Class;
    --  This pointer will keep a pointer to the C 'class record' for
    --  gtk. To avoid allocating memory for each widget, this may be done
    --  only once, and reused
@@ -65,7 +66,7 @@ package body Tictactoe is
       --  Used to create a new widget
    begin
       Tictactoe := new Gtk_Tictactoe_Record;
-      Initialize (Tictactoe);
+      Standard.Tictactoe.Initialize (Tictactoe);
    end Gtk_New;
 
    ----------------
@@ -84,7 +85,8 @@ package body Tictactoe is
       --  and the new signals created for this widget.
       --  Note that we keep Class_Record, so that the memory allocation
       --  is done only once.
-      Gtk.Object.Initialize_Class_Record (Tictactoe, Signals, Class_Record);
+      Gtk.Object.Initialize_Class_Record
+        (Tictactoe, Signals, Class_Record, "TicTacToe");
 
       --  Now initialize the composite part
 
@@ -152,7 +154,8 @@ package body Tictactoe is
 
          for J in Win_Array'Range (2) loop
             Success := Success and then 
-              Is_Active (Tictactoe.Buttons (Rwins (K, J), Cwins (K, J)).Button);
+              Get_Active
+                (Tictactoe.Buttons (Rwins (K, J), Cwins (K, J)).Button);
             Found := Found or else
               Tictactoe.Buttons (Rwins (K, J), Cwins (K, J)).Button =
                 Gtk_Toggle_Button (Button);

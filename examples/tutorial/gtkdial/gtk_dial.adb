@@ -1,3 +1,4 @@
+with Glib.Object;
 with Gdk.Drawable; use Gdk.Drawable;
 with Gdk.Event;    use Gdk.Event;
 with Gdk.Types;    use Gdk.Types;
@@ -19,9 +20,9 @@ with Ada.Numerics.Generic_Elementary_Functions; use Ada.Numerics;
 
 package body Gtk_Dial is
 
-   package Gfloat_Types is new
+   package Gdouble_Types is new
      Ada.Numerics.Generic_Elementary_Functions (Gdouble);
-   use Gfloat_Types;
+   use Gdouble_Types;
 
    Scroll_Delay_Length : constant := 300;
    Dial_Default_Size   : constant := 100;
@@ -90,12 +91,12 @@ package body Gtk_Dial is
 
    package Size_Cb is new Gtk.Handlers.Callback (Gtk_Dial_Record);
    package Requisition_Marshaller is new Size_Cb.Marshallers.Generic_Marshaller
-     (Gtk_Requisition_Access, To_Requisition);
+     (Gtk_Requisition_Access, Get_Requisition);
 
    package Allocation_Cb is new Gtk.Handlers.Callback (Gtk_Dial_Record);
    package Allocation_Marshaller is new
      Allocation_Cb.Marshallers.Generic_Marshaller
-       (Gtk_Allocation_Access, To_Allocation);
+       (Gtk_Allocation_Access, Get_Allocation);
 
    package Event_Cb is new Gtk.Handlers.Return_Callback
      (Gtk_Dial_Record, Boolean);
@@ -260,7 +261,7 @@ package body Gtk_Dial is
       Set_Window (Dial, Window);
       Set_Style (Dial, Attach (Get_Style (Dial), Get_Window (Dial)));
 
-      Set_User_Data (Window, Gtk.Get_Object (Dial));
+      Set_User_Data (Window, Glib.Object.Get_Object (Dial));
 
       Set_Background (Get_Style (Dial), Get_Window (Dial), State_Active);
    end Realize;
@@ -298,7 +299,7 @@ package body Gtk_Dial is
       end if;
 
       Dial.Radius := Gint (
-        Gfloat (Guint'Min (Allocation.Width, Allocation.Height)) * 0.45);
+        Gdouble (Gint'Min (Allocation.Width, Allocation.Height)) * 0.45);
       Dial.Pointer_Width := Dial.Radius / 5;
 
       Gtk.Handlers.Emit_Stop_By_Name (Dial, "size_allocate");
@@ -570,7 +571,7 @@ package body Gtk_Dial is
 
    procedure Update_Mouse (Dial : access Gtk_Dial_Record'Class; X, Y : Gint) is
       Xc, Yc : Gint;
-      Old_Value : Gfloat;
+      Old_Value : Gdouble;
 
    begin
       Xc := Gint (Get_Allocation_Width (Dial) / 2);
@@ -593,12 +594,10 @@ package body Gtk_Dial is
 
       Set_Value
         (Dial.Adjustment,
-         Gfloat
-           (Gdouble (Get_Lower (Dial.Adjustment)) +
-             (7.0 * PI / 6.0 - Dial.Angle) *
-               Gdouble
-                 (Get_Upper (Dial.Adjustment) - Get_Lower (Dial.Adjustment)) /
-                   (4.0 * PI / 3.0)));
+         Get_Lower (Dial.Adjustment) +
+           (7.0 * PI / 6.0 - Dial.Angle) *
+             (Get_Upper (Dial.Adjustment) - Get_Lower (Dial.Adjustment)) /
+               (4.0 * PI / 3.0));
 
       if Get_Value (Dial.Adjustment) /= Old_Value then
          if Dial.Policy = Update_Continuous then
@@ -626,7 +625,7 @@ package body Gtk_Dial is
    ------------
 
    procedure Update (Dial : access Gtk_Dial_Record'Class) is
-      New_Value : Gfloat;
+      New_Value : Gdouble;
    begin
       New_Value := Get_Value (Dial.Adjustment);
   

@@ -12,6 +12,7 @@ with Gtk.Label;         use Gtk.Label;
 with Gtk.Widget;        use Gtk.Widget;
 with Gtk.Main;          use Gtk.Main;
 with Gtk.Handlers;      use Gtk.Handlers;
+pragma Elaborate_All (Gtk.Handlers);
 
 with Ada.Text_IO;       use Ada.Text_IO;
 

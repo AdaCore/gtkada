@@ -31,7 +31,7 @@ package body My_Widget is
    --  This pointer will keep a pointer to the C 'class record' for
    --  gtk. To avoid allocating memory for each widget, this may be done
    --  only once, and reused
-   Class_Record : System.Address := System.Null_Address;
+   Class_Record : GObject_Class := Uninitialized_Class;
 
    --  Array of the signals created for this widget
    Signals : Chars_Ptr_Array := "bullseye" + "missed";
@@ -55,12 +55,12 @@ package body My_Widget is
    --  standard one.
    package Size_Cb is new Handlers.Callback (Target_Widget_Record);
    package Requisition_Marshaller is new Size_Cb.Marshallers.Generic_Marshaller
-     (Gtk_Requisition_Access, To_Requisition);
+     (Gtk_Requisition_Access, Gtk.Widget.Get_Requisition);
 
    package Allocation_Cb is new Handlers.Callback (Target_Widget_Record);
    package Allocation_Marshaller is new
      Allocation_Cb.Marshallers.Generic_Marshaller
-       (Gtk_Allocation_Access, To_Allocation);
+       (Gtk_Allocation_Access, Gtk.Widget.Get_Allocation);
 
    package Button_Cb is new Handlers.User_Callback
      (Target_Widget_Record, Integer);
@@ -94,7 +94,7 @@ package body My_Widget is
          end;
       end if;
 
-      Gdk.Window.Get_Size (Win, Width, Height);
+      Gdk.Drawable.Get_Size (Win, Width, Height);
       Gdk.Drawable.Draw_Arc
         (Win, Widget.Gc_Out,
          Filled => True,
@@ -154,8 +154,8 @@ package body My_Widget is
    is
    begin
       if Realized_Is_Set (Widget) then
-         Widget.Radius
-           := Gint (Guint'Min (Allocation.Width, Allocation.Height));
+         Widget.Radius :=
+           Gint'Min (Allocation.Width, Allocation.Height);
          Gdk.Window.Move_Resize (Get_Window (Widget),
                                  Allocation.X, Allocation.Y,
                                  Gint (Allocation.Width),
@@ -176,7 +176,7 @@ package body My_Widget is
       Tmp_X, Tmp_Y : Gint;
       Width, Height : Gint;
    begin
-      Gdk.Window.Get_Size (Get_Window (Widget), Width, Height);
+      Gdk.Drawable.Get_Size (Get_Window (Widget), Width, Height);
       Tmp_X := Gint (Get_X (Event)) - Width / 2;
       Tmp_Y := Gint (Get_Y (Event)) - Height / 2;
 
@@ -218,7 +218,8 @@ package body My_Widget is
       --  to put their name in a table.
       --  Note also that we keep Class_Record, so that the memory allocation
       --  is done only once.
-      Gtk.Object.Initialize_Class_Record (Widget, Signals, Class_Record);
+      Gtk.Object.Initialize_Class_Record
+        (Widget, Signals, Class_Record, "TestGtkTargetWidget");
 
       --  Note: We can not create the GC here, since the widget is not
       --  realized yet, and thus has no window available. This could be
