@@ -73,6 +73,8 @@ Gtk:
   Gtk_Type_Gdk_Event: replace by Gdk.Event.Get_Type
   Root_Type replaced by Glib.GObjects.GObject_Record
   All subprograms related to Root_Type moved to Glib.GObjects as well.
+Gtk.Accel_Group:
+  Major changes in API, see gtk-accep_group.ads
 Gtk.Adjustments:
   all Gfloat replaced by Gdouble
 Gtk.Arguments obsolete, use Glib.Values instead
@@ -271,7 +273,7 @@ Gtk.Vbutton_Box:
   Get/Set_Layout_Default: removed, deprecated, noop.
 Gtk.Widget:
   Accelerator_Signal, Lock_Accelerators, Remove_Accelerators,
-   Unlock_accleerators: removed.
+   Unlock_accelerators: removed.
   Gtk_Requisition, Gtk_Allocation: now takes gint insstead of gint16.
   Double_Buffered_Is_Set, Set_Double_Buffered,
   Get_Parent_Window, Hide_On_Delete, Get_Modifer_Style: new function.
@@ -314,6 +316,7 @@ gdkselection.h
 gdk-pixbuf-loader.h
 gdkwindow.h: see "missing" section.
 gtkaccessible.h (derives from AtkObject)
+gtkaccelgroup.h: see ??? comments.
 gtkarg.h
 gtkbindings.h
 gtkcellrenderer.h            |
