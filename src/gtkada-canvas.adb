@@ -2244,6 +2244,7 @@ package body Gtkada.Canvas is
       if Get_Event_Type (Event) = Gdk_2button_Press
         or else Get_Button (Event) /= 1
       then
+         Set_Cursor (Get_Window (Canvas), null);
          --  ??? Should do so for each item in the selection
          On_Button_Click (Canvas.Selection.Item, Event);
          return False;
