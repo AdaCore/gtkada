@@ -27,9 +27,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with System;
+
 package Gdk.Threads is
 
-   procedure Init;
+   procedure Init (Vtable : System.Address := System.Null_Address);
 
    procedure Enter;
 
