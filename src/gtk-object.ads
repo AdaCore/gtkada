@@ -2,7 +2,7 @@ package Gtk.Object is
 
    type Gtk_Object is new Root_Type with private;
 
-   procedure Destroy (Object : in Gtk_Object'Class);
+   procedure Destroy (Object : in out Gtk_Object'Class);
    --  mapping: Destroy gtkobject.h gtk_object_destroy
 
 private

@@ -7,7 +7,7 @@ package body Gtk.Object is
    -- Destroy --
    -----------------
 
-   procedure Destroy (Object : in Gtk_Object'Class)
+   procedure Destroy (Object : in out Gtk_Object'Class)
    is
       procedure Internal  (Object : in System.Address);
       pragma Import (C, Internal, "gtk_object_destroy");
