@@ -923,7 +923,7 @@ package Gtk.Extra.Plot is
    --    Called when the widget has been resized relative to its drawable.
    --    Its new size is given in parameters.
    --
-   --  </signal>
+   --  </signals>
 
 private
    type Gtk_Plot_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
