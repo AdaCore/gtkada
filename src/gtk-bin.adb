@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                        Copyright (C) 2000                         --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,6 +35,7 @@ package body Gtk.Bin is
    function Get_Child (Bin : access Gtk_Bin_Record) return Gtk_Widget is
       function Internal (W : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_bin_get_child");
+
    begin
       return Convert (Internal (Get_Object (Bin)));
    end Get_Child;
