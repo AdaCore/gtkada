@@ -34,7 +34,6 @@ generic
 
 package Glib.XML is
 
-   type String_Ptr is access all String;
    procedure Free is new Unchecked_Deallocation (String, String_Ptr);
 
    type Node;

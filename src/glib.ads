@@ -73,6 +73,7 @@ package Glib is
    type Gshort_Array is array (Natural range <>) of Gshort;
    type Glong_Array is array (Natural range <>) of Glong;
    type Gint_Array is array (Natural range <>) of Gint;
+   type Guint_Array is array (Natural range <>) of Guint;
    type Gushort_Array is array (Natural range <>) of Gushort;
    type Gulong_Array is array (Natural range <>) of Gulong;
    type Gfloat_Array is array (Natural range <>) of Gfloat;
@@ -104,6 +105,7 @@ package Glib is
    procedure Free is new Ada.Unchecked_Deallocation
      (Object => Guchar_Array, Name => Guchar_Array_Access);
 
+   type String_Ptr is access all String;
 
    -------------------
    --  Object_Type  --
