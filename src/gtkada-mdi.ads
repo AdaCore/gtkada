@@ -510,6 +510,7 @@ private
    type Notebook_Array is array (Dock_Side) of Gtk.Notebook.Gtk_Notebook;
    type Int_Array is array (Left .. Bottom) of Glib.Gint;
    type Window_Array is array (Left .. Bottom) of Gdk.Window.Gdk_Window;
+   type Event_Array is array (Left .. Bottom) of Gtk.Event_Box.Gtk_Event_Box;
 
    type MDI_Window_Record is new Gtk.Fixed.Gtk_Fixed_Record with record
       Items : Gtk.Widget.Widget_List.Glist := Gtk.Widget.Widget_List.Null_List;
@@ -519,6 +520,10 @@ private
       --  The five possible docks (one on each side and one in the middle.
       --  Note that the one in the middle might not be visible, or even
       --  created, if it is replaced by a Gtk_Layout.
+
+      Drop_Sites : Event_Array := (others => null);
+      --  The drop sites on each side of the MDI, where items can be dropped to
+      --  create new docks
 
       Raise_Id : Gtk.Main.Idle_Handler_Id := 0;
       --  The id of the Raise_Child_Idle handler.
