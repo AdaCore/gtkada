@@ -174,6 +174,9 @@ package Gdk.Types is
 
    type Gdk_Join_Style is (Miter, Round, Bevel);
 
+   type Gdk_Key_Type is new Guint;
+   --  see Gdk.Types.Keysyms for key type constants
+
    type Gdk_Input_Condition is (Read, Write, Input_Exception);
 
    type Gdk_Line_Style is (Solid, On_Off_Dash, Double_Dash);
