@@ -233,8 +233,7 @@ package Gdk.GC is
      (GC : Gdk_GC; Rectangle : Gdk.Rectangle.Gdk_Rectangle);
    --  Set the clip rectangle.
    --  Only the points that are drawn inside this rectangle will be displayed
-   --  on the screen. Note that you might have to modify the Clip origin first
-   --  with Set_Clip_Origin.
+   --  on the screen. The clip origin is modified automatically.
    --  See Set_Clip_Mask to delete the current clip mask.
 
    procedure Set_Clip_Region (GC : Gdk_GC; Region : Gdk.Region.Gdk_Region);
