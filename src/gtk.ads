@@ -121,13 +121,6 @@ package Gtk is
    --  Name should be the C widget's name, such as GtkScrollbar or GtkButton,
    --  rather than the Ada name.
 
-   --  Package Unchecked_Cast:
-   --  This package has now been removed completly from GtkAda.
-   --  You can safely replace any call you had to it with a standard
-   --  Unchecked_Conversion.
-   --  This package had several disadvantages (it wasn't task-safe for
-   --  instance).
-
    function Is_Created (Object : in Root_Type'Class) return Boolean;
    --  Return True if the associated C object has been created, False if no
    --  C object is associated with Object.
@@ -174,20 +167,13 @@ private
    --  If the Data is not set, then returns a new access type, that points to
    --  a structure with the same tag as Stub.
 
-   type Type_Conversion_Func is access
-     function (Obj : System.Address; Stub : Root_Type'Class)
-              return Root_Type_Access;
-   Type_Conversion_Function : Type_Conversion_Func;
-   --  This is a "soft link" for the type conversion function.  This
-   --  function has to convert a C object to an Ada object. By
-   --  default, it just creates a Gtk.Object, no matter what the real
-   --  C type is.  It can be set to another function that will convert
-   --  to the appropriate type (this is not the default since this will
-   --  slow down initializations a little bit, and will 'with' all the
-   --  packages from GtkAda).
-   --  See Gtk.Type_Conversion for its use.
-   --  Stub is the expect type (it is used by the simple conversion
-   --  function only).
+   function Conversion_Function
+     (Obj : System.Address; Stub : Root_Type'Class) return Root_Type_Access;
+   --  This function has to convert a C object to an Ada object.
+   --  It will first try all the registered functions (in
+   --  Gtk.Type_Conversion_Hooks) and by default, will create a Gtk.Object,
+   --  no matter what the real C type is.
+   --  Stub is the expected type.
 
    --  </doc_ignore>
 

@@ -30,16 +30,12 @@
 with Interfaces.C.Strings;
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
+with Gtk.Type_Conversion_Hooks;
 
 package body Gtk is
 
    procedure Free_User_Data (Data : in System.Address);
    --  Free the user data Data. This function should not be called directly
-
-   function Simple_Conversion (Obj  : System.Address;
-                               Stub : Root_Type'Class)
-                              return Root_Type_Access;
-   --  Create a Gtk.Object around the C object Obj
 
    --------------------
    -- Free_User_Data --
@@ -60,14 +56,19 @@ package body Gtk is
    -- Get_User_Data --
    -------------------
 
-   function Get_User_Data (Obj  : in System.Address; Stub : in Root_Type'Class)
-                           return Root_Type_Access
+   function Get_User_Data
+     (Obj  : in System.Address;
+      Stub : in Root_Type'Class) return Root_Type_Access
    is
-      function Internal (Object : in System.Address; Key : in Glib.GQuark)
-                         return Root_Type_Access;
+      function Internal
+        (Object : in System.Address;
+         Key : in Glib.GQuark) return Root_Type_Access;
       pragma Import (C, Internal, "gtk_object_get_data_by_id");
+
       use type System.Address;
+
       R : Root_Type_Access;
+
    begin
       if Obj = System.Null_Address then
          return null;
@@ -76,16 +77,17 @@ package body Gtk is
       if GtkAda_String_Quark = Glib.Unknown_Quark then
          GtkAda_String_Quark := Glib.Quark_From_String (GtkAda_String);
       end if;
+
       R := Internal (Obj, GtkAda_String_Quark);
 
       if R = null then
-         R := Type_Conversion_Function (Obj, Stub);
-         --  We use the soft link function to create a stub. This function
-         --  will either simply return what we expect (Stub), or try to
-         --  create the Ada type depending on the C type.
+         R := Conversion_Function (Obj, Stub);
+         --  This function will either simply return what we expect (Stub), or
+         --  try to create the exact Ada type corresponding to the C type.
          Set_Object (R, Obj);
          Initialize_User_Data (R);
       end if;
+
       return R;
    end Get_User_Data;
 
@@ -94,15 +96,16 @@ package body Gtk is
    --------------------------
 
    procedure Initialize_User_Data (Obj : access Root_Type'Class) is
-      function Internal (Object : in System.Address;
-                         Key    : in Glib.GQuark)
-                         return Root_Type_Access;
+      function Internal
+        (Object : in System.Address;
+         Key    : in Glib.GQuark) return Root_Type_Access;
       pragma Import (C, Internal, "gtk_object_get_data_by_id");
 
-      procedure Set_User_Data (Obj     : System.Address;
-                               Name    : Glib.GQuark;
-                               Data    : System.Address;
-                               Destroy : System.Address);
+      procedure Set_User_Data
+        (Obj     : System.Address;
+         Name    : Glib.GQuark;
+         Data    : System.Address;
+         Destroy : System.Address);
       pragma Import (C, Set_User_Data, "gtk_object_set_data_by_id_full");
 
    begin
@@ -116,24 +119,46 @@ package body Gtk is
       end if;
    end Initialize_User_Data;
 
-   -----------------------
-   -- Simple_Conversion --
-   -----------------------
+   -------------------------
+   -- Conversion_Function --
+   -------------------------
 
-   function Simple_Conversion (Obj  : System.Address;
-                               Stub : Root_Type'Class)
-                               return Root_Type_Access is
+   function Conversion_Function
+     (Obj  : System.Address; Stub : Root_Type'Class) return Root_Type_Access
+   is
+      function Get_Type (Obj : System.Address) return Gtk_Type;
+      pragma Import (C, Get_Type, "ada_object_get_type");
+
+      Name  : constant String := Type_Name (Get_Type (Obj));
+      Hooks : Gtk.Type_Conversion_Hooks.Hook_List_Access;
+
+      use type Gtk.Type_Conversion_Hooks.Hook_List_Access;
+
    begin
-      return new Root_Type'Class'(Stub);
-   end Simple_Conversion;
+      Hooks := Gtk.Type_Conversion_Hooks.Conversion_Hooks;
+
+      while Hooks /= null loop
+         declare
+            R : Root_Type_Access := Hooks.Func (Name);
+         begin
+            if R /= null then
+               return R;
+            end if;
+         end;
+
+         Hooks := Hooks.Next;
+      end loop;
+
+      return new Root_Type'Class' (Stub);
+   end Conversion_Function;
 
    ---------------
    -- Type_Name --
    ---------------
 
    function Type_Name (Type_Num : in Gtk_Type) return String is
-      function Internal (Type_Num : in Gtk_Type)
-                         return Interfaces.C.Strings.chars_ptr;
+      function Internal
+        (Type_Num : in Gtk_Type) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_type_name");
    begin
       return Interfaces.C.Strings.Value (Internal (Type_Num));
@@ -154,8 +179,8 @@ package body Gtk is
    --  Get_Object  --
    ------------------
 
-   function Get_Object (Object : access Root_Type'Class) return System.Address
-   is
+   function Get_Object
+     (Object : access Root_Type'Class) return System.Address is
    begin
       return Object.Ptr;
    end Get_Object;
@@ -174,12 +199,11 @@ package body Gtk is
    --  Set_Object  --
    ------------------
 
-   procedure Set_Object (Object : access Root_Type'Class;
-                         Value  : in     System.Address) is
+   procedure Set_Object
+     (Object : access Root_Type'Class;
+      Value  : in     System.Address) is
    begin
       Object.Ptr := Value;
    end Set_Object;
 
-begin
-   Type_Conversion_Function := Simple_Conversion'Access;
 end Gtk;
