@@ -47,6 +47,8 @@ with Gtk.Widget;
 
 package Gtk.Table is
 
+   use Gtk.Enums;
+
    type Gtk_Table_Record is new Gtk.Container.Gtk_Container_Record
      with private;
    type Gtk_Table is access all Gtk_Table_Record'Class;
@@ -76,16 +78,17 @@ package Gtk.Table is
                      Columns     : in Guint);
    --  Modify the number of rows and columns in the table.
 
-   procedure Attach (Table         : access Gtk_Table_Record;
-                     Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
-                     Left_Attach   : in Guint;
-                     Right_Attach  : in Guint;
-                     Top_Attach    : in Guint;
-                     Bottom_Attach : in Guint;
-                     Xoptions      : in Gtk.Enums.Gtk_Attach_Options;
-                     Yoptions      : in Gtk.Enums.Gtk_Attach_Options;
-                     Xpadding      : in Guint;
-                     Ypadding      : in Guint);
+   procedure Attach
+     (Table         : access Gtk_Table_Record;
+      Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Left_Attach   : in Guint;
+      Right_Attach  : in Guint;
+      Top_Attach    : in Guint;
+      Bottom_Attach : in Guint;
+      Xoptions      : in Gtk_Attach_Options := Expand or Fill;
+      Yoptions      : in Gtk_Attach_Options := Expand or Fill;
+      Xpadding      : in Guint := 0;
+      Ypadding      : in Guint := 0);
    --  Insert a new widget in the table.
    --  All the attachments are relative to the separations between columns and
    --  rows (for instance, to insert a widget spanning the first two columns
@@ -106,6 +109,8 @@ package Gtk.Table is
    --  Insert a new widget in the table, with default values.
    --  No padding is put around the child, and the options are set to
    --  Expand and Fill.
+   --  This call is similar to Attach with default values and is only provided
+   --  for compatibility.
 
    procedure Set_Row_Spacing (Table   : access Gtk_Table_Record;
                               Row     : in Guint;

@@ -38,16 +38,17 @@ package body Gtk.Table is
    -- Attach --
    ------------
 
-   procedure Attach (Table         : access Gtk_Table_Record;
-                     Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
-                     Left_Attach   : in Guint;
-                     Right_Attach  : in Guint;
-                     Top_Attach    : in Guint;
-                     Bottom_Attach : in Guint;
-                     Xoptions      : in Gtk.Enums.Gtk_Attach_Options;
-                     Yoptions      : in Gtk.Enums.Gtk_Attach_Options;
-                     Xpadding      : in Guint;
-                     Ypadding      : in Guint)
+   procedure Attach
+     (Table         : access Gtk_Table_Record;
+      Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Left_Attach   : in Guint;
+      Right_Attach  : in Guint;
+      Top_Attach    : in Guint;
+      Bottom_Attach : in Guint;
+      Xoptions      : in Gtk_Attach_Options := Expand or Fill;
+      Yoptions      : in Gtk_Attach_Options := Expand or Fill;
+      Xpadding      : in Guint := 0;
+      Ypadding      : in Guint := 0)
    is
       procedure Internal (Table         : in System.Address;
                           Child         : in System.Address;
