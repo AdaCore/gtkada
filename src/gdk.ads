@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -34,6 +34,9 @@ package Gdk is
 
    type Root_Type is tagged private;
    type Root_Type_Access is access all Root_Type'Class;
+   --  The base type of the hierarchy in GtkAda. It basically gives access
+   --  to an underlying C object. This is not a controlled type, for efficiency
+   --  reasons, and because gtk+ takes care of memory management on its own.
 
    generic
       type To is new Root_Type with private;
@@ -49,13 +52,20 @@ package Gdk is
    --   that will be overidden the next time you call Convert. You should make
    --   a copy of it if you need to reuse it.
    --  Warning : no verification is done at Ada level. The only verification
-   --  are done by gtk itself. Whenever possible, avoid using this function
-   --  See testgtk/create_notebook.adb for an example how to use this package.
+   --  are done by gtk itself.
+   --  See also the package Gtk.Type_Conversion for help on how to convert
+   --  from C widgets to Ada widgets.
+   --
+   --  This package should not be required at all. If you absolutely need to
+   --  use it, please report it to the GtkAda team (gtkada@ada.eu.org) so that
+   --  we try and get rid of this case if possible.
 
    function Is_Created (Object : in Root_Type'Class) return Boolean;
    --  Return True if the associated C object has been created, False if no
    --  C object is associated with Object.
-
+   --  This is not the same as testing whether an access type (for instance
+   --  any of the widgets) is "null", since this relates to the underlying
+   --  C object.
 
    --  The following services are for INTERNAL use only. They are not
    --  declared inside the private part for visibility issues. Do NOT
