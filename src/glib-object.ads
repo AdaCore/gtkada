@@ -32,6 +32,8 @@
 --
 --  </description>
 
+with Gtkada.Types;
+
 package Glib.GObjects is
 
    type GObject_Record is tagged private;
@@ -117,11 +119,74 @@ package Glib.GObjects is
    --  If Num is negative, return the type returned by the handlers for this
    --  signal.
 
+   --------------------------
+   -- Creating new widgets --
+   --------------------------
+   --  These types and functions are used only when creating new widget types
+   --  directly in Ada. These functions initialize the classes so that they are
+   --  correctly recognized by gtk+ itself
+   --  See the GtkAda user's guide for more information on how to create your
+   --  own widget types in Ada.
+
+   type GObject_Class is private;
+   Uninitialized_Class : constant GObject_Class;
+   --  This type encloses all the informations related to a specific type of
+   --  object or widget. All instances of such an object have a pointer to this
+   --  structure, that includes the definition of all the signals that exist
+   --  for a given object, all its properties,...
+
+   type Signal_Parameter_Types is
+     array (Natural range <>, Natural range <>) of GType;
+   --  The description of the parameters for each event.
+   --  Each event defined with Initialize_Class_Record below should have an
+   --  entry in this table. If Gtk_Type_None is found in the table, it is
+   --  ignored. For instance, a Signal_Parameter_Type like:
+   --    (1 => (1 => Gdk_Type_Gdk_Event, 2 => GType_None),
+   --     2 => (1 => GType_Int,          2 => GType_Int));
+   --  defines two signals, the first with a single Gdk_Event parameter, the
+   --  second with two ints parameters.
+
+   Null_Parameter_Types : constant Signal_Parameter_Types (1 .. 0, 1 .. 0) :=
+     (others => (others => GType_None));
+   --  An empty array, used as a default parameter in Initialize_Class_Record.
+
+   procedure Initialize_Class_Record
+     (Object       : access GObject_Record'Class;
+      Signals      : Gtkada.Types.Chars_Ptr_Array;
+      Class_Record : in out GObject_Class;
+      Type_Name    : String;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types);
+   --  Create the class record for a new object type.
+   --  It is associated with Signals'Length new signals. A pointer to the
+   --  newly created structure is also returned in Class_Record.
+   --  If Class_Record /= System.Null_Address, no memory allocation is
+   --  performed, we just reuse it.
+   --  Note: The underlying C object must already have been initialized
+   --  by a call to its parent's Initialize function.
+   --  Parameters'Length should be the same as Signals'Length, or the result
+   --  is undefined.
+   --  As a special case, if Parameters has its default value, all signals are
+   --  created with no argument. This is done for backward compatibility
+   --  mainly, and you should instead give it an explicit value.
+   --  Type_Name should be a unique name identifying the name of the new type.
+   --
+   --  Only the signals with no parameter can be connected from C. However,
+   --  any signal can be connected from Ada. This is due to the way we define
+   --  default marshallers for the signals.
+
+   function Type_From_Class (Class_Record : GObject_Class) return GType;
+   --  Return the internal gtk+ type that describes the newly created
+   --  Class_Record
+
 private
 
    type GObject_Record is tagged record
       Ptr : System.Address := System.Null_Address;
    end record;
+
+   type GObject_Class is new System.Address;
+   Uninitialized_Class : constant GObject_Class :=
+     GObject_Class (System.Null_Address);
 
    --  <doc_ignore>
 
@@ -149,5 +214,5 @@ private
 
    pragma Inline (Get_Object);
    pragma Inline (Set_Object);
-
+   pragma Import (C, Type_From_Class, "ada_type_from_class");
 end Glib.GObjects;

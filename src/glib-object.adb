@@ -31,6 +31,7 @@ with Unchecked_Conversion;
 with Unchecked_Deallocation;
 
 with Glib.Type_Conversion_Hooks;
+with Gtkada.Types; use Gtkada.Types;
 
 package body Glib.GObjects is
 
@@ -225,11 +226,17 @@ package body Glib.GObjects is
    ---------------
 
    function Type_Name (Type_Num : in GType) return String is
+      use type Interfaces.C.Strings.chars_ptr;
       function Internal (Type_Num : in GType)
                          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "g_type_name");
+      Ret : Interfaces.C.Strings.chars_ptr := Internal (Type_Num);
    begin
-      return Interfaces.C.Strings.Value (Internal (Type_Num));
+      if Ret = Null_Ptr then
+         return "";
+      else
+         return Interfaces.C.Strings.Value (Ret);
+      end if;
    end Type_Name;
 
    --------------------
@@ -271,5 +278,49 @@ package body Glib.GObjects is
       Free (Object);
       return Result;
    end Unchecked_Cast;
+
+   -----------------------------
+   -- Initialize_Class_Record --
+   -----------------------------
+
+   procedure Initialize_Class_Record
+     (Object       : access GObject_Record'Class;
+      Signals      : Gtkada.Types.Chars_Ptr_Array;
+      Class_Record : in out GObject_Class;
+      Type_Name    : String;
+      Parameters   : Signal_Parameter_Types := Null_Parameter_Types)
+   is
+      function Internal
+        (Object         : System.Address;
+         NSignals       : Gint;
+         Signals        : System.Address;
+         Parameters     : System.Address;
+         Max_Parameters : Gint;
+         Class_Record   : GObject_Class;
+         Type_Name      : String) return GObject_Class;
+      pragma Import (C, Internal, "ada_initialize_class_record");
+
+      Default_Params : Signal_Parameter_Types (1 .. Signals'Length, 1 .. 0) :=
+        (others => (others => GType_None));
+      Pa  : System.Address := Default_Params'Address;
+      Num : Gint := 0;
+
+   begin
+      if Parameters /= Null_Parameter_Types then
+         pragma Assert (Parameters'Length (1) = Signals'Length);
+         Pa := Parameters'Address;
+         Num := Parameters'Length (2);
+      end if;
+
+      Class_Record :=
+        Internal
+          (Get_Object (Object),
+           Signals'Length,
+           Signals'Address,
+           Pa,
+           Num,
+           Class_Record,
+           Type_Name & ASCII.NUL);
+   end Initialize_Class_Record;
 
 end Glib.GObjects;
