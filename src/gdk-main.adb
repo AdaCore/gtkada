@@ -54,6 +54,30 @@ package body Gdk.Main is
    end Get_Use_Xshm;
 
 
+   ------------------
+   --  Set_Locale  --
+   ------------------
+
+   function Set_Locale return String is
+      function Internal return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gdk_set_locale");
+   begin
+      return C.Strings.Value (Internal);
+   end Set_Locale;
+
+
+   ------------------
+   --  Set_Locale  --
+   ------------------
+
+   procedure Set_Locale is
+      Dummy : constant String := Set_Locale;
+      pragma Warnings (Off, Dummy);
+   begin
+      null;
+   end Set_Locale;
+
+
    --------------------
    --  Set_Use_Xshm  --
    --------------------

@@ -30,6 +30,16 @@ with Glib; use Glib;
 
 package Gdk.Main is
 
+   procedure Init;
+
+   procedure Gdk_Exit (Error_Code : in Gint);
+
+   function Set_Locale return String;
+
+   procedure Set_Locale;
+   --
+   --  Drops the string returned by the Set_Locale function;
+
    procedure Set_Use_Xshm (Use_Xshm : in Boolean := True);
 
    function Get_Use_Xshm return Boolean;
@@ -61,11 +71,10 @@ package Gdk.Main is
    procedure Key_Repeat_Restore;
 
 
-   --  Will probably not be implemented since it does not seem
-   --  to be necessary.
-   --
+   ----------------------------------------------------------------------
 
-
+   pragma Import (C, Init, "ag_gdk_init");
+   pragma Import (C, Gdk_Exit, "gdk_exit");
    pragma Import (C, Time_Get, "gdk_time_get");
    pragma Import (C, Timer_Get, "gdk_timer_get");
    pragma Import (C, Timer_Set, "gdk_timer_set");
