@@ -497,6 +497,7 @@ package Gdk.Window is
       Icon_Window : Gdk_Window;
       Pixmap      : Gdk_Pixmap;
       Mask        : Gdk_Bitmap);
+   --  Currently not supported under Windows
 
    procedure Set_Icon_Name
      (Window : Gdk_Window;
