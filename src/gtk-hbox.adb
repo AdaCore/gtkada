@@ -1,6 +1,10 @@
 
 package body Gtk.Hbox is
 
+   -------------
+   -- Gtk_New --
+   -------------
+
    procedure Gtk_New (Widget      : out Hbox;
                       Homogeneous : in Boolean;
                       Spacing     : in GInt)
@@ -12,4 +16,6 @@ package body Gtk.Hbox is
       Set_Object (Widget, Internal (Boolean'Pos (Homogeneous),
                                     Spacing));
    end Gtk_New;
+
+
 end Gtk.Hbox;

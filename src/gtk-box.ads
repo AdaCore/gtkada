@@ -4,7 +4,7 @@ with Gtk.Widget;
 
 package Gtk.Box is
 
-   type Box is new Gtk.Container.Container with private;
+   type Box is abstract new Gtk.Container.Container with private;
 
    type Pack_Type is (Pack_Start, Pack_End);
    --  mapping: Pack_Type gtkenums.h GtkPackType

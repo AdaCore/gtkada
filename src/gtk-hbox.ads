@@ -11,6 +11,8 @@ package Gtk.Hbox is
    --  mapping: New gtkhbox.h gtk_hbox_new
 
 
+   --  mapping: NOT_IMPLEMENTED gtkhbox.h gtk_hbox_get_type
+
 private
 
    type Hbox is new Gtk.Box.Box with null record;
