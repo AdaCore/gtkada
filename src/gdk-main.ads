@@ -145,13 +145,6 @@ private
    pragma Import (C, Flush, "gdk_flush");
    pragma Import (C, Beep, "gdk_beep");
 
-   for Gdk_Grab_Status use
-     (Grab_Success => 0,
-      Grab_Already_Grabbed => 1,
-      Gdk_Grab_Invalid_Time => 2,
-      Gdk_Grab_Not_Viewable => 3,
-      Gdk_Grab_Frozen => 4);
-
 end Gdk.Main;
 
 --  missing:
