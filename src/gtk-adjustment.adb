@@ -5,7 +5,7 @@ package body Gtk.Adjustment is
    --  Clamp_Page  --
    ------------------
 
-   procedure Clamp_Page (Adjustment : in out Gtk_Adjustment;
+   procedure Clamp_Page (Adjustment : in out Gtk_Adjustment'Class;
                          Lower      : in     Gfloat;
                          Upper      : in     Gfloat) is
 
@@ -47,11 +47,23 @@ package body Gtk.Adjustment is
    end Gtk_New;
 
 
+   ---------------------------
+   --  Null_Gtk_Adjustment  --
+   ---------------------------
+
+   function Null_Adjustment return Gtk_Adjustment is
+      Result : Gtk_Adjustment;
+   begin
+      Set_Object (Result, System.Null_Address);
+      return Result;
+   end Null_Adjustment;
+
+
    -----------------
-   --  Set_Value  --
+   --  set_Value  --
    -----------------
 
-   procedure Set_Value (Adjustment : in out Gtk_Adjustment;
+   procedure Set_Value (Adjustment : in out Gtk_Adjustment'Class;
                         Value      : in     Gfloat) is
 
       procedure Internal (Adjustment : in System.Address;
