@@ -356,6 +356,12 @@ package Gdk.Event is
    -----------------------------------
    -- Access to fields of the event --
    -----------------------------------
+   --  The following functions can be used to retrieve some specific fields
+   --  from an event. Some of these fields do not exist for all the types of
+   --  events (see the description of each event for a list of the relevant
+   --  fields).
+   --  Note also that you can not pass a null event to them. The parameter must
+   --  be a correct event, or the result is undefined.
 
    Invalid_Field : exception;
    --  If a field does not exist for the event you gave, an exception
