@@ -40,7 +40,7 @@
 --  We have tried to reference these functions in the other packages as well.
 --
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gdk.Color;
 with Gdk.Event;
@@ -1516,4 +1516,5 @@ end Gtk.Widget;
 --  - gtk_widget_get_direction
 --  - gtk_widget_set_default_direction
 --  - gtk_widget_get_default_direction
-
+--  - gtk_widget_child_focus
+--  - gtk_widget_get_accessible
