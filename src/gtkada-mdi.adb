@@ -1687,7 +1687,9 @@ package body Gtkada.MDI is
          when Left =>
             --  Substract Handle_Size / 2, so that the handle is still under
             --  the pointer, and the user can simply click again to resize
+
             M.Docks_Size (Left) := M.Current_X - Handle_Size / 2;
+
             if M.Docks_Size (Left) >
               Gint (Get_Allocation_Width (M)) - M.Docks_Size (Right)
             then
@@ -1698,6 +1700,7 @@ package body Gtkada.MDI is
          when Right =>
             M.Docks_Size (Right) :=
               Gint (Get_Allocation_Width (M)) - M.Current_X - Handle_Size;
+
             if M.Docks_Size (Left) >
               Gint (Get_Allocation_Width (M)) - M.Docks_Size (Right)
             then
@@ -1707,6 +1710,7 @@ package body Gtkada.MDI is
 
          when Top =>
             M.Docks_Size (Top) := M.Current_Y - Handle_Size;
+
             if M.Docks_Size (Top) >
               Gint (Get_Allocation_Height (M)) - M.Docks_Size (Bottom)
             then
@@ -1717,6 +1721,7 @@ package body Gtkada.MDI is
          when Bottom =>
             M.Docks_Size (Bottom) :=
               Gint (Get_Allocation_Height (M)) - M.Current_Y - Handle_Size / 2;
+
             if M.Docks_Size (Top) >
               Gint (Get_Allocation_Height (M)) - M.Docks_Size (Bottom)
             then
