@@ -1,4 +1,26 @@
+-----------------------------------------------------------------------
+--          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--                                                                   --
+-- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU Library General Public       --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- Library General Public License for more details.                  --
+--                                                                   --
+-- You should have received a copy of the GNU Library General Public --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+-----------------------------------------------------------------------
+
 with Gdk; use Gdk;
+with System;
 
 package body Gtk.Preview is
 
@@ -21,7 +43,7 @@ package body Gtk.Preview is
           W       : in Gint);
       pragma Import (C, Internal, "gtk_preview_draw_row");
    begin
-      Internal (Gtk.Get_Object (Preview),
+      Internal (Get_Object (Preview),
                 Data'Address,
                 X,
                 Y,
@@ -52,7 +74,7 @@ package body Gtk.Preview is
       pragma Import (C, Internal, "gtk_preview_get_info");
       Widget : Gtk_Preview_Info;
    begin
-      Gtk.Set_Object (Widget, Internal);
+      Set_Object (Widget, Internal);
       return Widget;
    end Get_Info;
 
@@ -81,7 +103,7 @@ package body Gtk.Preview is
                          return        System.Address;
       pragma Import (C, Internal, "gtk_preview_new");
    begin
-      Gtk.Set_Object (Widget, Internal (Gtk_Preview_Type'Pos (The_Type)));
+      Set_Object (Widget, Internal (Gtk_Preview_Type'Pos (The_Type)));
    end Gtk_New;
 
    ---------
@@ -111,7 +133,7 @@ package body Gtk.Preview is
           Height  : in Gint);
       pragma Import (C, Internal, "gtk_preview_put");
    begin
-      Internal (Gtk.Get_Object (Preview),
+      Internal (Get_Object (Preview),
                 Get_Object (Window),
                 Get_Object (Gc),
                 Srcx,
@@ -143,7 +165,7 @@ package body Gtk.Preview is
           W       : in Gint);
       pragma Import (C, Internal, "gtk_preview_put_row");
    begin
-      Internal (Gtk.Get_Object (Preview),
+      Internal (Get_Object (Preview),
                 Src'Address,
                 Dest'Address,
                 X,
@@ -199,7 +221,7 @@ package body Gtk.Preview is
           Expand  : in Gint);
       pragma Import (C, Internal, "gtk_preview_set_expand");
    begin
-      Internal (Gtk.Get_Object (Preview),
+      Internal (Get_Object (Preview),
                 Expand);
    end Set_Expand;
 
@@ -254,7 +276,7 @@ package body Gtk.Preview is
           Height  : in Gint);
       pragma Import (C, Internal, "gtk_preview_size");
    begin
-      Internal (Gtk.Get_Object (Preview),
+      Internal (Get_Object (Preview),
                 Width,
                 Height);
    end Size;

@@ -1,3 +1,24 @@
+-----------------------------------------------------------------------
+--          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--                                                                   --
+-- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU Library General Public       --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- Library General Public License for more details.                  --
+--                                                                   --
+-- You should have received a copy of the GNU Library General Public --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+-----------------------------------------------------------------------
+
 --  The widget is the base of the tree for displayable objects.
 --  (A displayable object is one which takes up some amount
 --  of screen real estate). It provides a common base and interface
@@ -6,6 +27,7 @@
 with Gtk.Object;
 with Gdk.Types;
 with Gdk.Rectangle;
+with System;
 
 package Gtk.Widget is
 
@@ -34,9 +56,6 @@ package Gtk.Widget is
 
    procedure Destroy (Widget : in out Gtk_Widget'Class);
    --  mapping: Destroy gtkwidget.h gtk_widget_destroy
-
-   --  GET_STYLE : to get the style field of a widget, please see
-   --  package gtk-style.ads
 
    --  GET_WINDOW : to get the window field of a widget, please
    --  see package gtk-window.ads
@@ -131,14 +150,15 @@ package Gtk.Widget is
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_default_visual
    --  FIXME  --  need Gdk_Visual
 
-   --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_style
+   --  GET_STYLE : to get the style field of a widget, please see
+   --  package gtk-style.ads
+
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_get_default_style
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_style
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_default_style
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_restore_default_style
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_ensure_style
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_reset_rc_styles
-   --  FIXME  -- need Gtk_Style
 
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_set_state
    --  FIXME  --  need Gtk_State (enumerated type)
@@ -190,7 +210,6 @@ package Gtk.Widget is
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_dnd_drag_set
    --  mapping: NOT_IMPLEMENTED gtkwidget.h gtk_widget_dnd_drop_set
    --  FIXME  --  need Gdk_Event
-   --  FIXME  -- A generic package will be needed (a new file?)
 
    -----------------------
    -- Default callbacks --

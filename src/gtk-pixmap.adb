@@ -1,6 +1,28 @@
+-----------------------------------------------------------------------
+--          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--                                                                   --
+-- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU Library General Public       --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- Library General Public License for more details.                  --
+--                                                                   --
+-- You should have received a copy of the GNU Library General Public --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+-----------------------------------------------------------------------
+
 with Gdk; use Gdk;
 with Gdk.Bitmap;
 with Gdk.Pixmap;
+with System;
 
 package body Gtk.Pixmap is
 
@@ -19,7 +41,7 @@ package body Gtk.Pixmap is
           Mask   : in System.Address);
       pragma Import (C, Internal, "gtk_pixmap_get");
    begin
-      Internal (Gtk.Get_Object (Pixmap),
+      Internal (Get_Object (Pixmap),
                 Get_Object (Val),
                 Get_Object (Mask));
    end Get;
@@ -36,7 +58,7 @@ package body Gtk.Pixmap is
       pragma Import (C, Internal, "ada_pixmap_get_mask");
       Tmp : Gdk.Bitmap.Gdk_Bitmap;
    begin
-      Set_Object (Tmp, Internal (Gtk.Get_Object (Widget)));
+      Set_Object (Tmp, Internal (Get_Object (Widget)));
       return Tmp;
    end Get_Mask;
 
@@ -52,7 +74,7 @@ package body Gtk.Pixmap is
       pragma Import (C, Internal, "ada_pixmap_get_pixmap");
       Tmp : Gdk.Pixmap.Gdk_Pixmap;
    begin
-      Set_Object (Tmp, Internal (Gtk.Get_Object (Widget)));
+      Set_Object (Tmp, Internal (Get_Object (Widget)));
       return Tmp;
    end Get_Pixmap;
 
@@ -71,7 +93,7 @@ package body Gtk.Pixmap is
           return      System.Address;
       pragma Import (C, Internal, "gtk_pixmap_new");
    begin
-      Gtk.Set_Object (Widget, Internal (Get_Object (Pixmap),
+      Set_Object (Widget, Internal (Get_Object (Pixmap),
                                     Get_Object (Mask)));
    end Gtk_New;
 
@@ -90,9 +112,9 @@ package body Gtk.Pixmap is
           Mask   : in System.Address);
       pragma Import (C, Internal, "gtk_pixmap_set");
    begin
-      Internal (Gtk.Get_Object (Pixmap),
-                Gdk.Get_Object (Val),
-                Gdk.Get_Object (Mask));
+      Internal (Get_Object (Pixmap),
+                Get_Object (Val),
+                Get_Object (Mask));
    end Set;
 
 end Gtk.Pixmap;

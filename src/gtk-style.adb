@@ -1,17 +1,29 @@
+-----------------------------------------------------------------------
+--          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--                                                                   --
+-- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU Library General Public       --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- Library General Public License for more details.                  --
+--                                                                   --
+-- You should have received a copy of the GNU Library General Public --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+-----------------------------------------------------------------------
+
 with Gdk; use Gdk;
 with Gtk.Enums; use Gtk.Enums;
+with System;
 
 package body Gtk.Style is
-
-   ------------
-   -- Adjust --
-   ------------
-
-   procedure Adjust (Object : in out Gtk_Style) is
-   begin
-      null;
-      --  IFREF Ref (Object);
-   end Adjust;
 
    --------------
    --  Attach  --
@@ -24,8 +36,8 @@ package body Gtk.Style is
       pragma Import (C, Internal, "gtk_style_attach");
       Result : Gtk_Style;
    begin
-      Gtk.Set_Object (Result, Internal (Gtk.Get_Object (Style),
-                                        Gdk.Get_Object (Window)));
+      Set_Object (Result, Internal (Get_Object (Style),
+                                    Get_Object (Window)));
       return Result;
    end Attach;
 
@@ -39,7 +51,7 @@ package body Gtk.Style is
       function Internal (Style : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_style_copy");
    begin
-      Gtk.Set_Object (Destination, Internal (Gtk.Get_Object (Source)));
+      Set_Object (Destination, Internal (Get_Object (Source)));
    end Copy;
 
 
@@ -51,7 +63,7 @@ package body Gtk.Style is
       procedure Internal (Style : in System.Address);
       pragma Import (C, Internal, "gtk_style_detach");
    begin
-      Internal (Gtk.Get_Object (Style));
+      Internal (Get_Object (Style));
    end Detach;
 
 
@@ -78,7 +90,7 @@ package body Gtk.Style is
                           Height      : in Gint);
       pragma Import (C, Internal, "gtk_draw_arrow");
    begin
-      Internal (Gtk.Get_Object (Style), Gdk.Get_Object (Window), State_Type,
+      Internal (Get_Object (Style), Get_Object (Window), State_Type,
                 Shadow_Type, Arrow_Type, Fill, X, Y, Width, Height);
    end Draw_Arrow;
 
@@ -103,7 +115,7 @@ package body Gtk.Style is
                           Height      : in Gint);
       pragma Import (C, Internal, "gtk_draw_diamond");
    begin
-      Internal (Gtk.Get_Object (Style), Gdk.Get_Object (Window), State_Type,
+      Internal (Get_Object (Style), Get_Object (Window), State_Type,
                 Shadow_Type, X, Y, Width, Height);
    end Draw_Diamond;
 
@@ -122,7 +134,7 @@ package body Gtk.Style is
                           X1, X2, Y     : in Gint);
       pragma Import (C, Internal, "gtk_draw_hline");
    begin
-      Internal (Gtk.Get_Object (Style), Gdk.Get_Object (Window),
+      Internal (Get_Object (Style), Get_Object (Window),
                 State_Type, X1, X2, Y);
    end Draw_Hline;
 
@@ -146,7 +158,7 @@ package body Gtk.Style is
                           Height      : in Gint);
       pragma Import (C, Internal, "gtk_draw_oval");
    begin
-      Internal (Gtk.Get_Object (Style), Gdk.Get_Object (Window), State_Type,
+      Internal (Get_Object (Style), Get_Object (Window), State_Type,
                 Shadow_Type, X, Y, Width, Height);
    end Draw_Oval;
 
@@ -169,7 +181,7 @@ package body Gtk.Style is
                           Fill          : in Gint);
       pragma Import (C, Internal, "gtk_draw_polygon");
    begin
-      Internal (Gtk.Get_Object (Style), Gdk.Get_Object (Window), State_Type,
+      Internal (Get_Object (Style), Get_Object (Window), State_Type,
                 Shadow_Type, Points, Points'Length, Fill);
    end Draw_Polygon;
 
@@ -191,7 +203,7 @@ package body Gtk.Style is
                           X, Y, Width, Height : Gint);
       pragma Import (C, Internal, "gtk_draw_shadow");
    begin
-      Internal (Gtk.Get_Object (Style), Gdk.Get_Object (Window),
+      Internal (Get_Object (Style), Get_Object (Window),
                 State_Type, Shadow_Type, X, Y, Width, Height);
    end Draw_Shadow;
 
@@ -211,7 +223,7 @@ package body Gtk.Style is
                           Str           : in String);
       pragma Import (C, Internal, "gtk_draw_string");
    begin
-      Internal (Gtk.Get_Object (Style), Gdk.Get_Object (Window),
+      Internal (Get_Object (Style), Get_Object (Window),
                 State_Type, X,  Y, Str & ASCII.NUL);
    end Draw_String;
 
@@ -230,7 +242,7 @@ package body Gtk.Style is
                           Y1, Y2, X     : in Gint);
       pragma Import (C, Internal, "gtk_draw_vline");
    begin
-      Internal (Gtk.Get_Object (Style), Gdk.Get_Object (Window),
+      Internal (Get_Object (Style), Get_Object (Window),
                 State_Type, Y1, Y2, X);
    end Draw_Vline;
 
@@ -248,7 +260,7 @@ package body Gtk.Style is
       pragma Import (C, Internal, "ada_style_get_bg");
       Color : Gdk.Color.Gdk_Color;
    begin
-      Set_Object (Color, Internal (Gtk.Get_Object (Style),
+      Set_Object (Color, Internal (Get_Object (Style),
                                    Gtk_State_Type'Pos (State_Type)));
       return Color;
    end Get_Bg;
@@ -263,7 +275,7 @@ package body Gtk.Style is
       pragma Import (C, Internal, "ada_style_get_black");
       Color : Gdk.Color.Gdk_Color;
    begin
-      Set_Object (Color, Internal (Gtk.Get_Object (Style)));
+      Set_Object (Color, Internal (Get_Object (Style)));
       return Color;
    end Get_Black;
 
@@ -277,7 +289,7 @@ package body Gtk.Style is
       pragma Import (C, Internal, "ada_style_get_white");
       Color : Gdk.Color.Gdk_Color;
    begin
-      Set_Object (Color, Internal (Gtk.Get_Object (Style)));
+      Set_Object (Color, Internal (Get_Object (Style)));
       return Color;
    end Get_White;
 
@@ -289,7 +301,7 @@ package body Gtk.Style is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_style_new");
    begin
-      Gtk.Set_Object (Style, Internal);
+      Set_Object (Style, Internal);
    end Gtk_New;
 
    ---------------
@@ -304,29 +316,9 @@ package body Gtk.Style is
       pragma Import (C, Internal, "ada_widget_get_style");
       Style : Gtk.Style.Gtk_Style;
    begin
-      Gtk.Set_Object (Style, Internal (Gtk.Get_Object (Widget)));
+      Set_Object (Style, Internal (Get_Object (Widget)));
       return Style;
    end Get_Style;
-
-   --------------
-   -- Finalize --
-   --------------
-
-   procedure Finalize (Object : in out Gtk_Style) is
-   begin
-      null;
-      --  IFREF Unref (Object);
-   end Finalize;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize (Object : in out Gtk_Style) is
-   begin
-      null;
-      --  IFREF Ref (Object);
-   end Initialize;
 
    ---------
    -- Ref --
@@ -337,8 +329,8 @@ package body Gtk.Style is
       pragma Import (C, Internal, "gtk_style_ref");
       use type System.Address;
    begin
-      if Gtk.Get_Object (Object) /= System.Null_Address then
-         Internal (Gtk.Get_Object (Object));
+      if Get_Object (Object) /= System.Null_Address then
+         Internal (Get_Object (Object));
       end if;
    end Ref;
 
@@ -354,7 +346,7 @@ package body Gtk.Style is
                           State_Type : in Enums.Gtk_State_Type);
       pragma Import (C, Internal, "gtk_style_set_background");
    begin
-      Internal (Gtk.Get_Object (Style), Gdk.Get_Object (Window), State_Type);
+      Internal (Get_Object (Style), Get_Object (Window), State_Type);
    end Set_Background;
 
    -----------
@@ -366,8 +358,8 @@ package body Gtk.Style is
       pragma Import (C, Internal, "gtk_style_unref");
       use type System.Address;
    begin
-      if Gtk.Get_Object (Object) /= System.Null_Address then
-         Internal (Gtk.Get_Object (Object));
+      if Get_Object (Object) /= System.Null_Address then
+         Internal (Get_Object (Object));
       end if;
    end Unref;
 

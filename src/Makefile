@@ -56,6 +56,9 @@ $(TEST_LINK).o::
 	$(GNATMAKE) -c $(TEST_LINK) -shared -fPIC $(GNATFLAGS)
 
 main: main.adb test.adb test.ads libgtkada.so
+	$(GNATMAKE) $@ $(GNATMAKEFLAGS) $(GNATMAKELDFLAGS) 
+
+install: libgtkada.a libgtkada.so
 	@echo To Install, copy libgtkada.a *.ads *.ali to a new directory
 	@echo and then do a 'chmod a-w *.ali' so that Gnat will not
 	@echo try to recompile your files
