@@ -556,6 +556,14 @@ ada_gdk_cursor_new (gint cursor_type)
  **  Support for events
  **********************************************************/
 
+extern const gdouble invalid_gdouble_value;
+extern const gint    invalid_gint_value;
+extern const gint16  invalid_gint16_value;
+extern const guint   invalid_guint_value;
+extern const guint16 invalid_guint16_value;
+extern const guint32 invalid_guint32_value;
+extern const gulong  invalid_gulong_value;
+
 gdouble ada_gdk_event_get_x (GdkEvent * event)
 {
   switch (event->type)
@@ -575,7 +583,7 @@ gdouble ada_gdk_event_get_x (GdkEvent * event)
     default:
       break;
     }
-  return -10000.0;
+  return invalid_gdouble_value;
 }
 
 gdouble ada_gdk_event_get_y (GdkEvent * event)
@@ -597,7 +605,7 @@ gdouble ada_gdk_event_get_y (GdkEvent * event)
     default:
       break;
     }
-  return -10000.0;
+  return invalid_gdouble_value;
 }
 
 gint16 ada_gdk_event_get_width (GdkEvent * event)
@@ -609,7 +617,7 @@ gint16 ada_gdk_event_get_width (GdkEvent * event)
     default:
       break;
     }
-  return -10000;
+  return invalid_gint16_value;
 }
 
 gint16 ada_gdk_event_get_height (GdkEvent * event)
@@ -621,7 +629,7 @@ gint16 ada_gdk_event_get_height (GdkEvent * event)
     default:
       break;
     }
-  return -10000;
+  return invalid_gint16_value;
 }
 
 gdouble ada_gdk_event_get_x_root (GdkEvent * event)
@@ -641,7 +649,7 @@ gdouble ada_gdk_event_get_x_root (GdkEvent * event)
     default:
       break;
     }
-  return -10000.0;
+  return invalid_gdouble_value;
 }
 
 gdouble ada_gdk_event_get_y_root (GdkEvent * event)
@@ -661,7 +669,7 @@ gdouble ada_gdk_event_get_y_root (GdkEvent * event)
     default:
       break;
     }
-  return -10000.0;
+  return invalid_gdouble_value;
 }
 
 guint ada_gdk_event_get_button (GdkEvent * event)
@@ -676,7 +684,7 @@ guint ada_gdk_event_get_button (GdkEvent * event)
     default:
       break;
     }
-  return 10000;
+  return invalid_guint_value;
 }
 
 guint ada_gdk_event_get_state (GdkEvent * event)
@@ -701,7 +709,7 @@ guint ada_gdk_event_get_state (GdkEvent * event)
     default:
       break;
     }
-  return 10000;
+  return invalid_guint_value;
 }
 
 GdkWindow* ada_gdk_event_get_subwindow (GdkEvent * event)
@@ -727,7 +735,7 @@ gint ada_gdk_event_get_mode (GdkEvent * event)
     default:
       break;
     }
-  return -10000;
+  return invalid_gint_value;
 }
 
 gint ada_gdk_event_get_detail (GdkEvent * event)
@@ -740,7 +748,7 @@ gint ada_gdk_event_get_detail (GdkEvent * event)
     default:
       break;
     }
-  return -10000;
+  return invalid_gint_value;
 }
 
 gint ada_gdk_event_get_focus (GdkEvent * event)
@@ -753,7 +761,7 @@ gint ada_gdk_event_get_focus (GdkEvent * event)
     default:
       break;
     }
-  return -10000;
+  return invalid_gint_value;
 }
 
 gdouble ada_gdk_event_get_pressure (GdkEvent * event)
@@ -770,7 +778,7 @@ gdouble ada_gdk_event_get_pressure (GdkEvent * event)
     default:
       break;
     }
-  return -10000.0;
+  return invalid_gdouble_value;
 }
 
 gdouble ada_gdk_event_get_xtilt (GdkEvent * event)
@@ -787,7 +795,7 @@ gdouble ada_gdk_event_get_xtilt (GdkEvent * event)
     default:
       break;
     }
-  return -10000.0;
+  return invalid_gdouble_value;
 }
 
 gdouble ada_gdk_event_get_ytilt (GdkEvent * event)
@@ -804,7 +812,7 @@ gdouble ada_gdk_event_get_ytilt (GdkEvent * event)
     default:
       break;
     }
-  return -10000.0;
+  return invalid_gdouble_value;
 }
 
 gint ada_gdk_event_get_source (GdkEvent * event)
@@ -824,7 +832,7 @@ gint ada_gdk_event_get_source (GdkEvent * event)
     default:
       break;
     }
-  return -10000;
+  return invalid_gint_value;
 }
 
 guint32 ada_gdk_event_get_device_id (GdkEvent * event)
@@ -844,7 +852,7 @@ guint32 ada_gdk_event_get_device_id (GdkEvent * event)
     default:
       break;
     }
-  return 10000;
+  return invalid_guint32_value;
 }
 
 GdkRectangle ada_gdk_event_get_area (GdkEvent * event)
@@ -854,7 +862,7 @@ GdkRectangle ada_gdk_event_get_area (GdkEvent * event)
   else
     {
       GdkRectangle area;
-      area.width = -10000;
+      area.width = invalid_guint16_value;
       return area;
     }
 }
@@ -863,21 +871,21 @@ gint ada_gdk_event_get_count (GdkEvent * event)
 {
   if (event->type == GDK_EXPOSE)
     return event->expose.count;
-  return -10000;
+  return invalid_gint_value;
 }
 
 gint ada_gdk_event_get_in (GdkEvent * event)
 {
   if (event->type == GDK_FOCUS_CHANGE) 
     return event->focus_change.in;
-  return -10000;
+  return invalid_gint_value;
 }
 
 gint ada_gdk_event_get_is_hint (GdkEvent * event)
 {
   if (event->type == GDK_MOTION_NOTIFY)
     return event->motion.is_hint;
-  return -10000;
+  return invalid_gint_value;
 }
 
 gint ada_gdk_event_get_key_val (GdkEvent * event)
@@ -890,7 +898,7 @@ gint ada_gdk_event_get_key_val (GdkEvent * event)
     default:
       break;
     }
-  return -10000;
+  return invalid_gint_value;
 }
 
 char* ada_gdk_event_get_string (GdkEvent * event)
@@ -910,56 +918,56 @@ gulong ada_gdk_event_get_atom (GdkEvent * event)
 {
   if (event->type == GDK_PROPERTY_NOTIFY)
     return event->property.atom;
-  return 100000;
+  return invalid_gulong_value;
 }
 
 guint ada_gdk_event_get_property_state (GdkEvent * event)
 {
   if (event->type == GDK_PROPERTY_NOTIFY)
     return event->property.state;
-  return 100000;
+  return invalid_guint_value;
 }
 
 gint ada_gdk_event_get_visibility_state (GdkEvent * event)
 {
   if (event->type == GDK_VISIBILITY_NOTIFY)
     return event->visibility.state;
-  return -10000;
+  return invalid_gint_value;
 }
 
 gulong ada_gdk_event_get_selection (GdkEvent * event)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     return event->selection.selection;
-  return 100000;
+  return invalid_gulong_value;
 }
 
 gulong ada_gdk_event_get_target (GdkEvent * event)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     return event->selection.target;
-  return 100000;
+  return invalid_gulong_value;
 }
 
 gulong ada_gdk_event_get_property (GdkEvent * event)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     return event->selection.property;
-  return 100000;
+  return invalid_gulong_value;
 }
 
 guint32 ada_gdk_event_get_requestor (GdkEvent * event)
 {
   if (event->type == GDK_SELECTION_NOTIFY)
     return event->selection.requestor;
-  return 100000;
+  return invalid_guint32_value;
 }
 
 gulong ada_gdk_event_get_message_type (GdkEvent * event)
 {
   if (event->type == GDK_CLIENT_EVENT)
     return event->client.message_type;
-  return 100000;
+  return invalid_gulong_value;
 }
 
 GdkEvent * ada_gdk_event_create (gint type, GdkWindow* win)
