@@ -81,10 +81,38 @@ package Glib.Convert is
      (Str           : String;
       To_Codeset    : String;
       From_Codeset  : String;
+      Error         : GError_Access := null) return String;
+   --  Same as above, but return a String directly.
+
+   procedure Convert
+     (Str           : chars_ptr;
+      Len           : Natural;
+      To_Codeset    : String;
+      From_Codeset  : String;
+      Bytes_Read    : out Natural;
+      Bytes_Written : out Natural;
+      Error         : GError_Access := null;
+      Result        : out String);
+   --  Same as Convert procedure, but take a C string as input.
+
+   function Convert
+     (Str           : String;
+      To_Codeset    : String;
+      From_Codeset  : String;
       Bytes_Read    : access Natural;
       Bytes_Written : access Natural;
       Error         : GError_Access := null) return chars_ptr;
    --  Same as Convert procedure, but return the result as a C string.
+
+   function Convert
+     (Str           : chars_ptr;
+      Len           : Natural;
+      To_Codeset    : String;
+      From_Codeset  : String;
+      Bytes_Read    : access Natural;
+      Bytes_Written : access Natural;
+      Error         : GError_Access := null) return chars_ptr;
+   --  Same as Convert procedure, but take and return the result as a C string.
 
    procedure Locale_To_UTF8
      (OS_String     : String;

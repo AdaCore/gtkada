@@ -31,6 +31,26 @@ package body Glib.Convert is
    procedure g_free (S : chars_ptr);
    pragma Import (C, g_free, "g_free");
 
+   function g_convert
+     (Str           : String;
+      Len           : Gsize;
+      To_Codeset    : String;
+      From_Codeset  : String;
+      Bytes_Read    : access Gsize;
+      Bytes_Written : access Gsize;
+      Error         : GError_Access) return chars_ptr;
+
+   function g_convert
+     (Str           : chars_ptr;
+      Len           : Gsize;
+      To_Codeset    : String;
+      From_Codeset  : String;
+      Bytes_Read    : access Gsize;
+      Bytes_Written : access Gsize;
+      Error         : GError_Access) return chars_ptr;
+
+   pragma Import (C, g_convert, "g_convert");
+
    -------------
    -- Convert --
    -------------
@@ -44,23 +64,66 @@ package body Glib.Convert is
       Error         : GError_Access := null;
       Result        : out String)
    is
-      function Internal
-        (Str           : String;
-         Len           : Gsize;
-         To_Codeset    : String;
-         From_Codeset  : String;
-         Bytes_Read    : access Gsize;
-         Bytes_Written : access Gsize;
-         Error         : GError_Access) return chars_ptr;
-      pragma Import (C, Internal, "g_convert");
-
       Read    : aliased Gsize;
       Written : aliased Gsize;
       S       : chars_ptr;
 
    begin
-      S := Internal
+      S := g_convert
         (Str, Str'Length, To_Codeset & ASCII.NUL, From_Codeset & ASCII.NUL,
+         Read'Access, Written'Access, Error);
+      Bytes_Read := Natural (Read);
+      Bytes_Written := Natural (Written);
+
+      declare
+         Res : constant String := Value (S);
+      begin
+         Result (Result'First .. Result'First + Bytes_Written - 1) := Res;
+      end;
+
+      g_free (S);
+   end Convert;
+
+   function Convert
+     (Str           : String;
+      To_Codeset    : String;
+      From_Codeset  : String;
+      Error         : GError_Access := null) return String
+   is
+      Read    : aliased Gsize;
+      Written : aliased Gsize;
+      S       : chars_ptr;
+
+   begin
+      S := g_convert
+        (Str, Str'Length, To_Codeset & ASCII.NUL, From_Codeset & ASCII.NUL,
+         Read'Access, Written'Access, Error);
+
+      declare
+         Res : constant String := Value (S);
+      begin
+         g_free (S);
+         return Res;
+      end;
+   end Convert;
+
+   procedure Convert
+     (Str           : chars_ptr;
+      Len           : Natural;
+      To_Codeset    : String;
+      From_Codeset  : String;
+      Bytes_Read    : out Natural;
+      Bytes_Written : out Natural;
+      Error         : GError_Access := null;
+      Result        : out String)
+   is
+      Read    : aliased Gsize;
+      Written : aliased Gsize;
+      S       : chars_ptr;
+
+   begin
+      S := g_convert
+        (Str, Gsize (Len), To_Codeset & ASCII.NUL, From_Codeset & ASCII.NUL,
          Read'Access, Written'Access, Error);
       Bytes_Read := Natural (Read);
       Bytes_Written := Natural (Written);
@@ -82,23 +145,35 @@ package body Glib.Convert is
       Bytes_Written : access Natural;
       Error         : GError_Access := null) return chars_ptr
    is
-      function Internal
-        (Str           : String;
-         Len           : Gsize;
-         To_Codeset    : String;
-         From_Codeset  : String;
-         Bytes_Read    : access Gsize;
-         Bytes_Written : access Gsize;
-         Error         : GError_Access) return chars_ptr;
-      pragma Import (C, Internal, "g_convert");
-
       Read    : aliased Gsize;
       Written : aliased Gsize;
       S       : chars_ptr;
 
    begin
-      S := Internal
+      S := g_convert
         (Str, Str'Length, To_Codeset & ASCII.NUL, From_Codeset & ASCII.NUL,
+         Read'Access, Written'Access, Error);
+      Bytes_Read.all := Natural (Read);
+      Bytes_Written.all := Natural (Written);
+      return S;
+   end Convert;
+
+   function Convert
+     (Str           : chars_ptr;
+      Len           : Natural;
+      To_Codeset    : String;
+      From_Codeset  : String;
+      Bytes_Read    : access Natural;
+      Bytes_Written : access Natural;
+      Error         : GError_Access := null) return chars_ptr
+   is
+      Read    : aliased Gsize;
+      Written : aliased Gsize;
+      S       : chars_ptr;
+
+   begin
+      S := g_convert
+        (Str, Gsize (Len), To_Codeset & ASCII.NUL, From_Codeset & ASCII.NUL,
          Read'Access, Written'Access, Error);
       Bytes_Read.all := Natural (Read);
       Bytes_Written.all := Natural (Written);
