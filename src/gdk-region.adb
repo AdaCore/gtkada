@@ -29,6 +29,18 @@
 package body Gdk.Region is
 
 
+   -----------
+   --  "="  --
+   -----------
+
+   function "=" (Left, Right : in Gdk_Region) return Boolean is
+      function Internal (Region1, Region2 : in System.Address) return Gboolean;
+      pragma Import (C, Internal, "gdk_region_equal");
+   begin
+      return To_Boolean (Internal (Get_Object (Left), Get_Object (Right)));
+   end "=";
+
+
    ---------------
    --  Destroy  --
    ---------------
@@ -52,19 +64,6 @@ package body Gdk.Region is
    begin
       return To_Boolean (Internal (Get_Object (Region)));
    end Empty;
-
-
-   -------------
-   --  Equal  --
-   -------------
-
-   function Equal (Region1, Region2 : in Gdk_Region) return Boolean is
-      function Internal (Region1, Region2 : in System.Address) return Gboolean;
-      pragma Import (C, Internal, "gdk_region_equal");
-   begin
-      return To_Boolean (Internal (Get_Object (Region1),
-                                   Get_Object (Region2)));
-   end Equal;
 
 
    ---------------

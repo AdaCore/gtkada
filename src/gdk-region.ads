@@ -42,7 +42,8 @@ package Gdk.Region is
 
    function Empty (Region : in Gdk_Region) return Boolean;
 
-   function Equal (Region1, Region2 : in Gdk_Region) return Boolean;
+   function "=" (Left, Right : in Gdk_Region) return Boolean;
+
 
    function Point_In (Region : in Gdk_Region;
                       X, Y   : in Integer) return Boolean;
