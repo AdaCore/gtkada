@@ -42,9 +42,9 @@ package body Glib.Glade is
    --  Use by Add_Package and Gen_Packages to register all the packages
    --  referenced and print them
 
-   Signal_Instanciations : array (Signal_Range) of String_Ptr;
-   Num_Signal_Instanciations : Natural := 0;
-   --  Used by Add_Signal_Instanciation and Gen_Signal_Instanciations
+   Signal_Instantiations : array (Signal_Range) of String_Ptr;
+   Num_Signal_Instantiations : Natural := 0;
+   --  Used by Add_Signal_Instantiation and Gen_Signal_Instantiations
 
    type Signal_Rec is record
       Widget : Node_Ptr;
@@ -53,7 +53,7 @@ package body Glib.Glade is
 
    Signals : array (Signal_Range) of Signal_Rec;
    Num_Signals : Natural := 0;
-   --  Used by Add_Signal and Gen_Signal_Instanciations
+   --  Used by Add_Signal and Gen_Signal_Instantiations
 
    procedure Add_Signal
      (Widget : Node_Ptr; Handler, Signal, Class : String_Ptr);
@@ -61,8 +61,8 @@ package body Glib.Glade is
    --  Top is the node of the top level widget containing the signal
    --  Widget is the node of the widget containing the signal
 
-   procedure Add_Signal_Instanciation (S : String_Ptr);
-   --  Add widget S in Signal_Instanciation if S isn't already present
+   procedure Add_Signal_Instantiation (S : String_Ptr);
+   --  Add widget S in Signal_Instantiation if S isn't already present
 
    --------------
    -- Get_Part --
@@ -125,20 +125,20 @@ package body Glib.Glade is
    end Add_Signal;
 
    ------------------------------
-   -- Add_Signal_Instanciation --
+   -- Add_Signal_Instantiation --
    ------------------------------
 
-   procedure Add_Signal_Instanciation (S : String_Ptr) is
+   procedure Add_Signal_Instantiation (S : String_Ptr) is
    begin
-      for J in 1 .. Num_Signal_Instanciations loop
-         if Signal_Instanciations (J).all = S.all then
+      for J in 1 .. Num_Signal_Instantiations loop
+         if Signal_Instantiations (J).all = S.all then
             return;
          end if;
       end loop;
 
-      Num_Signal_Instanciations := Num_Signal_Instanciations + 1;
-      Signal_Instanciations (Num_Signal_Instanciations) := S;
-   end Add_Signal_Instanciation;
+      Num_Signal_Instantiations := Num_Signal_Instantiations + 1;
+      Signal_Instantiations (Num_Signal_Instantiations) := S;
+   end Add_Signal_Instantiation;
 
    ------------
    -- Adjust --
@@ -798,7 +798,7 @@ package body Glib.Glade is
          Name := Get_Field (P, "name");
          After := Get_Field (P, "after");
          Add_Signal (Top, Handler, Name, Class);
-         Add_Signal_Instanciation (Class);
+         Add_Signal_Instantiation (Class);
 
          Put_Line (File, "   " &
            To_Ada (Class (Class'First + 3 .. Class'Last)) &
@@ -832,10 +832,10 @@ package body Glib.Glade is
    end Gen_Signal;
 
    -------------------------------
-   -- Gen_Signal_Instanciations --
+   -- Gen_Signal_Instantiations --
    -------------------------------
 
-   function Gen_Signal_Instanciations (Project : String; File : File_Type)
+   function Gen_Signal_Instantiations (Project : String; File : File_Type)
      return Natural
    is
       S        : String_Ptr;
@@ -846,12 +846,12 @@ package body Glib.Glade is
       Kind_Old : String_Ptr;
 
    begin
-      if Num_Signal_Instanciations > 0 then
+      if Num_Signal_Instantiations > 0 then
          Put_Line (File, "with Gtk.Handlers;");
       end if;
 
-      for J in Signal_Range'First .. Num_Signal_Instanciations loop
-         S := new String' (To_Package_Name (Signal_Instanciations (J).all));
+      for J in Signal_Range'First .. Num_Signal_Instantiations loop
+         S := new String' (To_Package_Name (Signal_Instantiations (J).all));
          Put_Line (File, "with " & S.all & "; use " & S.all & ";");
          Free (S);
       end loop;
@@ -860,8 +860,8 @@ package body Glib.Glade is
       Put_Line (File, "package Callbacks_" & Project & " is");
       New_Line (File);
 
-      for J in Signal_Range'First .. Num_Signal_Instanciations loop
-         S := Signal_Instanciations (J);
+      for J in Signal_Range'First .. Num_Signal_Instantiations loop
+         S := Signal_Instantiations (J);
          Put_Line (File, "   package " &
            To_Ada (S (S'First + 3 .. S'Last)) & "_Callback is new");
          Put_Line (File, "     Gtk.Handlers.Callback (" &
@@ -1042,8 +1042,8 @@ package body Glib.Glade is
          end if;
       end loop;
 
-      return Num_Signal_Instanciations;
-   end Gen_Signal_Instanciations;
+      return Num_Signal_Instantiations;
+   end Gen_Signal_Instantiations;
 
    --  The following table is needed to transform Gtk+ names that cannot
    --  be mapped automatically (e.g Ada reserved words) into the correct GtkAda
