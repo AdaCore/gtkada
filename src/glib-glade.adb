@@ -30,7 +30,6 @@
 with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Strings.Fixed; use Ada.Strings; use Ada.Strings.Fixed;
 with Gtk; use Gtk;
-with Gtk.Handlers; use Gtk.Handlers;
 
 package body Glib.Glade is
 
@@ -133,7 +132,7 @@ package body Glib.Glade is
 
    function Add_Signal
      (Widget : Node_Ptr;
-      Handler, Signal, Class, Orig_Class : String_Ptr)return String_Ptr  is
+      Handler, Signal, Class, Orig_Class : String_Ptr) return String_Ptr  is
    begin
       for J in 1 .. Num_Signals loop
          if Signals (J).Handler.all = Handler.all then
