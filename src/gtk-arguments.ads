@@ -27,14 +27,18 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
 --  This package provides a convenient interface to C, providing easy
---  conversion from a C's (void*) pointer to any Ada type used in GtkAda.
---  These functions are mainly used when writing callbacks and/or
---  marshallers for these callbacks (see Gtk.Marshallers and Gtk.Handlers).
+--  conversion from a C's (void*) pointer to any Ada type used in
+--  GtkAda.  Although this package has been designed to be easily
+--  reusable by being as general as possible, these functions are mainly
+--  used when writing callbacks and/or marshallers (see Gtk.Marshallers
+--  and Gtk.Handlers).
 --
 --  Therefore, the main type in this package is Gtk_Args, which is the
---  equivalent of the C's (GtkArg*) array, i.e an array of unions.
---  This package provides functions to extract the values from this type.
+--  equivalent of the C's (GtkArg*) array, i.e an array of unions.  This
+--  package provides functions to extract the values from this type.
+--  </description>
 
 with System;
 with Gdk.Event;
@@ -44,13 +48,14 @@ with Gtk.Notebook;
 package Gtk.Arguments is
 
    type Gtk_Args is private;
-   --  This represents a set of parameters passed to a callback. You can access
-   --  the parameters in it through one of the To_* functions found below.
-   --  First argument has index 1.
+   --  This type represents a table of arguments. Each argument of the
+   --  table can be of any type. You can access them through one of the
+   --  To_* functions found below. The index of the first element is
+   --  always 1.
 
 
    function Make_Args (Nb : Guint; Args : System.Address) return Gtk_Args;
-   --  Build a Gtk_Args structure from the match C array. Nb should be the
+   --  Build a Gtk_Args structure from the given C array. Nb should be the
    --  number of elements in the Args array.
 
    function Get_Nth   (Args : Gtk_Args; Num : Positive) return System.Address;
@@ -82,7 +87,6 @@ package Gtk.Arguments is
 
    ----------------------------------
    --  General conversion functions
-   --  These are the same functions as above, but more general
    ----------------------------------
 
    function To_Gint          (C : System.Address) return Gint;
