@@ -1087,21 +1087,20 @@ package body Gtkada.MDI is
             Set_Foreground (MDI.Focus_GC, Focus_Title_Color);
             Need_Redraw := True;
          end if;
+      end if;
 
-         --  Resize the title bar of all children already in the MDI
+      --  Resize the title bar of all children already in the MDI
 
-         List := First (MDI.Items);
-         while List /= Null_List loop
-            C := MDI_Child (Get_Data (List));
-            Set_Child_Title_Bar (C);
-            Update_Tab_Color (C, Force => True);
-            Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
-            List := Widget_List.Next (List);
-         end loop;
+      List := First (MDI.Items);
+      while List /= Null_List loop
+         C := MDI_Child (Get_Data (List));
+         Set_Child_Title_Bar (C);
+         Update_Tab_Color (C, Force => True);
+         List := Widget_List.Next (List);
+      end loop;
 
-         if Need_Redraw then
-            Queue_Draw (MDI);
-         end if;
+      if Need_Redraw then
+         Queue_Draw (MDI);
       end if;
    end Configure;
 
@@ -1338,9 +1337,11 @@ package body Gtkada.MDI is
       if not Child.MDI.Draw_Title_Bars then
          Hide (Child.Title_Box);
          Set_Child_Visible (Child.Title_Box, False);
+         Set_USize (Child.Title_Box, -1, Child.MDI.Title_Bar_Height);
       else
          Show (Child.Title_Box);
          Set_Child_Visible (Child.Title_Box, True);
+         Set_USize (Child.Title_Box, -1, 0);
       end if;
    end Set_Child_Title_Bar;
 
