@@ -43,8 +43,9 @@ package Gtk.Enums is
                             Window_Dialog,
                             Window_Popup);
 
-   type Gtk_Button_Box_Style is (Default_Style, Spread,
-                                 Edge, Start, Style_End);
+   type Gtk_Button_Box_Style is
+     (Buttonbox_Default_Style, Buttonbox_Spread, Buttonbox_Edge,
+      Buttonbox_Start, Buttonbox_Style_End);
 
    type Gtk_Direction_Type is (Dir_Tab_Forward,
                                Dir_Tab_Backward,
@@ -80,7 +81,7 @@ package Gtk.Enums is
                             Update_Discontinuous,
                             Update_Delayed);
 
-   type Gtk_Relief_Style is (Normal, Half, None);
+   type Gtk_Relief_Style is (Relief_Normal, Relief_Half, Relief_None);
 
    type Gtk_Attach_Options is new Glib.Guint32;
    Expand : constant Gtk_Attach_Options := 1;
@@ -97,9 +98,9 @@ package Gtk.Enums is
    type Gtk_Submenu_Placement is (Top_Bottom,
                                   Left_Right);
 
-   type Gtk_Menu_Factory_Type is (Factory_Menu,
-                                  Factory_Menu_Bar,
-                                  Factory_Option_Menu);
+   type Gtk_Menu_Factory_Type is (Menu_Factory_Menu,
+                                  Menu_Factory_Menu_Bar,
+                                  Menu_Factory_Option_Menu);
 
    type Gtk_Resize_Mode is (Resize_Parent,     --  Pass request to the parent
                             Resize_Queue,      --  Queue resizes on this widget
@@ -142,38 +143,32 @@ package Gtk.Enums is
    type Gtk_Orientation is (Orientation_Horizontal,
                             Orientation_Vertical);
 
-   type Gtk_Spin_Button_Update_Policy is new Glib.Guint32;
-   Update_Always        : constant Gtk_Spin_Button_Update_Policy := 1;
-   Update_If_Valid      : constant Gtk_Spin_Button_Update_Policy := 2;
-   Update_Snap_To_Ticks : constant Gtk_Spin_Button_Update_Policy := 4;
+   type Gtk_Spin_Button_Update_Policy is (Update_Always, Update_If_Valid);
 
+   type Gtk_Toolbar_Child_Type is (Toolbar_Child_Space,
+                                   Toolbar_Child_Button,
+                                   Toolbar_Child_Togglebutton,
+                                   Toolbar_Child_Radiobutton,
+                                   Toolbar_Child_Widget);
 
-   type Gtk_Toolbar_Style is (Toolbar_Icons,
-                              Toolbar_Text,
-                              Toolbar_Both);
+   type Gtk_Toolbar_Style is (Toolbar_Icons, Toolbar_Text, Toolbar_Both);
 
-   type Gtk_Toolbar_Child_Type is (Child_Space,
-                                   Child_Button,
-                                   Child_Togglebutton,
-                                   Child_Radiobutton,
-                                   Child_Widget);
+   type Gtk_Toolbar_Space_Style is (Toolbar_Space_Empty, Toolbar_Space_Line);
 
-   type Gtk_Tree_View_Mode is (View_Line,
-                               View_Item);
+   type Gtk_Tree_View_Mode is (Tree_View_Line, Tree_View_Item);
 
    type Gtk_Visibility is (Visibility_None,
                            Visibility_Partial,
                            Visibility_Full);
 
-   type Gtk_Progress_Bar_Style is (Continuous,
-                                   Discrete);
+   type Gtk_Progress_Bar_Style is (Progress_Continuous, Progress_Discrete);
+
    --  enum type introduced in gtk1.1
 
-   type Gtk_Progress_Bar_Orientation is (Left_To_Right,
-                                         Right_To_Left,
-                                         Bottom_To_Top,
-                                         Top_To_Bottom);
-   --  enum type introduced in gtk1.1
+   type Gtk_Progress_Bar_Orientation is (Progress_Left_To_Right,
+                                         Progress_Right_To_Left,
+                                         Progress_Bottom_To_Top,
+                                         Progress_Top_To_Bottom);
 
    --  Some Glib instanciations
 
