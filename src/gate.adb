@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --                   GATE - GtkAda Components                        --
 --                                                                   --
---               Copyright (C) 1999 Arnaud Charlet                   --
+--                      Copyright (C) 1999                           --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
