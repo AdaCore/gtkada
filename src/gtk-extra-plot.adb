@@ -104,7 +104,6 @@ package body Gtk.Extra.Plot is
       pragma Import (C, Internal, "gtk_plot_new");
    begin
       Set_Object (Plot, Internal (Drawable));
-      Initialize_User_Data (Plot);
    end Initialize;
 
    -------------
@@ -138,7 +137,6 @@ package body Gtk.Extra.Plot is
       pragma Import (C, Internal, "gtk_plot_new_with_size");
    begin
       Set_Object (Plot, Internal (Drawable, Width, Height));
-      Initialize_User_Data (Plot);
    end Initialize;
 
    ------------------
@@ -257,13 +255,16 @@ package body Gtk.Extra.Plot is
        Area : in Gdk.Rectangle.Gdk_Rectangle)
    is
       procedure Internal (Plot : in System.Address;
-                          Area : in out Gdk.Rectangle.Gdk_Rectangle);
+                          Area : System.Address);
       pragma Import (C, Internal, "gtk_plot_refresh");
 
-      Rec : Gdk.Rectangle.Gdk_Rectangle := Area;
-
+      Rec : aliased Gdk.Rectangle.Gdk_Rectangle := Area;
+      R : System.Address := Rec'Adress;
    begin
-      Internal (Get_Object (Plot), Rec);
+      if Rec = Full_Area then
+         R := System.Null_Address;
+      end if;
+      Internal (Get_Object (Plot), R);
    end Refresh;
 
    ----------
@@ -1793,7 +1794,6 @@ package body Gtk.Extra.Plot is
       pragma Import (C, Internal, "gtk_plot_axis_new");
    begin
       Set_Object (Axis, Internal (Orientation));
-      Initialize_User_Data (Axis);
    end Initialize;
 
    ----------------------------
