@@ -17,15 +17,19 @@ with Gtk.Widget;
 with Gtk.Window;
 
 with Create_Buttons;
+with Create_Check_Buttons;
 with Create_Color_Selection;
-with Create_File_Selection;
+
+--  with Ada.Text_IO; use Ada.Text_IO;
 
 package body Test is
 
    package ASU renames Ada.Strings.Unbounded;
 
+   function US (Source : String) return ASU.Unbounded_String
+     renames ASU.To_Unbounded_String;
 
-   type Gtk_Window_Access is access all Window.Gtk_Window'Class;
+
 
    ----------------------
    --  Local services  --
@@ -64,64 +68,48 @@ package body Test is
 
    type Buttons_Array is array (Positive range <>) of Button_Information;
 
-   -------------------------------
-   --  Gtk+ Example procedures  --
-   -------------------------------
-
-   Main_Window : aliased Window.Gtk_Window;
-   Check_Buttons_Window : aliased Window.Gtk_Window;
-
-   procedure Create_Check_Buttons (Widget : in out Button.Gtk_Button'Class);
-   procedure Create_Check_Buttons (Widget : in out Button.Gtk_Button'Class)
-   is separate;
-
-   ---------------------------
-   --  The list of buttons  --
-   ---------------------------
 
    Buttons : constant Buttons_Array :=
-     ((ASU.To_Unbounded_String ("button box"), null),
-      (ASU.To_Unbounded_String ("buttons"), Create_Buttons.Run'Access),
-      (ASU.To_Unbounded_String ("check buttons"), Create_Check_Buttons'Access),
-      (ASU.To_Unbounded_String ("clist"), null),
-      (ASU.To_Unbounded_String ("color selection"),
-       Create_Color_Selection.Run'Access),
-      (ASU.To_Unbounded_String ("cursors"), null),
-      (ASU.To_Unbounded_String ("dialog"), null),
-      (ASU.To_Unbounded_String ("dnd"), null),
-      (ASU.To_Unbounded_String ("entry"), null),
-      (ASU.To_Unbounded_String ("file selection"),
-       Create_File_Selection.Run'Access),
-      (ASU.To_Unbounded_String ("gamma curve"), null),
-      (ASU.To_Unbounded_String ("handle box"), null),
-      (ASU.To_Unbounded_String ("list"), null),
-      (ASU.To_Unbounded_String ("menus"), null),
-      (ASU.To_Unbounded_String ("miscellaneous"), null),
-      (ASU.To_Unbounded_String ("notebook"), null),
-      (ASU.To_Unbounded_String ("panes"), null),
-      (ASU.To_Unbounded_String ("pixmap"), null),
-      (ASU.To_Unbounded_String ("preview color"), null),
-      (ASU.To_Unbounded_String ("preview gray"), null),
-      (ASU.To_Unbounded_String ("progress bar"), null),
-      (ASU.To_Unbounded_String ("radio buttons"), null),
-      (ASU.To_Unbounded_String ("range controls"), null),
-      (ASU.To_Unbounded_String ("reparent"), null),
-      (ASU.To_Unbounded_String ("rulers"), null),
-      (ASU.To_Unbounded_String ("scrolled windows"), null),
-      (ASU.To_Unbounded_String ("shapes"), null),
-      (ASU.To_Unbounded_String ("spinbutton"), null),
-      (ASU.To_Unbounded_String ("statusbar"), null),
-      (ASU.To_Unbounded_String ("test idle"), null),
-      (ASU.To_Unbounded_String ("test mainloop"), null),
-      (ASU.To_Unbounded_String ("test scrolling"), null),
-      (ASU.To_Unbounded_String ("test selection"), null),
-      (ASU.To_Unbounded_String ("test timeout"), null),
-      (ASU.To_Unbounded_String ("text"), null),
-      (ASU.To_Unbounded_String ("toggle buttons"), null),
-      (ASU.To_Unbounded_String ("toolbar"), null),
-      (ASU.To_Unbounded_String ("tooltips"), null),
-      (ASU.To_Unbounded_String ("tree"), null),
-      (ASU.To_Unbounded_String ("WM hints"), null)
+     ((US ("button box"), null),
+      (US ("buttons"), Create_Buttons.Run'Access),
+      (US ("check buttons"), Create_Check_Buttons.Run'Access),
+      (US ("clist"), null),
+      (US ("color selection"), Create_Color_Selection.Run'Access),
+      (US ("cursors"), null),
+      (US ("dialog"), null),
+      (US ("dnd"), null),
+      (US ("entry"), null),
+      (US ("file selection"), null),
+      (US ("gamma curve"), null),
+      (US ("handle box"), null),
+      (US ("list"), null),
+      (US ("menus"), null),
+      (US ("miscellaneous"), null),
+      (US ("notebook"), null),
+      (US ("panes"), null),
+      (US ("pixmap"), null),
+      (US ("preview color"), null),
+      (US ("preview gray"), null),
+      (US ("progress bar"), null),
+      (US ("radio buttons"), null),
+      (US ("range controls"), null),
+      (US ("reparent"), null),
+      (US ("rulers"), null),
+      (US ("scrolled windows"), null),
+      (US ("shapes"), null),
+      (US ("spinbutton"), null),
+      (US ("statusbar"), null),
+      (US ("test idle"), null),
+      (US ("test mainloop"), null),
+      (US ("test scrolling"), null),
+      (US ("test selection"), null),
+      (US ("test timeout"), null),
+      (US ("text"), null),
+      (US ("toggle buttons"), null),
+      (US ("toolbar"), null),
+      (US ("tooltips"), null),
+      (US ("tree"), null),
+      (US ("WM hints"), null)
       );
 
    --------------------------
@@ -129,6 +117,7 @@ package body Test is
    --------------------------
 
    procedure Create_Main_Window is
+      Main_Window : Window.Gtk_Window;
       Cb_Id : Guint;
       Box1, Box2 : Vbox.Gtk_Vbox;
       A_Label : Label.Gtk_Label;
@@ -145,10 +134,9 @@ package body Test is
 
       Cb_Id := Window_Callback.Connect (Obj => Main_Window, Name => "destroy",
                                         Func => Exit_Main'Access);
-      Cb_Id := Window_Callback.Connect
-        (Obj => Main_Window,
-         Name => "delete_event",
-         Func => Exit_Main'Access);
+      Cb_Id := Window_Callback.Connect (Obj => Main_Window,
+                                        Name => "delete_event",
+                                        Func => Exit_Main'Access);
 
       Vbox.Gtk_New (Widget => Box1, Homogeneous => False, Spacing => 0);
       Container.Add (Container => Main_Window, Widget => Box1);
