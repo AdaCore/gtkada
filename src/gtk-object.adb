@@ -202,14 +202,15 @@ package body Gtk.Object is
       -- Get --
       ---------
 
-      function Get (Object : in Gtk_Object'Class) return Data_Type is
+      function Get (Object : in Gtk_Object'Class;
+                    Id     : in String := "user_data") return Data_Type is
          function Internal (Object : in System.Address;
                             Key    : in String)
                             return System.Address;
          pragma Import (C, Internal, "gtk_object_get_data");
          D : Cb_Record_Access
            := Convert (Internal (Get_Object (Object),
-                                 "user_data" & Ascii.NUL));
+                                 Id & Ascii.NUL));
       begin
          if D = null then
             raise Constraint_Error;
@@ -222,7 +223,8 @@ package body Gtk.Object is
       ---------
 
       procedure Set (Object : in Gtk_Object'Class;
-                     Data   : in Data_Type)
+                     Data   : in Data_Type;
+                     Id     : in String := "user_data")
       is
          function Convert is new Unchecked_Conversion (Cb_Record_Access,
                                                        System.Address);
@@ -234,7 +236,7 @@ package body Gtk.Object is
          D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
       begin
          Internal (Get_Object (Object),
-                   "user_data" & Ascii.NUL,
+                   Id & Ascii.NUL,
                    Convert (D),
                    Free'Address);
       end Set;

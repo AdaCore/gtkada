@@ -23,11 +23,13 @@ package Gtk.Object is
    generic
       type Data_Type (<>) is private;
    package User_Data is
-      function Get (Object : in Gtk_Object'Class) return Data_Type;
+      function Get (Object : in Gtk_Object'Class;
+                    Id     : in String := "user_data") return Data_Type;
       --  mapping: User_Data.Get gtkobject.h gtk_object_get_user_data
 
       procedure Set (Object : in Gtk_Object'Class;
-                     Data   : in Data_Type);
+                     Data   : in Data_Type;
+                     Id     : in String := "user_data");
       --  mapping: User_Data.Set gtkobject.h gtk_object_set_user_data
    end User_Data;
 
