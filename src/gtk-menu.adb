@@ -33,21 +33,6 @@ with Gtk.Menu_Shell; use Gtk.Menu_Shell;
 
 package body Gtk.Menu is
 
-   ------------
-   -- Append --
-   ------------
-
-   procedure Append
-     (Menu  : access Gtk_Menu_Record;
-      Child : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
-   is
-      procedure Internal (Menu  : System.Address;
-                          Child : System.Address);
-      pragma Import (C, Internal, "gtk_menu_append");
-   begin
-      Internal (Get_Object (Menu), Get_Object (Child));
-   end Append;
-
    ----------------------
    -- Attach_To_Widget --
    ----------------------
@@ -173,23 +158,6 @@ package body Gtk.Menu is
       Initialize_User_Data (Widget);
    end Initialize;
 
-   ------------
-   -- Insert --
-   ------------
-
-   procedure Insert
-     (Menu     : access Gtk_Menu_Record;
-      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
-      Position : in Gint := 0)
-   is
-      procedure Internal (Menu     : System.Address;
-                          Child    : System.Address;
-                          Position : Gint);
-      pragma Import (C, Internal, "gtk_menu_insert");
-   begin
-      Internal (Get_Object (Menu), Get_Object (Child), Position);
-   end Insert;
-
    -------------
    -- Popdown --
    -------------
@@ -201,22 +169,6 @@ package body Gtk.Menu is
    begin
       Internal (Get_Object (Menu));
    end Popdown;
-
-   -------------
-   -- Prepend --
-   -------------
-
-   procedure Prepend
-     (Menu  : access Gtk_Menu_Record;
-      Child : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
-   is
-      procedure Internal (Menu  : System.Address;
-                          Child : System.Address);
-      pragma Import (C, Internal, "gtk_menu_prepend");
-   begin
-      Internal (Get_Object (Menu), Get_Object (Child));
-   end Prepend;
-
 
    ---------------------
    --  Reorder_Child  --

@@ -92,25 +92,6 @@ package Gtk.Menu is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Menu.
 
-   procedure Append
-     (Menu  : access Gtk_Menu_Record;
-      Child : access Gtk_Menu_Item_Record'Class);
-   --  Append a new item to the menu.
-   --  The new item is added at the end of the menu.
-
-   procedure Insert
-     (Menu     : access Gtk_Menu_Record;
-      Child    : access Gtk_Menu_Item_Record'Class;
-      Position : in Gint := 0);
-   --  Add a new item to the menu, at a given position.
-   --  The first position in the menu is number 0.
-   --  If Position is 0, this procedure is the same as Prepend.
-
-   procedure Prepend
-     (Menu  : access Gtk_Menu_Record;
-      Child : access Gtk_Menu_Item_Record'Class);
-   --  Add a new item at the end of a menu.
-
    procedure Reorder_Child
      (Menu     : access Gtk_Menu_Record;
       Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
