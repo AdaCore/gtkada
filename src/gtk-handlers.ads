@@ -163,7 +163,7 @@ package Gtk.Handlers is
 
    generic
       type Widget_Type is new Glib.Object.GObject_Record with private;
-      type Return_Type is private;
+      type Return_Type is (<>);
    package Return_Callback is
 
       type Handler is access function
@@ -342,7 +342,7 @@ package Gtk.Handlers is
 
    generic
       type Widget_Type is new Glib.Object.GObject_Record with private;
-      type Return_Type is private;
+      type Return_Type is (<>);
       type User_Type (<>) is private;
    package User_Return_Callback is
 

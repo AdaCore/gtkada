@@ -126,7 +126,7 @@ package Gtk.Marshallers is
 
    generic
       type Widget_Type is new Glib.Object.GObject_Record with private;
-      type Return_Type is private;
+      type Return_Type is (<>);
    package Return_Marshallers is
 
       type Handler_Proxy is access function
@@ -222,7 +222,7 @@ package Gtk.Marshallers is
 
    generic
       type Widget_Type is new Glib.Object.GObject_Record with private;
-      type Return_Type is private;
+      type Return_Type is (<>);
       type User_Type (<>) is private;
    package User_Return_Marshallers is
 

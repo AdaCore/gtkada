@@ -538,17 +538,16 @@ package body Gtk.Handlers is
            (Object : System.Address;
             Name   : String;
             Param  : System.Address;
-            Ret    : out Return_Type;
-            Last   : System.Address := System.Null_Address);
+            Ret    : out Integer);
          pragma Import (C, Internal, "g_signal_emit_by_name");
 
-         B : Return_Type;
+         B : Integer;
       begin
          pragma Assert (Count_Arguments (Object, Name) = 1);
          Internal
            (Get_Object (Object), Name & ASCII.NUL,
             Gdk.Event.To_Address (Param), B);
-         return B;
+         return Return_Type'Val (B);
       end Emit_By_Name;
 
    end Return_Callback;
@@ -895,18 +894,16 @@ package body Gtk.Handlers is
            (Object : System.Address;
             Name   : String;
             Param  : System.Address;
-            Ret    : out Return_Type;
-            Last   : System.Address := System.Null_Address);
+            Ret    : out Integer);
          pragma Import (C, Internal, "g_signal_emit_by_name");
 
-         B : Return_Type;
-
+         B : Integer;
       begin
          pragma Assert (Count_Arguments (Object, Name) = 1);
          Internal
            (Get_Object (Object), Name & ASCII.NUL,
             Gdk.Event.To_Address (Param), B);
-         return B;
+         return Return_Type'Val (B);
       end Emit_By_Name;
 
    end User_Return_Callback;
