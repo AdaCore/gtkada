@@ -34,6 +34,7 @@ with Gdk.Color;
 with Gdk.Cursor;  use Gdk.Cursor;
 with Gdk.Event;
 with Gdk.Pixbuf;
+with Gdk.Rectangle;
 with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Box;
@@ -153,6 +154,19 @@ package Gtkada.MDI is
    --  child always destroyed when Esc is pressed) if Always_Destroy_Float is
    --  true.
 
+   procedure Gtk_New
+     (Child  : out MDI_Child;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Flags  : Child_Flags := All_Buttons);
+   --  Create a new MDI child that contains widget.
+
+   procedure Initialize
+     (Child  : access MDI_Child_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Flags  : Child_Flags);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
    function Put
      (MDI   : access MDI_Window_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -160,8 +174,8 @@ package Gtkada.MDI is
       Focus_Widget : Gtk.Widget.Gtk_Widget := null;
       Default_Width, Default_Height : Glib.Gint := -1) return MDI_Child;
    --  Add a new child to the MDI window, and return its embedding widget.
-   --  Child mustn't be a Gtk_Window (or one of its children). Otherwise,
-   --  Program_Error is raised.
+   --  Child mustn't be a Gtk_Window (or one of its inheriting types).
+   --  Otherwise, Program_Error is raised.
    --
    --  Flags indicates which buttons should be made visible in the title bar.
    --
@@ -229,6 +243,19 @@ package Gtkada.MDI is
    --  Associate an icon with Child. This icon is visible in the title bar, the
    --  notebook tabs, the Window menu and the interactive selection dialog.
    --  The icon is updated dynamically on the screen.
+
+   function Dnd_Data
+     (Child : access MDI_Child_Record; Copy : Boolean) return MDI_Child;
+   --  When a drag-and-drop operation took place to move a child from one
+   --  position to the next, this function is called to know what child should
+   --  be moved.
+   --  As a result, the implementer can choose whether a copy of the child
+   --  should be returned (creating a new view for an editor for instance), or
+   --  if the child itself should be moved (the default).
+   --  The returned MDI_Child must have been added to the MDI before it is
+   --  returned.
+   --  Copy is set to true if a copy operation was requested, to False if a
+   --  simple move operation was requested.
 
    -----------
    -- Menus --
@@ -693,26 +720,13 @@ private
       --  label used when child is in a notebook, null if not in a notebook
    end record;
 
-   procedure Gtk_New
-     (Child  : out MDI_Child;
-      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags  : Child_Flags := All_Buttons);
-   --  Create a new MDI child that contains widget.
-
-   procedure Initialize
-     (Child  : access MDI_Child_Record;
-      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags  : Child_Flags);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
-
    type Child_Iterator is record
       Iter : Gtk.Widget.Widget_List.Glist;
    end record;
 
    type Notebook_Array is array (Left .. Bottom) of Gtk.Notebook.Gtk_Notebook;
    type Window_Array is array (Left .. Bottom) of Gdk.Window.Gdk_Window;
-   type Event_Array is array (Left .. Bottom) of Gtk.Event_Box.Gtk_Event_Box;
+   type Drag_Status is (No_Drag, In_Pre_Drag, In_Drag);
 
    type Central_Area is record
       Children_Are_Maximized : Boolean := False;
@@ -737,10 +751,6 @@ private
 
       Central : Central_Area;
 
-      Drop_Sites : Event_Array := (others => null);
-      --  The drop sites on each side of the MDI, where items can be dropped to
-      --  create new docks
-
       Desktop_Was_Loaded : Boolean := False;
       --  True if a desktop was loaded
 
@@ -752,11 +762,6 @@ private
 
       Xor_GC   : Gdk.GC.Gdk_GC;
       --  GC used while resizing or moving a child
-
-      X_Root, Y_Root : Glib.Gint;
-      Current_X, Current_Y, Current_W, Current_H : Glib.Gint;
-      --  The coordinates of the initial click in a move or resize
-      --  operation.
 
       Initial_Width, Initial_Height : Glib.Gint;
       --  Initial size of the child currently being resized.
@@ -822,6 +827,13 @@ private
 
       All_Floating_Mode : Boolean := False;
       --  Set to true if all windows should be set to floating
+
+      --  Handling of Dnd
+      Drag_Start_X, Drag_Start_Y : Gint;
+      In_Drag : Drag_Status := No_Drag;
+      Dnd_Rectangle : Gdk.Rectangle.Gdk_Rectangle;
+      Dnd_Rectangle_Owner : Gdk.Gdk_Window;
+      Dnd_Xor_GC : Gdk.Gdk_GC;
    end record;
 
    pragma Inline (Get_Window);
