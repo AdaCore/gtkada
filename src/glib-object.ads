@@ -35,7 +35,7 @@
 
 with Gtkada.Types;
 
-package Glib.GObjects is
+package Glib.Object is
 
    type GObject_Record is tagged private;
    type GObject is access all GObject_Record'Class;
@@ -218,7 +218,7 @@ package Glib.GObjects is
    --  </signals>
 
    procedure Notify
-     (Object : access Glib.GObjects.GObject_Record;
+     (Object        : access GObject_Record;
       Property_Name : String);
    --  Emits the "notify" signal, to signal every listener that the property
    --  has been changed.
@@ -270,4 +270,4 @@ private
    pragma Import (C, Query, "g_signal_query");
    pragma Import (C, Id, "ada_gsignal_query_id");
    pragma Import (C, Return_Type, "ada_gsignal_query_return_type");
-end Glib.GObjects;
+end Glib.Object;

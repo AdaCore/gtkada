@@ -28,7 +28,7 @@
 -----------------------------------------------------------------------
 
 with Glib;              use Glib;
-with Glib.GObjects;     use Glib.GObjects;
+with Glib.Object;       use Glib.Object;
 with Gdk.Pixmap;        use Gdk.Pixmap;
 with Gdk.Color;         use Gdk.Color;
 with Gtk.Main;          use Gtk.Main;

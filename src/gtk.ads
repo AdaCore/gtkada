@@ -36,11 +36,11 @@
 --  </description>
 --  <c_version>1.2.7</c_version>
 
-with Glib;                use Glib;
-with Gdk;                 use Gdk;
+with Glib;        use Glib;
+with Gdk;         use Gdk;
 
 pragma Warnings (Off);
-with Glib.GObjects;       use Glib.GObjects;
+with Glib.Object; use Glib.Object;
 with System;
 pragma Warnings (On);
 

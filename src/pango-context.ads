@@ -27,11 +27,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.GObjects;
+with Glib.Object;
 
 package Pango.Context is
 
-   type Pango_Context_Record is new Glib.GObjects.GObject_Record with private;
+   type Pango_Context_Record is new Glib.Object.GObject_Record with private;
 
    type Pango_Context is access all Pango_Context_Record'Class;
 
@@ -40,7 +40,7 @@ package Pango.Context is
 
 private
 
-   type Pango_Context_Record is new Glib.GObjects.GObject_Record
+   type Pango_Context_Record is new Glib.Object.GObject_Record
      with null record;
 
 end Pango.Context;

@@ -27,8 +27,8 @@
 -----------------------------------------------------------------------
 
 with Interfaces.C.Strings; use Interfaces.C.Strings;
-with Glib.GObjects;        use Glib.GObjects;
-with Glib.Values;          use Glib.Values;
+with Glib.Object; use Glib.Object;
+with Glib.Values; use Glib.Values;
 
 package body Glib.Properties.Creation is
 

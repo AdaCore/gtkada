@@ -54,7 +54,7 @@ with Gtk.Adjustment;
 with Gtk.Enums;
 with Gtk.Object;
 with Gtk.Style;
-with Glib.GObjects;
+with Glib.Object;
 with Glib.Glist;
 with Glib.GSlist;
 with System;
@@ -687,7 +687,7 @@ package Gtk.Widget is
    --  some internal pointers to functions.
 
    procedure Set_Scroll_Adjustments_Signal
-     (Widget : Glib.GObjects.GObject_Class; Signal : String);
+     (Widget : Glib.Object.GObject_Class; Signal : String);
    --  Modifies the signal to be sent when the adjustments are modified. This
    --  is only useful when you are rewritting your own widget that can be
    --  embedded directly in a Gtk_Scrolled_Window, without any Gtk_Viewport.

@@ -26,8 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.GObjects;        use Glib.GObjects;
-with Glib.Values;          use Glib.Values;
+with Glib.Object; use Glib.Object;
+with Glib.Values; use Glib.Values;
 
 package body Glib.Properties is
 
@@ -61,7 +61,7 @@ package body Glib.Properties is
    ------------------
 
    function Get_Property
-     (Object : access Glib.GObjects.GObject_Record'Class;
+     (Object : access Glib.Object.GObject_Record'Class;
       Name   : Property_String_RO) return String
    is
       Value : GValue;
@@ -81,7 +81,7 @@ package body Glib.Properties is
    ------------------
 
    function Get_Property
-     (Object : access Glib.GObjects.GObject_Record'Class;
+     (Object : access Glib.Object.GObject_Record'Class;
       Name   : Property_String) return String is
    begin
       return Get_Property (Object, Property_String_RO (Name));

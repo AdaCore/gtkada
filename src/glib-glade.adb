@@ -20,7 +20,7 @@
 
 with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Strings.Fixed; use Ada.Strings; use Ada.Strings.Fixed;
-with Glib.GObjects; use Glib.GObjects;
+with Glib.Object; use Glib.Object;
 
 package body Glib.Glade is
 

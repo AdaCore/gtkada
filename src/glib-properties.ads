@@ -63,7 +63,7 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
-with Glib.GObjects;
+with Glib.Object;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 
@@ -94,17 +94,17 @@ package Glib.Properties is
    --  Special handling of string properties
 
    procedure Set_Property
-     (Object : access Glib.GObjects.GObject_Record'Class;
+     (Object : access Glib.Object.GObject_Record'Class;
       Name : Property_String;
       Value : String);
 
    function Get_Property
-     (Object : access Glib.GObjects.GObject_Record'Class;
+     (Object : access Glib.Object.GObject_Record'Class;
       Name : Property_String) return String;
    pragma Inline (Get_Property);
 
    function Get_Property
-     (Object : access Glib.GObjects.GObject_Record'Class;
+     (Object : access Glib.Object.GObject_Record'Class;
       Name : Property_String_RO) return String;
 end Glib.Properties;
 

@@ -33,7 +33,7 @@ with Unchecked_Deallocation;
 with Glib.Type_Conversion_Hooks;
 with Gtkada.Types; use Gtkada.Types;
 
-package body Glib.GObjects is
+package body Glib.Object is
 
    procedure Free_User_Data (Data : in System.Address);
    --  Free the user data Data. This function should not be called directly
@@ -347,13 +347,13 @@ package body Glib.GObjects is
    ------------
 
    procedure Notify
-     (Object : access Glib.GObjects.GObject_Record;
+     (Object        : access GObject_Record;
       Property_Name : String)
    is
       procedure Internal (Object : System.Address; Name : String);
       pragma Import (C, Internal, "g_object_notify");
    begin
-      Internal (Glib.GObjects.Get_Object (Object), Property_Name & ASCII.Nul);
+      Internal (Get_Object (Object), Property_Name & ASCII.Nul);
    end Notify;
 
-end Glib.GObjects;
+end Glib.Object;

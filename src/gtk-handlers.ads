@@ -82,7 +82,7 @@
 --
 --  The common generic parameter to all sub-packages is the widget type,
 --  which is the basic widget manipulated. This can be
---  Glib.GObjects.GObject_Record type if you want to reduce the number of
+--  Glib.Object.GObject_Record type if you want to reduce the number of
 --  instantiations, but the conversion to the original type will have to be
 --  done inside the handler.
 --
@@ -154,7 +154,7 @@ package Gtk.Handlers is
    ---------------------------------------------------------
 
    generic
-      type Widget_Type is new Glib.GObjects.GObject_Record with private;
+      type Widget_Type is new Glib.Object.GObject_Record with private;
       type Return_Type is private;
    package Return_Callback is
 
@@ -333,7 +333,7 @@ package Gtk.Handlers is
    ---------------------------------------------------------
 
    generic
-      type Widget_Type is new Glib.GObjects.GObject_Record with private;
+      type Widget_Type is new Glib.Object.GObject_Record with private;
       type Return_Type is private;
       type User_Type (<>) is private;
    package User_Return_Callback is
@@ -460,7 +460,7 @@ package Gtk.Handlers is
    ---------------------------------------------------------
 
    generic
-      type Widget_Type is new Glib.GObjects.GObject_Record with private;
+      type Widget_Type is new Glib.Object.GObject_Record with private;
    package Callback is
 
       type Handler is access procedure
@@ -607,7 +607,7 @@ package Gtk.Handlers is
    ---------------------------------------------------------
 
    generic
-      type Widget_Type is new Glib.GObjects.GObject_Record with private;
+      type Widget_Type is new Glib.Object.GObject_Record with private;
       type User_Type (<>) is private;
    package User_Callback is
 
@@ -730,29 +730,29 @@ package Gtk.Handlers is
    ------------------------------------------------------------------
 
    procedure Disconnect
-     (Object : access Glib.GObjects.GObject_Record'Class;
+     (Object : access Glib.Object.GObject_Record'Class;
       Id     : Handler_Id);
    --  Disconnect the handler identified by the given Handler_Id.
 
    procedure Emit_Stop_By_Name
-     (Object : access Glib.GObjects.GObject_Record'Class;
+     (Object : access Glib.Object.GObject_Record'Class;
       Name   : String);
    --  During a signal emission, invoking this procedure will halt the
    --  emission.
 
    procedure Handler_Block
-     (Obj : access Glib.GObjects.GObject_Record'Class;
+     (Obj : access Glib.Object.GObject_Record'Class;
       Id  : Handler_Id);
    --  Blocks temporily the signal. For each call to this procedure,
    --  a call to Handler_Unblock must be performed in order to really
    --  unblock the signal.
 
    procedure Handlers_Destroy
-     (Obj : access Glib.GObjects.GObject_Record'Class);
+     (Obj : access Glib.Object.GObject_Record'Class);
    --  Destroys all the handlers associated to the given object.
 
    procedure Handler_Unblock
-     (Obj : access Glib.GObjects.GObject_Record'Class;
+     (Obj : access Glib.Object.GObject_Record'Class;
       Id  : Handler_Id);
    --  See Handler_Block.
 

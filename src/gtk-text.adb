@@ -31,7 +31,7 @@ with System;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
 with Glib; use Glib;
 with Glib.Values;
-with Glib.GObjects;
+with Glib.Object;
 with Gdk.Window; use Gdk.Window;
 with Gtk.Enums;
 with Gtk.Handlers;
@@ -44,8 +44,7 @@ pragma Elaborate_All (Gtk.Handlers);
 
 package body Gtk.Text is
 
-   Class_Record : Glib.GObjects.GObject_Class :=
-     Glib.GObjects.Uninitialized_Class;
+   Class_Record : Glib.Object.GObject_Class := Glib.Object.Uninitialized_Class;
    --  A pointer to the 'class record'.
 
    Signals : Interfaces.C.Strings.chars_ptr_array :=
@@ -64,7 +63,7 @@ package body Gtk.Text is
       12 => New_String ("kill_line"));
    --  The list of new signals supported by this widget.
 
-   Signal_Parameters : constant Glib.GObjects.Signal_Parameter_Types :=
+   Signal_Parameters : constant Glib.Object.Signal_Parameter_Types :=
      (1  => (GType_None,   GType_None, GType_None),
       2  => (GType_String, GType_Int,  GType_Pointer),
       3  => (GType_Int,    GType_Int,  GType_None),
@@ -398,7 +397,7 @@ package body Gtk.Text is
       --  and the new signals created for this widget.
       --  Note also that we keep Class_Record, so that the memory allocation
       --  is done only once.
-      Glib.GObjects.Initialize_Class_Record
+      Glib.Object.Initialize_Class_Record
         (Text, Signals, Class_Record, "GtkadaText", Signal_Parameters);
 
       --  If no Adjustment specified, then create new ones

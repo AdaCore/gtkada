@@ -94,11 +94,11 @@
 --  </description>
 --  <c_version>1.3.4</c_version>
 
-with Glib.GObjects;
+with Glib.Object;
 
 package Gtk.Object is
 
-   type Gtk_Object_Record is new Glib.GObjects.GObject_Record with private;
+   type Gtk_Object_Record is new Glib.Object.GObject_Record with private;
    type Gtk_Object is access all Gtk_Object_Record'Class;
 
    procedure Ref (Object : access Gtk_Object_Record);
@@ -135,7 +135,7 @@ package Gtk.Object is
 
    function Get_Type (Object : access Gtk_Object_Record) return Gtk_Type;
    --  This function is now obsolete, and is temporarily kept for backward
-   --  compatibility only. Use Glib.GObjects.Get_Type instead.
+   --  compatibility only. Use Glib.Object.Get_Type instead.
    --  ???
 
    -------------
@@ -278,7 +278,7 @@ package Gtk.Object is
    --  </signals>
 
 private
-   type Gtk_Object_Record is new Glib.GObjects.GObject_Record with null record;
+   type Gtk_Object_Record is new Glib.Object.GObject_Record with null record;
 
    pragma Inline (Destroyed_Is_Set);
    pragma Inline (Floating_Is_Set);

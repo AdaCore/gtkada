@@ -49,7 +49,7 @@
 --  enumeration type with gtk+ for a full compatibility with C.
 --  </description>
 
-with Glib.GObjects;
+with Glib.Object;
 with Glib.Values;
 
 package Glib.Generic_Properties is
@@ -72,18 +72,18 @@ package Glib.Generic_Properties is
       type Property is new Glib.Property;
 
       procedure Set_Property
-        (Object : access Glib.GObjects.GObject_Record'Class;
+        (Object : access Glib.Object.GObject_Record'Class;
          Name   : Property;
          Value  : Discrete_Type);
       --  Set a property of Object based on Enumeration_Type.
 
       function Get_Property
-        (Object : access Glib.GObjects.GObject_Record'Class;
+        (Object : access Glib.Object.GObject_Record'Class;
          Name   : Property) return Discrete_Type;
       pragma Inline (Get_Property);
 
       function Get_Property
-        (Object : access Glib.GObjects.GObject_Record'Class;
+        (Object : access Glib.Object.GObject_Record'Class;
          Name   : Property_RO) return Discrete_Type;
       --  Get a property from Object
 

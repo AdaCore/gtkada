@@ -29,7 +29,7 @@
 
 with System;
 with Glib; use Glib;
-with Glib.GObjects; use Glib.GObjects;
+with Glib.Object; use Glib.Object;
 with Gtk; use Gtk;
 with Gtk.Type_Conversion;
 pragma Elaborate_All (Gtk.Type_Conversion);

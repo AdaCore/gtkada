@@ -26,8 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib.GObjects;  use Glib.GObjects;
-with Glib.Values;    use Glib.Values;
+with Glib.Object; use Glib.Object;
+with Glib.Values; use Glib.Values;
 with Unchecked_Conversion;
 
 package body Glib.Generic_Properties is
@@ -144,7 +144,7 @@ package body Glib.Generic_Properties is
       ------------------
 
       function Get_Property
-        (Object : access Glib.GObjects.GObject_Record'Class;
+        (Object : access Glib.Object.GObject_Record'Class;
          Name   : Property_RO) return Discrete_Type
       is
          procedure Get
@@ -164,7 +164,7 @@ package body Glib.Generic_Properties is
       ------------------
 
       function Get_Property
-        (Object : access Glib.GObjects.GObject_Record'Class;
+        (Object : access Glib.Object.GObject_Record'Class;
          Name   : Property) return Discrete_Type is
       begin
          return Get_Property (Object, Property_RO (Name));
@@ -175,7 +175,7 @@ package body Glib.Generic_Properties is
       ------------------
 
       procedure Set_Property
-        (Object : access Glib.GObjects.GObject_Record'Class;
+        (Object : access Glib.Object.GObject_Record'Class;
          Name   : Property;
          Value  : Discrete_Type)
       is

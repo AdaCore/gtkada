@@ -32,7 +32,7 @@
 --  </description>
 
 pragma Warnings (Off);
-with Glib.GObjects; use Glib.GObjects;
+with Glib.Object; use Glib.Object;
 pragma Warnings (On);
 
 package Gnome is

@@ -29,7 +29,7 @@
 
 with Ada.Numerics.Elementary_Functions;  use Ada.Numerics.Elementary_Functions;
 with Glib;             use Glib;
-with Glib.GObjects;    use Glib.GObjects;
+with Glib.Object;      use Glib.Object;
 with Glib.Values;      use Glib.Values;
 with Gdk.Color;        use Gdk.Color;
 with Gdk.Cursor;       use Gdk.Cursor;

@@ -32,7 +32,7 @@
 --  manipulate new properties associated with new widget types.
 --
 --  You do not have to be familiar with this package in order to use
---  properties. See Glib.GObjects instead, that provides the minimal
+--  properties. See Glib.Object instead, that provides the minimal
 --  subprograms to get and set properties.
 --
 --  This package is only intended for writers of new widgets. You will need
@@ -56,7 +56,7 @@
 --
 --  </description>
 
-with Glib.GObjects;
+with Glib.Object;
 with Glib.Values;
 
 package Glib.Properties.Creation is
@@ -349,8 +349,8 @@ package Glib.Properties.Creation is
    --
    --  Your widget needs to define two handlers, Set_Property_Handler and
    --  Get_Property_Handler, that are called every time the user accesses the
-   --  value of a property through a call to Glib.GObjects.Set_Property or
-   --  Glib.GObjects.Get_Property.
+   --  value of a property through a call to Glib.Object.Set_Property or
+   --  Glib.Object.Get_Property.
    --
    --  For efficiency reasons, a property is also associated with an integer
    --  value, that you must provide when creating the property. This value is
@@ -362,7 +362,7 @@ package Glib.Properties.Creation is
    type Property_Id is new Guint;
 
    type Set_Property_Handler is access procedure
-     (Object        : access Glib.GObjects.GObject_Record'Class;
+     (Object        : access Glib.Object.GObject_Record'Class;
       Prop_Id       : Property_Id;
       Value         : Glib.Values.GValue;
       Property_Spec : Param_Spec);
@@ -383,7 +383,7 @@ package Glib.Properties.Creation is
    --  be emitted.
 
    type Get_Property_Handler is access procedure
-     (Object        : access Glib.GObjects.GObject_Record'Class;
+     (Object        : access Glib.Object.GObject_Record'Class;
       Prop_Id       : Property_Id;
       Value         : out Glib.Values.GValue;
       Property_Spec : Param_Spec);
@@ -391,7 +391,7 @@ package Glib.Properties.Creation is
    --  of a property. You should set the value in Value
 
    procedure Set_Properties_Handlers
-     (Class_Record : Glib.GObjects.GObject_Class;
+     (Class_Record : Glib.Object.GObject_Class;
       Set_Property : Set_Property_Handler;
       Get_Property : Get_Property_Handler);
    --  Set the two functions used to set and retrieve properties. You
@@ -404,7 +404,7 @@ package Glib.Properties.Creation is
    --  be able to install new properties afterwards
 
    procedure Install_Property
-     (Class_Record  : Glib.GObjects.GObject_Class;
+     (Class_Record  : Glib.Object.GObject_Class;
       Prop_Id       : Property_Id;
       Property_Spec : Param_Spec);
    --  Adds a new property to Class_Record. You should use this function only

@@ -39,7 +39,7 @@ with Gtk.Text_Attributes;
 
 package Gtk.Text_Layout is
 
-   type Gtk_Text_Layout_Record is new Glib.GObjects.GObject_Record
+   type Gtk_Text_Layout_Record is new Glib.Object.GObject_Record
      with private;
    type Gtk_Text_Layout is access all Gtk_Text_Layout_Record'Class;
 
@@ -67,7 +67,7 @@ package Gtk.Text_Layout is
 
 private
 
-   type Gtk_Text_Layout_Record is new Glib.GObjects.GObject_Record
+   type Gtk_Text_Layout_Record is new Glib.Object.GObject_Record
      with null record;
 
    pragma Import (C, Get_Type, "gtk_text_layout_get_type");

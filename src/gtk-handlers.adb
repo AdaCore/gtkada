@@ -29,7 +29,7 @@
 
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
-with Glib.GObjects; use Glib.GObjects;
+with Glib.Object; use Glib.Object;
 with Glib.Values; use Glib.Values;
 with Gtk.Widget;
 with System;
@@ -51,7 +51,7 @@ package body Gtk.Handlers is
    --  signal
 
    function Do_Signal_Connect
-     (Object      : Glib.GObjects.GObject;
+     (Object      : Glib.Object.GObject;
       Name        : String;
       Marshaller  : System.Address;
       Handler     : System.Address;
@@ -172,7 +172,7 @@ package body Gtk.Handlers is
    -----------------------
 
    function Do_Signal_Connect
-     (Object      : Glib.GObjects.GObject;
+     (Object      : Glib.Object.GObject;
       Name        : String;
       Marshaller  : System.Address;
       Handler     : System.Address;
@@ -438,7 +438,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
-           (Glib.GObjects.GObject (Widget),
+           (Glib.Object.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Marsh.Proxy),
@@ -473,7 +473,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
-           (Glib.GObjects.GObject (Widget),
+           (Glib.Object.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Marsh.Proxy),
@@ -508,7 +508,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
-           (Glib.GObjects.GObject (Widget),
+           (Glib.Object.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Cb),
@@ -543,7 +543,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
-           (Glib.GObjects.GObject (Widget),
+           (Glib.Object.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Cb),
@@ -750,7 +750,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
-           (Glib.GObjects.GObject (Widget),
+           (Glib.Object.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Marsh.Proxy),
@@ -785,7 +785,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
-           (Glib.GObjects.GObject (Widget),
+           (Glib.Object.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Cb),
@@ -1017,7 +1017,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
-           (Glib.GObjects.GObject (Widget),
+           (Glib.Object.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Marsh.Proxy),
@@ -1052,7 +1052,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
-           (Glib.GObjects.GObject (Widget),
+           (Glib.Object.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Marsh.Proxy),
@@ -1085,7 +1085,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
-           (Glib.GObjects.GObject (Widget),
+           (Glib.Object.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Cb),
@@ -1120,7 +1120,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
-           (Glib.GObjects.GObject (Widget),
+           (Glib.Object.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Cb),
@@ -1316,7 +1316,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
-           (Glib.GObjects.GObject (Widget),
+           (Glib.Object.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Marsh.Proxy),
@@ -1349,7 +1349,7 @@ package body Gtk.Handlers is
             "Handlers for this signal should not return a value.");
 
          return Do_Signal_Connect
-           (Glib.GObjects.GObject (Widget),
+           (Glib.Object.GObject (Widget),
             Name,
             First_Marshaller'Address,
             To_Address (Cb),
@@ -1387,7 +1387,7 @@ package body Gtk.Handlers is
    ----------------
 
    procedure Disconnect
-     (Object : access Glib.GObjects.GObject_Record'Class;
+     (Object : access Glib.Object.GObject_Record'Class;
       Id     : Handler_Id) is
    begin
       Disconnect_Internal (Obj => Get_Object (Object), Id  => Id);
@@ -1398,7 +1398,7 @@ package body Gtk.Handlers is
    -----------------------
 
    procedure Emit_Stop_By_Name
-     (Object : access Glib.GObjects.GObject_Record'Class;
+     (Object : access Glib.Object.GObject_Record'Class;
       Name   : String)
    is
       procedure Internal
@@ -1417,7 +1417,7 @@ package body Gtk.Handlers is
    -------------------
 
    procedure Handler_Block
-     (Obj : access Glib.GObjects.GObject_Record'Class;
+     (Obj : access Glib.Object.GObject_Record'Class;
       Id  : Handler_Id)
    is
       procedure Internal (Obj : System.Address; Id : Handler_Id);
@@ -1431,7 +1431,7 @@ package body Gtk.Handlers is
    -- Handlers_Destroy --
    ----------------------
 
-   procedure Handlers_Destroy (Obj : access Glib.GObjects.GObject_Record'Class)
+   procedure Handlers_Destroy (Obj : access Glib.Object.GObject_Record'Class)
    is
       procedure Internal (Obj : System.Address);
       pragma Import (C, Internal, "g_signal_handlers_destroy");
@@ -1445,7 +1445,7 @@ package body Gtk.Handlers is
    ---------------------
 
    procedure Handler_Unblock
-     (Obj : access Glib.GObjects.GObject_Record'Class;
+     (Obj : access Glib.Object.GObject_Record'Class;
       Id  : Handler_Id)
    is
       procedure Internal (Obj : System.Address; Id : Handler_Id);

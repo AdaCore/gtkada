@@ -45,12 +45,12 @@
 --
 --  </description>
 
-with Glib.GObjects;
+with Glib.Object;
 
 package Glib.Type_Conversion_Hooks is
 
    type File_Conversion_Hook_Type is
-     access function (Type_Name : String) return Glib.GObjects.GObject;
+     access function (Type_Name : String) return Glib.Object.GObject;
    --  This variable can be point to one of your functions.
    --  It gets the name of a C widget (ex/ "GtkButton") and should return
    --  a newly allocated Ada widget.
