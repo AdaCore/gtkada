@@ -332,7 +332,7 @@ package Gtk.Tree_View is
      (Tree_View : access Gtk_Tree_View_Record;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
       Column    : Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-      Rect      : Gdk.Rectangle.Gdk_Rectangle);
+      Rect      : out Gdk.Rectangle.Gdk_Rectangle);
    --  Fills the bounding rectangle in tree window coordinates for the cell at
    --  the row specified by Path and the column specified by Column. If Path is
    --  Null, or points to a path not currently displayed, the Y and Height
@@ -363,7 +363,7 @@ package Gtk.Tree_View is
 
    procedure Get_Visible_Rect
      (Tree_View    : access Gtk_Tree_View_Record;
-      Visible_Rect : Gdk.Rectangle.Gdk_Rectangle);
+      Visible_Rect : out Gdk.Rectangle.Gdk_Rectangle);
    --  Fills Visible_Rect with the currently-visible region of the
    --  buffer, in tree coordinates. Convert to widget coordinates with
    --  gtk_tree_view_tree_to_widget_coords(). Tree coordinates start at
