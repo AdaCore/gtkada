@@ -7,7 +7,7 @@
 @titlepage
 
 @title GtkAda User's Guide
-@subtitle Version 1.2.1
+@subtitle Version 1.2.2
 @subtitle Document revision level $Revision$
 @subtitle Date: $Date$
 @author E. Briot, J. Brobecker, A. Charlet, P. Durif
@@ -32,7 +32,7 @@ GtkAda User's Guide
 
 GtkAda, the Ada 95 graphical toolkit
 
-Version 1.2.1
+Version 1.2.2
 
 Date: $Date$
 
@@ -126,7 +126,7 @@ The home page for gtk is
 
      @uref{http://www.gtk.org}
 
-This is GtkAda version 1.2.1. This package is an Ada95 graphical library
+This is GtkAda version 1.2.2. This package is an Ada95 graphical library
 for the Gimp Toolkit, which means this is a set of packages to allow you
 to easily create some graphical interfaces under X11 and Win32, using Ada95
 as a programming language.
@@ -146,6 +146,7 @@ This binding was tested on the following systems:
 @item Dec Unix 4.0b
 @item SGI IRIX 6.5
 @item HP/UX 10.20
+@item NT 4.0
 @end itemize
 using the following compilers:
 @itemize @bullet
