@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
@@ -42,13 +42,13 @@ package Gtk.GRange is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Range.
 
-   function Get_Adjustment
-     (The_Range : access Gtk_Range_Record)
-      return Gtk.Adjustment.Gtk_Adjustment;
-
    procedure Set_Update_Policy
      (The_Range : access Gtk_Range_Record;
       Policy    : Gtk_Update_Type);
+
+   function Get_Adjustment
+     (The_Range : access Gtk_Range_Record)
+      return Gtk.Adjustment.Gtk_Adjustment;
 
    procedure Set_Adjustment
      (The_Range  : access Gtk_Range_Record;
@@ -59,6 +59,34 @@ package Gtk.GRange is
       Setting   : Boolean := True);
 
    function Get_Inverted (The_Range : access Gtk_Range_Record) return Boolean;
+
+   procedure Set_Increments
+     (The_Range : access Gtk_Range_Record;
+      Step      : Gdouble;
+      Page      : Gdouble);
+   --  Set the Step and the Page size for the range. The Step size is used when
+   --  the user clicks on the Gtk_Scrollbar arrows or moves the Gtk_Scale via
+   --  the arrow keys. The Page size is used when moving by pages via the
+   --  Page-Up and Page-Down keys for instance.
+
+   procedure Set_Range
+     (The_Range : access Gtk_Range_Record;
+      Min       : Gdouble;
+      Max       : Gdouble);
+   --  Set the allowable values in the Gtk_Range, and clamps the range value to
+   --  the between Min and Max.
+
+   procedure Set_Value
+     (The_Range : access Gtk_Range_Record;
+      Value     : Gdouble);
+   --  Set the current value of the given Range. If the value is outside the
+   --  minimum or the maximum value range, it will be clamped to fit inside
+   --  the range.
+   --  Cause the "value_changed" signal to be emitted if the value is
+   --  different.
+
+   function Get_Value (The_Range : access Gtk_Range_Record) return Gdouble;
+   --  Return the current value of the range.
 
    ----------------
    -- Properties --

@@ -122,4 +122,66 @@ package body Gtk.GRange is
       return Boolean'Val (Internal (Get_Object (The_Range)));
    end Get_Inverted;
 
+   --------------------
+   -- Set_Increments --
+   --------------------
+
+   procedure Set_Increments
+     (The_Range : access Gtk_Range_Record;
+      Step      : Gdouble;
+      Page      : Gdouble)
+   is
+      procedure Internal
+        (The_Range : System.Address;
+         Step      : Gdouble;
+         Page      : Gdouble);
+      pragma Import (C, Internal, "gtk_range_set_increments");
+   begin
+      Internal (Get_Object (The_Range), Step, Page);
+   end Set_Increments;
+
+   ---------------
+   -- Set_Range --
+   ---------------
+
+   procedure Set_Range
+     (The_Range : access Gtk_Range_Record;
+      Min       : Gdouble;
+      Max       : Gdouble)
+   is
+      procedure Internal
+        (The_Range : System.Address;
+         Min       : Gdouble;
+         Max       : Gdouble);
+      pragma Import (C, Internal, "gtk_range_set_range");
+   begin
+      Internal (Get_Object (The_Range), Min, Max);
+   end Set_Range;
+
+   ---------------
+   -- Set_Value --
+   ---------------
+
+   procedure Set_Value
+     (The_Range : access Gtk_Range_Record;
+      Value     : Gdouble)
+   is
+      procedure Internal (The_Range : System.Address; Value : Gdouble);
+      pragma Import (C, Internal, "gtk_range_set_value");
+   begin
+      Internal (Get_Object (The_Range), Value);
+   end Set_Value;
+
+   ---------------
+   -- Get_Value --
+   ---------------
+
+   function Get_Value (The_Range : access Gtk_Range_Record) return Gdouble
+   is
+      function Internal (The_Range : System.Address) return Gdouble;
+      pragma Import (C, Internal, "gtk_range_get_value");
+   begin
+      return Internal (Get_Object (The_Range));
+   end Get_Value;
+
 end Gtk.GRange;
