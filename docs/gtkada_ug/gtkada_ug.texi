@@ -1653,7 +1653,7 @@ A minimal main program for a tasking GtkAda application looks like:
 Callbacks require a bit of attention. Callbacks from GtkAda (signals) are made
 within the GtkAda lock. However, callbacks from Glib (timeouts, IO callbacks,
 and idle functions) are made outside of the GtkAda lock. So, within a signal
-handler you do not need to call Gtk.Threads.Enter, but within the other types
+handler you do not need to call Gdk.Threads.Enter, but within the other types
 of callbacks, you do.
 
 @node Object-oriented features
