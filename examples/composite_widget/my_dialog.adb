@@ -14,7 +14,8 @@ package body My_Dialog is
    procedure Initialize (Dialog : access My_Dialog_Record'Class) is
       Sep : Gtk.Separator.Gtk_Separator;
    begin
-      Gtk.Window.Initialize (Dialog, Gtk.Enums.Window_Toplevel);
+      Gtk.Window.Initialize
+        (Gtk.Window.Gtk_Window (Dialog), Gtk.Enums.Window_Toplevel);
 
       Gtk.Box.Gtk_New_Vbox (Dialog.Vbox, False, 0);
       Add (Dialog, Dialog.Vbox);
