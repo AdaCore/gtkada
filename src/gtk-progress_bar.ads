@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -38,25 +38,35 @@ package Gtk.Progress_Bar is
      with private;
    type Gtk_Progress_Bar is access all Gtk_Progress_Bar_Record'Class;
 
-   procedure Gtk_New (Progress_Bar : out Gtk_Progress_Bar;
-                      Adjustment   : in Gtk.Adjustment.Gtk_Adjustment := null);
-   procedure Initialize (Progress_Bar : access Gtk_Progress_Bar_Record'Class;
-                         Adjustment   : in Gtk.Adjustment.Gtk_Adjustment);
+   procedure Gtk_New
+     (Progress_Bar : out Gtk_Progress_Bar;
+      Adjustment   : in Gtk.Adjustment.Gtk_Adjustment :=
+        Gtk.Adjustment.Null_Adjustment);
+
+   procedure Initialize
+     (Progress_Bar : access Gtk_Progress_Bar_Record'Class;
+      Adjustment   : in Gtk.Adjustment.Gtk_Adjustment);
+
    procedure Set_Activity_Blocks
      (Progress_Bar : access Gtk_Progress_Bar_Record;
       Blocks       : in Guint);
+
    procedure Set_Activity_Step
      (Progress_Bar : access Gtk_Progress_Bar_Record;
       Step         : in Guint);
+
    procedure Set_Bar_Style
      (Progress_Bar : access Gtk_Progress_Bar_Record;
       Style        : in Gtk_Progress_Bar_Style);
+
    procedure Set_Discrete_Blocks
      (Progress_Bar : access Gtk_Progress_Bar_Record;
       Blocks       : in Guint);
+
    procedure Set_Orientation
      (Progress_Bar : access Gtk_Progress_Bar_Record;
       Orientation  : in Gtk_Progress_Bar_Orientation);
+
    procedure Update
      (Progress_Bar : access Gtk_Progress_Bar_Record;
       Percentage   : in Gfloat);

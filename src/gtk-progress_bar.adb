@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -40,7 +40,9 @@ package body Gtk.Progress_Bar is
 
    procedure Gtk_New
      (Progress_Bar : out Gtk_Progress_Bar;
-      Adjustment   : in Gtk.Adjustment.Gtk_Adjustment := null) is
+      Adjustment   : in Gtk.Adjustment.Gtk_Adjustment :=
+        Gtk.Adjustment.Null_Adjustment)
+   is
    begin
       Progress_Bar := new Gtk_Progress_Bar_Record;
       Initialize (Progress_Bar, Adjustment);
