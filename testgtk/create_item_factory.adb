@@ -13,7 +13,7 @@ package body Create_Item_Factory is
    use Factory_Data;
 
    procedure Ifactory_Cb
-     (Callback_Data   : Integer;
+     (Callback_Data   : Data_Type_Access;
       Callback_Action : Guint;
       Widget          : Limited_Widget);
 
@@ -44,7 +44,7 @@ package body Create_Item_Factory is
       Gtk_New ("/Help/_About", "", Ifactory_Cb'Access));
 
    procedure Ifactory_Cb
-     (Callback_Data   : Integer;
+     (Callback_Data   : Data_Type_Access;
       Callback_Action : Guint;
       Widget          : Limited_Widget) is
    begin
@@ -72,7 +72,7 @@ package body Create_Item_Factory is
       --                            item_factory,
       --                            (GtkDestroyNotify) gtk_object_unref);
       Attach (Accel_Group, Frame);
-      Create_Items (Item_Factory, Menu_Items, 0);
+      Create_Items (Item_Factory, Menu_Items, null);
  
       --  preselect /Preferences/Shape/Oval over the other radios
       Set_Active (Gtk_Check_Menu_Item (Get_Item
