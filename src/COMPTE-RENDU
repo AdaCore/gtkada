@@ -117,3 +117,27 @@ Pour ce qui est de get_type, on l'importe dans le Gtk_New mais on ne le
 declare pas dans les specs.
 >>
 
+
+Reunion du 17 Juillet 1997
+
+- Manu : Rajouter un test dans Gtk.Signal pour qu'on puisse passer null.
+         Retirer les "void callbacks"...
+- Joel : Regarder le probleme des flags, et essayer de trouver une solution
+         elegante.
+         Ensuite, il faudra l'implementer.
+- Manu : Regarder le pb des callbacks : il faut pouvoir acceder directement
+         a l'objet lui meme dans le callback et non a une copie. C'est
+         important en cas de destroy par ex.
+- Manu : Regarder le gros pb des callback.
+  Joel : P*****, ca va marcher oui!
+- Joel : Regarder du cote des libtools pour faire une lib dynamique
+- Joel : Modifier le script mapping.pl
+    > s/\s+/ /;  # pour supprimer les blancs multiples.
+    > s/ (\*+)/$1 / ; # pour attacher les etoiles au type
+    > puis la fonction originale
+    > > if (/^(\S+)\s+(g[td]k_\S+)\s+\((.*)/)
+- Joel : Aller voir les fichier .defs de guile-gtk
+         (home page GTK, aller voir la FAQ rubrique sur les bindings).
+- Joel : comment faire pour passer un GdkBitmap**.
+
+         
