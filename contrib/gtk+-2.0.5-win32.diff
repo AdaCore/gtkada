@@ -1,15 +1,15 @@
-# This is a patch against Gtk+ 2.0.3 sources that fixes Windows specific
+# This is a patch against Gtk+ 2.0.5 sources that fixes Windows specific
 # problems.
 
-####################################################################################
+###############################################################################
 #
-####################################################################################
+###############################################################################
 # Problems already included in the Gtk+ CVS:
 
 
-####################################################################################
+###############################################################################
 #
-####################################################################################
+###############################################################################
 # Problems not included in CVS:
 
 
@@ -18,13 +18,12 @@
 # Ctrl-C
 #########################################
 
---- gtk+-2.0.3/gdk/win32/save/gdkevents-win32.c      Tue Jun  4 19:31:17 2002
-+++ gtk+-2.0.3/gdk/win32/gdkevents-win32.c   Wed Jun  5 11:08:12 2002
+--- gtk+-2.0.5/gdk/win32/save/gdkevents-win32.c      Tue Jun  4 19:31:17 2002
++++ gtk+-2.0.5/gdk/win32/gdkevents-win32.c   Wed Jun  5 11:08:12 2002
 @@ -886,6 +886,11 @@
  static guint
  vk_from_char (guint c)
  {
-+  /* fduguet */
 +  if ((c >= 1) && (c <=26))
 +    {
 +      return (c - 1 + 'A') ;
@@ -38,8 +37,8 @@
 # always on top
 #########################################
 
---- gtk+-2.0.3/gdk/win32/save/gdkwindow-win32.c      Fri May 31 12:18:44 2002
-+++ gtk+-2.0.3/gdk/win32/gdkwindow-win32.c   Wed Jun  5 15:51:34 2002
+--- gtk+-2.0.5/gdk/win32/save/gdkwindow-win32.c      Fri May 31 12:18:44 2002
++++ gtk+-2.0.5/gdk/win32/gdkwindow-win32.c   Wed Jun  5 15:51:34 2002
 @@ -1519,7 +1516,9 @@
    if (!SetParent (window_id, parent_id))
         WIN32_API_FAILED ("SetParent");
@@ -56,8 +55,8 @@
 # boxes display (e.g. tab characters)
 #########################################
 
---- pango-1.0.2/pango/save/pangowin32.c   Thu Jun  6 11:27:34 2002
-+++ pango-1.0.2/pango/pangowin32.c        Thu Jun  6 14:07:58 2002
+--- pango-1.0.3/pango/save/pangowin32.c   Thu Jun  6 11:27:34 2002
++++ pango-1.0.3/pango/pangowin32.c        Thu Jun  6 14:07:58 2002
 @@ -240,7 +240,7 @@
  {
    HFONT old_hfont = NULL;
@@ -100,8 +99,8 @@
 # memory leak - GdkImage not unreferenced
 #########################################
 
---- save/gdkpixmap-win32.c	Fri Jun 21 16:08:55 2002
-+++ gdkpixmap-win32.c	Fri Jun 21 16:10:25 2002
+--- gtk+-2.0.5/gdk/win32/save/gdkpixmap-win32.c Fri Jun 21 16:08:55 2002
++++ gtk+-2.0.5/gdk/win32/gdkpixmap-win32.c Fri Jun 21 16:10:25 2002
 @@ -101,6 +101,7 @@
  {
    GdkPixmapImplWin32 *impl = GDK_PIXMAP_IMPL_WIN32 (object);
@@ -126,8 +125,8 @@
 # memory leak - increasing size of translate_queue
 #########################################
 
---- save/gdkgeometry-win32.c	Fri Jun 21 15:58:00 2002
-+++ gdkgeometry-win32.c	Fri Jun 21 16:29:24 2002
+--- gtk+-2.0.5/gdk/win32/save/gdkgeometry-win32.c Fri Jun 21 15:58:00 2002
++++ gtk+-2.0.5/gdk/win32/gdkgeometry-win32.c Fri Jun 21 16:29:24 2002
 @@ -769,6 +769,25 @@
      }
  }
