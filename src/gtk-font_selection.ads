@@ -99,6 +99,7 @@ package Gtk.Font_Selection is
       Fontname : String) return Boolean;
    --  Set the name and attributes of the selected font in Fontsel.
    --  Fontname should have the format described in Pango.Font.
+   --  Fontself must have been displayed on the screen already
 
    function Get_Preview_Text
      (Fontsel : access Gtk_Font_Selection_Record) return UTF8_String;
