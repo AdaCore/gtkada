@@ -76,14 +76,11 @@ package Gtkada.MDI is
    type MDI_Child_Array is array (Natural range <>) of MDI_Child;
    No_Children : constant MDI_Child_Array := (1 .. 0 => null);
 
-   type State_Type is (Normal, Iconified, Floating, Docked);
+   type State_Type is (Normal, Floating, Docked);
    --  This type indicates the state of an item in the MDI:
    --  - Normal: the item can be manipulated (moved and resized) by the user.
    --      It is found either in the middle notebook (maximized items), or
    --      in the layout.
-   --  - Iconified: the item has been minimized, and can only be moved by the
-   --      user. No resize is taken into account. The item is also to be
-   --      found in the middle notebook or layout.
    --  - Floating: the item has its own toplevel window, and is thus managed
    --      by the window manager.
    --  - Docked: The item has been put in one of the notebooks on the sides.
@@ -133,9 +130,8 @@ package Gtkada.MDI is
 
    procedure Configure
      (MDI                       : access MDI_Window_Record;
-      Opaque_Resize             : Boolean             := False;
-      Opaque_Move               : Boolean             := False;
-      Close_Floating_Is_Unfloat : Boolean             := True;
+      Opaque_Resize             : Boolean := False;
+      Close_Floating_Is_Unfloat : Boolean := True;
       Title_Font         : Pango.Font.Pango_Font_Description := null;
       Background_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Title_Bar_Color    : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
@@ -158,15 +154,12 @@ package Gtkada.MDI is
    --  Show_Tabs_Policy indicates when the notebook tabs should be displayed.
 
    type Child_Flags is mod 2 ** 5;
-   Iconify_Button       : constant Child_Flags := 2 ** 0;
-   Maximize_Button      : constant Child_Flags := 2 ** 1;
    Destroy_Button       : constant Child_Flags := 2 ** 2;
    Float_As_Transient   : constant Child_Flags := 2 ** 3;
    Always_Destroy_Float : constant Child_Flags := 2 ** 4;
-   All_Buttons          : constant Child_Flags :=
-     Iconify_Button or Maximize_Button or Destroy_Button;
+   All_Buttons          : constant Child_Flags := Destroy_Button;
    --  Special flags to set up the widgets:
-   --  The first three list the buttons that should be displayed in the title
+   --  The first is the buttons that should be displayed in the title
    --  bar of the MDI children.
    --  If Float_As_Transient is set, then the child will be set up as a
    --  transient window when floating: on most window managers, it will stay on
@@ -459,32 +452,6 @@ package Gtkada.MDI is
    --  If the children are maximized, this selected the next page from the
    --  notebook.
 
-   procedure Minimize_Child
-     (Child : access MDI_Child_Record'Class; Minimize : Boolean);
-   --  Change the minimized state of a child.
-   --  If the child was floating, it is first put back in the MDI
-
-   procedure Maximize_Children
-     (MDI : access MDI_Window_Record; Maximize : Boolean := True);
-   --  All windows, except docked and floating ones, are maximized and occupy
-   --  as much space as possible in MDI.
-
-   procedure Cascade_Children (MDI : access MDI_Window_Record);
-   --  All the children are stacked so that the focus widget is on top.
-   --  They overlap each other, but all the title bars are left visible
-
-   procedure Single_Window (MDI : access MDI_Window_Record);
-   --  Keep only one notebook in the central area (ie undo any Split that
-   --  might have been done previously).
-
-   procedure Tile_Horizontally (MDI : access MDI_Window_Record);
-   procedure Tile_Vertically (MDI : access MDI_Window_Record);
-   --  The available space in the MDI is shared equally between all children.
-   --  They do not overlap each other.
-   --  Tile_Horizontally with put children next to each other, Tile_Vertically
-   --  will put children one below another. This is the same behavior as for
-   --  Gtk_Vbox and Gtk_Hbox
-
    procedure Split
      (MDI               : access MDI_Window_Record;
       Orientation       : Gtk.Enums.Gtk_Orientation;
@@ -729,10 +696,6 @@ private
       --  If these are set to -1, the child will be assigned its requested
       --  size.
 
-      Uniconified_X, Uniconified_Y : Glib.Gint;
-      --  Initial coordinates of the item when it is not iconified. These
-      --  fields are only relevant while the item is iconified.
-
       Uniconified_State : State_Type;
       --  The state the child had before being floated
 
@@ -750,9 +713,6 @@ private
       --  The widget which should actually get the keyboard focus
 
       Icon : Gdk.Pixbuf.Gdk_Pixbuf;
-
-      Maximize_Button : Gtk.Button.Gtk_Button;
-      Minimize_Button : Gtk.Button.Gtk_Button;
 
       Title_Box : Gtk.Box.Gtk_Box;
       --  Box that contains the title. It will be resized whenever the title
@@ -773,16 +733,6 @@ private
    type Window_Array is array (Left .. Bottom) of Gdk.Window.Gdk_Window;
    type Drag_Status is (No_Drag, In_Pre_Drag, In_Drag);
 
-   type Central_Area is record
-      Children_Are_Maximized : Boolean := False;
-      --  True if the children are currently maximized.
-
-      Container : Gtkada.Multi_Paned.Gtkada_Multi_Paned;
-      Layout   : Gtk.Fixed.Gtk_Fixed;
-   end record;
-   --  The central area. Only one of the items is active at any item and
-   --  contains the items assigned to the central area
-
    type MDI_Window_Record is new Gtk.Table.Gtk_Table_Record with record
       Main_Pane : Gtkada.Multi_Paned.Gtkada_Multi_Paned;
 
@@ -794,7 +744,8 @@ private
       --  Note that the one in the middle might not be visible, or even
       --  created, if it is replaced by a Gtk_Layout.
 
-      Central : Central_Area;
+      Central : Gtkada.Multi_Paned.Gtkada_Multi_Paned;
+      --  The central area
 
       Desktop_Was_Loaded : Boolean := False;
       --  True if a desktop was loaded
@@ -808,9 +759,6 @@ private
 
       Selected_Child : MDI_Child := null;
       --  The child that was selected for a resize or move operation
-
-      Xor_GC   : Gdk.GC.Gdk_GC;
-      --  GC used while resizing or moving a child
 
       Initial_Width, Initial_Height : Glib.Gint;
       --  Initial size of the child currently being resized.
@@ -837,21 +785,11 @@ private
       --  The dynamic menu used to provide access to the most common
       --  functions of MDI.
 
-      Default_X, Default_Y : Glib.Gint := 10;
-      --  Default position when placing a new child.
-
       Title_Layout        : Pango.Layout.Pango_Layout;
       --  Layout used to draw titles in the MDI children
 
       Title_Bar_Height    : Glib.Gint;
       --  Height of the title bar for all the children
-
-      Opaque_Resize : Boolean;
-      --  True if the contents of windows should be displayed while resizing
-      --  widgets
-
-      Opaque_Move : Boolean;
-      --  True if the contents of windows should be displayed while moved
 
       Close_Floating_Is_Unfloat : Boolean;
       --  True if destroying a floating window will put the child back in the
