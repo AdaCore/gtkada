@@ -128,11 +128,14 @@ package Glib.XML is
       Attribute_Name : in UTF8_String;
       Default        : in UTF8_String := "") return UTF8_String;
    --  Return the value of the attribute 'Attribute_Name' if present.
+   --  Special XML characters have already been interpreted in the result
+   --  string.
    --  Return Default otherwise.
 
    procedure Set_Attribute
      (N : Node_Ptr; Attribute_Name, Attribute_Value : UTF8_String);
-   --  Create a new attribute, or replace an existing one
+   --  Create a new attribute, or replace an existing one. The attribute value
+   --  is automatically protected for special XML characters
 
    function Find_Tag_With_Attribute
      (N     : Node_Ptr;

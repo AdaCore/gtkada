@@ -318,8 +318,7 @@ package body Glib.XML is
             V : constant String := Value.all;
          begin
             Free (Value);
-
-            return V (V'First .. V'Last);
+            return V;
          end;
       end if;
    end Get_Attribute;
@@ -335,7 +334,7 @@ package body Glib.XML is
       Key, Value : String_Ptr;
       Atts       : String_Ptr;
       Str        : constant String :=
-        Attribute_Name & "=""" & Translate (Attribute_Value) & """ ";
+        Attribute_Name & "=""" & Protect (Attribute_Value) & """ ";
 
    begin
       if N.Attributes /= null then
