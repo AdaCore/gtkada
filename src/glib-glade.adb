@@ -171,7 +171,7 @@ package body Glib.Glade is
    ------------
 
    function Adjust (S : String) return String is
-      T : String (1 .. S'Length + 256);
+      T : String (1 .. S'Length + 4096);
       K : Natural := 1;
 
    begin
@@ -181,6 +181,10 @@ package body Glib.Glade is
             K := K + 16;
 
          --  Skip additional CR present on Win32
+
+         elsif S (J) = '"' then
+            T (K .. K + 1) := """""";
+            K := K + 2;
 
          elsif S (J) /= ASCII.CR then
             T (K) := S (J);
@@ -408,7 +412,13 @@ package body Glib.Glade is
          Put (File, To_Ada (Cur) & ", ");
 
          if Prefix /= "" then
-            Put_Line (File, Prefix & P.Value.all & Postfix & ");");
+            if Prefix (Prefix'Last) = '"' then
+               --  If the value is text, adjust it before inserting it.
+               Put_Line (File, Prefix & Adjust (P.Value.all) & Postfix & ");");
+
+            else
+               Put_Line (File, Prefix & P.Value.all & Postfix & ");");
+            end if;
          else
             if Is_Float then
                Put_Line (File, To_Float (P.Value.all) & ");");
@@ -577,7 +587,12 @@ package body Glib.Glade is
             Put (File, To_Ada (P) & ", ");
 
             if Prefix /= "" then
-               Put (File, Prefix & Param1 & Postfix);
+               if Prefix (Prefix'Last) = '"' then
+                  Put (File, Prefix & Adjust (Param1) & Postfix);
+
+               else
+                  Put (File, Prefix & Param1 & Postfix);
+               end if;
             else
                Put (File, To_Ada (Param1));
             end if;
