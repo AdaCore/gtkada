@@ -1,0 +1,172 @@
+This is a patch against Gtk+ 2.2.1 sources that fixes Windows specific problems
+
+Thu Mar 27 18:16:10 2003	Arnaud Charlet <charlet@gnat.com>
+
+	* gtk+/gdk/win32/gdkwindow-win32.c: Bring parent window on top when
+	destroying a modal window. Fixes unexpected lost focus.
+
+Fri Mar 14 12:50:58 2003	Arnaud Charlet <charlet@gnat.com>
+
+	* pango/modules/basic/basic-win32.c: Disable undefined macros
+
+Mon Nov 25 12:00:14  2002	Arnaud Charlet <charlet@gnat.com>
+
+	* gtk+/gdk/win32/Makefile.am: Remove gdk-win32res.lo dependency,
+	since we do not want to use the default Gtk+ icon.
+
+Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
+
+	* gtk+/gdk/win32/gdkevents-win32.c: Force an update when paint message
+	is received, otherwise windows in background are not immediately
+	refreshed when moving a modal window on top of them.
+	Add handling of WM_NCPAINT message to refresh some areas when a window
+	from another application is moved on top of the current app.
+
+Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
+
+	* gtk+/gtk/gtktextview.c: Improve handling of selections under Windows
+
+#########################################
+# Selection problem B430-008
+#########################################
+
+--- gtk+/gtk/gtktextview.c.old	2002-11-05 11:11:07 +0100
++++ gtk+/gtk/gtktextview.c	2002-11-05 11:11:25 +0100
+@@ -3937,8 +3937,10 @@
+ 
+   text_view = GTK_TEXT_VIEW (widget);
+ 
++#if 0
+   if (event->window != text_view->text_window->bin_window)
+     return FALSE;
++#endif
+ 
+   if (event->button == 1)
+     {
+
+--- gtk+/gdk/win32/gdkevents-win32.c	2003/03/27 11:08:56	1.2
++++ gtk+/gdk/win32/gdkevents-win32.c	2003/03/27 14:11:31
+@@ -2910,6 +2910,12 @@
+ 	  _gdk_window_process_expose (window, update_region);
+ 	  gdk_region_destroy (update_region);
+ 	  return_val = FALSE;
++
++          /* Force a process_updates to refresh visible windows
++           * when receiving a paint message. */
++ 
++          if (!GDK_WINDOW_DESTROYED (window) && gdk_window_is_visible (window))
++            gdk_window_process_updates (window, FALSE);
+         }
+       DeleteObject (hrgn);
+       break;
+--- gtk+/gdk/win32/gdkevents-win32.c	2003/04/13 09:25:27	1.3
++++ gtk+/gdk/win32/gdkevents-win32.c	2003/04/13 09:49:57
+@@ -2823,6 +2823,31 @@
+       *ret_valp = 1;
+       break;
+ 
++    case WM_NCPAINT:
++      if (msg->wParam < 1)
++	break;
++
++      hrgn = CreateRectRgn (0, 0, 0, 0);
++      if (GetUpdateRgn (msg->hwnd, hrgn, FALSE) == ERROR)
++	{
++	  WIN32_GDI_FAILED ("GetUpdateRgn");
++	  break;
++	}
++
++      {
++        GdkRegion *update_region = _gdk_win32_hrgn_to_region (hrgn);
++
++	_gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
++	gdk_region_offset (update_region, xoffset, yoffset);
++
++	_gdk_window_process_expose (window, update_region);
++	gdk_region_destroy (update_region);
++
++	DeleteObject (hrgn);
++	return_val = FALSE;
++      }
++      break;
++
+     case WM_PAINT:
+       hrgn = CreateRectRgn (0, 0, 0, 0);
+       if (GetUpdateRgn (msg->hwnd, hrgn, FALSE) == ERROR)
+--- gtk+/gdk/win32/Makefile.am	2002/11/25 10:58:36	1.1
++++ gtk+/gdk/win32/Makefile.am	2002/11/25 10:59:18
+@@ -79,4 +79,4 @@
+ libgdkinclude_HEADERS =		\
+ 	gdkwin32.h
+ 
+-libgdk_win32_la_LIBADD = rc/gdk-win32res.lo
++libgdk_win32_la_LIBADD =
+
+--- pango/modules/basic/basic-win32.c.old	2003-03-14 11:36:44 +0100
++++ pango/modules/basic/basic-win32.c	2003-03-14 11:37:20 +0100
+@@ -303,7 +303,6 @@
+     {
+ #define CASE(n) case LANG_##n: return #n
+       CASE (NEUTRAL);
+-      CASE (INVARIANT);
+       CASE (AFRIKAANS);
+       CASE (ALBANIAN);
+       CASE (ARABIC);
+@@ -319,7 +318,6 @@
+       CASE (CROATIAN);
+       CASE (CZECH);
+       CASE (DANISH);
+-      CASE (DIVEHI);
+       CASE (DUTCH);
+       CASE (ENGLISH);
+       CASE (ESTONIAN);
+@@ -327,7 +325,6 @@
+       CASE (FARSI);
+       CASE (FINNISH);
+       CASE (FRENCH);
+-      CASE (GALICIAN);
+       CASE (GEORGIAN);
+       CASE (GERMAN);
+       CASE (GREEK);
+@@ -344,7 +341,6 @@
+       CASE (KAZAK);
+       CASE (KONKANI);
+       CASE (KOREAN);
+-      CASE (KYRGYZ);
+       CASE (LATVIAN);
+       CASE (LITHUANIAN);
+       CASE (MACEDONIAN);
+@@ -352,7 +348,6 @@
+       CASE (MALAYALAM);
+       CASE (MANIPURI);
+       CASE (MARATHI);
+-      CASE (MONGOLIAN);
+       CASE (NEPALI);
+       CASE (NORWEGIAN);
+       CASE (ORIYA);
+@@ -368,7 +363,6 @@
+       CASE (SPANISH);
+       CASE (SWAHILI);
+       CASE (SWEDISH);
+-      CASE (SYRIAC);
+       CASE (TAMIL);
+       CASE (TATAR);
+       CASE (TELUGU);
+--- gtk+/gdk/win32/gdkwindow-win32.c	2003/03/27 14:43:01	1.1
++++ gtk+/gdk/win32/gdkwindow-win32.c	2003/04/13 09:22:48
+@@ -742,6 +742,15 @@
+   GDK_NOTE (MISC, g_print ("_gdk_windowing_window_destroy %p\n",
+ 			   GDK_WINDOW_HWND (window)));
+ 
++  if (private->modal_hint)
++    {
++      HWND parent = (HWND) GetWindowLong
++	(GDK_WINDOW_HWND (window), GWL_HWNDPARENT);
++
++      if ((long)parent > 1 && !BringWindowToTop (parent))
++	WIN32_API_FAILED ("BringWindowToTop");
++    }
++
+   if (private->extension_events != 0)
+     _gdk_input_window_destroy (window);
+ 
