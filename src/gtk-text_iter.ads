@@ -34,6 +34,7 @@
 --  </description>
 --  <c_version>1.3.6</c_version>
 
+with Glib; use Glib;
 with Glib.Values;
 with Gdk.Pixbuf;
 with Gtk.Text_Child;
@@ -84,15 +85,16 @@ package Gtk.Text_Iter is
    -- Dereference operators --
    ---------------------------
 
-   --  function Get_Char
-   --    (Iter   : access Gtk_Text_Iter)
-   --     return gunichar;
-   --  ??? gunichar (and maybe all unicode.h) needs to be bound
-   --  ??? first, before this function can be bound.
+   function Get_Char (Iter : Gtk_Text_Iter) return Gunichar;
+   --  Return the character immediately following Iter. If Iter is at the
+   --  end of the buffer, then return ASCII.NUL.
 
    function Get_Char (Iter : Gtk_Text_Iter) return Character;
    --  Return the character immediately following Iter. If Iter is at the
    --  end of the buffer, then return ASCII.NUL.
+   --  Note that this function assumes that the text is encoded in ASCII
+   --  format. If this is not the case, use the Get_Char function that
+   --  returns a Gunichar instead.
 
    function Get_Slice
      (Start   : Gtk_Text_Iter;
