@@ -333,6 +333,38 @@ package body Gtk.Clist is
       Gdk.Set_Object (Mask, Msk);
    end Get_Pixmap;
 
+   ----------------
+   -- Get_Pixmap --
+   ----------------
+
+   procedure Get_Pixmap
+     (Clist    : access Gtk_Clist_Record;
+      Row      : in Gtk_Clist_Row;
+      Column   : in Gint;
+      Pixmap   : out Gdk.Pixmap.Gdk_Pixmap'Class;
+      Mask     : out Gdk.Bitmap.Gdk_Bitmap'Class;
+      Is_Valid : out Boolean)
+   is
+      function Internal
+        (Clist  : in System.Address;
+         Row    : in System.Address;
+         Column : in Gint;
+         Pixmap : in System.Address;
+         Mask   : in System.Address)
+         return      Gint;
+      pragma Import (C, Internal, "ada_gtk_clist_get_pixmap");
+      Pix : aliased System.Address;
+      Msk : aliased System.Address;
+   begin
+      Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
+                                         Get_Object (Row),
+                                         Column,
+                                         Pix'Address,
+                                         Msk'Address));
+      Gdk.Set_Object (Pixmap, Pix);
+      Gdk.Set_Object (Mask, Msk);
+   end Get_Pixmap;
+
    -----------------
    -- Get_Pixtext --
    -----------------
@@ -532,6 +564,35 @@ package body Gtk.Clist is
       end if;
    end Get_Text;
 
+   --------------
+   -- Get_Text --
+   --------------
+
+   function Get_Text (Clist    : access Gtk_Clist_Record;
+                      Row      : Gtk_Clist_Row;
+                      Column   : in Gint)
+                     return String
+   is
+      function Internal
+        (Clist  : in System.Address;
+         Row    : in System.Address;
+         Column : in Gint;
+         Text   : in System.Address)
+         return      Gint;
+      pragma Import (C, Internal, "ada_gtk_clist_get_text");
+
+      S : aliased Interfaces.C.Strings.chars_ptr;
+      Is_Valid : Gint;
+   begin
+      Is_Valid := Internal (Get_Object (Clist), Get_Object (Row),
+                            Column, S'Address);
+      if Is_Valid /= 0 then
+         return Interfaces.C.Strings.Value (S);
+      else
+         return String'(1 .. 0 => ' ');
+      end if;
+   end Get_Text;
+
    ---------------------
    -- Get_Vadjustment --
    ---------------------
@@ -722,6 +783,20 @@ package body Gtk.Clist is
    begin
       Internal (Get_Object (Clist));
    end Select_All;
+
+   -------------------
+   -- Set_Auto_Sort --
+   -------------------
+
+   procedure Set_Auto_Sort (Clist     : access Gtk_Clist_Record;
+                            Auto_Sort : Boolean)
+   is
+      procedure Internal (Clist     : System.Address;
+                          Auto_Sort : Integer);
+      pragma Import (C, Internal, "gtk_clist_set_auto_sort");
+   begin
+      Internal (Get_Object (Clist), Boolean'Pos (Auto_Sort));
+   end Set_Auto_Sort;
 
    ----------------
    -- Select_Row --
@@ -1177,6 +1252,34 @@ package body Gtk.Clist is
       end if;
    end Set_Show_Titles;
 
+   ---------------------
+   -- Set_Sort_Column --
+   ---------------------
+
+   procedure Set_Sort_Column (Clist  : access Gtk_Clist_Record;
+                              Column : Gint)
+   is
+      procedure Internal (Clist : System.Address;
+                          Column : Gint);
+      pragma Import (C, Internal, "gtk_clist_set_sort_column");
+   begin
+      Internal (Get_Object (Clist), Column);
+   end Set_Sort_Column;
+
+   -------------------
+   -- Set_Sort_Type --
+   -------------------
+
+   procedure Set_Sort_Type (Clist     : access Gtk_Clist_Record;
+                            Sort_Type : Gtk_Sort_Type)
+   is
+      procedure Internal (Clist : System.Address;
+                          Sort_Type : Integer);
+      pragma Import (C, Internal, "gtk_clist_set_sort_type");
+   begin
+      Internal (Get_Object (Clist), Gtk_Sort_Type'Pos (Sort_Type));
+   end Set_Sort_Type;
+
    --------------
    -- Set_Text --
    --------------
@@ -1232,6 +1335,17 @@ package body Gtk.Clist is
          Internal (Get_Object (Clist), Get_Object (Adjustment));
       end if;
    end Set_Vadjustment;
+
+   ----------
+   -- Sort --
+   ----------
+
+   procedure Sort (Clist : access Gtk_Clist_Record) is
+      procedure Internal (Clist : System.Address);
+      pragma Import (C, Internal, "gtk_clist_sort");
+   begin
+      Internal (Get_Object (Clist));
+   end Sort;
 
    ---------------
    -- Swap_Rows --
@@ -1303,6 +1417,37 @@ package body Gtk.Clist is
       Internal (Get_Object (Clist));
    end Undo_Selection;
 
+   -----------------------
+   -- Set_Cell_Contents --
+   -----------------------
+
+   procedure Set_Cell_Contents (Clist     : access Gtk_Clist_Record;
+                                Row       : Gtk_Clist_Row;
+                                Column    : Gint;
+                                Cell_Type : Gtk_Cell_Type;
+                                Text      : String;
+                                Spacing   : Guint8;
+                                Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
+                                Mask      : Gdk.Bitmap.Gdk_Bitmap)
+   is
+      procedure Internal (Clist     : System.Address;
+                          Row       : System.Address;
+                          Column    : Gint;
+                          Cell_Type : Gtk_Cell_Type;
+                          Text      : System.Address;
+                          Spacing   : Guint8;
+                          Pixmap    : System.Address;
+                          Mask      : System.Address);
+      pragma Import (C, Internal, "ada_gtk_clist_set_cell_contents");
+      T : System.Address := System.Null_Address;
+   begin
+      if Text /= "" then
+         T := T'Address;
+      end if;
+      Internal (Get_Object (Clist), Get_Object (Row), Column,
+                Cell_Type, T, Spacing, Get_Object (Pixmap), Get_Object (Mask));
+   end Set_Cell_Contents;
+
    --------------
    -- Row_Data --
    --------------
@@ -1355,6 +1500,24 @@ package body Gtk.Clist is
       end Get;
 
       ---------
+      -- Get --
+      ---------
+
+      function Get (Object : access Gtk_Clist_Record'Class;
+                    Row    : in     Gtk_Clist_Row)
+                   return Data_Type
+      is
+         function Internal (Object : in System.Address;
+                            Row    : in System.Address)
+                            return System.Address;
+         pragma Import (C, Internal, "ada_gtk_clist_get_row_data");
+         D : Cb_Record_Access
+           := Convert (Internal (Get_Object (Object), Get_Object (Row)));
+      begin
+         return D.Ptr.all;
+      end Get;
+
+      ---------
       -- Set --
       ---------
 
@@ -1373,6 +1536,29 @@ package body Gtk.Clist is
       begin
          Internal (Get_Object (Object),
                    Row,
+                   Convert (D),
+                   Free_Data'Address);
+      end Set;
+
+      ---------
+      -- Set --
+      ---------
+
+      procedure Set (Object : access Gtk_Clist_Record'Class;
+                     Row    : in     Gtk_Clist_Row;
+                     Data   : in     Data_Type)
+      is
+         function Convert is new Unchecked_Conversion (Cb_Record_Access,
+                                                       System.Address);
+         procedure Internal (Object  : in System.Address;
+                             Row     : in System.Address;
+                             Data    : in System.Address;
+                             Destroy : in System.Address);
+         pragma Import (C, Internal, "ada_gtk_clist_set_row_data_full");
+         D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
+      begin
+         Internal (Get_Object (Object),
+                   Get_Object (Row),
                    Convert (D),
                    Free_Data'Address);
       end Set;

@@ -121,7 +121,21 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 		       "gtkobject.h/get_arg"             => 0,
 		       "gtkwidget.h/hide_all"            => 0,
 		       "gtkwidget.h/show_all"            => 0,
-		       "gtkwidget.h/debug_msg"           => 0   # is a signal
+		       "gtkwidget.h/debug_msg"           => 0,  # is a signal
+		       "gtkclist.h/set_scroll_adjustments" => 0,
+		       "gtkclist.h/refresh"              => 0,
+		       "gtkclist.h/cell_size_request"    => 0,
+		       "gtkclist.h/draw_drag_highlight"  => 0,
+		       "gtkclist.h/sort_list"            => 0,
+		       "gtkclist.h/remove_row"           => 0,
+		       "gtkclist.h/draw_row"             => 0,
+		       "gtkclist.h/selection_find"       => 0,
+		       "gtkclist.h/clear"                => 0,
+		       "gtkclist.h/set_scroll_adjustments" => 0,
+		       "gtkclist.h/insert_row"           => 0,
+		       "gtkclist.h/fake_unselect_all"    => 0,
+		       "gtkclist.h/set_cell_contents"    => 0,
+		       "gtkclist.h/resync_selection"     => 0
 		       );
 
 ## Contains the parent of each widget

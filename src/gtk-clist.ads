@@ -32,6 +32,13 @@
 --  This widget displays a multi-column list. Each line is made of
 --  a number of column, each being able to display any kind of widget.
 --
+--  The intersection of a line and a column is called a Cell. Each cell can
+--  have a different type (Cell_Text, Cell_Pixmap, Cell_Pixtext), and display
+--  its contents depending on this type. For instance, the text is not
+--  displayed in the type is Cell_Pixmap.
+--  Note that this type is changed dynamically by some of the subprograms
+--  below, like Set_Pixmap, Set_Text, ... and Set_Cell_Contents
+--
 --  This is one of the most powerful widgets in GtkAda, that can be used to
 --  display an kind of information. Look also into using Gtk_Ctree, which is
 --  a similar widget.
@@ -61,6 +68,17 @@ package Gtk.Clist is
    type Gtk_Clist is access all Gtk_Clist_Record'Class;
 
    type Gtk_Clist_Row is new Object_Type;
+
+   type Gtk_Sort_Type is (Ascending, Descending);
+
+
+   --  <doc_ignore>
+   function Convert (C : in Gtk_Clist_Row) return System.Address;
+   function Convert (W : System.Address) return Gtk_Clist_Row;
+
+   package Row_List is new Glib.Glist.Generic_List (Gtk_Clist_Row);
+
+   --  </doc_ignore>
 
    ------------------------------------------------
    -- Creating a list and setting the attributes --
@@ -145,6 +163,18 @@ package Gtk.Clist is
    --  Note that changing the selection mode to Selection_Single or
    --  Selection_Browse will deselect all the items in the clist.
 
+   function Get_Selection_Mode (Clist : access Gtk_Clist_Record)
+                               return Gtk.Enums.Gtk_Selection_Mode;
+   --  Return the selection mode for the clist.
+
+   --  <doc_ignore>
+   function Get_Clist_Window (Clist : access Gtk_Clist_Record)
+                              return Gdk.Window.Gdk_Window;
+   --  Returns the scrolling window used in the clist. This function is
+   --  kept for backward compatible reasons, and you probably won't have to use
+   --  it.
+   --  </doc_ignore>
+
    --------------------
    -- Visual aspects --
    --------------------
@@ -182,6 +212,52 @@ package Gtk.Clist is
    --  Add a new row at the beginning of the clist, and return its index.
    --  The behavior is undefined if Text does not have at least as many items
    --  as there are columns in the Clist.
+
+   procedure Insert (Clist : access Gtk_Clist_Record;
+                     Row   : in     Gint;
+                     Text  : in     Gtkada.Types.Chars_Ptr_Array);
+   --  Add a new row in the clist.
+   --  The row 0 is the first in the clist. If Row is not in the range for
+   --  clist, the new row is added at the end. The behavior is undefined if
+   --  Text does not have enough items.
+
+   procedure Remove (Clist : access Gtk_Clist_Record; Row : in Gint);
+   --  Remove a row from the clist (0 is the first one).
+
+   procedure Clear (Clist : access Gtk_Clist_Record);
+   --  Clears the entire list. This is much faster than doing a Remove on each
+   --  line.
+
+   procedure Swap_Rows (Clist : access Gtk_Clist_Record;
+                        Row1  : in     Gint;
+                        Row2  : in     Gint);
+   --  Exchange the position of two rows in the clist.
+
+   procedure Row_Move (Clist      : access Gtk_Clist_Record;
+                       Source_Row : in     Gint;
+                       Dest_Row   : in     Gint);
+   --  Move the row at Source_Row to Dest_Row (0 indicates the first row in
+   --  the clist)
+
+   procedure Set_Sort_Column (Clist  : access Gtk_Clist_Record;
+                              Column : Gint);
+   --  Indicate the column on which to sort the clist.
+   --  This column is relevant when you use Sort or Set_Auto_Sort below.
+   --  The first column is number 0.
+
+   procedure Set_Sort_Type (Clist     : access Gtk_Clist_Record;
+                            Sort_Type : Gtk_Sort_Type);
+   --  Indicate in which order the sort should be done on the clist
+   --  (ascending or descending).
+
+   procedure Sort (Clist : access Gtk_Clist_Record);
+   --  Sort the lines of the clist, based on the column set by Set_Sort_Column,
+   --  and in the order set by Set_Sort_Type.
+
+   procedure Set_Auto_Sort (Clist     : access Gtk_Clist_Record;
+                            Auto_Sort : Boolean);
+   --  If Auto_Sort is true, then the clist will be automatically sorted every
+   --  time a new line is inserted into the clist.
 
    -------------
    -- Columns --
@@ -363,6 +439,55 @@ package Gtk.Clist is
                            return Boolean;
    --  Return the selectable status of the row.
 
+   procedure Select_Row (Clist  : access Gtk_Clist_Record;
+                         Row    : in Gint;
+                         Column : in Gint);
+   --  Emit the signal "select_row". This simulates the user pressing
+   --  the mouse on Row, Column on the clist.
+
+   procedure Unselect_Row (Clist  : access Gtk_Clist_Record;
+                           Row    : in Gint;
+                           Column : in Gint);
+   --  Emit the signal "unselect_row", as if the user had clicked on
+   --  Row, Column on the clist.
+
+   procedure Undo_Selection (Clist  : access Gtk_Clist_Record);
+   --  Undo the last select/unselect operation.
+
+   procedure Get_Selection_Info (Clist    : access Gtk_Clist_Record;
+                                 X        : in Gint;
+                                 Y        : in Gint;
+                                 Row      : out Gint;
+                                 Column   : out Gint;
+                                 Is_Valid : out Boolean);
+   --  Return the Row/Column corresponding to the coordinates X,Y in the
+   --  Row column. The coordinates X,Y are relative to the clist window
+   --  (ie 0,0 is the top left corner of the clist).
+   --  The result is valid only if Is_Valid is true
+
+   procedure Select_All (Clist : access Gtk_Clist_Record);
+   --  Select all the rows in the clist. This only works if the selection
+   --  mode allows for multiple rows selected at the same time (extended or
+   --  multiple).
+
+   procedure Unselect_All (Clist : access Gtk_Clist_Record);
+   --  Deselect all the rows in the clist. If the selection mode is
+   --  Browse, then only the current line is deselected.
+
+   function Get_Focus_Row (Clist : access Gtk_Clist_Record) return Gint;
+   --  Return the number of the line that currently has the focus.
+
+   function Get_Row_List (Clist : access Gtk_Clist_Record)
+                         return         Row_List.Glist;
+   --  Return the list of all the rows in the clist. This might speed up
+   --  the access to the rows a little.
+   --  You can then use the function Set_Cell_Contents to modify the cells
+   --  in the row, and Get_Text or Get_Pixmap to get its contents.
+
+   function Get_Selection (Widget : access Gtk_Clist_Record)
+                           return Gtk.Enums.Gint_List.Glist;
+   --  Return the list of selected rows, by number.
+
    -----------
    -- Cells --
    -----------
@@ -381,15 +506,25 @@ package Gtk.Clist is
       Column : in Gint;
       Text   : in String);
    --  Set the cell's text, replacing its current contents.
+   --  This changes the type of the cell to Cell_Text. The pixmap (if any)
+   --  will no longer be displayed.
 
-   function Get_Text
-     (Clist    : access Gtk_Clist_Record;
-      Row      : in Gint;
-      Column   : in Gint) return String;
-   --  Return the text contained in cell.
+   function Get_Text (Clist    : access Gtk_Clist_Record;
+                      Row      : in Gint;
+                      Column   : in Gint) return String;
+   --  Return the text contained in cell. The type of the cell should be
+   --  either Cell_Text or Cell_Pixtext.
    --  If there was a problem, a null-length string is returned.
    --  The problem might appear in case the row or the column are
    --  invalid, or if the cell does not contain any text.
+
+   function Get_Text (Clist    : access Gtk_Clist_Record;
+                      Row      : Gtk_Clist_Row;
+                      Column   : in Gint)
+                     return String;
+   --  Return the text contained in cell. The Row can be obtained from
+   --  Get_Row_List, this function speeds up the access a little compared
+   --  to the other Get_Text above.
 
    procedure Set_Pixmap
      (Clist  : access Gtk_Clist_Record;
@@ -398,6 +533,8 @@ package Gtk.Clist is
       Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
    --  Set the cell's pixmap, replacing its current contents.
+   --  The type of the cell becomes Cell_Pixmap, and the text is no longer
+   --  displayed.
 
    procedure Get_Pixmap
      (Clist    : access Gtk_Clist_Record;
@@ -406,9 +543,21 @@ package Gtk.Clist is
       Pixmap   : out Gdk.Pixmap.Gdk_Pixmap'Class;
       Mask     : out Gdk.Bitmap.Gdk_Bitmap'Class;
       Is_Valid : out Boolean);
-   --  Return the pixmap contained in a cell.
+   --  Return the pixmap contained in a cell. The type of the cell should
+   --  be Cell_Pixmap.
    --  The result is meaningful only if Is_Valid is True. If the Cell did not
    --  contain a pixmap, Is_Valid is set to False
+
+   procedure Get_Pixmap
+     (Clist    : access Gtk_Clist_Record;
+      Row      : in Gtk_Clist_Row;
+      Column   : in Gint;
+      Pixmap   : out Gdk.Pixmap.Gdk_Pixmap'Class;
+      Mask     : out Gdk.Bitmap.Gdk_Bitmap'Class;
+      Is_Valid : out Boolean);
+   --  Return the pixmap contained in a cell. Row can be obtained directly with
+   --  Get_Row_List, and speeds up the access a little compared to the previous
+   --  Get_Pixmap function.
 
    procedure Set_Pixtext
      (Clist   : access Gtk_Clist_Record;
@@ -419,7 +568,8 @@ package Gtk.Clist is
       Pixmap  : in Gdk.Pixmap.Gdk_Pixmap'Class;
       Mask    : in Gdk.Bitmap.Gdk_Bitmap'Class);
    --  Set both the text and the pixmap for the cell.
-   --  Replace its current contents.
+   --  Replace its current contents. The type of the cell becomes Cell_Pixtext,
+   --  and both the text and the pixmap are displayed.
 
    procedure Get_Pixtext
      (Clist    : access Gtk_Clist_Record;
@@ -457,6 +607,19 @@ package Gtk.Clist is
    --  Both shifts can be either positive or negative.
    --  This is particularly useful for indenting items in a columns.
 
+   procedure Set_Cell_Contents (Clist     : access Gtk_Clist_Record;
+                                Row       : Gtk_Clist_Row;
+                                Column    : Gint;
+                                Cell_Type : Gtk.Enums.Gtk_Cell_Type;
+                                Text      : String;
+                                Spacing   : Guint8;
+                                Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
+                                Mask      : Gdk.Bitmap.Gdk_Bitmap);
+   --  Modify the contents and type of a cell.
+   --  Cell_Type indicates what should be displayed in the cell. Note that
+   --  if you do not want any string, you should pass an empty string "".
+   --  You get Row from Get_Row_List.
+
    -------------------------
    -- Reordering the list --
    -------------------------
@@ -493,124 +656,199 @@ package Gtk.Clist is
    --  Col_Align (from 0.0x0.0 (top-left) to 1.0x1.0 (bottom-right), all
    --  intermediate values are possible).
 
-   ----------
-   -- Misc --
-   ----------
-
-   function Convert (C : in Gtk_Clist_Row) return System.Address;
-   function Convert (W : System.Address) return Gtk_Clist_Row;
-   package Row_List is new Glib.Glist.Generic_List (Gtk_Clist_Row);
-
-
-   --  Return the index of the row
-
-   procedure Clear (Clist : access Gtk_Clist_Record);
-
-
-   function Get_Clist_Window (Clist : access Gtk_Clist_Record)
-                              return Gdk.Window.Gdk_Window;
-
-
-
-   function Get_Focus_Row (Clist : access Gtk_Clist_Record) return Gint;
-
-
-   function Get_Row_List (Clist : access Gtk_Clist_Record)
-                          return         Row_List.Glist;
-
-   function Get_Selection (Widget : access Gtk_Clist_Record)
-                           return Gtk.Enums.Gint_List.Glist;
-
-   procedure Get_Selection_Info
-     (Clist    : access Gtk_Clist_Record;
-      X        : in Gint;
-      Y        : in Gint;
-      Row      : out Gint;
-      Column   : out Gint;
-      Is_Valid : out Boolean);
-   --  The result is valid only if Is_Valid is true
-
-   function Get_Selection_Mode (Clist : access Gtk_Clist_Record)
-                                return Gtk.Enums.Gtk_Selection_Mode;
-
-
-   procedure Insert (Clist : access Gtk_Clist_Record;
-                     Row   : in     Gint;
-                     Text  : in     Gtkada.Types.Chars_Ptr_Array);
-
-   procedure Remove (Clist : access Gtk_Clist_Record; Row : in Gint);
-
-   procedure Row_Move (Clist      : access Gtk_Clist_Record;
-                       Source_Row : in     Gint;
-                       Dest_Row   : in     Gint);
-
-   procedure Select_All (Clist : access Gtk_Clist_Record);
-
-   procedure Select_Row
-     (Clist  : access Gtk_Clist_Record;
-      Row    : in Gint;
-      Column : in Gint);
-
-   --  gtk_clist_set_auto_sort
-
-
-
-   --  gtk_clist_set_compare_func ([...])
-
-   procedure Set_Show_Titles (Clist : access Gtk_Clist_Record; Show : Boolean);
-   --  If show is true, call Column_Titles_Show. Do nothing otherwise.
-   --  This procedure is primarily used by Gate generated code.
-
-   --  gtk_clist_set_sort_column
-   --  gtk_clist_set_sort_type
-
-   --  gtk_clist_sort
-
-   procedure Swap_Rows (Clist : access Gtk_Clist_Record;
-                        Row1  : in     Gint;
-                        Row2  : in     Gint);
-
-   procedure Undo_Selection (Clist  : access Gtk_Clist_Record);
-
-   procedure Unselect_Row
-     (Clist  : access Gtk_Clist_Record;
-      Row    : in Gint;
-      Column : in Gint);
-
-   procedure Unselect_All (Clist : access Gtk_Clist_Record);
-
    ---------------
    -- Row_Data --
    ---------------
+   --  You can associate one private data with each row in the clist. If you
+   --  want to store multiple values, you should create a record type that
+   --  contains all the values, and associate with value with the relevant
+   --  line in the clist.
+   --  This package is the equivalent of Gtk.Widget.User_Data for the Clists.
+   --
+   --  This is your responsability to use the Get and Set functions from the
+   --  same generic package. However, you can use different packages for
+   --  different lines (altough this will definitly make things harded to use!)
+   --
+   --  Note also that an internal copy of the Data is done, therefore the
+   --  "find" functions found in gtk+ have no equivalent in GtkAda, although it
+   --  would be enough to write one by iterating over the Row numbers.
 
    generic
       type Data_Type (<>) is private;
    package Row_Data is
       function Get (Object : access Gtk_Clist_Record'Class;
                     Row    : in     Gint)
-                    return Data_Type;
+                   return Data_Type;
+      --  Get the data associated to a specific row.
+
+      function Get (Object : access Gtk_Clist_Record'Class;
+                    Row    : in     Gtk_Clist_Row)
+                   return Data_Type;
+      --  Same as above, but acts directly on a row obtained through
+      --  Get_Row_List. This is faster for big lists.
 
       procedure Set (Object : access Gtk_Clist_Record'Class;
                      Row    : in Gint;
                      Data   : in Data_Type);
-      --  maps gtk_clist_set_row_data_full
+      --  Modify the data associated with a row
 
-      --  gint gtk_clist_find_row_from_data ([...])
-
+      procedure Set (Object : access Gtk_Clist_Record'Class;
+                     Row    : in Gtk_Clist_Row;
+                     Data   : in Data_Type);
+      --  Same as above but acts directly on a row obtained through
+      --  Get_Row_List. This is faster for big lists.
    end Row_Data;
 
-   --  The previous package implements the Row_Data stuff.
-   --  !! Warning !! No type verification is made to check if you are
-   --  using the appropriate function Get. This is your own responsability
-
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   ----------------------------
+   -- Support for GATE/DGATE --
+   ----------------------------
 
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
+   --  Gate internal function
 
    procedure Generate (Clist : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
 
+   --  <doc_ignore>
+   procedure Set_Show_Titles (Clist : access Gtk_Clist_Record; Show : Boolean);
+   --  If show is true, call Column_Titles_Show. Do nothing otherwise.
+   --  This procedure is primarily used by Gate generated code.
+   --  </doc_ignore>
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "select_row"
+   --    procedure Handler (Clist  : access Gtk_Clist_Record'Class;
+   --                       Row    : Gint;
+   --                       Column : Gint;
+   --                       Event  : Gdk.Event.Gdk_Event);
+   --
+   --    Emitted to request the selection of a row. Event will be NULL most of
+   --    the time when the event is emitted directly by GtkAda. You should use
+   --    Select_Row instead.
+   --
+   --  - "unselect_row"
+   --    procedure Handler (Clist  : access Gtk_Clist_Record'Class;
+   --                       Row    : Gint;
+   --                       Column : Gint;
+   --                       Event  : Gdk.Event.Gdk_Event);
+   --
+   --    Emitted to request the unselection of a row. Event will be NULL most
+   --    of the time when the event is emitted directly by GtkAda. You should
+   --    use Unselect_Row instead.
+   --
+   --  - "row_move"
+   --    procedure Handler (Clist      : access Gtk_Clist_Record'Class;
+   --                       Source_Row : Gint;
+   --                       Dest_Row   : Gint);
+   --
+   --    Emitted to request the change of a Source_Row to Dest_Row. You should
+   --    use Row_Move instead.
+   --
+   --  - "click_column"
+   --    procedure Handler (Clist  : access Gtk_Clist_Record'Class;
+   --                       Column : Gint);
+   --
+   --    Emitted when the user has clicked on one of the buttons at the top
+   --    of a column. The first column has number 0.
+   --
+   --  - "resize_column"
+   --    procedure Handler (Clist  : access Gtk_Clist_Record'Class;
+   --                       Column : Gint;
+   --                       Width  : Gint);
+   --
+   --    Emitted to request a new size for a given column. You should use
+   --    Set_Column_Width instead.
+   --
+   --  - "toggle_focus_row"
+   --    procedure Handler (Clist  : access Gtk_Clist_Record'Class);
+   --
+   --    Emitted to request the change of the selection status (selected/
+   --    unselected) of the focus row. This signal is not emitted internally
+   --    by GtkAda.
+   --
+   --  - "select_all"
+   --    procedure Handler (Clist  : access Gtk_Clist_Record'Class);
+   --
+   --    Emitted to request the selection of all the rows in the Clist, if the
+   --    selection mode allows. You should use Select_All instead.
+   --
+   --  - "unselect_all"
+   --    procedure Handler (Clist  : access Gtk_Clist_Record'Class);
+   --
+   --    Emitted to request the unselection of all the rows in the Clist, if
+   --    the selection mode is different from Browse. You should use
+   --    Unselect_All instead.
+   --
+   --  - "undo_selection"
+   --    procedure Handler (Clist  : access Gtk_Clist_Record'Class);
+   --
+   --    Emitted to request the cancellation of the last select/unselect
+   --    operation. You should use Undo_Selection instead.
+   --
+   --  - "start_selection"
+   --    procedure Handler (Clist  : access Gtk_Clist_Record'Class);
+   --
+   --    Request the start of the selection. This signal is not emitted
+   --    internally by GtkAda, but acts as if the user had clicked on the
+   --    focus row (the exact visual modification depends on the selection
+   --    mode).
+   --
+   --  - "end_selection"
+   --    procedure Handler (Clist  : access Gtk_Clist_Record'Class);
+   --
+   --    Ends the current selection process. This is never emitted internally
+   --    by GtkAda, but acts as if the user had just released the mouse button.
+   --
+   --  - "toggle_add_mode"
+   --    procedure Handler (Clist  : access Gtk_Clist_Record'Class);
+   --
+   --    Changes the add_mode for the clist (indicates whether the next line
+   --    clicked on will be added to the selection or will replace it).
+   --    This is never emitted internally by GtkAda.
+   --
+   --  - "extend_selection"
+   --    procedure Handler (Clist       : access Gtk_Clist_Record'Class;
+   --                       Scroll_Type : Gtk.Enums.Gtk_Scroll_Type;
+   --                       Position    : Gfloat;
+   --                       Auto_Start_Selection : Boolean);
+   --
+   --    Extends the current selection. Position is used only for certain
+   --    values of Scroll_Type. It is never emitted internally by GtkAda. It
+   --    has no effect if the selection mode is not Extended.
+   --
+   --  - "scroll_vertical"
+   --    procedure Handler (Clist       : access Gtk_Clist_Record'Class;
+   --                       Scroll_Type : Gtk.Enums.Gtk_Scroll_Type;
+   --                       Position    : Gfloat);
+   --
+   --    Scrolls the clist vertically. This also modifies the selection.
+   --    It is never emitted internally by GtkAda. You should consider using
+   --    Moveto instead.
+   --
+   --  - "scroll_horizontal"
+   --    procedure Handler (Clist       : access Gtk_Clist_Record'Class;
+   --                       Scroll_Type : Gtk.Enums.Gtk_Scroll_Type;
+   --                       Position    : Gfloat);
+   --
+   --    Scrolls the clist horizontally. This also modifies the selection.
+   --    It is never emitted internally by GtkAda. You should consider using
+   --    Moveto instead.
+   --
+   --  - "abort_column_resize"
+   --    procedure Handler (Clist       : access Gtk_Clist_Record'Class);
+   --
+   --    Aborts the current interactive resizing of the column by the user.
+   --    This releases the grab done on the pointer. It is never emitted
+   --    internally by GtkAda.
+   --
+   --  </signals>
 
 private
    type Gtk_Clist_Record is new Gtk.Container.Gtk_Container_Record

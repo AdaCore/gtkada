@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -2341,6 +2341,71 @@ GList*
 ada_clist_get_row_list (GtkCList* widget)
 {
   return widget->row_list;
+}
+
+void
+ada_gtk_clist_set_cell_contents (GtkCList* clist,
+				 GtkCListRow* row,
+				 gint column,
+				 GtkCellType type,
+				 char* string,
+				 guint8 spacing,
+				 GdkPixmap *pixmap,
+				 GdkBitmap *mask)
+{
+  GTK_CLIST_CLASS (((GtkObject*)clist)->klass)->set_cell_contents
+     (clist, row, column, type, string, spacing, pixmap, mask);
+}
+
+int
+ada_gtk_clist_get_text (GtkCList* clist,
+			GtkCListRow * row,
+			gint column,
+			gchar** string)
+{
+  if (row->cell[column].type == GTK_CELL_TEXT)
+    *string = GTK_CELL_TEXT (row->cell[column])->text;
+  else if (row->cell[column].type == GTK_CELL_PIXTEXT)
+    *string = GTK_CELL_PIXTEXT (row->cell[column])->text;
+  else
+    return 0;
+  return 1;
+}
+
+int
+ada_gtk_clist_get_pixmap (GtkCList    *clist,
+			  GtkCListRow *row,
+			  gint         column,
+			  GdkPixmap  **pixmap,
+			  GdkBitmap  **mask)
+{
+  if (row->cell[column].type == GTK_CELL_PIXMAP) {
+    *pixmap = GTK_CELL_PIXMAP (row->cell[column])->pixmap;
+    *mask = GTK_CELL_PIXMAP (row->cell[column])->mask;
+  } else if (row->cell[column].type == GTK_CELL_PIXTEXT) {
+    *pixmap = GTK_CELL_PIXTEXT (row->cell[column])->pixmap;
+    *mask = GTK_CELL_PIXTEXT (row->cell[column])->mask;
+  } else {
+    return 0;
+  }
+  return 1;
+}
+
+gpointer
+ada_gtk_clist_get_row_data (GtkCList    *clist,
+			    GtkCListRow *row)
+{
+  return row->data;
+}
+
+void
+ada_gtk_clist_set_row_data_full (GtkCList        *clist,
+				 GtkCListRow     *row,
+				 gpointer         data,
+				 GtkDestroyNotify destroy)
+{
+  row->data = data;
+  row->destroy = destroy;
 }
 
 /******************************************
