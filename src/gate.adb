@@ -22,13 +22,48 @@
 --  Parse a Glade's XML project file and generate the corresponding Ada code
 
 with Gtk.Glade; use Gtk.Glade;
+with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
 with Ada.Command_Line; use Ada.Command_Line;
+with Ada.Text_IO; use Ada.Text_IO;
 
 procedure Gate is
+   N            : Node_Ptr;
+   Arg          : Natural;
+   Flag_Project : Boolean := False;
+
+   procedure Usage;
+
+   procedure Usage is
+   begin
+      Put_Line ("Usage: gate switches project-file");
+      New_Line;
+      Put_Line ("  -p    Output the name of the project and exit");
+   end Usage;
+
 begin
    --  ??? This is still a very simple minded program.
 
-   if Argument_Count > 0 then
-      Generate (Argument (1));
+   if Argument_Count = 0 then
+      Usage;
+   else
+      Arg := 1;
+
+      if Argument (Arg) = "-p" then
+         Flag_Project := True;
+         Arg := Arg + 1;
+      end if;
+
+      if Arg > Argument_Count then
+         Usage;
+         return;
+      end if;
+
+      N := Parse (Argument (Arg));
+
+      if Flag_Project then
+         Put_Line (Get_Field (Find_Tag (N.Child, "project"), "name").all);
+      else
+         Generate (N);
+      end if;
    end if;
 end Gate;
