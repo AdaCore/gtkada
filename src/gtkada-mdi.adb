@@ -861,7 +861,7 @@ package body Gtkada.MDI is
       if Event = null then
          declare
             List, Tmp : Widget_List.Glist;
-            Notebook  : Gtk_Notebook;
+            Notebook, Current : Gtk_Notebook;
             Child     : MDI_Child;
          begin
             if not Visible_In_Central_Only then
@@ -877,36 +877,44 @@ package body Gtkada.MDI is
 
             else
                List := Get_Children (MDI);
-               Notebook := Find_Current_In_Central (MDI);
+               Current := Find_Current_In_Central (MDI);
                Tmp  := List;
 
-               while Tmp /= Null_List loop
-                  if Widget_List.Get_Data (Tmp) = Gtk_Widget (Notebook) then
-                     if Move_To_Next then
-                        Tmp := Widget_List.Next (Tmp);
-                        if Tmp = Null_List then
-                           Tmp := Widget_List.First (List);
-                        end if;
-                     else
-                        Tmp := Widget_List.Prev (Tmp);
-                        if Tmp = Null_List then
-                           Tmp := Widget_List.Last (List);
-                        end if;
+               while Tmp /= Null_List
+                  and then Widget_List.Get_Data (Tmp) /= Gtk_Widget (Current)
+               loop
+                  Tmp := Widget_List.Next (Tmp);
+               end loop;
+
+               loop
+                  if Move_To_Next then
+                     Tmp := Widget_List.Next (Tmp);
+                     if Tmp = Null_List then
+                        Tmp := Widget_List.First (List);
                      end if;
-
-                     Notebook := Gtk_Notebook (Widget_List.Get_Data (Tmp));
-                     Child := MDI_Child
-                       (Get_Nth_Page
-                          (Notebook, Get_Current_Page (Notebook)));
-
-                     if Child /= null then
-                        Set_Focus_Child (Child);
+                  else
+                     Tmp := Widget_List.Prev (Tmp);
+                     if Tmp = Null_List then
+                        Tmp := Widget_List.Last (List);
                      end if;
+                  end if;
 
+                  Notebook := Gtk_Notebook (Widget_List.Get_Data (Tmp));
+                  Child := MDI_Child
+                    (Get_Nth_Page
+                       (Notebook, Get_Current_Page (Notebook)));
+                  --  Ignored children that have been put to one side
+                  if Child /= null
+                     and then Child.Position
+                        not in Position_Bottom .. Position_Right
+                  then
+                     Set_Focus_Child (Child);
                      exit;
                   end if;
 
-                  Tmp := Widget_List.Next (Tmp);
+                  --  We have tested all notebooks, none of them matches
+                  exit when Widget_List.Get_Data (Tmp) =
+                     Gtk_Widget (Current);
                end loop;
 
                Free (List);
