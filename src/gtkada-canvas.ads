@@ -454,6 +454,7 @@ package Gtkada.Canvas is
 
    procedure Update_Links
      (Canvas : access Interactive_Canvas_Record'Class;
+      Win    : Gdk.Window.Gdk_Window;
       From_Item : Canvas_Item := null);
    --  Draw all the links to and from From_Item (or all the links in the canvas
    --  if From_Item is null).
@@ -636,6 +637,13 @@ package Gtkada.Canvas is
    --
    --  Emitted when the canvas has been zoomed in or out. You do not need to
    --  redraw the items yourself, since this will be handled by calls to Draw
+   --
+   --  - "draw_links"
+   --  procedure Handler (Canvas : access Interactive_Canvas_Record'Class;
+   --                     window : Gdk.Window.Gdk_Window);
+   --
+   --  Emitted when the links must be drawn in Window, before redrawing all the
+   --  items.
    --
    --  </signals>
 

@@ -103,7 +103,8 @@ package body Gtkada.Canvas is
      (1 => New_String ("background_click"),
       2 => New_String ("item_selected"),
       3 => New_String ("zoomed"),
-      4 => New_String ("set_scroll_adjustments"));
+      4 => New_String ("set_scroll_adjustments"),
+      5 => New_String ("draw_links"));
    --  Array of the signals created for this widget
 
    -----------------
@@ -185,6 +186,15 @@ package body Gtkada.Canvas is
    --  in (X_Out, Y_Out).
    --  X_Pos and Y_Pos have the same meaning as Src_X_Pos and Src_Y_Pos in the
    --  link record.
+
+   procedure Draw_Orthogonal_Link
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Window : Gdk_Window;
+      GC     : in Gdk.GC.Gdk_GC;
+      Link   : access Canvas_Link_Record'Class);
+   --  Draw a link on the screen, as possibly several orthogonal lines.
+   --  This link includes both an arrow head on its destination, and an
+   --  optional text displayed approximatively in its middle.
 
    procedure Draw_Straight_Link
      (Canvas : access Interactive_Canvas_Record'Class;
@@ -298,6 +308,15 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class; Percent : Guint);
    --  Internal function to implement zooming
 
+   procedure Draw_Links
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Pixmap : Gdk.Window.Gdk_Window);
+   --  Emit the "draw_links" signal
+
+   procedure Draw_Links_Cb
+     (Canvas : access Gtk_Widget_Record'Class; Args : Glib.Values.GValues);
+   --  Handler for the "draw_links" signal
+
    ---------------------------
    -- To_Canvas_Coordinates --
    ---------------------------
@@ -341,10 +360,11 @@ package body Gtkada.Canvas is
       Auto_Layout : Boolean := True)
    is
       Signal_Parameters : constant Signal_Parameter_Types :=
-        (1 => (1 => Gdk.Event.Get_Type, 2 => GType_None),
-         2 => (1 => GType_Pointer,      2 => GType_None),
-         3 => (1 => GType_Uint,         2 => GType_None),
-         4 => (1 => Gtk.Adjustment.Get_Type, 2 => Gtk.Adjustment.Get_Type));
+        (1 => (1 => Gdk.Event.Get_Type,      2 => GType_None),
+         2 => (1 => GType_Pointer,           2 => GType_None),
+         3 => (1 => GType_Uint,              2 => GType_None),
+         4 => (1 => Gtk.Adjustment.Get_Type, 2 => Gtk.Adjustment.Get_Type),
+         5 => (1 => Gdk.Drawable.Get_Type,   2 => GType_None));
       --  the parameters for the above signals.
       --  This must be defined in this function rather than at the
       --  library-level, or the value of Gdk_Event.Get_Type is not yet
@@ -391,6 +411,7 @@ package body Gtkada.Canvas is
       Widget_Callback.Connect
         (Canvas, "destroy",
          Widget_Callback.To_Marshaller (Canvas_Destroyed'Access));
+      Widget_Callback.Connect (Canvas, "draw_links", Draw_Links_Cb'Access);
 
       --  We want to be sure to get all the mouse events, that are required
       --  for the animation.
@@ -1150,6 +1171,183 @@ package body Gtkada.Canvas is
       end if;
    end Draw_Annotation;
 
+   --------------------------
+   -- Draw_Orthogonal_Link --
+   --------------------------
+
+   procedure Draw_Orthogonal_Link
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Window : Gdk_Window;
+      GC     : in Gdk.GC.Gdk_GC;
+      Link   : access Canvas_Link_Record'Class)
+   is
+      X1, Y1, Xp1, Yp1, X2, Y2, Xp2, Yp2, X3, Y3 : Gint;
+      Xc1, Xc2, Yc1, Yc2 : Gint;
+      Xarr_End, Yarr_End, Xarr_Start, Yarr_Start : Gint;
+      Angle_Arr_End, Angle_Arr_Start : Float;
+      Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
+      Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
+      Src  : Canvas_Item := Canvas_Item (Get_Src (Link));
+      Dest : Canvas_Item := Canvas_Item (Get_Dest (Link));
+   begin
+      X1 := To_Canvas_Coordinates (Canvas, Src.Coord.X) - Xbase;
+      Y1 := To_Canvas_Coordinates (Canvas, Src.Coord.Y) - Ybase;
+      Xp1 := To_Canvas_Coordinates
+        (Canvas, Src.Coord.X + Gint (Src.Coord.Width)) - Xbase;
+      Yp1 := To_Canvas_Coordinates
+        (Canvas, Src.Coord.Y + Gint (Src.Coord.Height)) - Ybase;
+
+      X2 := To_Canvas_Coordinates (Canvas, Dest.Coord.X) - Xbase;
+      Y2 := To_Canvas_Coordinates (Canvas, Dest.Coord.Y) - Ybase;
+      Xp2 := To_Canvas_Coordinates
+        (Canvas, Dest.Coord.X + Gint (Dest.Coord.Width)) - Xbase;
+      Yp2 := To_Canvas_Coordinates
+        (Canvas, Dest.Coord.Y + Gint (Dest.Coord.Height)) - Ybase;
+
+      Xc1 := (X1 + Xp1) / 2;
+      Xc1 := Xc1 - Xc1 mod Gint (Canvas.Grid_Size);
+
+      Xc2 := (X2 + Xp2) / 2;
+      Xc2 := Xc2 - Xc2 mod Gint (Canvas.Grid_Size);
+
+      Yc1 := (Y1 + Yp1) / 2;
+      Yc2 := (Y2 + Yp2) / 2;
+
+      --  The preferred case will be
+      --     A ---
+      --         |____ B
+      --  The separation line should be at equal distance of the center of A
+      --  and the center of B, so that multiple items lined up in a column
+      --  above B all have the vertical line at the same location.
+      --
+      --  If the vertical line can be drawn at exact distance of the centers,
+      --  then we try and display the vertical line at equal distance of the
+      --  adjacent edges of A and B
+
+      X3 := (X1 + Xp1 + X2 + Xp2) / 4;
+      X3 := X3 - X3 mod Gint (Canvas.Grid_Size);
+
+      if X3 > Xp1
+        and then X3 >= X2
+        and then Xp1 < X2
+      then
+         X3 := (Xp1 + X2) / 2;
+
+      elsif X3 < X1
+        and then X3 < Xp2
+        and then X1 > Xp2
+      then
+         X3 := (X1 + Xp2) / 2;
+      end if;
+
+      if (X3 >= Xp1 and then X3 <= X2)
+        or else (X3 <= X1 and then X3 >= Xp2)
+      then
+         Draw_Line (Window, GC, X3, Yc1, X3, (Y2 + Yp2) / 2);
+         Yarr_Start := Yc1;
+         Yarr_End := Yc2;
+
+         if X3 >= Xp1 then
+            Draw_Line (Window, GC, Xp1, Yc1, X3, Yc1);
+            Draw_Line (Window, GC, X3, Yc2, X2, Yc2);
+            Xarr_Start := Xp1;
+            Xarr_End := X2;
+            Angle_Arr_Start := 0.0;
+            Angle_Arr_End := -Ada.Numerics.Pi;
+         else
+            Draw_Line (Window, GC, X1, Yc1, X3, Yc1);
+            Draw_Line (Window, GC, X3, Yc2, Xp2, Yc2);
+            Xarr_Start := X1;
+            Xarr_End := Xp2;
+            Angle_Arr_Start := -Ada.Numerics.Pi;
+            Angle_Arr_End := 0.0;
+         end if;
+
+      --  Third case is when we didn't have enough space to draw the
+      --  intermediate line. In that case, the layout is similar to
+      --      A ----
+      --           |
+      --           B
+      --  with the vertical line drawn at the same location as in the first
+      --  algorithm.
+
+      elsif X3 >= Xp1 or else X3 <= X1 then
+         if X3 >= Xp1 then
+            Draw_Line (Window, GC, Xp1, Yc1, X3, Yc1);
+            Xarr_Start := Xp1;
+            Angle_Arr_Start := -Ada.Numerics.Pi;
+         else
+            Draw_Line (Window, GC, X1, Yc1, X3, Yc1);
+            Xarr_Start := X1;
+            Angle_Arr_Start := 0.0;
+         end if;
+
+         Yarr_Start := Yc1;
+         Xarr_End := X3;
+
+         if Y2 < Yc1 then
+            Draw_Line (Window, GC, X3, Yc1, X3, Yp2);
+            Yarr_End := Yp2;
+            Angle_Arr_End := Ada.Numerics.Pi / 2.0;
+         else
+            Draw_Line (Window, GC, X3, Yc1, X3, Y2);
+            Yarr_End := Y2;
+            Angle_Arr_End := -Ada.Numerics.Pi / 2.0;
+         end if;
+
+      --  Second case is when one of the item is below the other one. In that
+      --  case, the layout should look like
+      --       AAA
+      --       |_
+      --         |
+      --        BB
+      --  ie the link connects the top side of one item and the bottom side of
+      --  the other item.
+
+      elsif (X1 <= X2 and then X2 <= Xp1)
+        or else (X2 <= X1 and then X1 <= Xp2)
+      then
+         Y3 := (Y1 + Yp1 + Y2 + Yp2) / 4;
+         Y3 := Y3 - Y3 mod Gint (Canvas.Grid_Size);
+         Xarr_Start := Xc1;
+         Xarr_End := Xc2;
+
+         Draw_Line (Window, GC, Xc1, Y3, Xc2, Y3);
+
+         if Y2 > Y3 then
+            Draw_Line (Window, GC, Xc1, Yp1, Xc1, Y3);
+            Draw_Line (Window, GC, Xc2, Y3, Xc2, Y2);
+            Yarr_Start := Yp1;
+            Yarr_End := Y2;
+            Angle_Arr_End := -Ada.Numerics.Pi / 2.0;
+            Angle_Arr_Start := Ada.Numerics.Pi / 2.0;
+         else
+            Draw_Line (Window, GC, Xc1, Y1, Xc1, Y3);
+            Draw_Line (Window, GC, Xc2, Y3, Xc2, Yp2);
+            Yarr_Start := Y1;
+            Yarr_End := Yp2;
+            Angle_Arr_End := Ada.Numerics.Pi / 2.0;
+            Angle_Arr_Start := -Ada.Numerics.Pi / 2.0;
+         end if;
+      end if;
+
+      if Link.Arrow = End_Arrow or else Link.Arrow = Both_Arrow then
+         Draw_Arrow_Head
+           (Canvas, Window, GC, Xarr_End, Yarr_End, Angle_Arr_End);
+      end if;
+
+      if Link.Arrow = Start_Arrow or else Link.Arrow = Both_Arrow then
+         Draw_Arrow_Head
+           (Canvas, Window, GC, Xarr_Start, Yarr_Start, Angle_Arr_Start);
+      end if;
+
+      --  Draw the text if any
+
+      --  if Link.Descr /= null then
+      --     Draw_Annotation (Canvas, Window, GC, X3, (Y1 + Y2) / 2, Link);
+      --  end if;
+   end Draw_Orthogonal_Link;
+
    ------------------------
    -- Draw_Straight_Link --
    ------------------------
@@ -1160,124 +1358,68 @@ package body Gtkada.Canvas is
       GC     : in Gdk.GC.Gdk_GC;
       Link   : access Canvas_Link_Record'Class)
    is
-      X1, Y1, X2, Y2, X3 : Gint;
+      X1, Y1, X2, Y2 : Gint;
       Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
       Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
       Src  : Canvas_Item := Canvas_Item (Get_Src (Link));
       Dest : Canvas_Item := Canvas_Item (Get_Dest (Link));
    begin
-      if Canvas.Orthogonal_Links then
-         Clip_Line
-           (Src.Coord,
-            (Src.Coord.X + Gint (Gfloat (Src.Coord.Width) * Link.Src_X_Pos)
-             + Dest.Coord.X
-             + Gint (Gfloat (Dest.Coord.Width) * Link.Dest_X_Pos))
-            / 2,
-            Src.Coord.Y + Gint (Gfloat (Src.Coord.Height) * Link.Src_Y_Pos),
-            X_Pos => Link.Src_X_Pos, Y_Pos => Link.Src_Y_Pos,
-            X_Out => X1, Y_Out => Y1);
-         Clip_Line
-           (Dest.Coord,
-            (Dest.Coord.X + Gint (Gfloat (Dest.Coord.Width) * Link.Dest_X_Pos)
-             + Src.Coord.X + Gint (Gfloat (Src.Coord.Width) * Link.Src_X_Pos))
-            / 2,
-            Dest.Coord.Y + Gint (Gfloat (Dest.Coord.Height) * Link.Dest_Y_Pos),
-            X_Pos => Link.Dest_X_Pos, Y_Pos => Link.Dest_Y_Pos,
-            X_Out => X2, Y_Out => Y2);
-      else
-         Clip_Line
-           (Src.Coord,
-            Dest.Coord.X + Gint (Gfloat (Dest.Coord.Width) * Link.Dest_X_Pos),
-            Dest.Coord.Y + Gint (Gfloat (Dest.Coord.Height) * Link.Dest_Y_Pos),
-            X_Pos => Link.Src_X_Pos, Y_Pos => Link.Src_Y_Pos,
-            X_Out => X1, Y_Out => Y1);
-         Clip_Line
-           (Dest.Coord,
-            Src.Coord.X + Gint (Gfloat (Src.Coord.Width) * Link.Src_X_Pos),
-            Src.Coord.Y + Gint (Gfloat (Src.Coord.Height) * Link.Src_Y_Pos),
-            X_Pos => Link.Dest_X_Pos, Y_Pos => Link.Dest_Y_Pos,
-            X_Out => X2, Y_Out => Y2);
-      end if;
-
+      Clip_Line
+        (Src.Coord,
+         Dest.Coord.X + Gint (Gfloat (Dest.Coord.Width) * Link.Dest_X_Pos),
+         Dest.Coord.Y + Gint (Gfloat (Dest.Coord.Height) * Link.Dest_Y_Pos),
+         X_Pos => Link.Src_X_Pos, Y_Pos => Link.Src_Y_Pos,
+         X_Out => X1, Y_Out => Y1);
+      Clip_Line
+        (Dest.Coord,
+         Src.Coord.X + Gint (Gfloat (Src.Coord.Width) * Link.Src_X_Pos),
+         Src.Coord.Y + Gint (Gfloat (Src.Coord.Height) * Link.Src_Y_Pos),
+         X_Pos => Link.Dest_X_Pos, Y_Pos => Link.Dest_Y_Pos,
+         X_Out => X2, Y_Out => Y2);
       X1 := To_Canvas_Coordinates (Canvas, X1) - Xbase;
       Y1 := To_Canvas_Coordinates (Canvas, Y1) - Ybase;
       X2 := To_Canvas_Coordinates (Canvas, X2) - Xbase;
       Y2 := To_Canvas_Coordinates (Canvas, Y2) - Ybase;
 
-      --  Draw the links
-      if Canvas.Orthogonal_Links then
-         X3 := (Src.Coord.X + Gint (Gfloat (Src.Coord.Width) * Link.Src_X_Pos)
-           + Dest.Coord.X + Gint (Gfloat (Dest.Coord.Width) * Link.Dest_X_Pos))
-           / 2;
-         X3 := To_Canvas_Coordinates (Canvas, X3) - Xbase;
-         X3 := X3 - X3 mod Gint (Canvas.Grid_Size);
-
-         Draw_Line (Window, GC, X1, Y1, X3, Y1);
-         Draw_Line (Window, GC, X3, Y1, X3, Y2);
-         Draw_Line (Window, GC, X3, Y2, X2, Y2);
-      else
-         Draw_Line (Window, GC, X1, Y1, X2, Y2);
-      end if;
+      Draw_Line (Window, GC, X1, Y1, X2, Y2);
 
       --  Draw the end arrow head
 
       if Link.Arrow = End_Arrow or else Link.Arrow = Both_Arrow then
-         if Canvas.Orthogonal_Links then
-            if X3 < X2 then
-               Draw_Arrow_Head (Canvas, Window, GC, X2, Y2, Ada.Numerics.Pi);
-            else
-               Draw_Arrow_Head (Canvas, Window, GC, X2, Y2, 0.0);
-            end if;
-
+         if X1 /= X2 then
+            Draw_Arrow_Head
+              (Canvas, Window, GC, X2, Y2,
+               Arctan (Float (Y1 - Y2), Float (X1 - X2)));
+         elsif Y1 > Y2 then
+            Draw_Arrow_Head
+              (Canvas, Window, GC, X2, Y2, Ada.Numerics.Pi / 2.0);
          else
-            if X1 /= X2 then
-               Draw_Arrow_Head
-                 (Canvas, Window, GC, X2, Y2,
-                  Arctan (Float (Y1 - Y2), Float (X1 - X2)));
-            elsif Y1 > Y2 then
-               Draw_Arrow_Head
-                 (Canvas, Window, GC, X2, Y2, Ada.Numerics.Pi / 2.0);
-            else
-               Draw_Arrow_Head
-                 (Canvas, Window, GC, X2, Y2, -Ada.Numerics.Pi / 2.0);
-            end if;
+            Draw_Arrow_Head
+              (Canvas, Window, GC, X2, Y2, -Ada.Numerics.Pi / 2.0);
          end if;
       end if;
 
       --  Draw the start arrow head
 
       if Link.Arrow = Start_Arrow or else Link.Arrow = Both_Arrow then
-         if Canvas.Orthogonal_Links then
-            if X1 < X3 then
-               Draw_Arrow_Head (Canvas, Window, GC, X1, Y1, Ada.Numerics.Pi);
-            else
-               Draw_Arrow_Head (Canvas, Window, GC, X1, Y1, 0.0);
-            end if;
-
+         if X1 /= X2 then
+            Draw_Arrow_Head
+              (Canvas, Window, GC, X1, Y1,
+               Arctan (Float (Y2 - Y1), Float (X2 - X1)));
+         elsif Y1 > Y2 then
+            Draw_Arrow_Head
+              (Canvas, Window, GC, X1, Y1, -Ada.Numerics.Pi / 2.0);
          else
-            if X1 /= X2 then
-               Draw_Arrow_Head
-                 (Canvas, Window, GC, X1, Y1,
-                  Arctan (Float (Y2 - Y1), Float (X2 - X1)));
-            elsif Y1 > Y2 then
-               Draw_Arrow_Head
-                 (Canvas, Window, GC, X1, Y1, -Ada.Numerics.Pi / 2.0);
-            else
-               Draw_Arrow_Head
-                 (Canvas, Window, GC, X1, Y1, +Ada.Numerics.Pi / 2.0);
-            end if;
+            Draw_Arrow_Head
+              (Canvas, Window, GC, X1, Y1, +Ada.Numerics.Pi / 2.0);
          end if;
       end if;
 
       --  Draw the text if any
 
       if Link.Descr /= null then
-         if Canvas.Orthogonal_Links then
-            Draw_Annotation (Canvas, Window, GC, X3, (Y1 + Y2) / 2, Link);
-         else
-            Draw_Annotation
-              (Canvas, Window, GC, (X1 + X2) / 2, (Y1 + Y2) / 2, Link);
-         end if;
+         Draw_Annotation
+           (Canvas, Window, GC, (X1 + X2) / 2, (Y1 + Y2) / 2, Link);
       end if;
    end Draw_Straight_Link;
 
@@ -1299,11 +1441,11 @@ package body Gtkada.Canvas is
       Right_Angle : constant Float := Ada.Numerics.Pi / 2.0;
       X1, Y1, X3, Y3, Xc, Yc, Radius : Gint;
       Src  : Canvas_Item := Canvas_Item (Get_Src (Link));
-      W : constant Gint := To_Canvas_Coordinates (Canvas, Src.Coord.Width);
 
    begin
       pragma Assert (Src = Canvas_Item (Get_Dest (Link)));
-      Xc := To_Canvas_Coordinates (Canvas, Src.Coord.X) - Xbase + W;
+      Xc := To_Canvas_Coordinates (Canvas, Src.Coord.X + Src.Coord.Width)
+        - Xbase;
       Yc := To_Canvas_Coordinates (Canvas, Src.Coord.Y) - Ybase;
       Radius := Gint (Arc_Offset) / 2 * Offset;
 
@@ -1325,11 +1467,11 @@ package body Gtkada.Canvas is
 
       --  Draw the arrows
 
-      if Link.Arrow = End_Arrow or else Link.Arrow = Both_Arrow then
+      if Link.Arrow /= No_Arrow then
          Draw_Arrow_Head (Canvas, Window, GC, X3, Y3, -Right_Angle);
       end if;
 
-      if Link.Arrow = Start_Arrow or else Link.Arrow = Both_Arrow then
+      if Link.Arrow = Both_Arrow then
          Draw_Arrow_Head (Canvas, Window, GC, X1, Y1, 0.0);
       end if;
 
@@ -1514,7 +1656,11 @@ package body Gtkada.Canvas is
 
       elsif Edge_Number = 1 then
          --  The first link in the list is always straight
-         Draw_Straight_Link (Canvas, Window, GC, Link);
+         if Canvas.Orthogonal_Links then
+            Draw_Orthogonal_Link (Canvas, Window, GC, Link);
+         else
+            Draw_Straight_Link (Canvas, Window, GC, Link);
+         end if;
 
       elsif Edge_Number mod 2 = 1 then
          Draw_Arc_Link (Canvas, Window, GC, Link, Edge_Number / 2);
@@ -1531,6 +1677,7 @@ package body Gtkada.Canvas is
 
    procedure Update_Links
      (Canvas : access Interactive_Canvas_Record'Class;
+      Win    : Gdk.Window.Gdk_Window;
       From_Item : Canvas_Item := null)
    is
       Selected : aliased Item_Selection_List_Record;
@@ -1544,28 +1691,8 @@ package body Gtkada.Canvas is
          Selected_Access := Selected'Unrestricted_Access;
       end if;
 
-      if Use_Double_Buffer then
-         Update_Links
-           (Canvas, Canvas.Double_Buffer, Canvas.Black_GC,
-            False, Selected_Access);
-      else
-         Update_Links
-           (Canvas, Get_Window (Canvas), Canvas.Black_GC, False,
-            Selected_Access);
-      end if;
-
-      if Use_Double_Buffer then
-         Draw_Drawable
-           (Get_Window (Canvas),
-            GC     => Canvas.Black_GC,
-            Src    => Canvas.Double_Buffer,
-            Xsrc   => 0,
-            Ysrc   => 0,
-            Xdest  => 0,
-            Ydest  => 0,
-            Width  => Gint (Get_Allocation_Width (Canvas)),
-            Height => Gint (Get_Allocation_Height (Canvas)));
-      end if;
+      Update_Links
+        (Canvas, Win, Canvas.Black_GC, False, Selected_Access);
    end Update_Links;
 
    ------------------
@@ -1621,6 +1748,37 @@ package body Gtkada.Canvas is
          Selected.Item.Coord.Y := Y;
       end if;
    end Update_Links;
+
+   -------------------
+   -- Draw_Links_Cb --
+   -------------------
+
+   procedure Draw_Links_Cb
+     (Canvas : access Gtk_Widget_Record'Class;
+      Args   : Glib.Values.GValues)
+   is
+      Pix : Gdk_Window := Gdk_Window (To_C_Proxy (Args, 1));
+      C : Interactive_Canvas := Interactive_Canvas (Canvas);
+   begin
+      Update_Links (C, Pix, C.Black_GC, False);
+   end Draw_Links_Cb;
+
+   ----------------
+   -- Draw_Links --
+   ----------------
+
+   procedure Draw_Links
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Pixmap : Gdk.Window.Gdk_Window)
+   is
+      procedure Internal (Canvas : System.Address;
+                          Name   : String;
+                          Pixmap : Gdk_Window;
+                          Last : System.Address := System.Null_Address);
+      pragma Import (C, Internal, "g_signal_emit_by_name");
+   begin
+      Internal (Get_Object (Canvas), "draw_links" & ASCII.NUL, Pixmap);
+   end Draw_Links;
 
    ------------
    -- Expose --
@@ -1707,7 +1865,7 @@ package body Gtkada.Canvas is
       --  Draw the links first, so that they appear to be below the items.
       --  ??? Should redraw only the required links
 
-      Update_Links (Canvas, Pix, Canvas.Black_GC, False);
+      Draw_Links (Canvas, Pix);
 
       --  Draw each of the items.
 
@@ -2232,6 +2390,7 @@ package body Gtkada.Canvas is
                Height => To_Canvas_Coordinates
                  (Canvas, Gint (Selected.Item.Coord.Height)));
 
+            --  ??? Should we emit the "draw_links" signal
             Update_Links
               (Canvas, Get_Window (Canvas), Canvas.Anim_GC, True, Selected);
 
