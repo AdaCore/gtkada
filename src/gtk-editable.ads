@@ -53,8 +53,8 @@ package Gtk.Editable is
       (Editable : access Gtk_Editable_Record;
        Claim    : in Boolean := True;
        Time     : in Guint32);
-   --  If Claim is set to True, claim the ownership of the primary X
-   --  selection. Otherwise, release it. "Time" should be set to the
+   --  If Claim is set to True, claim the ownership of the primary X selection.
+   --  Otherwise, release it. "Time" should be set to the
    --  time of the last-change time for the specified selection. It is
    --  discarded if it is earlier than the current last-change time, or
    --  later than the current X server time.
@@ -77,17 +77,17 @@ package Gtk.Editable is
       (Editable  : access Gtk_Editable_Record;
        Start_Pos : in Gint := 0;
        End_Pos   : in Gint := -1);
-   --  Delete the characters from Start_Pos to End_Pos. If End_Pos is
-   --  negative, the characters are deleted from Start_Pos to the end
-   --  of the text.
+   --  Delete the characters from Start_Pos to End_Pos.
+   --  If End_Pos is negative, the characters are deleted from Start_Pos to the
+   --  end of the text.
 
    function Get_Chars
       (Editable  : access Gtk_Editable_Record;
        Start_Pos : in Gint := 0;
        End_Pos   : in Gint := -1)
        return         String;
-   --  Get the text from Start_Pos to End_Pos. If End_Pos is negative,
-   --  the text from Start_Pos to the end is returned.
+   --  Get the text from Start_Pos to End_Pos.
+   --  If End_Pos is negative, the text from Start_Pos to the end is returned.
 
    function Get_Clipboard_Text (Widget : access Gtk_Editable_Record)
                                 return      String;
@@ -118,8 +118,8 @@ package Gtk.Editable is
       (Editable        : access Gtk_Editable_Record;
        New_Text        : in String;
        Position        : in out Gint);
-   --  Insert the given string at the given position. Position is set to
-   --  the new cursor position.
+   --  Insert the given string at the given position.
+   --  Position is set to the new cursor position.
 
    procedure Paste_Clipboard
       (Editable : access Gtk_Editable_Record;
@@ -131,9 +131,9 @@ package Gtk.Editable is
       (Editable : access Gtk_Editable_Record;
        Start    : in Gint;
        The_End  : in Gint := -1);
-   --  Select the region of text from Start to The_End. If The_End is
-   --  negative, the region is selected from Start to the end of the
-   --  text.
+   --  Select the region of text from Start to The_End.
+   --  If The_End is negative, the region is selected from Start to the end of
+   --  the text.
 
    procedure Set_Position (Editable : access Gtk_Editable_Record;
                            Position : Gint);
@@ -142,6 +142,9 @@ package Gtk.Editable is
    function Get_Position (Editable : access Gtk_Editable_Record) return Gint;
    --  Return the position of the cursor.
 
+   ----------------------------
+   -- Support for Gate/Dgate --
+   ----------------------------
 
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type)
