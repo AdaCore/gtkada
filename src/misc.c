@@ -161,12 +161,6 @@ ada_widget_has_grab (GtkWidget * widget)
 }
 
 guint32
-ada_widget_basic (GtkWidget * widget)
-{
-  return GTK_WIDGET_BASIC (widget);
-}
-
-guint32
 ada_widget_rc_style (GtkWidget * widget)
 {
   return GTK_WIDGET_RC_STYLE (widget);
