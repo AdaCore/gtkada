@@ -118,11 +118,11 @@ package Gdk.Rgb is
    --  Convert the Rgb representation to the usual one found in Gdk.Color.
 
    procedure GC_Set_Foreground
-     (GC : in out Gdk.GC.Gdk_GC; Value : in Rgb_Item);
+     (GC : in Gdk.GC.Gdk_GC; Value : in Rgb_Item);
    --  See GC_Set_Background.
 
    procedure GC_Set_Background
-     (GC : in out Gdk.GC.Gdk_GC; Value : in Rgb_Item);
+     (GC : in Gdk.GC.Gdk_GC; Value : in Rgb_Item);
    --  Modify the foreground and the background of a graphic context with a
    --  value. These are exactly the same functions has found in Gdk.Gc, but do
    --  not used the same parameters.
@@ -145,18 +145,18 @@ package Gdk.Rgb is
                    Index : in Rgb_Cmap_Index) return Glib.Guchar;
    --  Same as Get for 8-bit displays.
 
-   procedure Set (Cmap  : in out Gdk_Rgb_Cmap;
-                  Index : in     Rgb_Cmap_Index;
-                  Value : in     Rgb_Item);
+   procedure Set (Cmap  : in Gdk_Rgb_Cmap;
+                  Index : in Rgb_Cmap_Index;
+                  Value : in Rgb_Item);
    --  Set an item in Cmap.
 
-   procedure Set_8 (Cmap  : in out Gdk_Rgb_Cmap;
-                    Index : in     Rgb_Cmap_Index;
-                    Value : in     Glib.Guchar);
+   procedure Set_8 (Cmap  : in Gdk_Rgb_Cmap;
+                    Index : in Rgb_Cmap_Index;
+                    Value : in Glib.Guchar);
    --  Same as Set for 8-bit displays
 
    procedure Gtk_New
-     (Cmap : in out Gdk_Rgb_Cmap; Colors : in Glib.Guint32_Array);
+     (Cmap : out Gdk_Rgb_Cmap; Colors : in Glib.Guint32_Array);
    --  Create a colormap.
 
    procedure Free (Cmap : in out Gdk_Rgb_Cmap);
@@ -167,8 +167,8 @@ package Gdk.Rgb is
    ----------------------
 
    procedure Draw_Rgb_Image
-     (Drawable      : in out Gdk.Drawable.Gdk_Drawable;
-      GC            : in out Gdk.GC.Gdk_GC;
+     (Drawable      : in Gdk.Drawable.Gdk_Drawable;
+      GC            : in Gdk.GC.Gdk_GC;
       X, Y          : in Glib.Gint;
       Width, Height : in Glib.Gint;
       Dith          : in Gdk_Rgb_Dither;
@@ -188,8 +188,8 @@ package Gdk.Rgb is
    --     buffer to.
 
    procedure Draw_Rgb_Image_Dithalign
-     (Drawable      : in out Gdk.Drawable.Gdk_Drawable;
-      GC            : in out Gdk.GC.Gdk_GC;
+     (Drawable      : in Gdk.Drawable.Gdk_Drawable;
+      GC            : in Gdk.GC.Gdk_GC;
       X, Y          : in Glib.Gint;
       Width, Height : in Glib.Gint;
       Dith          : in Gdk_Rgb_Dither;
@@ -199,8 +199,8 @@ package Gdk.Rgb is
    --  Same kind of function as above, but for different buffer types (???).
 
    procedure Draw_Rgb_32_Image
-     (Drawable      : in out Gdk.Drawable.Gdk_Drawable;
-      GC            : in out Gdk.GC.Gdk_GC;
+     (Drawable      : in Gdk.Drawable.Gdk_Drawable;
+      GC            : in Gdk.GC.Gdk_GC;
       X, Y          : in Glib.Gint;
       Width, Height : in Glib.Gint;
       Dith          : in Gdk_Rgb_Dither;
@@ -209,8 +209,8 @@ package Gdk.Rgb is
    --  Same kind of function as above, but for different buffer types (???).
 
    procedure Draw_Gray_Image
-     (Drawable      : in out Gdk.Drawable.Gdk_Drawable;
-      GC            : in out Gdk.GC.Gdk_GC;
+     (Drawable      : in Gdk.Drawable.Gdk_Drawable;
+      GC            : in Gdk.GC.Gdk_GC;
       X, Y          : in Glib.Gint;
       Width, Height : in Glib.Gint;
       Dith          : in Gdk_Rgb_Dither;
@@ -219,8 +219,8 @@ package Gdk.Rgb is
    --  Same kind of function as above, but for different buffer types (???).
 
    procedure Draw_Indexed_Image
-     (Drawable      : in out Gdk.Drawable.Gdk_Drawable;
-      GC            : in out Gdk.GC.Gdk_GC;
+     (Drawable      : in Gdk.Drawable.Gdk_Drawable;
+      GC            : in Gdk.GC.Gdk_GC;
       X, Y          : in Glib.Gint;
       Width, Height : in Glib.Gint;
       Dith          : in Gdk_Rgb_Dither;
