@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -172,6 +172,8 @@ package Gtk.Marshallers is
            (Widget : access Widget_Type'Class;
             Params : Glib.Values.GValues;
             Cb     : General_Handler) return Return_Type;
+
+         Call_Access : constant Handler_Proxy := Call'Access;
       end Generic_Marshaller;
 
       --  Widget Marshaller
@@ -195,6 +197,8 @@ package Gtk.Marshallers is
            (Widget : access Widget_Type'Class;
             Params : Glib.Values.GValues;
             Cb     : General_Handler) return Return_Type;
+
+         Call_Access : constant Handler_Proxy := Call'Access;
       end Generic_Widget_Marshaller;
 
       --  Void Marshaller
@@ -213,6 +217,8 @@ package Gtk.Marshallers is
            (Widget : access Widget_Type'Class;
             Params : Glib.Values.GValues;
             Cb     : General_Handler) return Return_Type;
+
+         Call_Access : constant Handler_Proxy := Call'Access;
       end Void_Marshaller;
    end Return_Marshallers;
 
@@ -270,6 +276,8 @@ package Gtk.Marshallers is
             Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type) return Return_Type;
+
+         Call_Access : constant Handler_Proxy := Call'Access;
       end Generic_Marshaller;
 
       --  Widget Marshaller
@@ -295,6 +303,8 @@ package Gtk.Marshallers is
             Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type) return Return_Type;
+
+         Call_Access : constant Handler_Proxy := Call'Access;
       end Generic_Widget_Marshaller;
 
       --  Void Marshaller
@@ -315,6 +325,8 @@ package Gtk.Marshallers is
             Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type) return Return_Type;
+
+         Call_Access : constant Handler_Proxy := Call'Access;
       end Void_Marshaller;
 
    end User_Return_Marshallers;
@@ -370,6 +382,8 @@ package Gtk.Marshallers is
            (Widget : access Widget_Type'Class;
             Params : Glib.Values.GValues;
             Cb     : General_Handler);
+
+         Call_Access : constant Handler_Proxy := Call'Access;
       end Generic_Marshaller;
 
       --  Widget Marshaller
@@ -393,6 +407,8 @@ package Gtk.Marshallers is
            (Widget : access Widget_Type'Class;
             Params : Glib.Values.GValues;
             Cb     : General_Handler);
+
+         Call_Access : constant Handler_Proxy := Call'Access;
       end Generic_Widget_Marshaller;
 
       --  Void Marshaller
@@ -410,6 +426,8 @@ package Gtk.Marshallers is
            (Widget : access Widget_Type'Class;
             Params : Glib.Values.GValues;
             Cb     : General_Handler);
+
+         Call_Access : constant Handler_Proxy := Call'Access;
       end Void_Marshaller;
 
    end Void_Marshallers;
@@ -468,6 +486,8 @@ package Gtk.Marshallers is
             Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type);
+
+         Call_Access : constant Handler_Proxy := Call'Access;
       end Generic_Marshaller;
 
       --  Widget Marshaller
@@ -493,6 +513,8 @@ package Gtk.Marshallers is
             Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type);
+
+         Call_Access : constant Handler_Proxy := Call'Access;
       end Generic_Widget_Marshaller;
 
       --  Void Marshaller
@@ -513,6 +535,8 @@ package Gtk.Marshallers is
             Params    : Glib.Values.GValues;
             Cb        : General_Handler;
             User_Data : User_Type);
+
+         Call_Access : constant Handler_Proxy := Call'Access;
       end Void_Marshaller;
 
    end User_Void_Marshallers;
