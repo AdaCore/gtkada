@@ -245,10 +245,12 @@ package body Glib.Glade is
       Q := N;
       P := N.Parent;
 
-      while P.Tag.all /= "GTK-Interface" loop
-         Q := P;
-         P := P.Parent;
-      end loop;
+      if P /= null then
+         while P.Tag.all /= "glade-interface" loop
+            Q := P;
+            P := P.Parent;
+         end loop;
+      end if;
 
       return Q;
    end Find_Top_Widget;
@@ -374,34 +376,44 @@ package body Glib.Glade is
    -------------
 
    procedure Gen_Set
-     (N        : Node_Ptr;
-      Name     : String;
-      File     : File_Type;
-      Prefix   : String  := "";
-      Postfix  : String  := "";
-      Is_Float : Boolean := False)
+     (N             : Node_Ptr;
+      Name          : String;
+      File          : File_Type;
+      Prefix        : String  := "";
+      Postfix       : String  := "";
+      Is_Float      : Boolean := False;
+      Property_Name : String := "")
    is
-      P   : constant String_Ptr := Get_Field (N, Name);
-      Cur : constant String_Ptr := Get_Field (N, "name");
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      P   : Node_Ptr;
+      Cur : constant String := Get_Attribute (Find_Tag_With_Attribute
+         (N, "widget", "id"), "id");
+      Top : constant String := Get_Attribute (Find_Tag_With_Attribute
+         (Find_Top_Widget (N), "widget", "id"), "id");
 
    begin
+      if Property_Name = "" then
+         P  := Find_Tag_With_Attribute (N.Child, "property", "name", Name);
+      else
+         P  := Find_Tag_With_Attribute
+           (N.Child, "property", "name", Property_Name);
+      end if;
+
       if P /= null then
          Put (File, "   Set_" & To_Ada (Name) & " (");
 
          if Top /= Cur then
-            Put (File, To_Ada (Top.all) & ".");
+            Put (File, To_Ada (Top) & ".");
          end if;
 
-         Put (File, To_Ada (Cur.all) & ", ");
+         Put (File, To_Ada (Cur) & ", ");
 
          if Prefix /= "" then
-            Put_Line (File, Prefix & P.all & Postfix & ");");
+            Put_Line (File, Prefix & P.Value.all & Postfix & ");");
          else
             if Is_Float then
-               Put_Line (File, To_Float (P.all) & ");");
+               Put_Line (File, To_Float (P.Value.all) & ");");
             else
-               Put_Line (File, To_Ada (P.all) & ");");
+               Put_Line (File, To_Ada (P.Value.all) & ");");
             end if;
          end if;
       end if;
@@ -410,20 +422,24 @@ package body Glib.Glade is
    procedure Gen_Set
      (N : Node_Ptr; Name, Field : String; File : File_Type)
    is
-      P   : constant String_Ptr := Get_Field (N, Field);
-      Cur : constant String_Ptr := Get_Field (N, "name");
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+   pragma Unreferenced (Field);
+      P   : constant Node_Ptr := Find_Tag_With_Attribute
+         (N.Child, "property", "name", Name);
+      Cur : constant String := Get_Attribute (Find_Tag_With_Attribute
+         (N, "widget", "id"), "id");
+      Top : constant String := Get_Attribute (Find_Tag_With_Attribute
+         (Find_Top_Widget (N), "widget", "id"), "id");
 
    begin
       if P /= null then
          Put (File, "   Set_" & To_Ada (Name) & " (");
 
          if Cur /= Top then
-            Put (File, To_Ada (Top.all) & ".");
+            Put (File, To_Ada (Top) & ".");
          end if;
 
-         Put_Line (File, To_Ada (Get_Field (N, "name").all) & ", " &
-           To_Ada (P.all) & ");");
+         Put_Line (File, To_Ada (Cur) & ", " &
+           To_Ada (P.Value.all) & ");");
       end if;
    end Gen_Set;
 
@@ -433,12 +449,18 @@ package body Glib.Glade is
       File : File_Type;
       Is_Float : Boolean := False)
    is
-      P   : constant String_Ptr := Get_Field (N, Field1);
-      Q   : constant String_Ptr := Get_Field (N, Field2);
-      R   : constant String_Ptr := Get_Field (N, Field3);
-      S   : constant String_Ptr := Get_Field (N, Field4);
-      Cur : constant String_Ptr := Get_Field (N, "name");
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      P   : constant Node_Ptr := Find_Tag_With_Attribute
+         (N.Child, "property", "name", Field1);
+      Q   : constant Node_Ptr := Find_Tag_With_Attribute
+         (N.Child, "property", "name", Field2);
+      R   : constant Node_Ptr := Find_Tag_With_Attribute
+         (N.Child, "property", "name", Field3);
+      S   : constant Node_Ptr := Find_Tag_With_Attribute
+         (N.Child, "property", "name", Field4);
+      Cur : constant String := Get_Attribute (Find_Tag_With_Attribute
+         (N, "widget", "id"), "id");
+      Top : constant String := Get_Attribute (Find_Tag_With_Attribute
+         (Find_Top_Widget (N), "widget", "id"), "id");
 
    begin
       if P /= null then
@@ -447,20 +469,20 @@ package body Glib.Glade is
                Put (File, "   Set_" & Name & " (");
 
                if Cur /= Top then
-                  Put (File, To_Ada (Top.all) & ".");
+                  Put (File, To_Ada (Top) & ".");
                end if;
 
-               Put (File, To_Ada (Get_Field (N, "name").all) & ", " &
-                 To_Float (P.all));
+               Put (File, To_Ada (Cur) & ", " &
+                 To_Float (P.Value.all));
             else
                Put (File, "   Set_" & Name & " (");
 
                if Cur /= Top then
-                  Put (File, To_Ada (Top.all) & ".");
+                  Put (File, To_Ada (Top) & ".");
                end if;
 
-               Put (File, To_Ada (Get_Field (N, "name").all) & ", " &
-                 To_Ada (P.all));
+               Put (File, To_Ada (Cur) & ", " &
+                 To_Ada (P.Value.all));
             end if;
 
          elsif Q = null then
@@ -473,36 +495,38 @@ package body Glib.Glade is
             Put (File, "   Set_" & Name & " (");
 
             if Cur /= Top then
-               Put (File, To_Ada (Top.all) & ".");
+               Put (File, To_Ada (Top) & ".");
             end if;
 
-            Put (File, To_Ada (Get_Field (N, "name").all) & ", ");
+            Put (File, To_Ada (Cur) & ", ");
 
             if Is_Float then
-               Put (File, To_Float (P.all) & ", " & To_Float (Q.all));
+               Put (File, To_Float (P.Value.all) & ", " & To_Float
+                  (Q.Value.all));
 
             elsif Q /= null then
-               Put (File, To_Ada (P.all) & ", " & To_Ada (Q.all));
+               Put (File, To_Ada (P.Value.all) & ", " & To_Ada
+                  (Q.Value.all));
 
             else
                --  ??? Need to find a clean and uniform way of handling default
                --  integer values
 
-               Put (File, To_Ada (P.all) & ", -1");
+               Put (File, To_Ada (P.Value.all) & ", -1");
             end if;
 
-            if R /= null then
+            if Field3 /= "" and R /= null then
                if Is_Float then
-                  Put (File, ", " & To_Float (R.all));
+                  Put (File, ", " & To_Float (R.Value.all));
                else
-                  Put (File, ", " & To_Ada (R.all));
+                  Put (File, ", " & To_Ada (R.Value.all));
                end if;
 
-               if S /= null then
+               if Field4 /= "" and S /= null then
                   if Is_Float then
-                     Put (File, ", " & To_Float (S.all));
+                     Put (File, ", " & To_Float (S.Value.all));
                   else
-                     Put (File, ", " & To_Ada (S.all));
+                     Put (File, ", " & To_Ada (S.Value.all));
                   end if;
                end if;
             end if;
@@ -524,20 +548,15 @@ package body Glib.Glade is
       Prefix   : String := "";
       Postfix  : String := "")
    is
-      P   : String_Ptr;
-      Cur : String_Ptr;
-      Top : String_Ptr;
-
+      P   : constant String := Get_Attribute (N, "id");
+      Cur : constant String := Get_Attribute (N, "id");
+      Top : constant String := Get_Attribute (Find_Top_Widget (N), "id");
    begin
       if N.Specific_Data.Created then
          return;
       end if;
 
-      P := Get_Field (N, "name");
-      Cur := Get_Field (N, "name");
-      Top := Get_Field (Find_Top_Widget (N), "name");
-
-      if P /= null then
+      if P /= "" then
          Add_Package (Class);
 
          if Param1 /= "" then
@@ -553,10 +572,10 @@ package body Glib.Glade is
 
             Put (File, " (");
             if Cur /= Top then
-               Put (File, To_Ada (Top.all) & ".");
+               Put (File, To_Ada (Top) & ".");
             end if;
 
-            Put (File, To_Ada (P.all) & ", ");
+            Put (File, To_Ada (P) & ", ");
 
             if Prefix /= "" then
                Put (File, Prefix & Param1 & Postfix);
@@ -584,10 +603,10 @@ package body Glib.Glade is
             Put (File, " (");
 
             if Cur /= Top then
-               Put (File, To_Ada (Top.all) & ".");
+               Put (File, To_Ada (Top) & ".");
             end if;
 
-            Put_Line (File, To_Ada (P.all) & ");");
+            Put_Line (File, To_Ada (P) & ");");
          end if;
 
          N.Specific_Data.Created := True;
@@ -682,40 +701,31 @@ package body Glib.Glade is
    --------------------
 
    procedure Gen_Call_Child
-     (N, Child : Node_Ptr;
+     (N, Child, Parent : Node_Ptr;
       Class, Call : String;
       Param1, Param2, Param3 : String := "";
       File : File_Type)
    is
-      P      : constant String_Ptr := Get_Field (N, "name");
-      Top    : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
-      Parent : String_Ptr;
+      pragma Unreferenced (Class);
+      P      : constant String := Get_Attribute (N, "id");
+      Top    : constant String := Get_Attribute (Find_Top_Widget (N), "id");
 
    begin
-      if P /= null then
+      if P /= "" then
          if Child = null then
             Put (File, "   " & Call & " (");
 
-            Parent := Get_Field (N.Parent, "name");
+            declare
+               Parent_Str : constant String := Get_Attribute (Parent, "id");
+            begin
 
-            if Top /= Parent then
-               Put (File, To_Ada (Top.all) & ".");
-            end if;
+               if Top /= Parent_Str then
+                  Put (File, To_Ada (Top) & ".");
+               end if;
 
-            Put (File, To_Ada (Parent.all) & ", " &
-              To_Ada (Top.all) & "." & To_Ada (P.all));
-
-         else
-            Put (File, "   " & Call & " (");
-
-            Parent := Find_Tag (Find_Parent (N.Parent, Class), "name").Value;
-
-            if Top /= Parent then
-               Put (File, To_Ada (Top.all) & ".");
-            end if;
-
-            Put (File, To_Ada (Parent.all) & ", " & To_Ada (Top.all) & "." &
-              To_Ada (P.all));
+               Put (File, To_Ada (Parent_Str) & ", " &
+                    To_Ada (Top) & "." & To_Ada (P));
+            end;
          end if;
 
          if Param1 /= "" then
@@ -822,7 +832,7 @@ package body Glib.Glade is
 
       function Simple_Class (Class : String_Ptr) return String_Ptr is
       begin
-         if Class'Length >= 5
+         if Class /= null and then Class'Length >= 5
            and then Class (Class'First .. Class'First + 2) = "Gtk"
            and then
              (Class (Class'First + 3) = 'H'
@@ -1188,13 +1198,21 @@ package body Glib.Glade is
    ---------------------
 
    function Gettext_Support (N : Node_Ptr) return Boolean is
-      Top         : constant Node_Ptr   := Find_Top_Widget (N);
-      S           : String_Ptr;
-
+      P : Node_Ptr;
    begin
-      S := Get_Field (Find_Child (Top.Parent, "project"), "gettext_support");
+      if N /= null then
+         P := Find_Tag_With_Attribute (N.Child, "property",
+               "translatable");
+         if N /= null then
+            declare
+               S : constant String := Get_Attribute (P, "translatable");
+            begin
+               return S = "yes";
+            end;
+         end if;
+      end if;
 
-      return S /= null and then Boolean'Value (S.all);
+      return False;
    end Gettext_Support;
 
    ---------------------

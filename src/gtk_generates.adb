@@ -28,6 +28,15 @@ package body Gtk_Generates is
 
    Widget, Widget2 : System.Address;
 
+   function Get_Property
+     (N        : Node_Ptr;
+      Property : String) return String_Ptr;
+   --  Return the value of the property Property if it exists in the direct
+   --  children of N.
+
+   function Get_Class (N : Node_Ptr) return String;
+   --  Return the class of N if N is a widget. Otherwise return "".
+
    function Widget_New
      (T : Glib.GType; Addr : System.Address := System.Null_Address)
       return System.Address;
@@ -79,7 +88,7 @@ package body Gtk_Generates is
    begin
       Widget := Widget_New (Build_Type);
       Gen_New (N, "Arrow", Get_Field (N, "arrow_type").all,
-        Get_Field (N, "shadow_type").all, File => File);
+      Get_Field (N, "shadow_type").all, File => File);
       Widget_Destroy (Widget);
       Misc_Generate (N, File);
    end Arrow_Generate;
@@ -124,7 +133,8 @@ package body Gtk_Generates is
 
    procedure Box_Generate (N : Node_Ptr; File : File_Type) is
       Child_Name : constant Node_Ptr := Find_Tag (N.Child, "child_name");
-      Class      : constant String_Ptr := Get_Field (N, "class");
+      Class      : constant String := Get_Attribute (N, "class");
+      P, Q       : Node_Ptr;
       function Build_HType return Glib.GType;
       pragma Import (C, Build_HType, "gtk_hbox_get_type");
 
@@ -137,9 +147,14 @@ package body Gtk_Generates is
 
       if Child_Name = null then
          if not N.Specific_Data.Created then
-            Gen_New (N, "Box", Get_Field (N, "homogeneous").all,
-              Get_Field (N, "spacing").all,
-              Class (Class'First + 3) & "box", File);
+            P := Find_Tag_With_Attribute (N.Child, "property", "name",
+               "homogeneous");
+            Q := Find_Tag_With_Attribute (N.Child, "property", "name",
+               "spacing");
+            if P /= null and Q /= null then
+               Gen_New (N, "Box", P.Value.all, Q.Value.all,
+                 Class (Class'First + 3) & "box", File);
+            end if;
          end if;
 
       else
@@ -158,7 +173,9 @@ package body Gtk_Generates is
 
    procedure Button_Generate (N : Node_Ptr; File : File_Type) is
       Child_Name : constant Node_Ptr   := Find_Tag (N.Child, "child_name");
-      Label      : constant String_Ptr := Get_Field (N, "label");
+      Label      : constant Node_Ptr := Find_Tag_With_Attribute
+         (N.Child, "property", "name", "label");
+      --  Label      : constant String_Ptr := Get_Field (N, "label");
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_button_get_type");
 
@@ -174,11 +191,13 @@ package body Gtk_Generates is
                Gen_New (N, "Button", File => File);
             else
                if Gettext_Support (N) then
-                  Gen_New (N, "Button", Label.all, File => File,
-                    Prefix => "-""", Postfix => """");
+                  Gen_New (N, "Button", Label.Value.all,
+                     File => File,
+                     Prefix => "-""", Postfix => """");
                else
-                  Gen_New (N, "Button", Label.all, File => File,
-                    Prefix => """", Postfix => """");
+                  Gen_New (N, "Button", Label.Value.all,
+                     File => File,
+                     Prefix => """", Postfix => """");
                end if;
 
             end if;
@@ -683,18 +702,24 @@ package body Gtk_Generates is
 
    begin
       Widget := Widget_New (Build_Type);
-      if Gettext_Support (N) then
-         Gen_New (N, "Label", Adjust (Get_Field (N, "label").all),
-           File => File, Prefix => "-(""", Postfix => """)");
-      else
-         Gen_New (N, "Label", Adjust (Get_Field (N, "label").all),
-           File => File, Prefix => """", Postfix => """");
+
+      P := Find_Tag_With_Attribute (N.Child, "property", "name", "label");
+
+      if P /= null then
+         if Gettext_Support (N) then
+            Gen_New (N, "Label", Adjust (P.Value.all),
+               File => File, Prefix => "-(""", Postfix => """)");
+         else
+            Gen_New (N, "Label", Adjust (P.Value.all),
+               File => File, Prefix => """", Postfix => """");
+         end if;
       end if;
 
       Widget_Destroy (Widget);
       Misc_Generate (N, File);
+
       Gen_Set (N, "justify", File);
-      Gen_Set (N, "Line_Wrap", "wrap", File);
+      Gen_Set (N, "line_wrap", File, Property_Name => "wrap");
 
       if Child_Name /= null then
          Is_Tab := Get_Part (Child_Name.all, 2) = "tab";
@@ -801,7 +826,8 @@ package body Gtk_Generates is
       Gen_New (N, "Menu", File => File);
 
       if S /= null and then S.all = "GtkMenuItem" then
-         Gen_Call_Child (N, null, "Menu_Item", "Set_Submenu", File => File);
+         Gen_Call_Child
+           (N, null, N.Parent, "Menu_Item", "Set_Submenu", File => File);
          N.Specific_Data.Has_Container := True;
       end if;
 
@@ -846,12 +872,7 @@ package body Gtk_Generates is
    end Menu_Item_Generate;
 
    procedure Misc_Generate (N : Node_Ptr; File : File_Type) is
-      function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_misc_get_type");
-
    begin
-      Widget := Widget_New (Build_Type);
-      Widget_Destroy (Widget);
       Widget_Generate (N, File);
       Gen_Set (N, "Alignment", "xalign", "yalign", "", "", File,
         Is_Float => True);
@@ -1019,10 +1040,11 @@ package body Gtk_Generates is
    end Progress_Bar_Generate;
 
    procedure Radio_Button_Generate (N : Node_Ptr; File : File_Type) is
-      Label : constant String_Ptr := Get_Field (N, "label");
-      Name  : constant String_Ptr := Get_Field (N, "name");
+      Label : constant String_Ptr := Get_Property (N, "label");
+      Name  : constant String := Get_Attribute (N, "id");
+      Group : constant String_Ptr := Get_Property (N, "group");
       Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
-      Top   : constant String_Ptr := Get_Field (Top_Widget, "name");
+      Top   : constant String := Get_Attribute (Top_Widget, "id");
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_radio_button_get_type");
 
@@ -1034,9 +1056,16 @@ package body Gtk_Generates is
 
       if not N.Specific_Data.Created then
          Add_Package ("Radio_Button");
-         Put (File, "   Gtk_New (" &
-           To_Ada (Top.all) & "." & To_Ada (Name.all) & ", " &
-           To_Ada (Get_Field (N.Parent, "name").all) & "_Group");
+
+         if Group = null then
+            Put (File, "   Gtk_New ("
+                 & To_Ada (Top) & "." & To_Ada (Name)
+                 & ", null");
+         else
+            Put (File, "   Gtk_New ("
+                 & To_Ada (Top) & "." & To_Ada (Name)
+                 & ", " & To_Ada (Top) & "." & To_Ada (Group.all));
+         end if;
 
          if Label /= null then
             Put (File, ", ");
@@ -1049,9 +1078,6 @@ package body Gtk_Generates is
          end if;
 
          Put_Line (File, ");");
-         Put_Line (File, "   " & To_Ada (Get_Field (N.Parent, "name").all) &
-           "_Group := Group (" & To_Ada (Top.all) & "." &
-           To_Ada (Name.all) & ");");
          N.Specific_Data.Created := True;
       end if;
 
@@ -1520,9 +1546,12 @@ package body Gtk_Generates is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_window_get_type");
 
+      P : Node_Ptr;
    begin
       Widget := Widget_New (Build_Type);
-      Gen_New (N, "Window", Get_Field (N, "type").all, File => File);
+
+      P := Find_Tag_With_Attribute (N.Child, "property", "name", "type");
+      Gen_New (N, "Window", P.Value.all, File => File);
       Widget_Destroy (Widget);
       Bin_Generate (N, File);
 
@@ -1534,18 +1563,22 @@ package body Gtk_Generates is
 
       Gen_Set (N, "Policy", "allow_shrink", "allow_grow",
         "auto_shrink", "", File);
-      Gen_Set (N, "position", File);
+      Gen_Set (N, "position", File, Property_Name => "window_position");
       Gen_Set (N, "modal", File);
       Gen_Set (N, "Default_Size", "default_width", "default_height",
         "", "", File);
    end Window_Generate;
 
-   procedure End_Generate (N : Node_Ptr; File : File_Type) is
+   procedure End_Generate
+      (Project : Node_Ptr; N : Node_Ptr; File : File_Type)
+   is
       Child       : constant Node_Ptr := Find_Tag (N.Child, "child");
       Q           : Node_Ptr;
-      Top         : constant Node_Ptr   := Find_Top_Widget (N);
-      Top_Name    : constant String_Ptr := Get_Field (Top, "name");
-      Cur         : constant String_Ptr := Get_Field (N, "name");
+      Top         : constant Node_Ptr   := Find_Top_Widget (Project);
+      Top_Name    : constant String := Get_Attribute (Top, "id");
+      Cur         : constant String := Get_Attribute (N, "id");
+      Parent      : constant Node_Ptr := N.Parent.Parent;
+      --  ??? Is there always a <child> tag around the <widget> tag ?
       S           : String_Ptr;
       Flag_Set    : Boolean;
       Use_Default : Boolean;
@@ -1554,10 +1587,11 @@ package body Gtk_Generates is
       The_First   : Natural;
 
    begin
-      S := Get_Field (Find_Child (Top.Parent, "project"), "use_widget_names");
+      S := Get_Field (Find_Child (Project, "glade-project"),
+         "use_widget_names");
 
       if S /= null and then Boolean'Value (S.all) then
-         if Gettext_Support (Top) then
+         if Gettext_Support (N) then
             Gen_Set (N, "name",
               File => File, Prefix => "-""", Postfix => """");
          else
@@ -1572,41 +1606,41 @@ package body Gtk_Generates is
       Gen_Set (N, "state", File);
       Gen_Set (N, "extension_events", File);
 
-      S := Get_Field (N, "can_default");
+      S := Get_Property (N, "can_default");
 
       if S /= null and then Boolean'Value (S.all) then
          Add_Package ("Object");
          Put (File, "   Set_Flags (");
 
          if Top_Name /= Cur then
-            Put (File, To_Ada (Top_Name.all) & ".");
+            Put (File, To_Ada (Top_Name) & ".");
          end if;
 
-         Put_Line (File, To_Ada (Cur.all) & ", Can_Default);");
+         Put_Line (File, To_Ada (Cur) & ", Can_Default);");
       end if;
 
-      S := Get_Field (N, "has_focus");
+      S := Get_Property (N, "has_focus");
 
       if S /= null and then Boolean'Value (S.all) then
          Put (File, "   Grab_Focus (");
 
          if Top_Name /= Cur then
-            Put (File, To_Ada (Top_Name.all) & ".");
+            Put (File, To_Ada (Top_Name) & ".");
          end if;
 
-         Put_Line (File, To_Ada (Cur.all) & ");");
+         Put_Line (File, To_Ada (Cur) & ");");
       end if;
 
-      S := Get_Field (N, "has_default");
+      S := Get_Property (N, "has_default");
 
       if S /= null and then Boolean'Value (S.all) then
          Put (File, "   Grab_Default (");
 
          if Top_Name /= Cur then
-            Put (File, To_Ada (Top_Name.all) & ".");
+            Put (File, To_Ada (Top_Name) & ".");
          end if;
 
-         Put_Line (File, To_Ada (Cur.all) & ");");
+         Put_Line (File, To_Ada (Cur) & ");");
       end if;
 
       S := Get_Field (N, "events");
@@ -1615,10 +1649,10 @@ package body Gtk_Generates is
          Put (File, "   Set_Events (");
 
          if Top_Name /= Cur then
-            Put (File, To_Ada (Top_Name.all) & ".");
+            Put (File, To_Ada (Top_Name) & ".");
          end if;
 
-         Put (File, To_Ada (Cur.all) & ", ");
+         Put (File, To_Ada (Cur) & ", ");
 
          Flag_Set := False;
          The_First := S'First;
@@ -1659,191 +1693,194 @@ package body Gtk_Generates is
       --  ??? Need to find a better way to call Pack_Start
 
       if not N.Specific_Data.Has_Container and then Child /= null then
-         Q := Find_Tag (Child.Child, "pack");
+         Q := Find_Tag (Child, "packing");
 
-         if Q = null or else Q.Value.all = "GTK_PACK_START" then
-            if Get_Field (Child, "fill") /= null then
+         if Q /= null then
 
-               --  This widget is part of a Gtk_Box
+            if Q.Value.all = "GTK_PACK_START" then
+               if Get_Field (Child.Child, "fill") /= null then
 
-               Gen_Call_Child (N, Child, "Box", "Pack_Start",
-                 "expand", "fill", "padding", File);
-               N.Specific_Data.Has_Container := True;
+                  --  This widget is part of a Gtk_Box
 
-            elsif Get_Field (Child, "left_attach") /= null then
-
-               --  This widget is part of a Gtk_Table
-
-               Add_Package ("Table");
-               Put_Line (File, "   Attach (" &
-                 To_Ada (Top_Name.all) & "." &
-                 To_Ada (Find_Tag
-                   (Find_Parent (N.Parent, "Table"), "name").Value.all) &
-                 ", " & To_Ada (Top_Name.all) & "." &
-                 To_Ada (Cur.all) &
-                 ", " & Get_Field (Child, "left_attach").all &
-                 ", " & Get_Field (Child, "right_attach").all &
-                 ", " & Get_Field (Child, "top_attach").all &
-                 ", " & Get_Field (Child, "bottom_attach").all & ",");
-
-               Put (File, "     ");
-
-               Flag_Set := False;
-
-               if Boolean'Value (Get_Field (Child, "xexpand").all) then
-                  Put (File, "Expand");
-                  Flag_Set := True;
-               end if;
-
-               if Boolean'Value (Get_Field (Child, "xshrink").all) then
-                  if Flag_Set then
-                     Put (File, " or ");
-                  else
-                     Flag_Set := True;
-                  end if;
-
-                  Put (File, "Shrink");
-               end if;
-
-               if Boolean'Value (Get_Field (Child, "xfill").all) then
-                  if Flag_Set then
-                     Put (File, " or ");
-                  else
-                     Flag_Set := True;
-                  end if;
-
-                  Put (File, "Fill");
-               end if;
-
-               if not Flag_Set then
-                  Put (File, "0");
-               end if;
-
-               Put (File, ", ");
-
-               Flag_Set := False;
-
-               if Boolean'Value (Get_Field (Child, "yexpand").all) then
-                  Put (File, "Expand");
-                  Flag_Set := True;
-               end if;
-
-               if Boolean'Value (Get_Field (Child, "yshrink").all) then
-                  if Flag_Set then
-                     Put (File, " or ");
-                  else
-                     Flag_Set := True;
-                  end if;
-
-                  Put (File, "Shrink");
-               end if;
-
-               if Boolean'Value (Get_Field (Child, "yfill").all) then
-                  if Flag_Set then
-                     Put (File, " or ");
-                  else
-                     Flag_Set := True;
-                  end if;
-
-                  Put (File, "Fill");
-               end if;
-
-               if not Flag_Set then
-                  Put_Line (File, "0,");
-               else
-                  Put_Line (File, ",");
-               end if;
-
-               Put_Line (File, "     " & Get_Field (Child, "xpad").all & ", " &
-                 Get_Field (Child, "ypad").all & ");");
-               N.Specific_Data.Has_Container := True;
-
-            elsif Get_Field (Child, "side") /= null then
-
-               --  This widget is part of a packer
-
-               Add_Package ("Packer");
-               S := Get_Field (Child, "use_default");
-               Use_Default := S /= null and then Boolean'Value (S.all);
-
-               if Use_Default then
-                  Put (File, "   Add_Defaults (");
-               else
-                  Put (File, "   Add (");
-               end if;
-
-               Put_Line (File,
-                 To_Ada (Top_Name.all) & "." &
-                 To_Ada (Find_Tag
-                   (Find_Parent (N.Parent, "Packer"), "name").Value.all) &
-                 ", " & To_Ada (Top_Name.all) & "." &
-                 To_Ada (Cur.all) &
-                 ", " & To_Ada (Get_Field (Child, "side").all) &
-                 ", " & To_Ada (Get_Field (Child, "anchor").all) & ",");
-
-               Put (File, "     ");
-
-               Flag_Set := False;
-               S := Get_Field (Child, "expand");
-
-               if S /= null and then S.all = "True" then
-                  Flag_Set := True;
-                  Put (File, "Gtk_Pack_Expand");
-               end if;
-
-               S := Get_Field (Child, "xfill");
-
-               if S /= null and then S.all = "True" then
-                  if Flag_Set then
-                     Put (File, " or ");
-                  else
-                     Flag_Set := True;
-                  end if;
-
-                  Put (File, "Gtk_Fill_X");
-               end if;
-
-               S := Get_Field (Child, "yfill");
-
-               if S /= null and then S.all = "True" then
-                  if Flag_Set then
-                     Put (File, " or ");
-                  else
-                     Flag_Set := True;
-                  end if;
-
-                  Put (File, "Gtk_Fill_Y");
-               end if;
-
-               if not Flag_Set then
-                  Put (File, "0");
-               end if;
-
-               if not Use_Default then
-                  Put_Line (File, ",");
-                  Put (File,
-                    "     " & Get_Field (Child, "border_width").all &
-                    ", " & Get_Field (Child, "xpad").all &
-                    ", " & Get_Field (Child, "ypad").all &
-                    ", " & Get_Field (Child, "xipad").all &
-                    ", " & Get_Field (Child, "yipad").all);
-               end if;
-
-               Put_Line (File, ");");
-               N.Specific_Data.Has_Container := True;
-            end if;
-
-         elsif Q.Value.all = "GTK_PACK_END" then
-            if Get_Field (Child, "fill") /= null then
-               S := Get_Field (N, "child_name");
-
-               if S = null or else S.all /= "Dialog:action_area" then
-                  --  This widget is part of a Gtk_Box, but not one of the
-                  --  internal components of the box
-
-                  Gen_Call_Child (N, Child, "Box", "Pack_End",
-                                  "expand", "fill", "padding", File);
+                  Gen_Call_Child (N, Child.Child, Parent, "Box", "Pack_Start",
+                    "expand", "fill", "padding", File);
                   N.Specific_Data.Has_Container := True;
+
+               elsif Get_Field (Child, "left_attach") /= null then
+
+                  --  This widget is part of a Gtk_Table
+
+                  Add_Package ("Table");
+                  Put_Line (File, "   Attach (" &
+                    To_Ada (Top_Name) & "." &
+                    To_Ada (Find_Tag
+                      (Find_Parent (Parent, "Table"), "name").Value.all) &
+                    ", " & To_Ada (Top_Name) & "." &
+                    To_Ada (Cur) &
+                    ", " & Get_Field (Child, "left_attach").all &
+                    ", " & Get_Field (Child, "right_attach").all &
+                    ", " & Get_Field (Child, "top_attach").all &
+                    ", " & Get_Field (Child, "bottom_attach").all & ",");
+
+                  Put (File, "     ");
+
+                  Flag_Set := False;
+
+                  if Boolean'Value (Get_Field (Child, "xexpand").all) then
+                     Put (File, "Expand");
+                     Flag_Set := True;
+                  end if;
+
+                  if Boolean'Value (Get_Field (Child, "xshrink").all) then
+                     if Flag_Set then
+                        Put (File, " or ");
+                     else
+                        Flag_Set := True;
+                     end if;
+
+                     Put (File, "Shrink");
+                  end if;
+
+                  if Boolean'Value (Get_Field (Child, "xfill").all) then
+                     if Flag_Set then
+                        Put (File, " or ");
+                     else
+                        Flag_Set := True;
+                     end if;
+
+                     Put (File, "Fill");
+                  end if;
+
+                  if not Flag_Set then
+                     Put (File, "0");
+                  end if;
+
+                  Put (File, ", ");
+
+                  Flag_Set := False;
+
+                  if Boolean'Value (Get_Field (Child, "yexpand").all) then
+                     Put (File, "Expand");
+                     Flag_Set := True;
+                  end if;
+
+                  if Boolean'Value (Get_Field (Child, "yshrink").all) then
+                     if Flag_Set then
+                        Put (File, " or ");
+                     else
+                        Flag_Set := True;
+                     end if;
+
+                     Put (File, "Shrink");
+                  end if;
+
+                  if Boolean'Value (Get_Field (Child, "yfill").all) then
+                     if Flag_Set then
+                        Put (File, " or ");
+                     else
+                        Flag_Set := True;
+                     end if;
+
+                     Put (File, "Fill");
+                  end if;
+
+                  if not Flag_Set then
+                     Put_Line (File, "0,");
+                  else
+                     Put_Line (File, ",");
+                  end if;
+
+                  Put_Line (File, "     " & Get_Field (Child, "xpad").all &
+                     ", " & Get_Field (Child, "ypad").all & ");");
+                  N.Specific_Data.Has_Container := True;
+
+               elsif Get_Field (Child, "side") /= null then
+
+                  --  This widget is part of a packer
+
+                  Add_Package ("Packer");
+                  S := Get_Field (Child, "use_default");
+                  Use_Default := S /= null and then Boolean'Value (S.all);
+
+                  if Use_Default then
+                     Put (File, "   Add_Defaults (");
+                  else
+                     Put (File, "   Add (");
+                  end if;
+
+                  Put_Line (File,
+                    To_Ada (Top_Name) & "." &
+                    To_Ada (Find_Tag
+                      (Find_Parent (Parent, "Packer"), "name").Value.all) &
+                    ", " & To_Ada (Top_Name) & "." &
+                    To_Ada (Cur) &
+                    ", " & To_Ada (Get_Field (Child, "side").all) &
+                    ", " & To_Ada (Get_Field (Child, "anchor").all) & ",");
+
+                  Put (File, "     ");
+
+                  Flag_Set := False;
+                  S := Get_Field (Child, "expand");
+
+                  if S /= null and then S.all = "True" then
+                     Flag_Set := True;
+                     Put (File, "Gtk_Pack_Expand");
+                  end if;
+
+                  S := Get_Field (Child, "xfill");
+
+                  if S /= null and then S.all = "True" then
+                     if Flag_Set then
+                        Put (File, " or ");
+                     else
+                        Flag_Set := True;
+                     end if;
+
+                     Put (File, "Gtk_Fill_X");
+                  end if;
+
+                  S := Get_Field (Child, "yfill");
+
+                  if S /= null and then S.all = "True" then
+                     if Flag_Set then
+                        Put (File, " or ");
+                     else
+                        Flag_Set := True;
+                     end if;
+
+                     Put (File, "Gtk_Fill_Y");
+                  end if;
+
+                  if not Flag_Set then
+                     Put (File, "0");
+                  end if;
+
+                  if not Use_Default then
+                     Put_Line (File, ",");
+                     Put (File,
+                       "     " & Get_Field (Child, "border_width").all &
+                       ", " & Get_Field (Child, "xpad").all &
+                       ", " & Get_Field (Child, "ypad").all &
+                       ", " & Get_Field (Child, "xipad").all &
+                       ", " & Get_Field (Child, "yipad").all);
+                  end if;
+
+                  Put_Line (File, ");");
+                  N.Specific_Data.Has_Container := True;
+               end if;
+
+            elsif Q.Value.all = "GTK_PACK_END" then
+               if Get_Field (Child, "fill") /= null then
+                  S := Get_Field (N, "child_name");
+
+                  if S = null or else S.all /= "Dialog:action_area" then
+                     --  This widget is part of a Gtk_Box, but not one of the
+                     --  internal components of the box
+
+                     Gen_Call_Child (N, Child, Parent, "Box", "Pack_End",
+                                     "expand", "fill", "padding", File);
+                     N.Specific_Data.Has_Container := True;
+                  end if;
                end if;
             end if;
          end if;
@@ -1856,13 +1893,13 @@ package body Gtk_Generates is
             Add_Package ("Accel_Group");
             Put_Line (File, "   Gtk_New (The_Accel_Group);");
             Put_Line (File, "   Add_Accel_Group (" &
-              To_Ada (Top_Name.all) & ", The_Accel_Group);");
+              To_Ada (Top_Name) & ", The_Accel_Group);");
             Top.Specific_Data.Has_Accel_Group := True;
          end if;
 
          Put_Line (File, "   Add_Accelerator (" &
-            To_Ada (Top_Name.all) & "." &
-            To_Ada (Cur.all) & ", """ &
+            To_Ada (Top_Name) & "." &
+            To_Ada (Cur) & ", """ &
             Get_Field (Q, "signal").all & """,");
          Add_Package ("Gdk.Types.Keysyms");
          S := Get_Field (Q, "modifiers");
@@ -1887,13 +1924,13 @@ package body Gtk_Generates is
 
          if Gettext_Support (N) then
             Put_Line (File, "   Set_Tip (Tooltips, " &
-               To_Ada (Top_Name.all) & "." &
-               To_Ada (Cur.all) & ", -""" & S.all & """);");
+               To_Ada (Top_Name) & "." &
+               To_Ada (Cur) & ", -""" & S.all & """);");
 
          else
             Put_Line (File, "   Set_Tip (Tooltips, " &
-               To_Ada (Top_Name.all) & "." &
-               To_Ada (Cur.all) & ", """ & S.all & """);");
+               To_Ada (Top_Name) & "." &
+               To_Ada (Cur) & ", """ & S.all & """);");
          end if;
       end if;
 
@@ -1903,30 +1940,80 @@ package body Gtk_Generates is
 
       if Find_Tag (N.Child, "child_name") = null then
          if not N.Specific_Data.Has_Container then
-            S := Get_Field (N.Parent, "class");
+            declare
+               S : constant String := Get_Class (Parent);
+            begin
 
-            if S /= null then
-               if S.all = "GtkFixed" then
-                  Gen_Call_Child (N, N, "Fixed",
-                    "Put", "x", "y", File => File);
+               if S /= "" then
+                  if S = "GtkFixed" then
+                     Gen_Call_Child (N, N, Parent, "Fixed",
+                                     "Put", "x", "y", File => File);
 
-               elsif S.all = "GtkLayout" then
-                  Gen_Call_Child (N, N, "Layout",
-                    "Put", "x", "y", File => File);
+                  elsif S = "GtkLayout" then
+                     Gen_Call_Child (N, N, Parent, "Layout",
+                                  "Put", "x", "y", File => File);
 
-               elsif S.all = "GtkToolbar" then
-                  --  ??? Need to handle tooltip
-                  Gen_Call_Child (N, null, "Toolbar",
-                    "Append_Widget", File => File);
+                  elsif S = "GtkToolbar" then
+                     --  ??? Need to handle tooltip
+                     Gen_Call_Child (N, null, Parent, "Toolbar",
+                                  "Append_Widget", File => File);
 
-               else
-                  Gen_Call_Child (N, null, "Container", "Add", File => File);
+                  else
+                     Gen_Call_Child
+                       (N, null, Parent, "Container", "Add", File => File);
+                  end if;
                end if;
-            end if;
 
-            N.Specific_Data.Has_Container := True;
+               N.Specific_Data.Has_Container := True;
+            end;
          end if;
       end if;
    end End_Generate;
+
+   ------------------
+   -- Get_Property --
+   ------------------
+
+   function Get_Property
+     (N        : Node_Ptr;
+      Property : String) return String_Ptr
+   is
+      C : Node_Ptr;
+   begin
+      if N = null then
+         return null;
+      end if;
+
+      C := N.Child;
+
+      while C /= null loop
+         if C.Tag.all = "property"
+           and then Get_Attribute (C, "name") = Property
+         then
+            return C.Value;
+         end if;
+
+         C := C.Next;
+      end loop;
+
+      return null;
+   end Get_Property;
+
+   ---------------
+   -- Get_Class --
+   ---------------
+
+   function Get_Class (N : Node_Ptr) return String is
+   begin
+      if N = null then
+         return "";
+      end if;
+
+      if N.Tag.all = "widget" then
+         return Get_Attribute (N, "class");
+      end if;
+
+      return "";
+   end Get_Class;
 
 end Gtk_Generates;

@@ -46,11 +46,13 @@ package Gtk.Glade is
 
    procedure Generate (File : String);
    --  Parse file File and generate the corresponding Ada code on standard
-   --  output.
+   --  output. Note the .glade file should be passed here and not the
+   --  .gladep file.
 
-   procedure Generate (N : Node_Ptr);
-   --  Generate the Ada code corresponding the creation of to N and its
-   --  children on standard output.
+   procedure Generate (Project : Node_Ptr; Interface : Node_Ptr);
+   --  Generate the Ada code corresponding the creation of to
+   --  Project and Interface and its children on
+   --  standard input.
 
    procedure Register_Generate (Widget : String; Generate : Generate_Ptr);
    --  Register Callback as a procedure that knows how to generate code
