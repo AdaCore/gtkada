@@ -34,6 +34,7 @@ with Create_Preview_Gray;
 with Create_Progress;
 with Create_Radio_Button;
 with Create_Range;
+with Create_Reparent;
 with Create_Toolbar;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
@@ -109,7 +110,7 @@ package body Test is
       (US ("progress bar"), Create_Progress.Run'Access),
       (US ("radio buttons"), Create_Radio_Button.Run'Access),
       (US ("range controls"), Create_Range.Run'Access),
-      (US ("reparent"), null),
+      (US ("reparent"), Create_Reparent.Run'Access),
       (US ("rulers"), null),
       (US ("scrolled windows"), null),
       (US ("shapes"), null),
