@@ -385,8 +385,8 @@ package body Gtk.Notebook is
    begin
       Set_Object
         (Notebook_Page,
-         Internal (Get_Object (Widget_List.Get_Data (Widget_List.Nth
-           (Get_Children (Notebook), Guint (Page_Num))))));
+         Internal (Get_Object (Widget_List.Nth_Data
+           (Get_Children (Notebook), Guint (Page_Num)))));
       Ref (Gtk_Object (Notebook_Page));
       Remove_Page (Notebook, Page_Num);
       Insert_Page (Notebook, Notebook_Page, Tab_Label, Page_Num);
