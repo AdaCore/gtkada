@@ -337,6 +337,8 @@ package body Gtk.Type_Conversion is
                return new Gtk.Viewport.Gtk_Viewport_Record;
             elsif Type_Name = "GtkVPaned" then
                return new Gtk.Paned.Gtk_Paned_Record;
+            elsif Type_Name = "GtkVScrollbar" then
+               return new Gtk.Scrollbar.Gtk_Scrollbar_Record;
             end if;
          when 'W' =>
             if Type_Name = "GtkWidget" then
