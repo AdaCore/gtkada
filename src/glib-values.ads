@@ -61,7 +61,7 @@ package Glib.Values is
    --  number of elements in the Values array.
 
    procedure Free (Val : in out GValues);
-   --  Deallocate the memory associated to the given Values array.
+   --  Deallocate the memory associated with the given Values array.
 
    function Nth (Val : GValues; Num : Guint) return GValue;
    --  Return the Num-th element from Values.
