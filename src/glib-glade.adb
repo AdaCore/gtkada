@@ -655,7 +655,7 @@ package body Glib.Glade is
    ---------------
 
    procedure Gen_Child (N, Child : Node_Ptr; File : File_Type) is
-      P      : String_Ptr := Get_Field (N, "name");
+      P      : constant String_Ptr := Get_Field (N, "name");
       Top    : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
       Parent : String_Ptr;
 
@@ -687,7 +687,7 @@ package body Glib.Glade is
       Param1, Param2, Param3 : String := "";
       File : File_Type)
    is
-      P      : String_Ptr := Get_Field (N, "name");
+      P      : constant String_Ptr := Get_Field (N, "name");
       Top    : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
       Parent : String_Ptr;
 
