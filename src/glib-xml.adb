@@ -311,14 +311,12 @@ package body Glib.XML is
       N : Node_Ptr := new Node;
       Q : Node_Ptr;
       S : String_Ptr;
-      Index_Save : Natural;
       Empty_Node : Boolean;
       Last_Child : Node_Ptr;
 
    begin
       pragma Assert (Buf (Index.all) = '<');
       Index.all := Index.all + 1;
-      Index_Save := Index.all;
       Get_Buf (Buf, Index.all, '>', N.Tag);
 
       --  Check to see whether it is a comment, !DOCTYPE, or the like:

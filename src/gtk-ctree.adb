@@ -1485,11 +1485,10 @@ package body Gtk.Ctree is
       procedure Deallocate_Data_Type is new Unchecked_Deallocation
         (Data_Type, Data_Type_Access);
 
-      type Ctree_Func_Record is
-         record
-            Func : Gtk_Ctree_Func;
-            Data : Data_Type_Access;
-         end record;
+      type Ctree_Func_Record is record
+         Func : Gtk_Ctree_Func;
+         Data : Data_Type_Access;
+      end record;
       type Ctree_Func_Record_Access is access all Ctree_Func_Record;
 
       procedure Free_Data (Data : Data_Type_Access);
@@ -1699,17 +1698,11 @@ package body Gtk.Ctree is
                              Func  : in System.Address;
                              Data  : in System.Address);
          pragma Import (C, Internal, "gtk_ctree_post_recursive");
-         C_Func_Address : System.Address;
+
          Local_Data : aliased constant Ctree_Func_Record :=
            (Func => Func, Data => Data);
 
       begin
-         if Func = null then
-            C_Func_Address := System.Null_Address;
-         else
-            C_Func_Address := C_Ctree_Func'Address;
-         end if;
-
          Internal
            (Get_Object (Ctree), Node, C_Ctree_Func'Address,
             Local_Data'Address);
@@ -1730,17 +1723,11 @@ package body Gtk.Ctree is
                              Func  : in System.Address;
                              Data  : in System.Address);
          pragma Import (C, Internal, "gtk_ctree_post_recursive_to_depth");
-         C_Func_Address : System.Address;
+
          Local_Data : aliased constant Ctree_Func_Record :=
            (Func => Func, Data => Data);
 
       begin
-         if Func = null then
-            C_Func_Address := System.Null_Address;
-         else
-            C_Func_Address := C_Ctree_Func'Address;
-         end if;
-
          Internal
            (Get_Object (Ctree), Node, Depth, C_Ctree_Func'Address,
             Data => Local_Data'Address);
@@ -1759,17 +1746,11 @@ package body Gtk.Ctree is
                              Func  : in System.Address;
                              Data  : in System.Address);
          pragma Import (C, Internal, "gtk_ctree_pre_recursive");
-         C_Func_Address : System.Address;
+
          Local_Data : aliased constant Ctree_Func_Record :=
            (Func => Func, Data => Data);
 
       begin
-         if Func = null then
-            C_Func_Address := System.Null_Address;
-         else
-            C_Func_Address := C_Ctree_Func'Address;
-         end if;
-
          Internal
            (Get_Object (Ctree), Node, C_Ctree_Func'Address,
             Local_Data'Address);
@@ -1790,17 +1771,11 @@ package body Gtk.Ctree is
                              Func  : in System.Address;
                              Data  : in System.Address);
          pragma Import (C, Internal, "gtk_ctree_pre_recursive_to_depth");
-         C_Func_Address : System.Address;
+
          Local_Data : aliased constant Ctree_Func_Record :=
            (Func => Func, Data => Data);
 
       begin
-         if Func = null then
-            C_Func_Address := System.Null_Address;
-         else
-            C_Func_Address := C_Ctree_Func'Address;
-         end if;
-
          Internal
            (Get_Object (Ctree), Node, Depth, C_Ctree_Func'Address,
             Data => Local_Data'Address);
