@@ -495,6 +495,16 @@ ada_paned_get_child2 (GtkPaned* widget) {
   return widget->child2;
 }
 
+guint16
+ada_gtk_paned_get_handle_size (GtkPaned* widget) {
+  return widget->handle_size;
+}
+
+guint16
+ada_gtk_paned_get_gutter_size (GtkPaned* widget) {
+  return widget->gutter_size;
+}
+
 /********************
  * Progress_Bar
  ********************/
