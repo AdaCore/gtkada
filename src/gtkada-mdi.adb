@@ -2938,7 +2938,8 @@ package body Gtkada.MDI is
          if Child.Icon /= null then
             Gtk_New_Hbox (Box, Homogeneous => False);
 
-            Render_Pixmap_And_Mask (Child.Icon, Pix, Mask, 128);
+            Render_Pixmap_And_Mask_For_Colormap
+              (Child.Icon, Get_Default_Colormap, Pix, Mask, 128);
             Gtk_New (Pixmap, Pix, Mask);
             Pack_Start (Box, Pixmap, Expand => False);
             Pack_Start (Box, Child.Tab_Label,  Expand => True, Fill => True);
