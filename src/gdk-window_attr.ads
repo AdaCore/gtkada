@@ -38,6 +38,14 @@ package Gdk.Window_Attr is
 
    subtype Gdk_Window_Attr is Gdk.Gdk_Window_Attr;
    Null_Window_Attr : constant Gdk_Window_Attr;
+   --  This record describes the initial attributes for a window. Most of
+   --  them can be changed later on, but it is more efficient to set them
+   --  right from the start.
+   --  You usually need to do the following when initializing such a
+   --  structure:
+   --      Window_Attr.Visual := Get_Visual (Window);
+   --      Window_Attr.Colormap := Get_Colormap (Window);
+   --      Window_Attr.Event_Mask := Get_Events (Window) or Exposure_Mask;
 
    procedure Gdk_New
      (Window_Attr       : out Gdk_Window_Attr;
