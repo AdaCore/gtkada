@@ -43,6 +43,7 @@ with Gtk.Signal;
 with Gtk.Widget;           use Gtk.Widget;
 with Gtk.Window;           use Gtk.Window;
 
+with Create_Arrow;
 with Create_Button_Box;
 with Create_Buttons;
 with Create_Calendar;
@@ -130,7 +131,8 @@ package body Test is
 
 
    Buttons : constant Buttons_Array :=
-     ((US ("button box"), Create_Button_Box.Run'Access),
+     ((US ("arrow"), Create_Arrow.Run'Access),
+      (US ("button box"), Create_Button_Box.Run'Access),
       (US ("buttons"), Create_Buttons.Run'Access),
       (US ("calendar"), Create_Calendar.Run'Access),
       (US ("check buttons"), Create_Check_Buttons.Run'Access),
