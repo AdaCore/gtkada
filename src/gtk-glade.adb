@@ -227,7 +227,6 @@ package body Gtk.Glade is
       File        : File_Type;
       Kind        : Variable_Kind) return Boolean
    is
-      Option_Menu : Boolean := True;
       Accelerator : Boolean := True;
       Tooltip     : Boolean := True;
       Image       : Boolean := True;
@@ -238,7 +237,6 @@ package body Gtk.Glade is
          File  : File_Type;
          Kind  : Variable_Kind;
          First : Boolean;
-         Option_Menu : in out Boolean;
          Accelerator : in out Boolean;
          Tooltip     : in out Boolean);
       --  Internal recursive version of this procedure
@@ -248,7 +246,6 @@ package body Gtk.Glade is
          File  : File_Type;
          Kind  : Variable_Kind;
          First : Boolean;
-         Option_Menu : in out Boolean;
          Accelerator : in out Boolean;
          Tooltip     : in out Boolean)
       is
@@ -333,21 +330,6 @@ package body Gtk.Glade is
                               Printed := True;
                            end if;
 
-                           --  Declare a menu with each option menu
-
-                           if S = "GtkOptionMenu" then
-                              Put_Line (File, "   " &
-                                 To_Ada (Get_Attribute (T, "id")) &
-                                 "_Menu : Gtk_Menu;");
-                              Printed := True;
-
-                              if Option_Menu then
-                                 Put_Line (File,
-                                    "   The_Menu_Item : Gtk_Menu_Item;");
-                                 Option_Menu := False;
-                              end if;
-                           end if;
-
                            --  Declare a Gdk_Image and a Gdk_Visual if any
                            --  Gtk_Image needs to be created in this widget
 
@@ -376,7 +358,7 @@ package body Gtk.Glade is
                            --  Declare a Tooltip if any tooltip needs to be
                            --  set up in this widget
 
-                           if Find_Tag (T.Child, "tooltip") /= null then
+                           if Get_Property (T, "tooltip") /= null then
                               if Tooltip then
                                  Put_Line (File,
                                     "   Tooltips : Gtk_Tooltips;");
@@ -387,7 +369,7 @@ package body Gtk.Glade is
                         end if;
                      end;
 
-                     Print_Var (T.Child, File, Kind, False, Option_Menu,
+                     Print_Var (T.Child, File, Kind, False,
                         Accelerator, Tooltip);
                   end if;
                end;
@@ -402,7 +384,7 @@ package body Gtk.Glade is
       end Print_Var;
 
    begin
-      Print_Var (N, File, Kind, True, Option_Menu, Accelerator, Tooltip);
+      Print_Var (N, File, Kind, True, Accelerator, Tooltip);
       return Printed;
    end Print_Var;
 
