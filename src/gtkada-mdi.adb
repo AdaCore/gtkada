@@ -4564,67 +4564,69 @@ package body Gtkada.MDI is
             Register := Register.Next;
          end loop;
 
-         if Child /= null then
-            --  Undock the child, since it is possible that its current
-            --  dock is different from the one registered in the desktop. It
-            --  might have been docked by Register
-
-            Dock_Child (Child, False);
-
-            N := Child_Node.Child.Next;
-
-            while N /= null loop
-               --  We ignore the <title> and <short_title> fields. After all,
-               --  the callback that created the child has or should have set
-               --  a proper title already, and there is no reason to override
-               --  this.
-
-               if N.Tag.all = "X" then
-                  Child.X := Gint'Value (N.Value.all);
-
-               elsif N.Tag.all = "Y" then
-                  Child.Y := Gint'Value (N.Value.all);
-
-               elsif N.Tag.all = "Width" then
-                  Width := Guint'Value (N.Value.all);
-
-               elsif N.Tag.all = "Height" then
-                  Height := Guint'Value (N.Value.all);
-
-               elsif N.Tag.all = "State" then
-                  State := State_Type'Value (N.Value.all);
-
-               elsif N.Tag.all = "Dock" then
-                  Child.Dock := Dock_Side'Value (N.Value.all);
-
-               elsif N.Tag.all = "Uniconified_X" then
-                  Child.Uniconified_X := Gint'Value (N.Value.all);
-
-               elsif N.Tag.all = "Uniconified_Y" then
-                  Child.Uniconified_Y := Gint'Value (N.Value.all);
-
-               elsif N.Tag.all = "Uniconified_Width" then
-                  Child.Uniconified_Width := Gint'Value (N.Value.all);
-
-               elsif N.Tag.all = "Uniconified_Height" then
-                  Child.Uniconified_Height := Gint'Value (N.Value.all);
-
-               elsif N.Tag.all = "Focus"
-                 and then Boolean'Value (N.Value.all)
-               then
-                  Focus_Child := Child;
-
-               elsif N.Tag.all = "Raised" then
-                  Raised := Boolean'Value (N.Value.all);
-
-               else
-                  --  ??? Unknown node, just ignore for now
-                  null;
-               end if;
-
-               N := N.Next;
-            end loop;
+         if Child = null then
+            return;
          end if;
+
+         --  Undock the child, since it is possible that its current
+         --  dock is different from the one registered in the desktop. It
+         --  might have been docked by Register
+
+         Dock_Child (Child, False);
+
+         N := Child_Node.Child.Next;
+
+         while N /= null loop
+            --  We ignore the <title> and <short_title> fields. After all,
+            --  the callback that created the child has or should have set
+            --  a proper title already, and there is no reason to override
+            --  this.
+
+            if N.Tag.all = "X" then
+               Child.X := Gint'Value (N.Value.all);
+
+            elsif N.Tag.all = "Y" then
+               Child.Y := Gint'Value (N.Value.all);
+
+            elsif N.Tag.all = "Width" then
+               Width := Guint'Value (N.Value.all);
+
+            elsif N.Tag.all = "Height" then
+               Height := Guint'Value (N.Value.all);
+
+            elsif N.Tag.all = "State" then
+               State := State_Type'Value (N.Value.all);
+
+            elsif N.Tag.all = "Dock" then
+               Child.Dock := Dock_Side'Value (N.Value.all);
+
+            elsif N.Tag.all = "Uniconified_X" then
+               Child.Uniconified_X := Gint'Value (N.Value.all);
+
+            elsif N.Tag.all = "Uniconified_Y" then
+               Child.Uniconified_Y := Gint'Value (N.Value.all);
+
+            elsif N.Tag.all = "Uniconified_Width" then
+               Child.Uniconified_Width := Gint'Value (N.Value.all);
+
+            elsif N.Tag.all = "Uniconified_Height" then
+               Child.Uniconified_Height := Gint'Value (N.Value.all);
+
+            elsif N.Tag.all = "Focus"
+              and then Boolean'Value (N.Value.all)
+            then
+               Focus_Child := Child;
+
+            elsif N.Tag.all = "Raised" then
+               Raised := Boolean'Value (N.Value.all);
+
+            else
+               --  ??? Unknown node, just ignore for now
+               null;
+            end if;
+
+            N := N.Next;
+         end loop;
 
          Set_Size_Request (Child, Gint (Width), Gint (Height));
       end Parse_Child_Node;
