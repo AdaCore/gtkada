@@ -1,5 +1,6 @@
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
+with Gtk.Object;
 
 --  This package tries to handle three problems encountered with callbacks
 --    1) the memory allocated internally by our Ada functions must be freed
@@ -22,14 +23,52 @@ with Unchecked_Deallocation;
 
 package body Gtk.Signal is
 
-   function C_GTK_Signal_Connect
-     (Obj       : System.Address;
-      Name      : String;
-      Func_Data : System.Address;
-      Destroy   : System.Address;
-      After     : Gint)
-      return      Guint;
-   pragma Import (C, C_GTK_Signal_Connect, "ada_gtk_signal_connect");
+   type DestroyFunc is access procedure (Data : in System.Address);
+   type GtkArgArray is new System.Address;
+   type MarshallerFunc is access procedure (Object    : in System.Address;
+                                            User_Data : in System.Address;
+                                            Nparams   : in Guint;
+                                            Params    : in GtkArgArray);
+   function Do_Signal_Connect (Object     : in Gtk.Object.Gtk_Object'Class;
+                               Name       : in String;
+                               Marshaller : in System.Address;
+                               Func_Data  : in System.Address;
+                               Destroy    : in System.Address;
+                               After      : in Boolean)
+                               return          Guint;
+
+   -----------------------
+   -- Do_Signal_Connect --
+   -----------------------
+
+   function Do_Signal_Connect (Object     : in Gtk.Object.Gtk_Object'Class;
+                               Name       : in String;
+                               Marshaller : in System.Address;
+                               Func_Data  : in System.Address;
+                               Destroy    : in System.Address;
+                               After      : in Boolean)
+                               return         Guint
+   is
+      function Internal (Object        : System.Address;
+                         Name          : String;
+                         Func          : System.Address;
+                         Marshaller    : System.Address;
+                         Func_Data     : System.Address;
+                         Destroy       : System.Address;
+                         Object_Signal : Gint;
+                         After         : Gint)
+                         return          Guint;
+      pragma Import (C, Internal, "gtk_signal_connect_full");
+   begin
+      return Internal (Get_Object (Object),
+                       Name & Ascii.NUL,
+                       System.Null_Address,
+                       Marshaller,
+                       Func_Data,
+                       Destroy,
+                       Boolean'Pos (False),
+                       Boolean'Pos (After));
+   end Do_Signal_Connect;
 
    ---------------
    --  Callback --
@@ -40,55 +79,59 @@ package body Gtk.Signal is
       type Data_Access is access Data_Type;
       type Data_Type_Record is
          record
-            Binding_Func : System.Address;
-            Signal       : Gint;
-            Data         : Data_Access;
-            Func         : Callback;
+            Data   : Data_Access;
+            Func   : Callback;
          end record;
       type Data_Type_Access is access all Data_Type_Record;
       pragma Convention (C, Data_Type_Access);
 
       function Convert is new Unchecked_Conversion (Data_Type_Access,
                                                     System.Address);
+      function Convert is new Unchecked_Conversion (System.Address,
+                                                    Data_Type_Access);
 
-      procedure Free (Data : in out Data_Type_Access);
+      procedure Free (Data : in System.Address);
+      pragma Convention (C, Free);
       --  Free the memory associated with the callback's data
 
-      procedure General_Cb (Widget : System.Address;
-                            Data   : Data_Type_Access);
-      --  This is the only real callback function which is called from
-      --  C. It dispatches the call to the real callback, after converting
-      --  the widget from a C pointer to an Ada Widget type
-      pragma Convention (C, General_Cb);
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray);
+      pragma Convention (C, Marshaller);
 
       ----------
       -- Free --
       ----------
 
-      procedure Free (Data : in out Data_Type_Access) is
+      procedure Free (Data : in System.Address) is
          procedure Internal is new Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
          procedure Internal_2 is new Unchecked_Deallocation
            (Data_Type, Data_Access);
+         D : Data_Type_Access := Convert (Data);
       begin
-         Internal_2 (Data.Data);
-         Internal (Data);
+         Internal_2 (D.Data);
+         Internal (D);
       end Free;
 
       ----------------
-      -- General_Cb --
+      -- Marshaller --
       ----------------
 
-      procedure General_Cb (Widget : System.Address;
-                            Data   : Data_Type_Access)
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray)
       is
-         Object : Widget_Type;
+         Data   : Data_Type_Access := Convert (User_Data);
+         Widget : Widget_Type;
       begin
-         Set_Object (Object, Widget);
          if Data.Func /= null then
-            Data.Func (Object, Data.Data.all);
+            Set_Object (Widget, Object);
+            Data.Func (Widget, Data.Data.all);
          end if;
-      end General_Cb;
+      end Marshaller;
 
       -------------
       -- Connect --
@@ -104,16 +147,14 @@ package body Gtk.Signal is
       is
          D : Data_Type_Access :=
           new Data_Type_Record'(Data         => new Data_Type'(Func_Data),
-                                Func         => Func,
-                                Binding_Func => General_Cb'Address,
-                                Signal       => 1);
+                                Func         => Func);
       begin
-         return C_GTK_Signal_Connect
-           (Obj       => Get_Object (Obj),
-            Name      => Name & Ascii.NUL,
-            Func_Data => Convert (D),
-            Destroy   => Free'Address,
-            After     => Boolean'Pos (After));
+         return Do_Signal_Connect (Obj,
+                                   Name & Ascii.NUL,
+                                   Marshaller'Address,
+                                   Convert (D),
+                                   Free'Address,
+                                   After);
       end Connect;
    end Callback;
 
@@ -123,49 +164,32 @@ package body Gtk.Signal is
 
    package body Void_Callback is
 
-      type Data_Type_Record is
-         record
-            Binding_Func : System.Address;
-            Signal       : Gint;
-            Func         : Callback;
-         end record;
-      type Data_Type_Access is access all Data_Type_Record;
-      pragma Convention (C, Data_Type_Access);
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray);
+      pragma Convention (C, Marshaller);
 
-      function Convert is new Unchecked_Conversion (Data_Type_Access,
+      function Convert is new Unchecked_Conversion (System.Address,
+                                                    Callback);
+      function Convert is new Unchecked_Conversion (Callback,
                                                     System.Address);
 
-      procedure Free (Data : in out Data_Type_Access);
-
-      procedure General_Cb (Widget : System.Address;
-                            Data   : Data_Type_Access);
-      pragma Convention (C, General_Cb);
-
-      ----------
-      -- Free --
-      ----------
-
-      procedure Free (Data : in out Data_Type_Access) is
-         procedure Internal is new Unchecked_Deallocation (Data_Type_Record,
-                                                           Data_Type_Access);
-      begin
-         Internal (Data);
-      end Free;
-
       ----------------
-      -- General_Cb --
+      -- Marshaller --
       ----------------
 
-      procedure General_Cb (Widget : System.Address;
-                            Data   : Data_Type_Access)
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray)
       is
-         AWidget : Widget_Type;
+         Data   : Callback := Convert (User_Data);
+         Widget : Widget_Type;
       begin
-         Set_Object (AWidget, Widget);
-         if Data.Func /= null then
-            Data.Func (AWidget);
-         end if;
-      end General_Cb;
+         Set_Object (Widget, Object);
+         Data (Widget);
+      end Marshaller;
 
       -------------
       -- Connect --
@@ -178,17 +202,13 @@ package body Gtk.Signal is
          After : in Boolean := False)
          return Guint
       is
-         D : Data_Type_Access
-           := new Data_Type_Record'(Func         => Func,
-                                    Binding_Func => General_Cb'Address,
-                                    Signal       => 1);
       begin
-         return C_GTK_Signal_Connect
-           (Obj       => Get_Object (Obj),
-            Name      => Name & Ascii.NUL,
-            Func_Data => Convert (D),
-            Destroy   => Free'Address,
-            After     => Boolean'Pos (After));
+         return Do_Signal_Connect (Obj,
+                                   Name & Ascii.NUL,
+                                   Marshaller'Address,
+                                   Convert (Func),
+                                   System.Null_Address,
+                                   After);
       end Connect;
    end Void_Callback;
 
@@ -199,54 +219,56 @@ package body Gtk.Signal is
 
    package body Object_Callback is
 
-      type Widget_Type_Access is access all Widget_Type;
       type Data_Type_Record is
          record
-            Binding_Func : System.Address;
-            Signal       : Gint;
-            Func         : Callback;
-            Data         : Widget_Type_Access;
+            Func : Callback;
+            Data : Widget_Type;
          end record;
-      --  Data has to be a pointer otherwise the C functions can not access
-      --  properly the Binding_Func field of the structure...
-
       type Data_Type_Access is access all Data_Type_Record;
+
       pragma Convention (C, Data_Type_Access);
 
       function Convert is new Unchecked_Conversion (Data_Type_Access,
                                                     System.Address);
+      function Convert is new Unchecked_Conversion (System.Address,
+                                                    Data_Type_Access);
 
-      procedure Free (Data : in out Data_Type_Access);
-      procedure General_Cb (Widget : System.Address;
-                            Data   : Data_Type_Access);
-      pragma Convention (C, General_Cb);
+      procedure Free (Data : in System.Address);
+      pragma Convention (C, Free);
+
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray);
+      pragma Convention (C, Marshaller);
 
       ----------
       -- Free --
       ----------
 
-      procedure Free (Data : in out Data_Type_Access) is
+      procedure Free (Data : in System.Address) is
          procedure Internal is new Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
-         procedure Internal2 is new Unchecked_Deallocation
-           (Widget_Type, Widget_Type_Access);
+         D : Data_Type_Access := Convert (Data);
       begin
-         Internal2 (Data.Data);
-         Internal (Data);
+         Internal (D);
       end Free;
 
       ----------------
-      -- General_Cb --
+      -- Marshaller --
       ----------------
 
-      procedure General_Cb (Widget : System.Address;
-                            Data   : Data_Type_Access)
+      procedure Marshaller (Object    : in System.Address;
+                            User_Data : in System.Address;
+                            Nparams   : in Guint;
+                            Params    : in GtkArgArray)
       is
+         Data : Data_Type_Access := Convert (User_Data);
       begin
          if Data.Func /= null then
-            Data.Func (Data.Data.all);
+            Data.Func (Data.Data);
          end if;
-      end General_Cb;
+      end Marshaller;
 
       -------------
       -- Connect --
@@ -261,18 +283,15 @@ package body Gtk.Signal is
          return Guint
       is
          D : Data_Type_Access
-           := new Data_Type_Record'(Data         =>
-                                      new Widget_Type'(Slot_Object),
-                                    Func         => Func,
-                                    Binding_Func => General_Cb'Address,
-                                    Signal       => 1);
+           := new Data_Type_Record'(Data => Widget_Type (Slot_Object),
+                                    Func => Func);
       begin
-         return C_GTK_Signal_Connect
-           (Obj       => Get_Object (Obj),
-            Name      => Name & Ascii.NUL,
-            Func_Data => Convert (D),
-            Destroy   => Free'Address,
-            After     => Boolean'Pos (After));
+         return Do_Signal_Connect (Obj,
+                                   Name & Ascii.NUL,
+                                   Marshaller'Address,
+                                   Convert (D),
+                                   Free'Address,
+                                   After);
       end Connect;
    end Object_Callback;
 

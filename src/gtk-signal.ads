@@ -101,7 +101,6 @@ package Gtk.Signal is
                               Handler_Id : in Guint);
    --  mapping: Handler_Unblock gtksignal.h gtk_signal_handler_unblock
 
-
    --  Functions which are not implemented because they are probably not needed
    --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_init
    --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_new
