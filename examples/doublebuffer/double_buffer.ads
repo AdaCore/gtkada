@@ -77,9 +77,8 @@ with Gdk.Drawable;
 
 package Double_Buffer is
 
-   type Gtk_Double_Buffer_Record is
-     new Gtk.Drawing_Area.Gtk_Drawing_Area_Record
-     with private;
+   type Gtk_Double_Buffer_Record is new
+     Gtk.Drawing_Area.Gtk_Drawing_Area_Record with private;
    type Gtk_Double_Buffer is access all Gtk_Double_Buffer_Record'Class;
 
    procedure Gtk_New (Buffer : out Gtk_Double_Buffer);
@@ -112,16 +111,19 @@ package Double_Buffer is
 
 private
 
-   type Gtk_Double_Buffer_Record is
-     new Gtk.Drawing_Area.Gtk_Drawing_Area_Record
-     with record
-        Pixmap              : Gdk.Pixmap.Gdk_Pixmap := Gdk.Pixmap.Null_Pixmap;
-        Triple_Buffer       : Gdk.Pixmap.Gdk_Pixmap := Gdk.Pixmap.Null_Pixmap;
-        Is_Frozen               : Boolean := False;
-        Back_Store              : Boolean := False;
-        Should_Update_On_Screen : Boolean := False;
-        Use_Triple_Buffer       : Boolean := False;
-     end record;
+   type Gtk_Double_Buffer_Record is new
+     Gtk.Drawing_Area.Gtk_Drawing_Area_Record
+   with record
+      Pixmap                  : Gdk.Pixmap.Gdk_Pixmap :=
+        Gdk.Pixmap.Null_Pixmap;
+      Triple_Buffer           : Gdk.Pixmap.Gdk_Pixmap :=
+        Gdk.Pixmap.Null_Pixmap;
+      Is_Frozen               : Boolean := False;
+      Back_Store              : Boolean := False;
+      Should_Update_On_Screen : Boolean := False;
+      Use_Triple_Buffer       : Boolean := False;
+   end record;
+
    --  PIXMAP is the actual double-buffer pixmap on which the user is
    --  drawing.
    --

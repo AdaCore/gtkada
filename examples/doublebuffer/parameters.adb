@@ -1,4 +1,3 @@
-
 with Full_Test; use Full_Test;
 with Gtk.Main; use Gtk.Main;
 

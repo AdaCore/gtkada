@@ -35,20 +35,21 @@ package body Anim_Timeout is
                       X     => 0,   Y      => 0,
                       Width => 400, Height => 400);
 
-      for I in Gint'(1) .. 30 loop
+      for J in Gint'(1) .. 30 loop
          Draw_Rectangle (Pixmap, Black_Gc, Filled => False,
-                         X     => X_Pos,  Y      => 30 + I * 2,
+                         X     => X_Pos,  Y      => 30 + J * 2,
                          Width => X_Pos + 100, Height => 100);
          Draw_Rectangle (Pixmap, Black_Gc, Filled => False,
-                         X     => X_Pos+20,  Y      => 60 + I * 2,
+                         X     => X_Pos+20,  Y      => 60 + J * 2,
                          Width => X_Pos+60, Height => 80);
          Draw_Rectangle (Pixmap, Black_Gc, Filled => False,
-                      X     => X_Pos+30,  Y      => 50 + I * 2,
+                      X     => X_Pos+30,  Y      => 50 + J * 2,
                          Width => X_Pos+80, Height => 90);
          Draw_Rectangle (Pixmap, Black_Gc, Filled => False,
-                         X     => X_Pos-20,  Y      => 120 + I * 2,
+                         X     => X_Pos-20,  Y      => 120 + J * 2,
                          Width => X_Pos+80, Height => 190);
       end loop;
+
       X_Pos := (X_Pos + 1) mod 140;
    end Draw_Complex;
 
@@ -89,15 +90,15 @@ package body Anim_Timeout is
    ----------
 
    procedure Init is
-      Win : Gtk_Window;
+      Win    : Gtk_Window;
       Area   : Gtk_Drawing_Area;
       Buffer : Gtk_Double_Buffer;
       Vbox,
-      Hbox : Gtk_Box;
-      Label : Gtk_Label;
-      Id  : Guint;
-   begin
+      Hbox   : Gtk_Box;
+      Label  : Gtk_Label;
+      Id     : Guint;
 
+   begin
       Put_Line ("This demo shows how you can use a Double_Buffer widget");
       Put_Line (" to provide flicker-free animations in your applications.");
       Put_Line ("The code is almost the same as with a Gtk_Drawing_Area.");
@@ -148,7 +149,6 @@ package body Anim_Timeout is
                               Gtk_Drawing_Area (Buffer));
       Id := Gint_Timeout.Add (10, Draw_Complex_Area'Access,
                               Area);
-
    end Init;
 
 end Anim_Timeout;

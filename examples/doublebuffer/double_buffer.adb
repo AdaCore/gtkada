@@ -121,6 +121,7 @@ package body Double_Buffer is
    is
       Old_Pixmap : Gdk.Pixmap.Gdk_Pixmap := Buffer.Pixmap;
       Old_Triple : Gdk.Pixmap.Gdk_Pixmap := Buffer.Triple_Buffer;
+
    begin
       Buffer.Pixmap := Create_Internal_Pixmap (Buffer);
 
@@ -137,6 +138,7 @@ package body Double_Buffer is
             declare
                Old_Width  : Gint;
                Old_Height : Gint;
+
             begin
                Get_Size (Gdk_Window (Old_Pixmap), Old_Width, Old_Height);
 
@@ -175,6 +177,7 @@ package body Double_Buffer is
             declare
                Old_Width  : Gint;
                Old_Height : Gint;
+
             begin
                Get_Size (Gdk_Window (Old_Triple), Old_Width, Old_Height);
 
@@ -216,6 +219,7 @@ package body Double_Buffer is
       if Gdk.Is_Created (Buffer.Pixmap) then
          Gdk.Pixmap.Unref (Buffer.Pixmap);
       end if;
+
       if Gdk.Is_Created (Buffer.Triple_Buffer) then
          Gdk.Pixmap.Unref (Buffer.Triple_Buffer);
       end if;
@@ -232,13 +236,11 @@ package body Double_Buffer is
       Area : Gdk.Rectangle.Gdk_Rectangle := Gdk.Event.Get_Area (Event);
    begin
       if Buffer.Use_Triple_Buffer then
-
          --  If the event was generated manually, we need to update
          --  the Triple_Buffer with the value of the double_buffer,
          --  unless of course the buffer is frozen.
 
          if Gdk.Event.Get_Send_Event (Event) then
-
             if Buffer.Is_Frozen then
                Buffer.Should_Update_On_Screen := True;
             else
@@ -267,8 +269,8 @@ package body Double_Buffer is
                                  Source_Y => Area.Y,
                                  Width    => Gint (Area.Width),
                                  Height   => Gint (Area.Height));
-      elsif not Buffer.Is_Frozen then
 
+      elsif not Buffer.Is_Frozen then
          --  Copy the double buffer to the screen
          Gdk.Drawable.Copy_Area (Get_Window (Buffer),
                                  Get_Foreground_GC (Get_Style (Buffer),
@@ -280,9 +282,11 @@ package body Double_Buffer is
                                  Source_Y => Area.Y,
                                  Width    => Gint (Area.Width),
                                  Height   => Gint (Area.Height));
+
       else
          Buffer.Should_Update_On_Screen := True;
       end if;
+
       return False;
    end Expose;
 
@@ -291,8 +295,7 @@ package body Double_Buffer is
    ----------------
 
    function Get_Pixmap (Buffer : access Gtk_Double_Buffer_Record)
-                       return Gdk.Drawable.Gdk_Drawable
-   is
+     return Gdk.Drawable.Gdk_Drawable is
    begin
       return Gdk.Drawable.Gdk_Drawable (Buffer.Pixmap);
    end Get_Pixmap;
@@ -302,8 +305,7 @@ package body Double_Buffer is
    --------------------
 
    procedure Set_Back_Store (Buffer : access Gtk_Double_Buffer_Record;
-                             Back_Store : Boolean := True)
-   is
+                             Back_Store : Boolean := True) is
    begin
       Buffer.Back_Store := Back_Store;
    end Set_Back_Store;
@@ -324,6 +326,7 @@ package body Double_Buffer is
    procedure Thaw (Buffer : access Gtk_Double_Buffer_Record) is
    begin
       Buffer.Is_Frozen := False;
+
       if Buffer.Should_Update_On_Screen then
          Draw (Buffer);
       end if;
@@ -334,8 +337,7 @@ package body Double_Buffer is
    -----------------------
 
    procedure Set_Triple_Buffer (Buffer : access Gtk_Double_Buffer_Record;
-                                Use_Triple_Buffer : Boolean := True)
-   is
+                                Use_Triple_Buffer : Boolean := True) is
    begin
       Buffer.Use_Triple_Buffer := Use_Triple_Buffer;
 
@@ -347,6 +349,7 @@ package body Double_Buffer is
       end if;
 
       --  If we do want a triple buffer, create the pixmap
+
       if Use_Triple_Buffer then
          Buffer.Triple_Buffer := Create_Internal_Pixmap (Buffer);
 
@@ -363,7 +366,6 @@ package body Double_Buffer is
             Width    => Gint (Get_Allocation_Width (Buffer)),
             Height   => Gint (Get_Allocation_Height (Buffer)));
       end if;
-
    end Set_Triple_Buffer;
 
 end Double_Buffer;

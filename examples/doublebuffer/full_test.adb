@@ -57,8 +57,7 @@ package body Full_Test is
    -----------------------
 
    procedure Toggle_Back_Store (Button : access Gtk_Toggle_Button_Record'Class;
-                                Buffer : Gtk_Double_Buffer)
-   is
+                                Buffer : Gtk_Double_Buffer) is
    begin
       Set_Back_Store (Buffer, Get_Active (Button));
    end Toggle_Back_Store;
@@ -68,8 +67,7 @@ package body Full_Test is
    -------------------
 
    procedure Toggle_Triple (Button : access Gtk_Toggle_Button_Record'Class;
-                            Buffer : Gtk_Double_Buffer)
-   is
+                            Buffer : Gtk_Double_Buffer) is
    begin
       Set_Triple_Buffer (Buffer, Get_Active (Button));
    end Toggle_Triple;
@@ -86,11 +84,13 @@ package body Full_Test is
       --  The following call only works thanks to
       --  the 'with Gtk.Type_Conversion', since the label is created in C
       --  and not in Ada.
+
       Label := Gtk_Label (Widget_List.Get_Data (Children (Button)));
 
       if Get_Active (Button) then
          Freeze (Buffer);
          Set_Text (Label, "Thaw");
+
       else
          Thaw (Buffer);
          Set_Text (Gtk_Label (Widget_List.Get_Data (Children (Button))),
@@ -105,6 +105,7 @@ package body Full_Test is
    procedure Draw (Buffer : access Gtk_Double_Buffer_Record'Class) is
       X : Gint := Gint (Gint_Random.Random (Gen));
       Y : Gint := Gint (Gint_Random.Random (Gen));
+
    begin
       Gdk.Gc.Set_Foreground (Black_Gc,
                              Colors (Color_Random.Random (Gen_Color)));
@@ -221,7 +222,6 @@ package body Full_Test is
       Color   : Gdk.Color.Gdk_Color;
 
    begin
-
       Gtk_New (Win, Window_Toplevel);
       Set_Title (Win, "Double_Buffer tests");
       Quit_Cb.Connect (Win, "destroy", Quit_Cb.To_Marshaller (Quit'Access));

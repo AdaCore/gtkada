@@ -1,4 +1,3 @@
-
 with Anim_Timeout; use Anim_Timeout;
 with Gtk.Main; use Gtk.Main;
 

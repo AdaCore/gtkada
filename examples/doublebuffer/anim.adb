@@ -1,4 +1,3 @@
-
 with Anim_Task; use Anim_Task;
 with Gtk.Main; use Gtk.Main;
 
