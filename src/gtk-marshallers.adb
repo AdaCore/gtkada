@@ -486,9 +486,9 @@ package body Gtk.Marshallers is
 
    end User_Return_Marshallers;
 
-   --------------------------
-   -- Callback_Marshallers --
-   --------------------------
+   ----------------------
+   -- Void_Marshallers --
+   ----------------------
 
    package body Void_Marshallers is
 
