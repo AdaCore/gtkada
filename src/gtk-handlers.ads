@@ -150,7 +150,7 @@ package Gtk.Handlers is
    type GClosure is new Glib.C_Proxy;
 
    type Handler_Id is record
-      Signal : Signal_Id;
+      Signal  : Signal_Id := Null_Signal_Id;
       Closure : GClosure;
    end record;
    --  This uniquely identifies a connection widget<->signal.
@@ -1119,7 +1119,7 @@ package Gtk.Handlers is
 
    procedure Disconnect
      (Object : access Glib.Object.GObject_Record'Class;
-      Id     : Handler_Id);
+      Id     : in out Handler_Id);
    --  Disconnect the handler identified by the given Handler_Id.
 
    procedure Emit_Stop_By_Name
@@ -1168,4 +1168,3 @@ end Gtk.Handlers;
 --     Return_Widget_Cb.To_Marshaller (My_Cb'Access));
 --
 --  </example>
-
