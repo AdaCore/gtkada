@@ -334,6 +334,23 @@ package body Gtk.Text is
    end Set_Point;
 
    -------------------
+   -- Set_Line_Wrap --
+   -------------------
+
+   procedure Set_Line_Wrap
+     (Text      : access Gtk_Text_Record;
+      Line_Wrap : in Boolean)
+   is
+      procedure Internal
+        (Text      : in System.Address;
+         Line_Wrap : in Gint);
+      pragma Import (C, Internal, "gtk_text_set_line_wrap");
+
+   begin
+      Internal (Get_Object (Text), Boolean'Pos (Line_Wrap));
+   end Set_Line_Wrap;
+
+   -------------------
    -- Set_Word_Wrap --
    -------------------
 

@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.2.6</c_version>
+
 with Gdk.Color;
 with Gdk.Font;
 with Gtk.Object; use Gtk.Object;
@@ -89,6 +91,9 @@ package Gtk.Text is
 
    procedure Set_Editable
      (Text : access Gtk_Text_Record; Editable : in Boolean);
+
+   procedure Set_Line_Wrap
+     (Text : access Gtk_Text_Record; Line_Wrap : in Boolean);
 
    procedure Set_Point (Text : access Gtk_Text_Record; Index : in Guint);
 
