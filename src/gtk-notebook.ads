@@ -46,7 +46,7 @@ package Gtk.Notebook is
        Child      : in Gtk.Widget.Gtk_Widget'Class;
        Tab_Label  : in Gtk.Box.Gtk_Box'Class;
        Menu_Label : in Gtk.Box.Gtk_Box'Class);
-   function Current_Page (Notebook : in Gtk_Notebook) return Gint;
+   function Get_Current_Page (Notebook : in Gtk_Notebook) return Gint;
    function Get_Children (Widget : in Gtk_Notebook) return Widget_List.Glist;
    function Get_Cur_Page (Widget : in Gtk_Notebook'Class)
                           return Gtk_Notebook_Page;

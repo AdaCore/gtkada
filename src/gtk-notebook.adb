@@ -74,16 +74,16 @@ package body Gtk.Notebook is
                 Get_Object (Menu_Label));
    end Append_Page_Menu;
 
-   ------------------
-   -- Current_Page --
-   ------------------
+   ----------------------
+   -- Get_Current_Page --
+   ----------------------
 
-   function Current_Page (Notebook : in Gtk_Notebook) return Gint is
+   function Get_Current_Page (Notebook : in Gtk_Notebook) return Gint is
       function Internal (Notebook : in System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_notebook_current_page");
+      pragma Import (C, Internal, "gtk_notebook_get_current_page");
    begin
       return Internal (Get_Object (Notebook));
-   end Current_Page;
+   end Get_Current_Page;
 
    ------------------
    -- Get_Children --
