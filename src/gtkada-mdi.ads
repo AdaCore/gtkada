@@ -177,6 +177,9 @@ package Gtkada.MDI is
    --
    --  If Focus_Widget is not null, this is the widget that gets the keyboard
    --  focus when the child is selected.
+   --
+   --  Calling Put does not give the focus to the newly inserted widget.
+   --  To do that, you should call Set_Focus_Child.
 
    procedure Close
      (MDI : access MDI_Window_Record;
@@ -729,6 +732,10 @@ private
       Focus_Title_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
 
       Group : Gtk.Accel_Group.Gtk_Accel_Group;
+
+      Prevent_Focus_On_Page_Switch : Boolean := False;
+      --  Set to True when we want to enable page switching in notebooks
+      --  without giving the focus to the childs.
    end record;
 
    pragma Inline (Get_Window);
