@@ -2,73 +2,50 @@
 
 use strict;
 
+if ($#ARGV < 0) {
+  print "Syntax : generate.pl file_name [definition-file unit_name]\n";
+  print "   file_name : name of the C file to parse\n";
+  print "   definition_file : file to parse for the struct definition\n";
+  print "   unit_name : if present, only functions include this name will be \n";
+  print "               generated\n";
+  print " ex/  generate.pl ../include/gdk/gdk.h ../include/gdk/gdktypes.h window\n";
+  print " ex/  generate.pl ../include/gtk/gtkframe.h\n";
+  exit;
+}
 
-my ($file) = shift @ARGV || die "must give a filename!!\n";
-
+my ($file) = $ARGV [0] || die "must give a filename!!\n";
 
 open (FILE, $file);
 my (@cfile) = <FILE>;
 close (FILE);
 
-my (@output) = ();
-my (%with_list) = ();
+
 my ($directory);
+my ($unit_name) = "";
+my ($definition_file) = $file;
 
 ($directory, $file) = ($file =~ /^(.*)\/([^\/]+)\.h$/);
 my ($hfile) = $file . ".h";
+my ($prefix) = ($file =~ /(g[dt]k)/);
+substr ($prefix, 0, 1) = uc (substr ($prefix, 0, 1));
+
+if ($#ARGV >= 1) {
+  $definition_file = $ARGV [1];
+}
+if ($#ARGV >= 2) {
+  $unit_name = $ARGV [2];
+  substr ($unit_name, 0, 1) = uc (substr ($unit_name, 0, 1));
+  $file = $prefix.$unit_name;
+}
+
+my (@output) = ();
+my (%with_list) = ();
+
+my ($current_package) = &create_ada_name ($file);
 $file = uc ($file);
 
 $file = "GTKFILESELECTION" if ($file eq "GTKFILESEL");
 $file = "GTK$1BUTTONBOX" if ($file =~ /GTK([VH]?)BBOX/);
-
-### Look for the structure representing the unit in the C file
-my ($line) = 0;
-for ($line = 0; $line < $#cfile; $line ++)
-{
-  last if (uc ($cfile[$line]) =~ /^STRUCT\s+_$file\s*$/);
-}
-my ($current_package);
-$cfile[$line] =~ /struct\s+_(.*)/;
-$current_package = &create_ada_name ($1);
-
-my ($in_comment) = 0;
-$line += 2;  ## skip the '{' line
-if ($cfile[$line] =~ /\/\*/) ## If we have a comment, skip it
-  {
-    1 while ($cfile[++$line] !~ /\*\//);
-    $line++;
-  }
-
-### Look for the parent widget
-
-my ($parent) = (split (/\s+/, $cfile[$line])) [1];
-
-my (%fields) = ();
-$line++;
-while ($cfile[$line] !~ /\}/)
-  {
-    if ($cfile[$line] =~ /\/\*/) ## If we have a comment, skip it
-      {
-	$line++ while ($cfile[$line] !~ /\*\//);
-	$line++;
-      }
-    $line++ while ($cfile[$line] =~ /^\s*$/);
-    chop ($cfile[$line]);
-    $cfile[$line] =~ s/\s+/ /g;
-    $cfile[$line] =~ s/ $//;
-    $cfile[$line] =~ s/^ //;
-    $cfile[$line] =~ s/ \*/\* /;  ## attach the pointer to the type not to the field
-    $cfile[$line] =~ s/;//;
-    my ($type, $field) = split (/ /, $cfile[$line]);
-
-    print STDERR "Create a function for the field $field (of type $type) [n]?";
-    my ($answer) = scalar (<STDIN>);
-    if ($answer =~ /^y/)
-      {
-	$fields {$field} = $type;
-      }
-    $line ++;
-  }
 
 
 my (%functions) = &parse_functions;
@@ -77,8 +54,17 @@ my ($abstract) = 0;
 # Set 1 on the previous line if you want to eventually create abstract types.
 
 ## Create some new functions for every field to get
-my ($ctype_package) = "Gtk$current_package*";
-$ctype_package =~ s/_//g;
+my ($ctype_package) = "$prefix$current_package*";
+$ctype_package =~ s/_//g; 
+
+my ($parent) = "Root_Type";
+my (%fields) = ();
+&parse_definition_file ($definition_file);
+
+if ($parent eq "gpointer") {
+  $parent = "Root_Type";
+}
+
 foreach (keys %fields)
   {
     push (@{$functions{"ada_" . lc ($current_package) . "_get_$_"}},
@@ -91,7 +77,71 @@ foreach (keys %fields)
 
 ### END ###############
 
+######################################
+## Parse the definition file
+## PARAMS : name of the file to parse
+## modifies  $parent, %fields
+######################################
 
+sub parse_definition_file
+  {
+    my ($filename) = shift;
+    local (*FILE);
+    my (@deffile);
+    open (FILE, $filename);
+    @deffile = <FILE>;
+    close (FILE);
+    
+    my ($line) = 0;
+    for ($line = 0; $line < $#deffile; $line ++)
+      {
+	last if ($deffile[$line] =~ /^STRUCT\s+_$file\s*$/i);
+      }
+    
+    if ($line < $#deffile) {
+      $deffile[$line] =~ /struct\s+_(.*)/;
+      $current_package = &create_ada_name ($1);
+      
+      my ($in_comment) = 0;
+      $line += 2;  ## skip the '{' line
+      if ($deffile[$line] =~ /\/\*/) ## If we have a comment, skip it
+	{
+	  1 while ($deffile[++$line] !~ /\*\//);
+	  $line++;
+	}
+      
+      ### Look for the parent widget
+      
+      $parent = (split (/\s+/, $deffile[$line])) [1];
+  
+      $line++;
+      while ($deffile[$line] !~ /\}/)
+	{
+	  if ($deffile[$line] =~ /\/\*/) ## If we have a comment, skip it
+	    {
+	      $line++ while ($deffile[$line] !~ /\*\//);
+	      $line++;
+	    }
+	  $line++ while ($deffile[$line] =~ /^\s*$/);
+	  chop ($deffile[$line]);
+	  $deffile[$line] =~ s/\s+/ /g;
+	  $deffile[$line] =~ s/ $//;
+	  $deffile[$line] =~ s/^ //;
+	  $deffile[$line] =~ s/ \*/\* /;  ## attach the pointer to the type not to the field
+	  $deffile[$line] =~ s/;//;
+	  my ($type, $field) = split (/ /, $deffile[$line]);
+	  
+	  print STDERR "Create a function for the field $field (of type $type) [n]?";
+	  my ($answer) = scalar (<STDIN>);
+	  if ($answer =~ /^y/)
+	    {
+	      $fields {$field} = $type;
+	    }
+	  $line ++;
+	}
+    }
+  }
+    
 ###################################
 ##  Generates the package specification file
 ###################################
@@ -104,18 +154,19 @@ sub generate_specifications
       {
 	&print_declaration ($_, @{$functions{$_}});
       }
-    unshift (@output, "   type Gtk_$current_package is "
+    my ($parent_string) = &package_name ($parent). ".$prefix\_" . &create_ada_name ($parent);
+    $parent_string = "Root_Type" if ($parent eq "Root_Type");
+
+    unshift (@output, "   type $prefix\_$current_package is "
 	     . ($abstract ? "abstract " : "")
-	     . "new ".
-	     &package_name ($parent). ".Gtk_", &create_ada_name ($parent).
-	     " with private;\n\n");
-    unshift (@output, "package Gtk.$current_package is\n\n");
+	     . "new " . $parent_string . " with private;\n\n");
+    unshift (@output, "package $prefix.$current_package is\n\n");
     
     push (@output, "\nprivate\n");
-    push (@output, "   type Gtk_$current_package is "
+    push (@output, "   type $prefix\_$current_package is "
 	  . ($abstract ? "abstract " : "")
 	  . "new ".
-	  &package_name ($parent). ".Gtk_", &create_ada_name ($parent).
+	  &package_name ($parent). ".$prefix\_", &create_ada_name ($parent).
 	  " with null record;\n\n");
     
     foreach (sort {&ada_func_name ($a) cmp &ada_func_name ($b)} keys %functions)
@@ -124,7 +175,7 @@ sub generate_specifications
       }
     
     
-    push (@output, "end Gtk.$current_package;\n");
+    push (@output, "end $prefix.$current_package;\n");
     
     print "\n", join (";\n", sort keys %with_list), ";\n"; 
     print "\n", join ("", @output);
@@ -137,14 +188,14 @@ sub generate_body
   {
     %with_list = ();
     @output = ();
-    push (@output, "package body Gtk.$current_package is\n\n");
+    push (@output, "package body $prefix.$current_package is\n\n");
     
     foreach (sort {&ada_func_name ($a) cmp &ada_func_name ($b)} keys %functions)
       {
 	&print_body ($_, @{$functions{$_}});
       }
     
-    push (@output, "end Gtk.$current_package;\n");
+    push (@output, "end $prefix.$current_package;\n");
 
     ## If there is indeed a body
     if ($#output > 3) {
@@ -171,7 +222,7 @@ sub generate_c_functions
 	$ctype =~ s/_//g;
 	push (@output, $fields{$_} . "\n");
 	push (@output, "ada_" . lc ($current_package) . "_get_$_ (");
-	push (@output, "Gtk$ctype* widget)\n{\n   return widget->$_;\n}\n\n");
+	push (@output, "$prefix$ctype* widget)\n{\n   return widget->$_;\n}\n\n");
       }
     print "\n\n", join ("", @output);
   }
@@ -198,7 +249,7 @@ sub create_ada_name
 	    substr ($entity, $i + 1, 1) = uc (substr ($entity, $i + 1, 1));
 	  }
       }
-    $entity =~ s/^Gtk_?//;
+    $entity =~ s/^G[dt]k_?//;
 
     return "The_Type" if ($entity eq "Type");
     return "The_End" if ($entity eq "End");
@@ -214,7 +265,6 @@ sub package_name
   {
     my ($entity) = shift;
     
-#    $entity =~ s/(.)([A-Z])/$1.$2/g;
     $entity =~ s/(G[td]k)/$1./;
     $entity =~ s/([a-z])([A-Z])/$1_$2/g;
     $entity =~ s/Gtk\.Range/Gtk\.Gtk_Range/;
@@ -238,7 +288,7 @@ sub parse_functions
       {
 	chop;
 	s/ \*/\* /g;
-	if (/^(\S+)\s+(gtk_\S+)\s+\((.*)/)
+	if (/^(\S+)\s+(g[dt]k_\S+)\s+\((.*)/)
 	  {
 	    $func_name = $2;
 	    $return = $1;
@@ -255,8 +305,11 @@ sub parse_functions
 		    last if ($1 =~ /\);/);
 		  }
 	      }
-	    push (@{$functions{$func_name}},
-		  $return, @arguments);
+	    if ($unit_name eq ""
+	       || $func_name =~ /$prefix\_$unit_name/i) {
+	      push (@{$functions{$func_name}},
+		    $return, @arguments);
+	    }
 	  }
       }
     return %functions;
@@ -276,7 +329,7 @@ sub print_new_declaration
     my ($string);
     my ($indent) = "";
 
-    $string = "   procedure Gtk_New";
+    $string = "   procedure $prefix\_New";
     push (@output, $string);
     $indent = ' ' x (length ($string));
     &print_arguments ($indent, "void", \&convert_ada_type,
@@ -325,7 +378,7 @@ sub print_arguments
 	if ($for_gtk_new)
 	  {
 	    push (@variables, "Widget");
-	    push (@types, "out Gtk_$current_package");
+	    push (@types, "out $prefix\_$current_package");
 	  }
 	
 	foreach (@arguments)
@@ -531,7 +584,7 @@ sub print_body
 	    push (@output, "   begin\n");
 	    $string = "      return Interfaces.C.Strings.Value (Internal";
 	  }
-	elsif ($return =~ /^Gtk/) {
+	elsif ($return =~ /^G[dt]k/) {
 	  push (@output, "   begin\n");
 	  $string = "      return " . &convert_ada_type ($return)
 	    . "'Val (Internal";
@@ -553,7 +606,7 @@ sub print_body
 	  push (@output, ");\n      return Tmp;\n");
 	}
 	elsif (&convert_ada_type ($return) eq "String"
-	      || $return =~ /^Gtk/) {
+	      || $return =~ /^G[dt]k/) {
 	  push (@output, ");\n");
 	}
 	else {
@@ -573,12 +626,12 @@ sub ada_func_name
     my ($c_func_name) = shift;
     my ($type) = lc ($current_package);
 
-    $c_func_name =~ s/^(gtk|ada)_?//;
+    $c_func_name =~ s/^(g[dt]k|ada)_?//;
     $c_func_name =~ s/^$type\_//;
 
     $type = &create_ada_name ($c_func_name);
     return "Gtk_Select" if ($type eq "Select");
-    return "Gtk_New" if ($type =~ /New/);
+    return "$prefix\_New" if ($type =~ /New/);
     return $type;
   }
     
@@ -610,22 +663,24 @@ sub convert_ada_type
       return "Gfloat";
     } elsif ($type =~ /(const)?(g?)char\*/) {
       return "String";
-    } elsif ($type =~ /(Gtk|Gdk)([^*]+)\*/) {
+    } elsif ($type eq "Root_Type") {
+	return "Root_Type";
+    } elsif ($type =~ /(G[td]k)([^*]+)\*/) {
       my ($t) = $2;
       my ($prefix) = $1;
       return "Object'Class" if ($t eq "Object");
-      $t =~ s/(.)([A-Z])/$1_$2/g;
-      if ("$prefix\_$t" ne "Gtk_$current_package")
-	{
-	  $with_list {"with $prefix.$t"} ++;
-	  return "$prefix.$t.$prefix\_$t\'Class";
-	}
-      else
-	{
-	  return "$prefix\_$t\'Class";
-	}
+      if ($t ne "GC") {
+	$t =~ s/(.)([A-Z])/$1_$2/g;
+      }
+      if ("$prefix\_$t" eq "$prefix\_$current_package") {
+	return "$prefix\_$t\'Class";
+      }
+      else {
+	$with_list {"with $prefix.$t"} ++;
+	return "$prefix.$t.$prefix\_$t\'Class";
+      }
     } else {
-      if ($type ne "Gtk_$current_package") {
+      if ($type ne "$prefix\_$current_package") {
 	$with_list {"with Gtk.Enums; use Gtk.Enums"} ++;
       }
       $type =~ s/([^_])([A-Z])/$1_$2/g;
@@ -687,7 +742,7 @@ sub print_comment
 	$string .= &ada_func_name ($func_name);
       }
     $string .= " $hfile ";
-    if ($func_name =~ /^gtk/)
+    if ($func_name =~ /^g[td]k/)
       {
 	if (length ($string) + length ($func_name) > 79) {
 	  $string .= "\\\n   --  mapping:      ";
@@ -699,10 +754,10 @@ sub print_comment
 	my ($entity) = $current_package;
 	my ($field) = ($func_name =~ /get_(.*)$/);
 	$entity =~ s/_//g;
-	if (length ($string) + length ("Gtk$entity->$field") > 79) {
+	if (length ($string) + length ("$prefix$entity->$field") > 79) {
 	  $string .= "\\\n   --  mapping:      ";
 	}
-	$string .= "Gtk$entity->$field\n";
+	$string .= "$prefix$entity->$field\n";
       }
     push (@output, $string);
   }
