@@ -2,7 +2,7 @@
 --                   Gate - GtkAda Components                        --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -375,7 +375,7 @@ package body Glib.Glade is
 
    procedure Gen_Set
      (N        : Node_Ptr;
-      Class, Name : String;
+      Name     : String;
       File     : File_Type;
       Prefix   : String  := "";
       Postfix  : String  := "";
@@ -408,7 +408,7 @@ package body Glib.Glade is
    end Gen_Set;
 
    procedure Gen_Set
-     (N : Node_Ptr; Class, Name, Field : String; File : File_Type)
+     (N : Node_Ptr; Name, Field : String; File : File_Type)
    is
       P   : constant String_Ptr := Get_Field (N, Field);
       Cur : constant String_Ptr := Get_Field (N, "name");
@@ -429,7 +429,7 @@ package body Glib.Glade is
 
    procedure Gen_Set
      (N : Node_Ptr;
-      Class, Name, Field1, Field2, Field3, Field4 : String;
+      Name, Field1, Field2, Field3, Field4 : String;
       File : File_Type;
       Is_Float : Boolean := False)
    is
