@@ -100,6 +100,12 @@ package Gtk.Arguments is
    function To_Object_Type   (C : System.Address) return Glib.Object_Type;
    function To_Root_Type     (C : System.Address) return Gdk.Root_Type_Access;
 
+   ----------------------------------
+   --  Reverse conversion functions
+   ----------------------------------
+
+   function To_Address       (E : Gdk.Event.Gdk_Event) return System.Address;
+
 private
    type Gtk_Args is record
       Nb  : Guint;

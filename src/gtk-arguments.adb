@@ -205,6 +205,15 @@ package body Gtk.Arguments is
       return Get_Nth (Args, Num);
    end To_Address;
 
+   ----------------
+   -- To_Address --
+   ----------------
+
+   function To_Address (E : Gdk.Event.Gdk_Event) return System.Address is
+   begin
+      return Get_Object (E);
+   end To_Address;
+
    ---------------
    -- To_String --
    ---------------
