@@ -1271,6 +1271,31 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Hide_All;
 
+   -----------------
+   -- Render_Icon --
+   -----------------
+
+   function Render_Icon
+     (Widget   : access Gtk_Widget_Record;
+      Stock_Id : String;
+      Size     : Gtk.Enums.Gtk_Icon_Size;
+      Detail   : String := "") return Gdk.Pixbuf.Gdk_Pixbuf
+   is
+      function Internal
+        (Widget : System.Address;
+         Stock_Id : String;
+         Size : Gtk.Enums.Gtk_Icon_Size;
+         Detail : System.Address) return Gdk.Pixbuf.Gdk_Pixbuf;
+      pragma Import (C, Internal, "gtk_widget_render_icon");
+      D : System.Address := System.Null_Address;
+   begin
+      if Detail /= "" then
+         D := Detail'Address;
+      end if;
+
+      return Internal (Get_Object (Widget), Stock_Id & ASCII.NUL, Size, D);
+   end Render_Icon;
+
    --------------------
    -- Set_Allocation --
    --------------------

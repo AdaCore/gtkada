@@ -56,6 +56,7 @@ with Gdk.Color;
 with Gdk.Event;
 with Gdk.Bitmap;
 with Gdk.Rectangle;
+with Gdk.Pixbuf;
 with Gdk.Types;
 with Gdk.Visual;
 with Gdk.Window;
@@ -675,6 +676,20 @@ package Gtk.Widget is
    --  available on your system. If this library is not available, your program
    --  will still work.
    --  See the manual page for XShapeCombineMask(3x) for more information.
+
+   function Render_Icon
+     (Widget   : access Gtk_Widget_Record;
+      Stock_Id : String;
+      Size     : Gtk.Enums.Gtk_Icon_Size;
+      Detail   : String := "") return Gdk.Pixbuf.Gdk_Pixbuf;
+   --  A convenience function that uses the theme engine for Widget, to lookup
+   --  a Stock_Id (see Gtk.Stock) and render it to a pixbuf (see Gdk.Pixbuf).
+   --  Detail should be a string that identifies the widget or code doing the
+   --  rendering, so that the theme engine can special-case rendering for that
+   --  widget or code. It can be left to the empty stirng to get the default
+   --  behavior.
+   --
+   --  Null is returned if Stock_Id wasn't known.
 
    ------------
    -- Styles --
@@ -1553,7 +1568,6 @@ end Gtk.Widget;
 --  - gtk_widget_create_pango_context
 --  - gtk_widget_get_pango_context
 --  - gtk_widget_create_pango_layout
---  - gtk_widget_render_icon
 --  - gtk_widget_class_install_style_property
 --  - gtk_widget_class_install_style_property_parser
 --  - gtk_widget_style_get_property
