@@ -1789,7 +1789,6 @@ package body Gtkada.MDI is
              Button  => Gint (Get_Button (Event)),
              Event   => Event));
          Target_List_Unref (List);
-         return True;
       end if;
 
       Set_Focus_Child (C);
