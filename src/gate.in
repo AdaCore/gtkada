@@ -68,7 +68,13 @@ if [ $? != 0 ]; then
 fi
 
 cd $tmp
-gnatchop gate.ada > /dev/null 2>&1
+if gnatchop gate.ada > /dev/null 2>&1; then
+  true
+else
+  echo "Couldn't call gnatchop, aborting."
+  exit 1
+fi
+
 /bin/rm -f gate.ada
 files=`echo *`
 cd $wd
