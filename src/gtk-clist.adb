@@ -162,16 +162,16 @@ package body Gtk.Clist is
    -------------------
 
    function Get_Cell_Type
-      (Clist  : access Gtk_Clist_Record;
-       Row    : in Gint;
-       Column : in Gint)
-       return      Gtk_Cell_Type
+     (Clist  : access Gtk_Clist_Record;
+      Row    : in Gint;
+      Column : in Gint)
+      return      Gtk_Cell_Type
    is
       function Internal
-         (Clist  : in System.Address;
-          Row    : in Gint;
-          Column : in Gint)
-          return      Gint;
+        (Clist  : in System.Address;
+         Row    : in Gint;
+         Column : in Gint)
+         return      Gint;
       pragma Import (C, Internal, "gtk_clist_get_cell_type");
    begin
       return Gtk_Cell_Type'Val (Internal (Get_Object (Clist), Row, Column));
@@ -196,39 +196,55 @@ package body Gtk.Clist is
    -- Get_Column_Button --
    -----------------------
 
-   function Get_Column_Button (Clist  : access Gtk_Clist_Record;
+   function Get_Column_Widget (Clist  : access Gtk_Clist_Record;
                                Column : in Gint)
-                               return Gtk.Button.Gtk_Button
+                               return Gtk.Widget.Gtk_Widget
    is
       function Internal (Clist  : in System.Address;
                          Column : in Gint)
                          return System.Address;
-      pragma Import (C, Internal, "ada_clist_get_column_button");
-      Stub : Gtk.Button.Gtk_Button_Record;
+      pragma Import (C, Internal, "gtk_clist_get_column_widget");
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      return Gtk.Button.Gtk_Button
+      return Gtk.Widget.Gtk_Widget
         (Get_User_Data (Internal (Get_Object (Clist), Column), Stub));
-   end Get_Column_Button;
+   end Get_Column_Widget;
+
+   ----------------------
+   -- Get_Column_Title --
+   ----------------------
+
+   function Get_Column_Title
+     (Clist  : access Gtk_Clist_Record; Column : in Gint)
+      return String
+   is
+      function Internal (Clist : System.Address; Column : Gint)
+                         return Interfaces.C.Strings.chars_ptr;
+      pragma Import (C, Internal, "gtk_clist_get_column_title");
+   begin
+      return Interfaces.C.Strings.Value
+        (Internal (Get_Object (Clist), Column));
+   end Get_Column_Title;
 
    ----------------
    -- Get_Pixmap --
    ----------------
 
    procedure Get_Pixmap
-      (Clist    : access Gtk_Clist_Record;
-       Row      : in Gint;
-       Column   : in Gint;
-       Pixmap   : out Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask     : out Gdk.Bitmap.Gdk_Bitmap'Class;
-       Is_Valid : out Boolean)
+     (Clist    : access Gtk_Clist_Record;
+      Row      : in Gint;
+      Column   : in Gint;
+      Pixmap   : out Gdk.Pixmap.Gdk_Pixmap'Class;
+      Mask     : out Gdk.Bitmap.Gdk_Bitmap'Class;
+      Is_Valid : out Boolean)
    is
       function Internal
-         (Clist  : in System.Address;
-          Row    : in Gint;
-          Column : in Gint;
-          Pixmap : in System.Address;
-          Mask   : in System.Address)
-          return      Gint;
+        (Clist  : in System.Address;
+         Row    : in Gint;
+         Column : in Gint;
+         Pixmap : in System.Address;
+         Mask   : in System.Address)
+         return      Gint;
       pragma Import (C, Internal, "gtk_clist_get_pixmap");
       Pix : System.Address;
       Msk : System.Address;
@@ -247,23 +263,23 @@ package body Gtk.Clist is
    -----------------
 
    procedure Get_Pixtext
-      (Clist    : access Gtk_Clist_Record;
-       Row      : in Gint;
-       Column   : in Gint;
-       Spacing  : in out Guint8;
-       Pixmap   : in out Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask     : in out Gdk.Bitmap.Gdk_Bitmap'Class;
-       Is_Valid : out Boolean)
+     (Clist    : access Gtk_Clist_Record;
+      Row      : in Gint;
+      Column   : in Gint;
+      Spacing  : in out Guint8;
+      Pixmap   : in out Gdk.Pixmap.Gdk_Pixmap'Class;
+      Mask     : in out Gdk.Bitmap.Gdk_Bitmap'Class;
+      Is_Valid : out Boolean)
    is
       function Internal
-         (Clist   : in System.Address;
-          Row     : in Gint;
-          Column  : in Gint;
-          Text    : in System.Address;
-          Spacing : in System.Address;
-          Pixmap  : in System.Address;
-          Mask    : in System.Address)
-          return       Gint;
+        (Clist   : in System.Address;
+         Row     : in Gint;
+         Column  : in Gint;
+         Text    : in System.Address;
+         Spacing : in System.Address;
+         Pixmap  : in System.Address;
+         Mask    : in System.Address)
+         return       Gint;
       pragma Import (C, Internal, "gtk_clist_get_pixtext");
 
       S    : Interfaces.C.Strings.chars_ptr;
@@ -280,6 +296,19 @@ package body Gtk.Clist is
       Gdk.Set_Object (Pixmap, Pix);
       Gdk.Set_Object (Mask, Msk);
    end Get_Pixtext;
+
+   --------------------
+   -- Get_Selectable --
+   --------------------
+
+   function Get_Selectable
+     (Clist : access Gtk_Clist_Record; Row : Gint) return Boolean
+   is
+      function Internal (Clist : System.Address; Row : Gint) return Gint;
+      pragma Import (C, Internal, "gtk_clist_get_selectable");
+   begin
+      return Boolean'Val (Internal (Get_Object (Clist), Row));
+   end Get_Selectable;
 
    -------------------
    -- Get_Selection --
@@ -306,15 +335,15 @@ package body Gtk.Clist is
       Y       : in Gint;
       Row     : out Gint;
       Column  : out Gint;
-     Is_Valid : out Boolean)
+      Is_Valid : out Boolean)
    is
       function Internal
-         (Clist  : in System.Address;
-          X      : in Gint;
-          Y      : in Gint;
-          Row    : in System.Address;
-          Column : in System.Address)
-          return      Gint;
+        (Clist  : in System.Address;
+         X      : in Gint;
+         Y      : in Gint;
+         Row    : in System.Address;
+         Column : in System.Address)
+         return      Gint;
       pragma Import (C, Internal, "gtk_clist_get_selection_info");
    begin
       Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
@@ -324,21 +353,34 @@ package body Gtk.Clist is
                                          Column'Address));
    end Get_Selection_Info;
 
+   ------------------------
+   -- Get_Selection_Mode --
+   ------------------------
+
+   function Get_Selection_Mode (Clist : access Gtk_Clist_Record)
+                                return Gtk_Selection_Mode
+   is
+      function Internal (Clist : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_clist_get_selection_mode");
+   begin
+      return Gtk_Selection_Mode'Val (Internal (Get_Object (Clist)));
+   end Get_Selection_Mode;
+
    --------------
    -- Get_Text --
    --------------
 
    function Get_Text
-      (Clist    : access Gtk_Clist_Record;
-       Row      : in Gint;
-       Column   : in Gint) return String
+     (Clist    : access Gtk_Clist_Record;
+      Row      : in Gint;
+      Column   : in Gint) return String
    is
       function Internal
-         (Clist  : in System.Address;
-          Row    : in Gint;
-          Column : in Gint;
-          Text   : in System.Address)
-          return      Gint;
+        (Clist  : in System.Address;
+         Row    : in Gint;
+         Column : in Gint;
+         Text   : in System.Address)
+         return      Gint;
       pragma Import (C, Internal, "gtk_clist_get_text");
       Is_Valid : Boolean;
       S : Interfaces.C.Strings.chars_ptr;
@@ -399,9 +441,9 @@ package body Gtk.Clist is
                          Titles  : in Line_Data)
    is
       function Internal
-         (Columns : in Gint;
-          Titles  : in System.Address)
-          return       System.Address;
+        (Columns : in Gint;
+         Titles  : in System.Address)
+         return       System.Address;
       pragma Import (C, Internal, "gtk_clist_new_with_titles");
    begin
       Set_Object (Widget, Internal (Columns, Titles'Address));
@@ -413,14 +455,14 @@ package body Gtk.Clist is
    ------------
 
    procedure Insert
-      (Clist : access Gtk_Clist_Record;
-       Row   : in Gint;
-       Text  : in Line_Data)
+     (Clist : access Gtk_Clist_Record;
+      Row   : in Gint;
+      Text  : in Line_Data)
    is
       procedure Internal
-         (Clist : in System.Address;
-          Row   : in Gint;
-          Text  : in System.Address);
+        (Clist : in System.Address;
+         Row   : in Gint;
+         Text  : in System.Address);
       pragma Import (C, Internal, "gtk_clist_insert");
    begin
       Internal (Get_Object (Clist),
@@ -432,18 +474,18 @@ package body Gtk.Clist is
    ------------
 
    procedure Moveto
-      (Clist     : access Gtk_Clist_Record;
-       Row       : in Gint;
-       Column    : in Gint;
-       Row_Align : in Gfloat;
-       Col_Align : in Gfloat)
+     (Clist     : access Gtk_Clist_Record;
+      Row       : in Gint;
+      Column    : in Gint;
+      Row_Align : in Gfloat;
+      Col_Align : in Gfloat)
    is
       procedure Internal
-         (Clist     : in System.Address;
-          Row       : in Gint;
-          Column    : in Gint;
-          Row_Align : in Gfloat;
-          Col_Align : in Gfloat);
+        (Clist     : in System.Address;
+         Row       : in Gint;
+         Column    : in Gint;
+         Row_Align : in Gfloat;
+         Col_Align : in Gfloat);
       pragma Import (C, Internal, "gtk_clist_moveto");
    begin
       Internal (Get_Object (Clist),
@@ -452,6 +494,20 @@ package body Gtk.Clist is
                 Row_Align,
                 Col_Align);
    end Moveto;
+
+   -------------
+   -- Prepend --
+   -------------
+
+   function Prepend (Clist : access Gtk_Clist_Record; Text  : in Line_Data)
+                     return Gint
+   is
+      function Internal (Clist : in System.Address; Text  : in System.Address)
+                         return      Gint;
+      pragma Import (C, Internal, "gtk_clist_prepend");
+   begin
+      return Internal (Get_Object (Clist), Text'Address);
+   end Prepend;
 
    ------------
    -- Remove --
@@ -499,14 +555,14 @@ package body Gtk.Clist is
    --------------------
 
    procedure Set_Background
-      (Clist : access Gtk_Clist_Record;
-       Row   : in Gint;
-       Color : in Gdk.Color.Gdk_Color)
+     (Clist : access Gtk_Clist_Record;
+      Row   : in Gint;
+      Color : in Gdk.Color.Gdk_Color)
    is
       procedure Internal
-         (Clist : in System.Address;
-          Row   : in Gint;
-          Color : in System.Address);
+        (Clist : in System.Address;
+         Row   : in Gint;
+         Color : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_background");
    begin
       Internal (Get_Object (Clist),
@@ -514,36 +570,108 @@ package body Gtk.Clist is
                 Color'Address);
    end Set_Background;
 
+   ------------------------
+   -- Set_Button_Actions --
+   ------------------------
+
+   procedure Set_Button_Actions (Clist         : access Gtk_Clist_Record;
+                                 Button        :        Guint;
+                                 Button_Action :        Gtk_Button_Action)
+   is
+      procedure Internal
+        (Clist : System.Address; Button : Guint; Button_Action : Guint);
+      pragma Import (C, Internal, "gtk_clist_set_button_actions");
+   begin
+      Internal
+        (Get_Object (Clist), Button, Gtk_Button_Action'Pos (Button_Action));
+   end Set_Button_Actions;
+
+   --------------------
+   -- Set_Cell_Style --
+   --------------------
+
+   procedure Set_Cell_Style (Clist  : access Gtk_Clist_Record;
+                             Row    : in Gint;
+                             Column : in Gint;
+                             Style  : access Gtk_Style_Record'Class) is
+      procedure Internal
+        (Clist : System.Address; Row : Gint;
+                                 Column : Gint; Style : System.Address);
+      pragma Import (C, Internal, "gtk_clist_set_cell_style");
+   begin
+      Internal (Get_Object (Clist), Row, Column, Get_Object (Style));
+   end Set_Cell_Style;
+
    ---------------------
    -- Set_Shadow_Type --
    ---------------------
 
    procedure Set_Shadow_Type
-      (Clist    : access Gtk_Clist_Record;
-       The_Type : in Gtk_Shadow_Type)
+     (Clist    : access Gtk_Clist_Record;
+      The_Type : in Gtk_Shadow_Type)
    is
       procedure Internal
-         (Clist    : in System.Address;
-          The_Type : in Gint);
+        (Clist    : in System.Address;
+         The_Type : in Gint);
       pragma Import (C, Internal, "gtk_clist_set_shadow_type");
    begin
       Internal (Get_Object (Clist),
                 Gtk_Shadow_Type'Pos (The_Type));
    end Set_Shadow_Type;
 
+   ----------------------------
+   -- Set_Column_Auto_Resize --
+   ----------------------------
+
+   procedure Set_Column_Auto_Resize
+     (Clist       : access Gtk_Clist_Record;
+      Column      : in Gint;
+      Auto_Resize : in Boolean)
+   is
+      procedure Internal
+        (Clist  : System.Address; Column : Gint; Auto_Resize : Gint);
+      pragma Import (C, Internal, "gtk_clist_set_column_auto_resize");
+   begin
+      Internal (Get_Object (Clist), Column, Boolean'Pos (Auto_Resize));
+   end Set_Column_Auto_Resize;
+
+   --------------------------
+   -- Set_Column_Min_Width --
+   --------------------------
+
+   procedure Set_Column_Min_Width
+     (Clist : access Gtk_Clist_Record; Column : Gint; Min_Width : Gint) is
+      procedure Internal (Clist : System.Address; Column : Gint; W : Gint);
+      pragma Import (C, Internal, "gtk_clist_set_column_min_width");
+   begin
+      Internal (Get_Object (Clist), Column, Min_Width);
+   end Set_Column_Min_Width;
+
+   --------------------------
+   -- Set_Column_Max_Width --
+   --------------------------
+
+   procedure Set_Column_Max_Width
+     (Clist : access Gtk_Clist_Record; Column : Gint; Max_Width : Gint) is
+      procedure Internal (Clist : System.Address; Column : Gint; W : Gint);
+      pragma Import (C, Internal, "gtk_clist_set_column_max_width");
+   begin
+      Internal (Get_Object (Clist), Column, Max_Width);
+   end Set_Column_Max_Width;
+
    ------------------------------
    -- Set_Column_Justification --
    ------------------------------
 
    procedure Set_Column_Justification
-      (Clist         : access Gtk_Clist_Record;
-       Column        : in Gint;
-       Justification : in Gtk_Justification)
+     (Clist         : access Gtk_Clist_Record;
+      Column        : in Gint;
+      Justification : in Gtk_Justification)
    is
       procedure Internal
-         (Clist         : in System.Address;
-          Column        : in Gint;
-          Justification : in Gint);
+        (Clist         : in System.Address;
+         Column        : in Gint;
+         Justification : in Gint);
       pragma Import (C, Internal, "gtk_clist_set_column_justification");
    begin
       Internal (Get_Object (Clist),
@@ -551,19 +679,35 @@ package body Gtk.Clist is
                 Gtk_Justification'Pos (Justification));
    end Set_Column_Justification;
 
+   ---------------------------
+   -- Set_Column_Resizeable --
+   ---------------------------
+
+   procedure Set_Column_Resizeable
+     (Clist    : access Gtk_Clist_Record;
+      Column   : in Gint;
+      Resizable : in Boolean)
+   is
+      procedure Internal
+        (Clist  : System.Address; Column : Gint; Resizable : Gint);
+      pragma Import (C, Internal, "gtk_clist_set_column_resizeable");
+   begin
+      Internal (Get_Object (Clist), Column, Boolean'Pos (Resizable));
+   end Set_Column_Resizeable;
+
    ----------------------
    -- Set_Column_Title --
    ----------------------
 
    procedure Set_Column_Title
-      (Clist  : access Gtk_Clist_Record;
-       Column : in Gint;
-       Title  : in String)
+     (Clist  : access Gtk_Clist_Record;
+      Column : in Gint;
+      Title  : in String)
    is
       procedure Internal
-         (Clist  : in System.Address;
-          Column : in Gint;
-          Title  : in String);
+        (Clist  : in System.Address;
+         Column : in Gint;
+         Title  : in String);
       pragma Import (C, Internal, "gtk_clist_set_column_title");
    begin
       Internal (Get_Object (Clist),
@@ -571,19 +715,35 @@ package body Gtk.Clist is
                 Title & Ascii.NUL);
    end Set_Column_Title;
 
+   ---------------------------
+   -- Set_Column_Visibility --
+   ---------------------------
+
+   procedure Set_Column_Visibility
+     (Clist   : access Gtk_Clist_Record;
+      Column  : in Gint;
+      Visible : in Boolean)
+   is
+      procedure Internal
+        (Clist  : System.Address; Column : Gint; Visible : Gint);
+      pragma Import (C, Internal, "gtk_clist_set_column_visibility");
+   begin
+      Internal (Get_Object (Clist), Column, Boolean'Pos (Visible));
+   end Set_Column_Visibility;
+
    -----------------------
    -- Set_Column_Widget --
    -----------------------
 
    procedure Set_Column_Widget
-      (Clist  : access Gtk_Clist_Record;
-       Column : in Gint;
-       Widget : in Gtk.Widget.Gtk_Widget)
+     (Clist  : access Gtk_Clist_Record;
+      Column : in Gint;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
-         (Clist  : in System.Address;
-          Column : in Gint;
-          Widget : in System.Address);
+        (Clist  : in System.Address;
+         Column : in Gint;
+         Widget : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_column_widget");
    begin
       Internal (Get_Object (Clist),
@@ -596,14 +756,14 @@ package body Gtk.Clist is
    ----------------------
 
    procedure Set_Column_Width
-      (Clist  : access Gtk_Clist_Record;
-       Column : in Gint;
-       Width  : in Gint)
+     (Clist  : access Gtk_Clist_Record;
+      Column : in Gint;
+      Width  : in Gint)
    is
       procedure Internal
-         (Clist  : in System.Address;
-          Column : in Gint;
-          Width  : in Gint);
+        (Clist  : in System.Address;
+         Column : in Gint;
+         Width  : in Gint);
       pragma Import (C, Internal, "gtk_clist_set_column_width");
    begin
       Internal (Get_Object (Clist),
@@ -616,14 +776,14 @@ package body Gtk.Clist is
    --------------------
 
    procedure Set_Foreground
-      (Clist : access Gtk_Clist_Record;
-       Row   : in Gint;
-       Color : in Gdk.Color.Gdk_Color)
+     (Clist : access Gtk_Clist_Record;
+      Row   : in Gint;
+      Color : in Gdk.Color.Gdk_Color)
    is
       procedure Internal
-         (Clist : in System.Address;
-          Row   : in Gint;
-          Color : in System.Address);
+        (Clist : in System.Address;
+         Row   : in Gint;
+         Color : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_foreground");
    begin
       Internal (Get_Object (Clist),
@@ -636,18 +796,18 @@ package body Gtk.Clist is
    ----------------
 
    procedure Set_Pixmap
-      (Clist  : access Gtk_Clist_Record;
-       Row    : in Gint;
-       Column : in Gint;
-       Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
+     (Clist  : access Gtk_Clist_Record;
+      Row    : in Gint;
+      Column : in Gint;
+      Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
+      Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is
       procedure Internal
-         (Clist  : in System.Address;
-          Row    : in Gint;
-          Column : in Gint;
-          Pixmap : in System.Address;
-          Mask   : in System.Address);
+        (Clist  : in System.Address;
+         Row    : in Gint;
+         Column : in Gint;
+         Pixmap : in System.Address;
+         Mask   : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_pixmap");
    begin
       Internal (Get_Object (Clist),
@@ -662,22 +822,22 @@ package body Gtk.Clist is
    -----------------
 
    procedure Set_Pixtext
-      (Clist   : access Gtk_Clist_Record;
-       Row     : in Gint;
-       Column  : in Gint;
-       Text    : in String;
-       Spacing : in Guint8;
-       Pixmap  : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask    : in Gdk.Bitmap.Gdk_Bitmap'Class)
+     (Clist   : access Gtk_Clist_Record;
+      Row     : in Gint;
+      Column  : in Gint;
+      Text    : in String;
+      Spacing : in Guint8;
+      Pixmap  : in Gdk.Pixmap.Gdk_Pixmap'Class;
+      Mask    : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is
       procedure Internal
-         (Clist   : in System.Address;
-          Row     : in Gint;
-          Column  : in Gint;
-          Text    : in String;
-          Spacing : in Guint8;
-          Pixmap  : in System.Address;
-          Mask    : in System.Address);
+        (Clist   : in System.Address;
+         Row     : in Gint;
+         Column  : in Gint;
+         Text    : in String;
+         Spacing : in Guint8;
+         Pixmap  : in System.Address;
+         Mask    : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_pixtext");
    begin
       Internal (Get_Object (Clist),
@@ -688,6 +848,19 @@ package body Gtk.Clist is
                 Gdk.Get_Object (Pixmap),
                 Gdk.Get_Object (Mask));
    end Set_Pixtext;
+
+   ---------------------
+   -- Set_Reorderable --
+   ---------------------
+
+   procedure Set_Reorderable
+     (Clist : access Gtk_Clist_Record; Reorderable : Boolean)
+   is
+      procedure Internal (Clist : System.Address; Reorderable : Gint);
+      pragma Import (C, Internal, "gtk_clist_set_reorderable");
+   begin
+      Internal (Get_Object (Clist), Boolean'Pos (Reorderable));
+   end Set_Reorderable;
 
    --------------------
    -- Set_Row_Height --
@@ -702,17 +875,45 @@ package body Gtk.Clist is
       Internal (Get_Object (Clist), Height);
    end Set_Row_Height;
 
+   -------------------
+   -- Set_Row_Style --
+   -------------------
+
+   procedure Set_Row_Style
+     (Clist : access Gtk_Clist_Record; Row : Gint;
+      Style : access Gtk_Style_Record'Class)
+   is
+      procedure Internal
+        (Clist : System.Address; Row : Gint; Style : System.Address);
+      pragma Import (C, Internal, "gtk_clist_set_row_style");
+   begin
+      Internal (Get_Object (Clist), Row, Get_Object (Style));
+   end Set_Row_Style;
+
+   --------------------
+   -- Set_Selectable --
+   --------------------
+
+   procedure Set_Selectable
+     (Clist : access Gtk_Clist_Record; Row : Gint; Selectable : Boolean) is
+      procedure Internal
+        (Clist : System.Address; Row : Gint; Selectable : Gint);
+      pragma Import (C, Internal, "gtk_clist_set_selectable");
+   begin
+      Internal (Get_Object (Clist), Row, Boolean'Pos (Selectable));
+   end Set_Selectable;
+
    ------------------------
    -- Set_Selection_Mode --
    ------------------------
 
    procedure Set_Selection_Mode
-      (Clist : access Gtk_Clist_Record;
-       Mode  : in Gtk_Selection_Mode)
+     (Clist : access Gtk_Clist_Record;
+      Mode  : in Gtk_Selection_Mode)
    is
       procedure Internal
-         (Clist : in System.Address;
-          Mode  : in Gint);
+        (Clist : in System.Address;
+         Mode  : in Gint);
       pragma Import (C, Internal, "gtk_clist_set_selection_mode");
    begin
       Internal (Get_Object (Clist),
@@ -724,18 +925,18 @@ package body Gtk.Clist is
    ---------------
 
    procedure Set_Shift
-      (Clist      : access Gtk_Clist_Record;
-       Row        : in Gint;
-       Column     : in Gint;
-       Vertical   : in Gint;
-       Horizontal : in Gint)
+     (Clist      : access Gtk_Clist_Record;
+      Row        : in Gint;
+      Column     : in Gint;
+      Vertical   : in Gint;
+      Horizontal : in Gint)
    is
       procedure Internal
-         (Clist      : in System.Address;
-          Row        : in Gint;
-          Column     : in Gint;
-          Vertical   : in Gint;
-          Horizontal : in Gint);
+        (Clist      : in System.Address;
+         Row        : in Gint;
+         Column     : in Gint;
+         Vertical   : in Gint;
+         Horizontal : in Gint);
       pragma Import (C, Internal, "gtk_clist_set_shift");
    begin
       Internal (Get_Object (Clist),
@@ -750,16 +951,16 @@ package body Gtk.Clist is
    --------------
 
    procedure Set_Text
-      (Clist  : access Gtk_Clist_Record;
-       Row    : in Gint;
-       Column : in Gint;
-       Text   : in String)
+     (Clist  : access Gtk_Clist_Record;
+      Row    : in Gint;
+      Column : in Gint;
+      Text   : in String)
    is
       procedure Internal
-         (Clist  : in System.Address;
-          Row    : in Gint;
-          Column : in Gint;
-          Text   : in String);
+        (Clist  : in System.Address;
+         Row    : in Gint;
+         Column : in Gint;
+         Text   : in String);
       pragma Import (C, Internal, "gtk_clist_set_text");
    begin
       Internal (Get_Object (Clist),
@@ -767,6 +968,31 @@ package body Gtk.Clist is
                 Column,
                 Text & Ascii.NUL);
    end Set_Text;
+
+   ------------------------
+   -- Set_Use_Drag_Icons --
+   ------------------------
+
+   procedure Set_Use_Drag_Icons
+     (Clist : access Gtk_Clist_Record; Use_Icons : Boolean)
+   is
+      procedure Internal (Clist : System.Address; Use_Icons : Guint);
+      pragma Import (C, Internal, "gtk_clist_set_use_drag_icons");
+   begin
+      Internal (Get_Object (Clist), Boolean'Pos (Use_Icons));
+   end Set_Use_Drag_Icons;
+
+   ---------------------------
+   -- Optimal_Column_Widget --
+   ---------------------------
+
+   function Optimal_Column_Width
+     (Clist : access Gtk_Clist_Record; Column : Gint) return Gint is
+      function Internal (Clist : System.Address; Column : Gint) return Gint;
+      pragma Import (C, Internal, "gtk_clist_optimal_column_width");
+   begin
+      return Internal (Get_Object (Clist), Column);
+   end Optimal_Column_Width;
 
    ----------
    -- Thaw --
@@ -785,14 +1011,14 @@ package body Gtk.Clist is
    ------------------
 
    procedure Unselect_Row
-      (Clist  : access Gtk_Clist_Record;
-       Row    : in Gint;
-       Column : in Gint)
+     (Clist  : access Gtk_Clist_Record;
+      Row    : in Gint;
+      Column : in Gint)
    is
       procedure Internal
-         (Clist  : in System.Address;
-          Row    : in Gint;
-          Column : in Gint);
+        (Clist  : in System.Address;
+         Row    : in Gint;
+         Column : in Gint);
       pragma Import (C, Internal, "gtk_clist_unselect_row");
    begin
       Internal (Get_Object (Clist),
@@ -800,6 +1026,16 @@ package body Gtk.Clist is
                 Column);
    end Unselect_Row;
 
+   --------------------
+   -- Undo_Selection --
+   --------------------
+
+   procedure Undo_Selection (Clist  : access Gtk_Clist_Record) is
+      procedure Internal (Clist : System.Address);
+      pragma Import (C, Internal, "gtk_clist_undo_selection");
+   begin
+      Internal (Get_Object (Clist));
+   end Undo_Selection;
 
 
    ---------------

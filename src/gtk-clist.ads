@@ -31,9 +31,9 @@ with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Pixmap;
 with Gdk.Window;
-with Gtk.Button;
 with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Style; use Gtk.Style;
 with Gtk.Widget;
 
 with Interfaces.C.Strings;
@@ -51,9 +51,9 @@ package Gtk.Clist is
    --  Free all the strings in Data
 
    function Append
-      (Clist : access Gtk_Clist_Record;
-       Text  : in Line_Data)
-       return      Gint;
+     (Clist : access Gtk_Clist_Record;
+      Text  : in Line_Data)
+      return      Gint;
    --  Return the index of the row
 
    procedure Clear (Clist : access Gtk_Clist_Record);
@@ -75,19 +75,21 @@ package Gtk.Clist is
    procedure Freeze (Clist : access Gtk_Clist_Record);
 
    function Get_Cell_Type
-      (Clist  : access Gtk_Clist_Record;
-       Row    : in Gint;
-       Column : in Gint)
-       return      Gtk_Cell_Type;
+     (Clist  : access Gtk_Clist_Record;
+      Row    : in Gint;
+      Column : in Gint)
+      return      Gtk_Cell_Type;
 
    function Get_Clist_Window (Clist : access Gtk_Clist_Record)
                               return Gdk.Window.Gdk_Window;
 
-   function Get_Column_Button (Clist  : access Gtk_Clist_Record;
+   function Get_Column_Widget (Clist  : access Gtk_Clist_Record;
                                Column : in Gint)
-                               return Gtk.Button.Gtk_Button;
-   --  This function does not exist in C. It returns the button at the top
-   --  of the column
+                               return Gtk.Widget.Gtk_Widget;
+
+   function Get_Column_Title
+     (Clist  : access Gtk_Clist_Record; Column : in Gint)
+      return String;
 
    procedure Get_Pixmap
      (Clist    : access Gtk_Clist_Record;
@@ -99,26 +101,33 @@ package Gtk.Clist is
    --  The result is meaningful only if Is_Valid is True
 
    procedure  Get_Pixtext
-      (Clist    : access Gtk_Clist_Record;
-       Row      : in Gint;
-       Column   : in Gint;
-       Spacing  : in out Guint8;
-       Pixmap   : in out Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask     : in out Gdk.Bitmap.Gdk_Bitmap'Class;
-       Is_Valid : out Boolean);
+     (Clist    : access Gtk_Clist_Record;
+      Row      : in Gint;
+      Column   : in Gint;
+      Spacing  : in out Guint8;
+      Pixmap   : in out Gdk.Pixmap.Gdk_Pixmap'Class;
+      Mask     : in out Gdk.Bitmap.Gdk_Bitmap'Class;
+      Is_Valid : out Boolean);
    --  The result is not meaningful if Is_Valid is false
    --  The only way to get the string is to use Get_Text (See below)
+
+   function Get_Selectable
+     (Clist : access Gtk_Clist_Record; Row : Gint)
+      return Boolean;
 
    function Get_Selection (Widget : access Gtk_Clist_Record)
                            return Gint_List.Glist;
 
+   function Get_Selection_Mode (Clist : access Gtk_Clist_Record)
+                                return Gtk_Selection_Mode;
+
    procedure Get_Selection_Info
-      (Clist    : access Gtk_Clist_Record;
-       X        : in Gint;
-       Y        : in Gint;
-       Row      : out Gint;
-       Column   : out Gint;
-       Is_Valid : out Boolean);
+     (Clist    : access Gtk_Clist_Record;
+      X        : in Gint;
+      Y        : in Gint;
+      Row      : out Gint;
+      Column   : out Gint;
+      Is_Valid : out Boolean);
    --  The result is valid only if Is_Valid is true
 
    function Get_Text
@@ -133,84 +142,127 @@ package Gtk.Clist is
    procedure Initialize (Widget : access Gtk_Clist_Record; Columns : in Gint);
 
    procedure Gtk_New
-      (Widget  : out Gtk_Clist;
-       Columns : in Gint;
-       Titles  : in Line_Data);
+     (Widget  : out Gtk_Clist;
+      Columns : in Gint;
+      Titles  : in Line_Data);
    procedure Initialize
-      (Widget  : access Gtk_Clist_Record;
-       Columns : in Gint;
-       Titles  : in Line_Data);
+     (Widget  : access Gtk_Clist_Record;
+      Columns : in Gint;
+      Titles  : in Line_Data);
 
    procedure Insert
-      (Clist : access Gtk_Clist_Record;
-       Row   : in Gint;
-       Text  : in Line_Data);
+     (Clist : access Gtk_Clist_Record;
+      Row   : in Gint;
+      Text  : in Line_Data);
 
    procedure Moveto
-      (Clist     : access Gtk_Clist_Record;
-       Row       : in Gint;
-       Column    : in Gint;
-       Row_Align : in Gfloat;
-       Col_Align : in Gfloat);
+     (Clist     : access Gtk_Clist_Record;
+      Row       : in Gint;
+      Column    : in Gint;
+      Row_Align : in Gfloat;
+      Col_Align : in Gfloat);
 
    procedure Remove (Clist : access Gtk_Clist_Record; Row : in Gint);
 
    function Row_Is_Visible (Clist : access Gtk_Clist_Record; Row  : in Gint)
                             return      Gtk_Visibility;
 
+   function Prepend (Clist : access Gtk_Clist_Record; Text  : in Line_Data)
+                     return      Gint;
+
    procedure Select_Row
-      (Clist  : access Gtk_Clist_Record;
-       Row    : in Gint;
-       Column : in Gint);
+     (Clist  : access Gtk_Clist_Record;
+      Row    : in Gint;
+      Column : in Gint);
 
    procedure Set_Background
-      (Clist : access Gtk_Clist_Record;
-       Row   : in Gint;
-       Color : in Gdk.Color.Gdk_Color);
+     (Clist : access Gtk_Clist_Record;
+      Row   : in Gint;
+      Color : in Gdk.Color.Gdk_Color);
+
+   procedure Set_Button_Actions (Clist         : access Gtk_Clist_Record;
+                                 Button        :        Guint;
+                                 Button_Action :        Gtk_Button_Action);
+
+   procedure Set_Cell_Style (Clist  : access Gtk_Clist_Record;
+                             Row    : in Gint;
+                             Column : in Gint;
+                             Style  : access Gtk_Style_Record'Class);
+
+   procedure Set_Column_Auto_Resize
+     (Clist       : access Gtk_Clist_Record;
+      Column      : in Gint;
+      Auto_Resize : in Boolean);
 
    procedure Set_Column_Justification
-      (Clist         : access Gtk_Clist_Record;
-       Column        : in Gint;
-       Justification : in Gtk_Justification);
+     (Clist         : access Gtk_Clist_Record;
+      Column        : in Gint;
+      Justification : in Gtk_Justification);
+
+   procedure Set_Column_Min_Width
+     (Clist : access Gtk_Clist_Record; Column : Gint; Min_Width : Gint);
+
+   procedure Set_Column_Max_Width
+     (Clist : access Gtk_Clist_Record; Column : Gint; Max_Width : Gint);
+
+   procedure Set_Column_Resizeable
+     (Clist    : access Gtk_Clist_Record;
+      Column   : in Gint;
+      Resizable : in Boolean);
 
    procedure Set_Column_Title
-      (Clist  : access Gtk_Clist_Record;
-       Column : in Gint;
-       Title  : in String);
+     (Clist  : access Gtk_Clist_Record;
+      Column : in Gint;
+      Title  : in String);
+
+   procedure Set_Column_Visibility
+     (Clist   : access Gtk_Clist_Record;
+      Column  : in Gint;
+      Visible : in Boolean);
 
    procedure Set_Column_Widget
-      (Clist  : access Gtk_Clist_Record;
-       Column : in Gint;
-       Widget : in Gtk.Widget.Gtk_Widget);
+     (Clist  : access Gtk_Clist_Record;
+      Column : in Gint;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    procedure Set_Column_Width
-      (Clist  : access Gtk_Clist_Record;
-       Column : in Gint;
-       Width  : in Gint);
+     (Clist  : access Gtk_Clist_Record;
+      Column : in Gint;
+      Width  : in Gint);
 
    procedure Set_Foreground
-      (Clist : access Gtk_Clist_Record;
-       Row   : in Gint;
-       Color : in Gdk.Color.Gdk_Color);
+     (Clist : access Gtk_Clist_Record;
+      Row   : in Gint;
+      Color : in Gdk.Color.Gdk_Color);
 
    procedure Set_Pixmap
-      (Clist  : access Gtk_Clist_Record;
-       Row    : in Gint;
-       Column : in Gint;
-       Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+     (Clist  : access Gtk_Clist_Record;
+      Row    : in Gint;
+      Column : in Gint;
+      Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
+      Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
 
    procedure Set_Pixtext
-      (Clist   : access Gtk_Clist_Record;
-       Row     : in Gint;
-       Column  : in Gint;
-       Text    : in String;
-       Spacing : in Guint8;
-       Pixmap  : in Gdk.Pixmap.Gdk_Pixmap'Class;
-       Mask    : in Gdk.Bitmap.Gdk_Bitmap'Class);
+     (Clist   : access Gtk_Clist_Record;
+      Row     : in Gint;
+      Column  : in Gint;
+      Text    : in String;
+      Spacing : in Guint8;
+      Pixmap  : in Gdk.Pixmap.Gdk_Pixmap'Class;
+      Mask    : in Gdk.Bitmap.Gdk_Bitmap'Class);
 
-   procedure Set_Row_Height (Clist : access Gtk_Clist_Record;
-                             Height : in Gint);
+   procedure Set_Reorderable
+     (Clist : access Gtk_Clist_Record; Reorderable : Boolean);
+
+   procedure Set_Row_Height
+     (Clist : access Gtk_Clist_Record; Height : Gint);
+
+   procedure Set_Row_Style
+     (Clist : access Gtk_Clist_Record; Row : Gint;
+      Style : access Gtk_Style_Record'Class);
+
+   procedure Set_Selectable
+     (Clist : access Gtk_Clist_Record; Row : Gint; Selectable : Boolean);
 
    procedure Set_Selection_Mode (Clist : access Gtk_Clist_Record;
                                  Mode  : in Gtk_Selection_Mode);
@@ -219,24 +271,32 @@ package Gtk.Clist is
                               The_Type : in Gtk_Shadow_Type);
 
    procedure Set_Shift
-      (Clist      : access Gtk_Clist_Record;
-       Row        : in Gint;
-       Column     : in Gint;
-       Vertical   : in Gint;
-       Horizontal : in Gint);
+     (Clist      : access Gtk_Clist_Record;
+      Row        : in Gint;
+      Column     : in Gint;
+      Vertical   : in Gint;
+      Horizontal : in Gint);
 
    procedure Set_Text
-      (Clist  : access Gtk_Clist_Record;
-       Row    : in Gint;
-       Column : in Gint;
-       Text   : in String);
+     (Clist  : access Gtk_Clist_Record;
+      Row    : in Gint;
+      Column : in Gint;
+      Text   : in String);
+
+   procedure Set_Use_Drag_Icons
+     (Clist : access Gtk_Clist_Record; Use_Icons : Boolean);
 
    procedure Thaw (Clist : access Gtk_Clist_Record);
 
+   function Optimal_Column_Width
+     (Clist : access Gtk_Clist_Record; Column : Gint) return Gint;
+
    procedure Unselect_Row
-      (Clist  : access Gtk_Clist_Record;
-       Row    : in Gint;
-       Column : in Gint);
+     (Clist  : access Gtk_Clist_Record;
+      Row    : in Gint;
+      Column : in Gint);
+
+   procedure Undo_Selection (Clist  : access Gtk_Clist_Record);
 
    ---------------
    -- Row_Data --
