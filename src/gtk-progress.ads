@@ -27,43 +27,58 @@
 -----------------------------------------------------------------------
 
 with Gtk.Adjustment;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Progress;
+with Gtk.Widget;
 
-package Gtk.Progress_Bar is
+package Gtk.Progress is
 
-   type Gtk_Progress_Bar is new Gtk.Progress.Gtk_Progress with private;
+   type Gtk_Progress is new Gtk.Widget.Gtk_Widget with private;
 
-   procedure Construct
-      (Pbar       : in Gtk_Progress_Bar;
+   function Get_Current_Percentage (Progress : in Gtk_Progress)
+                                    return        Gfloat;
+   function Get_Current_Text (Progress : in Gtk_Progress)
+                              return        String;
+   function Get_Percentage_From_Value
+     (Progress : in Gtk_Progress;
+      Value    : in Gfloat)
+      return        Gfloat;
+   function Get_Text_From_Value
+     (Progress : in Gtk_Progress;
+      Value    : in Gfloat)
+      return        String;
+   function Get_Value (Progress : in Gtk_Progress)
+                       return        Gfloat;
+   procedure Reconfigure
+     (Progress : in Gtk_Progress;
+      Value    : in Gfloat;
+      Min      : in Gfloat;
+      Max      : in Gfloat);
+
+   procedure Set_Activity_Mode
+     (Progress      : in Gtk_Progress;
+      Activity_Mode : in Boolean);
+   function Get_Activity_Mode (Progress : in Gtk_Progress) return Boolean;
+
+   procedure Set_Adjustment
+      (Progress   : in Gtk_Progress;
        Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
-
-   function Get_Adjustment (Widget : in Gtk_Progress_Bar)
-                            return Gtk.Adjustment.Gtk_Adjustment;
-
-   procedure Gtk_New (Widget     : out Gtk_Progress_Bar;
-                      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
-   procedure Gtk_New (Widget : out Gtk_Progress_Bar);
-   procedure Set_Activity_Blocks
-      (Pbar   : in Gtk_Progress_Bar;
-       Blocks : in Guint);
-   procedure Set_Activity_Step
-      (Pbar : in Gtk_Progress_Bar;
-       Step : in Guint);
-   procedure Set_Bar_Style
-      (Pbar  : in Gtk_Progress_Bar;
-       Style : in Gtk_Progress_Bar_Style);
-   procedure Set_Discrete_Blocks
-      (Pbar   : in Gtk_Progress_Bar;
-       Blocks : in Guint);
-   procedure Set_Orientation
-      (Pbar        : in Gtk_Progress_Bar;
-       Orientation : in Gtk_Progress_Bar_Orientation);
-   procedure Update
-      (Pbar       : in Gtk_Progress_Bar;
+   procedure Set_Format_String
+      (Progress : in Gtk_Progress;
+       Format   : in String);
+   procedure Set_Percentage
+      (Progress   : in Gtk_Progress;
        Percentage : in Gfloat);
+   procedure Set_Show_Text
+      (Progress  : in Gtk_Progress;
+       Show_Text : in Boolean);
+   procedure Set_Text_Alignment
+      (Progress : in Gtk_Progress;
+       X_Align  : in Gfloat;
+       Y_Align  : in Gfloat);
+   procedure Set_Value
+      (Progress : in Gtk_Progress;
+       Value    : in Gfloat);
 
 private
-   type Gtk_Progress_Bar is new Gtk.Progress.Gtk_Progress with null record;
+   type Gtk_Progress is new Gtk.Widget.Gtk_Widget with null record;
 
-end Gtk.Progress_Bar;
+end Gtk.Progress;

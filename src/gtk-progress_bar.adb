@@ -26,23 +26,56 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;
 with Gdk; use Gdk;
+with Gtk.Adjustment;
+with System;
 
 package body Gtk.Progress_Bar is
 
+   ---------------
+   -- Construct --
+   ---------------
+
+   procedure Construct
+      (Pbar       : in Gtk_Progress_Bar;
+       Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+   is
+      procedure Internal
+         (Pbar       : in System.Address;
+          Adjustment : in System.Address);
+      pragma Import (C, Internal, "gtk_progress_bar_construct");
+   begin
+      Internal (Get_Object (Pbar),
+                Get_Object (Adjustment));
+   end Construct;
+
    --------------------
-   -- Get_Percentage --
+   -- Get_Adjustment --
    --------------------
 
-   function Get_Percentage (Widget : in Gtk_Progress_Bar)
-                            return      Gfloat
-   is
-      function Internal (Widget : in System.Address) return Gfloat;
-      pragma Import (C, Internal, "ada_progress_bar_get_percentage");
+   function Get_Adjustment (Widget : in Gtk_Progress_Bar)
+                            return Gtk.Adjustment.Gtk_Adjustment is
+      function Internal (Widget : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_progress_bar_get_adjustment");
+      Adj : Gtk.Adjustment.Gtk_Adjustment;
    begin
-      return Internal (Get_Object (Widget));
-   end Get_Percentage;
+      Set_Object (Adj, Internal (Get_Object (Widget)));
+      return Adj;
+   end Get_Adjustment;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New (Widget     : out Gtk_Progress_Bar;
+                      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+   is
+      function Internal (Adjustment : in System.Address)
+                         return          System.Address;
+      pragma Import (C, Internal, "gtk_progress_bar_new_with_adjustment");
+   begin
+      Set_Object (Widget, Internal (Get_Object (Adjustment)));
+   end Gtk_New;
 
    -------------
    -- Gtk_New --
@@ -55,6 +88,91 @@ package body Gtk.Progress_Bar is
    begin
       Set_Object (Widget, Internal);
    end Gtk_New;
+
+   -------------------------
+   -- Set_Activity_Blocks --
+   -------------------------
+
+   procedure Set_Activity_Blocks
+      (Pbar   : in Gtk_Progress_Bar;
+       Blocks : in Guint)
+   is
+      procedure Internal
+         (Pbar   : in System.Address;
+          Blocks : in Guint);
+      pragma Import (C, Internal, "gtk_progress_bar_set_activity_blocks");
+   begin
+      Internal (Get_Object (Pbar),
+                Blocks);
+   end Set_Activity_Blocks;
+
+   -----------------------
+   -- Set_Activity_Step --
+   -----------------------
+
+   procedure Set_Activity_Step
+      (Pbar : in Gtk_Progress_Bar;
+       Step : in Guint)
+   is
+      procedure Internal
+         (Pbar : in System.Address;
+          Step : in Guint);
+      pragma Import (C, Internal, "gtk_progress_bar_set_activity_step");
+   begin
+      Internal (Get_Object (Pbar),
+                Step);
+   end Set_Activity_Step;
+
+   -------------------
+   -- Set_Bar_Style --
+   -------------------
+
+   procedure Set_Bar_Style
+      (Pbar  : in Gtk_Progress_Bar;
+       Style : in Gtk_Progress_Bar_Style)
+   is
+      procedure Internal
+         (Pbar  : in System.Address;
+          Style : in Gint);
+      pragma Import (C, Internal, "gtk_progress_bar_set_bar_style");
+   begin
+      Internal (Get_Object (Pbar),
+                Gtk_Progress_Bar_Style'Pos (Style));
+   end Set_Bar_Style;
+
+   -------------------------
+   -- Set_Discrete_Blocks --
+   -------------------------
+
+   procedure Set_Discrete_Blocks
+      (Pbar   : in Gtk_Progress_Bar;
+       Blocks : in Guint)
+   is
+      procedure Internal
+         (Pbar   : in System.Address;
+          Blocks : in Guint);
+      pragma Import (C, Internal, "gtk_progress_bar_set_discrete_blocks");
+   begin
+      Internal (Get_Object (Pbar),
+                Blocks);
+   end Set_Discrete_Blocks;
+
+   ---------------------
+   -- Set_Orientation --
+   ---------------------
+
+   procedure Set_Orientation
+      (Pbar        : in Gtk_Progress_Bar;
+       Orientation : in Gtk_Progress_Bar_Orientation)
+   is
+      procedure Internal
+         (Pbar        : in System.Address;
+          Orientation : in Gint);
+      pragma Import (C, Internal, "gtk_progress_bar_set_orientation");
+   begin
+      Internal (Get_Object (Pbar),
+                Gtk_Progress_Bar_Orientation'Pos (Orientation));
+   end Set_Orientation;
 
    ------------
    -- Update --
