@@ -9,6 +9,7 @@ with Gdk.Types;    use Gdk.Types;
 with Gtk.Frame;    use Gtk.Frame;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
 with Gtk.Handlers; use Gtk.Handlers;
+with Gtk.Widget;   use Gtk.Widget;
 
 package body Create_Gc is
 
@@ -182,14 +183,14 @@ package body Create_Gc is
       Load (Font, "-*-courier-*-i-*-*-*-130-*-*-*-*-*-*");
 
       Blue := Gdk.Color.Parse ("Blue");
-      Alloc_Color (Colormap   => Gdk.Color.Get_System,
+      Alloc_Color (Colormap   => Gtk.Widget.Get_Default_Colormap,
                    Color      => Blue,
                    Writeable  => False,
                    Best_Match => True,
                    Success    => Success);
 
       Red := Gdk.Color.Parse ("Red");
-      Alloc_Color (Colormap   => Gdk.Color.Get_System,
+      Alloc_Color (Colormap   => Gtk.Widget.Get_Default_Colormap,
                    Color      => Red,
                    Writeable  => False,
                    Best_Match => True,
