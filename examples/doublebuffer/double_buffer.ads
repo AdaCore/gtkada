@@ -74,7 +74,6 @@
 with Gtk.Drawing_Area;
 with Gdk.Pixmap;
 with Gdk.Drawable;
-with Gdk.Rectangle;
 
 package Double_Buffer is
 

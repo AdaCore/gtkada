@@ -15,7 +15,6 @@ with Gtk.Widget;          use Gtk.Widget;
 with Double_Buffer;       use Double_Buffer;
 with Gtk.Toggle_Button;   use Gtk.Toggle_Button;
 with Gtk.Main;            use Gtk.Main;
-with Gtk.Style;           use Gtk.Style;
 with Gtk.Text;            use Gtk.Text;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 
