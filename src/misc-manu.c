@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
+#include <glib.h>
 
 /***************************************************
  *  Functions for Objects
@@ -21,11 +22,13 @@ ada_type_name (GtkObject* object)
  *  Functions for GtkArg
  ***************************************************/
 
-GtkObject*
+gpointer
 ada_gtkarg_value_object (GtkArg* args, guint num)
 {
   if ((args [num].type % 256) == GTK_TYPE_OBJECT)
-    return GTK_VALUE_OBJECT (args [num]);
+    return (gpointer)GTK_VALUE_OBJECT (args [num]);
+  else if ((args [num].type % 256) == GTK_TYPE_POINTER)
+    return GTK_VALUE_POINTER (args [num]);
   else
     {
       fprintf (stderr, "request for an Object value (%d) when we have a %d\n",
@@ -372,3 +375,49 @@ ada_pixmap_get_pixmap (GtkPixmap* widget)
    return widget->pixmap;
 }
 
+/*******************************************
+ ** Functions for Notebook
+ *******************************************/
+
+gint
+ada_notebook_get_tab_pos (GtkNotebook* widget)
+{
+   return widget->tab_pos;
+}
+
+GList*
+ada_notebook_get_children (GtkNotebook* widget)
+{
+  return widget->children;
+}
+
+GtkNotebookPage*
+ada_notebook_get_cur_page (GtkNotebook* widget)
+{
+  return widget->cur_page;
+}
+
+GtkWidget*
+ada_notebook_get_menu_label (GtkNotebookPage* widget)
+{
+  return widget->menu_label;
+}
+
+GtkWidget*
+ada_notebook_get_tab_label (GtkNotebookPage* widget)
+{
+  return widget->tab_label;
+}
+
+/**********************************************
+ ** Functions for Box
+ **********************************************/
+
+GtkWidget*
+ada_box_get_child (GtkBox* widget, gint num)
+{
+  if (num < g_list_length (widget->children))
+    return ((GtkBoxChild*)(g_list_nth_data (widget->children, num)))->widget;
+  else
+    return NULL;
+}
