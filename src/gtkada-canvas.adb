@@ -116,10 +116,6 @@ package body Gtkada.Canvas is
 
    procedure Free is new Unchecked_Deallocation (String, String_Access);
    procedure Free is new Unchecked_Deallocation
-     (Canvas_Link_Record'Class, Canvas_Link);
-   procedure Free is new Unchecked_Deallocation
-     (Canvas_Item_Record'Class, Canvas_Item);
-   procedure Free is new Unchecked_Deallocation
      (Item_Selection_List_Record, Item_Selection_List);
 
    package Canvas_Timeout is new Gtk.Main.Timeout (Interactive_Canvas);
