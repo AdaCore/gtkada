@@ -148,7 +148,7 @@ This binding was tested on the following systems:
 @item SGI IRIX 6.5
 @item HP/UX 10.20
 @item NT 4.0
-@item AiX 4.3.1
+@item AiX 4.3.2
 @end itemize
 using the following compilers:
 @itemize @bullet

@@ -23,7 +23,7 @@ Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheo
 Maintained-by: gtkada@ada.eu.org
 Primary-site:  http://gtkada.eu.org
 Original-site: http://ada.eu.org/gtkada/ 
-Platforms: SunOS-5.5.1 Linux-2.0.36 DECUnix-4.0b IRIX-6.5 HP/UX-10.20 NT-4.0 AiX-4.3.1
+Platforms: SunOS-5.5.1 Linux-2.0.36 DECUnix-4.0b IRIX-6.5 HP/UX-10.20 NT-4.0 AiX-4.3.2
 Copying-policy: GPL (with a slight modification, see headers of *.ad[bs] files
 End
 
