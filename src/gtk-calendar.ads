@@ -59,7 +59,7 @@ package Gtk.Calendar is
    No_Month_Change : constant Gtk_Calendar_Display_Options;
    --  Prevent the user from switching months with the calendar.
 
-   Show_Week_Number : constant Gtk_Calendar_Display_Options;
+   Show_Week_Numbers : constant Gtk_Calendar_Display_Options;
    --  Display each week numbers of the current year, down the left side of
    --  the calendar.
 
@@ -197,7 +197,7 @@ private
    Show_Heading      : constant Gtk_Calendar_Display_Options := 2 ** 0;
    Show_Day_Names    : constant Gtk_Calendar_Display_Options := 2 ** 1;
    No_Month_Change   : constant Gtk_Calendar_Display_Options := 2 ** 2;
-   Show_Week_Number  : constant Gtk_Calendar_Display_Options := 2 ** 3;
+   Show_Week_Numbers : constant Gtk_Calendar_Display_Options := 2 ** 3;
    Week_Start_Monday : constant Gtk_Calendar_Display_Options := 2 ** 4;
 
 end Gtk.Calendar;
