@@ -58,17 +58,20 @@ with Gdk.Pixmap;
 with Gdk.Window;
 with Glib;
 with Gtk.Drawing_Area;
-with Gtk.Viewport;
 with Gdk.Rectangle;
+with Gtk.Adjustment;
+with Gtk.Main;
 
 package Gtkada.Canvas is
 
-   type Interactive_Canvas_Record is new Gtk.Viewport.Gtk_Viewport_Record
-     with private;
+   type Interactive_Canvas_Record is new
+     Gtk.Drawing_Area.Gtk_Drawing_Area_Record with private;
    type Interactive_Canvas is access all Interactive_Canvas_Record'Class;
    --  A canvas on which items are put.
    --  Each item can be moved interactively by the user, and links can be
    --  drawn automatically from an item to another.
+   --  This widget can be inserted directly in a scrolled window to provide
+   --  support for scrolling.
 
    type Canvas_Item_Record is abstract tagged private;
    type Canvas_Item is access all Canvas_Item_Record'Class;
@@ -207,13 +210,6 @@ package Gtkada.Canvas is
                            Item   : access Canvas_Item_Record'Class);
    --  This should be called when Item has changed the contents of its
    --  pixmap, and thus the Canvas should be updated.
-
-   procedure Item_Resized (Canvas : access Interactive_Canvas_Record;
-                           Item   : access Canvas_Item_Record'Class);
-   --  This should be called when Item has been resized, and the canvas
-   --  should be updated (ie the arrow should be redrawn for instance).
-   --  However, Item should resize its pixmap and redraw itself before
-   --  calling this procedure.
 
    procedure Refresh_Canvas (Canvas : access Interactive_Canvas_Record);
    --  Redraw the whole canvas (both in the double buffer and on the screen).
@@ -472,17 +468,28 @@ private
          Next : Canvas_Item_List;
       end record;
 
-   type Interactive_Canvas_Record is new Gtk.Viewport.Gtk_Viewport_Record with
+   type Item_Selection_List_Record;
+   type Item_Selection_List is access Item_Selection_List_Record;
+   type Item_Selection_List_Record is
+      record
+         Item : Canvas_Item;
+         X, Y : Glib.Gint;
+         Next : Item_Selection_List;
+      end record;
+   --  A list of items, but this also memorizes the position of the items (used
+   --  for selected widgets while they are being moved, so that we do not
+   --  change the coordinates of the item itself until the mouse is released
+   --  (and thus provide correct scrolling).
+
+   type Interactive_Canvas_Record is new
+      Gtk.Drawing_Area.Gtk_Drawing_Area_Record with
       record
          Links             : Canvas_Link_List  := null;
          Children          : Canvas_Item_List := null;
 
-         Selection         : Canvas_Item_List := null;
+         Selection         : Item_Selection_List := null;
          --  List of currently selected items that will be moved when the mouse
          --  is dragged
-
-         Xmax, Ymax        : Glib.Gint := 0;
-         --  Maximal coordinates in the canvas.
 
          Last_X_Event      : Glib.Gint;
          Last_Y_Event      : Glib.Gint;
@@ -492,10 +499,11 @@ private
          --  True if mouse has moved while the button was clicked. This is used
          --  to distinguish between item motion and item selection.
 
-         Drawing_Area      : Gtk.Drawing_Area.Gtk_Drawing_Area;
-         Double_Pixmap     : Gdk.Pixmap.Gdk_Pixmap;
-
          Grid_Size         : Glib.Guint := Default_Grid_Size;
+         --  The current number of pixels between each dot of the grid. If this
+         --  is strictly below 2, the grid is not drawn. (0) means that the
+         --  user has deactivated the grid completely.
+
          Annotation_Font   : String_Access;
          Annotation_Height : Glib.Gint := Default_Annotation_Height;
          Arc_Link_Offset   : Float := Float (Default_Arc_Link_Offset);
@@ -511,14 +519,17 @@ private
          Black_GC : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
          Anim_GC  : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
          Font     : Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
+
+         Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;
+         Scrolling_Timeout_Id : Gtk.Main.Timeout_Handler_Id := 0;
+         Dashed_Line_Visible : Boolean := False;
       end record;
 
-   type Canvas_Item_Record is abstract tagged
-      record
-         Coord     : Gdk.Rectangle.Gdk_Rectangle;
-         Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
-         Visible   : Boolean := True;
-      end record;
+   type Canvas_Item_Record is abstract tagged record
+      Coord     : Gdk.Rectangle.Gdk_Rectangle;
+      Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
+      Visible   : Boolean := True;
+   end record;
 
    pragma Inline (Pixmap);
 end Gtkada.Canvas;
