@@ -1,10 +1,4 @@
-GtkAda 2.2.x release
---------------------
-
-New features in 2.2.x:
-- New widget GtkAda.Multi_Paned
-
-GtkAda 2.2.0 release
+GtkAda 2.2.1 release
 --------------------
 
 GtkAda is an Ada95 graphical toolkit based on Gtk+. It allows you
@@ -12,25 +6,9 @@ to develop graphical applications in Ada95 using Gtk+.
 
 The primary download site is http://libre.act-europe.fr/GtkAda
 
-This version represents a major update compared to GtkAda 2.0.0, and is
+This version represents a minor update compared to GtkAda 2.2.0, and is
 suitable for use with Gtk+ 2.2.0 and above.
 
-New features in 2.2.0:
-- Support for Glade2
-- Support for GtkExtra
-- Support for libglade2
-- New functions bound in Gtk.Label
-- New type UTF8_String to make it clearer when UTF8 strings are expected
-- New capabilities in GtkAda.MDI, see spec for details
-- Support for drad-n-drop in GtkAda.MDI
-- Bugs and memory leak fixes in GtkAda.MDI
-- New package Glib.Graphs (was actually in GtkAda 2.0.0, but not announced)
-- Update to GNOME 2.0 API
-- Memory leaks fixed in Glib.XML
-- Code clean ups
-- Fixed Gtk.Text_Buffer.Cut|Copy|Paste_Clipboard
-- Speed improvements and code clean up in Gtkada.Canvas
-- Full support for Pango (font handling and internationalization support)
-- New package Glib.Messages
-- New package Glib.Unicode
+New features in 2.2.x:
+- New widget GtkAda.Multi_Paned
 
