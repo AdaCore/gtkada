@@ -21,6 +21,7 @@
 --  GATE stands for Glade Ada Translator and Evaluator
 --  Parse a Glade's XML project file and generate the corresponding Ada code
 
+with Gtk.Main; use Gtk.Main;
 with Gtk.Glade; use Gtk.Glade;
 with Glib.Glade; use Glib; use Glib.Glade; use Glib.Glade.Glib_XML;
 with Ada.Command_Line; use Ada.Command_Line;
@@ -98,6 +99,14 @@ begin
          end if;
 
       else
+         --  Instanciate (i.e create Gtk Widgets) N to ensure that the gtk+
+         --  library will know about the internal structures of the generated
+         --  widgets. This is needed in particular to retrieve the argument
+         --  count and types for the various signals.
+
+         Gtk.Main.Init;
+         Instantiate (N, False);
+         Reset_Tree (N);
          Generate (N);
       end if;
    end if;
