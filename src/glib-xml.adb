@@ -885,8 +885,6 @@ package body Glib.XML is
    ---------------
 
    function Deep_Copy (N : Node_Ptr) return Node_Ptr is
-      New_N : Node_Ptr;
-
       function Deep_Copy_Internal
         (N : Node_Ptr; Parent : Node_Ptr := null) return Node_Ptr;
       --  Internal version of Deep_Copy. Returns a deep copy of N, whose
@@ -898,6 +896,7 @@ package body Glib.XML is
          Attr  : String_Ptr;
          Value : String_Ptr;
 
+         New_N : Node_Ptr;
       begin
          if N = null then
             return null;
@@ -910,21 +909,23 @@ package body Glib.XML is
                Value := new String'(N.Value.all);
             end if;
 
-            return new Node'
+            New_N := new Node'
               (Tag => new String'(N.Tag.all),
                Attributes => Attr,
                Value => Value,
                Parent => Parent,
-               Child => Deep_Copy_Internal (N.Child, Parent => New_N),
+               Child => null,
                Next => Deep_Copy_Internal (N.Next, Parent => Parent),
                Specific_Data => N.Specific_Data);
+
+            New_N.Child := Deep_Copy_Internal (N.Child, Parent => New_N);
+
+            return New_N;
          end if;
       end Deep_Copy_Internal;
 
    begin
-      New_N := Deep_Copy_Internal (N);
-
-      return New_N;
+      return Deep_Copy_Internal (N);
    end Deep_Copy;
 
 end Glib.XML;
