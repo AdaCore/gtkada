@@ -238,6 +238,28 @@ ada_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
 }
 
 /********************
+ * Font_Selection
+ ********************/
+
+GtkWidget*
+ada_gtk_font_selection_dialog_get_cancel (GtkFontSelectionDialog* fsd)
+{
+  return fsd->cancel_button;
+}
+
+GtkWidget*
+ada_gtk_font_selection_dialog_get_ok (GtkFontSelectionDialog* fsd)
+{
+  return fsd->ok_button;
+}
+
+GtkWidget*
+ada_gtk_font_selection_dialog_get_apply (GtkFontSelectionDialog* fsd)
+{
+  return fsd->apply_button;
+}
+
+/********************
  * Check_Menu_Item
  ********************/
 

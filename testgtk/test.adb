@@ -54,6 +54,7 @@ with Create_Cursors;
 with Create_Dialog;
 with Create_Entry;
 with Create_File_Selection;
+with Create_Font_Selection;
 with Create_Gamma_Curve;
 with Create_Handle_Box;
 with Create_List;
@@ -143,6 +144,7 @@ package body Test is
       (US ("dnd"), null),
       (US ("entry"), Create_Entry.Run'Access),
       (US ("file selection"), Create_File_Selection.Run'Access),
+      (US ("font selection"), Create_Font_Selection.Run'Access),
       (US ("gamma curve"), Create_Gamma_Curve.Run'Access),
       (US ("handle box"), Create_Handle_Box.Run'Access),
       (US ("list"), Create_List.Run'Access),
