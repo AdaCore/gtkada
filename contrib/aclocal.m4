@@ -31,14 +31,14 @@ EOF
 
    $GNATMAKE conftest > /dev/null 2>&1
 
-   if ! test -x conftest ; then
+   if ( test ! -x conftest ) then
       AC_MSG_RESULT(no)
       AC_MSG_ERROR($GNATMAKE test failed at compile time! Check your configuration.)
    fi
 
    ./conftest
 
-   if ! test -f $conftest_ok; then
+   if ( test ! -f $conftest_ok ) then
       AC_MSG_RESULT(no)
       AC_MSG_ERROR($GNATMAKE test failed at run time! Check your configuration.)
    fi

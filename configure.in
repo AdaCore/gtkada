@@ -18,7 +18,7 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 
 # checking for gtk
-AM_PATH_GTK(1.1.14,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
+AM_PATH_GTK(1.1.16,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
 
 # Set the version number of GtkAda
 AC_SUBST(GTKADA_VERSION)

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision
+# From configure.in Revision: 1.1 
 #############################################################
 #
 #  Checking for Gnat
@@ -833,14 +833,14 @@ EOF
 
    $GNATMAKE conftest > /dev/null 2>&1
 
-   if ! test -x conftest ; then
+   if ( test ! -x conftest ) then
       echo "$ac_t""no" 1>&6
       { echo "configure: error: $GNATMAKE test failed at compile time! Check your configuration." 1>&2; exit 1; }
    fi
 
    ./conftest
 
-   if ! test -f $conftest_ok; then
+   if ( test ! -f $conftest_ok ) then
       echo "$ac_t""no" 1>&6
       { echo "configure: error: $GNATMAKE test failed at run time! Check your configuration." 1>&2; exit 1; }
    fi
@@ -1077,7 +1077,7 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-  min_gtk_version=1.1.14
+  min_gtk_version=1.1.16
   echo $ac_n "checking for GTK - version >= $min_gtk_version""... $ac_c" 1>&6
 echo "configure:1083: checking for GTK - version >= $min_gtk_version" >&5
   no_gtk=""
@@ -1531,3 +1531,4 @@ EOF
 chmod +x $CONFIG_STATUS
 rm -fr confdefs* $ac_clean_files
 test "$no_create" = yes || ${CONFIG_SHELL-/bin/sh} $CONFIG_STATUS || exit 1
+
