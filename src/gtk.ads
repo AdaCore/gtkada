@@ -82,7 +82,17 @@ private
    --  to the appropriate type (this is not the default since this will
    --  slow down initializations a little bit, and will 'with' all the
    --  packages from GtkAda).
+   --  See Gtk.Type_Conversion for its use.
    --  Stub is the expect type (it is used by the simple conversion
    --  function only).
+
+
+   --  The following is intended for internal use only.
+   --  This functions is called every time Initialize_User_Data is called, i.e
+   --  every time a widget is created in Ada. This is used to enable macros.
+   --  Only one function can be registerd.
+   type Initialize_Hook is access
+     procedure (Obj : access Root_Type'Class);
+   Initialize_User_Data_Hook : Initialize_Hook;
 
 end Gtk;

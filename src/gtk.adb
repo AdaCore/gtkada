@@ -122,6 +122,10 @@ package body Gtk is
 --              & " size=" & Integer'Image (Obj'Size)
 --              & " Address=" & Integer'Image (Convert (Obj.all'Address)));
       end if;
+
+      if Initialize_User_Data_Hook /= null then
+         Initialize_User_Data_Hook (Obj);
+      end if;
    end Initialize_User_Data;
 
    -------------------
