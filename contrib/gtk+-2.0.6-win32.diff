@@ -119,7 +119,7 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
 +      GdkRegion * whole_region = gdk_region_rectangle (&impl->position_info.clip_rect);
 +      _gdk_window_process_expose (window,
 +                          GetCurrentTime (),
-+                          whole_region );
++                          whole_region);
 +      gdk_region_destroy (whole_region);
 +    }
 +
