@@ -8,19 +8,19 @@ package Gtk is
    subtype GInt32 is Integer range -(2 ** 16) .. (2 ** 16 - 1);
    --  Same for all basic types
 
-   type Gtk_Object is tagged private;
+   type Object is tagged private;
 
-   procedure Gtk_Init;
-   --  mapping: Gtk_Init gtkmain.h gtk_init
+   procedure Init;
+   --  mapping: Init gtkmain.h gtk_init
 
-   procedure Gtk_Main;
-   --  mapping: Gtk_Main gtkmain.h gtk_main
+   procedure Main;
+   --  mapping: Main gtkmain.h gtk_main
 
-   procedure Gtk_Main_Quit;
-   --  mapping: Gtk_Main_Quit gtkmain.h gtk_main_quit
+   procedure Main_Quit;
+   --  mapping: Main_Quit gtkmain.h gtk_main_quit
 
-   procedure Gtk_Destroy (Object : in Gtk_Object'Class);
-   --  mapping: Gtk_Destroy gtkobject.h gtk_object_destroy
+   procedure Destroy (Obj : in Object'Class);
+   --  mapping: Destroy gtkobject.h gtk_object_destroy
 
    --  Functions which are not implemented because they are probably not needed
    --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_object_add_arg_type
@@ -64,16 +64,16 @@ package Gtk is
 
 private
 
-   type Gtk_Object is tagged
+   type Object is tagged
      record
         Ptr : System.Address := System.Null_Address;
      end record;
 
-   function Get_Object (Object : in Gtk_Object'Class)
+   function Get_Object (Obj : in Object'Class)
                         return System.Address;
    pragma Inline (Get_Object);
 
-   procedure Set_Object (Object : in out Gtk_Object'Class;
+   procedure Set_Object (Obj : in out Object'Class;
                          Value  : in     System.Address);
    pragma Inline (Set_Object);
 

@@ -14,182 +14,182 @@ package body Gtk.Signal is
                                                     System.Address);
 
       ------------------------
-      -- Gtk_Signal_Connect --
+      -- Signal_Connect --
       ------------------------
 
-      function Gtk_Connect
-        (Object    : in Gtk_Object'Class;
+      function Connect
+        (Obj       : in Object'Class;
          Name      : in String;
-         Func      : in Gtk_Callback;
+         Func      : in Callback;
          Func_Data : in Data_Type)
          return GUint
       is
-         function Internal (Object    : System.Address;
+         function Internal (Obj       : System.Address;
                             Name      : String;
-                            Func      : Gtk_Callback;
+                            Func      : Callback;
                             Func_Data : System.Address) return GUint;
          pragma Import (C, Internal, "gtk_signal_connect");
       begin
          D := new Data_Type'(Func_Data);
-         return Internal (Get_Object (Object), Name & Ascii.NUL,
+         return Internal (Get_Object (Obj), Name & Ascii.NUL,
                           Func, Convert (D));
-      end Gtk_Connect;
+      end Connect;
 
       -------------------------------
-      --  Gtk_Signal_Connect_After --
+      --  Signal_Connect_After --
       -------------------------------
 
-      function Gtk_Connect_After
-        (Object    : in Gtk_Object'Class;
+      function Connect_After
+        (Obj       : in Object'Class;
          Name      : in String;
-         Func      : in Gtk_Callback;
+         Func      : in Callback;
          Func_Data : in Data_Type)
          return GUint
       is
-         function Internal (Object    : System.Address;
+         function Internal (Obj       : System.Address;
                             Name      : String;
-                            Func      : Gtk_Callback;
+                            Func      : Callback;
                             Func_Data : System.Address) return GUint;
          pragma Import (C, Internal, "gtk_signal_connect_after");
       begin
          D := new Data_Type'(Func_Data);
-         return Internal (Get_Object (Object), Name & Ascii.NUL,
+         return Internal (Get_Object (Obj), Name & Ascii.NUL,
                           Func, Convert (D));
-      end Gtk_Connect_After;
+      end Connect_After;
 
    end Callback;
 
    ------------------------
-   -- Gtk_Signal_Connect --
+   -- Signal_Connect --
    ------------------------
 
-   function Gtk_Connect
-     (Object : in Gtk_Object'Class;
-      Name   : in String;
-      Func   : in Gtk_Void_Callback)
+   function Connect
+     (Obj  : in Object'Class;
+      Name : in String;
+      Func : in Void_Callback)
       return GUint
    is
-      function Internal (Object : System.Address;
-                         Name   : String;
-                         Func   : Gtk_Void_Callback;
-                         Data   : System.Address) return GUint;
+      function Internal (Obj  : System.Address;
+                         Name : String;
+                         Func : Void_Callback;
+                         Data : System.Address) return GUint;
       pragma Import (C, Internal, "gtk_signal_connect");
    begin
-      return Internal (Get_Object (Object), Name & Ascii.NUL,
+      return Internal (Get_Object (Obj), Name & Ascii.NUL,
                        Func, System.Null_Address);
-   end Gtk_Connect;
+   end Connect;
 
    ------------------------------
-   -- Gtk_Signal_Connect_After --
+   -- Signal_Connect_After --
    ------------------------------
 
-   function Gtk_Connect_After
-     (Object : in Gtk_Object'Class;
-      Name   : in String;
-      Func   : in Gtk_Void_Callback)
+   function Connect_After
+     (Obj  : in Object'Class;
+      Name : in String;
+      Func : in Void_Callback)
       return GUint
    is
-      function Internal (Object : System.Address;
-                         Name   : String;
-                         Func   : Gtk_Void_Callback;
-                         Data   : System.Address) return GUint;
+      function Internal (Obj  : System.Address;
+                         Name : String;
+                         Func : Void_Callback;
+                         Data : System.Address) return GUint;
       pragma Import (C, Internal, "gtk_signal_connect_after");
    begin
-      return Internal (Get_Object (Object), Name & Ascii.NUL,
+      return Internal (Get_Object (Obj), Name & Ascii.NUL,
                        Func, System.Null_Address);
-   end Gtk_Connect_After;
+   end Connect_After;
 
    -------------------------------
-   -- Gtk_Signal_Connect_Object --
+   -- Signal_Connect_Object --
    -------------------------------
 
-   function Gtk_Connect_Object
-     (Object      : in Gtk_Object'Class;
+   function Connect_Object
+     (Obj         : in Object'Class;
       Name        : in String;
-      Func        : in Gtk_Signal_Func;
-      Slot_Object : access Gtk_Object'Class)
+      Func        : in Signal_Func;
+      Slot_Object : access Object'Class)
       return GUint
    is
-      function Internal (Object : System.Address;
-                         Name   : String;
-                         Func   : Gtk_Signal_Func;
-                         Slot   : System.Address) return GUint;
+      function Internal (Obj  : System.Address;
+                         Name : String;
+                         Func : Signal_Func;
+                         Slot : System.Address) return GUint;
       pragma Import (C, Internal, "gtk_signal_connect_object");
    begin
-      return Internal (Get_Object (Object), Name & Ascii.NUL,
+      return Internal (Get_Object (Obj), Name & Ascii.NUL,
                        Func, Slot_Object.all'Address);
-   end Gtk_Connect_Object;
+   end Connect_Object;
 
    -------------------------------------
-   -- Gtk_Signal_Connect_Object_After --
+   -- Signal_Connect_Object_After --
    -------------------------------------
 
-   function Gtk_Connect_Object_After
-     (Object      : in Gtk_Object'Class;
+   function Connect_Object_After
+     (Obj         : in Object'Class;
       Name        : in String;
-      Func        : in Gtk_Signal_Func;
-      Slot_Object : access Gtk_Object'Class)
+      Func        : in Signal_Func;
+      Slot_Object : access Object'Class)
       return GUint
    is
-      function Internal (Object : System.Address;
-                         Name   : String;
-                         Func   : Gtk_Signal_Func;
-                         Slot   : System.Address) return GUint;
+      function Internal (Obj  : System.Address;
+                         Name : String;
+                         Func : Signal_Func;
+                         Slot : System.Address) return GUint;
       pragma Import (C, Internal, "gtk_signal_connect_object_after");
    begin
-      return Internal (Get_Object (Object), Name & Ascii.NUL,
+      return Internal (Get_Object (Obj), Name & Ascii.NUL,
                        Func, Slot_Object.all'Address);
-   end Gtk_Connect_Object_After;
+   end Connect_Object_After;
 
    ---------------------------
-   -- Gtk_Signal_Disconnect --
+   -- Signal_Disconnect --
    ---------------------------
 
-   procedure Gtk_Disconnect (Object     : in Gtk_Object'Class;
-                             Handler_Id : in GUint)
+   procedure Disconnect (Obj        : in Object'Class;
+                         Handler_Id : in GUint)
    is
-      procedure Internal (Object     : System.Address;
+      procedure Internal (Obj        : System.Address;
                           Handler_Id : GUint);
       pragma Import (C, Internal, "gtk_signal_disconnect");
    begin
-      Internal (Get_Object (Object), Handler_Id);
-   end Gtk_Disconnect;
+      Internal (Get_Object (Obj), Handler_Id);
+   end Disconnect;
 
    ------------------------------
-   -- Gtk_Signal_Handler_Block --
+   -- Signal_Handler_Block --
    ------------------------------
-   procedure Gtk_Handler_Block (Object : in Gtk_Object'Class;
-                                Handler_Id : in GUint)
+   procedure Handler_Block (Obj        : in Object'Class;
+                            Handler_Id : in GUint)
    is
-      procedure Internal (Object     : in System.Address;
+      procedure Internal (Obj        : in System.Address;
                           Handler_Id : in GUint);
       pragma Import (C, Internal, "gtk_signal_handler_block");
    begin
-      Internal (Get_Object (Object), Handler_Id);
-   end Gtk_Handler_Block;
+      Internal (Get_Object (Obj), Handler_Id);
+   end Handler_Block;
 
    ---------------------------------
-   -- Gtk_Signal_Handlers_Destroy --
+   -- Signal_Handlers_Destroy --
    ---------------------------------
 
-   procedure Gtk_Handlers_Destroy (Object : in Gtk_Object'Class)
+   procedure Handlers_Destroy (Obj : in Object'Class)
    is
-      procedure Internal (Object : System.Address);
+      procedure Internal (Obj : System.Address);
       pragma Import (C, Internal, "gtk_signal_handlers_destroy");
    begin
-      Internal (Get_Object (Object));
-   end Gtk_Handlers_Destroy;
+      Internal (Get_Object (Obj));
+   end Handlers_Destroy;
 
    -------------------------------- -- Signal_Handler_Unblock --
-   -- Gtk_Signal_Handler_Unblock --
+   --------------------------------
    procedure Handler_Unblock (Obj        : in Object'Class;
-   procedure Gtk_Handler_Unblock (Object     : in Gtk_Object'Class;
-                                  Handler_Id : in GUint)
+                              Handler_Id : in GUint)
+   is
       procedure Internal (Obj     : in System.Address;
-      procedure Internal (Object     : in System.Address;
+                          Handler_Id : in GUint);
       pragma Import (C, Internal, "gtk_signal_handler_unblock");
    begin
       Internal (Get_Object (Obj), Handler_Id);
-      Internal (Get_Object (Object), Handler_Id);
-   end Gtk_Handler_Unblock;
+   end Handler_Unblock;
+
 end Gtk.Signal;

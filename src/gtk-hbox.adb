@@ -1,7 +1,7 @@
 
 package body Gtk.Hbox is
 
-   procedure Gtk_New (Widget      : out Gtk_Hbox;
+   procedure Gtk_New (Widget      : out Hbox;
                       Homogeneous : in Boolean;
                       Spacing     : in GInt)
    is

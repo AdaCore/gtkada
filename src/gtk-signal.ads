@@ -9,7 +9,7 @@ package Gtk.Signal is
 
    --  FIXME free memory associated with the data in disconnect
    --  FIXME We have to keep track of the data type somehow
-   --  FIXME A simple way could be that Gtk_Connect returns a special type
+   --  FIXME A simple way could be that Connect returns a special type
    --  FIXME associated with the generic package, and the disconnect
    --  FIXME function is part of this generic package.
 
@@ -24,26 +24,26 @@ package Gtk.Signal is
 
    package Callback is
 
-      type Gtk_Callback is access procedure
-        (Widget : in Gtk.Widget.Gtk_Widget'Class;
+      type Callback is access procedure
+        (Widget : in Gtk.Widget.Widget'Class;
          Data   : access Data_Type);
-      --  Callback function for Gtk_Signal_Connect below
+      --  Callback function for Signal_Connect below
 
-      function Gtk_Connect
-        (Object    : in Gtk_Object'Class;
+      function Connect
+        (Obj       : in Object'Class;
          Name      : in String;
-         Func      : in Gtk_Callback;
+         Func      : in Callback;
          Func_Data : in Data_Type)
          return GUint;
-      --  mapping: Gtk_Connect gtksignal.h gtk_signal_connect
+      --  mapping: Connect gtksignal.h gtk_signal_connect
 
-      function Gtk_Connect_After
-        (Object    : in Gtk_Object'Class;
+      function Connect_After
+        (Obj       : in Object'Class;
          Name      : in String;
-         Func      : in Gtk_Callback;
+         Func      : in Callback;
          Func_Data : in Data_Type)
          return GUint;
-      --  mapping: Gtk_Connect_After gtksignal.h gtk_signal_connect_after
+      --  mapping: Connect_After gtksignal.h gtk_signal_connect_after
 
    end Callback;
 
@@ -52,64 +52,64 @@ package Gtk.Signal is
    --  passed to the callback
    -----------------------------------------------------------------
 
-   type Gtk_Void_Callback is access procedure
-     (Widget : in Gtk.Widget.Gtk_Widget'Class);
+   type Void_Callback is access procedure
+     (Widget : in Gtk.Widget.Widget'Class);
 
-   function Gtk_Connect
-     (Object : in Gtk_Object'Class;
+   function Connect
+     (Obj    : in Object'Class;
       Name   : in String;
-      Func   : in Gtk_Void_Callback)
+      Func   : in Void_Callback)
       return GUint;
-   --  mapping: Gtk_Connect gtksignal.h gtk_signal_connect
+   --  mapping: Connect gtksignal.h gtk_signal_connect
 
-   function Gtk_Connect_After
-     (Object : in Gtk_Object'Class;
+   function Connect_After
+     (Obj    : in Object'Class;
       Name   : in String;
-      Func   : in Gtk_Void_Callback)
+      Func   : in Void_Callback)
       return GUint;
-   --  mapping: Gtk_Connect_After gtksignal.h gtk_signal_connect_after
+   --  mapping: Connect_After gtksignal.h gtk_signal_connect_after
 
    ------------------------------------------------------------------
    --  The following functions are for callbacks send to another object
    ------------------------------------------------------------------
-   type Gtk_Signal_Func is access procedure
-     (Object : in Gtk.Widget.Gtk_Widget'Class);
+   type Signal_Func is access procedure
+     (Object : in Gtk.Widget.Widget'Class);
 
-   function Gtk_Connect_Object
-     (Object      : in Gtk_Object'Class;
+   function Connect_Object
+     (Obj         : in Object'Class;
       Name        : in String;
-      Func        : in Gtk_Signal_Func;
-      Slot_Object : access Gtk_Object'Class)
+      Func        : in Signal_Func;
+      Slot_Object : access Object'Class)
       return GUint;
-   --  mapping: Gtk_Connect_Object gtksignal.h gtk_signal_connect_object
+   --  mapping: Connect_Object gtksignal.h gtk_signal_connect_object
 
-   function Gtk_Connect_Object_After
-     (Object      : in Gtk_Object'Class;
+   function Connect_Object_After
+     (Obj         : in Object'Class;
       Name        : in String;
-      Func        : in Gtk_Signal_Func;
-      Slot_Object : access Gtk_Object'Class)
+      Func        : in Signal_Func;
+      Slot_Object : access Object'Class)
       return GUint;
-   --  mapping: Gtk_Connect_Object_After gtksignal.h \
+   --  mapping: Connect_Object_After gtksignal.h \
    --  mapping: gtk_signal_connect_object_after
 
    ------------------------------------------------------------------
    --  More general functions
    ------------------------------------------------------------------
 
-   procedure Gtk_Disconnect (Object     : in Gtk_Object'Class;
-                             Handler_Id : in GUint);
-   --  mapping: Gtk_Disconnect gtksignal.h gtk_signal_disconnect
+   procedure Disconnect (Obj        : in Object'Class;
+                         Handler_Id : in GUint);
+   --  mapping: Disconnect gtksignal.h gtk_signal_disconnect
 
-   procedure Gtk_Handler_Block (Object     : in Gtk_Object'Class;
-                                Handler_Id : in GUint);
-   --  mapping: Gtk_Handler_Block gtksignal.h gtk_signal_handler_block
+   procedure Handler_Block (Obj        : in Object'Class;
+                            Handler_Id : in GUint);
+   --  mapping: Handler_Block gtksignal.h gtk_signal_handler_block
 
-   procedure Gtk_Handlers_Destroy (Object : in Gtk_Object'Class);
-   --  mapping: Gtk_Handlers_Destroy gtksignal.h gtk_signal_handlers_destroy
+   procedure Handlers_Destroy (Obj : in Object'Class);
+   --  mapping: Handlers_Destroy gtksignal.h gtk_signal_handlers_destroy
 
-   procedure Gtk_Handler_Unblock (Object     : in Gtk_Object'Class;
-                                  Handler_Id : in GUint);
-   --  mapping: Gtk_Handler_Unblock gtksignal.h gtk_signal_handler_unblock
+   procedure Handler_Unblock (Obj        : in Object'Class;
+                              Handler_Id : in GUint);
+   --  mapping: Handler_Unblock gtksignal.h gtk_signal_handler_unblock
 
 
    --  Functions which are not implemented because they are probably not needed
@@ -134,7 +134,7 @@ package Gtk.Signal is
    --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_disconnect_by_func
    --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_disconnect_by_data
    --    Actually, gtk_signal_disconnect_by_data can not be implemented since
-   --    we did a new memory allocation in the Gtk_Connect function
+   --    we did a new memory allocation in the Connect function
    --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_handler_block_by_func
    --  mapping: NOT_IMPLEMENTED gtksignal.h gtk_signal_handler_block_by_data
    --    The two 'block' can not be implemented

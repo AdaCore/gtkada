@@ -3,16 +3,16 @@ with Gtk.Box;
 
 package Gtk.Hbox is
 
-   type Gtk_Hbox is new Gtk.Box.Gtk_Box with private;
+   type Hbox is new Gtk.Box.Box with private;
 
-   procedure Gtk_New (Widget      : out Gtk_Hbox;
+   procedure Gtk_New (Widget      : out Hbox;
                       Homogeneous : in Boolean;
                       Spacing     : in GInt);
-   --  mapping: Gtk_New gtkhbox.h gtk_hbox_new
+   --  mapping: New gtkhbox.h gtk_hbox_new
 
 
 private
 
-   type Gtk_Hbox is new Gtk.Box.Gtk_Box with null record;
+   type Hbox is new Gtk.Box.Box with null record;
 
 end Gtk.Hbox;
