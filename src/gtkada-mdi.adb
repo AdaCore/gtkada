@@ -2376,9 +2376,20 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record'Class;
       Force : Boolean := False)
    is
-      Color : Gdk_Color := Null_Color;
+      Color : Gdk_Color := Get_Bg (Get_Default_Style, State_Normal);
       Note  : constant Gtk_Notebook := Get_Notebook (Child);
       Label : Gtk_Widget;
+
+      function Color_Equal (A, B : Gdk_Color) return Boolean;
+      --  Coloc comparison not taking into account the Pixel value.
+
+      function Color_Equal (A, B : Gdk_Color) return Boolean is
+      begin
+         return Red (A) = Red (B)
+           and then Green (A) = Green (B)
+           and then Blue (A) = Blue (B);
+      end Color_Equal;
+
    begin
       if not Force and then MDI_Child (Child) = Child.MDI.Focus_Child then
          Color := Child.MDI.Focus_Title_Color;
@@ -2387,10 +2398,19 @@ package body Gtkada.MDI is
       if (Force or else not Child.MDI.Draw_Title_Bars)
         and then Note /= null
       then
-         Modify_Bg (Note, State_Normal, Color);
-         Label := Get_Tab_Label (Note, Child);
-         if Label /= null then
-            Modify_Bg (Label, State_Normal, Color);
+         --  If the color is already being applied to this notebook, avoid
+         --  the call to Modify_BG, which is quite costly since it causes
+         --  a queue_resize on the notebook.
+         --  Also avoids a potential loop caused by the behavior above.
+         if not Color_Equal (Get_Bg (Get_Style (Note), State_Normal), Color)
+           and then not Color_Equal
+             (Get_Bg (Get_Modifier_Style (Note), State_Normal), Color)
+         then
+            Modify_Bg (Note, State_Normal, Color);
+            Label := Get_Tab_Label (Note, Child);
+            if Label /= null then
+               Modify_Bg (Label, State_Normal, Color);
+            end if;
          end if;
       end if;
    end Update_Tab_Color;
