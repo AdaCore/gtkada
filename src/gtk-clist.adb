@@ -42,7 +42,8 @@ with Gtk.Util; use Gtk.Util;
 package body Gtk.Clist is
 
    procedure Output_Titles (Name : in String;
-                            A    : in Chars_Ptr_Array);
+                            A    : in Chars_Ptr_Array;
+                            File : in File_Type);
    --  Given an array of C String, generate the corresponding Ada code
    --  in the context of GATE.
 
@@ -1322,19 +1323,24 @@ package body Gtk.Clist is
    -------------------
 
    procedure Output_Titles (Name : in String;
-                            A    : in Chars_Ptr_Array) is
+                            A    : in Chars_Ptr_Array;
+                            File : in File_Type) is
    begin
       Glib.Glade.Add_Package ("Interfaces.C.Strings");
-      Put_Line (Name & " : constant Chars_Ptr_Array (1 .. "
-                & Gint'Image (A'Last) & ")");
-      Put_Line ("        : = (");
+      Put_Line
+        (File,
+         Name & " : constant Chars_Ptr_Array (1 .. " &
+         Gint'Image (A'Last) & ")");
+      Put_Line (File, "        : = (");
 
       for Index in A'First .. A'Last loop
-         Put_Line ("             Interfaces.C.Strings.New_String ( """ &
-                   Interfaces.C.Strings.Value (A (Index)) & """,");
+         Put_Line
+           (File,
+            "             Interfaces.C.Strings.New_String ( """ &
+            Interfaces.C.Strings.Value (A (Index)) & """,");
       end loop;
 
-      Put_Line ("            );");
+      Put_Line (File, "            );");
    end Output_Titles;
 
    ----------------------
@@ -1377,7 +1383,7 @@ package body Gtk.Clist is
             Name   : constant String := Get_Field (N, "name").all & "_Titles";
          begin
             Build_Title_List (N, Titles);
-            Output_Titles (Name, Titles);
+            Output_Titles (Name, Titles, File);
             Gen_New (N, "Clist", Columns.all, Name, File => File);
          end;
       else

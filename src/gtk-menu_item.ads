@@ -63,6 +63,12 @@ package Gtk.Menu_Item is
 
    procedure Right_Justify (Menu_Item : access Gtk_Menu_Item_Record);
 
+   procedure Set_Right_Justify
+     (Menu_Item : access Gtk_Menu_Item_Record;
+      Justify   : Boolean);
+   --  Call Right_Justify when Justify. Noop otherwise
+   --  This procedure is needed by Gate to automate the code generation.
+
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
  

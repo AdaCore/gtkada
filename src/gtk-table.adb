@@ -240,14 +240,17 @@ package body Gtk.Table is
 
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
-      P : Node_Ptr;
+      P   : Node_Ptr;
+      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+
    begin
       if not N.Specific_Data.Created then
          P := Find_Tag (N.Child, "name");
 
          if P /= null then
             Add_Package ("Table");
-            Put (File, "   Table.Gtk_New (" & To_Ada (P.Value.all) & ", " &
+            Put (File, "   Gtk_New (" & To_Ada (Top.all) & "." &
+              To_Ada (P.Value.all) & ", " &
               To_Ada (Get_Field (N, "rows").all));
             Put (File, ", " & To_Ada (Get_Field (N, "columns").all));
             Put_Line

@@ -957,7 +957,10 @@ package body Gtk.Widget is
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
       Child     : Node_Ptr := Find_Tag (N.Child, "child");
-      Q, Top    : Node_Ptr;
+      Q         : Node_Ptr;
+      Top       : constant Node_Ptr := Find_Top_Widget (N);
+      Top_Name  : constant String_Ptr := Get_Field (Top, "name");
+      Cur       : constant String_Ptr := Get_Field (N, "name");
       S         : String_Ptr;
       Flag_Set  : Boolean;
       First     : Natural;
@@ -976,29 +979,49 @@ package body Gtk.Widget is
 
       if S /= null and then Boolean'Value (S.all) then
          Add_Package ("Object");
-         Put_Line (File, "   Object.Set_Flags (Gtk_Object (" &
-           To_Ada (Get_Field (N, "name").all) & "), Can_Default);");
+         Put (File, "   Set_Flags (");
+
+         if Top_Name /= Cur then
+            Put (File, To_Ada (Top_Name.all) & ".");
+         end if;
+
+         Put_Line (File, To_Ada (Cur.all) & ", Can_Default);");
       end if;
 
       S := Get_Field (N, "has_focus");
 
       if S /= null and then Boolean'Value (S.all) then
-         Put_Line (File, "   Widget.Grab_Focus (Gtk_Widget (" &
-           To_Ada (Get_Field (N, "name").all) & "));");
+         Put (File, "   Grab_Focus (");
+
+         if Top_Name /= Cur then
+            Put (File, To_Ada (Top_Name.all) & ".");
+         end if;
+
+         Put_Line (File, To_Ada (Cur.all) & ");");
       end if;
 
       S := Get_Field (N, "has_default");
 
       if S /= null and then Boolean'Value (S.all) then
-         Put_Line (File, "   Widget.Grab_Default (Gtk_Widget (" &
-           To_Ada (Get_Field (N, "name").all) & "));");
+         Put (File, "   Grab_Default (");
+
+         if Top_Name /= Cur then
+            Put (File, To_Ada (Top_Name.all) & ".");
+         end if;
+
+         Put_Line (File, To_Ada (Cur.all) & ");");
       end if;
 
       S := Get_Field (N, "events");
 
       if S /= null then
-         Put (File, "   Widget.Set_Events (Gtk_Widget (" &
-           To_Ada (Get_Field (N, "name").all) & "), ");
+         Put (File, "   Set_Events (");
+
+         if Top_Name /= Cur then
+            Put (File, To_Ada (Top_Name.all) & ".");
+         end if;
+
+         Put (File, To_Ada (Cur.all) & ", ");
 
          Flag_Set := False;
          The_First := S'First;
@@ -1049,10 +1072,12 @@ package body Gtk.Widget is
 
             elsif Get_Field (Child, "left_attach") /= null then
                Add_Package ("Table");
-               Put_Line (File, "   Table.Attach (" &
+               Put_Line (File, "   Attach (" &
+                 To_Ada (Top_Name.all) & "." &
                  To_Ada (Find_Tag
                    (Find_Parent (N.Parent, "Table"), "name").Value.all) &
-                 ", " & To_Ada (Get_Field (N, "name").all) &
+                 ", " & To_Ada (Top_Name.all) & "." &
+                 To_Ada (Cur.all) &
                  ", " & Get_Field (Child, "left_attach").all &
                  ", " & Get_Field (Child, "right_attach").all &
                  ", " & Get_Field (Child, "top_attach").all &
@@ -1136,18 +1161,17 @@ package body Gtk.Widget is
       Q := Find_Tag (N.Child, "accelerator");
 
       if Q /= null then
-         Top := Find_Top_Widget (N);
-
          if not Top.Specific_Data.Has_Accel_Group then
-            Put_Line (File, "   Accel_Group.Gtk_New (The_Accel_Group);");
-            Put_Line (File, "   Window.Add_Accel_Group (" &
-              To_Ada (Get_Field (Top, "name").all) & ", The_Accel_Group);");
+            Put_Line (File, "   Gtk_New (The_Accel_Group);");
+            Put_Line (File, "   Add_Accel_Group (" &
+              To_Ada (Top_Name.all) & ", The_Accel_Group);");
             Top.Specific_Data.Has_Accel_Group := True;
          end if;
 
-         Put_Line (File, "   Widget.Add_Accelerator (Gtk_Widget (" &
-            Get_Field (N, "name").all & "), """ & Get_Field (Q, "signal").all &
-            """,");
+         Put_Line (File, "   Add_Accelerator (" &
+            To_Ada (Top_Name.all) & "." &
+            To_Ada (Cur.all) & ", """ &
+            Get_Field (Q, "signal").all & """,");
          S := Get_Field (Q, "modifiers");
          Put (File, "     The_Accel_Group, " & Get_Field (Q, "key").all);
 

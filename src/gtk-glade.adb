@@ -127,22 +127,26 @@ package body Gtk.Glade is
    --  Top_Level is True when Create_Widget is called for a top level
    --  widget
 
-   procedure Print_Create_Function
+   procedure Print_Initialize_Procedure
      (N : Node_Ptr; File : File_Type; First : Boolean := False);
-   --  Print body of a given "create" function to file. First is used only
+   --  Print body of a given "Initialize" procedure to file. First is used only
    --  internally when this procedure is called recursively.
 
    procedure Print_Header (N : Node_Ptr; File : File_Type);
    --  Print the main procedure with the name of the project contained in N
    --  to file.
 
-   procedure Print_Foot_Page (N : Node_Ptr; File : File_Type);
-   --  Print end of each "create" function to file.
+   type Variable_Kind is (Global, Local);
 
    procedure Print_Var
-     (N : Node_Ptr; File : File_Type; First : Boolean := True);
+     (N           : Node_Ptr;
+      File        : File_Type;
+      Kind        : Variable_Kind);
+
    --  Print variable declarations for a given "create" function to file.
-   --  First is only used internally.
+   --  If Kind is Global, print only the field as described in the node N,
+   --  otherwise print only the variables used internally to support the
+   --  global variables (e.g temporary lists, ...)
 
    -----------
    -- Equal --
@@ -233,11 +237,11 @@ package body Gtk.Glade is
          null;
    end Generic_DPtr;
 
-   ---------------------------
-   -- Print_Create_Function --
-   ---------------------------
+   --------------------------------
+   -- Print_Initialize_Procedure --
+   --------------------------------
 
-   procedure Print_Create_Function
+   procedure Print_Initialize_Procedure
      (N : Node_Ptr; File : File_Type; First : Boolean := False)
    is
       P : Node_Ptr;
@@ -255,37 +259,24 @@ package body Gtk.Glade is
 
       while P /= null loop
          if P.Tag.all = "widget" then
-            Print_Create_Function (P, File);
+            Print_Initialize_Procedure (P, File);
          end if;
 
          P := P.Next;
       end loop;
-   end Print_Create_Function;
-
-   ---------------------
-   -- Print_Foot_Page --
-   ---------------------
-
-   procedure Print_Foot_Page (N : Node_Ptr; File : File_Type) is
-      Name : String := To_Ada (Get_Field (N, "name").all);
-
-   begin
-      Put_Line (File, "   return " & Name & ";");
-      Put_Line (File, "end Create_" & Name & ";");
-      New_Line (File);
-   end Print_Foot_Page;
+   end Print_Initialize_Procedure;
 
    ------------------
    -- Print_Header --
    ------------------
 
    procedure Print_Header (N : Node_Ptr; File : File_Type) is
-      P, Q, R : String_Ptr;
+      P, Q : String_Ptr;
       M : Node_Ptr;
 
    begin
       P := Get_Field (N.Child.Next, "name");
-      R := Get_Field (N.Child, "name");
+      Q := Get_Field (N.Child, "name");
 
       Put_Line ("with Gtk; use Gtk;");
       Put_Line ("with Gtk.Main;");
@@ -297,34 +288,17 @@ package body Gtk.Glade is
          exit when M = null;
 
          P := Get_Field (M, "name");
-         Q := Get_Field (M, "class");
 
-         if P /= null and Q /= null then
-            Put_Line ("with Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) &
-              "; use Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) & ";");
-            Put_Line ("with Create_" & To_Ada (P.all) & ";");
+         if P /= null then
+            Put_Line ("with " & To_Ada (P.all) & "_Pkg; use " &
+              To_Ada (P.all) & "_Pkg;");
          end if;
 
          M := M.Next;
       end loop;
 
       New_Line;
-      Put_Line ("procedure " & To_Ada (R.all) & " is");
-      M := N.Child.Next;
-
-      loop
-         exit when M = null;
-         P := Get_Field (M, "name");
-         Q := Get_Field (M, "class");
-
-         if P /= null and Q /= null then
-            Put_Line ("   " & To_Ada (P.all) & " : " & To_Ada (Q.all) & ";");
-         end if;
-
-         M := M.Next;
-      end loop;
-
-      New_Line;
+      Put_Line ("procedure " & To_Ada (Q.all) & " is");
       Put_Line ("begin");
       Put_Line ("   Gtk.Main.Set_Locale;");
       Put_Line ("   Gtk.Main.Init;");
@@ -335,35 +309,15 @@ package body Gtk.Glade is
          P := Get_Field (M, "name");
 
          if P /= null then
-            Put_Line ("   " & To_Ada (P.all) & " := Create_" &
-              To_Ada (P.all) & ";");
-            Put_Line ("   Widget.Show_All (Gtk_Widget (" &
-              To_Ada (P.all) & "));");
+            Put_Line ("   Gtk_New (" & To_Ada (P.all) & ");");
+            Put_Line ("   Show_All (" & To_Ada (P.all) & ");");
          end if;
 
          M := M.Next;
       end loop;
 
       Put_Line ("   Gtk.Main.Main;");
-      Put_Line ("end " & To_Ada (R.all) & ";");
-      M := N.Child.Next;
-
-      loop
-         exit when M = null;
-         P := Get_Field (M, "name");
-         Q := Get_Field (M, "class");
-
-         if P /= null and Q /= null then
-            New_Line;
-            Put_Line ("with Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) &
-              "; use Gtk." & To_Ada (Q (Q'First + 3 .. Q'Last)) & ";");
-            New_Line;
-            Put_Line ("function Create_" & To_Ada (P.all) & " return " &
-              To_Ada (Q.all) & ";");
-         end if;
-
-         M := M.Next;
-      end loop;
+      Put_Line ("end " & To_Ada (Q.all) & ";");
    end Print_Header;
 
    ---------------
@@ -371,75 +325,137 @@ package body Gtk.Glade is
    ---------------
 
    procedure Print_Var
-     (N : Node_Ptr; File : File_Type; First : Boolean := True)
-   is
-      P : Node_Ptr := N;
-      Q : Node_Ptr;
-      S : String_Ptr;
-      First_Option_Menu : Boolean := True;
+     (N           : Node_Ptr;
+      File        : File_Type;
+      Kind        : Variable_Kind)
+  is
+      Option_Menu : Boolean := True;
+      Callback    : Boolean := True;
+      Accelerator : Boolean := True;
+
+      procedure Print_Var
+        (N     : Node_Ptr;
+         File  : File_Type;
+         Kind  : Variable_Kind;
+         First : Boolean;
+         Option_Menu : in out Boolean;
+         Callback    : in out Boolean;
+         Accelerator : in out Boolean);
+      --  Internal recursive version of this procedure
+
+      procedure Print_Var
+        (N     : Node_Ptr;
+         File  : File_Type;
+         Kind  : Variable_Kind;
+         First : Boolean;
+         Option_Menu : in out Boolean;
+         Callback    : in out Boolean;
+         Accelerator : in out Boolean)
+      is
+         P : Node_Ptr := N;
+         Q : Node_Ptr;
+         S : String_Ptr;
+
+      begin
+         while P /= null loop
+            if P.Tag.all = "widget" then
+               Q := Find_Tag (P.Child, "name");
+
+               if Q /= null then
+                  S := Get_Field (P, "class");
+
+                  if Kind = Global then
+                     if not First then
+                        Put_Line (File, "      " & To_Ada (Q.Value.all) &
+                          " : " & To_Ada (S.all) & ";");
+                     end if;
+
+                  elsif Kind = Local then
+                     --  Special cases:
+                     --  Declare a Gtk_Adjustment with each Gtk_Spin_Button,
+                     --  Gtk_Scale and Gtk_Scrollbar
+
+                     if S.all = "GtkSpinButton" or else S.all = "GtkHScale"
+                       or else S.all = "GtkVScale"
+                       or else S.all = "GtkHScrollbar"
+                       or else S.all = "GtkVScrollbar"
+                     then
+                        Put_Line (File, "   " & To_Ada (Q.Value.all) &
+                          "_Adj : Gtk_Adjustment;");
+                     end if;
+
+                     --  Declare a GSList for each Widget containing radio
+                     --  buttons
+
+                     if S.all = "GtkRadioButton" then
+                        if not
+                          P.Parent.Specific_Data.Has_Radio_Button_Group
+                        then
+                           Put_Line (File, "   " &
+                             To_Ada (Get_Field (P.Parent, "name").all) &
+                             "_Group : Widget_SList.GSList;");
+                           P.Parent.Specific_Data.Has_Radio_Button_Group :=
+                             True;
+                        end if;
+                     end if;
+
+                     --  Declare a Glist with each combo box
+
+                     if S.all = "GtkCombo" then
+                        Put_Line (File, "   " &
+                          To_Ada (Get_Field (P, "name").all) &
+                          "_Items : String_List.Glist;");
+                     end if;
+
+                     --  Declare a menu with each option menu
+
+                     if S.all = "GtkOptionMenu" then
+                        Put_Line (File, "   " &
+                          To_Ada (Get_Field (P, "name").all) &
+                          "_Menu : Gtk_Menu;");
+
+                        if Option_Menu then
+                           Put_Line (File,
+                             "   The_Menu_Item : Gtk_Menu_Item;");
+                           Option_Menu := False;
+                        end if;
+                     end if;
+
+                     --  Declare a Cb_Id if any signal needs to be connected in
+                     --  this widget
+
+                     if Find_Tag (P.Child, "signal") /= null then
+                        if Callback then
+                           Put_Line (File, "   Cb_Id : Glib.Guint;");
+                           Callback := False;
+                        end if;
+                     end if;
+
+                     --  Declare an Accel_Group if any accelerator needs to be
+                     --  set up in this widget
+
+                     if Find_Tag (P.Child, "accelerator") /= null then
+                        if Accelerator then
+                           Put_Line (File,
+                             "   The_Accel_Group : Gtk_Accel_Group;");
+                           Accelerator := False;
+                        end if;
+                     end if;
+                  end if;
+
+                  Print_Var (P.Child, File, Kind, False, Option_Menu,
+                    Callback, Accelerator);
+               end if;
+            end if;
+
+            exit when First;
+
+            P := P.Next;
+         end loop;
+      end Print_Var;
 
    begin
-      while P /= null loop
-         if P.Tag.all = "widget" then
-            Q := Find_Tag (P.Child, "name");
-
-            if Q /= null then
-               S := Get_Field (P, "class");
-               Put_Line (File, "   " & To_Ada (Q.Value.all) & " : " &
-                 To_Ada (S.all) & ";");
-
-               --  Special cases:
-               --  Declare a Gtk_Adjustment with each Gtk_Spin_Button,
-               --  Gtk_Scale and Gtk_Scrollbar
-
-               if S.all = "GtkSpinButton" or else S.all = "GtkHScale"
-                 or else S.all = "GtkVScale"
-                 or else S.all = "GtkHScrollbar"
-                 or else S.all = "GtkVScrollbar"
-               then
-                  Put_Line (File, "   " & To_Ada (Q.Value.all) &
-                    "_Adj : Gtk_Adjustment;");
-               end if;
-
-               --  Declare a GSList with each Widget containing radio buttons
-
-               if S.all = "GtkRadioButton" then
-                  if not P.Parent.Specific_Data.Has_Radio_Button_Group then
-                     Put_Line (File, "   " &
-                       To_Ada (Get_Field (P.Parent, "name").all) &
-                       "_Group : Widget_SList.GSList;");
-                     P.Parent.Specific_Data.Has_Radio_Button_Group := True;
-                  end if;
-               end if;
-
-               --  Declare a Glist with each combo box
-
-               if S.all = "GtkCombo" then
-                  Put_Line (File, "   " &
-                    To_Ada (Get_Field (P, "name").all) &
-                    "_Items : String_List.Glist;");
-               end if;
-
-               --  Declare a menu with each option menu
-
-               if S.all = "GtkOptionMenu" then
-                  Put_Line (File, "   " &
-                    To_Ada (Get_Field (P, "name").all) & "_Menu : Gtk_Menu;");
-
-                  if First_Option_Menu then
-                     Put_Line (File, "   The_Menu_Item : Gtk_Menu_Item;");
-                     First_Option_Menu := False;
-                  end if;
-               end if;
-
-               Print_Var (P.Child, File, False);
-            end if;
-         end if;
-
-         exit when First;
-
-         P := P.Next;
-      end loop;
+      Print_Var (N, File, Kind, True, Option_Menu, Callback, Accelerator);
    end Print_Var;
 
    ------------------------
@@ -478,33 +494,71 @@ package body Gtk.Glade is
 
          if Name /= null and Class /= null then
             Create (Output);
-            Put_Line (Output, "function Create_" &
-              To_Ada (Name.all) & " return " & To_Ada (Class.all) & " is");
-            Put_Line (Output, "   Cb_Id : Glib.Guint;");
-            Put_Line (Output, "   The_Accel_Group : Gtk_Accel_Group;");
-            Print_Var (M, Output);
+            Put_Line (Output, "package " & To_Ada (Name.all) & "_Pkg is");
             New_Line (Output);
-            Put_Line (Output, "begin");
-            Print_Create_Function (M, Output, True);
-            Print_Foot_Page (M, Output);
-            New_Line;
-            Put_Line ("with Glib; use Glib;");
-            Put_Line ("with Gtk; use Gtk;");
+            Put_Line (Output, "   type " & To_Ada (Name.all) &
+              "_Record is new " & To_Ada (Class.all) & "_Record with record");
+            Print_Var (M, Output, Global);
+            Put_Line (Output, "   end record;");
+            Put_Line (Output, "   type " & To_Ada (Name.all) &
+              "_Access is access all " & To_Ada (Name.all) & "_Record'Class;");
+            New_Line (Output);
+            Put_Line (Output, "   procedure Gtk_New (" & To_Ada (Name.all) &
+              " : out " & To_Ada (Name.all) & "_Access);");
+            Put_Line (Output, "   procedure Initialize (" & To_Ada (Name.all) &
+              " : access " & To_Ada (Name.all) & "_Record'Class);");
+            New_Line (Output);
+            Put_Line (Output, "   " & To_Ada (Name.all) & " : " &
+              To_Ada (Name.all) & "_Access;");
+            New_Line (Output);
+            Put_Line (Output, "end " & To_Ada (Name.all) & "_Pkg;");
+
+            Put_Line (Output, "with Glib; use Glib;");
+            Put_Line (Output, "with Gtk; use Gtk;");
 
             --  ??? It would be nice to determine when these packages are
             --  needed
 
-            Put_Line ("with Gdk.Types; use Gdk.Types;");
-            Put_Line ("with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;");
-            Put_Line ("with Gtk.Enums;  use Gtk.Enums;");
-            Put_Line ("with Gtk.Button; use Gtk.Button;");
-            Put_Line ("with Gtk.Widget; use Gtk.Widget;");
-            Put_Line ("with Gtk.Window; use Gtk.Window;");
-            Put_Line ("with Gtk.Pixmap; use Gtk.Pixmap;");
-            Put_Line ("with Gtk.Accel_Group; use Gtk.Accel_Group;");
+            Put_Line (Output, "with Gdk.Types; use Gdk.Types;");
+            Put_Line (Output,
+              "with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;");
+            Put_Line (Output, "with Gtk.Widget; use Gtk.Widget;");
+            Put_Line (Output, "with Gtk.Enums;  use Gtk.Enums;");
+            Put_Line (Output, "with Gtk.Pixmap; use Gtk.Pixmap;");
+            Put_Line (Output, "with Gtk.Accel_Group; use Gtk.Accel_Group;");
 
-            Put_Line ("with Callbacks_" & Project &
+            Put_Line (Output, "with Callbacks_" & Project &
               "; use Callbacks_" & Project & ";");
+            New_Line (Output);
+            Put_Line (Output, "package body " & To_Ada (Name.all) &
+              "_Pkg is");
+            New_Line (Output);
+            Put_Line (Output, "procedure Gtk_New (" &
+              To_Ada (Name.all) & " : out " & To_Ada (Name.all) &
+              "_Access) is");
+            Put_Line (Output, "begin");
+            Put_Line (Output, "   " & To_Ada (Name.all) & " := new " &
+              To_Ada (Name.all) & "_Record;");
+            Put_Line (Output, "   " & To_Ada (Name.all) & "_Pkg.Initialize (" &
+              To_Ada (Name.all) & ");");
+            Put_Line (Output, "end Gtk_New;");
+            New_Line (Output);
+            Put_Line (Output, "procedure Initialize (" &
+              To_Ada (Name.all) & " : access " & To_Ada (Name.all) &
+              "_Record'Class) is");
+            Print_Var (M, Output, Local);
+            New_Line (Output);
+            Put_Line (Output, "begin");
+            Print_Initialize_Procedure (M, Output, True);
+            Put_Line (Output, "end Initialize;");
+            New_Line (Output);
+            Put_Line (Output, "end " & To_Ada (Name.all) & "_Pkg;");
+
+            --  Add "predefined" packages
+
+            Add_Package ("Button");
+            Add_Package ("Window");
+
             Gen_Packages (Standard_Output);
             Reset_Packages;
             New_Line;
@@ -526,7 +580,6 @@ package body Gtk.Glade is
          M := M.Next;
       end loop;
 
-      New_Line;
       Num_Signals := Gen_Signal_Instanciations (Project, Standard_Output);
    end Generate;
 

@@ -107,6 +107,7 @@ package body Gtk.Label is
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
       Child_Name : String_Ptr := Get_Field (N, "child_name");
       S          : String_Ptr;
+      Top        : String_Ptr := Get_Field (Find_Top_Widget (N), "name");
       P          : Node_Ptr;
       Page_Num   : Gint;
 
@@ -157,10 +158,12 @@ package body Gtk.Label is
 
             Put_Line (File,
               "   Notebook.Set_Tab (" &
+              To_Ada (Top.all) & "." &
               To_Ada (Find_Tag
                 (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
                  "name").Value.all) & "," &
               Gint'Image (Page_Num) & ", " &
+              To_Ada (Top.all) & "." &
               To_Ada (Get_Field (N, "name").all) & ");");
          end if;
 

@@ -556,8 +556,10 @@ package body Gtk.Toolbar is
 
    procedure Generate (N       : in Node_Ptr;
                        File    : in File_Type) is
-      P, Top : Node_Ptr;
-      S : String_Ptr;
+      P   : Node_Ptr;
+      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Cur : constant String_Ptr := Get_Field (N, "name");
+      S   : String_Ptr;
 
    begin
       Gen_New (N, "Toolbar", Get_Field (N, "orientation").all,
@@ -576,14 +578,19 @@ package body Gtk.Toolbar is
             S := Get_Field (P, "child_name");
 
             if S /= null and then Get_Part (S.all, 1) = "Toolbar" then
-               Top := Find_Top_Widget (N);
-               Put_Line (File, "   " & To_Ada (Get_Field (P, "name").all) &
-                 " := Toolbar.Append_Item (" &
-                 Get_Field (N, "name").all & ", """ &
+               Put (File, "   " & To_Ada (Top.all) & "." &
+                 To_Ada (Get_Field (P, "name").all) &
+                 " := Append_Item (");
+
+               if Top /= Cur then
+                  Put (File, To_Ada (Top.all) & ".");
+               end if;
+
+               Put_Line (File, To_Ada (Cur.all) & ", """ &
                  Get_Field (P, "label").all & """, """", """",");
                Put_Line (File, "     Create_Pixmap (" & '"' &
                  Get_Field (P, "icon").all &
-                 """, " & To_Ada (Get_Field (Top, "name").all) & "));");
+                 """, " & To_Ada (Top.all) & "));");
                P.Specific_Data.Created := True;
                P.Specific_Data.Has_Container := True;
             end if;

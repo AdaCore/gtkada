@@ -274,13 +274,15 @@ package body Gtk.Spin_Button is
    --------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
-      S : String_Ptr;
+      S   : String_Ptr;
+      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+
    begin
       if not N.Specific_Data.Created then
          S := Get_Field (N, "name");
          Add_Package ("Adjustment");
          Put_Line
-           (File, "   Adjustment.Gtk_New (" & To_Ada (S.all) & "_Adj, " &
+           (File, "   Gtk_New (" & To_Ada (S.all) & "_Adj, " &
             To_Float (Get_Field (N, "hvalue").all) & ", " &
             To_Float (Get_Field (N, "hlower").all) & ", " &
             To_Float (Get_Field (N, "hupper").all) & ", " &
@@ -288,8 +290,8 @@ package body Gtk.Spin_Button is
             To_Float (Get_Field (N, "hpage").all)  & ", " &
             To_Float (Get_Field (N, "hpage_size").all) & ");");
          Add_Package ("Spin_Button");
-         Put_Line (File, "   Spin_Button.Gtk_New (" & To_Ada (S.all) & ", " &
-           To_Ada (S.all) & "_Adj, " &
+         Put_Line (File, "   Gtk_New (" & To_Ada (Top.all) & "." &
+           To_Ada (S.all) & ", " & To_Ada (S.all) & "_Adj, " &
            To_Float (Get_Field (N, "climb_rate").all) & ", " &
            Get_Field (N, "digits").all & ");");
          N.Specific_Data.Created := True;

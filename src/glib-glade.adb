@@ -278,26 +278,29 @@ package body Glib.Glade is
      (N : Node_Ptr; Class, Name : String;
       File : File_Type; Delim : Character := ' '; Is_Float : Boolean := False)
    is
-      P : Node_Ptr := Find_Tag (N.Child, Name);
+      P   : constant String_Ptr := Get_Field (N, Name);
+      Cur : constant String_Ptr := Get_Field (N, "name");
+      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
 
    begin
       if P /= null then
          Add_Package (Class);
+         Put (File, "   Set_" & To_Ada (Name) & " (");
 
-         if Is_Float then
-            Put (File, "   " & Class & ".Set_" & To_Ada (Name) & " (Gtk_" &
-              Class & " (" & To_Float (Find_Tag (N.Child, "name").Value.all) &
-              "), ");
-         else
-            Put (File, "   " & Class & ".Set_" & To_Ada (Name) & " (Gtk_" &
-              Class & " (" & To_Ada (Find_Tag (N.Child, "name").Value.all) &
-              "), ");
+         if Top /= Cur then
+            Put (File, To_Ada (Top.all) & ".");
          end if;
 
+         Put (File, To_Ada (Get_Field (N, "name").all) & ", ");
+
          if Delim /= ' ' then
-            Put_Line (File, Delim & P.Value.all & Delim & ");");
+            Put_Line (File, Delim & P.all & Delim & ");");
          else
-            Put_Line (File, To_Ada (P.Value.all) & ");");
+            if Is_Float then
+               Put_Line (File, To_Float (P.all) & ");");
+            else
+               Put_Line (File, To_Ada (P.all) & ");");
+            end if;
          end if;
       end if;
    end Gen_Set;
@@ -305,14 +308,21 @@ package body Glib.Glade is
    procedure Gen_Set
      (N : Node_Ptr; Class, Name, Field : String; File : File_Type)
    is
-      P : String_Ptr := Get_Field (N, Field);
+      P   : constant String_Ptr := Get_Field (N, Field);
+      Cur : constant String_Ptr := Get_Field (N, "name");
+      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
 
    begin
       if P /= null then
          Add_Package (Class);
-         Put_Line (File, "   " & Class & ".Set_" & To_Ada (Name) & " (Gtk_" &
-           Class & " (" & To_Ada (Find_Tag (N.Child, "name").Value.all) &
-           "), " & To_Ada (P.all) & ");");
+         Put (File, "   Set_" & To_Ada (Name) & " (");
+
+         if Cur /= Top then
+            Put (File, To_Ada (Top.all) & ".");
+         end if;
+
+         Put_Line (File, To_Ada (Get_Field (N, "name").all) & ", " &
+           To_Ada (P.all) & ");");
       end if;
    end Gen_Set;
 
@@ -322,10 +332,12 @@ package body Glib.Glade is
       File : File_Type;
       Is_Float : Boolean := False)
    is
-      P : String_Ptr := Get_Field (N, Field1);
-      Q : String_Ptr := Get_Field (N, Field2);
-      R : String_Ptr := Get_Field (N, Field3);
-      S : String_Ptr := Get_Field (N, Field4);
+      P   : constant String_Ptr := Get_Field (N, Field1);
+      Q   : constant String_Ptr := Get_Field (N, Field2);
+      R   : constant String_Ptr := Get_Field (N, Field3);
+      S   : constant String_Ptr := Get_Field (N, Field4);
+      Cur : constant String_Ptr := Get_Field (N, "name");
+      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
 
    begin
       if P /= null then
@@ -333,12 +345,22 @@ package body Glib.Glade is
             Add_Package (Class);
 
             if Is_Float then
-               Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
-                 " (" & To_Ada (Get_Field (N, "name").all) & "), " &
+               Put (File, "   Set_" & Name & " (");
+
+               if Cur /= Top then
+                  Put (File, To_Ada (Top.all) & ".");
+               end if;
+
+               Put (File, To_Ada (Get_Field (N, "name").all) & ", " &
                  To_Float (P.all));
             else
-               Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
-                 " (" & To_Ada (Get_Field (N, "name").all) & "), " &
+               Put (File, "   Set_" & Name & " (");
+
+               if Cur /= Top then
+                  Put (File, To_Ada (Top.all) & ".");
+               end if;
+
+               Put (File, To_Ada (Get_Field (N, "name").all) & ", " &
                  To_Ada (P.all));
             end if;
 
@@ -347,8 +369,13 @@ package body Glib.Glade is
          then
             Add_Package (Class);
 
-            Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
-              " (" & To_Ada (Get_Field (N, "name").all) & "), ");
+            Put (File, "   Set_" & Name & " (");
+
+            if Cur /= Top then
+               Put (File, To_Ada (Top.all) & ".");
+            end if;
+
+            Put (File, To_Ada (Get_Field (N, "name").all) & ", ");
 
             if Is_Float then
                Put (File, To_Float (P.all) & ", " & To_Float (Q.all));
@@ -393,31 +420,51 @@ package body Glib.Glade is
       Class, Param1, Param2, New_Name : String := "";
       File : File_Type; Delim : Character := ' ')
    is
-      P : Node_Ptr;
+      P   : String_Ptr;
+      Cur : String_Ptr;
+      Top : String_Ptr;
 
    begin
       if N.Specific_Data.Created then
          return;
       end if;
 
-      P := Find_Tag (N.Child, "name");
+      P := Get_Field (N, "name");
+      Cur := Get_Field (N, "name");
+      Top := Get_Field (Find_Top_Widget (N), "name");
 
       if P /= null then
          Add_Package (Class);
 
          if Param1 /= "" then
-            Put (File, "   " & Class & ".Gtk_New");
+            if Cur = Top then
+               Put (File, "   Gtk." & Class & ".Initialize");
+            else
+               Put (File, "   Gtk_New");
+            end if;
 
             if New_Name /= "" then
                Put (File, '_' & New_Name);
             end if;
 
             if Delim /= ' ' then
-               Put (File, " (" & To_Ada (P.Value.all) & ", " & Delim &
+               Put (File, " (");
+
+               if Cur /= Top then
+                  Put (File, To_Ada (Top.all) & ".");
+               end if;
+
+               Put (File, To_Ada (P.all) & ", " & Delim &
                  Param1 & Delim);
+
             else
-               Put
-                 (File, " (" & To_Ada (P.Value.all) & ", " & To_Ada (Param1));
+               Put (File, " (");
+
+               if Cur /= Top then
+                  Put (File, To_Ada (Top.all) & ".");
+               end if;
+
+               Put (File, To_Ada (P.all) & ", " & To_Ada (Param1));
             end if;
 
             if Param2 /= "" then
@@ -427,13 +474,23 @@ package body Glib.Glade is
             Put_Line (File, ");");
 
          else
-            Put (File, "   " & Class & ".Gtk_New");
+            if Cur = Top then
+               Put (File, "   Gtk." & Class & ".Initialize");
+            else
+               Put (File, "   Gtk_New");
+            end if;
 
             if New_Name /= "" then
                Put (File, '_' & New_Name);
             end if;
 
-            Put_Line (File, " (" & To_Ada (P.Value.all) & ");");
+            Put (File, " (");
+
+            if Cur /= Top then
+               Put (File, To_Ada (Top.all) & ".");
+            end if;
+
+            Put_Line (File, To_Ada (P.all) & ");");
          end if;
 
          N.Specific_Data.Created := True;
@@ -444,26 +501,45 @@ package body Glib.Glade is
      (N : Node_Ptr; Class, Param1, Param2, Param3, Param4, Param5 : String;
       File : File_Type; Delim : Character := ' ')
    is
-      P : Node_Ptr;
+      P   : String_Ptr;
+      Cur : String_Ptr;
+      Top : String_Ptr;
  
    begin
       if N.Specific_Data.Created then
          return;
       end if;
  
-      P := Find_Tag (N.Child, "name");
+      P := Get_Field (N, "name");
+      Cur := Get_Field (N, "name");
+      Top := Get_Field (Find_Top_Widget (N), "name");
  
       if P /= null then
          Add_Package (Class);
  
-         Put_Line (File, "   " & Class & ".Gtk_New");
+         if Cur = Top then
+            Put (File, "   Gtk." & Class & ".Initialize");
+         else
+            Put_Line (File, "   Gtk_New");
+         end if;
 
          if Delim /= ' ' then
-            Put (File, "     (" & To_Ada (P.Value.all) & ", " & Delim &
-              Param1 & Delim);
+            Put (File, " (");
+
+            if Cur /= Top then
+               Put (File, To_Ada (Top.all) & ".");
+            end if;
+
+            Put (File, To_Ada (P.all) & ", " & Delim & Param1 & Delim);
+
          else
-            Put
-              (File, "     (" & To_Ada (P.Value.all) & ", " & To_Ada (Param1));
+            Put (File, "     (");
+
+            if Cur /= Top then
+               Put (File, To_Ada (Top.all) & ".");
+            end if;
+
+            Put (File, To_Ada (P.all) & ", " & To_Ada (Param1));
          end if;
 
          Put (File, ", " & To_Ada (Param2));
@@ -484,12 +560,14 @@ package body Glib.Glade is
    ---------------
 
    procedure Gen_Child (N, Child : Node_Ptr; File : File_Type) is
-      P : Node_Ptr := Find_Tag (N.Child, "name");
+      P   : String_Ptr := Get_Field (N, "name");
+      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+
    begin
       if P /= null then
          Put_Line
-           (File, "   " & To_Ada (P.Value.all) & " := Get_" &
-            To_Ada (Get_Part (Child.Value.all, 2)) & " (" &
+           (File, "   " & To_Ada (Top.all) & "." & To_Ada (P.all) &
+            " := Get_" & To_Ada (Get_Part (Child.Value.all, 2)) & " (" &
             To_Ada (Find_Tag (Find_Parent
               (N.Parent, Get_Part (Child.Value.all, 1)),
               "name").Value.all) & ");");
@@ -500,27 +578,43 @@ package body Glib.Glade is
    -- Gen_Call_Child --
    --------------------
 
-   procedure Gen_Call_Child (N, Child : Node_Ptr;
-     Class, Call : String;
-     Param1, Param2, Param3 : String := "";
-     File : File_Type)
+   procedure Gen_Call_Child
+     (N, Child : Node_Ptr;
+      Class, Call : String;
+      Param1, Param2, Param3 : String := "";
+      File : File_Type)
    is
-      P : String_Ptr := Get_Field (N, "name");
+      P      : String_Ptr := Get_Field (N, "name");
+      Top    : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Parent : String_Ptr;
 
    begin
       if P /= null then
          Add_Package (Class);
 
          if Child = null then
-            Put (File, "   " & Class & '.' & Call & " (Gtk_" & Class & " (" &
-              To_Ada (Get_Field (N.Parent, "name").all) & "), " &
-              To_Ada (P.all));
+            Put (File, "   " & Call & " (");
+
+            Parent := Get_Field (N.Parent, "name");
+
+            if Top /= Parent then
+               Put (File, To_Ada (Top.all) & ".");
+            end if;
+
+            Put (File, To_Ada (Parent.all) & ", " &
+              To_Ada (Top.all) & "." & To_Ada (P.all));
 
          else
-            Put (File, "   " & Class & '.' & Call & " (" &
-              To_Ada
-                (Find_Tag (Find_Parent (N.Parent, Class), "name").Value.all) &
-              ", " & To_Ada (P.all));
+            Put (File, "   " & Call & " (");
+
+            Parent := Find_Tag (Find_Parent (N.Parent, Class), "name").Value;
+
+            if Top /= Parent then
+               Put (File, To_Ada (Top.all) & ".");
+            end if;
+
+            Put (File, To_Ada (Parent.all) & ", " & To_Ada (Top.all) & "." &
+              To_Ada (P.all));
          end if;
 
          if Param1 /= "" then
@@ -566,6 +660,8 @@ package body Glib.Glade is
 
    procedure Gen_Signal (N : Node_Ptr; File : File_Type) is
       P       : Node_Ptr := Find_Tag (N.Child, "signal");
+      Top     : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Current : constant String_Ptr := Get_Field (N, "name");
       Class   : String_Ptr;
       Handler : String_Ptr;
 
@@ -578,7 +674,13 @@ package body Glib.Glade is
          Put_Line (File, "   Cb_Id := " &
            To_Ada (Class (Class'First + 3 .. Class'Last)) &
            "_Callback.Connect");
-         Put_Line (File, "     (" & To_Ada (Get_Field (N, "name").all) &
+         Put (File, "     (");
+
+         if Top /= Current then
+            Put (File, To_Ada (Top.all) & ".");
+         end if;
+
+         Put_Line (File, To_Ada (Current.all) &
            ", """ & Get_Field (P, "name").all & """, " & To_Ada (Handler.all) &
            "'Access);");
          P := Find_Tag (P.Next, "signal");
@@ -629,7 +731,6 @@ package body Glib.Glade is
          end loop;
 
          Put_Line (File, "end Callbacks_" & Project & ";");
-         New_Line (File);
          Put_Line (File, "package body Callbacks_" & Project & " is");
          New_Line (File);
 

@@ -161,6 +161,19 @@ package body Gtk.Menu_Item is
       Internal (Get_Object (Menu_Item), Get_Object (Submenu));
    end Set_Submenu;
 
+   -----------------------
+   -- Set_Right_Justify --
+   -----------------------
+
+   procedure Set_Right_Justify
+     (Menu_Item : access Gtk_Menu_Item_Record;
+      Justify   : Boolean) is
+   begin
+      if Justify then
+         Right_Justify (Menu_Item);
+      end if;
+   end Set_Right_Justify;
+
    --------------
    -- Generate --
    --------------
