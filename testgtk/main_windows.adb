@@ -663,7 +663,7 @@ package body Main_Windows is
       pragma Warnings (Off, Page);
       pragma Warnings (Off, User);
    begin
-      if Get_Current_Page (Notebook) = 0 then
+      if Get_Current_Page (Notebook) = 3 then
          Set_Help (Opengl_Help'Access);
       else
          Set_Help (null);
@@ -718,7 +718,8 @@ package body Main_Windows is
       Notebook_Cb.Connect
         (Win.Notebook, "switch_page",
          Notebook_Cb.To_Marshaller (Switch_Page'Access),
-         Win.Notebook);
+         Win.Notebook,
+         After => True);
 
       --  First page: Gtk demos
       Gtk_New (Frame);
