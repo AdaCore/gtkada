@@ -55,7 +55,7 @@ package Gtk.Enums is
                                  Buttonbox_Spread,
                                  Buttonbox_Edge,
                                  Buttonbox_Start,
-                                 Buttonbox_Style_End);
+                                 Buttonbox_End);
 
    type Gtk_Direction_Type is (Dir_Tab_Forward,
                                Dir_Tab_Backward,
