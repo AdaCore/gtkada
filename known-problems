@@ -1,5 +1,10 @@
 Known problems fixed in GtkAda 2.4.0
 
+- E322-003: Storage_Error raised when closing an OpenGL window
+  Problem:    If you create a Gtk_GlArea and destroy its toplevel window, a
+              Storage_Error is raised
+  Workaround: Connect to the "destroy" event, as done in gtk-glarea.adb
+
 - Memory leak in Gtk.Tree_Model.Get_String (D823-006)
   Problem:    Calling Gtk.Tree_Model.Get_String causes a memory leak.
   Workaround: There is no known workaround.
