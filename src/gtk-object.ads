@@ -1,6 +1,15 @@
 package Gtk.Object is
 
    type Gtk_Object is new Root_Type with private;
+   --
+   --  FIXME  I wonder wether Gtk_Object should be an abstract
+   --  FIXME  type or not...
+
+   procedure Set_Flags (Object : in out Gtk_Object'Class;
+                        Flags  : in     Gint);
+
+   procedure Unset_Flags (Object : in out Gtk_Object'Class;
+                          Flags  : in     Gint);
 
    procedure Destroy (Object : in out Gtk_Object'Class);
    --  mapping: Destroy gtkobject.h gtk_object_destroy
