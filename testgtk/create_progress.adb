@@ -44,7 +44,6 @@ with Gtk.Progress_Bar; use Gtk.Progress_Bar;
 with Gtk.Radio_Menu_Item; use Gtk.Radio_Menu_Item;
 with Gtk.Spin_Button; use Gtk.Spin_Button;
 with Gtk.Table;       use Gtk.Table;
-with Gtk.Tooltips; use Gtk.Tooltips;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
 
@@ -84,6 +83,7 @@ package body Create_Progress is
    Pdata : ProgressData;
 
    function Progress_Timeout (Pbar : Gtk_Progress_Bar) return Boolean is
+      pragma Warnings (Off, Pbar);
       New_Val : Gfloat;
       Adj     : Gtk_Adjustment := Get_Adjustment (Pdata.Pbar);
    begin
@@ -100,6 +100,8 @@ package body Create_Progress is
                                Win : in out Gtk_Widget_Access) is
    begin
       Timeout_Remove (Pdata.Timer);
+      Pdata.Omenu1_Group := Widget_Slist.Null_List;
+      Pdata.Omenu2_Group := Widget_Slist.Null_List;
       Pdata.Timer := 0;
       Destroy (Pdata.Window);
       Destroyed (Window, Win);
@@ -113,6 +115,7 @@ package body Create_Progress is
 
 
    procedure Toggle_Orientation (Widget : in out Gtk_Widget) is
+      pragma Warnings (Off, Widget);
       I : Natural := Selected_Button (Pdata.Omenu1_Group);
    begin
       Set_Orientation (Pdata.Pbar,
@@ -129,8 +132,8 @@ package body Create_Progress is
       Set_Sensitive (Pdata.Y_Align_Spin, Is_Active (Widget));
    end Toggle_Show_Text;
 
-
    procedure Toggle_Bar_Style (Widget : in out Gtk_Widget) is
+      pragma Warnings (Off, Widget);
       I : Natural := Selected_Button (Pdata.Omenu2_Group);
    begin
       Set_Sensitive (Pdata.Block_Spin, I /= 1);
@@ -139,6 +142,7 @@ package body Create_Progress is
 
 
    procedure Value_Changed (Adj   : in out Gtk_Adjustment) is
+      pragma Warnings (Off, Adj);
    begin
       if Get_Activity_Mode (Pdata.Pbar) then
          Set_Text (Pdata.Label, "???");
@@ -151,6 +155,7 @@ package body Create_Progress is
 
 
    procedure Adjust_Blocks (Adj   : in out Gtk_Adjustment) is
+      pragma Warnings (Off, Adj);
    begin
       Set_Percentage (Pdata.Pbar, 0.0);
       Set_Discrete_Blocks (Pdata.Pbar,
@@ -159,6 +164,7 @@ package body Create_Progress is
 
 
    procedure Adjust_Step (Adj   : in out Gtk_Adjustment) is
+      pragma Warnings (Off, Adj);
    begin
       Set_Activity_Step (Pdata.Pbar,
                          Guint (Get_Value_As_Int (Pdata.Step_Spin)));
@@ -166,6 +172,7 @@ package body Create_Progress is
 
 
    procedure Adjust_Act_Blocks (Adj   : in out Gtk_Adjustment) is
+      pragma Warnings (Off, Adj);
    begin
       Set_Activity_Blocks (Pdata.Pbar,
                            Guint (Get_Value_As_Int (Pdata.Act_Blocks_Spin)));
@@ -173,6 +180,7 @@ package body Create_Progress is
 
 
    procedure Adjust_Align (Adj   : in out Gtk_Adjustment) is
+      pragma Warnings (Off, Adj);
    begin
       Set_Text_Alignment (Pdata.Pbar,
                           Get_Value_As_Float (Pdata.X_Align_Spin),
@@ -189,6 +197,7 @@ package body Create_Progress is
 
 
    procedure Entry_Changed (Widget : in out Gtk_Widget) is
+      pragma Warnings (Off, Widget);
    begin
       Set_Format_String (Pdata.Pbar, Get_Text (Pdata.Gentry));
    end Entry_Changed;
@@ -463,7 +472,7 @@ package body Create_Progress is
          Id := Adj_Cb.Connect (Adj, "value_changed", Adjust_Act_Blocks'Access);
 
          Gtk_New (Button, "close");
-         Id := Widget_Cb.Connect (Button, "clicked", Destroy_Progress'Access,
+         Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access,
                                   Pdata.Window);
          Set_Flags (Button, Can_Default);
          Pack_Start (Get_Action_Area (Pdata.Window), Button, True, True, 0);
