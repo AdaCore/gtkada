@@ -30,7 +30,7 @@
 with Gdk.Art.Pixbuf; use Gdk.Art.Pixbuf;
 with Gdk.Bitmap;     use Gdk.Bitmap;
 with Gdk.Drawable;   use Gdk.Drawable;
-with Gdk.Gc;         use Gdk.Gc;
+with Gdk.GC;         use Gdk.GC;
 
 package body Gdk.Pixbuf is
 
@@ -51,8 +51,8 @@ package body Gdk.Pixbuf is
 
    function Gdk_New (Width           : in Gint;
                      Height          : in Gint;
-                     Format          : in Gdk.Art.Pixbuf.Art_Pix_Format
-                       := Gdk.Art.Pixbuf.Art_Pix_Rgb;
+                     Format          : in Gdk.Art.Pixbuf.Art_Pix_Format :=
+                       Gdk.Art.Pixbuf.Art_Pix_RGB;
                      Has_Alpha       : in Boolean := False;
                      Bits_Per_Sample : in Gint := 8)
                     return Gdk_Pixbuf

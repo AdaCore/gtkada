@@ -360,7 +360,7 @@ package Gdk.Pixbuf is
                             Gdk.Art.Pixbuf.Filter_Bilinear)
                          return Gdk_Pixbuf;
    --  Scale the Src image to Dest_width x Dest_height and render the result
-   -- into a new pixbuf.
+   --  into a new pixbuf.
 
    function Composite_Color_Simple
      (Src           : in Gdk_Pixbuf;
