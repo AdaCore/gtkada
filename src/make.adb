@@ -115,7 +115,6 @@ with Gdk.Cursor;
 with Gdk.Drawable;
 with Gdk.Event;
 with Gdk.Font;
-with Gdk.GC.Pixmap;
 with Gdk.GC;
 with Gdk.Image;
 with Gdk.Input;
