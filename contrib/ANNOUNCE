@@ -23,7 +23,7 @@ Begin3
  Maintained-by: gtkada@ada.eu.org
  Primary-site:  http://ada.eu.org/gtkada/
  Original-site: http://ada.eu.org/gtkada/ 
- Platforms: SunOS-5.5.1 Linux-2.0.35 Linux-2.0.36 DECUnix-4.0b IRIX-6.5
+ Platforms: SunOS-5.5.1 Linux-2.0.35 Linux-2.0.36 DECUnix-4.0b IRIX-6.5 HP/UX-10.20
  Copying-policy: GPL (with a slight modification, see headers of *.ad[bs] files
 End
 
@@ -38,6 +38,7 @@ New features in 1.2.1 include:
   widget, even if the C widget was not created by GtkAda itself. This
   provides a full dynamic dispatching capability that was still missing.
   (see gtk-type_conversion.ads for more information)
+- Tested on HP/UX
 
 New features in 1.2.0 include:
 

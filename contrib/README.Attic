@@ -40,11 +40,13 @@ These functions were tested on the following systems :
    - SunOS 5.5.1
    - Dec Unix 4.0b
    - SGI IRIX 6.5
+   - HP/UX 10.20
 using the following compilers:
    - Gnat 3.12b2
    - Gnat 3.11p
 
 the following versions of gtk:
+   - Gtk 1.2.2
    - Gtk 1.2.1
    - Gtk 1.2.0
 
