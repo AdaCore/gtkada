@@ -46,7 +46,7 @@ while ($cfile[$line] !~ /\}/)
   {
     if ($cfile[$line] =~ /\/\*/) ## If we have a comment, skip it
       {
-	1 while ($cfile[$line] !~ /\*\//);
+	$line++ while ($cfile[$line] !~ /\*\//);
 	$line++;
       }
     $line++ while ($cfile[$line] =~ /^\s*$/);
@@ -197,7 +197,7 @@ sub create_ada_name
 
     return "The_Type" if ($entity eq "Type");
     return "The_End" if ($entity eq "End");
-#    return "The_Range" if ($entity eq "Range");
+    return "The_Digits" if ($entity eq "Digits");    
     return $entity;
   }
 
@@ -210,6 +210,8 @@ sub package_name
     my ($entity) = shift;
     
     $entity =~ s/(.)([A-Z])/$1.$2/g;
+    $entity =~ s/Gtk\.Range/Gtk\.Gtk_Range/;
+    $entity =~ s/Gtk\.Entry/Gtk\.Gtk_Entry/;    
     return $entity;
   }
 
