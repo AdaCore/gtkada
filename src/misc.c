@@ -254,7 +254,8 @@ ada_initialize_class_record (GtkObject*  object,
 			     char*       signals[],
 			     GtkType     parameters[],
 			     gint        max_parameters,
-			     void*       old_class_record)
+			     void*       old_class_record,
+			     guint       scroll_adj_signals)
 {
   if (old_class_record)
     {
@@ -317,6 +318,13 @@ ada_initialize_class_record (GtkObject*  object,
 	}
 
       object->klass->nsignals += nsignals;
+
+      if (scroll_adj_signals)
+	{
+	  GTK_WIDGET_CLASS(object->klass)->set_scroll_adjustments_signal =
+	    object->klass->signals
+	    [scroll_adj_signals - 1 + ancestor->nsignals];
+	}
       
       /* Initialize the function pointers for the new signals to NULL */
       memset ((char*)(object->klass) + query->class_size, 0, 
