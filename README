@@ -92,6 +92,9 @@ you?) send us patches, or at least ask for specific functions.
 It is important to know that only a subset of the gdk binding has
 actually been tested, and therefore errors are still likely to appear.
 
+The full set of Gtk+ widgets that can be generated from GtkGlade, the
+GUI builder is now supported by GtkAda.
+
 We have tried to adopt a consistent naming scheme for Ada identifiers :
 
 - The widget names are  the same as in  C, excepted that an underscore
