@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,7 +36,7 @@
 --  to store the pixel data on the server side (thus not allowing manipulation
 --  of the data after creation) you should use Gtk_Pixmap.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gdk.Bitmap;
 with Gdk.Pixbuf;
@@ -61,7 +61,7 @@ package Gtk.Image is
       Image_Stock,
       Image_Icon_Set,
       Image_Animation);
-   for Gtk_Image_Type'Size use Gint'Size;
+   pragma Convention (C, Gtk_Image_Type);
 
    procedure Gtk_New
      (Image : out Gtk_Image;
