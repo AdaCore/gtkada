@@ -50,9 +50,9 @@ c_extra_objects = gtkextra/gtk*.o
 all: dirs libs tools
 
 ifeq ($(BUILD_SHARED),yes)
-libs: extra $(LIBNAME) $(ARCHIVENAME) opengl pixbuf install_ali
+libs: extra $(LIBNAME) $(ARCHIVENAME) opengl pixbuf glade install_ali
 else
-libs: extra $(ARCHIVENAME) opengl pixbuf install_ali
+libs: extra $(ARCHIVENAME) opengl pixbuf glade install_ali
 endif
 
 opengl: force
@@ -64,7 +64,10 @@ pixbuf: force
 extra: force
 	$(MAKE) -C gtkextra
 
-tools: $(GATE_EX) $(DGATE) $(GDIALOG)
+glade: force
+	$(MAKE) -C glade
+
+tools: $(GATE_EX) $(GDIALOG)
 
 ## Private targets
 
@@ -106,11 +109,11 @@ $(GATE_EX):: $(GATE_SRC) $(LIBNAME)
 	  $(GNATMAKE) $(GNATFLAGS) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	fi
 
-$(DGATE):: $(DGATE).adb $(LIBNAME)
+$(DGATE):: $(DGATE).adb $(LIBNAME) glade
 	@if [ -f .devel ]; then \
-	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) $(DGATE) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
+	   $(GNATMAKE) -aO$(LIB_DIR) -Iglade $(GNATFLAGS_DEVEL) $(DGATE) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	else \
-	   $(GNATMAKE) $(GNATFLAGS) $(DGATE) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
+	   $(GNATMAKE) -Iglade $(GNATFLAGS) $(DGATE) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	fi
 
 $(GDIALOG):: $(GDIALOG).adb $(LIBNAME)
@@ -152,10 +155,10 @@ install: all
 	   $(INSTALL_SCRIPT) $(GTKADA_CONFIG) $(bindir); \
            $(INSTALL_SCRIPT) $(GATE) $(bindir); \
            $(INSTALL_PROGRAM) $(GATE_EX) $(bindir); \
-           $(INSTALL_PROGRAM) $(DGATE) $(bindir); \
            $(INSTALL_PROGRAM) $(GDIALOG) $(bindir); \
            $(MAKE) -C opengl install; \
            $(MAKE) -C pixbuf install; \
+           $(MAKE) -C glade install; \
 	fi
 	@echo '------------------------------------------------------------------'
 	@echo '--  GtkAda has now been installed.                              --'
@@ -180,21 +183,25 @@ clean: clean-generic
 	$(MAKE) -C gtkextra clean
 	$(MAKE) -C opengl clean
 	$(MAKE) -C pixbuf clean
+	$(MAKE) -C glade clean
 
 distclean: mostlyclean-generic
 	$(MAKE) -C gtkextra distclean
 	$(MAKE) -C opengl distclean
 	$(MAKE) -C pixbuf distclean
+	$(MAKE) -C glade distclean
 
 mostlyclean: mostlyclean-generic
 	$(MAKE) -C gtkextra mostlyclean
 	$(MAKE) -C opengl mostlyclean
 	$(MAKE) -C pixbuf mostlyclean
+	$(MAKE) -C glade mostlyclean
 
 maintainer-clean: mostlyclean-generic
 	$(MAKE) -C gtkextra maintainer-clean
 	$(MAKE) -C opengl maintainer-clean
 	$(MAKE) -C pixbuf maintainer-clean
+	$(MAKE) -C glade maintainer-clean
 
 ## Building the C files: they all depend on the c file in the source directory
 ## The dependencies on the .h files have to be given explicitly
