@@ -437,7 +437,7 @@ package Gtk.Style is
                            State_Type : in Enums.Gtk_State_Type;
                            Shadow_Type : in Enums.Gtk_Shadow_Type;
                            Points     : in Gdk.Types.Gdk_Points_Array;
-                           Fill       : in Gint);
+                           Fill       : in Boolean);
 
    procedure Draw_Arrow (Style       : in Gtk_Style;
                          Window      : in Gdk.Window.Gdk_Window;
