@@ -52,6 +52,7 @@ package body Glib.XML is
    --  terminating before the first 'Terminator' character. Index will also
    --  point to the next non blank character.
    --  The special XML '&' characters are translated appropriately in S.
+   --  S is set to null if Terminator wasn't found in Buf.
 
    procedure Extract_Attrib
      (Tag        : in out String_Ptr;
@@ -108,15 +109,22 @@ package body Glib.XML is
       Start : constant Natural := Index;
 
    begin
-      while Buf (Index) /= Terminator loop
+      while Index <= Buf'Last
+        and then Buf (Index) /= Terminator
+      loop
          Index := Index + 1;
       end loop;
 
-      S := new String'(Translate (Buf (Start .. Index - 1)));
-      Index := Index + 1;
+      if Index > Buf'Last then
+         S := null;
 
-      if Index < Buf'Last then
-         Skip_Blanks (Buf, Index);
+      else
+         S := new String'(Translate (Buf (Start .. Index - 1)));
+         Index := Index + 1;
+
+         if Index < Buf'Last then
+            Skip_Blanks (Buf, Index);
+         end if;
       end if;
    end Get_Buf;
 
@@ -661,8 +669,12 @@ package body Glib.XML is
 
    begin
       Get_Buf (Buffer, Index, '>', XML_Version);
-      Free (XML_Version);
-      return Get_Node (Buffer, Index'Unchecked_Access);
+      if XML_Version = null then
+         return null;
+      else
+         Free (XML_Version);
+         return Get_Node (Buffer, Index'Unchecked_Access);
+      end if;
    end Parse_Buffer;
 
    --------------
