@@ -72,36 +72,73 @@ gnatchop gate.ada > /dev/null 2>&1
 /bin/rm -f gate.ada
 files=`echo *`
 cd $wd
-/bin/rm -f $gt/gate.difs
 
-for j in $files; do
-  @DIFF@ $gt/$j $j >> $gt/gate.difs 2>/dev/null
-done
+if [ "@MERGE_AVAIL@" = "True" ]; then
+  conflicts=0
+  echo "Merge of some changes failed. It usually means that some modified code
+is obsolete in the current project file.
+Conflicts have been kept in the following files to help merging manually:
+" > $gt/conflicts.txt
 
-/bin/cp -f $tmp/* .
-/bin/rm -f *.rej *.orig
+  for j in $files; do
+    if [ -f $j ]; then
+      @MERGE@ $j $gt/$j $tmp/$j 2>/dev/null
+    else
+      cp $tmp/$j $j
+    fi
 
-if cat $gt/gate.difs | @PATCH@ > $gt/patch.out 2>&1; then
+    if [ $? = 1 ]; then
+      conflicts=1
+      echo "$j" >> $gt/conflicts.txt
+    fi
+  done
+
   echo "The following files have been created/updated in $psrcdir:"
 
   for j in $files; do
     echo "  "$j
   done
 
+  if [ $conflicts = 1 ]; then
+    cat $gt/conflicts.txt | gdialog error justify_left
+  fi
+  
   echo done.
-  /bin/rm -f *.orig
+
 else
-  echo "The following files have been updated in $psrcdir:"
+
+  /bin/rm -f $gt/gate.difs
 
   for j in $files; do
-    echo "  "$j
+    @DIFF@ $gt/$j $j >> $gt/gate.difs 2>/dev/null
   done
 
-  cat << EOF | gdialog error justify_left
+  /bin/cp -f $tmp/* .
+  /bin/rm -f *.rej *.orig
+
+  if cat $gt/gate.difs | @PATCH@ > $gt/patch.out 2>&1; then
+    echo "The following files have been created/updated in $psrcdir:"
+
+    for j in $files; do
+      echo "  "$j
+    done
+
+    /bin/rm -f *.orig
+  else
+    echo "The following files have been updated in $psrcdir:"
+
+    for j in $files; do
+      echo "  "$j
+    done
+
+    cat << EOF | gdialog error justify_left
 Merge of some changes failed. It usually means that some modified code
 is obsolete in the current project file.
 .rej files have been generated to help merging manually if needed.
 EOF
+  fi
+
+  echo done.
 fi
 
 /bin/mv -f $tmp/* $gt/
