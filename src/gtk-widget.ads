@@ -601,9 +601,6 @@ package Gtk.Widget is
      return Gtk.Style.Gtk_Style;
    --  Return the style of a given widget.
 
-   procedure Set_Default_Style (Style : Gtk.Style.Gtk_Style);
-   --  Set the default global style.
-
    function Get_Default_Style return Gtk.Style.Gtk_Style;
    --  Get the default global style.
 
@@ -1696,7 +1693,6 @@ private
 
    pragma Import (C, Push_Style, "gtk_widget_push_style");
    pragma Import (C, Pop_Style, "gtk_widget_pop_style");
-   pragma Import (C, Set_Default_Style, "gtk_widget_set_default_style");
    pragma Import (C, Get_Default_Style, "gtk_widget_get_default_style");
    pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
    pragma Import (C, Get_Type, "gtk_widget_get_type");
