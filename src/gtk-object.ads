@@ -31,8 +31,6 @@ package Gtk.Object is
    function Get_Type (Object : in Gtk_Object'Class) return Gint;
    --  mapping Get_Type gtkobject.h GTK_OBJECT_TYPE
 
-   function Is_Created (Object : in Gtk_Object) return Boolean;
-
    procedure Ref (Object : in out Gtk_Object);
    --  mapping: Ref gtkobject.h gtk_object_ref
 

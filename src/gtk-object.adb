@@ -96,19 +96,6 @@ package body Gtk.Object is
       return Internal (Get_Object (Object));
    end Get_Type;
 
-   ------------------
-   --  Is_Created  --
-   ------------------
-
-   function Is_Created (Object : in Gtk_Object) return Boolean is
-      use type System.Address;
-      function Destroyed (Object : in System.Address) return Guint32;
-      pragma Import (C, Destroyed, "ada_object_destroyed");
-   begin
-      return Get_Object (Object) /= System.Null_Address
-        and then not To_Boolean (Destroyed (Get_Object (Object)));
-   end Is_Created;
-
    ---------
    -- Ref --
    ---------
