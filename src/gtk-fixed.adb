@@ -79,7 +79,7 @@ package body Gtk.Fixed is
 
    procedure Move
       (Fixed  : access Gtk_Fixed_Record;
-       Widget : in Gtk.Widget.Gtk_Widget;
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : in Gint16;
        Y      : in Gint16)
    is
@@ -102,7 +102,7 @@ package body Gtk.Fixed is
 
    procedure Put
       (Fixed  : access Gtk_Fixed_Record;
-       Widget : in Gtk.Widget.Gtk_Widget;
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : in Gint16;
        Y      : in Gint16)
    is

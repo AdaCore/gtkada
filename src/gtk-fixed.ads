@@ -42,12 +42,12 @@ package Gtk.Fixed is
    procedure Initialize (Widget : access Gtk_Fixed_Record'Class);
    procedure Move
       (Fixed  : access Gtk_Fixed_Record;
-       Widget : in Gtk.Widget.Gtk_Widget;
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : in Gint16;
        Y      : in Gint16);
    procedure Put
       (Fixed  : access Gtk_Fixed_Record;
-       Widget : in Gtk.Widget.Gtk_Widget;
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
        X      : in Gint16;
        Y      : in Gint16);
 
