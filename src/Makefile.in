@@ -42,6 +42,8 @@ GATE          = gate
 GENERATE      = generate.pl
 DGATE         = dgate
 GDIALOG       = gdialog
+GENERATE_PRJ  = ./generate_prj
+PRJ           = gtkada.gpr
 
 c_objects = $(LIB_DIR)/misc.o $(LIB_DIR)/misc_extra.o $(LIB_DIR)/misc_broken.o
 c_extra_objects = gtkextra/gtk*.o
@@ -145,6 +147,8 @@ install: all
 	   $(MKDIR) $(libdir); \
 	   $(MKDIR) $(incdir); \
 	   $(MKDIR) $(alidir); \
+	   $(GENERATE_PRJ); \
+	   $(INSTALL_DATA) $(PRJ) $(incdir); \
 	   $(INSTALL_DATA) $(ARCHIVENAME) $(libdir); \
 	   if [ $(BUILD_SHARED) = yes ]; then \
 	     $(INSTALL_DATA) $(SONAME) $(libdir); \
