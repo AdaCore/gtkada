@@ -26,6 +26,16 @@ OPENGL_OBJECTS=$(OPENGL_SOURCES:%.adb=%.o)
 OPENGL_LIBS=@GL_LIBS@
 OPENGL_FLAGS=@GL_CFLAGS@
 MESA_SPECS=gl_h.ads glu_h.ads
+
+all: $(LIBNAME) $(ARCHIVENAME)
+install: all
+	$(INSTALL_DATA) $(ARCHIVENAME) $(libdir)
+	$(INSTALL_DATA) $(LIBNAME) $(libdir)
+	$(CP) $(MESA_SPECS) $(incdir)
+	$(CP) gdk*.ads gdk*.adb $(incdir)
+	$(CP) gtk*.ads gtk*.adb $(incdir)
+	$(CHMOD) -w $(alidir)/*.ali
+
 else
 OPENGL_C_OBJECTS=
 OPENGL_SOURCES=
@@ -33,9 +43,10 @@ OPENGL_OBJECTS=
 OPENGL_LIBS=
 OPENGL_FLAGS=
 MESA_SPECS=
-endif
 
-all: $(LIBNAME) $(ARCHIVENAME)
+all:
+install:
+endif
 
 $(LIBNAME):: $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
 	$(CC) -shared -fPIC $(OS_SPECIFIC_LINK_OPTIONS) -o $(LIBNAME) gdk*.o gtk*.o @GTK_LIBS@ -L.. -lgtkada
@@ -60,14 +71,6 @@ gtkglarea.o: gtkglarea.h gtkglarea.c
 	$(CC) -c $(CFLAGS) $(OPENGL_FLAGS) gtkglarea.c
 gdkgl.o:     gdkgl.h gdkgl.c
 	$(CC) -c $(CFLAGS) $(OPENGL_FLAGS) gdkgl.c
-
-install: all
-	$(INSTALL_DATA) $(ARCHIVENAME) $(libdir)
-	$(INSTALL_DATA) $(LIBNAME) $(libdir)
-	$(CP) $(MESA_SPECS) $(incdir)
-	$(CP) gdk*.ads gdk*.adb $(incdir)
-	$(CP) gtk*.ads gtk*.adb $(incdir)
-	$(CHMOD) -w $(alidir)/*.ali
 
 clean-generic:
 	-${RM} *.o *.ali *~ b_*.c b~*.ad? core
