@@ -327,7 +327,7 @@ private
 
    type Property is new String;
 
-   type Signal_Id is new Guint;
+   type Signal_Id is new Gulong;
    Invalid_Signal_Id : constant Signal_Id := -1;
    Null_Signal_Id : constant Signal_Id := 0;
 
