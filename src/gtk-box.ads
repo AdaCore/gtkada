@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,14 +34,16 @@ with Gtk.Widget; use Gtk.Widget;
 package Gtk.Box is
 
    type Gtk_Box is new Gtk.Container.Gtk_Container with private;
+   subtype Gtk_Vbox is Gtk_Box;
+   subtype Gtk_Hbox is Gtk_Box;
 
    function Get_Child (Box : in Gtk_Box; Num : in Gint) return Gtk_Widget;
 
-   procedure Gtk_New_Vbox (Widget      : out Gtk_Box;
+   procedure Gtk_New_Vbox (Box         : out Gtk_Box;
                            Homogeneous : in  Boolean;
                            Spacing     : in  Gint);
 
-   procedure Gtk_New_Hbox (Widget      : out Gtk_Box;
+   procedure Gtk_New_Hbox (Box         : out Gtk_Box;
                            Homogeneous : in  Boolean;
                            Spacing     : in  Gint);
 
@@ -90,6 +93,13 @@ package Gtk.Box is
       Fill      : in Boolean;
       Padding   : in Gint;
       PackType  : in Gtk_Pack_Type);
+
+   procedure Generate (Box    : in Gtk_Box;
+                       N      : in Node_Ptr;
+                       File   : in File_Type);
+
+   procedure Generate (Box    : in out Gtk_Box;
+                       N      : in Node_Ptr);
 
 private
 

@@ -1,7 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
--- Copyright (C) 1998 Emmanuel Briot and Joel Brobecker              --
+--                     Copyright (C) 1998-1999                       --
+--        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +29,8 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Dialog; use Gtk.Dialog;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Box is
 
@@ -49,7 +52,7 @@ package body Gtk.Box is
    -- Gtk_New_Vbox --
    ------------------
 
-   procedure Gtk_New_Vbox (Widget      : out Gtk_Box;
+   procedure Gtk_New_Vbox (Box         : out Gtk_Box;
                            Homogeneous : in  Boolean;
                            Spacing     : in  Gint)
    is
@@ -57,15 +60,14 @@ package body Gtk.Box is
                          Spacing     : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_vbox_new");
    begin
-      Set_Object (Widget, Internal (Boolean'Pos (Homogeneous),
-                                    Spacing));
+      Set_Object (Box, Internal (Boolean'Pos (Homogeneous), Spacing));
    end Gtk_New_Vbox;
 
    ------------------
    -- Gtk_New_Hbox --
    ------------------
 
-   procedure Gtk_New_Hbox (Widget      : out Gtk_Box;
+   procedure Gtk_New_Hbox (Box         : out Gtk_Box;
                            Homogeneous : in  Boolean;
                            Spacing     : in  Gint)
    is
@@ -73,8 +75,7 @@ package body Gtk.Box is
                          Spacing     : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_hbox_new");
    begin
-      Set_Object (Widget, Internal (Boolean'Pos (Homogeneous),
-                                    Spacing));
+      Set_Object (Box, Internal (Boolean'Pos (Homogeneous), Spacing));
    end Gtk_New_Hbox;
 
    ----------------
@@ -243,5 +244,93 @@ package body Gtk.Box is
                 Boolean'Pos (Expand), Boolean'Pos (Fill), Padding,
                 Gtk_Pack_Type'Pos (PackType));
    end Set_Child_Packing;
+
+   --------------
+   -- Generate --
+   --------------
+
+   procedure Generate (Box    : in Gtk_Box;
+                       N      : in Node_Ptr;
+                       File   : in File_Type) is
+      use Container;
+
+      Child_Name : Node_Ptr := Find_Tag (N.Child, "child_name");
+      Class      : String_Ptr := Get_Field (N, "class");
+
+   begin
+      if Child_Name = null then
+         Gen_New (N, "Box", Find_Tag (N.Child, "homogeneous").Value.all,
+           Find_Tag (N.Child, "spacing").Value.all, Class (4) & "box", File);
+
+      else
+         Gen_Child (N, Child_Name, File);
+      end if;
+
+      Generate (Gtk_Container (Box), N, File);
+
+      if Child_Name /= null then
+         Gen_Set (N, "Box", "homogeneous", File);
+         Gen_Set (N, "Box", "spacing", File);
+      end if;
+   end Generate;
+
+   procedure Generate (Box    : in out Gtk_Box;
+                       N      : in Node_Ptr) is
+      use Container;
+
+      Child_Name : String_Ptr := Get_Field (N, "child_name");
+      Class      : String_Ptr := Get_Field (N, "class");
+      S          : String_Ptr;
+
+   begin
+      if not N.Specific_Data.Created then
+         if Child_Name = null then
+            if Class (Class'First + 3) = 'H' then
+               Gtk_New_Hbox
+                 (Box,
+                  Boolean'Value (Get_Field (N, "homogeneous").all),
+                  Gint'Value (Get_Field (N, "spacing").all));
+
+            else
+               Gtk_New_Vbox
+                 (Box,
+                  Boolean'Value (Get_Field (N, "homogeneous").all),
+                  Gint'Value (Get_Field (N, "spacing").all));
+            end if;
+         else
+            if Get_Part (Child_Name.all, 2) = "action_area" then
+               Box :=
+                 Get_Action_Area (Gtk_Dialog (Get_Object (Find_Tag
+                   (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
+                    "name").Value).all));
+
+            else
+               Box :=
+                 Get_Vbox (Gtk_Dialog (Get_Object (Find_Tag
+                   (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
+                    "name").Value).all));
+            end if;
+         end if;
+
+         Set_Object (Get_Field (N, "name"), Box'Unchecked_Access);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Generate (Gtk_Container (Box), N);
+
+      if Child_Name /= null then
+         S := Get_Field (N, "homogeneous");
+
+         if S /= null then
+            Set_Homogeneous (Box, Boolean'Value (S.all));
+         end if;
+
+         S := Get_Field (N, "spacing");
+
+         if S /= null then
+            Set_Spacing (Box, Gint'Value (S.all));
+         end if;
+      end if;
+   end Generate;
 
 end Gtk.Box;
