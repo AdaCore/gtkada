@@ -51,6 +51,21 @@ package Gtk.Ctree is
 
    package Row_List is new Glib.Glist.Generic_List (Gtk_Ctree_Row);
 
+   function Convert (C : in Gtk_Ctree_Node) return System.Address;
+   function Convert (W : System.Address) return Gtk_Ctree_Node;
+   package Node_List is new Glib.Glist.Generic_List (Gtk_Ctree_Node);
+   --
+   --  Note: To extract the Gtk_Ctree_Node, use Node_List.Get_Gpointer,
+   --        not Node_List.Get_Data.
+
+
+   type Gtk_Ctree_Compare_Drag_Func is access
+     function (Ctree        : in Gtk_Ctree;
+               Source_Node  : in Gtk_Ctree_Node;
+               New_Parent   : in Gtk_Ctree_Node;
+               New_Sibling  : in Gtk_Ctree_Node) return Boolean;
+
+
    procedure Collapse (Ctree : access Gtk_Ctree_Record;
                        Node  : in     Gtk_Ctree_Node);
 
@@ -102,8 +117,14 @@ package Gtk.Ctree is
       Expanded      :    out Boolean;
       Success       :    out Boolean);
 
+   function Get_Node_List (Ctree : access Gtk_Ctree_Record)
+                           return         Node_List.Glist;
+
    function Get_Row_List (Ctree : access Gtk_Ctree_Record)
                           return         Row_List.Glist;
+
+   function Get_Selection (Widget : access Gtk_Ctree_Record)
+                           return Node_List.Glist;
 
    function Get_Show_Stub (Ctree : access Gtk_Ctree_Record) return Boolean;
 
@@ -298,7 +319,9 @@ package Gtk.Ctree is
      (Ctree : access Gtk_Ctree_Record;
       Node  : in     Gtk_Ctree_Node := Null_Ctree_Node);
 
-   --  Set_Drag_Compare_Func
+   procedure Set_Compare_Drag_Func
+     (Ctree    : access Gtk_Ctree_Record;
+      Cmp_Func : in     Gtk_Ctree_Compare_Drag_Func);
 
    procedure Set_Expander_Style
      (Ctree          : access Gtk_Ctree_Record;
@@ -373,7 +396,13 @@ package Gtk.Ctree is
                                 Data    : in     Data_Type_Access)
         return Glib.Gnodes.Gnode;
 
-      --  Insert_Gnode
+      function Insert_Gnode (Ctree   : access Gtk_Ctree_Record'Class;
+                             Parent  : in     Glib.Gnodes.Gnode;
+                             Sibling : in     Glib.Gnodes.Gnode;
+                             Node    : in     Gtk_Ctree_Node;
+                             Func    : in     Gtk_Ctree_Gnode_Func;
+                             Data    : in     Data_Type_Access)
+        return Gtk_Ctree_Node;
 
    end Ctree_Gnode;
 
@@ -393,10 +422,39 @@ package Gtk.Ctree is
                    Node  : in     Gtk_Ctree_Node;
                    Data  : in     Data_Type_Access);
 
-      --  Find_All_By_Row_Data
-      --  Find_All_By_Row_Data_Custom
-      --  Find_By_Row_Data
-      --  Find_By_Row_Data_Custom
+      type Gcompare_Func is access
+        function (A, B : in Data_Type) return Boolean;
+
+      function Find_By_Row_Data (Ctree : access Gtk_Ctree_Record'Class;
+                                 Node  : in     Gtk_Ctree_Node;
+                                 Data  : in     Data_Type)
+        return Gtk_Ctree_Node;
+      --
+      --  Note : This function does not map 'gtk_ctree_find_by_row_data'.
+      --         Instead, it is using Find_By_Row_Data_Custom with the
+      --         comparison function being the Data_Type equality operator.
+
+
+      function Find_All_By_Row_Data (Ctree : access Gtk_Ctree_Record'Class;
+                                     Node  : in     Gtk_Ctree_Node;
+                                     Data  : in     Data_Type)
+        return Node_List.Glist;
+      --
+      --  Note : This function does not map 'gtk_ctree_find_all_by_row_data'.
+      --         Instead, it is using Find_All_By_Row_Data_Custom with the
+      --         comparison function being the Data_Type equality operator.
+
+      function Find_By_Row_Data_Custom (Ctree : access Gtk_Ctree_Record'Class;
+                                        Node  : in     Gtk_Ctree_Node;
+                                        Data  : in     Data_Type;
+                                        Func  : in     Gcompare_Func)
+        return Gtk_Ctree_Node;
+
+      function Find_All_By_Row_Data_Custom
+        (Ctree : access Gtk_Ctree_Record'Class;
+         Node  : in     Gtk_Ctree_Node;
+         Data  : in     Data_Type;
+         Func  : in     Gcompare_Func) return Node_List.Glist;
 
       function Node_Get_Row_Data (Ctree : access Gtk_Ctree_Record'Class;
                                   Node  : in     Gtk_Ctree_Node)
@@ -435,8 +493,16 @@ package Gtk.Ctree is
                                         Data  : in     Data_Type_Access);
 
 
-   end Row_Data;
+   private
 
+      function Default_Gcompare_Func (A, B : in Data_Type) return Boolean;
+      --
+      --  This function needs to be declared in the spec, although it is
+      --  only used in the body. Otherwise, the compiler does not allow
+      --  to apply the 'Access attribute to it.
+
+   end Row_Data;
+   --
    --  The previous package implements the Row_Data stuff.
    --  !! Warning !! No type verification is made to check if you are
    --  using the appropriate function Get. This is your own responsability

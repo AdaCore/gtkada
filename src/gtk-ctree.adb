@@ -34,6 +34,25 @@ with Unchecked_Deallocation;
 
 package body Gtk.CTree is
 
+   Compare_Drag_Func_Key :
+     constant String := "_GtkAda_Ctree_Compare_Drag_Func" & Ascii.NUL;
+   --
+   --  The key that will be used to store the address of the Ada
+   --  Compare_Drag_Func function.
+
+
+   --  Local Declarations...
+   --
+
+   function C_Compare_Drag_Func (Ctree       : in System.Address;
+                                 Source_Node : in System.Address;
+                                 New_Parent  : in System.Address;
+                                 New_Sibling : in System.Address)
+     return Gboolean;
+   pragma Convention (C, C_Compare_Drag_Func);
+
+
+
    --------------
    -- Collapse --
    --------------
@@ -79,6 +98,26 @@ package body Gtk.CTree is
    begin
       Internal (Get_Object (Ctree), Get_Object (Node), Depth);
    end Collapse_To_Depth;
+
+   ---------------
+   --  Convert  --
+   ---------------
+
+   function Convert (C : in Gtk_Ctree_Node) return System.Address is
+   begin
+      return Get_Object (C);
+   end Convert;
+
+   ---------------
+   --  Convert  --
+   ---------------
+
+   function Convert (W : System.Address) return Gtk_Ctree_Node is
+      Result : Gtk_Ctree_Node;
+   begin
+      Set_Object (Result, W);
+      return Result;
+   end Convert;
 
    ------------
    -- Expand --
@@ -240,6 +279,24 @@ package body Gtk.CTree is
    end Get_Node_Info;
 
 
+   ---------------------
+   --  Get_Node_List  --
+   ---------------------
+
+   function Get_Node_List (Ctree : access Gtk_Ctree_Record)
+                           return         Node_List.Glist
+   is
+      function Internal (Ctree : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_clist_get_row_list");
+      --  Note: We need to extract "GTK_CLIST (Ctree)->row_list", which
+      --  explains why the imported C routine applies to a clist.
+      --  Note also that the row_list is actually a GtkCtreeNode list...
+      List : Node_List.Glist;
+   begin
+      Node_List.Set_Object (List, Internal (Get_Object (Ctree)));
+      return List;
+   end Get_Node_List;
+
    ------------------
    -- Get_Row_List --
    ------------------
@@ -260,6 +317,21 @@ package body Gtk.CTree is
       return List;
    end Get_Row_List;
 
+
+   -------------------
+   -- Get_Selection --
+   -------------------
+
+   function Get_Selection (Widget : access Gtk_Ctree_Record)
+                           return Node_List.Glist
+   is
+      function Internal (Widget : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_clist_get_selection");
+      List : Node_List.Glist;
+   begin
+      Node_List.Set_Object (List, Internal (Get_Object (Widget)));
+      return List;
+   end Get_Selection;
 
    ---------------------
    --  Get_Show_Stub  --
@@ -1070,6 +1142,101 @@ package body Gtk.CTree is
       Internal (Get_Object (Ctree), Get_Object (Node));
    end Select_Recursive;
 
+
+   -----------------------------
+   --  Set_Compare_Drag_Func  --
+   -----------------------------
+
+   --  Note : Inside Set_Compare_Drag_Func, the type of the data stored
+   --         by Set_User_Data should be System.Address. It is assumed
+   --         that it is ok to replace it by a Gtk_Ctree_Compare_Drag_Func.
+   --
+   --         Also, inside the C_Compare_Drag_Func, it is assumed that
+   --         it is equivalent to replace the return type of Get_User_Data
+   --         by Gtk_Ctree_Compare_Drag_Func (instead of System.Address)
+   --
+   --         This avoids unnecessary conversions.
+
+
+   function C_Compare_Drag_Func (Ctree       : in System.Address;
+                                 Source_Node : in System.Address;
+                                 New_Parent  : in System.Address;
+                                 New_Sibling : in System.Address)
+     return Gboolean is
+      --
+      --  The C_Compare_Drag_Func is the "C" function that is stored
+      --  in the cmp_func field of the Ctree object. It therefore maps
+      --  exactly the profile expected by Gtk+.
+      --
+      --  What it does, when it is called, is to retrieve the address
+      --  of the user provided Ada compare function that is stored in
+      --  the user data area, using the Compare_Drag_Func_Key. It then
+      --  invokes it to perform the comparison.
+
+      function Get_User_Data (Object : in System.Address;
+                              Key    : in String)
+        return Gtk_Ctree_Compare_Drag_Func;
+      pragma Import (C, Get_User_Data, "gtk_object_get_data");
+
+      Local_Ctree_Stub : Gtk_Ctree_Record;
+      Local_Ctree : constant Gtk_Ctree :=
+        Gtk_Ctree (Get_User_Data (Ctree, Local_Ctree_Stub));
+      Local_Source_Node : Gtk_Ctree_Node;
+      Local_New_Parent : Gtk_Ctree_Node;
+      Local_New_Sibling : Gtk_Ctree_Node;
+
+      Cmp_Func : constant Gtk_Ctree_Compare_Drag_Func :=
+        Get_User_Data (Object => Ctree, Key => Compare_Drag_Func_Key);
+
+   begin
+      Set_Object (Object => Local_Source_Node, Value => Source_Node);
+      Set_Object (Object => Local_New_Parent, Value => New_Parent);
+      Set_Object (Object => Local_New_Sibling, Value => New_Sibling);
+      return To_Gboolean (Cmp_Func (Ctree => Local_Ctree,
+                                    Source_Node => Local_Source_Node,
+                                    New_Parent => Local_New_Parent,
+                                    New_Sibling => Local_New_Sibling));
+   end C_Compare_Drag_Func;
+
+   --
+
+   procedure Set_Compare_Drag_Func
+     (Ctree    : access Gtk_Ctree_Record;
+      Cmp_Func : in     Gtk_Ctree_Compare_Drag_Func) is
+
+      procedure Internal (Ctree    : in System.Address;
+                          Cmp_Func : in System.Address);
+      pragma Import (C, Internal, "gtk_ctree_set_drag_compare_func");
+
+      procedure Set_User_Data (Object : in System.Address;
+                               Name   : in String;
+                               Data   : in Gtk_Ctree_Compare_Drag_Func);
+      pragma Import (C, Set_User_Data, "gtk_object_set_data");
+
+   begin
+      if Cmp_Func = null then
+         Internal (Get_Object (Ctree), System.Null_Address);
+      else
+         Set_User_Data (Get_Object (Ctree), Compare_Drag_Func_Key, Cmp_Func);
+         Internal (Get_Object (Ctree), C_Compare_Drag_Func'Address);
+         --
+         --  It is not possible to store directly the Ada Cmp_Func into
+         --  the cmp_func field of the Ctree, because the profile of
+         --  Cmp_Func is not the same as the profile expected by Gtk+
+         --  (Gtk+ uses 'System.Address'es, whereas GtkAda uses nice Ada
+         --  structures).
+         --
+         --  We therefore store the address of the Cmp_Func inside the
+         --  user data area using the Compare_Drag_Func_Key, and provide
+         --  Gtk+ with an internal compare function that matches the expected
+         --  profile. This internal function will then retrieve the address
+         --  of our Cmp_Func, transform all the System.Address parameters in
+         --  GtkAda structures, and then invoke it.
+
+      end if;
+   end Set_Compare_Drag_Func;
+
+
    ------------------------
    -- Set_Expander_Style --
    ------------------------
@@ -1355,6 +1522,42 @@ package body Gtk.CTree is
          return Result;
       end Export_To_Gnode;
 
+      function Insert_Gnode (Ctree   : access Gtk_Ctree_Record'Class;
+                             Parent  : in     Glib.Gnodes.Gnode;
+                             Sibling : in     Glib.Gnodes.Gnode;
+                             Node    : in     Gtk_Ctree_Node;
+                             Func    : in     Gtk_Ctree_Gnode_Func;
+                             Data    : in     Data_Type_Access)
+        return Gtk_Ctree_Node is
+
+         function Internal (Ctree   : in System.Address;
+                            Parent  : in System.Address;
+                            Sibling : in System.Address;
+                            Node    : in System.Address;
+                            Func    : in System.Address;
+                            Data    : in System.Address)
+           return System.Address;
+         pragma Import (C, Internal, "gtk_ctree_insert_gnode");
+
+         C_Func_Address : System.Address;
+         Local_Data : constant Ctree_Gnode_Func_Record := (Func => Func,
+                                                           Data => Data);
+         Result : Gtk_Ctree_Node;
+      begin
+         if Func = null then
+            C_Func_Address := System.Null_Address;
+         else
+            C_Func_Address := C_Ctree_Gnode_Func'Address;
+         end if;
+         Set_Object (Result, Internal (Get_Object (Ctree),
+                                       Glib.Gnodes.Get_Object (Parent),
+                                       Glib.Gnodes.Get_Object (Sibling),
+                                       Get_Object (Node),
+                                       C_Func_Address,
+                                       Local_Data'Address));
+         return Result;
+      end Insert_Gnode;
+
    end Ctree_Gnode;
 
 
@@ -1363,6 +1566,9 @@ package body Gtk.CTree is
    ---------------
 
    package body Row_Data is
+
+      procedure Deallocate_Data_Type is new Unchecked_Deallocation
+        (Data_Type, Data_Type_Access);
 
       type Ctree_Func_Record is
          record
@@ -1389,6 +1595,23 @@ package body Gtk.CTree is
       pragma Convention (C, C_Ctree_Func);
 
 
+      type Gcompare_Func_Record is
+         record
+            Func : Gcompare_Func;
+            Data : Data_Type_Access;
+         end record;
+      type Gcompare_Func_Record_Access is access all Gcompare_Func_Record;
+
+      function Convert is new Unchecked_Conversion
+        (System.Address, Gcompare_Func_Record_Access);
+      function Convert is new Unchecked_Conversion
+        (Gcompare_Func_Record_Access, System.Address);
+
+      function C_Gcompare_Func
+        (Row_Data_Address           : in System.Address;
+         Gcompare_Func_Data_Address : in System.Address) return Gint;
+      pragma Convention (C, C_Gcompare_Func);
+
       ------------------
       -- C_Ctree_Func --
       ------------------
@@ -1406,17 +1629,130 @@ package body Gtk.CTree is
          Data_Access.Func (Ctree, Node, Data => Data_Access.Data);
       end C_Ctree_Func;
 
-      ----------
-      -- Free --
-      ----------
+
+      -----------------------
+      --  C_Gcompare_Func  --
+      -----------------------
+
+      function C_Gcompare_Func (Row_Data_Address           : in System.Address;
+                                Gcompare_Func_Data_Address : in System.Address)
+        return Gint
+      is
+         Row_Data : constant Data_Type_Access := Convert (Row_Data_Address);
+         Gcompare_Func_Data : constant Gcompare_Func_Record_Access :=
+           Convert (Gcompare_Func_Data_Address);
+      begin
+         if Row_Data /= null then
+            return To_Gint (Gcompare_Func_Data.Func
+                            (Row_Data.all,
+                             Gcompare_Func_Data.Data.all));
+         else  --  No data set to this node... Returning false
+            return To_Gint (False);
+         end if;
+      end C_Gcompare_Func;
+
+
+      -----------------------------
+      --  Default_Gcompare_Func  --
+      -----------------------------
+
+      function Default_Gcompare_Func (A, B : in Data_Type) return Boolean is
+      begin
+         return A = B;
+      end Default_Gcompare_Func;
+
+      ---------------
+      -- Free_Data --
+      ---------------
 
       procedure Free_Data (Data : in System.Address) is
-         procedure Internal is new Unchecked_Deallocation (Data_Type,
-                                                            Data_Type_Access);
          D : Data_Type_Access := Convert (Data);
       begin
-         Internal (D);
+         Deallocate_Data_Type (D);
       end Free_Data;
+
+
+      ------------------------
+      --  Find_By_Row_Data  --
+      ------------------------
+
+      function Find_By_Row_Data (Ctree : access Gtk_Ctree_Record'Class;
+                                 Node  : in     Gtk_Ctree_Node;
+                                 Data  : in     Data_Type)
+        return Gtk_Ctree_Node is
+      begin
+         return Find_By_Row_Data_Custom (Ctree, Node,
+                                         Data,
+                                         Default_Gcompare_Func'Access);
+      end Find_By_Row_Data;
+
+
+      ----------------------------
+      --  Find_All_By_Row_Data  --
+      ----------------------------
+
+      function Find_All_By_Row_Data (Ctree : access Gtk_Ctree_Record'Class;
+                                     Node  : in     Gtk_Ctree_Node;
+                                     Data  : in     Data_Type)
+        return Node_List.Glist is
+      begin
+         return Find_All_By_Row_Data_Custom (Ctree, Node,
+                                             Data,
+                                             Default_Gcompare_Func'Access);
+      end Find_All_By_Row_Data;
+
+
+      -------------------------------
+      --  Find_By_Row_Data_Custom  --
+      -------------------------------
+
+      function Find_By_Row_Data_Custom (Ctree : access Gtk_Ctree_Record'Class;
+                                        Node  : in     Gtk_Ctree_Node;
+                                        Data  : in     Data_Type;
+                                        Func  : in     Gcompare_Func)
+        return Gtk_Ctree_Node is
+         function Internal (Ctree : in System.Address;
+                            Node  : in System.Address;
+                            Data  : in System.Address;
+                            Func  : in System.Address) return System.Address;
+         pragma Import (C, Internal, "gtk_ctree_find_by_row_data_custom");
+         Local_Copy : Data_Type_Access := new Data_Type'(Data);
+         D : Gcompare_Func_Record := (Func => Func, Data => Local_Copy);
+         Result : Gtk_Ctree_Node;
+      begin
+         Set_Object (Result, Internal (Get_Object (Ctree), Get_Object (Node),
+                                       D'Address, C_Gcompare_Func'Address));
+         Deallocate_Data_Type (Local_Copy);
+         return Result;
+      end Find_By_Row_Data_Custom;
+
+
+      -----------------------------------
+      --  Find_All_By_Row_Data_Custom  --
+      -----------------------------------
+
+      function Find_All_By_Row_Data_Custom
+        (Ctree : access Gtk_Ctree_Record'Class;
+         Node  : in     Gtk_Ctree_Node;
+         Data  : in     Data_Type;
+         Func  : in     Gcompare_Func) return Node_List.Glist is
+         function Internal (Ctree : in System.Address;
+                            Node  : in System.Address;
+                            Data  : in System.Address;
+                            Func  : in System.Address) return System.Address;
+         pragma Import (C, Internal, "gtk_ctree_find_all_by_row_data_custom");
+         Local_Copy : Data_Type_Access := new Data_Type'(Data);
+         D : Gcompare_Func_Record := (Func => Func, Data => Local_Copy);
+         Result : Node_List.Glist;
+      begin
+         Node_List.Set_Object (Result, Internal (Get_Object (Ctree),
+                                                 Get_Object (Node),
+                                                 D'Address,
+                                                 C_Gcompare_Func'Address));
+         Deallocate_Data_Type (Local_Copy);
+         return Result;
+      end Find_All_By_Row_Data_Custom;
+
 
       -----------------------
       -- Node_Get_Row_Data --
