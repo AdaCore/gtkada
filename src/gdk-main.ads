@@ -61,11 +61,13 @@ package Gdk.Main is
 
    procedure Timer_Disable;
 
-
-
    function Screen_Width return Gint;
 
    function Screen_Height return Gint;
+
+   function Screen_Width_MM return Gint;
+
+   function Screen_Height_MM return Gint;
 
    procedure Flush;
 
@@ -106,6 +108,8 @@ private
    pragma Import (C, Timer_Disable, "gdk_timer_disable");
    pragma Import (C, Screen_Width, "gdk_screen_width");
    pragma Import (C, Screen_Height, "gdk_screen_height");
+   pragma Import (C, Screen_Width_MM, "gdk_screen_width_mm");
+   pragma Import (C, Screen_Height_MM, "gdk_screen_height_mm");
    pragma Import (C, Flush, "gdk_flush");
    pragma Import (C, Beep, "gdk_beep");
    pragma Import (C, Key_Repeat_Disable, "gdk_key_repeat_disable");
