@@ -131,42 +131,6 @@ package body Gtk.GEntry is
       Internal (Get_Object (The_Entry), Text & ASCII.Nul);
    end Prepend_Text;
 
-   -------------------
-   -- Select_Region --
-   -------------------
-
-   procedure Select_Region
-     (The_Entry : access Gtk_Entry_Record;
-      Start     : in Gint;
-      The_End  : in Gint)
-   is
-      procedure Internal
-        (The_Entry : in System.Address;
-         Start     : in Gint;
-         The_End   : in Gint);
-      pragma Import (C, Internal, "gtk_entry_select_region");
-
-   begin
-      Internal (Get_Object (The_Entry), Start, The_End);
-   end Select_Region;
-
-   ------------------
-   -- Set_Editable --
-   ------------------
-
-   procedure Set_Editable
-     (The_Entry : access Gtk_Entry_Record;
-      Editable  : in Boolean)
-   is
-      procedure Internal
-        (The_Entry : in System.Address;
-         Editable  : in Gint);
-      pragma Import (C, Internal, "gtk_entry_set_editable");
-
-   begin
-      Internal (Get_Object (The_Entry), Boolean'Pos (Editable));
-   end Set_Editable;
-
    --------------------
    -- Set_Max_Length --
    --------------------
@@ -183,23 +147,6 @@ package body Gtk.GEntry is
    begin
       Internal (Get_Object (The_Entry), Max);
    end Set_Max_Length;
-
-   ------------------
-   -- Set_Position --
-   ------------------
-
-   procedure Set_Position
-     (The_Entry : access Gtk_Entry_Record;
-      Position  : in Gint)
-   is
-      procedure Internal
-        (The_Entry : in System.Address;
-         Position  : in Gint);
-      pragma Import (C, Internal, "gtk_entry_set_position");
-
-   begin
-      Internal (Get_Object (The_Entry), Position);
-   end Set_Position;
 
    --------------
    -- Set_Text --

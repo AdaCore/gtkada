@@ -102,8 +102,9 @@ package Gtk.Editable is
 
    procedure Set_Editable (Widget : access Gtk_Editable_Record;
                            Editable : in Boolean := True);
-   --  Make the widget editable by the user if Editable is set to True.
-   --  Disallow any update from the user otherwise.
+   --  Set the editable status of the entry.
+   --  If Editable is False, the user can not modify the contents of the entry.
+   --  This does not affect the user of the insertion functions above.
 
    function Get_Has_Selection (Widget : access Gtk_Editable_Record)
                                return      Boolean;
@@ -135,12 +136,20 @@ package Gtk.Editable is
        Start    : in Gint;
        The_End  : in Gint := -1);
    --  Select the region of text from Start to The_End.
-   --  If The_End is negative, the region is selected from Start to the end of
-   --  the text.
+   --  The characters that are selected are those characters at positions
+   --  from Start up to, but not including The_End. If The_End_Pos is
+   --  negative, then the the characters selected will be those characters
+   --  from Start to the end of the text.
 
    procedure Set_Position (Editable : access Gtk_Editable_Record;
                            Position : Gint);
-   --  Set the cursor position.
+   --  Change the position of the cursor in the entry.
+   --  The cursor is displayed before the character with the given
+   --  index in the widget (the first character has index 0). The
+   --  value must be less than or equal to the number of characters in the
+   --  widget. A value of -1 indicates that the position
+   --  should be set after the last character in the entry.
+   --  Note that this position is in characters, not in bytes.
 
    function Get_Position (Editable : access Gtk_Editable_Record) return Gint;
    --  Return the position of the cursor.

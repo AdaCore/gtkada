@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,59 +27,106 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  A Gtk_Entry is a single line text editing widget.
+--  The text is automatically scrolled if it is longer than can be displayed
+--  on the screen, so that the cursor position is visible at all times.
+--
+--  See also Gtk_Text for a multiple-line text editing widget.
+--
+--  Note that this widget does not currently support wide-character, or
+--  character sets that require multiple-byte encoding.
+--
+--  </description>
+--  <c_version>1.2.7</c_version>
+
 with Gtk.Editable;
 with Gtk.Object;
 
 package Gtk.GEntry is
 
+   --  <doc_ignore>
    type Gtk_Entry_Record is new Gtk.Editable.Gtk_Editable_Record with private;
    type Gtk_Entry is access all Gtk_Entry_Record'Class;
    subtype Gtk_GEntry is Gtk_Entry;
+   --  </doc_ignore>
 
-   procedure Append_Text
-     (The_Entry : access Gtk_Entry_Record;
-      Text      : in String);
-   function Get_Text (The_Entry : access Gtk_Entry_Record)
-     return String;
    procedure Gtk_New (Widget : out Gtk_Entry;
                       Max    : in Guint16);
+   --  Create a new entry with a maximum length for the text.
+   --  The text can never be longer than Max characters.
+
    procedure Gtk_New (Widget : out Gtk_Entry);
+   --  Create a new entry with no maximum length for the text
+
    procedure Initialize (Widget : access Gtk_Entry_Record'Class;
                          Max    : in Guint16);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
    procedure Initialize (Widget : access Gtk_Entry_Record'Class);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
 
-   procedure Prepend_Text
-     (The_Entry : access Gtk_Entry_Record;
-      Text      : in String);
-   procedure Select_Region
-     (The_Entry : access Gtk_Entry_Record;
-      Start     : in Gint;
-      The_End   : in Gint);
-   procedure Set_Editable
-     (The_Entry : access Gtk_Entry_Record;
-      Editable  : in Boolean);
-   procedure Set_Max_Length
-     (The_Entry : access Gtk_Entry_Record;
-      Max       : in Guint16);
-   procedure Set_Position
-     (The_Entry : access Gtk_Entry_Record;
-      Position  : in Gint);
-   procedure Set_Text
-     (The_Entry : access Gtk_Entry_Record;
-      Text      : in String);
-   procedure Set_Visibility
-     (The_Entry : access Gtk_Entry_Record;
-      Visible   : in Boolean);
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Entry.
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
+   procedure Set_Text (The_Entry : access Gtk_Entry_Record;
+                       Text      : in String);
+   --  Modify the text in the entry.
+   --  The text is cut at the maximum length that was set when the entry was
+   --  created.
+   --  The text replaces the current contents.
+
+   procedure Append_Text (The_Entry : access Gtk_Entry_Record;
+                          Text      : in String);
+   --  Append a new string at the end of the existing one.
+
+   procedure Prepend_Text (The_Entry : access Gtk_Entry_Record;
+                           Text      : in String);
+   --  Insert some text at the beginning of the entry.
+
+   --  <doc_ignore>
+   function Get_Text (The_Entry : access Gtk_Entry_Record)
+                     return String;
+   --  Return the current text written in the entry.
+   --
+   --  This function is deprecated, you should use Gtk.Editable.Get_Chars
+   --  instead.
+   --  </doc_ignore>
+
+   procedure Set_Visibility (The_Entry : access Gtk_Entry_Record;
+                             Visible   : in Boolean);
+   --  Set the visibility of the characters in the entry.
+   --  If Visible is set to False, the characters will be replaced with
+   --  starts ('*') in the display, and when the text is copied elsewhere.
+
+   procedure Set_Max_Length (The_Entry : access Gtk_Entry_Record;
+                             Max       : in Guint16);
+   --  Set the maximum length for the text.
+   --  The current text is truncated if needed.
+
+   ----------------------------
+   -- Support for GATE/DGATE --
+   ----------------------------
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
 
    procedure Generate (The_Entry : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
 
 private
    type Gtk_Entry_Record is new Gtk.Editable.Gtk_Editable_Record
      with null record;
-
+   pragma Import (C, Get_Type, "gtk_entry_get_type");
 end Gtk.GEntry;
