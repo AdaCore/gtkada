@@ -4148,7 +4148,6 @@ package body Gtkada.MDI is
          From_Tree : Glib.Xml_Int.Node_Ptr;
          User      : User_Data)
       is
-         Widget     : Gtk_Widget;
          Child, Focus_Child : MDI_Child;
          Child_Node : Node_Ptr := From_Tree.Child;
          N          : Node_Ptr;
@@ -4184,24 +4183,18 @@ package body Gtkada.MDI is
                Maximize_Children (MDI, Boolean'Value (Child_Node.Value.all));
 
             elsif Child_Node.Tag.all = "Child" then
-               --  Create the widget
+               --  Create the child
 
                Register := Registers;
-               Widget   :=  null;
+               Child := null;
 
-               while Widget = null and then Register /= null loop
-                  Widget := Register.Load (Child_Node.Child, User);
+               while Child = null and then Register /= null loop
+                  Child := Register.Load
+                    (MDI_Window (MDI), Child_Node.Child, User);
                   Register := Register.Next;
                end loop;
 
-               if Widget /= null then
-                  if Widget.all not in MDI_Child_Record'Class then
-                     Gtk_New (Child, Widget);
-                     Child := Put (MDI, Child);
-                  else
-                     Child := MDI_Child (Widget);
-                  end if;
-
+               if Child /= null then
                   N := Child_Node.Child.Next;
 
                   while N /= null loop
