@@ -152,7 +152,6 @@ gtk_combobox_popup_display (GtkComboBox * combobox)
 		    GDK_BUTTON_RELEASE_MASK |
 		    GDK_POINTER_MOTION_MASK, 
 		    NULL, NULL, GDK_CURRENT_TIME);
-
 }
 
 void
