@@ -1,8 +1,9 @@
 SRC=gtkplot.c gtkplotcanvas.c gtkplotprint.c gtkplotps.c \
   gtkpsfont.c gtkplotpc.c gtksheet.c gtkitementry.c \
-  gtkcombobox.c gtkextra-marshall.o gtkcolorcombo.c gtkbordercombo.c \
-  gtkfontcombo.c gtkplotgdk.c gtkextra.c gtkplotdt.c \
-  gtkplotdata.c gtkplot3d.c gtkplotpolar.c gtkplotbar.c gtkplotbox.c gtkplotsurface.c
+  gtkextra-marshal.c gtkextra.c gtkplotdt.c \
+  gtkcombobox.c gtkcolorcombo.c gtkbordercombo.c gtkfontcombo.c gtkplotgdk.c \
+  gtkplotdata.c gtkplot3d.c gtkplotpolar.c gtkplotbar.c gtkplotbox.c \
+  gtkplotsurface.c
 
 OBJ=${SRC:%.c=%.o}
 CC=@CC@
@@ -10,20 +11,20 @@ FPIC=@FPIC@
 CFLAGS=@CFLAGS@
 ALL_CFLAGS=$(CFLAGS) @GTK_CFLAGS@ $(FPIC)
 
-all: gtkextramarshal.h gtkextramarshal.c $(OBJ)
+all: gtkextra-marshal.h gtkextra-marshal.c $(OBJ)
 
 %.o: %.c %.h
 	$(CC) -c $(ALL_CFLAGS) $<
 
-gtkextramarshal.h: gtkextra.list
-	glib-genmarshal --prefix=gtk_extra_marshal --header $< > gtkextramarshal.h
+gtkextra-marshal.h: gtkextra-marshal.list
+	glib-genmarshal --prefix=gtkextra --header $< > $@
 
-gtkextramarshal.c: gtkextra.list
-	glib-genmarshal --prefix=gtk_extra_marshal --body $< > gtkextramarshal.c
+gtkextra-marshal.c: gtkextra-marshal.list
+	glib-genmarshal --prefix=gtkextra --body $< > $@
 
 clean:
 	-$(RM) $(OBJ)
-	-$(RM) gtkextramarshal.[ch]
+	-$(RM) gtkextra-marshal.[ch]
 
 distclean: clean
 	-$(RM) Makefile
