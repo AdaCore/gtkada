@@ -1,0 +1,266 @@
+
+
+package body Gtk.Gtk_Range is
+
+   ---------------------
+   -- Default_Hmotion --
+   ---------------------
+
+   procedure Default_Hmotion
+      (The_Range : in Gtk_Range'Class;
+       Xdelta    : in Gint;
+       Ydelta    : in Gint)
+   is
+      procedure Internal
+         (The_Range : in System.Address;
+          Xdelta    : in Gint;
+          Ydelta    : in Gint);
+      pragma Import (C, Internal, "gtk_range_default_hmotion");
+   begin
+      Internal (Get_Object (The_Range),
+                Xdelta,
+                Ydelta);
+   end Default_Hmotion;
+
+   ----------------------------
+   -- Default_Hslider_Update --
+   ----------------------------
+
+   procedure Default_Hslider_Update (The_Range : in Gtk_Range'Class)
+   is
+      procedure Internal (The_Range : in System.Address);
+      pragma Import (C, Internal, "gtk_range_default_hslider_update");
+   begin
+      Internal (Get_Object (The_Range));
+   end Default_Hslider_Update;
+
+   ---------------------------
+   -- Default_Htrough_Click --
+   ---------------------------
+
+   procedure Default_Htrough_Click
+     (The_Range : in Gtk_Range'Class;
+      X         : in Gint;
+      Y         : in Gint;
+      Jump_Perc : in out Gfloat;
+      Result    :    out Gint)
+   is
+      function Internal
+        (The_Range : in System.Address;
+         X         : in Gint;
+         Y         : in Gint;
+         Jump_Perc : in System.Address)
+         return         Gint;
+      pragma Import (C, Internal, "gtk_range_default_htrough_click");
+   begin
+      Result := Internal (Get_Object (The_Range),
+                          X,
+                          Y,
+                          Jump_Perc'Address);
+   end Default_Htrough_Click;
+
+   ---------------------
+   -- Default_Vmotion --
+   ---------------------
+
+   procedure Default_Vmotion
+      (The_Range : in Gtk_Range'Class;
+       Xdelta    : in Gint;
+       Ydelta    : in Gint)
+   is
+      procedure Internal
+         (The_Range : in System.Address;
+          Xdelta    : in Gint;
+          Ydelta    : in Gint);
+      pragma Import (C, Internal, "gtk_range_default_vmotion");
+   begin
+      Internal (Get_Object (The_Range),
+                Xdelta,
+                Ydelta);
+   end Default_Vmotion;
+
+   ----------------------------
+   -- Default_Vslider_Update --
+   ----------------------------
+
+   procedure Default_Vslider_Update (The_Range : in Gtk_Range'Class)
+   is
+      procedure Internal (The_Range : in System.Address);
+      pragma Import (C, Internal, "gtk_range_default_vslider_update");
+   begin
+      Internal (Get_Object (The_Range));
+   end Default_Vslider_Update;
+
+   ---------------------------
+   -- Default_Vtrough_Click --
+   ---------------------------
+
+   procedure Default_Vtrough_Click
+     (The_Range : in Gtk_Range'Class;
+      X         : in Gint;
+      Y         : in Gint;
+      Jump_Perc : in out Gfloat;
+      Result    :    out Gint)
+   is
+      function Internal
+        (The_Range : in System.Address;
+         X         : in Gint;
+         Y         : in Gint;
+         Jump_Perc : in System.Address)
+         return         Gint;
+      pragma Import (C, Internal, "gtk_range_default_vtrough_click");
+   begin
+      Result := Internal (Get_Object (The_Range),
+                          X,
+                          Y,
+                          Jump_Perc'Address);
+   end Default_Vtrough_Click;
+
+   ---------------------
+   -- Draw_Background --
+   ---------------------
+
+   procedure Draw_Background (The_Range : in Gtk_Range'Class)
+   is
+      procedure Internal (The_Range : in System.Address);
+      pragma Import (C, Internal, "gtk_range_draw_background");
+   begin
+      Internal (Get_Object (The_Range));
+   end Draw_Background;
+
+   -----------------
+   -- Draw_Slider --
+   -----------------
+
+   procedure Draw_Slider (The_Range : in Gtk_Range'Class)
+   is
+      procedure Internal (The_Range : in System.Address);
+      pragma Import (C, Internal, "gtk_range_draw_slider");
+   begin
+      Internal (Get_Object (The_Range));
+   end Draw_Slider;
+
+   --------------------
+   -- Draw_Step_Back --
+   --------------------
+
+   procedure Draw_Step_Back (The_Range : in Gtk_Range'Class)
+   is
+      procedure Internal (The_Range : in System.Address);
+      pragma Import (C, Internal, "gtk_range_draw_step_back");
+   begin
+      Internal (Get_Object (The_Range));
+   end Draw_Step_Back;
+
+   --------------------
+   -- Draw_Step_Forw --
+   --------------------
+
+   procedure Draw_Step_Forw (The_Range : in Gtk_Range'Class)
+   is
+      procedure Internal (The_Range : in System.Address);
+      pragma Import (C, Internal, "gtk_range_draw_step_forw");
+   begin
+      Internal (Get_Object (The_Range));
+   end Draw_Step_Forw;
+
+   -----------------
+   -- Draw_Trough --
+   -----------------
+
+   procedure Draw_Trough (The_Range : in Gtk_Range'Class)
+   is
+      procedure Internal (The_Range : in System.Address);
+      pragma Import (C, Internal, "gtk_range_draw_trough");
+   begin
+      Internal (Get_Object (The_Range));
+   end Draw_Trough;
+
+   --------------------
+   -- Get_Adjustment --
+   --------------------
+
+   function Get_Adjustment (The_Range  : in Gtk_Range'Class)
+                            return      Gtk.Adjustment.Gtk_Adjustment'Class
+   is
+      function Internal (The_Range  : in System.Address)
+                         return      System.Address;
+      pragma Import (C, Internal, "gtk_range_get_adjustment");
+      Widget : Gtk.Adjustment.Gtk_Adjustment;
+   begin
+      Set_Object (Widget, Internal (Get_Object (The_Range)));
+      return Widget;
+   end Get_Adjustment;
+
+   --------------------
+   -- Set_Adjustment --
+   --------------------
+
+   procedure Set_Adjustment
+      (The_Range  : in Gtk_Range'Class;
+       Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class)
+   is
+      procedure Internal
+         (The_Range  : in System.Address;
+          Adjustment : in System.Address);
+      pragma Import (C, Internal, "gtk_range_set_adjustment");
+   begin
+      Internal (Get_Object (The_Range),
+                Get_Object (Adjustment));
+   end Set_Adjustment;
+
+   -----------------------
+   -- Set_Update_Policy --
+   -----------------------
+
+   procedure Set_Update_Policy
+      (The_Range : in Gtk_Range'Class;
+       Policy    : in Gtk_Update_Type)
+   is
+      procedure Internal
+         (The_Range : in System.Address;
+          Policy    : in Gint);
+      pragma Import (C, Internal, "gtk_range_set_update_policy");
+   begin
+      Internal (Get_Object (The_Range),
+                Gtk_Update_Type'Pos (Policy));
+   end Set_Update_Policy;
+
+   -------------------
+   -- Slider_Update --
+   -------------------
+
+   procedure Slider_Update (The_Range : in Gtk_Range'Class)
+   is
+      procedure Internal (The_Range : in System.Address);
+      pragma Import (C, Internal, "gtk_range_slider_update");
+   begin
+      Internal (Get_Object (The_Range));
+   end Slider_Update;
+
+   ------------------
+   -- Trough_Click --
+   ------------------
+
+   procedure Trough_Click
+     (The_Range : in Gtk_Range'Class;
+      X         : in Gint;
+      Y         : in Gint;
+      Jump_Perc : in out Gfloat;
+      Result    :    out Gint)
+   is
+      function Internal
+         (The_Range : in System.Address;
+          X         : in Gint;
+          Y         : in Gint;
+          Jump_Perc : in System.Address)
+          return         Gint;
+      pragma Import (C, Internal, "gtk_range_trough_click");
+   begin
+      Result := Internal (Get_Object (The_Range),
+                          X,
+                          Y,
+                          Jump_Perc'Address);
+   end Trough_Click;
+
+end Gtk.Gtk_Range;
