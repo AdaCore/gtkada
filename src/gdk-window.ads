@@ -38,7 +38,9 @@
 --
 --  If you simply want to create a simply window, you should instead look
 --  at the functions provided in Gtk.Window and Gtk.Widget, which are higher
---  level than these.
+--  level than these. See also the function Gtk.Widget.Get_Window to get the
+--  Gdk_Window associated with a widget. Be aware that some of them don't have
+--  such windows!
 --
 --  Scrolling can be implemented in several ways with GtkAda (toplevel
 --  scrolling should be done with the Gtk_Scrolled_Window widget, but you
