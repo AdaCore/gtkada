@@ -1395,7 +1395,8 @@ package body Gtk.Clist is
 
       if Columns /= null then
          declare
-            Titles : Chars_Ptr_Array (1 .. Gint'Value (Columns.all));
+            Titles : Chars_Ptr_Array
+              (1 .. Interfaces.C.size_t'Value (Columns.all));
             Name   : constant String :=
               To_Ada (Get_Field (N, "name").all) & "_Titles";
          begin
@@ -1424,7 +1425,8 @@ package body Gtk.Clist is
          Columns := Get_Field (N, "columns");
          if Columns /= null then
             declare
-               Titles : Chars_Ptr_Array (1 .. Gint'Value (Columns.all));
+               Titles : Chars_Ptr_Array
+                 (1 .. Interfaces.C.size_t'Value (Columns.all));
             begin
                Build_Title_List (N, Titles);
                Gtk_New (Gtk_Clist (Clist), Gint'Value (Columns.all), Titles);

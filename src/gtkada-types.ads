@@ -27,16 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
-
 with Interfaces.C.Strings;
 
 package Gtkada.Types is
 
    Data_Error : exception;
 
-   type Chars_Ptr_Array is array (Gint range <>)
-     of Interfaces.C.Strings.chars_ptr;
+   subtype Chars_Ptr_Array is Interfaces.C.Strings.chars_ptr_array;
 
    procedure Free (A : in out Chars_Ptr_Array);
    --  Frees all the strings in A
