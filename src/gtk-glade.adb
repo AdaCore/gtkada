@@ -23,9 +23,6 @@ with Gtk_Generates; use Gtk_Generates;
 
 package body Gtk.Glade is
 
-   Max_Widgets : constant := 200;
-   --  Maximum number of widget types.
-
    subtype Hash_Header is Natural range 0 .. 300;
    --  Number of hash headers, related (for efficiency purposes only)
    --  to the maximum number of widgets.
