@@ -28,6 +28,8 @@
 -----------------------------------------------------------------------
 
 --  <description>
+--  Note that this package is curretnyl not supported under Win32 systems.
+--
 --  Together with Gtk_Plug, Gtk_Socket provides the ability to embed widgets
 --  from one process into another process in a fashion that is transparent to
 --  the user. One process creates a Gtk_Socket widget and, passes the XID of
@@ -37,7 +39,7 @@
 --  applications window.
 --
 --  The XID of the socket's window is obtained by using the
---  GTK_WINDOW_XWINDOW() macro from the header file <gdk/gdkx.h>. Before using
+--  XWindow function provided in this package. Before using
 --  this macro, the socket must have been realized, and for hence, have been
 --  added to its parent.
 --
@@ -83,15 +85,19 @@ package Gtk.Socket is
    --  Reparent a pre-existing toplevel window into a Gtk_Socket.
    --  Wid is the XID of an existing toplevel window.
 
-   function Get_Plug_Window (Socket : access Gtk_Socket_Record)
-                            return Gdk.Window.Gdk_Window;
+   function Get_Plug_Window
+     (Socket : access Gtk_Socket_Record) return Gdk.Window.Gdk_Window;
    --  Return the id of the embedded window.
+
+   function Get_XWindow (Window : Gdk.Window.Gdk_Window) return Guint32;
+   --  Return the X window associated with a Gdk_Window, 0 under Win32.
 
 private
 
    type Gtk_Socket_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
 
+   pragma Import (C, Get_XWindow, "ada_get_xwindow");
 end Gtk.Socket;
 
 --  <example>
@@ -111,5 +117,5 @@ end Gtk.Socket;
 --
 --  Realize (Socket);
 --  Put_Line ("The XID of the sockets window is" &
---            Guint32'Image (XWINDOW (Get_Window (Socket))));
+--            Guint32'Image (Get_XWindow (Get_Window (Socket))));
 --  </example>
