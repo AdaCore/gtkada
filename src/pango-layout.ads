@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2002 ACT-Europe                      --
+--                   Copyright (C) 2002 ACT-Europe                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +32,6 @@ with Pango.Font;
 package Pango.Layout is
 
    type Pango_Layout is new Glib.C_Proxy;
-
 
    procedure Set_Font_Description
      (Layout : Pango_Layout;
