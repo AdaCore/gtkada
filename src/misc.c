@@ -1,2 +1,2 @@
-#include <misc-joel.c>
-#include <misc-manu.c>
+#include "misc-joel.c"
+#include "misc-manu.c"
