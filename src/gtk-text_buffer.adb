@@ -36,19 +36,9 @@ package body Gtk.Text_Buffer is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Buffer : out Gtk_Text_Buffer) is
-   begin
-      Buffer := new Gtk_Text_Buffer_Record;
-      Initialize (Buffer);
-   end Gtk_New;
-
-   -------------
-   -- Gtk_New --
-   -------------
-
    procedure Gtk_New
      (Buffer : out Gtk_Text_Buffer;
-      Table  : access Gtk.Text_Tag_Table.Gtk_Text_Tag_Table_Record'Class) is
+      Table  : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table := null) is
    begin
       Buffer := new Gtk_Text_Buffer_Record;
       Initialize (Buffer, Table);
@@ -58,27 +48,22 @@ package body Gtk.Text_Buffer is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Buffer : access Gtk_Text_Buffer_Record'Class)
-   is
-      function Internal (Table : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_text_buffer_new");
-   begin
-      Set_Object (Buffer, Internal (System.Null_Address));
-      Initialize_User_Data (Buffer);
-   end Initialize;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
    procedure Initialize
      (Buffer : access Gtk_Text_Buffer_Record'Class;
-      Table  : access Gtk.Text_Tag_Table.Gtk_Text_Tag_Table_Record'Class)
+      Table  : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table)
    is
       function Internal (Table : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_text_buffer_new");
+
+      use type Gtk.Text_Tag_Table.Gtk_Text_Tag_Table;
+
    begin
-      Set_Object (Buffer, Internal (Get_Object (Table)));
+      if Table = null then
+         Set_Object (Buffer, Internal (System.Null_Address));
+      else
+         Set_Object (Buffer, Internal (Get_Object (Table)));
+      end if;
+
       Initialize_User_Data (Buffer);
    end Initialize;
 
@@ -86,10 +71,12 @@ package body Gtk.Text_Buffer is
    -- Get_Line_Count --
    --------------------
 
-   function Get_Line_Count (Buffer : access Gtk_Text_Buffer_Record) return Gint
+   function Get_Line_Count
+     (Buffer : access Gtk_Text_Buffer_Record) return Gint
    is
       function Internal (Buffer : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_buffer_get_line_count");
+
    begin
       return Internal (Get_Object (Buffer));
    end Get_Line_Count;
@@ -98,10 +85,12 @@ package body Gtk.Text_Buffer is
    -- Get_Char_Count --
    --------------------
 
-   function Get_Char_Count (Buffer : access Gtk_Text_Buffer_Record) return Gint
+   function Get_Char_Count
+     (Buffer : access Gtk_Text_Buffer_Record) return Gint
    is
       function Internal (Buffer : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_buffer_get_char_count");
+
    begin
       return Internal (Get_Object (Buffer));
    end Get_Char_Count;
@@ -110,12 +99,14 @@ package body Gtk.Text_Buffer is
    -- Get_Tag_Table --
    -------------------
 
-   function Get_Tag_Table (Buffer : access Gtk_Text_Buffer_Record)
-                           return Gtk.Text_Tag_Table.Gtk_Text_Tag_Table
+   function Get_Tag_Table
+     (Buffer : access Gtk_Text_Buffer_Record)
+      return Gtk.Text_Tag_Table.Gtk_Text_Tag_Table
    is
       function Internal (Buffer : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_text_buffer_get_tag_table");
       Stub : Gtk.Text_Tag_Table.Gtk_Text_Tag_Table_Record;
+
    begin
       return Gtk.Text_Tag_Table.Gtk_Text_Tag_Table
                (Get_User_Data (Internal (Get_Object (Buffer)),
@@ -135,10 +126,9 @@ package body Gtk.Text_Buffer is
          Text   : String;
          Len    : Gint);
       pragma Import (C, Internal, "gtk_text_buffer_set_text");
+
    begin
-      Internal (Get_Object (Buffer),
-                Text & ASCII.NUL,
-                Text'Length);
+      Internal (Get_Object (Buffer), Text, Text'Length);
    end Set_Text;
 
    ------------
@@ -156,11 +146,9 @@ package body Gtk.Text_Buffer is
          Text   : String;
          Len    : Gint);
       pragma Import (C, Internal, "gtk_text_buffer_insert");
+
    begin
-      Internal (Get_Object (Buffer),
-                Iter,
-                Text & ASCII.NUL,
-                Text'Length);
+      Internal (Get_Object (Buffer), Iter, Text, Text'Length);
    end Insert;
 
    ----------------------
@@ -176,10 +164,9 @@ package body Gtk.Text_Buffer is
          Text   : String;
          Len    : Gint);
       pragma Import (C, Internal, "gtk_text_buffer_insert_at_cursor");
+
    begin
-      Internal (Get_Object (Buffer),
-                Text & ASCII.NUL,
-                Text'Length);
+      Internal (Get_Object (Buffer), Text, Text'Length);
    end Insert_At_Cursor;
 
    ------------------------
@@ -198,15 +185,14 @@ package body Gtk.Text_Buffer is
          Iter             : Gtk.Text_Iter.Gtk_Text_Iter;
          Text             : String;
          Len              : Gint;
-         Default_Editable : Gboolean)
-         return Gboolean;
+         Default_Editable : Gboolean) return Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_insert_interactive");
+
    begin
-      Result := To_Boolean (Internal (Get_Object (Buffer),
-                                      Iter,
-                                      Text & ASCII.NUL,
-                                      Text'Length,
-                                      To_Gboolean (Default_Editable)));
+      Result :=
+        To_Boolean
+          (Internal (Get_Object (Buffer), Iter, Text, Text'Length,
+           To_Gboolean (Default_Editable)));
    end Insert_Interactive;
 
    ----------------------------------
@@ -216,22 +202,20 @@ package body Gtk.Text_Buffer is
    function Insert_Interactive_At_Cursor
      (Buffer           : access Gtk_Text_Buffer_Record;
       Text             : String;
-      Default_Editable : Boolean)
-      return Boolean
+      Default_Editable : Boolean) return Boolean
    is
       function Internal
         (Buffer           : System.Address;
          Text             : String;
          Len              : Gint;
-         Default_Editable : Gboolean)
-         return Gboolean;
-      pragma Import (C, Internal,
-                     "gtk_text_buffer_insert_interactive_at_cursor");
+         Default_Editable : Gboolean) return Gboolean;
+      pragma Import
+        (C, Internal, "gtk_text_buffer_insert_interactive_at_cursor");
+
    begin
-      return To_Boolean (Internal (Get_Object (Buffer),
-                                   Text & ASCII.NUL,
-                                   Text'Length,
-                                   To_Gboolean (Default_Editable)));
+      return To_Boolean
+        (Internal (Get_Object (Buffer), Text, Text'Length,
+         To_Gboolean (Default_Editable)));
    end Insert_Interactive_At_Cursor;
 
    ------------------
@@ -250,6 +234,7 @@ package body Gtk.Text_Buffer is
          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
       pragma Import (C, Internal, "gtk_text_buffer_insert_range");
+
    begin
       Internal (Get_Object (Buffer), Iter, Start, The_End);
    end Insert_Range;
@@ -271,15 +256,16 @@ package body Gtk.Text_Buffer is
          Iter             : Gtk.Text_Iter.Gtk_Text_Iter;
          Start            : Gtk.Text_Iter.Gtk_Text_Iter;
          The_End          : Gtk.Text_Iter.Gtk_Text_Iter;
-         Default_Editable : Gboolean)
-         return Gboolean;
+         Default_Editable : Gboolean) return Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_insert_range_interactive");
+
    begin
-      Result := To_Boolean (Internal (Get_Object (Buffer),
-                                      Iter,
-                                      Start,
-                                      The_End,
-                                      To_Gboolean (Default_Editable)));
+      Result := To_Boolean
+        (Internal (Get_Object (Buffer),
+         Iter,
+         Start,
+         The_End,
+         To_Gboolean (Default_Editable)));
    end Insert_Range_Interactive;
 
    ------------
@@ -296,6 +282,7 @@ package body Gtk.Text_Buffer is
          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
       pragma Import (C, Internal, "gtk_text_buffer_delete");
+
    begin
       Internal (Get_Object (Buffer), Start, The_End);
    end Delete;
@@ -315,14 +302,15 @@ package body Gtk.Text_Buffer is
         (Buffer           : System.Address;
          Start_Iter       : Gtk.Text_Iter.Gtk_Text_Iter;
          End_Iter         : Gtk.Text_Iter.Gtk_Text_Iter;
-         Default_Editable : Gboolean)
-         return Gboolean;
+         Default_Editable : Gboolean) return Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_delete_interactive");
+
    begin
-      Result := To_Boolean (Internal (Get_Object (Buffer),
-                                      Start_Iter,
-                                      End_Iter,
-                                      To_Gboolean (Default_Editable)));
+      Result := To_Boolean
+        (Internal (Get_Object (Buffer),
+         Start_Iter,
+         End_Iter,
+         To_Gboolean (Default_Editable)));
    end Delete_Interactive;
 
    --------------
@@ -333,8 +321,7 @@ package body Gtk.Text_Buffer is
      (Buffer               : access Gtk_Text_Buffer_Record;
       Start                : Gtk.Text_Iter.Gtk_Text_Iter;
       The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
-      Include_Hidden_Chars : Boolean := False)
-      return String
+      Include_Hidden_Chars : Boolean := False) return String
    is
       function Internal
         (Buffer               : System.Address;
@@ -343,12 +330,21 @@ package body Gtk.Text_Buffer is
          Include_Hidden_Chars : Gboolean)
          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_buffer_get_text");
+
+      Str : Interfaces.C.Strings.chars_ptr :=
+         Internal
+           (Get_Object (Buffer),
+            Start,
+            The_End,
+            To_Gboolean (Include_Hidden_Chars));
+
    begin
-      return Interfaces.C.Strings.Value
-               (Internal (Get_Object (Buffer),
-                          Start,
-                          The_End,
-                          To_Gboolean (Include_Hidden_Chars)));
+      declare
+         S : constant String := Interfaces.C.Strings.Value (Str);
+      begin
+         Interfaces.C.Strings.Free (Str);
+         return S;
+      end;
    end Get_Text;
 
    ---------------
@@ -359,8 +355,7 @@ package body Gtk.Text_Buffer is
      (Buffer               : access Gtk_Text_Buffer_Record;
       Start                : Gtk.Text_Iter.Gtk_Text_Iter;
       The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
-      Include_Hidden_Chars : Boolean := False)
-      return String
+      Include_Hidden_Chars : Boolean := False) return String
    is
       function Internal
         (Buffer               : System.Address;
@@ -369,33 +364,41 @@ package body Gtk.Text_Buffer is
          Include_Hidden_Chars : Gboolean)
          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_text_buffer_get_slice");
+
+      Str : Interfaces.C.Strings.chars_ptr :=
+         Internal
+           (Get_Object (Buffer),
+            Start,
+            The_End,
+            To_Gboolean (Include_Hidden_Chars));
+
    begin
-      return Interfaces.C.Strings.Value
-               (Internal (Get_Object (Buffer),
-                          Start,
-                          The_End,
-                          To_Gboolean (Include_Hidden_Chars)));
+      declare
+         S : constant String := Interfaces.C.Strings.Value (Str);
+      begin
+         Interfaces.C.Strings.Free (Str);
+         return S;
+      end;
    end Get_Slice;
 
    -------------------
    -- Insert_Pixbuf --
    -------------------
 
-   --  procedure Insert_Pixbuf
-   --    (Buffer : access Gtk_Text_Buffer_Record;
-   --     Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
-   --     Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf)
-   --  is
-   --     procedure Internal
-   --       (Buffer : System.Address;
-   --        Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
-   --        Pixbuf : GdkPixbuf);
-   --     pragma Import (C, Internal, "gtk_text_buffer_insert_pixbuf");
-   --  begin
-   --     Internal (Get_Object (Buffer),
-   --               Iter,
-   --               Pixbuf);
-   --  end Insert_Pixbuf;
+   procedure Insert_Pixbuf
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+      Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf)
+   is
+      procedure Internal
+        (Buffer : System.Address;
+         Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+         Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
+      pragma Import (C, Internal, "gtk_text_buffer_insert_pixbuf");
+
+   begin
+      Internal (Get_Object (Buffer), Iter, Pixbuf);
+   end Insert_Pixbuf;
 
    -------------------------
    -- Insert_Child_Anchor --
@@ -411,6 +414,7 @@ package body Gtk.Text_Buffer is
          Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
          Anchor : System.Address);
       pragma Import (C, Internal, "gtk_text_buffer_insert_child_anchor");
+
    begin
       Internal (Get_Object (Buffer), Iter, Get_Object (Anchor));
    end Insert_Child_Anchor;
@@ -426,9 +430,9 @@ package body Gtk.Text_Buffer is
    is
       function Internal
         (Buffer : System.Address;
-         Iter   : Gtk.Text_Iter.Gtk_Text_Iter)
-         return System.Address;
+         Iter   : Gtk.Text_Iter.Gtk_Text_Iter) return System.Address;
       pragma Import (C, Internal, "gtk_text_buffer_create_child_anchor");
+
       Stub : Gtk.Text_Child.Gtk_Text_Child_Anchor_Record;
    begin
       Result := Gtk.Text_Child.Gtk_Text_Child_Anchor
@@ -444,40 +448,43 @@ package body Gtk.Text_Buffer is
      (Buffer       : access Gtk_Text_Buffer_Record;
       Mark_Name    : String := "";
       Where        : Gtk.Text_Iter.Gtk_Text_Iter;
-      Left_Gravity : Boolean := True)
-      return Gtk.Text_Mark.Gtk_Text_Mark
+      Left_Gravity : Boolean := True) return Gtk.Text_Mark.Gtk_Text_Mark
    is
       function Internal
         (Buffer       : System.Address;
          Mark_Name    : String;
          Where        : Gtk.Text_Iter.Gtk_Text_Iter;
-         Left_Gravity : Gboolean)
-         return System.Address;
-      pragma Import (C, Internal, "gtk_text_buffer_create_mark");
-      function Internal_No_Mark_Name
+         Left_Gravity : Gboolean) return System.Address;
+
+      function Internal
         (Buffer       : System.Address;
          Mark_Name    : System.Address := System.Null_Address;
          Where        : Gtk.Text_Iter.Gtk_Text_Iter;
-         Left_Gravity : Gboolean)
-         return System.Address;
-      pragma Import (C, Internal_No_Mark_Name, "gtk_text_buffer_create_mark");
+         Left_Gravity : Gboolean) return System.Address;
+      pragma Import (C, Internal, "gtk_text_buffer_create_mark");
+
       Stub : Gtk.Text_Mark.Gtk_Text_Mark_Record;
+
    begin
       if Mark_Name /= "" then
-         return Gtk.Text_Mark.Gtk_Text_Mark
-                  (Get_User_Data (Internal (Get_Object (Buffer),
-                                            Mark_Name & ASCII.NUL,
-                                            Where,
-                                            To_Gboolean (Left_Gravity)),
-                                  Stub));
+         return
+           Gtk.Text_Mark.Gtk_Text_Mark
+             (Get_User_Data
+               (Internal
+                 (Get_Object (Buffer),
+                  Mark_Name & ASCII.NUL,
+                  Where,
+                  To_Gboolean (Left_Gravity)),
+                  Stub));
       else
          return
            Gtk.Text_Mark.Gtk_Text_Mark
-             (Get_User_Data (Internal_No_Mark_Name
-                               (Buffer => Get_Object (Buffer),
-                                Where => Where,
-                                Left_Gravity => To_Gboolean (Left_Gravity)),
-                             Stub));
+             (Get_User_Data
+               (Internal
+                  (Buffer => Get_Object (Buffer),
+                   Where => Where,
+                   Left_Gravity => To_Gboolean (Left_Gravity)),
+                   Stub));
       end if;
    end Create_Mark;
 
@@ -495,6 +502,7 @@ package body Gtk.Text_Buffer is
          Mark   : System.Address;
          Where  : Gtk.Text_Iter.Gtk_Text_Iter);
       pragma Import (C, Internal, "gtk_text_buffer_move_mark");
+
    begin
       Internal (Get_Object (Buffer), Get_Object (Mark), Where);
    end Move_Mark;
@@ -511,6 +519,7 @@ package body Gtk.Text_Buffer is
         (Buffer : System.Address;
          Mark   : System.Address);
       pragma Import (C, Internal, "gtk_text_buffer_delete_mark");
+
    begin
       Internal (Get_Object (Buffer), Get_Object (Mark));
    end Delete_Mark;
@@ -521,14 +530,13 @@ package body Gtk.Text_Buffer is
 
    function Get_Mark
      (Buffer : access Gtk_Text_Buffer_Record;
-      Name   : String)
-      return Gtk.Text_Mark.Gtk_Text_Mark
+      Name   : String) return Gtk.Text_Mark.Gtk_Text_Mark
    is
       function Internal
         (Buffer : System.Address;
-         Name   : String)
-         return System.Address;
+         Name   : String) return System.Address;
       pragma Import (C, Internal, "gtk_text_buffer_get_mark");
+
       Stub : Gtk.Text_Mark.Gtk_Text_Mark_Record;
    begin
       return Gtk.Text_Mark.Gtk_Text_Mark
@@ -551,6 +559,7 @@ package body Gtk.Text_Buffer is
          Name   : String;
          Where  : Gtk.Text_Iter.Gtk_Text_Iter);
       pragma Import (C, Internal, "gtk_text_buffer_move_mark_by_name");
+
    begin
       Internal (Get_Object (Buffer), Name & ASCII.NUL, Where);
    end Move_Mark_By_Name;
@@ -567,6 +576,7 @@ package body Gtk.Text_Buffer is
         (Buffer : System.Address;
          Name   : String);
       pragma Import (C, Internal, "gtk_text_buffer_delete_mark_by_name");
+
    begin
       Internal (Get_Object (Buffer), Name & ASCII.NUL);
    end Delete_Mark_By_Name;
@@ -575,12 +585,14 @@ package body Gtk.Text_Buffer is
    -- Get_Insert --
    ----------------
 
-   function Get_Insert (Buffer : access Gtk_Text_Buffer_Record)
-                        return Gtk.Text_Mark.Gtk_Text_Mark
+   function Get_Insert
+     (Buffer : access Gtk_Text_Buffer_Record)
+      return Gtk.Text_Mark.Gtk_Text_Mark
    is
       function Internal (Buffer : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_text_buffer_get_insert");
       Stub : Gtk.Text_Mark.Gtk_Text_Mark_Record;
+
    begin
       return Gtk.Text_Mark.Gtk_Text_Mark
                (Get_User_Data (Internal (Get_Object (Buffer)),
@@ -615,6 +627,7 @@ package body Gtk.Text_Buffer is
         (Buffer : System.Address;
          Where  : Gtk.Text_Iter.Gtk_Text_Iter);
       pragma Import (C, Internal, "gtk_text_buffer_place_cursor");
+
    begin
       Internal (Get_Object (Buffer), Where);
    end Place_Cursor;
@@ -635,6 +648,7 @@ package body Gtk.Text_Buffer is
          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
       pragma Import (C, Internal, "gtk_text_buffer_apply_tag");
+
    begin
       Internal (Get_Object (Buffer), Get_Object (Tag), Start, The_End);
    end Apply_Tag;
@@ -655,6 +669,7 @@ package body Gtk.Text_Buffer is
          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
       pragma Import (C, Internal, "gtk_text_buffer_remove_tag");
+
    begin
       Internal (Get_Object (Buffer), Get_Object (Tag), Start, The_End);
    end Remove_Tag;
@@ -675,6 +690,7 @@ package body Gtk.Text_Buffer is
          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
       pragma Import (C, Internal, "gtk_text_buffer_apply_tag_by_name");
+
    begin
       Internal (Get_Object (Buffer), Name & ASCII.NUL, Start, The_End);
    end Apply_Tag_By_Name;
@@ -695,6 +711,7 @@ package body Gtk.Text_Buffer is
          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
       pragma Import (C, Internal, "gtk_text_buffer_remove_tag_by_name");
+
    begin
       Internal (Get_Object (Buffer), Name & ASCII.NUL, Start, The_End);
    end Remove_Tag_By_Name;
@@ -711,12 +728,13 @@ package body Gtk.Text_Buffer is
    is
       procedure Internal
         (Buffer      : System.Address;
-         Iter        : System.Address;
+         Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
          Line_Number : Gint;
          Char_Offset : Gint);
       pragma Import (C, Internal, "gtk_text_buffer_get_iter_at_line_offset");
+
    begin
-      Internal (Get_Object (Buffer), Iter'Address, Line_Number, Char_Offset);
+      Internal (Get_Object (Buffer), Iter, Line_Number, Char_Offset);
    end Get_Iter_At_Line_Offset;
 
    ----------------------------
@@ -731,12 +749,13 @@ package body Gtk.Text_Buffer is
    is
       procedure Internal
         (Buffer      : System.Address;
-         Iter        : System.Address;
+         Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
          Line_Number : Gint;
          Byte_Index  : Gint);
       pragma Import (C, Internal, "gtk_text_buffer_get_iter_at_line_index");
+
    begin
-      Internal (Get_Object (Buffer), Iter'Address, Line_Number, Byte_Index);
+      Internal (Get_Object (Buffer), Iter, Line_Number, Byte_Index);
    end Get_Iter_At_Line_Index;
 
    ------------------------
@@ -750,11 +769,12 @@ package body Gtk.Text_Buffer is
    is
       procedure Internal
         (Buffer      : System.Address;
-         Iter        : System.Address;
+         Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
          Char_Offset : Gint);
       pragma Import (C, Internal, "gtk_text_buffer_get_iter_at_offset");
+
    begin
-      Internal (Get_Object (Buffer), Iter'Address, Char_Offset);
+      Internal (Get_Object (Buffer), Iter, Char_Offset);
    end Get_Iter_At_Offset;
 
    ----------------------
@@ -771,6 +791,7 @@ package body Gtk.Text_Buffer is
          Iter        : System.Address;
          Line_Number : Gint);
       pragma Import (C, Internal, "gtk_text_buffer_get_iter_at_line");
+
    begin
       Internal (Get_Object (Buffer), Iter'Address, Line_Number);
    end Get_Iter_At_Line;
@@ -787,6 +808,7 @@ package body Gtk.Text_Buffer is
         (Buffer : System.Address;
          Iter   : System.Address);
       pragma Import (C, Internal, "gtk_text_buffer_get_end_iter");
+
    begin
       Internal (Get_Object (Buffer), Iter'Address);
    end Get_End_Iter;
@@ -805,6 +827,7 @@ package body Gtk.Text_Buffer is
          Start   : System.Address;
          The_End : System.Address);
       pragma Import (C, Internal, "gtk_text_buffer_get_bounds");
+
    begin
       Internal (Get_Object (Buffer), Start'Address, The_End'Address);
    end Get_Bounds;
@@ -823,6 +846,7 @@ package body Gtk.Text_Buffer is
          Iter   : System.Address;
          Mark   : System.Address);
       pragma Import (C, Internal, "gtk_text_buffer_get_iter_at_mark");
+
    begin
       Internal (Get_Object (Buffer), Iter'Address, Get_Object (Mark));
    end Get_Iter_At_Mark;
@@ -841,6 +865,7 @@ package body Gtk.Text_Buffer is
          Iter   : System.Address;
          Anchor : System.Address);
       pragma Import (C, Internal, "gtk_text_buffer_get_iter_at_child_anchor");
+
    begin
       Internal (Get_Object (Buffer), Iter'Address, Get_Object (Anchor));
    end Get_Iter_At_Child_Anchor;
@@ -849,11 +874,12 @@ package body Gtk.Text_Buffer is
    -- Get_Modified --
    ------------------
 
-   function Get_Modified (Buffer : access Gtk_Text_Buffer_Record)
-                          return Boolean
+   function Get_Modified
+     (Buffer : access Gtk_Text_Buffer_Record) return Boolean
    is
       function Internal (Buffer : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_get_modified");
+
    begin
       return To_Boolean (Internal (Get_Object (Buffer)));
    end Get_Modified;
@@ -866,10 +892,9 @@ package body Gtk.Text_Buffer is
      (Buffer  : access Gtk_Text_Buffer_Record;
       Setting : Boolean := True)
    is
-      procedure Internal
-        (Buffer  : System.Address;
-         Setting : Gboolean);
+      procedure Internal (Buffer : System.Address; Setting : Gboolean);
       pragma Import (C, Internal, "gtk_text_buffer_set_modified");
+
    begin
       Internal (Get_Object (Buffer), To_Gboolean (Setting));
    end Set_Modified;
@@ -888,6 +913,7 @@ package body Gtk.Text_Buffer is
          Override_Location : Gtk.Text_Iter.Gtk_Text_Iter;
          Default_Editable  : Gboolean);
       pragma Import (C, Internal, "gtk_text_buffer_paste_primary");
+
    begin
       Internal (Get_Object (Buffer),
                 Override_Location,
@@ -906,19 +932,19 @@ package body Gtk.Text_Buffer is
         (Buffer           : System.Address;
          Default_Editable : Gboolean);
       pragma Import (C, Internal, "gtk_text_buffer_cut_clipboard");
+
    begin
-      Internal (Get_Object (Buffer),
-                To_Gboolean (Default_Editable));
+      Internal (Get_Object (Buffer), To_Gboolean (Default_Editable));
    end Cut_Clipboard;
 
    --------------------
    -- Copy_Clipboard --
    --------------------
 
-   procedure Copy_Clipboard (Buffer : access Gtk_Text_Buffer_Record)
-   is
+   procedure Copy_Clipboard (Buffer : access Gtk_Text_Buffer_Record) is
       procedure Internal (Buffer : System.Address);
       pragma Import (C, Internal, "gtk_text_buffer_copy_clipboard");
+
    begin
       Internal (Get_Object (Buffer));
    end Copy_Clipboard;
@@ -935,6 +961,7 @@ package body Gtk.Text_Buffer is
         (Buffer           : System.Address;
          Default_Editable : Gboolean);
       pragma Import (C, Internal, "gtk_text_buffer_paste_clipboard");
+
    begin
       Internal (Get_Object (Buffer), To_Gboolean (Default_Editable));
    end Paste_Clipboard;
@@ -952,13 +979,12 @@ package body Gtk.Text_Buffer is
       function Internal
         (Buffer  : System.Address;
          Start   : System.Address;
-         The_End : System.Address)
-         return Gboolean;
+         The_End : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_get_selection_bounds");
+
    begin
-      Result := To_Boolean (Internal (Get_Object (Buffer),
-                                      Start'Address,
-                                      The_End'Address));
+      Result := To_Boolean
+        (Internal (Get_Object (Buffer), Start'Address, The_End'Address));
    end Get_Selection_Bounds;
 
    ----------------------
@@ -968,19 +994,20 @@ package body Gtk.Text_Buffer is
    function Delete_Selection
      (Buffer           : access Gtk_Text_Buffer_Record;
       Interactive      : Boolean;
-      Default_Editable : Boolean)
-      return Boolean
+      Default_Editable : Boolean) return Boolean
    is
       function Internal
         (Buffer           : System.Address;
          Interactive      : Gboolean;
-         Default_Editable : Gboolean)
-         return Gboolean;
+         Default_Editable : Gboolean) return Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_delete_selection");
+
    begin
-      return To_Boolean (Internal (Get_Object (Buffer),
-                                   To_Gboolean (Interactive),
-                                   To_Gboolean (Default_Editable)));
+      return To_Boolean
+        (Internal
+          (Get_Object (Buffer),
+           To_Gboolean (Interactive),
+           To_Gboolean (Default_Editable)));
    end Delete_Selection;
 
    -----------------------
@@ -990,6 +1017,7 @@ package body Gtk.Text_Buffer is
    procedure Begin_User_Action (Buffer : access Gtk_Text_Buffer_Record) is
       procedure Internal (Buffer : System.Address);
       pragma Import (C, Internal, "gtk_text_buffer_begin_user_action");
+
    begin
       Internal (Get_Object (Buffer));
    end Begin_User_Action;
@@ -1001,6 +1029,7 @@ package body Gtk.Text_Buffer is
    procedure End_User_Action (Buffer : access Gtk_Text_Buffer_Record) is
       procedure Internal (Buffer : System.Address);
       pragma Import (C, Internal, "gtk_text_buffer_end_user_action");
+
    begin
       Internal (Get_Object (Buffer));
    end End_User_Action;

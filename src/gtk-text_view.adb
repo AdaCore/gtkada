@@ -40,19 +40,9 @@ package body Gtk.Text_View is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Text_View) is
-   begin
-      Widget := new Gtk_Text_View_Record;
-      Initialize (Widget);
-   end Gtk_New;
-
-   -------------
-   -- Gtk_New --
-   -------------
-
    procedure Gtk_New
      (Widget : out Gtk_Text_View;
-      Buffer : access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class) is
+      Buffer : Gtk.Text_Buffer.Gtk_Text_Buffer := null) is
    begin
       Widget := new Gtk_Text_View_Record;
       Initialize (Widget, Buffer);
@@ -63,27 +53,21 @@ package body Gtk.Text_View is
    ----------------
 
    procedure Initialize
-     (Widget : access Gtk_Text_View_Record'Class)
-   is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_text_view_new");
-   begin
-      Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
-   end Initialize;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
-   procedure Initialize
      (Widget : access Gtk_Text_View_Record'Class;
-      Buffer : access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class)
+      Buffer : Gtk.Text_Buffer.Gtk_Text_Buffer)
    is
       function Internal (Buffer : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_text_view_new_with_buffer");
+
+      use type Gtk.Text_Buffer.Gtk_Text_Buffer;
+
    begin
-      Set_Object (Widget, Internal (Get_Object (Buffer)));
+      if Buffer = null then
+         Set_Object (Widget, Internal (System.Null_Address));
+      else
+         Set_Object (Widget, Internal (Get_Object (Buffer)));
+      end if;
+
       Initialize_User_Data (Widget);
    end Initialize;
 
@@ -95,10 +79,9 @@ package body Gtk.Text_View is
      (Text_View : access Gtk_Text_View_Record;
       Buffer    : access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class)
    is
-      procedure Internal
-        (Text_View : System.Address;
-         Buffer    : System.Address);
+      procedure Internal (Text_View : System.Address; Buffer : System.Address);
       pragma Import (C, Internal, "gtk_text_view_set_buffer");
+
    begin
       Internal (Get_Object (Text_View), Get_Object (Buffer));
    end Set_Buffer;
@@ -107,12 +90,15 @@ package body Gtk.Text_View is
    -- Get_Buffer --
    ----------------
 
-   function Get_Buffer (Text_View : access Gtk_Text_View_Record)
-                        return Gtk.Text_Buffer.Gtk_Text_Buffer
+   function Get_Buffer
+     (Text_View : access Gtk_Text_View_Record)
+      return Gtk.Text_Buffer.Gtk_Text_Buffer
    is
       function Internal (Text_View : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_text_view_get_buffer");
+
       Stub : Gtk.Text_Buffer.Gtk_Text_Buffer_Record;
+
    begin
       return Gtk.Text_Buffer.Gtk_Text_Buffer
                (Get_User_Data (Internal (Get_Object (Text_View)), Stub));
@@ -128,8 +114,7 @@ package body Gtk.Text_View is
       Within_Margin : Gdouble;
       Use_Align     : Boolean;
       Xalign        : Gdouble;
-      Yalign        : Gdouble)
-      return Boolean
+      Yalign        : Gdouble) return Boolean
    is
       function Internal
         (Text_View     : System.Address;
@@ -137,16 +122,18 @@ package body Gtk.Text_View is
          Within_Margin : Gdouble;
          Use_Align     : Gboolean;
          Xalign        : Gdouble;
-         Yalign        : Gdouble)
-         return Gboolean;
+         Yalign        : Gdouble) return Gboolean;
       pragma Import (C, Internal, "gtk_text_view_scroll_to_iter");
+
    begin
-      return To_Boolean (Internal (Get_Object (Text_View),
-                                   Iter,
-                                   Within_Margin,
-                                   To_Gboolean (Use_Align),
-                                   Xalign,
-                                   Yalign));
+      return To_Boolean
+        (Internal
+          (Get_Object (Text_View),
+           Iter,
+           Within_Margin,
+           To_Gboolean (Use_Align),
+           Xalign,
+           Yalign));
    end Scroll_To_Iter;
 
    --------------------
@@ -169,6 +156,7 @@ package body Gtk.Text_View is
          Xalign        : Gdouble;
          Yalign        : Gdouble);
       pragma Import (C, Internal, "gtk_text_view_scroll_to_mark");
+
    begin
       Internal (Get_Object (Text_View),
                 Get_Object (Mark),
@@ -186,10 +174,9 @@ package body Gtk.Text_View is
      (Text_View : access Gtk_Text_View_Record;
       Mark      : access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class)
    is
-      procedure Internal
-        (Text_View : System.Address;
-         Mark      : System.Address);
+      procedure Internal (Text_View : System.Address; Mark : System.Address);
       pragma Import (C, Internal, "gtk_text_view_scroll_mark_onscreen");
+
    begin
       Internal (Get_Object (Text_View), Get_Object (Mark));
    end Scroll_Mark_Onscreen;
@@ -205,9 +192,9 @@ package body Gtk.Text_View is
    is
       function Internal
         (Text_View : System.Address;
-         Mark      : System.Address)
-         return Gboolean;
+         Mark      : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_view_move_mark_onscreen");
+
    begin
       return To_Boolean (Internal (Get_Object (Text_View), Get_Object (Mark)));
    end Move_Mark_Onscreen;
@@ -216,11 +203,12 @@ package body Gtk.Text_View is
    -- Place_Cursor_Onscreen --
    ---------------------------
 
-   function Place_Cursor_Onscreen (Text_View : access Gtk_Text_View_Record)
-                                   return Boolean
+   function Place_Cursor_Onscreen
+     (Text_View : access Gtk_Text_View_Record) return Boolean
    is
       function Internal (Text_View : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_view_place_cursor_onscreen");
+
    begin
       return To_Boolean (Internal (Get_Object (Text_View)));
    end Place_Cursor_Onscreen;
@@ -235,12 +223,11 @@ package body Gtk.Text_View is
    is
       procedure Internal
         (Text_View    : System.Address;
-         Visible_Rect : System.Address);
+         Visible_Rect : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_text_view_get_visible_rect");
-      Local_Visible_Rect : aliased Gdk.Rectangle.Gdk_Rectangle;
+
    begin
-      Internal (Get_Object (Text_View), Local_Visible_Rect'Address);
-      Visible_Rect := Local_Visible_Rect;
+      Internal (Get_Object (Text_View), Visible_Rect);
    end Get_Visible_Rect;
 
    ------------------------
@@ -251,10 +238,9 @@ package body Gtk.Text_View is
      (Text_View : access Gtk_Text_View_Record;
       Setting   : Boolean := True)
    is
-      procedure Internal
-        (Text_View : System.Address;
-         Setting   : Gboolean);
+      procedure Internal (Text_View : System.Address; Setting : Gboolean);
       pragma Import (C, Internal, "gtk_text_view_set_cursor_visible");
+
    begin
       Internal (Get_Object (Text_View), To_Gboolean (Setting));
    end Set_Cursor_Visible;
@@ -263,11 +249,12 @@ package body Gtk.Text_View is
    -- Get_Cursor_Visible --
    ------------------------
 
-   function Get_Cursor_Visible (Text_View : access Gtk_Text_View_Record)
-                                return Boolean
+   function Get_Cursor_Visible
+     (Text_View : access Gtk_Text_View_Record) return Boolean
    is
       function Internal (Text_View : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_view_get_cursor_visible");
+
    begin
       return To_Boolean (Internal (Get_Object (Text_View)));
    end Get_Cursor_Visible;
@@ -284,12 +271,11 @@ package body Gtk.Text_View is
       procedure Internal
         (Text_View : System.Address;
          Iter      : Gtk.Text_Iter.Gtk_Text_Iter;
-         Location  : System.Address);
+         Location  : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_text_view_get_iter_location");
-      Local_Location : aliased Gdk.Rectangle.Gdk_Rectangle;
+
    begin
-      Internal (Get_Object (Text_View), Iter, Local_Location'Address);
-      Location := Local_Location;
+      Internal (Get_Object (Text_View), Iter, Location);
    end Get_Iter_Location;
 
    --------------------------
@@ -308,6 +294,7 @@ package body Gtk.Text_View is
          X         : Gint;
          Y         : Gint);
       pragma Import (C, Internal, "gtk_text_view_get_iter_at_location");
+
    begin
       Internal (Get_Object (Text_View), Iter'Address, X, Y);
    end Get_Iter_At_Location;
@@ -328,6 +315,7 @@ package body Gtk.Text_View is
          Y         : out Gint;
          Height    : out Gint);
       pragma Import (C, Internal, "gtk_text_view_get_line_yrange");
+
    begin
       Internal (Get_Object (Text_View), Iter, Y, Height);
    end Get_Line_Yrange;
@@ -366,19 +354,16 @@ package body Gtk.Text_View is
    is
       procedure Internal
         (Text_View : System.Address;
-         Win       : Gint;
+         Win       : Gtk.Enums.Gtk_Text_Window_Type;
          Buffer_X  : Gint;
          Buffer_Y  : Gint;
          Window_X  : out Gint;
          Window_Y  : out Gint);
       pragma Import (C, Internal, "gtk_text_view_buffer_to_window_coords");
+
    begin
-      Internal (Get_Object (Text_View),
-                Gtk.Enums.Gtk_Text_Window_Type'Pos (Win),
-                Buffer_X,
-                Buffer_Y,
-                Window_X,
-                Window_Y);
+      Internal
+        (Get_Object (Text_View), Win, Buffer_X, Buffer_Y, Window_X, Window_Y);
    end Buffer_To_Window_Coords;
 
    -----------------------------
@@ -395,19 +380,16 @@ package body Gtk.Text_View is
    is
       procedure Internal
         (Text_View : System.Address;
-         Win       : Gint;
+         Win       : Gtk.Enums.Gtk_Text_Window_Type;
          Window_X  : Gint;
          Window_Y  : Gint;
          Buffer_X  : out Gint;
          Buffer_Y  : out Gint);
       pragma Import (C, Internal, "gtk_text_view_window_to_buffer_coords");
+
    begin
-      Internal (Get_Object (Text_View),
-                Gtk.Enums.Gtk_Text_Window_Type'Pos (Win),
-                Window_X,
-                Window_Y,
-                Buffer_X,
-                Buffer_Y);
+      Internal
+        (Get_Object (Text_View), Win, Window_X, Window_Y, Buffer_X, Buffer_Y);
    end Window_To_Buffer_Coords;
 
    ----------------
@@ -416,17 +398,16 @@ package body Gtk.Text_View is
 
    function Get_Window
      (Text_View : access Gtk_Text_View_Record;
-      Win       : Gtk.Enums.Gtk_Text_Window_Type)
-      return Gdk.Window.Gdk_Window
+      Win       : Gtk.Enums.Gtk_Text_Window_Type) return Gdk.Window.Gdk_Window
    is
       function Internal
         (Text_View : System.Address;
-         Win       : Gint)
+         Win       : Gtk.Enums.Gtk_Text_Window_Type)
          return Gdk.Window.Gdk_Window;
       pragma Import (C, Internal, "gtk_text_view_get_window");
+
    begin
-      return Internal (Get_Object (Text_View),
-                       Gtk.Enums.Gtk_Text_Window_Type'Pos (Win));
+      return Internal (Get_Object (Text_View), Win);
    end Get_Window;
 
    ---------------------
@@ -435,14 +416,13 @@ package body Gtk.Text_View is
 
    function Get_Window_Type
      (Text_View : access Gtk_Text_View_Record;
-      Window    : Gdk.Window.Gdk_Window)
-      return Gtk.Enums.Gtk_Text_Window_Type
+      Window    : Gdk.Window.Gdk_Window) return Gtk.Enums.Gtk_Text_Window_Type
    is
       function Internal
         (Text_View : System.Address;
-         Window    : Gdk.Window.Gdk_Window)
-         return Gint;
+         Window    : Gdk.Window.Gdk_Window) return Gint;
       pragma Import (C, Internal, "gtk_text_view_get_window_type");
+
    begin
       return Gtk.Enums.Gtk_Text_Window_Type'Val
                (Internal (Get_Object (Text_View), Window));
@@ -459,13 +439,12 @@ package body Gtk.Text_View is
    is
       procedure Internal
         (Text_View : System.Address;
-         The_Type  : Gint;
+         The_Type  : Gtk.Enums.Gtk_Text_Window_Type;
          Size      : Gint);
       pragma Import (C, Internal, "gtk_text_view_set_border_window_size");
+
    begin
-      Internal (Get_Object (Text_View),
-                Gtk.Enums.Gtk_Text_Window_Type'Pos (The_Type),
-                Size);
+      Internal (Get_Object (Text_View), The_Type, Size);
    end Set_Border_Window_Size;
 
    --------------------------
@@ -482,6 +461,7 @@ package body Gtk.Text_View is
          Width     : Gint;
          Height    : Gint);
       pragma Import (C, Internal, "gtk_text_view_set_text_window_size");
+
    begin
       Internal (Get_Object (Text_View), Width, Height);
    end Set_Text_Window_Size;
@@ -497,9 +477,9 @@ package body Gtk.Text_View is
    is
       function Internal
         (Text_View : System.Address;
-         Iter      : Gtk.Text_Iter.Gtk_Text_Iter)
-         return Gboolean;
+         Iter      : Gtk.Text_Iter.Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_view_forward_display_line");
+
    begin
       Result := To_Boolean (Internal (Get_Object (Text_View), Iter));
    end Forward_Display_Line;
@@ -515,9 +495,9 @@ package body Gtk.Text_View is
    is
       function Internal
         (Text_View : System.Address;
-         Iter      : Gtk.Text_Iter.Gtk_Text_Iter)
-         return Gboolean;
+         Iter      : Gtk.Text_Iter.Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_view_backward_display_line");
+
    begin
       Result := To_Boolean (Internal (Get_Object (Text_View), Iter));
    end Backward_Display_Line;
@@ -533,9 +513,9 @@ package body Gtk.Text_View is
    is
       function Internal
         (Text_View : System.Address;
-         Iter      : Gtk.Text_Iter.Gtk_Text_Iter)
-         return Gboolean;
+         Iter      : Gtk.Text_Iter.Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_view_forward_display_line_end");
+
    begin
       Result := To_Boolean (Internal (Get_Object (Text_View), Iter));
    end Forward_Display_Line_End;
@@ -551,9 +531,9 @@ package body Gtk.Text_View is
    is
       function Internal
         (Text_View : System.Address;
-         Iter      : Gtk.Text_Iter.Gtk_Text_Iter)
-         return Gboolean;
+         Iter      : Gtk.Text_Iter.Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_view_backward_display_line_start");
+
    begin
       Result := To_Boolean (Internal (Get_Object (Text_View), Iter));
    end Backward_Display_Line_Start;
@@ -564,14 +544,13 @@ package body Gtk.Text_View is
 
    function Starts_Display_Line
      (Text_View : access Gtk_Text_View_Record;
-      Iter      : Gtk.Text_Iter.Gtk_Text_Iter)
-      return Boolean
+      Iter      : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean
    is
       function Internal
         (Text_View : System.Address;
-         Iter      : Gtk.Text_Iter.Gtk_Text_Iter)
-         return Gboolean;
+         Iter      : Gtk.Text_Iter.Gtk_Text_Iter) return Gboolean;
       pragma Import (C, Internal, "gtk_text_view_starts_display_line");
+
    begin
       return To_Boolean (Internal (Get_Object (Text_View), Iter));
    end Starts_Display_Line;
@@ -589,9 +568,9 @@ package body Gtk.Text_View is
       function Internal
         (Text_View : System.Address;
          Iter      : Gtk.Text_Iter.Gtk_Text_Iter;
-         Count     : Gint)
-         return Gboolean;
+         Count     : Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_text_view_move_visually");
+
    begin
       Result := To_Boolean (Internal (Get_Object (Text_View), Iter, Count));
    end Move_Visually;
@@ -610,6 +589,7 @@ package body Gtk.Text_View is
          Child     : System.Address;
          Anchor    : System.Address);
       pragma Import (C, Internal, "gtk_text_view_add_child_at_anchor");
+
    begin
       Internal (Get_Object (Text_View),
                 Get_Object (Child),
@@ -630,16 +610,14 @@ package body Gtk.Text_View is
       procedure Internal
         (Text_View    : System.Address;
          Child        : System.Address;
-         Which_Window : Gint;
+         Which_Window : Gtk.Enums.Gtk_Text_Window_Type;
          Xpos         : Gint;
          Ypos         : Gint);
       pragma Import (C, Internal, "gtk_text_view_add_child_in_window");
+
    begin
-      Internal (Get_Object (Text_View),
-                Get_Object (Child),
-                Gtk.Enums.Gtk_Text_Window_Type'Pos (Which_Window),
-                Xpos,
-                Ypos);
+      Internal
+        (Get_Object (Text_View), Get_Object (Child), Which_Window, Xpos, Ypos);
    end Add_Child_In_Window;
 
    ----------------
@@ -658,11 +636,9 @@ package body Gtk.Text_View is
          Xpos      : Gint;
          Ypos      : Gint);
       pragma Import (C, Internal, "gtk_text_view_move_child");
+
    begin
-      Internal (Get_Object (Text_View),
-                Get_Object (Child),
-                Xpos,
-                Ypos);
+      Internal (Get_Object (Text_View), Get_Object (Child), Xpos, Ypos);
    end Move_Child;
 
    -------------------
@@ -675,22 +651,24 @@ package body Gtk.Text_View is
    is
       procedure Internal
         (Text_View : System.Address;
-         Wrap_Mode : Gint);
+         Wrap_Mode : Gtk.Enums.Gtk_Wrap_Mode);
       pragma Import (C, Internal, "gtk_text_view_set_wrap_mode");
+
    begin
-      Internal (Get_Object (Text_View),
-                Gtk.Enums.Gtk_Wrap_Mode'Pos (Wrap_Mode));
+      Internal (Get_Object (Text_View), Wrap_Mode);
    end Set_Wrap_Mode;
 
    -------------------
    -- Get_Wrap_Mode --
    -------------------
 
-   function Get_Wrap_Mode (Text_View : access Gtk_Text_View_Record)
-                           return Gtk.Enums.Gtk_Wrap_Mode
+   function Get_Wrap_Mode
+     (Text_View : access Gtk_Text_View_Record)
+      return Gtk.Enums.Gtk_Wrap_Mode
    is
       function Internal (Text_View : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_view_get_wrap_mode");
+
    begin
       return Gtk.Enums.Gtk_Wrap_Mode'Val (Internal (Get_Object (Text_View)));
    end Get_Wrap_Mode;
@@ -703,10 +681,9 @@ package body Gtk.Text_View is
      (Text_View : access Gtk_Text_View_Record;
       Setting   : Boolean := True)
    is
-      procedure Internal
-        (Text_View : System.Address;
-         Setting   : Gboolean);
+      procedure Internal (Text_View : System.Address; Setting : Gboolean);
       pragma Import (C, Internal, "gtk_text_view_set_editable");
+
    begin
       Internal (Get_Object (Text_View), To_Gboolean (Setting));
    end Set_Editable;
@@ -715,11 +692,12 @@ package body Gtk.Text_View is
    -- Get_Editable --
    ------------------
 
-   function Get_Editable (Text_View : access Gtk_Text_View_Record)
-                          return Boolean
+   function Get_Editable
+     (Text_View : access Gtk_Text_View_Record) return Boolean
    is
       function Internal (Text_View : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_text_view_get_editable");
+
    begin
       return To_Boolean (Internal (Get_Object (Text_View)));
    end Get_Editable;
@@ -733,9 +711,9 @@ package body Gtk.Text_View is
       Pixels_Above_Lines : Gint)
    is
       procedure Internal
-        (Text_View          : System.Address;
-         Pixels_Above_Lines : Gint);
+        (Text_View : System.Address; Pixels_Above_Lines : Gint);
       pragma Import (C, Internal, "gtk_text_view_set_pixels_above_lines");
+
    begin
       Internal (Get_Object (Text_View), Pixels_Above_Lines);
    end Set_Pixels_Above_Lines;
@@ -744,11 +722,12 @@ package body Gtk.Text_View is
    -- Get_Pixels_Above_Lines --
    ----------------------------
 
-   function Get_Pixels_Above_Lines (Text_View : access Gtk_Text_View_Record)
-                                    return Gint
+   function Get_Pixels_Above_Lines
+     (Text_View : access Gtk_Text_View_Record) return Gint
    is
       function Internal (Text_View : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_view_get_pixels_above_lines");
+
    begin
       return Internal (Get_Object (Text_View));
    end Get_Pixels_Above_Lines;
@@ -762,9 +741,9 @@ package body Gtk.Text_View is
       Pixels_Below_Lines : Gint)
    is
       procedure Internal
-        (Text_View          : System.Address;
-         Pixels_Below_Lines : Gint);
+        (Text_View : System.Address; Pixels_Below_Lines : Gint);
       pragma Import (C, Internal, "gtk_text_view_set_pixels_below_lines");
+
    begin
       Internal (Get_Object (Text_View), Pixels_Below_Lines);
    end Set_Pixels_Below_Lines;
@@ -773,11 +752,12 @@ package body Gtk.Text_View is
    -- Get_Pixels_Below_Lines --
    ----------------------------
 
-   function Get_Pixels_Below_Lines (Text_View : access Gtk_Text_View_Record)
-                                    return Gint
+   function Get_Pixels_Below_Lines
+     (Text_View : access Gtk_Text_View_Record) return Gint
    is
       function Internal (Text_View : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_view_get_pixels_below_lines");
+
    begin
       return Internal (Get_Object (Text_View));
    end Get_Pixels_Below_Lines;
@@ -791,9 +771,9 @@ package body Gtk.Text_View is
       Pixels_Inside_Wrap : Gint)
    is
       procedure Internal
-        (Text_View          : System.Address;
-         Pixels_Inside_Wrap : Gint);
+        (Text_View : System.Address; Pixels_Inside_Wrap : Gint);
       pragma Import (C, Internal, "gtk_text_view_set_pixels_inside_wrap");
+
    begin
       Internal (Get_Object (Text_View), Pixels_Inside_Wrap);
    end Set_Pixels_Inside_Wrap;
@@ -802,11 +782,12 @@ package body Gtk.Text_View is
    -- Get_Pixels_Inside_Wrap --
    ----------------------------
 
-   function Get_Pixels_Inside_Wrap (Text_View : access Gtk_Text_View_Record)
-                                    return Gint
+   function Get_Pixels_Inside_Wrap
+     (Text_View : access Gtk_Text_View_Record) return Gint
    is
       function Internal (Text_View : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_view_get_pixels_inside_wrap");
+
    begin
       return Internal (Get_Object (Text_View));
    end Get_Pixels_Inside_Wrap;
@@ -821,22 +802,24 @@ package body Gtk.Text_View is
    is
       procedure Internal
         (Text_View     : System.Address;
-         Justification : Gint);
+         Justification : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_text_view_set_justification");
+
    begin
-      Internal (Get_Object (Text_View),
-                Gtk.Enums.Gtk_Justification'Pos (Justification));
+      Internal (Get_Object (Text_View), Justification);
    end Set_Justification;
 
    -----------------------
    -- Get_Justification --
    -----------------------
 
-   function Get_Justification (Text_View : access Gtk_Text_View_Record)
-                               return Gtk.Enums.Gtk_Justification
+   function Get_Justification
+     (Text_View : access Gtk_Text_View_Record)
+      return Gtk.Enums.Gtk_Justification
    is
       function Internal (Text_View : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_view_get_justification");
+
    begin
       return Gtk.Enums.Gtk_Justification'Val
                (Internal (Get_Object (Text_View)));
@@ -847,13 +830,11 @@ package body Gtk.Text_View is
    ---------------------
 
    procedure Set_Left_Margin
-     (Text_View   : access Gtk_Text_View_Record;
-      Left_Margin : Gint)
+     (Text_View : access Gtk_Text_View_Record; Left_Margin : Gint)
    is
-      procedure Internal
-        (Text_View   : System.Address;
-         Left_Margin : Gint);
+      procedure Internal (Text_View : System.Address; Left_Margin : Gint);
       pragma Import (C, Internal, "gtk_text_view_set_left_margin");
+
    begin
       Internal (Get_Object (Text_View), Left_Margin);
    end Set_Left_Margin;
@@ -862,11 +843,12 @@ package body Gtk.Text_View is
    -- Get_Left_Margin --
    ---------------------
 
-   function Get_Left_Margin (Text_View : access Gtk_Text_View_Record)
-                             return Gint
+   function Get_Left_Margin
+     (Text_View : access Gtk_Text_View_Record) return Gint
    is
       function Internal (Text_View : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_view_get_left_margin");
+
    begin
       return Internal (Get_Object (Text_View));
    end Get_Left_Margin;
@@ -876,13 +858,11 @@ package body Gtk.Text_View is
    ----------------------
 
    procedure Set_Right_Margin
-     (Text_View    : access Gtk_Text_View_Record;
-      Right_Margin : Gint)
+     (Text_View : access Gtk_Text_View_Record; Right_Margin : Gint)
    is
-      procedure Internal
-        (Text_View    : System.Address;
-         Right_Margin : Gint);
+      procedure Internal (Text_View : System.Address; Right_Margin : Gint);
       pragma Import (C, Internal, "gtk_text_view_set_right_margin");
+
    begin
       Internal (Get_Object (Text_View), Right_Margin);
    end Set_Right_Margin;
@@ -891,11 +871,12 @@ package body Gtk.Text_View is
    -- Get_Right_Margin --
    ----------------------
 
-   function Get_Right_Margin (Text_View : access Gtk_Text_View_Record)
-                              return Gint
+   function Get_Right_Margin
+     (Text_View : access Gtk_Text_View_Record) return Gint
    is
       function Internal (Text_View : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_view_get_right_margin");
+
    begin
       return Internal (Get_Object (Text_View));
    end Get_Right_Margin;
@@ -905,13 +886,11 @@ package body Gtk.Text_View is
    ----------------
 
    procedure Set_Indent
-     (Text_View : access Gtk_Text_View_Record;
-      Indent    : Gint)
+     (Text_View : access Gtk_Text_View_Record; Indent : Gint)
    is
-      procedure Internal
-        (Text_View : System.Address;
-         Indent    : Gint);
+      procedure Internal (Text_View : System.Address; Indent : Gint);
       pragma Import (C, Internal, "gtk_text_view_set_indent");
+
    begin
       Internal (Get_Object (Text_View), Indent);
    end Set_Indent;
@@ -920,11 +899,12 @@ package body Gtk.Text_View is
    -- Get_Indent --
    ----------------
 
-   function Get_Indent (Text_View : access Gtk_Text_View_Record)
-                        return Gint
+   function Get_Indent
+     (Text_View : access Gtk_Text_View_Record) return Gint
    is
       function Internal (Text_View : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_text_view_get_indent");
+
    begin
       return Internal (Get_Object (Text_View));
    end Get_Indent;
