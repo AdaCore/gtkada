@@ -1,6 +1,6 @@
 \input texinfo   @c -*-texinfo-*-
 @settitle GtkAda Reference Manual
-@setfilename func.info
+@setfilename gtkada_rm.info
 @syncodeindex fn cp
 
 @c --------------------------------------------

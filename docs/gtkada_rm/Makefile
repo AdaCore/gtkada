@@ -1,14 +1,15 @@
 
-func:
+gtkada_rm:
 	./generate_doc.pl ../../src/*.ads
-	tex func.texi
-	texindex func.cp
-	tex func.texi
-	makeinfo func.texi
-	perl ../texi2html func.texi
+	tex gtkada_rm.texi
+	texindex gtkada_rm.cp
+	tex gtkada_rm.texi
+	makeinfo gtkada_rm.texi
+	perl ../texi2html gtkada_rm.texi
 
 clean:
-	${RM} func.aux func.cp func.dvi func.fn func.html func.info* func.ky 
-	${RM} func.log func.pg func.toc func.tp func.vr func_stoc.html func_toc.html 
-	${RM} generated.texi generated_menu.texi func.cps generated_submenu.texi
+	${RM} gtkada_rm.aux gtkada_rm.cp gtkada_rm.dvi gtkada_rm.fn gtkada_rm.html 
+	${RM} gtkada_rm.info* gtkada_rm.ky gtkada_rm.log gtkada_rm.pg gtkada_rm.toc
+	${RM} gtkada_rm.tp gtkada_rm.vr gtkada_rm_stoc.html gtkada_rm_toc.html 
+	${RM} generated.texi generated_menu.texi gtkada_rm.cps generated_submenu.texi
 
