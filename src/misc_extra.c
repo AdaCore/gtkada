@@ -1,5 +1,9 @@
 
 #include <gtk/gtk.h>
+
+#include "gtkextra/gtkpsfont.h"
+/* XXX ??? */
+#if 0
 #include "gtkextra/gtkplot.h"
 #include "gtkextra/gtkplotcanvas.h"
 #include "gtkextra/gtksheet.h"
@@ -271,6 +275,8 @@ gint
 ada_gtk_item_entry_get_justification (GtkItemEntry* item) {
   return item->justification;
 }
+
+#endif
 
 /********************************************************************
  **
