@@ -22,6 +22,24 @@
 
 package body Gdk.Window is
 
+
+   ------------------
+   --  Clear_Area  --
+   ------------------
+
+   procedure Clear_Area (Window : in Gdk_Window'Class;
+                         X      : in Gint;
+                         Y      : in Gint;
+                         Width  : in Gint;
+                         Height : in Gint) is
+      procedure Internal (Window : in System.Address;
+                          X, Y, Width, Height : in Gint);
+      pragma Import (C, Internal, "gdk_window_clear_area");
+   begin
+      Internal (Get_Object (Window), X, Y, Width, Height);
+   end Clear_Area;
+
+
    ----------------
    -- Get_Window --
    ----------------

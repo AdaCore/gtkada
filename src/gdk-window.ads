@@ -19,6 +19,7 @@
 -- Boston, MA 02111-1307, USA.                                       --
 -----------------------------------------------------------------------
 
+with Glib; use Glib;
 with Gdk;
 with Gtk.Widget;
 
@@ -28,6 +29,14 @@ package Gdk.Window is
 
    function Get_Window (Widget : in Gtk.Widget.Gtk_Widget'Class)
                         return Gdk.Window.Gdk_Window'Class;
+   --  FIXME : This should be in Gtk.Window.
+
+   procedure Clear_Area (Window : in Gdk_Window'Class;
+                         X      : in Gint;
+                         Y      : in Gint;
+                         Width  : in Gint;
+                         Height : in Gint);
+   --  mapping: Clear_Area gdk.h gdk_window_clear_area
 
 private
 
