@@ -34,4 +34,18 @@ package body Gtk.Enums is
       return Widget;
    end Convert;
 
+   function Convert (I : Gint) return System.Address is
+      function Internal is new Unchecked_Conversion
+        (Gint, System.Address);
+   begin
+      return Internal (I);
+   end Convert;
+
+   function Convert (S : System.Address) return Gint is
+      function Internal is new Unchecked_Conversion
+        (System.Address, Gint);
+   begin
+      return Internal (S);
+   end Convert;
+
 end Gtk.Enums;

@@ -1,3 +1,4 @@
+with Gdk;
 with Gtk.Object;
 with Gtk.Widget;
 with Gtk.Tips_Query;

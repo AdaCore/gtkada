@@ -393,6 +393,12 @@ ada_style_get_black (GtkStyle* style)
   return &(style->black);
 }
 
+GdkColor*
+ada_style_get_white (GtkStyle* style)
+{
+  return &(style->white);
+}
+
 /********************************************
  ** Functions for Widget
  ********************************************/
@@ -604,4 +610,31 @@ GtkWidget*
 ada_tree_item_get_subtree (GtkTreeItem* widget)
 {
   return GTK_TREE_ITEM_SUBTREE (widget);
+}
+
+
+/******************************************
+ ** Functions for CList
+ ******************************************/
+
+GList*
+ada_clist_get_selection (GtkCList* widget)
+{
+   return widget->selection;
+}
+
+GtkWidget*
+ada_clist_get_column_button (GtkCList* widget,
+			     gint      column)
+{
+  if (widget->columns < column)
+    return widget->column[column].button;
+  else
+    return NULL;
+}
+
+GdkWindow*
+ada_clist_get_clist_window (GtkCList* widget)
+{
+  return widget->clist_window;
 }

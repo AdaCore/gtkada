@@ -37,6 +37,12 @@ package Gtk.Enums is
                            Arrow_Left,
                            Arrow_Right);
 
+   type Gtk_Cell_Type is (Cell_Empty,
+                          Cell_Text,
+                          Cell_Pixmap,
+                          Cell_Pixtext,
+                          Cell_Widget);
+
    --  FIXME  move the Pack_Type back here.
 
    type Gtk_Policy_Type is (Policy_Always,
@@ -129,6 +135,8 @@ package Gtk.Enums is
 
    function Convert (S : String) return System.Address;
    function Convert (S : System.Address) return String;
+   function Convert (I : Gint) return System.Address;
+   function Convert (S : System.Address) return Gint;
    function Convert (W : Gtk.Widget.Gtk_Widget'Class) return System.Address;
    function Convert (W : System.Address) return Gtk.Widget.Gtk_Widget'Class;
 
@@ -137,6 +145,7 @@ package Gtk.Enums is
      (Gtk.Widget.Gtk_Widget'Class);
    package Widget_SList is new Glib.GSlist.Generic_SList
      (Gtk.Widget.Gtk_Widget'Class);
+   package Gint_List is new Glib.Glist.Generic_List (Gint);
 
 
 end Gtk.Enums;
