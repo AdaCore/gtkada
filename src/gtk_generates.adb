@@ -193,12 +193,13 @@ package body Gtk_Generates is
    ---------------------
 
    procedure Button_Generate (N : Node_Ptr; File : File_Type) is
-      Child_Name : constant Node_Ptr   := Find_Tag (N.Child, "child_name");
-      Label      : constant Node_Ptr := Find_Tag_With_Attribute
+      Label      : constant Node_Ptr   := Find_Tag_With_Attribute
          (N.Child, "property", "name", "label");
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_button_get_type");
 
+      Use_Stock : constant Boolean :=
+        Get_Property (N, "use_stock", "False") = "True";
    begin
       Widget := Widget_New (Build_Type);
       if N.Specific_Data.Initialized then
@@ -206,23 +207,27 @@ package body Gtk_Generates is
       end if;
 
       if not N.Specific_Data.Created then
-         if Child_Name = null then
+         if Use_Stock then
+            Gen_New (N, "Button",
+                     Get_Property (N, "label", ""),
+                     New_Name => "From_Stock",
+                     File     => File,
+                     Prefix => """", Postfix => """");
+
+         else
             if Label = null then
                Gen_New (N, "Button", File => File);
             else
                if Gettext_Support (N) then
                   Gen_New (N, "Button", Adjust (Label.Value.all),
-                     File => File,
-                     Prefix => "-""", Postfix => """");
+                           File => File,
+                           Prefix => "-""", Postfix => """");
                else
                   Gen_New (N, "Button", Adjust (Label.Value.all),
-                     File => File,
-                     Prefix => """", Postfix => """");
+                           File => File,
+                           Prefix => """", Postfix => """");
                end if;
-
             end if;
-         else
-            Gen_Child (N, Child_Name, File);
          end if;
       end if;
 
@@ -575,8 +580,6 @@ package body Gtk_Generates is
    ---------------------
    -- Dialog_Generate --
    ---------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Dialog_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -1063,6 +1066,9 @@ package body Gtk_Generates is
 
    begin
       Widget := Widget_New (Build_Type);
+
+      Add_Package ("List_Item");
+
       if Gettext_Support (N) then
          Gen_New (N, "List_Item", Get_Property (N, "label"),
            File => File, Prefix => "-""", Postfix => """");
@@ -2255,7 +2261,11 @@ package body Gtk_Generates is
                Put_Line (File, S.all & ");");
             end if;
 
-         elsif Parent_Class = "GtkVBox" or else Parent_Class = "GtkHBox" then
+         elsif Parent_Class = "GtkVBox"
+           or else Parent_Class = "GtkHBox"
+           or else Parent_Class = "GtkHButtonBox"
+           or else Parent_Class = "GtkVButtonBox"
+         then
             S := Get_Property (Packing, "pack_type");
 
             --  Put the procedure call.
@@ -2273,7 +2283,22 @@ package body Gtk_Generates is
 
             --  Put the name of the parent.
 
-            Put_Line (File, Top_Name & "." & Parent_Name & ",");
+            if Get_Attribute (Parent.Parent, "internal-child") = "" then
+               Put_Line (File, Top_Name & "." & Parent_Name & ",");
+            else
+               Put (File, "Get_"
+                    & To_Ada (Get_Attribute (Parent.Parent, "internal-child"))
+                    & " (");
+
+               if Parent.Parent.Parent = Top then
+                  Put_Line (File, Top_Name & "),");
+               else
+                  Put_Line (File, Top_Name & "."
+                            & To_Ada
+                              (Get_Name (Parent.Parent.Parent))
+                            & "),");
+               end if;
+            end if;
 
             --  Put the name of the child.
 
@@ -2462,6 +2487,37 @@ package body Gtk_Generates is
                        (N, null, Parent,
                         "Option_Menu", "Set_Menu", File => File);
 
+                  elsif S = "GtkHButtonBox" or else S = "GtkVButtonBox"
+                    or else S = "GtkVBox" or else S = "GtkHBox"
+                  then
+                     if Get_Attribute (Parent.Parent, "internal-child")
+                       = ""
+                     then
+                        Gen_Call_Child
+                          (N, null, Parent,
+                           "Container", "Pack_Start", File => File);
+                     else
+                        Add_Package ("Box");
+
+                        Put (File, "   Pack_Start ("
+                             & "Get_" & To_Ada
+                               (Get_Attribute
+                                  (Parent.Parent, "internal-child"))
+                             & " (");
+
+                        if Parent.Parent.Parent.Parent.Parent = Top then
+                           Put (File, Top_Name & "), ");
+
+                        else
+                           Put (File, Top_Name & "."
+                                & To_Ada
+                                  (Get_Name
+                                     (Parent.Parent.Parent.Parent.Parent))
+                                & "), ");
+                        end if;
+
+                        Put_Line (File, Top_Name & "." & Cur & ");");
+                     end if;
                   else
                      Gen_Call_Child
                        (N, null, Parent, "Container", "Add", File => File);
