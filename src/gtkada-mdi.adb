@@ -1092,28 +1092,28 @@ package body Gtkada.MDI is
          MDI.Title_Bar_Color   := Title_Bar_Color;
       end if;
 
+      if MDI.Highlight_Style /= null then
+         Unref (MDI.Highlight_Style);
+      end if;
+
+      MDI.Highlight_Style := Copy (Get_Default_Style);
+
+      if Focus_Title_Color /= Null_Color then
+         MDI.Focus_Title_Color := Focus_Title_Color;
+
+         Set_Foreground
+           (MDI.Highlight_Style, State_Normal, MDI.Focus_Title_Color);
+         Set_Foreground
+           (MDI.Highlight_Style, State_Active, MDI.Focus_Title_Color);
+         Set_Foreground
+           (MDI.Highlight_Style, State_Selected, MDI.Focus_Title_Color);
+         Set_Foreground
+           (MDI.Highlight_Style, State_Prelight, MDI.Focus_Title_Color);
+         Set_Foreground
+           (MDI.Highlight_Style, State_Insensitive, MDI.Focus_Title_Color);
+      end if;
+
       if Realized_Is_Set (MDI) then
-         if MDI.Highlight_Style /= null then
-            Unref (MDI.Highlight_Style);
-         end if;
-
-         MDI.Highlight_Style := Copy (Get_Style (MDI));
-
-         if Focus_Title_Color /= Null_Color then
-            MDI.Focus_Title_Color := Focus_Title_Color;
-
-            Set_Foreground
-              (MDI.Highlight_Style, State_Normal, MDI.Focus_Title_Color);
-            Set_Foreground
-              (MDI.Highlight_Style, State_Active, MDI.Focus_Title_Color);
-            Set_Foreground
-              (MDI.Highlight_Style, State_Selected, MDI.Focus_Title_Color);
-            Set_Foreground
-              (MDI.Highlight_Style, State_Prelight, MDI.Focus_Title_Color);
-            Set_Foreground
-              (MDI.Highlight_Style, State_Insensitive, MDI.Focus_Title_Color);
-         end if;
-
          if Background_Color /= Null_Color then
             Set_Background (Get_Window (MDI), Background_Color);
 
