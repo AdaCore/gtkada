@@ -67,7 +67,8 @@ package Gtkada.Multi_Paned is
    --  (leaving some minimum amount of space to other children as needed).
    --  If Fixed_Size is true, then the size of the dock will not change when
    --  Win is resized. Otherwise, it will keep its relative size (x% of the
-   --  total size of Win)
+   --  total size of Win). This Fixed_Size setting will be reset to False
+   --  as soon as the user has resized a pane with the mouse.
 
    procedure Split
      (Win           : access Gtkada_Multi_Paned_Record;
