@@ -3,23 +3,27 @@ with System;
 
 package Gtk is
 
-   subtype GInt  is Integer;
-   subtype GUint is Positive;
-   subtype GInt32 is Integer range -(2 ** 16) .. (2 ** 16 - 1);
+   subtype Gint  is Integer;
+   subtype Guint is Positive;
+   subtype Gint32 is Integer range -(2 ** 16) .. (2 ** 16 - 1);
    --  Same for all basic types
 
-   type Object is tagged private;
+   type Gtk_Object is tagged private;
 
    procedure Init;
+   pragma Import (C, Init, "ag_gtk_init");
+   --  defined in misc-gnat.c
    --  mapping: Init gtkmain.h gtk_init
 
    procedure Main;
+   pragma Import (C, Main, "gtk_main");
    --  mapping: Main gtkmain.h gtk_main
 
    procedure Main_Quit;
+   pragma Import (C, Main_Quit, "gtk_main_quit");
    --  mapping: Main_Quit gtkmain.h gtk_main_quit
 
-   procedure Destroy (Obj : in Object'Class);
+   procedure Destroy (Obj : in Gtk_Object'Class);
    --  mapping: Destroy gtkobject.h gtk_object_destroy
 
    --  Functions which are not implemented because they are probably not needed
@@ -60,24 +64,25 @@ package Gtk is
    --  mapping: INTERNAL gtkobject.h gtk_object_set_data_by_id_full
 
 
-
-
 private
 
-   type Object is tagged
+   type Gtk_Object is tagged
       record
          Ptr : System.Address := System.Null_Address;
       end record;
 
-   function Get_Object (Obj : in Object'Class)
+   function Get_Object (Obj : in Gtk_Object'Class)
                         return System.Address;
    pragma Inline (Get_Object);
 
-   procedure Set_Object (Obj : in out Object'Class;
-                         Value  : in     System.Address);
+   procedure Set_Object (Obj   : in out Gtk_Object'Class;
+                         Value : in     System.Address);
    pragma Inline (Set_Object);
 
-   function To_Boolean (Value : in GInt) return Boolean;
-   function To_Gint (Bool : in Boolean) return GInt;
+   function To_Boolean (Value : in Gint) return Boolean;
+   pragma Inline (To_Boolean);
+
+   function To_Gint (Bool : in Boolean) return Gint;
+   pragma Inline (To_Gint);
 
 end Gtk;
