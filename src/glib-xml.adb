@@ -382,7 +382,7 @@ package body Glib.XML is
 
       procedure Do_Indent (Indent : Natural) is
       begin
-         Put ((1 .. Indent) => ' ');
+         Put ((1 .. Indent => ' '));
       end Do_Indent;
 
    begin
