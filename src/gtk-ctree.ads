@@ -35,6 +35,11 @@
 --  (it can have arbitrary widgets in the tree cells), but it is less efficient
 --  and is limited to 32768 pixels.
 --
+--  If you need horizontal or vertical scrolling, you mustn't put this widget
+--  in a Gtk_Viewport, and then in a Gtk_Scrolled_Window. Put it directly into
+--  a Gtk_Scrolled_Window, or horizontal scrolling will be disabled, and the
+--  column headers will disappear when scrolling vertically.
+--
 --  </description>
 --  <c_version>1.2.7</c_version>
 
