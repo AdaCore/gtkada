@@ -40,6 +40,7 @@
 
 with Glib.Properties;
 with Gtk.Editable;
+with Pango.Layout;
 
 package Gtk.GEntry is
 
@@ -167,6 +168,16 @@ package Gtk.GEntry is
    --  signal to track this. Remember when using the Pango_Layout
    --  functions you need to convert to and from pixels using
    --  Pango_Pixels or Pango_Scale.
+
+   function Get_Layout (The_Entry : access Gtk_Entry_Record)
+      return Pango.Layout.Pango_Layout;
+   --  Return the widget that manages all the layout of text (left-to-right,
+   --  right-to-left, fonts,...). Changing the font used for the entry should
+   --  be done by changing the font using for this layout.
+   --
+   --  The layout is useful to e.g. convert text positions to pixel positions,
+   --  in combination with Get_Layout_Offsets.  The returned layout is owned by
+   --  the entry so need not be freed by the caller.
 
    --  <doc_ignore>
    function Get_Chars (The_Entry : access Gtk_Entry_Record) return String
@@ -300,5 +311,3 @@ private
    pragma Import (C, Get_Type, "gtk_entry_get_type");
 end Gtk.GEntry;
 
---  missing:
---  gtk_entry_get_layout

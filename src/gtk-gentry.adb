@@ -29,6 +29,7 @@
 
 with System;
 with Interfaces.C.Strings;
+with Pango.Layout; use Pango.Layout;
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
@@ -180,6 +181,19 @@ package body Gtk.GEntry is
    begin
       return Internal (Get_Object (The_Entry));
    end Get_Width_Chars;
+
+   ----------------
+   -- Get_Layout --
+   ----------------
+
+   function Get_Layout (The_Entry : access Gtk_Entry_Record)
+      return Pango.Layout.Pango_Layout
+   is
+      function Internal (The_Entry : System.Address) return Pango_Layout;
+      pragma Import (C, Internal, "gtk_entry_get_layout");
+   begin
+      return Internal (Get_Object (The_Entry));
+   end Get_Layout;
 
    ------------------------
    -- Get_Layout_Offsets --
