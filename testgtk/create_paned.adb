@@ -49,7 +49,17 @@ package body Create_Paned is
    begin
       return "A @bGtk_Paned@B splits a container in two parts, that can be"
         & " resized by the user." & ASCII.LF
-        & "They have two children, one for each side.";
+        & "They have two children, one for each side."
+        & ASCII.LF
+        & "If @bShrink@B is set to True for one of the children, then the user"
+        & " can resize it to any size. If it is set to False, then the"
+        & " minimum size set for the child by a call to @bSet_Usize@B is"
+        & " enforced, and the child can never be shrinked more than that."
+        & ASCII.LF
+        & "If @bResize@B is set to True for one of the children, then that"
+        & " child is expanded or shrinked when the pane is resized."
+        & " Setting Resize to False for both children is equivalent to"
+        & " setting it to True for both.";
    end Help;
 
    -------------------
@@ -58,11 +68,6 @@ package body Create_Paned is
 
    procedure Toggle_Resize (Child : access Gtk_Widget_Record'Class) is
       Paned : Gtk_Paned := Gtk_Paned (Get_Parent (Child));
-      --  We use to need an unchecked conversion above, but this is
-      --  not required now, as long as their is a with of
-      --  Gtk.Type_Conversion. The correct Ada type will be created
-      --  correctly by GtkAda.
-
       Is_Child1 : Boolean := Gtk_Widget (Child) = Get_Child1 (Paned);
       Resize : Boolean;
       Shrink : Boolean;
@@ -144,6 +149,7 @@ package body Create_Paned is
 
       Gtk_New (Check, "Resize");
       Attach_Defaults (Table, Check, 0, 1, 1, 2);
+      Set_Active (Check, Get_Child1_Resize (Paned));
       Widget_Handler.Object_Connect
         (Check, "toggled",
          Widget_Handler.To_Marshaller (Toggle_Resize'Access),
@@ -151,7 +157,7 @@ package body Create_Paned is
 
       Gtk_New (Check, "Shrink");
       Attach_Defaults (Table, Check, 0, 1, 2, 3);
-      Set_Active (Check, True);
+      Set_Active (Check, Get_Child1_Shrink (Paned));
       Widget_Handler.Object_Connect
         (Check, "toggled",
          Widget_Handler.To_Marshaller (Toggle_Shrink'Access),
@@ -162,6 +168,7 @@ package body Create_Paned is
 
       Gtk_New (Check, "Resize");
       Attach_Defaults (Table, Check, 1, 2, 1, 2);
+      Set_Active (Check, Get_Child2_Resize (Paned));
       Widget_Handler.Object_Connect
         (Check, "toggled",
          Widget_Handler.To_Marshaller (Toggle_Resize'Access),
@@ -169,7 +176,7 @@ package body Create_Paned is
 
       Gtk_New (Check, "Shrink");
       Attach_Defaults (Table, Check, 1, 2, 2, 3);
-      Set_Active (Check, True);
+      Set_Active (Check, Get_Child2_Shrink (Paned));
       Widget_Handler.Object_Connect
         (Check, "toggled",
          Widget_Handler.To_Marshaller (Toggle_Shrink'Access),
@@ -204,21 +211,28 @@ package body Create_Paned is
       Add1 (Vpaned, HPaned);
 
       Gtk_New (Frame2);
-      Set_Shadow_Type (Frame2, Shadow_In);
-      Set_Usize (Frame2, 60, 60);
-      Add1 (HPaned, Frame2);
 
       Gtk_New (Button, "Hi There");
       Add (Frame2, Button);
 
+      Set_Shadow_Type (Frame2, Shadow_In);
+      Set_Usize (Frame2, 60, 60);
+      Pack1 (HPaned, Frame2, False, False);
+
+
       Gtk_New (Frame2);
+
+      Gtk_New (Button, "erehT iH");
+      Add (Frame2, Button);
+
       Set_Shadow_Type (Frame2, Shadow_In);
       Set_Usize (Frame2, 80, 60);
       Add2 (HPaned, Frame2);
 
+
       Gtk_New (Frame2);
       Set_Shadow_Type (Frame2, Shadow_In);
-      Set_Usize (Frame2, 60, 80);
+      Set_Usize (Frame2, 60, 280);
       Add2 (VPaned, Frame2);
 
       Pack_Start (Vbox,
@@ -226,7 +240,7 @@ package body Create_Paned is
                                        "Left", "Right"),
                   False, False, 0);
       Pack_Start (Vbox,
-                  Create_Pane_Options (Hpaned, "Vertical",
+                  Create_Pane_Options (Vpaned, "Vertical",
                                        "Top", "Bottom"),
                   False, False, 0);
 
