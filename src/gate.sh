@@ -5,7 +5,7 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-dir=`dirname $1`
+dir=${file%\\*}
 file=$1
 info=`gate-in.exe -p -s -x $file`
 
@@ -48,6 +48,7 @@ if [ $? != 0 ]; then
 fi
 
 gt=".gate/$prj"
+mkdir -p .gate > /dev/null 2>&1
 mkdir -p $gt > /dev/null 2>&1
 tmp=$gt/tmp
 rm -rf $tmp
@@ -55,7 +56,7 @@ mkdir $tmp
 wd=`pwd`
 out=$gt/output.txt
 
-gate-in.exe $file > $tmp/gate.ada
+gate-in.exe $file | grep -v Gtk-WARNING > $tmp/gate.ada
 
 if [ $? != 0 ]; then
   echo "Couldn't generate Ada code. Exiting." | gdialog error justify_left
