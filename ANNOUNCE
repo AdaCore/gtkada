@@ -16,14 +16,14 @@ LSM entry follows:
 Begin
 Title:  GtkAda
 Version: 1.2.5
-Entered-date: 05JAN00
+Entered-date: 28JAN00
 Description: Ada95 graphical toolkit based on Gtk+ (version >= 1.2.2) 
 Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade Win32
 Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
 Maintained-by: gtkada@ada.eu.org
 Primary-site:  http://gtkada.eu.org
 Original-site: http://ada.eu.org/gtkada/ 
-Platforms: Solaris Linux Tru64 IRIX HP/UX NT AiX FreeBSD
+Platforms: Solaris Linux Tru64 IRIX HP/UX NT AiX FreeBSD UnixWare
 Copying-policy: GPL (with a slight modification, see headers of *.ad[bs] files
 End
 
@@ -35,10 +35,10 @@ New features in 1.2.5 include:
   value (such as for the signal "delete_event"). It is also much more
   systematic than the old one (less packages need to be instantiated).
 - Gate has been updated to Glade 0.5.5, plus various bug fixes
+- Complete Gtk+ support for Gate/Dgate
 - A new example shows how to do some flicker-free animation with GtkAda
 - Tested on HP-UX 11.00
 - Tested on SCO UnixWare 7.1
-- Complete Gtk+ support for Gate/Dgate
 
 New features in 1.2.4 include:
 
