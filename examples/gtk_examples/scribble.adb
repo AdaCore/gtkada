@@ -1,7 +1,7 @@
 with Ada.Text_IO;
 with Glib;             use Glib;
 -- Gdk
-with Gdk;              use Gdk;
+with Gdk;
 with Gdk.Drawable;     use Gdk.Drawable;
 with Gdk.Event;        use Gdk.Event;
 with Gdk.Font;         use Gdk.Font;
@@ -105,9 +105,11 @@ procedure Scribble is
    -- Button_Press_Event --
    ------------------------
 
-   procedure Button_Press_Event (Widget: access Gtk_Drawing_Area_Record'Class;
-                                 Event: in  Gdk_Event)
+   procedure Button_Press_Event
+     (Widget: access Gtk_Drawing_Area_Record'Class;
+      Event: in  Gdk_Event)
    is
+      use type Gdk.Pixmap.Gdk_Pixmap;
    begin
       if Get_Button(Event) = 1 and pixmap /= Null_Pixmap then
          Draw_Brush (Widget, Gint(Get_X(Event)), Gint(Get_Y(Event)));
@@ -118,13 +120,14 @@ procedure Scribble is
    -- Motion_Notify_Event --
    -------------------------
 
-   procedure Motion_Notify_Event (Widget: access Gtk_Drawing_Area_Record'Class;
-                                  Event: in Gdk_Event)
+   procedure Motion_Notify_Event
+     (Widget: access Gtk_Drawing_Area_Record'Class; Event: in Gdk_Event)
    is
       X,Y: Gint;
       State: Gdk_Modifier_Type;
       Result: Gdk_Window;
 
+      use type Gdk.Pixmap.Gdk_Pixmap;
    begin
       if Get_Is_Hint (Event) then
          Get_Pointer (Get_Window(Widget),X,Y,State,Result);
@@ -133,6 +136,7 @@ procedure Scribble is
          y := Gint(Get_Y(Event));
          State := Get_State (Event);
       end if;
+
       if (State and BUTTON1_MASK) /= 0 and Pixmap /= Null_Pixmap then
         Draw_Brush (Widget, X, Y);
       end if;
@@ -143,11 +147,10 @@ procedure Scribble is
    ---------
 
    procedure Bye (Window : access Gtk.Window.Gtk_Window_Record'Class) is
-       pragma Warnings (Off, Window);
+      pragma Warnings (Off, Window);
    begin
       Gtk.Main.Main_Quit;
    end Bye;
-
 
    Button : Gtk_Button;
    Vbox : Gtk_Box;

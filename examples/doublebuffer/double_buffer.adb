@@ -122,6 +122,8 @@ package body Double_Buffer is
       Old_Pixmap : Gdk.Pixmap.Gdk_Pixmap := Buffer.Pixmap;
       Old_Triple : Gdk.Pixmap.Gdk_Pixmap := Buffer.Triple_Buffer;
 
+      use type Gdk.Pixmap.Gdk_Pixmap;
+
    begin
       Buffer.Pixmap := Create_Internal_Pixmap (Buffer);
 
@@ -215,6 +217,7 @@ package body Double_Buffer is
    ----------------
 
    procedure Destroy_Cb (Buffer : access Gtk_Double_Buffer_Record'Class) is
+      use type Gdk.Pixmap.Gdk_Pixmap;
    begin
       if Buffer.Pixmap /= null then
          Gdk.Pixmap.Unref (Buffer.Pixmap);
@@ -338,6 +341,7 @@ package body Double_Buffer is
 
    procedure Set_Triple_Buffer (Buffer : access Gtk_Double_Buffer_Record;
                                 Use_Triple_Buffer : Boolean := True) is
+      use type Gdk.Gdk_Window;
    begin
       Buffer.Use_Triple_Buffer := Use_Triple_Buffer;
 
