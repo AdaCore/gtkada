@@ -263,8 +263,11 @@ package Gtkada.MDI is
    --  focus to some specific part of your widget (an entry field,...) in some
    --  cases.
 
-   procedure Set_Focus_Child (Child : access MDI_Child_Record'Class);
+   procedure Set_Focus_Child
+     (Child       : access MDI_Child_Record'Class;
+      Force_Focus : Boolean := True);
    --  Make Child the active widget, and raise it at the top.
+   --  If Force_Focus is True, Grab_Focus on that child.
 
    function Check_Interactive_Selection_Dialog
      (MDI                   : access MDI_Window_Record;
