@@ -146,6 +146,7 @@ with Gtk.Extra.Plot_Layout;
 with Gtk.Extra.Plot_Ps;
 with Gtk.Extra.PsFont;
 with Gtk.Extra;
+with Gtkada.Canvas;
 
 procedure Make is
 begin
