@@ -8,8 +8,13 @@ fi
 echo Generating Ada files...
 
 info=`gate-in.exe -p -s $*`
+status=$?
 
-if [ $? != 0 ]; then
+if [ $status != 0 ]; then
+  if [ $status = 2 ]; then
+     echo $info
+  fi
+
   echo "Couldn't parse $*. Exiting."
   exit 1
 fi
