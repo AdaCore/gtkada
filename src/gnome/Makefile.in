@@ -7,6 +7,7 @@ GNOME_LIBS    = @GNOME_LIBS@
 HAVE_GNOME    = @HAVE_GNOME@
 INSTALL       = @INSTALL@
 INSTALL_DATA  = @INSTALL_DATA@
+GTK_OBJECTS   = gtk-clock.o gtk-dial.o gtk-pixmap_menu_item.o
 
 ifeq ($(HAVE_GNOME),True)
 all: $(ARCHIVENAME) $(LIBNAME)
@@ -33,20 +34,19 @@ gnome:
 
 $(LIBNAME): gnome
 ifeq ($(BUILD_SHARED),yes)
-	  $(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
-	  $(SO_OPTS)$(SONAME) gnome.o gnome-*.o $(GTK_LIBS) $(GNOME_LIBS)
-	  $(RM) $(LIBNAME)
-	  $(LN) $(SONAME) $(LIBNAME)
-	  -@if [ ! -f ../.devel ]; then \
-	    strip $(LIBNAME); \
-	    $(CHMOD) +x $(LIBNAME); \
-	  fi
+	$(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
+	  $(SO_OPTS)$(SONAME) gnome.o gnome-*.o $(GTK_OBJECTS) \
+	  $(GTK_LIBS) $(GNOME_LIBS)
+	$(RM) $(LIBNAME)
+	$(LN) $(SONAME) $(LIBNAME)
+	-@if [ ! -f ../.devel ]; then \
+	  strip $(LIBNAME); \
+	  $(CHMOD) +x $(LIBNAME); \
+	fi
 endif
 
 $(ARCHIVENAME): gnome
-	$(AR) $(ARFLAGS) $(ARCHIVENAME) gnome.o gnome-*.o gtk-clock.o \
-	  gtk-dial.o gtk-pixmap_menu_item.o
-
+	$(AR) $(ARFLAGS) $(ARCHIVENAME) gnome.o gnome-*.o $(GTK_OBJECTS)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) $(ARCHIVENAME); \
 	fi
