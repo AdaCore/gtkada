@@ -78,6 +78,22 @@ package body Gtk.Notebook is
                 Get_Object (Menu_Label));
    end Append_Page_Menu;
 
+   -------------
+   -- Convert --
+   -------------
+
+   function Convert (W : in Gtk_Notebook_Page) return System.Address is
+   begin
+      return Get_Object (W);
+   end Convert;
+
+   function Convert (W : System.Address) return Gtk_Notebook_Page is
+      Tmp : Gtk_Notebook_Page;
+   begin
+      Set_Object (Tmp, W);
+      return Tmp;
+   end Convert;
+
    ----------------------
    -- Get_Current_Page --
    ----------------------
@@ -96,12 +112,12 @@ package body Gtk.Notebook is
    ------------------
 
    function Get_Children (Widget : access Gtk_Notebook_Record)
-                          return Widget_List.Glist
+                          return Page_List.Glist
    is
       function Internal (Widget : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_notebook_get_children");
-      use Widget_List;
-      List : Glist;
+      use Page_List;
+      List : Page_List.Glist;
    begin
       Set_Object (List, Internal (Get_Object (Widget)));
       return List;
@@ -467,11 +483,13 @@ package body Gtk.Notebook is
       Stub : Gtk_Widget_Record;
    begin
       Page := Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Widget_List.Nth_Data
-                                              (Get_Children (Notebook),
-                                               Guint (Page_Num)))), Stub));
+        (Get_User_Data (Internal (Get_Object
+         (Page_List.Nth_Data (Get_Children (Notebook),
+                              Guint (Page_Num)))), Stub));
+      Ref (Page);
       Remove_Page (Notebook, Page_Num);
       Insert_Page (Notebook, Gtk_Widget (Page), Tab_Label, Page_Num);
+      Unref (Page);
    end Set_Tab;
 
    --------------------

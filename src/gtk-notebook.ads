@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Gdk; use Gdk;
+with Glib.Glist;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Container;
 with Gtk.Enums;  use Gtk.Enums;
@@ -39,7 +40,7 @@ package Gtk.Notebook is
      with private;
    type Gtk_Notebook is access all Gtk_Notebook_Record'Class;
 
-   type Gtk_Notebook_Page is new Root_Type with private;
+   type Gtk_Notebook_Page is new Root_Type with null record;
 
    procedure Append_Page
      (Notebook  : access Gtk_Notebook_Record;
@@ -52,9 +53,6 @@ package Gtk.Notebook is
       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
    function Get_Current_Page
      (Notebook : access Gtk_Notebook_Record) return Gint;
-   function Get_Children
-     (Widget : access Gtk_Notebook_Record) return Widget_List.Glist;
-
    function Get_Cur_Page
      (Widget : access Gtk_Notebook_Record'Class) return Gtk_Notebook_Page;
    --  Note: This function returns a record type instead of an access type
@@ -130,6 +128,16 @@ package Gtk.Notebook is
      (Notebook : access Gtk_Notebook_Record;
       Pos      : in Gtk_Position_Type);
 
+   --  List of Pages
+
+   function Convert (W : in Gtk_Notebook_Page) return System.Address;
+   function Convert (W : System.Address) return Gtk_Notebook_Page;
+   package Page_List is new Glib.Glist.Generic_List
+     (Gtk_Notebook_Page);
+   function Get_Children
+     (Widget : access Gtk_Notebook_Record) return Page_List.Glist;
+
+
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
@@ -147,6 +155,5 @@ package Gtk.Notebook is
 private
    type Gtk_Notebook_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
-   type Gtk_Notebook_Page is new Root_Type with null record;
 
 end Gtk.Notebook;
