@@ -232,7 +232,7 @@ package body Gtk.Signal is
          end if;
          if Data.Func /= null then
             Set_Object (Widget, Object);
-            Set_Object (Widget2, Tmp);
+            Gdk.Set_Object (Widget2, Tmp);
             Data.Func (Widget, Widget2, Data.Data.all);
          end if;
       end Marshaller;
