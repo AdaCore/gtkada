@@ -164,6 +164,35 @@ ada_initialize_class_record (GtkObject*  object,
     }
 }
 
+/*********************************************************************
+ **  Gdk.RGB functions
+ *********************************************************************/
+
+guint32
+ada_rgb_cmap_get (GdkRbgCmap* cmap, gint index)
+{
+  return cmap->colors [index];
+}
+
+guchar
+ada_rgb_cmap_get8 (GdkRbgCmap* cmap, gint index)
+{
+  return cmap->lut [index];
+}
+
+void
+ada_rgb_cmap_set (GdkRbgCmap* cmap, gint index, guint32 value)
+{
+  cmap->colors [index] = value;
+}
+
+void
+ada_rgb_cmap_set8 (GdkRbgCmap* cmap, gint index, guchar value)
+{
+  cmap->lut [index] = value;
+}
+
+
 /*
  * Gnode macros
  *
