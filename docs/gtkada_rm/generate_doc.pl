@@ -224,11 +224,6 @@ foreach $source_file (@source_files) {
 	## Widget hierarchy
 	
 	if (@hierarchy) {
-	    &color_output ($section_bg, $section_fg,
-			   "\@node $package_name Widget Hierarchy\n",
-			   "\@section Widget Hierarchy\n");
-	    &html_output ("<TABLE WIDTH=100%><TR><TD WIDTH=$tab1_width></TD>",
-			  "<TD BGCOLOR=$hierarchy_bg>");
 	    my ($hierarchy, $hierarchy_short) = ("", "");
 	    $hierarchy = sprintf ("\@b{%-30s (\@pxref{Package_%s})\n",
 				  "Gtk_Object}", "Gtk.Object");
@@ -246,10 +241,20 @@ foreach $source_file (@source_files) {
 			       $hierarchy[$level],
 			       &package_from_type ($hierarchy[$level]));
 	    }
-	    &output ("\@ifinfo\n\@smallexample\n$hierarchy\n",
-		     "\@end smallexample\n\@end ifinfo\n");
-	    &output ("\@iftex\n\@smallexample\n$hierarchy_short",
-		     "\n\@end smallexample\n\@end iftex");
+	    &color_output ($section_bg, $section_fg,
+			   "\@node $package_name Widget Hierarchy\n",
+			   "\@section Widget Hierarchy\n");
+	    &html_output ("<TABLE WIDTH=100%><TR><TD WIDTH=$tab1_width></TD>",
+			  "<TD BGCOLOR=$hierarchy_bg>");
+	    &output ("\n\@ifnottex\n");
+	    &output ("\n\@smallexample\n$hierarchy\n\@end smallexample\n");
+	    &output ("\@end ifnottex\n");
+	    &output ("\@ifnothtml\n\@iftex\n\@smallexample\n$hierarchy_short\n",
+		     "\@end smallexample\n\@end iftex\n\@end ifnothtml\n");
+#	    &output ("\@ifinfo\n\@smallexample\n$hierarchy\n",
+#		     "\@end smallexample\n\@end ifinfo\n");
+#	    &output ("\@iftex\n\@smallexample\n$hierarchy_short",
+#		     "\n\@end smallexample\n\@end iftex");
 	    &html_output ("</TD></TR></TABLE>");
 	} else {
 	    $parent{$package_name} = "<>";

@@ -5,7 +5,7 @@ gtkada_rm:
 	texindex gtkada_rm.cp
 	tex gtkada_rm.texi
 	dvips gtkada_rm.dvi -o gtkada_rm.ps
-	perl ../texi2html -menu -split_chapter -expandinfo -body "BGCOLOR=#FFFFFF" gtkada_rm.texi
+	perl ../texi2html -menu -split_chapter -body "BGCOLOR=#FFFFFF" gtkada_rm.texi
 	makeinfo --force -o gtkada_rm.info gtkada_rm.texi
 	makeinfo --force --no-headers --no-split -o gtkada_rm.txt gtkada_rm.texi
 	-${RM} *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
