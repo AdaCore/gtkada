@@ -173,7 +173,10 @@ package Gtk.GEntry is
       return Pango.Layout.Pango_Layout;
    --  Return the widget that manages all the layout of text (left-to-right,
    --  right-to-left, fonts,...). Changing the font used for the entry should
-   --  be done by changing the font using for this layout.
+   --  be done by changing the font using for this layout. Note that you should
+   --  also change the font in the Pango_Context returned by Get_Pango_Context,
+   --  or the next keypress event in the entry will restore the default initial
+   --  font.
    --
    --  The layout is useful to e.g. convert text positions to pixel positions,
    --  in combination with Get_Layout_Offsets.  The returned layout is owned by
