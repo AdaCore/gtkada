@@ -30,7 +30,6 @@
 with Glib;            use Glib;
 with Glib.Object;     use Glib.Object;
 with Gtk.Box;         use Gtk.Box;
-with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Handle_Box;  use Gtk.Handle_Box;
 with Gtk.Label;       use Gtk.Label;
 with Gtk.Separator;   use Gtk.Separator;
@@ -135,7 +134,6 @@ package body Create_Handle_Box is
 
       Create_Toolbar.Make_Toolbar (Toolbar, Get_Window (Frame),
                                    Get_Style (Frame));
-      Set_Button_Relief (Toolbar, Relief_Normal);
       Add (Handle, Toolbar);
 
       Gtk_New (Handle);
