@@ -669,10 +669,27 @@ package body Gtk.Text_Buffer is
          Start   : Gtk.Text_Iter.Gtk_Text_Iter;
          The_End : Gtk.Text_Iter.Gtk_Text_Iter);
       pragma Import (C, Internal, "gtk_text_buffer_remove_tag");
-
    begin
       Internal (Get_Object (Buffer), Get_Object (Tag), Start, The_End);
    end Remove_Tag;
+
+   ---------------------
+   -- Remove_All_Tags --
+   ---------------------
+
+   procedure Remove_All_Tags
+     (Buffer  : access Gtk_Text_Buffer_Record;
+      Start    : Gtk.Text_Iter.Gtk_Text_Iter;
+      The_End : Gtk.Text_Iter.Gtk_Text_Iter)
+   is
+      procedure Internal
+        (Buffer  : System.Address;
+         Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+         The_End : Gtk.Text_Iter.Gtk_Text_Iter);
+      pragma Import (C, Internal, "gtk_text_buffer_remove_all_tags");
+   begin
+      Internal (Get_Object (Buffer), Start, The_End);
+   end Remove_All_Tags;
 
    -----------------------
    -- Apply_Tag_By_Name --
@@ -795,6 +812,23 @@ package body Gtk.Text_Buffer is
    begin
       Internal (Get_Object (Buffer), Iter'Address, Line_Number);
    end Get_Iter_At_Line;
+
+   --------------------
+   -- Get_Start_Iter --
+   --------------------
+
+   procedure Get_Start_Iter
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : out Gtk.Text_Iter.Gtk_Text_Iter)
+   is
+      procedure Internal
+        (Buffer : System.Address;
+         Iter   : System.Address);
+      pragma Import (C, Internal, "gtk_text_buffer_get_start_iter");
+
+   begin
+      Internal (Get_Object (Buffer), Iter'Address);
+   end Get_Start_Iter;
 
    ------------------
    -- Get_End_Iter --

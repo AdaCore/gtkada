@@ -31,7 +31,7 @@
 --  This is the public representation of a text buffer to be used in
 --  cunjunction with Gtk.Text_View.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gdk.Pixbuf;
 with Gtk.Text_Child;
@@ -351,7 +351,7 @@ package Gtk.Text_Buffer is
 
    --  gtk_text_buffer_create_tag not bound: variable number of arguments
    --  ??? Discuss this with the Gtk+ team.
-   --  equivalent to Gtk_New + Gtk.Text_Tag.Table_Add
+   --  equivalent to Gtk_New + Gtk.Text_Tag_Table.Add
 
    procedure Apply_Tag
      (Buffer  : access Gtk_Text_Buffer_Record;
@@ -370,6 +370,15 @@ package Gtk.Text_Buffer is
    --  Emit the "remove_tag" signal.
    --  The default handler for the signal removes all occurrences of Tag from
    --  the given range. Start and End don't have to be in order.
+
+   procedure Remove_All_Tags
+     (Buffer  : access Gtk_Text_Buffer_Record;
+      Start    : Gtk.Text_Iter.Gtk_Text_Iter;
+      The_End : Gtk.Text_Iter.Gtk_Text_Iter);
+   --  Remove all tags in the range between Start and End. Note that this
+   --  procedure should be used carefully, as it might be removing tags that
+   --  were added from another section of the code. Thus, this function might
+   --  be a bad idea if tags are added from 2 or more code sections.
 
    procedure Apply_Tag_By_Name
      (Buffer  : access Gtk_Text_Buffer_Record;
@@ -421,6 +430,12 @@ package Gtk.Text_Buffer is
       Line_Number : Gint);
    --  Initialize Iter to the start of the given line.
    --  Line_Number: line number counting from 0.
+
+   procedure Get_Start_Iter
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Iter   : out Gtk.Text_Iter.Gtk_Text_Iter);
+   --  Initialize Iter with the first position in the text buffer. This is the
+   --  same as using Get_Iter_At_Offset with Offset set to 0.
 
    procedure Get_End_Iter
      (Buffer : access Gtk_Text_Buffer_Record;
