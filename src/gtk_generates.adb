@@ -2124,6 +2124,8 @@ package body Gtk_Generates is
       Gen_Set (N, "sensitive", File);
       Gen_Set (N, "UPosition", "x", "y", "", "", File);
       Gen_Set (N, "USize", "width", "height", "", "", File);
+      Gen_Set
+        (N, "Size_Request", "width_request", "height_request", "", "", File);
       Gen_Set (N, "state", File);
       Gen_Set (N, "extension_events", File);
 
