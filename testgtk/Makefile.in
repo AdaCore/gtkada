@@ -48,12 +48,8 @@ $(target)::
 	fi
 
 opengl/view_gl.adb::
-	@if [ $(HAVE_OPENGL) = "True" ]; then \
-	   $(CP) opengl/view_gl.adb_opengl opengl/view_gl.adb; \
-	else \
-	   $(CP) opengl/view_gl.adb_no_opengl opengl/view_gl.adb; \
-	fi
-	   
+	gnatprep -r -c -DHAVE_GL=$(HAVE_OPENGL) -DWIN32=False \
+	  opengl/view_gl.gpb opengl/view_gl.adb
 
 lw.o: opengl/lw.c opengl/lw.h
 	$(CC) -c opengl/lw.c -Iopengl @GTK_CFLAGS@
