@@ -120,7 +120,7 @@ package body Glib.Convert is
          Error    : GError_Access) return chars_ptr;
       pragma Import (C, Internal, "g_filename_from_uri");
 
-      S   : chars_ptr := Internal (URI & ASCII.NUL, Hostname, Error);
+      S   : constant chars_ptr := Internal (URI & ASCII.NUL, Hostname, Error);
       Str : constant String := Value (S);
 
    begin
@@ -144,7 +144,7 @@ package body Glib.Convert is
          Error         : GError_Access) return chars_ptr;
       pragma Import (C, Internal, "g_filename_from_utf8");
 
-      S   : chars_ptr := Internal
+      S   : constant chars_ptr := Internal
         (UTF8_String, UTF8_String'Length, Error => Error);
       Str : constant String := Value (S);
 
@@ -169,7 +169,7 @@ package body Glib.Convert is
       pragma Import (C, Internal, "g_filename_to_uri");
 
       S    : chars_ptr;
-      Host : aliased String := Hostname & ASCII.NUL;
+      Host : aliased constant String := Hostname & ASCII.NUL;
 
    begin
       if Hostname = "" then
@@ -202,7 +202,7 @@ package body Glib.Convert is
          Error         : GError_Access) return chars_ptr;
       pragma Import (C, Internal, "g_filename_to_utf8");
 
-      S   : chars_ptr := Internal
+      S   : constant chars_ptr := Internal
         (OS_String, OS_String'Length, Error => Error);
       Str : constant String := Value (S);
 
@@ -284,15 +284,12 @@ package body Glib.Convert is
          Error         : GError_Access := null) return chars_ptr;
       pragma Import (C, Internal, "g_locale_from_utf8");
 
-      S : chars_ptr := Internal (UTF8_String, UTF8_String'Length);
+      S   : constant chars_ptr := Internal (UTF8_String, UTF8_String'Length);
+      Str : constant String := Value (S);
 
    begin
-      declare
-         Str : constant String := Value (S);
-      begin
-         g_free (S);
-         return Str;
-      end;
+      g_free (S);
+      return Str;
    end Locale_From_UTF8;
 
    --------------------
@@ -368,15 +365,12 @@ package body Glib.Convert is
          Error         : GError_Access := null) return chars_ptr;
       pragma Import (C, Internal, "g_locale_to_utf8");
 
-      S : chars_ptr := Internal (OS_String, OS_String'Length);
+      S   : constant chars_ptr := Internal (OS_String, OS_String'Length);
+      Str : constant String := Value (S);
 
    begin
-      declare
-         Str : constant String := Value (S);
-      begin
-         g_free (S);
-         return Str;
-      end;
+      g_free (S);
+      return Str;
    end Locale_To_UTF8;
 
 end Glib.Convert;
