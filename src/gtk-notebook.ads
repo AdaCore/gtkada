@@ -37,7 +37,6 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
-with Gdk; use Gdk;
 with Glib.Glist;
 with Gtk.Object;
 with Gtk.Container;
@@ -51,10 +50,7 @@ package Gtk.Notebook is
      with private;
    type Gtk_Notebook is access all Gtk_Notebook_Record'Class;
 
-   type Gtk_Notebook_Page is new Gdk.C_Proxy;
-   --  A page of the notebook.
-   --  It can contain a single child, and is also associated with a tab
-   --  label used to select that page in the notebook.
+   subtype Gtk_Notebook_Page is Gtk.Gtk_Notebook_Page;
 
    ---------------------------------------------
    -- Creating a notebook and inserting pages --
