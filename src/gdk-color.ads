@@ -59,6 +59,9 @@ package Gdk.Color is
                     Succeeded :    out Boolean);
    --  mapping: Change gdk.h gdk_color_change
 
+   function "=" (Colora, Colorb : in Gdk_Color'Class) return Boolean;
+   --  mapping: "=" gdk.h gdk_color_equal
+
 private
 
    type Gdk_Color is new Root_Type with null record;
