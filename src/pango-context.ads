@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,8 +34,8 @@ package Pango.Context is
 
    type Pango_Context is access all Pango_Context_Record'Class;
 
-   --  ??? Tempory binding of the type. The associated primitives will
-   --  ??? come later.
+   --  ??? Tempory binding of the type. The associated primitives will come
+   --  later.
 
 private
 

@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -85,8 +84,8 @@ package Pango.Font is
    --      Pango_Variant_Normal, and Pango_Stretch_Normal.
    --    - SIZE is a decimal number describing the size of the font in points.
    --      If unspecified, a size of 0 will be used.
-   --  ??? Note that From_String is broken wrt the Weight. This bug should
-   --  ??? be reported to the pango team.
+   --  ??? Note that From_String is broken wrt the Weight. This bug should be
+   --  reported to the pango team.
 
    function To_Font_Description
      (Family_Name : String := "";
