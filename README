@@ -2,17 +2,17 @@ General Information
 ===================
 
 This is GtkAda version 0.1. This  package is an  Ada95 binding for the
-Gimp Toolkit, which means these are a set of  packages to allow you to
+Gimp Toolkit, which means this is a set of  packages to allow you to
 easily create some  graphical interfaces under  X11, using Ada95  as a
 programming language.
 
-This is still  a alpha version, although it  is already pretty usable.
+This is still  an alpha version, although it  is already pretty usable.
 Every widget from gtk 1.0.4 as been implemented,  and the test program
 found in the gtk release has been converted to Ada (have a look at the
 testgtk/ directory).
 
 These functions were tested on the following systems :
-   - Linux version 2.0.34
+   - Linux version 2.0.35
    - SunOS 5.5.1
 using the following compilers :
    - Gnat 3.10p
@@ -60,8 +60,8 @@ quicky the function you are looking for :
 
 We have tried to adopt a consistent naming scheme for Ada identifiers :
 
-- The widget names are the same as in C, expect an underscore sign (_)
-is used to separated words
+- The widget names are the same as in C, excepted that an underscore sign (_)
+is used to separate words
 
     ex/   Gtk_Button   Gtk_Color_Selection_Dialog
 
@@ -90,7 +90,7 @@ gtk in the current directory
    $ cp <directoy>/gtk-config .
    $ make
 
-This will create to files, libgtkada.a and libgtkada.so
+This will create two files, libgtkada.a and libgtkada.so
 
 To install, copy these two files, plus all the .ads, .adb and .ali
 files into a directory.
@@ -165,8 +165,8 @@ How to report bugs
 
 This library is still in its version alpha, it is thus likely that you
 will find bugs.  We have tried to test it as much as possible,
-essentially by converted the testgtk.c file found in the gtk
-distribution.  We have been able to reprogram all the tests. Please
+essentially by converting the testgtk.c file found in the gtk
+distribution.  We have been able to reprogram nearly all the tests. Please
 have a look at the testgtk, which can give you a lot of examples of
 how to use this binding.
 
@@ -212,5 +212,6 @@ binding is as useful as possible...
 AUTHORS
 =======
 
-Emmanuel Briot  <Emmanuel.Briot@enst-bretagne.fr>
-Joel Brobecker  <Joel.Brobecker@enst-bretagne.fr>
+Emmanuel Briot  <Emmanuel.Briot@enst-bretagne.fr>, <briot@gnat.com>
+Joel Brobecker  <Joel.Brobecker@enst-bretagne.fr>, 
+                <jbrobecker@west.raytheon.com>
