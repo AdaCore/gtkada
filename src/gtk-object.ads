@@ -103,17 +103,6 @@ package Gtk.Object is
    type Gtk_Object_Record is new Glib.Object.GObject_Record with private;
    type Gtk_Object is access all Gtk_Object_Record'Class;
 
-   procedure Ref (Object : access Gtk_Object_Record);
-   --  Increment the reference count on the object.
-   --  Since an object is not deleted while its reference count is not null,
-   --  this is a way to keep an object in memory, in particular when you
-   --  want to temporarily remove a widget from its parent.
-
-   procedure Unref (Object : access Gtk_Object_Record);
-   --  Decrement the reference count for an object.
-   --  If it passed from 1 to 0, then the memory allocated for the object is
-   --  freed, and the object no longer usable.
-
    procedure Sink (Object : access Gtk_Object_Record);
    --  Sink the object.
    --  If the object is floating (does not have a parent yet), it is unref-ed

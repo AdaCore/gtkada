@@ -110,22 +110,6 @@ package body Gtk.Object is
       return Internal (Get_Object (Object));
    end Get_Type;
 
-   ---------
-   -- Ref --
-   ---------
-
-   procedure Ref (Object : access Gtk_Object_Record) is
-      procedure Internal (Object : System.Address);
-      pragma Import (C, Internal, "gtk_object_ref");
-
-      use type System.Address;
-
-   begin
-      if Get_Object (Object) /= System.Null_Address then
-         Internal (Get_Object (Object));
-      end if;
-   end Ref;
-
    ---------------
    -- Set_Flags --
    ---------------
@@ -149,22 +133,6 @@ package body Gtk.Object is
    begin
       Internal (Get_Object (Object));
    end Sink;
-
-   -----------
-   -- Unref --
-   -----------
-
-   procedure Unref (Object : access Gtk_Object_Record) is
-      procedure Internal (Object : System.Address);
-      pragma Import (C, Internal, "gtk_object_unref");
-
-      use type System.Address;
-
-   begin
-      if Get_Object (Object) /= System.Null_Address then
-         Internal (Get_Object (Object));
-      end if;
-   end Unref;
 
    -----------------
    -- Unset_Flags --
