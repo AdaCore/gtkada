@@ -44,14 +44,21 @@ package Gtk.Glade is
       Gate  : Generate_Ptr;
       Dgate : Dynamic_Generate_Ptr;
    end record;
+
+   procedure Generic_Ptr (N : Node_Ptr; File : File_Type);
+   --  Dummy Generate_Ptr that does nothing.
+ 
+   procedure Generic_DPtr
+     (Object : in out Gtk.Object.Gtk_Object; N : Node_Ptr);
+   --  Dummy Dynamic_Generate_Ptr that does nothing.
  
    function Get_Gate (Class : String) return Generate_Ptr;
    --  Return a Generate_Ptr corresponding to a specific Class.
-   --  If class isn't found, return null.
+   --  If class isn't found, return a pointer to Generic_Ptr.
 
    function Get_Dgate (Class : String) return Dynamic_Generate_Ptr;
    --  Return a Dynamic_Generate_Ptr corresponding to a specific Class.
-   --  If class isn't found, return null.
+   --  If class isn't found, return a pointer to Generic_DPtr.
 
    procedure Generate (File : String);
    --  Parse file File and generate the corresponding Ada code on standard

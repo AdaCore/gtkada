@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Object;
 with Gtk.Frame;
 
 package Gtk.Aspect_Frame is
@@ -34,29 +35,41 @@ package Gtk.Aspect_Frame is
    type Gtk_Aspect_Frame_Record is new Gtk.Frame.Gtk_Frame_Record with private;
    type Gtk_Aspect_Frame is access all Gtk_Aspect_Frame_Record'Class;
 
-   function Get_Ratio (Widget : access Gtk_Aspect_Frame_Record) return Gfloat;
-   function Get_Xalign (Widget : access Gtk_Aspect_Frame_Record) return Gfloat;
-   function Get_Yalign (Widget : access Gtk_Aspect_Frame_Record) return Gfloat;
+   function Get_Ratio (Aspect_Frame : access Gtk_Aspect_Frame_Record)
+     return Gfloat;
+   function Get_Xalign (Aspect_Frame : access Gtk_Aspect_Frame_Record)
+     return Gfloat;
+   function Get_Yalign (Aspect_Frame : access Gtk_Aspect_Frame_Record)
+     return Gfloat;
    procedure Gtk_New
-      (Widget     : out Gtk_Aspect_Frame;
-       Label      : in String;
-       Xalign     : in Gfloat;
-       Yalign     : in Gfloat;
-       Ratio      : in Gfloat;
-       Obey_Child : in Gint);
+     (Aspect_Frame : out Gtk_Aspect_Frame;
+      Label        : in String;
+      Xalign       : in Gfloat;
+      Yalign       : in Gfloat;
+      Ratio        : in Gfloat;
+      Obey_Child   : in Boolean);
    procedure Initialize
-      (Widget     : access Gtk_Aspect_Frame_Record;
-       Label      : in String;
-       Xalign     : in Gfloat;
-       Yalign     : in Gfloat;
-       Ratio      : in Gfloat;
-       Obey_Child : in Gint);
+     (Aspect_Frame : access Gtk_Aspect_Frame_Record;
+      Label        : in String;
+      Xalign       : in Gfloat;
+      Yalign       : in Gfloat;
+      Ratio        : in Gfloat;
+      Obey_Child   : in Boolean);
    procedure Set
-      (Aspect_Frame : access Gtk_Aspect_Frame_Record;
-       Xalign       : in Gfloat;
-       Yalign       : in Gfloat;
-       Ratio        : in Gfloat;
-       Obey_Child   : in Gint);
+     (Aspect_Frame : access Gtk_Aspect_Frame_Record;
+      Xalign       : in Gfloat;
+      Yalign       : in Gfloat;
+      Ratio        : in Gfloat;
+      Obey_Child   : in Boolean);
+
+   --  The two following procedures are used to generate and create widgets
+   --  from a Node.
+ 
+   procedure Generate (N      : in Node_Ptr;
+                       File   : in File_Type);
+ 
+   procedure Generate
+     (Aspect_Frame : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
 
 private
    type Gtk_Aspect_Frame_Record is new Gtk.Frame.Gtk_Frame_Record
