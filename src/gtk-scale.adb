@@ -43,6 +43,18 @@ package body Gtk.Scale is
       Internal (Get_Object (Scale));
    end Draw_Value;
 
+   ---------------------
+   -- Get_Value_Width --
+   ---------------------
+
+   function Get_Value_Width (Scale  : in Gtk_Scale) return Gint is
+      function Internal (Scale  : in System.Address)
+                         return      Gint;
+      pragma Import (C, Internal, "gtk_scale_get_value_width");
+   begin
+      return Internal (Get_Object (Scale));
+   end Get_Value_Width;
+
    --------------------
    -- Gtk_New_Hscale --
    --------------------
@@ -123,17 +135,5 @@ package body Gtk.Scale is
       Internal (Get_Object (Scale),
                 Gtk_Position_Type'Pos (Pos));
    end Set_Value_Pos;
-
-   -----------------
-   -- Value_Width --
-   -----------------
-
-   function Value_Width (Scale  : in Gtk_Scale) return Gint is
-      function Internal (Scale  : in System.Address)
-                         return      Gint;
-      pragma Import (C, Internal, "gtk_scale_value_width");
-   begin
-      return Internal (Get_Object (Scale));
-   end Value_Width;
 
 end Gtk.Scale;

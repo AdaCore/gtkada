@@ -50,7 +50,7 @@ package Gtk.Scale is
    procedure Set_Value_Pos
       (Scale : in Gtk_Scale;
        Pos   : in Gtk_Position_Type);
-   function Value_Width (Scale  : in Gtk_Scale) return Gint;
+   function Get_Value_Width (Scale  : in Gtk_Scale) return Gint;
 
 private
    type Gtk_Scale is new Gtk.GRange.Gtk_Range with null record;
