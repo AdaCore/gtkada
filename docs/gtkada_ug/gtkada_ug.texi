@@ -141,8 +141,9 @@ look at the @code{testgtk/} directory).
 
 This binding was tested on the following systems:
 @itemize @bullet
-@item Linux version 2.0.35
-@item SunOS 5.5.1
+@item Linux/x86
+@item Solaris/sparc
+@item Solaris/x86
 @item Dec Unix 4.0b
 @item SGI IRIX 6.5
 @item HP/UX 10.20
@@ -150,6 +151,7 @@ This binding was tested on the following systems:
 @end itemize
 using the following compilers:
 @itemize @bullet
+@item Gnat 3.12a
 @item Gnat 3.11b2
 @item Gnat 3.11p
 @end itemize
