@@ -149,7 +149,7 @@ package body Gtk.Object is
       pragma Import (C, Internal, "ada_initialize_class_record");
 
       Default_Params : Signal_Parameter_Types (1 .. Signals'Length, 1 .. 0) :=
-        (others => (others => Gtk_None));
+        (others => (others => Gtk_Type_None));
       Pa  : System.Address := Default_Params'Address;
       Num : Gint := 0;
    begin
