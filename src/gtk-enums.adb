@@ -44,11 +44,29 @@ package body Gtk.Enums is
       return Internal (Interfaces.C.Strings.New_String (S));
    end Convert;
 
+   function Convert_Chars_Ptr is new Unchecked_Conversion
+     (System.Address, Interfaces.C.Strings.chars_ptr);
+
    function Convert (S : System.Address) return String is
-      function Internal is new Unchecked_Conversion
-        (System.Address, Interfaces.C.Strings.chars_ptr);
    begin
-      return Interfaces.C.Strings.Value (Internal (S));
+      return Interfaces.C.Strings.Value (Convert_Chars_Ptr (S));
    end Convert;
+
+   ----------------------
+   -- Free_String_List --
+   ----------------------
+
+   procedure Free_String_List (List : in out String_List.Glist) is
+      use type String_List.Glist;
+      Tmp : String_List.Glist := List;
+      Chars : Interfaces.C.Strings.chars_ptr;
+   begin
+      while Tmp /= String_List.Null_List loop
+         Chars := Convert_Chars_Ptr (String_List.Get_Data (Tmp));
+         Interfaces.C.Strings.Free (Chars);
+         Tmp := String_List.Next (Tmp);
+      end loop;
+      String_List.Free (List);
+   end Free_String_List;
 
 end Gtk.Enums;

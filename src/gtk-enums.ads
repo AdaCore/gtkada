@@ -208,6 +208,14 @@ package Gtk.Enums is
    pragma Import (C, Convert_A, "convert_a");
 
    package String_List is new Glib.Glist.Generic_List (String);
+   --  Warning: when you create this list, new memory gets allocated for
+   --  all the strings. You should use the function Free_String_List
+   --  instead of Glib.Glist.Free to be sure to free this memory.
+
+   procedure Free_String_List (List : in out String_List.Glist);
+   --  Free the memory occupied by all the strings in the list, as well
+   --  as the memory occupied by the list itself.
+
    package Gint_List is new Glib.Glist.Generic_List (Gint,
                                                      Convert_I,
                                                      Convert_A);

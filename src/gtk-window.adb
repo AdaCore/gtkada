@@ -30,7 +30,6 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
-with Interfaces.C.Strings;
 
 package body Gtk.Window is
 
@@ -212,13 +211,13 @@ package body Gtk.Window is
                           Wmclass_Name  : in String;
                           Wmclass_Class : in String) is
       procedure Internal (W : System.Address;
-                          N : Interfaces.C.Strings.chars_ptr;
-                          C : Interfaces.C.Strings.chars_ptr);
+                          N : String;
+                          C : String);
       pragma Import (C, Internal, "gtk_window_set_wmclass");
    begin
       Internal (Get_Object (Window),
-                Interfaces.C.Strings.New_String (Wmclass_Name),
-                Interfaces.C.Strings.New_String (Wmclass_Class));
+                Wmclass_Name & ASCII.NUL,
+                Wmclass_Class & ASCII.NUL);
    end Set_Wmclass;
 
    --------------
