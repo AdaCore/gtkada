@@ -11,6 +11,7 @@ src_dir     = src
 testgtk_dir = testgtk
 doc_dir     = docs
 example_dir = examples
+projects_dir = projects
 
 all:
 	$(MAKE) -C $(src_dir)
@@ -18,6 +19,7 @@ all:
 
 install: 
 	$(MAKE) -C $(src_dir) install
+	$(MAKE) -C $(projects_dir) install
 	$(MAKE) -C $(testgtk_dir) install
 	$(MAKE) -C $(doc_dir) install
 	$(MAKE) -C $(example_dir) install
