@@ -122,6 +122,39 @@ package Pango.Layout is
    --  on the layout's context. This function should be called if you make
    --  changes to the context subsequent to creating the layout.
 
+   -----------
+   -- Lines --
+   -----------
+
+   type Pango_Layout_Line is new Glib.C_Proxy;
+
+   function Get_Line
+     (Layout : access Pango_Layout_Record;
+      Line   : Natural) return Pango_Layout_Line;
+   --  Retrieve a particular line from Layout.
+   --  Line must be between 0 and Get_Line_Count (Layout) - 1. null is returned
+   --  if the index is out of range.
+   --  The layout line can be Ref'ed and retained, but will become invalid if
+   --  changes are made to Layout.
+
+   procedure Line_Ref (Line : Pango_Layout_Line);
+   --  Increase the reference count of Line by 1.
+
+   procedure Line_Unref (Line : Pango_Layout_Line);
+   --  Decrease the reference count of Line by 1. If the result is 0, the line
+   --  and all associated memory will be destroyed.
+
+   function Line_Index_To_X
+     (Line     : Pango_Layout_Line;
+      Index    : Integer;
+      Trailing : Integer) return Glib.Gint;
+   --  Convert an index within a line to an X position.
+   --  Index is the byte offset of a graphem within the layout.
+   --  Trailing is an integer indicating the edge of the grapheme to retrieve
+   --  the position of. If 0, the trailing edge of the grapheme, otherwise, the
+   --  leading of the grapheme.
+   --  The returned value is in pango units.
+
    ----------------------
    -- Getting the size --
    ----------------------
@@ -160,6 +193,22 @@ package Pango.Layout is
       Width  : out Glib.Gint;
       Height : out Glib.Gint);
    --  Same as Get_Size, but the returned values are in pixels.
+
+   procedure XY_To_Index
+     (Layout           : access Pango_Layout_Record;
+      X_Pango, Y_Pango : Glib.Gint;
+      Byte_Index       : out Integer;
+      Trailing         : out Integer;
+      Exact            : out Boolean);
+   --  Convert from X and Y positions within a layout to the byte index of the
+   --  character at that logical position.
+   --  X and Y are given in pango units, not pixels.
+   --  If the position is not inside the layout, the closest position is
+   --  chosen, and Exact is set to False.
+   --  Trailing is the position in the grapheme where the user clicked. It will
+   --  either be 0 (left side) or the number of characters in the grapheme. In
+   --  some character sets, a given character can be represented by multiple
+   --  signs on the screen, which is what Trailing relates to.
 
    ---------------------------
    -- Manipulating the text --
@@ -233,6 +282,10 @@ package Pango.Layout is
 
 private
    type Pango_Layout_Record is new Glib.Object.GObject_Record with null record;
+
+   pragma Import (C, Line_Ref, "pango_layout_line_ref");
+   pragma Import (C, Line_Unref, "pango_layout_line_unref");
+   pragma Import (C, Line_Index_To_X, "pango_layout_line_index_to_x");
 end Pango.Layout;
 
 
@@ -255,12 +308,7 @@ end Pango.Layout;
 --  pango_layout_index_to_pos
 --  pango_layout_get_cursor_pos
 --  pango_layout_move_cursor_visually
---  pango_layout_xy_to_index
---  pango_layout_get_line
 --  pango_layout_get_lines
---  pango_layout_line_ref
---  pango_layout_line_unref
---  pango_layout_line_x_to_index
 --  pango_layout_line_index_to_x
 --  pango_layout_line_get_x_ranges
 --  pango_layout_line_get_extents

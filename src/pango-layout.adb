@@ -306,5 +306,48 @@ package body Pango.Layout is
       return Internal (Get_Object (Layout));
    end Get_Wrap;
 
+   -----------------
+   -- XY_To_Index --
+   -----------------
+
+   procedure XY_To_Index
+     (Layout           : access Pango_Layout_Record;
+      X_Pango, Y_Pango : Glib.Gint;
+      Byte_Index       : out Integer;
+      Trailing         : out Integer;
+      Exact            : out Boolean)
+   is
+      function Internal
+        (Layout   : System.Address;
+         X, Y     : Gint;
+         Index    : access Integer;
+         Trailing : access Integer) return Integer;
+      pragma Import (C, Internal, "pango_layout_xy_to_index");
+
+      B, T : aliased Integer;
+      E    : Integer;
+   begin
+      E := Internal (Get_Object (Layout), X_Pango, Y_Pango,
+                     B'Unchecked_Access, T'Unchecked_Access);
+      Byte_Index := B;
+      Trailing := T;
+      Exact := E = 1;
+   end XY_To_Index;
+
+   --------------
+   -- Get_Line --
+   --------------
+
+   function Get_Line
+     (Layout : access Pango_Layout_Record;
+      Line   : Natural) return Pango_Layout_Line
+   is
+      function Internal (L : System.Address; Line : Integer)
+         return Pango_Layout_Line;
+      pragma Import (C, Internal, "pango_layout_get_line");
+   begin
+      return Internal (Get_Object (Layout), Line);
+   end Get_Line;
+
 end Pango.Layout;
 
