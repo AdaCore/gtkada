@@ -40,14 +40,37 @@ package body Gtk.Text_View is
    -- Gtk_New --
    -------------
 
+   procedure Gtk_New (Widget : out Gtk_Text_View) is
+   begin
+      Widget := new Gtk_Text_View_Record;
+      Initialize (Widget);
+   end Gtk_New;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
    procedure Gtk_New
      (Widget : out Gtk_Text_View;
-      Buffer : access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class :=
-                        Gtk.Text_Buffer.Gtk_Text_Buffer'(null)) is
+      Buffer : access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class) is
    begin
       Widget := new Gtk_Text_View_Record;
       Initialize (Widget, Buffer);
    end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+     (Widget : access Gtk_Text_View_Record'Class)
+   is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_text_view_new");
+   begin
+      Set_Object (Widget, Internal);
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ----------------
    -- Initialize --

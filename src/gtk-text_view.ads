@@ -44,10 +44,13 @@ package Gtk.Text_View is
      new Gtk.Container.Gtk_Container_Record with private;
    type Gtk_Text_View is access all Gtk_Text_View_Record'Class;
 
+   procedure Gtk_New (Widget : out Gtk_Text_View);
+
    procedure Gtk_New
      (Widget : out Gtk_Text_View;
-      Buffer : access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class :=
-                        Gtk.Text_Buffer.Gtk_Text_Buffer'(null));
+      Buffer : access Gtk.Text_Buffer.Gtk_Text_Buffer_Record'Class);
+
+   procedure Initialize (Widget : access Gtk_Text_View_Record'Class);
 
    procedure Initialize
      (Widget : access Gtk_Text_View_Record'Class;
