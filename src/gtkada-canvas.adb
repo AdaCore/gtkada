@@ -55,6 +55,7 @@ with Gtkada.Handlers;  use Gtkada.Handlers;
 with Gtk.Main;         use Gtk.Main;
 pragma Elaborate_All (Gtk.Main);
 with Pango.Font;       use Pango.Font;
+with Pango.Layout;     use Pango.Layout;
 
 with Gtk.Style;        use Gtk.Style;
 with Gtk.Widget;       use Gtk.Widget;
@@ -407,6 +408,8 @@ package body Gtkada.Canvas is
          Widget_Callback.To_Marshaller (Canvas_Destroyed'Access));
       Widget_Callback.Connect (Canvas, "draw_links", Draw_Links_Cb'Access);
 
+      Canvas.Annotation_Layout := Create_Pango_Layout (Canvas);
+
       --  We want to be sure to get all the mouse events, that are required
       --  for the animation.
 
@@ -447,12 +450,10 @@ package body Gtkada.Canvas is
          Remove (C.Children, V);
       end loop;
 
+      Unref (C.Annotation_Layout);
       Unref (C.Clear_GC);
       Unref (C.Black_GC);
       Unref (C.Anim_GC);
-      if C.Annotation_Font /= null then
-         Unref (C.Annotation_Font);
-      end if;
       Destroy (C.Hadj);
       Destroy (C.Vadj);
    end Canvas_Destroyed;
@@ -512,13 +513,12 @@ package body Gtkada.Canvas is
    procedure Configure
      (Canvas : access Interactive_Canvas_Record;
       Grid_Size         : Guint := Default_Grid_Size;
-      Annotation_Font   : String := Default_Annotation_Font;
+      Annotation_Font   : Pango.Font.Pango_Font_Description :=
+        Pango.Font.From_String (Default_Annotation_Font);
       Arc_Link_Offset   : Gint := Default_Arc_Link_Offset;
       Arrow_Angle       : Gint := Default_Arrow_Angle;
       Arrow_Length      : Gint := Default_Arrow_Length;
-      Motion_Threshold  : Gint := Default_Motion_Threshold)
-   is
-      Descr : Pango_Font_Description;
+      Motion_Threshold  : Gint := Default_Motion_Threshold) is
    begin
       Canvas.Grid_Size := Grid_Size;
 
@@ -526,13 +526,7 @@ package body Gtkada.Canvas is
          Canvas.Align_On_Grid := False;
       end if;
 
-      if Canvas.Annotation_Font /= Null_Font then
-         Unref (Canvas.Annotation_Font);
-      end if;
-
-      Descr := From_String (Annotation_Font);
-      Canvas.Annotation_Font := From_Description (Descr);
-      Free (Descr);
+      Set_Font_Description (Canvas.Annotation_Layout, Annotation_Font);
 
       Canvas.Arc_Link_Offset := Arc_Link_Offset;
       Canvas.Arrow_Angle := Float (Arrow_Angle) * Ada.Numerics.Pi / 180.0;
@@ -1166,19 +1160,20 @@ package body Gtkada.Canvas is
    begin
       if Link.Descr /= null
         and then Link.Descr.all /= ""
-        and then Canvas.Annotation_Font /= null
+        and then Canvas.Annotation_Layout /= null
       then
          if Link.Pixbuf = Null_Pixbuf then
-            W := String_Width (Canvas.Annotation_Font, Link.Descr.all);
-            H := Get_Ascent (Canvas.Annotation_Font) +
-              Get_Descent (Canvas.Annotation_Font);
+            Set_Text (Canvas.Annotation_Layout, Link.Descr.all);
+            Get_Pixel_Size (Canvas.Annotation_Layout, W, H);
 
             Gdk_New (Pixmap, Get_Window (Canvas), W, H);
             Draw_Rectangle (Pixmap, Canvas.Clear_GC, True, 0, 0, W, H);
-            Draw_Text
-              (Pixmap, Canvas.Annotation_Font, GC, 0,
-               Get_Ascent (Canvas.Annotation_Font),
-               Link.Descr.all);
+            Draw_Layout
+              (Drawable => Pixmap,
+               GC       => Get_Black_GC (Get_Style (Canvas)),
+               X        => 0,
+               Y        => 0,
+               Layout   => Canvas.Annotation_Layout);
 
             Link.Pixbuf := Get_From_Drawable
               (Dest   => null,
@@ -1195,7 +1190,7 @@ package body Gtkada.Canvas is
 
          --  Do not draw the text in Xor mode, since this doesn't work on
          --  Windows systems, and doesn't provide any real information anyway.
-         if GC /= Canvas.Anim_GC and then Canvas.Annotation_Font /= null then
+         if GC /= Canvas.Anim_GC then
             if Canvas.Zoom = 100 then
                Tmp := Link.Pixbuf;
             else

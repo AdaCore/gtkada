@@ -52,7 +52,6 @@
 --  </description>
 
 with Gdk.Event;
-with Gdk.Font;
 with Gdk.GC;
 with Gdk.Pixbuf;
 with Gdk.Pixmap;
@@ -63,6 +62,8 @@ with Gtk.Drawing_Area;
 with Gdk.Rectangle;
 with Gtk.Adjustment;
 with Gtk.Main;
+with Pango.Font;
+with Pango.Layout;
 
 package Gtkada.Canvas is
 
@@ -157,7 +158,8 @@ package Gtkada.Canvas is
    procedure Configure
      (Canvas : access Interactive_Canvas_Record;
       Grid_Size         : Glib.Guint := Default_Grid_Size;
-      Annotation_Font   : String := Default_Annotation_Font;
+      Annotation_Font   : Pango.Font.Pango_Font_Description :=
+        Pango.Font.From_String (Default_Annotation_Font);
       Arc_Link_Offset   : Glib.Gint := Default_Arc_Link_Offset;
       Arrow_Angle       : Glib.Gint := Default_Arrow_Angle;
       Arrow_Length      : Glib.Gint := Default_Arrow_Length;
@@ -739,7 +741,9 @@ private
       Clear_GC        : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
       Black_GC        : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
       Anim_GC         : Gdk.GC.Gdk_GC := Gdk.GC.Null_GC;
-      Annotation_Font : Gdk.Font.Gdk_Font := Gdk.Font.Null_Font;
+
+      Annotation_Layout : Pango.Layout.Pango_Layout;
+      --  Layout used to draw the annotations
 
       Hadj, Vadj : Gtk.Adjustment.Gtk_Adjustment;
       Scrolling_Timeout_Id : Gtk.Main.Timeout_Handler_Id := 0;
