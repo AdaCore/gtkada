@@ -1000,15 +1000,15 @@ package body Gtkada.Canvas is
 
    procedure Redraw_Canvas (Canvas : access Interactive_Canvas_Record'Class) is
    begin
+      --  Adjust the scrollable area, and resize the canvas if needed
+
+      Update_Adjustments (Canvas);
+
       --  Clean everything in the canvas.
 
       Clear_Area_E (Get_Window (Canvas.Drawing_Area), 0, 0,
                     Gint (Get_Allocation_Width (Canvas)) - 1,
                     Gint (Get_Allocation_Height (Canvas)) - 1);
-
-      --  Adjust the scrollable area
-
-      Update_Adjustments (Canvas);
 
    end Redraw_Canvas;
 
@@ -1102,10 +1102,49 @@ package body Gtkada.Canvas is
                            return Boolean
    is
       Item    : Canvas_Item renames Canvas.Selected_Child;
+      Tmp : Canvas_Item_List := Canvas.Children;
+      Delta_X, Delta_Y : Gint := 0;
+      Min_X, Min_Y : Gint := Gint'Last;
    begin
       if Canvas.Selected_Child = null then
          return False;
       end if;
+
+      --  Move the items if the new one was moved out of the canvas.
+
+      if Item.Coord.X < Gint (Canvas.Grid_Size) then
+         Delta_X := -Item.Coord.X + Gint (Canvas.Grid_Size);
+      end if;
+
+      if Item.Coord.Y < Gint (Canvas.Grid_Size) then
+         Delta_Y := -Item.Coord.Y + Gint (Canvas.Grid_Size);
+      end if;
+
+      if Delta_X = 0 and then Delta_Y = 0 then
+         Tmp := Canvas.Children;
+         while Tmp /= null loop
+            if Tmp.Item.Coord.X < Min_X then
+               Min_X := Tmp.Item.Coord.X;
+            end if;
+            if Tmp.Item.Coord.Y < Min_Y then
+               Min_Y := Tmp.Item.Coord.Y;
+            end if;
+            Tmp := Tmp.Next;
+         end loop;
+         Delta_X := Gint (Canvas.Grid_Size) - Min_X;
+         Delta_Y := Gint (Canvas.Grid_Size) - Min_Y;
+      end if;
+
+      if Delta_X /= 0 or else Delta_Y /= 0 then
+         Tmp := Canvas.Children;
+         while Tmp /= null loop
+            Tmp.Item.Coord.X := Tmp.Item.Coord.X + Delta_X;
+            Tmp.Item.Coord.Y := Tmp.Item.Coord.Y + Delta_Y;
+            Tmp := Tmp.Next;
+         end loop;
+      end if;
+
+      --  Align the items on the grid.
 
       if Canvas.Align_On_Grid then
          Item.Coord.X := Item.Coord.X
@@ -1164,16 +1203,6 @@ package body Gtkada.Canvas is
       then
          Canvas.Mouse_Has_Moved := True;
          return False;
-      end if;
-
-      --  Can not move an item too much to the left or to the top
-
-      if Item.Coord.X + Delta_X < 0 then
-         Delta_X := -Item.Coord.X;
-      end if;
-
-      if Item.Coord.Y + Delta_Y < 0 then
-         Delta_Y := -Item.Coord.Y;
       end if;
 
       --  Delete the currently dashed lines
