@@ -3,7 +3,7 @@
 
 <project>
   <name>menu</name>
-  <srcdir>.</srcdir>
+  <source_directory>.</source_directory>
   <main_source_file>gladesrc.c</main_source_file>
   <main_header_file>gladesrc.h</main_header_file>
   <handler_source_file>gladesig.c</handler_source_file>
