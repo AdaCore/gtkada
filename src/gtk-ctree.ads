@@ -75,6 +75,12 @@ package Gtk.Ctree is
    -----------------------------------
    -- Creation, insertion, deletion --
    -----------------------------------
+   --  Elements inside a Gtk_Ctree are not ordered from the top to the bottom
+   --  as is the case for Gtk_Clist. Instead, they are put in the ctree by
+   --  indicating where in the tree they should be placed. The position of an
+   --  element (called a node) is defined by a parent node and a sibling node.
+   --  The node will be attached in the parent subtree, on top of the sibling
+   --  node.
 
    procedure Gtk_New (Widget      :    out Gtk_Ctree;
                       Columns     : in     Gint;
@@ -103,15 +109,6 @@ package Gtk.Ctree is
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Ctree.
-
-   --  <description>
-   --  Elements inside a Gtk_Ctree are not ordered from the top to the bottom
-   --  as is the case for Gtk_Clist. Instead, they are put in the ctree by
-   --  indicating where in the tree they should be placed. The position of an
-   --  element (called a node) is defined by a parent node and a sibling node.
-   --  The node will be attached in the parent subtree, on top of the sibling
-   --  node.
-   --  </description>
 
    function Insert_Node (Ctree         : access Gtk_Ctree_Record;
                          Parent        : in     Gtk_Ctree_Node;
