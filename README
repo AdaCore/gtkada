@@ -22,7 +22,7 @@ The home page for gtk is
      
 This home page will always contain the latest news for this toolkit.
 
-This is GtkAda version 1.2.1. This package is an Ada95 graphical library
+This is GtkAda version 1.2.3. This package is an Ada95 graphical library
 for the Gimp Toolkit, which means this is a set of packages to allow you
 to easily create some graphical interfaces under X11 and Win32, using Ada95
 as a programming language.
@@ -166,9 +166,10 @@ either  your program  or   the  toolkit.  Please  check   your program
 carefully, and if you think this is a problem in GtkAda itself, send us
 an email.
      
-To  report errors,  send a  mail  to all  the authors  (see the  email
-addresses at  the end of  this document) explaining exactly  what your
-are  doing,  what  it  the  expected  result  and  what  you  actually
+To report  errors, if you are a supported user of GNAT, send a mail to
+report@gnat.com following  the usual procedure. Otherwise, send a mail
+to gtkada@ada.eu.org to reach all the authors, explaining exactly what
+you are doing, what it the  expected  result  and  what  you  actually
 get. Please include the required sources to reproduced the problem, in
 a  format usable  by 'gnatchop'  (basically, insert  all  the required
 sources at  the end of  the mail). Please  try to provide a  subset of
