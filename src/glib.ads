@@ -232,7 +232,7 @@ package Glib is
    --  This name includes the trailing ASCII.Nul, and thus can be passed as is
    --  to C.
 
-   type Param_Spec is private;
+   type Param_Spec is new Glib.C_Proxy;
    --  See Glib.Properties.Creation for more information on this type
 
    type Param_Flags is mod 2 ** 6;
@@ -329,7 +329,6 @@ private
    --  anyway.
 
    type Property is new String;
-   type Param_Spec is new Glib.C_Proxy;
 
    type Signal_Id is new Guint;
    Invalid_Signal_Id : constant Signal_Id := -1;
