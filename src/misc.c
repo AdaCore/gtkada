@@ -1762,6 +1762,16 @@ ada_style_get_bg_pixmap (GtkStyle* style, gint state)
 	return style->bg_pixmap[state];
 }
 
+gint
+ada_style_get_x_thickness (GtkStyle* style) {
+  return style->klass->xthickness;
+}
+
+gint
+ada_style_get_y_thickness (GtkStyle* style) {
+  return style->klass->ythickness;
+}
+
 /***************************************************
  *  Functions for Objects
  ***************************************************/
@@ -1903,6 +1913,15 @@ ada_alignment_get_yscale (GtkAlignment* widget)
    return widget->yscale;
 }
 
+/******************************************
+ ** Functions for Bin
+ ******************************************/
+
+GtkWidget *
+ada_bin_get_child (GtkBin* widget)
+{
+   return widget->child;
+}
 
 /******************************************
  ** Functions for Ruler

@@ -410,7 +410,15 @@ package Gtk.Style is
 
    function Get_Bg_Pixmap      (Style      : in Gtk_Style;
                                 State_Type : in Enums.Gtk_State_Type)
-     return Gdk.Pixmap.Gdk_Pixmap;
+                               return Gdk.Pixmap.Gdk_Pixmap;
+
+   function X_Thickness (Style : in Gtk_Style) return Gint;
+   --  Width of the vertical scrollbars and ranges when Style is applied.
+   --  In fact, this thickness is used for a lot of widgets whose width
+   --  does not depend on their content, such as rulers,...
+
+   function Y_Thickness (Style : in Gtk_Style) return Gint;
+   --  Height of the horizontal scrollbars and ranges when Style is applied.
 
    procedure Draw_Hline (Style      : in Gtk_Style;
                          Window     : in Gdk.Window.Gdk_Window;
@@ -494,4 +502,6 @@ private
    pragma Import (C, Get_Black_GC, "ada_style_get_black_gc");
    pragma Import (C, Set_White_GC, "ada_style_set_white_gc");
    pragma Import (C, Get_White_GC, "ada_style_get_white_gc");
+   pragma Import (C, X_Thickness, "ada_style_get_x_thickness");
+   pragma Import (C, Y_Thickness, "ada_style_get_y_thickness");
 end Gtk.Style;
