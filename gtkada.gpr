@@ -1,0 +1,6 @@
+project Gtkada is
+
+   for Source_Dirs use ("src", "src/glade", "src/gnome", "src/opengl");
+   for Object_Dir use "src/lib-obj";
+
+end Gtkada;
