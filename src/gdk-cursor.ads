@@ -43,7 +43,7 @@ package Gdk.Cursor is
 
    --  procedure Set_Cursor
    --
-   --  This procedure has been moved to the Gdk.Window.Package
+   --  This procedure has been moved to the Gdk.Window Package
    --  to prevent any circular dependency.
 
 private
