@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                   Copyright (C) 2003 ACT-Europe                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,36 +26,22 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <description>
---
---  This package provides simple primitives to write multi-threaded
---  applications with GtkAda. See the GtkAda User's Guide for more details
---  (section Tasking with GtkAda).
---
---  </description>
---  <c_version>1.3.6</c_version>
+package body Gdk.Threads is
 
-with System;
+   ----------
+   -- Init --
+   ----------
 
-package Gdk.Threads is
+   procedure Init is
+      procedure Internal (Table : System.Address := System.Null_Address);
+      pragma Import (C, Internal, "g_thread_init");
 
-   procedure Init;
-   --  Initialize the Gdk internal threading support.
+      procedure Internal2;
+      pragma Import (C, Internal2, "gdk_threads_init");
 
-   procedure Enter;
-   --  Take the GtkAda global lock.
-   --  See the GtkAda User's Guide for more details (section Tasking with
-   --  GtkAda).
+   begin
+      Internal;
+      Internal2;
+   end Init;
 
-   procedure Leave;
-   --  Release the GtkAda global lock.
-   --  See the GtkAda User's Guide for more details (section Tasking with
-   --  GtkAda).
-
-private
-   pragma Linker_Options ("-lgthread-2.0");
-   --  This is needed to resolve g_thread_init
-
-   pragma Import (C, Enter, "gdk_threads_enter");
-   pragma Import (C, Leave, "gdk_threads_leave");
 end Gdk.Threads;
