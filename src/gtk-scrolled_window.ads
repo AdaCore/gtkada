@@ -46,19 +46,18 @@ package Gtk.Scrolled_Window is
      (Scrolled_Window : in out Gtk_Scrolled_Window;
       Child           : in     Gtk.Widget.Gtk_Widget'Class);
 
-   procedure Construct
-     (Scrolled_Window : in out Gtk_Scrolled_Window;
-      Hadjustment     : in     Adjustment.Gtk_Adjustment'Class :=
-        Adjustment.Null_Adjustment;
-      Vadjustment     : in     Adjustment.Gtk_Adjustment'Class :=
-        Adjustment.Null_Adjustment);
-
    function Get_Hadjustment (Scrolled_Window : in Gtk_Scrolled_Window)
                              return               Adjustment.Gtk_Adjustment;
 
    function Get_Vadjustment (Scrolled_Window : in Gtk_Scrolled_Window)
                              return               Adjustment.Gtk_Adjustment;
 
+   procedure Set_Hadjustment
+     (Scrolled_Window : in out Gtk_Scrolled_Window;
+      Hadjustment     : in     Adjustment.Gtk_Adjustment'Class);
+   procedure Set_Vadjustment
+     (Scrolled_Window : in out Gtk_Scrolled_Window;
+      Vadjustment     : in     Adjustment.Gtk_Adjustment'Class);
    procedure Set_Policy (Scrolled_Window    : in out Gtk_Scrolled_Window;
                          H_Scrollbar_Policy : in     Enums.Gtk_Policy_Type;
                          V_Scrollbar_Policy : in     Enums.Gtk_Policy_Type);
