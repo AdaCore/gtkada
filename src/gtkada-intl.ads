@@ -32,10 +32,29 @@
 --  This package provides support for string internationalization using the
 --  libintl library.
 --
---  To change the current locale setting, use the environment variable
---  "LC_MESSAGES". For example, to switch to the french locale using bash:
+--  To change the current locale setting, use on the environment variables
+--  "LANG" or "LC_MESSAGES". For example, to switch to the french locale using
+--  bash:
 --
---  $ export LC_MESSAGES=fr
+--  $ export LANG=fr
+--
+--  The following environment variables can be set to change the default
+--  settings of locale parameters:
+--
+--    - LANG Specifies locale name.
+--
+--    - LC_MESSAGES
+--          Specifies messaging locale, and if present overrides
+--          LANG for messages.
+--
+--    - TEXTDOMAIN
+--          Specifies the text domain name, which is identical to
+--          the message object filename without .mo suffix.
+--
+--    - TEXTDOMAINDIR
+--          Specifies the pathname to the message database, and  if
+--          present replaces the default (e.g /usr/lib/locale on Solaris,
+--          /usr/share/locale on Linux).
 --
 --  The recommended way to use the gettext capability in your application is
 --  to use Dgettext with your own domain, and define the following shortcut:
@@ -55,7 +74,7 @@
 --    Bind_Text_Domain ("GtkAda", "/usr/share/locale");
 --
 --  Under this locale directory, the functions provided by this package
---  will look for the directory $LC_MESSAGES/LC_MESSAGES,
+--  will look for the directory $LANG/LC_MESSAGES,
 --  /usr/share/locale/fr/LC_MESSAGES in our example; and in this directory,
 --  the file <domain>.mo will be used, e.g
 --  /usr/share/locale/fr/LC_MESSAGES/GtkAda.mo
@@ -74,6 +93,12 @@
 --
 --  $ msgfmt gtkada-fr.po -o gtkada-fr.gmo
 --  $ cp gtkada-fr.gmo /usr/share/locale/fr/LC_MESSAGES/GtkAda.mo
+--
+--  Then, to enable the string translation in your application, use the "-"
+--  function defined above, e.g:
+--
+--  Gtk_New (Label, -"Help");
+--  Gtk_New (Label, -("Help ?") & ASCII.LF & -("Yes"));
 --
 --  </description>
 
@@ -107,8 +132,3 @@ package Gtkada.Intl is
    --  This overrides the default system locale data base.
 
 end Gtkada.Intl;
-
---  <example>
---  Gtk_New (Label, -"English Label");
---  Gtk_New (Label, -("Multiline" & ASCII.LF & "Label"));
---  </example>
