@@ -705,23 +705,6 @@ package Gtk.Handlers is
       Id  : in Handler_Id);
    --  See Handler_Block.
 
-   function Count_Arguments
-     (The_Type : Gtk_Type; Name : in String) return Guint;
-   --  Return the number of arguments used in the handlers for the signal.
-   --  Note that in the Connect functions, we always test whether the user
-   --  has asked for *at most* the number of arguments defined by gtk+ for the
-   --  callback. This is because having less argument is authorized (the
-   --  extra parameters passed by gtk+ will simply be ignored), whereas having
-   --  more arguments is impossible (they would never be set).
-
-   function Argument_Type
-     (The_Type : Gtk_Type;
-      Name     : in String;
-      Num      : in Gint) return Gtk_Type;
-   --  Return the type of the num-th argument for the handlers of signal name.
-   --  If Num is negative, return the type returned by the handlers for this
-   --  signal.
-
    --  </doc_ignore>
 
 end Gtk.Handlers;
