@@ -16,7 +16,7 @@
 
 package body Clist is
 
-   procedure Hide_All_But_One (Clist      : access Gtk_Clist_Record'Class;
+   procedure Hide_All_But_One (Clist : access Gtk_Clist_Record'Class;
                                New_Column : Gint)
    is
    begin
