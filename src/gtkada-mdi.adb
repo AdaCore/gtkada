@@ -385,6 +385,9 @@ package body Gtkada.MDI is
    --  Child will be destroyed, unless you Ref' it first.
    --  The notebook is destroyed if Child was the last item.
 
+   function Get_Child_From_Page (Page : Gtk_Widget) return MDI_Child;
+   --  Return the MDI child contained in the notebook page.
+
    procedure Create_Menu_Entry (Child : access MDI_Child_Record'Class);
    --  Add an entry to the MDI menu that provides easy activation of Child
 
@@ -3294,6 +3297,15 @@ package body Gtkada.MDI is
       end if;
    end Remove_From_Notebook;
 
+   -------------------------
+   -- Get_Child_From_Page --
+   -------------------------
+
+   function Get_Child_From_Page (Page : Gtk_Widget) return MDI_Child is
+   begin
+      return MDI_Child (Page);
+   end Get_Child_From_Page;
+
    ----------------
    -- Dock_Child --
    ----------------
@@ -4285,13 +4297,17 @@ package body Gtkada.MDI is
       is
          use type Widget_List.Glist;
 
-         Item       : Widget_List.Glist := MDI.Items;
-         Child      : MDI_Child;
-         Root, Widget_Node, Child_Node : Node_Ptr;
-         Register   : Register_Node;
+         Item             : Widget_List.Glist := MDI.Items;
+         Root, Child_Node : Node_Ptr;
+         Widget_Node      : Node_Ptr;
+         Register         : Register_Node;
+         Child            : MDI_Child;
 
          procedure Add (Name, Value : String);
          --  Add a new child to Child_Node
+
+         procedure Save_Widget (Child : MDI_Child);
+         --  Save the Child.
 
          ---------
          -- Add --
@@ -4306,21 +4322,12 @@ package body Gtkada.MDI is
             Add_Child (Child_Node, N);
          end Add;
 
-      begin
-         Root := new Node;
-         Root.Tag := new String'("MDI");
-         Child_Node := Root;
+         -----------------
+         -- Save_Widget --
+         -----------------
 
-         Add ("Left",   Gint'Image (MDI.Docks_Size (Left)));
-         Add ("Right",  Gint'Image (MDI.Docks_Size (Right)));
-         Add ("Top",    Gint'Image (MDI.Docks_Size (Top)));
-         Add ("Bottom", Gint'Image (MDI.Docks_Size (Bottom)));
-         Add ("Maximized", Boolean'Image (MDI.Children_Are_Maximized));
-
-         while Item /= Widget_List.Null_List loop
-            Child := MDI_Child (Widget_List.Get_Data (Item));
-
-            --  Save the widget
+         procedure Save_Widget (Child : MDI_Child) is
+         begin
             Register := Registers;
             Widget_Node := null;
 
@@ -4365,6 +4372,53 @@ package body Gtkada.MDI is
 
                Add_Child (Root, Child_Node);
             end if;
+
+         end Save_Widget;
+
+      begin
+         Root := new Node;
+         Root.Tag := new String'("MDI");
+         Child_Node := Root;
+
+         Add ("Left",   Gint'Image (MDI.Docks_Size (Left)));
+         Add ("Right",  Gint'Image (MDI.Docks_Size (Right)));
+         Add ("Top",    Gint'Image (MDI.Docks_Size (Top)));
+         Add ("Bottom", Gint'Image (MDI.Docks_Size (Bottom)));
+         Add ("Maximized", Boolean'Image (MDI.Children_Are_Maximized));
+
+         --  Look through all the notebooks, and save the widgets in the
+         --  notebook order.
+
+         for J in MDI.Docks'Range loop
+            if MDI.Docks (J) /= null then
+
+               for Page_Index in reverse
+                 0 .. (Page_List.Length (Get_Children (MDI.Docks (J))) - 1)
+               loop
+                  Save_Widget
+                    (Get_Child_From_Page
+                       (Get_Nth_Page (MDI.Docks (J), Gint (Page_Index))));
+               end loop;
+            end if;
+         end loop;
+
+         --  Save the floating and non-maximized widgets.
+
+         while Item /= Widget_List.Null_List loop
+            Child := MDI_Child (Widget_List.Get_Data (Item));
+
+            case Child.State is
+               when Docked =>
+                  null;
+
+               when Normal =>
+                  if not MDI.Children_Are_Maximized then
+                     Save_Widget (Child);
+                  end if;
+
+               when Floating | Iconified =>
+                  Save_Widget (Child);
+            end case;
 
             Item := Widget_List.Next (Item);
          end loop;
