@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,8 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  with Gdk.ImlibColor;
---  with Gdk.ImlibImage;
 with Gtkada.Types; use Gtkada.Types;
 with Gtk;
 with Gtk.Widget;
@@ -55,117 +53,33 @@ package Gnome.Pixmap is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with this widget.
 
-   procedure Gnome_New (Widget  : out Gnome_Pixmap;
-                        Gpixmap : access Gnome_Pixmap_Record);
+   procedure Gnome_New
+     (Widget  : out Gnome_Pixmap;
+      Gpixmap : access Gnome_Pixmap_Record);
 
-   procedure Initialize (Widget  : access Gnome_Pixmap_Record'Class;
-                         Gpixmap : access Gnome_Pixmap_Record);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
-
-   procedure Gnome_New (Widget   : out Gnome_Pixmap;
-                        Xpm_Data : Chars_Ptr_Array);
-
-   procedure Initialize (Widget   : access Gnome_Pixmap_Record'Class;
-                         Xpm_Data : Chars_Ptr_Array);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
-
-   --  procedure Gnome_New
-   --    (Widget      : out Gnome_Pixmap;
-   --     Data        : String;
-   --     Alpha       : String;
-   --     Rgb_Width   : Integer;
-   --     Rgb_Height  : Integer;
-   --     Shape_Color : Gdk.ImlibColor.Gdk_ImlibColor);
-
-   --  procedure Initialize
-   --    (Widget      : access Gnome_Pixmap_Record'Class;
-   --     Data        : String;
-   --     Alpha       : String;
-   --     Rgb_Width   : Integer;
-   --     Rgb_Height  : Integer;
-   --     Shape_Color : Gdk.ImlibColor.Gdk_ImlibColor);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
-
-   --  procedure Gnome_New
-   --    (Widget : out Gnome_Pixmap;
-   --     Im     : Gdk.ImlibImage.Gdk_ImlibImage;
-   --     Width  : Integer;
-   --     Height : Integer);
-
-   --  procedure Initialize
-   --    (Widget : access Gnome_Pixmap_Record'Class;
-   --     Im     : Gdk.ImlibImage.Gdk_ImlibImage;
-   --     Width  : Integer;
-   --     Height : Integer);
+   procedure Initialize
+     (Widget  : access Gnome_Pixmap_Record'Class;
+      Gpixmap : access Gnome_Pixmap_Record);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    procedure Gnome_New
-     (Widget     : out Gnome_Pixmap;
-      Data       : String;
-      Alpha      : String;
-      Rgb_Width  : Integer;
-      Rgb_Height : Integer;
-      Width      : Integer;
-      Height     : Integer);
+     (Widget   : out Gnome_Pixmap;
+      Xpm_Data : Chars_Ptr_Array);
 
    procedure Initialize
-     (Widget     : access Gnome_Pixmap_Record'Class;
-      Data       : String;
-      Alpha      : String;
-      Rgb_Width  : Integer;
-      Rgb_Height : Integer;
-      Width      : Integer;
-      Height     : Integer);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
-
-   --  procedure Gnome_New
-   --    (Widget      : out Gnome_Pixmap;
-   --     Data        : String;
-   --     Alpha       : String;
-   --     Rgb_Width   : Integer;
-   --     Rgb_Height  : Integer;
-   --     Width       : Integer;
-   --     Height      : Integer;
-   --     Shape_Color : Gdk.ImlibColor.Gdk_ImlibColor);
-
-   --  procedure Initialize
-   --    (Widget      : access Gnome_Pixmap_Record'Class;
-   --     Data        : String;
-   --     Alpha       : String;
-   --     Rgb_Width   : Integer;
-   --     Rgb_Height  : Integer;
-   --     Width       : Integer;
-   --     Height      : Integer;
-   --     Shape_Color : Gdk.ImlibColor.Gdk_ImlibColor);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
-
-   procedure Gnome_New (Widget   : out Gnome_Pixmap;
-                        Filename : String);
-
-   procedure Initialize (Widget   : access Gnome_Pixmap_Record'Class;
-                         Filename : String);
+     (Widget   : access Gnome_Pixmap_Record'Class;
+      Xpm_Data : Chars_Ptr_Array);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    procedure Gnome_New
-     (Widget     : out Gnome_Pixmap;
-      Data       : String;
-      Alpha      : String;
-      Rgb_Width  : Integer;
-      Rgb_Height : Integer);
+     (Widget   : out Gnome_Pixmap;
+      Filename : String);
 
    procedure Initialize
-     (Widget     : access Gnome_Pixmap_Record'Class;
-      Data       : String;
-      Alpha      : String;
-      Rgb_Width  : Integer;
-      Rgb_Height : Integer);
+     (Widget   : access Gnome_Pixmap_Record'Class;
+      Filename : String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -183,14 +97,6 @@ package Gnome.Pixmap is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   --  procedure Gnome_New (Widget : out Gnome_Pixmap;
-   --                       Im : Gdk.ImlibImage.Gdk_ImlibImage);
-
-   --  procedure Initialize (Widget : access Gnome_Pixmap_Record'Class;
-   --                        Im : Gdk.ImlibImage.Gdk_ImlibImage);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
-
    procedure Load_File
      (Gpixmap  : access Gnome_Pixmap_Record;
       Filename : String);
@@ -200,50 +106,6 @@ package Gnome.Pixmap is
       Filename : String;
       Width    : Integer;
       Height   : Integer);
-
-   --  procedure Load_Imlib
-   --    (Gpixmap : access Gnome_Pixmap_Record;
-   --     Im      : Gdk.ImlibImage.Gdk_ImlibImage);
-
-   --  procedure Load_Imlib_At_Size
-   --    (Gpixmap : access Gnome_Pixmap_Record;
-   --     Im      : Gdk.ImlibImage.Gdk_ImlibImage;
-   --     Width   : Integer;
-   --     Height  : Integer);
-
-   procedure Load_Rgb_D
-     (Gpixmap    : access Gnome_Pixmap_Record;
-      Data       : String;
-      Alpha      : String;
-      Rgb_Width  : Integer;
-      Rgb_Height : Integer);
-
-   procedure Load_Rgb_D_At_Size
-     (Gpixmap    : access Gnome_Pixmap_Record;
-      Data       : String;
-      Alpha      : String;
-      Rgb_Width  : Integer;
-      Rgb_Height : Integer;
-      Width      : Integer;
-      Height     : Integer);
-
-   --  procedure Load_Rgb_D_Shaped
-   --    (Gpixmap     : access Gnome_Pixmap_Record;
-   --     Data        : String;
-   --     Alpha       : String;
-   --     Rgb_Width   : Integer;
-   --     Rgb_Height  : Integer;
-   --     Shape_Color : Gdk.ImlibColor.Gdk_ImlibColor);
-
-   --  procedure Load_Rgb_D_Shaped_At_Size
-   --    (Gpixmap     : access Gnome_Pixmap_Record;
-   --     Data        : String;
-   --     Alpha       : String;
-   --     Rgb_Width   : Integer;
-   --     Rgb_Height  : Integer;
-   --     Width       : Integer;
-   --     Height      : Integer;
-   --     Shape_Color : Gdk.ImlibColor.Gdk_ImlibColor);
 
    procedure Load_Xpm_D
      (Gpixmap  : access Gnome_Pixmap_Record;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -28,46 +28,11 @@
 -----------------------------------------------------------------------
 
 with Gdk.Color;
---  with Gdk.ImlibImage;
 with Gdk; use Gdk;
 with Gtk; use Gtk;
 with System;
 
 package body Gnome.Druid_Page_Standard is
-
-   ---------------
-   -- Gnome_New --
-   ---------------
-
-   --  procedure Gnome_New
-   --    (Widget : out Gnome_Druid_Page_Standard;
-   --     Title  : String;
-   --     Logo   : Gdk.ImlibImage.Gdk_ImlibImage)
-   --  is
-   --  begin
-   --     Widget := new Gnome_Druid_Page_Standard_Record;
-   --     Initialize (Widget, Title, Logo);
-   --  end Gnome_New;
-
-   ----------------
-   -- Initialize --
-   ----------------
-
-   --  procedure Initialize
-   --    (Widget: access Gnome_Druid_Page_Standard_Record'Class;
-   --     Title : String;
-   --     Logo  : Gdk.ImlibImage.Gdk_ImlibImage)
-   --  is
-   --     function Internal
-   --       (Title  : String;
-   --        Logo   : GdkImlibImage)
-   --        return System.Address;
-   --     pragma Import
-   --       (C, Internal, "gnome_druid_page_standard_new_with_vals");
-   --  begin
-   --     Set_Object (Widget, Internal (Title & ASCII.NUL, Logo));
-   --     Initialize_User_Data (Widget);
-   --  end Initialize;
 
    ---------------
    -- Gnome_New --
@@ -93,57 +58,6 @@ package body Gnome.Druid_Page_Standard is
       Initialize_User_Data (Widget);
    end Initialize;
 
-   ------------------
-   -- Set_Bg_Color --
-   ------------------
-
-   procedure Set_Bg_Color
-     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
-      Color               : Gdk.Color.Gdk_Color)
-   is
-      procedure Internal
-        (Druid_Page_Standard : System.Address;
-         Color               : Gdk.Color.Gdk_Color);
-      pragma Import (C, Internal, "gnome_druid_page_standard_set_bg_color");
-   begin
-      Internal (Get_Object (Druid_Page_Standard),
-                Color);
-   end Set_Bg_Color;
-
-   --------------
-   -- Set_Logo --
-   --------------
-
-   --  procedure Set_Logo
-   --    (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
-   --     Logo_Image          : Gdk.ImlibImage.Gdk_ImlibImage)
-   --  is
-   --     procedure Internal
-   --       (Druid_Page_Standard : System.Address;
-   --        Logo_Image          : GdkImlibImage);
-   --     pragma Import (C, Internal, "gnome_druid_page_standard_set_logo");
-   --  begin
-   --     Internal (Get_Object (Druid_Page_Standard),
-   --               Logo_Image);
-   --  end Set_Logo;
-
-   -----------------------
-   -- Set_Logo_Bg_Color --
-   -----------------------
-
-   procedure Set_Logo_Bg_Color
-     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
-      Color               : Gdk.Color.Gdk_Color)
-   is
-      procedure Internal
-        (Druid_Page_Standard : System.Address;
-         Color               : Gdk.Color.Gdk_Color);
-      pragma Import
-        (C, Internal, "gnome_druid_page_standard_set_logo_bg_color");
-   begin
-      Internal (Get_Object (Druid_Page_Standard), Color);
-   end Set_Logo_Bg_Color;
-
    ---------------
    -- Set_Title --
    ---------------
@@ -161,21 +75,104 @@ package body Gnome.Druid_Page_Standard is
                 Title & ASCII.NUL);
    end Set_Title;
 
-   ---------------------
-   -- Set_Title_Color --
-   ---------------------
+   --------------
+   -- Set_Logo --
+   --------------
 
-   procedure Set_Title_Color
+   procedure Set_Logo
+     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
+      Logo                : Gdk.Pixbuf.Gdk_Pixbuf)
+   is
+      procedure Internal
+        (Druid_Page_Standard : System.Address;
+         Logo                : Gdk.Pixbuf.Gdk_Pixbuf);
+      pragma Import (C, Internal, "gnome_druid_page_standard_set_logo");
+   begin
+      Internal (Get_Object (Druid_Page_Standard), Logo);
+   end Set_Logo;
+
+   -----------------------
+   -- Set_Top_Watermark --
+   -----------------------
+
+   procedure Set_Top_Watermark
+     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
+      Top_Watermark       : Gdk.Pixbuf.Gdk_Pixbuf)
+   is
+      procedure Internal
+        (Druid_Page_Standard : System.Address;
+         Logo                : Gdk.Pixbuf.Gdk_Pixbuf);
+      pragma Import (C, Internal,
+                     "gnome_druid_page_standard_set_top_watermark");
+   begin
+      Internal (Get_Object (Druid_Page_Standard), Top_Watermark);
+   end Set_Top_Watermark;
+
+   --------------------------
+   -- Set_Title_Foreground --
+   --------------------------
+
+   procedure Set_Title_Foreground
      (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
       Color               : Gdk.Color.Gdk_Color)
    is
       procedure Internal
         (Druid_Page_Standard : System.Address;
          Color               : Gdk.Color.Gdk_Color);
-      pragma Import (C, Internal, "gnome_druid_page_standard_set_title_color");
+      pragma Import (C, Internal,
+                       "gnome_druid_page_standard_set_title_foreground");
    begin
-      Internal (Get_Object (Druid_Page_Standard),
-                Color);
-   end Set_Title_Color;
+      Internal (Get_Object (Druid_Page_Standard), Color);
+   end Set_Title_Foreground;
+
+   --------------------
+   -- Set_Background --
+   --------------------
+
+   procedure Set_Background
+     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
+      Color               : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Druid_Page_Standard : System.Address;
+         Color               : Gdk.Color.Gdk_Color);
+      pragma Import (C, Internal, "gnome_druid_page_standard_set_background");
+   begin
+      Internal (Get_Object (Druid_Page_Standard), Color);
+   end Set_Background;
+
+   -------------------------
+   -- Set_Logo_Background --
+   -------------------------
+
+   procedure Set_Logo_Background
+     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
+      Color               : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Druid_Page_Standard : System.Address;
+         Color               : Gdk.Color.Gdk_Color);
+      pragma Import (C, Internal,
+                       "gnome_druid_page_standard_set_logo_background");
+   begin
+      Internal (Get_Object (Druid_Page_Standard), Color);
+   end Set_Logo_Background;
+
+   -----------------------------
+   -- Set_Contents_Background --
+   -----------------------------
+
+   procedure Set_Contents_Background
+     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
+      Color               : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Druid_Page_Standard : System.Address;
+         Color               : Gdk.Color.Gdk_Color);
+      pragma Import (C, Internal,
+                       "gnome_druid_page_standard_set_contents_background");
+   begin
+      Internal (Get_Object (Druid_Page_Standard), Color);
+   end Set_Contents_Background;
 
 end Gnome.Druid_Page_Standard;

@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -46,15 +45,18 @@ package body Gnome is
         (App_Id      : String;
          App_Version : String;
          Argc        : Integer;
-         Argv        : System.Address) return Integer;
-      pragma Import (C, Internal, "gnome_init");
+         Argv        : System.Address;
+         Popt_Option : System.Address;
+         Flags       : Integer;
+         Context     : System.Address) return Integer;
+      pragma Import (C, Internal, "gnome_init_with_popt_table");
 
    begin
       return Internal
         (App_Id & ASCII.NUL,
          App_Version & ASCII.NUL,
          gnat_argc,
-         gnat_argv) /= 0;
+         gnat_argv, System.Null_Address, 0, System.Null_Address) /= 0;
    end Init;
 
 end Gnome;

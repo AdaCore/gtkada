@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -76,7 +76,7 @@ package Gnome.App_Bar is
      (Appbar         : access Gnome_App_Bar_Record;
       Default_Status : String);
 
-   procedure Appbar_Set_Progress
+   procedure Appbar_Set_Progress_Percentage
      (Appbar     : access Gnome_App_Bar_Record;
       Percentage : Gfloat);
 

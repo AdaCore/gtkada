@@ -181,17 +181,6 @@ package body Gnome.Client is
       return Interfaces.C.Strings.Value (Internal (Get_Object (Client)));
    end Get_Previous_Id;
 
-   ----------
-   -- Init --
-   ----------
-
-   procedure Init is
-      procedure Internal;
-      pragma Import (C, Internal, "gnome_client_init");
-   begin
-      Internal;
-   end Init;
-
    ----------------------------
    -- Interaction_Key_Return --
    ----------------------------

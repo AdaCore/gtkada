@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk.Color;
+with Gdk.Color, Gdk.Pixbuf;
 --  with Gdk.ImlibImage;
 with Gnome.Druid_Page;
 with Gtk;
@@ -61,23 +61,31 @@ package Gnome.Druid_Page_Standard is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with this widget.
 
-   procedure Set_Bg_Color
-     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
-      Color               : Gdk.Color.Gdk_Color);
-
-   --  procedure Set_Logo
-   --    (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
-   --     Logo_Image          : Gdk.ImlibImage.Gdk_ImlibImage);
-
-   procedure Set_Logo_Bg_Color
-     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
-      Color               : Gdk.Color.Gdk_Color);
-
    procedure Set_Title
      (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
       Title               : String);
 
-   procedure Set_Title_Color
+   procedure Set_Logo
+     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
+      Logo                : Gdk.Pixbuf.Gdk_Pixbuf);
+
+   procedure Set_Top_Watermark
+     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
+      Top_Watermark       : Gdk.Pixbuf.Gdk_Pixbuf);
+
+   procedure Set_Title_Foreground
+     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
+      Color               : Gdk.Color.Gdk_Color);
+
+   procedure Set_Background
+     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
+      Color               : Gdk.Color.Gdk_Color);
+
+   procedure Set_Logo_Background
+     (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
+      Color               : Gdk.Color.Gdk_Color);
+
+   procedure Set_Contents_Background
      (Druid_Page_Standard : access Gnome_Druid_Page_Standard_Record;
       Color               : Gdk.Color.Gdk_Color);
 

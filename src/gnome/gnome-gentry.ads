@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
+--                  Copyright (C) 2001-2002                          --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -56,14 +56,10 @@ package Gnome.GEntry is
    function Entry_Gtk_Entry (Gentry : access Gnome_GEntry_Record)
                              return Gtk.Widget.Gtk_Widget;
 
-   procedure Entry_Load_History (Gentry : access Gnome_GEntry_Record);
-
    procedure Entry_Prepend_History
      (Gentry : access Gnome_GEntry_Record;
       Save   : Gint;
       Text   : String);
-
-   procedure Entry_Save_History (Gentry : access Gnome_GEntry_Record);
 
    procedure Entry_Set_History_Id
      (Gentry     : access Gnome_GEntry_Record;

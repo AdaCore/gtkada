@@ -109,8 +109,6 @@ package Gnome.Client is
    function Get_Previous_Id (Client : access Gnome_Client_Record)
                              return String;
 
-   procedure Init;
-
    procedure Interaction_Key_Return
      (Key             : Gint;
       Cancel_Shutdown : Boolean);
