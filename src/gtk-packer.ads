@@ -226,16 +226,12 @@ package Gtk.Packer is
    ------------------------
    -- Accessing children --
    ------------------------
-   --  <description>
-   --
    --  Some functions give access to the children of a Gtk_Packer.
    --  You can not use the standard Gtk.Container.Children function as is,
    --  since the children are not exactly widgets but more complicated
    --  structures. In C, one would use a direct access to the fields of
    --  the packer, and then do some type-casting, which is what we are
    --  trying to avoid in Ada.
-   --
-   --  </description>
 
    type Gtk_Packer_Child is new System.Address;
    Null_Packer_Child : constant Gtk_Packer_Child;
