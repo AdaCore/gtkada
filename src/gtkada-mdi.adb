@@ -367,12 +367,11 @@ package body Gtkada.MDI is
       MDI   : MDI_Window;
       Child : MDI_Child;
    end record;
-   --  The data that is used for Raise_Child_Idle. If Child is null, then the
-   --  current focus child is raised instead.
+   --  The data that is used for Raise_Child_Idle.
 
    function Raise_Child_Idle (Data : Raise_Idle_Data) return Boolean;
    --  Raise the child W in an idle loop, when it can not be done immediately
-   --  for isntance because the child hasn't been resized yet. This would
+   --  for instance because the child hasn't been resized yet. This would
    --  result in a lot of flickering otherwise.
 
    package Widget_Idle is new Gtk.Main.Idle (Raise_Idle_Data);
@@ -2435,10 +2434,6 @@ package body Gtkada.MDI is
       Child : MDI_Child := Data.Child;
    begin
       if Child = null then
-         Child := Data.MDI.Focus_Child;
-      end if;
-
-      if Child = null then
          return False;
       end if;
 
@@ -2540,7 +2535,7 @@ package body Gtkada.MDI is
       --  The actual raise is done in an idle loop. Otherwise, if the child
       --  hasn't been properly resized yet, there would be a lot of
       --  flickering.
-      Id := Widget_Idle.Add (Raise_Child_Idle'Access, (Child.MDI, null));
+      Id := Widget_Idle.Add (Raise_Child_Idle'Access, (Child.MDI, C));
 
       if Old /= null
         and then Realized_Is_Set (Old)
