@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Radio_Menu_Item is
 
@@ -39,12 +40,13 @@ package body Gtk.Radio_Menu_Item is
    -----------
 
    function Group (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
-                   return               Widget_SList.GSlist
+     return Widget_SList.GSlist
    is
       function Internal (Radio_Menu_Item : in System.Address)
-                         return               System.Address;
+        return System.Address;
       pragma Import (C, Internal, "gtk_radio_menu_item_group");
       Group : Widget_SList.GSlist;
+
    begin
       Set_Object (Group, Internal (Get_Object (Radio_Menu_Item)));
       return Group;
@@ -55,13 +57,12 @@ package body Gtk.Radio_Menu_Item is
    -------------
 
    procedure Gtk_New
-      (Widget : out Gtk_Radio_Menu_Item;
-       Group  : in Widget_SList.GSlist;
-       Label  : in String := "")
-   is
+     (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
+      Group           : in Widget_SList.GSlist;
+      Label           : in String := "") is
    begin
-      Widget := new Gtk_Radio_Menu_Item_Record;
-      Initialize (Widget, Group, Label);
+      Radio_Menu_Item := new Gtk_Radio_Menu_Item_Record;
+      Initialize (Radio_Menu_Item, Group, Label);
    end Gtk_New;
 
    ----------------
@@ -69,19 +70,19 @@ package body Gtk.Radio_Menu_Item is
    ----------------
 
    procedure Initialize
-      (Widget : access Gtk_Radio_Menu_Item_Record'Class;
-       Group  : in Widget_SList.GSlist;
-       Label  : in String := "")
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
+      Group  : in Widget_SList.GSlist;
+      Label  : in String := "")
    is
       function Internal
-         (Group  : in System.Address;
-          Label  : in String)
-          return      System.Address;
+        (Group  : in System.Address;
+         Label  : in String) return System.Address;
       pragma Import (C, Internal, "gtk_radio_menu_item_new_with_label");
+
    begin
-      Set_Object (Widget, Internal (Get_Object (Group),
-                                    Label & Ascii.NUL));
-      Initialize_User_Data (Widget);
+      Set_Object
+        (Radio_Menu_Item, Internal (Get_Object (Group), Label & Ascii.NUL));
+      Initialize_User_Data (Radio_Menu_Item);
    end Initialize;
 
    ---------------------
@@ -89,17 +90,18 @@ package body Gtk.Radio_Menu_Item is
    ---------------------
 
    function Selected_Button (In_Group : in Widget_SList.GSlist)
-                             return Natural
+     return Natural
    is
-      I   : Natural := 0;
+      J   : Natural := 0;
       Tmp : Widget_SList.GSlist := In_Group;
    begin
       while Tmp /= Widget_SList.Null_List loop
          exit when Get_Active (Gtk_Radio_Menu_Item (Get_Data (Tmp)));
          Tmp := Next (Tmp);
-         I := I + 1;
+         J := J + 1;
       end loop;
-      return I;
+
+      return J;
    end Selected_Button;
 
    ---------------
@@ -107,15 +109,103 @@ package body Gtk.Radio_Menu_Item is
    ---------------
 
    procedure Set_Group
-      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record;
-       Group           : in Widget_SList.GSlist)
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record;
+      Group           : in Widget_SList.GSlist)
    is
       procedure Internal
-         (Radio_Menu_Item : in System.Address;
-          Group           : in System.Address);
+        (Radio_Menu_Item : in System.Address;
+         Group           : in System.Address);
       pragma Import (C, Internal, "gtk_radio_menu_item_set_group");
+
    begin
       Internal (Get_Object (Radio_Menu_Item), Get_Object (Group));
    end Set_Group;
+
+   --------------
+   -- Generate --
+   --------------
+
+   --  ??? This code is very similar to what is done for Radio Buttons
+   --  (see gtk-radio_button.adb), so it would be nice to share the code
+   --  Also, this code only takes into account the default case of an unnamed
+   --  radio group.
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type) is
+      Label : constant String_Ptr := Get_Field (N, "label");
+      Name  : constant String_Ptr := Get_Field (N, "name");
+      Top   : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+
+   begin
+      if not N.Specific_Data.Created then
+         Add_Package ("Radio_Menu_Item");
+         Put (File, "   Gtk_New (" &
+           To_Ada (Top.all) & "." & To_Ada (Name.all) & ", " &
+           To_Ada (Get_Field (N.Parent, "name").all) & "_Group");
+
+         if Label /= null then
+            Put (File, ", """ & Label.all & '"');
+         end if;
+
+         Put_Line (File, ");");
+         Put_Line (File, "   " & To_Ada (Get_Field (N.Parent, "name").all) &
+           "_Group := Group (" & To_Ada (Top.all) & "." &
+           To_Ada (Name.all) & ");");
+         N.Specific_Data.Created := True;
+      end if;
+
+      Check_Menu_Item.Generate (N, File);
+   end Generate;
+
+   procedure Generate
+     (Radio_Menu_Item : in out Object.Gtk_Object; N : in Node_Ptr)
+   is
+      S : String_Ptr := Get_Field (N, "label");
+
+      function Find_Group (N : Node_Ptr) return Widget_SList.GSlist;
+      --  Find the group associated with the previous radio menu item in the
+      --  node N or Null_List if there is none.
+
+      function Find_Group (N : Node_Ptr)
+        return Widget_SList.GSlist
+      is
+         P     : Node_Ptr := N.Parent.Child;
+         Q     : Node_Ptr;
+         S     : String_Ptr;
+
+      begin
+         while P /= N loop
+            S := Get_Field (P, "class");
+
+            if S /= null and then S.all = "GtkRadioMenuItem" then
+               Q := P;
+            end if;
+
+            P := P.Next;
+         end loop;
+
+         if Q = null then
+            return Widget_SList.Null_List;
+         else
+            return Group (Gtk_Radio_Menu_Item
+              (Get_Object (Get_Field (Q, "name"))));
+         end if;
+      end Find_Group;
+
+   begin
+      if not N.Specific_Data.Created then
+         if S = null then
+            Gtk_New (Gtk_Radio_Menu_Item (Radio_Menu_Item),
+              Find_Group (N));
+         else
+            Gtk_New (Gtk_Radio_Menu_Item (Radio_Menu_Item),
+              Find_Group (N), S.all);
+         end if;
+
+         Set_Object (Get_Field (N, "name"), Radio_Menu_Item);
+         N.Specific_Data.Created := True;
+      end if;
+
+      Check_Menu_Item.Generate (Radio_Menu_Item, N);
+   end Generate;
 
 end Gtk.Radio_Menu_Item;

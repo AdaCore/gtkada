@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -28,36 +28,46 @@
 -----------------------------------------------------------------------
 
 with Gtk.Check_Menu_Item;
+with Gtk.Object;
 with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Radio_Menu_Item is
 
-   type Gtk_Radio_Menu_Item_Record
-      is new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record with private;
+   type Gtk_Radio_Menu_Item_Record is new
+     Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record with private;
    type Gtk_Radio_Menu_Item is access all Gtk_Radio_Menu_Item_Record'Class;
 
    function Group (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
-                   return               Widget_SList.GSlist;
-   procedure Gtk_New
-      (Widget : out Gtk_Radio_Menu_Item;
-       Group  : in Widget_SList.GSlist;
-       Label  : in String := "");
-   procedure Initialize
-      (Widget : access Gtk_Radio_Menu_Item_Record'Class;
-       Group  : in Widget_SList.GSlist;
-       Label  : in String := "");
-   procedure Set_Group
-      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record;
-       Group           : in Widget_SList.GSlist);
+     return Widget_SList.GSlist;
 
+   procedure Gtk_New
+     (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
+      Group           : in Widget_SList.GSlist;
+      Label           : in String := "");
+
+   procedure Initialize
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record'Class;
+      Group           : in Widget_SList.GSlist;
+      Label           : in String := "");
+
+   procedure Set_Group
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record;
+      Group           : in Widget_SList.GSlist);
 
    function Selected_Button (In_Group : in Widget_SList.GSlist) return Natural;
    --  Returns the button number of the selected button in the group
    --  NOTE: This function is not part of Gtk itself, but is provided as a
    --  convenient function
 
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
+
+   procedure Generate
+     (Radio_Menu_Item : in out Object.Gtk_Object; N : in Node_Ptr);
+   --  Dgate internal function
+
 private
-   type Gtk_Radio_Menu_Item_Record
-     is new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record with null record;
+   type Gtk_Radio_Menu_Item_Record is new
+     Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record with null record;
 
 end Gtk.Radio_Menu_Item;
