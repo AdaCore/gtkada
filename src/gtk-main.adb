@@ -23,6 +23,7 @@ package body Gtk.Main is
 
    procedure Set_Locale is
       Dummy : constant String := Set_Locale;
+      pragma Warnings (Off, Dummy);
    begin
       null;
    end Set_Locale;

@@ -1,5 +1,4 @@
 
-with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
 
 package Gtk.Editable is
