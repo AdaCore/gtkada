@@ -557,6 +557,14 @@ package Gtkada.MDI is
    --    connect to "selected" (see below) instead if you want to change some
    --    information at the child level.
    --
+   --  - "float_child"
+   --    procedure Handler
+   --       (MDI : access MDI_Window_Record'Class; Child : System.Address);
+   --
+   --    A child was set as floating in the MDI. A similar signal is emitted on
+   --    the child itself.
+   --
+   --
    --  </signals>
    --
    --  <signals>

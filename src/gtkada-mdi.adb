@@ -153,7 +153,8 @@ package body Gtkada.MDI is
      Gtk.Object.Uninitialized_Class;
 
    MDI_Signals : constant chars_ptr_array :=
-     (1 => New_String ("child_selected"));
+     (1 => New_String ("child_selected"),
+      2 => New_String ("float_child"));
 
    Child_Signals : constant chars_ptr_array :=
      (1 => New_String ("float_child"),
@@ -485,6 +486,10 @@ package body Gtkada.MDI is
    procedure Update_Menu_Item (Child : access MDI_Child_Record'Class);
    --  Update the menu entry for Child
 
+   procedure Emit_By_Name_Child
+     (Object : System.Address; Name : String; Child : System.Address);
+   pragma Import (C, Emit_By_Name_Child, "g_signal_emit_by_name");
+
    -------------------------
    -- Set_Focus_Child_MDI --
    -------------------------
@@ -538,7 +543,8 @@ package body Gtkada.MDI is
       Group : access Gtk.Accel_Group.Gtk_Accel_Group_Record'Class)
    is
       Signal_Parameters : constant Signal_Parameter_Types :=
-        (1 => (1 => GType_Pointer));
+        (1 => (1 => GType_Pointer),
+         2 => (1 => GType_Pointer));
       No_Signals : constant chars_ptr_array (1 .. 0) := (others => Null_Ptr);
    begin
       Gtk.Fixed.Initialize (MDI);
@@ -3178,10 +3184,6 @@ package body Gtkada.MDI is
      (Child       : access MDI_Child_Record'Class;
       Force_Focus : Boolean := True)
    is
-      procedure Emit_By_Name_Child
-        (Object : System.Address; Name : String; Child : System.Address);
-      pragma Import (C, Emit_By_Name_Child, "g_signal_emit_by_name");
-
       Old : constant MDI_Child := Child.MDI.Focus_Child;
       C   : constant MDI_Child := MDI_Child (Child);
 
@@ -3550,6 +3552,8 @@ package body Gtkada.MDI is
 
          Child.State := Floating;
          Update_Float_Menu (Child);
+         Emit_By_Name_Child (Get_Object (Child.MDI), "float_child" & ASCII.NUL,
+                             Get_Object (Child));
          Widget_Callback.Emit_By_Name (Child, "float_child");
 
       elsif Child.State = Floating and then not Float then
