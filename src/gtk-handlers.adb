@@ -180,9 +180,6 @@ package body Gtk.Handlers is
 
       --  If we have connected with Object_Connect, we want to automatically
       --  disconnect the signal as well.
-      --  ??? In fact, we should provide a general, high-level function, to
-      --  indicate that a handler should be destroyed when a specific object is
-      --  destroyed.
 
       if Slot_Object /= System.Null_Address then
          Watch_Closure (Slot_Object, Id.Closure);
@@ -807,7 +804,8 @@ package body Gtk.Handlers is
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
-            After);
+            After,
+            Get_Object (Slot_Object));
       end Object_Connect;
 
       -------------
@@ -876,7 +874,8 @@ package body Gtk.Handlers is
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
-            After);
+            After,
+            Get_Object (Slot_Object));
       end Object_Connect;
 
       ------------------
@@ -1492,7 +1491,8 @@ package body Gtk.Handlers is
             To_Address (Marsh.Proxy),
             Convert (D),
             Free_Data'Address,
-            After);
+            After,
+            Get_Object (Slot_Object));
       end Object_Connect;
 
       -------------
@@ -1562,7 +1562,8 @@ package body Gtk.Handlers is
             To_Address (Cb),
             Convert (D),
             Free_Data'Address,
-            After);
+            After,
+            Get_Object (Slot_Object));
       end Object_Connect;
 
       ------------------
