@@ -242,33 +242,11 @@ package Gdk.Event is
    function Get_Focus (Event : in Gdk_Event) return Boolean;
    --  Set to true if the window for the event is the focus window.
 
-   function Get_Pressure  (Event : in Gdk_Event) return Gdouble;
-   --  This is set to a constant in the gtk+ code itself, so it
-   --  is most probably useless... Its value is 0.5.
-   --  It is only used with some special input devices, like drawing
-   --  tablets,...
-
-   function Get_Xtilt     (Event : in Gdk_Event) return Gdouble;
-   --  This is set to a constant in the gtk+ code itself, so it
-   --  is most probably useless... Its value is 0.0.
-   --  It is only used with some special input devices, like drawing
-   --  tablets,...
-
-   function Get_Ytilt     (Event : in Gdk_Event) return Gdouble;
-   --  This is set to a constant in the gtk+ code itself, so it
-   --  is most probably useless... Its value is 0.0.
-   --  It is only used with some special input devices, like drawing
-   --  tablets,...
-
    function Get_Width (Event : in Gdk_Event) return Gint16;
    --  Get the width in a configure event.
 
    function Get_Height (Event : in Gdk_Event) return Gint16;
    --  Get the height in a configure event.
-
-   function Get_Source
-     (Event : in Gdk_Event) return Gdk.Types.Gdk_Input_Source;
-   --  Set to a constant for now in the gtk+ source... Probably useless.
 
    function Get_Device_Id
      (Event : in Gdk_Event) return Gdk.Types.Gdk_Device_Id;
