@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -52,7 +52,7 @@
 --  multiple accelerators and even signal names, though it is almost always
 --  used to display just one accelerator key.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Label;
 with Gtk.Widget;
@@ -73,6 +73,11 @@ package Gtk.Accel_Label is
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Accel_Label.
+
+   function Get_Accel_Widget
+     (Accel_Label : access Gtk_Accel_Label_Record)
+      return Gtk.Widget.Gtk_Widget;
+   --  Return the widget monitored by Accel_Label.
 
    function Get_Accel_Width
      (Accel_Label : access Gtk_Accel_Label_Record) return Guint;

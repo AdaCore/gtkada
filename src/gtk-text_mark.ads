@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,7 +29,7 @@
 --  <description>
 --  The Gtk_Text_Mark data type.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Values;
 
@@ -39,10 +38,9 @@ package Gtk.Text_Mark is
    type Gtk_Text_Mark_Record is new GObject_Record with private;
    type Gtk_Text_Mark is access all Gtk_Text_Mark_Record'Class;
 
-   --  ??? How are the marks destroyed? Is this automatic when the
-   --  ??? associated buffer is destroyed? Is this automatic when
-   --  ??? the text area where the mark is located is destroyed?
-   --  ??? More investigation needed.
+   --  ??? How are the marks destroyed? Is this automatic when the associated
+   --  buffer is destroyed? Is this automatic when the text area where the mark
+   --  is located is destroyed? More investigation needed.
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Label.
@@ -72,7 +70,7 @@ package Gtk.Text_Mark is
    --  function Get_Buffer (Mark   : access Gtk_Text_Mark_Record)
    --                       return Gtk.Text_Buffer.Gtk_Text_Buffer;
    --  ??? Can not be bound here to avoid circular dependency with
-   --  ??? Gtk.Text_Buffer.
+   --  Gtk.Text_Buffer.
    --  Get the buffer this mark is located inside, or null if the mark is
    --  deleted.
 
@@ -89,7 +87,7 @@ package Gtk.Text_Mark is
       Mark : access Gtk_Text_Mark_Record);
    --  Set the value of the given GValue to Mark.
 
-   function Get_Text_Mark (Val  : Glib.Values.GValue) return Gtk_Text_Mark;
+   function Get_Text_Mark (Val : Glib.Values.GValue) return Gtk_Text_Mark;
    --  Extract the iterator from the given GValue.
 
    ----------------

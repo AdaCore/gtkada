@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -80,20 +80,28 @@ package body Gtk.Socket is
       return Internal (Get_Object (Socket));
    end Get_Plug_Window;
 
-   -----------------
-   -- Get_XWindow --
-   -----------------
+   ------------
+   -- Add_Id --
+   ------------
 
-   function Get_XWindow (Window : Gdk.Window.Gdk_Window) return Guint32 is
-      function Internal (Window : Gdk.Window.Gdk_Window) return Guint32;
-      pragma Import (C, Internal, "ada_get_xwindow");
+   procedure Add_Id (Socket : access Gtk_Socket_Record; Id : Guint32) is
+      procedure Internal (Socket : System.Address; Id : Guint32);
+      pragma Import (C, Internal, "gtk_socket_add_id");
 
    begin
-      if Window = null then
-         raise Constraint_Error;
-      end if;
+      Internal (Get_Object (Socket), Id);
+   end Add_Id;
 
-      return Internal (Window);
-   end Get_XWindow;
+   ------------
+   -- Get_Id --
+   ------------
+
+   function Get_Id (Socket : access Gtk_Socket_Record) return Guint32 is
+      function Internal (Socket : System.Address) return Guint32;
+      pragma Import (C, Internal, "gtk_socket_get_id");
+
+   begin
+      return Internal (Get_Object (Socket));
+   end Get_Id;
 
 end Gtk.Socket;

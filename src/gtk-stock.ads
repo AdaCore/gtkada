@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2001 ACT-Europe                   --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,7 +31,7 @@
 --  images and buttons for toolbars, menu pixmaps, etc.
 --  </description>
 
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gdk.Types;
 with Gtkada.Types;
@@ -99,6 +99,9 @@ package Gtk.Stock is
    Stock_Dialog_Warning   : constant String := "gtk-dialog-warning";
    Stock_Dialog_Error     : constant String := "gtk-dialog-error";
    Stock_Dialog_Question  : constant String := "gtk-dialog-question";
+
+   Stock_Dnd              : constant String := "gtk-dnd";
+   Stock_Dnd_Multiple     : constant String := "gtk-dnd-multiple";
 
    Stock_Add              : constant String := "gtk-add";
    Stock_Apply            : constant String := "gtk-apply";

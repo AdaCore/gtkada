@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -168,7 +168,7 @@ package body Gtk.Radio_Menu_Item is
 
       --  This is a workaround for a bug in gtk+ <= 1.2.7 (that has been
       --  reported) The same code might be included in gtk+ at some point, and
-      --  can be removed from here then.   ???
+      --  can be removed from here then. ???
       Set_Active (Radio_Menu_Item, False);
    end Set_Group;
 

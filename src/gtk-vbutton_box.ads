@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,7 +35,7 @@
 --  is on the top of the box. Its end (for Gtk.Box.Pack_End) is on the bottom.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib;
 with Gtk.Button_Box;

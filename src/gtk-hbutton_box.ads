@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,7 +35,7 @@
 --  is on the left of the box. Its end (for Gtk.Box.Pack_End) is on the right.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Button_Box;
 with Gtk.Enums;
@@ -56,6 +56,7 @@ package Gtk.Hbutton_Box is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_HButton_Box.
 
+   --  <doc_ignore>
    procedure Set_Spacing_Default (Spacing : in Gint);
    --  Set the default spacing (space between two adjacent children).
    --  This is done for all the Hbutton_Boxes in your application. This can be
@@ -76,6 +77,7 @@ package Gtk.Hbutton_Box is
    function Get_Layout_Default return Gtk.Enums.Gtk_Button_Box_Style;
    --  Return the default layout to use for all the hbutton_boxes.
    --  pragma Deprecated (Get_Layout_Default);
+   --  </doc_ignore>
 
    ----------------
    -- Properties --

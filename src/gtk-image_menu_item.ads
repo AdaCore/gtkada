@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,7 +36,7 @@
 --  side, the pixmaps will be indented, which is not what you want. This widget
 --  solves the problem).
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Accel_Group;
 with Gtk.Menu_Item;

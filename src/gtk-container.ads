@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,7 +30,7 @@
 --  <description>
 --  Base class for widgets that have children.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gdk.Event;
 with Glib.Properties;
@@ -48,9 +48,13 @@ package Gtk.Container is
 
    procedure Set_Border_Width
      (Container    : access Gtk_Container_Record;
-      Border_Width : Gint);
+      Border_Width : Guint);
    --  Modify the size of the frame that surrounds the widget.
    --  The exact visual impact depends on the specific widget class.
+
+   function Get_Border_Width
+     (Container    : access Gtk_Container_Record) return Guint;
+   --  Return the size of the frame that surrounds the widget.
 
    procedure Add
      (Container : access Gtk_Container_Record;
@@ -74,6 +78,11 @@ package Gtk.Container is
    --  Change the resizing behavior for the Container.
    --  The default value is Resize_Parent.
 
+   function Get_Resize_Mode
+     (Container : access Gtk_Container_Record)
+      return Gtk.Enums.Gtk_Resize_Mode;
+   --  Return the resizing behavior for the Container.
+
    function Get_Children
      (Container : access Gtk_Container_Record)
       return Gtk.Widget.Widget_List.Glist;
@@ -81,8 +90,8 @@ package Gtk.Container is
 
    function Children
      (Container : access Gtk_Container_Record)
-     return Gtk.Widget.Widget_List.Glist
-     renames Get_Children;
+      return Gtk.Widget.Widget_List.Glist
+      renames Get_Children;
    --  This function is deprecated.
 
    procedure Propagate_Expose
@@ -304,3 +313,12 @@ end Gtk.Container;
 --  - gtk_container_add_with_args
 --  - gtk_container_addv
 --  - gtk_container_child_set
+--
+--  missing:
+--  - gtk_container_get_focus_chain
+--  - gtk_container_get_focus_vadjustment
+--  - gtk_container_class_install_child_property
+--  - gtk_container_class_find_child_property
+--  - gtk_container_class_list_child_properties
+--  - gtk_container_child_set_property
+--  - gtk_container_child_get_property

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,7 +48,7 @@
 --  as the height of the handlebox shrinks, so the snap edge should be set to
 --  Pos_Bottom.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Bin;
 with Gtk.Enums;
@@ -73,10 +73,19 @@ package Gtk.Handle_Box is
       Typ        : Enums.Gtk_Shadow_Type);
    --  Set the type of shadow to be drawn around the border of the Handle_Box.
 
+   function Get_Shadow_Type
+     (Handle_Box : access Gtk_Handle_Box_Record) return Enums.Gtk_Shadow_Type;
+   --  Return the shadow type of the handle box.
+
    procedure Set_Handle_Position
      (Handle_Box : access  Gtk_Handle_Box_Record;
       Position   : Enums.Gtk_Position_Type);
    --  Set the side of the Handle_Box where the handle is drawn.
+
+   function Get_Handle_Position
+     (Handle_Box : access  Gtk_Handle_Box_Record)
+      return Enums.Gtk_Position_Type;
+   --  Return the side of the Handle_Box where the handle is drawn.
 
    procedure Set_Snap_Edge
      (Handle_Box : access  Gtk_Handle_Box_Record;
@@ -92,6 +101,11 @@ package Gtk.Handle_Box is
    --  from the handle position. If the handle position is Pos_Right or
    --  Pos_Left, then the snap edge will be Pos_Top, otherwise it will be
    --  Pos_Left.
+
+   function Get_Snap_Edge
+     (Handle_Box : access  Gtk_Handle_Box_Record)
+      return Enums.Gtk_Position_Type;
+   --  Return the snap edge of a Handle_Box.
 
    ----------------
    -- Properties --

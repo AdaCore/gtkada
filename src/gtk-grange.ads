@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,7 +27,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.6</c_version>
+--  <description>
+--  This widget provides a low level graphical representation of a range of
+--  values. It is used by other widgets such as Gtk_Scale and Gtk_Scrollbar.
+--  </description>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
@@ -45,20 +49,44 @@ package Gtk.GRange is
    procedure Set_Update_Policy
      (The_Range : access Gtk_Range_Record;
       Policy    : Gtk_Update_Type);
+   --  Set the update policy for the range.
+   --  Update_Continuous means that anytime the range slider is moved, the
+   --  range value will change and the value_changed signal will be emitted.
+   --  Update_Delayed means that the value will be updated after a brief
+   --  timeout where no slider motion occurs, so updates are spaced by a short
+   --  time rather than continuous.
+   --  Update_Discontinuous means that the value will only be updated when the
+   --  user releases the button and ends the slider drag operation.
 
-   function Get_Adjustment
-     (The_Range : access Gtk_Range_Record)
-      return Gtk.Adjustment.Gtk_Adjustment;
+   function Get_Update_Policy
+     (The_Range : access Gtk_Range_Record) return Gtk_Update_Type;
+   --  Return the current update policy.
 
    procedure Set_Adjustment
      (The_Range  : access Gtk_Range_Record;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
+   --  Set the adjustment to be used as the "model" object for this range
+   --  widget. The adjustment indicates the current range value, the
+   --  minimum and maximum range values, the step/page increments used
+   --  for keybindings and scrolling, and the page size. The page size
+   --  is normally 0 for Gtk_Scale and nonzero for Gtk_Scrollbar, and
+   --  indicates the size of the visible area of the widget being scrolled.
+   --  The page size affects the size of the scrollbar slider.
+
+   function Get_Adjustment
+     (The_Range : access Gtk_Range_Record)
+      return Gtk.Adjustment.Gtk_Adjustment;
+   --  Return the adjustment associated with the range widget.
 
    procedure Set_Inverted
      (The_Range : access Gtk_Range_Record;
       Setting   : Boolean := True);
+   --  Ranges normally move from lower to higher values as the slider moves
+   --  from top to bottom or left to right. Inverted ranges have higher values
+   --  at the top or on the right rather than on the bottom or left.
 
    function Get_Inverted (The_Range : access Gtk_Range_Record) return Boolean;
+   --  Return whether the range is inverted.
 
    procedure Set_Increments
      (The_Range : access Gtk_Range_Record;
@@ -87,6 +115,13 @@ package Gtk.GRange is
 
    function Get_Value (The_Range : access Gtk_Range_Record) return Gdouble;
    --  Return the current value of the range.
+
+   ------------
+   -- Signal --
+   ------------
+
+   --  value_changed
+   --  move_slider
 
    ----------------
    -- Properties --

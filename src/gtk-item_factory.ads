@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,7 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gdk.Types;
 with Gtk.Accel_Group;
@@ -46,6 +46,12 @@ package Gtk.Item_Factory is
       Item,
       --  Create a simple item
 
+      Image_Item,
+      --  Create an item holding an image
+
+      Stock_Item,
+      --  Create an item holding a stock image
+
       Check_Item,
       --  Create a check item
 
@@ -55,11 +61,11 @@ package Gtk.Item_Factory is
       Radio_Item,
       --  Create a radio item
 
-      Tearoff,
-      --  Create a tearoff item
-
       Separator,
       --  Create a separator
+
+      Tearoff,
+      --  Create a tearoff item
 
       Branch,
       --  Create an item to hold sub items
@@ -278,7 +284,7 @@ private
       Item_Type       : Gtkada.Types.Chars_Ptr;
 
       --  Extra data for some item types:
-      --  Image_Item -> pointer to inline pixbuf + inline pixbuf length
+      --  Image_Item -> pointer to inline pixbuf
       --  Stock_Item -> name of stock item
 
       Extra_Data      : Gtkada.Types.Chars_Ptr;
@@ -288,11 +294,3 @@ private
    pragma Import (C, Get_Type, "gtk_item_factory_get_type");
 
 end Gtk.Item_Factory;
-
---  Functions not bound:
---  gtk_item_factory_parse_rc_scanner
---  gtk_item_factory_dump_items
---  gtk_item_factory_dump_rc
---  gtk_item_factory_create_menu_entries
---  gtk_item_factories_path_delete
---  gtk_item_factories_create_items_ac

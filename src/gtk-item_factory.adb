@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -337,11 +337,13 @@ package body Gtk.Item_Factory is
             case Item_Type is
                when Title       => return "<Title>";
                when Item        => return "<Item>";
+               when Image_Item  => return "<ImageItem>";
+               when Stock_Item  => return "<StockItem>";
                when Check_Item  => return "<CheckItem>";
                when Toggle_Item => return "<ToggleItem>";
                when Radio_Item  => return "<RadioItem>";
-               when Tearoff     => return "<Tearoff>";
                when Separator   => return "<Separator>";
+               when Tearoff     => return "<Tearoff>";
                when Branch      => return "<Branch>";
                when Last_Branch => return "<LastBranch>";
             end case;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,6 +30,34 @@
 with System;
 
 package body Gtk.Misc is
+
+   -------------------
+   -- Get_Alignment --
+   -------------------
+
+   procedure Get_Alignment
+     (Misc : access Gtk_Misc_Record; Xalign : out Gfloat; Yalign : out Gfloat)
+   is
+      procedure Internal (Misc : System.Address; Xalign, Yalign : out Gfloat);
+      pragma Import (C, Internal, "gtk_misc_get_alignment");
+
+   begin
+      Internal (Get_Object (Misc), Xalign, Yalign);
+   end Get_Alignment;
+
+   -----------------
+   -- Get_Padding --
+   -----------------
+
+   procedure Get_Padding
+     (Misc : access Gtk_Misc_Record; Xpad : out Gint; Ypad : out Gint)
+   is
+      procedure Internal (Misc : System.Address; Xpad, Ypad : out Gint);
+      pragma Import (C, Internal, "gtk_misc_get_padding");
+
+   begin
+      Internal (Get_Object (Misc), Xpad, Ypad);
+   end Get_Padding;
 
    -------------------
    -- Set_Alignment --

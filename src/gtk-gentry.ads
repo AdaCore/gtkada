@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,13 +33,10 @@
 --  The text is automatically scrolled if it is longer than can be displayed
 --  on the screen, so that the cursor position is visible at all times.
 --
---  See also Gtk_Text for a multiple-line text editing widget.
---
---  Note that this widget does not currently support wide-character, or
---  character sets that require multiple-byte encoding.
+--  See Gtk_Text_View for a multiple-line text editing widget.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Properties;
 with Gtk.Editable;
@@ -48,20 +45,24 @@ package Gtk.GEntry is
 
    --  <doc_ignore>
    type Gtk_Entry_Record is new Gtk.Editable.Gtk_Editable_Record with private;
+   --  Gtk_Entry is actually a child of Gtk_Widget, and implements the
+   --  Gtk_Editable interface, but GtkAda does not support yet interfaces,
+   --  so use direct inheritance for now ???
+
    type Gtk_Entry is access all Gtk_Entry_Record'Class;
    subtype Gtk_GEntry is Gtk_Entry;
-   --  </doc_ignore>
 
-   procedure Gtk_New (Widget : out Gtk_Entry; Max : Guint16);
+   procedure Gtk_New (Widget : out Gtk_Entry; Max : Gint);
    --  Create a new entry with a maximum length for the text.
    --  The text can never be longer than Max characters.
    --  pragma Deprecated (Gtk_New);
+   --  </doc_ignore>
 
    procedure Gtk_New (Widget : out Gtk_Entry);
    --  Create a new entry with no maximum length for the text
 
    procedure Initialize
-     (Widget : access Gtk_Entry_Record'Class; Max : Guint16);
+     (Widget : access Gtk_Entry_Record'Class; Max : Gint);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -72,25 +73,72 @@ package Gtk.GEntry is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Entry.
 
-   procedure Set_Editable
-     (The_Entry : access Gtk_Entry_Record; Editable : Boolean);
-
    procedure Set_Visibility
      (The_Entry : access Gtk_Entry_Record; Visible : Boolean);
    --  Set the visibility of the characters in the entry.
    --  If Visible is set to False, the characters will be replaced with
-   --  starts ('*') in the display, and when the text is copied elsewhere.
+   --  the invisible character ('*' by default) in the display, and when the
+   --  text is copied elsewhere.
+
+   function Get_Visibility
+     (The_Entry : access Gtk_Entry_Record) return Boolean;
+   --  Return the visibility of the characters in the entry.
+
+   procedure Set_Invisible_Char
+     (The_Entry : access Gtk_Entry_Record; Char : Gunichar);
+   --  Set the character to use in place of the actual text when
+   --  Set_Visibility has been called to set text visibility to False.
+   --  i.e. this is the character used in "password mode" to
+   --  show the user how many characters have been typed. The default
+   --  invisible char is an asterisk ('*'). If you set the invisible char
+   --  to 0, then the user will get no feedback at all; there will be
+   --  no text on the screen as they type.
+
+   function Get_Invisible_Char
+     (The_Entry : access Gtk_Entry_Record) return Gunichar;
+   --  Retrieve the character displayed in place of the real characters
+   --  for entries with visisbility set to false. See Set_Invisible_Char.
+
+   procedure Set_Has_Frame
+     (The_Entry : access Gtk_Entry_Record; Setting : Boolean := True);
+   --  Set whether the entry has a beveled frame around it.
+
+   function Get_Has_Frame
+     (The_Entry : access Gtk_Entry_Record) return Boolean;
+   --  Return whether the entry has a beveled frame.
 
    procedure Set_Max_Length
-     (The_Entry : access Gtk_Entry_Record; Max : Guint16);
+     (The_Entry : access Gtk_Entry_Record; Max : Gint);
    --  Set the maximum length for the text.
    --  The current text is truncated if needed.
 
+   function Get_Max_Length (The_Entry : access Gtk_Entry_Record) return Gint;
+   --  Return the maximum length for the text.
+
+   procedure Set_Activates_Default
+     (The_Entry : access Gtk_Entry_Record; Setting : Boolean);
+   --  If Setting is True, pressing Enter in the Entry will activate the
+   --  default widget for the window containing the entry. This usually means
+   --  that the dialog box containing the entry will be closed, since the
+   --  default widget is usually one of the dialog buttons.
+   --
+   --  (For experts: if Setting is True, the entry calls
+   --  Gtk.Window.Activate_Default on the window containing the entry, in
+   --  the default handler for the "activate" signal.)
+
+   function Get_Activates_Default
+     (The_Entry : access Gtk_Entry_Record) return Boolean;
+   --  Return whether the entry will activate the default widget.
+
    procedure Set_Width_Chars
-     (The_Entry : access Gtk_Entry_Record'Class; Width : Natural);
+     (The_Entry : access Gtk_Entry_Record'Class; Width : Gint);
    --  Number of characters to leave space for in the entry, on the screen.
    --  This is the number of visible characters, not the maximal number of
    --  characters the entry can contain
+
+   function Get_Width_Chars
+     (The_Entry : access Gtk_Entry_Record'Class) return Gint;
+   --  Return number of characters to leave space for in the entry.
 
    procedure Set_Text (The_Entry : access Gtk_Entry_Record; Text : String);
    --  Modify the text in the entry.
@@ -101,6 +149,26 @@ package Gtk.GEntry is
    function Get_Text (The_Entry : access Gtk_Entry_Record) return String;
    --  Return the current text written in the entry.
 
+   procedure Get_Layout_Offsets
+     (The_Entry : access Gtk_Entry_Record;
+      X         : out Gint;
+      Y         : out Gint);
+   --  Obtain the position of the Pango_Layout used to render text
+   --  in the entry, in widget coordinates. Useful if you want to line
+   --  up the text in an entry with some other text, e.g. when using the
+   --  entry to implement editable cells in a sheet widget.
+   --
+   --  Also useful to convert mouse events into coordinates inside the
+   --  Pango_Layout, e.g. to take some action if some part of the entry text
+   --  is clicked.
+   --
+   --  Note that as the user scrolls around in the entry the offsets will
+   --  change; you'll need to connect to the "notify::scroll_offset"
+   --  signal to track this. Remember when using the Pango_Layout
+   --  functions you need to convert to and from pixels using
+   --  Pango_Pixels or Pango_Scale.
+
+   --  <doc_ignore>
    function Get_Chars (The_Entry : access Gtk_Entry_Record) return String
      renames Get_Text;
    --  Convenience function provided for compatibility with GtkAda 1.2
@@ -114,6 +182,11 @@ package Gtk.GEntry is
      (The_Entry : access Gtk_Entry_Record; Text : String);
    --  Insert some text at the beginning of the entry.
    --  pragma Deprecated (Prepend_Text);
+
+   procedure Set_Editable
+     (The_Entry : access Gtk_Entry_Record; Editable : Boolean);
+   --  pragma Deprecated (Set_Editable);
+   --  </doc_ignore>
 
    ----------------
    -- Properties --
@@ -192,11 +265,8 @@ package Gtk.GEntry is
 
    --  <signals>
    --  The following new signals are defined for this widget:
-   --  - "insert_text"
-   --  - "delete_text"
-   --  - "changed"
-   --  - "populate_popup"
    --  - "activate"
+   --  - "populate_popup"
    --  - "move_cursor"
    --  - "insert_at_cursor"
    --  - "delete_from_cursor"
@@ -231,18 +301,4 @@ private
 end Gtk.GEntry;
 
 --  missing:
---  procedure Set_Invisible_Char
---    (GtkEntry *entry, gunichar ch);
-
---  procedure Set_Has_Frame
---    (GtkEntry *entry, gboolean setting);
-
---  function Get_Has_Frame (GtkEntry *entry) return Boolean;
-
---  procedure Set_Activates_Default
---    (GtkEntry *entry, gboolean setting);
-
---  function Get_Activates_Default (GtkEntry *entry) return Boolean;
-
---  function Get_Width_Chars (GtkEntry *entry) return Gint;
-
+--  gtk_entry_get_layout

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -90,6 +90,20 @@ package body Gtk.GRange is
    begin
       Internal (Get_Object (The_Range), Policy);
    end Set_Update_Policy;
+
+   -----------------------
+   -- Get_Update_Policy --
+   -----------------------
+
+   function Get_Update_Policy
+     (The_Range : access Gtk_Range_Record) return Gtk_Update_Type
+   is
+      function Internal (The_Range : System.Address) return Gtk_Update_Type;
+      pragma Import (C, Internal, "gtk_range_get_update_policy");
+
+   begin
+      return Internal (Get_Object (The_Range));
+   end Get_Update_Policy;
 
    ------------------
    -- Set_Inverted --

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,10 +35,10 @@ package body Gtk.Plug is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Plug; Socket_Id : Guint32) is
+   procedure Gtk_New (Plug : out Gtk_Plug; Socket_Id : Guint32) is
    begin
-      Widget := new Gtk_Plug_Record;
-      Initialize (Widget, Socket_Id);
+      Plug := new Gtk_Plug_Record;
+      Initialize (Plug, Socket_Id);
    end Gtk_New;
 
    ----------------
@@ -46,14 +46,26 @@ package body Gtk.Plug is
    ----------------
 
    procedure Initialize
-     (Widget : access Gtk_Plug_Record'Class; Socket_Id : Guint32)
+     (Plug : access Gtk_Plug_Record'Class; Socket_Id : Guint32)
    is
       function Internal (Socket_Id : Guint32) return System.Address;
       pragma Import (C, Internal, "gtk_plug_new");
 
    begin
-      Set_Object (Widget, Internal (Socket_Id));
-      Initialize_User_Data (Widget);
+      Set_Object (Plug, Internal (Socket_Id));
+      Initialize_User_Data (Plug);
    end Initialize;
+
+   ------------
+   -- Get_Id --
+   ------------
+
+   function Get_Id (Plug : access Gtk_Plug_Record) return Guint32 is
+      function Internal (Plug : System.Address) return Guint32;
+      pragma Import (C, Internal, "gtk_plug_get_id");
+
+   begin
+      return Internal (Get_Object (Plug));
+   end Get_Id;
 
 end Gtk.Plug;

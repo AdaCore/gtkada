@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,16 +28,23 @@
 -----------------------------------------------------------------------
 
 --  <description>
---  The progress bar provides a convenient way of displayed a state of
---  completion for typically lenghty tasks.
+--  The progress bar provides a convenient way of displaying a state of
+--  completion for typically lengthy tasks.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Properties;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Progress;
 
 package Gtk.Progress_Bar is
+
+   type Gtk_Progress_Bar_Orientation is
+     (Progress_Left_To_Right,
+      Progress_Right_To_Left,
+      Progress_Bottom_To_Top,
+      Progress_Top_To_Bottom);
+   pragma Convention (C, Gtk_Progress_Bar_Orientation);
 
    type Gtk_Progress_Bar_Record is new
      Gtk.Progress.Gtk_Progress_Record with private;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -84,7 +84,7 @@
 --  call Finish, to warn the source widget that the drag and drop operation
 --  is finished, and whether it was successful or not.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib; use Glib;
 with Gdk.Bitmap;
@@ -142,9 +142,9 @@ package Gtk.Dnd is
    Target_Same_App : constant Target_Flags := 2 ** 0;
    Target_Same_Widget : constant Target_Flags := 2 ** 1;
 
-   -------------------------------------------
-   --  Setting up a widget as a destination --
-   -------------------------------------------
+   ------------------------------------------
+   -- Setting up a widget as a destination --
+   ------------------------------------------
 
    procedure Dest_Set
      (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -290,8 +290,7 @@ package Gtk.Dnd is
       Start_X   : Gint;
       Start_Y   : Gint;
       Current_X : Gint;
-      Current_Y : Gint)
-     return Boolean;
+      Current_Y : Gint) return Boolean;
    --  Checks to see if a mouse drag starting at (Start_X, Start_Y) and ending
    --  at (Current_X, Current_Y) has passed the GTK drag threshhold, and thus
    --  should trigger the beginning of a drag-and-drop operation.
@@ -338,6 +337,7 @@ package Gtk.Dnd is
       Hot_Y    : Gint);
    --  Change the default drag icon. GtkAda retains a reference count for the
    --  arguments, and will release them when they are no longer needed.
+   --  This procedure is deprecated.
 
    procedure Set_Icon_Pixbuf
      (Context : Drag_Context;

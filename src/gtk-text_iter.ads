@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +31,7 @@
 --  the characters/pixmaps/widgets (indexable objects) in the text buffer
 --  are changed.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib; use Glib;
 with Glib.Values;
@@ -205,6 +204,17 @@ package Gtk.Text_Iter is
    --  Gtk_Text_View. This function is simply a convenience wrapper around
    --  Get_Attributes. If no tags applied to this text affect editability,
    --  Default_Setting will be returned.
+
+   function Can_Insert
+     (Iter                : Gtk_Text_Iter;
+      Default_Editability : Boolean) return Boolean;
+   --  Return whether text inserted at Iter would be editable.
+   --  Considering the default editability of the buffer, and tags that
+   --  affect editability, determines whether text inserted at Iter would
+   --  be editable. If text inserted at Iter would be editable then the
+   --  user should be allowed to insert text at Iter.
+   --  Gtk.Text_Buffer.Insert_Interactive uses this function to decide
+   --  whether insertions are allowed at a given position.
 
    function Starts_Word (Iter : Gtk_Text_Iter) return Boolean;
    --  Determine whether Iter begins a natural-language word.
@@ -499,6 +509,18 @@ package Gtk.Text_Iter is
    --  characters, move to the paragraph delimiter characters for the next
    --  line.
 
+   procedure Set_Visible_Line_Offset
+     (Iter         : in out Gtk_Text_Iter;
+      Char_On_Line : Gint);
+   --  Like Set_Line_Index, but the index is in visible bytes.
+   --  I.e. text with a tag making it invisible is not counted in the index.
+
+   procedure Set_Visible_Line_Index
+     (Iter         : in out Gtk_Text_Iter;
+      Byte_On_Line : Gint);
+   --  Like Set_Line_Offset, but the offset is in visible characters.
+   --  I.e. text with a tag making it invisible is not counted in the offset.
+
    procedure Forward_To_Tag_Toggle
      (Iter   : in out Gtk_Text_Iter;
       Tag    : Gtk.Text_Tag.Gtk_Text_Tag := null;
@@ -526,7 +548,7 @@ package Gtk.Text_Iter is
    --     Limit     : access Gtk_Text_Iter)
    --     return Boolean;
    --  ??? Need to be put in a generic package...
-   --  ??? And also needs a binding to gunichar
+   --  And also needs a binding to gunichar
 
    --  function Backward_Find_Char
    --    (Iter      : access Gtk_Text_Iter;
@@ -535,7 +557,7 @@ package Gtk.Text_Iter is
    --     Limit     : access Gtk_Text_Iter)
    --     return Boolean;
    --  ??? Need to be put in a generic package.
-   --  ??? And also needs a binding to gunichar.
+   --  And also needs a binding to gunichar.
 
    procedure Forward_Search
      (Iter         : Gtk_Text_Iter;
@@ -630,7 +652,7 @@ package Gtk.Text_Iter is
    --  Gtk_Text_Iter is limited.
 
 private
-   function C_Gtk_Text_Iter_Size return Natural;
+   function C_Gtk_Text_Iter_Size return Gint;
    pragma Import (C, C_Gtk_Text_Iter_Size, "ada_c_gtk_text_iter_size");
 
    type Gtk_Text_Iter is limited record
@@ -647,7 +669,7 @@ private
       Dummy11 : Gint;
       Dummy12 : Gint;
       Dummy13 : Gint;
-      Dummy14 : Gint;
+      Dummy14 : System.Address;
    end record;
    pragma Convention (C, Gtk_Text_Iter);
    --  Note that part of the implementation of this package assumes that this

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -75,8 +75,22 @@ package Gtk.Clist is
    --  In the following subprograms, rows can also be accessed via their
    --  number, starting from 0.
 
+   type Gtk_Button_Action is new Guint;
+   Button_Ignored : constant Gtk_Button_Action := 0;
+   Button_Selects : constant Gtk_Button_Action := 1 ** 0;
+   Button_Drags   : constant Gtk_Button_Action := 1 ** 1;
+   Button_Expands : constant Gtk_Button_Action := 1 ** 2;
+
+   type Gtk_Cell_Type is
+     (Cell_Empty,
+      Cell_Text,
+      Cell_Pixmap,
+      Cell_Pixtext,
+      Cell_Widget);
+   pragma Convention (C, Gtk_Cell_Type);
+
    type Gtk_Sort_Type is (Ascending, Descending);
-   for Gtk_Sort_Type'Size use Gint'Size;
+   pragma Convention (C, Gtk_Sort_Type);
    --  The order in which the rows should be sorted.
 
    --  <doc_ignore>
@@ -554,7 +568,7 @@ package Gtk.Clist is
    function Get_Cell_Type
      (Clist  : access Gtk_Clist_Record;
       Row    : in Gint;
-      Column : in Gint) return Gtk.Enums.Gtk_Cell_Type;
+      Column : in Gint) return Gtk_Cell_Type;
    --  Return the type of the cell at Row/Column.
    --  This indicates which of the functions Get_Text. Get_Pixmap, etc.
    --  below you can use.
@@ -672,7 +686,7 @@ package Gtk.Clist is
      (Clist     : access Gtk_Clist_Record;
       Row       : Gtk_Clist_Row;
       Column    : Gint;
-      Cell_Type : Gtk.Enums.Gtk_Cell_Type;
+      Cell_Type : Gtk_Cell_Type;
       Text      : String;
       Spacing   : Guint8;
       Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
@@ -698,8 +712,8 @@ package Gtk.Clist is
 
    procedure Set_Button_Actions
      (Clist         : access Gtk_Clist_Record;
-      Button        :        Guint;
-      Button_Action :        Gtk.Enums.Gtk_Button_Action);
+      Button        : Guint;
+      Button_Action : Gtk_Button_Action);
    --  Set the action for a specific button on the list.
    --  The default if for the left mouse button to select or drag and item,
    --  the other buttons are ignored.

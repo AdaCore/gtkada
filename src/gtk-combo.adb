@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -219,17 +219,18 @@ package body Gtk.Combo is
 
    procedure Set_Value_In_List
      (Combo_Box   : access Gtk_Combo_Record;
-      Val         : Gint;
-      Ok_If_Empty : Boolean)
+      Val         : Boolean := True;
+      Ok_If_Empty : Boolean := False)
    is
       procedure Internal
         (Combo_Box   : System.Address;
-         Val         : Gint;
-         Ok_If_Empty : Gint);
+         Val         : Gboolean;
+         Ok_If_Empty : Gboolean);
       pragma Import (C, Internal, "gtk_combo_set_value_in_list");
 
    begin
-      Internal (Get_Object (Combo_Box), Val, Boolean'Pos (Ok_If_Empty));
+      Internal (Get_Object (Combo_Box),
+                To_Gboolean (Val), To_Gboolean (Ok_If_Empty));
    end Set_Value_In_List;
 
 end Gtk.Combo;

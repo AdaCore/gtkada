@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -167,6 +166,21 @@ package body Gtk.Text_Buffer is
 
    begin
       Internal (Get_Object (Buffer), Text, Text'Length);
+   end Insert_At_Cursor;
+
+   procedure Insert_At_Cursor
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Text   : Gtkada.Types.Chars_Ptr;
+      Len    : Gint := -1)
+   is
+      procedure Internal
+        (Buffer : System.Address;
+         Text   : Gtkada.Types.Chars_Ptr;
+         Len    : Gint);
+      pragma Import (C, Internal, "gtk_text_buffer_insert_at_cursor");
+
+   begin
+      Internal (Get_Object (Buffer), Text, Len);
    end Insert_At_Cursor;
 
    ------------------------

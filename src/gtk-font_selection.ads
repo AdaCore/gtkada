@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -45,7 +45,7 @@
 --  interactively by the user.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gdk.Font;
 with Gtk.Box;
@@ -85,12 +85,15 @@ package Gtk.Font_Selection is
    --  The string has the same format as excepted in the Gdk.Font package.
    --  This is also the standard format on X11 systems.
 
+   --  <doc_ignore>
    function Get_Font
      (Fontsel : access Gtk_Font_Selection_Record) return Gdk.Font.Gdk_Font;
    --  Allocate and return the font selected by the user.
    --  This newly created font can be used as is by all the drawing functions
    --  in the Gdk.Drawable package.
    --  If not font has been selected, Gdk.Font.Null_Font is returned.
+   --  This function is deprecated.
+   --  </doc_ignore>
 
    function Set_Font_Name
      (Fontsel  : access Gtk_Font_Selection_Record;
@@ -131,12 +134,15 @@ package Gtk.Font_Selection is
    --  The string has the same format as excepted in the Gdk.Font package.
    --  This is also the standard format on X11 systems.
 
+   --  <doc_ignore>
    function Get_Font
      (Fsd : access Gtk_Font_Selection_Dialog_Record) return Gdk.Font.Gdk_Font;
    --  Allocate and return the font selected by the user.
    --  This newly created font can be used as is by all the drawing functions
    --  in the Gdk.Drawable package.
    --  If not font has been selected, Gdk.Font.Null_Font is returned.
+   --  This function is deprecated.
+   --  </doc_ignore>
 
    function Set_Font_Name
      (Fsd      : access Gtk_Font_Selection_Dialog_Record;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,10 +38,12 @@
 --  above two instead.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
+with Glib.Properties;
 with Gtk.Box;
 with Gtk.Enums;
+with Gtk.Widget;
 
 package Gtk.Button_Box is
 
@@ -73,6 +75,26 @@ package Gtk.Button_Box is
       return Enums.Gtk_Button_Box_Style;
    --  Return the layout used in the box.
 
+   procedure Set_Child_Secondary
+     (Button_Box   : access Gtk_Button_Box_Record;
+      Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Is_Secondary : Boolean);
+   --  Set whether Child should appear in a secondary group of children.
+   --  A typical use of a secondary child is the help button in a dialog.
+   --
+   --  This group appears after the other children if the style is
+   --  Buttonbox_Start, Buttonbox_Spread or Buttonbox_Edge, and before the
+   --  other children if the style is Buttonbox_End. For horizontal button
+   --  boxes, the definition of before/after depends on direction of the
+   --  widget. (See Gtk.Widget.Set_Direction) If the style is Buttonbox_Start,
+   --  or Buttonbox_End, then the secondary children are aligned at
+   --  the other end of the button box from the main children. For the
+   --  other styles, they appear immediately next to the main children.
+   --
+   --  Is_Secondary: if True, the Child appears in a secondary group of the
+   --                button box.
+
+   --  <doc_ignore>
    procedure Set_Child_Size
      (Button_Box : access Gtk_Button_Box_Record;
       Min_Width  : Gint;
@@ -80,6 +102,7 @@ package Gtk.Button_Box is
    --  Set the size to use for children of this specific box.
    --  You can modify the size for all the boxes at once by using
    --  Set_Child_Size_Default.
+   --  Deprecated.
 
    procedure Get_Child_Size
      (Button_Box : access Gtk_Button_Box_Record;
@@ -88,8 +111,8 @@ package Gtk.Button_Box is
    --  Return the size to use for children of this specific box.
    --  Min_Width and Min_Height are set to -1 if this widget uses the default
    --  sizes that are set by Set_Child_Size_Default.
+   --  Deprecated.
 
-   --  <doc_ignore>
    procedure Set_Child_Ipadding
      (Button_Box : access Gtk_Button_Box_Record;
       Ipad_X     : Gint;
@@ -105,7 +128,23 @@ package Gtk.Button_Box is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties.
    --
+   --  - Name:  Layout_Style_Property
+   --    Type:  Gtk_Button_Box_Style
+   --    Flags: read-write
+   --    Descr: How to layout the buttons in the box.
+   --    See also: Same as calling Set_Layout.
+   --
+   --  - Name:  Child_Secondary_Property
+   --    Type:  Boolean
+   --    Flags: read-write
+   --    Descr: If True, the child appears in a secondary group of children,
+   --           suitable for, e.g., help buttons.
+   --    See also: Same as calling Set_Child_Secondary.
+   --
    --  </properties>
+
+   Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style;
+   Child_Secondary_Property : constant Glib.Properties.Property_Boolean;
 
    -------------
    -- Signals --
@@ -118,4 +157,10 @@ package Gtk.Button_Box is
 private
    type Gtk_Button_Box_Record is new Gtk.Box.Gtk_Box_Record with null record;
    pragma Import (C, Get_Type, "gtk_button_box_get_type");
+
+   Layout_Style_Property : constant Gtk.Enums.Property_Gtk_Button_Box_Style :=
+      Gtk.Enums.Build ("layout_style");
+   Child_Secondary_Property : constant Glib.Properties.Property_Boolean :=
+      Glib.Properties.Build ("secondary");
+
 end Gtk.Button_Box;

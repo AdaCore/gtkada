@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -602,18 +602,16 @@ package body Gtk.Ctree is
    function Node_Get_Cell_Type (Ctree  : access Gtk_Ctree_Record;
                                 Node   : in     Gtk_Ctree_Node;
                                 Column : in     Gint)
-                                return          Gtk_Cell_Type
+                                return Gtk.Clist.Gtk_Cell_Type
    is
       function Internal (Ctree  : in System.Address;
                          Node   : in Gtk_Ctree_Node;
-                         Column : in Gint)
-                         return Gint;
+                         Column : in Gint) return Gint;
       pragma Import (C, Internal, "gtk_ctree_node_get_cell_type");
 
    begin
-      return Gtk_Cell_Type'Val (Internal (Get_Object (Ctree),
-                                          Node,
-                                          Column));
+      return Gtk.Clist.Gtk_Cell_Type'Val
+        (Internal (Get_Object (Ctree), Node, Column));
    end Node_Get_Cell_Type;
 
    ---------------------
@@ -744,6 +742,9 @@ package body Gtk.Ctree is
       Mask : aliased System.Address;
       Text : aliased Interfaces.C.Strings.chars_ptr;
       Success : Gint;
+
+      use Gtk.Clist;
+
    begin
       if Node_Get_Cell_Type (Ctree, Node, Column) = Cell_Text then
          Success := Internal (Get_Object (Ctree), Node, Column, Text'Access);

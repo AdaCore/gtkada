@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -896,20 +896,6 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget), Style);
    end Set_Style;
 
-   ------------------------
-   -- Get_Modifier_Style --
-   ------------------------
-
-   function Get_Modifier_Style
-     (Widget : access Gtk_Widget_Record) return Gtk_Rc_Style
-   is
-      function Internal (Widget : System.Address) return Gtk_Rc_Style;
-      pragma Import (C, Internal, "gtk_widget_get_modifier_style");
-
-   begin
-      return Internal (Get_Object (Widget));
-   end Get_Modifier_Style;
-
    -----------------------
    -- Get_Parent_Window --
    -----------------------
@@ -937,21 +923,6 @@ package body Gtk.Widget is
    begin
       return Internal (Get_Object (Widget));
    end Get_Style;
-
-   ------------------
-   -- Modify_Style --
-   ------------------
-
-   procedure Modify_Style
-     (Widget : access Gtk_Widget_Record;
-      Style  : Gtk_Rc_Style)
-   is
-      procedure Internal (Widget : System.Address; Style : Gtk_Rc_Style);
-      pragma Import (C, Internal, "gtk_widget_modify_style");
-
-   begin
-      Internal (Get_Object (Widget), Style);
-   end Modify_Style;
 
    -----------------
    -- Modify_Font --

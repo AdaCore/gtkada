@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,6 +25,8 @@
 -- exception does not however invalidate any other reasons why the   --
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
+
+--  <c_version>1.3.11</c_version>
 
 with Glib.Object;
 with Gdk.Event;
@@ -57,10 +58,35 @@ package Gtk.Cell_Renderer is
    Cell_Renderer_Insensitive : constant Gtk_Cell_Renderer_State;
    Cell_Renderer_Sorted      : constant Gtk_Cell_Renderer_State;
 
-   type Cell_Renderer_Mode is
+   type Gtk_Cell_Renderer_Mode is
      (Cell_Renderer_Mode_Inert,
       Cell_Renderer_Mode_Activatable,
       Cell_Renderer_Mode_Editable);
+   for Gtk_Cell_Renderer_Mode'Size use Glib.Gint'Size;
+
+   function Get_Type return GType;
+   --  Return the internal value associated with Gtk_Cell_Renderer
+
+   procedure Get_Size
+     (Cell      : access Gtk_Cell_Renderer_Record;
+      Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Cell_Area : out Gdk.Rectangle.Gdk_Rectangle;
+      X_Offset  : out Gint;
+      Y_Offset  : out Gint;
+      Width     : out Gint;
+      Height    : out Gint);
+   --  Obtain the width and height needed to render the cell.
+   --  Used by view widgets to determine the appropriate size for the Cell_Area
+   --  passed to Render. Fill in the x and y offsets (if set) of the cell
+   --  relative to this location. Please note that the values set in Width and
+   --  Height, as well as those in X_Offset and Y_Offset are inclusive of the
+   --  Xpad and Ypad properties.
+   --  Widget: the widget the renderer is rendering to.
+   --  Cell_Area: The area a cell will be allocated.
+   --  X_Offset: X offset of cell relative to Cell_Area.
+   --  Y_Offset: Y offset of cell relative to Cell_Area.
+   --  Width: Width needed to render a cell.
+   --  Height: Height needed to render a cell.
 
    procedure Render
      (Cell            : access Gtk_Cell_Renderer_Record;
@@ -86,8 +112,7 @@ package Gtk.Cell_Renderer is
       Path            : String;
       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-      Flags           : Gtk_Cell_Renderer_State)
-      return Boolean;
+      Flags           : Gtk_Cell_Renderer_State) return Boolean;
    --  Passes an activate event to the cell renderer for possible processing.
    --  Some cell renderers may use events;
    --  for example, Gtk_Cell_Renderer_Toggle toggles when it gets a
@@ -100,8 +125,7 @@ package Gtk.Cell_Renderer is
       Path            : String;
       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-      Flags           : Gtk_Cell_Renderer_State)
-      return Glib.Object.GObject;
+      Flags           : Gtk_Cell_Renderer_State) return Glib.Object.GObject;
    --  Passes an activate event to the cell renderer for possible processing.
    --  Cell: a Gtk_Cell_Renderer
    --  Event: a Gdk_Event
@@ -178,6 +202,8 @@ package Gtk.Cell_Renderer is
 private
    type Gtk_Cell_Renderer_Record is
      new Gtk.Object.Gtk_Object_Record with null record;
+
+   pragma Import (C, Get_Type, "gtk_cell_get_type");
 
    Cell_Renderer_Selected    : constant Gtk_Cell_Renderer_State := 2 ** 0;
    Cell_Renderer_Prelit      : constant Gtk_Cell_Renderer_State := 2 ** 1;

@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.11</c_version>
+
 with Gtk;
 with Gdk.Event;
 with Glib.Object;
@@ -43,20 +44,21 @@ package Gtk.Cell_Editable is
    procedure Start_Editing
      (Cell_Editable : access Gtk.Cell_Editable.Gtk_Cell_Editable_Record'Class;
       Event         : Gdk.Event.Gdk_Event);
-   --  Begins editing on a Gtk_Cell_Editable.  Event is the Gdk_Event that
-   --  began the editing process.  It may be null, in the instance that
-   --  editing was initiated through programatic means.
+   --  Begin editing on a Gtk_Cell_Editable.
+   --  Event is the Gdk_Event that began the editing process. It may be null,
+   --  if the instance that editing was initiated through programatic means.
 
    procedure Editing_Done
      (Cell_Editable : access Gtk.Cell_Editable.Gtk_Cell_Editable_Record'Class);
-   --  Emits the "editing_done" signal.  This signal is a sign for the cell
-   --  renderer to update its value from the cell.
+   --  Emit the "editing_done" signal.
+   --  This signal is a sign for the cell renderer to update its value from the
+   --  cell.
 
    procedure Remove_Widget
      (Cell_Editable : access Gtk.Cell_Editable.Gtk_Cell_Editable_Record'Class);
-   --  Emits the "remove_widget" signal.  This signal is meant to indicate
-   --  that the cell is finished editing, and the widget may now be destroyed.
-
+   --  Emit the "remove_widget" signal.
+   --  This signal is meant to indicate that the cell is finished editing, and
+   --  the widget may now be destroyed.
 
 private
    type Gtk_Cell_Editable_Record is

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,7 +39,7 @@
 --
 --  @pxref{Package_Gtk.Extra.Color_Combo} for a different way to select colors.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gdk.Color;
 with Gtk.Enums;
@@ -70,15 +70,6 @@ package Gtk.Color_Selection is
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Color_Selection.
-
-   procedure Set_Update_Policy
-     (Colorsel : access Gtk_Color_Selection_Record;
-      Policy   : Enums.Gtk_Update_Type);
-   --  Set the behavior of the scales used to select a value (red, green,...)
-   --  Set Policy to Update_Continuous if you want to update the color
-   --  continuously as the slider is mode, Update_Discontinuous to update the
-   --  color only when the mouse is released and Update_Delayed to update when
-   --  the mouse is released or has been motionless for a while.
 
    function Get_Has_Opacity_Control
      (Colorsel : access Gtk_Color_Selection_Record) return Boolean;
@@ -149,7 +140,6 @@ package Gtk.Color_Selection is
    --  Return TRue if the user is currently dragging a color around, False if
    --  the selection has stopped.
 
-
    --  procedure Palette_From_String
    --  ??? Not implemented yet.
 
@@ -159,20 +149,6 @@ package Gtk.Color_Selection is
    --  Set_Change_Palette_Hook
    --  ??? Not implemented yet.
 
-   procedure Set_Color
-     (Colorsel : access Gtk_Color_Selection_Record;
-      Color    : Color_Array);
-   --  Modify the current color.
-   --  Note that Color is an array of percentages, between 0.0 and 1.0, not
-   --  absolute values.
-
-   procedure Get_Color
-     (Colorsel : access Gtk_Color_Selection_Record;
-      Color    : out Color_Array);
-   --  Get the current color.
-   --  Note that Color is an array of percentages, between 0.0 and 1.0, not
-   --  absolute values.
-
    function To_Absolute (Color : Gdouble) return Gushort;
    --  Convert from a percentage value as returned by Get_Color to an
    --  absolute value as can be used with Gdk_Color.
@@ -180,6 +156,34 @@ package Gtk.Color_Selection is
    function To_Percent (Color : Gushort) return Gdouble;
    --  Convert from an absolute value as used in Gdk_Color to a percentage
    --  value as used in Set_Color.
+
+   --  <doc_ignore>
+   procedure Set_Update_Policy
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Policy   : Enums.Gtk_Update_Type);
+   --  Set the behavior of the scales used to select a value (red, green,...)
+   --  Set Policy to Update_Continuous if you want to update the color
+   --  continuously as the slider is mode, Update_Discontinuous to update the
+   --  color only when the mouse is released and Update_Delayed to update when
+   --  the mouse is released or has been motionless for a while.
+   --  This procedure is deprecated.
+
+   procedure Set_Color
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Color    : Color_Array);
+   --  Modify the current color.
+   --  Note that Color is an array of percentages, between 0.0 and 1.0, not
+   --  absolute values.
+   --  This procedure is deprecated.
+
+   procedure Get_Color
+     (Colorsel : access Gtk_Color_Selection_Record;
+      Color    : out Color_Array);
+   --  Get the current color.
+   --  Note that Color is an array of percentages, between 0.0 and 1.0, not
+   --  absolute values.
+   --  This procedure is deprecated.
+   --  </doc_ignore>
 
    ----------------
    -- Properties --

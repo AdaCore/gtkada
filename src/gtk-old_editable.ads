@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-1999 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,7 +36,7 @@
 --  application can connect to to modify the behavior of a widget.
 --
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Widget;
 

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,6 +32,7 @@ with Gtk.Menu_Item;  use Gtk.Menu_Item;
 with Gtk.Menu_Shell; use Gtk.Menu_Shell;
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Menu is
 
@@ -120,8 +121,32 @@ package body Gtk.Menu is
       return Gtk.Widget.Convert (Internal (Get_Object (Menu)));
    end Get_Attach_Widget;
 
+   -----------------------
+   -- Get_Tearoff_State --
+   -----------------------
+
+   function Get_Tearoff_State (Menu : access Gtk_Menu_Record) return Boolean is
+      function Internal (Menu : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_menu_get_tearoff_state");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Menu)));
+   end Get_Tearoff_State;
+
+   ---------------
+   -- Get_Title --
+   ---------------
+
+   function Get_Title (Menu : access Gtk_Menu_Record) return String is
+      function Internal (Menu : System.Address) return chars_ptr;
+      pragma Import (C, Internal, "gtk_menu_get_title");
+
+   begin
+      return Value (Internal (Get_Object (Menu)));
+   end Get_Title;
+
    -------------
-   -- Get_New --
+   -- Gtk_New --
    -------------
 
    procedure Gtk_New (Widget : out Gtk_Menu) is
@@ -155,9 +180,9 @@ package body Gtk.Menu is
       Internal (Get_Object (Menu));
    end Popdown;
 
-   ---------------------
-   --  Reorder_Child  --
-   ---------------------
+   -------------------
+   -- Reorder_Child --
+   -------------------
 
    procedure Reorder_Child
      (Menu     : access Gtk_Menu_Record;
@@ -174,9 +199,9 @@ package body Gtk.Menu is
       Internal (Get_Object (Menu), Get_Object (Child), Position);
    end Reorder_Child;
 
-   ------------------
-   --  Reposition  --
-   ------------------
+   ----------------
+   -- Reposition --
+   ----------------
 
    procedure Reposition (Menu : access Gtk_Menu_Record) is
       procedure Internal (Menu : System.Address);
@@ -186,9 +211,9 @@ package body Gtk.Menu is
       Internal (Get_Object (Menu));
    end Reposition;
 
-   -----------------------
-   --  Set_Accel_Group  --
-   -----------------------
+   ---------------------
+   -- Set_Accel_Group --
+   ---------------------
 
    procedure Set_Accel_Group
       (Menu    : access Gtk_Menu_Record;
@@ -202,6 +227,21 @@ package body Gtk.Menu is
    begin
       Internal (Get_Object (Menu), Get_Object (Accel));
    end Set_Accel_Group;
+
+   --------------------
+   -- Set_Accel_Path --
+   --------------------
+
+   procedure Set_Accel_Path
+     (Menu       : access Gtk_Menu_Record;
+      Accel_Path : String)
+   is
+      procedure Internal (Menu : System.Address; Accel_Path : String);
+      pragma Import (C, Internal, "gtk_menu_set_accel_path");
+
+   begin
+      Internal (Get_Object (Menu), Accel_Path & ASCII.NUL);
+   end Set_Accel_Path;
 
    ----------------
    -- Set_Active --

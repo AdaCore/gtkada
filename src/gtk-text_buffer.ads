@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,7 +30,7 @@
 --  This is the public representation of a text buffer to be used in
 --  cunjunction with Gtk.Text_View.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtkada.Types;
 with Gdk.Pixbuf;
@@ -105,6 +104,15 @@ package Gtk.Text_Buffer is
    --  Call Buffer_Insert, using the current cursor position
    --  as the insertion point.
    --  Text: UTF-8 format text to insert.
+   --  Len: The length of the string. Computed automatically if -1.
+
+   procedure Insert_At_Cursor
+     (Buffer : access Gtk_Text_Buffer_Record;
+      Text   : Gtkada.Types.Chars_Ptr;
+      Len    : Gint := -1);
+   --  Call Buffer_Insert, using the current cursor position
+   --  as the insertion point.
+   --  Text: UTF-8 format C string to insert.
 
    procedure Insert_Interactive
      (Buffer           : access Gtk_Text_Buffer_Record;
@@ -367,7 +375,7 @@ package Gtk.Text_Buffer is
    --  If you move them to the same place in two steps with Move_Mark, you will
    --  temporarily select a region in between their old and new locations,
    --  which can be pretty inefficient since the temporarily-selected region
-   --  will force stuff to be recalculated. This function moves them as a unit,
+   --  will force stuff to be recomputed. This function moves them as a unit,
    --  which can be optimized.
 
    --  gtk_text_buffer_create_tag not bound: variable number of arguments
@@ -396,10 +404,9 @@ package Gtk.Text_Buffer is
      (Buffer  : access Gtk_Text_Buffer_Record;
       Start    : Gtk.Text_Iter.Gtk_Text_Iter;
       The_End : Gtk.Text_Iter.Gtk_Text_Iter);
-   --  Remove all tags in the range between Start and End. Note that this
-   --  procedure should be used carefully, as it might be removing tags that
-   --  were added from another section of the code. Thus, this function might
-   --  be a bad idea if tags are added from 2 or more code sections.
+   --  Remove all tags in the range between Start and End.
+   --  Note that this procedure should be used carefully, as it might be
+   --  removing tags that were added from another section of the code.
 
    procedure Apply_Tag_By_Name
      (Buffer  : access Gtk_Text_Buffer_Record;
@@ -502,6 +509,14 @@ package Gtk.Text_Buffer is
    --  it will automatically toggled on the modified bit again. When the
    --  modified bit flips, the buffer emits a "modified_changed" signal.
 
+   --  ??? Not bound since GtkClipboard hasn't been bound yet
+   --  procedure Add_Selection_Clipboard
+   --    (GtkTextBuffer *buffer,
+   --     GtkClipboard  *clipboard);
+   --  procedure Remove_Selection_Clipboard
+   --    (GtkTextBuffer *buffer,
+   --     GtkClipboard  *clipboard);
+
    procedure Cut_Clipboard
      (Buffer           : access Gtk_Text_Buffer_Record;
       Default_Editable : Boolean);
@@ -562,8 +577,8 @@ package Gtk.Text_Buffer is
    --  Should be paired with a call to Begin_User_Action.
    --  See that function for a full explanation.
 
-   function Get_Buffer (Iter : Gtk.Text_Iter.Gtk_Text_Iter)
-                        return Gtk_Text_Buffer;
+   function Get_Buffer
+     (Iter : Gtk.Text_Iter.Gtk_Text_Iter) return Gtk_Text_Buffer;
    --  Return the buffer associated to the given Gtk_Text_Iterator.
 
    ----------------

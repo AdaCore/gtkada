@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -79,14 +79,14 @@ package body Gtk.Fixed is
    procedure Move
      (Fixed  : access Gtk_Fixed_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      X      : Gint16;
-      Y      : Gint16)
+      X      : Gint;
+      Y      : Gint)
    is
       procedure Internal
         (Fixed  : System.Address;
          Widget : System.Address;
-         X      : Gint16;
-         Y      : Gint16);
+         X      : Gint;
+         Y      : Gint);
       pragma Import (C, Internal, "gtk_fixed_move");
 
    begin
@@ -100,14 +100,14 @@ package body Gtk.Fixed is
    procedure Put
      (Fixed  : access Gtk_Fixed_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      X      : Gint16;
-      Y      : Gint16)
+      X      : Gint;
+      Y      : Gint)
    is
       procedure Internal
         (Fixed  : System.Address;
          Widget : System.Address;
-         X      : Gint16;
-         Y      : Gint16);
+         X      : Gint;
+         Y      : Gint);
       pragma Import (C, Internal, "gtk_fixed_put");
 
    begin
@@ -122,11 +122,25 @@ package body Gtk.Fixed is
      (Fixed      : access Gtk_Fixed_Record;
       Has_Window : Boolean := False)
    is
-      procedure Set_Has_Window (Fixed : System.Address; Has_Window : Boolean);
+      procedure Internal (Fixed : System.Address; Has_Window : Gboolean);
+      pragma Import (C, Internal, "gtk_fixed_set_has_window");
 
-      pragma Import (C, Set_Has_Window, "gtk_fixed_set_has_window");
    begin
-      Set_Has_Window (Get_Object (Fixed), Has_Window);
+      Internal (Get_Object (Fixed), To_Gboolean (Has_Window));
    end Set_Has_Window;
+
+   --------------------
+   -- Get_Has_Window --
+   --------------------
+
+   function Get_Has_Window
+     (Fixed : access Gtk_Fixed_Record) return Boolean
+   is
+      function Internal (Fixed : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_fixed_get_has_window");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Fixed)));
+   end Get_Has_Window;
 
 end Gtk.Fixed;

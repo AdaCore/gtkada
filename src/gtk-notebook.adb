@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,9 +27,10 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Container; use Gtk.Container;
-with Gtk.Widget;    use Gtk.Widget;
-with Gtk.Enums;     use Gtk.Enums;
+with Gtk.Container;        use Gtk.Container;
+with Gtk.Widget;           use Gtk.Widget;
+with Gtk.Enums;            use Gtk.Enums;
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
 
 package body Gtk.Notebook is
@@ -129,6 +130,68 @@ package body Gtk.Notebook is
       return Convert (Internal (Get_Object (Notebook), Get_Object (Child)));
    end Get_Menu_Label;
 
+   -------------------------
+   -- Get_Menu_Label_Text --
+   -------------------------
+
+   function Get_Menu_Label_Text
+     (Notebook : access Gtk_Notebook_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class) return String
+   is
+      function Internal
+        (Widget : System.Address;
+         Child  : System.Address) return chars_ptr;
+      pragma Import (C, Internal, "gtk_notebook_get_menu_label_text");
+
+   begin
+      return Value (Internal (Get_Object (Notebook), Get_Object (Child)));
+   end Get_Menu_Label_Text;
+
+   ---------------------
+   -- Get_Show_Border --
+   ---------------------
+
+   function Get_Show_Border
+     (Notebook : access Gtk_Notebook_Record) return Boolean
+   is
+      function Internal
+        (Notebook : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_notebook_get_show_border");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Notebook)));
+   end Get_Show_Border;
+
+   -------------------
+   -- Get_Show_Tabs --
+   -------------------
+
+   function Get_Show_Tabs
+     (Notebook : access Gtk_Notebook_Record) return Boolean
+   is
+      function Internal
+        (Notebook : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_notebook_get_show_tabs");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Notebook)));
+   end Get_Show_Tabs;
+
+   --------------------
+   -- Get_Scrollable --
+   --------------------
+
+   function Get_Scrollable
+     (Notebook : access Gtk_Notebook_Record) return Boolean
+   is
+      function Internal
+        (Notebook : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_notebook_get_scrollable");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Notebook)));
+   end Get_Scrollable;
+
    -------------------
    -- Get_Tab_Label --
    -------------------
@@ -146,6 +209,23 @@ package body Gtk.Notebook is
    begin
       return Convert (Internal (Get_Object (Notebook), Get_Object (Child)));
    end Get_Tab_Label;
+
+   ------------------------
+   -- Get_Tab_Label_Text --
+   ------------------------
+
+   function Get_Tab_Label_Text
+     (Notebook : access Gtk_Notebook_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class) return String
+   is
+      function Internal
+        (Widget : System.Address;
+         Child  : System.Address) return chars_ptr;
+      pragma Import (C, Internal, "gtk_notebook_get_tab_label_text");
+
+   begin
+      return Value (Internal (Get_Object (Notebook), Get_Object (Child)));
+   end Get_Tab_Label_Text;
 
    -----------------
    -- Get_Tab_Pos --

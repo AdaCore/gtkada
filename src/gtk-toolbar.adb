@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -207,6 +207,62 @@ package body Gtk.Toolbar is
       Internal (Get_Object (Toolbar), Get_Object (Widget), TTA, TPTA);
    end Append_Widget;
 
+   ---------------------
+   -- Get_Orientation --
+   ---------------------
+
+   function Get_Orientation
+     (Toolbar : access Gtk_Toolbar_Record) return Gtk_Orientation
+   is
+      function Internal (Toolbar : System.Address) return Gtk_Orientation;
+      pragma Import (C, Internal, "gtk_toolbar_get_orientation");
+
+   begin
+      return Internal (Get_Object (Toolbar));
+   end Get_Orientation;
+
+   ---------------
+   -- Get_Style --
+   ---------------
+
+   function Get_Style
+     (Toolbar : access Gtk_Toolbar_Record) return Gtk_Toolbar_Style
+   is
+      function Internal (Toolbar : System.Address) return Gtk_Toolbar_Style;
+      pragma Import (C, Internal, "gtk_toolbar_get_style");
+
+   begin
+      return Internal (Get_Object (Toolbar));
+   end Get_Style;
+
+   -------------------
+   -- Get_Icon_Size --
+   -------------------
+
+   function Get_Icon_Size
+     (Toolbar : access Gtk_Toolbar_Record) return Gtk_Icon_Size
+   is
+      function Internal (Toolbar : System.Address) return Gtk_Icon_Size;
+      pragma Import (C, Internal, "gtk_toolbar_get_icon_size");
+
+   begin
+      return Internal (Get_Object (Toolbar));
+   end Get_Icon_Size;
+
+   ------------------
+   -- Get_Tooltips --
+   ------------------
+
+   function Get_Tooltips
+     (Toolbar : access Gtk_Toolbar_Record) return Boolean
+   is
+      function Internal (Toolbar : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_toolbar_get_tooltips");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Toolbar)));
+   end Get_Tooltips;
+
    -------------
    -- Gtk_New --
    -------------
@@ -229,7 +285,6 @@ package body Gtk.Toolbar is
       Widget := new Gtk_Toolbar_Record;
       Initialize (Widget, Orientation, Style);
    end Gtk_New;
-
 
    ----------------
    -- Initialize --

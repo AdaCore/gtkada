@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -42,7 +42,7 @@
 --  @pxref{Package_Gtk.GEntry} for a text editing widget without spin buttons.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Adjustment;
 with Gtk.GEntry;
@@ -64,7 +64,7 @@ package Gtk.Spin_Button is
    --  Determine the update policy of the spin button which affects the
    --  behaviour when parsing inserted text and syncing its value with the
    --  values of the adjustment.
-   for Gtk_Spin_Button_Update_Policy'Size use Gint'Size;
+   pragma Convention (C, Gtk_Spin_Button_Update_Policy);
 
    type Gtk_Spin_Type is
      (Spin_Step_Forward,
@@ -72,10 +72,11 @@ package Gtk.Spin_Button is
       Spin_Page_Forward,
       Spin_Page_Backward,
       Spin_Home,
+      Spin_End,
       Spin_User_Defined);
    --  Determine how manual spinning should be done.
    --  See also the Spin procedure.
-   for Gtk_Spin_Type'Size use Gint'Size;
+   pragma Convention (C, Gtk_Spin_Type);
 
    procedure Gtk_New
      (Spin_Button : out Gtk_Spin_Button;
@@ -134,17 +135,33 @@ package Gtk.Spin_Button is
       The_Digits  : Guint);
    --  Set number of decimals of the spin button.
 
+   function Get_Digits
+     (Spin_Button : access Gtk_Spin_Button_Record) return Guint;
+   --  Return the number of decimals of the spin button.
+
    procedure Set_Increments
      (Spin_Button : access Gtk_Spin_Button_Record;
       Step        : Gdouble;
       Page        : Gdouble);
-   --  Set number of decimals of the spin button.
+   --  Set increments for a single step and a page move.
+
+   procedure Get_Increments
+     (Spin_Button : access Gtk_Spin_Button_Record;
+      Step        : out Gdouble;
+      Page        : out Gdouble);
+   --  Return increments for a single step and a page move.
 
    procedure Set_Range
      (Spin_Button : access Gtk_Spin_Button_Record;
       Min         : Gdouble;
       Max         : Gdouble);
-   --  Set number of decimals of the spin button.
+   --  Set range of the spin button.
+
+   procedure Get_Range
+     (Spin_Button : access Gtk_Spin_Button_Record;
+      Min         : out Gdouble;
+      Max         : out Gdouble);
+   --  Return range of the spin button.
 
    function Get_Value
      (Spin_Button : access Gtk_Spin_Button_Record) return Gdouble;
@@ -163,13 +180,22 @@ package Gtk.Spin_Button is
      (Spin_Button : access Gtk_Spin_Button_Record;
       Policy      : Gtk_Spin_Button_Update_Policy);
    --  Set the update policy of the spin button.
-   --  See Gtk_Pin_Button_Update_Policy for the meaning of Policy.
+   --  See Gtk_Spin_Button_Update_Policy for the meaning of Policy.
+
+   function Get_Update_Policy
+     (Spin_Button : access Gtk_Spin_Button_Record)
+      return Gtk_Spin_Button_Update_Policy;
+   --  Return the update policy of the spin button.
 
    procedure Set_Numeric
      (Spin_Button : access Gtk_Spin_Button_Record;
       Numeric     : Boolean);
    --  If Numeric is True, then only a numeric value can be typed in the
    --  text entry, otherwise also nonnumeric text.
+
+   function Get_Numeric
+     (Spin_Button : access Gtk_Spin_Button_Record) return Boolean;
+   --  Return whether only numeric values can be typedin the text entry.
 
    procedure Spin
      (Spin_Button : access Gtk_Spin_Button_Record;
@@ -184,11 +210,21 @@ package Gtk.Spin_Button is
    --  Set whether the spin button should "wrap around" when exceeding the
    --  upper and lower limits.
 
+   function Get_Wrap
+     (Spin_Button : access Gtk_Spin_Button_Record) return Boolean;
+   --  Return whether the spin button will "wrap around" when exceeding the
+   --  upper and lower limits.
+
    procedure Set_Snap_To_Ticks
     (Spin_Button   : access Gtk_Spin_Button_Record;
      Snap_To_Ticks : Boolean);
    --  Set the spin button to round the value to the nearest step value
    --  which is set within its adjustment settings.
+
+   function Get_Snap_To_Ticks
+    (Spin_Button : access Gtk_Spin_Button_Record) return Boolean;
+   --  Return whether the spin button rounds the value to the nearest step
+   --  value which is set within its adjustment settings.
 
    procedure Update (Spin_Button : access Gtk_Spin_Button_Record);
    --  Manually force an update of the spin button.

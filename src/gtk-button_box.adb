@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                 Copyright (C) 2000-2002 ACT-Europe                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -66,6 +66,28 @@ package body Gtk.Button_Box is
         (Internal (Get_Object (Button_Box)));
    end Get_Layout;
 
+   -------------------------
+   -- Set_Child_Secondary --
+   -------------------------
+
+   procedure Set_Child_Secondary
+     (Button_Box   : access Gtk_Button_Box_Record;
+      Child        : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Is_Secondary : Boolean)
+   is
+      procedure Internal
+        (Widget       : System.Address;
+         Child        : System.Address;
+         Is_Secondary : Gboolean);
+      pragma Import (C, Internal, "gtk_button_box_set_child_secondary");
+
+   begin
+      Internal
+        (Get_Object (Button_Box),
+         Get_Object (Child),
+         To_Gboolean (Is_Secondary));
+   end Set_Child_Secondary;
+
    --------------------
    -- Set_Child_Size --
    --------------------
@@ -109,7 +131,9 @@ package body Gtk.Button_Box is
    procedure Set_Child_Ipadding
      (Button_Box : access Gtk_Button_Box_Record;
       Ipad_X     : Gint;
-      Ipad_Y     : Gint) is
+      Ipad_Y     : Gint)
+   is
+      pragma Unreferenced (Button_Box, Ipad_X, Ipad_Y);
    begin
       null;
    end Set_Child_Ipadding;

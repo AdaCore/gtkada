@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -62,7 +62,7 @@
 --  +------------------------------------------------+
 --  </example>
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Properties;
 with Gtk.Bin;
@@ -127,6 +127,33 @@ package Gtk.Button is
      (Button : access Gtk_Button_Record) return Gtk.Enums.Gtk_Relief_Style;
    --  Get the current relief style for the button
 
+   procedure Set_Label
+     (Button : access Gtk_Button_Record;
+      Label  : String);
+   --  Set the label of the button.
+
+   function Get_Label
+     (Button : access Gtk_Button_Record) return String;
+   --  Return the label of the button.
+
+   procedure Set_Use_Underline
+     (Button        : access Gtk_Button_Record;
+      Use_Underline : Boolean);
+   --  Set whether underscore is used to designate an accelerator.
+
+   function Get_Use_Underline
+     (Button : access Gtk_Button_Record) return Boolean;
+   --  Return whether underscores are used to designate an accelerator.
+
+   procedure Set_Use_Stock
+     (Button    : access Gtk_Button_Record;
+      Use_Stock : Boolean);
+   --  Set whether a stock item is used by the button.
+
+   function Get_Use_Stock
+     (Button : access Gtk_Button_Record) return Boolean;
+   --  Return whether a stock item is used by the button.
+
    ----------------------
    -- Signals emission --
    ----------------------
@@ -158,9 +185,7 @@ package Gtk.Button is
    --    Type:  String
    --    Flags: read-write
    --    Descr: Changes the text contained in the button.
-   --    See also:
-   --      Change the text of the single child of the button, that is
-   --      a Gtk_Label
+   --    See also: Same as calling Set_Label directly.
    --
    --  - Name:  Relief_Property
    --    Type:  Gtk_Relief_Style

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,7 +36,7 @@
 --  the ASCII.LF character. However, this is not the recommended way
 --  to display long texts (see the Gtk_Text widget instead)
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Properties;
 with Gtk.Enums;
@@ -78,10 +78,12 @@ package Gtk.Label is
    function Get_Text (Label : access Gtk_Label_Record) return String;
    --  Get the current value of the text displayed in the label.
 
+   --  <doc_ignore>
    function Get
      (Label : access Gtk_Label_Record) return String renames Get_Text;
    --  Same as Get_Text.
    --  pragma Deprecated (Get);
+   --  </doc_ignore>
 
    procedure Set_Justify
      (Label : access Gtk_Label_Record;
@@ -234,11 +236,19 @@ end Gtk.Label;
 
 --  missing:
 --  Set_Attributes
+--  Get_Attributes
 --  Set_Markup
+--  Set_Use_Markup
+--  Get_Use_Markup
+--  Set_Use_Underline
+--  Get_Use_Underline
 --  Set_Markup_With_Mnemonic
 --  Get_Mnemonic_Keyval
+--  Get_Mnemonic_Widget
 --  Set_Mnemonic_Widget
 --  Set_Text_With_Mnemonic
+--  Get_Justify
+--  Get_Line_Wrap
 --  Set_Selectable
 --  Get_Selectable
 --  Select_Region

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,7 +37,7 @@
 --  main loop.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gdk.Event;
 with Gtk.Widget;
@@ -61,10 +61,12 @@ package Gtk.Main is
    --  Initialize GtkAda's internal structures.
    --  Return False if there was an error (no access to the display, etc.)
 
+   --  <doc_ignore>
    procedure Gtk_Exit (Error_Code : Gint);
    --  Terminate GtkAda.
    --  Deprecated, use Main_Quit instead.
    --  pragma Deprecated (Gtk_Exit);
+   --  </doc_ignore>
 
    function Set_Locale return String;
    --  Read and parse the local settings, such as time format, ...
@@ -245,10 +247,11 @@ package Gtk.Main is
       type Data_Type (<>) is private;
    package Idle is
       type Callback is access function (D : in Data_Type) return Boolean;
-      function Add (Cb       : in Callback;
-                    D        : in Data_Type;
-                    Priority : in Idle_Priority := Priority_Default_Idle)
-                   return Idle_Handler_Id;
+      function Add
+        (Cb       : in Callback;
+         D        : in Data_Type;
+         Priority : in Idle_Priority := Priority_Default_Idle)
+         return Idle_Handler_Id;
    end Idle;
    --  !!Warning!! The instances of this package must be declared at library
    --  level, as they are some accesses to internal functions that happen
@@ -313,12 +316,7 @@ package Gtk.Main is
    -----------
    --  The following functions are used to react when new data is available on
    --  a file descriptor (file, socket, pipe, ...)
-   --  They have not been bound, since apparently there is no easy way in Ada
-   --  to get the file descriptor for an open file, and there is no standard
-   --  socket package.
-   --  Instead, you should consider having a separate task that takes care of
-   --  monitoring over sources of input in your application, or use the low
-   --  level Gdk.Input package.
+   --  You can use the lower level Gdk.Input package instead.
 
    --  gtk_input_add_full
    --  gtk_input_remove
@@ -327,7 +325,6 @@ package Gtk.Main is
    --  gtk_get_current_event
    --  gtk_get_current_event_time
    --  gtk_get_current_event_state
-
 
 private
    pragma Import (C, Gtk_Exit, "gtk_exit");

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,7 +40,7 @@
 --  this group
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Check_Button;
 with Gtk.Widget; use Gtk.Widget;
@@ -99,7 +99,6 @@ package Gtk.Radio_Button is
    --  pass it null or a button that has not been created with Gtk_New, as in
    --  the example below.
 
-
    procedure Initialize
      (Radio_Button : access Gtk_Radio_Button_Record'Class;
       Group        : Widget_SList.GSlist;
@@ -136,8 +135,7 @@ package Gtk.Radio_Button is
 
    function Group
      (Radio_Button : access Gtk_Radio_Button_Record)
-     return Widget_SList.GSlist
-     renames Get_Group;
+      return Widget_SList.GSlist renames Get_Group;
    --  This function is deprecated.
 
    procedure Set_Group

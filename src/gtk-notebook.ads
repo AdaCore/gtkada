@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,7 +35,7 @@
 --  This is the best way to organize complicated interfaces that have a lot
 --  of widgets, by putting the children into groups of coherent widgets.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Glist;
 with Glib.Values;
@@ -55,7 +55,7 @@ package Gtk.Notebook is
    type Gtk_Notebook_Tab is
      (Notebook_Tab_First,
       Notebook_Tab_Last);
-   for Gtk_Notebook_Tab'Size use Gint'Size;
+   pragma Convention (C, Gtk_Notebook_Tab);
 
    ---------------------------------------------
    -- Creating a notebook and inserting pages --
@@ -208,6 +208,10 @@ package Gtk.Notebook is
    --  Indicate whether the notebook should display borders.
    --  This border gives a 3D aspect to the notebook.
 
+   function Get_Show_Border
+     (Notebook : access Gtk_Notebook_Record) return Boolean;
+   --  Return whether the notebook displays borders.
+
    procedure Set_Show_Tabs
      (Notebook  : access Gtk_Notebook_Record;
       Show_Tabs : Boolean := True);
@@ -215,6 +219,10 @@ package Gtk.Notebook is
    --  If the tabs are not displayed, the only way for the user to select a
    --  new page is through the contextual menu, and thus you should make sure
    --  that the pages were created with the Insert_Page_Menu, ... subprograms.
+
+   function Get_Show_Tabs
+     (Notebook : access Gtk_Notebook_Record) return Boolean;
+   --  Return whether the tabs are displayed.
 
    procedure Set_Tab_Pos
      (Notebook : access Gtk_Notebook_Record;
@@ -226,27 +234,33 @@ package Gtk.Notebook is
      (Widget : access Gtk_Notebook_Record) return Gtk.Enums.Gtk_Position_Type;
    --  Return the current position of the tabs.
 
+   --  <doc_ignore>
    procedure Set_Homogeneous_Tabs
      (Notebook    : access Gtk_Notebook_Record;
       Homogeneous : in Boolean := True);
    --  Indicate whether all the tabs should have the same size (width or
    --  height, depending on which side they are displayed on).
+   --  pragma Deprecated (Set_Homogeneous_Tabs);
 
    procedure Set_Tab_Border
      (Notebook     : access Gtk_Notebook_Record;
       Border_Width : in Gint);
    --  Change the width of the tabs' borders.
    --  This modifies both the horizontal border and the vertical border.
+   --  pragma Deprecated (Set_Tab_Border);
 
    procedure Set_Tab_Hborder
      (Notebook     : access Gtk_Notebook_Record;
       Border_Width : in Gint);
    --  Modify the width of the horizontal borders of the tabs.
+   --  pragma Deprecated (Set_Tab_Hborder);
 
    procedure Set_Tab_Vborder
      (Notebook     : access Gtk_Notebook_Record;
       Border_Width : in Gint);
    --  Modify the height of the vertical borders of the tabs.
+   --  pragma Deprecated (Set_Tab_Vborder);
+   --  </doc_ignore>
 
    procedure Set_Scrollable
      (Notebook   : access Gtk_Notebook_Record;
@@ -256,6 +270,11 @@ package Gtk.Notebook is
    --  The default is not to display such scrolling arrows. Note also that
    --  a notebook with too many pages, even if the scrolling is activated,
    --  is sometimes hard to use for the user.
+
+   function Get_Scrollable
+     (Notebook : access Gtk_Notebook_Record) return Boolean;
+   --  Return whether Notebook is scrollable.
+   --  See Set_Scrollable for more details.
 
    ----------------
    -- Popup Menu --
@@ -302,6 +321,11 @@ package Gtk.Notebook is
    --  Modify the text displayed in the tab for the page that contains Child.
    --  This is a less general form of Set_Tab_Label above.
 
+   function Get_Tab_Label_Text
+     (Notebook : access Gtk_Notebook_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class) return String;
+   --  Return the text displayed in the tab for the page that contains Child.
+
    procedure Set_Tab
      (Notebook  : access Gtk_Notebook_Record;
       Page_Num  : Gint;
@@ -331,6 +355,12 @@ package Gtk.Notebook is
    --  Modify the text displayed in the contextual menu for the page that
    --  contains Child.
    --  This is a less general form of Set_Menu_Label above.
+
+   function Get_Menu_Label_Text
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class) return String;
+   --  Return the text displayed in the contextual menu for the page that
+   --  contains Child.
 
    procedure Query_Tab_Label_Packing
      (Notebook   : access Gtk_Notebook_Record;

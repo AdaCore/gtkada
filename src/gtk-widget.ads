@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,7 +40,7 @@
 --  We have tried to reference these functions in the other packages as well.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with System;
 with Glib.Object;
@@ -218,6 +218,7 @@ package Gtk.Widget is
    --  Add a drawing request to the event queue for part of the widget.
    --  This is more efficient that calling Draw directly (see Queue_Draw).
 
+   --  <doc_ignore>
    procedure Queue_Clear (Widget : access Gtk_Widget_Record);
    --  Add a clear request to the event queue for the whole widget.
    --  This is added to the same list as for Queue_Draw, and thus is coalesced
@@ -234,6 +235,7 @@ package Gtk.Widget is
    --  This is added to the same list as for Queue_Draw, and thus is coalesced
    --  as much as possible with other drawing requests.
    --  pragma Deprecated (Queue_Clear_Area);
+   --  </doc_ignore>
 
    procedure Queue_Resize (Widget : access Gtk_Widget_Record);
    --  Queue drawing requests after a resizing of the widget.
@@ -510,24 +512,6 @@ package Gtk.Widget is
    function Get_Style (Widget : access Gtk_Widget_Record)
      return Gtk.Style.Gtk_Style;
    --  Return the style of a given widget.
-
-   procedure Modify_Style
-     (Widget : access Gtk_Widget_Record;
-      Style  : Gtk_Rc_Style);
-   --  Modify the default style of a widget.
-
-   function Get_Modifier_Style
-     (Widget : access Gtk_Widget_Record) return Gtk_Rc_Style;
-   --  Return the current modifier style for the widget.
-   --  (As set by Modify_Style.) If no style has previously set, a new
-   --  Gtk_Rc_Style will be created with all values unset, and set as the
-   --  modifier style for the widget. If you make changes to this rc
-   --  style, you must call Modify_Style, passing in the
-   --  returned rc style, to make sure that your changes take effect.
-   --
-   --  Return value: the modifier style for the widget. This rc style is
-   --    owned by the widget. If you want to keep a pointer to value this
-   --    around, you must add a refcount using Gtk.Rc.Style_Ref.
 
    procedure Set_Default_Style (Style : Gtk.Style.Gtk_Style);
    --  Set the default global style.
@@ -1551,10 +1535,6 @@ end Gtk.Widget;
 --  - gtk_widget_new
 --  - gtk_widget_destroy
 --  - gtk_widget_destroyed
---  - gtk_widget_get
---  - gtk_widget_getv
---  - gtk_widget_set
---  - gtk_widget_setv
 --  - gtk_widget_get_parent_window  <= mainly internal
 --  - gtk_widget_hide_on_delete     <= used as callback
 --  - gtk_widget_set_composite_name

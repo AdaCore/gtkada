@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -61,25 +61,6 @@ package body Gtk.Container is
    begin
       Internal (Get_Object (Container));
    end Check_Resize;
-
-   ------------------
-   -- Get_Children --
-   ------------------
-
-   function Get_Children
-     (Container : access Gtk_Container_Record)
-      return Gtk.Widget.Widget_List.Glist
-   is
-      function Internal (Container : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_container_get_children");
-
-      List : Gtk.Widget.Widget_List.Glist;
-
-   begin
-      Gtk.Widget.Widget_List.Set_Object
-        (List, Internal (Get_Object (Container)));
-      return List;
-   end Get_Children;
 
    ----------------
    -- Child_Type --
@@ -184,6 +165,54 @@ package body Gtk.Container is
    end Forall_Pkg;
 
    ----------------------
+   -- Get_Border_Width --
+   ----------------------
+
+   function Get_Border_Width
+     (Container : access Gtk_Container_Record) return Guint
+   is
+      function Internal (Container : System.Address) return Guint;
+      pragma Import (C, Internal, "gtk_container_get_border_width");
+
+   begin
+      return Internal (Get_Object (Container));
+   end Get_Border_Width;
+
+   ------------------
+   -- Get_Children --
+   ------------------
+
+   function Get_Children
+     (Container : access Gtk_Container_Record)
+      return Gtk.Widget.Widget_List.Glist
+   is
+      function Internal (Container : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_container_get_children");
+
+      List : Gtk.Widget.Widget_List.Glist;
+
+   begin
+      Gtk.Widget.Widget_List.Set_Object
+        (List, Internal (Get_Object (Container)));
+      return List;
+   end Get_Children;
+
+   ---------------------
+   -- Get_Resize_Mode --
+   ---------------------
+
+   function Get_Resize_Mode
+     (Container : access Gtk_Container_Record)
+      return Gtk_Resize_Mode
+   is
+      function Internal (Container : System.Address) return Gtk_Resize_Mode;
+      pragma Import (C, Internal, "gtk_container_get_resize_mode");
+
+   begin
+      return Internal (Get_Object (Container));
+   end Get_Resize_Mode;
+
+   ----------------------
    -- Propagate_Expose --
    ----------------------
 
@@ -235,11 +264,11 @@ package body Gtk.Container is
 
    procedure Set_Border_Width
      (Container    : access Gtk_Container_Record;
-      Border_Width : Gint)
+      Border_Width : Guint)
    is
       procedure Internal
-        (Container  : System.Address;
-         Border_Widget : Gint);
+        (Container     : System.Address;
+         Border_Widget : Guint);
       pragma Import (C, Internal, "gtk_container_set_border_width");
 
    begin

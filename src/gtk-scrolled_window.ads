@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -55,7 +55,7 @@
 --  Set_Scroll_Adjustments in the call to Gtk.Object.Initialize_Class_Record.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Adjustment; use Gtk.Adjustment;
 with Gtk.Bin;
@@ -66,17 +66,6 @@ package Gtk.Scrolled_Window is
 
    type Gtk_Scrolled_Window_Record is new Bin.Gtk_Bin_Record with private;
    type Gtk_Scrolled_Window is access all Gtk_Scrolled_Window_Record'Class;
-
-   type Gtk_Corner_Type is
-     (Corner_Top_Left,
-      Corner_Bottom_Left,
-      Corner_Top_Right,
-      Corner_Bottom_Right);
-   --  Type used by Set_Placement below to determine the location of the
-   --  child widget with respect to the scrollbars.
-   --  Corner_Top_Left means the child is in the top left, with the scrollbars
-   --  underneath and to the right.
-   for Gtk_Corner_Type'Size use Gint'Size;
 
    procedure Gtk_New
      (Scrolled_Window : out Gtk_Scrolled_Window;
@@ -135,16 +124,32 @@ package Gtk.Scrolled_Window is
    --  the slider part of the bar would be smaller than the trough - the
    --  display is larger than the page size).
 
+   procedure Get_Policy
+     (Scrolled_Window    : access Gtk_Scrolled_Window_Record;
+      H_Scrollbar_Policy : out Enums.Gtk_Policy_Type;
+      V_Scrollbar_Policy : out Enums.Gtk_Policy_Type);
+   --  Return the scrollbar policy for the horizontal and vertical scrollbars.
+
    procedure Set_Placement
      (Scrolled_Window  : access Gtk_Scrolled_Window_Record;
-      Window_Placement : Gtk_Corner_Type);
+      Window_Placement : Gtk.Enums.Gtk_Corner_Type);
    --  Determine the location of the widget with respect to the scrollbars.
    --  The default is Corner_Top_Left.
+
+   function Get_Placement
+     (Scrolled_Window  : access Gtk_Scrolled_Window_Record)
+      return Gtk.Enums.Gtk_Corner_Type;
+   --  Return the location of the widget with respect to the scrollbars.
 
    procedure Set_Shadow_Type
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
       Shadow_Type     : Gtk.Enums.Gtk_Shadow_Type);
    --  Change the type of shadow drawn around the contents of Scrolled_Window.
+
+   function Get_Shadow_Type
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
+      return Gtk.Enums.Gtk_Shadow_Type;
+   --  Return the type of shadow drawn around the contents of Scrolled_Window.
 
    procedure Add_With_Viewport
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;

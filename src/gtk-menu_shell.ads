@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,7 +40,7 @@
 --  submenu (if any) displayed.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Container;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
@@ -50,14 +50,6 @@ package Gtk.Menu_Shell is
    type Gtk_Menu_Shell_Record is new
      Gtk.Container.Gtk_Container_Record with private;
    type Gtk_Menu_Shell is access all Gtk_Menu_Shell_Record'Class;
-
-   type Gtk_Menu_Direction_Type is
-     (Menu_Dir_Parent,
-      Menu_Dir_Child,
-      Menu_Dir_Next,
-      Menu_Dir_Prev);
-   --  Direction where to move the selection. See the signal "selection-done"
-   --  below.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Menu_Shell.

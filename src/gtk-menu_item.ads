@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Item;
 with Gtk.Widget;
@@ -42,9 +42,9 @@ package Gtk.Menu_Item is
    procedure Gtk_New_With_Mnemonic
      (Menu_Item : out Gtk_Menu_Item;
       Label     : String);
-   --  Create a new Gtk_Menu_Item containing a label. The label is created
-   --  using Gtk.Label.Gtk_New_With_Mnemonic, so underscores in Label indicate
-   --  the mnemonic for the menu item.
+   --  Create a new Gtk_Menu_Item containing a label.
+   --  The label is created using Gtk.Label.Gtk_New_With_Mnemonic, so
+   --  underscores in Label indicate the mnemonic for the menu item.
 
    procedure Initialize
      (Menu_Item : access Gtk_Menu_Item_Record'Class; Label : String);
@@ -61,11 +61,13 @@ package Gtk.Menu_Item is
    procedure Set_Submenu
      (Menu_Item : access Gtk_Menu_Item_Record;
       Submenu   : access Widget.Gtk_Widget_Record'Class);
-
-   procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record);
+   --  Set the submenu underneath Menu_Item.
 
    function Get_Submenu
      (Menu_Item : access Gtk_Menu_Item_Record) return Gtk.Widget.Gtk_Widget;
+   --  Get the submenu underneath this menu item, if any, null otherwise.
+
+   procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record);
 
    procedure Gtk_Select (Menu_Item : access Gtk_Menu_Item_Record);
 
@@ -80,11 +82,26 @@ package Gtk.Menu_Item is
      (Menu_Item : access Gtk_Menu_Item_Record;
       Justify   : Boolean := True);
 
+   function Get_Right_Justified
+     (Menu_Item : access Gtk_Menu_Item_Record) return Boolean;
+
    procedure Set_Right_Justify
      (Menu_Item : access Gtk_Menu_Item_Record;
-      Justify   : Boolean);
-   --  Call Right_Justify when Justify. Noop otherwise
+      Justify   : Boolean) renames Set_Right_Justified;
    --  This procedure is needed by Gate to automate the code generation.
+
+   procedure Set_Accel_Path
+     (Menu_Item  : access Gtk_Menu_Item_Record;
+      Accel_Path : String);
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  activate
+   --  activate_item
+   --  toggle_size_request
+   --  toggle_size_allocate
 
    ----------------
    -- Properties --
@@ -103,5 +120,13 @@ private
 end Gtk.Menu_Item;
 
 --  missing:
---  Toggle_Size_Request
---  Toggle_Size_Allocate
+--  procedure Toggle_Size_Request
+--    (Menu_Item   : access Gtk_Menu_Item_Record;
+--     Requisition : int*);
+--  Emit the signal "toggle_size_request"
+
+--  procedure Toggle_Size_Allocate
+--    (Menu_Item  : access Gtk_Menu_Item_Record;
+--     Allocation : Gint);
+--  Emit the signal "toggle_size_allocate"
+

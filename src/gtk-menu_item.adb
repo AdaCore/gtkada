@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -139,6 +139,18 @@ package body Gtk.Menu_Item is
       Initialize_User_Data (Menu_Item);
    end Initialize_With_Mnemonic;
 
+   -----------------
+   -- Get_Submenu --
+   -----------------
+
+   function Get_Right_Justified
+     (Menu_Item : access Gtk_Menu_Item_Record) return Boolean
+   is
+      function Internal (Menu_Item : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_menu_item_get_right_justified");
+   begin
+      return To_Boolean (Internal (Get_Object (Menu_Item)));
+   end Get_Right_Justified;
 
    -----------------
    -- Get_Submenu --
@@ -174,6 +186,23 @@ package body Gtk.Menu_Item is
       Set_Right_Justified (Menu_Item, True);
    end Right_Justify;
 
+   --------------------
+   -- Set_Accel_Path --
+   --------------------
+
+   procedure Set_Accel_Path
+     (Menu_Item  : access Gtk_Menu_Item_Record;
+      Accel_Path : String)
+   is
+      procedure Internal
+        (Menu_Item  : System.Address;
+         Accel_Path : String);
+      pragma Import (C, Internal, "gtk_menu_item_set_accel_path");
+
+   begin
+      Internal (Get_Object (Menu_Item), Accel_Path & ASCII.NUL);
+   end Set_Accel_Path;
+
    -----------------
    -- Set_Submenu --
    -----------------
@@ -203,20 +232,10 @@ package body Gtk.Menu_Item is
         (Menu_Item : System.Address;
          Justify   : Gboolean);
       pragma Import (C, Internal, "gtk_menu_item_set_right_justified");
+
    begin
       Internal (Get_Object (Menu_Item), To_Gboolean (Justify));
    end Set_Right_Justified;
-
-   -----------------------
-   -- Set_Right_Justify --
-   -----------------------
-
-   procedure Set_Right_Justify
-     (Menu_Item : access Gtk_Menu_Item_Record;
-      Justify   : Boolean) is
-   begin
-      Set_Right_Justified (Menu_Item, Justify);
-   end Set_Right_Justify;
 
    ---------------------
    -- Type_Conversion --

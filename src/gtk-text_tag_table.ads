@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,7 +30,7 @@
 --  A table is a collection of tags where you can Add, Remove, Lookup
 --  or traverse (Foreach) a tag.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Text_Tag;
 
@@ -71,10 +70,6 @@ package Gtk.Text_Tag_Table is
 
    function Get_Size (Table : access Gtk_Text_Tag_Table_Record) return Gint;
    --  Return the size of the table (number of tags).
-
-   function Size (Table : access Gtk_Text_Tag_Table_Record) return Gint
-     renames Get_Size;
-   --  This function is deprecated.
 
    generic
       type Data_Type (<>) is private;

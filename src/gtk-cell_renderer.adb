@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,6 +38,35 @@ with System; use System;
 
 package body Gtk.Cell_Renderer is
 
+   --------------
+   -- Get_Size --
+   --------------
+
+   procedure Get_Size
+     (Cell      : access Gtk_Cell_Renderer_Record;
+      Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Cell_Area : out Gdk.Rectangle.Gdk_Rectangle;
+      X_Offset  : out Gint;
+      Y_Offset  : out Gint;
+      Width     : out Gint;
+      Height    : out Gint)
+   is
+      procedure Internal
+        (Cell      : System.Address;
+         Widget    : System.Address;
+         Cell_Area : out Gdk.Rectangle.Gdk_Rectangle;
+         X_Offset  : out Gint;
+         Y_Offset  : out Gint;
+         Width     : out Gint;
+         Height    : out Gint);
+      pragma Import (C, Internal, "gtk_cell_renderer_get_size");
+
+   begin
+      Internal
+        (Get_Object (Cell), Get_Object (Widget),
+         Cell_Area, X_Offset, Y_Offset, Width, Height);
+   end Get_Size;
+
    ------------
    -- Render --
    ------------
@@ -61,14 +89,16 @@ package body Gtk.Cell_Renderer is
          Expose_Area     : Gdk.Rectangle.Gdk_Rectangle;
          Flags           : Gint);
       pragma Import (C, Internal, "gtk_cell_renderer_render");
+
    begin
-      Internal (Get_Object (Cell),
-                Window,
-                Get_Object (Widget),
-                Background_Area,
-                Cell_Area,
-                Expose_Area,
-                Gtk_Cell_Renderer_State'Pos (Flags));
+      Internal
+        (Get_Object (Cell),
+         Window,
+         Get_Object (Widget),
+         Background_Area,
+         Cell_Area,
+         Expose_Area,
+         Gtk_Cell_Renderer_State'Pos (Flags));
    end Render;
 
    --------------
@@ -82,8 +112,7 @@ package body Gtk.Cell_Renderer is
       Path            : String;
       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-      Flags           : Gtk_Cell_Renderer_State)
-      return Boolean
+      Flags           : Gtk_Cell_Renderer_State) return Boolean
    is
       function Internal
         (Cell            : System.Address;
@@ -92,17 +121,18 @@ package body Gtk.Cell_Renderer is
          Path            : String;
          Background_Area : Gdk.Rectangle.Gdk_Rectangle;
          Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
-         Flags           : Gint)
-         return Gint;
+         Flags           : Gint) return Gboolean;
       pragma Import (C, Internal, "gtk_cell_renderer_activate");
+
    begin
-      return Boolean'Val (Internal (Get_Object (Cell),
-                                    Event,
-                                    Get_Object (Widget),
-                                    Path & ASCII.NUL,
-                                    Background_Area,
-                                    Cell_Area,
-                                    Gtk_Cell_Renderer_State'Pos (Flags)));
+      return To_Boolean (Internal
+        (Get_Object (Cell),
+         Event,
+         Get_Object (Widget),
+         Path & ASCII.NUL,
+         Background_Area,
+         Cell_Area,
+         Gtk_Cell_Renderer_State'Pos (Flags)));
    end Activate;
 
    -------------------

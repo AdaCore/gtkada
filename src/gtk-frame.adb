@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,12 +37,45 @@ package body Gtk.Frame is
    ---------------
 
    function Get_Label (Frame : access Gtk_Frame_Record) return String is
-      function Internal (Label : System.Address) return chars_ptr;
+      function Internal (Frame : System.Address) return chars_ptr;
       pragma Import (C, Internal, "gtk_frame_get_label");
 
    begin
       return Value (Internal (Get_Object (Frame)));
    end Get_Label;
+
+   ---------------------
+   -- Get_Label_Align --
+   ---------------------
+
+   procedure Get_Label_Align
+     (Frame  : access Gtk_Frame_Record;
+      Xalign : out Gfloat;
+      Yalign : out Gfloat)
+   is
+      procedure Internal
+        (Frame  : System.Address;
+         Xalign : out Gfloat;
+         Yalign : out Gfloat);
+      pragma Import (C, Internal, "gtk_frame_get_label_align");
+
+   begin
+      Internal (Get_Object (Frame), Xalign, Yalign);
+   end Get_Label_Align;
+
+   ---------------------
+   -- Get_Shadow_Type --
+   ---------------------
+
+   function Get_Shadow_Type
+     (Frame : access Gtk_Frame_Record) return Gtk_Shadow_Type
+   is
+      function Internal (Frame : System.Address) return Gtk_Shadow_Type;
+      pragma Import (C, Internal, "gtk_frame_get_shadow_type");
+
+   begin
+      return Internal (Get_Object (Frame));
+   end Get_Shadow_Type;
 
    -------------
    -- Gtk_New --

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -78,6 +78,20 @@ package body Gtk.Viewport is
       return Gtk.Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (Viewport)), Stub));
    end Get_Vadjustment;
+
+   ---------------------
+   -- Get_Shadow_Type --
+   ---------------------
+
+   function Get_Shadow_Type
+     (Viewport : access Gtk_Viewport_Record) return Gtk_Shadow_Type
+   is
+      function Internal (Viewport : System.Address) return Gtk_Shadow_Type;
+      pragma Import (C, Internal, "gtk_viewport_get_shadow_type");
+
+   begin
+      return Internal (Get_Object (Viewport));
+   end Get_Shadow_Type;
 
    -------------
    -- Gtk_New --

@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,7 +39,7 @@
 --  a way that they get the size they request and not more. For example, if you
 --  are packing your widgets into a table, you would not include the Fill flag.
 --  </description>
---  <c_version>1.3.7</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Object;
 with Glib.Generic_Properties;
@@ -52,13 +51,13 @@ package Gtk.Size_Group is
    type Gtk_Size_Group is access all Gtk_Size_Group_Record'Class;
 
    type Size_Group_Mode is (None, Horizontal, Vertical, Both);
+   pragma Convention (C, Size_Group_Mode);
    --  This type indicates how the size of all widgets in the group match:
    --  - None: The behavior is the same as if there was no size. Each widget
    --          requests its most appropriate size.
    --  - Horizontal: All the widgets in the group will have the same width.
    --  - Vertical: All the widgets in the group will have the same height
    --  - Both: All the widgets in the group will have exactly the same size.
-   for Size_Group_Mode'Size use Gint'Size;
 
    procedure Gtk_New
      (Size_Group : out Gtk_Size_Group; Mode : Size_Group_Mode := Both);
@@ -141,9 +140,3 @@ private
 
    pragma Import (C, Get_Type, "gtk_size_group_get_type");
 end Gtk.Size_Group;
-
-
---  Functions that have no equivalent in GtkAda (internal functions ?)
---  _gtk_size_group_get_child_requisition
---  _gtk_size_group_compute_requisition
---  _gtk_size_group_queue_resize

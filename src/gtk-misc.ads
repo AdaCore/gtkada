@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -32,7 +32,7 @@
 --  alignment and padding.
 --  This widget can not be instantiated directly.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Properties;
 with Gtk.Widget;
@@ -56,10 +56,18 @@ package Gtk.Misc is
    --  Note that if the widget fills its allocated area, these two parameters
    --  won't have any effect.
 
+   procedure Get_Alignment
+     (Misc : access Gtk_Misc_Record; Xalign : out Gfloat; Yalign : out Gfloat);
+   --  Return the alignment of the widget.
+
    procedure Set_Padding
      (Misc : access Gtk_Misc_Record; Xpad : Gint; Ypad : Gint);
    --  Set the padding (i.e. the extra spaces on the side of the widget).
    --  If Xpad or Ypad is negative, they will be changed to 0.
+
+   procedure Get_Padding
+     (Misc : access Gtk_Misc_Record; Xpad : out Gint; Ypad : out Gint);
+   --  Return the padding of the widget.
 
    ----------------
    -- Properties --

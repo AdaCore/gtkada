@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -42,7 +42,7 @@
 --  widgets.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Properties;
 with Gtk.Bin;
@@ -91,10 +91,20 @@ package Gtk.Frame is
    --  displayed on the top of the frame (0.0 for Xalign means align the label
    --  on the left, 1.0 means align the label on the right).
 
+   procedure Get_Label_Align
+     (Frame  : access Gtk_Frame_Record;
+      Xalign : out Gfloat;
+      Yalign : out Gfloat);
+   --  Return the X and Y alignments of the title in the frame.
+
    procedure Set_Shadow_Type
      (Frame    : access Gtk_Frame_Record;
       The_Type : Gtk_Shadow_Type);
    --  Change the visual aspect of the frame.
+
+   function Get_Shadow_Type
+     (Frame : access Gtk_Frame_Record) return Gtk_Shadow_Type;
+   --  Return the visual aspect of the frame.
 
    ----------------
    -- Properties --

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,6 +48,117 @@ package body Gtk.Spin_Button is
       return Gtk.Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (Spin_Button)), Stub));
    end Get_Adjustment;
+
+   ----------------
+   -- Get_Digits --
+   ----------------
+
+   function Get_Digits
+     (Spin_Button : access Gtk_Spin_Button_Record) return Guint
+   is
+      function Internal
+        (Spin_Button : System.Address) return Guint;
+      pragma Import (C, Internal, "gtk_spin_button_get_digits");
+
+   begin
+      return Internal (Get_Object (Spin_Button));
+   end Get_Digits;
+
+   --------------------
+   -- Get_Increments --
+   --------------------
+
+   procedure Get_Increments
+     (Spin_Button : access Gtk_Spin_Button_Record;
+      Step        : out Gdouble;
+      Page        : out Gdouble)
+   is
+      procedure Internal
+        (Spin_Button : System.Address;
+         Step        : out Gdouble;
+         Page        : out Gdouble);
+      pragma Import (C, Internal, "gtk_spin_button_get_increments");
+
+   begin
+      Internal (Get_Object (Spin_Button), Step, Page);
+   end Get_Increments;
+
+   ---------------
+   -- Get_Range --
+   ---------------
+
+   procedure Get_Range
+     (Spin_Button : access Gtk_Spin_Button_Record;
+      Min         : out Gdouble;
+      Max         : out Gdouble)
+   is
+      procedure Internal
+        (Spin_Button : System.Address;
+         Min         : out Gdouble;
+         Max         : out Gdouble);
+      pragma Import (C, Internal, "gtk_spin_button_get_range");
+
+   begin
+      Internal (Get_Object (Spin_Button), Min, Max);
+   end Get_Range;
+
+   -----------------------
+   -- Get_Update_Policy --
+   -----------------------
+
+   function Get_Update_Policy
+     (Spin_Button : access Gtk_Spin_Button_Record)
+      return Gtk_Spin_Button_Update_Policy
+   is
+      function Internal
+        (Spin_Button : System.Address) return Gtk_Spin_Button_Update_Policy;
+      pragma Import (C, Internal, "gtk_spin_button_get_update_policy");
+
+   begin
+      return Internal (Get_Object (Spin_Button));
+   end Get_Update_Policy;
+
+   -----------------
+   -- Get_Numeric --
+   -----------------
+
+   function Get_Numeric
+     (Spin_Button : access Gtk_Spin_Button_Record) return Boolean
+   is
+      function Internal (Spin_Button : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_spin_button_get_numeric");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Spin_Button)));
+   end Get_Numeric;
+
+   --------------
+   -- Get_Wrap --
+   --------------
+
+   function Get_Wrap
+     (Spin_Button : access Gtk_Spin_Button_Record) return Boolean
+   is
+      function Internal (Spin_Button : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_spin_button_get_wrap");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Spin_Button)));
+   end Get_Wrap;
+
+   -----------------------
+   -- Get_Snap_To_Ticks --
+   -----------------------
+
+   function Get_Snap_To_Ticks
+     (Spin_Button : access Gtk_Spin_Button_Record) return Boolean
+   is
+      function Internal (Spin_Button : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_spin_button_get_snap_to_ticks");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Spin_Button)));
+   end Get_Snap_To_Ticks;
 
    ---------------
    -- Get_Value --

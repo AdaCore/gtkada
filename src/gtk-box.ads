@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -53,7 +53,7 @@
 --  on how all the parameters for the boxes work.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Properties;
 with Gtk.Container;
@@ -175,6 +175,10 @@ package Gtk.Box is
    --  If the box is homogeneous, then all its children will be allocated the
    --  same amount of space, even if they are not resized to occupy it
    --  (depending on the parameters given to Pack_Start and Pack_End).
+
+   function Get_Homogeneous
+     (In_Box : access Gtk_Box_Record) return Boolean;
+   --  Return the homogeneous parameter of the box.
 
    procedure Set_Spacing
      (In_Box  : access Gtk_Box_Record;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,8 +35,6 @@
 --  Just like a Gtk_Viewport, its visible area is indicated by two
 --  Gtk_Adjustment widgets, and thus a Gtk_Layout can be put as is in a
 --  Gtk_Scrolled_Window.
---  In fact, due to a bug in gtk+1.2.6, you will have to do put in a scrolled
---  window. This of course will be fixed in later versions.
 --  As for Gtk_Fixed containers, the children can be located anywhere in the
 --  layout (no automatic organization is done). But, as opposed to Gtk_Fixed
 --  widgets, a Gtk_Layout does not try to resize itself to show all its
@@ -49,7 +47,7 @@
 --  and make sure you specify a size big enough for the layout.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Properties;
 with Gdk.Window;
@@ -149,8 +147,6 @@ package Gtk.Layout is
      (Layout     : access Gtk_Layout_Record;
       Adjustment : Gtk.Adjustment.Gtk_Adjustment);
    --  Specify a new adjustment to use for the vertical visual area.
-
-
 
    --  <doc_ignore>
 

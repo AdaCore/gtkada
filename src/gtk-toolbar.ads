@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib;
 with Gtk.Button;
@@ -100,10 +100,6 @@ package Gtk.Toolbar is
    -----------------
    -- Stock items --
    -----------------
-
-   procedure Set_Icon_Size
-     (Toolbar   : access Gtk_Toolbar_Record;
-      Icon_Size : Gtk_Icon_Size);
 
    function Insert_Stock
      (Toolbar              : access Gtk_Toolbar_Record;
@@ -200,6 +196,10 @@ package Gtk.Toolbar is
      (Toolbar : access Gtk_Toolbar_Record;
       Style   : Gtk_Toolbar_Style);
 
+   procedure Set_Icon_Size
+     (Toolbar   : access Gtk_Toolbar_Record;
+      Icon_Size : Gtk_Icon_Size);
+
    procedure Set_Tooltips
      (Toolbar : access Gtk_Toolbar_Record;
       Enable  : Boolean);
@@ -207,6 +207,18 @@ package Gtk.Toolbar is
    procedure Unset_Style (Toolbar : access Gtk_Toolbar_Record);
 
    procedure Unset_Icon_Size (Toolbar : access Gtk_Toolbar_Record);
+
+   function Get_Orientation
+     (Toolbar : access Gtk_Toolbar_Record) return Gtk_Orientation;
+
+   function Get_Style
+     (Toolbar : access Gtk_Toolbar_Record) return Gtk_Toolbar_Style;
+
+   function Get_Icon_Size
+     (Toolbar : access Gtk_Toolbar_Record) return Gtk_Icon_Size;
+
+   function Get_Tooltips
+     (Toolbar : access Gtk_Toolbar_Record) return Boolean;
 
    ----------------
    -- Properties --

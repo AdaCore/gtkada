@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -58,6 +58,20 @@ package body Gtk.Toggle_Button is
    begin
       return To_Boolean (Internal (Get_Object (Toggle_Button)));
    end Get_Inconsistent;
+
+   --------------
+   -- Get_Mode --
+   --------------
+
+   function Get_Mode
+     (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean
+   is
+      function Internal (Widget : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_toggle_button_get_mode");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Toggle_Button)));
+   end Get_Mode;
 
    -------------
    -- Gtk_New --

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
@@ -53,16 +53,9 @@ package Gtk.Ruler is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Ruler.
 
-   procedure Draw_Ticks (Ruler : access Gtk_Ruler_Record);
-
-   procedure Draw_Pos (Ruler : access Gtk_Ruler_Record);
-
    procedure Set_Metric
      (Ruler  : access Gtk_Ruler_Record;
       Metric : Gtk_Metric_Type);
-
-   function Get_Metric
-     (Ruler  : access Gtk_Ruler_Record) return Gtk_Metric_Type;
 
    procedure Set_Range
      (Ruler    : access Gtk_Ruler_Record;
@@ -71,12 +64,27 @@ package Gtk.Ruler is
       Position : Gdouble;
       Max_Size : Gdouble);
 
+   procedure Draw_Ticks (Ruler : access Gtk_Ruler_Record);
+
+   procedure Draw_Pos (Ruler : access Gtk_Ruler_Record);
+
+   function Get_Metric
+     (Ruler  : access Gtk_Ruler_Record) return Gtk_Metric_Type;
+   --  Get the units used for a Gtk_Ruler. See Set_Metric.
+
    procedure Get_Range
      (Ruler    : access Gtk_Ruler_Record;
       Lower    : out Gdouble;
       Upper    : out Gdouble;
       Position : out Gdouble;
       Max_Size : out Gdouble);
+   --  Retrieve values indicating the range and current position of a Ruler.
+   --  See Set_Range.
+   --  Lower: Lower limit of the ruler.
+   --  Upper: Upper limit of the ruler.
+   --  Position: Current position of the mark on the ruler.
+   --  Max_Size: Maximum size of the ruler used when calculating the space to
+   --            leave for the text.
 
    ----------------
    -- Properties --

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -33,6 +33,8 @@ pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.Accel_Label is
 
+   use Gtk.Widget;
+
    -----------------------
    -- Local Subprograms --
    -----------------------
@@ -41,6 +43,20 @@ package body Gtk.Accel_Label is
    --  This function is used to implement a minimal automated type conversion
    --  without having to drag the whole Gtk.Type_Conversion package for the
    --  most common widgets.
+
+   ----------------------
+   -- Get_Accel_Widget --
+   ----------------------
+
+   function Get_Accel_Widget
+     (Accel_Label : access Gtk_Accel_Label_Record) return Gtk_Widget
+   is
+      function Internal (Accel_Label : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_accel_label_get_accel_widget");
+
+   begin
+      return Convert (Internal (Get_Object (Accel_Label)));
+   end Get_Accel_Widget;
 
    ---------------------
    -- Get_Accel_Width --

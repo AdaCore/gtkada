@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -553,5 +553,5 @@ end Gtk.Style;
 --  gtk_paint_expander
 --  gtk_paint_layout
 --  gtk_paint_resize_grip
---  gtk_boder_copy
---  gtk_boder_free
+--  gtk_border_copy
+--  gtk_border_free

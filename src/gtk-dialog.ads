@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,7 +47,7 @@
 --
 --  @pxref{Package_Gtkada.Dialogs} for a higher level dialog interface.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Properties;
 with Gtk.Box;
@@ -64,7 +64,7 @@ package Gtk.Dialog is
    -----------------------
 
    type Gtk_Dialog_Flags is mod 3;
-   for Gtk_Dialog_Flags'Size use Gint'Size;
+   pragma Convention (C, Gtk_Dialog_Flags);
    Modal               : constant Gtk_Dialog_Flags := 0;
    Destroy_With_Parent : constant Gtk_Dialog_Flags := 1;
    No_Separator        : constant Gtk_Dialog_Flags := 2;

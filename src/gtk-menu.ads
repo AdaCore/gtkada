@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -59,7 +59,7 @@
 --  initially have a shortcut.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Accel_Group;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
@@ -114,11 +114,16 @@ package Gtk.Menu is
    --  Note that you can give the user access to this functionality by
    --  inserting a Gtk_Tearoff_Menu_Item in the menu.
 
-   procedure Set_Title
-     (Menu : access Gtk_Menu_Record; Title : String);
+   function Get_Tearoff_State (Menu : access Gtk_Menu_Record) return Boolean;
+   --  Return the tearoff status of the menu.
+
+   procedure Set_Title (Menu : access Gtk_Menu_Record; Title : String);
    --  Set the title of the menu.
    --  Title is displayed when the menu is displayed as a tearoff menu in an
    --  independent window.
+
+   function Get_Title (Menu : access Gtk_Menu_Record) return String;
+   --  Return the tiel of the menu.
 
    procedure Reorder_Child
      (Menu     : access Gtk_Menu_Record;
@@ -220,6 +225,24 @@ package Gtk.Menu is
    function Get_Accel_Group
      (Menu : access Gtk_Menu_Record) return Accel_Group.Gtk_Accel_Group;
    --  Get the accelerator group used to set the key bindings in the menu.
+
+   procedure Set_Accel_Path
+     (Menu       : access Gtk_Menu_Record;
+      Accel_Path : String);
+   --  Set an accelerator path for this menu from which accelerator paths
+   --  for its immediate children, its menu items, can be constructed.
+   --  The main purpose of this function is to spare the programmer the
+   --  inconvenience of having to call Gtk.Menu_Item.Set_Accel_Path on
+   --  each menu item that should support runtime user changable accelerators.
+   --  Instead, by just calling Gtk.Menu.Set_Accel_Path on their parent,
+   --  each menu item of this menu, that contains a label describing its
+   --  purpose, automatically gets an accel path assigned. For example, a menu
+   --  containing menu items "New" and "Exit", will, after
+   --  Set_Accel_Path (menu, "<Gnumeric-Sheet>/File"); has been called, assign
+   --  its items the accel paths:
+   --  "<Gnumeric-Sheet>/File/New" and "<Gnumeric-Sheet>/File/Exit".
+   --  Assigning accel paths to menu items then enables the user to change
+   --  their accelerators at runtime.
 
    ----------------------------------
    -- Attaching a menu to a widget --

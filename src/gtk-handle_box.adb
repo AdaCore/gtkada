@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,6 +30,52 @@
 with System;
 
 package body Gtk.Handle_Box is
+
+   -------------------------
+   -- Get_Handle_Position --
+   -------------------------
+
+   function Get_Handle_Position
+     (Handle_Box : access Gtk_Handle_Box_Record) return Enums.Gtk_Position_Type
+   is
+      function Internal
+        (Handle_Box : System.Address) return Enums.Gtk_Position_Type;
+      pragma Import (C, Internal, "gtk_handle_box_get_handle_position");
+
+   begin
+      return Internal (Get_Object (Handle_Box));
+   end Get_Handle_Position;
+
+   ---------------------
+   -- Get_Shadow_Type --
+   ---------------------
+
+   function Get_Shadow_Type
+     (Handle_Box : access Gtk_Handle_Box_Record)
+      return Enums.Gtk_Shadow_Type
+   is
+      function Internal
+        (Handle_Box : System.Address) return Enums.Gtk_Shadow_Type;
+      pragma Import (C, Internal, "gtk_handle_box_get_shadow_type");
+
+   begin
+      return Internal (Get_Object (Handle_Box));
+   end Get_Shadow_Type;
+
+   -------------------
+   -- Get_Snap_Edge --
+   -------------------
+
+   function Get_Snap_Edge
+     (Handle_Box : access Gtk_Handle_Box_Record) return Enums.Gtk_Position_Type
+   is
+      function Internal
+        (Handle_Box : System.Address) return Enums.Gtk_Position_Type;
+      pragma Import (C, Internal, "gtk_handle_box_get_snap_edge");
+
+   begin
+      return Internal (Get_Object (Handle_Box));
+   end Get_Snap_Edge;
 
    -------------
    -- Gtk_New --

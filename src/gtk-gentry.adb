@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -57,6 +57,149 @@ package body Gtk.GEntry is
       Internal (Get_Object (The_Entry), Text & ASCII.NUL);
    end Append_Text;
 
+   --------------------
+   -- Get_Visibility --
+   --------------------
+
+   function Get_Visibility
+     (The_Entry : access Gtk_Entry_Record) return Boolean
+   is
+      function Internal (The_Entry : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_entry_get_visibility");
+
+   begin
+      return To_Boolean (Internal (Get_Object (The_Entry)));
+   end Get_Visibility;
+
+   ------------------------
+   -- Set_Invisible_Char --
+   ------------------------
+
+   procedure Set_Invisible_Char
+     (The_Entry : access Gtk_Entry_Record; Char : Gunichar)
+   is
+      procedure Internal (The_Entry : System.Address; Char : Gunichar);
+      pragma Import (C, Internal, "gtk_entry_get_invisible_char");
+
+   begin
+      Internal (Get_Object (The_Entry), Char);
+   end Set_Invisible_Char;
+
+   ------------------------
+   -- Get_Invisible_Char --
+   ------------------------
+
+   function Get_Invisible_Char
+     (The_Entry : access Gtk_Entry_Record) return Gunichar
+   is
+      function Internal (The_Entry : System.Address) return Gunichar;
+      pragma Import (C, Internal, "gtk_entry_get_invisible_char");
+
+   begin
+      return Internal (Get_Object (The_Entry));
+   end Get_Invisible_Char;
+
+   -------------------
+   -- Set_Has_Frame --
+   -------------------
+
+   procedure Set_Has_Frame
+     (The_Entry : access Gtk_Entry_Record; Setting : Boolean := True)
+   is
+      procedure Internal (The_Entry : System.Address; Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_entry_set_has_frame");
+
+   begin
+      Internal (Get_Object (The_Entry), To_Gboolean (Setting));
+   end Set_Has_Frame;
+
+   -------------------
+   -- Get_Has_Frame --
+   -------------------
+
+   function Get_Has_Frame
+     (The_Entry : access Gtk_Entry_Record) return Boolean
+   is
+      function Internal (The_Entry : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_entry_get_has_frame");
+
+   begin
+      return To_Boolean (Internal (Get_Object (The_Entry)));
+   end Get_Has_Frame;
+
+   --------------------
+   -- Get_Max_Length --
+   --------------------
+
+   function Get_Max_Length (The_Entry : access Gtk_Entry_Record) return Gint is
+      function Internal (The_Entry : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_entry_get_max_length");
+
+   begin
+      return Internal (Get_Object (The_Entry));
+   end Get_Max_Length;
+
+   ---------------------------
+   -- Set_Activates_Default --
+   ---------------------------
+
+   procedure Set_Activates_Default
+     (The_Entry : access Gtk_Entry_Record; Setting : Boolean)
+   is
+      procedure Internal (The_Entry : System.Address; Setting : Gboolean);
+      pragma Import (C, Internal, "gtk_entry_set_activates_default");
+
+   begin
+      Internal (Get_Object (The_Entry), To_Gboolean (Setting));
+   end Set_Activates_Default;
+
+   ---------------------------
+   -- Get_Activates_Default --
+   ---------------------------
+
+   function Get_Activates_Default
+     (The_Entry : access Gtk_Entry_Record) return Boolean
+   is
+      function Internal (The_Entry : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_entry_get_activates_default");
+
+   begin
+      return To_Boolean (Internal (Get_Object (The_Entry)));
+   end Get_Activates_Default;
+
+   ---------------------
+   -- Get_Width_Chars --
+   ---------------------
+
+   function Get_Width_Chars
+     (The_Entry : access Gtk_Entry_Record'Class) return Gint
+   is
+      function Internal (The_Entry : System.Address) return Gint;
+      pragma Import (C, Internal, "gtk_entry_get_width_chars");
+
+   begin
+      return Internal (Get_Object (The_Entry));
+   end Get_Width_Chars;
+
+   ------------------------
+   -- Get_Layout_Offsets --
+   ------------------------
+
+   procedure Get_Layout_Offsets
+     (The_Entry : access Gtk_Entry_Record;
+      X         : out Gint;
+      Y         : out Gint)
+  is
+      procedure Internal
+        (The_Entry : System.Address;
+         X         : out Gint;
+         Y         : out Gint);
+      pragma Import (C, Internal, "gtk_entry_get_layout_offsets");
+
+   begin
+      Internal (Get_Object (The_Entry), X, Y);
+   end Get_Layout_Offsets;
+
    --------------
    -- Get_Text --
    --------------
@@ -74,7 +217,7 @@ package body Gtk.GEntry is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Entry; Max : Guint16) is
+   procedure Gtk_New (Widget : out Gtk_Entry; Max : Gint) is
    begin
       Widget := new Gtk_Entry_Record;
       Initialize (Widget, Max);
@@ -96,9 +239,9 @@ package body Gtk.GEntry is
 
    procedure Initialize
      (Widget : access Gtk_Entry_Record'Class;
-      Max    : Guint16)
+      Max    : Gint)
    is
-      function Internal (Max : Guint16) return System.Address;
+      function Internal (Max : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_entry_new_with_max_length");
 
    begin
@@ -153,9 +296,9 @@ package body Gtk.GEntry is
 
    procedure Set_Max_Length
      (The_Entry : access Gtk_Entry_Record;
-      Max       : Guint16)
+      Max       : Gint)
    is
-      procedure Internal (The_Entry : System.Address; Max : Guint16);
+      procedure Internal (The_Entry : System.Address; Max : Gint);
       pragma Import (C, Internal, "gtk_entry_set_max_length");
 
    begin
@@ -193,9 +336,9 @@ package body Gtk.GEntry is
    ---------------------
 
    procedure Set_Width_Chars
-     (The_Entry : access Gtk_Entry_Record'Class; Width : Natural)
+     (The_Entry : access Gtk_Entry_Record'Class; Width : Gint)
    is
-      procedure Internal (The_Entry : System.Address; Width : Natural);
+      procedure Internal (The_Entry : System.Address; Width : Gint);
       pragma Import (C, Internal, "gtk_entry_set_width_chars");
    begin
       Internal (Get_Object (The_Entry), Width);

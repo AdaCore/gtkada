@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  Check out the Gtk_Sheet widget for a different kind of table that can
 --  also contain text and images in a more efficient way.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Properties;
 with Gtk.Container;
@@ -141,6 +141,29 @@ package Gtk.Table is
    --  Indicate the homogeneous status of the table.
    --  If Homogeneous is True, the rows and columns of the table will all
    --  be allocated the same width or height.
+
+   function Get_Row_Spacing
+     (Table : access Gtk_Table_Record;
+      Row   : Guint) return Guint;
+   --  Return the spacing in pixels between Row and the next one.
+
+   function Get_Col_Spacing
+     (Table  : access Gtk_Table_Record;
+      Column : Guint) return Guint;
+   --  Return the spacing in pixels between Column and the next one.
+
+   function Get_Default_Row_Spacing
+     (Table : access Gtk_Table_Record) return Guint;
+   --  Return the default spacing for the rows.
+
+   function Get_Default_Col_Spacing
+     (Table : access Gtk_Table_Record) return Guint;
+   --  Return the default spacing for the columns.
+
+   function Get_Homogeneous
+     (Table : access Gtk_Table_Record) return Boolean;
+   --  Return the homogeneous status of the table.
+   --  See Set_Homogeneous for more details.
 
    ----------------
    -- Properties --

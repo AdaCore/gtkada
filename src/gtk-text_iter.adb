@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -61,6 +60,22 @@ package body Gtk.Text_Iter is
 
    package Iter_Access_Address_Conversions is
      new System.Address_To_Access_Conversions (Gtk_Text_Iter);
+
+   ----------------
+   -- Can_Insert --
+   ----------------
+
+   function Can_Insert
+     (Iter                : Gtk_Text_Iter;
+      Default_Editability : Boolean) return Boolean
+   is
+      function Internal
+        (Iter : Gtk_Text_Iter; Default : Gboolean) return Gboolean;
+      pragma Import (C, Internal, "gtk_text_iter_can_insert");
+
+   begin
+      return To_Boolean (Internal (Iter, To_Gboolean (Default_Editability)));
+   end Can_Insert;
 
    ----------
    -- Copy --
@@ -922,6 +937,40 @@ package body Gtk.Text_Iter is
    begin
       Result := To_Boolean (Internal (Iter));
    end Forward_To_Line_End;
+
+   -----------------------------
+   -- Set_Visible_Line_Offset --
+   -----------------------------
+
+   procedure Set_Visible_Line_Offset
+     (Iter         : in out Gtk_Text_Iter;
+      Char_On_Line : Gint)
+   is
+      procedure Internal
+        (Iter         : Gtk_Text_Iter;
+         Char_On_Line : Gint);
+      pragma Import (C, Internal, "gtk_text_iter_set_visible_line_offset");
+
+   begin
+      Internal (Iter, Char_On_Line);
+   end Set_Visible_Line_Offset;
+
+   ----------------------------
+   -- Set_Visible_Line_Index --
+   ----------------------------
+
+   procedure Set_Visible_Line_Index
+     (Iter         : in out Gtk_Text_Iter;
+      Byte_On_Line : Gint)
+   is
+      procedure Internal
+        (Iter         : Gtk_Text_Iter;
+         Byte_On_Line : Gint);
+      pragma Import (C, Internal, "gtk_text_iter_set_visible_line_index");
+
+   begin
+      Internal (Iter, Byte_On_Line);
+   end Set_Visible_Line_Index;
 
    ---------------------------
    -- Forward_To_Tag_Toggle --

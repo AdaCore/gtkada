@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -50,7 +50,7 @@
 --  will set the entry field to the last or first item in the list,
 --  respectively.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Properties;
 with Gtk.GEntry;
@@ -74,6 +74,48 @@ package Gtk.Combo is
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Combo.
+
+   procedure Set_Value_In_List
+     (Combo_Box   : access Gtk_Combo_Record;
+      Val         : Boolean := True;
+      Ok_If_Empty : Boolean := False);
+   --  Specify whether the value entered in the text entry field must match one
+   --  of the values in the list. If this is set then the user will not be able
+   --  to perform any other action until a valid value has been entered.
+   --  If an empty field is acceptable, the Ok_If_Empty parameter should be
+   --  True.
+   --  If the value entered must match one of the values in the list, val
+   --  should be True.
+
+   procedure Set_Use_Arrows
+     (Combo_Box : access Gtk_Combo_Record; Val : Boolean := True);
+   --  Specify if the arrow (cursor) keys can be used to step through the
+   --  items in the list. This is on by default.
+
+   procedure Set_Use_Arrows_Always
+     (Combo_Box : access Gtk_Combo_Record; Val : Boolean := True);
+   --  Specify if the arrow keys will still work even if the current contents
+   --  of the Gtk_Entry field do not match any of the list items.
+
+   procedure Set_Case_Sensitive
+     (Combo_Box : access Gtk_Combo_Record; Val : Boolean := True);
+   --  Specify whether the text entered into the Gtk_Entry field and the text
+   --  in the list items are case sensitive.
+   --  This may be useful, for example, when you have called Set_Value_In_List
+   --  to limit the values entered, but you are not worried about differences
+   --  in case.
+
+   procedure Set_Item_String
+     (Combo_Box  : access Gtk_Combo_Record;
+      Item       : Gtk.Item.Gtk_Item;
+      Item_Value : String);
+   --  Set the string to place in the Gtk_Entry field when a particular list
+   --  item is selected. This is needed if the list item is not a simple label.
+
+   procedure Set_Popdown_Strings
+     (Combo_Box : access Gtk_Combo_Record;
+      Strings   : String_List.Glist);
+   --  Set all the items in the popup list.
 
    procedure Disable_Activate (Combo_Box : access Gtk_Combo_Record);
    --  Disable the standard handler for the <return> key in the entry field.
@@ -100,48 +142,6 @@ package Gtk.Combo is
    function Get_Popup_Window
      (Combo_Box : access Gtk_Combo_Record) return Gtk.Window.Gtk_Window;
    --  Return the popup window associated with a Combo_Box.
-
-   procedure Set_Case_Sensitive
-     (Combo_Box : access Gtk_Combo_Record; Val : Boolean := True);
-   --  Specify whether the text entered into the Gtk_Entry field and the text
-   --  in the list items are case sensitive.
-   --  This may be useful, for example, when you have called Set_Value_In_List
-   --  to limit the values entered, but you are not worried about differences
-   --  in case.
-
-   procedure Set_Item_String
-     (Combo_Box  : access Gtk_Combo_Record;
-      Item       : Gtk.Item.Gtk_Item;
-      Item_Value : String);
-   --  Set the string to place in the Gtk_Entry field when a particular list
-   --  item is selected. This is needed if the list item is not a simple label.
-
-   procedure Set_Popdown_Strings
-     (Combo_Box : access Gtk_Combo_Record;
-      Strings   : String_List.Glist);
-   --  Set all the items in the popup list.
-
-   procedure Set_Use_Arrows
-     (Combo_Box : access Gtk_Combo_Record; Val : Boolean := True);
-   --  Specify if the arrow (cursor) keys can be used to step through the
-   --  items in the list. This is on by default.
-
-   procedure Set_Use_Arrows_Always
-     (Combo_Box : access Gtk_Combo_Record; Val : Boolean := True);
-   --  Specify if the arrow keys will still work even if the current contents
-   --  of the Gtk_Entry field do not match any of the list items.
-
-   procedure Set_Value_In_List
-     (Combo_Box   : access Gtk_Combo_Record;
-      Val         : Gint;
-      Ok_If_Empty : Boolean);
-   --  Specify whether the value entered in the text entry field must match one
-   --  of the values in the list. If this is set then the user will not be able
-   --  to perform any other action until a valid value has been entered.
-   --  If an empty field is acceptable, the Ok_If_Empty parameter should be
-   --  True.
-   --  If the value entered must match one of the values in the list, val
-   --  should be True.
 
    ----------------
    -- Properties --

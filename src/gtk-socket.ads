@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -67,7 +67,7 @@
 --  you start with visible windows, some window managers will not be able to
 --  correctly merge the two windows (Enlightenment for instance).
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Container;
 with Gdk.Window;
@@ -88,16 +88,42 @@ package Gtk.Socket is
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Socket.
 
+   procedure Add_Id (Socket : access Gtk_Socket_Record; Id : Guint32);
+   --  Add an XEMBED client, such as a Gtk_Plug, to the Gtk_Socket.
+   --  The client may be in the same process or in a different process.
+   --
+   --  To embed a Gtk_Plug in a Gtk_Socket, you can either create the
+   --  Gtk_Plug with Gtk_New (0), call Gtk.Plug.Get_Id to get the
+   --  window ID of the plug, and then pass that to the Gtk.Socket.Add_Id, or
+   --  you can call Gtk.Socket.Get_Id to get the window ID for the socket, and
+   --  call Gtk.Plug.Gtk_New passing in that ID.
+   --
+   --  Id: the XID of a client participating in the XEMBED protocol.
+   --
+   --  The Gtk_Socket must have already be added into a toplevel window
+   --  before you can make this call.
+
+   function Get_Id (Socket : access Gtk_Socket_Record) return Guint32;
+   --  Get the window ID of a Gtk_Socket widget, which can then be used to
+   --  create a client embedded inside the socket, for instance with
+   --  Gtk.Socket.Gtk_New (Id). The Gtk_Socket must have already been added
+   --  into a toplevel window before you can make this call.
+
+   --  <doc_ignore>
    procedure Steal (Socket : access Gtk_Socket_Record; Wid : Guint32);
    --  Reparent a pre-existing toplevel window into a Gtk_Socket.
+   --  This is meant to embed clients that do not know about embedding into a
+   --  Gtk_Socket, however doing so is inherently unreliable, and using
+   --  this function is not recommended.
+   --  The Gtk_Socket must have already be added into a toplevel window
+   --  before you can make this call.
    --  Wid is the XID of an existing toplevel window.
+   --  pragma Deprecated (Steal);
+   --  </doc_ignore>
 
    function Get_Plug_Window
      (Socket : access Gtk_Socket_Record) return Gdk.Window.Gdk_Window;
    --  Return the id of the embedded window.
-
-   function Get_XWindow (Window : Gdk.Window.Gdk_Window) return Guint32;
-   --  Return the X window associated with a Gdk_Window, 0 under Win32.
 
    ----------------
    -- Properties --
@@ -134,5 +160,5 @@ end Gtk.Socket;
 --
 --  Realize (Socket);
 --  Put_Line ("The XID of the sockets window is" &
---            Guint32'Image (Get_XWindow (Get_Window (Socket))));
+--            Guint32'Image (Get_Id (Socket)));
 --  </example>

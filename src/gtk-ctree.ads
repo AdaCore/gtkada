@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -65,6 +65,39 @@ package Gtk.Ctree is
 
    --  <doc_ignore>
    Null_Ctree_Node : constant Gtk_Ctree_Node := null;
+
+   type Gtk_Ctree_Line_Style is
+     (Ctree_Lines_None,
+      --  No line will be drawn in the Ctree
+
+      Ctree_Lines_Solid,
+      --  Solid lines will be drawn
+
+      Ctree_Lines_Dotted,
+      --  Dotted lines will be drawn
+
+      Ctree_Lines_Tabbed
+      --  The tree won't be highlighted by lines but by tabs surrounding nodes
+     );
+   pragma Convention (C, Gtk_Ctree_Line_Style);
+   --  See Gtk.Ctree.Set_Line_Style for more details.
+
+   type Gtk_Ctree_Expander_Style is
+     (Ctree_Expander_None,
+      --  No pixmap will be drawn, you will have to double-click on the node to
+      --  expand it.
+
+      Ctree_Expander_Square,
+      --  The pixmap will be a square
+
+      Ctree_Expander_Triangle,
+      --  The pixmap will be a triangle
+
+      Ctree_Expander_Circular
+      --  The pixmap will be a circle
+     );
+   --  See Gtk.Ctree.Set_Expander_Style for more details.
+   pragma Convention (C, Gtk_Ctree_Expander_Style);
 
    package Row_List is new Glib.Glist.Generic_List (Gtk_Ctree_Row);
 
@@ -481,7 +514,7 @@ package Gtk.Ctree is
    function Node_Get_Cell_Type (Ctree  : access Gtk_Ctree_Record;
                                 Node   : in     Gtk_Ctree_Node;
                                 Column : in     Gint)
-                                return          Gtk_Cell_Type;
+                                return Gtk.Clist.Gtk_Cell_Type;
    --  Return the type of the cell at Node/Column.
    --  This indicates which of the functions Node_Get_Text. Node_Get_Pixmap,
    --  etc. should be used with this cell.

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -54,6 +54,20 @@ package body Gtk.Box is
          return null;
       end if;
    end Get_Child;
+
+   ---------------------
+   -- Get_Homogeneous --
+   ---------------------
+
+   function Get_Homogeneous
+     (In_Box : access Gtk_Box_Record) return Boolean
+   is
+      function Internal (In_Box : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_box_get_homogeneous");
+
+   begin
+      return To_Boolean (Internal (Get_Object (In_Box)));
+   end Get_Homogeneous;
 
    -----------------
    -- Get_Spacing --

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,6 +48,58 @@ package body Gtk.Scrolled_Window is
    begin
       Internal (Get_Object (Scrolled_Window), Get_Object (Child));
    end Add_With_Viewport;
+
+   ----------------
+   -- Get_Policy --
+   ----------------
+
+   procedure Get_Policy
+     (Scrolled_Window    : access Gtk_Scrolled_Window_Record;
+      H_Scrollbar_Policy : out Enums.Gtk_Policy_Type;
+      V_Scrollbar_Policy : out Enums.Gtk_Policy_Type)
+   is
+      procedure Internal
+        (Scrolled_Window    : System.Address;
+         H_Scrollbar_Policy : out Enums.Gtk_Policy_Type;
+         V_Scrollbar_Policy : out Enums.Gtk_Policy_Type);
+      pragma Import (C, Internal, "gtk_scrolled_window_get_policy");
+
+   begin
+      Internal
+        (Get_Object (Scrolled_Window), H_Scrollbar_Policy, V_Scrollbar_Policy);
+   end Get_Policy;
+
+   -------------------
+   -- Get_Placement --
+   -------------------
+
+   function Get_Placement
+     (Scrolled_Window  : access Gtk_Scrolled_Window_Record)
+      return Gtk.Enums.Gtk_Corner_Type
+   is
+      function Internal
+        (Scrolled_Window : System.Address) return Gtk.Enums.Gtk_Corner_Type;
+      pragma Import (C, Internal, "gtk_scrolled_window_get_placement");
+
+   begin
+      return Internal (Get_Object (Scrolled_Window));
+   end Get_Placement;
+
+   ---------------------
+   -- Get_Shadow_Type --
+   ---------------------
+
+   function Get_Shadow_Type
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
+      return Gtk.Enums.Gtk_Shadow_Type
+   is
+      function Internal
+        (Scrolled_Window : System.Address) return Gtk.Enums.Gtk_Shadow_Type;
+      pragma Import (C, Internal, "gtk_scrolled_window_get_shadow_type");
+
+   begin
+      return Internal (Get_Object (Scrolled_Window));
+   end Get_Shadow_Type;
 
    ----------------------
    -- Get_Hadjustement --

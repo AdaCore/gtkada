@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,7 +29,7 @@
 --  <description>
 --  This is the View of the Model/View/Controller text capabilities of GtkAda.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gdk.Rectangle;
 with Gdk.Window;
@@ -378,6 +377,10 @@ package Gtk.Text_View is
 
    function Get_Indent (Text_View : access Gtk_Text_View_Record) return Gint;
    --  ???
+
+   --  ??? not bound because PangoTabArray isn't bound either:
+   --  Set_Tabs
+   --  Get_Tabs
 
    ----------------
    -- Properties --

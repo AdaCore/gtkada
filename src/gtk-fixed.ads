@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  as font size changes easily.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Container;
 with Gtk.Widget;
@@ -63,21 +63,21 @@ package Gtk.Fixed is
      (Fixed : access Gtk_Fixed_Record) return Widget.Widget_List.Glist;
    --  Return the list of Widgets contained in a Gtk_Fixed.
 
-   procedure Move
-     (Fixed  : access Gtk_Fixed_Record;
-      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      X      : Gint16;
-      Y      : Gint16);
-   --  Move a child of a GtkFixed container to the given position.
-   --  X indicates the horizontal position to place the widget at.
-   --  Y is the vertical position to place the widget at.
-
    procedure Put
      (Fixed  : access Gtk_Fixed_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
-      X      : Gint16;
-      Y      : Gint16);
+      X      : Gint;
+      Y      : Gint);
    --  Add Widget to a Fixed container at the given position.
+   --  X indicates the horizontal position to place the widget at.
+   --  Y is the vertical position to place the widget at.
+
+   procedure Move
+     (Fixed  : access Gtk_Fixed_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      X      : Gint;
+      Y      : Gint);
+   --  Move a child of a GtkFixed container to the given position.
    --  X indicates the horizontal position to place the widget at.
    --  Y is the vertical position to place the widget at.
 
@@ -88,6 +88,10 @@ package Gtk.Fixed is
    --  Gdk_Window for or not. (By default, it will be created with no
    --  separate Gdk_Window). This function must be called while the widget
    --  is not realized, for instance, immediately after the window is created.
+
+   function Get_Has_Window (Fixed : access Gtk_Fixed_Record) return Boolean;
+   --  Return whether a Gtk_Fixed widget is created with a separate
+   --  Gdk_Window for or not.
 
    ----------------
    -- Properties --

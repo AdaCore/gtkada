@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,7 +48,7 @@
 --  in the application while it is displayed.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Properties;
 with Gdk.Window;
@@ -85,6 +85,9 @@ package Gtk.Window is
    procedure Set_Title (Window : access Gtk_Window_Record; Title : String);
    --  Change the title of the window, as it appears in the title bar.
    --  Note that on some systems you might not be able to change it.
+
+   function Get_Title (Window : access Gtk_Window_Record) return String;
+   --  Return the title of the window, or "" if there is none
 
    procedure Set_Wmclass
      (Window        : access Gtk_Window_Record;
@@ -192,11 +195,12 @@ package Gtk.Window is
    --  Set whether the user can resize a window.
    --  Windows are user resizable by default.
 
+   --  <doc_ignore>
    procedure Set_Resizeable
      (Window    : access Gtk_Window_Record;
-      Resizable : Boolean := True)
-     renames Set_Resizable;
+      Resizable : Boolean := True) renames Set_Resizable;
    --  This procedure is deprecated.
+   --  </doc_ignore>
 
    function Get_Resizable (Window : access Gtk_Window_Record) return Boolean;
    --  Whether the user can resize a window.
@@ -395,15 +399,13 @@ package Gtk.Window is
    --  You can track maximization via the "window_state_event" signal
    --  on Gtk_Widget.
 
-   function Get_Title (Window : access Gtk_Window_Record) return String;
-   --  Return the title of the window, or "" if there is none
-
    function Get_Transient_For
      (Window : access Gtk_Window_Record) return Gtk_Window;
    --  Return the window for which this one is a temporary window.
    --  See Set_Transient_For below for more information on transient windows.
    --  null is returned if there is no such window.
 
+   --  <doc_ignore>
    procedure Set_Policy
      (Window       : access Gtk_Window_Record;
       Allow_Shrink : Boolean;
@@ -424,6 +426,7 @@ package Gtk.Window is
    --  If Auto_Shrink if False, then the window is not shrinked when its
    --  content changes.
    --  pragma Deprecated (Set_Policy);
+   --  </doc_ignore>
 
    procedure Set_Default_Size
      (Window : access Gtk_Window_Record; Width : Gint; Height : Gint);
@@ -433,7 +436,6 @@ package Gtk.Window is
    --  This is different from Gtk.Widget.Set_Usize which sets an absolute
    --  size for the widget.
    --  This has no effect on Popup windows (set in call to Gtk_New).
-   --  pragma Deprecated (Set_Default_Size);
 
    ----------------
    -- Properties --
@@ -581,10 +583,36 @@ end Gtk.Window;
 --  </example>
 
 --  missing:
---  gtk_window_add_mnemonic
---  gtk_window_remove_mnemonic
---  gtk_window_mnemonic_activate
---  gtk_window_set_mnemonic_modifier
---  gtk_window_begin_resize_drag
---  gtk_window_begin_move_drag
-
+--  Get_Role
+--  Set_Focus
+--  Get_Focus
+--  Get_Type_Hint
+--  Get_Destroy_With_Parent
+--  Get_Has_Frame
+--  Get_Frame_Dimensions
+--  Get_Decorated
+--  Set_Icon_List
+--  Get_Icon_List
+--  Set_Icon
+--  Get_Icon
+--  Set_Default_Icon_List
+--  Get_Default_Icon_List
+--  Get_Modal
+--  Add_Mnemonic
+--  Remove_Mnemonic
+--  Mnemonic_Activate
+--  Set_Mnemonic_Modifier
+--  Get_Mnemonic_Modifier
+--  Begin_Resize_Drag
+--  Begin_Move_Drag
+--  Get_Default_Size
+--  Resize
+--  Get_Size
+--  Move
+--  Get_Position
+--  Parse_Geometry
+--  Reshow_With_Initial_Size
+--  Group_Get_Type
+--  Group_New
+--  Group_Add_Window
+--  Group_Remove_Window

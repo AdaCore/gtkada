@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,7 +29,7 @@
 --  <description>
 --  The Gtk_Text_Tag data type.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Enums;
 with Pango.Enums;
@@ -77,7 +76,7 @@ package Gtk.Text_Tag is
    --     Event        : Gdk.Event.Gdk_Event;
    --     Iter         : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean;
    --  ??? Can not be bound here. Circular dependency problem with
-   --  ??? Gtk_Text_Iter.
+   --  Gtk_Text_Iter.
    --  Emit the "event" signal on Tag.
    --  Event_Object: object that received the event, such as a widget.
    --  Event: the event.

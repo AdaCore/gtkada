@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -95,6 +95,82 @@ package body Gtk.Table is
         (Get_Object (Table), Get_Object (Widget), Left_Attach, Right_Attach,
          Top_Attach, Bottom_Attach);
    end Attach_Defaults;
+
+   ---------------------
+   -- Get_Row_Spacing --
+   ---------------------
+
+   function Get_Row_Spacing
+     (Table : access Gtk_Table_Record;
+      Row   : Guint) return Guint
+   is
+      function Internal
+        (Table : System.Address;
+         Row   : Guint) return Guint;
+      pragma Import (C, Internal, "gtk_table_get_row_spacing");
+
+   begin
+      return Internal (Get_Object (Table), Row);
+   end Get_Row_Spacing;
+
+   ---------------------
+   -- Get_Col_Spacing --
+   ---------------------
+
+   function Get_Col_Spacing
+     (Table  : access Gtk_Table_Record;
+      Column : Guint) return Guint
+   is
+      function Internal
+        (Table   : System.Address;
+         Column  : Guint) return Guint;
+      pragma Import (C, Internal, "gtk_table_get_col_spacing");
+
+   begin
+      return Internal (Get_Object (Table), Column);
+   end Get_Col_Spacing;
+
+   -----------------------------
+   -- Get_Default_Row_Spacing --
+   -----------------------------
+
+   function Get_Default_Row_Spacing
+     (Table : access Gtk_Table_Record) return Guint
+   is
+      function Internal (Table : System.Address) return Guint;
+      pragma Import (C, Internal, "gtk_table_get_default_row_spacing");
+
+   begin
+      return Internal (Get_Object (Table));
+   end Get_Default_Row_Spacing;
+
+   -----------------------------
+   -- Get_Default_Col_Spacing --
+   -----------------------------
+
+   function Get_Default_Col_Spacing
+     (Table : access Gtk_Table_Record) return Guint
+   is
+      function Internal (Table : System.Address) return Guint;
+      pragma Import (C, Internal, "gtk_table_get_default_col_spacing");
+
+   begin
+      return Internal (Get_Object (Table));
+   end Get_Default_Col_Spacing;
+
+   ---------------------
+   -- Get_Homogeneous --
+   ---------------------
+
+   function Get_Homogeneous
+     (Table : access Gtk_Table_Record) return Boolean
+   is
+      function Internal (Table : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_table_get_homogeneous");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Table)));
+   end Get_Homogeneous;
 
    -------------
    -- Gtk_New --

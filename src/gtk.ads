@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -34,7 +34,7 @@
 --  @pxref{Package_Gtk.Main}.
 --
 --  </description>
---  <c_version>1.2.7</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib;        use Glib;
 with Gdk;         use Gdk;
@@ -45,10 +45,6 @@ with System;
 pragma Warnings (On);
 
 package Gtk is
-
-   type Gtk_Rc_Style is new Gdk.C_Proxy;
-   --  Type used to handle resource styles.
-   --  See package Gtk.Rc for more details.
 
    function Major_Version return Guint;
    --  Return the major version number for Gtk+.

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Check_Menu_Item;
 with Gtk.Widget; use Gtk.Widget;
@@ -67,16 +67,15 @@ package Gtk.Radio_Menu_Item is
 
    function Group
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
-     return Widget_SList.GSlist
-     renames Get_Group;
+      return Widget_SList.GSlist renames Get_Group;
    --  This function is deprecated. Get_Group should be used instead.
 
    procedure Set_Group
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record;
-      Group           : in Widget_SList.GSlist);
+      Group           : Widget_SList.GSlist);
 
    function Selected_Button (In_Group : Widget_SList.GSlist) return Natural;
-   --  Returns the button number of the selected button in the group.
+   --  Return the button number of the selected button in the group.
    --  Note: This function is not part of Gtk+ itself, but is provided as a
    --  convenient function
 

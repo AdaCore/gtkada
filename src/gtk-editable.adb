@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,29 +36,24 @@ package body Gtk.Editable is
    -- Copy_Clipboard --
    --------------------
 
-   procedure Copy_Clipboard
-      (Editable : access Gtk_Editable_Record; Time : Guint32)
-   is
-      procedure Internal (Editable : System.Address; Time : Guint32);
+   procedure Copy_Clipboard (Editable : access Gtk_Editable_Record) is
+      procedure Internal (Editable : System.Address);
       pragma Import (C, Internal, "gtk_editable_copy_clipboard");
 
    begin
-      Internal (Get_Object (Editable), Time);
+      Internal (Get_Object (Editable));
    end Copy_Clipboard;
 
    -------------------
    -- Cut_Clipboard --
    -------------------
 
-   procedure Cut_Clipboard
-     (Editable : access Gtk_Editable_Record;
-      Time     : Guint32)
-   is
-      procedure Internal (Editable : System.Address; Time : Guint32);
+   procedure Cut_Clipboard (Editable : access Gtk_Editable_Record) is
+      procedure Internal (Editable : System.Address);
       pragma Import (C, Internal, "gtk_editable_cut_clipboard");
 
    begin
-      Internal (Get_Object (Editable), Time);
+      Internal (Get_Object (Editable));
    end Cut_Clipboard;
 
    ----------------------
@@ -129,6 +124,20 @@ package body Gtk.Editable is
    end Get_Chars;
 
    ------------------
+   -- Get_Editable --
+   ------------------
+
+   function Get_Editable
+     (Editable : access Gtk_Editable_Record) return Boolean
+   is
+      function Internal (Editable : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_editable_get_editable");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Editable)));
+   end Get_Editable;
+
+   ------------------
    -- Get_Position --
    ------------------
 
@@ -197,17 +206,12 @@ package body Gtk.Editable is
    -- Paste_Clipboard --
    ---------------------
 
-   procedure Paste_Clipboard
-     (Editable : access Gtk_Editable_Record;
-      Time     : Guint32)
-   is
-      procedure Internal
-        (Editable : System.Address;
-         Time     : Guint32);
+   procedure Paste_Clipboard (Editable : access Gtk_Editable_Record) is
+      procedure Internal (Editable : System.Address);
       pragma Import (C, Internal, "gtk_editable_paste_clipboard");
 
    begin
-      Internal (Get_Object (Editable), Time);
+      Internal (Get_Object (Editable));
    end Paste_Clipboard;
 
    -------------------

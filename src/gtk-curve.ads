@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,9 +39,10 @@
 --  user can draw the points of the curve freely, and they are not connected at
 --  all.
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Drawing_Area;
+with Gtk.Enums; use Gtk.Enums;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 pragma Elaborate_All (Glib.Generic_Properties);
 with Glib.Properties;
@@ -51,12 +52,6 @@ package Gtk.Curve is
    type Gtk_Curve_Record is new
      Gtk.Drawing_Area.Gtk_Drawing_Area_Record with private;
    type Gtk_Curve is access all Gtk_Curve_Record'Class;
-
-   type Gtk_Curve_Type is
-     (Curve_Type_Linear,
-      Curve_Type_Spline,
-      Curve_Type_Free);
-   for Gtk_Curve_Type'Size use Gint'Size;
 
    procedure Gtk_New (Curve : out Gtk_Curve);
    --  Create a new Curve.
@@ -98,7 +93,7 @@ package Gtk.Curve is
 
    procedure Get_Vector
      (Curve  : access Gtk_Curve_Record;
-      Vector : in out Gfloat_Array);
+      Vector : out Gfloat_Array);
    --  Return a vector of points representing the curve.
 
    procedure Set_Curve_Type

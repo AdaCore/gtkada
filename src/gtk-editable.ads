@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -36,7 +36,7 @@
 --  application can connect to to modify the behavior of a widget.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Widget;
 
@@ -89,20 +89,14 @@ package Gtk.Editable is
    --  Get the text from Start_Pos to End_Pos.
    --  If End_Pos is negative, the text from Start_Pos to the end is returned.
 
-   procedure Cut_Clipboard
-     (Editable : access Gtk_Editable_Record;
-      Time     : Guint32);
+   procedure Cut_Clipboard (Editable : access Gtk_Editable_Record);
    --  Copy the characters in the current selection to the clipboard.
    --  The selection is then deleted.
 
-   procedure Copy_Clipboard
-     (Editable : access Gtk_Editable_Record;
-      Time     : Guint32);
+   procedure Copy_Clipboard (Editable : access Gtk_Editable_Record);
    --  Copy the characters in the current selection to the clipboard.
 
-   procedure Paste_Clipboard
-     (Editable : access Gtk_Editable_Record;
-      Time     : Guint32);
+   procedure Paste_Clipboard (Editable : access Gtk_Editable_Record);
    --  The contents of the clipboard is pasted into the given widget at
    --  the current cursor position.
 
@@ -129,6 +123,10 @@ package Gtk.Editable is
    --  Set the editable status of the entry.
    --  If Editable is False, the user can not modify the contents of the entry.
    --  This does not affect the user of the insertion functions above.
+
+   function Get_Editable
+     (Editable : access Gtk_Editable_Record) return Boolean;
+   --  Get the editable status of the entry.
 
    ----------------
    -- Properties --

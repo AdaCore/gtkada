@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -47,7 +47,7 @@
 --
 --  </example>
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Gtk.Object;
 
@@ -123,18 +123,6 @@ package Gtk.Adjustment is
    -- Write functions --
    ---------------------
 
-   procedure Set_Upper
-     (Adjustment : access Gtk_Adjustment_Record;
-      Upper      : Gdouble);
-   --  Modify the upper bound of the adjustment.
-   --  You should call Changed after modifying this value.
-
-   procedure Set_Lower
-     (Adjustment : access Gtk_Adjustment_Record;
-      Lower      : Gdouble);
-   --  Modify the lower bound of the adjustment.
-   --  You should call Changed after modifying this value.
-
    procedure Set_Value
      (Adjustment : access Gtk_Adjustment_Record;
       Value      : Gdouble);
@@ -142,10 +130,22 @@ package Gtk.Adjustment is
    --  You do not need to call Value_Changed after modifying this value,
    --  this is done automatically.
 
-   procedure Set_Page_Size
+   procedure Set_Lower
      (Adjustment : access Gtk_Adjustment_Record;
-      Page_Size  : Gdouble);
-   --  Modify the page size of the adjustment.
+      Lower      : Gdouble);
+   --  Modify the lower bound of the adjustment.
+   --  You should call Changed after modifying this value.
+
+   procedure Set_Upper
+     (Adjustment : access Gtk_Adjustment_Record;
+      Upper      : Gdouble);
+   --  Modify the upper bound of the adjustment.
+   --  You should call Changed after modifying this value.
+
+   procedure Set_Step_Increment
+     (Adjustment     : access Gtk_Adjustment_Record;
+      Step_Increment : Gdouble);
+   --  Modify the step increment of the adjustment.
    --  You should call Changed after modifying this value.
 
    procedure Set_Page_Increment
@@ -154,10 +154,10 @@ package Gtk.Adjustment is
    --  Modify the page increment of the adjustment.
    --  You should call Changed after modifying this value.
 
-   procedure Set_Step_Increment
-     (Adjustment     : access Gtk_Adjustment_Record;
-      Step_Increment : Gdouble);
-   --  Modify the step increment of the adjustment.
+   procedure Set_Page_Size
+     (Adjustment : access Gtk_Adjustment_Record;
+      Page_Size  : Gdouble);
+   --  Modify the page size of the adjustment.
    --  You should call Changed after modifying this value.
 
    --------------------

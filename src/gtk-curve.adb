@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,7 +37,7 @@ package body Gtk.Curve is
 
    procedure Get_Vector
      (Curve  : access Gtk_Curve_Record;
-      Vector : in out Gfloat_Array)
+      Vector : out Gfloat_Array)
    is
       procedure Internal
         (Curve  : System.Address;
@@ -46,8 +46,7 @@ package body Gtk.Curve is
       pragma Import (C, Internal, "gtk_curve_get_vector");
 
    begin
-      Internal (Get_Object (Curve), Vector'Length,
-                Vector (Vector'First)'Address);
+      Internal (Get_Object (Curve), Vector'Length, Vector'Address);
    end Get_Vector;
 
    -------------

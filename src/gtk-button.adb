@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -30,6 +30,7 @@
 with System;
 with Glib.Type_Conversion_Hooks;
 pragma Elaborate_All (Glib.Type_Conversion_Hooks);
+with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Gtk.Button is
 
@@ -65,6 +66,20 @@ package body Gtk.Button is
       Internal (Get_Object (Button));
    end Enter;
 
+   ---------------
+   -- Get_Label --
+   ---------------
+
+   function Get_Label
+     (Button : access Gtk_Button_Record) return String
+   is
+      function Internal (Button : System.Address) return chars_ptr;
+      pragma Import (C, Internal, "gtk_button_get_label");
+
+   begin
+      return Value (Internal (Get_Object (Button)));
+   end Get_Label;
+
    ----------------
    -- Get_Relief --
    ----------------
@@ -79,6 +94,34 @@ package body Gtk.Button is
    begin
       return Gtk.Enums.Gtk_Relief_Style'Val (Internal (Get_Object (Button)));
    end Get_Relief;
+
+   -----------------------
+   -- Get_Use_Underline --
+   -----------------------
+
+   function Get_Use_Underline
+     (Button : access Gtk_Button_Record) return Boolean
+   is
+      function Internal (Button : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_button_get_use_underline");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Button)));
+   end Get_Use_Underline;
+
+   -------------------
+   -- Get_Use_Stock --
+   -------------------
+
+   function Get_Use_Stock
+     (Button : access Gtk_Button_Record) return Boolean
+   is
+      function Internal (Button : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_button_get_use_stock");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Button)));
+   end Get_Use_Stock;
 
    -------------
    -- Gtk_New --
@@ -204,6 +247,23 @@ package body Gtk.Button is
       Internal (Get_Object (Button));
    end Released;
 
+   ---------------
+   -- Set_Label --
+   ---------------
+
+   procedure Set_Label
+     (Button : access Gtk_Button_Record;
+      Label  : String)
+   is
+      procedure Internal
+        (Button : System.Address;
+         Label  : String);
+      pragma Import (C, Internal, "gtk_button_set_label");
+
+   begin
+      Internal (Get_Object (Button), Label & ASCII.NUL);
+   end Set_Label;
+
    ----------------
    -- Set_Relief --
    ----------------
@@ -220,6 +280,40 @@ package body Gtk.Button is
    begin
       Internal (Get_Object (Button), New_Style);
    end Set_Relief;
+
+   -----------------------
+   -- Set_Use_Underline --
+   -----------------------
+
+   procedure Set_Use_Underline
+     (Button        : access Gtk_Button_Record;
+      Use_Underline : Boolean)
+   is
+      procedure Internal
+        (Button        : System.Address;
+         Use_Underline : Gboolean);
+      pragma Import (C, Internal, "gtk_button_set_use_underline");
+
+   begin
+      Internal (Get_Object (Button), To_Gboolean (Use_Underline));
+   end Set_Use_Underline;
+
+   -------------------
+   -- Set_Use_Stock --
+   -------------------
+
+   procedure Set_Use_Stock
+     (Button    : access Gtk_Button_Record;
+      Use_Stock : Boolean)
+   is
+      procedure Internal
+        (Button    : System.Address;
+         Use_Stock : Gboolean);
+      pragma Import (C, Internal, "gtk_button_set_use_stock");
+
+   begin
+      Internal (Get_Object (Button), To_Gboolean (Use_Stock));
+   end Set_Use_Stock;
 
    ---------------------
    -- Type_Conversion --

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -92,7 +92,7 @@
 --        the memory used by the object and its user_data is freed.
 --
 --  </description>
---  <c_version>1.3.6</c_version>
+--  <c_version>1.3.11</c_version>
 
 with Glib.Object;
 with Glib.Properties;
@@ -155,18 +155,11 @@ package Gtk.Object is
    --     cleared as soon as Set_Parent is called on the widget or the widget
    --     is qualified as a toplevel widget (see
    --     Gtk.Container.Register_Toplevel).
-   --
-   --  - "Connected":
-   --     Set if the object is connected to at least one handler
-   --
-   --  - "Constructed":
-   --     Set if the object has been fully constructed, and is now usable.
-   --     Every time you create an object at the GtkAda level, the object will
-   --     be fully constructed, and you shouldn't have to worry about that
-   --     flag.
 
    In_Destruction : constant := 2 ** 0;
    Floating       : constant := 2 ** 1;
+   Reserved_1     : constant := 2 ** 2;
+   Reserved_2     : constant := 2 ** 3;
 
    function Flags (Object : access Gtk_Object_Record) return Guint32;
    --  Return the flags that are set for the object, as a binary mask.
@@ -277,7 +270,6 @@ private
    User_Data_Property : constant Glib.Properties.Property_Address :=
      Glib.Properties.Build ("user_data");
 
-   pragma Inline (Destroyed_Is_Set);
    pragma Inline (Floating_Is_Set);
    pragma Inline (In_Destruction_Is_Set);
 
