@@ -568,6 +568,7 @@ package body Gtk.Toolbar is
       Gen_Set (N, "Toolbar", "space_size", File);
       Gen_Set (N, "Toolbar", "space_style", File);
       Gen_Set (N, "Toolbar", "tooltips", File);
+      Gen_Set (N, "Toolbar", "Button_Relief", "relief", File);
 
       --  Now look for widgets that should be added to this toolbar
 
@@ -637,6 +638,13 @@ package body Gtk.Toolbar is
 
       if S /= null then
          Set_Tooltips (Gtk_Toolbar (Toolbar), Boolean'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "relief");
+
+      if S /= null then
+         Set_Button_Relief (Gtk_Toolbar (Toolbar),
+           Gtk_Relief_Style'Value (S (S'First + 4 .. S'Last)));
       end if;
 
       --  Now look for widgets that should be added to this toolbar
