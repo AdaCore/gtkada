@@ -132,9 +132,8 @@ package body Gtk.Util is
    ----------------
 
    procedure Set_Signal (Name : String; Signal : Void_Signal) is
-      S : aliased String := Name;
    begin
-      Signals.Set (S'Unchecked_Access, Signal);
+      Signals.Set (new String '(Name), Signal);
    end Set_Signal;
 
 end Gtk.Util;
