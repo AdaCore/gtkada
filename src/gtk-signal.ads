@@ -13,6 +13,10 @@ package Gtk.Signal is
    --  FIXME so that we can clean the memory. But there is a problem with
    --  FIXME Destroy_Handlers (because we have to find the individual handlers
 
+   --  FIXME Joel : Add some Void_Callbacks / That is callbacks that
+   --  FIXME do nothing. This is sometimes convinient when you want to
+   --  FIXME a signal without doing anything.
+
    ---------------------------------------------------------------
    --  The following package is for callbacks requiring a data to
    --  be passed to the callback function

@@ -3,34 +3,67 @@ with System;
 
 package Gtk is
 
-   subtype Gdouble is Long_Float;
-   subtype Gint    is Integer;
-   subtype Guint   is Positive;
+   -----------------------
+   --  The basic types  --
+   -----------------------
+
+   subtype Gint  is Integer;
    subtype Gint32  is Integer range -(2 ** 16) .. (2 ** 16 - 1);
-   --  Same for all basic types
+
+   subtype Guint is Positive;
+   subtype Guint8 is Natural range 0 .. 2 ** 8 - 1;
+
+   subtype Gfloat is Float;
+   subtype Gdouble is Long_Float;
+
+   type String_Ptr is access String;
+
+   -----------------------
+   --  The Object type  --
+   -----------------------
+
+   type Object is tagged private;
+
+   procedure Destroy (Obj : in Object'Class);
+   --  mapping: Destroy gtkobject.h gtk_object_destroy
+
+
+   -------------------------------
+   --  The Gtk main procedures  --
+   -------------------------------
+
+   procedure Init;
+   --  mapping: Init gtkmain.h gtk_init
+
+   procedure Main;
+   --  mapping: Main gtkmain.h gtk_main
+
+   procedure Main_Quit;
+   --  mapping: Main_Quit gtkmain.h gtk_main_quit
 
    type Gtk_Update_Type is (Update_Continuous,
                             Update_Discontinuous,
                             Update_Delayed);
    --  mapping: Gtk_Update_Type gtkenums.h GtkUpdateType
+   --  FIXME  Should be somewhere else
 
-   type Gtk_Object is tagged private;
+private
 
-   procedure Init;
-   pragma Import (C, Init, "ag_gtk_init");
-   --  defined in misc-gnat.c
-   --  mapping: Init gtkmain.h gtk_init
+   type Object is tagged
+      record
+         Ptr : System.Address := System.Null_Address;
+      end record;
 
-   procedure Main;
-   pragma Import (C, Main, "gtk_main");
-   --  mapping: Main gtkmain.h gtk_main
+   function Get_Object (Obj : in Object'Class)
+                        return System.Address;
+   pragma Inline (Get_Object);
 
-   procedure Main_Quit;
-   pragma Import (C, Main_Quit, "gtk_main_quit");
-   --  mapping: Main_Quit gtkmain.h gtk_main_quit
+   procedure Set_Object (Obj : in out Object'Class;
+                         Value  : in     System.Address);
+   pragma Inline (Set_Object);
 
-   procedure Destroy (Obj : in Gtk_Object'Class);
-   --  mapping: Destroy gtkobject.h gtk_object_destroy
+   function To_Boolean (Value : in Gint) return Boolean;
+   function To_Gint (Bool : in Boolean) return Gint;
 
    --  Functions which are not implemented because they are probably not needed
    --  mapping: NOT_IMPLEMENTED gtkobject.h gtk_object_add_arg_type
@@ -68,27 +101,5 @@ package Gtk is
    --  mapping: INTERNAL gtkobject.h gtk_object_remove_data_by_id
    --  mapping: INTERNAL gtkobject.h gtk_object_set_data_by_id
    --  mapping: INTERNAL gtkobject.h gtk_object_set_data_by_id_full
-
-
-private
-
-   type Gtk_Object is tagged
-      record
-         Ptr : System.Address := System.Null_Address;
-      end record;
-
-   function Get_Object (Obj : in Gtk_Object'Class)
-                        return System.Address;
-   pragma Inline (Get_Object);
-
-   procedure Set_Object (Obj   : in out Gtk_Object'Class;
-                         Value : in     System.Address);
-   pragma Inline (Set_Object);
-
-   function To_Boolean (Value : in Gint) return Boolean;
-   pragma Inline (To_Boolean);
-
-   function To_Gint (Bool : in Boolean) return Gint;
-   pragma Inline (To_Gint);
 
 end Gtk;

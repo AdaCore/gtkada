@@ -3,29 +3,28 @@ with Gtk.Button_Box;
 
 package Gtk.VButton_Box is
 
-   type VButton_Box is new Gtk.Button_Box.Button_Box with private;
+   type Gtk_VButton_Box is new Button_Box.Gtk_Button_Box with private;
 
-   function Get_Spacing_Default return GInt;
+   function Get_Spacing_Default return Gint;
    --  mapping: Get_Spacing_Default gtkvbbox.h \
    --  mapping: gtk_vbutton_box_get_spacing_default
 
-   function Get_Layout_Default return Gtk.Button_Box.Style;
+   function Get_Layout_Default return Button_Box.Style;
    --  mapping: Get_Layout_Default gtkvbbox.h \
    --  mapping: gtk_vbutton_box_get_layout_default
 
-   procedure Set_Spacing_Default (Spacing : in GInt);
+   procedure Set_Spacing_Default (Spacing : in Gint);
    --  mapping: Set_Spacing_Default gtkvbbox.h \
    --  mapping: gtk_vbutton_box_set_spacing_default
 
-   procedure Set_Layout_Default (Layout : in Gtk.Button_Box.Style);
+   procedure Set_Layout_Default (Layout : in Button_Box.Style);
    --  mapping: Set_Layout_Default gtkvbbox.h \
    --  mapping: gtk_vbutton_box_set_layout_default
 
-   --  mapping: NOT_IMPLEMENTED gtkvbbox.h gtk_vbutton_box_get_type
-
 private
 
-   type VButton_Box is new Gtk.Button_Box.Button_Box with null record;
+   type Gtk_VButton_Box is new Button_Box.Gtk_Button_Box with null record;
 
+   --  mapping: NOT_IMPLEMENTED gtkvbbox.h gtk_vbutton_box_get_type
 
 end Gtk.VButton_Box;

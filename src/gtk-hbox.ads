@@ -1,9 +1,8 @@
-
 with Gtk.Box;
 
 package Gtk.Hbox is
 
-   type Gtk_Hbox is new Gtk.Box.Gtk_Box with private;
+   type Gtk_Hbox is new Box.Gtk_Box with private;
 
    procedure Gtk_New (Widget      : out Gtk_Hbox;
                       Homogeneous : in Boolean;
