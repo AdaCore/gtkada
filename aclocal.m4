@@ -434,7 +434,14 @@ AC_DEFUN(AM_CHECK_OPENGL,
    LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGL"
    AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL=yes, have_MesaGL=no)
    AC_MSG_RESULT($have_MesaGL)
-    
+
+   if test "x$have_MesaGL" = "xno"; then
+     AC_MSG_CHECKING([Mesa with pthreads])
+     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGL -lpthread"
+     AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL_pthread=yes, have_MesaGL_pthread=no)
+     AC_MSG_RESULT($have_MesaGL_pthread)
+   fi
+
    LIBS="$saved_LIBS"
    HAVE_OPENGL="False"
 
@@ -462,6 +469,9 @@ AC_DEFUN(AM_CHECK_OPENGL,
    xMesaGL)
       if test "x$have_MesaGL" = "xyes"; then
          GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
+         HAVE_OPENGL="True"
+      elif test "x$have_MesaGL_pthread" = "xyes"; then
+         GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
          HAVE_OPENGL="True"
       else
          AC_MSG_ERROR([Missing Mesa library])
