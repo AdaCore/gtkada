@@ -77,7 +77,7 @@ package Gtk.Spin_Button is
       Numeric     : in Boolean);
 
    procedure Set_Snap_To_Ticks
-    (Spin_Button   : in Gtk_Spin_Button;
+    (Spin_Button   : access Gtk_Spin_Button_Record;
      Snap_To_Ticks : in Boolean);
 
    procedure Set_Update_Policy
