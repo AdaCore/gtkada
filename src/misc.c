@@ -47,6 +47,7 @@
 #include <gobject/gparamspecs.h>
 #include <gobject/gmarshal.h>
 #include <gtk/gtkwidget.h>
+#include <pango/pango.h>
 #include <gunicode.h>
 
 #ifndef _WIN32  /* Assuming X11 */
@@ -1662,6 +1663,16 @@ ada_adjustment_set_page_size (GtkAdjustment * adjustment,
  */
 
 void
+ada_style_set_font_description (GtkStyle* style, PangoFontDescription* font) {
+  style->font_desc = font;
+}
+
+PangoFontDescription*
+ada_style_get_font_description (GtkStyle* style) {
+  return style->font_desc;
+}
+
+void
 ada_style_set_fg (GtkStyle* style, gint state, GdkColor* color)
 {
   if (color != NULL)
@@ -1769,18 +1780,6 @@ GdkColor*
 ada_style_get_white (GtkStyle* style)
 {
   return &style->white;
-}
-
-void
-ada_style_set_font (GtkStyle* style, GdkFont* font)
-{
-  style->font = font;
-}
-
-GdkFont*
-ada_style_get_font (GtkStyle* style)
-{
-  return style->font;
 }
 
 void

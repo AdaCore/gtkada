@@ -29,14 +29,17 @@
 
 --  <c_version>1.3.6</c_version>
 
+--  In gtk+ 2.0, consider using directly the various functions
+--  Gtk.Widget.Modify_Font, Gtk.Widget.Modify_Background,...
+
 with Gdk; use Gdk;
 with Gdk.Color;
 with Gdk.GC;
-with Gdk.Font;
 with Gdk.Types;
 with Gdk.Pixmap;
 with Gdk.Window;
 with Gtk.Enums;
+with Pango.Font;
 
 package Gtk.Style is
 
@@ -230,9 +233,10 @@ package Gtk.Style is
 
    function Get_White (Style : Gtk_Style) return Gdk.Color.Gdk_Color;
 
-   procedure Set_Font (Style : Gtk_Style; Font : Gdk.Font.Gdk_Font);
-
-   function Get_Font (Style : Gtk_Style) return Gdk.Font.Gdk_Font;
+   procedure Set_Font_Description
+     (Style : Gtk_Style; Desc : Pango.Font.Pango_Font_Description);
+   function Get_Font_Description
+     (Style : Gtk_Style) return Pango.Font.Pango_Font_Description;
 
    procedure Set_Black_GC (Style : Gtk_Style; GC : Gdk.GC.Gdk_GC);
 
@@ -475,14 +479,14 @@ private
    pragma Import (C, Draw_Hline, "gtk_draw_hline");
    pragma Import (C, Draw_Shadow, "gtk_draw_shadow");
    pragma Import (C, Draw_Vline, "gtk_draw_vline");
-   pragma Import (C, Set_Font, "ada_style_set_font");
-   pragma Import (C, Get_Font, "ada_style_get_font");
    pragma Import (C, Set_Black_GC, "ada_style_set_black_gc");
    pragma Import (C, Get_Black_GC, "ada_style_get_black_gc");
    pragma Import (C, Set_White_GC, "ada_style_set_white_gc");
    pragma Import (C, Get_White_GC, "ada_style_get_white_gc");
    pragma Import (C, X_Thickness, "ada_style_get_x_thickness");
    pragma Import (C, Y_Thickness, "ada_style_get_y_thickness");
+   pragma Import (C, Set_Font_Description, "ada_style_set_font_description");
+   pragma Import (C, Get_Font_Description, "ada_style_get_font_description");
 end Gtk.Style;
 
 --  missing:
