@@ -96,6 +96,7 @@
 
 with Gdk;
 with System;
+with Gtkada.Types;
 
 package Gtk.Object is
 
@@ -219,11 +220,9 @@ package Gtk.Object is
    --  See the GtkAda user's guide for more information on how to create your
    --  own widget types in Ada.
 
-   type Signal_Array is array (Natural range <>) of String_Ptr;
-
    procedure Initialize_Class_Record
      (Object       : access Gtk_Object_Record'Class;
-      Signals      : Signal_Array;
+      Signals      : Gtkada.Types.Chars_Ptr_Array;
       Class_Record : in out System.Address);
    --  Create the class record for a new widget type.
    --  It is associated with Signals'Length new signals. A pointer to the
