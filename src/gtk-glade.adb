@@ -129,6 +129,14 @@ package body Gtk.Glade is
       Hash       => Hash,
       Equal      => Equal);
 
+   procedure Create_Widget (N : Node_Ptr);
+   --  Create a widget and all its children from a given widget tree
+
+   procedure Print_Create_Function
+     (N : Node_Ptr; File : File_Type; First : Boolean := False);
+   --  Print body of a given "create" function to file. First is used only
+   --  internally when this procedure is called recursively.
+
    procedure Print_Header (N : Node_Ptr; File : File_Type);
    --  Print the main procedure with the name of the project contained in N
    --  to file.
@@ -138,14 +146,6 @@ package body Gtk.Glade is
 
    procedure Print_Var (N : Node_Ptr; File : File_Type);
    --  Print variable declarations for a given "create" function to file.
-
-   procedure Print_Create_Function
-     (N : Node_Ptr; File : File_Type; First : Boolean := False);
-   --  Print body of a given "create" function to file. First is used only
-   --  internally when this procedure is called recursively.
-
-   procedure Create_Widget (N : Node_Ptr);
-   --  Create a widget and all its children from a given widget tree
 
    -----------
    -- Equal --
@@ -172,6 +172,79 @@ package body Gtk.Glade is
 
       return N;
    end Hash;
+
+   -------------------
+   -- Create_Widget --
+   -------------------
+
+   procedure Create_Widget (N : Node_Ptr) is
+      P   : Node_Ptr;
+      Obj : Gtk.Object.Gtk_Object'Class := Get_Object (Get_Field (N, "class"));
+
+   begin
+      Gtk.Object.Generate (Obj, N);
+      Widget.Show (Gtk.Widget.Gtk_Widget (Obj));
+      P := N.Child;
+
+      while P /= null loop
+         if P.Tag.all = "widget" then
+            Create_Widget (P);
+         end if;
+
+         P := P.Next;
+      end loop;
+   end Create_Widget;
+
+   ---------------------------
+   -- Print_Create_Function --
+   ---------------------------
+
+   procedure Print_Create_Function
+     (N : Node_Ptr; File : File_Type; First : Boolean := False)
+   is
+      P : Node_Ptr;
+      S : String_Ptr;
+
+   begin
+      Gtk.Object.Generate (Get_Object (Get_Field (N, "class")), N, File);
+      S := Get_Field (N, "name");
+
+      if S /= null then
+         if not First then
+            Put_Line (File, "   Widget.Show (Gtk_Widget (" &
+              To_Ada (S.all) & "));");
+         end if;
+
+         New_Line (File);
+      end if;
+
+      P := N.Child;
+
+      while P /= null loop
+         if P.Tag.all = "widget" then
+            Print_Create_Function (P, File);
+         end if;
+
+         P := P.Next;
+      end loop;
+   end Print_Create_Function;
+
+   ---------------------
+   -- Print_Foot_Page --
+   ---------------------
+
+   procedure Print_Foot_Page (N : Node_Ptr; File : File_Type) is
+      Name : String := To_Ada (Get_Field (N, "name").all);
+
+   begin
+      Put_Line (File, "   return " & Name & ";");
+      Put_Line (File, "end Create_" & Name & ";");
+      New_Line (File);
+   end Print_Foot_Page;
+
+   ------------------
+   -- Print_Header --
+   ------------------
 
    procedure Print_Header (N : Node_Ptr; File : File_Type) is
       P, Q, R : String_Ptr;
@@ -233,14 +306,9 @@ package body Gtk.Glade is
       end loop;
    end Print_Header;
 
-   procedure Print_Foot_Page (N : Node_Ptr; File : File_Type) is
-      Name : String := To_Ada (Get_Field (N, "name").all);
-
-   begin
-      Put_Line (File, "   return " & Name & ";");
-      Put_Line (File, "end Create_" & Name & ";");
-      New_Line (File);
-   end Print_Foot_Page;
+   ---------------
+   -- Print_Var --
+   ---------------
 
    procedure Print_Var (N : Node_Ptr; File : File_Type) is
       P : Node_Ptr := N;
@@ -262,53 +330,9 @@ package body Gtk.Glade is
       end loop;
    end Print_Var;
 
-   procedure Print_Create_Function
-     (N : Node_Ptr; File : File_Type; First : Boolean := False)
-   is
-      P : Node_Ptr;
-      S : String_Ptr;
-
-   begin
-      Gtk.Object.Generate (Get_Object (Get_Field (N, "class")), N, File);
-      S := Get_Field (N, "name");
-
-      if S /= null then
-         if not First then
-            Put_Line (File, "   Widget.Show (Gtk_Widget (" &
-              To_Ada (S.all) & "));");
-         end if;
-
-         New_Line (File);
-      end if;
-
-      P := N.Child;
-
-      while P /= null loop
-         if P.Tag.all = "widget" then
-            Print_Create_Function (P, File);
-         end if;
-
-         P := P.Next;
-      end loop;
-   end Print_Create_Function;
-
-   procedure Create_Widget (N : Node_Ptr) is
-      P   : Node_Ptr;
-      Obj : Gtk.Object.Gtk_Object'Class := Get_Object (Get_Field (N, "class"));
-
-   begin
-      Gtk.Object.Generate (Obj, N);
-      Widget.Show (Gtk.Widget.Gtk_Widget (Obj));
-      P := N.Child;
-
-      while P /= null loop
-         if P.Tag.all = "widget" then
-            Create_Widget (P);
-         end if;
-
-         P := P.Next;
-      end loop;
-   end Create_Widget;
+   ------------------------
+   --  Global functions  --
+   ------------------------
 
    --------------
    -- Generate --
@@ -372,15 +396,19 @@ package body Gtk.Glade is
    -----------------
 
    procedure Instanciate (File : String) is
-      N : Node_Ptr;
-
    begin
-      N := Parse (File).Child.Next;
+      Instanciate (Parse (File));
+   end Instanciate;
+
+   procedure Instanciate (N : Node_Ptr) is
+      P : Node_Ptr;
+   begin
+      P := N.Child.Next;
 
       loop
-         exit when N = null;
-         Create_Widget (N);
-         N := N.Next;
+         exit when P = null;
+         Create_Widget (P);
+         P := P.Next;
       end loop;
    end Instanciate;
 
