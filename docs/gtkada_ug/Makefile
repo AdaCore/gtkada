@@ -9,9 +9,5 @@ all: gtkada.texi
 	-$(RM) *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
 
 clean:
-	-$(RM) gtkada.aux gtkada.cp gtkada.dvi gtkada.fn gtkada.html gtkada.info*
-	-$(RM) gtkada.ky gtkada.log gtkada.pg gtkada.toc gtkada.tp gtkada.vr
-	-$(RM) texput.log gtkada.ps gtkada.txt
-
-distclean:
-	-$(RM) gtkada.ps
+	-$(RM) *.aux *.cp *.cps *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr
+	-$(RM) gtkada.html gtkada.info* gtkada.ps gtkada.txt
