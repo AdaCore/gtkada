@@ -1,6 +1,30 @@
-# This is a patch against Gtk+ 2.0.6 sources that fixes Windows specific
-# problems.
+This is a patch against Gtk+ 2.0.6 sources that fixes Windows specific
+problems.
 
+Mon Sep 16 12:03:54  2002	Arnaud Charlet <charlet@gnat.com>
+
+	* pango/modules/basic/basic-win32.c: fix typo in module entry name, so
+	that --with-included-modules works under Windows.
+
+	* glib/build/win32/compile-resource: fix handling of errors
+
+	* gtk+/build/win32/compile-resource: ditto
+
+Fri Sep 13 14:56:43  2002	Florent Duguet <duguet@gnat.com>
+
+	* gtk+/gdk/win32/gdkselection-win32.c: modifying the utf8 string
+	clean-up for proper copy paste of strings with empty lines.
+
+Thu Sep 12 18:03:02 2002	Florent Duguet <duguet@gnat.com>
+
+	* gtk+/gdk/win32/gdkevents-win32.c: force an update when paint message
+	is received this forces a refresh of zones which are actually
+	invalidated and visible
+
+Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
+
+	* gtk+/gdk/win32/gdkgeometry-win32.c: ask for a repaint of the
+	invalidate zone to address smoothness issues
 
 #########################################
 # Ctrl-C
@@ -209,11 +233,6 @@
 # GtkTextView smoothness issues
 #########################################
 
-Wed Sep 11 16:55:47  2002  Florent Duguet <duguet@gnat.com>
-
-	* gdkgeometry-win32.c : ask for a repaint of the invalidate zone to 
-	address smoothness issues
-
 --- gtk+/gdk/win32/gdkgeometry-win32.c.old	2002-02-10 14:18:50.000000000 +0100
 +++ gtk+/gdk/win32/gdkgeometry-win32.c	2002-09-11 16:21:14.000000000 +0200
 @@ -134,14 +134,18 @@
@@ -237,14 +256,6 @@ Wed Sep 11 16:55:47  2002  Florent Duguet <duguet@gnat.com>
      }
  
    tmp_list = obj->children;
-
-
-Thu Sep 12 18:03:02 2002  Florent Duguet <duguet@gnat.com>
-
-	* gdkevents-win32.c : force an update when paint message is received
-	this forces a refresh of zones which are actually invalidated and 
-	visible
-
 --- gtk+/gdk/win32/gdkevents-win32.c.old	2002-03-06 01:36:08.000000000 +0100
 +++ gtk+/gdk/win32/gdkevents-win32.c	2002-09-12 17:37:07.000000000 +0200
 @@ -2972,6 +2976,13 @@
@@ -260,12 +271,6 @@ Thu Sep 12 18:03:02 2002  Florent Duguet <duguet@gnat.com>
          }
        break;
 
-
-
-Fri Sep 13 14:56:43  2002	Florent Duguet <duguet@gnat.com>
-
-	* gdkselection-win32.c : modifying the utf8 string clean-up for
-	proper copy paste of strings with empty lines.
 
 --- gtk+/gdk/win32/gdkselection-win32.c.old	2002-02-10 14:18:50.000000000 +0100
 +++ gtk+/gdk/win32/gdkselection-win32.c	2002-09-13 14:55:09.000000000 +0200
@@ -296,3 +301,56 @@ Fri Sep 13 14:56:43  2002	Florent Duguet <duguet@gnat.com>
  	}
        else
  	{
+--- pango/modules/basic/basic-win32.c.orig	2002-09-15 00:56:30.000000000 +0200
++++ pango/modules/basic/basic-win32.c	2002-09-15 01:00:02.000000000 +0200
+@@ -233,8 +233,8 @@
+ /* The following three functions provide the public module API for
+  * Pango
+  */
+-#ifdef MODULE_PREFIX
+-#define MODULE_ENTRY(func) _pango_basic_##func
++#ifdef WIN32_MODULE_PREFIX
++#define MODULE_ENTRY(func) _pango_basic_win32_##func
+ #else
+ #define MODULE_ENTRY(func) func
+ #endif
+--- glib/build/win32/compile-resource.orig	2002-09-14 17:43:47.000000000 +0200
++++ glib/build/win32/compile-resource	2002-09-14 17:40:59.000000000 +0200
+@@ -37,12 +37,10 @@
+         buildnumber=0
+     fi
+ 
+-    m4 -DBUILDNUMBER=$buildnumber <$rcfile >$$.rc
+-    windres $$.rc $resfile
++    m4 -DBUILDNUMBER=$buildnumber <$rcfile >$$.rc &&
++    windres $$.rc $resfile &&
+     rm $$.rc
+-    exit 0
++else
++    # Return failure
++    exit 1
+ fi
+-
+-# Return failure
+-
+-exit 1
+--- gtk+/build/win32/compile-resource.orig	2002-09-14 17:43:47.000000000 +0200
++++ gtk+/build/win32/compile-resource	2002-09-14 17:40:59.000000000 +0200
+@@ -37,12 +37,10 @@
+         buildnumber=0
+     fi
+ 
+-    m4 -DBUILDNUMBER=$buildnumber <$rcfile >$$.rc
+-    windres $$.rc $resfile
++    m4 -DBUILDNUMBER=$buildnumber <$rcfile >$$.rc &&
++    windres $$.rc $resfile &&
+     rm $$.rc
+-    exit 0
++else
++    # Return failure
++    exit 1
+ fi
+-
+-# Return failure
+-
+-exit 1
