@@ -26,9 +26,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <disabled_description>
+--  <description>
 --  See extended documentation in Gtk.Tree_View_Column and Gtk.Tree_Store.
---  </disabled_description>
+--  </description>
 
 --  <c_version>1.3.11</c_version>
 
