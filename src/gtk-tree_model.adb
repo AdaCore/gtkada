@@ -31,7 +31,6 @@ with Glib.Object;           use Glib.Object;
 with Gtk;                   use Gtk;
 with Interfaces.C.Strings;
 with System;                use System;
-with Unchecked_Conversion;
 
 package body Gtk.Tree_Model is
 
@@ -84,19 +83,20 @@ package body Gtk.Tree_Model is
 
    function Get_Indices (Path : Gtk_Tree_Path) return Gint_Array is
       type Big_Gint_Array is array (Natural) of Gint;
-      type Big_Gint_Array_Access is access Big_Gint_Array;
-      function To_Big_Gint is new Unchecked_Conversion
-        (System.Address, Big_Gint_Array_Access);
+      type Big_Gint_Array_Access is access all Big_Gint_Array;
+      pragma Convention (C, Big_Gint_Array_Access);
 
-      function Internal (Path : Gtk_Tree_Path) return System.Address;
+      function Internal (Path : Gtk_Tree_Path) return Big_Gint_Array_Access;
       pragma Import (C, Internal, "gtk_tree_path_get_indices");
 
       Result : Gint_Array (0 .. Integer (Get_Depth (Path)) - 1);
-      R      : Big_Gint_Array_Access := To_Big_Gint (Internal (Path));
+      R      : constant Big_Gint_Array_Access := Internal (Path);
+
    begin
       for J in Result'Range loop
          Result (J) := R (J);
       end loop;
+
       return Result;
    end Get_Indices;
 
