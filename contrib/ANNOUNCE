@@ -30,6 +30,8 @@ New features in 1.2.11 include:
   Gtk_Radio_Menu_Item, Gtk_Tearoff_Menu_Item, Gtk_Tree_Item.
 - A new function, Gtk.Unchecked_Cast, provides an alternative to
   Gtk.Type_Conversion.
+- The Gtkada.Canvas has been partly rewritten and now uses less memory. It also
+  provides scrolling while moving items.
 
 LSM entry follows:
 Begin4
