@@ -266,6 +266,9 @@ package body Gtk.Signal is
                              Name   : in String);
          pragma Import (C, Internal, "gtk_signal_emit_by_name");
       begin
+         --  for Emit_By_Name, we want to make sure that we pass at least
+         --  as many arguments to the gtk handler as are expected.
+         pragma Assert (Count_Arguments (Object, Name) <= 0);
          Internal (Get_Object (Object.all), Name & Ascii.NUL);
       end Emit_By_Name;
 
@@ -388,10 +391,14 @@ package body Gtk.Signal is
       is
          procedure Internal (Object  : in System.Address;
                              Name    : in String;
-                             Cb_Data : in Cb_Type);
+                             Cb_Data : in System.Address);
          pragma Import (C, Internal, "gtk_signal_emit_by_name");
       begin
-         Internal (Get_Object (Object.all), Name & Ascii.Nul, Cb_Data);
+         --  for Emit_By_Name, we want to make sure that we pass at least
+         --  as many arguments to the gtk handler as are expected.
+         pragma Assert (Count_Arguments (Object, Name) <= 1);
+         Internal (Get_Object (Object.all), Name & Ascii.Nul,
+                   Get_Object (Cb_Data));
       end Emit_By_Name;
 
    end Two_Callback;
@@ -519,10 +526,14 @@ package body Gtk.Signal is
       is
          procedure Internal (Object  : in System.Address;
                              Name    : in String;
-                             Cb_Data : in Cb_Type);
+                             Cb_Data : in System.Address);
          pragma Import (C, Internal, "gtk_signal_emit_by_name");
       begin
-         Internal (Get_Object (Object.all), Name & Ascii.Nul, Cb_Data);
+         --  for Emit_By_Name, we want to make sure that we pass at least
+         --  as many arguments to the gtk handler as are expected.
+         pragma Assert (Count_Arguments (Object, Name) <= 1);
+         Internal (Get_Object (Object.all), Name & Ascii.Nul,
+                   Get_Object (Cb_Data));
       end Emit_By_Name;
 
    end Two_Callback_Gtk;
@@ -633,6 +644,9 @@ package body Gtk.Signal is
                              Name   : in String);
          pragma Import (C, Internal, "gtk_signal_emit_by_name");
       begin
+         --  for Emit_By_Name, we want to make sure that we pass at least
+         --  as many arguments to the gtk handler as are expected.
+         pragma Assert (Count_Arguments (Object, Name) <= 0);
          Internal (Get_Object (Object.all), Name & Ascii.NUL);
       end Emit_By_Name;
 
@@ -835,6 +849,9 @@ package body Gtk.Signal is
                              Name   : in String);
          pragma Import (C, Internal, "gtk_signal_emit_by_name");
       begin
+         --  for Emit_By_Name, we want to make sure that we pass at least
+         --  as many arguments to the gtk handler as are expected.
+         pragma Assert (Count_Arguments (Object, Name) <= 0);
          Internal (Get_Object (Object.all), Name & Ascii.NUL);
       end Emit_By_Name;
 
