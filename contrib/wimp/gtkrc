@@ -7,6 +7,9 @@ style "wimp-default"
   GtkOptionMenu::indicator_spacing = { 7, 5, 2, 2 }
   GtkSpinButton::shadow-type = in
 
+  GtkButton::child_displacement_x = 1
+  GtkButton::child_displacement_y = 1
+
   engine "wimp" 
   {
   }
