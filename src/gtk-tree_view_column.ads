@@ -65,6 +65,7 @@ with Gtk.Tree_Model;
 with Gtk.Widget;
 
 with Glib.Glist;
+pragma Elaborate_All (Glib.Glist);
 with Ada.Unchecked_Conversion;
 
 package Gtk.Tree_View_Column is

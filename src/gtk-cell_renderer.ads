@@ -36,6 +36,7 @@ with Gtk;
 with Gtk.Object;
 with Gtk.Widget;
 with Glib.Glist;
+pragma Elaborate_All (Glib.Glist);
 
 with Unchecked_Conversion;
 

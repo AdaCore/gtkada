@@ -96,6 +96,7 @@
 
 with Glib;           use Glib;
 with Glib.Glist;
+pragma Elaborate_All (Glib.Glist);
 with Gdk.Color;
 with Gdk.Drawable;
 with Gdk.Rectangle;

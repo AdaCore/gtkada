@@ -43,6 +43,7 @@
 
 with Glib.Object;
 with Glib.Generic_Properties;
+pragma Elaborate_All (Glib.Generic_Properties);
 with Gtk.Widget;
 
 package Gtk.Size_Group is

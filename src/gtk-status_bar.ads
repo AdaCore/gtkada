@@ -53,6 +53,7 @@
 with Gtk.Box;
 with Interfaces.C.Strings;
 with Glib.GSlist;
+pragma Elaborate_All (Glib.GSlist);
 with System;
 
 package Gtk.Status_Bar is

@@ -41,6 +41,7 @@
 --  <c_version>1.3.11</c_version>
 
 with Glib.Glist;
+pragma Elaborate_All (Glib.Glist);
 with Glib.Values;
 with Gtk.Container;
 with Gtk.Enums;

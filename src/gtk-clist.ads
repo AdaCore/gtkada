@@ -55,6 +55,7 @@ with Gdk.Color;
 with Gdk.Pixmap;
 with Gdk.Window;
 with Glib.Glist;
+pragma Elaborate_All (Glib.Glist);
 with Gtk.Adjustment;
 with Gtk.Container;
 with Gtk.Enums;

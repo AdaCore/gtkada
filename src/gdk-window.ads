@@ -52,6 +52,7 @@ with System;
 with Glib; use Glib;
 with Glib.Object;
 with Glib.Glist;
+pragma Elaborate_All (Glib.Glist);
 with Gdk;
 with Gdk.Color;
 with Gdk.Cursor;

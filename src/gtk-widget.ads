@@ -46,6 +46,7 @@ with System;
 with Glib.Object;
 with Glib.Properties;
 with Glib.Glist;
+pragma Elaborate_All (Glib.Glist);
 with Glib.GSlist;
 pragma Elaborate_All (Glib.GSlist);
 with Glib.Values;

@@ -48,6 +48,7 @@ with Gdk.Color;
 with Gdk.Pixmap;
 with Glib; use Glib;
 with Glib.Glist;
+pragma Elaborate_All (Glib.Glist);
 with Glib.Gnodes;
 with Gtk.Clist;
 with Gtk.Enums; use Gtk.Enums;
