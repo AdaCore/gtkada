@@ -1143,4 +1143,8 @@ package body Gtk.Text_Iter is
                (Glib.Values.Get_Address (Val)).all;
    end Get_Text_Iter;
 
+begin
+   if Gtk_Text_Iter'Size /= C_Gtk_Text_Iter_Size * 8 then
+      raise Program_Error;
+   end if;
 end Gtk.Text_Iter;

@@ -630,6 +630,8 @@ package Gtk.Text_Iter is
    --  Gtk_Text_Iter is limited.
 
 private
+   function C_Gtk_Text_Iter_Size return Natural;
+   pragma Import (C, C_Gtk_Text_Iter_Size, "ada_c_gtk_text_iter_size");
 
    type Gtk_Text_Iter is limited record
       Dummy1  : System.Address;

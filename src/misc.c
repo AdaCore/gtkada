@@ -2135,6 +2135,10 @@ ada_text_iter_copy (const GtkTextIter *source,
   *dest = *source;
 }
 
+int ada_c_gtk_text_iter_size () {
+  return sizeof (GtkTextIter);
+}
+
 /******************************************
  ** Functions for Text_View
  ******************************************/
