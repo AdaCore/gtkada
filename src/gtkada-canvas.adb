@@ -3388,10 +3388,10 @@ package body Gtkada.Canvas is
      (Item   : access Buffered_Item_Record;
       Width, Height  : Glib.Gint)
    is
-      function Screen_Get_Default return Gint;
+      function Screen_Get_Default return System.Address;
       pragma Import (C, Screen_Get_Default, "gdk_screen_get_default");
 
-      function Get_Root_Window (Screen : Gint) return Gdk_Drawable;
+      function Get_Root_Window (Screen : System.Address) return Gdk_Drawable;
       pragma Import (C, Get_Root_Window, "gdk_screen_get_root_window");
    begin
       Set_Screen_Size (Canvas_Item_Record (Item.all)'Access, Width, Height);
