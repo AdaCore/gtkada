@@ -26,7 +26,6 @@ pragma Warnings (Off, Gtk.Type_Conversion);
 pragma Elaborate_All (Gtk.Handlers);
 
 with Ada.Numerics.Discrete_Random;
-with Ada.Text_IO; use Ada.Text_IO;
 
 package body Full_Test is
    package Void_Cb is new Gtk.Handlers.User_Callback
