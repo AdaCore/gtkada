@@ -29,6 +29,9 @@
 
 --  <description>
 --
+--  This widget is now deprecated in gtk+, and you need to compile your
+--  gtk+ library with the correct switches to suppport it.
+--
 --  A Gtk_Packer is a container that organizes its children according
 --  to a given location (North, East, South, West or any combination of
 --  them).
