@@ -41,12 +41,11 @@ package Glib is
    --  The basic types  defined by glib  --
    ----------------------------------------
 
-   type Gboolean is new C.char;
-
    type Gshort is new C.short;
    type Glong  is new C.long;
    type Gint   is new C.int;
    type Gchar  is new C.char;
+   type Gboolean is new Gint;
 
    type Gushort is new C.unsigned_short;
    type Gulong  is new C.unsigned_long;
@@ -95,7 +94,6 @@ package Glib is
    function To_Boolean (Value : in Guint) return Boolean;
    function To_Gboolean (Bool : in Boolean) return Gboolean;
    function To_Gint (Bool : in Boolean) return Gint;
-
 
    -------------------------
    --  Some Access types  --

@@ -93,7 +93,7 @@ package Gdk.Color is
 
 
    procedure Alloc_Color (Colormap   : in     Gdk_Colormap;
-                          Color      : in     Gdk_Color;
+                          Color      : in out Gdk_Color;
                           Writeable  : in     Boolean;
                           Best_Match : in     Boolean;
                           Success    :    out Boolean);
@@ -112,13 +112,13 @@ package Gdk.Color is
 
 
    procedure Alloc_Colors (Colormap   : in     Gdk_Colormap;
-                           Colors     : in     Gdk_Color_Array;
+                           Colors     : in out Gdk_Color_Array;
                            Writeable  : in     Boolean;
                            Best_Match : in     Boolean;
                            Success    :    out Boolean_Array;
                            Result     :    out Gint);
    --  Allocate a set of colors. The parameters are the same as for Alloc_Color
-   --  Result is the number of colors successfully allocated.
+   --  Result is the number of colors not successfully allocated.
    --
    --  The size of the Boolean_Array is equal to the length of the
    --  Colors_Array. USAGE OF AN ARRAY OF A DIFFERENT SIZE WILL

@@ -80,6 +80,7 @@ package body Gdk.Color is
       if not To_Boolean (Internal (Get_Object (Colormap), Col'Address)) then
          raise Wrong_Color;
       end if;
+      Color := Col;
    end Alloc;
 
 
@@ -88,7 +89,7 @@ package body Gdk.Color is
    --------------------
 
    procedure Alloc_Color (Colormap   : in Gdk_Colormap;
-                          Color      : in Gdk_Color;
+                          Color      : in out Gdk_Color;
                           Writeable  : in Boolean;
                           Best_Match : in Boolean;
                           Success    :    out Boolean) is
@@ -106,6 +107,7 @@ package body Gdk.Color is
                                        Col'Address,
                                        To_Gboolean (Writeable),
                                        To_Gboolean (Best_Match)));
+      Color := Col;
    end Alloc_Color;
 
 
@@ -114,23 +116,23 @@ package body Gdk.Color is
    --------------------
 
    procedure Alloc_Colors (Colormap   : in     Gdk_Colormap;
-                           Colors     : in     Gdk_Color_Array;
+                           Colors     : in out Gdk_Color_Array;
                            Writeable  : in     Boolean;
                            Best_Match : in     Boolean;
                            Success    :    out Boolean_Array;
                            Result     :    out Gint) is
       function Internal (Colormap   : in System.Address;
-                         Colors     : in Gdk_Color_Array;
+                         Colors     : in System.Address;
                          N_Colors   : in Gint;
                          Writeable  : in Gboolean;
                          Best_Match : in Gboolean;
                          Success    : in System.Address)
                          return Gint;
       pragma Import (C, Internal, "gdk_colormap_alloc_colors");
-      Tmp : Gboolean_Array (1 .. Colors'Length);
+      Tmp : Gboolean_Array (Colors'First .. Colors'Last);
    begin
       Result := Internal (Get_Object (Colormap),
-                          Colors,
+                          Colors'Address,
                           Colors'Length,
                           To_Gboolean (Writeable),
                           To_Gboolean (Best_Match),
@@ -192,6 +194,7 @@ package body Gdk.Color is
    begin
       Succeeded := To_Boolean (Internal (Get_Object (Colormap),
                                          Col'Address));
+      Color := Col;
    end Change;
 
    ----------
@@ -291,7 +294,6 @@ package body Gdk.Color is
       return Color.Green;
    end Green;
 
-
    ------------
    --  Hash  --
    ------------
@@ -308,7 +310,6 @@ package body Gdk.Color is
    begin
       return Internal (ColA'Address, ColB'Address);
    end Hash;
-
 
    -----------
    -- Parse --
@@ -344,7 +345,6 @@ package body Gdk.Color is
       return Color.Red;
    end Red;
 
-
    -----------
    --  Ref  --
    -----------
@@ -356,7 +356,6 @@ package body Gdk.Color is
    begin
       S := Internal (Get_Object (Colormap));
    end Ref;
-
 
    ---------------
    -- Set_Pixel --
