@@ -18,8 +18,8 @@ CFLAGS = @CFLAGS@ -Wall
 ALL_CFLAGS = $(CFLAGS) @GTK_CFLAGS@ -fPIC
 
 GNATCC = gcc
-GNATFLAGS = -O2 -gnatgn
-GNATFLAGS_DEVEL = -O2 -gnatga -g
+GNATFLAGS = -O2 -gnatn
+GNATFLAGS_DEVEL = -O2 -gnatgawl -g
 ALL_GNATFLAGS = $(GNATFLAGS) -fPIC
 
 GNATMAKE = gnatmake
