@@ -139,7 +139,7 @@ install: $(ARCHIVENAME) $(LIBNAME)
 	@echo '------------------------------------------------------------------'
 
 clean-generic:
-	-${RM} *.o *.ali *~ b_*.c core
+	-${RM} *.o *.ali *~ b_*.c b~*.ad? core
 	-$(RM) $(LIB_DIR)/*
 	-${RM} $(ARCHIVENAME) $(LIBNAME)
 	-${RM} $(GATE_EX) $(DGATE)
