@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -237,6 +237,17 @@ package Gtk.Text_View is
    --  or the height of Text_Window_Top or Text_Window_Bottom.
    --  Automatically destroy the corresponding window if the size is set to 0,
    --  and create the window if the size is set to non-zero.
+
+   procedure Set_Disable_Scroll_On_Focus
+     (Text_View : access Gtk_Text_View_Record;
+      Set       : Boolean);
+   --  Set whether the Text_View should scroll to the cursor when it gets the
+   --  focus. (This is the default behaviour)
+
+   function Get_Disable_Scroll_On_Focus
+     (Text_View : access Gtk_Text_View_Record) return Boolean;
+   --  Return True when the behaviour to scroll on the cursor when grabbing the
+   --  focus is disabled.
 
    procedure Forward_Display_Line
      (Text_View : access Gtk_Text_View_Record;
