@@ -2449,11 +2449,6 @@ package body Gtkada.MDI is
       Pack_Start
         (Child.Main_Box, Event, Expand => True, Fill => True, Padding => 0);
 
-      if not Draw_Title_Bars then
-         Set_Child_Visible (Child.Title_Box, False);
-         Hide_All (Child.Title_Box);
-      end if;
-
       Widget_Callback.Object_Connect
         (Child.Initial, "destroy",
          Widget_Callback.To_Marshaller (Destroy_Initial_Child'Access),
@@ -2572,7 +2567,7 @@ package body Gtkada.MDI is
       --  otherwise the notebook page will not be made visible.
 
       Show_All (C);
-      if not Draw_Title_Bars then
+      if MDI.Central.Children_Are_Maximized and then not Draw_Title_Bars then
          Hide_All (C.Title_Box);
       end if;
 
@@ -3695,7 +3690,9 @@ package body Gtkada.MDI is
                  (Child, Child.Uniconified_Width, Child.Uniconified_Height);
             end if;
 
-            if not Draw_Title_Bars then
+            if MDI.Central.Children_Are_Maximized
+               and then not Draw_Title_Bars
+            then
                Set_Child_Visible (Child.Title_Box, True);
                Show_All (Child.Title_Box);
             end if;
@@ -5231,6 +5228,9 @@ package body Gtkada.MDI is
                         Dock_Child (Child, False);
                         Child.Uniconified_Width := Gint (Width);
                         Child.Uniconified_Height := Gint (Height);
+                        if not MDI.Central.Children_Are_Maximized then
+                           Move (MDI.Central.Layout, Child, Child.X, Child.Y);
+                        end if;
 
                      when Iconified =>
                         Child.State := Iconified;
