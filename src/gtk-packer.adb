@@ -244,19 +244,24 @@ package body Gtk.Packer is
  
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
+      S : String_Ptr;
    begin
-      Gen_New (N, File => File);
+      Gen_New (N, "Packer", File => File);
       Container.Generate (N, File);
       Gen_Set (N, "Packer", "default_border_width", File => File);
-      Gen_Set (N, "Packer", "Default_Pad", Get_Field (N, "default_pad_x").all,
-        Get_Field (N, "default_pad_y").all, "", "", File => File);
-      Gen_Set (N, "Packer", "Default_Ipad",
-        Get_Field (N, "default_ipad_x").all,
-        Get_Field (N, "default_ipad_y").all, "", "", File => File);
 
-      if not N.Specific_Data.Has_Container then
-         Gen_Call_Child (N, null, "Container", "Add", File => File);
-         N.Specific_Data.Has_Container := True;
+      S  := Get_Field (N, "default_pad_x");
+
+      if S /= null then
+         Gen_Set (N, "Packer", "Default_Pad", S.all,
+           Get_Field (N, "default_pad_y").all, "", "", File => File);
+      end if;
+
+      S  := Get_Field (N, "default_ipad_x");
+
+      if S /= null then
+         Gen_Set (N, "Packer", "Default_Ipad", S.all,
+           Get_Field (N, "default_ipad_y").all, "", "", File => File);
       end if;
    end Generate;
  
@@ -291,14 +296,6 @@ package body Gtk.Packer is
       if S /= null then
          Set_Default_Ipad (Gtk_Packer (Packer), Guint'Value (S.all),
            Guint'Value (Get_Field (N, "default_ipad_y").all));
-      end if;
-
-      if not N.Specific_Data.Has_Container then
-         Container.Add
-           (Container.Gtk_Container
-            (Get_Object (Get_Field (N.Parent, "name"))),
-            Gtk.Widget.Gtk_Widget (Packer));
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 
