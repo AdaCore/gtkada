@@ -65,7 +65,7 @@ package Gtk.Widget is
    type Gtk_Widget_Access is access all Gtk_Widget'Class;
 
    function Get_Window (Widget : in Gtk_Widget)
-                        return Gdk.Window.Gdk_Window'Class;
+                        return Gdk.Window.Gdk_Window;
 
    procedure Activate (Widget : in out Gtk_Widget);
 

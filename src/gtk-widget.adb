@@ -234,7 +234,7 @@ package body Gtk.Widget is
    ----------------
 
    function Get_Window (Widget : in Gtk_Widget)
-                        return Gdk.Window.Gdk_Window'Class
+                        return Gdk.Window.Gdk_Window
    is
       function Internal (Widget : System.Address)
                         return    System.Address;
