@@ -3,17 +3,12 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Dialog; use Gtk.Dialog;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Hseparator; use Gtk.Hseparator;
 with Gtk.Label; use Gtk.Label;
-with Gtk.Main; use Gtk.Main;
 with Gtk.Misc; use Gtk.Misc;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
-with Gtk.Table; use Gtk.Table;
 with Gtk.Vbox; use Gtk.Vbox;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 
 package body Create_Dialog is
