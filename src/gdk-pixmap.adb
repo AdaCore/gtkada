@@ -158,7 +158,7 @@ package body Gdk.Pixmap is
    begin
       Internal (Get_Object (GC), Get_Object (Tile));
    end Set_Tile;
- 
+
    ------------------
    -- Unref_Pixmap --
    ------------------
@@ -168,6 +168,7 @@ package body Gdk.Pixmap is
       pragma Import (C, Internal, "gdk_pixmap_unref");
    begin
       Internal (Get_Object (Pixmap));
+      Set_Object (Pixmap, System.Null_Address);
    end Unref_Pixmap;
 
 end Gdk.Pixmap;
