@@ -5,8 +5,8 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-dir=${file%\\*}
-file=$1
+dir=`dirname $1|sed -e 's$\\\\$/$g'`
+file=`cd $dir; pwd`/`basename $1`
 info=`gate-in.exe -p -s -x $file`
 
 if [ $? != 0 ]; then
