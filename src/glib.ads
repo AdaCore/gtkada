@@ -67,9 +67,12 @@ package Glib is
    ------------------------
 
    type Gint_Array is array (Natural range <>) of Gint;
+   type Gushort_Array is array (Natural range <>) of Gushort;
    type Gulong_Array is array (Natural range <>) of Gulong;
    type Gfloat_Array is array (Natural range <>) of Gfloat;
    type Guchar_Array is array (Natural range <>) of Guchar;
+
+   type Boolean_Array is array (Natural range <>) of Boolean;
 
    ---------------------------
    --  Conversion services  --

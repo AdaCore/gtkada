@@ -34,7 +34,7 @@ package Gdk.Drawable is
 
    subtype Gdk_Drawable is Window.Gdk_Window;
 
-   procedure Copy_Area (To       : in out Gdk_Drawable;
+   procedure Copy_Area (To       : in Gdk_Drawable;
                         GC       : in Gdk.GC.Gdk_GC;
                         To_X     : in Gint;
                         To_Y     : in Gint;

@@ -32,7 +32,7 @@ package body Gdk.Drawable is
    -- Copy_Area --
    ---------------
 
-   procedure Copy_Area (To       : in out Gdk_Drawable;
+   procedure Copy_Area (To       : in Gdk_Drawable;
                         GC       : in Gdk.GC.Gdk_GC;
                         To_X     : in Gint;
                         To_Y     : in Gint;
