@@ -61,11 +61,6 @@ package body Create_Notebook is
    package Frame_Cb is new Signal.Callback
      (Gtk_Check_Button_Record, Gtk_Frame);
 
-   package ConvertP is new Gdk.Unchecked_Cast
-     (Gtk_Pixmap_Record, Gtk_Pixmap);
-   package ConvertB is new Gdk.Unchecked_Cast
-     (Gtk_Box_Record, Gtk_Box);
-
    Window           : aliased Gtk_Window;
    Book_Open        : Gdk_Pixmap;
    Book_Open_Mask   : Gdk_Bitmap;
@@ -243,19 +238,19 @@ package body Create_Notebook is
       Old_Page : Gtk_Notebook_Page := Get_Cur_Page (Notebook);
       Pixmap  : Gtk_Pixmap;
    begin
-      Pixmap := ConvertP.Convert
-        (Get_Child (ConvertB.Convert (Get_Tab_Label (Page)), 0));
+      Pixmap := Gtk_Pixmap
+        (Get_Child (Gtk_Box (Get_Tab_Label (Page)), 0));
       Set (Pixmap, Book_Open, Book_Open_Mask);
-      Pixmap := ConvertP.Convert
-        (Get_Child (ConvertB.Convert (Get_Menu_Label (Page)), 0));
+      Pixmap := Gtk_Pixmap
+        (Get_Child (Gtk_Box (Get_Menu_Label (Page)), 0));
       Set (Pixmap, Book_Open, Book_Open_Mask);
 
       if Gdk.Is_Created (Old_Page) then
-         Pixmap := ConvertP.Convert
-           (Get_Child (ConvertB.Convert (Get_Tab_Label (Old_Page)), 0));
+         Pixmap := Gtk_Pixmap
+           (Get_Child (Gtk_Box (Get_Tab_Label (Old_Page)), 0));
          Set (Pixmap, Book_Closed, Book_Closed_Mask);
-         Pixmap := ConvertP.Convert
-           (Get_Child (ConvertB.Convert (Get_Menu_Label (Old_Page)), 0));
+         Pixmap := Gtk_Pixmap
+           (Get_Child (Gtk_Box (Get_Menu_Label (Old_Page)), 0));
          Set (Pixmap, Book_Closed, Book_Closed_Mask);
       end if;
    end Page_Switch;

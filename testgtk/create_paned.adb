@@ -47,10 +47,13 @@ package body Create_Paned is
 
    Window : aliased Gtk.Window.Gtk_Window;
 
-   package To_Paned is new Unchecked_Cast (Gtk_Paned_Record, Gtk_Paned);
-
    procedure Toggle_Resize (Child : access Gtk_Widget_Record) is
-      Paned : Gtk_Paned := To_Paned.Convert (Get_Parent (Child));
+      Paned : Gtk_Paned := Gtk_Paned (Get_Parent (Child));
+      --  We use to need an unchecked conversion above, but this is
+      --  not required now, as long as their is a with of
+      --  Gtk.Type_Conversion. The correct Ada type will be created
+      --  correctly by GtkAda.
+
       Is_Child1 : Boolean := Gtk_Widget (Child) = Get_Child1 (Paned);
       Resize : Boolean;
       Shrink : Boolean;
@@ -76,7 +79,7 @@ package body Create_Paned is
    end Toggle_Resize;
 
    procedure Toggle_Shrink (Child : access Gtk_Widget_Record) is
-      Paned : Gtk_Paned := To_Paned.Convert (Get_Parent (Child));
+      Paned : Gtk_Paned := Gtk_Paned (Get_Parent (Child));
       Is_Child1 : Boolean := Gtk_Widget (Child) = Get_Child1 (Paned);
       Resize : Boolean;
       Shrink : Boolean;

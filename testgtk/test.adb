@@ -44,6 +44,8 @@ with Gtk.Signal;
 with Gtk.Widget;           use Gtk.Widget;
 with Gtk.Window;           use Gtk.Window;
 
+with Gtk.Type_Conversion;
+
 with Create_Arrow;
 with Create_Button_Box;
 with Create_Buttons;
