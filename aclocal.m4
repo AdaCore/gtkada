@@ -66,6 +66,24 @@ EOF
    AC_MSG_RESULT(yes)
 ])
 
+
+#############################################################
+#
+#  Checking for gnatprep
+#
+#############################################################
+
+
+AC_DEFUN(AM_PATH_GNATPREP,
+[
+   AC_PATH_PROG(GNATPREP, gnatprep, no)
+
+   if test x$GNATPREP = xno ; then
+      AC_MSG_ERROR(I could not find gnatprep. See the file 'INSTALL' for more details.)
+   fi
+
+])
+
 #############################################################
 #
 #  Checking for Perl
@@ -423,13 +441,13 @@ AC_DEFUN(AM_CHECK_OPENGL,
    fi
    
    LIBS="$saved_LIBS"
-   HAVE_OPENGL=no_opengl
+   HAVE_OPENGL="False"
    
    if test "x$with_lib_GL" = "xyes"; then
    
      if test "x$have_GL" = "xyes"; then
        GL_LIBS="$GL_LDOPTS -lGLU -lGL"
-       HAVE_OPENGL=opengl
+       HAVE_OPENGL="True"
      else
        AC_MSG_ERROR([Missing GL library])
      fi
@@ -438,10 +456,10 @@ AC_DEFUN(AM_CHECK_OPENGL,
    
      if test "x$have_MesaGL" = "xyes"; then
        GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
-       HAVE_OPENGL=opengl
+       HAVE_OPENGL="True"
      elif test "x$have_MesaGL_pthread" = "xyes"; then
        GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
-       HAVE_OPENGL=opengl
+       HAVE_OPENGL="True"
      else
        AC_MSG_ERROR([Missing MesaGL library])
      fi
@@ -450,13 +468,13 @@ AC_DEFUN(AM_CHECK_OPENGL,
    
      if test "x$have_GL" = "xyes"; then
        GL_LIBS="$GL_LDOPTS -lGLU -lGL"
-       HAVE_OPENGL=opengl
+       HAVE_OPENGL="True"
      elif test "x$have_MesaGL" = "xyes"; then
        GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
-       HAVE_OPENGL=opengl
+       HAVE_OPENGL="True"
      elif test "x$have_MesaGL_pthread" = "xyes"; then
        GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
-       HAVE_OPENGL=opengl
+       HAVE_OPENGL="True"
      else
        AC_MSG_RESULT([*** OpenGL support will not be integrated into GtkAda ***])
      fi
@@ -466,4 +484,18 @@ AC_DEFUN(AM_CHECK_OPENGL,
    AC_SUBST(GL_CFLAGS)
    AC_SUBST(HAVE_OPENGL)
 
+])
+
+
+#############################################################
+#
+#  A small macro to create a file after preprocessing it using gnatprep
+#
+#############################################################
+
+
+AC_DEFUN(AM_GNATPREP,
+[   
+   echo "creating $1"
+   $GNATPREP $1.in $1 config.defs
 ])
