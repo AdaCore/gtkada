@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                      Copyright (C) 1999                           --
+--                  Copyright (C) 1999-2000                          --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -139,6 +139,31 @@ package body Glib.Glade is
       Num_Signal_Instanciations := Num_Signal_Instanciations + 1;
       Signal_Instanciations (Num_Signal_Instanciations) := S;
    end Add_Signal_Instanciation;
+
+   ------------
+   -- Adjust --
+   ------------
+
+   function Adjust (S : String) return String is
+      T : String (1 .. S'Length + 256);
+      K : Natural := 1;
+
+   begin
+      for J in S'Range loop
+         if S (J) = ASCII.LF then
+            T (K .. K + 15) := """ & ASCII.LF & """;
+            K := K + 16;
+
+         --  Skip additional CR present on Win32
+
+         elsif S (J) /= ASCII.CR then
+            T (K) := S (J);
+            K := K + 1;
+         end if;
+      end loop;
+
+      return T (1 .. K - 1);
+   end Adjust;
 
    -----------------
    -- Find_Parent --
@@ -469,9 +494,11 @@ package body Glib.Glade is
    -------------
 
    procedure Gen_New
-     (N : Node_Ptr;
-      Class, Param1, Param2, New_Name : String := "";
-      File : File_Type; Delim : Character := ' ')
+     (N     : Node_Ptr;
+      Class : String;
+      Param1, Param2, New_Name : String := "";
+      File  : File_Type;
+      Delim : Character := ' ')
    is
       P   : String_Ptr;
       Cur : String_Ptr;
@@ -734,7 +761,7 @@ package body Glib.Glade is
       N.Specific_Data.Created := False;
       N.Specific_Data.Has_Container := False;
       N.Specific_Data.Has_Accel_Group := False;
-      N.Specific_Data.Has_Radio_Button_Group := False;
+      N.Specific_Data.Has_Radio_Group := False;
 
       if Check_Next then
          M := N.Next;
@@ -877,6 +904,9 @@ package body Glib.Glade is
 
             Put_Line (File, "end " &
               To_Ada (Get_Field (SR.Widget, "name").all) & "_Pkg.Callbacks;");
+
+            --  ??? Need to find a way to put only the required packages
+
             Put_Line (File, "with System; use System;");
             Put_Line (File, "with Glib; use Glib;");
             Put_Line (File, "with Gdk.Event; use Gdk.Event;");

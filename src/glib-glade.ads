@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                      Copyright (C) 1999                           --
+--                   Copyright (C) 1999-2000                         --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -43,8 +43,8 @@ package Glib.Glade is
       Has_Accel_Group : Boolean := False;
       --  True if object has created an accelerator group
 
-      Has_Radio_Button_Group : Boolean := False;
-      --  True if object has created a radio button group
+      Has_Radio_Group : Boolean := False;
+      --  True if object has created a radio button/menu_item group
    end record;
 
    package Glib_XML is new Glib.XML (XML_Data);
@@ -55,6 +55,10 @@ package Glib.Glade is
    --  This is used to generate the proper list of "with"ed packages.
    --  Note that S is assumed to be a child of Gtk, e.g for Gtk.Table,
    --  call Add_Package ("Table").
+
+   function Adjust (S : String) return String;
+   --  Replace non "compilable" characters (e.g ASCII.LF) and return
+   --  a printable and "compilable" Ada string.
 
    function Find_Parent (N : Node_Ptr; Class : String) return Node_Ptr;
    --  Find a node in the ancestors of N with a given class
@@ -98,7 +102,8 @@ package Glib.Glade is
    --  If Is_Float is true, call To_Float on each non null field.
 
    procedure Gen_New
-     (N : Node_Ptr; Class, Param1, Param2, New_Name : String := "";
+     (N : Node_Ptr; Class : String;
+      Param1, Param2, New_Name : String := "";
       File : File_Type; Delim : Character := ' ');
    --  Output a call to <Class>.Gtk_New in File.
    --  N is the node containing the widget to create.
@@ -130,9 +135,9 @@ package Glib.Glade is
      Param1, Param2, Param3 : String := "";
      File : File_Type);
    --  If N has a field "name", Output a call to Call in File of the form:
-   --    <Class>.<Call> (Gtk_<Class> (Parent (N)), N)
+   --    <Call> (Parent (N), N)
    --  if Child is null, or
-   --    <Class>.<Call> (<Parent>, N)
+   --    <Call> (<Parent>, N)
    --  where Parent (N) is the name of N.Parent and <Parent> is the name of the
    --  first parent of N whose class is <Class>
    --  Param<n> when non null, represents a field of Child (Child musn't be
