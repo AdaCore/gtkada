@@ -347,35 +347,117 @@ ada_gdk_event_any_set_send_event (GdkEventAny * event, gint8 send_event)
 
 /*
  *
- *  GdkEventExpose
+ * GdkEventButton
  *
  */
 
-GdkRectangle
-ada_gdk_event_expose_get_area (GdkEventExpose * event)
+guint32
+ada_gdk_event_button_get_time (GdkEventButton * event)
 {
-  return event->area;
+  return event->time;
 }
 
-void
-ada_gdk_event_expose_set_area (GdkEventExpose * event,
-			       GdkRectangle * area)
+gdouble
+ada_gdk_event_button_get_x (GdkEventButton * event)
 {
-  event->area = *area;
+  return event->x;
 }
 
-gint
-ada_gdk_event_expose_get_count (GdkEventExpose * event)
+gdouble
+ada_gdk_event_button_get_y (GdkEventButton * event)
 {
-  return event->count;
+  return event->y;
 }
 
-void
-ada_gdk_event_expose_set_count (GdkEventExpose * event, gint count)
+gdouble
+ada_gdk_event_button_get_pressure (GdkEventButton * event)
 {
-  event->count = count;
+  return event->pressure;
 }
 
+gdouble
+ada_gdk_event_button_get_xtilt (GdkEventButton * event)
+{
+  return event->xtilt;
+}
+
+gdouble
+ada_gdk_event_button_get_ytilt (GdkEventButton * event)
+{
+  return event->ytilt;
+}
+
+guint
+ada_gdk_event_button_get_state (GdkEventButton * event)
+{
+  return event->state;
+}
+
+guint
+ada_gdk_event_button_get_button (GdkEventButton * event)
+{
+  return event->button;
+}
+
+GdkInputSource
+ada_gdk_event_button_get_source (GdkEventButton * event)
+{
+  return event->source;
+}
+
+guint32
+ada_gdk_event_button_get_device_id (GdkEventButton * event)
+{
+  return event->deviceid;
+}
+
+gdouble
+ada_gdk_event_button_get_x_root (GdkEventButton * event)
+{
+  return event->x_root;
+}
+
+gdouble
+ada_gdk_event_button_get_y_root (GdkEventButton * event)
+{
+  return event->y_root;
+}
+
+/*
+ *
+ * GdkEventClient
+ *
+ */
+
+GdkAtom
+ada_gdk_event_client_get_message_type (GdkEventClient * event)
+{
+  return event->message_type;
+}
+
+gushort
+ada_gdk_event_client_get_data_format (GdkEventClient * event)
+{
+  return event->data_format;
+}
+
+char *
+ada_gdk_event_client_get_b (GdkEventClient * event)
+{
+  return event->data.b;
+}
+
+short *
+ada_gdk_event_client_get_s (GdkEventClient * event)
+{
+  return event->data.s;
+}
+
+long *
+ada_gdk_event_client_get_l (GdkEventClient * event)
+{
+  return event->data.l;
+}
 
 /*
  *
@@ -433,44 +515,113 @@ ada_gdk_event_configure_set_height (GdkEventConfigure * event, gint16 height)
 
 /*
  *
- * GdkEventButton
+ * GdkEventCrossing
+ *
  *
  */
 
-guint32
-ada_gdk_event_button_get_state (GdkEventButton * event)
+GdkWindow *
+ada_gdk_event_crossing_get_subwindow (GdkEventCrossing * event)
 {
-  return event->state;
+  return event->subwindow;
 }
 
 guint32
-ada_gdk_event_button_get_button (GdkEventButton * event)
+ada_gdk_event_crossing_get_time (GdkEventCrossing * event)
 {
-  return event->button;
+  return event->time;
 }
 
-gint16
-ada_gdk_event_button_get_x (GdkEventButton * event)
+gdouble
+ada_gdk_event_crossing_get_x (GdkEventCrossing * event)
 {
   return event->x;
 }
 
-void
-ada_gdk_event_button_set_x (GdkEventButton * event, gint16 x)
-{
-  event->x = x;
-}
-
-gint16
-ada_gdk_event_button_get_y (GdkEventButton * event)
+gdouble
+ada_gdk_event_crossing_get_y (GdkEventCrossing * event)
 {
   return event->y;
 }
 
-void
-ada_gdk_event_button_set_y (GdkEventButton * event, gint16 y)
+gdouble
+ada_gdk_event_crossing_get_x_root (GdkEventCrossing * event)
 {
-  event->y = y;
+  return event->x_root;
+}
+
+gdouble
+ada_gdk_event_crossing_get_y_root (GdkEventCrossing * event)
+{
+  return event->y_root;
+}
+
+GdkCrossingMode
+ada_gdk_event_crossing_get_mode (GdkEventCrossing * event)
+{
+  return event->mode;
+}
+
+GdkNotifyType
+ada_gdk_event_crossing_get_detail (GdkEventCrossing * event)
+{
+  return event->detail;
+}
+
+gboolean
+ada_gdk_event_crossing_get_focus (GdkEventCrossing * event)
+{
+  return event->focus;
+}
+
+guint
+ada_gdk_event_crossing_get_state (GdkEventCrossing * event)
+{
+  return event->state;
+}
+
+
+/*
+ *
+ *  GdkEventExpose
+ *
+ */
+
+GdkRectangle
+ada_gdk_event_expose_get_area (GdkEventExpose * event)
+{
+  return event->area;
+}
+
+void
+ada_gdk_event_expose_set_area (GdkEventExpose * event,
+			       GdkRectangle * area)
+{
+  event->area = *area;
+}
+
+gint
+ada_gdk_event_expose_get_count (GdkEventExpose * event)
+{
+  return event->count;
+}
+
+void
+ada_gdk_event_expose_set_count (GdkEventExpose * event, gint count)
+{
+  event->count = count;
+}
+
+/*
+ *
+ * GdkEventFocus
+ *
+ */
+
+gint16
+ada_gdk_event_focus_get_in (GdkEventFocus * event)
+{
+  return event->in;
 }
 
 /*
@@ -478,6 +629,12 @@ ada_gdk_event_button_set_y (GdkEventButton * event, gint16 y)
  * GdkEventKey
  *
  */
+
+guint32
+ada_gdk_event_key_get_time (GdkEventKey * event)
+{
+  return event->time;
+}
 
 guint32
 ada_gdk_event_key_get_state (GdkEventKey * event)
@@ -510,16 +667,173 @@ ada_gdk_event_key_get_string (GdkEventKey * event)
  *
  */
 
-gint16
+guint32
+ada_gdk_event_motion_get_time (GdkEventMotion * event)
+{
+  return event->time;
+}
+
+gdouble
 ada_gdk_event_motion_get_x (GdkEventMotion * event)
 {
   return event->x;
 }
 
-gint16
+gdouble
 ada_gdk_event_motion_get_y (GdkEventMotion * event)
 {
   return event->y;
+}
+
+gdouble
+ada_gdk_event_motion_get_pressure (GdkEventMotion * event)
+{
+  return event->pressure;
+}
+
+gdouble
+ada_gdk_event_motion_get_xtilt (GdkEventMotion * event)
+{
+  return event->xtilt;
+}
+
+gdouble
+ada_gdk_event_motion_get_ytilt (GdkEventMotion * event)
+{
+  return event->ytilt;
+}
+
+guint 
+ada_gdk_event_motion_get_state (GdkEventMotion * event)
+{
+  return event->state; /* Gdk_Modifier_Type */
+}
+
+guint16
+ada_gdk_event_motion_get_is_hint (GdkEventMotion * event)
+{
+  return event->is_hint;
+}
+
+GdkInputSource 
+ada_gdk_event_motion_get_source (GdkEventMotion * event)
+{
+  return event->source;
+}
+
+guint32
+ada_gdk_event_motion_get_deviceid (GdkEventMotion * event)
+{
+  return event->deviceid;
+}
+
+gdouble
+ada_gdk_event_motion_get_x_root (GdkEventMotion * event)
+{
+  return event->x_root;
+}
+
+gdouble
+ada_gdk_event_motion_get_y_root (GdkEventMotion * event)
+{
+  return event->y_root;
+}
+
+/*
+ *
+ * GdkEventProperty
+ *
+ */
+
+GdkAtom
+ada_gdk_event_property_get_atom (GdkEventProperty * event)
+{
+  return event->atom;
+}
+
+guint32
+ada_gdk_event_property_get_time (GdkEventProperty * event)
+{
+  return event->time;
+}
+
+guint
+ada_gdk_event_property_get_state (GdkEventProperty * event)
+{
+  return event->state;
+}
+
+/*
+ *
+ * GdkEventProximity
+ *
+ */
+
+guint32
+ada_gdk_event_proximity_get_time (GdkEventProximity * event)
+{
+  return event->time;
+}
+
+GdkInputSource
+ada_gdk_event_proximity_get_source (GdkEventProximity * event)
+{
+  return event->source;
+}
+
+guint32
+ada_gdk_event_proximity_get_deviceid (GdkEventProximity * event)
+{
+  return event->deviceid;
+}
+
+
+/*
+ *
+ * GdkEventSelection
+ *
+ */
+
+GdkAtom
+ada_gdk_event_selection_get_selection (GdkEventSelection * event)
+{
+  return event->selection;
+}
+
+GdkAtom
+ada_gdk_event_selection_get_target (GdkEventSelection * event)
+{
+  return event->target;
+}
+
+GdkAtom
+ada_gdk_event_selection_get_property (GdkEventSelection * event)
+{
+  return event->property;
+}
+
+guint32
+ada_gdk_event_selection_get_requestor (GdkEventSelection * event)
+{
+  return event->requestor;
+}
+
+guint32
+ada_gdk_event_selection_get_time (GdkEventSelection * event)
+{
+  return event->time;
+}
+
+
+/*
+ * GdkEventVisibility
+ *
+ */
+
+GdkVisibilityState
+ada_gdk_event_visibility_get_visibility_state (GdkEventVisibility * event)
+{
+  return event->state;
 }
 
 
@@ -576,13 +890,6 @@ ada_adjustment_set_page_size (GtkAdjustment * adjustment,
 {
   adjustment->page_size = value;
 }
-
-guint32
-ada_gdk_event_motion_get_state (GdkEventButton * event)
-{
-  return event->state;
-}
-
 
 /*
  *
@@ -1520,3 +1827,30 @@ ada_gdk_window_attr_get_override_redirect (GdkWindowAttr * window_attr)
   
   return window_attr->override_redirect;
 }
+
+
+/*
+ *
+ * Gdk properties
+ *
+ */
+
+inline void
+ada_gdk_property_get (GdkWindow	 *window,
+		      GdkAtom     property,
+		      GdkAtom     type,
+		      gulong      offset,
+		      gulong      length,
+		      gint        pdelete,
+		      GdkAtom    *actual_property_type,
+		      gint       *actual_format,
+		      gint       *actual_length,
+		      guchar    **data,
+		      gint       *success)
+{
+  *success = gdk_property_get (window, property, type, offset, length,
+			       pdelete, actual_property_type, actual_format,
+			       actual_length, data);
+}
+
+
