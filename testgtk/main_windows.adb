@@ -38,6 +38,7 @@ with Gtk.Dialog;          use Gtk.Dialog;
 with Gtk.Drawing_Area;    use Gtk.Drawing_Area;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Frame;           use Gtk.Frame;
+with Gtk.HButton_Box;     use Gtk.HButton_Box;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Main;            use Gtk.Main;
 with Gtk.Notebook;        use Gtk.Notebook;
@@ -57,6 +58,7 @@ with Interfaces.C.Strings;
 with Ada.Strings.Fixed;
 
 with Create_Arrow;
+with Create_Box;
 with Create_Button_Box;
 with Create_Buttons;
 with Create_Calendar;
@@ -68,6 +70,7 @@ with Create_Cursors;
 with Create_Dialog;
 with Create_Entry;
 with Create_File_Selection;
+with Create_Fixed;
 with Create_Font_Selection;
 with Create_Gamma_Curve;
 with Create_Handle_Box;
@@ -82,8 +85,7 @@ with Create_Preview_Gray;
 with Create_Progress;
 with Create_Radio_Button;
 with Create_Range;
-with Create_Reparent;
-with Create_Rulers;
+with Create_Reparent;with Create_Rulers;
 with Create_Scrolled;
 with Create_Scroll_Test;
 with Create_Spin;
@@ -163,8 +165,8 @@ package body Main_Windows is
    --  Callbacks when a different item in the tree is selected.
 
    package Window_Callback is new Gtk.Signal.Void_Callback
-     (Base_Type => Main_Window_Record);
-   procedure Exit_Main (Object : access Main_Window_Record);
+     (Base_Type => Gtk_Widget_Record);
+   procedure Exit_Main (Object : access Gtk_Widget_Record);
    --  Callbacks when the main window is killed
 
    type Demo_Type is (Box, Base, Complex, Gimp, Misc);
@@ -190,6 +192,8 @@ package body Main_Windows is
    Gtk_Demos : constant Tree_Item_Array :=
      ((NS ("arrow"),            Base,    Create_Arrow.Run'Access,
                                          Create_Arrow.Help'Access),
+      (NS ("box"),              Box,     Create_Box.Run'Access,
+                                         Create_Box.Help'Access),
       (NS ("button box"),       Box,     Create_Button_Box.Run'Access,
                                          Create_Button_Box.Help'Access),
       (NS ("buttons"),          Base,    Create_Buttons.Run'Access, null),
@@ -204,6 +208,8 @@ package body Main_Windows is
       (NS ("entry"),            Base,    Create_Entry.Run'Access, null),
       (NS ("event watcher"),    Misc,    null, null),
       (NS ("file selection"),   Complex, Create_File_Selection.Run'Access, null),
+      (NS ("fixed"),            Box,     Create_Fixed.Run'Access,
+                                         Create_Fixed.Help'Access),
       (NS ("font selection"),   Gimp,    Create_Font_Selection.Run'Access, null),
       (NS ("gamma curve"),      Gimp,    Create_Gamma_Curve.Run'Access, null),
       (NS ("handle box"),       Box,     Create_Handle_Box.Run'Access, null),
@@ -285,6 +291,17 @@ package body Main_Windows is
    end Fill_Gtk_Tree;
 
    ------------------
+   -- Destroy_Help --
+   ------------------
+
+   procedure Destroy_Help (Button : access Gtk_Widget_Record) is
+      pragma Warnings (Off, Button);
+   begin
+      Destroy (Help_Dialog);
+      Help_Dialog := null;
+   end Destroy_Help;
+
+   ------------------
    -- Display_Help --
    ------------------
 
@@ -295,16 +312,13 @@ package body Main_Windows is
       Label     : Gtk.Label.Gtk_Label;
 
    begin
-      if Current_Help = null then
-         return;
-      end if;
-
       if Help_Dialog = null then
          Gtk_New (Help_Dialog);
          Set_Policy (Help_Dialog, Allow_Shrink => True, Allow_Grow => True,
                      Auto_Shrink => True);
          Set_Title (Help_Dialog, "testgtk help");
-         Set_Usize (Help_Dialog, 400, 250);
+         Set_Default_Size (Help_Dialog, 400, 250);
+         --  Set_Usize (Help_Dialog, 400, 250);
 
          Set_Spacing (Get_Vbox (Help_Dialog), 3);
 
@@ -319,90 +333,99 @@ package body Main_Windows is
          Add (Scrolled, Help_Text);
          Set_Editable (Help_Text, False);
          Set_Style (Help_Text, Get_Style (Help_Dialog));
+         Set_Word_Wrap (Help_Text, Word_Wrap => True);
 
          Gtk_New (Close, "Close");
          Pack_Start (Get_Action_Area (Help_Dialog), Close, False, False);
-         Id := Widget_Cb.Connect (Close, "clicked", Hide'Access, Help_Dialog);
+         Id := Widget_Cb.Connect (Close, "clicked", Destroy_Help'Access, Help_Dialog);
+         Set_Flags (Close, Can_Default);
+         Grab_Default (Close);
 
       else
          Delete_Text (Help_Text, 0, -1);
       end if;
 
       Freeze (Help_Text);
-      declare
-         Help  : constant String := Current_Help.all;
-         Pos   : Natural := Help'First;
-         First : Natural;
-         Blue  : Gdk_Color;
-         Black : constant Gdk_Color
-           := Gdk.Color.Black (Get_Colormap (Help_Text));
-         Current_Color : Gdk_Color := Black;
-         Newline : constant String := (1 => ASCII.LF);
-         Max_Length : constant := 70;
 
-         Line_End : Natural;
-         --  Points to the first character of the next line
+      if Current_Help = null then
+         Insert (Help_Text, Null_Font,
+                 Gdk.Color.Black (Get_Colormap (Help_Text)), Null_Color,
+                 "No help available", -1);
+      else
 
-      begin
-         Set_Rgb (Blue, 16#0#, 16#0#, 16#FFFF#);
+         declare
+            Help  : constant String := Current_Help.all;
+            Pos   : Natural := Help'First;
+            First : Natural;
+            Blue  : Gdk_Color;
+            Black : constant Gdk_Color
+              := Gdk.Color.Black (Get_Colormap (Help_Text));
+            Current_Color : Gdk_Color := Black;
+            Newline : constant String := (1 => ASCII.LF);
 
-         loop
+            Line_End : Natural;
+            --  Points to the first character of the next line
 
-            --  The end of the line can be at most Max_Length character,
-            --  finishing at the first previous white space. Stops at the
-            --  first Newline encountered if any
+         begin
+            Set_Rgb (Blue, 16#0#, 16#0#, 16#FFFF#);
 
-            if Pos + Max_Length < Help'Last then
-               Line_End := Ada.Strings.Fixed.Index
-                 (Help (Pos .. Pos + Max_Length), " ", Ada.Strings.Backward);
-            else
+            loop
+
+               --  The end of the line can be at most Max_Length character,
+               --  finishing at the first previous white space. Stops at the
+               --  first Newline encountered if any
+
+--                 Line_End := Ada.Strings.Fixed.Index
+--                   (Help (Pos .. Help'Last), " ", Ada.Strings.Backward);
+--                 if Line_End = 0 then
                Line_End := Help'Last + 1;
-            end if;
-
-            First := Ada.Strings.Fixed.Index
-              (Help (Pos .. Line_End - 1), Newline);
-            if First /= 0 then
-               Line_End := First;
-            end if;
-
-            --  Scan and print the line
-
-            while Pos < Line_End loop
-
-               --  Any special sections to highlight ?
+--               end if;
 
                First := Ada.Strings.Fixed.Index
-                 (Help (Pos .. Line_End - 1), "@");
-
-               if First = 0 or First = Line_End - 1 then
-                  Insert (Help_Text, Null_Font, Current_Color, Null_Color,
-                          Help (Pos .. Line_End - 1), -1);
-                  Pos := Line_End;
-
-               else
-                  Insert (Help_Text, Null_Font, Current_Color, Null_Color,
-                          Help (Pos .. First - 1), -1);
-
-                  case Help (First + 1) is
-                     when 'b' =>
-                        Current_Color := Blue;
-                        Pos := First + 2;
-                     when 'B' =>
-                        Current_Color := Black;
-                        Pos := First + 2;
-                     when others =>
-                        Insert (Help_Text, Null_Font, Current_Color, Null_Color,
-                                "@", 1);
-                        Pos := First + 1;
-                  end case;
+                 (Help (Pos .. Line_End - 1), Newline);
+               if First /= 0 then
+                  Line_End := First;
                end if;
-            end loop;
 
-            Pos := Pos + 1;
-            exit when Pos > Help'Last;
-            Insert (Help_Text, Null_Font, Null_Color, Null_Color, Newline, 1);
-         end loop;
-      end;
+               --  Scan and print the line
+
+               while Pos < Line_End loop
+
+                  --  Any special sections to highlight ?
+
+                  First := Ada.Strings.Fixed.Index
+                    (Help (Pos .. Line_End - 1), "@");
+
+                  if First = 0 or First = Line_End - 1 then
+                     Insert (Help_Text, Null_Font, Current_Color, Null_Color,
+                             Help (Pos .. Line_End - 1), -1);
+                     Pos := Line_End;
+
+                  else
+                     Insert (Help_Text, Null_Font, Current_Color, Null_Color,
+                             Help (Pos .. First - 1), -1);
+
+                     case Help (First + 1) is
+                        when 'b' =>
+                           Current_Color := Blue;
+                           Pos := First + 2;
+                        when 'B' =>
+                           Current_Color := Black;
+                           Pos := First + 2;
+                        when others =>
+                           Insert (Help_Text, Null_Font, Current_Color, Null_Color,
+                                   "@", 1);
+                           Pos := First + 1;
+                     end case;
+                  end if;
+               end loop;
+
+               Pos := Pos + 1;
+               exit when Pos > Help'Last;
+               Insert (Help_Text, Null_Font, Null_Color, Null_Color, Newline, 1);
+            end loop;
+         end;
+      end if;
 
       Thaw (Help_Text);
       Show_All (Help_Dialog);
@@ -455,7 +478,7 @@ package body Main_Windows is
    --  Exit_Main  --
    -----------------
 
-   procedure Exit_Main (Object : access Main_Window_Record) is
+   procedure Exit_Main (Object : access Gtk_Widget_Record) is
    begin
       Gtk.Main.Main_Quit;
    end Exit_Main;
@@ -567,7 +590,8 @@ package body Main_Windows is
       Frame    : Gtk.Frame.Gtk_Frame;
       Label    : Gtk.Label.Gtk_Label;
       Box      : Gtk.Box.Gtk_Box;
-      Vbox     : Gtk.Box.Gtk_Box;
+      Vbox,
+      Vbox2    : Gtk.Box.Gtk_Box;
       Tree     : Gtk.Tree.Gtk_Tree;
       Scrolled : Gtk_Scrolled_Window;
       Cb_Id    : Guint;
@@ -575,6 +599,8 @@ package body Main_Windows is
       Style    : Gtk_Style;
       Drawing_Area : Gtk.Drawing_Area.Gtk_Drawing_Area;
       Button   : Gtk.Button.Gtk_Button;
+      --  Bbox     : Gtk.Box.Gtk_Box;
+      Bbox     : Gtk.Hbutton_Box.Gtk_Hbutton_Box;
 
    begin
       Gtk.Window.Initialize (Win, Gtk.Enums.Window_Toplevel);
@@ -596,12 +622,11 @@ package body Main_Windows is
 
       Gtk_New (Label, "GtkAda, the portable Ada95 GUI");
       Set_Style (Label, Style);
-      Pack_Start (Vbox, Label, Expand => True, Fill => True, Padding => 10);
-      Show (Label);
+      Pack_Start (Vbox, Label, Expand => False, Fill => False, Padding => 10);
 
       --  Notebook creation
       Gtk_New (Win.Notebook);
-      Pack_Start (Vbox, Win.Notebook, Expand => False, Fill => False);
+      Pack_Start (Vbox, Win.Notebook, Expand => True, Fill => True);
 
       --  First page: Gtk demos
       Gtk_New (Frame);
@@ -610,32 +635,24 @@ package body Main_Windows is
 
       Gtk.Box.Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 0);
       Gtk.Frame.Add (Frame, Widget => Box);
-      Set_Usize (Box, 700, 600);
 
-      Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
+      Gtk_New_Vbox (Vbox2, Homogeneous => False, Spacing => 0);
       Pack_Start (In_Box  => Box,
-                  Child   => Vbox,
+                  Child   => Vbox2,
                   Expand  => True,
                   Fill    => True,
                   Padding => 0);
-
-      Gtk_New (Button, "Help on current demo");
-      Pack_Start (In_Box => Vbox,
-                  Child  => Button,
-                  Expand => False,
-                  Fill   => False);
-      Cb_Id := Widget3_Cb.Connect (Button, "clicked", Display_Help'Access);
 
       Gtk_New (Scrolled);
       Set_Policy (Scrolled,
                   Gtk.Enums.Policy_Automatic,
                   Gtk.Enums.Policy_Always);
-      Pack_Start (In_Box  => VBox,
+      Pack_Start (In_Box  => VBox2,
                   Child   => Scrolled,
                   Expand  => True,
                   Fill    => True,
                   Padding => 0);
-      Set_Usize (Scrolled, 150, 600);
+      Set_Usize (Scrolled, 150, 500);
 
       Gtk_New (Tree);
       Set_Selection_Mode (Tree, Gtk.Enums.Selection_Single);
@@ -650,7 +667,7 @@ package body Main_Windows is
                 Expand  => True,
                 Fill    => True,
                 Padding => 0);
-      Set_Usize (Gtk_Demo_Frame, 550, 600);
+      Set_Usize (Gtk_Demo_Frame, 550, 500);
 
       --  Second page: Gdk demos
       Gtk_New (Frame);
@@ -668,14 +685,31 @@ package body Main_Windows is
       Gtk_New (Drawing_Area);
       Add (Frame, Drawing_Area);
 
-      Show_All (Box);
-
       --  Third page: OpenGL demos
       Gtk_New (Frame);
       Gtk_New (Label, "OpenGL demo");
       Append_Page (Win.Notebook, Frame, Label);
 
       View_GL.Run (Frame);
+
+      --  Button box for the buttons at the bottom
+      -- Gtk_New_Hbox (Bbox, Homogeneous => True, Spacing => 10);
+      Gtk_New (Bbox);
+      Set_Layout (Bbox, Buttonbox_Spread);
+      Set_Spacing (Bbox, 40);
+
+      Gtk_New (Button, "Help on current demo");
+      Pack_Start (Bbox, Button, Expand => True, Fill => False);
+      Cb_Id := Widget3_Cb.Connect (Button, "clicked", Display_Help'Access);
+
+      Gtk_New (Button, "Quit");
+      Pack_Start (Bbox, Button, Expand => True, Fill => False);
+      Cb_Id := Widget3_Cb.Connect (Button, "clicked", Exit_Main'Access);
+
+      Pack_End (Vbox, Bbox, Expand => False, Padding => 5);
+
+      --  Display everything
+      Show_All (Vbox);
 
    end Initialize;
 end Main_Windows;
