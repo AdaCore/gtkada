@@ -50,27 +50,17 @@ with Gtk.Widget;
 with Pango.Font;
 with Pango.Layout;
 
---  TODO:
---  - handles multiple views of the MDI (through several top-level windows)
---  - Icons should be put at the bottom, and automatically moved when the
---    MDI window is resized.
---  - Icons should be placed correctly when there are also docked items
---  - Add support for groups (children are associated with groups, and groups
---    can have special colors, can be minimized,...). Groups could be
---    implemented as special MDI_Children ?
---  - Manipulation of the title bar for children (adding buttons, adding
---    pixmaps,...)
---  - define new signals ("float_child", ...)
---  - Automatically add a new menu bar when a child is floated (settable
---    on a per-child basis).
---  - contextual menu in the title bar of children to dock them, float them,...
-
 package Gtkada.MDI is
 
    type MDI_Window_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type MDI_Window is access all MDI_Window_Record'Class;
    --  Although this widget is implemented as a gtk_layout, you shouldn't
    --  use the standard Gtk_Layout functions like Put and Move yourself.
+   --  If you are doing a Show_All on this widget (or one of its parents in the
+   --  GUI), you should always call Maximize_Children afterward to make sure
+   --  that the internal state is properly setup. Otherwise, it might happen
+   --  that some of the children are not visible because another widget is
+   --  displayed on top of them.
 
    type MDI_Child_Record is new Gtk.Event_Box.Gtk_Event_Box_Record
      with private;
@@ -693,6 +683,9 @@ private
       --  True if destroying a floating window will put the child back in the
       --  MDI instead of destroying it. False if the child should be destroyed
       --  (provided it accepts so in its delete_event handler).
+
+      Children_Are_Maximized : Boolean := False;
+      --  True if the children are currently maximized.
 
       Highlight_Style : Gtk.Style.Gtk_Style;
       --  Style to use to highlight the tabs and menus for the highlighted
