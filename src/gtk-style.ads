@@ -30,6 +30,7 @@
 with Gdk; use Gdk;
 with Gdk.Color;
 with Gdk.GC;
+with Gdk.Font;
 with Gdk.Types;
 with Gdk.Window;
 with Gtk.Enums;
@@ -43,8 +44,7 @@ package Gtk.Style is
    procedure Gtk_New (Style : out Gtk_Style);
    procedure Initialize (Style : access Gtk_Style_Record);
 
-   procedure Copy (Source : access Gtk_Style_Record;
-                   Destination : out Gtk_Style);
+   function Copy (Source : access Gtk_Style_Record) return Gtk_Style;
 
    function Attach (Style  : access Gtk_Style_Record;
                     Window : in Gdk.Window.Gdk_Window) return Gtk_Style;
@@ -54,6 +54,14 @@ package Gtk.Style is
    procedure Set_Background (Style      : access Gtk_Style_Record;
                              Window     : in     Gdk.Window.Gdk_Window;
                              State_Type : in     Enums.Gtk_State_Type);
+   procedure Set_Foreground (Style      : access Gtk_Style_Record;
+                             State_Type : in     Enums.Gtk_State_Type;
+                             Color      : in     Gdk.Color.Gdk_Color);
+   procedure Set_Base (Style      : access Gtk_Style_Record;
+                       State_Type : in     Enums.Gtk_State_Type;
+                       Color      : in     Gdk.Color.Gdk_Color);
+   procedure Set_Font (Style      : access Gtk_Style_Record;
+                       Font       : in     Gdk.Font.Gdk_Font);
 
    function Get_Bg (Style      : access Gtk_Style_Record;
                     State_Type : in Enums.Gtk_State_Type)

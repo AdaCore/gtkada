@@ -56,14 +56,15 @@ package body Gtk.Style is
    --  Copy  --
    ------------
 
-   procedure Copy (Source : access Gtk_Style_Record;
-                   Destination : out Gtk_Style) is
+   function Copy (Source : access Gtk_Style_Record) return Gtk_Style is
       function Internal (Style : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_style_copy");
+      Destination : Gtk_Style;
    begin
       Destination := new Gtk_Style_Record;
       Set_Object (Destination, Internal (Get_Object (Source)));
       Initialize_User_Data (Destination);
+      return Destination;
    end Copy;
 
 
@@ -404,6 +405,22 @@ package body Gtk.Style is
       end if;
    end Ref;
 
+   --------------
+   -- Set_Base --
+   --------------
+
+   procedure Set_Base (Style      : access Gtk_Style_Record;
+                       State_Type : in     Enums.Gtk_State_Type;
+                       Color      : in     Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Style : System.Address; State : Gint; Color : Gdk.Color.Gdk_Color);
+      pragma Import (C, Internal, "ada_style_set_base");
+   begin
+      Internal
+        (Get_Object (Style), Enums.Gtk_State_Type'Pos (State_Type), Color);
+   end Set_Base;
+
    ----------------------
    --  Set_Background  --
    ----------------------
@@ -418,6 +435,36 @@ package body Gtk.Style is
    begin
       Internal (Get_Object (Style), Get_Object (Window), State_Type);
    end Set_Background;
+
+   --------------
+   -- Set_Font --
+   --------------
+
+   procedure Set_Font (Style : access Gtk_Style_Record;
+                       Font  : Gdk.Font.Gdk_Font)
+   is
+      procedure Internal
+        (Style : System.Address; Font : System.Address);
+      pragma Import (C, Internal, "ada_style_set_font");
+   begin
+      Internal (Get_Object (Style), Get_Object (Font));
+   end Set_Font;
+
+   --------------------
+   -- Set_Foreground --
+   --------------------
+
+   procedure Set_Foreground (Style      : access Gtk_Style_Record;
+                             State_Type : in     Enums.Gtk_State_Type;
+                             Color      : in     Gdk.Color.Gdk_Color)
+   is
+      procedure Internal
+        (Style : System.Address; State : Gint; Color : Gdk.Color.Gdk_Color);
+      pragma Import (C, Internal, "ada_style_set_foreground");
+   begin
+      Internal
+        (Get_Object (Style), Enums.Gtk_State_Type'Pos (State_Type), Color);
+   end Set_Foreground;
 
    -----------
    -- Unref --

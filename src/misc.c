@@ -933,6 +933,24 @@ ada_gtk_style_get_white_gc (GtkStyle * style)
   return style->white_gc;
 }
 
+void
+ada_style_set_foreground (GtkStyle* style, gint state, GdkColor color)
+{
+  style->fg[state] = color;
+}
+
+void
+ada_style_set_base (GtkStyle* style, gint state, GdkColor color)
+{
+  style->base[state] = color;
+}
+
+void
+ada_style_set_font (GtkStyle* style, GdkFont* font)
+{
+  style->font = font;
+}
+
 /***************************************************
  *  Functions for Objects
  ***************************************************/
@@ -1540,14 +1558,10 @@ ada_clist_get_selection (GtkCList* widget)
    return widget->selection;
 }
 
-GtkWidget*
-ada_clist_get_column_button (GtkCList* widget,
-			     gint      column)
+gint
+ada_clist_get_selection_mode (GtkCList* widget)
 {
-  if (widget->columns < column)
-    return widget->column[column].button;
-  else
-    return NULL;
+  return widget->selection_mode;
 }
 
 GdkWindow*
