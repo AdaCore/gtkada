@@ -13,7 +13,7 @@ begin
    --  Do not specify a label
    Gtk.Toggle_Button.Gtk_New (Toggle);
 
-   Style := Gtk.Style.Get_Style (Toggle);
+   Style := Gtk.Toggle_Button.Get_Style (Toggle);
    Gdk.Pixmap.Create_From_Xpm
      (Pixmap,
       Gtk.Toggle_Button.Get_Window (Toggle),

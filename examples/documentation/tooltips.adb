@@ -11,8 +11,8 @@
 --      }
 --      widget "gtk-tooltips*" style "postie"
 
-with Gtk.Tooltips, Gtk.Style, Gtk.Enums, Gdk.Color;
-use Gtk.Tooltips, Gtk.Style, Gtk.Enums, Gdk.Color;
+with Gtk.Tooltips, Gtk.Style, Gtk.Widget, Gtk.Enums, Gdk.Color;
+use Gtk.Tooltips, Gtk.Style, Gtk.Widget, Gtk.Enums, Gdk.Color;
 
 procedure Tooltips is
    Style : Gtk_Style;
