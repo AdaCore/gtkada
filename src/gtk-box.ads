@@ -31,8 +31,10 @@
 --
 --  A box is a container that can have multiple children, organized either
 --  horizontally or vertically. Two subtypes are provided, Gtk_Hbox and
---  Gtk_Vbox, to conform to the C API. However, you do not need to
---  distinguish between the two in Ada, this is automatic.
+--  Gtk_Vbox, to conform to the C API. In Ada, you do not need to
+--  distinguish between the two, but note that the Gtk_Box type is conceptually
+--  an abstract type: there is no way to create a "Gtk_Box", only ways to
+--  create either an horizontal box, or a vertical box.
 --
 --  Children can be added to one of two positions in the box, either at the
 --  beginning (ie left or top) or at the end (ie right or bottom). Each of
