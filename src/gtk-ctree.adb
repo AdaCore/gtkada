@@ -1161,12 +1161,13 @@ package body Gtk.Ctree is
       Expander_Style : in     Gtk_Ctree_Expander_Style :=
         Ctree_Expander_Square)
    is
-      procedure Internal (Ctree          : in System.Address;
-                          Expander_Style : in Gint);
+      procedure Internal
+        (Ctree          : System.Address;
+         Expander_Style : Gtk_Ctree_Expander_Style);
       pragma Import (C, Internal, "gtk_ctree_set_expander_style");
+
    begin
-      Internal (Get_Object (Ctree),
-                Gtk_Ctree_Expander_Style'Pos (Expander_Style));
+      Internal (Get_Object (Ctree), Expander_Style);
    end Set_Expander_Style;
 
    ----------------
@@ -1191,11 +1192,13 @@ package body Gtk.Ctree is
      (Ctree      : access Gtk_Ctree_Record;
       Line_Style : in     Gtk_Ctree_Line_Style := Ctree_Lines_Solid)
    is
-      procedure Internal (Ctree      : in System.Address;
-                          Line_Style : in Gint);
+      procedure Internal
+        (Ctree      : System.Address;
+         Line_Style : Gtk_Ctree_Line_Style);
       pragma Import (C, Internal, "gtk_ctree_set_line_style");
+
    begin
-      Internal (Get_Object (Ctree), Gtk_Ctree_Line_Style'Pos (Line_Style));
+      Internal (Get_Object (Ctree), Line_Style);
    end Set_Line_Style;
 
    -------------------
