@@ -332,11 +332,11 @@ package Gtk.Widget is
    --  </doc_ignore>
 
    function Get_Allocation_Width
-     (Widget : access Gtk_Widget_Record) return Guint;
+     (Widget : access Gtk_Widget_Record) return Allocation_Int;
    --  Return the current width of the widget.
 
    function Get_Allocation_Height
-     (Widget : access Gtk_Widget_Record) return Guint;
+     (Widget : access Gtk_Widget_Record) return Allocation_Int;
    --  Return the current height of the widget.
 
    function Get_Allocation_X (Widget : access Gtk_Widget_Record) return Gint;

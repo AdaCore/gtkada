@@ -201,9 +201,9 @@ package body Gtk.Widget is
    ---------------------------
 
    function Get_Allocation_Height
-     (Widget : access Gtk_Widget_Record) return Guint
+     (Widget : access Gtk_Widget_Record) return Allocation_Int
    is
-      function Internal (Widget : System.Address) return Guint;
+      function Internal (Widget : System.Address) return Allocation_Int;
       pragma Import (C, Internal, "ada_widget_allocation_height");
 
    begin
@@ -215,9 +215,9 @@ package body Gtk.Widget is
    --------------------------
 
    function Get_Allocation_Width
-     (Widget : access Gtk_Widget_Record) return Guint
+     (Widget : access Gtk_Widget_Record) return Allocation_Int
    is
-      function Internal (Widget : System.Address) return Guint;
+      function Internal (Widget : System.Address) return Allocation_Int;
       pragma Import (C, Internal, "ada_widget_allocation_width");
 
    begin
