@@ -319,7 +319,8 @@ package body Gtkada.MDI is
    --  Same as Set_Focus_Child_MDI, but for floating windows
 
    function Set_Focus_Child_MDI_From_Tab
-     (Child : access Gtk_Widget_Record'Class) return Boolean;
+     (Child : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event) return Boolean;
    --  Gives the focus to Child when the notebook tab associated with it is
    --  pressed.
 
@@ -482,7 +483,11 @@ package body Gtkada.MDI is
    ----------------------------------
 
    function Set_Focus_Child_MDI_From_Tab
-     (Child : access Gtk_Widget_Record'Class) return Boolean is
+     (Child : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event) return Boolean
+   is
+      Tmp : Boolean;
+      pragma Unreferenced (Tmp);
    begin
       --  Let the even through if the child already has the focus. This way,
       --  the notebook tab of the focus child can still be used for
@@ -491,7 +496,10 @@ package body Gtkada.MDI is
          return False;
 
       else
-         Set_Focus_Child (MDI_Child (Child));
+         --  Process the button press event to select the child and start a
+         --  drag-and-drop operation
+
+         Tmp := Button_Pressed_Forced (Child => Child, Event => Event);
 
          --  We must return True here, to stop the propagation. This function
          --  is called as a result of a button_press event in the notebook's.
@@ -1472,40 +1480,25 @@ package body Gtkada.MDI is
       Event  : Gdk_Event) return Boolean
    is
       C      : constant MDI_Child := MDI_Child (Child);
-      MDI    : constant MDI_Window := C.MDI;
-      Tmp    : Gdk_Grab_Status;
-      pragma Unreferenced (Tmp);
-
    begin
-      MDI.In_Drag := No_Drag;
+      C.MDI.In_Drag := No_Drag;
 
-      if Get_Event_Type (Event) /= Button_Press then
+      if Get_Event_Type (Event) /= Button_Press
+        or else Get_Button (Event) /= 1
+      then
          return False;
-      end if;
-
-      if Get_Button (Event) = 3 then
-         Lower_Child (C);
-         return True;
-      elsif Get_Button (Event) /= 1 then
-         return False;
-      end if;
-
-      --  Do we have a drag-and-drop operation ?
-      --  Drag-and-drop can only start for the focus child. Otherwise, it
-      --  might happen that the widget that would gain the focus also tries
-      --  to grab the mouse as part of the focus_in callback, and the dnd
-      --  would fail.
-
-      if C.MDI.Focus_Child = C then
-         return Child_Drag_Begin (C, Event);
       end if;
 
       --  Focus and raise the child. Raise_Child must be called explicitly
-      --  since Set_Focus_Child won't do it if the child already has the focus.
+      --  since Set_Focus_Child won't do it if the child already has the focus
+
       Set_Focus_Child (C);
       Raise_Child (C, False);
 
-      return True;
+      --  Start a drag-and-drop operation. This won't be effective unless
+      --  the user actually drags the mouse a while
+
+      return Child_Drag_Begin (C, Event);
    end Button_Pressed_Forced;
 
    --------------------
