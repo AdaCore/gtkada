@@ -7,7 +7,7 @@
 @titlepage
 
 @title GtkAda User's Guide
-@subtitle Version 1.2.0
+@subtitle Version 1.2.0.1
 @subtitle Document revision level $Revision$
 @subtitle Date: $Date$
 @author E. Briot, J. Brobecker, A. Charlet, P. Durif
