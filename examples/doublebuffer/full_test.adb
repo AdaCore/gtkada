@@ -1,7 +1,7 @@
 
 with Glib;                use Glib;
 with Gdk.Color;           use Gdk.Color;
-with Gdk.Gc;              use Gdk.Gc;
+with Gdk.GC;              use Gdk.GC;
 with Gdk.Font;            use Gdk.Font;
 with Gdk.Drawable;        use Gdk.Drawable;
 with Gtk.Adjustment;      use Gtk.Adjustment;
@@ -39,7 +39,7 @@ package body Full_Test is
    Pixmap_Width : constant Gint := 400;
    Pixmap_Height : constant Gint := 250;
 
-   subtype My_Gint is Gint range 0 .. Gint'Min(Pixmap_Width, Pixmap_Height);
+   subtype My_Gint is Gint range 0 .. Gint'Min (Pixmap_Width, Pixmap_Height);
    package Gint_Random is new Ada.Numerics.Discrete_Random (My_Gint);
    Gen : Gint_Random.Generator;
 
@@ -48,8 +48,8 @@ package body Full_Test is
    package Color_Random is new Ada.Numerics.Discrete_Random (Color_Index);
    Gen_Color : Color_Random.Generator;
 
-   White_Gc : Gdk.Gc.Gdk_GC;
-   Black_Gc : Gdk.Gc.Gdk_GC;
+   White_Gc : Gdk.GC.Gdk_GC;
+   Black_Gc : Gdk.GC.Gdk_GC;
 
    -----------------------
    -- Toggle_Back_Store --
@@ -106,7 +106,7 @@ package body Full_Test is
       Y : Gint := Gint (Gint_Random.Random (Gen));
 
    begin
-      Gdk.Gc.Set_Foreground (Black_Gc,
+      Gdk.GC.Set_Foreground (Black_Gc,
                              Colors (Color_Random.Random (Gen_Color)));
       Draw_Rectangle (Get_Pixmap (Buffer),
                       Black_Gc, False,
@@ -152,56 +152,75 @@ package body Full_Test is
       LF : constant Character := ASCII.LF;
    begin
       return "This demo shows how the double_buffer works:"
-        & LF
-        & "You can draw random rectangles on the off-screen pixmap thanks" & LF
-        & " to the DRAW button."
-        & LF & LF
-        & "The rectangles will not appear on the screen before you explictly" & LF
-        & " call Gtk.Widget.Draw (button GTK.WIDGET.DRAW). This copies the" & LF
-        & " off-screen pixmap both to the screen and to the triple buffer if" & LF
-        & " you are using it."
-        & LF & LF
-        & "You should also examine how the double_buffer behaves with regards" & LF
-        & " to expose event. The simplest way to test that is to hide part or" & LF
-        & " all of the window, and show it again."
-        & LF & LF
-        & "The following scenarii are worth examining:"
-        & LF & LF
-        & "  - If no Triple_Buffer is used and the window not frozen."
-        & LF & LF
-        & "    The screen is updated from the off-screen pixmap whenever you" & LF
-        & "    click on DRAW or force an expose event. If you are in the" & LF
-        & "    process of doing a long draw operation (multiple DRAW clicks)" & LF
-        & "    the screen is updated anyway with whatever is displayed on" & LF
-        & "    the off-screen buffer at the time."
-        & LF & LF
-        & "  - If no Triple_Buffer is used and the window is frozen."
-        & LF & LF
-        & "    The screen is not updated when an expose event happens, and the" & LF
-        & "    update is delayed until the widget is thawed." & LF
-        & "    Likewise, the screen is not updated even when you call" & LF
-        & "    Gtk.Widget.Draw."
-        & LF & LF
-        & "  - If a Triple_Buffer is used and the window is not frozen."
-        & LF & LF
-        & "    The screen is updated from the triple buffer. Thus you can draw" & LF
-        & "    anything on the double-buffer, it won't be visible on the screen" & LF
-        & "    until you call Gtk.Widget.Draw, even if some expose event happen" & LF
-        & "    during a long draw operation."
-        & LF & LF
-        & "  - If a Triple_Buffer is used and the window is frozen."
-        & LF & LF
-        & "    The screen is still updated from the triple buffer. However," & LF
-        & "    the double buffer is never copied to the triple buffer, even" & LF
-        & "    when you call Gtk.Widget.Draw. When the widget is thawed, the" & LF
-        & "    double buffer is copied to the triple buffer if required."
-        & LF & LF
-        & "The value of Back_Store is used when the widget is resized. If its" & LF
-        & " value is False, then the content of the pixmap is not saved when" & LF
-        & " widget is resized, and the new content of the pixmap is random." & LF
-        & "If its value is True, then the content is restored, and if required" & LF
-        & " is completed by an solid color (chosen from the Gtk_Style of the" & LF
-        & " widget).";
+         & LF
+         & "You can draw random rectangles on the off-screen pixmap thanks"
+         & LF & " to the DRAW button."
+         & LF & LF
+         & "The rectangles will not appear on the screen before you explictly"
+         & LF
+         & " call Gtk.Widget.Draw (button GTK.WIDGET.DRAW). This copies the"
+         & LF
+         & " off-screen pixmap both to the screen and to the triple buffer if"
+         & LF
+         & " you are using it."
+         & LF & LF
+         & "You should also examine how the double_buffer behaves with regards"
+         & LF
+         & " to expose event. The simplest way to test that is to hide part or"
+         & LF
+         & " all of the window, and show it again."
+         & LF & LF
+         & "The following scenarii are worth examining:"
+         & LF & LF
+         & "  - If no Triple_Buffer is used and the window not frozen."
+         & LF & LF
+         & "    The screen is updated from the off-screen pixmap whenever you"
+         & LF
+         & "    click on DRAW or force an expose event. If you are in the" & LF
+         & "    process of doing a long draw operation (multiple DRAW clicks)"
+         & LF
+         & "    the screen is updated anyway with whatever is displayed on"
+         & LF & "    the off-screen buffer at the time."
+         & LF & LF
+         & "  - If no Triple_Buffer is used and the window is frozen."
+         & LF & LF &
+         "    The screen is not updated when an expose event happens, and the"
+         & LF
+         & "    update is delayed until the widget is thawed." & LF
+         & "    Likewise, the screen is not updated even when you call" & LF
+         & "    Gtk.Widget.Draw."
+         & LF & LF
+         & "  - If a Triple_Buffer is used and the window is not frozen."
+         & LF & LF &
+         "    The screen is updated from the triple buffer. Thus you can draw"
+         & LF
+         & "    anything on the double-buffer, it won't be visible on the"
+         & LF
+         & "    screen until you call Gtk.Widget.Draw, even if some expose"
+         & LF
+         & "    event happens during a long draw operation."
+         & LF & LF
+         & "  - If a Triple_Buffer is used and the window is frozen."
+         & LF & LF
+         & "    The screen is still updated from the triple buffer. However,"
+         & LF
+         & "    the double buffer is never copied to the triple buffer, even"
+         & LF
+         & "    when you call Gtk.Widget.Draw. When the widget is thawed, the"
+         & LF
+         & "    double buffer is copied to the triple buffer if required."
+         & LF & LF
+         & "The value of Back_Store is used when the widget is resized. If its"
+         & LF
+         & " value is False, then the content of the pixmap is not saved when"
+         & LF
+         & " widget is resized, and the new content of the pixmap is random."
+         & LF &
+         "If its value is True, then the content is restored, and if required"
+         & LF
+         & " is completed by an solid color (chosen from the Gtk_Style of the"
+         & LF
+         & " widget).";
    end Help;
 
    ----------
@@ -239,7 +258,7 @@ package body Full_Test is
       Gtk_New (Buffer);
       Set_Back_Store (Buffer, True);
       Set_Triple_Buffer (Buffer, False);
-      Set_Usize (Buffer, Pixmap_Width, Pixmap_Height);
+      Set_USize (Buffer, Pixmap_Width, Pixmap_Height);
       Pack_Start (Hbox, Buffer, Expand => True);
 
       Gtk_New (Button, "Rectangle");
@@ -285,7 +304,7 @@ package body Full_Test is
 
       Gtk_New (Text);
       Set_Editable (Text, False);
-      Set_Usize (Text, Pixmap_Width, 250);
+      Set_USize (Text, Pixmap_Width, 250);
       Add (Scrolled, Text);
 
       Freeze (Text);
@@ -298,10 +317,10 @@ package body Full_Test is
 
       Show_All (Win);
 
-      Gdk.Gc.Gdk_New (White_Gc, Get_Window (Buffer));
+      Gdk.GC.Gdk_New (White_Gc, Get_Window (Buffer));
       Color := Gdk.Color.Parse ("black");
       Gdk.Color.Alloc (Gdk.Color.Get_System, Color);
-      Gdk.Gc.Set_Foreground (White_Gc, Color);
+      Gdk.GC.Set_Foreground (White_Gc, Color);
 
       Reset (Buffer);
       Double_Buffer.Draw (Buffer);
@@ -319,7 +338,7 @@ package body Full_Test is
                     Success    => Success,
                     Result     => Result);
 
-      Gdk.Gc.Gdk_New (Black_Gc, Get_Window (Buffer));
+      Gdk.GC.Gdk_New (Black_Gc, Get_Window (Buffer));
    end Init;
 
 end Full_Test;

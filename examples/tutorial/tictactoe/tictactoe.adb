@@ -99,11 +99,11 @@ package body Tictactoe is
             Gtk_New (Tictactoe.Buttons (J, K).Button);
             Attach_Defaults
               (Table, Tictactoe.Buttons (J, K).Button, J - 1, J, K - 1, K);
-	    Tictactoe.Buttons (J, K).Id := Button_Cb.Connect
+            Tictactoe.Buttons (J, K).Id := Button_Cb.Connect
               (Tictactoe.Buttons (J, K).Button, "toggled",
                Button_Cb.To_Marshaller (Toggle'Access),
                Gtk_Tictactoe (Tictactoe));
-            Set_Usize (Tictactoe.Buttons (J, K).Button, 20, 20);
+            Set_USize (Tictactoe.Buttons (J, K).Button, 20, 20);
             Show (Tictactoe.Buttons (J, K).Button);
          end loop;
       end loop;
@@ -137,7 +137,7 @@ package body Tictactoe is
       (1, 2, 3), (1, 2, 3), (1, 2, 3),
       (1, 2, 3), (1, 2, 3));
 
-   Cwins : constant Win_Array := 
+   Cwins : constant Win_Array :=
      ((1, 2, 3), (1, 2, 3), (1, 2, 3),
       (1, 1, 1), (2, 2, 2), (3, 3, 3),
       (1, 2, 3), (3, 2, 1));
@@ -183,6 +183,7 @@ package body Tictactoe is
    ----------
 
    procedure Quit (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) is
+      pragma Unreferenced (Widget);
    begin
       Main.Gtk_Exit (0);
    end Quit;

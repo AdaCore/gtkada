@@ -27,8 +27,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Hello_Package, Ada.Text_IO; use Hello_Package, Ada.Text_IO;
-with Gtk.Main, Gtk.Widget, Gtk.Window, Gtk.Button; use Gtk.Window, Gtk.Button;
+with Hello_Package; use Hello_Package;
+with Gtk.Main;
+with Gtk.Widget;
+with Gtk.Window; use Gtk.Window;
+with Gtk.Button; use Gtk.Button;
 
 procedure Hello is
    Window : Gtk_Window;

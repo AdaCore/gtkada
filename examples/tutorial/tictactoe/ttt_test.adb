@@ -34,16 +34,16 @@ with Tictactoe; use Tictactoe;
 procedure TTT_Test is
    Window : Gtk_Window;
    Tic    : Gtk_Tictactoe;
-begin 
+begin
    Gtk.Main.Init;
 
    Gtk_New (Window);
- 
+
    Set_Title (Window, "Aspect Frame");
- 
+
    Widget_Cb.Connect
      (Window, "destroy", Widget_Cb.To_Marshaller (Quit'Access));
-  
+
    Set_Border_Width (Window, 10);
 
    Gtk_New (Tic);
@@ -54,6 +54,6 @@ begin
      Tictactoe_Cb.To_Marshaller (Win'Access));
 
    Show (Window);
- 
+
    Gtk.Main.Main;
 end TTT_Test;
