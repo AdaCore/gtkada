@@ -2208,16 +2208,19 @@ package body Gtkada.MDI is
 
       Widget_List.Prepend (MDI.Items, Gtk_Widget (C));
 
-      --  Set the default size request for C to that of Child.
-      Size_Request (Child, Requisition);
-      Set_Size_Request (C, Requisition.Width, Requisition.Height);
-
       --  If all items are maximized, add Child to the notebook
 
       if Children_Are_Maximized (MDI) then
          Put_In_Notebook (MDI, None, C);
       else
          Put (MDI.Layout, C, 0, 0);
+      end if;
+
+      --  Set the default size request for C to that of Child.
+
+      if not Children_Are_Maximized (MDI) then
+         Size_Request (Child, Requisition);
+         Set_Size_Request (C, Requisition.Width, Requisition.Height);
       end if;
 
       if MDI.Menu /= null then
