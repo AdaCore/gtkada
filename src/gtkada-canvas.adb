@@ -24,6 +24,7 @@ with Gtk.Object;       use Gtk.Object;
 with System;
 with Unchecked_Deallocation;
 
+
 package body Gtkada.Canvas is
 
    Class_Record : System.Address := System.Null_Address;
@@ -95,14 +96,19 @@ package body Gtkada.Canvas is
    --  Handle key events, to provide scrolling through Page Up, Page Down, and
    --  arrow keys.
 
-   procedure Clip_Line (From   : access Canvas_Item_Record'Class;
-                        To_X   : in Gint;
-                        To_Y   : in Gint;
-                        X_Out  : out Gint;
-                        Y_Out  : out Gint);
+   procedure Clip_Line
+     (From  : access Canvas_Item_Record'Class;
+      To_X  : in Gint;
+      To_Y  : in Gint;
+      X_Pos : in Gfloat;
+      Y_Pos : in Gfloat;
+      X_Out : out Gint;
+      Y_Out : out Gint);
    --  Clip the line that goes from the middle of From to (To_X, To_Y).
    --  The intersection between that line and the border of From is returned
    --  in (X_Out, Y_Out).
+   --  X_Pos and Y_Pos have the same meaning as Src_X_Pos and Src_Y_Pos in the
+   --  link record.
 
    procedure Draw_Straight_Link
      (Canvas : access Interactive_Canvas_Record'Class;
@@ -124,12 +130,16 @@ package body Gtkada.Canvas is
    --  optional text displayed approximatively in its middle.
 
    procedure Update_Adjustments
-     (Canvas : access Interactive_Canvas_Record'Class);
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Xmax, Ymax : Gint := 0);
    --  Update the adjustments of the canvas.
    --  This also resizes the Canvas itself, so that scrolling is usable if
    --  the canvas was put in a Scrolled_Window.
    --  This is the main function used to provide scrolling in case the widget
    --  was inserted in a scrolled window.
+   --  The bounds for the adjustments are automatically computed, unless
+   --  Xmax or Ymax is different from 0, in which case these are taken as the
+   --  maximal bounds.
 
    procedure Draw_Arrow_Head (Canvas : access Interactive_Canvas_Record'Class;
                               Window : Gdk_Window;
@@ -265,6 +275,9 @@ package body Gtkada.Canvas is
    is
    begin
       Canvas.Grid_Size := Grid_Size;
+      if Grid_Size = 0 then
+         Canvas.Align_On_Grid := False;
+      end if;
       Free (Canvas.Annotation_Font);
       Canvas.Annotation_Font := new String'(Annotation_Font);
       Canvas.Annotation_Height := Annotation_Height;
@@ -273,7 +286,9 @@ package body Gtkada.Canvas is
       Canvas.Arrow_Length := Float (Arrow_Length);
       Canvas.Motion_Threshold := Motion_Threshold;
 
-      Unref (Canvas.Font);
+      if Canvas.Font /= Null_Font then
+         Unref (Canvas.Font);
+      end if;
       Canvas.Font := Get_Gdkfont (Canvas.Annotation_Font.all,
                                   Canvas.Annotation_Height);
    end Configure;
@@ -313,7 +328,7 @@ package body Gtkada.Canvas is
                             Align  : Boolean := True)
    is
    begin
-      Canvas.Align_On_Grid := Align;
+      Canvas.Align_On_Grid := (Canvas.Grid_Size /= 0) and then Align;
    end Align_On_Grid;
 
    ------------------------
@@ -321,10 +336,12 @@ package body Gtkada.Canvas is
    ------------------------
 
    procedure Update_Adjustments
-     (Canvas : access Interactive_Canvas_Record'Class)
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Xmax, Ymax : Gint := 0)
    is
       Current      : Canvas_Item_List := Canvas.Children;
-      X_Max, Y_Max : Gint := Gint'First;
+      X_Max, Y_Max : Guint := Guint'First;
+      Modified     : Boolean;
    begin
       --  Find the smallest bounding box for all the items in the canvas.
       --  Note that this does not include links, which might thus be found
@@ -332,49 +349,60 @@ package body Gtkada.Canvas is
       --  Note also that we do not handle widgets whose location has negative
       --  coordinates, which we thus forbid in Button_Motion.
 
-      while Current /= null loop
-         if Current.Item.Visible
-           and then Current.Item.Coord.X + Gint (Current.Item.Coord.Width)
-           > X_Max
-         then
-            X_Max := Current.Item.Coord.X + Gint16 (Current.Item.Coord.Width);
-         end if;
+      if Xmax = 0 or else Ymax = 0 then
 
-         if Current.Item.Visible
-           and then Current.Item.Coord.Y + Gint (Current.Item.Coord.Height)
-           > Y_Max
-         then
-            Y_Max := Current.Item.Coord.Y + Gint16 (Current.Item.Coord.Height);
-         end if;
-         Current := Current.Next;
-      end loop;
+         while Current /= null loop
+            if Current.Item.Visible
+              and then Guint (Current.Item.Coord.X) + Current.Item.Coord.Width
+              > X_Max
+            then
+               X_Max :=
+                 Guint (Current.Item.Coord.X) + Current.Item.Coord.Width;
+            end if;
 
+            if Current.Item.Visible
+              and then Guint (Current.Item.Coord.Y) + Current.Item.Coord.Height
+              > Y_Max
+            then
+               Y_Max :=
+                 Guint (Current.Item.Coord.Y) + Current.Item.Coord.Height;
+            end if;
+            Current := Current.Next;
+         end loop;
+      end if;
+
+      if Xmax /= 0 then
+         X_Max := Guint (Xmax);
+      end if;
+      Modified := Canvas.Xmax /= Gint (X_Max);
       Canvas.Xmax := Gint (X_Max);
+
+      if Ymax /= 0 then
+         Y_Max := Guint (Ymax);
+      end if;
+      Modified := Modified or else (Canvas.Ymax /= Gint (Y_Max));
       Canvas.Ymax := Gint (Y_Max);
 
       --  Don't resize it if we already have the right size, for efficiency.
 
-      if Get_Allocation_Width (Canvas.Drawing_Area) /=
-        Guint (X_Max + X_Thickness (Get_Style (Canvas)))
-        or else Get_Allocation_Height (Canvas.Drawing_Area) /=
-        Guint (Y_Max + Y_Thickness (Get_Style (Canvas)))
-      then
+      if Modified then
 
          --  Update the scrollbars.
 
          Set_Lower (Get_Hadjustment (Canvas), 0.0);
-         Set_Upper (Get_Hadjustment (Canvas), Gfloat (X_Max));
+         Set_Upper (Get_Hadjustment (Canvas), Gfloat (Canvas.Xmax));
          Changed (Get_Hadjustment (Canvas));
 
          Set_Lower (Get_Vadjustment (Canvas), 0.0);
-         Set_Upper (Get_Vadjustment (Canvas), Gfloat (Y_Max));
+         Set_Upper (Get_Vadjustment (Canvas), Gfloat (Canvas.Ymax));
          Changed (Get_Vadjustment (Canvas));
 
          --  Resize the canvas, so that scrolling can take place.
 
          Size (Canvas.Drawing_Area,
-               X_Max + X_Thickness (Get_Style (Canvas)),
-               Y_Max + Y_Thickness (Get_Style (Canvas)));
+               Canvas.Xmax + X_Thickness (Get_Style (Canvas)),
+               Canvas.Ymax + Y_Thickness (Get_Style (Canvas)));
+
       end if;
    end Update_Adjustments;
 
@@ -387,6 +415,8 @@ package body Gtkada.Canvas is
       Item   : access Canvas_Item_Record'Class;
       X, Y   : Glib.Gint := Glib.Gint'First)
    is
+      Step  : Guint := Canvas.Grid_Size;
+
       function Location_Is_Free (X, Y : Gint) return Boolean;
       --  Return True if the location X, Y for the new item would be
       --  acceptable, or if it would cross an existing item.
@@ -401,10 +431,10 @@ package body Gtkada.Canvas is
          Dest  : Gdk.Rectangle.Gdk_Rectangle;
          Inter : Boolean := False;
       begin
-         Item.Coord.X := X - Gint (Canvas.Grid_Size);
-         Item.Coord.Y := Y - Gint (Canvas.Grid_Size);
-         Item.Coord.Width := Item.Coord.Width + 2 * Canvas.Grid_Size - 1;
-         Item.Coord.Height := Item.Coord.Height + 2 * Canvas.Grid_Size - 1;
+         Item.Coord.X := X - Gint (Step);
+         Item.Coord.Y := Y - Gint (Step);
+         Item.Coord.Width := Item.Coord.Width + 2 * Step - 1;
+         Item.Coord.Height := Item.Coord.Height + 2 * Step - 1;
 
          while not Inter and then Tmp /= null loop
 
@@ -415,8 +445,8 @@ package body Gtkada.Canvas is
             end if;
             Tmp := Tmp.Next;
          end loop;
-         Item.Coord.Width := Item.Coord.Width - 2 * Canvas.Grid_Size + 1;
-         Item.Coord.Height := Item.Coord.Height - 2 * Canvas.Grid_Size + 1;
+         Item.Coord.Width := Item.Coord.Width - 2 * Step + 1;
+         Item.Coord.Height := Item.Coord.Height - 2 * Step + 1;
          return not Inter;
       end Location_Is_Free;
 
@@ -426,6 +456,11 @@ package body Gtkada.Canvas is
       Y1       : Gint;
 
    begin
+      --  When no grid is drawn...
+      if Step = 0 then
+         Step := Default_Grid_Size;
+      end if;
+
       if X /= Gint'First and then Y /= Gint'First then
          Item.Coord.X := X;
          Item.Coord.Y := Y;
@@ -454,10 +489,10 @@ package body Gtkada.Canvas is
             begin
                loop
                   X1 := Src_Item.Coord.X + ((Num + 1) mod 3 - 1)
-                    * Gint (Canvas.Grid_Size * 2 + Src_Item.Coord.Width);
+                    * Gint (Step * 2 + Src_Item.Coord.Width);
                   Y1 := Src_Item.Coord.Y
                     + Gint (Src_Item.Coord.Height)
-                    + (1 + Num / 3) * Gint (Canvas.Grid_Size * 2);
+                    + (1 + Num / 3) * Gint (Step * 2);
                   if X1 >= 0 then
                      exit when Location_Is_Free (X1, Y1);
                   end if;
@@ -469,10 +504,10 @@ package body Gtkada.Canvas is
          --  location
 
          else
-            X1 := Gint (Canvas.Grid_Size);
-            Y1 := Gint (Canvas.Grid_Size);
+            X1 := Gint (Step);
+            Y1 := Gint (Step);
             while not Location_Is_Free (X1, Y1) loop
-               X1 := X1 + Gint (Canvas.Grid_Size) * 2;
+               X1 := X1 + Gint (Step) * 2;
             end loop;
          end if;
 
@@ -577,46 +612,59 @@ package body Gtkada.Canvas is
    procedure Clip_Line (From  : access Canvas_Item_Record'Class;
                         To_X  : in Gint;
                         To_Y  : in Gint;
+                        X_Pos : in Gfloat;
+                        Y_Pos : in Gfloat;
                         X_Out : out Gint;
                         Y_Out : out Gint)
    is
-      Center_X : constant Gint := From.Coord.X + Gint (From.Coord.Width) / 2;
-      Center_Y : constant Gint := From.Coord.Y + Gint (From.Coord.Height) / 2;
-      Delta_X  : constant Gint := abs (Center_X - To_X);
-      Delta_Y  : constant Gint := abs (Center_Y - To_Y);
-      Offset   : Gint := 1;
+      Src_X : constant Gint :=
+        From.Coord.X + Gint (Gfloat (From.Coord.Width) * X_Pos);
+      Src_Y : constant Gint :=
+        From.Coord.Y + Gint (Gfloat (From.Coord.Height) * Y_Pos);
+      Delta_X  : constant Gint := To_X - Src_X;
+      Delta_Y  : constant Gint := To_Y - Src_Y;
+
+      Offset : Gint;
    begin
-      --  East or West side
-
-      if Gint (From.Coord.Height) * Delta_X
-        > Gint (From.Coord.Width) * Delta_Y
-      then
-         if To_X <= Center_X then
-            Offset := -1;
-         end if;
-
-         if Center_X /= To_X and then Center_Y /= To_Y then
-            Y_Out := Center_Y + Offset * Gint (From.Coord.Width / 2)
-              * (Center_Y - To_Y) / (Center_X - To_X);
+      --  Intersection with horizontal sides
+      if Delta_Y /= 0 then
+         Offset := (Src_X * To_Y - To_X * Src_Y);
+         if Delta_Y < 0 then
+            --  Intersection with north side ?
+            Y_Out := From.Coord.Y;
          else
-            Y_Out := Center_Y;
-         end if;
-         X_Out := Center_X + Offset * Gint (From.Coord.Width) / 2;
-
-      --  North or South side
-      else
-         if To_Y <= Center_Y then
-            Offset := -1;
+            Y_Out := From.Coord.Y + Gint (From.Coord.Height);
          end if;
 
-         if Center_X /= To_X and then Center_Y /= To_Y then
-            X_Out := Center_X + Offset * Gint (From.Coord.Height / 2)
-              * (Center_X - To_X) / (Center_Y - To_Y);
-         else
-            X_Out := Center_X;
+         X_Out := (Delta_X * Y_Out + Offset) / Delta_Y;
+         if From.Coord.X <= X_Out
+           and then X_Out <= From.Coord.X + Gint (From.Coord.Width)
+         then
+            return;
          end if;
-         Y_Out := Center_Y + Offset * Gint (From.Coord.Height) / 2;
       end if;
+
+      --  Intersection with vertical sides
+      if Delta_X /= 0 then
+         Offset := (To_X * Src_Y - Src_X * To_Y);
+         if Delta_X < 0 then
+            --  Intersection with West side ?
+            X_Out := From.Coord.X;
+         else
+            --  Intersection with East side ?
+            X_Out := From.Coord.X + Gint (From.Coord.Width);
+         end if;
+
+         Y_Out := (Delta_Y * X_Out + Offset) / Delta_X;
+         if From.Coord.Y <= Y_Out
+           and then Y_Out <= From.Coord.Y + Gint (From.Coord.Height)
+         then
+            return;
+         end if;
+      end if;
+
+      X_Out := 0;
+      Y_Out := 0;
    end Clip_Line;
 
    ---------------------
@@ -678,10 +726,22 @@ package body Gtkada.Canvas is
    is
       X1, Y1, X2, Y2 : Gint;
    begin
-      Clip_Line (Link.Src, Link.Dest.Coord.X, Link.Dest.Coord.Y,
-                 X_Out => X1, Y_Out => Y1);
-      Clip_Line (Link.Dest, Link.Src.Coord.X, Link.Src.Coord.Y,
-                 X_Out => X2, Y_Out => Y2);
+      Clip_Line
+        (Link.Src,
+         Link.Dest.Coord.X
+            + Gint (Gfloat (Link.Dest.Coord.Width) * Link.Dest_X_Pos),
+         Link.Dest.Coord.Y
+            + Gint (Gfloat (Link.Dest.Coord.Height) * Link.Dest_Y_Pos),
+         X_Pos => Link.Src_X_Pos, Y_Pos => Link.Src_Y_Pos,
+         X_Out => X1, Y_Out => Y1);
+      Clip_Line
+        (Link.Dest,
+         Link.Src.Coord.X
+            + Gint (Gfloat (Link.Src.Coord.Width) * Link.Src_X_Pos),
+         Link.Src.Coord.Y
+            + Gint (Gfloat (Link.Src.Coord.Height) * Link.Src_Y_Pos),
+         X_Pos => Link.Dest_X_Pos, Y_Pos => Link.Dest_Y_Pos,
+         X_Out => X2, Y_Out => Y2);
 
       --  Draw the link itself
 
@@ -821,10 +881,14 @@ package body Gtkada.Canvas is
          --  and the two lines from the centers to the middle point.  Finally,
          --  we will be able to compute the circle enclosing the three points.
 
-         X1 := Link.Src.Coord.X  + Gint (Link.Src.Coord.Width) / 2;
-         Y1 := Link.Src.Coord.Y  + Gint (Link.Src.Coord.Height) / 2;
-         X3 := Link.Dest.Coord.X + Gint (Link.Dest.Coord.Width) / 2;
-         Y3 := Link.Dest.Coord.Y + Gint (Link.Dest.Coord.Height) / 2;
+         X1 := Link.Src.Coord.X
+           + Gint (Gfloat (Link.Src.Coord.Width) * Link.Src_X_Pos);
+         Y1 := Link.Src.Coord.Y
+           + Gint (Gfloat (Link.Src.Coord.Height) * Link.Src_Y_Pos);
+         X3 := Link.Dest.Coord.X
+           + Gint (Gfloat (Link.Dest.Coord.Width) * Link.Dest_X_Pos);
+         Y3 := Link.Dest.Coord.Y
+           + Gint (Gfloat (Link.Dest.Coord.Height) * Link.Dest_Y_Pos);
 
          --  Compute the middle point for the arc, and create a dummy item for
          --  it that the user can move.
@@ -853,8 +917,12 @@ package body Gtkada.Canvas is
 
          --  Clip to the border of the boxes
 
-         Clip_Line (Link.Src,  X2, Y2, X_Out => X1, Y_Out => Y1);
-         Clip_Line (Link.Dest, X2, Y2, X_Out => X3, Y_Out => Y3);
+         Clip_Line (Link.Src, X2, Y2,
+                    X_Pos => Link.Src_X_Pos, Y_Pos => Link.Src_Y_Pos,
+                    X_Out => X1, Y_Out => Y1);
+         Clip_Line (Link.Dest, X2, Y2,
+                    X_Pos => Link.Dest_X_Pos, Y_Pos => Link.Dest_Y_Pos,
+                    X_Out => X3, Y_Out => Y3);
 
          --  Compute the circle's center and radius
 
@@ -1013,17 +1081,19 @@ package body Gtkada.Canvas is
 
       --  Draw the background dots.
 
-      while Y < Get_Allocation_Height (Canvas.Drawing_Area) loop
-         X := Canvas.Grid_Size;
-         while X < Get_Allocation_Width (Canvas.Drawing_Area) loop
-            Draw_Point (Canvas.Double_Pixmap,
-                        GC       => Canvas.Black_GC,
-                        X        => Gint (X),
-                        Y        => Gint (Y));
-            X := X + Canvas.Grid_Size;
+      if Canvas.Grid_Size /= 0 then
+         while Y < Get_Allocation_Height (Canvas.Drawing_Area) loop
+            X := Canvas.Grid_Size;
+            while X < Get_Allocation_Width (Canvas.Drawing_Area) loop
+               Draw_Point (Canvas.Double_Pixmap,
+                           GC       => Canvas.Black_GC,
+                           X        => Gint (X),
+                           Y        => Gint (Y));
+               X := X + Canvas.Grid_Size;
+            end loop;
+            Y := Y + Canvas.Grid_Size;
          end loop;
-         Y := Y + Canvas.Grid_Size;
-      end loop;
+      end if;
 
       --  Draw the links first, so that they appear to be below the items.
 
@@ -1304,8 +1374,9 @@ package body Gtkada.Canvas is
       Tmp : Canvas_Item_List := Canvas.Children;
       Delta_X, Delta_Y : Gint := 0;
       Min_X, Min_Y : Gint := Gint'Last;
-      Item : Canvas_Item;
       Selected : Canvas_Item_List;
+      W, H : Gint;
+      Max_X, Max_Y : Gint := Gint'First;
    begin
 
       Grab_Remove (Canvas.Drawing_Area);
@@ -1317,84 +1388,85 @@ package body Gtkada.Canvas is
 
       if Canvas.Mouse_Has_Moved then
 
-         Selected := Canvas.Selection;
-         while Selected /= null loop
-            Item := Selected.Item;
+         W := Gint (Get_Allocation_Width (Canvas));
+         H := Gint (Get_Allocation_Height (Canvas));
 
-            --  Make sure the items are aligned on the grid if required.
+         Tmp := Canvas.Children;
+         while Tmp /= null loop
+            if Tmp.Item.Visible then
+               Min_X := Gint'Min (Min_X, Tmp.Item.Coord.X);
+               Max_X := Gint'Max
+                 (Max_X,
+                  Tmp.Item.Coord.X + Gint (Tmp.Item.Coord.Width));
 
-            if Canvas.Align_On_Grid then
-               Item.Coord.X := Item.Coord.X
-                 - Item.Coord.X mod Gint (Canvas.Grid_Size);
-               Item.Coord.Y := Item.Coord.Y
-                 - Item.Coord.Y mod Gint (Canvas.Grid_Size);
+               Min_Y := Gint'Min (Min_Y, Tmp.Item.Coord.Y);
+               Max_Y := Gint'Max
+                 (Max_Y,
+                  Tmp.Item.Coord.Y + Gint (Tmp.Item.Coord.Height));
             end if;
-
-            --  Move the items if the new one was moved out of the canvas.
-
-            if Item.Coord.X < Gint (Canvas.Grid_Size) then
-               Delta_X :=
-                 Gint'Max (Delta_X, -Item.Coord.X + Gint (Canvas.Grid_Size));
-            end if;
-
-            if Item.Coord.Y < Gint (Canvas.Grid_Size) then
-               Delta_Y :=
-                 Gint'Max (Delta_Y, -Item.Coord.Y + Gint (Canvas.Grid_Size));
-            end if;
-
-            Selected := Selected.Next;
+            Tmp := Tmp.Next;
          end loop;
 
-         if Delta_X = 0 or else Delta_Y = 0 then
-            Tmp := Canvas.Children;
-            while Tmp /= null loop
-               if Tmp.Item.Coord.X < Min_X then
-                  Min_X := Tmp.Item.Coord.X;
-               end if;
-               if Tmp.Item.Coord.Y < Min_Y then
-                  Min_Y := Tmp.Item.Coord.Y;
-               end if;
-               Tmp := Tmp.Next;
-            end loop;
-            if Delta_X = 0 then
-               Delta_X := Gint (Canvas.Grid_Size) - Min_X;
-            end if;
-            if Delta_Y = 0 then
-               Delta_Y := Gint (Canvas.Grid_Size) - Min_Y;
-            end if;
+         --  If one of the items is out of the canvas on the left
+         --  (Min_X < 0), or if the items are two widely spaced (wider than
+         --  the canvas itself), then align the left-most item to the left
+         --  of the canvas.
+
+         if Min_X < Gint (Canvas.Grid_Size)
+           or else Max_X - Min_X + 2 * Gint (Canvas.Grid_Size) > W
+         then
+            Delta_X := Gint (Canvas.Grid_Size) - Min_X;
+
+            --  Else, if one item is too much to the right, align it on the
+            --  right of the canvas. Note that we know this won't force another
+            --  one outside of the right.
+         elsif Max_X > W then
+            Delta_X := W - Max_X - Gint (Canvas.Grid_Size);
          end if;
 
-         if Delta_X /= 0 or else Delta_Y /= 0 then
-            Tmp := Canvas.Children;
-            while Tmp /= null loop
-               Tmp.Item.Coord.X := Tmp.Item.Coord.X + Delta_X;
-               Tmp.Item.Coord.Y := Tmp.Item.Coord.Y + Delta_Y;
-               if Canvas.Align_On_Grid then
-                  Tmp.Item.Coord.X := Tmp.Item.Coord.X
-                    - Tmp.Item.Coord.X mod Gint (Canvas.Grid_Size);
-                  Tmp.Item.Coord.Y := Tmp.Item.Coord.Y
-                    - Tmp.Item.Coord.Y mod Gint (Canvas.Grid_Size);
-               end if;
-               Tmp := Tmp.Next;
-            end loop;
+         if Min_Y < Gint (Canvas.Grid_Size)
+           or else Max_Y - Min_Y + 2 * Gint (Canvas.Grid_Size) > H
+         then
+            Delta_Y := Gint (Canvas.Grid_Size) - Min_Y;
+         elsif Max_Y > H then
+            Delta_Y := H - Max_Y - Gint (Canvas.Grid_Size);
          end if;
 
-         --  Align the items on the grid.
+         --  Move all the items by the appropriate amount, and align them on
+         --  the grid if required.
 
-         Selected := Canvas.Selection;
-         while Selected /= null loop
-            Item := Selected.Item;
+         Tmp := Canvas.Children;
+         while Tmp /= null loop
+            Tmp.Item.Coord.X := Tmp.Item.Coord.X + Delta_X;
+            Tmp.Item.Coord.Y := Tmp.Item.Coord.Y + Delta_Y;
             if Canvas.Align_On_Grid then
-               Item.Coord.X := Item.Coord.X
-                 - Item.Coord.X mod Gint (Canvas.Grid_Size);
-               Item.Coord.Y := Item.Coord.Y
-                 - Item.Coord.Y mod Gint (Canvas.Grid_Size);
+               Tmp.Item.Coord.X := Tmp.Item.Coord.X
+                 - Tmp.Item.Coord.X mod Gint (Canvas.Grid_Size);
+               Tmp.Item.Coord.Y := Tmp.Item.Coord.Y
+                 - Tmp.Item.Coord.Y mod Gint (Canvas.Grid_Size);
             end if;
-            Selected := Selected.Next;
+            Tmp := Tmp.Next;
          end loop;
 
-         Update_Adjustments (Canvas);
+         Update_Adjustments (Canvas, Max_X + Delta_X, Max_Y + Delta_Y);
          Draw_On_Double_Buffer (Canvas);
+
+         --  Scroll the canvas so as to show the right-most item from the
+         --  selection
+         Min_X := Gint'Last;
+         Min_Y := Gint'Last;
+
+         Selected := Canvas.Selection;
+         while Selected /= null loop
+            Min_X := Gint'Min (Min_X, Selected.Item.Coord.X);
+            Min_Y := Gint'Min (Min_Y, Selected.Item.Coord.Y);
+            Selected := Selected.Next;
+         end loop;
+
+         Set_Value (Get_Hadjustment (Canvas),
+                    Gfloat (Min_X - Gint (Canvas.Grid_Size)));
+         Set_Value (Get_Vadjustment (Canvas),
+                    Gfloat (Min_Y - Gint (Canvas.Grid_Size)));
 
       --  If the user did not move the mouse while it was pressed, this is
       --  because he only wanted to select the item.
@@ -1948,13 +2020,14 @@ package body Gtkada.Canvas is
       Src    : access Canvas_Item_Record'Class;
       Dest   : access Canvas_Item_Record'Class;
       Arrow  : in Arrow_Type := End_Arrow;
-      Descr  : in String := "")
+      Descr  : in String := "";
+      Side   : Link_Side := Automatic)
    is
       L : Canvas_Link;
    begin
       L := new Canvas_Link_Record;
       Configure (L, Src, Dest, Arrow, Descr);
-      Add_Link (Canvas, L);
+      Add_Link (Canvas, L, Side);
    end Add_Link;
 
    --------------
@@ -2003,33 +2076,42 @@ package body Gtkada.Canvas is
 
    procedure Add_Link
      (Canvas : access Interactive_Canvas_Record;
-      Link   : access Canvas_Link_Record'Class)
+      Link   : access Canvas_Link_Record'Class;
+      Side   : Link_Side := Automatic)
    is
-      Offset : Gint := 1;
-      Side   : Link_Side;
+      Offset    : Gint := 1;
+      Auto_Side : Link_Side;
    begin
       --  Find the type of link that should be used.
       --  We can't use straight links for self referencing links.
 
       if Link.Src /= Link.Dest
-        and then not Has_Link (Canvas, Link.Src, Link.Dest, Straight, 0)
+        and then
+        (Side = Straight
+         or else
+         (Side = Automatic
+          and then not Has_Link (Canvas, Link.Src, Link.Dest, Straight, 0)))
       then
-         Side := Straight;
+         Auto_Side := Straight;
          Offset := 0;
       else
          loop
-            if not Has_Link (Canvas, Link.Src, Link.Dest, Right, Offset) then
-               Side := Right;
+            if Side /= Left and then
+              not Has_Link (Canvas, Link.Src, Link.Dest, Right, Offset)
+            then
+               Auto_Side := Right;
                exit;
-            elsif not Has_Link (Canvas, Link.Src, Link.Dest, Left, Offset) then
-               Side := Left;
+            elsif Side /= Right and then
+              not Has_Link (Canvas, Link.Src, Link.Dest, Left, Offset)
+            then
+               Auto_Side := Left;
                exit;
             end if;
             Offset := Offset + 1;
          end loop;
       end if;
 
-      Link.Side   := Side;
+      Link.Side   := Auto_Side;
       Link.Offset := Offset;
       Canvas.Links := new Canvas_Link_List_Record'
         (Link => Canvas_Link (Link),
@@ -2121,5 +2203,27 @@ package body Gtkada.Canvas is
          return Link.Descr.all;
       end if;
    end Get_Descr;
+
+   -----------------
+   -- Set_Src_Pos --
+   -----------------
+
+   procedure Set_Src_Pos
+     (Link : access Canvas_Link_Record; X_Pos, Y_Pos : Gfloat := 0.5) is
+   begin
+      Link.Src_X_Pos := X_Pos;
+      Link.Src_Y_Pos := Y_Pos;
+   end Set_Src_Pos;
+
+   ------------------
+   -- Set_Dest_Pos --
+   ------------------
+
+   procedure Set_Dest_Pos
+     (Link : access Canvas_Link_Record; X_Pos, Y_Pos : Gfloat := 0.5) is
+   begin
+      Link.Dest_X_Pos := X_Pos;
+      Link.Dest_Y_Pos := Y_Pos;
+   end Set_Dest_Pos;
 
 end Gtkada.Canvas;
