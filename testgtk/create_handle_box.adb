@@ -76,13 +76,18 @@ package body Create_Handle_Box is
       if not Is_Created (Window) then
          Gtk_New (Window, Window_Toplevel);
          Set_Title (Window, "Handle Box Test");
-         Set_Policy (Window, Allow_Shrink => True,
-                     Allow_Grow => True, Auto_Shrink => False);
+         Set_Policy (Window,
+                     Allow_Shrink => True,
+                     Allow_Grow   => True,
+                     Auto_Shrink  => False);
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
-         Set_Border_Width (Window, 20);
+         Set_Border_Width (Window,
+                           Border_Width => 20);
 
-         Gtk_New_Vbox (Vbox, False, 0);
+         Gtk_New_Vbox (Vbox,
+                       Homogeneous => False,
+                       Spacing     => 0);
          Add (Window, Vbox);
          Show (Vbox);
 
@@ -94,7 +99,9 @@ package body Create_Handle_Box is
          Add (Vbox, Separator);
          Show (Separator);
 
-         Gtk_New_Hbox (Hbox, False, 10);
+         Gtk_New_Hbox (Hbox,
+                       Homogeneous => False,
+                       Spacing     => 10);
          Add (Vbox, Hbox);
          Show (Hbox);
 
@@ -107,7 +114,11 @@ package body Create_Handle_Box is
          Show (Label);
 
          Gtk_New (Handle);
-         Add (Hbox, Handle);
+         Pack_Start (Hbox,
+                     Child   => Handle,
+                     Expand  => False,
+                     Fill    => False,
+                     Padding => 0);
          Id := Handle_Cb.Connect (Handle, "child_attached",
                                   Child_Signal'Access, "attached");
          Id := Handle_Cb.Connect (Handle, "child_detached",
@@ -115,11 +126,16 @@ package body Create_Handle_Box is
          Show (Handle);
 
          Create_Toolbar.Make_Toolbar (Toolbar, Window);
+         Set_Button_Relief (Toolbar, Normal);
          Add (Handle, Toolbar);
          Show (Toolbar);
 
          Gtk_New (Handle);
-         Add (Hbox, Handle);
+         Pack_Start (Hbox,
+                     Child   => Handle,
+                     Expand  => False,
+                     Fill    => False,
+                     Padding => 0);
          Id := Handle_Cb.Connect (Handle, "child_attached",
                                   Child_Signal'Access, "attached");
          Id := Handle_Cb.Connect (Handle, "child_detached",

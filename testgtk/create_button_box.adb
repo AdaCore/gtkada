@@ -32,6 +32,7 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Button_Box; use Gtk.Button_Box;
 with Gtk.Enums; use Gtk.Enums;
+with Gtk.Frame; use Gtk.Frame;
 with Gtk.Hbutton_Box; use Gtk.Hbutton_Box;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Vbutton_Box; use Gtk.Vbutton_Box;
@@ -46,125 +47,118 @@ package body Create_Button_Box is
 
    Window : aliased Gtk_Window;
 
-   procedure Create_Bbox_Window (Horizontal : in Boolean;
-                                 Title      : in String;
-                                 Pos        : in Gint;
-                                 Spacing    : in Gint;
-                                 Child_W    : in Gint;
-                                 Child_H    : in Gint;
-                                 Layout     : in Gtk_Button_Box_Style)
+   function Create_Bbox (Horizontal : in Boolean;
+                         Title      : in String;
+                         Spacing    : in Gint;
+                         Child_W    : in Gint;
+                         Child_H    : in Gint;
+                         Layout     : in Gtk_Button_Box_Style)
+                         return Gtk_Frame
    is
-      Id     : Guint;
-      Box1   : Gtk_Box;
       Bbox   : Gtk_Button_Box;
       Button : Gtk_Button;
+      Frame  : Gtk_Frame;
    begin
-      Gtk_New (Window, Window_Toplevel);
-      Set_Title (Window, Title);
-      Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
-                                Window'Access);
-
-      if Horizontal then
-         Set_Usize (Window, 550, 60);
-         Set_Uposition (Window, 150, Pos);
-         Gtk_New_Vbox (Box1, False, 0);
-      else
-         Set_Usize (Window, 150, 400);
-         Set_Uposition (Window, Pos, 200);
-         Gtk_New_Vbox (Box1, False, 0);
-      end if;
-
-      Add (Window, Box1);
-      Show (Box1);
-
+      Gtk_New (Frame, Label => Title);
       if Horizontal then
          declare
-            Tmp : Gtk_Hbutton_Box;
+            B : Gtk_HButton_Box;
          begin
-            Gtk_New (Tmp);
-            Bbox := Gtk_Button_Box (Tmp);
+            Gtk_New (B);
+            BBox := Gtk_Button_Box (B);
          end;
       else
          declare
-            Tmp : Gtk_Vbutton_Box;
+            B : Gtk_VButton_Box;
          begin
-            Gtk_New (Tmp);
-            Bbox := Gtk_Button_Box (Tmp);
+            Gtk_New (B);
+            BBox := Gtk_Button_Box (B);
          end;
       end if;
+
+      Set_Border_Width (Bbox, Border_Width => 5);
+      Add (Frame, Bbox);
 
       Set_Layout (Bbox, Layout);
-      Gtk.Button_Box.Set_Spacing (Bbox, Spacing);
+      Set_Spacing (Bbox, Spacing);
       Set_Child_Size (Bbox, Child_W, Child_H);
-      Show (Bbox);
-
-      Set_Border_Width (Box1, 25);
-      Pack_Start (Box1, Bbox, True, True, 0);
 
       Gtk_New (Button, Label => "OK");
       Add (Bbox, Button);
-      Id := Widget_Cb.Connect (Button, "clicked", Destroy'Access, Window);
-      Show (Button);
 
       Gtk_New (Button, Label => "Cancel");
       Add (Bbox, Button);
-      Show (Button);
 
       Gtk_New (Button, Label => "Help");
       Add (Bbox, Button);
-      Show (Button);
 
-      Show (Window);
-   end Create_Bbox_Window;
-
-   procedure Test_Hbbox (Widget : in out Gtk_Button) is
-      pragma Warnings (Off, Widget);
-   begin
-      Create_Bbox_Window (True, "Spread", 50,40, 85, 28, Spread);
-      Create_Bbox_Window (True, "Edge", 200, 40, 85, 25, Edge);
-      Create_Bbox_Window (True, "Start", 350, 40, 85, 25, Start);
-      Create_Bbox_Window (True, "End", 500, 15, 30, 25, Style_End);
-   end Test_Hbbox;
-
-   procedure Test_Vbbox (Widget : in out Gtk_Button) is
-      pragma Warnings (Off, Widget);
-   begin
-      Create_Bbox_Window (False, "Spread", 50, 40, 85, 25, Spread);
-      Create_Bbox_Window (False, "Edge", 250, 40, 85, 28, Edge);
-      Create_Bbox_Window (False, "Start", 450, 40, 85, 25, Start);
-      Create_Bbox_Window (False, "End", 650, 15, 30, 25, Style_end);
-   end Test_Vbbox;
+      return Frame;
+   end Create_Bbox;
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id     : Guint;
       Bbox   : Gtk_Hbutton_Box;
       Button : Gtk_Button;
+      Vbox   : Gtk_Box;
+      Hbox   : Gtk_Box;
+      Main_Vbox : Gtk_Box;
+      Frame_Horz : Gtk_Frame;
+      Frame_Vert : Gtk_Frame;
    begin
       if not Is_Created (Window) then
 
          Gtk_New (Window, Window_Toplevel);
-         Set_Title (Window, "Button Box Test");
+         Set_Title (Window, "Button Boxes");
          Id := Widget2_Cb.Connect (Window, "destroy", Destroyed'Access,
                                    Window'Access);
-         Set_Border_Width (Window, Border_Width => 20);
+         Set_Border_Width (Window, Border_Width => 10);
 
-         Gtk_New (Bbox);
-         Add (Window, Bbox);
-         Show (Bbox);
+         Gtk_New_Vbox (Main_Vbox, Homogeneous => False, Spacing => 0);
+         Add (Window, Main_Vbox);
 
-         Gtk_New (Button, Label => "Horizontal");
-         Id := Void_Cb.Connect (Button, "clicked", Test_Hbbox'Access);
-         Add (Bbox, Button);
-         Show (Button);
+         Gtk_New (Frame_Horz, "Horizontal Button Boxes");
+         Pack_Start (Main_Vbox,
+                     Child   => Frame_Horz,
+                     Expand  => True,
+                     Fill    => True,
+                     Padding => 10);
 
-         Gtk_New (Button, Label => "Vertical");
-         Id := Void_Cb.Connect (Button, "clicked", Test_Vbbox'Access);
-         Add (Bbox, Button);
-         Show (Button);
+         Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
+         Set_Border_Width (Vbox, Border_Width => 10);
+         Add (Frame_Horz, Vbox);
+
+         Pack_Start (Vbox, Create_Bbox (True, "Spread", 40, 85, 20, Spread),
+                                        True, True, 0);
+         Pack_Start (Vbox, Create_Bbox (True, "Edge", 40, 85, 20, Edge),
+                                        True, True, 5);
+         Pack_Start (Vbox, Create_Bbox (True, "Start", 40, 85, 20, Start),
+                                        True, True, 5);
+         Pack_Start (Vbox, Create_Bbox (True, "End", 40, 85, 20, Style_End),
+                                        True, True, 5);
+
+
+         Gtk_New (Frame_Vert, "Vertical Button Boxes");
+         Pack_Start (Main_Vbox,
+                     Frame_Vert,
+                     Expand  => True,
+                     Fill    => True,
+                     Padding => 10);
+         Gtk_New_Hbox (Hbox, Homogeneous => False, Spacing => 0);
+         Set_Border_Width (Hbox, Border_Width => 10);
+         Add (Frame_Vert, Hbox);
+
+         Pack_Start (Hbox, Create_Bbox (False, "Spread", 30, 85, 20, Spread),
+                                        True, True, 0);
+         Pack_Start (Hbox, Create_Bbox (False, "Edge", 30, 85, 20, Edge),
+                                        True, True, 5);
+         Pack_Start (Hbox, Create_Bbox (False, "Start", 30, 85, 20, Start),
+                                        True, True, 5);
+         Pack_Start (Hbox, Create_Bbox (False, "End", 30, 85, 20, Style_End),
+                                        True, True, 5);
       end if;
 
       if not Visible_Is_Set (Window) then
-         Show (Window);
+         Show_All (Window);
       else
          Destroy (Window);
       end if;
