@@ -1,5 +1,5 @@
 Here are the complete procedures to build Gtk+ 2.2.4 from scratch
-(Systems tested are Redhat 7.2, Solaris/sparc 2.5.1, Solaris/sparc 8,
+(Systems tested are Redhat 8.0, Solaris/sparc 2.5.1, Solaris/sparc 8,
  Solaris/x86 2.6, Tru64 5.1a, HP-UX 11.00).
 
 Note that these instructions are provided as is, and do not represent a
@@ -238,7 +238,7 @@ touch -r aclocal.m4 configure.in
 # hangul-x,tamil-x,tamil-xft,thai-x,gurmukhi-x,bengali-x,gujarati-x,
 # devanagari-x,myanmar-x
 
-# Under Linux (or if you have built Xft):
+# If you have Xft2 available, e.g. under Redhat 8.0 and above
 ./configure --prefix=$prefix \
 	--with-included-modules=basic-x,basic-xft --disable-debug
 
