@@ -4421,7 +4421,7 @@ package body Gtkada.MDI is
             end loop;
          end;
 
-         --  A pass to eliminate all empty Panes.
+         --  A pass to eliminate all empty.
 
          declare
             procedure Prune_Empty (N : in out Node_Ptr);
