@@ -52,7 +52,7 @@ using the following compilers:
    - Gnat 3.12p
 
 the following versions of gtk:
-   - Gtk+ 1.2.0 -> 1.2.6
+   - Gtk+ 1.2.2 -> 1.2.6
 
 and the following versions of glade:
    - Glade 0.5.5

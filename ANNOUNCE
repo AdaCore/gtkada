@@ -2,7 +2,7 @@
 GtkAda 1.2.5 release
 --------------------
 
-GtkAda is an Ada95 graphical toolkit based on Gtk+ version 1.2.x. It
+GtkAda is an Ada95 graphical toolkit based on Gtk+ version >= 1.2.2. It
 allows you to develop graphical applications in Ada95 using Gtk+.
 
 Currently, all widgets  of the Gtk+ 1.2 series have  been bound. The
@@ -17,7 +17,7 @@ Begin3
 Title:  GtkAda
 Version: 1.2.5
 Entered-date: 15DEC99
-Description: Ada95 graphical toolkit based on Gtk+ (version 1.2.x) 
+Description: Ada95 graphical toolkit based on Gtk+ (version >= 1.2.2) 
 Keywords: Ada95 Ada Gtk+ Gtk X Gui Glade Win32
 Author: Emmanuel Briot <briot@gnat.com>, Joel Brobecker <jbrobecker@west.raytheon.com> and Arnaud Charlet <charlet@gnat.com>
 Maintained-by: gtkada@ada.eu.org
