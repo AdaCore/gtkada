@@ -382,27 +382,24 @@ switches (chosen to be compatible with the ones set by @code{gtk-config}):
   the directories where all the GtkAda, gtk+, and dependant libraries are
   found. For instance, if GtkAda was compiled with support for OpenGL,
   the OpenGL libraries will automatically be present.
-@item @code{--static}: Forces the libraries to be static libraries instead
-  of dynamic ones.
+@item @code{--static}: Forces linking with the static gtkada library. This
+  option will still use the dynamic gtk+ libraries.
 @end itemize
 
 @subsection Windows systems
 
 Things are somewhat easier on Windows systems. You don't have access to the
-@code{gtkada-config} script. However, the good news is that you also don't
+@code{gtkada-config} script. On the other hang you also don't
 have to specify which libraries to use or where to find them.
 
 The only thing you should specify on the @code{gnatmake} command line is
 where the GtkAda spec files are found, as in:
 
 @smallexample
-> gnatmake <main-file> -Ic:\GtkAda\lib
+> gnatmake <main-file> -Ic:\gtkada\include\gtkada
 @end smallexample
 
-if GtkAda was installed in @file{c:\GtkAda}.
-
-No static libraries are provided currently, so you can't create a static
-version of your application and you will have to use the dynamic libraries.
+if GtkAda was installed under @file{c:\gtkada}.
 
 @c ---------------------------------------------------------------------
 @node Architecture of the toolkit
