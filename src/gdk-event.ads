@@ -435,10 +435,13 @@ package Gdk.Event is
    function Get_Height (Event : Gdk_Event) return Gint;
    --  Get the height in a configure event.
 
+   function Get_Direction (Event : Gdk_Event) return Gdk_Scroll_Direction;
+   --  Get the direction in a scroll event.
+
    function Get_Device_Id (Event : Gdk_Event) return Gdk_Device_Id;
    --  Set to a constant for now in the gtk+ source... Probably useless.
    --  Since multiple input devices can be used at the same time, like a mouse
-   --  and a graphic tablet, this indicated which one generated the event.
+   --  and a graphic tablet, this indicates which one generated the event.
 
    function Get_Area (Event : Gdk_Event) return Rectangle.Gdk_Rectangle;
    --  The minimal area on which the event applies.
@@ -566,6 +569,10 @@ package Gdk.Event is
    procedure Set_Hardware_Keycode (Event : Gdk_Event; Keycode : Guint16);
    --  Set the hardware key code field of a key event.
 
+   procedure Set_Direction
+     (Event : Gdk_Event; Direction : Gdk_Scroll_Direction);
+   --  Set the direction field of a scroll event.
+
    procedure Set_Atom (Event : Gdk_Event; Atom : Gdk.Types.Gdk_Atom);
    --  Set the Atom field of an event.
 
@@ -655,7 +662,7 @@ package Gdk.Event is
    --  You need to use the function Set_* above to modify them, before you can
    --  send the event with Emit_By_Name.
    --  !!Note!!: The event has to be freed if you have called this function.
-   --  Use the function Free.
+   --  Use the function Free below.
 
    procedure Free (Event : in out Gdk_Event);
    --  Free the memory (and C structure) associated with an event.
@@ -666,7 +673,6 @@ package Gdk.Event is
    type Event_Handler_Func is access procedure
      (Event : Gdk_Event; Data : System.Address);
    --  Function that can be used as a new event handler.
-   --  Use From_Address below to convert to a real event type.
    --  This function should dispatch all the events properly, since it replaces
    --  completly the default event handler. However, it can call
    --  Gtk.Main.Do_Event to take care of the events it does not know how to
@@ -713,6 +719,19 @@ package Gdk.Event is
    -- Design issues --
    -------------------
    --  See gdk-event.adb for some of the design issues behing that package.
+
+   ---------------------
+   -- Event Recording --
+   ---------------------
+
+   procedure Set_Follow_Events (Follow_Events : Boolean := True);
+   --  Set whether windows should follow events that they normally don't
+   --  (such as motion events) for event recording purposes.
+   --  This function is used in cunjonction with GtkAda.Macro
+
+   function Get_Follow_Events return Boolean;
+   --  Return follow_events value.
+   --  See Set_Follow_Events for more details.
 
 private
 

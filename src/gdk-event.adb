@@ -334,6 +334,24 @@ package body Gdk.Event is
    end Get_Focus;
 
    -------------------
+   -- Get_Direction --
+   -------------------
+
+   function Get_Direction (Event : Gdk_Event) return Gdk_Scroll_Direction is
+      function Internal (Event : Gdk_Event) return Gint;
+      pragma Import (C, Internal, "ada_gdk_event_get_direction");
+
+      Direction : constant Gint := Internal (Event);
+
+   begin
+      if Direction = Invalid_Gint_Value then
+         raise Invalid_Field;
+      end if;
+
+      return Gdk_Scroll_Direction'Val (Direction);
+   end Get_Direction;
+
+   -------------------
    -- Get_Device_Id --
    -------------------
 
@@ -1102,6 +1120,23 @@ package body Gdk.Event is
       end if;
    end Set_Hardware_Keycode;
 
+   -------------------
+   -- Set_Direction --
+   -------------------
+
+   procedure Set_Direction
+     (Event : Gdk_Event; Direction : Gdk_Scroll_Direction)
+   is
+      function Internal
+        (Event : Gdk_Event; Direction : Gdk_Scroll_Direction) return Gint;
+      pragma Import (C, Internal, "ada_gdk_event_set_direction");
+
+   begin
+      if Internal (Event, Direction) = 0 then
+         raise Invalid_Field;
+      end if;
+   end Set_Direction;
+
    --------------
    -- Set_Atom --
    --------------
@@ -1297,5 +1332,27 @@ package body Gdk.Event is
    begin
       return Gdk_Event (Glib.Values.Get_Proxy (Value));
    end Get_Event;
+
+   -----------------------
+   -- Set_Follow_Events --
+   -----------------------
+
+   Follow_Events : Boolean := False;
+   --  Used by Get/Set_Follow_Events functions below.
+   --  See spec of Set_Follow_Events for more details.
+
+   procedure Set_Follow_Events (Follow_Events : Boolean := True) is
+   begin
+      Gdk.Event.Follow_Events := Follow_Events;
+   end Set_Follow_Events;
+
+   -----------------------
+   -- Get_Follow_Events --
+   -----------------------
+
+   function Get_Follow_Events return Boolean is
+   begin
+      return Follow_Events;
+   end Get_Follow_Events;
 
 end Gdk.Event;
