@@ -153,12 +153,11 @@ package body Gtkada.MDI is
    --  Whether title bars should be drawn when in maximized mode. They are
    --  always visible in non-maximized mode
 
-   Position_Of_Tabs : constant Gtk.Enums.Gtk_Position_Type := Pos_Top;
+   Position_Of_Tabs : constant Gtk.Enums.Gtk_Position_Type := Pos_Bottom;
    --  Where the tabs of the notebooks should be
 
    type Show_Tabs_Policy is (Always, Never, As_Needed);
-   pragma Unreferenced (As_Needed);
-   Show_Tabs : Show_Tabs_Policy := Always;
+   Show_Tabs : Show_Tabs_Policy := As_Needed;
    pragma Warnings (Off, Show_Tabs);
    --  Whether tabs in notebooks should be visible
    --  (not a constant to avoid warnings below about condition being always
