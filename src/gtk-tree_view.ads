@@ -294,8 +294,8 @@ package Gtk.Tree_View is
 
    procedure Get_Cursor
      (Tree_View    : access Gtk_Tree_View_Record;
-      Path         : Gtk.Tree_Model.Gtk_Tree_Path;
-      Focus_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column);
+      Path         : out Gtk.Tree_Model.Gtk_Tree_Path;
+      Focus_Column : out Gtk.Tree_View_Column.Gtk_Tree_View_Column);
    --  Fills in Path and Focus_Column with the current path and focus column.
    --  If the cursor isn't currently set, then *path will be Null. If no column
    --  currently has focus, then *focus_column will be Null.

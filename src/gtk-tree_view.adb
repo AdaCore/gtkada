@@ -778,17 +778,27 @@ package body Gtk.Tree_View is
 
    procedure Get_Cursor
      (Tree_View    : access Gtk_Tree_View_Record;
-      Path         : Gtk.Tree_Model.Gtk_Tree_Path;
-      Focus_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column)
+      Path         : out Gtk.Tree_Model.Gtk_Tree_Path;
+      Focus_Column : out Gtk.Tree_View_Column.Gtk_Tree_View_Column)
    is
       procedure Internal
         (Tree_View    : System.Address;
-         Path         : Gtk.Tree_Model.Gtk_Tree_Path;
-         Focus_Column : System.Address);
+         Path         : access Gtk.Tree_Model.Gtk_Tree_Path;
+         Focus_Column : access System.Address);
       pragma Import (C, Internal, "gtk_tree_view_get_cursor");
 
+      Local_Column : aliased System.Address;
+      Local_Path   : aliased Gtk.Tree_Model.Gtk_Tree_Path;
+      Stub         : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
+
    begin
-      Internal (Get_Object (Tree_View), Path, Get_Object (Focus_Column));
+      Internal
+        (Get_Object (Tree_View), Local_Path'Access, Local_Column'Access);
+
+      Focus_Column := Gtk.Tree_View_Column.Gtk_Tree_View_Column
+        (Get_User_Data (Local_Column, Stub));
+
+      Path := Local_Path;
    end Get_Cursor;
 
    ---------------------
