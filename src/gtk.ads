@@ -58,7 +58,10 @@ private
    --  these functions.
 
    GtkAda_String : constant String := "_GtkAda" & Ascii.NUL;
+   GtkAda_String_Quark : Glib.GQuark := Glib.Unknown_Quark;
    --  The name for the user data that we set in the objects.
+   --  The Quark version is to speed up the string lookup (this is done
+   --  only once).
 
    procedure Initialize_User_Data (Obj : access Root_Type'Class);
    --  Sets a user data field for the C object associated with Obj.
@@ -85,14 +88,5 @@ private
    --  See Gtk.Type_Conversion for its use.
    --  Stub is the expect type (it is used by the simple conversion
    --  function only).
-
-
-   --  The following is intended for internal use only.
-   --  This functions is called every time Initialize_User_Data is called, i.e
-   --  every time a widget is created in Ada. This is used to enable macros.
-   --  Only one function can be registerd.
-   type Initialize_Hook is access
-     procedure (Obj : access Root_Type'Class);
-   Initialize_User_Data_Hook : Initialize_Hook;
 
 end Gtk;

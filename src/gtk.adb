@@ -72,18 +72,21 @@ package body Gtk is
    function Get_User_Data (Obj  : in System.Address; Stub : in Root_Type'Class)
                            return Root_Type_Access
    is
-      function Internal (Object : in System.Address; Key : in String)
+      function Internal (Object : in System.Address; Key : in Glib.GQuark)
                          return Root_Type_Access;
-      pragma Import (C, Internal, "gtk_object_get_data");
-      function Get_Type (Object : in System.Address) return Guint;
-      pragma Import (C, Get_Type, "ada_get_type");
+      pragma Import (C, Internal, "gtk_object_get_data_by_id");
       use type System.Address;
       R : Root_Type_Access;
    begin
       if Obj = System.Null_Address then
          return null;
       end if;
-      R := Internal (Obj, GtkAda_String);
+
+      if GtkAda_String_Quark = Glib.Unknown_Quark then
+         GtkAda_String_Quark := Glib.Quark_From_String (GtkAda_String);
+      end if;
+      R := Internal (Obj, GtkAda_String_Quark);
+
       if R = null then
          R := Type_Conversion_Function (Obj, Stub);
          --  We use the soft link function to create a stub. This function
@@ -101,30 +104,31 @@ package body Gtk is
 
    procedure Initialize_User_Data (Obj : access Root_Type'Class) is
       function Internal (Object : in System.Address;
-                         Key    : in String)
+                         Key    : in Glib.GQuark)
                          return Root_Type_Access;
-      pragma Import (C, Internal, "gtk_object_get_data");
+      pragma Import (C, Internal, "gtk_object_get_data_by_id");
 
       procedure Set_User_Data (Obj     : System.Address;
-                               Name    : String;
+                               Name    : Glib.GQuark;
                                Data    : System.Address;
                                Destroy : System.Address);
-      pragma Import (C, Set_User_Data, "gtk_object_set_data_full");
+      pragma Import (C, Set_User_Data, "gtk_object_set_data_by_id_full");
 
 --        function Convert is new Unchecked_Conversion (System.Address,
 --                                                      Integer);
    begin
-      if Internal (Get_Object (Obj), GtkAda_String) = null then
-         Set_User_Data (Get_Object (Obj), GtkAda_String,
+
+      if GtkAda_String_Quark = Glib.Unknown_Quark then
+         GtkAda_String_Quark := Glib.Quark_From_String (GtkAda_String);
+      end if;
+
+      if Internal (Get_Object (Obj), GtkAda_String_Quark) = null then
+         Set_User_Data (Get_Object (Obj), GtkAda_String_Quark,
                         Obj.all'Address, Free_User_Data'Address);
 --           Ada.Text_IO.Put_Line
 --             ("Initialize_User_Data " & External_Tag (Obj.all'Tag)
 --              & " size=" & Integer'Image (Obj'Size)
 --              & " Address=" & Integer'Image (Convert (Obj.all'Address)));
-      end if;
-
-      if Initialize_User_Data_Hook /= null then
-         Initialize_User_Data_Hook (Obj);
       end if;
    end Initialize_User_Data;
 
