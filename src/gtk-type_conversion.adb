@@ -35,7 +35,6 @@ with Gtk.Arrow;
 with Gtk.Aspect_Frame;
 with Gtk.Bin;
 with Gtk.Box;
-with Gtk.Button;
 with Gtk.Button_Box;
 with Gtk.Calendar;
 with Gtk.Check_Button;
@@ -80,7 +79,6 @@ with Gtk.List;
 with Gtk.List_Item;
 with Gtk.Menu;
 with Gtk.Menu_Bar;
-with Gtk.Menu_Item;
 with Gtk.Menu_Shell;
 with Gtk.Misc;
 with Gtk.Notebook;
@@ -166,8 +164,6 @@ package body Gtk.Type_Conversion is
                return new Gtk.Extra.Border_Combo.Gtk_Border_Combo_Record;
             elsif Type_Name = "GtkBox" then
                return new Gtk.Box.Gtk_Box_Record;
-            elsif Type_Name = "GtkButton" then
-               return new Gtk.Button.Gtk_Button_Record;
             elsif Type_Name = "GtkButtonBox" then
                return new Gtk.Button_Box.Gtk_Button_Box_Record;
             end if;
@@ -270,8 +266,6 @@ package body Gtk.Type_Conversion is
                return new Gtk.Menu.Gtk_Menu_Record;
             elsif Type_Name = "GtkMenuBar" then
                return new Gtk.Menu_Bar.Gtk_Menu_Bar_Record;
-            elsif Type_Name = "GtkMenuItem" then
-               return new Gtk.Menu_Item.Gtk_Menu_Item_Record;
             elsif Type_Name = "GtkMenuShell" then
                return new Gtk.Menu_Shell.Gtk_Menu_Shell_Record;
             elsif Type_Name = "GtkMisc" then
