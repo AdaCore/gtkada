@@ -30,12 +30,15 @@ with Gtk.Widget;
 
 package Gtk.Calendar is
 
-   type Gtk_Calendar_Display_Options is (Show_Heading,
-                                         Show_Day_Names,
-                                         No_Month_Change,
-                                         Show_Week_Number,
-                                         Week_Start_Monday);
-   --  enum type introduced in gtk1.1
+   type Gtk_Calendar_Display_Options is private;
+   Show_Heading : constant Gtk_Calendar_Display_Options;
+   Show_Day_Names : constant Gtk_Calendar_Display_Options;
+   No_Month_Change : constant Gtk_Calendar_Display_Options;
+   Show_Week_Number : constant Gtk_Calendar_Display_Options;
+   Week_Start_Monday : constant Gtk_Calendar_Display_Options;
+
+   function "and" (Left, Right : Gtk_Calendar_Display_Options)
+                   return Gtk_Calendar_Display_Options;
 
    type Gtk_Calendar is new Gtk.Widget.Gtk_Widget with private;
 
@@ -71,9 +74,11 @@ package Gtk.Calendar is
 private
    type Gtk_Calendar is new Gtk.Widget.Gtk_Widget with null record;
 
-   for Gtk_Calendar_Display_Options use (Show_Heading      => 1,
-                                         Show_Day_Names    => 2,
-                                         No_Month_Change   => 4,
-                                         Show_Week_Number  => 8,
-                                         Week_Start_Monday => 16);
+   type Gtk_Calendar_Display_Options is new Gint;
+   Show_Heading : constant Gtk_Calendar_Display_Options := 1;
+   Show_Day_Names : constant Gtk_Calendar_Display_Options := 2;
+   No_Month_Change : constant Gtk_Calendar_Display_Options := 4;
+   Show_Week_Number : constant Gtk_Calendar_Display_Options := 8;
+   Week_Start_Monday : constant Gtk_Calendar_Display_Options := 16;
+
 end Gtk.Calendar;

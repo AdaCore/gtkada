@@ -31,6 +31,16 @@ with System;
 
 package body Gtk.Calendar is
 
+   ----------
+   -- Left --
+   ----------
+
+   function "and" (Left, Right : Gtk_Calendar_Display_Options)
+                   return Gtk_Calendar_Display_Options is
+   begin
+      return Left + Right;
+   end "and";
+
    -----------------
    -- Clear_Marks --
    -----------------
