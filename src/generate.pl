@@ -678,7 +678,7 @@ sub create_ada_name
     $entity =~ s/-/_/g;
 
     # Put an underscore before each upper-case letter
-    $entity =~ s/([^_])([A-Z])/$1_$2/g;
+    $entity =~ s/([^_])([A-Z0-9])/$1_$2/g;
 
     substr ($entity, 0, 1) = uc (substr ($entity, 0, 1));
 
@@ -700,7 +700,6 @@ sub create_ada_name
     return "Accepted" if ($entity eq "Accept");  # gnome-icon-item.h
     return "Modifier" if ($entity eq "Mod");     # gnome-stock.h
     return "Sub_Type" if ($entity eq "Subtype"); # gnome-stock.h
-
     return $entity;
   }
 
@@ -917,7 +916,7 @@ sub print_arguments
 	}
 	else {
 	  my ($t) = &{$convert} ($return);
-	  $t =~ s/'Class$//;
+	  $t =~ s/\'Class$//;
 	  push (@output, $t);
 	}
       }
@@ -1109,6 +1108,7 @@ sub print_body
 	push (@output, $string);
 	&print_arguments_call (' ' x length ($string), @arguments);
 	push (@output, ");\n");
+	push (@output, "      Initialize_User_Data (Widget);\n");
       }
     else
       {
@@ -1176,6 +1176,8 @@ sub ada_func_name
 
     $c_func_name =~ s/^(g[dt]k|gnome|ada)_?//;
     $c_func_name =~ s/^$type\_//;
+    $type =~ s/_//g;
+    $c_func_name =~ s/^$type\_//;  # cases like  "plot_3d" and "plot_3d_..."
 
     $type = &create_ada_name ($c_func_name);
     return "Gtk_Select" if ($type eq "Select");
@@ -1247,6 +1249,8 @@ sub convert_ada_type
 	$t = "MDI_$1";
       } elsif ($t eq "Entry") {
 	$t = "GEntry";
+      } elsif ($t eq "Plot3D") {
+	$t = "Plot_3D";
       } elsif ($t ne "GC") {
 	$t =~ s/(.)([A-Z])/$1_$2/g;
       }
