@@ -504,7 +504,8 @@ package Gtkada.MDI is
    package Desktop is
 
       type Save_Desktop_Function is access function
-        (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+        (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+         User   : User_Data)
          return Glib.Xml_Int.Node_Ptr;
       --  A general function that dumps the parameters of a widget into an XML
       --  tree.
@@ -543,7 +544,8 @@ package Gtkada.MDI is
       --  Return False if the desktop couldn't be loaded
 
       function Save_Desktop
-        (MDI : access MDI_Window_Record'Class) return Glib.Xml_Int.Node_Ptr;
+        (MDI : access MDI_Window_Record'Class;
+         User : User_Data) return Glib.Xml_Int.Node_Ptr;
       --  Return an XML tree that describes the current contents of the MDI.
       --  This function calls each of the registered function for the children
       --  of the MDI.

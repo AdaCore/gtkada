@@ -4134,7 +4134,12 @@ package body Gtkada.MDI is
                   L := L2;
                end loop;
 
-               --  We now force the closing of all notebooks and children.
+               --  Children that haven't been deleted at this point are those
+               --  that refused the delete_event. We thus keep them, since they
+               --  might need special handling later on. At worse, we break the
+               --  desktop.
+
+               --  We now force the closing of all empty notebooks
                Children := Get_Children (MDI);
                L := Children;
                while L /= Null_List loop
@@ -4145,8 +4150,6 @@ package body Gtkada.MDI is
                      else
                         Found_Empty := True;
                      end if;
-                  else
-                     Remove (MDI, Note);
                   end if;
                   L := Next (L);
                end loop;
@@ -4219,7 +4222,8 @@ package body Gtkada.MDI is
       ------------------
 
       function Save_Desktop
-        (MDI : access MDI_Window_Record'Class) return Glib.Xml_Int.Node_Ptr
+        (MDI : access MDI_Window_Record'Class;
+         User : User_Data) return Glib.Xml_Int.Node_Ptr
       is
          use type Widget_List.Glist;
 
@@ -4270,7 +4274,7 @@ package body Gtkada.MDI is
             Widget_Node := null;
 
             while Widget_Node = null and then Register /= null loop
-               Widget_Node := Register.Save (Child.Initial);
+               Widget_Node := Register.Save (Child.Initial, User);
                Register := Register.Next;
             end loop;
 
