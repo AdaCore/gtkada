@@ -1331,12 +1331,13 @@ package body Gtkada.MDI is
 
    procedure Close
      (MDI : access MDI_Window_Record;
-      Child : access Gtk.Widget.Gtk_Widget_Record'Class)
+      Child : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Force : Boolean := False)
    is
       C : constant MDI_Child := Find_MDI_Child (MDI, Child);
    begin
       if C /= null then
-         Close_Child (C);
+         Close_Child (C, Force);
       end if;
    end Close;
 
@@ -1354,7 +1355,10 @@ package body Gtkada.MDI is
    -- Close_Child --
    -----------------
 
-   procedure Close_Child (Child : access MDI_Child_Record'Class) is
+   procedure Close_Child
+     (Child : access MDI_Child_Record'Class;
+      Force : Boolean := False)
+   is
       Event      : Gdk_Event;
    begin
       --  Don't do anything for now if the MDI isn't realized, since we
@@ -1368,7 +1372,7 @@ package body Gtkada.MDI is
          --  However, we need to restore the initial state before calling
          --  Dock_Child and Float_Child below
 
-         if not Return_Callback.Emit_By_Name
+         if Force or else not Return_Callback.Emit_By_Name
            (Child.Initial, "delete_event", Event)
          then
             Float_Child (Child, False);
@@ -1392,10 +1396,6 @@ package body Gtkada.MDI is
 
    procedure Destroy_Child (Child : access Gtk_Widget_Record'Class) is
       use type Widget_SList.GSlist;
-
-      function Ref_Count (A : System.Address) return Guint;
-      pragma Import (C, Ref_Count, "ada_gtk_debug_get_ref_count");
-
       C : MDI_Child := MDI_Child (Child);
 
    begin
@@ -2997,8 +2997,6 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class;
       Event : Gdk_Event) return Boolean is
    begin
-      --  Gtk_Window children are handled differently (see Float_Child)
-
       if MDI_Child (Child).MDI.Close_Floating_Is_Unfloat
         and then (MDI_Child (Child).Flags and Always_Destroy_Float) = 0
       then
