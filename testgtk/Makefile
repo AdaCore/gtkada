@@ -28,7 +28,7 @@ CFLAGS = -O2 -g -Wall
 ALL_CFLAGS = $(CFLAGS) `gtk-config --cflags`
 
 GNATCC = gcc
-GNATFLAGS = -O2 -g -gnatwu
+GNATFLAGS = -O2 -g # -gnatwu
 ALL_GNATFLAGS = $(GNATFLAGS) -I..
 
 GNATMAKE = gnatmake
@@ -56,7 +56,8 @@ uninstall: ;
 install-strip: ;
 
 clean:
-	${RM} *.o *.ali *~ testgtk b_testgtk.c core
+	-${RM} *.o *.ali *~ testgtk b_testgtk.c core
+	-${RM} .\#*
 
 distclean: clean
 
