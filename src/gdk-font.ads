@@ -27,6 +27,7 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
+with Gdk.Types;
 
 package Gdk.Font is
 
@@ -53,8 +54,14 @@ package Gdk.Font is
    function Text_Width (Font : in Gdk_Font;
                         Text : in String) return Gint;
 
+   function Text_Width (Font : in Gdk_Font;
+                        Text : in Gdk.Types.Gdk_WString) return Gint;
+
    function Char_Width (Font : in Gdk_Font;
                         Char : in Character) return Gint;
+
+   function Char_Width (Font : in Gdk_Font;
+                        Char : in Gdk.Types.Gdk_WChar) return Gint;
 
    function String_Measure (Font : in Gdk_Font;
                             Str  : in String) return Gint;

@@ -88,6 +88,20 @@ package body Gdk.Font is
    end Char_Width;
 
 
+   ------------------
+   --  Char_Width  --
+   ------------------
+
+   function Char_Width (Font : in Gdk_Font;
+                        Char : in Gdk.Types.Gdk_WChar) return Gint is
+      function Internal (Font : in System.Address;
+                         Char : in C.wchar_t) return Gint;
+      pragma Import (C, Internal, "gdk_char_width_wc");
+   begin
+      return Internal (Get_Object (Font), C.To_C (Char));
+   end Char_Width;
+
+
    --------------------
    --  Fontset_Load  --
    --------------------
@@ -210,6 +224,20 @@ package body Gdk.Font is
       return Internal (Get_Object (Font), Text, Text'Length);
    end Text_Width;
 
+
+   ------------------
+   --  Text_Width  --
+   ------------------
+
+   function Text_Width (Font : in Gdk_Font;
+                        Text : in Gdk.Types.Gdk_WString) return Gint is
+      function Internal (Font        : in System.Address;
+                         Text        : in Gdk.Types.Gdk_WString;
+                         Text_Length : in Gint) return Gint;
+      pragma Import (C, Internal, "gdk_text_width_wc");
+   begin
+      return Internal (Get_Object (Font), Text, Text'Length);
+   end Text_Width;
 
    -------------
    --  Unref  --
