@@ -22,6 +22,82 @@ AC_PROG_RANLIB
 # checking for gtk
 AM_PATH_GTK(1.2.0,,AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
 
+# checking for openGL libraries
+AC_ARG_WITH(GL-prefix,  [  --with-GL-prefix=DIR    Prefix where GL/MesaGL is installed])
+AC_ARG_WITH(lib-GL,     [  --with-lib-GL           use '-lGL'])
+AC_ARG_WITH(lib-MesaGL, [  --with-lib-MesaGL       use '-lMesaGL'])
+
+if test "x$with_GL_prefix" = "x" ; then
+ GL_LDOPTS=""
+ GL_CFLAGS=""
+else
+ GL_LDOPTS="-L$with_GL_prefix/lib"
+ GL_CFLAGS="-I$with_GL_prefix/include"
+fi
+
+saved_LIBS="$LIBS"
+
+AC_MSG_CHECKING([OpenGL])
+LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lGL"
+AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_GL=yes, have_GL=no)
+AC_MSG_RESULT($have_GL)
+
+AC_MSG_CHECKING([Mesa])
+LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGL"
+AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL=yes, have_MesaGL=no)
+AC_MSG_RESULT($have_MesaGL)
+
+if test "x$have_MesaGL" = "xno"; then
+ AC_MSG_CHECKING([Mesa with pthreads])
+ LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGL -lpthread"
+ AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL_pthread=yes, have_MesaGL_pthread=no)
+ AC_MSG_RESULT($have_MesaGL_pthread)
+fi
+
+LIBS="$saved_LIBS"
+HAVE_OPENGL=no_opengl
+
+if test "x$with_lib_GL" = "xyes"; then
+
+  if test "x$have_GL" = "xyes"; then
+    GL_LIBS="$GL_LDOPTS -lGLU -lGL"
+    HAVE_OPENGL=opengl
+  else
+    AC_MSG_ERROR([Missing GL library])
+  fi
+
+elif test "x$with_lib_MesaGL" = "xyes"; then
+
+  if test "x$have_MesaGL" = "xyes"; then
+    GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
+    HAVE_OPENGL=opengl
+  elif test "x$have_MesaGL_pthread" = "xyes"; then
+    GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
+    HAVE_OPENGL=opengl
+  else
+    AC_MSG_ERROR([Missing MesaGL library])
+  fi
+
+else
+
+  if test "x$have_GL" = "xyes"; then
+    GL_LIBS="$GL_LDOPTS -lGLU -lGL"
+    HAVE_OPENGL=opengl
+  elif test "x$have_MesaGL" = "xyes"; then
+    GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
+    HAVE_OPENGL=opengl
+  elif test "x$have_MesaGL_pthread" = "xyes"; then
+    GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
+    HAVE_OPENGL=opengl
+  else
+    AC_MSG_RESULT([*** OpenGL support will not be integrated into GtkAda ***])
+  fi
+fi
+
+AC_SUBST(GL_LIBS)
+AC_SUBST(GL_CFLAGS)
+AC_SUBST(HAVE_OPENGL)
+
 # Set the version number of GtkAda
 AC_SUBST(GTKADA_VERSION)
 

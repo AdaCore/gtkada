@@ -52,17 +52,21 @@ libdir        = $(prefix)/lib
 incdir        = $(prefix)/include/gtkada
 alidir        = $(incdir)
 
-ifdef HAVE_OPENGL
+HAVE_OPENGL=@HAVE_OPENGL@
+
+ifeq ($(HAVE_OPENGL),opengl)
 OPENGL_C_OBJECTS=$(LIB_DIR)/gtkglarea.o $(LIB_DIR)/gdkgl.o
 OPENGL_SOURCES=gdk-gl.adb gtk-glarea.adb
 OPENGL_OBJECTS=$(OPENGL_SOURCES:%.adb=$(LIB_DIR)/%.o)
-OPENGL_LIBS=@OPENGL_LIBS@
+OPENGL_LIBS=@GL_LIBS@
+OPENGL_FLAGS=@GL_CFLAGS@
 MESA_SPECS=gl_h.ads glu_h.ads
 else
 OPENGL_C_OBJECTS=
 OPENGL_SOURCES=
 OPENGL_OBJECTS=
 OPENGL_LIBS=
+OPENGL_FLAGS=
 MESA_SPECS=
 endif
 
@@ -177,10 +181,12 @@ maintainer-clean: mostlyclean-generic
 ## The dependencies on the .h files have to be given explicitly
 
 $(c_objects): $(LIB_DIR)/%.o : %.c
-	$(CD) $(LIB_DIR); $(CC) -c $(CFLAGS) ../$<
+	$(CD) $(LIB_DIR); $(CC) -c $(CFLAGS) $(OPENGL_FLAGS) ../$<
 
 $(LIB_DIR)/gtkglarea.o: gtkglarea.h gtkglarea.c
+	$(CD) $(LIB_DIR); $(CC) -c $(CFLAGS) $(OPENGL_FLAGS) ../gtkglarea.c
 $(LIB_DIR)/gdkgl.o:     gdkgl.h gdkgl.c
+	$(CD) $(LIB_DIR); $(CC) -c $(CFLAGS) $(OPENGL_FLAGS) ../gdkgl.c
 
 
 force:
