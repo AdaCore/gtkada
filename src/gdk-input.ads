@@ -29,6 +29,7 @@
 
 with Gdk.Types;
 with Gdk.Window;
+with Glib;
 
 package Gdk.Input is
 
@@ -43,6 +44,30 @@ package Gdk.Input is
    --  FIXME: Verify that Mask is indeed of type GdkEventMask.
    --  FIXME: The C code defines it as Gint...
 
+   generic
+      type Data_Type (<>) is private;
+   package Input_Add is
+
+      type Data_Access is access all Data_Type;
+      for Data_Access'Size use System.Word_Size;
+
+      type Gdk_Input_Function is access procedure
+        (Data      : Data_Access;
+         Source    : Glib.Gint;
+         Condition : Gdk.Types.Gdk_Input_Condition);
+
+      function Add
+        (Source    : Glib.Gint;
+         Condition : Gdk.Types.Gdk_Input_Condition;
+         Func      : Gdk_Input_Function;
+         Data      : Data_Access) return Glib.Gint;
+
+   private
+      pragma Import (C, Add, "gdk_input_add");
+   end Input_Add;
+
+   procedure Remove (Tag : Glib.Gint);
+
    --  to bind: gdk_input_motion_events
    --    This returns the list of past motion events in the window, between two
    --    times. This might give a finer granularity than getting the
@@ -53,4 +78,5 @@ private
    pragma Import (C, Init, "gdk_input_init");
    pragma Import (C, Gdk_Exit, "gdk_input_exit");
    pragma Import (C, Set_Extension_Events, "gdk_input_set_extension_events");
+   pragma Import (C, Remove, "gdk_input_remove");
 end Gdk.Input;
