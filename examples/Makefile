@@ -1,4 +1,5 @@
 DIRECTORIES=base_widget \
+  calendar_combo        \
   composite_widget      \
   doublebuffer          \
   documentation         \
