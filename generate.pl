@@ -8,6 +8,7 @@ if ($#ARGV < 0) {
   print "         The arguments are then   file_name_1  file_name_2]\n";
   print "         If file_name_2 is present, the output will only show the difference\n";
   print "         between the two\n";
+  print "         The c file should be the first one\n";
   print "   file_name : name of the C file to parse\n";
   print "   definition_file : file to parse for the struct definition\n";
   print "   unit_name : if present, only the functions including this name will be \n";
@@ -61,6 +62,7 @@ my (@cfile);
 if ($list_mode) {
 
     my (%list);
+    my (%from);
 
     while (@ARGV) {
 	open (FILE, $ARGV [0]);
@@ -71,10 +73,15 @@ if ($list_mode) {
 	    my (%functions) = &parse_functions;
 	    foreach (keys %functions) {
 		my ($tmp) = &ada_func_name ($_);
+		if ($tmp eq '_New') {
+		    $tmp = "Gtk_New";
+		}
 		$list{$tmp}++ unless ($tmp eq 'Get_Type');
+		$from{$tmp} = $ARGV[0] . " $_";
 	    }
 	}
 	elsif ($ARGV [0] =~ /\.ad[bs]$/) {
+	    my ($last);
 	    foreach (@cfile)
 	    {
 		if (/(procedure|function)\s+([\w_.]+)/
@@ -82,14 +89,21 @@ if ($list_mode) {
 		    $2 !~ /Internal/i)
 		{
 		    $list {$2}++;
+		    $from {$2} = $ARGV[0];
+		    $last = $2;
 		}
+		elsif (/pragma\s+Import\s+\(C,[^,]+,\s+\"([^\"]+)\"/)
+		{
+		    $from {$last} .= "  from misc.c";
+		}
+		
 	    }
 	}
  	shift @ARGV;
     }
 
     foreach (sort keys %list) {
-	print $_, "\n" if ($list{$_} == 1);
+	print $_, "  (from ", $from{$_}, ")\n" if ($list{$_} == 1);
     }
     exit 0;
 }
