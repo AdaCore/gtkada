@@ -280,7 +280,7 @@ An inserted line
 This is the second line
 EOF
 
-      AC_MSG_CHECKING(the correct diff option)
+      AC_MSG_CHECKING(for the correct diff option)
 
       if $DIFF -u $file_to_patch $file_to_patch > /dev/null 2>&1 ; then
          AC_MSG_RESULT(-u)
@@ -319,7 +319,7 @@ EOF
 
       else
 
-	 AC_MSG_CHECKING(the correct patch option)
+	 AC_MSG_CHECKING(for the correct patch option)
 
 	 cat > $patch_file <<EOF
 --- $file_to_patch.ori Mon Mar  1 21:21:34 1999

@@ -1,0 +1,44 @@
+SHELL=/bin/sh
+@SET_MAKE@
+
+.SUFFIXES:
+
+.PHONY:
+.PHONY: clean-generic mostlyclean-generic \
+	clean distclean mostlyclean maintainer-clean
+
+src_dir     = src
+testgtk_dir = testgtk
+
+all:
+	cd $(src_dir) && make
+	cd $(testgtk_dir) && make
+
+install: 
+	cd $(src_dir) && make install
+
+clean-generic:
+	-${RM} core
+	-${RM} .\#*
+
+mostlyclean-generic: clean-generic
+	-${RM} Makefile
+
+clean: clean-generic
+	-cd $(src_dir) && make clean
+	-cd $(testgtk_dir) && make clean
+
+distclean: mostlyclean-generic
+	-${RM} config.cache config.log config.status
+	-cd $(src_dir) && ${MAKE} distclean
+	-cd $(testgtk_dir) && ${MAKE} distclean
+
+mostlyclean: mostlyclean-generic
+	-cd $(src_dir) && ${MAKE} mostlyclean
+	-cd $(testgtk) && ${MAKE} mostlyclean
+
+maintainer-clean: mostlyclean-generic
+	-${RM} config.cache config.log config.status
+	-${RM} configure
+	-cd $(src_dir) && ${MAKE} maintainer-clean
+	-cd $(testgtk_dir) && ${MAKE} maintainer-clean

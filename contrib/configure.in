@@ -1,10 +1,10 @@
 AC_REVISION($Revision$)
-AC_INIT(glib.ads)
+AC_INIT(src/glib.ads)
 
 # Current release settings
-GTKADA_MAJOR_VERSION=1
-GTKADA_MINOR_VERSION=1
-GTKADA_MICRO_VERSION=15
+GTKADA_MAJOR_VERSION=0
+GTKADA_MINOR_VERSION=6
+GTKADA_MICRO_VERSION=0
 GTKADA_VERSION=$GTKADA_MAJOR_VERSION.$GTKADA_MINOR_VERSION.$GTKADA_MICRO_VERSION
 
 AC_CANONICAL_HOST
@@ -27,4 +27,4 @@ AC_SUBST(GTKADA_VERSION)
 EXEC_PREFIX="$prefix"
 AC_SUBST(EXEC_PREFIX)
 
-AC_OUTPUT(Makefile testgtk/Makefile create_test_link.pl gtkada-config gate)
+AC_OUTPUT(Makefile src/Makefile src/create_test_link.pl src/gtkada-config src/gate testgtk/Makefile)
