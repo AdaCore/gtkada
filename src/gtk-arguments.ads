@@ -40,12 +40,15 @@
 --  package provides functions to extract the values from this type.
 --  </description>
 
+
 with System;
 with Gdk.Event;
 with Gtk.Object;
 with Gtk.Notebook;
 
 package Gtk.Arguments is
+
+   --  <doc_ignore>Do not create automatic documentation for this package
 
    type Gtk_Args is private;
    --  This type represents a table of arguments. Each argument of the
@@ -120,4 +123,6 @@ private
    pragma Inline (To_Object);
    pragma Inline (To_Event);
    pragma Inline (To_String);
+
+   --  </doc_ignore>
 end Gtk.Arguments;
