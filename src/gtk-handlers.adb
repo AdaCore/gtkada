@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                 Copyright (C) 2000-2002 ACT-Europe                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -348,6 +348,8 @@ package body Gtk.Handlers is
          Invocation_Hint : System.Address;
          User_Data       : System.Address)
       is
+         pragma Unreferenced (Invocation_Hint, User_Data);
+
          use type Marshallers.Handler_Proxy;
 
          Data   : constant Data_Type_Access := Convert (Get_Data (Closure));
@@ -637,6 +639,8 @@ package body Gtk.Handlers is
          Invocation_Hint : System.Address;
          User_Data       : System.Address)
       is
+         pragma Unreferenced (Invocation_Hint, User_Data);
+
          use type Marshallers.Handler_Proxy;
 
          Data   : constant Data_Type_Access := Convert (Get_Data (Closure));
@@ -982,6 +986,8 @@ package body Gtk.Handlers is
          Invocation_Hint : System.Address;
          User_Data       : System.Address)
       is
+         pragma Unreferenced (Invocation_Hint, User_Data, Return_Value);
+
          use type Marshallers.Handler_Proxy;
 
          Data   : constant Data_Type_Access := Convert (Get_Data (Closure));
@@ -1322,6 +1328,8 @@ package body Gtk.Handlers is
          Invocation_Hint : System.Address;
          User_Data       : System.Address)
       is
+         pragma Unreferenced (Invocation_Hint, User_Data, Return_Value);
+
          use type Marshallers.Handler_Proxy;
 
          Data   : constant Data_Type_Access := Convert (Get_Data (Closure));
