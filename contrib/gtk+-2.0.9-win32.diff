@@ -2,6 +2,9 @@ This is a patch against Gtk+ 2.0.9 sources that fixes Windows specific problems.
 
 Thu Nov 28 11:54:59  2002	Arnaud Charlet <charlet@gnat.com>
 
+	* pango/pango/pangowin32.c: Remove initialization of
+	pango_win32_os_version_info.
+
 	* pango/pango/pangowin32-fontmap.c (pango_win32_font_map_class_init):
 	Properly initialize pango_win32_os_version_info.
 
@@ -465,3 +468,31 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
  }
  
  static PangoWin32FontMap *fontmap = NULL;
+--- pango/pango/pangowin32.c	2002/11/28 10:38:13	1.2
++++ pango/pango/pangowin32.c	2002/11/28 10:46:43
+@@ -41,7 +41,7 @@
+ 
+ #define PANGO_WIN32_UNKNOWN_FLAG 0x10000000
+ 
+-HDC pango_win32_hdc;
++HDC pango_win32_hdc = NULL;
+ OSVERSIONINFO pango_win32_os_version_info;
+ 
+ typedef struct _PangoWin32FontClass   PangoWin32FontClass;
+@@ -193,16 +193,6 @@
+   font_class->find_shaper = pango_win32_font_find_shaper;
+   font_class->get_glyph_extents = pango_win32_font_get_glyph_extents;
+   font_class->get_metrics = pango_win32_font_get_metrics;
+-
+-  if (pango_win32_hdc == NULL)
+-    {
+-      pango_win32_hdc = CreateDC ("DISPLAY", NULL, NULL, NULL);
+-      memset (&pango_win32_os_version_info, 0,
+-	      sizeof (pango_win32_os_version_info));
+-      pango_win32_os_version_info.dwOSVersionInfoSize =
+-	sizeof (OSVERSIONINFO);
+-      GetVersionEx (&pango_win32_os_version_info);
+-    }
+ }
+ 
+ PangoWin32Font *
