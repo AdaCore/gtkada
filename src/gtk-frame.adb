@@ -50,11 +50,19 @@ package body Gtk.Frame is
 
    procedure Initialize (Frame : access Gtk_Frame_Record;
                          Label : in String := "") is
-      function Internal (Label  : in String)
+      function Internal (Label  : in System.Address)
         return System.Address;
       pragma Import (C, Internal, "gtk_frame_new");
    begin
-      Set_Object (Frame, Internal (Label & Ascii.NUL));
+      if Label = "" then
+         Set_Object (Frame, Internal (System.Null_Address));
+      else
+         declare
+            Tmp : constant String := Label & Ascii.NUL;
+         begin
+            Set_Object (Frame, Internal (Tmp'Address));
+         end;
+      end if;
       Initialize_User_Data (Frame);
    end Initialize;
 
@@ -112,7 +120,7 @@ package body Gtk.Frame is
    --------------
    -- Generate --
    --------------
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
       S : String_Ptr;
@@ -129,7 +137,7 @@ package body Gtk.Frame is
       Gen_Set (N, "Frame", "Label_Align", "xalign", "yalign", "", "", File);
       Gen_Set (N, "Frame", "shadow_type", File);
    end Generate;
- 
+
    procedure Generate (Frame : in out Gtk.Object.Gtk_Object;
                        N     : in Node_Ptr) is
       S, S2 : String_Ptr;
@@ -146,12 +154,12 @@ package body Gtk.Frame is
          Set_Object (Get_Field (N, "name"), Frame);
          N.Specific_Data.Created := True;
       end if;
- 
+
       Bin.Generate (Frame, N);
- 
+
       S := Get_Field (N, "xalign");
       S2 := Get_Field (N, "yalign");
- 
+
       if S /= null and then S2 /= null then
          Set_Label_Align (Gtk_Frame (Frame),
            Gfloat'Value (S.all), Gfloat'Value (S2.all));
