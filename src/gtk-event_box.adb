@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -52,5 +52,59 @@ package body Gtk.Event_Box is
    begin
       Set_Object (Event_Box, Internal);
    end Initialize;
+
+   ------------------------
+   -- Set_Visible_Window --
+   ------------------------
+
+   procedure Set_Visible_Window
+      (Event_Box : access Gtk_Event_Box_Record;
+       Visible_Window : Boolean)
+   is
+      procedure Internal (Event_Box : System.Address; Visible : Integer);
+      pragma Import (C, Internal, "gtk_event_box_set_visible_window");
+   begin
+      Internal (Get_Object (Event_Box), Boolean'Pos (Visible_Window));
+   end Set_Visible_Window;
+
+   ------------------------
+   -- Get_Visible_Window --
+   ------------------------
+
+   function Get_Visible_Window
+      (Event_Box : access Gtk_Event_Box_Record) return Boolean
+   is
+      function Internal (Box : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_event_box_get_visible_window");
+   begin
+      return Internal (Get_Object (Event_Box)) /= 0;
+   end Get_Visible_Window;
+
+   ---------------------
+   -- Set_Above_Child --
+   ---------------------
+
+   procedure Set_Above_Child
+      (Event_Box : access Gtk_Event_Box_Record;
+       Above_Child : Boolean)
+   is
+      procedure Internal (Box : System.Address; Above : Integer);
+      pragma Import (C, Internal, "gtk_event_box_set_above_child");
+   begin
+      Internal (Get_Object (Event_Box), Boolean'Pos (Above_Child));
+   end Set_Above_Child;
+
+   ---------------------
+   -- Get_Above_Child --
+   ---------------------
+
+   function Get_Above_Child
+      (Event_Box : access Gtk_Event_Box_Record) return Boolean
+   is
+      function Internal (Box : System.Address) return Integer;
+      pragma Import (C, Internal, "gtk_event_box_get_above_child");
+   begin
+      return Internal (Get_Object (Event_Box)) /= 0;
+   end Get_Above_Child;
 
 end Gtk.Event_Box;

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2005 AdaCore                    --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -42,7 +42,7 @@
 --  scrolled window of the popup.
 --
 --  </description>
---  <c_version>1.3.11</c_version>
+--  <c_version>2.4.10</c_version>
 
 with Gtk.Bin;
 
@@ -61,6 +61,32 @@ package Gtk.Event_Box is
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Event_Box.
+
+   procedure Set_Visible_Window
+      (Event_Box : access Gtk_Event_Box_Record;
+       Visible_Window : Boolean);
+   --  Set whether the event box uses a visible or invisible child window. The
+   --  default is to use visible windows
+   --  Except if you want to explicitly change the background, or explicitly
+   --  draw on it, you should make the event box invisible.
+
+   function Get_Visible_Window
+      (Event_Box : access Gtk_Event_Box_Record) return Boolean;
+   --  Returns whether the event box has a visible window
+
+   procedure Set_Above_Child
+      (Event_Box : access Gtk_Event_Box_Record;
+       Above_Child : Boolean);
+   --  Set whether the event box window is positioned above the windows of its
+   --  child, as opposed to below it. If the window is above, all events inside
+   --  the event box will go to the event box. If the window is below, events
+   --  in windows of child widgets will first go to that widget, and then to
+   --  its parent. The default is to keep the window below the child.
+
+   function Get_Above_Child
+      (Event_Box : access Gtk_Event_Box_Record) return Boolean;
+   --  Returns whether the event window is positioned above the windows of its
+   --  children.
 
    ----------------
    -- Properties --
