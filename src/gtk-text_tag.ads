@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -45,6 +45,9 @@ package Gtk.Text_Tag is
 
    procedure Gtk_New (Widget : out Gtk_Text_Tag; Name : String := "");
    --  Create a new Gtk_Text_Tag.
+   --  Newly created tags must be added to the tags table for the buffer you
+   --  intend to use them in.
+   --     Gtk.Text_Tag_Table.Add (Get_Tag_Table (Buffer), Tag);
 
    procedure Initialize
      (Widget : access Gtk_Text_Tag_Record'Class;
