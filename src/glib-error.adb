@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -43,9 +43,10 @@ package body Glib.Error is
    pragma Convention (C, GError_Struct_Access);
 
    pragma Warnings (Off);
+   --  Kill non relevant warnings about To_Gerror
+
    function To_Gerror is new Ada.Unchecked_Conversion
      (GError, GError_Struct_Access);
-   pragma Warnings (On);
 
    ---------------
    -- Error_New --
