@@ -85,7 +85,7 @@ package Gdk.Types is
                             Last_Cursor,
                             Cursor_Is_Pixmap);
 
-   type Gdk_Event_Mask is new Gint;
+   type Gdk_Event_Mask is new Guint;
    Exposure_Mask            : constant Gdk_Event_Mask := 2 ** 0;
    Pointer_Motion_Mask      : constant Gdk_Event_Mask := 2 ** 1;
    Pointer_Motion_Hint_Mask : constant Gdk_Event_Mask := 2 ** 2;
@@ -107,6 +107,39 @@ package Gdk.Types is
    All_Events_Mask          : constant Gdk_Event_Mask := 2 ** 18;
    Proximity_Out_Mask       : constant Gdk_Event_Mask := 2 ** 19;
 
+   type Gdk_Event_Type is (Nothing,
+                           Delete,
+                           Destroy,
+                           Expose,
+                           Motion_Notify,
+                           Button_Press,
+                           Gdk_2button_Press,
+                           Gdk_3button_Press,
+                           Button_Release,
+                           Key_Press,
+                           Key_Release,
+                           Enter_Notify,
+                           Leave_Notify,
+                           Focus_Change,
+                           Configure,
+                           Map,
+                           Unmap,
+                           Property_Notify,
+                           Selection_Clear,
+                           Selection_Request,
+                           Selection_Notify,
+                           Proximity_In,
+                           Proximity_Out,
+                           Drag_Begin,
+                           Drag_Request,
+                           Drop_Enter,
+                           Drop_Leave,
+                           Drop_Data_Avail,
+                           Client_Event,
+                           Visibility_Notify,
+                           No_Expose,
+                           Other_Event);
+
    type Gdk_Fill is (Solid, Tiled, Stippled, Opaque_Stippled);
 
    type Gdk_Fill_Rule is (Even_Odd_Rule, Winding_Rule);
@@ -123,31 +156,25 @@ package Gdk.Types is
 
    type Gdk_Subwindow_Mode is (Clip_By_Children, Include_Inferiors);
 
-   type Gdk_Values_Mask is (Foreground,
-                            Background,
-                            Font,
-                            GC_Function,
-                            Fill,
-                            Tile,
-                            Stipple,
-                            Clip_Mask,
-                            Subwindow,
-                            Ts_X_Origin,
-                            Tx_Y_Origin,
-                            Clip_X_Origin,
-                            Clip_Y_Origin,
-                            Exposures,
-                            Line_Width,
-                            Line_Style,
-                            Cap_Style,
-                            Join_Style);
-
-
-   --  FIXME: These values are meant to be a mask, which suppose that
-   --  FIXME: they can be combined together to form a value. It is
-   --  FIXME: possible to do so in C but the current implementation in
-   --  FIXME: Ada does not allow that for the moment....
-   --  FIXME: This should be re-written.
+   type Gdk_Values_Mask is new Guint;
+   Foreground    : constant Gdk_Values_Mask := 2 ** 0;
+   Background    : constant Gdk_Values_Mask := 2 ** 1;
+   Font          : constant Gdk_Values_Mask := 2 ** 2;
+   GC_Function   : constant Gdk_Values_Mask := 2 ** 3;
+   Fill          : constant Gdk_Values_Mask := 2 ** 4;
+   Tile          : constant Gdk_Values_Mask := 2 ** 5;
+   Stipple       : constant Gdk_Values_Mask := 2 ** 6;
+   Clip_Mask     : constant Gdk_Values_Mask := 2 ** 7;
+   Subwindow     : constant Gdk_Values_Mask := 2 ** 8;
+   Ts_X_Origin   : constant Gdk_Values_Mask := 2 ** 9;
+   Tx_Y_Origin   : constant Gdk_Values_Mask := 2 ** 10;
+   Clip_X_Origin : constant Gdk_Values_Mask := 2 ** 11;
+   Clip_Y_Origin : constant Gdk_Values_Mask := 2 ** 12;
+   Exposures     : constant Gdk_Values_Mask := 2 ** 13;
+   Line_Width    : constant Gdk_Values_Mask := 2 ** 14;
+   Line_Style    : constant Gdk_Values_Mask := 2 ** 15;
+   Cap_Style     : constant Gdk_Values_Mask := 2 ** 16;
+   Join_Style    : constant Gdk_Values_Mask := 2 ** 17;
 
    type Gdk_Visual_Type is (Static_Gray,
                             Grayscale,
@@ -161,32 +188,44 @@ package Gdk.Types is
    --  Representation clauses  --
    ------------------------------
 
+   for Gdk_Event_Type use (Nothing => -1,
+                           Delete => 0,
+                           Destroy => 1,
+                           Expose => 2,
+                           Motion_Notify => 3,
+                           Button_Press => 4,
+                           Gdk_2button_Press => 5,
+                           Gdk_3button_Press => 6,
+                           Button_Release => 7,
+                           Key_Press => 8,
+                           Key_Release => 9,
+                           Enter_Notify => 10,
+                           Leave_Notify => 11,
+                           Focus_Change => 12,
+                           Configure => 13,
+                           Map => 14,
+                           Unmap => 15,
+                           Property_Notify => 16,
+                           Selection_Clear => 17,
+                           Selection_Request => 18,
+                           Selection_Notify => 19,
+                           Proximity_In => 20,
+                           Proximity_Out => 21,
+                           Drag_Begin => 22,
+                           Drag_Request => 23,
+                           Drop_Enter => 24,
+                           Drop_Leave => 25,
+                           Drop_Data_Avail => 26,
+                           Client_Event => 27,
+                           Visibility_Notify => 28,
+                           No_Expose => 29,
+                           Other_Event => 9999);
+
    for Gdk_Input_Condition use (Read            => 2 ** 0,
                                 Write           => 2 ** 1,
                                 Input_Exception => 2 ** 2);
 
    for Gdk_Subwindow_Mode use (Clip_By_Children  => 0,
                                Include_Inferiors => 1);
-
-   for Gdk_Values_Mask use (Foreground    => 2 ** 0,
-                            Background    => 2 ** 1,
-                            Font          => 2 ** 2,
-                            GC_Function   => 2 ** 3,
-                            Fill          => 2 ** 4,
-                            Tile          => 2 ** 5,
-                            Stipple       => 2 ** 6,
-                            Clip_Mask     => 2 ** 7,
-                            Subwindow     => 2 ** 8,
-                            Ts_X_Origin   => 2 ** 9,
-                            Tx_Y_Origin   => 2 ** 10,
-                            Clip_X_Origin => 2 ** 11,
-                            Clip_Y_Origin => 2 ** 12,
-                            Exposures     => 2 ** 13,
-                            Line_Width    => 2 ** 14,
-                            Line_Style    => 2 ** 15,
-                            Cap_Style     => 2 ** 16,
-                            Join_Style    => 2 ** 17);
-   --
-   --  FIXME: See Gdk_Event_Mask. Same remark.
 
 end Gdk.Types;
