@@ -60,9 +60,9 @@ package body Create_Rulers is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Ruler     : Gtk_Ruler;
-      Table     : Gtk_Table;
-      Darea     : Gtk_Drawing_Area;
+      Ruler : Gtk_Ruler;
+      Table : Gtk_Table;
+      Darea : Gtk_Drawing_Area;
 
    begin
       Set_Label (Frame, "Ruler");
@@ -73,8 +73,9 @@ package body Create_Rulers is
       Gtk_New (Darea);
       Unrealize (Darea);
       Set_Events (Darea, Pointer_Motion_Mask + Pointer_Motion_Hint_Mask);
-      Attach (Table, Darea, 1, 2, 1, 2, Expand + Enums.Fill, Expand + Enums.Fill,
-              0, 0);
+      Attach
+        (Table, Darea, 1, 2, 1, 2,
+         Expand + Enums.Fill, Expand + Enums.Fill, 0, 0);
 
       Gtk_New_Hruler (Ruler);
       Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
@@ -82,7 +83,8 @@ package body Create_Rulers is
         (Gtk_Object (Darea), "motion_notify_event",
          Motion_Cb.To_Marshaller (Default_Motion_Notify_Event'Access),
          Slot_Object => Ruler);
-      Attach (Table, Ruler, 1, 2, 0, 1, Expand + Enums.Fill, Enums.Fill, 0, 0);
+      Attach
+        (Table, Ruler, 1, 2, 0, 1, Expand + Enums.Fill, Enums.Fill, 0, 0);
 
       Gtk_New_Vruler (Ruler);
       Set_Range (Ruler, 5.0, 15.0, 0.0, 20.0);
@@ -90,7 +92,8 @@ package body Create_Rulers is
         (Gtk_Object (Darea), "motion_notify_event",
          Motion_Cb.To_Marshaller (Default_Motion_Notify_Event'Access),
          Slot_Object => Ruler);
-      Attach (Table, Ruler, 0, 1, 1, 2, Enums.Fill, Expand + Enums.Fill, 0, 0);
+      Attach
+        (Table, Ruler, 0, 1, 1, 2, Enums.Fill, Expand + Enums.Fill, 0, 0);
 
       Show_All (Frame);
    end Run;
