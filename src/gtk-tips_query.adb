@@ -35,8 +35,7 @@ package body Gtk.Tips_Query is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Tips_Query)
-   is
+   procedure Gtk_New (Widget : out Gtk_Tips_Query) is
    begin
       Widget := new Gtk_Tips_Query_Record;
       Initialize (Widget);
@@ -46,8 +45,7 @@ package body Gtk.Tips_Query is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Tips_Query_Record'Class)
-   is
+   procedure Initialize (Widget : access Gtk_Tips_Query_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tips_query_new");
    begin
@@ -88,16 +86,15 @@ package body Gtk.Tips_Query is
       pragma Import (C, Internal, "gtk_tips_query_set_labels");
    begin
       Internal (Get_Object (Tips_Query),
-                Label_Inactive & ASCII.Nul,
-                Label_No_Tip & ASCII.Nul);
+                Label_Inactive & ASCII.NUL,
+                Label_No_Tip & ASCII.NUL);
    end Set_Labels;
 
    -----------------
    -- Start_Query --
    -----------------
 
-   procedure Start_Query (Tips_Query : access Gtk_Tips_Query_Record)
-   is
+   procedure Start_Query (Tips_Query : access Gtk_Tips_Query_Record) is
       procedure Internal (Tips_Query : in System.Address);
       pragma Import (C, Internal, "gtk_tips_query_start_query");
    begin
@@ -108,8 +105,7 @@ package body Gtk.Tips_Query is
    -- Stop_Query --
    ----------------
 
-   procedure Stop_Query (Tips_Query : access Gtk_Tips_Query_Record)
-   is
+   procedure Stop_Query (Tips_Query : access Gtk_Tips_Query_Record) is
       procedure Internal (Tips_Query : in System.Address);
       pragma Import (C, Internal, "gtk_tips_query_stop_query");
    begin

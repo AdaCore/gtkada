@@ -40,9 +40,12 @@ package Gtk.Tearoff_Menu_Item is
    procedure Initialize
      (Menu_Item : access Gtk_Tearoff_Menu_Item_Record'Class);
 
-private
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Tearoff_Menu_Item.
 
+private
    type Gtk_Tearoff_Menu_Item_Record is new Menu_Item.Gtk_Menu_Item_Record
      with null record;
 
+   pragma Import (C, Get_Type, "get_tearoff_men_item_get_type");
 end Gtk.Tearoff_Menu_Item;
