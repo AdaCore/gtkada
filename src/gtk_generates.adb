@@ -506,10 +506,7 @@ package body Gtk_Generates is
 
       if P /= null and then P.Child /= null and then P.Child.Child /= null then
          P := Find_Tag (P.Child.Child, "child");
-      end if;
 
-      if P /= null and then P.Child /= null and then P.Child.Child /= null then
-         P := Find_Tag (P.Child.Child, "child");
          if P /= null then
             P := P.Child;
          end if;
@@ -2527,6 +2524,10 @@ package body Gtk_Generates is
 
                         Put_Line (File, Top_Name & "." & Cur & ");");
                      end if;
+
+                  elsif S = "GtkList" then
+                     null;
+
                   else
                      Gen_Call_Child
                        (N, null, Parent, "Container", "Add", File => File);
