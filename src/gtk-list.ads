@@ -58,6 +58,8 @@ package Gtk.List is
 
    function Get_Children
      (Widget : access Gtk.List.Gtk_List_Record) return Widget_List.Glist;
+   --  The returned list mustn't be freed by the caller, it references internal
+   --  data of gtk+
 
    function Get_Selection
      (Widget : access Gtk.List.Gtk_List_Record) return Widget_List.Glist;
