@@ -216,13 +216,10 @@ package body Gtk.GRange is
    is
       function Internal (The_Range  : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_range_get_adjustment");
-
-      Widget : Gtk.Adjustment.Gtk_Adjustment;
-      pragma Warnings (Off, Widget);  --  ??? Not clear why GNAT is complaining
-
+      Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
    begin
-      Set_Object (Widget, Internal (Get_Object (The_Range)));
-      return Widget;
+      return Gtk.Adjustment.Gtk_Adjustment
+        (Get_User_Data (Internal (Get_Object (The_Range)), Stub));
    end Get_Adjustment;
 
    --------------------
