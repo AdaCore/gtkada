@@ -1284,6 +1284,8 @@ package body Gtkada.MDI is
          Unref (MDI_Window (MDI).Layout);
       end if;
 
+      MDI_Window (MDI).Prevent_Focus_On_Page_Switch := True;
+
       --  Note: we only destroy the floating children. Other children will be
       --  destroyed when their parent container is destroyed, so we have
       --  nothing to do for them.
@@ -2427,13 +2429,6 @@ package body Gtkada.MDI is
          Create_Menu_Entry (C);
       end if;
 
-      --  If MDI is not realized, then we don't need to do anything now,
-      --  this will be done automatically in Realize_MDI
-
-      if Realized_Is_Set (MDI) then
-         Set_Focus_Child (C);
-      end if;
-
       if Focus_Widget /= null then
          Widget_Callback.Object_Connect
            (C, "grab_focus",
@@ -2676,6 +2671,9 @@ package body Gtkada.MDI is
       Prepend (Child.MDI.Items, Gtk_Widget (Child));
       Unref (Child);
 
+      --  We want to be able to raise children without giving them the focus.
+      Child.MDI.Prevent_Focus_On_Page_Switch := True;
+
       --  For an docked item, we in fact want to raise its parent dock,
       --  and make sure the current page in that dock is the correct one.
 
@@ -2700,12 +2698,13 @@ package body Gtkada.MDI is
          end if;
       end if;
 
-      --  Work around a problem with the notebook: changing the current page in
-      --  the notebook changes the current focus child, therefore the user can
-      --  not force the focus when the item is selected.
+      Child.MDI.Prevent_Focus_On_Page_Switch := False;
 
-      if Child.MDI.Focus_Child = Child then
-         Grab_Focus (Child);
+      --  Give the focus to the Focus_Child, since the notebook page switch
+      --  might have changed that.
+
+      if Child.MDI.Focus_Child /= null then
+         Grab_Focus (Child.MDI.Focus_Child);
       end if;
 
       return False;
@@ -2776,7 +2775,10 @@ package body Gtkada.MDI is
    begin
       --  Be lazy. And avoid infinite loop when updating the MDI menu...
 
-      if C = Old then
+      if C = Old
+        or else not Realized_Is_Set (Child.MDI)
+        or else Child.MDI.Prevent_Focus_On_Page_Switch
+      then
          return;
       end if;
 
@@ -3137,17 +3139,20 @@ package body Gtkada.MDI is
      (Docked_Child : access Gtk_Widget_Record'Class; Args : Gtk_Args)
    is
       Page_Num : constant Guint := To_Guint (Args, 2);
+      Child    : MDI_Child;
    begin
-      --  Unfortunately, "switch_page" is emitted when the notebooks are
-      --  destroyed, although everything will fail later on. So we have to
-      --  check for this special case.
-      if Page_Num /= -1
-        and then not Gtk.Object.In_Destruction_Is_Set (Docked_Child)
-      then
-         Set_Focus_Child
-           (MDI_Child (Get_Nth_Page
-                       (Gtk_Notebook (Docked_Child), Gint (Page_Num))));
+      if Page_Num = -1 then
+         return;
       end if;
+
+      Child := MDI_Child
+        (Get_Nth_Page (Gtk_Notebook (Docked_Child), Gint (Page_Num)));
+
+      if Child.MDI.Prevent_Focus_On_Page_Switch then
+         return;
+      end if;
+
+      Set_Focus_Child (Child);
    end Docked_Switch_Page;
 
    ---------------------
