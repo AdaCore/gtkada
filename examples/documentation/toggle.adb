@@ -1,4 +1,4 @@
---  This examples creates a toggle button with a pixmap in it
+--  This example creates a toggle button with a pixmap in it
 
 with Gtk.Toggle_Button, Gdk.Pixmap, Gdk.Bitmap, Gtk.Pixmap;
 with Gtk.Style, Gtk.Enums;
