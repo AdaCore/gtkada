@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --                   Gate - GtkAda Components                        --
 --                                                                   --
---                   Copyright (C) 1999-2001                         --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -129,8 +129,8 @@ package body Gtk_Generates is
       Container_Generate (N, File);
 
       if Child_Name /= null then
-         Gen_Set (N, "Box", "homogeneous", File);
-         Gen_Set (N, "Box", "spacing", File);
+         Gen_Set (N, "homogeneous", File);
+         Gen_Set (N, "spacing", File);
       end if;
    end Box_Generate;
 
@@ -166,7 +166,7 @@ package body Gtk_Generates is
       end if;
 
       Container_Generate (N, File);
-      Gen_Set (N, "Button", "relief", File);
+      Gen_Set (N, "relief", File);
    end Button_Generate;
 
    procedure Button_Box_Generate (N : Node_Ptr; File : File_Type) is
@@ -176,11 +176,11 @@ package body Gtk_Generates is
    begin
       Build_Type;
       Box_Generate (N, File);
-      Gen_Set (N, "Button_Box", "spacing", File);
-      Gen_Set (N, "Button_Box", "Layout", "layout_style", "", "", "", File);
-      Gen_Set (N, "Button_Box", "Child_Size",
+      Gen_Set (N, "spacing", File);
+      Gen_Set (N, "Layout", "layout_style", "", "", "", File);
+      Gen_Set (N, "Child_Size",
         "child_min_width", "child_min_height", "", "", File);
-      Gen_Set (N, "Button_Box", "Child_Ipadding",
+      Gen_Set (N, "Child_Ipadding",
         "child_ipad_x", "child_ipad_y", "", "", File);
    end Button_Box_Generate;
 
@@ -233,8 +233,8 @@ package body Gtk_Generates is
       end if;
 
       Menu_Item_Generate (N, File);
-      Gen_Set (N, "Check_Menu_Item", "active", File);
-      Gen_Set (N, "Check_Menu_Item", "always_show_toggle", File => File);
+      Gen_Set (N, "active", File);
+      Gen_Set (N, "always_show_toggle", File => File);
    end Check_Menu_Item_Generate;
 
    procedure Clist_Generate (N : Node_Ptr; File : File_Type) is
@@ -257,9 +257,9 @@ package body Gtk_Generates is
       end if;
 
       Container_Generate (N, File);
-      Gen_Set (N, "Clist", "selection_mode", File => File);
-      Gen_Set (N, "Clist", "shadow_type", File => File);
-      Gen_Set (N, "Clist", "show_titles", File);
+      Gen_Set (N, "selection_mode", File => File);
+      Gen_Set (N, "shadow_type", File => File);
+      Gen_Set (N, "show_titles", File);
 
       S := Get_Field (N, "column_widths");
 
@@ -284,7 +284,7 @@ package body Gtk_Generates is
    begin
       Build_Type;
       Gen_New (N, "Color_Selection", File => File);
-      Gen_Set (N, "Color_Selection", "Update_Policy", "policy", File => File);
+      Gen_Set (N, "Update_Policy", "policy", File => File);
       Box_Generate (N, File);
    end Color_Selection_Generate;
 
@@ -328,9 +328,9 @@ package body Gtk_Generates is
       end if;
 
       Box_Generate (N, File);
-      Gen_Set (N, "Combo", "case_sensitive", File);
-      Gen_Set (N, "Combo", "use_arrows", File);
-      Gen_Set (N, "Combo", "use_arrows_always", File);
+      Gen_Set (N, "case_sensitive", File);
+      Gen_Set (N, "use_arrows", File);
+      Gen_Set (N, "use_arrows_always", File);
 
       S := Get_Field (N, "items");
 
@@ -375,8 +375,8 @@ package body Gtk_Generates is
    begin
       Build_Type;
       Widget_Generate (N, File);
-      Gen_Set (N, "Container", "border_width", File);
-      Gen_Set (N, "Container", "resize_mode", File);
+      Gen_Set (N, "border_width", File);
+      Gen_Set (N, "resize_mode", File);
    end Container_Generate;
 
    procedure Ctree_Generate (N : Node_Ptr; File : File_Type) is
@@ -396,8 +396,8 @@ package body Gtk_Generates is
       Build_Type;
       Gen_New (N, "Curve", File => File);
       Drawing_Area_Generate (N, File);
-      Gen_Set (N, "Curve", "curve_type", File => File);
-      Gen_Set (N, "Curve", "Range", "min_x", "max_x", "min_y", "max_y",
+      Gen_Set (N, "curve_type", File => File);
+      Gen_Set (N, "Range", "min_x", "max_x", "min_y", "max_y",
         File => File, Is_Float => True);
    end Curve_Generate;
 
@@ -445,7 +445,7 @@ package body Gtk_Generates is
            File => File, Prefix => """", Postfix => """");
       end if;
 
-      Gen_Set (N, "File_Selection", "show_file_op_buttons", File);
+      Gen_Set (N, "show_file_op_buttons", File);
       Window_Generate (N, File);
    end File_Selection_Generate;
 
@@ -509,10 +509,10 @@ package body Gtk_Generates is
 
       Bin_Generate (N, File);
       Gen_Set
-        (N, "Frame", "Label_Align",
+        (N, "Label_Align",
          "label_xalign", "label_yalign", "", "", File,
          Is_Float => True);
-      Gen_Set (N, "Frame", "shadow_type", File);
+      Gen_Set (N, "shadow_type", File);
    end Frame_Generate;
 
    procedure Gamma_Curve_Generate (N : Node_Ptr; File : File_Type) is
@@ -547,17 +547,17 @@ package body Gtk_Generates is
       end if;
 
       Editable_Generate (N, File);
-      Gen_Set (N, "GEntry", "editable", File);
-      Gen_Set (N, "GEntry", "Max_Length", "text_max_length", "", "", "", File);
-      Gen_Set (N, "GEntry", "position", File);
+      Gen_Set (N, "editable", File);
+      Gen_Set (N, "Max_Length", "text_max_length", "", "", "", File);
+      Gen_Set (N, "position", File);
 
       if Gettext_Support (N) then
-         Gen_Set (N, "GEntry", "text", File, "-""", """");
+         Gen_Set (N, "text", File, "-""", """");
       else
-         Gen_Set (N, "GEntry", "text", File, """", """");
+         Gen_Set (N, "text", File, """", """");
       end if;
 
-      Gen_Set (N, "GEntry", "Visibility", "text_visible", "", "", "", File);
+      Gen_Set (N, "Visibility", "text_visible", "", "", "", File);
    end GEntry_Generate;
 
    procedure GRange_Generate (N : Node_Ptr; File : File_Type) is
@@ -567,7 +567,7 @@ package body Gtk_Generates is
    begin
       Build_Type;
       Widget_Generate (N, File);
-      Gen_Set (N, "GRange", "Update_Policy", "policy", File => File);
+      Gen_Set (N, "Update_Policy", "policy", File => File);
    end GRange_Generate;
 
    procedure Handle_Box_Generate (N : Node_Ptr; File : File_Type) is
@@ -578,9 +578,9 @@ package body Gtk_Generates is
       Build_Type;
       Gen_New (N, "Handle_Box", File => File);
       Bin_Generate (N, File);
-      Gen_Set (N, "Handle_Box", "shadow_type", File);
-      Gen_Set (N, "Handle_Box", "handle_position", File);
-      Gen_Set (N, "Handle_Box", "snap_edge", File);
+      Gen_Set (N, "shadow_type", File);
+      Gen_Set (N, "handle_position", File);
+      Gen_Set (N, "snap_edge", File);
    end Handle_Box_Generate;
 
    procedure Hbutton_Box_Generate (N : Node_Ptr; File : File_Type) is
@@ -647,8 +647,8 @@ package body Gtk_Generates is
       end if;
 
       Misc_Generate (N, File);
-      Gen_Set (N, "Label", "justify", File);
-      Gen_Set (N, "Label", "Line_Wrap", "wrap", File);
+      Gen_Set (N, "justify", File);
+      Gen_Set (N, "Line_Wrap", "wrap", File);
 
       if Child_Name /= null then
          Is_Tab := Get_Part (Child_Name.all, 2) = "tab";
@@ -703,7 +703,7 @@ package body Gtk_Generates is
       Gen_New (N, "Layout", File => File);
       Container_Generate (N, File);
 
-      Gen_Set (N, "Layout", "Size", "area_width", "area_height", "", "",
+      Gen_Set (N, "Size", "area_width", "area_height", "", "",
         File => File);
       Add_Package ("Adjustment");
       Put_Line (File, "   Set_Step_Increment (Get_Hadjustment (" &
@@ -722,7 +722,7 @@ package body Gtk_Generates is
       Build_Type;
       Gen_New (N, "List", File => File);
       Container_Generate (N, File);
-      Gen_Set (N, "List", "selection_mode", File => File);
+      Gen_Set (N, "selection_mode", File => File);
    end List_Generate;
 
    procedure List_Item_Generate (N : Node_Ptr; File : File_Type) is
@@ -767,7 +767,7 @@ package body Gtk_Generates is
       Build_Type;
       Gen_New (N, "Menu_Bar", File => File);
       Menu_Shell_Generate (N, File);
-      Gen_Set (N, "Menu_Bar", "shadow_type", File => File);
+      Gen_Set (N, "shadow_type", File => File);
    end Menu_Bar_Generate;
 
    procedure Menu_Item_Generate (N : Node_Ptr; File : File_Type) is
@@ -790,7 +790,7 @@ package body Gtk_Generates is
       end if;
 
       Item_Generate (N, File);
-      Gen_Set (N, "Menu_Item", "right_justify", File);
+      Gen_Set (N, "right_justify", File);
    end Menu_Item_Generate;
 
    procedure Misc_Generate (N : Node_Ptr; File : File_Type) is
@@ -800,9 +800,9 @@ package body Gtk_Generates is
    begin
       Build_Type;
       Widget_Generate (N, File);
-      Gen_Set (N, "Misc", "Alignment", "xalign", "yalign", "", "", File,
+      Gen_Set (N, "Alignment", "xalign", "yalign", "", "", File,
         Is_Float => True);
-      Gen_Set (N, "Misc", "Padding", "xpad", "ypad", "", "", File);
+      Gen_Set (N, "Padding", "xpad", "ypad", "", "", File);
    end Misc_Generate;
 
    procedure Notebook_Generate (N : Node_Ptr; File : File_Type) is
@@ -813,13 +813,13 @@ package body Gtk_Generates is
       Build_Type;
       Gen_New (N, "Notebook", File => File);
       Container_Generate (N, File);
-      Gen_Set (N, "Notebook", "scrollable", File);
-      Gen_Set (N, "Notebook", "show_border", File);
-      Gen_Set (N, "Notebook", "show_tabs", File);
-      Gen_Set (N, "Notebook", "tab_border", File);
-      Gen_Set (N, "Notebook", "tab_hborder", File);
-      Gen_Set (N, "Notebook", "tab_vborder", File);
-      Gen_Set (N, "Notebook", "tab_pos", File);
+      Gen_Set (N, "scrollable", File);
+      Gen_Set (N, "show_border", File);
+      Gen_Set (N, "show_tabs", File);
+      Gen_Set (N, "tab_border", File);
+      Gen_Set (N, "tab_hborder", File);
+      Gen_Set (N, "tab_vborder", File);
+      Gen_Set (N, "tab_pos", File);
    end Notebook_Generate;
 
    procedure Option_Menu_Generate (N : Node_Ptr; File : File_Type) is
@@ -888,9 +888,9 @@ package body Gtk_Generates is
          File => File);
 
       Container_Generate (N, File);
-      Gen_Set (N, "Paned", "handle_size", File);
-      Gen_Set (N, "Paned", "gutter_size", File);
-      Gen_Set (N, "Paned", "position", File);
+      Gen_Set (N, "handle_size", File);
+      Gen_Set (N, "gutter_size", File);
+      Gen_Set (N, "position", File);
    end Paned_Generate;
 
    procedure Pixmap_Generate (N : Node_Ptr; File : File_Type) is
@@ -932,7 +932,7 @@ package body Gtk_Generates is
       end if;
 
       Widget_Generate (N, File);
-      Gen_Set (N, "Preview", "expand", File);
+      Gen_Set (N, "expand", File);
    end Preview_Generate;
 
    procedure Progress_Generate (N : Node_Ptr; File : File_Type) is
@@ -942,8 +942,8 @@ package body Gtk_Generates is
    begin
       Build_Type;
       Widget_Generate (N, File);
-      Gen_Set (N, "Progress", "activity_mode", File => File);
-      Gen_Set (N, "Progress", "show_text", File => File);
+      Gen_Set (N, "activity_mode", File => File);
+      Gen_Set (N, "show_text", File => File);
    end Progress_Generate;
 
    procedure Progress_Bar_Generate (N : Node_Ptr; File : File_Type) is
@@ -954,8 +954,8 @@ package body Gtk_Generates is
       Build_Type;
       Gen_New (N, "Progress_Bar", File => File);
       Progress_Generate (N, File);
-      Gen_Set (N, "Progress_Bar", "bar_style", File => File);
-      Gen_Set (N, "Progress_Bar", "orientation", File => File);
+      Gen_Set (N, "bar_style", File => File);
+      Gen_Set (N, "orientation", File => File);
    end Progress_Bar_Generate;
 
    procedure Radio_Button_Generate (N : Node_Ptr; File : File_Type) is
@@ -1048,9 +1048,9 @@ package body Gtk_Generates is
       Build_Type;
       Gen_New (N, "Ruler", "", "", Class (Class'First + 3) & "ruler", File);
       Widget_Generate (N, File);
-      Gen_Set (N, "Ruler", "metric", File);
+      Gen_Set (N, "metric", File);
       Gen_Set
-        (N, "Ruler", "Range", "lower", "upper", "position", "max_size", File,
+        (N, "Range", "lower", "upper", "position", "max_size", File,
          Is_Float => True);
    end Ruler_Generate;
 
@@ -1079,9 +1079,9 @@ package body Gtk_Generates is
       end if;
 
       GRange_Generate (N, File);
-      Gen_Set (N, "Scale", "digits", File => File);
-      Gen_Set (N, "Scale", "draw_value", File => File);
-      Gen_Set (N, "Scale", "value_pos", File => File);
+      Gen_Set (N, "digits", File => File);
+      Gen_Set (N, "draw_value", File => File);
+      Gen_Set (N, "value_pos", File => File);
    end Scale_Generate;
 
    procedure Scrollbar_Generate (N : Node_Ptr; File : File_Type) is
@@ -1134,7 +1134,7 @@ package body Gtk_Generates is
       Build_Type;
       Gen_New (N, "Scrolled_Window", File => File);
       Container_Generate (N, File);
-      Gen_Set (N, "Scrolled_Window", "Policy", "hscrollbar_policy",
+      Gen_Set (N, "Policy", "hscrollbar_policy",
         "vscrollbar_policy", "", "", File);
    end Scrolled_Window_Generate;
 
@@ -1179,11 +1179,11 @@ package body Gtk_Generates is
 
       GEntry_Generate (N, File);
 
-      Gen_Set (N, "Spin_Button", "numeric", File);
-      Gen_Set (N, "Spin_Button", "Snap_To_Ticks", "snap", "", "", "", File);
-      Gen_Set (N, "Spin_Button", "update_policy", File);
-      Gen_Set (N, "Spin_Button", "value", File, Is_Float => True);
-      Gen_Set (N, "Spin_Button", "wrap", File);
+      Gen_Set (N, "numeric", File);
+      Gen_Set (N, "Snap_To_Ticks", "snap", "", "", "", File);
+      Gen_Set (N, "update_policy", File);
+      Gen_Set (N, "value", File, Is_Float => True);
+      Gen_Set (N, "wrap", File);
    end Spin_Button_Generate;
 
    procedure Status_Bar_Generate (N : Node_Ptr; File : File_Type) is
@@ -1220,8 +1220,8 @@ package body Gtk_Generates is
       end if;
 
       Container_Generate (N, File);
-      Gen_Set (N, "Table", "Row_Spacings", "row_spacing", File);
-      Gen_Set (N, "Table", "Col_Spacings", "column_spacing", File);
+      Gen_Set (N, "Row_Spacings", "row_spacing", File);
+      Gen_Set (N, "Col_Spacings", "column_spacing", File);
    end Table_Generate;
 
    procedure Text_Generate (N : Node_Ptr; File : File_Type) is
@@ -1234,9 +1234,9 @@ package body Gtk_Generates is
 
       Editable_Generate (N, File);
 
-      Gen_Set (N, "Text", "editable", File);
-      Gen_Set (N, "Text", "point", File);
-      Gen_Set (N, "Text", "word_wrap", File);
+      Gen_Set (N, "editable", File);
+      Gen_Set (N, "point", File);
+      Gen_Set (N, "word_wrap", File);
    end Text_Generate;
 
    procedure Toggle_Button_Generate (N : Node_Ptr; File : File_Type) is
@@ -1265,8 +1265,8 @@ package body Gtk_Generates is
       end if;
 
       Button_Generate (N, File);
-      Gen_Set (N, "Toggle_Button", "mode", File);
-      Gen_Set (N, "Toggle_Button", "active", File);
+      Gen_Set (N, "mode", File);
+      Gen_Set (N, "active", File);
    end Toggle_Button_Generate;
 
    Widget_Class : aliased String := "GtkWidget";
@@ -1285,10 +1285,10 @@ package body Gtk_Generates is
       Gen_New (N, "Toolbar", Get_Field (N, "orientation").all,
         Get_Field (N, "type").all, File => File);
       Container_Generate (N, File);
-      Gen_Set (N, "Toolbar", "space_size", File);
-      Gen_Set (N, "Toolbar", "space_style", File);
-      Gen_Set (N, "Toolbar", "tooltips", File);
-      Gen_Set (N, "Toolbar", "Button_Relief", "relief", File);
+      Gen_Set (N, "space_size", File);
+      Gen_Set (N, "space_style", File);
+      Gen_Set (N, "tooltips", File);
+      Gen_Set (N, "Button_Relief", "relief", File);
 
       --  Now look for widgets that should be added to this toolbar
 
@@ -1389,9 +1389,9 @@ package body Gtk_Generates is
       Build_Type;
       Gen_New (N, "Tree", File => File);
       Container_Generate (N, File);
-      Gen_Set (N, "Tree", "selection_mode", File);
-      Gen_Set (N, "Tree", "view_lines", File);
-      Gen_Set (N, "Tree", "view_mode", File);
+      Gen_Set (N, "selection_mode", File);
+      Gen_Set (N, "view_lines", File);
+      Gen_Set (N, "view_mode", File);
    end Tree_Generate;
 
    procedure Tree_Item_Generate (N : Node_Ptr; File : File_Type) is
@@ -1429,10 +1429,12 @@ package body Gtk_Generates is
       Build_Type;
       Gen_New (N, "Viewport", File => File);
       Bin_Generate (N, File);
-      Gen_Set (N, "Viewport", "shadow_type", File => File);
+      Gen_Set (N, "shadow_type", File => File);
    end Viewport_Generate;
 
    procedure Widget_Generate (N : Node_Ptr; File : File_Type) is
+      pragma Unreferenced (N);
+      pragma Unreferenced (File);
    begin
       null;
    end Widget_Generate;
@@ -1447,16 +1449,16 @@ package body Gtk_Generates is
       Bin_Generate (N, File);
 
       if Gettext_Support (N) then
-         Gen_Set (N, "Window", "title", File, "-""", """");
+         Gen_Set (N, "title", File, "-""", """");
       else
-         Gen_Set (N, "Window", "title", File, """", """");
+         Gen_Set (N, "title", File, """", """");
       end if;
 
-      Gen_Set (N, "Window", "Policy", "allow_shrink", "allow_grow",
+      Gen_Set (N, "Policy", "allow_shrink", "allow_grow",
         "auto_shrink", "", File);
-      Gen_Set (N, "Window", "position", File);
-      Gen_Set (N, "Window", "modal", File);
-      Gen_Set (N, "Window", "Default_Size", "default_width", "default_height",
+      Gen_Set (N, "position", File);
+      Gen_Set (N, "modal", File);
+      Gen_Set (N, "Default_Size", "default_width", "default_height",
         "", "", File);
    end Window_Generate;
 
@@ -1478,19 +1480,19 @@ package body Gtk_Generates is
 
       if S /= null and then Boolean'Value (S.all) then
          if Gettext_Support (Top) then
-            Gen_Set (N, "Widget", "name",
+            Gen_Set (N, "name",
               File => File, Prefix => "-""", Postfix => """");
          else
-            Gen_Set (N, "Widget", "name",
+            Gen_Set (N, "name",
               File => File, Prefix => """", Postfix => """");
          end if;
       end if;
 
-      Gen_Set (N, "Widget", "sensitive", File);
-      Gen_Set (N, "Widget", "UPosition", "x", "y", "", "", File);
-      Gen_Set (N, "Widget", "USize", "width", "height", "", "", File);
-      Gen_Set (N, "Widget", "state", File);
-      Gen_Set (N, "Widget", "extension_events", File);
+      Gen_Set (N, "sensitive", File);
+      Gen_Set (N, "UPosition", "x", "y", "", "", File);
+      Gen_Set (N, "USize", "width", "height", "", "", File);
+      Gen_Set (N, "state", File);
+      Gen_Set (N, "extension_events", File);
 
       S := Get_Field (N, "can_default");
 
