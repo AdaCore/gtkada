@@ -85,6 +85,7 @@ with Create_Main_Loop;
 with Create_Menu;
 with Create_Notebook;
 with Create_Paned;
+with Create_Packer;
 with Create_Pixmap;
 with Create_Preview_Color;
 with Create_Preview_Gray;
@@ -253,6 +254,8 @@ package body Main_Windows is
       (NS ("modal window"),     Base,    null, null),
       (NS ("notebook"),         Box,     Create_Notebook.Run'Access,
                                          Create_Notebook.Help'Access),
+      (Ns ("packer"),           Box,     Create_Packer.Run'Access,
+                                         Create_Packer.Help'Access),
       (NS ("panes"),            Box,     Create_Paned.Run'Access,
                                          Create_Paned.Help'Access),
       (NS ("pixmap"),           Base,    Create_Pixmap.Run'Access,
