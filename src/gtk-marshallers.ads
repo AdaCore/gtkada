@@ -27,84 +27,88 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--  This package provides a set of generic packages to easily create
+--  some Marshallers. Although this package has been designed to be
+--  easily reusable, the primary aim of this package is to simplify the
+--  use of callbacks.
+--
+--  To understand the paradigm used in this package, some definitions
+--  are necessary:
+--
+--     A Handler, or Callback, is a procedure (or a function) provided
+--     by the user. This handler, when attached to a particular object,
+--     can be called back when certain events happen during the life of
+--     this object. All handlers take as a first argument an access to
+--     the object they were attached to. Depending on the callback, this
+--     handler can also have some extra parameters; most of the time,
+--     one extra parameter will be used. For more information about
+--     Handlers, refer to the package Gtk.Handlers, where this notion is
+--     explained in more details.
+--
+--     A General_Handler is an access to any Handler. Note that this is
+--     a type used internaly, most users should *not* be using it. It is
+--     publicly defined in order to allow users to create any new
+--     marshaller that would not be already provided here.
+--
+--     A Handler_Proxy is a procedure or a function that, from an array
+--     of arguments stored in Gtk.Arguments.Gtk_Args and a
+--     General_Handler, calls the associated Handler with the
+--     appropriate arguments.
+--
+--     A Marshaller is the association of a General_Handler and a
+--     Handler_Proxy.
+--
+--  This package is divided in four generic packages. Each package has
+--  been designed to cover a certain kind of callback by providing the
+--  associated marshallers. There are two primary factors that describe
+--  a callback, and that decide which marshaller to use: Does the
+--  callback have access to some user data?  Does the callback return
+--  some value?
+--
+--  Depending on that, the appropriate generic package should be chosen.
+--  For example, if the callback retuns a value, but does not have
+--  access to some user data, then the "User_Return_Marshallers" package
+--  should be used. More details about the usage of each package is
+--  provided individually below.
+--
+--  Each of this package is in turn divided in three generic
+--  sub-packages.  The organization of these subpackage is always the
+--  same :
+--     o The type "Handler" is defined. It describes the profile of the
+--       Handler covered in this generic package.
+--     o a "To_Marshaller" function is provided to build a Marshaller
+--       from any Handler.
+--     o A "Emit_By_Name" procedure is also provided to allow the user
+--       to "emit" a signal. This service is explained in more details in
+--       Gtk.Handlers.
+--     o A private function "Call" is also defined. This is the actual
+--       Handler_Proxy that will be used when creating Marshallers with
+--       the "To_Marshaller" service.
+--
+--  Once again, selecting the right generic sub-package depends on the
+--  callback. For instance, the first package, always called
+--  "Generic_Marshaller", is to be used when the handler has one extra
+--  argument which is a simple non-tagged type. More details about the
+--  usage of each sub-package is also provided individually.
+--
+--  Although most of the cases are covered by the packages below, some
+--  unusual cases may appear. This is the case for example when the
+--  callback accepts three extra parameters. In such cases, two options
+--  are available: The first option is to use the "standard" callback
+--  mechanism with one parameter, this parameter being an array of
+--  arguments that you will parse yourself. The second option is to
+--  create a new Marshaller package. This is more interesting if more
+--  than one callback will follow the same pattern. The body of this
+--  package can be used as a good model to build such new marshallers.
+--  </description>
+
 with Gtk.Object;
 with Gtk.Arguments;
-
---  This package simplifies the use of the callbacks. It has to be used
---  in conjonction with Gtk.Handlers.
---  The idea is that instead of having a general callback that gets its
---  argument in an array, we substitute a Marshaller, that will convert
---  the array into a series of standard parameters to a function.
---
---  This package provides a series of such marshallers. They will cover
---  the most usual cases.
---  Here is an example:
---     We want to connect the "delete_event" signal to a widget. The
---     handlers for this signal get an extra new argument that is the
---     Gdk_Event that generated the signal.
---     Here is how to do it:
---
---         with Gtk.Handlers;    use Gtk.Handlers;
---         with Gtk.Marshallers; use Gtk.Marshallers;
---
---         function My_Cb (Widget : access Gtk_Widget_Record'Class;
---                         Event  : Gdk.Event.Gdk_Event)
---                         return Gint;
---         --  your own function
---
---         package Return_Widget_Cb is new Gtk.Handlers.Return_Callback
---            (Gtk.Widget.Gtk_Widget_Record, Gint);
---
---         Return_Widget_Cb.Connect (W, "delete_event",
---            Return_Widget_Cb.To_Event_Marshaller (My_Cb'Access));
---
---  The real handler in gtk+ should expect at least as many arguments as
---  in the marshaller you are using (i.e if your marshaller has one
---  argument (as in the Generic_Marshaller or Generic_Widget_Marshaller
---  below, the C handler must have at least one argument too).
---
---  Each of the generic packages here provides one main function, called
---  To_Marshaller. This returns a record that is a connection between a
---  given marshaller and a user callback.
---
---  Some cases are not covered by this package. This is most notably the case
---  when the callback has more than one extra parameter.
---  In that case, you have two choices: either you use the standard
---  callback mechanism and parse the arguments yourself, or create a new
---  Marshaller package. The second solution is more interesting if you want
---  to have multiple callbacks following the same model.
---  Have a look at the body of this package to find how to write new
---  Marshallers.
---
---  There are four generic packages here, the same organization as in
---  Gtk.Handlers (i.e there is one for callbacks returning values, but with no
---  user data, for callbacks returning values and with a user callbacks, for
---  callbacks not returning any value and with no user data, and for callbacks
---  returning values and with a user data.
-
---  The packages themselves contain three generic subpackages. The first one,
---  always called "Generic_Marshaller" is for the cases when the extra
---  argument is a simple non-tagged type. The second one
---  "Generic_Widget_Marshaller" is used when the extra parameter is a tagged
---  type, for instance one of the GtkAda widgets.
---  The third subpackage is for the cases when there is no extra parameter.
---
---  The organization of these generic subpackages is always the same:
---  * The type "Marshaller" is defined.
---    This is the general format of the marshaller covered in this generic
---    package.
---  * The type "Generic_Callback" is used to indicate an association between
---    a handler and a marshaller.
---  * The function "To_Marshaller" is the only one that you have to use. It
---    returns an structure that you can pass directly to the Connect functions
---    in Gtk.Handlers. The argument is the callback you want to call.
---  * "Emit_By_Name" is used to emit a signal with the matching profile. You
---    have to give all the expected parameters.
 
 package Gtk.Marshallers is
 
    type General_Handler is access procedure;
-   --  A general access type for a handler.
 
    --------------------------------------------------------------
    --  Return Marshallers: Return a value, don't have user data
@@ -115,14 +119,15 @@ package Gtk.Marshallers is
       type Return_Type is private;
    package Return_Marshallers is
 
-      type Marshaller is access function (Widget  : access Widget_Type'Class;
-                                          Params  : Gtk.Arguments.Gtk_Args;
-                                          Cb      : General_Handler)
-                                         return Return_Type;
+      type Handler_Proxy is access
+        function (Widget  : access Widget_Type'Class;
+                  Params  : Gtk.Arguments.Gtk_Args;
+                  Cb      : General_Handler)
+                  return Return_Type;
 
-      type Connection is record
+      type Marshaller is record
          Func  : General_Handler;   --  User callback
-         Marsh : Marshaller;        --  Marshaller for this callback
+         Marsh : Handler_Proxy;     --  Handler_Proxy for this callback
       end record;
 
       --  Basic Marshaller
@@ -135,7 +140,7 @@ package Gtk.Marshallers is
          type Handler is access function (Widget : access Widget_Type'Class;
                                           Param  : Base_Type)
                                          return Return_Type;
-         function To_Marshaller (Cb : Handler) return Connection;
+         function To_Marshaller (Cb : Handler) return Marshaller;
          procedure Emit_By_Name (Object : access Widget_Type'Class;
                                  Name   : in String;
                                  Param  : Base_Type);
@@ -154,7 +159,7 @@ package Gtk.Marshallers is
          type Handler is access function (Widget : access Widget_Type'Class;
                                           Param  : access Base_Type'Class)
                                          return Return_Type;
-         function To_Marshaller (Cb : Handler) return Connection;
+         function To_Marshaller (Cb : Handler) return Marshaller;
          procedure Emit_By_Name (Object : access Widget_Type'Class;
                                  Name   : in String;
                                  Param  : access Base_Type'Class);
@@ -169,7 +174,7 @@ package Gtk.Marshallers is
       package Void_Marshaller is
          type Handler is access function (Widget : access Widget_Type'Class)
                                          return Return_Type;
-         function To_Marshaller (Cb : Handler) return Connection;
+         function To_Marshaller (Cb : Handler) return Marshaller;
          procedure Emit_By_Name (Object : access Widget_Type'Class;
                                  Name   : in String);
       private
@@ -190,15 +195,16 @@ package Gtk.Marshallers is
       type User_Type (<>) is private;
    package User_Return_Marshallers is
 
-      type Marshaller is access function (Widget    : access Widget_Type'Class;
-                                          Params    : Gtk.Arguments.Gtk_Args;
-                                          Cb        : General_Handler;
-                                          User_Data : User_Type)
-                                         return Return_Type;
+      type Handler_Proxy is access
+        function (Widget    : access Widget_Type'Class;
+                  Params    : Gtk.Arguments.Gtk_Args;
+                  Cb        : General_Handler;
+                  User_Data : User_Type)
+                  return Return_Type;
 
-      type Connection is record
+      type Marshaller is record
          Func  : General_Handler;
-         Marsh : Marshaller;
+         Marsh : Handler_Proxy;
       end record;
 
       --  Basic Marshaller
@@ -212,7 +218,7 @@ package Gtk.Marshallers is
                                           Param  : Base_Type;
                                           User_Data : User_Type)
                                          return Return_Type;
-         function To_Marshaller (Cb : Handler) return Connection;
+         function To_Marshaller (Cb : Handler) return Marshaller;
          procedure Emit_By_Name (Object    : access Widget_Type'Class;
                                  Name      : in String;
                                  Param     : Base_Type);
@@ -233,7 +239,7 @@ package Gtk.Marshallers is
                                           Param     : access Base_Type'Class;
                                           User_Data : User_Type)
                                          return Return_Type;
-         function To_Marshaller (Cb : Handler) return Connection;
+         function To_Marshaller (Cb : Handler) return Marshaller;
          procedure Emit_By_Name (Object    : access Widget_Type'Class;
                                  Name      : in String;
                                  Param     : access Base_Type'Class);
@@ -250,7 +256,7 @@ package Gtk.Marshallers is
          type Handler is access function (Widget    : access Widget_Type'Class;
                                           User_Data : User_Type)
                                          return Return_Type;
-         function To_Marshaller (Cb : Handler) return Connection;
+         function To_Marshaller (Cb : Handler) return Marshaller;
          procedure Emit_By_Name (Object    : access Widget_Type'Class;
                                  Name      : in String);
       private
@@ -271,13 +277,14 @@ package Gtk.Marshallers is
       type Widget_Type is new Gtk.Object.Gtk_Object_Record with private;
    package Void_Marshallers is
 
-      type Marshaller is access procedure (Widget  : access Widget_Type'Class;
-                                           Params  : Gtk.Arguments.Gtk_Args;
-                                           Cb      : General_Handler);
+      type Handler_Proxy is access
+        procedure (Widget  : access Widget_Type'Class;
+                   Params  : Gtk.Arguments.Gtk_Args;
+                   Cb      : General_Handler);
 
-      type Connection is record
+      type Marshaller is record
          Func  : General_Handler;
-         Marsh : Marshaller;
+         Marsh : Handler_Proxy;
       end record;
 
       --  Basic Marshaller
@@ -289,7 +296,7 @@ package Gtk.Marshallers is
       package Generic_Marshaller is
          type Handler is access procedure (Widget : access Widget_Type'Class;
                                            Param  : Base_Type);
-         function To_Marshaller (Cb : Handler) return Connection;
+         function To_Marshaller (Cb : Handler) return Marshaller;
          procedure Emit_By_Name (Object : access Widget_Type'Class;
                                  Name   : in String;
                                  Param  : Base_Type);
@@ -306,7 +313,7 @@ package Gtk.Marshallers is
       package Generic_Widget_Marshaller is
          type Handler is access procedure (Widget : access Widget_Type'Class;
                                            Param  : access Base_Type'Class);
-         function To_Marshaller (Cb : Handler) return Connection;
+         function To_Marshaller (Cb : Handler) return Marshaller;
          procedure Emit_By_Name (Object : access Widget_Type'Class;
                                  Name   : in String;
                                  Param  : access Base_Type'Class);
@@ -319,7 +326,7 @@ package Gtk.Marshallers is
       --  Void Marshaller
       package Void_Marshaller is
          type Handler is access procedure (Widget : access Widget_Type'Class);
-         function To_Marshaller (Cb : Handler) return Connection;
+         function To_Marshaller (Cb : Handler) return Marshaller;
          procedure Emit_By_Name (Object : access Widget_Type'Class;
                                  Name   : in String);
       private
@@ -339,14 +346,15 @@ package Gtk.Marshallers is
       type Widget_Type is new Gtk.Object.Gtk_Object_Record with private;
       type User_Type (<>) is private;
    package User_Void_Marshallers is
-      type Marshaller is access procedure (Widget   : access Widget_Type'Class;
-                                           Params   : Gtk.Arguments.Gtk_Args;
-                                           Cb       : General_Handler;
-                                           User_Data : User_Type);
+      type Handler_Proxy is access
+        procedure (Widget   : access Widget_Type'Class;
+                   Params   : Gtk.Arguments.Gtk_Args;
+                   Cb       : General_Handler;
+                   User_Data : User_Type);
 
-      type Connection is record
+      type Marshaller is record
          Func  : General_Handler;
-         Marsh : Marshaller;
+         Marsh : Handler_Proxy;
       end record;
 
       --  Basic Marshaller
@@ -359,7 +367,7 @@ package Gtk.Marshallers is
          type Handler is access procedure (Widget : access Widget_Type'Class;
                                            Param  : Base_Type;
                                            User_Data : User_Type);
-         function To_Marshaller (Cb : Handler) return Connection;
+         function To_Marshaller (Cb : Handler) return Marshaller;
          procedure Emit_By_Name (Object    : access Widget_Type'Class;
                                  Name      : in String;
                                  Param     : Base_Type);
@@ -378,7 +386,7 @@ package Gtk.Marshallers is
          type Handler is access procedure (Widget   : access Widget_Type'Class;
                                            Param     : access Base_Type'Class;
                                            User_Data : User_Type);
-         function To_Marshaller (Cb : Handler) return Connection;
+         function To_Marshaller (Cb : Handler) return Marshaller;
          procedure Emit_By_Name (Object    : access Widget_Type'Class;
                                  Name      : in String;
                                  Param     : access Base_Type'Class);
@@ -393,7 +401,7 @@ package Gtk.Marshallers is
       package Void_Marshaller is
          type Handler is access procedure (Widget   : access Widget_Type'Class;
                                            User_Data : User_Type);
-         function To_Marshaller (Cb : Handler) return Connection;
+         function To_Marshaller (Cb : Handler) return Marshaller;
          procedure Emit_By_Name (Object    : access Widget_Type'Class;
                                  Name      : in String);
       private

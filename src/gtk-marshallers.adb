@@ -69,7 +69,7 @@ package body Gtk.Marshallers is
          -- To_Marshaller --
          -------------------
 
-         function To_Marshaller (Cb : Handler) return Connection is
+         function To_Marshaller (Cb : Handler) return Marshaller is
          begin
             --  We must have at least one argument in the real callback.
             --  We should create an object of type Widget_Type to be able
@@ -135,7 +135,7 @@ package body Gtk.Marshallers is
          -- To_Marshaller --
          -------------------
 
-         function To_Marshaller (Cb : Handler) return Connection is
+         function To_Marshaller (Cb : Handler) return Marshaller is
          begin
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
@@ -192,7 +192,7 @@ package body Gtk.Marshallers is
          -- To_Marshaller --
          -------------------
 
-         function To_Marshaller (Cb : Handler) return Connection is
+         function To_Marshaller (Cb : Handler) return Marshaller is
          begin
             return (Func => To_General_Handler (Cb), Marsh => Call'Access);
          end To_Marshaller;
@@ -252,7 +252,7 @@ package body Gtk.Marshallers is
          -- To_Marshaller --
          -------------------
 
-         function To_Marshaller (Cb : Handler) return Connection is
+         function To_Marshaller (Cb : Handler) return Marshaller is
          begin
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
@@ -317,7 +317,7 @@ package body Gtk.Marshallers is
          -- To_Marshaller --
          -------------------
 
-         function To_Marshaller (Cb : Handler) return Connection is
+         function To_Marshaller (Cb : Handler) return Marshaller is
          begin
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
@@ -376,7 +376,7 @@ package body Gtk.Marshallers is
          -- To_Marshaller --
          -------------------
 
-         function To_Marshaller (Cb : Handler) return Connection is
+         function To_Marshaller (Cb : Handler) return Marshaller is
          begin
             return (Func => To_General_Handler (Cb), Marsh => Call'Access);
          end To_Marshaller;
@@ -434,7 +434,7 @@ package body Gtk.Marshallers is
          -- To_Marshaller --
          -------------------
 
-         function To_Marshaller (Cb : Handler) return Connection is
+         function To_Marshaller (Cb : Handler) return Marshaller is
          begin
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
@@ -496,7 +496,7 @@ package body Gtk.Marshallers is
          -- To_Marshaller --
          -------------------
 
-         function To_Marshaller (Cb : Handler) return Connection is
+         function To_Marshaller (Cb : Handler) return Marshaller is
          begin
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
@@ -552,7 +552,7 @@ package body Gtk.Marshallers is
          -- To_Marshaller --
          -------------------
 
-         function To_Marshaller (Cb : Handler) return Connection is
+         function To_Marshaller (Cb : Handler) return Marshaller is
          begin
             return (Func => To_General_Handler (Cb), Marsh => Call'Access);
          end To_Marshaller;
@@ -612,7 +612,7 @@ package body Gtk.Marshallers is
          -- To_Marshaller --
          -------------------
 
-         function To_Marshaller (Cb : Handler) return Connection is
+         function To_Marshaller (Cb : Handler) return Marshaller is
          begin
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
@@ -676,7 +676,7 @@ package body Gtk.Marshallers is
          -- To_Marshaller --
          -------------------
 
-         function To_Marshaller (Cb : Handler) return Connection is
+         function To_Marshaller (Cb : Handler) return Marshaller is
          begin
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
@@ -734,7 +734,7 @@ package body Gtk.Marshallers is
          -- To_Marshaller --
          -------------------
 
-         function To_Marshaller (Cb : Handler) return Connection is
+         function To_Marshaller (Cb : Handler) return Marshaller is
          begin
             return (Func => To_General_Handler (Cb), Marsh => Call'Access);
          end To_Marshaller;
