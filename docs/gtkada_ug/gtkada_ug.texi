@@ -2465,8 +2465,8 @@ to convert it back to the type you want and expect.
 In the third case (imported C widgets), GtkAda is not, by default, able to
 create the corresponding Ada type.
 
-The solution we suggest to solve these two issues is to 'with' the unit
-@b{Gtk.Type_Conversion}. In that case, every standard widget, no matter who
+The solution we suggest to solve these two issues is to 'with' the
+@b{Gtk.Type_Conversion} unit. In that case, every standard widget, no matter who
 created them, will always be correctly converted to an appropriate Ada type.
 So, basically, if you put the following in your main unit:
 
