@@ -1,4 +1,3 @@
-
 /*
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
@@ -216,7 +215,7 @@ ada_initialize_class_record
       /* Note: The memory allocated in this function is never freed. No need
 	 to worry, since this is only allocated once per user's widget type,
 	 and might be used until the end of the application */
-      
+
       /* Right now, object->klass points to the ancestor's class */
       GType ancestor = G_TYPE_FROM_CLASS (G_OBJECT_GET_CLASS (object));
       GTypeInfo * class_info = g_new (GTypeInfo, 1);
@@ -2121,7 +2120,13 @@ ada_text_attributes_set_font (GtkTextAttributes* text_attr,
 {
   g_return_if_fail (font != NULL);
 
-  text_attr->font = font;
+  /* Free the family name pointer if already allocated */
+  pango_font_description_free (text_attr->font);
+  
+  /* set the font. Make sure to strdup the font->family_name field
+     to avoid dangling pointers. This memory will be deallocated
+     during the final unref */
+  text_attr->font = pango_font_description_copy (font);
 }
 
 /******************************************
