@@ -3771,7 +3771,7 @@ ada_gtk_tree_view_thaw_sort (GtkTreeStore* tree, gint id)
  *****************************************/
 
 
-#if (GTK_CHECK_VERSION (2, 4, 0))
+#if (!GTK_CHECK_VERSION (2, 4, 0))
 void
 gtk_event_box_set_visible_window (GtkEventBox *event_box,
                                   gboolean     visible_window) 
