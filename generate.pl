@@ -18,6 +18,8 @@ my ($directory);
 my ($hfile) = $file . ".h";
 $file = uc ($file);
 
+$file = "GTKFILESELECTION" if ($file eq "GTKFILESEL");
+
 ### Look for the structure representing the unit in the C file
 my ($line) = 0;
 for ($line = 0; $line < $#cfile; $line ++)
@@ -143,7 +145,7 @@ sub generate_body
 
     ## If there is indeed a body
     if ($#output > 3) {
-      print "\n";
+      print "\n", join (";\n", sort keys %with_list), ";\n"; 
       print "\n", join ("", @output);
     }
   }
@@ -354,7 +356,18 @@ sub print_arguments
 	push (@output, "\n$indent") if ($arguments[0] !~ /void/);
 	push (@output, "return ");
 	push (@output, ' ' x ($longest - 1)) if  ($arguments[0] !~ /void/);
-	push (@output, &{$convert} ($return));
+	if ($convert == \&convert_c_type) {
+	  if (&{$convert} ($return) eq "String") {
+	    push (@output, "Interfaces.C.Strings.chars_ptr");
+	    $with_list {"with Interfaces.C.Strings"} ++;
+	  }
+	  else {
+	    push (@output, &{$convert} ($return));
+	  }
+	}
+	else {
+	  push (@output, &{$convert} ($return));
+	}
       }
   }
 
@@ -505,8 +518,13 @@ sub print_body
 	  {
 	    my ($tmp) = &convert_ada_type ($return);
 	    $tmp =~ s/\'Class//;
-	    push (@output, "      Widget : $tmp;\n   begin\n");
-	    $string = "      Set_Object (Widget, Internal";
+	    push (@output, "      Tmp : $tmp;\n   begin\n");
+	    $string = "      Set_Object (Tmp, Internal";
+	  }
+	elsif (&convert_ada_type ($return) eq "String")
+	  {
+	    push (@output, "   begin\n");
+	    $string = "      return Interfaces.C.Strings.Value (Internal";
 	  }
 	elsif ($return ne "void")
 	  {
@@ -522,7 +540,10 @@ sub print_body
 	
 	&print_arguments_call (' ' x length ($string), @arguments);
 	if (&convert_ada_type ($return) =~ /\'Class/) {
-	  push (@output, ");\n      return Widget;\n");
+	  push (@output, ");\n      return Tmp;\n");
+	}
+	elsif (&convert_ada_type ($return) eq "String") {
+	  push (@output, ");\n");
 	}
 	else {
 	  push (@output, ";\n");
