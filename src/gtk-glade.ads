@@ -33,6 +33,8 @@
 --  It provides routines to generate Ada code and create widgets dynamically
 --  from an XML definition file.
 --  @pxref{Package_Glib.Glade} for the low level GUI builder support.
+--  @pxref{Package_Gtk.Util} for the additional API to support easily dynamic
+--  loading of files.
 --
 --  </description>
 
