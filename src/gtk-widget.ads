@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -1719,8 +1719,8 @@ private
 end Gtk.Widget;
 
 --  missing:
---  - gtk_widget_new
---  - gtk_widget_destroy
+--  - gtk_widget_new                <= low level, typically not needed
+--  - gtk_widget_destroy            <= not needed, see Gtk.Object.Destroy
 --  - gtk_widget_destroyed
 --  - gtk_widget_get_parent_window  <= mainly internal
 --  - gtk_widget_hide_on_delete     <= used as callback
