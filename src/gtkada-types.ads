@@ -34,6 +34,8 @@ package Gtkada.Types is
    Data_Error : exception;
 
    subtype Chars_Ptr_Array is Interfaces.C.Strings.chars_ptr_array;
+   Null_Array : constant Gtkada.Types.Chars_Ptr_Array
+     := (1 .. 0 => Interfaces.C.Strings.Null_Ptr);
 
    procedure Free (A : in out Chars_Ptr_Array);
    --  Frees all the strings in A
