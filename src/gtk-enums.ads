@@ -73,7 +73,8 @@ package Gtk.Enums is
    type Gtk_Pack_Type is (Pack_Start, Pack_End);
 
    type Gtk_Policy_Type is (Policy_Always,
-                            Policy_Automatic);
+                            Policy_Automatic,
+                            Policy_Never);
 
    type Gtk_Update_Type is (Update_Continuous,
                             Update_Discontinuous,
