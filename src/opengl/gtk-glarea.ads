@@ -33,7 +33,7 @@
 --  it is possible to use the openGL API.
 --
 --  </description>
---  <c_version>1.2.2</c_version>
+--  <c_version>gtkglarea 1.2.2</c_version>
 
 with Gtk.Drawing_Area;
 with Gdk.GL; use Gdk.GL;
