@@ -1,11 +1,11 @@
 
 #include <gtk/gtk.h>
-#include <gtkextra/gtkplot.h>
-#include <gtkextra/gtkplotcanvas.h>
-#include <gtkextra/gtksheet.h>
-#include <gtkextra/gtkcombobox.h>
-#include <gtkextra/gtkfontcombo.h>
-#include <gtkextra/gtkitementry.h>
+#include "gtkextra/gtkplot.h"
+#include "gtkextra/gtkplotcanvas.h"
+#include "gtkextra/gtksheet.h"
+#include "gtkextra/gtkcombobox.h"
+#include "gtkextra/gtkfontcombo.h"
+#include "gtkextra/gtkitementry.h"
 
 /********************************************************************
  **
@@ -75,6 +75,11 @@ ada_gtk_plot_canvas_set_flags (GtkPlotCanvas* canvas, guint16 flags) {
 void
 ada_gtk_plot_canvas_unset_flags (GtkPlotCanvas* canvas, guint16 flags) {
   GTK_PLOT_CANVAS_UNSET_FLAGS (canvas, flags);
+}
+
+GtkPlotCanvasType
+ada_gtk_plot_canvas_get_item_type (GtkPlotCanvasItem * item) {
+  return item->type;
 }
 
 /********************************************************************
@@ -211,3 +216,4 @@ char*
 ada_gtk_psfont_get_psname (GtkPSFont* font) {
   return font->psname;
 }
+
