@@ -27,9 +27,14 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+pragma Elaborate_All (Glib.Generic_Properties);
 with System;
 
 package body Gdk.Color is
+
+   package Color_Properties is new Generic_Internal_Boxed_Property
+     (Gdk_Color, Gdk_Color_Type);
 
    -----------
    -- Equal --

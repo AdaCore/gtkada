@@ -48,8 +48,6 @@
 
 with Glib; use Glib;
 with Glib.Object;
-with Glib.Generic_Properties; use Glib.Generic_Properties;
-pragma Elaborate_All (Glib.Generic_Properties);
 with Gdk.Visual;
 
 package Gdk.Color is
@@ -276,6 +274,15 @@ package Gdk.Color is
 
    type Property_Gdk_Color is new Glib.Property;
 
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Gdk_Color;
+      Value  : Gdk_Color);
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_Gdk_Color) return Gdk_Color;
+
    --  </doc_ignore>
 
 private
@@ -297,18 +304,6 @@ private
    --  so that gtk+ can provide a default value for colors.
 
    pragma Import (C, Gdk_Color_Type, "gdk_color_get_type");
-
-   package Color_Properties is new Generic_Internal_Boxed_Property
-     (Gdk_Color, Gdk_Color_Type);
-
-   procedure Set_Property
-     (Object : access Glib.Object.GObject_Record'Class;
-      Name   : Property_Gdk_Color;
-      Value  : Gdk_Color);
-
-   function Get_Property
-     (Object : access Glib.Object.GObject_Record'Class;
-      Name   : Property_Gdk_Color) return Gdk_Color;
 
    pragma Inline (Set_Rgb);
    pragma Inline (Set_Pixel);
