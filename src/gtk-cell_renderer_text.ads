@@ -66,6 +66,9 @@ package Gtk.Cell_Renderer_Text is
    --       Path : String;
    --       New_Text : String);
    --
+   --    Called when the text has been edited interactively . Note that you
+   --    also need to set the attribute "editable" for users to be able to
+   --    interactively edit the cell.
    --  </signals>
 
    ----------------
