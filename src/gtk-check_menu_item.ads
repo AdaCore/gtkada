@@ -36,7 +36,7 @@
 --  left side of the Gtk_Menu_Item. Activating the Gtk_Menu_Item toggles the
 --  value.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Glib.Properties;
 with Gtk.Menu_Item;
@@ -55,6 +55,19 @@ package Gtk.Check_Menu_Item is
    procedure Initialize
      (Check_Menu_Item : access Gtk_Check_Menu_Item_Record'Class;
       Label           : String := "");
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Gtk_New_With_Mnemonic
+     (Check_Menu_Item : out Gtk_Check_Menu_Item;
+      Label           : String);
+   --  Create a new Gtk_Check_Menu_Item containing a label. The label
+   --  will be created will be created using Gtk.Label.New_With_Mnemonic,
+   --  so underscores in the label indicate the mnemonic for the menu item.
+
+   procedure Initialize_With_Mnemonic
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record'Class;
+      Label           : String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 

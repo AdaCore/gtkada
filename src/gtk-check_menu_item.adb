@@ -90,11 +90,44 @@ package body Gtk.Check_Menu_Item is
    is
       function Internal (Label : String) return System.Address;
       pragma Import (C, Internal, "gtk_check_menu_item_new_with_label");
+      function Internal_No_Label return System.Address;
+      pragma Import (C, Internal_No_Label, "gtk_check_menu_item_new");
+   begin
+      if Label = "" then
+         Set_Object (Check_Menu_Item, Internal_No_Label);
+      else
+         Set_Object (Check_Menu_Item, Internal (Label & ASCII.NUL));
+      end if;
+      Initialize_User_Data (Check_Menu_Item);
+   end Initialize;
+
+   ---------------------------
+   -- Gtk_New_With_Mnemonic --
+   ---------------------------
+
+   procedure Gtk_New_With_Mnemonic
+     (Check_Menu_Item : out Gtk_Check_Menu_Item;
+      Label           : String) is
+   begin
+      Check_Menu_Item := new Gtk_Check_Menu_Item_Record;
+      Initialize_With_Mnemonic (Check_Menu_Item, Label);
+   end Gtk_New_With_Mnemonic;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize_With_Mnemonic
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record'Class;
+      Label           : String)
+   is
+      function Internal (Label : String) return System.Address;
+      pragma Import (C, Internal, "gtk_check_menu_item_new_with_mnemonic");
 
    begin
       Set_Object (Check_Menu_Item, Internal (Label & ASCII.NUL));
       Initialize_User_Data (Check_Menu_Item);
-   end Initialize;
+   end Initialize_With_Mnemonic;
 
    ----------------
    -- Set_Active --
