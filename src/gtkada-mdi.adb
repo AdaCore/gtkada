@@ -991,11 +991,13 @@ package body Gtkada.MDI is
       Title_Bar_Color           : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
       Focus_Title_Color         : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color)
    is
-      Desc : Pango_Font_Description;
-      W, H : Gint;
-      List : Widget_List.Glist;
-      C    : MDI_Child;
-      Need_Redraw : Boolean := False;
+      Desc            : Pango_Font_Description;
+      W, H            : Gint;
+      List            : Widget_List.Glist;
+      C               : MDI_Child;
+      Highlight_Style : Gtk_Style;
+      Need_Redraw     : Boolean := False;
+
    begin
       MDI.Opaque_Resize := Opaque_Resize;
       MDI.Opaque_Move   := Opaque_Move;
@@ -1040,7 +1042,21 @@ package body Gtkada.MDI is
       end if;
 
       Ensure_Style (MDI);
-      MDI.Highlight_Style := Copy (Get_Style (MDI));
+      Highlight_Style := Get_Style (MDI);
+
+      --  Apparently calling Ensure_Style is not sufficient on some systems.
+      --  For example, Gtk+ under Solaris 2.5.1 will set Highlight_Style to
+      --  null, so we have to compensate.
+
+      --  On the other hand, we cannot use Get_Default_Style systematically,
+      --  since under Windows if we do not take the style associated with MDI,
+      --  we will end up using a different font when using Highlight_Style.
+
+      if Highlight_Style = null then
+         Highlight_Style := Get_Default_Style;
+      end if;
+
+      MDI.Highlight_Style := Copy (Highlight_Style);
 
       if Focus_Title_Color /= Null_Color then
          MDI.Focus_Title_Color := Focus_Title_Color;
