@@ -308,7 +308,7 @@ package body Gtk.Widget is
 
    function Get_Parent (Widget : access Gtk_Widget_Record) return Gtk_Widget is
       function Internal (Widget : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_widget_get_parent");
+      pragma Import (C, Internal, "gtk_widget_get_parent");
 
       S : System.Address;
       use type System.Address;
