@@ -534,12 +534,13 @@ package Gtk.Text_Buffer is
    --  Should be paired with a call to Begin_User_Action.
    --  See that function for a full explanation.
 
+   function Get_Buffer (Iter : Gtk.Text_Iter.Gtk_Text_Iter)
+                        return Gtk_Text_Buffer;
+   --  Return the buffer associated to the given Gtk_Text_Iterator.
+
    -------------
    -- Signals --
    -------------
-
-   --  ??? The mode for the Gtk_Text_Iter parameters are probably
-   --  ??? Incorrect. Check each of them, one day.
 
    --  <signals>
    --  The following new signals are defined for this widget:
@@ -547,27 +548,27 @@ package Gtk.Text_Buffer is
    --  - "insert_text"
    --    procedure Handler
    --      (Widget : access Gtk_Text_Buffer_Record'Class;
-   --       Pos    : access Gtk.Text_Iter.Gtk_Text_Iter;
+   --       Pos    : Gtk.Text_Iter.Gtk_Text_Iter;
    --       Text   : String;
    --       Length : Gint);
    --
    --  - "insert_pixbuf"
    --    procedure Handler
    --      (Widget : access Gtk_Text_Buffer_Record'Class;
-   --       Pos    : access Gtk.Text_Iter.Gtk_Text_Iter;
+   --       Pos    : Gtk.Text_Iter.Gtk_Text_Iter;
    --       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
    --
    --  - "insert_child_anchor"
    --    procedure Handler
    --      (Widget : access Gtk_Text_Buffer_Record'Class;
-   --       Pos    : access Gtk.Text_Iter.Gtk_Text_Iter;
+   --       Pos    : Gtk.Text_Iter.Gtk_Text_Iter;
    --       Anchor : access Gtk.Text_Child.Gtk_Text_Child_Anchor_Record'Class);
    --
    --  - "delete_range"
    --    procedure Handler
    --      (Widget  : access Gtk_Text_Buffer_Record'Class;
-   --       Start   : access Gtk.Text_Iter.Gtk_Text_Iter;
-   --       The_End : access Gtk.Text_Iter.Gtk_Text_Iter);
+   --       Start   : Gtk.Text_Iter.Gtk_Text_Iter;
+   --       The_End : Gtk.Text_Iter.Gtk_Text_Iter);
    --
    --  - "changed"
    --    procedure Handler (Widget : access Gtk_Text_Buffer_Record'Class);
@@ -578,7 +579,7 @@ package Gtk.Text_Buffer is
    --  - "mark_set"
    --    procedure Handler
    --      (Widget   : access Gtk_Text_Buffer_Record'Class;
-   --       Location : access Gtk.Text_Iter.Gtk_Text_Iter;
+   --       Location : Gtk.Text_Iter.Gtk_Text_Iter;
    --       Mark     : access Gtk.Text_Mark.Gtk_Text_Mark_Record'Class);
    --
    --  - "mark_deleted"
@@ -590,15 +591,15 @@ package Gtk.Text_Buffer is
    --    procedure Handler
    --      (Widget     : access Gtk_Text_Buffer_Record'Class;
    --       Tag        : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
-   --       Start_Char : access Gtk.Text_Iter.Gtk_Text_Iter;
-   --       End_Char   : access Gtk.Text_Iter.Gtk_Text_Iter);
+   --       Start_Char : Gtk.Text_Iter.Gtk_Text_Iter;
+   --       End_Char   : Gtk.Text_Iter.Gtk_Text_Iter);
    --
    --  - "remove_tag"
    --    procedure Handler
    --      (Widget     : access Gtk_Text_Buffer_Record'Class;
    --       Tag        : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
-   --       Start_Char : access Gtk.Text_Iter.Gtk_Text_Iter;
-   --       End_Char   : access Gtk.Text_Iter.Gtk_Text_Iter);
+   --       Start_Char : Gtk.Text_Iter.Gtk_Text_Iter;
+   --       End_Char   : Gtk.Text_Iter.Gtk_Text_Iter);
    --
    --  - "begin_user_action"
    --    procedure Handler (Widget : access Gtk_Text_Buffer_Record'Class);
