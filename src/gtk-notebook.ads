@@ -121,6 +121,12 @@ package Gtk.Notebook is
    procedure Set_Tab_Border
      (Notebook     : access Gtk_Notebook_Record;
       Border_Width : in Gint);
+   procedure Set_Tab_Hborder
+     (Notebook     : access Gtk_Notebook_Record;
+      Border_Width : in Gint);
+   procedure Set_Tab_Vborder
+     (Notebook     : access Gtk_Notebook_Record;
+      Border_Width : in Gint);
    procedure Set_Tab_Label_Packing
      (Notebook  : access Gtk_Notebook_Record;
       Child      : access Gtk.Widget.Gtk_Widget_Record'Class;

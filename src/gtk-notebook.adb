@@ -534,6 +534,32 @@ package body Gtk.Notebook is
       Internal (Get_Object (Notebook), Border_Width);
    end Set_Tab_Border;
 
+   ---------------------
+   -- Set_Tab_Hborder --
+   ---------------------
+
+   procedure Set_Tab_Hborder (Notebook : access Gtk_Notebook_Record;
+                              Border_Width : Gint)
+   is
+      procedure Internal (Notebook : System.Address; Border_Width : Gint);
+      pragma Import (C, Internal, "gtk_notebook_set_tab_hborder");
+   begin
+      Internal (Get_Object (Notebook), Border_Width);
+   end Set_Tab_Hborder;
+
+   --------------------
+   -- Set_Tab_Border --
+   --------------------
+
+   procedure Set_Tab_Vborder (Notebook : access Gtk_Notebook_Record;
+                              Border_Width : Gint)
+   is
+      procedure Internal (Notebook : System.Address; Border_Width : Gint);
+      pragma Import (C, Internal, "gtk_notebook_set_tab_vborder");
+   begin
+      Internal (Get_Object (Notebook), Border_Width);
+   end Set_Tab_Vborder;
+
    -----------------
    -- Set_Tab_Pos --
    -----------------
@@ -560,6 +586,8 @@ package body Gtk.Notebook is
       Gen_Set (N, "Notebook", "show_border", File);
       Gen_Set (N, "Notebook", "show_tabs", File);
       Gen_Set (N, "Notebook", "tab_border", File);
+      Gen_Set (N, "Notebook", "tab_hborder", File);
+      Gen_Set (N, "Notebook", "tab_vborder", File);
       Gen_Set (N, "Notebook", "tab_pos", File);
 
       if not N.Specific_Data.Has_Container then
@@ -602,6 +630,18 @@ package body Gtk.Notebook is
 
       if S /= null then
          Set_Tab_Border (Gtk_Notebook (Notebook), Gint'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "tab_hborder");
+
+      if S /= null then
+         Set_Tab_Hborder (Gtk_Notebook (Notebook), Gint'Value (S.all));
+      end if;
+
+      S := Get_Field (N, "tab_vborder");
+
+      if S /= null then
+         Set_Tab_Vborder (Gtk_Notebook (Notebook), Gint'Value (S.all));
       end if;
 
       S := Get_Field (N, "tab_pos");
