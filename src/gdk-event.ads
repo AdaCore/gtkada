@@ -98,30 +98,37 @@ package Gdk.Event is
    --  Type: Key_Press, Key_Release
 
    subtype Gdk_Event_Property is Gdk_Event;
-   --  Some property of the window was modified
+   --  Some property of the window was modified. GtkAda provides a higher
+   --  level interface, and you almost never need to use this event.
    --  Relevent fields: Atom, Time, Property_State
    --  Type: Property_Notify
 
    subtype Gdk_Event_Proximity is Gdk_Event;
    --  from gtk+: "This event type will be used pretty rarely. It only is
    --  important for XInput aware programs that are drawing their own
-   --  cursor"
+   --  cursor". This is only used with non standard input devices, like
+   --  graphic tablets.
    --  Relevant fields: Time, Source, Device_Id
    --  Type: Proximity_In, Proximity_Out
 
    subtype Gdk_Event_Visibility is Gdk_Event;
    --  The visibility state of the window (partially visibly, fully visible,
-   --  hidden)
+   --  hidden). This event almost never need to be used, since other events
+   --  are generated at the same time, like expose_events
    --  Relevant fields: Visibility_State
    --  type: Visibility_Notify
 
    subtype Gdk_Event_Selection is Gdk_Event;
-   --  Something has been selected inside the window
+   --  This is how X11 implements a simple cut-and-paste mechanism. However,
+   --  GtkAda provides a higher level interface to the selection mechanism,
+   --  so this event will almost never be used.
    --  Relevant fields: Selection, Target, Property, Requestor, Time
    --  Type: Selection_Clear, Selection_Request, Selection_Notify
 
    subtype Gdk_Event_Client is Gdk_Event;
-   --  ???
+   --  This is an event used to send arbitrary data from one X application
+   --  to another. This event too is almost never used, and is not documented
+   --  here. Please consult an X11 documentation for more information.
    --  Relevant fields: Message_Type, Data
    --  Type: Client_Event
 
@@ -218,6 +225,8 @@ package Gdk.Event is
    function Get_Ytilt     (Event : in Gdk_Event) return Gdouble;
    --  These are currently set to constants in the gtk+ code itself, so they
    --  are most probably useless... Their respective values are 0.5, 0 and 0
+   --  They are only used with some special input devices, like drawing
+   --  tablets,...
 
    function Get_Source (Event : in Gdk_Event)
                        return Gdk.Types.Gdk_Input_Source;
@@ -226,6 +235,8 @@ package Gdk.Event is
    function Get_Device_Id (Event : in Gdk_Event)
                           return Gdk.Types.Gdk_Device_Id;
    --  Set to a constant for now in the gtk+ source... Probably useless.
+   --  Since multiple input devices can be used at the same time, like a mouse
+   --  and a graphic tablet, this indicated which one generated the event.
 
    function Get_Area (Event : in Gdk_Event) return Rectangle.Gdk_Rectangle;
    --  The minimal area on which the event applies (For Expose_Events, this is
