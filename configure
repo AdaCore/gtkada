@@ -793,7 +793,7 @@ test "$host_alias" != "$target_alias" &&
       BUILD_SHARED=no
       FPIC=
       ;;
-   i?86-*sysv*)
+   *sysv4*)
       SO_OPTS=-Wl,-h,
       BUILD_SHARED=no
       FPIC=
