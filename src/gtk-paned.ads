@@ -172,13 +172,13 @@ package Gtk.Paned is
    --  Return the child displayed in the bottom or right pane.
 
    function Get_Child1_Resize (Paned : access Gtk_Paned_Record) return Boolean;
-   --  Get the value of the resize attribute for the child child.
+   --  Get the value of the resize attribute for the first child.
 
    function Get_Child2_Resize (Paned : access Gtk_Paned_Record) return Boolean;
    --  Get the value of the resize attribute for the second child.
 
    function Get_Child1_Shrink (Paned : access Gtk_Paned_Record) return Boolean;
-   --  Get the value of the shrink attribute for the child child.
+   --  Get the value of the shrink attribute for the first child.
 
    function Get_Child2_Shrink (Paned : access Gtk_Paned_Record) return Boolean;
    --  Get the value of the shrink attribute for the second child.
