@@ -30,9 +30,7 @@
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Calendar; use Gtk.Calendar;
-with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 
 package body Create_Calendar is

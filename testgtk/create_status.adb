@@ -30,7 +30,6 @@
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Enums; use Gtk.Enums;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk; use Gtk;

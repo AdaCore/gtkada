@@ -31,7 +31,6 @@ with Glib;              use Glib;
 with Gtk;               use Gtk;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Check_Button;  use Gtk.Check_Button;
-with Gtk.Enums;
 
 package body Create_Check_Buttons is
 

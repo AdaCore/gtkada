@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
 with Gtk.Adjustment; use Gtk.Adjustment;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Enums; use Gtk.Enums;

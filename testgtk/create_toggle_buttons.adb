@@ -30,7 +30,6 @@
 with Glib;               use Glib;
 with Gtk;                use Gtk;
 with Gtk.Box;            use Gtk.Box;
-with Gtk.Enums;
 with Gtk.Toggle_Button;  use Gtk.Toggle_Button;
 with Gtk.Signal;
 with Gtk.Widget;         use Gtk.Widget;

@@ -36,10 +36,8 @@ with Gtk.Enums; use Gtk.Enums;
 with Gtk.Hbutton_Box; use Gtk.Hbutton_Box;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Text; use Gtk.Text;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 
 with Ada.Text_IO; use Ada.Text_IO;

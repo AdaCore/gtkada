@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
-with Gdk.Types; use Gdk.Types;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Signal; use Gtk.Signal;

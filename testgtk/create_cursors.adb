@@ -46,7 +46,6 @@ with Gtk.Signal; use Gtk.Signal;
 with Gtk.Spin_Button; use Gtk.Spin_Button;
 with Gtk.Style;  use Gtk.Style;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 
 with Ada.Text_IO; use Ada.Text_IO;

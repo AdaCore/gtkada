@@ -37,7 +37,6 @@ with Gtk.Label; use Gtk.Label;
 with Gtk.Paned; use Gtk.Paned;
 with Gtk.Table; use Gtk.Table;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 with Common; use Common;
 

@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
 with Gdk.Bitmap; use Gdk.Bitmap;
 with Gdk.Pixmap; use Gdk.Pixmap;
 with Gtk.Box; use Gtk.Box;

@@ -31,16 +31,13 @@ with Gdk;  use Gdk;
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
-with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Tips_Query; use Gtk.Tips_Query;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Tooltips; use Gtk.Tooltips;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 
 with Ada.Text_IO;

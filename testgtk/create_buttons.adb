@@ -35,7 +35,6 @@ with Gtk.Frame; use Gtk.Frame;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Table; use Gtk.Table;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 
 package body Create_Buttons is

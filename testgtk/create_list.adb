@@ -40,7 +40,6 @@ with Gtk.Radio_Menu_Item;  use Gtk.Radio_Menu_Item;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtkada.Types; use Gtkada.Types;
 
 with Ada.Text_IO;   use Ada.Text_IO;

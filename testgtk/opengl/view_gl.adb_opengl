@@ -7,7 +7,6 @@ with Gdk.Types;        use Gdk.Types;
 with Gdk.Window;       use Gdk.Window;
 with Glib;             use Glib;
 with Glu_H;            use Glu_H;
-with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Glarea;       use Gtk.Glarea;
 with Gtk.Signal;       use Gtk.Signal;
 with Interfaces.C;     use Interfaces.C;

@@ -31,12 +31,10 @@ with Gdk;  use Gdk;
 with Glib; use Glib;
 with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 
 with Ada.Text_IO;

@@ -34,7 +34,6 @@ with Gtk.Enums; use Gtk.Enums;
 with Gtk.Frame; use Gtk.Frame;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Table; use Gtk.Table;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 
 package body Create_Arrow is

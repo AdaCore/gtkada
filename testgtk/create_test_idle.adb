@@ -36,7 +36,6 @@ with Gtk.Label; use Gtk.Label;
 with Gtk.Main; use Gtk.Main;
 with Gtk.Radio_Button; use Gtk.Radio_Button;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
 with Common; use Common;

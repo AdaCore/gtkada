@@ -38,7 +38,6 @@ with Gtk.Label; use Gtk.Label;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Spin_Button; use Gtk.Spin_Button;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 
 package body Create_Spin is

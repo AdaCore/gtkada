@@ -151,7 +151,7 @@ package body Create_Shapes is
       Shape_Combine_Mask (Window, Mask, Px, Py);
       Id := Win_Cb.Connect (Window, "button_press_event",
                             Shape_Pressed'Access);
-      Id := Win_Cb2.Connect (Window, "button_realease_event",
+      Id := Win_Cb2.Connect (Window, "button_release_event",
                              Shape_Released'Access);
       Id := Win_Cb3.Connect (Window, "motion_notify_event",
                              Shape_Motion'Access);

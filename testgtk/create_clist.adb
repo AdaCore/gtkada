@@ -46,7 +46,6 @@ with Gtk.Scrolled_Window;  use Gtk.Scrolled_Window;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Style; use Gtk.Style;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
 with Gtkada.Types; use Gtkada.Types;
 with Common; use Common;
 

@@ -32,7 +32,6 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Main; use Gtk.Main;
-with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
 with Common; use Common;
