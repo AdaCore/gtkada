@@ -177,7 +177,7 @@ package Glib.Glade is
    procedure Gen_Signal
      (N            : Node_Ptr;
       File         : File_Type;
-      Widget_Class : String_Ptr := null);
+      Widget_Class : String := "");
    --  Output to file calls to connect if N contains any signal.
    --  Also register the class of the widget that uses signals.
    --  Widget_Class if not null specifies the class of the widget contained in
@@ -200,4 +200,26 @@ package Glib.Glade is
    --  package, by applying if needed GtkAda special exceptions in the naming
    --  rules (e.g GtkEntry -> Gtk.GEntry, GtkHScale -> Gtk.Scale).
 
+   ----------------------------------------
+   -- Field accessors, utility functions --
+   ----------------------------------------
+
+   function Get_Property
+     (N        : Node_Ptr;
+      Property : String) return String_Ptr;
+   --  Return the value of the property Property if it exists in the direct
+   --  children of N.
+
+   function Get_Class (N : Node_Ptr) return String;
+   --  Return the class of N if N is a widget. Otherwise return "".
+
+   function Get_Name (N : Node_Ptr) return String;
+   --  Return the name of N.
+
+   function Get_Property
+     (N        : Node_Ptr;
+      Property : String;
+      Default  : String := "") return String;
+   --  Return the propertu Property in N, or Default if the property was not
+   --  found.
 end Glib.Glade;
