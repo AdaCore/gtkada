@@ -172,9 +172,9 @@ package body Gtk is
    -- Type_Name --
    ---------------
 
-   function Type_Name (Type_Num : in Gint) return String
+   function Type_Name (Type_Num : in Gtk_Type) return String
    is
-      function Internal (Type_Num : in Gint)
+      function Internal (Type_Num : in Gtk_Type)
                          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_type_name");
    begin
