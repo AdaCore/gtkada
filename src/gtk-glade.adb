@@ -2,7 +2,7 @@
 --                   Gate - GtkAda Components                        --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -546,7 +546,7 @@ package body Gtk.Glade is
 
                declare
                   Pixmaps : constant Node_Ptr := Find_Tag
-                    (Project, "pixmaps_directory");
+                    (Project.Child, "pixmaps_directory");
                begin
                   if Pixmaps /= null then
                      Put_Line (Output, "   Pixmaps_Dir : constant String := """
