@@ -227,20 +227,6 @@ package body Gtk.Paned is
    end Pack2;
 
    ---------------------
-   -- Set_Gutter_Size --
-   ---------------------
-
-   procedure Set_Gutter_Size (Paned : access Gtk_Paned_Record;
-                              Size  : in Guint16)
-   is
-      procedure Internal (Paned : in System.Address;
-                          Size  : in Gint);
-      pragma Import (C, Internal, "gtk_paned_set_gutter_size");
-   begin
-      Internal (Get_Object (Paned), Guint16'Pos (Size));
-   end Set_Gutter_Size;
-
-   ---------------------
    -- Set_Handle_Size --
    ---------------------
 
@@ -277,16 +263,5 @@ package body Gtk.Paned is
    begin
       return Internal (Get_Object (Paned));
    end Get_Handle_Size;
-
-   ---------------------
-   -- Get_Gutter_Size --
-   ---------------------
-
-   function Get_Gutter_Size (Paned : access Gtk_Paned_Record) return Guint16 is
-      function Internal (Paned : System.Address) return Guint16;
-      pragma Import (C, Internal, "ada_gtk_paned_get_gutter_size");
-   begin
-      return Internal (Get_Object (Paned));
-   end Get_Gutter_Size;
 
 end Gtk.Paned;

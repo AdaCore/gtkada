@@ -154,14 +154,6 @@ package Gtk.Paned is
    function Get_Handle_Size (Paned : access Gtk_Paned_Record) return Guint16;
    --  Return the current size in pixels of the handle.
 
-   procedure Set_Gutter_Size (Paned : access Gtk_Paned_Record;
-                              Size  : in Guint16);
-   --  Set the width in pixels of the gutter.
-   --  This is the area between the two panes.
-
-   function Get_Gutter_Size (Paned : access Gtk_Paned_Record) return Guint16;
-   --  Return the width in pixels of the gutter.
-
    function Get_Child1 (Paned : access Gtk_Paned_Record)
                        return Gtk.Widget.Gtk_Widget;
    --  Return the child displayed in the top or left pane.
