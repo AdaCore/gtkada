@@ -442,7 +442,8 @@ package Gtkada.MDI is
      (MDI               : access MDI_Window_Record;
       Orientation       : Gtk.Enums.Gtk_Orientation;
       Reuse_If_Possible : Boolean := False;
-      After             : Boolean := False);
+      After             : Boolean := False;
+      Width, Height     : Glib.Gint := 0);
    --  Split the central area. The split starting from either the currently
    --  selected child or the last child that had the focus in that area.
    --  If Reuse_If_Possible is True, and the current child is already splitted
@@ -450,6 +451,8 @@ package Gtkada.MDI is
    --  If After is true, then the currently selected child is put below or
    --  to the right in the splitted area, otherwise it is left on the top or
    --  left of that area).
+   --  Width and Height indicate the desired geometry for the splitted area,
+   --  0 indicate a 50/50 split.
 
    ----------------------
    -- Desktop Handling --
