@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --                   GATE - GtkAda Components                        --
 --                                                                   --
---                      Copyright (C) 1999                           --
+--                   Copyright (C) 1999-2000                         --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
@@ -31,11 +31,12 @@ with Ada.Exceptions; use Ada.Exceptions;
 with System.Assertions;
 
 procedure Gate is
-   N                     : Node_Ptr;
-   S                     : String_Ptr;
-   Arg                   : Natural;
-   Flag_Project          : Boolean := False;
-   Flag_Source_Directory : Boolean := False;
+   N                      : Node_Ptr;
+   S                      : String_Ptr;
+   Arg                    : Natural;
+   Flag_Project           : Boolean := False;
+   Flag_Source_Directory  : Boolean := False;
+   Flag_Pixmaps_Directory : Boolean := False;
 
    procedure Usage;
 
@@ -43,8 +44,9 @@ procedure Gate is
    begin
       Put_Line ("Usage: " & Command_Name & " switches project-file");
       New_Line;
-      Put_Line ("  -p    Output the name of the project and exit");
+      Put_Line ("  -p    Output the program name and exit");
       Put_Line ("  -s    Output the name of the source directory and exit");
+      Put_Line ("  -x    Output the name of the pixmaps directory and exit");
       Set_Exit_Status (1);
    end Usage;
 
@@ -64,6 +66,11 @@ begin
          Arg := Arg + 1;
       end if;
 
+      if Argument (Arg) = "-x" then
+         Flag_Pixmaps_Directory := True;
+         Arg := Arg + 1;
+      end if;
+
       if Arg > Argument_Count then
          Usage;
          return;
@@ -77,12 +84,14 @@ begin
 
       N := Parse (Argument (Arg));
 
-      if Flag_Project or else Flag_Source_Directory then
+      if Flag_Project or else Flag_Source_Directory
+        or else Flag_Pixmaps_Directory
+      then
          if Flag_Project then
-            S := Get_Field (Find_Tag (N.Child, "project"), "name");
+            S := Get_Field (Find_Tag (N.Child, "project"), "program_name");
 
             if S = null then
-               New_Line;
+               Put_Line ("<no_name>");
             else
                Put_Line (S.all);
             end if;
@@ -92,7 +101,18 @@ begin
             S := Get_Field (Find_Tag (N.Child, "project"), "source_directory");
 
             if S = null then
-               New_Line;
+               Put_Line ("<no_name>");
+            else
+               Put_Line (S.all);
+            end if;
+         end if;
+
+         if Flag_Pixmaps_Directory then
+            S := Get_Field (Find_Tag (N.Child, "project"),
+              "pixmaps_directory");
+
+            if S = null then
+               Put_Line ("<no_name>");
             else
                Put_Line (S.all);
             end if;
