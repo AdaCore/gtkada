@@ -43,7 +43,9 @@
 --
 --  GtkAda supports several drag-and-drop protocols, so as to be able to
 --  communicate with the maximum number of applications. These protocols are
---  Xdnd, Motif, and Windows.
+--  Xdnd and Motif.
+--
+--  Note that drag-and-drop is currently not supported under Windows systems.
 --
 --  Below is a summary of what is needed to add drag-and-drop capabilities to
 --  your application. We highly recommend that you look at, and understand,
