@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Ada.Characters.Handling; use Ada.Characters.Handling;
+with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 
 package body Glib.Glade is
 
@@ -256,22 +257,42 @@ package body Glib.Glade is
       return R (1 .. K - 1);
    end To_Ada;
 
+   --------------
+   -- To_Float --
+   --------------
+
+   function To_Float (S : String) return String is
+   begin
+      if Index (S, ".") /= 0 then
+         return S;
+      else
+         return S & ".0";
+      end if;
+   end To_Float;
+
    -------------
    -- Gen_Set --
    -------------
 
    procedure Gen_Set
      (N : Node_Ptr; Class, Name : String;
-      File : File_Type; Delim : Character := ' ')
+      File : File_Type; Delim : Character := ' '; Is_Float : Boolean := False)
    is
       P : Node_Ptr := Find_Tag (N.Child, Name);
 
    begin
       if P /= null then
          Add_Package (Class);
-         Put (File, "   " & Class & ".Set_" & To_Ada (Name) & " (Gtk_" &
-           Class & " (" & To_Ada (Find_Tag (N.Child, "name").Value.all) &
-           "), ");
+
+         if Is_Float then
+            Put (File, "   " & Class & ".Set_" & To_Ada (Name) & " (Gtk_" &
+              Class & " (" & To_Float (Find_Tag (N.Child, "name").Value.all) &
+              "), ");
+         else
+            Put (File, "   " & Class & ".Set_" & To_Ada (Name) & " (Gtk_" &
+              Class & " (" & To_Ada (Find_Tag (N.Child, "name").Value.all) &
+              "), ");
+         end if;
 
          if Delim /= ' ' then
             Put_Line (File, Delim & P.Value.all & Delim & ");");
@@ -298,7 +319,8 @@ package body Glib.Glade is
    procedure Gen_Set
      (N : Node_Ptr;
       Class, Name, Field1, Field2, Field3, Field4 : String;
-      File : File_Type)
+      File : File_Type;
+      Is_Float : Boolean := False)
    is
       P : String_Ptr := Get_Field (N, Field1);
       Q : String_Ptr := Get_Field (N, Field2);
@@ -311,21 +333,34 @@ package body Glib.Glade is
         and then (Field4 = "" or else S /= null)
       then
          Add_Package (Class);
-         Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class & " (" &
-           To_Ada (Get_Field (N, "name").all) & "), " &
-           To_Ada (P.all) & ", " & To_Ada (Q.all));
+
+         if Is_Float then
+            Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
+              " (" & To_Ada (Get_Field (N, "name").all) & "), " &
+              To_Float (P.all) & ", " & To_Float (Q.all));
+         else
+            Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
+              " (" & To_Ada (Get_Field (N, "name").all) & "), " &
+              To_Ada (P.all) & ", " & To_Ada (Q.all));
+         end if;
 
          if R /= null then
-            Put (File, ", " & To_Ada (R.all));
+            if Is_Float then
+               Put (File, ", " & To_Float (R.all));
+            else
+               Put (File, ", " & To_Ada (R.all));
+            end if;
 
             if S /= null then
-               Put_Line (File, ", " & To_Ada (S.all) & ");");
-            else
-               Put_Line (File, ");");
+               if Is_Float then
+                  Put (File, ", " & To_Float (S.all));
+               else
+                  Put (File, ", " & To_Ada (S.all));
+               end if;
             end if;
-         else
-            Put_Line (File, ");");
          end if;
+
+         Put_Line (File, ");");
       end if;
    end Gen_Set;
 
@@ -414,9 +449,12 @@ package body Glib.Glade is
          Put (File, ", " & To_Ada (Param2));
          Put_Line (File, ", " & To_Ada (Param3) & ", ");
          Put (File, "      " & To_Ada (Param4));
-         Put (File, ", " & To_Ada (Param5));
-         Put_Line (File, ");");
 
+         if Param5 /= "" then
+            Put (File, ", " & To_Ada (Param5));
+         end if;
+
+         Put_Line (File, ");");
          N.Specific_Data.Created := True;
       end if;
    end Gen_New;
