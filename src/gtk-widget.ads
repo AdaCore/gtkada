@@ -75,6 +75,9 @@ package Gtk.Widget is
    --  use this.
    pragma Pack (Gtk_Requisition);
 
+   type Gtk_Requisition_Access is access all Gtk_Requisition;
+   --  This type is used to create new widgets.
+
    type Gtk_Allocation is record
       X      : Gint16;
       Y      : Gint16;
@@ -85,6 +88,9 @@ package Gtk.Widget is
    --  See the section in the user guide on how to create new widgets for more
    --  information.
    pragma Pack (Gtk_Allocation);
+
+   type Gtk_Allocation_Access is access all Gtk_Allocation;
+   --  This type is used to create new widgets.
 
    -------------------------
    -- Widgets' life cycle --
