@@ -27,10 +27,10 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
--- <description>
--- This package defines the Gtk_Text_Attributes type.
--- </description>
--- <c_version>1.3.4</c_version>
+--  <description>
+--  This package defines the Gtk_Text_Attributes type.
+--  </description>
+--  <c_version>1.3.4</c_version>
 
 with Glib; use Glib;
 with Pango.Font;
