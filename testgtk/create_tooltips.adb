@@ -43,13 +43,12 @@ with Gtk.Tooltips; use Gtk.Tooltips;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
+with Common; use Common;
 
 with Ada.Text_IO;
 
 package body Create_Tooltips is
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Tooltips_Data is new User_Data (Gtk_Tooltips);
    package Query_Cb is new Object_Callback (Gtk_Tips_Query);
    package Entered_Cb is new Tips_Query_Callback (Gtk_Toggle_Button);

@@ -43,11 +43,10 @@ with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
+with Common; use Common;
 
 package body Create_Spin is
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Label_User is new User_Data (Gtk_Label);
    package Spin_O_Cb is new Signal.Object_Callback (Gtk_Spin_Button);
    package Spin_Cb is new Signal.Callback (Gtk_Toggle_Button,

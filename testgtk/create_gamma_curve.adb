@@ -36,15 +36,14 @@ with Gtk.Signal; use Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
+with Common; use Common;
 
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Text_IO;
 
 package body Create_Gamma_Curve is
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
    package Float_P is new Ada.Numerics.Generic_Elementary_Functions (Gfloat);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
    Window : aliased Gtk_Window;
    Count  : Gint := 0;

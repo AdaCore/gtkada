@@ -45,11 +45,11 @@ with Gtk.Drawing_Area;
 with Gtk.Scrollbar;
 with Gtk.Signal;
 with Gtk.Style;
+with Gtk.Window; use Gtk.Window;
 with Gtk.Widget; use Gtk.Widget;
+with Common; use Common;
 
 package body Create_Scroll_Test is
-
-   package Widget_Cb is new Signal.Object_Callback (Widget.Gtk_Widget);
 
    package Adjustment_Cb is new Signal.Callback
      (Widget_Type => Adjustment.Gtk_Adjustment,
@@ -64,9 +64,6 @@ package body Create_Scroll_Test is
      (Widget_Type => Drawing_Area.Gtk_Drawing_Area,
       Data_Type => Adjustment.Gtk_Adjustment,
       Cb_Type => Gdk.Event.Gdk_Event_Expose);
-
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
-
 
    Scroll_Test_Pos : Integer := 0;
    Scroll_Test_GC : Gdk.GC.Gdk_GC;
@@ -155,7 +152,7 @@ package body Create_Scroll_Test is
          Id := Widget2_Cb.Connect (Dialog, "destroy",
                                    Destroyed'Access,
                                    Dialog'Access);
-         Gtk.Dialog.Set_Title (Window => Dialog, Title => "Scroll Test");
+         Gtk.Window.Set_Title (Window => Dialog, Title => "Scroll Test");
          Container.Border_Width (Dialog, 0);
 
          Box.Gtk_New_Hbox (Widget => Hbox, Homogeneous => False, Spacing => 0);

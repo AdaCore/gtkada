@@ -38,14 +38,13 @@ with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
+with Common; use Common;
 
 with Ada.Text_IO;
 with Interfaces.C.Strings;
 
 package body Create_Status is
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Status_Cb is new Signal.Object_Callback (Gtk_Status_Bar);
 
    Window  : aliased Gtk.Window.Gtk_Window;

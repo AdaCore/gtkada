@@ -50,11 +50,10 @@ with Gtk.Tree_Item; use Gtk.Tree_Item;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
+with Common; use Common;
 
 package body Create_Tree is
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Tree_Cb is new Signal.Object_Callback (Gtk_Tree);
 
    Window : aliased Gtk.Window.Gtk_Window;

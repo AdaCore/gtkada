@@ -38,12 +38,11 @@ with Gtk.Signal; use Gtk.Signal;
 with Gtk.Vbutton_Box; use Gtk.Vbutton_Box;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
+with Common; use Common;
 with Gtk; use Gtk;
 
 package body Create_Button_Box is
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Void_Cb is new Signal.Void_Callback (Gtk_Button);
 
    Window : aliased Gtk_Window;

@@ -40,12 +40,12 @@ with Gtk.Object; use Gtk.Object;
 with Gtk.Progress_Bar; use Gtk.Progress_Bar;
 with Gtk.Tooltips; use Gtk.Tooltips;
 with Gtk.Widget; use Gtk.Widget;
+with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
+with Common; use Common;
 
 package body Create_Progress is
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Time_Cb   is new Gtk.Main.Timeout (Gtk_Progress_Bar);
 
    Window     : aliased Gtk.Dialog.Gtk_Dialog;

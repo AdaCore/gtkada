@@ -40,6 +40,7 @@ with Gtk.Separator; use Gtk.Separator;
 with Gtk.Style; use Gtk.Style;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
+with Common; use Common;
 with Gtk; use Gtk;
 
 with Interfaces.C.Strings;
@@ -47,8 +48,6 @@ with Interfaces.C.Strings;
 package body Create_Clist is
    package ICS renames Interfaces.C.Strings;
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Clist_Cb  is new Signal.Object_Callback (Gtk_Clist);
 
    Window : aliased Gtk.Window.Gtk_Window;

@@ -37,15 +37,14 @@ with Gtk.Misc; use Gtk.Misc;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
+with Gtk.Window; use Gtk.Window;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk; use Gtk;
+with Common; use Common;
 
 package body Create_Test_Timeout is
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Label_Timeout is new Timeout (Gtk_Label'Class);
-   package Label_Cb is new Signal.Object_Callback (Gtk_Label);
 
    Dialog : aliased Gtk_Dialog;
    Timeout   : Guint;

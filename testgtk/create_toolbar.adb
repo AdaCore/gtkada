@@ -41,12 +41,11 @@ with Gtk.Style; use Gtk.Style;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
+with Common; use Common;
 
 package body Create_Toolbar is
 
    package Toolbar_Cb is new Signal.Object_Callback (Gtk_Toolbar);
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
    function New_Pixmap (Filename   : in String;
                         Window     : in Gdk_Window'Class;

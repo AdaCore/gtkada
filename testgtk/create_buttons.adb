@@ -37,13 +37,12 @@ with Gtk.Separator; use Gtk.Separator;
 with Gtk.Table; use Gtk.Table;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
+with Common; use Common;
 with Gtk; use Gtk;
 
 package body Create_Buttons is
 
    package Button_Cb is new Signal.Object_Callback (Gtk_Button);
-   package Window_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
    Window : aliased Gtk.Window.Gtk_Window;
 
@@ -115,7 +114,7 @@ package body Create_Buttons is
          Show (Box2);
 
          Gtk_New (Close, Label => "Close");
-         Id := Window_Cb.Connect (Close, "clicked", Destroy'Access, Window);
+         Id := Widget_Cb.Connect (Close, "clicked", Destroy'Access, Window);
          Pack_Start (Box2, Close, Expand => True, Fill => True, Padding => 0);
          Set_Flags (Close, Can_Default);
          Grab_Default (Close);

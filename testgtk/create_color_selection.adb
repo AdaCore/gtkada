@@ -37,6 +37,7 @@ with Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window;
 with Ada.Text_IO;
+with Common; use Common;
 
 package body Create_Color_Selection is
 
@@ -48,8 +49,6 @@ package body Create_Color_Selection is
    package Exit_Cb is new Signal.Object_Callback
      (Widget_Type => Gtk.Widget.Gtk_Widget);
    --  Must be instanciated at library level !
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
-
 
    procedure Color_Changed (Dialog : in out Gtk_Color_Selection'Class);
    procedure Color_Ok (Widget : in out Button.Gtk_Button'Class;

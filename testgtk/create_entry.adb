@@ -40,14 +40,13 @@ with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
+with Common; use Common;
 with Gtk; use Gtk;
 
 package body Create_Entry is
 
    package Entry_Cb is new Signal.Callback (Widget_Type => Gtk_Check_Button,
                                             Data_Type   => Gtk_Entry);
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
    Window : aliased Gtk_Window;
 

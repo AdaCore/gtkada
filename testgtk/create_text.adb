@@ -48,13 +48,12 @@ with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
+with Common; use Common;
 
 with Ada.Text_IO; use Ada.Text_IO;
 
 package body Create_Text is
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Text_Cb is new Signal.Callback (Gtk_Toggle_Button, Gtk_Text);
 
    Window : aliased Gtk_Window;

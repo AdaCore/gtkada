@@ -20,7 +20,6 @@ man3ext = .3
 .PHONY:
 .PHONY: clean distclean mostlyclean maintainer-clean
 
-c_objects = misc.o misc-gnat.o
 target = testgtk
 
 CC = gcc
@@ -85,9 +84,3 @@ installdirs: ;
 	$(CC) -c $(ALL_GNATFLAGS) $<
 .ads.o:
 	$(CC) -c $(ALL_GNATFLAGS) $<
-
-misc.o: ../misc.c ../misc-joel.c ../misc-manu.c
-	$(CC) -c $(ALL_CFLAGS) ../misc.c
-
-misc-gnat.o: ../misc-gnat.c
-	$(CC) -c $(ALL_CFLAGS) ../misc-gnat.c

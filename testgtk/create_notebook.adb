@@ -52,13 +52,12 @@ with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
+with Common; use Common;
 
 with Interfaces.C.Strings;
 
 package body Create_Notebook is
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
    package Note_Cb is new Signal.Object_Callback (Gtk_Notebook);
    package Button_Cb is new Signal.Callback (Gtk_Check_Button, Gtk_Notebook);
    package Two_Cb is new Signal.Two_Callback (Gtk_Notebook, Gtk_Notebook,

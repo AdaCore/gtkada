@@ -37,14 +37,13 @@ with Gtk.Separator;
 with Gtk.Signal;
 with Gtk.Widget; use Gtk.Widget;
 with Gtk.Window;use Gtk.Window;
+with Common; use Common;
 
 package body Create_Check_Buttons is
 
    package Exit_Cb is new Signal.Object_Callback
      (Widget_Type => Gtk.Widget.Gtk_Widget);
    --  Must be instanciated at library level !
-
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
 
    New_Window : aliased Window.Gtk_Window;

@@ -36,13 +36,11 @@ with Gtk.Misc; use Gtk.Misc;
 with Gtk.Signal; use Gtk.Signal;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Widget; use Gtk.Widget;
+with Gtk.Window; use Gtk.Window;
+with Common; use Common;
 with Gtk; use Gtk;
 
 package body Create_Dialog is
-
-   package Label_Cb is new Signal.Object_Callback (Gtk_Label);
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Widget);
-   package Widget2_Cb is new Signal.Callback (Gtk_Widget, Gtk_Widget_Access);
 
    Dialog       : aliased Gtk.Dialog.Gtk_Dialog;
    Global_Label : Gtk_Label;
