@@ -38,6 +38,7 @@ with Gtk.Dialog;        use Gtk.Dialog;
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Label;         use Gtk.Label;
 with Gtk.Pixmap;        use Gtk.Pixmap;
+with Gtk.Stock;         use Gtk.Stock;
 with Gtk.Widget;        use Gtk.Widget;
 with Ada.Strings;       use Ada.Strings;
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
@@ -50,6 +51,8 @@ package body Gtkada.Dialogs is
    subtype String_20 is String (1 .. 20);
    --  Give enough room for translations
 
+   type String_Const_Ptr is access constant String;
+
    Dialog_Button_String : constant array (Button_Range) of String_20 :=
      ("Yes                 ",
       "No                  ",
@@ -60,6 +63,17 @@ package body Gtkada.Dialogs is
       "Retry               ",
       "Ignore              ",
       "Help                ");
+
+   Dialog_Button_Stock : constant array (Button_Range) of String_Const_Ptr :=
+     (Stock_Yes'Access,
+      Stock_No'Access,
+      null,
+      Stock_Ok'Access,
+      Stock_Cancel'Access,
+      null,
+      null,
+      null,
+      Stock_Help'Access);
 
    type Gtkada_Dialog_Record is new Gtk_Dialog_Record with record
       Value    : Message_Dialog_Buttons := Button_None;
@@ -210,7 +224,12 @@ package body Gtkada.Dialogs is
          if (Buttons and
              2 ** Integer (J)) /= 0
          then
-            Gtk_New (Button, Trim (-Dialog_Button_String (J), Right));
+            if Dialog_Button_Stock (J) = null then
+               Gtk_New (Button, Trim (-Dialog_Button_String (J), Right));
+            else
+               Gtk_New_From_Stock (Button, Dialog_Button_Stock (J).all);
+            end if;
+
             Set_USize (Button, 80, -1);
             Pack_Start
               (Get_Action_Area (Dialog), Button,
