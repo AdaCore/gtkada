@@ -162,13 +162,13 @@ package body Glib.Glist is
       -- Get_Data --
       --------------
 
-      function Get_Data (List : in Glist) return System.Address is
+      function Get_Data_Address (List : in Glist) return System.Address is
          function Internal (List : in System.Address)
                             return System.Address;
          pragma Import (C, Internal, "ada_list_get_data");
       begin
          return Internal (Get_Object (List));
-      end Get_Data;
+      end Get_Data_Address;
 
       --------------------
       --  Get_Gpointer  --

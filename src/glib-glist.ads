@@ -58,7 +58,7 @@ package Glib.Glist is
       procedure Free (List : in out Glist);
 
       function Get_Data (List : in Glist) return Gpointer;
-      function Get_Data (List : in Glist) return System.Address;
+      function Get_Data_Address (List : in Glist) return System.Address;
       --  These two functions are basically the same, except that the first
       --  one first converts the System.Address to Gpointer.
       --  The second one is only useful if you need access directly to the

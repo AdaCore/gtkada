@@ -62,7 +62,7 @@ package body Gtk.Enums is
       Chars : Interfaces.C.Strings.chars_ptr;
    begin
       while Tmp /= String_List.Null_List loop
-         Chars := Convert_Chars_Ptr (String_List.Get_Data (Tmp));
+         Chars := Convert_Chars_Ptr (String_List.Get_Data_Address (Tmp));
          Interfaces.C.Strings.Free (Chars);
          Tmp := String_List.Next (Tmp);
       end loop;
