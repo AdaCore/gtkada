@@ -36,33 +36,10 @@ package body Gtk.Editable is
    -- Changed --
    -------------
 
-   procedure Changed (Editable : access Gtk_Editable_Record)
-   is
-      procedure Internal (Editable : in System.Address);
-      pragma Import (C, Internal, "gtk_editable_changed");
+   procedure Changed (Editable : access Gtk_Editable_Record) is
    begin
-      Internal (Get_Object (Editable));
+      raise Program_Error;
    end Changed;
-
-   ---------------------
-   -- Claim_Selection --
-   ---------------------
-
-   procedure Claim_Selection
-      (Editable : access Gtk_Editable_Record;
-       Claim    : in Boolean := True;
-       Time     : in Guint32)
-   is
-      procedure Internal
-         (Editable : in System.Address;
-          Claim    : in Gint;
-          Time     : in Guint32);
-      pragma Import (C, Internal, "gtk_editable_claim_selection");
-   begin
-      Internal (Get_Object (Editable),
-                Boolean'Pos (Claim),
-                Time);
-   end Claim_Selection;
 
    --------------------
    -- Copy_Clipboard --
@@ -170,42 +147,33 @@ package body Gtk.Editable is
    -- Get_Clipboard_Text --
    ------------------------
 
-   function Get_Clipboard_Text (Widget : access Gtk_Editable_Record)
-                                 return      String
-   is
-      function Internal (Widget : in System.Address)
-                         return      Interfaces.C.Strings.chars_ptr;
-      pragma Import (C, Internal, "ada_editable_get_clipboard_text");
+   function Get_Clipboard_Text
+     (Widget : access Gtk_Editable_Record) return String is
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
+      raise Program_Error;
+      return "";
    end Get_Clipboard_Text;
 
    ------------------
    -- Get_Editable --
    ------------------
 
-   function Get_Editable (Widget : access Gtk_Editable_Record)
-                          return      Boolean
-   is
-      function Internal (Widget : in System.Address)
-                         return      Guint;
-      pragma Import (C, Internal, "ada_editable_get_editable");
+   function Get_Editable
+     (Widget : access Gtk_Editable_Record) return Boolean is
    begin
-      return Internal (Get_Object (Widget)) /= 0;
+      raise Program_Error;
+      return False;
    end Get_Editable;
 
    -----------------------
    -- Get_Has_Selection --
    -----------------------
 
-   function Get_Has_Selection (Widget : access Gtk_Editable_Record)
-                               return      Boolean
-   is
-      function Internal (Widget : in System.Address)
-                         return      Guint;
-      pragma Import (C, Internal, "ada_editable_get_has_selection");
+   function Get_Has_Selection
+     (Widget : access Gtk_Editable_Record) return Boolean is
    begin
-      return Internal (Get_Object (Widget)) /= 0;
+      raise Program_Error;
+      return False;
    end Get_Has_Selection;
 
    ------------------
@@ -219,33 +187,34 @@ package body Gtk.Editable is
       return Internal (Get_Object (Editable));
    end Get_Position;
 
-   ---------------------------
-   -- Get_Selection_End_Pos --
-   ---------------------------
+   --------------------------
+   -- Get_Selection_Bounds --
+   --------------------------
 
-   function Get_Selection_End_Pos (Widget : access Gtk_Editable_Record)
-                                   return      Guint
+   procedure Get_Selection_Bounds
+     (Widget    : access Gtk_Editable_Record;
+      Success   : out Boolean;
+      Start_Pos : out Guint;
+      End_Pos   : out Guint)
    is
-      function Internal (Widget : in System.Address)
-                         return      Guint;
-      pragma Import (C, Internal, "ada_editable_get_selection_end_pos");
-   begin
-      return Internal (Get_Object (Widget));
-   end Get_Selection_End_Pos;
+      function Internal
+        (Widget  : System.Address;
+         Start   : access Guint;
+         End_Pos : access Guint) return Gint;
+      pragma Import (C, Internal, "gtk_editable_get_selection_bounds");
 
-   -----------------------------
-   -- Get_Selection_Start_Pos --
-   -----------------------------
+      S, E : aliased Guint;
 
-   function Get_Selection_Start_Pos (Widget : access Gtk_Editable_Record)
-                                     return      Guint
-   is
-      function Internal (Widget : in System.Address)
-                         return      Guint;
-      pragma Import (C, Internal, "ada_editable_get_selection_start_pos");
    begin
-      return Internal (Get_Object (Widget));
-   end Get_Selection_Start_Pos;
+      Success := Boolean'Val
+        (Internal
+          (Get_Object (Widget), S'Unchecked_Access, E'Unchecked_Access));
+
+      if Success then
+         Start_Pos := S;
+         End_Pos   := E;
+      end if;
+   end Get_Selection_Bounds;
 
    -----------------
    -- Insert_Text --
@@ -312,13 +281,11 @@ package body Gtk.Editable is
    -- Set_Editable --
    ------------------
 
-   procedure Set_Editable (Widget : access Gtk_Editable_Record;
-                           Editable : in Boolean := True)
-   is
-      procedure Internal (Widget : in System.Address; Editable : Guint);
-      pragma Import (C, Internal, "ada_editable_set_editable");
+   procedure Set_Editable
+     (Widget : access Gtk_Editable_Record;
+      Editable : in Boolean := True) is
    begin
-      Internal (Get_Object (Widget), Boolean'Pos (Editable));
+      raise Program_Error;
    end Set_Editable;
 
    ------------------

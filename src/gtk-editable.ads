@@ -51,16 +51,6 @@ package Gtk.Editable is
    procedure Changed (Editable : access Gtk_Editable_Record);
    --  Cause the "changed" signal to be emitted.
 
-   procedure Claim_Selection
-     (Editable : access Gtk_Editable_Record;
-      Claim    : in Boolean := True;
-      Time     : in Guint32);
-   --  If Claim is set to True, claim the ownership of the primary X selection.
-   --  Otherwise, release it. "Time" should be set to the
-   --  time of the last-change time for the specified selection. It is
-   --  discarded if it is earlier than the current last-change time, or
-   --  later than the current X server time.
-
    procedure Copy_Clipboard
      (Editable : access Gtk_Editable_Record;
       Time     : in Guint32);
@@ -109,13 +99,13 @@ package Gtk.Editable is
      (Widget : access Gtk_Editable_Record) return Boolean;
    --  Return True if the selection is owned by the widget.
 
-   function Get_Selection_End_Pos
-     (Widget : access Gtk_Editable_Record) return Guint;
-   --  Return the position of the end of the current selection.
-
-   function Get_Selection_Start_Pos
-     (Widget : access Gtk_Editable_Record) return Guint;
-   --  Return the position of the beginning of the current selection.
+   procedure Get_Selection_Bounds
+     (Widget    : access Gtk_Editable_Record;
+      Success   : out Boolean;
+      Start_Pos : out Guint;
+      End_Pos   : out Guint);
+   --  Return the position of the start and end of the current selection.
+   --  If success is false, Start_Pos and End_Pos are not modified.
 
    procedure Insert_Text
      (Editable : access Gtk_Editable_Record;
