@@ -309,11 +309,10 @@ package Gtk.Tree_View is
 
    procedure Get_Path_At_Pos
      (Tree_View : access Gtk_Tree_View_Record;
-      Window    : Gdk.Window.Gdk_Window;
       X         : Gint;
       Y         : Gint;
-      Path      : Gtk.Tree_Model.Gtk_Tree_Path;
-      Column    : Gtk.Tree_View_Column.Gtk_Tree_View_Column;
+      Path      : out Gtk.Tree_Model.Gtk_Tree_Path;
+      Column    : out Gtk.Tree_View_Column.Gtk_Tree_View_Column;
       Cell_X    : out Gint;
       Cell_Y    : out Gint;
       Row_Found : out Boolean);
