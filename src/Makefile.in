@@ -102,7 +102,7 @@ install_ali::
 	test -f .devel || $(CP) $(LIB_DIR)/*.ali .
 	test -f .devel || $(CHMOD) -w glib*.ali gdk*.ali gtk*.ali
 
-$(GATE_EX):: $(GATE_SRC) $(LIBNAME)
+$(GATE_EX):: $(GATE_SRC) $(LIBNAME) force
 	@if [ -f .devel ]; then \
 	  $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKEBINDFLAGS) $(GNATMAKELDFLAGS); \
 	else \
