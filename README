@@ -145,16 +145,15 @@ There are two kinds of problems you can encounter :
 may  get some  warnings messages,  mainly because  of  types problems.
 These warnings should not appear, as  we have tried to be as type safe
 as possible  in this package.  To  know exactly where  the problem is,
-please recompile your program with debug information, run gdb, and set
-a breakpoint on the function 'g_log'. Then run your  program as usual,
-using  the  'run'  command.  Then  send  us the  result  of  the  'bt'
-command. Here is a summary :
+we recommand using gdb. You will have to load the dynamic libraries
+first. Then  send  us the  result  of  the  'bt' command.
+Here is a summary :
      
-   $ gnatmake -f -g <your_program> `gtkada-config`
+   $ gnatmake -g <your_program> `gtkada-config`
    $ gdb <your_program_name>
    (gdb) break main
    (gdb) run
-   (gdb) break g_warning
+   (gdb) break g_log
    (gdb) cont
    ....
    (gdb) bt
