@@ -70,8 +70,8 @@ package body Gtk.Misc is
       use Widget;
    begin
       Generate (Gtk_Widget (Misc), N, File);
-      Gen_Set (N, "Misc", "Alignment", "xalign", "yalign", "", File);
-      Gen_Set (N, "Misc", "Padding", "xpad", "ypad", "", File);
+      Gen_Set (N, "Misc", "Alignment", "xalign", "yalign", "", "", File);
+      Gen_Set (N, "Misc", "Padding", "xpad", "ypad", "", "", File);
    end Generate;
 
    procedure Generate (Misc : in out Gtk_Misc;

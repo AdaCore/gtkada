@@ -146,9 +146,8 @@ package body Gtk.Window is
       Gen_New (N, "Window", Get_Field (N, "type").all, File => File);
       Generate (Gtk_Bin (Window), N, File);
       Gen_Set (N, "Window", "title", File, '"');
-      --  ??? Missing Set_Default
       Gen_Set (N, "Window", "Policy", "allow_shrink", "allow_grow",
-        "auto_shrink", File);
+        "auto_shrink", "", File);
       Gen_Set (N, "Window", "position", File);
    end Generate;
 

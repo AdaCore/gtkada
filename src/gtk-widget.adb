@@ -686,12 +686,8 @@ package body Gtk.Widget is
       Generate (Gtk_Object (Widget), N, File);
       Gen_Set (N, "Widget", "name", File, '"');
       Gen_Set (N, "Widget", "sensitive", File);
-      Gen_Set (N, "Widget", "UPosition", "x", "y", "", File);
-      Gen_Set (N, "Widget", "USize", "width", "height", "", File);
-      --  ??? Missing Set_Parent
-      --  ??? Missing Set_Events
-      --  ??? Missing Set_Default_Visual
-      --  ??? Missing Set_Default_Colormap
+      Gen_Set (N, "Widget", "UPosition", "x", "y", "", "", File);
+      Gen_Set (N, "Widget", "USize", "width", "height", "", "", File);
       Gen_Set (N, "Widget", "state", File);
 
       --  ??? Need to find a better way to call Pack_Start
