@@ -948,8 +948,13 @@ sub print_arguments_call
 	    $arg_num++;
 	    if (&convert_c_type ($type) eq "System.Address")
 	      {
-		push (@output, "Get_Object ("
-		      .  &create_ada_name ($name) . ")");
+		if ($type eq "GtkRequisition*") {
+		  push (@output, &create_ada_name ($name)
+			. "'Address");
+		} else {
+		  push (@output, "Get_Object ("
+			.  &create_ada_name ($name) . ")");
+		}
 	      }
 	    elsif (&convert_c_type ($type) eq "String")
 	      {
@@ -1021,6 +1026,7 @@ sub print_declaration
 	push (@output, "   function Get_Type return Gtk.Gtk_Type;\n");
 	push (@output, "   --  Return the internal value associated with"
 	      . " this widget.\n\n");
+	$has_get_type_subprogram = 0;
       }
 
     } else {
