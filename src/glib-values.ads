@@ -121,6 +121,9 @@ package Glib.Values is
 
    procedure Set_Boxed (Value : in out GValue; V_Address : System.Address);
    function  Get_Boxed (Value : GValue) return System.Address;
+   --  This is similar to Set_Address and Get_Address, except that the boxed
+   --  type might have been associated with some specific initialization and
+   --  finalization functions through Glib.Boxed_Type_Register_Static
 
    procedure Set_Enum (Value : in out GValue; V_Enum : Gint);
    function Get_Enum (Value : GValue) return Glib.Gint;
