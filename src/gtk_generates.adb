@@ -45,6 +45,12 @@ package body Gtk_Generates is
    procedure Widget_Destroy (Widget : System.Address);
    pragma Import (C, Widget_Destroy, "gtk_widget_destroy");
 
+   --------------------------
+   -- Accel_Label_Generate --
+   --------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Accel_Label_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_accel_label_get_type");
@@ -64,6 +70,12 @@ package body Gtk_Generates is
       Label_Generate (N, File);
    end Accel_Label_Generate;
 
+   ------------------------
+   -- Alignment_Generate --
+   ------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Alignment_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_alignment_get_type");
@@ -81,6 +93,12 @@ package body Gtk_Generates is
       Bin_Generate (N, File);
    end Alignment_Generate;
 
+   --------------------
+   -- Arrow_Generate --
+   --------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Arrow_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_arrow_get_type");
@@ -92,6 +110,12 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Misc_Generate (N, File);
    end Arrow_Generate;
+
+   ---------------------------
+   -- Aspect_Frame_Generate --
+   ---------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Aspect_Frame_Generate (N : Node_Ptr; File : File_Type) is
       S  : String_Ptr;
@@ -130,6 +154,10 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Frame_Generate (N, File);
    end Aspect_Frame_Generate;
+
+   ------------------
+   -- Box_Generate --
+   ------------------
 
    procedure Box_Generate (N : Node_Ptr; File : File_Type) is
       Child_Name : constant Node_Ptr := Find_Tag (N.Child, "child_name");
@@ -171,6 +199,10 @@ package body Gtk_Generates is
       end if;
    end Box_Generate;
 
+   ---------------------
+   -- Button_Generate --
+   ---------------------
+
    procedure Button_Generate (N : Node_Ptr; File : File_Type) is
       Child_Name : constant Node_Ptr   := Find_Tag (N.Child, "child_name");
       Label      : constant Node_Ptr := Find_Tag_With_Attribute
@@ -190,11 +222,11 @@ package body Gtk_Generates is
                Gen_New (N, "Button", File => File);
             else
                if Gettext_Support (N) then
-                  Gen_New (N, "Button", Label.Value.all,
+                  Gen_New (N, "Button", Adjust (Label.Value.all),
                      File => File,
                      Prefix => "-""", Postfix => """");
                else
-                  Gen_New (N, "Button", Label.Value.all,
+                  Gen_New (N, "Button", Adjust (Label.Value.all),
                      File => File,
                      Prefix => """", Postfix => """");
                end if;
@@ -209,6 +241,12 @@ package body Gtk_Generates is
       Container_Generate (N, File);
       Gen_Set (N, "relief", File);
    end Button_Generate;
+
+   -------------------------
+   -- Button_Box_Generate --
+   -------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Button_Box_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -226,6 +264,12 @@ package body Gtk_Generates is
         "child_ipad_x", "child_ipad_y", "", "", File);
    end Button_Box_Generate;
 
+   -----------------------
+   -- Calendar_Generate --
+   -----------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Calendar_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_calendar_get_type");
@@ -236,6 +280,12 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Widget_Generate (N, File);
    end Calendar_Generate;
+
+   ---------------------------
+   -- Check_Button_Generate --
+   ---------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Check_Button_Generate (N : Node_Ptr; File : File_Type) is
       Label : constant String_Ptr := Get_Field (N, "label");
@@ -262,6 +312,12 @@ package body Gtk_Generates is
       Toggle_Button_Generate (N, File);
    end Check_Button_Generate;
 
+   ------------------------------
+   -- Check_Menu_Item_Generate --
+   ------------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Check_Menu_Item_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_check_menu_item_get_type");
@@ -281,6 +337,12 @@ package body Gtk_Generates is
       Gen_Set (N, "active", File);
       Gen_Set (N, "always_show_toggle", File => File);
    end Check_Menu_Item_Generate;
+
+   --------------------
+   -- Clist_Generate --
+   --------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Clist_Generate (N : Node_Ptr; File : File_Type) is
       Columns, S : String_Ptr;
@@ -323,6 +385,12 @@ package body Gtk_Generates is
       end if;
    end Clist_Generate;
 
+   ------------------------------
+   -- Color_Selection_Generate --
+   ------------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Color_Selection_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_color_selection_get_type");
@@ -334,6 +402,12 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Box_Generate (N, File);
    end Color_Selection_Generate;
+
+   -------------------------------------
+   -- Color_Selection_Dialog_Generate --
+   -------------------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Color_Selection_Dialog_Generate
      (N : Node_Ptr; File : File_Type)
@@ -354,6 +428,12 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Window_Generate (N, File);
    end Color_Selection_Dialog_Generate;
+
+   --------------------
+   -- Combo_Generate --
+   --------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Combo_Generate (N : Node_Ptr; File : File_Type) is
       S     : String_Ptr;
@@ -417,12 +497,24 @@ package body Gtk_Generates is
       end if;
    end Combo_Generate;
 
+   ------------------------
+   -- Container_Generate --
+   ------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Container_Generate (N : Node_Ptr; File : File_Type) is
    begin
       Widget_Generate (N, File);
       Gen_Set (N, "border_width", File);
       Gen_Set (N, "resize_mode", File);
    end Container_Generate;
+
+   --------------------
+   -- Ctree_Generate --
+   --------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Ctree_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -433,6 +525,12 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Clist_Generate (N, File);
    end Ctree_Generate;
+
+   --------------------
+   -- Curve_Generate --
+   --------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Curve_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -448,6 +546,12 @@ package body Gtk_Generates is
         File => File, Is_Float => True);
    end Curve_Generate;
 
+   ---------------------
+   -- Dialog_Generate --
+   ---------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Dialog_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_dialog_get_type");
@@ -458,6 +562,12 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Window_Generate (N, File);
    end Dialog_Generate;
+
+   ---------------------------
+   -- Drawing_Area_Generate --
+   ---------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Drawing_Area_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -470,6 +580,12 @@ package body Gtk_Generates is
       Widget_Generate (N, File);
    end Drawing_Area_Generate;
 
+   ------------------------
+   -- Event_Box_Generate --
+   ------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Event_Box_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_event_box_get_type");
@@ -480,6 +596,12 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Bin_Generate (N, File);
    end Event_Box_Generate;
+
+   -----------------------------
+   -- File_Selection_Generate --
+   -----------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure File_Selection_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -500,6 +622,12 @@ package body Gtk_Generates is
       Window_Generate (N, File);
    end File_Selection_Generate;
 
+   --------------------
+   -- Fixed_Generate --
+   --------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Fixed_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_fixed_get_type");
@@ -511,6 +639,12 @@ package body Gtk_Generates is
       Container_Generate (N, File);
    end Fixed_Generate;
 
+   -----------------------------
+   -- Font_Selection_Generate --
+   -----------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Font_Selection_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_font_selection_get_type");
@@ -521,6 +655,12 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Notebook_Generate (N, File);
    end Font_Selection_Generate;
+
+   ------------------------------------
+   -- Font_Selection_Dialog_Generate --
+   ------------------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Font_Selection_Dialog_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -539,6 +679,12 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Window_Generate (N, File);
    end Font_Selection_Dialog_Generate;
+
+   --------------------
+   -- Frame_Generate --
+   --------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Frame_Generate (N : Node_Ptr; File : File_Type) is
       S  : String_Ptr;
@@ -570,6 +716,12 @@ package body Gtk_Generates is
       Gen_Set (N, "shadow_type", File);
    end Frame_Generate;
 
+   --------------------------
+   -- Gamma_Curve_Generate --
+   --------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Gamma_Curve_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_gamma_curve_get_type");
@@ -588,6 +740,12 @@ package body Gtk_Generates is
         To_Float (Get_Field (N, "min_y").all) & ", " &
         To_Float (Get_Field (N, "max_y").all) & ");");
    end Gamma_Curve_Generate;
+
+   ---------------------
+   -- GEntry_Generate --
+   ---------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure GEntry_Generate (N : Node_Ptr; File : File_Type) is
       Child_Name : constant Node_Ptr := Find_Tag (N.Child, "child_name");
@@ -617,6 +775,12 @@ package body Gtk_Generates is
       Gen_Set (N, "Visibility", "text_visible", "", "", "", File);
    end GEntry_Generate;
 
+   ---------------------
+   -- GRange_Generate --
+   ---------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure GRange_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_range_get_type");
@@ -627,6 +791,12 @@ package body Gtk_Generates is
       Widget_Generate (N, File);
       Gen_Set (N, "Update_Policy", "policy", File => File);
    end GRange_Generate;
+
+   -------------------------
+   -- Handle_Box_Generate --
+   -------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Handle_Box_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -642,6 +812,12 @@ package body Gtk_Generates is
       Gen_Set (N, "snap_edge", File);
    end Handle_Box_Generate;
 
+   --------------------------
+   -- Hbutton_Box_Generate --
+   --------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Hbutton_Box_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_hbutton_box_get_type");
@@ -652,6 +828,12 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Button_Box_Generate (N, File);
    end Hbutton_Box_Generate;
+
+   --------------------
+   -- Image_Generate --
+   --------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Image_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -676,6 +858,12 @@ package body Gtk_Generates is
       Misc_Generate (N, File);
    end Image_Generate;
 
+   ---------------------------
+   -- Input_Dialog_Generate --
+   ---------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Input_Dialog_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_input_dialog_get_type");
@@ -686,6 +874,10 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Dialog_Generate (N, File);
    end Input_Dialog_Generate;
+
+   --------------------
+   -- Label_Generate --
+   --------------------
 
    procedure Label_Generate (N : Node_Ptr; File : File_Type) is
       Child_Name : constant String_Ptr := Get_Field (N, "child_name");
@@ -762,6 +954,12 @@ package body Gtk_Generates is
       end if;
    end Label_Generate;
 
+   ---------------------
+   -- Layout_Generate --
+   ---------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Layout_Generate (N : Node_Ptr; File : File_Type) is
       Cur : constant String_Ptr := Get_Field (N, "name");
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
@@ -785,6 +983,12 @@ package body Gtk_Generates is
         To_Float (Get_Field (N, "vstep").all) & ");");
    end Layout_Generate;
 
+   -------------------
+   -- List_Generate --
+   -------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure List_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_list_get_type");
@@ -796,6 +1000,12 @@ package body Gtk_Generates is
       Container_Generate (N, File);
       Gen_Set (N, "selection_mode", File => File);
    end List_Generate;
+
+   ------------------------
+   -- List_Item_Generate --
+   ------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure List_Item_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -814,6 +1024,12 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Item_Generate (N, File);
    end List_Item_Generate;
+
+   -------------------
+   -- Menu_Generate --
+   -------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Menu_Generate (N : Node_Ptr; File : File_Type) is
       S  : constant String_Ptr := Get_Field (N.Parent, "class");
@@ -834,6 +1050,12 @@ package body Gtk_Generates is
       Menu_Shell_Generate (N, File);
    end Menu_Generate;
 
+   -----------------------
+   -- Menu_Bar_Generate --
+   -----------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Menu_Bar_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_menu_bar_get_type");
@@ -845,6 +1067,10 @@ package body Gtk_Generates is
       Menu_Shell_Generate (N, File);
       Gen_Set (N, "shadow_type", File => File);
    end Menu_Bar_Generate;
+
+   ------------------------
+   -- Menu_Item_Generate --
+   ------------------------
 
    procedure Menu_Item_Generate (N : Node_Ptr; File : File_Type) is
       S  : constant String_Ptr := Get_Field (N, "label");
@@ -870,6 +1096,12 @@ package body Gtk_Generates is
       Gen_Set (N, "right_justify", File);
    end Menu_Item_Generate;
 
+   -------------------
+   -- Misc_Generate --
+   -------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Misc_Generate (N : Node_Ptr; File : File_Type) is
    begin
       Widget_Generate (N, File);
@@ -877,6 +1109,12 @@ package body Gtk_Generates is
         Is_Float => True);
       Gen_Set (N, "Padding", "xpad", "ypad", "", "", File);
    end Misc_Generate;
+
+   -----------------------
+   -- Notebook_Generate --
+   -----------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Notebook_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -895,6 +1133,12 @@ package body Gtk_Generates is
       Gen_Set (N, "tab_vborder", File);
       Gen_Set (N, "tab_pos", File);
    end Notebook_Generate;
+
+   --------------------------
+   -- Option_Menu_Generate --
+   --------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Option_Menu_Generate (N : Node_Ptr; File : File_Type) is
       S  : String_Ptr;
@@ -950,6 +1194,12 @@ package body Gtk_Generates is
       end if;
    end Option_Menu_Generate;
 
+   --------------------
+   -- Paned_Generate --
+   --------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Paned_Generate (N : Node_Ptr; File : File_Type) is
       Class : constant String_Ptr := Get_Field (N, "class");
       function Build_Type return Glib.GType;
@@ -968,6 +1218,12 @@ package body Gtk_Generates is
       Gen_Set (N, "gutter_size", File);
       Gen_Set (N, "position", File);
    end Paned_Generate;
+
+   ---------------------
+   -- Pixmap_Generate --
+   ---------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Pixmap_Generate (N : Node_Ptr; File : File_Type) is
       Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
@@ -997,6 +1253,12 @@ package body Gtk_Generates is
       Misc_Generate (N, File);
    end Pixmap_Generate;
 
+   ----------------------
+   -- Preview_Generate --
+   ----------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Preview_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_preview_get_type");
@@ -1013,6 +1275,12 @@ package body Gtk_Generates is
       Gen_Set (N, "expand", File);
    end Preview_Generate;
 
+   -----------------------
+   -- Progress_Generate --
+   -----------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Progress_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_progress_get_type");
@@ -1024,6 +1292,12 @@ package body Gtk_Generates is
       Gen_Set (N, "activity_mode", File => File);
       Gen_Set (N, "show_text", File => File);
    end Progress_Generate;
+
+   ---------------------------
+   -- Progress_Bar_Generate --
+   ---------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Progress_Bar_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -1037,6 +1311,10 @@ package body Gtk_Generates is
       Gen_Set (N, "bar_style", File => File);
       Gen_Set (N, "orientation", File => File);
    end Progress_Bar_Generate;
+
+   ---------------------------
+   -- Radio_Button_Generate --
+   ---------------------------
 
    procedure Radio_Button_Generate (N : Node_Ptr; File : File_Type) is
       Label : constant String_Ptr := Get_Property (N, "label");
@@ -1084,10 +1362,11 @@ package body Gtk_Generates is
       Check_Button_Generate (N, File);
    end Radio_Button_Generate;
 
-   --  ??? This code is very similar to what is done for Radio Buttons
-   --  (see gtk-radio_button.adb), so it would be nice to share the code
-   --  Also, this code only takes into account the default case of an unnamed
-   --  radio group.
+   ------------------------------
+   -- Radio_Menu_Item_Generate --
+   ------------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Radio_Menu_Item_Generate (N : Node_Ptr; File : File_Type) is
       Label : constant String_Ptr := Get_Field (N, "label");
@@ -1126,6 +1405,12 @@ package body Gtk_Generates is
       Check_Menu_Item_Generate (N, File);
    end Radio_Menu_Item_Generate;
 
+   --------------------
+   -- Ruler_Generate --
+   --------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Ruler_Generate (N : Node_Ptr; File : File_Type) is
       Class : constant String_Ptr := Get_Field (N, "class");
       function Build_Type return Glib.GType;
@@ -1141,6 +1426,12 @@ package body Gtk_Generates is
         (N, "Range", "lower", "upper", "position", "max_size", File,
          Is_Float => True);
    end Ruler_Generate;
+
+   --------------------
+   -- Scale_Generate --
+   --------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Scale_Generate (N : Node_Ptr; File : File_Type) is
       S     : String_Ptr;
@@ -1172,6 +1463,12 @@ package body Gtk_Generates is
       Gen_Set (N, "draw_value", File => File);
       Gen_Set (N, "value_pos", File => File);
    end Scale_Generate;
+
+   ------------------------
+   -- Scrollbar_Generate --
+   ------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Scrollbar_Generate (N : Node_Ptr; File : File_Type) is
       S     : String_Ptr;
@@ -1216,6 +1513,12 @@ package body Gtk_Generates is
       GRange_Generate (N, File);
    end Scrollbar_Generate;
 
+   ------------------------------
+   -- Scrolled_Window_Generate --
+   ------------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Scrolled_Window_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_scrolled_window_get_type");
@@ -1229,18 +1532,35 @@ package body Gtk_Generates is
         "vscrollbar_policy", "", "", File);
    end Scrolled_Window_Generate;
 
+   ------------------------
+   -- Separator_Generate --
+   ------------------------
+
    procedure Separator_Generate (N : Node_Ptr; File : File_Type) is
-      Class : constant String_Ptr := Get_Field (N, "class");
-      function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_separator_get_type");
+      Class : constant String := Get_Class (N);
+      function Build_Hseparator return Glib.GType;
+      pragma Import (C, Build_Hseparator, "gtk_hseparator_get_type");
+      function Build_Vseparator return Glib.GType;
+      pragma Import (C, Build_Vseparator, "gtk_vseparator_get_type");
 
    begin
-      Widget := Widget_New (Build_Type);
+      if Class = "GtkHSeparator" then
+         Widget := Widget_New (Build_Hseparator);
+      else
+         Widget := Widget_New (Build_Vseparator);
+      end if;
+
       Gen_New (N, "Separator", "", "",
         Class (Class'First + 3) & "separator", File);
       Widget_Destroy (Widget);
       Widget_Generate (N, File);
    end Separator_Generate;
+
+   --------------------------
+   -- Spin_Button_Generate --
+   --------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Spin_Button_Generate (N : Node_Ptr; File : File_Type) is
       S   : String_Ptr;
@@ -1279,6 +1599,12 @@ package body Gtk_Generates is
       Gen_Set (N, "wrap", File);
    end Spin_Button_Generate;
 
+   -------------------------
+   -- Status_Bar_Generate --
+   -------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Status_Bar_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_statusbar_get_type");
@@ -1290,27 +1616,33 @@ package body Gtk_Generates is
       Box_Generate (N, File);
    end Status_Bar_Generate;
 
+   --------------------
+   -- Table_Generate --
+   --------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Table_Generate (N : Node_Ptr; File : File_Type) is
-      P   : Node_Ptr;
-      Top : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Name     : constant String := To_Ada (Get_Attribute (N, "id"));
+      Top      : constant Node_Ptr := Find_Top_Widget (N);
+      Top_Name : constant String := To_Ada (Get_Attribute (Top, "id"));
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_table_get_type");
 
    begin
       Widget := Widget_New (Build_Type);
-      if not N.Specific_Data.Created then
-         P := Find_Tag (N.Child, "name");
-
-         if P /= null then
-            Add_Package ("Table");
-            Put (File, "   Gtk_New (" & To_Ada (Top.all) & "." &
-              To_Ada (P.Value.all) & ", " &
-              To_Ada (Get_Field (N, "rows").all));
-            Put (File, ", " & To_Ada (Get_Field (N, "columns").all));
-            Put_Line
-              (File, ", " & To_Ada (Get_Field (N, "homogeneous").all) & ");");
-            N.Specific_Data.Created := True;
-         end if;
+      if not N.Specific_Data.Created
+        and then Name /= ""
+      then
+         Add_Package ("Table");
+         Put (File, "   Gtk_New (" & Top_Name & "." &
+                 Name & ", " &
+                 To_Ada (Get_Property (N, "n_rows").all));
+         Put (File, ", " & To_Ada (Get_Property (N, "n_columns").all));
+         Put_Line
+           (File,
+            ", " & To_Ada (Get_Property (N, "homogeneous").all) & ");");
+         N.Specific_Data.Created := True;
       end if;
 
       Widget_Destroy (Widget);
@@ -1318,6 +1650,12 @@ package body Gtk_Generates is
       Gen_Set (N, "Row_Spacings", "row_spacing", File);
       Gen_Set (N, "Col_Spacings", "column_spacing", File);
    end Table_Generate;
+
+   -------------------
+   -- Text_Generate --
+   -------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Text_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -1334,6 +1672,12 @@ package body Gtk_Generates is
       Gen_Set (N, "point", File);
       Gen_Set (N, "word_wrap", File);
    end Text_Generate;
+
+   ----------------------------
+   -- Toggle_Button_Generate --
+   ----------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Toggle_Button_Generate (N : Node_Ptr; File : File_Type) is
       Label : constant String_Ptr := Get_Field (N, "label");
@@ -1367,6 +1711,12 @@ package body Gtk_Generates is
    end Toggle_Button_Generate;
 
    Widget_Class : aliased String := "GtkWidget";
+
+   ----------------------
+   -- Toolbar_Generate --
+   ----------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Toolbar_Generate (N : Node_Ptr; File : File_Type) is
       P, Child   : Node_Ptr;
@@ -1479,6 +1829,12 @@ package body Gtk_Generates is
       end loop;
    end Toolbar_Generate;
 
+   -------------------
+   -- Tree_Generate --
+   -------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Tree_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_tree_get_type");
@@ -1492,6 +1848,12 @@ package body Gtk_Generates is
       Gen_Set (N, "view_lines", File);
       Gen_Set (N, "view_mode", File);
    end Tree_Generate;
+
+   ------------------------
+   -- Tree_Item_Generate --
+   ------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Tree_Item_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -1511,6 +1873,12 @@ package body Gtk_Generates is
       Item_Generate (N, File);
    end Tree_Item_Generate;
 
+   --------------------------
+   -- Vbutton_Box_Generate --
+   --------------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
+
    procedure Vbutton_Box_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_vbutton_box_get_type");
@@ -1521,6 +1889,12 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Button_Box_Generate (N, File);
    end Vbutton_Box_Generate;
+
+   -----------------------
+   -- Viewport_Generate --
+   -----------------------
+
+   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Viewport_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -1534,12 +1908,20 @@ package body Gtk_Generates is
       Gen_Set (N, "shadow_type", File => File);
    end Viewport_Generate;
 
+   ---------------------
+   -- Widget_Generate --
+   ---------------------
+
    procedure Widget_Generate (N : Node_Ptr; File : File_Type) is
       pragma Unreferenced (N);
       pragma Unreferenced (File);
    begin
       null;
    end Widget_Generate;
+
+   ---------------------
+   -- Window_Generate --
+   ---------------------
 
    procedure Window_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -1568,22 +1950,26 @@ package body Gtk_Generates is
         "", "", File);
    end Window_Generate;
 
+   ------------------
+   -- End_Generate --
+   ------------------
+
    procedure End_Generate
       (Project : Node_Ptr; N : Node_Ptr; File : File_Type)
    is
-      Child       : constant Node_Ptr := Find_Tag (N.Child, "child");
-      Q           : Node_Ptr;
-      Top         : constant Node_Ptr   := Find_Top_Widget (Project);
-      Top_Name    : constant String := Get_Attribute (Top, "id");
-      Cur         : constant String := Get_Attribute (N, "id");
-      Parent      : constant Node_Ptr := N.Parent.Parent;
-      --  ??? Is there always a <child> tag around the <widget> tag ?
-      S           : String_Ptr;
-      Flag_Set    : Boolean;
-      Use_Default : Boolean;
-      First       : Natural;
-      Last        : Natural;
-      The_First   : Natural;
+      Packing      : constant Node_Ptr := Find_Tag (N, "packing");
+      Q            : Node_Ptr;
+      Top          : constant Node_Ptr := Find_Top_Widget (N);
+      Top_Name     : constant String := To_Ada (Get_Attribute (Top, "id"));
+      Cur          : constant String := To_Ada (Get_Attribute (N, "id"));
+      Parent       : constant Node_Ptr := N.Parent.Parent;
+      Parent_Name  : constant String := To_Ada (Get_Attribute (Parent, "id"));
+      S            : String_Ptr;
+      Flag_Set     : Boolean;
+      First        : Natural;
+      Last         : Natural;
+      The_First    : Natural;
+      Parent_Class : constant String := Get_Class (Parent);
 
    begin
       S := Get_Field (Find_Child (Project, "glade-project"),
@@ -1612,10 +1998,10 @@ package body Gtk_Generates is
          Put (File, "   Set_Flags (");
 
          if Top_Name /= Cur then
-            Put (File, To_Ada (Top_Name) & ".");
+            Put (File, Top_Name & ".");
          end if;
 
-         Put_Line (File, To_Ada (Cur) & ", Can_Default);");
+         Put_Line (File, Cur & ", Can_Default);");
       end if;
 
       S := Get_Property (N, "has_focus");
@@ -1624,10 +2010,10 @@ package body Gtk_Generates is
          Put (File, "   Grab_Focus (");
 
          if Top_Name /= Cur then
-            Put (File, To_Ada (Top_Name) & ".");
+            Put (File, Top_Name & ".");
          end if;
 
-         Put_Line (File, To_Ada (Cur) & ");");
+         Put_Line (File, Cur & ");");
       end if;
 
       S := Get_Property (N, "has_default");
@@ -1636,10 +2022,10 @@ package body Gtk_Generates is
          Put (File, "   Grab_Default (");
 
          if Top_Name /= Cur then
-            Put (File, To_Ada (Top_Name) & ".");
+            Put (File, Top_Name & ".");
          end if;
 
-         Put_Line (File, To_Ada (Cur) & ");");
+         Put_Line (File, Cur & ");");
       end if;
 
       S := Get_Field (N, "events");
@@ -1648,10 +2034,10 @@ package body Gtk_Generates is
          Put (File, "   Set_Events (");
 
          if Top_Name /= Cur then
-            Put (File, To_Ada (Top_Name) & ".");
+            Put (File, Top_Name & ".");
          end if;
 
-         Put (File, To_Ada (Cur) & ", ");
+         Put (File, Cur & ", ");
 
          Flag_Set := False;
          The_First := S'First;
@@ -1689,200 +2075,154 @@ package body Gtk_Generates is
          Put_Line (File, ");");
       end if;
 
-      --  ??? Need to find a better way to call Pack_Start
+      --  Look for a "packing" sibling node.
 
-      if not N.Specific_Data.Has_Container and then Child /= null then
-         Q := Find_Tag (Child, "packing");
+      if not N.Specific_Data.Has_Container and then Packing /= null then
+         --  The following depends on the class of the parent.
 
-         if Q /= null then
+         if Parent_Class = "GtkTable" then
+            Put (File,
+                 "   Attach" & ASCII.LF &
+                 "     (" & Top_Name & "." & Parent_Name & "," & ASCII.LF &
+                 "       " & Top_Name & "." & Cur & ",");
 
-            if Q.Value.all = "GTK_PACK_START" then
-               if Get_Field (Child.Child, "fill") /= null then
+            Put (File, "      Left_Attach  => ");
+            S := Get_Property (Packing, "left_attach");
 
-                  --  This widget is part of a Gtk_Box
+            if S = null then
+               Put_Line (File, "0,");
+            else
+               Put_Line (File, S.all & ",");
+            end if;
 
-                  Gen_Call_Child (N, Child.Child, Parent, "Box", "Pack_Start",
-                    "expand", "fill", "padding", File);
-                  N.Specific_Data.Has_Container := True;
+            Put (File, "      Right_Attach  => ");
+            S := Get_Property (Packing, "right_attach");
 
-               elsif Get_Field (Child, "left_attach") /= null then
+            if S = null then
+               Put_Line (File, "0,");
+            else
+               Put_Line (File, S.all & ",");
+            end if;
 
-                  --  This widget is part of a Gtk_Table
+            Put (File, "      Top_Attach  => ");
+            S := Get_Property (Packing, "top_attach");
 
-                  Add_Package ("Table");
-                  Put_Line (File, "   Attach (" &
-                    To_Ada (Top_Name) & "." &
-                    To_Ada (Find_Tag
-                      (Find_Parent (Parent, "Table"), "name").Value.all) &
-                    ", " & To_Ada (Top_Name) & "." &
-                    To_Ada (Cur) &
-                    ", " & Get_Field (Child, "left_attach").all &
-                    ", " & Get_Field (Child, "right_attach").all &
-                    ", " & Get_Field (Child, "top_attach").all &
-                    ", " & Get_Field (Child, "bottom_attach").all & ",");
+            if S = null then
+               Put_Line (File, "0,");
+            else
+               Put_Line (File, S.all & ",");
+            end if;
 
-                  Put (File, "     ");
+            Put (File, "      Bottom_Attach  => ");
+            S := Get_Property (Packing, "bottom_attach");
 
-                  Flag_Set := False;
+            if S = null then
+               Put_Line (File, "0");
+            else
+               Put_Line (File, S.all & ",");
+            end if;
 
-                  if Boolean'Value (Get_Field (Child, "xexpand").all) then
-                     Put (File, "Expand");
-                     Flag_Set := True;
-                  end if;
+            S := Get_Property (Packing, "x_options");
 
-                  if Boolean'Value (Get_Field (Child, "xshrink").all) then
-                     if Flag_Set then
-                        Put (File, " or ");
-                     else
-                        Flag_Set := True;
-                     end if;
+            if S /= null and then S.all /= "" then
+               Put (File, "      Xoptions  => ");
 
-                     Put (File, "Shrink");
-                  end if;
-
-                  if Boolean'Value (Get_Field (Child, "xfill").all) then
-                     if Flag_Set then
-                        Put (File, " or ");
-                     else
-                        Flag_Set := True;
-                     end if;
-
-                     Put (File, "Fill");
-                  end if;
-
-                  if not Flag_Set then
-                     Put (File, "0");
-                  end if;
-
-                  Put (File, ", ");
-
-                  Flag_Set := False;
-
-                  if Boolean'Value (Get_Field (Child, "yexpand").all) then
-                     Put (File, "Expand");
-                     Flag_Set := True;
-                  end if;
-
-                  if Boolean'Value (Get_Field (Child, "yshrink").all) then
-                     if Flag_Set then
-                        Put (File, " or ");
-                     else
-                        Flag_Set := True;
-                     end if;
-
-                     Put (File, "Shrink");
-                  end if;
-
-                  if Boolean'Value (Get_Field (Child, "yfill").all) then
-                     if Flag_Set then
-                        Put (File, " or ");
-                     else
-                        Flag_Set := True;
-                     end if;
-
-                     Put (File, "Fill");
-                  end if;
-
-                  if not Flag_Set then
-                     Put_Line (File, "0,");
-                  else
-                     Put_Line (File, ",");
-                  end if;
-
-                  Put_Line (File, "     " & Get_Field (Child, "xpad").all &
-                     ", " & Get_Field (Child, "ypad").all & ");");
-                  N.Specific_Data.Has_Container := True;
-
-               elsif Get_Field (Child, "side") /= null then
-
-                  --  This widget is part of a packer
-
-                  Add_Package ("Packer");
-                  S := Get_Field (Child, "use_default");
-                  Use_Default := S /= null and then Boolean'Value (S.all);
-
-                  if Use_Default then
-                     Put (File, "   Add_Defaults (");
-                  else
-                     Put (File, "   Add (");
-                  end if;
-
-                  Put_Line (File,
-                    To_Ada (Top_Name) & "." &
-                    To_Ada (Find_Tag
-                      (Find_Parent (Parent, "Packer"), "name").Value.all) &
-                    ", " & To_Ada (Top_Name) & "." &
-                    To_Ada (Cur) &
-                    ", " & To_Ada (Get_Field (Child, "side").all) &
-                    ", " & To_Ada (Get_Field (Child, "anchor").all) & ",");
-
-                  Put (File, "     ");
-
-                  Flag_Set := False;
-                  S := Get_Field (Child, "expand");
-
-                  if S /= null and then S.all = "True" then
-                     Flag_Set := True;
-                     Put (File, "Gtk_Pack_Expand");
-                  end if;
-
-                  S := Get_Field (Child, "xfill");
-
-                  if S /= null and then S.all = "True" then
-                     if Flag_Set then
-                        Put (File, " or ");
-                     else
-                        Flag_Set := True;
-                     end if;
-
-                     Put (File, "Gtk_Fill_X");
-                  end if;
-
-                  S := Get_Field (Child, "yfill");
-
-                  if S /= null and then S.all = "True" then
-                     if Flag_Set then
-                        Put (File, " or ");
-                     else
-                        Flag_Set := True;
-                     end if;
-
-                     Put (File, "Gtk_Fill_Y");
-                  end if;
-
-                  if not Flag_Set then
-                     Put (File, "0");
-                  end if;
-
-                  if not Use_Default then
-                     Put_Line (File, ",");
-                     Put (File,
-                       "     " & Get_Field (Child, "border_width").all &
-                       ", " & Get_Field (Child, "xpad").all &
-                       ", " & Get_Field (Child, "ypad").all &
-                       ", " & Get_Field (Child, "xipad").all &
-                       ", " & Get_Field (Child, "yipad").all);
-                  end if;
-
-                  Put_Line (File, ");");
-                  N.Specific_Data.Has_Container := True;
-               end if;
-
-            elsif Q.Value.all = "GTK_PACK_END" then
-               if Get_Field (Child, "fill") /= null then
-                  S := Get_Field (N, "child_name");
-
-                  if S = null or else S.all /= "Dialog:action_area" then
-                     --  This widget is part of a Gtk_Box, but not one of the
-                     --  internal components of the box
-
-                     Gen_Call_Child (N, Child, Parent, "Box", "Pack_End",
-                                     "expand", "fill", "padding", File);
-                     N.Specific_Data.Has_Container := True;
-                  end if;
+               if S.all = "expand|shrink" then
+                  Put_Line (File, "Expand,");
+               else
+                  Put_Line (File, To_Ada (S.all) & ",");
                end if;
             end if;
+
+            S := Get_Property (Packing, "y_options");
+
+            if S /= null and then S.all /= "" then
+               Put (File, "      Yoptions  => ");
+
+               if S.all = "expand|shrink" then
+                  Put_Line (File, "Expand,");
+               else
+                  Put_Line (File, To_Ada (S.all) & ",");
+               end if;
+            end if;
+
+            Put (File, "      Xpadding  => ");
+            S := Get_Property (Packing, "x_padding");
+
+            if S = null then
+               Put_Line (File, "0,");
+            else
+               Put_Line (File, S.all & ",");
+            end if;
+
+            Put (File, "      Ypadding  => ");
+            S := Get_Property (Packing, "y_padding");
+
+            if S = null then
+               Put_Line (File, "0);");
+            else
+               Put_Line (File, S.all & ");");
+            end if;
+
+         elsif Parent_Class = "GtkVBox" or else Parent_Class = "GtkHBox" then
+            S := Get_Property (Packing, "pack_type");
+
+            --  Put the procedure call.
+
+            --  ??? Should deal with tables here.
+            if S = null or else S.all = "GTK_PACK_START" then
+               Put
+                 (File, "   Pack_Start" & ASCII.LF &
+                  "     (");
+            elsif S.all = "GTK_PACK_END" then
+               Put
+                 (File, "   Pack_End" & ASCII.LF &
+                  "     (");
+            end if;
+
+            --  Put the name of the parent.
+
+            Put_Line (File, Top_Name & "." & Parent_Name & ",");
+
+            --  Put the name of the child.
+
+            Put (File, "      " & Top_Name & "." & Cur);
+            Put_Line (File, ",");
+
+            --  Put the Fill, Expand, Padding attributes.
+
+            Put (File, "      Expand  => ");
+            S := Get_Property (Packing, "expand");
+
+            if S = null then
+               Put_Line (File, "False,");
+            else
+               Put_Line (File, S.all & ",");
+            end if;
+
+            Put (File, "      Fill    => ");
+            S := Get_Property (Packing, "fill");
+
+            if S = null then
+               Put_Line (File, "False,");
+            else
+               Put_Line (File, S.all & ",");
+            end if;
+
+            Put (File, "      Padding => ");
+            S := Get_Property (Packing, "padding");
+
+            if S = null then
+               Put_Line (File, "0);");
+            else
+               Put_Line (File, S.all & ");");
+            end if;
          end if;
+
+         --  ??? Need to implement specific "adding" functions for widgets
+         --  that require it (fixed, etc).
+
+         N.Specific_Data.Has_Container := True;
       end if;
 
       Q := Find_Tag (N.Child, "accelerator");
@@ -1892,13 +2232,13 @@ package body Gtk_Generates is
             Add_Package ("Accel_Group");
             Put_Line (File, "   Gtk_New (The_Accel_Group);");
             Put_Line (File, "   Add_Accel_Group (" &
-              To_Ada (Top_Name) & ", The_Accel_Group);");
+               Top_Name & ", The_Accel_Group);");
             Top.Specific_Data.Has_Accel_Group := True;
          end if;
 
          Put_Line (File, "   Add_Accelerator (" &
-            To_Ada (Top_Name) & "." &
-            To_Ada (Cur) & ", """ &
+                   Top_Name & "." &
+                   Cur & ", """ &
             Get_Field (Q, "signal").all & """,");
          Add_Package ("Gdk.Types.Keysyms");
          S := Get_Field (Q, "modifiers");
@@ -1923,13 +2263,13 @@ package body Gtk_Generates is
 
          if Gettext_Support (N) then
             Put_Line (File, "   Set_Tip (Tooltips, " &
-               To_Ada (Top_Name) & "." &
-               To_Ada (Cur) & ", -""" & S.all & """);");
+               Top_Name & "." &
+               Cur & ", -""" & S.all & """);");
 
          else
             Put_Line (File, "   Set_Tip (Tooltips, " &
-               To_Ada (Top_Name) & "." &
-               To_Ada (Cur) & ", """ & S.all & """);");
+                Top_Name & "." &
+                Cur & ", """ & S.all & """);");
          end if;
       end if;
 
