@@ -153,8 +153,12 @@ package Gtk.Window is
 
    procedure Set_Transient_For (Window : access Gtk_Window_Record;
                                 Parent : access Gtk_Window_Record'Class);
-   --  ???
-   --  (see XSetTransientForHint)
+   --  Specifies that WINDOW is a transient window (ie a temporary window,
+   --  like a popup menu or a dialog box). PARENT is the toplevel window
+   --  of the application to which WINDOW belongs. A window that has set
+   --  this can expect less decoration from the window manager (for instance
+   --  no title bar and no borders).
+   --  (see XSetTransientForHint(3) on Unix systems)
 
    procedure Set_Geometry_Hints
      (Window          : access Gtk_Window_Record;
