@@ -1,7 +1,7 @@
 CC = @CC@
 FPIC = @FPIC@
 
-GNATFLAGS = -O2 -gnatn -gnatwuwl
+GNATFLAGS = -O2 -gnatn -gnatws
 GNATFLAGS_DEVEL = -O2 -gnatag -gnatwl -g
 
 GNATMAKE = gnatmake
