@@ -284,7 +284,7 @@ package Gnome.Stock is
    --  Return a default button widget for dialogs
    --  If the Button_Type argument matches a Button_* constant, then a stock
    --  button is created.
-   --- Otherwise, if Ordinary is True, an ordinary button is created, and
+   --  Otherwise, if Ordinary is True, an ordinary button is created, and
    --  Button_Type is given as the label. If Ordinary is False, null will
    --  be returned.
 
