@@ -171,3 +171,21 @@
  
    return TRUE;
  #else
+
+
+
+#########################################
+# linefeeds in copy-paste
+#########################################
+
+--- gtk+-2.0.5/gdk/win32/save/gdkproperty-win32.c Fri Jun 21 18:14:52 2002
++++ gtk+-2.0.5/gdk/win32/gdkproperty-win32.c Fri Jun 21 18:14:52 2002
+@@ -305,7 +305,7 @@
+ 	  method = PLAIN_ASCII;
+ 	  size = nelements;
+ 	  for (i = 0; i < nelements; i++)
+-	    if (*data == '\n')
++	    if (data[i] == '\n')
+ 	      size++;
+ 	  size++;
+ 	  GDK_NOTE (DND, g_print ("...as text: %.40s\n", data));
