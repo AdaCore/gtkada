@@ -246,6 +246,7 @@ package body Gtk.Tree_Store is
 
    begin
       Internal (Get_Object (Tree_Store), Iter);
+      Iter := Gtk.Tree_Model.Null_Iter;
    end Remove;
 
    ------------
