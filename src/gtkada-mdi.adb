@@ -4302,6 +4302,7 @@ package body Gtkada.MDI is
          Widget_Node      : Node_Ptr;
          Register         : Register_Node;
          Child            : MDI_Child;
+         Length           : Guint;
 
          procedure Add (Name, Value : String);
          --  Add a new child to Child_Node
@@ -4393,13 +4394,15 @@ package body Gtkada.MDI is
             if MDI.Docks (J) /= null
               and then (J /= None or else MDI.Children_Are_Maximized)
             then
-               for Page_Index in reverse
-                 0 .. (Page_List.Length (Get_Children (MDI.Docks (J))) - 1)
-               loop
-                  Save_Widget
-                    (Get_Child_From_Page
-                       (Get_Nth_Page (MDI.Docks (J), Gint (Page_Index))));
-               end loop;
+               Length := Page_List.Length (Get_Children (MDI.Docks (J)));
+
+               if Length > 0 then
+                  for Page_Index in reverse 0 .. Length - 1 loop
+                     Save_Widget
+                       (Get_Child_From_Page
+                          (Get_Nth_Page (MDI.Docks (J), Gint (Page_Index))));
+                  end loop;
+               end if;
             end if;
          end loop;
 
