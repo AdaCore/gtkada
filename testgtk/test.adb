@@ -31,6 +31,7 @@ with Create_Paned;
 with Create_Pixmap;
 with Create_Preview_Color;
 with Create_Preview_Gray;
+with Create_Progress;
 with Create_Toolbar;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
@@ -103,7 +104,7 @@ package body Test is
       (US ("pixmap"), Create_Pixmap.Run'Access),
       (US ("preview color"), Create_Preview_Color.Run'Access),
       (US ("preview gray"), Create_Preview_Gray.Run'Access),
-      (US ("progress bar"), null),
+      (US ("progress bar"), Create_Progress.Run'Access),
       (US ("radio buttons"), null),
       (US ("range controls"), null),
       (US ("reparent"), null),
