@@ -71,6 +71,9 @@ package Gtkada.MDI is
    --  You can easily convert from this to the initial widget using the
    --  functions Find_MDI_Child and Get_Widget.
 
+   type MDI_Child_Array is array (Natural range <>) of MDI_Child;
+   No_Children : constant MDI_Child_Array := (1 .. 0 => null);
+
    type State_Type is (Normal, Iconified, Floating, Docked);
    --  This type indicates the state of an item in the MDI:
    --  - Normal: the item can be manipulated (moved and resized) by the user.
