@@ -200,6 +200,7 @@ distclean: mostlyclean-generic
 	$(MAKE) -C pixbuf distclean
 	$(MAKE) -C glade distclean
 	$(MAKE) -C gnome distclean
+	-$(RM) Makefile.common
 
 mostlyclean: mostlyclean-generic
 	$(MAKE) -C gtkextra mostlyclean
@@ -207,6 +208,7 @@ mostlyclean: mostlyclean-generic
 	$(MAKE) -C pixbuf mostlyclean
 	$(MAKE) -C glade mostlyclean
 	$(MAKE) -C gnome mostlyclean
+	-$(RM) Makefile.common
 
 maintainer-clean: mostlyclean-generic
 	$(MAKE) -C gtkextra maintainer-clean
@@ -214,6 +216,7 @@ maintainer-clean: mostlyclean-generic
 	$(MAKE) -C pixbuf maintainer-clean
 	$(MAKE) -C glade maintainer-clean
 	$(MAKE) -C gnome maintainer-clean
+	-$(RM) Makefile.common
 
 ## Building the C files: they all depend on the c file in the source directory
 ## The dependencies on the .h files have to be given explicitly
