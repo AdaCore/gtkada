@@ -76,7 +76,6 @@ General GTK documentation
 
 * Package Gtk.Text::
 * Package Gtk.Table::
-* Package Gtk.Notebook::
 * Package Gtk.Event_Box::
 * Package Gtk.File_Selection::
 
@@ -908,7 +907,6 @@ specific widget.
 @menu
 * Package Gtk.Text::
 * Package Gtk.Table::
-* Package Gtk.Notebook::
 * Package Gtk.Event_Box::
 * Package Gtk.File_Selection::
 @end menu
@@ -1104,24 +1102,6 @@ several values:
 For the @code{Attach_Defaults} procedure, the default values of @code{Xoptions}
 and @code{Yoptions} are equals to @code{Expand or Fill} and those of
 @code{Xpadding} and @code{Ypadding} are 0.
-
-@node Package Gtk.Notebook
-@section Package Gtk.Notebook
-@example
-@c @group
-@c @cartouche
-@b{type} Gtk_Notebook_Record @b{is new} Gtk.Container.Gtk_Container_Record
-  @b{with private};
-@b{type} Gtk_Notebook @b{is access all} Gtk_Notebook_Record'@b{Class};
-@c @end cartouche
-@c @end group
-@end example
-
-The NoteBook Widget is a collection of @var{pages} that overlap each other,
-each page containing different information.
-This widget has become more common lately in GUI programming,
-and it is a good way to show blocks of similar information that warrant
-separation in their display. 
 
 @node Package Gtk.Event_Box
 @section Package Gtk.Event_Box
