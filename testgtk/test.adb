@@ -15,8 +15,8 @@ with Gtk.Signal;
 with Gtk.Widget;
 with Gtk.Window;
 
-with Create_Buttons;
 with Create_Button_Box;
+with Create_Buttons;
 with Create_Check_Buttons;
 with Create_Color_Selection;
 with Create_Dialog;
@@ -25,6 +25,7 @@ with Create_File_Selection;
 with Create_Gamma_Curve;
 with Create_Handle_Box;
 with Create_List;
+with Create_Main_Loop;
 with Create_Menu;
 with Create_Notebook;
 with Create_Paned;
@@ -41,11 +42,11 @@ with Create_Spin;
 with Create_Status;
 with Create_Test_Idle;
 with Create_Test_Timeout;
-with Create_Toggle_Buttons;
-with Create_Tooltips;
-with Create_Main_Loop;
 with Create_Text;
+with Create_Toggle_Buttons;
 with Create_Toolbar;
+with Create_Tooltips;
+with Create_Tree;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
 
@@ -134,7 +135,7 @@ package body Test is
       (US ("toggle buttons"), Create_Toggle_Buttons.Run'Access),
       (US ("toolbar"), Create_Toolbar.Run'Access),
       (US ("tooltips"), Create_Tooltips.Run'Access),
-      (US ("tree"), null),
+      (US ("tree"), Create_Tree.Run'Access),
       (US ("WM hints"), null)
       );
 
