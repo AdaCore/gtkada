@@ -2149,7 +2149,9 @@ package body Gtkada.MDI is
       Event     : Gtk_Event_Box;
 
    begin
-      pragma Assert (Widget.all not in Gtk_Window_Record'Class);
+      if Widget.all in Gtk_Window_Record'Class then
+         raise Program_Error;
+      end if;
 
       Gtk.Event_Box.Initialize (Child);
 

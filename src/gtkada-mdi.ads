@@ -154,8 +154,9 @@ package Gtkada.MDI is
       Child : access Gtk.Widget.Gtk_Widget_Record'Class;
       Flags : Child_Flags := All_Buttons) return MDI_Child;
    --  Add a new child to the MDI window, and return its embedding widget.
-   --  Note that there is a small difference between adding a toplevel
-   --  Gtk_Window and a standard widget.
+   --  Child mustn't be a Gtk_Window (or one of its children). Otherwise,
+   --  Program_Error is raised.
+   --
    --  In the former case, only the child of the window is inserted into MDI.
    --  However, every time the child is set as floating (ie in its own
    --  toplevel window), we reuse the window you give in parameter to Put.
