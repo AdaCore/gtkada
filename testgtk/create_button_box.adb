@@ -47,6 +47,9 @@ package body Create_Button_Box is
    begin
       return "This demo demonstrates the possible @bLayout@B that can be used"
         & " with a @bGtk_Button_Box@B widget." & ASCII.LF
+        & "A @bGtk_Button_Box@B is a special kind of @bGtk_Box@B, homogeneous,"
+        & " which can organize its children according to a special layout."
+        & ASCII.LF
         & "All the boxes here are created exactly the same way, and only the"
         & " layout differs.";
    end Help;
