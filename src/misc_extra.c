@@ -2,6 +2,10 @@
 #include <gtk/gtk.h>
 #include <gtkextra/gtkplot.h>
 #include <gtkextra/gtkplotcanvas.h>
+#include <gtkextra/gtksheet.h>
+#include <gtkextra/gtkcombobox.h>
+#include <gtkextra/gtkfontcombo.h>
+#include <gtkextra/gtkitementry.h>
 
 /********************************************************************
  **
@@ -71,4 +75,118 @@ ada_gtk_plot_canvas_set_flags (GtkPlotCanvas* canvas, guint16 flags) {
 void
 ada_gtk_plot_canvas_unset_flags (GtkPlotCanvas* canvas, guint16 flags) {
   GTK_PLOT_CANVAS_UNSET_FLAGS (canvas, flags);
+}
+
+/********************************************************************
+ **
+ **  Gtk_Sheet widget
+ **
+ ********************************************************************/
+
+gint
+ada_gtk_extra_sheet_flag_is_set (GtkSheet* sheet, guint16  flag) {
+  return ((GTK_SHEET_FLAGS (sheet) & flag) != 0);
+}
+
+void
+ada_gtk_extra_sheet_set_flags (GtkSheet* sheet, guint16 flags) {
+  GTK_SHEET_SET_FLAGS (sheet, flags);
+}
+
+void
+ada_gtk_extra_sheet_unset_flags (GtkSheet* sheet, guint16 flags) {
+  GTK_SHEET_UNSET_FLAGS (sheet, flags);
+}
+
+GtkWidget*
+ada_gtk_sheet_get_widget (GtkSheetChild* child) {
+  return child->widget;
+}
+
+void
+ada_gtk_sheet_get_range (GtkSheet* sheet, GtkSheetRange* range) {
+  *range = sheet->range;
+}
+
+gint
+ada_gtk_sheet_get_maxcol (GtkSheet* sheet) {
+  return sheet->maxcol;
+}
+
+gint
+ada_gtk_sheet_get_maxrow (GtkSheet* sheet) {
+  return sheet->maxrow;
+}
+
+gchar*
+ada_gtk_sheet_get_column_title (GtkSheet* sheet, gint col) {
+  return sheet->column[col].name;
+}
+
+gchar*
+ada_gtk_sheet_get_row_title (GtkSheet* sheet, gint row) {
+  return sheet->row[row].name;
+}
+
+/********************************************************************
+ **
+ **  Gtk_Combo_Box widget
+ **
+ ********************************************************************/
+
+GtkWidget*
+ada_gtk_combo_box_get_button (GtkComboBox* combo) {
+  return combo->button;
+}
+
+GtkWidget*
+ada_gtk_combo_box_get_arrow (GtkComboBox* combo) {
+  return combo->arrow;
+}
+
+GtkWidget*
+ada_gtk_combo_box_get_frame (GtkComboBox* combo) {
+  return combo->frame;
+}
+
+/********************************************************************
+ **
+ **  Gtk_Font_Combo widget
+ **
+ ********************************************************************/
+
+GtkWidget*
+ada_gtk_font_combo_get_name_combo (GtkFontCombo* combo) {
+  return combo->name_combo;
+}
+
+GtkWidget*
+ada_gtk_font_combo_get_size_combo (GtkFontCombo* combo) {
+  return combo->size_combo;
+}
+
+GtkWidget*
+ada_gtk_font_combo_get_bold_button (GtkFontCombo* combo) {
+  return combo->bold_button;
+}
+
+GtkWidget*
+ada_gtk_font_combo_get_italic_button (GtkFontCombo* combo) {
+  return combo->italic_button;
+}
+
+GdkFont*
+ada_gtk_font_combo_get_font (GtkFontCombo* combo) {
+  return combo->font;
+}
+
+/********************************************************************
+ **
+ **  Gtk_Item_Entry widget
+ **
+ ********************************************************************/
+
+gint
+ada_gtk_item_entry_get_justification (GtkIentry* item) {
+  return item->justification;
 }
