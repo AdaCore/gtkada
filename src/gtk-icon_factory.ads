@@ -142,8 +142,7 @@ package Gtk.Icon_Factory is
 
    function Lookup
      (Factory  : access Gtk_Icon_Factory_Record;
-      Stock_Id : String)
-      return Gtk_Icon_Set;
+      Stock_Id : String) return Gtk_Icon_Set;
    --  Looks up Stock_Id in the icon factory, returning an icon set if found,
    --  otherwise null. For display to the user, you should use
    --  Gtk.Style.Lookup_Icon_Set on the Gtk_Style for the widget that will
@@ -163,9 +162,7 @@ package Gtk.Icon_Factory is
    --  factories. Not normally used; you might use it for a library that
    --  can be unloaded or shut down.
 
-   function Lookup_Default
-     (Stock_Id : String)
-      return Gtk_Icon_Set;
+   function Lookup_Default (Stock_Id : String) return Gtk_Icon_Set;
    --  Looks for an icon in the list of default icon factories.  For
    --  display to the user, you should use Gtk.Style.Lookup_Icon_Set on
    --  the Gtk_Style for the widget that will display the icon, instead of
