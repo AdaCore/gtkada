@@ -66,18 +66,6 @@ package body Gdk.Pixbuf is
       return Internal (Pixbuf);
    end Copy;
 
-   ----------
-   -- Copy --
-   ----------
-
-   function Copy (Src : Gdk_Pixbuf_Frame) return Gdk_Pixbuf_Frame is
-      function Internal (Pixbuf : Gdk_Pixbuf_Frame) return Gdk_Pixbuf_Frame;
-      pragma Import (C, Internal, "gdk_pixbuf_frame_copy");
-
-   begin
-      return Internal (Src);
-   end Copy;
-
    -------------
    -- Gdk_New --
    -------------
@@ -169,24 +157,6 @@ package body Gdk.Pixbuf is
         (Inline_Pixbuf, To_Gboolean (Copy_Pixels), Length, Err'Access);
       Error := Err;
    end Gdk_New_From_Inline;
-
-   ----------------
-   -- Get_Frames --
-   ----------------
-
-   function Get_Frames
-     (Animation : Gdk_Pixbuf_Animation) return Frame_List.Glist
-   is
-      function Internal
-        (Animation : Gdk_Pixbuf_Animation) return System.Address;
-      pragma Import (C, Internal, "gdk_pixbuf_animation_get_frames");
-
-      List : Frame_List.Glist;
-
-   begin
-      Frame_List.Set_Object (List, Internal (Animation));
-      return List;
-   end Get_Frames;
 
    -------------------
    -- Get_Has_Alpha --

@@ -71,7 +71,6 @@ package Gdk.Pixbuf is
 
    type Gdk_Pixbuf_Frame is new Glib.C_Proxy;
    --  An animation is composed of frames.
-   --  See alse Get_Frames.
 
    type Frame_Action is (Frame_Retain, Frame_Dispose, Frame_Revert);
    --  GIF-like animation overlay modes for frames.
@@ -543,10 +542,6 @@ package Gdk.Pixbuf is
    function Get_Height (Animation : Gdk_Pixbuf_Animation) return Gint;
    --  Return the height of the bounding box of a pixbuf animation.
 
-   function Get_Frames
-     (Animation : Gdk_Pixbuf_Animation) return Frame_List.Glist;
-   --  Return the list of frames of an animation.
-
    function Get_Num_Frames (Animation : Gdk_Pixbuf_Animation) return Gint;
    --  Return the number of frames in a pixbuf animation.
 
@@ -568,9 +563,6 @@ package Gdk.Pixbuf is
 
    function Get_Action (Frame : Gdk_Pixbuf_Frame) return Frame_Action;
    --  Return the overlay action of an animation frame.
-
-   function Copy (Src : Gdk_Pixbuf_Frame) return Gdk_Pixbuf_Frame;
-   --  Copy a Gdk_Pixbuf_Frame.
 
    procedure Free (Frame : Gdk_Pixbuf_Frame);
    --  Free a Gdk_Pixbuf_Frame.
