@@ -102,7 +102,8 @@ package Gtk.Enums is
 
    type Gtk_Window_Position is (Win_Pos_None,
                                 Win_Pos_Center,
-                                Win_Pos_Mouse);
+                                Win_Pos_Mouse,
+                                Win_Pos_Center_Always);
 
    type Gtk_Submenu_Direction is (Direction_Left,
                                   Direction_Right);
