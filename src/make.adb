@@ -32,7 +32,7 @@ with Glib.Enums;
 with Glib.Glist;
 with Glib.Glade;
 with Glib.Gnodes;
-with Glib.GObjects;
+with Glib.Object;
 with Glib.GSlist;
 with Glib.Module;
 with Glib.Properties;
