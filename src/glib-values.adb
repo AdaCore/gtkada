@@ -52,6 +52,18 @@ package body Glib.Values is
       return Interfaces.C.Strings.Value (Internal (Value));
    end Get_String;
 
+   ----------------
+   -- Get_String --
+   ----------------
+
+   function  Get_String (Value : GValue; Length : Gint) return String is
+      function Internal (Value : GValue) return chars_ptr;
+      pragma Import (C, Internal, "g_value_get_string");
+   begin
+      return Interfaces.C.Strings.Value
+        (Internal (Value), Interfaces.C.size_t (Length));
+   end Get_String;
+
    -----------------
    -- Make_Values --
    -----------------

@@ -91,6 +91,7 @@ package Glib.Values is
 
    procedure Set_String (Value : GValue; V_String : String);
    function  Get_String (Value : GValue) return String;
+   function  Get_String (Value : GValue; Length : Gint) return String;
 
    procedure Set_Proxy (Value : GValue; V_Proxy : C_Proxy);
    function  Get_Proxy (Value : GValue) return C_Proxy;
