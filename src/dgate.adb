@@ -93,4 +93,9 @@ begin
       Instanciate (N);
       Gtk.Main.Main;
    end if;
+
+exception
+   when others =>
+      Put_Line ("DGATE: Internal error. This usually means that the specified");
+      Put_Line ("project file has some syntax errors.");
 end DGate;
