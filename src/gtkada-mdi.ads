@@ -608,7 +608,7 @@ package Gtkada.MDI is
      (MDI     : access MDI_Window_Record;
       Present : Boolean);
    --  Whether giving the focus to a child should cause the window containing
-   --  this child should be Presented.
+   --  this child to be "Presented".
    --  This behaviour is enabled by default; it might be useful to disable it,
    --  for example when loading a desktop.
 
