@@ -34,7 +34,6 @@ with Gtk.Box;           use Gtk.Box;
 with Gtk.Button;        use Gtk.Button;
 with Gtk.Frame;         use Gtk.Frame;
 with Gtk.Handlers;      use Gtk.Handlers;
-with Gtk.Object;        use Gtk.Object;
 with Gtk.Tips_Query;    use Gtk.Tips_Query;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Tooltips;      use Gtk.Tooltips;
