@@ -96,13 +96,11 @@ gtk_border_combo_class_init (GtkBorderComboClass * klass)
 
   border_combo_signals[CHANGED]=gtk_signal_new("changed",
                                       GTK_RUN_FIRST,
-                                      object_class->type,
+                                      GTK_CLASS_TYPE (object_class),
                                       GTK_SIGNAL_OFFSET(GtkBorderComboClass,
                                       changed),
                                       gtk_marshal_NONE__INT,
                                       GTK_TYPE_NONE, 1, GTK_TYPE_INT);
-
-  gtk_object_class_add_signals (object_class, border_combo_signals,LAST_SIGNAL);
   klass->changed = NULL;
                                                         
 }

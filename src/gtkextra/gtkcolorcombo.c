@@ -34,7 +34,7 @@
 #include <gdk/gdkkeysyms.h>
 #include "gtkcombobox.h"
 #include "gtkcolorcombo.h"
-
+#include "gtkextramarshal.h"
 
 /* SIGNALS */
 enum {
@@ -136,14 +136,12 @@ gtk_color_combo_class_init (GtkColorComboClass * klass)
   
   color_combo_signals[CHANGED]=gtk_signal_new("changed",
                                       GTK_RUN_FIRST,
-                                      object_class->type,
+                                      GTK_CLASS_TYPE (object_class),
                                       GTK_SIGNAL_OFFSET(GtkColorComboClass,
                                       changed),
-                                      gtk_marshal_NONE__INT_POINTER,
+                                      gtk_extra_marshal_VOID__INT_POINTER,
                                       GTK_TYPE_NONE,  
                                       2, GTK_TYPE_INT, GTK_TYPE_STRING);
-
-  gtk_object_class_add_signals (object_class, color_combo_signals,LAST_SIGNAL);
   klass->changed = NULL;
 }
 
