@@ -56,7 +56,7 @@ package Gdk.Threads is
    --  GtkAda).
 
 private
-   pragma Linker_Options ("-lgthread");
+   pragma Linker_Options ("-lgthread-1.3");
    --  This is needed to resolve g_thread_init
 
    pragma Import (C, Init, "g_thread_init");
