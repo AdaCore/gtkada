@@ -163,3 +163,4 @@ $(LIB_DIR)/misc-gnat.o: misc-gnat.c
 	$(CC) -c $(ALL_GNATFLAGS) $<
 
 force:
+
