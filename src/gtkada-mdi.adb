@@ -5059,7 +5059,6 @@ package body Gtkada.MDI is
          Icons_Height : constant Gint :=
            MDI.Title_Bar_Height - 2 * Border_Thickness;
          Raised     : Boolean;
-
          Current_Pages : array (Dock_Side) of MDI_Child :=
            (others => null);
 
@@ -5133,16 +5132,20 @@ package body Gtkada.MDI is
                                    Allocation_Int (Icons_Width),
                                    Allocation_Int (Icons_Height)));
                   end case;
-
-
-                  if State = Docked then
-                     Set_USize
-                       (MDI.Docks (Child.Dock),
-                        Allocation_Int (Width),
-                        Allocation_Int (Height));
-                  end if;
-
                end if;
+
+            elsif Child_Node.Tag.all = "Bottom_Dock_Height" then
+               Set_USize (MDI.Docks (Bottom), -1,
+                          Allocation_Int'Value (Child_Node.Value.all));
+            elsif Child_Node.Tag.all = "Top_Dock_Height" then
+               Set_USize (MDI.Docks (Top), -1,
+                          Allocation_Int'Value (Child_Node.Value.all));
+            elsif Child_Node.Tag.all = "Left_Dock_Width" then
+               Set_USize (MDI.Docks (Left),
+                          Allocation_Int'Value (Child_Node.Value.all), -1);
+            elsif Child_Node.Tag.all = "Right_Dock_Width" then
+               Set_USize (MDI.Docks (Right),
+                          Allocation_Int'Value (Child_Node.Value.all), -1);
             end if;
 
             Child_Node := Child_Node.Next;
@@ -5313,6 +5316,23 @@ package body Gtkada.MDI is
 
          Add (Root, "Maximized",
               Boolean'Image (MDI.Central.Children_Are_Maximized));
+         Add (Root, "Bottom_Dock_Height",
+              Gint'Image
+                (Gint (Get_Allocation_Height (MDI.Docks (Bottom)))
+                 + Y_Thickness (Get_Style (MDI.Docks (Bottom))) + 1));
+         Add (Root, "Top_Dock_Height",
+              Gint'Image
+                (Gint (Get_Allocation_Height (MDI.Docks (Top)))
+                 + Y_Thickness (Get_Style (MDI.Docks (Top))) + 1));
+         Add (Root, "Left_Dock_Width",
+              Gint'Image
+                (Gint (Get_Allocation_Width (MDI.Docks (Left)))
+                 + X_Thickness (Get_Style (MDI.Docks (Left))) + 1));
+         Add (Root, "Right_Dock_Width",
+              Gint'Image
+                (Gint (Get_Allocation_Width (MDI.Docks (Right)))
+                 + X_Thickness (Get_Style (MDI.Docks (Right))) + 1));
+
 
          --  Look through all the notebooks, and save the widgets in the
          --  notebook order.
