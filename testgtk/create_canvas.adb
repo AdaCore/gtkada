@@ -30,7 +30,6 @@
 with Ada.Numerics.Discrete_Random;
 with Gdk.Color;           use Gdk.Color;
 with Gdk.Drawable;        use Gdk.Drawable;
-with Gdk.Pixmap;          use Gdk.Pixmap;
 with Gdk.GC;              use Gdk.GC;
 with Glib;                use Glib;
 with Gtk.Arrow;           use Gtk.Arrow;
@@ -61,21 +60,18 @@ package body Create_Canvas is
    --  graphics.
    ----------------------------------------------------------------
 
-   type Display_Item_Record is new Canvas_Item_Record with record
+   type Display_Item_Record is new Buffered_Item_Record with record
       Color : Gdk.Color.Gdk_Color;
       W, H : Gint;
       Num : Positive;
    end record;
    type Display_Item is access all Display_Item_Record'Class;
 
-   procedure Initialize (Item : access Display_Item_Record'Class);
+   procedure Initialize
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Item : access Display_Item_Record'Class);
    --  Initialize Item with a random size and color.
-
-   procedure Draw (Item : access Display_Item_Record;
-                   Canvas : access Interactive_Canvas_Record'Class;
-                   Dest : Gdk.Pixmap.Gdk_Pixmap;
-                   Xdest, Ydest : Gint);
-
+   --  Canvas must have been realized
 
    -----------------------------
    --  Misc. types and variables
@@ -83,7 +79,6 @@ package body Create_Canvas is
 
    package Canvas_Cb is new Gtk.Handlers.Callback
      (Interactive_Canvas_Record);
-
 
    procedure Add_Canvas_Link
      (Canvas : access Interactive_Canvas_Record'Class;
@@ -180,62 +175,34 @@ package body Create_Canvas is
    -- Draw --
    ----------
 
-   procedure Draw (Item : access Display_Item_Record;
-                   Canvas : access Interactive_Canvas_Record'Class;
-                   Dest : Gdk.Pixmap.Gdk_Pixmap;
-                   Xdest, Ydest : Gint)
-   is
-      W : constant Gint := Gint (Get_Coord (Item).Width);
-      H : constant Gint := Gint (Get_Coord (Item).Height);
+   procedure Draw (Item : access Display_Item_Record'Class) is
    begin
       Set_Foreground (Green_GC, Display_Item (Item).Color);
       Draw_Rectangle
-        (Dest,
+        (Pixmap (Item),
          GC     => Green_GC,
          Filled => True,
-         X      => Xdest,
-         Y      => Ydest,
-         Width  => W,
-         Height => H);
-      if Get_Zoom (Canvas) >= 50 then
-         Set_Foreground (Green_GC, Black (Get_Default_Colormap));
-         Draw_Text
-           (Dest,
-            Font,
-            Green_GC,
-            Xdest + W / 2,
-            Ydest + H / 2,
-            Positive'Image (Display_Item (Item).Num));
-      end if;
+         X      => 0,
+         Y      => 0,
+         Width  => Item.W,
+         Height => Item.H);
+      Set_Foreground (Green_GC, Black (Get_Default_Colormap));
+      Draw_Text
+        (Pixmap (Item),
+         Font,
+         Green_GC,
+         Item.W / 2,
+         Item.H / 2,
+         Positive'Image (Display_Item (Item).Num));
    end Draw;
-
-   -------------------
-   -- Canvas_Zoomed --
-   -------------------
-
-   procedure Canvas_Zoomed (Canvas : access Interactive_Canvas_Record'Class) is
-      function Internal
-        (Canvas : access Interactive_Canvas_Record'Class;
-         Item   : access Canvas_Item_Record'Class) return Boolean
-      is
-         It : Display_Item := Display_Item (Item);
-      begin
-         --  Change the size the item occupies on the screen.
-         Set_Screen_Size
-           (Item, To_Canvas_Coordinates (Canvas, It.W),
-            To_Canvas_Coordinates (Canvas, It.H));
-         return True;
-      end Internal;
-
-   begin
-      For_Each_Item (Canvas, Internal'Unrestricted_Access);
-   end Canvas_Zoomed;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Item : access Display_Item_Record'Class) is
+   procedure Initialize
+     (Canvas : access Interactive_Canvas_Record'Class;
+      Item : access Display_Item_Record'Class) is
    begin
       Item.Color := Colors (Random (Color_Gen));
       Item.W := Item_Width * Random (Zoom_Gen);
@@ -245,8 +212,9 @@ package body Create_Canvas is
          Items_List (Item.Num) := Canvas_Item (Item);
       end if;
       Last_Item := Last_Item + 1;
-      Set_Screen_Size (Item, Item.W, Item.H);
+      Set_Screen_Size_And_Pixmap (Item, Get_Window (Canvas), Item.W, Item.H);
       Set_Text (Num_Items_Label, Positive'Image (Last_Item - 1) & " items");
+      Draw (Item);
    end Initialize;
 
    ---------------------
@@ -258,7 +226,7 @@ package body Create_Canvas is
    is
       Item : Display_Item := new Display_Item_Record;
    begin
-      Initialize (Item);
+      Initialize (Canvas, Item);
       Put (Canvas, Item, Random (Gen), Random (Gen));
       Refresh_Canvas (Canvas);
       Show_Item (Canvas, Item);
@@ -317,7 +285,7 @@ package body Create_Canvas is
       Item : Display_Item := new Display_Item_Record;
       Num  : constant Positive := Positive (Get_Value_As_Int (Start_Spin));
    begin
-      Initialize (Item);
+      Initialize (Canvas, Item);
 
       if With_Link and then Num < Last_Item then
          Add_Canvas_Link (Canvas, Item, Item, "0");
@@ -431,31 +399,6 @@ package body Create_Canvas is
       end loop;
    end Zoom_Out;
 
-   ---------------------
-   -- Add_Widget_Item --
-   ---------------------
-
-   procedure Add_Widget_Item
-     (Canvas : access Interactive_Canvas_Record'Class) is
-     pragma Warnings (Off, Canvas);
---        Item : Canvas_Item_Widget := new Canvas_Item_Widget_Record;
---        Button : Gtk_Button;
-   begin
---        Gtk_New (Button, "Bar");
---        Add (Item, Canvas, Button);
---        Put (Canvas, Item, Random (Gen), Random (Gen));
-
---        if Last_Item <= Items_List'Last then
---           Items_List (Last_Item) := Canvas_Item (Item);
---        end if;
---        Last_Item := Last_Item + 1;
---        Set_Screen_Size (Item, Item_Width, Item_Height);
---        Set_Text (Num_Items_Label, Positive'Image (Last_Item - 1) & " items");
-
---        Refresh_Canvas (Canvas);
-      null;
-   end Add_Widget_Item;
-
    -------------------
    -- Initial_Setup --
    -------------------
@@ -467,19 +410,19 @@ package body Create_Canvas is
       Link  : Canvas_Link;
    begin
       Item1 := new Display_Item_Record;
-      Initialize (Item1);
+      Initialize (Canvas, Item1);
       Put (Canvas, Item1, 10, 10);
 
       Item2 := new Display_Item_Record;
-      Initialize (Item2);
+      Initialize (Canvas, Item2);
       Put (Canvas, Item2, 70, 240);
 
       Item3 := new Display_Item_Record;
-      Initialize (Item3);
+      Initialize (Canvas, Item3);
       Put (Canvas, Item3, 200, 10);
 
       Item4 := new Display_Item_Record;
-      Initialize (Item4);
+      Initialize (Canvas, Item4);
       Put (Canvas, Item4, 280, 170);
 
       Add_Canvas_Link (Canvas, Item1, Item1, "From1->2");
@@ -592,12 +535,6 @@ package body Create_Canvas is
         (Button, "clicked",
          Canvas_Cb.To_Marshaller (Add_Single_Item_With_Link'Access), Canvas);
 
---        Gtk_New (Button, "Add Widget");
---        Pack_Start (Bbox2, Button, Expand => False, Fill => True);
---        Canvas_Cb.Object_Connect
---          (Button, "clicked",
---           Canvas_Cb.To_Marshaller (Add_Widget_Item'Access), Canvas);
-
       Gtk_New (Num_Items_Label, "0 items");
       Pack_Start (Spin_Box, Num_Items_Label, Expand => False, Fill => False);
 
@@ -638,10 +575,6 @@ package body Create_Canvas is
          Alloc (Gtk.Widget.Get_Default_Colormap, Colors (J));
       end loop;
       Font := Get_Gdkfont ("Courier", 8);
-
-      Canvas_Cb.Connect
-        (Canvas, "zoomed",
-         Canvas_Cb.To_Marshaller (Canvas_Zoomed'Access));
 
       Initial_Setup (Canvas);
       Show_All (Frame);
