@@ -134,7 +134,7 @@ package body Gtk.Object is
 
    procedure Initialize_Class_Record
      (Object       : access Gtk_Object_Record'Class;
-      Signals      : Signal_Array;
+      Signals      : Gtkada.Types.Chars_Ptr_Array;
       Class_Record : in out System.Address)
    is
       function Internal (Object       : System.Address;
@@ -147,7 +147,7 @@ package body Gtk.Object is
    begin
       Class_Record := Internal (Get_Object (Object),
                                 Signals'Length,
-                                Signals (Signals'First)'Address,
+                                Signals'Address,
                                 Class_Record);
    end Initialize_Class_Record;
 
