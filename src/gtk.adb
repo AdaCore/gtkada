@@ -47,8 +47,10 @@ package body Gtk is
         (System.Address, Root_Type_Access);
       procedure Free is new Unchecked_Deallocation
         (Root_Type'Class, Root_Type_Access);
+      pragma Warnings (Off);
       function Convert is new Unchecked_Conversion
         (System.Address, Integer);
+      pragma Warnings (On);
       Obj : Root_Type_Access := Convert (Data);
    begin
 --        Ada.Text_IO.Put_Line
