@@ -1332,6 +1332,52 @@ gint ada_gdk_event_set_y (GdkEvent * event, gdouble y)
   return 1;
 }
 
+gint ada_gdk_event_set_xroot (GdkEvent * event, gdouble xroot)
+{
+  switch (event->type)
+    {
+    case GDK_MOTION_NOTIFY:
+      event->motion.x_root = xroot;
+      break;
+    case GDK_BUTTON_PRESS:
+    case GDK_2BUTTON_PRESS:
+    case GDK_3BUTTON_PRESS:
+    case GDK_BUTTON_RELEASE:
+      event->button.x_root = xroot;
+      break;
+    case GDK_ENTER_NOTIFY:
+    case GDK_LEAVE_NOTIFY:
+      event->crossing.x_root = xroot;
+      break;
+    default:
+      return 0;
+    }
+  return 1;
+}
+
+gint ada_gdk_event_set_yroot (GdkEvent * event, gdouble yroot)
+{
+  switch (event->type)
+    {
+    case GDK_MOTION_NOTIFY:
+      event->motion.y_root = yroot;
+      break;
+    case GDK_BUTTON_PRESS:
+    case GDK_2BUTTON_PRESS:
+    case GDK_3BUTTON_PRESS:
+    case GDK_BUTTON_RELEASE:
+      event->button.y_root = yroot;
+      break;
+    case GDK_ENTER_NOTIFY:
+    case GDK_LEAVE_NOTIFY:
+      event->crossing.y_root = yroot;
+      break;
+    default:
+      return 0;
+    }
+  return 1;
+}
+
 gint ada_gdk_event_set_time (GdkEvent * event, guint32 time)
 {
   switch (event->type)
