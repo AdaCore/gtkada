@@ -1,17 +1,11 @@
-
 with Gtk.Signal;
 with Gtk.Window; use Gtk.Window;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Text; use Gtk.Text;
-with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.File_Selection; use Gtk.File_Selection;
 
 package Callbacks_Gladeedit is
-
-   Text1 : Gtk.Text.Gtk_Text;
-   Statusbar1 : Gtk.Status_Bar.Gtk_Statusbar;
-   Main_Window : Gtk.Window.Gtk_Window;
 
    package Window_Callback is new
      Gtk.Signal.Void_Callback (Gtk_Window_Record);

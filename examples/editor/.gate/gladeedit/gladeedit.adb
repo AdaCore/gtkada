@@ -1,31 +1,22 @@
 with Gtk; use Gtk;
 with Gtk.Main;
 with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
-with Create_Main_Window;
-with Gtk.File_Selection; use Gtk.File_Selection;
-with Create_Open_File_Selection;
-with Gtk.Dialog; use Gtk.Dialog;
-with Create_About_Dialog;
-with Gtk.File_Selection; use Gtk.File_Selection;
-with Create_Save_File_Selection;
+with Main_Window_Pkg; use Main_Window_Pkg;
+with Open_File_Selection_Pkg; use Open_File_Selection_Pkg;
+with About_Dialog_Pkg; use About_Dialog_Pkg;
+with Save_File_Selection_Pkg; use Save_File_Selection_Pkg;
 
 procedure Gladeedit is
-   Main_Window : Gtk_Window;
-   Open_File_Selection : Gtk_File_Selection;
-   About_Dialog : Gtk_Dialog;
-   Save_File_Selection : Gtk_File_Selection;
-
 begin
    Gtk.Main.Set_Locale;
    Gtk.Main.Init;
-   Main_Window := Create_Main_Window;
-   Widget.Show_All (Gtk_Widget (Main_Window));
-   Open_File_Selection := Create_Open_File_Selection;
-   Widget.Show_All (Gtk_Widget (Open_File_Selection));
-   About_Dialog := Create_About_Dialog;
-   Widget.Show_All (Gtk_Widget (About_Dialog));
-   Save_File_Selection := Create_Save_File_Selection;
-   Widget.Show_All (Gtk_Widget (Save_File_Selection));
+   Gtk_New (Main_Window);
+   Show_All (Main_Window);
+   Gtk_New (Open_File_Selection);
+   Show_All (Open_File_Selection);
+   Gtk_New (About_Dialog);
+   Show_All (About_Dialog);
+   Gtk_New (Save_File_Selection);
+   Show_All (Save_File_Selection);
    Gtk.Main.Main;
 end Gladeedit;

@@ -1,4 +1,3 @@
-
 package body Callbacks_Gladeedit is
 
    procedure On_Main_Window_Delete_Event

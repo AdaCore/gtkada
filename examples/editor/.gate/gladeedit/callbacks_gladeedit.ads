@@ -1,4 +1,3 @@
-
 with Gtk.Signal;
 with Gtk.Window; use Gtk.Window;
 with Gtk.Menu_Item; use Gtk.Menu_Item;
