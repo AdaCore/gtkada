@@ -73,6 +73,7 @@ begin
 
    Menu_Item.Gtk_New (New1, "New");
    Accel_Group.Gtk_New (The_Accel_Group);
+   Window.Add_Accel_Group (Main_Window, The_Accel_Group);
    Widget.Add_Accelerator (Gtk_Widget (New1), "activate",
      The_Accel_Group, GDK_N, Gdk.Types.Control_Mask, Accel_Visible);
    Cb_Id := Menu_Item_Callback.Connect
