@@ -9,6 +9,8 @@ package Gtk.Progress_Bar is
    procedure Update
       (Pbar       : in Gtk_Progress_Bar'Class;
        Percentage : in Gfloat);
+   function Get_Percentage (Widget : in Gtk_Progress_Bar'Class)
+                            return      Gfloat;
 
 private
    type Gtk_Progress_Bar is new Gtk.Widget.Gtk_Widget with null record;

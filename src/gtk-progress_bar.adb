@@ -2,6 +2,19 @@
 
 package body Gtk.Progress_Bar is
 
+   --------------------
+   -- Get_Percentage --
+   --------------------
+
+   function Get_Percentage (Widget : in Gtk_Progress_Bar'Class)
+                            return      Gfloat
+   is
+      function Internal (Widget : in System.Address) return Gfloat;
+      pragma Import (C, Internal, "ada_progress_bar_get_percentage");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Percentage;
+
    -------------
    -- Gtk_New --
    -------------
