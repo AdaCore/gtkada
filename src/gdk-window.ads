@@ -201,6 +201,8 @@ package Gdk.Window is
       Width  :    out Gint;
       Height :    out Gint;
       Depth  :    out Gint);
+   --  You can get the size of the root window (ie the size of the screen)
+   --  simply by giving Null_Window as the first argument to this procedure.
 
    procedure Get_Position
      (Window : in     Gdk_Window;
@@ -327,5 +329,4 @@ private
    pragma Import (C, Set_Colormap, "gdk_window_set_colormap");
    pragma Import (C, Set_Icon, "gdk_window_set_icon");
    pragma Import (C, Set_Back_Pixmap, "gdk_window_set_back_pixmap");
-
 end Gdk.Window;
