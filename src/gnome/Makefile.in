@@ -27,9 +27,9 @@ endif
 
 gnome:
 	@if [ -f ../.devel ]; then \
-	  $(GNATMAKE) -c $(GNATFLAGS_DEVEL) $(FPIC) -I.. -aO../lib-obj make; \
+	  $(GNATMAKE) -c $(GNATFLAGS_DEVEL) $(FPIC) -I.. -aO../lib-obj make_gnome; \
 	else \
-	  $(GNATMAKE) -c $(GNATFLAGS) $(FPIC) -I.. -aO../lib-obj make; \
+	  $(GNATMAKE) -c $(GNATFLAGS) $(FPIC) -I.. -aO../lib-obj make_gnome; \
 	fi
 
 $(LIBNAME): gnome
@@ -52,7 +52,7 @@ $(ARCHIVENAME): gnome
 	fi
 
 link: $(LIBNAME)
-	gnatmake -gnaty make `gtkada-config` -largs -lgnomeada
+	gnatmake -gnaty make_gnome `gtkada-config` -largs -lgnomeada
 
 clean:
 	-$(RM) *.o *.ali *~ core
