@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
-with Gdk; use Gdk;
 with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Font;
