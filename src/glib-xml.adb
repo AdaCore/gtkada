@@ -593,7 +593,13 @@ package body Glib.XML is
             raise;
       end;
 
+      if Buf'Length = 0 then
+         Free (Buf);
+         return null;
+      end if;
+
       Fast_Read (File, Buf);
+
       Get_Buf (Buf.all, Index, '>', XML_Version);
       Result := Get_Node (Buf.all, Index'Unchecked_Access);
       Free (Buf);
