@@ -1,4 +1,4 @@
-EXEC=contextual banner toggle glist_traverse
+EXEC=contextual banner toggle glist_traverse tooltips
 
 all: ${EXEC}
 
