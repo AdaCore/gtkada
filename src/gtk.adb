@@ -1,5 +1,7 @@
 package body Gtk is
 
+   use type System.Address;
+
    ----------------
    -- Get_Object --
    ----------------
@@ -22,6 +24,17 @@ package body Gtk is
    begin
       return Internal (Object.Ptr);
    end Get_Type;
+
+
+   ------------------
+   --  Is_Created  --
+   ------------------
+
+   function Is_Created (Object : in Root_Type'Class) return Boolean is
+   begin
+      return Get_Object (Object) /= System.Null_Address;
+   end Is_Created;
+
 
    -------------------
    -- Major_Version --

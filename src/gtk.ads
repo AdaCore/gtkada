@@ -14,6 +14,8 @@ package Gtk is
    --  Accessible from the body of any child of Gtk for any descendant
    --  of Gtk_Root_Type.
 
+   function Is_Created (Object : in Root_Type'Class) return Boolean;
+
    function Major_Version return Guint;
    function Minor_Version return Guint;
    function Micro_Version return Guint;
