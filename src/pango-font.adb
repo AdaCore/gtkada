@@ -103,7 +103,8 @@ package body Pango.Font is
       --  into a string that From_String will then parse back! The approach
       --  used here is to build a font description using the Family_Name only,
       --  and then to set directly the other different parameters...
-      Result : Pango_Font_Description := From_String (Family_Name);
+      Result : Pango_Font_Description :=
+        From_String (Family_Name & Gint'Image (Size));
    begin
       Result.all :=
         (Family_Name => Result.Family_Name,
@@ -111,7 +112,7 @@ package body Pango.Font is
          Variant => Variant,
          Weight => Weight,
          Stretch => Stretch,
-         Size => Size);
+         Size => Result.Size);
       return Result;
    end To_Font_Description;
 
