@@ -3,15 +3,13 @@ This directory contains various contributions or updates for GtkAda.
 Contents
 ========
 
-pango-1.2.1.diff: a patch against pango 1.2.1 sources to ease distributing
+pango-1.2.5.diff: a patch against pango 1.2.5 sources to ease distributing
 gtk+ executables with no pango install.
 
-gtk+-2.2.1-win32.diff: a patch against Gtk+ 2.2.1 sources that fixes
+gtk+-2.2.4-win32.diff: a patch against Gtk+ 2.2.1 sources that fixes
 Windows specific problems.
 
-gtkada-2.0-win32.diff: a patch to run GtkAda 2.0.x properly under Windows
+gtkada-2.2-win32.diff: a patch to run GtkAda 2.2.x properly under Windows
 
 glade-2.0.0.diff: a patch to enable Ada support in Glade 2.0.0
 
-wimp: an improved version of gtk-wimp, a Gtk+ engine taking advantage of
-the native Windows XP uxtheme dll.
