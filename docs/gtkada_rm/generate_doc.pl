@@ -257,6 +257,8 @@ foreach $source_file (@source_files) {
 	if (@hierarchy) {
 	    my ($hierarchy, $hierarchy_short) = ("", "");
 	    $hierarchy = sprintf ("\@b{%-30s (\@pxref{Package_%s})\n",
+				  "GObject}", "Glib.Object");
+	    $hierarchy .= sprintf ("\@b{%-30s (\@pxref{Package_%s})\n",
 				  "Gtk_Object}", "Gtk.Object");
 	    $hierarchy_short = sprintf ("%-30s (Package %s)\n",
 					"Gtk_Object", "Gtk.Object");
@@ -447,7 +449,8 @@ foreach $source_file (@source_files) {
 ## Creates empty nodes for the packages that are referenced but not
 ## already created.
 
-$parent{"Gtk_Object"} = "";
+# $parent{"Gtk_Object"} = "";
+$parent{"GObject"} = "";
 foreach $package_name (keys %parent) {
     $package_name = &package_from_type ($package_name);
     unless (defined $output{$package_name}) {
@@ -865,7 +868,7 @@ sub find_hierarchy () {
 sub find_hierarchy_array () {
     my ($type) = shift;
 
-    if ($type =~ /Gtk_Object/) {
+    if ($type =~ /Gtk_Object/ || $type =~ /GObject/i) {
 	return ($type);
     };
 
