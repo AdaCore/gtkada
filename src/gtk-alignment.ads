@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -43,7 +43,7 @@
 --  expanded.
 --
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Bin;
 
@@ -52,30 +52,33 @@ package Gtk.Alignment is
    type Gtk_Alignment_Record is new Gtk.Bin.Gtk_Bin_Record with private;
    type Gtk_Alignment is access all Gtk_Alignment_Record'Class;
 
-   procedure Gtk_New (Alignment : out Gtk_Alignment;
-                      Xalign    : in Gfloat;
-                      Yalign    : in Gfloat;
-                      Xscale    : in Gfloat;
-                      Yscale    : in Gfloat);
+   procedure Gtk_New
+     (Alignment : out Gtk_Alignment;
+      Xalign    : Gfloat;
+      Yalign    : Gfloat;
+      Xscale    : Gfloat;
+      Yscale    : Gfloat);
    --  Create a new alignment widget, with initial values for the settings.
    --  See the description of the settings above.
 
-   procedure Initialize (Alignment : access Gtk_Alignment_Record'Class;
-                         Xalign    : in Gfloat;
-                         Yalign    : in Gfloat;
-                         Xscale    : in Gfloat;
-                         Yscale    : in Gfloat);
+   procedure Initialize
+     (Alignment : access Gtk_Alignment_Record'Class;
+      Xalign    : Gfloat;
+      Yalign    : Gfloat;
+      Xscale    : Gfloat;
+      Yscale    : Gfloat);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Alignment.
 
-   procedure Set (Alignment : access Gtk_Alignment_Record;
-                  Xalign    : in Gfloat;
-                  Yalign    : in Gfloat;
-                  Xscale    : in Gfloat;
-                  Yscale    : in Gfloat);
+   procedure Set
+     (Alignment : access Gtk_Alignment_Record;
+      Xalign    : Gfloat;
+      Yalign    : Gfloat;
+      Xscale    : Gfloat;
+      Yscale    : Gfloat);
    --  Modify the settings for the alignment.
    --  See the description of the settings above.
 

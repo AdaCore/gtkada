@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -26,6 +26,8 @@
 -- exception does not however invalidate any other reasons why the   --
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
+
+--  <c_version>1.3.4</c_version>
 
 with Gdk; use Gdk;
 with Gdk.Types;
@@ -54,61 +56,61 @@ package Gtk.Accel_Group is
    --  procedure Unref
 
    function Activate
-     (Accel_Group : in Gtk_Accel_Group;
-      Accel_Key   : in Gdk.Types.Gdk_Key_Type;
-      Accel_Mods  : in Gdk.Types.Gdk_Modifier_Type) return Boolean;
+     (Accel_Group : Gtk_Accel_Group;
+      Accel_Key   : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Boolean;
 
    function Accel_Groups_Activate
      (Object     : access Gtk.Object.Gtk_Object_Record'Class;
-      Accel_Key  : in Gdk.Types.Gdk_Key_Type;
-      Accel_Mods : in Gdk.Types.Gdk_Modifier_Type) return Boolean;
+      Accel_Key  : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods : Gdk.Types.Gdk_Modifier_Type) return Boolean;
 
    procedure Attach
-     (Accel_Group : in Gtk_Accel_Group;
+     (Accel_Group : Gtk_Accel_Group;
       Object      : access Gtk.Object.Gtk_Object_Record'Class);
    --  Object should be able to get key_press and key_release events (ie
    --  this won't work in a Gtk_Box which has no window).
    --  The recommended way is to attach the Accel_Group to the toplevel window.
 
    procedure Detach
-     (Accel_Group : in Gtk_Accel_Group;
+     (Accel_Group : Gtk_Accel_Group;
       Object      : access Gtk.Object.Gtk_Object_Record'Class);
 
-   procedure Lock (Accel_Group : in Gtk_Accel_Group);
+   procedure Lock (Accel_Group : Gtk_Accel_Group);
 
-   procedure Unlock (Accel_Group : in Gtk_Accel_Group);
+   procedure Unlock (Accel_Group : Gtk_Accel_Group);
 
    ---------------------------------
    --  Accelerator Group Entries  --
    ---------------------------------
 
    function Get_Entry
-     (Accel_Group : in Gtk_Accel_Group;
-      Accel_Key   : in Gdk.Types.Gdk_Key_Type;
-      Accel_Mods  : in Gdk.Types.Gdk_Modifier_Type) return Gtk_Accel_Entry;
+     (Accel_Group : Gtk_Accel_Group;
+      Accel_Key   : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Gtk_Accel_Entry;
 
    procedure Lock_Entry
-     (Accel_Group : in Gtk_Accel_Group;
-      Accel_Key   : in Gdk.Types.Gdk_Key_Type;
-      Accel_Mods  : in Gdk.Types.Gdk_Modifier_Type);
+     (Accel_Group : Gtk_Accel_Group;
+      Accel_Key   : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods  : Gdk.Types.Gdk_Modifier_Type);
 
    procedure Unlock_Entry
-     (Accel_Group : in Gtk_Accel_Group;
-      Accel_Key   : in Gdk.Types.Gdk_Key_Type;
-      Accel_Mods  : in Gdk.Types.Gdk_Modifier_Type);
+     (Accel_Group : Gtk_Accel_Group;
+      Accel_Key   : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods  : Gdk.Types.Gdk_Modifier_Type);
 
    procedure Add
-     (Accel_Group  : in Gtk_Accel_Group;
-      Accel_Key    : in     Gdk.Types.Gdk_Key_Type;
-      Accel_Mods   : in     Gdk.Types.Gdk_Modifier_Type;
-      Accel_Flags  : in     Gtk_Accel_Flags;
+     (Accel_Group  : Gtk_Accel_Group;
+      Accel_Key    : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods   : Gdk.Types.Gdk_Modifier_Type;
+      Accel_Flags  : Gtk_Accel_Flags;
       Object       : access Gtk.Object.Gtk_Object_Record'Class;
-      Accel_Signal : in     String);
+      Accel_Signal : String);
 
    procedure Remove
-     (Accel_Group : in Gtk_Accel_Group;
-      Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
-      Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type;
+     (Accel_Group : Gtk_Accel_Group;
+      Accel_Key   : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods  : Gdk.Types.Gdk_Modifier_Type;
       Object      : access Gtk.Object.Gtk_Object_Record'Class);
 
    ---------------------------
@@ -117,17 +119,17 @@ package Gtk.Accel_Group is
 
    procedure Handle_Add
      (Object          : access Gtk.Object.Gtk_Object_Record'Class;
-      Accel_Signal_Id : in     Guint;
-      Accel_Group     : in     Gtk_Accel_Group;
-      Accel_Key       : in     Gdk.Types.Gdk_Key_Type;
-      Accel_Mods      : in     Gdk.Types.Gdk_Modifier_Type;
-      Accel_Flags     : in     Gtk_Accel_Flags);
+      Accel_Signal_Id : Guint;
+      Accel_Group     : Gtk_Accel_Group;
+      Accel_Key       : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods      : Gdk.Types.Gdk_Modifier_Type;
+      Accel_Flags     : Gtk_Accel_Flags);
 
    procedure Handle_Remove
      (Object      : access Gtk.Object.Gtk_Object_Record'Class;
-      Accel_Group : in     Gtk_Accel_Group;
-      Accel_Key   : in     Gdk.Types.Gdk_Key_Type;
-      Accel_Mods  : in     Gdk.Types.Gdk_Modifier_Type);
+      Accel_Group : Gtk_Accel_Group;
+      Accel_Key   : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods  : Gdk.Types.Gdk_Modifier_Type);
 
    --  function Create_Add
    --  function Create_Remove
@@ -146,20 +148,20 @@ package Gtk.Accel_Group is
    --------------------
 
    function Accelerator_Valid
-     (Keyval    : in Gdk.Types.Gdk_Key_Type;
-      Modifiers : in Gdk.Types.Gdk_Modifier_Type) return Boolean;
+     (Keyval    : Gdk.Types.Gdk_Key_Type;
+      Modifiers : Gdk.Types.Gdk_Modifier_Type) return Boolean;
 
    procedure Accelerator_Parse
-     (Accelerator      : in     String;
-      Accelerator_Key  :    out Gdk.Types.Gdk_Key_Type;
-      Accelerator_Mods :    out Gdk.Types.Gdk_Modifier_Type);
+     (Accelerator      : String;
+      Accelerator_Key  : out Gdk.Types.Gdk_Key_Type;
+      Accelerator_Mods : out Gdk.Types.Gdk_Modifier_Type);
 
    function Accelerator_Name
-     (Accelerator_Key  : in Gdk.Types.Gdk_Key_Type;
-      Accelerator_Mods : in Gdk.Types.Gdk_Modifier_Type) return String;
+     (Accelerator_Key  : Gdk.Types.Gdk_Key_Type;
+      Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type) return String;
 
    procedure Accelerator_Set_Default_Mod_Mask
-     (Default_Mod_Mask : in Gdk.Types.Gdk_Modifier_Type);
+     (Default_Mod_Mask : Gdk.Types.Gdk_Modifier_Type);
 
    function Accelerator_Get_Default_Mod_Mask
      return Gdk.Types.Gdk_Modifier_Type;

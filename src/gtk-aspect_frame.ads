@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  actually given).
 --
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Frame;
 
@@ -47,12 +47,13 @@ package Gtk.Aspect_Frame is
    type Gtk_Aspect_Frame_Record is new Gtk.Frame.Gtk_Frame_Record with private;
    type Gtk_Aspect_Frame is access all Gtk_Aspect_Frame_Record'Class;
 
-   procedure Gtk_New (Aspect_Frame : out Gtk_Aspect_Frame;
-                      Label        : in String;
-                      Xalign       : in Gfloat;
-                      Yalign       : in Gfloat;
-                      Ratio        : in Gfloat;
-                      Obey_Child   : in Boolean);
+   procedure Gtk_New
+     (Aspect_Frame : out Gtk_Aspect_Frame;
+      Label        : String;
+      Xalign       : Gfloat;
+      Yalign       : Gfloat;
+      Ratio        : Gfloat;
+      Obey_Child   : Boolean);
    --  Create a new Aspect_Frame.
    --  If Label is the empty string, then the frame won't have any title.
    --  Xalign and Yalign are constrained to the range 0.0 .. 1.0 and specify
@@ -63,37 +64,39 @@ package Gtk.Aspect_Frame is
    --  is taken from the child's requisition (ie the ideal size it asked
    --  for at creation time).
 
-   procedure Initialize (Aspect_Frame : access Gtk_Aspect_Frame_Record'Class;
-                         Label        : in String;
-                         Xalign       : in Gfloat;
-                         Yalign       : in Gfloat;
-                         Ratio        : in Gfloat;
-                         Obey_Child   : in Boolean);
+   procedure Initialize
+     (Aspect_Frame : access Gtk_Aspect_Frame_Record'Class;
+      Label        : String;
+      Xalign       : Gfloat;
+      Yalign       : Gfloat;
+      Ratio        : Gfloat;
+      Obey_Child   : Boolean);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Aspect_Frame.
 
-   procedure Set (Aspect_Frame : access Gtk_Aspect_Frame_Record;
-                  Xalign       : in Gfloat;
-                  Yalign       : in Gfloat;
-                  Ratio        : in Gfloat;
-                  Obey_Child   : in Boolean);
+   procedure Set
+     (Aspect_Frame : access Gtk_Aspect_Frame_Record;
+      Xalign       : Gfloat;
+      Yalign       : Gfloat;
+      Ratio        : Gfloat;
+      Obey_Child   : Boolean);
    --  Modify the frame's parameters (see the description of these parameters
    --  for Gtk_New.
 
-   function Get_Ratio (Aspect_Frame : access Gtk_Aspect_Frame_Record)
-                      return Gfloat;
+   function Get_Ratio
+     (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat;
    --  Return the current ratio for the frame (width / height)
 
-   function Get_Xalign (Aspect_Frame : access Gtk_Aspect_Frame_Record)
-                       return Gfloat;
+   function Get_Xalign
+     (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat;
    --  Return the current X alignment for the frame.
    --  0.0 means the child is left aligned, 1.0 that it is right aligned.
 
-   function Get_Yalign (Aspect_Frame : access Gtk_Aspect_Frame_Record)
-                       return Gfloat;
+   function Get_Yalign
+     (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat;
    --  Return the current Y alignment for the frame.
    --  1.0 means the child is top aligned, 1.0 that it is bottom aligned.
 

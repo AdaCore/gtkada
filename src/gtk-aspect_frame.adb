@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,11 +35,12 @@ package body Gtk.Aspect_Frame is
    -- Get_Ratio --
    ---------------
 
-   function Get_Ratio (Aspect_Frame : access Gtk_Aspect_Frame_Record)
-     return Gfloat
+   function Get_Ratio
+     (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat
    is
-      function Internal (Widget : in System.Address) return Gfloat;
+      function Internal (Widget : System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_aspect_frame_get_ratio");
+
    begin
       return Internal (Get_Object (Aspect_Frame));
    end Get_Ratio;
@@ -48,11 +49,12 @@ package body Gtk.Aspect_Frame is
    -- Get_Xalign --
    ----------------
 
-   function Get_Xalign (Aspect_Frame : access Gtk_Aspect_Frame_Record)
-     return Gfloat
+   function Get_Xalign
+     (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat
    is
-      function Internal (Widget : in System.Address) return Gfloat;
+      function Internal (Widget : System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_aspect_frame_get_xalign");
+
    begin
       return Internal (Get_Object (Aspect_Frame));
    end Get_Xalign;
@@ -61,11 +63,12 @@ package body Gtk.Aspect_Frame is
    -- Get_Yalign --
    ----------------
 
-   function Get_Yalign (Aspect_Frame : access Gtk_Aspect_Frame_Record)
-     return Gfloat
+   function Get_Yalign
+     (Aspect_Frame : access Gtk_Aspect_Frame_Record) return Gfloat
    is
-      function Internal (Widget : in System.Address) return Gfloat;
+      function Internal (Widget : System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_aspect_frame_get_yalign");
+
    begin
       return Internal (Get_Object (Aspect_Frame));
    end Get_Yalign;
@@ -76,11 +79,11 @@ package body Gtk.Aspect_Frame is
 
    procedure Gtk_New
      (Aspect_Frame : out Gtk_Aspect_Frame;
-      Label        : in String;
-      Xalign       : in Gfloat;
-      Yalign       : in Gfloat;
-      Ratio        : in Gfloat;
-      Obey_Child   : in Boolean) is
+      Label        : String;
+      Xalign       : Gfloat;
+      Yalign       : Gfloat;
+      Ratio        : Gfloat;
+      Obey_Child   : Boolean) is
    begin
       Aspect_Frame := new Gtk_Aspect_Frame_Record;
       Initialize (Aspect_Frame, Label, Xalign, Yalign, Ratio, Obey_Child);
@@ -92,28 +95,31 @@ package body Gtk.Aspect_Frame is
 
    procedure Initialize
      (Aspect_Frame : access Gtk_Aspect_Frame_Record'Class;
-      Label        : in String;
-      Xalign       : in Gfloat;
-      Yalign       : in Gfloat;
-      Ratio        : in Gfloat;
-      Obey_Child   : in Boolean)
+      Label        : String;
+      Xalign       : Gfloat;
+      Yalign       : Gfloat;
+      Ratio        : Gfloat;
+      Obey_Child   : Boolean)
    is
       function Internal
-        (Label      : in System.Address;
-         Xalign     : in Gfloat;
-         Yalign     : in Gfloat;
-         Ratio      : in Gfloat;
-         Obey_Child : in Gint)
-         return System.Address;
+        (Label      : System.Address;
+         Xalign     : Gfloat;
+         Yalign     : Gfloat;
+         Ratio      : Gfloat;
+         Obey_Child : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_aspect_frame_new");
+
       S : aliased constant String := Label & ASCII.NUL;
       Sa : System.Address := System.Null_Address;
    begin
       if Label /= "" then
          Sa := S'Address;
       end if;
-      Set_Object (Aspect_Frame, Internal (Sa, Xalign, Yalign, Ratio,
-                                          Boolean'Pos (Obey_Child)));
+
+      Set_Object
+        (Aspect_Frame,
+         Internal
+           (Sa, Xalign, Yalign, Ratio, Boolean'Pos (Obey_Child)));
       Initialize_User_Data (Aspect_Frame);
    end Initialize;
 
@@ -123,17 +129,17 @@ package body Gtk.Aspect_Frame is
 
    procedure Set
      (Aspect_Frame : access Gtk_Aspect_Frame_Record;
-      Xalign       : in Gfloat;
-      Yalign       : in Gfloat;
-      Ratio        : in Gfloat;
-      Obey_Child   : in Boolean)
+      Xalign       : Gfloat;
+      Yalign       : Gfloat;
+      Ratio        : Gfloat;
+      Obey_Child   : Boolean)
    is
       procedure Internal
-        (Aspect_Frame : in System.Address;
-         Xalign       : in Gfloat;
-         Yalign       : in Gfloat;
-         Ratio        : in Gfloat;
-         Obey_Child   : in Gint);
+        (Aspect_Frame : System.Address;
+         Xalign       : Gfloat;
+         Yalign       : Gfloat;
+         Ratio        : Gfloat;
+         Obey_Child   : Gint);
       pragma Import (C, Internal, "gtk_aspect_frame_set");
 
    begin

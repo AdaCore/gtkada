@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@ package body Gtk.Accel_Label is
    function Get_Accel_Width
      (Accel_Label : access Gtk_Accel_Label_Record) return Guint
    is
-      function Internal (Accel_Label : in System.Address) return Guint;
+      function Internal (Accel_Label : System.Address) return Guint;
       pragma Import (C, Internal, "gtk_accel_label_get_accel_width");
 
    begin
@@ -49,7 +49,7 @@ package body Gtk.Accel_Label is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Accel_Label : out Gtk_Accel_Label; Str : in  String) is
+   procedure Gtk_New (Accel_Label : out Gtk_Accel_Label; Str : String) is
    begin
       Accel_Label := new Gtk_Accel_Label_Record;
       Initialize (Accel_Label, Str);
@@ -60,10 +60,9 @@ package body Gtk.Accel_Label is
    ----------------
 
    procedure Initialize
-     (Accel_Label : access Gtk_Accel_Label_Record'Class;
-      Str         : in String)
+     (Accel_Label : access Gtk_Accel_Label_Record'Class; Str : String)
    is
-      function Internal (Str : in String) return System.Address;
+      function Internal (Str : String) return System.Address;
       pragma Import (C, Internal, "gtk_accel_label_new");
 
    begin
@@ -78,7 +77,7 @@ package body Gtk.Accel_Label is
    function Refetch
      (Accel_Label : access Gtk_Accel_Label_Record) return Boolean
    is
-      function Internal (Accel_Label : in System.Address) return Gint;
+      function Internal (Accel_Label : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_accel_label_refetch");
 
    begin
@@ -94,8 +93,8 @@ package body Gtk.Accel_Label is
       Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
-        (Accel_Label  : in System.Address;
-         Accel_Widget : in System.Address);
+        (Accel_Label  : System.Address;
+         Accel_Widget : System.Address);
       pragma Import (C, Internal, "gtk_accel_label_set_accel_widget");
 
    begin

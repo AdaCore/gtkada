@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -52,7 +52,7 @@
 --  multiple accelerators and even signal names, though it is almost always
 --  used to display just one accelerator key.
 --  </description>
---  <c_version>1.2.8</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Label;
 with Gtk.Widget;
@@ -62,13 +62,12 @@ package Gtk.Accel_Label is
    type Gtk_Accel_Label_Record is new Gtk.Label.Gtk_Label_Record with private;
    type Gtk_Accel_Label is access all Gtk_Accel_Label_Record;
 
-   procedure Gtk_New (Accel_Label : out Gtk_Accel_Label; Str : in  String);
+   procedure Gtk_New (Accel_Label : out Gtk_Accel_Label; Str : String);
    --  Create a new Gtk_Accel_Label.
    --  Str is the label string.
 
    procedure Initialize
-     (Accel_Label : access Gtk_Accel_Label_Record'Class;
-      Str         : in String);
+     (Accel_Label : access Gtk_Accel_Label_Record'Class; Str : String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 

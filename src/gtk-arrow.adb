@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,8 +37,8 @@ package body Gtk.Arrow is
 
    procedure Gtk_New
       (Arrow       : out Gtk_Arrow;
-       Arrow_Type  : in Gtk_Arrow_Type;
-       Shadow_Type : in Gtk_Shadow_Type) is
+       Arrow_Type  : Gtk_Arrow_Type;
+       Shadow_Type : Gtk_Shadow_Type) is
    begin
       Arrow := new Gtk_Arrow_Record;
       Initialize (Arrow, Arrow_Type, Shadow_Type);
@@ -50,17 +50,16 @@ package body Gtk.Arrow is
 
    procedure Initialize
      (Arrow       : access Gtk_Arrow_Record'Class;
-      Arrow_Type  : in Gtk_Arrow_Type;
-      Shadow_Type : in Gtk_Shadow_Type)
+      Arrow_Type  : Gtk_Arrow_Type;
+      Shadow_Type : Gtk_Shadow_Type)
    is
       function Internal
-        (Arrow_Type  : in Gint;
-         Shadow_Type : in Gint)
-         return System.Address;
+        (Arrow_Type  : Gtk_Arrow_Type;
+         Shadow_Type : Gtk_Shadow_Type) return System.Address;
       pragma Import (C, Internal, "gtk_arrow_new");
+
    begin
-      Set_Object (Arrow, Internal (Gtk_Arrow_Type'Pos (Arrow_Type),
-                                   Gtk_Shadow_Type'Pos (Shadow_Type)));
+      Set_Object (Arrow, Internal (Arrow_Type, Shadow_Type));
       Initialize_User_Data (Arrow);
    end Initialize;
 
@@ -70,18 +69,17 @@ package body Gtk.Arrow is
 
    procedure Set
       (Arrow       : access Gtk_Arrow_Record;
-       Arrow_Type  : in Gtk_Arrow_Type;
-       Shadow_Type : in Gtk_Shadow_Type)
+       Arrow_Type  : Gtk_Arrow_Type;
+       Shadow_Type : Gtk_Shadow_Type)
    is
       procedure Internal
-         (Arrow       : in System.Address;
-          Arrow_Type  : in Gint;
-          Shadow_Type : in Gint);
+         (Arrow       : System.Address;
+          Arrow_Type  : Gtk_Arrow_Type;
+          Shadow_Type : Gtk_Shadow_Type);
       pragma Import (C, Internal, "gtk_arrow_set");
+
    begin
-      Internal (Get_Object (Arrow),
-                Gtk_Arrow_Type'Pos (Arrow_Type),
-                Gtk_Shadow_Type'Pos (Shadow_Type));
+      Internal (Get_Object (Arrow), Arrow_Type, Shadow_Type);
    end Set;
 
 end Gtk.Arrow;

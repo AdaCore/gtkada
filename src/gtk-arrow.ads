@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -41,7 +41,7 @@
 --  Arrows are created with a call to Gtk_New. The direction or style of an
 --  arrow can be changed after creation by using Set.
 --  </description>
---  <c_version>1.2.8</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Misc;
@@ -53,14 +53,14 @@ package Gtk.Arrow is
 
    procedure Gtk_New
      (Arrow       : out Gtk_Arrow;
-      Arrow_Type  : in Gtk_Arrow_Type;
-      Shadow_Type : in Gtk_Shadow_Type);
+      Arrow_Type  : Gtk_Arrow_Type;
+      Shadow_Type : Gtk_Shadow_Type);
    --  Create a new arrow widget.
 
    procedure Initialize
      (Arrow       : access Gtk_Arrow_Record'Class;
-      Arrow_Type  : in Gtk_Arrow_Type;
-      Shadow_Type : in Gtk_Shadow_Type);
+      Arrow_Type  : Gtk_Arrow_Type;
+      Shadow_Type : Gtk_Shadow_Type);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -69,8 +69,8 @@ package Gtk.Arrow is
 
    procedure Set
      (Arrow       : access Gtk_Arrow_Record;
-      Arrow_Type  : in Gtk_Arrow_Type;
-      Shadow_Type : in Gtk_Shadow_Type);
+      Arrow_Type  : Gtk_Arrow_Type;
+      Shadow_Type : Gtk_Shadow_Type);
    --  Set the direction and style of the Arrow.
 
    -------------

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,24 +48,25 @@
 --    lower    value        value + page_size       upper
 --
 --  </example>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
-with Gtk.Data;
+with Gtk.Object;
 
 package Gtk.Adjustment is
 
-   type Gtk_Adjustment_Record is new Data.Gtk_Data_Record with private;
+   type Gtk_Adjustment_Record is new Object.Gtk_Object_Record with private;
    type Gtk_Adjustment is access all Gtk_Adjustment_Record'Class;
 
    Null_Adjustment : constant Gtk_Adjustment;
 
-   procedure Gtk_New (Adjustment     : out Gtk_Adjustment;
-                      Value          : in     Gfloat;
-                      Lower          : in     Gfloat;
-                      Upper          : in     Gfloat;
-                      Step_Increment : in     Gfloat;
-                      Page_Increment : in     Gfloat;
-                      Page_Size      : in     Gfloat);
+   procedure Gtk_New
+     (Adjustment     : out Gtk_Adjustment;
+      Value          : Gdouble;
+      Lower          : Gdouble;
+      Upper          : Gdouble;
+      Step_Increment : Gdouble;
+      Page_Increment : Gdouble;
+      Page_Size      : Gdouble);
    --  Create a new adjustment.
    --  Value is the initial value of the adjustment. It must be in the
    --  range (Lower .. Upper) and the adjustment's value will never be
@@ -77,13 +78,14 @@ package Gtk.Adjustment is
    --  Page_Size is the size of the area that is currently visible
    --  (for instance in a Gtk_Scrolled_Window).
 
-   procedure Initialize (Adjustment     : access Gtk_Adjustment_Record'Class;
-                         Value          : in     Gfloat;
-                         Lower          : in     Gfloat;
-                         Upper          : in     Gfloat;
-                         Step_Increment : in     Gfloat;
-                         Page_Increment : in     Gfloat;
-                         Page_Size      : in     Gfloat);
+   procedure Initialize
+     (Adjustment     : access Gtk_Adjustment_Record'Class;
+      Value          : Gdouble;
+      Lower          : Gdouble;
+      Upper          : Gdouble;
+      Step_Increment : Gdouble;
+      Page_Increment : Gdouble;
+      Page_Size      : Gdouble);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
@@ -94,62 +96,68 @@ package Gtk.Adjustment is
    -- Read functions --
    --------------------
 
-   function Get_Value (Adjustment : access Gtk_Adjustment_Record)
-                      return Gfloat;
+   function Get_Value
+     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
    --  Return the current value of the adjustment.
 
-   function Get_Lower (Adjustment : access Gtk_Adjustment_Record)
-                      return Gfloat;
+   function Get_Lower
+     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
    --  Return the lower bound of the adjustment.
 
-   function Get_Upper (Adjustment : access Gtk_Adjustment_Record)
-                      return Gfloat;
+   function Get_Upper
+     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
    --  Return the upper bound of the adjustment.
 
-   function Get_Step_Increment (Adjustment : access Gtk_Adjustment_Record)
-                               return Gfloat;
+   function Get_Step_Increment
+     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
    --  Return the step increment of the adjustment.
 
-   function Get_Page_Increment (Adjustment : access Gtk_Adjustment_Record)
-                               return Gfloat;
+   function Get_Page_Increment
+     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
    --  Return the page increment of the adjustment.
 
-   function Get_Page_Size (Adjustment : access Gtk_Adjustment_Record)
-                          return Gfloat;
+   function Get_Page_Size
+     (Adjustment : access Gtk_Adjustment_Record) return Gdouble;
    --  Return the page size of the adjustment.
 
    ---------------------
    -- Write functions --
    ---------------------
 
-   procedure Set_Upper (Adjustment : access Gtk_Adjustment_Record;
-                        Upper      : in Gfloat);
+   procedure Set_Upper
+     (Adjustment : access Gtk_Adjustment_Record;
+      Upper      : Gdouble);
    --  Modify the upper bound of the adjustment.
    --  You should call Changed after modifying this value.
 
-   procedure Set_Lower (Adjustment : access Gtk_Adjustment_Record;
-                        Lower      : in Gfloat);
+   procedure Set_Lower
+     (Adjustment : access Gtk_Adjustment_Record;
+      Lower      : Gdouble);
    --  Modify the lower bound of the adjustment.
    --  You should call Changed after modifying this value.
 
-   procedure Set_Value (Adjustment : access Gtk_Adjustment_Record;
-                        Value      : in Gfloat);
+   procedure Set_Value
+     (Adjustment : access Gtk_Adjustment_Record;
+      Value      : Gdouble);
    --  Modify the current value of the adjustment.
    --  You do not need to call Value_Changed after modifying this value,
    --  this is done automatically.
 
-   procedure Set_Page_Size (Adjustment : access Gtk_Adjustment_Record;
-                            Page_Size  : in Gfloat);
+   procedure Set_Page_Size
+     (Adjustment : access Gtk_Adjustment_Record;
+      Page_Size  : Gdouble);
    --  Modify the page size of the adjustment.
    --  You should call Changed after modifying this value.
 
-   procedure Set_Page_Increment (Adjustment     : access Gtk_Adjustment_Record;
-                                 Page_Increment : in Gfloat);
+   procedure Set_Page_Increment
+     (Adjustment     : access Gtk_Adjustment_Record;
+      Page_Increment : Gdouble);
    --  Modify the page increment of the adjustment.
    --  You should call Changed after modifying this value.
 
-   procedure Set_Step_Increment (Adjustment : access Gtk_Adjustment_Record;
-                                 Step_Increment : in Gfloat);
+   procedure Set_Step_Increment
+     (Adjustment     : access Gtk_Adjustment_Record;
+      Step_Increment : Gdouble);
    --  Modify the step increment of the adjustment.
    --  You should call Changed after modifying this value.
 
@@ -157,9 +165,10 @@ package Gtk.Adjustment is
    -- Misc functions --
    --------------------
 
-   procedure Clamp_Page (Adjustment : access Gtk_Adjustment_Record;
-                         Lower      : in     Gfloat;
-                         Upper      : in     Gfloat);
+   procedure Clamp_Page
+     (Adjustment : access Gtk_Adjustment_Record;
+      Lower      : Gdouble;
+      Upper      : Gdouble);
    --  Update the Adjustment value to ensure that the range between Lower and
    --  Upper is in the current page (i.e. between value and value +
    --  page_size). If the range is larger than the page size, then only the
@@ -201,10 +210,9 @@ package Gtk.Adjustment is
 
 private
 
-   type Gtk_Adjustment_Record is new Data.Gtk_Data_Record with null record;
+   type Gtk_Adjustment_Record is new Object.Gtk_Object_Record with null record;
 
    Null_Adjustment : constant Gtk_Adjustment := null;
 
    pragma Import (C, Get_Type, "gtk_adjustment_get_type");
 end Gtk.Adjustment;
-
