@@ -2,7 +2,7 @@
 --                   Gate - GtkAda Components                        --
 --                                                                   --
 --   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2002 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -758,7 +758,7 @@ package body Gtk_Generates is
       Widget_Destroy (Widget);
       Editable_Generate (N, File);
       Gen_Set (N, "editable", File);
-      Gen_Set (N, "Max_Length", "max_length", "", "", "", File);
+      Gen_Set (N, "max_length", File);
       Gen_Set (N, "position", File);
 
       if Gettext_Support (N) then
@@ -767,7 +767,7 @@ package body Gtk_Generates is
          Gen_Set (N, "text", File, """", """");
       end if;
 
-      Gen_Set (N, "Visibility", "visibility", "", "", "", File);
+      Gen_Set (N, "visibility", File);
    end GEntry_Generate;
 
    ---------------------
@@ -1776,8 +1776,6 @@ package body Gtk_Generates is
       Gen_Set (N, "active", File);
    end Toggle_Button_Generate;
 
-   Widget_Class : constant String := "GtkWidget";
-
    ----------------------
    -- Toolbar_Generate --
    ----------------------
@@ -1883,7 +1881,7 @@ package body Gtk_Generates is
                end if;
 
                Add_Package ("Widget");
-               Gen_Signal (P, File, Widget_Class);
+               Gen_Signal (P, File, "GtkWidget");
 
                P.Specific_Data.Created := True;
                P.Specific_Data.Initialized := True;
