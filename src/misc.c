@@ -36,6 +36,7 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtktextlayout.h>
 #include <gtk/gtktypeutils.h>
 
 #ifndef _WIN32  /* Assuming X11 */
@@ -2129,6 +2130,33 @@ ada_gtk_viewport_get_bin_window (GtkViewport* viewport) {
 }
 
 /******************************************
+ ** Functions for Text_Attributes
+ ******************************************/
+
+PangoFontDescription
+ada_text_attributes_get_font (GtkTextAttributes* text_attr)
+{
+  return text_attr->font;
+}
+
+void
+ada_text_attributes_set_font (GtkTextAttributes* text_attr,
+                              PangoFontDescription* font)
+{
+  text_attr->font = *font;
+}
+
+/******************************************
+ ** Functions for Text_Layout
+ ******************************************/
+
+GtkTextAttributes*
+ada_text_layout_get_default_style (GtkTextLayout* layout)
+{
+  return layout->default_style;
+}
+
+/******************************************
  ** Functions for Text_View
  ******************************************/
 
@@ -2151,6 +2179,12 @@ ada_text_view_set_adjustments (GtkTextView* widget,
 {
   g_signal_emit_by_name
     (G_OBJECT (widget), "set_scroll_adjustments", hadj, vadj);
+}
+
+GtkTextLayout*
+ada_text_view_get_layout (GtkTextView* widget)
+{
+  return widget->layout;
 }
 
 /******************************************
