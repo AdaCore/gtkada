@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --                   Gate - GtkAda Components                        --
 --                                                                   --
---                   Copyright (C) 1999-2001                         --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -152,9 +152,9 @@ package body Gtk.Glade is
       P := Get_Field (N.Child.Next, "name");
       Q := Get_Field (N.Child, "name");
 
-      Put_Line ("with Gtk; use Gtk;");
-      Put_Line ("with Gtk.Main;");
-      Put_Line ("with Gtk.Widget; use Gtk.Widget;");
+      Put_Line (File, "with Gtk; use Gtk;");
+      Put_Line (File, "with Gtk.Main;");
+      Put_Line (File, "with Gtk.Widget; use Gtk.Widget;");
 
       M := N.Child.Next;
 
@@ -164,15 +164,15 @@ package body Gtk.Glade is
          P := Get_Field (M, "name");
 
          if P /= null then
-            Put_Line ("with " & To_Ada (P.all) & "_Pkg; use " &
+            Put_Line (File, "with " & To_Ada (P.all) & "_Pkg; use " &
               To_Ada (P.all) & "_Pkg;");
          end if;
 
          M := M.Next;
       end loop;
 
-      New_Line;
-      Put_Line ("procedure " & To_Ada (Q.all) & " is");
+      New_Line (File);
+      Put_Line (File, "procedure " & To_Ada (Q.all) & " is");
 
       M := N.Child.Next;
 
@@ -181,17 +181,17 @@ package body Gtk.Glade is
          P := Get_Field (M, "name");
 
          if P /= null then
-            Put_Line
-              ("   " & To_Ada (P.all) & " : " & To_Ada (P.all) & "_Access;");
+            Put_Line (File,
+              "   " & To_Ada (P.all) & " : " & To_Ada (P.all) & "_Access;");
          end if;
 
          M := M.Next;
       end loop;
 
-      New_Line;
-      Put_Line ("begin");
-      Put_Line ("   Gtk.Main.Set_Locale;");
-      Put_Line ("   Gtk.Main.Init;");
+      New_Line (File);
+      Put_Line (File, "begin");
+      Put_Line (File, "   Gtk.Main.Set_Locale;");
+      Put_Line (File, "   Gtk.Main.Init;");
       M := N.Child.Next;
 
       loop
@@ -199,15 +199,15 @@ package body Gtk.Glade is
          P := Get_Field (M, "name");
 
          if P /= null then
-            Put_Line ("   Gtk_New (" & To_Ada (P.all) & ");");
-            Put_Line ("   Show_All (" & To_Ada (P.all) & ");");
+            Put_Line (File, "   Gtk_New (" & To_Ada (P.all) & ");");
+            Put_Line (File, "   Show_All (" & To_Ada (P.all) & ");");
          end if;
 
          M := M.Next;
       end loop;
 
-      Put_Line ("   Gtk.Main.Main;");
-      Put_Line ("end " & To_Ada (Q.all) & ";");
+      Put_Line (File, "   Gtk.Main.Main;");
+      Put_Line (File, "end " & To_Ada (Q.all) & ";");
    end Print_Header;
 
    ---------------
@@ -408,7 +408,7 @@ package body Gtk.Glade is
       Gettext     : Boolean;
 
    begin
-      Print_Header (N, Output);
+      Print_Header (N, Standard_Output);
       M := N.Child.Next;
       Gettext := Gettext_Support (M);
 
