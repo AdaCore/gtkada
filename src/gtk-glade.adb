@@ -132,7 +132,9 @@ package body Gtk.Glade is
       P := N.Child;
 
       while P /= null loop
-         if P.Tag.all = "child" then
+         if P.Tag.all = "child"
+           and then Get_Attribute (P, "internal-child") = ""
+         then
             Q := P.Child;
             while Q /= null loop
                if Q.Tag.all = "widget" then
@@ -254,7 +256,9 @@ package body Gtk.Glade is
 
       begin
          while P /= null loop
-            if P.Tag.all = "child" then
+            if P.Tag.all = "child"
+              and then Get_Attribute (P, "internal-child") = ""
+            then
                T := Find_Tag (P.Child, "widget");
             else
                T := P;
