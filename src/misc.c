@@ -535,6 +535,14 @@ ada_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
 }
 
 /*********************
+ * Gtk_Container
+ *********************/
+
+GtkWidget* ada_gtk_container_get_focus_child (GtkContainer* container) {
+  return container->focus_child;
+}
+
+/*********************
  * Gdk_Font support
  *********************/
 

@@ -191,6 +191,11 @@ package Gtk.Container is
       Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Emit a "set_focus_child" signal.
 
+   function Get_Focus_Child
+     (Container : access Gtk_Container_Record) return Gtk.Widget.Gtk_Widget;
+   --  Return the child that currently has the keyboard focus. Note that null
+   --  can be returned.
+
    ----------------
    -- Properties --
    ----------------

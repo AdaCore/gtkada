@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with System;
+with System;     use System;
 with Gtk.Enums;  use Gtk.Enums;
 with Gtk.Widget; use Gtk.Widget;
 
@@ -372,5 +372,24 @@ package body Gtk.Container is
    begin
       Internal (Get_Object (Container));
    end Unset_Focus_Chain;
+
+   ---------------------
+   -- Get_Focus_Child --
+   ---------------------
+
+   function Get_Focus_Child
+     (Container : access Gtk_Container_Record) return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Container : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gtk_container_get_focus_child");
+
+      Child : System.Address := Internal (Get_Object (Container));
+   begin
+      if Child = System.Null_Address then
+         return null;
+      else
+         return Convert (Child);
+      end if;
+   end Get_Focus_Child;
 
 end Gtk.Container;
