@@ -27,6 +27,13 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This package provides the complete Gate API to generate code for the GUI
+--  builder.
+--
+--  </description>
+
 with Ada.Text_IO; use Ada.Text_IO;
 with Glib.XML;
 pragma Elaborate_All (Glib.XML);
@@ -55,41 +62,40 @@ package Glib.Glade is
    use Glib_XML;
 
    procedure Add_Package (S : String);
-   --  Add package S in the list of packages if S isn't already present
+   --  Add package S in the list of packages if S isn't already present.
    --  This is used to generate the proper list of "with"ed packages.
    --  Note that S is assumed to be a child of Gtk, e.g for Gtk.Table,
    --  call Add_Package ("Table").
 
    function Adjust (S : String) return String;
-   --  Replace non "compilable" characters (e.g ASCII.LF) and return
-   --  a printable and "compilable" Ada string.
+   --  Replace non "compilable" characters (e.g ASCII.LF).
+   --  Return a printable and "compilable" Ada string.
 
    function Find_Parent (N : Node_Ptr; Class : String) return Node_Ptr;
-   --  Find a node in the ancestors of N with a given class
+   --  Find a node in the ancestors of N with a given class.
 
    function Find_Top_Widget (N : Node_Ptr) return Node_Ptr;
-   --  Find a node in the ancestors of N that represents a root widget
+   --  Find a node in the ancestors of N that represents a root widget.
 
    function Find_Child (N : Node_Ptr; Tag : String) return Node_Ptr;
-   --  Find a node in the children of N with a given Tag
+   --  Find a node in the children of N with a given Tag.
 
    function To_Ada (S : String; Separator : Character := '_') return String;
-   --  Convert S by adding a separator before each upper case character and
-   --  by putting in upper case each character following a separator.
+   --  Convert S by adding a separator before each upper case character.
+   --  Also put in upper case each character following a separator.
 
    function To_Float (S : String) return String;
-   --  Convert S to an Ada Float by adding a trailing ".0" when S is an
-   --  integer value.
+   --  Convert S to an Ada Float by adding a trailing ".0" when needed.
 
    function Get_Part
      (S : String; Part : Positive; Separator : Character := ':') return String;
-   --  Get the Part-th part of S delimited by Separator
+   --  Get the Part-th part of S delimited by Separator.
 
    procedure Gen_Set
      (N : Node_Ptr; Class, Name : String;
       File : File_Type; Delim : Character := ' '; Is_Float : Boolean := False);
-   --  Generate a Set_<Name> call in File. If Delim is not a space, Name is
-   --  surrounded by it.
+   --  Generate a Set_<Name> call in File.
+   --  If Delim is not a space, Name is surrounded by it.
    --  If Is_Float is true, call To_Float on the field <Name>.
 
    procedure Gen_Set
@@ -99,8 +105,8 @@ package Glib.Glade is
    procedure Gen_Set
      (N : Node_Ptr; Class, Name, Field1, Field2, Field3, Field4 : String;
       File : File_Type; Is_Float : Boolean := False);
-   --  Generate a Set_<Name> (Field1) call in File if Field2 is a null
-   --  string, or Set_<Name> (Field1, Field2) if Field3 is a null
+   --  Generate a Set_<Name> (Field1) call in File if Field2 is a null string.
+   --  Or Set_<Name> (Field1, Field2) if Field3 is a null
    --  string, or Set_<Name> (Field1, Field2, Field3) if Field4 is null, or
    --  Set_<Name> (Field1, Field2, Field3, Field4) otherwise.
    --  If Is_Float is true, call To_Float on each non null field.
@@ -155,15 +161,15 @@ package Glib.Glade is
    --  with Gtk.yyy; use Gtk.yyy;
 
    procedure Reset_Packages;
-   --  Reset the global table of packages
+   --  Reset the global table of packages.
 
    procedure Reset_Tree (N : Node_Ptr; Check_Next : Boolean := True);
-   --  Reset the value of the flags for each node contained in N
+   --  Reset the value of the flags for each node contained in N.
    --  Check_Next indicates whether the linked list of brothers of N should
    --  also be reset (the children are always reset recursively).
 
    procedure Gen_Signal (N : Node_Ptr; File : File_Type);
-   --  Output to file calls to connect if N contains any signal
+   --  Output to file calls to connect if N contains any signal.
    --  Also register the class of the widget that uses signals.
 
    function Gen_Signal_Instanciations (Project : String; File : File_Type)
@@ -175,7 +181,7 @@ package Glib.Glade is
    --  Callbacks_<Project>
 
    function To_Package_Name (S : String) return String;
-   --  Transforms the name of a given Gtk+ widget into the corresponding GtkAda
+   --  Transform the name of a given Gtk+ widget into the corresponding GtkAda
    --  package, by applying if needed GtkAda special exceptions in the naming
    --  rules (e.g GtkEntry -> Gtk.GEntry, GtkHScale -> Gtk.Scale).
 
