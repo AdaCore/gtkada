@@ -460,7 +460,7 @@ package Gtk.Window is
    --  had prior to hiding, rather than using the default size.
    --
    --  Windows can't actually be 0x0 in size, they must be at least 1x1, but
-   --  passing 0 for @width and @height is OK, resulting in a 1x1 default size.
+   --  passing 0 for Width and Height is OK, resulting in a 1x1 default size.
    --
    --  This has no effect on Popup windows (set in call to Gtk_New).
 
