@@ -533,19 +533,18 @@ package body Gtkada.MDI is
      (MDI : access Gtk_Widget_Record'Class) return Boolean
    is
       M    : constant MDI_Window := MDI_Window (MDI);
-      Item : Widget_List.Glist := M.Items;
-      Child : MDI_Child;
    begin
-      while Item /= Widget_List.Null_List loop
-         Child := MDI_Child (Get_Data (Item));
+      --  If the current child was a floating window, make sure it keeps the
+      --  focus, and that no one gains the keyboard focus in the main window.
+      --  This avoids a situation where an TextView has the keyboard focus, but
+      --  isn't the MDI focus child.
 
-         if Child.State /= Floating then
-            Set_Focus_Child (Child);
-            exit;
-         end if;
+      if M.Focus_Child /= null
+        and then M.Focus_Child.State = Floating
+      then
+         Set_Focus (Gtk_Window (Get_Toplevel (M)), null);
+      end if;
 
-         Item := Next (Item);
-      end loop;
       return False;
    end Toplevel_Focus_In;
 
