@@ -125,7 +125,7 @@ package body Test is
    procedure Create_Main_Window is
       Main_Window : Window.Gtk_Window;
       Cb_Id : Guint;
-      Box1, Box2 : Vbox.Gtk_VBox;
+      Box1, Box2 : Vbox.Gtk_Vbox;
       A_Label : Label.Gtk_Label;
       A_Scrolled_Window : Scrolled_Window.Gtk_Scrolled_Window;
       Temp : Adjustment.Gtk_Adjustment;

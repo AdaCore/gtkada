@@ -9,7 +9,7 @@ OBJECTS= misc.o misc-gnat.o
 TARGET= testgtk
 
 $(TARGET): $(OBJECTS) ../*.ad[sb] *.ad[sb]
-	$(GNATMAKE) $(TARGET) $(GNATFLAGS) -largs `gtk-config --libs` $(OBJECTS)
+	$(GNATMAKE) $(TARGET) $(GNATFLAGS) -largs `gtk-config --libs` $(OBJECTS) -L../ -lgtkada 
 
 
 misc.o: ../misc.c ../misc-joel.c ../misc-manu.c
