@@ -19,7 +19,8 @@ New features in 1.2.7/1.3.7 include:
 - Update to GtkGlArea 1.2.2
 - The support for opengl is now built in a separate library.
 - Support for image loading, rendering, scaling and compositing has been added
-  (from libart and gdkpixbuf).
+  (from libart and gdk-pixbuf).
+- The GtkAda Reference Manual has been significantly enhanced.
 
 New features in 1.2.6/1.3.6 include:
 
