@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <description>
 --  A Gdk_Window is the physical window that appears on the screen.
 --  This is the low-level structure known to the X server or to Win32.
 --  All the widgets are internally associated with a specific Gdk_Window,
@@ -40,7 +39,6 @@
 --  If you simply want to create a simply window, you should instead look
 --  at the functions provided in Gtk.Window and Gtk.Widget, which are higher
 --  level than these.
---  </description>
 --  <c_version>1.2.7</c_version>
 
 with Glib; use Glib;
