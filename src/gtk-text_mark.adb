@@ -1,8 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 2001                            --
---                         ACT-Europe                                --
+--                Copyright (C) 2001-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -123,12 +122,11 @@ package body Gtk.Text_Mark is
    -- Get_Text_Mark --
    -------------------
 
-   function Get_Text_Mark (Val  : Glib.Values.GValue) return Gtk_Text_Mark
-   is
+   function Get_Text_Mark (Val  : Glib.Values.GValue) return Gtk_Text_Mark is
       Stub : Gtk_Text_Mark_Record;
    begin
       return Gtk_Text_Mark
-               (Get_User_Data (Glib.Values.Get_Address (Val), Stub));
+        (Get_User_Data_Fast (Glib.Values.Get_Address (Val), Stub));
    end Get_Text_Mark;
 
 end Gtk.Text_Mark;
