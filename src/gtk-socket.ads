@@ -97,7 +97,6 @@ private
    type Gtk_Socket_Record is new Gtk.Container.Gtk_Container_Record
      with null record;
 
-   pragma Import (C, Get_XWindow, "ada_get_xwindow");
 end Gtk.Socket;
 
 --  <example>

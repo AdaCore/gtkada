@@ -79,4 +79,20 @@ package body Gtk.Socket is
       return Internal (Get_Object (Socket));
    end Get_Plug_Window;
 
+   -----------------
+   -- Get_XWindow --
+   -----------------
+
+   function Get_XWindow (Window : Gdk.Window.Gdk_Window) return Guint32 is
+      function Internal (Window : Gdk.Window.Gdk_Window) return Guint32;
+      pragma Import (C, Internal, "ada_get_xwindow");
+
+   begin
+      if Window = null then
+         raise Constraint_Error;
+      end if;
+
+      return Internal (Window);
+   end Get_XWindow;
+
 end Gtk.Socket;
