@@ -28,8 +28,19 @@
 -----------------------------------------------------------------------
 
 with System;
+with Glib.Type_Conversion_Hooks;
+pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.Accel_Label is
+
+   -----------------------
+   -- Local Subprograms --
+   -----------------------
+
+   function Type_Conversion (Type_Name : String) return GObject;
+   --  This function is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    ---------------------
    -- Get_Accel_Width --
@@ -113,4 +124,19 @@ package body Gtk.Accel_Label is
       Set_Accel_Object (Accel_Label, Accel_Widget);
    end Set_Accel_Widget;
 
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return GObject is
+   begin
+      if Type_Name = "GtkAccelLabel" then
+         return new Gtk_Accel_Label_Record;
+      else
+         return null;
+      end if;
+   end Type_Conversion;
+
+begin
+   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Accel_Label;

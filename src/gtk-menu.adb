@@ -30,8 +30,15 @@
 with System;
 with Gtk.Menu_Item;  use Gtk.Menu_Item;
 with Gtk.Menu_Shell; use Gtk.Menu_Shell;
+with Glib.Type_Conversion_Hooks;
+pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.Menu is
+
+   function Type_Conversion (Type_Name : String) return GObject;
+   --  This function is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    ----------------------
    -- Attach_To_Widget --
@@ -324,4 +331,19 @@ package body Gtk.Menu is
       end Popup;
    end User_Menu_Popup;
 
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return GObject is
+   begin
+      if Type_Name = "GtkMenu" then
+         return new Gtk_Menu_Record;
+      else
+         return null;
+      end if;
+   end Type_Conversion;
+
+begin
+   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Menu;

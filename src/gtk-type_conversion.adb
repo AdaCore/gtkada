@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 pragma Warnings (Off);
-with Gtk.Accel_Label;
 with Gtk.Adjustment;
 with Gtk.Alignment;
 with Gtk.Arrow;
@@ -76,8 +75,6 @@ with Gtk.Item;
 with Gtk.Item_Factory;
 with Gtk.Layout;
 with Gtk.List;
-with Gtk.Menu;
-with Gtk.Menu_Bar;
 with Gtk.Menu_Shell;
 with Gtk.Misc;
 with Gtk.Notebook;
@@ -140,9 +137,7 @@ package body Gtk.Type_Conversion is
    begin
       case Type_Name (Type_Name'First + 3) is
          when 'A' =>
-            if Type_Name = "GtkAccelLabel" then
-               return new Gtk.Accel_Label.Gtk_Accel_Label_Record;
-            elsif Type_Name = "GtkAdjustment" then
+            if Type_Name = "GtkAdjustment" then
                return new Gtk.Adjustment.Gtk_Adjustment_Record;
             elsif Type_Name = "GtkAlignment" then
                return new Gtk.Alignment.Gtk_Alignment_Record;
@@ -252,11 +247,7 @@ package body Gtk.Type_Conversion is
                return new Gtk.List.Gtk_List_Record;
             end if;
          when 'M' =>
-            if Type_Name = "GtkMenu" then
-               return new Gtk.Menu.Gtk_Menu_Record;
-            elsif Type_Name = "GtkMenuBar" then
-               return new Gtk.Menu_Bar.Gtk_Menu_Bar_Record;
-            elsif Type_Name = "GtkMenuShell" then
+            if Type_Name = "GtkMenuShell" then
                return new Gtk.Menu_Shell.Gtk_Menu_Shell_Record;
             elsif Type_Name = "GtkMisc" then
                return new Gtk.Misc.Gtk_Misc_Record;

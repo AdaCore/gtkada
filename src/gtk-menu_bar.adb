@@ -28,8 +28,15 @@
 -----------------------------------------------------------------------
 
 with System;
+with Glib.Type_Conversion_Hooks;
+pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.Menu_Bar is
+
+   function Type_Conversion (Type_Name : String) return GObject;
+   --  This function is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    -------------
    -- Gtk_New --
@@ -54,4 +61,19 @@ package body Gtk.Menu_Bar is
       Initialize_User_Data (Menu_Bar);
    end Initialize;
 
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return GObject is
+   begin
+      if Type_Name = "GtkMenuBar" then
+         return new Gtk_Menu_Bar_Record;
+      else
+         return null;
+      end if;
+   end Type_Conversion;
+
+begin
+   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Menu_Bar;
