@@ -1,0 +1,7 @@
+EXPORTS
+	lw_is_lwobject
+	lw_object_read
+	lw_object_free
+	lw_object_show
+	lw_object_radius
+	lw_object_scale
