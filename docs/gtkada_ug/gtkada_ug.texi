@@ -163,7 +163,7 @@ using the following compilers:
 
 the following versions of gtk:
 @itemize @bullet
-@item Gtk 1.2.5
+@item Gtk 1.2.6
 @item Gtk 1.2.2
 @item Gtk 1.2.1
 @item Gtk 1.2.0
