@@ -1,4 +1,4 @@
-#!/opt/gnu/bin/perl 
+#! /usr/bin/env perl
 
 use strict;
 ## parse all mapping comments in the .ads files

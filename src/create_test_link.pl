@@ -1,4 +1,4 @@
-#! /usr/local/bin/perl
+#! /usr/bin/env perl
 
 open (VERSION, "gcc -gnatv gtk.ads 2> /dev/null | ");
 $version=join (" ", <VERSION>);
