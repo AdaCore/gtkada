@@ -67,9 +67,7 @@ package body Create_Canvas is
    end record;
    type Display_Item is access all Display_Item_Record'Class;
 
-   procedure Initialize
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Item : access Display_Item_Record'Class);
+   procedure Initialize (Item : access Display_Item_Record'Class);
    --  Initialize Item with a random size and color.
    --  Canvas must have been realized
 
@@ -200,9 +198,7 @@ package body Create_Canvas is
    -- Initialize --
    ----------------
 
-   procedure Initialize
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Item : access Display_Item_Record'Class) is
+   procedure Initialize (Item : access Display_Item_Record'Class) is
    begin
       Item.Color := Colors (Random (Color_Gen));
       Item.W := Item_Width * Random (Zoom_Gen);
@@ -212,7 +208,7 @@ package body Create_Canvas is
          Items_List (Item.Num) := Canvas_Item (Item);
       end if;
       Last_Item := Last_Item + 1;
-      Set_Screen_Size_And_Pixmap (Item, Get_Window (Canvas), Item.W, Item.H);
+      Set_Screen_Size (Item, Item.W, Item.H);
       Set_Text (Num_Items_Label, Positive'Image (Last_Item - 1) & " items");
       Draw (Item);
    end Initialize;
@@ -226,7 +222,7 @@ package body Create_Canvas is
    is
       Item : Display_Item := new Display_Item_Record;
    begin
-      Initialize (Canvas, Item);
+      Initialize (Item);
       Put (Canvas, Item, Random (Gen), Random (Gen));
       Refresh_Canvas (Canvas);
       Show_Item (Canvas, Item);
@@ -285,7 +281,7 @@ package body Create_Canvas is
       Item : Display_Item := new Display_Item_Record;
       Num  : constant Positive := Positive (Get_Value_As_Int (Start_Spin));
    begin
-      Initialize (Canvas, Item);
+      Initialize (Item);
 
       if With_Link and then Num < Last_Item then
          Add_Canvas_Link (Canvas, Item, Item, "0");
@@ -410,19 +406,19 @@ package body Create_Canvas is
       Link  : Canvas_Link;
    begin
       Item1 := new Display_Item_Record;
-      Initialize (Canvas, Item1);
+      Initialize (Item1);
       Put (Canvas, Item1, 10, 10);
 
       Item2 := new Display_Item_Record;
-      Initialize (Canvas, Item2);
+      Initialize (Item2);
       Put (Canvas, Item2, 70, 240);
 
       Item3 := new Display_Item_Record;
-      Initialize (Canvas, Item3);
+      Initialize (Item3);
       Put (Canvas, Item3, 200, 10);
 
       Item4 := new Display_Item_Record;
-      Initialize (Canvas, Item4);
+      Initialize (Item4);
       Put (Canvas, Item4, 280, 170);
 
       Add_Canvas_Link (Canvas, Item1, Item1, "From1->2");
