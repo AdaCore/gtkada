@@ -152,6 +152,7 @@ package Gtk.Widget is
 
    procedure Show_All (Widget : access Gtk_Widget_Record);
    --  Show Widget and all its children recursively.
+   --  See also Set_Child_Visible below
 
    procedure Hide_All (Widget : access Gtk_Widget_Record);
    --  Hide Widget and all its children.
@@ -159,6 +160,7 @@ package Gtk.Widget is
    --  simply call the Hide subprogram on it. This procedure Hide_All should
    --  only be used if you want to unschedule a widget to be displayed later,
    --  not to remove an actual widget from the screen.
+   --  See also Set_Child_Visible below.
 
    procedure Map (Widget : access Gtk_Widget_Record);
    --  Map a widget to the screen.
@@ -210,6 +212,16 @@ package Gtk.Widget is
    --  Sets whether Widget should be mapped along with its parent when its
    --  parent is mapped and Widget has been shown with Show.
    --
+   --  "mapped" indicates the moment the window is actually shown on the
+   --  screen. Show and Hide indicate your intention to show Widget on the
+   --  scree or not, but if the parent of Widget is itself not shown at that
+   --  time, the two commands Show and Hide have no immediate effect, and just
+   --  set a flag to save your intent.
+   --  Set_Child_Visible indicates that the widget shouldn't be part of the
+   --  recursive processing done by Show_All and Hide_All on the parent. You
+   --  have decided once and for all what the behavior should be, and you don't
+   --  want it to be changed by future calls to Show_All and Hide_All.
+   --
    --  The child visibility can be set for widget before it is added to a
    --  container with Set_Parent, to avoid mapping children unnecessary before
    --  immediately unmapping them. However it will be reset to its default
@@ -222,10 +234,7 @@ package Gtk.Widget is
    --  can queue a resize itself.
    --
    --  This function is only useful for container implementations and
-   --  never should be called by an application.
-   --
-   --  It should also only be called when after the widget was added to its
-   --  parent container.
+   --  should generally not be called by an application.
 
    function Get_Child_Visible
      (Widget : access Gtk_Widget_Record) return Boolean;
