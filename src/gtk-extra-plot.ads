@@ -112,7 +112,7 @@ package Gtk.Extra.Plot is
                                    X     : Gdouble;
                                    Error : access Gboolean)
                                   return Gdouble;
-   --  Generic function that can be instanciated for Plot_Function below.
+   --  Generic function that can be instantiated for Plot_Function below.
    --  </doc_ignore>
 
    pragma Convention (C, Generic_Plot_Function);
@@ -599,7 +599,7 @@ package Gtk.Extra.Plot is
      (Plot : access Gtk_Plot_Record;
       Axis : Plot_Axis_Pos;
       Text : String);
-   --  Defines a suffix to add before each label on the axis
+   --  Defines a prefix to add before each label on the axis
 
    function Axis_Get_Labels_Suffix
      (Plot : access Gtk_Plot_Record;
