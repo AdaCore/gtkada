@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -59,6 +59,7 @@ with Gtk.Window;          use Gtk.Window;
 with Interfaces.C.Strings;
 with Ada.Strings.Fixed;
 
+with Create_Alignment;
 with Create_Arrow;
 with Create_Box;
 with Create_Button_Box;
@@ -198,7 +199,9 @@ package body Main_Windows is
 
 
    Gtk_Demos : constant Tree_Item_Array :=
-     ((NS ("arrow"),            Base,    Create_Arrow.Run'Access,
+     ((NS ("alignment"),        Box,     Create_Alignment.Run'Access,
+                                         Create_Alignment.Help'Access),
+      (NS ("arrow"),            Base,    Create_Arrow.Run'Access,
                                          Create_Arrow.Help'Access),
       (NS ("box"),              Box,     Create_Box.Run'Access,
                                          Create_Box.Help'Access),
@@ -724,8 +727,10 @@ package body Main_Windows is
 
       --  Label
       Style := Copy (Get_Style (Win));
-      Load (Font, "-adobe-helvetica-bold-*-*-*-*-190-*-*-*-*-*-*");
-      Set_Font (Style, Font);
+      Load (Font, "-adobe-helvetica-bold-*-*-*-*-180-*-*-*-*-*-*");
+      if Gdk.Is_Created (Font) then
+         Set_Font (Style, Font);
+      end if;
 
       Gtk_New (Label, "GtkAda, the portable Ada95 GUI");
       Set_Style (Label, Style);
