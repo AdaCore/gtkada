@@ -1629,7 +1629,6 @@ rm -f conftest*
    LIBS="$saved_LIBS"
    HAVE_OPENGL="False"
 
- 
    case "x$with_GL" in
    x|xauto)
       if test "x$have_GL" = "xyes"; then
@@ -1648,15 +1647,15 @@ rm -f conftest*
          GL_LIBS="$GL_LDOPTS -lGLU -lGL"
          HAVE_OPENGL="True"
       else
-         { echo "configure: error: Missing GL library" 1>&2; exit 1; }
+         { echo "configure: error: Missing OpenGL library" 1>&2; exit 1; }
       fi
       ;;
    xMesaGL)
       if test "x$have_MesaGL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lGLU -lGL"
+         GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
          HAVE_OPENGL="True"
       else
-         { echo "configure: error: Missing GL library" 1>&2; exit 1; }
+         { echo "configure: error: Missing Mesa library" 1>&2; exit 1; }
       fi
       ;;
    xno)
@@ -1666,7 +1665,7 @@ rm -f conftest*
       ;;
    esac
 
-   if test "x$HAVE_OPENGL"="xFalse"; then
+   if test "x$HAVE_OPENGL" = "xFalse"; then
       echo "$ac_t""*** OpenGL support will not be integrated into GtkAda ***" 1>&6
    fi
 

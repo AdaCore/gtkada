@@ -438,7 +438,6 @@ AC_DEFUN(AM_CHECK_OPENGL,
    LIBS="$saved_LIBS"
    HAVE_OPENGL="False"
 
- 
    case "x$with_GL" in
    x|xauto)
       if test "x$have_GL" = "xyes"; then
@@ -462,7 +461,7 @@ AC_DEFUN(AM_CHECK_OPENGL,
       ;;
    xMesaGL)
       if test "x$have_MesaGL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lGLU -lGL"
+         GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
          HAVE_OPENGL="True"
       else
          AC_MSG_ERROR([Missing Mesa library])
@@ -475,7 +474,7 @@ AC_DEFUN(AM_CHECK_OPENGL,
       ;;
    esac
 
-   if test "x$HAVE_OPENGL"="xFalse"; then
+   if test "x$HAVE_OPENGL" = "xFalse"; then
       AC_MSG_RESULT([*** OpenGL support will not be integrated into GtkAda ***])
    fi
 
