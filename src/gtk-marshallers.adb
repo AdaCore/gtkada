@@ -77,7 +77,7 @@ package body Gtk.Marshallers is
             --  arguments
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
 
-            return (Func  => To_General_Handler (Cb), Marsh => Call'Access);
+            return (Func  => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------
@@ -169,7 +169,7 @@ package body Gtk.Marshallers is
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
 
-            return (Func  => To_General_Handler (Cb), Marsh => Call'Access);
+            return (Func  => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------
@@ -227,7 +227,7 @@ package body Gtk.Marshallers is
 
          function To_Marshaller (Cb : Handler) return Marshaller is
          begin
-            return (Func => To_General_Handler (Cb), Marsh => Call'Access);
+            return (Func => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------
@@ -294,7 +294,7 @@ package body Gtk.Marshallers is
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
 
-            return (Func => To_General_Handler (Cb), Marsh => Call'Access);
+            return (Func => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------
@@ -387,7 +387,7 @@ package body Gtk.Marshallers is
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
 
-            return (Func => To_General_Handler (Cb), Marsh => Call'Access);
+            return (Func => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------
@@ -447,7 +447,7 @@ package body Gtk.Marshallers is
 
          function To_Marshaller (Cb : Handler) return Marshaller is
          begin
-            return (Func => To_General_Handler (Cb), Marsh => Call'Access);
+            return (Func => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------
@@ -512,7 +512,7 @@ package body Gtk.Marshallers is
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
 
-            return (Func => To_General_Handler (Cb), Marsh => Call'Access);
+            return (Func => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------
@@ -593,7 +593,7 @@ package body Gtk.Marshallers is
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
 
-            return (Func  => To_General_Handler (Cb), Marsh => Call'Access);
+            return (Func  => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------
@@ -646,7 +646,7 @@ package body Gtk.Marshallers is
 
          function To_Marshaller (Cb : Handler) return Marshaller is
          begin
-            return (Func => To_General_Handler (Cb), Marsh => Call'Access);
+            return (Func => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------
@@ -709,7 +709,7 @@ package body Gtk.Marshallers is
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
 
-            return (Func => To_General_Handler (Cb), Marsh => Call'Access);
+            return (Func => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------
@@ -792,7 +792,7 @@ package body Gtk.Marshallers is
             --  We must have at least one argument in the real callback.
             --  pragma Assert (Count_Arguments (Get_Type (Obj), Name) >= 1);
 
-            return (Func => To_General_Handler (Cb), Marsh => Call'Access);
+            return (Func => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------
@@ -847,7 +847,7 @@ package body Gtk.Marshallers is
 
          function To_Marshaller (Cb : Handler) return Marshaller is
          begin
-            return (Func => To_General_Handler (Cb), Marsh => Call'Access);
+            return (Func => To_General_Handler (Cb), Proxy => Call'Access);
          end To_Marshaller;
 
          ------------------

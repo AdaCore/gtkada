@@ -136,7 +136,7 @@ package Gtk.Marshallers is
 
       type Marshaller is record
          Func  : General_Handler;   --  User callback
-         Marsh : Handler_Proxy;     --  Handler_Proxy for this callback
+         Proxy : Handler_Proxy;     --  Handler_Proxy for this callback
       end record;
 
       --  Basic Marshaller
@@ -228,7 +228,7 @@ package Gtk.Marshallers is
 
       type Marshaller is record
          Func  : General_Handler;
-         Marsh : Handler_Proxy;
+         Proxy : Handler_Proxy;
       end record;
 
       --  Basic Marshaller
@@ -322,7 +322,7 @@ package Gtk.Marshallers is
 
       type Marshaller is record
          Func  : General_Handler;
-         Marsh : Handler_Proxy;
+         Proxy : Handler_Proxy;
       end record;
 
       --  Basic Marshaller
@@ -402,7 +402,7 @@ package Gtk.Marshallers is
 
       type Marshaller is record
          Func  : General_Handler;
-         Marsh : Handler_Proxy;
+         Proxy : Handler_Proxy;
       end record;
 
       --  Basic Marshaller
