@@ -217,7 +217,7 @@ package Gtk.Window is
    --  This has no effect on Popup windows (set in call to Gtk_New).
 
    procedure Set_Modal (Window : access Gtk_Window_Record;
-                        Modal  : in Boolean);
+                        Modal  : in Boolean := True);
    --  Define the window as being Modal.
    --  It will grab the input from the keyboard and the mouse while it is
    --  displayed and will release it when it is hidden. The grab is only in

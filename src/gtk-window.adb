@@ -138,16 +138,19 @@ package body Gtk.Window is
    is
       procedure Internal (Window   : System.Address;
                           Wid      : System.Address;
-                          Geometry : System.Address;
+                          Geometry : in out Gdk_Geometry;
                           Mask     : Gdk_Window_Hints);
       pragma Import (C, Internal, "gtk_window_set_geometry_hints");
-      Geom : aliased Gdk_Geometry := Geometry;
+
+      Geom : Gdk_Geometry := Geometry;
       Wid  : System.Address := System.Null_Address;
+
    begin
       if Geometry_Widget /= null then
          Wid := Get_Object (Geometry_Widget);
       end if;
-      Internal (Get_Object (Window), Wid, Geom'Address, Geom_Mask);
+
+      Internal (Get_Object (Window), Wid, Geom, Geom_Mask);
    end Set_Geometry_Hints;
 
    ---------------
@@ -155,7 +158,7 @@ package body Gtk.Window is
    ---------------
 
    procedure Set_Modal (Window : access Gtk_Window_Record;
-                        Modal  : in Boolean) is
+                        Modal  : in Boolean := True) is
       procedure Internal (Window : System.Address; Modal : Integer);
       pragma Import (C, Internal, "gtk_window_set_modal");
    begin
@@ -246,7 +249,13 @@ package body Gtk.Window is
    begin
       Gen_New (N, "Window", Get_Field (N, "type").all, File => File);
       Bin.Generate (N, File);
-      Gen_Set (N, "Window", "title", File, '"');
+
+      if Gettext_Support (N) then
+         Gen_Set (N, "Window", "title", File, "-""", """");
+      else
+         Gen_Set (N, "Window", "title", File, """", """");
+      end if;
+
       Gen_Set (N, "Window", "Policy", "allow_shrink", "allow_grow",
         "auto_shrink", "", File);
       Gen_Set (N, "Window", "position", File);
