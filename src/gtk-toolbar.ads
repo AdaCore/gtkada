@@ -1,4 +1,5 @@
 
+with Gtk.Button;
 with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
@@ -16,8 +17,8 @@ package Gtk.Toolbar is
        Tooltip_Private_Text : in String;
        Icon                 : in Gtk.Widget.Gtk_Widget'Class)
        return                    Gtk.Widget.Gtk_Widget'Class;
-   --  Note : you have to set the callback yourself, as opposed to what is
-   --  done in C.
+   --  Note : you have to set the "clicked" callback yourself, as opposed to
+   --  what is done in C.
 
    function Append_Item
       (Toolbar              : in Gtk_Toolbar'Class;
@@ -25,7 +26,7 @@ package Gtk.Toolbar is
        Tooltip_Text         : in String;
        Tooltip_Private_Text : in String;
        Icon                 : in Gtk.Widget.Gtk_Widget'Class)
-       return                    Gtk.Widget.Gtk_Widget'Class;
+       return                    Gtk.Button.Gtk_Button;
    --  Note : you have to set the callback yourself, as opposed to what is
    --  done in C.
 
@@ -59,7 +60,7 @@ package Gtk.Toolbar is
        Tooltip_Private_Text : in String;
        Icon                 : in Gtk.Widget.Gtk_Widget'Class;
        Position             : in Gint)
-       return                    Gtk.Widget.Gtk_Widget'Class;
+       return                    Gtk.Button.Gtk_Button;
    procedure Insert_Space
       (Toolbar  : in Gtk_Toolbar'Class;
        Position : in Gint);
@@ -84,7 +85,7 @@ package Gtk.Toolbar is
        Tooltip_Text         : in String;
        Tooltip_Private_Text : in String;
        Icon                 : in Gtk.Widget.Gtk_Widget'Class)
-       return                    Gtk.Widget.Gtk_Widget'Class;
+       return                    Gtk.Button.Gtk_Button;
    procedure Prepend_Space (Toolbar : in Gtk_Toolbar'Class);
    procedure Prepend_Widget
       (Toolbar              : in Gtk_Toolbar'Class;
@@ -102,7 +103,7 @@ package Gtk.Toolbar is
        Style   : in Gtk_Toolbar_Style);
    procedure Set_Tooltips
       (Toolbar : in Gtk_Toolbar'Class;
-       Enable  : in Gint);
+       Enable  : in Boolean);
 
 private
    type Gtk_Toolbar is new Gtk.Container.Gtk_Container with null record;
