@@ -435,6 +435,8 @@ private
    pragma Import (C, Compare,       "gtk_tree_path_compare");
    pragma Import (C, Down,          "gtk_tree_path_down");
    pragma Import (C, Set_Tree_Iter, "g_value_set_pointer");
+   pragma Import (C, Iter_Copy,     "ada_tree_iter_copy");
+
 end Gtk.Tree_Model;
 
 --  Not bound:

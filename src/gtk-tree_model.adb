@@ -26,12 +26,11 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Interfaces.C.Strings;  use Interfaces.C.Strings;
 with Glib.Object;           use Glib.Object;
 with Gtk;                   use Gtk;
 with Interfaces.C.Strings;
 with System;                use System;
-with System.Address_To_Access_Conversions;
 
 package body Gtk.Tree_Model is
 
@@ -199,33 +198,19 @@ package body Gtk.Tree_Model is
       return Internal (Get_Object (Tree_Model), Index);
    end Get_Column_Type;
 
-   ---------------
-   -- Iter_Copy --
-   ---------------
-
-   procedure Iter_Copy (Source : Gtk_Tree_Iter; Dest : out Gtk_Tree_Iter) is
-      procedure Internal (Source : Gtk_Tree_Iter; Dest : System.Address);
-      pragma Import (C, Internal, "ada_tree_iter_copy");
-
-   begin
-      Internal (Source, Dest'Address);
-   end Iter_Copy;
-
    -------------------
    -- Get_Tree_Iter --
    -------------------
 
-   package Iter_Access_Address_Conversions is
-     new System.Address_To_Access_Conversions (Gtk_Tree_Iter);
-
    procedure Get_Tree_Iter
      (Val  : Glib.Values.GValue;
-      Iter : out Gtk_Tree_Iter) is
+      Iter : out Gtk_Tree_Iter)
+   is
+      procedure Internal (Source : System.Address; Dest : out Gtk_Tree_Iter);
+      pragma Import (C, Internal, "ada_tree_iter_copy");
+
    begin
-      Iter_Copy
-        (Source => Iter_Access_Address_Conversions.To_Pointer
-                     (Glib.Values.Get_Address (Val)).all,
-         Dest   => Iter);
+      Internal (Glib.Values.Get_Address (Val), Iter);
    end Get_Tree_Iter;
 
    --------------
