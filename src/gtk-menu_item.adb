@@ -177,6 +177,8 @@ package body Gtk.Menu_Item is
 
       Item.Generate (N, File);
 
+      Gen_Set (N, "Menu_Item", "right_justify", File);
+
       if not N.Specific_Data.Has_Container then
          Gen_Call_Child (N, null, "Container", "Add", File => File);
          N.Specific_Data.Has_Container := True;
@@ -201,6 +203,12 @@ package body Gtk.Menu_Item is
       end if;
 
       Item.Generate (Menu_Item, N);
+
+      S := Get_Field (N, "right_justify");
+
+      if Boolean'Value (S.all) then
+         Right_Justify (Gtk_Menu_Item (Menu_Item));
+      end if;
 
       if not N.Specific_Data.Has_Container then
          Container.Add
