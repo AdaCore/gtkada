@@ -35,9 +35,9 @@ with Gtk.Check_Button; use Gtk.Check_Button;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Hbutton_Box; use Gtk.Hbutton_Box;
 with Gtk.Signal; use Gtk.Signal;
-with Gtk.Style; use Gtk.Style;
 with Gtk.Separator; use Gtk.Separator;
 with Gtk.Scrollbar; use Gtk.Scrollbar;
+with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Table; use Gtk.Table;
 with Gtk.Text; use Gtk.Text;
@@ -54,6 +54,24 @@ package body Create_Text is
    package Text_Cb is new Signal.Callback (Gtk_Toggle_Button, Gtk_Text);
 
    Window : aliased Gtk_Window;
+
+   type String_Access is access String;
+   type Text_Colors_Type is record
+      Red, Green, Blue : Gushort;
+      Name  : String_Access;
+   end record;
+   type Text_Colors_Type_Array is array (Natural range <>) of
+     Text_Colors_Type;
+
+   Text_Colors : constant Text_Colors_Type_Array :=
+     ((16#0#, 16#0#, 16#0#, new String'("black")),
+      (16#FFFF#, 16#FFFF#, 16#FFFF#, new String'("white")),
+      (16#FFFF#, 16#0#,    16#0#,    new String'("red")),
+      (16#0#,    16#FFFF#, 16#0#,    new String'("green")),
+      (16#0#,    16#0#,    16#FFFF#, new String'("blue")),
+      (16#0#,    16#FFFF#, 16#FFFF#, new String'("cyan")),
+      (16#FFFF#, 16#0#,    16#FFFF#, new String'("magenta")),
+      (16#FFFF#, 16#FFFF#, 16#0#,    new String'("yellow")));
 
    procedure Toggle_Editable (Toggle : in out Gtk_Toggle_Button;
                               Text   : in out Gtk_Text)
@@ -76,12 +94,14 @@ package body Create_Text is
       Hbox         : Gtk_HButton_Box;
       Table        : Gtk_Table;
       Text         : Gtk_Text;
+      Font         : Gdk_Font;
       Hscrollbar,
         Vscrollbar : Gtk_Scrollbar;
-      Infile       : File_Type;
       Check        : Gtk_Check_Button;
       Separator    : Gtk_Separator;
       Button       : Gtk_Button;
+      Scrolled     : Gtk_Scrolled_Window;
+      Color_I, Color_J : Gdk_Color;
    begin
 
       if not Is_Created (Window) then
@@ -103,55 +123,55 @@ package body Create_Text is
          Pack_Start (Box1, Box2, True, True, 0);
          Show (Box2);
 
-         Gtk_New (Table, 2, 2, False);
-         Set_Row_Spacing (Table, 0, 2);
-         Set_Col_Spacing (Table, 0, 2);
-         Pack_Start (Box2, Table, True, True, 0);
-         Show (Table);
+         Gtk_New (Scrolled);
+         Pack_Start (Box2, Scrolled, True, True, 0);
+         Set_Policy (Scrolled, Policy_Never, Policy_Always);
+         Show (Scrolled);
 
          Gtk_New (Text);
          Set_Editable (Text, True);
-         Attach (Table, Text, 0, 1, 0, 1,
-                 Expand or Shrink or Fill,
-                 Expand or Shrink or Fill, 0, 0);
+         Add (Scrolled, Text);
+         Grab_Focus (Text);
          Show (Text);
 
-         Gtk_New_Hscrollbar (Hscrollbar, Get_Hadj (Text));
-         Attach (Table, Hscrollbar, 0, 1, 1, 2,
-                 Expand or Fill or Shrink,
-                 Fill, 0, 0);
-         Show (Hscrollbar);
-
-         Gtk_New_Vscrollbar (Vscrollbar, Get_Vadj (Text));
-         Attach (Table, Vscrollbar, 1, 2, 0, 1,
-                 Fill, Expand or Fill or Shrink,
-                 0, 0);
-         Show (Vscrollbar);
-
          Freeze (Text);
-         Realize (Text);
 
-         Open (Infile, In_File, "create_text.adb");
+         Load (Font, "-adobe-courier-medium-r-normal--*-120-*-*-*-*-*-*");
+
+         for I in Text_Colors'Range loop
+            Insert (Text, Font,
+                    White (Get_Colormap (Text)), Null_Color,
+                    Text_Colors (I).Name.all & Ascii.HT, -1);
+            Set_Rgb (Color_I, Text_Colors (I).Red, Text_Colors (I).Green,
+                     Text_Colors (I).Blue);
+            for J in Text_Colors'Range loop
+               Set_Rgb (Color_J, Text_Colors (J).Red, Text_Colors (J).Green,
+                        Text_Colors (J).Blue);
+               Insert (Text, Font, Color_J, Color_I, "XYZ", -1);
+            end loop;
+            Insert (Text, Null_Font, Null_Color, Null_Color,
+                    "" & Ascii.LF, -1);
+         end loop;
+
          declare
             Buffer : String (1 .. 1024);
             Last   : Natural;
+            Infile       : File_Type;
          begin
+            Open (Infile, In_File, "create_text.adb");
             while not End_Of_File (Infile) loop
                Get_Line (Infile, Buffer, Last);
 
-               Insert (Text, Null_Font, Null_Color, Null_Color,
+               Insert (Text, Null_Font, White (Get_Colormap (Text)),
+                       Null_Color,
                        Buffer (1 .. Last) & Ascii.LF, Gint (Last) + 1);
             end loop;
+            Close (Infile);
+         exception
+            when Name_Error =>
+               Put_Line ("File create_text.adb not found....");
          end;
 
-         Close (Infile);
-
-         Insert (Text, Null_Font, Get_Black (Get_Style (Text)), Null_Color,
-                 "And even ", 9);
-         Insert (Text, Null_Font, Get_Bg (Get_Style (Text), State_Normal),
-                 Null_Color, "colored", 7);
-         Insert (Text, Null_Font, Get_Black (Get_Style (Text)), Null_Color,
-                 "text", 4);
          Thaw (Text);
 
          Gtk_New (Hbox);
@@ -193,10 +213,6 @@ package body Create_Text is
          Destroy (Window);
       end if;
 
-   exception
-      when Name_Error =>
-         Put_Line ("File create_text.adb not found....");
-         Destroy (Window);
    end Run;
 
 end Create_Text;

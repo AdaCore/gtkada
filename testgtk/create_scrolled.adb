@@ -33,15 +33,39 @@ with Gtk.Button; use Gtk.Button;
 with Gtk.Dialog; use Gtk.Dialog;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
+with Gtk.Signal; use Gtk.Signal;
 with Gtk.Table; use Gtk.Table;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Widget; use Gtk.Widget;
+with Gtk.Window; use Gtk.Window;
 with Gtk; use Gtk;
 with Common; use Common;
 
 package body Create_Scrolled is
 
+   package Scrolled_Cb is new Signal.Object_Callback (Gtk_Scrolled_Window);
+
    Window : aliased Gtk.Dialog.Gtk_Dialog;
+
+   Has_Parent   : Boolean := False;
+   Parent       : Gtk_Widget;
+   Float_Parent : Gtk_Window;
+
+   procedure Scrolled_Windows_Remove (Win : in out Gtk_Scrolled_Window) is
+   begin
+      if Has_Parent then
+         Reparent (Win, New_Parent => Parent);
+         Destroy (Float_Parent);
+         Has_Parent := False;
+      else
+         Parent := Gtk_Widget (Get_Parent (Win));
+         Gtk_New (Float_Parent, Window_Toplevel);
+         Reparent (Win, Float_Parent);
+         Show (Float_Parent);
+         Has_Parent := True;
+      end if;
+   end Scrolled_Windows_Remove;
+
 
    procedure Run (Widget : in out Gtk.Button.Gtk_Button) is
       Id        : Guint;
@@ -59,15 +83,23 @@ package body Create_Scrolled is
          Set_Border_Width (Window, Border_Width => 0);
 
          Gtk_New (Scrolled);
-         Set_Border_Width (Scrolled, 10);
-         Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
-         Pack_Start (Get_Vbox (Window), Scrolled, True, True, 0);
+         Set_Border_Width (Scrolled, Border_Width => 10);
+         Set_Policy (Scrolled,
+                     H_Scrollbar_Policy => Policy_Automatic,
+                     V_Scrollbar_Policy => Policy_Automatic);
+         Pack_Start (Get_Vbox (Window), Scrolled,
+                     Expand  => True,
+                     Fill    => True,
+                     Padding => 0);
          Show (Scrolled);
 
-         Gtk_New (Table, 20, 20, False);
-         Set_Row_Spacings (Table, 10);
-         Set_Col_Spacings (Table, 10);
-         Add (Scrolled, Table);
+         Gtk_New (Table,
+                  Rows        => 20,
+                  Columns     => 20,
+                  Homogeneous => False);
+         Set_Row_Spacings (Table, Spacing => 10);
+         Set_Col_Spacings (Table, Spacing => 10);
+         Add_With_Viewport (Scrolled, Table);
          Set_Focus_Hadjustment (Table, Get_Hadjustment (Scrolled));
          Set_Focus_Vadjustment (Table, Get_Vadjustment (Scrolled));
          Show (Table);
@@ -88,6 +120,15 @@ package body Create_Scrolled is
          Pack_Start (Get_Action_Area (Window), Button, True, True, 0);
          Grab_Default (Button);
          Show (Button);
+
+         Gtk_New (Button, "remove");
+         Id := Scrolled_Cb.Connect (Button, "clicked",
+                                    Scrolled_Windows_Remove'Access,
+                                    Scrolled);
+         Pack_Start (Get_Action_Area (Window), Button, True, True, 0);
+         Show (Button);
+
+         Set_Default_Size (Window, 300, 300);
       end if;
 
       if not Gtk.Widget.Visible_Is_Set (Window) then
