@@ -259,12 +259,19 @@ new_font(GtkEntry *entry, gpointer data)
 
   font_combo = GTK_FONT_COMBO(data);
 
-  text=gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(font_combo->name_combo)->entry));
+  text=(char*)gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(font_combo->name_combo)->entry));
 
-  size=gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(font_combo->size_combo)->entry));
+  size=(char*)gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(font_combo->size_combo)->entry));
 
   italic = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(GTK_FONT_COMBO(font_combo)->italic_button));
   bold = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(GTK_FONT_COMBO(font_combo)->bold_button));
+
+  /* GtkAda team: in gtk+2.0, the "changed" signal is emitted more
+  *  often, including with an empty text in the entry.
+  *  In that case, we simply exit. */
+  if (!text || text [0] == '\0') {
+     return;
+  }
 
   height = atoi(size);
   font_combo->psfont = psfont = gtk_psfont_find_by_family(text, italic, bold);
