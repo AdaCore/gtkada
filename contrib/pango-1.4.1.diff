@@ -1,6 +1,6 @@
 Thu Dec 06 2004  Arnaud Charlet  <charlet@adacore.com>
 
-	* pango/pango-context.c (itemize_state_fill_shaper): Avoid
+	* pango/pango-context.c, pango/glyphstring.c, pango/pangowin32.c: Avoid
 	dereferencing null font.
 
 Thu Nov 27 2003  Arnaud Charlet  <charlet@adacore.com>
@@ -52,3 +52,35 @@ Thu Nov 27 2003  Arnaud Charlet  <charlet@adacore.com>
        item->analysis.shape_engine = shape_engine;
      }
  }
+--- pango/glyphstring.c.old	2004-12-06 17:35:56.000000000 +0100
++++ pango/glyphstring.c	2004-12-06 17:36:28.000000000 +0100
+@@ -182,6 +182,9 @@ pango_glyph_string_extents_range (PangoG
+       
+       PangoGlyphGeometry *geometry = &glyphs->glyphs[i].geometry;
+ 
++      if (font == NULL)
++	goto skip_font;
++
+       pango_font_get_glyph_extents (font, glyphs->glyphs[i].glyph,
+ 				    ink_rect ? &glyph_ink : NULL,
+ 				    logical_rect ? &glyph_logical : NULL);
+@@ -229,6 +232,7 @@ pango_glyph_string_extents_range (PangoG
+ 	    }
+ 	}
+ 
++skip_font:
+       x_pos += geometry->width;
+     }
+ }
+--- pango/pangowin32.c.old	2004-12-06 17:43:37.000000000 +0100
++++ pango/pangowin32.c	2004-12-06 17:44:23.000000000 +0100
+@@ -89,6 +89,9 @@ pango_win32_get_hfont (PangoFont *font)
+   PangoWin32FontCache *cache;
+   TEXTMETRIC tm;
+ 
++  if (!win32font)
++    return NULL;
++
+   if (!win32font->hfont)
+     {
+       cache = pango_win32_font_map_get_font_cache (win32font->fontmap);
