@@ -120,8 +120,6 @@ with View_GL; use View_GL;
 
 with Libart_Demo;  use Libart_Demo;
 
-with Ada.Text_IO; use Ada.Text_IO;
-
 package body Main_Windows is
 
    procedure Fill_Gtk_Tree
