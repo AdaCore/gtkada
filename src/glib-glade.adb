@@ -686,15 +686,25 @@ package body Glib.Glade is
       end if;
    end Gen_Call_Child;
 
-   -----------------
-   -- Gen_Package --
-   -----------------
+   ------------------
+   -- Gen_Packages --
+   ------------------
 
    procedure Gen_Packages (File : File_Type) is
    begin
       for J in Package_Range'First .. Num_Packages loop
-         Put_Line (File, "with Gtk." & Packages (J).all & "; use Gtk." &
-           Packages (J).all & ";");
+         --  This special case is ugly ???
+         S := Packages (J);
+
+         if S'Length > 9
+           and then S (S'First .. S'First + 9) = "Interfaces"
+         then
+            Put_Line (File, "with " & Packages (J).all & "; use" &
+              Packages (J).all & ";");
+         else
+            Put_Line (File, "with Gtk." & Packages (J).all & "; use Gtk." &
+              Packages (J).all & ";");
+         end if;
       end loop;
    end Gen_Packages;
 
