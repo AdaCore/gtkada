@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --                   Gate - GtkAda Components                        --
 --                                                                   --
---                   Copyright (C) 1999-2001                         --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1999-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- GATE is free software;  you can redistribute it and/or modify  it --
 -- under the terms of the GNU General Public License as published by --
@@ -968,7 +968,7 @@ package body Glib.Glade is
 
          if Prev_SR.Widget = null or else SR.Widget /= Prev_SR.Widget then
             Prev_SR := SR;
-            Put_Line (File, "with Gtk.Arguments;");
+            Put_Line (File, "with Glib.Values;");
             Put_Line (File, "with Gtk.Widget; use Gtk.Widget;");
             New_Line (File);
             Put_Line (File, "package " &
@@ -1003,7 +1003,7 @@ package body Glib.Glade is
                     (Signals (J).Orig_Class.all), Signals (J).Signal.all) > 0
                   then
                      Put_Line (File, ";");
-                     Put (File, "      Params : Gtk.Arguments.Gtk_Args)");
+                     Put (File, "      Params : Glib.Values.GValues)");
                   else
                      Put (File, ")");
                   end if;
@@ -1036,7 +1036,7 @@ package body Glib.Glade is
               To_Ada (Get_Field (SR.Widget, "name").all) &
               "_Pkg.Callbacks is");
             New_Line (File);
-            Put_Line (File, "   use Gtk.Arguments;");
+            Put_Line (File, "   use Glib.Values;");
             New_Line (File);
 
             for J in Signal_Range'First .. Num_Signals loop
@@ -1081,7 +1081,7 @@ package body Glib.Glade is
                      if Count > 0 then
                         Put_Line (File, ";");
                         Put (File,
-                          "      Params : Gtk.Arguments.Gtk_Args)");
+                          "      Params : Glib.Values.GValues)");
                      else
                         Put (File, ")");
                      end if;
