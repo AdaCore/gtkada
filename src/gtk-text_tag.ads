@@ -171,7 +171,7 @@ package Gtk.Text_Tag is
    --    See also:  <none>
    --
    --  - Name:  Style_Property
-   --    Type:  Pango_Enums.Style
+   --    Type:  Pango.Enums.Style
    --    Flags: read-write
    --    Descr: Font style
    --    See also:  <none>
@@ -183,7 +183,7 @@ package Gtk.Text_Tag is
    --    See also:  <none>
    --
    --  - Name:  Weight_Property
-   --    Type:  Gint
+   --    Type:  Pango.Enums.Weight
    --    Flags: read-write
    --    Descr: Font weight
    --    See also:  <none>
@@ -478,7 +478,7 @@ package Gtk.Text_Tag is
    Famility_Property           : constant Glib.Properties.Property_String;
    Style_Property              : constant Pango.Enums.Property_Style;
    Variant_Property            : constant Pango.Enums.Property_Variant;
-   Weight_Property             : constant Glib.Properties.Property_Int;
+   Weight_Property             : constant Pango.Enums.Property_Weight;
    Stretch_Property            : constant Pango.Enums.Property_Stretch;
    Size_Property               : constant Glib.Properties.Property_Int;
    Size_Points_Property        : constant Glib.Properties.Property_Double;
@@ -575,8 +575,8 @@ private
      Pango.Enums.Build ("style");
    Variant_Property            : constant Pango.Enums.Property_Variant :=
      Pango.Enums.Build ("variant");
-   Weight_Property             : constant Glib.Properties.Property_Int :=
-     Glib.Properties.Build ("weight");
+   Weight_Property             : constant Pango.Enums.Property_Weight :=
+     Pango.Enums.Build ("weight");
    Stretch_Property            : constant Pango.Enums.Property_Stretch :=
      Pango.Enums.Build ("stretch");
    Size_Property               : constant Glib.Properties.Property_Int :=
