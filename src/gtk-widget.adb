@@ -1834,13 +1834,13 @@ package body Gtk.Widget is
                   Gtk.Table.Attach (Gtk_Table (Get_Object (Find_Tag
                     (Find_Parent (N.Parent, "Table"), "name").Value)),
                      Gtk_Widget (Get_Object (Get_Field (N, "name"))),
-                     Gint'Value (Get_Field (Child, "left_attach").all),
-                     Gint'Value (Get_Field (Child, "right_attach").all),
-                     Gint'Value (Get_Field (Child, "top_attach").all),
-                     Gint'Value (Get_Field (Child, "bottom_attach").all),
+                     Guint'Value (Get_Field (Child, "left_attach").all),
+                     Guint'Value (Get_Field (Child, "right_attach").all),
+                     Guint'Value (Get_Field (Child, "top_attach").all),
+                     Guint'Value (Get_Field (Child, "bottom_attach").all),
                      Xoptions, Yoptions,
-                     Gint'Value (Get_Field (Child, "xpad").all),
-                     Gint'Value (Get_Field (Child, "ypad").all));
+                     Guint'Value (Get_Field (Child, "xpad").all),
+                     Guint'Value (Get_Field (Child, "ypad").all));
                   N.Specific_Data.Has_Container := True;
                exception
                   when Constraint_Error =>
