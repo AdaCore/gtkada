@@ -3,8 +3,8 @@ Tue Jul  9 11:48:58 2002  Arnaud Charlet  <charlet@gnat.com>
 	* gdk-window.adb: Remove reference to gdk_window_get_decorations since
 	it is undefined under Windows.
 
-	* glib-values.ads, glib-values.adb: Fix definition of GValue to
-	conform to ms bitfields packing under Windows.
+	* glib-values.ads: Fix definition of GValue to conform to ms bitfields
+	packing under Windows.
 
 *** gdk-window.adb.old	Thu Apr 25 18:07:10 2002
 --- gdk-window.adb	Thu Apr 25 18:07:50 2002
@@ -41,45 +41,23 @@ Tue Jul  9 11:48:58 2002  Arnaud Charlet  <charlet@gnat.com>
      end Get_Decorations;
   
      ------------------------------
-*** glib-values.ads.old	Thu Apr 25 18:06:56 2002
---- glib-values.ads	Thu Apr 25 18:08:00 2002
+*** glib-values.ads	4 Sep 2002 14:47:59 -0000	1.13
+--- glib-values.ads	8 Nov 2002 11:49:02 -0000
 ***************
-*** 136,146 ****
+*** 136,142 ****
      --  also provided inside Gtk.Text_Iter.
   
   private
 !    type GValue_Data is array (1 .. 2) of Guint64;
-!    type GValue is record
-!       g_type : GType := GType_Invalid;
-!       data   : GValue_Data;
-!    end record;
-     pragma Convention (C, GValue);
-  
-     type GValues is record
---- 136,142 ----
+     type GValue is record
+        g_type : GType := GType_Invalid;
+        data   : GValue_Data;
+--- 136,143 ----
      --  also provided inside Gtk.Text_Iter.
   
   private
-!    type GValue is array (1 .. 24) of Gint8;
-     pragma Convention (C, GValue);
-  
-     type GValues is record
-*** glib-values.adb.old	Thu Apr 25 18:07:01 2002
---- glib-values.adb	Thu Apr 25 18:08:06 2002
-***************
-*** 151,157 ****
-        procedure Internal (Value : in out GValue; G_Type : Glib.GType);
-        pragma Import (C, Internal, "g_value_init");
-     begin
-!       Value := (g_type => 0, data => (others => 0));
-        Internal (Value, G_Type);
-     end Init;
-  
---- 151,157 ----
-        procedure Internal (Value : in out GValue; G_Type : Glib.GType);
-        pragma Import (C, Internal, "g_value_init");
-     begin
-!       Value := (others => 0);
-        Internal (Value, G_Type);
-     end Init;
-  
+! 
+!    type GValue_Data is array (1 .. 20) of Guint8;
+     type GValue is record
+        g_type : GType := GType_Invalid;
+        data   : GValue_Data;
