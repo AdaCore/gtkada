@@ -51,16 +51,13 @@ c_extra_objects = gtkextra/gtk*.o
 all: dirs libs tools
 
 ifeq ($(BUILD_SHARED),yes)
-libs: extra $(LIBNAME) $(ARCHIVENAME) opengl pixbuf glade gnome install_ali
+libs: extra $(LIBNAME) $(ARCHIVENAME) opengl glade gnome install_ali
 else
-libs: extra $(ARCHIVENAME) opengl pixbuf glade gnome install_ali
+libs: extra $(ARCHIVENAME) opengl glade gnome install_ali
 endif
 
 opengl: force
 	$(MAKE) -C opengl
-
-pixbuf: force
-	$(MAKE) -C pixbuf
 
 extra: force
 	$(MAKE) -C gtkextra
@@ -164,7 +161,6 @@ install: all
            $(INSTALL_PROGRAM) $(GATE_EX) $(bindir); \
            $(INSTALL_PROGRAM) $(GDIALOG) $(bindir); \
            $(MAKE) -C opengl install; \
-           $(MAKE) -C pixbuf install; \
            $(MAKE) -C glade install; \
            $(MAKE) -C gnome install; \
 	fi
@@ -190,14 +186,12 @@ mostlyclean-generic: clean-generic
 clean: clean-generic
 	$(MAKE) -C gtkextra clean
 	$(MAKE) -C opengl clean
-	$(MAKE) -C pixbuf clean
 	$(MAKE) -C glade clean
 	$(MAKE) -C gnome clean
 
 distclean: mostlyclean-generic
 	$(MAKE) -C gtkextra distclean
 	$(MAKE) -C opengl distclean
-	$(MAKE) -C pixbuf distclean
 	$(MAKE) -C glade distclean
 	$(MAKE) -C gnome distclean
 	-$(RM) Makefile.common
@@ -205,7 +199,6 @@ distclean: mostlyclean-generic
 mostlyclean: mostlyclean-generic
 	$(MAKE) -C gtkextra mostlyclean
 	$(MAKE) -C opengl mostlyclean
-	$(MAKE) -C pixbuf mostlyclean
 	$(MAKE) -C glade mostlyclean
 	$(MAKE) -C gnome mostlyclean
 	-$(RM) Makefile.common
@@ -213,7 +206,6 @@ mostlyclean: mostlyclean-generic
 maintainer-clean: mostlyclean-generic
 	$(MAKE) -C gtkextra maintainer-clean
 	$(MAKE) -C opengl maintainer-clean
-	$(MAKE) -C pixbuf maintainer-clean
 	$(MAKE) -C glade maintainer-clean
 	$(MAKE) -C gnome maintainer-clean
 	-$(RM) Makefile.common
