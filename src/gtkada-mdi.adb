@@ -343,13 +343,6 @@ package body Gtkada.MDI is
    --  Iconify a child (this act as toggles, for the title bar of all
    --  children).
 
-   procedure Docked_Switch_Page
-     (Docked_Child : access Gtk_Widget_Record'Class;
-      Args : Gtk_Args);
-   --  Called when the current page in Docked_Child has changed.
-   --  This is used to refresh the notebook so that is reflects the selected
-   --  widget.
-
    procedure Compute_Size
      (MDI                 : access MDI_Window_Record'Class;
       Side                : Dock_Side;
@@ -431,22 +424,6 @@ package body Gtkada.MDI is
      (Child : access Gtk_Widget_Record'Class) return Boolean;
    --  Same as Set_Focus_Child_MDI, but for floating windows
 
-   type Raise_Idle_Data is record
-      MDI   : MDI_Window;
-      Child : MDI_Child;
-   end record;
-   --  The data that is used for Raise_Child_Idle.
-
-   function Raise_Child_Idle (Data : Raise_Idle_Data) return Boolean;
-   --  Raise the child W in an idle loop, when it can not be done immediately
-   --  for instance because the child hasn't been resized yet. This would
-   --  result in a lot of flickering otherwise.
-
-   procedure Destroy_Raise_Child_Idle (D : in out Raise_Idle_Data);
-   --  Called when the idle for Raise_Child_Idle is destroyed.
-
-   package Widget_Idle is new Gtk.Main.Idle (Raise_Idle_Data);
-
    procedure Source_Drag_Data_Get
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class; Args : Gtk_Args);
    --  Called when a drag source must emit some data
@@ -454,9 +431,6 @@ package body Gtkada.MDI is
    procedure Target_Drag_Data_Received
      (Notebook : access Gtk.Widget.Gtk_Widget_Record'Class; Args : Gtk_Args);
    --  Called when some data is received by a drop site
-
-   procedure Give_Focus_To_Widget (Widget : access Gtk_Widget_Record'Class);
-   --  Give the keyboard focus to Widget.
 
    procedure Give_Focus_To_Child (Child : MDI_Child);
    --  Give the focus to a specific MDI child
@@ -523,8 +497,17 @@ package body Gtkada.MDI is
    function Set_Focus_Child_MDI_Floating
      (Child : access Gtk_Widget_Record'Class) return Boolean is
    begin
-      Set_Focus_Child (MDI_Child (Child), Force_Focus => True);
-      return False;
+      Set_Focus_Child (MDI_Child (Child));
+
+      --  We must return True here, to stop the propagation. This function is
+      --  called as a result of a button_press event in the notebook's tabs.
+      --  The call to Set_Focus_Child above raises the child and gives it the
+      --  focus appropriately. However, if we let the signal go through, it
+      --  will be handled by the notebook, which will not see a change in the
+      --  current page, and will give the focus to the tab itself, not to the
+      --  page's contents.
+
+      return True;
    end Set_Focus_Child_MDI_Floating;
 
    -------------
@@ -1760,7 +1743,7 @@ package body Gtkada.MDI is
                                 and then It.State = Docked
                                 and then It.Dock = Dock))
                   then
-                     Set_Focus_Child (It, Force_Focus => True);
+                     Set_Focus_Child (It);
                      exit;
                   end if;
 
@@ -1814,10 +1797,6 @@ package body Gtkada.MDI is
             Dock_Child (C, False);
          end if;
 
-         if C.MDI.Raise_Id /= 0 then
-            Idle_Remove (C.MDI.Raise_Id);
-         end if;
-
          --  For maximized children, test whether there are still enough
          --  pages. Note that if the child is destroyed through its title bar
          --  button, it has already been unparented, and thus is no longer in
@@ -1827,7 +1806,6 @@ package body Gtkada.MDI is
            and then C.MDI.Children_Are_Maximized
          then
             Remove_From_Notebook (C, None);
-
             Set_Show_Tabs
               (C.MDI.Docks (None),
                Get_Nth_Page (C.MDI.Docks (None), 1) /= null);
@@ -1836,10 +1814,6 @@ package body Gtkada.MDI is
             Remove (Gtk_Container (Get_Parent (C)), C);
          end if;
       end if;
-
-      --  Destroy the child, unless the user has explicitely kept a Ref on it
-      --  (therefore, do not use Destroy, only Unref). In all cases, it should
-      --  be hidden on the screen
 
       if Get_Parent (C.Initial) /= null then
          Remove (Gtk_Container (Get_Parent (C.Initial)), C.Initial);
@@ -1860,6 +1834,10 @@ package body Gtkada.MDI is
       --  calls above might result in calls to Raise_Child_Idle, which tries
       --  to manipulate that list.
       Widget_List.Remove (C.MDI.Items, Gtk_Widget (C));
+
+      --  Destroy the child, unless the user has explicitely kept a Ref on it
+      --  (therefore, do not use Destroy, only Unref). In all cases, it should
+      --  be hidden on the screen
       Unref (C);
    end Destroy_Child;
 
@@ -2216,7 +2194,7 @@ package body Gtkada.MDI is
 
       if Get_Button (Event) = 3 then
          Lower_Child (C);
-         return False;
+         return True;
       elsif Get_Button (Event) /= 1 then
          return False;
       end if;
@@ -2232,7 +2210,7 @@ package body Gtkada.MDI is
       if C.State = Docked
         or else (C.State = Normal and then MDI.Children_Are_Maximized)
       then
-         return False;
+         return True;
       end if;
 
       MDI.Selected_Child := C;
@@ -2653,6 +2631,7 @@ package body Gtkada.MDI is
 
       Gtk.Event_Box.Initialize (Child);
 
+
       Gtk.Object.Initialize_Class_Record
         (Child,
          Signals      => Child_Signals,
@@ -2757,17 +2736,6 @@ package body Gtkada.MDI is
          Child);
    end Initialize;
 
-   --------------------------
-   -- Give_Focus_To_Widget --
-   --------------------------
-
-   procedure Give_Focus_To_Widget (Widget : access Gtk_Widget_Record'Class) is
-   begin
-      if Child_Focus (Widget, Dir_Tab_Forward) then
-         Grab_Focus (Widget);
-      end if;
-   end Give_Focus_To_Widget;
-
    -------------------------
    -- Give_Focus_To_Child --
    -------------------------
@@ -2780,7 +2748,13 @@ package body Gtkada.MDI is
             F := Child.Focus_Widget;
          end if;
 
-         Give_Focus_To_Widget (F);
+         --  If we can't give the focus to the focus widget, give it to
+         --  child itself. This is better than keeping it on the previous
+         --  child.
+
+         if not Child_Focus (F, Dir_Tab_Forward) then
+            Grab_Focus (Child);
+         end if;
       end if;
    end Give_Focus_To_Child;
 
@@ -3116,22 +3090,14 @@ package body Gtkada.MDI is
               (Get_Window (Gtk_Window (Get_Toplevel (Child.Initial))));
          end if;
       end if;
-
    end Lower_Child;
 
-   ----------------------
-   -- Raise_Child_Idle --
-   ----------------------
+   -----------------
+   -- Raise_Child --
+   -----------------
 
-   function Raise_Child_Idle (Data : Raise_Idle_Data) return Boolean is
-      Child : MDI_Child := Data.Child;
-      Tmp   : Boolean;
-      pragma Unreferenced (Tmp);
+   procedure Raise_Child (Child : access MDI_Child_Record'Class) is
    begin
-      if Child = null then
-         return False;
-      end if;
-
       Ref (Child);
       Remove (Child.MDI.Items, Gtk_Widget (Child));
       Prepend (Child.MDI.Items, Gtk_Widget (Child));
@@ -3165,18 +3131,6 @@ package body Gtkada.MDI is
       --  might have changed that.
 
       Give_Focus_To_Child (Child.MDI.Focus_Child);
-
-      return False;
-   end Raise_Child_Idle;
-
-   -----------------
-   -- Raise_Child --
-   -----------------
-
-   procedure Raise_Child (Child : access MDI_Child_Record'Class) is
-      Tmp : Boolean;
-   begin
-      Tmp := Raise_Child_Idle ((Child.MDI, MDI_Child (Child)));
    end Raise_Child;
 
    ----------------------
@@ -3210,23 +3164,11 @@ package body Gtkada.MDI is
       end if;
    end Update_Float_Menu;
 
-   ------------------------------
-   -- Destroy_Raise_Child_Idle --
-   ------------------------------
-
-   procedure Destroy_Raise_Child_Idle (D : in out Raise_Idle_Data) is
-   begin
-      D.MDI.Raise_Id := 0;
-   end Destroy_Raise_Child_Idle;
-
    ---------------------
    -- Set_Focus_Child --
    ---------------------
 
-   procedure Set_Focus_Child
-     (Child       : access MDI_Child_Record'Class;
-      Force_Focus : Boolean := True)
-   is
+   procedure Set_Focus_Child (Child : access MDI_Child_Record'Class) is
       Old : constant MDI_Child := Child.MDI.Focus_Child;
       C   : constant MDI_Child := MDI_Child (Child);
       Focus : Gtk_Widget;
@@ -3243,25 +3185,8 @@ package body Gtkada.MDI is
       Child.MDI.Focus_Child := C;
 
       --  Make sure the page containing Child in a notebook is put on top.
-      --  The actual raise is done in an idle loop. Otherwise, if the child
-      --  hasn't been properly resized yet, there would be a lot of
-      --  flickering.
-      --  It isn't possible to immediately do the raise, since this breaks
-      --  a number of focus-related things: if there are two text_view in a
-      --  notebook, switching from one page to the other doesn't properly give
-      --  back the focus to the editor. Likewise, if Set_Focus_Child is called
-      --  for a child which is then floated, the MDI flickers and the current
-      --  page in the notebooks might change
 
-      if Child.MDI.Raise_Id /= 0 then
-         Idle_Remove (Child.MDI.Raise_Id);
-      end if;
-
-      if Child.State /= Floating then
-         Child.MDI.Raise_Id :=
-           Widget_Idle.Add (Raise_Child_Idle'Access, (Child.MDI, C),
-                            Destroy => Destroy_Raise_Child_Idle'Access);
-      end if;
+      Raise_Child (C);
 
       if Old /= null
         and then Realized_Is_Set (Old)
@@ -3296,10 +3221,6 @@ package body Gtkada.MDI is
       --  want to make sure that no other widget has the focus. As a result,
       --  focus_in events will always be sent the next time the user selects a
       --  widget.
-
-      if Force_Focus then
-         Give_Focus_To_Child (C);
-      end if;
 
       Highlight_Child (C, False);
 
@@ -3642,28 +3563,6 @@ package body Gtkada.MDI is
       return Child.State = Floating;
    end Is_Floating;
 
-   ------------------------
-   -- Docked_Switch_Page --
-   ------------------------
-
-   procedure Docked_Switch_Page
-     (Docked_Child : access Gtk_Widget_Record'Class; Args : Gtk_Args)
-   is
-      Page_Num : constant Guint := To_Guint (Args, 2);
-      Child    : MDI_Child;
-   begin
-      if Page_Num = -1
-        or else Gtk.Object.In_Destruction_Is_Set (Docked_Child)
-      then
-         return;
-      end if;
-
-      Child := MDI_Child
-        (Get_Nth_Page (Gtk_Notebook (Docked_Child), Gint (Page_Num)));
-
-      Set_Focus_Child (Child);
-   end Docked_Switch_Page;
-
    ---------------------
    -- Create_Notebook --
    ---------------------
@@ -3683,9 +3582,6 @@ package body Gtkada.MDI is
          --  Coordinates don't matter, they are set in Size_Allocate_MDI.
 
          Put (MDI, MDI.Docks (Side), 0, 0);
-         Widget_Callback.Connect
-           (MDI.Docks (Side), "switch_page",
-            Docked_Switch_Page'Access);
 
          --   Size to be computed
 
@@ -4888,13 +4784,6 @@ package body Gtkada.MDI is
 
             Child_Node := Child_Node.Next;
          end loop;
-
-         --  Remove any idle that would have been set when the notebooks were
-         --  created.
-
-         if MDI.Raise_Id /= 0 then
-            Idle_Remove (MDI.Raise_Id);
-         end if;
 
          --  Need to set the focus child before raising the notebook pages,
          --  since Raise_Child_Idle will restore the focus child, and thus
