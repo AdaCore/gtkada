@@ -488,7 +488,7 @@ package body Gtk.Glade is
             Print_Create_Function (M, Output, True);
             Print_Foot_Page (M, Output);
             New_Line;
-            Put_Line ("with Glib;");
+            Put_Line ("with Glib; use Glib;");
             Put_Line ("with Gtk; use Gtk;");
 
             --  ??? It would be nice to determine when these packages are

@@ -329,7 +329,7 @@ package body Glib.Glade is
 
    begin
       if P /= null then
-         if Q = null then
+         if Field2 = "" then
             Add_Package (Class);
 
             if Is_Float then
@@ -347,14 +347,20 @@ package body Glib.Glade is
          then
             Add_Package (Class);
 
+            Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
+              " (" & To_Ada (Get_Field (N, "name").all) & "), ");
+
             if Is_Float then
-               Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
-                 " (" & To_Ada (Get_Field (N, "name").all) & "), " &
-                 To_Float (P.all) & ", " & To_Float (Q.all));
+               Put (File, To_Float (P.all) & ", " & To_Float (Q.all));
+
+            elsif Q /= null then
+               Put (File, To_Ada (P.all) & ", " & To_Ada (Q.all));
+
             else
-               Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
-                 " (" & To_Ada (Get_Field (N, "name").all) & "), " &
-                 To_Ada (P.all) & ", " & To_Ada (Q.all));
+               --  ??? Need to find a clean and uniform way of handling default
+               --  integer values
+
+               Put (File, To_Ada (P.all) & ", -1");
             end if;
 
             if R /= null then
