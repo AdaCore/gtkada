@@ -37,6 +37,7 @@
 --  <c_version>1.2.7</c_version>
 
 with Glib;                use Glib;
+with Gdk;                 use Gdk;
 with System;
 with Glib.Glade;          use Glib.Glade, Glib.Glade.Glib_XML;
 with Ada.Text_IO;         use Ada.Text_IO;
@@ -56,6 +57,10 @@ package Gtk is
    --  <doc_ignore>
    type Root_Type_Access is access all Root_Type'Class;
    --  </doc_ignore>
+
+   type Gtk_Rc_Style is new Gdk.C_Proxy;
+   --  Type used to handle resource styles.
+   --  @pxref{Package_Gtk.Rc} for more details.
 
    function Major_Version return Guint;
    --  Return the major version number for Gtk+.
