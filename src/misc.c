@@ -50,6 +50,18 @@ convert_i (gint s)
    return (void*)s;
 }
 
+guint
+convert_ua (void* a)
+{
+   return (guint)a;
+}
+
+void*
+convert_ui (guint s)
+{
+   return (void*)s;
+}
+
 /********************************************************************
  *  Returns the major/minor/macro version number of Gtk+. This is
  *  needed as the windows version uses a different convention for the

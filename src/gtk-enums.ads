@@ -29,7 +29,6 @@
 
 with Glib;
 with Glib.Glist;
-with Unchecked_Conversion;
 pragma Elaborate_All (Glib.Glist);
 
 with System;
@@ -239,8 +238,12 @@ package Gtk.Enums is
                                                      Convert_I,
                                                      Convert_A);
 
-   function Convert is new Unchecked_Conversion (Guint, System.Address);
-   function Convert is new Unchecked_Conversion (System.Address, Guint);
-   package Guint_List is new Glib.Glist.Generic_List (Guint);
+   function Convert_UI (I : Guint) return System.Address;
+   function Convert_UA (S : System.Address) return Guint;
+   pragma Import (C, Convert_UI, "convert_ui");
+   pragma Import (C, Convert_UA, "convert_ua");
+   package Guint_List is new Glib.Glist.Generic_List (Guint,
+                                                      Convert_UI,
+                                                      Convert_UA);
 
 end Gtk.Enums;
