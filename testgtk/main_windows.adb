@@ -644,8 +644,9 @@ package body Main_Windows is
          Add (Button, Pixmap);
          Show (Button);
 
-         Widget := Append_Element (Toolbar, Toolbar_Child_Widget, Button,
-                                   "", Tooltips, "", Pixmap);
+         Widget := Append_Element
+           (Toolbar, Toolbar_Child_Widget, Gtk_Widget (Button), "",
+            Tooltips, "", Gtk_Widget (Pixmap));
 
          --  Id := Tool_Cb.Connect (Button, "clicked", Execute_Tool_Cb'Access, Cmd);
       end Add_Tool;
