@@ -47,12 +47,7 @@
 --  icon.
 --  </description>
 
-with Glib; use Glib;
-with Gdk.Pixmap;
-with Gdk.Types;
-with Gtk.Button;
-with Gtk.Menu_Item;
-with Gtk.Widget;
+with Gtk;
 with Gnome.Pixmap;
 
 package Gnome.Stock is
