@@ -27,84 +27,115 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  The aim of this package is to provide some services to connect a
+--  handler to a signal emitted by a Gtk Object. To understand the
+--  services provided by this package, some definitions are necessary:
+--
+--    Signal: A signal is a kind of message that an object wants to
+--    broadcast. All Gtk_Objects can emit signals. These messages are
+--    associated to certain events happening during the life of an
+--    object. For instance, when a user clicks on a button, the
+--    "clicked" signal is emitted by the button.
+--
+--    Handler (or callback): A handler is a function or procedure that
+--    the user "connects" to a signal for a particular object.
+--    Connecting a handler to a signal means associating this handler to
+--    the signal.  When the signal is emitted, all connected handlers
+--    are called back. Usually, the role of those callbacks is to do
+--    some processing triggered by a user action. For instance, when
+--    "clicked" signal is emitted by the "OK" button of a dialog, the
+--    connected handler can be used to close the dialog or recompute
+--    some value.
+--
+--    In GtkAda, the handlers are defined in a form as general as
+--    possible. The first argument is always an access to the object it
+--    has been connected to. The second object is a table of arguments
+--    (See Gtk.Arguments for more details about this table). It is the
+--    responsibility of this handler to extract the values from it, and
+--    to convert them to the correct Ada type.
+--
+--    Because such handlers are not very convenient to use, this package
+--    also provides some services to connect a marshaller instead. It
+--    will then do the extraction work before calling the more
+--    programmer-friendly handler, as defined in Gtk.Marshallers (see
+--    Gtk.Marshallers for more details).
+--
+--  The subdivision of this package is identical to Gtk.Marshallers; it
+--  is made of four generic sub-packages, each representing one of the
+--  four possible kinds of handlers: they can return a value or not, and
+--  they can have some user specific data associated to them or not.
+--  Selecting the right package depends on the profile of the handler.
+--  For example, the handler for the "delete_event" signal of a
+--  Gtk_Window has a return value, and has an extra parameter (a Gint).
+--  All handlers also have a user_data field by default, but its usage
+--  is optional. To connect a handler to this signal, if the user_data
+--  field is not used, the Return_Callback generic should be
+--  instantiated. On the other hand, if the user_data field is
+--  necessary, then the User_Return_Callback generic should be used.
+--
+--  Note also that the real handler in Gtk+ should expect at least as
+--  many arguments as in the marshaller you are using. If your
+--  marshaller has one argument, the C handler must have at least one
+--  argument too.
+--
+--  The common generic parameter to all sub-packages is the widget type,
+--  which is the basic widget manipulated. To reduce the number of
+--  instantiations, the Gtk.Object.Gtk_Object_Record type can be used,
+--  but the conversion to the original type will have to be done inside
+--  the handler.
+--
+--  All sub-packages are organized in the same way.
+--
+--    First, the type "Handler" is defined. It represents the general
+--    form of the callbacks supported by the sub-package.
+--
+--    The corresponding sub-package of Gtk.Marshallers is instantiated.
+--
+--    A series of "Connect" procedures and functions is given. All cases
+--    are covered: the functions return the Handler_Id of the newly
+--    created association, while the procedures just connect the
+--    handler, dropping the Handler_Id; some services allow the user to
+--    connect a Handler while some others allow the usage of
+--    Marshallers, which are more convenient. Note that more than one
+--    handler may be connected to a signal; the handlers will then be
+--    invoked in the order of connection.
+--
+--    Some "Connect_Object" services are also provided. Those services
+--    never have a user_data. They accept an additional parameter called
+--    Slot_Object. When the callback in invoked, the Gtk Object emitting
+--    the signal is substituted by this Slot_Object.
+--
+--    There are several methods to connect a handler. For each method,
+--    although the option of connecting a Handler is provided, the
+--    recommended way is to use Marshallers. Each connect service is
+--    documented below, in the first sub-package.
+--
+--    A series of "To_Marshaller" functions are provided. They return
+--    some marshallers for the most commonly used types in order to ease
+--    the usage of this package. Most of the time, it will not be
+--    necessary to use some other marshallers.
+--
+--    As for the "To_Marshaller" functions, a series of "Emit_By_Name"
+--    procedures are also provided for the same most common types, to
+--    allow the user to easily emit signals. These procedures are mainly
+--    intended for people building new Gtk_Objects.
+--
+--  At the end of this package, some general services related to the
+--  management of signals and handlers are also provided. Each one of
+--  them is documented individually below.
+--
+--  IMPORTANT NOTE: These packages must be instantiated at library-level
+--
+--  </description>
+
 with Gdk.Event;
 with Gtk.Arguments;
 with Gtk.Marshallers;
 with Gtk.Notebook;
 with Gtk.Object;
 with Gtk.Widget;
-
---  This package is made of four sub-packages.
---
---  They represent the four possible kind of callbacks: they can return values
---  or not, and they can have user specific data associated to them or not.
---
---  They are generic packages. The common parameter is Widget_Type, which
---  is the basic widget manipulated. If you do not want to instantiate too
---  many of these packages, you can use Gtk.Object.Gtk_Object_Record. The
---  callbacks will then have to do the conversions.
---  !!Important Note!! These packages must be implemented at library-level.
---
---  The general organization of the packages is the same:
---  * The type "Handler" is the general form of the callbacks.
---    The callbacks in this package are as general as possible: they receive as
---    an argument an array of all the specific values created by gtk+. It is
---    your responsability to extract the values from it and convert them to
---    whatever Ada type they represent. The functions in Gtk.Arguments will
---    help you to do this job.
---  * A series of Connect function is given. They cover all the cases,
---    from returning or not the "Handler_Id" of the newly create association,
---    connecting either a "Handler" or a "Marshaller", ...
---    There are four kinds of connect function in gtk+:
---      Connect: connect the widget to the signal
---      Connect_After: the new handler is put last on the list.
---        Since we can have default values for parameters in Ada, this is
---        represented by one more parameter, After, with a default value.
---      Connect_Object: the user_data is an Gtk Object, which
---        is passed to the handler instead of the object to which the signal
---        was connected. These functions never have a user data.
---      Connect_Object_After: Same as above, but put the handler
---        at the end of the list. This is also implemented as a parameter
---        with a default value.
---
---  You should also look at the package Gtk.Marshallers which gives a
---  more natural way to use callbacks.
---
---  FIXME: The following was taken out of Gtk.Marshallers.
---  FIXME: Add this to the future documentation of Gtk.Handlers.
---  Here is an example:
---     We want to connect the "delete_event" signal to a widget. The
---     handlers for this signal get an extra new argument that is the
---     Gdk_Event that generated the signal.
---     Here is how to do it:
---
---         with Gtk.Handlers;    use Gtk.Handlers;
---         with Gtk.Marshallers; use Gtk.Marshallers;
---
---         function My_Cb (Widget : access Gtk_Widget_Record'Class;
---                         Event  : Gdk.Event.Gdk_Event)
---                         return Gint;
---         --  your own function
---
---         package Return_Widget_Cb is new Gtk.Handlers.Return_Callback
---            (Gtk.Widget.Gtk_Widget_Record, Gint);
---
---         Return_Widget_Cb.Connect (W, "delete_event",
---            Return_Widget_Cb.To_Event_Marshaller (My_Cb'Access));
---
---  The real handler in gtk+ should expect at least as many arguments as
---  in the marshaller you are using (i.e if your marshaller has one
---  argument (as in the Generic_Marshaller or Generic_Widget_Marshaller
---  below, the C handler must have at least one argument too).
---
---  There are four generic packages here, the same organization as in
---  Gtk.Handlers (i.e there is one for callbacks returning values, but
---  with no
---  user data, for callbacks returning values and with a user callbacks,
---  for
---  callbacks not returning any value and with no user data, and for
---  callbacks
---  returning values and with a user data.
 
 package Gtk.Handlers is
    pragma Elaborate_Body;
@@ -131,11 +162,20 @@ package Gtk.Handlers is
 
       --  Connecting a handler to an object
 
+      --  In all the Connect services below, the following arguments
+      --  will be used:
+      --    o Widget, Name: This represents the association (Gtk Object,
+      --      Signal_Name) to which the handler is to be connected.
+      --    o After: If this boolean is set to True, then the handler
+      --      will be connected after all the default handlers. By
+      --      default, it is set to False.
+
       procedure Connect
         (Widget  : access Widget_Type'Class;
          Name    : in     String;
          Marsh   : in     Marshallers.Marshaller;
          After   : in     Boolean := False);
+      --  Connects a Marshaller. The Handler_Id is dropped.
 
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
@@ -143,12 +183,14 @@ package Gtk.Handlers is
          Marsh       : in     Marshallers.Marshaller;
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False);
+      --  Connects a Marshaller. The Handler_Id is dropped.
 
       procedure Connect
         (Widget  : access Widget_Type'Class;
          Name    : in     String;
          Cb      : in     Handler;
          After   : in     Boolean := False);
+      --  Connects a Handler. The Handler_Id is dropped.
 
       procedure Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
@@ -156,6 +198,7 @@ package Gtk.Handlers is
          Cb          : in     Handler;
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False);
+      --  Connects a Handler. The Handler_Id is dropped.
 
       pragma Inline (Connect);
       pragma Inline (Object_Connect);
@@ -166,6 +209,7 @@ package Gtk.Handlers is
          Marsh   : in     Marshallers.Marshaller;
          After   : in     Boolean := False)
         return Handler_Id;
+      --  Connects a Marshaller. Returns the Handler_Id.
 
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
@@ -174,6 +218,7 @@ package Gtk.Handlers is
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False)
         return Handler_Id;
+      --  Connects a Marshaller. Returns the Handler_Id.
 
       function Connect
         (Widget  : access Widget_Type'Class;
@@ -181,6 +226,7 @@ package Gtk.Handlers is
          Cb      : in     Handler;
          After   : in     Boolean := False)
         return Handler_Id;
+      --  Connects a Handler. Returns the Handler_Id.
 
       function Object_Connect
         (Widget      : access Gtk.Object.Gtk_Object_Record'Class;
@@ -189,6 +235,8 @@ package Gtk.Handlers is
          Slot_Object : access Widget_Type'Class;
          After       : in     Boolean := False)
         return Handler_Id;
+      --  Connects a Handler. Returns the Handler_Id.
+
 
       --  Some convenient functions to create marshallers
 
@@ -628,21 +676,33 @@ package Gtk.Handlers is
    procedure Disconnect
      (Object : access Gtk.Object.Gtk_Object_Record'Class;
       Id     : in Handler_Id);
+   --  Disconnect the handler identified by the given Handler_Id.
+
+   --  FIXME: Bind Disconnect_By_Name
+
+   --  FIXME: Bind Emit_Stop
 
    procedure Emit_Stop_By_Name
      (Object : access Gtk.Object.Gtk_Object_Record'Class;
       Name   : in String);
+   --  During a signal emission, invoking this procedure will halt the
+   --  emission.
 
    procedure Handler_Block
      (Obj : access Gtk.Object.Gtk_Object_Record'Class;
       Id  : in Handler_Id);
+   --  Blocks temporily the signal. For each call to this procedure,
+   --  a call to Handler_Unblock must be performed in order to really
+   --  unblock the signal.
 
    procedure Handlers_Destroy
      (Obj : access Object.Gtk_Object_Record'Class);
+   --  Destroys all the handlers associated to the given object.
 
    procedure Handler_Unblock
      (Obj : access Gtk.Object.Gtk_Object_Record'Class;
       Id  : in Handler_Id);
+   --  See Handler_Block.
 
    function Count_Arguments
      (The_Type : Gtk_Type; Name : in String) return Guint;
@@ -663,3 +723,25 @@ package Gtk.Handlers is
    --  signal.
 
 end Gtk.Handlers;
+
+--  <example>
+--  --  This example connects the "delete_event" signal to a widget.
+--  --  The handlers for this signal get an extran argument which is
+--  --  the Gdk_Event that generated the signal.
+--
+--  with Gtk.Handlers;    use Gtk.Handlers;
+--  with Gtk.Marshallers; use Gtk.Marshallers;
+--
+--  function My_Cb (Widget : access Gtk_Widget_Record'Class;
+--                  Event  : Gdk.Event.Gdk_Event)
+--                  return Gint;
+--  --  your own function
+--
+--  package Return_Widget_Cb is new Gtk.Handlers.Return_Callback
+--     (Gtk.Widget.Gtk_Widget_Record, Gint);
+--
+--  Return_Widget_Cb.Connect (W, "delete_event",
+--     Return_Widget_Cb.To_Marshaller (My_Cb'Access));
+--
+-- </example>
+
