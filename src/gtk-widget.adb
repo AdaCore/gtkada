@@ -30,6 +30,7 @@
 with Interfaces.C.Strings;
 with Gdk.Visual; use Gdk.Visual;
 with Gdk.Color;  use Gdk.Color;
+with Ada.Unchecked_Conversion;
 
 package body Gtk.Widget is
 
@@ -354,6 +355,32 @@ package body Gtk.Widget is
    begin
       return Convert (Internal (Get_Object (Widget)));
    end Get_Toplevel;
+
+   ---------------------
+   -- Get_Requisition --
+   ---------------------
+
+   function Get_Requisition
+     (Value : Glib.Values.GValue) return Gtk_Requisition_Access
+   is
+      function To_Requisition is new
+        Ada.Unchecked_Conversion (System.Address, Gtk_Requisition_Access);
+   begin
+      return To_Requisition (Glib.Values.Get_Address (Value));
+   end Get_Requisition;
+
+   --------------------
+   -- Get_Allocation --
+   --------------------
+
+   function Get_Allocation
+     (Value : Glib.Values.GValue) return Gtk_Allocation_Access
+   is
+      function To_Allocation is new
+        Ada.Unchecked_Conversion (System.Address, Gtk_Allocation_Access);
+   begin
+      return To_Allocation (Glib.Values.Get_Address (Value));
+   end Get_Allocation;
 
    ----------------
    -- Set_Window --

@@ -42,6 +42,16 @@
 --  </description>
 --  <c_version>1.3.6</c_version>
 
+with System;
+with Glib.Object;
+with Glib.Properties;
+with Glib.Glist;
+with Glib.GSlist;
+pragma Elaborate_All (Glib.GSlist);
+with Glib.Values;
+
+with Pango.Font;
+
 with Gdk.Color;
 with Gdk.Event;
 with Gdk.Bitmap;
@@ -49,18 +59,12 @@ with Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Visual;
 with Gdk.Window;
+
 with Gtk.Accel_Group;
 with Gtk.Adjustment;
 with Gtk.Enums;
 with Gtk.Object;
 with Gtk.Style;
-with Glib.Object;
-with Glib.Properties;
-with Glib.Glist;
-with Glib.GSlist;
-with System;
-with Pango.Font;
-pragma Elaborate_All (Glib.GSlist);
 
 package Gtk.Widget is
 
@@ -914,6 +918,18 @@ package Gtk.Widget is
    package Widget_SList is new Glib.GSlist.Generic_SList (Gtk_Widget);
 
    --  </doc_ignore>
+
+   --------------------
+   -- GValue support --
+   --------------------
+
+   function Get_Requisition
+     (Value : Glib.Values.GValue) return Gtk_Requisition_Access;
+   --  Convert a value into a Gtk_Requisition_Access.
+
+   function Get_Allocation
+     (Value : Glib.Values.GValue) return Gtk_Allocation_Access;
+   --  Convert a value into a Gtk_Allocation_Access.
 
    ----------------
    -- Properties --
