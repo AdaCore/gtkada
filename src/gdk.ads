@@ -67,9 +67,6 @@ package Gdk is
    --  any of the widgets) is "null", since this relates to the underlying
    --  C object.
 
-   function Is_Created (Object : in System.Address) return Boolean;
-   --  Return True if Object is different from System.Null_Address
-
    --  The following services are for INTERNAL use only. They are not
    --  declared inside the private part for visibility issues. Do NOT
    --  use them outside of the binding.
