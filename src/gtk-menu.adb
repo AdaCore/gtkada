@@ -362,8 +362,8 @@ package body Gtk.Menu is
 
          Internal
            (Get_Object (Menu),
-            Get_Object (Parent_Menu_Shell),
-            Get_Object (Parent_Menu_Item),
+            Parent_Shell,
+            Parent_Item,
             Func,
             Data.all'Address,
             Button,
