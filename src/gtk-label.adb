@@ -32,7 +32,6 @@ with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
 with Gtk.Object; use Gtk.Object;
-with Gtk.Container; use Gtk.Container;
 with Gtk.Notebook; use Gtk.Notebook;
 with Gtk.Clist; use Gtk.Clist;
 
