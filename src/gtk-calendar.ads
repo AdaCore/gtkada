@@ -42,6 +42,7 @@
 --  If performing many 'mark' operations, the calendar can be frozen to prevent
 --  flicker, using Freeze, and 'thawed' again using Thaw.
 --  </description>
+--  <c_version>1.2.8</c_version>
 
 with Gtk.Object; use Gtk.Object;
 with Gtk.Widget;
