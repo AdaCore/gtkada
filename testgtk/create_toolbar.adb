@@ -131,8 +131,10 @@ package body Create_Toolbar is
    ---------------------
 
    procedure Set_Small_Space (Toolbar : access Gtk_Toolbar_Record'Class) is
+      pragma Warnings (Off, Toolbar);
    begin
-      Set_Space_Size (Toolbar, 5);
+      --  Set_Space_Size (Toolbar, 5);
+      null;
    end Set_Small_Space;
 
    -------------------
@@ -140,8 +142,10 @@ package body Create_Toolbar is
    -------------------
 
    procedure Set_Big_Space (Toolbar : access Gtk_Toolbar_Record'Class) is
+      pragma Warnings (Off, Toolbar);
    begin
-      Set_Space_Size (Toolbar, 10);
+      --  Set_Space_Size (Toolbar, 10);
+      null;
    end Set_Big_Space;
 
    ----------------
@@ -167,8 +171,10 @@ package body Create_Toolbar is
    -------------
 
    procedure Borders (Toolbar : access Gtk_Toolbar_Record'Class) is
+      pragma Warnings (Off, Toolbar);
    begin
-      Set_Button_Relief (Toolbar, Relief_Normal);
+      --  Set_Button_Relief (Toolbar, Relief_Normal);
+      null;
    end Borders;
 
    ----------------
@@ -176,8 +182,10 @@ package body Create_Toolbar is
    ----------------
 
    procedure Borderless (Toolbar : access Gtk_Toolbar_Record'Class) is
+      pragma Warnings (Off, Toolbar);
    begin
-      Set_Button_Relief (Toolbar, Relief_None);
+      --  Set_Button_Relief (Toolbar, Relief_None);
+      null;
    end Borderless;
 
    -----------------------
@@ -185,8 +193,10 @@ package body Create_Toolbar is
    -----------------------
 
    procedure Space_Style_Empty (Toolbar : access Gtk_Toolbar_Record'Class) is
+      pragma Warnings (Off, Toolbar);
    begin
-      Set_Space_Style (Toolbar, Toolbar_Space_Empty);
+      --  Set_Space_Style (Toolbar, Toolbar_Space_Empty);
+      null;
    end Space_Style_Empty;
 
    ----------------------
@@ -194,8 +204,10 @@ package body Create_Toolbar is
    ----------------------
 
    procedure Space_Style_Line (Toolbar : access Gtk_Toolbar_Record'Class) is
+      pragma Warnings (Off, Toolbar);
    begin
-      Set_Space_Style (Toolbar, Toolbar_Space_Line);
+      --  Set_Space_Style (Toolbar, Toolbar_Space_Line);
+      null;
    end Space_Style_Line;
 
    ------------------
