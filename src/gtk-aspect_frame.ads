@@ -54,13 +54,13 @@ package Gtk.Aspect_Frame is
                       Yalign       : in Gfloat;
                       Ratio        : in Gfloat;
                       Obey_Child   : in Boolean);
-   --  Creates a new Aspect_Frame.
-   --  If LABEL is the empty string, then the frame won't have any title.
-   --  XALIGN and YALIGN are constrained to the range 0.0 .. 1.0 and specify
+   --  Create a new Aspect_Frame.
+   --  If Label is the empty string, then the frame won't have any title.
+   --  Xalign and Yalign are constrained to the range 0.0 .. 1.0 and specify
    --  the alignment of the child inside the frame (0.0 means either left or
    --  top aligned, 1.0 means right or bottom aligned).
-   --  RATIO is the ratio width/height for the child of the frame.
-   --  If OBEY_CHILD is True, then RATIO is ignored and the effective ratio
+   --  Ratio is the ratio width/height for the child of the frame.
+   --  If Obey_Child is True, then Ratio is ignored and the effective ratio
    --  is taken from the child's requisition (ie the ideal size it asked
    --  for at creation time).
 
@@ -74,7 +74,7 @@ package Gtk.Aspect_Frame is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Aspect_Frame
+   --  Return the internal value associated with a Gtk_Aspect_Frame
    --  internally.
 
    procedure Set (Aspect_Frame : access Gtk_Aspect_Frame_Record;
@@ -82,21 +82,21 @@ package Gtk.Aspect_Frame is
                   Yalign       : in Gfloat;
                   Ratio        : in Gfloat;
                   Obey_Child   : in Boolean);
-   --  Modifies the frame's parameters (see the description of these parameters
+   --  Modify the frame's parameters (see the description of these parameters
    --  for Gtk_New.
 
    function Get_Ratio (Aspect_Frame : access Gtk_Aspect_Frame_Record)
                       return Gfloat;
-   --  Returns the current ratio for the frame (width / height)
+   --  Return the current ratio for the frame (width / height)
 
    function Get_Xalign (Aspect_Frame : access Gtk_Aspect_Frame_Record)
                        return Gfloat;
-   --  Returns the current X alignment for the frame.
+   --  Return the current X alignment for the frame.
    --  0.0 means the child is left aligned, 1.0 that it is right aligned.
 
    function Get_Yalign (Aspect_Frame : access Gtk_Aspect_Frame_Record)
                        return Gfloat;
-   --  Returns the current Y alignment for the frame.
+   --  Return the current Y alignment for the frame.
    --  1.0 means the child is top aligned, 1.0 that it is bottom aligned.
 
    ----------------------------
