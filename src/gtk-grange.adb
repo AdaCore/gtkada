@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,188 +31,17 @@ with System;
 
 package body Gtk.GRange is
 
-   ---------------------
-   -- Default_Hmotion --
-   ---------------------
-
-   procedure Default_Hmotion
-     (The_Range : access Gtk_Range_Record;
-      Xdelta    : in Gint;
-      Ydelta    : in Gint)
-   is
-      procedure Internal
-        (The_Range : in System.Address;
-         Xdelta    : in Gint;
-         Ydelta    : in Gint);
-      pragma Import (C, Internal, "gtk_range_default_hmotion");
-
-   begin
-      Internal (Get_Object (The_Range), Xdelta, Ydelta);
-   end Default_Hmotion;
-
-   ----------------------------
-   -- Default_Hslider_Update --
-   ----------------------------
-
-   procedure Default_Hslider_Update (The_Range : access Gtk_Range_Record) is
-      procedure Internal (The_Range : in System.Address);
-      pragma Import (C, Internal, "gtk_range_default_hslider_update");
-
-   begin
-      Internal (Get_Object (The_Range));
-   end Default_Hslider_Update;
-
-   ---------------------------
-   -- Default_Htrough_Click --
-   ---------------------------
-
-   procedure Default_Htrough_Click
-     (The_Range : access Gtk_Range_Record;
-      X         : in Gint;
-      Y         : in Gint;
-      Jump_Perc : in out Gfloat;
-      Result    :    out Gint)
-   is
-      function Internal
-        (The_Range : in System.Address;
-         X         : in Gint;
-         Y         : in Gint;
-         Jump_Perc : access Gfloat) return Gint;
-      pragma Import (C, Internal, "gtk_range_default_htrough_click");
-
-      Jump : aliased Gfloat := Jump_Perc;
-
-   begin
-      Result := Internal (Get_Object (The_Range), X, Y, Jump'Access);
-      Jump_Perc := Jump;
-   end Default_Htrough_Click;
-
-   ---------------------
-   -- Default_Vmotion --
-   ---------------------
-
-   procedure Default_Vmotion
-     (The_Range : access Gtk_Range_Record;
-      Xdelta    : in Gint;
-      Ydelta    : in Gint)
-   is
-      procedure Internal
-        (The_Range : in System.Address;
-         Xdelta    : in Gint;
-         Ydelta    : in Gint);
-      pragma Import (C, Internal, "gtk_range_default_vmotion");
-
-   begin
-      Internal (Get_Object (The_Range), Xdelta, Ydelta);
-   end Default_Vmotion;
-
-   ----------------------------
-   -- Default_Vslider_Update --
-   ----------------------------
-
-   procedure Default_Vslider_Update (The_Range : access Gtk_Range_Record) is
-      procedure Internal (The_Range : in System.Address);
-      pragma Import (C, Internal, "gtk_range_default_vslider_update");
-
-   begin
-      Internal (Get_Object (The_Range));
-   end Default_Vslider_Update;
-
-   ---------------------------
-   -- Default_Vtrough_Click --
-   ---------------------------
-
-   procedure Default_Vtrough_Click
-     (The_Range : access Gtk_Range_Record;
-      X         : in Gint;
-      Y         : in Gint;
-      Jump_Perc : in out Gfloat;
-      Result    :    out Gint)
-   is
-      function Internal
-        (The_Range : in System.Address;
-         X         : in Gint;
-         Y         : in Gint;
-         Jump_Perc : access Gfloat) return Gint;
-      pragma Import (C, Internal, "gtk_range_default_vtrough_click");
-
-      Jump : aliased Gfloat := Jump_Perc;
-
-   begin
-      Result := Internal (Get_Object (The_Range), X, Y, Jump'Access);
-      Jump_Perc := Jump;
-   end Default_Vtrough_Click;
-
-   ---------------------
-   -- Draw_Background --
-   ---------------------
-
-   procedure Draw_Background (The_Range : access Gtk_Range_Record) is
-      procedure Internal (The_Range : in System.Address);
-      pragma Import (C, Internal, "gtk_range_draw_background");
-
-   begin
-      Internal (Get_Object (The_Range));
-   end Draw_Background;
-
-   -----------------
-   -- Draw_Slider --
-   -----------------
-
-   procedure Draw_Slider (The_Range : access Gtk_Range_Record) is
-      procedure Internal (The_Range : in System.Address);
-      pragma Import (C, Internal, "gtk_range_draw_slider");
-
-   begin
-      Internal (Get_Object (The_Range));
-   end Draw_Slider;
-
-   --------------------
-   -- Draw_Step_Back --
-   --------------------
-
-   procedure Draw_Step_Back (The_Range : access Gtk_Range_Record) is
-      procedure Internal (The_Range : in System.Address);
-      pragma Import (C, Internal, "gtk_range_draw_step_back");
-
-   begin
-      Internal (Get_Object (The_Range));
-   end Draw_Step_Back;
-
-   --------------------
-   -- Draw_Step_Forw --
-   --------------------
-
-   procedure Draw_Step_Forw (The_Range : access Gtk_Range_Record) is
-      procedure Internal (The_Range : in System.Address);
-      pragma Import (C, Internal, "gtk_range_draw_step_forw");
-
-   begin
-      Internal (Get_Object (The_Range));
-   end Draw_Step_Forw;
-
-   -----------------
-   -- Draw_Trough --
-   -----------------
-
-   procedure Draw_Trough (The_Range : access Gtk_Range_Record) is
-      procedure Internal (The_Range : in System.Address);
-      pragma Import (C, Internal, "gtk_range_draw_trough");
-
-   begin
-      Internal (Get_Object (The_Range));
-   end Draw_Trough;
-
    --------------------
    -- Get_Adjustment --
    --------------------
 
-   function Get_Adjustment (The_Range  : access Gtk_Range_Record)
+   function Get_Adjustment (The_Range : access Gtk_Range_Record)
      return Gtk.Adjustment.Gtk_Adjustment
    is
-      function Internal (The_Range  : in System.Address) return System.Address;
+      function Internal (The_Range : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_range_get_adjustment");
       Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
+
    begin
       return Gtk.Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (The_Range)), Stub));
@@ -224,11 +53,11 @@ package body Gtk.GRange is
 
    procedure Set_Adjustment
      (The_Range  : access Gtk_Range_Record;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal
-        (The_Range  : in System.Address;
-         Adjustment : in System.Address);
+        (The_Range  : System.Address;
+         Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_range_set_adjustment");
 
       Adj : System.Address;
@@ -251,52 +80,46 @@ package body Gtk.GRange is
 
    procedure Set_Update_Policy
      (The_Range : access Gtk_Range_Record;
-      Policy    : in Gtk_Update_Type)
+      Policy    : Gtk_Update_Type)
    is
       procedure Internal
-        (The_Range : in System.Address;
-         Policy    : in Gint);
+        (The_Range : System.Address;
+         Policy    : Gint);
       pragma Import (C, Internal, "gtk_range_set_update_policy");
 
    begin
       Internal (Get_Object (The_Range), Gtk_Update_Type'Pos (Policy));
    end Set_Update_Policy;
 
-   -------------------
-   -- Slider_Update --
-   -------------------
-
-   procedure Slider_Update (The_Range : access Gtk_Range_Record) is
-      procedure Internal (The_Range : in System.Address);
-      pragma Import (C, Internal, "gtk_range_slider_update");
-
-   begin
-      Internal (Get_Object (The_Range));
-   end Slider_Update;
-
    ------------------
-   -- Trough_Click --
+   -- Set_Inverted --
    ------------------
 
-   procedure Trough_Click
+   procedure Set_Inverted
      (The_Range : access Gtk_Range_Record;
-      X         : in Gint;
-      Y         : in Gint;
-      Jump_Perc : in out Gfloat;
-      Result    :    out Gint)
+      Setting   : Boolean := True)
    is
-      function Internal
-        (The_Range : in System.Address;
-         X         : in Gint;
-         Y         : in Gint;
-         Jump_Perc : access Gfloat) return Gint;
-      pragma Import (C, Internal, "gtk_range_trough_click");
-
-      Jump : aliased Gfloat := Jump_Perc;
+      procedure Internal
+        (The_Range : System.Address;
+         Setting   : Gboolean);
+      pragma Import (C, Internal, "gtk_range_set_inverted");
 
    begin
-      Result := Internal (Get_Object (The_Range), X, Y, Jump'Access);
-      Jump_Perc := Jump;
-   end Trough_Click;
+      Internal (Get_Object (The_Range), Boolean'Pos (Setting));
+   end Set_Inverted;
+
+   ------------------
+   -- Get_Inverted --
+   ------------------
+
+   function Get_Inverted
+     (The_Range : access Gtk_Range_Record) return Boolean
+   is
+      function Internal (The_Range : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_range_get_inverted");
+
+   begin
+      return Boolean'Val (Internal (Get_Object (The_Range)));
+   end Get_Inverted;
 
 end Gtk.GRange;

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.3</c_version>
+
 with Gtk.Adjustment;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
@@ -40,66 +42,23 @@ package Gtk.GRange is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Range.
 
-   procedure Default_Hmotion
-     (The_Range : access Gtk_Range_Record;
-      Xdelta    : in Gint;
-      Ydelta    : in Gint);
-
-   procedure Default_Hslider_Update (The_Range : access Gtk_Range_Record);
-
-   procedure Default_Htrough_Click
-     (The_Range : access Gtk_Range_Record;
-      X         : in Gint;
-      Y         : in Gint;
-      Jump_Perc : in out Gfloat;
-      Result    : out Gint);
-   --  Was a function in C
-
-   procedure Default_Vmotion
-     (The_Range : access Gtk_Range_Record;
-      Xdelta    : in Gint;
-      Ydelta    : in Gint);
-
-   procedure Default_Vslider_Update (The_Range : access Gtk_Range_Record);
-
-   procedure Default_Vtrough_Click
-     (The_Range : access Gtk_Range_Record;
-      X         : in Gint;
-      Y         : in Gint;
-      Jump_Perc : in out Gfloat;
-      Result    :    out Gint);
-   --  Was a function in C
-
-   procedure Draw_Background (The_Range : access Gtk_Range_Record);
-
-   procedure Draw_Slider (The_Range : access Gtk_Range_Record);
-
-   procedure Draw_Step_Back (The_Range : access Gtk_Range_Record);
-
-   procedure Draw_Step_Forw (The_Range : access Gtk_Range_Record);
-
-   procedure Draw_Trough (The_Range : access Gtk_Range_Record);
-
-   function Get_Adjustment (The_Range  : access Gtk_Range_Record)
-     return Gtk.Adjustment.Gtk_Adjustment;
-
-   procedure Set_Adjustment
-     (The_Range  : access Gtk_Range_Record;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+   function Get_Adjustment
+     (The_Range : access Gtk_Range_Record)
+      return Gtk.Adjustment.Gtk_Adjustment;
 
    procedure Set_Update_Policy
      (The_Range : access Gtk_Range_Record;
-      Policy    : in Gtk_Update_Type);
+      Policy    : Gtk_Update_Type);
 
-   procedure Slider_Update (The_Range : access Gtk_Range_Record);
+   procedure Set_Adjustment
+     (The_Range  : access Gtk_Range_Record;
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
 
-   procedure Trough_Click
+   procedure Set_Inverted
      (The_Range : access Gtk_Range_Record;
-      X         : in Gint;
-      Y         : in Gint;
-      Jump_Perc : in out Gfloat;
-      Result    :    out Gint);
-   --  Was a function in C
+      Setting   : Boolean := True);
+
+   function Get_Inverted (The_Range : access Gtk_Range_Record) return Boolean;
 
 private
    type Gtk_Range_Record is new Gtk.Widget.Gtk_Widget_Record with null record;
