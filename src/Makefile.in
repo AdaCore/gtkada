@@ -39,6 +39,7 @@ GTKADA_CONFIG = gtkada-config
 GATE_SRC      = gate.adb
 GATE_EX       = gate-in.exe
 GATE          = gate
+GENERATE      = generate.pl
 DGATE         = dgate
 GDIALOG       = gdialog
 
@@ -156,6 +157,7 @@ install: all
 	   $(CHMOD) -w $(alidir)/*.ali; \
 	   $(INSTALL_SCRIPT) $(GTKADA_CONFIG) $(bindir); \
            $(INSTALL_SCRIPT) $(GATE) $(bindir); \
+           $(INSTALL_SCRIPT) $(GENERATE) $(bindir); \
            $(INSTALL_PROGRAM) $(GATE_EX) $(bindir); \
            $(INSTALL_PROGRAM) $(GDIALOG) $(bindir); \
            $(MAKE) -C opengl install; \
