@@ -3892,7 +3892,7 @@ package body Gtkada.MDI is
          end loop;
 
          if Raised_Child /= null then
-            Set_Current_Page (Notebook, Page_Num (Notebook, Child));
+            Set_Current_Page (Notebook, Page_Num (Notebook, Raised_Child));
          end if;
       end Parse_Notebook_Node;
 
