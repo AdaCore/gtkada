@@ -3228,7 +3228,7 @@ package body Gtkada.MDI is
    begin
       --  Be lazy. And avoid infinite loop when updating the MDI menu...
 
-      if C = Old then
+      if C = Old or else Gtk.Object.In_Destruction_Is_Set (C.MDI) then
          return;
       end if;
 
@@ -4765,6 +4765,7 @@ package body Gtkada.MDI is
                Register := Registers;
                Child := null;
                Raised := False;
+               State := Normal;
 
                while Child = null and then Register /= null loop
                   Child := Register.Load
@@ -4842,6 +4843,9 @@ package body Gtkada.MDI is
                                    Allocation_Int (Width),
                                    Allocation_Int (Height)));
                         Float_Child (Child, True);
+                        Move
+                          (Get_Window (Gtk_Window (Get_Toplevel (Child))),
+                           Child.X, Child.Y);
 
                      when Normal =>
                         Float_Child (Child, False);
@@ -4953,25 +4957,47 @@ package body Gtkada.MDI is
                Child_Node := new Node;
                Child_Node.Tag := new String'("Child");
 
-               if Child.State = Iconified then
-                  Add ("Uniconified_Height",
-                       Gint'Image (Child.Uniconified_Height));
-                  Add ("Uniconified_Width",
-                       Gint'Image (Child.Uniconified_Width));
-                  Add ("Uniconified_Y", Gint'Image (Child.Uniconified_Y));
-                  Add ("Uniconified_X", Gint'Image (Child.Uniconified_X));
-               end if;
-
                Add ("Dock", Dock_Side'Image (Child.Dock));
                Add ("State", State_Type'Image (Child.State));
                Add ("Title", Child.Title.all);
                Add ("Short_Title", Child.Short_Title.all);
-               Add ("Height",
-                    Allocation_Int'Image (Get_Allocation_Height (Child)));
-               Add ("Width",
-                    Allocation_Int'Image (Get_Allocation_Width (Child)));
-               Add ("Y", Gint'Image (Child.Y));
-               Add ("X", Gint'Image (Child.X));
+
+               if Child.State = Floating then
+                  declare
+                     Win : constant Gtk_Widget :=
+                       Get_Toplevel (Child.Initial);
+                     X, Y, W, H : Gint;
+                  begin
+                     --  Note: This size doesn't include the size of the window
+                     --  decorations, doesn't seem to be a way to do this.
+                     W := Get_Allocation_Width (Win);
+                     H := Get_Allocation_Height (Win);
+                     Get_Root_Origin (Get_Window (Win), X, Y);
+
+                     Add ("Y", Gint'Image (Y));
+                     Add ("X", Gint'Image (X));
+                     Add ("Height", Gint'Image (H));
+                     Add ("Width", Gint'Image (W));
+                     Add ("Uniconified_Height", Gint'Image (H));
+                     Add ("Uniconified_Width",  Gint'Image (W));
+                  end;
+               else
+                  if Child.State = Iconified then
+                     Add ("Uniconified_Height",
+                          Gint'Image (Child.Uniconified_Height));
+                     Add ("Uniconified_Width",
+                          Gint'Image (Child.Uniconified_Width));
+                     Add ("Uniconified_Y", Gint'Image (Child.Uniconified_Y));
+                     Add ("Uniconified_X", Gint'Image (Child.Uniconified_X));
+                  end if;
+
+                  Add ("Y", Gint'Image (Child.Y));
+                  Add ("X", Gint'Image (Child.X));
+                  Add ("Height",
+                       Allocation_Int'Image (Get_Allocation_Height (Child)));
+                  Add ("Width",
+                       Allocation_Int'Image (Get_Allocation_Width (Child)));
+               end if;
 
                if Child = MDI.Focus_Child then
                   Add ("Focus", "True");
@@ -4985,7 +5011,6 @@ package body Gtkada.MDI is
 
                Add_Child (Root, Child_Node);
             end if;
-
          end Save_Widget;
 
          Current_Page : Gint;
