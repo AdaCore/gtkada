@@ -92,6 +92,19 @@ package Glib.XML is
    --  Return the value of the field 'Field' if present in the children of N.
    --  Return null otherwise.
 
+   procedure Add_Child (N : Node_Ptr; Child : Node_Ptr);
+   --  Add a new child to a node.
+
+   type Free_Specific_Data is access
+     procedure (Data : in out XML_Specific_Data);
+
+   procedure Free
+     (N : in out Node_Ptr; Free_Data : Free_Specific_Data := null);
+   --  Free the memory allocated for a node and its children.
+   --  It also disconnects N from its parent.
+   --  If Free_Data is not null, it is used to free the memory occupied by
+   --  the Specific_Data for each node.
+
    function Get_Attribute
      (N : in Node_Ptr;
       Attribute_Name : in String) return String_Ptr;

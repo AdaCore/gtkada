@@ -285,6 +285,17 @@ package body Glib.XML is
       return Value;
    end Get_Attribute;
 
+   ---------------
+   -- Add_Child --
+   ---------------
+
+   procedure Add_Child (N : Node_Ptr; Child : Node_Ptr) is
+   begin
+      Child.Next := N.Child;
+      Child.Parent := N;
+      N.Child := Child;
+   end Add_Child;
+
    --------------
    -- Get_Node --
    --------------
@@ -329,8 +340,7 @@ package body Glib.XML is
                else
                   --  Parse the children
 
-                  N.Child := Get_Node (Buf, Index);
-                  N.Child.Parent := N;
+                  Add_Child (N, Get_Node (Buf, Index));
                   Last_Child := N.Child;
                   pragma Assert (Buf (Index.all) = '<');
 
@@ -372,9 +382,7 @@ package body Glib.XML is
 
       procedure Do_Indent (Indent : Natural) is
       begin
-         for J in 1 .. Indent loop
-            Put (' ');
-         end loop;
+         Put ((1 .. Indent) => ' ');
       end Do_Indent;
 
    begin
@@ -492,5 +500,67 @@ package body Glib.XML is
          return null;
       end if;
    end Get_Field;
+
+   ----------
+   -- Free --
+   ----------
+
+   procedure Free
+     (N : in out Node_Ptr; Free_Data : Free_Specific_Data := null)
+   is
+      procedure Free_Node (N : in out Node_Ptr);
+      --  Free the memory for a node, but doesn't remove it from its parent
+
+      procedure Unchecked_Free is new Unchecked_Deallocation (Node, Node_Ptr);
+
+      ---------------
+      -- Free_Node --
+      ---------------
+
+      procedure Free_Node (N : in out Node_Ptr) is
+         Child : Node_Ptr := N.Child;
+         Previous : Node_Ptr;
+      begin
+         Free (N.Tag);
+         Free (N.Attributes);
+         Free (N.Value);
+         if Free_Data /= null then
+            Free_Data (N.Specific_Data);
+         end if;
+
+         --  Free all the children
+         while Child /= null loop
+            Previous := Child.Next;
+            Free_Node (Child);
+            Child := Previous;
+         end loop;
+
+         Unchecked_Free (N);
+      end Free_Node;
+
+      Child : Node_Ptr;
+      Previous : Node_Ptr;
+   begin
+      if N = null then
+         return;
+      end if;
+
+      if N.Parent /= null then
+         Child := N.Parent.Child;
+      end if;
+      --  Remove the node from its parent
+      while Child /= null and then Child /= N loop
+         if Previous = null then
+            N.Parent.Child := Child.Next;
+         else
+            Previous.Next := Child.Next;
+         end if;
+         Previous := Child;
+         Child := Child.Next;
+      end loop;
+
+      --  Free the memory occupied by the node
+      Free_Node (N);
+   end Free;
 
 end Glib.XML;
