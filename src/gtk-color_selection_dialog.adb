@@ -80,11 +80,14 @@ package body Gtk.Color_Selection_Dialog is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Color_Selection_Dialog) is
-      function Internal return System.Address;
+   procedure Gtk_New
+     (Widget : out Gtk_Color_Selection_Dialog;
+      Title  : in String)
+   is
+      function Internal (S : String) return System.Address;
       pragma Import (C, Internal, "gtk_color_selection_dialog_new");
    begin
-      Set_Object (Widget, Internal);
+      Set_Object (Widget, Internal (Title & Ascii.NUL));
    end Gtk_New;
 
 end Gtk.Color_Selection_Dialog;

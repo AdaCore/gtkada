@@ -8,7 +8,8 @@ package Gtk.Color_Selection_Dialog is
    type Gtk_Color_Selection_Dialog is new
      Gtk.Window.Gtk_Window with private;
 
-   procedure Gtk_New (Widget : out Gtk_Color_Selection_Dialog);
+   procedure Gtk_New (Widget : out Gtk_Color_Selection_Dialog;
+                      Title  : in String);
    --  mapping: Gtk_New gtkcolorsel.h gtk_color_selection_dialog_new
 
    function Get_Colorsel (Dialog : in Gtk_Color_Selection_Dialog'Class)
