@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Glib;              use Glib;
+with Glib.GObjects;     use Glib.GObjects;
 with Gdk.Pixmap;        use Gdk.Pixmap;
 with Gdk.Color;         use Gdk.Color;
 with Gtk.Main;          use Gtk.Main;
@@ -87,9 +88,9 @@ package body Gtkada.Dialogs is
       Label  : aliased Gtk_Label_Record;
       Result : Message_Dialog_Buttons;
    begin
-      Gtk.Set_Object
+      Set_Object
         (Label'Unchecked_Access,
-         Gtk.Get_Object (Get_Child (Gtk_Button (Button))));
+         Get_Object (Get_Child (Gtk_Button (Button))));
 
       if Get (Label'Unchecked_Access) = -"Help" then
          Result := Message_Dialog

@@ -29,6 +29,7 @@
 
 with Ada.Numerics.Elementary_Functions;  use Ada.Numerics.Elementary_Functions;
 with Glib;             use Glib;
+with Glib.GObjects;    use Glib.GObjects;
 with Glib.Values;      use Glib.Values;
 with Gdk.Color;        use Gdk.Color;
 with Gdk.Cursor;       use Gdk.Cursor;
@@ -461,7 +462,7 @@ package body Gtkada.Canvas is
       end if;
 
       if Hadj /= System.Null_Address then
-         Canv.Hadj := Gtk_Adjustment (Gtk.Get_User_Data (Hadj, Stub));
+         Canv.Hadj := Gtk_Adjustment (Get_User_Data (Hadj, Stub));
       else
          Gtk_New (Canv.Hadj, 0.0, 0.0, 0.0, 1.0, 1.0, 10.0);
       end if;
@@ -473,7 +474,7 @@ package body Gtkada.Canvas is
       end if;
 
       if Vadj /= System.Null_Address then
-         Canv.Vadj := Gtk_Adjustment (Gtk.Get_User_Data (Vadj, Stub));
+         Canv.Vadj := Gtk_Adjustment (Get_User_Data (Vadj, Stub));
       else
          Gtk_New (Canv.Vadj, 0.0, 0.0, 0.0, 1.0, 1.0, 10.0);
       end if;
@@ -1711,7 +1712,7 @@ package body Gtkada.Canvas is
       --  ??? Should send one such event per item in the selection
 
       Emit_By_Name_Item
-        (Gtk.Get_Object (Canvas), "item_selected" & ASCII.NUL,
+        (Get_Object (Canvas), "item_selected" & ASCII.NUL,
          Canvas.Selection.Item);
 
       --  Change the cursor to give visual feedback
