@@ -17,5 +17,7 @@ Windows specific problems.
 
 gtkada-2.0-win32.diff: a patch to run GtkAda 2.0.x properly under Windows
 
+glade-2.0.0.diff: a patch to enable Ada support in Glade 2.0.0
+
 wimp: an improved version of gtk-wimp, a Gtk+ engine taking advantage of
 the native Windows XP uxtheme dll.
