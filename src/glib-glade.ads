@@ -58,10 +58,11 @@ package Glib.Glade is
    --  surrounded by it.
 
    procedure Gen_Set
-     (N : Node_Ptr; Class, Name, Field1, Field2, Field3 : String;
+     (N : Node_Ptr; Class, Name, Field1, Field2, Field3, Field4 : String;
       File : File_Type);
    --  Generate a Set_<Name> (Field1, Field2) call in File if Field3 is a null
-   --  string or Set_<Name> (Field1, Field2, Field3) otherwise.
+   --  string or Set_<Name> (Field1, Field2, Field3) if Field4 is null, or
+   --  Set_<Name> (Field1, Field2, Field3, Field4) otherwise.
 
    procedure Gen_New
      (N : Node_Ptr; Class, Param1, Param2, New_Name : String := "";

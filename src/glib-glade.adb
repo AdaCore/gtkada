@@ -261,28 +261,32 @@ package body Glib.Glade is
 
    procedure Gen_Set
      (N : Node_Ptr;
-      Class, Name, Field1, Field2, Field3 : String;
+      Class, Name, Field1, Field2, Field3, Field4 : String;
       File : File_Type)
    is
-      P : Node_Ptr := Find_Tag (N.Child, Field1);
-      Q : Node_Ptr := Find_Tag (N.Child, Field2);
-      R : Node_Ptr;
+      P : String_Ptr := Get_Field (N, Field1);
+      Q : String_Ptr := Get_Field (N, Field2);
+      R : String_Ptr := Get_Field (N, Field3);
+      S : String_Ptr := Get_Field (N, Field4);
 
    begin
-      if Field3 /= "" then
-         R := Find_Tag (N.Child, Field3);
-      end if;
-
       if P /= null and then Q /= null
         and then (Field3 = "" or else R /= null)
+        and then (Field4 = "" or else S /= null)
       then
          Add_Package (Class);
          Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class & " (" &
-           To_Ada (Find_Tag (N.Child, "name").Value.all) & "), " &
-           To_Ada (P.Value.all) & ", " & To_Ada (Q.Value.all));
+           To_Ada (Get_Field (N, "name").all) & "), " &
+           To_Ada (P.all) & ", " & To_Ada (Q.all));
 
          if R /= null then
-            Put_Line (File, ", " & To_Ada (R.Value.all) & ");");
+            Put (File, ", " & To_Ada (R.all));
+
+            if S /= null then
+               Put_Line (File, ", " & To_Ada (S.all) & ");");
+            else
+               Put_Line (File, ");");
+            end if;
          else
             Put_Line (File, ");");
          end if;
@@ -332,8 +336,13 @@ package body Glib.Glade is
             Put_Line (File, ");");
 
          else
-            Put_Line (File, "   " & Class & ".Gtk_New (" &
-              To_Ada (P.Value.all) & ");");
+            Put (File, "   " & Class & ".Gtk_New");
+
+            if New_Name /= "" then
+               Put (File, '_' & New_Name);
+            end if;
+
+            Put_Line (File, " (" & To_Ada (P.Value.all) & ");");
          end if;
 
          N.Specific_Data.Created := True;
