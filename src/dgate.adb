@@ -47,6 +47,8 @@ procedure DGate is
    procedure Register_Signals (N : Node_Ptr);
    --  Call Set_Signal for each signal declared in the N tree.
  
+   procedure Usage;
+
    procedure Register_Signals (N : Node_Ptr) is
       P       : Node_Ptr;
       Name    : String_Ptr;
@@ -74,9 +76,16 @@ procedure DGate is
          end loop;
       end if;
    end Register_Signals;
- 
+
+   procedure Usage is
+   begin
+      Ada.Text_IO.Put_Line ("Usage: dgate project-file");
+   end Usage;
+
 begin
-   if Argument_Count > 0 then
+   if Argument_Count = 0 then
+      Usage;
+   else
       Gtk.Main.Set_Locale;
       Gtk.Main.Init;
       N := Parse (Argument (1));
