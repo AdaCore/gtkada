@@ -691,6 +691,7 @@ package body Glib.Glade is
    ------------------
 
    procedure Gen_Packages (File : File_Type) is
+      S : String_Ptr;
    begin
       for J in Package_Range'First .. Num_Packages loop
          --  This special case is ugly ???
