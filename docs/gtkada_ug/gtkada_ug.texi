@@ -528,84 +528,84 @@ in the @file{testgtk/} directory in the GtkAda distribution.
 @need 15
 @smallexample
 Gtk_Object
-  \__ Gtk_Data
-        \__ Gtk_Tooltips
-        \__ Gtk_Adjustment
+  +-- Gtk_Data
+  |     +-- Gtk_Tooltips
+  |     \__ Gtk_Adjustment
   \__ Gtk_Widget  @i{(Visual widgets)}
-        \__ Gtk_Calendar
-        \__ Gtk_Container  @i{(Widgets that have children)}
-        |     \__ Gtk_Bin  @i{(Widgets that have a single child)}
-        |     |     \__ Gtk_Alignment
-        |     |     \__ Gtk_Button @i{(Widgets that you can click)}
-        |     |     |     \__ Gtk_Option_Menu
-        |     |     |     \__ Gtk_Toggle_Button
+        +-- Gtk_Calendar
+        +-- Gtk_Container  @i{(Widgets that have children)}
+        |     +-- Gtk_Bin  @i{(Widgets that have a single child)}
+        |     |     +-- Gtk_Alignment
+        |     |     +-- Gtk_Button @i{(Widgets that you can click)}
+        |     |     |     +-- Gtk_Option_Menu
+        |     |     |     +-- Gtk_Toggle_Button
         |     |     |     |     \__ Gtk_Check_Button
-        |     |     |     |     |     \__ Gtk_Radio_Button
-        |     |     \__ Gtk_Event_Box
-        |     |     \__ Gtk_Frame
+        |     |     |     |           \__ Gtk_Radio_Button
+        |     |     +-- Gtk_Event_Box
+        |     |     +-- Gtk_Frame
         |     |     |     \__ Gtk_Aspect_Frame
-        |     |     \__ Gtk_Handle_Box
-        |     |     \__ Gtk_Invisible
-        |     |     \__ Gtk_Item
-        |     |     |     \__ Gtk_List_Item
-        |     |     |     \__ Gtk_Menu_Item
-        |     |     |     |     \__ Gtk_Check_Menu_Item
+        |     |     +-- Gtk_Handle_Box
+        |     |     +-- Gtk_Invisible
+        |     |     +-- Gtk_Item
+        |     |     |     +-- Gtk_List_Item
+        |     |     |     +-- Gtk_Menu_Item
+        |     |     |     |     +-- Gtk_Check_Menu_Item
         |     |     |     |     |     \__ Gtk_Radio_Menu_Item
         |     |     |     |     \__ Gtk_Tearoff_Menu_Item
         |     |     |     \__ Gtk_Tree_Item
-        |     |     \__ Gtk_Viewport
+        |     |     +-- Gtk_Viewport
         |     |     \__ Gtk_Window  @i{(Have an independent window)}
-        |     |     |     \__ Gtk_Color_Selection_Dialog
-        |     |     |     \__ Gtk_Dialog
-        |     |     |     |     \__ Gtk_Input_Dialog
-        |     |     |     \__ Gtk_File_Selection
-        |     |     |     \__ Gtk_Font_Selection_Dialog
-        |     |     |     \__ Gtk_Plug
-        |     \__ Gtk_Box  @i{(Widgets that have one or more children)}
-        |     |     \__ Gtk_Button_Box
-        |     |     |     \__ Gtk_Vbutton_Box
+        |     |           +-- Gtk_Color_Selection_Dialog
+        |     |           +-- Gtk_Dialog
+        |     |           |     \__ Gtk_Input_Dialog
+        |     |           +-- Gtk_File_Selection
+        |     |           +-- Gtk_Font_Selection_Dialog
+        |     |           \__ Gtk_Plug
+        |     +-- Gtk_Box  @i{(Widgets that have one or more children)}
+        |     |     +-- Gtk_Button_Box
+        |     |     |     +-- Gtk_Vbutton_Box
         |     |     |     \__ Gtk_Hbutton_Box
-        |     |     \__ Gtk_Color_Selection
-        |     |     \__ Gtk_Combo
-        |     |     \__ Gtk_Gamma_Curve
+        |     |     +-- Gtk_Color_Selection
+        |     |     +-- Gtk_Combo
+        |     |     +-- Gtk_Gamma_Curve
         |     |     \__ Gtk_Status_Bar
-        |     \__ Gtk_Clist
+        |     +-- Gtk_Clist
         |     |     \__ Gtk_Ctree
-        |     \__ Gtk_Fixed
-        |     \__ Gtk_Layout
-        |     \__ Gtk_List
-        |     \__ Gtk_Menu_Shell
-        |     |     \__ Gtk_Menu
+        |     +-- Gtk_Fixed
+        |     +-- Gtk_Layout
+        |     +-- Gtk_List
+        |     +-- Gtk_Menu_Shell
+        |     |     +-- Gtk_Menu
         |     |     \__ Gtk_Menu_Bar
-        |     \__ Gtk_Notebook
+        |     +-- Gtk_Notebook
         |     |     \__ Gtk_Font_Selection
-        |     \__ Gtk_Packer
-        |     \__ Gtk_Paned
-        |     \__ Gtk_Scrolled_Window
-        |     \__ Gtk_Socket
-        |     \__ Gtk_Toolbar
-        |     \__ Gtk_Table
+        |     +-- Gtk_Packer
+        |     +-- Gtk_Paned
+        |     +-- Gtk_Scrolled_Window
+        |     +-- Gtk_Socket
+        |     +-- Gtk_Toolbar
+        |     +-- Gtk_Table
         |     \__ Gtk_Tree
-        \__ Gtk_Drawing_Area
+        +-- Gtk_Drawing_Area
         |     \__ Gtk_Curve
-        \__ Gtk_Editable
-        |     \__ Gtk_Entry
+        +-- Gtk_Editable
+        |     +-- Gtk_Entry
         |     |     \__ Gtk_Spin_Button
         |     \__ Gtk_Text
-        \__ Gtk_Misc
-        |     \__ Gtk_Arrow
-        |     \__ Gtk_Image
-        |     \__ Gtk_Label
-        |     |     \__ Gtk_Accel_Label
+        +-- Gtk_Misc
+        |     +-- Gtk_Arrow
+        |     +-- Gtk_Image
+        |     +-- Gtk_Label
+        |     |     +-- Gtk_Accel_Label
         |     |     \__ Gtk_Tips_Query
         |     \__ Gtk_Pixmap
-        \__ Gtk_Preview
-        \__ Gtk_Progress
+        +-- Gtk_Preview
+        +-- Gtk_Progress
         |     \__ Gtk_Progress_Bar
-        \__ Gtk_Range
-        |     \__ Gtk_Scale
+        +-- Gtk_Range
+        |     +-- Gtk_Scale
         |     \__ Gtk_Scrollbar
-        \__ Gtk_Ruler
+        +-- Gtk_Ruler
         \__ Gtk_Separator
 @end smallexample
 
@@ -650,7 +650,6 @@ be a Gtk_Box, which can have any number of children.
 Some widgets in GtkAda itself are build with this strategy, from the
 very basic @code{Gtk_Button} to the more advanced
 @code{Gtk_File_Selection}.
-
 
 @smallexample
 A Gtk_Button contains a Gtk_Label by default, that displays the text in
@@ -2580,9 +2579,9 @@ in your program or in the toolkit.  Please check your program carefully,
 and if you think this is a problem in GtkAda itself, send us an e-mail.
 @end itemize
 
-To report errors, if you are a supported user of GNAT, send a mail to
-@uref{mailto:report@@gnat.com}, otherwise send a mail to the authors
-(@uref{mailto:gtkada@@ada.eu.org}) explaining exactly what your
+If you are a supported user of GNAT, send a mail to
+@uref{mailto:report@@gnat.com} to report errors, otherwise send a mail to the
+authors (@uref{mailto:gtkada@@ada.eu.org}) explaining exactly what your
 are  doing,  what  is  the  expected  result  and  what  you  actually
 get. Please include the required sources to reproduce the problem, in
 a  format usable  by @code{gnatchop}  (basically, insert  all  the required
@@ -2909,8 +2908,8 @@ This is an array of string access that contains the name of the signals
 you want to create. For instance, you could create Signals with
 @example
    Signals      : Gtk.Object.Signal_Array (0 .. 1) :=
-     (0 => @b{new} String'("bullseye" & Ascii.NUL),
-      1 => @b{new} String'("missed" & Ascii.NUL));
+     (0 => @b{new} String' ("bullseye" & ASCII.Nul),
+      1 => @b{new} String' ("missed" & ASCII.Nul));
 @end example
 This will create two signals, named "bullseye" and "missed", whose callbacks
 do not take any argument (apart from the usual user's data). This is the only
@@ -2975,6 +2974,7 @@ area).
 @node Support for Glade the Gtk GUI builder
 @chapter Support for Glade, the Gtk GUI builder
 
+@section Introduction
 GtkAda now comes with a support for the GUI builder Glade (this is not
 the glade released with Gnat for distributed systems).
 Not all widgets are supported yet, but we eventually hope to have all
@@ -2986,32 +2986,36 @@ both cases, you first need to get and install glade (http://glade.pn.org).
 Then start a new project (or edit an old one). It is easy enough to use,
 simply select the widget you want to add to your interface, and click!
 
+@section Using Glade
 Note that we only recommend to use version 0.5.5 of Glade, as some previous
 versions are not compatible. Using this version, you can directly create Ada
 files from Glade by selecting Ada95 as the language in the project options.
 By doing so, you will tell Glade to call gate internally when using the
 "Write Source Code" functionality.
 
-@itemize @bullet
-@item DGATE (Dynamic Glade Ada Translator and Evaluator) is the dynamic
-version of our support. This is an Ada program that takes the XML file
-in argument. It also provides default callbacks for your application, we
-recommand using it while you are trying to design your interface.
-
-@item GATE is the static version of our support. This tool
+@section Gate
+@subsection Invoking Gate
+Gate is the static version of our support. This tool
 takes the XML file in argument and generates a set of Ada files that,
 when compiled, will recreate the interface you just designed with Glade.
-@end itemize
+To invoke it, simply call gate will a Glade project file as unique argument.
 
+@subsection Structure of the generated files
 The most important files created by Gate are called
 @code{<widget_name>-callbacks.adb}.
 They contain stubs for all the callbacks related to a top level widget
 you declared in Glade.
+@subsubsection The main file
+@subsubsection Top level widget files
+@subsubsection Main handler file
+@subsubsection Top level widget signal files
+Support for signals: no arguments, with arguments...
 
+@subsection Modifying generated files
 Note that you can easily go back to Glade any time, modify your interface,
-and have GATE re-generate a set of files. All your modifications will be
-kept in the new files. For that, GATE creates a directory @code{.gate/} in the
-current directory. Please do not delete it if you want GATE to be able to
+and have Gate re-generate a set of files. All your modifications will be
+kept in the new files. For that, Gate creates a directory @code{.gate/} in the
+current directory. Please do not delete it if you want Gate to be able to
 keep your changes from one version to the next.
 
 Also note that to be able to keep track of your modifications, gate
@@ -3019,16 +3023,65 @@ relies on @code{patch} and @code{diff} being available on your system.
 If you don't have a working set of @code{diff/patch}, @code{configure}
 will simply replace them by null operations.
 
-GATE and DGATE currently don't support all widgets and properties available
-under Glade. To help you identify which widgets are not supported, GATE will
-generate a comment in the @code{create_<widget>.adb} file that looks like:
+@subsection Adding Gate support for new widgets
+@subsubsection Implementing ``Generate'' procedures
+@itemize
+@item Glib.Glade API
+@item Most common mapping
+  @itemize
+  @item Gen_New
+  @item Gen_Set
+  @item Gen_Call_Child
+  @item example
+  @end itemize
+@item Registering ``Generate'' functions
+  Gtk.Glade.Register_Generate (Widget, Func)
+@end itemize
+
+@section Dgate (Dynamic Gate)
+@subsection Introduction to Dgate
+Dgate is the dynamic version of our support. This is an Ada program that takes
+the XML file in argument. It also provides default callbacks for your
+application, we recommand using it while you are trying to design your
+interface.
+
+@subsection Using Dgate
+As for Gate you can simply invoke Dgate by specifying a Glade project file.
+
+@subsection Gtk.Glade
+
+@itemize
+@item Loading an XML file
+@item Registering signals
+@item Retrieving widgets
+@end itemize
+
+@subsection A complete example
+
+Bla bla...
+
+@section Limitations
+Gate and Dgate currently support all Gtk+ widgets and properties available
+under Glade. but to help you identify widgets that may not be supported (e.g
+Gnome widgets), Gate will generate a warning on the standard error:
 
 @smallexample
-   --  WARNING: Unsupported widget GtkImage (image1)
+$ gate warning.glade
+Generating Ada files...
+
+GtkAda-WARNING **: Unsupported widget GnomeCanvas (canvas1)
+The following files have been created/updated in src:
+[...]
 @end smallexample
 
-Which means that while generating the file, GATE detected an unsupported
-widget (in this case GtkImage) whose name is image1.
+and add a comment in the @code{<widget>_pkg.adb} file that looks like:
+
+@smallexample
+   --  WARNING: Unsupported widget GnomeCanvas (canvas1)
+@end smallexample
+
+Which means that while generating the file, Gate detected an unsupported
+widget (in this case GnomeCanvas) whose name is canvas1.
 If you get such warnings, your file may or may not compile properly, but
 you won't get the complete widget hierarchy at run time.
 
@@ -3037,36 +3090,17 @@ causes this problem. We don't guarantee a rapid fix for each particular
 problem, but receiving real examples of missing functionnalities will
 certainly help implementing them faster.
 
-Similarly, DGATE generates a warning to the standard output when encountering
+Similarly, Dgate generates a warning to the standard error when encountering
 an unsupported widget:
 
 @smallexample
-GtkAda-WARNING **: Unsupported widget GtkImage (image1)
+GtkAda-WARNING **: Unsupported widget GnomeCanvas (canvas1)
 @end smallexample
 
-Here is the list of widgets that are currently not supported by GATE/DGATE.
+Here is the list of widgets that are currently not supported by Gate/Dgate.
 
 @itemize @bullet
-@item Gtk_Accel_Label
-@item Gtk_Color_Selection
-@item Gtk_Curve
-@item Gtk_Fixed
-@item Gtk_Font_Selection
-@item Gtk_Font_Selection_Dialog
-@item Gtk_Gamma_Curve
-@item Gtk_Handle_Box
-@item Gtk_Image
-@item Gtk_Invisible
-@item Gtk_Layout
-@item Gtk_Packer
-@item Gtk_Pixmap
-@item Gtk_Plug
-@item Gtk_Preview_Info
 @item Gtk_Radio_Menu_Item
-@item Gtk_Socket
-@item Gtk_Tearoff_Menu_Item
-@item Gtk_Tips_Query
-@item Gtk_Tooltips
 @end itemize
 
 @c --------------------------------------------------------------
@@ -3089,7 +3123,7 @@ Publication License. You can get an electronic copy of it at
 @url{http://www.opencontent.org/}.
 @end itemize
 
-@printindex cp
+@c @printindex cp
 @contents
 
 @bye
