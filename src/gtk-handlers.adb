@@ -133,7 +133,7 @@ package body Gtk.Handlers is
 
       type Data_Type_Record is record
          Func     : Handler;             --  User's callback
-         Marsh    : Marshallers.Handler_Proxy := null;  -- Handler_Proxy to use
+         Proxy    : Marshallers.Handler_Proxy := null;  -- Handler_Proxy to use
          Object   : Acc        := null;  --  Slot Object for Object_Connect
          Ret_Type : Gtk_Type;            --  The C constant used to indicate
          --                              --  the return type.
@@ -253,8 +253,8 @@ package body Gtk.Handlers is
          end if;
 
          if Data.Object = null then
-            if Data.Marsh /= null then
-               Value := Data.Marsh (Acc (Get_User_Data (Object, Stub)),
+            if Data.Proxy /= null then
+               Value := Data.Proxy (Acc (Get_User_Data (Object, Stub)),
                                     Gtk.Arguments.Make_Args (Nparams, Params),
                                     To_General_Handler (Data.Func));
             else
@@ -262,8 +262,8 @@ package body Gtk.Handlers is
                                    Gtk.Arguments.Make_Args (Nparams, Params));
             end if;
          else
-            if Data.Marsh /= null then
-               Value := Data.Marsh (Data.Object,
+            if Data.Proxy /= null then
+               Value := Data.Proxy (Data.Object,
                                     Gtk.Arguments.Make_Args (Nparams, Params),
                                     To_General_Handler (Data.Func));
             else
@@ -289,7 +289,7 @@ package body Gtk.Handlers is
       is
          D : Data_Type_Access :=
            new Data_Type_Record'(Func     => To_Handler (Marsh.Func),
-                                 Marsh    => Marsh.Marsh,
+                                 Proxy    => Marsh.Proxy,
                                  Object   => null,
                                  Ret_Type => Argument_Type (Get_Type (Widget),
                                                             Name,
@@ -321,7 +321,7 @@ package body Gtk.Handlers is
       is
          D : Data_Type_Access :=
            new Data_Type_Record'(Func     => To_Handler (Marsh.Func),
-                                 Marsh    => Marsh.Marsh,
+                                 Proxy    => Marsh.Proxy,
                                  Object   => Acc (Slot_Object),
                                  Ret_Type => Argument_Type
                                    (Gtk.Object.Get_Type (Widget),
@@ -353,7 +353,7 @@ package body Gtk.Handlers is
       is
          D : Data_Type_Access :=
            new Data_Type_Record'(Func     => Cb,
-                                 Marsh    => null,
+                                 Proxy    => null,
                                  Object   => null,
                                  Ret_Type => Argument_Type (Get_Type (Widget),
                                                             Name,
@@ -385,7 +385,7 @@ package body Gtk.Handlers is
       is
          D : Data_Type_Access :=
            new Data_Type_Record'(Func     => Cb,
-                                 Marsh    => null,
+                                 Proxy    => null,
                                  Object   => Acc (Slot_Object),
                                  Ret_Type => Argument_Type
                                     (Gtk.Object.Get_Type (Widget),
@@ -437,7 +437,7 @@ package body Gtk.Handlers is
       type User_Access is access User_Type;
       type Data_Type_Record is record
          Func     : Handler;             --  User's callback
-         Marsh    : Marshallers.Handler_Proxy := null; --  Handler_Proxy to use
+         Proxy    : Marshallers.Handler_Proxy := null; --  Handler_Proxy to use
          User     : User_Access  := null;
          Ret_Type : Gtk_Type;            --  The C constant used to indicate
          --                              --  the return type.
@@ -497,8 +497,8 @@ package body Gtk.Handlers is
             return;
          end if;
 
-         if Data.Marsh /= null then
-            Value := Data.Marsh (Acc (Get_User_Data (Object, Stub)),
+         if Data.Proxy /= null then
+            Value := Data.Proxy (Acc (Get_User_Data (Object, Stub)),
                                  Gtk.Arguments.Make_Args (Nparams, Params),
                                  To_General_Handler (Data.Func),
                                  Data.User.all);
@@ -557,7 +557,7 @@ package body Gtk.Handlers is
       is
          D : Data_Type_Access :=
            new Data_Type_Record'(Func     => To_Handler (Marsh.Func),
-                                 Marsh    => Marsh.Marsh,
+                                 Proxy    => Marsh.Proxy,
                                  User     => new User_Type'(User_Data),
                                  Ret_Type => Argument_Type
                                    (Get_Type (Widget),
@@ -590,7 +590,7 @@ package body Gtk.Handlers is
       is
          D : Data_Type_Access :=
            new Data_Type_Record'(Func     => Cb,
-                                 Marsh    => null,
+                                 Proxy    => null,
                                  User     => new User_Type'(User_Data),
                                  Ret_Type => Argument_Type
                                    (Get_Type (Widget),
@@ -629,7 +629,7 @@ package body Gtk.Handlers is
 
       type Data_Type_Record is record
          Func   : Handler;             --  User's callback
-         Marsh  : Marshallers.Handler_Proxy := null;  --  Handler_Proxy to use
+         Proxy  : Marshallers.Handler_Proxy := null;  --  Handler_Proxy to use
          Object : Acc        := null;  --  Slot Object for Object_Connect
       end record;
       type Data_Type_Access is access all Data_Type_Record;
@@ -684,8 +684,8 @@ package body Gtk.Handlers is
          end if;
 
          if Data.Object = null then
-            if Data.Marsh /= null then
-               Data.Marsh (Acc (Get_User_Data (Object, Stub)),
+            if Data.Proxy /= null then
+               Data.Proxy (Acc (Get_User_Data (Object, Stub)),
                            Gtk.Arguments.Make_Args (Nparams, Params),
                            To_General_Handler (Data.Func));
             else
@@ -693,8 +693,8 @@ package body Gtk.Handlers is
                           Gtk.Arguments.Make_Args (Nparams, Params));
             end if;
          else
-            if Data.Marsh /= null then
-               Data.Marsh (Data.Object,
+            if Data.Proxy /= null then
+               Data.Proxy (Data.Object,
                            Gtk.Arguments.Make_Args (Nparams, Params),
                            To_General_Handler (Data.Func));
             else
@@ -779,7 +779,7 @@ package body Gtk.Handlers is
       is
          D : Data_Type_Access :=
            new Data_Type_Record'(Func  => To_Handler (Marsh.Func),
-                                 Marsh => Marsh.Marsh,
+                                 Proxy => Marsh.Proxy,
                                  Object => null);
       begin
          pragma Assert
@@ -808,7 +808,7 @@ package body Gtk.Handlers is
       is
          D : Data_Type_Access :=
            new Data_Type_Record'(Func  => To_Handler (Marsh.Func),
-                                 Marsh => Marsh.Marsh,
+                                 Proxy => Marsh.Proxy,
                                  Object => Acc (Slot_Object));
       begin
          pragma Assert
@@ -836,7 +836,7 @@ package body Gtk.Handlers is
       is
          D : Data_Type_Access :=
            new Data_Type_Record'(Func   => Cb,
-                                 Marsh  => null,
+                                 Proxy  => null,
                                  Object => null);
       begin
          pragma Assert
@@ -865,7 +865,7 @@ package body Gtk.Handlers is
       is
          D : Data_Type_Access :=
            new Data_Type_Record'(Func   => Cb,
-                                 Marsh  => null,
+                                 Proxy  => null,
                                  Object => Acc (Slot_Object));
       begin
          pragma Assert
@@ -902,7 +902,7 @@ package body Gtk.Handlers is
       type User_Access is access User_Type;
       type Data_Type_Record is record
          Func   : Handler;             --  User's callback
-         Marsh  : Marshallers.Handler_Proxy := null;  --  Handler_Proxy to use
+         Proxy  : Marshallers.Handler_Proxy := null;  --  Handler_Proxy to use
          User   : User_Access := null;
       end record;
       type Data_Type_Access is access all Data_Type_Record;
@@ -959,8 +959,8 @@ package body Gtk.Handlers is
             return;
          end if;
 
-         if Data.Marsh /= null then
-            Data.Marsh (Acc (Get_User_Data (Object, Stub)),
+         if Data.Proxy /= null then
+            Data.Proxy (Acc (Get_User_Data (Object, Stub)),
                         Gtk.Arguments.Make_Args (Nparams, Params),
                         To_General_Handler (Data.Func),
                         Data.User.all);
@@ -1017,7 +1017,7 @@ package body Gtk.Handlers is
       is
          D : Data_Type_Access :=
            new Data_Type_Record'(Func  => To_Handler (Marsh.Func),
-                                 Marsh => Marsh.Marsh,
+                                 Proxy => Marsh.Proxy,
                                  User  => new User_Type'(User_Data));
       begin
          pragma Assert
@@ -1046,7 +1046,7 @@ package body Gtk.Handlers is
       is
          D : Data_Type_Access :=
            new Data_Type_Record'(Func  => Cb,
-                                 Marsh => null,
+                                 Proxy => null,
                                  User  => new User_Type'(User_Data));
       begin
          pragma Assert
