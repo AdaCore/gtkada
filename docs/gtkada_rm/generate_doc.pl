@@ -245,7 +245,10 @@ foreach $source_file (@source_files) {
 			$has_itemize = 0;
 		    }
 		    &output ("\@subsection $name\n\n");
-		    &output (&clean_comment_marks ($comment, 1), "\n\n");
+		    $comment =~ s/^\s*//;
+		    $comment = &process_list
+			(&clean_comment_marks ($comment, 1));
+		    &output ($comment, "\n\n");
 		    next;
 		}
 
@@ -281,7 +284,9 @@ foreach $source_file (@source_files) {
 		if ($comments ne "") {
 		    &output ("\@ifhtml\n<BR>\n\@end ifhtml\n");
 		}
-		&output (&clean_comment_marks ($comment, 1), "\n\n",
+		$comment =~ s/^\s*//;
+		$comment = &process_list (&clean_comment_marks ($comment, 1));
+		&output ($comment, "\n\n",
 			 "\@ifhtml\n<BR><BR>\n\@end ifhtml\n");
 	    }
 	    if ($has_itemize == 1)  {
@@ -651,7 +656,7 @@ sub process_list () {
 	
 	$output .= $line . "\n";
     }
-    $output .= "\@end itemize\n" if ($terminate_list);
+    $output .= "\@end itemize\n" if ($in_list);
 	
     return $output;
 }
