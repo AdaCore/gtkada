@@ -29,7 +29,6 @@
 with Glib; use Glib;
 with Gdk.Bitmap;
 with Gdk.Color;
-with Gdk.GC;
 with Gdk.Drawable;
 with Gdk.Window;
 with Interfaces.C.Strings;
@@ -47,20 +46,13 @@ package Gdk.Pixmap is
    --  If the depth is -1, the default depth for the window will be
    --  chosen
 
-   procedure Unref_Pixmap (Pixmap : in out Gdk_Pixmap);
+   procedure Ref (Pixmap : in out Gdk_Pixmap);
+   --  Adds a reference to a pixmap
+
+   procedure Unref (Pixmap : in out Gdk_Pixmap);
    --  This is the usual way to destroy a pixmap. The memory is freed when
    --  there is no more reference
 
-   procedure Ref_Pixmap (Pixmap : in out Gdk_Pixmap);
-   --  Adds a reference to a pixmap
-
-   procedure Set_Tile (GC   : in out Gdk.GC.Gdk_GC'Class;
-                       Tile : in     Gdk_Pixmap);
-
-   procedure Set_Stipple (GC      : in out Gdk.GC.Gdk_GC'Class;
-                          Stipple : in     Pixmap.Gdk_Pixmap);
-
- 
    procedure Create_From_Data (Pixmap :    out Gdk_Pixmap;
                                Window : in     Gdk.Window.Gdk_Window'Class;
                                Data   : in     String;

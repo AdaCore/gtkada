@@ -123,52 +123,28 @@ package body Gdk.Pixmap is
                                     Width, Height, Depth));
    end Gdk_New;
 
-   ----------------
-   -- Ref_Pixmap --
-   ----------------
+   ---------
+   -- Ref --
+   ---------
 
-   procedure Ref_Pixmap (Pixmap : in out Gdk_Pixmap) is
+   procedure Ref (Pixmap : in out Gdk_Pixmap) is
       function Internal (Pixmap : System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_pixmap_ref");
       S : System.Address;
    begin
       S := Internal (Get_Object (Pixmap));
-   end Ref_Pixmap;
+   end Ref;
 
-   -------------------
-   --  Set_Stipple  --
-   -------------------
+   -----------
+   -- Unref --
+   -----------
 
-   procedure Set_Stipple (GC      : in out Gdk.GC.Gdk_GC'Class;
-                          Stipple : in     Gdk_Pixmap) is
-      procedure Internal (GC, Stipple : in System.Address);
-      pragma Import (C, Internal, "gdk_gc_set_stipple");
-   begin
-      Internal (Get_Object (GC), Get_Object (Stipple));
-   end Set_Stipple;
-
-   ----------------
-   --  Set_Tile  --
-   ----------------
-
-   procedure Set_Tile (GC   : in out Gdk.GC.Gdk_GC'Class;
-                       Tile : in     Gdk_Pixmap) is
-      procedure Internal (GC, Tile : in System.Address);
-      pragma Import (C, Internal, "gdk_gc_set_tile");
-   begin
-      Internal (Get_Object (GC), Get_Object (Tile));
-   end Set_Tile;
-
-   ------------------
-   -- Unref_Pixmap --
-   ------------------
-
-   procedure Unref_Pixmap (Pixmap : in out Gdk_Pixmap) is
+   procedure Unref (Pixmap : in out Gdk_Pixmap) is
       procedure Internal (Pixmap : in System.Address);
       pragma Import (C, Internal, "gdk_pixmap_unref");
    begin
       Internal (Get_Object (Pixmap));
       Set_Object (Pixmap, System.Null_Address);
-   end Unref_Pixmap;
+   end Unref;
 
 end Gdk.Pixmap;
