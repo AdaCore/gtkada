@@ -220,6 +220,8 @@ package body Gtk.Type_Conversion is
                return new Gtk.Handle_Box.Gtk_Handle_Box_Record;
             elsif Type_Name = "GtkHButtonBox" then
                return new Gtk.Hbutton_Box.Gtk_Hbutton_Box_Record;
+            elsif Type_Name = "GtkHPaned" then
+               return new Gtk.Paned.Gtk_Paned_Record;
             end if;
          when 'I' =>
             if Type_Name = "GtkImage" then
@@ -266,8 +268,6 @@ package body Gtk.Type_Conversion is
          when 'P' =>
             if Type_Name = "GtkPacker" then
                return new Gtk.Packer.Gtk_Packer_Record;
-            elsif Type_Name = "GtkPaned" then
-               return new Gtk.Paned.Gtk_Paned_Record;
             elsif Type_Name = "GtkPixmap" then
                return new Gtk.Pixmap.Gtk_Pixmap_Record;
             elsif Type_Name = "GtkPlug" then
@@ -332,6 +332,8 @@ package body Gtk.Type_Conversion is
                return new Gtk.Vbutton_Box.Gtk_Vbutton_Box_Record;
             elsif Type_Name = "GtkViewport" then
                return new Gtk.Viewport.Gtk_Viewport_Record;
+            elsif Type_Name = "GtkVPaned" then
+               return new Gtk.Paned.Gtk_Paned_Record;
             end if;
          when 'W' =>
             if Type_Name = "GtkWidget" then
