@@ -165,6 +165,8 @@ package Gdk.Window is
 
    procedure Set_Cursor (Window : in Gdk_Window;
                          Cursor : in Gdk.Cursor.Gdk_Cursor);
+   --  Note: the window must be realized first, ie have an associated X11
+   --  window.
 
    procedure Set_Colormap (Window   : in Gdk_Window;
                            Colormap : in Gdk.Color.Gdk_Colormap);

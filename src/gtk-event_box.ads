@@ -30,8 +30,8 @@
 --  <description>
 --
 --  This widget is a container that catches event for its child when its
---  child does not have its own window (like a Gtk_Scrolled_Window for
---  instance).
+--  child does not have its own window (like a Gtk_Scrolled_Window or a
+--  Gtk_Label for instance).
 --  Some widgets in GtkAda do not have their own window, and thus can not
 --  directly get events from the server. The Gtk_Event_Box widget can be
 --  used to force its child to receive events anyway.
