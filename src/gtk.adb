@@ -1,74 +1,60 @@
 package body Gtk is
 
-   -----------------
-   -- Destroy --
-   -----------------
-
-   procedure Destroy (Obj : access Gtk_Object'Class)
-   is
-      procedure Internal  (Obj : in System.Address);
-      pragma Import (C, Internal, "gtk_object_destroy");
-   begin
-      Internal (Get_Object (Obj.all));
-   end Destroy;
-
-
    ----------------
    -- Get_Object --
    ----------------
 
-   function Get_Object (Obj : in Gtk_Object'Class)
+   function Get_Object (Object : in Root_Type'Class)
                         return System.Address is
    begin
-      return Obj.Ptr;
+      return Object.Ptr;
    end Get_Object;
 
 
-   --------------
-   -- Init --
-   --------------
+   ---------------------
+   --  Major_Version  --
+   ---------------------
 
-   procedure Init is
-      procedure Internal;
-      pragma Import (C, Internal, "ag_gtk_init");
+   function Major_Version return Guint is
+      Number : Guint;
+      pragma Import (C, Number, "gtk_major_version");
    begin
-      Internal;
-   end Init;
+      return Number;
+   end Major_Version;
 
 
-   --------------
-   -- Main --
-   --------------
+   ---------------------
+   --  Micro_Version  --
+   ---------------------
 
-   procedure Main is
-      procedure Internal;
-      pragma Import (C, Internal, "gtk_main");
+   function Micro_Version return Guint is
+      Number : Guint;
+      pragma Import (C, Number, "gtk_micro_version");
    begin
-      Internal;
-   end Main;
+      return Number;
+   end Micro_Version;
 
+   ---------------------
+   --  Minor_Version  --
+   ---------------------
 
-   -------------------
-   -- Main_Quit --
-   -------------------
-
-   procedure Main_Quit is
-      procedure Internal;
-      pragma Import (C, Internal, "gtk_main_quit");
+   function Minor_Version return Guint is
+      Number : Guint;
+      pragma Import (C, Number, "gtk_minor_version");
    begin
-      Internal;
-   end Main_Quit;
+      return Number;
+   end Minor_Version;
 
 
    ----------------
    -- Set_Object --
    ----------------
 
-   procedure Set_Object (Obj   : in out Gtk_Object'Class;
-                         Value : in     System.Address) is
+   procedure Set_Object (Object : in out Root_Type'Class;
+                         Value  : in     System.Address) is
       use type System.Address;
    begin
-      Obj.Ptr := Value;
+      Object.Ptr := Value;
    end Set_Object;
 
 
