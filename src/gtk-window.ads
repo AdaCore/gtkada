@@ -75,7 +75,7 @@ package Gtk.Window is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Window internally.
+   --  Return the internal value associated with a Gtk_Window.
 
    procedure Set_Title (Window : access Gtk_Window_Record;
                         Title  : in String);

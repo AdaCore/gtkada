@@ -160,7 +160,7 @@ package Gtk.Widget is
    --  ressources.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Widget internally.
+   --  Return the internal value associated with a Gtk_Widget.
 
    ----------------------
    -- Drawing a widget --

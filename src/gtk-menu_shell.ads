@@ -95,7 +95,7 @@ package Gtk.Menu_Shell is
    --  the screen.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Menu_Shell internally.
+   --  Return the internal value associated with a Gtk_Menu_Shell.
 
    ----------------------
    -- Signals emission --

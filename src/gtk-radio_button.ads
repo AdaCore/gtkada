@@ -90,7 +90,7 @@ package Gtk.Radio_Button is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Radio_Button internally.
+   --  Return the internal value associated with a Gtk_Radio_Button.
 
    function Group (Radio_Button : access Gtk_Radio_Button_Record)
                   return Widget_SList.GSlist;

@@ -101,13 +101,13 @@ package Gtk.Box is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Box internally.
+   --  Return the internal value associated with a Gtk_Box.
 
    function Get_Hbox_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_HBox internally.
+   --  Return the internal value associated with a Gtk_HBox.
 
    function Get_Vbox_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_VBox internally.
+   --  Return the internal value associated with a Gtk_VBox.
 
    procedure Pack_Start
      (In_Box  : access Gtk_Box_Record;

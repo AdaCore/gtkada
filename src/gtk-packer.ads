@@ -131,7 +131,7 @@ package Gtk.Packer is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Packer internally.
+   --  Return the internal value associated with a Gtk_Packer.
 
    procedure Add_Defaults
      (Packer  : access Gtk_Packer_Record;

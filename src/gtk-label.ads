@@ -58,7 +58,7 @@ package Gtk.Label is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Label internally.
+   --  Return the internal value associated with a Gtk_Label.
 
    procedure Set_Text (Label : access Gtk_Label_Record;
                        Str   : in String);

@@ -63,7 +63,7 @@ package Gtk.Toggle_Button is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Toggle_Button internally
+   --  Return the internal value associated with a Gtk_Toggle_Button.
 
    procedure Set_Mode (Toggle_Button  : access Gtk_Toggle_Button_Record;
                        Draw_Indicator : in Boolean);

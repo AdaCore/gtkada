@@ -71,7 +71,7 @@ package Gtk.Container is
    --  Return a list of all the children of the container.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Container internally.
+   --  Return the internal value associated with a Gtk_Container.
 
    -----------------------
    -- Foreach functions --

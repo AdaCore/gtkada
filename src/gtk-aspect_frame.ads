@@ -74,8 +74,7 @@ package Gtk.Aspect_Frame is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Aspect_Frame
-   --  internally.
+   --  Return the internal value associated with a Gtk_Aspect_Frame.
 
    procedure Set (Aspect_Frame : access Gtk_Aspect_Frame_Record;
                   Xalign       : in Gfloat;

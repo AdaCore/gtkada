@@ -70,7 +70,7 @@ package Gtk.Alignment is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Alignment internally.
+   --  Return the internal value associated with a Gtk_Alignment.
 
    procedure Set (Alignment : access Gtk_Alignment_Record;
                   Xalign    : in Gfloat;

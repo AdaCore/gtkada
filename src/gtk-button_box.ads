@@ -50,7 +50,7 @@ package Gtk.Button_Box is
    type Gtk_Button_Box is access all Gtk_Button_Box_Record'Class;
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Button_Box internally.
+   --  Return the internal value associated with a Gtk_Button_Box.
 
    procedure Set_Child_Size_Default (Min_Width  : in Gint;
                                      Min_Height : in Gint);

@@ -66,7 +66,7 @@ package Gtk.Tooltips is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Tooltips internally.
+   --  Return the internal value associated with a Gtk_Tooltips.
 
    procedure Enable (Tooltips : access Gtk_Tooltips_Record);
    --  Enable all the tooltips in the group.

@@ -55,7 +55,7 @@ package Gtk.Vbutton_Box is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Vbutton_Box internally.
+   --  Return the internal value associated with a Gtk_Vbutton_Box.
 
    procedure Set_Spacing_Default (Spacing : in Gint);
    --  Set the default spacing (space between two adjacent children).

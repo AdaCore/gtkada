@@ -59,7 +59,7 @@ package Gtk.Button is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Button internally.
+   --  Return the internal value associated with a Gtk_Button.
 
    procedure Set_Relief (Button   : access Gtk_Button_Record;
                          NewStyle : in     Gtk.Enums.Gtk_Relief_Style);

@@ -57,7 +57,7 @@ package Gtk.Check_Button is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Check_Button internally.
+   --  Return the internal value associated with a Gtk_Check_Button.
 
    ----------------------------
    -- Support for GATE/DGATE --

@@ -74,7 +74,7 @@ package Gtk.Menu is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Menu internally.
+   --  Return the internal value associated with a Gtk_Menu.
 
    procedure Append
      (Menu  : access Gtk_Menu_Record;

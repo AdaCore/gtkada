@@ -123,7 +123,7 @@ package Gtk.Clist is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Clist internally.
+   --  Return the internal value associated with a Gtk_Clist.
 
    procedure Set_Hadjustment
       (Clist      : access Gtk_Clist_Record;

@@ -42,7 +42,7 @@ package Gtk.Bin is
    type Gtk_Bin is access all Gtk_Bin_Record'Class;
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Bin internally.
+   --  Return the internal value associated with a Gtk_Bin.
 
    ----------------------------
    -- Support for GATE/DGATE --

@@ -61,7 +61,7 @@ package Gtk.Misc is
    --  If Xpad or Ypad is negative, they will be changed to 0.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Misc internally.
+   --  Return the internal value associated with a Gtk_Misc.
 
    ----------------------------
    -- Support for GATE/DGATE --

@@ -64,7 +64,7 @@ package Gtk.Frame is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Return the internal value associated with a Gtk_Frame internally.
+   --  Return the internal value associated with a Gtk_Frame.
 
    procedure Set_Label (Frame : access Gtk_Frame_Record;
                         Label : in String := "");
