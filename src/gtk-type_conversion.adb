@@ -83,7 +83,6 @@ with Gtk.Misc;
 with Gtk.Notebook;
 with Gtk.Object;
 with Gtk.Option_Menu;
-with Gtk.Packer;
 with Gtk.Paned;
 with Gtk.Pixmap;
 with Gtk.Plug;
@@ -273,9 +272,7 @@ package body Gtk.Type_Conversion is
                return new Gtk.Option_Menu.Gtk_Option_Menu_Record;
             end if;
          when 'P' =>
-            if Type_Name = "GtkPacker" then
-               return new Gtk.Packer.Gtk_Packer_Record;
-            elsif Type_Name = "GtkPixmap" then
+            if Type_Name = "GtkPixmap" then
                return new Gtk.Pixmap.Gtk_Pixmap_Record;
             elsif Type_Name = "GtkPlug" then
                return new Gtk.Plug.Gtk_Plug_Record;

@@ -31,42 +31,6 @@ with System;
 
 package body Gtk.Menu_Bar is
 
-   ------------
-   -- Append --
-   ------------
-
-   procedure Append
-     (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
-   is
-      procedure Internal
-        (Menu_Bar : System.Address;
-         Child    : System.Address);
-      pragma Import (C, Internal, "gtk_menu_bar_append");
-
-   begin
-      Internal (Get_Object (Menu_Bar), Get_Object (Child));
-   end Append;
-
-   ------------
-   -- Insert --
-   ------------
-
-   procedure Insert
-     (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
-      Position : Gint)
-   is
-      procedure Internal
-        (Menu_Bar : System.Address;
-         Child    : System.Address;
-         Position : Gint);
-      pragma Import (C, Internal, "gtk_menu_bar_insert");
-
-   begin
-      Internal (Get_Object (Menu_Bar), Get_Object (Child), Position);
-   end Insert;
-
    -------------
    -- Gtk_New --
    -------------
@@ -89,20 +53,5 @@ package body Gtk.Menu_Bar is
       Set_Object (Menu_Bar, Internal);
       Initialize_User_Data (Menu_Bar);
    end Initialize;
-
-   -------------
-   -- Prepend --
-   -------------
-
-   procedure Prepend
-     (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
-   is
-      procedure Internal (Menu_Bar : System.Address; Child : System.Address);
-      pragma Import (C, Internal, "gtk_menu_bar_prepend");
-
-   begin
-      Internal (Get_Object (Menu_Bar), Get_Object (Child));
-   end Prepend;
 
 end Gtk.Menu_Bar;

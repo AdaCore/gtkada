@@ -111,17 +111,17 @@ package body Gtk.Text_Tag_Table is
       end if;
    end Lookup;
 
-   ----------
-   -- Size --
-   ----------
+   --------------
+   -- Get_Size --
+   --------------
 
-   function Size (Table : access Gtk_Text_Tag_Table_Record) return Gint is
+   function Get_Size (Table : access Gtk_Text_Tag_Table_Record) return Gint is
       function Internal (Table : System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_text_tag_table_size");
+      pragma Import (C, Internal, "gtk_text_tag_table_get_size");
 
    begin
       return Internal (Get_Object (Table));
-   end Size;
+   end Get_Size;
 
    --------------
    -- Iterator --

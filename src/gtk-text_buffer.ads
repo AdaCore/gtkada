@@ -502,23 +502,6 @@ package Gtk.Text_Buffer is
    --  it will automatically toggled on the modified bit again. When the
    --  modified bit flips, the buffer emits a "modified_changed" signal.
 
-   procedure Paste_Primary
-     (Buffer            : access Gtk_Text_Buffer_Record;
-      Default_Editable  : Boolean);
-   --  Paste the primary selection at the Insertion point.
-   --  (Note: pasting is asynchronous, that is, we'll ask for the paste data
-   --  and return, and at some point later after the main loop runs, the paste
-   --  data will be inserted.)
-
-   procedure Paste_Primary
-     (Buffer            : access Gtk_Text_Buffer_Record;
-      Override_Location : Gtk.Text_Iter.Gtk_Text_Iter;
-      Default_Editable  : Boolean);
-   --  Paste the primary selection at the Override_Location.
-   --  (Note: pasting is asynchronous, that is, we'll ask for the paste data
-   --  and return, and at some point later after the main loop runs, the paste
-   --  data will be inserted.)
-
    procedure Cut_Clipboard
      (Buffer           : access Gtk_Text_Buffer_Record;
       Default_Editable : Boolean);

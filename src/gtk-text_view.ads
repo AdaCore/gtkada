@@ -240,14 +240,6 @@ package Gtk.Text_View is
    --  Automatically destroy the corresponding window if the size is set to 0,
    --  and create the window if the size is set to non-zero.
 
-   procedure Set_Text_Window_Size
-     (Text_View : access Gtk_Text_View_Record;
-      Width     : Gint;
-      Height    : Gint);
-   --  Set the size request for the main text window (Text_Window_Text).
-   --  If the widget gets more space than it requested, the main text window
-   --  will be larger than this.
-
    procedure Forward_Display_Line
      (Text_View : access Gtk_Text_View_Record;
       Iter      : in out Gtk.Text_Iter.Gtk_Text_Iter;

@@ -69,8 +69,12 @@ package Gtk.Text_Tag_Table is
    --  Look up a named tag.
    --  Return the tag or null if none by that name is in the table.
 
-   function Size (Table : access Gtk_Text_Tag_Table_Record) return Gint;
+   function Get_Size (Table : access Gtk_Text_Tag_Table_Record) return Gint;
    --  Return the size of the table (number of tags).
+
+   function Size (Table : access Gtk_Text_Tag_Table_Record) return Gint
+     renames Get_Size;
+   --  This function is deprecated.
 
    generic
       type Data_Type (<>) is private;

@@ -44,24 +44,24 @@ package body Gtk.Radio_Menu_Item is
    --  without having to drag the whole Gtk.Type_Conversion package for the
    --  most common widgets.
 
-   -----------
-   -- Group --
-   -----------
+   ---------------
+   -- Get_Group --
+   ---------------
 
-   function Group
+   function Get_Group
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
       return Widget_SList.GSlist
    is
       function Internal
         (Radio_Menu_Item : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_radio_menu_item_group");
+      pragma Import (C, Internal, "gtk_radio_menu_item_get_group");
 
       Group : Widget_SList.GSlist;
 
    begin
       Set_Object (Group, Internal (Get_Object (Radio_Menu_Item)));
       return Group;
-   end Group;
+   end Get_Group;
 
    -------------
    -- Gtk_New --

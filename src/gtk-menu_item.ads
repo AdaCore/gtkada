@@ -72,11 +72,6 @@ package Gtk.Menu_Item is
      (Menu_Item : access Gtk_Menu_Item_Record;
       Placement : Enums.Gtk_Submenu_Placement);
 
-   procedure Configure
-     (Menu_Item              : access Gtk_Menu_Item_Record;
-      Show_Toggle_Indicator  : Boolean;
-      Show_Submenu_Indicator : Boolean);
-
    procedure Gtk_Select (Menu_Item : access Gtk_Menu_Item_Record);
 
    procedure Deselect (Menu_Item : access Gtk_Menu_Item_Record);
@@ -84,6 +79,11 @@ package Gtk.Menu_Item is
    procedure Activate (Menu_Item : access Gtk_Menu_Item_Record);
 
    procedure Right_Justify (Menu_Item : access Gtk_Menu_Item_Record);
+   --  Deprecated. Use Set_Right_Justified with Justify = True instead.
+
+   procedure Set_Right_Justified
+     (Menu_Item : access Gtk_Menu_Item_Record;
+      Justify   : Boolean);
 
    procedure Set_Right_Justify
      (Menu_Item : access Gtk_Menu_Item_Record;

@@ -58,7 +58,7 @@ package body Common is
          Widget_Handler.Object_Connect (Menu_Item, "activate",
                                         Widget_Handler.To_Marshaller (Cb),
                                         Slot_Object => Menu_Item);
-         Gr := Group (Menu_Item);
+         Gr := Get_Group (Menu_Item);
          Append (Menu, Menu_Item);
          if Gint (I) = History then
             Set_Active (Menu_Item, True);

@@ -420,19 +420,19 @@ package body Gtk.Notebook is
       Internal (Get_Object (Notebook), Boolean'Pos (Homogeneous));
    end Set_Homogeneous_Tabs;
 
-   --------------
-   -- Set_Page --
-   --------------
+   ----------------------
+   -- Set_Current_Page --
+   ----------------------
 
-   procedure Set_Page
+   procedure Set_Current_Page
      (Notebook : access Gtk_Notebook_Record; Page_Num : Gint := -1)
    is
       procedure Internal (Notebook : System.Address; Page_Num : Gint);
-      pragma Import (C, Internal, "gtk_notebook_set_page");
+      pragma Import (C, Internal, "gtk_notebook_set_current_page");
 
    begin
       Internal (Get_Object (Notebook), Page_Num);
-   end Set_Page;
+   end Set_Current_Page;
 
    --------------------
    -- Set_Scrollable --

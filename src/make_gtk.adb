@@ -126,7 +126,6 @@ with Gtk.Misc;
 with Gtk.Notebook;
 with Gtk.Object;
 with Gtk.Option_Menu;
-with Gtk.Packer;
 with Gtk.Paned;
 with Gtk.Pixmap;
 with Gtk.Plug;

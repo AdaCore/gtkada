@@ -62,16 +62,16 @@ package body Gtk.Container is
       Internal (Get_Object (Container));
    end Check_Resize;
 
-   --------------
-   -- Children --
-   --------------
+   ------------------
+   -- Get_Children --
+   ------------------
 
-   function Children
+   function Get_Children
      (Container : access Gtk_Container_Record)
       return Gtk.Widget.Widget_List.Glist
    is
       function Internal (Container : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_container_children");
+      pragma Import (C, Internal, "gtk_container_get_children");
 
       List : Gtk.Widget.Widget_List.Glist;
 
@@ -79,7 +79,7 @@ package body Gtk.Container is
       Gtk.Widget.Widget_List.Set_Object
         (List, Internal (Get_Object (Container)));
       return List;
-   end Children;
+   end Get_Children;
 
    ----------------
    -- Child_Type --

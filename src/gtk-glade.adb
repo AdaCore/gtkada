@@ -612,7 +612,6 @@ begin
    SHT.Set (new String'("GtkMenuShell"), Menu_Shell_Generate'Access);
    SHT.Set (new String'("GtkNotebook"), Notebook_Generate'Access);
    SHT.Set (new String'("GtkOptionMenu"), Option_Menu_Generate'Access);
-   SHT.Set (new String'("GtkPacker"), Packer_Generate'Access);
    SHT.Set (new String'("GtkHPaned"), Paned_Generate'Access);
    SHT.Set (new String'("GtkVPaned"), Paned_Generate'Access);
    SHT.Set (new String'("GtkPixmap"), Pixmap_Generate'Access);

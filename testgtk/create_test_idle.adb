@@ -166,7 +166,7 @@ package body Create_Test_Idle is
          My_Button_Cb.To_Marshaller (Toggle_Container'Access), Container);
       Pack_Start (Box, Myb, False, False, 0);
 
-      Gr := Group (Myb);
+      Gr := Get_Group (Myb);
       Myb := new My_Button_Record;
       Initialize (Myb, Gr, "Resize-Queue");
       Myb.Value := Resize_Queue;
@@ -175,7 +175,7 @@ package body Create_Test_Idle is
          My_Button_Cb.To_Marshaller (Toggle_Container'Access), Container);
       Pack_Start (Box, Myb, False, False, 0);
 
-      Gr := Group (Myb);
+      Gr := Get_Group (Myb);
       Myb := new My_Button_Record;
       Initialize (Myb, Gr, "Resize-Immediate");
       Myb.Value := Resize_Immediate;

@@ -62,11 +62,11 @@ package body Create_Radio_Button is
       Gtk_New (Button, Widget_SList.Null_List, "button1");
       Pack_Start (Box2, Button, True, True, 0);
 
-      Gtk_New (Button, Group (Button), "button2");
+      Gtk_New (Button, Get_Group (Button), "button2");
       Set_Active (Button, True);
       Pack_Start (Box2, Button, True, True, 0);
 
-      Gtk_New (Button, Group (Button), "button3");
+      Gtk_New (Button, Get_Group (Button), "button3");
       Pack_Start (Box2, Button, True, True, 0);
 
       Show_All (Frame);

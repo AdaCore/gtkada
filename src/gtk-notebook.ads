@@ -173,7 +173,7 @@ package Gtk.Notebook is
    --  Note that Child is not the notebook page, but the widget you inserted
    --  with Insert_Page, Append_Page,...
 
-   procedure Set_Page
+   procedure Set_Current_Page
      (Notebook : access Gtk_Notebook_Record;
       Page_Num : in Gint := -1);
    --  Modify the current page.
@@ -185,6 +185,12 @@ package Gtk.Notebook is
    --
    --  Note: This call won't succeeded unless you have called Show on the
    --  widget displayed in the page.
+
+   procedure Set_Page
+     (Notebook : access Gtk_Notebook_Record;
+      Page_Num : in Gint := -1)
+     renames Set_Current_Page;
+   --  This function is deprecated. Use Set_Current_Page instead.
 
    procedure Next_Page (Notebook : access Gtk_Notebook_Record);
    --  Display the next page on the screen.

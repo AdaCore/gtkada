@@ -245,14 +245,6 @@ package Gdk.Pixbuf is
      (Data : Interfaces.C.Strings.chars_ptr_array) return Gdk_Pixbuf;
    --  Create an image from a XPM data.
 
-   procedure Gdk_New_From_Inline
-     (Pixbuf        : out Gdk_Pixbuf;
-      Inline_Pixbuf : Guchar_Array;
-      Copy_Pixels   : Boolean;
-      Length        : Gint;
-      Error         : out GError);
-   --  Read an inline pixbuf.
-
    procedure Save
      (Pixbuf   : Gdk_Pixbuf;
       Filename : String;

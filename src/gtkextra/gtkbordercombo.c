@@ -170,12 +170,12 @@ gtk_border_combo_update (GtkWidget * widget, GtkBorderCombo * border_combo)
       }
       border_combo->row=new_row;
       border_combo->column=new_col;
-      window=GTK_PIXMAP(GTK_BUTTON(GTK_COMBO_BOX(border_combo)->button)
+      window=GTK_PIXMAP(GTK_BIN(GTK_COMBO_BOX(border_combo)->button)
                                                          ->child)->pixmap;
       gdk_window_copy_area(window,
                            widget->style->fg_gc[GTK_STATE_NORMAL],
                            0,0,
- GTK_PIXMAP(GTK_BUTTON(border_combo->button[new_row][new_col])->child)->pixmap,
+ GTK_PIXMAP(GTK_BIN(border_combo->button[new_row][new_col])->child)->pixmap,
                            0,0,16,16);
 
       gtk_widget_queue_draw(GTK_COMBO_BOX(border_combo)->button);
@@ -325,7 +325,7 @@ gtk_border_combo_realize(GtkWidget *widget)
                     border_combo->table);
   gtk_widget_show(border_combo->table);
 
-  if(!GTK_BUTTON(combo->button)->child && widget->window){
+  if(!GTK_BIN(combo->button)->child && widget->window){
        border_pixmap=gdk_pixmap_create_from_xpm_d(
                              widget->window,
                              NULL,

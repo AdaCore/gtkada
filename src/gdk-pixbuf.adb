@@ -132,32 +132,6 @@ package body Gdk.Pixbuf is
       Error := Err;
    end Gdk_New_From_File;
 
-   -------------------------
-   -- Gdk_New_From_Inline --
-   -------------------------
-
-   procedure Gdk_New_From_Inline
-     (Pixbuf        : out Gdk_Pixbuf;
-      Inline_Pixbuf : Guchar_Array;
-      Copy_Pixels   : Boolean;
-      Length        : Gint;
-      Error         : out GError)
-   is
-      function Internal
-        (Inline_Pixbuf : Guchar_Array;
-         Copy_Pixels   : Gboolean;
-         Length        : Gint;
-         Error         : access GError) return Gdk_Pixbuf;
-      pragma Import (C, Internal, "gdk_pixbuf_new_from_inline");
-
-      Err : aliased GError;
-
-   begin
-      Pixbuf := Internal
-        (Inline_Pixbuf, To_Gboolean (Copy_Pixels), Length, Err'Access);
-      Error := Err;
-   end Gdk_New_From_Inline;
-
    -------------------
    -- Get_Has_Alpha --
    -------------------

@@ -68,7 +68,6 @@ package Gtk_Generates is
    procedure Misc_Generate                   (N : Node_Ptr; File : File_Type);
    procedure Notebook_Generate               (N : Node_Ptr; File : File_Type);
    procedure Option_Menu_Generate            (N : Node_Ptr; File : File_Type);
-   procedure Packer_Generate                 (N : Node_Ptr; File : File_Type);
    procedure Paned_Generate                  (N : Node_Ptr; File : File_Type);
    procedure Pixmap_Generate                 (N : Node_Ptr; File : File_Type);
    procedure Preview_Generate                (N : Node_Ptr; File : File_Type);

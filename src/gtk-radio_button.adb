@@ -33,22 +33,22 @@ package body Gtk.Radio_Button is
 
    use Widget_SList;
 
-   -----------
-   -- Group --
-   -----------
+   ---------------
+   -- Get_Group --
+   ---------------
 
-   function Group
+   function Get_Group
      (Radio_Button : access Gtk_Radio_Button_Record) return Widget_SList.GSlist
    is
       function Internal (Button : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_radio_button_group");
+      pragma Import (C, Internal, "gtk_radio_button_get_group");
 
       Group : Widget_SList.GSlist;
 
    begin
       Set_Object (Group, Internal (Get_Object (Radio_Button)));
       return Group;
-   end Group;
+   end Get_Group;
 
    -------------
    -- Gtk_New --

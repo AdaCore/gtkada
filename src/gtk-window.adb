@@ -127,19 +127,19 @@ package body Gtk.Window is
       end if;
    end Get_Title;
 
-   --------------------
-   -- Get_Resizeable --
-   --------------------
+   -------------------
+   -- Get_Resizable --
+   -------------------
 
-   function Get_Resizeable
+   function Get_Resizable
      (Window : access Gtk_Window_Record) return Boolean
    is
       function Internal (Window : System.Address) return Gboolean;
-      pragma Import (C, Internal, "gtk_window_get_resizeable");
+      pragma Import (C, Internal, "gtk_window_get_resizable");
 
    begin
       return To_Boolean (Internal (Get_Object (Window)));
-   end Get_Resizeable;
+   end Get_Resizable;
 
    --------------------------
    -- Get_Transient_Parent --
@@ -454,21 +454,21 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Get_Object (Parent));
    end Set_Transient_For;
 
-   --------------------
-   -- Set_Resizeable --
-   --------------------
+   -------------------
+   -- Set_Resizable --
+   -------------------
 
-   procedure Set_Resizeable
+   procedure Set_Resizable
      (Window    : access Gtk_Window_Record;
       Resizable : Boolean := True)
    is
       procedure Internal
         (Window : System.Address; Resizeable : Gboolean);
-      pragma Import (C, Internal, "gtk_window_set_resizeable");
+      pragma Import (C, Internal, "gtk_window_set_resizable");
 
    begin
       Internal (Get_Object (Window), To_Gboolean (Resizable));
-   end Set_Resizeable;
+   end Set_Resizable;
 
    --------------
    -- Set_Role --

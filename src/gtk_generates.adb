@@ -875,32 +875,6 @@ package body Gtk_Generates is
       end if;
    end Option_Menu_Generate;
 
-   procedure Packer_Generate (N : Node_Ptr; File : File_Type) is
-      S  : String_Ptr;
-      procedure Build_Type;
-      pragma Import (C, Build_Type, "gtk_packer_get_type");
-
-   begin
-      Build_Type;
-      Gen_New (N, "Packer", File => File);
-      Container_Generate (N, File);
-      Gen_Set (N, "Packer", "default_border_width", File => File);
-
-      S  := Get_Field (N, "default_pad_x");
-
-      if S /= null then
-         Gen_Set (N, "Packer", "Default_Pad", S.all,
-           Get_Field (N, "default_pad_y").all, "", "", File => File);
-      end if;
-
-      S  := Get_Field (N, "default_ipad_x");
-
-      if S /= null then
-         Gen_Set (N, "Packer", "Default_Ipad", S.all,
-           Get_Field (N, "default_ipad_y").all, "", "", File => File);
-      end if;
-   end Packer_Generate;
-
    procedure Paned_Generate (N : Node_Ptr; File : File_Type) is
       Class : constant String_Ptr := Get_Field (N, "class");
       procedure Build_Type;

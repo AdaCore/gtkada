@@ -523,11 +523,6 @@ package Gtk.Widget is
    function Get_Default_Style return Gtk.Style.Gtk_Style;
    --  Get the default global style.
 
-   procedure Set_Rc_Style (Widget : access Gtk_Widget_Record);
-   --  Restore the default style of a widget.
-   --  The default style is given by the configuration file initially parsed
-   --  by GtkAda.
-
    procedure Ensure_Style (Widget : access Gtk_Widget_Record);
    --  Make sure that the widget has a style associated to it.
    --  Either the default one as set by Set_Rc_Style above or one set by the

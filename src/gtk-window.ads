@@ -186,14 +186,24 @@ package Gtk.Window is
    --  This is useful for dialogs that shouldn't persist beyond the lifetime
    --  of the main window they're associated with, for example.
 
-   procedure Set_Resizeable
+   procedure Set_Resizable
      (Window    : access Gtk_Window_Record;
       Resizable : Boolean := True);
    --  Set whether the user can resize a window.
-   --  Windows are user resizeable by default.
+   --  Windows are user resizable by default.
 
-   function Get_Resizeable (Window : access Gtk_Window_Record) return Boolean;
+   procedure Set_Resizeable
+     (Window    : access Gtk_Window_Record;
+      Resizable : Boolean := True)
+     renames Set_Resizable;
+   --  This procedure is deprecated.
+
+   function Get_Resizable (Window : access Gtk_Window_Record) return Boolean;
    --  Whether the user can resize a window.
+
+   function Get_Resizeable (Window : access Gtk_Window_Record) return Boolean
+     renames Get_Resizable;
+   --  This function is deprecated.
 
    procedure Set_Gravity
      (Window  : access Gtk_Window_Record;

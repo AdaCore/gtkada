@@ -75,7 +75,7 @@ package body Create_Menu is
       for J in 0 .. 5 loop
          Gtk_New (Menu_Item, Group, "Item" & Integer'Image (Depth)
                   & " -" & Integer'Image (J + 1));
-         Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
+         Group := Gtk.Radio_Menu_Item.Get_Group (Menu_Item);
          Append (Menu, Menu_Item);
          Show (Menu_Item);
 
@@ -119,7 +119,8 @@ package body Create_Menu is
 
       Gtk_New (Menu_Item, "bar");
       Set_Submenu (Menu_Item, Create_Menu (4, true));
-      Right_Justify (Menu_Item);
+
+      Set_Right_Justified (Menu_Item, True);
       Append (Menu_Bar, Menu_Item);
 
       Gtk_New_Vbox (Box2, False, 10);

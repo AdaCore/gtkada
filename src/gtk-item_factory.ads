@@ -205,7 +205,6 @@ package Gtk.Item_Factory is
          Accelerator     : String := "";
          Callback        : Gtk_Item_Factory_Callback := null;
          Pixbuf          : access Guchar_Array;
-         Len             : Guint;
          Callback_Action : Guint := 0) return Gtk_Item_Factory_Entry;
       --  Create a Gtk_Item_Factory_Entry from an inline pixbuf image.
       --  It is up to you to call Free at an appropriate point to avoid memory
@@ -288,7 +287,6 @@ private
       --  Stock_Item -> name of stock item
 
       Extra_Data      : Gtkada.Types.Chars_Ptr;
-      Extra_Data2     : Guint;
    end record;
    pragma Convention (C, Gtk_Item_Factory_Entry);
 

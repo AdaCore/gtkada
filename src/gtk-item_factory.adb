@@ -430,7 +430,6 @@ package body Gtk.Item_Factory is
          Accelerator     : String := "";
          Callback        : Gtk_Item_Factory_Callback := null;
          Pixbuf          : access Guchar_Array;
-         Len             : Guint;
          Callback_Action : Guint := 0) return Gtk_Item_Factory_Entry
       is
          Ientry : Gtk_Item_Factory_Entry;
@@ -442,7 +441,6 @@ package body Gtk.Item_Factory is
          Ientry := Gtk_New
            (Path, Accelerator, Callback, "<ImageItem>", Callback_Action);
          Ientry.Extra_Data  := To_Chars_Ptr (Pixbuf.all'Address);
-         Ientry.Extra_Data2 := Len;
          return Ientry;
       end Gtk_New;
 

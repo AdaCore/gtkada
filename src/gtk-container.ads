@@ -74,10 +74,16 @@ package Gtk.Container is
    --  Change the resizing behavior for the Container.
    --  The default value is Resize_Parent.
 
-   function Children
+   function Get_Children
      (Container : access Gtk_Container_Record)
       return Gtk.Widget.Widget_List.Glist;
    --  Return a list of all the children of the container.
+
+   function Children
+     (Container : access Gtk_Container_Record)
+     return Gtk.Widget.Widget_List.Glist
+     renames Get_Children;
+   --  This function is deprecated.
 
    procedure Propagate_Expose
      (Container : access Gtk_Container_Record;

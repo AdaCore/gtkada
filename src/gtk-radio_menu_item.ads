@@ -61,9 +61,15 @@ package Gtk.Radio_Menu_Item is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Radio_Menu_Item.
 
-   function Group
+   function Get_Group
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
       return Widget_SList.GSlist;
+
+   function Group
+     (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
+     return Widget_SList.GSlist
+     renames Get_Group;
+   --  This function is deprecated. Get_Group should be used instead.
 
    procedure Set_Group
      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record;

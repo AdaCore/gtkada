@@ -127,12 +127,18 @@ package Gtk.Radio_Button is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Radio_Button.
 
-   function Group
+   function Get_Group
      (Radio_Button : access Gtk_Radio_Button_Record)
       return Widget_SList.GSlist;
    --  Return the group to which Radio_Button belongs.
    --  This can be used as an argument to the first version of Gtk_New above,
    --  or the list can also be traversed to get all the buttons.
+
+   function Group
+     (Radio_Button : access Gtk_Radio_Button_Record)
+     return Widget_SList.GSlist
+     renames Get_Group;
+   --  This function is deprecated.
 
    procedure Set_Group
      (Radio_Button : access Gtk_Radio_Button_Record;

@@ -448,25 +448,6 @@ package body Gtk.Text_View is
    end Set_Border_Window_Size;
 
    --------------------------
-   -- Set_Text_Window_Size --
-   --------------------------
-
-   procedure Set_Text_Window_Size
-     (Text_View : access Gtk_Text_View_Record;
-      Width     : Gint;
-      Height    : Gint)
-   is
-      procedure Internal
-        (Text_View : System.Address;
-         Width     : Gint;
-         Height    : Gint);
-      pragma Import (C, Internal, "gtk_text_view_set_text_window_size");
-
-   begin
-      Internal (Get_Object (Text_View), Width, Height);
-   end Set_Text_Window_Size;
-
-   --------------------------
    -- Forward_Display_Line --
    --------------------------
 

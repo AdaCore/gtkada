@@ -429,7 +429,7 @@ package body Create_Notebook is
         (Menu_Item, "activate",
          Note_Cb.To_Marshaller (Standard_Notebook'Access),
          Slot_Object => Notebook);
-      Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
+      Group := Gtk.Radio_Menu_Item.Get_Group (Menu_Item);
       Append (Menu, Menu_Item);
       Show (Menu_Item);
 
@@ -438,7 +438,7 @@ package body Create_Notebook is
         (Menu_Item, "activate",
          Note_Cb.To_Marshaller (Notabs_Notebook'Access),
          Slot_Object => Notebook);
-      Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
+      Group := Gtk.Radio_Menu_Item.Get_Group (Menu_Item);
       Append (Menu, Menu_Item);
       Show (Menu_Item);
 
@@ -447,7 +447,7 @@ package body Create_Notebook is
         (Menu_Item, "activate",
          Note_Cb.To_Marshaller (Scrollable_Notebook'Access),
          Slot_Object => Notebook);
-      Group := Gtk.Radio_Menu_Item.Group (Menu_Item);
+      Group := Gtk.Radio_Menu_Item.Get_Group (Menu_Item);
       Append (Menu, Menu_Item);
       Show (Menu_Item);
 

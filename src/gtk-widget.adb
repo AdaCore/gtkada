@@ -1119,18 +1119,6 @@ package body Gtk.Widget is
    end Set_Parent_Window;
 
    ------------------
-   -- Set_Rc_Style --
-   ------------------
-
-   procedure Set_Rc_Style (Widget : access Gtk_Widget_Record) is
-      procedure Internal (Widget : System.Address);
-      pragma Import (C, Internal, "gtk_widget_set_rc_style");
-
-   begin
-      Internal (Get_Object (Widget));
-   end Set_Rc_Style;
-
-   ------------------
    -- Ensure_Style --
    ------------------
 
@@ -1147,11 +1135,11 @@ package body Gtk.Widget is
    ---------------------------
 
    procedure Restore_Default_Style (Widget : access Gtk_Widget_Record) is
-      procedure Internal (Widget : System.Address);
-      pragma Import (C, Internal, "gtk_widget_restore_default_style");
+      procedure Internal (Widget : System.Address; Style : System.Address);
+      pragma Import (C, Internal, "gtk_widget_set_style");
 
    begin
-      Internal (Get_Object (Widget));
+      Internal (Get_Object (Widget), System.Null_Address);
    end Restore_Default_Style;
 
    ---------------------

@@ -54,27 +54,6 @@ package body Gtk.Menu_Item is
       Internal (Get_Object (Menu_Item));
    end Activate;
 
-   ---------------
-   -- Configure --
-   ---------------
-
-   procedure Configure
-     (Menu_Item              : access Gtk_Menu_Item_Record;
-      Show_Toggle_Indicator  : Boolean;
-      Show_Submenu_Indicator : Boolean)
-   is
-      procedure Internal
-        (Menu_Item              : System.Address;
-         Show_Toggle_Indicator  : Boolean;
-         Show_Submenu_Indicator : Boolean);
-      pragma Import (C, Internal, "gtk_menu_item_configure");
-
-   begin
-      Internal
-        (Get_Object (Menu_Item),
-         Show_Toggle_Indicator, Show_Submenu_Indicator);
-   end Configure;
-
    --------------
    -- Deselect --
    --------------
@@ -192,11 +171,8 @@ package body Gtk.Menu_Item is
    --------------------
 
    procedure Right_Justify (Menu_Item : access Gtk_Menu_Item_Record) is
-      procedure Internal (Menu_Item : System.Address);
-      pragma Import (C, Internal, "gtk_menu_item_right_justify");
-
    begin
-      Internal (Get_Object (Menu_Item));
+      Set_Right_Justified (Menu_Item, True);
    end Right_Justify;
 
    -------------------
@@ -233,6 +209,20 @@ package body Gtk.Menu_Item is
       Internal (Get_Object (Menu_Item), Get_Object (Submenu));
    end Set_Submenu;
 
+   -------------------------
+   -- Set_Right_Justified --
+   -------------------------
+
+   procedure Set_Right_Justified
+     (Menu_Item : access Gtk_Menu_Item_Record;
+      Justify   : Boolean)
+   is
+      procedure Internal (Menu_Item : System.Address; Justify : Boolean);
+      pragma Import (C, Internal, "gtk_menu_item_set_right_justified");
+   begin
+      Internal (Get_Object (Menu_Item), Justify);
+   end Set_Right_Justified;
+
    -----------------------
    -- Set_Right_Justify --
    -----------------------
@@ -242,7 +232,9 @@ package body Gtk.Menu_Item is
       Justify   : Boolean) is
    begin
       if Justify then
-         Right_Justify (Menu_Item);
+         null;
+         --  TODO
+         --  Right_Justify (Menu_Item);
       end if;
    end Set_Right_Justify;
 

@@ -36,7 +36,6 @@
 --  <c_version>1.3.6</c_version>
 
 with Gtk.Menu_Shell;
-with Gtk.Menu_Item;
 
 package Gtk.Menu_Bar is
 
@@ -53,23 +52,6 @@ package Gtk.Menu_Bar is
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Menu_Bar.
-
-   procedure Append
-     (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
-   --  Add a new Gtk_Menu_Item to the end of the Gtk_Menu_Bar.
-
-   procedure Prepend
-     (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
-   --  Add a new Gtk_Menu_Item to the beginning of the Gtk_Menu_Bar.
-
-   procedure Insert
-     (Menu_Bar : access Gtk_Menu_Bar_Record;
-      Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
-      Position : Gint);
-   --  Add a new Gtk_Menu_Item to the Gtk_Menu_Bar at a specified position.
-   --  The first element of a menu bar is at position 0.
 
    ----------------
    -- Properties --
