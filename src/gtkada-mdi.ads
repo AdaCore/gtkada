@@ -218,6 +218,15 @@ package Gtkada.MDI is
    --  You can create new Position types as needed, for instance if you want
    --  to group similar windows together automatically.
 
+   procedure Set_Size
+     (MDI    : access MDI_Window_Record;
+      Child  : access MDI_Child_Record'Class;
+      Width  : Glib.Gint;
+      Height : Glib.Gint);
+   --  Forces a new size for a child. If Width or Height is left to -1, the
+   --  matching size will be computed from the child's requisition. If they are
+   --  left to 0, the corresponding length is left to its current value.
+
    procedure Close
      (MDI   : access MDI_Window_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class;

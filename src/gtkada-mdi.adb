@@ -1610,21 +1610,25 @@ package body Gtkada.MDI is
                         Split
                           (C.MDI,
                            Current, Note, Orientation_Vertical,
+                           Width => 0, Height => 0,
                            After => True);
                      when Position_Top =>
                         Split
                           (C.MDI,
                            Current, Note, Orientation_Vertical,
+                           Width => 0, Height => 0,
                            After => False);
                      when Position_Left =>
                         Split
                           (C.MDI,
                            Current, Note, Orientation_Horizontal,
+                           Width => 0, Height => 0,
                            After => False);
                      when Position_Right =>
                         Split
                           (C.MDI,
                            Current, Note, Orientation_Horizontal,
+                           Width => 0, Height => 0,
                            After => True);
                      when others =>
                         null;
@@ -2003,6 +2007,25 @@ package body Gtkada.MDI is
       Give_Focus_To_Child (MDI.Focus_Child);
       return C;
    end Put;
+
+   --------------
+   -- Set_Size --
+   --------------
+
+   procedure Set_Size
+     (MDI    : access MDI_Window_Record;
+      Child  : access MDI_Child_Record'Class;
+      Width  : Glib.Gint;
+      Height : Glib.Gint)
+   is
+      Notebook : constant Gtk_Notebook := Get_Notebook (Child);
+   begin
+      if Notebook /= null then
+         Set_Size (MDI,
+                   Widget => Notebook,
+                   Width => Width, Height => Height);
+      end if;
+   end Set_Size;
 
    ---------------
    -- Get_Title --
@@ -3241,6 +3264,8 @@ package body Gtkada.MDI is
             Split (MDI,
                    Ref_Widget  => Note,
                    New_Child   => Note2,
+                   Width       => 0,
+                   Height      => 0,
                    Orientation => Orientation,
                    After       => After);
          end if;
@@ -3708,13 +3733,11 @@ package body Gtkada.MDI is
       --  A new notebook is created and returned
 
       procedure Parse_Pane_Node
-        (MDI         : access MDI_Window_Record'Class;
-         Node        : Node_Ptr;
-         Focus_Child : in out MDI_Child;
-         User        : User_Data;
-         Initial_Orientation : Gtk_Orientation;
-         Initial_Ref_Child : Gtk_Widget := null;
-         First_Child : out Gtk_Notebook);
+        (MDI                 : access MDI_Window_Record'Class;
+         Node                : Node_Ptr;
+         Focus_Child         : in out MDI_Child;
+         User                : User_Data;
+         Initial_Ref_Child   : Gtk_Notebook := null);
       --  Parse a <Pane> node
       --  First_Child is the first notebook insert in pane (possibly inserted
 
@@ -3905,117 +3928,112 @@ package body Gtkada.MDI is
          Node                : Node_Ptr;
          Focus_Child         : in out MDI_Child;
          User                : User_Data;
-         Initial_Orientation : Gtk_Orientation;
-         Initial_Ref_Child   : Gtk_Widget := null;
-         First_Child         : out Gtk_Notebook)
+         Initial_Ref_Child   : Gtk_Notebook := null)
       is
          Orientation : constant Gtk_Orientation := Gtk_Orientation'Value
            (Get_Attribute (Node, "Orientation"));
          N     : Node_Ptr;
          Width, Height : Gint;
-         Note : Gtk_Notebook;
-         Ref_Item : Gtk_Widget := Initial_Ref_Child;
-         Ref_Pane : Pane := Root_Pane;
-         Is_First : Boolean := True;
-         Orient : Gtk_Orientation;
-         Must_Unref : Boolean;
-         Pane_First_Child : Gtk_Notebook;
+         Ref_Item : Gtk_Notebook := Initial_Ref_Child;
+         Count : Natural := 0;
+         Notebook_Node : Node_Ptr;
+
       begin
          if Traces then
             Put_Line ("MDI Parsing pane node " & Orientation'Img);
          end if;
 
-         First_Child := null;
-
          N := Node.Child;
          while N /= null loop
-            if Is_First then
-               Orient := Initial_Orientation;
-               Is_First := False;
-            else
-               Orient := Orientation;
-            end if;
-
-            if N.Tag.all = "Notebook" then
-               Parse_Notebook_Node
-                 (MDI, N, User, Focus_Child, Width, Height, Note);
-
-               Must_Unref := False;
-               if Get_Parent (Note) /= null then
-                  --  We reused an existing notebook (likely an empty one)
-                  Ref (Note);
-                  Must_Unref := True;
-                  Remove (Gtk_Container (Get_Parent (Note)), Note);
-               end if;
-
-               if First_Child /= null
-                 and then Node.Child.Tag.all = "Pane"
-                 and then N = Node.Child.Next
-               then
-                  if Traces then
-                     Put_Line ("MDI Notebook inserted, split_group since "
-                               & System.Address_Image (First_Child.all'Address)
-                               & " orient=" & Orient'Img);
-                  end if;
-                  Split_Group (MDI,
-                               Ref_Widget  => First_Child,
-                               New_Child   => Note,
-                               Width       => Width,
-                               Height      => Height,
-                               Orientation => Orient);
-
-               elsif Ref_Item /= null then
-                  if Traces then
-                     Put_Line ("MDI Notebook inserted, splitting ref_item "
-                               & System.Address_Image (Ref_Item.all'Address)
-                               & " orient=" & Orient'Img);
-                  end if;
-                  Split (MDI,
-                         Ref_Widget  => Ref_Item,
-                         New_Child   => Note,
-                         Width       => Width,
-                         Height      => Height,
-                         Orientation => Orient);
-               else
-                  if Traces then
-                     Put_Line ("MDI Notebook inserted, splitting ref_pane "
-                               & Orient'Img);
-                  end if;
-                  Split (MDI,
-                         Ref_Pane    => Ref_Pane,
-                         New_Child   => Note,
-                         Width       => Width,
-                         Height      => Height,
-                         Orientation => Orient);
-               end if;
-               Ref_Item := Gtk_Widget (Note);
-               Ref_Pane := Get_Pane (MDI, Note);
-
-               if First_Child = null then
-                  First_Child := Note;
-               end if;
-
-               if Must_Unref then
-                  Unref (Note);
-               end if;
-
-            elsif N.Tag.all = "Pane" then
-               Parse_Pane_Node
-                 (MDI,
-                  Node        => N,
-                  Focus_Child => Focus_Child,
-                  User        => User,
-                  Initial_Orientation => Orient,
-                  Initial_Ref_Child => Ref_Item,
-                  First_Child => Pane_First_Child);
-               Ref_Item := null;
-               if First_Child = null then
-                  First_Child := Pane_First_Child;
-               end if;
-            end if;
-
+            Count := Count + 1;
             N := N.Next;
          end loop;
+
+         declare
+            Notebooks : array (1 .. Count) of Gtk_Notebook;
+         begin
+            --  First insert all direct children of the pane, splitting as
+            --  needed. Only then process the Pane children. Otherwise, the
+            --  children of Pane will have been split and reorganized so that
+            --  we won't be able to get a reference item for further splitting
+            Count := Notebooks'First;
+            N := Node.Child;
+            while N /= null loop
+               --  Find the first notebook node of N
+               Notebook_Node := N;
+               while Notebook_Node.Tag /= null
+                 and then Notebook_Node.Tag.all /= "Notebook"
+               loop
+                  Notebook_Node := Notebook_Node.Child;
+               end loop;
+
+               if Count = Notebooks'First
+                 and then Initial_Ref_Child /= null
+               then
+                  Notebooks (Count) := Initial_Ref_Child;
+               else
+                  Parse_Notebook_Node
+                    (MDI         => MDI,
+                     Child_Node  => Notebook_Node,
+                     User        => User,
+                     Focus_Child => Focus_Child,
+                     Width       => Width,
+                     Height      => Height,
+                     Notebook    => Notebooks (Count));
+
+                  if Ref_Item = null then
+                     if Traces then
+                        Put_Line
+                          ("MDI: Add_Child "
+                           & System.Address_Image
+                             (Notebooks (Count).all'Address));
+                     end if;
+                     Add_Child (Win         => MDI,
+                                New_Child   => Notebooks (Count),
+                                Orientation => Orientation,
+                                Width       => Width,
+                                Height      => Height);
+                  else
+                     if Traces then
+                        Put_Line
+                          ("MDI: Split "
+                           & System.Address_Image
+                             (Notebooks (Count).all'Address)
+                           & " ref="
+                           & System.Address_Image (Ref_Item.all'Address)
+                           & " Orient=" & Orientation'Img);
+                     end if;
+                     Split (MDI,
+                            Ref_Widget  => Ref_Item,
+                            New_Child   => Notebooks (Count),
+                            Width       => Width,
+                            Height      => Height,
+                            Orientation => Orientation);
+                  end if;
+               end if;
+
+               Ref_Item := Notebooks (Count);
+               Count := Count + 1;
+               N := N.Next;
+            end loop;
+
+            --  Now process the Pane children recursively, splitting as needed
+
+            N := Node.Child;
+            Count := Notebooks'First;
+            while N /= null loop
+               if N.Tag.all = "Pane" then
+                  Parse_Pane_Node
+                    (MDI                 => MDI,
+                     Node                => N,
+                     Focus_Child         => Focus_Child,
+                     User                => User,
+                     Initial_Ref_Child   => Notebooks (Count));
+               end if;
+               Count := Count + 1;
+               N := N.Next;
+            end loop;
+         end;
       end Parse_Pane_Node;
 
       ---------------------
@@ -4032,8 +4050,6 @@ package body Gtkada.MDI is
          State      : State_Type;
          Raised     : Boolean;
          X, Y       : Gint;
-         First_Notebook : Gtk_Notebook;
-
       begin
          if From_Tree /= null then
             Child_Node := From_Tree.Child;
@@ -4044,11 +4060,20 @@ package body Gtkada.MDI is
             Put_Line ("MDI Restore_Desktop");
          end if;
 
+         declare
+            Children : Widget_List.Glist := Get_Children (MDI);
+            L : Widget_List.Glist := Children;
+         begin
+            while L /= Null_List loop
+               Remove (MDI, Get_Data (L));
+               L := Next (L);
+            end loop;
+            Free (Children);
+         end;
+
          while Child_Node /= null loop
             if Child_Node.Tag.all = "Pane" then
-               Parse_Pane_Node (MDI, Child_Node, Focus_Child, User,
-                                Orientation_Horizontal,
-                                null, First_Notebook);
+               Parse_Pane_Node (MDI, Child_Node, Focus_Child, User, null);
 
             elsif Child_Node.Tag.all = "Bottom_Dock_Height" then
                --  An old desktop ? Do not load it at all, and use the default
