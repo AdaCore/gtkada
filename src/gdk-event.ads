@@ -344,9 +344,8 @@ package Gdk.Event is
    -------------------------
 
    procedure Deep_Copy (From : Gdk_Event; To : out Gdk_Event);
-   --  Deep copy for an event. The C structure is itself duplicated,
-   --  but since we have controlled types, it will be automatically
-   --  deallocated.
+   --  Deep copy for an event. The C structure is itself duplicated.
+   --  You need to deallocated it yourself with a call to Free below.
 
    procedure Get_Graphics_Expose
      (Event  : out Gdk_Event_Expose;
