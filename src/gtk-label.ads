@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -38,7 +38,7 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
-with Gtk.Object; use Gtk.Object;
+with Gtk.Object;
 with Gtk.Enums;
 with Gtk.Misc;
 
@@ -102,12 +102,25 @@ package Gtk.Label is
    --  feature is only used internally by gtk+ to create menus, and is not
    --  useful for end-users.
 
+   ----------------------------
+   -- Support for GATE/DGATE --
+   ----------------------------
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
    --  Gate internal function
 
-   procedure Generate (Label : in out Gtk_Object; N : in Node_Ptr);
+   procedure Generate (Label : in out Gtk.Object.Gtk_Object;
+                       N     : in Node_Ptr);
    --  Dgate internal function
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
 
 private
    type Gtk_Label_Record is new Misc.Gtk_Misc_Record with null record;

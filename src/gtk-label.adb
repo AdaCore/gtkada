@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -31,6 +31,7 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
+with Gtk.Object; use Gtk.Object;
 with Gtk.Container; use Gtk.Container;
 with Gtk.Notebook; use Gtk.Notebook;
 
@@ -218,7 +219,7 @@ package body Gtk.Label is
       end if;
    end Generate;
 
-   procedure Generate (Label : in out Gtk_Object;
+   procedure Generate (Label : in out Gtk.Object.Gtk_Object;
                        N     : in Node_Ptr) is
       Child_Name : String_Ptr := Get_Field (N, "child_name");
       S          : String_Ptr;

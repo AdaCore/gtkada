@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,6 +29,9 @@
 
 with System;
 with Gdk; use Gdk;
+with Gtk.Enums;  use Gtk.Enums;
+with Gtk.Widget; use Gtk.Widget;
+with Gtk.Object; use Gtk.Object;
 
 package body Gtk.Container is
 
@@ -45,6 +48,17 @@ package body Gtk.Container is
       Internal (Get_Object (Container), Get_Object (Widget));
    end Add;
 
+   ------------------
+   -- Check_Resize --
+   ------------------
+
+   procedure Check_Resize (Container : access Gtk_Container_Record) is
+      procedure Internal (Container : System.Address);
+      pragma Import (C, Internal, "gtk_container_check_resize");
+   begin
+      Internal (Get_Object (Container));
+   end Check_Resize;
+
    --------------
    -- Children --
    --------------
@@ -60,6 +74,19 @@ package body Gtk.Container is
                                          Internal (Get_Object (Container)));
       return List;
    end Children;
+
+   ----------------
+   -- Child_Type --
+   ----------------
+
+   function Child_Type (Container : access Gtk_Container_Record)
+                       return Gtk.Gtk_Type
+   is
+      function Internal (Container : System.Address) return Gtk.Gtk_Type;
+      pragma Import (C, Internal, "gtk_container_child_type");
+   begin
+      return Internal (Get_Object (Container));
+   end Child_Type;
 
    -------------------
    -- Get_Toplevels --
@@ -100,6 +127,21 @@ package body Gtk.Container is
       Internal (Get_Object (Container), Border_Width);
    end Set_Border_Width;
 
+   ---------------------
+   -- Set_Focus_Child --
+   ---------------------
+
+   procedure Set_Focus_Child
+     (Container : access Gtk_Container_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Container : System.Address;
+                          Child     : System.Address);
+      pragma Import (C, Internal, "gtk_container_set_focus_child");
+   begin
+      Internal (Get_Object (Container), Get_Object (Child));
+   end Set_Focus_Child;
+
    ---------------------------
    -- Set_Focus_Hadjustment --
    ---------------------------
@@ -132,6 +174,20 @@ package body Gtk.Container is
       Internal (Get_Object (Container), Get_Object (Adjustment));
    end Set_Focus_Vadjustment;
 
+   ----------------------------
+   -- Set_Reallocate_Redraws --
+   ----------------------------
+
+   procedure Set_Reallocate_Redraws (Container : access Gtk_Container_Record;
+                                     Needs_Redraws : Boolean := False)
+   is
+      procedure Internal (Container : in System.Address;
+                          Needs_Redraws : in Gint);
+      pragma Import (C, Internal, "gtk_container_set_reallocate_redraws");
+   begin
+      Internal (Get_Object (Container), Boolean'Pos (Needs_Redraws));
+   end Set_Reallocate_Redraws;
+
    ---------------------
    -- Set_Resize_Mode --
    ---------------------
@@ -144,6 +200,121 @@ package body Gtk.Container is
    begin
       Internal (Get_Object (Container), Gtk_Resize_Mode'Pos (Resize_Mode));
    end Set_Resize_Mode;
+
+   -----------
+   -- Focus --
+   -----------
+
+   function Focus (Container : access Gtk_Container_Record;
+                   Direction : Gtk_Direction_Type)
+                  return Boolean
+   is
+      function Internal (Container : System.Address;
+                         Direction : Gtk_Direction_Type)
+                        return Gint;
+      pragma Import (C, Internal, "gtk_container_focus");
+   begin
+      return Boolean'Val (Internal (Get_Object (Container), Direction));
+   end Focus;
+
+   -----------------------
+   -- Register_Toplevel --
+   -----------------------
+
+   procedure Register_Toplevel (Container : access Gtk_Container_Record) is
+      procedure Internal (Container : System.Address);
+      pragma Import (C, Internal, "gtk_container_register_toplevel");
+   begin
+      Internal (Get_Object (Container));
+   end Register_Toplevel;
+
+   -------------------------
+   -- Unregister_Toplevel --
+   -------------------------
+
+   procedure Unregister_Toplevel (Container : access Gtk_Container_Record) is
+      procedure Internal (Container : System.Address);
+      pragma Import (C, Internal, "gtk_container_unregister_toplevel");
+   begin
+      Internal (Get_Object (Container));
+   end Unregister_Toplevel;
+
+   ----------------
+   -- Forall_Pkg --
+   ----------------
+
+   package body Forall_Pkg is
+
+      type Internal_Data is record
+         Data : Data_Type;
+         Func : Forall_Function;
+      end record;
+
+      type Internal_Data_Access is access all Internal_Data;
+
+      procedure Internal_Func (Widget : System.Address;
+                               Data   : Internal_Data_Access);
+
+      -------------------
+      -- Internal_Func --
+      -------------------
+
+      procedure Internal_Func (Widget : System.Address;
+                               Data   : Internal_Data_Access)
+      is
+         Stub : Gtk_Widget_Record;
+      begin
+         Data.Func (Gtk_Widget (Get_User_Data (Widget, Stub)), Data.Data);
+      end Internal_Func;
+
+      ------------
+      -- Forall --
+      ------------
+
+      procedure Forall (Container : access Gtk_Container_Record;
+                        Func      : Forall_Function;
+                        Data      : Data_Type)
+      is
+         procedure Internal (Container : System.Address;
+                             Func      : System.Address;
+                             Data      : System.Address);
+         pragma Import (C, Internal, "gtk_container_forall");
+         D : aliased Internal_Data := (Data, Func);
+      begin
+         Internal (Get_Object (Container), Internal_Func'Address, D'Address);
+      end Forall;
+
+   end Forall_Pkg;
+
+   ------------
+   -- Forall --
+   ------------
+
+   procedure Forall (Container : access Gtk_Container_Record;
+                     Func      : Forall_Function)
+   is
+      procedure Internal_Func (Widget : System.Address;
+                               Data   : Forall_Function);
+
+      -------------------
+      -- Internal_Func --
+      -------------------
+
+      procedure Internal_Func (Widget : System.Address;
+                               Data   : Forall_Function)
+      is
+         Stub : Gtk_Widget_Record;
+      begin
+         Data (Gtk_Widget (Get_User_Data (Widget, Stub)));
+      end Internal_Func;
+
+      procedure Internal (Container : System.Address;
+                          Func      : System.Address;
+                          Data      : Forall_Function);
+      pragma Import (C, Internal, "gtk_container_forall");
+   begin
+      Internal (Get_Object (Container), Internal_Func'Address, Func);
+   end Forall;
 
    --------------
    -- Generate --

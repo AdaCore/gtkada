@@ -27,6 +27,16 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  Abstract class for objects containing data
+--  This object is currently not very useful since it only provides
+--  a single "disconnect" signal.
+--
+--  This is the "Model" in the Model/View/Controller framework.
+--  </description>
+--  <c_version>1.2.6</c_version>
+
 with Gtk.Object;
 
 package Gtk.Data is
@@ -34,18 +44,32 @@ package Gtk.Data is
    type Gtk_Data_Record is new Object.Gtk_Object_Record with private;
    type Gtk_Data is access all Gtk_Data_Record'Class;
 
-   --  The two following procedures are used to generate and create widgets
-   --  from a Node.
- 
+   ----------------------------
+   -- Support for GATE/DGATE --
+   ----------------------------
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type)
      renames Gtk.Object.Generate;
- 
+   --  Gate internal function
+
    procedure Generate (Data : in out Gtk.Object.Gtk_Object; N : in Node_Ptr)
      renames Gtk.Object.Generate;
+   --  Dgate internal function
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --
+   --  - "disconnect"
+   --    procedure Handler (Data : access Gtk_Data_Record'Class);
+   --
+   --    Emitted just before DATA is destroyed.
+   --  </signals>
 
 private
-
    type Gtk_Data_Record is new Object.Gtk_Object_Record with null record;
-
 end Gtk.Data;
