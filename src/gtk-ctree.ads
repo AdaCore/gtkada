@@ -56,9 +56,6 @@ package Gtk.Ctree is
    function Convert (C : in Gtk_Ctree_Node) return System.Address;
    function Convert (W : System.Address) return Gtk_Ctree_Node;
    package Node_List is new Glib.Glist.Generic_List (Gtk_Ctree_Node);
-   --
-   --  Note: To extract the Gtk_Ctree_Node, use Node_List.Get_Gpointer,
-   --        not Node_List.Get_Data.
 
 
    type Gtk_Ctree_Compare_Drag_Func is access
@@ -120,13 +117,15 @@ package Gtk.Ctree is
       Success       :    out Boolean);
 
    function Get_Node_List (Ctree : access Gtk_Ctree_Record)
-                           return         Node_List.Glist;
+                          return         Node_List.Glist;
+   --   Extract the nodes with Node_List.Get_Pointer
 
    function Get_Row_List (Ctree : access Gtk_Ctree_Record)
                           return         Row_List.Glist;
 
    function Get_Selection (Widget : access Gtk_Ctree_Record)
-                           return Node_List.Glist;
+                          return Node_List.Glist;
+   --   Extract the nodes with Node_List.Get_Data
 
    function Get_Show_Stub (Ctree : access Gtk_Ctree_Record) return Boolean;
 
@@ -512,7 +511,7 @@ package Gtk.Ctree is
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
    --  Gate internal function
- 
+
    procedure Generate (Ctree : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
    --  Dgate internal function
 
