@@ -18,13 +18,18 @@ CFLAGS = @CFLAGS@ -Wall
 ALL_CFLAGS = $(CFLAGS) @GTK_CFLAGS@ -shared -fPIC
 
 GNATCC = gcc
-GNATFLAGS = -O2 -g -gnatg -gnata
+GNATFLAGS = -O2 -g -gnatga
 ALL_GNATFLAGS = $(GNATFLAGS) -shared -fPIC
 
 GNATMAKE = gnatmake
 GNATMAKEFLAGS = $(GNATFLAGS)
 GNATMAKELDFLAGS = -largs -L. @GTK_LIBS@ -lgtkada
 
+CP = cp -p -f
+CHMOD = chmod
+MKDIR = mkdir -p
+RMDIR = rmdir
+MV = mv
 ARFLAGS = r
 
 RANLIB = @RANLIB@
@@ -36,6 +41,7 @@ ARCHIVENAME   = libgtkada.a
 GTKADA_CONFIG = gtkada-config
 GATE_SRC      = gate.adb
 GATE_EX       = gate.ex
+GATE          = gate
 DGATE         = dgate
 
 prefix        = @prefix@
@@ -48,15 +54,27 @@ alidir        = $(incdir)
 
 c_objects = misc.o misc-gnat.o
 
-all: libs $(GATE_EX) $(DGATE) testgtk 
+all: libs gates $(GATE_EX) $(DGATE) testgtk 
 
 libs: $(LIBNAME) $(ARCHIVENAME)
 
+gates: modes $(GATE_EX) $(DGATE) unmodes
+
+modes:
+	$(CHMOD) -w glib*.ali gdk*.ali gtk*.ali
+	$(MKDIR) gate-tmp
+	$(MV) glib*.o gdk*.o gtk*.o gate-tmp
+
+unmodes:
+	$(MV) gate-tmp/* .
+	$(RMDIR) gate-tmp
+	$(CHMOD) +w glib*.ali gdk*.ali gtk*.ali
+
 $(LIBNAME):: $(TEST_LINK).o $(c_objects)
-	$(CC) -shared -Wl,-soname,$(SONAME) -o $(LIBNAME) g*.o $(c_objects) @GTK_LIBS@ -lm
+	$(CC) -shared -o $(LIBNAME) glib*.o gdk*.o gtk*.o $(c_objects) @GTK_LIBS@ -lm
 
 $(ARCHIVENAME):: $(TEST_LINK).o $(c_objects)
-	$(AR) $(ARFLAGS) $(ARCHIVENAME) g*.o $(c_objects)
+	$(AR) $(ARFLAGS) $(ARCHIVENAME) glib*.o gdk*.o gtk*.o $(c_objects)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) $(ARCHIVENAME); \
 	fi
@@ -77,12 +95,19 @@ $(TEST_LINK).o::
 install: $(ARCHIVENAME) $(LIBNAME)
 	@if [ "$(prefix)" != `pwd` ]; then \
 	   echo Installing GtkAda in $(prefix); \
-	   $(RM) test_link.ali; \
-	   $(INSTALL) -d $(bindir) $(libdir) $(incdir) $(alidir); \
-	   $(INSTALL_DATA) $(ARCHIVENAME) $(LIBNAME) $(libdir); \
-	   $(INSTALL) -m 444 *.ads *.adb $(incdir); \
-	   $(INSTALL) -m 444 *.ali $(alidir); \
+	   $(MKDIR) $(bindir); \
+	   $(MKDIR) $(libdir); \
+	   $(MKDIR) $(incdir); \
+	   $(MKDIR) $(alidir); \
+	   $(INSTALL_DATA) $(ARCHIVENAME) $(libdir); \
+	   $(INSTALL_DATA) $(LIBNAME) $(libdir); \
+	   $(CP) glib*.ads glib*.adb $(incdir); \
+	   $(CP) gdk*.ads gdk*.adb $(incdir); \
+	   $(CP) gtk*.ads gtk*.adb $(incdir); \
+	   $(CP) glib*.ali gdk*.ali gtk*.ali $(alidir); \
+	   $(CHMOD) -w $(alidir)/*.ali; \
 	   $(INSTALL_PROGRAM) $(GTKADA_CONFIG) $(bindir); \
+           $(INSTALL_PROGRAM) $(GATE) $(bindir); \
            $(INSTALL_PROGRAM) $(GATE_EX) $(bindir); \
            $(INSTALL_PROGRAM) $(DGATE) $(bindir); \
 	fi
@@ -94,10 +119,10 @@ install: $(ARCHIVENAME) $(LIBNAME)
 	@echo ------------------------------------------------------------------
 
 clean-generic:
-	-${RM} *.o *.ali *~ main b_main.c core
+	-${RM} *.o *.ali *~ b_*.c core
 	-${RM} $(ARCHIVENAME) $(LIBNAME)
-	-${RM} $(GATE_EX) b_$(GATE_EX).c $(DGATE) b_$(DGATE).c
-	-${RM} $(TEST_LINK) b_$(TEST_LINK).c $(TEST_LINK).adb
+	-${RM} $(GATE_EX) $(DGATE)
+	-${RM} $(TEST_LINK) $(TEST_LINK).adb
 	-${RM} .\#*
 
 mostlyclean-generic: clean-generic
