@@ -68,6 +68,18 @@ package Gdk.Types is
    --  FIXME: Ada does not allow that for the moment....
    --  FIXME: This should be re-written.
 
+   type Gdk_Visual_Type is (Static_Gray,
+                            Grayscale,
+                            Static_Color,
+                            Pseudo_Color,
+                            True_Color,
+                            Direct_Color);
+
+
+   ------------------------------
+   --  Representation clauses  --
+   ------------------------------
+
    for Gdk_Input_Condition use (Read            => 2 ** 0,
                                 Write           => 2 ** 1,
                                 Input_Exception => 2 ** 2);
