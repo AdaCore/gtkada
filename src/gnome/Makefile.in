@@ -55,4 +55,8 @@ link: $(LIBNAME)
 	gnatmake -gnaty make `gtkada-config` -largs -lgnomeada
 
 clean:
-	$(RM) *.o *.ali *~ core
+	-$(RM) *.o *.ali *~ core
+
+distclean: clean
+	-$(RM) Makefile
+	-$(RM) libgnomeada*.so*
