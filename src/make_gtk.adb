@@ -188,19 +188,18 @@ with Gtk.Extra.Border_Combo;
 with Gtk.Extra.Color_Combo;
 with Gtk.Extra.Combo_Box;
 
---  disabled for now, until these widgets have been ported to Gtk+ 2.0:
---  with Gtk.Extra.Plot;
---  with Gtk.Extra.Plot_Canvas;
---  with Gtk.Extra.Plot_Data;
---  with Gtk.Extra.Plot_Bar;
---  with Gtk.Extra.Plot_Box;
---  with Gtk.Extra.Plot_Polar;
---  with Gtk.Extra.Plot_3D;
---  with Gtk.Extra.Plot_Surface;
---  with Gtk.Extra.Plot_Ps;
---  with Gtk.Extra.Sheet;
---  with Gtk.Extra.Font_Combo;
---  with Gtk.Extra.Item_Entry;
+with Gtk.Extra.Plot;
+with Gtk.Extra.Plot_Canvas;
+with Gtk.Extra.Plot_Data;
+with Gtk.Extra.Plot_Bar;
+with Gtk.Extra.Plot_Box;
+with Gtk.Extra.Plot_Polar;
+with Gtk.Extra.Plot_3D;
+with Gtk.Extra.Plot_Surface;
+with Gtk.Extra.Plot_Ps;
+with Gtk.Extra.Sheet;
+with Gtk.Extra.Font_Combo;
+with Gtk.Extra.Item_Entry;
 
 with Gtkada.Canvas;
 with Gtkada.Dialogs;

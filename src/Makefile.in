@@ -46,7 +46,7 @@ GENERATE_PRJ  = ./generate_prj
 PRJ           = gtkada.gpr
 
 c_objects = $(LIB_DIR)/misc.o $(LIB_DIR)/misc_extra.o $(LIB_DIR)/misc_broken.o
-c_extra_objects = gtkextra/gtk*.o
+c_extra_objects = ${wildcard gtkextra/gtk*.o}
 
 ## General and public targets
 
@@ -78,7 +78,7 @@ dirs:: force
 	-$(MKDIR) $(LIB_DIR)
 	-$(CHMOD) +x $(GATE) $(GTKADA_CONFIG)
 
-$(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
+$(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects) $(c_extra_objects)
 ifeq ($(BUILD_SHARED),yes)
 	$(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
 	  $(SO_OPTS)$(SONAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o \
@@ -92,7 +92,7 @@ ifeq ($(BUILD_SHARED),yes)
 	fi
 endif
 
-$(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects)
+$(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o ${wildcard ${LIB_DIR}/*.o} $(c_objects) $(c_extra_objects)
 	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(LIB_DIR)/pango*.o $(c_objects) $(c_extra_objects)
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) $(ARCHIVENAME); \
