@@ -37,8 +37,7 @@ package Glib.Gnodes is
    --  pop_allocator
    --  push_allocator
 
-   function Child_Position (Node  : in Gnode;
-                            Child : in Gnode) return Gint;
+   function Child_Position (Node  : in Gnode; Child : in Gnode) return Gint;
 
    function Depth (Node : in Gnode) return Guint;
 
@@ -50,16 +49,19 @@ package Glib.Gnodes is
 
    function Get_Root (Node : in Gnode) return Gnode;
 
-   procedure Insert (Parent   : in out Gnode;
-                     Position : in     Gint;
-                     Node     : in out Gnode);
+   procedure Insert
+     (Parent   : in out Gnode;
+      Position : in     Gint;
+      Node     : in out Gnode);
 
-   procedure Insert_Before (Parent  : in out Gnode;
-                            Sibling : in out Gnode;
-                            Node    : in out Gnode);
+   procedure Insert_Before
+     (Parent  : in out Gnode;
+      Sibling : in out Gnode;
+      Node    : in out Gnode);
 
-   function Is_Ancestor (Node       : in Gnode;
-                         Descendant : in Gnode) return Boolean;
+   function Is_Ancestor
+     (Node       : in Gnode;
+      Descendant : in Gnode) return Boolean;
 
    function Is_Leaf (Node : in Gnode) return Boolean;
 
@@ -71,23 +73,20 @@ package Glib.Gnodes is
 
    function Max_Height (Root : in Gnode) return Guint;
 
-   function N_Nodes (Root  : in Gnode;
-                     Flags : in Glib_Traverse_Flags) return Guint;
+   function N_Nodes
+     (Root  : in Gnode; Flags : in Glib_Traverse_Flags) return Guint;
 
    function Next_Sibling (Node : in Gnode) return Gnode;
 
-   function Nth_Child (Node : in Gnode;
-                       N    : in Guint) return Gnode;
+   function Nth_Child (Node : in Gnode; N : in Guint) return Gnode;
 
-   procedure Prepend (Parent : in out Gnode;
-                      Node   : in out Gnode);
+   procedure Prepend (Parent : in out Gnode; Node : in out Gnode);
 
    function Prev_Sibling (Node : in Gnode) return Gnode;
 
    procedure Reverse_Children (Node : in out Gnode);
 
    procedure Unlink (Node : in out Gnode);
-
 
    generic
       type Element (<>) is private;
@@ -102,11 +101,9 @@ package Glib.Gnodes is
       --  find
       --  find_child
 
-      procedure Glib_New (Node :    out Gnode;
-                          Data : in     Element_Access);
+      procedure Glib_New (Node : out Gnode; Data : in Element_Access);
 
       --  traverse
-
    end Gnode_Data;
 
 private

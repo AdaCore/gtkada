@@ -35,10 +35,7 @@ package Glib.Enums is
    Traverse_All       : constant Glib_Traverse_Flags;
    Traverse_Flags     : constant Glib_Traverse_Flags;
 
-   type Glib_Traverse_Type is (In_Order,
-                               Pre_Order,
-                               Post_Order,
-                               Level_Order);
+   type Glib_Traverse_Type is (In_Order, Pre_Order, Post_Order, Level_Order);
 
 private
 

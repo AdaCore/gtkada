@@ -42,6 +42,7 @@ package Gtk.GRange is
      (The_Range : access Gtk_Range_Record;
       Xdelta    : in Gint;
       Ydelta    : in Gint);
+
    procedure Default_Hslider_Update (The_Range : access Gtk_Range_Record);
 
    procedure Default_Htrough_Click
@@ -56,6 +57,7 @@ package Gtk.GRange is
      (The_Range : access Gtk_Range_Record;
       Xdelta    : in Gint;
       Ydelta    : in Gint);
+
    procedure Default_Vslider_Update (The_Range : access Gtk_Range_Record);
 
    procedure Default_Vtrough_Click
@@ -67,18 +69,26 @@ package Gtk.GRange is
    --  Was a function in C
 
    procedure Draw_Background (The_Range : access Gtk_Range_Record);
+
    procedure Draw_Slider (The_Range : access Gtk_Range_Record);
+
    procedure Draw_Step_Back (The_Range : access Gtk_Range_Record);
+
    procedure Draw_Step_Forw (The_Range : access Gtk_Range_Record);
+
    procedure Draw_Trough (The_Range : access Gtk_Range_Record);
+
    function Get_Adjustment (The_Range  : access Gtk_Range_Record)
      return Gtk.Adjustment.Gtk_Adjustment;
+
    procedure Set_Adjustment
      (The_Range  : access Gtk_Range_Record;
       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+
    procedure Set_Update_Policy
      (The_Range : access Gtk_Range_Record;
       Policy    : in Gtk_Update_Type);
+
    procedure Slider_Update (The_Range : access Gtk_Range_Record);
 
    procedure Trough_Click

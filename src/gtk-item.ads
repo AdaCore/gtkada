@@ -44,8 +44,7 @@ package Gtk.Item is
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (N      : in Node_Ptr;
-                       File   : in File_Type)
+   procedure Generate (N : in Node_Ptr; File : in File_Type)
      renames Gtk.Bin.Generate;
 
    procedure Generate (Container : in out Gtk_Object; N : in Node_Ptr)

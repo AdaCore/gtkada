@@ -35,8 +35,7 @@ package body Gtk.Invisible is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Invisible)
-   is
+   procedure Gtk_New (Widget : out Gtk_Invisible) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_invisible_new");
    begin
