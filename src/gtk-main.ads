@@ -247,15 +247,21 @@ package Gtk.Main is
       type Data_Type (<>) is private;
    package Idle is
       type Callback is access function (D : in Data_Type) return Boolean;
+      type Destroy_Callback is access procedure (D : in out Data_Type);
+
       function Add
         (Cb       : in Callback;
          D        : in Data_Type;
-         Priority : in Idle_Priority := Priority_Default_Idle)
+         Priority : in Idle_Priority := Priority_Default_Idle;
+         Destroy  : in Destroy_Callback := null)
          return Idle_Handler_Id;
    end Idle;
    --  !!Warning!! The instances of this package must be declared at library
    --  level, as they are some accesses to internal functions that happen
    --  when the callback is called.
+   --  Destroy will be called automatically just prior to the destruction of D.
+   --  In particular, it is also called if the idle is destroyed through a call
+   --  to Idle_Remove.
    --  </doc_ignore>
 
    procedure Idle_Remove (Id : in Idle_Handler_Id);

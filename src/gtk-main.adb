@@ -331,6 +331,7 @@ package body Gtk.Main is
       type Data_Type_Access is access Data_Type;
       type Cb_Record is record
          Func : Callback;
+         User_Destroy : Destroy_Callback;
          Data : Data_Type_Access;
       end record;
       type Cb_Record_Access is access Cb_Record;
@@ -356,6 +357,9 @@ package body Gtk.Main is
          Data : Cb_Record_Access := Convert (D);
 
       begin
+         if Data.User_Destroy /= null then
+            Data.User_Destroy (Data.Data.all);
+         end if;
          Internal2 (Data.Data);
          Internal (Data);
       end Free_Data;
@@ -377,7 +381,8 @@ package body Gtk.Main is
       function Add
         (Cb       : Callback;
          D        : Data_Type;
-         Priority : Idle_Priority := Priority_Default_Idle)
+         Priority : Idle_Priority := Priority_Default_Idle;
+         Destroy  : Destroy_Callback := null)
          return Idle_Handler_Id
       is
          function Internal
@@ -391,8 +396,10 @@ package body Gtk.Main is
          function Convert is new Unchecked_Conversion
            (Cb_Record_Access, System.Address);
 
-         Data : Cb_Record_Access := new Cb_Record'(Func => Cb,
-                                                   Data => new Data_Type'(D));
+         Data : Cb_Record_Access := new Cb_Record'
+           (Func => Cb,
+            User_Destroy => Destroy,
+            Data => new Data_Type'(D));
       begin
          return Internal (Priority, General_Cb'Address, System.Null_Address,
                           Convert (Data), Free_Data'Address);
