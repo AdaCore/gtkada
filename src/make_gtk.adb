@@ -36,6 +36,7 @@ with Glib.Glade;
 with Glib.Gnodes;
 with Glib.Object;
 with Glib.GSlist;
+with Glib.Messages;
 with Glib.Module;
 with Glib.Properties;
 with Glib.Properties.Creation;
