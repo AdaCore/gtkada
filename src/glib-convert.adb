@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2001-2002 ACT-Europe                 --
+--                Copyright (C) 2001-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -407,8 +407,13 @@ package body Glib.Convert is
    begin
       S := Internal
         (OS_String, OS_String'Length, Read'Access, Written'Access, Error);
+
       Bytes_Read := Natural (Read);
       Bytes_Written := Natural (Written);
+
+      if S = Null_Ptr then
+         return;
+      end if;
 
       declare
          Res : constant String := Value (S);
