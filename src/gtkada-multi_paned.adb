@@ -1440,6 +1440,55 @@ package body Gtkada.Multi_Paned is
       Unchecked_Free (Old);
    end Add_Handle;
 
+   -------------------
+   -- Splitted_Area --
+   -------------------
+
+   function Splitted_Area
+     (Win           : access Gtkada_Multi_Paned_Record;
+      Ref_Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Orientation   : Gtk.Enums.Gtk_Orientation;
+      After         : Boolean := True) return Gtk.Widget.Gtk_Widget
+   is
+      Iter         : Child_Iterator := Start (Win);
+      Current, Tmp : Child_Description_Access;
+   begin
+      loop
+         Current := Get (Iter);
+         exit when Current = null
+           or else (Current.Is_Widget
+                    and then Current.Widget = Gtk_Widget (Ref_Widget));
+         Next (Iter);
+      end loop;
+
+      if Current /= null
+        and then Current.Parent.Orientation = Orientation
+      then
+         if After then
+            Current := Current.Next;
+         else
+            Tmp := Current.Parent.First_Child;
+            while Tmp /= null
+              and then Tmp.Next /= Current
+            loop
+               Tmp := Tmp.Next;
+            end loop;
+
+            Current := Tmp;
+         end if;
+
+         while Current /= null and then not Current.Is_Widget loop
+            Current := Current.First_Child;
+         end loop;
+
+         if Current /= null then
+            return Current.Widget;
+         end if;
+      end if;
+
+      return null;
+   end Splitted_Area;
+
    --------------------
    -- Split_Internal --
    --------------------

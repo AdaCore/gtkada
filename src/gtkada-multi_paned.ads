@@ -89,6 +89,15 @@ package Gtkada.Multi_Paned is
       Fixed_Size    : Boolean := False);
    --  Force a specific size for Widget
 
+   function Splitted_Area
+     (Win           : access Gtkada_Multi_Paned_Record;
+      Ref_Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Orientation   : Gtk.Enums.Gtk_Orientation;
+      After         : Boolean := True) return Gtk.Widget.Gtk_Widget;
+   --  Return the widget in the splitted area next to Ref_Widget if any exist.
+   --  Orientation and After define which splitted area we are looking at.
+   --  null is returned if there are no such splitted area.
+
    ---------------
    -- Iterators --
    ---------------
