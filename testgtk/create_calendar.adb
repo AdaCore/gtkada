@@ -52,7 +52,7 @@ package body Create_Calendar is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box1     : Gtk_Box;
-      --  Calendar : Gtk_Calendar;
+      Calendar : Gtk_Calendar;
    begin
       Set_Label (Frame, "Calendar");
 
@@ -60,14 +60,9 @@ package body Create_Calendar is
       Add (Frame, Box1);
       Show (Box1);
 
-      --  ??? To be investigated:
-      --  the following lines cause testgtk to crash when selecting the
-      --  calendar and then selecting another test. Most likely a bug in the
-      --  calendar itself.
-
-      --       Gtk_New (Calendar);
-      --       Pack_Start (Box1, Calendar, False, False, 0);
-      --       Show (Calendar);
+      Gtk_New (Calendar);
+      Pack_Start (Box1, Calendar, False, False, 0);
+      Show (Calendar);
    end Run;
 
 end Create_Calendar;
