@@ -125,8 +125,10 @@ package body Gtk.Glade is
       Hash       => Hash,
       Equal      => Equal);
 
-   procedure Create_Widget (N : Node_Ptr);
+   procedure Create_Widget (N : Node_Ptr; Top_Level : Boolean := True);
    --  Create a widget and all its children from a given widget tree
+   --  Top_Level is True when Create_Widget is called for a top level
+   --  widget
 
    procedure Print_Create_Function
      (N : Node_Ptr; File : File_Type; First : Boolean := False);
@@ -175,22 +177,23 @@ package body Gtk.Glade is
    -- Create_Widget --
    -------------------
 
-   procedure Create_Widget (N : Node_Ptr) is
+   procedure Create_Widget (N : Node_Ptr; Top_Level : Boolean := True) is
       P      : Node_Ptr;
       Object : Gtk.Object.Gtk_Object;
 
    begin
       Get_Dgate (Get_Field (N, "class").all) (Object, N);
-      Widget.Show (Widget.Gtk_Widget (Object));
       P := N.Child;
 
       while P /= null loop
          if P.Tag.all = "widget" then
-            Create_Widget (P);
+            Create_Widget (P, False);
          end if;
 
          P := P.Next;
       end loop;
+
+      Widget.Show_All (Widget.Gtk_Widget (Object));
    end Create_Widget;
 
    ---------------------------
@@ -205,14 +208,8 @@ package body Gtk.Glade is
 
    begin
       Get_Gate (Get_Field (N, "class").all) (N, File);
-      S := Get_Field (N, "name");
 
-      if S /= null then
-         if not First then
-            Put_Line (File, "   Widget.Show (Gtk_Widget (" &
-              To_Ada (S.all) & "));");
-         end if;
-
+      if not First then
          New_Line (File);
       end if;
 
@@ -225,6 +222,16 @@ package body Gtk.Glade is
 
          P := P.Next;
       end loop;
+
+      S := Get_Field (N, "name");
+
+      if S /= null then
+         if First then
+            Put_Line (File, "   Widget.Show_All (Gtk_Widget (" &
+              To_Ada (S.all) & "));");
+         end if;
+      end if;
+
    end Print_Create_Function;
 
    ---------------------

@@ -713,7 +713,6 @@ package body Gtk.Widget is
 
    begin
       Object.Generate (N, File);
-      Gen_Set (N, "Widget", "name", File, '"');
       Gen_Set (N, "Widget", "sensitive", File);
       Gen_Set (N, "Widget", "UPosition", "x", "y", "", "", File);
       Gen_Set (N, "Widget", "USize", "width", "height", "", "", File);
@@ -753,11 +752,6 @@ package body Gtk.Widget is
 
    begin
       Object.Generate (Widget, N);
-      S := Get_Field (N, "name");
-
-      if S /= null then
-         Set_Name (Gtk_Widget (Widget), S.all);
-      end if;
 
       S := Get_Field (N, "sensitive");
 
