@@ -29,7 +29,8 @@
 
 --  <description>
 --
---  Note that this widget is obsolete. Consider using Gtk.Ctree instead.
+--  Note that this widget is obsolete and broken.
+--  Consider using Gtk.Tree_View instead.
 --
 --  This widget displays a tree with expandable nodes. A tree is used to
 --  display hierarchically-organized data. It is a vertical container for

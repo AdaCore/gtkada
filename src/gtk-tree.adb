@@ -232,12 +232,11 @@ package body Gtk.Tree is
      (Tree : access Gtk_Tree_Record;
       Mode : in Gtk_Selection_Mode)
    is
-      procedure Internal
-        (Tree : in System.Address;
-         Mode : in Gint);
+      procedure Internal (Tree : System.Address; Mode : Gtk_Selection_Mode);
       pragma Import (C, Internal, "gtk_tree_set_selection_mode");
+
    begin
-      Internal (Get_Object (Tree), Gtk_Selection_Mode'Pos (Mode));
+      Internal (Get_Object (Tree), Mode);
    end Set_Selection_Mode;
 
    --------------------
@@ -264,12 +263,11 @@ package body Gtk.Tree is
      (Tree : access Gtk_Tree_Record;
       Mode : in Gtk_Tree_View_Mode)
    is
-      procedure Internal
-        (Tree : in System.Address;
-         Mode : in Gint);
+      procedure Internal (Tree : System.Address; Mode : Gtk_Tree_View_Mode);
       pragma Import (C, Internal, "gtk_tree_set_view_mode");
+
    begin
-      Internal (Get_Object (Tree), Gtk_Tree_View_Mode'Pos (Mode));
+      Internal (Get_Object (Tree), Mode);
    end Set_View_Mode;
 
    --------------------
