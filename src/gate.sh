@@ -1,23 +1,17 @@
 #
 
 if [ $# -eq 0 ]; then
-  echo "Usage: gate project-file"
+  echo "Usage: gate project-file" | gdialog error justify_left
   exit 1
 fi
 
-echo Generating Ada files...
-
 dir=`dirname $1`
-file=`cd $dir; pwd`/`basename $1`
+file=$1
 info=`gate-in.exe -p -s -x $file`
 status=$?
 
 if [ $status != 0 ]; then
-  if [ $status = 2 ]; then
-     echo $info
-  fi
-
-  echo "Couldn't parse $file Exiting."
+  echo "Couldn't parse $file. Exiting." | gdialog error justify_left
   exit 1
 fi
 
@@ -43,14 +37,14 @@ pixdir="$3"
 mkdir -p $dir/$srcdir
 
 if [ "$pixdir" != "<no_name>" -a -d $dir/$pixdir ]; then
-   cp $dir/$pixdir/*.xpm $dir/$srcdir > /dev/null 2>&1
+   cp $dir/$pixdir/*xpm $dir/$srcdir > /dev/null 2>&1
 fi
 
 owd=`pwd`
 cd $dir/$srcdir
 
 if [ $? != 0 ]; then
-  echo "Couldn't change to $dir/$srcdir, aborting."
+  echo "Couldn't change to $dir/$srcdir, aborting." | gdialog error justify_left
   exit 1
 fi
 
@@ -60,10 +54,12 @@ tmp=$gt/tmp
 rm -rf $tmp
 mkdir $tmp
 wd=`pwd`
+out=$gt/output.txt
+
 gate-in.exe $file > $tmp/gate.ada
 
 if [ $? != 0 ]; then
-  echo "Couldn't generate Ada code. Exiting."
+  echo "Couldn't generate Ada code. Exiting." | gdialog error justify_left
   exit 1
 fi
 
@@ -82,28 +78,27 @@ cp -f $tmp/* .
 rm -f *.rej *.orig
 
 if cat $gt/gate.difs | patch -f > $gt/patch.out 2>&1; then
-  echo "The following files have been created/updated in $psrcdir:"
+  echo "The following files have been created/updated in $psrcdir:" > $out
 
   for j in $files; do
-    echo "  "$j
+    echo "  "$j >> $out
   done
 
-  echo done.
   rm -f *.orig
+  # cat $out | gdialog information justify_fill
 else
-  echo "The following files have been updated in $psrcdir:"
+  echo "The following files have been updated in $psrcdir:" > $out
 
   for j in $files; do
-    echo "  "$j
+    echo "  "$j >> $out
   done
 
-cat << EOF | gdialog error justify_fill
-Merge of some changes failed. It usually means that some modified code
-is obsolete in the current project file.
+  echo Merge of some changes failed. It usually means that some modified>> $out
+  echo code is obsolete in the current project file.>> $out
+  echo Files with the ".rej" extension have been generated to help merging>>$out
+  echo manually if needed.>> $out
 
-Files with the ".rej" extension have been generated to help merging
-manually if needed.
-EOF
+  cat $out | gdialog error justify_fill
 fi
 
-cp -f $tmp/* $gt/
+cp -f $tmp/* $gt
