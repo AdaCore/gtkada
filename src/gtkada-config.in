@@ -42,10 +42,6 @@ while test $# -gt 0; do
       ;;
     --static)
       gtkada_libs="$prefix/lib/libgtkada.a"
-      gtk_conf_pre=`pkg-config gtk+-x11-2.0 --variable=prefix`
-      glib_conf_pre=`pkg-config glib-2.0 --variable=prefix`
-      my_gtk_flags=`pkg-config gtk+-x11-2.0 --libs | sed -e 's/-lglib//g' -e 's/-lgtk//g' -e 's/-lgdk//g' | sed -e 's/-lgmodule//g'`
-      gtk_libs="$gtk_conf_pre/lib/libgtk.a $gtk_conf_pre/lib/libgdk.a $glib_conf_pre/lib/libglib.a $glib_conf_pre/lib/libgmodule.a $my_gtk_flags @LIBGLADE_STATIC_LIBS@"
       gtkada_lflags=""
       ;;  
     --prefix)
