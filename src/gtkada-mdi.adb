@@ -2832,17 +2832,7 @@ package body Gtkada.MDI is
       elsif Child.State = Floating
         and then Realized_Is_Set (Child.Initial)
       then
-         declare
-            Win : constant Gdk.Window.Gdk_Window :=
-                    Get_Window (Get_Toplevel (Child.Initial));
-         begin
-            if (Get_State (Win) and Window_State_Maximized) /= 0 then
-               Present (Gtk_Window (Get_Toplevel (Child.Initial)));
-               Maximize (Win);
-            else
-               Present (Gtk_Window (Get_Toplevel (Child.Initial)));
-            end if;
-         end;
+         Present (Gtk_Window (Get_Toplevel (Child.Initial)));
 
       elsif Realized_Is_Set (Child) then
          Gdk.Window.Gdk_Raise (Get_Window (Child));
@@ -2939,6 +2929,11 @@ package body Gtkada.MDI is
            (C, Border_Thickness, Border_Thickness,
             Gint (Get_Allocation_Width (C)) - 2 * Border_Thickness,
             Child.MDI.Title_Bar_Height);
+
+         --  Give the focus to the window containing the child.
+         if Child.MDI.Present_Window_On_Child_Focus then
+            Present (Gtk_Window (Get_Toplevel (C)));
+         end if;
       end if;
 
       Update_Dock_Menu (C);
@@ -4196,7 +4191,7 @@ package body Gtkada.MDI is
    end Close_Cb;
 
    --------------
-   -- Close_Cb --
+   -- Focus_Cb --
    --------------
 
    procedure Focus_Cb (Child : access Gtk_Widget_Record'Class) is
@@ -5449,6 +5444,17 @@ package body Gtkada.MDI is
    begin
       return MDI.Desktop_Was_Loaded;
    end Desktop_Was_Loaded;
+
+   ----------------------------
+   -- Present_On_Child_Focus --
+   ----------------------------
+
+   procedure Present_On_Child_Focus
+     (MDI     : access MDI_Window_Record;
+      Present : Boolean) is
+   begin
+      MDI.Present_Window_On_Child_Focus := Present;
+   end Present_On_Child_Focus;
 
    ---------------
    -- Get_State --
