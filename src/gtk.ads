@@ -16,8 +16,7 @@ package Gtk is
    function Minor_Version return Guint;
    function Micro_Version return Guint;
 
-   function Type_Name (Object : in Root_Type'Class)
-                       return      String;
+   function Type_Name (Type_Num : in Gint) return      String;
 
    function Get_Object (Object : in Root_Type'Class)
                         return System.Address;
