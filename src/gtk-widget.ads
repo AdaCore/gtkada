@@ -1141,12 +1141,10 @@ package Gtk.Widget is
    --    ???
    --
    --  - "selection_received"
-   --
-   --    ???
+   --    Related to the selection mechanism, see Gtk.Selection
    --
    --  - "selection_get"
-   --
-   --    ???
+   --    Related to the selection mechanism, see Gtk.Selection
    --
    --  - "proximity_in_event"
    --    function Handler (Widget : access Gtk_Widget_Record'Class;
@@ -1169,13 +1167,28 @@ package Gtk.Widget is
    --    of widget (if no other handler of widget has returned True).
    --
    --  - "drag_leave"
+   --    Event related to drag-and-drop support. See the Gtk.Dnd documentation.
+   --
    --  - "drag_begin"
+   --    Event related to drag-and-drop support. See the Gtk.Dnd documentation.
+   --
    --  - "drag_end"
+   --    Event related to drag-and-drop support. See the Gtk.Dnd documentation.
+   --
    --  - "drag_data_delete"
+   --    Event related to drag-and-drop support. See the Gtk.Dnd documentation.
+   --
    --  - "drag_motion"
+   --    Event related to drag-and-drop support. See the Gtk.Dnd documentation.
+   --
    --  - "drag_drop"
+   --    Event related to drag-and-drop support. See the Gtk.Dnd documentation.
+   --
    --  - "drag_data_get"
+   --    Event related to drag-and-drop support. See the Gtk.Dnd documentation.
+   --
    --  - "drag_data_received"
+   --    Event related to drag-and-drop support. See the Gtk.Dnd documentation.
    --
    --  - "visibility_notify_event"
    --    function Handler (Widget : access Gtk_Widget_Record'Class;

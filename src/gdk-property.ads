@@ -35,7 +35,7 @@ with Gdk.Window;
 package Gdk.Property is
 
    function Atom_Intern (Atom_Name      : in String;
-                         Only_If_Exists : in Boolean)
+                         Only_If_Exists : in Boolean := True)
                          return              Gdk.Types.Gdk_Atom;
 
    function Atom_Name (Atom   : in Gdk.Types.Gdk_Atom) return String;

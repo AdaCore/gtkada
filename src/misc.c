@@ -299,6 +299,60 @@ ada_rgb_cmap_set8 (GdkRgbCmap* cmap, gint index, guchar value)
   cmap->lut [index] = value;
 }
 
+/*****************************************************
+ ** Gtk.Selection and Gtk.Dnd functions
+ *****************************************************/
+
+GdkAtom
+ada_gtk_dnd_get_selection (GtkSelectionData* selection) {
+  return selection->selection;
+}
+
+GdkAtom
+ada_gtk_dnd_get_target (GtkSelectionData* selection) {
+  return selection->target;
+}
+
+GdkAtom
+ada_gtk_dnd_get_type (GtkSelectionData* selection) {
+  return selection->type;
+}
+
+gint
+ada_gtk_dnd_get_format (GtkSelectionData* selection) {
+  return selection->format;
+}
+
+guchar*
+ada_gtk_dnd_get_data (GtkSelectionData* selection) {
+  return selection->data;
+}
+
+gint
+ada_gtk_dnd_get_length (GtkSelectionData* selection) {
+  return selection->length;
+}
+
+GdkDragAction
+ada_gtk_dnd_context_get_actions (GdkDragContext* context) {
+  return context->actions;
+}
+
+GdkDragAction
+ada_gtk_dnd_context_get_suggested_action (GdkDragContext* context) {
+  return context->suggested_action;
+}
+
+GdkDragAction
+ada_gtk_dnd_context_get_action (GdkDragContext* context) {
+  return context->action;
+}
+
+GList*
+ada_gtk_dnd_context_get_targets (GdkDragContext* context) {
+  return context->targets;
+}
+
 
 /*
  * Gnode macros

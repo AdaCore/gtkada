@@ -73,6 +73,9 @@ package Gdk.Types is
    --
 
    type Gdk_Atom is new Gulong;
+   --  This type represents a property of the X-server, that can be
+   --  manipulated through functions in Gdk.Property. They have an associated
+   --  name, that can be printed, as well as a value whose type may vary.
 
    type Gdk_Axis_Use is (Axis_Ignore,
                          Axis_X,
@@ -717,11 +720,4 @@ end Gdk.Types;
 --  + GdkFontType
 --  + GdkNotifyType
 --  + GdkPropertyState
---  + GdkSelection
---  + GdkSelectionType
 --  + GdkStatus
---  + GdkTarget
---
---  The following types will probably be bound later (DnD).
---
---  + GdkDragAction

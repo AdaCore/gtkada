@@ -61,7 +61,7 @@ package body Gdk.Property is
    -----------------
 
    function Atom_Intern (Atom_Name      : in String;
-                         Only_If_Exists : in Boolean)
+                         Only_If_Exists : in Boolean := True)
                          return              Gdk.Types.Gdk_Atom
    is
       function Internal (Atom_Name      : in String;
