@@ -70,19 +70,20 @@ package Glib is
    ------------------------
 
    type Gboolean_Array is array (Natural range <>) of Gboolean;
-   type Gshort_Array is array (Natural range <>) of Gshort;
-   type Glong_Array is array (Natural range <>) of Glong;
-   type Gint_Array is array (Natural range <>) of Gint;
-   type Guint_Array is array (Natural range <>) of Guint;
-   type Gushort_Array is array (Natural range <>) of Gushort;
-   type Gulong_Array is array (Natural range <>) of Gulong;
-   type Gfloat_Array is array (Natural range <>) of Gfloat;
-   type Guchar_Array is array (Natural range <>) of Guchar;
+   type Gshort_Array   is array (Natural range <>) of Gshort;
+   type Glong_Array    is array (Natural range <>) of Glong;
+   type Gint_Array     is array (Natural range <>) of Gint;
+   type Guint_Array    is array (Natural range <>) of Guint;
+   type Guint32_Array  is array (Natural range <>) of Guint32;
+   type Gushort_Array  is array (Natural range <>) of Gushort;
+   type Gulong_Array   is array (Natural range <>) of Gulong;
+   type Gfloat_Array   is array (Natural range <>) of Gfloat;
+   type Guchar_Array   is array (Natural range <>) of Guchar;
 
-   type Boolean_Array is array (Natural range <>) of Boolean;
+   type Boolean_Array  is array (Natural range <>) of Boolean;
 
-   type Short_Array is array (Natural range <>) of C.short;
-   type Long_Array is array (Natural range <>) of C.long;
+   type Short_Array    is array (Natural range <>) of C.short;
+   type Long_Array     is array (Natural range <>) of C.long;
 
    ---------------------------
    --  Conversion services  --

@@ -109,6 +109,7 @@ with Gdk.Pixmap;
 with Gdk.Property;
 with Gdk.Rectangle;
 with Gdk.Region;
+with Gdk.Rgb;
 with Gdk.Threads;
 with Gdk.Types.Keysyms;
 with Gdk.Types;
