@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gdk; use Gdk;
-with Gtk.Enums; use Gtk.Enums;
 with System;
 
 package body Gtk.Extra.Font_Combo is

@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gdk; use Gdk;
-with Gtk.Enums;
 with System;
 
 package body Gtk.Extra.Combo_Box is
