@@ -84,7 +84,7 @@ with Gtk.Tooltips;
 with Gtk.Tree;
 with Gtk.Tree_Item;
 with Gtk.Util;
-with Gtk.VButton_Box;
+with Gtk.Vbutton_Box;
 with Gtk.Viewport;
 with Gtk.Widget;
 with Gtk.Window;
