@@ -656,14 +656,18 @@ sub get_types () {
 		$line =~ /(access (.|\n)*)/;
 		$description .= $1;
 		my ($length) = "    ";
-		while ($line !~ /\)/) {
-		    $line = shift @content;
-		    $line =~ s/^\s+/ /;
-		    $description .= $length . $line;
+
+		# If there is a non-empty argument list, include it.
+		if ($line =~ /\(/) {
+		    while ($line !~ /\)/) {
+			$line = shift @content;
+			$line =~ s/^\s+/ /;
+			$description .= $length . $line;
+		    }
 		}
 
 		# Add the 'return' line
-		if ($is_function) {
+		if ($is_function && $line !~ /\Wreturn\W/) {
 		    $line = shift @content;
 		    $line =~ s/^\s+/ /;
 		    $description .= "   $line";
