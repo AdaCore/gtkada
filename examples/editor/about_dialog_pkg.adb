@@ -42,7 +42,6 @@ begin
 
    Gtk_New (About_Dialog.Button7, "OK");
    Set_Flags (About_Dialog.Button7, Can_Default);
-   Grab_Default (About_Dialog.Button7);
    Pack_Start (About_Dialog.Dialog_Action_Area2, About_Dialog.Button7, False, False, 0);
    Button_Callback.Connect
      (About_Dialog.Button7, "clicked",
