@@ -32,6 +32,7 @@ with Gdk;            use Gdk;
 with Gtk.Menu_Item;  use Gtk.Menu_Item;
 with Gtk.Menu_Shell; use Gtk.Menu_Shell;
 with Gtk.Util;       use Gtk.Util;
+with Gtk.Object;     use Gtk.Object;
 
 package body Gtk.Menu is
 
@@ -255,13 +256,13 @@ package body Gtk.Menu is
    -----------------------
 
    procedure Set_Accel_Group
-      (Menu        : access Gtk_Menu_Record;
-       Accel_Group : access Gtk.Accel_Group.Gtk_Accel_Group'Class) is
+      (Menu    : access Gtk_Menu_Record;
+       Accel   : access Gtk.Accel_Group.Gtk_Accel_Group'Class) is
       procedure Internal (Menu        : in System.Address;
                           Accel_Group : in System.Address);
       pragma Import (C, Internal, "gtk_menu_set_accel_group");
    begin
-      Internal (Get_Object (Menu), Get_Object (Accel_Group));
+      Internal (Get_Object (Menu), Get_Object (Accel));
    end Set_Accel_Group;
 
 

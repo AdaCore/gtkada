@@ -213,8 +213,8 @@ package Gtk.Menu is
    --------------------------------
 
    procedure Set_Accel_Group
-      (Menu        : access Gtk_Menu_Record;
-       Accel_Group : access Accel_Group.Gtk_Accel_Group'Class);
+      (Menu     : access Gtk_Menu_Record;
+       Accel    : access Accel_Group.Gtk_Accel_Group'Class);
    --  Set the Accel_Group that holds the global accelerators and key bindings
    --  for the menu.
 

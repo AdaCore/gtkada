@@ -44,7 +44,7 @@
 
 with Gtk.Object;
 with Gtk.Container;
-with Gtk.Menu_Item;   use Gtk.Menu_Item
+with Gtk.Menu_Item;   use Gtk.Menu_Item;
 
 package Gtk.Menu_Shell is
 
