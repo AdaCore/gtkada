@@ -2688,13 +2688,13 @@ package body Gtkada.MDI is
 
          Size_Request (Child, Requisition);
          Set_Default_Size (Win, Requisition.Width, Requisition.Height);
-         Show_All (Win);
 
          Child.State := Floating;
          Update_Float_Menu (Child);
          Emit_By_Name_Child (Get_Object (Child.MDI), "float_child" & ASCII.NUL,
                              Get_Object (Child));
          Widget_Callback.Emit_By_Name (Child, "float_child");
+         Show_All (Win);
 
       elsif Child.State = Floating and then not Float then
          --  Reassign the widget to Child instead of the notebook
