@@ -509,6 +509,9 @@ package body Gtkada.MDI is
             Set_Focus_Child (MDI_Window (MDI), Containing => Widget);
          end if;
       end if;
+
+      --  No need to call the parent's set_focus_child, this is called
+      --  automatically when the signal is propagated.
    end Set_Focus_Child_MDI;
 
    ----------------------------------
@@ -1696,13 +1699,15 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record'Class;
       Force : Boolean := False)
    is
-      Event      : Gdk_Event;
+      MDI    : constant MDI_Window := MDI_Window (Child.MDI);
+      Event  : Gdk_Event;
+      Id     : Gtk.Handlers.Handler_Id;
    begin
       --  Don't do anything for now if the MDI isn't realized, since we
       --  can't send create the event anyway.
 
-      if Realized_Is_Set (Child.MDI) then
-         Allocate (Event, Delete, Get_Window (Child.MDI));
+      if Realized_Is_Set (MDI) then
+         Allocate (Event, Delete, Get_Window (MDI));
 
          --  For a top-level window, we must rebuild the initial widget
          --  temporarily, so that the application can do all the test it wants.
@@ -1714,6 +1719,14 @@ package body Gtkada.MDI is
          then
             Float_Child (Child, False);
             Destroy (Child);
+
+            --  Set the focus on the child that had the focus just before.
+            --  If both are in the main notebook, this results in an extra
+            --  flicker while pages are switched...
+
+            if MDI.Items /= Widget_List.Null_List then
+               Set_Focus_Child (MDI, Get_Data (MDI.Items));
+            end if;
          end if;
 
          Free (Event);
@@ -2718,7 +2731,9 @@ package body Gtkada.MDI is
 
    procedure Give_Focus_To_Child (Widget : access Gtk_Widget_Record'Class) is
    begin
-      Grab_Focus (Widget);
+      if Child_Focus (Widget, Dir_Tab_Forward) then
+         Grab_Focus (Widget);
+      end if;
    end Give_Focus_To_Child;
 
    ---------
@@ -2813,7 +2828,9 @@ package body Gtkada.MDI is
       --  Restore the keyboard focus, which might have been stolen if the new
       --  child was added to a notebook.
 
-      if MDI.Focus_Child /= null then
+      if MDI.Focus_Child /= null
+        and then Child_Focus (MDI.Focus_Child, Dir_Tab_Forward)
+      then
          Grab_Focus (MDI.Focus_Child);
       end if;
 
@@ -3071,6 +3088,8 @@ package body Gtkada.MDI is
 
    function Raise_Child_Idle (Data : Raise_Idle_Data) return Boolean is
       Child : MDI_Child := Data.Child;
+      Tmp   : Boolean;
+      pragma Unreferenced (Tmp);
    begin
       if Child = null then
          return False;
@@ -3119,7 +3138,9 @@ package body Gtkada.MDI is
       --  Give the focus to the Focus_Child, since the notebook page switch
       --  might have changed that.
 
-      if Child.MDI.Focus_Child /= null then
+      if Child.MDI.Focus_Child /= null
+        and then Child_Focus (Child.MDI.Focus_Child, Dir_Tab_Forward)
+      then
          Grab_Focus (Child.MDI.Focus_Child);
       end if;
 
@@ -3248,7 +3269,9 @@ package body Gtkada.MDI is
       --  want to make sure that no other widget has the focus. As a result,
       --  focus_in events will always be sent the next time the user selects a
       --  widget.
-      if Force_Focus then
+      if Force_Focus
+        and then Child_Focus (C, Dir_Tab_Forward)
+      then
          Grab_Focus (C);
       end if;
 
@@ -4032,7 +4055,7 @@ package body Gtkada.MDI is
       end if;
 
       if Old_Focus /= null then
-         Raise_Child (Old_Focus);
+         Set_Focus_Child (MDI, Old_Focus);
       end if;
 
       Queue_Resize (MDI);
@@ -4695,7 +4718,7 @@ package body Gtkada.MDI is
          Icons_Height : constant Gint :=
            MDI.Title_Bar_Height - 2 * Border_Thickness;
 
-         Raised     : Boolean := False;
+         Raised     : Boolean;
 
          Current_Pages : array (Dock_Side) of MDI_Child
            := (others => null);
@@ -4729,6 +4752,7 @@ package body Gtkada.MDI is
 
                Register := Registers;
                Child := null;
+               Raised := False;
 
                while Child = null and then Register /= null loop
                   Child := Register.Load
@@ -4797,8 +4821,6 @@ package body Gtkada.MDI is
                   if Raised then
                      Current_Pages (Child.Dock) := Child;
                   end if;
-
-                  Raised := False;
 
                   case State is
                      when Docked =>
