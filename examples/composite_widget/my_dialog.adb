@@ -11,11 +11,10 @@ package body My_Dialog is
       Initialize (Dialog);
    end Gtk_New;
 
-   procedure Initialize (Dialog : access My_Dialog_Record) is
+   procedure Initialize (Dialog : access My_Dialog_Record'Class) is
       Sep : Gtk.Separator.Gtk_Separator;
    begin
-      Gtk.Window.Initialize (Gtk.Window.Gtk_Window (Dialog),
-                             Gtk.Enums.Window_Toplevel);
+      Gtk.Window.Initialize (Dialog, Gtk.Enums.Window_Toplevel);
 
       Gtk.Box.Gtk_New_Vbox (Dialog.Vbox, False, 0);
       Add (Dialog, Dialog.Vbox);
@@ -30,6 +29,5 @@ package body My_Dialog is
       Gtk.Box.Pack_End (Dialog.Vbox, Sep, False, True, 0);
       Gtk.Separator.Show (Sep);
    end Initialize;
-
 
 end My_Dialog;
