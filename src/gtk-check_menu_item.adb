@@ -28,8 +28,19 @@
 -----------------------------------------------------------------------
 
 with System;
+with Gtk.Type_Conversion_Hooks;
+pragma Elaborate_All (Gtk.Type_Conversion_Hooks);
 
 package body Gtk.Check_Menu_Item is
+
+   -----------------------
+   -- Local Subprograms --
+   -----------------------
+
+   function Type_Conversion (Type_Name : String) return Root_Type_Access;
+   --  This function is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    ----------------
    -- Get_Active --
@@ -118,4 +129,19 @@ package body Gtk.Check_Menu_Item is
       Internal (Get_Object (Check_Menu_Item));
    end Toggled;
 
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return Root_Type_Access is
+   begin
+      if Type_Name = "GtkCheckMenuItem" then
+         return new Gtk_Check_Menu_Item_Record;
+      else
+         return null;
+      end if;
+   end Type_Conversion;
+
+begin
+   Gtk.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Check_Menu_Item;

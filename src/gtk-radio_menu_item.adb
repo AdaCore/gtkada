@@ -28,10 +28,21 @@
 -----------------------------------------------------------------------
 
 with System;
+with Gtk.Type_Conversion_Hooks;
+pragma Elaborate_All (Gtk.Type_Conversion_Hooks);
 
 package body Gtk.Radio_Menu_Item is
 
    use Widget_SList;
+
+   -----------------------
+   -- Local Subprograms --
+   -----------------------
+
+   function Type_Conversion (Type_Name : String) return Root_Type_Access;
+   --  This function is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    -----------
    -- Group --
@@ -124,4 +135,19 @@ package body Gtk.Radio_Menu_Item is
       Set_Active (Radio_Menu_Item, False);
    end Set_Group;
 
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return Root_Type_Access is
+   begin
+      if Type_Name = "GtkRadioMenuItem" then
+         return new Gtk_Radio_Menu_Item_Record;
+      else
+         return null;
+      end if;
+   end Type_Conversion;
+
+begin
+   Gtk.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Radio_Menu_Item;

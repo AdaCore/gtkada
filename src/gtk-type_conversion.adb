@@ -38,7 +38,6 @@ with Gtk.Box;
 with Gtk.Button_Box;
 with Gtk.Calendar;
 with Gtk.Check_Button;
-with Gtk.Check_Menu_Item;
 with Gtk.Clist;
 with Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog;
@@ -91,7 +90,6 @@ with Gtk.Preview;
 with Gtk.Progress;
 with Gtk.Progress_Bar;
 with Gtk.Radio_Button;
-with Gtk.Radio_Menu_Item;
 with Gtk.Rc;
 with Gtk.Ruler;
 with Gtk.Scale;
@@ -102,14 +100,12 @@ with Gtk.Socket;
 with Gtk.Spin_Button;
 with Gtk.Status_Bar;
 with Gtk.Table;
-with Gtk.Tearoff_Menu_Item;
 with Gtk.Text;
 with Gtk.Tips_Query;
 with Gtk.Toggle_Button;
 with Gtk.Toolbar;
 with Gtk.Tooltips;
 with Gtk.Tree;
-with Gtk.Tree_Item;
 with Gtk.Vbutton_Box;
 with Gtk.Viewport;
 with Gtk.Widget;
@@ -171,8 +167,6 @@ package body Gtk.Type_Conversion is
                return new Gtk.Calendar.Gtk_Calendar_Record;
             elsif Type_Name = "GtkCheckButton" then
                return new Gtk.Check_Button.Gtk_Check_Button_Record;
-            elsif Type_Name = "GtkCheckMenuItem" then
-               return new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record;
             elsif Type_Name = "GtkCList" then
                return new Gtk.Clist.Gtk_Clist_Record;
             elsif Type_Name = "GtkColorCombo" then
@@ -247,8 +241,6 @@ package body Gtk.Type_Conversion is
                return new Gtk.Input_Dialog.Gtk_Input_Dialog_Record;
             elsif Type_Name = "GtkInvisible" then
                return new Gtk.Invisible.Gtk_Invisible_Record;
-            elsif Type_Name = "GtkItem" then
-               return new Gtk.Item.Gtk_Item_Record;
             elsif Type_Name = "GtkItemFactory" then
                return new Gtk.Item_Factory.Gtk_Item_Factory_Record;
             end if;
@@ -299,8 +291,6 @@ package body Gtk.Type_Conversion is
          when 'R' =>
             if Type_Name = "GtkRadioButton" then
                return new Gtk.Radio_Button.Gtk_Radio_Button_Record;
-            elsif Type_Name = "GtkRadioMenuItem" then
-               return new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item_Record;
             elsif Type_Name = "GtkRange" then
                return new Gtk.GRange.Gtk_Range_Record;
             elsif Type_Name = "GtkRuler" then
@@ -327,8 +317,6 @@ package body Gtk.Type_Conversion is
          when 'T' =>
             if Type_Name = "GtkTable" then
                return new Gtk.Table.Gtk_Table_Record;
-            elsif Type_Name = "GtkTearoffMenuItem" then
-               return new Gtk.Tearoff_Menu_Item.Gtk_Tearoff_Menu_Item_Record;
             elsif Type_Name = "GtkText" then
                return new Gtk.Text.Gtk_Text_Record;
             elsif Type_Name = "GtkTipsQuery" then
@@ -341,8 +329,6 @@ package body Gtk.Type_Conversion is
                return new Gtk.Tooltips.Gtk_Tooltips_Record;
             elsif Type_Name = "GtkTree" then
                return new Gtk.Tree.Gtk_Tree_Record;
-            elsif Type_Name = "GtkTreeItem" then
-               return new Gtk.Tree_Item.Gtk_Tree_Item_Record;
             end if;
          when 'V' =>
             if Type_Name = "GtkVBox" then
