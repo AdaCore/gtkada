@@ -188,6 +188,8 @@ package Gtk.Notebook is
    --  Modify the current page.
    --  The current page is the page that is currently visible on the screen.
    --  Nothing happens if there is no such page.
+   --  Note also that the page has to be visible on the screen (ie you must
+   --  have called Gtk.Widget.Show on it first).
 
    procedure Next_Page (Notebook : access Gtk_Notebook_Record);
    --  Display the next page on the screen.
