@@ -455,11 +455,11 @@ package body Gtk.Text_View is
    is
       procedure Internal
         (Text_View : System.Address;
-         Set       : Boolean);
+         Set       : Gboolean);
       pragma Import (C, Internal, "ada_text_view_set_disable_scroll_on_focus");
 
    begin
-      Internal (Get_Object (Text_View), Set);
+      Internal (Get_Object (Text_View), To_Gboolean (Set));
    end Set_Disable_Scroll_On_Focus;
 
    ---------------------------------
@@ -469,10 +469,10 @@ package body Gtk.Text_View is
    function Get_Disable_Scroll_On_Focus
      (Text_View : access Gtk_Text_View_Record) return Boolean
    is
-      function Internal (Text_View : System.Address) return Boolean;
+      function Internal (Text_View : System.Address) return Gboolean;
       pragma Import (C, Internal, "ada_text_view_get_disable_scroll_on_focus");
    begin
-      return Internal (Get_Object (Text_View));
+      return To_Boolean (Internal (Get_Object (Text_View)));
    end Get_Disable_Scroll_On_Focus;
 
    --------------------------
