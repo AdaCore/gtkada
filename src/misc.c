@@ -36,6 +36,7 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtktypeutils.h>
 
 gint
 convert_a (void* a)
@@ -80,24 +81,61 @@ ada_signal_count_arguments (gint type, char* signal_name)
  ********************************************************************/
 
 GtkType
-ada_signal_argument_type (gint type, char* signal_name, guint num)
+ada_signal_argument_type (gint type, char* signal_name, gint num)
 {
   /* Implementation note: using gtk_signal_query adds an extra call to
      malloc and free, but using the internal variables/macros for
-     gtksignal.c would make this too dependent from the exact implementation
+     gtksignal.c would make this too dependent on the exact implementation
      of gtk+ */
   guint signal_id = gtk_signal_lookup (signal_name, type);
   GtkSignalQuery * signal = gtk_signal_query (signal_id);
 
-  if (num >= signal->nparams)
-    return GTK_TYPE_NONE;
-  else if (num < 0)
+  if (num < 0)
     return signal->return_val;
+  else if (num >= signal->nparams)
+    return GTK_TYPE_NONE;
   else
     {
       GtkType params = signal->params [num];
       g_free (signal);
       return params;
+    }
+}
+
+void
+ada_set_return_value (GtkType type, void* value, GtkArg* params, guint num) {
+  
+  params[num].type = type;
+  switch (GTK_FUNDAMENTAL_TYPE (type))
+    {
+    case GTK_TYPE_BOOL:
+      *(GTK_RETLOC_BOOL (params[num])) = (gboolean)value;
+      break;
+    case GTK_TYPE_INT:
+      *(GTK_RETLOC_INT (params[num])) = (gint)value;
+      break;
+    case GTK_TYPE_UINT:
+      *(GTK_RETLOC_UINT (params[num])) = (guint)value;
+      break;
+    case GTK_TYPE_LONG:
+      *(GTK_RETLOC_LONG (params[num])) = (glong)value;
+      break;
+    case GTK_TYPE_ULONG:
+      *(GTK_RETLOC_ULONG (params[num])) = (gulong)value;
+      break;
+    case GTK_TYPE_STRING:
+      *(GTK_RETLOC_STRING (params[num])) = (char*)value;
+      break;
+    case GTK_TYPE_POINTER:
+      *(GTK_RETLOC_POINTER (params[num])) = (gpointer*)value;
+      break;
+    case GTK_TYPE_BOXED:
+      *(GTK_RETLOC_BOXED (params[num])) = (gpointer*)value;
+      break;
+    default:
+      fprintf (stderr, "GtkAda: Return value type not supported (%d)\n",
+	       type);
+      break;
     }
 }
 
@@ -575,6 +613,30 @@ gdouble ada_gdk_event_get_y (GdkEvent * event)
   return -10000.0;
 }
 
+gint16 ada_gdk_event_get_width (GdkEvent * event)
+{
+  switch (event->type)
+    {
+    case GDK_CONFIGURE:
+      return event->configure.width;
+    default:
+      break;
+    }
+  return -10000;
+}
+
+gint16 ada_gdk_event_get_height (GdkEvent * event)
+{
+  switch (event->type)
+    {
+    case GDK_CONFIGURE:
+      return event->configure.height;
+    default:
+      break;
+    }
+  return -10000;
+}
+
 gdouble ada_gdk_event_get_x_root (GdkEvent * event)
 {
   switch (event->type)
@@ -1032,6 +1094,30 @@ gint ada_gdk_event_set_y (GdkEvent * event, gdouble y)
   return 1;
 }
 
+gint ada_gdk_event_set_width (GdkEvent * event, gint16 width)
+{
+  switch (event->type)
+    {
+    case GDK_CONFIGURE:
+      event->configure.width = width;
+    default:
+      return 0;
+    }
+  return 1;
+}
+
+gint ada_gdk_event_set_height (GdkEvent * event, gint16 height)
+{
+  switch (event->type)
+    {
+    case GDK_CONFIGURE:
+      event->configure.height = height;
+    default:
+      return 0;
+    }
+  return 1;
+}
+
 gint ada_gdk_event_set_button (GdkEvent * event, guint button)
 {
   switch (event->type)
@@ -1309,7 +1395,8 @@ ada_adjustment_set_page_size (GtkAdjustment * adjustment,
 void
 ada_style_set_fg (GtkStyle* style, gint state, GdkColor* color)
 {
-  style->fg[state] = *color;
+  if (color != NULL)
+    style->fg[state] = *color;
 }
 
 GdkColor*
@@ -1321,7 +1408,8 @@ ada_style_get_fg (GtkStyle* style, gint state)
 void
 ada_style_set_bg (GtkStyle* style, gint state, GdkColor* color)
 {
-  style->bg[state] = *color;
+  if (color != NULL)
+    style->bg[state] = *color;
 }
 
 GdkColor*
@@ -1567,7 +1655,7 @@ gpointer
 ada_gtkarg_value_object (GtkArg* args, guint num)
 {
   gpointer return_value = NULL;
-  switch (args [num].type % 256)
+  switch (GTK_FUNDAMENTAL_TYPE (args [num].type))
     {
     case GTK_TYPE_OBJECT:
       return_value = (gpointer)GTK_VALUE_OBJECT (args [num]);
@@ -1581,9 +1669,30 @@ ada_gtkarg_value_object (GtkArg* args, guint num)
     case GTK_TYPE_BOXED:
       return_value = (gpointer)GTK_VALUE_BOXED (args [num]);
       break;
+    case GTK_TYPE_INT:
+      return_value = (gpointer)GTK_VALUE_INT (args [num]);
+      break;
+    case GTK_TYPE_BOOL:
+      return_value = (gpointer)GTK_VALUE_BOOL (args [num]);
+      break;
+    case GTK_TYPE_UINT:
+      return_value = (gpointer)GTK_VALUE_UINT (args [num]);
+      break;
+    case GTK_TYPE_LONG:
+      return_value = (gpointer)GTK_VALUE_LONG (args [num]);
+      break;
+    case GTK_TYPE_ULONG:
+      return_value = (gpointer)GTK_VALUE_ULONG (args [num]);
+      break;
+    case GTK_TYPE_INVALID:
+      fprintf (stderr, "GtkAda: GTK_TYPE_INVALID found in ada_gtkarg_value_object\n");
+      break;
+    case GTK_TYPE_NONE:
+      fprintf (stderr, "GtkAda: GTK_TYPE_NONE found in ada_gtkarg_value_object\n");
+      break;
     default:
       {
-	fprintf (stderr, "request for an Object value (%d) when we have a %d\n",
+	fprintf (stderr, "GtkAda: request for an Object value (%d) when we have a %d\n",
 		 GTK_TYPE_OBJECT, (args[num].type % 256));
       }
     }
@@ -1938,11 +2047,13 @@ ada_widget_get_parent (GtkWidget* widget)
   return widget->parent;
 }
 
-GtkSignalFunc
-ada_widget_get_motion_notify (GtkWidget* widget)
+gint
+ada_widget_get_motion_notify (GtkWidget* widget, GdkEvent* event)
 {
-  return (GtkSignalFunc)(GTK_WIDGET_CLASS (GTK_OBJECT (widget)->klass)
-			 ->motion_notify_event);
+  GtkSignalFunc func =
+    (GtkSignalFunc)(GTK_WIDGET_CLASS (GTK_OBJECT (widget)->klass)
+		    ->motion_notify_event);
+  func (widget, event);
 }
 
 /******************************************
