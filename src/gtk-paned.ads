@@ -77,7 +77,7 @@ package Gtk.Paned is
    type Gtk_Paned is access all Gtk_Paned_Record'Class;
    subtype Gtk_Hpaned is Gtk_Paned;
    subtype Gtk_Vpaned is Gtk_Paned;
-   --  </doc_ignore
+   --  </doc_ignore>
 
    procedure Gtk_New_Vpaned (Widget : out Gtk_Paned);
    --  Create a new vertical container.
@@ -184,7 +184,7 @@ package Gtk.Paned is
    --  Get the value of the shrink attribute for the second child.
 
    ----------------------------
-   -- Support for GATE/DGATE --
+   -- Support for Gate/Dgate --
    ----------------------------
 
    procedure Generate (N    : in Node_Ptr;
