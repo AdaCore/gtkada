@@ -37,6 +37,38 @@ with System;
 
 package Gtk.Enums is
 
+   type Gtk_Anchor_Type is
+     (Anchor_Center,
+      Anchor_North,
+      Anchor_North_West,
+      Anchor_North_East,
+      Anchor_South,
+      Anchor_South_East,
+      Anchor_South_West,
+      Anchor_West,
+      Anchor_East);
+   --  Gtk_Anchor_Type indicates the exact location of the widget on its
+   --  side. Note that not all anchors are relevant for each side.
+   --
+   --  For instance, if you put a widget on Side_Right, with an anchor of
+   --  Anchor_North, Anchor_North_West or Anchor_North_East, the widget will
+   --  in fact appear on the upper right side of the remaining space in the
+   --  container.
+   --
+   --  Thus, if a previous child was added on Side_North, then the new child
+   --  will only appear on the second line in the container. The order the
+   --  children are inserted into the container is important.
+   for Gtk_Anchor_Type'Size use Gint'Size;
+
+   Anchor_N  : Gtk_Anchor_Type renames Anchor_North;
+   Anchor_NW : Gtk_Anchor_Type renames Anchor_North_West;
+   Anchor_NE : Gtk_Anchor_Type renames Anchor_North_East;
+   Anchor_S  : Gtk_Anchor_Type renames Anchor_South;
+   Anchor_SW : Gtk_Anchor_Type renames Anchor_South_West;
+   Anchor_SE : Gtk_Anchor_Type renames Anchor_South_East;
+   Anchor_W  : Gtk_Anchor_Type renames Anchor_West;
+   Anchor_E  : Gtk_Anchor_Type renames Anchor_East;
+
    type Gtk_Arrow_Type is (Arrow_Up, Arrow_Down, Arrow_Left, Arrow_Right);
    for Gtk_Arrow_Type'Size use Gint'Size;
 
@@ -193,11 +225,11 @@ package Gtk.Enums is
 
    type Gtk_Scroll_Type is
      (Scroll_None,
+      Scroll_Jump,
       Scroll_Step_Backward,
       Scroll_Step_Forward,
       Scroll_Page_Backward,
       Scroll_Page_Forward,
-      Scroll_Jump,
       Scroll_Step_Up,
       Scroll_Step_Down,
       Scroll_Page_Up,
@@ -205,7 +237,9 @@ package Gtk.Enums is
       Scroll_Step_Left,
       Scroll_Step_Right,
       Scroll_Page_Left,
-      Scroll_Page_Right);
+      Scroll_Page_Right,
+      Scroll_Page_Start,
+      Scroll_Page_End);
    for Gtk_Scroll_Type'Size use Gint'Size;
 
    type Gtk_Selection_Mode is
@@ -222,6 +256,24 @@ package Gtk.Enums is
       Shadow_Etched_In,
       Shadow_Etched_Out);
    for Gtk_Shadow_Type'Size use Gint'Size;
+
+   type Gtk_Side_Type is
+     (Side_Top,
+      Side_Bottom,
+      Side_Left,
+      Side_Right);
+   --  Gtk_Side_Type indicates on which the widget should be inserted.
+   --  The children are displayed in the order they were inserted into the
+   --  container.
+   --  Each time a child is displayed, the available space for the remaining
+   --  child is restrained. For instance, every time you put a child on the
+   --  Side_Top or Side_Bottom, the available space is decreased so that no
+   --  other widget is inserted in the same line.
+   --
+   --  For instance, if you put two widgets on Side_Top, the second one will
+   --  appear below the first one. If you add two widgets on Side_Right, the
+   --  second one will be placed on the left of the first.
+   for Gtk_Side_Type'Size use Gint'Size;
 
    type Gtk_State_Type is
      (State_Normal,
@@ -269,13 +321,6 @@ package Gtk.Enums is
 
    type Gtk_Tree_View_Mode is (Tree_View_Line, Tree_View_Item);
    for Gtk_Tree_View_Mode'Size use Gint'Size;
-
-   type Gtk_Trough_Type is
-     (Trough_None,
-      Trough_Start,
-      Trough_End,
-      Trough_Jump);
-   for Gtk_Trough_Type'Size use Gint'Size;
 
    type Gtk_Update_Type is
      (Update_Continuous,
