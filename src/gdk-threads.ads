@@ -34,14 +34,11 @@ package Gdk.Threads is
 
    procedure Leave;
 
-   procedure Wake;
-
    ---------------------
    --  pragma Import  --
    ---------------------
 
    pragma Import (C, Enter, "gdk_threads_enter");
    pragma Import (C, Leave, "gdk_threads_leave");
-   pragma Import (C, Wake, "gdk_threads_wake");
 
 end Gdk.Threads;
