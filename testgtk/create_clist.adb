@@ -162,8 +162,8 @@ package body Create_Clist is
    -------------
 
    procedure Add1000 (List : access Gtk_Clist_Record'Class) is
-      Pixmap : Gdk_Pixmap;
-      Mask   : Gdk_Bitmap;
+      Pixmap : Gdk.Gdk_Pixmap;
+      Mask   : Gdk.Gdk_Bitmap;
       Texts  : Chars_Ptr_Array (0 .. Clist_Columns - 1);
       Row    : Gint;
       Style  : Gtk_Style := Get_Style (List);
