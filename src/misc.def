@@ -225,6 +225,7 @@ EXPORTS
 	ada_gtk_paned_get_gutter_size
 	ada_gtk_paned_get_handle_size
 	ada_gtk_parse_cmd_line
+	ada_gtk_type_gdk_event
 	ada_gtkarg_value_object
 	ada_initialize_class_record
 	ada_list_get_children
