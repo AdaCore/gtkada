@@ -26,7 +26,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
 
 package Gtk.Calendar is
