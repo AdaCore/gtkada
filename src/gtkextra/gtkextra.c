@@ -120,7 +120,7 @@ _gtkextra_signal_emit(GtkObject *object, guint signal_id, ...)
 
     }
 
-  result = *(gboolean **)var_args;
+  result = va_arg (var_args, gboolean*);
 
   g_value_init(&ret, query.return_type);
   G_VALUE_COLLECT (&ret,
