@@ -42,6 +42,7 @@ with Gdk.Window;
 package Gdk.Drawable is
 
    subtype Gdk_Drawable is Window.Gdk_Window;
+   Null_Drawable : constant Gdk_Drawable;
 
    procedure Copy_Area (To       : in Gdk_Drawable'Class;
                         GC       : in Gdk.GC.Gdk_GC;
@@ -141,7 +142,6 @@ package Gdk.Drawable is
        Gc       : in Gdk.GC.Gdk_GC;
        Points   : in Gdk.Types.Gdk_Points_Array);
 
+private
+   Null_Drawable : constant Gdk_Drawable := (Ptr => System.Null_Address);
 end Gdk.Drawable;
-
-
-
