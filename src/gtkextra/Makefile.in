@@ -4,7 +4,7 @@ SRC=gtkplot.c gtkplotcanvas.c gtkplotprint.c gtkplotps.c \
 
 OBJ=${SRC:%.c=%.o}
 CC=@CC@
-FPIC=-fPIC
+FPIC=@FPIC@
 CFLAGS=-O2
 ALL_CFLAGS=$(CFLAGS) @GTK_CFLAGS@ $(FPIC)
 
