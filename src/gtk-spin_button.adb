@@ -283,12 +283,12 @@ package body Gtk.Spin_Button is
          Add_Package ("Adjustment");
          Put_Line
            (File, "   Gtk_New (" & To_Ada (S.all) & "_Adj, " &
-            To_Float (Get_Field (N, "hvalue").all) & ", " &
-            To_Float (Get_Field (N, "hlower").all) & ", " &
-            To_Float (Get_Field (N, "hupper").all) & ", " &
-            To_Float (Get_Field (N, "hstep").all)  & ", " &
-            To_Float (Get_Field (N, "hpage").all)  & ", " &
-            To_Float (Get_Field (N, "hpage_size").all) & ");");
+            To_Float (Get_Field (N, "value").all) & ", " &
+            To_Float (Get_Field (N, "lower").all) & ", " &
+            To_Float (Get_Field (N, "upper").all) & ", " &
+            To_Float (Get_Field (N, "step").all)  & ", " &
+            To_Float (Get_Field (N, "page").all)  & ", " &
+            To_Float (Get_Field (N, "page_size").all) & ");");
          Add_Package ("Spin_Button");
          Put_Line (File, "   Gtk_New (" & To_Ada (Top.all) & "." &
            To_Ada (S.all) & ", " & To_Ada (S.all) & "_Adj, " &
@@ -318,12 +318,12 @@ package body Gtk.Spin_Button is
       if not N.Specific_Data.Created then
          Gtk_New
            (Adj,
-            Gfloat'Value (Get_Field (N, "hvalue").all),
-            Gfloat'Value (Get_Field (N, "hlower").all),
-            Gfloat'Value (Get_Field (N, "hupper").all),
-            Gfloat'Value (Get_Field (N, "hstep").all),
-            Gfloat'Value (Get_Field (N, "hpage").all),
-            Gfloat'Value (Get_Field (N, "hpage_size").all));
+            Gfloat'Value (Get_Field (N, "value").all),
+            Gfloat'Value (Get_Field (N, "lower").all),
+            Gfloat'Value (Get_Field (N, "upper").all),
+            Gfloat'Value (Get_Field (N, "step").all),
+            Gfloat'Value (Get_Field (N, "page").all),
+            Gfloat'Value (Get_Field (N, "page_size").all));
          Gtk_New (Gtk_Spin_Button (Spin_Button), Adj,
            Gfloat'Value (Get_Field (N, "climb_rate").all),
            Gint'Value (Get_Field (N, "digits").all));

@@ -178,12 +178,12 @@ package body Gtk.Scale is
          Add_Package ("Adjustment");
          Put_Line
            (File, "   Adjustment.Gtk_New (" & To_Ada (S.all) & "_Adj, " &
-            To_Float (Get_Field (N, "hvalue").all) & ", " &
-            To_Float (Get_Field (N, "hlower").all) & ", " &
-            To_Float (Get_Field (N, "hupper").all) & ", " &
-            To_Float (Get_Field (N, "hstep").all)  & ", " &
-            To_Float (Get_Field (N, "hpage").all)  & ", " &
-            To_Float (Get_Field (N, "hpage_size").all) & ");");
+            To_Float (Get_Field (N, "value").all) & ", " &
+            To_Float (Get_Field (N, "lower").all) & ", " &
+            To_Float (Get_Field (N, "upper").all) & ", " &
+            To_Float (Get_Field (N, "step").all)  & ", " &
+            To_Float (Get_Field (N, "page").all)  & ", " &
+            To_Float (Get_Field (N, "page_size").all) & ");");
 
          Gen_New (N, "Scale", S.all & "_Adj", "",
            Class (Class'First + 3) & "scale", File => File);
@@ -204,12 +204,12 @@ package body Gtk.Scale is
       if not N.Specific_Data.Created then
          Adjustment.Gtk_New
            (Adj,
-            Gfloat'Value (Get_Field (N, "hvalue").all),
-            Gfloat'Value (Get_Field (N, "hlower").all),
-            Gfloat'Value (Get_Field (N, "hupper").all),
-            Gfloat'Value (Get_Field (N, "hstep").all),
-            Gfloat'Value (Get_Field (N, "hpage").all),
-            Gfloat'Value (Get_Field (N, "hpage_size").all));
+            Gfloat'Value (Get_Field (N, "value").all),
+            Gfloat'Value (Get_Field (N, "lower").all),
+            Gfloat'Value (Get_Field (N, "upper").all),
+            Gfloat'Value (Get_Field (N, "step").all),
+            Gfloat'Value (Get_Field (N, "page").all),
+            Gfloat'Value (Get_Field (N, "page_size").all));
 
          if Class (Class'First + 3) = 'H' then
             Gtk_New_Hscale (Gtk_Scale (Scale), Adj);
