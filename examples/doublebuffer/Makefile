@@ -1,13 +1,15 @@
 all: parameters anim anim2
 
+GNAT_FLAGS = -g -gnata -gnatwu
+
 parameters::
-	gnatmake -gnatwuwl parameters `gtkada-config`
+	gnatmake $(GNAT_FLAGS) parameters `gtkada-config`
 
 anim::
-	gnatmake -gnatwuwl anim `gtkada-config`
+	gnatmake $(GNAT_FLAGS) anim `gtkada-config`
 
 anim2::
-	gnatmake -gnatwuwl anim2 `gtkada-config`
+	gnatmake $(GNAT_FLAGS) anim2 `gtkada-config`
 
 clean:
 	${RM} *.o *.ali anim parameters anim2

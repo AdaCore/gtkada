@@ -1,5 +1,5 @@
 all:
-	gnatmake main `gtkada-config`
+	gnatmake -g -gnata -gnaty -gnatwu main `gtkada-config`
 run:
 	./main
 

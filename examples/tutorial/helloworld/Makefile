@@ -1,5 +1,5 @@
 all: force
-	gnatmake hello `gtkada-config`
+	gnatmake -g -gnata -gnaty -gnatwu hello `gtkada-config`
 clean: 
 	rm -f *.o *~ *.ali hello
 force:

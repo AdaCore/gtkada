@@ -1,4 +1,4 @@
-CFLAGS = -g -O2
+CFLAGS = -g -O2 -gnata -gnaty -gnatwu
 
 EXEC = power
 
