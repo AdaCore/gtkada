@@ -27,10 +27,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Frame;         use Gtk.Frame;
+with Gtk.Label;         use Gtk.Label;
+
 #if HAVE_LIBART then
 
 with Glib;              use Glib;
-with Gtk.Frame;         use Gtk.Frame;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Drawing_Area;  use Gtk.Drawing_Area;
 with Gdk.Pixbuf;        use Gdk.Pixbuf;
@@ -38,7 +40,6 @@ with Gtk.Handlers;      use Gtk.Handlers;
 with Gtk.Style;         use Gtk.Style;
 with Gtk.Widget;        use Gtk.Widget;
 with Gdk.Rgb;           use Gdk.Rgb;
-with Gtk.Label;         use Gtk.Label;
 
 #end if;
 
