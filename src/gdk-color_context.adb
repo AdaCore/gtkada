@@ -80,11 +80,9 @@ package body Gdk.Color_Context is
       function Internal (Visual, Colormap : in System.Address)
         return System.Address;
       pragma Import (C, Internal, "gdk_color_context_new");
-      Result : Gdk_Color_Context;
    begin
-      Set_Object (Result, Internal (Get_Object (Visual),
-                                    Get_Object (Colormap)));
-      CC := Result;
+      Set_Object (CC, Internal (Get_Object (Visual),
+                                Get_Object (Colormap)));
    end Gdk_New;
 
 
@@ -144,12 +142,14 @@ package body Gdk.Color_Context is
                          Failed : in System.Address)
                          return Glib.Gulong;
       pragma Import (C, Internal, "gdk_color_context_get_pixel");
+      Result : Integer;
    begin
       Pixel := Internal (CC => Get_Object (CC),
                          Red => Color.Red,
                          Green => Color.Green,
                          Blue => Color.Blue,
-                         Failed => Failed'Address);
+                         Failed => Result'Address);
+      Failed := Result /= 0;
    end Get_Pixel;
 
 
