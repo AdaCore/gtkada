@@ -48,6 +48,8 @@ package Gdk.Event is
 
    procedure Get (Event : out Gdk_Event);
 
+   procedure Peek (Event : out Gdk_Event);
+
    procedure Put (Event : in Gdk_Event);
 
    procedure Copy (Source : in Gdk_Event;

@@ -169,6 +169,18 @@ package body Gdk.Event is
    end Get_Window;
 
 
+   ------------
+   --  Peek  --
+   ------------
+
+   procedure Peek (Event : out Gdk_Event) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gdk_event_peek");
+   begin
+      Set_Object (Event, Internal);
+   end Peek;
+
+
    -----------
    --  Put  --
    -----------
