@@ -143,7 +143,11 @@ package body Create_Text is
 
       for I in Text_Colors'Range loop
          Insert (Text, Font,
-                 White (Get_Colormap (Text)), Null_Color,
+                 Null_Color, Null_Color,
+                 --  White (Get_Colormap (Text)), Null_Color,
+                 --  ??? The white foreground color is replaced by the
+                 --  ??? default black color until the dark background
+                 --  ??? pixmap is put supported.
                  Text_Colors (I).Name.all & Ascii.HT, -1);
          Set_Rgb (Color_I, Text_Colors (I).Red, Text_Colors (I).Green,
                   Text_Colors (I).Blue);
@@ -165,7 +169,10 @@ package body Create_Text is
          while not End_Of_File (Infile) loop
             Get_Line (Infile, Buffer, Last);
 
-            Insert (Text, Null_Font, White (Get_Colormap (Text)),
+            Insert (Text, Null_Font, Null_Color,
+            --  Insert (Text, Null_Font, White (Get_Colormap (Text)),
+            --  ??? The white foreground color is replaced by the default
+            --  ??? black color until the dark background pixmap is supported.
                     Null_Color,
                     Buffer (1 .. Last) & Ascii.LF, Gint (Last) + 1);
          end loop;
