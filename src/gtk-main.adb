@@ -33,6 +33,8 @@ with Unchecked_Conversion;
 with System;
 with Gdk; use Gdk;
 
+with Ada.Text_IO; use Ada.Text_IO;
+
 package body Gtk.Main is
 
    package C renames Interfaces.C;
@@ -78,6 +80,20 @@ package body Gtk.Main is
    begin
       Internal (Get_Object (Widget));
    end Grab_Remove;
+
+   ----------
+   -- Main --
+   ----------
+
+   procedure Main is
+      procedure Internal;
+      pragma Import (C, Internal, "gtk_main");
+   begin
+      if Main_Hook /= null then
+         Main_Hook.all;
+      end if;
+      Internal;
+   end Main;
 
    ----------------
    -- Set_Locale --

@@ -95,12 +95,18 @@ package Gtk.Main is
 
    procedure Timeout_Remove (Id : in Guint);
 
+
+   --  This hook is called just before initializing the main loop.
+   --  This is used internally by GtkAda to implement macros. Do not modify it
+   --  by hand. This can be modified at any time !
+   type Hook is access procedure;
+   Main_Hook : Hook := null;
+
 private
    --  Some services can be directly binded...
 
    pragma Import (C, Gtk_Exit, "gtk_exit");
    pragma Import (C, Events_Pending, "gtk_events_pending");
-   pragma Import (C, Main, "gtk_main");
    pragma Import (C, Main_Level, "gtk_main_level");
    pragma Import (C, Main_Quit, "gtk_main_quit");
    pragma Import (C, Main_Iteration, "gtk_main_iteration");
