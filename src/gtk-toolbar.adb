@@ -605,6 +605,8 @@ package body Gtk.Toolbar is
    -- Generate --
    --------------
 
+   Widget_Class : aliased String := "GtkWidget";
+
    procedure Generate (N : in Node_Ptr; File : in File_Type) is
       P, Child : Node_Ptr;
       Top  : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
@@ -681,6 +683,9 @@ package body Gtk.Toolbar is
                else
                   Put_Line (File, ");");
                end if;
+
+               Add_Package ("Widget");
+               Gen_Signal (P, File, Widget_Class'Access);
 
                P.Specific_Data.Created := True;
                P.Specific_Data.Initialized := True;
