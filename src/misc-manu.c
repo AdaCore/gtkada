@@ -324,3 +324,23 @@ ada_dialog_get_vbox (GtkDialog* widget)
    return widget->vbox;
 }
 
+/******************************************
+ ** Functions for Toggle_Button
+ ******************************************/
+
+guint
+ada_toggle_button_get_active (GtkToggleButton* widget)
+{
+   return widget->active;
+}
+
+/******************************************
+ ** Functions for Combo
+ ******************************************/
+
+GtkWidget*
+ada_combo_get_entry (GtkCombo* widget)
+{
+   return widget->entry;
+}
+
