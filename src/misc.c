@@ -2822,6 +2822,7 @@ ada_gdk_window_attr_destroy (GdkWindowAttr *window_attr)
 
   if (window_attr->title) g_free (window_attr->title);
   if (window_attr->wmclass_name) g_free (window_attr->wmclass_name);
+  if (window_attr->wmclass_class) g_free (window_attr->wmclass_class);
 
   g_free (window_attr);
 }
@@ -3034,7 +3035,8 @@ ada_gdk_window_attr_set_wmclass_class (GdkWindowAttr *window_attr,
 {
   g_return_if_fail (window_attr != NULL);
   
-  window_attr->wmclass_class = wmclass_class;
+  if (window_attr->wmclass_class) g_free (window_attr->wmclass_class);
+  window_attr->wmclass_class = g_strdup (wmclass_class);
 }
 
 gchar*
