@@ -153,7 +153,9 @@ package Gtkada.MDI is
    --  If Float_As_Transient is set, then the child will be set up as a
    --  transient window when floating: on most window managers, it will stay on
    --  top of the MDI, but the window will have less decorations in its title
-   --  bar, in particular no destroy button.
+   --  bar, in particular no destroy button. In such a case, <Esc> will close
+   --  the window, or unfloat it depending on the MDI's setup, as is the case
+   --  for all dialogs in GtkAda.
 
    function Put
      (MDI   : access MDI_Window_Record;

@@ -32,6 +32,7 @@ with Pango.Font;       use Pango.Font;
 with Gdk;              use Gdk;
 with Gdk.Color;        use Gdk.Color;
 with Gdk.Cursor;       use Gdk.Cursor;
+with Gtk.Dialog;       use Gtk.Dialog;
 with Gdk.Dnd;          use Gdk.Dnd;
 with Gdk.Drawable;     use Gdk.Drawable;
 with Gdk.Event;        use Gdk.Event;
@@ -2984,8 +2985,10 @@ package body Gtkada.MDI is
      (Child : access MDI_Child_Record'Class;
       Float : Boolean)
    is
+      Diag  : Gtk_Dialog;
       Win   : Gtk_Window;
       Alloc : Gtk_Allocation;
+      Cont  : Gtk_Container;
    begin
       if Child.State /= Floating and then Float then
          --  Ref is removed when the child is unfloated.
@@ -3004,13 +3007,22 @@ package body Gtkada.MDI is
             Remove (Child.MDI.Layout, Child);
          end if;
 
-         Gtk_New (Win, Window_Toplevel);
-         Set_Title (Win, Child.Title.all);
-         Set_Position (Win, Win_Pos_Mouse);
 
          if (Child.Flags and Float_As_Transient) /= 0 then
-            Set_Transient_For (Win, Gtk_Window (Get_Toplevel (Child.MDI)));
+            Gtk_New (Diag,
+                     Title  => Child.Title.all,
+                     Parent => Gtk_Window (Get_Toplevel (Child.MDI)),
+                     Flags  => No_Separator or Destroy_With_Parent);
+            Set_Has_Separator (Diag, False);
+            Win  := Gtk_Window (Diag);
+            Cont := Gtk_Container (Get_Vbox (Diag));
+         else
+            Gtk_New (Win);
+            Set_Title (Win, Child.Title.all);
+            Cont := Gtk_Container (Win);
          end if;
+
+         Set_Position (Win, Win_Pos_Mouse);
 
          --  Delete_Event should be forwarded to the child, not to the
          --  toplevel window
@@ -3019,7 +3031,7 @@ package body Gtkada.MDI is
            (Win, "delete_event",
             Return_Callback.To_Marshaller (Delete_Child'Access), Child);
 
-         Reparent (Get_Parent (Child.Initial), Win);
+         Reparent (Get_Parent (Child.Initial), Cont);
          Set_Default_Size
            (Win, Child.Uniconified_Width, Child.Uniconified_Height);
          Show_All (Win);
