@@ -1,7 +1,8 @@
 SRC=gtkplot.c gtkplotcanvas.c gtkplotprint.c gtkplotps.c \
   gtkpsfont.c gtkplotpc.c gtksheet.c gtkitementry.c \
   gtkextra-marshal.c gtkextra.c gtkplotdt.c \
-  gtkcombobox.c gtkcolorcombo.c gtkbordercombo.c gtkfontcombo.c gtkplotgdk.c \
+  gtkextracombobox.c gtkcolorcombo.c gtkbordercombo.c \
+  gtkfontcombo.c gtkplotgdk.c \
   gtkplotdata.c gtkplot3d.c gtkplotpolar.c gtkplotbar.c gtkplotbox.c \
   gtkplotsurface.c
 
