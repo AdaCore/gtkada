@@ -16,10 +16,9 @@ with Gtk.Vbox;
 with Gtk.Widget;
 with Gtk.Window;
 
-with Create_Color_Selection;
 with Create_Buttons;
-
---  with Ada.Text_IO; use Ada.Text_IO;
+with Create_Color_Selection;
+with Create_File_Selection;
 
 package body Test is
 
@@ -91,7 +90,8 @@ package body Test is
       (ASU.To_Unbounded_String ("dialog"), null),
       (ASU.To_Unbounded_String ("dnd"), null),
       (ASU.To_Unbounded_String ("entry"), null),
-      (ASU.To_Unbounded_String ("file selection"), null),
+      (ASU.To_Unbounded_String ("file selection"),
+       Create_File_Selection.Run'Access),
       (ASU.To_Unbounded_String ("gamma curve"), null),
       (ASU.To_Unbounded_String ("handle box"), null),
       (ASU.To_Unbounded_String ("list"), null),
