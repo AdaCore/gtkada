@@ -28,8 +28,8 @@
 -----------------------------------------------------------------------
 
 with System;
-with Gtk.Type_Conversion_Hooks;
-pragma Elaborate_All (Gtk.Type_Conversion_Hooks);
+with Glib.Type_Conversion_Hooks;
+pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
 package body Gtk.Radio_Menu_Item is
 
@@ -39,7 +39,7 @@ package body Gtk.Radio_Menu_Item is
    -- Local Subprograms --
    -----------------------
 
-   function Type_Conversion (Type_Name : String) return Root_Type_Access;
+   function Type_Conversion (Type_Name : String) return GObject;
    --  This function is used to implement a minimal automated type conversion
    --  without having to drag the whole Gtk.Type_Conversion package for the
    --  most common widgets.
@@ -139,7 +139,7 @@ package body Gtk.Radio_Menu_Item is
    -- Type_Conversion --
    ---------------------
 
-   function Type_Conversion (Type_Name : String) return Root_Type_Access is
+   function Type_Conversion (Type_Name : String) return GObject is
    begin
       if Type_Name = "GtkRadioMenuItem" then
          return new Gtk_Radio_Menu_Item_Record;
@@ -149,5 +149,5 @@ package body Gtk.Radio_Menu_Item is
    end Type_Conversion;
 
 begin
-   Gtk.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
+   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
 end Gtk.Radio_Menu_Item;
