@@ -29,9 +29,14 @@
 
 --  <c_version>1.3.6</c_version>
 
+with Glib;
 with Gdk.Types;
 
 package Gdk.Keyval is
+
+   type Gdk_Keymap is private;
+
+   function Get_Type return Glib.GType;
 
    function Name (Keyval : Gdk.Types.Gdk_Key_Type) return String;
 
@@ -50,6 +55,9 @@ package Gdk.Keyval is
 private
    pragma Import (C, To_Upper, "gdk_keyval_to_upper");
    pragma Import (C, To_Lower, "gdk_keyval_to_lower");
+   pragma Import (C, Get_Type, "gdk_keymap_get_type");
+
+   type Gdk_Keymap is new C_Proxy;
 end Gdk.Keyval;
 
 --  missing:
