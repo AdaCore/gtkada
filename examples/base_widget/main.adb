@@ -1,23 +1,23 @@
-with Glib; use Glib;
-with Gtk.Box;    use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
+with Glib;             use Glib;
+with Gtk.Box;          use Gtk.Box;
+with Gtk.Button;       use Gtk.Button;
 with Gtk.Drawing_Area; use Gtk.Drawing_Area;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Main; use Gtk.Main;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
+with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Label;        use Gtk.Label;
+with Gtk.Main;         use Gtk.Main;
+with Gtk.Handlers;     use Gtk.Handlers;
+with Gtk.Widget;       use Gtk.Widget;
+with Gtk.Window;       use Gtk.Window;
 
 with My_Widget; use My_Widget;
 with Text_IO;
 
 procedure Main is
 
-   package Target_Cb is new Gtk.Signal.Callback
+   package Target_Cb is new Gtk.Handlers.User_Callback
      (Target_Widget_Record, String);
 
-   procedure Won (Widget : access Target_Widget_Record;
+   procedure Won (Widget : access Target_Widget_Record'Class;
                   Message : String) is
    begin
       Text_IO.Put_Line (Message);
@@ -27,7 +27,6 @@ procedure Main is
    Ok     : Target_Widget;
    Box    : Gtk_Box;
    Label  : Gtk_Label;
-   Id     : Guint;
 
 begin
    Gtk.Main.Set_Locale;
@@ -45,8 +44,10 @@ begin
 
    Gtk_New (Ok);
    Pack_Start (Box, Ok, True, True);
-   Id := Target_Cb.Connect (Ok, "bullseye", Won'Access, "I won");
-   Id := Target_Cb.Connect (Ok, "missed", Won'Access, "I lost");
+   Target_Cb.Connect (Ok, "bullseye",
+                      Target_Cb.To_Marshaller (Won'Access), "I won");
+   Target_Cb.Connect (Ok, "missed",
+                      Target_Cb.To_Marshaller (Won'Access), "I lost");
 
    Show_All (Main_W);
 

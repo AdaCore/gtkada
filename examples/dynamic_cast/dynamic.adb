@@ -8,20 +8,20 @@
 --  convert a C widget to an Ada widget. This requires the
 --  'with Gtk.Type_Conversion' below.
 
-with Glib; use Glib;
-with Gdk.Bitmap; use Gdk.Bitmap;
-with Gdk.Pixmap; use Gdk.Pixmap;
-with Gtk.Box; use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Main;  use Gtk.Main;
-with Gtk.Signal; use Gtk.Signal;
-with Gtk.Style; use Gtk.Style;
-with Gtk.Pixmap; use Gtk.Pixmap;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Window; use Gtk.Window;
-with Gtk; use Gtk;
+with Glib;         use Glib;
+with Gdk.Bitmap;   use Gdk.Bitmap;
+with Gdk.Pixmap;   use Gdk.Pixmap;
+with Gtk.Box;      use Gtk.Box;
+with Gtk.Button;   use Gtk.Button;
+with Gtk.Enums;    use Gtk.Enums;
+with Gtk.Label;    use Gtk.Label;
+with Gtk.Main;     use Gtk.Main;
+with Gtk.Handlers; use Gtk.Handlers;
+with Gtk.Style;    use Gtk.Style;
+with Gtk.Pixmap;   use Gtk.Pixmap;
+with Gtk.Widget;   use Gtk.Widget;
+with Gtk.Window;   use Gtk.Window;
+with Gtk;          use Gtk;
 
 with Gtk.Type_Conversion;
 --  This is to enable the exact conversion from C widgets to Ada
@@ -43,7 +43,7 @@ procedure Dynamic is
    --  automatically the correspondig Ada widget.
    --  It would be possible to dispatch on the 'Tag too for instance.
 
-   procedure Change_Label (Button : access Gtk_Button_Record) is
+   procedure Change_Label (Button : access Gtk_Button_Record'Class) is
       use Widget_List;
 
       --  A button has a single child
@@ -72,10 +72,9 @@ procedure Dynamic is
    end Change_Label;
 
 
-   package Widget_Cb is new Signal.Object_Callback (Gtk_Button_Record);
+   package Widget_Cb is new Handlers.Callback (Gtk_Button_Record);
 
    Window    : Gtk_Window;
-   Id        : Guint;
    Box1,
    Box2      : Gtk_Box;
    Button,
@@ -133,12 +132,18 @@ begin
    --  Create the two action buttons
 
    Gtk_New (Button1, "Change Button 1");
-   Id := Widget_Cb.Connect (Button1, "clicked", Change_Label'Access, Button);
+   Widget_Cb.Object_Connect
+     (Button1, "clicked",
+      Widget_Cb.To_Marshaller (Change_Label'Access),
+      Slot_Object => Button);
    Pack_Start (Box1, Button1, True, True, 0);
    Show (Button1);
 
    Gtk_New (Button1, "Change Button 2");
-   Id := Widget_Cb.Connect (Button1, "clicked", Change_Label'Access, Button2);
+   Widget_Cb.Object_Connect
+     (Button1, "clicked",
+      Widget_Cb.To_Marshaller (Change_Label'Access),
+      Slot_Object => Button2);
    Pack_Start (Box1, Button1, True, True, 0);
    Show (Button1);
 

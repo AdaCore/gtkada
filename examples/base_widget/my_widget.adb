@@ -1,14 +1,18 @@
-with Glib;          use Glib;
-with Gdk;           use Gdk;
-with Gdk.Color;     use Gdk.Color;
-with Gdk.Drawable;  use Gdk.Drawable;
-with Gdk.Event;     use Gdk.Event;
-with Gdk.Rectangle; use Gdk.Rectangle;
-with Gdk.Types;     use Gdk.Types;
-with Gtk.Widget;    use Gtk.Widget;
-with Gdk.Window;    use Gdk.Window;
-with Gtk.Object;    use Gtk.Object;
-with Gtk.Signal;    use Gtk.Signal;
+with Glib;            use Glib;
+with Gdk;             use Gdk;
+with Gtk;             use Gtk;
+with Gdk.Color;       use Gdk.Color;
+with Gdk.Drawable;    use Gdk.Drawable;
+with Gdk.Event;       use Gdk.Event;
+with Gdk.Rectangle;   use Gdk.Rectangle;
+with Gdk.Types;       use Gdk.Types;
+with Gtk.Widget;      use Gtk.Widget;
+with Gdk.Window;      use Gdk.Window;
+with Gtk.Object;      use Gtk.Object;
+with Gtk.Arguments;   use Gtk.Arguments;
+with Gtk.Handlers;    use Gtk.Handlers;
+with Gtk.Marshallers; use Gtk.Marshallers;
+with Unchecked_Conversion;
 
 with System;
 
@@ -32,7 +36,7 @@ package body My_Widget is
      (0 => new String'("bullseye" & Ascii.NUL),
       1 => new String'("missed" & Ascii.NUL));
 
-   package Internal_Cb is new Void_Callback (Target_Widget_Record);
+   package Internal_Cb is new Handlers.Callback (Target_Widget_Record);
    --  The type of callbacks for the signals above. This is used only to
    --  emit the signals.
 
@@ -45,20 +49,63 @@ package body My_Widget is
    --    * Connect a function to the "destroy" callback to take care of
    --      the finalization of the object.
 
-   package Draw_Cb is new Void_Callback (Target_Widget_Record);
-   package Size_Cb is new Record_Callback
-     (Target_Widget_Record, Gtk.Widget.Gtk_Requisition);
-   package Allocation_Cb is new Record_Callback
-     (Target_Widget_Record, Gtk.Widget.Gtk_Allocation);
-   package Button_Cb is new Two_Callback
-     (Target_Widget_Record, Integer, Gdk.Event.Gdk_Event_Button);
+   package Draw_Cb is new Handlers.Callback (Target_Widget_Record);
+
+   --  Define our own marshaller, since this is not one of the
+   --  standard one.
+   type Requisition_Access is access Gtk.Widget.Gtk_Requisition;
+   package Size_Cb is new Handlers.Callback
+     (Target_Widget_Record);
+   function To_Requisition (Args : Gtk_Args; Num : Positive)
+                           return Requisition_Access;
+   package Requisition_Marshaller is new Size_Cb.Marshallers.Generic_Marshaller
+     (Requisition_Access, To_Requisition);
+
+
+   type Allocation_Access is access Gtk.Widget.Gtk_Allocation;
+   package Allocation_Cb is new Handlers.Callback
+     (Target_Widget_Record);
+   function To_Allocation (Args : Gtk_Args; Num : Positive)
+                          return Allocation_Access;
+   package Allocation_Marshaller is new
+     Allocation_Cb.Marshallers.Generic_Marshaller
+     (Allocation_Access, To_Allocation);
+
+   package Button_Cb is new Handlers.User_Callback
+     (Target_Widget_Record, Integer);
+
+   --------------------
+   -- To_Requisition --
+   --------------------
+
+   function To_Requisition (Args : Gtk_Args; Num : Positive)
+                           return Requisition_Access
+   is
+      function Convert is new Unchecked_Conversion
+        (System.Address, Requisition_Access);
+   begin
+      return Convert (Get_Nth (Args, Num));
+   end To_Requisition;
+
+   -------------------
+   -- To_Allocation --
+   -------------------
+
+   function To_Allocation (Args : Gtk_Args; Num : Positive)
+                          return Allocation_Access
+   is
+      function Convert is new Unchecked_Conversion
+        (System.Address, Allocation_Access);
+   begin
+      return Convert (Get_Nth (Args, Num));
+   end To_Allocation;
 
    ---------------
    -- Draw_Target --
    ---------------
 
 
-   procedure Draw_Target (Widget  : access Target_Widget_Record)
+   procedure Draw_Target (Widget  : access Target_Widget_Record'Class)
      --  This function is called when we need to redraw the widget (for
      --  instance whenever part of it has been cleared
    is
@@ -108,8 +155,8 @@ package body My_Widget is
    -- Size_Request --
    ------------------
 
-   procedure Size_Request (Widget      : access Target_Widget_Record;
-                           Requisition : in out Gtk.Widget.Gtk_Requisition)
+   procedure Size_Request (Widget      : access Target_Widget_Record'Class;
+                           Requisition : Requisition_Access)
      --  This function is called by gtk+ when the widget is realized.
      --  It should modify Requisition to ask for a appropriate size for
      --  the widget. Note that the widget will not necessary have that size,
@@ -124,15 +171,15 @@ package body My_Widget is
 
       --  Stop the signal from being propagated to the parent's default
       --  size_request function
-      Gtk.Signal.Emit_Stop_By_Name (Widget, "size_request");
+      Gtk.Handlers.Emit_Stop_By_Name (Widget, "size_request");
    end Size_Request;
 
    -------------------
    -- Size_Allocate --
    -------------------
 
-   procedure Size_Allocate (Widget     : access Target_Widget_Record;
-                            Allocation : in out Gtk.Widget.Gtk_Allocation)
+   procedure Size_Allocate (Widget     : access Target_Widget_Record'Class;
+                            Allocation : Allocation_Access)
      --  This function is called once gtk has decided what size and position
      --  the widget will actually have, or everytime the widget is resized.
      --  This would be a good time for instance for resizing the component
@@ -150,15 +197,15 @@ package body My_Widget is
                                  Gint (Allocation.Width),
                                  Gint (Allocation.Height));
       end if;
-      Gtk.Signal.Emit_Stop_By_Name (Widget, "size_allocate");
+      Gtk.Handlers.Emit_Stop_By_Name (Widget, "size_allocate");
    end Size_Allocate;
 
    -------------
    -- Clicked --
    -------------
 
-   procedure Clicked (Widget : access Target_Widget_Record;
-                      Event  : in Gdk_Event_Button;
+   procedure Clicked (Widget : access Target_Widget_Record'Class;
+                      Event  : in Gdk_Event;
                       Dummy  : Integer)
      -- called when the mouse is clicked within the widget
    is
@@ -195,7 +242,6 @@ package body My_Widget is
    ----------------
 
    procedure Initialize (Widget : access Target_Widget_Record) is
-      Id : Guint;
    begin
       --  We need to call the ancestor's Initialize function to create
       --  the underlying C object.
@@ -222,12 +268,17 @@ package body My_Widget is
       Set_Events (Widget, Exposure_Mask or Button_Release_Mask);
 
       --  Set up the appropriate callbacks to redraw, ...
-      Id := Draw_Cb.Connect (Widget, "expose_event", Draw_Target'Access, True);
-      Id := Size_Cb.Connect (Widget, "size_request", Size_Request'Access);
-      Id := Button_Cb.Connect (Widget, "button_release_event",
-                               Clicked'Access, 0);
-      Id := Allocation_Cb.Connect (Widget, "size_allocate",
-                                   Size_Allocate'Access);
+      Draw_Cb.Connect (Widget, "expose_event",
+                       Draw_Cb.To_Marshaller (Draw_Target'Access), True);
+      Size_Cb.Connect
+        (Widget, "size_request",
+         Requisition_Marshaller.To_Marshaller (Size_Request'Access));
+      Button_Cb.Connect
+        (Widget, "button_release_event",
+         Button_Cb.To_Marshaller (Clicked'Access), 0);
+      Allocation_Cb.Connect
+        (Widget, "size_allocate",
+         Allocation_Marshaller.To_Marshaller (Size_Allocate'Access));
    end Initialize;
 
 
