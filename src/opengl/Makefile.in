@@ -5,6 +5,8 @@
 .PHONY: clean-generic mostlyclean-generic \
 	clean distclean mostlyclean maintainer-clean
 
+include ../Makefile.common
+
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
@@ -49,9 +51,9 @@ $(ARCHIVENAME):: $(OPENGL_OBJECTS) $(OPENGL_C_OBJECTS)
 
 $(OPENGL_OBJECTS):: force
 	@if [ -f ../.devel ]; then \
-	   $(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS) $(FPIC) -q -c $(patsubst %.o,%.adb,$@); \
+	   $(GNATMAKE) -I.. -aO../lib-obj $(GNATFLAGS_DEVEL) $(FPIC) -c $(patsubst %.o,%.adb,$@); \
 	else \
-	   $(GNATMAKE) -I.. $(GNATFLAGS) $(FPIC) -q -c $(patsubst %.o,%.adb,$@); \
+	   $(GNATMAKE) -I.. $(GNATFLAGS) $(FPIC) -c $(patsubst %.o,%.adb,$@); \
 	fi
  
 gtkglarea.o: gtkglarea.h gtkglarea.c
