@@ -51,7 +51,7 @@
 --  a postscript file.
 --
 --  </description>
---  <c_version>gtk+extra 0.99<c_version>
+--  <c_version>gtk+extra 0.99.1<c_version>
 
 with Glib;           use Glib;
 with Glib.Glist;
@@ -151,6 +151,11 @@ package Gtk.Extra.Plot is
                               Symbol_Opaque);
    --  Style used to draw the points in a graph.
 
+   type Plot_Border_Style is (Border_None,
+                              Border_Line,
+                              Border_Shadow);
+   --  Border types used for legends.
+
    type Plot_Line_Style is (Line_None,
                             Line_Solid,
                             Line_Dotted,
@@ -168,34 +173,40 @@ package Gtk.Extra.Plot is
                            Connect_Middle_Step); --  Split in the middle
    --  The type of connection between two adjacent points in a graph.
 
-   type Plot_Label_Mask is (Label_None,
-                            Label_Left,
-                            Label_Right,
-                            Label_Top,
-                            Label_Bottom);
+   type Plot_Label_Pos is (Label_None,
+                           Label_Left,
+                           Label_Right,
+                           Label_Top,
+                           Label_Bottom);
    --  The type of labels.
 
    type Plot_Error is (Error_Div_Zero,
                        Error_Log_Neg);
    --  Errors that can be encountered while calculating a graph.
 
-   type Plot_Axis  is (Axis_Left,
-                       Axis_Right,
-                       Axis_Top,
-                       Axis_Bottom);
+   type Plot_Axis_Pos  is (Axis_Left,
+                           Axis_Right,
+                           Axis_Top,
+                           Axis_Bottom);
    --  Where the axis should be put
 
    type Plot_Label_Style is (Label_Float,
                              Label_Exp);
    --  The style of labels (floating point, or scientific notation)
 
-   type Plot_Ticks is new Integer;
-   Ticks_None  : constant Plot_Ticks;
-   Ticks_Left  : constant Plot_Ticks;
-   Ticks_Right : constant Plot_Ticks;
-   Ticks_Up    : constant Plot_Ticks;
-   Ticks_Down  : constant Plot_Ticks;
-   Ticks_All   : constant Plot_Ticks;
+   type Plot_Angle is (Angle_0,
+                       Angle_90,
+                       Angle_180,
+                       Angle_270);
+   --  Valid values for the angles of texts and titles.
+
+   type Plot_Ticks_Pos is new Integer;
+   Ticks_None  : constant Plot_Ticks_Pos;
+   Ticks_Left  : constant Plot_Ticks_Pos;
+   Ticks_Right : constant Plot_Ticks_Pos;
+   Ticks_Up    : constant Plot_Ticks_Pos;
+   Ticks_Down  : constant Plot_Ticks_Pos;
+   Ticks_All   : constant Plot_Ticks_Pos;
 
    ---------------------
    -- Creating a plot --
@@ -389,57 +400,62 @@ package Gtk.Extra.Plot is
    --  second method here.
 
    function Get_Axis (Plot   : access Gtk_Plot_Record;
-                      Axis   : in Plot_Axis)
+                      Axis   : in Plot_Axis_Pos)
                      return      Gtk_Plot_Axis;
    --  Get a pointer to an axis.
 
    procedure Axis_Set_Visible (Plot    : access Gtk_Plot_Record;
-                               Axis    : in Plot_Axis;
+                               Axis    : in Plot_Axis_Pos;
                                Visible : in Boolean);
    --  Indicate whether the axis should be visible or not.
 
    function Axis_Get_Visible (Plot   : access Gtk_Plot_Record;
-                              Axis   : in Plot_Axis)
+                              Axis   : in Plot_Axis_Pos)
                              return      Boolean;
    --  Return the visibility state of the axis
 
    procedure Axis_Set_Title (Plot  : access Gtk_Plot_Record;
-                             Axis  : in Plot_Axis;
+                             Axis  : in Plot_Axis_Pos;
                              Title : in String);
    --  Modify the title of the axis.
    --  Each axis has a title that is displayed along its line (vertically
    --  for the left and right sides).
 
    procedure Axis_Show_Title (Plot : access Gtk_Plot_Record;
-                              Axis : in Plot_Axis);
+                              Axis : in Plot_Axis_Pos);
    --  Show the title associated with the axis.
 
    procedure Axis_Hide_Title (Plot : access Gtk_Plot_Record;
-                              Axis : in Plot_Axis);
+                              Axis : in Plot_Axis_Pos);
    --  Hide the title associated with the axis.
 
    procedure Axis_Move_Title (Plot  : access Gtk_Plot_Record;
-                              Axis  : in Plot_Axis;
-                              Angle : in Gint;
+                              Axis  : in Plot_Axis_Pos;
+                              Angle : in Plot_Angle;
                               X     : in Gdouble;
                               Y     : in Gdouble);
    --  Modify the position and orientation of the axis' title.
-   --  The only valid values for Angle are 0, 90, 180 and 270 degres.
    --  X and Y indicate a position relative to the location of the axis (0.0
    --  to display it to the left (resp. top) of the axis, 1.0 to display it
    --  to the right (resp. bottom) of the axis.
 
    procedure Axis_Justify_Title
      (Plot          : access Gtk_Plot_Record;
-      Axis          : in Plot_Axis;
+      Axis          : in Plot_Axis_Pos;
       Justification : in Gtk.Enums.Gtk_Justification);
    --  Modify the justification for the axis.
 
    procedure Axis_Set_Attributes (Plot       : access Gtk_Plot_Record;
-                                  Axis       : in     Plot_Axis;
+                                  Axis       : in     Plot_Axis_Pos;
                                   Line_Width : in     Gint;
                                   Color      : in     Gdk.Color.Gdk_Color);
    --  Modify the attributes of the lines of the axis.
+
+   procedure Axis_Get_Attributes (Plot       : access Gtk_Plot_Record;
+                                  Axis       : in     Plot_Axis_Pos;
+                                  Line_Width : out    Gint;
+                                  Color      : out    Gdk.Color.Gdk_Color);
+   --  Get the attributes of the axis.
 
    procedure Axis_Set_Ticks (Plot        : access Gtk_Plot_Record;
                              Orientation : in Gtk.Enums.Gtk_Orientation;
@@ -454,21 +470,21 @@ package Gtk.Extra.Plot is
    --  big ticks drawn along the axis.
 
    procedure Axis_Set_Ticks_Length (Plot   : access Gtk_Plot_Record;
-                                    Axis   : in Plot_Axis;
+                                    Axis   : in Plot_Axis_Pos;
                                     Length : in Gint);
    --  Set the length (in pixels) of the big ticks.
    --  The small ticks will have half this length.
 
    procedure Axis_Set_Ticks_Width (Plot  : access Gtk_Plot_Record;
-                                   Axis  : in Plot_Axis;
+                                   Axis  : in Plot_Axis_Pos;
                                    Width : in Gint);
    --  Set the width (in pixels) of the ticks.
    --  This width is common to both the long and short ticks.
 
    procedure Axis_Show_Ticks (Plot       : access Gtk_Plot_Record;
-                              Axis       : in Plot_Axis;
-                              Major_Mask : in Plot_Ticks;
-                              Minor_Mask : in Plot_Ticks);
+                              Axis       : in Plot_Axis_Pos;
+                              Major_Mask : in Plot_Ticks_Pos;
+                              Minor_Mask : in Plot_Ticks_Pos);
    --  Set the style of the ticks.
    --  Not all the values are relevant for all the axis (You can not
    --  use Ticks_Left for horizontal axis.
@@ -487,24 +503,35 @@ package Gtk.Extra.Plot is
    --  Axis_Set_Ticks_Limits.
 
    procedure Axis_Show_Labels (Plot        : access Gtk_Plot_Record;
-                               Axis        : in Plot_Axis;
-                               Labels_Mask : in Plot_Label_Mask);
+                               Axis        : in Plot_Axis_Pos;
+                               Labels_Mask : in Plot_Label_Pos);
    --  Indicate whether a label should be drawn at each ticks to indicate
    --  its value.
    --  Not all values of Labels_Mask are relevant for all axis. For instance,
    --  for a vertical axis, the relevant values are Label_Right and Label_Left.
 
+   procedure Axis_Title_Set_Attributes (Plot       : access Gtk_Plot_Record;
+                                        Axis       : in Plot_Axis_Pos;
+                                        Ps_Font    : in String;
+                                        Height     : in Gint;
+                                        Angle      : in Plot_Angle;
+                                        Foreground : in Gdk.Color.Gdk_Color;
+                                        Background : in Gdk.Color.Gdk_Color);
+   --  Set the attributes to be used for the title of the axis.
+   --  Ps_Font should be a postscript font (see Gtk.Plot.PsFont).
+
    procedure Axis_Labels_Set_Attributes (Plot       : access Gtk_Plot_Record;
-                                         Axis       : in Plot_Axis;
+                                         Axis       : in Plot_Axis_Pos;
                                          Ps_Font    : in String;
                                          Height     : in Gint;
+                                         Angle      : in Plot_Angle;
                                          Foreground : in Gdk.Color.Gdk_Color;
                                          Background : in Gdk.Color.Gdk_Color);
    --  Set the attributes to be used for the ticks labels.
    --  Ps_Font should be a postscript font (see Gtk.Plot.PsFont).
 
    procedure Axis_Labels_Set_Numbers (Plot      : access Gtk_Plot_Record;
-                                      Axis      : in Plot_Axis;
+                                      Axis      : in Plot_Axis_Pos;
                                       Style     : in Plot_Label_Style;
                                       Precision : in Gint);
    --  Set the style of labels.
@@ -604,13 +631,10 @@ package Gtk.Extra.Plot is
    procedure Hide_Legends (Plot : access Gtk_Plot_Record);
    --  Indicate that the legend should not be displayed.
 
-   procedure Show_Legends_Border (Plot         : access Gtk_Plot_Record;
-                                  Show_Shadow  : in Boolean;
-                                  Shadow_Width : in Gint);
-   --  Indicate that the legend will be put in a shadowed box.
-
-   procedure Hide_Legends_Border (Plot : access Gtk_Plot_Record);
-   --  Hide the borders around the legend.
+   procedure Set_Legends_Border (Plot         : access Gtk_Plot_Record;
+                                 Border       : Plot_Border_Style;
+                                 Shadow_Width : Gint);
+   --  Modify the way the borders of the legend look like.
 
    procedure Legends_Move (Plot : access Gtk_Plot_Record;
                            X    : in Gdouble;
@@ -645,7 +669,7 @@ package Gtk.Extra.Plot is
      (Plot          : access Gtk_Plot_Record;
       X             : in Gdouble;
       Y             : in Gdouble;
-      Angle         : in Gint;
+      Angle         : in Plot_Angle;
       Ps_Font       : in String := "";
       Font_Height   : in Gint := 10;
       Foreground    : in Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
@@ -655,8 +679,7 @@ package Gtk.Extra.Plot is
       Text          : in String := "");
    --  Print some text in Plot.
    --  The text will be drawn at the relative coordinates (X, Y), with a
-   --  specified Angle (Currently, the only recognized values are 0, 90,
-   --  180 and 270 degres).
+   --  specified Angle.
    --  If Font is the empty string, a default font and default Font_Height
    --  will be used. Likewise, default colors will be used if you don't
    --  specify any. Font should be the name of a postscript font, the list of
@@ -873,16 +896,22 @@ package Gtk.Extra.Plot is
                                           Color : out Gdk.Color.Gdk_Color);
    --  Return the line attributes used for the connectors.
 
-   procedure Dataset_Set_Xy_Attributes (Data  : in Gtk_Plot_Data;
-                                        Style : in Plot_Line_Style;
-                                        Width : in Gint;
-                                        Color : in Gdk.Color.Gdk_Color);
+   procedure Dataset_Set_X_Attributes (Data  : in Gtk_Plot_Data;
+                                       Style : in Plot_Line_Style;
+                                       Width : in Gint;
+                                       Color : in Gdk.Color.Gdk_Color);
    --  Set the style of the lines used to connect the symbols to the two main
    --  axis.
    --  Each symbol, in addition to being connected to the next one with a
    --  connector, can also be linked to the axis X=0 and Y=0, so that it is
    --  easier to read its coordinates. This function set the style of the
-   --  lines used in that case.
+   --  lines used to connect to the line Y=0.
+
+   procedure Dataset_Set_Y_Attributes (Data  : in Gtk_Plot_Data;
+                                       Style : in Plot_Line_Style;
+                                       Width : in Gint;
+                                       Color : in Gdk.Color.Gdk_Color);
+   --  Same as Dataset_Set_X_Attributes, for the line X=0.
 
    procedure Dataset_Show_Xerrbars (Data : in Gtk_Plot_Data);
    --  Indicate that each symbol should be connected to the (Y=0) line.
@@ -991,17 +1020,22 @@ private
    pragma Import (C, Get_Type, "gtk_plot_get_type");
 
    type Gtk_Plot_Axis is new System.Address;
-   for Plot_Label_Mask use (Label_None   => 0,
-                            Label_Left   => 1,
-                            Label_Right  => 2,
-                            Label_Top    => 4,
-                            Label_Bottom => 8);
-   Ticks_None  : constant Plot_Ticks := 0;
-   Ticks_Left  : constant Plot_Ticks := 1;
-   Ticks_Right : constant Plot_Ticks := 2;
-   Ticks_Up    : constant Plot_Ticks := 4;
-   Ticks_Down  : constant Plot_Ticks := 8;
-   Ticks_All   : constant Plot_Ticks := 15;
+   for Plot_Label_Pos use (Label_None   => 0,
+                           Label_Left   => 1,
+                           Label_Right  => 2,
+                           Label_Top    => 4,
+                           Label_Bottom => 8);
+   Ticks_None  : constant Plot_Ticks_Pos := 0;
+   Ticks_Left  : constant Plot_Ticks_Pos := 1;
+   Ticks_Right : constant Plot_Ticks_Pos := 2;
+   Ticks_Up    : constant Plot_Ticks_Pos := 4;
+   Ticks_Down  : constant Plot_Ticks_Pos := 8;
+   Ticks_All   : constant Plot_Ticks_Pos := 15;
+
+   for Plot_Angle use (Angle_0   => 0,
+                       Angle_90  => 90,
+                       Angle_180 => 180,
+                       Angle_270 => 270);
 
    pragma Import (C, Gtk_Dataset_New, "gtk_plot_dataset_new");
    pragma Import (C, Dataset_Set_Numpoints, "gtk_plot_dataset_set_numpoints");
