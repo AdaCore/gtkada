@@ -321,15 +321,18 @@ package body Gdk.Event is
    -- Get_Area --
    --------------
 
-   function Get_Area (Event : in Gdk_Event) return Rectangle.Gdk_Rectangle is
+   function Get_Area (Event : Gdk_Event) return Rectangle.Gdk_Rectangle is
       procedure Internal (Event : Gdk_Event; Area : System.Address);
       pragma Import (C, Internal, "ada_gdk_event_get_area");
+
       Rec : aliased Rectangle.Gdk_Rectangle;
    begin
       Internal (Event, Rec'Address);
-      if Rec.Width = Invalid_Guint16_Value then
+
+      if Rec.Width = Invalid_Gint_Value then
          raise Invalid_Field;
       end if;
+
       return Rec;
    end Get_Area;
 
@@ -337,14 +340,17 @@ package body Gdk.Event is
    -- Get_Count --
    ---------------
 
-   function Get_Count (Event : in Gdk_Event) return Gint is
-      function Internal (Event : in Gdk_Event) return Gint;
+   function Get_Count (Event : Gdk_Event) return Gint is
+      function Internal (Event : Gdk_Event) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_get_count");
+
       Count : constant Gint := Internal (Event);
+
    begin
       if Count = Invalid_Gint_Value then
          raise Invalid_Field;
       end if;
+
       return Count;
    end Get_Count;
 
