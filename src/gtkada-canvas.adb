@@ -91,6 +91,11 @@ package body Gtkada.Canvas is
    Scrolling_Amount : constant := 4;
    --  Number of pixels to scroll while the mouse is in the surrounding box.
 
+   Links_Threshold_While_Moving : constant := 20;
+   --  Maximal number of links that are drawn while moving an item. This is
+   --  used to make the canvas still usable when there are lots of links to a
+   --  given item.
+
    Signals : constant chars_ptr_array :=
      (1 => New_String ("background_click"),
       2 => New_String ("item_selected"),
@@ -971,16 +976,42 @@ package body Gtkada.Canvas is
 
    procedure For_Each_Item
      (Canvas  : access Interactive_Canvas_Record;
-      Execute : Item_Processor)
+      Execute : Item_Processor;
+      Linked_From_Or_To : Canvas_Item := null)
    is
-      Item : Vertex_Iterator := First (Canvas.Children);
-      It   : Canvas_Item;
+      Item : Vertex_Iterator;
+      Edge : Edge_Iterator;
+      It, It2 : Canvas_Item;
    begin
-      while not At_End (Item) loop
-         It := Canvas_Item (Get (Item));
-         Next (Item);
-         exit when not Execute (Canvas, It);
-      end loop;
+      if Linked_From_Or_To = null then
+         Item := First (Canvas.Children);
+         while not At_End (Item) loop
+            It := Canvas_Item (Get (Item));
+            Next (Item);
+            exit when not Execute (Canvas, It);
+         end loop;
+
+      else
+         Set_Directed (Canvas.Children, False);
+
+         Edge := First (Canvas.Children, Vertex_Access (Linked_From_Or_To));
+         while not At_End (Edge) loop
+            It  := Canvas_Item (Get_Src (Get (Edge)));
+            It2 := Canvas_Item (Get_Dest (Get (Edge)));
+            Next (Edge);
+
+            if It /= Linked_From_Or_To then
+               exit when not Execute (Canvas, It);
+            end if;
+
+            if It2 /= Linked_From_Or_To then
+               exit when not Execute (Canvas, It2);
+            end if;
+
+         end loop;
+
+         Set_Directed (Canvas.Children, True);
+      end if;
    end For_Each_Item;
 
    ---------------
@@ -1802,6 +1833,7 @@ package body Gtkada.Canvas is
       Current : Edge_Iterator;
       L : Canvas_Link;
       X, Y    : Gint;
+      Count   : Natural := 0;
    begin
       if Selected /= null then
          X := Selected.Item.Coord.X;
@@ -1829,6 +1861,12 @@ package body Gtkada.Canvas is
             Draw_Link (Canvas, L, Window, Invert_Mode, GC,
                        Gint (Repeat_Count (Current)));
          end if;
+
+         --  To save time, we limit the number of links that are drawn while
+         --  moving items.
+         Count := Count + 1;
+         exit when Selected /= null
+           and then Count > Links_Threshold_While_Moving;
 
          Next (Current);
       end loop;
