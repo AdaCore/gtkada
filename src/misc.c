@@ -142,6 +142,31 @@ ada_widget_rc_style (GtkWidget * widget)
   return GTK_WIDGET_RC_STYLE (widget);
 }
 
+guint16
+ada_widget_allocation_height (GtkWidget* widget)
+{
+  return widget->allocation.height;
+}
+
+guint16
+ada_widget_allocation_width (GtkWidget* widget)
+{
+  return widget->allocation.width;
+}
+
+gint16
+ada_widget_allocation_x (GtkWidget* widget)
+{
+  return widget->allocation.x;
+}
+
+gint16
+ada_widget_allocation_y (GtkWidget* widget)
+{
+  return widget->allocation.y;
+}
+
+
     
 /*
  * 
@@ -733,6 +758,19 @@ ada_gtk_adjustment_get_value (GtkAdjustment * adjustment)
   return adjustment->value;
 }
 
+void
+ada_adjustment_set_page_increment (GtkAdjustment * adjustment,
+                                       gfloat value)
+{
+  adjustment->page_increment = value;
+}
+
+void
+ada_adjustment_set_page_size (GtkAdjustment * adjustment,
+                                  gfloat value)
+{
+  adjustment->page_size = value;
+}
 
 guint32
 ada_gdk_event_motion_get_state (GdkEventButton * event)
