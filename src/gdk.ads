@@ -40,6 +40,7 @@ package Gdk is
 
    type C_Dummy_Record is limited private;
    type C_Proxy is access C_Dummy_Record;
+   pragma Convention (C, C_Proxy);
    --  General proxy for C structures.
    --  This type is used instead of System.Address so that the variables are
    --  automatically initialized to 'null'.
@@ -47,7 +48,6 @@ package Gdk is
    --  It has thus been made limited private with no subprogram to access it.
    --  C_Proxy is a public type so that one can compare directly the value
    --  of the variables with 'null'.
-   --  Note also that for more security this type as a C convention.
 
    generic
       type To is new Root_Type with private;
@@ -98,8 +98,6 @@ private
    end record;
 
    type C_Dummy_Record is null record;
-   --  This array can contain anything, since it is never used in
-   --  fact.
-
-   pragma Convention (C, C_Proxy);
+   --  This array can contain anything, since it is never used on the Ada side
+   --  anyway.
 end Gdk;
