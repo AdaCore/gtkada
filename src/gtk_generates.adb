@@ -494,8 +494,11 @@ package body Gtk_Generates is
          P := Find_Tag (P.Child.Child, "child");
       end if;
 
-      if P /= null then
-         P := P.Child;
+      if P /= null and then P.Child /= null and then P.Child.Child /= null then
+         P := Find_Tag (P.Child.Child, "child");
+         if P /= null then
+            P := P.Child;
+         end if;
       end if;
 
       while P /= null loop
@@ -1674,11 +1677,20 @@ package body Gtk_Generates is
       function Build_Type return Glib.GType;
       pragma Import (C, Build_Type, "gtk_text_view_get_type");
 
+      --  Make sure the buffer is also initialized, since some signals are
+      --  redirected to it.
+      function Text_Buffer_New (Table : System.Address) return System.Address;
+      pragma Import (C, Text_Buffer_New, "gtk_text_buffer_new");
+      Buffer : constant System.Address :=
+        Text_Buffer_New (System.Null_Address);
+      pragma Unreferenced (Buffer);
+
       Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
       Top  : constant String := Get_Name (Top_Widget);
       Cur  : constant String := Get_Name (N);
 
    begin
+
       Widget := Widget_New (Build_Type);
       Gen_New (N, "Text_View", File => File);
       Widget_Destroy (Widget);
