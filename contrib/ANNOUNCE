@@ -8,6 +8,7 @@ The primary download site is http://libre.act-europe.fr/GtkAda
 
 New features in 1.2.12 include
 
+- Update to GtkExtra 0.99.14, including a new 3D Plot widget.
 - The GtkAda.Canvas now provides zooming capabilities. It also draws curve
   links with Bezier splines instead of circles.
   For efficiency, the items in the canvas are no longer double-buffered. Use
