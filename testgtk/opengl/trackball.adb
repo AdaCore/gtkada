@@ -1,5 +1,6 @@
-
+pragma Warnings (Off);
 with Ada.Numerics.Aux; use Ada.Numerics.Aux;
+pragma Warnings (On);
 
 package body Trackball is
 
