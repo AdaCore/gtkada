@@ -224,6 +224,8 @@ package Gdk.Event is
    --  Relevant fields: Area, Region, Count
    --  Type: Expose
 
+   --  ??? Need a function to access Region
+
    subtype Gdk_Event_No_Expose is Gdk_Event;
    --  Indicate that the source region was completely available when parts of
    --  a drawable were copied.
@@ -641,7 +643,7 @@ package Gdk.Event is
    --  a segmentation fault).
 
    type Event_Handler_Func is access procedure
-     (Event : System.Address; Data : System.Address);
+     (Event : Gdk_Event; Data : System.Address);
    --  Function that can be used as a new event handler.
    --  Use From_Address below to convert to a real event type.
    --  This function should dispatch all the events properly, since it replaces
