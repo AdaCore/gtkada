@@ -1,6 +1,5 @@
 package body Gtk.Window is
 
-
    ------------------------
    --  Activate_Default  --
    ------------------------
@@ -24,9 +23,8 @@ package body Gtk.Window is
       return To_Boolean (Internal (Get_Object (Window)));
    end Activate_Focus;
 
-
    -------------
-   -- New --
+   -- Gtk_New --
    -------------
 
    procedure Gtk_New (Window   : out Gtk_Window;
@@ -36,7 +34,6 @@ package body Gtk.Window is
    begin
       Set_Object (Window, Internal (Gtk_Window_Type'Pos (The_Type)));
    end Gtk_New;
-
 
    ----------------
    --  Position  --
