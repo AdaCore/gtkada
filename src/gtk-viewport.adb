@@ -31,6 +31,19 @@ with System;
 
 package body Gtk.Viewport is
 
+   --------------------
+   -- Get_Bin_Window --
+   --------------------
+
+   function Get_Bin_Window
+     (Widget : access Gtk_Viewport_Record) return Gdk.Gdk_Window
+   is
+      function Internal (Viewport : System.Address) return Gdk.Gdk_Window;
+      pragma Import (C, Internal, "ada_gtk_viewport_get_bin_window");
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Bin_Window;
+
    ---------------------
    -- Get_Hadjustment --
    ---------------------

@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gdk;
 with Gtk.Adjustment;
 with Gtk.Bin;
 with Gtk.Enums; use Gtk.Enums;
@@ -48,6 +49,11 @@ package Gtk.Viewport is
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Viewport.
+
+   function Get_Bin_Window
+     (Widget : access Gtk_Viewport_Record) return Gdk.Gdk_Window;
+   --  Return the window associated with the viewport.
+   --  You should use this one rather than Gtk.Widget.Get_Window.
 
    function Get_Hadjustment
      (Viewport : access Gtk_Viewport_Record)
