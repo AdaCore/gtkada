@@ -131,12 +131,6 @@ package Glib is
    function To_Boolean (Value : in Gboolean) return Boolean;
    --  Convert a C boolean into an Ada boolean.
 
-   function To_Boolean (Value : in Gint) return Boolean;
-   --  Convert a C int into an Ada boolean.
-
-   function To_Boolean (Value : in Guint) return Boolean;
-   --  Convert a C uint into an Ada boolean.
-
    function To_Gboolean (Bool : in Boolean) return Gboolean;
    --  Convert an Ada boolean into a C boolean.
 
