@@ -122,8 +122,8 @@ package Gdk.Pixbuf is
 
    function Gdk_New (Width           : in Gint;
                      Height          : in Gint;
-                     Format          : in Gdk.Art.Pixbuf.Art_Pix_Format
-                       := Gdk.Art.Pixbuf.Art_Pix_Rgb;
+                     Format          : in Gdk.Art.Pixbuf.Art_Pix_Format :=
+                       Gdk.Art.Pixbuf.Art_Pix_Rgb;
                      Has_Alpha       : in Boolean := False;
                      Bits_Per_Sample : in Gint := 8)
                     return Gdk_Pixbuf;
@@ -300,8 +300,8 @@ package Gdk.Pixbuf is
                     Offset_Y     : in Gdouble := 0.0;
                     Scale_X      : in Gdouble := 1.0;
                     Scale_Y      : in Gdouble := 1.0;
-                    Filter_Level : in Gdk.Art.Pixbuf.Art_Filter_Level
-                      := Gdk.Art.Pixbuf.Filter_Bilinear);
+                    Filter_Level : in Gdk.Art.Pixbuf.Art_Filter_Level :=
+                      Gdk.Art.Pixbuf.Filter_Bilinear);
    --  Transform the source image by scaling by Scale_x and Scale_y then
    --  translating by Offset_x and Offset_y, then renders the rectangle
    --  (Dest_x,Dest_y,Dest_width,Dest_height) of the resulting image onto the
@@ -317,8 +317,8 @@ package Gdk.Pixbuf is
                         Offset_Y      : in Gdouble := 0.0;
                         Scale_X       : in Gdouble := 1.0;
                         Scale_Y       : in Gdouble := 1.0;
-                        Filter_Level  : in Gdk.Art.Pixbuf.Art_Filter_Level
-                          := Gdk.Art.Pixbuf.Filter_Bilinear;
+                        Filter_Level  : in Gdk.Art.Pixbuf.Art_Filter_Level :=
+                          Gdk.Art.Pixbuf.Filter_Bilinear;
                         Overall_Alpha : in Gint := 128);
    --  Transform the source image by scaling by Scale_x and Scale_y then
    --  translating by Offset_x and Offset_y, then composite the rectangle
@@ -337,8 +337,8 @@ package Gdk.Pixbuf is
       Offset_Y      : in Gdouble := 0.0;
       Scale_X       : in Gdouble := 1.0;
       Scale_Y       : in Gdouble := 1.0;
-      Filter_Level  : in Gdk.Art.Pixbuf.Art_Filter_Level
-        := Gdk.Art.Pixbuf.Filter_Bilinear;
+      Filter_Level  : in Gdk.Art.Pixbuf.Art_Filter_Level :=
+        Gdk.Art.Pixbuf.Filter_Bilinear;
       Overall_Alpha : in Gint := 128;
       Check_X       : in Gint := 0;
       Check_Y       : in Gint := 0;
@@ -356,8 +356,8 @@ package Gdk.Pixbuf is
    function Scale_Simple (Src           : in Gdk_Pixbuf;
                           Dest_Width    : in Gint;
                           Dest_Height   : in Gint;
-                          Filter_Level  : in Gdk.Art.Pixbuf.Art_Filter_Level
-                            := Gdk.Art.Pixbuf.Filter_Bilinear)
+                          Filter_Level  : in Gdk.Art.Pixbuf.Art_Filter_Level :=
+                            Gdk.Art.Pixbuf.Filter_Bilinear)
                          return Gdk_Pixbuf;
    --  Scale the Src image to Dest_width x Dest_height and render the result
    -- into a new pixbuf.
@@ -366,8 +366,8 @@ package Gdk.Pixbuf is
      (Src           : in Gdk_Pixbuf;
       Dest_Width    : in Gint;
       Dest_Height   : in Gint;
-      Filter_Level  : in Gdk.Art.Pixbuf.Art_Filter_Level
-        := Gdk.Art.Pixbuf.Filter_Bilinear;
+      Filter_Level  : in Gdk.Art.Pixbuf.Art_Filter_Level :=
+        Gdk.Art.Pixbuf.Filter_Bilinear;
       Overall_Alpha : in Gint := 128;
       Color1        : in Gdk.Art.Pixbuf.Art_U32 := 0;
       Color2        : in Gdk.Art.Pixbuf.Art_U32 := 0)
@@ -404,7 +404,7 @@ end Gdk.Pixbuf;
 --  NOT BOUND: gdk_pixbuf_new_from_data
 --  NOT BOUND: gdk_pixbuf_render_pixmap_and_mask
 --  NOT BOUND: gdk_pixbuf_animation_new_from_file
---  NOT BOUND: gdk_pixbuf_animaion_ref
+--  NOT BOUND: gdk_pixbuf_animation_ref
 --  NOT BOUND: gdk_pixbuf_animation_unref
 --  NOT BOUND: gdk_pixbuf_preinit
 --  NOT BOUND: gdk_pixbuf_postinit
