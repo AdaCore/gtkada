@@ -441,9 +441,11 @@ package Gtkada.MDI is
    -- Reorganizing children --
    ---------------------------
 
-   procedure Raise_Child (Child : access MDI_Child_Record'Class);
+   procedure Raise_Child
+     (Child : access MDI_Child_Record'Class; Give_Focus : Boolean := True);
    --  Put Child in the foreground.
-   --  Note that this does not give the focus to this child.
+   --  Note that this does not give the focus to this child, unless
+   --  Give_Focus is set to True
 
    procedure Lower_Child (Child : access MDI_Child_Record'Class);
    --  Put Child in the background.

@@ -539,10 +539,17 @@ package body Gtkada.MDI is
       --  This avoids a situation where an TextView has the keyboard focus, but
       --  isn't the MDI focus child.
 
-      if M.Focus_Child /= null
-        and then M.Focus_Child.State = Floating
-      then
+      if M.Focus_Child = null then
          Set_Focus (Gtk_Window (Get_Toplevel (M)), null);
+
+      elsif M.Focus_Child.State = Floating then
+         Set_Focus (Gtk_Window (Get_Toplevel (M)), null);
+
+      else
+         --  Make sure the keyboard focus is correctly restored, for instance
+         --  if we had open a temporary dialog and then closed it to go back
+         --  to GPS.
+         Give_Focus_To_Child (M.Focus_Child);
       end if;
 
       return False;
@@ -1581,7 +1588,7 @@ package body Gtkada.MDI is
       --  Focus and raise the child. Raise_Child must be called explicitely
       --  since Set_Focus_Child won't do it if the child already has the focus.
       Set_Focus_Child (C);
-      Raise_Child (C);
+      Raise_Child (C, False);
 
       --  Do we have a drag-and-drop operation ? This is true if we are
       --  pressing control, or simply clicking in a maximized or docked
@@ -1739,14 +1746,14 @@ package body Gtkada.MDI is
                         --  Raise the page that last had it in the same pane
 
                         if C /= C2 then
-                           Raise_Child (C);
+                           Raise_Child (C, False);
                         else
                            while Item /= Widget_List.Null_List loop
                               It := MDI_Child (Get_Data (Item));
                               if It /= C2
                                 and then Get_Parent (C2) = Get_Parent (It)
                               then
-                                 Raise_Child (It);
+                                 Raise_Child (It, False);
                                  exit;
                               end if;
 
@@ -1795,7 +1802,7 @@ package body Gtkada.MDI is
                end if;
             end if;
 
-            Raise_Child (C2);
+            Raise_Child (C2, False);
             Set_Focus_Child (C2);
             C.MDI.In_Drag := No_Drag;
             return True;
@@ -2637,7 +2644,9 @@ package body Gtkada.MDI is
    -- Raise_Child --
    -----------------
 
-   procedure Raise_Child (Child : access MDI_Child_Record'Class) is
+   procedure Raise_Child
+     (Child : access MDI_Child_Record'Class; Give_Focus : Boolean := True)
+   is
       Old_Focus : constant MDI_Child := Child.MDI.Focus_Child;
       Note : Gtk_Notebook;
       Current_Focus : MDI_Child;
@@ -2676,7 +2685,11 @@ package body Gtkada.MDI is
       --  Give the focus to the Focus_Child, since the notebook page switch
       --  might have changed that.
 
-      Give_Focus_To_Child (Old_Focus);
+      if not Give_Focus then
+         Give_Focus_To_Child (Old_Focus);
+      else
+         Set_Focus_Child (Child);
+      end if;
    end Raise_Child;
 
    ----------------------
@@ -2738,7 +2751,7 @@ package body Gtkada.MDI is
       --  manager.
 
       if C.State /= Floating then
-         Raise_Child (C);
+         Raise_Child (C, False);
       end if;
 
       if Old /= null
@@ -3520,7 +3533,7 @@ package body Gtkada.MDI is
 
       if Old_Focus /= null then
          Set_Focus_Child (MDI, Old_Focus);
-         Raise_Child (Old_Focus);
+         Raise_Child (Old_Focus, False);
       end if;
 
       Queue_Resize (MDI);
@@ -3882,7 +3895,7 @@ package body Gtkada.MDI is
       if C /= null then
          Dock_Child (C, C.State /= Docked);
          Set_Focus_Child (C);
-         Raise_Child (C);
+         Raise_Child (C, False);
       end if;
 
    exception
@@ -3912,7 +3925,7 @@ package body Gtkada.MDI is
       if C /= null then
          Float_Child (C, C.State /= Floating);
          Set_Focus_Child (C);
-         Raise_Child (C);
+         Raise_Child (C, False);
       end if;
 
    exception
@@ -4872,7 +4885,7 @@ package body Gtkada.MDI is
 
          for J in Current_Pages'Range loop
             if Current_Pages (J) /= null then
-               Raise_Child (Current_Pages (J));
+               Raise_Child (Current_Pages (J), False);
             end if;
          end loop;
 
