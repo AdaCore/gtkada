@@ -30,10 +30,33 @@ with Interfaces.C.Strings;
 with Unchecked_Deallocation;
 with Unchecked_Conversion;
 with System;
+with Gdk; use Gdk;
 
 package body Gtk.Main is
 
    package C renames Interfaces.C;
+
+   --------------
+   -- Grab_Add --
+   --------------
+
+   procedure Grab_Add (Widget : Gtk.Widget.Gtk_Widget'Class) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_grab_add");
+   begin
+      Internal (Get_Object (Widget));
+   end Grab_Add;
+
+   -----------------
+   -- Grab_Remove --
+   -----------------
+
+   procedure Grab_Remove (Widget : Gtk.Widget.Gtk_Widget'Class) is
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_grab_remove");
+   begin
+      Internal (Get_Object (Widget));
+   end Grab_Remove;
 
    ----------------
    -- Set_Locale --

@@ -26,6 +26,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+with Gtk.Widget;
+
 package Gtk.Main is
 
    procedure Init;
@@ -56,6 +58,11 @@ package Gtk.Main is
    function Main_Iteration return Gint;
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_main_iteration
 
+   procedure Grab_Add (Widget : Gtk.Widget.Gtk_Widget'Class);
+   --  mapping: Grab_Add gtkmain.h gtk_grab_add
+
+   procedure Grab_Remove (Widget : Gtk.Widget.Gtk_Widget'Class);
+   --  mapping: Grab_Remove gtkmain.h gtk_grab_remove
 
    --  Some services can be directly binded...
    --
@@ -115,9 +122,7 @@ package Gtk.Main is
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_main_iteration_do
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_true
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_false
-   --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_grab_add
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_grab_get_current
-   --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_grab_remove
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_init_add
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_quit_add_destroy
    --  mapping: NOT_IMPLEMENTED gtkmain.h gtk_quit_add
