@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,6 +29,7 @@
 
 with Gtk.Enums;
 with Gtk.Box;
+with Gtk.Object;
 
 package Gtk.Color_Selection is
 
@@ -52,6 +53,14 @@ package Gtk.Color_Selection is
 
    procedure Set_Update_Policy (Colorsel : access Gtk_Color_Selection_Record;
                                 Policy   : in Enums.Gtk_Update_Type);
+
+   procedure Generate (N : in Node_Ptr; File : in File_Type);
+   --  Gate internal function
+
+   procedure Generate
+     (Colorsel : in out Object.Gtk_Object;
+      N        : in Node_Ptr);
+   --  Dgate internal function
 
 private
 
