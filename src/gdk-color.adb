@@ -29,16 +29,16 @@
 
 package body Gdk.Color is
 
-   ---------
-   -- "=" --
-   ---------
+   -----------
+   -- Equal --
+   -----------
 
-   function "=" (Colora, Colorb : in Gdk_Color) return Boolean is
+   function Equal (Colora, Colorb : in Gdk_Color) return Boolean is
    begin
       return Colora.Red = Colorb.Red
         and then Colora.Blue = Colorb.Blue
         and then Colora.Green = Colorb.Green;
-   end "=";
+   end Equal;
 
    -----------
    -- Alloc --

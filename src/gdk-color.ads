@@ -198,7 +198,7 @@ package Gdk.Color is
    procedure Copy (Source      : in     Gdk_Color;
                    Destination :    out Gdk_Color);
 
-   function "=" (Colora, Colorb : in Gdk_Color) return Boolean;
+   function Equal (Colora, Colorb : in Gdk_Color) return Boolean;
 
    ----------------------------------------------
    --  Setting/Getting the fields of Gdk_Color --
