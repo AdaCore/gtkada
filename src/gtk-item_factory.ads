@@ -93,10 +93,6 @@ package Gtk.Item_Factory is
    function Get_Type return Gtk_Type;
    --  Return the internal value associated with a Gtk_Item_Factory
 
-   procedure Parse_Rc (File_Name : String);
-
-   procedure Parse_Rc_String (Rc_String : String);
-
    procedure Add_Foreign
      (Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Full_Path    : String;
@@ -245,10 +241,6 @@ package Gtk.Item_Factory is
          Y            : Guint;
          Mouse_Button : Guint;
          Time         : Guint32);
-
-      procedure Print_Func
-        (File_Pointer : Data_Type_Access;
-         Str          : String);
 
       procedure Set_Translate_Func
         (Ifactory : access Gtk_Item_Factory_Record'Class;

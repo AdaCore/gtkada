@@ -202,30 +202,6 @@ package body Gtk.Item_Factory is
       return Convert (Internal (Get_Object (Ifactory), Action));
    end Get_Widget_By_Action;
 
-   --------------
-   -- Parse_Rc --
-   --------------
-
-   procedure Parse_Rc (File_Name : String) is
-      procedure Internal (File_Name : String);
-      pragma Import (C, Internal, "gtk_item_factory_parse_rc");
-
-   begin
-      Internal (File_Name & ASCII.NUL);
-   end Parse_Rc;
-
-   ---------------------
-   -- Parse_Rc_String --
-   ---------------------
-
-   procedure Parse_Rc_String (Rc_String : String) is
-      procedure Internal (Rc_String : String);
-      pragma Import (C, Internal, "gtk_item_factory_parse_rc_string");
-
-   begin
-      Internal (Rc_String & ASCII.NUL);
-   end Parse_Rc_String;
-
    ----------------------
    -- Path_From_Widget --
    ----------------------
@@ -507,20 +483,6 @@ package body Gtk.Item_Factory is
                    Mouse_Button,
                    Time);
       end Popup_With_Data;
-
-      ----------------
-      -- Print_Func --
-      ----------------
-
-      procedure Print_Func (File_Pointer : Data_Type_Access; Str : String) is
-         procedure Internal
-           (FILE_Pointer : System.Address;
-            Str          : String);
-         pragma Import (C, Internal, "gtk_item_factory_print_func");
-
-      begin
-         Internal (File_Pointer'Address, Str & ASCII.NUL);
-      end Print_Func;
 
       ------------------------
       -- Set_Translate_Func --
