@@ -365,7 +365,7 @@ package body Gtkada.Multi_Paned is
               (Gtkada_Multi_Paned (Paned), Child.Parent, Child, Child.Handles);
 
             if Child.Parent.First_Child = Child then
-               Previous.Next := Child.Parent.First_Child;
+               Previous.Next := Child.Next;
                Child.Parent.First_Child := Child.First_Child;
             else
                Tmp := Child.Parent.First_Child;
@@ -437,7 +437,6 @@ package body Gtkada.Multi_Paned is
 
          Merge_With_Parent_If_Single_Child (Parent);
          Merge_With_Parent_If_Same (Parent);
-
          Queue_Resize (Split);
       end if;
    end Remove_Child;
@@ -1040,7 +1039,11 @@ package body Gtkada.Multi_Paned is
                end if;
             end if;
 
-            if Current.Width /= 0 or else Current.Height /= 0 then
+            if (Current.Parent.Orientation = Orientation_Horizontal
+                and then Current.Width /= 0)
+              or else (Current.Parent.Orientation = Orientation_Vertical
+                       and then Current.Height /= 0)
+            then
                Tmp := Current.Parent.First_Child;
                for H in Current.Parent.Handles'Range loop
                   if Tmp = Current then
@@ -1250,6 +1253,10 @@ package body Gtkada.Multi_Paned is
             if not After then
                Tmp2.Widget    := Current.Widget;
                Current.Widget := Gtk_Widget (New_Child);
+               Tmp2.Width     := Current.Width;
+               Tmp2.Height    := Current.Height;
+               Current.Width  := Width;
+               Current.Height := Height;
             end if;
 
             Add_Handle (Win, Current.Parent, Current);
@@ -1290,6 +1297,10 @@ package body Gtkada.Multi_Paned is
             if not After then
                Current.Next.Widget := Current.Widget;
                Current.Widget      := Gtk_Widget (New_Child);
+               Current.Next.Width  := Current.Width;
+               Current.Next.Height := Current.Height;
+               Current.Width  := Width;
+               Current.Height := Height;
             end if;
          end if;
 
@@ -1360,10 +1371,11 @@ package body Gtkada.Multi_Paned is
    procedure Add_Child
      (Win        : access Gtkada_Multi_Paned_Record;
       New_Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Orientation   : Gtk.Enums.Gtk_Orientation :=
+        Gtk.Enums.Orientation_Horizontal;
       Width, Height : Glib.Gint := 0) is
    begin
-      Split_Internal
-        (Win, null, New_Child, Orientation_Horizontal, Width, Height);
+      Split_Internal (Win, null, New_Child, Orientation, Width, Height);
    end Add_Child;
 
    --------------
