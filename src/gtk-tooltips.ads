@@ -59,22 +59,22 @@ package Gtk.Tooltips is
    end record;
 
    procedure Gtk_New (Widget : out Gtk_Tooltips);
-   --  Creates a new group of tooltips.
+   --  Create a new group of tooltips.
 
    procedure Initialize (Widget : access Gtk_Tooltips_Record'Class);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Tooltips internally.
+   --  Return the internal value associated with a Gtk_Tooltips internally.
 
    procedure Enable (Tooltips : access Gtk_Tooltips_Record);
-   --  Enables all the tooltips in the group.
+   --  Enable all the tooltips in the group.
    --  From now on, when the mouse rests over a widget for a short period of
    --  time, the help text is automatically displayed.
 
    procedure Disable (Tooltips : access Gtk_Tooltips_Record);
-   --  Disables all the tooptips in the group.
+   --  Disable all the tooptips in the group.
    --  From now on, no tooltips in this group will appear, unless they are
    --  re-enabled.
 
@@ -82,28 +82,28 @@ package Gtk.Tooltips is
                         Duration : in Guint := 500);
    --  Set the delay between the user moving the mouse over a widget and the
    --  text appearing.
-   --  DURATION is in milli-seconds.
+   --  Duration is in milli-seconds.
 
    procedure Set_Tip
      (Tooltips    : access Gtk_Tooltips_Record;
       Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tip_Text    : in String;
       Tip_Private : in String := "");
-   --  Adds a new tooltip to WIDGET.
-   --  The message that appears in the tooltip is TIP_TEXT, and the tooltip
-   --  belongs to the group TOOLTIPS.
-   --  TIP_PRIVATE contains more information, that can be displayed by a
-   --  GTK_TIPS_QUERY widget through the "widget_selected" signal.
-   --  In most cases, TIP_PRIVATE should simply keep its default empty value.
+   --  Add a new tooltip to Widget.
+   --  The message that appears in the tooltip is Tip_Text, and the tooltip
+   --  belongs to the group Tooltips.
+   --  Tip_Private contains more information, that can be displayed by a
+   --  Gtk_Tips_Query widget through the "widget_selected" signal.
+   --  In most cases, Tip_Private should simply keep its default empty value.
 
    procedure Set_Colors (Tooltips   : access Gtk_Tooltips_Record;
                          Foreground : Gdk.Color.Gdk_Color;
                          Background : Gdk.Color.Gdk_Color);
-   --  Modifies the color scheme for the tooltips in the group TOOLTIPS.
+   --  Modify the color scheme for the tooltips in the group Tooltips.
 
    function Get_Data (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
                      return Tooltips_Data;
-   --  Returns the tooltip data associated with the WIDGET.
+   --  Return the tooltip data associated with the Widget.
    --  If there is none, the two text fields in the returned structure have
    --  a length 0.
 
@@ -123,4 +123,4 @@ end Gtk.Tooltips;
 
 --  The following functions have no Ada equivalent:
 --  gtk_tooltips_force_window: internal function for gtk+, makes sure the group
---     as a window associated with you.
+--     has a window associated with you.
