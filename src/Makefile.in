@@ -27,8 +27,8 @@ MKDIR = mkdir -p
 RMDIR = rmdir
 MV = mv
 
-SONAME        = libgtkada.so
-LIBNAME       = libgtkada.so
+SONAME        = libgtkada$(SO_EXT)
+LIBNAME       = libgtkada$(SO_EXT)
 ARCHIVENAME   = libgtkada.a
 
 GTKADA_CONFIG = gtkada-config

@@ -13,8 +13,8 @@ INSTALL_DATA = @INSTALL_DATA@
 
 CFLAGS = @CFLAGS@ -Wall @GTK_CFLAGS@ -I. $(FPIC)
  
-SONAME        = libgtkada_gl.so
-LIBNAME       = libgtkada_gl.so
+SONAME        = libgtkada_gl$(SO_EXT)
+LIBNAME       = libgtkada_gl$(SO_EXT)
 ARCHIVENAME   = libgtkada_gl.a
 
 HAVE_OPENGL=@HAVE_OPENGL@
