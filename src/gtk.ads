@@ -112,4 +112,8 @@ private
    --  Stub is the expect type (it is used by the simple conversion
    --  function only).
 
+   pragma Import (C, Major_Version, "ada_gtk_major_version");
+   pragma Import (C, Minor_Version, "ada_gtk_minor_version");
+   pragma Import (C, Micro_Version, "ada_gtk_micro_version");
+ 
 end Gtk;

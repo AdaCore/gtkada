@@ -51,6 +51,28 @@ convert_i (gint s)
 }
 
 /********************************************************************
+ *  Returns the major/minor/macro version number of Gtk+. This is
+ *  needed as the windows version uses a different convention for the
+ *  corresponding variables gtk_{major/minor/micro)_version than the
+ *  unix version.
+ ********************************************************************/
+
+guint
+ada_gtk_major_version () {
+  return GTK_MAJOR_VERSION;
+}
+
+guint
+ada_gtk_minor_version () {
+  return GTK_MINOR_VERSION;
+}
+
+guint
+ada_gtk_micro_version () {
+  return GTK_MICRO_VERSION;
+}
+
+/********************************************************************
  **  Returns the real widget name (as opposed to gtk_widget_get_name,
  **  this one returns NULL instead of the class name if no name was
  **  set.
@@ -2879,3 +2901,14 @@ ada_gdk_property_get (GdkWindow	 *window,
 			       actual_length, data);
 }
 
+#if GTK_MICRO_VERSION < 4
+/* Define gtk_container_set_reallocate_redraws for Gtk+ versions < 1.2.4 */
+void
+gtk_container_set_reallocate_redraws (GtkContainer *container,
+                                      gboolean      needs_redraws)
+{
+  g_warning
+    ("Gtk+ %d.%d.%d does not provide gtk_container_set_reallocate_redraws\n",
+     GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
+}
+#endif
