@@ -17,8 +17,8 @@ CC = @CC@
 FPIC = -fPIC
 CFLAGS = @CFLAGS@ -Wall @GTK_CFLAGS@ -I.. $(FPIC)
 
-GNATFLAGS = -O2 -gnatny
-GNATFLAGS_DEVEL = -O2 -gnatwlue -gnatay -g
+GNATFLAGS = -O2 -gnatn -gnatwuwewl
+GNATFLAGS_DEVEL = -O2 -gnatag -gnatwuwewl -g
 
 GNATMAKE = gnatmake
 GNATMAKELDFLAGS = -largs -L. @GTK_LIBS@ -lgtkada
@@ -166,7 +166,6 @@ clean-generic:
 mostlyclean-generic: clean-generic
 	-${RM} Makefile
 	-${RM} $(GATE)
-	-${RM} create_test_link.pl
 	-${RM} $(GTKADA_CONFIG)
 
 clean: clean-generic
