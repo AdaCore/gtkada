@@ -332,7 +332,7 @@ package body Gtk.Tree_Model is
       function Internal (Tree_Model, Iter : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_tree_model_iter_next");
 
-      Local_Iter : aliased Gtk_Tree_Iter;
+      Local_Iter : aliased Gtk_Tree_Iter := Iter;
 
    begin
       if Internal (Get_Object (Tree_Model), Local_Iter'Address) = 0 then
