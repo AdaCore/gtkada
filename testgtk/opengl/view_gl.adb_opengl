@@ -326,7 +326,7 @@ package body View_Gl is
          return;
       end if;
 
-      Show_Lwobject (Frame, "alien.lwo");
+      Show_Lwobject (Frame, "penguin.lwo");
    end Run;
 
 
