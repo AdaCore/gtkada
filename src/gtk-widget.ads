@@ -361,6 +361,8 @@ package Gtk.Widget is
    --  Add a new accelerator for the widget.
    --  The signal Accel_Signal will be sent to Widget when the matching
    --  key is pressed and the widget has the focus.
+   --  Consider using Gtk.Accel_Map.Add_Entry instead, which is compatible with
+   --  interactive change of accelerators by the user.
 
    procedure Remove_Accelerator
      (Widget       : access Gtk_Widget_Record;
