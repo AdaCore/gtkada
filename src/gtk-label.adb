@@ -152,7 +152,7 @@ package body Gtk.Label is
    function Parse_Uline
      (Label : access Gtk_Label_Record;
       Text  : String) return Gdk.Types.Gdk_Key_Type
-   is 
+   is
       function Internal
         (Label : System.Address; Text : String) return Gdk.Types.Gdk_Key_Type;
       pragma Import (C, Internal, "gtk_label_parse_uline");
