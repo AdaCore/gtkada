@@ -3025,10 +3025,10 @@ will simply replace them by null operations.
 
 @subsection Adding Gate support for new widgets
 @subsubsection Implementing ``Generate'' procedures
-@itemize
+@itemize @bullet
 @item Glib.Glade API
 @item Most common mapping
-  @itemize
+  @itemize @bullet
   @item Gen_New
   @item Gen_Set
   @item Gen_Call_Child
@@ -3050,7 +3050,7 @@ As for Gate you can simply invoke Dgate by specifying a Glade project file.
 
 @subsection Gtk.Glade
 
-@itemize
+@itemize @bullet
 @item Loading an XML file
 @item Registering signals
 @item Retrieving widgets
