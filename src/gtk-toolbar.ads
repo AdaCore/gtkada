@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.4</c_version>
+
+with Glib;
 with Gtk.Button;
 with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
@@ -34,144 +37,178 @@ with Gtk.Widget;
 
 package Gtk.Toolbar is
 
-   type Gtk_Toolbar_Record is new Gtk.Container.Gtk_Container_Record
-     with private;
+   type Gtk_Toolbar_Record is new
+     Gtk.Container.Gtk_Container_Record with private;
    type Gtk_Toolbar is access all Gtk_Toolbar_Record'Class;
 
    procedure Gtk_New
      (Widget      : out Gtk_Toolbar;
-      Orientation : in Gtk_Orientation;
-      Style       : in Gtk_Toolbar_Style);
+      Orientation : Gtk_Orientation;
+      Style       : Gtk_Toolbar_Style);
 
    procedure Initialize
      (Widget      : access Gtk_Toolbar_Record'Class;
-      Orientation : in Gtk_Orientation;
-      Style       : in Gtk_Toolbar_Style);
+      Orientation : Gtk_Orientation;
+      Style       : Gtk_Toolbar_Style);
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Toolbar.
 
    --  In all the following functions, "Tooltip_Text" can be a empty String.
    --  In that case, no tooltip will be created
 
+   -------------------------
+   -- Simple button items --
+   -------------------------
+
+   function Append_Item
+     (Toolbar              : access Gtk_Toolbar_Record;
+      Text                 : String := "";
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
+      Icon                 : Gtk.Widget.Gtk_Widget := null)
+      return Gtk.Button.Gtk_Button;
+   --  Note : you have to set the callback yourself, as opposed to what is
+   --  done in C.
+
+   function Prepend_Item
+     (Toolbar              : access Gtk_Toolbar_Record;
+      Text                 : String := "";
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
+      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Gtk.Button.Gtk_Button;
+
+   function Insert_Item
+     (Toolbar              : access Gtk_Toolbar_Record;
+      Text                 : String := "";
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
+      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Position             : Gint)
+      return Gtk.Button.Gtk_Button;
+
+   -----------------
+   -- Stock items --
+   -----------------
+
+   procedure Set_Icon_Size
+     (Toolbar   : access Gtk_Toolbar_Record;
+      Icon_Size : Gtk_Icon_Size);
+
+   procedure Insert_Stock
+     (Toolbar              : access Gtk_Toolbar_Record;
+      Stock_Id             : String;
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
+      Position             : Gint);
+
+   -----------------
+   -- Space items --
+   -----------------
+
+   procedure Append_Space (Toolbar : access Gtk_Toolbar_Record);
+
+   procedure Prepend_Space (Toolbar : access Gtk_Toolbar_Record);
+
+   procedure Insert_Space
+     (Toolbar : access Gtk_Toolbar_Record; Position : Gint);
+
+   ----------------------
+   -- Any element type --
+   ----------------------
+
    function Append_Element
      (Toolbar              : access Gtk_Toolbar_Record;
-      The_Type             : in Gtk_Toolbar_Child_Type;
+      The_Type             : Gtk_Toolbar_Child_Type;
       Widget               : Gtk.Widget.Gtk_Widget := null;
-      Text                 : in String := "";
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
+      Text                 : String := "";
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Widget.Gtk_Widget;
    --  Note : you have to set the "clicked" callback yourself, as opposed to
    --  what is done in C.
 
-   function Append_Item
+   function Prepend_Element
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : in String := "";
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
-      Icon                 : Gtk.Widget.Gtk_Widget := null)
-      return Gtk.Button.Gtk_Button;
+      The_Type             : Gtk_Toolbar_Child_Type;
+      Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Text                 : String := "";
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
+      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
+      return Gtk.Widget.Gtk_Widget;
+
+   function Insert_Element
+     (Toolbar              : access Gtk_Toolbar_Record;
+      The_Type             : Gtk_Toolbar_Child_Type;
+      Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Text                 : String := "";
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
+      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Position             : Gint)
+      return Gtk.Widget.Gtk_Widget;
    --  Note : you have to set the callback yourself, as opposed to what is
    --  done in C.
 
-   procedure Append_Space (Toolbar : access Gtk_Toolbar_Record);
+   ---------------------
+   -- Generic widgets --
+   ---------------------
 
    procedure Append_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "");
-
-   function Insert_Element
-     (Toolbar              : access Gtk_Toolbar_Record;
-      The_Type             : in Gtk_Toolbar_Child_Type;
-      Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Text                 : in String := "";
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Position             : in Gint)
-      return Gtk.Widget.Gtk_Widget;
-   --  Note : you have to set the callback yourself, as opposed to what is
-   --  done in C.
-
-   function Insert_Item
-     (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : in String := "";
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Position             : in Gint)
-      return Gtk.Button.Gtk_Button;
-
-   procedure Insert_Space
-     (Toolbar  : access Gtk_Toolbar_Record;
-      Position : in Gint);
-
-   procedure Insert_Widget
-     (Toolbar              : access Gtk_Toolbar_Record;
-      Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
-      Position             : in Gint);
-
-   function Prepend_Element
-     (Toolbar              : access Gtk_Toolbar_Record;
-      The_Type             : in Gtk_Toolbar_Child_Type;
-      Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Text                 : in String := "";
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
-      return Gtk.Widget.Gtk_Widget;
-
-   function Prepend_Item
-     (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : in String := "";
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
-      Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
-      return Gtk.Button.Gtk_Button;
-
-   procedure Prepend_Space (Toolbar : access Gtk_Toolbar_Record);
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "");
 
    procedure Prepend_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "");
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "");
+
+   procedure Insert_Widget
+     (Toolbar              : access Gtk_Toolbar_Record;
+      Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
+      Position             : Gint);
+
+   ---------------------
+   -- Style functions --
+   ---------------------
 
    procedure Set_Orientation
      (Toolbar     : access Gtk_Toolbar_Record;
-      Orientation : in Gtk_Orientation);
-
-   procedure Set_Space_Size
-     (Toolbar    : access Gtk_Toolbar_Record;
-      Space_Size : in Gint);
-
-   procedure Set_Space_Style
-     (Toolbar : access Gtk_Toolbar_Record;
-      Style   : in Gtk_Toolbar_Space_Style);
+      Orientation : Gtk_Orientation);
 
    procedure Set_Style
      (Toolbar : access Gtk_Toolbar_Record;
-      Style   : in Gtk_Toolbar_Style);
+      Style   : Gtk_Toolbar_Style);
+
+   procedure Set_Space_Size
+     (Toolbar    : access Gtk_Toolbar_Record;
+      Space_Size : Gint);
+
+   procedure Set_Space_Style
+     (Toolbar : access Gtk_Toolbar_Record;
+      Style   : Gtk_Toolbar_Space_Style);
 
    procedure Set_Tooltips
      (Toolbar : access Gtk_Toolbar_Record;
-      Enable  : in Boolean);
+      Enable  : Boolean);
 
    procedure Set_Button_Relief
-     (Toolbar : access Gtk_Toolbar_Record; Relief : in Gtk_Relief_Style);
+     (Toolbar : access Gtk_Toolbar_Record; Relief : Gtk_Relief_Style);
 
    function Get_Button_Relief
      (Toolbar : access Gtk_Toolbar_Record) return Gtk_Relief_Style;
 
 private
-   type Gtk_Toolbar_Record is new Gtk.Container.Gtk_Container_Record
-     with null record;
+   type Gtk_Toolbar_Record is
+     new Gtk.Container.Gtk_Container_Record with null record;
 
    pragma Import (C, Get_Type, "gtk_toolbar_get_type");
 end Gtk.Toolbar;

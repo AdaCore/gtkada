@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -40,6 +40,7 @@ package body Gtk.Viewport is
    is
       function Internal (Viewport : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "ada_gtk_viewport_get_bin_window");
+
    begin
       return Internal (Get_Object (Widget));
    end Get_Bin_Window;
@@ -49,12 +50,11 @@ package body Gtk.Viewport is
    ---------------------
 
    function Get_Hadjustment
-     (Viewport : access Gtk_Viewport_Record)
-      return Gtk.Adjustment.Gtk_Adjustment
+     (Viewport : access Gtk_Viewport_Record) return Adjustment.Gtk_Adjustment
    is
-      function Internal (Viewport : in System.Address)
-        return System.Address;
+      function Internal (Viewport : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_viewport_get_hadjustment");
+
       Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
 
    begin
@@ -66,11 +66,12 @@ package body Gtk.Viewport is
    -- Get_Vadjustment --
    ---------------------
 
-   function Get_Vadjustment (Viewport : access Gtk_Viewport_Record)
-     return Gtk.Adjustment.Gtk_Adjustment
+   function Get_Vadjustment
+     (Viewport : access Gtk_Viewport_Record) return Adjustment.Gtk_Adjustment
    is
-      function Internal (Viewport : in System.Address) return System.Address;
+      function Internal (Viewport : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_viewport_get_vadjustment");
+
       Stub : Gtk.Adjustment.Gtk_Adjustment_Record;
 
    begin
@@ -97,13 +98,12 @@ package body Gtk.Viewport is
 
    procedure Initialize
      (Viewport    : access Gtk_Viewport_Record'Class;
-      Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
-      Vadjustment : in Gtk.Adjustment.Gtk_Adjustment)
+      Hadjustment : Gtk.Adjustment.Gtk_Adjustment;
+      Vadjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
       function Internal
-        (Hadjustment : in System.Address;
-         Vadjustment : in System.Address)
-         return System.Address;
+        (Hadjustment : System.Address;
+         Vadjustment : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_viewport_new");
 
       Hadj, Vadj : System.Address;
@@ -133,11 +133,11 @@ package body Gtk.Viewport is
 
    procedure Set_Hadjustment
      (Viewport   : access Gtk_Viewport_Record;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal
-        (Viewport   : in System.Address;
-         Adjustment : in System.Address);
+        (Viewport   : System.Address;
+         Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_viewport_set_hadjustment");
 
       Adj : System.Address;
@@ -160,15 +160,14 @@ package body Gtk.Viewport is
 
    procedure Set_Shadow_Type
      (Viewport : access Gtk_Viewport_Record;
-      The_Type : in Gtk_Shadow_Type)
+      The_Type : Gtk_Shadow_Type)
    is
       procedure Internal
-        (Viewport : in System.Address;
-         The_Type : in Gint);
+        (Viewport : System.Address; The_Type : Gtk_Shadow_Type);
       pragma Import (C, Internal, "gtk_viewport_set_shadow_type");
 
    begin
-      Internal (Get_Object (Viewport), Gtk_Shadow_Type'Pos (The_Type));
+      Internal (Get_Object (Viewport), The_Type);
    end Set_Shadow_Type;
 
    ---------------------
@@ -177,11 +176,11 @@ package body Gtk.Viewport is
 
    procedure Set_Vadjustment
      (Viewport   : access Gtk_Viewport_Record;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal
-        (Viewport   : in System.Address;
-         Adjustment : in System.Address);
+        (Viewport   : System.Address;
+         Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_viewport_set_vadjustment");
 
       Adj : System.Address;

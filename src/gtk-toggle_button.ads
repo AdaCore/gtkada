@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,9 +38,10 @@
 --  toggled.
 
 --  </description>
---  <c_version> 1.2.6 </c_version>
+--  <c_version>1.3.4</c_version>
 --  <screenshot>togglebutton</screenshot>
 
+with Glib;
 with Gtk.Button;
 
 package Gtk.Toggle_Button is
@@ -49,39 +50,55 @@ package Gtk.Toggle_Button is
      with private;
    type Gtk_Toggle_Button is access all Gtk_Toggle_Button_Record'Class;
 
-   procedure Gtk_New (Toggle_Button : out Gtk_Toggle_Button;
-                      Label         : in String := "");
+   procedure Gtk_New
+     (Toggle_Button : out Gtk_Toggle_Button;
+      Label         : String := "");
    --  Initialize a button.
    --  If Label is "", then no label is created inside the button and
    --  you will have to provide your own child through a call to
    --  Gtk.Container.Add. This is the recommended way to put a pixmap
    --  inside a toggle button.
 
-   procedure Initialize (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
-                         Label         : in String := "");
+   procedure Initialize
+     (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
+      Label         : String := "");
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Toggle_Button.
 
-   procedure Set_Mode (Toggle_Button  : access Gtk_Toggle_Button_Record;
-                       Draw_Indicator : in Boolean);
+   procedure Set_Mode
+     (Toggle_Button  : access Gtk_Toggle_Button_Record;
+      Draw_Indicator : Boolean);
    --  Change the mode of the button.
    --  If Draw_Indicator is False, then the button is hidden.
 
-   procedure Set_Active (Toggle_Button : access Gtk_Toggle_Button_Record;
-                         Is_Active     : in Boolean);
+   procedure Set_Active
+     (Toggle_Button : access Gtk_Toggle_Button_Record;
+      Is_Active     : Boolean);
    --  Change the state of the button.
    --  When Is_Active is True, the button is drawn as a pressed button.
 
-   function Get_Active (Toggle_Button : access Gtk_Toggle_Button_Record)
-                      return Boolean;
+   function Get_Active
+     (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean;
    --  Return true if the button is in its active state, i.e is pressed.
 
-   function Is_Active (Toggle_Button : access Gtk_Toggle_Button_Record)
-                      return Boolean;
-   --  Deprecated: this is the old name of Get_Active.
+   procedure Set_Inconsistent
+     (Toggle_Button : access Gtk_Toggle_Button_Record;
+      Setting       : Boolean := True);
+   --  If the user has selected a range of elements (such as some text or
+   --  spreadsheet cells) that are affected by a toggle button, and the
+   --  current values in that range are inconsistent, you may want to
+   --  display the toggle in an "in between" state. This function turns on
+   --  "in between" display.  Normally you would turn off the inconsistent
+   --  state again if the user toggles the toggle button. This has to be
+   --  done manually, Set_Inconsistent only affects visual appearance, it
+   --  doesn't affect the semantics of the button.
+
+   function Get_Inconsistent
+     (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean;
+   --  Get the value set by Set_Inconsistent.
 
    ----------------------
    -- Signals emission --

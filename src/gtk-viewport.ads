@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <c_version>1.3.4</c_version>
+
+with Glib;
 with Gdk;
 with Gtk.Adjustment;
 with Gtk.Bin;
@@ -47,7 +50,7 @@ package Gtk.Viewport is
       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment);
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Viewport.
 
    function Get_Bin_Window
@@ -56,24 +59,22 @@ package Gtk.Viewport is
    --  You should use this one rather than Gtk.Widget.Get_Window.
 
    function Get_Hadjustment
-     (Viewport : access Gtk_Viewport_Record)
-      return Gtk.Adjustment.Gtk_Adjustment;
+     (Viewport : access Gtk_Viewport_Record) return Adjustment.Gtk_Adjustment;
 
    function Get_Vadjustment
-     (Viewport : access Gtk_Viewport_Record)
-      return Gtk.Adjustment.Gtk_Adjustment;
+     (Viewport : access Gtk_Viewport_Record) return Adjustment.Gtk_Adjustment;
 
    procedure Set_Hadjustment
      (Viewport   : access Gtk_Viewport_Record;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
-
-   procedure Set_Shadow_Type
-     (Viewport : access Gtk_Viewport_Record;
-      The_Type : in Gtk_Shadow_Type);
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
 
    procedure Set_Vadjustment
      (Viewport   : access Gtk_Viewport_Record;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
+
+   procedure Set_Shadow_Type
+     (Viewport : access Gtk_Viewport_Record;
+      The_Type : Gtk_Shadow_Type);
 
 private
    type Gtk_Viewport_Record is new Gtk.Bin.Gtk_Bin_Record with null record;

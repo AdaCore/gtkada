@@ -40,7 +40,7 @@
 --  We have tried to reference these functions in the other packages as well.
 --
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
 with Gdk.Color;
 with Gdk.Event;
@@ -65,31 +65,33 @@ package Gtk.Widget is
    type Gtk_Widget is access all Gtk_Widget_Record'Class;
 
    type Gtk_Requisition is record
-      Width  : Gint16;
-      Height : Gint16;
+      Width  : Gint;
+      Height : Gint;
    end record;
    --  Gtk_Requisition is the desired amount of screen real-estate a widget
    --  requests to the server. Its real allocated size might be different.
    --  See the section in the GtkAda user guide on how to create new widgets
    --  in Ada, and the examples/base_widget directory for an example on how to
    --  use this.
-   pragma Pack (Gtk_Requisition);
+   pragma Convention (C, Gtk_Requisition);
 
    type Gtk_Requisition_Access is access all Gtk_Requisition;
+   pragma Convention (C, Gtk_Requisition_Access);
    --  This type is used to create new widgets.
 
    type Gtk_Allocation is record
-      X      : Gint16;
-      Y      : Gint16;
-      Width  : Guint16;
-      Height : Guint16;
+      X      : Gint;
+      Y      : Gint;
+      Width  : Gint;
+      Height : Gint;
    end record;
    --  Gtk_Allocation indicates a size and position a widget was allocated.
    --  See the section in the user guide on how to create new widgets for more
    --  information.
-   pragma Pack (Gtk_Allocation);
+   pragma Convention (C, Gtk_Allocation);
 
    type Gtk_Allocation_Access is access all Gtk_Allocation;
+   pragma Convention (C, Gtk_Allocation_Access);
    --  This type is used to create new widgets.
 
    -------------------------
@@ -179,7 +181,11 @@ package Gtk.Widget is
 
    end Realize_Handling;
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Hide_On_Delete (Widget : access Gtk_Widget_Record) return Boolean;
+   --  Hide widget and return True.
+   --  This function is intended to be used as a callback.
+
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Widget.
 
    ----------------------
@@ -206,6 +212,7 @@ package Gtk.Widget is
    --  Add a clear request to the event queue for the whole widget.
    --  This is added to the same list as for Queue_Draw, and thus is coalesced
    --  as much as possible with other drawing requests.
+   --  pragma Deprecated (Queue_Clear);
 
    procedure Queue_Clear_Area
      (Widget : access Gtk_Widget_Record;
@@ -216,6 +223,7 @@ package Gtk.Widget is
    --  Add a clear request to the event queue for part of the widget.
    --  This is added to the same list as for Queue_Draw, and thus is coalesced
    --  as much as possible with other drawing requests.
+   --  pragma Deprecated (Queue_Clear_Area);
 
    procedure Queue_Resize (Widget : access Gtk_Widget_Record);
    --  Queue drawing requests after a resizing of the widget.
@@ -225,10 +233,11 @@ package Gtk.Widget is
 
    procedure Draw
      (Widget : access Gtk_Widget_Record;
-      Area   : in Gdk.Rectangle.Gdk_Rectangle := Gdk.Rectangle.Full_Area);
+      Area   : Gdk.Rectangle.Gdk_Rectangle := Gdk.Rectangle.Full_Area);
    --  Emit a "draw" signal for a specific area of the widget.
    --  The visual aspect might be different whether the widget has the focus
    --  or not.
+   --  pragma Deprecated (Draw);
 
    -----------------------
    -- Size and position --
@@ -256,14 +265,14 @@ package Gtk.Widget is
 
    procedure Set_UPosition
      (Widget : access Gtk_Widget_Record;
-      X, Y   : in Gint);
+      X, Y   : Gint);
    --  Modify the position of the widget.
    --  This should be used only for toplevel widgets (windows and dialogs),
    --  since other widgets' positions are handled by their parent.
 
    procedure Set_USize
-     (Widget : access Gtk_Widget_Record;
-      Width, Height : in Gint);
+     (Widget        : access Gtk_Widget_Record;
+      Width, Height : Gint);
    --  Modify the size of the widget.
    --  This sets an absolute size for the widget, no matter what its requested
    --  size would be. For Gtk_Windows, you should consider using
@@ -292,35 +301,35 @@ package Gtk.Widget is
 
    procedure Add_Accelerator
      (Widget       : access Gtk_Widget_Record;
-      Accel_Signal : in String;
-      Accel_Group  : in Gtk.Accel_Group.Gtk_Accel_Group;
-      Accel_Key    : in Gdk.Types.Gdk_Key_Type;
-      Accel_Mods   : in Gdk.Types.Gdk_Modifier_Type;
-      Accel_Flags  : in Gtk.Accel_Group.Gtk_Accel_Flags);
+      Accel_Signal : String;
+      Accel_Group  : Gtk.Accel_Group.Gtk_Accel_Group;
+      Accel_Key    : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods   : Gdk.Types.Gdk_Modifier_Type;
+      Accel_Flags  : Gtk.Accel_Group.Gtk_Accel_Flags);
    --  Add a new accelerator for the widget.
    --  The signal Accel_Signal will be sent to Widget when the matching
    --  key is pressed and the widget has the focus.
 
    procedure Remove_Accelerator
      (Widget       : access Gtk_Widget_Record;
-      Accel_Group  : in Gtk.Accel_Group.Gtk_Accel_Group;
-      Accel_Key    : in Gdk.Types.Gdk_Key_Type;
-      Accel_Mods   : in Gdk.Types.Gdk_Modifier_Type);
+      Accel_Group  : Gtk.Accel_Group.Gtk_Accel_Group;
+      Accel_Key    : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods   : Gdk.Types.Gdk_Modifier_Type);
    --  Remove an accelerator for the widget.
 
    procedure Remove_Accelerators
      (Widget       : access Gtk_Widget_Record;
-      Accel_Signal : in String;
-      Visible_Only : in Boolean := True);
+      Accel_Signal : String;
+      Visible_Only : Boolean := True);
    --  Remove all the accelerators for the widget that emits the Accel_Signal
    --  signal when the key is pressed.
    --  Visible_Only is currently unused in the code of gtk+.
 
    function Accelerator_Signal
      (Widget       : access Gtk_Widget_Record;
-      Accel_Group  : in Gtk.Accel_Group.Gtk_Accel_Group;
-      Accel_Key    : in Gdk.Types.Gdk_Key_Type;
-      Accel_Mods   : in Gdk.Types.Gdk_Modifier_Type) return Guint;
+      Accel_Group  : Gtk.Accel_Group.Gtk_Accel_Group;
+      Accel_Key    : Gdk.Types.Gdk_Key_Type;
+      Accel_Mods   : Gdk.Types.Gdk_Modifier_Type) return Guint;
    --  Return the signal id of the signal emitted when Accel_Key is pressed
    --  inside the widget.
 
@@ -342,10 +351,23 @@ package Gtk.Widget is
 
    function Event
      (Widget : access Gtk_Widget_Record'Class;
-      Event  : Gdk.Event.Gdk_Event) return Gint;
+      Event  : Gdk.Event.Gdk_Event) return Boolean;
    --  Emit a signal on the widget.
    --  The exact signal depends on the event type (i.e. if the type is
    --  Gdk_Button_Press, then a "button_press" signal is emitted).
+
+   procedure Send_Expose
+     (Widget : access Gtk_Widget_Record;
+      Event  : Gdk.Event.Gdk_Event_Expose);
+   --  Emit an expose event signals on a widget.
+   --  This function is not normally used directly. The only time it is used
+   --  is when propagating an expose event to a child No_Window widget, and
+   --  that is normally done using Gtk.Container.Propagate_Expose.
+   --
+   --  If you want to force an area of a window to be redrawn,
+   --  use Gdk.Window.Invalidate_Rect or Gdk.Window.Invalidate_Region.
+   --  To cause the redraw to be done immediately, follow that call
+   --  with a call to Gdk.Window.Process_Updates.
 
    procedure Activate (Widget : access Gtk_Widget_Record);
    --  Emit an activate signal on the widget.
@@ -361,7 +383,7 @@ package Gtk.Widget is
 
    procedure Set_Events
      (Widget : access Gtk_Widget_Record;
-      Events : in     Gdk.Types.Gdk_Event_Mask);
+      Events : Gdk.Types.Gdk_Event_Mask);
    --  Sets the event mask for the widget.
    --  Widget should not have been realized before, or nothing is done.
    --  This is the only way you can explicitly get mouse or keyboards events on
@@ -375,12 +397,12 @@ package Gtk.Widget is
 
    procedure Add_Events
      (Widget : access Gtk_Widget_Record;
-      Events : in     Gdk.Types.Gdk_Event_Mask);
+      Events : Gdk.Types.Gdk_Event_Mask);
    --  Add some events to the current event mask of the widget.
 
    procedure Set_Extension_Events
      (Widget : access Gtk_Widget_Record;
-      Mode   : in     Gdk.Types.Gdk_Extension_Mode);
+      Mode   : Gdk.Types.Gdk_Extension_Mode);
    --  Set the extension event mask for the widget.
    --  This is used to activate some special input modes for other devices than
    --  keyboard and mouse.
@@ -422,7 +444,7 @@ package Gtk.Widget is
 
    procedure Set_Colormap
      (Widget : access Gtk_Widget_Record;
-      Cmap : Gdk.Color.Gdk_Colormap);
+      Cmap   : Gdk.Color.Gdk_Colormap);
    --  Modify the colormap of the widget.
    --  The widget must not have been realized.
 
@@ -434,14 +456,6 @@ package Gtk.Widget is
    procedure Pop_Colormap;
    --  See Push_Colormap for more information.
 
-   procedure Push_Visual (Visual : Gdk.Visual.Gdk_Visual);
-   --  Modify temporarily the default visual set for newly created widgets.
-   --  You should use this in pair with Pop_Colormap below (Push the new value,
-   --  create the widget, and pop the value).
-
-   procedure Pop_Visual;
-   --  See Push_Visual for more information.
-
    function Get_Default_Colormap return Gdk.Color.Gdk_Colormap;
    --  Return the default colormap used when a widget is created.
 
@@ -452,11 +466,6 @@ package Gtk.Widget is
 
    function Get_Default_Visual return Gdk.Visual.Gdk_Visual;
    --  Return the default visual used when a new widget is created.
-
-   procedure Set_Default_Visual (Visual : Gdk.Visual.Gdk_Visual);
-   --  Modify permanently the default visual used when a widget is created.
-   --  If you only want to modify this visual temporarily for a few widgets,
-   --  you should consider using Push_Visual and Pop_Visual instead.
 
    ------------
    -- Styles --
@@ -488,6 +497,19 @@ package Gtk.Widget is
       Style  : Gtk_Rc_Style);
    --  Modify the default style of a widget.
 
+   function Get_Modifier_Style
+     (Widget : access Gtk_Widget_Record) return Gtk_Rc_Style;
+   --  Return the current modifier style for the widget.
+   --  (As set by Modify_Style.) If no style has previously set, a new
+   --  Gtk_Rc_Style will be created with all values unset, and set as the
+   --  modifier style for the widget. If you make changes to this rc
+   --  style, you must call Modify_Style, passing in the
+   --  returned rc style, to make sure that your changes take effect.
+   --
+   --  Return value: the modifier style for the widget. This rc style is
+   --    owned by the widget. If you want to keep a pointer to value this
+   --    around, you must add a refcount using Gtk.Rc.Style_Ref.
+
    procedure Set_Default_Style (Style : Gtk.Style.Gtk_Style);
    --  Set the default global style.
 
@@ -518,7 +540,7 @@ package Gtk.Widget is
 
    procedure Set_Name
      (Widget : access Gtk_Widget_Record;
-      Name   : in String);
+      Name   : String);
    --  Set the name for the widget.
    --  This name is used purely internally to identify the widget, and does not
    --  give any visual clue.
@@ -545,6 +567,10 @@ package Gtk.Widget is
    --  Return the parent of the widget, or null if Widget is a toplevel
    --  widget.
 
+   function Get_Parent_Window
+     (Widget : access Gtk_Widget_Record) return Gdk.Window.Gdk_Window;
+   --  Return the widget's parent window.
+
    function Get_Toplevel (Widget : access Gtk_Widget_Record) return Gtk_Widget;
    --  Return the toplevel ancestor of the widget.
    --  This is the window or dialog in which the widget is included.
@@ -552,7 +578,7 @@ package Gtk.Widget is
 
    function Get_Ancestor
      (Widget        : access Gtk_Widget_Record;
-      Ancestor_Type : in Gtk_Type) return Gtk_Widget;
+      Ancestor_Type : Gtk_Type) return Gtk_Widget;
    --  Return the closest ancestor of Widget which is of type Ancestor_Type.
    --  Return null if there is none.
 
@@ -597,7 +623,7 @@ package Gtk.Widget is
 
    procedure Set_State
      (Widget : access Gtk_Widget_Record;
-      State : in Enums.Gtk_State_Type);
+      State  : Enums.Gtk_State_Type);
    --  Modify the state of the widget.
    --  This modifies its visual aspect, and thus should be used only if you
    --  change its behavior at the same time, so as not to confuse the user.
@@ -608,7 +634,7 @@ package Gtk.Widget is
 
    procedure Set_Sensitive
      (Widget    : access Gtk_Widget_Record;
-      Sensitive : in Boolean := True);
+      Sensitive : Boolean := True);
    --  Modify the sensitivity of the widget.
    --  An insensitive widget is generally grayed out, and can not be activated.
    --  For instance, an insensitive menu item is grayed, and can never be
@@ -619,6 +645,11 @@ package Gtk.Widget is
       App_Paintable : Boolean);
    --  Modify the "App_Paintable" flag for the widget.
 
+   procedure Set_Double_Buffered
+     (Widget          : access Gtk_Widget_Record;
+      Double_Buffered : Boolean := True);
+   --  Modify the "Double_Buffered" flag for the widget.
+
    procedure Get_Pointer
      (Widget : access Gtk_Widget_Record;
       X      : out Gint;
@@ -627,7 +658,7 @@ package Gtk.Widget is
 
    procedure Set_Window
      (Widget : access Gtk_Widget_Record;
-      Window : in Gdk.Window.Gdk_Window);
+      Window : Gdk.Window.Gdk_Window);
    --  Set the Gdk window associated with the widget.
 
    function Get_Window
@@ -749,6 +780,7 @@ package Gtk.Widget is
    No_Reparent      : constant := 2 ** 18;
    App_Paintable    : constant := 2 ** 19;
    Receives_Default : constant := 2 ** 20;
+   Double_Buffered  : constant := 2 ** 21;
 
    function Toplevel_Is_Set
      (Widget : access Gtk_Widget_Record'Class) return Boolean;
@@ -799,13 +831,17 @@ package Gtk.Widget is
      (Widget : access Gtk_Widget_Record'Class) return Boolean;
    --  Test whether the Rc_Style flag is set.
 
+   function Double_Buffered_Is_Set
+     (Widget : access Gtk_Widget_Record'Class) return Boolean;
+   --  Test whether the Double_Buffered flag is set.
+
    --------------------------------------
    -- Definitions for lists of widgets --
    --------------------------------------
 
    --  <doc_ignore>
 
-   function Convert (W : in Gtk_Widget) return System.Address;
+   function Convert (W : Gtk_Widget) return System.Address;
    function Convert (W : System.Address) return Gtk_Widget;
    package Widget_List is new Glib.Glist.Generic_List (Gtk_Widget);
    package Widget_SList is new Glib.GSlist.Generic_SList (Gtk_Widget);
@@ -1218,14 +1254,11 @@ private
    pragma Import (C, Set_Default_Style, "gtk_widget_set_default_style");
    pragma Import (C, Get_Default_Style, "gtk_widget_get_default_style");
    pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
-   pragma Import (C, Pop_Visual, "gtk_widget_pop_visual");
    pragma Import (C, Get_Type, "gtk_widget_get_type");
    pragma Import (C, Get_Default_Colormap, "gtk_widget_get_default_colormap");
    pragma Import (C, Get_Default_Visual, "gtk_widget_get_default_visual");
    pragma Import (C, Push_Colormap, "gtk_widget_push_colormap");
-   pragma Import (C, Push_Visual, "gtk_widget_push_visual");
    pragma Import (C, Set_Default_Colormap, "gtk_widget_set_default_colormap");
-   pragma Import (C, Set_Default_Visual, "gtk_widget_set_default_visual");
    pragma Inline (Toplevel_Is_Set);
    pragma Inline (No_Window_Is_Set);
    pragma Inline (Realized_Is_Set);
@@ -1238,10 +1271,13 @@ private
    pragma Inline (Has_Default_Is_Set);
    pragma Inline (Has_Grab_Is_Set);
    pragma Inline (Rc_Style_Is_Set);
+   pragma Inline (Double_Buffered_Is_Set);
 end Gtk.Widget;
 
---  Functions that have no Ada equivalent:
+--  missing:
 --  - gtk_widget_new
+--  - gtk_widget_destroy
+--  - gtk_widget_destroyed
 --  - gtk_widget_get
 --  - gtk_widget_getv
 --  - gtk_widget_set
@@ -1254,3 +1290,25 @@ end Gtk.Widget;
 --  - gtk_widget_pop_composite_child
 --  - gtk_widget_path
 --  - gtk_widget_class_path
+--  - gtk_widget_mnemonic_activate
+--  - gtk_widget_region_intersect
+--  - gtk_widget_is_focus
+--  - gtk_widget_modify_fg
+--  - gtk_widget_modify_bg
+--  - gtk_widget_modify_text
+--  - gtk_widget_modify_base
+--  - gtk_widget_modify_font
+--  - gtk_widget_create_pango_context
+--  - gtk_widget_get_pango_context
+--  - gtk_widget_create_pango_layout
+--  - gtk_widget_render_icon
+--  - gtk_widget_class_install_style_property
+--  - gtk_widget_class_install_style_property_parser
+--  - gtk_widget_style_get_property
+--  - gtk_widget_style_get_valist
+--  - gtk_widget_style_get
+--  - gtk_widget_set_direction
+--  - gtk_widget_get_direction
+--  - gtk_widget_set_default_direction
+--  - gtk_widget_get_default_direction
+

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -37,28 +37,26 @@ package body Gtk.Toolbar is
 
    function Append_Element
      (Toolbar              : access Gtk_Toolbar_Record;
-      The_Type             : in Gtk_Toolbar_Child_Type;
+      The_Type             : Gtk_Toolbar_Child_Type;
       Widget               : Gtk.Widget.Gtk_Widget := null;
-      Text                 : in String := "";
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
+      Text                 : String := "";
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Widget.Gtk_Widget
    is
       function Internal
-        (Toolbar              : in System.Address;
-         The_Type             : in Gint;
-         Widget               : in System.Address;
-         Text                 : in System.Address;
-         Tooltip_Text         : in System.Address;
-         Tooltip_Private_Text : in System.Address;
-         Icon                 : in System.Address;
-         Callback             : in System.Address;
-         User_Data            : in System.Address)
-         return System.Address;
+        (Toolbar              : System.Address;
+         The_Type             : Gtk_Toolbar_Child_Type;
+         Widget               : System.Address;
+         Text                 : System.Address;
+         Tooltip_Text         : System.Address;
+         Tooltip_Private_Text : System.Address;
+         Icon                 : System.Address;
+         Callback             : System.Address;
+         User_Data            : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_append_element");
 
-      Stub : Gtk.Widget.Gtk_Widget_Record;
       T    : aliased constant String := Text & ASCII.NUL;
       TA   : System.Address := T'Address;
       TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
@@ -95,12 +93,12 @@ package body Gtk.Toolbar is
          I := Get_Object (Icon);
       end if;
 
-      return Gtk.Widget.Gtk_Widget
-        (Get_User_Data (Internal (Get_Object (Toolbar),
-                                  Gtk_Toolbar_Child_Type'Pos (The_Type),
-                                  W, TA, TTA, TPTA, I, System.Null_Address,
-                                  System.Null_Address),
-                        Stub));
+      return Gtk.Widget.Convert
+        (Internal
+          (Get_Object (Toolbar),
+           The_Type,
+           W, TA, TTA, TPTA, I, System.Null_Address,
+           System.Null_Address));
    end Append_Element;
 
    -----------------
@@ -109,22 +107,23 @@ package body Gtk.Toolbar is
 
    function Append_Item
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : in String := "";
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
+      Text                 : String := "";
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
       Icon                 : Gtk.Widget.Gtk_Widget := null)
       return Gtk.Button.Gtk_Button
    is
       function Internal
-        (Toolbar              : in System.Address;
-         Text                 : in System.Address;
-         Tooltip_Text         : in System.Address;
-         Tooltip_Private_Text : in System.Address;
-         Icon                 : in System.Address;
-         Callback             : in System.Address;
-         User_Data            : in System.Address)
+        (Toolbar              : System.Address;
+         Text                 : System.Address;
+         Tooltip_Text         : System.Address;
+         Tooltip_Private_Text : System.Address;
+         Icon                 : System.Address;
+         Callback             : System.Address;
+         User_Data            : System.Address)
          return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_append_item");
+
       Stub : Gtk.Button.Gtk_Button_Record;
       T    : aliased constant String := Text & ASCII.NUL;
       TA   : System.Address := T'Address;
@@ -167,8 +166,9 @@ package body Gtk.Toolbar is
    ------------------
 
    procedure Append_Space (Toolbar : access Gtk_Toolbar_Record) is
-      procedure Internal (Toolbar : in System.Address);
+      procedure Internal (Toolbar : System.Address);
       pragma Import (C, Internal, "gtk_toolbar_append_space");
+
    begin
       Internal (Get_Object (Toolbar));
    end Append_Space;
@@ -180,15 +180,16 @@ package body Gtk.Toolbar is
    procedure Append_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "")
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "")
    is
       procedure Internal
-        (Toolbar              : in System.Address;
-         Widget               : in System.Address;
-         Tooltip_Text         : in System.Address;
-         Tooltip_Private_Text : in System.Address);
+        (Toolbar              : System.Address;
+         Widget               : System.Address;
+         Tooltip_Text         : System.Address;
+         Tooltip_Private_Text : System.Address);
       pragma Import (C, Internal, "gtk_toolbar_append_widget");
+
       TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
       TTA  : System.Address := TT'Address;
       TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
@@ -210,10 +211,12 @@ package body Gtk.Toolbar is
    -- Get_Button_Relief --
    -----------------------
 
-   function Get_Button_Relief (Toolbar : access Gtk_Toolbar_Record)
-     return Gtk_Relief_Style is
+   function Get_Button_Relief
+     (Toolbar : access Gtk_Toolbar_Record) return Gtk_Relief_Style
+   is
       function Internal (Toolbar : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_toolbar_get_button_relief");
+
    begin
       return Gtk_Relief_Style'Val (Internal (Get_Object (Toolbar)));
    end Get_Button_Relief;
@@ -224,8 +227,8 @@ package body Gtk.Toolbar is
 
    procedure Gtk_New
      (Widget      : out Gtk_Toolbar;
-      Orientation : in Gtk_Orientation;
-      Style       : in Gtk_Toolbar_Style) is
+      Orientation : Gtk_Orientation;
+      Style       : Gtk_Toolbar_Style) is
    begin
       Widget := new Gtk_Toolbar_Record;
       Initialize (Widget, Orientation, Style);
@@ -237,17 +240,16 @@ package body Gtk.Toolbar is
 
    procedure Initialize
      (Widget      : access Gtk_Toolbar_Record'Class;
-      Orientation : in Gtk_Orientation;
-      Style       : in Gtk_Toolbar_Style)
+      Orientation : Gtk_Orientation;
+      Style       : Gtk_Toolbar_Style)
    is
       function Internal
-        (Orientation : in Gint;
-         Style       : in Gint)
-         return System.Address;
+        (Orientation : Gtk_Orientation;
+         Style       : Gtk_Toolbar_Style) return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_new");
+
    begin
-      Set_Object (Widget, Internal (Gtk_Orientation'Pos (Orientation),
-                                    Gtk_Toolbar_Style'Pos (Style)));
+      Set_Object (Widget, Internal (Orientation, Style));
       Initialize_User_Data (Widget);
    end Initialize;
 
@@ -257,30 +259,27 @@ package body Gtk.Toolbar is
 
    function Insert_Element
      (Toolbar              : access Gtk_Toolbar_Record;
-      The_Type             : in Gtk_Toolbar_Child_Type;
+      The_Type             : Gtk_Toolbar_Child_Type;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Text                 : in String := "";
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
+      Text                 : String := "";
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
       Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Position             : in Gint)
-      return Gtk.Widget.Gtk_Widget
+      Position             : Gint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
-        (Toolbar              : in System.Address;
-         The_Type             : in Gint;
-         Widget               : in System.Address;
-         Text                 : in System.Address;
-         Tooltip_Text         : in System.Address;
-         Tooltip_Private_Text : in System.Address;
-         Icon                 : in System.Address;
-         Callback             : in System.Address;
-         User_Data            : in System.Address;
-         Position             : in Gint)
-         return System.Address;
+        (Toolbar              : System.Address;
+         The_Type             : Gtk_Toolbar_Child_Type;
+         Widget               : System.Address;
+         Text                 : System.Address;
+         Tooltip_Text         : System.Address;
+         Tooltip_Private_Text : System.Address;
+         Icon                 : System.Address;
+         Callback             : System.Address;
+         User_Data            : System.Address;
+         Position             : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_insert_element");
 
-      Stub : Gtk.Widget.Gtk_Widget_Record;
       T    : aliased constant String := Text & ASCII.NUL;
       TA   : System.Address := T'Address;
       TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
@@ -301,17 +300,15 @@ package body Gtk.Toolbar is
          TPTA := System.Null_Address;
       end if;
 
-      return Gtk.Widget.Gtk_Widget
-        (Get_User_Data
-          (Internal
-            (Get_Object (Toolbar),
-             Gtk_Toolbar_Child_Type'Pos (The_Type),
-             Get_Object (Widget),
-             TA, TTA, TPTA, Get_Object (Icon),
-             System.Null_Address,
-             System.Null_Address,
-             Position),
-           Stub));
+      return Gtk.Widget.Convert
+        (Internal
+          (Get_Object (Toolbar),
+           The_Type,
+           Get_Object (Widget),
+           TA, TTA, TPTA, Get_Object (Icon),
+           System.Null_Address,
+           System.Null_Address,
+           Position));
    end Insert_Element;
 
    -----------------
@@ -320,23 +317,21 @@ package body Gtk.Toolbar is
 
    function Insert_Item
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : in String := "";
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
+      Text                 : String := "";
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
       Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Position             : in Gint)
-      return Gtk.Button.Gtk_Button
+      Position             : Gint) return Gtk.Button.Gtk_Button
    is
       function Internal
-        (Toolbar              : in System.Address;
-         Text                 : in System.Address;
-         Tooltip_Text         : in System.Address;
-         Tooltip_Private_Text : in System.Address;
-         Icon                 : in System.Address;
-         Callback             : in System.Address;
-         User_Data            : in System.Address;
-         Position             : in Gint)
-         return                    System.Address;
+        (Toolbar              : System.Address;
+         Text                 : System.Address;
+         Tooltip_Text         : System.Address;
+         Tooltip_Private_Text : System.Address;
+         Icon                 : System.Address;
+         Callback             : System.Address;
+         User_Data            : System.Address;
+         Position             : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_insert_item");
 
       Stub : Gtk.Button.Gtk_Button_Record;
@@ -376,16 +371,51 @@ package body Gtk.Toolbar is
    ------------------
 
    procedure Insert_Space
-     (Toolbar  : access Gtk_Toolbar_Record;
-      Position : in Gint)
+     (Toolbar : access Gtk_Toolbar_Record; Position : Gint)
    is
-      procedure Internal
-        (Toolbar  : in System.Address;
-         Position : in Gint);
+      procedure Internal (Toolbar : System.Address; Position : Gint);
       pragma Import (C, Internal, "gtk_toolbar_insert_space");
+
    begin
       Internal (Get_Object (Toolbar), Position);
    end Insert_Space;
+
+   ------------------
+   -- Insert_Stock --
+   ------------------
+
+   procedure Insert_Stock
+     (Toolbar              : access Gtk_Toolbar_Record;
+      Stock_Id             : String;
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
+      Position             : Gint)
+   is
+      procedure Internal
+        (Toolbar              : System.Address;
+         Stock_Id             : String;
+         Tooltip_Text         : System.Address;
+         Tooltip_Private_Text : System.Address;
+         Position             : Gint);
+      pragma Import (C, Internal, "gtk_toolbar_insert_stock");
+
+      TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
+      TTA  : System.Address := TT'Address;
+      TPT  : aliased constant String := Tooltip_Private_Text & ASCII.NUL;
+      TPTA : System.Address := TPT'Address;
+
+   begin
+      if Tooltip_Text'Length = 0 then
+         TTA := System.Null_Address;
+      end if;
+
+      if Tooltip_Private_Text'Length = 0 then
+         TPTA := System.Null_Address;
+      end if;
+
+      Internal
+        (Get_Object (Toolbar), Stock_Id & ASCII.NUL, TTA, TPTA, Position);
+   end Insert_Stock;
 
    -------------------
    -- Insert_Widget --
@@ -394,16 +424,16 @@ package body Gtk.Toolbar is
    procedure Insert_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
-      Position             : in Gint)
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
+      Position             : Gint)
    is
       procedure Internal
-        (Toolbar              : in System.Address;
-         Widget               : in System.Address;
-         Tooltip_Text         : in System.Address;
-         Tooltip_Private_Text : in System.Address;
-         Position             : in Gint);
+        (Toolbar              : System.Address;
+         Widget               : System.Address;
+         Tooltip_Text         : System.Address;
+         Tooltip_Private_Text : System.Address;
+         Position             : Gint);
       pragma Import (C, Internal, "gtk_toolbar_insert_widget");
 
       TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
@@ -430,28 +460,25 @@ package body Gtk.Toolbar is
 
    function Prepend_Element
      (Toolbar              : access Gtk_Toolbar_Record;
-      The_Type             : in Gtk_Toolbar_Child_Type;
+      The_Type             : Gtk_Toolbar_Child_Type;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Text                 : in String := "";
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
+      Text                 : String := "";
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
       Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
       return Gtk.Widget.Gtk_Widget
    is
       function Internal
-        (Toolbar              : in System.Address;
-         The_Type             : in Gint;
-         Widget               : in System.Address;
-         Text                 : in System.Address;
-         Tooltip_Text         : in System.Address;
-         Tooltip_Private_Text : in System.Address;
-         Icon                 : in System.Address;
-         Callback             : in System.Address;
-         User_Data            : in System.Address)
-         return System.Address;
+        (Toolbar              : System.Address;
+         The_Type             : Gtk_Toolbar_Child_Type;
+         Widget               : System.Address;
+         Text                 : System.Address;
+         Tooltip_Text         : System.Address;
+         Tooltip_Private_Text : System.Address;
+         Icon                 : System.Address;
+         Callback             : System.Address;
+         User_Data            : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_prepend_element");
-
-      Stub : Gtk.Widget.Gtk_Widget_Record;
 
       T    : aliased constant String := Text & ASCII.NUL;
       TA   : System.Address := T'Address;
@@ -473,16 +500,14 @@ package body Gtk.Toolbar is
          TPTA := System.Null_Address;
       end if;
 
-      return Gtk.Widget.Gtk_Widget
-        (Get_User_Data
-          (Internal
-            (Get_Object (Toolbar),
-             Gtk_Toolbar_Child_Type'Pos (The_Type),
-             Get_Object (Widget),
-             TA, TTA, TPTA,
-             Get_Object (Icon),
-             System.Null_Address, System.Null_Address),
-           Stub));
+      return Gtk.Widget.Convert
+        (Internal
+          (Get_Object (Toolbar),
+           The_Type,
+           Get_Object (Widget),
+           TA, TTA, TPTA,
+           Get_Object (Icon),
+           System.Null_Address, System.Null_Address));
    end Prepend_Element;
 
    ------------------
@@ -491,20 +516,20 @@ package body Gtk.Toolbar is
 
    function Prepend_Item
      (Toolbar              : access Gtk_Toolbar_Record;
-      Text                 : in String := "";
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "";
+      Text                 : String := "";
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "";
       Icon                 : access Gtk.Widget.Gtk_Widget_Record'Class)
       return Gtk.Button.Gtk_Button
    is
       function Internal
-        (Toolbar              : in System.Address;
-         Text                 : in System.Address;
-         Tooltip_Text         : in System.Address;
-         Tooltip_Private_Text : in System.Address;
-         Icon                 : in System.Address;
-         Callback             : in System.Address;
-         User_Data            : in System.Address)
+        (Toolbar              : System.Address;
+         Text                 : System.Address;
+         Tooltip_Text         : System.Address;
+         Tooltip_Private_Text : System.Address;
+         Icon                 : System.Address;
+         Callback             : System.Address;
+         User_Data            : System.Address)
          return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_prepend_item");
 
@@ -544,8 +569,9 @@ package body Gtk.Toolbar is
    -------------------
 
    procedure Prepend_Space (Toolbar : access Gtk_Toolbar_Record) is
-      procedure Internal (Toolbar : in System.Address);
+      procedure Internal (Toolbar : System.Address);
       pragma Import (C, Internal, "gtk_toolbar_prepend_space");
+
    begin
       Internal (Get_Object (Toolbar));
    end Prepend_Space;
@@ -557,14 +583,14 @@ package body Gtk.Toolbar is
    procedure Prepend_Widget
      (Toolbar              : access Gtk_Toolbar_Record;
       Widget               : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Tooltip_Text         : in String := "";
-      Tooltip_Private_Text : in String := "")
+      Tooltip_Text         : String := "";
+      Tooltip_Private_Text : String := "")
    is
       procedure Internal
-        (Toolbar              : in System.Address;
-         Widget               : in System.Address;
-         Tooltip_Text         : in System.Address;
-         Tooltip_Private_Text : in System.Address);
+        (Toolbar              : System.Address;
+         Widget               : System.Address;
+         Tooltip_Text         : System.Address;
+         Tooltip_Private_Text : System.Address);
       pragma Import (C, Internal, "gtk_toolbar_prepend_widget");
 
       TT   : aliased constant String := Tooltip_Text & ASCII.NUL;
@@ -588,14 +614,32 @@ package body Gtk.Toolbar is
    -- Set_Button_Relief --
    -----------------------
 
-   procedure Set_Button_Relief (Toolbar : access Gtk_Toolbar_Record;
-                                Relief  : in Gtk_Relief_Style) is
-      procedure Internal (Toolbar : in System.Address;
-                          Relief  : in Gint);
+   procedure Set_Button_Relief
+     (Toolbar : access Gtk_Toolbar_Record;
+      Relief  : Gtk_Relief_Style)
+   is
+      procedure Internal (Toolbar : System.Address; Relief : Gtk_Relief_Style);
       pragma Import (C, Internal, "gtk_toolbar_set_button_relief");
+
    begin
-      Internal (Get_Object (Toolbar), Gtk_Relief_Style'Pos (Relief));
+      Internal (Get_Object (Toolbar), Relief);
    end Set_Button_Relief;
+
+   -------------------
+   -- Set_Icon_Size --
+   -------------------
+
+   procedure Set_Icon_Size
+     (Toolbar   : access Gtk_Toolbar_Record;
+      Icon_Size : Gtk_Icon_Size)
+   is
+      procedure Internal
+        (Toolbar : System.Address; Icon_Size : Gtk_Icon_Size);
+      pragma Import (C, Internal, "gtk_toolbar_set_icon_size");
+
+   begin
+      Internal (Get_Object (Toolbar), Icon_Size);
+   end Set_Icon_Size;
 
    ---------------------
    -- Set_Orientation --
@@ -603,14 +647,15 @@ package body Gtk.Toolbar is
 
    procedure Set_Orientation
      (Toolbar     : access Gtk_Toolbar_Record;
-      Orientation : in Gtk_Orientation)
+      Orientation : Gtk_Orientation)
    is
       procedure Internal
-        (Toolbar     : in System.Address;
-         Orientation : in Gint);
+        (Toolbar     : System.Address;
+         Orientation : Gtk_Orientation);
       pragma Import (C, Internal, "gtk_toolbar_set_orientation");
+
    begin
-      Internal (Get_Object (Toolbar), Gtk_Orientation'Pos (Orientation));
+      Internal (Get_Object (Toolbar), Orientation);
    end Set_Orientation;
 
    --------------------
@@ -619,12 +664,13 @@ package body Gtk.Toolbar is
 
    procedure Set_Space_Size
      (Toolbar    : access Gtk_Toolbar_Record;
-      Space_Size : in Gint)
+      Space_Size : Gint)
    is
       procedure Internal
-        (Toolbar    : in System.Address;
-         Space_Size : in Gint);
+        (Toolbar    : System.Address;
+         Space_Size : Gint);
       pragma Import (C, Internal, "gtk_toolbar_set_space_size");
+
    begin
       Internal (Get_Object (Toolbar), Space_Size);
    end Set_Space_Size;
@@ -633,13 +679,16 @@ package body Gtk.Toolbar is
    -- Set_Space_Style --
    ---------------------
 
-   procedure Set_Space_Style (Toolbar : access Gtk_Toolbar_Record;
-                              Style   : in Gtk_Toolbar_Space_Style) is
-      procedure Internal (Toolbar : in System.Address;
-                          Style   : in Gint);
+   procedure Set_Space_Style
+     (Toolbar : access Gtk_Toolbar_Record;
+      Style   : Gtk_Toolbar_Space_Style)
+   is
+      procedure Internal
+        (Toolbar : System.Address; Style : Gtk_Toolbar_Space_Style);
       pragma Import (C, Internal, "gtk_toolbar_set_space_style");
+
    begin
-      Internal (Get_Object (Toolbar), Gtk_Toolbar_Space_Style'Pos (Style));
+      Internal (Get_Object (Toolbar), Style);
    end Set_Space_Style;
 
    ---------------
@@ -648,14 +697,13 @@ package body Gtk.Toolbar is
 
    procedure Set_Style
      (Toolbar : access Gtk_Toolbar_Record;
-      Style   : in Gtk_Toolbar_Style)
+      Style   : Gtk_Toolbar_Style)
    is
-      procedure Internal
-        (Toolbar : in System.Address;
-         Style   : in Gint);
+      procedure Internal (Toolbar : System.Address; Style : Gtk_Toolbar_Style);
       pragma Import (C, Internal, "gtk_toolbar_set_style");
+
    begin
-      Internal (Get_Object (Toolbar), Gtk_Toolbar_Style'Pos (Style));
+      Internal (Get_Object (Toolbar), Style);
    end Set_Style;
 
    ------------------
@@ -663,13 +711,11 @@ package body Gtk.Toolbar is
    ------------------
 
    procedure Set_Tooltips
-     (Toolbar : access Gtk_Toolbar_Record;
-      Enable  : in Boolean)
+     (Toolbar : access Gtk_Toolbar_Record; Enable : Boolean)
    is
-      procedure Internal
-        (Toolbar : in System.Address;
-         Enable  : in Gint);
+      procedure Internal (Toolbar : System.Address; Enable : Gint);
       pragma Import (C, Internal, "gtk_toolbar_set_tooltips");
+
    begin
       Internal (Get_Object (Toolbar), Boolean'Pos (Enable));
    end Set_Tooltips;

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,15 +35,15 @@
 --  is on the top of the box. Its end (for Gtk.Box.Pack_End) is on the bottom.
 --
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.4</c_version>
 
+with Glib;
 with Gtk.Button_Box;
-with Gtk.Enums;
 
 package Gtk.Vbutton_Box is
 
-   type Gtk_Vbutton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record
-     with private;
+   type Gtk_Vbutton_Box_Record is
+     new Gtk.Button_Box.Gtk_Button_Box_Record with private;
    type Gtk_Vbutton_Box is access all Gtk_Vbutton_Box_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Vbutton_Box);
@@ -53,26 +53,8 @@ package Gtk.Vbutton_Box is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Vbutton_Box.
-
-   procedure Set_Spacing_Default (Spacing : in Gint);
-   --  Set the default spacing (space between two adjacent children).
-   --  This is done for all the Vbutton_Boxes in your application. This can be
-   --  overridden for a specific box by calling Gtk.Button_Box.Set_Spacing.
-
-   function Get_Spacing_Default return Gint;
-   --  Return the default spacing to use for all Vbutton_Boxes in your
-   --  application that don't have a specific value.
-
-   procedure Set_Layout_Default (Layout : in Gtk.Enums.Gtk_Button_Box_Style);
-   --  Set the the default layout to use for all the Vbutton_Boxes in your
-   --  application that don't have a specific value set by
-   --  Gtk.Button_Box.Set_Layout. The default value is Buttonbox_Edge.
-
-   function Get_Layout_Default return Gtk.Enums.Gtk_Button_Box_Style;
-   --  Return the default layout to use for all the vbutton_boxes in your
-   --  application.
 
    -------------
    -- Signals --
@@ -83,11 +65,8 @@ package Gtk.Vbutton_Box is
    --  </signals>
 
 private
-   type Gtk_Vbutton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record
-     with null record;
+   type Gtk_Vbutton_Box_Record is
+     new Gtk.Button_Box.Gtk_Button_Box_Record with null record;
+
    pragma Import (C, Get_Type, "gtk_vbutton_box_get_type");
-   pragma Import (C, Get_Spacing_Default,
-                  "gtk_vbutton_box_get_spacing_default");
-   pragma Import (C, Set_Spacing_Default,
-                  "gtk_vbutton_box_set_spacing_default");
 end Gtk.Vbutton_Box;

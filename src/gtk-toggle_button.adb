@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,11 +38,26 @@ package body Gtk.Toggle_Button is
    function Get_Active
      (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean
    is
-      function Internal (Widget : in System.Address) return Integer;
+      function Internal (Widget : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_toggle_button_get_active");
+
    begin
-      return Boolean'Val (Internal (Get_Object (Toggle_Button)));
+      return To_Boolean (Internal (Get_Object (Toggle_Button)));
    end Get_Active;
+
+   ----------------------
+   -- Get_Inconsistent --
+   ----------------------
+
+   function Get_Inconsistent
+     (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean
+   is
+      function Internal (Widget : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_toggle_button_get_inconsistent");
+
+   begin
+      return To_Boolean (Internal (Get_Object (Toggle_Button)));
+   end Get_Inconsistent;
 
    -------------
    -- Gtk_New --
@@ -50,7 +65,7 @@ package body Gtk.Toggle_Button is
 
    procedure Gtk_New
      (Toggle_Button : out Gtk_Toggle_Button;
-      Label         : in String := "") is
+      Label         : String := "") is
    begin
       Toggle_Button := new Gtk_Toggle_Button_Record;
       Initialize (Toggle_Button, Label);
@@ -62,10 +77,11 @@ package body Gtk.Toggle_Button is
 
    procedure Initialize
      (Toggle_Button : access Gtk_Toggle_Button_Record'Class;
-      Label         : in String := "")
+      Label         : String := "")
    is
-      function Internal (Label  : in String) return System.Address;
+      function Internal (Label : String) return System.Address;
       pragma Import (C, Internal, "gtk_toggle_button_new_with_label");
+
       function Internal2 return System.Address;
       pragma Import (C, Internal2, "gtk_toggle_button_new");
 
@@ -75,16 +91,9 @@ package body Gtk.Toggle_Button is
       else
          Set_Object (Toggle_Button, Internal (Label & ASCII.NUL));
       end if;
+
       Initialize_User_Data (Toggle_Button);
    end Initialize;
-
-   ---------------
-   -- Is_Active --
-   ---------------
-
-   function Is_Active
-     (Toggle_Button : access Gtk_Toggle_Button_Record) return Boolean
-      renames Get_Active;
 
    ----------------
    -- Set_Active --
@@ -92,16 +101,33 @@ package body Gtk.Toggle_Button is
 
    procedure Set_Active
      (Toggle_Button : access Gtk_Toggle_Button_Record;
-      Is_Active     : in Boolean)
+      Is_Active     : Boolean)
    is
       procedure Internal
-        (Toggle_Button : in System.Address;
-         Is_Active     : in Gint);
+        (Toggle_Button : System.Address;
+         Is_Active     : Gint);
       pragma Import (C, Internal, "gtk_toggle_button_set_active");
 
    begin
       Internal (Get_Object (Toggle_Button), Boolean'Pos (Is_Active));
    end Set_Active;
+
+   ----------------------
+   -- Set_Inconsistent --
+   ----------------------
+
+   procedure Set_Inconsistent
+     (Toggle_Button : access Gtk_Toggle_Button_Record;
+      Setting       : Boolean := True)
+   is
+      procedure Internal
+        (Toggle_Button : System.Address;
+         Setting       : Gboolean);
+      pragma Import (C, Internal, "gtk_toggle_button_set_inconsistent");
+
+   begin
+      Internal (Get_Object (Toggle_Button), To_Gboolean (Setting));
+   end Set_Inconsistent;
 
    --------------
    -- Set_Mode --
@@ -109,11 +135,11 @@ package body Gtk.Toggle_Button is
 
    procedure Set_Mode
      (Toggle_Button  : access Gtk_Toggle_Button_Record;
-      Draw_Indicator : in Boolean)
+      Draw_Indicator : Boolean)
    is
       procedure Internal
-        (Toggle_Button  : in System.Address;
-         Draw_Indicator : in Gint);
+        (Toggle_Button  : System.Address;
+         Draw_Indicator : Gint);
       pragma Import (C, Internal, "gtk_toggle_button_set_mode");
 
    begin
@@ -125,8 +151,9 @@ package body Gtk.Toggle_Button is
    -------------
 
    procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record) is
-      procedure Internal (Toggle_Button : in System.Address);
+      procedure Internal (Toggle_Button : System.Address);
       pragma Import (C, Internal, "gtk_toggle_button_toggled");
+
    begin
       Internal (Get_Object (Toggle_Button));
    end Toggled;
