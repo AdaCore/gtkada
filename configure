@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# From configure.in Revision: 1.31 
+# From configure.in Revision: 1.32 
 #############################################################
 #
 #  Adding some OS specific flags and parameters
@@ -659,9 +659,9 @@ fi
 
 
 # Current release settings
-GTKADA_MAJOR_VERSION=1
-GTKADA_MINOR_VERSION=2
-GTKADA_MICRO_VERSION=12
+GTKADA_MAJOR_VERSION=2
+GTKADA_MINOR_VERSION=0
+GTKADA_MICRO_VERSION=0
 GTKADA_VERSION=$GTKADA_MAJOR_VERSION.$GTKADA_MINOR_VERSION.$GTKADA_MICRO_VERSION
 
 ac_aux_dir=
@@ -1578,18 +1578,18 @@ fi
   if test x$gtk_config_exec_prefix != x ; then
      gtk_config_args="$gtk_config_args --exec-prefix=$gtk_config_exec_prefix"
      if test x${GTK_CONFIG+set} != xset ; then
-        GTK_CONFIG=$gtk_config_exec_prefix/bin/gtk-config
+        GTK_CONFIG=$gtk_config_exec_prefix/bin/gtk-config-2.0
      fi
   fi
   if test x$gtk_config_prefix != x ; then
      gtk_config_args="$gtk_config_args --prefix=$gtk_config_prefix"
      if test x${GTK_CONFIG+set} != xset ; then
-        GTK_CONFIG=$gtk_config_prefix/bin/gtk-config
+        GTK_CONFIG=$gtk_config_prefix/bin/gtk-config-2.0
      fi
   fi
 
-  # Extract the first word of "gtk-config", so it can be a program name with args.
-set dummy gtk-config; ac_word=$2
+  # Extract the first word of "gtk-config-2.0", so it can be a program name with args.
+set dummy gtk-config-2.0; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
 echo "configure:1595: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_GTK_CONFIG'+set}'`\" = set"; then
@@ -1624,7 +1624,7 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-  min_gtk_version=1.2.2
+  min_gtk_version=1.3.2
   echo $ac_n "checking for GTK - version >= $min_gtk_version""... $ac_c" 1>&6
 echo "configure:1630: checking for GTK - version >= $min_gtk_version" >&5
   no_gtk=""
@@ -2227,96 +2227,7 @@ rm -f conftest*
 
 # try to find libart & gdk-pixbuf if present
    
-  # Extract the first word of "libart-config", so it can be a program name with args.
-set dummy libart-config; ac_word=$2
-echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:2234: checking for $ac_word" >&5
-if eval "test \"`echo '$''{'ac_cv_path_LIBART_CONFIG'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  case "$LIBART_CONFIG" in
-  /*)
-  ac_cv_path_LIBART_CONFIG="$LIBART_CONFIG" # Let the user override the test with a path.
-  ;;
-  ?:/*)			 
-  ac_cv_path_LIBART_CONFIG="$LIBART_CONFIG" # Let the user override the test with a dos path.
-  ;;
-  *)
-  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS=":"
-  ac_dummy="$PATH"
-  for ac_dir in $ac_dummy; do 
-    test -z "$ac_dir" && ac_dir=.
-    if test -f $ac_dir/$ac_word; then
-      ac_cv_path_LIBART_CONFIG="$ac_dir/$ac_word"
-      break
-    fi
-  done
-  IFS="$ac_save_ifs"
-  test -z "$ac_cv_path_LIBART_CONFIG" && ac_cv_path_LIBART_CONFIG="no"
-  ;;
-esac
-fi
-LIBART_CONFIG="$ac_cv_path_LIBART_CONFIG"
-if test -n "$LIBART_CONFIG"; then
-  echo "$ac_t""$LIBART_CONFIG" 1>&6
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-  # Extract the first word of "gdk-pixbuf-config", so it can be a program name with args.
-set dummy gdk-pixbuf-config; ac_word=$2
-echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:2270: checking for $ac_word" >&5
-if eval "test \"`echo '$''{'ac_cv_path_PIXBUF_CONFIG'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  case "$PIXBUF_CONFIG" in
-  /*)
-  ac_cv_path_PIXBUF_CONFIG="$PIXBUF_CONFIG" # Let the user override the test with a path.
-  ;;
-  ?:/*)			 
-  ac_cv_path_PIXBUF_CONFIG="$PIXBUF_CONFIG" # Let the user override the test with a dos path.
-  ;;
-  *)
-  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS=":"
-  ac_dummy="$PATH"
-  for ac_dir in $ac_dummy; do 
-    test -z "$ac_dir" && ac_dir=.
-    if test -f $ac_dir/$ac_word; then
-      ac_cv_path_PIXBUF_CONFIG="$ac_dir/$ac_word"
-      break
-    fi
-  done
-  IFS="$ac_save_ifs"
-  test -z "$ac_cv_path_PIXBUF_CONFIG" && ac_cv_path_PIXBUF_CONFIG="no"
-  ;;
-esac
-fi
-PIXBUF_CONFIG="$ac_cv_path_PIXBUF_CONFIG"
-if test -n "$PIXBUF_CONFIG"; then
-  echo "$ac_t""$PIXBUF_CONFIG" 1>&6
-else
-  echo "$ac_t""no" 1>&6
-fi
-
-
-  if test "$PIXBUF_CONFIG" = "no" ; then
-    HAVE_PIXBUF="False"
-    PIXBUF_CFLAGS=""
-    PIXBUF_LIBS=""
-    PIXBUF_STATIC_LIBS=""
-  else
-    HAVE_PIXBUF="True"
-    PIXBUF_PREFIX=`$PIXBUF_CONFIG --prefix`
-    LIBART_PREFIX=`$LIBART_CONFIG --prefix`
-    PIXBUF_CFLAGS=`$PIXBUF_CONFIG --cflags`
-    PIXBUF_LIBS="-L$PIXBUF_PREFIX/lib -lgdk_pixbuf -lart_lgpl"
-    PIXBUF_STATIC_LIBS="$PIXBUF_PREFIX/lib/libgdk_pixbuf.a $LIBART_PREFIX/lib/libart_lgpl.a"
-  fi
-
-  
-  
-  
+  HAVE_PIXBUF="True"
   
 
 
@@ -2325,7 +2236,7 @@ fi
   # Extract the first word of "libglade-config", so it can be a program name with args.
 set dummy libglade-config; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:2329: checking for $ac_word" >&5
+echo "configure:2240: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_LIBGLADE_CONFIG'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2383,7 +2294,7 @@ fi
   # Extract the first word of "gnome-config", so it can be a program name with args.
 set dummy gnome-config; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:2387: checking for $ac_word" >&5
+echo "configure:2298: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_GNOME_CONFIG'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -2634,11 +2545,6 @@ s%@HAVE_GETTEXT@%$HAVE_GETTEXT%g
 s%@GL_LIBS@%$GL_LIBS%g
 s%@GL_CFLAGS@%$GL_CFLAGS%g
 s%@HAVE_OPENGL@%$HAVE_OPENGL%g
-s%@LIBART_CONFIG@%$LIBART_CONFIG%g
-s%@PIXBUF_CONFIG@%$PIXBUF_CONFIG%g
-s%@PIXBUF_CFLAGS@%$PIXBUF_CFLAGS%g
-s%@PIXBUF_LIBS@%$PIXBUF_LIBS%g
-s%@PIXBUF_STATIC_LIBS@%$PIXBUF_STATIC_LIBS%g
 s%@HAVE_PIXBUF@%$HAVE_PIXBUF%g
 s%@LIBGLADE_CONFIG@%$LIBGLADE_CONFIG%g
 s%@LIBGLADE_CFLAGS@%$LIBGLADE_CFLAGS%g

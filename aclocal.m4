@@ -157,17 +157,17 @@ AC_ARG_ENABLE(gtktest, [  --disable-gtktest       Do not try to compile and run 
   if test x$gtk_config_exec_prefix != x ; then
      gtk_config_args="$gtk_config_args --exec-prefix=$gtk_config_exec_prefix"
      if test x${GTK_CONFIG+set} != xset ; then
-        GTK_CONFIG=$gtk_config_exec_prefix/bin/gtk-config
+        GTK_CONFIG=$gtk_config_exec_prefix/bin/gtk-config-2.0
      fi
   fi
   if test x$gtk_config_prefix != x ; then
      gtk_config_args="$gtk_config_args --prefix=$gtk_config_prefix"
      if test x${GTK_CONFIG+set} != xset ; then
-        GTK_CONFIG=$gtk_config_prefix/bin/gtk-config
+        GTK_CONFIG=$gtk_config_prefix/bin/gtk-config-2.0
      fi
   fi
 
-  AC_PATH_PROG(GTK_CONFIG, gtk-config, no)
+  AC_PATH_PROG(GTK_CONFIG, gtk-config-2.0, no)
   min_gtk_version=ifelse([$1], ,1.1.15,$1)
   AC_MSG_CHECKING(for GTK - version >= $min_gtk_version)
   no_gtk=""
@@ -628,26 +628,7 @@ AC_DEFUN(AM_CHECK_GNOME,
 
 AC_DEFUN(AM_CHECK_PIXBUF,
 [   
-  AC_PATH_PROG(LIBART_CONFIG, libart-config, no)
-  AC_PATH_PROG(PIXBUF_CONFIG, gdk-pixbuf-config, no)
-
-  if test "$PIXBUF_CONFIG" = "no" ; then
-    HAVE_PIXBUF="False"
-    PIXBUF_CFLAGS=""
-    PIXBUF_LIBS=""
-    PIXBUF_STATIC_LIBS=""
-  else
-    HAVE_PIXBUF="True"
-    PIXBUF_PREFIX=`$PIXBUF_CONFIG --prefix`
-    LIBART_PREFIX=`$LIBART_CONFIG --prefix`
-    PIXBUF_CFLAGS=`$PIXBUF_CONFIG --cflags`
-    PIXBUF_LIBS="-L$PIXBUF_PREFIX/lib -lgdk_pixbuf -lart_lgpl"
-    PIXBUF_STATIC_LIBS="$PIXBUF_PREFIX/lib/libgdk_pixbuf.a $LIBART_PREFIX/lib/libart_lgpl.a"
-  fi
-
-  AC_SUBST(PIXBUF_CFLAGS)
-  AC_SUBST(PIXBUF_LIBS)
-  AC_SUBST(PIXBUF_STATIC_LIBS)
+  HAVE_PIXBUF="True"
   AC_SUBST(HAVE_PIXBUF)
 ])
 
