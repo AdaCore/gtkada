@@ -311,8 +311,7 @@ package body Gtk.Glade is
 
          if P /= null then
             Put_Line ("   Gtk_New (" & To_Ada (P.all) & ");");
-            Put_Line ("   Widget.Show_All (Gtk_Widget (" & To_Ada (P.all) &
-              "));");
+            Put_Line ("   Show_All (" & To_Ada (P.all) & ");");
          end if;
 
          M := M.Next;
