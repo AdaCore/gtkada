@@ -743,5 +743,5 @@ end Gtk.Handlers;
 --  Return_Widget_Cb.Connect (W, "delete_event",
 --     Return_Widget_Cb.To_Marshaller (My_Cb'Access));
 --
--- </example>
+--  </example>
 

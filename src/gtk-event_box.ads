@@ -82,6 +82,6 @@ package Gtk.Event_Box is
    --  </signals>
 
 private
-   type Gtk_Event_Box_Record is new Gtk.Bin.Gtk_Bin_Record with null record
+   type Gtk_Event_Box_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
    pragma Import (C, Get_Type, "gtk_event_box_get_type");
 end Gtk.Event_Box;

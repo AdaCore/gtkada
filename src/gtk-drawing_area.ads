@@ -101,6 +101,6 @@ package Gtk.Drawing_Area is
 
 private
    type Gtk_Drawing_Area_Record is new Gtk.Widget.Gtk_Widget_Record
-     with null record
+     with null record;
    pragma Import (C, Get_Type, "gtk_drawing_area_get_type");
 end Gtk.Drawing_Area;
