@@ -48,6 +48,7 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;               use System;
 with GNAT.IO;              use GNAT.IO;
 with Ada.Exceptions;       use Ada.Exceptions;
+with System.Address_Image;
 
 package body Gtkada.Multi_Paned is
 
@@ -111,6 +112,11 @@ package body Gtkada.Multi_Paned is
       Args       : Gtk_Args);
    --  A child was removed from Spittable
 
+   procedure Remove_Child
+      (Split : access Gtkada_Multi_Paned_Record'Class;
+       Pane : Child_Description_Access);
+   --  Remove a specific pane
+
    procedure Draw_Resize_Line (Split : access Gtkada_Multi_Paned_Record'Class);
    --  Draw, in xor mode, the resizing line
 
@@ -140,12 +146,16 @@ package body Gtkada.Multi_Paned is
    procedure Split_Internal
      (Win         : access Gtkada_Multi_Paned_Record'Class;
       Ref_Widget  : Gtk_Widget;
+      Ref_Pane    : Pane;
+      Use_Ref_Pane  : Boolean;
       New_Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation : Gtk_Orientation;
-      Fixed_Size    : Boolean := False;
+      Fixed_Size  : Boolean := False;
       Width, Height : Glib.Gint := 0;
       After       : Boolean := True);
-   --  Internal version of Split_Horizontal and Split_Vertical
+   --  Internal version of Split_Horizontal and Split_Vertical.
+   --  If Use_Ref_Pane is true, then all split are done with regards to
+   --  Ref_Pane, otherwise they are done relative to Ref_Widget.
 
    procedure Add_Handle
      (Split : access Gtkada_Multi_Paned_Record'Class;
@@ -196,6 +206,8 @@ package body Gtkada.Multi_Paned is
                    & """ height=""" & Alloc.Height'Img
                    & """ visible=""" & Is_Visible (Child)'Img
                    & """ fixed_size=""" & Child.Fixed_Size'Img
+                   & """ widget="""
+                   & System.Address_Image (Child.Widget.all'Address)
                    & """>");
       else
          Compute_Child_Position (Split, Child, Alloc);
@@ -431,7 +443,29 @@ package body Gtkada.Multi_Paned is
       Args  : Gtk_Args)
    is
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
+      Child : constant Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
+      Iter : Child_Iterator;
+      Current : Child_Description_Access;
+   begin
+      Iter := Start (Split);
 
+      loop
+         Current := Get (Iter);
+         exit when Current = null
+           or else (Current.Is_Widget and then Current.Widget = Child);
+         Next (Iter);
+      end loop;
+      Remove_Child (Split, Current);
+   end Remove_Child;
+
+   ------------------
+   -- Remove_Child --
+   ------------------
+
+   procedure Remove_Child
+      (Split : access Gtkada_Multi_Paned_Record'Class;
+       Pane : Child_Description_Access)
+   is
       procedure Merge_With_Parent_If_Single_Child
         (Child : in out Child_Description_Access);
       --  If Child has a single child itself, merge it with its parent, and
@@ -501,8 +535,7 @@ package body Gtkada.Multi_Paned is
                Tmp := Tmp.Next;
             end loop;
 
-            Add_Handle
-              (Gtkada_Multi_Paned (Paned), Child.Parent, Child, Child.Handles);
+            Add_Handle (Split, Child.Parent, Child, Child.Handles);
 
             if Child.Parent.First_Child = Child then
                Previous.Next := Child.Next;
@@ -521,23 +554,11 @@ package body Gtkada.Multi_Paned is
          end if;
       end Merge_With_Parent_If_Same;
 
-
-      Child : constant Gtk_Widget := Gtk_Widget (To_Object (Args, 1));
+      Current : Child_Description_Access := Pane;
       Old_Handles  : Handles_Array_Access;
       C, D : Natural;
-      Iter : Child_Iterator;
-      Current, Tmp, Parent : Child_Description_Access;
-
+      Tmp, Parent : Child_Description_Access;
    begin
-      Iter := Start (Split);
-
-      loop
-         Current := Get (Iter);
-         exit when Current = null
-           or else (Current.Is_Widget and then Current.Widget = Child);
-         Next (Iter);
-      end loop;
-
       if Current /= null then
          Parent := Current.Parent;
          C := Parent.Handles'First;
@@ -573,6 +594,15 @@ package body Gtkada.Multi_Paned is
 
          Merge_With_Parent_If_Single_Child (Parent);
          Merge_With_Parent_If_Same (Parent);
+
+         if Parent /= null
+            and then not Parent.Is_Widget
+            and then Parent.Parent /= null
+            and then Parent.First_Child = null
+         then
+            Remove_Child (Split, Parent);
+         end if;
+
          Queue_Resize (Split);
       end if;
    end Remove_Child;
@@ -643,7 +673,9 @@ package body Gtkada.Multi_Paned is
          while Tmp /= Child loop
             Tmp := Tmp.Next;
 
-            if Is_Visible (Child.Parent.Handles (Handle_Index).Win) then
+            if Child.Parent.Handles (Handle_Index).Win /= null
+              and then Is_Visible (Child.Parent.Handles (Handle_Index).Win)
+            then
                Percent := Child.Parent.Handles (Handle_Index).Percent;
             end if;
 
@@ -661,7 +693,9 @@ package body Gtkada.Multi_Paned is
          end loop;
 
          while Handle_Index <= Child.Parent.Handles'Last
-           and then not Is_Visible (Child.Parent.Handles (Handle_Index).Win)
+           and then
+             (Child.Parent.Handles (Handle_Index).Win = null
+              or else not Is_Visible (Child.Parent.Handles (Handle_Index).Win))
          loop
             Handle_Index := Handle_Index + 1;
          end loop;
@@ -1176,7 +1210,7 @@ package body Gtkada.Multi_Paned is
       Position     : Gtk_Allocation;
       Requisition  : Gtk_Requisition;
       Parent_Pos   : Gtk_Allocation;
-
+      W, H         : Gint;
    begin
       --  Register the new size for the window itself
       Set_Allocation (Split, Alloc);
@@ -1234,14 +1268,12 @@ package body Gtkada.Multi_Paned is
          Next (Iter);
       end loop;
 
-      --  Compute the widget size requisition where needed
+      --  Compute the widget requests sizes
       Iter := Start (Split);
       loop
          Current := Get (Iter);
          exit when Current = null;
-
          if Current.Is_Widget and then Is_Visible (Current) then
-
             if Current.Width = -1 or else Current.Height = -1 then
                Size_Request (Current.Widget, Requisition);
                if Current.Width = -1 then
@@ -1252,35 +1284,60 @@ package body Gtkada.Multi_Paned is
                   Current.Height := Requisition.Height;
                end if;
             end if;
+         end if;
+         Next (Iter);
+      end loop;
+
+      --  Compute the handles' position
+      Iter := Start (Split);
+      loop
+         Current := Get (Iter);
+         exit when Current = null;
+
+         if Current.Parent /= null then
+            W := 0;
+            H := 0;
+            if Current.Is_Widget then
+               W := Current.Width;
+               H := Current.Height;
+            else
+               Tmp := Current.First_Child;
+               while Tmp /= null and then not Tmp.Is_Widget loop
+                  Tmp := Tmp.First_Child;
+               end loop;
+               if Tmp /= null then
+                  W := Tmp.Width;
+                  H := Tmp.Height;
+               end if;
+            end if;
 
             if (Current.Parent.Orientation = Orientation_Horizontal
-                and then Current.Width /= 0)
-              or else (Current.Parent.Orientation = Orientation_Vertical
-                       and then Current.Height /= 0)
+                 and then W > 0)
+               or else (Current.Parent.Orientation = Orientation_Vertical
+                        and then H > 0)
             then
                Tmp := Current.Parent.First_Child;
-               for H in Current.Parent.Handles'Range loop
+               for Handle in Current.Parent.Handles'Range loop
                   if Tmp = Current then
                      Compute_Child_Position
                        (Split, Current.Parent, Parent_Pos);
                      case Current.Parent.Orientation is
                         when Orientation_Horizontal =>
-                           Current.Parent.Handles (H).Percent :=
-                             Float (Current.Width) / Float (Parent_Pos.Width);
+                           Current.Parent.Handles (Handle).Percent :=
+                             Float (W) / Float (Parent_Pos.Width);
                         when Orientation_Vertical =>
-                           Current.Parent.Handles (H).Percent :=
-                             Float (Current.Height) /
-                               Float (Parent_Pos.Height);
+                           Current.Parent.Handles (Handle).Percent :=
+                             Float (H) / Float (Parent_Pos.Height);
                      end case;
 
-                     if H > Current.Parent.Handles'First then
-                        Current.Parent.Handles (H).Percent :=
-                          Current.Parent.Handles (H).Percent
-                          + Current.Parent.Handles (H - 1).Percent;
+                     if Handle > Current.Parent.Handles'First then
+                        Current.Parent.Handles (Handle).Percent :=
+                          Current.Parent.Handles (Handle).Percent
+                          + Current.Parent.Handles (Handle - 1).Percent;
                      end if;
 
-                     if Current.Parent.Handles (H).Percent > 1.0 then
-                        Current.Parent.Handles (H).Percent := 0.99;
+                     if Current.Parent.Handles (Handle).Percent > 1.0 then
+                        Current.Parent.Handles (Handle).Percent := 0.99;
                      end if;
 
                      Tmp := null;
@@ -1297,11 +1354,11 @@ package body Gtkada.Multi_Paned is
                      when Orientation_Horizontal =>
                         Current.Parent.Handles
                           (Current.Parent.Handles'Last).Percent := 1.0 -
-                          Float (Current.Width) / Float (Parent_Pos.Width);
+                          Float (W) / Float (Parent_Pos.Width);
                      when Orientation_Vertical =>
                         Current.Parent.Handles
                           (Current.Parent.Handles'Last).Percent := 1.0 -
-                          Float (Current.Height) / Float (Parent_Pos.Height);
+                          Float (H) / Float (Parent_Pos.Height);
                   end case;
 
                   if Current.Parent.Handles
@@ -1312,7 +1369,7 @@ package body Gtkada.Multi_Paned is
                   end if;
                end if;
 
-               if not Current.Fixed_Size then
+               if Current.Is_Widget and then not Current.Fixed_Size then
                   Current.Width := 0;
                   Current.Height := 0;
                end if;
@@ -1450,8 +1507,8 @@ package body Gtkada.Multi_Paned is
       Orientation   : Gtk.Enums.Gtk_Orientation;
       After         : Boolean := True) return Gtk.Widget.Gtk_Widget
    is
-      Iter         : Child_Iterator := Start (Win);
       Current, Tmp : Child_Description_Access;
+      Iter    : Child_Iterator := Start (Win);
    begin
       loop
          Current := Get (Iter);
@@ -1489,6 +1546,32 @@ package body Gtkada.Multi_Paned is
       return null;
    end Splitted_Area;
 
+   --------------
+   -- Get_Pane --
+   --------------
+
+   function Get_Pane
+     (Win    : access Gtkada_Multi_Paned_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Pane
+   is
+      Iter    : Child_Iterator := Start (Win);
+      Current : Child_Description_Access;
+   begin
+      loop
+         Current := Get (Iter);
+         exit when Current = null
+           or else (Current.Is_Widget
+                    and then Current.Widget = Gtk_Widget (Widget));
+         Next (Iter);
+      end loop;
+
+      if Current /= null then
+         return Pane (Current.Parent);
+      else
+         return null;
+      end if;
+   end Get_Pane;
+
    --------------------
    -- Split_Internal --
    --------------------
@@ -1496,94 +1579,206 @@ package body Gtkada.Multi_Paned is
    procedure Split_Internal
      (Win           : access Gtkada_Multi_Paned_Record'Class;
       Ref_Widget    : Gtk_Widget;
+      Ref_Pane      : Pane;
+      Use_Ref_Pane  : Boolean;
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk_Orientation;
       Fixed_Size    : Boolean := False;
       Width, Height : Glib.Gint := 0;
       After         : Boolean := True)
    is
-      Iter : Child_Iterator := Start (Win);
+      procedure Add_After_All_Children (Parent : Child_Description_Access);
+      --  Add the new child at the end of the child list for Parent
+
+      procedure Add_As_First_Child (Parent : Child_Description_Access);
+      --  Add the new child as the first child of parent
+
+      procedure Add_In_List
+        (Parent   : Child_Description_Access;
+         Ref_Item : Child_Description_Access;
+         After    : Boolean);
+      --  Add a new child to Parent, before or after Ref_Item
+
+      function Create_Or_Get_Parent
+        (Current : Child_Description_Access) return Child_Description_Access;
+      --  Create a new parent for Current with the orientation specified in
+      --  parameter to Split_Internal.
+
+      --------------------------
+      -- Create_Or_Get_Parent --
+      --------------------------
+
+      function Create_Or_Get_Parent
+        (Current : Child_Description_Access) return Child_Description_Access
+      is
+         Pane, Tmp2 : Child_Description_Access;
+      begin
+         if Current.Parent /= null
+            and then Current.Parent.Orientation = Orientation
+         then
+            return Current.Parent;
+         end if;
+
+         Pane := new Child_Description'
+           (Parent      => Current.Parent,
+            Next        => Current.Next,
+            Is_Widget   => False,
+            Orientation => Orientation,
+            First_Child => Current,
+            Handles     => new Handles_Array (1 .. 0));
+
+         Current.Parent := Pane;
+
+         if Pane.Parent = null then
+            Win.Children := Pane;
+         elsif Pane.Parent.First_Child = Current then
+            Pane.Parent.First_Child := Pane;
+         else
+            Tmp2 := Pane.Parent.First_Child;
+            while Tmp2.Next /= Current loop
+               Tmp2 := Tmp2.Next;
+            end loop;
+            Tmp2.Next := Pane;
+         end if;
+
+         Current.Next   := null;
+         return Pane;
+      end Create_Or_Get_Parent;
+
+      -----------------
+      -- Add_In_List --
+      -----------------
+
+      procedure Add_In_List
+        (Parent   : Child_Description_Access;
+         Ref_Item : Child_Description_Access;
+         After    : Boolean)
+      is
+         Tmp  : Child_Description_Access := Parent.First_Child;
+         Tmp2 : Child_Description_Access;
+      begin
+         Tmp2 := new Child_Description'
+           (Parent      => Parent,
+            Next        => null,
+            Is_Widget   => True,
+            Fixed_Size  => Fixed_Size,
+            Width       => Width,
+            Height      => Height,
+            Widget      => Gtk_Widget (New_Child));
+
+         if After then
+            while Tmp /= Ref_Item loop
+               Tmp := Tmp.Next;
+            end loop;
+            Tmp2.Next := Tmp.Next;
+            Tmp.Next := Tmp2;
+            Add_Handle (Win, Parent, Tmp);
+         else
+            if Parent.First_Child = Ref_Item then
+               Tmp2.Next := Parent.First_Child;
+               Parent.First_Child := Tmp2;
+            else
+               while Tmp.Next /= Ref_Item loop
+                  Tmp := Tmp.Next;
+               end loop;
+               Tmp2.Next := Tmp.Next;
+               Tmp.Next := Tmp2;
+            end if;
+            Add_Handle (Win, Parent, Tmp2);
+         end if;
+      end Add_In_List;
+
+      ------------------------
+      -- Add_As_First_Child --
+      ------------------------
+
+      procedure Add_As_First_Child (Parent : Child_Description_Access) is
+         Tmp : Child_Description_Access;
+      begin
+         Tmp := new Child_Description'
+           (Parent      => Parent,
+            Next        => Parent.First_Child,
+            Is_Widget   => True,
+            Fixed_Size  => Fixed_Size,
+            Width       => Width,
+            Height      => Height,
+            Widget      => Gtk_Widget (New_Child));
+         Parent.First_Child := Tmp;
+         Add_Handle (Win, Parent, Tmp);
+      end Add_As_First_Child;
+
+      ----------------------------
+      -- Add_After_All_Children --
+      ----------------------------
+
+      procedure Add_After_All_Children (Parent : Child_Description_Access) is
+         Tmp, Tmp2 : Child_Description_Access;
+      begin
+         Tmp := new Child_Description'
+           (Parent      => Parent,
+            Next        => null,
+            Is_Widget   => True,
+            Fixed_Size  => Fixed_Size,
+            Width       => Width,
+            Height      => Height,
+            Widget      => Gtk_Widget (New_Child));
+         if Parent.First_Child = null then
+            Parent.First_Child := Tmp;
+         else
+            Tmp2 := Parent.First_Child;
+            while Tmp2.Next /= null loop
+               Tmp2 := Tmp2.Next;
+            end loop;
+            Tmp2.Next := Tmp;
+         end if;
+         Add_Handle (Win, Parent, Tmp2);
+      end Add_After_All_Children;
+
       Current, Tmp2, Pane : Child_Description_Access;
    begin
-      if Ref_Widget /= null then
-         loop
-            Current := Get (Iter);
-            exit when Current = null
-              or else (Current.Is_Widget and then Current.Widget = Ref_Widget);
-            Next (Iter);
-         end loop;
+      if Ref_Pane /= null then
+         --  Split specific pane
+         Current := Child_Description_Access (Ref_Pane);
+      elsif Ref_Widget = null then
+         if Use_Ref_Pane then
+            --  Split main window
+            Current := Win.Children;
+         else
+            Current := null;
+         end if;
+      else
+         declare
+            Iter    : Child_Iterator := Start (Win);
+         begin
+            loop
+               Current := Get (Iter);
+               exit when Current = null
+                 or else (Current.Is_Widget
+                          and then Current.Widget = Ref_Widget);
+               Next (Iter);
+            end loop;
+         end;
       end if;
 
       if Current /= null then
-         if Current.Parent.Orientation = Orientation then
-            Tmp2 := new Child_Description'
-              (Parent      => Current.Parent,
-               Next        => Current.Next,
-               Is_Widget   => True,
-               Fixed_Size  => Fixed_Size,
-               Width       => Width,
-               Height      => Height,
-               Widget      => Gtk_Widget (New_Child));
-            if not After then
-               Tmp2.Widget    := Current.Widget;
-               Current.Widget := Gtk_Widget (New_Child);
-               Tmp2.Width     := Current.Width;
-               Tmp2.Height    := Current.Height;
-               Tmp2.Fixed_Size := Current.Fixed_Size;
-               Current.Fixed_Size := Fixed_Size;
-               Current.Width  := Width;
-               Current.Height := Height;
+         if not Current.Is_Widget then
+            if Current.Orientation = Orientation then
+               if After then
+                  Add_After_All_Children (Current);
+               else
+                  Add_As_First_Child (Current);
+               end if;
+            else  --  Current.Orientation /= Orientation
+               Pane := Create_Or_Get_Parent (Current);
+               Add_In_List (Pane, Current, After);
             end if;
 
-            Add_Handle (Win, Current.Parent, Current);
-            Current.Next := Tmp2;
-         else
-            Pane := new Child_Description'
-              (Parent      => Current.Parent,
-               Next        => Current.Next,
-               Is_Widget   => False,
-               Orientation => Orientation,
-               First_Child => Current,
-               Handles     => new Handles_Array (1 .. 1));
-            Pane.Handles (1) :=
-              ((0, 0, 0, 0), Win => null, Percent => 0.5);
-            if Realized_Is_Set (Win) then
-               Create_Handle (Win, Pane.Handles (1), Pane.Orientation);
-            end if;
-
-            Current.Parent := Pane;
-
-            if Pane.Parent.First_Child = Current then
-               Pane.Parent.First_Child := Pane;
-            else
-               Tmp2 := Pane.Parent.First_Child;
-               while Tmp2.Next /= Current loop
-                  Tmp2 := Tmp2.Next;
-               end loop;
-               Tmp2.Next := Pane;
-            end if;
-
-            Current.Next := new Child_Description'
-              (Parent      => Pane,
-               Next        => null,
-               Is_Widget   => True,
-               Fixed_Size  => Fixed_Size,
-               Width       => Width,
-               Height      => Height,
-               Widget      => Gtk_Widget (New_Child));
-            if not After then
-               Current.Next.Widget := Current.Widget;
-               Current.Widget      := Gtk_Widget (New_Child);
-               Current.Next.Width  := Current.Width;
-               Current.Next.Height := Current.Height;
-               Current.Next.Fixed_Size := Current.Fixed_Size;
-               Current.Fixed_Size := Fixed_Size;
-               Current.Width  := Width;
-               Current.Height := Height;
-            end if;
+         else  --  Current.Is_Widget
+            Pane := Create_Or_Get_Parent (Current);
+            Add_In_List (Pane, Current, After);
          end if;
 
-      --   Ref_Widget not found => Do nothing unless there is no child yet
+      --   Current = null => Do nothing unless there is no child yet
       elsif Win.Children = null then
          Tmp2 := new Child_Description'
            (Parent      => null,
@@ -1633,6 +1828,24 @@ package body Gtkada.Multi_Paned is
    -----------
 
    procedure Split
+     (Win           : access Gtkada_Multi_Paned_Record;
+      Ref_Pane      : Pane;
+      New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Orientation   : Gtk.Enums.Gtk_Orientation;
+      Fixed_Size    : Boolean := False;
+      Width, Height : Glib.Gint := 0;
+      After         : Boolean := True) is
+   begin
+      Split_Internal
+        (Win, null, Ref_Pane, True, New_Child, Orientation,
+         Fixed_Size, Width, Height, After);
+   end Split;
+
+   -----------
+   -- Split --
+   -----------
+
+   procedure Split
      (Win         : access Gtkada_Multi_Paned_Record;
       Ref_Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
       New_Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -1642,7 +1855,7 @@ package body Gtkada.Multi_Paned is
       After       : Boolean := True) is
    begin
       Split_Internal
-        (Win, Gtk_Widget (Ref_Widget), New_Child, Orientation,
+        (Win, Gtk_Widget (Ref_Widget), null, False, New_Child, Orientation,
          Fixed_Size, Width, Height, After);
    end Split;
 
@@ -1656,10 +1869,12 @@ package body Gtkada.Multi_Paned is
       Orientation   : Gtk.Enums.Gtk_Orientation :=
         Gtk.Enums.Orientation_Horizontal;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0) is
+      Width, Height : Glib.Gint := 0;
+      After         : Boolean := True) is
    begin
       Split_Internal
-        (Win, null, New_Child, Orientation, Fixed_Size, Width, Height);
+        (Win, null, null, False,
+         New_Child, Orientation, Fixed_Size, Width, Height, After);
    end Add_Child;
 
    --------------

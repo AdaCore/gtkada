@@ -43,6 +43,23 @@ package Gtkada.Multi_Paned is
      with private;
    type Gtkada_Multi_Paned is access all Gtkada_Multi_Paned_Record'Class;
 
+   type Pane is private;
+   --  An area of the window, which can is splitted either horizontally or
+   --  vertically. It can contain one or several children, next to each other,
+   --  or on top of one another.
+
+   Root_Pane : constant Pane;
+   --  The root pane. If you split this one, the newly added window will be
+   --  next to all other windows. For instance, if you split vertically with
+   --  the main_pane the following window, you will get:
+   --     +-----+------+        +-----+------+
+   --     |  1  |      |        |  1  |      |
+   --     +-----+  3   |    =>  +-----+  3   |
+   --     |  2  |      |        |  2  |      |
+   --     +-----+------+        +-----+------+
+   --                           |     4      |
+   --                           +------------+
+
    procedure Gtk_New (Win : out Gtkada_Multi_Paned);
    procedure Initialize (Win : access Gtkada_Multi_Paned_Record'Class);
    --  Create a new paned window.
@@ -58,7 +75,8 @@ package Gtkada.Multi_Paned is
       Orientation   : Gtk.Enums.Gtk_Orientation :=
         Gtk.Enums.Orientation_Horizontal;
       Fixed_Size    : Boolean := False;
-      Width, Height : Glib.Gint := 0);
+      Width, Height : Glib.Gint := 0;
+      After         : Boolean := True);
    --  Add new child, splitting as needed.
    --  This should be used when there is no child yet
    --  The window is splitted in two by default. However, if Width and Height
@@ -98,6 +116,76 @@ package Gtkada.Multi_Paned is
    --  Orientation and After define which splitted area we are looking at.
    --  null is returned if there are no such splitted area.
 
+   function Get_Pane
+     (Win    : access Gtkada_Multi_Paned_Record;
+      Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Pane;
+   --  Return the pane that contains the widget. See comment for Split below.
+
+   procedure Split
+     (Win           : access Gtkada_Multi_Paned_Record;
+      Ref_Pane      : Pane;
+      New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Orientation   : Gtk.Enums.Gtk_Orientation;
+      Fixed_Size    : Boolean := False;
+      Width, Height : Glib.Gint := 0;
+      After         : Boolean := True);
+   --  Split Ref_Pane to display New_Child to one of its sides.
+   --  See the comments for Root_Pane above.
+   --  The examples below assume that you are using one of the two split
+   --  procedures, either with a Ref_Pane or a Ref_Widget. In the former case,
+   --  the pane is obtained with a call to Get_Pane(Ref_Widget).
+   --  As you will see, the results are different (although they might appear
+   --  similar sometimes on this simple example.
+   --  In all these examples, we split either vertically or horizontally, and
+   --  add a new widget "4".
+   --
+   --  Given the following setup:
+   --     +---+---+
+   --     | 1 |   |
+   --     +---+ 3 |
+   --     | 2 |   |
+   --     +---+---+
+   --
+   --  Ref_Pane = Get_Pane ("1")              Ref_Widget = "1"
+   --  Split vertically
+   --    After=True  After=False        After=True   After=False
+   --    +---+---+   +---+---+          +---+---+    +---+---+
+   --    | 1 | 3 |   | 4 | 3 |          | 1 | 3 |    | 4 | 3 |
+   --    +---+   |   +---+   |          +---+   |    +---+   |
+   --    | 2 |   |   | 1 |   |          | 4 |   |    | 1 |   |
+   --    +---+   |   +---+   |          +---+   |    +---+   |
+   --    | 4 |   |   | 2 |   |          | 2 |   |    | 2 |   |
+   --    +---+---+   +---+---+          +---+---+    +---+---+
+   --
+   --  Split horizontally
+   --    After=True     After=False     After=True     After=False
+   --    +---+---+---+  +---+---+---+   +---+---+---+  +---+---+---+
+   --    | 1 | 4 | 3 |  | 4 | 1 | 3 |   | 1 | 4 | 3 |  | 4 | 1 | 3 |
+   --    +---+   |   |  |   +---+   |   +---+---+   |  +---+---+   |
+   --    | 2 |   |   |  |   | 2 |   |   |   2   |   |  |   2   |   |
+   --    +---+---+---+  +---+---+---+   +-------+---+  +-------+---+
+   --
+   --
+   --  Ref_Pane = Get_Pane ("3")             Ref_Widget = "3"
+   --  Split vertically
+   --    After=True   After=False       After=True     After=False
+   --    +---+---+    +-------+         +---+---+      +---+---+
+   --    | 1 | 3 |    |   4   |         | 1 | 3 |      | 1 | 4 |
+   --    +---+   |    +---+---+         +---+---+      +---+---+
+   --    | 2 |   |    | 1 | 3 |         | 2 | 4 |      | 2 | 3 |
+   --    +---+---+    +---+   |         +---+---+      +---+---+
+   --    |   4   |    | 2 |   |
+   --    +-------+    +---+---+
+   --
+   --  Split horizontally
+   --    After=True     After=False     After=True     After=False
+   --    +---+---+---+  +---+---+---+   +---+---+---+  +---+---+---+
+   --    | 1 | 3 | 4 |  | 4 | 1 | 3 |   | 1 | 3 | 4 |  | 1 | 4 | 3 |
+   --    +---+   |   |  |   +---+   |   +---+   |   |  +---+   |   |
+   --    | 2 |   |   |  |   | 2 |   |   | 2 |   |   |  | 2 |   |   |
+   --    +---+---+---+  +---+---+---+   +---+---+---+  +---+---+---+
+
+
    ---------------
    -- Iterators --
    ---------------
@@ -125,7 +213,8 @@ package Gtkada.Multi_Paned is
    function Get_Orientation
      (Iter : Child_Iterator) return Gtk.Enums.Gtk_Orientation;
    --  Return the orientation of the current child. This is only relevant if
-   --  the child doesn't contain a widget (and therefore Get_Widget has
+   --  the child doesn't cont    after=False  +---+---+
+   --                   |ain a widget (and therefore Get_Widget has
    --  returned null).
 
    function Get_Depth (Iter : Child_Iterator) return Natural;
@@ -160,6 +249,9 @@ private
             Handles     : Handles_Array_Access;
       end case;
    end record;
+
+   type Pane is new Child_Description_Access;
+   Root_Pane : constant Pane := null;
 
    type Child_Iterator is record
       Current : Child_Description_Access;
