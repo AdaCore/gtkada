@@ -104,7 +104,7 @@ begin
       Gtk.Main.Init;
       N := Parse (Argument (1));
       Register_Signals (N);
-      Instanciate (N);
+      Instantiate (N);
       Gtk.Main.Main;
    end if;
 
