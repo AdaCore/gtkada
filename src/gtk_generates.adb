@@ -1500,10 +1500,10 @@ package body Gtk_Generates is
    --------------------
 
    procedure Scale_Generate (N : Node_Ptr; File : File_Type) is
-      Name  : constant String := Get_Name (N);
-      Class : constant String := Get_Class (N);
+      Name       : constant String := Get_Name (N);
+      Class      : constant String := Get_Class (N);
       Top_Widget : constant Node_Ptr := Find_Top_Widget (N);
-      Top   : constant String := Get_Name (Top_Widget);
+      Top        : constant String := To_Ada (Get_Name (Top_Widget));
       function Build_Vscale return Glib.GType;
       pragma Import (C, Build_Vscale, "gtk_vscale_get_type");
       function Build_Hscale return Glib.GType;
