@@ -432,16 +432,15 @@ package Gtkada.MDI is
       --  of a type that is it can handle.
 
       type Load_Desktop_Function is access function
-        (Node : Glib.Xml_Int.Node_Ptr; User : User_Data)
-         return Gtk.Widget.Gtk_Widget;
+        (MDI : MDI_Window; Node : Glib.Xml_Int.Node_Ptr; User : User_Data)
+         return MDI_Child;
       --  A general function that loads a widget from an XML tree.
       --
       --  As for Save_Desktop_Function, this function should return null if it
       --  doesn't know how to handle Node or if Node doesn't describe a widget
       --  type that it can handle.
-      --  The function can return directly a MDI_Child widget, but must put
-      --  it directly in the MDI before returning. This can be used if some
-      --  special attributes or callbacks need to be set on the MDI_Child.
+      --
+      --  This function returns an MDI_Widget that has been put in the MDI.
 
       procedure Register_Desktop_Functions
         (Save : Save_Desktop_Function;
