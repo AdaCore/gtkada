@@ -36,11 +36,12 @@
 --  The children can be set to expand and/or fill their assigned location.
 --
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Gdk;
-with Gtk.Widget;
 with Gtk.Container;
+with Gtk.Enums; use Gtk.Enums;
+with Gtk.Widget;
 
 package Gtk.Packer is
 
@@ -67,56 +68,6 @@ package Gtk.Packer is
    Gtk_Pack_Expand : constant Gtk_Packer_Options;
    Gtk_Fill_X      : constant Gtk_Packer_Options;
    Gtk_Fill_Y      : constant Gtk_Packer_Options;
-
-   type Gtk_Side_Type is
-     (Side_Top,
-      Side_Bottom,
-      Side_Left,
-      Side_Right);
-   --  Gtk_Side_Type indicates on which the widget should be inserted.
-   --  The children are displayed in the order they were inserted into the
-   --  container.
-   --  Each time a child is displayed, the available space for the remaining
-   --  child is restrained. For instance, every time you put a child on the
-   --  Side_Top or Side_Bottom, the available space is decreased so that no
-   --  other widget is inserted in the same line.
-   --
-   --  For instance, if you put two widgets on Side_Top, the second one will
-   --  appear below the first one. If you add two widgets on Side_Right, the
-   --  second one will be placed on the left of the first.
-   for Gtk_Side_Type'Size use Gint'Size;
-
-   type Gtk_Anchor_Type is
-     (Anchor_Center,
-      Anchor_North,
-      Anchor_North_West,
-      Anchor_North_East,
-      Anchor_South,
-      Anchor_South_East,
-      Anchor_South_West,
-      Anchor_West,
-      Anchor_East);
-   --  Gtk_Anchor_Type indicates the exact location of the widget on its
-   --  side. Note that not all anchors are relevant for each side.
-   --
-   --  For instance, if you put a widget on Side_Right, with an anchor of
-   --  Anchor_North, Anchor_North_West or Anchor_North_East, the widget will
-   --  in fact appear on the upper right side of the remaining space in the
-   --  container.
-   --
-   --  Thus, if a previous child was added on Side_North, then the new child
-   --  will only appear on the second line in the container. The order the
-   --  children are inserted into the container is important.
-   for Gtk_Anchor_Type'Size use Gint'Size;
-
-   Anchor_N  : Gtk_Anchor_Type renames Anchor_North;
-   Anchor_NW : Gtk_Anchor_Type renames Anchor_North_West;
-   Anchor_NE : Gtk_Anchor_Type renames Anchor_North_East;
-   Anchor_S  : Gtk_Anchor_Type renames Anchor_South;
-   Anchor_SW : Gtk_Anchor_Type renames Anchor_South_West;
-   Anchor_SE : Gtk_Anchor_Type renames Anchor_South_East;
-   Anchor_W  : Gtk_Anchor_Type renames Anchor_West;
-   Anchor_E  : Gtk_Anchor_Type renames Anchor_East;
 
    --------------------------
    -- Modifying the Packer --
