@@ -44,7 +44,6 @@ with Gdk.Region;       use Gdk.Region;
 with Gdk.Types;        use Gdk.Types;
 with Gdk.Types.Keysyms; use Gdk.Types.Keysyms;
 with Gdk.Rectangle;    use Gdk.Rectangle;
-with Gdk.Visual;       use Gdk.Visual;
 with Gdk.Window;       use Gdk.Window;
 with Gtk.Adjustment;   use Gtk.Adjustment;
 with Gtk.Arguments;    use Gtk.Arguments;
@@ -3387,7 +3386,13 @@ package body Gtkada.Canvas is
 
    procedure Set_Screen_Size
      (Item   : access Buffered_Item_Record;
-      Width, Height  : Glib.Gint) is
+      Width, Height  : Glib.Gint)
+   is
+      function Screen_Get_Default return Gint;
+      pragma Import (C, Screen_Get_Default, "gdk_screen_get_default");
+
+      function Get_Root_Window (Screen : Gint) return Gdk_Drawable;
+      pragma Import (C, Get_Root_Window, "gdk_screen_get_root_window");
    begin
       Set_Screen_Size (Canvas_Item_Record (Item.all)'Access, Width, Height);
 
@@ -3395,8 +3400,11 @@ package body Gtkada.Canvas is
          Gdk.Pixmap.Unref (Item.Pixmap);
       end if;
 
-      Gdk_New (Item.Pixmap, null, Width, Height,
-               Depth => Get_Best_Depth);
+      --  Always pass a drawable, so that the colormap for Item.Pixmap is
+      --  set correctly. Otherwise, on setups where colormaps are used we
+      --  get a crash
+      Gdk_New
+        (Item.Pixmap, Get_Root_Window (Screen_Get_Default), Width, Height);
    end Set_Screen_Size;
 
    ------------
