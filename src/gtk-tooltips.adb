@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -29,6 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
+with Interfaces.C.Strings;
 
 package body Gtk.Tooltips is
 
@@ -82,7 +83,7 @@ package body Gtk.Tooltips is
 
    procedure Set_Delay
      (Tooltips : access Gtk_Tooltips_Record;
-      duration : in Guint)
+      duration : in Guint := 500)
    is
       procedure Internal (Tooltips : System.Address;
                           Duration : Guint);
@@ -90,6 +91,24 @@ package body Gtk.Tooltips is
    begin
       Internal (Get_Object (Tooltips), Duration);
    end Set_Delay;
+
+   ----------------
+   -- Set_Colors --
+   ----------------
+
+   procedure Set_Colors (Tooltips   : access Gtk_Tooltips_Record;
+                         Foreground : Gdk.Color.Gdk_Color;
+                         Background : Gdk.Color.Gdk_Color)
+   is
+      procedure Internal (Tooltips   : System.Address;
+                          Foreground : System.Address;
+                          Background : System.Address);
+      pragma Import (C, Internal, "gtk_tooltips_set_colors");
+      Fore : aliased Gdk.Color.Gdk_Color := Foreground;
+      Back : aliased Gdk.Color.Gdk_Color := Background;
+   begin
+      Internal (Get_Object (Tooltips), Fore'Address, Back'Address);
+   end Set_Colors;
 
    -------------
    -- Set_Tip --
@@ -111,5 +130,38 @@ package body Gtk.Tooltips is
                 Tip_Text & Ascii.NUL,
                 Tip_Private & Ascii.NUL);
    end Set_Tip;
+
+   --------------
+   -- Get_Data --
+   --------------
+
+   function Get_Data (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+                     return Tooltips_Data
+   is
+      type C_Data is record
+         Tooltips : System.Address;
+         Widget   : System.Address;
+         Text     : Interfaces.C.Strings.chars_ptr;
+         Privat   : Interfaces.C.Strings.chars_ptr;
+      end record;
+      --  keep in sync with the C structure.
+      type C_Data_Access is access C_Data;
+
+      function Internal (Widget : System.Address) return C_Data_Access;
+      pragma Import (C, Internal, "gtk_tooltips_data_get");
+
+      Data : C_Data_Access := Internal (Get_Object (Widget));
+      T    : String := Interfaces.C.Strings.Value (Data.Text);
+      P    : String := Interfaces.C.Strings.Value (Data.Privat);
+      Data2 : Tooltips_Data (Text_Length    => T'Length,
+                             Private_Length => P'Length);
+      Stub : Gtk_Tooltips_Record;
+   begin
+      Data2.Tooltips     := Gtk_Tooltips (Get_User_Data (Data.Tooltips, Stub));
+      Data2.Widget       := Gtk.Widget.Gtk_Widget (Widget);
+      Data2.Text         := T;
+      Data2.Text_Private := P;
+      return Data2;
+   end Get_Data;
 
 end Gtk.Tooltips;

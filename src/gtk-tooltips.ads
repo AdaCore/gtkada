@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,6 +27,20 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  Tooltips are the small text windows that popup when the mouse rests over
+--  a widget, and that provide a quick help for the user.
+--
+--  In GtkAda, all tooltips belong to a group (a Gtk_Tooltips). All the
+--  individual tooltips in a group can be disabled or enabled at the same
+--  time. Likewise, the colors and style of a tooltip can be set on a group
+--  basis.
+--
+--  </description>
+--  <c_version>1.2.6</c_version>
+
+with Gdk.Color;
 with Gtk.Data;
 with Gtk.Widget;
 
@@ -35,20 +49,78 @@ package Gtk.Tooltips is
    type Gtk_Tooltips_Record is new Gtk.Data.Gtk_Data_Record with private;
    type Gtk_Tooltips is access all Gtk_Tooltips_Record'Class;
 
-   procedure Enable (Tooltips : access Gtk_Tooltips_Record);
-   procedure Disable (Tooltips : access Gtk_Tooltips_Record);
+   type Tooltips_Data (Text_Length    : Natural;
+                       Private_Length : Natural)
+   is record
+      Tooltips     : Gtk_Tooltips;    --  the group of the tooltip
+      Widget       : Gtk.Widget.Gtk_Widget; --  the widget to which it applies
+      Text         : String (1 .. Text_Length); --  the text of the tooltip
+      Text_Private : String (1 .. Private_Length); --  the private text
+   end record;
+
    procedure Gtk_New (Widget : out Gtk_Tooltips);
+   --  Creates a new group of tooltips.
+
    procedure Initialize (Widget : access Gtk_Tooltips_Record'Class);
-   procedure Set_Delay
-     (Tooltips : access Gtk_Tooltips_Record;
-      Duration : in Guint);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Returns the internal value associated with a Gtk_Tooltips internally.
+
+   procedure Enable (Tooltips : access Gtk_Tooltips_Record);
+   --  Enables all the tooltips in the group.
+   --  From now on, when the mouse rests over a widget for a short period of
+   --  time, the help text is automatically displayed.
+
+   procedure Disable (Tooltips : access Gtk_Tooltips_Record);
+   --  Disables all the tooptips in the group.
+   --  From now on, no tooltips in this group will appear, unless they are
+   --  re-enabled.
+
+   procedure Set_Delay (Tooltips : access Gtk_Tooltips_Record;
+                        Duration : in Guint := 500);
+   --  Set the delay between the user moving the mouse over a widget and the
+   --  text appearing.
+   --  DURATION is in milli-seconds.
+
    procedure Set_Tip
      (Tooltips    : access Gtk_Tooltips_Record;
       Widget      : access Gtk.Widget.Gtk_Widget_Record'Class;
       Tip_Text    : in String;
       Tip_Private : in String := "");
+   --  Adds a new tooltip to WIDGET.
+   --  The message that appears in the tooltip is TIP_TEXT, and the tooltip
+   --  belongs to the group TOOLTIPS.
+   --  TIP_PRIVATE contains more information, that can be displayed by a
+   --  GTK_TIPS_QUERY widget through the "widget_selected" signal.
+   --  In most cases, TIP_PRIVATE should simply keep its default empty value.
+
+   procedure Set_Colors (Tooltips   : access Gtk_Tooltips_Record;
+                         Foreground : Gdk.Color.Gdk_Color;
+                         Background : Gdk.Color.Gdk_Color);
+   --  Modifies the color scheme for the tooltips in the group TOOLTIPS.
+
+   function Get_Data (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+                     return Tooltips_Data;
+   --  Returns the tooltip data associated with the WIDGET.
+   --  If there is none, the two text fields in the returned structure have
+   --  a length 0.
+
+   -------------
+   -- Signals --
+   -------------
+
+   --  <signals>
+   --  The following new signals are defined for this widget:
+   --  </signals>
 
 private
    type Gtk_Tooltips_Record is new Gtk.Data.Gtk_Data_Record with null record;
 
+   pragma Import (C, Get_Type, "gtk_tooltips_get_type");
 end Gtk.Tooltips;
+
+--  The following functions have no Ada equivalent:
+--  gtk_tooltips_force_window: internal function for gtk+, makes sure the group
+--     as a window associated with you.
