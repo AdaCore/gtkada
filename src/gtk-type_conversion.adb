@@ -106,7 +106,7 @@ with Gtk.Toolbar;
 with Gtk.Tooltips;
 with Gtk.Tree;
 with Gtk.Tree_Item;
-with Gtk.VButton_Box;
+with Gtk.Vbutton_Box;
 with Gtk.Viewport;
 with Gtk.Widget;
 with Gtk.Window;
@@ -328,8 +328,8 @@ package body Gtk.Type_Conversion is
          when 'V' =>
             if Type_Name = "GtkVBox" then
                return new Gtk.Box.Gtk_Box_Record;
-            elsif Type_Name = "GtkVbuttonBox" then
-               return new Gtk.VButton_Box.Gtk_VButton_Box_Record;
+            elsif Type_Name = "GtkVButtonBox" then
+               return new Gtk.Vbutton_Box.Gtk_Vbutton_Box_Record;
             elsif Type_Name = "GtkViewport" then
                return new Gtk.Viewport.Gtk_Viewport_Record;
             end if;
