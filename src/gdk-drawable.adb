@@ -58,7 +58,7 @@ package body Gdk.Drawable is
    -- Draw_Rectangle --
    --------------------
 
-   procedure Draw_Rectangle (Drawable : in Gdk_Drawable;
+   procedure Draw_Rectangle (Drawable : in Gdk_Drawable'Class;
                              Gc       : in Gdk.GC.Gdk_GC'Class;
                              Filled   : in Boolean := False;
                              X, Y     : in Gint;
@@ -82,7 +82,7 @@ package body Gdk.Drawable is
    -- Draw_Point --
    ----------------
 
-   procedure Draw_Point (Drawable : in Gdk_Drawable;
+   procedure Draw_Point (Drawable : in Gdk_Drawable'Class;
                          Gc       : in Gdk.GC.Gdk_GC'Class;
                          X        : in Gint;
                          Y        : in Gint) is
@@ -100,7 +100,7 @@ package body Gdk.Drawable is
    -- Draw_Line --
    ---------------
 
-   procedure Draw_Line (Drawable : in Gdk_Drawable;
+   procedure Draw_Line (Drawable : in Gdk_Drawable'Class;
                              Gc       : in Gdk.GC.Gdk_GC'Class;
                              X1, Y1   : in Gint;
                              X2, Y2   : in Gint) is
@@ -119,7 +119,7 @@ package body Gdk.Drawable is
    -- Draw_Arc --
    --------------
 
-   procedure Draw_Arc (Drawable : in Gdk_Drawable;
+   procedure Draw_Arc (Drawable : in Gdk_Drawable'Class;
                        Gc       : in Gdk.GC.Gdk_GC'Class;
                        Filled   : in Boolean := False;
                        X        : in Gint;
@@ -148,7 +148,7 @@ package body Gdk.Drawable is
    -- Draw_Pixmap --
    -----------------
 
-   procedure Draw_Pixmap (Drawable : in Gdk.Drawable.Gdk_Drawable;
+   procedure Draw_Pixmap (Drawable : in Gdk.Drawable.Gdk_Drawable'Class;
                           Gc       : in Gdk.GC.Gdk_GC'Class;
                           Src      : in Gdk.Drawable.Gdk_Drawable'Class;
                           Xsrc     : in Gint;
@@ -176,7 +176,7 @@ package body Gdk.Drawable is
    -- Draw_Polygon --
    ------------------
 
-   procedure Draw_Polygon (Drawable : in Gdk_Drawable;
+   procedure Draw_Polygon (Drawable : in Gdk_Drawable'Class;
                            Gc       : in Gdk.GC.Gdk_GC'Class;
                            Filled   : in Boolean;
                            Points   : in Gdk.Point.Gdk_Points_Array)
