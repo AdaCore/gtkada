@@ -1311,8 +1311,8 @@ gint ada_gdk_event_set_y (GdkEvent * event, gdouble y)
   switch (event->type)
     {
     case GDK_MOTION_NOTIFY:
-      break;
       event->motion.y = y;
+      break;
     case GDK_BUTTON_PRESS:
     case GDK_2BUTTON_PRESS:
     case GDK_3BUTTON_PRESS:
@@ -1326,6 +1326,50 @@ gint ada_gdk_event_set_y (GdkEvent * event, gdouble y)
     case GDK_CONFIGURE:
       event->configure.y = y;
       break;
+    default:
+      return 0;
+    }
+  return 1;
+}
+
+gint ada_gdk_event_set_time (GdkEvent * event, guint32 time)
+{
+  switch (event->type)
+    {
+    case GDK_MOTION_NOTIFY:
+      event->motion.time = time;
+      break;
+      
+    case GDK_BUTTON_PRESS:
+    case GDK_2BUTTON_PRESS:
+    case GDK_3BUTTON_PRESS:
+    case GDK_BUTTON_RELEASE:
+      event->button.time = time;
+      break;
+      
+    case GDK_KEY_PRESS:
+    case GDK_KEY_RELEASE:
+      event->key.time = time;
+      break;
+      
+    case GDK_ENTER_NOTIFY:
+    case GDK_LEAVE_NOTIFY:
+      event->crossing.time = time;
+      break;
+      
+    case GDK_PROPERTY_NOTIFY:
+      event->property.time = time;
+      break;
+      
+    case GDK_SELECTION_NOTIFY:
+      event->selection.time = time;
+      break;
+      
+    case GDK_PROXIMITY_IN:
+    case GDK_PROXIMITY_OUT:
+      event->proximity.time = time;
+      break;
+
     default:
       return 0;
     }
@@ -1417,6 +1461,22 @@ gint ada_gdk_event_set_subwindow (GdkEvent * event, GdkWindow* win)
     }
   return 1;
 }
+
+gint ada_gdk_event_set_string (GdkEvent * event, char* str)
+{
+  switch (event->type)
+    {
+    case GDK_KEY_PRESS:
+    case GDK_KEY_RELEASE:
+      event->key.length = strlen (str);
+      event->key.string = str;
+      break;
+    default:
+      return 0;
+    }
+  return 1;
+}
+
 
 gint ada_gdk_event_set_mode (GdkEvent * event, gint mode)
 {
@@ -2031,6 +2091,22 @@ ada_gamma_curve_get_gamma (GtkGammaCurve* widget)
 }
 
 /******************************************
+ ** Functions for Gtk_Window
+ ******************************************/
+
+char*
+ada_gtk_window_get_title (GtkWindow* window)
+{
+  return window->title;
+}
+
+GtkWindow*
+ada_gtk_window_get_transient_parent (GtkWindow* window)
+{
+  return window->transient_parent;
+}
+
+/******************************************
  ** Functions for Alignment
  ******************************************/
 
@@ -2365,6 +2441,13 @@ ada_widget_get_motion_notify (GtkWidget* widget, GdkEvent* event)
 {
   return (GTK_WIDGET_CLASS (GTK_OBJECT (widget)->klass)
 	  ->motion_notify_event)(widget, (GdkEventMotion*)event);
+}
+
+gint
+ada_widget_has_default_motion_notify (GtkWidget* widget)
+{
+  return
+    (GTK_WIDGET_CLASS (GTK_OBJECT (widget)->klass)->motion_notify_event) != 0;
 }
 
 /******************************************
