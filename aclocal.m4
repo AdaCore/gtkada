@@ -581,10 +581,8 @@ AC_DEFUN(AM_CHECK_OPENGL,
 #
 #############################################################
 
-
 AC_DEFUN(AM_CHECK_PIXBUF,
 [   
-
   AC_PATH_PROG(LIBART_CONFIG, libart-config, no)
   AC_PATH_PROG(PIXBUF_CONFIG, gdk-pixbuf-config, no)
 
@@ -606,9 +604,36 @@ AC_DEFUN(AM_CHECK_PIXBUF,
   AC_SUBST(PIXBUF_LIBS)
   AC_SUBST(PIXBUF_STATIC_LIBS)
   AC_SUBST(HAVE_PIXBUF)
-
 ])
 
+#############################################################
+#
+#  Checking for libglade
+#
+#############################################################
+
+AC_DEFUN(AM_CHECK_LIBGLADE,
+[   
+  AC_PATH_PROG(LIBGLADE_CONFIG, libglade-config, no)
+
+  if test "$LIBGLADE_CONFIG" = "no" ; then
+    HAVE_LIBGLADE="False"
+    LIBGLADE_CFLAGS=""
+    LIBGLADE_LIBS=""
+    LIBGLADE_STATIC_LIBS=""
+  else
+    HAVE_LIBGLADE="True"
+    LIBGLADE_PREFIX=`$LIBGLADE_CONFIG --prefix`
+    LIBGLADE_CFLAGS=`$LIBGLADE_CONFIG --cflags`
+    LIBGLADE_LIBS="-L$LIBGLADE_PREFIX/lib -lglade -lxml"
+    LIBGLADE_STATIC_LIBS="$LIBGLADE_PREFIX/lib/libglade.a $LIBGLADE_PREFIX/lib/libxml.a"
+  fi
+
+  AC_SUBST(LIBGLADE_CFLAGS)
+  AC_SUBST(LIBGLADE_LIBS)
+  AC_SUBST(LIBGLADE_STATIC_LIBS)
+  AC_SUBST(HAVE_LIBGLADE)
+])
 
 #############################################################
 #
