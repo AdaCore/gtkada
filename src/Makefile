@@ -42,7 +42,7 @@ RANLIB = ranlib
 
 all: libgtkada.so libgtkada.a
 
-libgtkada.so:: test_link.o $(c_objects)
+libgtkada.so:: $(TEST_LINK).o $(c_objects)
 	$(CC) -shared -o libgtkada.so g*.o $(c_objects)
 
 libgtkada.a::
@@ -51,9 +51,9 @@ libgtkada.a::
 	  $(RANLIB) libgtkada.a; \
 	fi \
 
-test_link.o::
-	#perl ./create_test_link.pl > test_link.adb
-	$(GNATMAKE) -c test_link -shared -fPIC $(GNATFLAGS)
+$(TEST_LINK).o::
+	perl ./create_test_link.pl > $(TEST_LINK).adb
+	$(GNATMAKE) -c $(TEST_LINK) -shared -fPIC $(GNATFLAGS)
 
 main: main.adb test.adb test.ads libgtkada.so
 	$(GNATMAKE) $@ $(GNATMAKEFLAGS) $(GNATMAKELDFLAGS) 
@@ -69,7 +69,9 @@ install-strip:
 
 clean:
 	-${RM} *.o *.ali *~ main b_main.c core
-	-${RM} test_link b_test_link.c libgtkada.a libgtkada.so
+	-${RM} libgtkada.a libgtkada.so
+	-${RM} $(TEST_LINK) b_$(TEST_LINK).c $(TEST_LINK).adb
+	-${RM} .\#*
 	-cd testgtk && make clean
 
 distclean: clean
