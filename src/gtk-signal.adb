@@ -401,11 +401,11 @@ package body Gtk.Signal is
 
    end Two_Callback_Gtk;
 
-   -------------------
-   -- Draw_Callback --
-   -------------------
+   ---------------------
+   -- Record_Callback --
+   ---------------------
 
-   package body Draw_Callback is
+   package body Record_Callback is
 
       type Data_Type_Record is
          record
@@ -460,11 +460,11 @@ package body Gtk.Signal is
          Data   : Data_Type_Access := Convert (User_Data);
          Tmp    : System.Address := Internal (Params, 0);
 
-         Widget2 : Gdk.Rectangle.Gdk_Rectangle;
-         for Widget2'Address use Tmp;
+         Rec    : Simple_Record;
+         for Rec'Address use Tmp;
       begin
          if Data.Func /= null then
-            Data.Func (Acc (Get_User_Data (Object, Stub)), Widget2);
+            Data.Func (Acc (Get_User_Data (Object, Stub)), Rec);
          end if;
       end Marshaller;
 
@@ -489,7 +489,7 @@ package body Gtk.Signal is
                                    After);
       end Connect;
 
-   end Draw_Callback;
+   end Record_Callback;
 
    -------------------------
    -- Tips_Query_Callback --

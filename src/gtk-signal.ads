@@ -28,7 +28,6 @@
 -----------------------------------------------------------------------
 
 with Gdk;
-with Gdk.Rectangle;
 with Gtk.Object;
 with Gtk.Widget;
 with Gtk.Tips_Query;
@@ -128,17 +127,22 @@ package Gtk.Signal is
 
    end Two_Callback_Gtk;
 
-   -----------------------------------------------------------------
-   --  The following package should be used in the callbacks for  --
-   --  the "draw" function when creating new widgets              --
-   -----------------------------------------------------------------
+   ------------------------------------------------------------------
+   --  The following package should be used in the callbacks for   --
+   --  gtk internal functions, such as "draw", "size request",...  --
+   --  The second parameter will be set by gtk itself when calling --
+   --  your gtk function (no type verification is done!)           --
+   --                                                              --
+   --  Do not use this package with tagged types, it won't work    --
+   ------------------------------------------------------------------
 
    generic
       type Base_Type is new Gtk.Object.Gtk_Object_Record with private;
-   package Draw_Callback is
+      type Simple_Record is private;
+   package Record_Callback is
       type Callback is access procedure
         (Widget  : access Base_Type;
-         Area    : in Gdk.Rectangle.Gdk_Rectangle);
+         Param   : in out Simple_Record);
 
       function Connect
         (Obj       : access Base_Type'Class;
@@ -146,7 +150,7 @@ package Gtk.Signal is
          Func      : in Callback;
          After     : in Boolean := False)
         return Guint;
-   end Draw_Callback;
+   end Record_Callback;
 
    -----------------------------------------------------------------
    --  The following functions are for callbacks requiring no data to be
