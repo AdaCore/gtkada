@@ -2363,7 +2363,14 @@ package body Gtkada.MDI is
       --  If all items are maximized, add Child to the notebook
 
       if Children_Are_Maximized (MDI) then
+         --  As a side effect, putting C in a notebook causes the
+         --  Child widget to have no requisition. Therefore we
+         --  save the requisition, and re-set the size request of
+         --  Child afterwards.
+         Requisition := Get_Child_Requisition (Child);
          Put_In_Notebook (MDI, None, C);
+         Size_Request (Child, Requisition);
+
       else
          Put (MDI.Layout, C, 0, 0);
       end if;
@@ -3124,6 +3131,7 @@ package body Gtkada.MDI is
    is
       Label : Gtk_Label;
       Event : Gtk_Event_Box;
+
    begin
       --  Embed the contents of the child into the notebook, and mark
       --  Child as docked, so that we can't manipulate it afterwards.
@@ -3165,6 +3173,7 @@ package body Gtkada.MDI is
       Add (Event, Label);
       Show (Label);
       Append_Page (MDI.Docks (Side), Child, Event);
+
       Unref (Child);
 
       if Child.Minimize_Button /= null then
