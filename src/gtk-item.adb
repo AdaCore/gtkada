@@ -4,7 +4,7 @@ package body Gtk.Item is
    -- Item_Select --
    -----------------
 
-   procedure Item_Select (The_Item : in Item'Class) is
+   procedure Item_Select (The_Item : in Gtk_Item'Class) is
       procedure Internal (The_Item : in System.Address);
       pragma Import (C, Internal, "gtk_item_select");
    begin
@@ -15,7 +15,7 @@ package body Gtk.Item is
    -- Item_Deselect --
    -------------------
 
-   procedure Item_Deselect (The_Item : in Item'Class) is
+   procedure Item_Deselect (The_Item : in Gtk_Item'Class) is
       procedure Internal (The_Item : in System.Address);
       pragma Import (C, Internal, "gtk_item_deselect");
    begin
@@ -26,7 +26,7 @@ package body Gtk.Item is
    -- Toggle --
    ------------
 
-   procedure Toggle (The_Item : in Item'Class) is
+   procedure Toggle (The_Item : in Gtk_Item'Class) is
       procedure Internal (The_Item : in System.Address);
       pragma Import (C, Internal, "gtk_item_toggle");
    begin

@@ -8,10 +8,9 @@ package Gtk.Vbox is
    procedure Gtk_New (Widget      : out Gtk_Vbox;
                       Homogeneous : in Boolean;
                       Spacing     : in Gint);
-   --  mapping: New gtkvbox.h gtk_hbox_new
+   --  mapping: New gtkvbox.h gtk_vbox_new
 
-
-   --  mapping: NOT_IMPLEMENTED gtkvbox.h gtk_hbox_get_type
+   --  mapping: NOT_IMPLEMENTED gtkvbox.h gtk_vbox_get_type
 
 private
 
