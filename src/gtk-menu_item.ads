@@ -83,7 +83,7 @@ package Gtk.Menu_Item is
 
    procedure Set_Right_Justified
      (Menu_Item : access Gtk_Menu_Item_Record;
-      Justify   : Boolean);
+      Justify   : Boolean := True);
 
    procedure Set_Right_Justify
      (Menu_Item : access Gtk_Menu_Item_Record;

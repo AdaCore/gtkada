@@ -215,12 +215,14 @@ package body Gtk.Menu_Item is
 
    procedure Set_Right_Justified
      (Menu_Item : access Gtk_Menu_Item_Record;
-      Justify   : Boolean)
+      Justify   : Boolean := True)
    is
-      procedure Internal (Menu_Item : System.Address; Justify : Boolean);
+      procedure Internal
+        (Menu_Item : System.Address;
+         Justify   : Gboolean);
       pragma Import (C, Internal, "gtk_menu_item_set_right_justified");
    begin
-      Internal (Get_Object (Menu_Item), Justify);
+      Internal (Get_Object (Menu_Item), To_Gboolean (Justify));
    end Set_Right_Justified;
 
    -----------------------
