@@ -157,6 +157,23 @@ package body Gtk.Scrolled_Window is
       end if;
    end Set_Hadjustment;
 
+   -------------------
+   -- Set_Placement --
+   -------------------
+
+   procedure Set_Placement
+     (Scrolled_Window  : access Gtk_Scrolled_Window_Record;
+      Window_Placement : Gtk_Corner_Type)
+   is
+      procedure Internal (Scrolled_Window  : System.Address;
+                          Window_Placement : Gint);
+      pragma Import (C, Internal, "gtk_scrolled_window_set_placement");
+
+   begin
+      Internal
+        (Get_Object (Scrolled_Window), Gtk_Corner_Type'Pos (Window_Placement));
+   end Set_Placement;
+
    ----------------
    -- Set_Policy --
    ----------------
@@ -166,14 +183,14 @@ package body Gtk.Scrolled_Window is
       H_Scrollbar_Policy : in     Enums.Gtk_Policy_Type;
       V_Scrollbar_Policy : in     Enums.Gtk_Policy_Type)
    is
-      procedure Internal (Scrolled_Window : in System.Address;
-                          H_Scrollbar_Policy : in Enums.Gtk_Policy_Type;
-                          V_Scrollbar_Policy : in Enums.Gtk_Policy_Type);
+      procedure Internal (Scrolled_Window    : in System.Address;
+                          H_Scrollbar_Policy : in Gint;
+                          V_Scrollbar_Policy : in Gint);
       pragma Import (C, Internal, "gtk_scrolled_window_set_policy");
    begin
       Internal (Get_Object (Scrolled_Window),
-                H_Scrollbar_Policy,
-                V_Scrollbar_Policy);
+                Enums.Gtk_Policy_Type'Pos (H_Scrollbar_Policy),
+                Enums.Gtk_Policy_Type'Pos (V_Scrollbar_Policy));
    end Set_Policy;
 
    ---------------------
