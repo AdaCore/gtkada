@@ -244,7 +244,7 @@ package body Gtk.Text is
       Fore   : in Gdk.Color.Gdk_Color;
       Back   : in Gdk.Color.Gdk_Color;
       Chars  : in String;
-      Length : in Gint)
+      Length : in Gint := -1)
    is
       procedure Internal
         (Text   : in System.Address;
@@ -308,7 +308,7 @@ package body Gtk.Text is
 
    procedure Set_Editable
      (Text     : access Gtk_Text_Record;
-      Editable : in Boolean)
+      Editable : in Boolean := True)
    is
       procedure Internal
         (Text     : in System.Address;
@@ -339,7 +339,7 @@ package body Gtk.Text is
 
    procedure Set_Line_Wrap
      (Text      : access Gtk_Text_Record;
-      Line_Wrap : in Boolean)
+      Line_Wrap : in Boolean := True)
    is
       procedure Internal
         (Text      : in System.Address;
@@ -356,7 +356,7 @@ package body Gtk.Text is
 
    procedure Set_Word_Wrap
      (Text      : access Gtk_Text_Record;
-      Word_Wrap : in Boolean)
+      Word_Wrap : in Boolean := True)
    is
       procedure Internal
         (Text      : in System.Address;

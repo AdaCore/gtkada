@@ -27,6 +27,12 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  This widget displays any given text that can be manipulated by
+--  both the user and the programmer.
+--
+--  </description>
 --  <c_version>1.2.6</c_version>
 
 with Gdk.Color;
@@ -42,39 +48,75 @@ package Gtk.Text is
 
    function Backward_Delete (Text : access Gtk_Text_Record; Nchars : in Guint)
      return Boolean;
+   --  Backward delete Nchars characters from the current point position.
+   --  There must be at least Nchars characters to delete before the
+   --  pointer, or the operation will not be performed.
+   --  Return True if the operation was succesful, False otherwise.
 
    function Forward_Delete (Text : access Gtk_Text_Record; Nchars : in Guint)
      return Boolean;
+   --  Forward delete Nchars characters from the current point position.
+   --  There must be at least Nchars characters to delete after the
+   --  pointer, or the operation will not be performed.
+   --  Return True if the operation was succesful, False otherwise.
 
    procedure Freeze (Text : access Gtk_Text_Record);
+   --  Freeze the Gtk_Text widget, stopping any redrawing of the widget
+   --  until the Thaw operation is called. This operation is useful when
+   --  a large number of changes need to be made within the widget.
+   --  Freezing it during the updates will avoid some flicker seen by
+   --  the user.
 
+   --  <doc_ignore>
    function Get_Gap_Position (Text : access Gtk_Text_Record) return Guint;
 
    function Get_Gap_Size (Text : access Gtk_Text_Record) return Guint;
+   --  Those 2 functions should probably be deleted.
+   --  </doc_ignore>
 
    function Get_Hadj (Text : access Gtk_Text_Record)
      return Gtk.Adjustment.Gtk_Adjustment;
+   --  Return the horizontal scrollbar associated to the given text
+   --  widget.
 
    function Get_Length (Text : access Gtk_Text_Record) return Guint;
+   --  Return the total length of the text contained within the text
+   --  widget.
 
    function Get_Point (Text : access Gtk_Text_Record) return Guint;
+   --  Gets the current position of the cursor as the number of
+   --  characters from the upper left corner of the widget.
 
+   --  <doc_ignore>
    function Get_Text (Text : access Gtk_Text_Record) return String;
+   --  Should probably be deleted (does not work, fails to capture
+   --  user changes). Use Gtk.Editable.Get_Chars instead.
+   --  </doc_ignore>
 
+   --  <doc_ignore>
    function Get_Text_End (Text : access Gtk_Text_Record) return Guint;
+   --  Should probably be deleted.
+   --  </doc_ignore>
 
    procedure Gtk_New
      (Text : out Gtk_Text;
       Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
       Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
+   --  Create a new text widget with the given scrollbars. If either or
+   --  both scrollbars is not provided, the text widget will create its
+   --  own.
 
    procedure Initialize
      (Text : access Gtk_Text_Record'Class;
       Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
       Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment);
+   --  Internal initialization function.
+   --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Vadj (Text : access Gtk_Text_Record)
      return Gtk.Adjustment.Gtk_Adjustment;
+   --  Return the vertical scrollbar associated to the given text
+   --  widget.
 
    procedure Insert
      (Text   : access Gtk_Text_Record;
@@ -82,25 +124,46 @@ package Gtk.Text is
       Fore   : in Gdk.Color.Gdk_Color;
       Back   : in Gdk.Color.Gdk_Color;
       Chars  : in String;
-      Length : in Gint);
+      Length : in Gint := -1);
+   --  Insert the given string (Chars) inside the text of the text
+   --  widget, with the specified Font, foreground (Fore) and background
+   --  (Back) colors. Only the first "Length" characters are inserted,
+   --  unless Length is set to -1, in which case the complete string is
+   --  inserted.
 
    procedure Set_Adjustments
      (Text : access Gtk_Text_Record;
       Hadj : Gtk.Adjustment.Gtk_Adjustment;
       Vadj : Gtk.Adjustment.Gtk_Adjustment);
+   --  Set the horizontal and vertical adjustments associated to the
+   --  given text widget.
 
    procedure Set_Editable
-     (Text : access Gtk_Text_Record; Editable : in Boolean);
+     (Text : access Gtk_Text_Record; Editable : in Boolean := True);
+   --  Toggle the editable state of the given text widget, which
+   --  determine whether the user can edit the text or not. Note that
+   --  the programmer can still perform any update.
 
    procedure Set_Line_Wrap
-     (Text : access Gtk_Text_Record; Line_Wrap : in Boolean);
+     (Text : access Gtk_Text_Record; Line_Wrap : in Boolean := True);
+   --  Set the Line_Wrap state of the given text widget. If set to True,
+   --  the line is broken when it reaches the extent of the widget
+   --  viewing area and the rest is displayed on the next line. If set
+   --  to false, the line continues regardless of the size of current
+   --  viewing area.
 
    procedure Set_Point (Text : access Gtk_Text_Record; Index : in Guint);
+   --  Set the cursor position.
 
    procedure Set_Word_Wrap
-     (Text : access Gtk_Text_Record; Word_Wrap : in Boolean);
+     (Text : access Gtk_Text_Record; Word_Wrap : in Boolean := True);
+   --  Set the Word_Wrap state of the given text widget. If set to True,
+   --  words are wrapped down to the next line if they can't be completed
+   --  on the current line.
 
    procedure Thaw (Text : access Gtk_Text_Record);
+   --  Cancel the previous call to Freeze. Allow the widget to be
+   --  redrawn again.
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function
