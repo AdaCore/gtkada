@@ -46,10 +46,10 @@ package Gtk.Button is
 
    procedure Gtk_New (Button : out Gtk_Button;
                       Label : in String := "");
-   --  Creates a new button.
-   --  if LABEL is not the empty string, then the text appears in the
+   --  Create a new button.
+   --  if Label is not the empty string, then the text appears in the
    --  button (and the child of the button is a Gtk_Label). On the other
-   --  hand, if LABEL is the empty string, then no child is created for
+   --  hand, if Label is the empty string, then no child is created for
    --  the button and it is your responsability to add one. This is the
    --  recommended way to put a pixmap inside the button.
 
@@ -59,11 +59,11 @@ package Gtk.Button is
    --  See the section "Creating your own widgets" in the documentation.
 
    function Get_Type return Gtk.Gtk_Type;
-   --  Returns the internal value associated with a Gtk_Button internally.
+   --  Return the internal value associated with a Gtk_Button internally.
 
    procedure Set_Relief (Button   : access Gtk_Button_Record;
                          NewStyle : in     Gtk.Enums.Gtk_Relief_Style);
-   --  Modifies the relief style for the button.
+   --  Modify the relief style for the button.
    --  This modifies only its visual aspect, not its behavior.
 
    function Get_Relief (Button : access Gtk_Button_Record)
@@ -75,19 +75,19 @@ package Gtk.Button is
    ----------------------
 
    procedure Pressed  (Button : access Gtk_Button_Record);
-   --  Sends the "pressed" signal to the button
+   --  Send the "pressed" signal to the button
 
    procedure Released (Button : access Gtk_Button_Record);
-   --  Sends the "release" signal to the button
+   --  Send the "release" signal to the button
 
    procedure Clicked  (Button : access Gtk_Button_Record);
-   --  Sends the "clicked" signal to the button
+   --  Send the "clicked" signal to the button
 
    procedure Enter    (Button : access Gtk_Button_Record);
-   --  Sends the "enter" signal to the button
+   --  Send the "enter" signal to the button
 
    procedure Leave    (Button : access Gtk_Button_Record);
-   --  Sends the "leave" signal to the button
+   --  Send the "leave" signal to the button
 
    ----------------------------
    -- Support for GATE/DGATE --
@@ -111,20 +111,20 @@ package Gtk.Button is
    --  - "clicked"
    --    procedure Handler (Button : access Gtk_Button_Record'Class);
    --
-   --    Calls when the button has been clicked on by the user. This is the
+   --    Emitted when the button has been clicked on by the user. This is the
    --    signal you should use to start your own actions.
    --
    --  - "pressed"
    --    procedure Handler (Button : access Gtk_Button_Record'Class);
    --
-   --    This signal is emitted when the user presses the mouse button on
+   --    Emitted when the user presses the mouse button on
    --    the widget. The default implementation modifies the widget state
    --    and its visual aspect.
    --
    --  - "released"
    --    procedure Handler (Button : access Gtk_Button_Record'Class);
    --
-   --    This signal is emitted when the user releases the mouse button and
+   --    Emitted when the user releases the mouse button and
    --    is inside of the widget. The default implementation modifies the
    --    widget state and its visual aspect. If the mouse is still inside
    --    the widget, then the "clicked" signal is emitted.
@@ -132,13 +132,13 @@ package Gtk.Button is
    --  - "enter"
    --    procedure Handler (Button : access Gtk_Button_Record'Class);
    --
-   --    This signal is emitted when the mouse enters the button. The clicked
+   --    Emitted when the mouse enters the button. The clicked
    --    signal can only be emitted when the mouse is inside the button.
    --
    --  - "leave"
    --    procedure Handler (Button : access Gtk_Button_Record'Class);
    --
-   --    This signal is emitted when the mouse leaves the button.
+   --    Emitted when the mouse leaves the button.
    --
    --  </signals>
 
