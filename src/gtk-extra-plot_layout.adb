@@ -152,27 +152,25 @@ package body Gtk.Extra.Plot_Layout is
                           Text          : in String);
       pragma Import (C, Internal, "gtk_plot_layout_put_text");
       use type Gdk.Color.Gdk_Color;
+
       Fg_C : aliased Gdk.Color.Gdk_Color := Fg;
       F : System.Address := Fg_C'Address;
       Bg_C : aliased Gdk.Color.Gdk_Color := Bg;
       B : System.Address := Bg_C'Address;
+
    begin
       if Fg = Gdk.Color.Null_Color then
          F := System.Null_Address;
       end if;
+
       if Bg = Gdk.Color.Null_Color then
          B := System.Null_Address;
       end if;
-      Internal (Get_Object (Layout),
-                X,
-                Y,
-                Angle,
-                Ps_Font & ASCII.Nul,
-                Height,
-                F,
-                B,
-                Gtk.Enums.Gtk_Justification'Pos (Justification),
-                Text & ASCII.Nul);
+
+      Internal
+        (Get_Object (Layout), X, Y, Angle, Ps_Font & ASCII.Nul, Height,
+         F, B, Gtk.Enums.Gtk_Justification'Pos (Justification),
+         Text & ASCII.Nul);
    end Put_Text;
 
    -------------
@@ -198,12 +196,15 @@ package body Gtk.Extra.Plot_Layout is
                           Color       : in System.Address);
       pragma Import (C, Internal, "gtk_plot_layout_set_background");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
       C : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          C := System.Null_Address;
       end if;
+
       Internal (Get_Object (Plot_Layout), C);
    end Set_Background;
 

@@ -94,34 +94,40 @@ package body Gtk.Extra.Sheet is
    -- Initialize --
    ----------------
 
-   procedure Initialize (Sheet   : access Gtk_Sheet_Record'Class;
-                         Rows    : in Gint;
-                         Columns : in Gint;
-                         Title   : in String := "";
-                         Entry_Type : in Gtk_Type := Gtk_Type_Invalid)
+   procedure Initialize
+     (Sheet   : access Gtk_Sheet_Record'Class;
+      Rows    : in Gint;
+      Columns : in Gint;
+      Title   : in String := "";
+      Entry_Type : in Gtk_Type := Gtk_Type_Invalid)
    is
-      function Internal (Rows    : in Gint;
-                         Columns : in Gint;
-                         Title   : in System.Address)
-                        return       System.Address;
+      function Internal
+        (Rows    : in Gint;
+         Columns : in Gint;
+         Title   : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_sheet_new");
-      function Internal2 (Rows      : in Gint;
-                         Columns    : in Gint;
-                         Title      : in System.Address;
-                         Entry_Type : in Gtk_Type)
-                        return       System.Address;
+
+      function Internal2
+        (Rows      : in Gint;
+         Columns    : in Gint;
+         Title      : in System.Address;
+         Entry_Type : in Gtk_Type) return System.Address;
       pragma Import (C, Internal2, "gtk_sheet_new_with_custom_entry");
+
       S : aliased String := Title & ASCII.Nul;
       Sa : System.Address := S'Address;
+
    begin
       if Title = "" then
          Sa := System.Null_Address;
       end if;
+
       if Entry_Type /= Gtk_Type_Invalid then
          Set_Object (Sheet, Internal2 (Rows, Columns, Sa, Entry_Type));
       else
          Set_Object (Sheet, Internal (Rows, Columns, Sa));
       end if;
+
       Initialize_User_Data (Sheet);
    end Initialize;
 
@@ -129,11 +135,11 @@ package body Gtk.Extra.Sheet is
    -- Gtk_New_Browser --
    ---------------------
 
-   procedure Gtk_New_Browser (Sheet   : out Gtk_Sheet;
-                              Rows    : in Gint;
-                              Columns : in Gint;
-                              Title   : in String := "")
-   is
+   procedure Gtk_New_Browser
+     (Sheet   : out Gtk_Sheet;
+      Rows    : in Gint;
+      Columns : in Gint;
+      Title   : in String := "") is
    begin
       Sheet := new Gtk_Sheet_Record;
       Initialize_Browser (Sheet, Rows, Columns, Title);
@@ -148,17 +154,20 @@ package body Gtk.Extra.Sheet is
                                  Columns : in Gint;
                                  Title   : in String := "")
    is
-      function Internal (Rows    : in Gint;
-                         Columns : in Gint;
-                         Title   : in System.Address)
-                        return       System.Address;
+      function Internal
+        (Rows    : in Gint;
+         Columns : in Gint;
+         Title   : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_sheet_new_browser");
+
       S : aliased String := Title & ASCII.Nul;
       Sa : System.Address := S'Address;
+
    begin
       if Title = "" then
          Sa := System.Null_Address;
       end if;
+
       Set_Object (Sheet, Internal (Rows, Columns, Sa));
       Initialize_User_Data (Sheet);
    end Initialize_Browser;
@@ -168,12 +177,13 @@ package body Gtk.Extra.Sheet is
    ---------------------
 
    procedure Set_Hadjustment
-      (Sheet      : access Gtk_Sheet_Record;
-       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+     (Sheet      : access Gtk_Sheet_Record;
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
-      procedure Internal (Sheet      : in System.Address;
-                          Adjustment : in System.Address);
+      procedure Internal
+        (Sheet : in System.Address; Adjustment : in System.Address);
       pragma Import (C, Internal, "gtk_sheet_set_hadjustment");
+
    begin
       Internal (Get_Object (Sheet), Get_Object (Adjustment));
    end Set_Hadjustment;
@@ -226,8 +236,7 @@ package body Gtk.Extra.Sheet is
    -- Get_State --
    ---------------
 
-   function Get_State (Sheet  : access Gtk_Sheet_Record) return Sheet_State
-   is
+   function Get_State (Sheet  : access Gtk_Sheet_Record) return Sheet_State is
       function Internal (Sheet  : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_sheet_get_state");
    begin
@@ -239,16 +248,15 @@ package body Gtk.Extra.Sheet is
    -----------------------
 
    procedure Get_Visible_Range
-      (Sheet     : access Gtk_Sheet_Record;
-       The_Range : out Gtk_Sheet_Range)
+     (Sheet     : access Gtk_Sheet_Record;
+      The_Range : out Gtk_Sheet_Range)
    is
-      procedure Internal (Sheet : in System.Address;
-                          R     : in System.Address);
+      procedure Internal
+        (Sheet : in System.Address; The_Range : out Gtk_Sheet_Range);
       pragma Import (C, Internal, "gtk_sheet_get_visible_range");
-      R : aliased Gtk_Sheet_Range;
+
    begin
-      Internal (Get_Object (Sheet), R'Address);
-      The_Range := R;
+      Internal (Get_Object (Sheet), The_Range);
    end Get_Visible_Range;
 
    ------------------------
@@ -685,15 +693,18 @@ package body Gtk.Extra.Sheet is
    -- Select_Range --
    ------------------
 
-   procedure Select_Range (Sheet     : access Gtk_Sheet_Record;
-                           The_Range : in Gtk_Sheet_Range)
+   procedure Select_Range
+     (Sheet     : access Gtk_Sheet_Record;
+      The_Range : in Gtk_Sheet_Range)
    is
-      procedure Internal (Sheet : in System.Address;
-                          The_Range : in System.Address);
+      procedure Internal
+        (Sheet : in System.Address; The_Range : in out Gtk_Sheet_Range);
       pragma Import (C, Internal, "gtk_sheet_select_range");
-      R : aliased Gtk_Sheet_Range := The_Range;
+
+      R : Gtk_Sheet_Range := The_Range;
+
    begin
-      Internal (Get_Object (Sheet), R'Address);
+      Internal (Get_Object (Sheet), R);
    end Select_Range;
 
    --------------------
@@ -760,17 +771,18 @@ package body Gtk.Extra.Sheet is
                           Justification : in Gint;
                           Text          : in System.Address);
       pragma Import (C, Internal, "gtk_sheet_set_cell");
+
       T : aliased String := Text & ASCII.Nul;
       Ta : System.Address := T'Address;
+
    begin
       if Text = "" then
          Ta := System.Null_Address;
       end if;
-      Internal (Get_Object (Sheet),
-                Row,
-                Col,
-                Gtk.Enums.Gtk_Justification'Pos (Justification),
-                Ta);
+
+      Internal
+        (Get_Object (Sheet), Row, Col,
+         Gtk.Enums.Gtk_Justification'Pos (Justification), Ta);
    end Set_Cell;
 
    -------------------
@@ -787,12 +799,15 @@ package body Gtk.Extra.Sheet is
                           Col   : in Gint;
                           Text  : in System.Address);
       pragma Import (C, Internal, "gtk_sheet_set_cell_text");
+
       T : aliased String := Text & ASCII.Nul;
       Ta : System.Address := T'Address;
+
    begin
       if Text = "" then
          Ta := System.Null_Address;
       end if;
+
       Internal (Get_Object (Sheet), Row, Col, Ta);
    end Set_Cell_Text;
 
@@ -861,11 +876,13 @@ package body Gtk.Extra.Sheet is
                           The_Range : in Gtk_Sheet_Range)
    is
       procedure Internal (Sheet     : in System.Address;
-                          The_Range : in System.Address);
+                          The_Range : in out Gtk_Sheet_Range);
       pragma Import (C, Internal, "gtk_sheet_range_clear");
-      R : aliased Gtk_Sheet_Range := The_Range;
+
+      R : Gtk_Sheet_Range := The_Range;
+
    begin
-      Internal (Get_Object (Sheet), R'Address);
+      Internal (Get_Object (Sheet), R);
    end Range_Clear;
 
    ------------------
@@ -974,24 +991,27 @@ package body Gtk.Extra.Sheet is
    -- Get_Pixel_Info --
    --------------------
 
-   procedure Get_Pixel_Info (Sheet  : access Gtk_Sheet_Record;
-                             X      : in Gint;
-                             Y      : in Gint;
-                             Row    : out Gint;
-                             Column : out Gint)
+   procedure Get_Pixel_Info
+     (Sheet  : access Gtk_Sheet_Record;
+      X      : in Gint;
+      Y      : in Gint;
+      Row    : out Gint;
+      Column : out Gint)
    is
-      function Internal (Sheet  : in System.Address;
-                         X      : in Gint;
-                         Y      : in Gint;
-                         Row    : access Gint;
-                         Column : access Gint)
-                        return      Gint;
+      function Internal
+        (Sheet  : in System.Address;
+         X      : in Gint;
+         Y      : in Gint;
+         Row    : access Gint;
+         Column : access Gint) return Gint;
       pragma Import (C, Internal, "gtk_sheet_get_pixel_info");
+
       R, C : aliased Gint;
    begin
       if Internal (Get_Object (Sheet), X, Y, R'Access, C'Access) = 0 then
          raise Constraint_Error;
       end if;
+
       Row := R;
       Column := C;
    end Get_Pixel_Info;
@@ -1000,22 +1020,24 @@ package body Gtk.Extra.Sheet is
    -- Get_Cell_Area --
    -------------------
 
-   function Get_Cell_Area (Sheet  : access Gtk_Sheet_Record;
-                           Row    : in Gint;
-                           Column : in Gint;
-                           Area   : in Gdk.Rectangle.Gdk_Rectangle)
-                          return  Boolean
+   function Get_Cell_Area
+     (Sheet  : access Gtk_Sheet_Record;
+      Row    : in Gint;
+      Column : in Gint;
+      Area   : in Gdk.Rectangle.Gdk_Rectangle) return Boolean
    is
-      function Internal (Sheet  : in System.Address;
-                         Row    : in Gint;
-                         Column : in Gint;
-                         Area   : in System.Address)
-                        return      Gint;
+      function Internal
+        (Sheet  : in System.Address;
+         Row    : in Gint;
+         Column : in Gint;
+         Area   : access Gdk.Rectangle.Gdk_Rectangle) return Gint;
       pragma Import (C, Internal, "gtk_sheet_get_cell_area");
+
       A : aliased Gdk.Rectangle.Gdk_Rectangle := Area;
+
    begin
       return Boolean'Val
-        (Internal (Get_Object (Sheet), Row, Column, A'Address));
+        (Internal (Get_Object (Sheet), Row, Column, A'Access));
    end Get_Cell_Area;
 
    ----------------------
@@ -1155,12 +1177,15 @@ package body Gtk.Extra.Sheet is
                           Color     : in System.Address);
       pragma Import (C, Internal, "gtk_sheet_range_set_background");
       use type Gdk.Color.Gdk_Color;
+
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          Ca := System.Null_Address;
       end if;
+
       Internal (Get_Object (Sheet), The_Range, Ca);
    end Range_Set_Background;
 
@@ -1177,12 +1202,15 @@ package body Gtk.Extra.Sheet is
                           Color     : in System.Address);
       pragma Import (C, Internal, "gtk_sheet_range_set_foreground");
       use type Gdk.Color.Gdk_Color;
+
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          Ca := System.Null_Address;
       end if;
+
       Internal (Get_Object (Sheet), The_Range, Ca);
    end Range_Set_Foreground;
 
@@ -1291,12 +1319,15 @@ package body Gtk.Extra.Sheet is
                           Color     : in System.Address);
       pragma Import (C, Internal, "gtk_sheet_range_set_border_color");
       use type Gdk.Color.Gdk_Color;
+
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          Ca := System.Null_Address;
       end if;
+
       Internal (Get_Object (Sheet), The_Range, Ca);
    end Range_Set_Border_Color;
 
@@ -1414,15 +1445,16 @@ package body Gtk.Extra.Sheet is
    -- Get_Range --
    ---------------
 
-   function Get_Range (Sheet : access Gtk_Sheet_Record)
-                      return Gtk_Sheet_Range
+   function Get_Range
+     (Sheet : access Gtk_Sheet_Record) return Gtk_Sheet_Range
    is
-      procedure Internal (Sheet     : System.Address;
-                          The_Range : System.Address);
+      procedure Internal
+        (Sheet : System.Address; The_Range : out Gtk_Sheet_Range);
       pragma Import (C, Internal, "ada_gtk_sheet_get_range");
-      R : aliased Gtk_Sheet_Range;
+
+      R : Gtk_Sheet_Range;
    begin
-      Internal (Get_Object (Sheet), R'Address);
+      Internal (Get_Object (Sheet), R);
       return R;
    end Get_Range;
 

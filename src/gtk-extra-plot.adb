@@ -230,12 +230,14 @@ package body Gtk.Extra.Plot is
                           Background : in System.Address);
       pragma Import (C, Internal, "gtk_plot_set_background");
       use type Gdk.Color.Gdk_Color;
+
       Back : aliased Gdk.Color.Gdk_Color := Background;
       Backa : System.Address := Back'Address;
    begin
       if Background = Gdk.Color.Null_Color then
          Backa := System.Null_Address;
       end if;
+
       Internal (Get_Object (Plot), Backa);
    end Set_Background;
 
@@ -248,11 +250,13 @@ package body Gtk.Extra.Plot is
        Area   : in Gdk.Rectangle.Gdk_Rectangle)
    is
       procedure Internal (Widget : in System.Address;
-                          Area   : in System.Address);
+                          Area   : in out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_plot_paint");
-      Rec : aliased Gdk.Rectangle.Gdk_Rectangle := Area;
+
+      Rec : Gdk.Rectangle.Gdk_Rectangle := Area;
+
    begin
-      Internal (Get_Object (Widget), Rec'Address);
+      Internal (Get_Object (Widget), Rec);
    end Paint;
 
    -------------
@@ -264,11 +268,13 @@ package body Gtk.Extra.Plot is
        Area : in Gdk.Rectangle.Gdk_Rectangle)
    is
       procedure Internal (Plot : in System.Address;
-                          Area : in System.Address);
+                          Area : in out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_plot_refresh");
-      Rec : aliased Gdk.Rectangle.Gdk_Rectangle := Area;
+
+      Rec : Gdk.Rectangle.Gdk_Rectangle := Area;
+
    begin
-      Internal (Get_Object (Plot), Rec'Address);
+      Internal (Get_Object (Plot), Rec);
    end Refresh;
 
    ----------
@@ -529,8 +535,8 @@ package body Gtk.Extra.Plot is
        Font_Height   : in Gint := 10;
        Foreground    : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
        Background    : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-       Justification : in Gtk.Enums.Gtk_Justification
-         := Gtk.Enums.Justify_Center;
+       Justification : in Gtk.Enums.Gtk_Justification :=
+         Gtk.Enums.Justify_Center;
        Text          : in String := "")
    is
       procedure Internal (Plot          : in System.Address;
@@ -545,15 +551,18 @@ package body Gtk.Extra.Plot is
                           Text          : in String);
       pragma Import (C, Internal, "gtk_plot_put_text");
       use type Gdk.Color.Gdk_Color;
-      Back : aliased Gdk.Color.Gdk_Color := Background;
-      Fore : aliased Gdk.Color.Gdk_Color := Foreground;
+
+      Back  : aliased Gdk.Color.Gdk_Color := Background;
+      Fore  : aliased Gdk.Color.Gdk_Color := Foreground;
       Backa : System.Address := Back'Address;
       Forea : System.Address := Fore'Address;
-      F    : aliased String := Ps_Font & ASCII.NUL;
+      F     : aliased String := Ps_Font & ASCII.NUL;
+
    begin
       if Foreground = Gdk.Color.Null_Color then
          Forea := System.Null_Address;
       end if;
+
       if Background = Gdk.Color.Null_Color then
          Backa := System.Null_Address;
       end if;
@@ -709,12 +718,15 @@ package body Gtk.Extra.Plot is
                           Color : in System.Address);
       pragma Import (C, Internal, "gtk_plot_axis_set_attributes");
       use type Gdk.Color.Gdk_Color;
+
       C  : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
+
    begin
       if C = Gdk.Color.Null_Color then
          Ca := System.Null_Address;
       end if;
+
       Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Line_Width, Ca);
    end Axis_Set_Attributes;
 
@@ -722,21 +734,22 @@ package body Gtk.Extra.Plot is
    -- Axis_Get_Attributes --
    -------------------------
 
-   procedure Axis_Get_Attributes (Plot       : access Gtk_Plot_Record;
-                                  Axis       : in     Plot_Axis_Pos;
-                                  Line_Width : out    Gint;
-                                  Color      : out    Gdk.Color.Gdk_Color)
+   procedure Axis_Get_Attributes
+     (Plot       : access Gtk_Plot_Record;
+      Axis       : in     Plot_Axis_Pos;
+      Line_Width : out    Gint;
+      Color      : out    Gdk.Color.Gdk_Color)
    is
-      procedure Internal (Plot  : System.Address;
-                          Axis  : Gint;
-                          Width : out Gint;
-                          Color : in System.Address);
+      procedure Internal
+        (Plot  : System.Address;
+         Axis  : Gint;
+         Width : out Gint;
+         Color : out Gdk.Color.Gdk_Color);
       pragma Import (C, Internal, "gtk_plot_axis_get_attributes");
-      Col : aliased Gdk.Color.Gdk_Color;
+
    begin
-      Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis),
-                Line_Width, Col'Address);
-      Color := Col;
+      Internal
+        (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Line_Width, Color);
    end Axis_Get_Attributes;
 
    --------------------
@@ -922,6 +935,7 @@ package body Gtk.Extra.Plot is
                           Background : in System.Address);
       pragma Import (C, Internal, "gtk_plot_axis_title_set_attributes");
       use type Gdk.Color.Gdk_Color;
+
       Fore : aliased Gdk.Color.Gdk_Color := Foreground;
       Fa   : System.Address := Fore'Address;
       Back : aliased Gdk.Color.Gdk_Color := Background;
@@ -930,16 +944,14 @@ package body Gtk.Extra.Plot is
       if Fore = Gdk.Color.Null_Color then
          Fa := System.Null_Address;
       end if;
+
       if Back = Gdk.Color.Null_Color then
          Ba := System.Null_Address;
       end if;
-      Internal (Get_Object (Plot),
-                Plot_Axis_Pos'Pos (Axis),
-                Ps_Font & ASCII.Nul,
-                Height,
-                Plot_Angle'Pos (Angle),
-                Fa,
-                Ba);
+
+      Internal
+        (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Ps_Font & ASCII.Nul,
+         Height, Plot_Angle'Pos (Angle), Fa, Ba);
    end Axis_Title_Set_Attributes;
 
    --------------------------------
@@ -963,6 +975,7 @@ package body Gtk.Extra.Plot is
                           Background : in System.Address);
       pragma Import (C, Internal, "gtk_plot_axis_labels_set_attributes");
       use type Gdk.Color.Gdk_Color;
+
       Fore : aliased Gdk.Color.Gdk_Color := Foreground;
       Fa   : System.Address := Fore'Address;
       Back : aliased Gdk.Color.Gdk_Color := Background;
@@ -971,16 +984,14 @@ package body Gtk.Extra.Plot is
       if Fore = Gdk.Color.Null_Color then
          Fa := System.Null_Address;
       end if;
+
       if Back = Gdk.Color.Null_Color then
          Ba := System.Null_Address;
       end if;
-      Internal (Get_Object (Plot),
-                Plot_Axis_Pos'Pos (Axis),
-                Ps_Font & ASCII.Nul,
-                Height,
-                Plot_Angle'Pos (Angle),
-                Fa,
-                Ba);
+
+      Internal
+        (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Ps_Font & ASCII.Nul,
+         Height, Plot_Angle'Pos (Angle), Fa, Ba);
    end Axis_Labels_Set_Attributes;
 
    -----------------------------
@@ -1157,16 +1168,16 @@ package body Gtk.Extra.Plot is
                           Color : in System.Address);
       pragma Import (C, Internal, "gtk_plot_x0line_set_attributes");
       use type Gdk.Color.Gdk_Color;
+
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
+
    begin
       if C = Gdk.Color.Null_Color then
          Ca := System.Null_Address;
       end if;
-      Internal (Get_Object (Plot),
-                Plot_Line_Style'Pos (Style),
-                Width,
-                Ca);
+
+      Internal (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, Ca);
    end X0line_Set_Attributes;
 
    ---------------------------
@@ -1185,16 +1196,16 @@ package body Gtk.Extra.Plot is
           Color : in System.Address);
       pragma Import (C, Internal, "gtk_plot_y0line_set_attributes");
       use type Gdk.Color.Gdk_Color;
+
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
+
    begin
       if C = Gdk.Color.Null_Color then
          Ca := System.Null_Address;
       end if;
-      Internal (Get_Object (Plot),
-                Plot_Line_Style'Pos (Style),
-                Width,
-                Ca);
+
+      Internal (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, Ca);
    end Y0line_Set_Attributes;
 
    --------------------------------
@@ -1212,16 +1223,16 @@ package body Gtk.Extra.Plot is
                           Color : in System.Address);
       pragma Import (C, Internal, "gtk_plot_major_hgrid_set_attributes");
       use type Gdk.Color.Gdk_Color;
+
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
+
    begin
       if C = Gdk.Color.Null_Color then
          Ca := System.Null_Address;
       end if;
-      Internal (Get_Object (Plot),
-                Plot_Line_Style'Pos (Style),
-                Width,
-                Ca);
+
+      Internal (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, Ca);
    end Major_Hgrid_Set_Attributes;
 
    --------------------------------
@@ -1239,16 +1250,16 @@ package body Gtk.Extra.Plot is
                           Color : in System.Address);
       pragma Import (C, Internal, "gtk_plot_major_vgrid_set_attributes");
       use type Gdk.Color.Gdk_Color;
+
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
+
    begin
       if C = Gdk.Color.Null_Color then
          Ca := System.Null_Address;
       end if;
-      Internal (Get_Object (Plot),
-                Plot_Line_Style'Pos (Style),
-                Width,
-                Ca);
+
+      Internal (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, Ca);
    end Major_Vgrid_Set_Attributes;
 
    --------------------------------
@@ -1266,16 +1277,16 @@ package body Gtk.Extra.Plot is
                           Color : in System.Address);
       pragma Import (C, Internal, "gtk_plot_minor_hgrid_set_attributes");
       use type Gdk.Color.Gdk_Color;
+
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
+
    begin
       if C = Gdk.Color.Null_Color then
          Ca := System.Null_Address;
       end if;
-      Internal (Get_Object (Plot),
-                Plot_Line_Style'Pos (Style),
-                Width,
-                Ca);
+
+      Internal (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, Ca);
    end Minor_Hgrid_Set_Attributes;
 
    --------------------------------
@@ -1293,16 +1304,16 @@ package body Gtk.Extra.Plot is
                           Color : in System.Address);
       pragma Import (C, Internal, "gtk_plot_minor_vgrid_set_attributes");
       use type Gdk.Color.Gdk_Color;
+
       C : aliased Gdk.Color.Gdk_Color := Color;
       Ca : System.Address := C'Address;
+
    begin
       if C = Gdk.Color.Null_Color then
          Ca := System.Null_Address;
       end if;
-      Internal (Get_Object (Plot),
-                Plot_Line_Style'Pos (Style),
-                Width,
-                Ca);
+
+      Internal (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, Ca);
    end Minor_Vgrid_Set_Attributes;
 
    ------------------
@@ -1409,27 +1420,28 @@ package body Gtk.Extra.Plot is
                           Background : in System.Address);
       pragma Import (C, Internal, "gtk_plot_legends_set_attributes");
       use type Gdk.Color.Gdk_Color;
+
       Fore  : aliased Gdk.Color.Gdk_Color := Foreground;
       Forea : System.Address := Fore'Address;
       Back  : aliased Gdk.Color.Gdk_Color := Background;
       Backa : System.Address := Back'Address;
       Font  : String := Ps_Font & ASCII.NUL;
       F     : System.Address := Font'Address;
+
    begin
       if Foreground = Gdk.Color.Null_Color then
          Forea := System.Null_Address;
       end if;
+
       if Background = Gdk.Color.Null_Color then
          Backa := System.Null_Address;
       end if;
+
       if Ps_Font = "" then
          F := System.Null_Address;
       end if;
-      Internal (Get_Object (Plot),
-                F,
-                Height,
-                Forea,
-                Backa);
+
+      Internal (Get_Object (Plot), F, Height, Forea, Backa);
    end Legends_Set_Attributes;
 
    ----------
@@ -1605,15 +1617,14 @@ package body Gtk.Extra.Plot is
    -- Dataset_Get_X --
    -------------------
 
-   function Dataset_Get_X (Data       : in Gtk_Plot_Data)
-                          return Points_Array
-   is
-      function Internal (Data       : in Gtk_Plot_Data;
-                         Num_Points : in System.Address)
-                        return      System.Address;
+   function Dataset_Get_X (Data : in Gtk_Plot_Data) return Points_Array is
+      function Internal
+        (Data       : in Gtk_Plot_Data;
+         Num_Points : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_plot_dataset_get_x");
+
       Num_Points : aliased Gint;
-      S : System.Address := Internal (Data, Num_Points'Address);
+      S          : System.Address := Internal (Data, Num_Points'Address);
    begin
       return (Points => To_Double_Array (S), Num_Points => Num_Points);
    end Dataset_Get_X;
@@ -1622,15 +1633,14 @@ package body Gtk.Extra.Plot is
    -- Dataset_Get_Y --
    -------------------
 
-   function Dataset_Get_Y (Data       : in Gtk_Plot_Data)
-                          return    Points_Array
-   is
-      function Internal (Data       : in Gtk_Plot_Data;
-                         Num_Points : in System.Address)
-                        return        System.Address;
+   function Dataset_Get_Y (Data : in Gtk_Plot_Data) return Points_Array is
+      function Internal
+        (Data       : in Gtk_Plot_Data;
+         Num_Points : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_plot_dataset_get_y");
+
       Num_Points : aliased Gint;
-      S : System.Address := Internal (Data, Num_Points'Address);
+      S          : System.Address := Internal (Data, Num_Points'Address);
    begin
       return (Points => To_Double_Array (S), Num_Points => Num_Points);
    end Dataset_Get_Y;
@@ -1639,15 +1649,14 @@ package body Gtk.Extra.Plot is
    -- Dataset_Get_Dx --
    --------------------
 
-   function Dataset_Get_Dx (Data     : in Gtk_Plot_Data)
-                           return    Points_Array
-   is
-      function Internal (Data       : in Gtk_Plot_Data;
-                         Num_Points : in System.Address)
-                        return          System.Address;
+   function Dataset_Get_Dx (Data : in Gtk_Plot_Data) return Points_Array is
+      function Internal
+        (Data       : in Gtk_Plot_Data;
+         Num_Points : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_plot_dataset_get_dx");
+
       Num_Points : aliased Gint;
-      S : System.Address := Internal (Data, Num_Points'Address);
+      S          : System.Address := Internal (Data, Num_Points'Address);
    begin
       return (Points => To_Double_Array (S), Num_Points => Num_Points);
    end Dataset_Get_Dx;
@@ -1656,13 +1665,12 @@ package body Gtk.Extra.Plot is
    -- Dataset_Get_Dy --
    --------------------
 
-   function Dataset_Get_Dy (Data       : in Gtk_Plot_Data)
-                           return      Points_Array
-   is
-      function Internal (Data       : in Gtk_Plot_Data;
-                         Num_Points : in System.Address)
-                        return          System.Address;
+   function Dataset_Get_Dy (Data : in Gtk_Plot_Data) return Points_Array is
+      function Internal
+        (Data       : in Gtk_Plot_Data;
+         Num_Points : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_plot_dataset_get_dy");
+
       Num_Points : aliased Gint;
       S : System.Address := Internal (Data, Num_Points'Address);
    begin
@@ -1673,12 +1681,13 @@ package body Gtk.Extra.Plot is
    -- Dataset_Set_Symbol --
    ------------------------
 
-   procedure Dataset_Set_Symbol (Data       : in Gtk_Plot_Data;
-                                 The_Type   : in Plot_Symbol_Type;
-                                 Style      : in Plot_Symbol_Style;
-                                 Size       : in Gint;
-                                 Line_Width : in Gint;
-                                 Color      : in Gdk.Color.Gdk_Color)
+   procedure Dataset_Set_Symbol
+     (Data       : in Gtk_Plot_Data;
+      The_Type   : in Plot_Symbol_Type;
+      Style      : in Plot_Symbol_Style;
+      Size       : in Gint;
+      Line_Width : in Gint;
+      Color      : in Gdk.Color.Gdk_Color)
    is
       procedure Internal (Data       : in Gtk_Plot_Data;
                           The_Type   : in Gint;
@@ -1688,93 +1697,103 @@ package body Gtk.Extra.Plot is
                           Color      : in System.Address);
       pragma Import (C, Internal, "gtk_plot_dataset_set_symbol");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
       C   : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          C := System.Null_Address;
       end if;
-      Internal (Data,
-                Plot_Symbol_Type'Pos (The_Type),
-                Plot_Symbol_Style'Pos (Style),
-                Size,
-                Line_Width,
-                C);
+
+      Internal
+        (Data,
+         Plot_Symbol_Type'Pos (The_Type),
+         Plot_Symbol_Style'Pos (Style),
+         Size,
+         Line_Width,
+         C);
    end Dataset_Set_Symbol;
 
    ------------------------
    -- Dataset_Get_Symbol --
    ------------------------
 
-   procedure Dataset_Get_Symbol (Data       : in Gtk_Plot_Data;
-                                 The_Type   : out Plot_Symbol_Type;
-                                 Style      : out Plot_Symbol_Style;
-                                 Size       : out Gint;
-                                 Line_Width : out Gint;
-                                 Color      : out Gdk.Color.Gdk_Color)
+   procedure Dataset_Get_Symbol
+     (Data       : in Gtk_Plot_Data;
+      The_Type   : out Plot_Symbol_Type;
+      Style      : out Plot_Symbol_Style;
+      Size       : out Gint;
+      Line_Width : out Gint;
+      Color      : out Gdk.Color.Gdk_Color)
    is
-      procedure Internal (Data       : in Gtk_Plot_Data;
-                          The_Type   : out Gint;
-                          Style      : out Gint;
-                          Size       : out Gint;
-                          Line_Width : out Gint;
-                          Color      : in System.Address);
+      procedure Internal
+        (Data       : in Gtk_Plot_Data;
+         The_Type   : out Gint;
+         Style      : out Gint;
+         Size       : out Gint;
+         Line_Width : out Gint;
+         Color      : out Gdk.Color.Gdk_Color);
       pragma Import (C, Internal, "gtk_plot_dataset_get_symbol");
-      C : aliased Gdk.Color.Gdk_Color;
+
       T, S : Gint;
+
    begin
-      Internal (Data, T, S, Size, Line_Width, C'Address);
+      Internal (Data, T, S, Size, Line_Width, Color);
       The_Type := Plot_Symbol_Type'Val (T);
       Style    := Plot_Symbol_Style'Val (S);
-      Color    := C;
    end Dataset_Get_Symbol;
 
    ---------------------------------
    -- Dataset_Set_Line_Attributes --
    ---------------------------------
 
-   procedure Dataset_Set_Line_Attributes (Data  : in Gtk_Plot_Data;
-                                          Style : in Plot_Line_Style;
-                                          Width : in Gint;
-                                          Color : in Gdk.Color.Gdk_Color)
+   procedure Dataset_Set_Line_Attributes
+     (Data  : in Gtk_Plot_Data;
+      Style : in Plot_Line_Style;
+      Width : in Gint;
+      Color : in Gdk.Color.Gdk_Color)
    is
-      procedure Internal (Data  : in Gtk_Plot_Data;
-                          Style : in Gint;
-                          Width : in Gint;
-                          Color : in System.Address);
+      procedure Internal
+        (Data  : in Gtk_Plot_Data;
+         Style : in Gint;
+         Width : in Gint;
+         Color : in System.Address);
       pragma Import (C, Internal, "gtk_plot_dataset_set_line_attributes");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
       C   : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          C := System.Null_Address;
       end if;
-      Internal (Data,
-                Plot_Line_Style'Pos (Style),
-                Width,
-                C);
+
+      Internal (Data, Plot_Line_Style'Pos (Style), Width, C);
    end Dataset_Set_Line_Attributes;
 
    ---------------------------------
    -- Dataset_Get_Line_Attributes --
    ---------------------------------
 
-   procedure Dataset_Get_Line_Attributes (Data  : in Gtk_Plot_Data;
-                                          Style : out Plot_Line_Style;
-                                          Width : out Gint;
-                                          Color : out Gdk.Color.Gdk_Color)
+   procedure Dataset_Get_Line_Attributes
+     (Data  : in Gtk_Plot_Data;
+      Style : out Plot_Line_Style;
+      Width : out Gint;
+      Color : out Gdk.Color.Gdk_Color)
    is
-      procedure Internal (Data  : in Gtk_Plot_Data;
-                          Style : out Gint;
-                          Width : out Gint;
-                          Color : in System.Address);
+      procedure Internal
+        (Data  : in Gtk_Plot_Data;
+         Style : out Gint;
+         Width : out Gint;
+         Color : out Gdk.Color.Gdk_Color);
       pragma Import (C, Internal, "gtk_plot_dataset_get_line_attributes");
-      C : aliased Gdk.Color.Gdk_Color;
+
       S : Gint;
+
    begin
-      Internal (Data, S, Width, C'Address);
-      Color := C;
+      Internal (Data, S, Width, Color);
       Style := Plot_Line_Style'Val (S);
    end Dataset_Get_Line_Attributes;
 
@@ -1782,66 +1801,71 @@ package body Gtk.Extra.Plot is
    -- Dataset_Set_X_Attributes --
    ------------------------------
 
-   procedure Dataset_Set_X_Attributes (Data  : in Gtk_Plot_Data;
-                                       Style : in Plot_Line_Style;
-                                       Width : in Gint;
-                                       Color : in Gdk.Color.Gdk_Color)
+   procedure Dataset_Set_X_Attributes
+     (Data  : in Gtk_Plot_Data;
+      Style : in Plot_Line_Style;
+      Width : in Gint;
+      Color : in Gdk.Color.Gdk_Color)
    is
-      procedure Internal (Data  : in Gtk_Plot_Data;
-                          Style : in Gint;
-                          Width : in Gint;
-                          Color : in System.Address);
+      procedure Internal
+        (Data  : in Gtk_Plot_Data;
+         Style : in Gint;
+         Width : in Gint;
+         Color : in System.Address);
       pragma Import (C, Internal, "gtk_plot_dataset_set_x_attributes");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
       C : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          C := System.Null_Address;
       end if;
-      Internal (Data,
-                Plot_Line_Style'Pos (Style),
-                Width,
-                C);
+
+      Internal (Data, Plot_Line_Style'Pos (Style), Width, C);
    end Dataset_Set_X_Attributes;
 
    ------------------------------
    -- Dataset_Set_Y_Attributes --
    ------------------------------
 
-   procedure Dataset_Set_Y_Attributes (Data  : in Gtk_Plot_Data;
-                                       Style : in Plot_Line_Style;
-                                       Width : in Gint;
-                                       Color : in Gdk.Color.Gdk_Color)
+   procedure Dataset_Set_Y_Attributes
+     (Data  : in Gtk_Plot_Data;
+      Style : in Plot_Line_Style;
+      Width : in Gint;
+      Color : in Gdk.Color.Gdk_Color)
    is
-      procedure Internal (Data  : in Gtk_Plot_Data;
-                          Style : in Gint;
-                          Width : in Gint;
-                          Color : in System.Address);
+      procedure Internal
+        (Data  : in Gtk_Plot_Data;
+         Style : in Gint;
+         Width : in Gint;
+         Color : in System.Address);
       pragma Import (C, Internal, "gtk_plot_dataset_set_y_attributes");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
       C : System.Address := Col'Address;
+
    begin
       if Color = Gdk.Color.Null_Color then
          C := System.Null_Address;
       end if;
-      Internal (Data,
-                Plot_Line_Style'Pos (Style),
-                Width,
-                C);
+
+      Internal (Data, Plot_Line_Style'Pos (Style), Width, C);
    end Dataset_Set_Y_Attributes;
 
    ------------------------
    -- Dataset_Set_Legend --
    ------------------------
 
-   procedure Dataset_Set_Legend (Data   : in Gtk_Plot_Data;
-                                 Legend : in String)
+   procedure Dataset_Set_Legend
+     (Data : in Gtk_Plot_Data; Legend : in String)
    is
-      procedure Internal (Data   : in Gtk_Plot_Data;
-                          Legend : in String);
+      procedure Internal
+        (Data   : in Gtk_Plot_Data; Legend : in String);
       pragma Import (C, Internal, "gtk_plot_dataset_set_legend");
+
    begin
       Internal (Data, Legend & ASCII.NUL);
    end Dataset_Set_Legend;
@@ -1850,12 +1874,10 @@ package body Gtk.Extra.Plot is
    -- Dataset_Set_Name --
    ----------------------
 
-   procedure Dataset_Set_Name (Data : in Gtk_Plot_Data;
-                               Name : in String)
-   is
-      procedure Internal (Data : in Gtk_Plot_Data;
-                          Name : in String);
+   procedure Dataset_Set_Name (Data : in Gtk_Plot_Data; Name : in String) is
+      procedure Internal (Data : in Gtk_Plot_Data; Name : in String);
       pragma Import (C, Internal, "gtk_plot_dataset_set_name");
+
    begin
       Internal (Data, Name & ASCII.Nul);
    end Dataset_Set_Name;
@@ -1864,12 +1886,11 @@ package body Gtk.Extra.Plot is
    -- Dataset_Get_Name --
    ----------------------
 
-   function Dataset_Get_Name (Data : in Gtk_Plot_Data)
-                             return String
-   is
+   function Dataset_Get_Name (Data : in Gtk_Plot_Data) return String is
       function Internal (Data : Gtk_Plot_Data)
-                        return Interfaces.C.Strings.chars_ptr;
+        return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gtk_dataset_get_name");
+
    begin
       return Interfaces.C.Strings.Value (Internal (Data));
    end Dataset_Get_Name;
@@ -1879,14 +1900,14 @@ package body Gtk.Extra.Plot is
    -- Remove_Dataset --
    --------------------
 
-   function Remove_Dataset (Plot    : access Gtk_Plot_Record;
-                            Dataset : in Gtk_Plot_Data)
-                           return       Boolean
+   function Remove_Dataset
+     (Plot    : access Gtk_Plot_Record;
+      Dataset : in Gtk_Plot_Data) return Boolean
    is
-      function Internal (Plot    : in System.Address;
-                         Dataset : in Gtk_Plot_Data)
-                        return       Gint;
+      function Internal
+        (Plot : in System.Address; Dataset : in Gtk_Plot_Data) return Gint;
       pragma Import (C, Internal, "gtk_plot_remove_dataset");
+
    begin
       return Boolean'Val (Internal (Get_Object (Plot), Dataset));
    end Remove_Dataset;
@@ -1895,14 +1916,14 @@ package body Gtk.Extra.Plot is
    -- Get_Axis --
    --------------
 
-   function Get_Axis (Plot   : access Gtk_Plot_Record;
-                      Axis   : in Plot_Axis_Pos)
-                     return     Gtk_Plot_Axis
+   function Get_Axis
+     (Plot   : access Gtk_Plot_Record;
+      Axis   : in Plot_Axis_Pos) return Gtk_Plot_Axis
    is
-      function Internal (Plot   : in System.Address;
-                         Axis   : in Gint)
-                        return      Gtk_Plot_Axis;
+      function Internal
+        (Plot : in System.Address; Axis : in Gint) return Gtk_Plot_Axis;
       pragma Import (C, Internal, "gtk_plot_get_axis");
+
    begin
       return Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis));
    end Get_Axis;
@@ -1911,21 +1932,20 @@ package body Gtk.Extra.Plot is
    -- Generic_Plot_Function --
    ---------------------------
 
-   function Generic_Plot_Function (Plot  : System.Address;
-                                   Set   : Gtk_Plot_Data;
-                                   X     : Gdouble;
-                                   Error : access Gboolean)
-                                  return Gdouble
+   function Generic_Plot_Function
+     (Plot  : System.Address;
+      Set   : Gtk_Plot_Data;
+      X     : Gdouble;
+      Error : access Gboolean) return Gdouble
    is
       Stub : Gtk_Plot_Record;
       B    : aliased Boolean;
       Y    : Gdouble;
+
    begin
-      Y :=  Func (Gtk_Plot (Get_User_Data (Plot, Stub)),
-                  Set,
-                  X,
-                  B'Access);
+      Y := Func (Gtk_Plot (Get_User_Data (Plot, Stub)), Set, X, B'Access);
       Error.all := Boolean'Pos (B);
+
       return Y;
    end Generic_Plot_Function;
 
@@ -1934,11 +1954,13 @@ package body Gtk.Extra.Plot is
    ------------------
 
    function Get_Datasets (Plot : access Gtk_Plot_Record)
-                         return Datasets_List.Glist
+     return Datasets_List.Glist
    is
       function Internal (Plot : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_plot_get_datasets");
+
       List : Datasets_List.Glist;
+
    begin
       Datasets_List.Set_Object (List, Internal (Get_Object (Plot)));
       return List;
@@ -1948,12 +1970,14 @@ package body Gtk.Extra.Plot is
    -- Get_Texts --
    ---------------
 
-   function Get_Texts (Plot : access Gtk_Plot_Record)
-                      return Texts_List.Glist
+   function Get_Texts
+     (Plot : access Gtk_Plot_Record) return Texts_List.Glist
    is
       function Internal (Plot : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_plot_get_texts");
+
       List : Texts_List.Glist;
+
    begin
       Texts_List.Set_Object (List, Internal (Get_Object (Plot)));
       return List;
@@ -1964,9 +1988,10 @@ package body Gtk.Extra.Plot is
    ---------------------
 
    function Get_Text_String (Text : in Gtk_Plot_Text) return String is
-      function Internal (Text : Gtk_Plot_Text)
-                        return Interfaces.C.Strings.chars_ptr;
+      function Internal
+        (Text : Gtk_Plot_Text) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gtk_plot_get_text_string");
+
    begin
       return Interfaces.C.Strings.Value (Internal (Text));
    end Get_Text_String;

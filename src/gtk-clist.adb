@@ -318,20 +318,20 @@ package body Gtk.Clist is
         (Clist  : in System.Address;
          Row    : in Gint;
          Column : in Gint;
-         Pixmap : in System.Address;
-         Mask   : in System.Address)
-         return      Gint;
+         Pixmap : access Gdk.Pixmap.Gdk_Pixmap;
+         Mask   : access Gdk.Bitmap.Gdk_Bitmap) return Gint;
       pragma Import (C, Internal, "gtk_clist_get_pixmap");
+
       Pix : aliased Gdk.Pixmap.Gdk_Pixmap;
       Msk : aliased Gdk.Bitmap.Gdk_Bitmap;
+
    begin
-      Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
-                                         Row,
-                                         Column,
-                                         Pix'Address,
-                                         Msk'Address));
+      Is_Valid :=
+        Boolean'Val (Internal
+          (Get_Object (Clist), Row, Column,
+           Pix'Access, Msk'Access));
       Pixmap := Pix;
-      Mask := Msk;
+      Mask   := Msk;
    end Get_Pixmap;
 
    ----------------
@@ -350,21 +350,19 @@ package body Gtk.Clist is
         (Clist  : in System.Address;
          Row    : in Gtk_Clist_Row;
          Column : in Gint;
-         Pixmap : in System.Address;
-         Mask   : in System.Address)
-         return      Gint;
+         Pixmap : access Gdk.Pixmap.Gdk_Pixmap;
+         Mask   : access Gdk.Bitmap.Gdk_Bitmap) return Gint;
       pragma Import (C, Internal, "ada_gtk_clist_get_pixmap");
+
       Pix : aliased Gdk.Pixmap.Gdk_Pixmap;
-      Msk : aliased Gdk.Bitmap.Gdk_Bitmap;
+      Msk : aliased Gdk.Pixmap.Gdk_Pixmap;
 
    begin
-      Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
-                                         Row,
-                                         Column,
-                                         Pix'Address,
-                                         Msk'Address));
+      Is_Valid :=
+        Boolean'Val (Internal
+          (Get_Object (Clist), Row, Column, Pix'Access, Msk'Access));
       Pixmap := Pix;
-      Mask := Msk;
+      Mask   := Msk;
    end Get_Pixmap;
 
    -----------------
@@ -384,34 +382,32 @@ package body Gtk.Clist is
         (Clist   : in System.Address;
          Row     : in Gint;
          Column  : in Gint;
-         Text    : in System.Address;
-         Spacing : in System.Address;
-         Pixmap  : in System.Address;
-         Mask    : in System.Address)
-         return       Gint;
+         Text    : access Interfaces.C.Strings.chars_ptr;
+         Spacing : access Guint8;
+         Pixmap  : access Gdk.Pixmap.Gdk_Pixmap;
+         Mask    : access Gdk.Bitmap.Gdk_Bitmap) return Gint;
       pragma Import (C, Internal, "gtk_clist_get_pixtext");
 
       S    : aliased Interfaces.C.Strings.chars_ptr;
+      Spac : aliased Guint8;
       Pix  : aliased Gdk.Pixmap.Gdk_Pixmap;
       Msk  : aliased Gdk.Bitmap.Gdk_Bitmap;
+
    begin
-      Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
-                                         Row,
-                                         Column,
-                                         S'Address,
-                                         Spacing'Address,
-                                         Pix'Address,
-                                         Msk'Address));
-      Pixmap := Pix;
-      Mask := Msk;
+      Is_Valid := Boolean'Val (Internal
+        (Get_Object (Clist), Row, Column, S'Access,
+         Spac'Access, Pix'Access, Msk'Access));
+      Spacing := Spac;
+      Pixmap  := Pix;
+      Mask    := Msk;
    end Get_Pixtext;
 
    ------------------
    -- Get_Row_List --
    ------------------
 
-   function Get_Row_List (Clist : access Gtk_Clist_Record)
-                          return         Row_List.Glist
+   function Get_Row_List
+     (Clist : access Gtk_Clist_Record) return Row_List.Glist
    is
       function Internal (Widget : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_clist_get_row_list");
@@ -454,8 +450,8 @@ package body Gtk.Clist is
    -- Get_Selection --
    -------------------
 
-   function Get_Selection (Widget : access Gtk_Clist_Record)
-                           return Gint_List.Glist
+   function Get_Selection
+     (Widget : access Gtk_Clist_Record) return Gint_List.Glist
    is
       function Internal (Widget : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_clist_get_selection");
@@ -481,20 +477,16 @@ package body Gtk.Clist is
         (Clist  : in System.Address;
          X      : in Gint;
          Y      : in Gint;
-         Row    : in System.Address;
-         Column : in System.Address)
-         return      Gint;
+         Row    : access Gint;
+         Column : access Gint) return Gint;
       pragma Import (C, Internal, "gtk_clist_get_selection_info");
+
       Row_Out, Column_Out : aliased Gint;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
+
    begin
-      Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
-                                         X,
-                                         Y,
-                                         Row_Out'Address,
-                                         Column_Out'Address));
-      Row := Row_Out;
+      Is_Valid := Boolean'Val (Internal
+        (Get_Object (Clist), X, Y, Row_Out'Access, Column_Out'Access));
+      Row    := Row_Out;
       Column := Column_Out;
    end Get_Selection_Info;
 
@@ -502,8 +494,8 @@ package body Gtk.Clist is
    -- Get_Selection_Mode --
    ------------------------
 
-   function Get_Selection_Mode (Clist : access Gtk_Clist_Record)
-                                return Gtk_Selection_Mode
+   function Get_Selection_Mode
+     (Clist : access Gtk_Clist_Record) return Gtk_Selection_Mode
    is
       function Internal (Clist : System.Address) return Gint;
       pragma Import (C, Internal, "ada_clist_get_selection_mode");
@@ -524,43 +516,37 @@ package body Gtk.Clist is
         (Clist  : in System.Address;
          Row    : in Gint;
          Column : in Gint;
-         Text   : in System.Address)
-         return      Gint;
+         Text   : access Interfaces.C.Strings.chars_ptr) return Gint;
       pragma Import (C, Internal, "gtk_clist_get_text");
+
       function Internal2
         (Clist   : in System.Address;
          Row     : in Gint;
          Column  : in Gint;
-         Text    : in System.Address;
+         Text    : access Interfaces.C.Strings.chars_ptr;
          Spacing : in System.Address;
          Pixmap  : in System.Address;
-         Mask    : in System.Address)
-         return       Gint;
+         Mask    : access System.Address) return Gint;
       pragma Import (C, Internal2, "gtk_clist_get_pixtext");
 
       Is_Valid : Boolean;
-      S : aliased Interfaces.C.Strings.chars_ptr;
-      Mask : aliased System.Address;
+      S        : aliased Interfaces.C.Strings.chars_ptr;
+      Mask     : aliased System.Address;
+
    begin
       if Get_Cell_Type (Clist, Row, Column) = Cell_Text then
-         Is_Valid := Boolean'Val (Internal (Get_Object (Clist),
-                                            Row,
-                                            Column,
-                                            S'Address));
+         Is_Valid := Boolean'Val (Internal
+           (Get_Object (Clist), Row, Column, S'Access));
       else
-         Is_Valid := Boolean'Val (Internal2 (Get_Object (Clist),
-                                             Row,
-                                             Column,
-                                             S'Address,
-                                             System.Null_Address,
-                                             System.Null_Address,
-                                             Mask'Address));
+         Is_Valid := Boolean'Val (Internal2
+           (Get_Object (Clist), Row, Column, S'Access,
+            System.Null_Address, System.Null_Address, Mask'Access));
       end if;
 
       if Is_Valid then
          return Interfaces.C.Strings.Value (S);
       else
-         return String'(1 .. 0 => ' ');
+         return "";
       end if;
    end Get_Text;
 
@@ -568,21 +554,21 @@ package body Gtk.Clist is
    -- Get_Text --
    --------------
 
-   function Get_Text (Clist    : access Gtk_Clist_Record;
-                      Row      : Gtk_Clist_Row;
-                      Column   : in Gint)
-                     return String
+   function Get_Text
+     (Clist    : access Gtk_Clist_Record;
+      Row      : Gtk_Clist_Row;
+      Column   : in Gint) return String
    is
       function Internal
         (Clist  : in System.Address;
          Row    : in Gtk_Clist_Row;
          Column : in Gint;
-         Text   : in System.Address)
-         return      Gint;
+         Text   : in System.Address) return Gint;
       pragma Import (C, Internal, "ada_gtk_clist_get_text");
 
-      S : aliased Interfaces.C.Strings.chars_ptr;
+      S        : aliased Interfaces.C.Strings.chars_ptr;
       Is_Valid : Gint;
+
    begin
       Is_Valid := Internal (Get_Object (Clist), Row, Column, S'Address);
 
@@ -829,6 +815,7 @@ package body Gtk.Clist is
          Color : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_background");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
@@ -837,6 +824,7 @@ package body Gtk.Clist is
       if Color = Gdk.Color.Null_Color then
          Color_A := System.Null_Address;
       end if;
+
       Internal (Get_Object (Clist), Row, Color_A);
    end Set_Background;
 
@@ -1081,6 +1069,7 @@ package body Gtk.Clist is
          Color : in System.Address);
       pragma Import (C, Internal, "gtk_clist_set_foreground");
       use type Gdk.Color.Gdk_Color;
+
       Col : aliased Gdk.Color.Gdk_Color := Color;
       --  Need to use a local variable to avoid problems with 'Address if
       --  the parameter is passed in a register for instance.
