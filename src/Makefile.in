@@ -82,8 +82,7 @@ $(ARCHIVENAME):: $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
 
 install_ali::
 	$(CP) $(LIB_DIR)/*.ali .
-	test -f .devel || $(CHMOD) -w *.ali
-
+	test -f .devel || $(CP) $(LIB_DIR)/*.ali .
 
 $(GATE_EX):: $(GATE_SRC) $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
 	$(GNATMAKE) $(GNATMAKEFLAGS) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS)
