@@ -4,6 +4,10 @@ package Gdk.Rectangle is
 
    type Gdk_Rectangle is new Root_Type with private;
 
+   Full_Area : constant Gdk_Rectangle;
+   --  The constant above can be used in Gtk.Widget.Draw when you want to
+   --  redraw the whole widget
+
    procedure Gdk_New (Rectangle : out Gdk_Rectangle);
 
    procedure Gdk_New (Rectangle :    out Gdk_Rectangle;
@@ -58,5 +62,6 @@ package Gdk.Rectangle is
 private
 
    type Gdk_Rectangle is new Root_Type with null record;
+   Full_Area : constant Gdk_Rectangle := (Ptr => System.Null_Address);
 
 end Gdk.Rectangle;
