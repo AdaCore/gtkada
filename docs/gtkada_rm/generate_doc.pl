@@ -229,17 +229,27 @@ foreach $source_file (@source_files) {
 			   "\@section Widget Hierarchy\n");
 	    &html_output ("<TABLE WIDTH=100%><TR><TD WIDTH=$tab1_width></TD>",
 			  "<TD BGCOLOR=$hierarchy_bg>");
-	    my ($hierarchy) = "";
+	    my ($hierarchy, $hierarchy_short) = ("", "");
 	    $hierarchy = sprintf ("\@b{%-30s (\@pxref{Package_%s})\n",
 				  "Gtk_Object}", "Gtk.Object");
+	    $hierarchy_short = sprintf ("%-30s (Package %s)\n",
+					"Gtk_Object", "Gtk.Object");
 	    for ($level = 1; $level < @hierarchy; $level ++) {
 		$hierarchy .= " " x ($level * 3)
 		    . sprintf ("\\___ \@b{%-" . (25 - $level * 3)
 			          . "s (\@pxref{Package_%s})\n",
 			       $hierarchy[$level] . "}",
 			       &package_from_type ($hierarchy[$level]));
+		$hierarchy_short .= " " x ($level * 3)
+		    . sprintf ("\\___ %-" . (25 - $level * 3)
+			          . "s (Package %s)\n",
+			       $hierarchy[$level],
+			       &package_from_type ($hierarchy[$level]));
 	    }
-	    &output ("\@example\n$hierarchy\n\@end example");
+	    &output ("\@ifinfo\n\@smallexample\n$hierarchy\n",
+		     "\@end smallexample\n\@end ifinfo\n");
+	    &output ("\@iftex\n\@smallexample\n$hierarchy_short",
+		     "\n\@end smallexample\n\@end iftex");
 	    &html_output ("</TD></TR></TABLE>");
 	} else {
 	    $parent{$package_name} = "<>";
@@ -323,7 +333,7 @@ foreach $source_file (@source_files) {
 		&html_output ("<TR>",
 			      "<TD WIDTH=$tab1_width></TD>",
 			      "<TD BGCOLOR=$subprog_bg valign=top WIDTH=$tab23_width>");
-		&output ("\@smallexample\n\@exdent $profile\n\@end smallexample");
+		&output ("\@smallexample\@exdent $profile\n\@end smallexample");
 		
 		$comment =~ s/^\s*//;
 		$comment = &process_list (&clean_comment_marks ($comment, 1));
