@@ -2222,6 +2222,7 @@ package body Gtkada.MDI is
       Set_Flags (Child, App_Paintable);
 
       Child.State := Normal;
+      Child.Buttons := Flags;
 
       Add_Events
         (Child, Button_Press_Mask
@@ -2758,6 +2759,8 @@ package body Gtkada.MDI is
 
       Update_Dock_Menu (C);
       Update_Float_Menu (C);
+      Set_Sensitive
+        (C.MDI.Close_Menu_Item, (C.Buttons and Destroy_Button) /= 0);
 
       if C.Menu_Item /= null
         and then not Get_Active (C.Menu_Item)
@@ -3820,10 +3823,10 @@ package body Gtkada.MDI is
          Gtk_New (Item);
          Append (MDI.Menu, Item);
 
-         Gtk_New (Item, "Close");
-         Append (MDI.Menu, Item);
+         Gtk_New (MDI.Close_Menu_Item, "Close");
+         Append (MDI.Menu, MDI.Close_Menu_Item);
          Widget_Callback.Object_Connect
-           (Item, "activate",
+           (MDI.Close_Menu_Item, "activate",
             Widget_Callback.To_Marshaller (Close_Cb'Access), MDI);
 
          Gtk_New (Item);

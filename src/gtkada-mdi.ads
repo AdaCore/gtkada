@@ -41,6 +41,7 @@ with Gtk.Handlers;
 with Gtk.Main;
 with Gtk.Menu;
 with Gtk.Notebook;
+with Gtk.Menu_Item;
 with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
 with Gtk.Widget;
@@ -541,6 +542,8 @@ private
       Menu_Item : Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item;
       --  The item in the dynamic menu that represents this child.
 
+      Buttons : Buttons_Flags;
+
       Maximize_Button : Gtk.Button.Gtk_Button;
       Minimize_Button : Gtk.Button.Gtk_Button;
 
@@ -647,6 +650,7 @@ private
       Dock_Menu_Item_Id  : Gtk.Handlers.Handler_Id;
       Float_Menu_Item    : Gtk.Check_Menu_Item.Gtk_Check_Menu_Item;
       Float_Menu_Item_Id : Gtk.Handlers.Handler_Id;
+      Close_Menu_Item    : Gtk.Menu_Item.Gtk_Menu_Item;
       --  The dynamic menu used to provide access to the most common
       --  functions of MDI.
 
