@@ -118,14 +118,7 @@ begin
          end if;
 
       else
-         --  Instantiate (i.e create Gtk Widgets) N to ensure that the gtk+
-         --  library will know about the internal structures of the generated
-         --  widgets. This is needed in particular to retrieve the argument
-         --  count and types for the various signals.
-
          Gtk.Main.Init;
-         Instantiate (N, False);
-         Reset_Tree (N);
          Generate (N);
       end if;
    end if;
