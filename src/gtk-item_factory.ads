@@ -71,8 +71,6 @@ package Gtk.Item_Factory is
    type Gtk_Item_Factory_Entry_Array is array (Gint range <>) of
      Gtk_Item_Factory_Entry;
 
-   type Gtk_Item_Factory_Callback is access procedure;
-
    procedure Gtk_New
      (Ifactory       : in out Gtk_Item_Factory;
       Container_Type : in Gtk_Type;
@@ -88,32 +86,6 @@ package Gtk.Item_Factory is
       Container_Type : in Gtk_Type;
       Path           : in String := "";
       Accel_Group    : in Gtk.Accel_Group.Gtk_Accel_Group);
-
-   function Gtk_New
-     (Path            : in String;
-      Accelerator     : in String := "";
-      Callback        : in Gtk_Item_Factory_Callback := null;
-      Item_Type       : in Item_Type_Enum;
-      Callback_Action : in Guint := 0) return Gtk_Item_Factory_Entry;
-   --  Create a Gtk_Item_Factory_Entry.
-   --  It is up to you to call Free at an appropriate point to avoid memory
-   --  leaks.
-
-   function Gtk_New
-     (Path            : in String;
-      Accelerator     : in String := "";
-      Callback        : in Gtk_Item_Factory_Callback := null;
-      Item_Type       : in String := "";
-      Callback_Action : in Guint := 0) return Gtk_Item_Factory_Entry;
-   --  Create a Gtk_Item_Factory_Entry.
-   --  It is up to you to call Free at an appropriate point to avoid memory
-   --  leaks.
-
-   procedure Free (Ientry : in out Gtk_Item_Factory_Entry);
-   --  Free all the dynamic data associated with an item factory entry.
-
-   procedure Free (Ientries : in out Gtk_Item_Factory_Entry_Array);
-   --  Free all the dynamic data associated with each item factory entry.
 
    procedure Add_Foreign
      (Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -178,20 +150,51 @@ package Gtk.Item_Factory is
       type Data_Type_Access is access all Data_Type;
 
       type Gtk_Print_Func is access procedure
-        (Func_Data : Data_Type_Access;
+        (Func_Data : Data_Type;
          Str       : String);  --  gchar* ???
 
       type Gtk_Translate_Func is access function
         (Path        : String;  --  const gchar* ???
-         Func_Data   : Data_Type_Access) return Gtkada.Types.Chars_Ptr;
+         Func_Data   : Data_Type) return Gtkada.Types.Chars_Ptr;
 
-      type Gtk_Item_Factory_Callback1 is access procedure
-        (Callback_Data   : in Data_Type_Access;
+      type Limited_Widget is limited private;
+
+      function To_Widget
+        (Widget : in Limited_Widget) return Gtk.Widget.Gtk_Widget;
+
+      type Gtk_Item_Factory_Callback is access procedure
+        (Callback_Data   : in Data_Type;
          Callback_Action : in Guint;
-         Widget          : in Gtk.Widget.Gtk_Widget);
+         Widget          : in Limited_Widget);
+
+      function Gtk_New
+        (Path            : in String;
+         Accelerator     : in String := "";
+         Callback        : in Gtk_Item_Factory_Callback := null;
+         Item_Type       : in Item_Type_Enum;
+         Callback_Action : in Guint := 0) return Gtk_Item_Factory_Entry;
+      --  Create a Gtk_Item_Factory_Entry.
+      --  It is up to you to call Free at an appropriate point to avoid memory
+      --  leaks.
+
+      function Gtk_New
+        (Path            : in String;
+         Accelerator     : in String := "";
+         Callback        : in Gtk_Item_Factory_Callback := null;
+         Item_Type       : in String := "";
+         Callback_Action : in Guint := 0) return Gtk_Item_Factory_Entry;
+      --  Create a Gtk_Item_Factory_Entry.
+      --  It is up to you to call Free at an appropriate point to avoid memory
+      --  leaks.
+
+      procedure Free (Ientry : in out Gtk_Item_Factory_Entry);
+      --  Free all the dynamic data associated with an item factory entry.
+
+      procedure Free (Ientries : in out Gtk_Item_Factory_Entry_Array);
+      --  Free all the dynamic data associated with each item factory entry.
 
       procedure Create_Item
-        (Ifactory      : access Gtk_Item_Factory_Record;
+        (Ifactory      : access Gtk_Item_Factory_Record'Class;
          Ientry        : in Gtk_Item_Factory_Entry;
          Callback_Data : in Data_Type;
          Callback_Type : in Guint);
@@ -199,19 +202,20 @@ package Gtk.Item_Factory is
       --  Callback_Type = 1 -> Gtk_Item_Factory_Callback1
 
       procedure Create_Items
-        (Ifactory      : access Gtk_Item_Factory_Record;
+        (Ifactory      : access Gtk_Item_Factory_Record'Class;
          Entries       : in Gtk_Item_Factory_Entry_Array;
          Callback_Data : in Data_Type);
 
       function Popup_Data
-        (Ifactory : access Gtk_Item_Factory_Record) return Data_Type_Access;
+        (Ifactory : access Gtk_Item_Factory_Record'Class)
+         return Data_Type_Access;
 
       function Popup_Data_From_Widget
         (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
          return Data_Type_Access;
 
       procedure Popup_With_Data
-        (Ifactory     : access Gtk_Item_Factory_Record;
+        (Ifactory     : access Gtk_Item_Factory_Record'Class;
          Popup_Data   : in Data_Type;
          Destroy      : in System.Address; --  Gtk_Destroy_Notify ???
          X            : in Guint;
@@ -224,10 +228,13 @@ package Gtk.Item_Factory is
          Str          : in String);
 
       procedure Set_Translate_Func
-        (Ifactory : access Gtk_Item_Factory_Record;
+        (Ifactory : access Gtk_Item_Factory_Record'Class;
          Func     : in Gtk_Translate_Func;
          Data     : in Data_Type;
          Notify   : in System.Address);  --  Gtk_Destroy_Notify ???
+
+   private
+      type Limited_Widget is new System.Address;
    end Data_Item;
 
 private
@@ -237,7 +244,7 @@ private
    type Gtk_Item_Factory_Entry is record
       Path            : Gtkada.Types.Chars_Ptr;
       Accelerator     : Gtkada.Types.Chars_Ptr;
-      Callback        : Gtk_Item_Factory_Callback;
+      Callback        : System.Address;
       Callback_Action : Guint;
       Item_Type       : Gtkada.Types.Chars_Ptr;
    end record;

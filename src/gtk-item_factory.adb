@@ -32,6 +32,7 @@ with Gtk.Accel_Group;
 with Gtk.Widget;
 with Interfaces.C.Strings;
 with System;
+with Unchecked_Conversion;
 
 package body Gtk.Item_Factory is
 
@@ -281,7 +282,7 @@ package body Gtk.Item_Factory is
       -----------------
 
       procedure Create_Item
-        (Ifactory      : access Gtk_Item_Factory_Record;
+        (Ifactory      : access Gtk_Item_Factory_Record'Class;
          Ientry        : in Gtk_Item_Factory_Entry;
          Callback_Data : in Data_Type;
          Callback_Type : in Guint)
@@ -304,7 +305,7 @@ package body Gtk.Item_Factory is
       ------------------
 
       procedure Create_Items
-        (Ifactory      : access Gtk_Item_Factory_Record;
+        (Ifactory      : access Gtk_Item_Factory_Record'Class;
          Entries       : in Gtk_Item_Factory_Entry_Array;
          Callback_Data : in Data_Type)
       is
@@ -322,12 +323,96 @@ package body Gtk.Item_Factory is
                    Callback_Data'Address);
       end Create_Items;
 
+      ----------
+      -- Free --
+      ----------
+
+      procedure Free (Ientry : in out Gtk_Item_Factory_Entry) is
+      begin
+         ICS.Free (Ientry.Path);
+         ICS.Free (Ientry.Accelerator);
+         ICS.Free (Ientry.Item_Type);
+      end Free;
+ 
+      procedure Free (Ientries : in out Gtk_Item_Factory_Entry_Array) is
+      begin
+         for J in Ientries'Range loop
+            Free (Ientries (J));
+         end loop;
+      end Free;
+
+      -------------
+      -- Gtk_New --
+      -------------
+
+      function Gtk_New
+        (Path            : in  String;
+         Accelerator     : in  String := "";
+         Callback        : in  Gtk_Item_Factory_Callback := null;
+         Item_Type       : in  Item_Type_Enum;
+         Callback_Action : in  Guint := 0) return Gtk_Item_Factory_Entry
+      is
+         function Item_Type_String (Item_Type : Item_Type_Enum) return String;
+
+         function Item_Type_String (Item_Type : Item_Type_Enum) return String is
+         begin
+            case Item_Type is
+               when Title       => return "<Title>";
+               when Item        => return "<Item>";
+               when Check_Item  => return "<CheckItem>";
+               when Toggle_Item => return "<ToggleItem>";
+               when Radio_Item  => return "<RadioItem>";
+               when Tearoff     => return "<Tearoff>";
+               when Separator   => return "<Separator>";
+               when Branch      => return "<Branch>";
+               when Last_Branch => return "<LastBranch>";
+            end case;
+         end Item_Type_String;
+
+      begin
+         return Gtk_New (Path, Accelerator, Callback,
+           Item_Type_String (Item_Type), Callback_Action);
+      end Gtk_New;
+
+      function Gtk_New
+        (Path            : in String;
+         Accelerator     : in String := "";
+         Callback        : in Gtk_Item_Factory_Callback := null;
+         Item_Type       : in String := "";
+         Callback_Action : in Guint := 0) return Gtk_Item_Factory_Entry
+      is
+         function To_Address is new
+           Unchecked_Conversion (Gtk_Item_Factory_Callback, System.Address);
+
+         Ientry : Gtk_Item_Factory_Entry;
+      begin
+         Ientry.Path := ICS.New_String (Path);
+
+         if Accelerator = "" then
+            Ientry.Accelerator := ICS.Null_Ptr;
+         else
+            Ientry.Accelerator := ICS.New_String (Accelerator);
+         end if;
+
+         Ientry.Callback        := To_Address (Callback);
+         Ientry.Callback_Action := Callback_Action;
+
+         if Item_Type = "" then
+            Ientry.Item_Type := ICS.Null_Ptr;
+         else
+            Ientry.Item_Type := ICS.New_String (Item_Type);
+         end if;
+
+         return Ientry;
+      end Gtk_New;
+
       ----------------
       -- Popup_Data --
       ----------------
 
       function Popup_Data
-        (Ifactory : access Gtk_Item_Factory_Record) return Data_Type_Access
+        (Ifactory : access Gtk_Item_Factory_Record'Class)
+         return Data_Type_Access
       is
          function Internal
            (Ifactory : in System.Address) return Data_Type_Access;
@@ -357,7 +442,7 @@ package body Gtk.Item_Factory is
       ---------------------
 
       procedure Popup_With_Data
-        (Ifactory     : access Gtk_Item_Factory_Record;
+        (Ifactory     : access Gtk_Item_Factory_Record'Class;
          Popup_Data   : in Data_Type;
          Destroy      : in System.Address;  --  Gtk_Destroy_Notify ???
          X            : in Guint;
@@ -403,7 +488,7 @@ package body Gtk.Item_Factory is
       ------------------------
 
       procedure Set_Translate_Func
-        (Ifactory : access Gtk_Item_Factory_Record;
+        (Ifactory : access Gtk_Item_Factory_Record'Class;
          Func     : in Gtk_Translate_Func;
          Data     : in Data_Type;
          Notify   : in System.Address)  --  Gtk_Destroy_Notify ???
@@ -422,6 +507,19 @@ package body Gtk.Item_Factory is
                    Notify);
       end Set_Translate_Func;
 
+      ---------------
+      -- To_Widget --
+      ---------------
+
+      function To_Widget
+        (Widget : in Limited_Widget) return Gtk.Widget.Gtk_Widget
+      is
+         Stub : Gtk.Widget.Gtk_Widget_Record;
+      begin
+         return Gtk.Widget.Gtk_Widget (Get_User_Data
+           (System.Address (Widget), Stub));
+      end To_Widget;
+
    end Data_Item;
 
    -------------
@@ -438,82 +536,6 @@ package body Gtk.Item_Factory is
       Initialize (Ifactory, Container_Type, Path, Accel_Group);
    end Gtk_New;
    
-   function Gtk_New
-     (Path            : in  String;
-      Accelerator     : in  String := "";
-      Callback        : in  Gtk_Item_Factory_Callback := null;
-      Item_Type       : in  Item_Type_Enum;
-      Callback_Action : in  Guint := 0) return Gtk_Item_Factory_Entry
-   is
-      function Item_Type_String (Item_Type : Item_Type_Enum) return String;
-
-      function Item_Type_String (Item_Type : Item_Type_Enum) return String is
-      begin
-         case Item_Type is
-            when Title       => return "<Title>";
-            when Item        => return "<Item>";
-            when Check_Item  => return "<CheckItem>";
-            when Toggle_Item => return "<ToggleItem>";
-            when Radio_Item  => return "<RadioItem>";
-            when Tearoff     => return "<Tearoff>";
-            when Separator   => return "<Separator>";
-            when Branch      => return "<Branch>";
-            when Last_Branch => return "<LastBranch>";
-         end case;
-      end Item_Type_String;
-
-   begin
-      return Gtk_New (Path, Accelerator, Callback,
-        Item_Type_String (Item_Type), Callback_Action);
-   end Gtk_New;
-
-   function Gtk_New
-     (Path            : in String;
-      Accelerator     : in String := "";
-      Callback        : in Gtk_Item_Factory_Callback := null;
-      Item_Type       : in String := "";
-      Callback_Action : in Guint := 0) return Gtk_Item_Factory_Entry
-   is
-      Ientry : Gtk_Item_Factory_Entry;
-   begin
-      Ientry.Path := ICS.New_String (Path);
-
-      if Accelerator = "" then
-         Ientry.Accelerator := ICS.Null_Ptr;
-      else
-         Ientry.Accelerator := ICS.New_String (Accelerator);
-      end if;
-
-      Ientry.Callback        := Callback;
-      Ientry.Callback_Action := Callback_Action;
-
-      if Item_Type = "" then
-         Ientry.Item_Type := ICS.Null_Ptr;
-      else
-         Ientry.Item_Type := ICS.New_String (Item_Type);
-      end if;
-
-      return Ientry;
-   end Gtk_New;
-
-   ----------
-   -- Free --
-   ----------
-
-   procedure Free (Ientry : in out Gtk_Item_Factory_Entry) is
-   begin
-      ICS.Free (Ientry.Path);
-      ICS.Free (Ientry.Accelerator);
-      ICS.Free (Ientry.Item_Type);
-   end Free;
- 
-   procedure Free (Ientries : in out Gtk_Item_Factory_Entry_Array) is
-   begin
-      for J in Ientries'Range loop
-         Free (Ientries (J));
-      end loop;
-   end Free;
-
    ----------------
    -- Initialize --
    ----------------
