@@ -4371,8 +4371,11 @@ package body Gtkada.MDI is
          Style := null;
       end if;
 
-      Tab := Get_Child (Child.Menu_Item);
-      Set_Style (Tab, Style);
+      --  Might be null if we haven't created the MDI menu yet
+      if Child.Menu_Item /= null then
+         Tab := Get_Child (Child.Menu_Item);
+         Set_Style (Tab, Style);
+      end if;
 
       if Label /= null then
          Set_Style (Label, Style);
