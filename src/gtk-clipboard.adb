@@ -42,7 +42,7 @@ package body Gtk.Clipboard is
       pragma Import (C, Internal, "gtk_clipboard_set_text");
 
    begin
-      Internal (Clipboard, Text & ASCII.NUL, Text'Length);
+      Internal (Clipboard, Text, Text'Length);
    end Set_Text;
 
 end Gtk.Clipboard;
