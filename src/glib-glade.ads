@@ -29,8 +29,9 @@
 
 --  <description>
 --
---  This package provides the complete Gate API to generate code for the GUI
+--  This package provides the low level Gate API to generate code for the GUI
 --  builder.
+--  @pxref{Package_Gtk.Glade} for the high level routines.
 --
 --  </description>
 
