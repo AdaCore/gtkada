@@ -47,11 +47,6 @@ package Gtk.Menu_Item is
    procedure Set_Placement (Menu_Item : in out Gtk_Menu_Item;
                             Placement : in     Enums.Gtk_Submenu_Placement);
 
-   procedure Accelerator_Size (Menu_Item : in out Gtk_Menu_Item);
-
-   function Accelerator_Text (Menu_Item : in Gtk_Menu_Item) return String;
-   --  This function returns the accelerator associated with the Menu_Item
-
    procedure Configure (Menu_Item              : in out Gtk_Menu_Item;
                         Show_Toggle_Indicator  : in     Boolean;
                         Show_Submenu_Indicator : in     Boolean);

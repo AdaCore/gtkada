@@ -28,36 +28,8 @@
 
 with System;
 with Gdk; use Gdk;
-with Interfaces.C; use Interfaces.C;
 
 package body Gtk.Menu_Item is
-
-   ----------------------
-   -- Accelerator_Size --
-   ----------------------
-
-   procedure Accelerator_Size (Menu_Item : in out Gtk_Menu_Item) is
-      procedure Internal (Menu_Item : in System.Address);
-      pragma Import (C, Internal, "gtk_menu_item_accelerator_size");
-   begin
-      Internal (Get_Object (Menu_Item));
-   end Accelerator_Size;
-
-   ----------------------
-   -- Accelerator_Text --
-   ----------------------
-
-   function Accelerator_Text (Menu_Item : in Gtk_Menu_Item) return String is
-      procedure Internal (Menu_Item : in System.Address;
-                          Buffer    : in out char_array);
-      pragma Import (C, Internal, "gtk_menu_item_accelerator_text");
-      Buffer : char_array (1 .. 32);
-      --  The size of the buffer has been taken from the source of gtk.
-      --  (see gtk_menu_item_accelerator_size for confirmation).
-   begin
-      Internal (Get_Object (Menu_Item), Buffer);
-      return To_Ada (Buffer);
-   end Accelerator_Text;
 
    --------------
    -- Activate --
