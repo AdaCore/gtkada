@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -412,8 +412,11 @@ package body Gtk.Item_Factory is
       is
          Ientry : Gtk_Item_Factory_Entry;
 
+         pragma Warnings (Off);
+         --  This UC is safe aliasing-wise, so kill warning
          function To_Chars_Ptr is new
            Ada.Unchecked_Conversion (System.Address, Gtkada.Types.Chars_Ptr);
+         pragma Warnings (On);
 
       begin
          Ientry := Gtk_New
