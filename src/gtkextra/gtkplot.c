@@ -3072,13 +3072,13 @@ gtk_plot_axis_show_labels (GtkPlot *plot, GtkPlotAxisPos axis, gint mask)
 
 
 void
-gtk_plot_axis_titles_set_attributes (GtkPlot *plot,	
-              		             GtkPlotAxisPos axis,
-				     gchar *font,
-                                     gint height,
-                                     gint angle,
-			             GdkColor *fg,
-			             GdkColor *bg)
+gtk_plot_axis_title_set_attributes (GtkPlot *plot,	
+              	                    GtkPlotAxisPos axis,
+				    gchar *font,
+                                    gint height,
+                                    gint angle,
+			            GdkColor *fg,
+			            GdkColor *bg)
 {
   GtkPlotAxis *aux;
 
