@@ -4,7 +4,7 @@ with Gtk.Widget;
 
 package body Gtk.Tree is
 
-   use Children_List;
+   use Widget_List;
 
    ------------
    -- Append --
@@ -67,12 +67,12 @@ package body Gtk.Tree is
    ------------------
 
    function Get_Children (Widget : in Gtk.Tree.Gtk_Tree'Class)
-                          return      Children_List.Glist
+                          return      Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
                          return      System.Address;
       pragma Import (C, Internal, "ada_tree_get_children");
-      List : Children_List.Glist;
+      List : Widget_List.Glist;
    begin
       Set_Object (List, Internal (Get_Object (Widget)));
       return List;
@@ -83,12 +83,12 @@ package body Gtk.Tree is
    -------------------
 
    function Get_Selection (Widget : in Gtk.Tree.Gtk_Tree'Class)
-                           return      Children_List.Glist
+                           return      Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
                          return      System.Address;
       pragma Import (C, Internal, "ada_tree_get_selection");
-      List : Children_List.Glist;
+      List : Widget_List.Glist;
    begin
       Set_Object (List, Internal (Get_Object (Widget)));
       return List;
@@ -149,7 +149,7 @@ package body Gtk.Tree is
 
    procedure Remove_Items
       (Tree  : in Gtk_Tree'Class;
-       Items : in Children_List.Glist)
+       Items : in Widget_List.Glist)
    is
       procedure Internal
          (Tree  : in System.Address;

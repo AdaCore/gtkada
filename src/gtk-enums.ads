@@ -1,4 +1,7 @@
 with Glib;
+with Glib.Glist;
+with Glib.GSlist;
+with Gtk.Widget;
 
 package Gtk.Enums is
 
@@ -47,17 +50,6 @@ package Gtk.Enums is
    Expand : constant Gtk_Attach_Options := 1;
    Shrink : constant Gtk_Attach_Options := 2;
    Fill   : constant Gtk_Attach_Options := 4;
-
-   --  FIXME  use some rep clauses here?
-   --
-   --  typedef enum
-   --  {
-   --    GTK_RUN_FIRST      = 0x1,
-   --    GTK_RUN_LAST       = 0x2,
-   --    GTK_RUN_BOTH       = 0x3,
-   --    GTK_RUN_MASK       = 0xF,
-   --    GTK_RUN_NO_RECURSE = 0x10
-   --  } GtkSignalRunType;
 
    type Gtk_Window_Position is (Win_Pos_None,
                                 Win_Pos_Center,
@@ -132,5 +124,19 @@ package Gtk.Enums is
    type Gtk_Visibility is (Visibility_None,
                            Visibility_Partial,
                            Visibility_Full);
+
+   --  Some Glib instanciations
+
+   function Convert (S : String) return System.Address;
+   function Convert (S : System.Address) return String;
+   function Convert (W : Gtk.Widget.Gtk_Widget'Class) return System.Address;
+   function Convert (W : System.Address) return Gtk.Widget.Gtk_Widget'Class;
+
+   package String_List is new Glib.Glist.Generic_List (String);
+   package Widget_List is new Glib.Glist.Generic_List
+     (Gtk.Widget.Gtk_Widget'Class);
+   package Widget_SList is new Glib.GSlist.Generic_SList
+     (Gtk.Widget.Gtk_Widget'Class);
+
 
 end Gtk.Enums;

@@ -1,13 +1,7 @@
 
 with System;
-with Gtk.Widget;
 
 package Glib.Glist is
-
-   function Convert (S : String) return System.Address;
-   function Convert (S : System.Address) return String;
-   function Convert (W : Gtk.Widget.Gtk_Widget'Class) return System.Address;
-   function Convert (W : System.Address) return Gtk.Widget.Gtk_Widget'Class;
 
    generic
       type Gpointer (<>) is private;

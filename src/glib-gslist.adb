@@ -1,23 +1,4 @@
-with Gtk;
-
 package body Glib.GSlist is
-
-   -------------
-   -- Convert --
-   -------------
-
-   function Convert (W : Gtk.Widget.Gtk_Widget'Class) return System.Address is
-   begin
-      return Gtk.Get_Object (W);
-   end Convert;
-
-   function Convert (W : System.Address) return Gtk.Widget.Gtk_Widget'Class is
-      Widget : Gtk.Widget.Gtk_Widget;
-   begin
-      Gtk.Set_Object (Widget, W);
-      return Widget;
-   end Convert;
-
 
    package body Generic_SList is
       -----------

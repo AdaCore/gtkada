@@ -2,18 +2,14 @@
 with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
-with Glib.Glist; use Glib.Glist;
 
 package Gtk.List is
 
    type Gtk_List is new Gtk.Container.Gtk_Container with private;
 
-   package Children_List is new Glib.Glist.Generic_List
-     (Gtk.Widget.Gtk_Widget'Class);
-
    procedure Append_Items
       (List  : in Gtk_List'Class;
-       Items : in Children_List.Glist);
+       Items : in Widget_List.Glist);
    function Child_Position
       (List   : in Gtk_List'Class;
        Child  : in Gtk.Widget.Gtk_Widget'Class)
@@ -23,23 +19,23 @@ package Gtk.List is
        Start   : in Gint;
        The_End : in Gint);
    function Get_Children (Widget : in Gtk.List.Gtk_List'Class)
-                          return      Children_List.Glist;
+                          return      Widget_List.Glist;
    function Get_Selection (Widget : in Gtk.List.Gtk_List'Class)
-                           return      Children_List.Glist;
+                           return      Widget_List.Glist;
    procedure Gtk_New (Widget : out Gtk_List);
    procedure Insert_Items
       (List     : in Gtk_List'Class;
-       Items    : in Children_List.Glist;
+       Items    : in Widget_List.Glist;
        Position : in Gint);
    procedure Prepend_Items
       (List  : in Gtk_List'Class;
-       Items : in Children_List.Glist);
+       Items : in Widget_List.Glist);
    procedure Remove_Items
       (List  : in Gtk_List'Class;
-       Items : in Children_List.Glist);
+       Items : in Widget_List.Glist);
    procedure Remove_Items_No_Unref
       (List  : in Gtk_List'Class;
-       Items : in Children_List.Glist);
+       Items : in Widget_List.Glist);
    procedure Select_Child
       (List  : in Gtk_List'Class;
        Child : in Gtk.Widget.Gtk_Widget'Class);

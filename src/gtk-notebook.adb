@@ -64,13 +64,14 @@ package body Gtk.Notebook is
    ------------------
 
    function Get_Children (Widget : in Gtk_Notebook'Class)
-                          return      Children_List.Glist
+                          return      Widget_List.Glist
    is
       function Internal (Widget : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_notebook_get_children");
-      List : Children_List.Glist;
+      use Widget_List;
+      List : Glist;
    begin
-      Children_List.Set_Object (List, Internal (Get_Object (Widget)));
+      Set_Object (List, Internal (Get_Object (Widget)));
       return List;
    end Get_Children;
 

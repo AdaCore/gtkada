@@ -4,8 +4,7 @@ with Gtk.Widget;
 
 package body Gtk.List is
 
-   use Children_List;
-
+   use Widget_List;
 
    ------------------
    -- Append_Items --
@@ -13,7 +12,7 @@ package body Gtk.List is
 
    procedure Append_Items
       (List  : in Gtk_List'Class;
-       Items : in Children_List.Glist)
+       Items : in Widget_List.Glist)
    is
       procedure Internal
          (List  : in System.Address;
@@ -68,12 +67,12 @@ package body Gtk.List is
    ------------------
 
    function Get_Children (Widget : in Gtk.List.Gtk_List'Class)
-                          return      Children_List.Glist
+                          return      Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
                          return      System.Address;
       pragma Import (C, Internal, "ada_list_get_children");
-      List : Children_List.Glist;
+      List : Glist;
    begin
       Set_Object (List, Internal (Get_Object (Widget)));
       return List;
@@ -84,12 +83,12 @@ package body Gtk.List is
    -------------------
 
    function Get_Selection (Widget : in Gtk.List.Gtk_List'Class)
-                           return      Children_List.Glist
+                           return      Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
                          return      System.Address;
       pragma Import (C, Internal, "ada_list_get_selection");
-      List : Children_List.Glist;
+      List : Glist;
    begin
       Set_Object (List, Internal (Get_Object (Widget)));
       return List;
@@ -113,7 +112,7 @@ package body Gtk.List is
 
    procedure Insert_Items
       (List     : in Gtk_List'Class;
-       Items    : in Children_List.Glist;
+       Items    : in Widget_List.Glist;
        Position : in Gint)
    is
       procedure Internal
@@ -133,7 +132,7 @@ package body Gtk.List is
 
    procedure Prepend_Items
       (List  : in Gtk_List'Class;
-       Items : in Children_List.Glist)
+       Items : in Widget_List.Glist)
    is
       procedure Internal
          (List  : in System.Address;
@@ -150,7 +149,7 @@ package body Gtk.List is
 
    procedure Remove_Items
       (List  : in Gtk_List'Class;
-       Items : in Children_List.Glist)
+       Items : in Widget_List.Glist)
    is
       procedure Internal
          (List  : in System.Address;
@@ -167,7 +166,7 @@ package body Gtk.List is
 
    procedure Remove_Items_No_Unref
       (List  : in Gtk_List'Class;
-       Items : in Children_List.Glist)
+       Items : in Widget_List.Glist)
    is
       procedure Internal
          (List  : in System.Address;

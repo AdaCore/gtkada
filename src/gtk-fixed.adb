@@ -6,13 +6,13 @@ package body Gtk.Fixed is
    ------------------
 
    function Get_Children (Widget : in Gtk.Fixed.Gtk_Fixed'Class)
-                          return      Children_List.Glist
+                          return      Enums.Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
                          return      System.Address;
       pragma Import (C, Internal, "ada_fixed_get_children");
-      use Children_List;
-      Children : Children_List.Glist;
+      use Enums.Widget_List;
+      Children : Glist;
    begin
       Set_Object (Children, Internal (Get_Object (Widget)));
       return Children;

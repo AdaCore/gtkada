@@ -1,5 +1,4 @@
 
-with Glib.Glist; use Glib.Glist;
 with Gtk.Box;
 with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
@@ -9,9 +8,6 @@ package Gtk.Notebook is
 
    type Gtk_Notebook is new Gtk.Container.Gtk_Container with private;
    type Gtk_Notebook_Page is new Root_Type with private;
-
-   package Children_List is new Glib.Glist.Generic_List
-     (Gtk.Widget.Gtk_Widget'Class);
 
    procedure Append_Page
       (Notebook  : in Gtk_Notebook'Class;
@@ -25,7 +21,7 @@ package Gtk.Notebook is
    function Current_Page (Notebook : in Gtk_Notebook'Class)
                           return        Gint;
    function Get_Children (Widget : in Gtk_Notebook'Class)
-                          return      Children_List.Glist;
+                          return      Widget_List.Glist;
    function Get_Cur_Page (Widget : in Gtk_Notebook'Class)
                           return      Gtk_Notebook_Page;
    function Get_Menu_Label (Page : in Gtk_Notebook_Page)

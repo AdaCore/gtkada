@@ -1,13 +1,10 @@
 with Gtk.Check_Menu_Item;
-with Glib.GSlist; use Glib.GSlist;
-with Gtk.Widget;
+with Gtk.Enums; use Gtk.Enums;
 
 package Gtk.Radio_Menu_Item is
 
    type Gtk_Radio_Menu_Item is new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item
      with private;
-   package Widget_SList is new Glib.GSlist.Generic_SList
-     (Gtk.Widget.Gtk_Widget'Class);
 
    function Group (Radio_Menu_Item : in Gtk_Radio_Menu_Item'Class)
                    return               Widget_SList.GSlist;

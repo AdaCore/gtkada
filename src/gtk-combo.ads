@@ -2,12 +2,9 @@
 with Gtk.GEntry;
 with Gtk.Box;
 with Gtk.Item;
-with Glib.Glist; use Glib.Glist;
+with Gtk.Enums; use Gtk.Enums;
 
 package Gtk.Combo is
-
-   --   type String_Access is access all String;
-   package String_List is new Glib.Glist.Generic_List (String);
 
    type Gtk_Combo is new Gtk.Box.Gtk_Box with private;
 

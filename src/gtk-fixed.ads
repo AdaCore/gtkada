@@ -1,17 +1,14 @@
 
-with Glib.Glist; use Glib.Glist;
+with Gtk.Enums;
 with Gtk.Container;
 with Gtk.Widget;
 
 package Gtk.Fixed is
 
    type Gtk_Fixed is new Gtk.Container.Gtk_Container with private;
- 
-   package Children_List is new Glib.Glist.Generic_List
-     (Gtk.Widget.Gtk_Widget'Class);
 
    function Get_Children (Widget : in Gtk.Fixed.Gtk_Fixed'Class)
-                          return      Children_List.Glist;
+                          return      Enums.Widget_List.Glist;
    procedure Gtk_New (Widget : out Gtk_Fixed);
    procedure Move
       (Fixed  : in Gtk_Fixed'Class;

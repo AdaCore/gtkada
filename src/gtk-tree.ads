@@ -2,14 +2,10 @@
 with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
 with Gtk.Widget;
-with Glib.Glist; use Glib.Glist;
 
 package Gtk.Tree is
 
    type Gtk_Tree is new Gtk.Container.Gtk_Container with private;
-
-   package Children_List is new Glib.Glist.Generic_List
-     (Gtk.Widget.Gtk_Widget'Class);
 
    procedure Append
       (Tree      : in Gtk_Tree'Class;
@@ -23,9 +19,9 @@ package Gtk.Tree is
        Start   : in Gint;
        The_End : in Gint);
    function Get_Children (Widget : in Gtk.Tree.Gtk_Tree'Class)
-                          return      Children_List.Glist;
+                          return      Widget_List.Glist;
    function Get_Selection (Widget : in Gtk.Tree.Gtk_Tree'Class)
-                           return      Children_List.Glist;
+                           return      Widget_List.Glist;
    procedure Gtk_New (Widget : out Gtk_Tree);
    procedure Insert
       (Tree      : in Gtk_Tree'Class;
@@ -36,7 +32,7 @@ package Gtk.Tree is
        Tree_Item : in Gtk.Widget.Gtk_Widget'Class);
    procedure Remove_Items
       (Tree  : in Gtk_Tree'Class;
-       Items : in Children_List.Glist);
+       Items : in Widget_List.Glist);
    procedure Select_Child
       (Tree      : in Gtk_Tree'Class;
        Tree_Item : in Gtk.Widget.Gtk_Widget'Class);

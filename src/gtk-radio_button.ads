@@ -1,12 +1,9 @@
 with Gtk.Check_Button;
-with Glib.GSlist; use Glib.GSlist;
-with Gtk.Widget;
+with Gtk.Enums; use Gtk.Enums;
 
 package Gtk.Radio_Button is
 
    type Gtk_Radio_Button is new Check_Button.Gtk_Check_Button with private;
-   package Widget_SList is new Glib.GSlist.Generic_SList
-     (Gtk.Widget.Gtk_Widget'Class);
 
    function Group (Button : in Gtk_Radio_Button) return Widget_SList.GSlist;
    --  mapping: Set_Group gtkradiobutton.h gtk_radio_button_group
