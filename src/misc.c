@@ -2151,6 +2151,12 @@ ada_tree_item_get_subtree (GtkTreeItem* widget)
  ** Functions for CList
  ******************************************/
 
+gint
+ada_clist_get_focus_row (GtkCList* widget)
+{
+  return widget->focus_row;
+}
+
 GList*
 ada_clist_get_selection (GtkCList* widget)
 {
