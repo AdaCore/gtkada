@@ -170,7 +170,7 @@ package body Gtk.Scrolled_Window is
    --------------
    -- Generate --
    --------------
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
    begin
@@ -178,8 +178,13 @@ package body Gtk.Scrolled_Window is
       Container.Generate (N, File);
       Gen_Set (N, "Scrolled_Window", "Policy", "hscrollbar_policy",
         "vscrollbar_policy", "", "", File);
+
+      if not N.Specific_Data.Has_Container then
+         Gen_Call_Child (N, null, "Container", "Add", File => File);
+         N.Specific_Data.Has_Container := True;
+      end if;
    end Generate;
- 
+
    procedure Generate
      (Scrolled_Window : in out Gtk.Object.Gtk_Object; N : in Node_Ptr)
    is
@@ -190,16 +195,24 @@ package body Gtk.Scrolled_Window is
          Set_Object (Get_Field (N, "name"), Scrolled_Window);
          N.Specific_Data.Created := True;
       end if;
- 
+
       Container.Generate (Scrolled_Window, N);
- 
+
       S := Get_Field (N, "hscrollbar_policy");
       S2 := Get_Field (N, "vscrollbar_policy");
- 
+
       if S /= null and then S2 /= null then
          Set_Policy (Gtk_Scrolled_Window (Scrolled_Window),
            Gtk_Policy_Type'Value (S (S'First + 4 .. S'Last)),
            Gtk_Policy_Type'Value (S2 (S2'First + 4 .. S2'Last)));
+      end if;
+
+      if not N.Specific_Data.Has_Container then
+         Container.Add
+           (Container.Gtk_Container
+            (Get_Object (Get_Field (N.Parent, "name"))),
+            Gtk.Widget.Gtk_Widget (Scrolled_Window));
+         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 

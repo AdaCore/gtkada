@@ -56,6 +56,11 @@ package Gtk.Scrolled_Window is
      (Scrolled_Window : access Gtk_Scrolled_Window_Record;
       Child           : access Gtk.Widget.Gtk_Widget_Record'Class);
 
+   procedure Add
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record;
+      Child           : access Gtk.Widget.Gtk_Widget_Record'Class)
+     renames Add_With_Viewport;
+
    function Get_Hadjustment
      (Scrolled_Window : access Gtk_Scrolled_Window_Record)
       return               Adjustment.Gtk_Adjustment;
@@ -79,10 +84,10 @@ package Gtk.Scrolled_Window is
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
- 
+
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
- 
+
    procedure Generate
      (Scrolled_Window : in out Gtk.Object.Gtk_Object; N : in Node_Ptr);
 
