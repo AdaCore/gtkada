@@ -67,8 +67,6 @@ package body Gtk.Text_View is
       else
          Set_Object (Widget, Internal (Get_Object (Buffer)));
       end if;
-
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ----------------

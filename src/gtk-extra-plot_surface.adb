@@ -65,7 +65,6 @@ package body Gtk.Extra.Plot_Surface is
       else
          Set_Object (Widget, Internal2 (Func));
       end if;
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ----------------------

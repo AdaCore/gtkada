@@ -125,8 +125,6 @@ package body Gtk.Radio_Button is
          Set_Object
            (Radio_Button, Internal (Get_Object (Group), Label & ASCII.NUL));
       end if;
-
-      Initialize_User_Data (Radio_Button);
    end Initialize;
 
    ----------------
@@ -158,8 +156,6 @@ package body Gtk.Radio_Button is
       else
          Set_Object (Radio_Button, Internal (S, Label & ASCII.NUL));
       end if;
-
-      Initialize_User_Data (Radio_Button);
    end Initialize;
 
    ------------------------------
@@ -177,7 +173,6 @@ package body Gtk.Radio_Button is
    begin
       Set_Object
         (Radio_Button, Internal (Get_Object (Group), Label & ASCII.NUL));
-      Initialize_User_Data (Radio_Button);
    end Initialize_With_Mnemonic;
 
    ------------------------------
@@ -196,7 +191,6 @@ package body Gtk.Radio_Button is
    begin
       Set_Object
         (Radio_Button, Internal (Get_Object (Group), Label & ASCII.NUL));
-      Initialize_User_Data (Radio_Button);
    end Initialize_With_Mnemonic;
 
    ---------------

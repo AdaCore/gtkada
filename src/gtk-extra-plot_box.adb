@@ -56,6 +56,5 @@ package body Gtk.Extra.Plot_Box is
       pragma Import (C, Internal, "gtk_plot_box_new");
    begin
       Set_Object (Box, Internal (Orientation));
-      Initialize_User_Data (Box);
    end Initialize;
 end Gtk.Extra.Plot_Box;

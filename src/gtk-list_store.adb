@@ -59,7 +59,6 @@ package body Gtk.List_Store is
 
    begin
       Set_Object (List_Store, Internal (Types'Length, Types'Address));
-      Initialize_User_Data (List_Store);
    end Initialize;
 
    ----------------------

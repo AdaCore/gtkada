@@ -144,7 +144,6 @@ package body Gtk.List is
       pragma Import (C, Internal, "gtk_list_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------------

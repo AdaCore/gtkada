@@ -53,7 +53,6 @@ package body Gtk.Size_Group is
       pragma Import (C, Internal, "gtk_size_group_new");
    begin
       Set_Object (Size_Group, Internal (Mode));
-      Initialize_User_Data (Size_Group);
    end Initialize;
 
    --------------

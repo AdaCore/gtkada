@@ -55,7 +55,6 @@ package body Bonobo.Dock_Layout is
       pragma Import (C, Internal, "bonobo_dock_layout_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    -----------------------

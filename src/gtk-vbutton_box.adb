@@ -51,7 +51,6 @@ package body Gtk.Vbutton_Box is
 
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
 end Gtk.Vbutton_Box;

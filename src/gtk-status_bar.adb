@@ -119,7 +119,6 @@ package body Gtk.Status_Bar is
 
    begin
       Set_Object (Statusbar, Internal);
-      Initialize_User_Data (Statusbar);
    end Initialize;
 
    ----------

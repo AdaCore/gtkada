@@ -82,7 +82,6 @@ package body Gtk.Gamma_Curve is
 
    begin
       Set_Object (Gamma_Curve, Internal);
-      Initialize_User_Data (Gamma_Curve);
    end Initialize;
 
 end Gtk.Gamma_Curve;

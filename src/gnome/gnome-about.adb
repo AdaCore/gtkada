@@ -97,7 +97,6 @@ package body Gnome.About is
           Documenters_Padded,
           Translator_Credits & ASCII.NUL,
           Logo));
-      Initialize_User_Data (About);
    end Initialize;
 
 end Gnome.About;

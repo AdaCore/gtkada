@@ -70,8 +70,6 @@ package body Gnome.App is
       else
          Set_Object (App, Internal (Appname & ASCII.NUL, The_Title'Address));
       end if;
-
-      Initialize_User_Data (App);
    end Initialize;
 
    -------------------

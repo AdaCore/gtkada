@@ -87,7 +87,6 @@ package body Gtk.Label is
 
    begin
       Set_Object (Label, Internal (Str & ASCII.NUL));
-      Initialize_User_Data (Label);
    end Initialize;
 
    ------------------------------
@@ -102,7 +101,6 @@ package body Gtk.Label is
 
    begin
       Set_Object (Label, Internal (Str & ASCII.NUL));
-      Initialize_User_Data (Label);
    end Initialize_With_Mnemonic;
 
    -----------------

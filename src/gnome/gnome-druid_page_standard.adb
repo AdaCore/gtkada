@@ -55,7 +55,6 @@ package body Gnome.Druid_Page_Standard is
       pragma Import (C, Internal, "gnome_druid_page_standard_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ---------------

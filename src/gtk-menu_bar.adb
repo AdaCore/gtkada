@@ -58,7 +58,6 @@ package body Gtk.Menu_Bar is
 
    begin
       Set_Object (Menu_Bar, Internal);
-      Initialize_User_Data (Menu_Bar);
    end Initialize;
 
    ---------------------

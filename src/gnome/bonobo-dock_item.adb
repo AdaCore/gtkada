@@ -65,7 +65,6 @@ package body Bonobo.Dock_Item is
    begin
       Set_Object (Widget, Internal (Name & ASCII.NUL,
                                     Bonobo_Dock_Item_Behavior'Pos (Behavior)));
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------

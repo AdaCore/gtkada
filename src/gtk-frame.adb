@@ -107,8 +107,6 @@ package body Gtk.Frame is
             Set_Object (Frame, Internal (S'Address));
          end;
       end if;
-
-      Initialize_User_Data (Frame);
    end Initialize;
 
    ---------------

@@ -278,7 +278,6 @@ package body Gtk.File_Selection is
 
    begin
       Set_Object (File_Selection, Internal (Title & ASCII.NUL));
-      Initialize_User_Data (File_Selection);
    end Initialize;
 
    ------------------

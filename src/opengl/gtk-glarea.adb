@@ -66,7 +66,6 @@ package body Gtk.GLArea is
          raise Constraint_Error;
       end if;
       Set_Object (Widget, Internal (Attributes (0)'Address));
-      Initialize_User_Data (Widget);
 
       --  gtk+'s double buffering and openGL's don't go together
       Set_Double_Buffered (Widget, False);
@@ -104,7 +103,6 @@ package body Gtk.GLArea is
       Attributes (Attributes'Last) := Gdk_GL_None;
       Set_Object (Widget, Internal (Attributes (0)'Address,
                                     Get_Object (Share)));
-      Initialize_User_Data (Widget);
 
       --  gtk+'s double buffering and openGL's don't go together
       Set_Double_Buffered (Widget, False);

@@ -97,7 +97,6 @@ package body Gtk.Handle_Box is
 
    begin
       Set_Object (Handle_Box, Internal);
-      Initialize_User_Data (Handle_Box);
    end Initialize;
 
    -------------------------

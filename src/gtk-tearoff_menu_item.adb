@@ -64,7 +64,6 @@ package body Gtk.Tearoff_Menu_Item is
 
    begin
       Set_Object (Menu_Item, Internal);
-      Initialize_User_Data (Menu_Item);
    end Initialize;
 
    ---------------------

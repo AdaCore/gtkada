@@ -178,7 +178,6 @@ package body Gtk.Adjustment is
       Set_Object (Adjustment,
                   Internal (Value, Lower, Upper, Step_Increment,
                             Page_Increment, Page_Size));
-      Initialize_User_Data (Adjustment);
    end Initialize;
 
    ---------------

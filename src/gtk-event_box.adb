@@ -51,7 +51,6 @@ package body Gtk.Event_Box is
 
    begin
       Set_Object (Event_Box, Internal);
-      Initialize_User_Data (Event_Box);
    end Initialize;
 
 end Gtk.Event_Box;

@@ -54,7 +54,6 @@ package body Bonobo.Dock is
       pragma Import (C, Internal, "bonobo_dock_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    -----------------------

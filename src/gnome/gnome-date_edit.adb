@@ -81,7 +81,6 @@ package body Gnome.Date_Edit is
 
    begin
       Set_Object (Date_Edit, Internal (The_Time, Flags));
-      Initialize_User_Data (Date_Edit);
    end Initialize;
 
    --------------

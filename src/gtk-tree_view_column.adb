@@ -69,7 +69,6 @@ package body Gtk.Tree_View_Column is
       pragma Import (C, Internal, "gtk_tree_view_column_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ----------------

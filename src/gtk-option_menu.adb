@@ -82,7 +82,6 @@ package body Gtk.Option_Menu is
 
    begin
       Set_Object (Option_Menu, Internal);
-      Initialize_User_Data (Option_Menu);
    end Initialize;
 
    -----------------

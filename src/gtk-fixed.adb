@@ -69,7 +69,6 @@ package body Gtk.Fixed is
 
    begin
       Set_Object (Fixed, Internal);
-      Initialize_User_Data (Fixed);
    end Initialize;
 
    ----------

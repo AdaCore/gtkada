@@ -94,7 +94,6 @@ package body Gtk.Accel_Label is
 
    begin
       Set_Object (Accel_Label, Internal (Str & ASCII.NUL));
-      Initialize_User_Data (Accel_Label);
    end Initialize;
 
    -------------

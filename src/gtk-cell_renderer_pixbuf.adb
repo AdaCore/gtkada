@@ -53,7 +53,6 @@ package body Gtk.Cell_Renderer_Pixbuf is
       pragma Import (C, Internal, "gtk_cell_renderer_pixbuf_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
 end Gtk.Cell_Renderer_Pixbuf;

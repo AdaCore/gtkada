@@ -90,7 +90,6 @@ package body Gtk.Extra.Color_Combo is
       pragma Import (C, Internal, "gtk_color_combo_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    -------------
@@ -125,7 +124,6 @@ package body Gtk.Extra.Color_Combo is
       Set_Object (Widget, Internal (Nrows,
                                     Ncols,
                                     Color_Names (Color_Names'First)'Address));
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------------

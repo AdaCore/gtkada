@@ -106,7 +106,6 @@ package body Gtk.Scale is
       end if;
 
       Set_Object (Scale, Internal (Adj));
-      Initialize_User_Data (Scale);
    end Initialize_Hscale;
 
    -----------------------
@@ -124,7 +123,6 @@ package body Gtk.Scale is
       pragma Import (C, Internal, "gtk_hscale_new_with_range");
    begin
       Set_Object (Scale, Internal (Min, Max, Step));
-      Initialize_User_Data (Scale);
    end Initialize_Hscale;
 
    -----------------------
@@ -150,7 +148,6 @@ package body Gtk.Scale is
       end if;
 
       Set_Object (Scale, Internal (Adj));
-      Initialize_User_Data (Scale);
    end Initialize_Vscale;
 
    -----------------------
@@ -168,7 +165,6 @@ package body Gtk.Scale is
       pragma Import (C, Internal, "gtk_vscale_new_with_range");
    begin
       Set_Object (Scale, Internal (Min, Max, Step));
-      Initialize_User_Data (Scale);
    end Initialize_Vscale;
 
    ----------------

@@ -178,8 +178,6 @@ package body Glade.XML is
          Set_Object
            (XML, Internal2 (Fname & ASCII.NUL, Addr1, Domain & ASCII.NUL));
       end if;
-
-      Initialize_User_Data (XML);
    end Initialize;
 
    ----------------------------
@@ -214,7 +212,6 @@ package body Glade.XML is
       end if;
 
       Set_Object (XML, Internal (Buffer, Buffer'Length, Addr1, Addr2));
-      Initialize_User_Data (XML);
    end Initialize_From_Memory;
 
    -------------------

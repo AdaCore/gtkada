@@ -100,7 +100,6 @@ package body Gtk.Extra.Font_Combo is
       pragma Import (C, Internal, "gtk_font_combo_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    --------------------

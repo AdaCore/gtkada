@@ -55,7 +55,6 @@ package body Bonobo.Dock_Band is
       pragma Import (C, Internal, "bonobo_dock_band_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------

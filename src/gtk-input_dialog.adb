@@ -53,7 +53,6 @@ package body Gtk.Input_Dialog is
 
    begin
       Set_Object (Input_Dialog, Internal);
-      Initialize_User_Data (Input_Dialog);
    end Initialize;
 
 end Gtk.Input_Dialog;

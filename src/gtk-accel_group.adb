@@ -127,7 +127,6 @@ package body Gtk.Accel_Group is
 
    begin
       Set_Object (Accel_Group, Internal);
-      Initialize_User_Data (Accel_Group);
    end Initialize;
 
    ----------

@@ -54,7 +54,6 @@ package body Gnome.Druid is
       pragma Import (C, Internal, "gnome_druid_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    -----------------

@@ -66,8 +66,6 @@ package body Gtk.Text_Tag is
       else
          Set_Object (Widget, Internal (Name & ASCII.NUL));
       end if;
-
-      Initialize_User_Data (Widget);
    end Initialize;
 
    -----------

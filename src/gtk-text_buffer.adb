@@ -62,8 +62,6 @@ package body Gtk.Text_Buffer is
       else
          Set_Object (Buffer, Internal (Get_Object (Table)));
       end if;
-
-      Initialize_User_Data (Buffer);
    end Initialize;
 
    --------------------

@@ -151,7 +151,6 @@ package body Gtk.Extra.Plot_Canvas is
       pragma Import (C, Internal, "gtk_plot_canvas_new");
    begin
       Set_Object (Widget, Internal (Width, Height, Magnification));
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ---------------------

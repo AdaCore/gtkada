@@ -78,7 +78,6 @@ package body Gtk.Scrollbar is
       end if;
 
       Set_Object (Widget, Internal (Adj));
-      Initialize_User_Data (Widget);
    end Initialize_Hscrollbar;
 
    ---------------------------
@@ -104,7 +103,6 @@ package body Gtk.Scrollbar is
       end if;
 
       Set_Object (Widget, Internal (Adj));
-      Initialize_User_Data (Widget);
    end Initialize_Vscrollbar;
 
 end Gtk.Scrollbar;

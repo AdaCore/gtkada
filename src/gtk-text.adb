@@ -243,7 +243,6 @@ package body Gtk.Text is
       end if;
 
       Set_Object (Text, Internal (H, V));
-      Initialize_User_Data (Text);
    end Initialize;
 
    ------------

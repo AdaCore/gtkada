@@ -96,7 +96,6 @@ package body Gtk.Dialog is
 
    begin
       Set_Object (Dialog, Internal);
-      Initialize_User_Data (Dialog);
    end Initialize;
 
    procedure Initialize
@@ -121,8 +120,6 @@ package body Gtk.Dialog is
          Set_Object
            (Dialog, Internal (Title & ASCII.NUL, Get_Object (Parent), Flags));
       end if;
-
-      Initialize_User_Data (Dialog);
    end Initialize;
 
    -----------------------

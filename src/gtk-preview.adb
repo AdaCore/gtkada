@@ -92,7 +92,6 @@ package body Gtk.Preview is
 
    begin
       Set_Object (Preview, Internal (The_Type));
-      Initialize_User_Data (Preview);
    end Initialize;
 
    ---------

@@ -98,7 +98,6 @@ package body Gtk.Check_Menu_Item is
       else
          Set_Object (Check_Menu_Item, Internal (Label & ASCII.NUL));
       end if;
-      Initialize_User_Data (Check_Menu_Item);
    end Initialize;
 
    ---------------------------
@@ -126,7 +125,6 @@ package body Gtk.Check_Menu_Item is
 
    begin
       Set_Object (Check_Menu_Item, Internal (Label & ASCII.NUL));
-      Initialize_User_Data (Check_Menu_Item);
    end Initialize_With_Mnemonic;
 
    ----------------

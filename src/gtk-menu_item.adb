@@ -120,8 +120,6 @@ package body Gtk.Menu_Item is
       else
          Set_Object (Menu_Item, Internal (Label & ASCII.NUL));
       end if;
-
-      Initialize_User_Data (Menu_Item);
    end Initialize;
 
    ------------------------------
@@ -136,7 +134,6 @@ package body Gtk.Menu_Item is
       pragma Import (C, Internal, "gtk_menu_item_new_with_mnemonic");
    begin
       Set_Object (Menu_Item, Internal (Label & ASCII.NUL));
-      Initialize_User_Data (Menu_Item);
    end Initialize_With_Mnemonic;
 
    -----------------

@@ -127,8 +127,6 @@ package body Gtk.Extra.Sheet is
       else
          Set_Object (Sheet, Internal (Rows, Columns, Sa));
       end if;
-
-      Initialize_User_Data (Sheet);
    end Initialize;
 
    ---------------------
@@ -169,7 +167,6 @@ package body Gtk.Extra.Sheet is
       end if;
 
       Set_Object (Sheet, Internal (Rows, Columns, Sa));
-      Initialize_User_Data (Sheet);
    end Initialize_Browser;
 
    ---------------------

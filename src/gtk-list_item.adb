@@ -88,7 +88,6 @@ package body Gtk.List_Item is
 
    begin
       Set_Object (List_Item, Internal (Label & ASCII.NUL));
-      Initialize_User_Data (List_Item);
    end Initialize;
 
    ---------------------

@@ -54,7 +54,6 @@ package body Gtk.Cell_Renderer_Text is
       pragma Import (C, Internal, "gtk_cell_renderer_text_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    --------------------------------

@@ -53,7 +53,6 @@ package body Gnome.Color_Picker is
       pragma Import (C, Internal, "gnome_color_picker_new");
    begin
       Set_Object (Color_Picker, Internal);
-      Initialize_User_Data (Color_Picker);
    end Initialize;
 
    ---------

@@ -63,7 +63,6 @@ package body Gtk.Separator is
 
    begin
       Set_Object (Separator, Internal);
-      Initialize_User_Data (Separator);
    end Initialize_Hseparator;
 
    ---------------------------
@@ -78,7 +77,6 @@ package body Gtk.Separator is
 
    begin
       Set_Object (Separator, Internal);
-      Initialize_User_Data (Separator);
    end Initialize_Vseparator;
 
 end Gtk.Separator;

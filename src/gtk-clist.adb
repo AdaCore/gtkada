@@ -633,7 +633,6 @@ package body Gtk.Clist is
       pragma Import (C, Internal, "gtk_clist_new");
    begin
       Set_Object (Widget, Internal (Columns));
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ----------------
@@ -652,7 +651,6 @@ package body Gtk.Clist is
 
    begin
       Set_Object (Widget, Internal (Columns, Titles (Titles'First)'Address));
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------

@@ -181,7 +181,6 @@ package body Gtk.Scrolled_Window is
       end if;
 
       Set_Object (Scrolled_Window, Internal (Hadj, Vadj));
-      Initialize_User_Data (Scrolled_Window);
    end Initialize;
 
    ---------------------

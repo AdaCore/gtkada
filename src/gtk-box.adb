@@ -123,7 +123,6 @@ package body Gtk.Box is
 
    begin
       Set_Object (Box, Internal (Boolean'Pos (Homogeneous), Spacing));
-      Initialize_User_Data (Box);
    end Initialize_Hbox;
 
    ---------------------
@@ -142,7 +141,6 @@ package body Gtk.Box is
 
    begin
       Set_Object (Box, Internal (Boolean'Pos (Homogeneous), Spacing));
-      Initialize_User_Data (Box);
    end Initialize_Vbox;
 
    ----------------

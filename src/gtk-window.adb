@@ -194,7 +194,6 @@ package body Gtk.Window is
 
    begin
       Set_Object (Window, Internal (The_Type));
-      Initialize_User_Data (Window);
    end Initialize;
 
    --------------------

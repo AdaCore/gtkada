@@ -56,7 +56,6 @@ package body Gtk.Extra.Plot_Bar is
       pragma Import (C, Internal, "gtk_plot_bar_new");
    begin
       Set_Object (Bar, Internal (Orientation));
-      Initialize_User_Data (Bar);
    end Initialize;
 
    ---------------

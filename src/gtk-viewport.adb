@@ -138,7 +138,6 @@ package body Gtk.Viewport is
       end if;
 
       Set_Object (Viewport, Internal (Hadj, Vadj));
-      Initialize_User_Data (Viewport);
    end Initialize;
 
    ---------------------

@@ -52,7 +52,6 @@ package body Gtk.Extra.Combo_Box is
       pragma Import (C, Internal, "gtk_combobox_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    -------------------------

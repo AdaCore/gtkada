@@ -64,7 +64,6 @@ package body Gtk.Extra.Plot_Data is
       else
          Set_Object (Data, Internal2 (Func));
       end if;
-      Initialize_User_Data (Data);
    end Initialize;
 
    --------------

@@ -54,7 +54,6 @@ package body Gtk.Rc is
 
    begin
       Set_Object (Rc_Style, Internal);
-      Initialize_User_Data (Rc_Style);
    end Initialize;
 
    ----------

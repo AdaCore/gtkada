@@ -51,7 +51,6 @@ package body Gtk.Tips_Query is
 
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ----------------

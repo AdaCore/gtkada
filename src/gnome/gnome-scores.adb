@@ -79,7 +79,6 @@ package body Gnome.Scores is
         (Widget, Internal (Names'Length, Names, S'Address, T'Address, Clear));
       Scores := S;
       Times  := T;
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ---------------

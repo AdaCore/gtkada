@@ -85,7 +85,6 @@ package body Gtk.Ruler is
 
    begin
       Set_Object (Ruler, Internal);
-      Initialize_User_Data (Ruler);
    end Initialize_Hruler;
 
    -----------------------
@@ -98,7 +97,6 @@ package body Gtk.Ruler is
 
    begin
       Set_Object (Ruler, Internal);
-      Initialize_User_Data (Ruler);
    end Initialize_Vruler;
 
    ----------------

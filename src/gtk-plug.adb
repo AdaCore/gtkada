@@ -53,7 +53,6 @@ package body Gtk.Plug is
 
    begin
       Set_Object (Plug, Internal (Socket_Id));
-      Initialize_User_Data (Plug);
    end Initialize;
 
    ------------

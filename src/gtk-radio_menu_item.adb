@@ -111,7 +111,6 @@ package body Gtk.Radio_Menu_Item is
          Set_Object
            (Radio_Menu_Item, Internal (Get_Object (Group), Label & ASCII.NUL));
       end if;
-      Initialize_User_Data (Radio_Menu_Item);
    end Initialize;
 
    ------------------------------
@@ -129,7 +128,6 @@ package body Gtk.Radio_Menu_Item is
    begin
       Set_Object
         (Radio_Menu_Item, Internal (Get_Object (Group), Label & ASCII.NUL));
-      Initialize_User_Data (Radio_Menu_Item);
    end Initialize_With_Mnemonic;
 
    ---------------------

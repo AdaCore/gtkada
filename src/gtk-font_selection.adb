@@ -273,7 +273,6 @@ package body Gtk.Font_Selection is
 
    begin
       Set_Object (Widget, Internal (Title & ASCII.NUL));
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ----------------
@@ -283,10 +282,8 @@ package body Gtk.Font_Selection is
    procedure Initialize (Widget : access Gtk_Font_Selection_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_new");
-
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    -------------------

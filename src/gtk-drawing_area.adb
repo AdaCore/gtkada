@@ -52,7 +52,6 @@ package body Gtk.Drawing_Area is
       pragma Import (C, Internal, "gtk_drawing_area_new");
    begin
       Set_Object (Drawing_Area, Internal);
-      Initialize_User_Data (Drawing_Area);
    end Initialize;
 
    ----------

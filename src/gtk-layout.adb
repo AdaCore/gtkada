@@ -110,7 +110,6 @@ package body Gtk.Layout is
       end if;
 
       Set_Object (Layout, Internal (Hadj, Vadj));
-      Initialize_User_Data (Layout);
    end Initialize;
 
    ----------

@@ -175,8 +175,6 @@ package body Gtk.Button is
       else
          Set_Object (Button, Internal (Label & ASCII.NUL));
       end if;
-
-      Initialize_User_Data (Button);
    end Initialize;
 
    ---------------------------
@@ -192,7 +190,6 @@ package body Gtk.Button is
 
    begin
       Set_Object (Button, Internal (Stock_Id & ASCII.NUL));
-      Initialize_User_Data (Button);
    end Initialize_From_Stock;
 
    ------------------------------
@@ -208,7 +205,6 @@ package body Gtk.Button is
 
    begin
       Set_Object (Button, Internal (Label & ASCII.NUL));
-      Initialize_User_Data (Button);
    end Initialize_With_Mnemonic;
 
    -----------

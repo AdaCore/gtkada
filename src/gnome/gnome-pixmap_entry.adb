@@ -69,7 +69,6 @@ package body Gnome.Pixmap_Entry is
       Set_Object (Widget, Internal (History_Id & ASCII.NUL,
                                     Browse_Dialog_Title & ASCII.NUL,
                                     Boolean'Pos (Do_Preview)));
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ----------------

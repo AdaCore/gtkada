@@ -122,7 +122,6 @@ package body Gtk.Alignment is
 
    begin
       Set_Object (Alignment, Internal (Xalign, Yalign, Xscale, Yscale));
-      Initialize_User_Data (Alignment);
    end Initialize;
 
    ---------

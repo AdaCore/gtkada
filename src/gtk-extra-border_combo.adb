@@ -51,7 +51,6 @@ package body Gtk.Extra.Border_Combo is
       pragma Import (C, Internal, "gtk_border_combo_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
 end Gtk.Extra.Border_Combo;

@@ -61,7 +61,6 @@ package body Gnome.Dialog is
 
    begin
       Set_Object (Dialog, Internal (Title & ASCII.NUL, Buttons + Null_Ptr));
-      Initialize_User_Data (Dialog);
    end Initialize;
 
    -------------------

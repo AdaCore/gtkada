@@ -217,7 +217,6 @@ package body Gtk.Image is
 
    begin
       Set_Object (Image, Internal (Val, Mask));
-      Initialize_User_Data (Image);
    end Initialize;
 
    procedure Initialize
@@ -232,7 +231,6 @@ package body Gtk.Image is
 
    begin
       Set_Object (Image, Internal (Pixmap, Mask));
-      Initialize_User_Data (Image);
    end Initialize;
 
    procedure Initialize
@@ -244,7 +242,6 @@ package body Gtk.Image is
 
    begin
       Set_Object (Image, Internal (Filename & ASCII.NUL));
-      Initialize_User_Data (Image);
    end Initialize;
 
    procedure Initialize
@@ -256,7 +253,6 @@ package body Gtk.Image is
 
    begin
       Set_Object (Image, Internal (Pixbuf));
-      Initialize_User_Data (Image);
    end Initialize;
 
    procedure Initialize
@@ -271,7 +267,6 @@ package body Gtk.Image is
 
    begin
       Set_Object (Image, Internal (Stock_Id & ASCII.NUL, Size));
-      Initialize_User_Data (Image);
    end Initialize;
 
    procedure Initialize
@@ -286,7 +281,6 @@ package body Gtk.Image is
 
    begin
       Set_Object (Image, Internal (Icon_Set, Size));
-      Initialize_User_Data (Image);
    end Initialize;
 
    procedure Initialize
@@ -298,7 +292,6 @@ package body Gtk.Image is
       pragma Import (C, Internal, "gtk_image_new_from_animation");
    begin
       Set_Object (Image, Internal (Animation));
-      Initialize_User_Data (Image);
    end Initialize;
 
    ---------

@@ -72,7 +72,6 @@ package body Gtk.Extra.Plot_3D is
       else
          Set_Object (Widget, Internal (Drawable, Width, Height));
       end if;
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ---------------

@@ -115,7 +115,6 @@ package body Gtk.Progress_Bar is
 
    begin
       Set_Object (Progress_Bar, Internal);
-      Initialize_User_Data (Progress_Bar);
    end Initialize;
 
    -----------

@@ -240,8 +240,6 @@ package body Gtk.Spin_Button is
            (Spin_Button,
             Internal (Get_Object (Adjustment), Climb_Rate, The_Digits));
       end if;
-
-      Initialize_User_Data (Spin_Button);
    end Initialize;
 
    procedure Initialize
@@ -255,7 +253,6 @@ package body Gtk.Spin_Button is
 
    begin
       Set_Object (Spin_Button, Internal (Min, Max, Step));
-      Initialize_User_Data (Spin_Button);
    end Initialize;
 
    --------------------

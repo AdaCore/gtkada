@@ -61,7 +61,6 @@ package body Gtk.Arrow is
 
    begin
       Set_Object (Arrow, Internal (Arrow_Type, Shadow_Type));
-      Initialize_User_Data (Arrow);
    end Initialize;
 
    ---------

@@ -84,7 +84,6 @@ package body Gtk.Pixmap is
 
    begin
       Set_Object (Widget, Internal (Pixmap, Mask));
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ---------

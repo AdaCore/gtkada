@@ -120,7 +120,6 @@ package body Gtk.Aspect_Frame is
         (Aspect_Frame,
          Internal
            (Sa, Xalign, Yalign, Ratio, Boolean'Pos (Obey_Child)));
-      Initialize_User_Data (Aspect_Frame);
    end Initialize;
 
    ---------

@@ -59,7 +59,6 @@ package body Gtk.Tree_View is
 
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    -------------
@@ -87,7 +86,6 @@ package body Gtk.Tree_View is
 
    begin
       Set_Object (Widget, Internal (Get_Object (Model)));
-      Initialize_User_Data (Widget);
    end Initialize;
 
    --------------------

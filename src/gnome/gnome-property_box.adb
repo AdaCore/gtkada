@@ -52,7 +52,6 @@ package body Gnome.Property_Box is
       pragma Import (C, Internal, "gnome_property_box_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    -----------------

@@ -60,7 +60,6 @@ package body Gtk.Tree_Store is
 
    begin
       Set_Object (Tree_Store, Internal (Types'Length, Types'Address));
-      Initialize_User_Data (Tree_Store);
    end Initialize;
 
    -----------------

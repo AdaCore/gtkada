@@ -192,7 +192,6 @@ package body Gtk.Paned is
 
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize_Hpaned;
 
    -----------------------
@@ -205,7 +204,6 @@ package body Gtk.Paned is
 
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize_Vpaned;
 
    -----------

@@ -75,8 +75,6 @@ package body Gtk.Check_Button is
       else
          Set_Object (Check_Button, Internal (Label & ASCII.NUL));
       end if;
-
-      Initialize_User_Data (Check_Button);
    end Initialize;
 
    ------------------------------
@@ -92,7 +90,6 @@ package body Gtk.Check_Button is
 
    begin
       Set_Object (Check_Button, Internal (Label & ASCII.NUL));
-      Initialize_User_Data (Check_Button);
    end Initialize_With_Mnemonic;
 
 end Gtk.Check_Button;

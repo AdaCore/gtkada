@@ -69,7 +69,6 @@ package body Gtk.Curve is
 
    begin
       Set_Object (Curve, Internal);
-      Initialize_User_Data (Curve);
    end Initialize;
 
    -----------

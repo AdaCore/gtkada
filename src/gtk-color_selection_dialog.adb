@@ -128,7 +128,6 @@ package body Gtk.Color_Selection_Dialog is
 
    begin
       Set_Object (Color_Selection_Dialog, Internal (Title & ASCII.NUL));
-      Initialize_User_Data (Color_Selection_Dialog);
    end Initialize;
 
 end Gtk.Color_Selection_Dialog;

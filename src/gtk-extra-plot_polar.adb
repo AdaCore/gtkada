@@ -66,7 +66,6 @@ package body Gtk.Extra.Plot_Polar is
       else
          Set_Object (Polar, Internal2 (Drawable, Width, Height));
       end if;
-      Initialize_User_Data (Polar);
    end Initialize;
 
    ------------

@@ -56,7 +56,6 @@ package body Gtk.Extra.Item_Entry is
       pragma Import (C, Internal, "gtk_item_entry_new_with_max_length");
    begin
       Set_Object (Widget, Internal (Max));
-      Initialize_User_Data (Widget);
    end Initialize;
 
    -----------------------

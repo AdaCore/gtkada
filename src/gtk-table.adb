@@ -204,7 +204,6 @@ package body Gtk.Table is
 
    begin
       Set_Object (Widget, Internal (Rows, Columns, Boolean'Pos (Homogeneous)));
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------

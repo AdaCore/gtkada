@@ -97,8 +97,6 @@ package body Gtk.Image_Menu_Item is
       else
          Set_Object (Widget, Internal2 (Label & ASCII.NUL));
       end if;
-
-      Initialize_User_Data (Widget);
    end Initialize;
 
    procedure Initialize
@@ -114,7 +112,6 @@ package body Gtk.Image_Menu_Item is
    begin
       Set_Object (Widget,
                   Internal (Stock_Id & ASCII.NUL, Get_Object (Accel_Group)));
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------------------------
@@ -130,7 +127,6 @@ package body Gtk.Image_Menu_Item is
 
    begin
       Set_Object (Widget, Internal (Label & ASCII.NUL));
-      Initialize_User_Data (Widget);
    end Initialize_With_Mnemonic;
 
    ---------------

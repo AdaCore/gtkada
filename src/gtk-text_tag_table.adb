@@ -51,7 +51,6 @@ package body Gtk.Text_Tag_Table is
 
    begin
       Set_Object (Table, Internal);
-      Initialize_User_Data (Table);
    end Initialize;
 
    ---------

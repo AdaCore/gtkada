@@ -113,7 +113,6 @@ package body Gtk.Combo is
 
    begin
       Set_Object (Combo_Box, Internal);
-      Initialize_User_Data (Combo_Box);
    end Initialize;
 
    ------------------------

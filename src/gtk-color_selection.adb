@@ -66,7 +66,6 @@ package body Gtk.Color_Selection is
       pragma Import (C, Internal, "gtk_color_selection_new");
    begin
       Set_Object (Widget, Internal);
-      Initialize_User_Data (Widget);
    end Initialize;
 
    ------------------
