@@ -49,9 +49,9 @@ $(target)::
 	@echo $(GNATMAKE) $(GNATFLAGS) $(target) '`'$(GTKADA_CONFIG)'`'
 	@echo "-------------------------------------"
 	@if [ -f $(src_dir)/.devel ]; then \
-	   $(GNATMAKE) $(GNATFLAGS_DEVEL) $(target) -I$(src_dir) -I$(src_dir)/opengl -Iopengl -I$(src_dir)/pixbuf -Ipixbuf -aO$(src_dir)/lib-obj -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS) @PIXBUF_LIBS@; \
+	   $(GNATMAKE) $(GNATFLAGS_DEVEL) $(target) -I$(src_dir) -I$(src_dir)/opengl -Iopengl -I$(src_dir)/pixbuf -Ipixbuf -aO$(src_dir)/lib-obj -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
 	else \
-	   $(GNATMAKE) $(GNATFLAGS) $(target) -I$(src_dir) -I$(src_dir)/opengl -Iopengl -I$(src_dir)/pixbuf -Ipixbuf -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS) @PIXBUF_LIBS@; \
+	   $(GNATMAKE) $(GNATFLAGS) $(target) -I$(src_dir) -I$(src_dir)/opengl -Iopengl -I$(src_dir)/pixbuf -Ipixbuf -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
 	fi
 
 opengl/view_gl.adb:: opengl/view_gl.gpb Makefile
