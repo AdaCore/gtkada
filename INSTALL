@@ -14,11 +14,14 @@ and your ADA_OBJECTS_PATH don't include this directory before building GtkAda.
 To install GtkAda, you first need to install GNU make, glib, pango, atk and
 gtk+, then do the following:
 
-If you are under Windows only:
+If you are under Windows, you need to use GCC 3.2 (or later) to build the
+C files. You can use an older GCC version for the Ada files (gnatmake):
    $ (cd src; patch -p0 < ../contrib/gtkada-2.0-win32.diff)
+   $ CC='gcc-3.2 -mms-bitfields' ./configure --prefix=<install_dir>
+   $ make install
 
-On all platforms:
-   $ ./configure --prefix=<installation_directory>
+On others platforms:
+   $ ./configure --prefix=<install_dir>
    $ make install
 
 This will create (and install) the GtkAda library and then compile the
