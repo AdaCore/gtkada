@@ -135,8 +135,21 @@ local ($keywords_reg) = join ("|", @Ada95_keywords, @Ada_keywords);
 		       "gtkclist.h/insert_row"           => 0,
 		       "gtkclist.h/fake_unselect_all"    => 0,
 		       "gtkclist.h/set_cell_contents"    => 0,
-		       "gtkclist.h/resync_selection"     => 0
+		       "gtkclist.h/resync_selection"     => 0,
+		       "gtkcheckitem.h/draw_indicator"   => 0
 		       );
+%package_from_type = ("Gtk_Plot"         => "Gtk.Extra.Plot",
+		      "Gtk_Check_Item"   => "Gtk.Extra.Check_Item",
+		      "Gtk_Plot_Layout"  => "Gtk.Extra.Plot_Layout",
+		      "Gtk_Plot_Canvas"  => "Gtk.Extra.Plot_Canvas",
+		      "Gtk_Combo_Box"    => "Gtk.Extra.Combo_Box",
+		      "Gtk_Sheet"        => "Gtk.Extra.Sheet",
+		      "Gtk_Color_Combo"  => "Gtk.Extra.Color_Combo",
+		      "Gtk_Border_Combo" => "Gtk.Extra.Border_Combo",
+		      "Gtk_Font_Combo"   => "Gtk.Extra.Font_Combo",
+		      "Gtk_IEntry"       => "Gtk.Extra.Item_Entry",
+		      "Gtk_Entry"        => "Gtk.Gentry",
+		      "Gtk_Range"        => "Gtk.Grange");
 
 ## Contains the parent of each widget
 %parent = ();
@@ -649,16 +662,13 @@ sub find_hierarchy_array () {
     };
 
     unless ($parent{$type}) {
-	my ($filename) = $type;
-	$filename =~ s/Gtk_//;
-	$filename =~ tr/A-Z/a-z/;
-	$filename .= ".ads";
+	my ($filename) = &file_from_package (&package_from_type($type));
 	if (-f $src_dir . "/gtk-" . $filename) {
 	    open (FILE, $src_dir . "/gtk-" . $filename);
 	} elsif (-f $src_dir . "/gtk-extra-" . $filename) {
 	    open (FILE, $src_dir . "/gtk-extra-" . $filename);
 	} else {
-	    die "file not found for type $type\n";
+	    die "file not found for type $type ($filename)\n";
 	}
 	my ($origin) = &find_type_in_package (<FILE>);
 	close (FILE);
@@ -667,23 +677,25 @@ sub find_hierarchy_array () {
     return (&find_hierarchy_array ($parent{$type}), $type);
 }
 
+# Returns the name of the file that contains a given package
+sub file_from_package () {
+    my ($package) = shift;
+    $package =~ s/G[dt]k\.//;
+    $package =~ s/\./-/;
+    $package =~ tr/A-Z/a-z/;
+    return $package . ".ads";
+}
 
 # Returns the name of the Ada package that contains the type $1
 
 sub package_from_type () {
     my ($string) = shift;
-    if ($string eq "Gtk_Plot") {
-	return "Gtk.Extra.Plot";
-    } elsif ($string eq "Gtk_Check_Item") {
-	return "Gtk.Extra.Check_Item";
-    } elsif ($string eq "Gtk_Plot_Layout") {
-	return "Gtk.Extra.Plot_Layout";
-    } elsif ($string eq "Gtk_Plot_Canvas") {
-	return "Gtk.Extra.Plot_Canvas";
+    if (defined $package_from_type{$string}) {
+	return $package_from_type{$string};
     } else {
 	$string =~ s/(G[td]k)_/$1./;
+	return $string;
     }
-    return $string;
 }
 
 # Prepare the string $1 for output (highlight keywords and comments)
