@@ -6,7 +6,7 @@ package body Gtk.Style is
    --------------
 
    function Attach (Style  : in Gtk_Style;
-                    Window : in Gdk.Types.Gdk_Window) return Gtk_Style is
+                    Window : in Gdk.Window.Gdk_Window) return Gtk_Style is
       function Internal (Style : in System.Address;
                          Window : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_style_attach");
@@ -48,7 +48,7 @@ package body Gtk.Style is
    ------------------
 
    procedure Draw_Arrow (Style       : in Gtk_Style;
-                         Window      : in Gdk.Types.Gdk_Window;
+                         Window      : in Gdk.Window.Gdk_Window;
                          State_Type  : in Enums.Gtk_State_Type;
                          Shadow_Type : in Enums.Gtk_Shadow_Type;
                          Arrow_Type  : in Enums.Gtk_Arrow_Type;
@@ -77,7 +77,7 @@ package body Gtk.Style is
    --------------------
 
    procedure Draw_Diamond (Style       : in Gtk_Style;
-                           Window      : in Gdk.Types.Gdk_Window;
+                           Window      : in Gdk.Window.Gdk_Window;
                            State_Type  : in Enums.Gtk_State_Type;
                            Shadow_Type : in Enums.Gtk_Shadow_Type;
                            X, Y        : in Gint;
@@ -101,7 +101,7 @@ package body Gtk.Style is
    ------------------
 
    procedure Draw_Hline (Style      : in Gtk_Style;
-                         Window     : in Gdk.Types.Gdk_Window;
+                         Window     : in Gdk.Window.Gdk_Window;
                          State_Type : in Enums.Gtk_State_Type;
                          X1, X2     : in Gint;
                          Y          : in Gint) is
@@ -120,7 +120,7 @@ package body Gtk.Style is
    -----------------
 
    procedure Draw_Oval (Style       : in Gtk_Style;
-                        Window      : in Gdk.Types.Gdk_Window;
+                        Window      : in Gdk.Window.Gdk_Window;
                         State_Type  : in Enums.Gtk_State_Type;
                         Shadow_Type : in Enums.Gtk_Shadow_Type;
                         X, Y        : in Gint;
@@ -144,7 +144,7 @@ package body Gtk.Style is
    --------------------
 
    procedure Draw_Polygon (Style       : in Gtk_Style;
-                           Window      : in Gdk.Types.Gdk_Window;
+                           Window      : in Gdk.Window.Gdk_Window;
                            State_Type  : in Enums.Gtk_State_Type;
                            Shadow_Type : in Enums.Gtk_Shadow_Type;
                            Points      : in Points_Array;
@@ -167,7 +167,7 @@ package body Gtk.Style is
    -------------------
 
    procedure Draw_Shadow (Style       : in Gtk_Style;
-                          Window      : in Gdk.Types.Gdk_Window;
+                          Window      : in Gdk.Window.Gdk_Window;
                           State_Type  : in Enums.Gtk_State_Type;
                           Shadow_Type : in Enums.Gtk_Shadow_Type;
                           X, Y        : in Gint;
@@ -189,7 +189,7 @@ package body Gtk.Style is
    -------------------
 
    procedure Draw_String (Style       : in Gtk_Style;
-                          Window      : in Gdk.Types.Gdk_Window;
+                          Window      : in Gdk.Window.Gdk_Window;
                           State_Type  : in Enums.Gtk_State_Type;
                           X, Y        : in Gint;
                           Str         : in String) is
@@ -209,7 +209,7 @@ package body Gtk.Style is
    ------------------
 
    procedure Draw_Vline (Style      : in Gtk_Style;
-                         Window     : in Gdk.Types.Gdk_Window;
+                         Window     : in Gdk.Window.Gdk_Window;
                          State_Type : in Enums.Gtk_State_Type;
                          Y1, Y2     : in Gint;
                          X          : in Gint) is
@@ -240,7 +240,7 @@ package body Gtk.Style is
    ----------------------
 
    procedure Set_Background (Style      : in out Gtk_Style;
-                             Window     : in     Gdk.Types.Gdk_Window;
+                             Window     : in     Gdk.Window.Gdk_Window;
                              State_Type : in     Enums.Gtk_State_Type) is
       procedure Internal (Style      : in System.Address;
                           Window     : in System.Address;
