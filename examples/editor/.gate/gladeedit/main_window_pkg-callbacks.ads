@@ -1,9 +1,10 @@
 with Gtk.Arguments;
+with Gtk.Widget; use Gtk.Widget;
 
 package Main_Window_Pkg.Callbacks is
-   procedure On_Main_Window_Delete_Event
-     (Object : access Gtk_Window_Record'Class;
-      Params : Gtk.Arguments.Gtk_Args);
+   function On_Main_Window_Delete_Event
+     (Object : access Gtk_Widget_Record'Class;
+      Params : Gtk.Arguments.Gtk_Args) return Boolean;
 
    procedure On_New_Activate
      (Object : access Gtk_Menu_Item_Record'Class);

@@ -1,8 +1,9 @@
 with Glib; use Glib;
 with Gtk; use Gtk;
-with Gdk.Types; use Gdk.Types;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Enums;  use Gtk.Enums;
+with Gdk.Types;       use Gdk.Types;
+with Gtk.Widget;      use Gtk.Widget;
+with Gtk.Enums;       use Gtk.Enums;
+with Gtkada.Handlers; use Gtkada.Handlers;
 with Callbacks_Gladeedit; use Callbacks_Gladeedit;
 with Main_Window_Pkg.Callbacks; use Main_Window_Pkg.Callbacks;
 
@@ -20,7 +21,7 @@ procedure Initialize (Main_Window : access Main_Window_Record'Class) is
 begin
    Gtk.Window.Initialize (Main_Window, Window_Toplevel);
    Set_USize (Main_Window, 600, 450);
-   Window_Callback.Connect
+   Return_Callback.Connect
      (Main_Window, "delete_event", On_Main_Window_Delete_Event'Access);
    Set_Title (Main_Window, "The Editor");
    Set_Policy (Main_Window, True, True, False);

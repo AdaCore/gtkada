@@ -3,8 +3,6 @@ with Gtk.Box; use Gtk.Box;
 with Gtk.Label; use Gtk.Label;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Object; use Gtk.Object;
-with Gtk.Window; use Gtk.Window;
-
 package About_Dialog_Pkg is
 
    type About_Dialog_Record is new Gtk_Dialog_Record with record

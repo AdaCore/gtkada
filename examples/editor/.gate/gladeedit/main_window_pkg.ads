@@ -12,7 +12,6 @@ with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Text; use Gtk.Text;
 with Gtk.Status_Bar; use Gtk.Status_Bar;
 with Gtk.Button; use Gtk.Button;
-
 package Main_Window_Pkg is
 
    type Main_Window_Record is new Gtk_Window_Record with record

@@ -1,8 +1,9 @@
 with Glib; use Glib;
 with Gtk; use Gtk;
-with Gdk.Types; use Gdk.Types;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Enums;  use Gtk.Enums;
+with Gdk.Types;       use Gdk.Types;
+with Gtk.Widget;      use Gtk.Widget;
+with Gtk.Enums;       use Gtk.Enums;
+with Gtkada.Handlers; use Gtkada.Handlers;
 with Callbacks_Gladeedit; use Callbacks_Gladeedit;
 with About_Dialog_Pkg.Callbacks; use About_Dialog_Pkg.Callbacks;
 

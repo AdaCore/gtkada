@@ -16,13 +16,13 @@ package body Open_File_Selection_Pkg.Callbacks is
    -- On_Open_Filesel_Delete_Event --
    ----------------------------------
 
-   procedure On_Open_Filesel_Delete_Event
-     (Object : access Gtk_File_Selection_Record'Class;
-      Params : Gtk.Arguments.Gtk_Args)
+   function On_Open_Filesel_Delete_Event
+     (Object : access Gtk_Widget_Record'Class;
+      Params : Gtk.Arguments.Gtk_Args) return Boolean
    is
       Arg1 : Gdk_Event := To_Event (Params, 1);
    begin
-      null;
+      return False;
    end On_Open_Filesel_Delete_Event;
 
    ---------------------------------------

@@ -12,6 +12,7 @@ with Gtk.Editable; use Gtk.Editable;
 with GNAT.OS_Lib; use GNAT.OS_Lib;
 with About_Dialog_Pkg; use About_Dialog_Pkg;
 with File_Utils; use File_Utils;
+with Gtkada.Dialogs; use Gtkada.Dialogs;
 
 package body Main_Window_Pkg.Callbacks is
 
@@ -23,13 +24,22 @@ package body Main_Window_Pkg.Callbacks is
    -- On_Main_Window_Delete_Event --
    ---------------------------------
 
-   procedure On_Main_Window_Delete_Event
-     (Object : access Gtk_Window_Record'Class;
-      Params : Gtk.Arguments.Gtk_Args)
+   function On_Main_Window_Delete_Event
+     (Object : access Gtk_Widget_Record'Class;
+      Params : Gtk.Arguments.Gtk_Args) return Boolean
    is
       Arg1 : Gdk_Event := To_Event (Params, 1);
    begin
-      Gtk.Main.Gtk_Exit (0);
+      if Message_Dialog
+        ("Do you really want to quit ?",
+         Confirmation,
+         Button_Yes or Button_No,
+         Button_Yes) = Button_Yes
+      then
+         Gtk.Main.Gtk_Exit (0);
+      end if;
+
+      return True;
    end On_Main_Window_Delete_Event;
 
    ---------------------
@@ -91,7 +101,14 @@ package body Main_Window_Pkg.Callbacks is
      (Object : access Gtk_Menu_Item_Record'Class)
    is
    begin
-      Gtk.Main.Gtk_Exit (0);
+      if Message_Dialog
+        ("Do you really want to quit ?",
+         Confirmation,
+         Button_Yes or Button_No,
+         Button_Yes) = Button_Yes
+      then
+         Gtk.Main.Gtk_Exit (0);
+      end if;
    end On_Quit_Activate;
 
    ---------------------
@@ -158,12 +175,14 @@ package body Main_Window_Pkg.Callbacks is
    procedure On_About_Activate
      (Object : access Gtk_Menu_Item_Record'Class)
    is
+      Button : Message_Dialog_Buttons;
    begin
-      if About_Dialog = null then
-         Gtk_New (About_Dialog);
-      end if;
-
-      Show_All (About_Dialog);
+      Button := Message_Dialog
+        ("The Text Editor" & ASCII.LF & ASCII.LF & "(Example program for Gate)",
+         Help_Msg =>
+           "This is the About information box." & ASCII.LF & ASCII.LF &
+           "Click on the OK button to close this window.",
+         Title => "About The GtkAda Text Editor Example");
    end On_About_Activate;
 
    ---------------------------

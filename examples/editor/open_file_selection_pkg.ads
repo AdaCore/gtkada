@@ -2,8 +2,6 @@ with Gtk.File_Selection; use Gtk.File_Selection;
 with Gtk.Button; use Gtk.Button;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Window; use Gtk.Window;
-
 package Open_File_Selection_Pkg is
 
    type Open_File_Selection_Record is new Gtk_File_Selection_Record with record

@@ -1,8 +1,9 @@
 with Glib; use Glib;
 with Gtk; use Gtk;
-with Gdk.Types; use Gdk.Types;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Enums;  use Gtk.Enums;
+with Gdk.Types;       use Gdk.Types;
+with Gtk.Widget;      use Gtk.Widget;
+with Gtk.Enums;       use Gtk.Enums;
+with Gtkada.Handlers; use Gtkada.Handlers;
 with Callbacks_Gladeedit; use Callbacks_Gladeedit;
 with Open_File_Selection_Pkg.Callbacks; use Open_File_Selection_Pkg.Callbacks;
 
@@ -18,7 +19,7 @@ procedure Initialize (Open_File_Selection : access Open_File_Selection_Record'Cl
 begin
    Gtk.File_Selection.Initialize (Open_File_Selection, "Open File");
    Set_Show_File_Op_Buttons (Open_File_Selection, True);
-   File_Selection_Callback.Connect
+   Return_Callback.Connect
      (Open_File_Selection, "delete_event", On_Open_Filesel_Delete_Event'Access);
    Set_Border_Width (Open_File_Selection, 10);
    Set_Title (Open_File_Selection, "Open File");
