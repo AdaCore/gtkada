@@ -65,5 +65,24 @@ package body Pango.Context is
       Internal (Get_Object (Context), Description);
    end Set_Font_Description;
 
+   ---------------
+   -- Load_Font --
+   ---------------
+
+   function Load_Font
+     (Context : access Pango_Context_Record'Class;
+      Descr   : Pango.Font.Pango_Font_Description)
+      return Pango.Font.Pango_Font
+   is
+      function Internal (Context : System.Address;
+                         Descr   : Pango_Font_Description)
+         return System.Address;
+      pragma Import (C, Internal, "pango_context_load_font");
+      Stub : Pango_Font_Record;
+   begin
+      return Pango_Font
+        (Get_User_Data (Internal (Get_Object (Context), Descr), Stub));
+   end Load_Font;
+
 end Pango.Context;
 

@@ -49,6 +49,12 @@ package Pango.Context is
    function Get_Font_Description (Context : Pango_Context)
       return Pango.Font.Pango_Font_Description;
 
+   function Load_Font
+     (Context : access Pango_Context_Record'Class;
+      Descr   : Pango.Font.Pango_Font_Description)
+      return Pango.Font.Pango_Font;
+   --  Load a new font from its description
+
 private
    type Pango_Context_Record is new Glib.Object.GObject_Record
      with null record;
@@ -57,7 +63,6 @@ end Pango.Context;
 
 --  missing:
 --  pango_context_list_families
---  pango_context_load_font
 --  pango_context_load_fontset
 --  pango_context_get_metrics
 --  pango_context_get_language
