@@ -97,6 +97,8 @@ package Glib.Glist is
                              Link : in Glist);
 
 
+      function Is_Created (List : in Glist) return Boolean;
+
       --  For Internal use only.
       --
       function Get_Object (Obj : in Glist)

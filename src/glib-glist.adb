@@ -29,6 +29,8 @@
 
 package body Glib.Glist is
 
+   use type System.Address;
+
    package body Generic_List is
       -----------
       -- Alloc --
@@ -192,6 +194,15 @@ package body Glib.Glist is
          return Internal (Get_Object (List),
                           Convert (Data));
       end Index;
+
+      ------------------
+      --  Is_Created  --
+      ------------------
+
+      function Is_Created (List : in Glist) return Boolean is
+      begin
+         return Get_Object (List) /= System.Null_Address;
+      end Is_Created;
 
       ----------
       -- Last --
