@@ -473,6 +473,36 @@ ada_gdk_event_button_set_y (GdkEventButton * event, gint16 y)
   event->y = y;
 }
 
+/*
+ *
+ * GdkEventKey
+ *
+ */
+
+guint32
+ada_gdk_event_key_get_state (GdkEventKey * event)
+{
+  return event->state;
+}
+
+guint
+ada_gdk_event_key_get_key_val (GdkEventKey * event)
+{
+  return event->keyval;
+}
+
+gint
+ada_gdk_event_key_get_length (GdkEventKey * event)
+{
+  return event->length;
+}
+
+gchar *
+ada_gdk_event_key_get_string (GdkEventKey * event)
+{
+  return event->string;
+}
+
 
 /*
  *
