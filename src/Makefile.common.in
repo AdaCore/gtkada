@@ -1,11 +1,12 @@
 CC = @CC@
-FPIC = -fPIC
+FPIC = @FPIC@
 
 GNATFLAGS = -O2 -gnatn -gnatwuwl
 GNATFLAGS_DEVEL = -O2 -gnatag -gnatwuwewl -g
 
 GNATMAKE = gnatmake
 OS_SPECIFIC_LINK_OPTIONS = @OS_SPECIFIC_LINK_OPTIONS@
+BUILD_SHARED = @BUILD_SHARED@
 SO_EXT = @SO_EXT@
 
 CP = cp -p -f
