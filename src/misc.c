@@ -29,6 +29,9 @@
 -----------------------------------------------------------------------
 */
 
+/* ??? Consider removing this in the future */
+#define GTK_ENABLE_BROKEN
+
 #include <glib.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
@@ -101,17 +104,6 @@ ada_gtk_minor_version () {
 guint
 ada_gtk_micro_version () {
   return GTK_MICRO_VERSION;
-}
-
-/********************************************************************
- **  Returns the GtkType associated with a GdkEvent.
- **  This is a function since under some systems, importing global
- **  variables requires special handling (e.g DLLs under Win32).
- ********************************************************************/
-
-GtkType
-ada_gtk_type_gdk_event () {
-  return GTK_TYPE_GDK_EVENT;
 }
 
 /********************************************************************
@@ -490,36 +482,6 @@ ada_widget_allocation_y (GtkWidget* widget)
 
 /*
  *
- * Notebook page
- *
- */
-
-guint
-ada_notebook_page_allocation_height (GtkNotebookPage* page)
-{
-  return (guint) page->allocation.height;
-}
-
-guint
-ada_notebook_page_allocation_width (GtkNotebookPage* page)
-{
-  return (guint) page->allocation.width;
-}
-
-gint
-ada_notebook_page_allocation_x (GtkNotebookPage* page)
-{
-  return (gint) page->allocation.x;
-}
-
-gint
-ada_notebook_page_allocation_y (GtkNotebookPage* page)
-{
-  return (gint) page->allocation.y;
-}
-
-/*
- *
  * radio_menu_item
  *
  */
@@ -629,11 +591,6 @@ ada_paned_get_child1 (GtkPaned* widget) {
 GtkWidget*
 ada_paned_get_child2 (GtkPaned* widget) {
   return widget->child2;
-}
-
-guint16
-ada_gtk_paned_get_handle_size (GtkPaned* widget) {
-  return widget->handle_size;
 }
 
 /********************
@@ -1948,8 +1905,8 @@ ada_style_get_y_thickness (GtkStyle* style) {
  *  Functions for Objects
  ***************************************************/
 
-gint
-ada_object_get_type (GtkObject* object)
+guint
+ada_object_get_type (GObject* object)
 {
   return G_OBJECT_TYPE (object);
 }
@@ -1989,25 +1946,25 @@ ada_gvalue_get_pointer (GValue* value)
 void
 ada_gvalue_set (GValue* value, void *val)
 {
-  if G_IS_VALUE_CHAR (value)
+  if G_VALUE_HOLDS_CHAR (value)
     g_value_set_char (value, *(gchar*)val);
-  else if G_IS_VALUE_UCHAR (value)
+  else if G_VALUE_HOLDS_UCHAR (value)
     g_value_set_uchar (value, *(guchar*)val);
-  else if G_IS_VALUE_BOOLEAN (value)
+  else if G_VALUE_HOLDS_BOOLEAN (value)
     g_value_set_boolean (value, *(char*)val);
-  else if G_IS_VALUE_INT (value)
+  else if G_VALUE_HOLDS_INT (value)
     g_value_set_int (value, *(gint*)val);
-  else if G_IS_VALUE_UINT (value)
+  else if G_VALUE_HOLDS_UINT (value)
     g_value_set_uint (value, *(guint*)val);
-  else if G_IS_VALUE_LONG (value)
+  else if G_VALUE_HOLDS_LONG (value)
     g_value_set_long (value, *(glong*)val);
-  else if G_IS_VALUE_ULONG (value)
+  else if G_VALUE_HOLDS_ULONG (value)
     g_value_set_ulong (value, *(gulong*)val);
-  else if G_IS_VALUE_FLOAT (value)
+  else if G_VALUE_HOLDS_FLOAT (value)
     g_value_set_float (value, *(gfloat*)val);
-  else if G_IS_VALUE_DOUBLE (value)
+  else if G_VALUE_HOLDS_DOUBLE (value)
     g_value_set_double (value, *(gdouble*)val);
-  else if G_IS_VALUE_POINTER (value)
+  else if G_VALUE_HOLDS_POINTER (value)
     g_value_set_pointer (value, *(gpointer*)val);
   else
     fprintf (stderr, "GtkAda: Return value type not supported\n");
@@ -2416,34 +2373,6 @@ GList*
 ada_notebook_get_children (GtkNotebook* widget)
 {
   return widget->children;
-}
-
-GtkNotebookPage*
-ada_notebook_get_cur_page (GtkNotebook* widget)
-{
-  return widget->cur_page;
-}
-
-GtkWidget*
-ada_notebook_get_menu_label (GtkNotebookPage* widget)
-{
-  return widget->menu_label;
-}
-
-/**********************************************
- ** Functions for NotebookPage
- **********************************************/
-
-GtkWidget*
-ada_notebook_page_get_child (GtkNotebookPage* widget)
-{
-  return widget->child;
-}
-
-GtkWidget*
-ada_notebook_get_tab_label (GtkNotebookPage* widget)
-{
-  return widget->tab_label;
 }
 
 /**********************************************
