@@ -42,6 +42,7 @@
 --  - contextual menu in the title bar of children to dock them, float them,...
 
 with Glib;             use Glib;
+with Glib.Convert;     use Glib.Convert;
 with Glib.Object;      use Glib.Object;
 with Pango.Font;       use Pango.Font;
 with Gdk;              use Gdk;
@@ -232,6 +233,9 @@ package body Gtkada.MDI is
       Label         : Gtk_Label;
       Ent           : Gtk_Entry;
       Length        : Natural := 0;
+      Modifier      : Gdk_Modifier_Type;
+      Next_Key      : Gdk_Key_Type;
+      Prev_Key      : Gdk_Key_Type;
    end record;
    type Selection_Dialog_Access is access all Selection_Dialog_Record'Class;
 
@@ -478,6 +482,11 @@ package body Gtkada.MDI is
       Event : Gdk_Event) return Boolean;
    --  Forward the key press event to the Win
 
+   function Key_Event_Selection_Dialog
+     (MDI   : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event) return Boolean;
+   --  Handle key events in the selection dialog
+
    -------------------------
    -- Set_Focus_Child_MDI --
    -------------------------
@@ -698,6 +707,27 @@ package body Gtkada.MDI is
       end if;
    end Update_Selection_Dialog;
 
+   --------------------------------
+   -- Key_Event_Selection_Dialog --
+   --------------------------------
+
+   function Key_Event_Selection_Dialog
+     (MDI   : access Gtk_Widget_Record'Class;
+      Event : Gdk_Event) return Boolean
+   is
+      M : constant MDI_Window := MDI_Window (MDI);
+   begin
+      return Check_Interactive_Selection_Dialog
+        (M,
+         Event,
+         Switch_Child_Modifier => Selection_Dialog_Access
+           (M.Selection_Dialog).Modifier,
+         Next_Child_Key        => Selection_Dialog_Access
+           (M.Selection_Dialog).Next_Key,
+         Previous_Child_Key     => Selection_Dialog_Access
+           (M.Selection_Dialog).Prev_Key);
+   end Key_Event_Selection_Dialog;
+
    ----------------------------------------
    -- Check_Interactive_Selection_Dialog --
    ----------------------------------------
@@ -714,8 +744,8 @@ package body Gtkada.MDI is
       D : Selection_Dialog_Access;
       Box : Gtk_Box;
       Frame : Gtk_Frame;
-      Propagate : Boolean;
-      pragma Unreferenced (Propagate);
+      Tmp : Gdk_Grab_Status;
+      pragma Unreferenced (Tmp);
    begin
       if Get_Event_Type (Event) = Key_Press
         and then
@@ -729,8 +759,12 @@ package body Gtkada.MDI is
             D := new Selection_Dialog_Record;
             Initialize (D, Window_Popup);
 
-            Set_Transient_For (D, Gtk_Window (Get_Toplevel (MDI)));
-            Set_Position (D, Win_Pos_Center_On_Parent);
+            if MDI.All_Floating_Mode then
+               Set_Position (D, Win_Pos_Mouse);
+            else
+               Set_Transient_For (D, Gtk_Window (Get_Toplevel (MDI)));
+               Set_Position (D, Win_Pos_Center_On_Parent);
+            end if;
             Set_Default_Size (D, 300, 70);
 
             Gtk_New (Frame);
@@ -747,8 +781,12 @@ package body Gtkada.MDI is
 
             Gtk_New (D.Ent);
             Pack_Start (Box, D.Ent, Expand => True);
+            Set_Editable (D.Ent, False);
 
             Show_All (D);
+            D.Modifier := Switch_Child_Modifier;
+            D.Next_Key := Next_Child_Key;
+            D.Prev_Key := Previous_Child_Key;
 
             MDI.Selection_Dialog := Gtk_Widget (D);
 
@@ -763,6 +801,19 @@ package body Gtkada.MDI is
             Update_Selection_Dialog (MDI, -1);
          end if;
 
+         --  Make sure all the key events are forwarded to us, as otherwise if
+         --  the mouse was moving out of the window we wouldn't the events
+         Tmp := Keyboard_Grab (Get_Window (D), True, Time => 0);
+
+         Return_Callback.Object_Connect
+           (D, "key_release_event",
+            Return_Callback.To_Marshaller
+              (Key_Event_Selection_Dialog'Access), MDI);
+         Return_Callback.Object_Connect
+           (D, "key_press_event",
+            Return_Callback.To_Marshaller
+              (Key_Event_Selection_Dialog'Access), MDI);
+
          return True;
 
       elsif Get_Event_Type (Event) = Key_Press
@@ -776,9 +827,8 @@ package body Gtkada.MDI is
             Delete_Text (D.Ent, Gint (D.Length) - 1, -1);
          else
             Delete_Text (D.Ent, Gint (D.Length), -1);
-            Set_State (Event, Get_State (Event) and not Switch_Child_Modifier);
-            Propagate := Return_Callback.Emit_By_Name
-              (D.Ent, "key_press_event", Event);
+            Append_Text
+              (D.Ent, Locale_To_UTF8 (Get_String (Event)));
          end if;
 
          Update_Selection_Dialog (MDI, 0);
@@ -804,6 +854,7 @@ package body Gtkada.MDI is
             Set_Focus_Child (C);
          end if;
 
+         Keyboard_Ungrab (Time => 0);
          Destroy (MDI.Selection_Dialog);
          MDI.Selection_Dialog := null;
 
@@ -1349,7 +1400,7 @@ package body Gtkada.MDI is
    procedure Size_Allocate_MDI_Layout
      (Layout : System.Address; Alloc : Gtk_Allocation)
    is
-      L : constant Gtk_Widget := Convert (Layout);
+      L : constant Gtk_Widget := Gtk.Widget.Convert (Layout);
    begin
       Set_Allocation (L, Alloc);
 
@@ -3390,6 +3441,10 @@ package body Gtkada.MDI is
 
          Return_Callback.Object_Connect
            (Win, "key_press_event",
+            Return_Callback.To_Marshaller (Key_Event_In_Floating'Access),
+            Gtk_Window (Get_Toplevel (Child.MDI)), After => True);
+         Return_Callback.Object_Connect
+           (Win, "key_release_event",
             Return_Callback.To_Marshaller (Key_Event_In_Floating'Access),
             Gtk_Window (Get_Toplevel (Child.MDI)), After => True);
 
