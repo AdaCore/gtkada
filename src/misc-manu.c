@@ -62,3 +62,19 @@ ada_gtk_signal_connect_after (GtkObject           *object,
 				  destroy_func, FALSE, TRUE);
 }
 
+
+/********************************************************
+ *  Functions to get the fields of a gamma curve
+ ********************************************************/
+
+GtkWidget*
+ada_gamma_curve_get_curve (GtkGammaCurve* widget)
+{
+  return widget->curve;
+}
+
+gfloat
+ada_gamma_curve_get_gamma (GtkGammaCurve* widget)
+{
+  return widget->gamma;
+}
