@@ -156,8 +156,8 @@ package Gtk is
    function Unchecked_Cast
      (Obj  : access Root_Type'Class;
       Stub : Root_Type'Class) return Root_Type_Access;
-   --  Cast Obj in an object of type Stub'Class.
-   --  Return the resulting object and free Obj.
+   --  Cast Obj in an object of tag Stub'Class.
+   --  Return the resulting object and free the memory pointed by Obj.
 
    function Count_Arguments
      (The_Type : Gtk_Type; Name : in String) return Guint;
