@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -48,6 +48,7 @@ package body Gtk.Tips_Query is
    procedure Initialize (Widget : access Gtk_Tips_Query_Record'Class) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tips_query_new");
+
    begin
       Set_Object (Widget, Internal);
       Initialize_User_Data (Widget);
@@ -62,12 +63,12 @@ package body Gtk.Tips_Query is
        Caller     : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
-         (Tips_Query : in System.Address;
-          Caller     : in System.Address);
+        (Tips_Query : System.Address;
+         Caller     : System.Address);
       pragma Import (C, Internal, "gtk_tips_query_set_caller");
+
    begin
-      Internal (Get_Object (Tips_Query),
-                Get_Object (Caller));
+      Internal (Get_Object (Tips_Query), Get_Object (Caller));
    end Set_Caller;
 
    ----------------
@@ -75,15 +76,16 @@ package body Gtk.Tips_Query is
    ----------------
 
    procedure Set_Labels
-      (Tips_Query     : access Gtk_Tips_Query_Record;
-       Label_Inactive : in String;
-       Label_No_Tip   : in String)
+     (Tips_Query     : access Gtk_Tips_Query_Record;
+      Label_Inactive : String;
+      Label_No_Tip   : String)
    is
       procedure Internal
-         (Tips_Query     : in System.Address;
-          Label_Inactive : in String;
-          Label_No_Tip   : in String);
+        (Tips_Query     : System.Address;
+         Label_Inactive : String;
+         Label_No_Tip   : String);
       pragma Import (C, Internal, "gtk_tips_query_set_labels");
+
    begin
       Internal (Get_Object (Tips_Query),
                 Label_Inactive & ASCII.NUL,
@@ -95,8 +97,9 @@ package body Gtk.Tips_Query is
    -----------------
 
    procedure Start_Query (Tips_Query : access Gtk_Tips_Query_Record) is
-      procedure Internal (Tips_Query : in System.Address);
+      procedure Internal (Tips_Query : System.Address);
       pragma Import (C, Internal, "gtk_tips_query_start_query");
+
    begin
       Internal (Get_Object (Tips_Query));
    end Start_Query;
@@ -106,8 +109,9 @@ package body Gtk.Tips_Query is
    ----------------
 
    procedure Stop_Query (Tips_Query : access Gtk_Tips_Query_Record) is
-      procedure Internal (Tips_Query : in System.Address);
+      procedure Internal (Tips_Query : System.Address);
       pragma Import (C, Internal, "gtk_tips_query_stop_query");
+
    begin
       Internal (Get_Object (Tips_Query));
    end Stop_Query;

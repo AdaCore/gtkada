@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,8 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  pragma Deprecated;
+
 with Gtk.Label;
 with Gtk.Widget;
 
@@ -45,8 +47,8 @@ package Gtk.Tips_Query is
 
    procedure Set_Labels
      (Tips_Query     : access Gtk_Tips_Query_Record;
-      Label_Inactive : in String;
-      Label_No_Tip   : in String);
+      Label_Inactive : String;
+      Label_No_Tip   : String);
 
    procedure Start_Query (Tips_Query : access Gtk_Tips_Query_Record);
    procedure Stop_Query (Tips_Query : access Gtk_Tips_Query_Record);
