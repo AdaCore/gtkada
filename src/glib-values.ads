@@ -107,6 +107,9 @@ package Glib.Values is
    procedure Set_Address (Value : GValue; V_Address : System.Address);
    function  Get_Address (Value : GValue) return System.Address;
 
+   --  Convenience function to Get and Set a Gtk_Text_Iter are
+   --  also provided inside Gtk.Text_Iter.
+
 private
    type GValue is new System.Address;
 
