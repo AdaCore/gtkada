@@ -16,7 +16,7 @@ MICRO   = @GTKADA_MICRO_VERSION@
 CP = cp -p -f
 LN = ln -s -f
 CHMOD = chmod
-ARFLAGS = r
+ARFLAGS = cr
 
 RANLIB = @RANLIB@
 
