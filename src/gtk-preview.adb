@@ -91,7 +91,7 @@ package body Gtk.Preview is
    procedure Put
       (Preview : in Gtk_Preview'Class;
        Window  : in Gdk.Window.Gdk_Window'Class;
-       Gc      : in Gdk.G_C.Gdk_G_C'Class;
+       Gc      : in Gdk.GC.Gdk_GC'Class;
        Srcx    : in Gint;
        Srcy    : in Gint;
        Destx   : in Gint;

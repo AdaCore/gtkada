@@ -1,6 +1,6 @@
 
 with Gdk.Colormap;
-with Gdk.G_C;
+with Gdk.GC;
 with Gdk.Visual;
 with Gdk.Window;
 with Gtk.Enums; use Gtk.Enums;
@@ -25,7 +25,7 @@ package Gtk.Preview is
    procedure Put
       (Preview : in Gtk_Preview'Class;
        Window  : in Gdk.Window.Gdk_Window'Class;
-       Gc      : in Gdk.G_C.Gdk_G_C'Class;
+       Gc      : in Gdk.GC.Gdk_GC'Class;
        Srcx    : in Gint;
        Srcy    : in Gint;
        Destx   : in Gint;
