@@ -43,6 +43,7 @@
 with Glib;             use Glib;
 with Glib.Convert;     use Glib.Convert;
 with Glib.Object;      use Glib.Object;
+with Glib.Properties;  use Glib.Properties;
 with Pango.Font;       use Pango.Font;
 with Gdk;              use Gdk;
 with Gdk.Color;        use Gdk.Color;
@@ -2894,6 +2895,7 @@ package body Gtkada.MDI is
       Tmp : Boolean;
       pragma Unreferenced (Tmp);
 
+      Previous_Focus_Child : constant MDI_Child := Child.MDI.Focus_Child;
    begin
       --  Be lazy. And avoid infinite loop when updating the MDI menu...
 
@@ -2932,7 +2934,18 @@ package body Gtkada.MDI is
             Child.MDI.Title_Bar_Height);
 
          --  Give the focus to the window containing the child.
-         if Child.MDI.Present_Window_On_Child_Focus then
+         --  Giving the focus to a window has the side effect of moving the
+         --  window to the current desktop. Therefore, we only do this when the
+         --  input focus was already on a window of the MDI.
+
+         if Child.MDI.Present_Window_On_Child_Focus
+           and then Previous_Focus_Child /= null
+           and then Realized_Is_Set
+             (Gtk_Window (Get_Toplevel (Previous_Focus_Child.Initial)))
+           and then Get_Property
+             (Gtk_Window (Get_Toplevel (Previous_Focus_Child.Initial)),
+              Has_Toplevel_Focus_Property)
+         then
             Present (Gtk_Window (Get_Toplevel (C)));
          end if;
       end if;
