@@ -27,7 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
 with Glib;
 with Gtk.Button;
@@ -41,15 +41,24 @@ package Gtk.Toolbar is
      Gtk.Container.Gtk_Container_Record with private;
    type Gtk_Toolbar is access all Gtk_Toolbar_Record'Class;
 
+   procedure Gtk_New (Widget : out Gtk_Toolbar);
+
    procedure Gtk_New
      (Widget      : out Gtk_Toolbar;
       Orientation : Gtk_Orientation;
       Style       : Gtk_Toolbar_Style);
+   --  This procedure is obsolete, and is provided for upward compatibility
+   --  only.
+
+   procedure Initialize (Widget : access Gtk_Toolbar_Record'Class);
 
    procedure Initialize
      (Widget      : access Gtk_Toolbar_Record'Class;
       Orientation : Gtk_Orientation;
       Style       : Gtk_Toolbar_Style);
+   --  Initialization function.
+   --  This procedure is obsolete, and is provided for upward compatibility
+   --  only.
 
    function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Toolbar.
@@ -112,6 +121,9 @@ package Gtk.Toolbar is
    procedure Prepend_Space (Toolbar : access Gtk_Toolbar_Record);
 
    procedure Insert_Space
+     (Toolbar : access Gtk_Toolbar_Record; Position : Gint);
+
+   procedure Remove_Space
      (Toolbar : access Gtk_Toolbar_Record; Position : Gint);
 
    ----------------------
@@ -188,23 +200,13 @@ package Gtk.Toolbar is
      (Toolbar : access Gtk_Toolbar_Record;
       Style   : Gtk_Toolbar_Style);
 
-   procedure Set_Space_Size
-     (Toolbar    : access Gtk_Toolbar_Record;
-      Space_Size : Gint);
-
-   procedure Set_Space_Style
-     (Toolbar : access Gtk_Toolbar_Record;
-      Style   : Gtk_Toolbar_Space_Style);
-
    procedure Set_Tooltips
      (Toolbar : access Gtk_Toolbar_Record;
       Enable  : Boolean);
 
-   procedure Set_Button_Relief
-     (Toolbar : access Gtk_Toolbar_Record; Relief : Gtk_Relief_Style);
+   procedure Unset_Style (Toolbar : access Gtk_Toolbar_Record);
 
-   function Get_Button_Relief
-     (Toolbar : access Gtk_Toolbar_Record) return Gtk_Relief_Style;
+   procedure Unset_Icon_Size (Toolbar : access Gtk_Toolbar_Record);
 
    ----------------
    -- Properties --

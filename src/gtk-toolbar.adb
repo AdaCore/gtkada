@@ -207,19 +207,15 @@ package body Gtk.Toolbar is
       Internal (Get_Object (Toolbar), Get_Object (Widget), TTA, TPTA);
    end Append_Widget;
 
-   -----------------------
-   -- Get_Button_Relief --
-   -----------------------
+   -------------
+   -- Gtk_New --
+   -------------
 
-   function Get_Button_Relief
-     (Toolbar : access Gtk_Toolbar_Record) return Gtk_Relief_Style
-   is
-      function Internal (Toolbar : System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_toolbar_get_button_relief");
-
+   procedure Gtk_New (Widget : out Gtk_Toolbar) is
    begin
-      return Gtk_Relief_Style'Val (Internal (Get_Object (Toolbar)));
-   end Get_Button_Relief;
+      Widget := new Gtk_Toolbar_Record;
+      Initialize (Widget);
+   end Gtk_New;
 
    -------------
    -- Gtk_New --
@@ -234,6 +230,21 @@ package body Gtk.Toolbar is
       Initialize (Widget, Orientation, Style);
    end Gtk_New;
 
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_Toolbar_Record'Class)
+   is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_toolbar_new");
+
+   begin
+      Set_Object (Widget, Internal);
+      Initialize_User_Data (Widget);
+   end Initialize;
+
    ----------------
    -- Initialize --
    ----------------
@@ -241,16 +252,11 @@ package body Gtk.Toolbar is
    procedure Initialize
      (Widget      : access Gtk_Toolbar_Record'Class;
       Orientation : Gtk_Orientation;
-      Style       : Gtk_Toolbar_Style)
-   is
-      function Internal
-        (Orientation : Gtk_Orientation;
-         Style       : Gtk_Toolbar_Style) return System.Address;
-      pragma Import (C, Internal, "gtk_toolbar_new");
-
+      Style       : Gtk_Toolbar_Style) is
    begin
-      Set_Object (Widget, Internal (Orientation, Style));
-      Initialize_User_Data (Widget);
+      Initialize (Widget);
+      Set_Orientation (Widget, Orientation);
+      Set_Style (Widget, Style);
    end Initialize;
 
    --------------------
@@ -379,6 +385,20 @@ package body Gtk.Toolbar is
    begin
       Internal (Get_Object (Toolbar), Position);
    end Insert_Space;
+
+   ------------------
+   -- Remove_Space --
+   ------------------
+
+   procedure Remove_Space
+     (Toolbar : access Gtk_Toolbar_Record; Position : Gint)
+   is
+      procedure Internal (Toolbar : System.Address; Position : Gint);
+      pragma Import (C, Internal, "gtk_toolbar_remove_space");
+
+   begin
+      Internal (Get_Object (Toolbar), Position);
+   end Remove_Space;
 
    ------------------
    -- Insert_Stock --
@@ -610,21 +630,6 @@ package body Gtk.Toolbar is
       Internal (Get_Object (Toolbar), Get_Object (Widget), TTA, TPTA);
    end Prepend_Widget;
 
-   -----------------------
-   -- Set_Button_Relief --
-   -----------------------
-
-   procedure Set_Button_Relief
-     (Toolbar : access Gtk_Toolbar_Record;
-      Relief  : Gtk_Relief_Style)
-   is
-      procedure Internal (Toolbar : System.Address; Relief : Gtk_Relief_Style);
-      pragma Import (C, Internal, "gtk_toolbar_set_button_relief");
-
-   begin
-      Internal (Get_Object (Toolbar), Relief);
-   end Set_Button_Relief;
-
    -------------------
    -- Set_Icon_Size --
    -------------------
@@ -658,39 +663,6 @@ package body Gtk.Toolbar is
       Internal (Get_Object (Toolbar), Orientation);
    end Set_Orientation;
 
-   --------------------
-   -- Set_Space_Size --
-   --------------------
-
-   procedure Set_Space_Size
-     (Toolbar    : access Gtk_Toolbar_Record;
-      Space_Size : Gint)
-   is
-      procedure Internal
-        (Toolbar    : System.Address;
-         Space_Size : Gint);
-      pragma Import (C, Internal, "gtk_toolbar_set_space_size");
-
-   begin
-      Internal (Get_Object (Toolbar), Space_Size);
-   end Set_Space_Size;
-
-   ---------------------
-   -- Set_Space_Style --
-   ---------------------
-
-   procedure Set_Space_Style
-     (Toolbar : access Gtk_Toolbar_Record;
-      Style   : Gtk_Toolbar_Space_Style)
-   is
-      procedure Internal
-        (Toolbar : System.Address; Style : Gtk_Toolbar_Space_Style);
-      pragma Import (C, Internal, "gtk_toolbar_set_space_style");
-
-   begin
-      Internal (Get_Object (Toolbar), Style);
-   end Set_Space_Style;
-
    ---------------
    -- Set_Style --
    ---------------
@@ -719,5 +691,29 @@ package body Gtk.Toolbar is
    begin
       Internal (Get_Object (Toolbar), Boolean'Pos (Enable));
    end Set_Tooltips;
+
+   -----------------
+   -- Unset_Style --
+   -----------------
+
+   procedure Unset_Style (Toolbar : access Gtk_Toolbar_Record)
+   is
+      procedure Internal (Toolbar : System.Address);
+      pragma Import (C, Internal, "gtk_toolbar_unset_style");
+   begin
+      Internal (Get_Object (Toolbar));
+   end Unset_Style;
+
+   ---------------------
+   -- Unset_Icon_Size --
+   ---------------------
+
+   procedure Unset_Icon_Size (Toolbar : access Gtk_Toolbar_Record)
+   is
+      procedure Internal (Toolbar : System.Address);
+      pragma Import (C, Internal, "gtk_toolbar_unset_icon_size");
+   begin
+      Internal (Get_Object (Toolbar));
+   end Unset_Icon_Size;
 
 end Gtk.Toolbar;
