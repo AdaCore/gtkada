@@ -170,13 +170,12 @@ package body Gtk.Widget is
      (Widget : access Gtk_Widget_Record;
       Area   : in Gdk.Rectangle.Gdk_Rectangle := Gdk.Rectangle.Full_Area)
    is
-      procedure Internal (Widget : in System.Address;
-                          Area   : in System.Address);
+      procedure Internal
+        (Widget : in System.Address;
+         Area   : in System.Address);
       pragma Import (C, Internal, "gtk_widget_draw");
 
       Rec : aliased Gdk.Rectangle.Gdk_Rectangle := Area;
-      --  Need to use a local variable to avoid problems with 'Address if
-      --  the parameter is passed in a register for instance.
       use type Gdk.Rectangle.Gdk_Rectangle;
    begin
       if Rec = Gdk.Rectangle.Full_Area then
@@ -343,20 +342,19 @@ package body Gtk.Widget is
    -- Get_Pointer --
    -----------------
 
-   procedure Get_Pointer (Widget : access Gtk_Widget_Record;
-                          X      : out Gint;
-                          Y      : out Gint)
+   procedure Get_Pointer
+     (Widget : access Gtk_Widget_Record;
+      X      : out Gint;
+      Y      : out Gint)
    is
-      procedure Internal (Widget : System.Address;
-                          X      : System.Address;
-                          Y      : System.Address);
+      procedure Internal
+        (Widget : System.Address;
+         X      : out Gint;
+         Y      : out Gint);
       pragma Import (C, Internal, "gtk_widget_get_pointer");
-      X1 : aliased Gint;
-      Y1 : aliased Gint;
+
    begin
-      Internal (Get_Object (Widget), X1'Address, Y1'Address);
-      X := X1;
-      Y := Y1;
+      Internal (Get_Object (Widget), X, Y);
    end Get_Pointer;
 
    ------------------
@@ -460,15 +458,16 @@ package body Gtk.Widget is
    -- Get_Child_Requisition --
    ---------------------------
 
-   function Get_Child_Requisition (Widget : access Gtk_Widget_Record)
-                            return Gtk_Requisition
+   function Get_Child_Requisition
+     (Widget : access Gtk_Widget_Record) return Gtk_Requisition
    is
       procedure Internal (Widget : System.Address;
-                          Req    : System.Address);
+                          Req    : out Gtk_Requisition);
       pragma Import (C, Internal, "gtk_widget_get_child_requisition");
-      Req : aliased Gtk_Requisition;
+
+      Req : Gtk_Requisition;
    begin
-      Internal (Get_Object (Widget), Req'Address);
+      Internal (Get_Object (Widget), Req);
       return Req;
    end Get_Child_Requisition;
 
@@ -549,18 +548,18 @@ package body Gtk.Widget is
                        Intersection : access Gdk.Rectangle.Gdk_Rectangle)
                       return Boolean
    is
-      function Internal (Widget : System.Address;
-                         Area   : System.Address;
-                         Inter  : System.Address)
-                        return Gint;
+      function Internal
+        (Widget : System.Address;
+         Area   : access Gdk.Rectangle.Gdk_Rectangle;
+         Inter  : access Gdk.Rectangle.Gdk_Rectangle) return Gint;
       pragma Import (C, Internal, "gtk_widget_intersect");
+
       Area_Local : aliased Gdk.Rectangle.Gdk_Rectangle := Area;
-      Area_Out   : aliased Gdk.Rectangle.Gdk_Rectangle;
       Result     : Gint;
+
    begin
-      Result := Internal (Get_Object (Widget), Area_Local'Address,
-                          Area_Out'Address);
-      Intersection.all := Area_Out;
+      Result := Internal
+        (Get_Object (Widget), Area_Local'Access, Intersection);
       return Boolean'Val (Result);
    end Intersect;
 
@@ -713,8 +712,8 @@ package body Gtk.Widget is
    -- Rc_Style_Is_Set --
    ---------------------
 
-   function Rc_Style_Is_Set (Widget : access Gtk_Widget_Record'Class)
-                            return Boolean is
+   function Rc_Style_Is_Set
+     (Widget : access Gtk_Widget_Record'Class) return Boolean is
    begin
       return Gtk.Widget.Flag_Is_Set (Widget, Rc_Style);
    end Rc_Style_Is_Set;
@@ -872,6 +871,52 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget),
                 Gdk.Types.Gdk_Extension_Mode'Pos (Mode));
    end Set_Extension_Events;
+
+   ---------------
+   -- Set_Style --
+   ---------------
+
+   procedure Set_Style
+     (Widget : access Gtk_Widget_Record;
+      Style  : Gtk.Style.Gtk_Style)
+   is
+      procedure Internal
+        (Widget : System.Address; Style : Gtk.Style.Gtk_Style);
+      pragma Import (C, Internal, "gtk_widget_set_style");
+
+   begin
+      Internal (Get_Object (Widget), Style);
+   end Set_Style;
+
+   ---------------
+   -- Get_Style --
+   ---------------
+
+   function Get_Style
+     (Widget : access Gtk_Widget_Record) return Gtk.Style.Gtk_Style
+   is
+      function Internal
+        (Widget : System.Address) return Gtk.Style.Gtk_Style;
+      pragma Import (C, Internal, "gtk_widget_get_style");
+
+   begin
+      return Internal (Get_Object (Widget));
+   end Get_Style;
+
+   ------------------
+   -- Modify_Style --
+   ------------------
+
+   procedure Modify_Style
+     (Widget : access Gtk_Widget_Record;
+      Style  : Gtk_Rc_Style)
+   is
+      procedure Internal (Widget : System.Address; Style : Gtk_Rc_Style);
+      pragma Import (C, Internal, "gtk_widget_modify_style");
+
+   begin
+      Internal (Get_Object (Widget), Style);
+   end Modify_Style;
 
    --------------------------
    -- Get_Extension_Events --
@@ -1133,29 +1178,28 @@ package body Gtk.Widget is
    procedure Size_Request (Widget      : access Gtk_Widget_Record;
                            Requisition : in out Gtk_Requisition)
    is
-      procedure Internal (Widget      : System.Address;
-                          Requisition : System.Address);
+      procedure Internal
+        (Widget : System.Address; Requisition : in out Gtk_Requisition);
       pragma Import (C, Internal, "gtk_widget_size_request");
-      Req : aliased Gtk_Requisition := Requisition;
+
    begin
-      Internal (Get_Object (Widget), Req'Address);
-      Requisition := Req;
+      Internal (Get_Object (Widget), Requisition);
    end Size_Request;
 
    -------------------
    -- Size_Allocate --
    -------------------
 
-   procedure Size_Allocate (Widget     : access Gtk_Widget_Record;
-                            Allocation : in out Gtk_Allocation)
+   procedure Size_Allocate
+     (Widget     : access Gtk_Widget_Record;
+      Allocation : in out Gtk_Allocation)
    is
-      procedure Internal (Widget      : System.Address;
-                          Allocation : System.Address);
+      procedure Internal
+        (Widget : System.Address; Allocation : in out Gtk_Allocation);
       pragma Import (C, Internal, "gtk_widget_size_allocate");
-      Alloc : aliased Gtk_Allocation := Allocation;
+
    begin
-      Internal (Get_Object (Widget), Alloc'Address);
-      Allocation := Alloc;
+      Internal (Get_Object (Widget), Allocation);
    end Size_Allocate;
 
    --------------
@@ -1308,7 +1352,13 @@ package body Gtk.Widget is
       S := Get_Field (Find_Child (Top.Parent, "project"), "use_widget_names");
 
       if S /= null and then Boolean'Value (S.all) then
-         Gen_Set (N, "Widget", "name", File, Delim => '"');
+         if Gettext_Support (Top) then
+            Gen_Set (N, "Widget", "name",
+              File => File, Prefix => "-""", Postfix => """");
+         else
+            Gen_Set (N, "Widget", "name",
+              File => File, Prefix => """", Postfix => """");
+         end if;
       end if;
 
       Gen_Set (N, "Widget", "sensitive", File);

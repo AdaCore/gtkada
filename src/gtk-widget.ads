@@ -47,13 +47,13 @@ with Gdk.Event;
 with Gdk.Bitmap;
 with Gdk.Rectangle;
 with Gdk.Types;
-with Gtk.Object;
 with Gdk.Visual;
 with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Adjustment;
 with Gtk.Enums;
 with Gtk.Object;
+with Gtk.Style;
 with Glib.Glist;
 with Glib.GSlist;
 with System;
@@ -458,23 +458,53 @@ package Gtk.Widget is
    ------------
    -- Styles --
    ------------
-   --  Most functions related to modifying the style of a widget (i.e. its
-   --  visual aspect) are found in the Gtk.Style package for circular
-   --  dependency reasons.
+
+   procedure Push_Style (Style : Gtk.Style.Gtk_Style);
+   --  Change the default values for styles.
+   --  This is generally used just before creating a widget. You should use
+   --  this procedure in pair with Pop_Style (Push the new value, create the
+   --  widget then pop the value)
+
+   procedure Pop_Style;
+   --  Restore the default values for styles.
+   --  This is generally used just after creating a widget. You should use
+   --  this procedure in pair with Push_Style (Push the new value, create the
+   --  widget then pop the value)
+
+   procedure Set_Style
+     (Widget : access Gtk_Widget_Record;
+      Style  : Gtk.Style.Gtk_Style);
+   --  Set the style for a given widget.
+
+   function Get_Style (Widget : access Gtk_Widget_Record)
+     return Gtk.Style.Gtk_Style;
+   --  Return the style of a given widget.
+
+   procedure Modify_Style
+     (Widget : access Gtk_Widget_Record;
+      Style  : Gtk_Rc_Style);
+   --  Modify the default style of a widget.
+
+   procedure Set_Default_Style (Style : Gtk.Style.Gtk_Style);
+   --  Set the default global style.
+
+   function Get_Default_Style return Gtk.Style.Gtk_Style;
+   --  Get the default global style.
 
    procedure Set_Rc_Style (Widget : access Gtk_Widget_Record);
-   --  Restore the default style of a widget, as given by the configuration
-   --  file initially parsed by GtkAda.
+   --  Restore the default style of a widget.
+   --  The default style is given by the configuration file initially parsed
+   --  by GtkAda.
 
    procedure Ensure_Style (Widget : access Gtk_Widget_Record);
-   --  Make sure that the widget has a style associated to it, either the
-   --  default one as set by Set_Rc_Style above or one set by the user with
-   --  Gtk.Style.Set_Style.
+   --  Make sure that the widget has a style associated to it.
+   --  Either the default one as set by Set_Rc_Style above or one set by the
+   --  user with Set_Style.
 
    procedure Restore_Default_Style (Widget : access Gtk_Widget_Record);
    --  Restore the default style that was set for the widget.
    --  The default style is the first one that was set either by a call
-   --  to Gtk.Style.Set_Style or Set_Rc_Style.
+   --  to Set_Style or Set_Rc_Style.
 
    procedure Reset_Rc_Styles (Widget : access Gtk_Widget_Record);
    --  Restore the Rc style recursively for widget and its children.
@@ -1174,6 +1204,10 @@ private
 
    type Gtk_Widget_Record is new Object.Gtk_Object_Record with null record;
 
+   pragma Import (C, Push_Style, "gtk_push_style");
+   pragma Import (C, Pop_Style, "gtk_pop_style");
+   pragma Import (C, Set_Default_Style, "gtk_widget_set_default_style");
+   pragma Import (C, Get_Default_Style, "gtk_widget_get_default_style");
    pragma Import (C, Pop_Colormap, "gtk_widget_pop_colormap");
    pragma Import (C, Pop_Visual, "gtk_widget_pop_visual");
    pragma Import (C, Get_Type, "gtk_widget_get_type");
@@ -1199,7 +1233,6 @@ end Gtk.Widget;
 
 --  Functions that have no Ada equivalent:
 --  - gtk_widget_new
---  - gtk_widget_newv
 --  - gtk_widget_get
 --  - gtk_widget_getv
 --  - gtk_widget_set
