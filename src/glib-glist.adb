@@ -156,6 +156,15 @@ package body Glib.Glist is
          return Convert (Internal (Get_Object (List)));
       end Get_Data;
 
+      --------------------
+      --  Get_Gpointer  --
+      --------------------
+
+      function Get_Gpointer (List : in Glist) return Gpointer is
+      begin
+         return Convert (Get_Object (List));
+      end Get_Gpointer;
+
       ----------------
       -- Get_Object --
       ----------------

@@ -56,8 +56,18 @@ package Glib.Glist is
       function First (List : in Glist)
                       return Glist;
       procedure Free (List : in out Glist);
-      function Get_Data (List : in Glist)
-                         return Gpointer;
+      function Get_Data (List : in Glist) return Gpointer;
+
+      function Get_Gpointer (List : in Glist) return Gpointer;
+      --
+      --  Sometimes, the data is not stored in the "data" field
+      --  of each cell, but rather at each cell. In such cases,
+      --  to retrieve the address of the data, we need to return
+      --  the address of the cell itself, insted of the address
+      --  pointed to by data.
+      --
+      --  Ex: the GtkCTree row_list.
+
       function Index (List : in Glist;
                       Data : in Gpointer)
                       return Gint;
