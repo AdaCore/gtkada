@@ -689,15 +689,15 @@ package Gtk.Widget is
 
    procedure Set_Scroll_Adjustments_Signal
      (Widget : Glib.Object.GObject_Class; Signal : String);
-   --  Modifies the signal to be sent when the adjustments are modified. This
-   --  is only useful when you are rewritting your own widget that can be
+   --  Modify the signal to be sent when the adjustments are modified.
+   --  This is only useful when you are rewritting your own widget that can be
    --  embedded directly in a Gtk_Scrolled_Window, without any Gtk_Viewport.
    --
    --  Signal is the name of the signal that will be emitted when
    --
    --  Note that the handlers for this signal must take two arguments in
    --  addition to the widget (the horizontal and vertical adjustments to be
-   --  used). See Gtk.Scrolled_Window and Gtk.Widget.Set_Scroll_Adustment for
+   --  used). See Gtk.Scrolled_Window and Gtk.Widget.Set_Scroll_Adjustment for
    --  more information on this signal.
 
    -----------
