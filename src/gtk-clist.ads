@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +28,8 @@
 -----------------------------------------------------------------------
 
 --  <description>
+--
+--  This widget is deprecated. Use Gtk.Tree_View instead.
 --
 --  This widget displays a multi-column list. Each line is made of
 --  a number of column, each being able to display any kind of widget.
@@ -74,6 +76,7 @@ package Gtk.Clist is
    --  number, starting from 0.
 
    type Gtk_Sort_Type is (Ascending, Descending);
+   for Gtk_Sort_Type'Size use Gint'Size;
    --  The order in which the rows should be sorted.
 
    --  <doc_ignore>

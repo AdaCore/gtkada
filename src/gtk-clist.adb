@@ -847,16 +847,19 @@ package body Gtk.Clist is
    -- Set_Button_Actions --
    ------------------------
 
-   procedure Set_Button_Actions (Clist         : access Gtk_Clist_Record;
-                                 Button        :        Guint;
-                                 Button_Action :        Gtk_Button_Action)
+   procedure Set_Button_Actions
+     (Clist         : access Gtk_Clist_Record;
+      Button        : Guint;
+      Button_Action : Gtk_Button_Action)
    is
       procedure Internal
-        (Clist : System.Address; Button : Guint; Button_Action : Guint);
+        (Clist         : System.Address;
+         Button        : Guint;
+         Button_Action : Gtk_Button_Action);
       pragma Import (C, Internal, "gtk_clist_set_button_actions");
+
    begin
-      Internal
-        (Get_Object (Clist), Button, Gtk_Button_Action'Pos (Button_Action));
+      Internal (Get_Object (Clist), Button, Button_Action);
    end Set_Button_Actions;
 
    --------------------
@@ -925,14 +928,13 @@ package body Gtk.Clist is
       Justification : in Gtk_Justification)
    is
       procedure Internal
-        (Clist         : in System.Address;
-         Column        : in Gint;
-         Justification : in Gint);
+        (Clist         : System.Address;
+         Column        : Gint;
+         Justification : Gtk_Justification);
       pragma Import (C, Internal, "gtk_clist_set_column_justification");
+
    begin
-      Internal (Get_Object (Clist),
-                Column,
-                Gtk_Justification'Pos (Justification));
+      Internal (Get_Object (Clist), Column, Justification);
    end Set_Column_Justification;
 
    ---------------------------
@@ -1237,12 +1239,11 @@ package body Gtk.Clist is
       Mode  : in Gtk_Selection_Mode)
    is
       procedure Internal
-        (Clist : in System.Address;
-         Mode  : in Gint);
+        (Clist : System.Address;
+         Mode  : Gtk_Selection_Mode);
       pragma Import (C, Internal, "gtk_clist_set_selection_mode");
    begin
-      Internal (Get_Object (Clist),
-                Gtk_Selection_Mode'Pos (Mode));
+      Internal (Get_Object (Clist), Mode);
    end Set_Selection_Mode;
 
    ---------------------
@@ -1251,15 +1252,15 @@ package body Gtk.Clist is
 
    procedure Set_Shadow_Type
      (Clist    : access Gtk_Clist_Record;
-      The_Type : in Gtk_Shadow_Type)
+      The_Type : Gtk_Shadow_Type)
    is
       procedure Internal
-        (Clist    : in System.Address;
-         The_Type : in Gint);
+        (Clist    : System.Address;
+         The_Type : Gtk_Shadow_Type);
       pragma Import (C, Internal, "gtk_clist_set_shadow_type");
+
    begin
-      Internal (Get_Object (Clist),
-                Gtk_Shadow_Type'Pos (The_Type));
+      Internal (Get_Object (Clist), The_Type);
    end Set_Shadow_Type;
 
    ---------------
@@ -1321,11 +1322,13 @@ package body Gtk.Clist is
    procedure Set_Sort_Type (Clist     : access Gtk_Clist_Record;
                             Sort_Type : Gtk_Sort_Type)
    is
-      procedure Internal (Clist : System.Address;
-                          Sort_Type : Integer);
+      procedure Internal
+        (Clist     : System.Address;
+         Sort_Type : Gtk_Sort_Type);
       pragma Import (C, Internal, "gtk_clist_set_sort_type");
+
    begin
-      Internal (Get_Object (Clist), Gtk_Sort_Type'Pos (Sort_Type));
+      Internal (Get_Object (Clist), Sort_Type);
    end Set_Sort_Type;
 
    --------------
