@@ -154,7 +154,8 @@ package Gtkada.MDI is
    function Put
      (MDI   : access MDI_Window_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags : Child_Flags := All_Buttons) return MDI_Child;
+      Flags : Child_Flags := All_Buttons;
+      Focus_Widget : Gtk.Widget.Gtk_Widget := null) return MDI_Child;
    --  Add a new child to the MDI window, and return its embedding widget.
    --  Child mustn't be a Gtk_Window (or one of its children). Otherwise,
    --  Program_Error is raised.
@@ -173,6 +174,9 @@ package Gtkada.MDI is
    --
    --  You shouldn't call Show_All on the returned child, since some of the
    --  title bar buttons are hidden.
+   --
+   --  If Focus_Widget is not null, this is the widget that gets the keyboard
+   --  focus when the child is selected.
 
    procedure Close
      (MDI : access MDI_Window_Record;

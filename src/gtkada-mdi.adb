@@ -436,6 +436,9 @@ package body Gtkada.MDI is
      (Notebook : access Gtk.Widget.Gtk_Widget_Record'Class; Args : Gtk_Args);
    --  Called when some data is received by a drop site
 
+   procedure Give_Focus_To_Child (Widget : access Gtk_Widget_Record'Class);
+   --  Give the keyboard focus to Widget.
+
    -------------------------
    -- Set_Focus_Child_MDI --
    -------------------------
@@ -2332,6 +2335,15 @@ package body Gtkada.MDI is
          Child);
    end Initialize;
 
+   -------------------------
+   -- Give_Focus_To_Child --
+   -------------------------
+
+   procedure Give_Focus_To_Child (Widget : access Gtk_Widget_Record'Class) is
+   begin
+      Grab_Focus (Widget);
+   end Give_Focus_To_Child;
+
    ---------
    -- Put --
    ---------
@@ -2339,7 +2351,8 @@ package body Gtkada.MDI is
    function Put
      (MDI   : access MDI_Window_Record;
       Child : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Flags : Child_Flags := All_Buttons) return MDI_Child
+      Flags : Child_Flags := All_Buttons;
+      Focus_Widget : Gtk.Widget.Gtk_Widget := null) return MDI_Child
    is
       C           : MDI_Child;
       Requisition : Gtk_Requisition;
@@ -2416,6 +2429,13 @@ package body Gtkada.MDI is
 
       if Realized_Is_Set (MDI) then
          Set_Focus_Child (C);
+      end if;
+
+      if Focus_Widget /= null then
+         Widget_Callback.Object_Connect
+           (C, "grab_focus",
+            Widget_Callback.To_Marshaller (Give_Focus_To_Child'Access),
+            Focus_Widget);
       end if;
 
       return C;
@@ -2682,7 +2702,7 @@ package body Gtkada.MDI is
       --  not force the focus when the item is selected.
 
       if Child.MDI.Focus_Child = Child then
-         Grab_Focus (Child.Initial);
+         Grab_Focus (Child);
       end if;
 
       return False;
@@ -2805,7 +2825,7 @@ package body Gtkada.MDI is
       --  focus_in events will always be sent the next time the user selects a
       --  widget.
 
-      Grab_Focus (C.Initial);
+      Grab_Focus (C);
 
       Highlight_Child (C, False);
 
