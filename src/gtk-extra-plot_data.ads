@@ -52,11 +52,9 @@ package Gtk.Extra.Plot_Data is
    --  The style of labels (floating point, or scientific notation)
    pragma Convention (C, Plot_Label_Style);
 
-
    type Plot_Scale is (Scale_Linear, Scale_Log10);
    --  Type of scale used for each axis of a graph.
    pragma Convention (C, Plot_Scale);
-
 
    type Gtk_Plot_Data_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Plot_Data is access all Gtk_Plot_Data_Record'Class;
@@ -91,7 +89,6 @@ package Gtk.Extra.Plot_Data is
    end record;
    --  The points are indexed from 0 to Num_Points-1.
    --  Note that you can't use 'Range, 'First or 'Last on Points.
-
 
    type Plot_Connector is
      (Connect_None,
