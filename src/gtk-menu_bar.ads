@@ -31,11 +31,10 @@
 --  Gtk_Menu_Bar is a subclass of Gtk_Menu_Shell which contains one to many
 --  Gtk_Menu_Item. The result is a standard menu bar which can hold many menu
 --  items. Gtk_Menu_Bar allows for a shadow type to be set for aesthetic
---  purposes. The shadow types are defined in the Set_Shadow_Type function.
+--  purposes.
 --  </description>
---  <c_version>1.3.4</c_version>
+--  <c_version>1.3.6</c_version>
 
-with Gtk.Enums; use Gtk.Enums;
 with Gtk.Menu_Shell;
 with Gtk.Menu_Item;
 
@@ -71,11 +70,6 @@ package Gtk.Menu_Bar is
       Position : Gint);
    --  Add a new Gtk_Menu_Item to the Gtk_Menu_Bar at a specified position.
    --  The first element of a menu bar is at position 0.
-
-   procedure Set_Shadow_Type
-     (Menu_Bar : access Gtk_Menu_Bar_Record;
-      The_Type : Gtk_Shadow_Type);
-   --  Set the shadow type to use on the Gtk_Menu_Bar.
 
    ----------------
    -- Properties --

@@ -105,19 +105,4 @@ package body Gtk.Menu_Bar is
       Internal (Get_Object (Menu_Bar), Get_Object (Child));
    end Prepend;
 
-   ---------------------
-   -- Set_Shadow_Type --
-   ---------------------
-
-   procedure Set_Shadow_Type
-     (Menu_Bar : access Gtk_Menu_Bar_Record;
-      The_Type : Gtk_Shadow_Type)
-   is
-      procedure Internal (Menu_Bar : System.Address; Typ : Gtk_Shadow_Type);
-      pragma Import (C, Internal, "gtk_menu_bar_set_shadow_type");
-
-   begin
-      Internal (Get_Object (Menu_Bar), The_Type);
-   end Set_Shadow_Type;
-
 end Gtk.Menu_Bar;
