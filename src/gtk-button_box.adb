@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,52 +31,15 @@ with System;
 
 package body Gtk.Button_Box is
 
-   ------------------------
-   -- Get_Child_Ipadding --
-   ------------------------
-
-   procedure Get_Child_Ipadding
-     (Button_Box : access Gtk_Button_Box_Record;
-      Ipad_X     : out Gint;
-      Ipad_Y     : out Gint)
-   is
-      procedure Internal
-        (Widget : in System.Address;
-         Ipad_X : in out Gint;
-         Ipad_Y : in out Gint);
-      pragma Import (C, Internal, "gtk_button_box_get_child_ipadding");
-
-   begin
-      Internal (Get_Object (Button_Box), Ipad_X, Ipad_Y);
-   end Get_Child_Ipadding;
-
-   --------------------
-   -- Get_Child_Size --
-   --------------------
-
-   procedure Get_Child_Size
-     (Button_Box : access Gtk_Button_Box_Record;
-      Min_Width  : out Gint;
-      Min_Height : out Gint)
-   is
-      procedure Internal
-        (Widget     : in System.Address;
-         Min_Width  : out Gint;
-         Min_Height : out Gint);
-      pragma Import (C, Internal, "gtk_button_box_get_child_size");
-
-   begin
-      Internal (Get_Object (Button_Box), Min_Width, Min_Height);
-   end Get_Child_Size;
-
    ----------------
    -- Get_Layout --
    ----------------
 
-   function Get_Layout (Button_Box : access Gtk_Button_Box_Record)
-     return Enums.Gtk_Button_Box_Style
+   function Get_Layout
+     (Button_Box : access Gtk_Button_Box_Record)
+      return Enums.Gtk_Button_Box_Style
    is
-      function Internal (Widget : in System.Address) return Gint;
+      function Internal (Widget : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_button_box_get_layout");
 
    begin
@@ -84,89 +47,23 @@ package body Gtk.Button_Box is
         (Internal (Get_Object (Button_Box)));
    end Get_Layout;
 
-   -----------------
-   -- Get_Spacing --
-   -----------------
-
-   function Get_Spacing (Button_Box : access Gtk_Button_Box_Record)
-     return Gint
-   is
-      function Internal (Widget : in System.Address) return Gint;
-      pragma Import (C, Internal, "gtk_button_box_get_spacing");
-
-   begin
-      return Internal (Get_Object (Button_Box));
-   end Get_Spacing;
-
-   ------------------------
-   -- Set_Child_Ipadding --
-   ------------------------
-
-   procedure Set_Child_Ipadding
-     (Button_Box : access Gtk_Button_Box_Record;
-      Ipad_X     : in Gint;
-      Ipad_Y     : in Gint)
-   is
-      procedure Internal
-        (Widget : in System.Address;
-         Ipad_X : in Gint;
-         Ipad_Y : in Gint);
-      pragma Import (C, Internal, "gtk_button_box_set_child_ipadding");
-
-   begin
-      Internal (Get_Object (Button_Box), Ipad_X, Ipad_Y);
-   end Set_Child_Ipadding;
-
-   --------------------
-   -- Set_Child_Size --
-   --------------------
-
-   procedure Set_Child_Size
-     (Button_Box : access Gtk_Button_Box_Record;
-      Min_Width  : in Gint;
-      Min_Height : in Gint)
-   is
-      procedure Internal
-        (Widget     : in System.Address;
-         Min_Width  : in Gint;
-         Min_Height : in Gint);
-      pragma Import (C, Internal, "gtk_button_box_set_child_size");
-
-   begin
-      Internal (Get_Object (Button_Box), Min_Width, Min_Height);
-   end Set_Child_Size;
-
    ----------------
    -- Set_Layout --
    ----------------
 
    procedure Set_Layout
      (Button_Box   : access Gtk_Button_Box_Record;
-      Layout_Style : in Enums.Gtk_Button_Box_Style)
+      Layout_Style : Enums.Gtk_Button_Box_Style)
    is
       procedure Internal
-        (Widget       : in System.Address;
-         Layout_Style : in Gint);
+        (Widget       : System.Address;
+         Layout_Style : Gint);
       pragma Import (C, Internal, "gtk_button_box_set_layout");
 
    begin
-      Internal (Get_Object (Button_Box),
-                Enums.Gtk_Button_Box_Style'Pos (Layout_Style));
+      Internal
+        (Get_Object (Button_Box),
+         Enums.Gtk_Button_Box_Style'Pos (Layout_Style));
    end Set_Layout;
-
-   -----------------
-   -- Set_Spacing --
-   -----------------
-
-   procedure Set_Spacing
-     (Button_Box : access Gtk_Button_Box_Record;
-      Spacing    : in Gint)
-   is
-      procedure Internal (Widget : in System.Address; Spacing : in Gint);
-      pragma Import (C, Internal, "gtk_button_box_set_spacing");
-
-   begin
-      Internal (Get_Object (Button_Box), Spacing);
-   end Set_Spacing;
 
 end Gtk.Button_Box;

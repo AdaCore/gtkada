@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -38,7 +38,7 @@
 --  above two instead.
 --
 --  </description>
---  <c_version>1.2.6</c_version>
+--  <c_version>1.3.3</c_version>
 
 with Gtk.Box;
 with Gtk.Enums;
@@ -51,39 +51,9 @@ package Gtk.Button_Box is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Button_Box.
 
-   procedure Set_Child_Size_Default (Min_Width  : in Gint;
-                                     Min_Height : in Gint);
-   --  Set the default size for the children of the button boxes.
-   --  This is the minimal size that the children will have (in pixels).
-   --  These default values apply to all the Button_Boxes created in your
-   --  application, except for boxes where Set_Child_Size has been called.
-
-   procedure Get_Child_Size_Default (Min_Width  : out Gint;
-                                     Min_Height : out Gint);
-   --  Return the default size for the children of the button_boxes.
-
-   procedure Set_Child_Ipadding_Default (Ipad_X : in Gint;
-                                         Ipad_Y : in Gint);
-   --  Set the default padding (the empty space left around all children).
-   --  This will be used for all the button boxes in your application,
-   --  except those for which Set_Child_Ipadding has been used.
-
-   procedure Get_Child_Ipadding_Default (Ipad_X : out Gint;
-                                         Ipad_Y : out Gint);
-   --  Return the default padding of the button boxes.
-
-   procedure Set_Spacing (Button_Box : access Gtk_Button_Box_Record;
-                          Spacing    : in Gint);
-   --  Set the spacing (the space left between two adjacent children).
-   --  This is done for all the button boxes. Note that there is a default
-   --  spacing set for Gtk_Hbutton_boxes and Gtk_Vbutton_boxes.
-
-   function Get_Spacing (Button_Box : access Gtk_Button_Box_Record)
-                        return Gint;
-   --  Return the spacing used for the button box.
-
-   procedure Set_Layout (Button_Box   : access Gtk_Button_Box_Record;
-                         Layout_Style : in Enums.Gtk_Button_Box_Style);
+   procedure Set_Layout
+     (Button_Box   : access Gtk_Button_Box_Record;
+      Layout_Style : Enums.Gtk_Button_Box_Style);
    --  Set the layout to use for the box.
    --  There are four such styles:
    --
@@ -98,36 +68,10 @@ package Gtk.Button_Box is
    --  - Buttonbox_End   : The children are put as much to the right
    --                      (resp. bottom) as possible in the box.
 
-   function Get_Layout (Button_Box : access Gtk_Button_Box_Record)
-                       return Enums.Gtk_Button_Box_Style;
+   function Get_Layout
+     (Button_Box : access Gtk_Button_Box_Record)
+      return Enums.Gtk_Button_Box_Style;
    --  Return the layout used in the box.
-
-   procedure Set_Child_Size (Button_Box : access Gtk_Button_Box_Record;
-                             Min_Width  : in Gint;
-                             Min_Height : in Gint);
-   --  Set the size to use for children of this specific box.
-   --  You can modify the size for all the boxes at once by using
-   --  Set_Child_Size_Default.
-
-   procedure Get_Child_Size (Button_Box : access Gtk_Button_Box_Record;
-                             Min_Width  : out Gint;
-                             Min_Height : out Gint);
-   --  Return the size to use for children of this specific box.
-   --  Min_Width and Min_Height are set to -1 if this widget uses the default
-   --  sizes that are set by Set_Child_Size_Default.
-
-   procedure Set_Child_Ipadding (Button_Box : access Gtk_Button_Box_Record;
-                                 Ipad_X     : in Gint;
-                                 Ipad_Y     : in Gint);
-   --  Set the padding to use for the children of this specific box.
-   --  You can modify the default padding by using Set_Child_Ipadding_Default.
-
-   procedure Get_Child_Ipadding (Button_Box : access Gtk_Button_Box_Record;
-                                 Ipad_X     : out Gint;
-                                 Ipad_Y     : out Gint);
-   --  Return the padding to use for children of this specific box.
-   --  Ipad_X and Ipad_Y are set to -1 if this widget uses the default
-   --  values that are set by Set_Child_Ipadding_Default.
 
    -------------
    -- Signals --
@@ -140,12 +84,4 @@ package Gtk.Button_Box is
 private
    type Gtk_Button_Box_Record is new Gtk.Box.Gtk_Box_Record with null record;
    pragma Import (C, Get_Type, "gtk_button_box_get_type");
-   pragma Import (C, Set_Child_Ipadding_Default,
-                  "gtk_button_box_set_child_ipadding_default");
-   pragma Import (C, Set_Child_Size_Default,
-                  "gtk_button_box_set_child_size_default");
-   pragma Import (C, Get_Child_Size_Default,
-                  "gtk_button_box_get_child_size_default");
-   pragma Import (C, Get_Child_Ipadding_Default,
-                  "gtk_button_box_get_child_ipadding_default");
 end Gtk.Button_Box;
