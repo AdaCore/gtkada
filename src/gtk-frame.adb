@@ -29,8 +29,6 @@
 
 with System;
 with Gdk; use Gdk;
-with Gtk.Container; use Gtk.Container;
-with Gtk.Widget; use Gtk.Widget;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Frame is
@@ -146,11 +144,6 @@ package body Gtk.Frame is
          "label_xalign", "label_yalign", "", "", File,
          Is_Float => True);
       Gen_Set (N, "Frame", "shadow_type", File);
-
-      if not N.Specific_Data.Has_Container then
-         Gen_Call_Child (N, null, "Container", "Add", File => File);
-         N.Specific_Data.Has_Container := True;
-      end if;
    end Generate;
 
    procedure Generate (Frame : in out Gtk.Object.Gtk_Object;
@@ -194,13 +187,6 @@ package body Gtk.Frame is
       if S /= null then
          Set_Shadow_Type (Gtk_Frame (Frame),
            Gtk_Shadow_Type'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      if not N.Specific_Data.Has_Container then
-         Container.Add
-           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-            Gtk_Widget (Frame));
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 
