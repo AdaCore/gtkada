@@ -744,7 +744,7 @@ following handler:
    end Ok;
 @end smallexample
 
-We know need to connect the object we created in the first part, and this
+We now need to connect the object we created in the first part, and this
 new callback we just defined. As documented in the reference manual,
 Gtk.Handlers defines four types of generic packages, depending on the
 arguments one expect in the callback, and whether the callback returns a
