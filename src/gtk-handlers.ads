@@ -170,6 +170,9 @@ package Gtk.Handlers is
         (Widget : access Widget_Type'Class;
          Params : Glib.Values.GValues) return Return_Type;
 
+      type Simple_Handler is access function
+        (Widget : access Widget_Type'Class) return Return_Type;
+
       package Marshallers is new Gtk.Marshallers.Return_Marshallers
         (Widget_Type, Return_Type);
 
@@ -204,10 +207,23 @@ package Gtk.Handlers is
       procedure Connect
         (Widget  : access Widget_Type'Class;
          Name    : String;
+         Cb      : Simple_Handler;
+         After   : Boolean := False);
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Simple_Handler;
+         Slot_Object : access Widget_Type'Class;
+         After       : Boolean := False);
+      --  Same as above, except with a simple handle with no parameter. This
+      --  is the same as using a To_Marshaller call to the above two
+      --  procedures, except it is shorter to write.
+
+      procedure Connect
+        (Widget  : access Widget_Type'Class;
+         Name    : String;
          Cb      : Handler;
          After   : Boolean := False);
-      --  Connects a Handler. The Handler_Id is dropped.
-
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
@@ -351,6 +367,9 @@ package Gtk.Handlers is
         (Widget    : access Widget_Type'Class;
          Params    : Glib.Values.GValues;
          User_Data : User_Type) return Return_Type;
+      type Simple_Handler is access function
+        (Widget    : access Widget_Type'Class;
+         User_Data : User_Type) return Return_Type;
 
       package Marshallers is new Gtk.Marshallers.User_Return_Marshallers
         (Widget_Type, Return_Type, User_Type);
@@ -363,7 +382,6 @@ package Gtk.Handlers is
          Marsh     : Marshallers.Marshaller;
          User_Data : User_Type;
          After     : Boolean := False);
-
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
@@ -375,10 +393,23 @@ package Gtk.Handlers is
       procedure Connect
         (Widget    : access Widget_Type'Class;
          Name      : String;
+         Cb        : Simple_Handler;
+         User_Data : User_Type;
+         After     : Boolean := False);
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Simple_Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False);
+
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False);
-
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
@@ -514,6 +545,7 @@ package Gtk.Handlers is
         (Widget_Type, Return_Type, User_Type);
 
       subtype Handler is Internal_Cb.Handler;
+      subtype Simple_Handler is Internal_Cb.Simple_Handler;
       package Marshallers renames Internal_Cb.Marshallers;
 
       --  Connecting a handler to an object
@@ -524,7 +556,6 @@ package Gtk.Handlers is
          Marsh     : Marshallers.Marshaller;
          User_Data : User_Type;
          After     : Boolean := False);
-
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
@@ -539,11 +570,24 @@ package Gtk.Handlers is
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False);
-
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False);
+
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Simple_Handler;
+         User_Data : User_Type;
+         After     : Boolean := False);
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Simple_Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
          After       : Boolean := False);
@@ -661,6 +705,8 @@ package Gtk.Handlers is
       type Handler is access procedure
         (Widget : access Widget_Type'Class;
          Params : Glib.Values.GValues);
+      type Simple_Handler is access procedure
+        (Widget : access Widget_Type'Class);
 
       package Marshallers is new
         Gtk.Marshallers.Void_Marshallers (Widget_Type);
@@ -672,7 +718,6 @@ package Gtk.Handlers is
          Name    : String;
          Marsh   : Marshallers.Marshaller;
          After   : Boolean := False);
-
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
@@ -685,11 +730,22 @@ package Gtk.Handlers is
          Name    : String;
          Cb      : Handler;
          After   : Boolean := False);
-
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         After       : Boolean := False);
+
+      procedure Connect
+        (Widget  : access Widget_Type'Class;
+         Name    : String;
+         Cb      : Simple_Handler;
+         After   : Boolean := False);
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Simple_Handler;
          Slot_Object : access Widget_Type'Class;
          After       : Boolean := False);
 
@@ -811,6 +867,9 @@ package Gtk.Handlers is
         (Widget    : access Widget_Type'Class;
          Params    : Glib.Values.GValues;
          User_Data : User_Type);
+      type Simple_Handler is access procedure
+        (Widget    : access Widget_Type'Class;
+         User_Data : User_Type);
 
       package Marshallers is new
         Gtk.Marshallers.User_Void_Marshallers (Widget_Type, User_Type);
@@ -823,7 +882,6 @@ package Gtk.Handlers is
          Marsh     : Marshallers.Marshaller;
          User_Data : User_Type;
          After     : Boolean := False);
-
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
@@ -838,11 +896,24 @@ package Gtk.Handlers is
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False);
-
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False);
+
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Simple_Handler;
+         User_Data : User_Type;
+         After     : Boolean := False);
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Simple_Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
          After       : Boolean := False);
@@ -971,6 +1042,7 @@ package Gtk.Handlers is
       package Marshallers renames Internal_Cb.Marshallers;
 
       subtype Handler is Internal_Cb.Handler;
+      subtype Simple_Handler is Internal_Cb.Simple_Handler;
 
       --  Connecting a handler to an object
 
@@ -980,7 +1052,6 @@ package Gtk.Handlers is
          Marsh     : Marshallers.Marshaller;
          User_Data : User_Type;
          After     : Boolean := False);
-
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
@@ -995,11 +1066,24 @@ package Gtk.Handlers is
          Cb        : Handler;
          User_Data : User_Type;
          After     : Boolean := False);
-
       procedure Object_Connect
         (Widget      : access Glib.Object.GObject_Record'Class;
          Name        : String;
          Cb          : Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False);
+
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Simple_Handler;
+         User_Data : User_Type;
+         After     : Boolean := False);
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Simple_Handler;
          Slot_Object : access Widget_Type'Class;
          User_Data   : User_Type;
          After       : Boolean := False);

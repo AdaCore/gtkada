@@ -319,6 +319,45 @@ package body Gtk.Handlers is
          Id := Object_Connect (Widget, Name, Cb, Slot_Object, After);
       end Object_Connect;
 
+      -------------
+      -- Connect --
+      -------------
+
+      procedure Connect
+        (Widget : access Widget_Type'Class;
+         Name   : String;
+         Cb     : Simple_Handler;
+         After  : Boolean := False)
+      is
+         Id : Handler_Id;
+         pragma Warnings (Off, Id);
+      begin
+         Id := Connect
+           (Widget, Name,
+            To_Marshaller (Marshallers.Void_Marshaller.Handler (Cb)),
+            After);
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Simple_Handler;
+         Slot_Object : access Widget_Type'Class;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+         pragma Warnings (Off, Id);
+      begin
+         Id := Object_Connect
+           (Widget, Name,
+            To_Marshaller (Marshallers.Void_Marshaller.Handler (Cb)),
+            Slot_Object, After);
+      end Object_Connect;
+
       ---------------
       -- Free_Data --
       ---------------
@@ -752,6 +791,47 @@ package body Gtk.Handlers is
       -- Connect --
       -------------
 
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Simple_Handler;
+         User_Data : User_Type;
+         After     : Boolean := False)
+      is
+         Id : Handler_Id;
+         pragma Warnings (Off, Id);
+      begin
+         Id := Connect
+           (Widget, Name,
+            To_Marshaller (Marshallers.Void_Marshaller.Handler (Cb)),
+            User_Data, After);
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Simple_Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+         pragma Warnings (Off, Id);
+      begin
+         Id := Object_Connect
+           (Widget, Name,
+            To_Marshaller (Marshallers.Void_Marshaller.Handler (Cb)),
+            Slot_Object, User_Data, After);
+      end Object_Connect;
+
+      -------------
+      -- Connect --
+      -------------
+
       function Connect
         (Widget    : access Widget_Type'Class;
          Name      : String;
@@ -1091,6 +1171,45 @@ package body Gtk.Handlers is
          pragma Warnings (Off, Id);
       begin
          Id := Object_Connect (Widget, Name, Cb, Slot_Object, After);
+      end Object_Connect;
+
+      -------------
+      -- Connect --
+      -------------
+
+      procedure Connect
+        (Widget : access Widget_Type'Class;
+         Name   : String;
+         Cb     : Simple_Handler;
+         After  : Boolean := False)
+      is
+         Id : Handler_Id;
+         pragma Warnings (Off, Id);
+      begin
+         Id := Connect
+           (Widget, Name,
+            To_Marshaller (Marshallers.Void_Marshaller.Handler (Cb)),
+            After);
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Simple_Handler;
+         Slot_Object : access Widget_Type'Class;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+         pragma Warnings (Off, Id);
+      begin
+         Id := Object_Connect
+           (Widget, Name,
+            To_Marshaller (Marshallers.Void_Marshaller.Handler (Cb)),
+            Slot_Object, After);
       end Object_Connect;
 
       -------------
@@ -1451,6 +1570,47 @@ package body Gtk.Handlers is
       -- Connect --
       -------------
 
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Simple_Handler;
+         User_Data : User_Type;
+         After     : Boolean := False)
+      is
+         Id : Handler_Id;
+         pragma Warnings (Off, Id);
+      begin
+         Id := Connect
+           (Widget, Name,
+            To_Marshaller (Marshallers.Void_Marshaller.Handler (Cb)),
+            User_Data, After);
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Simple_Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+         pragma Warnings (Off, Id);
+      begin
+         Id := Object_Connect
+           (Widget, Name,
+            To_Marshaller (Marshallers.Void_Marshaller.Handler (Cb)),
+            Slot_Object, User_Data, After);
+      end Object_Connect;
+
+      -------------
+      -- Connect --
+      -------------
+
       function Connect
         (Widget    : access Widget_Type'Class;
          Name      : String;
@@ -1695,6 +1855,47 @@ package body Gtk.Handlers is
       -- Connect --
       -------------
 
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Simple_Handler;
+         User_Data : User_Type;
+         After     : Boolean := False)
+      is
+         Id : Handler_Id;
+         pragma Warnings (Off, Id);
+      begin
+         Id := Connect
+           (Widget, Name,
+            To_Marshaller (Marshallers.Void_Marshaller.Handler (Cb)),
+            User_Data, After);
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Simple_Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+         pragma Warnings (Off, Id);
+      begin
+         Id := Object_Connect
+           (Widget, Name,
+            To_Marshaller (Marshallers.Void_Marshaller.Handler (Cb)),
+            Slot_Object, User_Data, After);
+      end Object_Connect;
+
+      -------------
+      -- Connect --
+      -------------
+
       function Connect
         (Widget    : access Widget_Type'Class;
          Name      : String;
@@ -1843,6 +2044,47 @@ package body Gtk.Handlers is
       begin
          Id := Object_Connect
            (Widget, Name, Cb, Slot_Object, User_Data, After);
+      end Object_Connect;
+
+      -------------
+      -- Connect --
+      -------------
+
+      procedure Connect
+        (Widget    : access Widget_Type'Class;
+         Name      : String;
+         Cb        : Simple_Handler;
+         User_Data : User_Type;
+         After     : Boolean := False)
+      is
+         Id : Handler_Id;
+         pragma Warnings (Off, Id);
+      begin
+         Id := Connect
+           (Widget, Name,
+            To_Marshaller (Marshallers.Void_Marshaller.Handler (Cb)),
+            User_Data, After);
+      end Connect;
+
+      --------------------
+      -- Object_Connect --
+      --------------------
+
+      procedure Object_Connect
+        (Widget      : access Glib.Object.GObject_Record'Class;
+         Name        : String;
+         Cb          : Simple_Handler;
+         Slot_Object : access Widget_Type'Class;
+         User_Data   : User_Type;
+         After       : Boolean := False)
+      is
+         Id : Handler_Id;
+         pragma Warnings (Off, Id);
+      begin
+         Id := Object_Connect
+           (Widget, Name,
+            To_Marshaller (Marshallers.Void_Marshaller.Handler (Cb)),
+            Slot_Object, User_Data, After);
       end Object_Connect;
 
       -------------
