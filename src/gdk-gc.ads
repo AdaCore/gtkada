@@ -126,6 +126,12 @@ package Gdk.GC is
    --  Note that setting the function to Gdk_Xor is not the right way
    --  to do animation. You should instead save the background pixmap,
    --  put the image, and then restore the background.
+   --
+   --  In general, there are three basic steps to drawing: reading the source
+   --  pixels, reading the destination pixels, and writing the destination
+   --  pixels.  Some functions only perform the third step (Set and Clear),
+   --  some do not need the middle step (Copy), whereas most require the three
+   --  steps, and thus can be much slower.
 
    procedure Set_Fill (GC   : in Gdk_GC;
                        Fill : in Types.Gdk_Fill);
@@ -175,6 +181,8 @@ package Gdk.GC is
                             Exposures : in Boolean);
    --  EXPOSURES indicates  whether you want "expose" and "noexpose" events to
    --  be reported when calling Copy_Area and Copy_Plane with this GC.
+   --  You should disable this if you don't need the event and want to optimize
+   --  your application.
 
    procedure Set_Line_Attributes (GC         : in Gdk_GC;
                                   Line_Width : in Gint;
@@ -183,7 +191,8 @@ package Gdk.GC is
                                   Join_Style : in Types.Gdk_Join_Style);
    --  Set the line attributes for this GC.
    --  LINE_WIDTH is the width of the line. If its value is 0, the line is as
-   --  thin as possible, possibly even more so than if the width is 1.
+   --  thin as possible, possibly even more so than if the width is 1. It is
+   --  also faster to draw a line with width 0 than any other line width.
    --
    --  LINE_STYLE specifies whether the line should be solid or dashed. If its
    --  value is Line_On_Off_Dash, the colors are alternatively the foreground

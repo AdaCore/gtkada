@@ -61,6 +61,8 @@ package Gdk.Event is
    subtype Gdk_Event_Configure is Gdk_Event;
    --  The window configuration has changed: either it was remapped,
    --  resized, moved, ...
+   --  Note that you usually don't have to redraw your window when you
+   --  receive such an event, since it is followed by an Gdk_Event_Expose.
    --  Relevant fields: X, Y, Width, Height
    --  Type: Configure
 
@@ -216,7 +218,8 @@ package Gdk.Event is
    --  deativates
 
    function Get_Detail (Event : in Gdk_Event) return Gdk.Types.Gdk_Notify_Type;
-   --  Set to indicate the notify details.
+   --  Set to indicate the notify details. Most applications can ignore
+   --  events with a Notify_Virtual detail or Notify_Non_Linear_Virtual.
 
    function Get_Focus (Event : in Gdk_Event) return Boolean;
    --  Set to true if the window for the event is the focus window
@@ -248,7 +251,9 @@ package Gdk.Event is
    --  the minimal area to redraw).
 
    function Get_Count (Event : in Gdk_Event) return Gint;
-   --  Number of Expose_Events that are to follow this one
+   --  Number of Expose_Events that are to follow this one.
+   --  Most applications can ignore the event if Count is not 0, which also
+   --  allows for optimizations.
 
    function Get_In (Event : in Gdk_Event) return Boolean;
    --  True if the window has gained the focus, False otherwise

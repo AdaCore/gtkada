@@ -98,12 +98,14 @@ package Gdk.Window is
                          Y      : in Gint;
                          Width  : in Gint;
                          Height : in Gint);
+   --  Does not generate an expose event.
 
    procedure Clear_Area_E (Window : in Gdk_Window;
                            X      : in Gint;
                            Y      : in Gint;
                            Width  : in Gint;
                            Height : in Gint);
+   --  Same as Clear_Area, but generates an expose event.
 
    ---------------------------
    --  procedure Copy_Area  --

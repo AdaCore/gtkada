@@ -43,4 +43,9 @@ package Gdk.Input is
    --  FIXME: Verify that Mask is indeed of type GdkEventMask.
    --  FIXME: The C code defines it as Gint...
 
+   --  to bind: gdk_input_motion_events
+   --    This returns the list of past motion events in the window, between two
+   --    times. This might give a finer granularity than getting the
+   --    Motion_Events themselves, and might be more efficient.
+   --    Not supporting by all XServers though.
 end Gdk.Input;
