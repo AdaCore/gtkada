@@ -38,7 +38,7 @@ New features in 1.2.5 include:
 - A new examples shows how to do some flicker-free animation with GtkAda
 - Tested on HP-UX 11.00
 - Tested on SCO UnixWare 7.1
-- Add partial support for Gtk_Ctree
+- Add partial support for Gtk_Ctree in Gate/Dgate
 
 New features in 1.2.4 include:
 
