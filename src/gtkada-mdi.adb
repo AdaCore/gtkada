@@ -2453,30 +2453,16 @@ package body Gtkada.MDI is
       --  and make sure the current page in that dock is the correct one.
 
       if Child.State = Docked then
-         if not Gtk.Object.Destroyed_Is_Set (Child.MDI.Docks (Child.Dock)) then
-            Gtk.Handlers.Handler_Block
-              (Child.MDI.Docks (Child.Dock),
-               Child.MDI.Switch_Page_Id (Child.Dock));
-            Set_Page
-              (Child.MDI.Docks (Child.Dock),
-               Page_Num (Child.MDI.Docks (Child.Dock), Child));
-            Gtk.Handlers.Handler_Unblock
-              (Child.MDI.Docks (Child.Dock),
-               Child.MDI.Switch_Page_Id (Child.Dock));
-         end if;
+         Set_Page
+           (Child.MDI.Docks (Child.Dock),
+            Page_Num (Child.MDI.Docks (Child.Dock), Child));
 
       elsif Child.State = Normal
         and then Children_Are_Maximized (Child.MDI)
       then
-         if not Gtk.Object.Destroyed_Is_Set (Child.MDI.Docks (None)) then
-            Gtk.Handlers.Handler_Block
-              (Child.MDI.Docks (None), Child.MDI.Switch_Page_Id (None));
-            Set_Page
-              (Child.MDI.Docks (None),
-               Page_Num (Child.MDI.Docks (None), Child));
-            Gtk.Handlers.Handler_Unblock
-              (Child.MDI.Docks (None), Child.MDI.Switch_Page_Id (None));
-         end if;
+         Set_Page
+           (Child.MDI.Docks (None),
+            Page_Num (Child.MDI.Docks (None), Child));
 
       elsif Realized_Is_Set (Child) then
          Gdk.Window.Gdk_Raise (Get_Window (Child));
@@ -2927,7 +2913,7 @@ package body Gtkada.MDI is
          --  Coordinates don't matter, they are set in Size_Allocate_MDI.
 
          Put (MDI, MDI.Docks (Side), 0, 0);
-         MDI.Switch_Page_Id (Side) := Widget_Callback.Connect
+         Widget_Callback.Connect
            (MDI.Docks (Side), "switch_page",
             Docked_Switch_Page'Access);
 

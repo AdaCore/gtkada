@@ -36,6 +36,7 @@ with Gtk.Button;
 with Gtk.Fixed;
 with Gtk.Event_Box;
 with Gtk.Handlers;
+with Gtk.Main;
 with Gtk.Menu;
 with Gtk.Notebook;
 with Gtk.Check_Menu_Item;
@@ -518,6 +519,9 @@ private
       --  The five possible docks (one on each side and one in the middle.
       --  Note that the one in the middle might not be visible, or even
       --  created, if it is replaced by a Gtk_Layout.
+
+      Raise_Id : Gtk.Main.Idle_Handler_Id := 0;
+      --  The id of the Raise_Child_Idle handler.
 
       Layout : Gtk.Fixed.Gtk_Fixed;
       --  The layout in the middle. It will be hidden when the items are
