@@ -1,5 +1,5 @@
-#include "gtk/gtk.h"
-#include <stdarg.h>
+#include <gtk/gtk.h>
+#include <gdk/gdk.h>
 
 /***************************************************
  *  Functions for Objects
@@ -9,6 +9,29 @@ gint
 ada_object_get_type (GtkObject* object)
 {
   return object->klass->type;
+}
+
+gchar*
+ada_type_name (GtkObject* object)
+{
+  return gtk_type_name (GTK_OBJECT_TYPE (object));
+}
+
+/***************************************************
+ *  Functions for GtkArg
+ ***************************************************/
+
+GtkObject*
+ada_gtkarg_value_object (GtkArg* args, guint num)
+{
+  if ((args [num].type % 256) == GTK_TYPE_OBJECT)
+    return GTK_VALUE_OBJECT (args [num]);
+  else
+    {
+      fprintf (stderr, "request for an Object value (%d) when we have a %d\n",
+	       GTK_TYPE_OBJECT, (args[num].type % 256));
+      return NULL;
+    }
 }
 
 /***************************************************
@@ -305,5 +328,47 @@ GtkWidget*
 ada_combo_get_entry (GtkCombo* widget)
 {
    return widget->entry;
+}
+
+/*******************************************
+ ** Functions for Style
+ *******************************************/
+
+GdkColor*
+ada_style_get_bg (GtkStyle* style, gint state)
+{
+    return &(style->bg [state]);
+}
+
+/********************************************
+ ** Functions for Widget
+ ********************************************/
+
+GtkStyle*
+ada_widget_get_style (GtkWidget* widget)
+{
+    return widget->style;
+}
+
+GdkWindow*
+ada_widget_get_window (GtkWidget* widget)
+{
+    return widget->window;
+}
+
+/******************************************
+ ** Functions for Pixmap
+ ******************************************/
+
+GdkBitmap*
+ada_pixmap_get_mask (GtkPixmap* widget)
+{
+   return widget->mask;
+}
+
+GdkPixmap*
+ada_pixmap_get_pixmap (GtkPixmap* widget)
+{
+   return widget->pixmap;
 }
 
