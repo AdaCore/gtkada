@@ -42,8 +42,10 @@ package Gdk.Pixmap is
                       Window : in     Gdk.Window.Gdk_Window'Class;
                       Width  : in     Gint;
                       Height : in     Gint;
-                      Depth  : in     Gint);
+                      Depth  : in     Gint := -1);
    --  Automatically reference the pixmap once
+   --  If the depth is -1, the default depth for the window will be
+   --  chosen
 
    procedure Unref_Pixmap (Pixmap : in out Gdk_Pixmap);
    --  This is the usual way to destroy a pixmap. The memory is freed when

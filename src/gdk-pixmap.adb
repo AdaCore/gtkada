@@ -112,7 +112,7 @@ package body Gdk.Pixmap is
                       Window : in     Gdk.Window.Gdk_Window'Class;
                       Width  : in     Gint;
                       Height : in     Gint;
-                      Depth  : in     Gint) is
+                      Depth  : in     Gint := -1) is
       function Internal (Window : in System.Address;
                          Width  : in Gint;
                          Height : in Gint;
