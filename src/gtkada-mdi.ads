@@ -38,6 +38,7 @@ with Gdk.Window;
 with Gtk.Accel_Group;
 with Gtk.Box;
 with Gtk.Button;
+with Gtk.Enums;
 with Gtk.Fixed;
 with Gtk.Event_Box;
 with Gtk.Handlers;
@@ -49,6 +50,7 @@ with Gtk.Style;
 with Gtk.Check_Menu_Item;
 with Gtk.Radio_Menu_Item;
 with Gtk.Widget;
+with Gtkada.Multi_Paned;
 with Pango.Font;
 with Pango.Layout;
 
@@ -423,6 +425,12 @@ package Gtkada.MDI is
    --  will put children one below another. This is the same behavior as for
    --  Gtk_Vbox and Gtk_Hbox
 
+   procedure Split
+     (MDI         : access MDI_Window_Record;
+      Orientation : Gtk.Enums.Gtk_Orientation);
+   --  Split the central area. The split starting from either the currently
+   --  selected child or the last child that had the focus in that area.
+
    ----------------------
    -- Desktop Handling --
    ----------------------
@@ -689,10 +697,20 @@ private
       Iter : Gtk.Widget.Widget_List.Glist;
    end record;
 
-   type Notebook_Array is array (Dock_Side) of Gtk.Notebook.Gtk_Notebook;
+   type Notebook_Array is array (Left .. Bottom) of Gtk.Notebook.Gtk_Notebook;
    type Int_Array is array (Left .. Bottom) of Glib.Gint;
    type Window_Array is array (Left .. Bottom) of Gdk.Window.Gdk_Window;
    type Event_Array is array (Left .. Bottom) of Gtk.Event_Box.Gtk_Event_Box;
+
+   type Central_Area is record
+      Children_Are_Maximized : Boolean := False;
+      --  True if the children are currently maximized.
+
+      Container : Gtkada.Multi_Paned.Gtkada_Multi_Paned;
+      Layout   : Gtk.Fixed.Gtk_Fixed;
+   end record;
+   --  The central area. Only one of the items is active at any item and
+   --  contains the items assigned to the central area
 
    type MDI_Window_Record is new Gtk.Fixed.Gtk_Fixed_Record with record
       Items : Gtk.Widget.Widget_List.Glist := Gtk.Widget.Widget_List.Null_List;
@@ -703,13 +721,11 @@ private
       --  Note that the one in the middle might not be visible, or even
       --  created, if it is replaced by a Gtk_Layout.
 
+      Central : Central_Area;
+
       Drop_Sites : Event_Array := (others => null);
       --  The drop sites on each side of the MDI, where items can be dropped to
       --  create new docks
-
-      Layout : Gtk.Fixed.Gtk_Fixed;
-      --  The layout in the middle. It will be hidden when the items are
-      --  maximized and put in the middle dock.
 
       Docks_Size : Int_Array := (others => 0);
       --  The size (height or width, depending on the location) of each of
@@ -756,7 +772,6 @@ private
       Focus_Child : MDI_Child := null;
       --  The child that currently has the focus. Some default actions will
       --  apply to this child only.
-      --  ??? Keypress events should be redirected to this child.
 
       Priorities : Priorities_Array := (0, 1, 2, 3);
       --  The order in which the docks should be displayed. See the
@@ -794,9 +809,6 @@ private
       --  True if destroying a floating window will put the child back in the
       --  MDI instead of destroying it. False if the child should be destroyed
       --  (provided it accepts so in its delete_event handler).
-
-      Children_Are_Maximized : Boolean := False;
-      --  True if the children are currently maximized.
 
       Highlight_Style : Gtk.Style.Gtk_Style;
       --  Style to use to highlight the tabs and menus for the highlighted
