@@ -84,6 +84,7 @@ with Gtk.Box;
 with Gtk.Button;
 with Gtk.Button_Box;
 with Gtk.Calendar;
+with Gtk.Cell_Editable;
 with Gtk.Cell_Renderer;
 with Gtk.Cell_Renderer_Pixbuf;
 with Gtk.Cell_Renderer_Text;
