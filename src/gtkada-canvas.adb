@@ -1892,7 +1892,7 @@ package body Gtkada.Canvas is
 
       Grab_Add (Canvas);
       Deep_Copy (From => Event, To => Canvas.Event_Press);
-      return False;
+      return True;
    end Button_Pressed;
 
    --------------------
