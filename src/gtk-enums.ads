@@ -208,6 +208,20 @@ package Gtk.Enums is
      );
    --  See Gtk.Ctree.Set_Expander_Style for more details.
 
+   type Gtk_Wrap_Mode is
+          (Wrapmode_None,
+           Wrapmode_Char,
+           Wrapmode_Word);
+
+   type Gtk_Text_Window_Type is
+          (Text_Window_Private,
+           Text_Window_Widget,
+           Text_Window_Text,
+           Text_Window_Left,
+           Text_Window_Right,
+           Text_Window_Top,
+           Text_Window_Bottom);
+
    --  Some Glib instantiations
 
    function Convert (S : String) return System.Address;
