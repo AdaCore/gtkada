@@ -397,6 +397,28 @@ package body Glib.Object is
       Internal (Get_Object (Object), Property_Name & ASCII.NUL);
    end Notify;
 
+   ---------
+   -- Ref --
+   ---------
+
+   procedure Ref (Object : access GObject_Record) is
+      procedure Internal (Object : System.Address);
+      pragma Import (C, Internal, "g_object_ref");
+   begin
+      Internal (Get_Object (Object));
+   end Ref;
+
+   -----------
+   -- Unref --
+   -----------
+
+   procedure Unref (Object : access GObject_Record) is
+      procedure Internal (Object : System.Address);
+      pragma Import (C, Internal, "g_object_unref");
+   begin
+      Internal (Get_Object (Object));
+   end Unref;
+
    ---------------
    -- User_Data --
    ---------------

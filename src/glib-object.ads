@@ -71,6 +71,17 @@ package Glib.Object is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
+   procedure Ref (Object : access GObject_Record);
+   --  Increment the reference counter for Object. See Unref below.
+   --  Since an object is not deleted while its reference count is not null,
+   --  this is a way to keep an object in memory, in particular when you
+   --  want to temporarily remove a widget from its parent.
+
+   procedure Unref (Object : access GObject_Record);
+   --  Decrement the reference counter for Object. When this reaches 0, the
+   --  object is effectively destroy, all the callbacks associated with it are
+   --  disconnected.
+
    ------------------------
    -- Interfacing with C --
    ------------------------
