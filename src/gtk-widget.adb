@@ -28,10 +28,13 @@
 -----------------------------------------------------------------------
 
 with Gdk;                  use Gdk;
-with Gdk.Color;            use Gdk.Color;
-with Gdk.Visual;           use Gdk.Visual;
 with Gtk.Box;              use Gtk.Box;
 with Gtk.Util;             use Gtk.Util;
+with Gtk.Fixed;            use Gtk.Fixed;
+with Gtk.Scrolled_Window;  use Gtk.Scrolled_Window;
+with Gtk.Layout;           use Gtk.Layout;
+with Gtk.Packer;           use Gtk.Packer;
+with Gtk.Container;        use Gtk.Container;
 with Interfaces.C.Strings;
 with Gtk.Table;            use Gtk.Table;
 with Ada.Strings.Fixed;    use Ada.Strings.Fixed;
@@ -1297,16 +1300,17 @@ package body Gtk.Widget is
 
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type) is
-      Child     : Node_Ptr := Find_Tag (N.Child, "child");
-      Q         : Node_Ptr;
-      Top       : constant Node_Ptr := Find_Top_Widget (N);
-      Top_Name  : constant String_Ptr := Get_Field (Top, "name");
-      Cur       : constant String_Ptr := Get_Field (N, "name");
-      S         : String_Ptr;
-      Flag_Set  : Boolean;
-      First     : Natural;
-      Last      : Natural;
-      The_First : Natural;
+      Child       : Node_Ptr := Find_Tag (N.Child, "child");
+      Q           : Node_Ptr;
+      Top         : constant Node_Ptr := Find_Top_Widget (N);
+      Top_Name    : constant String_Ptr := Get_Field (Top, "name");
+      Cur         : constant String_Ptr := Get_Field (N, "name");
+      S           : String_Ptr;
+      Flag_Set    : Boolean;
+      Use_Default : Boolean;
+      First       : Natural;
+      Last        : Natural;
+      The_First   : Natural;
 
    begin
       Object.Generate (N, File);
@@ -1406,12 +1410,18 @@ package body Gtk.Widget is
          Q := Find_Tag (Child.Child, "pack");
 
          if Q = null or else Q.Value.all = "GTK_PACK_START" then
-            if Get_Field (Child, "expand") /= null then
+            if Get_Field (Child, "fill") /= null then
+
+               --  This widget is part of a Gtk_Box
+
                Gen_Call_Child (N, Child, "Box", "Pack_Start",
                  "expand", "fill", "padding", File);
                N.Specific_Data.Has_Container := True;
 
             elsif Get_Field (Child, "left_attach") /= null then
+
+               --  This widget is part of a Gtk_Table
+
                Add_Package ("Table");
                Put_Line (File, "   Attach (" &
                  To_Ada (Top_Name.all) & "." &
@@ -1495,6 +1505,80 @@ package body Gtk.Widget is
                Put_Line (File, "     " & Get_Field (Child, "xpad").all & ", " &
                  Get_Field (Child, "ypad").all & ");");
                N.Specific_Data.Has_Container := True;
+
+            elsif Get_Field (Child, "side") /= null then
+
+               --  This widget is part of a packer
+
+               Add_Package ("Packer");
+               S := Get_Field (Child, "use_default");
+               Use_Default := S /= null and then Boolean'Value (S.all);
+
+               if Use_Default then
+                  Put (File, "   Add_Defaults (");
+               else
+                  Put (File, "   Add (");
+               end if;
+
+               Put_Line (File,
+                 To_Ada (Top_Name.all) & "." &
+                 To_Ada (Find_Tag
+                   (Find_Parent (N.Parent, "Packer"), "name").Value.all) &
+                 ", " & To_Ada (Top_Name.all) & "." &
+                 To_Ada (Cur.all) &
+                 ", " & To_Ada (Get_Field (Child, "side").all) &
+                 ", " & To_Ada (Get_Field (Child, "anchor").all) & ",");
+
+               Put (File, "     ");
+
+               Flag_Set := False;
+               S := Get_Field (Child, "expand");
+
+               if S /= null and then S.all = "True" then
+                  Flag_Set := True;
+                  Put (File, "Gtk_Pack_Expand");
+               end if;
+
+               S := Get_Field (Child, "xfill");
+
+               if S /= null and then S.all = "True" then
+                  if Flag_Set then
+                     Put (File, " or ");
+                  else
+                     Flag_Set := True;
+                  end if;
+
+                  Put (File, "Gtk_Fill_X");
+               end if;
+
+               S := Get_Field (Child, "yfill");
+
+               if S /= null and then S.all = "True" then
+                  if Flag_Set then
+                     Put (File, " or ");
+                  else
+                     Flag_Set := True;
+                  end if;
+
+                  Put (File, "Gtk_Fill_Y");
+               end if;
+
+               if not Flag_Set then
+                  Put (File, "0");
+               end if;
+
+               if not Use_Default then
+                  Put_Line (File, ",");
+                  Put (File,
+                    "     " & Get_Field (Child, "border_width").all &
+                    ", " & Get_Field (Child, "xpad").all &
+                    ", " & Get_Field (Child, "ypad").all &
+                    ", " & Get_Field (Child, "xipad").all &
+                    ", " & Get_Field (Child, "yipad").all);
+               end if;
+
+               Put_Line (File, ");");
+               N.Specific_Data.Has_Container := True;
             end if;
          end if;
       end if;
@@ -1503,6 +1587,7 @@ package body Gtk.Widget is
 
       if Q /= null then
          if not Top.Specific_Data.Has_Accel_Group then
+            Add_Package ("Accel_Group");
             Put_Line (File, "   Gtk_New (The_Accel_Group);");
             Put_Line (File, "   Add_Accel_Group (" &
               To_Ada (Top_Name.all) & ", The_Accel_Group);");
@@ -1513,6 +1598,7 @@ package body Gtk.Widget is
             To_Ada (Top_Name.all) & "." &
             To_Ada (Cur.all) & ", """ &
             Get_Field (Q, "signal").all & """,");
+         Add_Package ("Gdk.Types.Keysyms");
          S := Get_Field (Q, "modifiers");
          Put (File, "     The_Accel_Group, " & Get_Field (Q, "key").all);
 
@@ -1525,16 +1611,44 @@ package body Gtk.Widget is
       end if;
 
       Gen_Signal (N, File);
+
+      if Find_Tag (N.Child, "child_name") = null then
+         if not N.Specific_Data.Has_Container then
+            S := Get_Field (N.Parent, "class");
+
+            if S /= null then
+               if S.all = "GtkScrolledWindow" then
+                  Gen_Call_Child (N, null, "Scrolled_Window",
+                    "Add_With_Viewport", File => File);
+
+               elsif S.all = "GtkFixed" then
+                  Gen_Call_Child (N, N, "Fixed",
+                    "Put", "x", "y", File => File);
+
+               elsif S.all = "GtkLayout" then
+                  Gen_Call_Child (N, N, "Layout",
+                    "Put", "x", "y", File => File);
+
+               else
+                  Gen_Call_Child (N, null, "Container", "Add", File => File);
+               end if;
+            end if;
+
+            N.Specific_Data.Has_Container := True;
+         end if;
+      end if;
    end Generate;
 
    procedure Generate (Widget : in out Object.Gtk_Object;
                        N      : in Node_Ptr) is
-      S, S2, S3  : String_Ptr;
-      Child      : Node_Ptr := Find_Tag (N.Child, "child");
-      Q          : Node_Ptr;
-      Func       : Callback;
-      Data       : System.Address;
-      Events     : Gdk.Types.Gdk_Event_Mask;
+      S, S2, S3   : String_Ptr;
+      Child       : Node_Ptr := Find_Tag (N.Child, "child");
+      Q           : Node_Ptr;
+      Func        : Callback;
+      Data        : System.Address;
+      Events      : Gdk.Types.Gdk_Event_Mask;
+      Options     : Gtk_Packer_Options;
+      Use_Default : Boolean;
 
       procedure Signal_Connect
         (Object        : System.Address;
@@ -1676,6 +1790,9 @@ package body Gtk.Widget is
 
          if Q = null or else Q.Value.all = "GTK_PACK_START" then
             if S /= null and then S2 /= null and then S3 /= null then
+
+               --  This widget is part of a Gtk_Box
+
                Gtk.Box.Pack_Start
                  (Gtk_Box (Get_Object (Find_Tag
                    (Find_Parent (N.Parent, "Box"), "name").Value)),
@@ -1684,7 +1801,10 @@ package body Gtk.Widget is
                   Gint'Value (S3.all));
                N.Specific_Data.Has_Container := True;
 
-            else
+            elsif Get_Field (Child, "left_attach") /= null then
+
+               --  This widget is part of a Gtk_Table
+
                declare
                   Xoptions, Yoptions : Gtk_Attach_Options := 0;
                begin
@@ -1727,6 +1847,53 @@ package body Gtk.Widget is
                   when Constraint_Error =>
                      null;
                end;
+
+            elsif Get_Field (Child, "side") /= null then
+
+               --  This widget is part of a packer
+
+               S := Get_Field (Child, "use_default");
+               Use_Default := S /= null and then Boolean'Value (S.all);
+               Options := 0;
+
+               if Boolean'Value (Get_Field (Child, "expand").all) then
+                  Options := Options or Gtk_Pack_Expand;
+               end if;
+
+               if Boolean'Value (Get_Field (Child, "xfill").all) then
+                  Options := Options or Gtk_Fill_X;
+               end if;
+
+               if Boolean'Value (Get_Field (Child, "yfill").all) then
+                  Options := Options or Gtk_Fill_Y;
+               end if;
+
+               S := Get_Field (Child, "side");
+               S2 := Get_Field (Child, "anchor");
+
+               if Use_Default then
+                  Gtk.Packer.Add_Defaults (Gtk_Packer (Get_Object (Find_Tag
+                    (Find_Parent (N.Parent, "Packer"), "name").Value)),
+                     Gtk_Widget (Get_Object (Get_Field (N, "name"))),
+                     Gtk_Side_Type'Value (S (S'First + 4 .. S'Last)),
+                     Gtk_Anchor_Type'Value (S2 (S2'First + 4 .. S2'Last)),
+                     Options);
+
+               else
+                  Gtk.Packer.Add (Gtk_Packer (Get_Object (Find_Tag
+                    (Find_Parent (N.Parent, "Packer"), "name").Value)),
+                     Gtk_Widget (Get_Object (Get_Field (N, "name"))),
+                     Gtk_Side_Type'Value (S (S'First + 4 .. S'Last)),
+                     Gtk_Anchor_Type'Value (S2 (S2'First + 4 .. S2'Last)),
+                     Options,
+                     Guint'Value (Get_Field (Child, "border_width").all),
+                     Guint'Value (Get_Field (Child, "xpad").all),
+                     Guint'Value (Get_Field (Child, "ypad").all),
+                     Guint'Value (Get_Field (Child, "xipad").all),
+                     Guint'Value (Get_Field (Child, "yipad").all));
+               end if;
+
+               N.Specific_Data.Has_Container := True;
             end if;
          end if;
       end if;
@@ -1748,6 +1915,42 @@ package body Gtk.Widget is
 
          Q := Find_Tag (Q.Next, "signal");
       end loop;
+
+      if Find_Tag (N.Child, "child_name") = null then
+         if not N.Specific_Data.Has_Container then
+            S := Get_Field (N.Parent, "class");
+
+            if S /= null then
+               if S.all = "GtkScrolledWindow" then
+                  Scrolled_Window.Add_With_Viewport
+                    (Gtk_Scrolled_Window
+                      (Get_Object (Get_Field (N.Parent, "name"))),
+                     Gtk_Widget (Widget));
+
+               elsif S.all = "GtkFixed" then
+                  Fixed.Put
+                    (Gtk_Fixed (Get_Object (Get_Field (N.Parent, "name"))),
+                     Gtk_Widget (Widget),
+                     Gint16'Value (Get_Field (N, "x").all),
+                     Gint16'Value (Get_Field (N, "y").all));
+
+               elsif S.all = "GtkLayout" then
+                  Layout.Put
+                    (Gtk_Layout (Get_Object (Get_Field (N.Parent, "name"))),
+                     Gtk_Widget (Widget),
+                     Gint16'Value (Get_Field (N, "x").all),
+                     Gint16'Value (Get_Field (N, "y").all));
+
+               else
+                  Container.Add
+                    (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
+                     Gtk_Widget (Widget));
+               end if;
+            end if;
+
+            N.Specific_Data.Has_Container := True;
+         end if;
+      end if;
    end Generate;
 
 end Gtk.Widget;
