@@ -48,7 +48,7 @@ package body Glib.Glade is
 
    type Signal_Rec is record
       Widget : Node_Ptr;
-      Handler, Signal, Class : String_Ptr;
+      Handler, Signal, Class, Orig_Class : String_Ptr;
    end record;
 
    Signals : array (Signal_Range) of Signal_Rec;
@@ -56,10 +56,12 @@ package body Glib.Glade is
    --  Used by Add_Signal and Gen_Signal_Instantiations
 
    procedure Add_Signal
-     (Widget : Node_Ptr; Handler, Signal, Class : String_Ptr);
+     (Widget : Node_Ptr;
+      Handler, Signal, Class, Orig_Class : String_Ptr);
    --  Add a specific handler of signal of a given class in Signals.
-   --  Top is the node of the top level widget containing the signal
-   --  Widget is the node of the widget containing the signal
+   --  Top is the node of the top level widget containing the signal.
+   --  Widget is the node of the widget containing the signal.
+   --  This documentation is obsolete ???
 
    procedure Add_Signal_Instantiation (S : String_Ptr);
    --  Add widget S in Signal_Instantiation if S isn't already present
@@ -115,13 +117,15 @@ package body Glib.Glade is
    ----------------
 
    procedure Add_Signal
-     (Widget : Node_Ptr; Handler, Signal, Class : String_Ptr) is
+     (Widget : Node_Ptr;
+      Handler, Signal, Class, Orig_Class : String_Ptr) is
    begin
       Num_Signals := Num_Signals + 1;
-      Signals (Num_Signals).Widget  := Widget;
-      Signals (Num_Signals).Handler := Handler;
-      Signals (Num_Signals).Signal  := Signal;
-      Signals (Num_Signals).Class   := Class;
+      Signals (Num_Signals).Widget     := Widget;
+      Signals (Num_Signals).Handler    := Handler;
+      Signals (Num_Signals).Signal     := Signal;
+      Signals (Num_Signals).Class      := Class;
+      Signals (Num_Signals).Orig_Class := Orig_Class;
    end Add_Signal;
 
    ------------------------------
@@ -259,7 +263,6 @@ package body Glib.Glade is
       return null;
    end Find_Child;
 
-   ---------------------
    ------------
    -- To_Ada --
    ------------
@@ -775,6 +778,8 @@ package body Glib.Glade is
    -- Gen_Signal --
    ----------------
 
+   Gtk_Widget_Class : aliased String := "GtkWidget";
+
    procedure Gen_Signal
      (N            : Node_Ptr;
       File         : File_Type;
@@ -783,28 +788,43 @@ package body Glib.Glade is
       P       : Node_Ptr := Find_Tag (N.Child, "signal");
       Top     : constant Node_Ptr := Find_Top_Widget (N);
       Current : constant String_Ptr := Get_Field (N, "name");
+      Orig_Class,
       Class   : String_Ptr;
       Handler : String_Ptr;
       Name    : String_Ptr;
+      Object  : String_Ptr;
       After   : String_Ptr;
 
    begin
       if Widget_Class = null then
-         Class := Get_Field (N, "class");
+         Orig_Class := Get_Field (N, "class");
       else
-         Class := Widget_Class;
+         Orig_Class := Widget_Class;
       end if;
 
       while P /= null loop
+         Object := Get_Field (P, "object");
+
+         if Object /= null then
+            Class := Gtk_Widget_Class'Access;
+         else
+            Class := Orig_Class;
+         end if;
+
          Handler := Get_Field (P, "handler");
          Name := Get_Field (P, "name");
          After := Get_Field (P, "after");
-         Add_Signal (Top, Handler, Name, Class);
          Add_Signal_Instantiation (Class);
+         Add_Signal (Top, Handler, Name, Class, Orig_Class);
 
-         Put_Line (File, "   " &
-           To_Ada (Class (Class'First + 3 .. Class'Last)) &
-           "_Callback.Connect");
+         Put (File, "   " &
+           To_Ada (Class (Class'First + 3 .. Class'Last)) & "_Callback.");
+
+         if Object /= null then
+            Put (File, "Object_");
+         end if;
+
+         Put_Line (File, "Connect");
          Put (File, "     (");
 
          if Top /= N then
@@ -814,7 +834,9 @@ package body Glib.Glade is
          Put (File, To_Ada (Current.all) &
            ", """ & Name.all & """,");
 
-         if Count_Arguments (Type_From_Name (Class.all), Name.all) = 0 then
+         if Count_Arguments
+           (Type_From_Name (Orig_Class.all), Name.all) = 0
+         then
             New_Line (File);
             Put (File, "      " &
               To_Ada (Class (Class'First + 3 .. Class'Last)) &
@@ -822,6 +844,10 @@ package body Glib.Glade is
               ")");
          else
             Put (File, " " & To_Ada (Handler.all) & "'Access");
+         end if;
+
+         if Object /= null then
+            Put (File, ", " & To_Ada (Object.all));
          end if;
 
          if After /= null then
@@ -892,7 +918,7 @@ package body Glib.Glade is
                     To_Ada (Signals (J).Class.all) & "_Record'Class");
 
                   if Count_Arguments (Type_From_Name
-                    (Signals (J).Class.all), Signals (J).Signal.all) > 0
+                    (Signals (J).Orig_Class.all), Signals (J).Signal.all) > 0
                   then
                      Put_Line (File, ";");
                      Put_Line (File,
@@ -944,7 +970,7 @@ package body Glib.Glade is
                        To_Ada (Signals (J).Class.all) & "_Record'Class");
 
                      Count := Count_Arguments (Type_From_Name
-                       (Signals (J).Class.all), Signals (J).Signal.all);
+                       (Signals (J).Orig_Class.all), Signals (J).Signal.all);
 
                      if Count > 0 then
                         Put_Line (File, ";");
@@ -959,7 +985,7 @@ package body Glib.Glade is
                      for K in 1 .. Gint (Count) loop
                         Kind := new String' (To_Ada (Type_Name
                           (Argument_Type
-                            (Type_From_Name (Signals (J).Class.all),
+                            (Type_From_Name (Signals (J).Orig_Class.all),
                              Signals (J).Signal.all, K - 1))));
 
                         if Kind.all = "Gpointer" then
