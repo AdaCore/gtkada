@@ -30,7 +30,6 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
-with Gtk.Widget; use Gtk.Widget;
 with Gtk.Object; use Gtk.Object;
 with Gtk.Container; use Gtk.Container;
 with Gtk.File_Selection; use Gtk.File_Selection;
