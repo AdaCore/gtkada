@@ -78,22 +78,22 @@ package Bonobo.Dock_Item is
       X    : Gint;
       Y    : Gint);
 
-   function Get_Child (Dock_Item : access Bonobo_Dock_Item_Record)
-                       return Gtk.Widget.Gtk_Widget;
+   function Get_Child
+     (Dock_Item : access Bonobo_Dock_Item_Record) return Gtk.Widget.Gtk_Widget;
 
    procedure Get_Floating_Position
      (Item : access Bonobo_Dock_Item_Record;
       X    : out Gint;
       Y    : out Gint);
 
-   function Get_Name (Dock_Item : access Bonobo_Dock_Item_Record)
-                      return String;
+   function Get_Name
+     (Dock_Item : access Bonobo_Dock_Item_Record) return String;
 
-   function Get_Orientation (Dock_Item : access Bonobo_Dock_Item_Record)
-                             return Gtk_Orientation;
+   function Get_Orientation
+     (Dock_Item : access Bonobo_Dock_Item_Record) return Gtk_Orientation;
 
-   function Get_Shadow_Type (Dock_Item : access Bonobo_Dock_Item_Record)
-                             return Gtk_Shadow_Type;
+   function Get_Shadow_Type
+     (Dock_Item : access Bonobo_Dock_Item_Record) return Gtk_Shadow_Type;
 
    procedure Grab_Pointer (Item : access Bonobo_Dock_Item_Record);
 
@@ -103,17 +103,16 @@ package Bonobo.Dock_Item is
 
    function Set_Orientation
      (Dock_Item   : access Bonobo_Dock_Item_Record;
-      Orientation : Gtk_Orientation)
-      return Boolean;
+      Orientation : Gtk_Orientation) return Boolean;
 
    procedure Set_Shadow_Type
      (Dock_Item : access Bonobo_Dock_Item_Record;
       The_Type  : Gtk_Shadow_Type);
-   
-   function Get_Behavior (Dock_Item : access Bonobo_Dock_Item_Record)
-                          return Bonobo_Dock_Item_Behavior;
-			  
-   
+
+   function Get_Behavior
+     (Dock_Item : access Bonobo_Dock_Item_Record)
+      return Bonobo_Dock_Item_Behavior;
+
    -------------
    -- Signals --
    -------------
