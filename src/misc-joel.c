@@ -660,3 +660,14 @@ ada_gdk_event_configure_set_height (GdkEventConfigure * event, gint16 height)
   event->height = height;
 }
 
+/*
+ *
+ * GtkAdjustment
+ *
+ */
+
+gfloat
+ada_gtk_adjustment_get_value (GtkAdjustment * adjustment)
+{
+  return adjustment->value;
+}
