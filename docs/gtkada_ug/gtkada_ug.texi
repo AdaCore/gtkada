@@ -605,7 +605,7 @@ contains a Gtk_Box, itself divided into two boxes and a Gtk_Separator,
 and so on.
 
 @iftex
-@image{boxes, 15cm}
+@image{boxes, 14cm}
 @end iftex
 
 Altough this may seem more complicated than setting absolute positions
