@@ -171,7 +171,14 @@ package Glib.Unicode is
    --  Index doesn't need to be on the start of a character.
    --  Index is set to a value greater than Str'Last if there is no more
    --  character.
-   --  Null_Ptr is returned if there is no previous character
+
+   function UTF8_Next_Char
+     (Str : UTF8_String; Index : Natural) return Natural;
+   pragma Inline (UTF8_Next_Char);
+   --  Find the start of the next UTF8 character after the Index-th byte.
+   --  Index has to be on the start of a character.
+   --  Index is set to a value greater than Str'Last if there is no more
+   --  character.
 
    function UTF8_Find_Prev_Char
      (Str_Start : ICS.chars_ptr; Str : ICS.chars_ptr) return ICS.chars_ptr;
