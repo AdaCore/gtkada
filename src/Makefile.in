@@ -69,6 +69,7 @@ gates: $(GATE_EX) $(DGATE)
 
 dirs:: force
 	$(MKDIR) $(LIB_DIR)
+	$(CHMOD) +x $(GATE) $(GTKADA_CONFIG)
 
 
 $(LIBNAME):: $(LIB_DIR)/$(TEST_LINK).o $(c_objects)
