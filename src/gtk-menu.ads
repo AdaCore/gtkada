@@ -255,8 +255,9 @@ package Gtk.Menu is
    --  Returns the widget to which the menu was attached.
    --  If the menu was not attached, this function returns null
 
-
-
+   ----------------------------
+   -- Support for GATE/DGATE --
+   ----------------------------
 
    procedure Generate (N      : in Node_Ptr;
                        File   : in File_Type);
