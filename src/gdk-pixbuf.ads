@@ -152,6 +152,16 @@ package Gdk.Pixbuf is
    for Alpha_Range'Size use Gint'Size;
 
    package Frame_List is new Glib.Glist.Generic_List (Gdk_Pixbuf_Frame);
+   --  Handling of list of Pixbuf_Frames.
+
+   type Rgb_Buffer is array (Natural) of Glib.Guchar;
+   pragma Convention (C, Rgb_Buffer);
+   --  See Rgb_Buffer_Access.
+
+   type Rgb_Buffer_Access is access all Rgb_Buffer;
+   --  Type used By Get_Pixels below to return an array with no bound checks
+   --  tht is comatible with C (also known as a flat array).
+   pragma Convention (C, Rgb_Buffer_Access);
 
    --------------
    -- Get_Type --
@@ -189,7 +199,7 @@ package Gdk.Pixbuf is
    function Get_Bits_Per_Sample (Pixbuf : Gdk_Pixbuf) return Gint;
    --  Number of bits per color sample.
 
-   function Get_Pixels (Pixbuf : Gdk_Pixbuf) return Gdk.Rgb.Rgb_Buffer_Access;
+   function Get_Pixels (Pixbuf : Gdk_Pixbuf) return Rgb_Buffer_Access;
    --  Return a pointer to the pixel data of the image.
 
    function Get_Width (Pixbuf : Gdk_Pixbuf) return Gint;
