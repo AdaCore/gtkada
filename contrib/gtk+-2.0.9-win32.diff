@@ -1,5 +1,10 @@
 This is a patch against Gtk+ 2.0.9 sources that fixes Windows specific problems.
 
+Wed Jan 15 14:18:23  2003	Arnaud Charlet <charlet@gnat.com
+
+	* gtk+/gdk/win32/gdkevents-win32.c: Fix handling of negative coordinates
+	* gtk+/gtk/gtkmenuitem.c: Ditto
+
 Thu Nov 28 11:54:59  2002	Arnaud Charlet <charlet@gnat.com>
 
 	* pango/pango/pangowin32.c: Remove initialization of
@@ -496,3 +501,254 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
  }
  
  PangoWin32Font *
+--- gtk+/gdk/win32/gdkevents-win32.c	2003/01/14 16:30:22	1.2
++++ gtk+/gdk/win32/gdkevents-win32.c	2003/01/14 17:30:39
+@@ -43,6 +43,8 @@
+ #include "gdkinput-win32.h"
+ #include "gdkkeysyms.h"
+ 
++#include <windowsx.h>
++
+ #ifdef G_WITH_CYGWIN
+ #include <fcntl.h>
+ #include <errno.h>
+@@ -183,8 +185,8 @@
+   msg.lParam = lparam;
+   msg.time = _gdk_win32_get_next_tick (0);
+   pos = GetMessagePos ();
+-  msg.pt.x = LOWORD (pos);
+-  msg.pt.y = HIWORD (pos);
++  msg.pt.x = GET_X_LPARAM (pos);
++  msg.pt.y = GET_Y_LPARAM (pos);
+ 
+   event = _gdk_event_new ();
+   ((GdkEventPrivate *)event)->flags = GDK_EVENT_PENDING;
+@@ -1285,11 +1287,11 @@
+   if (!(GDK_WINDOW_OBJECT (window)->event_mask & GDK_ENTER_NOTIFY_MASK))
+     return;
+ 
+-  /* Enter events are at LOWORD (msg->lParam), HIWORD
++  /* Enter events are at GET_X_LPARAM (msg->lParam), GET_Y_LPARAM
+    * (msg->lParam) in msg->hwnd */
+ 
+-  pt.x = LOWORD (msg->lParam);
+-  pt.y = HIWORD (msg->lParam);
++  pt.x = GET_X_LPARAM (msg->lParam);
++  pt.y = GET_Y_LPARAM (msg->lParam);
+   if (msg->hwnd != GDK_WINDOW_HWND (window))
+     {
+       ClientToScreen (msg->hwnd, &pt);
+@@ -1528,11 +1530,12 @@
+ {
+   POINT pt;
+ 
+-  pt.x = LOWORD (msg->lParam);
+-  pt.y = HIWORD (msg->lParam);
++  pt.x = GET_X_LPARAM (msg->lParam);
++  pt.y = GET_Y_LPARAM (msg->lParam);
+   ClientToScreen (GDK_WINDOW_HWND (window1), &pt);
+   ScreenToClient (GDK_WINDOW_HWND (window2), &pt);
+   msg->lParam = MAKELPARAM (pt.x, pt.y);
++
+   GDK_NOTE (EVENTS, g_print ("...new coords are (%ld,%ld)\n", pt.x, pt.y));
+ }
+ 
+@@ -2034,8 +2037,8 @@
+        * around that. Also, the position is in screen coordinates, not
+        * client coordinates as with the button messages.
+        */
+-      pt.x = LOWORD (msg->lParam);
+-      pt.y = HIWORD (msg->lParam);
++      pt.x = GET_X_LPARAM (msg->lParam);
++      pt.y = GET_Y_LPARAM (msg->lParam);
+       if ((hwnd = WindowFromPoint (pt)) == NULL)
+ 	goto done;
+ 
+@@ -2073,8 +2076,8 @@
+       _gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
+       event->scroll.x = (gint16) pt.x + xoffset;
+       event->scroll.y = (gint16) pt.y + yoffset;
+-      event->scroll.x_root = (gint16) LOWORD (msg->lParam);
+-      event->scroll.y_root = (gint16) HIWORD (msg->lParam);
++      event->scroll.x_root = (gint16) GET_X_LPARAM (msg->lParam);
++      event->scroll.y_root = (gint16) GET_Y_LPARAM (msg->lParam);
+       event->scroll.state = 0;	/* No state information with MSH_MOUSEWHEEL */
+       event->scroll.device = _gdk_core_pointer;
+       return_val = !GDK_WINDOW_DESTROYED (window);
+@@ -2553,7 +2556,7 @@
+ 		g_print ("WM_%cBUTTONDOWN: %p  (%d,%d)\n",
+ 			 " LMR"[button],
+ 			 msg->hwnd,
+-			 LOWORD (msg->lParam), HIWORD (msg->lParam)));
++			 GET_X_LPARAM (msg->lParam), GET_Y_LPARAM (msg->lParam)));
+ 
+       if (((GdkWindowObject *) window)->extension_events != 0
+ 	  && _gdk_input_ignore_core)
+@@ -2593,8 +2596,8 @@
+       event->button.time = _gdk_win32_get_next_tick (msg->time);
+       if (window != orig_window)
+ 	translate_mouse_coords (orig_window, window, msg);
+-      event->button.x = current_x = (gint16) LOWORD (msg->lParam);
+-      event->button.y = current_y = (gint16) HIWORD (msg->lParam);
++      event->button.x = current_x = (gint16) GET_X_LPARAM (msg->lParam);
++      event->button.y = current_y = (gint16) GET_Y_LPARAM (msg->lParam);
+       _gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
+       event->button.x += xoffset;  /* XXX translate current_x, y too? */
+       event->button.y += yoffset;
+@@ -2622,7 +2625,7 @@
+ 		g_print ("WM_%cBUTTONUP: %p  (%d,%d)\n",
+ 			 " LMR"[button],
+ 			 msg->hwnd,
+-			 LOWORD (msg->lParam), HIWORD (msg->lParam)));
++			 GET_X_LPARAM (msg->lParam), GET_Y_LPARAM (msg->lParam)));
+ 
+       ASSIGN_WINDOW (find_window_for_pointer_event (window, msg));
+ 
+@@ -2651,8 +2654,8 @@
+ 	  if (window != orig_window)
+ 	    translate_mouse_coords (orig_window, window, msg);
+ 	  _gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
+-	  event->button.x = (gint16) LOWORD (msg->lParam) + xoffset;
+-	  event->button.y = (gint16) HIWORD (msg->lParam) + yoffset;
++	  event->button.x = (gint16) GET_X_LPARAM (msg->lParam) + xoffset;
++	  event->button.y = (gint16) GET_Y_LPARAM (msg->lParam) + yoffset;
+ 	  event->button.x_root = current_x_root = msg->pt.x;
+ 	  event->button.y_root = current_y_root = msg->pt.y;
+ 	  event->button.axes = NULL;
+@@ -2673,7 +2676,7 @@
+       GDK_NOTE (EVENTS,
+ 		g_print ("WM_MOUSEMOVE: %p  %#x (%d,%d)\n",
+ 			 msg->hwnd, msg->wParam,
+-			 LOWORD (msg->lParam), HIWORD (msg->lParam)));
++			 GET_X_LPARAM (msg->lParam), GET_Y_LPARAM (msg->lParam)));
+ 
+       ASSIGN_WINDOW (find_window_for_pointer_event (window, msg));
+ 
+@@ -2682,8 +2685,8 @@
+        * even if the mouse doesn't move. This disturbs gtk.
+        */
+       if (window == current_window
+-	  && LOWORD (msg->lParam) == current_x
+-	  && HIWORD (msg->lParam) == current_y)
++	  && GET_X_LPARAM (msg->lParam) == current_x
++	  && GET_Y_LPARAM (msg->lParam) == current_y)
+ 	break;
+ 
+       /* HB: only process mouse move messages if we own the active window. */
+@@ -2713,8 +2716,8 @@
+       event->motion.time = _gdk_win32_get_next_tick (msg->time);
+       if (window != orig_window)
+ 	translate_mouse_coords (orig_window, window, msg);
+-      event->motion.x = current_x = (gint16) LOWORD (msg->lParam);
+-      event->motion.y = current_y = (gint16) HIWORD (msg->lParam);
++      event->motion.x = current_x = (gint16) GET_X_LPARAM (msg->lParam);
++      event->motion.y = current_y = (gint16) GET_Y_LPARAM (msg->lParam);
+       _gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
+       event->motion.x += xoffset;
+       event->motion.y += yoffset;
+@@ -2732,7 +2735,7 @@
+       GDK_NOTE (EVENTS,
+ 		g_print ("WM_NCMOUSEMOVE: %p  x,y: %d %d\n",
+ 			 msg->hwnd,
+-			 LOWORD (msg->lParam), HIWORD (msg->lParam)));
++			 GET_X_LPARAM (msg->lParam), GET_Y_LPARAM (msg->lParam)));
+       if (current_window != NULL
+ 	  && (GDK_WINDOW_OBJECT (current_window)->event_mask & GDK_LEAVE_NOTIFY_MASK))
+ 	{
+@@ -2765,7 +2768,7 @@
+ 
+     case WM_MOUSEWHEEL:
+       GDK_NOTE (EVENTS, g_print ("WM_MOUSEWHEEL: %p %d\n",
+-				 msg->hwnd, HIWORD (msg->wParam)));
++				 msg->hwnd, GET_Y_LPARAM (msg->wParam)));
+ 
+       event->scroll.type = GDK_SCROLL;
+ 
+@@ -2774,8 +2777,8 @@
+        * coordinates as with the button messages. I love the
+        * consistency of Windows.
+        */
+-      pt.x = LOWORD (msg->lParam);
+-      pt.y = HIWORD (msg->lParam);
++      pt.x = GET_X_LPARAM (msg->lParam);
++      pt.y = GET_Y_LPARAM (msg->lParam);
+       if ((hwnd = WindowFromPoint (pt)) == NULL)
+ 	break;
+ 
+@@ -2813,8 +2816,8 @@
+       _gdk_windowing_window_get_offsets (window, &xoffset, &yoffset);
+       event->scroll.x = (gint16) pt.x + xoffset;
+       event->scroll.y = (gint16) pt.y + yoffset;
+-      event->scroll.x_root = (gint16) LOWORD (msg->lParam);
+-      event->scroll.y_root = (gint16) HIWORD (msg->lParam);
++      event->scroll.x_root = (gint16) GET_X_LPARAM (msg->lParam);
++      event->scroll.y_root = (gint16) GET_Y_LPARAM (msg->lParam);
+       event->scroll.state = build_pointer_event_state (msg);
+       event->scroll.device = _gdk_core_pointer;
+       return_val = !GDK_WINDOW_DESTROYED (window);
+@@ -3200,7 +3203,7 @@
+     case WM_MOVE:
+       GDK_NOTE (EVENTS, g_print ("WM_MOVE: %p  (%d,%d)\n",
+ 				 msg->hwnd,
+-				 LOWORD (msg->lParam), HIWORD (msg->lParam)));
++				 GET_X_LPARAM (msg->lParam), GET_Y_LPARAM (msg->lParam)));
+ 
+       if (!(private->event_mask & GDK_STRUCTURE_MASK))
+ 	break;
+@@ -3211,8 +3214,8 @@
+ 	{
+ 	  event->configure.type = GDK_CONFIGURE;
+ 	  event->configure.window = window;
+-	  event->configure.x = LOWORD (msg->lParam);
+-	  event->configure.y = HIWORD (msg->lParam);
++	  event->configure.x = GET_X_LPARAM (msg->lParam);
++	  event->configure.y = GET_Y_LPARAM (msg->lParam);
+ 	  GetClientRect (msg->hwnd, &rect);
+ 	  event->configure.width = rect.right;
+ 	  event->configure.height = rect.bottom;
+--- gtk+/gtk/gtkmenuitem.c	2003/01/15 11:24:21	1.1
++++ gtk+/gtk/gtkmenuitem.c	2003/01/15 11:43:42
+@@ -870,7 +870,7 @@
+   gint screen_width;
+   gint screen_height;
+   gint twidth, theight;
+-  gint tx, ty;
++  gint tx, ty, otx, oty;
+ 
+   g_return_if_fail (menu != NULL);
+   g_return_if_fail (x != NULL);
+@@ -885,14 +885,14 @@
+   screen_width = gdk_screen_width ();
+   screen_height = gdk_screen_height ();
+ 
+-  if (!gdk_window_get_origin (widget->window, &tx, &ty))
++  if (!gdk_window_get_origin (widget->window, &otx, &oty))
+     {
+       g_warning ("Menu not on screen");
+       return;
+     }
+ 
+-  tx += widget->allocation.x;
+-  ty += widget->allocation.y;
++  tx = otx + widget->allocation.x;
++  ty = oty + widget->allocation.y;
+ 
+   switch (menu_item->submenu_placement)
+     {
+@@ -939,14 +939,14 @@
+       ty += widget->allocation.height / 4;
+ 
+       /* If the height of the menu doesn't fit we move it upward. */
+-      ty = CLAMP (ty, 0, MAX (0, screen_height - theight));
++      ty = oty < 0 ? ty : CLAMP (ty, 0, MAX (0, screen_height - theight));
+       break;
+     }
+ 
+   /* If we have negative, tx, here it is because we can't get
+    * the menu all the way on screen. Favor the left portion.
+    */
+-  *x = CLAMP (tx, 0, MAX (0, screen_width - twidth));
++  *x = otx < 0 ? tx : CLAMP (tx, 0, MAX (0, screen_width - twidth));
+   *y = ty;
+ }
+ 
