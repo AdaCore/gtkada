@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,12 +27,24 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  Pixmaps are offscreen drawables. They can be drawn upon with the standard
+--  drawing primitives, then copied to another drawable (such as a Gdk_Window)
+--  with Gdk.Pixmap.Draw. The depth of a pixmap is the number of bits per
+--  pixels. Bitmaps are simply pixmaps with a depth of 1. (That is, they are
+--  monochrome bitmaps - each pixel can be either on or off).
+--  @pxref{Package_Gdk.Bitmap} for more details on bitmap handling.
+--
+--  </description>
+--  <c_version>1.2.7</c_version>
+
 with Glib; use Glib;
 with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Drawable;
 with Gdk.Window;
-with Interfaces.C.Strings;
+with Gtkada.Types;
 
 package Gdk.Pixmap is
 
@@ -44,12 +56,18 @@ package Gdk.Pixmap is
                       Width  : in     Gint;
                       Height : in     Gint;
                       Depth  : in     Gint := -1);
-   --  Automatically reference the pixmap once
-   --  If the depth is -1, the default depth for the window will be
-   --  chosen
+   --  Create a new pixmap with a given size.
+   --  Window is used to determine default values for the new pixmap.
+   --  Can be eventually null.
+   --  Width is the width of the new pixmap in pixels.
+   --  Height is the height of the new pixmap in pixels.
+   --  Depth is the depth (number of bits per pixel) of the new pixmap.
+   --  If -1, and window is not null, the depth of the new pixmap will be
+   --  equal to that of window.
+   --  Automatically reference the pixmap once.
 
    procedure Ref (Pixmap : in Gdk_Pixmap);
-   --  Adds a reference to a pixmap
+   --  Add a reference to a pixmap.
 
    procedure Unref (Pixmap : in out Gdk_Pixmap);
    --  This is the usual way to destroy a pixmap. The memory is freed when
@@ -63,12 +81,30 @@ package Gdk.Pixmap is
                                Depth  : in     Gint;
                                Fg     : in     Color.Gdk_Color;
                                Bg     : in     Color.Gdk_Color);
+   --  Create a pixmap from data in XBM format.
+   --  Window is used to determine default values for the new bitmap, can be
+   --  null in which case the root window is used.
+   --  Data is the XBM data.
+   --  Width is the width of the new bitmap in pixels.
+   --  Height is the height of the new bitmap in pixels.
+   --  Depth is the depth (number of bits per pixel) of the new pixmap.
+   --  Fg is the foreground color.
+   --  Bg is the background color.
 
    procedure Create_From_Xpm (Pixmap      :    out Gdk_Pixmap;
                               Window      : in     Gdk.Window.Gdk_Window;
                               Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
                               Transparent : in     Gdk.Color.Gdk_Color;
                               Filename    : in     String);
+   --  Create a pixmap from a XPM file.
+   --  Window is used to determine default values for the new pixmap.
+   --  Mask is a pointer to a place to store a bitmap representing the
+   --  transparency mask of the XPM file. Can be null, in which case
+   --  transparency will be ignored.
+   --  Transparent is the color to be used for the pixels that are transparent
+   --  in the input file. Can be null, in which case a default color will be
+   --  used.
+   --  Filename is the filename of a file containing XPM data.
 
    procedure Create_From_Xpm (Pixmap      :    out Gdk_Pixmap;
                               Window      : in     Gdk.Window.Gdk_Window;
@@ -76,15 +112,33 @@ package Gdk.Pixmap is
                               Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
                               Transparent : in     Gdk.Color.Gdk_Color;
                               Filename    : in     String);
+   --  Create a pixmap from a XPM file using a particular colormap.
+   --  Window is used to determine default values for the new pixmap. Can be
+   --  null if colormap is given.
+   --  Colormap is the Gdk_Colormap that the new pixmap will use. If omitted,
+   --  the colormap for window will be used.
+   --  Mask is a pointer to a place to store a bitmap representing the
+   --  transparency mask of the XPM file. Can be null, in which case
+   --  transparency will be ignored.
+   --  Transparent is the color to be used for the pixels that are transparent
+   --  in the input file. Can be null, in which case a default color will be
+   --  used.
+   --  Filename is the filename of a file containing XPM data.
 
    procedure Create_From_Xpm_D
      (Pixmap      :    out Gdk_Pixmap;
       Window      : in     Gdk.Window.Gdk_Window;
       Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
       Transparent : in     Gdk.Color.Gdk_Color;
-      Data        : in     Interfaces.C.Strings.chars_ptr_array);
-   --
-   --  FIXME: There should be a better type than chars_ptr_array...
+      Data        : in     Gtkada.Types.Chars_Ptr_Array);
+   --  Create a pixmap from data in XPM format.
+   --  Window is used to determine default values for the new pixmap.
+   --  Mask is a pointer to a place to store a bitmap representing the
+   --  transparency mask of the XPM file. Can be null, in which case
+   --  transparency will be ignored.
+   --  Transparent will be used for the pixels that are transparent in the
+   --  input file. Can be null in which case a default color will be used.
+   --  Data is a pointer to a string containing the XPM data.
 
    procedure Create_From_Xpm_D
      (Pixmap      :    out Gdk_Pixmap;
@@ -92,10 +146,17 @@ package Gdk.Pixmap is
       Colormap    : in     Gdk.Color.Gdk_Colormap;
       Mask        : in out Gdk.Bitmap.Gdk_Bitmap;
       Transparent : in     Gdk.Color.Gdk_Color;
-      Data        : in     Interfaces.C.Strings.chars_ptr_array);
-   --
-   --  FIXME: There should be a better type than chars_ptr_array...
-
+      Data        : in     Gtkada.Types.Chars_Ptr_Array);
+   --  Create a pixmap from data in XPM format using a particular colormap.
+   --  Window is used to determine default values for the new pixmap.
+   --  Colormap is the Gdk_Colormap that the new pixmap will be use. If
+   --  omitted, the colormap for window will be used.
+   --  Mask is a pointer to a place to store a bitmap representing the
+   --  transparency mask of the XPM file. Can be null, in which case
+   --  transparency will be ignored.
+   --  Transparent will be used for the pixels that are transparent in the
+   --  input file. Can be null in which case a default color will be used.
+   --  Data is a pointer to a string containing the XPM data.
 
 private
    Null_Pixmap : constant Gdk_Pixmap := null;

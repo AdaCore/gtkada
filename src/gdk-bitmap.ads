@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -27,6 +27,18 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
+--
+--  Pixmaps are offscreen drawables. They can be drawn upon with the standard
+--  drawing primitives, then copied to another drawable (such as a Gdk_Window)
+--  with Gdk.Pixmap.Draw. The depth of a pixmap is the number of bits per
+--  pixels. Bitmaps are simply pixmaps with a depth of 1. (That is, they are
+--  monochrome bitmaps - each pixel can be either on or off).
+--  @pxref{Package_Gdk.Pixmap} for more details on pixmap handling.
+--
+--  </description>
+--  <c_version>1.2.7</c_version>
+
 with Glib; use Glib;
 
 with Gdk.Drawable;
@@ -43,9 +55,15 @@ package Gdk.Bitmap is
                       Window : in  Gdk.Window.Gdk_Window;
                       Width  : in  Gint;
                       Height : in  Gint);
+   --  Create a new bitmap with a given size.
+   --  Window is used to determine default values for the new bitmap.
+   --  Can be eventually null in which case the root window is used.
+   --  Width is the width of the new bitmap in pixels.
+   --  Height is the height of the new bitmap in pixels.
 
    procedure Ref (Bitmap : in Gdk_Bitmap);
-
+   --  Add a reference to a bitmap.
+ 
    procedure Unref (Bitmap : in out Gdk_Bitmap);
    --  This is the usual way to destroy a bitmap. The memory is freed when
    --  there is no more reference
@@ -55,10 +73,16 @@ package Gdk.Bitmap is
                                Data   : in     String;
                                Width  : in     Gint;
                                Height : in     Gint);
+   --  Create a bitmap from data in XBM format.
+   --  Window is used to determine default values for the new bitmap, can be
+   --  null in which case the root window is used.
+   --  Data is the XBM data.
+   --  Width is the width of the new bitmap in pixels.
+   --  Height is the height of the new bitmap in pixels.
 
    procedure Set_Clip_Mask (GC    : in Gdk.GC.Gdk_GC;
                             Mask  : in Gdk_Bitmap);
-   --  If MASK is set to Null_Bitmap, then no clip_mask is used for drawing
+   --  If Mask is set to Null_Bitmap, then no clip_mask is used for drawing
 
 private
    Null_Bitmap : constant Gdk_Bitmap := null;
