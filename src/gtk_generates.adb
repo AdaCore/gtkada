@@ -30,12 +30,22 @@ package body Gtk_Generates is
 
    function Get_Property
      (N        : Node_Ptr;
+      Property : String;
+      Default  : String := "") return String;
+   --  Return the propertu Property in N, or Default if the property was not
+   --  found.
+
+   function Get_Property
+     (N        : Node_Ptr;
       Property : String) return String_Ptr;
    --  Return the value of the property Property if it exists in the direct
    --  children of N.
 
    function Get_Class (N : Node_Ptr) return String;
    --  Return the class of N if N is a widget. Otherwise return "".
+
+   function Get_Name (N : Node_Ptr) return String;
+   --  Return the name of N.
 
    function Widget_New
      (T : Glib.GType; Addr : System.Address := System.Null_Address)
@@ -1468,56 +1478,61 @@ package body Gtk_Generates is
    -- Scrollbar_Generate --
    ------------------------
 
-   --  ??? Need to re-sync the following subprogram with glade-2.
-
    procedure Scrollbar_Generate (N : Node_Ptr; File : File_Type) is
-      S     : String_Ptr;
-      Class : constant String_Ptr := Get_Field (N, "class");
-      function Build_Type return Glib.GType;
-      pragma Import (C, Build_Type, "gtk_scrollbar_get_type");
+      Class : constant String := Get_Class (N);
+      Name  : constant String := To_Ada (Get_Name (N));
+
+      function Build_Vscrollbar return Glib.GType;
+      pragma Import (C, Build_Vscrollbar, "gtk_vscrollbar_get_type");
+      function Build_Hscrollbar return Glib.GType;
+      pragma Import (C, Build_Hscrollbar, "gtk_hscrollbar_get_type");
 
    begin
-      Widget := Widget_New (Build_Type);
+      if Class = "GtkVScrollbar" then
+         Widget := Widget_New (Build_Vscrollbar);
+      else
+         Widget := Widget_New (Build_Hscrollbar);
+      end if;
+
       if not N.Specific_Data.Created then
-         S := Get_Field (N, "name");
          Add_Package ("Adjustment");
 
-         if Get_Field (N, "class").all = "GtkHScrollbar" then
+         if Class = "GtkHScrollbar" then
             Put_Line
-              (File, "   Adjustment.Gtk_New (" & To_Ada (S.all) & "_Adj, " &
-               To_Float (Get_Field (N, "hvalue").all) & ", " &
-               To_Float (Get_Field (N, "hlower").all) & ", " &
-               To_Float (Get_Field (N, "hupper").all) & ", " &
-               To_Float (Get_Field (N, "hstep").all)  & ", " &
-               To_Float (Get_Field (N, "hpage").all)  & ", " &
-               To_Float (Get_Field (N, "hpage_size").all) & ");");
+              (File, "   Adjustment.Gtk_New (" & To_Ada (Name) & "_Adj, " &
+               To_Float (Get_Property (N, "hvalue", "0.0")) & ", " &
+               To_Float (Get_Property (N, "hlower", "0.0")) & ", " &
+               To_Float (Get_Property (N, "hupper", "0.0")) & ", " &
+               To_Float (Get_Property (N, "hstep", "0.0"))  & ", " &
+               To_Float (Get_Property (N, "hpage", "0.0"))  & ", " &
+               To_Float (Get_Property (N, "hpage_size", "0.0")) & ");");
 
-            Gen_New (N, "Scrollbar", S.all & "Adj", "",
+            Gen_New (N, "Scrollbar", Name & "Adj", "",
                      Class (Class'First + 3) & "scrollbar", File => File);
          else
             Put_Line
-              (File, "   Adjustment.Gtk_New (" & To_Ada (S.all) & "_Adj, " &
-               To_Float (Get_Field (N, "vvalue").all) & ", " &
-               To_Float (Get_Field (N, "vlower").all) & ", " &
-               To_Float (Get_Field (N, "vupper").all) & ", " &
-               To_Float (Get_Field (N, "vstep").all)  & ", " &
-               To_Float (Get_Field (N, "vpage").all)  & ", " &
-               To_Float (Get_Field (N, "vpage_size").all) & ");");
+              (File, "   Adjustment.Gtk_New (" & To_Ada (Name) & "_Adj, " &
+               To_Float (Get_Property (N, "vvalue", "0.0")) & ", " &
+               To_Float (Get_Property (N, "vlower", "0.0")) & ", " &
+               To_Float (Get_Property (N, "vupper", "0.0")) & ", " &
+               To_Float (Get_Property (N, "vstep", "0.0"))  & ", " &
+               To_Float (Get_Property (N, "vpage", "0.0"))  & ", " &
+               To_Float (Get_Property (N, "vpage_size", "0.0")) & ");");
 
-            Gen_New (N, "Scrollbar", S.all & "Adj", "",
+            Gen_New (N, "Scrollbar", Name & "Adj", "",
                      Class (Class'First + 3) & "scrollbar", File => File);
          end if;
       end if;
 
       Widget_Destroy (Widget);
-      GRange_Generate (N, File);
+
+      --  ??? Why was this needed ?
+      --        GRange_Generate (N, File);
    end Scrollbar_Generate;
 
    ------------------------------
    -- Scrolled_Window_Generate --
    ------------------------------
-
-   --  ??? Need to re-sync the following subprogram with glade-2.
 
    procedure Scrolled_Window_Generate (N : Node_Ptr; File : File_Type) is
       function Build_Type return Glib.GType;
@@ -2338,6 +2353,20 @@ package body Gtk_Generates is
       return null;
    end Get_Property;
 
+   function Get_Property
+     (N        : Node_Ptr;
+      Property : String;
+      Default  : String := "") return String
+   is
+      P : constant String_Ptr := Get_Property (N, Property);
+   begin
+      if P = null then
+         return Default;
+      else
+         return P.all;
+      end if;
+   end Get_Property;
+
    ---------------
    -- Get_Class --
    ---------------
@@ -2354,5 +2383,19 @@ package body Gtk_Generates is
 
       return "";
    end Get_Class;
+
+   ---------------
+   -- Get_Name  --
+   ---------------
+
+   function Get_Name (N : Node_Ptr) return String is
+   begin
+      if N = null then
+         return "";
+      end if;
+
+      return Get_Attribute (N, "id");
+   end Get_Name;
+
 
 end Gtk_Generates;
