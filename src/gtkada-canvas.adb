@@ -2515,7 +2515,7 @@ package body Gtkada.Canvas is
                Free (Current);
             else
                Current.Link := L.Sibling;
-               Free (L.Descr);
+               Destroy (L);
                Free (L);
             end if;
             return;

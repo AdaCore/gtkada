@@ -345,8 +345,7 @@ package Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Link   : access Canvas_Link_Record'Class);
    --  Remove a link from the canvas.
-   --  Note that this does not deallocate the memory occupied by Link, this is
-   --  your responsability to do so.
+   --  It also destroys the link itself, and free the memory allocated to it.
    --  Nothing is done if Link does not belong to canvas.
 
    type Link_Processor is access function
