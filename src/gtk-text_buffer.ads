@@ -98,7 +98,7 @@ package Gtk.Text_Buffer is
    --  Insert Text at position Iter.
    --  Emit the "insert_text" signal; insertion actually occurs
    --  in the default handler for the signal. Iter is invalidated when
-   --  insertion occurs (because the buffer contents changes), but the
+   --  insertion occurs (because the buffer contents change), but the
    --  default signal handler revalidates it to point to the end of the
    --  inserted text.
    --  Text: UTF-8 format text to insert.
