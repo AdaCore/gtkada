@@ -16,7 +16,7 @@ LSM entry follows :
 Begin3
  Title:  GtkAda
  Version: 0.4
- Entered-date: 18NOV98
+ Entered-date: 05JAN99
  Description: Ada95 binding to Gtk+ (version 1.1.9) 
  Keywords: Ada95 Ada Gtk+ Gtk X Gui
  Author: Emmanuel Briot <briot@gnat.com> and Joel Brobecker <jbrobecker@west.raytheon.com>
