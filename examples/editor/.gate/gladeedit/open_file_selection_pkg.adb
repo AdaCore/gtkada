@@ -16,6 +16,7 @@ begin
 end Gtk_New;
 
 procedure Initialize (Open_File_Selection : access Open_File_Selection_Record'Class) is
+   pragma Suppress (All_Checks);
 begin
    Gtk.File_Selection.Initialize (Open_File_Selection, "Open File");
    Set_Show_File_Op_Buttons (Open_File_Selection, True);

@@ -16,6 +16,7 @@ begin
 end Gtk_New;
 
 procedure Initialize (Save_File_Selection : access Save_File_Selection_Record'Class) is
+   pragma Suppress (All_Checks);
 begin
    Gtk.File_Selection.Initialize (Save_File_Selection, "Save File");
    Set_Show_File_Op_Buttons (Save_File_Selection, True);

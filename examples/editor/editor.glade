@@ -5,9 +5,10 @@
   <name>gladeedit</name>
   <program_name>gladeedit</program_name>
   <directory></directory>
-  <source_directory>.</source_directory>
-  <pixmaps_directory>.</pixmaps_directory>
+  <source_directory>src</source_directory>
+  <pixmaps_directory></pixmaps_directory>
   <language>Ada 95</language>
+  <external_editor>echo 'GLIDE.GUI|%d/%F|load|%w|%w|'</external_editor>
   <gnome_support>False</gnome_support>
   <gettext_support>False</gettext_support>
   <use_widget_names>False</use_widget_names>

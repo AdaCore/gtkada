@@ -16,6 +16,7 @@ begin
 end Gtk_New;
 
 procedure Initialize (Main_Window : access Main_Window_Record'Class) is
+   pragma Suppress (All_Checks);
    The_Accel_Group : Gtk_Accel_Group;
 
 begin
