@@ -328,34 +328,48 @@ package body Glib.Glade is
       S : String_Ptr := Get_Field (N, Field4);
 
    begin
-      if P /= null and then Q /= null
-        and then (Field3 = "" or else R /= null)
-        and then (Field4 = "" or else S /= null)
-      then
-         Add_Package (Class);
+      if P /= null then
+         if Q = null then
+            Add_Package (Class);
 
-         if Is_Float then
-            Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
-              " (" & To_Ada (Get_Field (N, "name").all) & "), " &
-              To_Float (P.all) & ", " & To_Float (Q.all));
-         else
-            Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
-              " (" & To_Ada (Get_Field (N, "name").all) & "), " &
-              To_Ada (P.all) & ", " & To_Ada (Q.all));
-         end if;
-
-         if R /= null then
             if Is_Float then
-               Put (File, ", " & To_Float (R.all));
+               Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
+                 " (" & To_Ada (Get_Field (N, "name").all) & "), " &
+                 To_Float (P.all));
             else
-               Put (File, ", " & To_Ada (R.all));
+               Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
+                 " (" & To_Ada (Get_Field (N, "name").all) & "), " &
+                 To_Ada (P.all));
             end if;
 
-            if S /= null then
+         elsif (Field3 = "" or else R /= null)
+           and then (Field4 = "" or else S /= null)
+         then
+            Add_Package (Class);
+
+            if Is_Float then
+               Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
+                 " (" & To_Ada (Get_Field (N, "name").all) & "), " &
+                 To_Float (P.all) & ", " & To_Float (Q.all));
+            else
+               Put (File, "   " & Class & ".Set_" & Name & " (Gtk_" & Class &
+                 " (" & To_Ada (Get_Field (N, "name").all) & "), " &
+                 To_Ada (P.all) & ", " & To_Ada (Q.all));
+            end if;
+
+            if R /= null then
                if Is_Float then
-                  Put (File, ", " & To_Float (S.all));
+                  Put (File, ", " & To_Float (R.all));
                else
-                  Put (File, ", " & To_Ada (S.all));
+                  Put (File, ", " & To_Ada (R.all));
+               end if;
+
+               if S /= null then
+                  if Is_Float then
+                     Put (File, ", " & To_Float (S.all));
+                  else
+                     Put (File, ", " & To_Ada (S.all));
+                  end if;
                end if;
             end if;
          end if;

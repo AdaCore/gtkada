@@ -88,8 +88,9 @@ package Glib.Glade is
    procedure Gen_Set
      (N : Node_Ptr; Class, Name, Field1, Field2, Field3, Field4 : String;
       File : File_Type; Is_Float : Boolean := False);
-   --  Generate a Set_<Name> (Field1, Field2) call in File if Field3 is a null
-   --  string or Set_<Name> (Field1, Field2, Field3) if Field4 is null, or
+   --  Generate a Set_<Name> (Field1) call in File if Field2 is a null
+   --  string, or Set_<Name> (Field1, Field2) if Field3 is a null
+   --  string, or Set_<Name> (Field1, Field2, Field3) if Field4 is null, or
    --  Set_<Name> (Field1, Field2, Field3, Field4) otherwise.
    --  If Is_Float is true, call To_Float on each non null field.
 
