@@ -13,4 +13,6 @@ New features in 2.2.3:
 
 - Improvements in GtkAda.MDI
 - Speed improvements
+- D210-012 New function Gdk.Window.Get_Window_Id
+- New package Gtk.Icon_Factory
 
