@@ -84,10 +84,10 @@ package Gtk.Button is
    procedure Gtk_New_From_Stock
      (Button : out Gtk_Button; Stock_Id : String);
    --  Create a new button containing the image and text from a stock item.
-   --  Some stock ids have predefined contants like Gtk_Stock_Button_OK and
-   --  Gtk_Stock_Button_Apply.
-   --  Stock_Id: the name of the stock item
-   --  ??? Where do we get the stock Id from ???
+   --  Some stock ids have predefined contants like Gtk.Stock.Stock_OK or
+   --  Gtk.Stock.Stock_Apply. See Gtk.Stock for a complete list of predefined
+   --  stock items.
+   --  Stock_Id: the name of the stock item.
 
    procedure Gtk_New_With_Mnemonic
      (Button : out Gtk_Button; Label : String);
