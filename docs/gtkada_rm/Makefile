@@ -1,6 +1,7 @@
 
 gtkada_rm:
-	./generate_doc.pl ../../src/*.ads ../../src/pixbuf/*.ads
+	./generate_doc.pl ../../src/*.ads ../../src/opengl/*.ads \
+	  ../../src/pixbuf/*.ads
 	echo x | tex gtkada_rm.texi
 	texindex gtkada_rm.cp
 	tex gtkada_rm.texi
