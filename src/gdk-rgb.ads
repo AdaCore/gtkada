@@ -38,23 +38,23 @@ package Gdk.Rgb is
 
    --  This package implements a client-side pixmap. As opposed to the pixmaps
    --  found in Gdk.Pixmap, this one simply implements a local buffer, which
-   --  you can manipulate at the pixel level easily. This buffer then needs to
-   --  be send to the server.
-   --  The major difference in efficiency is that the same amount of data needs
-   --  to be send to the server no matter how much things were modified.
+   --  can be manipulated at the pixel level easily. This buffer then needs to
+   --  be sent to the server.
+   --  The major efficiency difference is that the same amount of data needs
+   --  to be sent to the server no matter how much things were modified.
    --  Gdk.Pixmaps requires one communication with the server per drawing
    --  function.
-   --  Some X servers are also optimized so that the buffers in these package
+   --  Some X servers are also optimized so that the buffers in this package
    --  can be implemented in shared memory with the server, which of course
    --  makes it much faster to transfer the data.
-   --  This package is basically an implementation of XImage (on X-Window).
-   --  This means that it handles transparently different depths, byte
+   --  This package is basically an implementation of XImage (on X-Window),
+   --  which means that it handles transparently different depths, byte
    --  ordering,... It also provides some color dithering functions.
    --
-   --  Note that before using this package you need to initialize it by calling
-   --  the Init procedure below.
+   --  Note that you need to initialize this package before using it by
+   --  calling the Init procedure below.
    --
-   --  See the command below Get_Visual and Get_Cmap for how to use the
+   --  See the commands Get_Visual and Get_Cmap below on how to use the
    --  colormaps and visual with this package
    --
    --  Dithering simulates a higher number of colors than what is available on
@@ -62,14 +62,14 @@ package Gdk.Rgb is
 
 
    procedure Init;
-   --  This function must be called before using any of the function below. It
+   --  This function must be called before using any of the functions below. It
    --  initializes internal data, such as the visual and the colormap that will
    --  be used.
 
 
    function Get_Visual return Gdk.Visual.Gdk_Visual;
    function Get_Cmap return Gdk.Color.Gdk_Colormap;
-   --  Return the visual and the color map used internally in this package.
+   --  Returns the visual and the color map used internally in this package.
    --  Note that these are not the same as returned by Gtk.Widget or
    --  Gdk.Window, and you should use these if you are using this package.
    --
@@ -165,7 +165,7 @@ package Gdk.Rgb is
    --  RowStride: Number of bytes between rows... (row n+1 will start at byte
    --     row n + Rowstride). Gdk.Rgb is faster is both the source pointer and
    --     the rowstride are aligned to a 4 byte boundary.
-   --  X,Y,Width,Height: Defined a region in the target to copy the buffer to.
+   --  X,Y,Width,Height: Defines a region in the target to copy the buffer to.
 
 
    procedure Draw_Rgb_Image_Dithalign
