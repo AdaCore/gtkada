@@ -138,10 +138,10 @@ package body Gtk.Option_Menu is
                Last := S'Last + 1;
             end if;
 
-            Put_Line (File, "   Menu_Item.Gtk_New (A_Menu_Item, """ &
+            Put_Line (File, "   Menu_Item.Gtk_New (The_Menu_Item, """ &
               S (First .. Last - 1) & """);");
             Put_Line (File, "   Menu.Append (" &
-              To_Ada (Get_Field (N, "name").all) & "_Menu, A_Menu_Item);");
+              To_Ada (Get_Field (N, "name").all) & "_Menu, The_Menu_Item);");
 
             exit when Last >= S'Last;
 

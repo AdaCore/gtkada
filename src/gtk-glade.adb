@@ -428,7 +428,7 @@ package body Gtk.Glade is
                     To_Ada (Get_Field (P, "name").all) & "_Menu : Gtk_Menu;");
 
                   if First_Option_Menu then
-                     Put_Line (File, "   A_Menu_Item : Gtk_Menu_Item;");
+                     Put_Line (File, "   The_Menu_Item : Gtk_Menu_Item;");
                      First_Option_Menu := False;
                   end if;
                end if;
