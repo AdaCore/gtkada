@@ -17,9 +17,11 @@ CC = @CC@
 GTKADA_CONFIG=gtkada-config
 GNATFLAGS = @CFLAGS@ -gnata
 GNATFLAGS_DEVEL = @CFLAGS@ -g -gnatawu
+TARGET_LFLAGS = @TARGET_LFLAGS@
 
 GNATMAKE = gnatmake
-GNATMAKELDFLAGS = -largs -L$(src_dir) -L$(opengl_dir) -lgtkada @GTK_LIBS@
+GNATMAKELDFLAGS = -largs -L$(src_dir) -L$(opengl_dir) -lgtkada @GTK_LIBS@ \
+		  $(TARGET_LFLAGS)
 
 CP = cp -f
 
