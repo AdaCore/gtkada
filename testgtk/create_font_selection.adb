@@ -55,11 +55,6 @@ package body Create_Font_Selection is
       Gtk_New (Font);
       Add (Frame, Font);
       Show_All (Frame);
-
-      Set_Filter (Font,
-                  Filter_Type  => Font_Filter_User,
-                  Slants => "italic" + "roman",
-                  Weights => Null_Array + "bold");
    end Run;
 
 end Create_Font_Selection;
