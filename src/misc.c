@@ -51,6 +51,44 @@ convert_i (gint s)
 }
 
 /********************************************************************
+ **  Returns the real widget name (as opposed to gtk_widget_get_name,
+ **  this one returns NULL instead of the class name if no name was
+ **  set.
+ ********************************************************************/
+
+char*
+ada_gtk_get_real_name (GtkWidget* w) {
+  return w->name;
+}
+
+/********************************************************************
+ **  This function parses the command line and returns
+ **  true if macro_switch exists. It is also removed from
+ **  the command line
+ ********************************************************************/
+
+int
+ada_gtk_parse_cmd_line (char* macro_switch) {
+  int i;
+  extern int gnat_argc;
+  extern char** gnat_argv;
+
+  for (i=1; i<gnat_argc; i++)
+    {
+      if (! strcmp (gnat_argv[i], macro_switch)) {
+	while (i < gnat_argc - 1) {
+	  gnat_argv [i] = gnat_argv [i + 1];
+	  i++;
+	}
+	gnat_argv [i] = NULL;
+	gnat_argc--;
+	return 1;
+      }
+    }
+  return 0;
+}
+ 
+/********************************************************************
  **  This function checks the number of arguments for a given signal
  **  and a specific widget.
  **  Returns -1 if the signal does not exist
@@ -1074,6 +1112,7 @@ GdkEvent * ada_gdk_event_create (gint type, GdkWindow* win)
   
   static_event.any.type   = type;
   static_event.any.window = win;
+  gdk_window_ref (win);
   switch (type)
     {
     case GDK_KEY_PRESS:
