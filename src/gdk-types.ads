@@ -470,7 +470,7 @@ private
    Proximity_In_Mask        : constant Gdk_Event_Mask := 2 ** 18;
    Proximity_Out_Mask       : constant Gdk_Event_Mask := 2 ** 19;
    Substructure_Mask        : constant Gdk_Event_Mask := 2 ** 20;
-   All_Events_Mask          : constant Gdk_Event_Mask := 16#0FFFFF#;
+   All_Events_Mask          : constant Gdk_Event_Mask := 16#1FFFFF#;
 
    Ic_Style                : constant Gdk_IC_Attributes_Type := 2 ** 0;
    Ic_Client_Window        : constant Gdk_IC_Attributes_Type := 2 ** 1;
