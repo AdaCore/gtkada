@@ -46,6 +46,20 @@ package body Gdk.Font is
    end "=";
 
 
+   -------------------
+   --  Char_Height  --
+   -------------------
+
+   function Char_Height (Font : in Gdk_Font;
+                         Char : in Character) return Gint is
+      function Internal (Font : in System.Address;
+                         Char : in Character) return Gint;
+      pragma Import (C, Internal, "gdk_char_height");
+   begin
+      return Internal (Get_Object (Font), Char);
+   end Char_Height;
+
+
    --------------------
    --  Char_Measure  --
    --------------------
@@ -123,6 +137,20 @@ package body Gdk.Font is
    begin
       S := Internal (Get_Object (Font));
    end Ref;
+
+
+   ---------------------
+   --  String_Height  --
+   ---------------------
+
+   function String_Height (Font : in Gdk_Font;
+                           Str  : in String) return Gint is
+      function Internal (Font : in System.Address;
+                         Str  : in String) return Gint;
+      pragma Import (C, Internal, "gdk_string_height");
+   begin
+      return Internal (Get_Object (Font), Str & ASCII.NUL);
+   end String_Height;
 
 
    ----------------------

@@ -65,6 +65,17 @@ package Gdk.Font is
    function Char_Measure (Font : in Gdk_Font;
                           Char : in Character) return Gint;
 
+   function String_Height (Font : in Gdk_Font;
+                           Str  : in String) return Gint;
+
+   --  function Text_Height
+   --
+   --  This function will not be bound because it is semantically
+   --  equivalent to String_Height.
+
+   function Char_Height (Font : in Gdk_Font;
+                         Char : in Character) return Gint;
+
 private
 
    type Gdk_Font is new Root_Type with null record;
