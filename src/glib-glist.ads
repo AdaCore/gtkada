@@ -33,6 +33,8 @@ package Glib.Glist is
       function First (List : in Glist)
                       return Glist;
       procedure Free (List : in out Glist);
+      function Get_Data (List : in Glist)
+                         return Gpointer;
       function Index (List : in Glist;
                       Data : in Gpointer)
                       return Gint;

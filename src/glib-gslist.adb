@@ -68,6 +68,19 @@ package body Glib.GSlist is
          return Tmp;
       end Concat;
 
+      --------------
+      -- Get_Data --
+      --------------
+
+      function Get_Data (List : in GSlist)
+                         return Gpointer
+      is
+         function Internal (List : System.Address) return System.Address;
+         pragma Import (C, Internal, "ada_gslist_get_data");
+      begin
+         return Convert (Internal (Get_Object (List)));
+      end Get_Data;
+
       ------------
       -- Insert --
       ------------

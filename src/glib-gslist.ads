@@ -29,6 +29,8 @@ package Glib.GSlist is
                      Data : in Gpointer)
                      return GSlist;
       procedure Free (List : in out GSlist);
+      function Get_Data (List : in GSlist)
+                         return Gpointer;
       function Index (List : in GSlist;
                       Data : in Gpointer)
                       return Gint;
