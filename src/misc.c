@@ -207,9 +207,6 @@ ada_initialize_class_record (GObject*  object,
 			     void*     old_class_record,
 			     guint     scroll_adj_signals)
 {
-/* XXX ??? */
-  printf ("*** GtkAda error: ada_initialize_class_record not implemented.\n");
-#if 0
   if (old_class_record)
     {
       G_OBJECT_GET_CLASS (object) = old_class_record;
@@ -217,30 +214,27 @@ ada_initialize_class_record (GObject*  object,
     }
   else
     {
-      int i;
+      int j;
+      GObjectClass* klass;
 
       /* Right now, object->klass points to the ancestor's class */
       GObjectClass* ancestor = G_OBJECT_GET_CLASS (object);
 
       /* We need to know the ancestor's class size */
-      GTypeQuery* query = g_type_query (GTK_CLASS_TYPE (ancestor));
+      GTypeQuery query;
+
+      g_type_query (GTK_CLASS_TYPE (ancestor), &query);
 
       /* Note: The memory allocated here is never freed. No need to worry,
 	 since this is only allocated once per user's widget type, and
 	 might be used until the end of the application */
-      G_OBJECT_GET_CLASS (object) = (GtkObjectClass*) malloc
-	(query->class_size + nsignals * sizeof (void*));
-      memcpy (G_OBJECT_GET_CLASS (object), ancestor, query->class_size);
 
-      /* Note: we *must* reallocate the signals array from scratch, and not
-	 use gtk_object_class_add_signals. Otherwise, if we have two Ada
-	 objects that inherit from the same Gtk+ widget, the first one will
-	 be corrupted through a call to realloc */
-      G_OBJECT_GET_CLASS (object)->signals =
-	g_new (guint, G_OBJECT_GET_CLASS (object)->nsignals + nsignals);
-      memcpy (G_OBJECT_GET_CLASS (object)->signals, ancestor->signals,
-	      ancestor->nsignals * sizeof (guint));
-      
+      klass = (GObjectClass*) malloc
+	(query.class_size + nsignals * sizeof (void*));
+      memcpy (klass, ancestor, query.class_size);
+
+      G_OBJECT_GET_CLASS (object) = klass;
+
       /* Implementation Note: We are actually cheating here: we should
 	 really create a new type, instead of reusing the parent class's type.
 	 This would be cleaner for some things, but since it seems to work
@@ -248,45 +242,36 @@ ada_initialize_class_record (GObject*  object,
 	 The important thing to test is whether the new signals are also
 	 known in the ancestor's class or not (they should not, of course!) */
 
-      for (i = 0; i < nsignals; i++)
+      for (j = 0; j < nsignals; j++)
 	{
 	  int count = 0;
+	  guint id;
+
 	  while (count < max_parameters
 		 &&
-		 (parameters [i * max_parameters + count] != G_TYPE_NONE))
+		 (parameters [j * max_parameters + count] != G_TYPE_NONE))
 	    {
-	      count ++;
+	      count++;
 	    }
 
-	  G_OBJECT_GET_CLASS (object)->signals [i + ancestor->nsignals] = gtk_signal_newv
-	    (signals[i],
-	     GTK_RUN_FIRST,
-	     GTK_CLASS_TYPE (G_OBJECT_GET_CLASS (object)),
-	     query->class_size + i * sizeof (void*) /*offset*/,
+	  id = gtk_signal_newv
+	    (signals[j],
+	     GTK_RUN_LAST,
+	     GTK_CLASS_TYPE (klass),
+	     query.class_size + j * sizeof (void*) /*offset*/,
 	     gtk_marshal_NONE__NONE,  /* default marshaller, unused at the
 					 Ada level */
 	     GTK_TYPE_NONE, count,
-	     parameters  + i * max_parameters);
+	     parameters + j * max_parameters);
+
+	  if (scroll_adj_signals && (scroll_adj_signals - 1 == j))
+	    ((GtkWidgetClass*)klass)->set_scroll_adjustments_signal = id;
 	}
 
-      G_OBJECT_GET_CLASS (object)->nsignals += nsignals;
-
-      if (scroll_adj_signals)
-	{
-	  GTK_WIDGET_GET_CLASS(object)->set_scroll_adjustments_signal =
-	    G_OBJECT_GET_CLASS (object)->signals
-	      [scroll_adj_signals - 1 + ancestor->nsignals];
-	}
-      
       /* Initialize the function pointers for the new signals to NULL */
-      memset ((char*)(G_OBJECT_GET_CLASS (object)) + query->class_size, 0, 
-	      nsignals * sizeof (void*));
-
-      g_free (query);
-      return G_OBJECT_GET_CLASS (object);
+      memset ((char*)(klass) + query.class_size, 0, nsignals * sizeof (void*));
+      return klass;
     }
-#endif
-  return NULL;
 }
 
 void
