@@ -3343,7 +3343,8 @@ package body Gtkada.MDI is
      (MDI               : access MDI_Window_Record;
       Orientation       : Gtk_Orientation;
       Reuse_If_Possible : Boolean := False;
-      After             : Boolean := False)
+      After             : Boolean := False;
+      Width, Height     : Glib.Gint := 0)
    is
       Note, Note2 : Gtk_Notebook;
       Child : MDI_Child;
@@ -3364,8 +3365,8 @@ package body Gtkada.MDI is
             Split (MDI,
                    Ref_Widget  => Note,
                    New_Child   => Note2,
-                   Width       => 0,
-                   Height      => 0,
+                   Width       => Width,
+                   Height      => Height,
                    Orientation => Orientation,
                    After       => After);
          end if;
