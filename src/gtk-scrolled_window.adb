@@ -201,7 +201,7 @@ package body Gtk.Scrolled_Window is
       procedure Internal
         (Scrolled_Window : System.Address;
          Shadow_Type     : Gtk.Enums.Gtk_Shadow_Type);
-      pragma Import (C, Internal, "gtk_scrolled_window_set_vadjustment");
+      pragma Import (C, Internal, "gtk_scrolled_window_set_shadow_type");
 
    begin
       Internal (Get_Object (Scrolled_Window), Shadow_Type);
