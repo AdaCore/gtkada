@@ -70,7 +70,7 @@ package Gdk.Drawable is
 
    function Get_Visual (Drawable : Gdk_Drawable) return Gdk.Gdk_Visual;
 
-   function Get_Depth (Drawable : Gdk_Drawable) return Gdk.Gdk_Visual;
+   function Get_Depth (Drawable : Gdk_Drawable) return Gint;
 
    procedure Ref (Drawable : Gdk_Drawable);
 
