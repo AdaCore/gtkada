@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --                Copyright (C) 2001-2002 ACT-Europe                 --
 --                                                                   --
@@ -42,8 +42,10 @@ package body Glib.Error is
    type GError_Struct_Access is access all GError_Struct;
    pragma Convention (C, GError_Struct_Access);
 
+   pragma Warnings (Off);
    function To_Gerror is new Ada.Unchecked_Conversion
      (GError, GError_Struct_Access);
+   pragma Warnings (On);
 
    ---------------
    -- Error_New --
