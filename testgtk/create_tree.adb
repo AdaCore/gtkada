@@ -49,8 +49,6 @@ with Common;              use Common;
 
 package body Create_Tree is
 
-   Window : aliased Gtk.Window.Gtk_Window;
-
    Default_Number_Of_Item  : Gfloat := 3.0;
    Default_Recursion_Level : Gfloat := 3.0;
 
