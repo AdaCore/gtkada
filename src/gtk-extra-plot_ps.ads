@@ -39,23 +39,23 @@ with Gtk.Extra.Plot_Canvas;  use Gtk.Extra.Plot_Canvas;
 
 package Gtk.Extra.Plot_Ps is
 
-   type Ps_Page_Size is (Plot_Letter,
-                         Plot_Legal,
-                         Plot_A4,
-                         Plot_Executive,
-                         Plot_Custom);
+   type Ps_Page_Size is
+     (Plot_Letter,
+      Plot_Legal,
+      Plot_A4,
+      Plot_Executive,
+      Plot_Custom);
    --  The formats that can be used for paper sizes.
+   for Ps_Page_Size'Size use Gint'Size;
 
-   type Ps_Orientation is (Plot_Portrait,
-                           Plot_Landscape);
+   type Ps_Orientation is (Plot_Portrait, Plot_Landscape);
    --  Portrait format means that the vertical size is longer than
    --  the horizontal size. Landscape is the reverse.
+   for Ps_Orientation'Size use Gint'Size;
 
-   type Ps_Units is (Plot_Inches,
-                     Plot_Mm,
-                     Plot_Cm,
-                     Plot_Pspoints);
+   type Ps_Units is (Plot_Inches, Plot_Mm, Plot_Cm, Plot_Pspoints);
    --  Units of measure for paper sizes.
+   for Ps_Units'Size use Gint'Size;
 
    procedure Plot_Export_Ps
       (Plot        : access Gtk.Extra.Plot.Gtk_Plot_Record'Class;

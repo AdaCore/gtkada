@@ -94,10 +94,11 @@ package body Gtk.Extra.Plot_3D is
    procedure Axis_Hide_Title
      (Plot : access Gtk_Plot_3D_Record; Side : Plot_Side)
    is
-      procedure Internal (Plot : System.Address; Side : Gint);
+      procedure Internal (Plot : System.Address; Side : Plot_Side);
       pragma Import (C, Internal, "gtk_plot3d_axis_hide_title");
+
    begin
-      Internal (Get_Object (Plot), Plot_Side'Pos (Side));
+      Internal (Get_Object (Plot), Side);
    end Axis_Hide_Title;
 
    --------------------------
@@ -110,10 +111,11 @@ package body Gtk.Extra.Plot_3D is
       Major_Step : Gdouble)
    is
       procedure Internal
-        (Plot : System.Address; Axis : Gint; Major_Step : Gdouble);
+        (Plot : System.Address; Axis : Plot_Orientation; Major_Step : Gdouble);
       pragma Import (C, Internal, "gtk_plot3d_axis_set_major_ticks");
+
    begin
-      Internal (Get_Object (Plot), Plot_Orientation'Pos (Axis), Major_Step);
+      Internal (Get_Object (Plot), Axis, Major_Step);
    end Axis_Set_Major_Ticks;
 
    --------------------------
@@ -126,10 +128,11 @@ package body Gtk.Extra.Plot_3D is
       Nminor : Gint)
    is
       procedure Internal
-        (Plot : System.Address; Axis : Gint; Nminor : Gint);
+        (Plot : System.Address; Axis : Plot_Orientation; Nminor : Gint);
       pragma Import (C, Internal, "gtk_plot3d_axis_set_minor_ticks");
+
    begin
-      Internal (Get_Object (Plot), Plot_Orientation'Pos (Axis), Nminor);
+      Internal (Get_Object (Plot), Axis, Nminor);
    end Axis_Set_Minor_Ticks;
 
    --------------------
@@ -144,13 +147,14 @@ package body Gtk.Extra.Plot_3D is
    is
       procedure Internal
         (Plot       : System.Address;
-         Axis       : Gint;
+         Axis       : Plot_Orientation;
          Major_Step : Gdouble;
          Nminor     : Gint);
       pragma Import (C, Internal, "gtk_plot3d_axis_set_ticks");
+
    begin
       Internal
-        (Get_Object (Plot), Plot_Orientation'Pos (Axis), Major_Step, Nminor);
+        (Get_Object (Plot), Axis, Major_Step, Nminor);
    end Axis_Set_Ticks;
 
    ---------------------------
@@ -161,10 +165,11 @@ package body Gtk.Extra.Plot_3D is
      (Plot : access Gtk_Plot_3D_Record; Axis : Plot_Orientation; Length : Gint)
    is
       procedure Internal
-        (Plot : System.Address; Axis : Gint; Length : Gint);
+        (Plot : System.Address; Axis : Plot_Orientation; Length : Gint);
       pragma Import (C, Internal, "gtk_plot3d_axis_set_ticks_length");
+
    begin
-      Internal (Get_Object (Plot), Plot_Orientation'Pos (Axis), Length);
+      Internal (Get_Object (Plot), Axis, Length);
    end Axis_Set_Ticks_Length;
 
    --------------------------
@@ -177,10 +182,11 @@ package body Gtk.Extra.Plot_3D is
       Width : Gfloat)
    is
       procedure Internal
-        (Plot : System.Address; Axis : Gint; Width : Gfloat);
+        (Plot : System.Address; Axis : Plot_Orientation; Width : Gfloat);
       pragma Import (C, Internal, "gtk_plot3d_axis_set_ticks_width");
+
    begin
-      Internal (Get_Object (Plot), Plot_Orientation'Pos (Axis), Width);
+      Internal (Get_Object (Plot), Axis, Width);
    end Axis_Set_Ticks_Width;
 
    ----------------------
@@ -191,10 +197,11 @@ package body Gtk.Extra.Plot_3D is
      (Plot : access Gtk_Plot_3D_Record; Side : Plot_Side; Label_Mask : Gint)
    is
       procedure Internal
-        (Plot : System.Address; Side : Gint;  Label_Mask : Gint);
+        (Plot : System.Address; Side : Plot_Side;  Label_Mask : Gint);
       pragma Import (C, Internal, "gtk_plot3d_axis_show_labels");
+
    begin
-      Internal (Get_Object (Plot), Plot_Side'Pos (Side), Label_Mask);
+      Internal (Get_Object (Plot), Side, Label_Mask);
    end Axis_Show_Labels;
 
    ---------------------------
@@ -207,10 +214,13 @@ package body Gtk.Extra.Plot_3D is
       Ticks_Mask : Plot_Ticks_Pos)
    is
       procedure Internal
-        (Plot : System.Address; Side : Gint; Ticks_Mask : Plot_Ticks_Pos);
+        (Plot       : System.Address;
+         Side       : Plot_Side;
+         Ticks_Mask : Plot_Ticks_Pos);
       pragma Import (C, Internal, "gtk_plot3d_axis_show_major_ticks");
+
    begin
-      Internal (Get_Object (Plot), Plot_Side'Pos (Side), Ticks_Mask);
+      Internal (Get_Object (Plot), Side, Ticks_Mask);
    end Axis_Show_Major_Ticks;
 
    ---------------------------
@@ -223,10 +233,12 @@ package body Gtk.Extra.Plot_3D is
       Ticks_Mask : Plot_Ticks_Pos)
    is
       procedure Internal
-        (Plot : System.Address; Side : Gint; Ticks_Mask : Plot_Ticks_Pos);
+        (Plot       : System.Address;
+         Side       : Plot_Side;
+         Ticks_Mask : Plot_Ticks_Pos);
       pragma Import (C, Internal, "gtk_plot3d_axis_show_minor_ticks");
    begin
-      Internal (Get_Object (Plot), Plot_Side'Pos (Side), Ticks_Mask);
+      Internal (Get_Object (Plot), Side, Ticks_Mask);
    end Axis_Show_Minor_Ticks;
 
    ---------------------
@@ -241,13 +253,14 @@ package body Gtk.Extra.Plot_3D is
    is
       procedure Internal
         (Plot       : System.Address;
-         Side       : Gint;
+         Side       : Plot_Side;
          Major_Mask : Plot_Ticks_Pos;
          Minor_Mask : Plot_Ticks_Pos);
       pragma Import (C, Internal, "gtk_plot3d_axis_show_ticks");
+
    begin
       Internal
-        (Get_Object (Plot), Plot_Side'Pos (Side), Major_Mask, Minor_Mask);
+        (Get_Object (Plot), Side, Major_Mask, Minor_Mask);
    end Axis_Show_Ticks;
 
    ---------------------
@@ -257,10 +270,11 @@ package body Gtk.Extra.Plot_3D is
    procedure Axis_Show_Title
      (Plot : access Gtk_Plot_3D_Record; Side : Plot_Side)
    is
-      procedure Internal (Plot : System.Address; Side : Gint);
+      procedure Internal (Plot : System.Address; Side : Plot_Side);
       pragma Import (C, Internal, "gtk_plot3d_axis_show_title");
+
    begin
-      Internal (Get_Object (Plot), Plot_Side'Pos (Side));
+      Internal (Get_Object (Plot), Side);
    end Axis_Show_Title;
 
    ---------------------------
@@ -297,14 +311,15 @@ package body Gtk.Extra.Plot_3D is
    is
       procedure Internal
         (Plot  : System.Address;
-         Style : Gint;
+         Style : Plot_Line_Style;
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot3d_corner_set_attributes");
+
       C : aliased Gdk_Color := Color;
+
    begin
-      Internal
-        (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, C'Address);
+      Internal (Get_Object (Plot), Style, Width, C'Address);
    end Corner_Set_Attributes;
 
    ------------------------
@@ -366,14 +381,15 @@ package body Gtk.Extra.Plot_3D is
    is
       procedure Internal
         (Plot  : System.Address;
-         Style : Gint;
+         Style : Plot_Line_Style;
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot3d_frame_set_attributes");
+
       C : aliased Gdk_Color := Color;
+
    begin
-      Internal
-        (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, C'Address);
+      Internal (Get_Object (Plot), Style, Width, C'Address);
    end Frame_Set_Attributes;
 
    --------------
@@ -387,14 +403,14 @@ package body Gtk.Extra.Plot_3D is
    is
       function Internal
         (Plot        : System.Address;
-         Orientation : Gint)
-         return System.Address;
+         Orientation : Plot_Orientation) return System.Address;
       pragma Import (C, Internal, "gtk_plot3d_get_axis");
+
       Stub : Gtk_Plot_Axis_Record;
+
    begin
       return Gtk_Plot_Axis (Get_User_Data
-        (Internal (Get_Object (Plot), Plot_Orientation'Pos (Orientation)),
-         Stub));
+        (Internal (Get_Object (Plot), Orientation), Stub));
    end Get_Axis;
 
    ---------------
@@ -424,12 +440,14 @@ package body Gtk.Extra.Plot_3D is
       Side   : Plot_Side) return Gtk_Plot_Axis
    is
       function Internal
-        (Plot : System.Address; Side : Gint) return System.Address;
+        (Plot : System.Address; Side : Plot_Side) return System.Address;
       pragma Import (C, Internal, "gtk_plot3d_get_side");
+
       Stub : Gtk_Plot_Axis_Record;
+
    begin
       return Gtk_Plot_Axis (Get_User_Data
-         (Internal (Get_Object (Plot), Plot_Side'Pos (Side)), Stub));
+         (Internal (Get_Object (Plot), Side), Stub));
    end Get_Side;
 
    -----------------------
@@ -540,14 +558,15 @@ package body Gtk.Extra.Plot_3D is
    is
       procedure Internal
         (Plot  : System.Address;
-         Style : Gint;
+         Style : Plot_Line_Style;
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot3d_major_zgrid_set_attributes");
+
       C : aliased Gdk_Color := Color;
+
    begin
-      Internal
-        (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, C'Address);
+      Internal (Get_Object (Plot), Style, Width, C'Address);
    end Major_Zgrid_Set_Attributes;
 
    -----------------------------
@@ -611,14 +630,15 @@ package body Gtk.Extra.Plot_3D is
    is
       procedure Internal
         (Plot  : System.Address;
-         Style : Gint;
+         Style : Plot_Line_Style;
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot3d_minor_zgrid_set_attributes");
+
       C : aliased Gdk_Color := Color;
+
    begin
-      Internal
-        (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, C'Address);
+      Internal (Get_Object (Plot), Style, Width, C'Address);
    end Minor_Zgrid_Set_Attributes;
 
    ---------------------
@@ -632,12 +652,14 @@ package body Gtk.Extra.Plot_3D is
    is
       procedure Internal
         (Plot  : System.Address;
-         Plane : Gint;
+         Plane : Plot_Plane;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot3d_plane_set_color");
+
       C : aliased Gdk_Color := Color;
+
    begin
-      Internal (Get_Object (Plot), Plot_Plane'Pos (Plane), C'Address);
+      Internal (Get_Object (Plot), Plane, C'Address);
    end Plane_Set_Color;
 
    -----------------------
@@ -649,11 +671,13 @@ package body Gtk.Extra.Plot_3D is
       Plane   : Plot_Plane;
       Visible : Boolean)
    is
-      procedure Internal (Plot : System.Address; Plane, Visible : Gint);
+      procedure Internal
+        (Plot : System.Address; Plane : Plot_Plane; Visible : Gint);
       pragma Import (C, Internal, "gtk_plot3d_plane_set_visible");
+
    begin
       Internal
-        (Get_Object (Plot), Plot_Plane'Pos (Plane), Boolean'Pos (Visible));
+        (Get_Object (Plot), Plane, Boolean'Pos (Visible));
    end Plane_Set_Visible;
 
    -------------------
@@ -663,11 +687,13 @@ package body Gtk.Extra.Plot_3D is
    function Plane_Visible
      (Plot : access Gtk_Plot_3D_Record; Plane : Plot_Plane) return Boolean
    is
-      function Internal (Plot : System.Address; Plane  : Gint) return Gint;
+      function Internal
+        (Plot : System.Address; Plane : Plot_Plane) return Gint;
       pragma Import (C, Internal, "gtk_plot3d_plane_visible");
+
    begin
       return Boolean'Val
-        (Internal (Get_Object (Plot), Plot_Plane'Pos (Plane)));
+        (Internal (Get_Object (Plot), Plane));
    end Plane_Visible;
 
    ------------------

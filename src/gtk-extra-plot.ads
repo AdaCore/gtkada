@@ -139,8 +139,7 @@ package Gtk.Extra.Plot is
       Set   : Gtk_Plot_Data;
       X     : Gdouble;
       Y     : Gdouble;
-      Error : access Boolean)
-     return Gdouble;
+      Error : access Boolean) return Gdouble;
    --  Function used for plotting 3D graphs.
    --  It should return the value associated with (X, Y) in its graph, and set
    --  Error to True if there was an error while calculating the value.
@@ -154,18 +153,21 @@ package Gtk.Extra.Plot is
 
    type Plot_Scale is (Scale_Linear, Scale_Log10);
    --  Type of scale used for each axis of a graph.
+   for Plot_Scale'Size use Gint'Size;
 
-   type Plot_Border_Style is (Border_None,
-                              --  No border is drawn
+   type Plot_Border_Style is
+     (Border_None,
+      --  No border is drawn
 
-                              Border_Line,
-                              --  A simple line on each side
+      Border_Line,
+      --  A simple line on each side
 
-                              Border_Shadow
-                              --  The right and bottom lines are
-                              --  thicker
-                              );
+      Border_Shadow
+      --  The right and bottom lines are
+      --  thicker
+     );
    --  Border types used for legends.
+   for Plot_Border_Style'Size use Gint'Size;
 
    type Plot_Label_Pos is new Integer;
    --  Position of labels along an axis.
@@ -174,31 +176,25 @@ package Gtk.Extra.Plot is
    Label_In     : constant Plot_Label_Pos;
    Label_Out    : constant Plot_Label_Pos;
 
-   type Plot_Error is (Error_Div_Zero,
-                       Error_Log_Neg);
+   type Plot_Error is (Error_Div_Zero, Error_Log_Neg);
    --  Errors that can be encountered while calculating a graph.
+   for Plot_Error'Size use Gint'Size;
 
-   type Plot_Axis_Pos  is (Axis_Left,
-                           Axis_Right,
-                           Axis_Top,
-                           Axis_Bottom);
+   type Plot_Axis_Pos is (Axis_Left, Axis_Right, Axis_Top, Axis_Bottom);
    --  Where the axis should be put
+   for Plot_Axis_Pos'Size use Gint'Size;
 
-   type Plot_Orientation  is (Axis_X,
-                              Axis_Y,
-                              Axis_Z);
+   type Plot_Orientation is (Axis_X, Axis_Y, Axis_Z);
    --  How to reference axis in 3D plots
+   for Plot_Orientation'Size use Gint'Size;
 
-   type Plot_Label_Style is (Label_Float,
-                             Label_Exp,
-                             Label_Pow);
+   type Plot_Label_Style is (Label_Float, Label_Exp, Label_Pow);
    --  The style of labels (floating point, or scientific notation)
+   for Plot_Label_Style'Size use Gint'Size;
 
-   type Plot_Angle is (Angle_0,
-                       Angle_90,
-                       Angle_180,
-                       Angle_270);
+   type Plot_Angle is (Angle_0, Angle_90, Angle_180, Angle_270);
    --  Valid values for the angles of texts and titles.
+   for Plot_Angle'Size use Gint'Size;
 
    type Plot_Ticks_Pos is new Integer;
    --  The position and orientation of the ticks along an axis.
@@ -952,10 +948,11 @@ private
    Ticks_In    : constant Plot_Ticks_Pos := 1;
    Ticks_Out   : constant Plot_Ticks_Pos := 2;
 
-   for Plot_Angle use (Angle_0   => 0,
-                       Angle_90  => 90,
-                       Angle_180 => 180,
-                       Angle_270 => 270);
+   for Plot_Angle use
+     (Angle_0   => 0,
+      Angle_90  => 90,
+      Angle_180 => 180,
+      Angle_270 => 270);
 
    type Gtk_Plot_Axis_Record is new Gtk.Object.Gtk_Object_Record with
      null record;

@@ -268,11 +268,13 @@ package body Gtk.Extra.Sheet is
    procedure Set_Selection_Mode (Sheet : access Gtk_Sheet_Record;
                                  Mode  : in Gtk.Enums.Gtk_Selection_Mode)
    is
-      procedure Internal (Sheet : in System.Address;
-                          Mode  : in Gint);
+      procedure Internal
+        (Sheet : System.Address;
+         Mode  : Gtk.Enums.Gtk_Selection_Mode);
       pragma Import (C, Internal, "gtk_sheet_set_selection_mode");
+
    begin
-      Internal (Get_Object (Sheet), Gtk.Enums.Gtk_Selection_Mode'Pos (Mode));
+      Internal (Get_Object (Sheet), Mode);
    end Set_Selection_Mode;
 
    ---------------
@@ -386,14 +388,14 @@ package body Gtk.Extra.Sheet is
        Row           : in Gint;
        Justification : in Gtk.Enums.Gtk_Justification)
    is
-      procedure Internal (Sheet         : in System.Address;
-                          Row           : in Gint;
-                          Justification : in Gint);
+      procedure Internal
+        (Sheet         : System.Address;
+         Row           : Gint;
+         Justification : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_sheet_row_button_justify");
+
    begin
-      Internal (Get_Object (Sheet),
-                Row,
-                Gtk.Enums.Gtk_Justification'Pos (Justification));
+      Internal (Get_Object (Sheet), Row, Justification);
    end Row_Button_Justify;
 
    ---------------------------
@@ -406,14 +408,13 @@ package body Gtk.Extra.Sheet is
        Justification : in Gtk.Enums.Gtk_Justification)
    is
       procedure Internal
-         (Sheet         : in System.Address;
-          Column        : in Gint;
-          Justification : in Gint);
+         (Sheet         : System.Address;
+          Column        : Gint;
+          Justification : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_sheet_column_button_justify");
+
    begin
-      Internal (Get_Object (Sheet),
-                Column,
-                Gtk.Enums.Gtk_Justification'Pos (Justification));
+      Internal (Get_Object (Sheet), Column, Justification);
    end Column_Button_Justify;
 
    ------------
@@ -830,11 +831,12 @@ package body Gtk.Extra.Sheet is
                        Justification : in Gtk.Enums.Gtk_Justification;
                        Text          : in String)
    is
-      procedure Internal (Sheet         : in System.Address;
-                          Row           : in Gint;
-                          Col           : in Gint;
-                          Justification : in Gint;
-                          Text          : in System.Address);
+      procedure Internal
+        (Sheet         : System.Address;
+         Row           : Gint;
+         Col           : Gint;
+         Justification : Gtk.Enums.Gtk_Justification;
+         Text          : System.Address);
       pragma Import (C, Internal, "gtk_sheet_set_cell");
 
       T : aliased String := Text & ASCII.NUL;
@@ -845,9 +847,7 @@ package body Gtk.Extra.Sheet is
          Ta := System.Null_Address;
       end if;
 
-      Internal
-        (Get_Object (Sheet), Row, Col,
-         Gtk.Enums.Gtk_Justification'Pos (Justification), Ta);
+      Internal (Get_Object (Sheet), Row, Col, Justification, Ta);
    end Set_Cell;
 
    -------------------
@@ -1289,13 +1289,14 @@ package body Gtk.Extra.Sheet is
        The_Range     : in Gtk_Sheet_Range;
        Justification : in Gtk.Enums.Gtk_Justification)
    is
-      procedure Internal (Sheet         : in System.Address;
-                          The_Range     : in Gtk_Sheet_Range;
-                          Justification : in Gint);
+      procedure Internal
+        (Sheet         : System.Address;
+         The_Range     : Gtk_Sheet_Range;
+         Justification : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_sheet_range_set_justification");
+
    begin
-      Internal (Get_Object (Sheet), The_Range,
-                Gtk.Enums.Gtk_Justification'Pos (Justification));
+      Internal (Get_Object (Sheet), The_Range, Justification);
    end Range_Set_Justification;
 
    ------------------------------
@@ -1307,14 +1308,14 @@ package body Gtk.Extra.Sheet is
        Column        : in Gint;
        Justification : in Gtk.Enums.Gtk_Justification)
    is
-      procedure Internal (Sheet         : in System.Address;
-                          Column        : in Gint;
-                          Justification : in Gint);
+      procedure Internal
+        (Sheet         : System.Address;
+         Column        : Gint;
+         Justification : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_sheet_column_set_justification");
+
    begin
-      Internal (Get_Object (Sheet),
-                Column,
-                Gtk.Enums.Gtk_Justification'Pos (Justification));
+      Internal (Get_Object (Sheet), Column, Justification);
    end Column_Set_Justification;
 
    ------------------------
@@ -1359,17 +1360,16 @@ package body Gtk.Extra.Sheet is
                                Width      : in Guint;
                                Line_Style : in Gdk.Types.Gdk_Line_Style)
    is
-      procedure Internal (Sheet      : in System.Address;
-                          The_Range  : in Gtk_Sheet_Range;
-                          Mask       : in Gint;
-                          Width      : in Guint;
-                          Line_Style : in Gint);
+      procedure Internal
+        (Sheet      : System.Address;
+         The_Range  : Gtk_Sheet_Range;
+         Mask       : Gtk_Sheet_Border;
+         Width      : Guint;
+         Line_Style : Gdk.Types.Gdk_Line_Style);
       pragma Import (C, Internal, "gtk_sheet_range_set_border");
+
    begin
-      Internal (Get_Object (Sheet), The_Range,
-                Gtk_Sheet_Border'Pos (Mask),
-                Width,
-                Gdk.Types.Gdk_Line_Style'Pos (Line_Style));
+      Internal (Get_Object (Sheet), The_Range, Mask, Width, Line_Style);
    end Range_Set_Border;
 
    ----------------------------

@@ -67,12 +67,13 @@ package body Gtk.Extra.Item_Entry is
       (Item_Entry    : access Gtk_IEntry_Record;
        Justification : in Gtk.Enums.Gtk_Justification)
    is
-      procedure Internal (Item_Entry    : in System.Address;
-                          Justification : in Gint);
+      procedure Internal
+        (Item_Entry    : System.Address;
+         Justification : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_item_entry_set_justification");
+
    begin
-      Internal (Get_Object (Item_Entry),
-                Gtk.Enums.Gtk_Justification'Pos (Justification));
+      Internal (Get_Object (Item_Entry), Justification);
    end Set_Justification;
 
    --------------
@@ -84,14 +85,16 @@ package body Gtk.Extra.Item_Entry is
        Text          : in String;
        Justification : in Gtk.Enums.Gtk_Justification)
    is
-      procedure Internal (Item_Entry    : in System.Address;
-                          Text          : in String;
-                          Justification : in Gint);
+      procedure Internal
+        (Item_Entry    : System.Address;
+         Text          : String;
+         Justification : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_item_entry_set_text");
+
    begin
       Internal (Get_Object (Item_Entry),
                 Text & ASCII.NUL,
-                Gtk.Enums.Gtk_Justification'Pos (Justification));
+                Justification);
    end Set_Text;
 
    -----------------------

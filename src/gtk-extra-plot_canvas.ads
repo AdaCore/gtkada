@@ -57,11 +57,13 @@ package Gtk.Extra.Plot_Canvas is
    -- Enum types --
    ----------------
 
-   type Plot_Canvas_Action is (Action_Inactive,
-                               Action_Selection,
-                               Action_Drag,
-                               Action_Resize);
+   type Plot_Canvas_Action is
+     (Action_Inactive,
+      Action_Selection,
+      Action_Drag,
+      Action_Resize);
    --  The action being performed on the canvas.
+   for Plot_Canvas_Action'Size use Gint'Size;
 
    type Plot_Canvas_Flag is new Gint;
    Frozen       : constant Plot_Canvas_Flag;
@@ -69,31 +71,35 @@ package Gtk.Extra.Plot_Canvas is
    Can_X_Resize : constant Plot_Canvas_Flag;
    Can_Y_Resize : constant Plot_Canvas_Flag;
 
-   type Plot_Canvas_Type is (None,
-                             Plot,
-                             Axis,
-                             Legends,
-                             Title,
-                             Text,
-                             Data,
-                             Line,
-                             Rectangle,
-                             Ellipse,
-                             Custom);
+   type Plot_Canvas_Type is
+     (None,
+      Plot,
+      Axis,
+      Legends,
+      Title,
+      Text,
+      Data,
+      Line,
+      Rectangle,
+      Ellipse,
+      Custom);
    --  The type of data that can be put in a canvas.
    --  Plot is only for a Gtk.Extra.Plot.Gtk_Plot widget.
+   for Plot_Canvas_Type'Size use Gint'Size;
 
-   type Plot_Canvas_Pos is (Canvas_Out,
-                            Canvas_In,
-                            Canvas_Left,
-                            Canvas_Right,
-                            Canvas_Top,
-                            Canvas_Bottom,
-                            Canvas_Top_Left,
-                            Canvas_Top_Right,
-                            Canvas_Bottom_Left,
-                            Canvas_Bottom_Right);
+   type Plot_Canvas_Pos is
+     (Canvas_Out,
+      Canvas_In,
+      Canvas_Left,
+      Canvas_Right,
+      Canvas_Top,
+      Canvas_Bottom,
+      Canvas_Top_Left,
+      Canvas_Top_Right,
+      Canvas_Bottom_Left,
+      Canvas_Bottom_Right);
    --  The position of the items in the canvas.
+   for Plot_Canvas_Pos'Size use Gint'Size;
 
    type Plot_Canvas_Arrow is new Gint;
    Arrow_None   : constant Plot_Canvas_Arrow;

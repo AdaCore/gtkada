@@ -519,16 +519,20 @@ package body Gtk.Extra.Plot_Data is
    is
       procedure Internal
         (Data                  : System.Address;
-         The_Type, Style, Size : Gint;
+         The_Type              : Plot_Symbol_Type;
+         Style                 : Plot_Symbol_Style;
+         Size                  : Gint;
          Line_Width            : Gfloat;
          Color, Border_Color   : System.Address);
       pragma Import (C, Internal, "gtk_plot_data_set_symbol");
+
       C : aliased Gdk_Color := Color;
       B : aliased Gdk_Color := Border_Color;
+
    begin
-      Internal (Get_Object (Data), Plot_Symbol_Type'Pos (The_Type),
-                Plot_Symbol_Style'Pos (Style), Size, Line_Width,
-                C'Address, B'Address);
+      Internal
+        (Get_Object (Data), The_Type, Style, Size,
+         Line_Width, C'Address, B'Address);
    end Set_Symbol;
 
    ----------------
@@ -568,10 +572,11 @@ package body Gtk.Extra.Plot_Data is
    procedure Set_Connector
      (Data : access Gtk_Plot_Data_Record; Connector : Plot_Connector)
    is
-      procedure Internal (Data : System.Address; Connector : Gint);
+      procedure Internal (Data : System.Address; Connector : Plot_Connector);
       pragma Import (C, Internal, "gtk_plot_data_set_connector");
+
    begin
-      Internal (Get_Object (Data), Plot_Connector'Pos (Connector));
+      Internal (Get_Object (Data), Connector);
    end Set_Connector;
 
    -------------------
@@ -599,14 +604,15 @@ package body Gtk.Extra.Plot_Data is
    is
       procedure Internal
         (Data  : System.Address;
-         Style : Gint;
+         Style : Plot_Line_Style;
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_data_set_line_attributes");
+
       C : aliased Gdk_Color := Color;
+
    begin
-      Internal (Get_Object (Data), Plot_Line_Style'Pos (Style), Width,
-                C'Address);
+      Internal (Get_Object (Data), Style, Width, C'Address);
    end Set_Line_Attributes;
 
    -------------------------
@@ -643,14 +649,15 @@ package body Gtk.Extra.Plot_Data is
    is
       procedure Internal
         (Data  : System.Address;
-         Style : Gint;
+         Style : Plot_Line_Style;
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_data_set_x_attributes");
+
       C : aliased Gdk_Color := Color;
+
    begin
-      Internal (Get_Object (Data), Plot_Line_Style'Pos (Style), Width,
-                C'Address);
+      Internal (Get_Object (Data), Style, Width, C'Address);
    end Set_X_Attributes;
 
    ----------------------
@@ -665,14 +672,15 @@ package body Gtk.Extra.Plot_Data is
    is
       procedure Internal
         (Data  : System.Address;
-         Style : Gint;
+         Style : Plot_Line_Style;
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_data_set_y_attributes");
+
       C : aliased Gdk_Color := Color;
+
    begin
-      Internal (Get_Object (Data), Plot_Line_Style'Pos (Style), Width,
-                C'Address);
+      Internal (Get_Object (Data), Style, Width, C'Address);
    end Set_Y_Attributes;
 
    ----------------------
@@ -687,14 +695,15 @@ package body Gtk.Extra.Plot_Data is
    is
       procedure Internal
         (Data  : System.Address;
-         Style : Gint;
+         Style : Plot_Line_Style;
          Width : Gfloat;
          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_data_set_z_attributes");
+
       C : aliased Gdk_Color := Color;
+
    begin
-      Internal (Get_Object (Data), Plot_Line_Style'Pos (Style), Width,
-                C'Address);
+      Internal (Get_Object (Data), Style, Width, C'Address);
    end Set_Z_Attributes;
 
    -------------------
@@ -854,10 +863,11 @@ package body Gtk.Extra.Plot_Data is
    procedure Set_Gradient_Mask
      (Data : access Gtk_Plot_Data_Record; Mask : Plot_Gradient)
    is
-      procedure Internal (Data : System.Address; Mask : Gint);
+      procedure Internal (Data : System.Address; Mask : Plot_Gradient);
       pragma Import (C, Internal, "gtk_plot_data_set_gradient_mask");
+
    begin
-      Internal (Get_Object (Data), Plot_Gradient'Pos (Mask));
+      Internal (Get_Object (Data), Mask);
    end Set_Gradient_Mask;
 
    -----------------------

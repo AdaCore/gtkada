@@ -69,24 +69,28 @@ package Gtk.Extra.Sheet is
    ----------------
 
    --  <doc_ignore>
-   type Sheet_Attr_Type is (Sheet_Foreground,
-                            Sheet_Background,
-                            Sheet_Font,
-                            Sheet_Justification,
-                            Sheet_Border,
-                            Sheet_Border_Color,
-                            Sheet_Is_Editable,
-                            Sheet_Is_Visible);
+   type Sheet_Attr_Type is
+     (Sheet_Foreground,
+      Sheet_Background,
+      Sheet_Font,
+      Sheet_Justification,
+      Sheet_Border,
+      Sheet_Border_Color,
+      Sheet_Is_Editable,
+      Sheet_Is_Visible);
    --  Attributes that can be set for the sheet.
    --  No function is provided at the Ada level to modify these attributes
    --  directly.
+   for Sheet_Attr_Type'Size use Gint'Size;
    --  </doc_ignore>
 
-   type Sheet_State is (Sheet_Normal,
-                        Sheet_Row_Selected,
-                        Sheet_Column_Selected,
-                        Sheet_Range_Selected);
+   type Sheet_State is
+     (Sheet_Normal,
+      Sheet_Row_Selected,
+      Sheet_Column_Selected,
+      Sheet_Range_Selected);
    --  The state of the selection.
+   for Sheet_State'Size use Gint'Size;
 
    type Gtk_Sheet_Border is new Integer;
    --  Mask that indicates which borders should be visible in a cell.

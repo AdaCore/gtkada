@@ -82,25 +82,27 @@ package Gtk.Extra.Plot_Data is
    --  Note that you can't use 'Range, 'First or 'Last on Points.
 
 
-   type Plot_Connector is (Connect_None,
-                           --  No connection
+   type Plot_Connector is
+     (Connect_None,
+      --  No connection
 
-                           Connect_Straight,
-                           --  straight line
+      Connect_Straight,
+      --  straight line
 
-                           Connect_Spline,
-                           --  spline or Bezier curve
+      Connect_Spline,
+      --  spline or Bezier curve
 
-                           Connect_Hv_Step,
-                           --  Horizontal then vertical
+      Connect_Hv_Step,
+      --  Horizontal then vertical
 
-                           Connect_Vh_Step,
-                           --  Vertical then horizontal
+      Connect_Vh_Step,
+      --  Vertical then horizontal
 
-                           Connect_Middle_Step
-                           --  Split in the middle
-                           );
+      Connect_Middle_Step
+      --  Split in the middle
+     );
    --  The type of connection between two adjacent points in a graph.
+   for Plot_Connector'Size use Gint'Size;
 
    type Plot_Gradient is new Integer;
    --  Indicate which color components vary along the gradient
@@ -109,34 +111,40 @@ package Gtk.Extra.Plot_Data is
    Gradient_V : constant Plot_Gradient; --  Value
    Gradient_S : constant Plot_Gradient; --  Saturation
 
-   type Plot_Symbol_Type is (Symbol_None,
-                             Symbol_Square,
-                             Symbol_Circle,
-                             Symbol_Up_Triangle,
-                             Symbol_Down_Triangle,
-                             Symbol_Right_Triangle,
-                             Symbol_Left_Triangle,
-                             Symbol_Diamond,
-                             Symbol_Plus,
-                             Symbol_Cross,
-                             Symbol_Star,
-                             Symbol_Dot,
-                             Symbol_Impulse);
+   type Plot_Symbol_Type is
+     (Symbol_None,
+      Symbol_Square,
+      Symbol_Circle,
+      Symbol_Up_Triangle,
+      Symbol_Down_Triangle,
+      Symbol_Right_Triangle,
+      Symbol_Left_Triangle,
+      Symbol_Diamond,
+      Symbol_Plus,
+      Symbol_Cross,
+      Symbol_Star,
+      Symbol_Dot,
+      Symbol_Impulse);
    --  Type of symbol used to represent the points in a graph.
+   for Plot_Symbol_Type'Size use Gint'Size;
 
-   type Plot_Symbol_Style is (Symbol_Empty,
-                              Symbol_Filled,
-                              Symbol_Opaque);
+   type Plot_Symbol_Style is
+     (Symbol_Empty,
+      Symbol_Filled,
+      Symbol_Opaque);
    --  Style used to draw the points in a graph.
+   for Plot_Symbol_Style'Size use Gint'Size;
 
-   type Plot_Line_Style is (Line_None,
-                            Line_Solid,
-                            Line_Dotted,
-                            Line_Dashed,
-                            Line_Dot_Dash,
-                            Line_Dot_Dot_Dash,
-                            Line_Dot_Dash_Dash);
+   type Plot_Line_Style is
+     (Line_None,
+      Line_Solid,
+      Line_Dotted,
+      Line_Dashed,
+      Line_Dot_Dash,
+      Line_Dot_Dot_Dash,
+      Line_Dot_Dash_Dash);
    --  Lines used to connect two adjacent points in a graph.
+   for Plot_Line_Style'Size use Gint'Size;
 
    --------------------
    -- Plot functions --
@@ -155,8 +163,7 @@ package Gtk.Extra.Plot_Data is
      (Plot  : System.Address;
       Set   : Gtk_Plot_Data;
       X     : Gdouble;
-      Error : access Gboolean)
-     return Gdouble;
+      Error : access Gboolean) return Gdouble;
    --  Function used for plotting.
    --  It should return the value associated with X in its graph, and set
    --  Error to True if there was an error while calculating the value.

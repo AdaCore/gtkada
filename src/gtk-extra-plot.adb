@@ -471,12 +471,13 @@ package body Gtk.Extra.Plot is
    procedure Set_Xscale (Plot       : access Gtk_Plot_Record;
                          Scale_Type : in Plot_Scale)
    is
-      procedure Internal (Plot       : in System.Address;
-                          Scale_Type : in Gint);
+      procedure Internal
+        (Plot       : System.Address;
+         Scale_Type : Plot_Scale);
       pragma Import (C, Internal, "gtk_plot_set_xscale");
+
    begin
-      Internal (Get_Object (Plot),
-                Plot_Scale'Pos (Scale_Type));
+      Internal (Get_Object (Plot), Scale_Type);
    end Set_Xscale;
 
    ----------------
@@ -486,12 +487,13 @@ package body Gtk.Extra.Plot is
    procedure Set_Yscale (Plot       : access Gtk_Plot_Record;
                          Scale_Type : in Plot_Scale)
    is
-      procedure Internal (Plot       : in System.Address;
-                          Scale_Type : in Gint);
+      procedure Internal
+        (Plot       : System.Address;
+         Scale_Type : Plot_Scale);
       pragma Import (C, Internal, "gtk_plot_set_yscale");
+
    begin
-      Internal (Get_Object (Plot),
-                Plot_Scale'Pos (Scale_Type));
+      Internal (Get_Object (Plot), Scale_Type);
    end Set_Yscale;
 
    ----------------
@@ -540,17 +542,18 @@ package body Gtk.Extra.Plot is
          Gtk.Enums.Justify_Center;
        Text          : in String := "")
    is
-      procedure Internal (Plot          : in System.Address;
-                          X             : in Gdouble;
-                          Y             : in Gdouble;
-                          Font          : in System.Address;
-                          Height        : in Gint;
-                          Angle         : in Gint;
-                          Foreground    : in System.Address;
-                          Background    : in System.Address;
-                          Transparent   : in Gint;
-                          Justification : in Gint;
-                          Text          : in String);
+      procedure Internal
+        (Plot          : System.Address;
+         X             : Gdouble;
+         Y             : Gdouble;
+         Font          : System.Address;
+         Height        : Gint;
+         Angle         : Plot_Angle;
+         Foreground    : System.Address;
+         Background    : System.Address;
+         Transparent   : Gint;
+         Justification : Gtk.Enums.Gtk_Justification;
+         Text          : String);
       pragma Import (C, Internal, "gtk_plot_put_text");
       use type Gdk.Color.Gdk_Color;
 
@@ -572,16 +575,16 @@ package body Gtk.Extra.Plot is
       if Ps_Font = "" then
          Internal (Get_Object (Plot), X, Y,
                    System.Null_Address, Font_Height,
-                   Plot_Angle'Pos (Angle), Forea, Backa,
+                   Angle, Forea, Backa,
                    Boolean'Pos (Transparent),
-                   Gtk.Enums.Gtk_Justification'Pos (Justification),
+                   Justification,
                    Text & ASCII.NUL);
       else
          Internal (Get_Object (Plot), X, Y,
                    F'Address, Font_Height,
-                   Plot_Angle'Pos (Angle), Forea, Backa,
+                   Angle, Forea, Backa,
                    Boolean'Pos (Transparent),
-                   Gtk.Enums.Gtk_Justification'Pos (Justification),
+                   Justification,
                    Text & ASCII.NUL);
       end if;
    end Put_Text;
@@ -594,31 +597,31 @@ package body Gtk.Extra.Plot is
                                Axis    : in Plot_Axis_Pos;
                                Visible : in Boolean)
    is
-      procedure Internal (Plot    : in System.Address;
-                          Axis    : in Gint;
-                          Visible : in Gint);
+      procedure Internal
+        (Plot    : System.Address;
+         Axis    : Plot_Axis_Pos;
+         Visible : Gint);
       pragma Import (C, Internal, "gtk_plot_axis_set_visible");
+
    begin
-      Internal (Get_Object (Plot),
-                Plot_Axis_Pos'Pos (Axis),
-                Boolean'Pos (Visible));
+      Internal (Get_Object (Plot), Axis, Boolean'Pos (Visible));
    end Axis_Set_Visible;
 
    ------------------
    -- Axis_Visible --
    ------------------
 
-   function Axis_Visible (Plot   : access Gtk_Plot_Record;
-                          Axis   : in Plot_Axis_Pos)
-                         return Boolean
+   function Axis_Visible
+     (Plot   : access Gtk_Plot_Record;
+      Axis   : in Plot_Axis_Pos) return Boolean
    is
-      function Internal (Plot   : in System.Address;
-                         Axis   : in Gint)
-                        return      Gint;
+      function Internal
+        (Plot : System.Address;
+         Axis : Plot_Axis_Pos) return Gint;
       pragma Import (C, Internal, "gtk_plot_axis_visible");
+
    begin
-      return Boolean'Val (Internal (Get_Object (Plot),
-                                    Plot_Axis_Pos'Pos (Axis)));
+      return Boolean'Val (Internal (Get_Object (Plot), Axis));
    end Axis_Visible;
 
    --------------------
@@ -629,14 +632,14 @@ package body Gtk.Extra.Plot is
                              Axis  : in Plot_Axis_Pos;
                              Title : in String)
    is
-      procedure Internal (Plot  : in System.Address;
-                          Axis  : in Gint;
-                          Title : in String);
+      procedure Internal
+        (Plot  : System.Address;
+         Axis  : Plot_Axis_Pos;
+         Title : String);
       pragma Import (C, Internal, "gtk_plot_axis_set_title");
+
    begin
-      Internal (Get_Object (Plot),
-                Plot_Axis_Pos'Pos (Axis),
-                Title & ASCII.NUL);
+      Internal (Get_Object (Plot), Axis, Title & ASCII.NUL);
    end Axis_Set_Title;
 
    ---------------------
@@ -646,11 +649,13 @@ package body Gtk.Extra.Plot is
    procedure Axis_Show_Title (Plot : access Gtk_Plot_Record;
                               Axis : in Plot_Axis_Pos)
    is
-      procedure Internal (Plot : in System.Address;
-                          Axis : in Gint);
+      procedure Internal
+        (Plot : System.Address;
+         Axis : Plot_Axis_Pos);
       pragma Import (C, Internal, "gtk_plot_axis_show_title");
+
    begin
-      Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis));
+      Internal (Get_Object (Plot), Axis);
    end Axis_Show_Title;
 
    ---------------------
@@ -660,11 +665,13 @@ package body Gtk.Extra.Plot is
    procedure Axis_Hide_Title (Plot : access Gtk_Plot_Record;
                               Axis : in Plot_Axis_Pos)
    is
-      procedure Internal (Plot : in System.Address;
-                          Axis : in Gint);
+      procedure Internal
+        (Plot : System.Address;
+         Axis : Plot_Axis_Pos);
       pragma Import (C, Internal, "gtk_plot_axis_hide_title");
+
    begin
-      Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis));
+      Internal (Get_Object (Plot), Axis);
    end Axis_Hide_Title;
 
    ---------------------
@@ -677,15 +684,16 @@ package body Gtk.Extra.Plot is
                               X     : in Gdouble;
                               Y     : in Gdouble)
    is
-      procedure Internal (Plot  : in System.Address;
-                          Axis  : in Gint;
-                          Angle : in Gint;
-                          X     : in Gdouble;
-                          Y     : in Gdouble);
+      procedure Internal
+        (Plot  : System.Address;
+         Axis  : Plot_Axis_Pos;
+         Angle : Plot_Angle;
+         X     : Gdouble;
+         Y     : Gdouble);
       pragma Import (C, Internal, "gtk_plot_axis_move_title");
+
    begin
-      Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis),
-                Plot_Angle'Pos (Angle), X, Y);
+      Internal (Get_Object (Plot), Axis, Angle, X, Y);
    end Axis_Move_Title;
 
    ------------------------
@@ -697,14 +705,14 @@ package body Gtk.Extra.Plot is
       Axis          : in Plot_Axis_Pos;
       Justification : in Gtk.Enums.Gtk_Justification)
    is
-      procedure Internal (Plot          : in System.Address;
-                          Axis          : in Gint;
-                          Justification : in Gint);
+      procedure Internal
+        (Plot          : System.Address;
+         Axis          : Plot_Axis_Pos;
+         Justification : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_plot_axis_justify_title");
+
    begin
-      Internal (Get_Object (Plot),
-                Plot_Axis_Pos'Pos (Axis),
-                Gtk.Enums.Gtk_Justification'Pos (Justification));
+      Internal (Get_Object (Plot), Axis, Justification);
    end Axis_Justify_Title;
 
    -------------------------
@@ -716,10 +724,11 @@ package body Gtk.Extra.Plot is
                                   Line_Width : in     Gfloat;
                                   Color      : in     Gdk.Color.Gdk_Color)
    is
-      procedure Internal (Plot  : in System.Address;
-                          Axis  : in Gint;
-                          Width : in Gfloat;
-                          Color : in System.Address);
+      procedure Internal
+        (Plot  : System.Address;
+         Axis  : Plot_Axis_Pos;
+         Width : Gfloat;
+         Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_axis_set_attributes");
       use type Gdk.Color.Gdk_Color;
 
@@ -731,7 +740,7 @@ package body Gtk.Extra.Plot is
          Ca := System.Null_Address;
       end if;
 
-      Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Line_Width, Ca);
+      Internal (Get_Object (Plot), Axis, Line_Width, Ca);
    end Axis_Set_Attributes;
 
    -------------------------
@@ -746,14 +755,13 @@ package body Gtk.Extra.Plot is
    is
       procedure Internal
         (Plot  : System.Address;
-         Axis  : Gint;
+         Axis  : Plot_Axis_Pos;
          Width : out Gfloat;
          Color : out Gdk.Color.Gdk_Color);
       pragma Import (C, Internal, "gtk_plot_axis_get_attributes");
 
    begin
-      Internal
-        (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Line_Width, Color);
+      Internal (Get_Object (Plot), Axis, Line_Width, Color);
    end Axis_Get_Attributes;
 
    --------------------
@@ -765,15 +773,15 @@ package body Gtk.Extra.Plot is
                              Major_Step  : in Gdouble;
                              Num_Minor   : in Gint)
    is
-      procedure Internal (Plot        : in System.Address;
-                          Orientation : in Gint;
-                          Major_Step  : in Gdouble;
-                          Num_Minor   : in Gint);
+      procedure Internal
+        (Plot        : System.Address;
+         Orientation : Plot_Orientation;
+         Major_Step  : Gdouble;
+         Num_Minor   : Gint);
       pragma Import (C, Internal, "gtk_plot_axis_set_ticks");
+
    begin
-      Internal (Get_Object (Plot),
-                Plot_Orientation'Pos (Orientation),
-                Major_Step, Num_Minor);
+      Internal (Get_Object (Plot), Orientation, Major_Step, Num_Minor);
    end Axis_Set_Ticks;
 
    --------------------------
@@ -784,14 +792,14 @@ package body Gtk.Extra.Plot is
                                    Orientation : in Plot_Orientation;
                                    Major_Step  : in Gdouble)
    is
-      procedure Internal (Plot        : in System.Address;
-                          Orientation : in Gint;
-                          Major_Step  : in Gdouble);
+      procedure Internal
+        (Plot        : System.Address;
+         Orientation : Plot_Orientation;
+         Major_Step  : Gdouble);
       pragma Import (C, Internal, "gtk_plot_axis_set_major_ticks");
+
    begin
-      Internal (Get_Object (Plot),
-                Plot_Orientation'Pos (Orientation),
-                Major_Step);
+      Internal (Get_Object (Plot), Orientation, Major_Step);
    end Axis_Set_Major_Ticks;
 
    --------------------------
@@ -802,14 +810,14 @@ package body Gtk.Extra.Plot is
                                    Orientation : in Plot_Orientation;
                                    Num_Minor   : in Gint)
    is
-      procedure Internal (Plot        : in System.Address;
-                          Orientation : in Gint;
-                          Num_Minor   : in Gint);
+      procedure Internal
+        (Plot        : System.Address;
+         Orientation : Plot_Orientation;
+         Num_Minor   : Gint);
       pragma Import (C, Internal, "gtk_plot_axis_set_minor_ticks");
+
    begin
-      Internal (Get_Object (Plot),
-                Plot_Orientation'Pos (Orientation),
-                Num_Minor);
+      Internal (Get_Object (Plot), Orientation, Num_Minor);
    end Axis_Set_Minor_Ticks;
 
    ---------------------------
@@ -820,12 +828,14 @@ package body Gtk.Extra.Plot is
                                     Axis   : in Plot_Axis_Pos;
                                     Length : in Gint)
    is
-      procedure Internal (Plot   : in System.Address;
-                          Axis   : in Gint;
-                          Length : in Gint);
+      procedure Internal
+        (Plot   : System.Address;
+         Axis   : Plot_Axis_Pos;
+         Length : Gint);
       pragma Import (C, Internal, "gtk_plot_axis_set_ticks_length");
+
    begin
-      Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Length);
+      Internal (Get_Object (Plot), Axis, Length);
    end Axis_Set_Ticks_Length;
 
    --------------------------
@@ -836,12 +846,14 @@ package body Gtk.Extra.Plot is
                                    Axis  : in Plot_Axis_Pos;
                                    Width : in Gfloat)
    is
-      procedure Internal (Plot  : in System.Address;
-                          Axis  : in Gint;
-                          Width : in Gfloat);
+      procedure Internal
+        (Plot  : System.Address;
+         Axis  : Plot_Axis_Pos;
+         Width : Gfloat);
       pragma Import (C, Internal, "gtk_plot_axis_set_ticks_width");
+
    begin
-      Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Width);
+      Internal (Get_Object (Plot), Axis, Width);
    end Axis_Set_Ticks_Width;
 
    ---------------------
@@ -854,15 +866,14 @@ package body Gtk.Extra.Plot is
                               Minor_Mask : in Plot_Ticks_Pos)
    is
       procedure Internal
-         (Plot       : in System.Address;
-          Axis       : in Gint;
-          Major_Mask : in Gint;
-          Minor_Mask : in Gint);
+         (Plot       : System.Address;
+          Axis       : Plot_Axis_Pos;
+          Major_Mask : Plot_Ticks_Pos;
+          Minor_Mask : Plot_Ticks_Pos);
       pragma Import (C, Internal, "gtk_plot_axis_show_ticks");
+
    begin
-      Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis),
-                Plot_Ticks_Pos'Pos (Major_Mask),
-                Plot_Ticks_Pos'Pos (Minor_Mask));
+      Internal (Get_Object (Plot), Axis, Major_Mask, Minor_Mask);
    end Axis_Show_Ticks;
 
    ---------------------------
@@ -874,15 +885,15 @@ package body Gtk.Extra.Plot is
                                     Ticks_Beg   : in Gdouble;
                                     Ticks_End   : in Gdouble)
    is
-      procedure Internal (Plot        : in System.Address;
-                          Orientation : in Gint;
-                          Beg         : in Gdouble;
-                          The_End     : in Gdouble);
+      procedure Internal
+        (Plot        : System.Address;
+         Orientation : Gtk.Enums.Gtk_Orientation;
+         Beg         : Gdouble;
+         The_End     : Gdouble);
       pragma Import (C, Internal, "gtk_plot_axis_set_ticks_limits");
+
    begin
-      Internal (Get_Object (Plot),
-                Gtk.Enums.Gtk_Orientation'Pos (Orientation),
-                Ticks_Beg, Ticks_End);
+      Internal (Get_Object (Plot), Orientation, Ticks_Beg, Ticks_End);
    end Axis_Set_Ticks_Limits;
 
    -----------------------------
@@ -893,11 +904,12 @@ package body Gtk.Extra.Plot is
      (Plot        : access Gtk_Plot_Record;
       Orientation : in Plot_Orientation)
    is
-      procedure Internal (Plot        : in System.Address;
-                          Orientation : in Gint);
+      procedure Internal
+        (Plot : System.Address; Orientation : Plot_Orientation);
       pragma Import (C, Internal, "gtk_plot_axis_unset_ticks_limits");
+
    begin
-      Internal (Get_Object (Plot), Plot_Orientation'Pos (Orientation));
+      Internal (Get_Object (Plot), Orientation);
    end Axis_Unset_Ticks_Limits;
 
    ----------------------
@@ -908,13 +920,14 @@ package body Gtk.Extra.Plot is
                                Axis        : in Plot_Axis_Pos;
                                Labels_Mask : in Plot_Label_Pos)
    is
-      procedure Internal (Plot        : in System.Address;
-                          Axis        : in Gint;
-                          Labels_Mask : in Gint);
+      procedure Internal
+        (Plot        : System.Address;
+         Axis        : Plot_Axis_Pos;
+         Labels_Mask : Plot_Label_Pos);
       pragma Import (C, Internal, "gtk_plot_axis_show_labels");
+
    begin
-      Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis),
-                Plot_Label_Pos'Pos (Labels_Mask));
+      Internal (Get_Object (Plot), Axis, Labels_Mask);
    end Axis_Show_Labels;
 
    -------------------------------
@@ -932,15 +945,16 @@ package body Gtk.Extra.Plot is
       Transparent   : in Boolean;
       Justification : in Gtk.Enums.Gtk_Justification)
    is
-      procedure Internal (Plot       : in System.Address;
-                          Axis       : in Gint;
-                          Font       : in String;
-                          Height     : in Gint;
-                          Angle      : in Gint;
-                          Foreground : in System.Address;
-                          Background : in System.Address;
-                          Transparent   : in Gint;
-                          Justification : in Gint);
+      procedure Internal
+        (Plot          : System.Address;
+         Axis          : Plot_Axis_Pos;
+         Font          : String;
+         Height        : Gint;
+         Angle         : Plot_Angle;
+         Foreground    : System.Address;
+         Background    : System.Address;
+         Transparent   : Gint;
+         Justification : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_plot_axis_title_set_attributes");
       use type Gdk.Color.Gdk_Color;
 
@@ -958,9 +972,9 @@ package body Gtk.Extra.Plot is
       end if;
 
       Internal
-        (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Ps_Font & ASCII.NUL,
-         Height, Plot_Angle'Pos (Angle), Fa, Ba,
-         Boolean'Pos (Transparent), Gtk_Justification'Pos (Justification));
+        (Get_Object (Plot), Axis, Ps_Font & ASCII.NUL,
+         Height, Angle, Fa, Ba,
+         Boolean'Pos (Transparent), Justification);
    end Axis_Title_Set_Attributes;
 
    --------------------------------
@@ -978,15 +992,16 @@ package body Gtk.Extra.Plot is
       Transparent   : in Boolean;
       Justification : in Gtk.Enums.Gtk_Justification)
    is
-      procedure Internal (Plot       : in System.Address;
-                          Axis       : in Gint;
-                          Font       : in String;
-                          Height     : in Gint;
-                          Angle      : in Gint;
-                          Foreground : in System.Address;
-                          Background : in System.Address;
-                          Transparent   : in Gint;
-                          Justification : in Gint);
+      procedure Internal
+        (Plot          : System.Address;
+         Axis          : Plot_Axis_Pos;
+         Font          : String;
+         Height        : Gint;
+         Angle         : Plot_Angle;
+         Foreground    : System.Address;
+         Background    : System.Address;
+         Transparent   : Gint;
+         Justification : Gtk.Enums.Gtk_Justification);
       pragma Import (C, Internal, "gtk_plot_axis_set_labels_attributes");
       use type Gdk.Color.Gdk_Color;
 
@@ -1004,9 +1019,8 @@ package body Gtk.Extra.Plot is
       end if;
 
       Internal
-        (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Ps_Font & ASCII.NUL,
-         Height, Plot_Angle'Pos (Angle), Fa, Ba,
-         Boolean'Pos (Transparent), Gtk_Justification'Pos (Justification));
+        (Get_Object (Plot), Axis, Ps_Font & ASCII.NUL,
+         Height, Angle, Fa, Ba, Boolean'Pos (Transparent), Justification);
    end Axis_Set_Labels_Attributes;
 
    -----------------------------
@@ -1018,16 +1032,15 @@ package body Gtk.Extra.Plot is
                                       Style     : in Plot_Label_Style;
                                       Precision : in Gint)
    is
-      procedure Internal (Plot      : in System.Address;
-                          Axis      : in Gint;
-                          Style     : in Gint;
-                          Precision : in Gint);
+      procedure Internal
+        (Plot      : System.Address;
+         Axis      : Plot_Axis_Pos;
+         Style     : Plot_Label_Style;
+         Precision : Gint);
       pragma Import (C, Internal, "gtk_plot_axis_set_labels_numbers");
+
    begin
-      Internal (Get_Object (Plot),
-                Plot_Axis_Pos'Pos (Axis),
-                Plot_Label_Style'Pos (Style),
-                Precision);
+      Internal (Get_Object (Plot), Axis, Style, Precision);
    end Axis_Set_Labels_Numbers;
 
    ---------------------------------
@@ -1038,14 +1051,14 @@ package body Gtk.Extra.Plot is
                                           Axis   : in Plot_Axis_Pos;
                                           Custom : in Boolean := True)
    is
-      procedure Internal (Plot   : in System.Address;
-                          Axis   : in Gint;
-                          Custom : in Gint);
+      procedure Internal
+        (Plot   : System.Address;
+         Axis   : Plot_Axis_Pos;
+         Custom : Gint);
       pragma Import (C, Internal, "gtk_plot_axis_use_custom_tick_labels");
+
    begin
-      Internal (Get_Object (Plot),
-                Plot_Axis_Pos'Pos (Axis),
-                Boolean'Pos (Custom));
+      Internal (Get_Object (Plot), Axis, Boolean'Pos (Custom));
    end Axis_Use_Custom_Tick_Labels;
 
    ----------------
@@ -1072,9 +1085,9 @@ package body Gtk.Extra.Plot is
          (Plot    : in System.Address;
           Visible : in Gint);
       pragma Import (C, Internal, "gtk_plot_x0_set_visible");
+
    begin
-      Internal (Get_Object (Plot),
-                Boolean'Pos (Visible));
+      Internal (Get_Object (Plot), Boolean'Pos (Visible));
    end X0_Set_Visible;
 
    ----------------
@@ -1159,10 +1172,11 @@ package body Gtk.Extra.Plot is
                                     Width : in Gfloat;
                                     Color : in Gdk.Color.Gdk_Color)
    is
-      procedure Internal (Plot  : in System.Address;
-                          Style : in Gint;
-                          Width : in Gfloat;
-                          Color : in System.Address);
+      procedure Internal
+        (Plot  : System.Address;
+         Style : Plot_Line_Style;
+         Width : Gfloat;
+         Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_x0line_set_attributes");
       use type Gdk.Color.Gdk_Color;
 
@@ -1174,7 +1188,7 @@ package body Gtk.Extra.Plot is
          Ca := System.Null_Address;
       end if;
 
-      Internal (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, Ca);
+      Internal (Get_Object (Plot), Style, Width, Ca);
    end X0line_Set_Attributes;
 
    ---------------------------
@@ -1187,10 +1201,10 @@ package body Gtk.Extra.Plot is
                                     Color : in Gdk.Color.Gdk_Color)
    is
       procedure Internal
-         (Plot  : in System.Address;
-          Style : in Gint;
-          Width : in Gfloat;
-          Color : in System.Address);
+         (Plot  : System.Address;
+          Style : Plot_Line_Style;
+          Width : Gfloat;
+          Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_y0line_set_attributes");
       use type Gdk.Color.Gdk_Color;
 
@@ -1202,7 +1216,7 @@ package body Gtk.Extra.Plot is
          Ca := System.Null_Address;
       end if;
 
-      Internal (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, Ca);
+      Internal (Get_Object (Plot), Style, Width, Ca);
    end Y0line_Set_Attributes;
 
    --------------------------------
@@ -1214,10 +1228,11 @@ package body Gtk.Extra.Plot is
                                          Width : in Gfloat;
                                          Color : in Gdk.Color.Gdk_Color)
    is
-      procedure Internal (Plot  : in System.Address;
-                          Style : in Gint;
-                          Width : in Gfloat;
-                          Color : in System.Address);
+      procedure Internal
+        (Plot  : System.Address;
+         Style : Plot_Line_Style;
+         Width : Gfloat;
+         Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_major_hgrid_set_attributes");
       use type Gdk.Color.Gdk_Color;
 
@@ -1229,7 +1244,7 @@ package body Gtk.Extra.Plot is
          Ca := System.Null_Address;
       end if;
 
-      Internal (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, Ca);
+      Internal (Get_Object (Plot), Style, Width, Ca);
    end Major_Hgrid_Set_Attributes;
 
    --------------------------------
@@ -1241,10 +1256,11 @@ package body Gtk.Extra.Plot is
                                          Width : in Gfloat;
                                          Color : in Gdk.Color.Gdk_Color)
    is
-      procedure Internal (Plot  : in System.Address;
-                          Style : in Gint;
-                          Width : in Gfloat;
-                          Color : in System.Address);
+      procedure Internal
+        (Plot  : System.Address;
+         Style : Plot_Line_Style;
+         Width : Gfloat;
+         Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_major_vgrid_set_attributes");
       use type Gdk.Color.Gdk_Color;
 
@@ -1256,7 +1272,7 @@ package body Gtk.Extra.Plot is
          Ca := System.Null_Address;
       end if;
 
-      Internal (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, Ca);
+      Internal (Get_Object (Plot), Style, Width, Ca);
    end Major_Vgrid_Set_Attributes;
 
    --------------------------------
@@ -1268,10 +1284,11 @@ package body Gtk.Extra.Plot is
                                          Width : in Gfloat;
                                          Color : in Gdk.Color.Gdk_Color)
    is
-      procedure Internal (Plot  : in System.Address;
-                          Style : in Gint;
-                          Width : in Gfloat;
-                          Color : in System.Address);
+      procedure Internal
+        (Plot  : System.Address;
+         Style : Plot_Line_Style;
+         Width : Gfloat;
+         Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_minor_hgrid_set_attributes");
       use type Gdk.Color.Gdk_Color;
 
@@ -1283,7 +1300,7 @@ package body Gtk.Extra.Plot is
          Ca := System.Null_Address;
       end if;
 
-      Internal (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, Ca);
+      Internal (Get_Object (Plot), Style, Width, Ca);
    end Minor_Hgrid_Set_Attributes;
 
    --------------------------------
@@ -1295,10 +1312,11 @@ package body Gtk.Extra.Plot is
                                          Width : in Gfloat;
                                          Color : in Gdk.Color.Gdk_Color)
    is
-      procedure Internal (Plot  : in System.Address;
-                          Style : in Gint;
-                          Width : in Gfloat;
-                          Color : in System.Address);
+      procedure Internal
+        (Plot  : System.Address;
+         Style : Plot_Line_Style;
+         Width : Gfloat;
+         Color : System.Address);
       pragma Import (C, Internal, "gtk_plot_minor_vgrid_set_attributes");
       use type Gdk.Color.Gdk_Color;
 
@@ -1310,7 +1328,7 @@ package body Gtk.Extra.Plot is
          Ca := System.Null_Address;
       end if;
 
-      Internal (Get_Object (Plot), Plot_Line_Style'Pos (Style), Width, Ca);
+      Internal (Get_Object (Plot), Style, Width, Ca);
    end Minor_Vgrid_Set_Attributes;
 
    ------------------
@@ -1345,13 +1363,14 @@ package body Gtk.Extra.Plot is
                                  Border       : Plot_Border_Style;
                                  Shadow_Width : Gint)
    is
-      procedure Internal (Plot         : in System.Address;
-                          Border       : Gint;
-                          Shadow_Width : Gint);
+      procedure Internal
+        (Plot         : in System.Address;
+         Border       : Plot_Border_Style;
+         Shadow_Width : Gint);
       pragma Import (C, Internal, "gtk_plot_set_legends_border");
+
    begin
-      Internal (Get_Object (Plot), Plot_Border_Style'Pos (Border),
-                Shadow_Width);
+      Internal (Get_Object (Plot), Border, Shadow_Width);
    end Set_Legends_Border;
 
    ------------------
@@ -1498,12 +1517,14 @@ package body Gtk.Extra.Plot is
       Axis   : in Plot_Axis_Pos) return Gtk_Plot_Axis
    is
       function Internal
-        (Plot : in System.Address; Axis : in Gint) return System.Address;
+        (Plot : in System.Address; Axis : Plot_Axis_Pos) return System.Address;
       pragma Import (C, Internal, "gtk_plot_get_axis");
+
       Stub : Gtk_Plot_Axis_Record;
+
    begin
       return Gtk_Plot_Axis (Get_User_Data
-         (Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis)), Stub));
+         (Internal (Get_Object (Plot), Axis), Stub));
    end Get_Axis;
 
    ---------------------------
@@ -1625,11 +1646,11 @@ package body Gtk.Extra.Plot is
         (Text          : Gtk_Plot_Text;
          Font          : String;
          Height        : Gint;
-         Angle         : Gint;
+         Angle         : Plot_Angle;
          Fg            : System.Address;
          Bg            : System.Address;
          Transparent   : Gint;
-         Justification : Gint;
+         Justification : Gtk.Enums.Gtk_Justification;
          Str           : String);
       pragma Import (C, Internal, "gtk_plot_text_set_attributes");
 
@@ -1648,10 +1669,9 @@ package body Gtk.Extra.Plot is
          Backa := System.Null_Address;
       end if;
 
-      Internal (Text, Font & ASCII.NUL, Height, Plot_Angle'Pos (Angle),
+      Internal (Text, Font & ASCII.NUL, Height, Angle,
                 Forea, Backa, Boolean'Pos (Transparent),
-                Gtk.Enums.Gtk_Justification'Pos (Justification),
-                Str & ASCII.NUL);
+                Justification, Str & ASCII.NUL);
    end Text_Set_Attributes;
 
    -------------------
@@ -1785,12 +1805,14 @@ package body Gtk.Extra.Plot is
       Axis : Plot_Axis_Pos;
       Text : String)
    is
-      procedure Internal (Plot : System.Address;
-                          Axis : Gint;
-                          Text : String);
+      procedure Internal
+        (Plot : System.Address;
+         Axis : Plot_Axis_Pos;
+         Text : String);
       pragma Import (C, Internal, "gtk_plot_axis_set_labels_suffix");
+
    begin
-      Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Text & ASCII.NUL);
+      Internal (Get_Object (Plot), Axis, Text & ASCII.NUL);
    end Axis_Set_Labels_Suffix;
 
    ----------------------------
@@ -1802,12 +1824,14 @@ package body Gtk.Extra.Plot is
       Axis : Plot_Axis_Pos;
       Text : String)
    is
-      procedure Internal (Plot : System.Address;
-                          Axis : Gint;
-                          Text : String);
+      procedure Internal
+        (Plot : System.Address;
+         Axis : Plot_Axis_Pos;
+         Text : String);
       pragma Import (C, Internal, "gtk_plot_axis_set_labels_prefix");
+
    begin
-      Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis), Text & ASCII.NUL);
+      Internal (Get_Object (Plot), Axis, Text & ASCII.NUL);
    end Axis_Set_Labels_Prefix;
 
    ----------------------------
@@ -1818,11 +1842,13 @@ package body Gtk.Extra.Plot is
      (Plot : access Gtk_Plot_Record;
       Axis : Plot_Axis_Pos) return String
    is
-      function Internal (Plot : System.Address; Axis : Gint)
+      function Internal
+        (Plot : System.Address; Axis : Plot_Axis_Pos)
          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_plot_axis_get_labels_suffix");
+
    begin
-      return Value (Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis)));
+      return Value (Internal (Get_Object (Plot), Axis));
    end Axis_Get_Labels_Suffix;
 
    ----------------------------
@@ -1833,11 +1859,13 @@ package body Gtk.Extra.Plot is
      (Plot : access Gtk_Plot_Record;
       Axis : Plot_Axis_Pos) return String
    is
-      function Internal (Plot : System.Address; Axis : Gint)
+      function Internal
+        (Plot : System.Address; Axis : Plot_Axis_Pos)
          return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_plot_axis_get_labels_prefix");
+
    begin
-      return Value (Internal (Get_Object (Plot), Plot_Axis_Pos'Pos (Axis)));
+      return Value (Internal (Get_Object (Plot), Axis));
    end Axis_Get_Labels_Prefix;
 
 end Gtk.Extra.Plot;
