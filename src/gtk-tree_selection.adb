@@ -158,9 +158,10 @@ package body Gtk.Tree_Selection is
          Iter      : System.Address)
          return Gint;
       pragma Import (C, Internal, "gtk_tree_selection_get_selected");
+      M : System.Address := Get_Object (Model);
    begin
       return Boolean'Val (Internal (Get_Object (Selection),
-                                    Get_Object (Model),
+                                    M'Address,
                                     Iter'Address));
    end Get_Selected;
 
