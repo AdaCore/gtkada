@@ -9,10 +9,6 @@ with Gnome.Client;
 with Gnome.Color_Picker;
 with Gnome.Date_Edit;
 with Gnome.Dialog;
-with Gnome.Dock;
-with Gnome.Dock_Band;
-with Gnome.Dock_Item;
-with Gnome.Dock_Layout;
 with Gnome.Druid;
 with Gnome.Druid_Page;
 with Gnome.Druid_Page_Finish;
@@ -37,6 +33,10 @@ with Gnome.Stock;
 with Gnome.Scores;
 with Gnome.UI_Defs;
 with Gnome.Window;
+with Bonobo.Dock;
+with Bonobo.Dock_Band;
+with Bonobo.Dock_Item;
+with Bonobo.Dock_Layout;
 pragma Warnings (On);
 
 procedure Make_Gnome is
