@@ -151,6 +151,9 @@ install: all
 	@echo '--  update your PATH to include gtkada-config in it.            --'
 	@echo '------------------------------------------------------------------'
 
+opengl-install:
+	$(MAKE) -C opengl install
+
 clean-generic:
 	-${RM} *.o *.ali *~ b_*.c b~*.ad? core
 	-$(RM) $(LIB_DIR)/*
