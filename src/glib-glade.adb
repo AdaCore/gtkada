@@ -143,7 +143,12 @@ package body Glib.Glade is
    begin
       while P /= null loop
          if P.Tag.all = "class" then
-            if P.Value (P.Value'First + 3 .. P.Value'Last) = Class
+
+            --  Class can be shorter than the real class name
+
+            if (P.Value'Length >= Class'Length + 3 and then
+                P.Value (P.Value'First + 3 .. P.Value'First + 2 + Class'Length)
+                  = Class)
 
             --  Take into account e.g Gtk[VH]Box
 
