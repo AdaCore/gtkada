@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -27,6 +27,9 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  This package is deprecated.
+--  <c_version>1.3.4</c_version>
+
 with Gtk.Adjustment;
 with Gtk.Widget;
 
@@ -35,24 +38,24 @@ package Gtk.Progress is
    type Gtk_Progress_Record is new Gtk.Widget.Gtk_Widget_Record with private;
    type Gtk_Progress is access all Gtk_Progress_Record'Class;
 
-   function Get_Type return Gtk.Gtk_Type;
+   function Get_Type return Glib.GType;
    --  Return the internal value associated with a Gtk_Progress.
 
    function Get_Current_Percentage
-     (Progress : access Gtk_Progress_Record) return Gfloat;
+     (Progress : access Gtk_Progress_Record) return Gdouble;
 
    function Get_Current_Text
      (Progress : access Gtk_Progress_Record) return String;
 
    function Get_Percentage_From_Value
      (Progress : access Gtk_Progress_Record;
-      Value    : in Gfloat) return Gfloat;
+      Value    : Gdouble) return Gdouble;
 
    function Get_Text_From_Value
      (Progress : access Gtk_Progress_Record;
-      Value    : in Gfloat) return String;
+      Value    : Gdouble) return String;
 
-   function Get_Value (Progress : access Gtk_Progress_Record) return Gfloat;
+   function Get_Value (Progress : access Gtk_Progress_Record) return Gdouble;
 
    function Get_Adjustment
      (Widget : access Gtk_Progress_Record)
@@ -60,41 +63,41 @@ package Gtk.Progress is
 
    procedure Configure
      (Progress : access Gtk_Progress_Record;
-      Value    : in Gfloat;
-      Min      : in Gfloat;
-      Max      : in Gfloat);
+      Value    : Gdouble;
+      Min      : Gdouble;
+      Max      : Gdouble);
 
    procedure Set_Activity_Mode
      (Progress      : access Gtk_Progress_Record;
-      Activity_Mode : in Boolean);
+      Activity_Mode : Boolean);
 
    function Get_Activity_Mode
      (Progress : access Gtk_Progress_Record) return Boolean;
 
    procedure Set_Adjustment
      (Progress   : access Gtk_Progress_Record;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment);
 
    procedure Set_Format_String
      (Progress : access Gtk_Progress_Record;
-      Format   : in String);
+      Format   : String);
 
    procedure Set_Percentage
      (Progress   : access Gtk_Progress_Record;
-      Percentage : in Gfloat);
+      Percentage : Gdouble);
 
    procedure Set_Show_Text
      (Progress  : access Gtk_Progress_Record;
-      Show_Text : in Boolean);
+      Show_Text : Boolean);
 
    procedure Set_Text_Alignment
      (Progress : access Gtk_Progress_Record;
-      X_Align  : in Gfloat;
-      Y_Align  : in Gfloat);
+      X_Align  : Gfloat;
+      Y_Align  : Gfloat);
 
    procedure Set_Value
      (Progress : access Gtk_Progress_Record;
-      Value    : in Gfloat);
+      Value    : Gdouble);
 
 private
    type Gtk_Progress_Record is new Gtk.Widget.Gtk_Widget_Record

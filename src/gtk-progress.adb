@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                     Copyright (C) 1998-2000                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2001 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -39,16 +39,17 @@ package body Gtk.Progress is
 
    procedure Configure
      (Progress : access Gtk_Progress_Record;
-      Value    : in Gfloat;
-      Min      : in Gfloat;
-      Max      : in Gfloat)
+      Value    : Gdouble;
+      Min      : Gdouble;
+      Max      : Gdouble)
    is
       procedure Internal
-        (Progress : in System.Address;
-         Value    : in Gfloat;
-         Min      : in Gfloat;
-         Max      : in Gfloat);
+        (Progress : System.Address;
+         Value    : Gdouble;
+         Min      : Gdouble;
+         Max      : Gdouble);
       pragma Import (C, Internal, "gtk_progress_configure");
+
    begin
       Internal (Get_Object (Progress), Value, Min, Max);
    end Configure;
@@ -57,8 +58,8 @@ package body Gtk.Progress is
    -- Get_Activity_Mode --
    -----------------------
 
-   function Get_Activity_Mode (Progress : access Gtk_Progress_Record)
-     return Boolean
+   function Get_Activity_Mode
+     (Progress : access Gtk_Progress_Record) return Boolean
    is
       function Internal (Progress : System.Address) return Guint;
       pragma Import (C, Internal, "ada_progress_get_activity_mode");
@@ -87,11 +88,10 @@ package body Gtk.Progress is
    -- Get_Current_Percentage --
    ----------------------------
 
-   function Get_Current_Percentage (Progress : access Gtk_Progress_Record)
-     return Gfloat
+   function Get_Current_Percentage
+     (Progress : access Gtk_Progress_Record) return Gdouble
    is
-      function Internal (Progress : in System.Address)
-        return Gfloat;
+      function Internal (Progress : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_progress_get_current_percentage");
 
    begin
@@ -102,11 +102,11 @@ package body Gtk.Progress is
    -- Get_Current_Text --
    ----------------------
 
-   function Get_Current_Text (Progress : access Gtk_Progress_Record)
-     return String
+   function Get_Current_Text
+     (Progress : access Gtk_Progress_Record) return String
    is
-      function Internal (Progress : in System.Address)
-        return Interfaces.C.Strings.chars_ptr;
+      function Internal
+        (Progress : System.Address) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_progress_get_current_text");
 
    begin
@@ -119,13 +119,10 @@ package body Gtk.Progress is
 
    function Get_Percentage_From_Value
      (Progress : access Gtk_Progress_Record;
-      Value    : in Gfloat)
-      return Gfloat
+      Value    : Gdouble) return Gdouble
    is
       function Internal
-        (Progress : in System.Address;
-         Value    : in Gfloat)
-         return Gfloat;
+        (Progress : System.Address; Value : Gdouble) return Gdouble;
       pragma Import (C, Internal, "gtk_progress_get_percentage_from_value");
 
    begin
@@ -138,13 +135,11 @@ package body Gtk.Progress is
 
    function Get_Text_From_Value
      (Progress : access Gtk_Progress_Record;
-      Value    : in Gfloat)
-      return String
+      Value    : Gdouble) return String
    is
       function Internal
-        (Progress : in System.Address;
-         Value    : in Gfloat)
-         return Interfaces.C.Strings.chars_ptr;
+        (Progress : System.Address;
+         Value    : Gdouble) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_progress_get_text_from_value");
 
    begin
@@ -156,8 +151,8 @@ package body Gtk.Progress is
    -- Get_Value --
    ---------------
 
-   function Get_Value (Progress : access Gtk_Progress_Record) return Gfloat is
-      function Internal (Progress : in System.Address) return Gfloat;
+   function Get_Value (Progress : access Gtk_Progress_Record) return Gdouble is
+      function Internal (Progress : System.Address) return Gdouble;
       pragma Import (C, Internal, "gtk_progress_get_value");
 
    begin
@@ -170,11 +165,11 @@ package body Gtk.Progress is
 
    procedure Set_Activity_Mode
      (Progress      : access Gtk_Progress_Record;
-      Activity_Mode : in Boolean)
+      Activity_Mode : Boolean)
    is
       procedure Internal
-        (Progress      : in System.Address;
-         Activity_Mode : in Guint);
+        (Progress      : System.Address;
+         Activity_Mode : Guint);
       pragma Import (C, Internal, "gtk_progress_set_activity_mode");
 
    begin
@@ -187,11 +182,11 @@ package body Gtk.Progress is
 
    procedure Set_Adjustment
      (Progress   : access Gtk_Progress_Record;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+      Adjustment : Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal
-        (Progress   : in System.Address;
-         Adjustment : in System.Address);
+        (Progress   : System.Address;
+         Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_progress_set_adjustment");
 
       Adj : System.Address;
@@ -214,11 +209,11 @@ package body Gtk.Progress is
 
    procedure Set_Format_String
      (Progress : access Gtk_Progress_Record;
-      Format   : in String)
+      Format   : String)
    is
       procedure Internal
-        (Progress : in System.Address;
-         Format   : in String);
+        (Progress : System.Address;
+         Format   : String);
       pragma Import (C, Internal, "gtk_progress_set_format_string");
 
    begin
@@ -231,11 +226,11 @@ package body Gtk.Progress is
 
    procedure Set_Percentage
      (Progress   : access Gtk_Progress_Record;
-      Percentage : in Gfloat)
+      Percentage : Gdouble)
    is
       procedure Internal
-        (Progress   : in System.Address;
-         Percentage : in Gfloat);
+        (Progress   : System.Address;
+         Percentage : Gdouble);
       pragma Import (C, Internal, "gtk_progress_set_percentage");
 
    begin
@@ -248,11 +243,11 @@ package body Gtk.Progress is
 
    procedure Set_Show_Text
      (Progress  : access Gtk_Progress_Record;
-      Show_Text : in Boolean)
+      Show_Text : Boolean)
    is
       procedure Internal
-        (Progress  : in System.Address;
-         Show_Text : in Integer);
+        (Progress  : System.Address;
+         Show_Text : Integer);
       pragma Import (C, Internal, "gtk_progress_set_show_text");
 
    begin
@@ -265,13 +260,13 @@ package body Gtk.Progress is
 
    procedure Set_Text_Alignment
      (Progress : access Gtk_Progress_Record;
-      X_Align  : in Gfloat;
-      Y_Align  : in Gfloat)
+      X_Align  : Gfloat;
+      Y_Align  : Gfloat)
    is
       procedure Internal
-        (Progress : in System.Address;
-         X_Align  : in Gfloat;
-         Y_Align  : in Gfloat);
+        (Progress : System.Address;
+         X_Align  : Gfloat;
+         Y_Align  : Gfloat);
       pragma Import (C, Internal, "gtk_progress_set_text_alignment");
 
    begin
@@ -284,11 +279,11 @@ package body Gtk.Progress is
 
    procedure Set_Value
      (Progress : access Gtk_Progress_Record;
-      Value    : in Gfloat)
+      Value    : Gdouble)
    is
       procedure Internal
-        (Progress : in System.Address;
-         Value    : in Gfloat);
+        (Progress : System.Address;
+         Value    : Gdouble);
       pragma Import (C, Internal, "gtk_progress_set_value");
 
    begin
