@@ -138,6 +138,9 @@ with Gtk.Object;
 with Gtk.Widget;
 
 package Gtk.Handlers is
+
+   --  <doc_ignore>
+
    pragma Elaborate_Body;
 
    type Handler_Id is new Guint;
@@ -721,6 +724,8 @@ package Gtk.Handlers is
    --  name.
    --  If Num is negative, returns the type returned by the handlers for this
    --  signal.
+
+   --  </doc_ignore>
 
 end Gtk.Handlers;
 
