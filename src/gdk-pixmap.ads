@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -31,9 +31,9 @@
 --
 --  Pixmaps are off-screen drawables. They can be drawn upon with the standard
 --  drawing primitives, then copied to another drawable (such as a Gdk_Window)
---  with Gdk.Pixmap.Draw. The depth of a pixmap is the number of bits per
---  pixels. Bitmaps are simply pixmaps with a depth of 1. (That is, they are
---  monochrome bitmaps - each pixel can be either on or off).
+--  with Gdk.Drawable.Draw_Drawable. The depth of a pixmap is the number of
+--  bits per pixels. Bitmaps are simply pixmaps with a depth of 1. (That is,
+--  they are monochrome bitmaps - each pixel can be either on or off).
 --  @pxref{Package_Gdk.Bitmap} for more details on bitmap handling.
 --
 --  </description>
