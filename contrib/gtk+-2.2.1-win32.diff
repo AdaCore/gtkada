@@ -1,5 +1,10 @@
 This is a patch against Gtk+ 2.2.1 sources that fixes Windows specific problems
 
+Sun Jun 15 10:03:36 2003	Arnaud Charlet <charlet@gnat.com>
+
+	* gtk+/gdk/win32/gdkevents-win32.c (gdk_event_translate): Invert
+	handling of left/right alt key, since left alt key is more often used.
+
 Mon May  5 01:34:32 2003	Arnaud Charlet <charlet@gnat.com>
 
 	* gtk+/gdk/win32/gdkwindow-win32.c (gdk_window_move): Revert to
@@ -490,3 +495,20 @@ Thu Sep 12 18:03:02 2002        Florent Duguet <duguet@gnat.com>
    /* Build UTF-8 string */
    if (ucount > 0)
      {
+--- gtk+/gdk/win32/gdkevents-win32.c	2003/05/06 11:55:38	1.6
++++ gtk+/gdk/win32/gdkevents-win32.c	2003/06/15 09:00:24
+@@ -2192,12 +2192,12 @@
+ 		  is_altgr_key = TRUE;
+ 		}
+ 	      event->key.keyval = GDK_Alt_R;
++	      /* This is needed in case she types Alt+nnn (on the numpad) */
++	      ignore_wm_char = FALSE;
+ 	    }
+ 	  else
+ 	    {
+ 	      event->key.keyval = GDK_Alt_L;
+-	      /* This needed in case she types Alt+nnn (on the numpad) */
+-	      ignore_wm_char = FALSE;
+ 	    }
+ 	  break;
+ 	case VK_PAUSE:
