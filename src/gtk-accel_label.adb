@@ -96,23 +96,6 @@ package body Gtk.Accel_Label is
    end Refetch;
 
    ----------------------
-   -- Set_Accel_Object --
-   ----------------------
-
-   procedure Set_Accel_Object
-     (Accel_Label  : access Gtk_Accel_Label_Record;
-      Accel_Object : access Glib.Object.GObject_Record'Class)
-   is
-      procedure Internal
-        (Accel_Label  : System.Address;
-         Accel_Widget : System.Address);
-      pragma Import (C, Internal, "gtk_accel_label_set_accel_object");
-
-   begin
-      Internal (Get_Object (Accel_Label), Get_Object (Accel_Object));
-   end Set_Accel_Object;
-
-   ----------------------
    -- Set_Accel_Widget --
    ----------------------
 
@@ -120,8 +103,13 @@ package body Gtk.Accel_Label is
      (Accel_Label  : access Gtk_Accel_Label_Record;
       Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
+      procedure Internal
+        (Accel_Label  : System.Address;
+         Accel_Widget : System.Address);
+      pragma Import (C, Internal, "gtk_accel_label_set_accel_widget");
+
    begin
-      Set_Accel_Object (Accel_Label, Accel_Widget);
+      Internal (Get_Object (Accel_Label), Get_Object (Accel_Widget));
    end Set_Accel_Widget;
 
    ---------------------

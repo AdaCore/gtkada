@@ -34,18 +34,18 @@
 --
 --  The accelerator key to display is not set explicitly. Instead, the
 --  Gtk_Accel_Label displays the accelerators which have been added to a
---  particular object. This object is set by calling Set_Accel_Object.
+--  particular widget. This widget is set by calling Set_Accel_Widget.
 --
 --  For example, a Gtk_Menu_Item widget may have an accelerator added to emit
 --  the "activate" signal when the 'Ctl+S' key combination is pressed.
 --  A Gtk_Accel_Label is created and added to the Gtk_Menu_Item, and
---  Set_Accel_Object is called with the Gtk_Menu_Item as the second argument.
+--  Set_Accel_Widget is called with the Gtk_Menu_Item as the second argument.
 --  The Gtk_Accel_Label will now display 'Ctl+S' after its label.
 --
 --  Note that creating a Gtk_Menu_Item with Gtk_New and a non null "label"
 --  parameter (ditto for Gtk_Check_Menu_Item and Gtk_Radio_Menu_Item)
 --  automatically adds a Gtk_Accel_Label to the Gtk_Menu_Item and calls
---  Set_Accel_Object to set it up for you.
+--  Set_Accel_Widget to set it up for you.
 --
 --  A Gtk_Accel_Label will only display accelerators which have the
 --  Accel_Visible (see Gtk.Accel_Group) flag set. A Gtk_Accel_Label can display
@@ -56,7 +56,6 @@
 
 with Gtk.Label;
 with Gtk.Widget;
-with Glib.Object;
 
 package Gtk.Accel_Label is
 
@@ -81,16 +80,10 @@ package Gtk.Accel_Label is
    --  This is used by menus to align all of the Gtk_Menu_Item widgets, and
    --  shouldn't be needed by applications.
 
-   procedure Set_Accel_Object
-     (Accel_Label  : access Gtk_Accel_Label_Record;
-      Accel_Object : access Glib.Object.GObject_Record'Class);
-   --  Set the widget whose accelerators are to be shown.
-   --  Accel_Widget is the widget whose accelerators are to be displayed.
-
    procedure Set_Accel_Widget
      (Accel_Label  : access Gtk_Accel_Label_Record;
       Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  This function is deprecated. Use Set_Accel_Object instead.
+   --  Add an accelerator to a particular widget.
 
    function Refetch
      (Accel_Label : access Gtk_Accel_Label_Record) return Boolean;
