@@ -9,7 +9,7 @@ Currently, all widgets  of the Gtk+ 1.2 series have  been bound. The
 binding  for the Gdk part is not complete yet, but is already pretty
 much in place.
 
-To test our binding, the testgtk program have been almost completely 
+To test our binding, the testgtk program has been almost completely 
 re-implemented and is also distributed with the binding.
 
 LSM entry follows :
