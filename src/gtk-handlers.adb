@@ -538,10 +538,10 @@ package body Gtk.Handlers is
            (Object : System.Address;
             Name   : String;
             Param  : System.Address;
-            Ret    : out Integer);
+            Ret    : out Gint);
          pragma Import (C, Internal, "g_signal_emit_by_name");
 
-         B : Integer;
+         B : Gint;
       begin
          pragma Assert (Count_Arguments (Object, Name) = 1);
          Internal
@@ -894,10 +894,10 @@ package body Gtk.Handlers is
            (Object : System.Address;
             Name   : String;
             Param  : System.Address;
-            Ret    : out Integer);
+            Ret    : out Gint);
          pragma Import (C, Internal, "g_signal_emit_by_name");
 
-         B : Integer;
+         B : Gint;
       begin
          pragma Assert (Count_Arguments (Object, Name) = 1);
          Internal

@@ -92,10 +92,10 @@ package body Gtk.Marshallers is
               (Object : System.Address;
                Name   : String;
                Param  : Base_Type;
-               Ret    : out Integer);
+               Ret    : out Gint);
             pragma Import (C, Internal, "g_signal_emit_by_name");
 
-            B : Integer;
+            B : Gint;
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
             Internal (Get_Object (Object), Name & ASCII.NUL, Param, B);
@@ -115,9 +115,9 @@ package body Gtk.Marshallers is
               (Object : System.Address;
                Name   : String;
                Param  : System.Address;
-               Ret    : out Integer);
+               Ret    : out Gint);
             pragma Import (C, Internal, "g_signal_emit_by_name");
-            B : Integer;
+            B : Gint;
 
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
@@ -186,10 +186,10 @@ package body Gtk.Marshallers is
               (Object : System.Address;
                Name   : String;
                Param  : System.Address;
-               Ret    : out Integer);
+               Ret    : out Gint);
             pragma Import (C, Internal, "g_signal_emit_by_name");
 
-            R : Integer;
+            R : Gint;
 
          begin
             --   pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
@@ -246,10 +246,10 @@ package body Gtk.Marshallers is
             procedure Internal
               (Object : System.Address;
                Name   : String;
-               Ret    : out Integer);
+               Ret    : out Gint);
             pragma Import (C, Internal, "g_signal_emit_by_name");
 
-            R : Integer;
+            R : Gint;
 
          begin
             --   pragma Assert (Count_Arguments (Get_Type (Object), Name) = 0);
@@ -317,10 +317,10 @@ package body Gtk.Marshallers is
               (Object : System.Address;
                Name   : String;
                Param  : Base_Type;
-               Ret    : out Integer);
+               Ret    : out Gint);
             pragma Import (C, Internal, "g_signal_emit_by_name");
 
-            B : Integer;
+            B : Gint;
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
             Internal (Get_Object (Object), Name & ASCII.NUL, Param, B);
@@ -340,10 +340,10 @@ package body Gtk.Marshallers is
               (Object : System.Address;
                Name   : String;
                Param  : System.Address;
-               Ret    : out Integer);
+               Ret    : out Gint);
             pragma Import (C, Internal, "g_signal_emit_by_name");
 
-            B : Integer;
+            B : Gint;
 
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
@@ -413,10 +413,10 @@ package body Gtk.Marshallers is
               (Object : System.Address;
                Name   : String;
                Param  : System.Address;
-               Ret    : out Integer);
+               Ret    : out Gint);
             pragma Import (C, Internal, "g_signal_emit_by_name");
 
-            R : Integer;
+            R : Gint;
 
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 1);
@@ -475,10 +475,10 @@ package body Gtk.Marshallers is
             procedure Internal
               (Object : System.Address;
                Name   : String;
-               Ret    : out Integer);
+               Ret    : out Gint);
             pragma Import (C, Internal, "g_signal_emit_by_name");
 
-            R : Integer;
+            R : Gint;
 
          begin
             --  pragma Assert (Count_Arguments (Get_Type (Object), Name) = 0);
