@@ -209,7 +209,6 @@ package body Gtk.Pixmap is
             Top := Find_Top_Widget (N);
             Pixmap := Object.Gtk_Object (Create_Pixmap (S.all,
               Gtk.Window.Gtk_Window (Get_Object (Get_Field (Top, "name")))));
-            N.Specific_Data.Created := True;
          end if;
 
          Set_Object (Get_Field (N, "name"), Pixmap);
