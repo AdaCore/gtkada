@@ -28,12 +28,14 @@
 -----------------------------------------------------------------------
 
 with Ada.Characters.Handling; use Ada.Characters.Handling;
-with Ada.Strings.Fixed; use Ada.Strings.Fixed;
+with Ada.Strings.Fixed; use Ada.Strings; use Ada.Strings.Fixed;
+with Gtk; use Gtk;
+with Gtk.Handlers; use Gtk.Handlers;
 
 package body Glib.Glade is
 
-   subtype Package_Range is Natural range 1 .. 100;
-   subtype Signal_Range is Natural range 1 .. 100;
+   subtype Package_Range is Natural range 1 .. 1000;
+   subtype Signal_Range is Natural range 1 .. 1000;
 
    Packages : array (Package_Range) of String_Ptr;
    Num_Packages : Natural := 0;
@@ -45,16 +47,19 @@ package body Glib.Glade is
    --  Used by Add_Signal_Instanciation and Gen_Signal_Instanciations
 
    type Signal_Rec is record
-      Widget, Signal, Class : String_Ptr;
+      Widget : Node_Ptr;
+      Handler, Signal, Class : String_Ptr;
    end record;
 
    Signals : array (Signal_Range) of Signal_Rec;
    Num_Signals : Natural := 0;
    --  Used by Add_Signal and Gen_Signal_Instanciations
 
-   procedure Add_Signal (Widget, Signal, Class : String_Ptr);
-   --  Add a specific signal of a given class in Signals.
-   --  Widget is the name of the top level widget containing the signal
+   procedure Add_Signal
+     (Widget : Node_Ptr; Handler, Signal, Class : String_Ptr);
+   --  Add a specific handler of signal of a given class in Signals.
+   --  Top is the node of the top level widget containing the signal
+   --  Widget is the node of the widget containing the signal
 
    procedure Add_Signal_Instanciation (S : String_Ptr);
    --  Add widget S in Signal_Instanciation if S isn't already present
@@ -109,12 +114,14 @@ package body Glib.Glade is
    -- Add_Signal --
    ----------------
 
-   procedure Add_Signal (Widget, Signal, Class : String_Ptr) is
+   procedure Add_Signal
+     (Widget : Node_Ptr; Handler, Signal, Class : String_Ptr) is
    begin
       Num_Signals := Num_Signals + 1;
-      Signals (Num_Signals).Widget := Widget;
-      Signals (Num_Signals).Signal := Signal;
-      Signals (Num_Signals).Class  := Class;
+      Signals (Num_Signals).Widget  := Widget;
+      Signals (Num_Signals).Handler := Handler;
+      Signals (Num_Signals).Signal  := Signal;
+      Signals (Num_Signals).Class   := Class;
    end Add_Signal;
 
    ------------------------------
@@ -718,38 +725,80 @@ package body Glib.Glade is
    end Reset_Packages;
 
    ----------------
+   -- Reset_Tree --
+   ----------------
+
+   procedure Reset_Tree (N : Node_Ptr; Check_Next : Boolean := True) is
+      M : Node_Ptr;
+   begin
+      N.Specific_Data.Created := False;
+      N.Specific_Data.Has_Container := False;
+      N.Specific_Data.Has_Accel_Group := False;
+      N.Specific_Data.Has_Radio_Button_Group := False;
+
+      if Check_Next then
+         M := N.Next;
+
+         while M /= null loop
+            Reset_Tree (M, Check_Next => False);
+            M := M.Next;
+         end loop;
+      end if;
+
+      if N.Child /= null then
+         Reset_Tree (N.Child);
+      end if;
+   end Reset_Tree;
+
+   ----------------
    -- Gen_Signal --
    ----------------
 
    procedure Gen_Signal (N : Node_Ptr; File : File_Type) is
       P       : Node_Ptr := Find_Tag (N.Child, "signal");
-      Top     : constant String_Ptr := Get_Field (Find_Top_Widget (N), "name");
+      Top     : constant Node_Ptr := Find_Top_Widget (N);
       Current : constant String_Ptr := Get_Field (N, "name");
       Class   : String_Ptr;
       Handler : String_Ptr;
+      Name    : String_Ptr;
+      After   : String_Ptr;
 
    begin
       while P /= null loop
          Handler := Get_Field (P, "handler");
          Class := Get_Field (N, "class");
+         Name := Get_Field (P, "name");
+         After := Get_Field (P, "after");
+         Add_Signal (Top, Handler, Name, Class);
          Add_Signal_Instanciation (Class);
-         Add_Signal (Top, Handler, Class);
+
          Put_Line (File, "   " &
            To_Ada (Class (Class'First + 3 .. Class'Last)) &
            "_Callback.Connect");
          Put (File, "     (");
 
-         if Top /= Current then
-            Put (File, To_Ada (Top.all) & ".");
+         if Top /= N then
+            Put (File, To_Ada (Get_Field (Top, "name").all) & ".");
          end if;
 
-         Put_Line (File, To_Ada (Current.all) &
-           ", """ & Get_Field (P, "name").all & """,");
-         Put_Line (File, "      " &
-           To_Ada (Class (Class'First + 3 .. Class'Last)) &
-           "_Callback.To_Marshaller (" &
-           To_Ada (Handler.all) &
-           "'Access));");
+         Put (File, To_Ada (Current.all) &
+           ", """ & Name.all & """,");
+
+         if Count_Arguments (Type_From_Name (Class.all), Name.all) = 0 then
+            New_Line (File);
+            Put (File, "      " &
+              To_Ada (Class (Class'First + 3 .. Class'Last)) &
+              "_Callback.To_Marshaller (" & To_Ada (Handler.all) & "'Access" &
+              ")");
+         else
+            Put (File, " " & To_Ada (Handler.all) & "'Access");
+         end if;
+
+         if After /= null then
+            Put (File, ", " & To_Ada (After.all));
+         end if;
+
+         Put_Line (File, ");");
          P := Find_Tag (P.Next, "signal");
       end loop;
    end Gen_Signal;
@@ -761,9 +810,12 @@ package body Glib.Glade is
    function Gen_Signal_Instanciations (Project : String; File : File_Type)
      return Natural
    is
-      S       : String_Ptr;
-      SR      : Signal_Rec;
-      Prev_SR : Signal_Rec;
+      S        : String_Ptr;
+      SR       : Signal_Rec;
+      Prev_SR  : Signal_Rec;
+      Count    : Guint;
+      Kind     : String_Ptr;
+      Kind_Old : String_Ptr;
 
    begin
       if Num_Signal_Instanciations > 0 then
@@ -796,49 +848,165 @@ package body Glib.Glade is
 
          if Prev_SR.Widget = null or else SR.Widget /= Prev_SR.Widget then
             Prev_SR := SR;
-            Put_Line (File, "package " & To_Ada (SR.Widget.all) &
+            Put_Line (File, "with Gtk.Arguments;");
+            New_Line (File);
+            Put_Line (File, "package " &
+              To_Ada (Get_Field (SR.Widget, "name").all) &
               "_Pkg.Callbacks is");
 
             for J in Signal_Range'First .. Num_Signals loop
                if Signals (J).Widget.all = SR.Widget.all then
                   Put_Line (File, "   procedure " &
-                    To_Ada (Signals (J).Signal.all));
-                  Put_Line (File, "     (Object : access " &
-                    To_Ada (Signals (J).Class.all) & "_Record'Class);");
+                    To_Ada (Signals (J).Handler.all));
+                  Put (File, "     (Object : access " &
+                    To_Ada (Signals (J).Class.all) & "_Record'Class");
+
+                  if Count_Arguments (Type_From_Name
+                    (Signals (J).Class.all), Signals (J).Signal.all) > 0
+                  then
+                     Put_Line (File, ";");
+                     Put_Line (File,
+                       "      Params : Gtk.Arguments.Gtk_Args);");
+                  else
+                     Put_Line (File, ");");
+                  end if;
+
                   New_Line (File);
                end if;
             end loop;
 
-            Put_Line (File, "end " & To_Ada (SR.Widget.all) &
-              "_Pkg.Callbacks;");
-            Put_Line (File, "package body " & To_Ada (SR.Widget.all) &
+            Put_Line (File, "end " &
+              To_Ada (Get_Field (SR.Widget, "name").all) & "_Pkg.Callbacks;");
+            Put_Line (File, "with System; use System;");
+            Put_Line (File, "with Glib; use Glib;");
+            Put_Line (File, "with Gdk.Event; use Gdk.Event;");
+            Put_Line (File, "with Gdk.Types; use Gdk.Types;");
+            Put_Line (File, "with Gtk.Accel_Group; use Gtk.Accel_Group;");
+            Put_Line (File, "with Gtk.Object; use Gtk.Object;");
+            Put_Line (File, "with Gtk.Enums; use Gtk.Enums;");
+            Put_Line (File, "with Gtk.Style; use Gtk.Style;");
+            Put_Line (File, "with Gtk.Widget; use Gtk.Widget;");
+            New_Line (File);
+            Put_Line (File, "package body " &
+              To_Ada (Get_Field (SR.Widget, "name").all) &
               "_Pkg.Callbacks is");
+            New_Line (File);
+            Put_Line (File, "   use Gtk.Arguments;");
             New_Line (File);
 
             for J in Signal_Range'First .. Num_Signals loop
                if Signals (J).Widget.all = SR.Widget.all then
                   declare
-                     Signal : constant String :=
-                       To_Ada (Signals (J).Signal.all);
-                     Dashes : constant String (1 .. Signal'Length + 8) :=
+                     Handler : constant String :=
+                       To_Ada (Signals (J).Handler.all);
+                     Dashes : constant String (1 .. Handler'Length + 6) :=
                        (others => '-');
                   begin
                      Put_Line (File, "   " & Dashes);
-                     Put_Line (File, "   --  " & Signal & "  --");
+                     Put_Line (File, "   -- " & Handler & " --");
                      Put_Line (File, "   " & Dashes);
                      New_Line (File);
-                     Put_Line (File, "   procedure " & Signal);
-                     Put_Line (File, "     (Object : access " &
-                       To_Ada (Signals (J).Class.all) & "_Record'Class) is");
+                     Put_Line (File, "   procedure " & Handler);
+                     Put (File, "     (Object : access " &
+                       To_Ada (Signals (J).Class.all) & "_Record'Class");
+
+                     Count := Count_Arguments (Type_From_Name
+                       (Signals (J).Class.all), Signals (J).Signal.all);
+
+                     if Count > 0 then
+                        Put_Line (File, ";");
+                        Put_Line (File,
+                          "      Params : Gtk.Arguments.Gtk_Args)");
+                     else
+                        Put_Line (File, ")");
+                     end if;
+
+                     Put_Line (File, "   is");
+
+                     for K in 1 .. Gint (Count) loop
+                        Kind := new String' (To_Ada (Type_Name
+                          (Argument_Type
+                            (Type_From_Name (Signals (J).Class.all),
+                             Signals (J).Signal.all, K - 1))));
+
+                        if Kind.all = "Gpointer" then
+                           Free (Kind);
+                           Kind := new String' ("Address");
+
+                        elsif Kind.all = "Gtk_String" then
+                           Free (Kind);
+                           Kind := new String' ("String");
+
+                        elsif Kind.all = "Gtk_Accel_Group"
+                          or else Kind.all = "Gtk_Style"
+                        then
+                           --  Need to declare an access type to handle null
+                           --  values
+
+                           Kind_Old := Kind;
+                           Kind := new String' (Kind.all & "_Access");
+                           Free (Kind_Old);
+                        end if;
+
+                        Put (File, "      Arg" &
+                          Trim (Gint'Image (K), Left) &
+                          " : " & Kind.all & " := ");
+
+                        --  ??? This whole section is ugly. Need to find a
+                        --  cleaner and more automated way of generating the
+                        --  right code.
+
+                        if Kind.all = "Gdk_Event" then
+                           Put (File, "To_Event");
+                        elsif Kind (Kind'First .. Kind'First + 2) = "Gtk" then
+                           if Kind.all = "Gtk_Clist_Row"
+                             or else Kind.all = "Gtk_Ctree_Node"
+                           then
+                              Put (File, Kind.all & " (To_Object_Type");
+                           elsif Kind.all = "Gtk_Object"
+                             or else Kind.all = "Gtk_Widget"
+                             or else Kind.all = "Gtk_Accel_Group_Access"
+                             or else Kind.all = "Gtk_Style_Access"
+                           then
+                              Put (File, Kind.all & " (To_Root_Type");
+                           else
+                              Put (File, Kind.all & "'Val (To_Gint");
+                           end if;
+
+                        elsif Kind (Kind'First .. Kind'First + 2) = "Gdk" then
+                           Put (File, Kind.all & " (To_Gint");
+                        else
+                           Put (File, "To_" & Kind.all);
+                        end if;
+
+                        Put (File, " (Params, " &
+                          Trim (Gint'Image (K), Left));
+
+                        if Kind (Kind'First .. Kind'First + 2) = "Gtk"
+                          or else Kind (Kind'First .. Kind'First + 2) = "Gdk"
+                        then
+                           if Kind.all = "Gdk_Event" then
+                              Put_Line (File, ");");
+                           else
+                              Put_Line (File, "));");
+                           end if;
+                        else
+                           Put_Line (File, ");");
+                        end if;
+
+                        Free (Kind);
+                     end loop;
+                  
                      Put_Line (File, "   begin");
                      Put_Line (File, "      null;");
-                     Put_Line (File, "   end " & Signal & ";");
+                     Put_Line (File, "   end " & Handler & ";");
                      New_Line (File);
                   end;
                end if;
             end loop;
 
-            Put_Line (File, "end " & To_Ada (SR.Widget.all) &
+            Put_Line (File, "end " &
+              To_Ada (Get_Field (SR.Widget, "name").all) &
               "_Pkg.Callbacks;");
          end if;
       end loop;
@@ -846,12 +1014,12 @@ package body Glib.Glade is
       return Num_Signal_Instanciations;
    end Gen_Signal_Instanciations;
 
-   --  The following table is needed to transform wrong names (e.g Ada reserved
-   --  words) into the correct package names as can be found in the GtkAda
-   --  library
+   --  The following table is needed to transform Gtk+ names that cannot
+   --  be mapped automatically (e.g Ada reserved words) into the correct GtkAda
+   --  package name.
 
    type Package_Mapping is record
-      Original_Package, New_Package : String_Ptr;
+      Gtk_Name, GtkAda_Package : String_Ptr;
    end record;
 
    type Special_Packages_Type is array (Positive range <>) of Package_Mapping;
@@ -877,8 +1045,8 @@ package body Glib.Glade is
    function To_Package_Name (S : String) return String is
    begin
       for J in Special_Packages'Range loop
-         if S = Special_Packages (J).Original_Package.all then
-            return Special_Packages (J).New_Package.all;
+         if S = Special_Packages (J).Gtk_Name.all then
+            return Special_Packages (J).GtkAda_Package.all;
          end if;
       end loop;
 

@@ -148,6 +148,11 @@ package Glib.Glade is
    procedure Reset_Packages;
    --  Reset the global table of packages
 
+   procedure Reset_Tree (N : Node_Ptr; Check_Next : Boolean := True);
+   --  Reset the value of the flags for each node contained in N
+   --  Check_Next indicates whether the linked list of brothers of N should
+   --  also be reset (the children are always reset recursively).
+
    procedure Gen_Signal (N : Node_Ptr; File : File_Type);
    --  Output to file calls to connect if N contains any signal
    --  Also register the class of the widget that uses signals.
