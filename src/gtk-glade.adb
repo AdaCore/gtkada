@@ -35,7 +35,7 @@ with Gtk.Button;
 with Gtk.Calendar;
 with Gtk.Check_Button;
 with Gtk.Check_Menu_Item;
---  with Gtk.Clist;
+with Gtk.Clist;
 --  with Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog;
 with Gtk.Combo;
@@ -57,7 +57,7 @@ with Gtk.Hbutton_Box;
 with Gtk.Input_Dialog;
 with Gtk.Item;
 with Gtk.Label;
---  with Gtk.List;
+with Gtk.List;
 with Gtk.List_Item;
 with Gtk.Menu;
 with Gtk.Menu_Bar;
@@ -65,7 +65,7 @@ with Gtk.Menu_Item;
 with Gtk.Menu_Shell;
 with Gtk.Notebook;
 with Gtk.Option_Menu;
---  with Gtk.Paned;
+with Gtk.Paned;
 --  with Gtk.Pixmap;
 with Gtk.Preview;
 with Gtk.Progress_Bar;
@@ -87,7 +87,7 @@ with Gtk.Toolbar;
 with Gtk.Tree;
 with Gtk.Tree_Item;
 with Gtk.Vbutton_Box;
---  with Gtk.Viewport;
+with Gtk.Viewport;
 with Gtk.Widget;
 with Gtk.Window;
 
@@ -212,7 +212,7 @@ package body Gtk.Glade is
       when Constraint_Error =>
          null;
    end Generic_Ptr;
- 
+
    ------------------
    -- Generic_DPtr --
    ------------------
@@ -611,8 +611,8 @@ begin
    SHT.Set (new String '("GtkCheckMenuItem"),
      (Gtk.Check_Menu_Item.Generate'Access,
       Gtk.Check_Menu_Item.Generate'Access));
-   --  SHT.Set (new String '("GtkCList"),
-   --    (Gtk.Clist.Generate'Access, Gtk.Clist.Generate'Access));
+   SHT.Set (new String '("GtkCList"),
+     (Gtk.Clist.Generate'Access, Gtk.Clist.Generate'Access));
    --  SHT.Set (new String '("GtkColorSelection"),
    --    (Gtk.Color_Selection.Generate'Access,
    --     Gtk.Color_Selection.Generate'Access));
@@ -658,8 +658,8 @@ begin
      (Gtk.Item.Generate'Access, Gtk.Item.Generate'Access));
    SHT.Set (new String '("GtkLabel"),
      (Gtk.Label.Generate'Access, Gtk.Label.Generate'Access));
-   --  SHT.Set (new String '("GtkList"),
-   --    (Gtk.List.Generate'Access, Gtk.List.Generate'Access));
+   SHT.Set (new String '("GtkList"),
+     (Gtk.List.Generate'Access, Gtk.List.Generate'Access));
    SHT.Set (new String '("GtkListItem"),
      (Gtk.List_Item.Generate'Access, Gtk.List_Item.Generate'Access));
    SHT.Set (new String '("GtkMenu"),
@@ -676,6 +676,10 @@ begin
      (Gtk.Option_Menu.Generate'Access, Gtk.Option_Menu.Generate'Access));
    --  SHT.Set (new String '("GtkPaned"),
    --    (Gtk.Paned.Generate'Access, Gtk.Paned.Generate'Access));
+   SHT.Set (new String '("GtkHPaned"),
+     (Gtk.Paned.Generate'Access, Gtk.Paned.Generate'Access));
+   SHT.Set (new String '("GtkVPaned"),
+     (Gtk.Paned.Generate'Access, Gtk.Paned.Generate'Access));
    --  SHT.Set (new String '("GtkPixmap"),
    --    (Gtk.Pixmap.Generate'Access, Gtk.Pixmap.Generate'Access));
    SHT.Set (new String '("GtkPreview"),
@@ -731,8 +735,8 @@ begin
      (Gtk.Tree_Item.Generate'Access, Gtk.Tree_Item.Generate'Access));
    SHT.Set (new String '("GtkVButtonBox"),
      (Gtk.Vbutton_Box.Generate'Access, Gtk.Vbutton_Box.Generate'Access));
-   --  SHT.Set (new String '("GtkViewport"),
-   --    (Gtk.Viewport.Generate'Access, Gtk.Viewport.Generate'Access));
+   SHT.Set (new String '("GtkViewport"),
+     (Gtk.Viewport.Generate'Access, Gtk.Viewport.Generate'Access));
    SHT.Set (new String '("GtkWindow"),
      (Gtk.Window.Generate'Access, Gtk.Window.Generate'Access));
 end Gtk.Glade;
