@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2003 ACT-Europe                 --
+--                Copyright (C) 2000-2004 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -3482,10 +3482,17 @@ ada_tree_iter_copy (const GtkTreeIter *source,
 #ifdef _WIN32
 
 #include <windows.h>
+#include <gdk/gdkwin32.h>
 void
 ada_gdk_move_pointer (gint x, gint y)
 {
   SetCursorPos (x, y);
+}
+
+void *
+ada_gdk_get_window_id (GdkWindow *w)
+{
+  return (void *)GDK_WINDOW_HWND (w);
 }
 
 #else
@@ -3499,6 +3506,12 @@ ada_gdk_move_pointer (gint x, gint y)
   Window xroot_window = GDK_WINDOW_XID (gdk_get_default_root_window ());
 
   XWarpPointer (xdisplay, None, xroot_window, 0, 0, 0, 0, x, y);
+}
+
+void *
+ada_gdk_get_window_id (GdkWindow *w)
+{
+  return (void *) GDK_WINDOW_XID (w);
 }
 
 #endif
