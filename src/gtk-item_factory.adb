@@ -321,7 +321,14 @@ package body Gtk.Item_Factory is
       ----------
 
       procedure Free (Ientry : in out Gtk_Item_Factory_Entry) is
+         use Interfaces.C.Strings;
       begin
+         if Ientry.Item_Type /= Null_Ptr
+           and then String' (Value (Ientry.Item_Type)) /= "<ImageItem>"
+         then
+            ICS.Free (Ientry.Extra_Data);
+         end if;
+
          ICS.Free (Ientry.Path);
          ICS.Free (Ientry.Accelerator);
          ICS.Free (Ientry.Item_Type);
@@ -399,6 +406,38 @@ package body Gtk.Item_Factory is
             Ientry.Item_Type := ICS.New_String (Item_Type);
          end if;
 
+         return Ientry;
+      end Gtk_New;
+
+      function Gtk_New
+        (Path            : String;
+         Accelerator     : String := "";
+         Stock_Id        : String;
+         Callback        : Gtk_Item_Factory_Callback := null;
+         Callback_Action : Guint := 0) return Gtk_Item_Factory_Entry
+      is
+         Ientry : Gtk_Item_Factory_Entry;
+      begin
+         Ientry := Gtk_New
+           (Path, Accelerator, Callback, "<StockItem>", Callback_Action);
+         Ientry.Extra_Data := ICS.New_String (Stock_Id);
+         return Ientry;
+      end Gtk_New;
+
+      function Gtk_New
+        (Path            : String;
+         Accelerator     : String := "";
+         Callback        : Gtk_Item_Factory_Callback := null;
+         Pixbuf          : Gtkada.Types.Chars_Ptr;
+         Len             : Guint;
+         Callback_Action : Guint := 0) return Gtk_Item_Factory_Entry
+      is
+         Ientry : Gtk_Item_Factory_Entry;
+      begin
+         Ientry := Gtk_New
+           (Path, Accelerator, Callback, "<ImageItem>", Callback_Action);
+         Ientry.Extra_Data  := Pixbuf;
+         Ientry.Extra_Data2 := Len;
          return Ientry;
       end Gtk_New;
 

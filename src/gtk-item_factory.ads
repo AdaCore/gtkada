@@ -190,6 +190,27 @@ package Gtk.Item_Factory is
       --  It is up to you to call Free at an appropriate point to avoid memory
       --  leaks.
 
+      function Gtk_New
+        (Path            : String;
+         Accelerator     : String := "";
+         Stock_Id        : String;
+         Callback        : Gtk_Item_Factory_Callback := null;
+         Callback_Action : Guint := 0) return Gtk_Item_Factory_Entry;
+      --  Create a Gtk_Item_Factory_Entry from a stock item.
+      --  It is up to you to call Free at an appropriate point to avoid memory
+      --  leaks.
+
+      function Gtk_New
+        (Path            : String;
+         Accelerator     : String := "";
+         Callback        : Gtk_Item_Factory_Callback := null;
+         Pixbuf          : Gtkada.Types.Chars_Ptr;
+         Len             : Guint;
+         Callback_Action : Guint := 0) return Gtk_Item_Factory_Entry;
+      --  Create a Gtk_Item_Factory_Entry from an inline pixbuf image.
+      --  It is up to you to call Free at an appropriate point to avoid memory
+      --  leaks.
+
       procedure Free (Ientry : in out Gtk_Item_Factory_Entry);
       --  Free all the dynamic data associated with an item factory entry.
 
@@ -266,7 +287,7 @@ private
       --  Image_Item -> pointer to inline pixbuf + inline pixbuf length
       --  Stock_Item -> name of stock item
 
-      Extra_Data      : System.Address;
+      Extra_Data      : Gtkada.Types.Chars_Ptr;
       Extra_Data2     : Guint;
    end record;
    pragma Convention (C, Gtk_Item_Factory_Entry);
