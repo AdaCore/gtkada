@@ -836,17 +836,25 @@ package body Gtk.Tree_View is
      (Tree_View : access Gtk_Tree_View_Record;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
       Column    : Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-      Rect      : Gdk.Rectangle.Gdk_Rectangle)
+      Rect      : out Gdk.Rectangle.Gdk_Rectangle)
    is
       procedure Internal
         (Tree_View : System.Address;
          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
          Column    : System.Address;
-         Rect      : Gdk.Rectangle.Gdk_Rectangle);
+         Rect      : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_tree_view_get_cell_area");
 
+      Col_Addr  : System.Address;
+      use type Gtk.Tree_View_Column.Gtk_Tree_View_Column;
    begin
-      Internal (Get_Object (Tree_View), Path, Get_Object (Column), Rect);
+      if Column = null then
+         Col_Addr := System.Null_Address;
+      else
+         Col_Addr := Get_Object (Column);
+      end if;
+
+      Internal (Get_Object (Tree_View), Path, Col_Addr, Rect);
    end Get_Cell_Area;
 
    -------------------------
@@ -876,11 +884,11 @@ package body Gtk.Tree_View is
 
    procedure Get_Visible_Rect
      (Tree_View    : access Gtk_Tree_View_Record;
-      Visible_Rect : Gdk.Rectangle.Gdk_Rectangle)
+      Visible_Rect : out Gdk.Rectangle.Gdk_Rectangle)
    is
       procedure Internal
         (Tree_View    : System.Address;
-         Visible_Rect : Gdk.Rectangle.Gdk_Rectangle);
+         Visible_Rect : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gtk_tree_view_get_visible_rect");
    begin
       Internal (Get_Object (Tree_View), Visible_Rect);
