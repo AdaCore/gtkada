@@ -304,6 +304,11 @@ package Glib.Object is
    generic
       type Data_Type (<>) is private;
    package User_Data is
+      type On_Destroyed_Callback is access procedure (Data : Data_Type);
+      --  On_Destroyed is called when the data is overriden in the object, by
+      --  an other object with the same ID, or when the object itself is
+      --  destroyed
+
       function Get
         (Object : access GObject_Record'Class;
          Id     : String := "user_data") return Data_Type;
@@ -313,7 +318,8 @@ package Glib.Object is
       procedure Set
         (Object : access GObject_Record'Class;
          Data   : Data_Type;
-         Id     : String := "user_data");
+         Id     : String := "user_data";
+         On_Destroyed : On_Destroyed_Callback := null);
       --  Associate some new user data with the object.
       --  The strings starting with "gtkada_" are reserved for GtkAda's
       --  internal use, please avoid using them.
@@ -331,7 +337,8 @@ package Glib.Object is
       procedure Set
         (Object : access GObject_Record'Class;
          Data   : Data_Type;
-         Id     : Glib.GQuark);
+         Id     : Glib.GQuark;
+         On_Destroyed : On_Destroyed_Callback := null);
       --  Same function as Set above, but uses directly the Quark associated
       --  with the string, which speeds up the access time significantly.
 

@@ -468,7 +468,8 @@ package body Glib.Object is
       type Data_Access is access all Data_Type;
 
       type Cb_Record is record
-         Ptr : Data_Access;
+         Ptr          : Data_Access;
+         On_Destroyed : On_Destroyed_Callback;
       end record;
       type Cb_Record_Access is access all Cb_Record;
 
@@ -505,6 +506,9 @@ package body Glib.Object is
          D : Cb_Record_Access := Convert (Data);
 
       begin
+         if D.On_Destroyed /= null then
+            D.On_Destroyed (D.Ptr.all);
+         end if;
          Internal2 (D.Ptr);
          Internal (D);
       end Free_Data;
@@ -564,12 +568,14 @@ package body Glib.Object is
       procedure Set
         (Object : access GObject_Record'Class;
          Data   : Data_Type;
-         Id     : String := "user_data")
+         Id     : String := "user_data";
+         On_Destroyed : On_Destroyed_Callback := null)
       is
          function Convert is new
            Unchecked_Conversion (Cb_Record_Access, System.Address);
          D : constant Cb_Record_Access :=
-           new Cb_Record'(Ptr => new Data_Type'(Data));
+           new Cb_Record'(Ptr => new Data_Type'(Data),
+                          On_Destroyed => On_Destroyed);
 
       begin
          Set_Data_Internal
@@ -586,13 +592,14 @@ package body Glib.Object is
       procedure Set
         (Object : access GObject_Record'Class;
          Data   : Data_Type;
-         Id     : Glib.GQuark)
+         Id     : Glib.GQuark;
+         On_Destroyed : On_Destroyed_Callback := null)
       is
          function Convert is new
            Unchecked_Conversion (Cb_Record_Access, System.Address);
          D : constant Cb_Record_Access :=
-           new Cb_Record'(Ptr => new Data_Type'(Data));
-
+           new Cb_Record'(Ptr => new Data_Type'(Data),
+                          On_Destroyed => On_Destroyed);
       begin
          Set_Data_Internal_Id
            (Get_Object (Object),
