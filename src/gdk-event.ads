@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -122,7 +122,7 @@ package Gdk.Event is
 
       Window_State,
       Setting);
-   for Gdk_Event_Type'Size use Gint'Size;
+   pragma Convention (C, Gdk_Event_Type);
 
    type Gdk_Event_Mask is mod 2 ** 32;
    --  Note that you need to change the event mask of a widget if you want
@@ -168,14 +168,14 @@ package Gdk.Event is
      (Visibility_Unobscured,
       Visibility_Partial,
       Visibility_Fully_Obscured);
-   for Gdk_Visibility_State'Size use Gint'Size;
+   pragma Convention (C, Gdk_Visibility_State);
 
    type Gdk_Scroll_Direction is
      (Scroll_Up,
       Scroll_Down,
       Scroll_Left,
       Scroll_Right);
-   for Gdk_Scroll_Direction'Size use Gint'Size;
+   pragma Convention (C, Gdk_Scroll_Direction);
 
    type Gdk_Notify_Type is
      (Notify_Ancestor,
@@ -184,13 +184,13 @@ package Gdk.Event is
       Notify_Non_Linear,
       Notify_Non_Linear_Virtual,
       Notify_Unknown);
-   for Gdk_Notify_Type'Size use Gint'Size;
+   pragma Convention (C, Gdk_Notify_Type);
 
    type Gdk_Crossing_Mode is (Crossing_Normal, Crossing_Grab, Crossing_Ungrab);
-   for Gdk_Crossing_Mode'Size use Gint'Size;
+   pragma Convention (C, Gdk_Crossing_Mode);
 
    type Gdk_Property_State is (Property_New_Value, Property_Delete);
-   for Gdk_Property_State'Size use Gint'Size;
+   pragma Convention (C, Gdk_Property_State);
 
    type Gdk_Window_State is mod 2 ** 32;
 
@@ -203,7 +203,7 @@ package Gdk.Event is
      (Setting_Action_New,
       Setting_Action_Changed,
       Setting_Action_Deleted);
-   for Gdk_Setting_Action'Size use Gint'Size;
+   pragma Convention (C, Gdk_Setting_Action);
 
    type Gdk_Device_Id is new Guint32;
    --  This type is specific to GtkAda. In Gdk, guint32 is used instead.
@@ -422,10 +422,10 @@ package Gdk.Event is
    function Get_Focus (Event : Gdk_Event) return Boolean;
    --  Set to true if the window for the event is the focus window.
 
-   function Get_Width (Event : Gdk_Event) return Gint16;
+   function Get_Width (Event : Gdk_Event) return Gint;
    --  Get the width in a configure event.
 
-   function Get_Height (Event : Gdk_Event) return Gint16;
+   function Get_Height (Event : Gdk_Event) return Gint;
    --  Get the height in a configure event.
 
    function Get_Device_Id (Event : Gdk_Event) return Gdk_Device_Id;
@@ -502,10 +502,10 @@ package Gdk.Event is
    procedure Set_Yroot  (Event : Gdk_Event; Yroot : Gdouble);
    --  Set the Yroot field of an event.
 
-   procedure Set_Width  (Event : Gdk_Event; Width : Gint16);
+   procedure Set_Width  (Event : Gdk_Event; Width : Gint);
    --  Set the Width field of an event.
 
-   procedure Set_Height (Event : Gdk_Event; Height : Gint16);
+   procedure Set_Height (Event : Gdk_Event; Height : Gint);
    --  Set the Height field of an event.
 
    procedure Set_Button (Event : Gdk_Event; Button : Guint);

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -96,17 +96,13 @@ package body Gdk.Event is
 
    Invalid_Gdouble_Value : constant Gdouble := Gdouble'Last - 1.0;
    Invalid_Gint_Value    : constant Gint    := Gint'Last - 1;
-   Invalid_Gint16_Value  : constant Gint16  := Gint16'Last - 1;
    Invalid_Guint_Value   : constant Guint   := Guint'Last - 1;
-   Invalid_Guint16_Value : constant Guint16 := Guint16'Last - 1;
    Invalid_Guint32_Value : constant Guint32 := Guint32'Last - 1;
    Invalid_Gulong_Value  : constant Gulong  := Gulong'Last - 1;
 
    pragma Export (C, Invalid_Gdouble_Value, "ada_gdk_invalid_gdouble_value");
    pragma Export (C, Invalid_Gint_Value, "ada_gdk_invalid_gint_value");
-   pragma Export (C, Invalid_Gint16_Value, "ada_gdk_invalid_gint16_value");
    pragma Export (C, Invalid_Guint_Value, "ada_gdk_invalid_guint_value");
-   pragma Export (C, Invalid_Guint16_Value, "ada_gdk_invalid_guint16_value");
    pragma Export (C, Invalid_Guint32_Value, "ada_gdk_invalid_guint32_value");
    pragma Export (C, Invalid_Gulong_Value, "ada_gdk_invalid_gulong_value");
 
@@ -161,14 +157,14 @@ package body Gdk.Event is
    -- Get_Width --
    ---------------
 
-   function Get_Width (Event : Gdk_Event) return Gint16 is
-      function Internal (Event : Gdk_Event) return Gint16;
+   function Get_Width (Event : Gdk_Event) return Gint is
+      function Internal (Event : Gdk_Event) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_get_width");
 
-      Width : constant Gint16 := Internal (Event);
+      Width : constant Gint := Internal (Event);
 
    begin
-      if Width = Invalid_Gint16_Value then
+      if Width = Invalid_Gint_Value then
          raise Invalid_Field;
       end if;
 
@@ -179,14 +175,14 @@ package body Gdk.Event is
    -- Get_Height --
    ----------------
 
-   function Get_Height (Event : Gdk_Event) return Gint16 is
-      function Internal (Event : Gdk_Event) return Gint16;
+   function Get_Height (Event : Gdk_Event) return Gint is
+      function Internal (Event : Gdk_Event) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_get_height");
 
-      Height : constant Gint16 := Internal (Event);
+      Height : constant Gint := Internal (Event);
 
    begin
-      if Height = Invalid_Gint16_Value then
+      if Height = Invalid_Gint_Value then
          raise Invalid_Field;
       end if;
 
@@ -875,8 +871,8 @@ package body Gdk.Event is
    -- Set_Width --
    ---------------
 
-   procedure Set_Width (Event : Gdk_Event; Width : Gint16) is
-      function Internal (Event : Gdk_Event; Width : Gint16) return Gint;
+   procedure Set_Width (Event : Gdk_Event; Width : Gint) is
+      function Internal (Event : Gdk_Event; Width : Gint) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_width");
 
    begin
@@ -889,8 +885,8 @@ package body Gdk.Event is
    -- Set_Height --
    ----------------
 
-   procedure Set_Height (Event : Gdk_Event; Height : Gint16) is
-      function Internal (Event : Gdk_Event; Height : Gint16) return Gint;
+   procedure Set_Height (Event : Gdk_Event; Height : Gint) is
+      function Internal (Event : Gdk_Event; Height : Gint) return Gint;
       pragma Import (C, Internal, "ada_gdk_event_set_height");
 
    begin
