@@ -270,6 +270,36 @@ package body Gtk.Window is
       Internal (Get_Object (Window), Get_Object (Accel_Group));
    end Remove_Accel_Group;
 
+   ------------
+   -- Resize --
+   ------------
+
+   procedure Resize
+     (Window : access Gtk_Window_Record;
+      Width, Height : Gint)
+   is
+      procedure Internal (Window : System.Address; Width, Height : Gint);
+      pragma Import (C, Internal, "gtk_window_resize");
+      Req : Gtk_Requisition;
+   begin
+      if Width = -1
+        and then Height = -1
+        and then Get_Child (Window) /= null
+      then
+         --  Size_Request directly on the window would return 0x0 if the
+         --  window is not currently visible, unfortunately. So we cheat a
+         --  little and directly ask the window's child for its prefered
+         --  size.
+
+         Size_Request (Get_Child (Window), Req);
+         Req.Width  := Req.Width + Gint (Get_Border_Width (Window) * 2);
+         Req.Height := Req.Height + Gint (Get_Border_Width (Window) * 2);
+         Internal (Get_Object (Window), Req.Width, Req.Height);
+      else
+         Internal (Get_Object (Window), Width, Height);
+      end if;
+   end Resize;
+
    -------------------
    -- Set_Decorated --
    -------------------
