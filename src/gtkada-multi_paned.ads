@@ -57,6 +57,7 @@ package Gtkada.Multi_Paned is
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation :=
         Gtk.Enums.Orientation_Horizontal;
+      Fixed_Size    : Boolean := False;
       Width, Height : Glib.Gint := 0);
    --  Add new child, splitting as needed.
    --  This should be used when there is no child yet
@@ -64,12 +65,16 @@ package Gtkada.Multi_Paned is
    --  are specified (or left to -1 for automatic computation), the window is
    --  splitted so that amount of screen space is left to the widget
    --  (leaving some minimum amount of space to other children as needed).
+   --  If Fixed_Size is true, then the size of the dock will not change when
+   --  Win is resized. Otherwise, it will keep its relative size (x% of the
+   --  total size of Win)
 
    procedure Split
      (Win           : access Gtkada_Multi_Paned_Record;
       Ref_Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
       New_Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Orientation   : Gtk.Enums.Gtk_Orientation;
+      Fixed_Size    : Boolean := False;
       Width, Height : Glib.Gint := 0;
       After         : Boolean := True);
    --  Split the pane containing Ref_Widget, and add New_Child
@@ -137,6 +142,7 @@ private
          when True  =>
             Widget      : Gtk.Widget.Gtk_Widget;
             Width, Height : Glib.Gint;
+            Fixed_Size  : Boolean;
          when False =>
             Orientation : Gtk.Enums.Gtk_Orientation;
             First_Child : Child_Description_Access;
