@@ -13,10 +13,12 @@ package Glib is
    type Gshort is new C.short;
    type Glong  is new C.long;
    type Gint   is new C.int;
+   type Gchar  is new C.char;
 
    type Gushort is new C.unsigned_short;
    type Gulong  is new C.unsigned_long;
    type Guint   is new C.unsigned;
+   type Guchar  is new C.unsigned_char;
 
    type Gfloat  is new C.C_float;
    type Gdouble is new C.double;
@@ -44,8 +46,9 @@ package Glib is
    --  Some Array types  --
    ------------------------
 
-   type Gulong_Array is array (Positive range <>) of Gulong;
-
+   type Gulong_Array is array (Natural range <>) of Gulong;
+   type Gfloat_Array is array (Natural range <>) of Gfloat;
+   type Guchar_Array is array (Natural range <>) of Guchar;
 
    ---------------------------
    --  Conversion services  --
@@ -56,3 +59,9 @@ package Glib is
    function To_Gint (Bool : in Boolean) return Gint;
 
 end Glib;
+
+
+
+
+
+
