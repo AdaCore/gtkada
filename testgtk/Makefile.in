@@ -22,12 +22,12 @@ GNATMAKELDFLAGS = -largs -L$(src_dir) @GTK_LIBS@ -lgtkada
 
 CP = cp -f
 
-## This variable should be set to either "opengl" or "no_opengl" depending on
-## whether the opengl directories have been installed on the system or not
+## This variable should be set to "True" if the opengl directories
+## have been installed on the system.
 HAVE_OPENGL=@HAVE_OPENGL@
 
 
-ifeq ($(HAVE_OPENGL),opengl)
+ifeq ($(HAVE_OPENGL),True)
 OPENGL_C_OBJECTS=lw.o
 OPENGL_LIBS= @GL_LIBS@
 else
@@ -48,7 +48,12 @@ $(target)::
 	fi
 
 opengl/view_gl.adb::
-	$(CP) opengl/view_gl.adb_$(HAVE_OPENGL) opengl/view_gl.adb
+	@if [ $(HAVE_OPENGL) = "True" ]; then \
+	   $(CP) opengl/view_gl.adb_opengl opengl/view_gl.adb; \
+	else \
+	   $(CP) opengl/view_gl.adb_no_opengl opengl/view_gl.adb; \
+	fi
+	   
 
 lw.o: opengl/lw.c opengl/lw.h
 	$(CC) -c opengl/lw.c -Iopengl @GTK_CFLAGS@
