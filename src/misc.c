@@ -47,6 +47,42 @@ convert_i (gint s)
    return (void*)s;
 }
 
+
+/*
+ * Gnode macros
+ *
+ */
+
+gboolean
+ada_gnode_is_root (GNode * node)
+{
+  return G_NODE_IS_ROOT (node);
+}
+
+gboolean
+ada_gnode_is_leaf (GNode * node)
+{
+  return G_NODE_IS_LEAF (node);
+}
+
+GNode*
+ada_gnode_prev_sibling (GNode * node)
+{
+  return g_node_prev_sibling (node);
+}
+
+GNode*
+ada_gnode_next_sibling (GNode * node)
+{
+  return g_node_next_sibling (node);
+}
+
+GNode*
+ada_gnode_first_child (GNode * node)
+{
+  return g_node_first_child (node);
+}
+
  
 /*
  *
