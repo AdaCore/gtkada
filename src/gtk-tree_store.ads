@@ -125,7 +125,7 @@ package Gtk.Tree_Store is
 
    procedure Append
      (Tree_Store : access Gtk_Tree_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  Appends a new row to Tree_Store.  If Parent is non-NULL, then it will
    --  append the new row after the last child of Parent, otherwise it will

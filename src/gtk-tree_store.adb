@@ -230,7 +230,7 @@ package body Gtk.Tree_Store is
 
    procedure Append
      (Tree_Store : access Gtk_Tree_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter;
       Parent     : Gtk.Tree_Model.Gtk_Tree_Iter)
    is
       procedure Internal
