@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
---                   Copyright (C) 2002 ACT-Europe                   --
+--                Copyright (C) 2002-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -176,10 +176,10 @@ package body Pango.Layout is
 
    procedure Set_Markup
      (Layout : access Pango_Layout_Record;
-      Markup : String)
+      Markup : Glib.UTF8_String)
    is
       procedure Internal
-        (Layout : System.Address; Text : String; Length : Gint);
+        (Layout : System.Address; Text : Glib.UTF8_String; Length : Gint);
       pragma Import (C, Internal, "pango_layout_set_markup");
    begin
       Internal (Get_Object (Layout), Markup, Markup'Length);
