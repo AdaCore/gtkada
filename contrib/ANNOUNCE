@@ -30,7 +30,7 @@ End
 
 New features from 0.6 include:
 
-- All 1.2.0 widgets are now bound
+- All 1.2.0 widgets are now bound (including Gtk.Ctree)
 - New directory structure
 - First version of the documentation
 - Code generation simplified in GATE
