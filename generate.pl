@@ -3,22 +3,28 @@
 use strict;
 
 if ($#ARGV < 0) {
-  print "Syntax : generate.pl file_name [definition-file unit_name]\n";
+  print "Syntax : generate.pl [switches] file_name [definition-file unit_name]\n";
+  print "   -l  : simply list the functions defined in the file (c or Ada)\n";
+  print "         The arguments are then   file_name_1  file_name_2]\n";
+  print "         If file_name_2 is present, the output will only show the difference\n";
+  print "         between the two\n";
   print "   file_name : name of the C file to parse\n";
   print "   definition_file : file to parse for the struct definition\n";
-  print "   unit_name : if present, only functions include this name will be \n";
+  print "   unit_name : if present, only the functions including this name will be \n";
   print "               generated\n";
   print " ex/  generate.pl ../include/gdk/gdk.h ../include/gdk/gdktypes.h window\n";
   print " ex/  generate.pl ../include/gtk/gtkframe.h\n";
   exit;
 }
 
+my ($list_mode) = 0;
+if ($ARGV[0] eq "-l") {
+    $list_mode = 1;
+    shift @ARGV;
+}
+
+
 my ($file) = $ARGV [0] || die "must give a filename!!\n";
-
-open (FILE, $file);
-my (@cfile) = <FILE>;
-close (FILE);
-
 
 my ($directory);
 my ($unit_name) = "";
@@ -47,6 +53,49 @@ $file = uc ($file);
 $file = "GTKFILESELECTION" if ($file eq "GTKFILESEL");
 $file = "GTKFONTSELECTION" if ($file eq "GTKFONTSEL");
 $file = "GTK$1BUTTONBOX" if ($file =~ /GTK([VH]?)BBOX/);
+
+my (@cfile);
+
+if ($list_mode) {
+
+    my (%list);
+
+    while (@ARGV) {
+	open (FILE, $ARGV [0]);
+	@cfile = <FILE>;
+	close (FILE);
+
+	if ($ARGV [0] =~ /\.h$/) {
+	    my (%functions) = &parse_functions;
+	    foreach (keys %functions) {
+		my ($tmp) = &ada_func_name ($_);
+		$list{$tmp}++ unless ($tmp eq 'Get_Type');
+	    }
+	}
+	elsif ($ARGV [0] =~ /\.ad[bs]$/) {
+	    foreach (@cfile)
+	    {
+		if (/(procedure|function)\s+([\w_.]+)/
+		    &&
+		    $2 !~ /Internal/i)
+		{
+		    $list {$2}++;
+		}
+	    }
+	}
+ 	shift @ARGV;
+    }
+
+    foreach (sort keys %list) {
+	print $_, "\n" if ($list{$_} == 1);
+    }
+    exit 0;
+}
+
+
+open (FILE, $ARGV [0]);
+@cfile = <FILE>;
+close (FILE);
 
 
 my (%functions) = &parse_functions;
@@ -209,14 +258,6 @@ sub generate_specifications
 	  . "new ".
 	  &package_name ($parent). ".$prefix\_", &create_ada_name ($parent).
 	  " with null record;\n\n");
-
-    ## Since beta 0.2.1, we no longer print the mapping comments at the end
-    ## of the files
-#    foreach (sort {&ada_func_name ($a) cmp &ada_func_name ($b)} keys %functions)
-#      {
-#	&print_comment ($_, @{$functions{$_}});
-#      }
-    
     
     push (@output, "end $prefix.$current_package;\n");
     
