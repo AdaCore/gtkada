@@ -51,8 +51,8 @@ package Gtk.Pixmap is
 
    procedure Gtk_New
      (Widget : out Gtk_Pixmap;
-      Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-      Mask   : Gdk.Bitmap.Gdk_Bitmap);
+      Pixmap : Gdk.Pixmap.Gdk_Pixmap := null;
+      Mask   : Gdk.Bitmap.Gdk_Bitmap := null);
 
    procedure Initialize
      (Widget : access Gtk_Pixmap_Record'Class;

@@ -61,8 +61,8 @@ package body Gtk.Pixmap is
 
    procedure Gtk_New
      (Widget : out Gtk_Pixmap;
-      Pixmap : Gdk.Pixmap.Gdk_Pixmap;
-      Mask   : Gdk.Bitmap.Gdk_Bitmap) is
+      Pixmap : Gdk.Pixmap.Gdk_Pixmap := null;
+      Mask   : Gdk.Bitmap.Gdk_Bitmap := null) is
    begin
       Widget := new Gtk_Pixmap_Record;
       Initialize (Widget, Pixmap, Mask);
@@ -82,8 +82,15 @@ package body Gtk.Pixmap is
          Mask   : Gdk.Bitmap.Gdk_Bitmap) return System.Address;
       pragma Import (C, Internal, "gtk_pixmap_new");
 
+      function Gtk_Type_New (Typ : Gtk.Gtk_Type) return System.Address;
+      pragma Import (C, Gtk_Type_New, "gtk_type_new");
+
    begin
-      Set_Object (Widget, Internal (Pixmap, Mask));
+      if Pixmap /= null then
+         Set_Object (Widget, Internal (Pixmap, Mask));
+      else
+         Set_Object (Widget, Gtk_Type_New (Gtk.Pixmap.Get_Type));
+      end if;
    end Initialize;
 
    ---------
