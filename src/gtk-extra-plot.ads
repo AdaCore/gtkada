@@ -694,7 +694,7 @@ package Gtk.Extra.Plot is
                             Width  : out Gint;
                             Height : out Gint);
    --  Return the size in pixels occupied by a text in the plot.
-   --  See also Gtk.Extra.Plot_Canvas for a function that returns
+   --  @pxref{Package_Gtk.Extra.Plot_Canvas} for a function that returns
    --  a Gtk_Plot_Text.
 
    function Get_Texts (Plot : access Gtk_Plot_Record)

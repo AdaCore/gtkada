@@ -64,7 +64,7 @@ package Gdk is
    --   a copy of it if you need to reuse it.
    --  Warning : no verification is done at Ada level. The only verification
    --  are done by gtk itself.
-   --  See also the package Gtk.Type_Conversion for help on how to convert
+   --  @pxref{Package_Gtk.Type_Conversion} for help on how to convert
    --  from C widgets to Ada widgets.
    --
    --  This package should not be required at all. If you absolutely need to

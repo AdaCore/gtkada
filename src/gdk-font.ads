@@ -59,8 +59,8 @@
 --  for instance xfontsel, xlsfont, gfontsel, or even the font selection
 --  dialog example in the testgtk/ directory of the GtkAda distribution.
 --
---  See also Gtk.Extra.PsFont for a package that processes postscript fonts,
---  with their more usual names, and can easily convert them to standard
+--  @pxref{Package_Gtk.Extra.PsFont} for a package that processes postscript
+--  fonts, with their more usual names, and can easily convert them to standard
 --  Gdk_Font structures.
 --
 --  Some of the functions below should be used only for wide-character strings.

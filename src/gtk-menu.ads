@@ -35,7 +35,7 @@
 --
 --  Such a menu is usually part of a Gtk_Menu_Bar (at the top of the window),
 --  or activated by clicking on an item in another Gtk_Menu.
---  See also Gtk_Option_Menu for another way of displaying menus.
+--  @pxref{Package_Gtk.Option_Menu} for another way of displaying menus.
 --
 --  All the menus in GtkAda can be "Tear off" menus, i.e you can detach
 --  them from their parent (either a menu bar or another menu) to keep them
