@@ -59,7 +59,7 @@ package Gtk.Adjustment is
 
    Null_Adjustment : constant Gtk_Adjustment;
 
-   procedure Gtk_New (Adjustment     : in out Gtk_Adjustment;
+   procedure Gtk_New (Adjustment     : out Gtk_Adjustment;
                       Value          : in     Gfloat;
                       Lower          : in     Gfloat;
                       Upper          : in     Gfloat;

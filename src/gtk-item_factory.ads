@@ -74,7 +74,7 @@ package Gtk.Item_Factory is
      Gtk_Item_Factory_Entry;
 
    procedure Gtk_New
-     (Ifactory       : in out Gtk_Item_Factory;
+     (Ifactory       : out Gtk_Item_Factory;
       Container_Type : in Gtk_Type;
       Path           : in String;
       Accel_Group    : in Gtk.Accel_Group.Gtk_Accel_Group);

@@ -72,7 +72,7 @@ package Gtk.Box is
    subtype Gtk_Vbox is Gtk_Box;
    --  </doc_ignore>
 
-   procedure Gtk_New_Vbox (Box         : in out Gtk_Box;
+   procedure Gtk_New_Vbox (Box         : out Gtk_Box;
                            Homogeneous : in  Boolean := False;
                            Spacing     : in  Gint := 0);
    --  Create a new vertical box.
@@ -82,7 +82,7 @@ package Gtk.Box is
    --  its own size.
    --  Spacing is the space left between two adjacent children.
 
-   procedure Gtk_New_Hbox (Box         : in out Gtk_Box;
+   procedure Gtk_New_Hbox (Box         : out Gtk_Box;
                            Homogeneous : in  Boolean := False;
                            Spacing     : in  Gint := 0);
    --  Create a new horizontal box.
