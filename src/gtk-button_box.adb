@@ -28,30 +28,8 @@
 
 with System;
 with Gdk; use Gdk;
-with Gtk.Enums; use Gtk.Enums;
-with Gtk.Widget;
 
 package body Gtk.Button_Box is
-
-   -----------------------
-   -- Child_Requisition --
-   -----------------------
-
-   procedure Child_Requisition
-      (Widget        : in Gtk.Widget.Gtk_Widget'Class;
-       Nvis_Children : in out Integer;
-       Width         : in out Integer;
-       Height        : in out Integer)
-   is
-      procedure Internal
-         (Widget        : in System.Address;
-          Nvis_Children : in out Integer;
-          Width         : in out Integer;
-          Height        : in out Integer);
-      pragma Import (C, Internal, "gtk_button_box_child_requisition");
-   begin
-      Internal (Get_Object (Widget), Nvis_Children, Width, Height);
-   end Child_Requisition;
 
    ------------------------
    -- Get_Child_Ipadding --
@@ -115,12 +93,13 @@ package body Gtk.Button_Box is
    -- Get_Layout --
    ----------------
 
-   function Get_Layout (Widget : in Gtk_Button_Box) return Gtk_Button_Box_Style
+   function Get_Layout (Widget : in Gtk_Button_Box)
+                        return Enums.Gtk_Button_Box_Style
    is
       function Internal (Widget : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_button_box_get_layout");
    begin
-      return Gtk_Button_Box_Style'Val (Internal (Get_Object (Widget)));
+      return Enums.Gtk_Button_Box_Style'Val (Internal (Get_Object (Widget)));
    end Get_Layout;
 
    -----------------
@@ -200,14 +179,15 @@ package body Gtk.Button_Box is
 
    procedure Set_Layout
       (Widget       : in Gtk_Button_Box;
-       Layout_Style : in Gtk_Button_Box_Style)
+       Layout_Style : in Enums.Gtk_Button_Box_Style)
    is
       procedure Internal
          (Widget       : in System.Address;
           Layout_Style : in Gint);
       pragma Import (C, Internal, "gtk_button_box_set_layout");
    begin
-      Internal (Get_Object (Widget), Gtk_Button_Box_Style'Pos (Layout_Style));
+      Internal (Get_Object (Widget),
+                Enums.Gtk_Button_Box_Style'Pos (Layout_Style));
    end Set_Layout;
 
    -----------------
