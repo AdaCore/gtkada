@@ -1341,9 +1341,7 @@ package body Gtkada.MDI is
       end if;
 
       if not Result then
-         Dock_Child (C, False);
-         Float_Child (C, False);
-         Destroy (C.Initial);
+         Destroy (C);
       end if;
 
       Free (Event);
@@ -1373,12 +1371,11 @@ package body Gtkada.MDI is
 
       Ref (C);
 
+      --  The child of the MDI_Child has now been taken care of, thus we need
+      --  to take care of the MDI_Child itself now.
+
       if C.Menu_Item /= null then
          Destroy (C.Menu_Item);
-      end if;
-
-      if C = C.MDI.Focus_Child then
-         C.MDI.Focus_Child := null;
       end if;
 
       Widget_List.Remove (C.MDI.Items, Gtk_Widget (C));
@@ -1386,12 +1383,13 @@ package body Gtkada.MDI is
       if not Gtk.Object.In_Destruction_Is_Set (C.MDI) then
          --  Initial_Child could be null if we are destroying a floating
          --  child explicitly (by closing its X11 window)
-         if C.State = Floating
-           and then C.Initial_Child /= null
-         then
+         if C.Initial_Child /= null then
             Float_Child (C, False);
-         elsif C.State = Docked then
             Dock_Child (C, False);
+         end if;
+
+         if C.MDI.Raise_Id /= 0 then
+            Idle_Remove (C.MDI.Raise_Id);
          end if;
 
          --  For maximized children, test whether there are still enough
@@ -1402,25 +1400,43 @@ package body Gtkada.MDI is
          if C.State = Normal
            and then Children_Are_Maximized (C.MDI)
          then
+            Remove_From_Notebook (C, None);
+
             Set_Show_Tabs
               (C.MDI.Docks (None),
                Get_Nth_Page (C.MDI.Docks (None), 1) /= null);
-         end if;
 
-         if C.MDI.Raise_Id /= 0 then
-            Idle_Remove (C.MDI.Raise_Id);
+         elsif Get_Parent (C) /= null then
+            Remove (Gtk_Container (Get_Parent (C)), C);
          end if;
       end if;
 
-      --  Destroy the toplevel Child is associated with
+      --  Reset the focus child, but only after we have finished manipulating
+      --  the notebooks. Otherwise, we get a switch_page event, that calls
+      --  Set_Focus_Child again
 
-      if C.Initial /= C.Initial_Child
-        and then not Gtk.Object.Destroyed_Is_Set (C.Initial)
-      then
-         Destroy (C.Initial);
+      if C = C.MDI.Focus_Child then
+         C.MDI.Focus_Child := null;
       end if;
 
+      --  Destroy the child, unless the user has explicitely kept a Ref on it
+      --  (therefore, do not use Destroy, only Unref). In all cases, it should
+      --  be hidden on the screen
+
+      if C.Initial.all in Gtk_Window_Record'Class then
+         if C.State /= Floating then
+            Reparent (C.Initial_Child, Gtk_Window (C.Initial));
+         end if;
+
+         Hide_All (C.Initial);
+         Unref (C.Initial);
+      else
+         Remove
+           (Gtk_Container (Get_Parent (C.Initial_Child)), C.Initial_Child);
+      end if;
       C.Initial := null;
+      C.Initial_Child := null;
+
       Free (C.Title);
       Free (C.Short_Title);
 
@@ -1438,8 +1454,6 @@ package body Gtkada.MDI is
       if MDI_Child (Child).Initial = MDI_Child (Child).Initial_Child then
          MDI_Child (Child).Initial := null;
       end if;
-
-      MDI_Child (Child).Initial_Child := null;
 
       --  If the initial_child wasn't explicitly destroyed in Destroy_Child
 
@@ -2689,7 +2703,7 @@ package body Gtkada.MDI is
    procedure Set_Focus_Child (Child : access MDI_Child_Record'Class) is
       procedure Emit_By_Name_Child
         (Object : System.Address; Name : String; Child : System.Address);
-      pragma Import (C, Emit_By_Name_Child, "gtk_signal_emit_by_name");
+      pragma Import (C, Emit_By_Name_Child, "g_signal_emit_by_name");
 
       Old : constant MDI_Child := Child.MDI.Focus_Child;
       C   : constant MDI_Child := MDI_Child (Child);
@@ -3051,8 +3065,8 @@ package body Gtkada.MDI is
       Page_Num : constant Guint := To_Guint (Args, 2);
    begin
       --  Unfortunately, "switch_page" is emitted when the notebooks are
-      --  destroyed, although every will fail later on. So we have to check for
-      --  this special case.
+      --  destroyed, although everything will fail later on. So we have to
+      --  check for this special case.
       if Page_Num /= -1
         and then not Gtk.Object.In_Destruction_Is_Set (Docked_Child)
       then
@@ -3177,7 +3191,7 @@ package body Gtkada.MDI is
    begin
       if Page /= -1 then
          Ref (Child);
-         Unparent (Child);
+         Remove (Gtk_Container (Get_Parent (Child)), Child);
          Remove_Page (Note, Page);
       end if;
 
@@ -3225,21 +3239,23 @@ package body Gtkada.MDI is
          Update_Dock_Menu (Child);
 
       elsif not Dock and then Child.State = Docked then
+         Ref (Child);
+         Remove_From_Notebook (Child, Child.Dock);
+
          if Children_Are_Maximized (MDI) then
             Put_In_Notebook (MDI, None, Child);
 
          else
-            Ref (Child);
-            Remove_From_Notebook (Child, Child.Dock);
             Alloc := (Child.X, Child.Y,
                       Allocation_Int (Child.Uniconified_Width),
                       Allocation_Int (Child.Uniconified_Height));
             Put (MDI.Layout, Child, 0, 0);
             Size_Allocate (Child, Alloc);
-            Unref (Child);
-            Queue_Resize (Child);
          end if;
          Child.State := Normal;
+
+         Unref (Child);
+         Queue_Resize (Child);
 
          if Child.Maximize_Button /= null then
             Set_Sensitive (Child.Maximize_Button, True);
