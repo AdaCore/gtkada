@@ -265,12 +265,21 @@ package body Gtk.Text is
       pragma Import (C, Emit_By_Name, "g_signal_emit_by_name");
 
    begin
+      if Text.Handling_Insert_Text then
+         return;
+      end if;
+
       Position :=
         Text_Iter.Get_Offset
           (Text_Iter.Get_Text_Iter (Glib.Values.Nth (Params, 1)));
+
+      --  Avoid infinite recursion
+
+      Text.Handling_Insert_Text := True;
       Emit_By_Name
         (Get_Object (Text), "insert_text" & ASCII.NUL,
          Str, Text_Length, Position'Address);
+      Text.Handling_Insert_Text := False;
    end Insert_Text_Handler;
 
    -------------------------
@@ -888,7 +897,8 @@ package body Gtk.Text is
         or else Back /= Gdk.Color.Null_Color
       then
          Text_Buffer.Get_Iter_At_Mark (Buffer, Start_Iter, Insert_Mark);
-         Start_Mark := Text_Buffer.Create_Mark (Buffer, Where => Start_Iter);
+         Start_Mark :=
+           Text_Buffer.Create_Mark (Buffer, Where => Start_Iter);
       end if;
 
       Text_Buffer.Insert_At_Cursor
