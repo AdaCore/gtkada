@@ -121,14 +121,16 @@ package body Gtk.Glade is
       Is_Internal : Boolean := False;
 
    begin
+      --  Do not generate code for internal children, since these are handled
+      --  directly by their parents
       Is_Internal := Get_Attribute (N.Parent, "internal-child") /= "";
+      if Is_Internal then
+         return;
+      end if;
 
       C := N.Specific_Data.Created;
-
-      if not Is_Internal then
-         Get_Gate (S) (N, File);
-         End_Generate (Project, N, File);
-      end if;
+      Get_Gate (S) (N, File);
+      End_Generate (Project, N, File);
 
       if not C and then S /= "placeholder" then
          New_Line (File);
@@ -265,10 +267,9 @@ package body Gtk.Glade is
                if Get_Attribute (P, "internal-child") = "" then
                   T := Find_Tag (P.Child, "widget");
                else
+                  --  Do not generate variables for internal children, since
+                  --  these are handled directly by their parents
                   T := null;
-                  Print_Var
-                    (P.Child.Child, File, Kind, False,
-                     Accelerator, Tooltip);
                end if;
             else
                T := P;
