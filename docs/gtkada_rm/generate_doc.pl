@@ -226,6 +226,7 @@ foreach $source_file (@source_files) {
 	my (%signals) = &find_signals ($cfile . ".h", @content);
 	my (@hierarchy) = &find_hierarchy (@content);
 	my (@subprogs) = &get_subprograms (@content);
+	my (%types) = &get_types (@content);
 
 
 	## Prepare the submenu
@@ -233,6 +234,7 @@ foreach $source_file (@source_files) {
 	&output ("\@menu\n");
 	&output ("* $package_name Widget Hierarchy::\n") if (@hierarchy);
 	&output ("* $package_name Signals::\n")          if (keys %signals);
+	&output ("* $package_name Types::\n")            if (%types);
 	&output ("* $package_name Subprograms::\n")      if (@subprogs);
 	
 	if (&get_tag_value ("example", @content)) {
@@ -254,11 +256,16 @@ foreach $source_file (@source_files) {
 			          . "s (\@pxref{Package_%s})\n",
 			       $hierarchy[$level] . "}",
 			       &package_from_type ($hierarchy[$level]));
-		$hierarchy_short .= " " x ($level * 3)
+		my ($line) = " " x ($level * 3)
 		    . sprintf ("\\___ %-" . (25 - $level * 3)
-			          . "s (Package %s)\n",
+			       . "s (Package %s)\n",
 			       $hierarchy[$level],
 			       &package_from_type ($hierarchy[$level]));
+		if (length ($line) > 75) {
+		    my ($length) = " " x ($level * 3);
+		    $line =~ s/\(/\n$length        \(/;
+		}
+		$hierarchy_short .= $line;		
 	    }
 	    &color_output ($section_bg, $section_fg,
 			   "\@node $package_name Widget Hierarchy\n",
@@ -294,6 +301,35 @@ foreach $source_file (@source_files) {
 	    &output ("\@end itemize\n\n");
 	}
 
+	## List of types (sorted)
+
+	if (%types) {
+	    &color_output ($section_bg, $section_fg,
+			   "\@node $package_name Types\n",
+			   "\@section Types\n\n");
+#	    &output ("\@itemize \@bullet\n");
+	    &html_output ("<TABLE width=100% border=0 ",
+			  "CELLSPACING=0>");
+
+	    foreach $type (sort keys %types) {
+		&html_output ("<TR>",
+			      "<TD WIDTH=$tab1_width></TD>",
+			      "<TD BGCOLOR=$subprog_bg valign=top>");
+#		&output ("\@item \n");
+		&output ("\@smallexample\n\@exdent ",
+			 $types{$type}[0],
+			 "\n\@end smallexample");
+		&html_output ("</TD></TR><TR>",
+			      "<TD WIDTH=$tab1_width></TD>\n<TD>");
+		&output ("\@noindent\n",
+			 $types{$type}[1], "\@*\n",
+			 "\@ifhtml\n<BR><BR>\n\@end ifhtml\n");
+		&html_output ("</TD></TR>");
+	    }
+	    &html_output ("</TABLE>");
+#	    &output ("\@end itemize\n");
+	}
+	
 	## List of subprograms (sorted)
 
 	if (@subprogs) {
@@ -311,7 +347,7 @@ foreach $source_file (@source_files) {
 
 		if ($return eq "--") {
 		    if ($has_itemize == 1) {
-			&output ("\@end itemize\n");
+#			&output ("\@end itemize\n");
 			$has_itemize = 0;
 		    }
 		    &html_output ("<TR><TD colspan=3 BGCOLOR=$subsection_bg>");
@@ -329,7 +365,7 @@ foreach $source_file (@source_files) {
 		}
 
 		if ($has_itemize == 0) {
-		    &output ("\@itemize \@bullet\n\n");
+#		    &output ("\@itemize \@bullet\n\n");
 		    $has_itemize = 1;
 		}
 
@@ -381,12 +417,13 @@ foreach $source_file (@source_files) {
 		&html_output ("</TD></TR><TR>",
 			      "<TD WIDTH=$tab1_width></TD>",
 			      "<TD colspan=2 WIDTH=$tab23_width>");
-		&output ($comment, "\@*\n",
+		&output ("\@noindent\n",
+			 $comment, "\@*\n",
 			 "\@ifhtml\n<BR><BR>\n\@end ifhtml\n");
 		&html_output ("</TD></TR>");
 	    }
 	    if ($has_itemize == 1)  {
-		&output ("\@end itemize\n\n");
+#		&output ("\@end itemize\n\n");
 	    }
 	    &html_output ("</TABLE>");
 	}
@@ -543,10 +580,10 @@ sub expand_include () {
 	    push (@strings, $1);
 	    my ($file, $rest) = ($2, $3);
 
-	    open (INCLUDE_FILE, "$src_dir/$file") ||
-		die "Could not open $src_dir/$file";
-	    push (@strings, "\n--  " . join ("--  ", <INCLUDE_FILE>) . "\n" . $rest);
-	    close (INCLUDE_FILE);
+	    if (open (INCLUDE_FILE, "$src_dir/$file")) {
+		push (@strings, "\n--  " . join ("--  ", <INCLUDE_FILE>) . "\n" . $rest);
+		close (INCLUDE_FILE);
+	    }
 
 	} else {
 	    push (@strings, $line);
@@ -556,6 +593,148 @@ sub expand_include () {
     return @strings;
 }
 
+
+# Return the list of types defined in the Ada file $1.
+# This function does not return the type defined in the private part of the
+# package.
+# It returns a hash-table:
+#  return ::= (type_name => (string_to_display, comment), ...)
+
+sub get_types () {
+    my (@content) = @_;
+    my (%types) = ();
+    my ($current) = "";
+    my ($description);
+    
+    while (($line = shift @content)) {
+
+	# Skip the private part
+	if ($line =~ /^\s*private/) {
+	    return %types;
+	}
+	
+	if ($line =~ /^\s*((sub)?type)\s*(\S+)\s+(.)/) {
+	    $current = $3;
+#	    print "======$current====\n";
+	    $description = "$1 $current is ";
+
+	    # Be sure that we have on the same line the "is" and the following
+	    # character or word (open parenthesis or new).
+	    if ($line =~ /\sis\s*$/ || $line !~ /\sis/) {
+		$line .= shift @content;
+	    }
+
+	    # Likewise for an access type, which could be an access to
+	    # subprogram
+	    if ($line =~ /access\s*$/) {
+		$line .= shift @content;
+	    }
+	    
+	    $line =~ s/^\s+/ /g;
+
+	    # For an access to function type
+	    if ($line =~ s/access\s+(function|procedure)/access $1/) {
+		my ($is_function) = ($1 eq "function");
+		$line =~ s/\(/\n    \(/;
+		$line =~ /(access (.|\n)*)/;
+		$description .= $1;
+		my ($length) = "    ";
+		while ($line !~ /\)/) {
+		    $line = shift @content;
+		    $line =~ s/^\s+/ /;
+		    $description .= $length . $line;
+		}
+
+		# Add the 'return' line
+		if ($is_function) {
+		    $line = shift @content;
+		    $line =~ s/^\s+/ /;
+		    $description .= "   $line";
+		}
+	    }
+
+	    # Else for a record type
+	    elsif ($line =~ /\Wrecord\W/) {
+		$description .= "record\n";
+		while ($line !~ /record;/) {
+		    $line = shift @content;
+		    chop $line;
+		    $line =~ s/^\s+//;
+		    if ($line =~ s/^\s*--\s*//) {
+			$description .= "      -- $line\n";
+		    } else {
+			$description .= "    $line\n";
+		    }			
+		}
+	    }
+	    
+	    # Else if we have an enumeration type, get all the possible values
+	    # and the associated comments
+	    elsif ($line =~ s/^.*\sis\s+\(\s*(.*)//) {
+		# There can be multiple values on the same line, separated
+		# by commas.
+
+		my ($length) = ' ' x (length ($description) - 0);
+		$description .= "\n    ($1\n";
+		$length = "    ";
+		while ($description !~ /\)/) {
+		    $line = shift @content;
+
+		    # If we have a comment
+		    if ($line =~ /^\s*--\s*(.*)$/) {
+			$description .= $length . "    -- $1\n";
+		    }
+
+		    # Else we have one or more possible values
+		    else {
+			$line =~ s/\s+/ /g;
+			$description .= "$length$line\n";
+		    }
+		}
+	    }
+
+	    # Else for a simple type, skip to the end of its definition
+	    else {
+		$line =~ /\sis\s+(.*)$/;
+		$description .= $1;
+		while ($line !~ /;/) {
+		    $line = shift @content;
+		    $line =~ s/\s+/ /g;
+		    $description .= $line;
+		}
+	    }
+	    
+#	    print $description;
+
+	    $line = shift @content;
+
+	    # If we have a comment associated with the type, read it.
+	    my ($comment) = "";
+	    if ($line =~ /^\s*--/) {
+		while ($line !~ /^\s*$/) {
+		    $line =~ s/^\s*--\s*/ /;
+		    $comment .= $line;
+		    $line = shift @content;
+		}
+	    } else {
+		unshift (@content, $line);
+	    }
+#	    print "\n===>\n$comment\n==============\n";
+#	    print $description, "\n";
+#	    print &highlight_keywords ($description), "\n";
+
+	    # Do not keep the widgets themselves
+	    if ($current !~ /_Record/
+		&& $description !~ /access all .*_Record/) {
+		$types{$current} = [&highlight_keywords ($description),
+				    $comment];
+	    }
+	}
+    }
+    return %types;
+}
+
+    
 # Returns the list of signals defined in the C file $1.
 # The Ada file is defined in $2
 # If the Ada file has a "<signals>" tag, then this is used instead
