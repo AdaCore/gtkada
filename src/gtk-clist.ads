@@ -101,6 +101,8 @@ package Gtk.Clist is
      (Clist  : access Gtk_Clist_Record; Column : in Gint)
       return String;
 
+   function Get_Focus_Row (Clist : access Gtk_Clist_Record) return Gint;
+
    function Get_Hadjustment (Clist  : access  Gtk_Clist_Record)
                              return           Gtk.Adjustment.Gtk_Adjustment;
 

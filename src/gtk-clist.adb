@@ -279,6 +279,19 @@ package body Gtk.Clist is
         (Internal (Get_Object (Clist), Column));
    end Get_Column_Title;
 
+
+   ---------------------
+   --  Get_Focus_Row  --
+   ---------------------
+
+   function Get_Focus_Row (Clist : access Gtk_Clist_Record) return Gint is
+      function Internal (Clist : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_clist_get_focus_row");
+   begin
+      return Internal (Get_Object (Clist));
+   end Get_Focus_Row;
+
+
    ---------------------
    -- Get_Hadjustment --
    ---------------------
