@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
+--                     Copyright (C) 1998-2000                       --
 --        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -320,11 +320,6 @@ package body Gtk.Tree is
       Gen_Set (N, "Tree", "selection_mode", File);
       Gen_Set (N, "Tree", "view_lines", File);
       Gen_Set (N, "Tree", "view_mode", File);
-
-      if not N.Specific_Data.Has_Container then
-         Gen_Call_Child (N, null, "Container", "Add", File => File);
-         N.Specific_Data.Has_Container := True;
-      end if;
    end Generate;
 
    procedure Generate (Tree : in out Gtk_Object;
@@ -359,13 +354,6 @@ package body Gtk.Tree is
          Set_View_Mode
            (Gtk_Tree (Tree),
             Gtk_Tree_View_Mode'Value (S (S'First + 4 .. S'Last)));
-      end if;
-
-      if not N.Specific_Data.Has_Container then
-         Container.Add
-           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name"))),
-            Gtk_Widget (Tree));
-         N.Specific_Data.Has_Container := True;
       end if;
    end Generate;
 
