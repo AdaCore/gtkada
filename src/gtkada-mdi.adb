@@ -4519,12 +4519,6 @@ package body Gtkada.MDI is
                elsif N.Tag.all = "Height" then
                   Height := Guint'Value (N.Value.all);
 
---               elsif N.Tag.all = "Title" then
---                  Set_Title (Child, N.Value.all, Child.Short_Title.all);
---
---               elsif N.Tag.all = "Short_Title" then
---                  Set_Title (Child, Child.Title.all, N.Value.all);
-
                elsif N.Tag.all = "State" then
                   State := State_Type'Value (N.Value.all);
 
@@ -4667,23 +4661,6 @@ package body Gtkada.MDI is
          MDI.Desktop_Was_Loaded := True;
 
          while Child_Node /= null loop
---              if Child_Node.Tag.all = "Left" then
---                 Set_Size (MDI.Main_Pane, MDI.Docks (Left),
---                           Gint'Value (Child_Node.Value.all), -1);
---
---              elsif Child_Node.Tag.all = "Right" then
---                 Set_Size (MDI.Main_Pane, MDI.Docks (Right),
---                           Gint'Value (Child_Node.Value.all), -1);
---
---              elsif Child_Node.Tag.all = "Top" then
---                 Set_Size (MDI.Main_Pane, MDI.Docks (Top),
---                           -1, Gint'Value (Child_Node.Value.all));
---
---              elsif Child_Node.Tag.all = "Bottom" then
---                 Set_Size (MDI.Main_Pane, MDI.Docks (Bottom),
---                           -1, Gint'Value (Child_Node.Value.all));
-
---            els
             if Child_Node.Tag.all = "Maximized" then
                Maximize_Children (MDI, Boolean'Value (Child_Node.Value.all));
 
@@ -4839,8 +4816,6 @@ package body Gtkada.MDI is
 
                Add (Child_Node, "Dock", Dock_Side'Image (Child.Dock));
                Add (Child_Node, "State", State_Type'Image (Child.State));
---               Add (Child_Node, "Title", Child.Title.all);
---               Add (Child_Node, "Short_Title", Child.Short_Title.all);
 
                if Child.State = Floating then
                   declare
@@ -4916,14 +4891,6 @@ package body Gtkada.MDI is
          Root := new Node;
          Root.Tag := new String'("MDI");
 
---           Add (Root, "Left",
---                Gint'Image (Get_Allocation_Width (MDI.Docks (Left))));
---           Add (Root, "Right",
---                Gint'Image (Get_Allocation_Width (MDI.Docks (Right))));
---           Add (Root, "Top",
---                Gint'Image (Get_Allocation_Height (MDI.Docks (Top))));
---           Add (Root, "Bottom",
---                Gint'Image (Get_Allocation_Height (MDI.Docks (Bottom))));
          Add (Root, "Maximized",
               Boolean'Image (MDI.Central.Children_Are_Maximized));
 
