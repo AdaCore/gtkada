@@ -1557,7 +1557,7 @@ package body Gtkada.MDI is
    is
       M      : MDI_Window := MDI_Window (MDI);
       Cursor : Gdk_Cursor;
-      Tmp    : Boolean;
+      Tmp    : Gdk_Grab_Status;
       Win_X  : Gint;
       Win_Y  : Gint;
 
@@ -1724,7 +1724,7 @@ package body Gtkada.MDI is
       C      : constant MDI_Child := MDI_Child (Child);
       MDI    : MDI_Window := C.MDI;
       Cursor : Gdk.Cursor.Gdk_Cursor;
-      Tmp    : Boolean;
+      Tmp    : Gdk_Grab_Status;
       Curs   : Gdk_Cursor_Type;
 
    begin
