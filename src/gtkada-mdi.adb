@@ -1039,7 +1039,8 @@ package body Gtkada.MDI is
          Unref (MDI.Highlight_Style);
       end if;
 
-      MDI.Highlight_Style := Copy (Get_Default_Style);
+      Ensure_Style (MDI);
+      MDI.Highlight_Style := Copy (Get_Style (MDI));
 
       if Focus_Title_Color /= Null_Color then
          MDI.Focus_Title_Color := Focus_Title_Color;
