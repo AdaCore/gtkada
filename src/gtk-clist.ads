@@ -31,6 +31,7 @@ with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Pixmap;
 with Gdk.Window;
+with Glib.Glist;
 with Gtk.Adjustment;
 with Gtk.Container;
 with Gtk.Enums; use Gtk.Enums;
@@ -43,6 +44,12 @@ package Gtk.Clist is
    type Gtk_Clist_Record is new Gtk.Container.Gtk_Container_Record
      with private;
    type Gtk_Clist is access all Gtk_Clist_Record'Class;
+
+   type Gtk_Clist_Row is new Object_Type;
+
+   function Convert (C : in Gtk_Clist_Row) return System.Address;
+   function Convert (W : System.Address) return Gtk_Clist_Row;
+   package Row_List is new Glib.Glist.Generic_List (Gtk_Clist_Row);
 
 
    function Append (Clist : access Gtk_Clist_Record;
@@ -115,6 +122,9 @@ package Gtk.Clist is
       Is_Valid : out Boolean);
    --  The result is not meaningful if Is_Valid is false
    --  The only way to get the string is to use Get_Text (See below)
+
+   function Get_Row_List (Clist : access Gtk_Clist_Record)
+                          return         Row_List.Glist;
 
    function Get_Row_Style (Clist  : access Gtk_Clist_Record;
                            Row    : in     Gint)
@@ -346,13 +356,14 @@ package Gtk.Clist is
    generic
       type Data_Type (<>) is private;
    package Row_Data is
-      function Get (Object : access Gtk_Clist_Record; Row : in Gint)
+      function Get (Object : access Gtk_Clist_Record'Class;
+                    Row    : in     Gint)
                     return Data_Type;
 
-      procedure Set (Object : access Gtk_Clist_Record;
+      procedure Set (Object : access Gtk_Clist_Record'Class;
                      Row    : in Gint;
                      Data   : in Data_Type);
-      --  Note : maps gtk_clist_set_row_data_full
+      --  maps gtk_clist_set_row_data_full
 
       --  gint gtk_clist_find_row_from_data ([...])
 

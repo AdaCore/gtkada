@@ -148,6 +148,26 @@ package body Gtk.Clist is
       return Internal (Get_Object (Clist));
    end Columns_Autosize;
 
+   ---------------
+   --  Convert  --
+   ---------------
+
+   function Convert (C : in Gtk_Clist_Row) return System.Address is
+   begin
+      return Get_Object (C);
+   end Convert;
+
+   ---------------
+   --  Convert  --
+   ---------------
+
+   function Convert (W : System.Address) return Gtk_Clist_Row is
+      Result : Gtk_Clist_Row;
+   begin
+      Set_Object (Result, W);
+      return Result;
+   end Convert;
+
    ------------
    -- Freeze --
    ------------
@@ -333,6 +353,22 @@ package body Gtk.Clist is
       Gdk.Set_Object (Pixmap, Pix);
       Gdk.Set_Object (Mask, Msk);
    end Get_Pixtext;
+
+
+   ------------------
+   -- Get_Row_List --
+   ------------------
+
+   function Get_Row_List (Clist : access Gtk_Clist_Record)
+                          return         Row_List.Glist
+   is
+      function Internal (Widget : in System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_clist_get_row_list");
+      List : Row_List.Glist;
+   begin
+      Row_List.Set_Object (List, Internal (Get_Object (Clist)));
+      return List;
+   end Get_Row_List;
 
    -------------------
    -- Get_Row_Style --
@@ -1225,8 +1261,8 @@ package body Gtk.Clist is
       -- Get --
       ---------
 
-      function Get (Object : access Gtk_Clist_Record;
-                    Row    : in Gint)
+      function Get (Object : access Gtk_Clist_Record'Class;
+                    Row    : in     Gint)
                     return Data_Type
       is
          function Internal (Object : in System.Address;
@@ -1236,9 +1272,6 @@ package body Gtk.Clist is
          D : Cb_Record_Access
            := Convert (Internal (Get_Object (Object), Row));
       begin
-         if D = null then
-            raise Constraint_Error;
-         end if;
          return D.Ptr.all;
       end Get;
 
@@ -1246,9 +1279,9 @@ package body Gtk.Clist is
       -- Set --
       ---------
 
-      procedure Set (Object : access Gtk_Clist_Record;
-                     Row    : in Gint;
-                     Data   : in Data_Type)
+      procedure Set (Object : access Gtk_Clist_Record'Class;
+                     Row    : in     Gint;
+                     Data   : in     Data_Type)
       is
          function Convert is new Unchecked_Conversion (Cb_Record_Access,
                                                        System.Address);
