@@ -28,7 +28,7 @@ gnome:
 	@if [ -f ../.devel ]; then \
 	  $(GNATMAKE) -c $(GNATFLAGS_DEVEL) $(FPIC) -I.. -aO../lib-obj make; \
 	else \
-	  $(GNATMAKE) -c $(GNATFLAGS) $(FPIC) -I.. make; \
+	  $(GNATMAKE) -c $(GNATFLAGS) $(FPIC) -I.. -aO../lib-obj make; \
 	fi
 
 $(LIBNAME): gnome
