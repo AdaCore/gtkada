@@ -18,9 +18,9 @@ package body Gtk.Image is
           Mask  : in System.Address);
       pragma Import (C, Internal, "gtk_image_get");
    begin
-      Internal (Get_Object (Image),
-                Get_Object (Val),
-                Get_Object (Mask));
+      Internal (Gtk.Get_Object (Image),
+                Gdk.Get_Object (Val),
+                Gdk.Get_Object (Mask));
    end Get;
 
    -------------
@@ -38,8 +38,8 @@ package body Gtk.Image is
           return      System.Address;
       pragma Import (C, Internal, "gtk_image_new");
    begin
-      Set_Object (Widget, Internal (Get_Object (Val),
-                                    Get_Object (Mask)));
+      Gtk.Set_Object (Widget, Internal (Gdk.Get_Object (Val),
+                                        Gdk.Get_Object (Mask)));
    end Gtk_New;
 
    ---------
@@ -57,9 +57,9 @@ package body Gtk.Image is
           Mask  : in System.Address);
       pragma Import (C, Internal, "gtk_image_set");
    begin
-      Internal (Get_Object (Image),
-                Get_Object (Val),
-                Get_Object (Mask));
+      Internal (Gtk.Get_Object (Image),
+                Gdk.Get_Object (Val),
+                Gdk.Get_Object (Mask));
    end Set;
 
 end Gtk.Image;

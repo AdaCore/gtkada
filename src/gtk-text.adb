@@ -9,17 +9,17 @@ package body Gtk.Text is
    ---------------------
 
    function Backward_Delete
-      (Text   : in Gtk_Text'Class;
-       Nchars : in Guint)
-       return      Gint
+     (Text   : in Gtk_Text'Class;
+      Nchars : in Guint)
+      return      Gint
    is
       function Internal
-         (Text   : in System.Address;
-          Nchars : in Guint)
-          return      Gint;
+        (Text   : in System.Address;
+         Nchars : in Guint)
+         return      Gint;
       pragma Import (C, Internal, "gtk_text_backward_delete");
    begin
-      return Internal (Get_Object (Text),
+      return Internal (Gtk.Get_Object (Text),
                        Nchars);
    end Backward_Delete;
 
@@ -28,17 +28,17 @@ package body Gtk.Text is
    --------------------
 
    function Forward_Delete
-      (Text   : in Gtk_Text'Class;
-       Nchars : in Guint)
-       return      Gint
+     (Text   : in Gtk_Text'Class;
+      Nchars : in Guint)
+      return      Gint
    is
       function Internal
-         (Text   : in System.Address;
-          Nchars : in Guint)
-          return      Gint;
+        (Text   : in System.Address;
+         Nchars : in Guint)
+         return      Gint;
       pragma Import (C, Internal, "gtk_text_forward_delete");
    begin
-      return Internal (Get_Object (Text),
+      return Internal (Gtk.Get_Object (Text),
                        Nchars);
    end Forward_Delete;
 
@@ -51,7 +51,7 @@ package body Gtk.Text is
       procedure Internal (Text : in System.Address);
       pragma Import (C, Internal, "gtk_text_freeze");
    begin
-      Internal (Get_Object (Text));
+      Internal (Gtk.Get_Object (Text));
    end Freeze;
 
    ----------------------
@@ -65,7 +65,7 @@ package body Gtk.Text is
                          return      Guint;
       pragma Import (C, Internal, "ada_text_get_gap_position");
    begin
-      return Internal (Get_Object (Widget));
+      return Internal (Gtk.Get_Object (Widget));
    end Get_Gap_Position;
 
    ------------------
@@ -79,7 +79,7 @@ package body Gtk.Text is
                          return      Guint;
       pragma Import (C, Internal, "ada_text_get_gap_size");
    begin
-      return Internal (Get_Object (Widget));
+      return Internal (Gtk.Get_Object (Widget));
    end Get_Gap_Size;
 
    --------------
@@ -94,7 +94,7 @@ package body Gtk.Text is
       pragma Import (C, Internal, "ada_text_get_hadj");
       Adj : Gtk.Adjustment.Gtk_Adjustment;
    begin
-      Set_Object (Adj, Internal (Get_Object (Widget)));
+      Gtk.Set_Object (Adj, Internal (Gtk.Get_Object (Widget)));
       return Adj;
    end Get_Hadj;
 
@@ -109,7 +109,7 @@ package body Gtk.Text is
                          return      Guint;
       pragma Import (C, Internal, "gtk_text_get_length");
    begin
-      return Internal (Get_Object (Text));
+      return Internal (Gtk.Get_Object (Text));
    end Get_Length;
 
    ---------------
@@ -123,7 +123,7 @@ package body Gtk.Text is
                          return      Guint;
       pragma Import (C, Internal, "gtk_text_get_point");
    begin
-      return Internal (Get_Object (Text));
+      return Internal (Gtk.Get_Object (Text));
    end Get_Point;
 
    --------------
@@ -137,7 +137,7 @@ package body Gtk.Text is
                          return      Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_text_get_text");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Widget)));
+      return Interfaces.C.Strings.Value (Internal (Gtk.Get_Object (Widget)));
    end Get_Text;
 
    ------------------
@@ -151,7 +151,7 @@ package body Gtk.Text is
                          return      Guint;
       pragma Import (C, Internal, "ada_text_get_text_end");
    begin
-      return Internal (Get_Object (Widget));
+      return Internal (Gtk.Get_Object (Widget));
    end Get_Text_End;
 
    -------------
@@ -159,20 +159,20 @@ package body Gtk.Text is
    -------------
 
    procedure Gtk_New
-      (Widget : out Gtk_Text;
-       Hadj   : in Gtk.Adjustment.Gtk_Adjustment'Class
-                   := Gtk.Adjustment.Null_Adjustment;
-       Vadj   : in Gtk.Adjustment.Gtk_Adjustment'Class
-                   := Gtk.Adjustment.Null_Adjustment)
+     (Widget : out Gtk_Text;
+      Hadj   : in Gtk.Adjustment.Gtk_Adjustment'Class
+        := Gtk.Adjustment.Null_Adjustment;
+      Vadj   : in Gtk.Adjustment.Gtk_Adjustment'Class
+        := Gtk.Adjustment.Null_Adjustment)
    is
       function Internal
-         (Hadj   : in System.Address;
-          Vadj   : in System.Address)
-          return      System.Address;
+        (Hadj   : in System.Address;
+         Vadj   : in System.Address)
+         return      System.Address;
       pragma Import (C, Internal, "gtk_text_new");
    begin
-      Set_Object (Widget, Internal (Get_Object (Hadj),
-                                    Get_Object (Vadj)));
+      Gtk.Set_Object (Widget, Internal (Gtk.Get_Object (Hadj),
+                                        Gtk.Get_Object (Vadj)));
    end Gtk_New;
 
    --------------
@@ -187,7 +187,7 @@ package body Gtk.Text is
       pragma Import (C, Internal, "ada_text_get_vadj");
       Adj : Gtk.Adjustment.Gtk_Adjustment;
    begin
-      Set_Object (Adj, Internal (Get_Object (Widget)));
+      Gtk.Set_Object (Adj, Internal (Gtk.Get_Object (Widget)));
       return Adj;
    end Get_Vadj;
 
@@ -196,25 +196,25 @@ package body Gtk.Text is
    ------------
 
    procedure Insert
-      (Text   : in Gtk_Text'Class;
-       Font   : in Gdk.Font.Gdk_Font'Class;
-       Fore   : in Gdk.Color.Gdk_Color'Class;
-       Back   : in Gdk.Color.Gdk_Color'Class;
-       Chars  : in String;
-       Length : in Gint)
+     (Text   : in Gtk_Text'Class;
+      Font   : in Gdk.Font.Gdk_Font'Class;
+      Fore   : in Gdk.Color.Gdk_Color'Class;
+      Back   : in Gdk.Color.Gdk_Color'Class;
+      Chars  : in String;
+      Length : in Gint)
    is
       procedure Internal
-         (Text   : in System.Address;
-          Font   : in System.Address;
-          Fore   : in System.Address;
-          Back   : in System.Address;
-          Chars  : in String;
-          Length : in Gint);
+        (Text   : in System.Address;
+         Font   : in System.Address;
+         Fore   : in System.Address;
+         Back   : in System.Address;
+         Chars  : in String;
+         Length : in Gint);
       pragma Import (C, Internal, "gtk_text_insert");
    begin
-      Internal (Get_Object (Text),
+      Internal (Gtk.Get_Object (Text),
                 Get_Object (Font),
-                Get_Object (Fore),
+        Get_Object (Fore),
                 Get_Object (Back),
                 Chars & Ascii.NUL,
                 Length);
@@ -225,19 +225,19 @@ package body Gtk.Text is
    ---------------------
 
    procedure Set_Adjustments
-      (Text : in Gtk_Text'Class;
-       Hadj : in Gtk.Adjustment.Gtk_Adjustment'Class;
-       Vadj : in Gtk.Adjustment.Gtk_Adjustment'Class)
+     (Text : in Gtk_Text'Class;
+      Hadj : in Gtk.Adjustment.Gtk_Adjustment'Class;
+      Vadj : in Gtk.Adjustment.Gtk_Adjustment'Class)
    is
       procedure Internal
-         (Text : in System.Address;
-          Hadj : in System.Address;
-          Vadj : in System.Address);
+        (Text : in System.Address;
+         Hadj : in System.Address;
+         Vadj : in System.Address);
       pragma Import (C, Internal, "gtk_text_set_adjustments");
    begin
-      Internal (Get_Object (Text),
-                Get_Object (Hadj),
-                Get_Object (Vadj));
+      Internal (Gtk.Get_Object (Text),
+                Gtk.Get_Object (Hadj),
+                Gtk.Get_Object (Vadj));
    end Set_Adjustments;
 
    ------------------
@@ -245,15 +245,15 @@ package body Gtk.Text is
    ------------------
 
    procedure Set_Editable
-      (Text     : in Gtk_Text'Class;
-       Editable : in Boolean)
+     (Text     : in Gtk_Text'Class;
+      Editable : in Boolean)
    is
       procedure Internal
-         (Text     : in System.Address;
-          Editable : in Gint);
+        (Text     : in System.Address;
+         Editable : in Gint);
       pragma Import (C, Internal, "gtk_text_set_editable");
    begin
-      Internal (Get_Object (Text),
+      Internal (Gtk.Get_Object (Text),
                 Boolean'Pos (Editable));
    end Set_Editable;
 
@@ -262,15 +262,15 @@ package body Gtk.Text is
    ---------------
 
    procedure Set_Point
-      (Text  : in Gtk_Text'Class;
-       Index : in Guint)
+     (Text  : in Gtk_Text'Class;
+      Index : in Guint)
    is
       procedure Internal
-         (Text  : in System.Address;
-          Index : in Guint);
+        (Text  : in System.Address;
+         Index : in Guint);
       pragma Import (C, Internal, "gtk_text_set_point");
    begin
-      Internal (Get_Object (Text),
+      Internal (Gtk.Get_Object (Text),
                 Index);
    end Set_Point;
 
@@ -279,15 +279,15 @@ package body Gtk.Text is
    -------------------
 
    procedure Set_Word_Wrap
-      (Text      : in Gtk_Text'Class;
-       Word_Wrap : in Boolean)
+     (Text      : in Gtk_Text'Class;
+      Word_Wrap : in Boolean)
    is
       procedure Internal
-         (Text      : in System.Address;
-          Word_Wrap : in Gint);
+        (Text      : in System.Address;
+         Word_Wrap : in Gint);
       pragma Import (C, Internal, "gtk_text_set_word_wrap");
    begin
-      Internal (Get_Object (Text),
+      Internal (Gtk.Get_Object (Text),
                 Boolean'Pos (Word_Wrap));
    end Set_Word_Wrap;
 
@@ -300,7 +300,7 @@ package body Gtk.Text is
       procedure Internal (Text : in System.Address);
       pragma Import (C, Internal, "gtk_text_thaw");
    begin
-      Internal (Get_Object (Text));
+      Internal (Gtk.Get_Object (Text));
    end Thaw;
 
 end Gtk.Text;

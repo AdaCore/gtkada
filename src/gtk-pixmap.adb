@@ -19,7 +19,7 @@ package body Gtk.Pixmap is
           Mask   : in System.Address);
       pragma Import (C, Internal, "gtk_pixmap_get");
    begin
-      Internal (Get_Object (Pixmap),
+      Internal (Gtk.Get_Object (Pixmap),
                 Get_Object (Val),
                 Get_Object (Mask));
    end Get;
@@ -36,7 +36,7 @@ package body Gtk.Pixmap is
       pragma Import (C, Internal, "ada_pixmap_get_mask");
       Tmp : Gdk.Bitmap.Gdk_Bitmap;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Widget)));
+      Set_Object (Tmp, Internal (Gtk.Get_Object (Widget)));
       return Tmp;
    end Get_Mask;
 
@@ -52,7 +52,7 @@ package body Gtk.Pixmap is
       pragma Import (C, Internal, "ada_pixmap_get_pixmap");
       Tmp : Gdk.Pixmap.Gdk_Pixmap;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Widget)));
+      Set_Object (Tmp, Internal (Gtk.Get_Object (Widget)));
       return Tmp;
    end Get_Pixmap;
 
@@ -71,7 +71,7 @@ package body Gtk.Pixmap is
           return      System.Address;
       pragma Import (C, Internal, "gtk_pixmap_new");
    begin
-      Set_Object (Widget, Internal (Get_Object (Pixmap),
+      Gtk.Set_Object (Widget, Internal (Get_Object (Pixmap),
                                     Get_Object (Mask)));
    end Gtk_New;
 
@@ -90,9 +90,9 @@ package body Gtk.Pixmap is
           Mask   : in System.Address);
       pragma Import (C, Internal, "gtk_pixmap_set");
    begin
-      Internal (Get_Object (Pixmap),
-                Get_Object (Val),
-                Get_Object (Mask));
+      Internal (Gtk.Get_Object (Pixmap),
+                Gdk.Get_Object (Val),
+                Gdk.Get_Object (Mask));
    end Set;
 
 end Gtk.Pixmap;

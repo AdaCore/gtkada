@@ -21,7 +21,7 @@ package body Gtk.Preview is
           W       : in Gint);
       pragma Import (C, Internal, "gtk_preview_draw_row");
    begin
-      Internal (Get_Object (Preview),
+      Internal (Gtk.Get_Object (Preview),
                 Data'Address,
                 X,
                 Y,
@@ -52,7 +52,7 @@ package body Gtk.Preview is
       pragma Import (C, Internal, "gtk_preview_get_info");
       Widget : Gtk_Preview_Info;
    begin
-      Set_Object (Widget, Internal);
+      Gtk.Set_Object (Widget, Internal);
       return Widget;
    end Get_Info;
 
@@ -81,7 +81,7 @@ package body Gtk.Preview is
                          return        System.Address;
       pragma Import (C, Internal, "gtk_preview_new");
    begin
-      Set_Object (Widget, Internal (Gtk_Preview_Type'Pos (The_Type)));
+      Gtk.Set_Object (Widget, Internal (Gtk_Preview_Type'Pos (The_Type)));
    end Gtk_New;
 
    ---------
@@ -111,7 +111,7 @@ package body Gtk.Preview is
           Height  : in Gint);
       pragma Import (C, Internal, "gtk_preview_put");
    begin
-      Internal (Get_Object (Preview),
+      Internal (Gtk.Get_Object (Preview),
                 Get_Object (Window),
                 Get_Object (Gc),
                 Srcx,
@@ -143,7 +143,7 @@ package body Gtk.Preview is
           W       : in Gint);
       pragma Import (C, Internal, "gtk_preview_put_row");
    begin
-      Internal (Get_Object (Preview),
+      Internal (Gtk.Get_Object (Preview),
                 Src'Address,
                 Dest'Address,
                 X,
@@ -199,7 +199,7 @@ package body Gtk.Preview is
           Expand  : in Gint);
       pragma Import (C, Internal, "gtk_preview_set_expand");
    begin
-      Internal (Get_Object (Preview),
+      Internal (Gtk.Get_Object (Preview),
                 Expand);
    end Set_Expand;
 
@@ -254,7 +254,7 @@ package body Gtk.Preview is
           Height  : in Gint);
       pragma Import (C, Internal, "gtk_preview_size");
    begin
-      Internal (Get_Object (Preview),
+      Internal (Gtk.Get_Object (Preview),
                 Width,
                 Height);
    end Size;

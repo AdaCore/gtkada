@@ -11,7 +11,7 @@ package body Gtk is
    function Get_Object (Object : in Root_Type'Class)
                         return System.Address is
    begin
-      return Object.Ptr;
+      return Gdk.Get_Object (Object);
    end Get_Object;
 
    ------------------
@@ -66,7 +66,7 @@ package body Gtk is
                          Value  : in     System.Address) is
       use type System.Address;
    begin
-      Object.Ptr := Value;
+      Gdk.Set_Object (Object, Value);
    end Set_Object;
 
    ---------------

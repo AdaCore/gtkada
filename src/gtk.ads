@@ -1,9 +1,10 @@
 with System;
 with Glib; use Glib;
+with Gdk;
 
 package Gtk is
 
-   type Root_Type is tagged private;
+   type Root_Type is new Gdk.Root_Type with private;
    --
    --  This type is an internal type used as a basis for all types
    --  of Gtk.
@@ -33,9 +34,6 @@ package Gtk is
 
 private
 
-   type Root_Type is tagged
-      record
-         Ptr : System.Address := System.Null_Address;
-      end record;
+   type Root_Type is new Gdk.Root_Type with null record;
 
 end Gtk;
