@@ -50,7 +50,7 @@ package Gtk.Signal is
 
       type Data_Type (<>) is private;
 
-      type Cb_Type is new Gtk.Root_Type with private;
+      type Cb_Type is new Gdk.Root_Type with private;
 
    package Two_Callback is
 
