@@ -5,6 +5,7 @@
 #include "gtkextra/gtksheet.h"
 #include "gtkextra/gtkcombobox.h"
 #include "gtkextra/gtkfontcombo.h"
+#include "gtkextra/gtkcolorcombo.h"
 #include "gtkextra/gtkitementry.h"
 
 /********************************************************************
@@ -228,6 +229,36 @@ ada_gtk_font_combo_get_italic_button (GtkFontCombo* combo) {
 GdkFont*
 ada_gtk_font_combo_get_font (GtkFontCombo* combo) {
   return combo->font;
+}
+
+/********************************************************************
+ **
+ **  Gtk_Color_Combo widget
+ **
+ ********************************************************************/
+
+gint ada_gtk_extra_color_combo_get_column (GtkColorCombo* combo) {
+  return combo->column;
+}
+
+gint ada_gtk_extra_color_combo_get_row (GtkColorCombo* combo) {
+  return combo->row;
+}
+
+gint ada_gtk_extra_color_combo_get_ncols (GtkColorCombo* combo) {
+  return combo->ncols;
+}
+
+gint ada_gtk_extra_color_combo_get_nrows (GtkColorCombo* combo) {
+  return combo->nrows;
+}
+
+void ada_gtk_extra_color_combo_set_row (GtkColorCombo* combo, gint row) {
+  combo->row = row;
+}
+
+void ada_gtk_extra_color_combo_set_column (GtkColorCombo* combo, gint col) {
+  combo->column = col;
 }
 
 /********************************************************************

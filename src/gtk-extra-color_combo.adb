@@ -27,11 +27,23 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gdk.Color;
+with Gdk.Color;   use Gdk.Color;
 with System;
 with Interfaces.C.Strings;
+with System;
+with Gtk.Widget;
 
 package body Gtk.Extra.Color_Combo is
+
+   procedure Set_Row
+     (Combo : access Gtk_Color_Combo_Record'Class;
+      Row   : Gint);
+   --  Set the selected row in the widget
+
+   procedure Set_Column
+     (Combo  : access Gtk_Color_Combo_Record'Class;
+      Column : Gint);
+   --  Set the selected column in the widget
 
    ----------------
    -- Find_Color --
@@ -134,5 +146,148 @@ package body Gtk.Extra.Color_Combo is
       return Interfaces.C.Strings.Value
         (Internal (Get_Object (Widget), Row, Col));
    end Get_Color_At;
+
+   ---------------
+   -- Set_Color --
+   ---------------
+
+   function Set_Color
+     (Color_Combo : access Gtk_Color_Combo_Record;
+      Name        : String)
+      return Boolean
+   is
+      Color : Gdk_Color;
+   begin
+      Color := Parse (Name);
+      Alloc (Gtk.Widget.Get_Default_Colormap, Color);
+      return Set_Color (Color_Combo, Color);
+   end Set_Color;
+
+   ---------------
+   -- Set_Color --
+   ---------------
+
+   function Set_Color
+     (Color_Combo : access Gtk_Color_Combo_Record;
+      Color       : Gdk.Color.Gdk_Color)
+      return Boolean
+   is
+      Row, Col : Gint;
+   begin
+      Find_Color (Color_Combo, Color, Row, Col);
+
+      if Row = -1 or else Col = -1 then
+         return False;
+      end if;
+
+      --  ??? Need to press the button in the popup window
+
+      Set_Row (Color_Combo, Row);
+      Set_Column (Color_Combo, Col);
+      Changed (Color_Combo, Row, Col);
+      return True;
+   end Set_Color;
+
+   -------------
+   -- Changed --
+   -------------
+
+   procedure Changed
+     (Color_Combo : access Gtk_Color_Combo_Record;
+      Row : Gint;
+      Col : Gint)
+   is
+      procedure Internal
+        (Combo     : System.Address;
+         Signal    : String;
+         Selection : Gint;
+         Name      : String);
+      pragma Import (C, Internal, "gtk_signal_emit_by_name");
+   begin
+      Internal (Get_Object (Color_Combo), "changed" & ASCII.Nul,
+                Row * Get_Ncols (Color_Combo) + Col,
+                Get_Color_At (Color_Combo, Row, Col) & ASCII.Nul);
+   end Changed;
+
+
+   ----------------
+   -- Get_Column --
+   ----------------
+
+   function Get_Column (Color_Combo : access Gtk_Color_Combo_Record)
+      return Gint
+   is
+      function Internal (Combo : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_gtk_extra_color_combo_get_column");
+   begin
+      return Internal (Get_Object (Color_Combo));
+   end Get_Column;
+
+   -------------
+   -- Get_Row --
+   -------------
+
+   function Get_Row (Color_Combo : access Gtk_Color_Combo_Record)
+      return Gint
+   is
+      function Internal (Combo : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_gtk_extra_color_combo_get_row");
+   begin
+      return Internal (Get_Object (Color_Combo));
+   end Get_Row;
+
+   ---------------
+   -- Get_Ncols --
+   ---------------
+
+   function Get_Ncols (Color_Combo : access Gtk_Color_Combo_Record)
+      return Gint
+   is
+      function Internal (Combo : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_gtk_extra_color_combo_get_ncols");
+   begin
+      return Internal (Get_Object (Color_Combo));
+   end Get_Ncols;
+
+   ---------------
+   -- Get_Nrows --
+   ---------------
+
+   function Get_Nrows (Color_Combo : access Gtk_Color_Combo_Record)
+      return Gint
+   is
+      function Internal (Combo : System.Address) return Gint;
+      pragma Import (C, Internal, "ada_gtk_extra_color_combo_get_nrows");
+   begin
+      return Internal (Get_Object (Color_Combo));
+   end Get_Nrows;
+
+   -------------
+   -- Set_Row --
+   -------------
+
+   procedure Set_Row
+     (Combo : access Gtk_Color_Combo_Record'Class;
+      Row   : Gint)
+   is
+      procedure Internal (Combo : System.Address; Row : Gint);
+      pragma Import (C, Internal, "ada_gtk_extra_color_combo_set_row");
+   begin
+      Internal (Get_Object (Combo), Row);
+   end Set_Row;
+
+   ----------------
+   -- Set_Column --
+   ----------------
+
+   procedure Set_Column
+     (Combo  : access Gtk_Color_Combo_Record'Class;
+      Column : Gint)
+   is
+      procedure Internal (Combo : System.Address; Column : Gint);
+      pragma Import (C, Internal, "ada_gtk_extra_color_combo_set_column");
+   begin
+      Internal (Get_Object (Combo), Column);
+   end Set_Column;
 
 end Gtk.Extra.Color_Combo;

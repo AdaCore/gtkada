@@ -34,7 +34,9 @@
 --
 --  Note that nothing appears in the button, this your responsibility to
 --  update it when the user selects a new color (see the "changed" signal).
---  </description>
+--  </description>. The recommended solution is to put a Gtk_Pixmap as the
+--  child of the button of the combo box ("Add (Get_Button (Combo), Pixmap)"),
+--  and updated it in the handler for this signal.
 --  <c_version>gtk+extra 0.99.5</c_version>
 
 with Gdk.Color;
@@ -83,6 +85,48 @@ package Gtk.Extra.Color_Combo is
                          Row         : out Gint;
                          Col         : out Gint);
    --  Return the coordinates in which a color appear in the popup window.
+   --  (-1, -1) is returned if the color was not found in the combo box.
+
+   function Set_Color
+     (Color_Combo : access Gtk_Color_Combo_Record;
+      Name        : String)
+     return Boolean;
+   --  Set the new current color. If the color is not found in the list of
+   --  colors provided in the popup window, False is returned.
+
+   function Set_Color
+     (Color_Combo : access Gtk_Color_Combo_Record;
+      Color       : Gdk.Color.Gdk_Color)
+     return Boolean;
+   --  Set the new current color. Color must have been allocated first.  If the
+   --  color is not found in the list of colors provided in the popup window,
+   --  False is returned.
+
+   function Get_Column (Color_Combo : access Gtk_Color_Combo_Record)
+      return Gint;
+   --  Return the currently selected column in the popup window. You can get
+   --  the currently selected color by using Get_Color_At and passing it the
+   --  current Row and Column.
+
+   function Get_Row (Color_Combo : access Gtk_Color_Combo_Record) return Gint;
+   --  Return The currently selected row.
+
+   function Get_Ncols (Color_Combo : access Gtk_Color_Combo_Record)
+      return Gint;
+   --  Return the number of columns in the popup window
+
+   function Get_Nrows (Color_Combo : access Gtk_Color_Combo_Record)
+      return Gint;
+   --  Return the number of rows in the popup window
+
+   procedure Changed
+     (Color_Combo : access Gtk_Color_Combo_Record;
+      Row : Gint;
+      Col : Gint);
+   --  Emit the changed signal for the widget, as if the color at coordinates
+   --  (Row, Col) had been selected.
+   --  Note that this doesn't change the internal state of the widget (use
+   --  Set_Color for that).
 
    -------------
    -- Signals --
