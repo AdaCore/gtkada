@@ -17,11 +17,10 @@ misc.o: misc.c misc-manu.c misc-joel.c
 .c.o:
 	$(CC) $(CFLAGS) $<
 
-clean::
+clean:
 	-${RM} *.o *.ali *~ main b_main.c
-        -${RM} test_link.adb test_link b_test_link.c
-
-
+	-${RM} test_link.adb test_link b_test_link.c
 test_link: *.ad[sb] $(OBJECTS)
-        ./create_test_link.pl > test_link.adb
+	./create_test_link.pl > test_link.adb
 	$(GNATMAKE) test_link $(GNATFLAGS) -largs $(GNATLARGS)
+
