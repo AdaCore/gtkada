@@ -32,7 +32,6 @@ with Gtk.Arrow;
 with Gtk.Aspect_Frame;
 with Gtk.Box;
 with Gtk.Button;
---  with Gtk.Button_Box;
 with Gtk.Calendar;
 with Gtk.Check_Button;
 with Gtk.Check_Menu_Item;
@@ -51,9 +50,9 @@ with Gtk.File_Selection;
 --  with Gtk.Font_Selection;
 with Gtk.Frame;
 --  with Gtk.Gamma_Curve;
---  with Gtk.GEntry;
+with Gtk.GEntry;
 --  with Gtk.Handle_Box;
---  with Gtk.Hbutton_Box;
+with Gtk.Hbutton_Box;
 --  with Gtk.Image;
 with Gtk.Input_Dialog;
 with Gtk.Item;
@@ -87,7 +86,7 @@ with Gtk.Toolbar;
 --  with Gtk.Tooltips;
 with Gtk.Tree;
 with Gtk.Tree_Item;
---  with Gtk.VButton_Box;
+with Gtk.Vbutton_Box;
 --  with Gtk.Viewport;
 with Gtk.Widget;
 with Gtk.Window;
@@ -417,7 +416,7 @@ package body Gtk.Glade is
 
                if S.all = "GtkCombo" then
                   Put_Line (File, "   " &
-                    To_Ada (Get_Field (P.Parent, "name").all) &
+                    To_Ada (Get_Field (P, "name").all) &
                     "_Items : String_List.Glist;");
                end if;
 
@@ -605,8 +604,6 @@ begin
      (Gtk.Box.Generate'Access, Gtk.Box.Generate'Access));
    SHT.Set (new String '("GtkButton"),
      (Gtk.Button.Generate'Access, Gtk.Button.Generate'Access));
-   --  SHT.Set (new String '("GtkButtonBox"),
-   --    (Gtk.Button_Box.Generate'Access, Gtk.Button_Box.Generate'Access));
    SHT.Set (new String '("GtkCalendar"),
      (Gtk.Calendar.Generate'Access, Gtk.Calendar.Generate'Access));
    SHT.Set (new String '("GtkCheckButton"),
@@ -647,12 +644,12 @@ begin
      (Gtk.Frame.Generate'Access, Gtk.Frame.Generate'Access));
    --  SHT.Set (new String '("GtkGammaCurve"),
    --    (Gtk.Gamma_Curve.Generate'Access, Gtk.Gamma_Curve.Generate'Access));
-   --  SHT.Set (new String '("GtkGentry"),
-   --    (Gtk.GEntry.Generate'Access, Gtk.GEntry.Generate'Access));
+   SHT.Set (new String '("GtkEntry"),
+     (Gtk.GEntry.Generate'Access, Gtk.GEntry.Generate'Access));
    --  SHT.Set (new String '("GtkHandleBox"),
    --    (Gtk.Handle_Box.Generate'Access, Gtk.Handle_Box.Generate'Access));
-   --  SHT.Set (new String '("GtkHButtonBox"),
-   --    (Gtk.Hbutton_Box.Generate'Access, Gtk.Hbutton_Box.Generate'Access));
+   SHT.Set (new String '("GtkHButtonBox"),
+     (Gtk.Hbutton_Box.Generate'Access, Gtk.Hbutton_Box.Generate'Access));
    --  SHT.Set (new String '("GtkImage"),
    --    (Gtk.Image.Generate'Access, Gtk.Image.Generate'Access));
    SHT.Set (new String '("GtkInputDialog"),
@@ -732,8 +729,8 @@ begin
      (Gtk.Tree.Generate'Access, Gtk.Tree.Generate'Access));
    SHT.Set (new String '("GtkTreeItem"),
      (Gtk.Tree_Item.Generate'Access, Gtk.Tree_Item.Generate'Access));
-   --  SHT.Set (new String '("GtkVButtonBox"),
-   --    (Gtk.VButton_Box.Generate'Access, Gtk.VButton_Box.Generate'Access));
+   SHT.Set (new String '("GtkVButtonBox"),
+     (Gtk.Vbutton_Box.Generate'Access, Gtk.Vbutton_Box.Generate'Access));
    --  SHT.Set (new String '("GtkViewport"),
    --    (Gtk.Viewport.Generate'Access, Gtk.Viewport.Generate'Access));
    SHT.Set (new String '("GtkWindow"),
