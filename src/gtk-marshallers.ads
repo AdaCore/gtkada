@@ -30,31 +30,35 @@
 --  <description>
 --  This package provides a set of generic packages to easily create
 --  some Marshallers. Although this package has been designed to be
---  easily reusable, the primary aim of this package is to simplify the
---  use of callbacks.
+--  easily reusable, its primary aim is to simplify the use of callbacks.
+--
+--  Note that most users don't need to understand or even look at this
+--  package, since the main functions are also renamed in the Gtk.Handlers
+--  package (They are called To_Marshaller). This package is rather
+--  complex (generic packages inside generic packages), and thus you should
+--  understand correctly how Gtk.Handlers work before looking at this one.
 --
 --  To understand the paradigm used in this package, some definitions
 --  are necessary:
 --
---     A Handler, or Callback, is a procedure (or a function) provided
---     by the user. This handler, when attached to a particular object,
---     can be called back when certain events happen during the life of
---     this object. All handlers take as a first argument an access to
---     the object they were attached to. Depending on the callback, this
+--     A Handler, or Callback, is a subprogram provided by the user.
+--     This handler, when attached to a particular object, will be
+--     called when certain events happen during the life of this
+--     object. All handlers take as a first argument an access to
+--     the object they were attached to. Depending on the signal, this
 --     handler can also have some extra parameters; most of the time,
---     one extra parameter will be used. For more information about
+--     only one extra parameter will be used. For more information about
 --     Handlers, refer to the package Gtk.Handlers, where this notion is
 --     explained in more details.
 --
 --     A General_Handler is an access to any Handler. Note that this is
 --     a type used internaly, most users should *not* be using it. It is
---     publicly defined in order to allow users to create any new
---     marshaller that would not be already provided here.
+--     publicly declared so that users can create new marshallers that
+--     would not be already provided here.
 --
---     A Handler_Proxy is a procedure or a function that, from an array
---     of arguments stored in Gtk.Arguments.Gtk_Args and a
---     General_Handler, calls the associated Handler with the
---     appropriate arguments.
+--     A Handler_Proxy is a subprogram that, from an array of arguments
+--     stored in Gtk.Arguments.Gtk_Args and a General_Handler, calls the
+--     associated Handler with the appropriate arguments.
 --
 --     A Marshaller is the association of a General_Handler and a
 --     Handler_Proxy.
@@ -67,13 +71,13 @@
 --  some value?
 --
 --  Depending on that, the appropriate generic package should be chosen.
---  For example, if the callback retuns a value, but does not have
---  access to some user data, then the "User_Return_Marshallers" package
---  should be used. More details about the usage of each package is
---  provided individually below.
+--  For example, if the callback returns a value, but does not expect
+--  user data, then the "Return_Marshallers" package should be used.
+--  More details about the usage of each package is provided individually
+--  below.
 --
---  Each of this package is in turn divided in three generic
---  sub-packages.  The organization of these subpackage is always the
+--  Each of these packages is in turn divided into three generic
+--  sub-packages.  The organization of these subpackages is always the
 --  same :
 --     o The type "Handler" is defined. It describes the profile of the
 --       Handler covered in this generic package.
@@ -87,20 +91,23 @@
 --       the "To_Marshaller" service.
 --
 --  Once again, selecting the right generic sub-package depends on the
---  callback. For instance, the first package, always called
+--  callback. For instance, the first sub-package, always called
 --  "Generic_Marshaller", is to be used when the handler has one extra
 --  argument which is a simple non-tagged type. More details about the
 --  usage of each sub-package is also provided individually.
 --
 --  Although most of the cases are covered by the packages below, some
 --  unusual cases may appear. This is the case for example when the
---  callback accepts three extra parameters. In such cases, two options
+--  callback accepts several extra parameters. In such cases, two options
 --  are available: The first option is to use the "standard" callback
 --  mechanism with one parameter, this parameter being an array of
 --  arguments that you will parse yourself. The second option is to
 --  create a new Marshaller package. This is more interesting if more
 --  than one callback will follow the same pattern. The body of this
 --  package can be used as a good model to build such new marshallers.
+--  See also the example in the GtkAda distribution for how to create your
+--  own marshallers.
+--
 --  </description>
 
 with Gtk.Object;
