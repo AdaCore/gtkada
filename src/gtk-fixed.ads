@@ -59,10 +59,6 @@ package Gtk.Fixed is
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with a Gtk_Fixed.
 
-   function Get_Children
-     (Fixed : access Gtk_Fixed_Record) return Widget.Widget_List.Glist;
-   --  Return the list of Widgets contained in a Gtk_Fixed.
-
    procedure Put
      (Fixed  : access Gtk_Fixed_Record;
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class;

@@ -31,24 +31,6 @@ with System;
 
 package body Gtk.Fixed is
 
-   ------------------
-   -- Get_Children --
-   ------------------
-
-   function Get_Children
-     (Fixed : access Gtk_Fixed_Record) return Widget.Widget_List.Glist
-   is
-      function Internal (Widget : System.Address) return System.Address;
-      pragma Import (C, Internal, "ada_fixed_get_children");
-
-      use Gtk.Widget.Widget_List;
-      Children : Gtk.Widget.Widget_List.Glist;
-
-   begin
-      Set_Object (Children, Internal (Get_Object (Fixed)));
-      return Children;
-   end Get_Children;
-
    -------------
    -- Gtk_New --
    -------------
