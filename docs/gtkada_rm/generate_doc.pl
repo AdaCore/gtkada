@@ -478,7 +478,24 @@ print MENU "\@end menu\n";
 close MENU;
 
 open (OUT, ">$output_file_name");
-foreach $package_name (sort keys %output) {
+foreach $package_name (sort
+		       { if ($a =~ /Glib/ && $b =~ /Glib/) {
+			   return $a cmp $b;
+		       } elsif ($a =~ /Glib/) {
+			   return -1;
+		       } elsif ($b =~ /Glib/) {
+			   return 1;
+		       } else {
+			   if ($a =~ /GtkAda/i && $b =~ /GtkAda/i) {
+			       return $a cmp $b;
+			   } elsif ($a =~ /GtkAda/i) {
+			       return -1;
+			   } elsif ($b =~ /GtkAda/i) {
+			       return 1;
+			   } else {
+			       return $a cmp $b;
+			   }
+		       }} keys %output) {
     print OUT join ("", @{$output{$package_name}}), "\n";
 }
 close OUT;
