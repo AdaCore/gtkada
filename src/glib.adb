@@ -130,4 +130,20 @@ package body Glib is
       return String (Prop);
    end Property_Name;
 
+   --------------------------------
+   -- Boxed_Type_Register_Static --
+   --------------------------------
+
+   function Boxed_Type_Register_Static
+     (Name : String;
+      Copy : Boxed_Copy;
+      Free : Boxed_Free) return GType
+   is
+      function Internal
+        (N : String; Copy : Boxed_Copy; Free : Boxed_Free) return GType;
+      pragma Import (C, Internal, "g_boxed_type_register_static");
+   begin
+      return Internal (Name & ASCII.NUL, Copy, Free);
+   end Boxed_Type_Register_Static;
+
 end Glib;

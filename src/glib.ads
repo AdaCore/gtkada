@@ -315,10 +315,35 @@ package Glib is
    GType_Pointer   : constant GType := 17 * (2 ** GType_Fundamental_Shift);
    --  A general pointer type.
 
-   GType_Boxed     : constant GType := 18 * (2 ** GType_Fundamental_Shift);
    GType_Param     : constant GType := 19 * (2 ** GType_Fundamental_Shift);
    GType_Object    : constant GType := 20 * (2 ** GType_Fundamental_Shift);
    --  One of the widgets/objects
+
+   -----------------
+   -- Boxed types --
+   -----------------
+   --  Boxed types are a convenient way to encapsulate Ada types through a C
+   --  layer. An initialization and a finalization function can be provided.
+   --  The most frequent usage of such types is in argument to signals and
+   --  handlers (See the functions in Glib.Values), or to store such types
+   --  in a Gtk_Tree_Model.
+
+   GType_Boxed     : constant GType := 18 * (2 ** GType_Fundamental_Shift);
+   --  The base type for all boxed types. In tree models, you should use the
+   --  actual type returned by Boxed_Type_Register_Static.
+
+   type Boxed_Copy is access
+      function (Boxed : System.Address) return System.Address;
+   pragma Convention (C, Boxed_Copy);
+   type Boxed_Free is access procedure (Boxed : System.Address);
+   pragma Convention (C, Boxed_Free);
+
+   function Boxed_Type_Register_Static
+     (Name : String;
+      Copy : Boxed_Copy;
+      Free : Boxed_Free) return GType;
+   --  Create a new boxed type
+
 
 private
    type C_Dummy is null record;
