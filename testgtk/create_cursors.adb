@@ -86,9 +86,10 @@ package body Create_Cursors is
    procedure Set_Cursor (Spinner : in out Gtk_Spin_Button;
                          Widget  : in out Gtk_Drawing_Area)
    is
+      pragma Warnings (Off);
       function To_Cursor is new Unchecked_Conversion (Gint,
                                                       Gdk_Cursor_Type);
-      pragma Warnings (Off);
+      pragma Warnings (On);
 
       C      : Gint := Get_Value_As_Int (Spinner);
       Cursor : Gdk_Cursor;
