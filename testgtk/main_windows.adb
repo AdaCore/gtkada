@@ -46,6 +46,7 @@ with Gtk.Main;            use Gtk.Main;
 with Gtk.Notebook;        use Gtk.Notebook;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Handlers;        use Gtk.Handlers;
+with Gtk.Paned;           use Gtk.Paned;
 with Gtk.Style;           use Gtk.Style;
 with Gtk.Text;            use Gtk.Text;
 with Gtk.Clist;           use Gtk.Clist;
@@ -681,35 +682,24 @@ package body Main_Windows is
       Frame    : Gtk.Frame.Gtk_Frame;
       Label    : Gtk.Label.Gtk_Label;
       Box      : Gtk.Box.Gtk_Box;
-      Vbox2    : Gtk.Box.Gtk_Box;
       Tree     : Gtk.Ctree.Gtk_Ctree;
       Scrolled : Gtk_Scrolled_Window;
+      Paned    : Gtk_Paned;
 
    begin
       Gtk_New (Frame);
       Gtk_New (Label, Title);
       Append_Page (Win.Notebook, Child => Frame, Tab_Label => Label);
 
-      Gtk.Box.Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 0);
-      Gtk.Frame.Add (Frame, Widget => Box);
-
-      Gtk_New_Vbox (Vbox2, Homogeneous => False, Spacing => 0);
-      Pack_Start (In_Box  => Box,
-                  Child   => Vbox2,
-                  Expand  => True,
-                  Fill    => True,
-                  Padding => 0);
+      Gtk_New_Hpaned (Paned);
+      Add (Frame, Paned);
 
       Gtk_New (Scrolled);
       Set_Policy (Scrolled,
                   Gtk.Enums.Policy_Automatic,
                   Gtk.Enums.Policy_Always);
-      Pack_Start (In_Box  => VBox2,
-                  Child   => Scrolled,
-                  Expand  => True,
-                  Fill    => True,
-                  Padding => 0);
-      Set_Usize (Scrolled, 170, 500);
+      Pack1 (Paned, Scrolled);
+      Set_Size_Request (Scrolled, 170, 500);
 
       Gtk_New (Tree, 1);
       Set_Selection_Mode (Tree, Gtk.Enums.Selection_Single);
@@ -717,13 +707,10 @@ package body Main_Windows is
       Fill_Gtk_Tree (Tree, Gtkada_Demo, Pixbuf_Demo);
 
       Gtk_New (Gtk_Demo_Frames (Page));
-      Set_Shadow_Type (Gtk_Demo_Frames (Page), The_Type => Gtk.Enums.Shadow_None);
-      Pack_End (In_Box  => Box,
-                Child   => Gtk_Demo_Frames (Page),
-                Expand  => True,
-                Fill    => True,
-                Padding => 0);
-      Set_Usize (Gtk_Demo_Frames (Page), 550, 500);
+      Set_Shadow_Type
+        (Gtk_Demo_Frames (Page), The_Type => Gtk.Enums.Shadow_None);
+      Pack2 (Paned, Gtk_Demo_Frames (Page));
+      Set_Size_Request (Gtk_Demo_Frames (Page), 550, 500);
    end Create_Demo_Frame;
 
    ----------------
