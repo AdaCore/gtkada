@@ -31,7 +31,6 @@ with Glib;        use Glib;
 with Glib.Xml_Int;
 with Gdk.GC;
 with Gdk.Color;
-with Gdk.Cursor;  use Gdk.Cursor;
 with Gdk.Event;
 with Gdk.Pixbuf;
 with Gdk.Rectangle;
@@ -746,20 +745,10 @@ private
       Selected : Dock_Side := None;
       --  The handle that was selected for the resize operation.
 
-      Selected_Child : MDI_Child := null;
-      --  The child that was selected for a resize or move operation
-
-      Initial_Width, Initial_Height : Glib.Gint;
-      --  Initial size of the child currently being resized.
-
       Focus_GC     : Gdk.GC.Gdk_GC;
       Non_Focus_GC : Gdk.GC.Gdk_GC;
       --  The various graphic contexts used to draw the titles of the
       --  children.
-
-      Current_Cursor : Gdk_Cursor_Type := Left_Ptr;
-      --  The cursor currently used within the MDI. It also indicates which
-      --  kind of operation is processing (moving, resizing a corner, ...)
 
       Focus_Child : MDI_Child := null;
       --  The child that currently has the focus. Some default actions will
