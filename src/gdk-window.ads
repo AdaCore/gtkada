@@ -218,10 +218,46 @@ package Gdk.Window is
    --  Gdk_Window yourself, or you won't be able to handle the events.
 
    function Get_Type return Glib.GType;
-   --  Return the internal value associated with Gdk_Window.
+   --  Return the internal lue associated with Gdk_Window.
 
    procedure Destroy (Window : in out Gdk_Window);
    --  Destroy a window and all its children.
+
+   type Gdk_Filter_Return is
+     (Continue,  --  Event not handled, continue processing
+      Translate, --  Translated event stored
+      Remove);   --  Terminate processing, removing event
+
+   type Gdk_Filter_Func is access function
+     (System_Event : C_Proxy;
+      Event        : Gdk.Event.Gdk_Event;
+      Data         : System.Address) return Gdk_Filter_Return;
+   --  A filter function, that will be called before the standard processing
+   --  in gtk+. System_Event is the raw event from the system,
+   --
+   --  Event hasn't been set when this function is set, and the function should
+   --  set it to a meaningful value if it returns Translate.
+   --
+   --  Data is the user_data that was passed with Add_Filter.
+
+   procedure Add_Filter
+     (Window : Gdk.Gdk_Window;
+      Filter : Gdk_Filter_Func;
+      Data   : System.Address);
+   --  Add an event filter to Window, allowing you to intercept events
+   --  before they reach GDK. This is a low-level operation and makes it
+   --  easy to break GDK and/or GTK+, so you have to know what you're
+   --  doing. Pass null for Window to get all events for all windows,
+   --  instead of events for a specific window.
+   --
+   --  This can be used for a temporary keyboard grab, although you should
+   --  consider using Gdk.Main.Keyboard_Grab instead.
+
+   procedure Remove_Filter
+     (Window : Gdk.Gdk_Window;
+      Filter : Gdk_Filter_Func;
+      Data   : System.Address);
+   --  Removing the filter that was previously associated with Filter and Data
 
    function Get_Window_Type (Window : Gdk_Window) return Gdk_Window_Type;
 
@@ -512,6 +548,7 @@ private
 
    Null_Window : constant Gdk_Window := null;
    pragma Import (C, Get_Type, "gdk_window_object_get_type");
+   pragma Import (C, Add_Filter, "gdk_window_add_filter");
    pragma Import (C, Clear, "gdk_window_clear");
    pragma Import (C, Clear_Area, "gdk_window_clear_area");
    pragma Import (C, Clear_Area_E, "gdk_window_clear_area_e");
@@ -547,6 +584,7 @@ private
    pragma Import (C, Move_Resize, "gdk_window_move_resize");
    pragma Import (C, Gdk_Raise, "gdk_window_raise");
    pragma Import (C, Ref, "gdk_drawable_ref");
+   pragma Import (C, Remove_Filter, "gdk_window_remove_filter");
    pragma Import (C, Reparent, "gdk_window_reparent");
    pragma Import (C, Resize, "gdk_window_resize");
    pragma Import (C, Set_Child_Shapes, "gdk_window_set_child_shapes");
