@@ -36,13 +36,11 @@ package Gdk.Rectangle is
    --  The constant above can be used in Gtk.Widget.Draw when you want to
    --  redraw the whole widget
 
-   procedure Gdk_New (Rectangle : out Gdk_Rectangle);
-
    procedure Gdk_New (Rectangle :    out Gdk_Rectangle;
-                      X         : in     Gint16;
-                      Y         : in     Gint16;
-                      Width     : in     Guint16;
-                      Height    : in     Guint16);
+                      X         : in     Gint16 := 0;
+                      Y         : in     Gint16 := 0;
+                      Width     : in     Guint16 := 0;
+                      Height    : in     Guint16 := 0);
 
    procedure Destroy (Rectangle : in out Gdk_Rectangle'Class);
 

@@ -106,26 +106,15 @@ package body Gdk.Rectangle is
       return Internal (Get_Object (Rectangle));
    end Get_Y;
 
-
-   ---------------
-   --  Gdk_New  --
-   ---------------
-
-   procedure Gdk_New (Rectangle : out Gdk_Rectangle) is
-   begin
-      Gdk_New (Rectangle, 0, 0, 0, 0);
-   end Gdk_New;
-
-
    ---------------
    --  Gdk_New  --
    ---------------
 
    procedure Gdk_New (Rectangle :    out Gdk_Rectangle;
-                      X         : in     Gint16;
-                      Y         : in     Gint16;
-                      Width     : in     Guint16;
-                      Height    : in     Guint16) is
+                      X         : in     Gint16 := 0;
+                      Y         : in     Gint16 := 0;
+                      Width     : in     Guint16 := 0;
+                      Height    : in     Guint16 := 0) is
       function Internal (X, Y : in Gint16; Width, Height : in Guint16)
                          return System.Address;
       pragma Import (C, Internal, "ada_gdk_rectangle_new_with_data");
