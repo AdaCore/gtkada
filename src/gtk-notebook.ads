@@ -296,14 +296,12 @@ package Gtk.Notebook is
    --  Modify the text displayed in the tab for the page that contains Child.
    --  This is a less general form of Set_Tab_Label above.
 
-   --  <doc_ignore>
-   --  This function is only needed by Gate.
    procedure Set_Tab
      (Notebook  : access Gtk_Notebook_Record;
       Page_Num  : Gint;
       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Set Notebook tab widget
-   --  </doc_ignore>
+   --  Set Notebook tab widget for a given page number.
+   --  This function is mainly intended for use by Gate.
 
    function Get_Menu_Label
      (Notebook : access Gtk_Notebook_Record;
