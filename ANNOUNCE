@@ -8,11 +8,12 @@ The primary download site is http://gtkada.eu.org
 
 New features in 1.2.11 include:
 
+- various refreshing/displaying problems fixed in the GUI builder under Windows
 - new functions Gtk.Viewport.Get_Bin_Window,
    Gtk.Notebook.Get_Allocation_[Height, Width, X, Y]
 - gmodule is now bound in Glib.Module
 - libglade is now bound in Glade and Glade.XML, and obsoletes the capability
-  previousely provided by Gtk.Glade
+  previousely provided in Gtk.Glade
 - Gtk.Glade.Register_Generate allows to add easily support for new widgets
   in Gate
 
