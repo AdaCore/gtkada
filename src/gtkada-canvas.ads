@@ -95,7 +95,7 @@ package Gtkada.Canvas is
    --  Font used when displaying link annotation.
    --  This is the name of a postscript font, as defined in Gtk.Extra.PsFont.
 
-   Default_Annotation_Height : constant := 7;
+   Default_Annotation_Height : constant := 8;
    --  Default Height use for the annotation font.
 
    Default_Grid_Size         : constant := 15;

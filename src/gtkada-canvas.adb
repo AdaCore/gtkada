@@ -2678,7 +2678,7 @@ package body Gtkada.Canvas is
       end if;
 
       Font_Size := To_Canvas_Coordinates (Canvas, Canvas.Annotation_Height);
-      if Font_Size >= 4 then
+      if Font_Size >= 1 then
          Canvas.Font := Get_Gdkfont (Canvas.Annotation_Font.all, Font_Size);
       else
          Canvas.Font := null;
