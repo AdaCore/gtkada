@@ -17,8 +17,10 @@ with Gtk.Widget;
 with Gtk.Window;
 
 with Create_Buttons;
+with Create_Button_Box;
 with Create_Check_Buttons;
 with Create_Color_Selection;
+with Create_File_Selection;
 
 --  with Ada.Text_IO; use Ada.Text_IO;
 
@@ -70,7 +72,7 @@ package body Test is
 
 
    Buttons : constant Buttons_Array :=
-     ((US ("button box"), null),
+     ((US ("button box"), Create_Button_Box.Run'Access),
       (US ("buttons"), Create_Buttons.Run'Access),
       (US ("check buttons"), Create_Check_Buttons.Run'Access),
       (US ("clist"), null),
@@ -79,7 +81,7 @@ package body Test is
       (US ("dialog"), null),
       (US ("dnd"), null),
       (US ("entry"), null),
-      (US ("file selection"), null),
+      (US ("file selection"), Create_File_Selection.Run'Access),
       (US ("gamma curve"), null),
       (US ("handle box"), null),
       (US ("list"), null),
