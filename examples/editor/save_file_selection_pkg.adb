@@ -7,6 +7,7 @@ with Gtk.Enums;  use Gtk.Enums;
 with Gtk.Pixmap; use Gtk.Pixmap;
 with Gtk.Accel_Group; use Gtk.Accel_Group;
 with Callbacks_Gladeedit; use Callbacks_Gladeedit;
+with Save_File_Selection_Pkg.Callbacks; use Save_File_Selection_Pkg.Callbacks;
 
 package body Save_File_Selection_Pkg is
 

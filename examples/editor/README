@@ -3,3 +3,6 @@ It basically demonstrates the same functionnalities, but in Ada ;-)
 
 To compile it, install GtkAda and run
 gnatmake gladeedit `gtkada-config`
+
+To modify it trough glade, type
+glade editor.glade

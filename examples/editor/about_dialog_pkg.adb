@@ -7,6 +7,7 @@ with Gtk.Enums;  use Gtk.Enums;
 with Gtk.Pixmap; use Gtk.Pixmap;
 with Gtk.Accel_Group; use Gtk.Accel_Group;
 with Callbacks_Gladeedit; use Callbacks_Gladeedit;
+with About_Dialog_Pkg.Callbacks; use About_Dialog_Pkg.Callbacks;
 
 package body About_Dialog_Pkg is
 
