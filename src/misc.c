@@ -182,16 +182,40 @@ GType ada_gsignal_query_return_type (GSignalQuery* query) {
  **     void (*handler2) (...);                // handler for second signal
  **     ...
  **     void (*handlern) (...);                // handler for nth signal
+ **     VirtualFunctions * virtual;            // pointer to virtual interface
+ **                                            // functions
  **     GObjectGetPropertyFunc real_get_property;
  **                                            // pointer to the get_property
  **                                            // in user's code
  **     GObjectSetPropertyFunc real_set_property;
  **                                            // likewise for set_property
  **  };
+ **
+ ** struct VirtualFunctions {
+ **     void (*virtual) (...);                 // first virtual function for
+ **                                            // interfaces
+ **     ...
+ **     void (*virtual) (...);
+ ** }
+
  *********************************************************************/
 
 GType ada_type_from_class (gpointer klass) {
   return G_TYPE_FROM_CLASS (klass);
+}
+
+void* ada_get_nth_virtual_function (GObjectClass* class, gint num)
+{
+  GTypeQuery query;
+  gpointer * virtual_functions;
+  
+  g_type_query (G_TYPE_FROM_CLASS (class), &query);
+  virtual_functions = (gpointer*)((char*)(class)
+				  + query.class_size
+				  - sizeof (GObjectGetPropertyFunc)
+				  - sizeof (GObjectSetPropertyFunc)
+				  - sizeof (gpointer));
+  return virtual_functions + num * sizeof (gpointer);
 }
 
 void*
@@ -202,7 +226,9 @@ ada_initialize_class_record
    GType         parameters[],
    gint          max_parameters,
    GObjectClass* old_class_record,
-   gchar*        type_name)
+   gchar*        type_name,
+   gint          num_virtual_functions,
+   gpointer*     virtual_functions)
 {
   GObjectClass* klass;
   
@@ -217,6 +243,7 @@ ada_initialize_class_record
       GTypeInfo * class_info = g_new (GTypeInfo, 1);
       GTypeQuery query;
       GType new_type;
+      gpointer* virtual;
       int j;
 
       /* We need to know the ancestor's class/instance sizes */
@@ -225,7 +252,8 @@ ada_initialize_class_record
       class_info->class_size = query.class_size
 	+ nsignals * sizeof (void*)
 	+ sizeof (GObjectGetPropertyFunc)
-	+ sizeof (GObjectSetPropertyFunc);
+	+ sizeof (GObjectSetPropertyFunc)
+	+ sizeof (void*); /* Last one if for virtual functions */
       class_info->base_init = NULL;
       class_info->base_finalize = NULL;
       class_info->class_init = NULL;
@@ -277,7 +305,20 @@ ada_initialize_class_record
 	}
 
       /* Initialize the function pointers for the new signals to NULL */
-      memset ((char*)(klass) + query.class_size, 0, nsignals * sizeof (void*));
+      memset ((char*)(klass) + query.class_size, 0,
+	      nsignals * sizeof (void*)
+	      + sizeof (GObjectGetPropertyFunc)
+	      + sizeof (GObjectSetPropertyFunc)
+	      + sizeof (void*));
+
+      virtual = (gpointer*) malloc (num_virtual_functions * sizeof (gpointer));
+      *((gpointer**)((char*)klass + query.class_size + nsignals * sizeof (void*)))
+	= virtual;
+
+      for (j = 0; j < num_virtual_functions; j++) {
+	virtual [j] = virtual_functions [j];
+      }
+      
     }
   else
     {
