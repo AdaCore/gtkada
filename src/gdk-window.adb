@@ -132,6 +132,26 @@ package body Gdk.Window is
       return Cmap;
    end Get_Colormap;
 
+
+   --------------------------------
+   --  Get_Desk_Relative_Origin  --
+   --------------------------------
+
+   procedure Get_Desk_Relative_Origin (Window  : in     Gdk_Window;
+                                       X       :    out Gint;
+                                       Y       :    out Gint;
+                                       Success :    out Boolean) is
+      function Internal (Window : in     System.Address;
+                         X, Y   : in     System.Address)
+        return Gboolean;
+      pragma Import (C, Internal, "gdk_window_get_deskrelative_origin");
+      Result : Gboolean;
+   begin
+      Result := Internal (Get_Object (Window), X'Address, Y'Address);
+      Success := To_Boolean (Result);
+   end Get_Desk_Relative_Origin;
+
+
    ------------------
    --  Get_Events  --
    ------------------
@@ -207,6 +227,22 @@ package body Gdk.Window is
       Internal (Get_Object (Window), X, Y);
    end Get_Position;
 
+
+   -----------------------
+   --  Get_Root_Origin  --
+   -----------------------
+
+   procedure Get_Root_Origin (Window : in     Gdk_Window;
+                              X      :    out Gint;
+                              Y      :    out Gint) is
+      procedure Internal (Window : in     System.Address;
+                          X, Y   :    out Gint);
+      pragma Import (C, Internal, "gdk_window_get_root_origin");
+   begin
+      Internal (Get_Object (Window), X, Y);
+   end Get_Root_Origin;
+
+
    ----------------
    --  Get_Size  --
    ----------------
@@ -281,6 +317,18 @@ package body Gdk.Window is
    begin
       Internal (Get_Object (Window));
    end Lower;
+
+   --------------------------
+   --  Merge_Child_Shapes  --
+   --------------------------
+
+   procedure Merge_Child_Shapes (Window : in out Gdk_Window) is
+      procedure Internal (Window : in System.Address);
+      pragma Import (C, Internal, "gdk_window_merge_child_shapes");
+   begin
+      Internal (Get_Object (Window));
+   end Merge_Child_Shapes;
+
 
    ------------
    --  Move  --
@@ -390,6 +438,19 @@ package body Gdk.Window is
       --  FIXME: instead of "in". But semantically, I prefer this
       --  FIXME: solution.
    end Set_Background;
+
+
+   ------------------------
+   --  Set_Child_Shapes  --
+   ------------------------
+
+   procedure Set_Child_Shapes (Window : in out Gdk_Window) is
+      procedure Internal (Window : in System.Address);
+      pragma Import (C, Internal, "gdk_window_set_child_shapes");
+   begin
+      Internal (Get_Object (Window));
+   end Set_Child_Shapes;
+
 
    --------------------
    --  Set_Colormap  --

@@ -132,31 +132,10 @@ package Gdk.Window is
    --                                      gint             offset_x,
    --                                      gint             offset_y);
    --
-   --  void gdk_window_dnd_drag_set (GdkWindow  *window,
-   --                                guint8      drag_enable,
-   --                                gchar     **typelist,
-   --                                guint       numtypes);
-   --
-   --  /*
-   --   *XXX todo: add a GDK_DROP_ENTER which can look at actual data
-   --   */
-   --  void gdk_window_dnd_drop_set (GdkWindow  *window,
-   --                                guint8      drop_enable,
-   --                                gchar     **typelist,
-   --                                guint       numtypes,
-   --                                guint8      destructive_op);
-   --
-   --  void gdk_dnd_drag_addwindow  (GdkWindow  *window);
-   --  void gdk_window_dnd_data_set (GdkWindow  *window,
-   --                                GdkEvent   *event,
-   --                                gpointer    data,
-   --                                gulong      data_numbytes);
-   --  void gdk_dnd_set_drag_cursors(GdkCursor *default_cursor,
-   --                                GdkCursor *goahead_cursor);
-   --  void gdk_dnd_set_drag_shape(GdkWindow *default_pixmapwin,
-   --                              GdkPoint *default_hotspot,
-   --                              GdkWindow *goahead_pixmapwin,
-   --                              GdkPoint *goahead_hotspot);
+
+   procedure Set_Child_Shapes (Window : in out Gdk_Window);
+
+   procedure Merge_Child_Shapes (Window : in out Gdk_Window);
 
    procedure Set_Hints (Window     : in out Gdk_Window;
                         X          : in     Gint;
@@ -215,6 +194,15 @@ package Gdk.Window is
                          X       :    out Gint;
                          Y       :    out Gint;
                          Success :    out Boolean);
+
+   procedure Get_Desk_Relative_Origin (Window  : in     Gdk_Window;
+                                       X       :    out Gint;
+                                       Y       :    out Gint;
+                                       Success :    out Boolean);
+
+   procedure Get_Root_Origin (Window : in     Gdk_Window;
+                              X      :    out Gint;
+                              Y      :    out Gint);
 
    --  GdkWindow*    gdk_window_get_pointer     (GdkWindow       *window,
    --                                            gint            *x,
