@@ -4368,7 +4368,7 @@ package body Gtkada.MDI is
          Maximize_Children (MDI, True);
       end if;
    end Single_Window;
-   
+
    -----------
    -- Split --
    -----------
