@@ -53,6 +53,13 @@ package Gtk.Cell_Renderer_Toggle is
    procedure Set_Radio
      (Toggle : access Gtk_Cell_Renderer_Toggle_Record;
       Radio  : Boolean);
+   --  If Setting is True, the cell renderer renders a radio toggle
+   --  (i.e. a toggle in a group of mutually-exclusive toggles).
+   --  If False, it renders a check toggle (a standalone boolean option).
+   --
+   --  Note that this only affects the visual display, but your application is
+   --  still responsible for enforcing the behavior, through the toggled
+   --  signal.
 
    function Get_Active (Toggle : access Gtk_Cell_Renderer_Toggle_Record)
                         return Boolean;
@@ -79,10 +86,10 @@ package Gtk.Cell_Renderer_Toggle is
    -- Properties --
    ----------------
 
-   --  The following properties are defined for this cell_renderer :
+   --  The following properties are defined for this cell_renderer.
    --
-   --   Attribute             Type                      Mode
-   --   =========             ====                      ====
+   --   Attribute             Type in Model             Mode
+   --   =========             =============             ====
    --
    --   "activatable"         Boolean                   Read / Write
    --   "active"              Boolean                   Read / Write
