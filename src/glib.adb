@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
 --          GtkAda - Ada95 binding for the Gimp Toolkit              --
 --                                                                   --
---                     Copyright (C) 1998-2001                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -28,6 +28,7 @@
 -----------------------------------------------------------------------
 
 with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Ada.Unchecked_Conversion;
 
 package body Glib is
 
@@ -153,8 +154,8 @@ package body Glib is
 
    function Build (Name : String) return Property is
    begin
-      if Name (Name'Last) /= ASCII.Nul then
-         return Property (Name & ASCII.Nul);
+      if Name (Name'Last) /= ASCII.NUL then
+         return Property (Name & ASCII.NUL);
       else
          return Property (Name);
       end if;

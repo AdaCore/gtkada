@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -73,6 +73,8 @@ package Glib is
    type Guint16 is mod 2 ** 16;
    type Guint32 is mod 2 ** 32;
    type Guint64 is mod 2 ** 64;
+
+   type Gsize is new C.size_t;
 
    type Gunichar is new Guint32;
 
@@ -336,4 +338,5 @@ private
    pragma Import (C, Fundamental, "ada_gtype_fundamental");
    pragma Import (C, Parent, "g_type_parent");
    pragma Inline (Build);
+
 end Glib;
