@@ -38,6 +38,24 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtktypeutils.h>
 
+#ifndef _WIN32  /* Assuming X11 */
+#include <gdk/gdkx.h>
+
+guint32
+ada_get_xwindow (GdkWindow *w)
+{
+  return GDK_WINDOW_XWINDOW (w);
+}
+
+#else
+
+guint32
+ada_get_xwindow (GdkWindow *w)
+{
+  return 0;
+}
+#endif
+
 gint
 convert_a (void* a)
 {
@@ -3099,8 +3117,8 @@ gtk_container_set_reallocate_redraws (GtkContainer *container,
 }
 #endif
 
-#if GTK_MINOR_VERSION > 2
-/* For Gtk+ 1.3.0 snapshots and future 1.4.x, the following functions have
+#if (GTK_MINOR_VERSION > 2) || (GTK_MAJOR_VERSION > 1)
+/* For Gtk+ 1.3.0 snapshots and future 2.x, the following functions have
    been obsoleted and replaced by macros. Since we cannot import macros from
    Ada, define the proper wrappers to stay compatible with 1.2.x */
 
