@@ -2746,6 +2746,13 @@ package body Gtkada.MDI is
             Focus_Widget);
       end if;
 
+      --  Restore the keyboard focus, which might have been stolen if the new
+      --  child was added to a notebook.
+
+      if MDI.Focus_Child /= null then
+         Grab_Focus (MDI.Focus_Child);
+      end if;
+
       return C;
    end Put;
 
@@ -4694,7 +4701,7 @@ package body Gtkada.MDI is
          end loop;
 
          if Focus_Child /= null then
-            Raise_Child (Focus_Child);
+            Set_Focus_Child (Focus_Child);
          end if;
 
          Queue_Resize (MDI);
