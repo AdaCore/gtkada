@@ -42,12 +42,12 @@ $(target)::
 	@echo $(GNATMAKE) $(GNATFLAGS) $(target) '`'$(GTKADA_CONFIG)'`'
 	@echo "-------------------------------------"
 	@if [ -f $(src_dir)/.devel ]; then \
-	   $(GNATMAKE) $(GNATFLAGS_DEVEL) $(target) -I$(src_dir) -Iopengl -aO$(src_dir)/lib-obj -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
+	   $(GNATMAKE) $(GNATFLAGS_DEVEL) $(target) -I$(src_dir) -I$(src_dir)/opengl -Iopengl -aO$(src_dir)/lib-obj -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
 	else \
-	   $(GNATMAKE) $(GNATFLAGS) $(target) -I$(src_dir) -Iopengl -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
+	   $(GNATMAKE) $(GNATFLAGS) $(target) -I$(src_dir) -I$(src_dir)/opengl -Iopengl -largs $(GNATMAKELDFLAGS) $(OPENGL_C_OBJECTS) $(OPENGL_LIBS); \
 	fi
 
-opengl/view_gl.adb::
+opengl/view_gl.adb:: opengl/view_gl.gpb
 	gnatprep -r -c -DHAVE_GL=$(HAVE_OPENGL) -DWIN32=False \
 	  opengl/view_gl.gpb opengl/view_gl.adb
 
