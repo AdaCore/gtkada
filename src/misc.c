@@ -40,6 +40,14 @@
 #include <gtk/gtktypeutils.h>
 #include <gobject/gsignal.h>
 #include <gobject/gtype.h>
+#include <gobject/gvalue.h>
+#include <gobject/gobject.h>
+#include <gobject/gparam.h>
+#include <gobject/genums.h>
+#include <gobject/gparamspecs.h>
+#include <gobject/gmarshal.h>
+#include <gtk/gtkwidget.h>
+#include <gunicode.h>
 
 #ifndef _WIN32  /* Assuming X11 */
 #include <gdk/gdkx.h>
@@ -141,48 +149,30 @@ ada_gtk_parse_cmd_line (int *gnat_argc, char **gnat_argv, char* macro_switch)
     }
   return 0;
 }
- 
-/********************************************************************
- **  This function checks the number of arguments for a given signal
- **  and a specific widget.
- **  Returns -1 if the signal does not exist
- ********************************************************************/
 
-guint
-ada_signal_count_arguments (GType type, char* signal_name)
-{
-  guint signal_id = g_signal_lookup (signal_name, type);
-  GSignalQuery signal;
+/******************************************
+ ** GSignal                              **
+ ******************************************/
 
-  if (signal_id == 0)
-    return -1;
-  g_signal_query (signal_id, &signal);  
-  return signal.n_params;
+int c_signal_query_size () {
+  return sizeof (GSignalQuery);
 }
 
-/********************************************************************
- **  Returns the type of the num-th argument to the handlers for
- **  signal_name.
- **  If num is negative, returns the type returned by the handler
- ********************************************************************/
+const gchar* ada_gsignal_query_signal_name (GSignalQuery* query) {
+  return query->signal_name;
+}
 
-GType
-ada_signal_argument_type (GType type, char* signal_name, gint num)
-{
-  guint signal_id = g_signal_lookup (signal_name, type);
-  GSignalQuery signal;
+const GType* ada_gsignal_query_params (GSignalQuery* query, guint* n_params) {
+  *n_params = query->n_params;
+  return query->param_types;
+}
 
-  if (signal_id == 0)
-    return GTK_TYPE_INVALID;
+guint ada_gsignal_query_id (GSignalQuery* query) {
+  return query->signal_id;
+}
 
-  g_signal_query (signal_id, &signal);
-
-  if (num < 0)
-    return signal.return_type;
-  else if (num >= signal.n_params)
-    return G_TYPE_NONE;
-  else
-    return signal.param_types [num];
+GType ada_gsignal_query_return_type (GSignalQuery* query) {
+  return query->return_type;
 }
 
 /*********************************************************************
@@ -1950,16 +1940,20 @@ ada_gclosure_get_data (GClosure *closure)
  *  Functions for GValue
  ***************************************************/
 
-GValue*
-ada_gvalue_nth (GValue* value, guint num)
-{
-  return value + num;
-}
-
 gpointer
 ada_gvalue_get_pointer (GValue* value)
 {
   return value->data[0].v_pointer;
+}
+
+void
+ada_gvalue_nth (GValue* value, guint num, GValue* val)
+{
+  *val = *(value + num);
+}
+
+int ada_c_gvalue_size () {
+  return sizeof (GValue);
 }
 
 void
@@ -3095,3 +3089,294 @@ ada_gdk_property_get (GdkWindow	 *window,
 			       actual_length, data);
 }
 
+
+/******************************************
+ ** GEnumClass                           **
+ ******************************************/
+
+int ada_c_enum_value_size () {
+  return sizeof (GEnumValue);
+}
+
+GEnumValue* ada_genum_nth_value (GEnumClass* klass, guint nth) {
+  return (nth < klass->n_values) ? &(klass->values[nth]) : NULL;
+}
+
+gint ada_genum_get_value (GEnumValue* value) {
+  return value->value;
+}
+
+gchar* ada_genum_get_name (GEnumValue* value) {
+  return value->value_name;
+}
+
+gchar* ada_genum_get_nick (GEnumValue* value) {
+  return value->value_nick;
+}
+
+/******************************************
+ ** GFlags                               **
+ ******************************************/
+
+GFlagsValue* ada_gflags_nth_value (GFlagsClass* klass, guint nth) {
+  return (nth < klass->n_values) ? &(klass->values[nth]) : NULL;
+}
+
+gint ada_gflags_get_value (GFlagsValue* value) {
+  return value->value;
+}
+
+gchar* ada_gflags_get_name (GFlagsValue* value) {
+  return value->value_name;
+}
+
+gchar* ada_gflags_get_nick (GFlagsValue* value) {
+  return value->value_nick;
+}
+
+/******************************************
+ ** GParamSpec                           **
+ ******************************************/
+
+char* ada_gparam_get_name (GParamSpec* param) {
+  return param->name;
+}
+
+char* ada_gparam_get_nick (GParamSpec* param) {
+  return param->nick;
+}
+
+char* ada_gparam_get_blurb (GParamSpec* param) {
+  return param->blurb;
+}
+
+GParamFlags ada_gparam_get_flags (GParamSpec* param) {
+  return param->flags;
+}
+
+GType ada_gparam_get_value_type (GParamSpec* param) {
+  return param->value_type;
+}
+
+gint8 ada_gparam_get_minimum_char (GParamSpecChar* param) {
+  return param->minimum;
+}
+
+gint8 ada_gparam_get_maximum_char (GParamSpecChar* param) {
+  return param->maximum;
+}
+
+gint8 ada_gparam_get_default_char (GParamSpecChar* param) {
+  return param->default_value;
+}
+
+guint8 ada_gparam_get_minimum_uchar (GParamSpecUChar* param) {
+  return param->minimum;
+}
+
+guint8 ada_gparam_get_maximum_uchar (GParamSpecUChar* param) {
+  return param->maximum;
+}
+
+guint8 ada_gparam_get_default_uchar (GParamSpecUChar* param) {
+  return param->default_value;
+}
+
+gboolean ada_gparam_get_default_boolean (GParamSpecBoolean* param) {
+  return param->default_value;
+}
+
+gint ada_gparam_get_minimum_int (GParamSpecInt* param) {
+  return param->minimum;
+}
+
+gint ada_gparam_get_maximum_int (GParamSpecInt* param) {
+  return param->maximum;
+}
+
+gint ada_gparam_get_default_int (GParamSpecInt* param) {
+  return param->default_value;
+}
+
+guint ada_gparam_get_minimum_uint (GParamSpecUInt* param) {
+  return param->minimum;
+}
+
+guint ada_gparam_get_maximum_uint (GParamSpecUInt* param) {
+  return param->maximum;
+}
+
+guint ada_gparam_get_default_uint (GParamSpecUInt* param) {
+  return param->default_value;
+}
+
+glong ada_gparam_get_minimum_long (GParamSpecLong* param) {
+  return param->minimum;
+}
+
+glong ada_gparam_get_maximum_long (GParamSpecLong* param) {
+  return param->maximum;
+}
+
+glong ada_gparam_get_default_long (GParamSpecLong* param) {
+  return param->default_value;
+}
+
+gulong ada_gparam_get_minimum_ulong (GParamSpecULong* param) {
+  return param->minimum;
+}
+
+gulong ada_gparam_get_maximum_ulong (GParamSpecULong* param) {
+  return param->maximum;
+}
+
+gulong ada_gparam_get_default_ulong (GParamSpecULong* param) {
+  return param->default_value;
+}
+
+gunichar ada_gparam_get_default_unichar (GParamSpecUnichar* param) {
+  return param->default_value;
+}
+
+glong ada_gparam_get_default_enum (GParamSpecEnum* param) {
+  return param->default_value;
+}
+
+GEnumClass* ada_gparam_get_enum_class_enum (GParamSpecEnum* param) {
+  return param->enum_class;
+}
+
+GFlagsClass* ada_gparam_get_flags_flags (GParamSpecFlags* param) {
+  return param->flags_class;
+}
+
+glong ada_gparam_get_default_flags (GParamSpecFlags* param) {
+  return param->default_value;
+}
+
+gfloat ada_gparam_get_minimum_gfloat (GParamSpecFloat* param) {
+  return param->minimum;
+}
+
+gfloat ada_gparam_get_maximum_gfloat (GParamSpecFloat* param) {
+  return param->maximum;
+}
+
+gfloat ada_gparam_get_default_gfloat (GParamSpecFloat* param) {
+  return param->default_value;
+}
+
+gfloat ada_gparam_get_epsilon_gfloat (GParamSpecFloat* param) {
+  return param->epsilon;
+}
+
+gdouble ada_gparam_get_minimum_gdouble (GParamSpecDouble* param) {
+  return param->minimum;
+}
+
+gdouble ada_gparam_get_maximum_gdouble (GParamSpecDouble* param) {
+  return param->maximum;
+}
+
+gdouble ada_gparam_get_default_gdouble (GParamSpecDouble* param) {
+  return param->default_value;
+}
+
+gdouble ada_gparam_get_epsilon_gdouble (GParamSpecDouble* param) {
+  return param->epsilon;
+}
+
+gchar* ada_gparam_default_string (GParamSpecString* param) {
+  return param->default_value;
+}
+
+gchar* ada_gparam_cset_first_string (GParamSpecString* param) {
+  return param->cset_first;
+}
+
+gchar* ada_gparam_cset_nth_string (GParamSpecString* param) {
+  return param->cset_nth;
+}
+
+gchar ada_gparam_substitutor_string (GParamSpecString* param) {
+  return param->substitutor;
+}
+
+gboolean ada_gparam_ensure_non_null_string (GParamSpecString* param) {
+  return param->ensure_non_null != 0;
+}
+
+/******************************************
+ ** New widgets
+ ******************************************/
+
+void ada_set_properties_handlers (gpointer klass,
+				  GObjectSetPropertyFunc set_handler,
+				  GObjectGetPropertyFunc get_handler)
+{
+  G_OBJECT_CLASS (klass)->set_property = set_handler;
+  G_OBJECT_CLASS (klass)->get_property = get_handler;
+}
+
+GObjectGetPropertyFunc ada_real_get_property_handler (GObject* object)
+{
+  GTypeQuery query;
+  g_type_query (G_TYPE_FROM_INSTANCE (object), &query);
+  return *(GObjectGetPropertyFunc*)((char*)(G_OBJECT_GET_CLASS (object))
+				  + query.class_size
+				    - sizeof (GObjectGetPropertyFunc)
+				  - sizeof (GObjectSetPropertyFunc));
+}
+
+void
+ada_set_real_get_property_handler (gpointer klass,
+				   GObjectGetPropertyFunc handler)
+{
+  GTypeQuery query;
+  g_type_query (G_TYPE_FROM_CLASS (klass), &query);
+  *(GObjectGetPropertyFunc*)((char*)(klass)
+			     + query.class_size
+			     - sizeof (GObjectGetPropertyFunc)
+			     - sizeof (GObjectSetPropertyFunc)) = handler;
+}
+
+GObjectSetPropertyFunc ada_real_set_property_handler (GObject* object)
+{
+  GTypeQuery query;
+  g_type_query (G_TYPE_FROM_INSTANCE (object), &query);
+  return *(GObjectSetPropertyFunc*)((char*)(G_OBJECT_GET_CLASS (object))
+				  + query.class_size
+				  - sizeof (GObjectSetPropertyFunc));
+}
+
+void
+ada_set_real_set_property_handler (gpointer klass,
+				   GObjectSetPropertyFunc handler)
+{
+  GTypeQuery query;
+  g_type_query (G_TYPE_FROM_CLASS (klass), &query);
+  *(GObjectSetPropertyFunc*)((char*)(klass)
+			    + query.class_size
+			    - sizeof (GObjectSetPropertyFunc)) = handler;
+}
+
+void
+ada_genum_create_enum_value
+(gint value, gchar* name, gchar* nick, GEnumValue* val)
+{
+  val->value = value;
+  val->value_name = g_strdup (name);
+  val->value_nick = g_strdup (nick);
+}
+
+/******************************************
+ ** GType                                **
+ ******************************************/
+
+GType ada_g_object_get_type (GObject* object) {
+  return G_OBJECT_TYPE (object);
+}
+
+GType ada_gtype_fundamental (GType type) {
+  return G_TYPE_FUNDAMENTAL (type);
+}
