@@ -27,6 +27,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
+--  <description>
 --  This widget works like a normal menu_item, but you can insert a
 --  arbitrary widget (most often a pixmap widget), which is displayed
 --  at the left side. The advantage is that indentation is handled the
@@ -35,28 +36,65 @@
 --  GtkAda - so if you use a normal menu_item to display pixmaps at the left
 --  side, the pixmaps will be indented, which is not what you want. This widget
 --  solves the problem).
+--  </description>
+--  <c_version>1.3.6</c_version>
 
+with Gtk.Accel_Group;
 with Gtk.Menu_Item;
 with Gtk.Widget;
 
-package Gtk.Pixmap_Menu_Item is
+package Gtk.Image_Menu_Item is
 
-   type Gtk_Pixmap_Menu_Item_Record is new
+   type Gtk_Image_Menu_Item_Record is new
      Gtk.Menu_Item.Gtk_Menu_Item_Record with private;
-   type Gtk_Pixmap_Menu_Item is access all Gtk_Pixmap_Menu_Item_Record'Class;
+   type Gtk_Image_Menu_Item is access all Gtk_Image_Menu_Item_Record'Class;
 
-   procedure Gtk_New (Widget : out Gtk_Pixmap_Menu_Item);
+   procedure Gtk_New
+     (Widget : out Gtk_Image_Menu_Item;
+      Label  : String);
+   --  Create a new Gtk_Image_Menu_Item.
+   --  If label is non null, set the label of the menu item.
 
-   procedure Initialize (Widget : access Gtk_Pixmap_Menu_Item_Record'Class);
+   procedure Gtk_New
+     (Widget      : out Gtk_Image_Menu_Item;
+      Stock_Id    : String;
+      Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group);
+   --  Create a new Gtk_Image_Menu_Item with a label.
+   --  If label contains an underscore, a mnemonic is created accordingly.
+
+   procedure Gtk_New_With_Mnemonic
+     (Widget : out Gtk_Image_Menu_Item;
+      Label  : String);
+   --  Create a new Gtk_Image_Menu_Item with a label.
+   --  If label contains an underscore, a mnemonic is created accordingly.
+
+   procedure Initialize
+     (Widget : access Gtk_Image_Menu_Item_Record'Class;
+      Label  : String);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Initialize
+     (Widget      : access Gtk_Image_Menu_Item_Record'Class;
+      Stock_Id    : String;
+      Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group);
+   --  ditto.
+
+   procedure Initialize_With_Mnemonic
+     (Widget : access Gtk_Image_Menu_Item_Record'Class;
+      Label  : String);
+   --  ditto.
 
    function Get_Type return Gtk.Gtk_Type;
    --  Return the internal value associated with this widget.
 
-   procedure Set_Pixmap
-     (Menu_Item : access Gtk_Pixmap_Menu_Item_Record;
-      Pixmap    : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Set_Image
+     (Menu_Item : access Gtk_Image_Menu_Item_Record;
+      Image     : access Gtk.Widget.Gtk_Widget_Record'Class);
+
+   function Get_Image
+     (Menu_Item : access Gtk_Image_Menu_Item_Record)
+      return Gtk.Widget.Gtk_Widget;
 
    -------------
    -- Signals --
@@ -68,8 +106,8 @@ package Gtk.Pixmap_Menu_Item is
    --  </signals>
 
 private
-   type Gtk_Pixmap_Menu_Item_Record is new
+   type Gtk_Image_Menu_Item_Record is new
      Gtk.Menu_Item.Gtk_Menu_Item_Record with null record;
 
-   pragma Import (C, Get_Type, "gtk_pixmap_menu_item_get_type");
-end Gtk.Pixmap_Menu_Item;
+   pragma Import (C, Get_Type, "gtk_image_menu_item_get_type");
+end Gtk.Image_Menu_Item;

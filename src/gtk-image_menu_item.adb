@@ -27,47 +27,156 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Widget;
 with System;
+with Glib.Type_Conversion_Hooks;
+pragma Elaborate_All (Glib.Type_Conversion_Hooks);
 
-package body Gtk.Pixmap_Menu_Item is
+with Gtk.Widget;
+
+package body Gtk.Image_Menu_Item is
+
+   -----------------------
+   -- Local Subprograms --
+   -----------------------
+
+   function Type_Conversion (Type_Name : String) return GObject;
+   --  This function is used to implement a minimal automated type conversion
+   --  without having to drag the whole Gtk.Type_Conversion package for the
+   --  most common widgets.
 
    -------------
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Pixmap_Menu_Item) is
+   procedure Gtk_New
+     (Widget : out Gtk_Image_Menu_Item;
+      Label  : String) is
    begin
-      Widget := new Gtk_Pixmap_Menu_Item_Record;
-      Initialize (Widget);
+      Widget := new Gtk_Image_Menu_Item_Record;
+      Initialize (Widget, Label);
    end Gtk_New;
+
+   procedure Gtk_New
+     (Widget      : out Gtk_Image_Menu_Item;
+      Stock_Id    : String;
+      Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group) is
+   begin
+      Widget := new Gtk_Image_Menu_Item_Record;
+      Initialize (Widget, Stock_Id, Accel_Group);
+   end Gtk_New;
+
+   ---------------------------
+   -- Gtk_New_With_Mnemonic --
+   ---------------------------
+
+   procedure Gtk_New_With_Mnemonic
+     (Widget : out Gtk_Image_Menu_Item;
+      Label  : String) is
+   begin
+      Widget := new Gtk_Image_Menu_Item_Record;
+      Initialize_With_Mnemonic (Widget, Label);
+   end Gtk_New_With_Mnemonic;
 
    ----------------
    -- Initialize --
    ----------------
 
-   procedure Initialize (Widget : access Gtk_Pixmap_Menu_Item_Record'Class) is
+   procedure Initialize
+     (Widget : access Gtk_Image_Menu_Item_Record'Class;
+      Label  : String)
+   is
       function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_pixmap_menu_item_new");
+      pragma Import (C, Internal, "gtk_image_menu_item_new");
+
+      function Internal2 (S : String) return System.Address;
+      pragma Import (C, Internal2, "gtk_image_menu_item_new_with_label");
+
    begin
-      Set_Object (Widget, Internal);
+      if Label = "" then
+         Set_Object (Widget, Internal);
+      else
+         Set_Object (Widget, Internal2 (Label & ASCII.NUL));
+      end if;
+
       Initialize_User_Data (Widget);
    end Initialize;
 
-   ----------------
-   -- Set_Pixmap --
-   ----------------
+   procedure Initialize
+     (Widget      : access Gtk_Image_Menu_Item_Record'Class;
+      Stock_Id    : String;
+      Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group)
+   is
+      function Internal
+        (Stock_Id    : String;
+         Accel_Group : Gtk.Accel_Group.Gtk_Accel_Group) return System.Address;
+      pragma Import (C, Internal, "gtk_image_menu_item_new_from_stock");
 
-   procedure Set_Pixmap
-     (Menu_Item : access Gtk_Pixmap_Menu_Item_Record;
-      Pixmap    : access Gtk.Widget.Gtk_Widget_Record'Class)
+   begin
+      Set_Object (Widget, Internal (Stock_Id & ASCII.NUL, Accel_Group));
+      Initialize_User_Data (Widget);
+   end Initialize;
+
+   ------------------------------
+   -- Initialize_With_Mnemonic --
+   ------------------------------
+
+   procedure Initialize_With_Mnemonic
+     (Widget : access Gtk_Image_Menu_Item_Record'Class;
+      Label  : String)
+   is
+      function Internal (Label : String) return System.Address;
+      pragma Import (C, Internal, "gtk_image_menu_item_new_with_mnemonic");
+
+   begin
+      Set_Object (Widget, Internal (Label & ASCII.NUL));
+      Initialize_User_Data (Widget);
+   end Initialize_With_Mnemonic;
+
+   ---------------
+   -- Get_Image --
+   ---------------
+
+   function Get_Image
+     (Menu_Item : access Gtk_Image_Menu_Item_Record)
+      return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Menu_Item : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_image_menu_item_get_image");
+
+   begin
+      return Gtk.Widget.Convert (Internal (Get_Object (Menu_Item)));
+   end Get_Image;
+
+   ---------------
+   -- Set_Image --
+   ---------------
+
+   procedure Set_Image
+     (Menu_Item : access Gtk_Image_Menu_Item_Record;
+      Image     : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
         (Menu_Item : System.Address;
-         Pixmap    : System.Address);
-      pragma Import (C, Internal, "gtk_pixmap_menu_item_set_pixmap");
-   begin
-      Internal (Get_Object (Menu_Item), Get_Object (Pixmap));
-   end Set_Pixmap;
+         Image     : System.Address);
+      pragma Import (C, Internal, "gtk_image_menu_item_set_image");
 
-end Gtk.Pixmap_Menu_Item;
+   begin
+      Internal (Get_Object (Menu_Item), Get_Object (Image));
+   end Set_Image;
+
+   ---------------------
+   -- Type_Conversion --
+   ---------------------
+
+   function Type_Conversion (Type_Name : String) return GObject is
+   begin
+      if Type_Name = "GtkImageMenuItem" then
+         return new Gtk_Image_Menu_Item_Record;
+      else
+         return null;
+      end if;
+   end Type_Conversion;
+
+begin
+   Glib.Type_Conversion_Hooks.Add_Hook (Type_Conversion'Access);
+end Gtk.Image_Menu_Item;
