@@ -83,13 +83,17 @@ package Gdk.Rgb is
    --      Gtk.Widget.Pop_Colormap;
 
 
-   type Rgb_Buffer is array (Natural range <>) of Glib.Guchar;
+   type Rgb_Buffer is array (Natural) of Glib.Guchar;
+   type Rgb_Buffer_Access is access all Rgb_Buffer;
    --  This is the buffer that will contain the image. You can manipulate each
    --  byte in it independantly, although there is no high level routine
    --  to draw lines, circles, ...
    --  Once you are done drawing into this buffer, you can copy it to any
    --  drawable on the screen, *if* the widget was created with the correct
    --  visual and colormap (see above).
+   --
+   --  Note also that this is a flat array, and that you can not check its
+   --  ranges.
 
 
    type Gdk_Rgb_Dither is (Dither_None, Dither_Normal, Dither_Max);

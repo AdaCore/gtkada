@@ -82,7 +82,8 @@ package Gdk.Pixbuf is
    function Get_Bits_Per_Sample (Pixbuf : in Gdk_Pixbuf) return Gint;
    --  Number of bits per color sample.
 
-   function Get_Pixels (Pixbuf : in Gdk_Pixbuf) return System.Address;
+   function Get_Pixels (Pixbuf : in Gdk_Pixbuf)
+                       return Gdk.Rgb.Rgb_Buffer_Access;
    --  Return a pointer to the pixel data of the image.
 
    function Get_Width (Pixbuf : in Gdk_Pixbuf) return Gint;
