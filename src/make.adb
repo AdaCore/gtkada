@@ -145,6 +145,7 @@ with Gtk.Separator;
 with Gtk.Socket;
 with Gtk.Spin_Button;
 with Gtk.Status_Bar;
+with Gtk.Stock;
 with Gtk.Style;
 with Gtk.Table;
 with Gtk.Tearoff_Menu_Item;
