@@ -38,7 +38,7 @@ Version @value{GtkAdaVersion}
 
 Date: $Date$
 
-Copyright @copyright{} 1998-1999, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
+Copyright @copyright{} 1998-2000, Emmanuel Briot, Joel Brobecker, Arnaud Charlet
 
 This document may be copied, in whole or in part, in any form or by any
 means, as is or with alterations, provided that (1) alterations are clearly
@@ -153,6 +153,7 @@ This toolkit was tested on the following systems:
 @item HP/UX 10.20
 @item HP/UX 11.00
 @item NT 4.0
+@item Windows 2000
 @item AiX 4.3.2
 @item SCO UnixWare 7.1
 @item FreeBSD 3.2
@@ -191,9 +192,9 @@ information that you might find interesting.
 
 If you are interested in getting support for GtkAda (including priority
 bug fixes, early releases, help in using the toolkit, help in designing
-your interface,@dots{}), please contact Ada Core Technologies
-(sales@@gnat.com).
-
+your interface, on site consulting@dots{}), please contact Ada Core
+Technologies (@uref{mailto:sales@@gnat.com}) or ACT Europe
+(@uref{mailto:sales@@act-europe.fr}).
 
 @c --------------------------------------------------------------------
 @node Getting started with GtkAda
@@ -1081,7 +1082,9 @@ However, if the widget was created implicitly (for instance every time you
 create a Gtk_Button, a Gtk_Label is also created for the text displayed), then
 GtkAda is not, by default, able to create the corresponding Ada type. Instead
 it will create a Gtk_Widget, and you will thus have to do an Uncheck_Cast
-to convert it back to the type you want and expect.
+to convert it back to the type you want and expect. One exception is the
+Gtk_Label (which is the most common case) that will always be recognized
+properly.
 
 In the third case (imported C widgets), GtkAda is not, by default, able to
 create the corresponding Ada type.
