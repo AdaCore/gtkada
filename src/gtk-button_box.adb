@@ -102,4 +102,16 @@ package body Gtk.Button_Box is
       Internal (Get_Object (Button_Box), Layout_Style);
    end Set_Layout;
 
+   ------------------------
+   -- Set_Child_Ipadding --
+   ------------------------
+
+   procedure Set_Child_Ipadding
+     (Button_Box : access Gtk_Button_Box_Record;
+      Ipad_X     : Gint;
+      Ipad_Y     : Gint) is
+   begin
+      null;
+   end Set_Child_Ipadding;
+
 end Gtk.Button_Box;

@@ -89,6 +89,14 @@ package Gtk.Button_Box is
    --  Min_Width and Min_Height are set to -1 if this widget uses the default
    --  sizes that are set by Set_Child_Size_Default.
 
+   --  <doc_ignore>
+   procedure Set_Child_Ipadding
+     (Button_Box : access Gtk_Button_Box_Record;
+      Ipad_X     : Gint;
+      Ipad_Y     : Gint);
+   --  Obsolete no-op procedure.
+   --  </doc_ignore>
+
    -------------
    -- Signals --
    -------------
