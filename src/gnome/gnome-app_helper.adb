@@ -103,10 +103,16 @@ package body Gnome.App_Helper is
 
    procedure Create_Menus
      (App  : access Gnome_App_Record'Class;
-      Info : access UI_Info_Array)
+      Info : UI_Info_Array_Access)
    is
+
+      procedure Internal
+        (App          : System.Address;
+         Info         : System.Address);
+      pragma Import (C, Internal, "gnome_app_create_menus");
+
    begin
-      raise Program_Error;
+      Internal (Get_Object (App), Info.all'Address);
    end Create_Menus;
 
    --------------------
@@ -114,11 +120,16 @@ package body Gnome.App_Helper is
    --------------------
 
    procedure Create_Toolbar
-     (App : access Gnome_App_Record'Class;
-      Info : access UI_Info_Array)
+     (App  : access Gnome_App_Record'Class;
+      Info : UI_Info_Array_Access)
    is
+      procedure Internal
+        (App          : System.Address;
+         Info         : System.Address);
+      pragma Import (C, Internal, "gnome_app_create_toolbar");
+
    begin
-      raise Program_Error;
+      Internal (Get_Object (App), Info.all'Address);
    end Create_Toolbar;
 
    ---------------
@@ -127,7 +138,7 @@ package body Gnome.App_Helper is
 
    procedure Fill_Menu
      (Menu_Shell   : access Gtk_Menu_Shell_Record'Class;
-      Info         : access UI_Info_Array;
+      Info         : UI_Info_Array_Access;
       Accel_Group  : Gtk_Accel_Group := null;
       Uline_Accels : Boolean := False;
       Pos          : Gint := 0;
@@ -195,11 +206,17 @@ package body Gnome.App_Helper is
 
    procedure Fill_Toolbar
      (Toolbar     : access Gtk_Toolbar_Record'Class;
-      Info        : access UI_Info_Array;
+      Info        : UI_Info_Array_Access;
       Accel_Group : Gtk_Accel_Group := null)
    is
+      procedure Internal
+        (Toolbar     : System.Address;
+         Info        : System.Address;
+         Accel_Group : Gtk_Accel_Group);
+      pragma Import (C, Internal, "gnome_app_fill_toolbar");
+
    begin
-      raise Program_Error;
+      Internal (Get_Object (Toolbar), Info.all'Address, Accel_Group);
    end Fill_Toolbar;
 
    -------------------
@@ -221,15 +238,6 @@ package body Gnome.App_Helper is
       return Convert (Internal (Get_Object (Parent), Path & ASCII.NUL, Pos));
    end Find_Menu_Pos;
 
-   -----------------------------
-   -- Gnome_Accelerators_Sync --
-   -----------------------------
-
-   procedure Gnome_Accelerators_Sync is
-   begin
-      raise Program_Error;
-   end Gnome_Accelerators_Sync;
-
    --------------------
    -- Helper_Gettext --
    --------------------
@@ -249,10 +257,16 @@ package body Gnome.App_Helper is
    procedure Insert_Menus
      (App       : access Gnome_App_Record'Class;
       Path      : String;
-      Menu_Info : access UI_Info_Array)
+      Menu_Info : UI_Info_Array_Access)
    is
+      procedure Internal
+        (App       : System.Address;
+         Path      : String;
+         Menu_Info : System.Address);
+      pragma Import (C, Internal, "gnome_app_fill_toolbar");
+
    begin
-      raise Program_Error;
+      Internal (Get_Object (App), Path & ASCII.NUL, Menu_Info.all'Address);
    end Insert_Menus;
 
    ------------------------
@@ -260,9 +274,15 @@ package body Gnome.App_Helper is
    ------------------------
 
    procedure Install_Menu_Hints
-     (App : Gnome_App; Info : access UI_Info_Array) is
+     (App : Gnome_App; Info : UI_Info_Array_Access)
+   is
+      procedure Internal
+        (App  : System.Address;
+         Info : System.Address);
+      pragma Import (C, Internal, "gnome_app_install_menu_hints");
+
    begin
-      raise Program_Error;
+      Internal (Get_Object (App), Info.all'Address);
    end Install_Menu_Hints;
 
    ----------------------------------
@@ -271,10 +291,15 @@ package body Gnome.App_Helper is
 
    procedure Install_Statusbar_Menu_Hints
      (Bar  : Gtk_Statusbar;
-      Info : access UI_Info_Array)
+      Info : UI_Info_Array_Access)
    is
+      procedure Internal
+        (Statusbar : System.Address;
+         Info      : System.Address);
+      pragma Import (C, Internal, "gnome_app_install_statusbar_menu_hints");
+
    begin
-      raise Program_Error;
+      Internal (Get_Object (Bar), Info.all'Address);
    end Install_Statusbar_Menu_Hints;
 
    -----------------------
@@ -287,8 +312,15 @@ package body Gnome.App_Helper is
       Start : Gint;
       Items : Gint)
    is
+      procedure Internal
+        (App   : System.Address;
+         Path  : String;
+         Start : Gint;
+         Items : Gint);
+      pragma Import (C, Internal, "gnome_app_remove_menu_range");
+
    begin
-      raise Program_Error;
+      Internal (Get_Object (App), Path & ASCII.NUL, Start, Items);
    end Remove_Menu_Range;
 
    ------------------
@@ -300,8 +332,14 @@ package body Gnome.App_Helper is
       Path  : String;
       Items : Gint)
    is
+      procedure Internal
+        (App   : System.Address;
+         Path  : String;
+         Items : Gint);
+      pragma Import (C, Internal, "gnome_app_remove_menus");
+
    begin
-      raise Program_Error;
+      Internal (Get_Object (App), Path & ASCII.NUL, Items);
    end Remove_Menus;
 
    ------------------
@@ -459,7 +497,7 @@ package body Gnome.App_Helper is
    ----------------------------
 
    function UI_Info_Menu_Edit_Tree
-     (Tree : access UI_Info_Array) return UI_Info is
+     (Tree : UI_Info_Array_Access) return UI_Info is
    begin
       return
         (UI_Subtree_Stock, New_String (-"_Edit"), Null_Ptr,
@@ -502,7 +540,7 @@ package body Gnome.App_Helper is
    ----------------------------
 
    function UI_Info_Menu_File_Tree
-     (Tree : access UI_Info_Array) return UI_Info is
+     (Tree : UI_Info_Array_Access) return UI_Info is
    begin
       return
         (UI_Subtree_Stock, New_String (-"_File"), Null_Ptr,
@@ -515,7 +553,7 @@ package body Gnome.App_Helper is
    -----------------------------
 
    function UI_Info_Menu_Files_Tree
-     (Tree : access UI_Info_Array) return UI_Info is
+     (Tree : UI_Info_Array_Access) return UI_Info is
    begin
       return
         (UI_Subtree_Stock, New_String (-"Fi_les"), Null_Ptr,
@@ -558,7 +596,7 @@ package body Gnome.App_Helper is
    ----------------------------
 
    function UI_Info_Menu_Game_Tree
-     (Tree : access UI_Info_Array) return UI_Info is
+     (Tree : UI_Info_Array_Access) return UI_Info is
    begin
       return
         (UI_Subtree_Stock, New_String (-"_Game"), Null_Ptr,
@@ -571,7 +609,7 @@ package body Gnome.App_Helper is
    ----------------------------
 
    function UI_Info_Menu_Help_Tree
-     (Tree : access UI_Info_Array) return UI_Info is
+     (Tree : UI_Info_Array_Access) return UI_Info is
    begin
       return
         (UI_Subtree_Stock, New_String (-"_Help"), Null_Ptr,
@@ -631,7 +669,7 @@ package body Gnome.App_Helper is
    ------------------------------
 
    function UI_Info_Menu_New_Subtree
-     (Tree : access UI_Info_Array) return UI_Info is
+     (Tree : UI_Info_Array_Access) return UI_Info is
    begin
       return
         (UI_Subtree_Stock, New_String (-"_New"), Null_Ptr,
@@ -900,7 +938,7 @@ package body Gnome.App_Helper is
    --------------------------------
 
    function UI_Info_Menu_Settings_Tree
-     (Tree : access UI_Info_Array) return UI_Info is
+     (Tree : UI_Info_Array_Access) return UI_Info is
    begin
       return
         (UI_Subtree_Stock, New_String (-"_Settings"), Null_Ptr,
@@ -942,7 +980,7 @@ package body Gnome.App_Helper is
    ----------------------------
 
    function UI_Info_Menu_View_Tree
-     (Tree : access UI_Info_Array) return UI_Info is
+     (Tree : UI_Info_Array_Access) return UI_Info is
    begin
       return
         (UI_Subtree_Stock, New_String (-"_View"), Null_Ptr,
@@ -955,7 +993,7 @@ package body Gnome.App_Helper is
    -------------------------------
 
    function UI_Info_Menu_Windows_Tree
-     (Tree : access UI_Info_Array) return UI_Info is
+     (Tree : UI_Info_Array_Access) return UI_Info is
    begin
       return
         (UI_Subtree_Stock, New_String (-"_Windows"), Null_Ptr,
@@ -985,7 +1023,7 @@ package body Gnome.App_Helper is
 
    function UI_Info_Subtree
      (Label : String;
-      Tree  : access UI_Info_Array) return UI_Info is
+      Tree  : UI_Info_Array_Access) return UI_Info is
    begin
       return
         (UI_Subtree, New_String (Label), Null_Ptr,
@@ -1000,7 +1038,7 @@ package body Gnome.App_Helper is
    function UI_Info_Subtree_Hint
      (Label : String;
       Hint  : String;
-      Tree  : access UI_Info_Array) return UI_Info is
+      Tree  : UI_Info_Array_Access) return UI_Info is
    begin
       return
         (UI_Subtree, New_String (Label), New_String (Hint),
@@ -1014,7 +1052,7 @@ package body Gnome.App_Helper is
 
    function UI_Info_Subtree_Stock
      (Label    : String;
-      Tree     : access UI_Info_Array;
+      Tree     : UI_Info_Array_Access;
       Stock_Id : String) return UI_Info is
    begin
       return
@@ -1082,7 +1120,7 @@ package body Gnome.App_Helper is
 
    function UI_New_Subtree
      (Label           : String;
-      Info            : access UI_Info_Array;
+      Info            : UI_Info_Array_Access;
       Pixmap_Type     : UI_Pixmap_Type := Pixmap_None;
       Pixmap_Info     : String := "";
       Accelerator_Key : Gdk_Key_Type := 0;

@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 --              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                   Copyright (C) 2000-2001                         --
+--                   Copyright (C) 2000-2002                         --
 --                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
@@ -106,6 +106,8 @@ package Gnome.App_Helper is
    --  needed to create menus or toolbars. The most convenient way to create
    --  such a structure is to use the UI_Info_* functions provided below.
 
+   type UI_Info_Array_Access is access UI_Info_Array;
+
    type Generic_Callback is access
      procedure (Widget : access Gtk_Widget_Record'Class);
 
@@ -131,7 +133,7 @@ package Gnome.App_Helper is
 
    function UI_New_Subtree
      (Label           : String;
-      Info            : access UI_Info_Array;
+      Info            : UI_Info_Array_Access;
       Pixmap_Type     : UI_Pixmap_Type := Pixmap_None;
       Pixmap_Info     : String := "";
       Accelerator_Key : Gdk_Key_Type := 0;
@@ -194,18 +196,18 @@ package Gnome.App_Helper is
 
    function UI_Info_Subtree
      (Label : String;
-      Tree  : access UI_Info_Array) return UI_Info;
+      Tree  : UI_Info_Array_Access) return UI_Info;
    --  Insert a subtree (submenu)
 
    function UI_Info_Subtree_Hint
      (Label : String;
       Hint  : String;
-      Tree  : access UI_Info_Array) return UI_Info;
+      Tree  : UI_Info_Array_Access) return UI_Info;
    --  Insert a subtree with a hint
 
    function UI_Info_Subtree_Stock
      (Label    : String;
-      Tree     : access UI_Info_Array;
+      Tree     : UI_Info_Array_Access;
       Stock_Id : String) return UI_Info;
    --  Insert a subtree (submenu) with a stock icon
 
@@ -236,7 +238,7 @@ package Gnome.App_Helper is
       Callback  : Generic_Callback) return UI_Info;
 
    function UI_Info_Menu_New_Subtree
-     (Tree : access UI_Info_Array) return UI_Info;
+     (Tree : UI_Info_Array_Access) return UI_Info;
    --  If you have more than one new type, use this tree
 
    function UI_Info_Menu_Open_Item
@@ -350,28 +352,28 @@ package Gnome.App_Helper is
    --  Some standard menus
 
    function UI_Info_Menu_File_Tree
-     (Tree : access UI_Info_Array) return UI_Info;
+     (Tree : UI_Info_Array_Access) return UI_Info;
 
    function UI_Info_Menu_Edit_Tree
-     (Tree : access UI_Info_Array) return UI_Info;
+     (Tree : UI_Info_Array_Access) return UI_Info;
 
    function UI_Info_Menu_View_Tree
-     (Tree : access UI_Info_Array) return UI_Info;
+     (Tree : UI_Info_Array_Access) return UI_Info;
 
    function UI_Info_Menu_Settings_Tree
-     (Tree : access UI_Info_Array) return UI_Info;
+     (Tree : UI_Info_Array_Access) return UI_Info;
 
    function UI_Info_Menu_Files_Tree
-     (Tree : access UI_Info_Array) return UI_Info;
+     (Tree : UI_Info_Array_Access) return UI_Info;
 
    function UI_Info_Menu_Windows_Tree
-     (Tree : access UI_Info_Array) return UI_Info;
+     (Tree : UI_Info_Array_Access) return UI_Info;
 
    function UI_Info_Menu_Help_Tree
-     (Tree : access UI_Info_Array) return UI_Info;
+     (Tree : UI_Info_Array_Access) return UI_Info;
 
    function UI_Info_Menu_Game_Tree
-     (Tree : access UI_Info_Array) return UI_Info;
+     (Tree : UI_Info_Array_Access) return UI_Info;
 
    --  These are strings to be used for paths when working with the menus
    --  stuff
@@ -397,7 +399,7 @@ package Gnome.App_Helper is
 
    procedure Fill_Menu
      (Menu_Shell   : access Gtk_Menu_Shell_Record'Class;
-      Info         : access UI_Info_Array;
+      Info         : UI_Info_Array_Access;
       Accel_Group  : Gtk_Accel_Group := null;
       Uline_Accels : Boolean := False;
       Pos          : Gint := 0;
@@ -413,19 +415,19 @@ package Gnome.App_Helper is
    --  (similarly to what is done in Object_Connect).
 
    procedure Create_Menus
-     (App : access Gnome_App_Record'Class; Info : access UI_Info_Array);
+     (App : access Gnome_App_Record'Class; Info : UI_Info_Array_Access);
    --  Construct a menu bar and attach it to the specified application window
 
    procedure Fill_Toolbar
      (Toolbar     : access Gtk_Toolbar_Record'Class;
-      Info        : access UI_Info_Array;
+      Info        : UI_Info_Array_Access;
       Accel_Group : Gtk_Accel_Group := null);
    --  Fill the specified toolbar with buttons created from the specified info.
    --  If Accel_Group is not null, then the items' accelerator keys are put
    --  into it.
 
    procedure Create_Toolbar
-     (App : access Gnome_App_Record'Class; Info : access UI_Info_Array);
+     (App : access Gnome_App_Record'Class; Info : UI_Info_Array_Access);
    --  Construct a toolbar and attach it to the specified application window
 
    function Find_Menu_Pos
@@ -464,21 +466,21 @@ package Gnome.App_Helper is
    procedure Insert_Menus
      (App       : access Gnome_App_Record'Class;
       Path      : String;
-      Menu_Info : access UI_Info_Array);
+      Menu_Info : UI_Info_Array_Access);
    --  what does it do ???
 
    --  procedure Install_Appbar_Menu_Hints
    --    (Appbar : Gnome_App_Bar;
-   --     Info   : access UI_Info_Array);
+   --     Info   : UI_Info_Array_Access);
    --  Activate the menu item hints, displaying in the given appbar.
    --  This can't be automatic since we can't reliably find the
    --  appbar.
    --  Really? Why can't it be automatic?
 
    procedure Install_Statusbar_Menu_Hints
-     (Bar : Gtk_Status_Bar; Info : access UI_Info_Array);
+     (Bar : Gtk_Status_Bar; Info : UI_Info_Array_Access);
 
-   procedure Install_Menu_Hints (App : Gnome_App; Info : access UI_Info_Array);
+   procedure Install_Menu_Hints (App : Gnome_App; Info : UI_Info_Array_Access);
 
 private
    type UI_Info_Type is
@@ -592,5 +594,7 @@ private
    UI_Info_Separator : constant UI_Info :=
      (UI_Separator, Null_Ptr, Null_Ptr, Null_Address, null,
       Null_Address, Pixmap_None, Null_Address, 0, 0, Null_Address);
+
+   pragma Import (C, Gnome_Accelerators_Sync, "gnome_accelerators_sync");
 
 end Gnome.App_Helper;
