@@ -40,6 +40,10 @@ package Gtk.Menu_Bar is
 
    procedure Gtk_New (Menu_Bar : out Gtk_Menu_Bar);
    procedure Initialize (Menu_Bar : access Gtk_Menu_Bar_Record'Class);
+
+   function Get_Type return Gtk.Gtk_Type;
+   --  Return the internal value associated with a Gtk_Option_Menu.
+
    procedure Append
      (Menu_Bar : access Gtk_Menu_Bar_Record;
       Child    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
@@ -67,5 +71,7 @@ private
 
    type Gtk_Menu_Bar_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
      with null record;
+
+   pragma Import (C, Get_Type, "gtk_menu_bar_get_type");
 
 end Gtk.Menu_Bar;
