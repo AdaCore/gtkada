@@ -43,6 +43,18 @@ package body Gtk.Adjustment is
    end Clamp_Page;
 
 
+   -----------------
+   --  Get_Value  --
+   -----------------
+
+   function Get_Value (Adjustment : in Gtk_Adjustment'Class) return Gfloat is
+      function Internal (Adjustment : in System.Address) return Gfloat;
+      pragma Import (C, Internal, "ada_gtk_adjustment_get_value");
+   begin
+      return Internal (Get_Object (Adjustment));
+   end Get_Value;
+
+
    ---------------
    --  Gtk_New  --
    ---------------

@@ -36,6 +36,8 @@ package Gtk.Adjustment is
                       Page_Size      : in Gfloat);
    --  mapping: Gtk_New gtkadjustment.h gtk_adjustment_new
 
+   function Get_Value (Adjustment : in Gtk_Adjustment'Class) return Gfloat;
+
    procedure Set_Value (Adjustment : in out Gtk_Adjustment'Class;
                         Value      : in     Gfloat);
    --  mapping: Set_Value gtkadjustment.h gtk_adjustment_set_value
