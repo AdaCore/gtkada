@@ -107,7 +107,10 @@ package Gtk is
    Gtk_Type_Boxed   : constant Gtk_Type := 14;
    Gtk_Type_Pointer : constant Gtk_Type := 15;  --  a general pointer type.
    Gtk_Type_Object  : constant Gtk_Type := 21;  --  One of the widgets/objects
-   Gtk_Type_Gdk_Event : Gtk_Type;      --  a Gdk_Event
+
+   function Gtk_Type_Gdk_Event return Gtk_Type;
+   --  Return the type corresponding to a Gdk_Event.
+   --  Note that this function must be called after Gtk+ has been initialized.
 
    function Type_Name (Type_Num : in Gtk_Type) return String;
    --  Return the type name corresponding to a Gtk_Type.
@@ -194,5 +197,5 @@ private
    pragma Import (C, Major_Version, "ada_gtk_major_version");
    pragma Import (C, Minor_Version, "ada_gtk_minor_version");
    pragma Import (C, Micro_Version, "ada_gtk_micro_version");
-   pragma Import (C, Gtk_Type_Gdk_Event, "GTK_TYPE_GDK_EVENT");
+   pragma Import (C, Gtk_Type_Gdk_Event, "ada_gtk_type_gdk_event");
 end Gtk;
