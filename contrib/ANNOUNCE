@@ -1,0 +1,29 @@
+GtkAda 0.1 release (Alpha code)
+
+GtkAda is an Ada95 binding of Gtk+ version 1.0.5. It allows you to
+develop graphical applications in Ada95 using Gtk+. 
+
+Currently, all widgets except GtkMenuFactory and GtkAccelerator have
+been implemented. To test our binding, the testgtk program have been
+almost completely re-implemented and is also distributed with the
+binding.
+
+LSM entry follows :
+Begin3
+Title:          GtkAda
+Version:        0.1
+Entered-date:   1998-08-05
+Description:    Ada95 binding of Gtk+ (version 1.0.5)
+Keywords:       Ada95 Gtk+ Gtk X GUI
+Author:         Emmanuel Briot <briot@gnat.com> and 
+                Joel Brobecker <jbrobecker@west.raytheon.com>
+Maintained-by:  <briot@gnat.com> and <jbrobecker@west.raytheon.com>
+Primary-site:   ftp://ftp.gtk.org 
+                GtkAda-alpha-0.1.tar.gz
+Original-site:  None for the moment.
+Platforms:      SunOS-2.6 Linux-2.0.35
+Copying-policy: LGPL (with a slight modification, see headers of
+                *.ad[sb] files)
+End
+
+
