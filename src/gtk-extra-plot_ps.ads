@@ -58,48 +58,48 @@ package Gtk.Extra.Plot_Ps is
    pragma Convention (C, Ps_Units);
 
    procedure Plot_Export_Ps
-      (Plot        : access Gtk.Extra.Plot.Gtk_Plot_Record'Class;
-       Psfile      : in String;
-       Orientation : in Ps_Orientation;
-       Epsflag     : in Boolean;
-       Page_Size   : in Ps_Page_Size);
+     (Plot        : access Gtk.Extra.Plot.Gtk_Plot_Record'Class;
+      Psfile      : in String;
+      Orientation : in Ps_Orientation;
+      Epsflag     : in Boolean;
+      Page_Size   : in Ps_Page_Size);
    --  Create a new postscript file PsFile with the content of Plot.
    --  Epsflag should be true if the generated file should be in
    --  Encapsulated Postscript format instead of simple Postscript.
 
    procedure Plot_Export_Ps_With_Size
-      (Plot        : access Gtk.Extra.Plot.Gtk_Plot_Record'Class;
-       Psfile      : in String;
-       Orientation : in Ps_Orientation;
-       Epsflag     : in Boolean;
-       Units       : in Ps_Units;
-       Width       : in Gint;
-       Height      : in Gint);
+     (Plot        : access Gtk.Extra.Plot.Gtk_Plot_Record'Class;
+      Psfile      : in String;
+      Orientation : in Ps_Orientation;
+      Epsflag     : in Boolean;
+      Units       : in Ps_Units;
+      Width       : in Gint;
+      Height      : in Gint);
    --  Create a new postscript file PsFile with the content of Plot.
    --  Epsflag should be true if the generated file should be in
    --  Encapsulated Postscript format instead of simple Postscript.
    --  The page has a custom size.
 
    procedure Plot_Canvas_Export_Ps
-      (Canvas      : access Gtk_Plot_Canvas_Record'Class;
-       File_Name   : in String;
-       Orientation : in Ps_Orientation;
-       Epsflag     : in Boolean;
-       Page_Size   : in Ps_Page_Size);
-   --  Create a new postscript file PsFile with the content of Layout.
+     (Canvas      : access Gtk_Plot_Canvas_Record'Class;
+      File_Name   : in String;
+      Orientation : in Ps_Orientation;
+      Epsflag     : in Boolean;
+      Page_Size   : in Ps_Page_Size);
+   --  Create a new postscript file PsFile with the content of Canvas.
    --  Every plot on it is exported to the postscript file.
    --  Epsflag should be true if the generated file should be in
    --  Encapsulated Postscript format instead of simple Postscript.
 
    procedure Plot_Canvas_Export_Ps_With_Size
-      (Canvas      : access Gtk_Plot_Canvas_Record'Class;
-       File_Name   : in String;
-       Orientation : in Ps_Orientation;
-       Epsflag     : in Boolean;
-       Units       : in Ps_Units;
-       Width       : in Gint;
-       Height      : in Gint);
-   --  Create a new postscript file PsFile with the content of Layout.
+     (Canvas      : access Gtk_Plot_Canvas_Record'Class;
+      File_Name   : in String;
+      Orientation : in Ps_Orientation;
+      Epsflag     : in Boolean;
+      Units       : in Ps_Units;
+      Width       : in Gint;
+      Height      : in Gint);
+   --  Create a new postscript file PsFile with the content of Canvas.
    --  Every plot on it is exported to the postscript file.
    --  Epsflag should be true if the generated file should be in
    --  Encapsulated Postscript format instead of simple Postscript.
@@ -107,23 +107,21 @@ package Gtk.Extra.Plot_Ps is
 
    --  <doc_ignore>
    procedure Plot_Layout_Export_Ps
-      (Canvas      : access Gtk_Plot_Canvas_Record'Class;
-       File_Name   : in String;
-       Orientation : in Ps_Orientation;
-       Epsflag     : in Boolean;
-       Page_Size   : in Ps_Page_Size)
-     renames Plot_Canvas_Export_Ps;
+     (Canvas      : access Gtk_Plot_Canvas_Record'Class;
+      File_Name   : in String;
+      Orientation : in Ps_Orientation;
+      Epsflag     : in Boolean;
+      Page_Size   : in Ps_Page_Size) renames Plot_Canvas_Export_Ps;
    --  For backward compatibility only.
 
    procedure Plot_Layout_Export_Ps_With_Size
-      (Canvas      : access Gtk_Plot_Canvas_Record'Class;
-       File_Name   : in String;
-       Orientation : in Ps_Orientation;
-       Epsflag     : in Boolean;
-       Units       : in Ps_Units;
-       Width       : in Gint;
-       Height      : in Gint)
-     renames Plot_Canvas_Export_Ps_With_Size;
+     (Canvas      : access Gtk_Plot_Canvas_Record'Class;
+      File_Name   : in String;
+      Orientation : in Ps_Orientation;
+      Epsflag     : in Boolean;
+      Units       : in Ps_Units;
+      Width       : in Gint;
+      Height      : in Gint) renames Plot_Canvas_Export_Ps_With_Size;
    --  For backward compatibility only.
    --  </doc_ignore>
 

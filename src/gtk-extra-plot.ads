@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --      Copyright (C) 2000 E. Briot, J. Brobecker and A. Charlet     --
 --                Copyright (C) 2000-2002 ACT-Europe                 --
@@ -539,13 +539,14 @@ package Gtk.Extra.Plot is
    --  Cancel the ticks limits set by a previous call to
    --  Axis_Set_Ticks_Limits.
 
-   procedure Axis_Show_Labels (Plot        : access Gtk_Plot_Record;
-                               Axis        : in Plot_Axis_Pos;
-                               Labels_Mask : in Plot_Label_Pos);
+   procedure Axis_Show_Labels
+     (Plot        : access Gtk_Plot_Record;
+      Axis        : in Plot_Axis_Pos;
+      Labels_Mask : in Plot_Label_Pos);
    --  Indicate whether a label should be drawn at each ticks to indicate
    --  its value.
    --  Not all values of Labels_Mask are relevant for all axis. For instance,
-   --  for a vertical axis, the relevant values are Label_Right and Label_Left.
+   --  for a vertical axis, the relevant values are Axis_Right and Axis_Left.
 
    procedure Axis_Title_Set_Attributes
      (Plot          : access Gtk_Plot_Record;
