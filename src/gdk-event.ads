@@ -642,6 +642,7 @@ package Gdk.Event is
    --  completly the default event handler. However, it can call
    --  Gtk.Main.Do_Event to take care of the events it does not know how to
    --  handle.
+   --  See also Gtk.Main.Get_Event_Widget to get the widget from the event.
 
    procedure Event_Handler_Set
      (Func : Event_Handler_Func; Data : System.Address);
