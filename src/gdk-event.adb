@@ -1139,4 +1139,13 @@ package body Gdk.Event is
       Internal (Func, Data, System.Null_Address);
    end Event_Handler_Set;
 
+   ---------------
+   -- Get_Event --
+   ---------------
+
+   function Get_Event (Value : Glib.Values.GValue) return Gdk_Event is
+   begin
+      return Gdk_Event (Glib.Values.Get_Proxy (Value));
+   end Get_Event;
+
 end Gdk.Event;

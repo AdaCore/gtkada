@@ -40,6 +40,7 @@
 
 with System;
 with Glib; use Glib;
+with Glib.Values;
 with Gdk.Rectangle;
 with Gdk.Types;
 with Gdk.Window;
@@ -489,6 +490,13 @@ package Gdk.Event is
 
    function Is_Created (E : Gdk_Event) return Boolean;
    --  Return True if the underlying C event has been created.
+
+   --------------------
+   -- GValue support --
+   --------------------
+
+   function Get_Event (Value : Glib.Values.GValue) return Gdk_Event;
+   --  Convert a value into a Gdk_Event.
 
    -------------------
    -- Design issues --
