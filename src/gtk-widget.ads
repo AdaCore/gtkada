@@ -77,6 +77,27 @@ package Gtk.Widget is
    type Gtk_Widget_Record is new Object.Gtk_Object_Record with null record;
    type Gtk_Widget is access all Gtk_Widget_Record'Class;
 
+   --  This is the desired amount of space when you create new widgets.
+   --  See the examples/base_widget directory for an example how to use this
+
+   type Gtk_Requisition is
+      record
+         Width  : Gint16;
+         Height : Gint16;
+      end record;
+   pragma Pack (Gtk_Requisition);
+
+   --  This is a size and position for a new widget. See examples/base_widget
+
+   type Gtk_Allocation is
+      record
+         X      : Gint16;
+         Y      : Gint16;
+         Width  : Guint16;
+         Height : Guint16;
+      end record;
+   pragma Pack (Gtk_Allocation);
+
    function Get_Window (Widget : access Gtk_Widget_Record)
                         return Gdk.Window.Gdk_Window;
 
