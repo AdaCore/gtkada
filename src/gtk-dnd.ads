@@ -34,14 +34,14 @@
 --  applications. The user clicks on a widget (called a "drag source"), and,
 --  while keeping the mouse button pressed, moves it to another widget, where
 --  the mouse button is released (this other widget is called a "drop site").
---  As a result, and if both widget can handle the same type of data, some data
---  is either copied or moved to this new widget.
+--  As a result, and if both widgets can handle the same type of data, some
+--  data is either copied or moved to this new widget.
 --
 --  This is a very intuitive way, in some cases, to enhance the usability of
 --  your application, although you should carefully consider whether this
 --  should be used or not.
 --
---  GtkAda supports several drag-and-drop protocol, so as to be able to
+--  GtkAda supports several drag-and-drop protocols, so as to be able to
 --  communicate with the maximum number of applications. These protocols are
 --  Xdnd, Motif, and Windows.
 --
@@ -56,7 +56,7 @@
 --
 --  - Defining a widget as a possible drag source
 --
---  You need to call Source_Set, specifying with mouse buttons can activate
+--  You need to call Source_Set, specifying which mouse buttons can activate
 --  the drag, which types of data will be given, and which kind of action
 --  will be performed.
 --  You then need to connect to the signal "drag_data_get", that will be
@@ -83,7 +83,7 @@
 --  call Finish, to warn the source widget that the drag and drop operation
 --  is finished, and whether it was successful or not.
 --  </description>
---  <c_synchro>1.2.7</c_synchro>
+--  <c_version>1.2.7</c_version>
 
 with Glib; use Glib;
 with Gdk.Bitmap;
@@ -106,7 +106,7 @@ package Gtk.Dnd is
    --  Possible actions for a drop onto a widget, during a drag-and-drop.
    --  The drag widgets (ie the ones from which the user can start a
    --  drag-and-drop operation) should set a mask, indicating which actions
-   --  it wants to do. The first action is the list below has the highest
+   --  it wants to do. The first action in the list below has the highest
    --  priority, the last one the lowest. The actual action chosen for the
    --  drag-and-drop will be the highest-priority one that is also accepted
    --  by the drop site.
@@ -121,6 +121,7 @@ package Gtk.Dnd is
    --  Any of the default action is accepted.
 
    Action_Default : constant Drag_Action;
+   --  ???
 
    Action_Copy    : constant Drag_Action;
    --  Copy the data to the drop site.
@@ -137,20 +138,22 @@ package Gtk.Dnd is
    --  by GtkAda.
 
    Action_Ask     : constant Drag_Action;
+   --  ???
 
    -------------------
    -- Drag_Protocol --
    -------------------
 
-   type Drag_Protocol is (Drag_Proto_Motif,
-                          Drag_Proto_Xdnd,
-                          Drag_Proto_Rootwin,
-                           --  A root window with nobody claiming the drag
-                          Drag_Proto_None
-                           --  Not a valid drag window
-                          );
+   type Drag_Protocol is
+     (Drag_Proto_Motif,
+      Drag_Proto_Xdnd,
+      Drag_Proto_Rootwin,
+      --  A root window with nobody claiming the drag
+      Drag_Proto_None
+      --  Not a valid drag window
+     );
    --  The various dnd protocols recognized by a window.
-   --  Note that not every window recognized every protocol, and you should
+   --  Note that not every window recognizes every protocol, and you should
    --  be careful as to which one you use. The function Gdk.Drag.Get_Protocol
    --  returns which one is recognized by a window.
 
@@ -169,35 +172,30 @@ package Gtk.Dnd is
    --  (for instance, if Source_Set was used with Action_Copy + Action_Move,
    --  the result will be exactly this sum, whatever was used for Dest_Set).
 
-   function Get_Suggested_Action (Context : in Drag_Context)
-                                 return Drag_Action;
+   function Get_Suggested_Action
+     (Context : in Drag_Context) return Drag_Action;
    --  Return the suggested action for that context.
-   --  This is the smallest possible action that was set by the source of the
-   --  drag-and-drop, ie the one it would rather used. The action that is
+   --  This is the highest priority action that was set by the source of the
+   --  drag-and-drop, ie the one it would rather use. The action that is
    --  actually used is the one returned by Get_Action, and depends on the
    --  mask set by the target.
 
    function Get_Action (Context : in Drag_Context) return Drag_Action;
    --  Return the action selected for the drag-and-drop operation.
-   --  This is the smallest common action between the drag site and the
+   --  This is the highest priority action common between the drag site and the
    --  drop widget (for instance, if Source_Set was used with Action_Copy +
    --  Action_Move and Dest_Set was used with only Action_Move, this will
    --  be Action_Move).
 
-   function Get_Targets (Context : in Drag_Context)
-                        return Gtk.Enums.Guint_List.Glist;
+   function Get_Targets
+     (Context : in Drag_Context) return Gtk.Enums.Guint_List.Glist;
    --  List of all the targets common to the drag source and the drop site.
    --  The Guint in the list are the ones given in the Info field in the
    --  Target_Entry structure below.
 
-   pragma Import (C, Get_Actions, "ada_gtk_dnd_context_get_actions");
-   pragma Import (C, Get_Suggested_Action,
-                    "ada_gtk_dnd_context_get_suggested_action");
-   pragma Import (C, Get_Action, "ada_gtk_dnd_context_get_action");
-
-   --------------------
-   --  Dest_Defaults --
-   --------------------
+   -------------------
+   -- Dest_Defaults --
+   -------------------
 
    type Dest_Defaults is new Integer;
    --  Specify the various types of action that will be taken on behalf of the
@@ -567,6 +565,11 @@ private
    Action_Ask     : constant Drag_Action := 32;
    Action_Any     : constant Drag_Action := 255;
 
+   pragma Import (C, Get_Actions, "ada_gtk_dnd_context_get_actions");
+   pragma Import
+     (C, Get_Suggested_Action,
+     "ada_gtk_dnd_context_get_suggested_action");
+   pragma Import (C, Get_Action, "ada_gtk_dnd_context_get_action");
    pragma Import (C, Set_Icon_Pixmap, "gtk_drag_set_icon_pixmap");
    pragma Import (C, Set_Icon_Default, "gtk_drag_set_icon_default");
    pragma Import (C, Set_Default_Icon, "gtk_drag_set_default_icon");
