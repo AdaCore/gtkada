@@ -2271,7 +2271,7 @@ ada_combo_get_entry (GtkCombo* widget)
 }
 
 GtkWidget*
-ada_combo_get_popwin (GtkCombo* widget)
+ada_combo_get_popup_window (GtkCombo* widget)
 {
   return widget->popwin;
 }
