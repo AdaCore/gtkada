@@ -1,3 +1,31 @@
+-----------------------------------------------------------------------
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
+--                                                                   --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
+--                                                                   --
+-- This library is free software; you can redistribute it and/or     --
+-- modify it under the terms of the GNU General Public               --
+-- License as published by the Free Software Foundation; either      --
+-- version 2 of the License, or (at your option) any later version.  --
+--                                                                   --
+-- This library is distributed in the hope that it will be useful,   --
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of    --
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU --
+-- General Public License for more details.                          --
+--                                                                   --
+-- You should have received a copy of the GNU General Public         --
+-- License along with this library; if not, write to the             --
+-- Free Software Foundation, Inc., 59 Temple Place - Suite 330,      --
+-- Boston, MA 02111-1307, USA.                                       --
+--                                                                   --
+-- As a special exception, if other files instantiate generics from  --
+-- this unit, or you link this unit with other files to produce an   --
+-- executable, this  unit  does not  by itself cause  the resulting  --
+-- executable to be covered by the GNU General Public License. This  --
+-- exception does not however invalidate any other reasons why the   --
+-- executable file  might be covered by the  GNU Public License.     --
+-----------------------------------------------------------------------
+
 with Gdk.Event;
 with Gtk.Widget;
 with Gdk.Types;
@@ -12,7 +40,6 @@ private
       Buffer : String_Access;
       Index  : Natural;
    end record;
-
 
    type Identifier_Type is (None, Name, Title, Transient, Label);
    --  The different ways we have to identify a widget.
@@ -43,7 +70,6 @@ private
    end record;
    --  An identifier for a widget
 
-
    type Macro_Item;
    type Macro_Item_Access is access all Macro_Item'Class;
 
@@ -54,15 +80,14 @@ private
    -- Macro_Item --
    ----------------
 
-   type Macro_Item is abstract tagged
-      record
-         Id           : Identifier;
-         Event_Type   : Gdk.Types.Gdk_Event_Type;
-         Next         : Macro_Item_Access;
-         Widget_Depth : Natural := 0;
-         X            : Gint := 0;
-         Y            : Gint := 0;
-      end record;
+   type Macro_Item is abstract tagged record
+      Id           : Identifier;
+      Event_Type   : Gdk.Types.Gdk_Event_Type;
+      Next         : Macro_Item_Access;
+      Widget_Depth : Natural := 0;
+      X            : Gint := 0;
+      Y            : Gint := 0;
+   end record;
    --  Widget_Depth is 0 if the event was actually sent to the widget
    --  whose name is Widget_Name, and not to one of its children.
    --  (X, Y) are used to find the child in case Widget_Depth is not null.
@@ -83,7 +108,6 @@ private
 
    procedure Load_From_Disk (File : access File_Buffer; Item : out Macro_Item);
    --  Load an item from the disk
-
 
    ----------------------------
    -- Macro_Item_Mouse_Press --
