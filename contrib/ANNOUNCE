@@ -12,6 +12,7 @@ New features in 1.2.7/1.3.7 include:
    Gtk_Check_Item, Gtk_Sheet, Gtk_Combo_Box, Gtk_Color_Combo, Gtk_Border_Combo,
    Gtk_Font_Combo, Gtk_Item_Entry
 - Postscript support added from GtkExtra: Gtk.Extra.Plot_Ps and Gtk.Extra.PsFont
+- New examples added in the directory examples/tutorial.
 - The handling of arrays of null terminated strings has been greatly simplified
   (see GtkAda.Types for more details).
 - The GtkAda Reference Manual has been significantly enhanced.
