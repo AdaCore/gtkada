@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2003 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -70,7 +70,7 @@ package Gdk.Rgb is
    --  Note that these are not the same as returned by Gtk.Widget or
    --  Gdk.Window, and you should use these if you are using this package.
    --
-   --  The drawable you intend to copy the RBG buffer to must use this visual
+   --  The drawable you intend to copy the RGB buffer to must use this visual
    --  and this colormap. Therefore, before creating the widget, you need to do
    --  the following:
    --    - Gtk.Widget.Push_Visual (Gdk.Rgb.Get_Visual);

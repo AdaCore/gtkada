@@ -191,7 +191,7 @@ package Gdk.Color is
    --  raised.
    --  The string can be one of :
    --
-   --  - "RBG:FF/FF/FF" where the "FF" substrings are respectively the value
+   --  - "RGB:FF/FF/FF" where the "FF" substrings are respectively the value
    --    of the red, green and blue components. Some other prefixes than RGB
    --    are defined in the X11 definition, please see some X11 documentation
    --    (or the man page XParseColor on unix systems).
