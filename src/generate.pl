@@ -1111,9 +1111,15 @@ sub print_body
 	  {
 	    my ($tmp) = &convert_ada_type ($return);
 	    $tmp =~ s/\'Class//;
-	    push (@output, "      Tmp : $tmp;\n   begin\n");
-	    $string = "      Set_Object (Tmp, Internal";
-	    $terminate = ");\n      return Tmp;\n";
+	    push (@output, "   begin\n");
+	    if ($tmp eq "Gtk.Widget.Gtk_Widget") {
+	      $string = "      return Convert (Internal";
+	      $terminate = ");\n";
+	    } else {
+	      $string = "      return $tmp (Convert (Internal";
+	      $terminate = "));\n";
+	      }
+	    $with_list{"with Gtk.Widget; use Gtk.Widget"}++;
 	  }
 	elsif (&convert_ada_type ($return) eq "String")
 	  {
