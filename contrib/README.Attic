@@ -45,7 +45,7 @@ These functions were tested on the following systems :
    - NT 4.0
    - AiX 4.3.2
 using the following compilers:
-   - Gnat 3.12a2
+   - Gnat 3.12
    - Gnat 3.11b2
    - Gnat 3.11p
 
