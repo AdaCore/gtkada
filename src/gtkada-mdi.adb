@@ -102,7 +102,7 @@ package body Gtkada.MDI is
    Drop_Area_Thickness : constant Gint := 4;
    --  Thickness of the Dnd drop areas on each side of the MDI.
 
-   Title_Font : constant String := "Helvetica 8";
+   Title_Font : constant String := "Sans 8";
    --  <preferences> Name of the font to use in the title bar
 
    Icons_Width : constant Gint := 100;
