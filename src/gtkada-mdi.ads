@@ -209,6 +209,9 @@ package Gtkada.MDI is
    --  If the children are maximized, this selected the next page from the
    --  notebook.
 
+   function Get_State (Child : access MDI_Child_Record) return State_Type;
+   --  Return the current state of the child
+
    procedure Minimize_Child
      (Child : access MDI_Child_Record'Class; Minimize : Boolean);
    --  Change the minimized state of a child.

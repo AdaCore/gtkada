@@ -4205,7 +4205,7 @@ package body Gtkada.MDI is
             Widget_Node := null;
 
             while Widget_Node = null and then Register /= null loop
-               Widget_Node := Register.Save (Get_Widget (Child));
+               Widget_Node := Register.Save (Child.Initial);
                Register := Register.Next;
             end loop;
 
@@ -4312,6 +4312,15 @@ package body Gtkada.MDI is
    begin
       return MDI.Desktop_Was_Loaded;
    end Desktop_Was_Loaded;
+
+   ---------------
+   -- Get_State --
+   ---------------
+
+   function Get_State (Child : access MDI_Child_Record) return State_Type is
+   begin
+      return Child.State;
+   end Get_State;
 
    --------------------------
    -- Source_Drag_Data_Get --
