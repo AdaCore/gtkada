@@ -56,11 +56,11 @@ package body Glib.Glade is
      (Widget : Node_Ptr;
       Handler, Signal, Class, Orig_Class : String_Ptr) return String_Ptr;
    --  Add a specific handler of signal of a given class in Signals.
-   --  If Handler is already present in the list of signals, do not add it
-   --  and return the class associated with the handler found, return null
-   --  otherwise.
+   --  If Handler is already present in the list of signals for the same
+   --  top level widget, do not add it and return the class associated with
+   --  the handler found, return null otherwise.
    --
-   --  Widget is the node of the widget containing the signal.
+   --  Widget is the node of the top level widget containing the signal.
    --  Orig_Class is the original class for the signal. If Orig_Class
    --  is different from Class, Class is the class of the widget passed
    --  to the callback using Object_Connect.
@@ -123,10 +123,12 @@ package body Glib.Glade is
 
    function Add_Signal
      (Widget : Node_Ptr;
-      Handler, Signal, Class, Orig_Class : String_Ptr) return String_Ptr  is
+      Handler, Signal, Class, Orig_Class : String_Ptr) return String_Ptr is
    begin
       for J in 1 .. Num_Signals loop
-         if Signals (J).Handler.all = Handler.all then
+         if Signals (J).Widget = Widget
+           and then Signals (J).Handler.all = Handler.all
+         then
             return Signals (J).Class;
          end if;
       end loop;
