@@ -63,6 +63,9 @@ package Gdk.Types is
    --  See the program xlsatoms on any X-Window machine to list all the atoms
    --  known by the Xserver.
 
+   Gdk_None : constant Gdk_Atom := null;
+   --  No atom constant.
+
    type Gdk_Axis_Use is
      (Axis_Ignore,
       Axis_X,
