@@ -69,9 +69,10 @@ package Gtk.Glade is
    --  children on standard output.
 
    procedure Instanciate (File : String);
-   --  Parse File and create the corresponding widgets.
+   --  Parse File, create and display the corresponding widgets.
 
-   procedure Instanciate (N : Node_Ptr);
-   --  Create the widgets corresponding to N and its children.
+   procedure Instanciate (N : Node_Ptr; Display : Boolean := True);
+   --  Create the widgets corresponding to N and its children, and
+   --  optionally display them.
 
 end Gtk.Glade;
