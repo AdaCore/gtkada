@@ -111,13 +111,25 @@ package Pango.Enums is
       Pango_Variant_Small_Caps);
    pragma Convention (C, Variant);
 
-   type Weight is new Gint;
-   Pango_Weight_Ultralight : constant Weight := 200;
-   Pango_Weight_Light      : constant Weight := 300;
-   Pango_Weight_Normal     : constant Weight := 400;
-   Pango_Weight_Bold       : constant Weight := 700;
-   Pango_Weight_Ultrabold  : constant Weight := 800;
-   Pango_Weight_Heavy      : constant Weight := 900;
+   type Weight is
+     (Pango_Weight_Ultralight,
+      Pango_Weight_Light,
+      Pango_Weight_Normal,
+      Pango_Weight_Medium,
+      Pango_Weight_Semi_Bold,
+      Pango_Weight_Bold,
+      Pango_Weight_Ultrabold,
+      Pango_Weight_Heavy);
+
+   for Weight use
+     (Pango_Weight_Ultralight => 200,
+      Pango_Weight_Light      => 300,
+      Pango_Weight_Normal     => 400,
+      Pango_Weight_Medium     => 500,
+      Pango_Weight_Semi_Bold  => 600,
+      Pango_Weight_Bold       => 700,
+      Pango_Weight_Ultrabold  => 800,
+      Pango_Weight_Heavy      => 900);
 
    type Wrap_Mode is
      (Pango_Wrap_Word,
