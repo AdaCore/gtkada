@@ -115,7 +115,8 @@ package Gtk.Object is
    package User_Data is
       function Get (Object : access Gtk_Object_Record'Class;
                     Id     : in String := "user_data") return Data_Type;
-      --  Raises Constraint_Error if no Data is associated with this Id
+      --  Error Handling:
+      --  Raises Gtkada.Types.Data_Error if no Data is associated with this Id
 
       procedure Set (Object : access Gtk_Object_Record'Class;
                      Data   : in Data_Type;

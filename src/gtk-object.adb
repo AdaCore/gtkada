@@ -32,6 +32,7 @@ with Unchecked_Deallocation;
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
+with Gtkada.Types;
 
 package body Gtk.Object is
 
@@ -248,10 +249,10 @@ package body Gtk.Object is
            := Convert (Internal (Get_Object (Object),
                                  Id & Ascii.NUL));
       begin
-         if D = null then
-            raise Constraint_Error;
-         end if;
          return D.Ptr.all;
+      exception
+         when Constraint_Error =>
+            raise Gtkada.Types.Data_Error;
       end Get;
 
       ---------
