@@ -24,6 +24,12 @@ On AiX and IRIX, the vendor C compiler is used:
 Once all these steps have been done successfully, only glib, atk, pango and gtk
 need to be rebuilt when their version change.
 
+Download
+
+pkgconfig, glib, pango, atk, gtk+ can be found at ftp://ftp.gtk.org/pub/gtk/
+
+##############
+
 prefix=/opt/gtk-2.0
 
 ##############
@@ -56,18 +62,6 @@ export C_INCLUDE_PATH
 # CFLAGS="-I$C_INCLUDE_PATH -O2 -g"
 # export CFLAGS
 
-############
-# libiconv #
-############
-# This step isn't needed on Linux nor AiX 5.1
-# It is needed under Solaris, HP-UX, Tru64 and IRIX
-
-tar xzvf libiconv-1.7.tar.gz
-cd libiconv-1.7
-./configure --prefix=$prefix
-make
-make install
-
 ########
 # zlib #
 ########
@@ -91,6 +85,21 @@ cd zlib
 make
 make install
 cd ..
+
+# At this point, follow instructions in xft-built.txt if you want to
+# enable Xft support on non Linux platforms
+
+############
+# libiconv #
+############
+# This step isn't needed on Linux nor AiX 5.1
+# It is needed under Solaris, HP-UX, Tru64 and IRIX
+
+tar xzvf libiconv-1.7.tar.gz
+cd libiconv-1.7
+./configure --prefix=$prefix
+make
+make install
 
 ##########
 # libpng #
