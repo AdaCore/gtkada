@@ -30,15 +30,18 @@
 with Gdk.Bitmap;
 with Gdk.Color;
 with Gdk.Pixmap;
-with Gtk.Enums; use Gtk.Enums;
+with Gtk.Enums;    use Gtk.Enums;
 with Gtk.Widget;
 with Interfaces.C.Strings;
 with Unchecked_Deallocation;
 with Unchecked_Conversion;
 with System;
-with Gdk; use Gdk;
-with Gtk.Ctree; use Gtk.Ctree;
-with Gtk.Util; use Gtk.Util;
+with Gdk;          use Gdk;
+with Gtk.Ctree;    use Gtk.Ctree;
+with Gtk.Util;     use Gtk.Util;
+with Gtkada.Types; use Gtkada.Types;
+with Gtk.Style;    use Gtk.Style;
+with Gtk.Object;   use Gtk.Object;
 
 package body Gtk.Clist is
 
@@ -838,13 +841,13 @@ package body Gtk.Clist is
    procedure Set_Column_Resizeable
      (Clist    : access Gtk_Clist_Record;
       Column   : in Gint;
-      Resizable : in Boolean)
+      Resizeable : in Boolean)
    is
       procedure Internal
-        (Clist  : System.Address; Column : Gint; Resizable : Gint);
+        (Clist  : System.Address; Column : Gint; Resizeable : Gint);
       pragma Import (C, Internal, "gtk_clist_set_column_resizeable");
    begin
-      Internal (Get_Object (Clist), Column, Boolean'Pos (Resizable));
+      Internal (Get_Object (Clist), Column, Boolean'Pos (Resizeable));
    end Set_Column_Resizeable;
 
    ----------------------
