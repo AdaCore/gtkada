@@ -29,6 +29,7 @@
 
 with Ada.Numerics.Elementary_Functions;  use Ada.Numerics.Elementary_Functions;
 with Glib;             use Glib;
+with Glib.Graphs;      use Glib.Graphs;
 with Glib.Object;      use Glib.Object;
 with Glib.Values;      use Glib.Values;
 with Gdk.Color;        use Gdk.Color;
@@ -107,11 +108,7 @@ package body Gtkada.Canvas is
 
    procedure Free is new Unchecked_Deallocation (String, String_Access);
    procedure Free is new Unchecked_Deallocation
-     (Canvas_Link_List_Record, Canvas_Link_List);
-   procedure Free is new Unchecked_Deallocation
      (Canvas_Link_Record'Class, Canvas_Link);
-   procedure Free is new Unchecked_Deallocation
-     (Canvas_Item_List_Record, Canvas_Item_List);
    procedure Free is new Unchecked_Deallocation
      (Canvas_Item_Record'Class, Canvas_Item);
    procedure Free is new Unchecked_Deallocation
@@ -343,6 +340,8 @@ package body Gtkada.Canvas is
    begin
       Gtk.Drawing_Area.Initialize (Canvas);
 
+      Set_Directed (Canvas.Children, True);
+
       --  The following call is required to initialize the class record,
       --  and the new signals created for this widget.
       --  Note also that we keep Class_Record, so that the memory allocation
@@ -404,9 +403,8 @@ package body Gtkada.Canvas is
 
    procedure Canvas_Destroyed (Canvas : access Gtk_Widget_Record'Class) is
       C : Interactive_Canvas := Interactive_Canvas (Canvas);
-      Tmp, Child : Canvas_Item_List;
-      Tmp2, Link_L : Canvas_Link_List;
-      Link, Tmp_Link : Canvas_Link;
+      Child : Vertex_Iterator;
+      V : Vertex_Access;
    begin
       if C.Scrolling_Timeout_Id /= 0 then
          Timeout_Remove (C.Scrolling_Timeout_Id);
@@ -414,27 +412,12 @@ package body Gtkada.Canvas is
 
       Clear_Selection (C);
 
-      Child := C.Children;
-      while Child /= null loop
-         Tmp := Child.Next;
-         Destroy (Child.Item);
-         Free (Child.Item);
-         Free (Child);
-         Child := Tmp;
-      end loop;
-
-      Link_L := C.Links;
-      while Link_L /= null loop
-         Tmp2 := Link_L.Next;
-         Link := Link_L.Link;
-         while Link /= null loop
-            Tmp_Link := Link.Sibling;
-            Destroy (Link);
-            Free (Link);
-            Link := Tmp_Link;
-         end loop;
-         Free (Link_L);
-         Link_L := Tmp2;
+      --  Delete nodes and links
+      Child := First (C.Children);
+      while not At_End (Child) loop
+         V := Get (Child);
+         Next (Child);
+         Remove (C.Children, V);
       end loop;
 
       Free (C.Annotation_Font);
@@ -579,10 +562,11 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record'Class;
       X_Min, X_Max, Y_Min, Y_Max : out Gint)
    is
-      Current : Canvas_Item_List := Canvas.Children;
+      Current : Vertex_Iterator := First (Canvas.Children);
+      Item : Canvas_Item;
       X, Y : Gint;
    begin
-      if Current = null then
+      if At_End (Current) then
          X_Min := 0;
          X_Max := 0;
          Y_Min := 0;
@@ -594,17 +578,18 @@ package body Gtkada.Canvas is
          Y_Min := Gint'Last;
          Y_Max := Gint'First;
 
-         while Current /= null loop
-            if Current.Item.Visible then
-               X := To_Canvas_Coordinates (Canvas, Current.Item.Coord.X);
-               Y := To_Canvas_Coordinates (Canvas, Current.Item.Coord.Y);
-               X_Max := Gint'Max (X_Max,  X + Gint (Current.Item.Coord.Width));
+         while not At_End (Current) loop
+            Item := Canvas_Item (Get (Current));
+            if Item.Visible then
+               X := To_Canvas_Coordinates (Canvas, Item.Coord.X);
+               Y := To_Canvas_Coordinates (Canvas, Item.Coord.Y);
+               X_Max := Gint'Max (X_Max,  X + Gint (Item.Coord.Width));
                X_Min := Gint'Min (X_Min, X);
-               Y_Max := Gint'Max (Y_Max, Y + Gint (Current.Item.Coord.Height));
+               Y_Max := Gint'Max (Y_Max, Y + Gint (Item.Coord.Height));
                Y_Min := Gint'Min (Y_Min, Y);
             end if;
 
-            Current := Current.Next;
+            Next (Current);
          end loop;
       end if;
    end Get_Bounding_Box;
@@ -668,7 +653,8 @@ package body Gtkada.Canvas is
       function Location_Is_Free (X, Y : Gint; Return_X : Boolean)
          return Gint
       is
-         Tmp   : Canvas_Item_List := Canvas.Children;
+         Tmp   : Vertex_Iterator := First (Canvas.Children);
+         Tmp_Item : Canvas_Item;
          Dest  : Gdk.Rectangle.Gdk_Rectangle;
          Inter : Boolean := False;
          W     : constant Gint := Item.Coord.Width;
@@ -681,40 +667,41 @@ package body Gtkada.Canvas is
          Item.Coord.Width := W + 2 * Gint (Zoom_Step);
          Item.Coord.Height := H + 2 * Gint (Zoom_Step);
 
-         while Tmp /= null loop
-            if Tmp.Item.Visible
-              and then Tmp.Item /= Canvas_Item (Item)
+         while not At_End (Tmp) loop
+            Tmp_Item := Canvas_Item (Get (Tmp));
+            if Tmp_Item.Visible
+              and then Tmp_Item /= Canvas_Item (Item)
             then
-               X_Tmp := To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.X);
-               Y_Tmp := To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.Y);
+               X_Tmp := To_Canvas_Coordinates (Canvas, Tmp_Item.Coord.X);
+               Y_Tmp := To_Canvas_Coordinates (Canvas, Tmp_Item.Coord.Y);
                Intersect ((X_Tmp,
                            Y_Tmp,
-                           Tmp.Item.Coord.Width,
-                           Tmp.Item.Coord.Height),
+                           Tmp_Item.Coord.Width,
+                           Tmp_Item.Coord.Height),
                           Item.Coord, Dest, Inter);
                exit when Inter;
             end if;
 
-            Tmp := Tmp.Next;
+            Next (Tmp);
          end loop;
 
          Item.Coord.Width := W;
          Item.Coord.Height := H;
          if Return_X then
             if Inter then
-               return X_Tmp + Zoom_Step + Gint (Tmp.Item.Coord.Width);
+               return X_Tmp + Zoom_Step + Gint (Tmp_Item.Coord.Width);
             end if;
             return X;
          else
             if Inter then
-               return Y_Tmp + Zoom_Step + Gint (Tmp.Item.Coord.Height);
+               return Y_Tmp + Zoom_Step + Gint (Tmp_Item.Coord.Height);
             end if;
             return Y;
          end if;
       end Location_Is_Free;
 
       Src_Item : Canvas_Item := null;
-      Links    : Canvas_Link_List := Canvas.Links;
+      Links    : Edge_Iterator;
       X1, X2   : Gint;
       Y1       : Gint;
 
@@ -730,23 +717,23 @@ package body Gtkada.Canvas is
          Item.Coord.X := X;
          Item.Coord.Y := Y;
       else
-         --  Check if there is any link that has for destination the widget we
-         --  are adding.
+         --  Check if there is any link that has for destination or source the
+         --  widget we are adding.
 
-         while Links /= null loop
-            if Links.Link.Src = Canvas_Item (Item)
-              or else Links.Link.Dest = Canvas_Item (Item)
-            then
-               Src_Item := Links.Link.Src;
-               exit;
+         Links := First (Canvas.Children, Src => Vertex_Access (Item));
+         if not At_End (Links) then
+            Src_Item := Canvas_Item (Get_Dest (Get (Links)));
+         else
+            Links := First (Canvas.Children, Dest => Vertex_Access (Item));
+            if not At_End (Links) then
+               Src_Item := Canvas_Item (Get_Src (Get (Links)));
             end if;
-            Links := Links.Next;
-         end loop;
+         end if;
 
-         --  The rule is the following when we have a link to an existing
-         --  item: We first try to put the new item below the old
-         --  one, then, if that place is already occupied, to the
-         --  bottom-right, then the bottom-left, then two down, ...
+         --  The rule is the following when we have a link to an existing item:
+         --  We first try to put the new item below the old one, then, if that
+         --  place is already occupied, to the bottom-right, then the
+         --  bottom-left, then two down, ...
 
          if Src_Item /= null then
             declare
@@ -816,9 +803,7 @@ package body Gtkada.Canvas is
       Item   : access Canvas_Item_Record'Class;
       X, Y   : Gint := Gint'First) is
    begin
-      Canvas.Children := new Canvas_Item_List_Record
-        '(Item => Canvas_Item (Item),
-          Next => Canvas.Children);
+      Add_Vertex (Canvas.Children, Item);
       Move_To (Canvas, Item, X, Y);
       Update_Adjustments (Canvas);
    end Put;
@@ -871,13 +856,11 @@ package body Gtkada.Canvas is
      (Canvas  : access Interactive_Canvas_Record;
       Execute : Item_Processor)
    is
-      Item : Canvas_Item_List := Canvas.Children;
-      Tmp  : Canvas_Item_List;
+      Item : Vertex_Iterator := First (Canvas.Children);
    begin
-      while Item /= null loop
-         Tmp := Item.Next;
-         exit when not Execute (Canvas, Item.Item);
-         Item := Tmp;
+      while not At_End (Item) loop
+         exit when not Execute (Canvas, Canvas_Item (Get (Item)));
+         Next (Item);
       end loop;
    end For_Each_Item;
 
@@ -1011,35 +994,37 @@ package body Gtkada.Canvas is
       X1, Y1, X2, Y2 : Gint;
       Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
       Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
-      Sx : constant Gint := Link.Src.Coord.X;
-      Sy : constant Gint := Link.Src.Coord.Y;
-      Dx : constant Gint := Link.Dest.Coord.X;
-      Dy : constant Gint := Link.Dest.Coord.Y;
+      Src  : Canvas_Item := Canvas_Item (Get_Src (Link));
+      Dest : Canvas_Item := Canvas_Item (Get_Dest (Link));
+      Sx : constant Gint := Src.Coord.X;
+      Sy : constant Gint := Src.Coord.Y;
+      Dx : constant Gint := Dest.Coord.X;
+      Dy : constant Gint := Dest.Coord.Y;
    begin
-      Link.Src.Coord.X := To_Canvas_Coordinates (Canvas, Sx) - Xbase;
-      Link.Src.Coord.Y := To_Canvas_Coordinates (Canvas, Sy) - Ybase;
-      Link.Dest.Coord.X := To_Canvas_Coordinates (Canvas, Dx) - Xbase;
-      Link.Dest.Coord.Y := To_Canvas_Coordinates (Canvas, Dy) - Ybase;
+      Src.Coord.X  := To_Canvas_Coordinates (Canvas, Sx) - Xbase;
+      Src.Coord.Y  := To_Canvas_Coordinates (Canvas, Sy) - Ybase;
+      Dest.Coord.X := To_Canvas_Coordinates (Canvas, Dx) - Xbase;
+      Dest.Coord.Y := To_Canvas_Coordinates (Canvas, Dy) - Ybase;
       Clip_Line
-        (Link.Src.Coord,
-         Link.Dest.Coord.X
-            + Gint (Gfloat (Link.Dest.Coord.Width) * Link.Dest_X_Pos),
-         Link.Dest.Coord.Y
-            + Gint (Gfloat (Link.Dest.Coord.Height) * Link.Dest_Y_Pos),
+        (Src.Coord,
+         Dest.Coord.X
+            + Gint (Gfloat (Dest.Coord.Width) * Link.Dest_X_Pos),
+         Dest.Coord.Y
+            + Gint (Gfloat (Dest.Coord.Height) * Link.Dest_Y_Pos),
          X_Pos => Link.Src_X_Pos, Y_Pos => Link.Src_Y_Pos,
          X_Out => X1, Y_Out => Y1);
       Clip_Line
-        (Link.Dest.Coord,
-         Link.Src.Coord.X
-            + Gint (Gfloat (Link.Src.Coord.Width) * Link.Src_X_Pos),
-         Link.Src.Coord.Y
-            + Gint (Gfloat (Link.Src.Coord.Height) * Link.Src_Y_Pos),
+        (Dest.Coord,
+         Src.Coord.X
+            + Gint (Gfloat (Src.Coord.Width) * Link.Src_X_Pos),
+         Src.Coord.Y
+            + Gint (Gfloat (Src.Coord.Height) * Link.Src_Y_Pos),
          X_Pos => Link.Dest_X_Pos, Y_Pos => Link.Dest_Y_Pos,
          X_Out => X2, Y_Out => Y2);
-      Link.Src.Coord.X := Sx;
-      Link.Src.Coord.Y := Sy;
-      Link.Dest.Coord.X := Dx;
-      Link.Dest.Coord.Y := Dy;
+      Src.Coord.X := Sx;
+      Src.Coord.Y := Sy;
+      Dest.Coord.X := Dx;
+      Dest.Coord.Y := Dy;
 
       --  Draw the link itself
 
@@ -1105,12 +1090,13 @@ package body Gtkada.Canvas is
         Float (To_Canvas_Coordinates (Canvas, Canvas.Arc_Link_Offset));
       Right_Angle : constant Float := Ada.Numerics.Pi / 2.0;
       X1, Y1, X3, Y3, Xc, Yc, Radius : Gint;
+      Src  : Canvas_Item := Canvas_Item (Get_Src (Link));
 
    begin
-      pragma Assert (Link.Src = Link.Dest);
+      pragma Assert (Src = Canvas_Item (Get_Dest (Link)));
       Xc := To_Canvas_Coordinates
-        (Canvas, Link.Src.Coord.X) + Gint (Link.Src.Coord.Width) - Xbase;
-      Yc := To_Canvas_Coordinates (Canvas, Link.Src.Coord.Y) - Ybase;
+        (Canvas, Src.Coord.X) + Gint (Src.Coord.Width) - Xbase;
+      Yc := To_Canvas_Coordinates (Canvas, Src.Coord.Y) - Ybase;
       Radius := Gint (Arc_Offset) / 2 * Offset;
 
       --  Location of the arrow and the annotation
@@ -1215,10 +1201,12 @@ package body Gtkada.Canvas is
       Ybase       : constant Gint := Gint (Get_Value (Canvas.Vadj));
       Arc_Offset  : constant Float :=
         Float (To_Canvas_Coordinates (Canvas, Canvas.Arc_Link_Offset));
-      Sx          : constant Gint := Link.Src.Coord.X;
-      Sy          : constant Gint := Link.Src.Coord.Y;
-      Dx          : constant Gint := Link.Dest.Coord.X;
-      Dy          : constant Gint := Link.Dest.Coord.Y;
+      Src         : Canvas_Item := Canvas_Item (Get_Src (Link));
+      Dest        : Canvas_Item := Canvas_Item (Get_Dest (Link));
+      Sx          : constant Gint := Src.Coord.X;
+      Sy          : constant Gint := Src.Coord.Y;
+      Dx          : constant Gint := Dest.Coord.X;
+      Dy          : constant Gint := Dest.Coord.Y;
    begin
       --  We will first compute the extra intermediate point between the
       --  center of the two items. Once we have this intermediate point, we
@@ -1226,19 +1214,15 @@ package body Gtkada.Canvas is
       --  and the two lines from the centers to the middle point. This extra
       --  point is used as a control point for the Bezier curve.
 
-      Link.Src.Coord.X := To_Canvas_Coordinates (Canvas, Sx) - Xbase;
-      Link.Src.Coord.Y := To_Canvas_Coordinates (Canvas, Sy) - Ybase;
-      Link.Dest.Coord.X := To_Canvas_Coordinates (Canvas, Dx) - Xbase;
-      Link.Dest.Coord.Y := To_Canvas_Coordinates (Canvas, Dy) - Ybase;
+      Src.Coord.X  := To_Canvas_Coordinates (Canvas, Sx) - Xbase;
+      Src.Coord.Y  := To_Canvas_Coordinates (Canvas, Sy) - Ybase;
+      Dest.Coord.X := To_Canvas_Coordinates (Canvas, Dx) - Xbase;
+      Dest.Coord.Y := To_Canvas_Coordinates (Canvas, Dy) - Ybase;
 
-      X1 := Link.Src.Coord.X +
-        Gint (Gfloat (Link.Src.Coord.Width) * Link.Src_X_Pos);
-      Y1 := Link.Src.Coord.Y +
-        Gint (Gfloat (Link.Src.Coord.Height) * Link.Src_Y_Pos);
-      X3 := Link.Dest.Coord.X +
-        Gint (Gfloat (Link.Dest.Coord.Width) * Link.Dest_X_Pos);
-      Y3 := Link.Dest.Coord.Y +
-        Gint (Gfloat (Link.Dest.Coord.Height) * Link.Dest_Y_Pos);
+      X1 := Src.Coord.X + Gint (Gfloat (Src.Coord.Width) * Link.Src_X_Pos);
+      Y1 := Src.Coord.Y + Gint (Gfloat (Src.Coord.Height) * Link.Src_Y_Pos);
+      X3 := Dest.Coord.X + Gint (Gfloat (Dest.Coord.Width) * Link.Dest_X_Pos);
+      Y3 := Dest.Coord.Y + Gint (Gfloat (Dest.Coord.Height) * Link.Dest_Y_Pos);
 
       --  Compute the middle point for the arc, and create a dummy item for it
       --  that the user can move.
@@ -1263,14 +1247,14 @@ package body Gtkada.Canvas is
       --  Clip to the border of the boxes
 
       Clip_Line
-        (Link.Src.Coord, X2, Y2, Link.Src_X_Pos, Link.Src_Y_Pos, X1, Y1);
+        (Src.Coord, X2, Y2, Link.Src_X_Pos, Link.Src_Y_Pos, X1, Y1);
       Clip_Line
-        (Link.Dest.Coord, X2, Y2, Link.Dest_X_Pos, Link.Dest_Y_Pos, X3, Y3);
+        (Dest.Coord, X2, Y2, Link.Dest_X_Pos, Link.Dest_Y_Pos, X3, Y3);
 
-      Link.Src.Coord.X := Sx;
-      Link.Src.Coord.Y := Sy;
-      Link.Dest.Coord.X := Dx;
-      Link.Dest.Coord.Y := Dy;
+      Src.Coord.X  := Sx;
+      Src.Coord.Y  := Sy;
+      Dest.Coord.X := Dx;
+      Dest.Coord.Y := Dy;
 
       if GC /= Canvas.Anim_GC then
          Bezier_One_Control (X1, Y1, X2, Y2, X3, Y3, 0.005);
@@ -1315,16 +1299,15 @@ package body Gtkada.Canvas is
    ------------------
 
    procedure Update_Links
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Window : Gdk_Window;
-      GC     : in Gdk.GC.Gdk_GC;
-      Selected : in Item_Selection_List := null)
+     (Canvas   : access Interactive_Canvas_Record'Class;
+      Window   : Gdk_Window;
+      GC       : Gdk.GC.Gdk_GC;
+      Selected : Item_Selection_List := null)
    is
-      Current : Canvas_Link_List := Canvas.Links;
-      Link    : Canvas_Link;
+      Current : Edge_Iterator;
+      L : Canvas_Link;
       X, Y    : Gint;
-      Offset  : Gint;
-      O       : Gint;
+      R       : Gint;
    begin
       if Selected /= null then
          X := Selected.Item.Coord.X;
@@ -1333,55 +1316,46 @@ package body Gtkada.Canvas is
          Selected.Item.Coord.Y := Selected.Y;
       end if;
 
-      while Current /= null loop
-         if Is_Visible (Current.Link.Src)
-           and then Is_Visible (Current.Link.Dest)
-           and then
-           (Selected = null
-            or else Current.Link.Src = Canvas_Item (Selected.Item)
-            or else Current.Link.Dest = Canvas_Item (Selected.Item))
+      --  Temporarily set the graph as not-directed, so that we get all links
+      --  to or from the item
+      Set_Directed (Canvas.Children, False);
+
+      if Selected /= null then
+         Current := First
+           (Canvas.Children, Src => Vertex_Access (Selected.Item));
+      else
+         Current := First (Canvas.Children);
+      end if;
+
+      while not At_End (Current) loop
+         L := Canvas_Link (Get (Current));
+         if Is_Visible (Canvas_Item (Get_Src (L)))
+           and then Is_Visible (Canvas_Item (Get_Dest (L)))
          then
+            R := Gint (Repeat_Count (Current));
+
             --  Self-referencing links
-            if Current.Link.Src = Current.Link.Dest then
-               Link := Current.Link;
-               Offset := 1;
-               while Link /= null loop
-                  Draw_Self_Link (Canvas, Window, GC, Link, Offset);
-                  Link := Link.Sibling;
-                  Offset := Offset + 1;
-               end loop;
+            if Get_Src (L) = Get_Dest (L) then
+               Draw_Self_Link (Canvas, Window, GC, L, R);
+
+            elsif R = 1 then
+               --  The first link in the list is always straight
+               Draw_Straight_Link (Canvas, Window, GC, L);
+
+            elsif R mod 2 = 1 then
+               Draw_Arc_Link (Canvas, Window, GC, L, R / 2);
 
             else
-               --  The first link in the list is always straight
-               Draw_Straight_Link (Canvas, Window, GC, Current.Link);
+               Draw_Arc_Link (Canvas, Window, GC, L, -(R / 2));
 
-               Link := Current.Link.Sibling;
-               Offset := 1;
-               while Link /= null loop
-
-                  --  Do we need to reverse the link ? If we don't do that,
-                  --  then the link will hide another link.
-                  O := -Offset;
-                  if Link.Src /= Current.Link.Src then
-                     O := Offset;
-                  end if;
-                  Draw_Arc_Link (Canvas, Window, GC, Link, O);
-                  Link := Link.Sibling;
-
-                  if Link /= null then
-                     O := Offset;
-                     if Link.Src /= Current.Link.Src then
-                        O := -Offset;
-                     end if;
-                     Draw_Arc_Link (Canvas, Window, GC, Link, O);
-                     Link := Link.Sibling;
-                  end if;
-                  Offset := Offset + 1;
-               end loop;
             end if;
          end if;
-         Current := Current.Next;
+
+         Next (Current);
       end loop;
+
+      --  Restore the directed status of the graph
+      Set_Directed (Canvas.Children, True);
 
       if Selected /= null then
          Selected.Item.Coord.X := X;
@@ -1399,7 +1373,8 @@ package body Gtkada.Canvas is
    is
       Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
       Rect : Gdk_Rectangle := Get_Area (Event);
-      Tmp : Canvas_Item_List := Canvas.Children;
+      Item : Canvas_Item;
+      Tmp : Vertex_Iterator := First (Canvas.Children);
       X, Y : Gint;
       Xmin : Gint;
       Dest : Gdk_Rectangle;
@@ -1470,24 +1445,25 @@ package body Gtkada.Canvas is
 
       --  Draw each of the items.
 
-      while Tmp /= null loop
-         if Tmp.Item.Visible then
+      while not At_End (Tmp) loop
+         Item := Canvas_Item (Get (Tmp));
+         if Item.Visible then
             Intersect
               (Rect,
-               (To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.X) - Xbase,
-                To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.Y) - Ybase,
-                Tmp.Item.Coord.Width,
-                Tmp.Item.Coord.Height),
+               (To_Canvas_Coordinates (Canvas, Item.Coord.X) - Xbase,
+                To_Canvas_Coordinates (Canvas, Item.Coord.Y) - Ybase,
+                Item.Coord.Width,
+                Item.Coord.Height),
                Dest, Inters);
             if Inters then
                Draw
-                 (Tmp.Item, Canvas, Pix,
-                  To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.X) - Xbase,
-                  To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.Y) - Ybase);
+                 (Item, Canvas, Pix,
+                  To_Canvas_Coordinates (Canvas, Item.Coord.X) - Xbase,
+                  To_Canvas_Coordinates (Canvas, Item.Coord.Y) - Ybase);
             end if;
          end if;
 
-         Tmp := Tmp.Next;
+         Next (Tmp);
       end loop;
 
       if Use_Double_Buffer then
@@ -1646,7 +1622,8 @@ package body Gtkada.Canvas is
       Event : Gdk_Event) return Boolean
    is
       Canvas : Interactive_Canvas := Interactive_Canvas (Canv);
-      Tmp : Canvas_Item_List := Canvas.Children;
+      Tmp : Vertex_Iterator := First (Canvas.Children);
+      Item : Canvas_Item;
       Xbase : constant Gint := Gint (Get_Value (Canvas.Hadj));
       Ybase : constant Gint := Gint (Get_Value (Canvas.Vadj));
       X : constant Gint := Gint (Get_X (Event)) + Xbase;
@@ -1670,19 +1647,20 @@ package body Gtkada.Canvas is
       --  Note that we only keep the last item found, since this is the one
       --  on top, and thus the one the user really wanted to select
 
-      while Tmp /= null loop
-         X2 := To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.X);
-         Y2 := To_Canvas_Coordinates (Canvas, Tmp.Item.Coord.Y);
-         if Tmp.Item.Visible
+      while not At_End (Tmp) loop
+         Item := Canvas_Item (Get (Tmp));
+         X2 := To_Canvas_Coordinates (Canvas, Item.Coord.X);
+         Y2 := To_Canvas_Coordinates (Canvas, Item.Coord.Y);
+         if Item.Visible
            and then X >= X2
-           and then X <= X2 + Gint (Tmp.Item.Coord.Width)
+           and then X <= X2 + Gint (Item.Coord.Width)
            and then Y >= Y2
-           and then Y <= Y2 + Gint (Tmp.Item.Coord.Height)
+           and then Y <= Y2 + Gint (Item.Coord.Height)
          then
             Clear_Selection (Canvas);
-            Add_To_Selection (Canvas, Tmp.Item);
+            Add_To_Selection (Canvas, Item);
          end if;
-         Tmp := Tmp.Next;
+         Next (Tmp);
       end loop;
 
       --  If there was none, nothing to do...
@@ -2025,70 +2003,13 @@ package body Gtkada.Canvas is
 
    procedure Remove
      (Canvas : access Interactive_Canvas_Record;
-      Item   : access Canvas_Item_Record'Class)
-   is
-      Previous      : Canvas_Item_List := null;
-      Current       : Canvas_Item_List := Canvas.Children;
-      Previous_Link : Canvas_Link_List;
-      Current_Link  : Canvas_Link_List;
-      Link, Tmp     : Canvas_Link;
-
+      Item   : access Canvas_Item_Record'Class) is
    begin
-      while Current /= null loop
-         if Current.Item = Canvas_Item (Item) then
+      Remove (Canvas.Children, Item);
 
-            --  Remove the item itself
-
-            if Previous = null then
-               Canvas.Children := Current.Next;
-            else
-               Previous.Next := Current.Next;
-            end if;
-
-            --  Remove all the links
-
-            Previous_Link := null;
-            Current_Link := Canvas.Links;
-            while Current_Link /= null loop
-               if Current_Link.Link.Src = Canvas_Item (Item)
-                 or else Current_Link.Link.Dest = Canvas_Item (Item)
-               then
-                  Link := Current_Link.Link;
-                  while Link /= null loop
-                     Tmp := Link.Sibling;
-                     Destroy (Link);
-                     Free (Link);
-                     Link := Tmp;
-                  end loop;
-
-                  if Previous_Link = null then
-                     Canvas.Links := Current_Link.Next;
-                  else
-                     Previous_Link.Next := Current_Link.Next;
-                  end if;
-               else
-                  Previous_Link := Current_Link;
-               end if;
-
-               if Previous_Link /= null then
-                  Current_Link := Previous_Link.Next;
-               else
-                  Current_Link := Canvas.Links;
-               end if;
-            end loop;
-
-            --  Free the memory
-            Destroy (Current.Item);
-            Free (Current);
-
-            --  Have to redraw everything, since there might have been some
-            --  links.
-            Refresh_Canvas (Canvas);
-            return;
-         end if;
-         Previous := Current;
-         Current := Current.Next;
-      end loop;
+      --  Have to redraw everything, since there might have been some
+      --  links.
+      Refresh_Canvas (Canvas);
    end Remove;
 
    ---------------------
@@ -2121,23 +2042,18 @@ package body Gtkada.Canvas is
       From, To : access Canvas_Item_Record'Class;
       Name     : String := "") return Boolean
    is
-      Current : Canvas_Link_List := Canvas.Links;
-      Link    : Canvas_Link;
+      Current : Edge_Iterator := First
+        (Canvas.Children,
+         Src  => Vertex_Access (From),
+         Dest => Vertex_Access (To));
    begin
-      while Current /= null loop
-         if Current.Link.Src = Canvas_Item (From)
-           and then Current.Link.Dest = Canvas_Item (To)
+      while not At_End (Current) loop
+         if Name = ""
+           or else Canvas_Link (Get (Current)).Descr.all = Name
          then
-            Link := Current.Link;
-            while Link /= null loop
-               if (Name = "" or else Link.Descr.all = Name) then
-                  return True;
-               end if;
-               Link := Link.Sibling;
-            end loop;
-            return False;
+            return True;
          end if;
-         Current := Current.Next;
+         Next (Current);
       end loop;
       return False;
    end Has_Link;
@@ -2148,36 +2064,9 @@ package body Gtkada.Canvas is
 
    procedure Lower_Item
      (Canvas : access Interactive_Canvas_Record;
-      Item   : access Canvas_Item_Record'Class)
-   is
-      Previous : Canvas_Item_List := Canvas.Children;
-      Current  : Canvas_Item_List;
-
+      Item   : access Canvas_Item_Record'Class) is
    begin
-      --  Already on top?
-
-      if Canvas.Children = null
-        or else Canvas.Children.Item = Canvas_Item (Item)
-      then
-         return;
-      end if;
-
-      Current := Canvas.Children.Next;
-
-      --  Look for the item.
-
-      while Current /= null loop
-         if Current.Item = Canvas_Item (Item) then
-            Previous.Next := Current.Next;
-            Current.Next := Canvas.Children;
-            Canvas.Children := Current;
-            exit;
-         end if;
-
-         Previous := Current;
-         Current := Current.Next;
-      end loop;
-
+      Move_To_Front (Canvas.Children, Item);
       Queue_Draw (Canvas);
    end Lower_Item;
 
@@ -2187,39 +2076,9 @@ package body Gtkada.Canvas is
 
    procedure Raise_Item
      (Canvas : access Interactive_Canvas_Record;
-      Item   : access Canvas_Item_Record'Class)
-   is
-      Previous : Canvas_Item_List := null;
-      Current  : Canvas_Item_List := Canvas.Children;
-      To_Move  : Canvas_Item_List := null;
-
+      Item   : access Canvas_Item_Record'Class) is
    begin
-      --  A single item => Nothing to do
-      if Canvas.Children.Next = null then
-         return;
-      end if;
-
-      while Current /= null loop
-         if Current.Item = Canvas_Item (Item) then
-            To_Move := Current;
-
-            if Previous = null then
-               Canvas.Children := Current.Next;
-            else
-               Previous.Next := Current.Next;
-            end if;
-         else
-            Previous := Current;
-         end if;
-
-         Current := Current.Next;
-      end loop;
-
-      if Previous /= null and then To_Move /= null then
-         Previous.Next := To_Move;
-         To_Move.Next := null;
-      end if;
-
+      Move_To_Back (Canvas.Children, Item);
       --  Have to redraw everything, since there might have been some links.
       Queue_Draw (Canvas);
    end Raise_Item;
@@ -2232,17 +2091,14 @@ package body Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record;
       Item   : access Canvas_Item_Record'Class) return Boolean
    is
-      Current : Canvas_Item_List := Canvas.Children;
+      Iter : Vertex_Iterator := First (Canvas.Children);
+      Last : Canvas_Item := null;
    begin
-      if Current = null then
-         return False;
-      end if;
-
-      while Current.Next /= null loop
-         Current := Current.Next;
+      while not At_End (Iter) loop
+         Last := Canvas_Item (Get (Iter));
+         Next (Iter);
       end loop;
-
-      return Current.Item = Canvas_Item (Item);
+      return Last = Canvas_Item (Item);
    end Is_On_Top;
 
    ---------------
@@ -2441,15 +2297,10 @@ package body Gtkada.Canvas is
 
    procedure Configure
      (Link   : access Canvas_Link_Record;
-      Src    : access Canvas_Item_Record'Class;
-      Dest   : access Canvas_Item_Record'Class;
       Arrow  : in Arrow_Type := End_Arrow;
       Descr  : in String := "") is
    begin
-      Link.Src := Canvas_Item (Src);
-      Link.Dest := Canvas_Item (Dest);
       Link.Arrow := Arrow;
-
       Free (Link.Descr);
       Link.Descr := new String'(Descr);
    end Configure;
@@ -2460,50 +2311,14 @@ package body Gtkada.Canvas is
 
    procedure Add_Link
      (Canvas : access Interactive_Canvas_Record;
-      Link   : access Canvas_Link_Record'Class)
-   is
-      List : Canvas_Link_List := Canvas.Links;
-      L : Canvas_Link;
-   begin
-      --  Do we already have links between the two items ?
-
-      while List /= null loop
-         if (List.Link.Src = Link.Src and then List.Link.Dest = Link.Dest)
-           or else
-           (List.Link.Src = Link.Dest and then List.Link.Dest = Link.Src)
-         then
-            L := List.Link;
-            while L.Sibling /= null loop
-               L := L.Sibling;
-            end loop;
-            L.Sibling := Canvas_Link (Link);
-            return;
-         end if;
-         List := List.Next;
-      end loop;
-
-      --  If not, we simply add a new item to the list
-
-      Canvas.Links := new Canvas_Link_List_Record'
-        (Link => Canvas_Link (Link),
-         Next => Canvas.Links);
-   end Add_Link;
-
-   --------------
-   -- Add_Link --
-   --------------
-
-   procedure Add_Link
-     (Canvas : access Interactive_Canvas_Record;
+      Link   : access Canvas_Link_Record'Class;
       Src    : access Canvas_Item_Record'Class;
       Dest   : access Canvas_Item_Record'Class;
       Arrow  : in Arrow_Type := End_Arrow;
-      Descr  : in String := "")
-   is
-      L : Canvas_Link := new Canvas_Link_Record;
+      Descr  : in String := "") is
    begin
-      Configure (L, Src, Dest, Arrow, Descr);
-      Add_Link (Canvas, L);
+      Configure (Link, Arrow, Descr);
+      Add_Edge (Canvas.Children, Link, Src, Dest);
    end Add_Link;
 
    -----------------
@@ -2512,43 +2327,9 @@ package body Gtkada.Canvas is
 
    procedure Remove_Link
      (Canvas : access Interactive_Canvas_Record;
-      Link   : access Canvas_Link_Record'Class)
-   is
-      Previous : Canvas_Link_List;
-      Current  : Canvas_Link_List := Canvas.Links;
-      L        : Canvas_Link;
+      Link   : access Canvas_Link_Record'Class) is
    begin
-      while Current /= null loop
-         L := Current.Link;
-         if L = Canvas_Link (Link) then
-            if L.Sibling = null then
-               if Previous = null then
-                  Canvas.Links := Current.Next;
-               else
-                  Previous.Next := Current.Next;
-               end if;
-               Free (Current);
-            else
-               Current.Link := L.Sibling;
-               Destroy (L);
-               Free (L);
-            end if;
-            return;
-         end if;
-
-         while L /= null loop
-            if L.Sibling = Canvas_Link (Link) then
-               L.Sibling := Link.Sibling;
-               Destroy (Link);
-               L := Canvas_Link (Link);
-               Free (L);
-               return;
-            end if;
-            L := L.Sibling;
-         end loop;
-         Previous := Current;
-         Current := Current.Next;
-      end loop;
+      Remove (Canvas.Children, Link);
    end Remove_Link;
 
    -------------------
@@ -2559,19 +2340,13 @@ package body Gtkada.Canvas is
      (Canvas  : access Interactive_Canvas_Record;
       Execute : Link_Processor)
    is
-      Current : Canvas_Link_List := Canvas.Links;
-      Tmp     : Canvas_Link_List;
-      Link, Tmp_Link : Canvas_Link;
+      Iter : Edge_Iterator := First (Canvas.Children);
+      Link : Canvas_Link;
    begin
-      while Current /= null loop
-         Tmp := Current.Next;
-         Link := Current.Link;
-         while Link /= null loop
-            Tmp_Link := Link.Sibling;
-            exit when not Execute (Canvas, Link);
-            Link := Tmp_Link;
-         end loop;
-         Current := Tmp;
+      while not At_End (Iter) loop
+         Link := Canvas_Link (Get (Iter));
+         Next (Iter);
+         exit when not Execute (Canvas, Link);
       end loop;
    end For_Each_Link;
 
@@ -2579,40 +2354,22 @@ package body Gtkada.Canvas is
    -- Destroy --
    -------------
 
-   procedure Destroy (Link : access Canvas_Link_Record) is
+   procedure Destroy (Link : in out Canvas_Link_Record) is
    begin
       Free (Link.Descr);
    end Destroy;
 
-   procedure Destroy (Item : access Canvas_Item_Record) is
+   procedure Destroy (Item : in out Canvas_Item_Record) is
    begin
       null;
    end Destroy;
 
-   procedure Destroy (Item : access Buffered_Item_Record) is
+   procedure Destroy (Item : in out Buffered_Item_Record) is
    begin
       if Item.Pixmap /= null then
          Gdk.Pixmap.Unref (Item.Pixmap);
       end if;
    end Destroy;
-
-   -------------
-   -- Get_Src --
-   -------------
-
-   function Get_Src (Link : access Canvas_Link_Record) return Canvas_Item is
-   begin
-      return Link.Src;
-   end Get_Src;
-
-   --------------
-   -- Get_Dest --
-   --------------
-
-   function Get_Dest (Link : access Canvas_Link_Record) return Canvas_Item is
-   begin
-      return Link.Dest;
-   end Get_Dest;
 
    ---------------
    -- Get_Descr --

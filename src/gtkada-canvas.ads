@@ -57,6 +57,7 @@ with Gdk.GC;
 with Gdk.Pixmap;
 with Gdk.Window;
 with Glib;
+with Glib.Graphs;
 with Gtk.Drawing_Area;
 with Gdk.Rectangle;
 with Gtk.Adjustment;
@@ -73,13 +74,13 @@ package Gtkada.Canvas is
    --  This widget can be inserted directly in a scrolled window to provide
    --  support for scrolling.
 
-   type Canvas_Item_Record is abstract tagged private;
+   type Canvas_Item_Record is abstract new Glib.Graphs.Vertex with private;
    type Canvas_Item is access all Canvas_Item_Record'Class;
    --  An item that can be put on the canvas.
    --  This is an abstract type, as it does not provide any default drawing
    --  routine. You must override the abstract Draw subprogram.
 
-   type Canvas_Link_Record is tagged private;
+   type Canvas_Link_Record is new Glib.Graphs.Edge with private;
    type Canvas_Link is access all Canvas_Link_Record'Class;
    --  A link between two items in the canvas.
    --  The implementation provided in this package provides links that can
@@ -225,6 +226,9 @@ package Gtkada.Canvas is
    --  Execute an action on each of the items contained in the canvas.
    --  If Execute returns False, we stop traversing the list of children.
    --  It is safe to remove the items in Item_Processor.
+   --
+   --  ??? Should we remove, and replace with the standard iterators from
+   --  ??? Graphs
 
    function Has_Link
      (Canvas   : access Interactive_Canvas_Record;
@@ -296,8 +300,6 @@ package Gtkada.Canvas is
 
    procedure Configure
      (Link   : access Canvas_Link_Record;
-      Src    : access Canvas_Item_Record'Class;
-      Dest   : access Canvas_Item_Record'Class;
       Arrow  : in Arrow_Type := End_Arrow;
       Descr  : in String := "");
    --  Configure a link.
@@ -305,12 +307,6 @@ package Gtkada.Canvas is
    --  If Descr is not the empty string, it will be displayed in the middle
    --  of the link, and should indicate what the link means.
    --  Arrow indicates whether some arrows should be printed as well.
-
-   function Get_Src (Link : access Canvas_Link_Record) return Canvas_Item;
-   --  Return the source item for the link
-
-   function Get_Dest (Link : access Canvas_Link_Record) return Canvas_Item;
-   --  Return the destination item for the link
 
    function Get_Descr (Link : access Canvas_Link_Record) return String;
    --  Return the description for the link, or "" if there is none
@@ -327,16 +323,12 @@ package Gtkada.Canvas is
 
    procedure Add_Link
      (Canvas : access Interactive_Canvas_Record;
-      Link   : access Canvas_Link_Record'Class);
-   --  Add a link to the canvas. The link must have been created first.
-
-   procedure Add_Link
-     (Canvas : access Interactive_Canvas_Record;
+      Link   : access Canvas_Link_Record'Class;
       Src    : access Canvas_Item_Record'Class;
       Dest   : access Canvas_Item_Record'Class;
       Arrow  : in Arrow_Type := End_Arrow;
       Descr  : in String := "");
-   --  Create and add a link between two items.
+   --  Add Link in the canvas. This connects the two items Src and Dest.
    --  Simpler procedure to add a standard link.
    --  This takes care of memory allocation, as well as adding the link to
    --  the canvas.
@@ -358,8 +350,10 @@ package Gtkada.Canvas is
    --  Execute an action on each of the links contained in the canvas.
    --  If Execute returns False, we stop traversing the list of links.
    --  It is safe to remove the link from the list in Link_Processor.
+   --
+   --  ??? Would be nicer to give direct access to the Graph iterators
 
-   procedure Destroy (Link : access Canvas_Link_Record);
+   procedure Destroy (Link : in out Canvas_Link_Record);
    --  Method called every time a link is destroyed. You should override this
    --  if you define your own link types.
    --  Note that the link might already have been removed from the canvas
@@ -410,7 +404,7 @@ package Gtkada.Canvas is
    --  This subprogram, that must be overridden, should draw the item on
    --  the pixmap Dest, at the specific location (At_X, At_Y).
 
-   procedure Destroy (Item : access Canvas_Item_Record);
+   procedure Destroy (Item : in out Canvas_Item_Record);
    --  Free the memory occupied by the item (not the item itself). You should
    --  override this function if you define your own widget type.
 
@@ -459,7 +453,7 @@ package Gtkada.Canvas is
       Xdest, Ydest : Glib.Gint);
    --  Draw the item's double-buffer onto Dest.
 
-   procedure Destroy (Item : access Buffered_Item_Record);
+   procedure Destroy (Item : in out Buffered_Item_Record);
    --  Free the double-buffer allocated for the item
 
    procedure Set_Screen_Size_And_Pixmap
@@ -513,35 +507,15 @@ private
 
    type String_Access is access String;
 
-   type Canvas_Link_List_Record;
-   type Canvas_Link_List is access Canvas_Link_List_Record;
-   type Canvas_Link_List_Record is record
-      Link : Canvas_Link;
-      Next : Canvas_Link_List;
-   end record;
-
-   type Canvas_Link_Record is tagged record
-      Src    : Canvas_Item;
-      Dest   : Canvas_Item;
+   type Canvas_Link_Record is new Glib.Graphs.Edge with record
       Descr  : String_Access;
+      Arrow  : Arrow_Type;
 
       Src_X_Pos  : Glib.Gfloat := 0.5;
       Src_Y_Pos  : Glib.Gfloat := 0.5;
       Dest_X_Pos : Glib.Gfloat := 0.5;
       Dest_Y_Pos : Glib.Gfloat := 0.5;
       --  Position of the link's attachment in each of the src and dest items.
-
-      Arrow  : Arrow_Type;
-
-      Sibling : Canvas_Link;
-      --  Pointer to the next link that connects the same two items.
-   end record;
-
-   type Canvas_Item_List_Record;
-   type Canvas_Item_List is access Canvas_Item_List_Record;
-   type Canvas_Item_List_Record is record
-      Item : Canvas_Item;
-      Next : Canvas_Item_List;
    end record;
 
    type Item_Selection_List_Record;
@@ -557,10 +531,9 @@ private
    --  (and thus provide correct scrolling).
 
    type Interactive_Canvas_Record is new
-      Gtk.Drawing_Area.Gtk_Drawing_Area_Record with
-   record
-      Links             : Canvas_Link_List  := null;
-      Children          : Canvas_Item_List := null;
+     Gtk.Drawing_Area.Gtk_Drawing_Area_Record
+   with record
+      Children          : Glib.Graphs.Graph;
 
       Selection         : Item_Selection_List := null;
       --  List of currently selected items that will be moved when the mouse
@@ -613,7 +586,7 @@ private
       --  Variables used while smooth-scrolling the canvas
    end record;
 
-   type Canvas_Item_Record is abstract tagged record
+   type Canvas_Item_Record is abstract new Glib.Graphs.Vertex with record
       Coord   : Gdk.Rectangle.Gdk_Rectangle;
       Visible : Boolean := True;
    end record;
