@@ -272,7 +272,8 @@ package body Gtk.Button is
 
       if S /= null then
          Set_Relief
-           (Gtk_Button (Button), Gtk.Enums.Gtk_Relief_Style'Value (S.all));
+           (Gtk_Button (Button),
+            Gtk.Enums.Gtk_Relief_Style'Value (S (S'First + 4 .. S'Last)));
       end if;
    end Generate;
 
