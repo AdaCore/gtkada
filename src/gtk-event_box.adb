@@ -38,10 +38,22 @@ package body Gtk.Event_Box is
 
    procedure Gtk_New (Widget : out Gtk_Event_Box)
    is
+   begin
+      Widget := new Gtk_Event_Box_Record;
+      Initialize (Widget);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_Event_Box_Record)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_event_box_new");
    begin
       Set_Object (Widget, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
 end Gtk.Event_Box;

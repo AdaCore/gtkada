@@ -36,8 +36,8 @@ package body Gtk.Container is
    -- Add --
    ---------
 
-   procedure Add (Container : in out Gtk_Container;
-                  Widget       : in Gtk.Widget.Gtk_Widget'Class) is
+   procedure Add (Container : access Gtk_Container_Record;
+                  Widget    : access Gtk.Widget.Gtk_Widget_Record'Class) is
       procedure Internal (Container : System.Address;
                           Widget    : System.Address);
       pragma Import (C, Internal, "gtk_container_add");
@@ -49,8 +49,8 @@ package body Gtk.Container is
    -- Remove --
    ------------
 
-   procedure Remove (Container : in out Gtk_Container;
-                     Widget : in Gtk.Widget.Gtk_Widget'Class) is
+   procedure Remove (Container : access Gtk_Container_Record;
+                     Widget : access Gtk.Widget.Gtk_Widget_Record'Class) is
       procedure Internal (Container : System.Address;
                           Widget : System.Address);
       pragma Import (C, Internal, "gtk_container_remove");
@@ -62,8 +62,8 @@ package body Gtk.Container is
    -- Set_Border_Width --
    ----------------------
 
-   procedure Set_Border_Width (Container : in Gtk_Container;
-                           Border_Width : in Gint) is
+   procedure Set_Border_Width (Container : access Gtk_Container_Record;
+                               Border_Width : in Gint) is
       procedure Internal (Container  : System.Address;
                           Border_Widget : Gint);
       pragma Import (C, Internal, "gtk_container_set_border_width");
@@ -76,8 +76,8 @@ package body Gtk.Container is
    ---------------------------
 
    procedure Set_Focus_Hadjustment
-     (Container  : in out Gtk_Container;
-      Adjustment : in     Gtk.Adjustment.Gtk_Adjustment'Class) is
+     (Container  : access Gtk_Container_Record;
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class) is
 
       procedure Internal (Container : in System.Address;
                           Adjustment : in System.Address);
@@ -92,8 +92,8 @@ package body Gtk.Container is
    ---------------------------
 
    procedure Set_Focus_Vadjustment
-     (Container  : in out Gtk_Container;
-      Adjustment : in     Gtk.Adjustment.Gtk_Adjustment'Class) is
+     (Container  : access Gtk_Container_Record;
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class) is
 
       procedure Internal (Container : in System.Address;
                           Adjustment : in System.Address);
@@ -107,7 +107,7 @@ package body Gtk.Container is
    -- Set_Resize_Mode --
    ---------------------
 
-   procedure Set_Resize_Mode (Container   : in out Gtk_Container;
+   procedure Set_Resize_Mode (Container   : access Gtk_Container_Record;
                               Resize_Mode : in Gtk_Resize_Mode) is
       procedure Internal (Container : in System.Address;
                           Mode      : in Integer);
@@ -120,7 +120,7 @@ package body Gtk.Container is
    -- Generate --
    --------------
 
-   procedure Generate (Container : in Gtk_Container;
+   procedure Generate (Container : access Gtk_Container_Record;
                        N         : in Node_Ptr;
                        File      : in File_Type) is
    begin
@@ -131,7 +131,7 @@ package body Gtk.Container is
       Gen_Set (N, "Container", "resize_mode", File);
    end Generate;
 
-   procedure Generate (Container : in out Gtk_Container;
+   procedure Generate (Container : access Gtk_Container_Record;
                        N         : in Node_Ptr) is
       S : String_Ptr;
    begin

@@ -38,92 +38,88 @@ package body Gtk.File_Selection is
    -- Get_Action_Area --
    ---------------------
 
-   function Get_Action_Area (File_Selection : in Gtk_File_Selection)
+   function Get_Action_Area (File_Selection : access Gtk_File_Selection_Record)
      return Gtk.Box.Gtk_Box
    is
       function Internal (File_Selection : in System.Address)
         return System.Address;
       pragma Import (C, Internal, "ada_file_selection_get_action_area");
-      Tmp : Gtk.Box.Gtk_Box;
-
+      Stub : Gtk.Box.Gtk_Box_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (File_Selection)));
-      return Tmp;
+      return Gtk.Box.Gtk_Box
+        (Get_User_Data (Internal (Get_Object (File_Selection)), Stub));
    end Get_Action_Area;
 
    ---------------------
    -- Get_Button_Area --
    ---------------------
 
-   function Get_Button_Area (File_Selection : in Gtk_File_Selection)
+   function Get_Button_Area (File_Selection : access Gtk_File_Selection_Record)
      return Gtk.Box.Gtk_Box
    is
       function Internal (File_Selection : in System.Address)
         return System.Address;
       pragma Import (C, Internal, "ada_file_selection_get_button_area");
-      Tmp : Gtk.Box.Gtk_Box;
-
+      Stub : Gtk.Box.Gtk_Box_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (File_Selection)));
-      return Tmp;
+      return Gtk.Box.Gtk_Box
+        (Get_User_Data (Internal (Get_Object (File_Selection)), Stub));
    end Get_Button_Area;
 
    -----------------------
    -- Get_Cancel_Button --
    -----------------------
 
-   function Get_Cancel_Button (File_Selection : in Gtk_File_Selection)
+   function Get_Cancel_Button
+     (File_Selection : access Gtk_File_Selection_Record)
      return Gtk.Button.Gtk_Button
    is
       function Internal (File_Selection : in System.Address)
         return System.Address;
       pragma Import (C, Internal, "ada_file_selection_get_cancel_button");
-      Tmp : Gtk.Button.Gtk_Button;
-
+      Stub : Gtk.Button.Gtk_Button_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (File_Selection)));
-      return Tmp;
+      return Gtk.Button.Gtk_Button
+        (Get_User_Data (Internal (Get_Object (File_Selection)), Stub));
    end Get_Cancel_Button;
 
    ------------------
    -- Get_Dir_List --
    ------------------
 
-   function Get_Dir_List (File_Selection : in Gtk_File_Selection)
-     return Gtk.Widget.Gtk_Widget'Class
+   function Get_Dir_List (File_Selection : access Gtk_File_Selection_Record)
+     return Gtk.Widget.Gtk_Widget
    is
       function Internal (File_Selection : in System.Address)
         return System.Address;
       pragma Import (C, Internal, "ada_file_selection_get_dir_list");
-      Tmp : Gtk.Widget.Gtk_Widget;
-
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (File_Selection)));
-      return Tmp;
+      return Gtk.Widget.Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (File_Selection)), Stub));
    end Get_Dir_List;
 
    -------------------
    -- Get_File_List --
    -------------------
 
-   function Get_File_List (File_Selection : in Gtk_File_Selection)
-     return Gtk.Widget.Gtk_Widget'Class
+   function Get_File_List (File_Selection : access Gtk_File_Selection_Record)
+     return Gtk.Widget.Gtk_Widget
    is
       function Internal (File_Selection : in System.Address)
         return System.Address;
       pragma Import (C, Internal, "ada_file_selection_get_file_list");
-      Tmp : Gtk.Widget.Gtk_Widget;
-
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (File_Selection)));
-      return Tmp;
+      return Gtk.Widget.Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (File_Selection)), Stub));
    end Get_File_List;
 
    ------------------
    -- Get_Filename --
    ------------------
 
-   function Get_Filename (File_Selection : in Gtk_File_Selection)
+   function Get_Filename (File_Selection : access Gtk_File_Selection_Record)
      return String
    is
       function Internal (File_Selection : in System.Address)
@@ -139,85 +135,83 @@ package body Gtk.File_Selection is
    -- Get_Help_Button --
    ---------------------
 
-   function Get_Help_Button (File_Selection : in Gtk_File_Selection)
+   function Get_Help_Button (File_Selection : access Gtk_File_Selection_Record)
      return Gtk.Button.Gtk_Button
    is
       function Internal (File_Selection : in System.Address)
         return System.Address;
       pragma Import (C, Internal, "ada_file_selection_get_help_button");
-      Tmp : Gtk.Button.Gtk_Button;
-
+      Stub : Gtk.Button.Gtk_Button_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (File_Selection)));
-      return Tmp;
+      return Gtk.Button.Gtk_Button
+        (Get_User_Data (Internal (Get_Object (File_Selection)), Stub));
    end Get_Help_Button;
 
    --------------------------
    -- Get_History_Pulldown --
    --------------------------
 
-   function Get_History_Pulldown (File_Selection : in Gtk_File_Selection)
-     return Gtk.Widget.Gtk_Widget'Class
+   function Get_History_Pulldown
+     (File_Selection : access Gtk_File_Selection_Record)
+     return Gtk.Widget.Gtk_Widget
    is
       function Internal (File_Selection : in System.Address)
         return System.Address;
       pragma Import (C, Internal, "ada_file_selection_get_history_pulldown");
-      Tmp : Gtk.Widget.Gtk_Widget;
-
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (File_Selection)));
-      return Tmp;
+      return Gtk.Widget.Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (File_Selection)), Stub));
    end Get_History_Pulldown;
 
    -------------------
    -- Get_Ok_Button --
    -------------------
 
-   function Get_Ok_Button (File_Selection : in Gtk_File_Selection)
+   function Get_Ok_Button (File_Selection : access Gtk_File_Selection_Record)
      return Gtk.Button.Gtk_Button
    is
       function Internal (File_Selection : in System.Address)
         return System.Address;
       pragma Import (C, Internal, "ada_file_selection_get_ok_button");
-      Tmp : Gtk.Button.Gtk_Button;
-
+      Stub : Gtk.Button.Gtk_Button_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (File_Selection)));
-      return Tmp;
+      return Gtk.Button.Gtk_Button
+        (Get_User_Data (Internal (Get_Object (File_Selection)), Stub));
    end Get_Ok_Button;
 
    -------------------------
    -- Get_Selection_Entry --
    -------------------------
 
-   function Get_Selection_Entry (File_Selection : in Gtk_File_Selection)
-     return Gtk.Widget.Gtk_Widget'Class
+   function Get_Selection_Entry
+     (File_Selection : access Gtk_File_Selection_Record)
+     return Gtk.Widget.Gtk_Widget
    is
       function Internal (File_Selection : in System.Address)
         return System.Address;
       pragma Import (C, Internal, "ada_file_selection_get_selection_entry");
-      Tmp : Gtk.Widget.Gtk_Widget;
-
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (File_Selection)));
-      return Tmp;
+      return Gtk.Widget.Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (File_Selection)), Stub));
    end Get_Selection_Entry;
 
    ------------------------
    -- Get_Selection_Text --
    ------------------------
 
-   function Get_Selection_Text (File_Selection : in Gtk_File_Selection)
-     return Gtk.Widget.Gtk_Widget'Class
+   function Get_Selection_Text
+     (File_Selection : access Gtk_File_Selection_Record)
+     return Gtk.Widget.Gtk_Widget
    is
       function Internal (File_Selection : in System.Address)
         return System.Address;
       pragma Import (C, Internal, "ada_file_selection_get_selection_text");
-      Tmp : Gtk.Widget.Gtk_Widget;
-
+      Stub : Gtk.Widget.Gtk_Widget_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (File_Selection)));
-      return Tmp;
+      return Gtk.Widget.Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (File_Selection)), Stub));
    end Get_Selection_Text;
 
    -------------
@@ -227,19 +221,17 @@ package body Gtk.File_Selection is
    procedure Gtk_New (File_Selection : out Gtk_File_Selection;
                       Title  : in String)
    is
-      function Internal (Title  : in String)
-        return System.Address;
-      pragma Import (C, Internal, "gtk_file_selection_new");
-
    begin
-      Set_Object (File_Selection, Internal (Title & Ascii.NUL));
+      File_Selection := new Gtk_File_Selection_Record;
+      Initialize (File_Selection, Title);
    end Gtk_New;
 
    -------------------------
    -- Hide_Fileop_Buttons --
    -------------------------
 
-   procedure Hide_Fileop_Buttons (File_Selection : in out Gtk_File_Selection)
+   procedure Hide_Fileop_Buttons
+     (File_Selection : access Gtk_File_Selection_Record)
    is
       procedure Internal (File_Selection : in System.Address);
       pragma Import (C, Internal, "gtk_file_selection_hide_fileop_buttons");
@@ -248,12 +240,27 @@ package body Gtk.File_Selection is
       Internal (Get_Object (File_Selection));
    end Hide_Fileop_Buttons;
 
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (File_Selection : access Gtk_File_Selection_Record;
+                         Title  : in String)
+   is
+      function Internal (Title  : in String)
+        return System.Address;
+      pragma Import (C, Internal, "gtk_file_selection_new");
+   begin
+      Set_Object (File_Selection, Internal (Title & Ascii.NUL));
+      Initialize_User_Data (File_Selection);
+   end Initialize;
+
    ------------------
    -- Set_Filename --
    ------------------
 
    procedure Set_Filename
-      (File_Selection  : in Gtk_File_Selection;
+      (File_Selection  : access Gtk_File_Selection_Record;
        Filename : in String)
    is
       procedure Internal
@@ -269,7 +276,8 @@ package body Gtk.File_Selection is
    -- Show_Fileop_Buttons --
    -------------------------
 
-   procedure Show_Fileop_Buttons (File_Selection : in out Gtk_File_Selection)
+   procedure Show_Fileop_Buttons
+     (File_Selection : access Gtk_File_Selection_Record)
    is
       procedure Internal (File_Selection : in System.Address);
       pragma Import (C, Internal, "gtk_file_selection_show_fileop_buttons");
@@ -282,7 +290,7 @@ package body Gtk.File_Selection is
    -- Generate --
    --------------
 
-   procedure Generate (File_Selection : in Gtk_File_Selection;
+   procedure Generate (File_Selection : access Gtk_File_Selection_Record;
                        N      : in Node_Ptr;
                        File   : in File_Type) is
       use Window;
@@ -292,17 +300,18 @@ package body Gtk.File_Selection is
       Generate (Gtk_Window (File_Selection), N, File);
    end Generate;
 
-   procedure Generate (File_Selection : in out Gtk_File_Selection;
+   procedure Generate (File_Selection : access Gtk_File_Selection_Record;
                        N              : in Node_Ptr) is
       use Window;
    begin
-      if not N.Specific_Data.Created then
-         Gtk_New (File_Selection, Get_Field (N, "title").all);
-         Set_Object (Get_Field (N, "name"), File_Selection'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--         if not N.Specific_Data.Created then
+--            Gtk_New (File_Selection, Get_Field (N, "title").all);
+--        Set_Object (Get_Field (N, "name"), File_Selection'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Window (File_Selection), N);
+--         Generate (Gtk_Window (File_Selection), N);
+      null;
    end Generate;
 
 end Gtk.File_Selection;

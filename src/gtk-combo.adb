@@ -36,7 +36,7 @@ package body Gtk.Combo is
    -- Disable_Activate --
    ----------------------
 
-   procedure Disable_Activate (Combo_Box : in Gtk_Combo) is
+   procedure Disable_Activate (Combo_Box : access Gtk_Combo_Record) is
       procedure Internal (Combo_Box  : in System.Address);
       pragma Import (C, Internal, "gtk_combo_disable_activate");
    begin
@@ -47,30 +47,32 @@ package body Gtk.Combo is
    -- Get_Entry --
    ---------------
 
-   function Get_Entry (Combo_Box : in Gtk_Combo) return Gtk.GEntry.Gtk_Entry is
+   function Get_Entry (Combo_Box : access Gtk_Combo_Record)
+                       return Gtk.GEntry.Gtk_Entry
+   is
       function Internal (Combo_Box : in System.Address)
                          return         System.Address;
       pragma Import (C, Internal, "ada_combo_get_entry");
-      Tmp : Gtk.GEntry.Gtk_Entry;
+      Stub : Gtk.GEntry.Gtk_Entry_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Combo_Box)));
-      return Tmp;
+      return Gtk.GEntry.Gtk_Entry
+        (Get_User_Data (Internal (Get_Object (Combo_Box)), Stub));
    end Get_Entry;
 
    --------------
    -- Get_List --
    --------------
 
-   function Get_List (Combo_Box : in Gtk_Combo)
+   function Get_List (Combo_Box : access Gtk_Combo_Record)
                       return         Gtk.List.Gtk_List
    is
       function Internal (Combo_Box : in System.Address)
                          return         System.Address;
       pragma Import (C, Internal, "ada_combo_get_list");
-      Tmp : Gtk.List.Gtk_List;
+      Stub : Gtk.List.Gtk_List_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Combo_Box)));
-      return Tmp;
+      return Gtk.List.Gtk_List
+        (Get_User_Data (Internal (Get_Object (Combo_Box)), Stub));
    end Get_List;
 
    -------------
@@ -78,17 +80,30 @@ package body Gtk.Combo is
    -------------
 
    procedure Gtk_New (Widget : out Gtk_Combo) is
+   begin
+      Widget := new Gtk_Combo_Record;
+      Initialize (Widget);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_Combo_Record) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_combo_new");
    begin
       Set_Object (Widget, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ------------------------
    -- Set_Case_Sensitive --
    ------------------------
 
-   procedure Set_Case_Sensitive (Combo_Box : in Gtk_Combo; Val : in Boolean) is
+   procedure Set_Case_Sensitive (Combo_Box : access Gtk_Combo_Record;
+                                 Val : in Boolean)
+   is
       procedure Internal (Combo_Box : in System.Address;
                           Val       : in Gint);
       pragma Import (C, Internal, "gtk_combo_set_case_sensitive");
@@ -101,8 +116,8 @@ package body Gtk.Combo is
    ---------------------
 
    procedure Set_Item_String
-     (Combo_Box  : in Gtk_Combo;
-      Item       : in Gtk.Item.Gtk_Item'Class;
+     (Combo_Box  : access Gtk_Combo_Record;
+      Item       : in Gtk.Item.Gtk_Item;
       Item_Value : in String)
    is
       procedure Internal (Combo_Box  : in System.Address;
@@ -119,7 +134,7 @@ package body Gtk.Combo is
    -------------------------
 
    procedure Set_Popdown_Strings
-     (Combo_Box : in Gtk_Combo;
+     (Combo_Box : access Gtk_Combo_Record;
       Strings   : in String_List.Glist)
    is
       procedure Internal (Combo_Box : in System.Address;
@@ -134,7 +149,9 @@ package body Gtk.Combo is
    -- Set_Use_Arrows --
    --------------------
 
-   procedure Set_Use_Arrows (Combo_Box : in Gtk_Combo; Val : in Boolean) is
+   procedure Set_Use_Arrows (Combo_Box : access Gtk_Combo_Record;
+                             Val : in Boolean)
+   is
       procedure Internal (Combo_Box : in System.Address; Val : in Gint);
       pragma Import (C, Internal, "gtk_combo_set_use_arrows");
    begin
@@ -145,7 +162,7 @@ package body Gtk.Combo is
    -- Set_Use_Arrows_Always --
    ---------------------------
 
-   procedure Set_Use_Arrows_Always (Combo_Box : in Gtk_Combo;
+   procedure Set_Use_Arrows_Always (Combo_Box : access Gtk_Combo_Record;
                                     Val : in Boolean)
    is
       procedure Internal (Combo_Box : in System.Address; Val : in Gint);
@@ -159,7 +176,7 @@ package body Gtk.Combo is
    -----------------------
 
    procedure Set_Value_In_List
-     (Combo_Box   : in Gtk_Combo;
+     (Combo_Box   : access Gtk_Combo_Record;
       Val         : in Gint;
       Ok_If_Empty : in Boolean)
    is

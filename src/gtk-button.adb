@@ -30,10 +30,10 @@
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
-with Gtk.Widget; use Gtk.Widget;
+--  with Gtk.Widget; use Gtk.Widget;
 with Gtk.Container; use Gtk.Container;
-with Gtk.File_Selection; use Gtk.File_Selection;
-with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
+--   with Gtk.File_Selection; use Gtk.File_Selection;
+--   with Gtk.Color_Selection_Dialog; use Gtk.Color_Selection_Dialog;
 
 package body Gtk.Button is
 
@@ -41,7 +41,7 @@ package body Gtk.Button is
    -- Clicked --
    -------------
 
-   procedure Clicked (Button : in Gtk_Button) is
+   procedure Clicked (Button : access Gtk_Button_Record) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_clicked");
    begin
@@ -52,7 +52,7 @@ package body Gtk.Button is
    -- Enter --
    -----------
 
-   procedure Enter (Button : in Gtk_Button) is
+   procedure Enter (Button : access Gtk_Button_Record) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_enter");
    begin
@@ -63,7 +63,7 @@ package body Gtk.Button is
    -- Get_Relief --
    ----------------
 
-   function Get_Relief (Button : in Gtk_Button)
+   function Get_Relief (Button : access Gtk_Button_Record)
                         return Gtk.Enums.Gtk_Relief_Style is
       function Internal (Button : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_button_get_relief");
@@ -75,29 +75,30 @@ package body Gtk.Button is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Button : out Gtk_Button) is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_button_new");
+   procedure Gtk_New (Button : out Gtk_Button; Label : in String := "") is
    begin
-      Set_Object (Button, Internal);
+      Button := new Gtk_Button_Record;
+      Initialize (Button, Label);
    end Gtk_New;
 
-   -------------
-   -- Gtk_New --
-   -------------
+   ----------------
+   -- Initialize --
+   ----------------
 
-   procedure Gtk_New (Button : out Gtk_Button; Label  : in String) is
+   procedure Initialize (Button : access Gtk_Button_Record; Label : in String)
+   is
       function Internal (S : String) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_with_label");
    begin
       Set_Object (Button, Internal (Label & Ascii.NUL));
-   end Gtk_New;
+      Initialize_User_Data (Button);
+   end Initialize;
 
    -----------
    -- Leave --
    -----------
 
-   procedure Leave (Button : in Gtk_Button) is
+   procedure Leave (Button : access Gtk_Button_Record) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_enter");
    begin
@@ -108,7 +109,7 @@ package body Gtk.Button is
    -- Pressed --
    -------------
 
-   procedure Pressed (Button : in Gtk_Button) is
+   procedure Pressed (Button : access Gtk_Button_Record) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_pressed");
    begin
@@ -119,7 +120,7 @@ package body Gtk.Button is
    -- Released --
    --------------
 
-   procedure Released (Button : in Gtk_Button) is
+   procedure Released (Button : access Gtk_Button_Record) is
       procedure Internal (W : in System.Address);
       pragma Import (C, Internal, "gtk_button_released");
    begin
@@ -130,7 +131,7 @@ package body Gtk.Button is
    -- Set_Relief --
    ----------------
 
-   procedure Set_Relief (Button   : in out Gtk_Button;
+   procedure Set_Relief (Button   : access Gtk_Button_Record;
                          NewStyle : in Gtk.Enums.Gtk_Relief_Style) is
       procedure Internal (Button : in System.Address;
                           NewStyle : in Gint);
@@ -144,7 +145,7 @@ package body Gtk.Button is
    -- Generate --
    --------------
 
-   procedure Generate (Button : in Gtk_Button;
+   procedure Generate (Button : access Gtk_Button_Record;
                        N      : in Node_Ptr;
                        File   : in File_Type) is
       use Container;
@@ -167,67 +168,68 @@ package body Gtk.Button is
       Gen_Set (N, "Button", "relief", File);
    end Generate;
 
-   procedure Generate (Button : in out Gtk_Button;
+   procedure Generate (Button : access Gtk_Button_Record;
                        N      : in Node_Ptr) is
       use Container;
 
-      Child_Name      : String_Ptr := Get_Field (N, "child_name");
-      S               : String_Ptr := Get_Field (N, "label");
-      File_Selection  : Gtk_File_Selection;
-      Color_Selection : Gtk_Color_Selection_Dialog;
+--         Child_Name      : String_Ptr := Get_Field (N, "child_name");
+--         S               : String_Ptr := Get_Field (N, "label");
+--         File_Selection  : Gtk_File_Selection;
+--         Color_Selection : Gtk_Color_Selection_Dialog;
 
    begin
-      if not N.Specific_Data.Created then
-         if Child_Name = null then
-            if S = null then
-               Gtk_New (Button);
-            else
-               Gtk_New (Button, S.all);
-            end if;
-         else
-            declare
-               Selection : Gtk_Widget'Class :=
-                 Get_Object (Find_Tag
-                   (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                    "name").Value).all;
+--         if not N.Specific_Data.Created then
+--            if Child_Name = null then
+--               if S = null then
+--                  --  Gtk_New (Button);
+--               else
+--                  --  Gtk_New (Button, S.all);
+--               end if;
+--            else
+--               declare
+--                  Selection : Gtk_Widget :=
+--                    Get_Object (Find_Tag
+--                      (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
+--                       "name").Value).all;
 
-            begin
-               if Get_Part (Child_Name.all, 1) = "FileSel" then
-                  File_Selection := Gtk_File_Selection (Selection);
+--               begin
+--                  if Get_Part (Child_Name.all, 1) = "FileSel" then
+--                     File_Selection := Gtk_File_Selection (Selection);
 
-                  if Get_Part (Child_Name.all, 2) = "ok_button" then
-                     Button := Get_Ok_Button (File_Selection);
-                  elsif Get_Part (Child_Name.all, 2) = "cancel_button" then
-                     Button := Get_Cancel_Button (File_Selection);
-                  elsif Get_Part (Child_Name.all, 2) = "help_button" then
-                     Button := Get_Help_Button (File_Selection);
-                  end if;
+--                     if Get_Part (Child_Name.all, 2) = "ok_button" then
+--                        Button := Get_Ok_Button (File_Selection);
+--                  elsif Get_Part (Child_Name.all, 2) = "cancel_button" then
+--                        Button := Get_Cancel_Button (File_Selection);
+--                     elsif Get_Part (Child_Name.all, 2) = "help_button" then
+--                        Button := Get_Help_Button (File_Selection);
+--                     end if;
 
-               elsif Get_Part (Child_Name.all, 1) = "ColorSel" then
-                  Color_Selection := Gtk_Color_Selection_Dialog (Selection);
+--                  elsif Get_Part (Child_Name.all, 1) = "ColorSel" then
+--                  Color_Selection := Gtk_Color_Selection_Dialog (Selection);
 
-                  if Get_Part (Child_Name.all, 2) = "ok_button" then
-                     Button := Get_OK_Button (Color_Selection);
-                  elsif Get_Part (Child_Name.all, 2) = "cancel_button" then
-                     Button := Get_Cancel_Button (Color_Selection);
-                  elsif Get_Part (Child_Name.all, 2) = "help_button" then
-                     Button := Get_Help_Button (Color_Selection);
-                  end if;
-               end if;
-            end;
-         end if;
+--                     if Get_Part (Child_Name.all, 2) = "ok_button" then
+--                        Button := Get_OK_Button (Color_Selection);
+--                  elsif Get_Part (Child_Name.all, 2) = "cancel_button" then
+--                        Button := Get_Cancel_Button (Color_Selection);
+--                     elsif Get_Part (Child_Name.all, 2) = "help_button" then
+--                        Button := Get_Help_Button (Color_Selection);
+--                     end if;
+--                  end if;
+--               end;
+--            end if;
 
-         Set_Object (Get_Field (N, "name"), Button'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--            Set_Object (Get_Field (N, "name"), Button'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Container (Button), N);
+--         Generate (Gtk_Container (Button), N);
 
-      S := Get_Field (N, "relief");
+--         S := Get_Field (N, "relief");
 
-      if S /= null then
-         Set_Relief (Button, Gtk.Enums.Gtk_Relief_Style'Value (S.all));
-      end if;
+--         if S /= null then
+--            Set_Relief (Button, Gtk.Enums.Gtk_Relief_Style'Value (S.all));
+--         end if;
+      null;
    end Generate;
 
 end Gtk.Button;

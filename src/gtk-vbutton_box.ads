@@ -32,15 +32,19 @@ with Gtk.Enums; use Gtk.Enums;
 
 package Gtk.VButton_Box is
 
-   type Gtk_VButton_Box is new Gtk.Button_Box.Gtk_Button_Box with private;
+   type Gtk_VButton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record
+     with private;
+   type Gtk_VButton_Box is access all Gtk_VButton_Box_Record'Class;
 
    function Get_Layout_Default return Gtk_Button_Box_Style;
    function Get_Spacing_Default return Gint;
    procedure Gtk_New (Widget : out Gtk_VButton_Box);
+   procedure Initialize (Widget : access Gtk_VButton_Box_Record);
    procedure Set_Layout_Default (Layout : in Gtk_Button_Box_Style);
    procedure Set_Spacing_Default (Spacing : in Gint);
 
 private
-   type Gtk_VButton_Box is new Gtk.Button_Box.Gtk_Button_Box with null record;
+   type Gtk_VButton_Box_Record is new Gtk.Button_Box.Gtk_Button_Box_Record
+     with null record;
 
 end Gtk.VButton_Box;

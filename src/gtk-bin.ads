@@ -31,10 +31,11 @@ with Gtk.Container; use Gtk.Container;
 
 package Gtk.Bin is
 
-   type Gtk_Bin is new Container.Gtk_Container with private;
+   type Gtk_Bin_Record is new Container.Gtk_Container_Record with private;
+   type Gtk_Bin is access all Gtk_Bin_Record'Class;
 
 private
 
-   type Gtk_Bin is new Container.Gtk_Container with null record;
+   type Gtk_Bin_Record is new Container.Gtk_Container_Record with null record;
 
 end Gtk.Bin;

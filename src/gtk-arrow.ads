@@ -33,18 +33,23 @@ with Gtk.Misc;
 
 package Gtk.Arrow is
 
-   type Gtk_Arrow is new Gtk.Misc.Gtk_Misc with private;
+   type Gtk_Arrow_Record is new Gtk.Misc.Gtk_Misc_Record with private;
+   type Gtk_Arrow is access all Gtk_Arrow_Record'Class;
 
    procedure Gtk_New
       (Widget      : out Gtk_Arrow;
        Arrow_Type  : in Gtk_Arrow_Type;
        Shadow_Type : in Gtk_Shadow_Type);
+   procedure Initialize
+      (Widget      : access Gtk_Arrow_Record;
+       Arrow_Type  : in Gtk_Arrow_Type;
+       Shadow_Type : in Gtk_Shadow_Type);
    procedure Set
-      (Arrow       : in Gtk_Arrow;
+      (Arrow       : access Gtk_Arrow_Record;
        Arrow_Type  : in Gtk_Arrow_Type;
        Shadow_Type : in Gtk_Shadow_Type);
 
 private
-   type Gtk_Arrow is new Gtk.Misc.Gtk_Misc with null record;
+   type Gtk_Arrow_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
 
 end Gtk.Arrow;

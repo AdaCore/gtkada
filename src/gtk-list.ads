@@ -33,54 +33,57 @@ with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.List is
 
-   type Gtk_List is new Gtk.Container.Gtk_Container with private;
+   type Gtk_List_Record is new Gtk.Container.Gtk_Container_Record with private;
+   type Gtk_List is access all Gtk_List_Record'Class;
 
    procedure Append_Items
-      (List  : in Gtk_List;
+      (List  : access Gtk_List_Record;
        Items : in Widget_List.Glist);
    function Child_Position
-      (List   : in Gtk_List;
-       Child  : in Gtk.Widget.Gtk_Widget'Class)
+      (List   : access Gtk_List_Record;
+       Child  : in Gtk.Widget.Gtk_Widget)
        return      Gint;
    procedure Clear_Items
-      (List    : in Gtk_List;
+      (List    : access Gtk_List_Record;
        Start   : in Gint;
        The_End : in Gint);
-   function Get_Children (Widget : in Gtk.List.Gtk_List)
+   function Get_Children (Widget : access Gtk.List.Gtk_List_Record)
                           return      Widget_List.Glist;
-   function Get_Selection (Widget : in Gtk.List.Gtk_List)
+   function Get_Selection (Widget : access Gtk.List.Gtk_List_Record)
                            return      Widget_List.Glist;
    procedure Gtk_New (Widget : out Gtk_List);
+   procedure Initialize (Widget : access Gtk_List_Record);
    procedure Insert_Items
-      (List     : in Gtk_List;
+      (List     : access Gtk_List_Record;
        Items    : in Widget_List.Glist;
        Position : in Gint);
    procedure Prepend_Items
-      (List  : in Gtk_List;
+      (List  : access Gtk_List_Record;
        Items : in Widget_List.Glist);
    procedure Remove_Items
-      (List  : in Gtk_List;
+      (List  : access Gtk_List_Record;
        Items : in Widget_List.Glist);
    procedure Remove_Items_No_Unref
-      (List  : in Gtk_List;
+      (List  : access Gtk_List_Record;
        Items : in Widget_List.Glist);
    procedure Select_Child
-      (List  : in Gtk_List;
-       Child : in Gtk.Widget.Gtk_Widget'Class);
+      (List  : access Gtk_List_Record;
+       Child : in Gtk.Widget.Gtk_Widget);
    procedure Select_Item
-      (List : in Gtk_List;
+      (List : access Gtk_List_Record;
        Item : in Gint);
    procedure Set_Selection_Mode
-      (List : in Gtk_List;
+      (List : access Gtk_List_Record;
        Mode : in Gtk_Selection_Mode);
    procedure Unselect_Child
-      (List  : in Gtk_List;
-       Child : in Gtk.Widget.Gtk_Widget'Class);
+      (List  : access Gtk_List_Record;
+       Child : in Gtk.Widget.Gtk_Widget);
    procedure Unselect_Item
-      (List : in Gtk_List;
+      (List : access Gtk_List_Record;
        Item : in Gint);
 
 private
-   type Gtk_List is new Gtk.Container.Gtk_Container with null record;
+   type Gtk_List_Record is new Gtk.Container.Gtk_Container_Record
+     with null record;
 
 end Gtk.List;

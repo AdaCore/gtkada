@@ -33,25 +33,27 @@ with Gtk.Widget;
 
 package Gtk.Option_Menu is
 
-   type Gtk_Option_Menu is new Button.Gtk_Button with private;
-
+   type Gtk_Option_Menu_Record is new Button.Gtk_Button_Record with private;
+   type Gtk_Option_Menu is access all Gtk_Option_Menu_Record'Class;
 
    procedure Gtk_New (Option_Menu : out Gtk_Option_Menu);
+   procedure Initialize (Option_Menu : access Gtk_Option_Menu_Record);
 
-   function Get_Menu (Option_Menu : in  Gtk_Option_Menu)
+   function Get_Menu (Option_Menu : access Gtk_Option_Menu_Record)
                       return Gtk.Menu.Gtk_Menu;
 
-   procedure Set_Menu (Option_Menu : in out Gtk_Option_Menu;
-                       Menu        : in     Widget.Gtk_Widget'Class);
+   procedure Set_Menu (Option_Menu : access Gtk_Option_Menu_Record;
+                       Menu        : access Widget.Gtk_Widget_Record'Class);
 
-   procedure Remove_Menu (Option_Menu : in out Gtk_Option_Menu;
-                          Menu        : in     Widget.Gtk_Widget'Class);
+   procedure Remove_Menu (Option_Menu : access Gtk_Option_Menu_Record;
+                          Menu        : access Widget.Gtk_Widget_Record'Class);
 
-   procedure Set_History (Option_Menu : in out Gtk_Option_Menu;
+   procedure Set_History (Option_Menu : access Gtk_Option_Menu_Record;
                           Index       : in     Gint);
 
 
 private
-   type Gtk_Option_Menu is new Button.Gtk_Button with null record;
+   type Gtk_Option_Menu_Record is new Button.Gtk_Button_Record
+     with null record;
 
 end Gtk.Option_Menu;

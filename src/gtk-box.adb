@@ -29,8 +29,8 @@
 
 with System;
 with Gdk; use Gdk;
-with Gtk.Dialog; use Gtk.Dialog;
-with Gtk.File_Selection; use Gtk.File_Selection;
+--  with Gtk.Dialog; use Gtk.Dialog;
+--  with Gtk.File_Selection; use Gtk.File_Selection;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Box is
@@ -39,53 +39,81 @@ package body Gtk.Box is
    -- Get_Child --
    ---------------
 
-   function Get_Child (Box : in Gtk_Box; Num : in Gint) return Gtk_Widget is
+   function Get_Child (Box : access Gtk_Box_Record;
+                       Num : in Gint)
+                       return Gtk_Widget is
       function Internal (Box : in System.Address; Num : in Gint)
                          return  System.Address;
       pragma Import (C, Internal, "ada_box_get_child");
-      W : Gtk.Widget.Gtk_Widget;
+      Stub : Gtk_Widget_Record;
    begin
-      Set_Object (W, Internal (Get_Object (Box), Num));
-      return W;
+      return Gtk_Widget
+        (Get_User_Data (Internal (Get_Object (Box), Num), Stub));
    end Get_Child;
 
    ------------------
    -- Gtk_New_Vbox --
    ------------------
 
-   procedure Gtk_New_Vbox (Box         : out Gtk_Box;
+   procedure Gtk_New_Vbox (Box         : in out Gtk_Box;
                            Homogeneous : in  Boolean;
                            Spacing     : in  Gint)
    is
-      function Internal (Homogeneous : Gint;
-                         Spacing     : Gint) return System.Address;
-      pragma Import (C, Internal, "gtk_vbox_new");
    begin
-      Set_Object (Box, Internal (Boolean'Pos (Homogeneous), Spacing));
+      Box := new Gtk_Box_Record;
+      Initialize_Vbox (Box, Homogeneous, Spacing);
    end Gtk_New_Vbox;
 
    ------------------
    -- Gtk_New_Hbox --
    ------------------
 
-   procedure Gtk_New_Hbox (Box         : out Gtk_Box;
+   procedure Gtk_New_Hbox (Box         : in out Gtk_Box;
                            Homogeneous : in  Boolean;
                            Spacing     : in  Gint)
    is
+   begin
+      Box := new Gtk_Box_Record;
+      Initialize_Hbox (Box, Homogeneous, Spacing);
+   end Gtk_New_Hbox;
+
+   ---------------------
+   -- Initialize_Hbox --
+   ---------------------
+
+   procedure Initialize_Hbox (Box         : access Gtk_Box_Record;
+                              Homogeneous : in  Boolean;
+                              Spacing     : in  Gint) is
       function Internal (Homogeneous : Gint;
                          Spacing     : Gint) return System.Address;
       pragma Import (C, Internal, "gtk_hbox_new");
    begin
       Set_Object (Box, Internal (Boolean'Pos (Homogeneous), Spacing));
-   end Gtk_New_Hbox;
+      Initialize_User_Data (Box);
+   end Initialize_Hbox;
+
+   ---------------------
+   -- Initialize_Vbox --
+   ---------------------
+
+   procedure Initialize_Vbox (Box         : access Gtk_Box_Record;
+                              Homogeneous : in  Boolean;
+                              Spacing     : in  Gint) is
+      function Internal (Homogeneous : Gint;
+                         Spacing     : Gint) return System.Address;
+      pragma Import (C, Internal, "gtk_vbox_new");
+   begin
+      Set_Object (Box, Internal (Boolean'Pos (Homogeneous), Spacing));
+      Initialize_User_Data (Box);
+   end Initialize_Vbox;
 
    ----------------
    -- Pack_Start --
    ----------------
 
    procedure Pack_Start
-     (In_Box  : in Gtk_Box;
-      Child   : in Gtk.Widget.Gtk_Widget'Class;
+     (In_Box  : access Gtk_Box_Record;
+      Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
       Expand  : in Boolean := True;
       Fill    : in Boolean := True;
       Padding : in Gint    := 0)
@@ -106,8 +134,8 @@ package body Gtk.Box is
    -------------------------
 
    procedure Pack_Start_Defaults
-     (In_Box  : in Gtk_Box;
-      Child   : in Gtk.Widget.Gtk_Widget'Class) is
+     (In_Box  : access Gtk_Box_Record;
+      Child   : access Gtk.Widget.Gtk_Widget_Record'Class) is
       procedure Internal (In_Box  : System.Address;
                           Child   : System.Address);
       pragma Import (C, Internal, "gtk_box_pack_start_defaults");
@@ -120,8 +148,8 @@ package body Gtk.Box is
    --------------
 
    procedure Pack_End
-     (In_Box  : in Gtk_Box;
-      Child   : in Gtk.Widget.Gtk_Widget'Class;
+     (In_Box  : access Gtk_Box_Record;
+      Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
       Expand  : in Boolean := True;
       Fill    : in Boolean := True;
       Padding : in Gint    := 0)
@@ -142,8 +170,8 @@ package body Gtk.Box is
    -----------------------
 
    procedure Pack_End_Defaults
-     (In_Box  : in Gtk_Box;
-      Child   : in Gtk.Widget.Gtk_Widget'Class) is
+     (In_Box  : access Gtk_Box_Record;
+      Child   : access Gtk.Widget.Gtk_Widget_Record'Class) is
       procedure Internal (In_Box  : System.Address;
                           Child   : System.Address);
       pragma Import (C, Internal, "gtk_box_pack_end_defaults");
@@ -155,7 +183,9 @@ package body Gtk.Box is
    -- Set_Homogeneous --
    ---------------------
 
-   procedure Set_Homogeneous (In_Box : in Gtk_Box; Homogeneous : in Boolean) is
+   procedure Set_Homogeneous (In_Box : access Gtk_Box_Record;
+                              Homogeneous : in Boolean)
+   is
       procedure Internal (In_Box : in System.Address; Homogeneous : in Gint);
       pragma Import (C, Internal, "gtk_box_set_homogeneous");
    begin
@@ -166,7 +196,9 @@ package body Gtk.Box is
    -- Set_Spacing --
    -----------------
 
-   procedure Set_Spacing (In_Box  : in Gtk_Box; Spacing : in Gint) is
+   procedure Set_Spacing (In_Box  : access Gtk_Box_Record;
+                          Spacing : in Gint)
+   is
       procedure Internal (In_Box  : in System.Address; Spacing : in Gint);
       pragma Import (C, Internal, "gtk_box_set_spacing");
    begin
@@ -178,8 +210,8 @@ package body Gtk.Box is
    -------------------
 
    procedure Reorder_Child
-     (In_Box : in Gtk_Box;
-      Child  : in Gtk.Widget.Gtk_Widget'Class;
+     (In_Box : access Gtk_Box_Record;
+      Child  : access Gtk.Widget.Gtk_Widget_Record'Class;
       Pos    : in Guint)
    is
       procedure Internal (In_Box : in System.Address;
@@ -195,8 +227,8 @@ package body Gtk.Box is
    -------------------------
 
    procedure Query_Child_Packing
-     (In_Box   : in  Gtk_Box;
-      Child    : in  Gtk.Widget.Gtk_Widget'Class;
+     (In_Box   : access Gtk_Box_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
       Expand   : out Boolean;
       Fill     : out Boolean;
       Padding  : out Gint;
@@ -226,8 +258,8 @@ package body Gtk.Box is
    -----------------------
 
    procedure Set_Child_Packing
-     (In_Box    : in Gtk_Box;
-      Child     : in Gtk.Widget.Gtk_Widget'Class;
+     (In_Box    : access Gtk_Box_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Expand    : in Boolean;
       Fill      : in Boolean;
       Padding   : in Gint;
@@ -250,7 +282,7 @@ package body Gtk.Box is
    -- Generate --
    --------------
 
-   procedure Generate (Box    : in Gtk_Box;
+   procedure Generate (Box    : access Gtk_Box_Record;
                        N      : in Node_Ptr;
                        File   : in File_Type) is
       use Container;
@@ -278,83 +310,84 @@ package body Gtk.Box is
       end if;
    end Generate;
 
-   procedure Generate (Box    : in out Gtk_Box;
+   procedure Generate (Box    : access Gtk_Box_Record;
                        N      : in Node_Ptr) is
-      use Container;
+--         use Container;
 
-      Child_Name     : String_Ptr := Get_Field (N, "child_name");
-      Class          : String_Ptr := Get_Field (N, "class");
-      S              : String_Ptr;
-      Dialog         : Gtk_Dialog;
-      File_Selection : Gtk_File_Selection;
+--         Child_Name     : String_Ptr := Get_Field (N, "child_name");
+--         Class          : String_Ptr := Get_Field (N, "class");
+--         S              : String_Ptr;
+--         Dialog         : Gtk_Dialog;
+--         File_Selection : Gtk_File_Selection;
 
    begin
-      if not N.Specific_Data.Created then
-         if Child_Name = null then
-            if Class (Class'First + 3) = 'H' then
-               Gtk_New_Hbox
-                 (Box,
-                  Boolean'Value (Get_Field (N, "homogeneous").all),
-                  Gint'Value (Get_Field (N, "spacing").all));
+--         if not N.Specific_Data.Created then
+--            if Child_Name = null then
+--               if Class (Class'First + 3) = 'H' then
+--                  Gtk_New_Hbox
+--                    (Box,
+--                     Boolean'Value (Get_Field (N, "homogeneous").all),
+--                     Gint'Value (Get_Field (N, "spacing").all));
 
-            else
-               Gtk_New_Vbox
-                 (Box,
-                  Boolean'Value (Get_Field (N, "homogeneous").all),
-                  Gint'Value (Get_Field (N, "spacing").all));
-            end if;
-         else
-            if Get_Part (Child_Name.all, 1) = "Dialog" then
-               Dialog :=
-                 Gtk_Dialog (Get_Object (Find_Tag
-                   (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                    "name").Value).all);
+--               else
+--                  Gtk_New_Vbox
+--                    (Box,
+--                     Boolean'Value (Get_Field (N, "homogeneous").all),
+--                     Gint'Value (Get_Field (N, "spacing").all));
+--               end if;
+--            else
+--               if Get_Part (Child_Name.all, 1) = "Dialog" then
+--                  Dialog :=
+--                    Gtk_Dialog (Get_Object (Find_Tag
+--                      (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
+--                       "name").Value).all);
 
-               if Get_Part (Child_Name.all, 2) = "action_area" then
-                  Box := Get_Action_Area (Dialog);
-               elsif Get_Part (Child_Name.all, 2) = "vbox" then
-                  Box := Get_Vbox (Dialog);
-               end if;
-            else
+--                  if Get_Part (Child_Name.all, 2) = "action_area" then
+--                     Box := Get_Action_Area (Dialog);
+--                  elsif Get_Part (Child_Name.all, 2) = "vbox" then
+--                     Box := Get_Vbox (Dialog);
+--                  end if;
+--               else
 
-               --  Assuming File_Selection
+--                  --  Assuming File_Selection
 
-               File_Selection :=
-                 Gtk_File_Selection (Get_Object (Find_Tag
-                   (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                    "name").Value).all);
+--                  File_Selection :=
+--                    Gtk_File_Selection (Get_Object (Find_Tag
+--                      (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
+--                       "name").Value).all);
 
-               if Get_Part (Child_Name.all, 2) = "action_area" then
-                  Box := Get_Action_Area (File_Selection);
-               elsif Get_Part (Child_Name.all, 2) = "button_area" then
-                  Box := Get_Button_Area (File_Selection);
-               end if;
-            end if;
-         end if;
+--                  if Get_Part (Child_Name.all, 2) = "action_area" then
+--                     Box := Get_Action_Area (File_Selection);
+--                  elsif Get_Part (Child_Name.all, 2) = "button_area" then
+--                     Box := Get_Button_Area (File_Selection);
+--                  end if;
+--               end if;
+--            end if;
 
-         Set_Object (Get_Field (N, "name"), Box'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--            Set_Object (Get_Field (N, "name"), Box'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Container (Box), N);
+--         Generate (Gtk_Container (Box), N);
 
-      if Child_Name = null then
-         Container.Add
-           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
-            Box);
-      else
-         S := Get_Field (N, "homogeneous");
+--         if Child_Name = null then
+--            Container.Add
+--              (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
+--                 Box);
+--         else
+--            S := Get_Field (N, "homogeneous");
 
-         if S /= null then
-            Set_Homogeneous (Box, Boolean'Value (S.all));
-         end if;
+--            if S /= null then
+--               Set_Homogeneous (Box, Boolean'Value (S.all));
+--            end if;
 
-         S := Get_Field (N, "spacing");
+--            S := Get_Field (N, "spacing");
 
-         if S /= null then
-            Set_Spacing (Box, Gint'Value (S.all));
-         end if;
-      end if;
+--            if S /= null then
+--               Set_Spacing (Box, Gint'Value (S.all));
+--            end if;
+--         end if;
+      null;
    end Generate;
 
 end Gtk.Box;

@@ -34,46 +34,57 @@ with Gtk.Window;
 
 package Gtk.File_Selection is
 
-   type Gtk_File_Selection is new Gtk.Window.Gtk_Window with private;
+   type Gtk_File_Selection_Record is new Gtk.Window.Gtk_Window_Record
+     with private;
+   type Gtk_File_Selection is access all Gtk_File_Selection_Record'Class;
 
-   function Get_Action_Area (File_Selection : in Gtk_File_Selection)
+   function Get_Action_Area (File_Selection : access Gtk_File_Selection_Record)
      return Gtk.Box.Gtk_Box;
-   function Get_Button_Area (File_Selection : in Gtk_File_Selection)
+   function Get_Button_Area (File_Selection : access Gtk_File_Selection_Record)
      return Gtk.Box.Gtk_Box;
-   function Get_Cancel_Button (File_Selection : in Gtk_File_Selection)
+   function Get_Cancel_Button
+     (File_Selection : access Gtk_File_Selection_Record)
      return Gtk.Button.Gtk_Button;
-   function Get_Dir_List (File_Selection : in Gtk_File_Selection)
-     return Gtk.Widget.Gtk_Widget'Class;
-   function Get_File_List (File_Selection : in Gtk_File_Selection)
-     return Gtk.Widget.Gtk_Widget'Class;
-   function Get_Filename (File_Selection : in Gtk_File_Selection)
+   function Get_Dir_List (File_Selection : access Gtk_File_Selection_Record)
+     return Gtk.Widget.Gtk_Widget;
+   function Get_File_List (File_Selection : access Gtk_File_Selection_Record)
+     return Gtk.Widget.Gtk_Widget;
+   function Get_Filename (File_Selection : access Gtk_File_Selection_Record)
      return String;
-   function Get_Help_Button (File_Selection : in Gtk_File_Selection)
+   function Get_Help_Button (File_Selection : access Gtk_File_Selection_Record)
      return Gtk.Button.Gtk_Button;
-   function Get_History_Pulldown (File_Selection : in Gtk_File_Selection)
-     return Gtk.Widget.Gtk_Widget'Class;
-   function Get_Ok_Button (File_Selection : in Gtk_File_Selection)
+   function Get_History_Pulldown
+     (File_Selection : access Gtk_File_Selection_Record)
+      return Gtk.Widget.Gtk_Widget;
+   function Get_Ok_Button (File_Selection : access Gtk_File_Selection_Record)
      return Gtk.Button.Gtk_Button;
-   function Get_Selection_Entry (File_Selection : in Gtk_File_Selection)
-     return Gtk.Widget.Gtk_Widget'Class;
-   function Get_Selection_Text (File_Selection : in Gtk_File_Selection)
-     return Gtk.Widget.Gtk_Widget'Class;
+   function Get_Selection_Entry
+     (File_Selection : access Gtk_File_Selection_Record)
+      return Gtk.Widget.Gtk_Widget;
+   function Get_Selection_Text
+     (File_Selection : access Gtk_File_Selection_Record)
+      return Gtk.Widget.Gtk_Widget;
    procedure Gtk_New (File_Selection : out Gtk_File_Selection;
                       Title          : in String);
-   procedure Hide_Fileop_Buttons (File_Selection : in out Gtk_File_Selection);
+   procedure Initialize (File_Selection : access Gtk_File_Selection_Record;
+                         Title          : in String);
+   procedure Hide_Fileop_Buttons
+     (File_Selection : access Gtk_File_Selection_Record);
    procedure Set_Filename
-     (File_Selection  : in Gtk_File_Selection;
+     (File_Selection  : access Gtk_File_Selection_Record;
       Filename        : in String);
-   procedure Show_Fileop_Buttons (File_Selection : in out Gtk_File_Selection);
+   procedure Show_Fileop_Buttons
+     (File_Selection : access Gtk_File_Selection_Record);
 
-   procedure Generate (File_Selection : in Gtk_File_Selection;
+   procedure Generate (File_Selection : access Gtk_File_Selection_Record;
                        N              : in Node_Ptr;
                        File           : in File_Type);
 
-   procedure Generate (File_Selection : in out Gtk_File_Selection;
+   procedure Generate (File_Selection : access Gtk_File_Selection_Record;
                        N              : in Node_Ptr);
 
 private
-   type Gtk_File_Selection is new Gtk.Window.Gtk_Window with null record;
+   type Gtk_File_Selection_Record is new Gtk.Window.Gtk_Window_Record
+     with null record;
 
 end Gtk.File_Selection;

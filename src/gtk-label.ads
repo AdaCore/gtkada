@@ -32,27 +32,30 @@ with Gtk.Misc;
 
 package Gtk.Label is
 
-   type Gtk_Label is new Misc.Gtk_Misc with private;
+   type Gtk_Label_Record is new Misc.Gtk_Misc_Record with private;
+   type Gtk_Label is access all Gtk_Label_Record'Class;
 
    procedure Gtk_New (Label :    out Gtk_Label;
                       Str   : in     String);
+   procedure Initialize (Label : access Gtk_Label_Record;
+                         Str   : in     String);
 
-   procedure Set_Text (Label : in Gtk_Label;
+   procedure Set_Text (Label : access Gtk_Label_Record;
                        Str   : in String);
 
-   procedure Set_Justify (Label : in Gtk_Label;
+   procedure Set_Justify (Label : access Gtk_Label_Record;
                           Jtype : in Enums.Gtk_Justification);
 
-   function Get (Label : in Gtk_Label) return String;
+   function Get (Label : access Gtk_Label_Record) return String;
 
-   procedure Generate (Label : in Gtk_Label;
+   procedure Generate (Label : access Gtk_Label_Record;
                        N     : in Node_Ptr;
                        File  : in File_Type);
 
-   procedure Generate (Label : in out Gtk_Label;
+   procedure Generate (Label : access Gtk_Label_Record;
                        N     : in Node_Ptr);
 
 private
-   type Gtk_Label is new Misc.Gtk_Misc with null record;
+   type Gtk_Label_Record is new Misc.Gtk_Misc_Record with null record;
 
 end Gtk.Label;

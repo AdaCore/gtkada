@@ -36,11 +36,15 @@ with Gtk.Widget;
 
 package Gtk.Preview is
 
-   type Gtk_Preview is new Gtk.Widget.Gtk_Widget with private;
-   type Gtk_Preview_Info is new Gtk.Widget.Gtk_Widget with private;
+   type Gtk_Preview_Record is new Gtk.Widget.Gtk_Widget_Record with private;
+   type Gtk_Preview is access all Gtk_Preview_Record'Class;
+
+   type Gtk_Preview_Info_Record is new Gtk.Widget.Gtk_Widget_Record
+     with private;
+   type Gtk_Preview_Info is access all Gtk_Preview_Info_Record'Class;
 
    procedure Draw_Row
-      (Preview : in Gtk_Preview;
+      (Preview : access Gtk_Preview_Record;
        Data    : in Guchar_Array;
        X       : in Gint;
        Y       : in Gint;
@@ -56,8 +60,10 @@ package Gtk.Preview is
    function Get_Visual return Gdk.Visual.Gdk_Visual'Class;
    procedure Gtk_New (Preview  : out Gtk_Preview;
                       The_Type : in Gtk_Preview_Type);
+   procedure Initialize (Preview  : access Gtk_Preview_Record;
+                         The_Type : in Gtk_Preview_Type);
    procedure Put
-     (Preview : in Gtk_Preview;
+     (Preview : access Gtk_Preview_Record;
       Window  : in Gdk.Window.Gdk_Window'Class;
       Gc      : in Gdk.GC.Gdk_GC'Class;
       Srcx    : in Gint;
@@ -74,13 +80,13 @@ package Gtk.Preview is
       Nblue_Shades  : in Guint;
       Ngray_Shades  : in Guint);
    procedure Set_Expand
-     (Preview : in Gtk_Preview;
+     (Preview : access Gtk_Preview_Record;
       Expand  : in Boolean);
    procedure Set_Gamma (Gamma : in Gdouble);
    procedure Set_Install_Cmap (Install_Cmap : in Gint);
    procedure Set_Reserved (Nreserved : in Gint);
    procedure Size
-     (Preview : in Gtk_Preview;
+     (Preview : access Gtk_Preview_Record;
       Width   : in Gint;
       Height  : in Gint);
    procedure Uninit;
@@ -88,15 +94,17 @@ package Gtk.Preview is
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (Preview : in Gtk_Preview;
+   procedure Generate (Preview : access Gtk_Preview_Record;
                        N       : in Node_Ptr;
                        File    : in File_Type);
 
-   procedure Generate (Preview : in out Gtk_Preview;
+   procedure Generate (Preview : access Gtk_Preview_Record;
                        N       : in Node_Ptr);
 
 private
-   type Gtk_Preview is new Gtk.Widget.Gtk_Widget with null record;
-   type Gtk_Preview_Info is new Gtk.Widget.Gtk_Widget with null record;
+   type Gtk_Preview_Record is new Gtk.Widget.Gtk_Widget_Record
+     with null record;
+   type Gtk_Preview_Info_Record is new Gtk.Widget.Gtk_Widget_Record
+     with null record;
 
 end Gtk.Preview;

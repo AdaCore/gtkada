@@ -31,61 +31,64 @@ with Gtk.Widget;
 
 package Gtk.Editable is
 
-   type Gtk_Editable is new Gtk.Widget.Gtk_Widget with private;
+   type Gtk_Editable_Record is new Gtk.Widget.Gtk_Widget_Record with private;
+   type Gtk_Editable is access all Gtk_Editable_Record'Class;
 
-   procedure Changed (Editable : in Gtk_Editable);
+   procedure Changed (Editable : access Gtk_Editable_Record);
    procedure Claim_Selection
-      (Editable : in Gtk_Editable;
+      (Editable : access Gtk_Editable_Record;
        Claim    : in Boolean;
        Time     : in Guint32);
    procedure Copy_Clipboard
-      (Editable : in Gtk_Editable;
+      (Editable : access Gtk_Editable_Record;
        Time     : in Guint32);
    procedure Cut_Clipboard
-      (Editable : in Gtk_Editable;
+      (Editable : access Gtk_Editable_Record;
        Time     : in Guint32);
-   procedure Delete_Selection (Editable : in Gtk_Editable);
+   procedure Delete_Selection (Editable : access Gtk_Editable_Record);
    procedure Delete_Text
-      (Editable  : in Gtk_Editable;
+      (Editable  : access Gtk_Editable_Record;
        Start_Pos : in Gint;
        End_Pos   : in Gint);
    function Get_Chars
-      (Editable  : in Gtk_Editable;
+      (Editable  : access Gtk_Editable_Record;
        Start_Pos : in Gint;
        End_Pos   : in Gint)
        return         String;
-   function Get_Clipboard_Text (Widget : in Gtk_Editable)
+   function Get_Clipboard_Text (Widget : access Gtk_Editable_Record)
                                 return      String;
-   function Get_Current_Pos (Widget : in Gtk_Editable)
+   function Get_Current_Pos (Widget : access Gtk_Editable_Record)
                              return      Guint;
-   function Get_Editable (Widget : in Gtk_Editable)
+   function Get_Editable (Widget : access Gtk_Editable_Record)
                           return      Boolean;
-   procedure Set_Editable (Widget : in Gtk_Editable; Editable : boolean);
-   function Get_Has_Selection (Widget : in Gtk_Editable)
+   procedure Set_Editable (Widget : access Gtk_Editable_Record;
+                           Editable : boolean);
+   function Get_Has_Selection (Widget : access Gtk_Editable_Record)
                                return      Boolean;
-   function Get_Selection_End_Pos (Widget : in Gtk_Editable)
+   function Get_Selection_End_Pos (Widget : access Gtk_Editable_Record)
                                    return      Guint;
-   function Get_Selection_Start_Pos (Widget : in Gtk_Editable)
+   function Get_Selection_Start_Pos (Widget : access Gtk_Editable_Record)
                                      return      Guint;
    procedure Insert_Text
-      (Editable        : in Gtk_Editable;
+      (Editable        : access Gtk_Editable_Record;
        New_Text        : in String;
        New_Text_Length : in Gint;
        Position        : in out Gint);
    procedure Paste_Clipboard
-      (Editable : in Gtk_Editable;
+      (Editable : access Gtk_Editable_Record;
        Time     : in Guint32);
    procedure Select_Region
-      (Editable : in Gtk_Editable;
+      (Editable : access Gtk_Editable_Record;
        Start    : in Gint;
        The_End  : in Gint);
 
-   procedure Set_Position (Editable : Gtk_Editable;
+   procedure Set_Position (Editable : access Gtk_Editable_Record;
                            Position : Gint);
 
-   function Get_Position (Editable : Gtk_Editable) return Gint;
+   function Get_Position (Editable : access Gtk_Editable_Record) return Gint;
 
 private
-   type Gtk_Editable is new Gtk.Widget.Gtk_Widget with null record;
+   type Gtk_Editable_Record is new Gtk.Widget.Gtk_Widget_Record
+     with null record;
 
 end Gtk.Editable;

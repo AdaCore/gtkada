@@ -28,6 +28,8 @@
 -----------------------------------------------------------------------
 
 with Glib; use Glib;
+with Gdk;  use Gdk;
+with System;
 
 with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
 with Ada.Text_IO; use Ada.Text_IO;
@@ -42,5 +44,21 @@ package Gtk is
    function Micro_Version return Guint;
 
    function Type_Name (Type_Num : in Gint) return String;
+
+private
+
+   GtkAda_String : constant String := "_GtkAda" & Ascii.NUL;
+   --  The name for the user data that we set in the objects.
+
+   procedure Initialize_User_Data (Obj : access Root_Type'Class);
+   --  Sets a user data field for the C object associated with Obj.
+   --  This field will be used so that it is possible, knowing a
+   --  C object, to get the full ada object.
+
+   function Get_User_Data (Obj : in System.Address; Stub : in Root_Type'Class)
+                           return Root_Type_Access;
+   --  Get the user data that was set by GtkAda.
+   --  If the Data is not set, then returns a new access type, that points to
+   --  a structure with the same tag as Stub.
 
 end Gtk;

@@ -33,26 +33,31 @@ with Gtk.Misc;
 
 package Gtk.Pixmap is
 
-   type Gtk_Pixmap is new Gtk.Misc.Gtk_Misc with private;
+   type Gtk_Pixmap_Record is new Gtk.Misc.Gtk_Misc_Record with private;
+   type Gtk_Pixmap is access all Gtk_Pixmap_Record'Class;
 
    procedure Get
-      (Pixmap : in Gtk_Pixmap;
+      (Pixmap : access Gtk_Pixmap_Record;
        Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
-   function Get_Mask (Widget : in Gtk_Pixmap)
+   function Get_Mask (Widget : access Gtk_Pixmap_Record)
                       return      Gdk.Bitmap.Gdk_Bitmap'Class;
-   function Get_Pixmap (Widget : in Gtk_Pixmap)
+   function Get_Pixmap (Widget : access Gtk_Pixmap_Record)
                         return      Gdk.Pixmap.Gdk_Pixmap'Class;
    procedure Gtk_New
       (Widget : out Gtk_Pixmap;
        Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+   procedure Initialize
+      (Widget : access Gtk_Pixmap_Record;
+       Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
+       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
    procedure Set
-      (Pixmap : in Gtk_Pixmap;
+      (Pixmap : access Gtk_Pixmap_Record;
        Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
 
 private
-   type Gtk_Pixmap is new Gtk.Misc.Gtk_Misc with null record;
+   type Gtk_Pixmap_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
 
 end Gtk.Pixmap;

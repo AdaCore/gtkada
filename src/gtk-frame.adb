@@ -39,19 +39,32 @@ package body Gtk.Frame is
    procedure Gtk_New (Widget : out Gtk_Frame;
                       Label  : in String := "")
    is
+   begin
+      Widget := new Gtk_Frame_Record;
+      Initialize (Widget, Label);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_Frame_Record;
+                         Label  : in String := "")
+   is
       function Internal (Label  : in String)
                          return      System.Address;
       pragma Import (C, Internal, "gtk_frame_new");
    begin
       Set_Object (Widget, Internal (Label & Ascii.NUL));
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ---------------
    -- Set_Label --
    ---------------
 
    procedure Set_Label
-      (Frame : in Gtk_Frame;
+      (Frame : access Gtk_Frame_Record;
        Label : in String)
    is
       procedure Internal
@@ -68,7 +81,7 @@ package body Gtk.Frame is
    ---------------------
 
    procedure Set_Label_Align
-      (Frame  : in Gtk_Frame;
+      (Frame  : access Gtk_Frame_Record;
        Xalign : in Gfloat;
        Yalign : in Gfloat)
    is
@@ -88,7 +101,7 @@ package body Gtk.Frame is
    ---------------------
 
    procedure Set_Shadow_Type
-      (Frame    : in Gtk_Frame;
+      (Frame    : access Gtk_Frame_Record;
        The_Type : in Gtk_Shadow_Type)
    is
       procedure Internal

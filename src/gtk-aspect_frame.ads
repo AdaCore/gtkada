@@ -31,11 +31,12 @@ with Gtk.Frame;
 
 package Gtk.Aspect_Frame is
 
-   type Gtk_Aspect_Frame is new Gtk.Frame.Gtk_Frame with private;
+   type Gtk_Aspect_Frame_Record is new Gtk.Frame.Gtk_Frame_Record with private;
+   type Gtk_Aspect_Frame is access all Gtk_Aspect_Frame_Record'Class;
 
-   function Get_Ratio (Widget : in Gtk_Aspect_Frame) return Gfloat;
-   function Get_Xalign (Widget : in Gtk_Aspect_Frame) return Gfloat;
-   function Get_Yalign (Widget : in Gtk_Aspect_Frame) return Gfloat;
+   function Get_Ratio (Widget : access Gtk_Aspect_Frame_Record) return Gfloat;
+   function Get_Xalign (Widget : access Gtk_Aspect_Frame_Record) return Gfloat;
+   function Get_Yalign (Widget : access Gtk_Aspect_Frame_Record) return Gfloat;
    procedure Gtk_New
       (Widget     : out Gtk_Aspect_Frame;
        Label      : in String;
@@ -43,14 +44,22 @@ package Gtk.Aspect_Frame is
        Yalign     : in Gfloat;
        Ratio      : in Gfloat;
        Obey_Child : in Gint);
+   procedure Initialize
+      (Widget     : access Gtk_Aspect_Frame_Record;
+       Label      : in String;
+       Xalign     : in Gfloat;
+       Yalign     : in Gfloat;
+       Ratio      : in Gfloat;
+       Obey_Child : in Gint);
    procedure Set
-      (Aspect_Frame : in Gtk_Aspect_Frame;
+      (Aspect_Frame : access Gtk_Aspect_Frame_Record;
        Xalign       : in Gfloat;
        Yalign       : in Gfloat;
        Ratio        : in Gfloat;
        Obey_Child   : in Gint);
 
 private
-   type Gtk_Aspect_Frame is new Gtk.Frame.Gtk_Frame with null record;
+   type Gtk_Aspect_Frame_Record is new Gtk.Frame.Gtk_Frame_Record
+     with null record;
 
 end Gtk.Aspect_Frame;

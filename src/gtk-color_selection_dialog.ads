@@ -34,43 +34,51 @@ with Gtk.Color_Selection;
 
 package Gtk.Color_Selection_Dialog is
 
-   type Gtk_Color_Selection_Dialog is new Gtk.Window.Gtk_Window with private;
+   type Gtk_Color_Selection_Dialog_Record is new Gtk.Window.Gtk_Window_Record
+     with private;
+   type Gtk_Color_Selection_Dialog
+     is access all Gtk_Color_Selection_Dialog_Record'Class;
 
    procedure Gtk_New (Color_Selection_Dialog : out Gtk_Color_Selection_Dialog;
                       Title  : in String);
 
+   procedure Initialize
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record;
+      Title  : in String);
+
    --  Functions to get the fields of the dialog
 
    function Get_Colorsel
-     (Color_Selection_Dialog : in Gtk_Color_Selection_Dialog)
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Color_Selection.Gtk_Color_Selection;
    function Get_OK_Button
-     (Color_Selection_Dialog : in Gtk_Color_Selection_Dialog)
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Button.Gtk_Button;
    function Get_Reset_Button
-     (Color_Selection_Dialog : in Gtk_Color_Selection_Dialog)
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Button.Gtk_Button;
    function Get_Cancel_Button
-     (Color_Selection_Dialog : in Gtk_Color_Selection_Dialog)
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Button.Gtk_Button;
    function Get_Help_Button
-     (Color_Selection_Dialog : in Gtk_Color_Selection_Dialog)
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Button.Gtk_Button;
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (Color_Selection_Dialog : in Gtk_Color_Selection_Dialog;
-                       N                      : in Node_Ptr;
-                       File                   : in File_Type);
+   procedure Generate
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record;
+      N                      : in Node_Ptr;
+      File                   : in File_Type);
 
    procedure Generate
-     (Color_Selection_Dialog : in out Gtk_Color_Selection_Dialog;
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record;
       N                      : in Node_Ptr);
 
 private
 
-   type Gtk_Color_Selection_Dialog is new
-     Gtk.Window.Gtk_Window with null record;
+   type Gtk_Color_Selection_Dialog_Record is new
+     Gtk.Window.Gtk_Window_Record with null record;
 
 end Gtk.Color_Selection_Dialog;

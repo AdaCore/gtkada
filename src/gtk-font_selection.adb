@@ -38,49 +38,49 @@ package body Gtk.Font_Selection is
    -- Get_Cancel_Button --
    -----------------------
 
-   function Get_Cancel_Button (Fsd : in Gtk_Font_Selection_Dialog)
+   function Get_Cancel_Button (Fsd : access Gtk_Font_Selection_Dialog_Record)
                                return Gtk.Button.Gtk_Button is
       function Internal (Fsd : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_font_selection_dialog_get_cancel");
-      Button : Gtk.Button.Gtk_Button;
+      Stub : Gtk.Button.Gtk_Button_Record;
    begin
-      Set_Object (Button, Internal (Get_Object (Fsd)));
-      return Button;
+      return Gtk.Button.Gtk_Button
+        (Get_User_Data (Internal (Get_Object (Fsd)), Stub));
    end Get_Cancel_Button;
 
    -------------------
    -- Get_Ok_Button --
    -------------------
 
-   function Get_Ok_Button (Fsd : in Gtk_Font_Selection_Dialog)
+   function Get_Ok_Button (Fsd : access Gtk_Font_Selection_Dialog_Record)
                                return Gtk.Button.Gtk_Button is
       function Internal (Fsd : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_font_selection_dialog_get_ok");
-      Button : Gtk.Button.Gtk_Button;
+      Stub : Gtk.Button.Gtk_Button_Record;
    begin
-      Set_Object (Button, Internal (Get_Object (Fsd)));
-      return Button;
+      return Gtk.Button.Gtk_Button
+        (Get_User_Data (Internal (Get_Object (Fsd)), Stub));
    end Get_Ok_Button;
 
    ----------------------
    -- Get_Apply_Button --
    ----------------------
 
-   function Get_Apply_Button (Fsd : in Gtk_Font_Selection_Dialog)
+   function Get_Apply_Button (Fsd : access Gtk_Font_Selection_Dialog_Record)
                               return Gtk.Button.Gtk_Button is
       function Internal (Fsd : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_font_selection_dialog_get_apply");
-      Button : Gtk.Button.Gtk_Button;
+      Stub : Gtk.Button.Gtk_Button_Record;
    begin
-      Set_Object (Button, Internal (Get_Object (Fsd)));
-      return Button;
+      return Gtk.Button.Gtk_Button
+        (Get_User_Data (Internal (Get_Object (Fsd)), Stub));
    end Get_Apply_Button;
 
    --------------
    -- Get_Font --
    --------------
 
-   function Get_Font (Fsd    : in Gtk_Font_Selection_Dialog)
+   function Get_Font (Fsd    : access Gtk_Font_Selection_Dialog_Record)
                       return      Gdk.Font.Gdk_Font
    is
       function Internal (Fsd    : in System.Address)
@@ -96,7 +96,7 @@ package body Gtk.Font_Selection is
    -- Get_Font_Name --
    -------------------
 
-   function Get_Font_Name (Fsd    : in Gtk_Font_Selection_Dialog)
+   function Get_Font_Name (Fsd    : access Gtk_Font_Selection_Dialog_Record)
                            return      String
    is
       use type Interfaces.C.Strings.chars_ptr;
@@ -116,7 +116,7 @@ package body Gtk.Font_Selection is
    -- Get_Preview_Text --
    ----------------------
 
-   function Get_Preview_Text (Fsd    : in Gtk_Font_Selection_Dialog)
+   function Get_Preview_Text (Fsd    : access Gtk_Font_Selection_Dialog_Record)
                               return      String
    is
       function Internal (Fsd    : in System.Address)
@@ -132,7 +132,7 @@ package body Gtk.Font_Selection is
    ----------------
 
    procedure Set_Filter
-      (Fsd         : in Gtk_Font_Selection_Dialog;
+      (Fsd         : access Gtk_Font_Selection_Dialog_Record;
        Filter_Type : in Gtk_Font_Filter_Type;
        Font_Type   : in Gtk_Font_Type;
        Foundries   : in String;
@@ -170,7 +170,7 @@ package body Gtk.Font_Selection is
    -------------------
 
    function Set_Font_Name
-      (Fsd      : in Gtk_Font_Selection_Dialog;
+      (Fsd      : access Gtk_Font_Selection_Dialog_Record;
        Fontname : in String)
        return        Boolean
    is
@@ -189,7 +189,7 @@ package body Gtk.Font_Selection is
    ----------------------
 
    procedure Set_Preview_Text
-      (Fsd  : in Gtk_Font_Selection_Dialog;
+      (Fsd  : access Gtk_Font_Selection_Dialog_Record;
        Text : in String)
    is
       procedure Internal
@@ -208,7 +208,7 @@ package body Gtk.Font_Selection is
    -- Get_Font --
    --------------
 
-   function Get_Font (Fontsel : in Gtk_Font_Selection)
+   function Get_Font (Fontsel : access Gtk_Font_Selection_Record)
                       return       Gdk.Font.Gdk_Font
    is
       function Internal (Fontsel : in System.Address)
@@ -224,7 +224,7 @@ package body Gtk.Font_Selection is
    -- Get_Font_Name --
    -------------------
 
-   function Get_Font_Name (Fontsel : in Gtk_Font_Selection)
+   function Get_Font_Name (Fontsel : access Gtk_Font_Selection_Record)
                            return       String
    is
       function Internal (Fontsel : in System.Address)
@@ -238,7 +238,7 @@ package body Gtk.Font_Selection is
    -- Get_Preview_Text --
    ----------------------
 
-   function Get_Preview_Text (Fontsel : in Gtk_Font_Selection)
+   function Get_Preview_Text (Fontsel : access Gtk_Font_Selection_Record)
                               return       String
    is
       function Internal (Fontsel : in System.Address)
@@ -252,13 +252,11 @@ package body Gtk.Font_Selection is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : in out Gtk_Font_Selection_Dialog;
+   procedure Gtk_New (Widget : out Gtk_Font_Selection_Dialog;
                       Title : String) is
-      function Internal (Title  : in String)
-                         return      System.Address;
-      pragma Import (C, Internal, "gtk_font_selection_dialog_new");
    begin
-      Set_Object (Widget, Internal (Title & Ascii.NUL));
+      Widget := new Gtk_Font_Selection_Dialog_Record;
+      Initialize (Widget, Title);
    end Gtk_New;
 
    -------------
@@ -267,18 +265,44 @@ package body Gtk.Font_Selection is
 
    procedure Gtk_New (Widget : out Gtk_Font_Selection)
    is
+   begin
+      Widget := new Gtk_Font_Selection_Record;
+      Initialize (Widget);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_Font_Selection_Dialog_Record;
+                         Title : String) is
+      function Internal (Title  : in String)
+                         return      System.Address;
+      pragma Import (C, Internal, "gtk_font_selection_dialog_new");
+   begin
+      Set_Object (Widget, Internal (Title & Ascii.NUL));
+      Initialize_User_Data (Widget);
+   end Initialize;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_Font_Selection_Record)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_font_selection_new");
    begin
       Set_Object (Widget, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ----------------
    -- Set_Filter --
    ----------------
 
    procedure Set_Filter
-      (Fontsel     : in Gtk_Font_Selection;
+      (Fontsel     : access Gtk_Font_Selection_Record;
        Filter_Type : in Gtk_Font_Filter_Type;
        Font_Type   : in Gtk_Font_Type;
        Foundries   : in String;
@@ -316,7 +340,7 @@ package body Gtk.Font_Selection is
    -------------------
 
    function Set_Font_Name
-      (Fontsel  : in Gtk_Font_Selection;
+      (Fontsel  : access Gtk_Font_Selection_Record;
        Fontname : in String)
        return        Boolean
    is
@@ -335,7 +359,7 @@ package body Gtk.Font_Selection is
    ----------------------
 
    procedure Set_Preview_Text
-      (Fontsel : in Gtk_Font_Selection;
+      (Fontsel : access Gtk_Font_Selection_Record;
        Text    : in String)
    is
       procedure Internal

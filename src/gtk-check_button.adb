@@ -36,22 +36,26 @@ package body Gtk.Check_Button is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Check_Button) is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_check_button_new");
+   procedure Gtk_New (Widget : out Gtk_Check_Button;
+                      With_Label : in String := "")
+   is
    begin
-      Set_Object (Widget, Internal);
+      Widget := new Gtk_Check_Button_Record;
+      Initialize (Widget, With_Label);
    end Gtk_New;
 
-   -------------
-   -- Gtk_New --
-   -------------
+   ----------------
+   -- Initialize --
+   ----------------
 
-   procedure Gtk_New (Widget : out Gtk_Check_Button; With_Label : in String) is
+   procedure Initialize (Widget : access Gtk_Check_Button_Record;
+                         With_Label : in String := "")
+   is
       function Internal (Label : in String) return System.Address;
       pragma Import (C, Internal, "gtk_check_button_new_with_label");
    begin
       Set_Object (Widget, Internal (With_Label & ASCII.NUL));
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
 end Gtk.Check_Button;

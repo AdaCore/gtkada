@@ -32,23 +32,27 @@ with Gtk.Widget;
 
 package Gtk.Ruler is
 
-   type Gtk_Ruler is new Gtk.Widget.Gtk_Widget with private;
+   type Gtk_Ruler_Record is new Gtk.Widget.Gtk_Widget_Record with private;
+   type Gtk_Ruler is access all Gtk_Ruler_Record'Class;
+
    subtype Gtk_Hruler is Gtk_Ruler;
    subtype Gtk_Vruler is Gtk_Ruler;
 
-   procedure Draw_Pos (Ruler : in Gtk_Ruler);
-   procedure Draw_Ticks (Ruler : in Gtk_Ruler);
-   function Get_Lower (Ruler : in Gtk_Ruler) return Gfloat;
-   function Get_Max_Size (Ruler : in Gtk_Ruler) return Gfloat;
-   function Get_Position (Ruler : in Gtk_Ruler) return Gfloat;
-   function Get_Upper (Ruler : in Gtk_Ruler) return Gfloat;
+   procedure Draw_Pos (Ruler : access Gtk_Ruler_Record);
+   procedure Draw_Ticks (Ruler : access Gtk_Ruler_Record);
+   function Get_Lower (Ruler : access Gtk_Ruler_Record) return Gfloat;
+   function Get_Max_Size (Ruler : access Gtk_Ruler_Record) return Gfloat;
+   function Get_Position (Ruler : access Gtk_Ruler_Record) return Gfloat;
+   function Get_Upper (Ruler : access Gtk_Ruler_Record) return Gfloat;
    procedure Gtk_New_Hruler (Ruler : out Gtk_Ruler);
    procedure Gtk_New_Vruler (Ruler : out Gtk_Ruler);
+   procedure Initialize_Hruler (Ruler : access Gtk_Ruler_Record);
+   procedure Initialize_Vruler (Ruler : access Gtk_Ruler_Record);
    procedure Set_Metric
-     (Ruler  : in Gtk_Ruler;
+     (Ruler  : access Gtk_Ruler_Record;
       Metric : in Gtk_Metric_Type);
    procedure Set_Range
-     (Ruler    : in Gtk_Ruler;
+     (Ruler    : access Gtk_Ruler_Record;
       Lower    : in Gfloat;
       Upper    : in Gfloat;
       Position : in Gfloat;
@@ -57,14 +61,14 @@ package Gtk.Ruler is
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (Ruler : in Gtk_Ruler;
+   procedure Generate (Ruler : access Gtk_Ruler_Record;
                        N     : in Node_Ptr;
                        File  : in File_Type);
 
-   procedure Generate (Ruler : in out Gtk_Ruler;
+   procedure Generate (Ruler : access Gtk_Ruler_Record;
                        N     : in Node_Ptr);
 
 private
-   type Gtk_Ruler is new Gtk.Widget.Gtk_Widget with null record;
+   type Gtk_Ruler_Record is new Gtk.Widget.Gtk_Widget_Record with null record;
 
 end Gtk.Ruler;

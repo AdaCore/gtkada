@@ -57,17 +57,16 @@ package body Gtk.Status_Bar is
    -------------
 
    procedure Gtk_New (Statusbar : out Gtk_Status_Bar) is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_statusbar_new");
    begin
-      Set_Object (Statusbar, Internal);
+      Statusbar := new Gtk_Status_Bar_Record;
+      Initialize (Statusbar);
    end Gtk_New;
 
    --------------------
    -- Get_Context_Id --
    --------------------
 
-   function Get_Context_Id (Statusbar : in Gtk_Status_Bar;
+   function Get_Context_Id (Statusbar : access Gtk_Status_Bar_Record;
                             Context_Description : in String)
                             return Context_Id
    is
@@ -84,7 +83,7 @@ package body Gtk.Status_Bar is
    -- Get_Messages --
    ------------------
 
-   function Get_Messages (Statusbar : in Gtk_Status_Bar)
+   function Get_Messages (Statusbar : access Gtk_Status_Bar_Record)
                           return Messages_List.GSlist
    is
       function Internal (Statusbar : in System.Address)
@@ -96,12 +95,24 @@ package body Gtk.Status_Bar is
       return List;
    end Get_Messages;
 
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Statusbar : access Gtk_Status_Bar_Record) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_statusbar_new");
+   begin
+      Set_Object (Statusbar, Internal);
+      Initialize_User_Data (Statusbar);
+   end Initialize;
+
    ----------
    -- Push --
    ----------
 
    function Push
-     (Statusbar : in Gtk_Status_Bar;
+     (Statusbar : access Gtk_Status_Bar_Record;
       Context   : in Context_Id;
       Text      : in String)
       return Message_Id
@@ -120,7 +131,7 @@ package body Gtk.Status_Bar is
    -- Pop --
    ---------
 
-   procedure Pop (Statusbar : in Gtk_Status_Bar;
+   procedure Pop (Statusbar : access Gtk_Status_Bar_Record;
                   Context   : in Context_Id)
    is
       procedure Internal (Statusbar : in System.Address;
@@ -134,7 +145,7 @@ package body Gtk.Status_Bar is
    -- Remove --
    ------------
 
-   procedure Remove (Statusbar : in Gtk_Status_Bar;
+   procedure Remove (Statusbar : access Gtk_Status_Bar_Record;
                      Context   : in Context_Id;
                      Message   : in Message_Id)
    is
@@ -150,7 +161,7 @@ package body Gtk.Status_Bar is
    -- Generate --
    --------------
 
-   procedure Generate (Statusbar : in Gtk_Status_Bar;
+   procedure Generate (Statusbar : access Gtk_Status_Bar_Record;
                        N         : in Node_Ptr;
                        File      : in File_Type) is
       use Box;
@@ -159,17 +170,19 @@ package body Gtk.Status_Bar is
       Generate (Gtk_Box (Statusbar), N, File);
    end Generate;
 
-   procedure Generate (Statusbar : in out Gtk_Status_Bar;
+   procedure Generate (Statusbar : access Gtk_Status_Bar_Record;
                        N         : in Node_Ptr) is
       use Box;
    begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Statusbar);
-         Set_Object (Get_Field (N, "name"), Statusbar'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--         if not N.Specific_Data.Created then
+--            Gtk_New (Statusbar);
+--            Set_Object (Get_Field (N, "name"), Statusbar'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Box (Statusbar), N);
+--         Generate (Gtk_Box (Statusbar), N);
+      null;
    end Generate;
+
 
 end Gtk.Status_Bar;

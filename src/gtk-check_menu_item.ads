@@ -31,38 +31,38 @@ with Gtk.Menu_Item;
 
 package Gtk.Check_Menu_Item is
 
-   type Gtk_Check_Menu_Item is new Gtk.Menu_Item.Gtk_Menu_Item with private;
+   type Gtk_Check_Menu_Item_Record is new Gtk.Menu_Item.Gtk_Menu_Item_Record
+     with private;
+   type Gtk_Check_Menu_Item is access all Gtk_Check_Menu_Item_Record'Class;
 
    procedure Gtk_New (Check_Menu_Item : out Gtk_Check_Menu_Item;
-                      Label  : in String);
-   procedure Gtk_New (Check_Menu_Item : out Gtk_Check_Menu_Item);
-   procedure Set_Show_Toggle (Check_Menu_Item : in Gtk_Check_Menu_Item;
-                              Always          : in Boolean);
-   procedure Set_Always_Show_Toggle
-     (Check_Menu_Item : in Gtk_Check_Menu_Item;
-      Always          : in Boolean)
-     renames Set_Show_Toggle;
+                      Label  : in String := "");
+   procedure Initialize (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
+                         Label  : in String := "");
+   procedure Set_Show_Toggle
+     (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
+      Always          : in Boolean);
 
-   procedure Set_Active (Check_Menu_Item     : in Gtk_Check_Menu_Item;
-                         Is_active           : in Boolean);
-   procedure Toggled (Check_Menu_Item : in Gtk_Check_Menu_Item);
+   procedure Set_Active (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
+                         Is_active       : in Boolean);
+   procedure Toggled (Check_Menu_Item : access Gtk_Check_Menu_Item_Record);
 
-   function Get_Active (Check_Menu_Item : in Gtk_Check_Menu_Item)
+   function Get_Active (Check_Menu_Item : access Gtk_Check_Menu_Item_Record)
                         return Boolean;
    --   Returns True if the Item is active
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (Check_Menu_Item : in Gtk_Check_Menu_Item;
+   procedure Generate (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
                        N               : in Node_Ptr;
                        File            : in File_Type);
 
-   procedure Generate (Check_Menu_Item : in out Gtk_Check_Menu_Item;
+   procedure Generate (Check_Menu_Item : access Gtk_Check_Menu_Item_Record;
                        N               : in Node_Ptr);
 
 private
-   type Gtk_Check_Menu_Item is new Gtk.Menu_Item.Gtk_Menu_Item
+   type Gtk_Check_Menu_Item_Record is new Gtk.Menu_Item.Gtk_Menu_Item_Record
      with null record;
 
 end Gtk.Check_Menu_Item;

@@ -28,37 +28,20 @@
 -----------------------------------------------------------------------
 
 with Gdk; use Gdk;
+with System;
 
 package Gtk.Object is
 
-   type Gtk_Object is new Root_Type with private;
+   type Gtk_Object_Record is new Root_Type with private;
+   type Gtk_Object is access all Gtk_Object_Record'Class;
 
-   procedure Destroy (Object : in out Gtk_Object);
+   procedure Destroy (Object : access Gtk_Object_Record);
 
-   function Get_Type (Object : in Gtk_Object) return Gint;
+   function Get_Type (Object : access Gtk_Object_Record) return Gint;
 
-   procedure Ref (Object : in out Gtk_Object);
+   procedure Ref (Object : access Gtk_Object_Record);
 
-   procedure Unref (Object : in out Gtk_Object);
-
-   ---------------
-   -- User_Data --
-   ---------------
-
-   generic
-      type Data_Type (<>) is private;
-   package User_Data is
-      function Get (Object : in Gtk_Object'Class;
-                    Id     : in String := "user_data") return Data_Type;
-
-      procedure Set (Object : in Gtk_Object'Class;
-                     Data   : in Data_Type;
-                     Id     : in String := "user_data");
-   end User_Data;
-
-   --  The previous package implements the User_Data stuff.
-   --  !! Warning !! No type verification is made to check if you are
-   --  using the appropriate function Get. This is your own responsability
+   procedure Unref (Object : access Gtk_Object_Record);
 
    -------------
    --  Flags  --
@@ -74,30 +57,57 @@ package Gtk.Object is
    Connected   : constant := 2 ** 2;
    Constructed : constant := 2 ** 3;
 
-   function Flags (Object : in Gtk_Object) return Guint32;
+   function Flags (Object : access Gtk_Object_Record) return Guint32;
 
-   procedure Set_Flags (Object : in out Gtk_Object;
+   procedure Set_Flags (Object : access Gtk_Object_Record;
                         Flags  : in     Guint32);
 
-   procedure Unset_Flags (Object : in out Gtk_Object;
+   procedure Unset_Flags (Object : access Gtk_Object_Record;
                           Flags  : in     Guint32);
 
-   function Destroyed_Is_Set (Object : in Gtk_Object'Class) return Boolean;
+   function Destroyed_Is_Set (Object : in Gtk_Object) return Boolean;
 
-   function Floating_Is_Set (Object : in Gtk_Object'Class) return Boolean;
+   function Floating_Is_Set (Object : in Gtk_Object) return Boolean;
 
-   function Connected_Is_Set (Object : in Gtk_Object'Class) return Boolean;
+   function Connected_Is_Set (Object : in Gtk_Object) return Boolean;
 
-   function Constructed_Is_Set (Object : in Gtk_Object'Class) return Boolean;
+   function Constructed_Is_Set (Object : in Gtk_Object) return Boolean;
 
-   procedure Generate (Object : in Gtk_Object;
+   ---------------
+   -- User_Data --
+   ---------------
+
+   --  This package allow you to associate your own Data to the C
+   --  widgets. No type verification is made to check if you are using the
+   --  corresponding Get function. This is your own responsability.
+   --  We recommand using package only if you want your data to be available
+   --  from your own C code. If you just want to access it from Ada, you
+   --  should consider creating a new tagged type instead.
+
+   generic
+      type Data_Type (<>) is private;
+   package User_Data is
+      function Get (Object : in Gtk_Object;
+                    Id     : in String := "user_data") return Data_Type;
+      --  Raises Constraint_Error if no Data is associated with this Id
+
+      procedure Set (Object : in Gtk_Object;
+                     Data   : in Data_Type;
+                     Id     : in String := "user_data");
+   end User_Data;
+
+   -----------------------
+   --  Support for Gate --
+   -----------------------
+
+   procedure Generate (Object : access Gtk_Object_Record;
                        N      : in Node_Ptr;
                        File   : in File_Type);
 
-   procedure Generate (Object : in out Gtk_Object;
+   procedure Generate (Object : access Gtk_Object_Record;
                        N      : in Node_Ptr);
 
 private
-   type Gtk_Object is new Root_Type with null record;
+   type Gtk_Object_Record is new Root_Type with null record;
 
 end Gtk.Object;

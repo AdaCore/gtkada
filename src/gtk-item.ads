@@ -31,16 +31,17 @@ with Gtk.Bin;
 
 package Gtk.Item is
 
-   type Gtk_Item is new Bin.Gtk_Bin with private;
+   type Gtk_Item_Record is new Bin.Gtk_Bin_Record with private;
+   type Gtk_Item is access all Gtk_Item_Record'Class;
 
-   procedure Item_Select (Item : in Gtk_Item);
+   procedure Item_Select (Item : access Gtk_Item_Record);
 
-   procedure Item_Deselect (Item : in Gtk_Item);
+   procedure Item_Deselect (Item : access Gtk_Item_Record);
 
-   procedure Toggle (Item : in Gtk_Item);
+   procedure Toggle (Item : access Gtk_Item_Record);
 
 private
 
-   type Gtk_Item is new Gtk.Bin.Gtk_Bin with null record;
+   type Gtk_Item_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
 
 end Gtk.Item;

@@ -32,58 +32,60 @@ with Gtk.Widget;
 
 package Gtk.Progress is
 
-   type Gtk_Progress is new Gtk.Widget.Gtk_Widget with private;
+   type Gtk_Progress_Record is new Gtk.Widget.Gtk_Widget_Record with private;
+   type Gtk_Progress is access all Gtk_Progress_Record'Class;
 
-   function Get_Current_Percentage (Progress : in Gtk_Progress)
+   function Get_Current_Percentage (Progress : access Gtk_Progress_Record)
                                     return        Gfloat;
-   function Get_Current_Text (Progress : in Gtk_Progress)
+   function Get_Current_Text (Progress : access Gtk_Progress_Record)
                               return        String;
    function Get_Percentage_From_Value
-     (Progress : in Gtk_Progress;
+     (Progress : access Gtk_Progress_Record;
       Value    : in Gfloat)
       return        Gfloat;
    function Get_Text_From_Value
-     (Progress : in Gtk_Progress;
+     (Progress : access Gtk_Progress_Record;
       Value    : in Gfloat)
       return        String;
-   function Get_Value (Progress : in Gtk_Progress)
+   function Get_Value (Progress : access Gtk_Progress_Record)
                        return        Gfloat;
 
-   function Get_Adjustment (Widget : in Gtk_Progress)
+   function Get_Adjustment (Widget : access Gtk_Progress_Record)
                             return Gtk.Adjustment.Gtk_Adjustment;
 
    procedure Configure
-     (Progress : in Gtk_Progress;
+     (Progress : access Gtk_Progress_Record;
       Value    : in Gfloat;
       Min      : in Gfloat;
       Max      : in Gfloat);
 
    procedure Set_Activity_Mode
-     (Progress      : in Gtk_Progress;
+     (Progress      : access Gtk_Progress_Record;
       Activity_Mode : in Boolean);
-   function Get_Activity_Mode (Progress : in Gtk_Progress) return Boolean;
-
+   function Get_Activity_Mode (Progress : access Gtk_Progress_Record)
+                               return Boolean;
    procedure Set_Adjustment
-      (Progress   : in Gtk_Progress;
+      (Progress   : access Gtk_Progress_Record;
        Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Set_Format_String
-      (Progress : in Gtk_Progress;
+      (Progress : access Gtk_Progress_Record;
        Format   : in String);
    procedure Set_Percentage
-      (Progress   : in Gtk_Progress;
+      (Progress   : access Gtk_Progress_Record;
        Percentage : in Gfloat);
    procedure Set_Show_Text
-      (Progress  : in Gtk_Progress;
+      (Progress  : access Gtk_Progress_Record;
        Show_Text : in Boolean);
    procedure Set_Text_Alignment
-      (Progress : in Gtk_Progress;
+      (Progress : access Gtk_Progress_Record;
        X_Align  : in Gfloat;
        Y_Align  : in Gfloat);
    procedure Set_Value
-      (Progress : in Gtk_Progress;
+      (Progress : access Gtk_Progress_Record;
        Value    : in Gfloat);
 
 private
-   type Gtk_Progress is new Gtk.Widget.Gtk_Widget with null record;
+   type Gtk_Progress_Record is new Gtk.Widget.Gtk_Widget_Record
+     with null record;
 
 end Gtk.Progress;

@@ -41,7 +41,7 @@ package body Gtk.Main is
    -- Grab_Add --
    --------------
 
-   procedure Grab_Add (Widget : Gtk.Widget.Gtk_Widget'Class) is
+   procedure Grab_Add (Widget : Gtk.Widget.Gtk_Widget) is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_grab_add");
    begin
@@ -52,7 +52,7 @@ package body Gtk.Main is
    -- Grab_Remove --
    -----------------
 
-   procedure Grab_Remove (Widget : Gtk.Widget.Gtk_Widget'Class) is
+   procedure Grab_Remove (Widget : Gtk.Widget.Gtk_Widget) is
       procedure Internal (Widget : System.Address);
       pragma Import (C, Internal, "gtk_grab_remove");
    begin

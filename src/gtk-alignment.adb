@@ -36,7 +36,7 @@ package body Gtk.Alignment is
    -- Get_Xalign --
    ----------------
 
-   function Get_Xalign (Widget : in Gtk_Alignment) return Gfloat is
+   function Get_Xalign (Widget : access Gtk_Alignment_Record) return Gfloat is
       function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_alignment_get_xalign");
    begin
@@ -47,7 +47,7 @@ package body Gtk.Alignment is
    -- Get_Xscale --
    ----------------
 
-   function Get_Xscale (Widget : in Gtk_Alignment) return Gfloat is
+   function Get_Xscale (Widget : access Gtk_Alignment_Record) return Gfloat is
       function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_alignment_get_xscale");
    begin
@@ -58,7 +58,7 @@ package body Gtk.Alignment is
    -- Get_Yalign --
    ----------------
 
-   function Get_Yalign (Widget : in Gtk_Alignment) return Gfloat is
+   function Get_Yalign (Widget : access Gtk_Alignment_Record) return Gfloat is
       function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_alignment_get_yalign");
    begin
@@ -69,7 +69,7 @@ package body Gtk.Alignment is
    -- Get_Yscale --
    ----------------
 
-   function Get_Yscale (Widget : in Gtk_Alignment) return Gfloat is
+   function Get_Yscale (Widget : access Gtk_Alignment_Record) return Gfloat is
       function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_alignment_get_yscale");
    begin
@@ -87,6 +87,22 @@ package body Gtk.Alignment is
        Xscale : in Gfloat;
        Yscale : in Gfloat)
    is
+   begin
+      Widget := new Gtk_Alignment_Record;
+      Initialize (Widget, Xalign, Yalign, Xscale, Yscale);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Widget : access Gtk_Alignment_Record;
+       Xalign : in Gfloat;
+       Yalign : in Gfloat;
+       Xscale : in Gfloat;
+       Yscale : in Gfloat)
+   is
       function Internal
          (Xalign : in Gfloat;
           Yalign : in Gfloat;
@@ -95,18 +111,16 @@ package body Gtk.Alignment is
           return      System.Address;
       pragma Import (C, Internal, "gtk_alignment_new");
    begin
-      Set_Object (Widget, Internal (Xalign,
-                                    Yalign,
-                                    Xscale,
-                                    Yscale));
-   end Gtk_New;
+      Set_Object (Widget, Internal (Xalign, Yalign, Xscale, Yscale));
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ---------
    -- Set --
    ---------
 
    procedure Set
-      (Alignment : in Gtk_Alignment;
+      (Alignment : access Gtk_Alignment_Record;
        Xalign    : in Gfloat;
        Yalign    : in Gfloat;
        Xscale    : in Gfloat;
@@ -120,11 +134,7 @@ package body Gtk.Alignment is
           Yscale    : in Gfloat);
       pragma Import (C, Internal, "gtk_alignment_set");
    begin
-      Internal (Get_Object (Alignment),
-                Xalign,
-                Yalign,
-                Xscale,
-                Yscale);
+      Internal (Get_Object (Alignment), Xalign, Yalign, Xscale, Yscale);
    end Set;
 
 end Gtk.Alignment;

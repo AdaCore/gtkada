@@ -32,23 +32,27 @@ with Gtk.Widget;
 
 package Gtk.Fixed is
 
-   type Gtk_Fixed is new Gtk.Container.Gtk_Container with private;
+   type Gtk_Fixed_Record is new Gtk.Container.Gtk_Container_Record
+     with private;
+   type Gtk_Fixed is access all Gtk_Fixed_Record'Class;
 
-   function Get_Children (Widget : in Gtk.Fixed.Gtk_Fixed)
+   function Get_Children (Widget : access Gtk_Fixed_Record)
                           return      Widget.Widget_List.Glist;
    procedure Gtk_New (Widget : out Gtk_Fixed);
+   procedure Initialize (Widget : access Gtk_Fixed_Record);
    procedure Move
-      (Fixed  : in Gtk_Fixed;
-       Widget : in Gtk.Widget.Gtk_Widget'Class;
+      (Fixed  : access Gtk_Fixed_Record;
+       Widget : in Gtk.Widget.Gtk_Widget;
        X      : in Gint16;
        Y      : in Gint16);
    procedure Put
-      (Fixed  : in Gtk_Fixed;
-       Widget : in Gtk.Widget.Gtk_Widget'Class;
+      (Fixed  : access Gtk_Fixed_Record;
+       Widget : in Gtk.Widget.Gtk_Widget;
        X      : in Gint16;
        Y      : in Gint16);
 
 private
-   type Gtk_Fixed is new Gtk.Container.Gtk_Container with null record;
+   type Gtk_Fixed_Record is new Gtk.Container.Gtk_Container_Record
+     with null record;
 
 end Gtk.Fixed;

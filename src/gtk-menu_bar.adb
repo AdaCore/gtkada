@@ -29,7 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
-with Gtk.Container; use Gtk.Container;
+--  with Gtk.Container; use Gtk.Container;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Menu_Bar is
@@ -39,8 +39,8 @@ package body Gtk.Menu_Bar is
    ------------
 
    procedure Append
-     (Menu_Bar : in Gtk_Menu_Bar;
-      Child    : in Gtk.Widget.Gtk_Widget'Class)
+     (Menu_Bar : access Gtk_Menu_Bar_Record;
+      Child    : in Gtk.Widget.Gtk_Widget)
    is
       procedure Internal
         (Menu_Bar : System.Address;
@@ -55,8 +55,8 @@ package body Gtk.Menu_Bar is
    ------------
 
    procedure Insert
-     (Menu_Bar : in Gtk_Menu_Bar;
-      Child    : in Gtk.Widget.Gtk_Widget'Class;
+     (Menu_Bar : access Gtk_Menu_Bar_Record;
+      Child    : in Gtk.Widget.Gtk_Widget;
       Position : in Gint)
    is
       procedure Internal (Menu_Bar : System.Address;
@@ -72,19 +72,30 @@ package body Gtk.Menu_Bar is
    -------------
 
    procedure Gtk_New (Menu_Bar : out Gtk_Menu_Bar) is
+   begin
+      Menu_Bar := new Gtk_Menu_Bar_Record;
+      Initialize (Menu_Bar);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Menu_Bar : access Gtk_Menu_Bar_Record) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_menu_bar_new");
    begin
       Set_Object (Menu_Bar, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Menu_Bar);
+   end Initialize;
 
    -------------
    -- Prepend --
    -------------
 
    procedure Prepend
-     (Menu_Bar : in Gtk_Menu_Bar;
-      Child    : in Gtk.Widget.Gtk_Widget'Class)
+     (Menu_Bar : access Gtk_Menu_Bar_Record;
+      Child    : in Gtk.Widget.Gtk_Widget)
    is
       procedure Internal (Menu_Bar : System.Address;
                           Child    : System.Address);
@@ -97,7 +108,7 @@ package body Gtk.Menu_Bar is
    -- Generate --
    --------------
 
-   procedure Generate (Menu_Bar : in Gtk_Menu_Bar;
+   procedure Generate (Menu_Bar : access Gtk_Menu_Bar_Record;
                        N    : in Node_Ptr;
                        File : in File_Type) is
       use Menu_Shell;
@@ -107,20 +118,21 @@ package body Gtk.Menu_Bar is
       Gen_Call_Child (N, null, "Container", "Add", File => File);
    end Generate;
 
-   procedure Generate (Menu_Bar : in out Gtk_Menu_Bar;
+   procedure Generate (Menu_Bar : access Gtk_Menu_Bar_Record;
                        N    : in Node_Ptr) is
       use Menu_Shell;
    begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Menu_Bar);
-         Set_Object (Get_Field (N, "name"), Menu_Bar'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--         if not N.Specific_Data.Created then
+--            Gtk_New (Menu_Bar);
+--            Set_Object (Get_Field (N, "name"), Menu_Bar'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Menu_Shell (Menu_Bar), N);
-      Container.Add
-        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
-         Menu_Bar);
+--         Generate (Gtk_Menu_Shell (Menu_Bar), N);
+--         Container.Add
+--           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
+--            Menu_Bar);
+      null;
    end Generate;
 
 end Gtk.Menu_Bar;

@@ -33,35 +33,38 @@ with Gtk.Widget;
 
 package Gtk.Tree_Item is
 
-   type Gtk_Tree_Item is new Gtk.Item.Gtk_Item with private;
+   type Gtk_Tree_Item_Record is new Gtk.Item.Gtk_Item_Record with private;
+   type Gtk_Tree_Item is access all Gtk_Tree_Item_Record'Class;
 
-   procedure Collapse (Tree_Item : in Gtk_Tree_Item);
-   procedure Deselect (Tree_Item : in Gtk_Tree_Item);
-   procedure Expand (Tree_Item : in Gtk_Tree_Item);
+   procedure Collapse (Tree_Item : access Gtk_Tree_Item_Record);
+   procedure Deselect (Tree_Item : access Gtk_Tree_Item_Record);
+   procedure Expand (Tree_Item : access Gtk_Tree_Item_Record);
    function From_Tree (Tree : in Gtk.Tree.Gtk_Tree) return Gtk_Tree_Item;
-   function Get_Subtree (Tree_Item : in Gtk_Tree_Item)
+   function Get_Subtree (Tree_Item : access Gtk_Tree_Item_Record)
      return Gtk.Tree.Gtk_Tree;
    procedure Gtk_New (Tree_Item : out Gtk_Tree_Item;
-                      Label     : in String);
-   procedure Gtk_New (Tree_Item : out Gtk_Tree_Item);
-   procedure Gtk_Select (Tree_Item : in Gtk_Tree_Item);
-   procedure Remove_Subtree (Tree_Item : in Gtk_Tree_Item);
+                      Label     : in String := "");
+   procedure Initialize (Tree_Item : access Gtk_Tree_Item_Record;
+                         Label     : in String := "");
+   procedure Gtk_Select (Tree_Item : access Gtk_Tree_Item_Record);
+   procedure Remove_Subtree (Tree_Item : access Gtk_Tree_Item_Record);
    procedure Set_Subtree
-     (Tree_Item : in Gtk_Tree_Item;
-      Subtree   : in Gtk.Widget.Gtk_Widget'Class);
-   function To_Tree (Tree_Item : in Gtk_Tree_Item) return Gtk.Tree.Gtk_Tree;
+     (Tree_Item : access Gtk_Tree_Item_Record;
+      Subtree   : in Gtk.Widget.Gtk_Widget);
+   function To_Tree (Tree_Item : access Gtk_Tree_Item_Record)
+                     return Gtk.Tree.Gtk_Tree;
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (Tree_Item : in Gtk_Tree_Item;
+   procedure Generate (Tree_Item : access Gtk_Tree_Item_Record;
                        N         : in Node_Ptr;
                        File      : in File_Type);
 
-   procedure Generate (Tree_Item : in out Gtk_Tree_Item;
+   procedure Generate (Tree_Item : access Gtk_Tree_Item_Record;
                        N         : in Node_Ptr);
 
 private
-   type Gtk_Tree_Item is new Gtk.Item.Gtk_Item with null record;
+   type Gtk_Tree_Item_Record is new Gtk.Item.Gtk_Item_Record with null record;
 
 end Gtk.Tree_Item;

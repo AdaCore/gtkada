@@ -31,19 +31,22 @@ with Gtk.Dialog;
 
 package Gtk.Input_Dialog is
 
-   type Gtk_Input_Dialog is new Dialog.Gtk_Dialog with private;
+   type Gtk_Input_Dialog_Record is new Dialog.Gtk_Dialog_Record with private;
+   type Gtk_Input_Dialog is access all Gtk_Input_Dialog_Record'Class;
 
    procedure Gtk_New (Input_Dialog : out Gtk_Input_Dialog);
+   procedure Initialize (Input_Dialog : access Gtk_Input_Dialog_Record);
 
-   procedure Generate (Input_Dialog : in Gtk_Input_Dialog;
+   procedure Generate (Input_Dialog : access Gtk_Input_Dialog_Record;
                        N      : in Node_Ptr;
                        File   : in File_Type);
 
-   procedure Generate (Input_Dialog : in out Gtk_Input_Dialog;
+   procedure Generate (Input_Dialog : access Gtk_Input_Dialog_Record;
                        N      : in Node_Ptr);
 
 private
 
-   type Gtk_Input_Dialog is new Dialog.Gtk_Dialog with null record;
+   type Gtk_Input_Dialog_Record is new Dialog.Gtk_Dialog_Record
+     with null record;
 
 end Gtk.Input_Dialog;

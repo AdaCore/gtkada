@@ -36,7 +36,7 @@ package body Gtk.Fixed is
    -- Get_Children --
    ------------------
 
-   function Get_Children (Widget : in Gtk.Fixed.Gtk_Fixed)
+   function Get_Children (Widget : access Gtk_Fixed_Record)
                           return      Widget.Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
@@ -55,19 +55,31 @@ package body Gtk.Fixed is
 
    procedure Gtk_New (Widget : out Gtk_Fixed)
    is
+   begin
+      Widget := new Gtk_Fixed_Record;
+      Initialize (Widget);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_Fixed_Record)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_fixed_new");
    begin
       Set_Object (Widget, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ----------
    -- Move --
    ----------
 
    procedure Move
-      (Fixed  : in Gtk_Fixed;
-       Widget : in Gtk.Widget.Gtk_Widget'Class;
+      (Fixed  : access Gtk_Fixed_Record;
+       Widget : in Gtk.Widget.Gtk_Widget;
        X      : in Gint16;
        Y      : in Gint16)
    is
@@ -89,8 +101,8 @@ package body Gtk.Fixed is
    ---------
 
    procedure Put
-      (Fixed  : in Gtk_Fixed;
-       Widget : in Gtk.Widget.Gtk_Widget'Class;
+      (Fixed  : access Gtk_Fixed_Record;
+       Widget : in Gtk.Widget.Gtk_Widget;
        X      : in Gint16;
        Y      : in Gint16)
    is

@@ -33,67 +33,68 @@ with Gtk.Widget;
 
 package Gtk.Menu is
 
-   type Gtk_Menu is new Gtk.Menu_Shell.Gtk_Menu_Shell with private;
+   type Gtk_Menu_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
+     with private;
+   type Gtk_Menu is access all Gtk_Menu_Record'Class;
 
    type Gtk_Menu_Detach_Func is access procedure
-     (Attach_Widget : in Gtk.Widget.Gtk_Widget'Class;
-      Menu          : in Gtk_Menu'Class);
+     (Attach_Widget : access Gtk.Widget.Gtk_Widget_Record;
+      Menu          : in Gtk_Menu);
 
    procedure Append
-     (Menu  : in Gtk_Menu;
-      Child : in Gtk.Widget.Gtk_Widget'Class);
+     (Menu  : access Gtk_Menu_Record;
+      Child : access Gtk.Widget.Gtk_Widget_Record'Class);
    procedure Attach_To_Widget
-     (Menu          : in Gtk_Menu;
-      Attach_Widget : in Gtk.Widget.Gtk_Widget'Class;
+     (Menu          : access Gtk_Menu_Record;
+      Attach_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Detacher      : in Gtk_Menu_Detach_Func);
-   procedure Detach (Menu : in Gtk_Menu);
-   function Get_Active (Menu : in Gtk_Menu)
+   procedure Detach (Menu : access Gtk_Menu_Record);
+   function Get_Active (Menu : access Gtk_Menu_Record)
                         return Gtk.Menu_Item.Gtk_Menu_Item;
-   function Get_Attach_Widget (Menu : in Gtk_Menu)
+   function Get_Attach_Widget (Menu : access Gtk_Menu_Record)
                                return Gtk.Widget.Gtk_Widget;
    procedure Gtk_New (Widget : out Gtk_Menu);
+   procedure Initialize (Widget : access Gtk_Menu_Record);
    procedure Insert
-     (Menu     : in Gtk_Menu;
-      Child    : in Gtk.Widget.Gtk_Widget'Class;
+     (Menu     : access Gtk_Menu_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position : in Gint);
 
    generic
       type Data_Type is private;
    package Menu_Popup is
       type Gtk_Menu_Position_Func is access procedure
-        (Menu      : in Gtk_Menu;
+        (Menu      : access Gtk_Menu_Record;
          X         : in out Gint;
          Y         : in out Gint;
          User_Data : access Data_Type);
       procedure Popup
-        (Menu              : in Gtk_Menu;
-         Parent_Menu_Shell : in Gtk.Menu_Shell.Gtk_Menu_Shell'Class;
-         Parent_Menu_Item  : in Gtk.Menu_Item.Gtk_Menu_Item;
+        (Menu              : access Gtk_Menu_Record;
+         Parent_Menu_Shell : access Gtk.Menu_Shell.Gtk_Menu_Shell_Record'Class;
+         Parent_Menu_Item  : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
          Func              : in Gtk_Menu_Position_Func;
          Data              : access Data_Type;
          Button            : in Guint;
          Activate_Time     : in Guint32);
    end Menu_Popup;
 
-   procedure Popdown (Menu : in Gtk_Menu);
+   procedure Popdown (Menu : access Gtk_Menu_Record);
    procedure Prepend
-     (Menu  : in Gtk_Menu;
-      Child : in Gtk.Widget.Gtk_Widget'Class);
+     (Menu  : access Gtk_Menu_Record;
+      Child : access Gtk.Widget.Gtk_Widget_Record'Class);
    procedure Set_Active
-     (Menu  : in Gtk_Menu;
+     (Menu  : access Gtk_Menu_Record;
       Index : in Guint);
---    procedure Set_Accelerator_Table
---      (Menu  : in Gtk_Menu'Class;
---       Table : in Gtk_Accelerator_Table);
 
-   procedure Generate (Menu : in Gtk_Menu;
+   procedure Generate (Menu : access Gtk_Menu_Record;
                        N    : in Node_Ptr;
                        File : in File_Type);
 
-   procedure Generate (Menu : in out Gtk_Menu;
+   procedure Generate (Menu : access Gtk_Menu_Record;
                        N    : in Node_Ptr);
 
 private
-   type Gtk_Menu is new Gtk.Menu_Shell.Gtk_Menu_Shell with null record;
+   type Gtk_Menu_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
+     with null record;
 
 end Gtk.Menu;

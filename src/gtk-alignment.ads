@@ -31,26 +31,33 @@ with Gtk.Bin;
 
 package Gtk.Alignment is
 
-   type Gtk_Alignment is new Gtk.Bin.Gtk_Bin with private;
+   type Gtk_Alignment_Record is new Gtk.Bin.Gtk_Bin_Record with private;
+   type Gtk_Alignment is access Gtk_Alignment_Record'Class;
 
-   function Get_Xalign (Widget : in Gtk_Alignment) return Gfloat;
-   function Get_Xscale (Widget : in Gtk_Alignment) return Gfloat;
-   function Get_Yalign (Widget : in Gtk_Alignment) return Gfloat;
-   function Get_Yscale (Widget : in Gtk_Alignment) return Gfloat;
+   function Get_Xalign (Widget : access Gtk_Alignment_Record) return Gfloat;
+   function Get_Xscale (Widget : access Gtk_Alignment_Record) return Gfloat;
+   function Get_Yalign (Widget : access Gtk_Alignment_Record) return Gfloat;
+   function Get_Yscale (Widget : access Gtk_Alignment_Record) return Gfloat;
    procedure Gtk_New
       (Widget : out Gtk_Alignment;
        Xalign : in Gfloat;
        Yalign : in Gfloat;
        Xscale : in Gfloat;
        Yscale : in Gfloat);
+   procedure Initialize
+      (Widget : access Gtk_Alignment_Record;
+       Xalign : in Gfloat;
+       Yalign : in Gfloat;
+       Xscale : in Gfloat;
+       Yscale : in Gfloat);
    procedure Set
-      (Alignment : in Gtk_Alignment;
+      (Alignment : access Gtk_Alignment_Record;
        Xalign    : in Gfloat;
        Yalign    : in Gfloat;
        Xscale    : in Gfloat;
        Yscale    : in Gfloat);
 
 private
-   type Gtk_Alignment is new Gtk.Bin.Gtk_Bin with null record;
+   type Gtk_Alignment_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
 
 end Gtk.Alignment;

@@ -36,7 +36,7 @@ package body Gtk.Scale is
    -- Draw_Value --
    ----------------
 
-   procedure Draw_Value (Scale : in Gtk_Scale)
+   procedure Draw_Value (Scale : access Gtk_Scale_Record)
    is
       procedure Internal (Scale : in System.Address);
       pragma Import (C, Internal, "gtk_scale_draw_value");
@@ -48,7 +48,7 @@ package body Gtk.Scale is
    -- Get_Value_Width --
    ---------------------
 
-   function Get_Value_Width (Scale  : in Gtk_Scale) return Gint is
+   function Get_Value_Width (Scale  : access Gtk_Scale_Record) return Gint is
       function Internal (Scale  : in System.Address)
                          return      Gint;
       pragma Import (C, Internal, "gtk_scale_get_value_width");
@@ -62,13 +62,11 @@ package body Gtk.Scale is
 
    procedure Gtk_New_Hscale
      (Widget     : out Gtk_Scale;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class)
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
-      function Internal (Adjustment : in System.Address)
-                         return          System.Address;
-      pragma Import (C, Internal, "gtk_hscale_new");
    begin
-      Set_Object (Widget, Internal (Get_Object (Adjustment)));
+      Widget := new Gtk_Scale_Record;
+      Initialize_Hscale (Widget, Adjustment);
    end Gtk_New_Hscale;
 
    --------------------
@@ -77,21 +75,51 @@ package body Gtk.Scale is
 
    procedure Gtk_New_Vscale
      (Widget     : out Gtk_Scale;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class)
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+   is
+   begin
+      Widget := new Gtk_Scale_Record;
+      Initialize_Vscale (Widget, Adjustment);
+   end Gtk_New_Vscale;
+
+   -----------------------
+   -- Initialize_Hscale --
+   -----------------------
+
+   procedure Initialize_Hscale
+     (Widget     : access Gtk_Scale_Record;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+   is
+      function Internal (Adjustment : in System.Address)
+                         return          System.Address;
+      pragma Import (C, Internal, "gtk_hscale_new");
+   begin
+      Set_Object (Widget, Internal (Get_Object (Adjustment)));
+      Initialize_User_Data (Widget);
+   end Initialize_Hscale;
+
+   -----------------------
+   -- Initialize_Vscale --
+   -----------------------
+
+   procedure Initialize_Vscale
+     (Widget     : access Gtk_Scale_Record;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
       function Internal (Adjustment : in System.Address)
                          return          System.Address;
       pragma Import (C, Internal, "gtk_vscale_new");
    begin
       Set_Object (Widget, Internal (Get_Object (Adjustment)));
-   end Gtk_New_Vscale;
+      Initialize_User_Data (Widget);
+   end Initialize_Vscale;
 
    ----------------
    -- Set_Digits --
    ----------------
 
    procedure Set_Digits
-      (Scale      : in Gtk_Scale;
+      (Scale      : access Gtk_Scale_Record;
        The_Digits : in Gint)
    is
       procedure Internal
@@ -108,7 +136,7 @@ package body Gtk.Scale is
    --------------------
 
    procedure Set_Draw_Value
-      (Scale      : in Gtk_Scale;
+      (Scale      : access Gtk_Scale_Record;
        Draw_Value : in Boolean)
    is
       procedure Internal
@@ -125,7 +153,7 @@ package body Gtk.Scale is
    -------------------
 
    procedure Set_Value_Pos
-      (Scale : in Gtk_Scale;
+      (Scale : access Gtk_Scale_Record;
        Pos   : in Gtk_Position_Type)
    is
       procedure Internal

@@ -31,22 +31,26 @@ with Gtk.Button;
 
 package Gtk.Toggle_Button is
 
-   type Gtk_Toggle_Button is new Gtk.Button.Gtk_Button with private;
+   type Gtk_Toggle_Button_Record is new Gtk.Button.Gtk_Button_Record
+     with private;
+   type Gtk_Toggle_Button is access all Gtk_Toggle_Button_Record'Class;
 
-   function Is_Active (Widget : in Gtk_Toggle_Button)
+   function Is_Active (Widget : access Gtk_Toggle_Button_Record)
                         return      Boolean;
-   procedure Gtk_New (Widget : out Gtk_Toggle_Button);
    procedure Gtk_New (Widget : out Gtk_Toggle_Button;
-                      Label  : in String);
+                      Label  : in String := "");
+   procedure Initialize (Widget : access Gtk_Toggle_Button_Record;
+                         Label  : in String := "");
    procedure Set_Mode
-      (Toggle_Button  : in Gtk_Toggle_Button;
+      (Toggle_Button  : access Gtk_Toggle_Button_Record;
        Draw_Indicator : in Boolean);
    procedure Set_Active
-      (Toggle_Button : in Gtk_Toggle_Button;
+      (Toggle_Button : access Gtk_Toggle_Button_Record;
        Is_Active     : in Boolean);
-   procedure Toggled (Toggle_Button : in Gtk_Toggle_Button);
+   procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record);
 
 private
-   type Gtk_Toggle_Button is new Gtk.Button.Gtk_Button with null record;
+   type Gtk_Toggle_Button_Record is new Gtk.Button.Gtk_Button_Record
+     with null record;
 
 end Gtk.Toggle_Button;

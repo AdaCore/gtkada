@@ -36,7 +36,7 @@ package body Gtk.Toggle_Button is
    -- Is_Active --
    ---------------
 
-   function Is_Active (Widget : in Gtk_Toggle_Button)
+   function Is_Active (Widget : access Gtk_Toggle_Button_Record)
                         return      Boolean
    is
       function Internal (Widget : in System.Address)
@@ -50,34 +50,35 @@ package body Gtk.Toggle_Button is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_Toggle_Button)
+   procedure Gtk_New (Widget : out Gtk_Toggle_Button;
+                      Label  : in String := "")
    is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_toggle_button_new");
    begin
-      Set_Object (Widget, Internal);
+      Widget := new Gtk_Toggle_Button_Record;
+      Initialize (Widget, Label);
    end Gtk_New;
 
-   -------------
-   -- Gtk_New --
-   -------------
+   ----------------
+   -- Initialize --
+   ----------------
 
-   procedure Gtk_New (Widget : out Gtk_Toggle_Button;
-                      Label  : in String)
+   procedure Initialize (Widget : access Gtk_Toggle_Button_Record;
+                         Label  : in String := "")
    is
       function Internal (Label  : in String)
                          return      System.Address;
       pragma Import (C, Internal, "gtk_toggle_button_new_with_label");
    begin
       Set_Object (Widget, Internal (Label & Ascii.NUL));
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ----------------
    -- Set_Active --
    ----------------
 
    procedure Set_Active
-      (Toggle_Button : in Gtk_Toggle_Button;
+      (Toggle_Button : access Gtk_Toggle_Button_Record;
        Is_Active     : in Boolean)
    is
       procedure Internal
@@ -93,7 +94,7 @@ package body Gtk.Toggle_Button is
    --------------
 
    procedure Set_Mode
-      (Toggle_Button  : in Gtk_Toggle_Button;
+      (Toggle_Button  : access Gtk_Toggle_Button_Record;
        Draw_Indicator : in Boolean)
    is
       procedure Internal
@@ -109,7 +110,7 @@ package body Gtk.Toggle_Button is
    -- Toggled --
    -------------
 
-   procedure Toggled (Toggle_Button : in Gtk_Toggle_Button)
+   procedure Toggled (Toggle_Button : access Gtk_Toggle_Button_Record)
    is
       procedure Internal (Toggle_Button : in System.Address);
       pragma Import (C, Internal, "gtk_toggle_button_toggled");

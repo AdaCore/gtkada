@@ -37,7 +37,7 @@ package body Gtk.GRange is
    ---------------------
 
    procedure Default_Hmotion
-      (The_Range : in Gtk_Range;
+      (The_Range : access Gtk_Range_Record;
        Xdelta    : in Gint;
        Ydelta    : in Gint)
    is
@@ -56,7 +56,7 @@ package body Gtk.GRange is
    -- Default_Hslider_Update --
    ----------------------------
 
-   procedure Default_Hslider_Update (The_Range : in Gtk_Range)
+   procedure Default_Hslider_Update (The_Range : access Gtk_Range_Record)
    is
       procedure Internal (The_Range : in System.Address);
       pragma Import (C, Internal, "gtk_range_default_hslider_update");
@@ -69,7 +69,7 @@ package body Gtk.GRange is
    ---------------------------
 
    procedure Default_Htrough_Click
-     (The_Range : in Gtk_Range;
+     (The_Range : access Gtk_Range_Record;
       X         : in Gint;
       Y         : in Gint;
       Jump_Perc : in out Gfloat;
@@ -94,7 +94,7 @@ package body Gtk.GRange is
    ---------------------
 
    procedure Default_Vmotion
-      (The_Range : in Gtk_Range;
+      (The_Range : access Gtk_Range_Record;
        Xdelta    : in Gint;
        Ydelta    : in Gint)
    is
@@ -113,7 +113,7 @@ package body Gtk.GRange is
    -- Default_Vslider_Update --
    ----------------------------
 
-   procedure Default_Vslider_Update (The_Range : in Gtk_Range)
+   procedure Default_Vslider_Update (The_Range : access Gtk_Range_Record)
    is
       procedure Internal (The_Range : in System.Address);
       pragma Import (C, Internal, "gtk_range_default_vslider_update");
@@ -126,7 +126,7 @@ package body Gtk.GRange is
    ---------------------------
 
    procedure Default_Vtrough_Click
-     (The_Range : in Gtk_Range;
+     (The_Range : access Gtk_Range_Record;
       X         : in Gint;
       Y         : in Gint;
       Jump_Perc : in out Gfloat;
@@ -150,7 +150,7 @@ package body Gtk.GRange is
    -- Draw_Background --
    ---------------------
 
-   procedure Draw_Background (The_Range : in Gtk_Range)
+   procedure Draw_Background (The_Range : access Gtk_Range_Record)
    is
       procedure Internal (The_Range : in System.Address);
       pragma Import (C, Internal, "gtk_range_draw_background");
@@ -162,7 +162,7 @@ package body Gtk.GRange is
    -- Draw_Slider --
    -----------------
 
-   procedure Draw_Slider (The_Range : in Gtk_Range)
+   procedure Draw_Slider (The_Range : access Gtk_Range_Record)
    is
       procedure Internal (The_Range : in System.Address);
       pragma Import (C, Internal, "gtk_range_draw_slider");
@@ -174,7 +174,7 @@ package body Gtk.GRange is
    -- Draw_Step_Back --
    --------------------
 
-   procedure Draw_Step_Back (The_Range : in Gtk_Range)
+   procedure Draw_Step_Back (The_Range : access Gtk_Range_Record)
    is
       procedure Internal (The_Range : in System.Address);
       pragma Import (C, Internal, "gtk_range_draw_step_back");
@@ -186,7 +186,7 @@ package body Gtk.GRange is
    -- Draw_Step_Forw --
    --------------------
 
-   procedure Draw_Step_Forw (The_Range : in Gtk_Range)
+   procedure Draw_Step_Forw (The_Range : access Gtk_Range_Record)
    is
       procedure Internal (The_Range : in System.Address);
       pragma Import (C, Internal, "gtk_range_draw_step_forw");
@@ -198,7 +198,7 @@ package body Gtk.GRange is
    -- Draw_Trough --
    -----------------
 
-   procedure Draw_Trough (The_Range : in Gtk_Range)
+   procedure Draw_Trough (The_Range : access Gtk_Range_Record)
    is
       procedure Internal (The_Range : in System.Address);
       pragma Import (C, Internal, "gtk_range_draw_trough");
@@ -210,8 +210,8 @@ package body Gtk.GRange is
    -- Get_Adjustment --
    --------------------
 
-   function Get_Adjustment (The_Range  : in Gtk_Range)
-                            return      Gtk.Adjustment.Gtk_Adjustment'Class
+   function Get_Adjustment (The_Range  : access Gtk_Range_Record)
+                            return      Gtk.Adjustment.Gtk_Adjustment
    is
       function Internal (The_Range  : in System.Address)
                          return      System.Address;
@@ -227,8 +227,8 @@ package body Gtk.GRange is
    --------------------
 
    procedure Set_Adjustment
-      (The_Range  : in Gtk_Range;
-       Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class)
+      (The_Range  : access Gtk_Range_Record;
+       Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
       procedure Internal
          (The_Range  : in System.Address;
@@ -244,7 +244,7 @@ package body Gtk.GRange is
    -----------------------
 
    procedure Set_Update_Policy
-      (The_Range : in Gtk_Range;
+      (The_Range : access Gtk_Range_Record;
        Policy    : in Gtk_Update_Type)
    is
       procedure Internal
@@ -260,7 +260,7 @@ package body Gtk.GRange is
    -- Slider_Update --
    -------------------
 
-   procedure Slider_Update (The_Range : in Gtk_Range)
+   procedure Slider_Update (The_Range : access Gtk_Range_Record)
    is
       procedure Internal (The_Range : in System.Address);
       pragma Import (C, Internal, "gtk_range_slider_update");
@@ -273,7 +273,7 @@ package body Gtk.GRange is
    ------------------
 
    procedure Trough_Click
-     (The_Range : in Gtk_Range;
+     (The_Range : access Gtk_Range_Record;
       X         : in Gint;
       Y         : in Gint;
       Jump_Perc : in out Gfloat;

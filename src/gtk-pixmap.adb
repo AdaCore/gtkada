@@ -39,7 +39,7 @@ package body Gtk.Pixmap is
    ---------
 
    procedure Get
-      (Pixmap : in Gtk_Pixmap;
+      (Pixmap : access Gtk_Pixmap_Record;
        Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is
@@ -58,7 +58,7 @@ package body Gtk.Pixmap is
    -- Get_Mask --
    --------------
 
-   function Get_Mask (Widget : in Gtk_Pixmap)
+   function Get_Mask (Widget : access Gtk_Pixmap_Record)
                       return      Gdk.Bitmap.Gdk_Bitmap'Class
    is
       function Internal (Widget : in System.Address)
@@ -74,7 +74,7 @@ package body Gtk.Pixmap is
    -- Get_Pixmap --
    ----------------
 
-   function Get_Pixmap (Widget : in Gtk_Pixmap)
+   function Get_Pixmap (Widget : access Gtk_Pixmap_Record)
                         return      Gdk.Pixmap.Gdk_Pixmap'Class
    is
       function Internal (Widget : in System.Address)
@@ -95,6 +95,20 @@ package body Gtk.Pixmap is
        Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is
+   begin
+      Widget := new Gtk_Pixmap_Record;
+      Initialize (Widget, Pixmap, Mask);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Widget : access Gtk_Pixmap_Record;
+       Pixmap : in Gdk.Pixmap.Gdk_Pixmap'Class;
+       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
+   is
       function Internal
          (Pixmap : in System.Address;
           Mask   : in System.Address)
@@ -103,14 +117,15 @@ package body Gtk.Pixmap is
    begin
       Set_Object (Widget, Internal (Get_Object (Pixmap),
                                     Get_Object (Mask)));
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ---------
    -- Set --
    ---------
 
    procedure Set
-      (Pixmap : in Gtk_Pixmap;
+      (Pixmap : access Gtk_Pixmap_Record;
        Val    : in Gdk.Pixmap.Gdk_Pixmap'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is

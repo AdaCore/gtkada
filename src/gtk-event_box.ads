@@ -31,11 +31,13 @@ with Gtk.Bin;
 
 package Gtk.Event_Box is
 
-   type Gtk_Event_Box is new Gtk.Bin.Gtk_Bin with private;
+   type Gtk_Event_Box_Record is new Gtk.Bin.Gtk_Bin_Record with private;
+   type Gtk_Event_Box is access Gtk_Event_Box_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Event_Box);
+   procedure Initialize (Widget : access Gtk_Event_Box_Record);
 
 private
-   type Gtk_Event_Box is new Gtk.Bin.Gtk_Bin with null record;
+   type Gtk_Event_Box_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
 
 end Gtk.Event_Box;

@@ -32,30 +32,36 @@ with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Radio_Button is
 
-   type Gtk_Radio_Button is new Check_Button.Gtk_Check_Button with private;
+   type Gtk_Radio_Button_Record is new Check_Button.Gtk_Check_Button_Record
+     with private;
+   type Gtk_Radio_Button is access all Gtk_Radio_Button_Record'Class;
 
-   function Group (Button : in Gtk_Radio_Button) return Widget_SList.GSlist;
-
-   procedure Gtk_New (Button : out Gtk_Radio_Button;
-                      Group  : in Widget_SList.GSlist);
+   function Group (Button : access Gtk_Radio_Button_Record)
+                   return Widget_SList.GSlist;
 
    procedure Gtk_New (Button : out Gtk_Radio_Button;
                       Group  : in Widget_SList.GSlist;
-                      Label  : in String);
-
-   procedure Gtk_New
-     (Button : out Gtk_Radio_Button;
-      Group  : in Gtk_Radio_Button);
+                      Label  : in String := "");
 
    procedure Gtk_New
      (Button : out Gtk_Radio_Button;
       Group  : in Gtk_Radio_Button;
+      Label  : in String := "");
+
+   procedure Initialize (Button : access Gtk_Radio_Button_Record;
+                         Group  : in Widget_SList.GSlist;
+                         Label  : in String);
+
+   procedure Initialize
+     (Button : access Gtk_Radio_Button_Record;
+      Group  : in Gtk_Radio_Button;
       Label  : in String);
 
-   procedure Set_Group (Button : in Gtk_Radio_Button;
+   procedure Set_Group (Button : access Gtk_Radio_Button_Record;
                         Group  : in Widget_SList.GSlist);
 
 private
-   type Gtk_Radio_Button is new Check_Button.Gtk_Check_Button with null record;
+   type Gtk_Radio_Button_Record is new Check_Button.Gtk_Check_Button_Record
+     with null record;
 
 end Gtk.Radio_Button;

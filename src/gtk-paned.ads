@@ -32,16 +32,23 @@ with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Paned is
 
-   type Gtk_Paned is new Gtk.Container.Gtk_Container with private;
+   type Gtk_Paned_Record is new Gtk.Container.Gtk_Container_Record
+     with private;
+   type Gtk_Paned is access all Gtk_Paned_Record'Class;
 
-   procedure Add1 (Paned : in Gtk_Paned; Child : in Gtk_Widget'Class);
-   procedure Add2 (Paned : in Gtk_Paned; Child : in Gtk_Widget'Class);
+   procedure Add1 (Paned : access Gtk_Paned_Record; Child : in Gtk_Widget);
+   procedure Add2 (Paned : access Gtk_Paned_Record; Child : in Gtk_Widget);
    procedure Gtk_New_Vpaned (Widget : out Gtk_Paned);
    procedure Gtk_New_Hpaned (Widget : out Gtk_Paned);
-   procedure Set_Gutter_Size (Paned : in Gtk_Paned; Size  : in Guint16);
-   procedure Set_Handle_Size (Paned : in Gtk_Paned; Size  : in Guint16);
+   procedure Initialize_Vpaned (Widget : access Gtk_Paned_Record);
+   procedure Initialize_Hpaned (Widget : access Gtk_Paned_Record);
+   procedure Set_Gutter_Size (Paned : access Gtk_Paned_Record;
+                              Size  : in Guint16);
+   procedure Set_Handle_Size (Paned : access Gtk_Paned_Record;
+                              Size  : in Guint16);
 
 private
-   type Gtk_Paned is new Gtk.Container.Gtk_Container with null record;
+   type Gtk_Paned_Record is new Gtk.Container.Gtk_Container_Record
+     with null record;
 
 end Gtk.Paned;

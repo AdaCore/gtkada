@@ -38,33 +38,34 @@ package body Gtk.Progress_Bar is
    -------------
 
    procedure Gtk_New (Widget     : out Gtk_Progress_Bar;
-                      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+                      Adjustment : in Gtk.Adjustment.Gtk_Adjustment := null)
+   is
+   begin
+      Widget := new Gtk_Progress_Bar_Record;
+      Initialize (Widget, Adjustment);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget     : access Gtk_Progress_Bar_Record;
+                         Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
       function Internal (Adjustment : in System.Address)
                          return          System.Address;
       pragma Import (C, Internal, "gtk_progress_bar_new_with_adjustment");
    begin
       Set_Object (Widget, Internal (Get_Object (Adjustment)));
-   end Gtk_New;
-
-   -------------
-   -- Gtk_New --
-   -------------
-
-   procedure Gtk_New (Widget : out Gtk_Progress_Bar)
-   is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_progress_bar_new");
-   begin
-      Set_Object (Widget, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    -------------------------
    -- Set_Activity_Blocks --
    -------------------------
 
    procedure Set_Activity_Blocks
-      (Pbar   : in Gtk_Progress_Bar;
+      (Pbar   : access Gtk_Progress_Bar_Record;
        Blocks : in Guint)
    is
       procedure Internal
@@ -81,7 +82,7 @@ package body Gtk.Progress_Bar is
    -----------------------
 
    procedure Set_Activity_Step
-      (Pbar : in Gtk_Progress_Bar;
+      (Pbar : access Gtk_Progress_Bar_Record;
        Step : in Guint)
    is
       procedure Internal
@@ -98,7 +99,7 @@ package body Gtk.Progress_Bar is
    -------------------
 
    procedure Set_Bar_Style
-      (Pbar  : in Gtk_Progress_Bar;
+      (Pbar  : access Gtk_Progress_Bar_Record;
        Style : in Gtk_Progress_Bar_Style)
    is
       procedure Internal
@@ -115,7 +116,7 @@ package body Gtk.Progress_Bar is
    -------------------------
 
    procedure Set_Discrete_Blocks
-      (Pbar   : in Gtk_Progress_Bar;
+      (Pbar   : access Gtk_Progress_Bar_Record;
        Blocks : in Guint)
    is
       procedure Internal
@@ -132,7 +133,7 @@ package body Gtk.Progress_Bar is
    ---------------------
 
    procedure Set_Orientation
-      (Pbar        : in Gtk_Progress_Bar;
+      (Pbar        : access Gtk_Progress_Bar_Record;
        Orientation : in Gtk_Progress_Bar_Orientation)
    is
       procedure Internal
@@ -149,7 +150,7 @@ package body Gtk.Progress_Bar is
    ------------
 
    procedure Update
-      (Pbar       : in Gtk_Progress_Bar;
+      (Pbar       : access Gtk_Progress_Bar_Record;
        Percentage : in Gfloat)
    is
       procedure Internal

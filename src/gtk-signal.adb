@@ -60,7 +60,7 @@ package body Gtk.Signal is
                                             User_Data : in System.Address;
                                             Nparams   : in Guint;
                                             Params    : in GtkArgArray);
-   function Do_Signal_Connect (Object     : in Gtk.Object.Gtk_Object'Class;
+   function Do_Signal_Connect (Object     : in Gtk.Object.Gtk_Object;
                                Name       : in String;
                                Marshaller : in System.Address;
                                Func_Data  : in System.Address;
@@ -72,7 +72,7 @@ package body Gtk.Signal is
    -- Do_Signal_Connect --
    -----------------------
 
-   function Do_Signal_Connect (Object     : in Gtk.Object.Gtk_Object'Class;
+   function Do_Signal_Connect (Object     : in Gtk.Object.Gtk_Object;
                                Name       : in String;
                                Marshaller : in System.Address;
                                Func_Data  : in System.Address;
@@ -91,7 +91,7 @@ package body Gtk.Signal is
                          return          Guint;
       pragma Import (C, Internal, "gtk_signal_connect_full");
    begin
-      return Internal (Get_Object (Object),
+      return Internal (Get_Object (Object.all),
                        Name & Ascii.NUL,
                        System.Null_Address,
                        Marshaller,
@@ -155,12 +155,12 @@ package body Gtk.Signal is
                             Nparams   : in Guint;
                             Params    : in GtkArgArray)
       is
-         Data   : Data_Type_Access := Convert (User_Data);
-         Widget : Widget_Type;
+         type Acc is access all Base_Type;
+         Data : Data_Type_Access := Convert (User_Data);
+         Stub : Base_Type;
       begin
          if Data.Func /= null then
-            Set_Object (Widget, Object);
-            Data.Func (Widget, Data.Data.all);
+            Data.Func (Acc (Get_User_Data (Object, Stub)), Data.Data.all);
          end if;
       end Marshaller;
 
@@ -169,7 +169,7 @@ package body Gtk.Signal is
       -------------
 
       function Connect
-        (Obj       : in Widget_Type'Class;
+        (Obj       : access Base_Type'Class;
          Name      : in String;
          Func      : in Callback;
          Func_Data : in Data_Type;
@@ -180,7 +180,7 @@ package body Gtk.Signal is
           new Data_Type_Record'(Data => new Data_Type'(Func_Data),
                                 Func => Func);
       begin
-         return Do_Signal_Connect (Obj,
+         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
                                    Marshaller'Address,
                                    Convert (D),
@@ -248,8 +248,9 @@ package body Gtk.Signal is
                             return System.Address;
          pragma Import (C, Internal, "ada_gtkarg_value_object");
          use type System.Address;
+         type Acc is access all Base_Type;
+         Stub   : Base_Type;
          Data   : Data_Type_Access := Convert (User_Data);
-         Widget : Widget_Type;
          Widget2 : Cb_Type;
          Tmp    : System.Address := Internal (Params, 0);
       begin
@@ -259,9 +260,9 @@ package body Gtk.Signal is
                "Wrong number of arguments in Two_Callback");
          end if;
          if Data.Func /= null then
-            Set_Object (Widget, Object);
             Gdk.Set_Object (Widget2, Tmp);
-            Data.Func (Widget, Widget2, Data.Data.all);
+            Data.Func (Acc (Get_User_Data (Object, Stub)),
+                       Widget2, Data.Data.all);
          end if;
       end Marshaller;
 
@@ -270,7 +271,7 @@ package body Gtk.Signal is
       -------------
 
       function Connect
-        (Obj       : in Widget_Type'Class;
+        (Obj       : access Base_Type'Class;
          Name      : in String;
          Func      : in Callback;
          Func_Data : in Data_Type;
@@ -281,7 +282,7 @@ package body Gtk.Signal is
           new Data_Type_Record'(Data => new Data_Type'(Func_Data),
                                 Func => Func);
       begin
-         return Do_Signal_Connect (Obj,
+         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
                                    Marshaller'Address,
                                    Convert (D),
@@ -365,8 +366,8 @@ package body Gtk.Signal is
          end To_String;
 
          Data    : Data_Type_Access;
-         Widget  : Gtk.Tips_Query.Gtk_Tips_Query;
-         Widget2 : Gtk.Widget.Gtk_Widget;
+         Widget  : aliased Gtk.Tips_Query.Gtk_Tips_Query_Record;
+         Widget2 : aliased Gtk.Widget.Gtk_Widget_Record;
       begin
          if Nparams < 3 then
             Ada.Text_IO.Put_Line
@@ -378,7 +379,7 @@ package body Gtk.Signal is
          if Data.Func /= null then
             Set_Object (Widget, Object);
             Set_Object (Widget2, Internal (Params, 0));
-            Data.Func (Widget, Widget2,
+            Data.Func (Widget'Access, Widget2'Access,
                        To_String (Internal (Params, 1)),
                        To_String (Internal (Params, 2)),
                        Data.Data.all);
@@ -390,7 +391,7 @@ package body Gtk.Signal is
       -------------
 
       function Connect
-        (Obj   : in Gtk.Tips_Query.Gtk_Tips_Query'Class;
+        (Obj   : access Gtk.Tips_Query.Gtk_Tips_Query_Record'Class;
          Name  : in String;
          Func  : in Callback;
          Data  : in Data_Type;
@@ -401,7 +402,7 @@ package body Gtk.Signal is
           new Data_Type_Record'(Data => new Data_Type'(Data),
                                 Func => Func);
       begin
-         return Do_Signal_Connect (Obj,
+         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
                                    Marshaller'Address,
                                    Convert (D),
@@ -436,11 +437,11 @@ package body Gtk.Signal is
                             Nparams   : in Guint;
                             Params    : in GtkArgArray)
       is
-         Data   : Callback := Convert (User_Data);
-         Widget : Widget_Type;
+         type Acc is access all Base_Type;
+         Data : Callback := Convert (User_Data);
+         Stub : Base_Type;
       begin
-         Set_Object (Widget, Object);
-         Data (Widget);
+         Data (Acc (Get_User_Data (Object, Stub)));
       end Marshaller;
 
       -------------
@@ -448,14 +449,14 @@ package body Gtk.Signal is
       -------------
 
       function Connect
-        (Obj   : in Widget_Type'Class;
+        (Obj   : access Base_Type'Class;
          Name  : in String;
          Func  : in Callback;
          After : in Boolean := False)
          return Guint
       is
       begin
-         return Do_Signal_Connect (Obj,
+         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
                                    Marshaller'Address,
                                    Convert (Func),
@@ -471,6 +472,7 @@ package body Gtk.Signal is
 
    package body Object_Callback is
 
+      type Widget_Type is access all Base_Type;
       type Data_Type_Record is
          record
             Func : Callback;
@@ -527,10 +529,10 @@ package body Gtk.Signal is
       -------------
 
       function Connect
-        (Obj         : in Object.Gtk_Object'Class;
+        (Obj         : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : in String;
          Func        : in Callback;
-         Slot_Object : in Widget_Type'Class;
+         Slot_Object : access Base_Type'Class;
          After       : in Boolean := False)
          return Guint
       is
@@ -538,7 +540,7 @@ package body Gtk.Signal is
            := new Data_Type_Record'(Data => Widget_Type (Slot_Object),
                                     Func => Func);
       begin
-         return Do_Signal_Connect (Obj,
+         return Do_Signal_Connect (Gtk.Object.Gtk_Object (Obj),
                                    Name,
                                    Marshaller'Address,
                                    Convert (D),
@@ -551,10 +553,10 @@ package body Gtk.Signal is
    -- C_Unsafe_Connect --
    ----------------------
 
-   function C_Unsafe_Connect (Object      : in Gtk.Object.Gtk_Object'Class;
+   function C_Unsafe_Connect (Object      : in Gtk.Object.Gtk_Object;
                               Name        : in String;
                               Func        : in System.Address;
-                              Slot_Object : in Gtk.Object.Gtk_Object'Class)
+                              Slot_Object : in Gtk.Object.Gtk_Object)
                               return Guint
    is
       function Internal (Object      : in System.Address;
@@ -564,8 +566,8 @@ package body Gtk.Signal is
                          return Guint;
       pragma Import (C, Internal, "gtk_signal_connect_object");
    begin
-      return Internal (Get_Object (Object), Name & Ascii.NUL,
-                       Func, Get_Object (Slot_Object));
+      return Internal (Get_Object (Object.all), Name & Ascii.NUL,
+                       Func, Get_Object (Slot_Object.all));
    end C_Unsafe_Connect;
 
    ----------------
@@ -573,14 +575,14 @@ package body Gtk.Signal is
    ----------------
 
    procedure Disconnect
-     (Object     : in Gtk.Object.Gtk_Object'Class;
+     (Object     : in Gtk.Object.Gtk_Object;
       Handler_Id : in Guint)
    is
       procedure Internal (Obj : System.Address; Id  : Guint);
       pragma Import (C, Internal, "gtk_signal_disconnect");
 
    begin
-      Internal (Obj => Get_Object (Object),
+      Internal (Obj => Get_Object (Object.all),
                 Id  => Handler_Id);
    end Disconnect;
 
@@ -588,28 +590,28 @@ package body Gtk.Signal is
    -- Emit_By_Name --
    ------------------
 
-   procedure Emit_By_Name (Object : in Gtk.Object.Gtk_Object'Class;
+   procedure Emit_By_Name (Object : in Gtk.Object.Gtk_Object;
                            Name   : in String)
    is
       procedure Internal (Object : in System.Address;
                           Name   : in String);
       pragma Import (C, Internal, "gtk_signal_emit_by_name");
    begin
-      Internal (Get_Object (Object), Name & Ascii.NUL);
+      Internal (Get_Object (Object.all), Name & Ascii.NUL);
    end Emit_By_Name;
 
    -----------------------
    -- Emit_Stop_By_Name --
    -----------------------
 
-   procedure Emit_Stop_By_Name (Object : in Gtk.Object.Gtk_Object'Class;
+   procedure Emit_Stop_By_Name (Object : in Gtk.Object.Gtk_Object;
                                 Name   : in String)
    is
       procedure Internal (Object : in System.Address;
                           Name   : in String);
       pragma Import (C, Internal, "gtk_signal_emit_stop_by_name");
    begin
-      Internal (Get_Object (Object), Name & Ascii.NUL);
+      Internal (Get_Object (Object.all), Name & Ascii.NUL);
    end Emit_Stop_By_Name;
 
    -------------------
@@ -617,38 +619,38 @@ package body Gtk.Signal is
    -------------------
 
    procedure Handler_Block
-     (Obj        : in Gtk.Object.Gtk_Object'Class;
+     (Obj        : in Gtk.Object.Gtk_Object;
       Handler_Id : in Guint)
    is
       procedure Internal (Obj : in System.Address; Id  : in Guint);
       pragma Import (C, Internal, "gtk_signal_handler_block");
    begin
-      Internal (Obj => Get_Object (Obj), Id  => Handler_Id);
+      Internal (Obj => Get_Object (Obj.all), Id  => Handler_Id);
    end Handler_Block;
 
    ----------------------
    -- Handlers_Destroy --
    ----------------------
 
-   procedure Handlers_Destroy (Obj : in Object.Gtk_Object'Class)
+   procedure Handlers_Destroy (Obj : in Object.Gtk_Object)
    is
       procedure Internal (Obj : System.Address);
       pragma Import (C, Internal, "gtk_signal_handlers_destroy");
    begin
-      Internal (Obj => Get_Object (Obj));
+      Internal (Obj => Get_Object (Obj.all));
    end Handlers_Destroy;
 
    ---------------------
    -- Handler_Unblock --
    ---------------------
 
-   procedure Handler_Unblock (Obj        : in Gtk.Object.Gtk_Object'Class;
+   procedure Handler_Unblock (Obj        : in Gtk.Object.Gtk_Object;
                               Handler_Id : in Guint)
    is
       procedure Internal (Obj : in System.Address; Id  : in Guint);
       pragma Import (C, Internal, "gtk_signal_handler_unblock");
    begin
-      Internal (Obj => Get_Object (Obj), Id  => Handler_Id);
+      Internal (Obj => Get_Object (Obj.all), Id  => Handler_Id);
    end Handler_Unblock;
 
 end Gtk.Signal;

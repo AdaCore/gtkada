@@ -31,8 +31,8 @@ with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;
 with Gdk; use Gdk;
 with Gtk.Util; use Gtk.Util;
-with Gtk.Container; use Gtk.Container;
-with Gtk.Notebook; use Gtk.Notebook;
+--   with Gtk.Container; use Gtk.Container;
+--   with Gtk.Notebook; use Gtk.Notebook;
 
 package body Gtk.Label is
 
@@ -40,7 +40,7 @@ package body Gtk.Label is
    -- Get --
    ---------
 
-   function Get (Label : in Gtk_Label) return String is
+   function Get (Label : access Gtk_Label_Record) return String is
       procedure Internal (Label : in     System.Address;
                           Str   :    out C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_label_get");
@@ -50,24 +50,35 @@ package body Gtk.Label is
       return Value (Temp);
    end Get;
 
-
    -------------
    -- Gtk_New --
    -------------
 
    procedure Gtk_New (Label :    out Gtk_Label;
                       Str   : in     String) is
+   begin
+      Label := new Gtk_Label_Record;
+      Initialize (Label, Str);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Label : access Gtk_Label_Record;
+                         Str   : in     String) is
       function Internal (Str : in String) return System.Address;
       pragma Import (C, Internal, "gtk_label_new");
    begin
       Set_Object (Label, Internal (Str & ASCII.NUL));
-   end Gtk_New;
+      Initialize_User_Data (Label);
+   end Initialize;
 
    -----------------
    -- Set_Justify --
    -----------------
 
-   procedure Set_Justify (Label : in Gtk_Label;
+   procedure Set_Justify (Label : access Gtk_Label_Record;
                           Jtype : in Enums.Gtk_Justification) is
       procedure Internal (Label : in System.Address;
                           Jtype : in Enums.Gtk_Justification);
@@ -80,7 +91,7 @@ package body Gtk.Label is
    -- Set_Text --
    --------------
 
-   procedure Set_Text (Label : in Gtk_Label;
+   procedure Set_Text (Label : access Gtk_Label_Record;
                        Str   : in String) is
       procedure Internal (Label : in System.Address;
                           Str   : in String);
@@ -93,7 +104,7 @@ package body Gtk.Label is
    -- Generate --
    --------------
 
-   procedure Generate (Label : in Gtk_Label;
+   procedure Generate (Label : access Gtk_Label_Record;
                        N     : in Node_Ptr;
                        File  : in File_Type) is
       use Misc;
@@ -138,58 +149,60 @@ package body Gtk.Label is
       end if;
    end Generate;
 
-   procedure Generate (Label : in out Gtk_Label;
+   procedure Generate (Label : access Gtk_Label_Record;
                        N     : in Node_Ptr) is
       use Misc;
 
-      Child_Name : String_Ptr := Get_Field (N, "child_name");
-      S          : String_Ptr;
-      P          : Node_Ptr;
-      Page_Num   : Gint;
+--         Child_Name : String_Ptr := Get_Field (N, "child_name");
+--         S          : String_Ptr;
+--         P          : Node_Ptr;
+--         Page_Num   : Gint;
 
    begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Label, Get_Field (N, "label").all);
-         Set_Object (Get_Field (N, "name"), Label'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--         if not N.Specific_Data.Created then
+--            Gtk_New (Label, Get_Field (N, "label").all);
+--            Set_Object (Get_Field (N, "name"), Label'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Misc (Label), N);
+--         Generate (Gtk_Misc (Label), N);
 
-      S := Get_Field (N, "justify");
+--         S := Get_Field (N, "justify");
 
-      if S /= null then
-         Set_Justify (Label,
-           Enums.Gtk_Justification'Value (S (S'First + 4 .. S'Last)));
-      end if;
+--         if S /= null then
+--            Set_Justify (Label,
+--              Enums.Gtk_Justification'Value (S (S'First + 4 .. S'Last)));
+--         end if;
 
-      if Child_Name /= null then
-         if Get_Part (Child_Name.all, 2) = "tab" then
-            P := N.Parent.Child;
-            Page_Num := 0;
+--         if Child_Name /= null then
+--            if Get_Part (Child_Name.all, 2) = "tab" then
+--               P := N.Parent.Child;
+--               Page_Num := 0;
 
-            while P /= N loop
-               S := Get_Field (P, "child_name");
+--               while P /= N loop
+--                  S := Get_Field (P, "child_name");
 
-               if S /= null and then S.all = Child_Name.all then
-                  Page_Num := Page_Num + 1;
-               end if;
+--                  if S /= null and then S.all = Child_Name.all then
+--                     Page_Num := Page_Num + 1;
+--                  end if;
 
-               P := P.Next;
-            end loop;
+--                  P := P.Next;
+--               end loop;
 
-            Set_Tab
-              (Gtk_Notebook (Get_Object (Find_Tag
-                 (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
-                  "name").Value).all), Page_Num, Label);
-         end if;
+--               Set_Tab
+--                 (Gtk_Notebook (Get_Object (Find_Tag
+--                    (Find_Parent (N.Parent, Get_Part (Child_Name.all, 1)),
+--                     "name").Value).all), Page_Num, Label);
+--            end if;
 
-      else
-         Container.Add
-           (Gtk_Container
-             (Get_Object (Get_Field (N.Parent, "name")).all),
-            Label);
-      end if;
+--         else
+--            Container.Add
+--              (Gtk_Container
+--                (Get_Object (Get_Field (N.Parent, "name")).all),
+--               Label);
+--         end if;
+      null;
    end Generate;
 
 end Gtk.Label;
+

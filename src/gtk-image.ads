@@ -33,22 +33,27 @@ with Gtk.Misc;
 
 package Gtk.Image is
 
-   type Gtk_Image is new Gtk.Misc.Gtk_Misc with private;
+   type Gtk_Image_Record is new Gtk.Misc.Gtk_Misc_Record with private;
+   type Gtk_Image is access all Gtk_Image_Record'Class;
 
    procedure Get
-      (Image : in Gtk_Image;
+      (Image : access Gtk_Image_Record;
        Val   : in Gdk.Image.Gdk_Image'Class;
        Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
    procedure Gtk_New
       (Widget : out Gtk_Image;
        Val    : in Gdk.Image.Gdk_Image'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
+   procedure Initialize
+      (Widget : access Gtk_Image_Record;
+       Val    : in Gdk.Image.Gdk_Image'Class;
+       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class);
    procedure Set
-      (Image : in Gtk_Image;
+      (Image : access Gtk_Image_Record;
        Val   : in Gdk.Image.Gdk_Image'Class;
        Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class);
 
 private
-   type Gtk_Image is new Gtk.Misc.Gtk_Misc with null record;
+   type Gtk_Image_Record is new Gtk.Misc.Gtk_Misc_Record with null record;
 
 end Gtk.Image;

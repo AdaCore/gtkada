@@ -39,8 +39,8 @@ package body Gtk.Menu is
    ------------
 
    procedure Append
-     (Menu  : in Gtk_Menu;
-      Child : in Gtk.Widget.Gtk_Widget'Class)
+     (Menu  : access Gtk_Menu_Record;
+      Child : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Menu  : System.Address;
                           Child : System.Address);
@@ -54,8 +54,8 @@ package body Gtk.Menu is
    ----------------------
 
    procedure Attach_To_Widget
-     (Menu          : in Gtk_Menu;
-      Attach_Widget : in Gtk.Widget.Gtk_Widget'Class;
+     (Menu          : access Gtk_Menu_Record;
+      Attach_Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Detacher      : in Gtk_Menu_Detach_Func)
    is
       procedure Internal (Menu          : System.Address;
@@ -71,7 +71,7 @@ package body Gtk.Menu is
    -- Detach --
    ------------
 
-   procedure Detach (Menu : in Gtk_Menu)
+   procedure Detach (Menu : access Gtk_Menu_Record)
    is
       procedure Internal (Menu : System.Address);
       pragma Import (C, Internal, "gtk_menu_detach");
@@ -83,7 +83,7 @@ package body Gtk.Menu is
    -- Get_Active --
    ----------------
 
-   function Get_Active (Menu : in Gtk_Menu)
+   function Get_Active (Menu : access Gtk_Menu_Record)
                         return Gtk.Menu_Item.Gtk_Menu_Item
    is
       function Internal (Menu : System.Address)
@@ -99,7 +99,7 @@ package body Gtk.Menu is
    -- Get_Attach_Widget --
    -----------------------
 
-   function Get_Attach_Widget (Menu : in Gtk_Menu)
+   function Get_Attach_Widget (Menu : access Gtk_Menu_Record)
                                return Gtk.Widget.Gtk_Widget
    is
       function Internal (Menu : System.Address)
@@ -117,19 +117,31 @@ package body Gtk.Menu is
 
    procedure Gtk_New (Widget : out Gtk_Menu)
    is
+   begin
+      Widget := new Gtk_Menu_Record;
+      Initialize_User_Data (Widget);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_Menu_Record)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_menu_new");
    begin
       Set_Object (Widget, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ------------
    -- Insert --
    ------------
 
    procedure Insert
-     (Menu     : in Gtk_Menu;
-      Child    : in Gtk.Widget.Gtk_Widget'Class;
+     (Menu     : access Gtk_Menu_Record;
+      Child    : access Gtk.Widget.Gtk_Widget_Record'Class;
       Position : in Gint)
    is
       procedure Internal (Menu     : System.Address;
@@ -144,7 +156,7 @@ package body Gtk.Menu is
    -- Popdown --
    -------------
 
-   procedure Popdown (Menu : in Gtk_Menu)
+   procedure Popdown (Menu : access Gtk_Menu_Record)
    is
       procedure Internal (Menu : System.Address);
       pragma Import (C, Internal, "gtk_menu_popdown");
@@ -157,8 +169,8 @@ package body Gtk.Menu is
    -------------
 
    procedure Prepend
-     (Menu  : in Gtk_Menu;
-      Child : in Gtk.Widget.Gtk_Widget'Class)
+     (Menu  : access Gtk_Menu_Record;
+      Child : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal (Menu  : System.Address;
                           Child : System.Address);
@@ -172,7 +184,7 @@ package body Gtk.Menu is
    ----------------
 
    procedure Set_Active
-     (Menu  : in Gtk_Menu;
+     (Menu  : access Gtk_Menu_Record;
       Index : in Guint)
    is
       procedure Internal (Menu  : System.Address;
@@ -189,9 +201,9 @@ package body Gtk.Menu is
       -----------
 
       procedure Popup
-        (Menu              : in Gtk_Menu;
-         Parent_Menu_Shell : in Gtk.Menu_Shell.Gtk_Menu_Shell'Class;
-         Parent_Menu_Item  : in Gtk.Menu_Item.Gtk_Menu_Item;
+        (Menu              : access Gtk_Menu_Record;
+         Parent_Menu_Shell : access Gtk.Menu_Shell.Gtk_Menu_Shell_Record'Class;
+         Parent_Menu_Item  : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class;
          Func              : in Gtk_Menu_Position_Func;
          Data              : access Data_Type;
          Button            : in Guint;
@@ -220,7 +232,7 @@ package body Gtk.Menu is
    -- Generate --
    --------------
 
-   procedure Generate (Menu : in Gtk_Menu;
+   procedure Generate (Menu : access Gtk_Menu_Record;
                        N    : in Node_Ptr;
                        File : in File_Type) is
       use Menu_Shell;
@@ -230,21 +242,22 @@ package body Gtk.Menu is
       Gen_Call_Child (N, null, "Menu_Item", "Set_Submenu", File => File);
    end Generate;
 
-   procedure Generate (Menu : in out Gtk_Menu;
+   procedure Generate (Menu : access Gtk_Menu_Record;
                        N    : in Node_Ptr) is
       use Menu_Shell;
    begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Menu);
-         Set_Object (Get_Field (N, "name"), Menu'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--         if not N.Specific_Data.Created then
+--            Gtk_New (Menu);
+--            Set_Object (Get_Field (N, "name"), Menu'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Menu_Shell (Menu), N);
-      Menu_Item.Set_Submenu
-        (Gtk_Menu_Item
-          (Get_Object (Get_Field (N.Parent, "name")).all),
-         Menu);
+--         Generate (Gtk_Menu_Shell (Menu), N);
+--         Menu_Item.Set_Submenu
+--           (Gtk_Menu_Item
+--             (Get_Object (Get_Field (N.Parent, "name")).all),
+--            Menu);
+      null;
    end Generate;
 
 end Gtk.Menu;

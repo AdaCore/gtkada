@@ -32,22 +32,25 @@ with Gtk.Enums; use Gtk.Enums;
 
 package Gtk.Frame is
 
-   type Gtk_Frame is new Gtk.Bin.Gtk_Bin with private;
+   type Gtk_Frame_Record is new Gtk.Bin.Gtk_Bin_Record with private;
+   type Gtk_Frame is access all Gtk_Frame_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Frame;
                       Label  : in String := "");
+   procedure Initialize (Widget : access Gtk_Frame_Record;
+                         Label  : in String := "");
    procedure Set_Label
-      (Frame : in Gtk_Frame;
+      (Frame : access Gtk_Frame_Record;
        Label : in String);
    procedure Set_Label_Align
-      (Frame  : in Gtk_Frame;
+      (Frame  : access Gtk_Frame_Record;
        Xalign : in Gfloat;
        Yalign : in Gfloat);
    procedure Set_Shadow_Type
-      (Frame    : in Gtk_Frame;
+      (Frame    : access Gtk_Frame_Record;
        The_Type : in Gtk_Shadow_Type);
 
 private
-   type Gtk_Frame is new Gtk.Bin.Gtk_Bin with null record;
+   type Gtk_Frame_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
 
 end Gtk.Frame;

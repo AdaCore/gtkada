@@ -38,13 +38,10 @@ package body Gtk.Scrollbar is
 
    procedure Gtk_New_Hscrollbar
      (Widget     : out Gtk_Scrollbar;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class)
-   is
-      function Internal (Adjustment : in System.Address)
-                         return          System.Address;
-      pragma Import (C, Internal, "gtk_hscrollbar_new");
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment) is
    begin
-      Set_Object (Widget, Internal (Get_Object (Adjustment)));
+      Widget := new Gtk_Scrollbar_Record;
+      Initialize_Hscrollbar (Widget, Adjustment);
    end Gtk_New_Hscrollbar;
 
    ------------------------
@@ -53,13 +50,42 @@ package body Gtk.Scrollbar is
 
    procedure Gtk_New_Vscrollbar
      (Widget     : out Gtk_Scrollbar;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class)
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment) is
+   begin
+      Widget := new Gtk_Scrollbar_Record;
+      Initialize_Vscrollbar (Widget, Adjustment);
+   end Gtk_New_Vscrollbar;
+
+   ---------------------------
+   -- Initialize_Hscrollbar --
+   ---------------------------
+
+   procedure Initialize_Hscrollbar
+     (Widget     : access Gtk_Scrollbar_Record;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
+   is
+      function Internal (Adjustment : in System.Address)
+                         return          System.Address;
+      pragma Import (C, Internal, "gtk_hscrollbar_new");
+   begin
+      Set_Object (Widget, Internal (Get_Object (Adjustment)));
+      Initialize_User_Data (Widget);
+   end Initialize_Hscrollbar;
+
+   ---------------------------
+   -- Initialize_Vscrollbar --
+   ---------------------------
+
+   procedure Initialize_Vscrollbar
+     (Widget     : access Gtk_Scrollbar_Record;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment)
    is
       function Internal (Adjustment : in System.Address)
                          return          System.Address;
       pragma Import (C, Internal, "gtk_vscrollbar_new");
    begin
       Set_Object (Widget, Internal (Get_Object (Adjustment)));
-   end Gtk_New_Vscrollbar;
+      Initialize_User_Data (Widget);
+   end Initialize_Vscrollbar;
 
 end Gtk.Scrollbar;

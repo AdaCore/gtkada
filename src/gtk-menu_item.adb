@@ -29,7 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
-with Gtk.Container; use Gtk.Container;
+--  with Gtk.Container; use Gtk.Container;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Menu_Item is
@@ -38,7 +38,7 @@ package body Gtk.Menu_Item is
    -- Activate --
    --------------
 
-   procedure Activate (Menu_Item : in out Gtk_Menu_Item) is
+   procedure Activate (Menu_Item : access Gtk_Menu_Item_Record) is
       procedure Internal (Menu_Item : in System.Address);
       pragma Import (C, Internal, "gtk_menu_item_activate");
    begin
@@ -49,7 +49,7 @@ package body Gtk.Menu_Item is
    -- Configure --
    ---------------
 
-   procedure Configure (Menu_Item              : in out Gtk_Menu_Item;
+   procedure Configure (Menu_Item              : access Gtk_Menu_Item_Record;
                         Show_Toggle_Indicator  : in     Boolean;
                         Show_Submenu_Indicator : in     Boolean) is
       procedure Internal (Menu_Item : System.Address;
@@ -65,7 +65,7 @@ package body Gtk.Menu_Item is
    -- Deselect --
    --------------
 
-   procedure Deselect (Menu_Item : in out Gtk_Menu_Item) is
+   procedure Deselect (Menu_Item : access Gtk_Menu_Item_Record) is
       procedure Internal (Menu_Item : in System.Address);
       pragma Import (C, Internal, "gtk_menu_item_deselect");
    begin
@@ -76,41 +76,42 @@ package body Gtk.Menu_Item is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Menu_Item : out Gtk_Menu_Item) is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_menu_item_new");
-   begin
-      Set_Object (Menu_Item, Internal);
-   end Gtk_New;
-
-   -------------
-   -- Gtk_New --
-   -------------
-
    procedure Gtk_New (Menu_Item : out Gtk_Menu_Item;
-                      Label     : in  String) is
-      function Internal (Label : in String) return System.Address;
-      pragma Import (C, Internal, "gtk_menu_item_new_with_label");
+                      Label     : in  String := "") is
    begin
-      Set_Object (Menu_Item, Internal (Label & ASCII.NUL));
+      Menu_Item := new Gtk_Menu_Item_Record;
+      Initialize (Menu_Item, Label);
    end Gtk_New;
 
    ----------------
    -- Gtk_Select --
    ----------------
 
-   procedure Gtk_Select (Menu_Item : in out Gtk_Menu_Item) is
+   procedure Gtk_Select (Menu_Item : access Gtk_Menu_Item_Record) is
       procedure Internal (Menu_Item : in System.Address);
       pragma Import (C, Internal, "gtk_menu_item_select");
    begin
       Internal (Get_Object (Menu_Item));
    end Gtk_Select;
 
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Menu_Item : access Gtk_Menu_Item_Record;
+                         Label     : in  String) is
+      function Internal (Label : in String) return System.Address;
+      pragma Import (C, Internal, "gtk_menu_item_new_with_label");
+   begin
+      Set_Object (Menu_Item, Internal (Label & ASCII.NUL));
+      Initialize_User_Data (Menu_Item);
+   end Initialize;
+
    --------------------
    -- Remove_Submenu --
    --------------------
 
-   procedure Remove_Submenu (Menu_Item : in out Gtk_Menu_Item) is
+   procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record) is
       procedure Internal (Menu_Item : in System.Address);
       pragma Import (C, Internal, "gtk_menu_item_remove_submenu");
    begin
@@ -121,7 +122,7 @@ package body Gtk.Menu_Item is
    -- Right_Justify --
    --------------------
 
-   procedure Right_Justify (Menu_Item : in out Gtk_Menu_Item) is
+   procedure Right_Justify (Menu_Item : access Gtk_Menu_Item_Record) is
       procedure Internal (Menu_Item : in System.Address);
       pragma Import (C, Internal, "gtk_menu_item_right_justify");
    begin
@@ -132,7 +133,7 @@ package body Gtk.Menu_Item is
    -- Set_Placement --
    -------------------
 
-   procedure Set_Placement (Menu_Item : in out Gtk_Menu_Item;
+   procedure Set_Placement (Menu_Item : access Gtk_Menu_Item_Record;
                             Placement : in     Enums.Gtk_Submenu_Placement) is
       procedure Internal (Menu_Item : in System.Address;
                           Placement : in Enums.Gtk_Submenu_Placement);
@@ -145,8 +146,8 @@ package body Gtk.Menu_Item is
    -- Set_Submenu --
    -----------------
 
-   procedure Set_Submenu (Menu_Item : in out Gtk_Menu_Item;
-                          Submenu   : in     Widget.Gtk_Widget'Class) is
+   procedure Set_Submenu (Menu_Item : access Gtk_Menu_Item_Record;
+                          Submenu   : in     Widget.Gtk_Widget) is
       procedure Internal (Menu_Item : in System.Address;
                           Submenu   : in System.Address);
       pragma Import (C, Internal, "gtk_menu_item_set_submenu");
@@ -158,7 +159,7 @@ package body Gtk.Menu_Item is
    -- Generate --
    --------------
 
-   procedure Generate (Menu_Item : in Gtk_Menu_Item;
+   procedure Generate (Menu_Item : access Gtk_Menu_Item_Record;
                        N         : in Node_Ptr;
                        File      : in File_Type) is
       use Item;
@@ -170,29 +171,30 @@ package body Gtk.Menu_Item is
       Gen_Call_Child (N, null, "Container", "Add", File => File);
    end Generate;
 
-   procedure Generate (Menu_Item : in out Gtk_Menu_Item;
+   procedure Generate (Menu_Item : access Gtk_Menu_Item_Record;
                        N         : in Node_Ptr) is
       use Item;
 
-      S : String_Ptr;
+--      S : String_Ptr;
    begin
-      if not N.Specific_Data.Created then
-         S := Get_Field (N, "label");
+--         if not N.Specific_Data.Created then
+--            S := Get_Field (N, "label");
 
-         if S = null then
-            Gtk_New (Menu_Item);
-         else
-            Gtk_New (Menu_Item, S.all);
-         end if;
+--            if S = null then
+--               Gtk_New (Menu_Item);
+--            else
+--               Gtk_New (Menu_Item, S.all);
+--            end if;
 
-         Set_Object (Get_Field (N, "name"), Menu_Item'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--            Set_Object (Get_Field (N, "name"), Menu_Item'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Item (Menu_Item), N);
-      Container.Add
-        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
-         Menu_Item);
+--         Generate (Gtk_Item (Menu_Item), N);
+--         Container.Add
+--           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
+--            Menu_Item);
+      null;
    end Generate;
 
 end Gtk.Menu_Item;

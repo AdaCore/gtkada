@@ -38,7 +38,7 @@ package body Gtk.Preview is
    --------------
 
    procedure Draw_Row
-     (Preview : in Gtk_Preview;
+     (Preview : access Gtk_Preview_Record;
       Data    : in Guchar_Array;
       X       : in Gint;
       Y       : in Gint;
@@ -104,20 +104,32 @@ package body Gtk.Preview is
 
    procedure Gtk_New (Preview  : out Gtk_Preview;
                       The_Type : in Gtk_Preview_Type) is
+   begin
+      Preview := new Gtk_Preview_Record;
+      Initialize (Preview, The_Type);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Preview  : access Gtk_Preview_Record;
+                         The_Type : in Gtk_Preview_Type) is
       function Internal (The_Type : in Gint)
-        return System.Address;
+                         return System.Address;
       pragma Import (C, Internal, "gtk_preview_new");
 
    begin
       Set_Object (Preview, Internal (Gtk_Preview_Type'Pos (The_Type)));
-   end Gtk_New;
+      Initialize_User_Data (Preview);
+   end Initialize;
 
    ---------
    -- Put --
    ---------
 
    procedure Put
-     (Preview : in Gtk_Preview;
+     (Preview : access Gtk_Preview_Record;
       Window  : in Gdk.Window.Gdk_Window'Class;
       Gc      : in Gdk.GC.Gdk_GC'Class;
       Srcx    : in Gint;
@@ -183,7 +195,7 @@ package body Gtk.Preview is
    ----------------
 
    procedure Set_Expand
-     (Preview : in Gtk_Preview;
+     (Preview : access Gtk_Preview_Record;
       Expand  : in Boolean)
    is
       procedure Internal
@@ -236,7 +248,7 @@ package body Gtk.Preview is
    ----------
 
    procedure Size
-     (Preview : in Gtk_Preview;
+     (Preview : access Gtk_Preview_Record;
       Width   : in Gint;
       Height  : in Gint)
    is
@@ -265,7 +277,7 @@ package body Gtk.Preview is
    -- Generate --
    --------------
 
-   procedure Generate (Preview : in Gtk_Preview;
+   procedure Generate (Preview : access Gtk_Preview_Record;
                        N         : in Node_Ptr;
                        File      : in File_Type) is
       use Widget;
@@ -279,28 +291,29 @@ package body Gtk.Preview is
       Gen_Set (N, "Preview", "expand", File);
    end Generate;
 
-   procedure Generate (Preview : in out Gtk_Preview;
+   procedure Generate (Preview : access Gtk_Preview_Record;
                        N         : in Node_Ptr) is
       use Widget;
 
-      S : String_Ptr;
+--      S : String_Ptr;
    begin
-      if not N.Specific_Data.Created then
-         if Get_Field (N, "type").all = "True" then
-            Gtk_New (Preview, Preview_Color);
-            Gtk_New (Preview, Preview_Grayscale);
-         end if;
+--         if not N.Specific_Data.Created then
+--            if Get_Field (N, "type").all = "True" then
+--               Gtk_New (Preview, Preview_Color);
+--               Gtk_New (Preview, Preview_Grayscale);
+--            end if;
 
-         Set_Object (Get_Field (N, "name"), Preview'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--            Set_Object (Get_Field (N, "name"), Preview'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Widget (Preview), N);
-      S := Get_Field (N, "expand");
+--         Generate (Gtk_Widget (Preview), N);
+--         S := Get_Field (N, "expand");
 
-      if S /= null then
-         Set_Expand (Preview, Boolean'Value (S.all));
-      end if;
+--         if S /= null then
+--            Set_Expand (Preview, Boolean'Value (S.all));
+--         end if;
+      null;
    end Generate;
 
 end Gtk.Preview;

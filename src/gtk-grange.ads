@@ -33,16 +33,17 @@ with Gtk.Widget;
 
 package Gtk.GRange is
 
-   type Gtk_Range is new Gtk.Widget.Gtk_Widget with private;
+   type Gtk_Range_Record is new Gtk.Widget.Gtk_Widget_Record with private;
+   type Gtk_Range is access all Gtk_Range_Record'Class;
 
    procedure Default_Hmotion
-      (The_Range : in Gtk_Range;
+      (The_Range : access Gtk_Range_Record;
        Xdelta    : in Gint;
        Ydelta    : in Gint);
-   procedure Default_Hslider_Update (The_Range : in Gtk_Range);
+   procedure Default_Hslider_Update (The_Range : access Gtk_Range_Record);
 
    procedure Default_Htrough_Click
-     (The_Range : in Gtk_Range;
+     (The_Range : access Gtk_Range_Record;
       X         : in Gint;
       Y         : in Gint;
       Jump_Perc : in out Gfloat;
@@ -50,36 +51,36 @@ package Gtk.GRange is
    --  Was a function in C
 
    procedure Default_Vmotion
-      (The_Range : in Gtk_Range;
+      (The_Range : access Gtk_Range_Record;
        Xdelta    : in Gint;
        Ydelta    : in Gint);
-   procedure Default_Vslider_Update (The_Range : in Gtk_Range);
+   procedure Default_Vslider_Update (The_Range : access Gtk_Range_Record);
 
    procedure Default_Vtrough_Click
-      (The_Range : in Gtk_Range;
+      (The_Range : access Gtk_Range_Record;
        X         : in Gint;
        Y         : in Gint;
        Jump_Perc : in out Gfloat;
        Result    :    out Gint);
    --  Was a function in C
 
-   procedure Draw_Background (The_Range : in Gtk_Range);
-   procedure Draw_Slider (The_Range : in Gtk_Range);
-   procedure Draw_Step_Back (The_Range : in Gtk_Range);
-   procedure Draw_Step_Forw (The_Range : in Gtk_Range);
-   procedure Draw_Trough (The_Range : in Gtk_Range);
-   function Get_Adjustment (The_Range  : in Gtk_Range)
-                            return      Gtk.Adjustment.Gtk_Adjustment'Class;
+   procedure Draw_Background (The_Range : access Gtk_Range_Record);
+   procedure Draw_Slider (The_Range : access Gtk_Range_Record);
+   procedure Draw_Step_Back (The_Range : access Gtk_Range_Record);
+   procedure Draw_Step_Forw (The_Range : access Gtk_Range_Record);
+   procedure Draw_Trough (The_Range : access Gtk_Range_Record);
+   function Get_Adjustment (The_Range  : access Gtk_Range_Record)
+                            return      Gtk.Adjustment.Gtk_Adjustment;
    procedure Set_Adjustment
-      (The_Range  : in Gtk_Range;
-       Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class);
+      (The_Range  : access Gtk_Range_Record;
+       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Set_Update_Policy
-      (The_Range : in Gtk_Range;
+      (The_Range : access Gtk_Range_Record;
        Policy    : in Gtk_Update_Type);
-   procedure Slider_Update (The_Range : in Gtk_Range);
+   procedure Slider_Update (The_Range : access Gtk_Range_Record);
 
    procedure Trough_Click
-      (The_Range : in Gtk_Range;
+      (The_Range : access Gtk_Range_Record;
        X         : in Gint;
        Y         : in Gint;
        Jump_Perc : in out Gfloat;
@@ -87,6 +88,6 @@ package Gtk.GRange is
    --  Was a function in C
 
 private
-   type Gtk_Range is new Gtk.Widget.Gtk_Widget with null record;
+   type Gtk_Range_Record is new Gtk.Widget.Gtk_Widget_Record with null record;
 
 end Gtk.GRange;

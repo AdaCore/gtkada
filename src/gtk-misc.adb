@@ -36,7 +36,7 @@ package body Gtk.Misc is
    -- Set_Alignment --
    -------------------
 
-   procedure Set_Alignment (Misc   : in out Gtk_Misc;
+   procedure Set_Alignment (Misc   : access Gtk_Misc_Record;
                             Xalign : in     Gfloat;
                             Yalign : in     Gfloat) is
       procedure Internal (Misc           : in System.Address;
@@ -50,7 +50,7 @@ package body Gtk.Misc is
    -- Set_Padding --
    -----------------
 
-   procedure Set_Padding (Misc : in out Gtk_Misc;
+   procedure Set_Padding (Misc : access Gtk_Misc_Record;
                           Xpad : in     Gint;
                           Ypad : in     Gint) is
       procedure Internal (Misc       : in System.Address;
@@ -64,7 +64,7 @@ package body Gtk.Misc is
    -- Generate --
    --------------
 
-   procedure Generate (Misc : in Gtk_Misc;
+   procedure Generate (Misc : access Gtk_Misc_Record;
                        N    : in Node_Ptr;
                        File : in File_Type) is
       use Widget;
@@ -74,7 +74,7 @@ package body Gtk.Misc is
       Gen_Set (N, "Misc", "Padding", "xpad", "ypad", "", "", File);
    end Generate;
 
-   procedure Generate (Misc : in out Gtk_Misc;
+   procedure Generate (Misc : access Gtk_Misc_Record;
                        N    : in Node_Ptr) is
       use Widget;
 

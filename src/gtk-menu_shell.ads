@@ -32,21 +32,24 @@ with Gtk.Widget;
 
 package Gtk.Menu_Shell is
 
-   type Gtk_Menu_Shell is new Gtk.Container.Gtk_Container with private;
+   type Gtk_Menu_Shell_Record is new Gtk.Container.Gtk_Container_Record
+     with private;
+   type Gtk_Menu_Shell is access all Gtk_Menu_Shell_Record'Class;
 
    procedure Append
-     (Menu_Shell : in Gtk_Menu_Shell;
-      Child      : in Gtk.Widget.Gtk_Widget'Class);
-   procedure Deactivate (Menu_Shell : in Gtk_Menu_Shell);
+     (Menu_Shell : access Gtk_Menu_Shell_Record;
+      Child      : in Gtk.Widget.Gtk_Widget);
+   procedure Deactivate (Menu_Shell : access Gtk_Menu_Shell_Record);
    procedure Insert
-     (Menu_Shell : in Gtk_Menu_Shell;
-      Child      : in Gtk.Widget.Gtk_Widget'Class;
+     (Menu_Shell : access Gtk_Menu_Shell_Record;
+      Child      : in Gtk.Widget.Gtk_Widget;
       Position   : in Gint);
    procedure Prepend
-     (Menu_Shell : in Gtk_Menu_Shell;
-      Child      : in Gtk.Widget.Gtk_Widget'Class);
+     (Menu_Shell : access Gtk_Menu_Shell_Record;
+      Child      : in Gtk.Widget.Gtk_Widget);
 
 private
-   type Gtk_Menu_Shell is new Gtk.Container.Gtk_Container with null record;
+   type Gtk_Menu_Shell_Record is new Gtk.Container.Gtk_Container_Record
+     with null record;
 
 end Gtk.Menu_Shell;

@@ -31,24 +31,25 @@ with Gtk.Widget;
 
 package Gtk.Misc is
 
-   type Gtk_Misc is new Widget.Gtk_Widget with private;
+   type Gtk_Misc_Record is new Widget.Gtk_Widget_Record with private;
+   type Gtk_Misc is access all Gtk_Misc_Record'Class;
 
-   procedure Set_Alignment (Misc   : in out Gtk_Misc;
+   procedure Set_Alignment (Misc   : access Gtk_Misc_Record;
                             Xalign : in     Gfloat;
                             Yalign : in     Gfloat);
 
-   procedure Set_Padding (Misc : in out Gtk_Misc;
+   procedure Set_Padding (Misc : access Gtk_Misc_Record;
                           Xpad : in     Gint;
                           Ypad : in     Gint);
 
-   procedure Generate (Misc : in Gtk_Misc;
+   procedure Generate (Misc : access Gtk_Misc_Record;
                        N    : in Node_Ptr;
                        File : in File_Type);
 
-   procedure Generate (Misc : in out Gtk_Misc;
+   procedure Generate (Misc : access Gtk_Misc_Record;
                        N    : in Node_Ptr);
 
 private
-   type Gtk_Misc is new Widget.Gtk_Widget with null record;
+   type Gtk_Misc_Record is new Widget.Gtk_Widget_Record with null record;
 
 end Gtk.Misc;

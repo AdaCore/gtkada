@@ -36,36 +36,42 @@ with Gtk.Enums; use Gtk.Enums;
 
 package Gtk.Combo is
 
-   type Gtk_Combo is new Gtk.Box.Gtk_Box with private;
+   type Gtk_Combo_Record is new Gtk.Box.Gtk_Box_Record with private;
+   type Gtk_Combo is access all Gtk_Combo_Record'Class;
 
-   procedure Disable_Activate (Combo_Box : in Gtk_Combo);
+   procedure Disable_Activate (Combo_Box : access Gtk_Combo_Record);
 
-   function Get_Entry (Combo_Box : in Gtk_Combo) return Gtk.GEntry.Gtk_Entry;
+   function Get_Entry (Combo_Box : access Gtk_Combo_Record)
+                       return Gtk.GEntry.Gtk_Entry;
 
-   function Get_List (Combo_Box : in Gtk_Combo) return Gtk.List.Gtk_List;
+   function Get_List (Combo_Box : access Gtk_Combo_Record)
+                      return Gtk.List.Gtk_List;
 
    procedure Gtk_New (Widget : out Gtk_Combo);
+   procedure Initialize (Widget : access Gtk_Combo_Record);
 
-   procedure Set_Case_Sensitive (Combo_Box : in Gtk_Combo; Val : in Boolean);
+   procedure Set_Case_Sensitive (Combo_Box : access Gtk_Combo_Record;
+                                 Val : in Boolean);
 
-   procedure Set_Item_String (Combo_Box  : in Gtk_Combo;
-                              Item       : in Gtk.Item.Gtk_Item'Class;
+   procedure Set_Item_String (Combo_Box  : access Gtk_Combo_Record;
+                              Item       : in Gtk.Item.Gtk_Item;
                               Item_Value : in String);
 
-   procedure Set_Popdown_Strings (Combo_Box : in Gtk_Combo;
+   procedure Set_Popdown_Strings (Combo_Box : access Gtk_Combo_Record;
                                   Strings   : in String_List.Glist);
 
-   procedure Set_Use_Arrows (Combo_Box : in Gtk_Combo; Val : in Boolean);
+   procedure Set_Use_Arrows (Combo_Box : access Gtk_Combo_Record;
+                             Val : in Boolean);
 
-   procedure Set_Use_Arrows_Always (Combo_Box : in Gtk_Combo;
+   procedure Set_Use_Arrows_Always (Combo_Box : access Gtk_Combo_Record;
                                     Val : in Boolean);
 
-   procedure Set_Value_In_List (Combo_Box   : in Gtk_Combo;
+   procedure Set_Value_In_List (Combo_Box   : access Gtk_Combo_Record;
                                 Val         : in Gint;
                                 Ok_If_Empty : in Boolean);
 
 private
 
-   type Gtk_Combo is new Gtk.Box.Gtk_Box with null record;
+   type Gtk_Combo_Record is new Gtk.Box.Gtk_Box_Record with null record;
 
 end Gtk.Combo;

@@ -31,12 +31,16 @@ with Gtk.Widget;
 
 package Gtk.Separator is
 
-   type Gtk_Separator is new Gtk.Widget.Gtk_Widget with private;
+   type Gtk_Separator_Record is new Gtk.Widget.Gtk_Widget_Record with private;
+   type Gtk_Separator is access all Gtk_Separator_Record'Class;
 
    procedure Gtk_New_Hseparator (Widget : out Gtk_Separator);
    procedure Gtk_New_Vseparator (Widget : out Gtk_Separator);
+   procedure Initialize_Hseparator (Widget : access Gtk_Separator_Record);
+   procedure Initialize_Vseparator (Widget : access Gtk_Separator_Record);
 
 private
-   type Gtk_Separator is new Gtk.Widget.Gtk_Widget with null record;
+   type Gtk_Separator_Record is new Gtk.Widget.Gtk_Widget_Record
+     with null record;
 
 end Gtk.Separator;

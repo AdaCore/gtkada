@@ -41,46 +41,49 @@ package Gtk.Calendar is
    function "and" (Left, Right : Gtk_Calendar_Display_Options)
                    return Gtk_Calendar_Display_Options;
 
-   type Gtk_Calendar is new Gtk.Widget.Gtk_Widget with private;
+   type Gtk_Calendar_Record is new Gtk.Widget.Gtk_Widget_Record with private;
+   type Gtk_Calendar is access all Gtk_Calendar_Record'Class;
 
-   procedure Clear_Marks (Calendar : in Gtk_Calendar);
+   procedure Clear_Marks (Calendar : access Gtk_Calendar_Record);
    procedure Display_Options
-      (Calendar : in Gtk_Calendar;
+      (Calendar : access Gtk_Calendar_Record;
        Flags    : in Gtk_Calendar_Display_Options);
-   procedure Freeze (Calendar : in Gtk_Calendar);
+   procedure Freeze (Calendar : access Gtk_Calendar_Record);
    procedure Get_Date
-      (Calendar : in Gtk_Calendar;
+      (Calendar : access Gtk_Calendar_Record;
        Year     : in out Guint;
        Month    : in out Guint;
        Day      : in out Guint);
    procedure Gtk_New (Widget : out Gtk_Calendar);
+   procedure Initialize (Widget : access Gtk_Calendar_Record);
    function Mark_Day
-      (Calendar : in Gtk_Calendar;
+      (Calendar : access Gtk_Calendar_Record;
        Day      : in Guint)
        return        Gint;
    procedure Select_Day
-      (Calendar : in Gtk_Calendar;
+      (Calendar : access Gtk_Calendar_Record;
        Day      : in Guint);
    function Select_Month
-      (Calendar : in Gtk_Calendar;
+      (Calendar : access Gtk_Calendar_Record;
        Month    : in Guint;
        Year     : in Guint)
        return        Gint;
-   procedure Thaw (Calendar : in Gtk_Calendar);
+   procedure Thaw (Calendar : access Gtk_Calendar_Record);
    function Unmark_Day
-      (Calendar : in Gtk_Calendar;
+      (Calendar : access Gtk_Calendar_Record;
        Day      : in Guint)
        return        Gint;
 
-   procedure Generate (Calendar : in Gtk_Calendar;
+   procedure Generate (Calendar : access Gtk_Calendar_Record;
                        N      : in Node_Ptr;
                        File   : in File_Type);
 
-   procedure Generate (Calendar : in out Gtk_Calendar;
+   procedure Generate (Calendar : access Gtk_Calendar_Record;
                        N        : in Node_Ptr);
 
 private
-   type Gtk_Calendar is new Gtk.Widget.Gtk_Widget with null record;
+   type Gtk_Calendar_Record is new Gtk.Widget.Gtk_Widget_Record
+     with null record;
 
    type Gtk_Calendar_Display_Options is new Gint;
    Show_Heading : constant Gtk_Calendar_Display_Options := 1;

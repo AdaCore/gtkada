@@ -32,19 +32,22 @@ with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Radio_Menu_Item is
 
-   type Gtk_Radio_Menu_Item is new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item
-     with private;
+   type Gtk_Radio_Menu_Item_Record
+      is new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record with private;
+   type Gtk_Radio_Menu_Item is access all Gtk_Radio_Menu_Item_Record'Class;
 
-   function Group (Radio_Menu_Item : in Gtk_Radio_Menu_Item)
+   function Group (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
                    return               Widget_SList.GSlist;
    procedure Gtk_New
       (Widget : out Gtk_Radio_Menu_Item;
        Group  : in Widget_SList.GSlist;
-       Label  : in String);
-   procedure Gtk_New (Widget : out Gtk_Radio_Menu_Item;
-                      Group  : in Widget_SList.GSlist);
+       Label  : in String := "");
+   procedure Initialize
+      (Widget : access Gtk_Radio_Menu_Item_Record;
+       Group  : in Widget_SList.GSlist;
+       Label  : in String := "");
    procedure Set_Group
-      (Radio_Menu_Item : in Gtk_Radio_Menu_Item;
+      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record;
        Group           : in Widget_SList.GSlist);
 
 
@@ -54,7 +57,7 @@ package Gtk.Radio_Menu_Item is
    --  convenient function
 
 private
-   type Gtk_Radio_Menu_Item is new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item
-     with null record;
+   type Gtk_Radio_Menu_Item_Record
+     is new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record with null record;
 
 end Gtk.Radio_Menu_Item;

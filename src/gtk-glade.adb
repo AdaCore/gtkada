@@ -38,7 +38,7 @@ with Gtk.Button_Box;
 with Gtk.Calendar;
 with Gtk.Check_Button;
 with Gtk.Check_Menu_Item;
-with Gtk.CList;
+with Gtk.Clist;
 with Gtk.Color_Selection;
 with Gtk.Color_Selection_Dialog;
 with Gtk.Combo;
@@ -57,7 +57,7 @@ with Gtk.Gamma_Curve;
 with Gtk.GEntry;
 with Gtk.GRange;
 with Gtk.Handle_Box;
-with Gtk.HButton_Box;
+with Gtk.Hbutton_Box;
 with Gtk.Image;
 with Gtk.Input_Dialog;
 with Gtk.Item;
@@ -104,8 +104,6 @@ with GNAT.HTable;
 
 package body Gtk.Glade is
 
-   type Gtk_Object_Ptr is access all Gtk.Object.Gtk_Object'Class;
-
    Max_Widgets : constant := 100;
    --  Maximum number of widgets
 
@@ -123,8 +121,8 @@ package body Gtk.Glade is
 
    package SHT is new GNAT.HTable.Simple_HTable
      (Header_Num => Hash_Header,
-      Element    => Gtk_Object_Ptr,
-      No_Element => new Gtk.Object.Gtk_Object,
+      Element    => Gtk.Object.Gtk_Object,
+      No_Element => new Gtk.Object.Gtk_Object_Record,
       Key        => String_Ptr,
       Hash       => Hash,
       Equal      => Equal);
@@ -181,7 +179,7 @@ package body Gtk.Glade is
 
    procedure Create_Widget (N : Node_Ptr) is
       P   : Node_Ptr;
-      Obj : Gtk.Object.Gtk_Object'Class := Get_Object (Get_Field (N, "class"));
+      Obj : Gtk.Object.Gtk_Object := Get_Object (Get_Field (N, "class"));
 
    begin
       Gtk.Object.Generate (Obj, N);
@@ -443,112 +441,126 @@ package body Gtk.Glade is
    ----------------
 
    function Get_Object (Class : String_Ptr)
-     return Gtk.Object.Gtk_Object'Class is
+     return Gtk.Object.Gtk_Object is
    begin
-      return SHT.Get (Class).all;
+      return SHT.Get (Class);
    end Get_Object;
 
-   Object : Gtk_Object_Ptr;
+   Object : Gtk.Object.Gtk_Object;
 
 begin
-   SHT.Set (new String '("GtkAdjustement"), new Gtk.Adjustment.Gtk_Adjustment);
-   SHT.Set (new String '("GtkAlignment"), new Gtk.Alignment.Gtk_Alignment);
-   SHT.Set (new String '("GtkArrow"), new Gtk.Arrow.Gtk_Arrow);
+   SHT.Set (new String '("GtkAdjustement"),
+            new Gtk.Adjustment.Gtk_Adjustment_Record);
+   SHT.Set (new String '("GtkAlignment"),
+            new Gtk.Alignment.Gtk_Alignment_Record);
+   SHT.Set (new String '("GtkArrow"), new Gtk.Arrow.Gtk_Arrow_Record);
    SHT.Set (new String '("GtkAspectFrame"),
-            new Gtk.Aspect_Frame.Gtk_Aspect_Frame);
-   SHT.Set (new String '("GtkBin"), new Gtk.Bin.Gtk_Bin);
+            new Gtk.Aspect_Frame.Gtk_Aspect_Frame_Record);
+   SHT.Set (new String '("GtkBin"), new Gtk.Bin.Gtk_Bin_Record);
 
-   Object := new Gtk.Box.Gtk_Box;
+   Object := new Gtk.Box.Gtk_Box_Record;
    SHT.Set (new String '("GtkBox"), Object);
    SHT.Set (new String '("GtkHBox"), Object);
    SHT.Set (new String '("GtkVBox"), Object);
 
-   SHT.Set (new String '("GtkButton"), new Gtk.Button.Gtk_Button);
-   SHT.Set (new String '("GtkButtonBox"), new Gtk.Button_Box.Gtk_Button_Box);
-   SHT.Set (new String '("GtkCalendar"), new Gtk.Calendar.Gtk_Calendar);
+   SHT.Set (new String '("GtkButton"), new Gtk.Button.Gtk_Button_Record);
+   SHT.Set (new String '("GtkButtonBox"),
+            new Gtk.Button_Box.Gtk_Button_Box_Record);
+   SHT.Set (new String '("GtkCalendar"), new Gtk.Calendar.Gtk_Calendar_Record);
    SHT.Set (new String '("GtkCheckButton"),
-            new Gtk.Check_Button.Gtk_Check_Button);
+            new Gtk.Check_Button.Gtk_Check_Button_Record);
    SHT.Set (new String '("GtkCheckMenuItem"),
-            new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item);
-   SHT.Set (new String '("GtkCList"), new Gtk.CList.Gtk_CList);
+            new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item_Record);
+   SHT.Set (new String '("GtkCList"), new Gtk.Clist.Gtk_Clist_Record);
    SHT.Set (new String '("GtkColorSelection"),
-            new Gtk.Color_Selection.Gtk_Color_Selection);
+            new Gtk.Color_Selection.Gtk_Color_Selection_Record);
    SHT.Set (new String '("GtkColorSelectionDialog"),
-            new Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog);
-   SHT.Set (new String '("GtkCombo"), new Gtk.Combo.Gtk_Combo);
-   SHT.Set (new String '("GtkContainer"), new Gtk.Container.Gtk_Container);
-   SHT.Set (new String '("GtkCurve"), new Gtk.Curve.Gtk_Curve);
-   SHT.Set (new String '("GtkData"), new Gtk.Data.Gtk_Data);
-   SHT.Set (new String '("GtkDialog"), new Gtk.Dialog.Gtk_Dialog);
+            new Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog_Record);
+   SHT.Set (new String '("GtkCombo"), new Gtk.Combo.Gtk_Combo_Record);
+   SHT.Set (new String '("GtkContainer"),
+            new Gtk.Container.Gtk_Container_Record);
+   SHT.Set (new String '("GtkCurve"), new Gtk.Curve.Gtk_Curve_Record);
+   SHT.Set (new String '("GtkData"), new Gtk.Data.Gtk_Data_Record);
+   SHT.Set (new String '("GtkDialog"), new Gtk.Dialog.Gtk_Dialog_Record);
    SHT.Set (new String '("GtkDrawingArea"),
-            new Gtk.Drawing_Area.Gtk_Drawing_Area);
-   SHT.Set (new String '("GtkEditable"), new Gtk.Editable.Gtk_Editable);
-   SHT.Set (new String '("GtkEventBox"), new Gtk.Event_Box.Gtk_Event_Box);
+            new Gtk.Drawing_Area.Gtk_Drawing_Area_Record);
+   SHT.Set (new String '("GtkEditable"), new Gtk.Editable.Gtk_Editable_Record);
+   SHT.Set (new String '("GtkEventBox"),
+            new Gtk.Event_Box.Gtk_Event_Box_Record);
    SHT.Set (new String '("GtkFileSelection"),
-            new Gtk.File_Selection.Gtk_File_Selection);
-   SHT.Set (new String '("GtkFixed"), new Gtk.Fixed.Gtk_Fixed);
+            new Gtk.File_Selection.Gtk_File_Selection_Record);
+   SHT.Set (new String '("GtkFixed"), new Gtk.Fixed.Gtk_Fixed_Record);
    SHT.Set (new String '("GtkFontSelection"),
-            new Gtk.Font_Selection.Gtk_Font_Selection);
-   SHT.Set (new String '("GtkFrame"), new Gtk.Frame.Gtk_Frame);
+            new Gtk.Font_Selection.Gtk_Font_Selection_Record);
+   SHT.Set (new String '("GtkFrame"), new Gtk.Frame.Gtk_Frame_Record);
    SHT.Set (new String '("GtkGammaCurve"),
-            new Gtk.Gamma_Curve.Gtk_Gamma_Curve);
-   SHT.Set (new String '("GtkGentry"), new Gtk.GEntry.Gtk_Entry);
-   SHT.Set (new String '("GtkGrange"), new Gtk.GRange.Gtk_Range);
-   SHT.Set (new String '("GtkHandleBox"), new Gtk.Handle_Box.Gtk_Handle_Box);
+            new Gtk.Gamma_Curve.Gtk_Gamma_Curve_Record);
+   SHT.Set (new String '("GtkGentry"), new Gtk.GEntry.Gtk_Entry_Record);
+   SHT.Set (new String '("GtkGrange"), new Gtk.GRange.Gtk_Range_Record);
+   SHT.Set (new String '("GtkHandleBox"),
+            new Gtk.Handle_Box.Gtk_Handle_Box_Record);
    SHT.Set (new String '("GtkHButtonBox"),
-     new Gtk.HButton_Box.Gtk_HButton_Box);
-   SHT.Set (new String '("GtkImage"), new Gtk.Image.Gtk_Image);
-   SHT.Set (new String '("GtkImage"), new Gtk.Image.Gtk_Image);
+     new Gtk.Hbutton_Box.Gtk_Hbutton_Box_Record);
+   SHT.Set (new String '("GtkImage"), new Gtk.Image.Gtk_Image_Record);
    SHT.Set (new String '("GtkInputDialog"),
-            new Gtk.Input_Dialog.Gtk_Input_Dialog);
-   SHT.Set (new String '("GtkItem"), new Gtk.Item.Gtk_Item);
-   SHT.Set (new String '("GtkLabel"), new Gtk.Label.Gtk_Label);
-   SHT.Set (new String '("GtkList"), new Gtk.List.Gtk_List);
-   SHT.Set (new String '("GtkListItem"), new Gtk.List_Item.Gtk_List_Item);
-   SHT.Set (new String '("GtkMenu"), new Gtk.Menu.Gtk_Menu);
-   SHT.Set (new String '("GtkMenuBar"), new Gtk.Menu_Bar.Gtk_Menu_Bar);
-   SHT.Set (new String '("GtkMenuItem"), new Gtk.Menu_Item.Gtk_Menu_Item);
-   SHT.Set (new String '("GtkMenuShell"), new Gtk.Menu_Shell.Gtk_Menu_Shell);
-   SHT.Set (new String '("GtkMisc"), new Gtk.Misc.Gtk_Misc);
-   SHT.Set (new String '("GtkNotebook"), new Gtk.Notebook.Gtk_Notebook);
+            new Gtk.Input_Dialog.Gtk_Input_Dialog_Record);
+   SHT.Set (new String '("GtkItem"), new Gtk.Item.Gtk_Item_Record);
+   SHT.Set (new String '("GtkLabel"), new Gtk.Label.Gtk_Label_Record);
+   SHT.Set (new String '("GtkList"), new Gtk.List.Gtk_List_Record);
+   SHT.Set (new String '("GtkListItem"),
+            new Gtk.List_Item.Gtk_List_Item_Record);
+   SHT.Set (new String '("GtkMenu"), new Gtk.Menu.Gtk_Menu_Record);
+   SHT.Set (new String '("GtkMenuBar"), new Gtk.Menu_Bar.Gtk_Menu_Bar_Record);
+   SHT.Set (new String '("GtkMenuItem"),
+            new Gtk.Menu_Item.Gtk_Menu_Item_Record);
+   SHT.Set (new String '("GtkMenuShell"),
+            new Gtk.Menu_Shell.Gtk_Menu_Shell_Record);
+   SHT.Set (new String '("GtkMisc"), new Gtk.Misc.Gtk_Misc_Record);
+   SHT.Set (new String '("GtkNotebook"), new Gtk.Notebook.Gtk_Notebook_Record);
    SHT.Set (new String '("GtkOptionMenu"),
-            new Gtk.Option_Menu.Gtk_Option_Menu);
-   SHT.Set (new String '("GtkPaned"), new Gtk.Paned.Gtk_Paned);
-   SHT.Set (new String '("GtkPixmap"), new Gtk.Pixmap.Gtk_Pixmap);
-   SHT.Set (new String '("GtkPreview"), new Gtk.Preview.Gtk_Preview);
-   SHT.Set (new String '("GtkProgress"), new Gtk.Progress.Gtk_Progress);
+            new Gtk.Option_Menu.Gtk_Option_Menu_Record);
+   SHT.Set (new String '("GtkPaned"), new Gtk.Paned.Gtk_Paned_Record);
+   SHT.Set (new String '("GtkPixmap"), new Gtk.Pixmap.Gtk_Pixmap_Record);
+   SHT.Set (new String '("GtkPreview"), new Gtk.Preview.Gtk_Preview_Record);
+   SHT.Set (new String '("GtkProgress"), new Gtk.Progress.Gtk_Progress_Record);
    SHT.Set (new String '("GtkProgressBar"),
-            new Gtk.Progress_Bar.Gtk_Progress_Bar);
+            new Gtk.Progress_Bar.Gtk_Progress_Bar_Record);
    SHT.Set (new String '("GtkRadioButton"),
-            new Gtk.Radio_Button.Gtk_Radio_Button);
+            new Gtk.Radio_Button.Gtk_Radio_Button_Record);
    SHT.Set (new String '("GtkRadioMenuItem"),
-            new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item);
+            new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item_Record);
 
-   Object := new Gtk.Ruler.Gtk_Ruler;
+   Object := new Gtk.Ruler.Gtk_Ruler_Record;
    SHT.Set (new String '("GtkRuler"), Object);
    SHT.Set (new String '("GtkHRuler"), Object);
    SHT.Set (new String '("GtkVRuler"), Object);
 
-   SHT.Set (new String '("GtkScale"), new Gtk.Scale.Gtk_Scale);
-   SHT.Set (new String '("GtkScrollbar"), new Gtk.Scrollbar.Gtk_Scrollbar);
+   SHT.Set (new String '("GtkScale"), new Gtk.Scale.Gtk_Scale_Record);
+   SHT.Set (new String '("GtkScrollbar"),
+            new Gtk.Scrollbar.Gtk_Scrollbar_Record);
    SHT.Set (new String '("GtkScrolledWindow"),
-            new Gtk.Scrolled_Window.Gtk_Scrolled_Window);
-   SHT.Set (new String '("GtkSeparator"), new Gtk.Separator.Gtk_Separator);
+            new Gtk.Scrolled_Window.Gtk_Scrolled_Window_Record);
+   SHT.Set (new String '("GtkSeparator"),
+            new Gtk.Separator.Gtk_Separator_Record);
    SHT.Set (new String '("GtkSpinButton"),
-            new Gtk.Spin_Button.Gtk_Spin_Button);
-   SHT.Set (new String '("GtkStatusBar"), new Gtk.Status_Bar.Gtk_Status_Bar);
-   SHT.Set (new String '("GtkTable"), new Gtk.Table.Gtk_Table);
-   SHT.Set (new String '("GtkText"), new Gtk.Text.Gtk_Text);
-   SHT.Set (new String '("GtkTipsQuery"), new Gtk.Tips_Query.Gtk_Tips_Query);
+            new Gtk.Spin_Button.Gtk_Spin_Button_Record);
+   SHT.Set (new String '("GtkStatusBar"),
+            new Gtk.Status_Bar.Gtk_Status_Bar_Record);
+   SHT.Set (new String '("GtkTable"), new Gtk.Table.Gtk_Table_Record);
+   SHT.Set (new String '("GtkText"), new Gtk.Text.Gtk_Text_Record);
+   SHT.Set (new String '("GtkTipsQuery"),
+            new Gtk.Tips_Query.Gtk_Tips_Query_Record);
    SHT.Set (new String '("GtkToggleButton"),
-            new Gtk.Toggle_Button.Gtk_Toggle_Button);
-   SHT.Set (new String '("GtkToolbar"), new Gtk.Toolbar.Gtk_Toolbar);
-   SHT.Set (new String '("GtkTooltips"), new Gtk.Tooltips.Gtk_Tooltips);
-   SHT.Set (new String '("GtkTree"), new Gtk.Tree.Gtk_Tree);
-   SHT.Set (new String '("GtkTreeItem"), new Gtk.Tree_Item.Gtk_Tree_Item);
+            new Gtk.Toggle_Button.Gtk_Toggle_Button_Record);
+   SHT.Set (new String '("GtkToolbar"), new Gtk.Toolbar.Gtk_Toolbar_Record);
+   SHT.Set (new String '("GtkTooltips"),
+            new Gtk.Tooltips.Gtk_Tooltips_Record);
+   SHT.Set (new String '("GtkTree"), new Gtk.Tree.Gtk_Tree_Record);
+   SHT.Set (new String '("GtkTreeItem"),
+            new Gtk.Tree_Item.Gtk_Tree_Item_Record);
    SHT.Set (new String '("GtkVButtonBox"),
-            new Gtk.VButton_Box.Gtk_VButton_Box);
-   SHT.Set (new String '("GtkViewport"), new Gtk.Viewport.Gtk_Viewport);
-   SHT.Set (new String '("GtkWidget"), new Gtk.Widget.Gtk_Widget);
-   SHT.Set (new String '("GtkWindow"), new Gtk.Window.Gtk_Window);
+            new Gtk.VButton_Box.Gtk_VButton_Box_Record);
+   SHT.Set (new String '("GtkViewport"), new Gtk.Viewport.Gtk_Viewport_Record);
+   SHT.Set (new String '("GtkWidget"), new Gtk.Widget.Gtk_Widget_Record);
+   SHT.Set (new String '("GtkWindow"), new Gtk.Window.Gtk_Window_Record);
 end Gtk.Glade;

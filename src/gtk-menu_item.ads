@@ -33,42 +33,44 @@ with Gtk.Widget;
 
 package Gtk.Menu_Item is
 
-   type Gtk_Menu_Item is new Item.Gtk_Item with private;
-
-   procedure Gtk_New (Menu_Item : out Gtk_Menu_Item);
+   type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with private;
+   type Gtk_Menu_Item is access all Gtk_Menu_Item_Record'Class;
 
    procedure Gtk_New (Menu_Item : out Gtk_Menu_Item;
-                      Label     : in  String);
+                      Label     : in  String := "");
 
-   procedure Set_Submenu (Menu_Item : in out Gtk_Menu_Item;
-                          Submenu   : in     Widget.Gtk_Widget'Class);
+   procedure Initialize (Menu_Item : access Gtk_Menu_Item_Record;
+                         Label     : in  String);
 
-   procedure Remove_Submenu (Menu_Item : in out Gtk_Menu_Item);
+   procedure Set_Submenu (Menu_Item : access Gtk_Menu_Item_Record;
+                          Submenu   : in     Widget.Gtk_Widget);
 
-   procedure Set_Placement (Menu_Item : in out Gtk_Menu_Item;
+   procedure Remove_Submenu (Menu_Item : access Gtk_Menu_Item_Record);
+
+   procedure Set_Placement (Menu_Item : access Gtk_Menu_Item_Record;
                             Placement : in     Enums.Gtk_Submenu_Placement);
 
-   procedure Configure (Menu_Item              : in out Gtk_Menu_Item;
+   procedure Configure (Menu_Item              : access Gtk_Menu_Item_Record;
                         Show_Toggle_Indicator  : in     Boolean;
                         Show_Submenu_Indicator : in     Boolean);
 
-   procedure Gtk_Select (Menu_Item : in out Gtk_Menu_Item);
+   procedure Gtk_Select (Menu_Item : access Gtk_Menu_Item_Record);
 
-   procedure Deselect (Menu_Item : in out Gtk_Menu_Item);
+   procedure Deselect (Menu_Item : access Gtk_Menu_Item_Record);
 
-   procedure Activate (Menu_Item : in out Gtk_Menu_Item);
+   procedure Activate (Menu_Item : access Gtk_Menu_Item_Record);
 
-   procedure Right_Justify (Menu_Item : in out Gtk_Menu_Item);
+   procedure Right_Justify (Menu_Item : access Gtk_Menu_Item_Record);
 
-   procedure Generate (Menu_Item : in Gtk_Menu_Item;
+   procedure Generate (Menu_Item : access Gtk_Menu_Item_Record;
                        N         : in Node_Ptr;
                        File      : in File_Type);
 
-   procedure Generate (Menu_Item : in out Gtk_Menu_Item;
+   procedure Generate (Menu_Item : access Gtk_Menu_Item_Record;
                        N         : in Node_Ptr);
 
 private
 
-   type Gtk_Menu_Item is new Item.Gtk_Item with null record;
+   type Gtk_Menu_Item_Record is new Item.Gtk_Item_Record with null record;
 
 end Gtk.Menu_Item;

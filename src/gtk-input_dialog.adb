@@ -38,17 +38,16 @@ package body Gtk.Input_Dialog is
    -------------
 
    procedure Gtk_New (Input_Dialog : out Gtk_Input_Dialog) is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_input_dialog_new");
    begin
-      Set_Object (Input_Dialog, Internal);
+      Input_Dialog := new Gtk_Input_Dialog_Record;
+      Initialize (Input_Dialog);
    end Gtk_New;
 
    --------------
    -- Generate --
    --------------
 
-   procedure Generate (Input_Dialog : in Gtk_Input_Dialog;
+   procedure Generate (Input_Dialog : access Gtk_Input_Dialog_Record;
                        N      : in Node_Ptr;
                        File   : in File_Type) is
       use Dialog;
@@ -57,17 +56,31 @@ package body Gtk.Input_Dialog is
       Generate (Gtk_Dialog (Input_Dialog), N, File);
    end Generate;
 
-   procedure Generate (Input_Dialog : in out Gtk_Input_Dialog;
+   procedure Generate (Input_Dialog : access Gtk_Input_Dialog_Record;
                        N        : in Node_Ptr) is
       use Dialog;
    begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Input_Dialog);
-         Set_Object (Get_Field (N, "name"), Input_Dialog'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--         if not N.Specific_Data.Created then
+--            Gtk_New (Input_Dialog);
+--        Set_Object (Get_Field (N, "name"), Input_Dialog'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Dialog (Input_Dialog), N);
+--         Generate (Gtk_Dialog (Input_Dialog), N);
+      null;
    end Generate;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Input_Dialog : access Gtk_Input_Dialog_Record) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_input_dialog_new");
+   begin
+      Set_Object (Input_Dialog, Internal);
+      Initialize_User_Data (Input_Dialog);
+   end Initialize;
+
 
 end Gtk.Input_Dialog;

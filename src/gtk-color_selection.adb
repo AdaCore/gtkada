@@ -36,7 +36,7 @@ package body Gtk.Color_Selection is
    -- Get_Color --
    ---------------
 
-   procedure Get_Color (Colorsel : in Gtk_Color_Selection;
+   procedure Get_Color (Colorsel : access Gtk_Color_Selection_Record;
                         Color    : out Color_Array)
    is
       procedure Internal (Colorsel : in System.Address;
@@ -52,17 +52,28 @@ package body Gtk.Color_Selection is
    -------------
 
    procedure Gtk_New (Widget : out Gtk_Color_Selection) is
+   begin
+      Widget := new Gtk_Color_Selection_Record;
+      Initialize (Widget);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_Color_Selection_Record) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_color_selection_new");
    begin
       Set_Object (Widget, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ---------------
    -- Set_Color --
    ---------------
 
-   procedure Set_Color (Colorsel : in Gtk_Color_Selection;
+   procedure Set_Color (Colorsel : access Gtk_Color_Selection_Record;
                         Color    : in Color_Array)
    is
       procedure Internal (Colorsel : in System.Address;
@@ -76,7 +87,7 @@ package body Gtk.Color_Selection is
    -- Set_Opacity --
    -----------------
 
-   procedure Set_Opacity (Colorsel    : in Gtk_Color_Selection;
+   procedure Set_Opacity (Colorsel    : access Gtk_Color_Selection_Record;
                           Use_Opacity : in Boolean)
    is
       procedure Internal (Colorsel    : in System.Address;
@@ -90,7 +101,7 @@ package body Gtk.Color_Selection is
    -- Set_Update_Policy --
    -----------------------
 
-   procedure Set_Update_Policy (Colorsel : in Gtk_Color_Selection;
+   procedure Set_Update_Policy (Colorsel : access Gtk_Color_Selection_Record;
                                 Policy   : in Enums.Gtk_Update_Type)
    is
       procedure Internal (Colorsel : in System.Address;

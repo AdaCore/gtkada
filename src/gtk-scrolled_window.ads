@@ -34,36 +34,50 @@ with Gtk.Widget;
 
 package Gtk.Scrolled_Window is
 
-   type Gtk_Scrolled_Window is new Container.Gtk_Container with private;
+   type Gtk_Scrolled_Window_Record is new Container.Gtk_Container_Record
+     with private;
+   type Gtk_Scrolled_Window is access all Gtk_Scrolled_Window_Record'Class;
 
    procedure Gtk_New
      (Scrolled_Window :    out Gtk_Scrolled_Window;
-      Hadjustment     : in     Adjustment.Gtk_Adjustment'Class :=
-        Adjustment.Null_Adjustment;
-      Vadjustment     : in     Adjustment.Gtk_Adjustment'Class :=
-        Adjustment.Null_Adjustment);
+      Hadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
+        := Adjustment.Null_Adjustment;
+      Vadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
+        := Adjustment.Null_Adjustment);
+   procedure Initialize
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record;
+      Hadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
+        := Adjustment.Null_Adjustment;
+      Vadjustment     : access Adjustment.Gtk_Adjustment_Record'Class
+        := Adjustment.Null_Adjustment);
 
    procedure Add_With_Viewport
-     (Scrolled_Window : in out Gtk_Scrolled_Window;
-      Child           : in     Gtk.Widget.Gtk_Widget'Class);
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record;
+      Child           : access Gtk.Widget.Gtk_Widget_Record'Class);
 
-   function Get_Hadjustment (Scrolled_Window : in Gtk_Scrolled_Window)
-                             return               Adjustment.Gtk_Adjustment;
+   function Get_Hadjustment
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
+      return               Adjustment.Gtk_Adjustment;
 
-   function Get_Vadjustment (Scrolled_Window : in Gtk_Scrolled_Window)
-                             return               Adjustment.Gtk_Adjustment;
+   function Get_Vadjustment
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record)
+      return               Adjustment.Gtk_Adjustment;
 
    procedure Set_Hadjustment
-     (Scrolled_Window : in out Gtk_Scrolled_Window;
-      Hadjustment     : in     Adjustment.Gtk_Adjustment'Class);
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record;
+      Hadjustment     : access Adjustment.Gtk_Adjustment_Record'Class);
+
    procedure Set_Vadjustment
-     (Scrolled_Window : in out Gtk_Scrolled_Window;
-      Vadjustment     : in     Adjustment.Gtk_Adjustment'Class);
-   procedure Set_Policy (Scrolled_Window    : in out Gtk_Scrolled_Window;
-                         H_Scrollbar_Policy : in     Enums.Gtk_Policy_Type;
-                         V_Scrollbar_Policy : in     Enums.Gtk_Policy_Type);
+     (Scrolled_Window : access Gtk_Scrolled_Window_Record;
+      Vadjustment     : access Adjustment.Gtk_Adjustment_Record'Class);
+
+   procedure Set_Policy
+     (Scrolled_Window    : access Gtk_Scrolled_Window_Record;
+      H_Scrollbar_Policy : in     Enums.Gtk_Policy_Type;
+      V_Scrollbar_Policy : in     Enums.Gtk_Policy_Type);
 
 private
-   type Gtk_Scrolled_Window is new Container.Gtk_Container with null record;
+   type Gtk_Scrolled_Window_Record is new Container.Gtk_Container_Record
+     with null record;
 
 end Gtk.Scrolled_Window;

@@ -37,7 +37,7 @@ package body Gtk.List_Item is
    -- Deselect --
    --------------
 
-   procedure Deselect (List_Item : in Gtk_List_Item) is
+   procedure Deselect (List_Item : access Gtk_List_Item_Record) is
       procedure Internal (List_Item : in System.Address);
       pragma Import (C, Internal, "gtk_list_item_deselect");
    begin
@@ -49,30 +49,17 @@ package body Gtk.List_Item is
    -------------
 
    procedure Gtk_New (List_Item : out Gtk_List_Item;
-                      Label     : in String) is
-      function Internal (Label : in String)
-        return System.Address;
-      pragma Import (C, Internal, "gtk_list_item_new_with_label");
+                      Label     : in String := "") is
    begin
-      Set_Object (List_Item, Internal (Label & Ascii.NUL));
-   end Gtk_New;
-
-   -------------
-   -- Gtk_New --
-   -------------
-
-   procedure Gtk_New (List_Item : out Gtk_List_Item) is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_list_item_new");
-   begin
-      Set_Object (List_Item, Internal);
+      List_Item := new Gtk_List_Item_Record;
+      Initialize (List_Item, Label);
    end Gtk_New;
 
    ----------------
    -- Gtk_Select --
    ----------------
 
-   procedure Gtk_Select (List_Item : in Gtk_List_Item) is
+   procedure Gtk_Select (List_Item : access Gtk_List_Item_Record) is
       procedure Internal (List_Item : in System.Address);
       pragma Import (C, Internal, "gtk_list_item_select");
    begin
@@ -83,7 +70,7 @@ package body Gtk.List_Item is
    -- Generate --
    --------------
 
-   procedure Generate (List_Item : in Gtk_List_Item;
+   procedure Generate (List_Item : access Gtk_List_Item_Record;
                        N         : in Node_Ptr;
                        File      : in File_Type) is
       use Item;
@@ -93,17 +80,33 @@ package body Gtk.List_Item is
       Generate (Gtk_Item (List_Item), N, File);
    end Generate;
 
-   procedure Generate (List_Item : in out Gtk_List_Item;
+   procedure Generate (List_Item : access Gtk_List_Item_Record;
                        N         : in Node_Ptr) is
       use Item;
    begin
-      if not N.Specific_Data.Created then
-         Gtk_New (List_Item, Get_Field (N, "label").all);
-         Set_Object (Get_Field (N, "name"), List_Item'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--         if not N.Specific_Data.Created then
+--            Gtk_New (List_Item, Get_Field (N, "label").all);
+--            Set_Object (Get_Field (N, "name"), List_Item'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Item (List_Item), N);
+--         Generate (Gtk_Item (List_Item), N);
+      null;
    end Generate;
 
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (List_Item : access Gtk_List_Item_Record;
+                         Label     : in String := "") is
+      function Internal (Label : in String)
+                         return System.Address;
+      pragma Import (C, Internal, "gtk_list_item_new_with_label");
+   begin
+      Set_Object (List_Item, Internal (Label & Ascii.NUL));
+      Initialize_User_Data (List_Item);
+   end Initialize;
+
 end Gtk.List_Item;
+

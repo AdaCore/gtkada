@@ -37,33 +37,32 @@ package body Gtk.Gamma_Curve is
    -------------
 
    procedure Gtk_New (Widget : out Gtk_Gamma_Curve) is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_gamma_curve_new");
    begin
-      Set_Object (Widget, Internal);
+      Widget := new Gtk_Gamma_Curve_Record;
+      Initialize (Widget);
    end Gtk_New;
 
    ---------------
    -- Get_Curve --
    ---------------
 
-   function Get_Curve (Widget : in Gtk_Gamma_Curve)
+   function Get_Curve (Widget : access Gtk_Gamma_Curve_Record)
                        return Gtk.Curve.Gtk_Curve
    is
       function Internal (Widget : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gamma_curve_get_curve");
 
-      Curve : Gtk.Curve.Gtk_Curve;
+      Stub : Gtk.Curve.Gtk_Curve_Record;
    begin
-      Set_Object (Curve, Internal (Get_Object (Widget)));
-      return Curve;
+      return Gtk.Curve.Gtk_Curve
+        (Get_User_Data (Internal (Get_Object (Widget)), Stub));
    end Get_Curve;
 
    ---------------
    -- Get_Gamma --
    ---------------
 
-   function Get_Gamma (Widget : in Gtk_Gamma_Curve)
+   function Get_Gamma (Widget : access Gtk_Gamma_Curve_Record)
                        return Gfloat
    is
       function Internal (Widget : System.Address) return Gfloat;
@@ -72,5 +71,16 @@ package body Gtk.Gamma_Curve is
       return Internal (Get_Object (Widget));
    end Get_Gamma;
 
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_Gamma_Curve_Record) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_gamma_curve_new");
+   begin
+      Set_Object (Widget, Internal);
+      Initialize_User_Data (Widget);
+   end Initialize;
 
 end Gtk.Gamma_Curve;

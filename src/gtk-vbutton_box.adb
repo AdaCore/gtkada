@@ -63,11 +63,23 @@ package body Gtk.VButton_Box is
 
    procedure Gtk_New (Widget : out Gtk_VButton_Box)
    is
+   begin
+      Widget := new Gtk_VButton_Box_Record;
+      Initialize (Widget);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_VButton_Box_Record)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vbutton_box_new");
    begin
       Set_Object (Widget, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ------------------------
    -- Set_Layout_Default --

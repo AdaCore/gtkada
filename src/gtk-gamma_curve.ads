@@ -32,18 +32,20 @@ with Gtk.Curve;
 
 package Gtk.Gamma_Curve is
 
-   type Gtk_Gamma_Curve is new Gtk.Box.Gtk_Box with private;
+   type Gtk_Gamma_Curve_Record is new Gtk.Box.Gtk_Box_Record with private;
+   type Gtk_Gamma_Curve is access all Gtk_Gamma_Curve_Record'Class;
 
    procedure Gtk_New (Widget : out Gtk_Gamma_Curve);
+   procedure Initialize (Widget : access Gtk_Gamma_Curve_Record);
 
-   function Get_Curve (Widget : in Gtk_Gamma_Curve)
+   function Get_Curve (Widget : access Gtk_Gamma_Curve_Record)
                        return Gtk.Curve.Gtk_Curve;
 
-   function Get_Gamma (Widget : in Gtk_Gamma_Curve)
+   function Get_Gamma (Widget : access Gtk_Gamma_Curve_Record)
                        return Gfloat;
 
 private
 
-   type Gtk_Gamma_Curve is new Gtk.Box.Gtk_Box with null record;
+   type Gtk_Gamma_Curve_Record is new Gtk.Box.Gtk_Box_Record with null record;
 
 end Gtk.Gamma_Curve;

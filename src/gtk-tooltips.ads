@@ -32,21 +32,23 @@ with Gtk.Widget;
 
 package Gtk.Tooltips is
 
-   type Gtk_Tooltips is new Gtk.Data.Gtk_Data with private;
+   type Gtk_Tooltips_Record is new Gtk.Data.Gtk_Data_Record with private;
+   type Gtk_Tooltips is access all Gtk_Tooltips_Record'Class;
 
-   procedure Enable (Tooltips : in Gtk_Tooltips);
-   procedure Disable (Tooltips : in Gtk_Tooltips);
+   procedure Enable (Tooltips : access Gtk_Tooltips_Record);
+   procedure Disable (Tooltips : access Gtk_Tooltips_Record);
    procedure Gtk_New (Widget : out Gtk_Tooltips);
+   procedure Initialize (Widget : access Gtk_Tooltips_Record);
    procedure Set_Delay
-     (Tooltips : in Gtk_Tooltips;
+     (Tooltips : access Gtk_Tooltips_Record;
       Duration : in Guint);
    procedure Set_Tip
-     (Tooltips    : in Gtk_Tooltips;
-      Widget      : in Gtk.Widget.Gtk_Widget'Class;
+     (Tooltips    : access Gtk_Tooltips_Record;
+      Widget      : in Gtk.Widget.Gtk_Widget;
       Tip_Text    : in String;
       Tip_Private : in String);
 
 private
-   type Gtk_Tooltips is new Gtk.Data.Gtk_Data with null record;
+   type Gtk_Tooltips_Record is new Gtk.Data.Gtk_Data_Record with null record;
 
 end Gtk.Tooltips;

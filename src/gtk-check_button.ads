@@ -31,15 +31,19 @@ with Gtk.Toggle_Button;
 
 package Gtk.Check_Button is
 
-   type Gtk_Check_Button is new Toggle_Button.Gtk_Toggle_Button with private;
+   type Gtk_Check_Button_Record is new Toggle_Button.Gtk_Toggle_Button_Record
+     with private;
+   type Gtk_Check_Button is access all Gtk_Check_Button_Record'Class;
 
-   procedure Gtk_New (Widget : out Gtk_Check_Button);
+   procedure Gtk_New (Widget : out Gtk_Check_Button;
+                      With_Label : in String := "");
 
-   procedure Gtk_New (Widget : out Gtk_Check_Button; With_Label : in String);
+   procedure Initialize (Widget : access Gtk_Check_Button_Record;
+                         With_Label : in String := "");
 
 private
 
-   type Gtk_Check_Button is new Toggle_Button.Gtk_Toggle_Button
+   type Gtk_Check_Button_Record is new Toggle_Button.Gtk_Toggle_Button_Record
      with null record;
 
 end Gtk.Check_Button;

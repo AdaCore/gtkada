@@ -73,69 +73,68 @@ package Gtk.Widget is
       Gtk_Composite_Child, Gtk_No_Reparent, Gtk_App_Paintable,
       Gtk_Receives_Default);
 
-   type Gtk_Widget is new Object.Gtk_Object with null record;
-   type Gtk_Widget_Access is access all Gtk_Widget'Class;
+   type Gtk_Widget_Record is new Object.Gtk_Object_Record with null record;
+   type Gtk_Widget is access all Gtk_Widget_Record'Class;
 
-   function Get_Window (Widget : in Gtk_Widget)
+   function Get_Window (Widget : access Gtk_Widget_Record)
                         return Gdk.Window.Gdk_Window;
 
-   procedure Activate (Widget : in out Gtk_Widget);
+   procedure Activate (Widget : access Gtk_Widget_Record);
 
-   procedure Destroy (Widget : in out Gtk_Widget);
-
-   procedure Destroyed (Dummy  : in out Gtk_Widget;
-                        Widget : in out Gtk_Widget_Access);
-   --  Destroyed sets Widget to NULL
+   procedure Destroy (Widget : access Gtk_Widget_Record);
 
    procedure Draw
-     (Widget : in Gtk_Widget;
+     (Widget : access Gtk_Widget_Record;
       Area   : in Gdk.Rectangle.Gdk_Rectangle := Gdk.Rectangle.Full_Area);
 
-   procedure Set_Name (Widget : in out Gtk_Widget; Name : in String);
+   procedure Set_Name (Widget : access Gtk_Widget_Record; Name : in String);
 
-   procedure Set_Sensitive (Widget    : in out Gtk_Widget;
+   procedure Set_Sensitive (Widget    : access Gtk_Widget_Record;
                             Sensitive : in Boolean := True);
 
-   procedure Set_UPosition (Widget : in out Gtk_Widget; X, Y : in Gint);
+   procedure Set_UPosition (Widget : access Gtk_Widget_Record; X, Y : in Gint);
 
-   procedure Set_USize (Widget : in out Gtk_Widget; Width, Height : in Gint);
+   procedure Set_USize (Widget : access Gtk_Widget_Record;
+                        Width, Height : in Gint);
 
-   procedure Show (Widget : in out Gtk_Widget);
+   procedure Show (Widget : access Gtk_Widget_Record);
 
-   procedure Show_All (Widget : in out Gtk_Widget);
+   procedure Show_All (Widget : access Gtk_Widget_Record);
 
-   procedure Hide (Widget : in out Gtk_Widget);
+   procedure Hide (Widget : access Gtk_Widget_Record);
 
-   procedure Map (Widget : in out Gtk_Widget);
+   procedure Map (Widget : access Gtk_Widget_Record);
 
-   procedure Unmap (Widget : in out Gtk_Widget);
+   procedure Unmap (Widget : access Gtk_Widget_Record);
 
-   procedure Realize (Widget : in out Gtk_Widget);
+   procedure Realize (Widget : access Gtk_Widget_Record);
 
-   procedure Unrealize (Widget : in out Gtk_Widget);
+   procedure Unrealize (Widget : access Gtk_Widget_Record);
 
-   procedure Reparent (Widget : in out Gtk_Widget;
-                       New_Parent : in Gtk_Widget'Class);
+   procedure Reparent (Widget : access Gtk_Widget_Record;
+                       New_Parent : in Gtk_Widget);
 
-   function Get_Parent (Widget : in Gtk_Widget) return Gtk_Widget'Class;
+   function Get_Parent (Widget : access Gtk_Widget_Record)
+                        return Gtk_Widget;
 
-   procedure Popup (Widget : in out Gtk_Widget; X, Y : in Gint);
+   procedure Popup (Widget : access Gtk_Widget_Record; X, Y : in Gint);
 
-   procedure Grab_Default (Widget : in out Gtk_Widget);
+   procedure Grab_Default (Widget : access Gtk_Widget_Record);
 
-   procedure Grab_Focus (Widget : in out Gtk_Widget);
+   procedure Grab_Focus (Widget : access Gtk_Widget_Record);
 
-   procedure Set_Parent (Widget : in out Gtk_Widget;
-                         Parent : in Gtk_Widget'Class);
+   procedure Set_Parent (Widget : access Gtk_Widget_Record;
+                         Parent : in Gtk_Widget);
 
-   function Get_Toplevel (Widget : in Gtk_Widget) return Gtk_Widget'Class;
+   function Get_Toplevel (Widget : access Gtk_Widget_Record)
+                          return Gtk_Widget;
 
-   function Get_Events (Widget : in Gtk_Widget) return Gint;
+   function Get_Events (Widget : access Gtk_Widget_Record) return Gint;
 
-   procedure Set_Events (Widget : in out Gtk_Widget;
+   procedure Set_Events (Widget : access Gtk_Widget_Record;
                          Events : in     Gdk.Types.Gdk_Event_Mask);
 
-   procedure Set_State (Widget : in out Gtk_Widget;
+   procedure Set_State (Widget : access Gtk_Widget_Record;
                         State : in Enums.Gtk_State_Type);
 
 
@@ -143,73 +142,90 @@ package Gtk.Widget is
 
    --  The following functions deal with Visuals
 
-   function Get_Visual (Widget : Gtk_Widget) return Gdk_Visual;
+   function Get_Visual (Widget : access Gtk_Widget_Record) return Gdk_Visual;
    function Get_Default_Visual return Gdk_Visual;
-   procedure Set_Default_Visual (Widget : Gtk_Widget; Visual : Gdk_Visual);
+   procedure Set_Default_Visual (Widget : access Gtk_Widget_Record;
+                                 Visual : Gdk_Visual);
 
    --  The following functions deal with Colormaps
 
-   function Get_Colormap (Widget : Gtk_Widget) return Gdk_Colormap;
+   function Get_Colormap (Widget : access Gtk_Widget_Record)
+                          return Gdk_Colormap;
    function Get_Default_Colormap return Gdk_Colormap;
-   procedure Set_Default_Colormap (Widget : Gtk_Widget; Cmap : Gdk_Colormap);
+   procedure Set_Default_Colormap (Widget : access Gtk_Widget_Record;
+                                   Cmap : Gdk_Colormap);
 
    --  The following four functions get the size and position of the widget
 
-   function Get_Allocation_Width (Widget : in Gtk_Widget) return Guint;
-   function Get_Allocation_Height (Widget : in Gtk_Widget) return Guint;
-   function Get_Allocation_X (Widget : in Gtk_Widget) return Gint;
-   function Get_Allocation_Y (Widget : in Gtk_Widget) return Gint;
+   function Get_Allocation_Width (Widget : access Gtk_Widget_Record)
+                                  return Guint;
+   function Get_Allocation_Height (Widget : access Gtk_Widget_Record)
+                                   return Guint;
+   function Get_Allocation_X (Widget : access Gtk_Widget_Record) return Gint;
+   function Get_Allocation_Y (Widget : access Gtk_Widget_Record) return Gint;
 
    -------------
    --  Events --
    -------------
 
-   procedure Event (Widget : Gtk.Widget.Gtk_Widget'Class;
+   procedure Event (Widget : in Gtk_Widget;
                     Event  : Gdk.Event.Gdk_Event);
 
    --------------------
    --  Widget flags  --
    --------------------
 
-   function Toplevel_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function No_Window_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function Realized_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function Mapped_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function Visible_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function Drawable_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function Sensitive_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function Parent_Sensitive_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function Is_Sensitive_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function Can_Focus_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function Has_Focus_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function Has_Default_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function Has_Grab_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
-   function Rc_Style_Is_Set (Widget : Gtk_Widget'Class) return Boolean;
+   function Toplevel_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                             return Boolean;
+   function No_Window_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                              return Boolean;
+   function Realized_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                             return Boolean;
+   function Mapped_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                           return Boolean;
+   function Visible_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                            return Boolean;
+   function Drawable_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                             return Boolean;
+   function Sensitive_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                              return Boolean;
+   function Parent_Sensitive_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                                     return Boolean;
+   function Is_Sensitive_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                                 return Boolean;
+   function Can_Focus_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                              return Boolean;
+   function Has_Focus_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                              return Boolean;
+   function Has_Default_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                                return Boolean;
+   function Has_Grab_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                             return Boolean;
+   function Rc_Style_Is_Set (Widget : access Gtk_Widget_Record'Class)
+                             return Boolean;
 
    -----------------------
    --  Default callbacks
    --  These methods are available for use with Gtk.Signal.C_Unsafe_Connect
    -----------------------
 
-   function Get_Default_Motion_Notify_Event (Widget : in Gtk_Widget)
+   function Get_Default_Motion_Notify_Event (Widget : access Gtk_Widget_Record)
                                              return System.Address;
 
-   procedure Generate (Widget : in Gtk_Widget;
+   procedure Generate (Widget : access Gtk_Widget_Record;
                        N      : in Node_Ptr;
                        File   : in File_Type);
 
-   procedure Generate (Widget : in out Gtk_Widget;
+   procedure Generate (Widget : access Gtk_Widget_Record;
                        N      : in Node_Ptr);
 
    ------------------------
    --  Definitions for lists of widgets
    ------------------------
 
-   function Convert (W : Gtk.Widget.Gtk_Widget'Class) return System.Address;
-   function Convert (W : System.Address) return Gtk.Widget.Gtk_Widget'Class;
-   package Widget_List is new Glib.Glist.Generic_List
-     (Gtk.Widget.Gtk_Widget'Class);
-   package Widget_SList is new Glib.GSlist.Generic_SList
-     (Gtk.Widget.Gtk_Widget'Class);
+   function Convert (W : in Gtk_Widget) return System.Address;
+   function Convert (W : System.Address) return Gtk_Widget;
+   package Widget_List is new Glib.Glist.Generic_List (Gtk_Widget);
+   package Widget_SList is new Glib.GSlist.Generic_SList (Gtk_Widget);
 
 end Gtk.Widget;

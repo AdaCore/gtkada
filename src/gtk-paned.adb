@@ -37,8 +37,8 @@ package body Gtk.Paned is
    ----------
 
    procedure Add1
-      (Paned : in Gtk_Paned;
-       Child : in Gtk.Widget.Gtk_Widget'Class)
+      (Paned : access Gtk_Paned_Record;
+       Child : in Gtk.Widget.Gtk_Widget)
    is
       procedure Internal
          (Paned : in System.Address;
@@ -53,8 +53,8 @@ package body Gtk.Paned is
    ----------
 
    procedure Add2
-      (Paned : in Gtk_Paned;
-       Child : in Gtk.Widget.Gtk_Widget'Class)
+      (Paned : access Gtk_Paned_Record;
+       Child : in Gtk.Widget.Gtk_Widget)
    is
       procedure Internal
          (Paned : in System.Address;
@@ -69,10 +69,9 @@ package body Gtk.Paned is
    --------------------
 
    procedure Gtk_New_Hpaned (Widget : out Gtk_Paned) is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_hpaned_new");
    begin
-      Set_Object (Widget, Internal);
+      Widget := new Gtk_Paned_Record;
+      Initialize_Hpaned (Widget);
    end Gtk_New_Hpaned;
 
    --------------------
@@ -80,18 +79,41 @@ package body Gtk.Paned is
    --------------------
 
    procedure Gtk_New_Vpaned (Widget : out Gtk_Paned) is
+   begin
+      Widget := new Gtk_Paned_Record;
+      Initialize_Vpaned (Widget);
+   end Gtk_New_Vpaned;
+
+   -----------------------
+   -- Initialize_Hpaned --
+   -----------------------
+
+   procedure Initialize_Hpaned (Widget : access Gtk_Paned_Record) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_hpaned_new");
+   begin
+      Set_Object (Widget, Internal);
+      Initialize_User_Data (Widget);
+   end Initialize_Hpaned;
+
+   -----------------------
+   -- Initialize_Vpaned --
+   -----------------------
+
+   procedure Initialize_Vpaned (Widget : access Gtk_Paned_Record) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vpaned_new");
    begin
       Set_Object (Widget, Internal);
-   end Gtk_New_Vpaned;
+      Initialize_User_Data (Widget);
+   end Initialize_Vpaned;
 
    ---------------------
    -- Set_Gutter_Size --
    ---------------------
 
    procedure Set_Gutter_Size
-      (Paned : in Gtk_Paned;
+      (Paned : access Gtk_Paned_Record;
        Size  : in Guint16)
    is
       procedure Internal
@@ -107,7 +129,7 @@ package body Gtk.Paned is
    ---------------------
 
    procedure Set_Handle_Size
-      (Paned : in Gtk_Paned;
+      (Paned : access Gtk_Paned_Record;
        Size  : in Guint16)
    is
       procedure Internal

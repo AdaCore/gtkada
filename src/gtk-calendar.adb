@@ -47,7 +47,7 @@ package body Gtk.Calendar is
    -- Clear_Marks --
    -----------------
 
-   procedure Clear_Marks (Calendar : in Gtk_Calendar)
+   procedure Clear_Marks (Calendar : access Gtk_Calendar_Record)
    is
       procedure Internal (Calendar : in System.Address);
       pragma Import (C, Internal, "gtk_calendar_clear_marks");
@@ -60,7 +60,7 @@ package body Gtk.Calendar is
    ---------------------
 
    procedure Display_Options
-      (Calendar : in Gtk_Calendar;
+      (Calendar : access Gtk_Calendar_Record;
        Flags    : in Gtk_Calendar_Display_Options)
    is
       procedure Internal
@@ -76,7 +76,7 @@ package body Gtk.Calendar is
    -- Freeze --
    ------------
 
-   procedure Freeze (Calendar : in Gtk_Calendar)
+   procedure Freeze (Calendar : access Gtk_Calendar_Record)
    is
       procedure Internal (Calendar : in System.Address);
       pragma Import (C, Internal, "gtk_calendar_freeze");
@@ -89,7 +89,7 @@ package body Gtk.Calendar is
    --------------
 
    procedure Get_Date
-      (Calendar : in Gtk_Calendar;
+      (Calendar : access Gtk_Calendar_Record;
        Year     : in out Guint;
        Month    : in out Guint;
        Day      : in out Guint)
@@ -113,18 +113,30 @@ package body Gtk.Calendar is
 
    procedure Gtk_New (Widget : out Gtk_Calendar)
    is
+   begin
+      Widget := new Gtk_Calendar_Record;
+      Initialize (Widget);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_Calendar_Record)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_calendar_new");
    begin
       Set_Object (Widget, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    --------------
    -- Mark_Day --
    --------------
 
    function Mark_Day
-      (Calendar : in Gtk_Calendar;
+      (Calendar : access Gtk_Calendar_Record;
        Day      : in Guint)
        return        Gint
    is
@@ -143,7 +155,7 @@ package body Gtk.Calendar is
    ----------------
 
    procedure Select_Day
-      (Calendar : in Gtk_Calendar;
+      (Calendar : access Gtk_Calendar_Record;
        Day      : in Guint)
    is
       procedure Internal
@@ -160,7 +172,7 @@ package body Gtk.Calendar is
    ------------------
 
    function Select_Month
-      (Calendar : in Gtk_Calendar;
+      (Calendar : access Gtk_Calendar_Record;
        Month    : in Guint;
        Year     : in Guint)
        return        Gint
@@ -181,7 +193,7 @@ package body Gtk.Calendar is
    -- Thaw --
    ----------
 
-   procedure Thaw (Calendar : in Gtk_Calendar)
+   procedure Thaw (Calendar : access Gtk_Calendar_Record)
    is
       procedure Internal (Calendar : in System.Address);
       pragma Import (C, Internal, "gtk_calendar_thaw");
@@ -194,7 +206,7 @@ package body Gtk.Calendar is
    ----------------
 
    function Unmark_Day
-      (Calendar : in Gtk_Calendar;
+      (Calendar : access Gtk_Calendar_Record;
        Day      : in Guint)
        return        Gint
    is
@@ -212,7 +224,7 @@ package body Gtk.Calendar is
    -- Generate --
    --------------
 
-   procedure Generate (Calendar : in Gtk_Calendar;
+   procedure Generate (Calendar : access Gtk_Calendar_Record;
                        N        : in Node_Ptr;
                        File     : in File_Type) is
       use Widget;
@@ -221,17 +233,18 @@ package body Gtk.Calendar is
       Generate (Gtk_Widget (Calendar), N, File);
    end Generate;
 
-   procedure Generate (Calendar : in out Gtk_Calendar;
+   procedure Generate (Calendar : access Gtk_Calendar_Record;
                        N        : in Node_Ptr) is
       use Widget;
    begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Calendar);
-         Set_Object (Get_Field (N, "name"), Calendar'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--         if not N.Specific_Data.Created then
+--            Gtk_New (Calendar);
+--            Set_Object (Get_Field (N, "name"), Calendar);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Widget (Calendar), N);
+--         Generate (Gtk_Widget (Calendar), N);
+      null;
    end Generate;
 
 end Gtk.Calendar;

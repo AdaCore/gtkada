@@ -38,7 +38,7 @@ package body Gtk.Radio_Menu_Item is
    -- Group --
    -----------
 
-   function Group (Radio_Menu_Item : in Gtk_Radio_Menu_Item)
+   function Group (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record)
                    return               Widget_SList.GSlist
    is
       function Internal (Radio_Menu_Item : in System.Address)
@@ -57,7 +57,21 @@ package body Gtk.Radio_Menu_Item is
    procedure Gtk_New
       (Widget : out Gtk_Radio_Menu_Item;
        Group  : in Widget_SList.GSlist;
-       Label  : in String)
+       Label  : in String := "")
+   is
+   begin
+      Widget := new Gtk_Radio_Menu_Item_Record;
+      Initialize (Widget, Group, Label);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Widget : access Gtk_Radio_Menu_Item_Record;
+       Group  : in Widget_SList.GSlist;
+       Label  : in String := "")
    is
       function Internal
          (Group  : in System.Address;
@@ -67,21 +81,8 @@ package body Gtk.Radio_Menu_Item is
    begin
       Set_Object (Widget, Internal (Get_Object (Group),
                                     Label & Ascii.NUL));
-   end Gtk_New;
-
-   -------------
-   -- Gtk_New --
-   -------------
-
-   procedure Gtk_New (Widget : out Gtk_Radio_Menu_Item;
-                      Group  : in Widget_SList.GSlist)
-   is
-      function Internal (Group  : in System.Address)
-                         return      System.Address;
-      pragma Import (C, Internal, "gtk_radio_menu_item_new");
-   begin
-      Set_Object (Widget, Internal (Get_Object (Group)));
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ---------------------
    -- Selected_Button --
@@ -90,13 +91,11 @@ package body Gtk.Radio_Menu_Item is
    function Selected_Button (In_Group : in Widget_SList.GSlist)
                              return Natural
    is
-      function To_Radio_Menu_Item is
-        new Unchecked_Cast (Gtk_Radio_Menu_Item);
       I   : Natural := 0;
       Tmp : Widget_SList.GSlist := In_Group;
    begin
       while Tmp /= Widget_SList.Null_List loop
-         exit when Get_Active (To_Radio_Menu_Item (Get_Data (Tmp)));
+         exit when Get_Active (Gtk_Radio_Menu_Item (Get_Data (Tmp)));
          Tmp := Next (Tmp);
          I := I + 1;
       end loop;
@@ -108,7 +107,7 @@ package body Gtk.Radio_Menu_Item is
    ---------------
 
    procedure Set_Group
-      (Radio_Menu_Item : in Gtk_Radio_Menu_Item;
+      (Radio_Menu_Item : access Gtk_Radio_Menu_Item_Record;
        Group           : in Widget_SList.GSlist)
    is
       procedure Internal

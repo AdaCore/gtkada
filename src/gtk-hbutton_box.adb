@@ -31,7 +31,7 @@ with System;
 with Gdk; use Gdk;
 with Gtk.Enums; use Gtk.Enums;
 
-package body Gtk.HButton_Box is
+package body Gtk.Hbutton_Box is
 
    ------------------------
    -- Get_Layout_Default --
@@ -61,13 +61,25 @@ package body Gtk.HButton_Box is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Widget : out Gtk_HButton_Box)
+   procedure Gtk_New (Widget : out Gtk_Hbutton_Box)
+   is
+   begin
+      Widget := new Gtk_Hbutton_Box_Record;
+      Initialize (Widget);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_Hbutton_Box_Record)
    is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_hbutton_box_new");
    begin
       Set_Object (Widget, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ------------------------
    -- Set_Layout_Default --
@@ -93,4 +105,4 @@ package body Gtk.HButton_Box is
       Internal (Spacing);
    end Set_Spacing_Default;
 
-end Gtk.HButton_Box;
+end Gtk.Hbutton_Box;

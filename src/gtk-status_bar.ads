@@ -34,14 +34,16 @@ with System;
 
 package Gtk.Status_Bar is
 
-   type Gtk_Status_Bar is new Gtk.Box.Gtk_Box with private;
+   type Gtk_Status_Bar_Record is new Gtk.Box.Gtk_Box_Record with private;
+   type Gtk_Status_Bar is access all Gtk_Status_Bar_Record'Class;
+
    type Context_Id is new Guint;
    type Message_Id is new Guint;
 
    type Status_Bar_Msg is record
-     Text    : Interfaces.C.Strings.chars_ptr;
-     Context : Context_Id;
-     Message : Message_Id;
+      Text    : Interfaces.C.Strings.chars_ptr;
+      Context : Context_Id;
+      Message : Message_Id;
    end record;
 
    function Convert (Msg : Status_Bar_Msg) return System.Address;
@@ -49,39 +51,41 @@ package Gtk.Status_Bar is
    package Messages_List is new Glib.GSlist.Generic_SList (Status_Bar_Msg);
 
    procedure Gtk_New (Statusbar : out Gtk_Status_Bar);
+   procedure Initialize (Statusbar : access Gtk_Status_Bar_Record);
 
-   function Get_Context_Id (Statusbar           : in Gtk_Status_Bar;
+   function Get_Context_Id (Statusbar           : access Gtk_Status_Bar_Record;
                             Context_Description : in String)
                             return Context_Id;
 
-   function Get_Messages (Statusbar : in Gtk_Status_Bar)
+   function Get_Messages (Statusbar : access Gtk_Status_Bar_Record)
                           return Messages_List.GSlist;
 
    function Push
-     (Statusbar : in Gtk_Status_Bar;
+     (Statusbar : access Gtk_Status_Bar_Record;
       Context   : in Context_Id;
       Text      : in String)
       return Message_Id;
 
    procedure Pop
-     (Statusbar : in Gtk_Status_Bar;
+     (Statusbar : access Gtk_Status_Bar_Record;
       Context   : in Context_Id);
 
-   procedure Remove (Statusbar  : in Gtk_Status_Bar;
+   procedure Remove (Statusbar  : access Gtk_Status_Bar_Record;
                      Context    : in Context_Id;
                      Message    : in Message_Id);
 
-   --  The two following procedures are used to generate and create widgets
+   --  The following two procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (Statusbar : in Gtk_Status_Bar;
+   procedure Generate (Statusbar : access Gtk_Status_Bar_Record;
                        N         : in Node_Ptr;
                        File      : in File_Type);
 
-   procedure Generate (Statusbar : in out Gtk_Status_Bar;
+   procedure Generate (Statusbar : access Gtk_Status_Bar_Record;
                        N         : in Node_Ptr);
 
+
 private
-   type Gtk_Status_Bar is new Gtk.Box.Gtk_Box with null record;
+   type Gtk_Status_Bar_Record is new Gtk.Box.Gtk_Box_Record with null record;
 
 end Gtk.Status_Bar;

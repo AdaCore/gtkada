@@ -33,27 +33,32 @@ with Gtk.Enums; use Gtk.Enums;
 
 package Gtk.Viewport is
 
-   type Gtk_Viewport is new Gtk.Bin.Gtk_Bin with private;
+   type Gtk_Viewport_Record is new Gtk.Bin.Gtk_Bin_Record with private;
+   type Gtk_Viewport is access all Gtk_Viewport_Record'Class;
 
-   function Get_Hadjustment (Viewport : in Gtk_Viewport)
-                             return        Gtk.Adjustment.Gtk_Adjustment'Class;
-   function Get_Vadjustment (Viewport : in Gtk_Viewport)
-                             return        Gtk.Adjustment.Gtk_Adjustment'Class;
+   function Get_Hadjustment (Viewport : access Gtk_Viewport_Record)
+                             return        Gtk.Adjustment.Gtk_Adjustment;
+   function Get_Vadjustment (Viewport : access Gtk_Viewport_Record)
+                             return        Gtk.Adjustment.Gtk_Adjustment;
    procedure Gtk_New
       (Widget      : out Gtk_Viewport;
-       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment'Class;
-       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment'Class);
+       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
+       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment);
+   procedure Initialize
+      (Widget      : access Gtk_Viewport_Record;
+       Hadjustment : in Gtk.Adjustment.Gtk_Adjustment;
+       Vadjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Set_Hadjustment
-      (Viewport   : in Gtk_Viewport;
-       Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class);
+      (Viewport   : access Gtk_Viewport_Record;
+       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Set_Shadow_Type
-      (Viewport : in Gtk_Viewport;
+      (Viewport : access Gtk_Viewport_Record;
        The_Type : in Gtk_Shadow_Type);
    procedure Set_Vadjustment
-      (Viewport   : in Gtk_Viewport;
-       Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class);
+      (Viewport   : access Gtk_Viewport_Record;
+       Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
 
 private
-   type Gtk_Viewport is new Gtk.Bin.Gtk_Bin with null record;
+   type Gtk_Viewport_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
 
 end Gtk.Viewport;

@@ -31,41 +31,60 @@ with Gtk.Data;
 
 package Gtk.Adjustment is
 
-   type Gtk_Adjustment is new Data.Gtk_Data with private;
+   type Gtk_Adjustment_Record is new Data.Gtk_Data_Record with private;
+   type Gtk_Adjustment is access all Gtk_Adjustment_Record'Class;
 
-   function Null_Adjustment return Gtk_Adjustment;
+   Null_Adjustment : constant Gtk_Adjustment;
 
-   procedure Gtk_New (Adjustment : out Gtk_Adjustment;
-                      Value          : in Gfloat;
-                      Lower          : in Gfloat;
-                      Upper          : in Gfloat;
-                      Step_Increment : in Gfloat;
-                      Page_Increment : in Gfloat;
-                      Page_Size      : in Gfloat);
+   procedure Gtk_New (Adjustment     : in out Gtk_Adjustment;
+                      Value          : in     Gfloat;
+                      Lower          : in     Gfloat;
+                      Upper          : in     Gfloat;
+                      Step_Increment : in     Gfloat;
+                      Page_Increment : in     Gfloat;
+                      Page_Size      : in     Gfloat);
 
-   function Get_Value (Adjustment : in Gtk_Adjustment) return Gfloat;
-   function Get_Lower (Adjustment : in Gtk_Adjustment) return Gfloat;
-   function Get_Upper (Adjustment : in Gtk_Adjustment) return Gfloat;
+   procedure Initialize (Adjustment     : access Gtk_Adjustment_Record;
+                         Value          : in     Gfloat;
+                         Lower          : in     Gfloat;
+                         Upper          : in     Gfloat;
+                         Step_Increment : in     Gfloat;
+                         Page_Increment : in     Gfloat;
+                         Page_Size      : in     Gfloat);
 
-   function Get_Step_Increment (Adjustment : in Gtk_Adjustment) return Gfloat;
+   function Get_Value (Adjustment : access Gtk_Adjustment_Record)
+                       return Gfloat;
+   function Get_Lower (Adjustment : access Gtk_Adjustment_Record)
+                       return Gfloat;
+   function Get_Upper (Adjustment : access Gtk_Adjustment_Record)
+                       return Gfloat;
 
-   procedure Set_Upper (Adjustment : in out Gtk_Adjustment; Upper : Gfloat);
-   procedure Set_Lower (Adjustment : in out Gtk_Adjustment; Lower : Gfloat);
+   function Get_Step_Increment (Adjustment : access Gtk_Adjustment_Record)
+                                return Gfloat;
 
-   procedure Set_Value (Adjustment : in out Gtk_Adjustment; Value : in Gfloat);
+   procedure Set_Upper (Adjustment : access Gtk_Adjustment_Record;
+                        Upper : Gfloat);
+   procedure Set_Lower (Adjustment : access Gtk_Adjustment_Record;
+                        Lower : Gfloat);
 
-   procedure Clamp_Page (Adjustment : in out Gtk_Adjustment;
+   procedure Set_Value (Adjustment : access Gtk_Adjustment_Record;
+                        Value : in Gfloat);
+
+   procedure Clamp_Page (Adjustment : access Gtk_Adjustment_Record;
                          Lower      : in     Gfloat;
                          Upper      : in     Gfloat);
 
-   procedure Set_Page_Size (Adjustment : in out Gtk_Adjustment;
+   procedure Set_Page_Size (Adjustment : access Gtk_Adjustment_Record;
                             Page_Size  : in Gfloat);
 
-   procedure Set_Page_Increment (Adjustment : in out Gtk_Adjustment;
+   procedure Set_Page_Increment (Adjustment : access Gtk_Adjustment_Record;
                                  Page_Increment : in Gfloat);
 
 private
 
-   type Gtk_Adjustment is new Data.Gtk_Data with null record;
+   type Gtk_Adjustment_Record is new Data.Gtk_Data_Record with null record;
+
+   Null_Adjustment_Record : aliased Gtk_Adjustment_Record;
+   Null_Adjustment : constant Gtk_Adjustment := Null_Adjustment_Record'Access;
 
 end Gtk.Adjustment;

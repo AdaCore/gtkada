@@ -31,10 +31,11 @@ with Gtk.Object;
 
 package Gtk.Data is
 
-   type Gtk_Data is new Object.Gtk_Object with private;
+   type Gtk_Data_Record is new Object.Gtk_Object_Record with private;
+   type Gtk_Data is access all Gtk_Data_Record'Class;
 
 private
 
-   type Gtk_Data is new Object.Gtk_Object with null record;
+   type Gtk_Data_Record is new Object.Gtk_Object_Record with null record;
 
 end Gtk.Data;

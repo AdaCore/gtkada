@@ -34,9 +34,14 @@ with Gtk.Window;
 
 package Gtk.Font_Selection is
 
-   type Gtk_Font_Selection is new Gtk.Notebook.Gtk_Notebook with private;
-   type Gtk_Font_Selection_Dialog is new Gtk.Window.Gtk_Window with private;
+   type Gtk_Font_Selection_Record is new Gtk.Notebook.Gtk_Notebook_Record
+     with private;
+   type Gtk_Font_Selection is access all Gtk_Font_Selection_Record'Class;
 
+   type Gtk_Font_Selection_Dialog_Record is new Gtk.Window.Gtk_Window_Record
+     with private;
+   type Gtk_Font_Selection_Dialog
+     is access all Gtk_Font_Selection_Dialog_Record'Class;
 
    type Gtk_Font_Filter_Type is (Font_Filter_Base,
                                  Font_Filter_User);
@@ -57,17 +62,17 @@ package Gtk.Font_Selection is
    --  Font_Selection_Dialog functions --
    --------------------------------------
 
-   function Get_Font (Fsd    : in Gtk_Font_Selection_Dialog)
+   function Get_Font (Fsd    : access Gtk_Font_Selection_Dialog_Record)
                       return      Gdk.Font.Gdk_Font;
 
-   function Get_Font_Name (Fsd    : in Gtk_Font_Selection_Dialog)
+   function Get_Font_Name (Fsd    : access Gtk_Font_Selection_Dialog_Record)
                            return      String;
 
-   function Get_Preview_Text (Fsd    : in Gtk_Font_Selection_Dialog)
+   function Get_Preview_Text (Fsd    : access Gtk_Font_Selection_Dialog_Record)
                               return      String;
 
    procedure Set_Filter
-      (Fsd         : in Gtk_Font_Selection_Dialog;
+      (Fsd         : access Gtk_Font_Selection_Dialog_Record;
        Filter_Type : in Gtk_Font_Filter_Type;
        Font_Type   : in Gtk_Font_Type;
        Foundries   : in String;
@@ -78,41 +83,44 @@ package Gtk.Font_Selection is
        Charsets    : in String);
 
    function Set_Font_Name
-      (Fsd      : in Gtk_Font_Selection_Dialog;
+      (Fsd      : access Gtk_Font_Selection_Dialog_Record;
        Fontname : in String)
        return        Boolean;
 
    procedure Set_Preview_Text
-      (Fsd  : in Gtk_Font_Selection_Dialog;
+      (Fsd  : access Gtk_Font_Selection_Dialog_Record;
        Text : in String);
 
-   function Get_Cancel_Button (Fsd : in Gtk_Font_Selection_Dialog)
+   function Get_Cancel_Button (Fsd : access Gtk_Font_Selection_Dialog_Record)
                                return Gtk.Button.Gtk_Button;
-   function Get_OK_Button (Fsd : in Gtk_Font_Selection_Dialog)
+   function Get_OK_Button (Fsd : access Gtk_Font_Selection_Dialog_Record)
                            return Gtk.Button.Gtk_Button;
-   function Get_Apply_Button (Fsd : in Gtk_Font_Selection_Dialog)
+   function Get_Apply_Button (Fsd : access Gtk_Font_Selection_Dialog_Record)
                               return Gtk.Button.Gtk_Button;
 
-   procedure Gtk_New (Widget : in out Gtk_Font_Selection_Dialog;
+   procedure Gtk_New (Widget : out Gtk_Font_Selection_Dialog;
                       Title : String);
+   procedure Initialize (Widget : access Gtk_Font_Selection_Dialog_Record;
+                         Title : String);
 
    -------------------------------
    --  Font_Selection functions --
    -------------------------------
 
-   function Get_Font (Fontsel : in Gtk_Font_Selection)
+   function Get_Font (Fontsel : access Gtk_Font_Selection_Record)
                       return       Gdk.Font.Gdk_Font;
 
-   function Get_Font_Name (Fontsel : in Gtk_Font_Selection)
+   function Get_Font_Name (Fontsel : access Gtk_Font_Selection_Record)
                            return       String;
 
-   function Get_Preview_Text (Fontsel : in Gtk_Font_Selection)
+   function Get_Preview_Text (Fontsel : access Gtk_Font_Selection_Record)
                               return       String;
 
    procedure Gtk_New (Widget : out Gtk_Font_Selection);
+   procedure Initialize (Widget : access Gtk_Font_Selection_Record);
 
    procedure Set_Filter
-      (Fontsel     : in Gtk_Font_Selection;
+      (Fontsel     : access Gtk_Font_Selection_Record;
        Filter_Type : in Gtk_Font_Filter_Type;
        Font_Type   : in Gtk_Font_Type;
        Foundries   : in String;
@@ -123,17 +131,18 @@ package Gtk.Font_Selection is
        Charsets    : in String);
 
    function Set_Font_Name
-      (Fontsel  : in Gtk_Font_Selection;
+      (Fontsel  : access Gtk_Font_Selection_Record;
        Fontname : in String)
        return        Boolean;
 
    procedure Set_Preview_Text
-      (Fontsel : in Gtk_Font_Selection;
+      (Fontsel : access Gtk_Font_Selection_Record;
        Text    : in String);
 
 private
-   type Gtk_Font_Selection is new Gtk.Notebook.Gtk_Notebook with null record;
-   type Gtk_Font_Selection_Dialog is new Gtk.Window.Gtk_Window
+   type Gtk_Font_Selection_Record is new Gtk.Notebook.Gtk_Notebook_Record
+     with null record;
+   type Gtk_Font_Selection_Dialog_Record is new Gtk.Window.Gtk_Window_Record
      with null record;
 
    for Gtk_Font_Type use (Font_Bitmap          => 1,

@@ -33,76 +33,86 @@ with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Box is
 
-   type Gtk_Box is new Gtk.Container.Gtk_Container with private;
+   type Gtk_Box_Record is new Gtk.Container.Gtk_Container_Record with private;
+   type Gtk_Box is access all Gtk_Box_Record'Class;
    subtype Gtk_Vbox is Gtk_Box;
    subtype Gtk_Hbox is Gtk_Box;
 
-   function Get_Child (Box : in Gtk_Box; Num : in Gint) return Gtk_Widget;
+   function Get_Child (Box : access Gtk_Box_Record; Num : in Gint)
+                       return Gtk_Widget;
 
-   procedure Gtk_New_Vbox (Box         : out Gtk_Box;
+   procedure Gtk_New_Vbox (Box         : in out Gtk_Box;
                            Homogeneous : in  Boolean;
                            Spacing     : in  Gint);
+   procedure Initialize_Vbox (Box         : access Gtk_Box_Record;
+                              Homogeneous : in  Boolean;
+                              Spacing     : in  Gint);
 
-   procedure Gtk_New_Hbox (Box         : out Gtk_Box;
+   procedure Gtk_New_Hbox (Box         : in out Gtk_Box;
                            Homogeneous : in  Boolean;
                            Spacing     : in  Gint);
+   procedure Initialize_Hbox (Box         : access Gtk_Box_Record;
+                              Homogeneous : in  Boolean;
+                              Spacing     : in  Gint);
 
    procedure Pack_Start
-     (In_Box  : in Gtk_Box;
-      Child   : in Gtk.Widget.Gtk_Widget'Class;
+     (In_Box  : access Gtk_Box_Record;
+      Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
       Expand  : in Boolean := True;
       Fill    : in Boolean := True;
       Padding : in Gint    := 0);
 
    procedure Pack_End
-     (In_Box  : in Gtk_Box;
-      Child   : in Gtk.Widget.Gtk_Widget'Class;
+     (In_Box  : access Gtk_Box_Record;
+      Child   : access Gtk.Widget.Gtk_Widget_Record'Class;
       Expand  : in Boolean := True;
       Fill    : in Boolean := True;
       Padding : in Gint    := 0);
 
    procedure Pack_Start_Defaults
-     (In_Box  : in Gtk_Box;
-      Child   : in Gtk.Widget.Gtk_Widget'Class);
+     (In_Box  : access Gtk_Box_Record;
+      Child   : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    procedure Pack_End_Defaults
-     (In_Box  : in Gtk_Box;
-      Child   : in Gtk.Widget.Gtk_Widget'Class);
+     (In_Box  : access Gtk_Box_Record;
+      Child   : access Gtk.Widget.Gtk_Widget_Record'Class);
 
-   procedure Set_Homogeneous (In_Box : in Gtk_Box; Homogeneous : in Boolean);
+   procedure Set_Homogeneous (In_Box      : access Gtk_Box_Record;
+                              Homogeneous : in     Boolean);
 
-   procedure Set_Spacing (In_Box : in Gtk_Box; Spacing : in Gint);
+   procedure Set_Spacing (In_Box : access Gtk_Box_Record; Spacing : in Gint);
 
    procedure Reorder_Child
-     (In_Box : in Gtk_Box;
-      Child  : in Gtk_Widget'Class;
+     (In_Box : access Gtk_Box_Record;
+      Child  : access Gtk_Widget_Record'Class;
       Pos    : in Guint);
 
    procedure Query_Child_Packing
-     (In_Box   : in Gtk_Box;
-      Child    : in Gtk_Widget'Class;
+     (In_Box   : access Gtk_Box_Record;
+      Child    : access Gtk_Widget_Record'Class;
       Expand   : out Boolean;
       Fill     : out Boolean;
       Padding  : out Gint;
       PackType : out Gtk_Pack_Type);
 
    procedure Set_Child_Packing
-     (In_Box    : in Gtk_Box;
-      Child     : in Gtk.Widget.Gtk_Widget'Class;
+     (In_Box    : access Gtk_Box_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
       Expand    : in Boolean;
       Fill      : in Boolean;
       Padding   : in Gint;
       PackType  : in Gtk_Pack_Type);
 
-   procedure Generate (Box    : in Gtk_Box;
+   procedure Generate (Box    : access Gtk_Box_Record;
                        N      : in Node_Ptr;
                        File   : in File_Type);
 
-   procedure Generate (Box    : in out Gtk_Box;
+   procedure Generate (Box    : access Gtk_Box_Record;
                        N      : in Node_Ptr);
 
 private
 
-   type Gtk_Box is new Gtk.Container.Gtk_Container with null record;
+   type Gtk_Box_Record is new Gtk.Container.Gtk_Container_Record
+     with null record;
 
 end Gtk.Box;

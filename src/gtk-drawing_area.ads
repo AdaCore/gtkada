@@ -31,23 +31,27 @@ with Gtk.Widget;
 
 package Gtk.Drawing_Area is
 
-   type Gtk_Drawing_Area is new Gtk.Widget.Gtk_Widget with private;
+   type Gtk_Drawing_Area_Record is new Gtk.Widget.Gtk_Widget_Record
+     with private;
+   type Gtk_Drawing_Area is access all Gtk_Drawing_Area_Record'Class;
 
    procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area);
+   procedure Initialize (Drawing_Area : access Gtk_Drawing_Area_Record);
    procedure Size
-     (Darea  : in Gtk_Drawing_Area;
+     (Darea  : access Gtk_Drawing_Area_Record;
       Width  : in Gint;
       Height : in Gint);
 
-   procedure Generate (Drawing_Area : in Gtk_Drawing_Area;
+   procedure Generate (Drawing_Area : access Gtk_Drawing_Area_Record;
                        N            : in Node_Ptr;
                        File         : in File_Type);
 
-   procedure Generate (Drawing_Area : in out Gtk_Drawing_Area;
+   procedure Generate (Drawing_Area : access Gtk_Drawing_Area_Record;
                        N            : in Node_Ptr);
 
 private
 
-   type Gtk_Drawing_Area is new Gtk.Widget.Gtk_Widget with null record;
+   type Gtk_Drawing_Area_Record is new Gtk.Widget.Gtk_Widget_Record
+     with null record;
 
 end Gtk.Drawing_Area;

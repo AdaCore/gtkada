@@ -37,28 +37,30 @@ package body Gtk.Dialog is
    -- Get_Action_Area --
    ---------------------
 
-   function Get_Action_Area (Dialog : in Gtk_Dialog) return Gtk.Box.Gtk_Box is
+   function Get_Action_Area (Dialog : access Gtk_Dialog_Record)
+                             return Gtk.Box.Gtk_Box
+   is
       function Internal (Dialog : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_dialog_get_action_area");
-      Tmp : Gtk.Box.Gtk_Box;
-
+      Stub : Gtk.Box.Gtk_Box_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Dialog)));
-      return Tmp;
+      return Gtk.Box.Gtk_Box
+        (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
    end Get_Action_Area;
 
    --------------
    -- Get_Vbox --
    --------------
 
-   function Get_Vbox (Dialog : in Gtk_Dialog) return Gtk.Box.Gtk_Box is
+   function Get_Vbox (Dialog : access Gtk_Dialog_Record)
+                      return Gtk.Box.Gtk_Box
+   is
       function Internal (Dialog : in System.Address) return System.Address;
       pragma Import (C, Internal, "ada_dialog_get_vbox");
-      Tmp : Gtk.Box.Gtk_Box;
-
+      Stub : Gtk.Box.Gtk_Box_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Dialog)));
-      return Tmp;
+      return Gtk.Box.Gtk_Box
+        (Get_User_Data (Internal (Get_Object (Dialog)), Stub));
    end Get_Vbox;
 
    -------------
@@ -67,17 +69,29 @@ package body Gtk.Dialog is
 
    procedure Gtk_New (Dialog : out Gtk_Dialog)
    is
+   begin
+      Dialog := new Gtk_Dialog_Record;
+      Initialize (Dialog);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Dialog : access Gtk_Dialog_Record)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_dialog_new");
    begin
       Set_Object (Dialog, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Dialog);
+   end Initialize;
 
    --------------
    -- Generate --
    --------------
 
-   procedure Generate (Dialog : in Gtk_Dialog;
+   procedure Generate (Dialog : access Gtk_Dialog_Record;
                        N      : in Node_Ptr;
                        File   : in File_Type) is
       use Window;
@@ -86,17 +100,18 @@ package body Gtk.Dialog is
       Generate (Gtk_Window (Dialog), N, File);
    end Generate;
 
-   procedure Generate (Dialog : in out Gtk_Dialog;
+   procedure Generate (Dialog : access Gtk_Dialog_Record;
                        N      : in Node_Ptr) is
       use Window;
    begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Dialog);
-         Set_Object (Get_Field (N, "name"), Dialog'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--         if not N.Specific_Data.Created then
+--            Gtk_New (Dialog);
+--            Set_Object (Get_Field (N, "name"), Dialog'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Window (Dialog), N);
+--         Generate (Gtk_Window (Dialog), N);
+      null;
    end Generate;
 
 end Gtk.Dialog;

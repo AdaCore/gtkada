@@ -37,7 +37,7 @@ package body Gtk.Button_Box is
    ------------------------
 
    procedure Get_Child_Ipadding
-      (Widget : in Gtk_Button_Box;
+      (Widget : access Gtk_Button_Box_Record;
        Ipad_X : out Gint;
        Ipad_Y : out Gint)
    is
@@ -66,7 +66,7 @@ package body Gtk.Button_Box is
    --------------------
 
    procedure Get_Child_Size
-      (Widget     : in Gtk_Button_Box;
+      (Widget     : access Gtk_Button_Box_Record;
        Min_Width  : out Gint;
        Min_Height : out Gint)
    is
@@ -94,7 +94,7 @@ package body Gtk.Button_Box is
    -- Get_Layout --
    ----------------
 
-   function Get_Layout (Widget : in Gtk_Button_Box)
+   function Get_Layout (Widget : access Gtk_Button_Box_Record)
                         return Enums.Gtk_Button_Box_Style
    is
       function Internal (Widget : in System.Address) return Gint;
@@ -107,7 +107,7 @@ package body Gtk.Button_Box is
    -- Get_Spacing --
    -----------------
 
-   function Get_Spacing (Widget : in Gtk_Button_Box) return Gint is
+   function Get_Spacing (Widget : access Gtk_Button_Box_Record) return Gint is
       function Internal (Widget : in System.Address) return Gint;
       pragma Import (C, Internal, "gtk_button_box_get_spacing");
    begin
@@ -119,7 +119,7 @@ package body Gtk.Button_Box is
    ------------------------
 
    procedure Set_Child_Ipadding
-      (Widget : in Gtk_Button_Box;
+      (Widget : access Gtk_Button_Box_Record;
        Ipad_X : in Gint;
        Ipad_Y : in Gint)
    is
@@ -150,7 +150,7 @@ package body Gtk.Button_Box is
    --------------------
 
    procedure Set_Child_Size
-      (Widget     : in Gtk_Button_Box;
+      (Widget     : access Gtk_Button_Box_Record;
        Min_Width  : in Gint;
        Min_Height : in Gint)
    is
@@ -179,7 +179,7 @@ package body Gtk.Button_Box is
    ----------------
 
    procedure Set_Layout
-      (Widget       : in Gtk_Button_Box;
+      (Widget       : access Gtk_Button_Box_Record;
        Layout_Style : in Enums.Gtk_Button_Box_Style)
    is
       procedure Internal
@@ -195,7 +195,9 @@ package body Gtk.Button_Box is
    -- Set_Spacing --
    -----------------
 
-   procedure Set_Spacing (Widget  : in Gtk_Button_Box; Spacing : in Gint) is
+   procedure Set_Spacing (Widget  : access Gtk_Button_Box_Record;
+                          Spacing : in Gint)
+   is
       procedure Internal (Widget  : in System.Address; Spacing : in Gint);
       pragma Import (C, Internal, "gtk_button_box_set_spacing");
    begin

@@ -37,7 +37,7 @@ package body Gtk.Image is
    ---------
 
    procedure Get
-      (Image : in Gtk_Image;
+      (Image : access Gtk_Image_Record;
        Val   : in Gdk.Image.Gdk_Image'Class;
        Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is
@@ -61,6 +61,20 @@ package body Gtk.Image is
        Val    : in Gdk.Image.Gdk_Image'Class;
        Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is
+   begin
+      Widget := new Gtk_Image_Record;
+      Initialize (Widget, Val, Mask);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Widget : access Gtk_Image_Record;
+       Val    : in Gdk.Image.Gdk_Image'Class;
+       Mask   : in Gdk.Bitmap.Gdk_Bitmap'Class)
+   is
       function Internal
          (Val    : in System.Address;
           Mask   : in System.Address)
@@ -69,14 +83,15 @@ package body Gtk.Image is
    begin
       Set_Object (Widget, Internal (Get_Object (Val),
                                     Get_Object (Mask)));
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ---------
    -- Set --
    ---------
 
    procedure Set
-      (Image : in Gtk_Image;
+      (Image : access Gtk_Image_Record;
        Val   : in Gdk.Image.Gdk_Image'Class;
        Mask  : in Gdk.Bitmap.Gdk_Bitmap'Class)
    is

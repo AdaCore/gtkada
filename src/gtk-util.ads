@@ -33,13 +33,11 @@ with System;
 
 package Gtk.Util is
 
-   type Gtk_Object_Ptr is access all Gtk.Widget.Gtk_Widget'Class;
-
-   procedure Set_Object (Name : String_Ptr; Object : Gtk_Object_Ptr);
+   procedure Set_Object (Name : String_Ptr; Object : Gtk.Widget.Gtk_Widget);
    --  Associates Object with the specified Name. It is up to the caller to
    --  choose unique names.
 
-   function Get_Object (Name : String_Ptr) return Gtk_Object_Ptr;
+   function Get_Object (Name : String_Ptr) return Gtk.Widget.Gtk_Widget;
    --  Return a widget associated (via a call to Set_Object) with Name
 
    type Private_Object is private;
@@ -53,7 +51,7 @@ package Gtk.Util is
    --  The callback type.
 
    procedure Set_Object
-     (Widget : in out Gtk.Widget.Gtk_Widget'Class;
+     (Widget : access Gtk.Widget.Gtk_Widget_Record;
       Object : in     Private_Object);
    --  Sets the "internal" contents of a given widget. This function is similar
    --  to Gdk.Set_Object, but specific to callback functions.

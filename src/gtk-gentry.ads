@@ -31,40 +31,46 @@ with Gtk.Editable;
 
 package Gtk.GEntry is
 
-   type Gtk_Entry is new Gtk.Editable.Gtk_Editable with private;
+   type Gtk_Entry_Record is new Gtk.Editable.Gtk_Editable_Record with private;
+   type Gtk_Entry is access all Gtk_Entry_Record'Class;
 
    procedure Append_Text
-     (The_Entry : in Gtk_Entry;
+     (The_Entry : access Gtk_Entry_Record;
       Text      : in String);
-   function Get_Text (The_Entry : in Gtk_Entry)
+   function Get_Text (The_Entry : access Gtk_Entry_Record)
                       return      String;
    procedure Gtk_New (Widget : out Gtk_Entry;
                       Max    : in Guint16);
    procedure Gtk_New (Widget : out Gtk_Entry);
+   procedure Initialize (Widget : access Gtk_Entry_Record;
+                         Max    : in Guint16);
+   procedure Initialize (Widget : access Gtk_Entry_Record);
+
    procedure Prepend_Text
-      (The_Entry : in Gtk_Entry;
+      (The_Entry : access Gtk_Entry_Record;
        Text      : in String);
    procedure Select_Region
-      (The_Entry : in Gtk_Entry;
+      (The_Entry : access Gtk_Entry_Record;
        Start     : in Gint;
        The_End   : in Gint);
    procedure Set_Editable
-      (The_Entry : in Gtk_Entry;
+      (The_Entry : access Gtk_Entry_Record;
        Editable  : in Boolean);
    procedure Set_Max_Length
-      (The_Entry : in Gtk_Entry;
+      (The_Entry : access Gtk_Entry_Record;
        Max       : in Guint16);
    procedure Set_Position
-      (The_Entry : in Gtk_Entry;
+      (The_Entry : access Gtk_Entry_Record;
        Position  : in Gint);
    procedure Set_Text
-      (The_Entry : in Gtk_Entry;
+      (The_Entry : access Gtk_Entry_Record;
        Text      : in String);
    procedure Set_Visibility
-      (The_Entry : in Gtk_Entry;
+      (The_Entry : access Gtk_Entry_Record;
        Visible   : in Boolean);
 
 private
-   type Gtk_Entry is new Gtk.Editable.Gtk_Editable with null record;
+   type Gtk_Entry_Record is new Gtk.Editable.Gtk_Editable_Record
+     with null record;
 
 end Gtk.GEntry;

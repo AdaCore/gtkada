@@ -33,37 +33,39 @@ with Gtk.Widget; use Gtk.Widget;
 
 package Gtk.Container is
 
-   type Gtk_Container is new Gtk.Widget.Gtk_Widget with private;
+   type Gtk_Container_Record is new Gtk.Widget.Gtk_Widget_Record with private;
+   type Gtk_Container is access all Gtk_Container_Record'Class;
 
-   procedure Add (Container : in out Gtk_Container;
-                  Widget    : in Gtk.Widget.Gtk_Widget'Class);
+   procedure Add (Container : access Gtk_Container_Record;
+                  Widget    : access Gtk.Widget.Gtk_Widget_Record'Class);
 
-   procedure Set_Border_Width (Container : in Gtk_Container;
+   procedure Set_Border_Width (Container : access Gtk_Container_Record;
                                Border_Width : in Gint);
 
-   procedure Remove (Container : in out Gtk_Container;
-                     Widget    : in Gtk.Widget.Gtk_Widget'Class);
+   procedure Remove (Container : access Gtk_Container_Record;
+                     Widget    : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    procedure Set_Focus_Hadjustment
-     (Container  : in out Gtk_Container;
-      Adjustment : in     Gtk.Adjustment.Gtk_Adjustment'Class);
+     (Container  : access Gtk_Container_Record;
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
    procedure Set_Focus_Vadjustment
-     (Container  : in out Gtk_Container;
-      Adjustment : in     Gtk.Adjustment.Gtk_Adjustment'Class);
+     (Container  : access Gtk_Container_Record;
+      Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
 
-   procedure Set_Resize_Mode (Container   : in out Gtk_Container;
+   procedure Set_Resize_Mode (Container   : access Gtk_Container_Record;
                               Resize_Mode : in Gtk_Resize_Mode);
 
-   procedure Generate (Container : in Gtk_Container;
+   procedure Generate (Container : access Gtk_Container_Record;
                        N         : in Node_Ptr;
                        File      : in File_Type);
 
-   procedure Generate (Container : in out Gtk_Container;
+   procedure Generate (Container : access Gtk_Container_Record;
                        N         : in Node_Ptr);
 
 private
 
-   type Gtk_Container is new Gtk.Widget.Gtk_Widget with null record;
+   type Gtk_Container_Record is new Gtk.Widget.Gtk_Widget_Record
+     with null record;
 
 end Gtk.Container;

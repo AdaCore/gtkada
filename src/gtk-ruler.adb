@@ -37,7 +37,7 @@ package body Gtk.Ruler is
    -- Draw_Pos --
    --------------
 
-   procedure Draw_Pos (Ruler : in Gtk_Ruler) is
+   procedure Draw_Pos (Ruler : access Gtk_Ruler_Record) is
       procedure Internal (Ruler : in System.Address);
       pragma Import (C, Internal, "gtk_ruler_draw_pos");
    begin
@@ -48,7 +48,7 @@ package body Gtk.Ruler is
    -- Draw_Ticks --
    ----------------
 
-   procedure Draw_Ticks (Ruler : in Gtk_Ruler) is
+   procedure Draw_Ticks (Ruler : access Gtk_Ruler_Record) is
       procedure Internal (Ruler : in System.Address);
       pragma Import (C, Internal, "gtk_ruler_draw_ticks");
    begin
@@ -59,7 +59,7 @@ package body Gtk.Ruler is
    -- Get_Lower --
    ---------------
 
-   function Get_Lower (Ruler : in Gtk_Ruler) return Gfloat is
+   function Get_Lower (Ruler : access Gtk_Ruler_Record) return Gfloat is
       function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_ruler_get_lower");
    begin
@@ -70,7 +70,7 @@ package body Gtk.Ruler is
    -- Get_Max_Size --
    ------------------
 
-   function Get_Max_Size (Ruler : in Gtk_Ruler) return Gfloat is
+   function Get_Max_Size (Ruler : access Gtk_Ruler_Record) return Gfloat is
       function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_ruler_get_max_size");
    begin
@@ -81,7 +81,7 @@ package body Gtk.Ruler is
    -- Get_Position --
    ------------------
 
-   function Get_Position (Ruler : in Gtk_Ruler) return Gfloat is
+   function Get_Position (Ruler : access Gtk_Ruler_Record) return Gfloat is
       function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_ruler_get_position");
    begin
@@ -92,7 +92,7 @@ package body Gtk.Ruler is
    -- Get_Upper --
    ---------------
 
-   function Get_Upper (Ruler : in Gtk_Ruler) return Gfloat is
+   function Get_Upper (Ruler : access Gtk_Ruler_Record) return Gfloat is
       function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_ruler_get_upper");
    begin
@@ -104,10 +104,9 @@ package body Gtk.Ruler is
    --------------------
 
    procedure Gtk_New_Hruler (Ruler : out Gtk_Ruler) is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_hruler_new");
    begin
-      Set_Object (Ruler, Internal);
+      Ruler := new Gtk_Ruler_Record;
+      Initialize_Hruler (Ruler);
    end Gtk_New_Hruler;
 
    --------------------
@@ -115,18 +114,41 @@ package body Gtk.Ruler is
    --------------------
 
    procedure Gtk_New_Vruler (Ruler : out Gtk_Ruler) is
+   begin
+      Ruler := new Gtk_Ruler_Record;
+      Initialize_Vruler (Ruler);
+   end Gtk_New_Vruler;
+
+   -----------------------
+   -- Initialize_Hruler --
+   -----------------------
+
+   procedure Initialize_Hruler (Ruler : access Gtk_Ruler_Record) is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_hruler_new");
+   begin
+      Set_Object (Ruler, Internal);
+      Initialize_User_Data (Ruler);
+   end Initialize_Hruler;
+
+   -----------------------
+   -- Initialize_Vruler --
+   -----------------------
+
+   procedure Initialize_Vruler (Ruler : access Gtk_Ruler_Record) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vruler_new");
    begin
       Set_Object (Ruler, Internal);
-   end Gtk_New_Vruler;
+      Initialize_User_Data (Ruler);
+   end Initialize_Vruler;
 
    ----------------
    -- Set_Metric --
    ----------------
 
    procedure Set_Metric
-     (Ruler  : in Gtk_Ruler;
+     (Ruler  : access Gtk_Ruler_Record;
       Metric : in Gtk_Metric_Type)
    is
       procedure Internal
@@ -142,7 +164,7 @@ package body Gtk.Ruler is
    ---------------
 
    procedure Set_Range
-     (Ruler    : in Gtk_Ruler;
+     (Ruler    : access Gtk_Ruler_Record;
       Lower    : in Gfloat;
       Upper    : in Gfloat;
       Position : in Gfloat;
@@ -164,7 +186,7 @@ package body Gtk.Ruler is
    -- Generate --
    --------------
 
-   procedure Generate (Ruler : in Gtk_Ruler;
+   procedure Generate (Ruler : access Gtk_Ruler_Record;
                        N     : in Node_Ptr;
                        File  : in File_Type) is
       use Widget;
@@ -178,43 +200,43 @@ package body Gtk.Ruler is
         (N, "Ruler", "Range", "lower", "upper", "position", "max_size", File);
    end Generate;
 
-   procedure Generate (Ruler : in out Gtk_Ruler;
+   procedure Generate (Ruler : access Gtk_Ruler_Record;
                        N     : in Node_Ptr) is
       use Widget;
 
-      Class         : String_Ptr := Get_Field (N, "class");
-      S, S2, S3, S4 : String_Ptr;
+--         Class         : String_Ptr := Get_Field (N, "class");
+--         S, S2, S3, S4 : String_Ptr;
    begin
-      if not N.Specific_Data.Created then
-         if Class (Class'First + 3) = 'H' then
-            Gtk_New_Hruler (Ruler);
-         else
-            Gtk_New_Vruler (Ruler);
-         end if;
+--         if not N.Specific_Data.Created then
+--            if Class (Class'First + 3) = 'H' then
+--               Gtk_New_Hruler (Ruler);
+--            else
+--               Gtk_New_Vruler (Ruler);
+--            end if;
 
-         Set_Object (Get_Field (N, "name"), Ruler'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--            Set_Object (Get_Field (N, "name"), Ruler'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Widget (Ruler), N);
-      S := Get_Field (N, "metric");
+--         Generate (Gtk_Widget (Ruler), N);
+--         S := Get_Field (N, "metric");
 
-      if S /= null then
-         Set_Metric (Ruler, Gtk_Metric_Type'Value (S (S'First + 4 .. S'Last)));
-      end if;
+--         if S /= null then
+--     Set_Metric (Ruler, Gtk_Metric_Type'Value (S (S'First + 4 .. S'Last)));
+--         end if;
 
-      S  := Get_Field (N, "lower");
-      S2 := Get_Field (N, "upper");
-      S3 := Get_Field (N, "position");
-      S4 := Get_Field (N, "max_size");
+--         S  := Get_Field (N, "lower");
+--         S2 := Get_Field (N, "upper");
+--         S3 := Get_Field (N, "position");
+--         S4 := Get_Field (N, "max_size");
 
-      if S /= null and then S2 /= null and then S3 /= null
-        and then S4 /= null
-      then
-         Set_Range (Ruler, Gfloat'Value (S.all), Gfloat'Value (S2.all),
-           Gfloat'Value (S3.all), Gfloat'Value (S4.all));
-      end if;
-
+--         if S /= null and then S2 /= null and then S3 /= null
+--           and then S4 /= null
+--         then
+--            Set_Range (Ruler, Gfloat'Value (S.all), Gfloat'Value (S2.all),
+--              Gfloat'Value (S3.all), Gfloat'Value (S4.all));
+--         end if;
+      null;
    end Generate;
 
 end Gtk.Ruler;

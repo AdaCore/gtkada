@@ -45,7 +45,7 @@ package Gtk.Signal is
    ---------------------------------------------------------------
 
    generic
-      type Widget_Type is new Gtk.Object.Gtk_Object with private;
+      type Base_Type is new Gtk.Object.Gtk_Object_Record with private;
 
       type Data_Type (<>) is private;
       --  The type of the data for the callback
@@ -55,12 +55,14 @@ package Gtk.Signal is
    package Callback is
 
       type Callback is access procedure
-        (Widget : in out Widget_Type;
-         Data   : in out Data_Type);
+        (Widget : access Base_Type;
+         Data   : in Data_Type);
       --  Callback function for Signal_Connect below
+      --  Data is now an 'in' parameter, since you are anyway not
+      --  modifying the original data you gave, but a copy of it.
 
       function Connect
-        (Obj       : in Widget_Type'Class;
+        (Obj       : access Base_Type'Class;
          Name      : in String;
          Func      : in Callback;
          Func_Data : in Data_Type;
@@ -75,7 +77,7 @@ package Gtk.Signal is
    ---------------------------------------------------------------
 
    generic
-      type Widget_Type is new Gtk.Object.Gtk_Object with private;
+      type Base_Type is new Gtk.Object.Gtk_Object_Record with private;
 
       type Data_Type (<>) is private;
 
@@ -84,13 +86,15 @@ package Gtk.Signal is
    package Two_Callback is
 
       type Callback is access procedure
-        (Widget  : in out Widget_Type;
-         Cb_Data : in out Cb_Type;
-         Data    : in out Data_Type);
+        (Widget  : access Base_Type;
+         Cb_Data : in Cb_Type;
+         Data    : in Data_Type);
       --  Callback function for Signal_Connect below
+      --  Data is now an 'in' parameter, since you are anyway not
+      --  modifying the original data you gave, but a copy of it.
 
       function Connect
-        (Obj       : in Widget_Type'Class;
+        (Obj       : access Base_Type'Class;
          Name      : in String;
          Func      : in Callback;
          Func_Data : in Data_Type;
@@ -104,15 +108,15 @@ package Gtk.Signal is
    -----------------------------------------------------------------
 
    generic
-      type Widget_Type is new Object.Gtk_Object with private;
+      type Base_Type is new Gtk.Object.Gtk_Object_Record with private;
 
    package Void_Callback is
 
       type Callback is access procedure
-        (Widget : in out Widget_Type);
+        (Widget : access Base_Type);
 
       function Connect
-        (Obj    : in Widget_Type'Class;
+        (Obj    : access Base_Type'Class;
          Name   : in String;
          Func   : in Callback;
          After  : in Boolean := False)
@@ -124,17 +128,17 @@ package Gtk.Signal is
    ------------------------------------------------------------------
 
    generic
-      type Widget_Type is new Object.Gtk_Object with private;
+      type Base_Type is new Gtk.Object.Gtk_Object_Record with private;
 
    package Object_Callback is
       type Callback is access procedure
-        (Object : in out Widget_Type);
+        (Object : access Base_Type);
 
       function Connect
-        (Obj         : in Object.Gtk_Object'Class;
+        (Obj         : access Gtk.Object.Gtk_Object_Record'Class;
          Name        : in String;
          Func        : in Callback;
-         Slot_Object : in Widget_Type'Class;
+         Slot_Object : access Base_Type'Class;
          After       : in Boolean := False)
          return Guint;
    end Object_Callback;
@@ -144,18 +148,18 @@ package Gtk.Signal is
    ------------------------------------------------------------------
 
    generic
-      type Data_Type is new Object.Gtk_Object with private;
+      type Data_Type is new Object.Gtk_Object_Record with private;
 
    package Tips_Query_Callback is
       type Callback is access procedure
-        (Tips_Query  : in out Gtk.Tips_Query.Gtk_Tips_Query;
-         Widget      : in out Gtk.Widget.Gtk_Widget;
+        (Tips_Query  : access Gtk.Tips_Query.Gtk_Tips_Query_Record;
+         Widget      : access Gtk.Widget.Gtk_Widget_Record;
          Tip_Text    : in String;
          Tip_Private : in String;
-         Data        : in out Data_Type);
+         Data        : in Data_Type);
 
       function Connect
-        (Obj         : in Gtk.Tips_Query.Gtk_Tips_Query'Class;
+        (Obj         : access Gtk.Tips_Query.Gtk_Tips_Query_Record'Class;
          Name        : in String;
          Func        : in Callback;
          Data        : in Data_Type;
@@ -167,10 +171,10 @@ package Gtk.Signal is
    --  The following function for connecting a default C callback
    ----------------------------------------------------------------
 
-   function C_Unsafe_Connect (Object      : in Gtk.Object.Gtk_Object'Class;
+   function C_Unsafe_Connect (Object      : in Gtk.Object.Gtk_Object;
                               Name        : in String;
                               Func        : in System.Address;
-                              Slot_Object : in Gtk.Object.Gtk_Object'Class)
+                              Slot_Object : in Gtk.Object.Gtk_Object)
                               return Guint;
    --  See testgtk/create_ruler for an example how to use this...
    --  You should avoid using this whenever possible
@@ -179,20 +183,20 @@ package Gtk.Signal is
    --  More general functions
    ------------------------------------------------------------------
 
-   procedure Disconnect (Object     : in Gtk.Object.Gtk_Object'Class;
+   procedure Disconnect (Object     : in Gtk.Object.Gtk_Object;
                          Handler_Id : in Guint);
 
-   procedure Emit_Stop_By_Name (Object : in Gtk.Object.Gtk_Object'Class;
+   procedure Emit_Stop_By_Name (Object : in Gtk.Object.Gtk_Object;
                                 Name   : in String);
-   procedure Emit_By_Name (Object : in Gtk.Object.Gtk_Object'Class;
+   procedure Emit_By_Name (Object : in Gtk.Object.Gtk_Object;
                            Name   : in String);
 
-   procedure Handler_Block (Obj        : in Gtk.Object.Gtk_Object'Class;
+   procedure Handler_Block (Obj        : in Gtk.Object.Gtk_Object;
                             Handler_Id : in Guint);
 
-   procedure Handlers_Destroy (Obj : in Object.Gtk_Object'Class);
+   procedure Handlers_Destroy (Obj : in Object.Gtk_Object);
 
-   procedure Handler_Unblock (Obj        : in Gtk.Object.Gtk_Object'Class;
+   procedure Handler_Unblock (Obj        : in Gtk.Object.Gtk_Object;
                               Handler_Id : in Guint);
 
 end Gtk.Signal;

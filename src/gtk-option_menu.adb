@@ -36,7 +36,7 @@ package body Gtk.Option_Menu is
    -- Get_Menu --
    --------------
 
-   function Get_Menu (Option_Menu : in  Gtk_Option_Menu)
+   function Get_Menu (Option_Menu : access Gtk_Option_Menu_Record)
                       return Gtk.Menu.Gtk_Menu
    is
       function Internal (Option_Menu : in System.Address)
@@ -53,18 +53,30 @@ package body Gtk.Option_Menu is
    -------------
 
    procedure Gtk_New (Option_Menu : out Gtk_Option_Menu) is
+   begin
+      Option_Menu := new Gtk_Option_Menu_Record;
+      Initialize (Option_Menu);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Option_Menu : access Gtk_Option_Menu_Record) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_option_menu_new");
    begin
       Set_Object (Option_Menu, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Option_Menu);
+   end Initialize;
 
    -----------------
    -- Remove_Menu --
    -----------------
 
-   procedure Remove_Menu (Option_Menu : in out Gtk_Option_Menu;
-                          Menu        : in     Widget.Gtk_Widget'Class) is
+   procedure Remove_Menu (Option_Menu : access Gtk_Option_Menu_Record;
+                          Menu        : access Widget.Gtk_Widget_Record'Class)
+   is
       procedure Internal (Option_Menu, Menu : in System.Address);
       pragma Import (C, Internal, "gtk_option_menu_remove_menu");
    begin
@@ -75,7 +87,7 @@ package body Gtk.Option_Menu is
    -- Set_History --
    -----------------
 
-   procedure Set_History (Option_Menu : in out Gtk_Option_Menu;
+   procedure Set_History (Option_Menu : access Gtk_Option_Menu_Record;
                           Index       : in     Gint) is
       procedure Internal (Option_Menu : in System.Address; Index : in Gint);
       pragma Import (C, Internal, "gtk_option_menu_set_history");
@@ -87,8 +99,8 @@ package body Gtk.Option_Menu is
    -- Set_Menu --
    --------------
 
-   procedure Set_Menu (Option_Menu : in out Gtk_Option_Menu;
-                       Menu        : in     Widget.Gtk_Widget'Class) is
+   procedure Set_Menu (Option_Menu : access Gtk_Option_Menu_Record;
+                       Menu        : access Widget.Gtk_Widget_Record'Class) is
       procedure Internal (Option_Menu, Menu : in System.Address);
       pragma Import (C, Internal, "gtk_option_menu_set_menu");
    begin

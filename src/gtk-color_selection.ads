@@ -32,27 +32,30 @@ with Gtk.Box;
 
 package Gtk.Color_Selection is
 
-   type Gtk_Color_Selection is new Gtk.Box.Gtk_Box with private;
+   type Gtk_Color_Selection_Record is new Gtk.Box.Gtk_Box_Record with private;
+   type Gtk_Color_Selection is access all Gtk_Color_Selection_Record'Class;
 
    type Color_Index is (Red, Green, Blue, Opacity);
    type Color_Array is array (Color_Index'Range) of Gdouble;
 
-   procedure Get_Color (Colorsel : in Gtk_Color_Selection;
+   procedure Get_Color (Colorsel : access Gtk_Color_Selection_Record;
                         Color    : out Color_Array);
 
    procedure Gtk_New (Widget : out Gtk_Color_Selection);
+   procedure Initialize (Widget : access Gtk_Color_Selection_Record);
 
-   procedure Set_Color (Colorsel : in Gtk_Color_Selection;
+   procedure Set_Color (Colorsel : access Gtk_Color_Selection_Record;
                         Color    : in Color_Array);
 
-   procedure Set_Opacity (Colorsel    : in Gtk_Color_Selection;
+   procedure Set_Opacity (Colorsel    : access Gtk_Color_Selection_Record;
                           Use_Opacity : in Boolean);
 
-   procedure Set_Update_Policy (Colorsel : in Gtk_Color_Selection;
+   procedure Set_Update_Policy (Colorsel : access Gtk_Color_Selection_Record;
                                 Policy   : in Enums.Gtk_Update_Type);
 
 private
 
-   type Gtk_Color_Selection is new Gtk.Box.Gtk_Box with null record;
+   type Gtk_Color_Selection_Record is new Gtk.Box.Gtk_Box_Record
+     with null record;
 
 end Gtk.Color_Selection;

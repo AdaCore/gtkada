@@ -33,31 +33,35 @@ with Gtk.Progress;
 
 package Gtk.Progress_Bar is
 
-   type Gtk_Progress_Bar is new Gtk.Progress.Gtk_Progress with private;
+   type Gtk_Progress_Bar_Record is new Gtk.Progress.Gtk_Progress_Record
+     with private;
+   type Gtk_Progress_Bar is access all Gtk_Progress_Bar_Record'Class;
 
    procedure Gtk_New (Widget     : out Gtk_Progress_Bar;
-                      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
-   procedure Gtk_New (Widget : out Gtk_Progress_Bar);
+                      Adjustment : in Gtk.Adjustment.Gtk_Adjustment := null);
+   procedure Initialize (Widget     : access Gtk_Progress_Bar_Record;
+                         Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Set_Activity_Blocks
-      (Pbar   : in Gtk_Progress_Bar;
+      (Pbar   : access Gtk_Progress_Bar_Record;
        Blocks : in Guint);
    procedure Set_Activity_Step
-      (Pbar : in Gtk_Progress_Bar;
+      (Pbar : access Gtk_Progress_Bar_Record;
        Step : in Guint);
    procedure Set_Bar_Style
-      (Pbar  : in Gtk_Progress_Bar;
+      (Pbar  : access Gtk_Progress_Bar_Record;
        Style : in Gtk_Progress_Bar_Style);
    procedure Set_Discrete_Blocks
-      (Pbar   : in Gtk_Progress_Bar;
+      (Pbar   : access Gtk_Progress_Bar_Record;
        Blocks : in Guint);
    procedure Set_Orientation
-      (Pbar        : in Gtk_Progress_Bar;
+      (Pbar        : access Gtk_Progress_Bar_Record;
        Orientation : in Gtk_Progress_Bar_Orientation);
    procedure Update
-      (Pbar       : in Gtk_Progress_Bar;
+      (Pbar       : access Gtk_Progress_Bar_Record;
        Percentage : in Gfloat);
 
 private
-   type Gtk_Progress_Bar is new Gtk.Progress.Gtk_Progress with null record;
+   type Gtk_Progress_Bar_Record is new Gtk.Progress.Gtk_Progress_Record
+     with null record;
 
 end Gtk.Progress_Bar;

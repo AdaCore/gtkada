@@ -38,7 +38,7 @@ package body Gtk.Tree_Item is
    -- Collapse --
    --------------
 
-   procedure Collapse (Tree_Item : in Gtk_Tree_Item)
+   procedure Collapse (Tree_Item : access Gtk_Tree_Item_Record)
    is
       procedure Internal (Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_item_collapse");
@@ -50,7 +50,7 @@ package body Gtk.Tree_Item is
    -- Deselect --
    --------------
 
-   procedure Deselect (Tree_Item : in Gtk_Tree_Item)
+   procedure Deselect (Tree_Item : access Gtk_Tree_Item_Record)
    is
       procedure Internal (Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_item_deselect");
@@ -62,7 +62,7 @@ package body Gtk.Tree_Item is
    -- Expand --
    ------------
 
-   procedure Expand (Tree_Item : in Gtk_Tree_Item)
+   procedure Expand (Tree_Item : access Gtk_Tree_Item_Record)
    is
       procedure Internal (Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_item_expand");
@@ -87,7 +87,7 @@ package body Gtk.Tree_Item is
    -- Get_Subtree --
    -----------------
 
-   function Get_Subtree (Tree_Item : in Gtk_Tree_Item)
+   function Get_Subtree (Tree_Item : access Gtk_Tree_Item_Record)
      return Gtk.Tree.Gtk_Tree
    is
       function Internal (Tree_Item : in System.Address)
@@ -105,32 +105,18 @@ package body Gtk.Tree_Item is
    -------------
 
    procedure Gtk_New (Tree_Item : out Gtk_Tree_Item;
-                      Label     : in String)
+                      Label     : in String := "")
    is
-      function Internal (Label  : in String)
-        return System.Address;
-      pragma Import (C, Internal, "gtk_tree_item_new_with_label");
    begin
-      Set_Object (Tree_Item, Internal (Label & Ascii.NUL));
-   end Gtk_New;
-
-   -------------
-   -- Gtk_New --
-   -------------
-
-   procedure Gtk_New (Tree_Item : out Gtk_Tree_Item)
-   is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_tree_item_new");
-   begin
-      Set_Object (Tree_Item, Internal);
+      Tree_Item := new Gtk_Tree_Item_Record;
+      Initialize (Tree_Item, Label);
    end Gtk_New;
 
    ----------------
    -- Gtk_Select --
    ----------------
 
-   procedure Gtk_Select (Tree_Item : in Gtk_Tree_Item)
+   procedure Gtk_Select (Tree_Item : access Gtk_Tree_Item_Record)
    is
       procedure Internal (Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_item_select");
@@ -138,11 +124,26 @@ package body Gtk.Tree_Item is
       Internal (Get_Object (Tree_Item));
    end Gtk_Select;
 
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Tree_Item : access Gtk_Tree_Item_Record;
+                         Label     : in String := "")
+   is
+      function Internal (Label  : in String)
+        return System.Address;
+      pragma Import (C, Internal, "gtk_tree_item_new_with_label");
+   begin
+      Set_Object (Tree_Item, Internal (Label & Ascii.NUL));
+      Initialize_User_Data (Tree_Item);
+   end Initialize;
+
    --------------------
    -- Remove_Subtree --
    --------------------
 
-   procedure Remove_Subtree (Tree_Item : in Gtk_Tree_Item)
+   procedure Remove_Subtree (Tree_Item : access Gtk_Tree_Item_Record)
    is
       procedure Internal (Tree_Item : in System.Address);
       pragma Import (C, Internal, "gtk_tree_item_remove_subtree");
@@ -155,8 +156,8 @@ package body Gtk.Tree_Item is
    -----------------
 
    procedure Set_Subtree
-      (Tree_Item : in Gtk_Tree_Item;
-       Subtree   : in Gtk.Widget.Gtk_Widget'Class)
+      (Tree_Item : access Gtk_Tree_Item_Record;
+       Subtree   : in Gtk.Widget.Gtk_Widget)
    is
       procedure Internal
          (Tree_Item : in System.Address;
@@ -171,7 +172,9 @@ package body Gtk.Tree_Item is
    -- To_Tree --
    -------------
 
-   function To_Tree (Tree_Item : in Gtk_Tree_Item) return Gtk.Tree.Gtk_Tree is
+   function To_Tree (Tree_Item : access Gtk_Tree_Item_Record)
+                     return Gtk.Tree.Gtk_Tree
+   is
       Tree : Gtk.Tree.Gtk_Tree;
    begin
       Set_Object (Tree, Get_Object (Tree_Item));
@@ -182,7 +185,7 @@ package body Gtk.Tree_Item is
    -- Generate --
    --------------
 
-   procedure Generate (Tree_Item : in Gtk_Tree_Item;
+   procedure Generate (Tree_Item : access Gtk_Tree_Item_Record;
                        N         : in Node_Ptr;
                        File      : in File_Type) is
       use Item;
@@ -192,17 +195,18 @@ package body Gtk.Tree_Item is
       Generate (Gtk_Item (Tree_Item), N, File);
    end Generate;
 
-   procedure Generate (Tree_Item : in out Gtk_Tree_Item;
+   procedure Generate (Tree_Item : access Gtk_Tree_Item_Record;
                        N         : in Node_Ptr) is
       use Item;
    begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Tree_Item, Get_Field (N, "label").all);
-         Set_Object (Get_Field (N, "name"), Tree_Item'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--         if not N.Specific_Data.Created then
+--            Gtk_New (Tree_Item, Get_Field (N, "label").all);
+--            Set_Object (Get_Field (N, "name"), Tree_Item'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Item (Tree_Item), N);
+--         Generate (Gtk_Item (Tree_Item), N);
+      null;
    end Generate;
 
 end Gtk.Tree_Item;

@@ -41,7 +41,7 @@ package body Gtk.List is
    ------------------
 
    procedure Append_Items
-      (List  : in Gtk_List;
+      (List  : access Gtk_List_Record;
        Items : in Widget_List.Glist)
    is
       procedure Internal
@@ -58,8 +58,8 @@ package body Gtk.List is
    --------------------
 
    function Child_Position
-      (List   : in Gtk_List;
-       Child  : in Gtk.Widget.Gtk_Widget'Class)
+      (List   : access Gtk_List_Record;
+       Child  : in Gtk.Widget.Gtk_Widget)
        return      Gint
    is
       function Internal
@@ -77,7 +77,7 @@ package body Gtk.List is
    -----------------
 
    procedure Clear_Items
-      (List    : in Gtk_List;
+      (List    : access Gtk_List_Record;
        Start   : in Gint;
        The_End : in Gint)
    is
@@ -96,7 +96,7 @@ package body Gtk.List is
    -- Get_Children --
    ------------------
 
-   function Get_Children (Widget : in Gtk.List.Gtk_List)
+   function Get_Children (Widget : access Gtk.List.Gtk_List_Record)
                           return      Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
@@ -112,7 +112,7 @@ package body Gtk.List is
    -- Get_Selection --
    -------------------
 
-   function Get_Selection (Widget : in Gtk.List.Gtk_List)
+   function Get_Selection (Widget : access Gtk.List.Gtk_List_Record)
                            return      Widget_List.Glist
    is
       function Internal (Widget : in System.Address)
@@ -130,18 +130,30 @@ package body Gtk.List is
 
    procedure Gtk_New (Widget : out Gtk_List)
    is
+   begin
+      Widget := new Gtk_List_Record;
+      Initialize (Widget);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_List_Record)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_list_new");
    begin
       Set_Object (Widget, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ------------------
    -- Insert_Items --
    ------------------
 
    procedure Insert_Items
-      (List     : in Gtk_List;
+      (List     : access Gtk_List_Record;
        Items    : in Widget_List.Glist;
        Position : in Gint)
    is
@@ -161,7 +173,7 @@ package body Gtk.List is
    -------------------
 
    procedure Prepend_Items
-      (List  : in Gtk_List;
+      (List  : access Gtk_List_Record;
        Items : in Widget_List.Glist)
    is
       procedure Internal
@@ -178,7 +190,7 @@ package body Gtk.List is
    ------------------
 
    procedure Remove_Items
-      (List  : in Gtk_List;
+      (List  : access Gtk_List_Record;
        Items : in Widget_List.Glist)
    is
       procedure Internal
@@ -195,7 +207,7 @@ package body Gtk.List is
    ---------------------------
 
    procedure Remove_Items_No_Unref
-      (List  : in Gtk_List;
+      (List  : access Gtk_List_Record;
        Items : in Widget_List.Glist)
    is
       procedure Internal
@@ -212,8 +224,8 @@ package body Gtk.List is
    ------------------
 
    procedure Select_Child
-      (List  : in Gtk_List;
-       Child : in Gtk.Widget.Gtk_Widget'Class)
+      (List  : access Gtk_List_Record;
+       Child : in Gtk.Widget.Gtk_Widget)
    is
       procedure Internal
          (List  : in System.Address;
@@ -229,7 +241,7 @@ package body Gtk.List is
    -----------------
 
    procedure Select_Item
-      (List : in Gtk_List;
+      (List : access Gtk_List_Record;
        Item : in Gint)
    is
       procedure Internal
@@ -246,7 +258,7 @@ package body Gtk.List is
    ------------------------
 
    procedure Set_Selection_Mode
-      (List : in Gtk_List;
+      (List : access Gtk_List_Record;
        Mode : in Gtk_Selection_Mode)
    is
       procedure Internal
@@ -263,8 +275,8 @@ package body Gtk.List is
    --------------------
 
    procedure Unselect_Child
-      (List  : in Gtk_List;
-       Child : in Gtk.Widget.Gtk_Widget'Class)
+      (List  : access Gtk_List_Record;
+       Child : in Gtk.Widget.Gtk_Widget)
    is
       procedure Internal
          (List  : in System.Address;
@@ -280,7 +292,7 @@ package body Gtk.List is
    -------------------
 
    procedure Unselect_Item
-      (List : in Gtk_List;
+      (List : access Gtk_List_Record;
        Item : in Gint)
    is
       procedure Internal

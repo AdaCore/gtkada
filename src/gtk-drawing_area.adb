@@ -29,7 +29,7 @@
 
 with System;
 with Gdk; use Gdk;
-with Gtk.Container; use Gtk.Container;
+--  with Gtk.Container; use Gtk.Container;
 with Gtk.Util; use Gtk.Util;
 
 package body Gtk.Drawing_Area is
@@ -39,18 +39,29 @@ package body Gtk.Drawing_Area is
    -------------
 
    procedure Gtk_New (Drawing_Area : out Gtk_Drawing_Area) is
+   begin
+      Drawing_Area := new Gtk_Drawing_Area_Record;
+      Initialize (Drawing_Area);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Drawing_Area : access Gtk_Drawing_Area_Record) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_drawing_area_new");
    begin
       Set_Object (Drawing_Area, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Drawing_Area);
+   end Initialize;
 
    ----------
    -- Size --
    ----------
 
    procedure Size
-     (Darea  : in Gtk_Drawing_Area;
+     (Darea  : access Gtk_Drawing_Area_Record;
       Width  : in Gint;
       Height : in Gint)
    is
@@ -66,7 +77,7 @@ package body Gtk.Drawing_Area is
    -- Generate --
    --------------
 
-   procedure Generate (Drawing_Area : in Gtk_Drawing_Area;
+   procedure Generate (Drawing_Area : access Gtk_Drawing_Area_Record;
                        N            : in Node_Ptr;
                        File         : in File_Type) is
       use Widget;
@@ -76,20 +87,21 @@ package body Gtk.Drawing_Area is
       Gen_Call_Child (N, null, "Container", "Add", File => File);
    end Generate;
 
-   procedure Generate (Drawing_Area : in out Gtk_Drawing_Area;
+   procedure Generate (Drawing_Area : access Gtk_Drawing_Area_Record;
                        N            : in Node_Ptr) is
       use Widget;
    begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Drawing_Area);
-         Set_Object (Get_Field (N, "name"), Drawing_Area'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--         if not N.Specific_Data.Created then
+--            Gtk_New (Drawing_Area);
+--        Set_Object (Get_Field (N, "name"), Drawing_Area'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Widget (Drawing_Area), N);
-      Container.Add
-        (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
-         Drawing_Area);
+--         Generate (Gtk_Widget (Drawing_Area), N);
+--         Container.Add
+--           (Gtk_Container (Get_Object (Get_Field (N.Parent, "name")).all),
+--            Drawing_Area);
+      null;
    end Generate;
 
 end Gtk.Drawing_Area;

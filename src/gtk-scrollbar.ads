@@ -32,16 +32,24 @@ with Gtk.Adjustment;
 
 package Gtk.Scrollbar is
 
-   type Gtk_Scrollbar is new Gtk.GRange.Gtk_Range with private;
+   type Gtk_Scrollbar_Record is new Gtk.GRange.Gtk_Range_Record with private;
+   type Gtk_Scrollbar is access all Gtk_Scrollbar_Record'Class;
 
    procedure Gtk_New_Hscrollbar
      (Widget     : out Gtk_Scrollbar;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class);
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
    procedure Gtk_New_Vscrollbar
      (Widget     : out Gtk_Scrollbar;
-      Adjustment : in Gtk.Adjustment.Gtk_Adjustment'Class);
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+   procedure Initialize_Hscrollbar
+     (Widget     : access Gtk_Scrollbar_Record;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
+   procedure Initialize_Vscrollbar
+     (Widget     : access Gtk_Scrollbar_Record;
+      Adjustment : in Gtk.Adjustment.Gtk_Adjustment);
 
 private
-   type Gtk_Scrollbar is new Gtk.GRange.Gtk_Range with null record;
+   type Gtk_Scrollbar_Record is new Gtk.GRange.Gtk_Range_Record
+     with null record;
 
 end Gtk.Scrollbar;

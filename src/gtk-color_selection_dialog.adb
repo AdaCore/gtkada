@@ -38,15 +38,15 @@ package body Gtk.Color_Selection_Dialog is
    ------------------
 
    function Get_Colorsel
-     (Color_Selection_Dialog : in Gtk_Color_Selection_Dialog)
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Color_Selection.Gtk_Color_Selection
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_colorsel_dialog_get_colorsel");
-      Tmp : Gtk.Color_Selection.Gtk_Color_Selection;
+      Stub : Gtk.Color_Selection.Gtk_Color_Selection_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Color_Selection_Dialog)));
-      return Tmp;
+      return Gtk.Color_Selection.Gtk_Color_Selection
+        (Get_User_Data (Internal (Get_Object (Color_Selection_Dialog)), Stub));
    end Get_Colorsel;
 
    -------------------
@@ -54,15 +54,15 @@ package body Gtk.Color_Selection_Dialog is
    -------------------
 
    function Get_OK_Button
-     (Color_Selection_Dialog : in Gtk_Color_Selection_Dialog)
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Button.Gtk_Button
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_colorsel_dialog_get_ok_button");
-      Tmp : Gtk.Button.Gtk_Button;
+      Stub : Gtk.Button.Gtk_Button_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Color_Selection_Dialog)));
-      return Tmp;
+      return Gtk.Button.Gtk_Button
+        (Get_User_Data (Internal (Get_Object (Color_Selection_Dialog)), Stub));
    end Get_OK_Button;
 
    ----------------------
@@ -70,15 +70,15 @@ package body Gtk.Color_Selection_Dialog is
    ----------------------
 
    function Get_Reset_Button
-     (Color_Selection_Dialog : in Gtk_Color_Selection_Dialog)
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Button.Gtk_Button
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_colorsel_dialog_get_reset_button");
-      Tmp : Gtk.Button.Gtk_Button;
+      Stub : Gtk.Button.Gtk_Button_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Color_Selection_Dialog)));
-      return Tmp;
+      return Gtk.Button.Gtk_Button
+        (Get_User_Data (Internal (Get_Object (Color_Selection_Dialog)), Stub));
    end Get_Reset_Button;
 
    -----------------------
@@ -86,15 +86,15 @@ package body Gtk.Color_Selection_Dialog is
    -----------------------
 
    function Get_Cancel_Button
-     (Color_Selection_Dialog : in  Gtk_Color_Selection_Dialog)
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Button.Gtk_Button
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_colorsel_dialog_get_cancel_button");
-      Tmp : Gtk.Button.Gtk_Button;
+      Stub : Gtk.Button.Gtk_Button_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Color_Selection_Dialog)));
-      return Tmp;
+      return Gtk.Button.Gtk_Button
+        (Get_User_Data (Internal (Get_Object (Color_Selection_Dialog)), Stub));
    end Get_Cancel_Button;
 
    ---------------------
@@ -102,15 +102,15 @@ package body Gtk.Color_Selection_Dialog is
    ---------------------
 
    function Get_Help_Button
-     (Color_Selection_Dialog : in  Gtk_Color_Selection_Dialog)
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record)
       return Gtk.Button.Gtk_Button
    is
       function Internal (Dialog : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_colorsel_dialog_get_help_button");
-      Tmp : Gtk.Button.Gtk_Button;
+      Stub : Gtk.Button.Gtk_Button_Record;
    begin
-      Set_Object (Tmp, Internal (Get_Object (Color_Selection_Dialog)));
-      return Tmp;
+      return Gtk.Button.Gtk_Button
+        (Get_User_Data (Internal (Get_Object (Color_Selection_Dialog)), Stub));
    end Get_Help_Button;
 
    -------------
@@ -121,19 +121,35 @@ package body Gtk.Color_Selection_Dialog is
      (Color_Selection_Dialog :    out Gtk_Color_Selection_Dialog;
       Title                  : in     String)
    is
+   begin
+      Color_Selection_Dialog := new Gtk_Color_Selection_Dialog_Record;
+      Initialize (Color_Selection_Dialog, Title);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record;
+      Title                  : in     String)
+   is
       function Internal (S : String) return System.Address;
       pragma Import (C, Internal, "gtk_color_selection_dialog_new");
    begin
       Set_Object (Color_Selection_Dialog, Internal (Title & Ascii.NUL));
-   end Gtk_New;
+      Initialize_User_Data (Color_Selection_Dialog);
+   end Initialize;
 
    --------------
    -- Generate --
    --------------
 
-   procedure Generate (Color_Selection_Dialog : in Gtk_Color_Selection_Dialog;
-                       N      : in Node_Ptr;
-                       File   : in File_Type) is
+   procedure Generate
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record;
+      N      : in Node_Ptr;
+      File   : in File_Type)
+   is
       use Window;
    begin
       Gen_New (N, "Color_Selection_Dialog", Get_Field (N, "title").all,
@@ -142,19 +158,21 @@ package body Gtk.Color_Selection_Dialog is
    end Generate;
 
    procedure Generate
-     (Color_Selection_Dialog : in out Gtk_Color_Selection_Dialog;
+     (Color_Selection_Dialog : access Gtk_Color_Selection_Dialog_Record;
       N                      : in Node_Ptr)
    is
       use Window;
    begin
-      if not N.Specific_Data.Created then
-         Gtk_New (Color_Selection_Dialog, Get_Field (N, "title").all);
-         Set_Object (Get_Field (N, "name"),
-           Color_Selection_Dialog'Unchecked_Access);
-         N.Specific_Data.Created := True;
-      end if;
+--         if not N.Specific_Data.Created then
+--            Gtk_New (Color_Selection_Dialog, Get_Field (N, "title").all);
+--            Set_Object (Get_Field (N, "name"),
+--              Color_Selection_Dialog'Unchecked_Access);
+--            N.Specific_Data.Created := True;
+--         end if;
 
-      Generate (Gtk_Window (Color_Selection_Dialog), N);
+--         Generate (Gtk_Window (Color_Selection_Dialog), N);
+      null;
    end Generate;
 
 end Gtk.Color_Selection_Dialog;
+

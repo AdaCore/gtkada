@@ -32,7 +32,8 @@ with Gtk.Enums;
 
 package Gtk.Button_Box is
 
-   type Gtk_Button_Box is new Gtk.Box.Gtk_Box with private;
+   type Gtk_Button_Box_Record is new Gtk.Box.Gtk_Box_Record with private;
+   type Gtk_Button_Box is access all Gtk_Button_Box_Record'Class;
 
    procedure Get_Child_Size_Default (Min_Width  : out Gint;
                                      Min_Height : out Gint);
@@ -46,34 +47,34 @@ package Gtk.Button_Box is
    procedure Set_Child_Ipadding_Default (Ipad_X : in Gint;
                                          Ipad_Y : in Gint);
 
-   function Get_Spacing (Widget : in Gtk_Button_Box) return Gint;
+   function Get_Spacing (Widget : access Gtk_Button_Box_Record) return Gint;
 
-   function Get_Layout (Widget : in Gtk_Button_Box)
+   function Get_Layout (Widget : access Gtk_Button_Box_Record)
                         return Enums.Gtk_Button_Box_Style;
 
-   procedure Get_Child_Size (Widget     : in     Gtk_Button_Box;
+   procedure Get_Child_Size (Widget     : access Gtk_Button_Box_Record;
                              Min_Width  :    out Gint;
                              Min_Height :    out Gint);
 
-   procedure Get_Child_Ipadding (Widget : in     Gtk_Button_Box;
+   procedure Get_Child_Ipadding (Widget : access Gtk_Button_Box_Record;
                                  Ipad_X :    out Gint;
                                  Ipad_Y :    out Gint);
 
-   procedure Set_Spacing (Widget  : in Gtk_Button_Box;
+   procedure Set_Spacing (Widget  : access Gtk_Button_Box_Record;
                           Spacing : in Gint);
 
-   procedure Set_Layout (Widget       : in Gtk_Button_Box;
+   procedure Set_Layout (Widget       : access Gtk_Button_Box_Record;
                          Layout_Style : in Enums.Gtk_Button_Box_Style);
 
-   procedure Set_Child_Size (Widget     : in Gtk_Button_Box;
+   procedure Set_Child_Size (Widget     : access Gtk_Button_Box_Record;
                              Min_Width  : in Gint;
                              Min_Height : in Gint);
 
-   procedure Set_Child_Ipadding (Widget : in Gtk_Button_Box;
+   procedure Set_Child_Ipadding (Widget : access Gtk_Button_Box_Record;
                                  Ipad_X : in Gint;
                                  Ipad_Y : in Gint);
 
 private
-   type Gtk_Button_Box is new Gtk.Box.Gtk_Box with null record;
+   type Gtk_Button_Box_Record is new Gtk.Box.Gtk_Box_Record with null record;
 
 end Gtk.Button_Box;

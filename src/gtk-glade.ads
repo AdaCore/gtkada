@@ -36,7 +36,7 @@ with Glib.Glade; use Glib.Glade; use Glib.Glade.Glib_XML;
 
 package Gtk.Glade is
 
-   function Get_Object (Class : String_Ptr) return Gtk.Object.Gtk_Object'Class;
+   function Get_Object (Class : String_Ptr) return Gtk.Object.Gtk_Object;
    --  Return an object with a specific Class. If class isn't found, return
    --  a Gtk_Object.
 

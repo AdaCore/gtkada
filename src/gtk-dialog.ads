@@ -32,22 +32,24 @@ with Gtk.Window;
 
 package Gtk.Dialog is
 
-   type Gtk_Dialog is new Gtk.Window.Gtk_Window with private;
+   type Gtk_Dialog_Record is new Gtk.Window.Gtk_Window_Record with private;
+   type Gtk_Dialog is access all Gtk_Dialog_Record'Class;
 
-   function Get_Action_Area (Dialog : in Gtk_Dialog)
+   function Get_Action_Area (Dialog : access Gtk_Dialog_Record)
                              return      Gtk.Box.Gtk_Box;
-   function Get_Vbox (Dialog : in Gtk_Dialog)
+   function Get_Vbox (Dialog : access Gtk_Dialog_Record)
                       return      Gtk.Box.Gtk_Box;
    procedure Gtk_New (Dialog : out Gtk_Dialog);
+   procedure Initialize (Dialog : access Gtk_Dialog_Record);
 
-   procedure Generate (Dialog : in Gtk_Dialog;
+   procedure Generate (Dialog : access Gtk_Dialog_Record;
                        N      : in Node_Ptr;
                        File   : in File_Type);
 
-   procedure Generate (Dialog : in out Gtk_Dialog;
+   procedure Generate (Dialog : access Gtk_Dialog_Record;
                        N      : in Node_Ptr);
 
 private
-   type Gtk_Dialog is new Gtk.Window.Gtk_Window with null record;
+   type Gtk_Dialog_Record is new Gtk.Window.Gtk_Window_Record with null record;
 
 end Gtk.Dialog;

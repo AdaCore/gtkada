@@ -32,29 +32,33 @@ with Gtk.Widget;
 
 package Gtk.Menu_Bar is
 
-   type Gtk_Menu_Bar is new Gtk.Menu_Shell.Gtk_Menu_Shell with private;
+   type Gtk_Menu_Bar_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
+     with private;
+   type Gtk_Menu_Bar is access all Gtk_Menu_Bar_Record'Class;
 
    procedure Gtk_New (Menu_Bar : out Gtk_Menu_Bar);
+   procedure Initialize (Menu_Bar : access Gtk_Menu_Bar_Record);
    procedure Append
-     (Menu_Bar : in Gtk_Menu_Bar;
-      Child    : in Gtk.Widget.Gtk_Widget'Class);
+     (Menu_Bar : access Gtk_Menu_Bar_Record;
+      Child    : in Gtk.Widget.Gtk_Widget);
    procedure Insert
-     (Menu_Bar : in Gtk_Menu_Bar;
-      Child    : in Gtk.Widget.Gtk_Widget'Class;
+     (Menu_Bar : access Gtk_Menu_Bar_Record;
+      Child    : in Gtk.Widget.Gtk_Widget;
       Position : in Gint);
    procedure Prepend
-     (Menu_Bar : in Gtk_Menu_Bar;
-      Child    : in Gtk.Widget.Gtk_Widget'Class);
+     (Menu_Bar : access Gtk_Menu_Bar_Record;
+      Child    : in Gtk.Widget.Gtk_Widget);
 
-   procedure Generate (Menu_Bar : in Gtk_Menu_Bar;
+   procedure Generate (Menu_Bar : access Gtk_Menu_Bar_Record;
                        N        : in Node_Ptr;
                        File     : in File_Type);
 
-   procedure Generate (Menu_Bar : in out Gtk_Menu_Bar;
+   procedure Generate (Menu_Bar : access Gtk_Menu_Bar_Record;
                        N        : in Node_Ptr);
 
 private
 
-   type Gtk_Menu_Bar is new Gtk.Menu_Shell.Gtk_Menu_Shell with null record;
+   type Gtk_Menu_Bar_Record is new Gtk.Menu_Shell.Gtk_Menu_Shell_Record
+     with null record;
 
 end Gtk.Menu_Bar;

@@ -32,24 +32,27 @@ with Gtk.Enums;
 
 package Gtk.Handle_Box is
 
-   type Gtk_Handle_Box is new Gtk.Bin.Gtk_Bin with private;
+   type Gtk_Handle_Box_Record is new Gtk.Bin.Gtk_Bin_Record with private;
+   type Gtk_Handle_Box is access all Gtk_Handle_Box_Record'Class;
 
    procedure Gtk_New
      (Handle_Box : out Gtk_Handle_Box);
+   procedure Initialize
+     (Handle_Box : access Gtk_Handle_Box_Record);
 
    procedure Set_Shadow_Type
-     (Handle_Box : in Gtk_Handle_Box;
+     (Handle_Box : access Gtk_Handle_Box_Record;
       Typ        : in Enums.Gtk_Shadow_Type);
 
    procedure Set_Handle_Position
-     (Handle_Box : in Gtk_Handle_Box;
+     (Handle_Box : access  Gtk_Handle_Box_Record;
       Position   : in Enums.Gtk_Position_Type);
 
    procedure Set_Snap_Edge
-     (Handle_Box : in Gtk_Handle_Box;
+     (Handle_Box : access  Gtk_Handle_Box_Record;
       Edge       : in Enums.Gtk_Position_Type);
 
 private
-   type Gtk_Handle_Box is new Gtk.Bin.Gtk_Bin with null record;
+   type Gtk_Handle_Box_Record is new Gtk.Bin.Gtk_Bin_Record with null record;
 
 end Gtk.Handle_Box;

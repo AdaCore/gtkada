@@ -37,8 +37,8 @@ package body Gtk.Menu_Shell is
    ------------
 
    procedure Append
-     (Menu_Shell : in Gtk_Menu_Shell;
-      Child      : in Gtk.Widget.Gtk_Widget'Class)
+     (Menu_Shell : access Gtk_Menu_Shell_Record;
+      Child      : in Gtk.Widget.Gtk_Widget)
    is
       procedure Internal
         (Menu_Shell : System.Address;
@@ -52,7 +52,7 @@ package body Gtk.Menu_Shell is
    -- Deactivate --
    ----------------
 
-   procedure Deactivate (Menu_Shell : in Gtk_Menu_Shell)
+   procedure Deactivate (Menu_Shell : access Gtk_Menu_Shell_Record)
    is
       procedure Internal (Menu_Shell : System.Address);
       pragma Import (C, Internal, "gtk_menu_shell_deactivate");
@@ -65,8 +65,8 @@ package body Gtk.Menu_Shell is
    ------------
 
    procedure Insert
-     (Menu_Shell : in Gtk_Menu_Shell;
-      Child      : in Gtk.Widget.Gtk_Widget'Class;
+     (Menu_Shell : access Gtk_Menu_Shell_Record;
+      Child      : in Gtk.Widget.Gtk_Widget;
       Position   : in Gint)
    is
       procedure Internal (Menu_Shell : System.Address;
@@ -82,8 +82,8 @@ package body Gtk.Menu_Shell is
    -------------
 
    procedure Prepend
-     (Menu_Shell : in Gtk_Menu_Shell;
-      Child      : in Gtk.Widget.Gtk_Widget'Class)
+     (Menu_Shell : access Gtk_Menu_Shell_Record;
+      Child      : in Gtk.Widget.Gtk_Widget)
    is
       procedure Internal (Menu_Shell : System.Address;
                           Child      : System.Address);

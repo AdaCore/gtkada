@@ -36,8 +36,10 @@ package body Gtk.Rc is
    -- Add_Widget_Class_Style --
    ----------------------------
 
-   procedure Add_Widget_Class_Style (Style   : in out Gtk.Style.Gtk_Style;
-                                     Pattern : in     String) is
+   procedure Add_Widget_Class_Style
+     (Style   : access Gtk.Style.Gtk_Style_Record'Class;
+      Pattern : in     String)
+   is
       procedure Internal (Style   : in System.Address;
                           Pattern : in String);
       pragma Import (C, Internal, "gtk_rc_add_widget_class_style");
@@ -49,8 +51,10 @@ package body Gtk.Rc is
    -- Add_Widget_Name_Style --
    ---------------------------
 
-   procedure Add_Widget_Name_Style (Style   : in out Gtk.Style.Gtk_Style;
-                                    Pattern : in     String) is
+   procedure Add_Widget_Name_Style
+     (Style   : access Gtk.Style.Gtk_Style_Record'Class;
+      Pattern : in     String)
+   is
       procedure Internal (Style   : in System.Address;
                           Pattern : in String);
       pragma Import (C, Internal, "gtk_rc_add_widget_name_style");
@@ -62,12 +66,17 @@ package body Gtk.Rc is
    -- Get_Style --
    ---------------
 
-   procedure Get_Style (Widget : in     Gtk.Widget.Gtk_Widget'Class;
-                        Style  :    out Gtk.Style.Gtk_Style) is
+   procedure Get_Style
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Style  :    out Gtk.Style.Gtk_Style)
+   is
       function Internal (Widget : in System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_rc_get_style");
    begin
+      Style := new Gtk.Style.Gtk_Style_Record;
       Set_Object (Style, Internal (Get_Object (Widget)));
+      Initialize_User_Data (Style);
+      --  TBD??? Check if there is memory leak here
    end Get_Style;
 
    -----------

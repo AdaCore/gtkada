@@ -38,18 +38,30 @@ package body Gtk.Handle_Box is
 
    procedure Gtk_New (Handle_Box : out Gtk_Handle_Box)
    is
+   begin
+      Handle_Box := new Gtk_Handle_Box_Record;
+      Initialize (Handle_Box);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Handle_Box : access Gtk_Handle_Box_Record)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_handle_box_new");
    begin
       Set_Object (Handle_Box, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Handle_Box);
+   end Initialize;
 
    -------------------------
    -- Set_Handle_Position --
    -------------------------
 
    procedure Set_Handle_Position
-     (Handle_Box : in Gtk_Handle_Box;
+     (Handle_Box : access Gtk_Handle_Box_Record;
       Position   : in Enums.Gtk_Position_Type)
    is
       procedure Internal (Handle_Box : System.Address;
@@ -65,7 +77,7 @@ package body Gtk.Handle_Box is
    ---------------------
 
    procedure Set_Shadow_Type
-     (Handle_Box : in Gtk_Handle_Box;
+     (Handle_Box : access Gtk_Handle_Box_Record;
       Typ        : in Enums.Gtk_Shadow_Type)
    is
       procedure Internal (Handle_Box : System.Address;
@@ -81,7 +93,7 @@ package body Gtk.Handle_Box is
    -------------------
 
    procedure Set_Snap_Edge
-     (Handle_Box : in Gtk_Handle_Box;
+     (Handle_Box : access Gtk_Handle_Box_Record;
       Edge       : in Enums.Gtk_Position_Type)
    is
       procedure Internal (Handle_Box : System.Address;

@@ -36,7 +36,7 @@ package body Gtk.Tooltips is
    -- Enable --
    ------------
 
-   procedure Enable (Tooltips : in Gtk_Tooltips) is
+   procedure Enable (Tooltips : access Gtk_Tooltips_Record) is
       procedure Internal (Tooltips : System.Address);
       pragma Import (C, Internal, "gtk_tooltips_enable");
    begin
@@ -47,7 +47,7 @@ package body Gtk.Tooltips is
    -- Disable --
    -------------
 
-   procedure Disable (Tooltips : in Gtk_Tooltips) is
+   procedure Disable (Tooltips : access Gtk_Tooltips_Record) is
       procedure Internal (Tooltips : System.Address);
       pragma Import (C, Internal, "gtk_tooltips_disable");
    begin
@@ -59,18 +59,29 @@ package body Gtk.Tooltips is
    -------------
 
    procedure Gtk_New (Widget : out Gtk_Tooltips) is
+   begin
+      Widget := new Gtk_Tooltips_Record;
+      Initialize (Widget);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize (Widget : access Gtk_Tooltips_Record) is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_tooltips_new");
    begin
       Set_Object (Widget, Internal);
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ---------------
    -- Set_Delay --
    ---------------
 
    procedure Set_Delay
-     (Tooltips : in Gtk_Tooltips;
+     (Tooltips : access Gtk_Tooltips_Record;
       duration : in Guint)
    is
       procedure Internal (Tooltips : System.Address;
@@ -85,8 +96,8 @@ package body Gtk.Tooltips is
    -------------
 
    procedure Set_Tip
-     (Tooltips    : in Gtk_Tooltips;
-      Widget      : in Gtk.Widget.Gtk_Widget'Class;
+     (Tooltips    : access Gtk_Tooltips_Record;
+      Widget      : in Gtk.Widget.Gtk_Widget;
       Tip_Text    : in String;
       Tip_Private : in String)
    is

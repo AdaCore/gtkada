@@ -38,10 +38,9 @@ package body Gtk.Separator is
 
    procedure Gtk_New_Hseparator (Widget : out Gtk_Separator)
    is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "gtk_hseparator_new");
    begin
-      Set_Object (Widget, Internal);
+      Widget := new Gtk_Separator_Record;
+      Initialize_Hseparator (Widget);
    end Gtk_New_Hseparator;
 
    ------------------------
@@ -50,10 +49,35 @@ package body Gtk.Separator is
 
    procedure Gtk_New_Vseparator (Widget : out Gtk_Separator)
    is
+   begin
+      Widget := new Gtk_Separator_Record;
+      Initialize_Vseparator (Widget);
+   end Gtk_New_Vseparator;
+
+   ---------------------------
+   -- Initialize_Hseparator --
+   ---------------------------
+
+   procedure Initialize_Hseparator (Widget : access Gtk_Separator_Record)
+   is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "gtk_hseparator_new");
+   begin
+      Set_Object (Widget, Internal);
+      Initialize_User_Data (Widget);
+   end Initialize_Hseparator;
+
+   ------------------------
+   -- Initialize_Vseparator --
+   ------------------------
+
+   procedure Initialize_Vseparator (Widget : access Gtk_Separator_Record)
+   is
       function Internal return System.Address;
       pragma Import (C, Internal, "gtk_vseparator_new");
    begin
       Set_Object (Widget, Internal);
-   end Gtk_New_Vseparator;
+      Initialize_User_Data (Widget);
+   end Initialize_Vseparator;
 
 end Gtk.Separator;

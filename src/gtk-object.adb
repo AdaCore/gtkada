@@ -38,91 +38,91 @@ package body Gtk.Object is
    -- Connected --
    ---------------
 
-   function Connected_Is_Set (Object : in Gtk_Object'Class) return Boolean is
+   function Connected_Is_Set (Object : in Gtk_Object) return Boolean is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_connected");
    begin
-      return To_Boolean (Internal (Get_Object (Object)));
+      return To_Boolean (Internal (Get_Object (Object.all)));
    end Connected_Is_Set;
 
    -----------------
    -- Constructed --
    -----------------
 
-   function Constructed_Is_Set (Object : in Gtk_Object'Class) return Boolean is
+   function Constructed_Is_Set (Object : in Gtk_Object) return Boolean is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_constructed");
    begin
-      return To_Boolean (Internal (Get_Object (Object)));
+      return To_Boolean (Internal (Get_Object (Object.all)));
    end Constructed_Is_Set;
 
    -------------
    -- Destroy --
    -------------
 
-   procedure Destroy (Object : in out Gtk_Object) is
+   procedure Destroy (Object : access Gtk_Object_Record) is
       procedure Internal  (Object : in System.Address);
       pragma Import (C, Internal, "gtk_object_destroy");
    begin
-      Internal (Get_Object (Object));
-      Set_Object (Object, System.Null_Address);
+      Internal (Get_Object (Object.all));
+      Set_Object (Object.all, System.Null_Address);
    end Destroy;
 
    ---------------
    -- Destroyed --
    ---------------
 
-   function Destroyed_Is_Set (Object : in Gtk_Object'Class) return Boolean is
+   function Destroyed_Is_Set (Object : in Gtk_Object) return Boolean is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_destroyed");
    begin
-      return To_Boolean (Internal (Get_Object (Object)));
+      return To_Boolean (Internal (Get_Object (Object.all)));
    end Destroyed_Is_Set;
 
    -----------
    -- Flags --
    -----------
 
-   function Flags (Object : in Gtk_Object) return Guint32 is
+   function Flags (Object : access Gtk_Object_Record) return Guint32 is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_flags");
    begin
-      return Internal (Get_Object (Object));
+      return Internal (Get_Object (Object.all));
    end Flags;
 
    --------------
    -- Floating --
    --------------
 
-   function Floating_Is_Set (Object : in Gtk_Object'Class) return Boolean is
+   function Floating_Is_Set (Object : in Gtk_Object) return Boolean is
       function Internal (Object : in System.Address) return Guint32;
       pragma Import (C, Internal, "ada_object_floating");
    begin
-      return To_Boolean (Internal (Get_Object (Object)));
+      return To_Boolean (Internal (Get_Object (Object.all)));
    end Floating_Is_Set;
 
    --------------
    -- Get_Type --
    --------------
 
-   function Get_Type (Object : in Gtk_Object) return Gint is
+   function Get_Type (Object : access Gtk_Object_Record) return Gint is
       function Internal (Object : in System.Address) return Gint;
       pragma Import (C, Internal, "ada_object_get_type");
    begin
-      return Internal (Get_Object (Object));
+      return Internal (Get_Object (Object.all));
    end Get_Type;
 
    ---------
    -- Ref --
    ---------
 
-   procedure Ref (Object : in out Gtk_Object) is
+   procedure Ref (Object : access Gtk_Object_Record) is
       procedure Internal (Object : in System.Address);
       pragma Import (C, Internal, "gtk_object_ref");
       use type System.Address;
    begin
-      if Get_Object (Object) /= System.Null_Address then
-         Internal (Get_Object (Object));
+      if Get_Object (Object.all) /= System.Null_Address then
+         Internal (Get_Object (Object.all));
       end if;
    end Ref;
 
@@ -130,27 +130,27 @@ package body Gtk.Object is
    --  Set_Flags  --
    -----------------
 
-   procedure Set_Flags (Object : in out Gtk_Object;
+   procedure Set_Flags (Object : access Gtk_Object_Record;
                         Flags  : in     Guint32) is
       procedure Internal (Object : in System.Address;
                           Flags  : in Guint32);
       pragma Import (C, Internal, "ada_object_set_flags");
    begin
-      Internal (Get_Object (Object), Flags);
+      Internal (Get_Object (Object.all), Flags);
    end Set_Flags;
 
    -----------
    -- Unref --
    -----------
 
-   procedure Unref (Object : in out Gtk_Object) is
+   procedure Unref (Object : access Gtk_Object_Record) is
       procedure Internal (Object : in System.Address);
       pragma Import (C, Internal, "gtk_object_unref");
       use type System.Address;
    begin
-      if Get_Object (Object) /= System.Null_Address then
-         Internal (Get_Object (Object));
-         Set_Object (Object, System.Null_Address);
+      if Get_Object (Object.all) /= System.Null_Address then
+         Internal (Get_Object (Object.all));
+         Set_Object (Object.all, System.Null_Address);
       end if;
    end Unref;
 
@@ -158,13 +158,13 @@ package body Gtk.Object is
    --  Unset_Flags  --
    -------------------
 
-   procedure Unset_Flags (Object : in out Gtk_Object;
+   procedure Unset_Flags (Object : access Gtk_Object_Record;
                           Flags  : in     Guint32) is
       procedure Internal (Object : in System.Address;
                           Flags  : in Guint32);
       pragma Import (C, Internal, "ada_object_unset_flags");
    begin
-      Internal (Get_Object (Object), Flags);
+      Internal (Get_Object (Object.all), Flags);
    end Unset_Flags;
 
    ---------------
@@ -203,7 +203,7 @@ package body Gtk.Object is
       -- Get --
       ---------
 
-      function Get (Object : in Gtk_Object'Class;
+      function Get (Object : in Gtk_Object;
                     Id     : in String := "user_data") return Data_Type is
          function Internal (Object : in System.Address;
                             Key    : in String)
@@ -223,7 +223,7 @@ package body Gtk.Object is
       -- Set --
       ---------
 
-      procedure Set (Object : in Gtk_Object'Class;
+      procedure Set (Object : in Gtk_Object;
                      Data   : in Data_Type;
                      Id     : in String := "user_data")
       is
@@ -236,25 +236,26 @@ package body Gtk.Object is
          pragma Import (C, Internal, "gtk_object_set_data_full");
          D : Cb_Record_Access := new Cb_Record'(Ptr => new Data_Type'(Data));
       begin
-         Internal (Get_Object (Object),
+         Internal (Get_Object (Object.all),
                    Id & Ascii.NUL,
                    Convert (D),
                    Free_Data'Address);
       end Set;
    end User_Data;
 
+
    --------------
    -- Generate --
    --------------
 
-   procedure Generate (Object : in Gtk_Object;
+   procedure Generate (Object : access Gtk_Object_Record;
                        N      : in Node_Ptr;
                        File   : in File_Type) is
    begin
       Gen_Set (N, "Object", "flags", File);
    end Generate;
 
-   procedure Generate (Object : in out Gtk_Object;
+   procedure Generate (Object : access Gtk_Object_Record;
                        N      : in Node_Ptr) is
       S : String_Ptr := Get_Field (N, "flags");
 

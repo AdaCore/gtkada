@@ -27,26 +27,28 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Gtk.Container;
+with Gtk.Bin;
 with Gtk.Enums;
 
 package Gtk.Button is
 
-   type Gtk_Button is new Container.Gtk_Container with private;
+   type Gtk_Button_Record is new Bin.Gtk_Bin_Record with private;
+   type Gtk_Button is access all Gtk_Button_Record'Class;
 
-   procedure Gtk_New (Button : out Gtk_Button);
-   procedure Gtk_New (Button : out Gtk_Button; Label  : in String);
+   procedure Gtk_New (Button : out Gtk_Button; Label : in String := "");
 
-   procedure Set_Relief (Button   : in out Gtk_Button;
+   procedure Initialize (Button : access Gtk_Button_Record; Label : in String);
+
+   procedure Set_Relief (Button   : access Gtk_Button_Record;
                          NewStyle : in     Gtk.Enums.Gtk_Relief_Style);
-   function Get_Relief (Button : in Gtk_Button)
+   function Get_Relief (Button : access Gtk_Button_Record)
                         return Gtk.Enums.Gtk_Relief_Style;
 
-   procedure Generate (Button : in Gtk_Button;
+   procedure Generate (Button : access Gtk_Button_Record;
                        N      : in Node_Ptr;
                        File   : in File_Type);
 
-   procedure Generate (Button : in out Gtk_Button;
+   procedure Generate (Button : access Gtk_Button_Record;
                        N      : in Node_Ptr);
 
    ---------------
@@ -55,14 +57,15 @@ package Gtk.Button is
 
    --  The following functions send signals to the widget.
 
-   procedure Pressed  (Button : in Gtk_Button);
-   procedure Released (Button : in Gtk_Button);
-   procedure Clicked  (Button : in Gtk_Button);
-   procedure Enter    (Button : in Gtk_Button);
-   procedure Leave    (Button : in Gtk_Button);
+   procedure Pressed  (Button : access Gtk_Button_Record);
+   procedure Released (Button : access Gtk_Button_Record);
+   procedure Clicked  (Button : access Gtk_Button_Record);
+   procedure Enter    (Button : access Gtk_Button_Record);
+   procedure Leave    (Button : access Gtk_Button_Record);
 
 private
 
-   type Gtk_Button is new Container.Gtk_Container with null record;
+   type Gtk_Button_Record is new Bin.Gtk_Bin_Record
+     with null record;
 
 end Gtk.Button;

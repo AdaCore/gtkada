@@ -37,8 +37,8 @@ package body Gtk.Table is
    ------------
 
    procedure Attach
-      (Table         : in Gtk_Table;
-       Child         : in Gtk.Widget.Gtk_Widget'Class;
+      (Table         : access Gtk_Table_Record;
+       Child         : access Gtk.Widget.Gtk_Widget_Record'Class;
        Left_Attach   : in Gint;
        Right_Attach  : in Gint;
        Top_Attach    : in Gint;
@@ -78,8 +78,8 @@ package body Gtk.Table is
    ---------------------
 
    procedure Attach_Defaults
-      (Table         : in Gtk_Table;
-       Widget        : in Gtk.Widget.Gtk_Widget'Class;
+      (Table         : access Gtk_Table_Record;
+       Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
        Left_Attach   : in Gint;
        Right_Attach  : in Gint;
        Top_Attach    : in Gint;
@@ -107,10 +107,25 @@ package body Gtk.Table is
    -------------
 
    procedure Gtk_New
-      (Widget      : out Gtk_Table;
-       Rows        : in Gint;
-       Columns     : in Gint;
-       Homogeneous : in Boolean)
+     (Widget      : out Gtk_Table;
+      Rows        : in Gint;
+      Columns     : in Gint;
+      Homogeneous : in Boolean)
+   is
+   begin
+      Widget := new Gtk_Table_Record;
+      Initialize (Widget, Rows, Columns, Homogeneous);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+     (Widget      : access Gtk_Table_Record;
+      Rows        : in Gint;
+      Columns     : in Gint;
+      Homogeneous : in Boolean)
    is
       function Internal
          (Rows        : in Gint;
@@ -122,14 +137,15 @@ package body Gtk.Table is
       Set_Object (Widget, Internal (Rows,
                                     Columns,
                                     Boolean'Pos (Homogeneous)));
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ---------------------
    -- Set_Col_Spacing --
    ---------------------
 
    procedure Set_Col_Spacing
-      (Table   : in Gtk_Table;
+      (Table   : access Gtk_Table_Record;
        Column  : in Gint;
        Spacing : in Gint)
    is
@@ -149,7 +165,7 @@ package body Gtk.Table is
    ----------------------
 
    procedure Set_Col_Spacings
-      (Table   : in Gtk_Table;
+      (Table   : access Gtk_Table_Record;
        Spacing : in Gint)
    is
       procedure Internal
@@ -166,7 +182,7 @@ package body Gtk.Table is
    ---------------------
 
    procedure Set_Homogeneous
-      (Table       : in Gtk_Table;
+      (Table       : access Gtk_Table_Record;
        Homogeneous : in Boolean)
    is
       procedure Internal
@@ -183,7 +199,7 @@ package body Gtk.Table is
    ---------------------
 
    procedure Set_Row_Spacing
-      (Table   : in Gtk_Table;
+      (Table   : access Gtk_Table_Record;
        Row     : in Gint;
        Spacing : in Gint)
    is
@@ -203,7 +219,7 @@ package body Gtk.Table is
    ----------------------
 
    procedure Set_Row_Spacings
-      (Table   : in Gtk_Table;
+      (Table   : access Gtk_Table_Record;
        Spacing : in Gint)
    is
       procedure Internal

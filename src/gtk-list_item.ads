@@ -31,25 +31,27 @@ with Gtk.Item;
 
 package Gtk.List_Item is
 
-   type Gtk_List_Item is new Gtk.Item.Gtk_Item with private;
+   type Gtk_List_Item_Record is new Gtk.Item.Gtk_Item_Record with private;
+   type Gtk_List_Item is access all Gtk_List_Item_Record'Class;
 
-   procedure Deselect (List_Item : in Gtk_List_Item);
+   procedure Deselect (List_Item : access Gtk_List_Item_Record);
    procedure Gtk_New (List_Item : out Gtk_List_Item;
-                      Label     : in String);
-   procedure Gtk_New (List_Item : out Gtk_List_Item);
-   procedure Gtk_Select (List_Item : in Gtk_List_Item);
+                      Label     : in String := "");
+   procedure Initialize (List_Item : access Gtk_List_Item_Record;
+                         Label     : in String := "");
+   procedure Gtk_Select (List_Item : access Gtk_List_Item_Record);
 
    --  The two following procedures are used to generate and create widgets
    --  from a Node.
 
-   procedure Generate (List_Item : in Gtk_List_Item;
+   procedure Generate (List_Item : access Gtk_List_Item_Record;
                        N         : in Node_Ptr;
                        File      : in File_Type);
 
-   procedure Generate (List_Item : in out Gtk_List_Item;
+   procedure Generate (List_Item : access Gtk_List_Item_Record;
                        N         : in Node_Ptr);
 
 private
-   type Gtk_List_Item is new Gtk.Item.Gtk_Item with null record;
+   type Gtk_List_Item_Record is new Gtk.Item.Gtk_Item_Record with null record;
 
 end Gtk.List_Item;

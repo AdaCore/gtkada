@@ -36,7 +36,8 @@ package body Gtk.Aspect_Frame is
    -- Get_Ratio --
    ---------------
 
-   function Get_Ratio (Widget : in Gtk_Aspect_Frame) return Gfloat is
+   function Get_Ratio (Widget : access Gtk_Aspect_Frame_Record) return Gfloat
+   is
       function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_aspect_frame_get_ratio");
    begin
@@ -47,7 +48,8 @@ package body Gtk.Aspect_Frame is
    -- Get_Xalign --
    ----------------
 
-   function Get_Xalign (Widget : in Gtk_Aspect_Frame) return Gfloat is
+   function Get_Xalign (Widget : access Gtk_Aspect_Frame_Record) return Gfloat
+   is
       function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_aspect_frame_get_xalign");
    begin
@@ -58,7 +60,8 @@ package body Gtk.Aspect_Frame is
    -- Get_Yalign --
    ----------------
 
-   function Get_Yalign (Widget : in Gtk_Aspect_Frame) return Gfloat is
+   function Get_Yalign (Widget : access Gtk_Aspect_Frame_Record) return Gfloat
+   is
       function Internal (Widget : in System.Address) return Gfloat;
       pragma Import (C, Internal, "ada_aspect_frame_get_yalign");
    begin
@@ -71,6 +74,23 @@ package body Gtk.Aspect_Frame is
 
    procedure Gtk_New
       (Widget     : out Gtk_Aspect_Frame;
+       Label      : in String;
+       Xalign     : in Gfloat;
+       Yalign     : in Gfloat;
+       Ratio      : in Gfloat;
+       Obey_Child : in Gint)
+   is
+   begin
+      Widget := new Gtk_Aspect_Frame_Record;
+      Initialize (Widget, Label, Xalign, Yalign, Ratio, Obey_Child);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Widget     : access Gtk_Aspect_Frame_Record;
        Label      : in String;
        Xalign     : in Gfloat;
        Yalign     : in Gfloat;
@@ -91,14 +111,15 @@ package body Gtk.Aspect_Frame is
                                     Yalign,
                                     Ratio,
                                     Obey_Child));
-   end Gtk_New;
+      Initialize_User_Data (Widget);
+   end Initialize;
 
    ---------
    -- Set --
    ---------
 
    procedure Set
-      (Aspect_Frame : in Gtk_Aspect_Frame;
+      (Aspect_Frame : access Gtk_Aspect_Frame_Record;
        Xalign       : in Gfloat;
        Yalign       : in Gfloat;
        Ratio        : in Gfloat;
