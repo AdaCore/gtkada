@@ -40,6 +40,18 @@ package Glib is
    --         Note also that some of those type can not be declared here since
    --         they are "generic" types.
 
+   ------------------------
+   --  Some Array types  --
+   ------------------------
 
+   type Gulong_Array is array (Positive range <>) of Gulong;
+
+
+   ---------------------------
+   --  Conversion services  --
+   ---------------------------
+
+   function To_Boolean (Value : in Gint) return Boolean;
+   function To_Gint (Bool : in Boolean) return Gint;
 
 end Glib;
