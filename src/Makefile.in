@@ -54,7 +54,7 @@ alidir        = $(incdir)
 
 HAVE_OPENGL=@HAVE_OPENGL@
 
-ifeq ($(HAVE_OPENGL),opengl)
+ifeq ($(HAVE_OPENGL),True)
 OPENGL_C_OBJECTS=$(LIB_DIR)/gtkglarea.o $(LIB_DIR)/gdkgl.o
 OPENGL_SOURCES=gdk-gl.adb gtk-glarea.adb
 OPENGL_OBJECTS=$(OPENGL_SOURCES:%.adb=$(LIB_DIR)/%.o)
