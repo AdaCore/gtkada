@@ -35,9 +35,12 @@ with Gtk.Widget; use Gtk.Widget;
 package Gtk.Box is
 
    type Gtk_Box_Record is new Gtk.Container.Gtk_Container_Record with private;
+   subtype Gtk_Hbox_Record is Gtk_Box_Record;
+   subtype Gtk_Vbox_Record is Gtk_Box_Record;
+
    type Gtk_Box is access all Gtk_Box_Record'Class;
-   subtype Gtk_Vbox is Gtk_Box;
    subtype Gtk_Hbox is Gtk_Box;
+   subtype Gtk_Vbox is Gtk_Box;
 
    function Get_Child (Box : access Gtk_Box_Record; Num : in Gint)
                        return Gtk_Widget;

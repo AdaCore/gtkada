@@ -34,8 +34,10 @@ with Gtk.Widget;
 package Gtk.Ruler is
 
    type Gtk_Ruler_Record is new Gtk.Widget.Gtk_Widget_Record with private;
-   type Gtk_Ruler is access all Gtk_Ruler_Record'Class;
+   subtype Gtk_Hruler_Record is Gtk_Ruler_Record;
+   subtype Gtk_Vruler_Record is Gtk_Ruler_Record;
 
+   type Gtk_Ruler is access all Gtk_Ruler_Record'Class;
    subtype Gtk_Hruler is Gtk_Ruler;
    subtype Gtk_Vruler is Gtk_Ruler;
 

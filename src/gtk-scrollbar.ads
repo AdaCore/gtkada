@@ -34,6 +34,9 @@ with Gtk.Adjustment;
 package Gtk.Scrollbar is
 
    type Gtk_Scrollbar_Record is new Gtk.GRange.Gtk_Range_Record with private;
+   subtype Gtk_Hscrollbar_Record is Gtk_Scrollbar_Record;
+   subtype Gtk_Vscrollbar_Record is Gtk_Scrollbar_Record;
+
    type Gtk_Scrollbar is access all Gtk_Scrollbar_Record'Class;
    subtype Gtk_Hscrollbar is Gtk_Scrollbar;
    subtype Gtk_Vscrollbar is Gtk_Scrollbar;

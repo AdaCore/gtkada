@@ -35,9 +35,12 @@ package Gtk.Paned is
 
    type Gtk_Paned_Record is new Gtk.Container.Gtk_Container_Record
      with private;
+   subtype Gtk_Hpaned_Record is Gtk_Paned_Record;
+   subtype Gtk_Vpaned_Record is Gtk_Paned_Record;
+
    type Gtk_Paned is access all Gtk_Paned_Record'Class;
-   subtype Gtk_Vpaned is Gtk_Paned;
    subtype Gtk_Hpaned is Gtk_Paned;
+   subtype Gtk_Vpaned is Gtk_Paned;
 
    procedure Add1 (Paned : access Gtk_Paned_Record;
                    Child : access Gtk_Widget_Record'Class);

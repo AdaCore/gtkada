@@ -33,6 +33,9 @@ with Gtk.Widget;
 package Gtk.Separator is
 
    type Gtk_Separator_Record is new Gtk.Widget.Gtk_Widget_Record with private;
+   subtype Gtk_Hseparator_Record is Gtk_Separator_Record;
+   subtype Gtk_Vseparator_Record is Gtk_Separator_Record;
+
    type Gtk_Separator is access all Gtk_Separator_Record'Class;
    subtype Gtk_Hseparator is Gtk_Separator;
    subtype Gtk_Vseparator is Gtk_Separator;

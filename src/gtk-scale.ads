@@ -35,6 +35,9 @@ with Gtk.GRange;
 package Gtk.Scale is
 
    type Gtk_Scale_Record is new Gtk.GRange.Gtk_Range_Record with private;
+   subtype Gtk_Hscale_Record is Gtk_Scale_Record;
+   subtype Gtk_Vscale_Record is Gtk_Scale_Record;
+
    type Gtk_Scale is access all Gtk_Scale_Record'Class;
    subtype Gtk_Hscale is Gtk_Scale;
    subtype Gtk_Vscale is Gtk_Scale;
