@@ -71,7 +71,7 @@ begin
 
 exception
    when others =>
-      Put_Line ("GATE: Internal error. This usually means that the specified"
+      Put_Line ("GATE: Internal error. This usually means that the specified");
       Put_Line ("project file has some syntax errors.");
       GNAT.OS_Lib.OS_Exit (2);
 end Gate;
