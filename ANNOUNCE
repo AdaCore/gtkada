@@ -13,19 +13,15 @@ re-implemented and is also distributed with the binding.
 
 LSM entry follows :
 Begin3
-Title:          GtkAda
-Version:        Beta 0.2.1
-Entered-date:   1998-11-04
-Description:    Ada95 binding of Gtk+ (version 1.0.6)
-Keywords:       Ada95 Ada Gtk+ Gtk X GUI
-Authors:        Emmanuel Briot <briot@gnat.com> and 
-                Joel Brobecker <jbrobecker@west.raytheon.com>
-Maintained-by:  <briot@gnat.com> and <jbrobecker@west.raytheon.com>
-Primary-site:   http://ada.eu.org/gtkada/
-Original-site:  http://ada.eu.org/gtkada/
-Platforms:      SunOS-5.5.1 Linux-2.0.35
-Copying-policy: GPL (with a slight modification, see headers of
-                *.ad[sb] files)
+ Title:  GtkAda
+ Version: 0.2.1beta
+ Entered-date: 06NOV98
+ Description: Ada95 binding to Gtk+ (version 1.0.6)
+ Keywords: Ada95 Ada Gtk+ Gtk X Gui
+ Author: Emmanuel Briot <briot@gnat.com> and Joel Brobecker <jbrobecker@west.raytheon.com>
+ Maintained-by: <briot@gnat.com> and <jbrobecker@west.raytheon.com>
+ Primary-site:  http://ada.eu.org/gtkada/
+ Original-site: http://ada.eu.org/gtkada/
+ Platforms: SunOS-5.5.1 Linux-2.0.35
+ Copying-policy: GPL (with a slight modification, see headers of *.ad[bs] files
 End
-
-
