@@ -35,6 +35,8 @@ New features in 1.2.4 include:
   testgtk has been updated to give some examples of openGL.
   You do *not* need openGL to build GtkAda, this is an optional part of the
   toolkit
+  A very thin binding to the openGL library MESA is also provided, although
+  you are invited to use your own openGL binding rather than this one.
 - Handling of Gdk events has been rewritten, so that:
     * It is now much easier to convert from one event type to another
     * It is possible to create events directly from GtkAda, and then send them
