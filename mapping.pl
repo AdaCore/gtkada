@@ -170,7 +170,7 @@ sub check_undefined
 	    &print_function (&file_name ($file), $return,
 			     $func_name, $arguments, 0);
 	    print '-' x length ($string),
-	    "\n$string\n", '-' x length ($string), "\n";
+	    "\n$string\n", '-' x length ($string), "\n\n";
 	    &print_function (&file_name ($file), $return,
 			     $func_name, $arguments, 1);
 	  }
@@ -219,9 +219,9 @@ sub convert_type
     return "String";
   } elsif ($type =~ /Gtk([^*]+)\*/) {
     my ($t) = $1;
-    return "Gtk_Object'Class" if ($t eq "Object");
+    return "Object'Class" if ($t eq "Object");
     $t =~ s/(.)([A-Z])/$1_$2/g;
-    return "Gtk.$t.Gtk_$t\'Class";
+    return "Gtk.$t.$t\'Class";
   } else {
     $type =~ s/(.)([A-Z])/$1_$2/g;
     return $type;
@@ -276,6 +276,7 @@ sub ada_style
       substr ($entity, $i + 1, 1) = uc (substr ($entity, $i + 1, 1));
     }
   }
+  $entity =~ s/^Gtk_//;
   return $entity;
 }
 
