@@ -1324,23 +1324,25 @@ package body Gtk.Clist is
 
    procedure Output_Titles (Name : in String;
                             A    : in Chars_Ptr_Array;
-                            File : in File_Type) is
+                            File : in File_Type)
+   is
+      First : Boolean := True;
    begin
       Glib.Glade.Add_Package ("Interfaces.C.Strings");
-      Put_Line
-        (File,
-         Name & " : constant Chars_Ptr_Array (1 .. " &
-         Gint'Image (A'Last) & ")");
-      Put_Line (File, "        : = (");
+      Put_Line (File, "   " & To_Ada (Name) & " := (");
 
       for Index in A'First .. A'Last loop
-         Put_Line
-           (File,
-            "             Interfaces.C.Strings.New_String ( """ &
-            Interfaces.C.Strings.Value (A (Index)) & """,");
+         if First then
+            First := False;
+         else
+            Put_Line (File, ",");
+         end if;
+
+         Put (File, "     Interfaces.C.Strings.New_String (""" &
+           Interfaces.C.Strings.Value (A (Index)) & """)");
       end loop;
 
-      Put_Line (File, "            );");
+      Put_Line (File, ");");
    end Output_Titles;
 
    ----------------------

@@ -441,6 +441,20 @@ package body Gtk.Glade is
                            Accelerator := False;
                         end if;
                      end if;
+
+                     --  Declare an array of strings for each Clist with
+                     --  a "columns" field.
+
+                     if S.all = "GtkCList" then
+                        S := Get_Field (P, "columns");
+
+                        if S /= null then
+                           Put_Line (File, "   " &
+                             To_Ada (Get_Field (P, "name").all) & "_Titles" &
+                               " : Chars_Ptr_Array (1 .. " &
+                             S.all & ");");
+                        end if;
+                     end if;
                   end if;
 
                   Print_Var (P.Child, File, Kind, False, Option_Menu,
@@ -526,9 +540,15 @@ package body Gtk.Glade is
             Put_Line (Output, "with Gtk.Enums;  use Gtk.Enums;");
             Put_Line (Output, "with Gtk.Pixmap; use Gtk.Pixmap;");
             Put_Line (Output, "with Gtk.Accel_Group; use Gtk.Accel_Group;");
-
             Put_Line (Output, "with Callbacks_" & Project &
               "; use Callbacks_" & Project & ";");
+
+            if Find_Child (M.Child, "signal") /= null then
+               Put_Line (Output, "with " & To_Ada (Name.all) &
+                 "_Pkg.Callbacks; use " & To_Ada (Name.all) &
+                 "_Pkg.Callbacks;");
+            end if;
+
             New_Line (Output);
             Put_Line (Output, "package body " & To_Ada (Name.all) &
               "_Pkg is");

@@ -45,15 +45,16 @@ package body Glib.Glade is
    --  Used by Add_Signal_Instanciation and Gen_Signal_Instanciations
 
    type Signal_Rec is record
-      Signal, Class : String_Ptr;
+      Widget, Signal, Class : String_Ptr;
    end record;
 
    Signals : array (Signal_Range) of Signal_Rec;
    Num_Signals : Natural := 0;
    --  Used by Add_Signal and Gen_Signal_Instanciations
 
-   procedure Add_Signal (Signal, Class : String_Ptr);
-   --  Add widget S in Signals if S isn't already present
+   procedure Add_Signal (Widget, Signal, Class : String_Ptr);
+   --  Add a specific signal of a given class in Signals.
+   --  Widget is the name of the top level widget containing the signal
 
    procedure Add_Signal_Instanciation (S : String_Ptr);
    --  Add widget S in Signal_Instanciation if S isn't already present
@@ -108,11 +109,12 @@ package body Glib.Glade is
    -- Add_Signal --
    ----------------
 
-   procedure Add_Signal (Signal, Class : String_Ptr) is
+   procedure Add_Signal (Widget, Signal, Class : String_Ptr) is
    begin
       Num_Signals := Num_Signals + 1;
+      Signals (Num_Signals).Widget := Widget;
       Signals (Num_Signals).Signal := Signal;
-      Signals (Num_Signals).Class := Class;
+      Signals (Num_Signals).Class  := Class;
    end Add_Signal;
 
    ------------------------------
@@ -186,6 +188,39 @@ package body Glib.Glade is
       return Q;
    end Find_Top_Widget;
 
+   ----------------
+   -- Find_Child --
+   ----------------
+
+   function Find_Child (N : Node_Ptr; Tag : String) return Node_Ptr is
+      P    : Node_Ptr := N;
+      Node : Node_Ptr;
+
+   begin
+      if N.Tag.all = Tag then
+         return N;
+      end if;
+
+      while P /= null loop
+         if P.Tag.all = Tag then
+            return P;
+         end if;
+
+         if P.Child /= null then
+            Node := Find_Child (P.Child, Tag);
+
+            if Node /= null then
+               return Node;
+            end if;
+         end if;
+
+         P := P.Next;
+      end loop;
+
+      return null;
+   end Find_Child;
+
+   ---------------------
    ------------
    -- To_Ada --
    ------------
@@ -670,7 +705,7 @@ package body Glib.Glade is
          Handler := Get_Field (P, "handler");
          Class := Get_Field (N, "class");
          Add_Signal_Instanciation (Class);
-         Add_Signal (Handler, Class);
+         Add_Signal (Top, Handler, Class);
          Put_Line (File, "   Cb_Id := " &
            To_Ada (Class (Class'First + 3 .. Class'Last)) &
            "_Callback.Connect");
@@ -694,58 +729,89 @@ package body Glib.Glade is
    function Gen_Signal_Instanciations (Project : String; File : File_Type)
      return Natural
    is
-      S   : String_Ptr;
+      S       : String_Ptr;
+      SR      : Signal_Rec;
+      Prev_SR : Signal_Rec;
+
    begin
-      if Num_Signal_Instanciations = 0 then
-         Put_Line (File, "package Callbacks_" & Project & " is");
-         Put_Line (File, "end Callbacks_" & Project & ";");
-
-      else
+      if Num_Signal_Instanciations > 0 then
          Put_Line (File, "with Gtk.Signal;");
-
-         for J in Signal_Range'First .. Num_Signal_Instanciations loop
-            S := Signal_Instanciations (J);
-            Put_Line (File, "with Gtk." &
-              To_Ada (S (S'First + 3 .. S'Last)) & "; use Gtk." &
-              To_Ada (S (S'First + 3 .. S'Last)) & ";");
-         end loop;
-
-         New_Line (File);
-         Put_Line (File, "package Callbacks_" & Project & " is");
-         New_Line (File);
-
-         for J in Signal_Range'First .. Num_Signal_Instanciations loop
-            S := Signal_Instanciations (J);
-            Put_Line (File, "   package " &
-              To_Ada (S (S'First + 3 .. S'Last)) & "_Callback is new");
-            Put_Line (File, "     Gtk.Signal.Void_Callback (" &
-              To_Ada (S.all) & "_Record);");
-            New_Line (File);
-         end loop;
-
-         for J in Signal_Range'First .. Num_Signals loop
-            Put_Line (File, "   procedure " & To_Ada (Signals (J).Signal.all));
-            Put_Line (File, "     (Object : access " &
-              To_Ada (Signals (J).Class.all) & "_Record);");
-            New_Line (File);
-         end loop;
-
-         Put_Line (File, "end Callbacks_" & Project & ";");
-         Put_Line (File, "package body Callbacks_" & Project & " is");
-         New_Line (File);
-
-         for J in Signal_Range'First .. Num_Signals loop
-            Put_Line (File, "   procedure " & To_Ada (Signals (J).Signal.all));
-            Put_Line (File, "     (Object : access " &
-              To_Ada (Signals (J).Class.all) & "_Record) is");
-            Put_Line (File, "   begin");
-            Put_Line (File, "      null;");
-            Put_Line (File, "   end " & To_Ada (Signals (J).Signal.all) & ";");
-            New_Line (File);
-         end loop;
-
-         Put_Line (File, "end Callbacks_" & Project & ";");
       end if;
+
+      for J in Signal_Range'First .. Num_Signal_Instanciations loop
+         S := Signal_Instanciations (J);
+
+         Put_Line (File, "with Gtk." &
+           To_Ada (S (S'First + 3 .. S'Last)) & "; use Gtk." &
+           To_Ada (S (S'First + 3 .. S'Last)) & ";");
+      end loop;
+
+      New_Line (File);
+      Put_Line (File, "package Callbacks_" & Project & " is");
+      New_Line (File);
+
+      for J in Signal_Range'First .. Num_Signal_Instanciations loop
+         S := Signal_Instanciations (J);
+         Put_Line (File, "   package " &
+           To_Ada (S (S'First + 3 .. S'Last)) & "_Callback is new");
+         Put_Line (File, "     Gtk.Signal.Void_Callback (" &
+           To_Ada (S.all) & "_Record);");
+         New_Line (File);
+      end loop;
+
+      Put_Line (File, "end Callbacks_" & Project & ";");
+
+      for J in Signal_Range'First .. Num_Signals loop
+         SR := Signals (J);
+
+         if Prev_SR.Widget = null or else SR.Widget /= Prev_SR.Widget then
+            Prev_SR := SR;
+            Put_Line (File, "package " & To_Ada (SR.Widget.all) &
+              "_Pkg.Callbacks is");
+
+            for J in Signal_Range'First .. Num_Signals loop
+               if Signals (J).Widget.all = SR.Widget.all then
+                  Put_Line (File, "   procedure " &
+                    To_Ada (Signals (J).Signal.all));
+                  Put_Line (File, "     (Object : access " &
+                    To_Ada (Signals (J).Class.all) & "_Record);");
+                  New_Line (File);
+               end if;
+            end loop;
+
+            Put_Line (File, "end " & To_Ada (SR.Widget.all) &
+              "_Pkg.Callbacks;");
+            Put_Line (File, "package body " & To_Ada (SR.Widget.all) &
+              "_Pkg.Callbacks is");
+            New_Line (File);
+
+            for J in Signal_Range'First .. Num_Signals loop
+               if Signals (J).Widget.all = SR.Widget.all then
+                  declare
+                     Signal : constant String :=
+                       To_Ada (Signals (J).Signal.all);
+                     Dashes : constant String (1 .. Signal'Length + 8) :=
+                       (others => '-');
+                  begin
+                     Put_Line (File, "   " & Dashes);
+                     Put_Line (File, "   --  " & Signal & "  --");
+                     Put_Line (File, "   " & Dashes);
+                     New_Line (File);
+                     Put_Line (File, "   procedure " & Signal);
+                     Put_Line (File, "     (Object : access " &
+                       To_Ada (Signals (J).Class.all) & "_Record) is");
+                     Put_Line (File, "   begin");
+                     Put_Line (File, "      null;");
+                     Put_Line (File, "   end " & Signal & ";");
+                     New_Line (File);
+                  end;
+               end if;
+            end loop;
+
+            Put_Line (File, "end " & To_Ada (SR.Widget.all) &
+              "_Pkg.Callbacks;");
+         end if;
+      end loop;
 
       return Num_Signal_Instanciations;
    end Gen_Signal_Instanciations;

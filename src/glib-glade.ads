@@ -62,6 +62,9 @@ package Glib.Glade is
    function Find_Top_Widget (N : Node_Ptr) return Node_Ptr;
    --  Find a node in the ancestors of N that represents a root widget
 
+   function Find_Child (N : Node_Ptr; Tag : String) return Node_Ptr;
+   --  Find a node in the children of N with a given Tag
+
    function To_Ada (S : String; Separator : Character := '_') return String;
    --  Convert S by adding a separator before each upper case character and
    --  by putting in upper case each character following a separator.

@@ -27,7 +27,6 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Glib; use Glib;
 pragma Warnings (Off);
 with Gtk.Accel_Label;
 with Gtk.Adjustment;
