@@ -32,6 +32,16 @@ pragma Elaborate_All (Glib.Generic_Properties);
 
 package Pango.Enums is
 
+   Pango_Scale : constant := 1024;
+   --  All internal units in Pango are expressed in terms of this unit. A
+   --  typical pango size must be divided by Pango_Scale to get the equivalent
+   --  in pixels.
+
+   function To_Pixels (Pango_Units : Gint) return Gint;
+   --  Convert a size in pango units to pixels. This is a rounding of
+   --  Pango_Units divided by Pango_Scale
+
+
    --  Enum types are bound with the following algorithm:
    --    + the "Pango" prefix of the type name is stripped
    --    + Each word of the type name is separated by '_'
