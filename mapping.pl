@@ -134,7 +134,7 @@ sub check_undefined
     while (<FILE>)
     {
       chop;
-      if (/^(\S+)\s+(gtk_\S+)\s+\((.*)/)
+      if (/^(\S+)\s+(g[td]k_\S+)\s+\((.*)/)
       {
 	$func_name = $2;
 	$return = $1;
@@ -198,7 +198,7 @@ sub convert_c
     return "Guint";
   } elsif ($type eq "constgchar*") {
     return "String";
-  } elsif ($type =~ /Gtk([^*]+)\*/) {
+  } elsif ($type =~ /G[dt]k([^*]+)\*/) {
     return "System.Address";
   } else {
     return $type;
@@ -217,11 +217,12 @@ sub convert_type
     return "Guint";
   } elsif ($type eq "constgchar*") {
     return "String";
-  } elsif ($type =~ /Gtk([^*]+)\*/) {
-    my ($t) = $1;
+  } elsif ($type =~ /(G[dt]k)([^*]+)\*/) {
+    my ($t) = $2;
+    my ($prefix) = $1;
     return "Object'Class" if ($t eq "Object");
     $t =~ s/(.)([A-Z])/$1_$2/g;
-    return "Gtk.$t.$t\'Class";
+    return "$prefix.$t.$t\'Class";
   } else {
     $type =~ s/(.)([A-Z])/$1_$2/g;
     return $type;
@@ -276,7 +277,7 @@ sub ada_style
       substr ($entity, $i + 1, 1) = uc (substr ($entity, $i + 1, 1));
     }
   }
-  $entity =~ s/^Gtk_//;
+  $entity =~ s/^G[td]k_//;
   return $entity;
 }
 
@@ -330,7 +331,7 @@ sub print_function
     {
       my ($type, $name) = /^(.*[ *])(\w+)$/;
       print ", " unless ($first);
-      if ( $type =~ /Gtk([^*]+)\*/)
+      if ( $type =~ /G[td]k([^*]+)\*/)
       {
 	print "Get_Object (", &ada_style ($name), ")";
       }
