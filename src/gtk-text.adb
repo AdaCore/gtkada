@@ -398,7 +398,7 @@ package body Gtk.Text is
       --  Note also that we keep Class_Record, so that the memory allocation
       --  is done only once.
       Gtk.Object.Initialize_Class_Record
-        (Text, Signals, Class_Record, Signal_Parameters);
+        (Text, Signals, Class_Record, "GtkadaText", Signal_Parameters);
 
       --  If no Adjustment specified, then create new ones
       if H_Adj = Adjustment.Null_Adjustment then
@@ -455,7 +455,6 @@ package body Gtk.Text is
       --  See [1] above.
 
       --  "move_page" signal handling not supported for the moment.???
-
    end Initialize;
 
    -------------
