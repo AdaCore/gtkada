@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -44,24 +44,6 @@
 #include <gtk/gtktextview.h>
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkwidget.h>
-
-#ifndef _WIN32  /* Assuming X11 */
-#include <gdk/gdkx.h>
-
-guint32
-ada_get_xwindow (GdkWindow *w)
-{
-  return GDK_WINDOW_XWINDOW (w);
-}
-
-#else
-
-guint32
-ada_get_xwindow (GdkWindow *w)
-{
-  return 0;
-}
-#endif
 
 gint
 convert_a (void* a)
@@ -781,18 +763,14 @@ ada_gdk_gc_set_ts_origin (GdkGCValues* values,
 #ifdef _WIN32
 #define ada_gdk_invalid_gdouble_value 1.79769313486232e308
 #define ada_gdk_invalid_gint_value (2<<31-1)
-#define ada_gdk_invalid_gint16_value (2<<15-1)
 #define ada_gdk_invalid_guint_value (2<<32-1)
-#define ada_gdk_invalid_guint16_value (2<<16-1)
 #define ada_gdk_invalid_guint32_value (2<<32-1)
 #define ada_gdk_invalid_gulong_value (2<<32-1)
 
 #else
 extern const gdouble ada_gdk_invalid_gdouble_value;
 extern const gint    ada_gdk_invalid_gint_value;
-extern const gint16  ada_gdk_invalid_gint16_value;
 extern const guint   ada_gdk_invalid_guint_value;
-extern const guint16 ada_gdk_invalid_guint16_value;
 extern const guint32 ada_gdk_invalid_guint32_value;
 extern const gulong  ada_gdk_invalid_gulong_value;
 #endif
@@ -846,7 +824,7 @@ gdouble ada_gdk_event_get_y (GdkEvent * event)
   return ada_gdk_invalid_gdouble_value;
 }
 
-gint16 ada_gdk_event_get_width (GdkEvent * event)
+gint ada_gdk_event_get_width (GdkEvent * event)
 {
   switch (event->type)
     {
@@ -855,10 +833,10 @@ gint16 ada_gdk_event_get_width (GdkEvent * event)
     default:
       break;
     }
-  return ada_gdk_invalid_gint16_value;
+  return ada_gdk_invalid_gint_value;
 }
 
-gint16 ada_gdk_event_get_height (GdkEvent * event)
+gint ada_gdk_event_get_height (GdkEvent * event)
 {
   switch (event->type)
     {
@@ -867,7 +845,7 @@ gint16 ada_gdk_event_get_height (GdkEvent * event)
     default:
       break;
     }
-  return ada_gdk_invalid_gint16_value;
+  return ada_gdk_invalid_gint_value;
 }
 
 gdouble ada_gdk_event_get_x_root (GdkEvent * event)
@@ -1354,7 +1332,7 @@ gint ada_gdk_event_set_time (GdkEvent * event, guint32 time)
   return 1;
 }
 
-gint ada_gdk_event_set_width (GdkEvent * event, gint16 width)
+gint ada_gdk_event_set_width (GdkEvent * event, gint width)
 {
   switch (event->type)
     {
@@ -1367,7 +1345,7 @@ gint ada_gdk_event_set_width (GdkEvent * event, gint16 width)
   return 1;
 }
 
-gint ada_gdk_event_set_height (GdkEvent * event, gint16 height)
+gint ada_gdk_event_set_height (GdkEvent * event, gint height)
 {
   switch (event->type)
     {
@@ -2730,14 +2708,14 @@ ada_gdk_window_attr_get_event_mask (GdkWindowAttr *window_attr)
 }
 
 void
-ada_gdk_window_attr_set_x (GdkWindowAttr * window_attr, gint16 x)
+ada_gdk_window_attr_set_x (GdkWindowAttr * window_attr, gint x)
 {
   g_return_if_fail (window_attr != NULL);
   
   window_attr->x = x;
 }
 
-gint16
+gint
 ada_gdk_window_attr_get_x (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, 0);
@@ -2746,14 +2724,14 @@ ada_gdk_window_attr_get_x (GdkWindowAttr *window_attr)
 }
 
 void
-ada_gdk_window_attr_set_y (GdkWindowAttr * window_attr, gint16 y)
+ada_gdk_window_attr_set_y (GdkWindowAttr * window_attr, gint y)
 {
   g_return_if_fail (window_attr != NULL);
   
   window_attr->y = y;
 }
   
-gint16
+gint
 ada_gdk_window_attr_get_y (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, 0);
@@ -2762,14 +2740,14 @@ ada_gdk_window_attr_get_y (GdkWindowAttr *window_attr)
 }
 
 void
-ada_gdk_window_attr_set_width (GdkWindowAttr * window_attr, gint16 width)
+ada_gdk_window_attr_set_width (GdkWindowAttr * window_attr, gint width)
 {
   g_return_if_fail (window_attr != NULL);
   
   window_attr->width = width;
 }
   
-gint16
+gint
 ada_gdk_window_attr_get_width (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, 0);
@@ -2778,14 +2756,14 @@ ada_gdk_window_attr_get_width (GdkWindowAttr *window_attr)
 }
 
 void
-ada_gdk_window_attr_set_height (GdkWindowAttr * window_attr, gint16 height)
+ada_gdk_window_attr_set_height (GdkWindowAttr * window_attr, gint height)
 {
   g_return_if_fail (window_attr != NULL);
   
   window_attr->height = height;
 }
   
-gint16
+gint
 ada_gdk_window_attr_get_height (GdkWindowAttr *window_attr)
 {
   g_return_val_if_fail (window_attr != NULL, 0);
