@@ -1,4 +1,4 @@
-EXEC=contextual banner toggle
+EXEC=contextual banner toggle glist_traverse
 
 all: ${EXEC}
 
