@@ -92,6 +92,15 @@ ada_gtk_micro_version () {
 }
 
 /********************************************************************
+ **  This function should only be used for debug purposes.
+ ********************************************************************/
+
+guint
+ada_gtk_debug_get_ref_count (GObject* object) {
+  return G_OBJECT (object)->ref_count;
+}
+
+/********************************************************************
  **  Returns the real widget name (as opposed to gtk_widget_get_name,
  **  this one returns NULL instead of the class name if no name was
  **  set.
