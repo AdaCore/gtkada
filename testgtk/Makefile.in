@@ -38,7 +38,7 @@ $(target): ../*.ad[sb] *.ad[sb]
 	@$(GNATMAKE) $(GNATFLAGS) $(target) $(ALL_CFLAGS) -largs $(GNATMAKELDFLAGS)
 
 static: ../*.ad[sb] *.ad[sb]
-	$(GNATMAKE) $(GNATMAKEFLAGS) $(target) -largs $(MALLOC_FLAGS) $(GNATMAKELDFLAGS_STATIC)
+	$(GNATMAKE) $(GNATMAKEFLAGS) $(target) $(ALL_CFLAGS) -largs $(MALLOC_FLAGS) $(GNATMAKELDFLAGS_STATIC)
 
 
 install:
