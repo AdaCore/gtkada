@@ -26,7 +26,7 @@
 -- executable file  might be covered by the  GNU Public License.     --
 -----------------------------------------------------------------------
 
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Interfaces.C.Strings; use Interfaces.C, Interfaces.C.Strings;
 with Glib.Object; use Glib.Object;
 with Glib.Values; use Glib.Values;
 
@@ -977,5 +977,73 @@ package body Glib.Properties.Creation is
                 Internal_Set_Property_Handler'Address,
                 Internal_Get_Property_Handler'Address);
    end Set_Properties_Handlers;
+
+   --------------------------
+   -- Register_Static_Enum --
+   --------------------------
+
+   function Register_Static_Enum
+     (Name   : String;
+      Values : Interfaces.C.Strings.chars_ptr_array) return Glib.GType
+   is
+      type Byte is range 0 .. 255;
+      for Byte'Size use 8;
+
+      function C_Enum_Value_Size return Natural;
+      pragma Import (C, C_Enum_Value_Size, "ada_c_enum_value_size");
+      type C_Enum_Value is array (1 .. C_Enum_Value_Size) of Byte;
+      pragma Pack (C_Enum_Value);
+
+      type Enum_Value_Array is array (Gint range <>) of C_Enum_Value;
+      type Enum_Value_Array_Access is access all Enum_Value_Array;
+
+      function C_Register_Static
+        (Name   : String; Static_Values : System.Address) return GType;
+      pragma Import (C, C_Register_Static, "g_enum_register_static");
+
+      procedure C_Create_Enum_Value
+        (Value : Gint; Name, Nick : chars_ptr; Enum : out C_Enum_Value);
+      pragma Import (C, C_Create_Enum_Value, "ada_genum_create_enum_value");
+      --  The strings Name and Nick are duplicated
+
+      Arr : constant Enum_Value_Array_Access :=
+        new Enum_Value_Array (0 .. Values'Length);
+   begin
+      for V in Values'Range loop
+         C_Create_Enum_Value
+           (Gint (V - Values'First),
+            Name => Values (V),
+            Nick => Values (V),
+            Enum => Arr (Gint (V) - Gint (Values'First) + Arr'First));
+      end loop;
+      C_Create_Enum_Value (0, Null_Ptr, Null_Ptr, Arr (Arr'Last));
+
+      return C_Register_Static (Name & ASCII.NUL, Arr.all'Address);
+   end Register_Static_Enum;
+
+   ---------------
+   -- Gnew_Enum --
+   ---------------
+
+   function Gnew_Enum
+     (Name, Nick, Blurb : String;
+      Enum_Type         : GType;
+      Default           : Gint := 0;
+      Flags : Param_Flags := Param_Readable or Param_Writable)
+      return Param_Spec
+   is
+      function Internal
+        (Name, Nick, Blurb : String;
+         Enum_Type         : GType;
+         Default           : Gint;
+         Flags             : Param_Flags) return Param_Spec;
+      pragma Import (C, Internal, "g_param_spec_enum");
+   begin
+      return Internal
+        (Name & ASCII.NUL, Nick & ASCII.NUL, Blurb & ASCII.NUL,
+         Enum_Type => Enum_Type,
+         Default   => Default,
+         Flags     => Flags);
+   end Gnew_Enum;
 
 end Glib.Properties.Creation;

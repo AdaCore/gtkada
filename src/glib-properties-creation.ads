@@ -58,6 +58,8 @@
 
 with Glib.Object;
 with Glib.Values;
+with Interfaces.C.Strings;
+
 
 package Glib.Properties.Creation is
 
@@ -110,6 +112,15 @@ package Glib.Properties.Creation is
 
    function Nick (Val : Enum_Value) return String;
    --  Return a displayable string for Val.
+
+   function Register_Static_Enum
+     (Name   : String;
+      Values : Interfaces.C.Strings.chars_ptr_array) return Glib.GType;
+   --  Create a new enumeration class from a list of valid values.
+   --  Values must be freed by the caller.
+
+   function Enum_Class_From_Type (Typ : Glib.GType) return Enum_Class;
+   --  Return the enumeration class corresponding to a type
 
    -------------------
    -- Flags classes --
@@ -266,6 +277,14 @@ package Glib.Properties.Creation is
    type Param_Spec_Enum is new Param_Spec;
    function Enumeration (Param : Param_Spec_Enum) return Enum_Class;
    function Default (Param : Param_Spec_Enum) return Glib.Gint;
+   function Gnew_Enum
+     (Name, Nick, Blurb : String;
+      Enum_Type         : GType;
+      Default           : Gint := 0;
+      Flags : Param_Flags := Param_Readable or Param_Writable)
+      return Param_Spec;
+   --  See Glib.Properties.Creation.Register_Static_Enum on how to create
+   --  Enum_Type
 
    --  Value_Type returns GType_Flags
    type Param_Spec_Flags is new Param_Spec;
@@ -440,6 +459,7 @@ private
    pragma Import (C, Unref, "g_param_spec_unref");
    pragma Import (C, Get_Qdata, "g_param_spec_get_gdata");
    pragma Import (C, Set_Qdata, "g_param_spec_set_gdata_full");
+   pragma Import (C, Enum_Class_From_Type, "g_type_class_ref");
    pragma Inline (Description);
    pragma Inline (Name);
 
