@@ -5,7 +5,7 @@
 
 @dircategory User Interface Toolkit
 @direntry
-* GTKAda_Rm: (gtkada_rm).           Ada '95 Binding to GTK+ Reference Manual
+* GtkAda_Rm: (gtkada_rm).           Ada95 graphical tookit based on GTK+ (Reference Manual)
 @end direntry 
 
 @c --------------------------------------------
