@@ -85,16 +85,16 @@ package body Gtk.Text is
      new Text_Callback.Marshallers.Generic_Marshaller
        (Boolean, Glib.Values.Get_Boolean);
 
-   --
-   --  Forward declarations
-   --
+   --------------------------
+   -- Forward declarations --
+   --------------------------
 
    procedure Get_Range_Iter
-     (Buffer : Text_Buffer.Gtk_Text_Buffer;
-      Start_Pos : Gint := 0;
-      End_Pos : Gint := -1;
-      Start_Iter : out Text_Iter.Gtk_Text_Iter;
-      End_Iter : out Text_Iter.Gtk_Text_Iter;
+     (Buffer      : Text_Buffer.Gtk_Text_Buffer;
+      Start_Pos   : Gint := 0;
+      End_Pos     : Gint := -1;
+      Start_Iter  : out Text_Iter.Gtk_Text_Iter;
+      End_Iter    : out Text_Iter.Gtk_Text_Iter;
       Valid_Range : out Boolean);
    --  Convert the Character offset range into a range delimited by
    --  Start_Iter and End_Iter. End_Iter is set to the end of the buffer
@@ -104,9 +104,9 @@ package body Gtk.Text is
    --  Iterators returned are undefined.
 
    procedure Set_Color_Property
-     (Tag   : Text_Tag.Gtk_Text_Tag;
+     (Tag           : Text_Tag.Gtk_Text_Tag;
       Property_Name : String;
-      Color : Gdk.Color.Gdk_Color);
+      Color         : Gdk.Color.Gdk_Color);
    --  Assign Color to the Tag property which name is Property_Name.
    --  ??? Temporary hack until the final property mechanism is put in place.
 
@@ -133,7 +133,7 @@ package body Gtk.Text is
       N      : Gint);
 
    procedure Set_Editable_Cb
-     (Widget : access Gtk_Text_Record'Class;
+     (Widget      : access Gtk_Text_Record'Class;
       Is_Editable : Boolean);
 
    --------------------
@@ -141,15 +141,15 @@ package body Gtk.Text is
    --------------------
 
    procedure Get_Range_Iter
-     (Buffer : Text_Buffer.Gtk_Text_Buffer;
-      Start_Pos : Gint := 0;
-      End_Pos : Gint := -1;
-      Start_Iter : out Text_Iter.Gtk_Text_Iter;
-      End_Iter : out Text_Iter.Gtk_Text_Iter;
+     (Buffer      : Text_Buffer.Gtk_Text_Buffer;
+      Start_Pos   : Gint := 0;
+      End_Pos     : Gint := -1;
+      Start_Iter  : out Text_Iter.Gtk_Text_Iter;
+      End_Iter    : out Text_Iter.Gtk_Text_Iter;
       Valid_Range : out Boolean) is
    begin
       --  Check the validity of the range
-      if End_Pos >= 0  and then End_Pos <= Start_Pos then
+      if End_Pos >= 0 and then End_Pos <= Start_Pos then
          Valid_Range := False;
          return;
       end if;
@@ -169,7 +169,6 @@ package body Gtk.Text is
       else
          Text_Buffer.Get_Iter_At_Offset (Buffer, End_Iter, End_Pos);
       end if;
-
    end Get_Range_Iter;
 
    ------------------------
@@ -177,18 +176,19 @@ package body Gtk.Text is
    ------------------------
 
    procedure Set_Color_Property
-     (Tag   : Text_Tag.Gtk_Text_Tag;
+     (Tag           : Text_Tag.Gtk_Text_Tag;
       Property_Name : String;
-      Color : Gdk.Color.Gdk_Color)
+      Color         : Gdk.Color.Gdk_Color)
    is
       procedure Internal
-        (Object : System.Address;
-         Property_Name : String;
-         Color : Gdk.Color.Gdk_Color;
+        (Object          : System.Address;
+         Property_Name   : String;
+         Color           : Gdk.Color.Gdk_Color;
          End_List_Marker : System.Address := System.Null_Address);
       pragma Import (C, Internal, "g_object_set");
       --  Note that the pragma Import ensures that Color is passed by ref,
       --  which is what we need.
+
    begin
       Internal (Get_Object (Tag), Property_Name & ASCII.NUL, Color);
    end Set_Color_Property;
@@ -214,16 +214,17 @@ package body Gtk.Text is
       Start_Pos : constant Gint :=
         Text_Iter.Get_Offset
           (Text_Iter.Get_Text_Iter (Glib.Values.Nth (Params, 1)));
-      End_Pos : constant Gint :=
+      End_Pos   : constant Gint :=
         Text_Iter.Get_Offset
           (Text_Iter.Get_Text_Iter (Glib.Values.Nth (Params, 2)));
 
       procedure Emit_By_Name
-        (Object : System.Address;
-         Name : String;
+        (Object    : System.Address;
+         Name      : String;
          Start_Pos : Gint;
-         End_Pos : Gint);
+         End_Pos   : Gint);
       pragma Import (C, Emit_By_Name, "g_signal_emit_by_name");
+
    begin
       Emit_By_Name (Get_Object (Widget), "delete_text", Start_Pos, End_Pos);
    end Delete_Range_Handler;
@@ -238,21 +239,23 @@ package body Gtk.Text is
    is
       Text_Length : constant Gint :=
         Glib.Values.Get_Int (Value => Glib.Values.Nth (Params, 3));
-      Text : constant String :=
+      Text        : constant String :=
         Glib.Values.Get_String
           (Value => Glib.Values.Nth (Params, 2), Length => Text_Length);
-      Position : aliased Gint;
+      Position    : aliased Gint;
 
       procedure Emit_By_Name
-        (Object : System.Address;
-         Name : String;
-         Text : String;
-         Length : Gint;
+        (Object   : System.Address;
+         Name     : String;
+         Text     : String;
+         Length   : Gint;
          Position : System.Address);
       pragma Import (C, Emit_By_Name, "g_signal_emit_by_name");
+
    begin
-      Position := Text_Iter.Get_Offset
-                    (Text_Iter.Get_Text_Iter (Glib.Values.Nth (Params, 1)));
+      Position :=
+        Text_Iter.Get_Offset
+          (Text_Iter.Get_Text_Iter (Glib.Values.Nth (Params, 1)));
       Emit_By_Name
         (Get_Object (Widget), "insert_text",
          Text, Text_Length, Position'Address);
@@ -267,12 +270,13 @@ package body Gtk.Text is
       Params : Glib.Values.GValues)
    is
       Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Widget);
-      X : constant Gint :=
+      X      : constant Gint :=
         Glib.Values.Get_Int (Glib.Values.Nth (Params, 1));
-      Y : constant Gint :=
+      Y      : constant Gint :=
         Glib.Values.Get_Int (Glib.Values.Nth (Params, 2));
       Iter, End_Iter : Text_Iter.Gtk_Text_Iter;
       Line, Offset, Last_Line_Index : Gint;
+
    begin
       Text_Buffer.Get_Iter_At_Mark
         (Buffer, Iter, Text_Buffer.Get_Insert (Buffer));
@@ -284,20 +288,24 @@ package body Gtk.Text is
 
       --  Move Iter to the new line, being careful not to go out of the buffer.
       Line := Line + Y;
+
       if Line < 0 then
          Line := 0;
       elsif Line > Last_Line_Index then
          Line := Last_Line_Index;
       end if;
+
       Text_Buffer.Get_Iter_At_Line (Buffer, Iter, Line);
 
       --  Move Iter to the new offset, being careful not to go out of the line.
       Offset := Offset + X;
+
       if Offset < 0 then
          Offset := 0;
       elsif Offset > Text_Iter.Get_Chars_In_Line (Iter) then
          Offset := Text_Iter.Get_Chars_In_Line (Iter);
       end if;
+
       Text_Iter.Set_Line_Offset (Iter, Offset);
 
       --  Now move the cursor to the position of Iter
@@ -312,9 +320,11 @@ package body Gtk.Text is
      (Widget : access Gtk_Text_Record'Class;
       N      : Gint)
    is
-      Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Widget);
-      Iter : Text_Iter.Gtk_Text_Iter;
+      Buffer         : constant Text_Buffer.Gtk_Text_Buffer :=
+        Get_Buffer (Widget);
+      Iter           : Text_Iter.Gtk_Text_Iter;
       Ignored_Result : Boolean;
+
    begin
       if N = 0 then
          return;
@@ -328,6 +338,7 @@ package body Gtk.Text is
       else
          Text_Iter.Backward_Word_Starts (Iter, -N, Ignored_Result);
       end if;
+
       Text_Buffer.Place_Cursor (Buffer, Iter);
    end Move_Word_Cb;
 
@@ -336,7 +347,7 @@ package body Gtk.Text is
    ---------------------
 
    procedure Set_Editable_Cb
-     (Widget : access Gtk_Text_Record'Class;
+     (Widget      : access Gtk_Text_Record'Class;
       Is_Editable : Boolean) is
    begin
       Set_Editable (Widget, Is_Editable);
@@ -366,8 +377,7 @@ package body Gtk.Text is
    procedure Initialize
      (Text : access Gtk_Text_Record'Class;
       Hadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment;
-      Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment)
-   is
+      Vadj : in Adjustment.Gtk_Adjustment := Adjustment.Null_Adjustment) is
    begin
       Text_View.Initialize (Text, null);
 
@@ -471,10 +481,11 @@ package body Gtk.Text is
    procedure Delete_Selection (Editable : access Gtk_Text_Record) is
       Dummy : Boolean;
    begin
-      Dummy := Text_Buffer.Delete_Selection
-                  (Get_Buffer (Editable),
-                   Interactive => False,
-                   Default_Editable => True);
+      Dummy :=
+        Text_Buffer.Delete_Selection
+          (Get_Buffer (Editable),
+           Interactive => False,
+           Default_Editable => True);
    end Delete_Selection;
 
    -----------------
@@ -486,9 +497,12 @@ package body Gtk.Text is
       Start_Pos : in Gint := 0;
       End_Pos   : in Gint := -1)
    is
-      Start_Iter, End_Iter : Gtk.Text_Iter.Gtk_Text_Iter;
-      Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Editable);
+      Start_Iter     : Gtk.Text_Iter.Gtk_Text_Iter;
+      End_Iter       : Gtk.Text_Iter.Gtk_Text_Iter;
+      Buffer         : constant Text_Buffer.Gtk_Text_Buffer :=
+        Get_Buffer (Editable);
       Range_Is_Valid : Boolean;
+
    begin
       Get_Range_Iter
         (Buffer, Start_Pos, End_Pos, Start_Iter, End_Iter, Range_Is_Valid);
@@ -501,13 +515,16 @@ package body Gtk.Text is
    end Delete_Text;
 
    function Get_Chars
-      (Editable  : access Gtk_Text_Record;
-       Start_Pos : in Gint := 0;
-       End_Pos   : in Gint := -1) return String
+     (Editable  : access Gtk_Text_Record;
+      Start_Pos : in Gint := 0;
+      End_Pos   : in Gint := -1) return String
    is
-      Start_Iter, End_Iter : Gtk.Text_Iter.Gtk_Text_Iter;
-      Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Editable);
+      Start_Iter     : Gtk.Text_Iter.Gtk_Text_Iter;
+      End_Iter       : Gtk.Text_Iter.Gtk_Text_Iter;
+      Buffer         : constant Text_Buffer.Gtk_Text_Buffer :=
+        Get_Buffer (Editable);
       Range_Is_Valid : Boolean;
+
    begin
       Get_Range_Iter
         (Buffer, Start_Pos, End_Pos, Start_Iter, End_Iter, Range_Is_Valid);
@@ -530,12 +547,16 @@ package body Gtk.Text is
    function Get_Selection_End_Pos
      (Widget : access Gtk_Text_Record) return Guint
    is
-      Start_Iter, End_Iter : Text_Iter.Gtk_Text_Iter;
+      Start_Iter       : Text_Iter.Gtk_Text_Iter;
+      End_Iter         : Text_Iter.Gtk_Text_Iter;
       Selection_Exists : Boolean;
-      Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Widget);
+      Buffer           : constant Text_Buffer.Gtk_Text_Buffer :=
+        Get_Buffer (Widget);
+
    begin
       Text_Buffer.Get_Selection_Bounds
         (Buffer, Start_Iter, End_Iter, Selection_Exists);
+
       if Selection_Exists then
          return Guint (Text_Iter.Get_Offset (End_Iter));
       else
@@ -550,12 +571,16 @@ package body Gtk.Text is
    function Get_Selection_Start_Pos
      (Widget : access Gtk_Text_Record) return Guint
    is
-      Start_Iter, End_Iter : Text_Iter.Gtk_Text_Iter;
+      Start_Iter       : Text_Iter.Gtk_Text_Iter;
+      End_Iter         : Text_Iter.Gtk_Text_Iter;
       Selection_Exists : Boolean;
-      Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Widget);
+      Buffer           : constant Text_Buffer.Gtk_Text_Buffer :=
+        Get_Buffer (Widget);
+
    begin
       Text_Buffer.Get_Selection_Bounds
         (Buffer, Start_Iter, End_Iter, Selection_Exists);
+
       if Selection_Exists then
          return Guint (Text_Iter.Get_Offset (Start_Iter));
       else
@@ -572,8 +597,10 @@ package body Gtk.Text is
       New_Text : in String;
       Position : in out Gint)
    is
-      Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Editable);
+      Buffer     : constant Text_Buffer.Gtk_Text_Buffer :=
+        Get_Buffer (Editable);
       Start_Iter : Text_Iter.Gtk_Text_Iter;
+
    begin
       Text_Buffer.Get_Iter_At_Offset (Buffer, Start_Iter, Position);
       Text_Buffer.Insert (Buffer, Start_Iter, New_Text);
@@ -598,12 +625,16 @@ package body Gtk.Text is
    procedure Select_Region
      (Editable : access Gtk_Text_Record;
       Start    : in Gint;
-      The_End  : in Gint := -1) is
-      Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Editable);
+      The_End  : in Gint := -1)
+   is
+      Buffer         : constant Text_Buffer.Gtk_Text_Buffer :=
+        Get_Buffer (Editable);
       Selection_Mark : Text_Mark.Gtk_Text_Mark;
-      Insert_Mark : Text_Mark.Gtk_Text_Mark;
-      Start_Iter, End_Iter : Text_Iter.Gtk_Text_Iter;
+      Insert_Mark    : Text_Mark.Gtk_Text_Mark;
+      Start_Iter     : Text_Iter.Gtk_Text_Iter;
+      End_Iter       : Text_Iter.Gtk_Text_Iter;
       Range_Is_Valid : Boolean;
+
    begin
       Get_Range_Iter
         (Buffer, Start, The_End, Start_Iter, End_Iter, Range_Is_Valid);
@@ -628,7 +659,8 @@ package body Gtk.Text is
       Position : Gint)
    is
       Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Editable);
-      Iter : Text_Iter.Gtk_Text_Iter;
+      Iter   : Text_Iter.Gtk_Text_Iter;
+
    begin
       Text_Buffer.Get_Iter_At_Offset (Buffer, Iter, Position);
       Text_Buffer.Place_Cursor (Buffer, Iter);
@@ -638,11 +670,12 @@ package body Gtk.Text is
    -- Get_Position --
    ------------------
 
-   function Get_Position (Editable : access Gtk_Text_Record) return Gint
-   is
-      Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Editable);
+   function Get_Position (Editable : access Gtk_Text_Record) return Gint is
+      Buffer      : constant Text_Buffer.Gtk_Text_Buffer :=
+        Get_Buffer (Editable);
       Insert_Mark : Text_Mark.Gtk_Text_Mark := Text_Buffer.Get_Insert (Buffer);
       Insert_Iter : Text_Iter.Gtk_Text_Iter;
+
    begin
       Text_Buffer.Get_Iter_At_Mark (Buffer, Insert_Iter, Insert_Mark);
       return Text_Iter.Get_Offset (Insert_Iter);
@@ -652,8 +685,8 @@ package body Gtk.Text is
    -- Get_Text_Area --
    -------------------
 
-   function Get_Text_Area (Text : access Gtk_Text_Record)
-     return Gdk.Gdk_Window is
+   function Get_Text_Area
+     (Text : access Gtk_Text_Record) return Gdk.Gdk_Window is
    begin
       return Get_Window (Text, Enums.Text_Window_Text);
    end Get_Text_Area;
@@ -662,12 +695,15 @@ package body Gtk.Text is
    -- Backward_Delete --
    ---------------------
 
-   function Backward_Delete (Text : access Gtk_Text_Record; Nchars : in Guint)
-      return Boolean
+   function Backward_Delete
+     (Text : access Gtk_Text_Record; Nchars : in Guint) return Boolean
    is
-      Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Text);
-      Insert_Iter, Start_Iter : Text_Iter.Gtk_Text_Iter;
+      Buffer        : constant Text_Buffer.Gtk_Text_Buffer :=
+        Get_Buffer (Text);
+      Insert_Iter   : Text_Iter.Gtk_Text_Iter;
+      Start_Iter    : Text_Iter.Gtk_Text_Iter;
       Insert_Offset : Gint;
+
    begin
       Text_Buffer.Get_Iter_At_Mark
         (Buffer, Insert_Iter, Text_Buffer.Get_Insert (Buffer));
@@ -680,8 +716,8 @@ package body Gtk.Text is
       Text_Buffer.Get_Iter_At_Offset
         (Buffer, Start_Iter, Char_Offset => Insert_Offset - Gint (Nchars));
       Text_Buffer.Delete (Buffer, Start_Iter, Insert_Iter);
-      return True;
 
+      return True;
    end Backward_Delete;
 
    --------------------
@@ -690,12 +726,14 @@ package body Gtk.Text is
 
    function Forward_Delete
      (Text   : access Gtk_Text_Record;
-      Nchars : in Guint)
-      return Boolean
+      Nchars : in Guint) return Boolean
    is
-      Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Text);
-      Insert_Iter, End_Iter : Text_Iter.Gtk_Text_Iter;
+      Buffer        : constant Text_Buffer.Gtk_Text_Buffer :=
+        Get_Buffer (Text);
+      Insert_Iter   : Text_Iter.Gtk_Text_Iter;
+      End_Iter      : Text_Iter.Gtk_Text_Iter;
       Insert_Offset : Gint;
+
    begin
       Text_Buffer.Get_Iter_At_Mark
         (Buffer, Insert_Iter, Text_Buffer.Get_Insert (Buffer));
@@ -708,8 +746,8 @@ package body Gtk.Text is
       Text_Buffer.Get_Iter_At_Offset
         (Buffer, End_Iter, Char_Offset => Insert_Offset + Gint (Nchars));
       Text_Buffer.Delete (Buffer, Insert_Iter, End_Iter);
-      return True;
 
+      return True;
    end Forward_Delete;
 
    ------------
@@ -736,8 +774,8 @@ package body Gtk.Text is
    -- Get_Hadj --
    --------------
 
-   function Get_Hadj (Text : access Gtk_Text_Record)
-     return Gtk.Adjustment.Gtk_Adjustment is
+   function Get_Hadj
+     (Text : access Gtk_Text_Record) return Gtk.Adjustment.Gtk_Adjustment is
    begin
       return Text.Hadj;
    end Get_Hadj;
@@ -746,8 +784,8 @@ package body Gtk.Text is
    -- Get_Vadj --
    --------------
 
-   function Get_Vadj (Text : access Gtk_Text_Record)
-     return Gtk.Adjustment.Gtk_Adjustment is
+   function Get_Vadj
+     (Text : access Gtk_Text_Record) return Gtk.Adjustment.Gtk_Adjustment is
    begin
       return Text.Vadj;
    end Get_Vadj;
@@ -766,7 +804,7 @@ package body Gtk.Text is
    ---------------
 
    function Get_Point (Text : access Gtk_Text_Record) return Guint is
-      Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Text);
+      Buffer      : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Text);
       Insert_Iter : Text_Iter.Gtk_Text_Iter;
    begin
       Text_Buffer.Get_Iter_At_Mark
@@ -786,16 +824,19 @@ package body Gtk.Text is
       Chars  : in String := "";
       Length : in Gint := -1)
    is
-      Buffer : constant Text_Buffer.Gtk_Text_Buffer := Get_Buffer (Text);
-      Insert_Mark : Text_Mark.Gtk_Text_Mark := Text_Buffer.Get_Insert (Buffer);
-      Start_Mark : Text_Mark.Gtk_Text_Mark;
-      Total_Length : Natural;
-      Start_Iter, End_Iter : Text_Iter.Gtk_Text_Iter;
+      Buffer        : constant Text_Buffer.Gtk_Text_Buffer :=
+        Get_Buffer (Text);
+      Insert_Mark   : Text_Mark.Gtk_Text_Mark :=
+        Text_Buffer.Get_Insert (Buffer);
+      Start_Mark    : Text_Mark.Gtk_Text_Mark;
+      Total_Length  : Natural;
+      Start_Iter    : Text_Iter.Gtk_Text_Iter;
+      End_Iter      : Text_Iter.Gtk_Text_Iter;
       Text_Prop_Tag : Text_Tag.Gtk_Text_Tag;
 
       use type Gdk.Color.Gdk_Color;
-   begin
 
+   begin
       if Length < 0 then
          Total_Length := Chars'Length;
       else
@@ -805,8 +846,9 @@ package body Gtk.Text is
       --  Create an anonymous mark at the point of insertion to be able
       --  to change the color properties of the inserted text. We do this
       --  only if specific colors were specified.
+
       if Fore /= Gdk.Color.Null_Color
-         or else Back /= Gdk.Color.Null_Color
+        or else Back /= Gdk.Color.Null_Color
       then
          Text_Buffer.Get_Iter_At_Mark (Buffer, Start_Iter, Insert_Mark);
          Start_Mark := Text_Buffer.Create_Mark (Buffer, Where => Start_Iter);
@@ -819,7 +861,7 @@ package body Gtk.Text is
       --  (note that we ignore the Font since the tags mechanism of the
       --  text_view widget does not support the usage of Gdk_Font).
       if Fore /= Gdk.Color.Null_Color
-         or else Back /= Gdk.Color.Null_Color
+        or else Back /= Gdk.Color.Null_Color
       then
          Text_Tag.Gtk_New (Text_Prop_Tag);
 
@@ -840,9 +882,7 @@ package body Gtk.Text is
 
          --  And apply the text properties tag between those two iterators.
          Text_Buffer.Apply_Tag (Buffer, Text_Prop_Tag, Start_Iter, End_Iter);
-
       end if;
-
    end Insert;
 
    ---------------------
@@ -852,8 +892,7 @@ package body Gtk.Text is
    procedure Set_Adjustments
      (Text : access Gtk_Text_Record;
       Hadj : Gtk.Adjustment.Gtk_Adjustment;
-      Vadj : Gtk.Adjustment.Gtk_Adjustment)
-   is
+      Vadj : Gtk.Adjustment.Gtk_Adjustment) is
    begin
       Text.Hadj := Hadj;
       Text.Vadj := Vadj;
@@ -865,7 +904,8 @@ package body Gtk.Text is
 
    procedure Set_Line_Wrap
      (Text      : access Gtk_Text_Record;
-      Line_Wrap : in Boolean := True) is
+      Line_Wrap : in Boolean := True)
+   is
       Wrap_Mode : Gtk.Enums.Gtk_Wrap_Mode := Get_Wrap_Mode (Text);
    begin
       if Line_Wrap then
@@ -876,9 +916,11 @@ package body Gtk.Text is
                  Gtk.Enums.Wrapmode_Word =>
                null;
          end case;
+
       else
          Wrap_Mode := Gtk.Enums.Wrapmode_None;
       end if;
+
       Set_Wrap_Mode (Text, Wrap_Mode);
    end Set_Line_Wrap;
 
@@ -903,6 +945,7 @@ package body Gtk.Text is
                Wrap_Mode := Gtk.Enums.Wrapmode_Char;
          end case;
       end if;
+
       Set_Wrap_Mode (Text, Wrap_Mode);
    end Set_Word_Wrap;
 
