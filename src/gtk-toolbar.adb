@@ -654,9 +654,9 @@ package body Gtk.Toolbar is
                   Put (File, To_Ada (Top.all) & ".");
                end if;
 
-               Put (File, To_Ada (Cur.all) &
-                 ", The_Type => Toolbar_Child_" & S (S'First + 3 .. S'Last));
-
+               Put_Line (File, To_Ada (Cur.all) & ",");
+               Put (File, "      The_Type => Toolbar_Child_" &
+                 S (S'First + 3 .. S'Last));
                S := Get_Field (P, "label");
 
                if S /= null then

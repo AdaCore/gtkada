@@ -354,6 +354,7 @@ package body Gtk.Glade is
       is
          P : Node_Ptr := N;
          Q : Node_Ptr;
+         R : String_Ptr;
          S : String_Ptr;
 
       begin
@@ -366,8 +367,17 @@ package body Gtk.Glade is
 
                   if Kind = Global then
                      if not First then
-                        Put_Line (File, "      " & To_Ada (Q.Value.all) &
-                          " : " & To_Ada (S.all) & ";");
+                        Put (File, "      " & To_Ada (Q.Value.all) & " : ");
+                        R := Get_Field (P, "child_name");
+
+                        if R /= null
+                          and then Get_Part (R.all, 1) = "Toolbar"
+                        then
+                           Put_Line (File, "Gtk_Widget;");
+                        else
+                           Put_Line (File, To_Ada (S.all) & ";");
+                        end if;
+
                         Printed := True;
                      end if;
 
