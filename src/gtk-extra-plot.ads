@@ -630,7 +630,8 @@ package Gtk.Extra.Plot is
       Transparent   : in Boolean;
       Justification : in Gtk.Enums.Gtk_Justification);
    --  Set the attributes to be used for the title of the axis.
-   --  Font is a postscript font name (see ???).
+   --  Font is a postscript font name (as listed in the beginning of this
+   --  package).
 
    procedure Axis_Set_Labels_Attributes
      (Plot          : access Gtk_Plot_Record;
