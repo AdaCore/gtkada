@@ -158,8 +158,8 @@ package body Create_Progress is
    begin
       Set_Text_Alignment
         (Pdata.Pbar,
-         Gfloat (Get_Value_As_Float (Pdata.X_Align_Spin)),
-         Gfloat (Get_Value_As_Float (Pdata.Y_Align_Spin)));
+         Gfloat (Get_Value (Pdata.X_Align_Spin)),
+         Gfloat (Get_Value (Pdata.Y_Align_Spin)));
    end Adjust_Align;
 
    --------------------------
