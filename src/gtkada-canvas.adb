@@ -1,4 +1,4 @@
-with Ada.Numerics.Generic_Elementary_Functions;
+with Ada.Numerics.Elementary_Functions;  use Ada.Numerics.Elementary_Functions;
 with Gdk.Color;        use Gdk.Color;
 with Gdk.Drawable;     use Gdk.Drawable;
 with Gdk.Event;        use Gdk.Event;
@@ -28,10 +28,6 @@ package body Gtkada.Canvas is
    -----------------
 
    procedure Free is new Unchecked_Deallocation (String, String_Access);
-
-   package Float_Numerics is
-      new Ada.Numerics.Generic_Elementary_Functions (Float);
-   use Float_Numerics;
 
    package Event_Handler is new Gtk.Handlers.Return_Callback
      (Widget_Type => Interactive_Canvas_Record, Return_Type => Boolean);
