@@ -19,3 +19,4 @@ glade-2.0.0.diff: a patch to enable Ada support in Glade 2.0.0
 gtk-wimp.diff: a patch against gtk-wimp, fixing handling of radio buttons
 and handles.
 
+xft-2.1.2.diff: fix build of xft with freetype 2.1.7
