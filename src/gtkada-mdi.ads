@@ -868,7 +868,6 @@ private
       Dnd_Xor_GC : Gdk.Gdk_GC;
    end record;
 
-   --   pragma Inline (Get_Window); --  ??? redundant
    pragma Inline (Get_Widget);
    pragma Inline (Get_Focus_Child);
    pragma Inline (Get);
