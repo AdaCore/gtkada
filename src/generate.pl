@@ -33,7 +33,7 @@ my ($definition_file) = $file;
 
 ($directory, $file) = ($file =~ /^(.*\/)?([^\/]+)\.h$/);
 my ($hfile) = $file . ".h";
-my ($prefix) = ($file =~ /(g[dt]k)/);
+my ($prefix) = ($file =~ /(g[dt]k|gnome)/);
 substr ($prefix, 0, 1) = uc (substr ($prefix, 0, 1));
 
 if ($#ARGV >= 1) {
@@ -93,7 +93,7 @@ if ($list_mode) {
 		if ($tmp eq '_New') {
 		    $tmp = "Gtk_New";
 		}
-		$list{$tmp}++ unless ($tmp eq 'Get_Type');
+		$list{$tmp}++;
 		$from{$tmp} = $ARGV[0] . " $_";
 	    }
 	}
@@ -172,10 +172,10 @@ sub print_copyright_notice
 {
     print <<'EOF';
 -----------------------------------------------------------------------
---          GtkAda - Ada95 binding for the Gimp Toolkit              --
+--              GtkAda - Ada95 binding for Gtk+/Gnome                --
 --                                                                   --
---                     Copyright (C) 1998-1999                       --
---        Emmanuel Briot, Joel Brobecker and Arnaud Charlet          --
+--                     Copyright (C) 2001                            --
+--                         ACT-Europe                                --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -217,7 +217,8 @@ sub parse_definition_file
     open (FILE, $filename);
     @deffile = <FILE>;
     close (FILE);
-    
+    $file =~ s/-//g;  # Handle Gnome naming convention, e.g gnome-dock-band
+
     my ($line) = 0;
     for ($line = 0; $line < $#deffile; $line ++)
       {
@@ -248,7 +249,12 @@ sub parse_definition_file
 	      $line++ while ($deffile[$line] !~ /\*\//);
 	      $line++;
 	    }
-	  $line++ while ($deffile[$line] =~ /^\s*$/);
+	  while ($deffile[$line] =~ /^\s*$/)
+	    {
+	      $line++;
+	      $deffile[$line] =~ s$/\*.*\*/$$g;
+	    }
+
 	  chop ($deffile[$line]);
 	  $deffile[$line] =~ s/\s+/ /g;
 	  $deffile[$line] =~ s/ $//;
@@ -273,14 +279,21 @@ sub parse_definition_file
 ###################################
 sub generate_specifications
   {
-    %with_list = ();
+    my ($parent_prefix);
+
+    %with_list = ("with Gtk" => 1);
     @output = ();
     $with_list {"with " . &package_name ($parent)} ++;
     foreach (sort {&ada_func_name ($a) cmp &ada_func_name ($b)} keys %functions)
       {
 	&print_declaration ($_, @{$functions{$_}});
       }
-    my ($parent_string) = &package_name ($parent). ".$prefix\_" . &create_ada_name ($parent);
+
+    $parent_prefix = "Gtk" if ($parent =~ /^gtk/i);
+    $parent_prefix = "Gdk" if ($parent =~ /^gdk/i);
+    $parent_prefix = "Gnome" if ($parent =~ /^gnome/i);
+
+    my ($parent_string) = &package_name ($parent). ".$parent_prefix\_" . &create_ada_name ($parent);
     if ($parent eq "Root_Type") {
 	$parent_string = "Root_Type";
     }
@@ -365,6 +378,7 @@ sub create_ada_name
     my ($i);
     my ($char);
 
+    $entity =~ s/-/_/g;
     $entity =~ s/([^_])([A-Z])/$1_$2/g;
     
     substr ($entity, 0, 1) = uc (substr ($entity, 0, 1));
@@ -377,7 +391,7 @@ sub create_ada_name
 	    substr ($entity, $i + 1, 1) = uc (substr ($entity, $i + 1, 1));
 	  }
       }
-    $entity =~ s/^G[dt]k_?//;
+    $entity =~ s/^(G[dt]k|Gnome)_?//;
 
     return "The_Type" if ($entity eq "Type");
     return "The_End" if ($entity eq "End");
@@ -393,10 +407,10 @@ sub package_name
   {
     my ($entity) = shift;
     
-    $entity =~ s/(G[td]k)/$1./;
+    $entity =~ s/(G[dt]k|Gnome)/$1./;
     $entity =~ s/([a-z])([A-Z])/$1_$2/g;
-    $entity =~ s/Gtk\.Range/Gtk\.Gtk_Range/;
-    $entity =~ s/Gtk\.Entry/Gtk\.Gtk_Entry/;    
+    $entity =~ s/Gtk\.Range/Gtk\.GRange/;
+    $entity =~ s/Gtk\.Entry/Gtk\.GEntry/;    
     return $entity;
   }
 
@@ -415,15 +429,21 @@ sub parse_functions
     while ($_ = shift @cfile)
       {
 	chop;
-	s/ \*/\* /g;
-	if (/^(\S+)\s+(g[dt]k_\S+)\s*\((.*)/)
+	s/\s*\*/\* /g;
+	if (/^(\S+)\s+((g[dt]k|gnome)_\S+)\s*$/)
+	  {
+	    $_ .= shift @cfile;
+	    s/\s*\*/\* /g;
+	  }
+
+	if (/^(\S+)\s+((g[dt]k|gnome)_\S+)\s*\((.*)/)
 	  {
 	    $func_name = $2;
 	    $return = $1;
-	    my ($tmp) = $3;
+	    my ($tmp) = $4;
 	    $tmp =~ s/,\s*$//;
 	    @arguments = split (/,/, $tmp);
-	    if ($3 !~ /\);/)
+	    if ($4 !~ /\);/)
 	      {
 		while ($_ = shift @cfile)
 		  {
@@ -504,7 +524,7 @@ sub print_arguments
     if ($#arguments != 0
 	|| ($for_gtk_new && $#arguments > 0))   ## More than one argument ?
       {
-	$indent = (' ' x $baseindent) . "   ";
+	$indent = (' ' x $baseindent) . "  ";
 	    push (@output, "\n$indent");
       }
     elsif ($arguments[0] !~ /void/ || $for_gtk_new || $return ne "void")
@@ -583,9 +603,15 @@ sub print_arguments
 	    push (@output, "Interfaces.C.Strings.chars_ptr");
 	    $with_list {"with Interfaces.C.Strings"} ++;
 	  }
+	  elsif ($return eq "Gtk.Gtk_Type") {
+	    push (@output, $return);
+	  }
 	  else {
 	    push (@output, &{$convert} ($return));
 	  }
+	}
+	elsif ($return eq "Gtk.Gtk_Type") {
+	  push (@output, $return);
 	}
 	else {
 	  push (@output, &{$convert} ($return));
@@ -626,7 +652,7 @@ sub print_arguments_call
 	    elsif (&convert_c_type ($type) eq "String")
 	      {
 		push (@output, &create_ada_name ($name)
-		     . " & Ascii.NUL");
+		     . " & ASCII.NUL");
 	      }
 	    elsif (&convert_c_type ($type) eq "Gint"
 		  && lc ($type) ne "gint")
@@ -678,8 +704,6 @@ sub print_declaration
     my ($indent);
     my ($adaname) = &ada_func_name ($func_name); 
 
-    return if ($adaname eq "Get_Type");
-
     if ($adaname =~ /New/)
       {
 	&print_new_declaration ($func_name, @arguments);
@@ -692,7 +716,7 @@ sub print_declaration
 	$string .=  " $adaname";
 	push (@output, "   $string");
 	$indent = ' ' x (length ($string) + 3);
-	
+	$return = "Gtk.Gtk_Type" if ($adaname eq "Get_Type");
 	&print_arguments ($indent, $return, \&convert_ada_type,
 			  3, 0, @arguments);
       }
@@ -714,8 +738,6 @@ sub print_body
     my ($string);
     my ($indent);
     my ($adaname) = &ada_func_name ($func_name); 
-
-    return if ($adaname eq "Get_Type");
 
     $string = "-- $adaname --";
     push (@output, "   " . '-' x length ($string) . "\n");
@@ -745,6 +767,7 @@ sub print_body
 	$string .=  " $adaname";
 	push (@output, "   $string");
 	$indent = ' ' x (length ($string) + 3);
+	$return = "Gtk.Gtk_Type" if ($adaname eq "Get_Type");
 	&print_arguments ($indent, $return, \&convert_ada_type,
 			  3, 0, @arguments);
       }
@@ -782,7 +805,12 @@ sub print_body
 	    push (@output, "   begin\n");
 	    $string = "      return Interfaces.C.Strings.Value (Internal";
 	  }
-	elsif ($return =~ /^G[dt]k/) {
+	elsif ($return eq "Gtk.Gtk_Type")
+	  {
+	    push (@output, "   begin\n");
+	    $string = "      return Internal";
+	  }
+	elsif ($return =~ /^(G[dt]k|Gnome)/) {
 	  push (@output, "   begin\n");
 	  $string = "      return " . &convert_ada_type ($return)
 	    . "'Val (Internal";
@@ -803,8 +831,11 @@ sub print_body
 	if (&convert_ada_type ($return) =~ /\'Class/) {
 	  push (@output, ");\n      return Tmp;\n");
 	}
+	elsif ($return eq "Gtk.Gtk_Type") {
+	  push (@output, ";\n");
+	}
 	elsif (&convert_ada_type ($return) eq "String"
-	      || $return =~ /^G[dt]k/) {
+	      || $return =~ /^(G[dt]k|Gnome)/) {
 	  push (@output, ");\n");
 	}
 	else {
@@ -824,7 +855,7 @@ sub ada_func_name
     my ($c_func_name) = shift;
     my ($type) = lc ($current_package);
 
-    $c_func_name =~ s/^(g[dt]k|ada)_?//;
+    $c_func_name =~ s/^(g[dt]k|gnome|ada)_?//;
     $c_func_name =~ s/^$type\_//;
 
     $type = &create_ada_name ($c_func_name);
@@ -868,7 +899,7 @@ sub convert_ada_type
     } elsif ($type =~ /GSList\*/) {
       $with_list {"with Glib.GSList"};
       return "GSList";
-    } elsif ($type =~ /(G[td]k)([^*]+)\*/) {
+    } elsif ($type =~ /(G[dt]k|Gnome)([^*]+)\*/) {
       my ($t) = $2;
       my ($prefix) = $1;
       return "Object'Class" if ($t eq "Object");
@@ -938,16 +969,9 @@ sub print_comment
     my ($string) = "";
     
     $string = "   --  mapping: ";
-    if ($ada eq "Get_Type")
-      {
-	$string .= "NOT_IMPLEMENTED";
-      }
-    else
-      {
-	$string .= &ada_func_name ($func_name);
-      }
+    $string .= &ada_func_name ($func_name);
     $string .= " $hfile ";
-    if ($func_name =~ /^g[td]k/)
+    if ($func_name =~ /^(g[dt]k|gnome)/)
       {
 	if (length ($string) + length ($func_name) > 79) {
 	  $string .= "\\\n   --  mapping:      ";
