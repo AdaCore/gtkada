@@ -87,10 +87,11 @@ package body Gtk.Radio_Button is
       Label        : in String)
    is
       function Internal (Group : in System.Address;
-                         Label : in String) return System.Address;
-      pragma Import (C, Internal,
-                     "gtk_radio_button_new_with_label");
-      function Internal2 (Group : in System.Address) return System.Address;
+                         Label : in String)
+                        return System.Address;
+      pragma Import (C, Internal, "gtk_radio_button_new_with_label");
+      function Internal2 (Group : in System.Address)
+                         return System.Address;
       pragma Import (C, Internal2, "gtk_radio_button_new");
 
    begin
@@ -120,12 +121,15 @@ package body Gtk.Radio_Button is
       function Internal2 (Group : in System.Address) return System.Address;
       pragma Import (C, Internal2, "gtk_radio_button_new_from_widget");
 
+      S : System.Address := System.Null_Address;
    begin
+      if Group /= null then
+         S := Get_Object (Group);
+      end if;
       if Label = "" then
-         Set_Object (Radio_Button, Internal2 (Get_Object (Group)));
+         Set_Object (Radio_Button, Internal2 (S));
       else
-         Set_Object
-           (Radio_Button, Internal (Get_Object (Group), Label & ASCII.NUL));
+         Set_Object (Radio_Button, Internal (S, Label & ASCII.NUL));
       end if;
 
       Initialize_User_Data (Radio_Button);
