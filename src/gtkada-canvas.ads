@@ -77,8 +77,7 @@ package Gtkada.Canvas is
    type Canvas_Item is access all Canvas_Item_Record'Class;
    --  An item that can be put on the canvas.
    --  This is an abstract type, as it does not provide any default drawing
-   --  routine. Instead, the end-user should extend this type and implement
-   --  a subprogram to draw on the pixmap returned by the Pixmap subprogram.
+   --  routine. You must override the abstract Draw subprogram.
 
    type Canvas_Link_Record is tagged private;
    type Canvas_Link is access all Canvas_Link_Record'Class;
@@ -104,7 +103,9 @@ package Gtkada.Canvas is
    --  This is used for both horizontal and vertical orientation.
 
    Default_Arc_Link_Offset   : constant := 25;
-   --  Distance between two parallel arcs for two links.
+   --  Distance between two parallel arcs for two links. This is not the exact
+   --  distance, and it only used to compute the control points for the bezier
+   --  curves.
 
    Default_Arrow_Angle       : constant := 30;
    --  Half angle for the arrows in degres
@@ -135,13 +136,6 @@ package Gtkada.Canvas is
                         --  the link has an arrow on both sides
                        );
    --  Indicate whether the links have an arrow or not.
-
-   type Link_Side is (Straight, Right, Left, Automatic);
-   --  The type of each link.
-   --  For Straight, the link is drawn as a straight line between the two
-   --  items. The other two cases indicates curve links, to a specific side.
-   --  When Automatic, this package will decide itself of the best type to
-   --  use.
 
    -----------------------
    -- Creating a canvas --
@@ -199,6 +193,8 @@ package Gtkada.Canvas is
    --  Its new position depends on whether it has links to other existing
    --  items (in which case it is placed to the right of it), or not (in which
    --  case it is placed at the bottom of the leftmost column).
+   --  Note also that the current size of the item is used to compute the new
+   --  location, so it should depend on the current zoom.
 
    procedure Remove (Canvas : access Interactive_Canvas_Record;
                      Item   : access Canvas_Item_Record'Class);
@@ -273,6 +269,18 @@ package Gtkada.Canvas is
      (Canvas : access Interactive_Canvas_Record) return Glib.Guint;
    --  Return the current zoom level
 
+   function To_Canvas
+     (Canvas : access Interactive_Canvas_Record'Class;
+      X      : Glib.Gint) return Glib.Gint;
+   --  Scale the scalar X depending by the zoom level (map from world
+   --  coordinates to canvas coordinates)
+
+   function To_World
+     (Canvas : access Interactive_Canvas_Record'Class;
+      X      : Glib.Gint) return Glib.Gint;
+   --  Scale the scalar X depending by the zoom level (map from canvas
+   --  coordinates to world coordinates)
+
    -----------
    -- Links --
    -----------
@@ -310,22 +318,16 @@ package Gtkada.Canvas is
 
    procedure Add_Link
      (Canvas : access Interactive_Canvas_Record;
-      Link   : access Canvas_Link_Record'Class;
-      Side   : Link_Side := Automatic);
-   --  Add an oriented link in the canvas.
-   --  This package can automatically choose whether the link should be a
-   --  straight line or an arc, so as to avoid overloading links. This behavior
-   --  is activated if Automatic is given for Side.
-   --  Note that no copy of Link is made, and that you should allocate some
-   --  memory yourself.
+      Link   : access Canvas_Link_Record'Class);
+   --  Add a link to the canvas. The link must have been created first.
 
    procedure Add_Link
      (Canvas : access Interactive_Canvas_Record;
       Src    : access Canvas_Item_Record'Class;
       Dest   : access Canvas_Item_Record'Class;
       Arrow  : in Arrow_Type := End_Arrow;
-      Descr  : in String := "";
-      Side   : Link_Side := Automatic);
+      Descr  : in String := "");
+   --  Create and add a link between two items.
    --  Simpler procedure to add a standard link.
    --  This takes care of memory allocation, as well as adding the link to
    --  the canvas.
@@ -350,9 +352,11 @@ package Gtkada.Canvas is
    --  It is safe to remove the link from the list in Link_Processor.
 
    procedure Destroy (Link : access Canvas_Link_Record);
-   --  Free the memory occupied by Link.
+   --  Method called every time a link is destroyed. You should override this
+   --  if you define your own link types.
    --  Note that Link should first be removed from the canvas, but this is
    --  your responsability to do so.
+   --  This shouldn't free the link itself, only its fields.
 
    ---------------
    -- Selection --
@@ -369,6 +373,8 @@ package Gtkada.Canvas is
    --  release). Item will be moved at the same time that the selection is
    --  moved.
    --  Item is not added again if it is already in the selection.
+   --  This function can be called from the Button_Click subprogram to force
+   --  moving items.
 
    procedure Remove_From_Selection
      (Canvas : access Interactive_Canvas_Record;
@@ -379,18 +385,24 @@ package Gtkada.Canvas is
    -- Items manipulation --
    ------------------------
 
-   procedure Initialize (Item   : access Canvas_Item_Record'Class;
-                         Win    : Gdk.Window.Gdk_Window;
-                         Width  : Glib.Gint;
-                         Height : Glib.Gint);
-   --  Function used to initialize the private data of the item.
-   --  Each child of Canvas_Item should call this function, so as to create
-   --  the canvas and register the size.
+   procedure Set_Screen_Size
+     (Item   : access Canvas_Item_Record;
+      Width, Height  : Glib.Gint);
+   --  Set the size that the items occupies on the screen. You must call this
+   --  subprogram every time the zoom level changes, since Width and Height
+   --  must reflect the current size of the item in the current zoom level,
+   --  not an absolute size that is automatically scaled.
 
-   function Pixmap (Item : access Canvas_Item_Record'Class)
-                   return Gdk.Pixmap.Gdk_Pixmap;
-   --  Return the pixmap on which the contents of the Item should be drawn.
-   --  Drawing is left to the end-user.
+   procedure Draw (Item : access Canvas_Item_Record;
+                   Canvas : access Interactive_Canvas_Record'Class;
+                   Dest : Gdk.Pixmap.Gdk_Pixmap;
+                   Xdest, Ydest : Glib.Gint) is abstract;
+   --  This subprogram, that must be overridden, should draw the item on
+   --  the pixmap Dest, at the specific location (At_X, At_Y).
+
+   procedure Destroy (Item : access Canvas_Item_Record);
+   --  Free the memory occupied by the item (not the item itself). You should
+   --  override this function if you define your own widget type.
 
    procedure On_Button_Click (Item   : access Canvas_Item_Record;
                               Event  : Gdk.Event.Gdk_Event_Button);
@@ -418,6 +430,38 @@ package Gtkada.Canvas is
 
    function Is_Visible (Item : access Canvas_Item_Record) return Boolean;
    --  Return True if the item is currently visible.
+
+   --------------------
+   -- Buffered items --
+   --------------------
+
+   type Buffered_Item_Record is new Canvas_Item_Record with private;
+   type Buffered_Item is access all Buffered_Item_Record'Class;
+   --  A widget that has a double-buffer associated. You should use this one
+   --  when drawing items can take a long time. You need to update the contents
+   --  of the pixmap when the item is created and every time the canvas is
+   --  zoomed (connect to the "zoomed" signal).
+
+   procedure Draw (Item : access Buffered_Item_Record;
+                   Canvas : access Interactive_Canvas_Record'Class;
+                   Dest : Gdk.Pixmap.Gdk_Pixmap;
+                   Xdest, Ydest : Glib.Gint);
+   --  Draw the item's double-buffer onto Dest.
+
+   procedure Destroy (Item : access Buffered_Item_Record);
+   --  Free the double-buffer allocated for the item
+
+   procedure Set_Screen_Size_And_Pixmap
+     (Item   : access Buffered_Item_Record;
+      Win    : Gdk.Window.Gdk_Window;
+      Width, Height  : Glib.Gint);
+   --  Sets the size used on the screen by item, and reallocate the pixmap
+   --  if needed
+
+   function Pixmap (Item : access Buffered_Item_Record)
+      return Gdk.Pixmap.Gdk_Pixmap;
+   --  Return the double-buffer that must be updated every time the canvas
+   --  is scrolled.
 
    -------------
    -- Signals --
@@ -447,14 +491,24 @@ package Gtkada.Canvas is
    --  - "zoomed"
    --  procedure Handler (Canvas : access Interactive_Canvas_Record'Class);
    --
-   --  Emitted when the canvas has been zoomed in or out. The items have been
-   --  resized, and you need to redraw them.
+   --  Emitted when the canvas has been zoomed in or out. You must resize the
+   --  items as needed, and possibily refresh their internal double-pixmap.
+   --  However, you do not need to redraw them on the screen, this will be
+   --  handled by separate calls to Draw.
    --
    --  </signals>
 
 private
 
    type String_Access is access String;
+
+   type Canvas_Link_List_Record;
+   type Canvas_Link_List is access Canvas_Link_List_Record;
+   type Canvas_Link_List_Record is
+      record
+         Link : Canvas_Link;
+         Next : Canvas_Link_List;
+      end record;
 
    type Canvas_Link_Record is tagged record
       Src    : Canvas_Item;
@@ -469,22 +523,9 @@ private
 
       Arrow  : Arrow_Type;
 
-      Side   : Link_Side;
-      Offset : Glib.Gint;
-      --  How the link is drawn.
-      --  Offset is used, along with Side, to calculate the "equation" of
-      --  the arc. Basically, Offset * Grid_Size is the distance in the
-      --  middle of the link between where a straight link would be and
-      --  where the arc is.
+      Sibling : Canvas_Link;
+      --  Pointer to the next link that connects the same two items.
    end record;
-
-   type Canvas_Link_List_Record;
-   type Canvas_Link_List is access Canvas_Link_List_Record;
-   type Canvas_Link_List_Record is
-      record
-         Link : Canvas_Link;
-         Next : Canvas_Link_List;
-      end record;
 
    type Canvas_Item_List_Record;
    type Canvas_Item_List is access Canvas_Item_List_Record;
@@ -561,10 +602,14 @@ private
       end record;
 
    type Canvas_Item_Record is abstract tagged record
-      Coord     : Gdk.Rectangle.Gdk_Rectangle;
-      Pixmap    : Gdk.Pixmap.Gdk_Pixmap;
-      Visible   : Boolean := True;
+      Coord   : Gdk.Rectangle.Gdk_Rectangle;
+      Visible : Boolean := True;
    end record;
 
-   pragma Inline (Pixmap);
+   type Buffered_Item_Record is new Canvas_Item_Record with record
+      Pixmap : Gdk.Pixmap.Gdk_Pixmap;
+   end record;
+
+   pragma Inline (To_Canvas);
+   pragma Inline (To_World);
 end Gtkada.Canvas;
