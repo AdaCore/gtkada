@@ -7,7 +7,6 @@ GNOME_LIBS    = @GNOME_LIBS@
 HAVE_GNOME    = @HAVE_GNOME@
 INSTALL       = @INSTALL@
 INSTALL_DATA  = @INSTALL_DATA@
-GTK_OBJECTS   = gtk-clock.o gtk-dial.o
 
 ifeq ($(HAVE_GNOME),True)
 all: $(ARCHIVENAME) $(LIBNAME)
@@ -16,8 +15,8 @@ install: all
 	$(INSTALL_DATA) $(SONAME) $(libdir)
 	$(RM) $(libdir)/$(LIBNAME)
 	$(LN) $(SONAME) $(libdir)/$(LIBNAME)
-	$(CP) gnome*.ads gnome*.adb gtk*.ads gtk*.adb $(incdir)
-	$(CP) gnome*.ali gtk*.ali $(alidir)
+	$(CP) gnome*.ads gnome*.adb bonobo*.ads bonobo*.adb $(incdir)
+	$(CP) gnome*.ali bonobo*.ali $(alidir)
 	$(CHMOD) -w $(alidir)/*.ali
 
 else
@@ -35,7 +34,7 @@ gnome:
 $(LIBNAME): gnome
 ifeq ($(BUILD_SHARED),yes)
 	$(CC) -shared $(FPIC) $(OS_SPECIFIC_LINK_OPTIONS) -o $(SONAME) \
-	  $(SO_OPTS)$(SONAME) gnome.o gnome-*.o $(GTK_OBJECTS) \
+	  $(SO_OPTS)$(SONAME) gnome.o gnome-*.o bonobo*.o \
 	  $(GTK_LIBS) $(GNOME_LIBS)
 	$(RM) $(LIBNAME)
 	$(LN) $(SONAME) $(LIBNAME)
@@ -46,7 +45,7 @@ ifeq ($(BUILD_SHARED),yes)
 endif
 
 $(ARCHIVENAME): gnome
-	$(AR) $(ARFLAGS) $(ARCHIVENAME) gnome.o gnome-*.o $(GTK_OBJECTS)
+	$(AR) $(ARFLAGS) $(ARCHIVENAME) gnome.o gnome-*.o bonobo*.o
 	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) $(ARCHIVENAME); \
 	fi
