@@ -3297,22 +3297,13 @@ package body Gtkada.MDI is
 
    function Key_Event_In_Floating
      (Win   : access Gtk_Widget_Record'Class;
-      Event : Gdk_Event) return Boolean
-   is
-      pragma Unreferenced (Win, Event);
+      Event : Gdk_Event) return Boolean is
    begin
-      --  Only forward special key events. Standard keys must be passed on to
-      --  the widgets, for instance a Gtk_Entry,...
-      --  if Get_State (Event) = 0 then
-      return False;
-      --  else
-      --     return Return_Callback.Emit_By_Name
-      --       (Win), "key_press_event", Event);
-      --  end if;
-
-      --  ??? Ignore for now, this needs to be implemented slightly
-      --  differently.
-
+      --  Note: the following works because we are connected after the standard
+      --  keypress event. Otherwise, standard keys in the child (space in
+      --  editors most notably) will not work as expected.
+      return Return_Callback.Emit_By_Name
+        (Win, "key_press_event", Event);
    end Key_Event_In_Floating;
 
    -----------------
@@ -3375,7 +3366,7 @@ package body Gtkada.MDI is
          Return_Callback.Object_Connect
            (Win, "key_press_event",
             Return_Callback.To_Marshaller (Key_Event_In_Floating'Access),
-            Gtk_Window (Get_Toplevel (Child.MDI)));
+            Gtk_Window (Get_Toplevel (Child.MDI)), After => True);
 
          Reparent (Get_Parent (Child.Initial), Cont);
          Set_Default_Size
