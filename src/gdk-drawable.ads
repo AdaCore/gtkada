@@ -51,7 +51,7 @@ with Gdk.Window;
 
 package Gdk.Drawable is
 
-   subtype Gdk_Drawable is Window.Gdk_Window;
+   subtype Gdk_Drawable is Gdk.Gdk_Drawable;
    --  A screen area that can be drawn upon.
 
    Null_Drawable : constant Gdk_Drawable;
