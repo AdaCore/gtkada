@@ -399,6 +399,10 @@ package body Gtkada.MDI is
    procedure Set_Child_Title_Bar (Child : access MDI_Child_Record'Class);
    --  Hide or display the title bar of the child, depending on its status.
 
+   function Find_Empty_Notebook
+     (MDI : access MDI_Window_Record'Class) return Gtk_Notebook;
+   --  Return the empty notebook, if there is any, in the MDI.
+
    ------------------
    -- Get_Notebook --
    ------------------
@@ -2797,6 +2801,28 @@ package body Gtkada.MDI is
       Unref (Child);
    end Put_In_Notebook;
 
+   -------------------------
+   -- Find_Empty_Notebook --
+   -------------------------
+
+   function Find_Empty_Notebook
+     (MDI : access MDI_Window_Record'Class) return Gtk_Notebook
+   is
+      Children : Widget_List.Glist := Get_Children (MDI);
+      L        : Widget_List.Glist := Children;
+      N        : Gtk_Notebook;
+   begin
+      while L /= Null_List loop
+         N := Gtk_Notebook (Get_Data (L));
+         if Get_Nth_Page (N, 0) = null then
+            Free (Children);
+            return N;
+         end if;
+         L := Next (L);
+      end loop;
+      return null;
+   end Find_Empty_Notebook;
+
    -----------------------------
    -- Find_Current_In_Central --
    -----------------------------
@@ -2840,21 +2866,7 @@ package body Gtkada.MDI is
       --  Look for an empty notebook if there is any, unless we are using a
       --  position on one of the sides
       if Note = null then
-         declare
-            Children : Widget_List.Glist := Get_Children (Gtk_Container (MDI));
-            L : Widget_List.Glist := Children;
-            N : Gtk_Notebook;
-         begin
-            while L /= Null_List loop
-               N := Gtk_Notebook (Get_Data (L));
-               if Get_Nth_Page (N, 0) = null then
-                  Empty := N;
-                  exit;
-               end if;
-               L := Next (L);
-            end loop;
-            Free (Children);
-         end;
+         Empty := Find_Empty_Notebook (MDI);
       end if;
 
       if Child_Position (Position)
@@ -3744,7 +3756,16 @@ package body Gtkada.MDI is
          Width  := Gint'Value (Get_Attribute (Child_Node, "Width", "-1"));
          Height := Gint'Value (Get_Attribute (Child_Node, "Height", "-1"));
 
-         Notebook := Create_Notebook (MDI);
+         Notebook := null;
+
+--           if Child_Node.Child = null then
+--              Notebook := Find_Empty_Notebook (MDI);
+--           end if;
+
+         if Notebook = null then
+            Notebook := Create_Notebook (MDI);
+         end if;
+
          Set_Child_Visible (Notebook, True);
          Show_All (Notebook);
 
@@ -3938,8 +3959,6 @@ package body Gtkada.MDI is
             pragma Assert (From_Tree.Tag.all = "MDI");
          end if;
 
-         MDI.Desktop_Was_Loaded := True;
-
          while Child_Node /= null loop
             if Child_Node.Tag.all = "Pane" then
                Ref_Pane := Root_Pane;
@@ -3986,6 +4005,8 @@ package body Gtkada.MDI is
          if Focus_Child /= null then
             Set_Focus_Child (Focus_Child);
          end if;
+
+         MDI.Desktop_Was_Loaded := True;
 
          Queue_Resize (MDI);
          return True;
@@ -4416,22 +4437,13 @@ package body Gtkada.MDI is
          end if;
 
          if Current = Gtk_Widget (MDI) then
-            declare
-               Children : Widget_List.Glist := Get_Children (MDI);
-               L : Widget_List.Glist := Children;
-               Note : Gtk_Notebook;
-            begin
-               Current := null;
-               while L /= Null_List loop
-                  Note := Gtk_Notebook (Get_Data (L));
-                  if Get_Nth_Page (Note, 0) = null then
-                     Current := Gtk_Widget (Note);
-                     exit;
-                  end if;
-                  L := Next (L);
-               end loop;
-               Free (Children);
-            end;
+            Current := Gtk_Widget (Find_Empty_Notebook (MDI));
+         end if;
+
+         if Current = null then
+            Parent   := null;
+            Position := Position_Default;
+            return;
          end if;
 
          Parent := Current;
