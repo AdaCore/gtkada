@@ -4347,6 +4347,11 @@ package body Gtkada.MDI is
             N := Child_Node.Child.Next;
 
             while N /= null loop
+               --  We ignore the <title> and <short_title> fields. After all,
+               --  the callback that created the child has or should have set
+               --  a proper title already, and there is no reason to override
+               --  this.
+
                if N.Tag.all = "X" then
                   Child.X := Gint'Value (N.Value.all);
 
@@ -4359,11 +4364,11 @@ package body Gtkada.MDI is
                elsif N.Tag.all = "Height" then
                   Height := Guint'Value (N.Value.all);
 
-               elsif N.Tag.all = "Title" then
-                  Set_Title (Child, N.Value.all, Child.Short_Title.all);
-
-               elsif N.Tag.all = "Short_Title" then
-                  Set_Title (Child, Child.Title.all, N.Value.all);
+--               elsif N.Tag.all = "Title" then
+--                  Set_Title (Child, N.Value.all, Child.Short_Title.all);
+--
+--               elsif N.Tag.all = "Short_Title" then
+--                  Set_Title (Child, Child.Title.all, N.Value.all);
 
                elsif N.Tag.all = "State" then
                   State := State_Type'Value (N.Value.all);
@@ -4676,8 +4681,8 @@ package body Gtkada.MDI is
 
                Add (Child_Node, "Dock", Dock_Side'Image (Child.Dock));
                Add (Child_Node, "State", State_Type'Image (Child.State));
-               Add (Child_Node, "Title", Child.Title.all);
-               Add (Child_Node, "Short_Title", Child.Short_Title.all);
+--               Add (Child_Node, "Title", Child.Title.all);
+--               Add (Child_Node, "Short_Title", Child.Short_Title.all);
 
                if Child.State = Floating then
                   declare
