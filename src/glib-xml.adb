@@ -575,27 +575,30 @@ package body Glib.XML is
 
       procedure Free_Node (N : in out Node_Ptr) is
          Child : Node_Ptr := N.Child;
-         Previous : Node_Ptr;
+         Next  : Node_Ptr;
+
       begin
          Free (N.Tag);
          Free (N.Attributes);
          Free (N.Value);
+
          if Free_Data /= null then
             Free_Data (N.Specific_Data);
          end if;
 
          --  Free all the children
          while Child /= null loop
-            Previous := Child.Next;
+            Next := Child.Next;
             Free_Node (Child);
-            Child := Previous;
+            Child := Next;
          end loop;
 
          Unchecked_Free (N);
       end Free_Node;
 
-      Child : Node_Ptr;
+      Child    : Node_Ptr;
       Previous : Node_Ptr;
+
    begin
       if N = null then
          return;
@@ -603,17 +606,19 @@ package body Glib.XML is
 
       if N.Parent /= null then
          Child := N.Parent.Child;
-      end if;
-      --  Remove the node from its parent
-      while Child /= null and then Child /= N loop
+
+         --  Remove the node from its parent
+         while Child /= null and then Child /= N loop
+            Previous := Child;
+            Child := Child.Next;
+         end loop;
+
          if Previous = null then
-            N.Parent.Child := Child.Next;
+            N.Parent.Child := N.Next;
          else
-            Previous.Next := Child.Next;
+            Previous.Next := N.Next;
          end if;
-         Previous := Child;
-         Child := Child.Next;
-      end loop;
+      end if;
 
       --  Free the memory occupied by the node
       Free_Node (N);
@@ -624,17 +629,17 @@ package body Glib.XML is
    ---------------
 
    function Deep_Copy (N : Node_Ptr) return Node_Ptr is
-
-      function Deep_Copy_Internal (N : Node_Ptr; Parent : Node_Ptr := null)
-         return Node_Ptr;
+      function Deep_Copy_Internal
+        (N : Node_Ptr; Parent : Node_Ptr := null) return Node_Ptr;
       --  Internal version of Deep_Copy. Returns a deep copy of N, whose
       --  parent should be Parent.
 
-      function Deep_Copy_Internal (N : Node_Ptr; Parent : Node_Ptr := null)
-         return Node_Ptr
+      function Deep_Copy_Internal
+        (N : Node_Ptr; Parent : Node_Ptr := null) return Node_Ptr
       is
-         Attr : String_Ptr;
+         Attr  : String_Ptr;
          Value : String_Ptr;
+
       begin
          if N = null then
             return null;
@@ -659,7 +664,7 @@ package body Glib.XML is
       end Deep_Copy_Internal;
 
    begin
-      return  Deep_Copy_Internal (N);
+      return Deep_Copy_Internal (N);
    end Deep_Copy;
 
 end Glib.XML;
