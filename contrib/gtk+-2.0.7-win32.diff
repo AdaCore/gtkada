@@ -380,8 +380,8 @@ Wed Sep 11 16:55:47  2002	Florent Duguet <duguet@gnat.com>
 ################################################################
 # Fixes wrong update in window display when window in background
 ################################################################
---- gdb/win32/gdkevents-win32.c.old	2002-11-05 11:19:14 +0100
-+++ gdb/win32/gdkevents-win32.c	2002-11-05 17:27:08 +0100
+--- gtk+/gdk/win32/gdkevents-win32.c.old	2002-11-05 11:19:14 +0100
++++ gtk+/gdk/win32/gdkevents-win32.c	2002-11-05 17:27:08 +0100
 @@ -1986,6 +1986,8 @@
    gchar buf[256];
    gboolean return_val = FALSE;
