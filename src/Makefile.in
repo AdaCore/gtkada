@@ -135,7 +135,7 @@ install: all
 	   $(MKDIR) $(incdir); \
 	   $(MKDIR) $(alidir); \
 	   $(INSTALL_DATA) $(ARCHIVENAME) $(libdir); \
-	   -$(INSTALL_DATA) $(LIBNAME) $(libdir); \
+	   $(INSTALL_DATA) $(LIBNAME) $(libdir); \
 	   $(CP) glib*.ads glib*.adb $(MESA_SPECS) $(incdir); \
 	   $(CP) gdk*.ads gdk*.adb $(incdir); \
 	   $(CP) gtk*.ads gtk*.adb $(incdir); \
