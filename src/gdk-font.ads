@@ -38,18 +38,18 @@
 --
 --  -adobe-courier-bold-o-normal--10-100-75-75-m-60-iso8859-1
 --  where:
---     adobe     : foundry
---     courier   : font family
---     bold      : weight (e.g. bold, medium)
---     o         : slant (e.g. roman, italic, oblique)
---     normal    : set width (e.g. normal, condensed, narrow, double)
---     10        : pixels
---     100       : points (in tenths of a point)
---     75        : horizontal resolution in dpi
---     75        : vertical resolution in dpi
---     m         : spacing (e.g. monospace or proportional)
---     60        : average width (in tenths of a pixel)
---     iso8859-1 : character set
+--     - adobe     : foundry
+--     - courier   : font family
+--     - bold      : weight (e.g. bold, medium)
+--     - o         : slant (e.g. roman, italic, oblique)
+--     - normal    : set width (e.g. normal, condensed, narrow, double)
+--     - 10        : pixels
+--     - 100       : points (in tenths of a point)
+--     - 75        : horizontal resolution in dpi
+--     - 75        : vertical resolution in dpi
+--     - m         : spacing (e.g. monospace or proportional)
+--     - 60        : average width (in tenths of a pixel)
+--     - iso8859-1 : character set
 --
 --  Any of the fields can have a '*' instead, so that the system will
 --  automatically find a font that matches the rest of the string, and won't
