@@ -8,6 +8,7 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
 [
 
    SO_EXT=.so
+   SO_OPTS=-Wl,-soname,
    BUILD_SHARED=yes
    FPIC=-fPIC
 
@@ -17,14 +18,18 @@ AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
       ;;
    hp*)
       SO_EXT=.sl
+      SO_OPTS=-Wl,+h,
       BUILD_SHARED=no
       FPIC=
       ;;
+   *sysv* | *solaris*)
+      SO_OPTS=-Wl,-h,
    esac
 
   AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
   AC_SUBST(BUILD_SHARED)
   AC_SUBST(SO_EXT)
+  AC_SUBST(SO_OPTS)
   AC_SUBST(FPIC)
 
 ]
