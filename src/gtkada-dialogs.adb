@@ -121,7 +121,8 @@ package body Gtkada.Dialogs is
       Default_Button : Message_Dialog_Buttons := Button_OK;
       Help_Msg       : String := "";
       Title          : String := "";
-      Justification  : Gtk_Justification := Justify_Center)
+      Justification  : Gtk_Justification := Justify_Center;
+      Parent         : Gtk.Window.Gtk_Window := null)
       return Message_Dialog_Buttons
    is
       Dialog      : Gtkada_Dialog;
@@ -150,7 +151,11 @@ package body Gtkada.Dialogs is
       end if;
 
       Set_Modal (Dialog);
-      Set_Position (Dialog, Win_Pos_Mouse);
+      if Parent /= null then
+         Set_Transient_For (Dialog, Parent);
+      else
+         Set_Position (Dialog, Win_Pos_Mouse);
+      end if;
       Return_Callback.Connect
         (Dialog, "delete_event",
          Return_Callback.To_Marshaller (Delete_Cb'Access));

@@ -33,7 +33,8 @@
 --
 --  </description>
 
-with Gtk.Enums; use Gtk.Enums;
+with Gtk.Enums;  use Gtk.Enums;
+with Gtk.Window; use Gtk.Window;
 
 package Gtkada.Dialogs is
    pragma Elaborate_Body;
@@ -82,7 +83,8 @@ package Gtkada.Dialogs is
       Default_Button : Message_Dialog_Buttons := Button_OK;
       Help_Msg       : String := "";
       Title          : String := "";
-      Justification  : Gtk_Justification := Justify_Center)
+      Justification  : Gtk_Justification := Justify_Center;
+      Parent         : Gtk.Window.Gtk_Window := null)
       return Message_Dialog_Buttons;
    --  Display a message dialog box centered on the mouse.
    --  This will create a dialog box containing the specified message.
@@ -95,6 +97,7 @@ package Gtkada.Dialogs is
    --  displayed will only have a OK button.
    --  If Title is null, a default title will be chosen depending on the value
    --  of Dialog_Type.
+   --  The dialog will be centered with regards to Parent
    --
    --  This function will return only after the user pressed one of the buttons
    --  or deleted the dialog, by running an additional level of main loop.
