@@ -111,10 +111,6 @@ package Gtk.Widget is
    -- Widgets' life cycle --
    -------------------------
 
-   procedure Initialize_Widget (Widget : access Gtk_Widget_Record'Class);
-   --  Internal initialization function.
-   --  See the section "Creating your own widgets" in the documentation.
-
    procedure Destroy_Cb (Widget : access Gtk_Widget_Record'Class);
    --  This function should be used as a callback to destroy a widget.
    --  All it does is call Destroy on its argument, but its profile is

@@ -616,21 +616,6 @@ package body Gtk.Widget is
       return Internal (Get_Object (Widget)) /= 0;
    end Hide_On_Delete;
 
-   -----------------------
-   -- Initialize_Widget --
-   -----------------------
-
-   procedure Initialize_Widget (Widget : access Gtk_Widget_Record'Class) is
-      --  XXX function Internal
-      --    (The_Type : in Gtk_Type;
-      --     Nargs    : in Guint;
-      --     Args     : System.Address) return System.Address;
-      --  pragma Import (C, Internal, "gtk_widget_newv");
-   begin
-      raise Program_Error;
-      --  Set_Object (Widget, Internal (Get_Type, 0, System.Null_Address));
-   end Initialize_Widget;
-
    ---------------
    -- Intersect --
    ---------------
@@ -1534,6 +1519,7 @@ package body Gtk.Widget is
 
       procedure Internal_Realize (Widget : System.Address) is
          Dummy : Widget_Type;
+         pragma Warnings (Off, Dummy);
       begin
          Realize_Proc (Widget_Type (Get_User_Data (Widget, Dummy).all)'Access);
       end Internal_Realize;
