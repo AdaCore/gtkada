@@ -1015,7 +1015,7 @@ package body Gtk.Handlers is
             "Invalid signal for this widget");
          pragma Assert
            (Type_Of_Return (Widget, Name) = GType_None,
-            "Handlers for this signal should not return a value.");
+            "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
@@ -1050,7 +1050,7 @@ package body Gtk.Handlers is
             "Invalid signal for this widget");
          pragma Assert
            (Type_Of_Return (Widget, Name) = GType_None,
-            "Handlers for this signal should not return a value.");
+            "Handlers for this signal should return a value.");
 
          return Do_Signal_Connect
            (Glib.Object.GObject (Widget),
