@@ -647,6 +647,9 @@ private
 
       Flags : Child_Flags;
 
+      Focus_Widget : Gtk.Widget.Gtk_Widget;
+      --  The widget which should actually get the keyboard focus
+
       Icon : Gdk.Pixbuf.Gdk_Pixbuf;
 
       Maximize_Button : Gtk.Button.Gtk_Button;

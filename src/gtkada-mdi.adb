@@ -457,8 +457,12 @@ package body Gtkada.MDI is
      (Notebook : access Gtk.Widget.Gtk_Widget_Record'Class; Args : Gtk_Args);
    --  Called when some data is received by a drop site
 
-   procedure Give_Focus_To_Child (Widget : access Gtk_Widget_Record'Class);
+   procedure Give_Focus_To_Widget (Widget : access Gtk_Widget_Record'Class);
    --  Give the keyboard focus to Widget.
+
+   procedure Give_Focus_To_Child (Child : MDI_Child);
+   --  Give the focus to a specific MDI child
+   --  You should never call Grab_Focus directly
 
    function Matching_Children
      (MDI : access MDI_Window_Record'Class; Str : String)
@@ -1702,6 +1706,9 @@ package body Gtkada.MDI is
       MDI    : constant MDI_Window := MDI_Window (Child.MDI);
       Event  : Gdk_Event;
       Id     : Gtk.Handlers.Handler_Id;
+      Item   : Widget_List.Glist;
+      It     : MDI_Child;
+      Dock   : Dock_Side;
    begin
       --  Don't do anything for now if the MDI isn't realized, since we
       --  can't send create the event anyway.
@@ -1717,16 +1724,31 @@ package body Gtkada.MDI is
          if Force or else not Return_Callback.Emit_By_Name
            (Child.Initial, "delete_event", Event)
          then
+            case Child.State is
+               when Normal | Iconified | Floating => Dock := None;
+               when Docked                        => Dock := Child.Dock;
+            end case;
+
             Float_Child (Child, False);
             Destroy (Child);
 
-            --  Set the focus on the child that had the focus just before.
-            --  If both are in the main notebook, this results in an extra
-            --  flicker while pages are switched...
+            --  Set the focus on the child that had the focus just before, and
+            --  in the same notebook. This might result in an extra flicker
+            --  while pages are switches...
 
-            if MDI.Items /= Widget_List.Null_List then
-               Set_Focus_Child (MDI, Get_Data (MDI.Items));
-            end if;
+            Item := MDI.Items;
+            while Item /= Widget_List.Null_List loop
+               It := MDI_Child (Get_Data (Item));
+
+               if (Dock = None and then It.State = Normal)
+                 or else (Dock /= None and then It.State = Docked)
+               then
+                  Set_Focus_Child (It, Force_Focus => True);
+                  exit;
+               end if;
+
+               Item := Widget_List.Next (Item);
+            end loop;
          end if;
 
          Free (Event);
@@ -2725,14 +2747,30 @@ package body Gtkada.MDI is
          Child);
    end Initialize;
 
+   --------------------------
+   -- Give_Focus_To_Widget --
+   --------------------------
+
+   procedure Give_Focus_To_Widget (Widget : access Gtk_Widget_Record'Class) is
+   begin
+      if Child_Focus (Widget, Dir_Tab_Forward) then
+         Grab_Focus (Widget);
+      end if;
+   end Give_Focus_To_Widget;
+
    -------------------------
    -- Give_Focus_To_Child --
    -------------------------
 
-   procedure Give_Focus_To_Child (Widget : access Gtk_Widget_Record'Class) is
+   procedure Give_Focus_To_Child (Child : MDI_Child) is
+      F : Gtk_Widget := Gtk_Widget (Child);
    begin
-      if Child_Focus (Widget, Dir_Tab_Forward) then
-         Grab_Focus (Widget);
+      if Child /= null then
+         if Child.Focus_Widget /= null then
+            F := Child.Focus_Widget;
+         end if;
+
+         Give_Focus_To_Widget (F);
       end if;
    end Give_Focus_To_Child;
 
@@ -2760,6 +2798,7 @@ package body Gtkada.MDI is
       C.MDI := MDI_Window (MDI);
       C.X   := MDI.Default_X;
       C.Y   := MDI.Default_Y;
+      C.Focus_Widget := Focus_Widget;
 
       Set_USize (C.Title_Box, -1, MDI.Title_Bar_Height);
 
@@ -2818,22 +2857,10 @@ package body Gtkada.MDI is
          Create_Menu_Entry (C);
       end if;
 
-      if Focus_Widget /= null then
-         Widget_Callback.Object_Connect
-           (C, "grab_focus",
-            Widget_Callback.To_Marshaller (Give_Focus_To_Child'Access),
-            Focus_Widget);
-      end if;
-
       --  Restore the keyboard focus, which might have been stolen if the new
       --  child was added to a notebook.
 
-      if MDI.Focus_Child /= null
-        and then Child_Focus (MDI.Focus_Child, Dir_Tab_Forward)
-      then
-         Grab_Focus (MDI.Focus_Child);
-      end if;
-
+      Give_Focus_To_Child (MDI.Focus_Child);
       return C;
    end Put;
 
@@ -3138,11 +3165,7 @@ package body Gtkada.MDI is
       --  Give the focus to the Focus_Child, since the notebook page switch
       --  might have changed that.
 
-      if Child.MDI.Focus_Child /= null
-        and then Child_Focus (Child.MDI.Focus_Child, Dir_Tab_Forward)
-      then
-         Grab_Focus (Child.MDI.Focus_Child);
-      end if;
+      Give_Focus_To_Child (Child.MDI.Focus_Child);
 
       return False;
    end Raise_Child_Idle;
@@ -3207,6 +3230,7 @@ package body Gtkada.MDI is
    is
       Old : constant MDI_Child := Child.MDI.Focus_Child;
       C   : constant MDI_Child := MDI_Child (Child);
+      Focus : Gtk_Widget;
 
    begin
       --  Be lazy. And avoid infinite loop when updating the MDI menu...
@@ -3269,10 +3293,9 @@ package body Gtkada.MDI is
       --  want to make sure that no other widget has the focus. As a result,
       --  focus_in events will always be sent the next time the user selects a
       --  widget.
-      if Force_Focus
-        and then Child_Focus (C, Dir_Tab_Forward)
-      then
-         Grab_Focus (C);
+
+      if Force_Focus then
+         Give_Focus_To_Child (C);
       end if;
 
       Highlight_Child (C, False);
