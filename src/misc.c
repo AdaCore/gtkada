@@ -29,25 +29,21 @@
 -----------------------------------------------------------------------
 */
 
-#include <glib.h>
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+
+#include <glib.h>
+#include <glib-object.h>
+
+#include <pango/pango.h>
+
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktextview.h>
 #include <gtk/gtktypeutils.h>
-#include <gobject/gsignal.h>
-#include <gobject/gtype.h>
-#include <gobject/gvalue.h>
-#include <gobject/gobject.h>
-#include <gobject/gparam.h>
-#include <gobject/genums.h>
-#include <gobject/gparamspecs.h>
-#include <gobject/gmarshal.h>
 #include <gtk/gtkwidget.h>
-#include <pango/pango.h>
 
 #ifndef _WIN32  /* Assuming X11 */
 #include <gdk/gdkx.h>
