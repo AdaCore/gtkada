@@ -31,34 +31,6 @@ with System;
 
 package body Gtk.Spin_Button is
 
-   ---------------
-   -- Configure --
-   ---------------
-
-   procedure Configure
-     (Spin_Button : access Gtk_Spin_Button_Record;
-      Adjustment  : Gtk.Adjustment.Gtk_Adjustment;
-      Climb_Rate  : in Gfloat;
-      The_Digits  : in Gint)
-   is
-      procedure Internal
-        (Spin_Button : in System.Address;
-         Adjustment  : in System.Address;
-         Climb_Rate  : in Gfloat;
-         The_Digits  : in Gint);
-      pragma Import (C, Internal, "gtk_spin_button_configure");
-      use type Gtk.Adjustment.Gtk_Adjustment;
-   begin
-      if Adjustment = null then
-         Internal (Get_Object (Spin_Button), System.Null_Address,
-                   Climb_Rate, The_Digits);
-      else
-         Internal
-           (Get_Object (Spin_Button), Get_Object (Adjustment), Climb_Rate,
-            The_Digits);
-      end if;
-   end Configure;
-
    --------------------
    -- Get_Adjustment --
    --------------------
@@ -66,10 +38,10 @@ package body Gtk.Spin_Button is
    function Get_Adjustment (Spin_Button : access Gtk_Spin_Button_Record)
      return Gtk.Adjustment.Gtk_Adjustment
    is
-      function Internal (Spin_Button : in System.Address)
-                         return           System.Address;
+      function Internal (Spin_Button : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_spin_button_get_adjustment");
       Stub : Adjustment.Gtk_Adjustment_Record;
+
    begin
       return Gtk.Adjustment.Gtk_Adjustment
         (Get_User_Data (Internal (Get_Object (Spin_Button)), Stub));
@@ -82,9 +54,9 @@ package body Gtk.Spin_Button is
    function Get_Value_As_Float (Spin_Button : access Gtk_Spin_Button_Record)
      return Gfloat
    is
-      function Internal (Spin_Button : in System.Address)
-                         return           Gfloat;
+      function Internal (Spin_Button : System.Address) return Gfloat;
       pragma Import (C, Internal, "gtk_spin_button_get_value_as_float");
+
    begin
       return Internal (Get_Object (Spin_Button));
    end Get_Value_As_Float;
@@ -96,9 +68,9 @@ package body Gtk.Spin_Button is
    function Get_Value_As_Int (Spin_Button : access Gtk_Spin_Button_Record)
      return Gint
    is
-      function Internal (Spin_Button : in System.Address)
-                         return           Gint;
+      function Internal (Spin_Button : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_spin_button_get_value_as_int");
+
    begin
       return Internal (Get_Object (Spin_Button));
    end Get_Value_As_Int;
@@ -111,8 +83,7 @@ package body Gtk.Spin_Button is
      (Spin_Button : out Gtk_Spin_Button;
       Adjustment  : Gtk.Adjustment.Gtk_Adjustment;
       Climb_Rate  : in Gfloat;
-      The_Digits  : in Gint)
-   is
+      The_Digits  : in Gint) is
    begin
       Spin_Button := new Gtk_Spin_Button_Record;
       Initialize (Spin_Button, Adjustment, Climb_Rate, The_Digits);
@@ -131,10 +102,10 @@ package body Gtk.Spin_Button is
       function Internal
         (Adjustment : in System.Address;
          Climb_Rate : in Gfloat;
-         The_Digits : in Gint)
-         return          System.Address;
+         The_Digits : in Gint) return System.Address;
       pragma Import (C, Internal, "gtk_spin_button_new");
       use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
       if Adjustment = null then
          Set_Object (Spin_Button,
@@ -144,6 +115,7 @@ package body Gtk.Spin_Button is
            (Spin_Button,
             Internal (Get_Object (Adjustment), Climb_Rate, The_Digits));
       end if;
+
       Initialize_User_Data (Spin_Button);
    end Initialize;
 
@@ -160,6 +132,7 @@ package body Gtk.Spin_Button is
          Adjustment  : in System.Address);
       pragma Import (C, Internal, "gtk_spin_button_set_adjustment");
       use type Gtk.Adjustment.Gtk_Adjustment;
+
    begin
       if Adjustment = null then
          Internal (Get_Object (Spin_Button), System.Null_Address);
