@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2001 ACT-Europe                 --
+--                Copyright (C) 2000-2002 ACT-Europe                 --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -76,10 +76,6 @@ package body Gtk.Dialog is
       Gtk.Dialog.Initialize (Dialog);
    end Gtk_New;
 
-   -------------
-   -- Gtk_New --
-   -------------
-
    procedure Gtk_New
      (Dialog : out Gtk_Dialog;
       Title  : String;
@@ -103,10 +99,6 @@ package body Gtk.Dialog is
       Initialize_User_Data (Dialog);
    end Initialize;
 
-   ----------------
-   -- Initialize --
-   ----------------
-
    procedure Initialize
      (Dialog : access Gtk_Dialog_Record'Class;
       Title  : String;
@@ -114,20 +106,22 @@ package body Gtk.Dialog is
       Flags  : Gtk_Dialog_Flags)
    is
       function Internal
-        (Title : String;
-         Parent : System.Address;
-         Flags : Gtk_Dialog_Flags;
+        (Title     : String;
+         Parent    : System.Address;
+         Flags     : Gtk_Dialog_Flags;
          Null_Args : System.Address := System.Null_Address)
-        return System.Address;
+         return System.Address;
       pragma Import (C, Internal, "gtk_dialog_new_with_buttons");
+
    begin
       if Parent = null then
-         Set_Object (Dialog,
-                     Internal (Title & ASCII.NUL, System.Null_Address, Flags));
+         Set_Object
+           (Dialog, Internal (Title & ASCII.NUL, System.Null_Address, Flags));
       else
-         Set_Object (Dialog,
-                     Internal (Title & ASCII.NUL, Get_Object (Parent), Flags));
+         Set_Object
+           (Dialog, Internal (Title & ASCII.NUL, Get_Object (Parent), Flags));
       end if;
+
       Initialize_User_Data (Dialog);
    end Initialize;
 
@@ -143,6 +137,7 @@ package body Gtk.Dialog is
       procedure Internal
         (Dialog, Child : System.Address; Response_Id : Gtk_Response_Type);
       pragma Import (C, Internal, "gtk_dialog_add_action_widget");
+
    begin
       Internal (Get_Object (Dialog), Get_Object (Child), Response_Id);
    end Add_Action_Widget;
@@ -158,8 +153,9 @@ package body Gtk.Dialog is
    is
       function Internal
         (Dialog : System.Address; Text : String; Id : Gtk_Response_Type)
-        return System.Address;
+         return System.Address;
       pragma Import (C, Internal, "gtk_dialog_add_button");
+
    begin
       return Gtk.Widget.Convert
         (Internal (Get_Object (Dialog), Text & ASCII.NUL, Response_Id));
@@ -175,10 +171,11 @@ package body Gtk.Dialog is
       Setting     : Boolean)
    is
       procedure Internal
-        (Dialog : System.Address;
+        (Dialog     : System.Address;
          Reponse_Id : Gtk_Response_Type;
-         Setting : Gint);
+         Setting    : Gint);
       pragma Import (C, Internal, "gtk_dialog_set_response_sensitive");
+
    begin
       Internal (Get_Object (Dialog), Response_Id, Boolean'Pos (Setting));
    end Set_Response_Sensitive;
@@ -193,6 +190,7 @@ package body Gtk.Dialog is
       procedure Internal
         (Dialog : System.Address; Response_Id : Gtk_Response_Type);
       pragma Import (C, Internal, "gtk_dialog_set_default_response");
+
    begin
       Internal (Get_Object (Dialog), Response_Id);
    end Set_Default_Response;
@@ -214,8 +212,8 @@ package body Gtk.Dialog is
    -- Get_Has_Separator --
    -----------------------
 
-   function Get_Has_Separator (Dialog : access Gtk_Dialog_Record)
-      return Boolean
+   function Get_Has_Separator
+     (Dialog : access Gtk_Dialog_Record) return Boolean
    is
       function Internal (Dialog : System.Address) return Gint;
       pragma Import (C, Internal, "gtk_dialog_get_has_separator");
@@ -227,9 +225,7 @@ package body Gtk.Dialog is
    -- Run --
    ---------
 
-   function Run (Dialog : access Gtk_Dialog_Record)
-      return Gtk_Response_Type
-   is
+   function Run (Dialog : access Gtk_Dialog_Record) return Gtk_Response_Type is
       function Internal (Dialog : System.Address) return Gtk_Response_Type;
       pragma Import (C, Internal, "gtk_dialog_run");
    begin
