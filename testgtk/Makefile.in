@@ -27,7 +27,7 @@ CP = cp -f
 
 ## This variable should be set to "True" if the opengl directories
 ## have been installed on the system.
-HAVE_OPENGL=False
+HAVE_OPENGL=@HAVE_OPENGL@
 
 ifeq ($(HAVE_OPENGL),True)
 OPENGL_C_OBJECTS=lw.o
