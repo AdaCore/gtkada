@@ -99,7 +99,7 @@ package Gdk.Window is
    --  procedure Copy_Area  --
    ---------------------------
    --
-   --  Copy_Area need a Gdk_Gc object. However, the Gdk.Gc package depends
+   --  Copy_Area needs a Gdk_Gc object. However, the Gdk.Gc package depends
    --  on this package, thus creating a circular dependency. This service
    --  has therefore been moved to the following child package : Gdk.Window.Gc.
 
