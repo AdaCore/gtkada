@@ -35,8 +35,8 @@ package body Gtk.Type_Conversion_Hooks is
 
    procedure Add_Hook (Func : File_Conversion_Hook_Type) is
    begin
-      File_Conversion_Hook := new Hook_List'(Func => Func,
-                                             Next => File_Conversion_Hook);
+      File_Conversion_Hook :=
+        new Hook_List'(Func => Func, Next => File_Conversion_Hook);
    end Add_Hook;
 
    ----------------------

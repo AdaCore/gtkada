@@ -35,12 +35,13 @@ package body Gtk.Selection is
    -- Get_Data_As_String --
    ------------------------
 
-   function Get_Data_As_String (Selection : in Selection_Data)
-                               return String
+   function Get_Data_As_String
+     (Selection : in Selection_Data) return String
    is
-      function Internal (Selection : Selection_Data)
-                        return Interfaces.C.Strings.chars_ptr;
+      function Internal
+        (Selection : Selection_Data) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "ada_gtk_dnd_get_data");
+
    begin
       return Interfaces.C.Strings.Value (Internal (Selection));
    end Get_Data_As_String;
@@ -49,14 +50,15 @@ package body Gtk.Selection is
    -- Selection_Data_Set --
    ------------------------
 
-   procedure Selection_Data_Set (Selection : in Selection_Data;
-                                 The_Type  : in Gdk.Types.Gdk_Atom;
-                                 Format    : in Gint;
-                                 Data      : in String)
-   is
+   procedure Selection_Data_Set
+     (Selection : in Selection_Data;
+      The_Type  : in Gdk.Types.Gdk_Atom;
+      Format    : in Gint;
+      Data      : in String) is
    begin
-      Selection_Data_Set (Selection, The_Type, Format,
-                          Data (Data'First)'Address, Data'Length);
+      Selection_Data_Set
+        (Selection, The_Type, Format,
+         Data (Data'First)'Address, Data'Length);
    end Selection_Data_Set;
 
    ---------------------
@@ -97,36 +99,40 @@ package body Gtk.Selection is
    -- Target_List_Find --
    ----------------------
 
-   procedure Target_List_Find (List   : in Target_List;
-                               Target : in Gdk.Types.Gdk_Atom;
-                               Info   : out Guint;
-                               Found  : out Boolean)
+   procedure Target_List_Find
+     (List   : in Target_List;
+      Target : in Gdk.Types.Gdk_Atom;
+      Info   : out Guint;
+      Found  : out Boolean)
    is
-      function Internal (List   : Target_List;
-                         Target : Gdk.Types.Gdk_Atom;
-                         Info   : System.Address)
-                        return Gboolean;
+      function Internal
+        (List   : Target_List;
+         Target : Gdk.Types.Gdk_Atom;
+         Info   : System.Address) return Gboolean;
       pragma Import (C, Internal, "gtk_target_list_find");
-      I : aliased Guint;
+
+      J : aliased Guint;
+
    begin
-      Found := Boolean'Val (Internal (List, Target, I'Address));
-      Info := I;
+      Found := Boolean'Val (Internal (List, Target, J'Address));
+      Info := J;
    end Target_List_Find;
 
    ---------------
    -- Owner_Set --
    ---------------
 
-   function Owner_Set (Widget    : in Gtk.Widget.Gtk_Widget;
-                       Selection : in Gdk_Selection := Selection_Primary;
-                       Time      : in Guint32 := 0)
-                      return Boolean
+   function Owner_Set
+     (Widget    : in Gtk.Widget.Gtk_Widget;
+      Selection : in Gdk_Selection := Selection_Primary;
+      Time      : in Guint32 := 0) return Boolean
    is
-      function Internal (Widget    : System.Address;
-                         Selection : Gdk_Selection;
-                         Time      : Guint32)
-                        return Gint;
+      function Internal
+        (Widget    : System.Address;
+         Selection : Gdk_Selection;
+         Time      : Guint32) return Gint;
       pragma Import (C, Internal, "gtk_selection_owner_set");
+
    begin
       return Boolean'Val (Internal (Get_Object (Widget), Selection, Time));
    end Owner_Set;
@@ -135,16 +141,19 @@ package body Gtk.Selection is
    -- Add_Target --
    ----------------
 
-   procedure Add_Target (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
-                         Selection : in Gdk_Selection;
-                         Target    : in Gdk.Types.Gdk_Atom;
-                         Info      : in Guint)
+   procedure Add_Target
+     (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Selection : in Gdk_Selection;
+      Target    : in Gdk.Types.Gdk_Atom;
+      Info      : in Guint)
    is
-      procedure Internal (Widget    : System.Address;
-                          Selection : in Gdk_Selection;
-                          Target    : in Gdk.Types.Gdk_Atom;
-                          Info      : in Guint);
+      procedure Internal
+        (Widget    : System.Address;
+         Selection : in Gdk_Selection;
+         Target    : in Gdk.Types.Gdk_Atom;
+         Info      : in Guint);
       pragma Import (C, Internal, "gtk_selection_add_target");
+
    begin
       Internal (Get_Object (Widget), Selection, Target, Info);
    end Add_Target;
@@ -158,11 +167,13 @@ package body Gtk.Selection is
       Selection : in Gdk_Selection;
       Targets   : in Target_Entry_Array)
    is
-      procedure Internal (Widget    : System.Address;
-                          Selection : Gdk_Selection;
-                          Targets   : System.Address;
-                          N_Targets : Guint);
+      procedure Internal
+        (Widget    : System.Address;
+         Selection : Gdk_Selection;
+         Targets   : System.Address;
+         N_Targets : Guint);
       pragma Import (C, Internal, "gtk_selection_add_targets");
+
    begin
       Internal (Get_Object (Widget), Selection, Targets'Address,
                 Targets'Length);
@@ -172,18 +183,19 @@ package body Gtk.Selection is
    -- Convert --
    -------------
 
-   function Convert (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
-                     Selection : in Gdk_Selection := Selection_Primary;
-                     Target    : in Gdk.Types.Gdk_Atom;
-                     Time      : in Guint32 := 0)
-                    return Boolean
+   function Convert
+     (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Selection : in Gdk_Selection := Selection_Primary;
+      Target    : in Gdk.Types.Gdk_Atom;
+      Time      : in Guint32 := 0) return Boolean
    is
-      function Internal (Widget    : System.Address;
-                         Selection : Gdk_Selection;
-                         Target    : Gdk.Types.Gdk_Atom;
-                         Time      : Guint32)
-                        return Gint;
+      function Internal
+        (Widget    : System.Address;
+         Selection : Gdk_Selection;
+         Target    : Gdk.Types.Gdk_Atom;
+         Time      : Guint32) return Gint;
       pragma Import (C, Internal, "gtk_selection_convert");
+
    begin
       return Boolean'Val (Internal (Get_Object (Widget), Selection,
                                     Target, Time));
