@@ -38,6 +38,7 @@
 --  </description>
 --  <c_version>1.2.6</c_version>
 
+with Gdk.Types;
 with Gtk.Enums;
 with Gtk.Misc;
 
