@@ -85,7 +85,8 @@ package Gtkada.Multi_Paned is
    procedure Set_Size
      (Win           : access Gtkada_Multi_Paned_Record;
       Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Width, Height : Glib.Gint := 0);
+      Width, Height : Glib.Gint := 0;
+      Fixed_Size    : Boolean := False);
    --  Force a specific size for Widget
 
    ---------------

@@ -166,6 +166,56 @@ package body Gtkada.Multi_Paned is
      (Split : access Gtkada_Multi_Paned_Record'Class);
    --  Compute the new percent value for the handle being dragged
 
+   procedure Dump
+     (Split : access Gtkada_Multi_Paned_Record'Class;
+      Child : Child_Description_Access;
+      Prefix : String := "");
+   --  Dump to stdout the status of the multipaned
+
+   ----------
+   -- Dump --
+   ----------
+
+   procedure Dump
+     (Split : access Gtkada_Multi_Paned_Record'Class;
+      Child : Child_Description_Access;
+      Prefix : String := "")
+   is
+      Tmp : Child_Description_Access;
+      H   : Natural;
+      Alloc : Gtk_Allocation;
+   begin
+      if Child.Is_Widget then
+         Compute_Child_Position (Split, Child, Alloc);
+         Put_Line (Prefix & "<widget req_width=""" & Child.Width'Img
+                   & """ req_height="""   & Child.Height'Img
+                   & """ width=""" & Alloc.Width'Img
+                   & """ height=""" & Alloc.Height'Img
+                   & """ visible=""" & Is_Visible (Child)'Img
+                   & """ fixed_size=""" & Child.Fixed_Size'Img
+                   & """>");
+      else
+         Compute_Child_Position (Split, Child, Alloc);
+         Put_Line (Prefix & "<pane orientation="
+                   & Child.Orientation'Img
+                   & """ handles=""" & Child.Handles'Length'Img
+                   & """ width=""" & Alloc.Width'Img
+                   & """ height=""" & Alloc.Height'Img
+                   & """>");
+         Tmp := Child.First_Child;
+         H := Child.Handles'First;
+         while Tmp /= null loop
+            Dump (Split, Tmp, Prefix & "  ");
+            if H <= Child.Handles'Last then
+               Put_Line (Prefix & "  <handle percent="""
+                         & Child.Handles (H).Percent'Img & """>");
+               H := H + 1;
+            end if;
+            Tmp := Tmp.Next;
+         end loop;
+      end if;
+   end Dump;
+
    -------------------------
    -- Set_Opaque_Resizing --
    -------------------------
@@ -261,7 +311,6 @@ package body Gtkada.Multi_Paned is
          return Orientation_Horizontal;
       end if;
    end Get_Orientation;
-
 
    ----------
    -- Next --
@@ -1065,19 +1114,20 @@ package body Gtkada.Multi_Paned is
       end if;
 
       for C in Ref .. Parent.Handles'Last loop
-         Last :=  Gint (Parent.Handles (C).Percent * Max);
+         if Is_Visible (Parent.Handles (C).Win) then
+            Last :=  Gint (Parent.Handles (C).Percent * Max);
+            if Last <= Previous + Minimum_Child_Width then
+               Last := Previous + Minimum_Child_Width;
+               Parent.Handles (C).Percent := Float (Last) / Max;
 
-         if Last <= Previous + Minimum_Child_Width then
-            Last := Previous + Minimum_Child_Width;
-            Parent.Handles (C).Percent := Float (Last) / Max;
-
-            if Parent.Handles (C).Percent >= 1.0 then
-               Parent.Handles (C).Percent := 0.99;
+               if Parent.Handles (C).Percent >= 1.0 then
+                  Parent.Handles (C).Percent := 0.99;
+               end if;
             end if;
-         end if;
 
-         Resize_Handle (C);
-         Previous := Last;
+            Resize_Handle (C);
+            Previous := Last;
+         end if;
       end loop;
 
       if Ref <= Parent.Handles'Last then
@@ -1087,18 +1137,20 @@ package body Gtkada.Multi_Paned is
       end if;
 
       for C in reverse Parent.Handles'First .. Ref - 1 loop
-         Last :=  Gint (Parent.Handles (C).Percent * Max);
-         if Last >= Previous - Minimum_Child_Width then
-            Last := Previous - Minimum_Child_Width;
-            Parent.Handles (C).Percent := Float (Last) / Max;
+         if Is_Visible (Parent.Handles (C).Win) then
+            Last :=  Gint (Parent.Handles (C).Percent * Max);
+            if Last >= Previous - Minimum_Child_Width then
+               Last := Previous - Minimum_Child_Width;
+               Parent.Handles (C).Percent := Float (Last) / Max;
 
-            if Parent.Handles (C).Percent <= 0.0 then
-               Parent.Handles (C).Percent := 0.01;
+               if Parent.Handles (C).Percent <= 0.0 then
+                  Parent.Handles (C).Percent := 0.01;
+               end if;
             end if;
-         end if;
 
-         Resize_Handle (C);
-         Previous := Last;
+            Resize_Handle (C);
+            Previous := Last;
+         end if;
       end loop;
    end Move_Handles;
 
@@ -1181,6 +1233,7 @@ package body Gtkada.Multi_Paned is
          exit when Current = null;
 
          if Current.Is_Widget and then Is_Visible (Current) then
+
             if Current.Width = -1 or else Current.Height = -1 then
                Size_Request (Current.Widget, Requisition);
                if Current.Width = -1 then
@@ -1231,6 +1284,7 @@ package body Gtkada.Multi_Paned is
 
                if Tmp = Current then
                   Compute_Child_Position (Split, Current.Parent, Parent_Pos);
+
                   case Current.Parent.Orientation is
                      when Orientation_Horizontal =>
                         Current.Parent.Handles
@@ -1558,7 +1612,8 @@ package body Gtkada.Multi_Paned is
    procedure Set_Size
      (Win           : access Gtkada_Multi_Paned_Record;
       Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Width, Height : Glib.Gint := 0)
+      Width, Height : Glib.Gint := 0;
+      Fixed_Size    : Boolean := False)
    is
       Iter    : Child_Iterator := Start (Win);
       Current : Child_Description_Access;
@@ -1572,6 +1627,7 @@ package body Gtkada.Multi_Paned is
          then
             Current.Width := Width;
             Current.Height := Height;
+            Current.Fixed_Size := Fixed_Size;
             exit;
          end if;
 
