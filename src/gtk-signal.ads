@@ -178,7 +178,8 @@ package Gtk.Signal is
    ------------------------------------------------------------------
 
    generic
-      type Base_Type is new Gtk.Object.Gtk_Object_Record with private;
+      type Base_Type (<>) is tagged private;
+      --  This does not need to be a tagged object extending Object
 
    package Object_Callback is
       type Callback is access procedure
