@@ -234,6 +234,10 @@ package Gdk.Window is
 
    procedure Show (Window : Gdk_Window);
 
+   procedure Show_Unraised (Window : Gdk_Window);
+   --  Show Window on screen, but does not modify its stacking order. In
+   --  contrast, Show will raise the window to the top of the window stack.
+
    procedure Hide (Window : Gdk_Window);
 
    procedure Withdraw (Window : Gdk_Window);
@@ -554,6 +558,7 @@ private
    pragma Import (C, Set_Hints, "gdk_window_set_hints");
    pragma Import (C, Set_Transient_For, "gdk_window_set_transient_for");
    pragma Import (C, Show, "gdk_window_show");
+   pragma Import (C, Show_Unraised, "gdk_window_show_unraised");
    pragma Import (C, Unref, "gdk_drawable_unref");
    pragma Import (C, Withdraw, "gdk_window_withdraw");
    pragma Import (C, Set_Cursor, "gdk_window_set_cursor");
