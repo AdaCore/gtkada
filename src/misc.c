@@ -48,25 +48,25 @@
 gint
 convert_a (void* a)
 {
-   return (gint)a;
+   return GPOINTER_TO_INT (a);
 }
 
 void*
 convert_i (gint s)
 {
-   return (void*)s;
+   return GINT_TO_POINTER (s);
 }
 
 guint
 convert_ua (void* a)
 {
-   return (guint)a;
+   return GPOINTER_TO_UINT (a);
 }
 
 void*
 convert_ui (guint s)
 {
-   return (void*)s;
+   return GUINT_TO_POINTER (s);
 }
 
 /********************************************************************
@@ -2455,7 +2455,7 @@ ada_clist_get_rows (GtkCList* clist)
 GList*
 ada_clist_get_selection (GtkCList* widget)
 {
-   return widget->selection;
+  return widget->selection;
 }
 
 gint
