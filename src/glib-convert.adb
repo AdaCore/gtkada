@@ -360,11 +360,18 @@ package body Glib.Convert is
       pragma Import (C, Internal, "g_locale_from_utf8");
 
       S   : constant chars_ptr := Internal (UTF8_String, UTF8_String'Length);
-      Str : constant String := Value (S);
 
    begin
-      g_free (S);
-      return Str;
+      if S = Null_Ptr then
+         return "";
+      else
+         declare
+            Str : constant String := Value (S);
+         begin
+            g_free (S);
+            return Str;
+         end;
+      end if;
    end Locale_From_UTF8;
 
    --------------------
