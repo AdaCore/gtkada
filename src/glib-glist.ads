@@ -84,12 +84,18 @@ package Glib.Glist is
                         Data : in Gpointer);
       procedure Remove_Link (List : in out Glist;
                              Link : in Glist);
+
+
+      --  For Internal use only.
+      --
       function Get_Object (Obj : in Glist)
                            return System.Address;
       pragma Inline (Get_Object);
+
       procedure Set_Object (Obj    : in out Glist;
                             Value  : in     System.Address);
       pragma Inline (Set_Object);
+
    private
 
       type Glist is
