@@ -14,17 +14,13 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
 CC = @CC@
-CFLAGS = @CFLAGS@ -Wall
-ALL_CFLAGS = $(CFLAGS) @GTK_CFLAGS@ -fPIC
+FPIC = -fPIC
+CFLAGS = @CFLAGS@ -Wall @GTK_CFLAGS@ $(FPIC)
 
-GNATCC = gcc
 GNATFLAGS = -O2 -gnatn
 GNATFLAGS_DEVEL = -O2 -gnatgawl -g
-ALL_GNATFLAGS = $(GNATFLAGS) -fPIC
 
 GNATMAKE = gnatmake
-GNATMAKEFLAGS = $(GNATFLAGS)
-GNATMAKEFLAGS_DEVEL = $(GNATFLAGS_DEVEL)
 GNATMAKELDFLAGS = -largs -L. @GTK_LIBS@ -lgtkada
 
 LIB_DIR=lib-obj
@@ -79,7 +75,7 @@ $(LIBNAME):: $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 
 $(ARCHIVENAME):: $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 	$(AR) $(ARFLAGS) $(ARCHIVENAME) $(LIB_DIR)/glib*.o $(LIB_DIR)/gdk*.o $(LIB_DIR)/gtk*.o $(c_objects)
-	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) -o -f /usr/ccs/bin/$(RANLIB) ]; then \
+	if [ -f /usr/bin/$(RANLIB) -o -f /bin/$(RANLIB) ]; then \
 	  $(RANLIB) $(ARCHIVENAME); \
 	fi
 
@@ -93,25 +89,25 @@ install_ali::
 
 $(GATE_EX):: $(GATE_SRC) $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 	if [ -f .devel ]; then \
-	  $(GNATMAKE) -aO$(LIB_DIR) $(GNATMAKEFLAGS_DEVEL) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS); \
+	  $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKELDFLAGS); \
 	else \
-	  $(GNATMAKE) $(GNATMAKEFLAGS) -o $(GATE_EX) $(ALL_CFLAGS) $(GATE_SRC) $(GNATMAKELDFLAGS); \
+	  $(GNATMAKE) $(GNATFLAGS) -o $(GATE_EX) $(GATE_SRC) $(GNATMAKELDFLAGS); \
 	fi
 
 $(DGATE):: $(DGATE).adb $(LIB_DIR)/$(MAKE_ADB).o $(c_objects)
 	if [ -f .devel ]; then \
-	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATMAKEFLAGS_DEVEL) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
+	   $(GNATMAKE) -aO$(LIB_DIR) $(GNATFLAGS_DEVEL) $(DGATE) $(GNATMAKELDFLAGS); \
 	else \
-	   $(GNATMAKE) $(GNATMAKEFLAGS) $(ALL_CFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
+	   $(GNATMAKE) $(GNATFLAGS) $(DGATE) $(GNATMAKELDFLAGS); \
 	fi
 
 $(LIB_DIR)/$(MAKE_ADB).o::
 	@if [ -f .devel ]; then \
 	  $(CD) $(LIB_DIR); \
-	  $(GNATMAKE) -c ../$(MAKE_ADB) -fPIC $(GNATFLAGS_DEVEL); \
+	  $(GNATMAKE) -c ../$(MAKE_ADB) $(GNATFLAGS_DEVEL) $(FPIC); \
 	else \
 	  $(CD) $(LIB_DIR); \
-	  $(GNATMAKE) -c ../$(MAKE_ADB) -fPIC $(GNATFLAGS); \
+	  $(GNATMAKE) -c ../$(MAKE_ADB) $(GNATFLAGS) $(FPIC); \
 	fi
 
 install: $(ARCHIVENAME) $(LIBNAME)
@@ -162,7 +158,7 @@ mostlyclean: mostlyclean-generic
 maintainer-clean: mostlyclean-generic
 
 $(LIB_DIR)/misc.o: misc.c
-	$(CD) $(LIB_DIR); $(CC) -c $(ALL_CFLAGS) ../misc.c
+	$(CD) $(LIB_DIR); $(CC) -c $(CFLAGS) ../misc.c
 
 force:
 

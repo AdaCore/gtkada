@@ -12,24 +12,12 @@ SHELL = /bin/sh
 target  = testgtk
 src_dir = ../src
 
-CC = @CC@
-CFLAGS = @CFLAGS@ -Wall
-ALL_CFLAGS = $(CFLAGS) -I$(src_dir)
-
-#MALLOC_FLAGS= ../debug/wrap.o -Wl,--wrap=malloc -Wl,--wrap=free -Wl,--wrap=strdup
-MALLOC_FLAGS=
-
 GTKADA_CONFIG=gtkada-config
-GNATCC = gcc
-GNATFLAGS = -O2 -gnata
+GNATFLAGS = @CFLAGS@ -gnata
+GNATFLAGS_DEVEL = @CFLAGS@ -g -gnatawu
 
 GNATMAKE = gnatmake
-GNATMAKEFLAGS = $(GNATFLAGS)
 GNATMAKELDFLAGS = -largs -L$(src_dir) @GTK_LIBS@ -lgtkada
-GNATMAKELDFLAGS_STATIC =  -largs $(MALLOC_FLAGS) -L$(src_dir)/ \
-	@GTK_PREFIX@/lib/libgtk.a @GTK_PREFIX@/lib/libglib.a \
-        $(src_dir)/libgtkada.a \
-        `echo '@GTK_LIBS@' | sed 's/-lglib//' | sed 's/-lgtk//'`
 
 all: $(target)
 
@@ -38,19 +26,10 @@ $(target): *.ad[sb]
 	@echo $(GNATMAKE) $(GNATFLAGS) $(target) '`'$(GTKADA_CONFIG)'`'
 	@echo "-------------------------------------"
 	@if [ -f $(src_dir)/.devel ]; then \
-	   $(GNATMAKE) $(GNATFLAGS) $(target) -g -aO$(src_dir)/lib-obj $(ALL_CFLAGS) -largs $(GNATMAKELDFLAGS); \
+	   $(GNATMAKE) $(GNATFLAGS_DEVEL) $(target) -I$(src_dir) -aO$(src_dir)/lib-obj -largs $(GNATMAKELDFLAGS); \
 	else \
-	   $(GNATMAKE) $(GNATFLAGS) $(target) $(ALL_CFLAGS) -largs $(GNATMAKELDFLAGS); \
+	   $(GNATMAKE) $(GNATFLAGS) $(target) -I$(src_dir) -largs $(GNATMAKELDFLAGS); \
 	fi
-
-static: force
-	$(RM) $(target)
-	@if [ -f $(src_dir)/.devel ]; then \
-	  $(GNATMAKE) $(GNATMAKEFLAGS) $(target) -g -I$(src_dir)/ -I$(src_dir)/lib-obj -largs $(MALLOC_FLAGS) $(GNATMAKELDFLAGS_STATIC); \
-	else \
-	  $(GNATMAKE) $(GNATMAKEFLAGS) $(target) -I$(src_dir)/ -largs $(MALLOC_FLAGS) $(GNATMAKELDFLAGS_STATIC); \
-	fi
-
 
 install:
 	@echo "Nothing to do --  just run the ./testgtk program"
@@ -67,12 +46,6 @@ mostlyclean: clean
 
 maintainer-clean: clean
 	-${RM} Makefile
-
-
-.adb.o:
-	$(CC) -c $(GNATFLAGS) $<
-.ads.o:
-	$(CC) -c $(GNATFLAGS) $<
 
 force:
 
