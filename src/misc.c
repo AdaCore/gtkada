@@ -202,43 +202,6 @@ ada_signal_argument_type (gint type, char* signal_name, gint num)
     return signal.param_types [num];
 }
 
-void
-ada_set_return_value (GType type, void* value, GtkArg* params, guint num)
-{
-  params[num].type = type;
-  switch (G_TYPE_FUNDAMENTAL (type))
-    {
-    case G_TYPE_BOOLEAN:
-      *(GTK_RETLOC_BOOL (params[num])) = (gboolean)value;
-      break;
-    case G_TYPE_INT:
-      *(GTK_RETLOC_INT (params[num])) = (gint)value;
-      break;
-    case G_TYPE_UINT:
-      *(GTK_RETLOC_UINT (params[num])) = (guint)value;
-      break;
-    case G_TYPE_LONG:
-      *(GTK_RETLOC_LONG (params[num])) = (glong)value;
-      break;
-    case G_TYPE_ULONG:
-      *(GTK_RETLOC_ULONG (params[num])) = (gulong)value;
-      break;
-    case G_TYPE_STRING:
-      *(GTK_RETLOC_STRING (params[num])) = (char*)value;
-      break;
-    case G_TYPE_POINTER:
-      *(GTK_RETLOC_POINTER (params[num])) = (gpointer*)value;
-      break;
-    case G_TYPE_BOXED:
-      *(GTK_RETLOC_BOXED (params[num])) = (gpointer*)value;
-      break;
-    default:
-      fprintf (stderr, "GtkAda: Return value type not supported (%d)\n",
-	       type);
-      break;
-    }
-}
-
 /*********************************************************************
  ** Creating new widgets
  *********************************************************************/
@@ -1992,55 +1955,62 @@ ada_object_get_type (GtkObject* object)
 }
 
 /***************************************************
- *  Functions for GtkArg
+ *  Functions for GClosure
  ***************************************************/
 
-gpointer
-ada_gtkarg_value_object (GtkArg* args, guint num)
+void*
+ada_gclosure_get_data (GClosure *closure)
 {
-  gpointer return_value = NULL;
-  switch (G_TYPE_FUNDAMENTAL (args [num].type))
-    {
-    case G_TYPE_OBJECT:
-      return_value = (gpointer)GTK_VALUE_OBJECT (args [num]);
-      break;
-    case G_TYPE_POINTER:
-      return_value = (gpointer)GTK_VALUE_POINTER (args [num]);
-      break;
-    case G_TYPE_STRING:
-      return_value = (gpointer)GTK_VALUE_STRING (args [num]);
-      break;
-    case G_TYPE_BOXED:
-      return_value = (gpointer)GTK_VALUE_BOXED (args [num]);
-      break;
-    case G_TYPE_INT:
-      return_value = (gpointer)GTK_VALUE_INT (args [num]);
-      break;
-    case G_TYPE_BOOLEAN:
-      return_value = (gpointer)GTK_VALUE_BOOL (args [num]);
-      break;
-    case G_TYPE_UINT:
-      return_value = (gpointer)GTK_VALUE_UINT (args [num]);
-      break;
-    case G_TYPE_LONG:
-      return_value = (gpointer)GTK_VALUE_LONG (args [num]);
-      break;
-    case G_TYPE_ULONG:
-      return_value = (gpointer)GTK_VALUE_ULONG (args [num]);
-      break;
-    case G_TYPE_INVALID:
-      fprintf (stderr, "GtkAda: G_TYPE_INVALID found in ada_gtkarg_value_object\n");
-      break;
-    case G_TYPE_NONE:
-      fprintf (stderr, "GtkAda: G_TYPE_NONE found in ada_gtkarg_value_object\n");
-      break;
-    default:
-      {
-	fprintf (stderr, "GtkAda: request for an Object value (%d) when we have a %d\n",
-		 G_TYPE_OBJECT, (args[num].type % 256));
-      }
-    }
-  return return_value;
+  return closure->data;
+}
+
+/***************************************************
+ *  Functions for GValue
+ ***************************************************/
+
+void
+ada_gtkarg_value_object ()
+{
+  /* XXX */
+}
+
+GValue*
+ada_gvalue_nth (GValue* value, guint num)
+{
+  return value + num;
+}
+
+gpointer
+ada_gvalue_get_pointer (GValue* value)
+{
+  return value->data[0].v_pointer;
+}
+
+void
+ada_gvalue_set (GValue* value, void *val)
+{
+  if G_IS_VALUE_CHAR (value)
+    g_value_set_char (value, *(gchar*)val);
+  else if G_IS_VALUE_UCHAR (value)
+    g_value_set_uchar (value, *(guchar*)val);
+  else if G_IS_VALUE_BOOLEAN (value)
+    g_value_set_boolean (value, *(char*)val);
+  else if G_IS_VALUE_INT (value)
+    g_value_set_int (value, *(gint*)val);
+  else if G_IS_VALUE_UINT (value)
+    g_value_set_uint (value, *(guint*)val);
+  else if G_IS_VALUE_LONG (value)
+    g_value_set_long (value, *(glong*)val);
+  else if G_IS_VALUE_ULONG (value)
+    g_value_set_ulong (value, *(gulong*)val);
+  else if G_IS_VALUE_FLOAT (value)
+    g_value_set_float (value, *(gfloat*)val);
+  else if G_IS_VALUE_DOUBLE (value)
+    g_value_set_double (value, *(gdouble*)val);
+  else if G_IS_VALUE_POINTER (value)
+    g_value_set_pointer (value, *(gpointer*)val);
+  else
+    fprintf (stderr, "GtkAda: Return value type not supported\n");
 }
 
 /***************************************************
