@@ -32,6 +32,7 @@ with Gdk.Pixmap;
 with Gtk.Misc;
 with Gtk.Window;
 with Gtk.Object;
+with Gtkada.Types;
 
 package Gtk.Pixmap is
 
@@ -64,6 +65,12 @@ package Gtk.Pixmap is
       Window   : access Gtk.Window.Gtk_Window_Record'Class)
       return Gtk_Pixmap;
    --  Create a pixmap given a window and a filename
+
+   function Create_Pixmap
+     (Data     : in Gtkada.Types.Chars_Ptr_Array;
+      Window   : access Gtk.Window.Gtk_Window_Record'Class)
+      return Gtk_Pixmap;
+   --  Create a pixmap given a window and a buffer.
 
    procedure Generate (N : in Node_Ptr; File : in File_Type);
    --  Gate internal function

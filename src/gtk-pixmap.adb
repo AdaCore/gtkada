@@ -159,6 +159,29 @@ package body Gtk.Pixmap is
       return Pixmap;
    end Create_Pixmap;
 
+   function Create_Pixmap
+     (Data     : in Gtkada.Types.Chars_Ptr_Array;
+      Window   : access Gtk.Window.Gtk_Window_Record'Class)
+      return Gtk_Pixmap
+   is
+      Gdkpixmap : Gdk.Pixmap.Gdk_Pixmap;
+      Mask      : Gdk.Bitmap.Gdk_Bitmap;
+      Pixmap    : Gtk_Pixmap;
+
+      use Gtk.Widget;
+      use Gtk.Window;
+
+   begin
+      if not Realized_Is_Set (Window) then
+         Gtk.Window.Realize (Window);
+      end if;
+
+      Gdk.Pixmap.Create_From_Xpm_D
+        (Gdkpixmap, Get_Window (Window), Mask, Gdk.Color.Null_Color, Data);
+      Gtk_New (Pixmap, Gdkpixmap, Mask);
+      return Pixmap;
+   end Create_Pixmap;
+
    --------------
    -- Generate --
    --------------
