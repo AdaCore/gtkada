@@ -3207,9 +3207,11 @@ package body Gtkada.MDI is
          Idle_Remove (Child.MDI.Raise_Id);
       end if;
 
-      Child.MDI.Raise_Id :=
-        Widget_Idle.Add (Raise_Child_Idle'Access, (Child.MDI, C),
-                         Destroy => Destroy_Raise_Child_Idle'Access);
+      if Child.State /= Floating then
+         Child.MDI.Raise_Id :=
+           Widget_Idle.Add (Raise_Child_Idle'Access, (Child.MDI, C),
+                            Destroy => Destroy_Raise_Child_Idle'Access);
+      end if;
 
       if Old /= null
         and then Realized_Is_Set (Old)
