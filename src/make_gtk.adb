@@ -73,6 +73,7 @@ with Gdk.Window_Attr;
 with Gtk.Type_Conversion;
 with Gtk.Accel_Group;
 with Gtk.Accel_Label;
+with Gtk.Accel_Map;
 with Gtk.Adjustment;
 with Gtk.Alignment;
 with Gtk.Arguments;
@@ -211,6 +212,7 @@ with Gtkada.Types;
 
 with Pango;
 with Pango.Context;
+with Pango.Layout;
 with Pango.Enums;
 with Pango.Font;
 
